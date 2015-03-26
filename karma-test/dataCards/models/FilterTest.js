@@ -1,4 +1,4 @@
-describe("Filter models", function() {
+describe('Filter models', function() {
   beforeEach(module('dataCards'));
 
   function parseAsJson(obj) {
@@ -71,21 +71,17 @@ describe("Filter models", function() {
 
   describe('TimeRangeFilter', function() {
     var fakeColumnName = _.uniqueId();
-    it('should throw if the constructor is passed invalid moments', inject(function(Filter) {
+    it('should throw if the constructor is passed non-Dates', inject(function(Filter) {
       expect(function() { new Filter.TimeRangeFilter(); }).to.throw();
       expect(function() { new Filter.TimeRangeFilter(null); }).to.throw();
       expect(function() { new Filter.TimeRangeFilter(0); }).to.throw();
       expect(function() { new Filter.TimeRangeFilter(3); }).to.throw();
       expect(function() { new Filter.TimeRangeFilter(''); }).to.throw();
-      expect(function() { new Filter.TimeRangeFilter(moment('pants', moment.ISO_8601), moment()); }).to.throw();
-      expect(function() { new Filter.TimeRangeFilter(moment(), moment('trousers', moment.ISO_8601)); }).to.throw();
-      expect(function() { new Filter.TimeRangeFilter(moment(), 123); }).to.throw();
-      expect(function() { new Filter.TimeRangeFilter(123, moment()); }).to.throw();
     }));
 
     it('should generate correct SOQL', inject(function(Filter, SoqlHelpers) {
-      var start = moment('1988-01-10T08:00:00.000Z');
-      var end = moment('2101-01-10T08:00:00.000Z');
+      var start = new Date('1988-01-10T08:00:00.000Z');
+      var end = new Date('2101-01-10T08:00:00.000Z');
       var filter = new Filter.TimeRangeFilter(start, end);
 
       var expected = "{0} BETWEEN {1} AND {2}".format(fakeColumnName, SoqlHelpers.encodePrimitive(start), SoqlHelpers.encodePrimitive(end));
@@ -93,8 +89,8 @@ describe("Filter models", function() {
     }));
 
     it('should serialize and deserialize properly', inject(function(Filter) {
-      var start = moment('1988-01-10T08:00:00.000Z');
-      var end = moment('2101-01-10T08:00:00.000Z');
+      var start = new Date('1988-01-10T08:00:00.000Z');
+      var end = new Date('2101-01-10T08:00:00.000Z');
       var filter = new Filter.TimeRangeFilter(start, end);
 
       var deserializedFilter = Filter.deserialize(parseAsJson(filter.serialize()));
@@ -103,14 +99,14 @@ describe("Filter models", function() {
     }));
 
     it('should fail when deserializing with a non-ISO8601 time.', inject(function(Filter) {
-      var start = moment('1988-01-10T08:00:00.000Z');
-      var end = moment('2101-01-10T08:00:00.000Z');
+      var start = new Date('1988-01-10T08:00:00.000Z');
+      var end = new Date('2101-01-10T08:00:00.000Z');
       var filter = new Filter.TimeRangeFilter(start, end);
 
       var serializedFilter = parseAsJson(filter.serialize());
 
       // Hack the serialized form to have a malformed end time.
-      serializedFilter['arguments'].end = '1/3/2013' // Not valid ISO8601
+      serializedFilter['arguments'].end = 'bad date' // Not valid
 
       expect(function() {
         Filter.deserialize(serializedFilter);

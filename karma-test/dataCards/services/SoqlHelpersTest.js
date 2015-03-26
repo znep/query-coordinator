@@ -1,4 +1,6 @@
-describe("SoqlHelpers service", function() {
+describe('SoqlHelpers service', function() {
+  'use strict';
+
   beforeEach(module('dataCards'));
 
   describe('SOQL string encoder', function() {
@@ -23,7 +25,7 @@ describe("SoqlHelpers service", function() {
       expect(function() { SoqlHelpers.encodeSoqlString({a:2}); }).to.throw();
     }));
     it('should encode dates to strings', inject(function(SoqlHelpers) {
-      expect(SoqlHelpers.encodeSoqlDate(moment('2014-08-01T16:36:24'))).to.equal("'2014-08-01T16:36:24'");
+      expect(SoqlHelpers.encodeSoqlDate(new Date('2014-08-01T16:36:24'))).to.equal("'2014-08-01T16:36:24'");
     }));
   });
 
@@ -66,9 +68,8 @@ describe("SoqlHelpers service", function() {
       var mockedEncode = sinon.stub(soqlHelpers, 'encodeSoqlDate').returns(fakeReturnValue);
 
       var testPrimitives = [
-        moment(),
-        moment('2014-08-01T16:36:24'),
-        new Date()
+        new Date(),
+        new Date('2014-08-01T16:36:24')
       ];
 
       var returned = _.map(testPrimitives, soqlHelpers.encodePrimitive);

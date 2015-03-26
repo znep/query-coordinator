@@ -1459,17 +1459,13 @@
         }
 
         function requestChartFilterByCurrentSelection() {
-          var selectionStartDateAsMoment = moment(selectionStartDate);
-          var selectionEndDateAsMoment = moment(selectionEndDate);
-          if (selectionStartDateAsMoment.isValid() && selectionEndDateAsMoment.isValid()) {
-            scope.$emit(
-              'filter-timeline-chart',
-              {
-                start: selectionStartDateAsMoment,
-                end: selectionEndDateAsMoment
-              }
-            );
-          }
+          scope.$emit(
+            'filter-timeline-chart',
+            {
+              start: selectionStartDate,
+              end: selectionEndDate
+            }
+          );
         }
 
         function requestChartFilterReset() {

@@ -31,7 +31,6 @@
         var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
         var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
 
-
         /*************************************
         * FIRST set up the 'busy' indicator. *
         *************************************/
@@ -50,7 +49,6 @@
             }
           )
         );
-
 
         /**
          * This used to take ~175ms because of the multiple maps and reduces.
@@ -101,7 +99,6 @@
           }
 
           return aggregatedData;
-
         }
 
         var reportInvalidTimelineDomain = _.once(
@@ -150,7 +147,6 @@
             }
 
             return precision;
-
           }
         );
 
@@ -186,7 +182,6 @@
               );
 
               return Rx.Observable.fromPromise(dataPromise);
-
             }
           }
         );
@@ -233,7 +228,6 @@
               return Rx.Observable.fromPromise(dataPromise);
             }
           }
-
         );
 
         var chartDataSequence = Rx.Observable.combineLatest(
@@ -257,7 +251,7 @@
           chartDataSequence.startWith(undefined), // Because we never request data w/o datasetPrecision.
           function(badDates, chartData) {
             var durationIsZero = _.isPresent(chartData) &&
-              moment.duration(chartData.maxDate - chartData.minDate) <= 0;
+              (chartData.maxDate - chartData.minDate) <= 0;
 
             if (badDates) {
               return { reason: 'badDates' };
@@ -287,11 +281,8 @@
             }
           }
         );
-
       }
-
     };
-
   }
 
   angular.

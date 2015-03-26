@@ -1,24 +1,12 @@
 describe('Analytics service', function() {
+  'use strict';
+
   var Analytics, $httpBackend, moment, $rootScope;
   var INITIAL_NAVIGATION_START_TIME = 222;
   var INITIAL_MOMENT_TIME = 1234;
   var INITIAL_TIME_DELTA = INITIAL_MOMENT_TIME - INITIAL_NAVIGATION_START_TIME;
   var DOM_READY_TIME = 4119;
   var fakeClock;
-
-  var mockMomentService = function() {
-    var nextValue = INITIAL_MOMENT_TIME;
-    return function() {
-      return {
-        valueOf: function() {
-          return nextValue;
-        },
-        _next: function(value) {
-          nextValue = value;
-        }
-      };
-    };
-  }();
 
   var mockWindowPerformance = {
     timing: {
@@ -39,7 +27,6 @@ describe('Analytics service', function() {
 
   beforeEach(function() {
     module(function($provide) {
-      $provide.value('moment', mockMomentService);
       $provide.value('$window', mockWindowService);
     });
   });
@@ -53,7 +40,7 @@ describe('Analytics service', function() {
 
   // *** Fake synchronous timing. ***
   beforeEach(function() {
-    fakeClock = sinon.useFakeTimers();
+    fakeClock = sinon.useFakeTimers(INITIAL_MOMENT_TIME);
   });
 
   afterEach(function() {
@@ -251,29 +238,31 @@ describe('Analytics service', function() {
 
     describe('http request time measurement', function() {
       it('should track the http request time', function() {
-        var START_TIME = 1000;
-        var END_TIME = 1234;
-        Analytics.startHttpRequest('label', START_TIME);
-        mockMomentService()._next(END_TIME);
-        Analytics.stopHttpRequest('label', START_TIME);
-        expectAnalyticsHttpPost('js-cardsview-label-time', END_TIME - START_TIME);
+        var DURATION_OF_REQUEST = 1000;
+
+        Analytics.startHttpRequest('label', INITIAL_MOMENT_TIME);
+        fakeClock.tick(DURATION_OF_REQUEST);
+        Analytics.stopHttpRequest('label', INITIAL_MOMENT_TIME);
+
+        expectAnalyticsHttpPost('js-cardsview-label-time', DURATION_OF_REQUEST);
         flushHttp();
       });
 
       it('should handle multiple in-flight http request timings with same label and different start times', function() {
-        var START_TIME_1 = 1000;
-        var START_TIME_2 = 1001;
-        var END_TIME_1 = 1234;
-        var END_TIME_2 = 1432;
+        var DURATION_OF_REQUEST_1 = 1000;
+        var DURATION_OF_REQUEST_2 = 500;
+        var SECOND_REQUEST_START_OFFSET = 200;
 
-        Analytics.startHttpRequest('label', START_TIME_1);
-        Analytics.startHttpRequest('label', START_TIME_2);
-        mockMomentService()._next(END_TIME_1);
-        Analytics.stopHttpRequest('label', START_TIME_2);
-        mockMomentService()._next(END_TIME_2);
-        Analytics.stopHttpRequest('label', START_TIME_1);
-        expectAnalyticsHttpPost('js-cardsview-label-time', END_TIME_1 - START_TIME_2);
-        expectAnalyticsHttpPost('js-cardsview-label-time', END_TIME_2 - START_TIME_1);
+        Analytics.startHttpRequest('label', INITIAL_MOMENT_TIME);
+        Analytics.startHttpRequest('label', INITIAL_MOMENT_TIME + SECOND_REQUEST_START_OFFSET);
+
+        fakeClock.tick(DURATION_OF_REQUEST_1);
+
+        Analytics.stopHttpRequest('label', INITIAL_MOMENT_TIME + SECOND_REQUEST_START_OFFSET);
+        Analytics.stopHttpRequest('label', INITIAL_MOMENT_TIME);
+
+        expectAnalyticsHttpPost('js-cardsview-label-time', DURATION_OF_REQUEST_1 - SECOND_REQUEST_START_OFFSET);
+        expectAnalyticsHttpPost('js-cardsview-label-time', DURATION_OF_REQUEST_1);
         flushHttp();
       });
 

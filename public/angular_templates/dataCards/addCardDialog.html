@@ -91,14 +91,14 @@
   <span ng-if="addCardModel === null">Choose a column from the dropdown above to add a new card</span>
   <div class="card-spot" ng-if="addCardModel !== null">
     <card model="addCardModel"
-          interactive="false"
-          class="card preview"></card>
-    <div class="card-controls">
-      <div class="card-control icon-settings"
-           title="Customize this card"
-           ng-if="isCustomizable"
-           ng-click="onCustomizeCard(addCardModel)"
-           >
+      interactive="false"
+      class="card preview">
+    </card>
+    <div class="add-card-controls">
+      <div class="card-control add-card-settings icon-settings"
+        title="Customize this card"
+        ng-if="isCustomizable"
+        ng-click="onCustomizeCard(addCardModel)">
         Settings
       </div>
     </div>
@@ -106,10 +106,10 @@
 </div>
 <div class="add-card-buttons">
   <button type="button"
-          class="action-btn dark r-to-l"
-          ng-click="dialogState.show = false">Cancel</button>
+    class="action-btn dark r-to-l"
+    ng-click="dialogState.show = false">Cancel</button>
   <button type="button"
-          class="action-btn dark r-to-l"
-          ng-class="{disabled: addCardModel === null}"
-          ng-click="addCard()">Add card</button>
+    class="action-btn dark r-to-l"
+    ng-class="{disabled: addCardModel === null}"
+    ng-click="addCard()">Add card</button>
 </div>

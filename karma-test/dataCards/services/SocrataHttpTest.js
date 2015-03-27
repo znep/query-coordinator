@@ -30,6 +30,7 @@ describe('Socrata-flavored $http service', function() {
   });
 
   afterEach(function() {
+    fakeClock.restore();
     $httpBackend.verifyNoOutstandingExpectation();
     $httpBackend.verifyNoOutstandingRequest();
   });

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationFeatureMap(Constants, ServerConfig, AngularRxExtensions, CardDataService, Filter) {
+  function cardVisualizationFeatureMap(ServerConfig, AngularRxExtensions, CardDataService, VectorTileData) {
 
     return {
       restrict: 'E',
@@ -10,7 +10,7 @@
         'whereClause': '='
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationFeatureMap.html',
-      link: function(scope, element, attrs) {
+      link: function(scope) {
 
         AngularRxExtensions.install(scope);
 
@@ -72,43 +72,16 @@
           featureExtentDataSequence.switchLatest()
         );
 
-        scope.bindObservable(
-          'featureLayerUrl',
-          Rx.Observable.combineLatest(
-            model.pluck('fieldName'),
-            dataset,
-            scope.observe('whereClause'),
-            function(fieldName, dataset, whereClause) {
+        var vectorTileGetterSequence = Rx.Observable.combineLatest(
+          model.pluck('fieldName'),
+          dataset.pluck('id'),
+          scope.observe('whereClause'),
+          Rx.Observable.returnValue(false), // TODO: Replace with dataset privacy
+          function(fieldName, datasetId, whereClause, isDatasetPrivate) {
+            return VectorTileData.buildTileGetter(fieldName, datasetId, whereClause, isDatasetPrivate);
+          });
 
-              // We can't use the .format() method here because we need to retain the literal
-              // {z}, {x} and {y} components of the string provided to Leaflet as a tile URL
-              // template.
-              //
-              // The limit of 65,536 is the number of unique points that could potentially be
-              // drawn on a 256x256 tile.
-              var url = '/tiles/' +
-                dataset.id +
-                '/' +
-                fieldName +
-                '/{z}/{x}/{y}.pbf?$limit=' +
-                String(Math.pow(256, 2));
-
-              // Tile requests do not go through $http, so we must add the app token parameter here.
-              // Technically the preferred method is through a header, but there's no easy way to
-              // do that here.
-              var appToken = ServerConfig.get('dataCardsAppToken');
-              if (!_.isEmpty(appToken)) {
-                url += '&$$app_token=' + appToken;
-              }
-
-              if (!_.isEmpty(whereClause)) {
-                url += '&$where=' + encodeURIComponent(whereClause);
-              }
-
-              return url;
-            }
-          )
-        );
+        scope.bindObservable('vectorTileGetter', vectorTileGetterSequence);
 
         scope.bindObservable(
           'rowDisplayUnit',

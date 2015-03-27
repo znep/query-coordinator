@@ -11,8 +11,8 @@
       scope: {
         'baseLayerUrl': '=',
         'featureExtent': '=',
-        'featureLayerUrl': '=',
         'zoomDebounceMilliseconds': '=',
+        'vectorTileGetter': '=',
         'rowDisplayUnit': '=?'
       },
       templateUrl: '/angular_templates/dataCards/featureMap.html',
@@ -32,10 +32,10 @@
         // We buffer feature layers so that there isn't a visible flash
         // of emptiness when we transition from one to the next. This is accomplished
         // by only removing the previous layers when the current one completes rendering.
-        var featureLayers = {};
+        var featureLayers = new Map();
         // We also keep a handle on the current feature layer Url so we know which of
         // the existing layers we can safely remove (i.e. not the current one).
-        var currentFeatureLayerUrl;
+        var currentVectorTileGetter;
         var startResizeFn = null;
         var completeResizeFn = null;
         var baseTileLayerObservable;
@@ -194,15 +194,11 @@
          * so that there is only ever one active feature layer attached to the
          * map at a time.
          *
-         * @param map - The Leaflet map object.
-         * @param featureLayerUrl - The url to the tile resource, including
-         *   the page's current where clause.
+         * @param {Object} map - The Leaflet map object.
+         * @param {Function} vectorTileGetter - Function that gets a vector tile
          */
-        function createNewFeatureLayer(map, featureLayerUrl) {
-
+        function createNewFeatureLayer(map, vectorTileGetter) {
           var featureLayerOptions = {
-            url: featureLayerUrl,
-            headers: {},
             debug: false,
             getFeatureId: getFeatureId,
             filter: filterLayerFeature,
@@ -213,7 +209,8 @@
             onRenderComplete: function() {
               emitRenderCompleted();
               removeOldFeatureLayers(map);
-            }
+            },
+            vectorTileGetter: vectorTileGetter
             // You can interact with mouse events by passing
             // callbacks on three property names: 'mousedown',
             // 'mouseup' and 'mousemove'.
@@ -222,9 +219,10 @@
           };
 
           // Don't create duplicate layers.
-          if (!featureLayers.hasOwnProperty(featureLayerUrl)) {
-            featureLayers[featureLayerUrl] = VectorTiles.create(featureLayerOptions);
-            map.addLayer(featureLayers[featureLayerUrl]);
+          if (!featureLayers.has(vectorTileGetter)) {
+            var layer = VectorTiles.create(featureLayerOptions);
+            featureLayers.set(vectorTileGetter, layer);
+            map.addLayer(layer);
           }
         }
 
@@ -235,23 +233,12 @@
          * @param map - The Leaflet map object.
          */
         function removeOldFeatureLayers(map) {
-
-          var featureLayerUrls = _.keys(featureLayers);
-          var thisFeatureLayerUrl;
-
-          // currentFeatureLayerUrl may be undefined.
-          if (_.isString(currentFeatureLayerUrl)) {
-
-            for (var i = 0; i < featureLayerUrls.length; i++) {
-
-              thisFeatureLayerUrl = featureLayerUrls[i];
-
-              if (featureLayerUrls[i] !== currentFeatureLayerUrl) {
-                map.removeLayer(featureLayers[thisFeatureLayerUrl]);
-                delete featureLayers[thisFeatureLayerUrl];
-              }
+          featureLayers.forEach(function(value, key) {
+            if (key !== currentVectorTileGetter) {
+              map.removeLayer(value);
+              featureLayers['delete'](key);
             }
-          }
+          });
         }
 
         /**
@@ -412,14 +399,14 @@
             }
           );
 
-        // React to changes to the featureLayerUrl observable
+        // React to changes to the vectorTileGetter observable
         // (which changes indicate that a re-render is needed).
         Rx.Observable.subscribeLatest(
-          scope.observe('featureLayerUrl').filter(_.isString),
-          boundsSetObservable,
-          function(featureLayerUrl, boundsSet) {
-            currentFeatureLayerUrl = featureLayerUrl;
-            createNewFeatureLayer(map, featureLayerUrl);
+          scope.observe('vectorTileGetter').filter(_.isFunction),
+          boundsSetObservable, // Used for signaling to create feature layer
+          function(vectorTileGetter) {
+            currentVectorTileGetter = vectorTileGetter;
+            createNewFeatureLayer(map, vectorTileGetter);
           }
         );
 

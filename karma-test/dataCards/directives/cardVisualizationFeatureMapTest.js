@@ -55,9 +55,9 @@ describe("A FeatureMap Card Visualization", function() {
 
     var featureMapScope = element.find('feature-map').scope();
 
-    // Use featureLayerUrl as a proxy for FeatureMap's happiness.
-    expect(featureMapScope.featureLayerUrl).to.equal(undefined);
+    // Use vectorTileGetter as a proxy for FeatureMap's happiness.
+    expect(featureMapScope.vectorTileGetter).to.equal(undefined);
     page.set('dataset', dataset);
-    expect(featureMapScope.featureLayerUrl).to.not.equal(undefined);
+    expect(featureMapScope.vectorTileGetter).to.not.equal(undefined);
   });
 });

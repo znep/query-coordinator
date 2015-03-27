@@ -443,8 +443,8 @@
           throw new Error('Cannot create VectorTileManager: options is not an object.');
         }
 
-        if (!options.hasOwnProperty('url') || !_.isString(options.url)) {
-          throw new Error('Cannot create VectorTileManager: options.url is not a string.');
+        if (!options.hasOwnProperty('vectorTileGetter') || !_.isFunction(options.vectorTileGetter)) {
+          throw new Error('Cannot create VectorTileManager: options.vectorTileGetter is not a function.');
         }
 
         if (!options.hasOwnProperty('filter') || !_.isFunction(options.filter)) {
@@ -603,67 +603,24 @@
       getTileData: function(tilePoint, zoom, callback) {
         var self = this;
         var tileId = VectorTileUtil.getTileId(tilePoint, zoom);
-        var xhr = new XMLHttpRequest();
-        var url = this.options.url.
-          replace('{z}', zoom).
-          replace('{x}', tilePoint.x).
-          replace('{y}', tilePoint.y);
+        var getterPromise;
 
         // Don't re-request tiles that are already outstanding.
         if (self.outstandingTileDataRequests.has(tileId) &&
           self.outstandingTileDataRequests.get(tileId) !== null) {
           return;
         }
-
-        xhr.onload = function() {
-
-          var arrayBuffer = [];
-
-          if (parseInt(xhr.status, 10) === 200) {
-            
-            // IE9 doesn't support binary data in xhr.response, so we have to
-            // use a righteous hack (See: http://stackoverflow.com/a/4330882).
-            if (_.isUndefined(xhr.response) &&
-                _.isDefined(window.VBArray) &&
-                typeof xhr.responseBody === 'unknown') {
-              arrayBuffer = new VBArray(xhr.responseBody).toArray();
-            // Default for well-behaved browsers.
-            } else if (xhr.response) {
-              arrayBuffer = new Uint8Array(xhr.response);
-            }
-
-            // If this is a tile with no features to be drawn, quit early.
-            if (arrayBuffer.length === 0) {
-              self.tileLoaded(tileId);
-              return;
-            }
-
-            // Invoke `callback` within the context of 'self'
-            // (the current instance of VectorTileManager).
-            callback.call(self, arrayBuffer, tileId);
+        getterPromise = this.options.vectorTileGetter(zoom, tilePoint.x, tilePoint.y);
+        self.tileLoading(tileId, getterPromise);
+        getterPromise.then(function(response) {
+          if (_.isEmpty(response.data)) {
+            self.tileLoaded(tileId);
+          } else {
+            callback.call(self, response.data, tileId);
           }
-        };
-
-        xhr.onabort = function() {
+        }, function() {
           self.tileLoaded(tileId);
-        };
-
-        xhr.onerror = function() {
-          self.tileLoaded(tileId);
-          throw new Error('Could not retrieve protocol buffer tile from tileServer: "{0} {1}"'.format(xhr.status, xhr.response));
-        };
-
-        xhr.open('GET', url, true);
-
-        // Set user-defined headers.
-        _.each(self.options.headers, function(value, key) {
-          xhr.setRequestHeader(key, value);
         });
-
-        xhr.responseType = 'arraybuffer';
-
-        self.tileLoading(tileId, xhr);
-        xhr.send();
       },
 
       renderDebugInfo: function(tilePoint, zoom) {
@@ -677,7 +634,7 @@
 
         // Border
         ctx.strokeRect(0, 0, tileSize, tileSize);
-        // Top-left cornder
+        // Top-left corner
         ctx.fillRect(0, 0, 5, 5);
         // Top-right corner
         ctx.fillRect(0, (tileSize - 5), 5, 5);
@@ -712,6 +669,11 @@
 
         layerIds = Object.keys(vectorTile.layers);
         i = layerIds.length;
+
+        if (i === 0) {
+          tileRenderedCallback();
+          return;
+        }
 
         while (i--) {
           layerId = layerIds[i];
@@ -752,12 +714,11 @@
         });
       },
 
-      tileLoading: function(tileId, xhr) {
+      tileLoading: function(tileId, getterPromise) {
         if (this.outstandingTileDataRequests.size === 0) {
           this.options.onRenderStart();
         }
-
-        this.outstandingTileDataRequests.set(tileId, xhr || null);
+        this.outstandingTileDataRequests.set(tileId, getterPromise || null);
       },
 
       tileLoaded: function(tileId) {
@@ -768,7 +729,6 @@
         }
       }
     });
-
 
     return {
       create: function(options) {

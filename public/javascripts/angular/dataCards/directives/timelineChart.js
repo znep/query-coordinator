@@ -2147,8 +2147,16 @@
         // React to the activeFilters being cleared when a selection is active
         Rx.Observable.subscribeLatest(
           scope.observe('activeFilters'),
+          scope.observe('chartData').filter(_.isDefined),
           function(activeFilters) {
-            if (selectionIsCurrentlyRendered && _.isEmpty(activeFilters)) {
+            if (_.isPresent(activeFilters)) {
+              var filter = activeFilters[0];
+
+              selectionStartDate = filter.start;
+              selectionEndDate = filter.end;
+              renderChartSelection();
+              enterSelectedState();
+            } else {
               enterDefaultState();
             }
           }

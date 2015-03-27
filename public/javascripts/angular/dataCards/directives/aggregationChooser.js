@@ -23,7 +23,7 @@
 
   var validColumnFilter = function(column) {
     // TODO: Once a "logical" type property is available, this will need to be updated
-    return column.physicalDatatype === 'number';
+    return column.physicalDatatype === 'number' || column.physicalDatatype === 'money';
   };
 
   function AggregationChooser(AngularRxExtensions, FlyoutService, WindowState) {

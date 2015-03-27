@@ -43,7 +43,8 @@
           'primaryAmountField',
           'isDefaultPage',
           'pageSource',
-          'baseSoqlFilter'
+          'baseSoqlFilter',
+          'defaultDateTruncFunction'
         ];
         _.each(fields, function(field) {
           self.defineObservableProperty(field, undefined, function() {

@@ -18,10 +18,13 @@
         var dataset = cardModelSequence.observeOnLatest('page.dataset').filter(_.isPresent);
         var baseSoqlFilter = cardModelSequence.observeOnLatest('page.baseSoqlFilter');
         var aggregationObservable = cardModelSequence.observeOnLatest('page.aggregation');
+        var defaultDateTruncFunction = cardModelSequence.observeOnLatest('page.defaultDateTruncFunction');
         var dataRequests = new Rx.Subject();
         var dataResponses = new Rx.Subject();
         var unfilteredDataSequence = new Rx.Subject();
         var filteredDataSequence = new Rx.Subject();
+        var filteredSoqlRollupTablesUsedSequence = new Rx.Subject();
+        var unfilteredSoqlRollupTablesUsedSequence = new Rx.Subject();
 
         // Keep track of the number of requests that have been made and the number of
         // responses that have come back.
@@ -150,24 +153,40 @@
           }
         );
 
+        // TODO we should look to see if we can remove this wrapper
         var unfilteredData = Rx.Observable.subscribeLatest(
           cardModelSequence.pluck('fieldName'),
           dataset,
           baseSoqlFilter,
           datasetPrecision,
           aggregationObservable,
-          function(fieldName, dataset, whereClauseFragment, datasetPrecision, aggregationData) {
+          defaultDateTruncFunction,
+          function(
+            fieldName,
+            dataset,
+            whereClauseFragment,
+            datasetPrecision,
+            aggregationData,
+            defaultDateTruncFunction
+          ) {
 
             if (_.isDefined(datasetPrecision)) {
 
               dataRequests.onNext(1);
+
+              // We expect the values in here to be set in the call to getTimelineData
+              // based on what date_trunc function to be used by the card
+              var soqlMetadata = {
+                dateTruncFunctionUsed: null
+              };
 
               var dataPromise = CardDataService.getTimelineData(
                 fieldName,
                 dataset.id,
                 whereClauseFragment,
                 datasetPrecision,
-                aggregationData
+                aggregationData,
+                soqlMetadata
               );
 
               dataPromise.then(
@@ -175,6 +194,9 @@
                   // Ok
                   unfilteredDataSequence.onNext(dataPromise);
                   dataResponses.onNext(1);
+                  unfilteredSoqlRollupTablesUsedSequence.onNext(
+                    soqlMetadata.dateTruncFunctionUsed === defaultDateTruncFunction
+                  );
                 },
                 function(err) {
                   // Do nothing
@@ -193,11 +215,26 @@
           datasetPrecision,
           aggregationObservable,
           cardModelSequence.observeOnLatest('activeFilters'),
-          function(fieldName, dataset, whereClause, datasetPrecision, aggregationData, activeFilters) {
+          defaultDateTruncFunction,
+          function(
+            fieldName,
+            dataset,
+            whereClause,
+            datasetPrecision,
+            aggregationData,
+            activeFilters,
+            defaultDateTruncFunction
+          ) {
 
             if (_.isDefined(datasetPrecision)) {
 
               dataRequests.onNext(1);
+
+              // We expect the values in here to be set in the call to getTimelineData
+              // based on what date_trunc function to be used by the card
+              var soqlMetadata = {
+                dateTruncFunctionUsed: null
+              };
 
               // Since we need to be able to render the unfiltered values outside
               // of the timeline chart's current selection area, we need to 'filter'
@@ -211,7 +248,8 @@
                 dataset.id,
                 SoqlHelpers.stripWhereClauseFragmentForFieldName(fieldName, whereClause, activeFilters),
                 datasetPrecision,
-                aggregationData
+                aggregationData,
+                soqlMetadata
               );
 
               dataPromise.then(
@@ -219,6 +257,9 @@
                   // Ok
                   filteredDataSequence.onNext(dataPromise);
                   dataResponses.onNext(1);
+                  filteredSoqlRollupTablesUsedSequence.onNext(
+                    soqlMetadata.dateTruncFunctionUsed === defaultDateTruncFunction
+                  );
                 },
                 function(err) {
                   // Do nothing
@@ -269,6 +310,8 @@
         scope.bindObservable('activeFilters', cardModelSequence.observeOnLatest('activeFilters'));
         scope.bindObservable('rowDisplayUnit', cardModelSequence.observeOnLatest('page.aggregation.unit'));
         scope.bindObservable('cannotRenderTimelineChart', cannotRenderTimelineChart);
+        scope.bindObservable('unfilteredSoqlRollupTablesUsed', unfilteredSoqlRollupTablesUsedSequence);
+        scope.bindObservable('filteredSoqlRollupTablesUsed', filteredSoqlRollupTablesUsedSequence);
 
         // Handle filtering
         scope.$on('filter-timeline-chart',

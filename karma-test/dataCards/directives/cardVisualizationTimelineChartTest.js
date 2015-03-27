@@ -59,6 +59,7 @@ describe('A Timeline Chart Card Visualization', function() {
     page.defineObservableProperty('dataset', dataset);
     page.defineObservableProperty('baseSoqlFilter', '');
     page.defineObservableProperty('aggregation', {});
+    page.defineObservableProperty('defaultDateTruncFunction', 'date_trunc_y');
     card.page = page;
     card.defineObservableProperty('expanded', false);
     card.defineObservableProperty('activeFilters', []);
@@ -175,4 +176,31 @@ describe('A Timeline Chart Card Visualization', function() {
     expect(errorMessage.text().trim()).to.equal('Chart cannot be rendered due to invalid date values.');
   });
 
+  // it.only('should have unfilteredSoqlRollupTablesUsed on scope', function() {
+  //   var outerScope = $rootScope.$new();
+  //   var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
+
+  //   mockCardDataService.getTimelineData = function(
+  //     fieldName,
+  //     dataset.id,
+  //     SoqlHelpers.stripWhereClauseFragmentForFieldName(fieldName, whereClause, activeFilters),
+  //     datasetPrecision,
+  //     aggregationData,
+  //     soqlMetada
+  //   ) {
+  //     return $q.when([
+  //       {
+  //       }
+  //     ]
+  //   )};
+  //   outerScope.model = stubCardModel();
+
+
+  //   // If it's going to crash, it's here.
+  //   var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
+
+  //   // Use chartData as a proxy for TimelineChart's happiness.
+  //   var timelineChartScope = element.find('.timeline-chart').scope();
+  //   expect(timelineChartScope.unfilteredSoqlRollupTablesUsed).to.be.true;
+  // });
 });

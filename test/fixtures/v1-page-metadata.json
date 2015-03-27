@@ -42,5 +42,5 @@
   "primaryAmountField": null,
   "version": 1,
   "largestTimeSpanDays": 7500,
-  "defaultDatetruncFunction": "datetrunc_y"
+  "defaultDateTruncFunction": "date_trunc_y"
 }

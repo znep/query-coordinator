@@ -8,7 +8,7 @@ class Phidippides < SocrataHttp
   class NoDatasetIdException < RuntimeError; end
   class NoCardsException < RuntimeError; end
   class NoPageIdException < RuntimeError; end
-  class NoDefaultDatetruncFunction < RuntimeError; end
+  class NoDefaultDateTruncFunction < RuntimeError; end
 
   # TODO: Should these actually be ignore-case?
   # Note - these are aligned so as to exemplify the differences between the regexes

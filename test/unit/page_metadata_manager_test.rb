@@ -57,7 +57,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     # Data lens page creation disabled until permissions issues have been dealt with
     # assert_equal('data-lens', result.fetch(:body).fetch('catalogViewId'), 'Expected the new catalogViewId to be returned')
     assert_equal(365, result.fetch(:body).fetch('largestTimeSpanDays'), 'Expected the value for the largest time span to be set')
-    assert_match(/datetrunc_\w+/, result.fetch(:body).fetch('defaultDatetruncFunction'), 'Includes datetrunc function')
+    assert_match(/date_trunc_\w+/, result.fetch(:body).fetch('defaultDateTruncFunction'), 'Includes date_trunc function')
   end
 
   def x_test_create_creates_data_lens_with_reference_v0
@@ -476,8 +476,8 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       'group by location_description, primary_type'
     assert_equal(expected, soql)
 
-    expected_soql = 'select some_column, datetrunc_y(time_column_fine_granularity), count(*) as value ' <<
-      'group by some_column, datetrunc_y(time_column_fine_granularity)'
+    expected_soql = 'select some_column, date_trunc_y(time_column_fine_granularity), count(*) as value ' <<
+      'group by some_column, date_trunc_y(time_column_fine_granularity)'
     manager.stubs(phidippides: stub(fetch_dataset_metadata: { body: v1_dataset_metadata }))
     stub_feature_flags_with(:metadata_transition_phase, '1')
     soql = manager.send(:build_rollup_soql, v1_page_metadata)
@@ -489,50 +489,50 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal(expected_soql, soql)
   end
 
-  def test_build_rollup_soql_for_phase_0_does_not_have_datetrunc
+  def test_build_rollup_soql_for_phase_0_does_not_have_date_trunc
     manager.stubs(phidippides: stub(fetch_dataset_metadata: { body: v0_dataset_metadata }))
     stub_feature_flags_with(:metadata_transition_phase, '0')
     soql = manager.send(:build_rollup_soql, v0_page_metadata)
-    refute_match(/datetrunc/, soql)
+    refute_match(/date_trunc/, soql)
   end
 
-  def test_build_rollup_soql_has_datetrunc
+  def test_build_rollup_soql_has_date_trunc
     manager.stubs(phidippides: stub(fetch_dataset_metadata: { body: v1_dataset_metadata }))
     stub_feature_flags_with(:metadata_transition_phase, '2')
     soql = manager.send(:build_rollup_soql, v1_page_metadata)
-    assert_match(/datetrunc/, soql)
+    assert_match(/date_trunc/, soql)
   end
 
-  def test_raise_when_missing_default_datetrunc_function
+  def test_raise_when_missing_default_date_trunc_function
     manager.stubs(phidippides: stub(fetch_dataset_metadata: { body: v1_dataset_metadata }))
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    assert_raises(Phidippides::NoDefaultDatetruncFunction) do
-      manager.send(:build_rollup_soql, v1_page_metadata.except('defaultDatetruncFunction'))
+    assert_raises(Phidippides::NoDefaultDateTruncFunction) do
+      manager.send(:build_rollup_soql, v1_page_metadata.except('defaultDateTruncFunction'))
     end
   end
 
-  def test_datetrunc_function_with_decades_of_days
-    assert_equal('datetrunc_y', manager.send(:datetrunc_function, (40 * 365.25).to_i))
+  def test_date_trunc_function_with_decades_of_days
+    assert_equal('date_trunc_y', manager.send(:date_trunc_function, (40 * 365.25).to_i))
   end
 
-  def test_datetrunc_function_with_exactly_20_years_of_days
-    assert_equal('datetrunc_ym', manager.send(:datetrunc_function, (20 * 365.25).to_i))
+  def test_date_trunc_function_with_exactly_20_years_of_days
+    assert_equal('date_trunc_ym', manager.send(:date_trunc_function, (20 * 365.25).to_i))
   end
 
-  def test_datetrunc_function_with_more_than_year_of_days_less_than_20
-    assert_equal('datetrunc_ym', manager.send(:datetrunc_function, (15 * 365.25).to_i))
+  def test_date_trunc_function_with_more_than_year_of_days_less_than_20
+    assert_equal('date_trunc_ym', manager.send(:date_trunc_function, (15 * 365.25).to_i))
   end
 
-  def test_datetrunc_function_with_exactly_1_year_of_days
-    assert_equal('datetrunc_ymd', manager.send(:datetrunc_function, (1 * 365.25).to_i))
+  def test_date_trunc_function_with_exactly_1_year_of_days
+    assert_equal('date_trunc_ymd', manager.send(:date_trunc_function, (1 * 365.25).to_i))
   end
 
-  def test_datetrunc_function_with_less_than_a_year_of_days
-    assert_equal('datetrunc_ymd', manager.send(:datetrunc_function, 20))
+  def test_date_trunc_function_with_less_than_a_year_of_days
+    assert_equal('date_trunc_ymd', manager.send(:date_trunc_function, 20))
   end
 
-  def test_datetrunc_function_with_nil_days_returns_nil
-    refute(manager.send(:datetrunc_function, nil), 'Expect nil when days nil')
+  def test_date_trunc_function_with_nil_days_returns_nil
+    refute(manager.send(:date_trunc_function, nil), 'Expect nil when days nil')
   end
 
   def test_dataset_metadata

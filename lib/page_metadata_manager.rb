@@ -103,7 +103,7 @@ class PageMetadataManager
 
     largest_time_span_days = largest_time_span_in_dataset_columns(dataset_id, options)
     page_metadata['largestTimeSpanDays'] = largest_time_span_days
-    page_metadata['defaultDatetruncFunction'] = datetrunc_function(largest_time_span_days)
+    page_metadata['defaultDateTruncFunction'] = date_trunc_function(largest_time_span_days)
 
     # Since we provision the page id beforehand, a create is the same as an
     # update.
@@ -203,29 +203,29 @@ class PageMetadataManager
         (column[logical_datatype_name] == 'location' && column['physicalDatatype'] == 'number'))
     end
 
-    columns_to_roll_up_by_datetrunc = []
+    columns_to_roll_up_by_date_trunc = []
 
     unless metadata_transition_phase_0?
-      columns_to_roll_up_by_datetrunc = columns.select do |column|
+      columns_to_roll_up_by_date_trunc = columns.select do |column|
         column_used_by_any_card?(column[column_field_name], cards) &&
           column['physicalDatatype'] == 'floating_timestamp'
       end
     end
 
     # Nothing to roll up
-    return if columns_to_roll_up.blank? && columns_to_roll_up_by_datetrunc.blank?
+    return if columns_to_roll_up.blank? && columns_to_roll_up_by_date_trunc.blank?
 
     if !metadata_transition_phase_0? &&
-      columns_to_roll_up_by_datetrunc.any? &&
-        page_metadata['defaultDatetruncFunction'].blank?
-          raise Phidippides::NoDefaultDatetruncFunction.new(
-            "page does not have default datetrunc function set for pageId: #{page_metadata['pageId']}"
+      columns_to_roll_up_by_date_trunc.any? &&
+        page_metadata['defaultDateTruncFunction'].blank?
+          raise Phidippides::NoDefaultDateTruncFunction.new(
+            "page does not have default date trunc function set for pageId: #{page_metadata['pageId']}"
           )
     end
 
     rolled_up_columns_soql = (columns_to_roll_up.pluck(column_field_name) +
-      columns_to_roll_up_by_datetrunc.pluck(column_field_name).map do |field_name|
-        "#{page_metadata['defaultDatetruncFunction']}(#{field_name})"
+      columns_to_roll_up_by_date_trunc.pluck(column_field_name).map do |field_name|
+        "#{page_metadata['defaultDateTruncFunction']}(#{field_name})"
       end).join(', ')
 
     soql = 'select '
@@ -244,14 +244,14 @@ class PageMetadataManager
   # If the max date is > 20 years after the start date: YEAR
   # If the max date is > 1 year after the start date: MONTH
   # Else: DAY
-  def datetrunc_function(days)
+  def date_trunc_function(days)
     return unless days
 
     years = (days / 365.25).to_i
     prec = 'y'
     prec << 'm' if years <= 20
     prec << 'd' if years <= 1
-    "datetrunc_#{prec}"
+    "date_trunc_#{prec}"
   end
 
   def update_rollup_table(args)

@@ -12,7 +12,8 @@ module AngularHelper
     {
       'statsdEnabled' => APP_CONFIG['statsd_enabled'],
       'oduxCardTypeMapping' => CARD_TYPE_MAPPING,
-      'assetRevisionKey' => asset_revision_key
+      'assetRevisionKey' => asset_revision_key,
+      'railsEnv' => Rails.env,
     }.tap do |config|
       FeatureFlags.list.each do |feature_key|
         js_feature_key = "#{feature_key[0]}#{feature_key.camelize[1..-1]}"

@@ -344,6 +344,7 @@ describe("CardDataService", function() {
       });
       $httpBackend.flush();
     });
+
     it('should correctly parse valid values', function(done) {
       var fakeData = [
         {"truncated_date":"2014-05-27T00:00:00.000","value":"1508"},
@@ -364,6 +365,7 @@ describe("CardDataService", function() {
       });
       $httpBackend.flush();
     });
+
     it('should reject the promise on bad dates', function(done) {
       var fakeData = [
         {"truncated_date":"2014-05-27T00:00:00.000","value":"1508"},
@@ -375,6 +377,7 @@ describe("CardDataService", function() {
       assertReject(CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation), done);
       $httpBackend.flush();
     });
+
     it('should reject the promise on 404', function(done) {
       fakeDataRequestHandler.respond(404, []);
       assertReject(CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation), done);
@@ -417,6 +420,19 @@ describe("CardDataService", function() {
       fakeDataRequestHandler.respond(fakeData);
       var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
       assertReject(response, done);
+      $httpBackend.flush();
+    });
+
+    it('should set dateTruncFunctionUsed on soqlMetadata', function(done) {
+      var fakeData = [];
+      var ourSoqlMetadata = { dateTruncFunctionUsed: null };
+      var response = CardDataService.getTimelineData('fakeTimestampColumn', fake4x4, '', 'DAY', countAggregation, ourSoqlMetadata)
+
+      fakeDataRequestHandler.respond(fakeData);
+      response.then(function() {
+        expect(ourSoqlMetadata.dateTruncFunctionUsed).to.equal('date_trunc_ymd');
+        done();
+      });
       $httpBackend.flush();
     });
   });

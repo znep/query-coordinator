@@ -129,7 +129,14 @@
         });
       },
 
-      getTimelineData: function(fieldName, datasetId, whereClauseFragment, precision, aggregationClauseData) {
+      getTimelineData: function(
+        fieldName,
+        datasetId,
+        whereClauseFragment,
+        precision,
+        aggregationClauseData,
+        soqlMetadata
+      ) {
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');
         Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
@@ -148,13 +155,17 @@
         }
 
         var aggregationClause = buildAggregationClause(aggregationClauseData);
+        var dateTruncFunction = 'date_trunc_{0}'.format(dateTrunc);
+        if (_.isObject(soqlMetadata)) {
+          soqlMetadata.dateTruncFunctionUsed = dateTruncFunction;
+        }
 
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
         var params = {
           $query: (
-            'SELECT date_trunc_{2}({0}) AS truncated_date, {3} AS value {1} ' +
+            'SELECT {2}({0}) AS truncated_date, {3} AS value {1} ' +
             'GROUP BY truncated_date'
-          ).format(fieldName, whereClause, dateTrunc, aggregationClause)
+          ).format(fieldName, whereClause, dateTruncFunction, aggregationClause)
         };
         var url = '/api/id/{0}.json?'.format(datasetId);
         var config = httpConfig.call(this);

@@ -1148,7 +1148,7 @@ describe('timelineChart', function() {
 
   });
 
-  describe.only('when loading a page with a filtered timeline chart', function() {
+  describe('when loading a page with a filtered timeline chart', function() {
 
     it('should render the filter markers specified from activeFilters', function() {
 

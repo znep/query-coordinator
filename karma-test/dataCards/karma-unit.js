@@ -180,7 +180,7 @@ module.exports = function ( karma ) {
       }
     },
 
-    frameworks: [ 'mocha', 'chai', 'chai-as-promised', 'chai-jquery' ],
+    frameworks: [ 'mocha', 'chai', 'chai-as-promised', 'chai-jquery', 'sinon-chai' ],
     plugins: [
       'karma-chai',
       'karma-chai-plugins',

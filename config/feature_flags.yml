@@ -107,3 +107,6 @@ use_soql_for_clustering:
 feature_map_zoom_debounce:
   description: Milliseconds after user interaction to delay before requesting vector tiles
   defaultValue: 500
+enable_newux_page_view_count:
+  description: Have new UX pages accumulated toward the global count of all page views.
+  defaultValue: false

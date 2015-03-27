@@ -112,6 +112,9 @@ jQuery.metrics = {
         $.metrics.mark("domain-intern", "browser-" + $.metrics.browser_name() +
                 "-" + $.browser.majorVersion);
 
+        var page_type = $.metrics.determine_page_type();
+        $.metrics.mark("domain", 'js-page-view-{0}'.format(page_type));
+
         // NavigationTiming not supported by safari
         // https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/NavigationTiming
         if (window.performance !== undefined)
@@ -137,7 +140,7 @@ jQuery.metrics = {
                 // subsequent interactive states will not be captured here
                 $.metrics.increment("domain-intern", "js-dom-load-time", js_dom_load_time);
 
-                var page_type = $.metrics.determine_page_type();
+                // TODO: Start sending "js-pageview-{page_type}"
 
                 $.metrics.increment("domain-intern", page_type + "-js-dom-load-time", js_dom_load_time);
                 $.metrics.mark("domain-intern", page_type + "-js-dom-load-samples");

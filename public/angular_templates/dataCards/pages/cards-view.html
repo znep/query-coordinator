@@ -46,7 +46,7 @@
               <div class="metadatum">
                 <span class="label">permissions</span>
                 <span class="value">
-                  <a href=# ng-click="manageLensState.show = true">{{ pagePermissions }} <small>(change)</small></a><span class="icon-warning" ng-if="pageIsPublic && !datasetIsPublic"></span>
+                  <a href=# ng-click="manageLensState.show = true">{{ pagePermissions }} <small>(change)</small><span class="icon-warning" ng-if="pageIsPublic && !datasetIsPublic"></span></a>
                 </span>
               </div>
               <modal-dialog ng-if="manageLensState.show" dialog-state="manageLensState">

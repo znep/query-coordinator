@@ -25,7 +25,6 @@
             });
           }
         }
-        element.on('click', '.modal-overlay', scope.closeDialog);
         WindowState.escapeKeyObservable.filter(function(e) {
           // Only close this dialog if we're the one on top
           var dialog = element.find('.modal-dialog');

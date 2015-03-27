@@ -47,8 +47,8 @@ angular.module('dataCards.directives').directive('socSelect', function() {
       fixArrowForBrowsers($element);
       var selectElement = $element.children('select');
       applyAttributes($attrs, selectElement)
-      $scope.$watch('disabled', function(d) {
-        selectElement.attr('disabled', d);
+      $scope.$watch('disabled', function(disabled) {
+        selectElement.attr('disabled', disabled);
       });
     }
   }

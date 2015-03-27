@@ -4,9 +4,9 @@ class PhidippidesDatasetsController < ApplicationController
   include UserAuthMethods
 
   # TODO: We need to plumb our code through to support csrf token verification
-  skip_before_filter :verify_authenticity_token,
-    # Some of these functions will return publicly-accessible data
-    :require_user
+  skip_before_filter :verify_authenticity_token
+  # Some of these functions will return publicly-accessible data
+  skip_before_filter :require_user, :only => [:show, :index]
 
   helper :all # include all helpers, all the time
 

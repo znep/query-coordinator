@@ -4,9 +4,9 @@ class PhidippidesPagesController < ApplicationController
   include UserAuthMethods
 
   # TODO: We need to plumb our code through to support csrf token verification
-  skip_before_filter :verify_authenticity_token,
-    # Some of these functions will return publicly-accessible data
-    :require_user
+  skip_before_filter :verify_authenticity_token
+  # Some of these functions will return publicly-accessible data
+  skip_before_filter :require_user, :only => [:show]
 
   helper :all # include all helpers, all the time
 
@@ -29,15 +29,15 @@ class PhidippidesPagesController < ApplicationController
         permissions = fetch_permissions(params[:id])
       rescue NewViewManager::ViewNotFound
         return render :nothing => true, :status => '404'
-      rescue NewViewManager::ViewAuthenticationRequired => e
-        return render :json => {error: e.message}, :status => '401'
-      rescue NewViewManager::ViewAccessDenied => e
-        return render :json => {error: e.message}, :status => '403'
-      rescue => e
-        message = "Unknown error while fetching permissions for pageId #{params[:id]}: #{e}"
+      rescue NewViewManager::ViewAuthenticationRequired => error
+        return render :json => {error: error.message}, :status => '401'
+      rescue NewViewManager::ViewAccessDenied => error
+        return render :json => {error: error.message}, :status => '403'
+      rescue => error
+        message = "Unknown error while fetching permissions for pageId #{params[:id]}: #{error}"
         Rails.logger.error(message)
         Airbrake.notify(
-          e,
+          error,
           :error_class => 'PermissionRetrieval',
           :error_message => message
         )

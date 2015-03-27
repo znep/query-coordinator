@@ -21,6 +21,8 @@ class NewViewManagerTest < Test::Unit::TestCase
         assert_equal('my title', payload[:name])
         assert_equal('my description', payload[:description])
         assert_equal('', payload[:metadata][:accessPoints][:new_view])
+        # Should not have the dataPublicRead flag - ie should default to private
+        assert_equal(nil, payload[:flags])
       elsif url == '/views/niew-veww/publication.json?accessType=WEBSITE'
         published = true
       end

@@ -192,12 +192,14 @@
           scope.observe('whereClause'),
           datasetPrecision,
           aggregationObservable,
-          cardModelSequence.observeOnLatest('activeFilters'),
-          function(fieldName, dataset, whereClause, datasetPrecision, aggregationData, activeFilters) {
+          cardModelSequence,
+          function(fieldName, dataset, whereClause, datasetPrecision, aggregationData, cardModel) {
 
             if (_.isDefined(datasetPrecision)) {
 
               dataRequests.onNext(1);
+
+              var currentActiveFilters = cardModel.getCurrentValue('activeFilters');
 
               // Since we need to be able to render the unfiltered values outside
               // of the timeline chart's current selection area, we need to 'filter'
@@ -209,7 +211,7 @@
               var dataPromise = CardDataService.getTimelineData(
                 fieldName,
                 dataset.id,
-                SoqlHelpers.stripWhereClauseFragmentForFieldName(fieldName, whereClause, activeFilters),
+                SoqlHelpers.stripWhereClauseFragmentForFieldName(fieldName, whereClause, currentActiveFilters),
                 datasetPrecision,
                 aggregationData
               );

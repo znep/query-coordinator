@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationTimelineChart(AngularRxExtensions, CardDataService, Filter, TimelineChartVisualizationHelpers, $log, SoqlHelpers) {
+  function cardVisualizationTimelineChart(AngularRxExtensions, CardDataService, Filter, TimelineChartVisualizationHelpers, $log, DateHelpers, SoqlHelpers) {
 
     return {
       restrict: 'E',
@@ -274,7 +274,10 @@
         scope.$on('filter-timeline-chart',
           function(event, data) {
             if (data !== null) {
-              var filter = new Filter.TimeRangeFilter(data.start, data.end);
+              var filter = new Filter.TimeRangeFilter(
+                DateHelpers.serializeFloatingTimestamp(data.start),
+                DateHelpers.serializeFloatingTimestamp(data.end)
+              );
               scope.model.set('activeFilters', [filter]);
             } else {
               scope.model.set('activeFilters', []);

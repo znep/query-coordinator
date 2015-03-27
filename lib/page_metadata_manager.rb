@@ -101,7 +101,6 @@ class PageMetadataManager
     # one is best displayed by 'y', another by 'ym', and another by 'ymd', we will
     # only be able to show time rolled-up by 'y', the largest time span.
 
-    # TODO Marc also talked about max date of 9999...
     largest_time_span_days = largest_time_span_in_dataset_columns(dataset_id, options)
     page_metadata['largestTimeSpanDays'] = largest_time_span_days
     page_metadata['defaultDatetruncFunction'] = datetrunc_function(largest_time_span_days)
@@ -209,7 +208,7 @@ class PageMetadataManager
     unless metadata_transition_phase_0?
       columns_to_roll_up_by_datetrunc = columns.select do |column|
         column_used_by_any_card?(column[column_field_name], cards) &&
-          column['physicalDatatype'] == 'time'
+          column['physicalDatatype'] == 'floating_timestamp'
       end
     end
 
@@ -246,6 +245,8 @@ class PageMetadataManager
   # If the max date is > 1 year after the start date: MONTH
   # Else: DAY
   def datetrunc_function(days)
+    return unless days
+
     years = (days / 365.25).to_i
     prec = 'y'
     prec << 'm' if years <= 20
@@ -270,8 +271,8 @@ class PageMetadataManager
 
   def largest_time_span_in_dataset_columns(dataset_id, options)
     dataset_metadata(dataset_id, options).fetch(:body).fetch('columns').
-      select { |_, values| values['physicalDatatype'] == 'time' }.
-      map { |field_name, _| time_range_in_column(dataset_id, field_name) }.max
+      select { |_, values| values['physicalDatatype'] == 'floating_timestamp' }.
+      map { |field_name, _| time_range_in_column(dataset_id, field_name) }.compact.max
   end
 
   def time_range_in_column(dataset_id, field_name)
@@ -280,10 +281,21 @@ class PageMetadataManager
   end
 
   def fetch_start_and_end_for_field(dataset_id, field_name)
-    core_request_uri = "/id/#{dataset_id}?$query=select min(#{field_name}) AS start, max(#{field_name}) AS end"
-    result = JSON.parse(
-      CoreServer::Base.connection.get_request(core_request_uri)
-    ).first
+    begin
+      JSON.parse(CoreServer::Base.connection.get_request(
+        "/id/#{dataset_id}.json?" <<
+        URI.encode("$query=select min(#{field_name}) AS start, max(#{field_name}) AS end")
+      )).first
+    rescue CoreServer::Error => error
+      error_msg = "Core server error while retrieving min and max of date column #{field_name} " <<
+        "(#{dataset_id}): #{error}"
+      Rails.logger.error(error_msg)
+      Airbrake.notify(
+        :error_class => 'CoreServer::Error',
+        :error_message => error_msg
+      )
+      nil
+    end
   end
 
   def soda_fountain

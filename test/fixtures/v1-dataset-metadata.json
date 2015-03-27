@@ -19,14 +19,14 @@
       "description": "",
       "fred": "text",
       "name": "Boulders",
-      "physicalDatatype": "time"
+      "physicalDatatype": "floating_timestamp"
     },
     "time_column_fine_granularity":{
       "cardinality": 3,
       "description": "",
       "fred": "text",
       "name": "Sand",
-      "physicalDatatype": "time"
+      "physicalDatatype": "floating_timestamp"
     }
   },
   "defaultPage": "four-four",

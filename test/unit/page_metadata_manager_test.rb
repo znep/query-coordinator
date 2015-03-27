@@ -531,6 +531,10 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal('datetrunc_ymd', manager.send(:datetrunc_function, 20))
   end
 
+  def test_datetrunc_function_with_nil_days_returns_nil
+    refute(manager.send(:datetrunc_function, nil), 'Expect nil when days nil')
+  end
+
   def test_dataset_metadata
     Phidippides.any_instance.expects(:fetch_dataset_metadata).times(1).with('vtvh-wqgq', {}).then.returns(
       status: '200',
@@ -591,11 +595,22 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     fake_field_name = 'live-beef'
     fake_dataset_id = 'five-five'
     CoreServer::Base.connection.expects(:get_request).with do |args|
-      assert_match(/min\(#{fake_field_name}\) AS start/i, args)
-      assert_match(/max\(#{fake_field_name}\) AS end/i, args)
+      assert_match(/min\(#{fake_field_name}\)%20AS%20start/i, args)
+      assert_match(/max\(#{fake_field_name}\)%20AS%20end/i, args)
       assert_match(/^\/id\/#{fake_dataset_id}/i, args)
     end.returns('[]')
     manager.send(:fetch_start_and_end_for_field, fake_dataset_id, fake_field_name)
+  end
+
+  def test_fetch_start_and_end_for_field_returns_nil
+    CoreServer::Base.connection.expects(:get_request).raises(CoreServer::Error)
+    refute(manager.send(:fetch_start_and_end_for_field, 'dead-beef', 'human'), 'Expects nil when error')
+  end
+
+  def test_fetch_start_and_end_for_field_notifies_airbrake_on_error
+    CoreServer::Base.connection.expects(:get_request).raises(CoreServer::Error)
+    Airbrake.expects(:notify)
+    manager.send(:fetch_start_and_end_for_field, 'dead-beef', 'human')
   end
 
   private

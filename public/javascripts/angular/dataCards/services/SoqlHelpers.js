@@ -20,8 +20,6 @@ angular.module('dataCards').factory('SoqlHelpers', function(Assert, DateHelpers)
   }
 
   function encodeSoqlDate(date) {
-    // Slice off the time zone and ensure times are all at midnight
-    // since date_trunc doesn't support hours/minutes/seconds.
     return SoqlHelpers.encodeSoqlString(
       DateHelpers.serializeFloatingTimestamp(date)
     );

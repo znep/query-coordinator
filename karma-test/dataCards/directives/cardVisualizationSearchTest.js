@@ -94,6 +94,7 @@
       var outerScope = rootScope.$new();
       outerScope.whereClause = '';
       outerScope.model = model;
+      outerScope.whereClause = "PRETEND_PAGE_FILTER";
 
       var html = '<div class="card-visualization"><card-visualization-search model="model" where-clause="whereClause"></card-visualization-search></div>';
       var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
@@ -155,15 +156,6 @@
             });
           });
 
-          it('should respond to submit by expanding the card', function() {
-            cardData.scope.$apply(function() {
-              cardData.element.find('form').triggerHandler('submit');
-            });
-            expect(toggleExpandedSpy.calledOnce).to.equal(true);
-            expect(cardData.element.find('.search-card-results').is(':visible')).to.equal(true);
-            expect(cardData.element.find('.search-card-text.no-results').is(':visible')).to.equal(false);
-          });
-
           it('should submit when you click the search button', function() {
             cardData.scope.$apply(function() {
               cardData.element.find('button[type="submit"]').click();
@@ -172,21 +164,50 @@
             expect(cardData.element.find('.search-card-results').is(':visible')).to.equal(true);
           });
 
-          it('should display with the column corresponding to the fieldname of this card in the first position', function() {
-            cardData.scope.$apply(function() {
-              cardData.element.find('form').triggerHandler('submit');
+          describe('that the user just submitted', function() {
+            beforeEach(function() {
+              cardData.scope.$apply(function() {
+                cardData.element.find('form').triggerHandler('submit');
+              });
             });
-            expect(cardData.element.find('.th:eq(0)').data('columnId')).to.equal(FIELDNAME);
-          });
 
-          it('should display the row count', function(done) {
-            cardData.scope.$apply(function() {
-              cardData.element.find('form').triggerHandler('submit');
+            it('should respond to submit by expanding the card', function() {
+              expect(toggleExpandedSpy.calledOnce).to.equal(true);
+              expect(cardData.element.find('.search-card-results').is(':visible')).to.equal(true);
+              expect(cardData.element.find('.search-card-text.no-results').is(':visible')).to.equal(false);
             });
-            cardData.element.find('card-visualization-search').isolateScope().observe('rowCount').subscribe(function(rowCount) {
-              expect(getRowsStub.called).to.equal(true);
-              expect(cardData.element.find('.search-card-info').text()).to.equal('Showing {0} of {1} matching results'.format(rowCount, ROW_COUNT));
-              done();
+
+            it('should respond with a table WHERE clause which is a logical AND of the page filter and the submitted text', function() {
+              function currentSearchWhere() {
+                var innerScope = cardData.element.find('card-visualization-table').scope();
+                return innerScope.searchWhere;
+              }
+
+              expect(currentSearchWhere()).to.equal('{0} AND {1} = "{2}"'.format(
+                cardData.outerScope.whereClause,
+                cardData.model.fieldName,
+                SEARCH_TERM));
+
+              //Simulate the user changing the page WHERE clause.
+              cardData.outerScope.whereClause = 'A_NEW_WHERE_CLAUSE';
+              cardData.outerScope.$apply();
+
+              expect(currentSearchWhere()).to.equal('{0} AND {1} = "{2}"'.format(
+                cardData.outerScope.whereClause,
+                cardData.model.fieldName,
+                SEARCH_TERM));
+            });
+
+            it('should display with the column corresponding to the fieldname of this card in the first position', function() {
+              expect(cardData.element.find('.th:eq(0)').data('columnId')).to.equal(FIELDNAME);
+            });
+
+            it('should display the row count', function(done) {
+              cardData.element.find('card-visualization-search').isolateScope().observe('rowCount').subscribe(function(rowCount) {
+                expect(getRowsStub.called).to.equal(true);
+                expect(cardData.element.find('.search-card-info').text()).to.equal('Showing {0} of {1} matching results'.format(rowCount, ROW_COUNT));
+                done();
+              });
             });
           });
 

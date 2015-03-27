@@ -208,7 +208,12 @@
             filter: filterLayerFeature,
             layerOrdering: getFeatureZIndex,
             style: getFeatureStyle,
-            debounceMilliseconds: scope.zoomDebounceMilliseconds
+            debounceMilliseconds: scope.zoomDebounceMilliseconds,
+            onRenderStart: emitRenderStarted,
+            onRenderComplete: function() {
+              emitRenderCompleted();
+              removeOldFeatureLayers(map);
+            }
             // You can interact with mouse events by passing
             // callbacks on three property names: 'mousedown',
             // 'mouseup' and 'mousemove'.
@@ -333,18 +338,6 @@
           completeResizeFn();
         });
 
-        // The 'vector-tile-render-started' and 'vector-tile-render-complete'
-        // events are not native to Leaflet so we need to listen for them on
-        // the container element, not the map object.
-        element.on('vector-tile-render-started', function(e) {
-          emitRenderStarted();
-        });
-
-        element.on('vector-tile-render-complete', function(e) {
-          emitRenderCompleted();
-          removeOldFeatureLayers(map);
-        });
-
         // Keep the baseTileLayer in sync with the baseLayerUrl observable.
         baseTileLayerObservable = scope.observe('baseLayerUrl').
           map(function(url) {
@@ -430,12 +423,10 @@
           }
         );
 
-        Rx.Observable.subscribeLatest(
-          element.observeDimensions().filter(_.property('height')),
-          function(dimensions, boundsSet) {
+        element.observeDimensions().filter(_.property('height')).
+          subscribe(function() {
             map.invalidateSize();
-          }
-        );
+          });
       }
     }
   }

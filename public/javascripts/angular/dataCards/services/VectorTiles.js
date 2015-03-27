@@ -466,15 +466,16 @@
           url: '',
           headers: {},
           tileSize: 256,
-          debounceMilliseconds: 500
+          debounceMilliseconds: 500,
+          onRenderStart: function() {},
+          onRenderComplete: function() {}
         };
         L.Util.setOptions(this, options);
 
         // Layers present in the protocol buffer responses.
-        this.layers = {};
-        this.outstandingTileDataRequests = {};
+        this.layers = new Map();
+        this.outstandingTileDataRequests = new Map();
         this.map = null;
-        this.outstandingRequestCount = 0;
         this.delayedTileDataRequests = [];
         this.firstRequest = true;
         this.debouncedFlushOutstandingQueue = _.debounce(
@@ -609,8 +610,8 @@
           replace('{y}', tilePoint.y);
 
         // Don't re-request tiles that are already outstanding.
-        if (self.outstandingTileDataRequests.hasOwnProperty(tileId) &&
-          self.outstandingTileDataRequests[tileId] !== null) {
+        if (self.outstandingTileDataRequests.has(tileId) &&
+          self.outstandingTileDataRequests.get(tileId) !== null) {
           return;
         }
 
@@ -716,9 +717,8 @@
           layerId = layerIds[i];
           layer = vectorTile.layers[layerId];
 
-          if (!this.layers.hasOwnProperty(layerId)) {
-
-            this.layers[layerId] = new VectorTileLayer(
+          if (!this.layers.has(layerId)) {
+            var newLayer = new VectorTileLayer(
               this,
               {
                 filter: this.options.filter,
@@ -726,77 +726,45 @@
                 style: this.style,
                 name: layerId
               }
-            ).
-            addTo(this.map);
+            );
 
+            this.layers.set(layerId, newLayer);
+            newLayer.addTo(this.map);
           }
 
-          this.layers[layerId].loadData(layer, tileId, tileRenderedCallback);
+          this.layers.get(layerId).loadData(layer, tileId, tileRenderedCallback);
         }
       },
 
       addChildLayers: function() {
-
-        var layerIds = Object.keys(this.layers);
-        var i = layerIds.length;
-        var layer;
-
-        while (i--) {
-          layer = this.layers[layerIds[i]];
-          if (layer.hasOwnProperty('_map')) {
-            this.map.addLayer(layer);
+        var self = this;
+        this.layers.forEach(function(layer) {
+          if (value.hasOwnProperty('_map')) {
+            self.map.addLayer(layer);
           }
-        }
+        });
       },
 
       removeChildLayers: function() {
-
-        var layerIds = Object.keys(this.layers);
-        var i = layerIds.length;
-        var layer;
-
-        while (i--) {
-          layer = this.layers[layerIds[i]];
-          this.map.removeLayer(layer);
-        }
-      },
-
-      emitRenderStartedEvent: function() {
-        var evt = document.createEvent('HTMLEvents');
-        evt.initEvent('vector-tile-render-started', true, true);
-        this.map._container.dispatchEvent(evt);
-      },
-
-      emitRenderCompleteEvent: function() {
-        var evt = document.createEvent('HTMLEvents');
-        evt.initEvent('vector-tile-render-complete', true, true);
-        this.map._container.dispatchEvent(evt);
+        var self = this;
+        this.layers.forEach(function(layer) {
+          self.map.removeLayer(layer);
+        });
       },
 
       tileLoading: function(tileId, xhr) {
-        if (this.outstandingRequestCount === 0) {
-          this.emitRenderStartedEvent();
+        if (this.outstandingTileDataRequests.size === 0) {
+          this.options.onRenderStart();
         }
 
-        if (!this.outstandingTileDataRequests.hasOwnProperty(tileId)) {
-          this.outstandingRequestCount++;
-        }
-
-        if (xhr) {
-          this.outstandingTileDataRequests[tileId] = xhr;
-        } else {
-          this.outstandingTileDataRequests[tileId] = null;
-        }
+        this.outstandingTileDataRequests.set(tileId, xhr || null);
       },
 
       tileLoaded: function(tileId) {
-        if (this.outstandingTileDataRequests.hasOwnProperty(tileId)) {
-          delete this.outstandingTileDataRequests[tileId];
-          this.outstandingRequestCount--;
-        }
+        this.outstandingTileDataRequests['delete'](tileId);
 
-        if (this.outstandingRequestCount === 0) {
-          this.emitRenderCompleteEvent();
+        if (this.outstandingTileDataRequests.size === 0) {
+          this.options.onRenderComplete();
         }
       }
     });

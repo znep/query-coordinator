@@ -221,7 +221,7 @@ describe('<aggregation-chooser/>', function() {
 
   it('should only include aggregatable columns in the dropdown', function() {
     var models = createModels({ primaryAggregation: 'sum', primaryAmountField: 'column1_number' });
-    var subjectUnderTest = createElement({page: models.page });
+    var subjectUnderTest = createElement({ page: models.page });
     var columnEntriesWhereCountIsSupported = subjectUnderTest.find('.aggregation-columns.count');
 
     // 2 number columns (column, column2_number) and 1 money column (column3_money).
@@ -278,7 +278,7 @@ describe('<aggregation-chooser/>', function() {
     expect(subjectUnderTest.find('.aggregation-chooser-trigger')).to.not.be.visible;
   });
 
-  it('should not be a dropdown if there are more than 10 number/money fields', function() {
+  it('should not be a dropdown if there are more than 10 number or money fields', function() {
     var columns = {};
     _.each(_.range(12), function(value, index) {
       var column = {

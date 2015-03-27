@@ -33,7 +33,10 @@
   <save-button
     class="dark"
     ng-click="save()"
-    enabled="true"
+    enabled="!dialogState.disableCloseDialog"
     save-status="saveStatus"></save-button>
-  <button class="action-btn dark" ng-click="dialogState.show = false">Cancel</button>
+  <button
+    ng-disabled="dialogState.disableCloseDialog"
+    class="action-btn dark"
+    ng-click="dialogState.show = false">Cancel</button>
 </div>

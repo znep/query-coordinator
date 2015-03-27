@@ -1148,4 +1148,50 @@ describe('timelineChart', function() {
 
   });
 
+  describe.only('when loading a page with a filtered timeline chart', function() {
+
+    it('should render the filter markers specified from activeFilters', function() {
+
+      var chart = createTimelineChart(640, false);
+      var timeRangeFilter = {
+        end: new Date("01 01 1984"),
+        start: new Date("01 01 1983")
+      };
+
+      scope.chartData = unfilteredTestData;
+      scope.activeFilters = [timeRangeFilter];
+      scope.$apply();
+
+      var chartWasSelected = $('.timeline-chart-wrapper').hasClass('selected');
+
+      expect(chartWasSelected).to.equal(true);
+
+    });
+
+    it('should be able to clear the active filter', function() {
+
+      var chart = createTimelineChart(640, false);
+      var timeRangeFilter = {
+        end: new Date("01 01 1984"),
+        start: new Date("01 01 1983")
+      };
+
+      scope.chartData = unfilteredTestData;
+      scope.activeFilters = [timeRangeFilter];
+      scope.$apply();
+
+      var chartIsSelected = $('.timeline-chart-wrapper').hasClass('selected');
+
+      expect(chartIsSelected).to.equal(true);
+
+      scope.activeFilters = [];
+      scope.$apply();
+
+      var chartIsNotSelected = $('.timeline-chart-wrapper').hasClass('selected');
+
+      expect(chartIsNotSelected).to.equal(false);
+    });
+
+  });
+
 });

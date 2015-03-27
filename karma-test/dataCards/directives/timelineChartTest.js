@@ -1152,8 +1152,8 @@ describe('timelineChart', function() {
 
     it('should render the filter markers specified from activeFilters', inject(function(Filter) {
       var chart = createTimelineChart(640, false);
-      var start = new Date("01 01 1983");
-      var end = new Date("01 01 1984");
+      var start = '1983-01-01T00:00:00';
+      var end = '1984-01-01T00:00:00';
       var timeRangeFilter = new Filter.TimeRangeFilter(start, end);
 
       scope.chartData = unfilteredTestData;
@@ -1168,8 +1168,8 @@ describe('timelineChart', function() {
 
     it('should be able to clear the active filter', inject(function(Filter) {
       var chart = createTimelineChart(640, false);
-      var start = new Date("01 01 1983");
-      var end = new Date("01 01 1984");
+      var start = '1983-01-01T00:00:00';
+      var end = '1984-01-01T00:00:00';
       var timeRangeFilter = new Filter.TimeRangeFilter(start, end);
 
       scope.chartData = unfilteredTestData;

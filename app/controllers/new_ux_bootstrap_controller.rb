@@ -3,7 +3,7 @@ require 'json'
 
 class NewUxBootstrapController < ActionController::Base
 
-  include CommonPhidippidesMethods
+  include CommonMetadataMethods
   include CommonMetadataTransitionMethods
   include UserAuthMethods
   include CardTypeMapping

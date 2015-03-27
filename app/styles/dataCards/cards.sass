@@ -141,6 +141,11 @@ body.state-view-cards
       .metadata
         padding-bottom: 10px
 
+        .manage-lens-link
+          .modal-dialog
+            max-width: 45rem
+
+
       .metadatum-wrapper
 
         &:last-child
@@ -164,6 +169,9 @@ body.state-view-cards
             &.value, &.value a
               text-transform: capitalize
               font-weight: bold
+              color: $grey-text-color
+
+            &.value a
               color: $aqua-font-color
 
             &.value.source-dataset-name
@@ -428,6 +436,46 @@ body.state-view-cards
         display: block
         height: 300px
         text-align: left
+
+  .manage-lens-link
+    .icon-warning
+      color: $yellow-warning-color
+      margin-left: .3rem
+
+  manage-lens-dialog
+    display: block
+
+    label
+      float: left
+
+      soc-select
+        // The existence of this soc-select causes the text next to it to
+        // align correctly vertically.
+        visibility: hidden
+        width: 0
+
+    .right
+      margin-left: 7em
+
+      .flavor-text
+        margin-top: 1rem
+        line-height: 1.5em
+        position: relative
+
+        .icon-warning
+          position: absolute
+          right: 100%
+          top: 0
+          line-height: inherit
+          margin-right: .2rem
+
+    .controls
+      margin-top: 1.5rem
+      overflow: hidden
+
+      button
+        float: right
+        margin-bottom: 0
 
 /*  DESKTOP-SPECIFIC STYLES  */
 

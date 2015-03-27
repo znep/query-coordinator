@@ -64,6 +64,26 @@
     ), $scope.eventToObservable('$destroy'));
   }
 
+  function initManageLens($scope, page) {
+    var pageIsPublicObservable = page.observe('permissions').
+        filter(_.isObject).
+        map(_.property('isPublic'));
+    $scope.bindObservable('pagePermissions', pageIsPublicObservable.map(function(isPublic) {
+      return isPublic ? 'public' : 'private';
+    }));
+    $scope.bindObservable('pageIsPublic', pageIsPublicObservable);
+    $scope.bindObservable(
+      'datasetIsPublic',
+      page.observe('dataset.permissions').filter(_.isObject).map(_.property('isPublic')).
+        // Default to true, so the warning icon doesn't appear before the actual metadata is fetched
+        startWith(true)
+    );
+
+    $scope.manageLensState = {
+      show: false
+    };
+  }
+
   var VALIDATION_ERROR_STRINGS = {
     name: {
       minLength: 'Please enter a title',
@@ -199,6 +219,7 @@
 
 
     initDownload($scope, page, obeIdObservable, WindowState, FlyoutService, ServerConfig);
+    initManageLens($scope, page);
 
     /**
      * If we ever get a 403 from the server while trying to access the dataset, it means we can't view

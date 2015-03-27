@@ -3,11 +3,23 @@ require 'test_helper'
 class PhidippidesDatasetsControllerTest < ActionController::TestCase
 
   def setup
-    CurrentDomain.class_variable_set('@@current_domain', :data => Hashie::Mash.new)
-    CurrentDomain.stubs(domain: stub(cname: 'localhost'))
+    init_core_session
+    init_current_domain
+    UserSession.any_instance.stubs(
+      save: Net::HTTPSuccess.new(1.1, 200, 'Success'),
+      find_token: true
+    )
+    User.stubs(current_user: User.new(some_user))
+
     @phidippides = Phidippides.new
     @phidippides.stubs(end_point: 'http://localhost:2401')
-    @controller.stubs(:phidippides => @phidippides)
+    @new_view_manager = NewViewManager.new
+    @new_view_manager.stubs(fetch: {grants: [{flags: ['public']}]})
+    @controller.stubs(
+      :phidippides => @phidippides,
+      :new_view_manager => @new_view_manager
+    )
+    stub_feature_flags_with(:use_catalog_lens_permissions, true)
   end
 
   def set_up_json_request(body = nil)
@@ -47,11 +59,11 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
 
   test 'show returns data for a given dataset' do
     @controller.stubs(can_update_metadata?: true)
-    @phidippides.stubs(issue_request: { body: mock_v1_dataset_metadata })
+    @phidippides.stubs(issue_request: { body: mock_v1_dataset_metadata, status: '200' })
     get :show, id: 'four-four', format: 'json'
     assert_response(:success)
     assert_equal(
-      ['columns', 'defaultPage', 'description', 'domain', 'id', 'locale', 'name', 'ownerId', 'updatedAt'].sort,
+      ['permissions', 'columns', 'defaultPage', 'description', 'domain', 'id', 'locale', 'name', 'ownerId', 'updatedAt'].sort,
       JSON.parse(@response.body).keys.sort)
   end
 
@@ -64,6 +76,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     @phidippides.expects(:migrate_dataset_metadata_to_v1).with do |result|
       assert_equal('vtvh-wqgq', result[:body][:id])
     end
+
     stub_feature_flags_with(:metadata_transition_phase, '3')
     get :show, id: 'four-four', format: 'json'
     assert_response(:success)
@@ -263,4 +276,11 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-dataset-metadata.json"))
   end
 
+  def some_user
+    { email: 'foo@bar.com',
+      password: 'asdf',
+      passwordConfirm: 'asdf',
+      accept_terms: true
+    }
+  end
 end

@@ -3,7 +3,14 @@ require 'test_helper'
 class PhidippidesPagesControllerTest < ActionController::TestCase
 
   def setup
-    CurrentDomain.stubs(domain: stub(cname: 'localhost'))
+    init_core_session
+    init_current_domain
+    UserSession.any_instance.stubs(
+      save: Net::HTTPSuccess.new(1.1, 200, 'Success'),
+      find_token: true
+    )
+    User.stubs(current_user: User.new(some_user))
+
     @phidippides = Phidippides.new
     @phidippides.stubs(end_point: 'http://localhost:2401')
     @page_metadata_manager = PageMetadataManager.new
@@ -16,6 +23,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
       create: { body: '', status: '200' },
       update: { body: '', status: '200' }
     )
+    stub_feature_flags_with(:use_catalog_lens_permissions, true)
   end
 
   def json_post(body = nil)
@@ -44,12 +52,83 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     @controller.stubs(can_update_metadata?: true)
     @phidippides.stubs(
       fetch_page_metadata: {
-        body: v0_page_metadata.to_json
+        body: v0_page_metadata,
+        status: '200'
       }
     )
+    connection_stub = mock
+    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    connection_stub.expects(:get_request).returns('{}')
+    CoreServer::Base.stubs(connection: connection_stub)
+
     get :show, id: 'four-four', format: 'json'
     assert_response(:success)
-    assert_equal([], JSON.parse(@response.body).keys - %w(pageId datasetId name description primaryAmountField primaryAggregation filterSoql isDefaultPage pageSource cards))
+    result = JSON.parse(@response.body)
+    assert_equal(%w(pageId datasetId name description primaryAmountField primaryAggregation filterSoql isDefaultPage pageSource cards permissions), result.keys)
+  end
+
+  test 'show displays permission:private for views private in core' do
+    @controller.stubs(can_update_metadata?: true)
+    @phidippides.stubs(
+      fetch_page_metadata: {
+        body: v1_page_metadata,
+        status: '200'
+      }
+    )
+    connection_stub = mock
+    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    connection_stub.expects(:get_request).returns('{"grants": []}')
+    CoreServer::Base.stubs(connection: connection_stub)
+
+    get :show, id: 'four-four', format: 'json'
+    assert_response(:success)
+    result = JSON.parse(@response.body).with_indifferent_access
+    assert_equal({isPublic: false, rights: []}.with_indifferent_access, result['permissions'])
+  end
+
+  test 'show displays permission:public for views public in core' do
+    @controller.stubs(can_update_metadata?: true)
+    @phidippides.stubs(
+      fetch_page_metadata: {
+        body: v1_page_metadata,
+        status: '200'
+      }
+    )
+    connection_stub = mock
+    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    connection_stub.expects(:get_request).returns('{"grants": [{"flags": ["public"]}]}')
+    CoreServer::Base.stubs(connection: connection_stub)
+
+    get :show, id: 'four-four', format: 'json'
+    assert_response(:success)
+    result = JSON.parse(@response.body).with_indifferent_access
+    assert_equal({isPublic: true, rights: []}.with_indifferent_access, result['permissions'])
+  end
+
+  test 'show returns 401 if the Core view requires authn' do
+    @controller.stubs(can_update_metadata?: true)
+    connection_stub = mock
+    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    connection_stub.expects(:get_request).with do |url|
+      assert_equal('/views/four-four.json', url)
+    end.then.raises(CoreServer::CoreServerError.new(nil, 'authentication_required', nil))
+    CoreServer::Base.stubs(connection: connection_stub)
+
+    get :show, id: 'four-four', format: 'json'
+    assert_response(401)
+  end
+
+  test 'show returns 403 if the Core view requires authz' do
+    @controller.stubs(can_update_metadata?: true)
+    connection_stub = mock
+    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    connection_stub.expects(:get_request).with do |url|
+      assert_equal('/views/four-four.json', url)
+    end.then.raises(CoreServer::CoreServerError.new(nil, 'permission_denied', nil))
+    CoreServer::Base.stubs(connection: connection_stub)
+
+    get :show, id: 'four-four', format: 'json'
+    assert_response(403)
   end
 
   test '(phase 0, 1 or 2) create returns 401 if not logged in' do
@@ -115,7 +194,6 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     assert_equal(v0_page_metadata, JSON.parse(@response.body))
 
     @page_metadata_manager.stubs(create: { body: v1_page_metadata.to_json, status: '200' })
-    Phidippides.any_instance.stubs(request_new_page_id: { body: { id: 'iuya-fxdq' }, status: '200' })
     stub_feature_flags_with(:metadata_transition_phase, '2')
     set_up_json_request(v1_page_metadata.except('pageId').to_json)
     post :create, format: :json
@@ -290,4 +368,11 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-page-metadata.json"))
   end
 
+  def some_user
+    { email: 'foo@bar.com',
+      password: 'asdf',
+      passwordConfirm: 'asdf',
+      accept_terms: true
+    }
+  end
 end

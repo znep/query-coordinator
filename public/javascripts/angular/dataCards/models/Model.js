@@ -381,6 +381,9 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
           this.observePropertyChangesRecursively().filter(function(change) {
             // Ignore changes that don't actually change the value
             return !_.isEqual(change.newValue, change.oldValue);
+          }).filter(function(change) {
+            // Ignore ephemeral properties
+            return !change.model._isObservablePropertyEphemeral(change.property);
           }),
           this._dirtyResetObservable
         ).scan({}, function(changes, change) {

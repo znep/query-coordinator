@@ -1,7 +1,7 @@
 class DatasetsController < ApplicationController
  
   include DatasetsHelper
-  include CommonPhidippidesMethods
+  include CommonMetadataMethods
  
   prepend_before_filter :check_chrome, :only => [:show, :alt]
   skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :form_success, :form_error, :external, :external_download, :download, :about]

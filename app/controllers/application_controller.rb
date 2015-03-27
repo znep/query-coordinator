@@ -3,7 +3,7 @@
 
 class ApplicationController < ActionController::Base
   include ActionControllerExtensions
-  before_filter :hook_auth_controller,  :create_core_server_connection,
+  before_filter :hook_auth_controller, :create_core_server_connection,
     :disable_frame_embedding, :adjust_format, :patch_microsoft_office, :sync_logged_in_cookie,
     :require_user, :set_user, :set_meta, :force_utf8_params, :poll_downtime_config
   helper :all # include all helpers, all the time

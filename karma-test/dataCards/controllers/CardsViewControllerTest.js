@@ -87,6 +87,7 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/selectionLabel.html'));
   beforeEach(module('/angular_templates/dataCards/spinner.html'));
   beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
+  beforeEach(module('/angular_templates/dataCards/manageLensDialog.html'));
   beforeEach(module('/angular_templates/dataCards/modalDialog.html'));
   beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
@@ -182,6 +183,7 @@ describe('CardsViewController', function() {
     var controller = $controller('CardsViewController', context);
     testHelpers.mockDirective(_$provide, 'modalDialog');
     testHelpers.mockDirective(_$provide, 'addCardDialog');
+    testHelpers.mockDirective(_$provide, 'manageLensDialog');
     context.$scope.$apply();
     expect(context.$scope.page).to.be.instanceof(Page);
 

@@ -18,12 +18,13 @@
         }
 
         // The various conditions under which we can close the dialog
-        function closeDialog() {
-          scope.$apply(function() {
-            scope.state.show = false;
-          });
+        scope.closeDialog = function() {
+          if (!scope.state.disableCloseDialog) {
+            scope.safeApply(function() {
+              scope.state.show = false;
+            });
+          }
         }
-        element.on('click', '.modal-overlay', closeDialog);
         WindowState.escapeKeyObservable.filter(function(e) {
           // Only close this dialog if we're the one on top
           var dialog = element.find('.modal-dialog');
@@ -33,7 +34,7 @@
           testPoint.left += 1;
           var topMostElement = document.elementFromPoint(testPoint.left, testPoint.top);
           return dialog[0] === topMostElement;
-        }).takeUntil(scope.observeDestroy(element)).subscribe(closeDialog);
+        }).takeUntil(scope.observeDestroy(element)).subscribe(scope.closeDialog);
       }
     };
   }

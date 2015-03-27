@@ -2,7 +2,34 @@ describe('<aggregation-chooser/>', function() {
   'use strict';
 
   var DEFAULT_ROW_DISPLAY_UNIT = 'unique row unit';
+  var DEFAULT_COLUMNS = {
+    column1_number: {
+      name: 'test column title',
+      description: 'test column description',
+      fred: 'amount',
+      physicalDatatype: 'number'
+    },
+    column2_number: {
+      name: 'second test column title',
+      description: 'second test column description',
+      fred: 'amount',
+      physicalDatatype: 'number'
+    },
+    column3_money: {
+      name: 'third test column title',
+      description: 'third test column description',
+      fred: 'amount',
+      physicalDatatype: 'money'
+    },
+    column4_text: {
+      name: 'fourth test column title',
+      description: 'fourth test column description',
+      fred: 'text',
+      physicalDatatype: 'text'
+    }
+  };
   var ELEMENT_HTML = '<aggregation-chooser page="page"></aggregation-chooser>';
+
   var testHelpers;
   var $rootScope;
   var Model;
@@ -51,22 +78,7 @@ describe('<aggregation-chooser/>', function() {
     options = options || {};
     _.defaults(options, {
       rowDisplayUnit: DEFAULT_ROW_DISPLAY_UNIT,
-      columns: {
-        statBar_column: {
-          name: 'test column title',
-          description: 'test column description',
-          fred: 'amount',
-          physicalDatatype: 'number',
-          importance: 2
-        },
-        statBar_column2: {
-          name: 'second test column title',
-          description: 'second test column description',
-          fred: 'amount',
-          physicalDatatype: 'number',
-          importance: 2
-        }
-      }
+      columns: DEFAULT_COLUMNS
     });
     _.forOwn(options.columns, function(column) {
       column.dataset = datasetModel;
@@ -175,7 +187,7 @@ describe('<aggregation-chooser/>', function() {
   });
 
   it('should highlight when options are hovered', function() {
-    var models = createModels({ primaryAggregation: 'sum', primaryAmountField: 'statBar_column'});
+    var models = createModels({ primaryAggregation: 'sum', primaryAmountField: 'column1_number'});
     var subjectUnderTest = createElement({page: models.page });
     testHelpers.TestDom.append(subjectUnderTest);
     $rootScope.$apply(function() {
@@ -198,20 +210,33 @@ describe('<aggregation-chooser/>', function() {
     expect(models.page.getCurrentValue('primaryAmountField')).to.equal(null);
     testHelpers.fireMouseEvent(subjectUnderTest.find('[data-aggregation-type="sum"]')[0], 'click');
     expect(models.page.getCurrentValue('primaryAggregation')).to.equal('sum');
-    expect(models.page.getCurrentValue('primaryAmountField')).to.equal('statBar_column');
-    testHelpers.fireMouseEvent(subjectUnderTest.find('[data-column-id="statBar_column2"]')[0], 'click');
+    expect(models.page.getCurrentValue('primaryAmountField')).to.equal('column1_number');
+    testHelpers.fireMouseEvent(subjectUnderTest.find('[data-column-id="column2_number"]')[0], 'click');
     expect(models.page.getCurrentValue('primaryAggregation')).to.equal('sum');
-    expect(models.page.getCurrentValue('primaryAmountField')).to.equal('statBar_column2');
+    expect(models.page.getCurrentValue('primaryAmountField')).to.equal('column2_number');
     testHelpers.fireMouseEvent(subjectUnderTest.find('[data-aggregation-type="count"]')[0], 'click');
     expect(models.page.getCurrentValue('primaryAggregation')).to.equal('count');
     expect(models.page.getCurrentValue('primaryAmountField')).to.equal(null);
   });
 
+  it('should only include aggregatable columns in the dropdown', function() {
+    var models = createModels({ primaryAggregation: 'sum', primaryAmountField: 'column1_number' });
+    var subjectUnderTest = createElement({page: models.page });
+    var columnEntriesWhereCountIsSupported = subjectUnderTest.find('.aggregation-columns.count');
+
+    // 2 number columns (column, column2_number) and 1 money column (column3_money).
+    expect(subjectUnderTest.find('[data-column-id]').length).to.equal(3);
+    expect(subjectUnderTest.find('[data-column-id="column1_number"]').length).to.equal(1);
+    expect(subjectUnderTest.find('[data-column-id="column2_number"]').length).to.equal(1);
+    expect(subjectUnderTest.find('[data-column-id="column3_money"]').length).to.equal(1);
+  });
+
+
   it('should select the appropriate aggregation function if one is present', function() {
-    var models = createModels({ primaryAggregation: 'sum', primaryAmountField: 'statBar_column' });
+    var models = createModels({ primaryAggregation: 'sum', primaryAmountField: 'column1_number' });
     var subjectUnderTest = createElement({page: models.page });
     expect(subjectUnderTest.find('[data-aggregation-type="sum"]')).to.have.class('active');
-    expect(subjectUnderTest.find('[data-column-id="statBar_column"]')).to.have.class('active');
+    expect(subjectUnderTest.find('[data-column-id="column1_number"]')).to.have.class('active');
   });
 
   it('should display a flyout for invalid selections', function() {
@@ -229,7 +254,7 @@ describe('<aggregation-chooser/>', function() {
     expect(flyout.text()).to.match(/this column cannot be used with a/i);
   });
 
-  it('should not be a dropdown if there are no number fields', function() {
+  it('should not be a dropdown if there are no number or money fields', function() {
     var models = createModels({
       columns: {
         pointMap_column: {
@@ -253,16 +278,15 @@ describe('<aggregation-chooser/>', function() {
     expect(subjectUnderTest.find('.aggregation-chooser-trigger')).to.not.be.visible;
   });
 
-  it('should not be a dropdown if there are more than 10 number fields', function() {
+  it('should not be a dropdown if there are more than 10 number/money fields', function() {
     var columns = {};
-    _.each(_.range(12), function(value) {
+    _.each(_.range(12), function(value, index) {
       var column = {
         name: 'column_{0}'.format(value),
         title: 'test column title - {0}'.format(value),
         description: 'test column description - {0}'.format(value),
         fred: 'amount',
-        physicalDatatype: 'number',
-        importance: 2
+        physicalDatatype: index > 6 ? 'money' : 'number'
       };
       columns[column.name] = column;
     });

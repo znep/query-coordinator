@@ -70,7 +70,7 @@ class PhidippidesDatasetsController < ApplicationController
 
       dataset_metadata = result[:body]
 
-      dataset_metadata[:permissions] = permissions if dataset_metadata && result[:status][0] == '2'
+      dataset_metadata[:permissions] = permissions if dataset_metadata && result[:status] =~ /^20[0-9]$/
 
       render :json => dataset_metadata, :status => result[:status]
     rescue Phidippides::ConnectionError

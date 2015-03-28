@@ -31,7 +31,10 @@
         // to operate on active sequences.
         var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
         var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
-        var geojsonRegionsData;
+
+        var shapeFileObservable;
+        var geometryLabelObservable;
+        var geojsonRegionsObservable;
 
         /*************************************
         * FIRST set up the 'busy' indicator. *
@@ -63,29 +66,20 @@
           }
         );
 
-        geojsonRegionsData = Rx.Observable.combineLatest(
-          dataset,
+        shapeFileObservable = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
           dataset.observeOnLatest('columns'),
-          function(dataset, fieldName, columns) {
-
+          function(fieldName, columns) {
             var shapeFile = null;
-            var sourceColumn = null;
-            var dataPromise = null;
 
             if (_.isEmpty(columns)) {
               return Rx.Observable.never();
             }
 
-            dataRequests.onNext(1);
-
             if (ServerConfig.metadataMigration.shouldConsumeComputationStrategy()) {
               // The shapeFile and the sourceColumn are both found in the
               // computationStrategy blob that is attached to computed columns.
               shapeFile = CardVisualizationChoroplethHelpers.extractShapeFileFromColumn(
-                columns[fieldName]
-              );
-              sourceColumn = CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn(
                 columns[fieldName]
               );
             } else {
@@ -97,6 +91,49 @@
             if (shapeFile === null) {
               throw new Error(
                 'Dataset metadata column for computed georegion does not include shapeFile.'
+              );
+            }
+
+            return shapeFile;
+          }
+        );
+
+        geometryLabelObservable = shapeFileObservable.map(
+          function(shapeFile) {
+            var dataPromise;
+
+            dataRequests.onNext(1);
+
+            dataPromise = CardDataService.getChoroplethGeometryLabel(shapeFile);
+
+            dataPromise.then(
+              function(res) {
+                // Ok
+                dataResponses.onNext(1);
+              },
+              function(err) {
+                // Do nothing
+              }
+            );
+
+            return Rx.Observable.fromPromise(dataPromise);
+          }
+        );
+
+        geojsonRegionsObservable = Rx.Observable.combineLatest(
+          dataset,
+          dataset.observeOnLatest('columns'),
+          model.pluck('fieldName'),
+          shapeFileObservable,
+          function(dataset, columns, fieldName, shapeFile) {
+            var sourceColumn = null;
+            var dataPromise;
+
+            dataRequests.onNext(1);
+
+            if (ServerConfig.metadataMigration.shouldConsumeComputationStrategy()) {
+              sourceColumn = CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn(
+                columns[fieldName]
               );
             }
 
@@ -165,7 +202,7 @@
           aggregationObservable,
           function(fieldName, dataset, whereClauseFragment, aggregationData) {
             dataRequests.onNext(1);
-            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData);
+            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData, { limit: 5000 });
             dataPromise.then(
               function(res) {
                 // Ok
@@ -185,7 +222,7 @@
           aggregationObservable,
           function(fieldName, dataset, whereClauseFragment, aggregationData) {
             dataRequests.onNext(1);
-            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData);
+            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData, { limit: 5000 });
             dataPromise.then(
               function(res) {
                 // Ok
@@ -210,7 +247,8 @@
         scope.bindObservable(
           'geojsonAggregateData',
           Rx.Observable.combineLatest(
-            geojsonRegionsData.switchLatest(),
+            geometryLabelObservable.switchLatest(),
+            geojsonRegionsObservable.switchLatest(),
             unfilteredDataSequence.switchLatest(),
             filteredDataSequence.switchLatest(),
             model.observeOnLatest('activeFilters'),

@@ -1123,7 +1123,7 @@ class CardTypeMappingTest < Test::Unit::TestCase
       nil,
       dataset_size
     )
-    assert_equal('search', computed_card_type)
+    assert_equal('column', computed_card_type)
   end
 
   def test_card_type_mapping_returns_expected_value_for_low_cardinality_text_column_in_phase_3

@@ -13,6 +13,9 @@ class NewUxBootstrapController < ActionController::Base
   # Keep track of the types of cards we added, so we can give a spread
   attr_accessor :skipped_cards_by_type, :added_card_types, :page_metadata_manager
 
+  # CORE-4770 Skip card creation for latitude/longitude column types (because no one cares)
+  COLUMNS_TO_SKIP = %w(latitude longitude lat lng x y)
+
   def initialize(*args)
     @added_card_types = Set.new
     @skipped_cards_by_type = Hash.new { |h, k| h[k] = [] }
@@ -305,7 +308,8 @@ class NewUxBootstrapController < ActionController::Base
       end.compact
     else
       columns.map do |field_name, column|
-        unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(field_name)
+        unless (Phidippides::SYSTEM_COLUMN_ID_REGEX.match(field_name) ||
+                COLUMNS_TO_SKIP.include?(column[:name].downcase))
           card_type = card_type_for(column, :fred, cached_dataset_size)
           if card_type
             card = page_metadata_manager.merge_new_card_data_with_default(

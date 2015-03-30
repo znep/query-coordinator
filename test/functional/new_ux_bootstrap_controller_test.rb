@@ -750,6 +750,30 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
           end
         end
 
+        context 'skip cards we do not care about' do
+          should 'not create a card for columns named "latitude", "longitude", "x", or "y"' do
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata
+              }
+            )
+            stub_feature_flags_with(:metadata_transition_phase, '3')
+
+            # Make sure the page we're creating fits certain criteria
+            @page_metadata_manager.expects(:create).with do |page, _|
+              assert_equal(10, page['cards'].length, 'Should create 10 cards')
+
+              assert(page['cards'].none? do |card|
+                 %w(latitude longitude lat lng x y).include?(card['fieldName'].downcase)
+              end, 'should omit latitude and longitude columns')
+
+            end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+
+            get :bootstrap, id: 'four-four'
+            assert_redirected_to('/view/neoo-page')
+          end
+        end
+
         should 'redirect to dataset page with error if error while creating page' do
           connection_stub = stub.tap do |stub|
             stub.stubs(get_request: '[{"count_0": "1234"}]',

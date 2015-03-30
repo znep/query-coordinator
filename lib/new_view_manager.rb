@@ -15,15 +15,18 @@ class NewViewManager
 
     begin
       response = CoreServer::Base.connection.get_request(url)
-    rescue CoreServer::ResourceNotFound => e
-      raise ViewNotFound.new(e.message)
-    rescue CoreServer::CoreServerError => e
-      if e.error_code == 'authentication_required'
-        raise ViewAuthenticationRequired.new(e.error_message)
-      elsif e.error_code == 'permission_denied'
-        raise ViewAccessDenied.new(e.error_message)
+    rescue CoreServer::ResourceNotFound => error
+      raise ViewNotFound.new(error.to_s)
+    rescue CoreServer::CoreServerError => error
+      if error.respond_to?(:error_code)
+        if error.error_code == 'authentication_required'
+          raise ViewAuthenticationRequired.new(error)
+        elsif error.error_code == 'permission_denied'
+          raise ViewAccessDenied.new(error)
+        end
       end
-      raise e
+
+      raise error
     end
 
     parse_core_response(response)
@@ -62,10 +65,11 @@ class NewViewManager
 
     begin
       response = CoreServer::Base.connection.delete_request(url)
-    rescue CoreServer::Error => e
+    rescue CoreServer::Error, CoreServer::ResourceNotFound => error
+
       report_error(
-        "Error deleting new_view lens for page #{page_id}: #{e.error_message}",
-        e,
+        "Error deleting new_view lens for page #{page_id}: #{error}",
+        error,
         :url => url
       )
       return
@@ -73,6 +77,30 @@ class NewViewManager
 
     parse_core_response(response)
   end
+
+  def update(page_id, title, description)
+    url = "/views/#{CGI::escape(page_id)}.json"
+    payload = {
+      :name => title,
+      :description => description
+    }
+
+    begin
+      response = CoreServer::Base.connection.update_request(url, JSON.dump(payload))
+    rescue CoreServer::Error, CoreServer::ResourceNotFound => error
+      report_error(
+        "Error updating new_view lens for page: #{error}",
+        error,
+        :url => url,
+        :payload => payload
+      )
+      return
+    end
+
+    parse_core_response(response)
+  end
+
+  private
 
   def create_new_view(page_url, title, description)
     url = '/views.json?accessType=WEBSITE'
@@ -98,57 +126,19 @@ class NewViewManager
 
     begin
       response = CoreServer::Base.connection.create_request(url, JSON.dump(payload))
-    rescue => e
+    rescue CoreServer::Error => error
       report_error(
-        "Error creating new_view lens for page: #{e.error_message}",
-        e,
-        { :url => url, :payload => payload },
-        { :page_url => page_url }
+        "Error creating new_view lens for page: #{error}",
+        error,
+        :url => url,
+        :payload => payload,
+        :page_url => page_url
       )
       return
     end
 
     parse_core_response(response)
   end
-
-  def publish_new_view(view_id)
-    url = "/views/#{view_id}/publication.json?accessType=WEBSITE"
-
-    begin
-      response = CoreServer::Base.connection.create_request(url)
-    rescue
-      report_error(
-        "Error publishing new_view lens #{view_id}: #{e.error_message}",
-        e,
-        { :url => url }
-      )
-    end
-
-    parse_core_response(response)
-  end
-
-  def update(page_id, title, description)
-    url = "/views/#{CGI::escape(page_id)}.json"
-    payload = {
-      :name => title,
-      :description => description,
-    }
-
-    begin
-      response = CoreServer::Base.connection.update_request(url, JSON.dump(payload))
-    rescue => e
-      report_error(
-        "Error updating new_view lens for page: #{e.error_message}",
-        e,
-        :url => url, :payload => payload
-      )
-      return
-    end
-
-    parse_core_response(response)
-  end
-
-  private
 
   def update_page_url(page_id, page_url)
     url = "/views/#{CGI::escape(page_id)}.json"
@@ -169,10 +159,10 @@ class NewViewManager
 
     begin
       response = CoreServer::Base.connection.update_request(url, JSON.dump(payload))
-    rescue CoreServer::Error => e
+    rescue CoreServer::Error => error
       report_error(
         "Error updating page_url (#{page_url}) for new_view lens for page #{page_id}",
-        e
+        error
       )
       return
     end
@@ -183,23 +173,23 @@ class NewViewManager
   def parse_core_response(response)
     begin
       JSON.parse(response).with_indifferent_access
-    rescue JSON::ParserError => e
+    rescue JSON::ParserError => error
       report_error(
-        "Error parsing JSON response from Core: #{e.error_message}",
-        e,
-        :context => { :response => response }
+        "Error parsing JSON response from Core: #{error}",
+        error,
+        :response => response
       )
-      raise e
+      raise error
     end
   end
 
-  def report_error(error_message, exception = nil, request = {}, context = {})
+  def report_error(error_message, exception = nil, options = {})
     Airbrake.notify(
       exception,
-      :error_class => "NewUXViewFailure",
-      :error_message => error_message,
-      :request => request,
-      :context => context
+      options.merge(
+        :error_class => 'NewUXViewFailure',
+        :error_message => error_message
+      )
     )
     Rails.logger.error(error_message)
     nil

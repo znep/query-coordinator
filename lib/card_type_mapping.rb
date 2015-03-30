@@ -74,9 +74,9 @@ module CardTypeMapping
       when 'point'
         card_type = 'feature'
       when 'text'
-        # See: https://socrata.atlassian.net/browse/CORE-4314, point 1.
+        # See: https://socrata.atlassian.net/browse/CORE-4755
         if dataset_size <= 10
-          card_type = 'search'
+          card_type = 'column'
         elsif is_low_cardinality?(cardinality, dataset_size)
           card_type = 'column'
         else

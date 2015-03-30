@@ -101,7 +101,7 @@ class PageMetadataManager
     # one is best displayed by 'y', another by 'ym', and another by 'ymd', we will
     # only be able to show time rolled-up by 'y', the largest time span.
 
-    largest_time_span_days = largest_time_span_in_dataset_columns(dataset_id, options)
+    largest_time_span_days = largest_time_span_in_days_in_dataset(dataset_id, options)
     page_metadata['largestTimeSpanDays'] = largest_time_span_days
     page_metadata['defaultDateTruncFunction'] = date_trunc_function(largest_time_span_days)
 
@@ -269,18 +269,18 @@ class PageMetadataManager
     phidippides.fetch_dataset_metadata(dataset_id, options)
   end
 
-  def largest_time_span_in_dataset_columns(dataset_id, options)
+  def largest_time_span_in_days_in_dataset(dataset_id, options)
     dataset_metadata(dataset_id, options).fetch(:body).fetch('columns').
       select { |_, values| values['physicalDatatype'] == 'floating_timestamp' }.
       map { |field_name, _| time_range_in_column(dataset_id, field_name) }.compact.max
   end
 
   def time_range_in_column(dataset_id, field_name)
-    result = fetch_start_and_end_for_field(dataset_id, field_name)
+    result = fetch_min_max_date_in_column(dataset_id, field_name)
     (Date.parse(result['end']) - Date.parse(result['start'])).to_i.abs
   end
 
-  def fetch_start_and_end_for_field(dataset_id, field_name)
+  def fetch_min_max_date_in_column(dataset_id, field_name)
     begin
       JSON.parse(CoreServer::Base.connection.get_request(
         "/id/#{dataset_id}.json?" <<

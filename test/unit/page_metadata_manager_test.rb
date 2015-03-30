@@ -13,7 +13,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       'address' => 'localhost',
       'port' => '6010'
     })
-    manager.stubs(:largest_time_span_in_dataset_columns).returns(365)
+    manager.stubs(:largest_time_span_in_days_in_dataset).returns(365)
   end
 
   def test_create_succeeds
@@ -544,28 +544,28 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal(result.fetch(:body), v1_page_metadata)
   end
 
-  def test_largest_time_span_in_dataset_columns
+  def test_largest_time_span_in_days_in_dataset
     fake_dataset_id = 'four-four'
-    manager.unstub(:largest_time_span_in_dataset_columns)
+    manager.unstub(:largest_time_span_in_days_in_dataset)
     manager.stubs(:dataset_metadata => { :body => v1_dataset_metadata })
     manager.expects(:time_range_in_column).with(fake_dataset_id, 'time_column_large_granularity').returns(300)
     manager.expects(:time_range_in_column).with(fake_dataset_id, 'time_column_fine_granularity').returns(3)
-    result = manager.send(:largest_time_span_in_dataset_columns, fake_dataset_id, {})
+    result = manager.send(:largest_time_span_in_days_in_dataset, fake_dataset_id, {})
     assert_equal(300, result)
   end
 
-  def test_largest_time_span_in_dataset_columns_equal
+  def test_largest_time_span_in_days_in_dataset_equal
     fake_dataset_id = 'four-four'
-    manager.unstub(:largest_time_span_in_dataset_columns)
+    manager.unstub(:largest_time_span_in_days_in_dataset)
     manager.stubs(:dataset_metadata => { :body => v1_dataset_metadata })
     manager.expects(:time_range_in_column).with(fake_dataset_id, 'time_column_large_granularity').returns(300)
     manager.expects(:time_range_in_column).with(fake_dataset_id, 'time_column_fine_granularity').returns(300)
-    result = manager.send(:largest_time_span_in_dataset_columns, fake_dataset_id, {})
+    result = manager.send(:largest_time_span_in_days_in_dataset, fake_dataset_id, {})
     assert_equal(300, result)
   end
 
   def test_time_range_in_column_dates_equal
-    manager.expects(:fetch_start_and_end_for_field).with('four-four', 'theFieldName').returns(
+    manager.expects(:fetch_min_max_date_in_column).with('four-four', 'theFieldName').returns(
       'start' => '1987-08-15T00:00:00.000',
       'end' => '1987-08-15T00:00:00.000'
     )
@@ -574,7 +574,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_time_range_in_column_dates_reversed
-    manager.expects(:fetch_start_and_end_for_field).with('four-four', 'theFieldName').returns(
+    manager.expects(:fetch_min_max_date_in_column).with('four-four', 'theFieldName').returns(
       'start' => '1987-08-31T00:00:00.000',
       'end' => '1987-08-01T00:00:00.000'
     )
@@ -583,7 +583,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_time_range_in_column_pathologically_large_dates
-    manager.expects(:fetch_start_and_end_for_field).with('four-four', 'theFieldName').returns(
+    manager.expects(:fetch_min_max_date_in_column).with('four-four', 'theFieldName').returns(
       'start' => '1970-01-01T00:00:00.000',
       'end' => '9999-12-31T23:59:59.999'
     )
@@ -591,7 +591,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal(2932896, result)
   end
 
-  def test_fetch_start_and_end_for_field_calls_api
+  def test_fetch_min_max_date_in_column_calls_api
     fake_field_name = 'live-beef'
     fake_dataset_id = 'five-five'
     CoreServer::Base.connection.expects(:get_request).with do |args|
@@ -599,18 +599,18 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       assert_match(/max\(#{fake_field_name}\)%20AS%20end/i, args)
       assert_match(/^\/id\/#{fake_dataset_id}/i, args)
     end.returns('[]')
-    manager.send(:fetch_start_and_end_for_field, fake_dataset_id, fake_field_name)
+    manager.send(:fetch_min_max_date_in_column, fake_dataset_id, fake_field_name)
   end
 
-  def test_fetch_start_and_end_for_field_returns_nil
+  def test_fetch_min_max_date_in_column_returns_nil
     CoreServer::Base.connection.expects(:get_request).raises(CoreServer::Error)
-    refute(manager.send(:fetch_start_and_end_for_field, 'dead-beef', 'human'), 'Expects nil when error')
+    refute(manager.send(:fetch_min_max_date_in_column, 'dead-beef', 'human'), 'Expects nil when error')
   end
 
-  def test_fetch_start_and_end_for_field_notifies_airbrake_on_error
+  def test_fetch_min_max_date_in_column_notifies_airbrake_on_error
     CoreServer::Base.connection.expects(:get_request).raises(CoreServer::Error)
     Airbrake.expects(:notify)
-    manager.send(:fetch_start_and_end_for_field, 'dead-beef', 'human')
+    manager.send(:fetch_min_max_date_in_column, 'dead-beef', 'human')
   end
 
   private

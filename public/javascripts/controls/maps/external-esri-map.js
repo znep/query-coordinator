@@ -157,8 +157,7 @@
                     newParams['LAYERDEFS'] = layerDefStrList.join("");
                 }
             }
-            var requestString = this.getFullRequestString(newParams);
-            return '/analytics/esri?esri_layer_url=' + encodeURIComponent(requestString);
+            return this.getFullRequestString(newParams);
         }
     });
 

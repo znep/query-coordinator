@@ -22,13 +22,13 @@ describe('Page model', function() {
     ServerConfig.override('currentPageMetadataVersion', CURRENT_PAGE_METADATA_VERSION);
   }));
 
-  it('should correctly deserialize serialized page metadata passed into the constructor.', inject(function(Page) {
+  it('should correctly deserialize serialized page metadata passed into the constructor.', function() {
     var pageOverrides = {pageId: 'test-page'};
     var datasetOverrides = {id: 'test-data'};
     var instance = Mockumentary.createPage(pageOverrides, datasetOverrides);
 
     expect(instance.id).to.equal('test-page');
-  }));
+  });
 
   it('should return a DatasetV1 model from the dataset property', function(done) {
     var pageOverrides = {pageId: 'test-page'};
@@ -92,10 +92,6 @@ describe('Page model', function() {
   });
 
   describe('toggleExpanded', function() {
-    var Page;
-    beforeEach(inject(function($injector) {
-      Page = $injector.get('Page');
-    }));
     it('should toggle expanded on the given card', function() {
       var pageOverrides = {pageId: 'test-page'};
       var datasetOverrides = {id: 'test-data'};

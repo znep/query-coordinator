@@ -7,7 +7,7 @@
   // 3 and removed the branches on the transition phase, we should probably
   // revisit this directive to clean it up.
 
-  function addCardDialog(AngularRxExtensions, Constants, CardTypeMapping, Card, FlyoutService, ServerConfig, $log) {
+  function addCardDialog(AngularRxExtensions, Constants, Card, FlyoutService, ServerConfig, $log) {
     return {
       restrict: 'E',
       scope: {
@@ -74,38 +74,17 @@
               return;
             }
 
-            if (ServerConfig.metadataMigration.shouldUseLocalCardTypeMapping()) {
-              scope.availableCardTypes = CardTypeMapping.availableVisualizationsForColumn(dataset, fieldName);
-            } else {
-              scope.availableCardTypes = column.availableCardTypes;
-            }
+            scope.availableCardTypes = column.availableCardTypes;
 
-            if (ServerConfig.metadataMigration.pageMetadata.useV0CardModels()) {
-              // TODO: Enforce some kind of schema validation at this step.
-              serializedCard = {
-                'cardCustomStyle': {},
-                'cardSize': parseInt(scope.dialogState.cardSize, 10),
-                'cardType': CardTypeMapping.defaultVisualizationForColumn(dataset, fieldName),
-                'displayMode': 'visualization',
-                'expanded': false,
-                'expandedCustomStyle': {},
-                'fieldName': fieldName
-              };
-            } else {
-              // TODO: Enforce some kind of schema validation at this step.
-              serializedCard = {
-                'cardSize': parseInt(scope.dialogState.cardSize, 10),
-                'expanded': false,
-                'fieldName': fieldName
-              };
+            // TODO: Enforce some kind of schema validation at this step.
+            serializedCard = {
+              'cardSize': parseInt(scope.dialogState.cardSize, 10),
+              'expanded': false,
+              'fieldName': fieldName
+            };
 
-              if (ServerConfig.metadataMigration.shouldUseLocalCardTypeMapping()) {
-                serializedCard['cardType'] = CardTypeMapping.defaultVisualizationForColumn(dataset, fieldName);
-              } else {
-                serializedCard['cardType'] = column.defaultCardType;
-              }
-            }
-            // TODO: Should just use the constructor, which should be different between V0 and V1
+            serializedCard['cardType'] = column.defaultCardType;
+            // TODO: Should just use the constructor
             scope.addCardModel = Card.deserialize(scope.page, serializedCard);
 
             if (column.hasOwnProperty('cardinality')) {

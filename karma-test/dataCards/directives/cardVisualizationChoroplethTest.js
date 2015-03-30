@@ -293,64 +293,7 @@ describe('A Choropleth Card Visualization', function() {
 
     });
 
-    it("should not fail to extract the shapeFile from the column's 'shapeFile' property if the metadataMigration is in phase 0", function() {
-
-      testHelpers.overrideMetadataMigrationPhase('0');
-
-      var columns = {
-        "ward": {
-          "name": "Ward where crime was committed.",
-          "description": "Batman has bigger fish to fry sometimes, you know.",
-          "fred": "location",
-          "physicalDatatype": "text",
-          // It is important that this gets converted into a shapefileHumanReadablePropertyName in
-          // cardVisualizationChoropleth.js which matches the test fixture, so do not change this
-          // until we either a) change the test fixture or b) remove the notion of
-          // shapefileHumanReadablePropertyName all together.
-          "shapefile": "snuk-a5kv"
-        }
-      };
-
-      expect(function() {
-        createChoropleth({
-          id: 'choropleth-1',
-          whereClause: '',
-          testUndefined: false,
-          datasetModel: createDatasetModelWithColumns(columns, '0'),
-          version: '0'
-        })
-      }).to.not.throw();
-
-    });
-
-    it("should fail to extract the shapeFile if the shapeFile property does not exist and the metadataMigration is in phase 0", function() {
-
-      testHelpers.overrideMetadataMigrationPhase('0');
-
-      var columns = {
-        "ward": {
-          "name": "Ward where crime was committed.",
-          "description": "Batman has bigger fish to fry sometimes, you know.",
-          "fred": "location",
-          "physicalDatatype": "text"
-        }
-      };
-
-      var testSubject = createChoropleth({
-        id: 'choropleth-1',
-        whereClause: '',
-        testUndefined: false,
-        datasetModel: createDatasetModelWithColumns(columns, '0'),
-        version: '0'
-      });
-
-      expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(true);
-    });
-
-    it("should not fail to extract the shapeFile from the column's 'computationStrategy' object if the metadataMigration is in phase 1 or 2", function() {
-
-      testHelpers.overrideMetadataMigrationPhase('1');
-
+    it("should not fail to extract the shapeFile from the column's 'computationStrategy' object", function() {
       var columns = {
         "ward": {
           "name": "Ward where crime was committed.",
@@ -372,18 +315,6 @@ describe('A Choropleth Card Visualization', function() {
           id: 'choropleth-1',
           whereClause: '',
           testUndefined: false,
-          datasetModel: createDatasetModelWithColumns(columns, '0'),
-          version: '1'
-        })
-      }).to.not.throw();
-
-      testHelpers.overrideMetadataMigrationPhase('2');
-
-      expect(function() {
-        createChoropleth({
-          id: 'choropleth-1',
-          whereClause: '',
-          testUndefined: false,
           datasetModel: createDatasetModelWithColumns(columns, '1'),
           version: '1'
         })
@@ -391,10 +322,7 @@ describe('A Choropleth Card Visualization', function() {
 
     });
 
-    it("should fail to extract the shapeFile if the shapeFile property does not exist in the column's 'computationStrategy' object and the metadataMigration is in phase 1 or 2", function() {
-
-      testHelpers.overrideMetadataMigrationPhase('1');
-
+    it("should fail to extract the shapeFile if the shapeFile property does not exist in the column's 'computationStrategy' object", function() {
       var columns = {
         "ward": {
           "name": "Ward where crime was committed.",
@@ -414,17 +342,6 @@ describe('A Choropleth Card Visualization', function() {
         id: 'choropleth-1',
         whereClause: '',
         testUndefined: false,
-        datasetModel: createDatasetModelWithColumns(columns, '0'),
-        version: '1'
-      });
-      expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(true);
-
-      testHelpers.overrideMetadataMigrationPhase('2');
-
-      testSubject = createChoropleth({
-        id: 'choropleth-1',
-        whereClause: '',
-        testUndefined: false,
         datasetModel: createDatasetModelWithColumns(columns, '1'),
         version: '1'
       });
@@ -432,10 +349,7 @@ describe('A Choropleth Card Visualization', function() {
       expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(true);
     });
 
-    it("should not use the source column to get the choropleth regions if the source_columns property does not exist in the column's 'computationStrategy' object and the metadataMigration is in phase 1 or 2", function() {
-
-      testHelpers.overrideMetadataMigrationPhase('1');
-
+    it("should not use the source column to get the choropleth regions if the source_columns property does not exist in the column's 'computationStrategy' object", function() {
       var columns = {
         "ward": {
           "name": "Ward where crime was committed.",
@@ -460,22 +374,12 @@ describe('A Choropleth Card Visualization', function() {
         id: 'choropleth-1',
         whereClause: '',
         testUndefined: false,
-        datasetModel: createDatasetModelWithColumns(columns, '0'),
-        version: '1'
-      });
-
-      testHelpers.overrideMetadataMigrationPhase('2');
-
-      createChoropleth({
-        id: 'choropleth-1',
-        whereClause: '',
-        testUndefined: false,
         datasetModel: createDatasetModelWithColumns(columns, '1'),
         version: '1'
       });
 
-      expect(CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledTwice).to.equal(true);
-      expect(CardDataService.getChoroplethRegions.calledTwice).to.equal(true);
+      expect(CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledOnce).to.equal(true);
+      expect(CardDataService.getChoroplethRegions.calledOnce).to.equal(true);
       expect(CardDataService.getChoroplethRegionsUsingSourceColumn.called).to.equal(false);
 
       CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.restore();
@@ -571,10 +475,7 @@ describe('A Choropleth Card Visualization', function() {
 
     });
 
-    it("should use the source column to get the choropleth regions if the source_columns property exists in the column's 'computationStrategy' object and the metadataMigration is in phase 1 or 2", function() {
-
-      testHelpers.overrideMetadataMigrationPhase('1');
-
+    it("should use the source column to get the choropleth regions if the source_columns property exists in the column's 'computationStrategy' object", function() {
       var columns = {
         "ward": {
           "name": "Ward where crime was committed.",
@@ -596,16 +497,6 @@ describe('A Choropleth Card Visualization', function() {
       sinon.spy(CardDataService, 'getChoroplethRegions');
       sinon.spy(CardDataService, 'getChoroplethRegionsUsingSourceColumn');
 
-      createChoropleth({
-        id: 'choropleth-1',
-        whereClause: '',
-        testUndefined: false,
-        datasetModel: createDatasetModelWithColumns(columns, '0'),
-        version: '1'
-      });
-
-      testHelpers.overrideMetadataMigrationPhase('2');
-
       var testSubject = createChoropleth({
         id: 'choropleth-1',
         whereClause: '',
@@ -614,9 +505,9 @@ describe('A Choropleth Card Visualization', function() {
         version: '1'
       });
 
-      expect(CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledTwice).to.equal(true);
+      expect(CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledOnce).to.equal(true);
       expect(CardDataService.getChoroplethRegions.called).to.equal(false);
-      expect(CardDataService.getChoroplethRegionsUsingSourceColumn.calledTwice).to.equal(true);
+      expect(CardDataService.getChoroplethRegionsUsingSourceColumn.calledOnce).to.equal(true);
       expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(false);
 
       CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.restore();
@@ -626,8 +517,6 @@ describe('A Choropleth Card Visualization', function() {
     });
 
     it("should not use the source column to get the choropleth regions if the computation strategy is 'georegion_match_on_string'", function() {
-
-      testHelpers.overrideMetadataMigrationPhase('3');
 
       var columns = {
         "ward": {

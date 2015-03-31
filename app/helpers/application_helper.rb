@@ -535,12 +535,14 @@ module ApplicationHelper
 
     label_for = name.chop.gsub(/[\[\]]+/, '_')
 
+    other_selected = [String, Array, Fixnum].include?(flag_value.class)
+
     html = []
     html << radio_button_tag(name, true, flag_value === true, :disabled => options[:disabled])
     html << label_tag("#{label_for}_true", 'true')
     html << radio_button_tag(name, false, flag_value === false, :disabled => options[:disabled])
     html << label_tag("#{label_for}_false", 'false')
-    html << radio_button_tag(name, nil, String === flag_value, class: 'other', :disabled => options[:disabled])
+    html << radio_button_tag(name, nil, other_selected, :class => 'other', :disabled => options[:disabled])
     html << label_tag(label_for, 'Other:')
     if flag_config.expectedValues?
       html << select_tag(
@@ -549,7 +551,15 @@ module ApplicationHelper
                   reject { |value| ['true', 'false'].include? value }, flag_value),
                 :disabled => options[:disabled])
     else
-      html << text_field_tag(name, String === flag_value ? flag_value : nil, :disabled => options[:disabled])
+      if flag_value.kind_of?(String)
+        html << text_field_tag(name, flag_value, :disabled => options[:disabled])
+      elsif flag_value.kind_of?(Fixnum)
+        html << text_field_tag(name, flag_value, :disabled => options[:disabled])
+      elsif flag_value.kind_of?(Array)
+        html << text_field_tag(name, flag_value.to_json, :disabled => options[:disabled])
+      else
+        html << text_field_tag(name, nil, :disabled => options[:disabled])
+      end
     end
 
     html.join(' ').html_safe

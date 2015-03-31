@@ -627,13 +627,13 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             assert_redirected_to('/view/neoo-page')
           end
 
-          should 'in phase 2' do
+          should 'in phase 3' do
             @phidippides.stubs(
               fetch_dataset_metadata: {
                 status: '200', body: v1_mock_dataset_metadata
               }
             )
-            stub_feature_flags_with(:metadata_transition_phase, '2')
+            stub_feature_flags_with(:metadata_transition_phase, '3')
 
             # Make sure the page we're creating fits certain criteria
             @page_metadata_manager.expects(:create).with do |page, _|
@@ -651,12 +651,14 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               assert(differing_card_types.present?)
 
               assert(page['cards'].any? do |card|
-                card['fieldName'] == 'none' && card['cardType'] == 'column'
-              end, 'A column with no cardinality should default to its low-cardinality default')
+                card['fieldName'] == 'none' && card['cardType'] == 'search'
+              end, 'A column with no cardinality should default to its high-cardinality default')
 
-              assert(page['cards'].none? do |card|
-                card['fieldName'] == 'below'
-              end, 'too-low cardinality columns should be omitted')
+              #This was never implemented past phase 2.
+              #See CORE-4843
+              #assert(page['cards'].none? do |card|
+              #  card['fieldName'] == 'below'
+              #end, 'too-low cardinality columns should be omitted')
 
               assert(page['cards'].all? do |card|
                 card['cardType']

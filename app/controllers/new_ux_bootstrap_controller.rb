@@ -281,10 +281,10 @@ class NewUxBootstrapController < ActionController::Base
   end
 
   # CORE-4770 Avoid card creation for latitude/longitude column types (because no one cares)
-  def column_ignored_for_bootstrap?(column)
+  def column_ignored_for_bootstrap?(field_name)
     columns_to_avoid = FeatureFlags.derive(nil, defined?(request) ? request : nil)[:field_names_to_avoid_during_bootstrap]
     columns_to_avoid = columns_to_avoid.kind_of?(Array) ? columns_to_avoid.map(&:to_s).map(&:downcase) : []
-    columns_to_avoid.include?(column[:name].downcase) || Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
+    columns_to_avoid.include?(field_name.downcase) || Phidippides::SYSTEM_COLUMN_ID_REGEX.match(field_name)
   end
 
   def generate_cards_from_dataset_metadata_columns(columns)
@@ -312,7 +312,7 @@ class NewUxBootstrapController < ActionController::Base
       end.compact
     else
       columns.map do |field_name, column|
-        unless column_ignored_for_bootstrap?(column)
+        unless column_ignored_for_bootstrap?(field_name)
           card_type = card_type_for(column, :fred, cached_dataset_size)
           if card_type
             card = page_metadata_manager.merge_new_card_data_with_default(

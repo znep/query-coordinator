@@ -37,6 +37,8 @@ class PhidippidesDatasetsController < ApplicationController
     return render :nothing => true, :status => '400' unless params[:id].present?
 
     if inherit_catalog_lens_permissions?
+      return render :nothing => true, :status => '403' unless can_read_dataset_data?(params[:id])
+
       # Grab permissions from core
       begin
         permissions = fetch_permissions(params[:id])
@@ -147,5 +149,15 @@ class PhidippidesDatasetsController < ApplicationController
 
   def dataset
     View.find(json_parameter(:datasetMetadata)['id'])
+  end
+
+  def can_read_dataset_data?(dataset_id)
+    begin
+      JSON.parse(
+        CoreServer::Base.connection.get_request("/id/#{dataset_id}?%24query=select+0+limit+1")
+      )[0]['_0'] == '0'
+    rescue CoreServer::Error
+      false
+    end
   end
 end

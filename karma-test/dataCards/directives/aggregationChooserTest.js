@@ -247,7 +247,7 @@ describe('<aggregation-chooser/>', function() {
   });
 
   it('should fallback to including all money and number columns if field_names_that_cannot_be_aggregated feature flag is invalid', function() {
-    ServerConfig.override('fieldNamesThatCannotBeAggregated', "blah blah blah");
+    ServerConfig.override('fieldNamesThatCannotBeAggregated', 'blah blah blah');
     var models = createModels({ primaryAggregation: 'sum', primaryAmountField: 'column1_number' });
     var subjectUnderTest = createElement({ page: models.page });
     var columnEntriesWhereCountIsSupported = subjectUnderTest.find('.aggregation-columns.count');

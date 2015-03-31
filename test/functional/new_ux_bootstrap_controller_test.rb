@@ -572,7 +572,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               end
 
               next true
-            end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+            end.returns({ status: '200', body: { pageId: 'neoo-page' } })
 
             get :bootstrap, id: 'four-four'
             assert_redirected_to('/view/neoo-page')
@@ -621,7 +621,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               end
 
               next true
-            end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+            end.returns({ status: '200', body: { pageId: 'neoo-page' } })
 
             get :bootstrap, id: 'four-four'
             assert_redirected_to('/view/neoo-page')
@@ -670,7 +670,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               end
 
               next true
-            end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+            end.returns({ status: '200', body: { pageId: 'neoo-page' } })
 
             get :bootstrap, id: 'four-four'
             assert_redirected_to('/view/neoo-page')
@@ -767,7 +767,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                  %w(latitude longitude lat lng x y).include?(card['fieldName'].downcase)
               end, 'should omit latitude and longitude columns')
 
-            end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+            end.returns(status: '200', body: { pageId: 'neoo-page' })
 
             get :bootstrap, id: 'four-four'
             assert_redirected_to('/view/neoo-page')
@@ -792,12 +792,10 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             @page_metadata_manager.expects(:create).with do |page, _|
               assert_equal(10, page['cards'].length, 'Should create 10 cards')
 
-              assert(page['cards'].any? do |card|
-                # still expect card because filter was invalid
-                card['fieldName'] == 'single3'
-              end)
+              # still expect card because filter was invalid
+              assert(page['cards'].any? { |card| card['fieldName'] == 'single3' })
 
-            end.then.returns({ status: '200', body: { pageId: 'neoo-page' } })
+            end.returns({ status: '200', body: { pageId: 'neoo-page' } })
 
             get :bootstrap, id: 'four-four'
             assert_redirected_to('/view/neoo-page')

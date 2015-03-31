@@ -4,6 +4,8 @@ class PageMetadataManager
 
   include CommonMetadataTransitionMethods
 
+  attr_accessor :column_field_name, :logical_datatype_name
+
   V0_CARD_TEMPLATE = {
     'fieldName' => nil,
     'cardSize' => 1,
@@ -85,32 +87,40 @@ class PageMetadataManager
   # Creates or updates a page. This takes care of updating phidippides, as well
   # as rollup tables in soda fountain and the core datalens link.
   def create_or_update(method, page_metadata, options = {})
+    if metadata_transition_phase_0?
+      @column_field_name = 'name'
+      @logical_datatype_name = 'logicalDatatype'
+    else
+      @column_field_name = 'fieldName'
+      @logical_datatype_name = 'fred'
+    end
+
     unless page_metadata['pageId'].present?
       raise Phidippides::NoPageIdException.new('page id must be provisioned first.')
     end
     page_id = page_metadata['pageId']
     dataset_id = page_metadata.fetch('datasetId')
+    cards = page_metadata['cards']
 
     # Data lens page creation disabled until permissions issues have been dealt with
     # catalog_view_it = create_or_update_new_view(method, page_id, page_metadata)
     # page_metadata['catalogViewId'] = catalog_view_id
+    dataset_metadata_result = dataset_metadata(page_metadata['datasetId'], options)
+    if dataset_metadata_result.fetch(:status) != '200'
+      raise Phidippides::NoDatasetMetadataException.new(
+        "could not fetch dataset metadata for id: #{page_metadata['datasetId']}"
+      )
+    end
+    columns = dataset_metadata_result.fetch(:body).fetch('columns')
 
-    # Need to find the largest time nugget for rollups because rollups are not magic
-    # We will only be able to roll-up dates on the largest time span. For example,
-    # if we have a 3 columns on the page with different date granularities, i.e.
-    # one is best displayed by 'y', another by 'ym', and another by 'ymd', we will
-    # only be able to show time rolled-up by 'y', the largest time span.
-
-    largest_time_span_days = largest_time_span_in_days_in_dataset(dataset_id, options)
-    page_metadata['largestTimeSpanDays'] = largest_time_span_days
-    page_metadata['defaultDateTruncFunction'] = date_trunc_function(largest_time_span_days)
+    update_date_trunc_function(page_metadata, columns, cards, options)
 
     # Since we provision the page id beforehand, a create is the same as an
     # update.
     result = phidippides.update_page_metadata(page_metadata, options)
 
     if result.fetch(:status) == '200'
-      rollup_soql = build_rollup_soql(page_metadata, options)
+      rollup_soql = build_rollup_soql(page_metadata, columns, cards, options)
 
       # if we can roll up anything for this query, do so
       if rollup_soql
@@ -171,52 +181,22 @@ class PageMetadataManager
     catalog_view_id
   end
 
-  def build_rollup_soql(page_metadata, options = {})
-    if metadata_transition_phase_0?
-      column_field_name = 'name'
-      logical_datatype_name = 'logicalDatatype'
-    else
-      column_field_name = 'fieldName'
-      logical_datatype_name = 'fred'
-    end
-
-    result = dataset_metadata(page_metadata['datasetId'], options)
-    columns = result.fetch(:body).fetch('columns')
-
-    # Since columns is a hash in metadata transition phases 1 and 2
-    # (not the array that it was before) we can create an intermediate
-    # representation in order to avoid modifying the logic that determines
-    # whether a column should be rolled up.
-    if metadata_transition_phase_1? || metadata_transition_phase_2?
-      columns = columns.map do |key, value|
-        value[column_field_name] = key
-        value
-      end
-    end
+  def build_rollup_soql(page_metadata, columns, cards, options = {})
+    normalized_columns = transformed_columns(columns)
 
     # TODO Need to consider the construction of the WHERE clause for page's
     # default filter.
-    cards = page_metadata['cards']
-    columns_to_roll_up = columns.select do |column|
+    columns_to_roll_up = normalized_columns.select do |column|
       column_used_by_any_card?(column[column_field_name], cards) &&
         (column[logical_datatype_name] == 'category' ||
         (column[logical_datatype_name] == 'location' && column['physicalDatatype'] == 'number'))
     end
 
-    columns_to_roll_up_by_date_trunc = []
-
-    unless metadata_transition_phase_0?
-      columns_to_roll_up_by_date_trunc = columns.select do |column|
-        column_used_by_any_card?(column[column_field_name], cards) &&
-          column['physicalDatatype'] == 'floating_timestamp'
-      end
-    end
-
     # Nothing to roll up
-    return if columns_to_roll_up.blank? && columns_to_roll_up_by_date_trunc.blank?
+    return if columns_to_roll_up.blank? && columns_to_roll_up_by_date_trunc(normalized_columns, cards).blank?
 
     if !metadata_transition_phase_0? &&
-      columns_to_roll_up_by_date_trunc.any? &&
+      columns_to_roll_up_by_date_trunc(normalized_columns, cards).any? &&
         page_metadata['defaultDateTruncFunction'].blank?
           raise Phidippides::NoDefaultDateTruncFunction.new(
             "page does not have default date trunc function set for pageId: #{page_metadata['pageId']}"
@@ -224,7 +204,7 @@ class PageMetadataManager
     end
 
     rolled_up_columns_soql = (columns_to_roll_up.pluck(column_field_name) +
-      columns_to_roll_up_by_date_trunc.pluck(column_field_name).map do |field_name|
+      columns_to_roll_up_by_date_trunc(normalized_columns, cards).pluck(column_field_name).map do |field_name|
         "#{page_metadata['defaultDateTruncFunction']}(#{field_name})"
       end).join(', ')
 
@@ -236,8 +216,48 @@ class PageMetadataManager
     soql << rolled_up_columns_soql
   end
 
-  def column_used_by_any_card?(column_field_name, cards)
-    cards.any? { |card| card['fieldName'] == column_field_name }
+  def update_date_trunc_function(page_metadata, columns, cards, options)
+    # Need to find the largest time nugget for rollups because rollups are not magic
+    # We will only be able to roll-up dates on the largest time span. For example,
+    # if we have a 3 columns on the page with different date granularities, i.e.
+    # one is best displayed by 'y', another by 'ym', and another by 'ymd', we will
+    # only be able to show time rolled-up by 'y', the largest time span.
+    largest_time_span_days = largest_time_span_in_days_being_used_in_columns(
+      columns_to_roll_up_by_date_trunc(transformed_columns(columns), cards),
+      page_metadata['datasetId']
+    )
+    page_metadata['largestTimeSpanDays'] = largest_time_span_days
+    page_metadata['defaultDateTruncFunction'] = date_trunc_function(largest_time_span_days)
+  end
+
+  def transformed_columns(columns)
+    # Since columns is a hash in metadata transition phases 1 and 2
+    # (not the array that it was before) we can create an intermediate
+    # representation in order to avoid modifying the logic that determines
+    # whether a column should be rolled up.
+    if metadata_transition_phase_0?
+      columns
+    else
+      columns.map do |key, value|
+        value[column_field_name] = key
+        value
+      end
+    end
+  end
+
+  def columns_to_roll_up_by_date_trunc(columns, cards)
+    if metadata_transition_phase_0?
+      []
+    else
+      columns.select do |column|
+        column_used_by_any_card?(column[column_field_name], cards) &&
+          column['physicalDatatype'] == 'floating_timestamp'
+      end
+    end
+  end
+
+  def column_used_by_any_card?(field_name, cards)
+    cards.any? { |card| card['fieldName'] == field_name }
   end
 
   # This is pulled from datasetPrecision calculation in cardVisualizationTimelineChart
@@ -269,10 +289,8 @@ class PageMetadataManager
     phidippides.fetch_dataset_metadata(dataset_id, options)
   end
 
-  def largest_time_span_in_days_in_dataset(dataset_id, options)
-    dataset_metadata(dataset_id, options).fetch(:body).fetch('columns').
-      select { |_, values| values['physicalDatatype'] == 'floating_timestamp' }.
-      map { |field_name, _| time_range_in_column(dataset_id, field_name) }.compact.max
+  def largest_time_span_in_days_being_used_in_columns(time_columns, dataset_id)
+    time_columns.map { |column| time_range_in_column(dataset_id, column[column_field_name]) }.compact.max
   end
 
   def time_range_in_column(dataset_id, field_name)

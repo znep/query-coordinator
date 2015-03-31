@@ -13,7 +13,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       'address' => 'localhost',
       'port' => '6010'
     })
-    manager.stubs(:largest_time_span_in_days_in_dataset).returns(365)
+    manager.stubs(:largest_time_span_in_days_being_used_in_columns).returns(1000)
   end
 
   def test_create_succeeds
@@ -56,7 +56,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal('asdf-asdf', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
     # Data lens page creation disabled until permissions issues have been dealt with
     # assert_equal('data-lens', result.fetch(:body).fetch('catalogViewId'), 'Expected the new catalogViewId to be returned')
-    assert_equal(365, result.fetch(:body).fetch('largestTimeSpanDays'), 'Expected the value for the largest time span to be set')
+    assert_equal(1000, result.fetch(:body).fetch('largestTimeSpanDays'), 'Expected the value for the largest time span to be set')
     assert_match(/date_trunc_\w+/, result.fetch(:body).fetch('defaultDateTruncFunction'), 'Includes date_trunc function')
   end
 
@@ -90,6 +90,22 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     stub_feature_flags_with(:metadata_transition_phase, '2')
 
     assert_raises(Phidippides::NewPageException) do
+      manager.create(v1_page_metadata)
+    end
+  end
+
+  def test_create_raises_no_dataset_metadata_exception_when_phiddy_craps_out_v0
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    manager.stubs(:dataset_metadata => { status: '500', body: nil })
+    assert_raises(Phidippides::NoDatasetMetadataException) do
+      manager.create(v0_page_metadata)
+    end
+  end
+
+  def test_create_raises_no_dataset_metadata_exception_when_phiddy_craps_out_v1
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+    manager.stubs(:dataset_metadata => { status: '500', body: nil })
+    assert_raises(Phidippides::NoDatasetMetadataException) do
       manager.create(v1_page_metadata)
     end
   end
@@ -468,46 +484,80 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   # Yes, this is a private method, but it warranted at least some unit testing
-  def test_build_soql
-    manager.stubs(phidippides: stub(fetch_dataset_metadata: { body: v0_dataset_metadata }))
+  def test_build_soql_v0
+    manager.stubs(
+      phidippides: stub(fetch_dataset_metadata: { body: v0_dataset_metadata }),
+      date_trunc_function: 'my_date_trunc_func',
+      column_field_name: 'name',
+      logical_datatype_name: 'logicalDatatype'
+    )
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    soql = manager.send(:build_rollup_soql, v0_page_metadata)
+    columns = v0_dataset_metadata.fetch('columns')
+    cards = v0_page_metadata.fetch('cards')
+    soql = manager.send(:build_rollup_soql, v0_page_metadata, columns, cards)
     expected = 'select location_description, primary_type, count(*) as value ' <<
       'group by location_description, primary_type'
     assert_equal(expected, soql)
+  end
 
+  def test_build_soql_v1
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    manager.stubs(
+      phidippides: stub(
+        fetch_dataset_metadata: { body: v1_dataset_metadata },
+        fetch_page_metadata: { status: '200', body: v1_page_metadata }
+      ),
+      column_field_name: 'fieldName',
+      logical_datatype_name: 'fred'
+    )
+    columns = v1_dataset_metadata.fetch('columns')
+    cards = v1_page_metadata.fetch('cards')
     expected_soql = 'select some_column, date_trunc_y(time_column_fine_granularity), count(*) as value ' <<
       'group by some_column, date_trunc_y(time_column_fine_granularity)'
-    manager.stubs(phidippides: stub(fetch_dataset_metadata: { body: v1_dataset_metadata }))
-    stub_feature_flags_with(:metadata_transition_phase, '1')
-    soql = manager.send(:build_rollup_soql, v1_page_metadata)
-    assert_equal(expected_soql, soql)
 
-    manager.stubs(phidippides: stub(fetch_dataset_metadata: { body: v1_dataset_metadata }))
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    soql = manager.send(:build_rollup_soql, v1_page_metadata)
+    soql = manager.send(:build_rollup_soql, v1_page_metadata, columns, cards)
     assert_equal(expected_soql, soql)
   end
 
   def test_build_rollup_soql_for_phase_0_does_not_have_date_trunc
-    manager.stubs(phidippides: stub(fetch_dataset_metadata: { body: v0_dataset_metadata }))
+    manager.stubs(
+      phidippides: stub(fetch_dataset_metadata: { body: v0_dataset_metadata }),
+      column_field_name: 'name',
+      logical_datatype_name: 'logicalDatatype'
+    )
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    soql = manager.send(:build_rollup_soql, v0_page_metadata)
+    columns = v0_dataset_metadata.fetch('columns')
+    cards = v0_page_metadata.fetch('cards')
+    soql = manager.send(:build_rollup_soql, v0_page_metadata, columns, cards)
     refute_match(/date_trunc/, soql)
   end
 
   def test_build_rollup_soql_has_date_trunc
-    manager.stubs(phidippides: stub(fetch_dataset_metadata: { body: v1_dataset_metadata }))
+    manager.stubs(
+      dataset_metadata: { body: v1_dataset_metadata },
+      column_field_name: 'fieldName',
+      logical_datatype_name: 'fred'
+    )
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    soql = manager.send(:build_rollup_soql, v1_page_metadata)
+    columns = v1_dataset_metadata.fetch('columns')
+    cards = v1_page_metadata.fetch('cards')
+    soql = manager.send(:build_rollup_soql, v1_page_metadata, columns, cards)
     assert_match(/date_trunc/, soql)
   end
 
   def test_raise_when_missing_default_date_trunc_function
-    manager.stubs(phidippides: stub(fetch_dataset_metadata: { body: v1_dataset_metadata }))
+    manager.stubs(
+      phidippides: stub(fetch_dataset_metadata: { body: v1_dataset_metadata }),
+      date_trunc_function: nil,
+      column_field_name: 'fieldName',
+      logical_datatype_name: 'fred'
+)
+    columns = v1_dataset_metadata.fetch('columns')
+    cards = v1_page_metadata.fetch('cards')
     stub_feature_flags_with(:metadata_transition_phase, '2')
+
     assert_raises(Phidippides::NoDefaultDateTruncFunction) do
-      manager.send(:build_rollup_soql, v1_page_metadata.except('defaultDateTruncFunction'))
+      manager.send(:build_rollup_soql, v1_page_metadata.except('defaultDateTruncFunction'), columns, cards)
     end
   end
 
@@ -544,23 +594,33 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal(result.fetch(:body), v1_page_metadata)
   end
 
-  def test_largest_time_span_in_days_in_dataset
+  def test_largest_time_span_in_days_being_used_in_columns
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+    manager.stubs(column_field_name: 'fieldName', logical_datatype_name: 'fred')
     fake_dataset_id = 'four-four'
-    manager.unstub(:largest_time_span_in_days_in_dataset)
-    manager.stubs(:dataset_metadata => { :body => v1_dataset_metadata })
+    manager.unstub(:largest_time_span_in_days_being_used_in_columns)
+    time_columns = v1_dataset_metadata.fetch('columns').select do |_, values|
+      values['physicalDatatype'] == 'floating_timestamp'
+    end
+    assert(time_columns.any?, 'Expected time columns in dataset')
     manager.expects(:time_range_in_column).with(fake_dataset_id, 'time_column_large_granularity').returns(300)
     manager.expects(:time_range_in_column).with(fake_dataset_id, 'time_column_fine_granularity').returns(3)
-    result = manager.send(:largest_time_span_in_days_in_dataset, fake_dataset_id, {})
+    result = manager.send(:largest_time_span_in_days_being_used_in_columns, manager.send(:transformed_columns, time_columns), fake_dataset_id)
     assert_equal(300, result)
   end
 
-  def test_largest_time_span_in_days_in_dataset_equal
+  def test_largest_time_span_in_days_being_used_in_columns_equal
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+    manager.stubs(column_field_name: 'fieldName', logical_datatype_name: 'fred')
     fake_dataset_id = 'four-four'
-    manager.unstub(:largest_time_span_in_days_in_dataset)
-    manager.stubs(:dataset_metadata => { :body => v1_dataset_metadata })
+    manager.unstub(:largest_time_span_in_days_being_used_in_columns)
+    time_columns = v1_dataset_metadata.fetch('columns').select do |_, values|
+      values['physicalDatatype'] == 'floating_timestamp'
+    end
+    assert(time_columns.any?, 'Expected time columns in dataset')
     manager.expects(:time_range_in_column).with(fake_dataset_id, 'time_column_large_granularity').returns(300)
     manager.expects(:time_range_in_column).with(fake_dataset_id, 'time_column_fine_granularity').returns(300)
-    result = manager.send(:largest_time_span_in_days_in_dataset, fake_dataset_id, {})
+    result = manager.send(:largest_time_span_in_days_being_used_in_columns, manager.send(:transformed_columns, time_columns), fake_dataset_id)
     assert_equal(300, result)
   end
 
@@ -611,6 +671,21 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     CoreServer::Base.connection.expects(:get_request).raises(CoreServer::Error)
     Airbrake.expects(:notify)
     manager.send(:fetch_min_max_date_in_column, 'dead-beef', 'human')
+  end
+
+  def test_update_date_trunc_function
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+    manager.stubs(
+      largest_time_span_in_days_being_used_in_columns: 12345678,
+      date_trunc_function: 'my_date_trunc_func',
+      columns_to_roll_up_by_date_trunc: [],
+      column_field_name: 'fieldName',
+      logical_datatype_name: 'fred'
+    )
+    page_metadata = {}
+    manager.send(:update_date_trunc_function, page_metadata, [], [], {})
+    assert_equal(12345678, page_metadata['largestTimeSpanDays'])
+    assert_equal('my_date_trunc_func', page_metadata['defaultDateTruncFunction'])
   end
 
   private

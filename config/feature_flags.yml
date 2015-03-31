@@ -95,6 +95,24 @@ metadata_transition_phase:
 exit_tech_preview:
   description: Enable to display transitionary New Backend features (currently scoped to Catalog/Browse)
   defaultValue: false
+field_names_to_avoid_during_bootstrap:
+  description: Do not create cards for these field names on bootstrap. Must be an array of fieldNames!
+  defaultValue:
+    - latitude
+    - longitude
+    - lat
+    - lng
+    - x
+    - y
+field_names_that_cannot_be_aggregated:
+  description: Do not include these field names in aggregation chooser. Must be an array of fieldNames!
+  defaultValue:
+    - latitude
+    - longitude
+    - lat
+    - lng
+    - x
+    - y
 debug_assets:
   description: Switch over to using unpackaged Javascript files.
   defaultValue: false
@@ -109,4 +127,7 @@ feature_map_zoom_debounce:
   defaultValue: 500
 enable_newux_page_view_count:
   description: Have new UX pages accumulated toward the global count of all page views.
+  defaultValue: false
+use_catalog_lens_permissions:
+  description: Whether page/dataset metadata should inherit permissions from their catalog lenses.
   defaultValue: false

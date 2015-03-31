@@ -3,8 +3,6 @@ class Phidippides < SocrataHttp
   include CommonMetadataTransitionMethods
   include CardTypeMapping
 
-  class NewPageException < RuntimeError; end
-  class PageIdException < RuntimeError; end
   class NoDatasetIdException < RuntimeError; end
   class NoCardsException < RuntimeError; end
   class NoPageIdException < RuntimeError; end
@@ -251,34 +249,6 @@ class Phidippides < SocrataHttp
   end
 
   # Page Metadata requests
-
-  def request_new_page_id(page_metadata = {}, options = {})
-    if metadata_transition_phase_0? || metadata_transition_phase_1?
-      # Meh. Create whatever they give us. It'll get overridden right after anyway.
-      response = issue_request(
-        :verb => :post,
-        :path => 'pages',
-        :data => page_metadata,
-        :request_id => options[:request_id],
-        :cookies => options[:cookies]
-      )
-    else
-      response = issue_request(
-        :verb => :post,
-        :path => 'v1/idgen',
-        :data => nil,
-        :request_id => options[:request_id],
-        :cookies => options[:cookies]
-      )
-    end
-
-    status = response[:status]
-    if response[:status] != '200'
-      raise Phidippides::NewPageException.new('could not provision new page id')
-    end
-
-    return response[:body].fetch(:id, response[:body][:pageId])
-  end
 
   def fetch_page_metadata(page_id, options = {})
     if metadata_transition_phase_0? || metadata_transition_phase_1?

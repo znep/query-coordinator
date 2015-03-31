@@ -45,9 +45,9 @@ class PhidippidesDatasetsController < ApplicationController
       rescue NewViewManager::ViewNotFound
         return render :nothing => true, :status => '404'
       rescue NewViewManager::ViewAuthenticationRequired => e
-        return render :json => {error: e.message}, :status => '401'
+        return render :json => { error: e.message }, :status => '401'
       rescue NewViewManager::ViewAccessDenied => e
-        return render :json => {error: e.message}, :status => '403'
+        return render :json => { error: e.message }, :status => '403'
       rescue
         return render :nothing => true, :status => '500'
       end
@@ -97,7 +97,9 @@ class PhidippidesDatasetsController < ApplicationController
   end
 
   def update
-    return render :nothing => true, :status => '401' unless dataset(params[:id]).can_edit?
+    unless (inherit_catalog_lens_permissions? ? dataset(params[:id]).can_edit? : can_create_metadata?)
+      return render :nothing => true, :status => '401'
+    end
 
     begin
       dataset_metadata = json_parameter(:datasetMetadata)

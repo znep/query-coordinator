@@ -14,7 +14,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     @phidippides = Phidippides.new
     @phidippides.stubs(end_point: 'http://localhost:2401')
     @new_view_manager = NewViewManager.new
-    @new_view_manager.stubs(fetch: {grants: [{flags: ['public']}]})
+    @new_view_manager.stubs(fetch: { grants: [{ flags: ['public'] }] })
     @controller.stubs(
       :phidippides => @phidippides,
       :new_view_manager => @new_view_manager
@@ -59,7 +59,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
 
   test 'show gives forbidden error if can\'t read data from core' do
     connection_stub = mock
-    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    connection_stub.stubs(reset_counters: { requests: {}, runtime: 0 })
     connection_stub.stubs(:get_request).raises(CoreServer::Error.new)
     CoreServer::Base.stubs(connection: connection_stub)
 
@@ -71,7 +71,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
 
   test 'show returns data for a given dataset' do
     connection_stub = mock
-    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    connection_stub.stubs(reset_counters: { requests: {}, runtime: 0 })
     connection_stub.stubs(:get_request).returns('[{"_0": "0"}]', '')
     CoreServer::Base.stubs(connection: connection_stub)
     @controller.stubs(can_create_metadata?: true)

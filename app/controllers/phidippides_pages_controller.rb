@@ -30,9 +30,9 @@ class PhidippidesPagesController < ApplicationController
       rescue NewViewManager::ViewNotFound
         return render :nothing => true, :status => '404'
       rescue NewViewManager::ViewAuthenticationRequired => error
-        return render :json => {error: error.message}, :status => '401'
+        return render :json => { error: error.message }, :status => '401'
       rescue NewViewManager::ViewAccessDenied => error
-        return render :json => {error: error.message}, :status => '403'
+        return render :json => { error: error.message }, :status => '403'
       rescue => error
         message = "Unknown error while fetching permissions for pageId #{params[:id]}: #{error}"
         Rails.logger.error(message)
@@ -99,7 +99,9 @@ class PhidippidesPagesController < ApplicationController
   end
 
   def update
-    return render :nothing => true, :status => '401' unless dataset(params[:id]).can_edit?
+    unless (inherit_catalog_lens_permissions? ? dataset(params[:id]).can_edit? : can_create_metadata?)
+      return render :nothing => true, :status => '401'
+    end
 
     begin
       page_metadata = json_parameter(:pageMetadata)
@@ -145,9 +147,9 @@ class PhidippidesPagesController < ApplicationController
     return render :nothing => true, :status => '403'
 
     return render :nothing => true, :status => '403' unless metadata_transition_phase_2?
-    return render :nothing => true, :status => '401' unless dataset(params[:id]).can_edit?
-    return render :nothing => true, :status => '405' unless request.delete?
-    return render :nothing => true, :status => '400' unless params[:id].present?
+    unless (inherit_catalog_lens_permissions? ? dataset(params[:id]).can_edit? : can_create_metadata?)
+      return render :nothing => true, :status => '401'
+    end
 
     # TODO: when we re-enable deletion, make sure to handle error cases here.
     new_view_manager.delete(params[:id])

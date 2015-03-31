@@ -1,4 +1,6 @@
 describe('A Choropleth Card Visualization', function() {
+  'use strict';
+
   var provide;
   var testHelpers;
   var serverConfig;
@@ -9,7 +11,8 @@ describe('A Choropleth Card Visualization', function() {
   var Model;
   var q;
   var timeout;
-  var cardVisualizationChoroplethHelpers;
+  var CardVisualizationChoroplethHelpers;
+  var CardDataService;
   var fakeClock = null;
 
   var testWards = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/ward_geojson.json';
@@ -51,6 +54,11 @@ describe('A Choropleth Card Visualization', function() {
           deferred.resolve(json);
           return deferred.promise;
         },
+        getChoroplethGeometryLabel: function(shapeFile) {
+          var deferred = q.defer();
+          deferred.resolve('geometryLabel');
+          return deferred.promise;
+        },
         getData: function(fieldName, datasetId, whereClause) {
           var deferred = q.defer();
           if (whereClause) {
@@ -75,8 +83,8 @@ describe('A Choropleth Card Visualization', function() {
     Model = $injector.get('Model');
     q = $injector.get('$q');
     timeout = $injector.get('$timeout');
-    cardVisualizationChoroplethHelpers = $injector.get('CardVisualizationChoroplethHelpers');
-    cardDataService = $injector.get('CardDataService');
+    CardVisualizationChoroplethHelpers = $injector.get('CardVisualizationChoroplethHelpers');
+    CardDataService = $injector.get('CardDataService');
   }));
 
   beforeEach(function() {
@@ -209,7 +217,7 @@ describe('A Choropleth Card Visualization', function() {
       flyoutTitle = flyout.find('.flyout-title').text();
       flyoutText = flyout.find('.content').text();
 
-      expect(flyoutTitle).to.equal('4');
+      expect(flyoutTitle).to.equal('');
       expect(flyout.is(':visible')).to.be.true;
 
       testHelpers.fireEvent(feature, 'mouseout');
@@ -223,13 +231,11 @@ describe('A Choropleth Card Visualization', function() {
       flyoutTitle = flyout.find('.flyout-title').text();
       flyoutText = flyout.find('.content').text();
 
-      expect(flyoutTitle).to.equal('33');
+      expect(flyoutTitle).to.equal('');
       expect(flyout.is(':visible')).to.be.true;
 
       testHelpers.fireEvent(feature, 'mouseout');
-
     });
-
   });
 
   describe('when created with mock choropleth visualizations', function() {
@@ -449,9 +455,9 @@ describe('A Choropleth Card Visualization', function() {
         }
       };
 
-      sinon.spy(cardVisualizationChoroplethHelpers, 'extractSourceColumnFromColumn');
-      sinon.spy(cardDataService, 'getChoroplethRegions');
-      sinon.spy(cardDataService, 'getChoroplethRegionsUsingSourceColumn');
+      sinon.spy(CardVisualizationChoroplethHelpers, 'extractSourceColumnFromColumn');
+      sinon.spy(CardDataService, 'getChoroplethRegions');
+      sinon.spy(CardDataService, 'getChoroplethRegionsUsingSourceColumn');
 
       createChoropleth({
         id: 'choropleth-1',
@@ -471,13 +477,13 @@ describe('A Choropleth Card Visualization', function() {
         version: '1'
       });
 
-      expect(cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledTwice).to.equal(true);
-      expect(cardDataService.getChoroplethRegions.calledTwice).to.equal(true);
-      expect(cardDataService.getChoroplethRegionsUsingSourceColumn.called).to.equal(false);
+      expect(CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledTwice).to.equal(true);
+      expect(CardDataService.getChoroplethRegions.calledTwice).to.equal(true);
+      expect(CardDataService.getChoroplethRegionsUsingSourceColumn.called).to.equal(false);
 
-      cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.restore();
-      cardDataService.getChoroplethRegions.restore();
-      cardDataService.getChoroplethRegionsUsingSourceColumn.restore();
+      CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.restore();
+      CardDataService.getChoroplethRegions.restore();
+      CardDataService.getChoroplethRegionsUsingSourceColumn.restore();
 
     });
 
@@ -502,9 +508,9 @@ describe('A Choropleth Card Visualization', function() {
         }
       };
 
-      sinon.spy(cardVisualizationChoroplethHelpers, 'extractSourceColumnFromColumn');
-      sinon.spy(cardDataService, 'getChoroplethRegions');
-      sinon.spy(cardDataService, 'getChoroplethRegionsUsingSourceColumn');
+      sinon.spy(CardVisualizationChoroplethHelpers, 'extractSourceColumnFromColumn');
+      sinon.spy(CardDataService, 'getChoroplethRegions');
+      sinon.spy(CardDataService, 'getChoroplethRegionsUsingSourceColumn');
 
       createChoropleth({
         id: 'choropleth-1',
@@ -524,13 +530,13 @@ describe('A Choropleth Card Visualization', function() {
         version: '1'
       });
 
-      expect(cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledTwice).to.equal(true);
-      expect(cardDataService.getChoroplethRegions.called).to.equal(false);
-      expect(cardDataService.getChoroplethRegionsUsingSourceColumn.calledTwice).to.equal(true);
+      expect(CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledTwice).to.equal(true);
+      expect(CardDataService.getChoroplethRegions.called).to.equal(false);
+      expect(CardDataService.getChoroplethRegionsUsingSourceColumn.calledTwice).to.equal(true);
 
-      cardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.restore();
-      cardDataService.getChoroplethRegions.restore();
-      cardDataService.getChoroplethRegionsUsingSourceColumn.restore();
+      CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.restore();
+      CardDataService.getChoroplethRegions.restore();
+      CardDataService.getChoroplethRegionsUsingSourceColumn.restore();
 
     });
 

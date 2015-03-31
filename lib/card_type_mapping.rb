@@ -70,14 +70,16 @@ module CardTypeMapping
       when 'point'
         card_type = 'feature'
       when 'text'
-        # See: https://socrata.atlassian.net/browse/CORE-4314, point 1.
+        # See: https://socrata.atlassian.net/browse/CORE-4755
         if dataset_size <= 10
-          card_type = 'search'
+          card_type = 'column'
         elsif is_low_cardinality?(cardinality, dataset_size)
           card_type = 'column'
         else
           card_type = 'search'
         end
+      when 'multiline'
+        card_type = 'invalid'
       when 'multipolygon'
         card_type = 'invalid'
       else
@@ -143,6 +145,10 @@ module CardTypeMapping
         available_card_types = ['feature']
       when 'text'
         available_card_types = ['column', 'search']
+      when 'multipolygon'
+        available_card_types = ['invalid']
+      when 'multiline'
+        available_card_types = ['invalid']
       else
         error_message = "Could not determine available card types: " \
           "invalid physicalDatatype '#{physical_datatype.inspect}' on column #{column.inspect}."

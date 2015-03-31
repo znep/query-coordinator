@@ -1,7 +1,12 @@
 describe('SoqlHelpers service', function() {
   'use strict';
 
+  var DateHelpers;
+
   beforeEach(module('dataCards'));
+  beforeEach(inject(function($injector) {
+    DateHelpers = $injector.get('DateHelpers');
+  }));
 
   describe('SOQL string encoder', function() {
     it('should pass through characters other than single quotes', inject(function(SoqlHelpers) {
@@ -25,7 +30,7 @@ describe('SoqlHelpers service', function() {
       expect(function() { SoqlHelpers.encodeSoqlString({a:2}); }).to.throw();
     }));
     it('should encode dates to strings', inject(function(SoqlHelpers) {
-      expect(SoqlHelpers.encodeSoqlDate(new Date('2014-08-01T16:36:24'))).to.equal("'2014-08-01T16:36:24'");
+      expect(SoqlHelpers.encodeSoqlDate(DateHelpers.deserializeFloatingTimestamp('2014-08-01T16:36:24'))).to.equal("'2014-08-01T16:36:24'");
     }));
   });
 

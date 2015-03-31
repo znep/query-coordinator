@@ -1,4 +1,4 @@
-module CommonPhidippidesMethods
+module CommonMetadataMethods
 
   include CommonSocrataMethods
 
@@ -42,4 +42,21 @@ module CommonPhidippidesMethods
     end
   end
 
+  def fetch_permissions(id)
+    catalog_response = new_view_manager.fetch(id)
+    {
+      isPublic: catalog_response.fetch(:grants, []).any? do |grant|
+        grant.fetch(:flags, []).include?('public')
+      end,
+      rights: catalog_response.fetch(:rights, [])
+    }
+  end
+
+  def new_view_manager
+    @new_view_manager ||= NewViewManager.new
+  end
+
+  def inherit_catalog_lens_permissions?
+    FeatureFlags.derive(nil, request)[:use_catalog_lens_permissions]
+  end
 end

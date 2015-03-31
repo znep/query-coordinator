@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationTimelineChart(AngularRxExtensions, CardDataService, Filter, TimelineChartVisualizationHelpers, $log, SoqlHelpers) {
+  function cardVisualizationTimelineChart(AngularRxExtensions, CardDataService, Filter, TimelineChartVisualizationHelpers, $log, DateHelpers, SoqlHelpers) {
 
     return {
       restrict: 'E',
@@ -214,7 +214,7 @@
           scope.observe('whereClause'),
           datasetPrecision,
           aggregationObservable,
-          cardModelSequence.observeOnLatest('activeFilters'),
+          cardModelSequence,
           defaultDateTruncFunction,
           function(
             fieldName,
@@ -222,7 +222,7 @@
             whereClause,
             datasetPrecision,
             aggregationData,
-            activeFilters,
+            cardModel,
             defaultDateTruncFunction
           ) {
 
@@ -236,6 +236,8 @@
                 dateTruncFunctionUsed: null
               };
 
+              var currentActiveFilters = cardModel.getCurrentValue('activeFilters');
+
               // Since we need to be able to render the unfiltered values outside
               // of the timeline chart's current selection area, we need to 'filter'
               // those data outside the selection manually rather than using SoQL.
@@ -246,7 +248,7 @@
               var dataPromise = CardDataService.getTimelineData(
                 fieldName,
                 dataset.id,
-                SoqlHelpers.stripWhereClauseFragmentForFieldName(fieldName, whereClause, activeFilters),
+                SoqlHelpers.stripWhereClauseFragmentForFieldName(fieldName, whereClause, currentActiveFilters),
                 datasetPrecision,
                 aggregationData,
                 soqlMetadata
@@ -317,7 +319,10 @@
         scope.$on('filter-timeline-chart',
           function(event, data) {
             if (data !== null) {
-              var filter = new Filter.TimeRangeFilter(data.start, data.end);
+              var filter = new Filter.TimeRangeFilter(
+                DateHelpers.serializeFloatingTimestamp(data.start),
+                DateHelpers.serializeFloatingTimestamp(data.end)
+              );
               scope.model.set('activeFilters', [filter]);
             } else {
               scope.model.set('activeFilters', []);

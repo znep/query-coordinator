@@ -1,10 +1,12 @@
-class PhidippidesPagesController < ActionController::Base
-
-  include CommonPhidippidesMethods
+class PhidippidesPagesController < ApplicationController
+  include CommonMetadataMethods
   include CommonMetadataTransitionMethods
   include UserAuthMethods
 
-  before_filter :hook_auth_controller
+  # TODO: We need to plumb our code through to support csrf token verification
+  skip_before_filter :verify_authenticity_token
+  # Some of these functions will return publicly-accessible data
+  skip_before_filter :require_user, :only => [:show]
 
   helper :all # include all helpers, all the time
 
@@ -21,13 +23,40 @@ class PhidippidesPagesController < ActionController::Base
     return render :nothing => true, :status => '406' unless request.format.to_s == 'application/json'
     return render :nothing => true, :status => '400' unless params[:id].present?
 
+    if inherit_catalog_lens_permissions?
+      # Inherit the permissions from the catalog entry that points to this page.
+      begin
+        permissions = fetch_permissions(params[:id])
+      rescue NewViewManager::ViewNotFound
+        return render :nothing => true, :status => '404'
+      rescue NewViewManager::ViewAuthenticationRequired => error
+        return render :json => {error: error.message}, :status => '401'
+      rescue NewViewManager::ViewAccessDenied => error
+        return render :json => {error: error.message}, :status => '403'
+      rescue => error
+        message = "Unknown error while fetching permissions for pageId #{params[:id]}: #{error}"
+        Rails.logger.error(message)
+        Airbrake.notify(
+          error,
+          :error_class => 'PermissionRetrieval',
+          :error_message => message
+        )
+        return render :nothing => true, :status => '500'
+      end
+    end
+
     begin
       result = phidippides.fetch_page_metadata(
         params[:id],
         :request_id => request_id,
         :cookies => forwardable_session_cookies
       )
-      render :json => result[:body], :status => result[:status]
+      page_metadata = result[:body]
+
+      # Also add the permissions
+      page_metadata[:permissions] = permissions if page_metadata && result[:status] =~ /^20[0-9]$/
+
+      render :json => page_metadata, :status => result[:status]
     rescue Phidippides::ConnectionError
       render :json => { :body => 'Phidippides connection error' }, :status => '500'
     end
@@ -55,10 +84,17 @@ class PhidippidesPagesController < ActionController::Base
       render :json => { :body => 'Phidippides connection error' }, :status => '500'
     rescue Phidippides::NoDatasetIdException => error
       render :json => { :body => "Error: #{error}" }, :status => '400'
-    rescue Phidippides::NewPageException => error
-      render :json => { :body => "Error: #{error}" }, :status => '500'
-    rescue Phidippides::PageIdException => error
+    rescue Phidippides::NoCardsException => error
       render :json => { :body => "Error: #{error}" }, :status => '400'
+    rescue NewViewManager::NewViewNotCreatedError => error
+      message = "Core error creating catalog lens request ID #{request_id}: #{error}"
+      Rails.logger.error(message)
+      Airbrake.notify(
+        e,
+        :error_class => 'NewViewCreation',
+        :error_message => message
+      )
+      render :nothing => true, :status => '500'
     end
   end
 
@@ -112,6 +148,9 @@ class PhidippidesPagesController < ActionController::Base
     return render :nothing => true, :status => '401' unless can_update_metadata?
     return render :nothing => true, :status => '405' unless request.delete?
     return render :nothing => true, :status => '400' unless params[:id].present?
+
+    # TODO: when we re-enable deletion, make sure to handle error cases here.
+    new_view_manager.delete(params[:id])
 
     begin
       result = phidippides.delete_page_metadata(

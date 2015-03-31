@@ -1,4 +1,5 @@
 describe('CardVisualizationChoroplethHelpers service', function() {
+  'use strict';
 
   var cardVisualizationChoroplethHelpers;
   var $log;
@@ -68,64 +69,6 @@ describe('CardVisualizationChoroplethHelpers service', function() {
         };
 
         expect(cardVisualizationChoroplethHelpers.extractShapeFileFromColumn(validColumn)).to.equal(validShapeFile);
-
-      });
-
-    });
-
-    describe('when extracting a geometryLabel', function() {
-
-      it('should log warnings if the geometryLabel is not present in a v1 dataset metadata column', function() {
-
-        var validColumn = {
-          "computationStrategy": {
-            "parameters": {
-              "region": "_c8h8-ygvf",
-              "geometryLabel": "geoid10"
-            },
-            "strategy_type": "georegion_match_on_point"
-          },
-          "description": "descr",
-          "fred": "location",
-          "name": "computed_column human readable name",
-          "physicalDatatype": "text"
-        };
-
-        sinon.spy($log, 'warn');
-
-        delete validColumn.computationStrategy.parameters['geometryLabel'];
-        expect(cardVisualizationChoroplethHelpers.extractGeometryLabelFromColumn(validColumn)).to.equal(null);
-
-        delete validColumn.computationStrategy['parameters'];
-        expect(cardVisualizationChoroplethHelpers.extractGeometryLabelFromColumn(validColumn)).to.equal(null);
-
-        delete validColumn['computationStrategy'];
-        expect(cardVisualizationChoroplethHelpers.extractGeometryLabelFromColumn(validColumn)).to.equal(null);
-
-        expect($log.warn.calledThrice);
-        $log.warn.restore();
-
-      });
-
-      it('should extract a geometryLabel from a v1 dataset metadata columns', function() {
-
-        var validGeometryLabel = 'geoid10';
-
-        var validColumn = {
-          "computationStrategy": {
-            "parameters": {
-              "region": "_c8h8-ygvf",
-              "geometryLabel": validGeometryLabel
-            },
-            "strategy_type": "georegion_match_on_point"
-          },
-          "description": "descr",
-          "fred": "location",
-          "name": "computed_column human readable name",
-          "physicalDatatype": "text"
-        };
-
-        expect(cardVisualizationChoroplethHelpers.extractGeometryLabelFromColumn(validColumn)).to.equal(validGeometryLabel);
 
       });
 

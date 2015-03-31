@@ -54,7 +54,7 @@ $action-btn-padding-left: 18px
   &:hover, &.active
     @include action-button($dark-btn-hover-font-color, $dark-btn-hover-bg-color, $dark-btn-hover-border-color)
 
-  &.disabled
+  &.disabled, &:disabled
     @include action-button($dark-btn-disabled-font-color, $dark-btn-disabled-bg-color, $dark-btn-disabled-border-color)
     cursor: default
 
@@ -64,7 +64,7 @@ $action-btn-padding-left: 18px
   &:hover
     @include action-button($green-btn-hover-font-color, $green-btn-hover-bg-color, $green-btn-hover-border-color)
 
-  &.disabled
+  &.disabled, &:disabled
     @include action-button($green-btn-disabled-font-color, $green-btn-disabled-bg-color, $green-btn-disabled-border-color)
     cursor: default
 

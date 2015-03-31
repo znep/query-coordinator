@@ -35,7 +35,7 @@
         Assert(_.isString(datasetId), 'datasetId should be a string');
         Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
         Assert(_.isObject(aggregationClauseData), 'aggregationClauseData object must be provided');
-        options = _.defaults({}, options);
+        options = _.defaults({ limit: 200 }, options);
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
 
@@ -53,13 +53,13 @@
 
         var queryTemplate;
         if (fieldName === 'name') {
-          queryTemplate = 'select {0}, {2} as value {1} group by {0} order by {2} desc limit 200';
+          queryTemplate = 'select {0}, {2} as value {1} group by {0} order by {2} desc limit {3}';
         } else {
-          queryTemplate = 'select {0} as name, {2} as value {1} group by {0} order by {2} desc limit 200';
+          queryTemplate = 'select {0} as name, {2} as value {1} group by {0} order by {2} desc limit {3}';
         }
         // TODO: Implement some method for paging/showing data that has been truncated.
         var params = {
-          $query: queryTemplate.format(fieldName, whereClause, aggregationClause)
+          $query: queryTemplate.format(fieldName, whereClause, aggregationClause, options.limit)
         };
         var url = '/api/id/{0}.json?'.format(datasetId);
         var config = httpConfig.call(this);
@@ -348,6 +348,31 @@
           } else {
             // TODO: Figure out how to handle error conditions.
           }
+        });
+      },
+
+      getChoroplethGeometryLabel: function(shapeFileId) {
+        var url = '/metadata/v1/dataset/{0}.json'.format(shapeFileId);
+        var config = httpConfig.call(this);
+
+        return http.get(url, config).then(function(response) {
+          var geometryLabel = null;
+
+          if (response.status !== 200) {
+            $log.warn(
+              'Could not determine geometry label: request failed with status code {0}'.
+                format(response.status)
+            );
+          } else if (!response.data.hasOwnProperty('geometryLabel')) {
+            $log.warn(
+              'Could not determine geometry label: dataset metadata does not include property ({0}).'.
+                format(url)
+            );
+          } else {
+            geometryLabel = response.data.geometryLabel;
+          }
+
+          return geometryLabel;
         });
       }
     };

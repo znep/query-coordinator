@@ -21,12 +21,7 @@
     };
   };
 
-  var validColumnFilter = function(column) {
-    // TODO: Once a "logical" type property is available, this will need to be updated
-    return column.physicalDatatype === 'number';
-  };
-
-  function AggregationChooser(AngularRxExtensions, FlyoutService, WindowState) {
+  function AggregationChooser(AngularRxExtensions, FlyoutService, WindowState, ServerConfig) {
 
     return {
       restrict: 'E',
@@ -110,6 +105,16 @@
             }
           }
         );
+
+        var validColumnFilter = function(column, fieldName) {
+          // TODO: Once a "logical" type property is available, this will need to be updated
+          var fieldNamesThatCannotBeAggregated = ServerConfig.get('fieldNamesThatCannotBeAggregated');
+          if (!_.isArray(fieldNamesThatCannotBeAggregated)) {
+            fieldNamesThatCannotBeAggregated = [];
+          }
+          return (column.physicalDatatype === 'number' || column.physicalDatatype === 'money') &&
+            (!_.contains(fieldNamesThatCannotBeAggregated, fieldName));
+        };
 
         // Observable that goes true if we should show the dropdown selector, false otherwise
         var canAggregateObservable = columnsObservable.map(function(columns) {

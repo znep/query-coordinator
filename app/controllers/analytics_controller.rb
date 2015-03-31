@@ -31,14 +31,6 @@ class AnalyticsController < ApplicationController
     render :json => "OK".to_json
   end
 
-  def esri
-    esri_layer_url = params[:esri_layer_url]
-    png_data = open(esri_layer_url, 'Accept' => 'image/webp')
-    content_size = png_data.length
-    Rails.logger.info("Loaded ESRI Layer #{esri_layer_url} from #{request.referer}; received #{content_size} bytes.")
-    render :text => png_data.read, :content_type => 'image/png'
-  end
-
 
   private
 
@@ -89,6 +81,7 @@ module ClientAnalyticsHelper
                            dataset dataset-sort dataset-filter dataset-grouped dataset-complex
                            dataslate admin profile govstat
                            browse browse-search
+                           newux
                            other).freeze
 
   DYNAMIC_METRIC_TYPES =  %w(js-dom-load-samples js-page-load-samples js-page-load-time js-dom-load-time).freeze
@@ -163,6 +156,7 @@ module ClientAnalyticsHelper
       base_metrics.each do |dynamic_metric|
         ret_val.push "domain-intern/#{functional_bucket}-#{dynamic_metric}"
       end
+      ret_val.push "domain/js-page-view-#{functional_bucket}"
     end
 
     ret_val.freeze
@@ -175,9 +169,9 @@ module ClientAnalyticsHelper
 
   def self.get_valid_increment(entity, metric, input)
     increment = input.to_i
-    # ten minute upper bound; to exclude things like 
+    # ten minute upper bound; to exclude things like
     # a user shutting thier laptop during a page load
-    if increment < 0 || increment > 600000 
+    if increment < 0 || increment > 600000
       return -1
     end
     if is_mark(entity, metric)

@@ -27,8 +27,8 @@
             <div class="metadatum-wrapper row">
               <last-updated class="metadatum"></last-updated>
             </div>
-            <div class="metadatum-wrapper row">
-              <div class="metadatum" ng-show="sourceDatasetURL">
+            <div class="metadatum-wrapper row" ng-show="sourceDatasetURL">
+              <div class="metadatum">
                 <span class="label">source dataset</span>
                 <span class="value source-dataset-name">
                   <a
@@ -41,6 +41,19 @@
                     title="Source Dataset"></a>
                 </span>
               </div>
+            </div>
+            <div class="metadatum-wrapper row manage-lens-link" ng-if="pagePermissions && currentUserHasSaveRight">
+              <div class="metadatum">
+                <span class="label">permissions</span>
+                <span class="value">
+                  <a href=# ng-click="manageLensState.show = true">{{ pagePermissions }} <small>(change)</small><span class="icon-warning" ng-if="pageIsPublic && !datasetIsPublic"></span></a>
+                </span>
+              </div>
+              <modal-dialog ng-if="manageLensState.show" dialog-state="manageLensState">
+                <manage-lens-dialog dialog-state="manageLensState" page="page"></manage-lens-dialog>
+              </modal-dialog>
+            </div>
+            <div class="metadatum-wrapper row">
               <related-views 
                 page="page" 
                 dataset-pages="datasetPages"

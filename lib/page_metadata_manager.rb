@@ -44,7 +44,6 @@ class PageMetadataManager
     end
   end
 
-
   # Creates a new page
   def create(page_metadata, options = {})
     unless page_metadata.key?('datasetId')
@@ -55,11 +54,12 @@ class PageMetadataManager
       raise Phidippides::NoCardsException.new('no cards entry on page metadata')
     end
 
-    # First provision a new page 4x4, so we can let the data lens know what to
-    # point to.
-    # This is also what we'll have to do in metadata_transition_phase_2 anyway.
-    new_page_id = phidippides.request_new_page_id(page_metadata, options)
-    raise Phidippides::NewPageException.new('could not provision new page id') unless new_page_id
+    initialize_metadata_transition_phase_key_names
+
+    # The core lens id for this page is the same one we use to refer to it in
+    # phidippides
+    new_page_id = new_view_manager.create(page_metadata['name'], page_metadata['description'])
+
     page_metadata['pageId'] = new_page_id
 
     # Make sure that there is a table card
@@ -69,7 +69,7 @@ class PageMetadataManager
 
     page_metadata['cards'] << table_card unless has_table_card
 
-    create_or_update(:create, page_metadata, options)
+    update_page_metadata(page_metadata, options)
   end
 
   # Updates an existing page.
@@ -79,14 +79,17 @@ class PageMetadataManager
     raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id') unless page_metadata.key?('datasetId')
     raise Phidippides::NoPageIdException.new('cannot create page with no page id') unless page_metadata.key?('pageId')
 
-    create_or_update(:update, page_metadata, options)
+    initialize_metadata_transition_phase_key_names
+
+    new_view_manager.update(page_metadata['pageId'], page_metadata['name'], page_metadata['description'])
+
+    # TODO: verify that phidippides does auth checks for this
+    update_page_metadata(page_metadata, options)
   end
 
   private
 
-  # Creates or updates a page. This takes care of updating phidippides, as well
-  # as rollup tables in soda fountain and the core datalens link.
-  def create_or_update(method, page_metadata, options = {})
+  def initialize_metadata_transition_phase_key_names
     if metadata_transition_phase_0?
       @column_field_name = 'name'
       @logical_datatype_name = 'logicalDatatype'
@@ -94,7 +97,11 @@ class PageMetadataManager
       @column_field_name = 'fieldName'
       @logical_datatype_name = 'fred'
     end
+  end
 
+  # Creates or updates a page. This takes care of updating phidippides, as well
+  # as rollup tables in soda fountain and the core datalens link.
+  def update_page_metadata(page_metadata, options = {})
     unless page_metadata['pageId'].present?
       raise Phidippides::NoPageIdException.new('page id must be provisioned first.')
     end
@@ -102,10 +109,7 @@ class PageMetadataManager
     dataset_id = page_metadata.fetch('datasetId')
     cards = page_metadata['cards']
 
-    # Data lens page creation disabled until permissions issues have been dealt with
-    # catalog_view_it = create_or_update_new_view(method, page_id, page_metadata)
-    # page_metadata['catalogViewId'] = catalog_view_id
-    dataset_metadata_result = dataset_metadata(page_metadata['datasetId'], options)
+    dataset_metadata_result = dataset_metadata(dataset_id, options)
     if dataset_metadata_result.fetch(:status) != '200'
       raise Phidippides::NoDatasetMetadataException.new(
         "could not fetch dataset metadata for id: #{page_metadata['datasetId']}"
@@ -143,42 +147,6 @@ class PageMetadataManager
     end
 
     result
-  end
-
-  def create_or_update_new_view(method, page_id, page_metadata)
-    # First update the data lens. We do this so that we can save the
-    # catalogViewId into the page_metadata, so that next time we need to
-    # update the page_metadata, we can also update the catalog view data
-    # lens that links to it (and has its own copy of the title/description).
-    if method == :create
-      catalog_view_id = new_view_manager.create(
-        page_id,
-        page_metadata['name'],
-        page_metadata['description']
-      )
-    else
-      # Fetch the existing page, so we can get the id of the catalog view
-      # data lens.
-      result = phidippides.fetch_page_metadata(page_id)
-      begin
-        catalog_view_id = result.fetch(:body, {})[:catalogViewId]
-        if catalog_view_id
-          # Update the catalog view data lens
-          new_view_manager.update(
-            catalog_view_id,
-            page_metadata['name'],
-            page_metadata['description']
-          )
-        end
-      rescue => e
-        Airbrake.notify(
-          :error_class => "UnexpectedPageMetadataResponseFormat",
-          :error_message => "Could not make sense of Phidippides response: " \
-            "#{result.inspect} (Error: #{e.inspect})"
-        )
-      end
-    end
-    catalog_view_id
   end
 
   def build_rollup_soql(page_metadata, columns, cards, options = {})

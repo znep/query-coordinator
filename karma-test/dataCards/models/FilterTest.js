@@ -70,7 +70,7 @@ describe('Filter models', function() {
   });
 
   describe('TimeRangeFilter', function() {
-    var fakeColumnName = _.uniqueId();
+
     it('should throw if the constructor is passed non-Dates', inject(function(Filter) {
       expect(function() { new Filter.TimeRangeFilter(); }).to.throw();
       expect(function() { new Filter.TimeRangeFilter(null); }).to.throw();
@@ -80,27 +80,33 @@ describe('Filter models', function() {
     }));
 
     it('should generate correct SOQL', inject(function(Filter, SoqlHelpers) {
-      var start = new Date('1988-01-10T08:00:00.000Z');
-      var end = new Date('2101-01-10T08:00:00.000Z');
+      var fakeColumnName = _.uniqueId();
+      var start = '1988-01-10T08:00:00';
+      var end = '2101-01-10T08:00:00';
       var filter = new Filter.TimeRangeFilter(start, end);
+      var expected = "{0} >= {1} AND {0} < {2}".format(
+        fakeColumnName,
+        SoqlHelpers.encodePrimitive(start),
+        SoqlHelpers.encodePrimitive(end)
+      );
 
-      var expected = "{0} >= {1} AND {0} < {2}".format(fakeColumnName, SoqlHelpers.encodePrimitive(start), SoqlHelpers.encodePrimitive(end));
       expect(filter.generateSoqlWhereFragment(fakeColumnName)).to.equal(expected);
     }));
 
     it('should serialize and deserialize properly', inject(function(Filter) {
-      var start = new Date('1988-01-10T08:00:00.000Z');
-      var end = new Date('2101-01-10T08:00:00.000Z');
+      var start = '1988-01-10T08:00:00';
+      var end = '2101-01-10T08:00:00';
       var filter = new Filter.TimeRangeFilter(start, end);
 
       var deserializedFilter = Filter.deserialize(parseAsJson(filter.serialize()));
 
-      expect(deserializedFilter).to.deep.equal(filter);
+      expect(deserializedFilter.start.getTime()).to.equal(filter.start.getTime());
+      expect(deserializedFilter.end.getTime()).to.equal(filter.end.getTime());
     }));
 
     it('should fail when deserializing with a non-ISO8601 time.', inject(function(Filter) {
-      var start = new Date('1988-01-10T08:00:00.000Z');
-      var end = new Date('2101-01-10T08:00:00.000Z');
+      var start = '1988-01-10T08:00:00';
+      var end = '2101-01-10T08:00:00';
       var filter = new Filter.TimeRangeFilter(start, end);
 
       var serializedFilter = parseAsJson(filter.serialize());

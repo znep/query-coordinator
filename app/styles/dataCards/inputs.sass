@@ -5,6 +5,9 @@ soc-select
   position: relative
   background-color: $api-panel-border-color
 
+  &[disabled] .arrow-container .arrow
+    display: none
+
   select
     min-width: 10rem
     width: 100%
@@ -32,7 +35,8 @@ soc-select
     height: 100%
     top: 0
     right: 0
-    background-color: $api-panel-border-color
+    // Set the background color; otherwise it won't mask the native arrow
+    background-color: inherit
     pointer-events: none
 
     .arrow

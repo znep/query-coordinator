@@ -4,7 +4,8 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def setup
     CurrentDomain.stubs(domain: stub(cname: 'localhost'))
-    NewViewManager.any_instance.stubs(:create)
+    NewViewManager.any_instance.stubs(create: 'niew-veww')
+    NewViewManager.any_instance.stubs(update: nil)
     Phidippides.any_instance.stubs(connection_details: {
       'address' => 'localhost',
       'port' => '2401'
@@ -22,7 +23,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     Phidippides.any_instance.stubs(
       update_page_metadata: { status: '200', body: v0_page_metadata },
       fetch_dataset_metadata: { status: '200', body: v0_dataset_metadata },
-      request_new_page_id: 'asdf-asdf',
     )
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
@@ -39,59 +39,37 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert(result.fetch(:body).fetch('pageId'), 'Expected a non-nil pageId to be created')
 
     Phidippides.any_instance.stubs(
-      request_new_page_id: 'asdf-asdf',
       update_page_metadata: { status: '200', body: nil }
     )
     stub_feature_flags_with(:metadata_transition_phase, '2')
-    # Data lens page creation disabled until permissions issues have been dealt with
-    # NewViewManager.any_instance.expects(:create).times(1).with do |page_id, name, description|
-    #   # Make sure it's creating the new view pointing to the correct page-id
-    #   assert_equal('asdf-asdf', page_id)
-    #   assert_not_equal(v1_page_metadata['pageId'], page_id, "pageId should not match existing pageId")
-    #   assert_equal(v1_page_metadata['name'], name)
-    #   assert_equal(v1_page_metadata['description'], description)
-    # end.then.returns('data-lens')
+    NewViewManager.any_instance.expects(:create).times(1).with do |name, description|
+      assert_equal(v1_page_metadata['name'], name)
+      assert_equal(v1_page_metadata['description'], description)
+    end.then.returns('data-lens')
     result = manager.create(v1_page_metadata)
     assert_equal('200', result.fetch(:status), 'Expected create result status to be 200')
-    assert_equal('asdf-asdf', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
-    # Data lens page creation disabled until permissions issues have been dealt with
-    # assert_equal('data-lens', result.fetch(:body).fetch('catalogViewId'), 'Expected the new catalogViewId to be returned')
+    assert_equal('data-lens', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
     assert_equal(1000, result.fetch(:body).fetch('largestTimeSpanDays'), 'Expected the value for the largest time span to be set')
     assert_match(/date_trunc_\w+/, result.fetch(:body).fetch('defaultDateTruncFunction'), 'Includes date_trunc function')
   end
 
-  def x_test_create_creates_data_lens_with_reference_v0
+  def test_create_creates_data_lens_with_reference_v1
     Phidippides.any_instance.stubs(
-      request_new_page_id: 'asdf-asdf',
-      fetch_dataset_metadata: { status: '200', body: v0_dataset_metadata_without_rollup_columns },
+      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns},
     )
     stub_feature_flags_with(:metadata_transition_phase, '0')
     Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |page_metadata|
-      # Make sure the page_metadata includes the correct data lens id
-      assert_equal('fdsa-fdsa', page_metadata['catalogViewId'])
+      # Make sure the page_metadata includes the correct id
+      assert_equal('fdsa-fdsa', page_metadata['pageId'])
     end.then.returns(status: '200', body: {})
 
-    NewViewManager.any_instance.expects(:create).times(1).with do |page_id, name, description|
+    NewViewManager.any_instance.expects(:create).times(1).with do |name, description|
       # Make sure it's creating the new view pointing to the correct page-id
-      assert_equal('asdf-asdf', page_id)
       assert_match(/^Chicago Crimes Loves/, name)
       assert_match(/^This dataset reflects/, description)
     end.then.returns('fdsa-fdsa')
 
     manager.create(v0_page_metadata)
-  end
-
-  def test_create_raises_an_error_if_it_is_unable_to_provision_a_new_page_id_in_metadata_migration_phase_2
-    PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
-    Phidippides.any_instance.stubs(
-      request_new_page_id: nil,
-      update_page_metadata: { body: nil, status: '200' }
-    )
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-
-    assert_raises(Phidippides::NewPageException) do
-      manager.create(v1_page_metadata)
-    end
   end
 
   def test_create_raises_no_dataset_metadata_exception_when_phiddy_craps_out_v0
@@ -112,31 +90,26 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def test_create_ignores_provided_pageId
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
-    # Data lens page creation disabled until permissions issues have been dealt with
-    # NewViewManager.any_instance.expects(:create).times(1).with do |page_id, name, description|
-    #   # Make sure it's creating the new view pointing to the correct page-id
-    #   assert_equal('asdf-asdf', page_id)
-    #   assert_not_equal(v1_page_metadata['pageId'], page_id, "pageId should not match existing pageId")
-    #   assert_equal(v1_page_metadata['name'], name)
-    #   assert_equal(v1_page_metadata['description'], description)
-    # end.then.returns('data-lens')
+    NewViewManager.any_instance.expects(:create).times(1).with do |name, description|
+      assert_equal(v1_page_metadata['name'], name)
+      assert_equal(v1_page_metadata['description'], description)
+    end.then.returns('data-lens')
     Phidippides.any_instance.stubs(
-      request_new_page_id: 'asdf-asdf',
-      update_page_metadata: { body: nil, status: '200' },
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns }
     )
+    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |page_metadata|
+      assert_equal(page_metadata['pageId'], 'data-lens')
+    end.then.returns({ body: nil, status: '200' })
+
     stub_feature_flags_with(:metadata_transition_phase, '2')
 
     result = manager.create(v1_page_metadata)
-    assert_equal('asdf-asdf', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
-    # Data lens page creation disabled until permissions issues have been dealt with
-    # assert_equal('data-lens', result.fetch(:body).fetch('catalogViewId'), 'Expected the new catalogViewId to be returned')
+    assert_equal('data-lens', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
   end
 
   def test_create_raises_an_error_if_dataset_id_is_not_present_in_new_page_metadata
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
     Phidippides.any_instance.stubs(
-      request_new_page_id: 'asdf-asdf',
       update_page_metadata: { body: nil, status: '200' }
     )
 
@@ -159,7 +132,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   def test_create_does_not_try_to_create_rollup_table_when_not_given_eligible_columns_in_phase_0
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
     Phidippides.any_instance.stubs(
-      request_new_page_id: 'asdf-asdf',
       update_page_metadata: { status: '200', body: v0_page_metadata },
       fetch_dataset_metadata: { status: '200', body: v0_dataset_metadata_without_rollup_columns }
     )
@@ -184,7 +156,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   def test_create_does_not_try_to_create_rollup_table_when_not_given_eligible_columns_in_phase_1
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
     Phidippides.any_instance.stubs(
-      request_new_page_id: 'asdf-asdf',
       update_page_metadata: { status: '200', body: v0_page_metadata },
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns }
     )
@@ -209,7 +180,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   def test_create_does_not_try_to_create_rollup_table_when_not_given_eligible_columns_in_phase_2
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
     Phidippides.any_instance.stubs(
-      request_new_page_id: 'asdf-asdf',
       update_page_metadata: { status: '200', body: nil },
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns }
     )
@@ -235,7 +205,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
 
     stub_fetch_dataset_metadata(v0_dataset_metadata)
-    stub_request_new_page_id
     stub_feature_flags_with(:metadata_transition_phase, '0')
     stub_update_page_metadata(v0_page_metadata).
       with { |page, _| assert_page_has_table_card(page) }
@@ -248,7 +217,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
 
     stub_fetch_dataset_metadata(v1_dataset_metadata)
-    stub_request_new_page_id
     stub_feature_flags_with(:metadata_transition_phase, '1')
     stub_update_page_metadata(v1_page_metadata_as_v0).
       with { |page, _| assert_page_has_table_card(page) }
@@ -261,7 +229,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
 
     stub_fetch_dataset_metadata(v1_dataset_metadata)
-    stub_request_new_page_id
     stub_feature_flags_with(:metadata_transition_phase, '2')
     stub_update_page_metadata(v1_page_metadata).
       with { |page, _| assert_page_has_table_card(page) }
@@ -272,7 +239,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def test_create_ensures_table_card_when_no_cards_phase0
     stub_fetch_dataset_metadata(v0_dataset_metadata)
-    stub_request_new_page_id
     stub_feature_flags_with(:metadata_transition_phase, '0')
     stub_update_page_metadata(v0_page_metadata).
       with { |page, _| assert_page_has_table_card(page) }
@@ -283,7 +249,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def test_create_ensures_table_card_when_no_cards_phase1
     stub_fetch_dataset_metadata(v1_dataset_metadata)
-    stub_request_new_page_id
     stub_feature_flags_with(:metadata_transition_phase, '1')
     stub_update_page_metadata(v1_page_metadata_as_v0).
       with { |page, _| assert_page_has_table_card(page) }
@@ -294,7 +259,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def test_create_ensures_table_card_when_no_cards_phase2
     stub_fetch_dataset_metadata(v1_dataset_metadata)
-    stub_request_new_page_id
     stub_feature_flags_with(:metadata_transition_phase, '2')
     stub_update_page_metadata(v1_page_metadata).
       with { |page, _| assert_page_has_table_card(page) }
@@ -311,7 +275,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       update_page_metadata: { status: '200', body: v0_page_metadata },
       fetch_dataset_metadata: { status: '200', body: v0_dataset_metadata },
       fetch_page_metadata: { status: '200', body: v0_page_metadata },
-      request_new_page_id: 'asdf-asdf',
     )
     stub_feature_flags_with(:metadata_transition_phase, '0')
     manager.create(v0_page_metadata)
@@ -323,27 +286,24 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       status: '200',
       body: v0_page_metadata
     )
+
     manager.update(v0_page_metadata.merge('bunch' => 'other stuff', 'foo' => 'bar'))
   end
 
-  def x_test_update_creates_data_lens_with_reference_v0
-    Phidippides.any_instance.stubs(
-      update_page_metadata: { status: '200', body: v0_page_metadata },
-    )
-    PageMetadataManager.any_instance.stubs(build_rollup_soql: nil)
+  def test_update_creates_data_lens_with_reference_v0
     stub_feature_flags_with(:metadata_transition_phase, '0')
+    manager.stubs(
+      build_rollup_soql: nil,
+      dataset_metadata: { status: '200', body: v0_dataset_metadata }
+    )
     Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |page_metadata|
       # Make sure the page_metadata includes the correct data lens id
-      assert_equal('lens-eyed', page_metadata['catalogViewId'])
       assert_equal('page-eyed', page_metadata['pageId'])
     end.then.returns(status: '200', body: {})
-    Phidippides.any_instance.expects(:fetch_page_metadata).times(1).with do |page_id|
-      assert_equal('page-eyed', page_id)
-    end.then.returns(status: '200', body: { catalogViewId: 'lens-eyed' })
 
     NewViewManager.any_instance.expects(:update).times(1).with do |lens_id, name, description|
       # Make sure it's creating the new view pointing to the correct page-id
-      assert_equal('lens-eyed', lens_id)
+      assert_equal('page-eyed', lens_id)
       assert_equal('new name', name)
       assert_equal('new description', description)
     end.then.returns('fdsa-fdsa')
@@ -361,10 +321,10 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
     Phidippides.any_instance.stubs(
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata },
-      request_new_page_id: 'asdf-asdf',
       update_page_metadata: { status: '200', body: v1_page_metadata },
       fetch_page_metadata: { status: '200', body: v1_page_metadata },
     )
+
     stub_feature_flags_with(:metadata_transition_phase, '1')
     manager.create(v1_page_metadata_as_v0)
     Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |json, options|
@@ -383,7 +343,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
     Phidippides.any_instance.stubs(
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata },
-      request_new_page_id: 'asdf-asdf',
       update_page_metadata: { status: '200', body: nil },
       fetch_page_metadata: { status: '200', body: {} },
     )
@@ -397,6 +356,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       status: '200',
       body: v1_page_metadata.merge('bunch' => 'other stuff', 'foo' => 'bar')
     )
+
     manager.update(v1_page_metadata.merge('bunch' => 'other stuff', 'foo' => 'bar'))
   end
 
@@ -739,7 +699,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       }
     ]
 
-    v1_page_metadata_as_v0.delete('catalogViewId')
     v1_page_metadata_as_v0.delete('version')
 
     v1_page_metadata_as_v0
@@ -778,12 +737,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   def stub_fetch_dataset_metadata(body)
     Phidippides.any_instance.stubs(
       fetch_dataset_metadata: { status: '200', body: body }
-    )
-  end
-
-  def stub_request_new_page_id
-    Phidippides.any_instance.stubs(
-      request_new_page_id: 'asdf-asdf'
     )
   end
 

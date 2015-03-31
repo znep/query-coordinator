@@ -119,6 +119,10 @@ angular.module('dataCards.models').factory('DatasetV1', function(
       self.defineEphemeralObservableProperty('rowCount', null, function() {
         return CardDataService.getRowCount(self.id);
       });
+
+      self.defineEphemeralObservableProperty('permissions', null, function() {
+        return datasetMetadataPromise().then(_.property('permissions'));
+      });
     }
   });
 

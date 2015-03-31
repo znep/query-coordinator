@@ -672,6 +672,33 @@ class CardTypeMappingTest < Test::Unit::TestCase
     end
   end
 
+  def test_card_type_mapping_returns_invalid_card_type_for_multipolygon_column_in_phases_0_1_and_2
+    cardinality = 15
+    dataset_size = 2500
+
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    computed_card_type = card_type_for(
+      fake_column('multipolygon', 'location', cardinality),
+      :logicalDatatype,
+      dataset_size
+    )
+    assert_nil(computed_card_type)
+  end
+
+  def test_card_type_mapping_returns_invalid_card_type_for_multiline_column_in_phases_0_1_and_2
+    cardinality = 15
+    dataset_size = 2500
+
+    stub_feature_flags_with(:metadata_transition_phase, '0')
+    computed_card_type = card_type_for(
+      fake_column('multiline', 'location', cardinality),
+      :logicalDatatype,
+      dataset_size
+    )
+    assert_nil(computed_card_type)
+  end
+
+
   # For 'new' card type mappping logic used in metadata transition phase 3, see:
   # https://docs.google.com/a/socrata.com/document/d/13KWv-5xugmWr-w4vnfXjIus4n9zLWOUEU1KxxnhMSrw/edit#
 
@@ -1057,6 +1084,34 @@ class CardTypeMappingTest < Test::Unit::TestCase
     assert_equal('feature', computed_card_type)
   end
 
+  # Multipolygon
+
+  def test_card_type_mapping_returns_expected_value_for_multipolygon_column_in_phase_3
+    dataset_size = 2500
+
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+    computed_card_type = card_type_for(
+      fake_column('multipolygon', nil, 2500),
+      nil,
+      dataset_size
+    )
+    assert_equal('invalid', computed_card_type)
+  end
+  #
+  # Multiline
+
+  def test_card_type_mapping_returns_expected_value_for_multiline_column_in_phase_3
+    dataset_size = 2500
+
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+    computed_card_type = card_type_for(
+      fake_column('multiline', nil, 2500),
+      nil,
+      dataset_size
+    )
+    assert_equal('invalid', computed_card_type)
+  end
+
   # Text
 
   def test_card_type_mapping_returns_expected_value_for_text_column_with_one_row_in_phase_3
@@ -1068,7 +1123,7 @@ class CardTypeMappingTest < Test::Unit::TestCase
       nil,
       dataset_size
     )
-    assert_equal('search', computed_card_type)
+    assert_equal('column', computed_card_type)
   end
 
   def test_card_type_mapping_returns_expected_value_for_low_cardinality_text_column_in_phase_3
@@ -1288,6 +1343,29 @@ class CardTypeMappingTest < Test::Unit::TestCase
     )
     assert_equal(['choropleth'], available_card_types)
   end
+
+  def test_card_type_mapping_returns_expected_available_card_types_for_multiline_column_in_phase_3
+    dataset_size = 2500
+
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+    available_card_types = available_card_types_for(
+      fake_column('multiline', nil, 2500),
+      dataset_size
+    )
+    assert_equal(['invalid'], available_card_types)
+  end
+
+  def test_card_type_mapping_returns_expected_available_card_types_for_multipolygon_column_in_phase_3
+    dataset_size = 2500
+
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+    available_card_types = available_card_types_for(
+      fake_column('multipolygon', nil, 2500),
+      dataset_size
+    )
+    assert_equal(['invalid'], available_card_types)
+  end
+
 
   def test_card_type_mapping_returns_expected_available_card_types_for_number_column_in_phase_3
     dataset_size = 2500

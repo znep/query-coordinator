@@ -1,4 +1,4 @@
-angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelpers) {
+angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelpers, DateHelpers) {
 
   function BinaryOperatorFilter(operator, operand, humanReadableOperand) {
     if (!_.isString(operator)) { throw new Error('BinaryOperatorFilter passed invalid operator'); }
@@ -31,11 +31,11 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
   };
 
   function TimeRangeFilter(start, end) {
-    if (!(start instanceof Date && end instanceof Date)) {
-      throw new Error('Cannot create TimeRangeFilter: bad dates.');
+    this.start = DateHelpers.deserializeFloatingTimestamp(start);
+    this.end = DateHelpers.deserializeFloatingTimestamp(end);
+    if (isNaN(this.start.getTime()) || isNaN(this.end.getTime())) {
+      throw new Error('Could not create TimeRangeFilter: bad dates.');
     }
-    this.start = start;
-    this.end = end;
   };
 
   TimeRangeFilter.prototype.generateSoqlWhereFragment = function(field) {
@@ -46,23 +46,25 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
   };
 
   TimeRangeFilter.prototype.serialize = function() {
-
     return {
       'function': 'TimeRange',
       'arguments': {
-        'start': this.start.toISOString().substring(0, 19),
-        'end': this.end.toISOString().substring(0, 19)
+        'start': DateHelpers.serializeFloatingTimestamp(this.start),
+        'end': DateHelpers.serializeFloatingTimestamp(this.end)
       }
     };
   };
 
   TimeRangeFilter.deserialize = function(blob) {
     var args = blob['arguments'];
-    var startDate = new Date(args.start);
-    var endDate = new Date(args.end);
-    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-      throw new Error('Could not deserialize TimeRangeFilter: bad dates.');
+    if (!args.hasOwnProperty('start')) {
+      throw new Error("Could not deserialize TimeRangeFilter: no 'start' property.");
     }
+    if (!args.hasOwnProperty('end')) {
+      throw new Error("Could not deserialize TimeRangeFilter: no 'end' property.");
+    }
+    var startDate = args.start;
+    var endDate = args.end;
     return new TimeRangeFilter(startDate, endDate);
   };
 

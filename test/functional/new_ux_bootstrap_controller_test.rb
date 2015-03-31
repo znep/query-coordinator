@@ -757,6 +757,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             @phidippides.stubs(
               fetch_dataset_metadata: {
                 status: '200', body: v1_mock_dataset_metadata
+              },
+              update_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata
               }
             )
             stub_feature_flags_with(:metadata_transition_phase, '3')
@@ -786,6 +789,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             @phidippides.stubs(
               fetch_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata
+              },
+              update_dataset_metadata: {
                 status: '200', body: v1_mock_dataset_metadata
               }
             )

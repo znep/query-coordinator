@@ -789,13 +789,10 @@ $(function()
     function initNewUXLink() {
         var newUxLink = $('<div class="new-ux-link icon-cards">' +
                             '<div class="icon-close"/>' +
-                              '<h3>' + $.t('screens.ds.new_ux_title') + '</h3>' +
-                              '<p>' + $.t('screens.ds.new_ux_text') + '</p>' +
-                              '<img class="new-ux-image" src="/images/new-ux-image.png" />' +
-                              '<div class="explore-btn">' +
-                                '<a>' + $.t('screens.ds.new_ux_button') + '</a>' +
-                              '</div>' +
-                            '</div>' +
+                            '<h3>' + $.t('screens.ds.new_ux_title') + '</h3>' +
+                            '<p>' + $.t('screens.ds.new_ux_text') + '</p>' +
+                            '<img class="new-ux-image" src="/images/new-ux-image.png"/>' +
+                            '<a class="explore-btn">' + $.t('screens.ds.new_ux_button') + '</a>' +
                           '</div>');
         var anchor = newUxLink.find('a');
 

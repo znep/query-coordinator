@@ -519,17 +519,35 @@ html, body
   &:before
     display: none
 
-  h3
+  > h3
     font-size: 1.5em
     font-weight: normal
     text-align: center
     margin-bottom: 0.2em
     color: $new-ux-link-color
-  p
+  > p
     font-size: 1em
     text-align: center
     margin-bottom: 0.2em
     color: $new-ux-link-color-2
+
+  > img.new-ux-image
+    height: 200px
+    margin: 0 auto
+
+  > a.explore-btn
+    display: block
+    width: 4em
+    margin: 0 auto
+    padding: 0.5em 1.4em
+    background: $new-ux-link-button-color
+    color: $new-ux-link-bg-color
+    font-weight: bold
+    font-size: 0.9em
+    text-decoration: none
+    @include border-radius(0.2em)
+    @include prefixer(transition, 'all 0.2s ease-out')
+
 
   .icon-close
     position: absolute
@@ -544,25 +562,6 @@ html, body
 
     &:hover
       font-weight: 900
-
-  .new-ux-image
-    height: 200px
-    margin: 0 auto
-
-  .explore-btn
-    width: 4em
-    margin: 0 auto
-    padding: 0.5em 1.4em
-    background: $new-ux-link-button-color
-    font-weight: bold
-    font-size: 0.9em
-    @include border-radius(0.2em)
-
-    > a
-      cursor: pointer
-      @include prefixer(transition, 'all 0.2s ease-out')
-      color: $new-ux-link-bg-color
-      text-decoration: none
 
   .spinner
     @include prefixer(transition, 'all 0.05s ease-out')

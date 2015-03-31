@@ -14,14 +14,14 @@
     return _.isString(value) ? value.trim() : value;
   }
 
-  function VectorTileData(RequestId, ServerConfig, $q) {
-    var VectorTileData;
+  function VectorTileDataService(RequestId, ServerConfig, $q) {
+    var VectorTileDataService;
     var tileserverHosts = ServerConfig.get('tileserverHosts');
     var originHost = $.baseUrl().host;
     /**
-     * Given the x and y values for a tile and dataset privacy, if there is an array
-     * of tileservers available, return one for a public tileserver hosts, otherwise return
-     * the originating host
+     * Given the x and y values for a tile and whether to use the the origin host,
+     * if there is an array of tileservers available, return one for a public
+     * tileserver hosts, otherwise return the originating host
      * @param {Number} x
      * @param {Number} y
      * @param {Boolean} [useOriginHost]
@@ -43,14 +43,17 @@
      * @returns {Object} Parsed headers as key value object
      */
     function parseHeaders(headers) {
-      var parsed = {}, key, val, i;
+      var parsed = {};
+      var key;
+      var val;
+      var colonIndex;
 
       if (!headers) return parsed;
 
       forEach(headers.split('\n'), function(line) {
-        i = line.indexOf(':');
-        key = lowercase(trim(line.substr(0, i)));
-        val = trim(line.substr(i + 1));
+        colonIndex = line.indexOf(':');
+        key = lowercase(trim(line.substr(0, colonIndex)));
+        val = trim(line.substr(colonIndex + 1));
 
         if (key) {
           parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
@@ -104,7 +107,7 @@
         var status = parseInt(xhr.status, 10);
 
         if (status === 200) {
-          arrayBuffer = VectorTileData.typedArrayFromArrayBufferResponse(xhr);
+          arrayBuffer = VectorTileDataService.typedArrayFromArrayBufferResponse(xhr);
           if (_.isDefined(arrayBuffer)) {
             xhrDeferred.resolve({
               data: arrayBuffer,
@@ -179,18 +182,18 @@
       return tileGetter;
     }
 
-    VectorTileData = {
+    VectorTileDataService = {
       getHost: getHost,
       getArrayBuffer: getArrayBuffer,
       buildTileGetter: buildTileGetter,
       typedArrayFromArrayBufferResponse: typedArrayFromArrayBufferResponse
     };
 
-    return VectorTileData;
+    return VectorTileDataService;
   }
 
   angular.
     module('dataCards.services').
-    service('VectorTileData', VectorTileData);
+    service('VectorTileDataService', VectorTileDataService);
 
 })();

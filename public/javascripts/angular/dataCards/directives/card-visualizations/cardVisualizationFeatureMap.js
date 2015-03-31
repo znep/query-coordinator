@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationFeatureMap(ServerConfig, AngularRxExtensions, CardDataService, VectorTileData) {
+  function cardVisualizationFeatureMap(ServerConfig, AngularRxExtensions, CardDataService, VectorTileDataService) {
 
     return {
       restrict: 'E',
@@ -16,7 +16,7 @@
 
         var model = scope.observe('model');
         var dataset = model.observeOnLatest('page.dataset').filter(_.isPresent);
-        var datasetPermissions = dataset.flatMap(function() { return dataset.observeOnLatest('permissions').filter(_.isPresent); });
+        var datasetPermissions = dataset.observeOnLatest('permissions').filter(_.isPresent);
         var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
         var dataRequests = new Rx.Subject();
         var dataResponses = new Rx.Subject();
@@ -85,7 +85,7 @@
           scope.observe('whereClause'),
           datasetIsPrivate,
           function(fieldName, datasetId, whereClause, datasetIsPrivate) {
-            return VectorTileData.buildTileGetter(fieldName, datasetId, whereClause, datasetIsPrivate);
+            return VectorTileDataService.buildTileGetter(fieldName, datasetId, whereClause, datasetIsPrivate);
           });
 
         scope.bindObservable('vectorTileGetter', vectorTileGetterSequence);

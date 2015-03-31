@@ -12,7 +12,7 @@ describe('featureMap', function() {
   var protocolBuffers;
   var testJson = 'karma-test/dataCards/test-data/featureMapTest/featureMapTestData.json';
   var protocolBufferEndpointResponses = 'karma-test/dataCards/test-data/featureMapTest/protocolBufferEndpointResponses.json';
-  var VectorTileData;
+  var VectorTileDataService;
 
   beforeEach(module(testJson));
   beforeEach(module(protocolBufferEndpointResponses));
@@ -47,7 +47,7 @@ describe('featureMap', function() {
     AngularRxExtensions = $injector.get('AngularRxExtensions');
     featureExtent = testHelpers.getTestJson(testJson);
     protocolBuffers = deserializeBytes(testHelpers.getTestJson(protocolBufferEndpointResponses));
-    VectorTileData = $injector.get('VectorTileData');
+    VectorTileDataService = $injector.get('VectorTileDataService');
   }));
 
   afterEach(function() {
@@ -97,7 +97,7 @@ describe('featureMap', function() {
   function vectorTileGetter(deferred, zoom, x, y) {
     var url = '/tiles/test-data/test_field/{0}/{1}/{2}.pbf'.format(zoom, x, y);
     if (protocolBuffers.hasOwnProperty(url)) {
-      deferred.resolve({ data: VectorTileData.typedArrayFromArrayBufferResponse({ response: protocolBuffers[url] }) });
+      deferred.resolve({ data: VectorTileDataService.typedArrayFromArrayBufferResponse({ response: protocolBuffers[url] }) });
     } else {
       deferred.resolve({ data: [] })
     }

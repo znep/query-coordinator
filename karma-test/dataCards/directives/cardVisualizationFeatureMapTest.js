@@ -5,7 +5,7 @@ describe('A FeatureMap Card Visualization', function() {
   var $rootScope;
   var Model;
   var _$provide;
-  var VectorTileData;
+  var VectorTileDataService;
   var dataset;
 
   beforeEach(module('/angular_templates/dataCards/cardVisualizationFeatureMap.html'));
@@ -21,11 +21,11 @@ describe('A FeatureMap Card Visualization', function() {
     Model = $injector.get('Model');
     var $q = $injector.get('$q');
     var mockCardDataService = {
-      getFeatureExtent: function(){ return $q.when([]); }
+      getFeatureExtent: function() { return $q.when([]); }
     };
     _$provide.value('CardDataService', mockCardDataService);
     testHelpers.mockDirective(_$provide, 'featureMap');
-    VectorTileData = $injector.get('VectorTileData');
+    VectorTileDataService = $injector.get('VectorTileDataService');
   }));
 
   afterEach(function(){
@@ -36,11 +36,11 @@ describe('A FeatureMap Card Visualization', function() {
     dataset = new Model();
     dataset.id = 'cras-hing';
     dataset.defineObservableProperty('rowDisplayUnit', '');
-    sinon.stub(VectorTileData, 'buildTileGetter');
+    sinon.stub(VectorTileDataService, 'buildTileGetter');
   });
 
   afterEach(function() {
-    VectorTileData.buildTileGetter.restore();
+    VectorTileDataService.buildTileGetter.restore();
   });
 
   function buildElement(options) {
@@ -49,7 +49,12 @@ describe('A FeatureMap Card Visualization', function() {
     });
 
     var outerScope = $rootScope.$new();
-    var html = '<div class="card-visualization"><card-visualization-feature-map model="model" where-clause="whereClause"></card-visualization-feature-map></div>';
+    var html = [
+      '<div class="card-visualization">',
+      '<card-visualization-feature-map model="model" where-clause="whereClause">',
+      '</card-visualization-feature-map>',
+      '</div>'
+    ].join('');
 
     var card = new Model();
     var page = new Model();
@@ -81,9 +86,9 @@ describe('A FeatureMap Card Visualization', function() {
     elementInfo.element.find('feature-map').scope();
 
     // Use buildTileGetter as a proxy for FeatureMap's happiness.
-    expect(VectorTileData.buildTileGetter).to.have.not.been.called;
+    expect(VectorTileDataService.buildTileGetter).to.have.not.been.called;
     elementInfo.pageModel.set('dataset', dataset);
-    expect(VectorTileData.buildTileGetter).to.have.been.called;
+    expect(VectorTileDataService.buildTileGetter).to.have.been.called;
   });
 
   describe('tileserver sharding', function() {
@@ -93,9 +98,14 @@ describe('A FeatureMap Card Visualization', function() {
       buildElement({
         dataset: dataset
       });
-      expect(VectorTileData.buildTileGetter).to.have.been.called;
-      var lastCall = VectorTileData.buildTileGetter.lastCall;
-      expect(lastCall).to.have.been.calledWithMatch(sinon.match.any,sinon.match.any, sinon.match.any, sinon.match.falsy);
+      expect(VectorTileDataService.buildTileGetter).to.have.been.called;
+      var lastCall = VectorTileDataService.buildTileGetter.lastCall;
+      expect(lastCall).to.have.been.calledWithMatch(
+        sinon.match.any,
+        sinon.match.any,
+        sinon.match.any,
+        sinon.match.falsy
+      );
     });
 
     it('should not parallelize tileserver requests if dataset is private', function() {
@@ -104,9 +114,14 @@ describe('A FeatureMap Card Visualization', function() {
       buildElement({
         dataset: dataset
       });
-      expect(VectorTileData.buildTileGetter).to.have.been.called;
-      var lastCall = VectorTileData.buildTileGetter.lastCall;
-      expect(lastCall).to.have.been.calledWithMatch(sinon.match.any,sinon.match.any, sinon.match.any, sinon.match.truthy);
+      expect(VectorTileDataService.buildTileGetter).to.have.been.called;
+      var lastCall = VectorTileDataService.buildTileGetter.lastCall;
+      expect(lastCall).to.have.been.calledWithMatch(
+        sinon.match.any,
+        sinon.match.any,
+        sinon.match.any,
+        sinon.match.truthy
+      );
     });
 
     it('should not parallelize tileserver request if dataset privacy is not available', function() {
@@ -115,9 +130,14 @@ describe('A FeatureMap Card Visualization', function() {
       buildElement({
         dataset: dataset
       });
-      expect(VectorTileData.buildTileGetter).to.have.been.called;
-      var lastCall = VectorTileData.buildTileGetter.lastCall;
-      expect(lastCall).to.have.been.calledWithMatch(sinon.match.any,sinon.match.any, sinon.match.any, sinon.match.truthy);
+      expect(VectorTileDataService.buildTileGetter).to.have.been.called;
+      var lastCall = VectorTileDataService.buildTileGetter.lastCall;
+      expect(lastCall).to.have.been.calledWithMatch(
+        sinon.match.any,
+        sinon.match.any,
+        sinon.match.any,
+        sinon.match.truthy
+      );
     });
   });
 });

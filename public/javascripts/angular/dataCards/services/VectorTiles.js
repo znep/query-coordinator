@@ -610,17 +610,20 @@
           self.outstandingTileDataRequests.get(tileId) !== null) {
           return;
         }
-        getterPromise = this.options.vectorTileGetter(zoom, tilePoint.x, tilePoint.y);
+        getterPromise = self.options.vectorTileGetter(zoom, tilePoint.x, tilePoint.y);
         self.tileLoading(tileId, getterPromise);
-        getterPromise.then(function(response) {
-          if (_.isEmpty(response.data)) {
+        getterPromise.then(
+          function(response) {
+            if (_.isEmpty(response.data)) {
+              self.tileLoaded(tileId);
+            } else {
+              callback.call(self, response.data, tileId);
+            }
+          },
+          function() {
             self.tileLoaded(tileId);
-          } else {
-            callback.call(self, response.data, tileId);
           }
-        }, function() {
-          self.tileLoaded(tileId);
-        });
+        );
       },
 
       renderDebugInfo: function(tilePoint, zoom) {

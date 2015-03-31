@@ -138,6 +138,8 @@
         $.component.root().show();
         $.component.root('edit').hide();
         _.defer(function() { $(window).resize(); });
+        // Remove ?_edit_mode=true url param reload
+        window.location.href = window.location.href.replace(/\?_edit_mode=true/, '');
     };
 
     var pullConfig = function()

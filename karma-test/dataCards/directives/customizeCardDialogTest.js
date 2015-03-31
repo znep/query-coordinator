@@ -74,6 +74,7 @@ describe('Customize card dialog', function() {
         datasetModel.id = 'rook-king';
         datasetModel.version = '1';
         datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
+        datasetModel.defineObservableProperty('permissions', '');
 
         if (phase === '0') {
 

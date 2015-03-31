@@ -12,9 +12,9 @@ describe('DatasetDataService', function() {
       var TestHelpers;
       var fake4x4 = 'fake-data';
 
-      var datasetMetadataUrl = phaseTestingUnder === 0 ?
-        '/dataset_metadata/{0}.json'.format(fake4x4) :
-        '/metadata/v1/dataset/{0}.json'.format(fake4x4);
+      var datasetMetadataUrlMatcher = phaseTestingUnder === 0 ?
+        new RegExp('/dataset_metadata/{0}\\.json'.format(fake4x4)) :
+        new RegExp('/metadata/v1/dataset/{0}\\.json'.format(fake4x4));
 
       var fakeDatasetMetadataResponseV0 = {
         id: fake4x4,
@@ -166,9 +166,9 @@ describe('DatasetDataService', function() {
 
       var fakeDatasetMetadataResponse = phaseTestingUnder === 0 ? fakeDatasetMetadataResponseV0 : fakeDatasetMetadataResponseV1;
 
-      var datasetPagesUrl = phaseTestingUnder === 0 ?
-        '/dataset_metadata/?id={0}&format=json'.format(fake4x4) :
-        '/metadata/v1/dataset/{0}/pages.json'.format(fake4x4);
+      var datasetPagesUrlMatcher = phaseTestingUnder === 0 ?
+        new RegExp('/dataset_metadata/\\?id={0}&format=json'.format(fake4x4)) :
+        new RegExp('/metadata/v1/dataset/{0}/pages\\.json'.format(fake4x4));
 
       var fakePagesForDatasetResponseV0 = {
         publisher: [
@@ -185,7 +185,7 @@ describe('DatasetDataService', function() {
 
       var fakePagesForDatasetResponse = phaseTestingUnder === 0 ? fakePagesForDatasetResponseV0 : fakePagesForDatasetResponseV1;
 
-      var geoJsonInfoUrl = '/resource/{0}.geojson'.format(fake4x4);
+      var geoJsonInfoUrlMatcher = new RegExp('/resource/{0}\\.geojson'.format(fake4x4));
       var fakeGeojsonInfoResponse = {
         type: 'FeatureCollection',
         features: [],
@@ -203,9 +203,9 @@ describe('DatasetDataService', function() {
         DatasetDataService = $injector.get('DatasetDataService');
         TestHelpers = $injector.get('testHelpers');
         $httpBackend = $injector.get('$httpBackend');
-        $httpBackend.whenGET(datasetMetadataUrl).respond(fakeDatasetMetadataResponse);
-        $httpBackend.whenGET(geoJsonInfoUrl).respond(fakeGeojsonInfoResponse);
-        $httpBackend.whenGET(datasetPagesUrl).respond(fakePagesForDatasetResponse);
+        $httpBackend.whenGET(datasetMetadataUrlMatcher).respond(fakeDatasetMetadataResponse);
+        $httpBackend.whenGET(geoJsonInfoUrlMatcher).respond(fakeGeojsonInfoResponse);
+        $httpBackend.whenGET(datasetPagesUrlMatcher).respond(fakePagesForDatasetResponse);
 
         TestHelpers.overrideMetadataMigrationPhase(phaseTestingUnder);
       }));

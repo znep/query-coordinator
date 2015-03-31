@@ -63,6 +63,7 @@ module.exports = function ( karma ) {
       /* Libraries which do not depend on Angular. */
       'bower_components/js-polyfills/url.js',
       'bower_components/lodash/dist/lodash.js',
+      'public/javascripts/util/polyfills.js',
       'public/javascripts/util/lodash-mixins.js',
       'public/javascripts/util/jquery-extensions.js',
       'public/javascripts/bower/jquery.dotdotdot.js',
@@ -179,7 +180,7 @@ module.exports = function ( karma ) {
       }
     },
 
-    frameworks: [ 'mocha', 'chai', 'chai-as-promised', 'chai-jquery' ],
+    frameworks: [ 'mocha', 'chai', 'chai-as-promised', 'chai-jquery', 'sinon-chai' ],
     plugins: [
       'karma-chai',
       'karma-chai-plugins',

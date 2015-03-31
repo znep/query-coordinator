@@ -44,7 +44,7 @@ class NewUxBootstrapController < ActionController::Base
     #     and non-deterministic.
 
     # 1. Check to make sure that the user is authorized to create a new view
-    unless can_update_metadata?
+    unless can_create_metadata?
       return render :json => {
         error: true,
         reason: "User must be one of these roles: #{ROLES_ALLOWED_TO_UPDATE_METADATA.join(', ')}"

@@ -83,7 +83,7 @@ class PhidippidesDatasetsController < ApplicationController
   def create
     # By design, cannot create dataset metadata past phase 0
     return render :nothing => true, :status => '404' unless metadata_transition_phase_0?
-    return render :nothing => true, :status => '401' unless can_update_metadata?
+    return render :nothing => true, :status => '401' unless can_create_metadata?
     return render :nothing => true, :status => '400' unless params[:datasetMetadata].present?
 
     begin
@@ -97,7 +97,7 @@ class PhidippidesDatasetsController < ApplicationController
   end
 
   def update
-    return render :nothing => true, :status => '401' unless can_update_metadata?
+    return render :nothing => true, :status => '401' unless dataset(params[:id]).can_edit?
 
     begin
       dataset_metadata = json_parameter(:datasetMetadata)
@@ -147,8 +147,8 @@ class PhidippidesDatasetsController < ApplicationController
 
   private
 
-  def dataset
-    View.find(json_parameter(:datasetMetadata)['id'])
+  def dataset(id = nil)
+    View.find(id || json_parameter(:datasetMetadata)['id'])
   end
 
   def can_read_dataset_data?(dataset_id)

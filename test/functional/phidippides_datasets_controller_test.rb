@@ -57,10 +57,28 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     assert(JSON.parse(@response.body)['publisher'].all? { |page| page['version'] == '1' }, 'expected all pages to be v1')
   end
 
-  test 'show returns data for a given dataset' do
-    @controller.stubs(can_update_metadata?: true)
+  test 'show gives forbidden error if can\'t read data from core' do
+    connection_stub = mock
+    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    connection_stub.stubs(:get_request).raises(CoreServer::Error.new)
+    CoreServer::Base.stubs(connection: connection_stub)
+
+    @controller.stubs(can_create_metadata?: true)
     @phidippides.stubs(issue_request: { body: mock_v1_dataset_metadata, status: '200' })
     get :show, id: 'four-four', format: 'json'
+    assert_response(403)
+  end
+
+  test 'show returns data for a given dataset' do
+    connection_stub = mock
+    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    connection_stub.stubs(:get_request).returns('[{"_0": "0"}]', '')
+    CoreServer::Base.stubs(connection: connection_stub)
+    @controller.stubs(can_create_metadata?: true)
+    @phidippides.stubs(issue_request: { body: mock_v1_dataset_metadata, status: '200' })
+
+    get :show, id: 'four-four', format: 'json'
+
     assert_response(:success)
     assert_equal(
       ['permissions', 'columns', 'defaultPage', 'description', 'domain', 'id', 'locale', 'name', 'ownerId', 'updatedAt'].sort,
@@ -68,7 +86,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
   end
 
   test 'show calls migrate_dataset_metadata_to_v1 on a successful request' do
-    @controller.stubs(can_update_metadata?: true)
+    @controller.stubs(can_create_metadata?: true, can_read_dataset_data?: true)
     @phidippides.stubs(
       issue_request: { status: '200', body: mock_v1_dataset_metadata }.with_indifferent_access,
       get_dataset_size: 5_000_000
@@ -83,7 +101,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
   end
 
   test 'show does not call migrate_dataset_metadata_to_v1 on an unsuccessful request' do
-    @controller.stubs(can_update_metadata?: true)
+    @controller.stubs(can_create_metadata?: true, can_read_dataset_data?: true)
     @phidippides.stubs(
       issue_request: { status: 404, body: mock_v1_dataset_metadata }.with_indifferent_access,
       get_dataset_size: 5_000_000
@@ -94,14 +112,14 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
   end
 
   test '(phase 0) create returns 401 unless logged in' do
-    @controller.stubs(can_update_metadata?: false)
+    @controller.stubs(can_create_metadata?: false)
     stub_feature_flags_with(:metadata_transition_phase, '0')
     post :create, format: :json
     assert_response(401)
   end
 
   test '(phase 0, 1, 2) create returns 404 unless in stage 0' do
-    @controller.stubs(can_update_metadata?: false)
+    @controller.stubs(can_create_metadata?: false)
     @phidippides.stubs(issue_request: { body: 'not json', status: 200 })
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
@@ -118,7 +136,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
   end
 
   test '(phase 0) create returns new dataset metadata when logged in' do
-    @controller.stubs(can_update_metadata?: true)
+    @controller.stubs(can_create_metadata?: true)
     @phidippides.stubs(issue_request: { body: mock_v0_dataset_metadata, status: 200 })
     stub_feature_flags_with(:metadata_transition_phase, '0')
     post :create, datasetMetadata: mock_v0_dataset_metadata.to_json, format: :json
@@ -126,7 +144,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
   end
 
   test '(phase 1 or 2) create returns 404' do
-    @controller.stubs(can_update_metadata?: true)
+    @controller.stubs(can_create_metadata?: true)
     @phidippides.stubs(issue_request: { body: mock_v1_dataset_metadata, status: 200 })
     stub_feature_flags_with(:metadata_transition_phase, '1')
     post :create, datasetMetadata: mock_v1_dataset_metadata.to_json, format: :json
@@ -138,7 +156,9 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
   end
 
   test '(phase 0, 1) update works when format is not JSON' do
-    @controller.stubs(can_update_metadata?: true)
+    dataset_stub = mock
+    dataset_stub.stubs(can_edit?: true)
+    @controller.stubs(can_create_metadata?: true, dataset: dataset_stub)
     @phidippides.stubs(update_dataset_metadata: { body: '', status: 200 })
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
@@ -151,7 +171,9 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
   end
 
   test '(phase 2) update returns 406 unless format is JSON' do
-    @controller.stubs(can_update_metadata?: true)
+    dataset_stub = mock
+    dataset_stub.stubs(can_edit?: true)
+    @controller.stubs(can_create_metadata?: true, dataset: dataset_stub)
     @phidippides.stubs(issue_request: { body: 'not json', status: 200 })
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
@@ -160,14 +182,18 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
   end
 
   test 'update returns 401 unless has necessary rights' do
-    @controller.stubs(can_update_metadata?: false)
+    dataset_stub = mock
+    dataset_stub.stubs(can_edit?: false)
+    @controller.stubs(can_create_metadata?: false, dataset: dataset_stub)
     put :update, id: 'q77b-s2zi', datasetMetadata: mock_v1_dataset_metadata.to_json, format: :json
     assert_response(401)
   end
 
   test 'update returns 406 if body id != endpoint id' do
+    dataset_stub = mock
+    dataset_stub.stubs(can_edit?: true)
     stub_feature_flags_with(:metadata_transition_phase, '0')
-    @controller.stubs(can_update_metadata?: true)
+    @controller.stubs(can_create_metadata?: true, dataset: dataset_stub)
     put :update, id: 'fake-four', datasetMetadata: mock_v0_dataset_metadata.to_json, format: :json
     assert_response(406)
 
@@ -181,7 +207,9 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
   end
 
   test '(phase 0) update returns 200 success' do
-    @controller.stubs(can_update_metadata?: true)
+    dataset_stub = mock
+    dataset_stub.stubs(can_edit?: true)
+    @controller.stubs(can_create_metadata?: true, dataset: dataset_stub)
     @phidippides.stubs(issue_request: { body: mock_v0_dataset_metadata, status: 200 })
     stub_feature_flags_with(:metadata_transition_phase, '0')
     put :update, id: 'q77b-s2zi', datasetMetadata: mock_v0_dataset_metadata.to_json, format: :json
@@ -189,7 +217,9 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
   end
 
   test '(phase 1 or 2) update returns 204 no content' do
-    @controller.stubs(can_update_metadata?: true)
+    dataset_stub = mock
+    dataset_stub.stubs(can_edit?: true)
+    @controller.stubs(can_create_metadata?: true, dataset: dataset_stub)
     @phidippides.stubs(issue_request: { body: mock_v1_dataset_metadata, status: 200 })
 
     stub_feature_flags_with(:metadata_transition_phase, '1')
@@ -219,39 +249,39 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     assert_response(400)
   end
 
-  test 'can_update_metadata? returns true when logged in and user is dataset owner (publisher)' do
+  test 'can_create_metadata? returns true when logged in and user is dataset owner (publisher)' do
     stub_user = stub(is_owner?: true, is_admin?: false, roleName: 'publisher')
     @controller.stubs(current_user: stub_user, dataset: 'foo')
-    assert(@controller.send(:can_update_metadata?))
+    assert(@controller.send(:can_create_metadata?))
   end
 
-  test 'can_update_metadata? returns true when logged in and user is superadmin' do
+  test 'can_create_metadata? returns true when logged in and user is superadmin' do
     stub_user = stub(is_owner?: false, is_admin?: true, roleName: 'administrator')
     @controller.stubs(current_user: stub_user, dataset: 'foo')
-    assert(@controller.send(:can_update_metadata?))
+    assert(@controller.send(:can_create_metadata?))
   end
 
-  test 'can_update_metadata? returns false when not logged in' do
+  test 'can_create_metadata? returns false when not logged in' do
     @controller.stubs(current_user: nil)
-    refute(@controller.send(:can_update_metadata?))
+    refute(@controller.send(:can_create_metadata?))
   end
 
-  test 'can_update_metadata? returns false when logged in but not dataset owner and not admin or publisher' do
+  test 'can_create_metadata? returns false when logged in but not dataset owner and not admin or publisher' do
     stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'editor')
     @controller.stubs(current_user: stub_user, dataset: 'foo')
-    refute(@controller.send(:can_update_metadata?))
+    refute(@controller.send(:can_create_metadata?))
   end
 
-  test 'can_update_metadata? returns true when logged in as publisher but not dataset owner and not admin' do
+  test 'can_create_metadata? returns true when logged in as publisher but not dataset owner and not admin' do
     stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'publisher')
     @controller.stubs(current_user: stub_user, dataset: 'foo')
-    assert(@controller.send(:can_update_metadata?))
+    assert(@controller.send(:can_create_metadata?))
   end
 
-  test 'can_update_metadata? returns true when logged in as (non-super) admininstrator but not dataset owner' do
+  test 'can_create_metadata? returns true when logged in as (non-super) admininstrator but not dataset owner' do
     stub_user = stub(is_owner?: false, is_admin?: false, roleName: 'administrator')
     @controller.stubs(current_user: stub_user, dataset: 'foo')
-    assert(@controller.send(:can_update_metadata?))
+    assert(@controller.send(:can_create_metadata?))
   end
 
   private

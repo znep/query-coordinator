@@ -63,7 +63,7 @@ class PhidippidesPagesController < ApplicationController
   end
 
   def create
-    return render :nothing => true, :status => '401' unless can_update_metadata? && save_as_enabled?
+    return render :nothing => true, :status => '401' unless can_create_metadata? && save_as_enabled?
 
     begin
       page_metadata = json_parameter(:pageMetadata)
@@ -99,7 +99,7 @@ class PhidippidesPagesController < ApplicationController
   end
 
   def update
-    return render :nothing => true, :status => '401' unless can_update_metadata?
+    return render :nothing => true, :status => '401' unless dataset(params[:id]).can_edit?
 
     begin
       page_metadata = json_parameter(:pageMetadata)
@@ -145,7 +145,7 @@ class PhidippidesPagesController < ApplicationController
     return render :nothing => true, :status => '403'
 
     return render :nothing => true, :status => '403' unless metadata_transition_phase_2?
-    return render :nothing => true, :status => '401' unless can_update_metadata?
+    return render :nothing => true, :status => '401' unless dataset(params[:id]).can_edit?
     return render :nothing => true, :status => '405' unless request.delete?
     return render :nothing => true, :status => '400' unless params[:id].present?
 
@@ -166,8 +166,8 @@ class PhidippidesPagesController < ApplicationController
 
   private
 
-  def dataset
-    View.find(json_parameter(:pageMetadata)['datasetId'])
+  def dataset(id = nil)
+    View.find(id || json_parameter(:pageMetadata)['datasetId'])
   end
 
   def save_as_enabled?

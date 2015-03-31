@@ -1,4 +1,6 @@
-describe("CardDataService", function() {
+describe('CardDataService', function() {
+  'use strict';
+
   var $httpBackend;
   var CardDataService;
   var ConstantsService;
@@ -16,17 +18,15 @@ describe("CardDataService", function() {
    * Takes a uri and returns a regex that matches plausible encodings of it in a uri.
    */
   function toUriRegex(str) {
-    return new RegExp(str.
-                      replace(/([.*()?])/g, '\\$1').
-                      replace(/ /g, '(%20|[+])').
-                      replace(/</g, '%3C').
-                      replace(/>/g, '%3E').
-                      replace(/:/g, '%3A').
-                      replace(/[$,]/g, function(m) {
-                        return encodeURIComponent(m);
-                      }),
-                      'i'
-                     );
+    return new RegExp(
+      str.
+        replace(/([.*()?])/g, '\\$1').
+        replace(/ /g, '(%20|[+])').
+        replace(/[<>:]/g, escape).
+        replace(/'/g, "(%27|')").
+        replace(/[$,]/g, encodeURIComponent),
+      'i'
+    );
   }
 
   function assertReject(response, done) {
@@ -43,7 +43,7 @@ describe("CardDataService", function() {
     CardDataService = $injector.get('CardDataService');
     ConstantsService = $injector.get('Constants');
     $httpBackend = $injector.get('$httpBackend');
-    fakeDataRequestHandler = $httpBackend.whenGET(new RegExp('^/api/id/{0}\\.json\\?'.format(fake4x4)));
+    fakeDataRequestHandler = $httpBackend.whenGET(new RegExp('/api/id/{0}\\.json\\?'.format(fake4x4)));
     fakeDataRequestHandler.respond([
       { name: 'fakeNumberColumn', value: 3 }
     ]);

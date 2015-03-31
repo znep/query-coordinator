@@ -66,12 +66,12 @@
     });
 
     it('should call revertPage when clicked', function() {
-
       var revertButton = createElement(true, false);
-
-      expect(revertButton.scope().revertPage).to.be.called;
+      revertButton.scope().revertPage = sinon.spy();
 
       revertButton.click();
+
+      expect(revertButton.scope().revertPage).to.have.been.called;
     });
 
   });

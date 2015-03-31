@@ -443,8 +443,8 @@
           throw new Error('Cannot create VectorTileManager: options is not an object.');
         }
 
-        if (!options.hasOwnProperty('url') || !_.isString(options.url)) {
-          throw new Error('Cannot create VectorTileManager: options.url is not a string.');
+        if (!options.hasOwnProperty('vectorTileGetter') || !_.isFunction(options.vectorTileGetter)) {
+          throw new Error('Cannot create VectorTileManager: options.vectorTileGetter is not a function.');
         }
 
         if (!options.hasOwnProperty('filter') || !_.isFunction(options.filter)) {
@@ -466,15 +466,16 @@
           url: '',
           headers: {},
           tileSize: 256,
-          debounceMilliseconds: 500
+          debounceMilliseconds: 500,
+          onRenderStart: function() {},
+          onRenderComplete: function() {}
         };
         L.Util.setOptions(this, options);
 
         // Layers present in the protocol buffer responses.
-        this.layers = {};
-        this.outstandingTileDataRequests = {};
+        this.layers = new Map();
+        this.outstandingTileDataRequests = new Map();
         this.map = null;
-        this.outstandingRequestCount = 0;
         this.delayedTileDataRequests = [];
         this.firstRequest = true;
         this.debouncedFlushOutstandingQueue = _.debounce(
@@ -602,67 +603,27 @@
       getTileData: function(tilePoint, zoom, callback) {
         var self = this;
         var tileId = VectorTileUtil.getTileId(tilePoint, zoom);
-        var xhr = new XMLHttpRequest();
-        var url = this.options.url.
-          replace('{z}', zoom).
-          replace('{x}', tilePoint.x).
-          replace('{y}', tilePoint.y);
+        var getterPromise;
 
         // Don't re-request tiles that are already outstanding.
-        if (self.outstandingTileDataRequests.hasOwnProperty(tileId) &&
-          self.outstandingTileDataRequests[tileId] !== null) {
+        if (self.outstandingTileDataRequests.has(tileId) &&
+          self.outstandingTileDataRequests.get(tileId) !== null) {
           return;
         }
-
-        xhr.onload = function() {
-
-          var arrayBuffer = [];
-
-          if (parseInt(xhr.status, 10) === 200) {
-            
-            // IE9 doesn't support binary data in xhr.response, so we have to
-            // use a righteous hack (See: http://stackoverflow.com/a/4330882).
-            if (_.isUndefined(xhr.response) &&
-                _.isDefined(window.VBArray) &&
-                typeof xhr.responseBody === 'unknown') {
-              arrayBuffer = new VBArray(xhr.responseBody).toArray();
-            // Default for well-behaved browsers.
-            } else if (xhr.response) {
-              arrayBuffer = new Uint8Array(xhr.response);
-            }
-
-            // If this is a tile with no features to be drawn, quit early.
-            if (arrayBuffer.length === 0) {
+        getterPromise = self.options.vectorTileGetter(zoom, tilePoint.x, tilePoint.y);
+        self.tileLoading(tileId, getterPromise);
+        getterPromise.then(
+          function(response) {
+            if (_.isEmpty(response.data)) {
               self.tileLoaded(tileId);
-              return;
+            } else {
+              callback.call(self, response.data, tileId);
             }
-
-            // Invoke `callback` within the context of 'self'
-            // (the current instance of VectorTileManager).
-            callback.call(self, arrayBuffer, tileId);
+          },
+          function() {
+            self.tileLoaded(tileId);
           }
-        };
-
-        xhr.onabort = function() {
-          self.tileLoaded(tileId);
-        };
-
-        xhr.onerror = function() {
-          self.tileLoaded(tileId);
-          throw new Error('Could not retrieve protocol buffer tile from tileServer: "{0} {1}"'.format(xhr.status, xhr.response));
-        };
-
-        xhr.open('GET', url, true);
-
-        // Set user-defined headers.
-        _.each(self.options.headers, function(value, key) {
-          xhr.setRequestHeader(key, value);
-        });
-
-        xhr.responseType = 'arraybuffer';
-
-        self.tileLoading(tileId, xhr);
-        xhr.send();
+        );
       },
 
       renderDebugInfo: function(tilePoint, zoom) {
@@ -676,7 +637,7 @@
 
         // Border
         ctx.strokeRect(0, 0, tileSize, tileSize);
-        // Top-left cornder
+        // Top-left corner
         ctx.fillRect(0, 0, 5, 5);
         // Top-right corner
         ctx.fillRect(0, (tileSize - 5), 5, 5);
@@ -712,13 +673,17 @@
         layerIds = Object.keys(vectorTile.layers);
         i = layerIds.length;
 
+        if (i === 0) {
+          tileRenderedCallback();
+          return;
+        }
+
         while (i--) {
           layerId = layerIds[i];
           layer = vectorTile.layers[layerId];
 
-          if (!this.layers.hasOwnProperty(layerId)) {
-
-            this.layers[layerId] = new VectorTileLayer(
+          if (!this.layers.has(layerId)) {
+            var newLayer = new VectorTileLayer(
               this,
               {
                 filter: this.options.filter,
@@ -726,81 +691,47 @@
                 style: this.style,
                 name: layerId
               }
-            ).
-            addTo(this.map);
+            );
 
+            this.layers.set(layerId, newLayer);
+            newLayer.addTo(this.map);
           }
 
-          this.layers[layerId].loadData(layer, tileId, tileRenderedCallback);
+          this.layers.get(layerId).loadData(layer, tileId, tileRenderedCallback);
         }
       },
 
       addChildLayers: function() {
-
-        var layerIds = Object.keys(this.layers);
-        var i = layerIds.length;
-        var layer;
-
-        while (i--) {
-          layer = this.layers[layerIds[i]];
-          if (layer.hasOwnProperty('_map')) {
-            this.map.addLayer(layer);
+        var self = this;
+        this.layers.forEach(function(layer) {
+          if (value.hasOwnProperty('_map')) {
+            self.map.addLayer(layer);
           }
-        }
+        });
       },
 
       removeChildLayers: function() {
-
-        var layerIds = Object.keys(this.layers);
-        var i = layerIds.length;
-        var layer;
-
-        while (i--) {
-          layer = this.layers[layerIds[i]];
-          this.map.removeLayer(layer);
-        }
+        var self = this;
+        this.layers.forEach(function(layer) {
+          self.map.removeLayer(layer);
+        });
       },
 
-      emitRenderStartedEvent: function() {
-        var evt = document.createEvent('HTMLEvents');
-        evt.initEvent('vector-tile-render-started', true, true);
-        this.map._container.dispatchEvent(evt);
-      },
-
-      emitRenderCompleteEvent: function() {
-        var evt = document.createEvent('HTMLEvents');
-        evt.initEvent('vector-tile-render-complete', true, true);
-        this.map._container.dispatchEvent(evt);
-      },
-
-      tileLoading: function(tileId, xhr) {
-        if (this.outstandingRequestCount === 0) {
-          this.emitRenderStartedEvent();
+      tileLoading: function(tileId, getterPromise) {
+        if (this.outstandingTileDataRequests.size === 0) {
+          this.options.onRenderStart();
         }
-
-        if (!this.outstandingTileDataRequests.hasOwnProperty(tileId)) {
-          this.outstandingRequestCount++;
-        }
-
-        if (xhr) {
-          this.outstandingTileDataRequests[tileId] = xhr;
-        } else {
-          this.outstandingTileDataRequests[tileId] = null;
-        }
+        this.outstandingTileDataRequests.set(tileId, getterPromise || null);
       },
 
       tileLoaded: function(tileId) {
-        if (this.outstandingTileDataRequests.hasOwnProperty(tileId)) {
-          delete this.outstandingTileDataRequests[tileId];
-          this.outstandingRequestCount--;
-        }
+        this.outstandingTileDataRequests['delete'](tileId);
 
-        if (this.outstandingRequestCount === 0) {
-          this.emitRenderCompleteEvent();
+        if (this.outstandingTileDataRequests.size === 0) {
+          this.options.onRenderComplete();
         }
       }
     });
-
 
     return {
       create: function(options) {

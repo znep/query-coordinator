@@ -9,7 +9,7 @@ module CommonMetadataMethods
   # Note that bootstrapping old backend datasets is controlled by this as well.
   ROLES_ALLOWED_TO_UPDATE_METADATA = %w(administrator publisher)
 
-  def can_update_metadata?
+  def can_create_metadata?
     current_user &&
       (ROLES_ALLOWED_TO_UPDATE_METADATA.include?(current_user.roleName) ||
       current_user.is_owner?(dataset) ||

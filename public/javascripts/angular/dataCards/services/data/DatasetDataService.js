@@ -1,4 +1,5 @@
 (function() {
+  'use strict';
 
   function DatasetDataService(ServerConfig, http, Assert, Schemas, SchemaConverter) {
 
@@ -8,9 +9,9 @@
       var url;
 
       if(ServerConfig.metadataMigration.datasetMetadata.shouldReadWriteFromNewEndpoint()) {
-        url = '/metadata/v1/dataset/{0}.json'.format(id);
+        url = $.baseUrl('/metadata/v1/dataset/{0}.json'.format(id));
       } else {
-        url = '/dataset_metadata/{0}.json'.format(id);
+        url = $.baseUrl('/dataset_metadata/{0}.json'.format(id));
       }
 
       var config = {
@@ -28,7 +29,7 @@
         "Don't know how to synthesize dataset metadata for v{0} schema".format(schemaVersion)
       );
 
-      return http.get(url, config).
+      return http.get(url.href, config).
         then(function(response) {
           return schemaConversionFunction(response.data);
         }
@@ -50,7 +51,7 @@
 
     this.getGeoJsonInfo = function(id, additionalConfig) {
       Assert(_.isString(id), 'id should be a string');
-      var url = '/resource/{0}.geojson'.format(id);
+      var url = $.baseUrl('/resource/{0}.geojson'.format(id));
 
       var config = _.extend({
         headers: {
@@ -60,8 +61,8 @@
         requester: this
       }, additionalConfig);
 
-      return http.get(url, config);
-    }
+      return http.get(url.href, config);
+    };
 
     this.requesterLabel = function() {
       return 'dataset-data-service';
@@ -75,9 +76,11 @@
 
       var url;
       if(ServerConfig.metadataMigration.datasetMetadata.shouldReadWriteFromNewEndpoint()) {
-        url = '/metadata/v1/dataset/{0}/pages.json'.format(datasetId);
+        url = $.baseUrl('/metadata/v1/dataset/{0}/pages.json'.format(datasetId));
       } else {
-        url = '/dataset_metadata/?id={0}&format=json'.format(datasetId);
+        url = $.baseUrl('/dataset_metadata/');
+        url.searchParams.set('id', datasetId);
+        url.searchParams.set('format', 'json');
       }
 
       var config = {
@@ -89,7 +92,9 @@
         data: '' // Without a blank body, $http will eat Content-Type :(
       };
 
-      return http.get(url, config).then(_.property('data')).then(SchemaConverter.datasetMetadata.pagesForDataset.toV0);
+      return http.get(url.href, config).
+        then(_.property('data')).
+        then(SchemaConverter.datasetMetadata.pagesForDataset.toV0);
     };
 
   }

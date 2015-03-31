@@ -8,8 +8,8 @@
     var v0FakeRequestHandler;
     var v1FakeRequestHandler;
     var fake4x4 = 'fake-data';
-    var v0PageDataUrl = '/page_metadata/{0}.json'.format(fake4x4);
-    var v1PageDataUrl = '/metadata/v1/page/{0}.json'.format(fake4x4);
+    var v0PageDataUrlMatcher = new RegExp('/page_metadata/{0}\\.json'.format(fake4x4));
+    var v1PageDataUrlMatcher = new RegExp('/metadata/v1/page/{0}\\.json'.format(fake4x4));
     // Note that we don't actually care much about the format of
     // the fakePageData. The tests that cover metadata migration
     // look at the urls to which requests are made, not the results.
@@ -45,8 +45,8 @@
       PageDataService = $injector.get('PageDataService');
       testHelpers = $injector.get('testHelpers');
       $httpBackend = $injector.get('$httpBackend');
-      v0FakeRequestHandler = $httpBackend.whenGET(v0PageDataUrl);
-      v1FakeRequestHandler = $httpBackend.whenGET(v1PageDataUrl);
+      v0FakeRequestHandler = $httpBackend.whenGET(v0PageDataUrlMatcher);
+      v1FakeRequestHandler = $httpBackend.whenGET(v1PageDataUrlMatcher);
       v0FakeRequestHandler.respond(fakePageData);
       v1FakeRequestHandler.respond(fakePageData);
     }));
@@ -120,13 +120,13 @@
         });
 
         it('should PUT if an ID is provided', function() {
-          $httpBackend.expectPUT(v0PageDataUrl, { pageMetadata: JSON.stringify(fakePageData) }).respond(200, 'ok');
+          $httpBackend.expectPUT(v0PageDataUrlMatcher, { pageMetadata: JSON.stringify(fakePageData) }).respond(200, 'ok');
           PageDataService.save(fakePageData, fake4x4);
           $httpBackend.flush();
         });
 
         it('should POST if no ID is provided', function() {
-          $httpBackend.expectPOST('/page_metadata.json', { pageMetadata: JSON.stringify(fakePageData) }).respond(200, 'ok');
+          $httpBackend.expectPOST(new RegExp('/page_metadata\\.json'), { pageMetadata: JSON.stringify(fakePageData) }).respond(200, 'ok');
           PageDataService.save(fakePageData);
           $httpBackend.flush();
         });
@@ -139,13 +139,13 @@
         });
 
         it('should PUT if an ID is provided', function() {
-          $httpBackend.expectPUT(v0PageDataUrl, { pageMetadata: JSON.stringify(fakePageData) }).respond(200, 'ok');
+          $httpBackend.expectPUT(v0PageDataUrlMatcher, { pageMetadata: JSON.stringify(fakePageData) }).respond(200, 'ok');
           PageDataService.save(fakePageData, fake4x4);
           $httpBackend.flush();
         });
 
         it('should POST if no ID is provided', function() {
-          $httpBackend.expectPOST('/page_metadata.json', { pageMetadata: JSON.stringify(fakePageData) }).respond(200, 'ok');
+          $httpBackend.expectPOST(new RegExp('/page_metadata\\.json'), { pageMetadata: JSON.stringify(fakePageData) }).respond(200, 'ok');
           PageDataService.save(fakePageData);
           $httpBackend.flush();
         });
@@ -158,13 +158,13 @@
         });
 
         it('should PUT if an ID is provided', function() {
-          $httpBackend.expectPUT(v1PageDataUrl, JSON.stringify(fakePageData)).respond(200, 'ok');
+          $httpBackend.expectPUT(v1PageDataUrlMatcher, JSON.stringify(fakePageData)).respond(200, 'ok');
           PageDataService.save(fakePageData, fake4x4);
           $httpBackend.flush();
         });
 
         it('should POST if no ID is provided', function() {
-          $httpBackend.expectPOST('/metadata/v1/page.json', JSON.stringify(fakePageData)).respond(200, 'ok');
+          $httpBackend.expectPOST(new RegExp('/metadata/v1/page\\.json'), JSON.stringify(fakePageData)).respond(200, 'ok');
           PageDataService.save(fakePageData);
           $httpBackend.flush();
         });

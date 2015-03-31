@@ -14,6 +14,8 @@ module AngularHelper
       'oduxCardTypeMapping' => CARD_TYPE_MAPPING,
       'assetRevisionKey' => asset_revision_key,
       'railsEnv' => Rails.env,
+      'cname' => CurrentDomain.cname,
+      'tileserverHosts' => APP_CONFIG['tileserver_hosts'].present? ? APP_CONFIG['tileserver_hosts'].split(',') : []
     }.tap do |config|
       FeatureFlags.list.each do |feature_key|
         js_feature_key = "#{feature_key[0]}#{feature_key.camelize[1..-1]}"

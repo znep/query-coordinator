@@ -4,12 +4,21 @@
   var forEach = _.forEach;
   var requestIdHeaderName = 'X-Socrata-RequestId';
 
+  function addCSRF(config) {
+    if (!config.xsrfHeaderName) {
+      config.xsrfHeaderName = 'X-CSRF-Token';
+      config.xsrfCookieName = 'socrata-csrf-token';
+    }
+  }
+
   function httpProvider($http, $rootScope, RequestId, $log) {
     function http(requestConfig) {
       var id;
       var eventMetadata = {
         startTime: Date.now()
       };
+
+      addCSRF(requestConfig);
 
       if (_.isDefined(requestConfig.requester)) {
         if (_.isFunction(requestConfig.requester.requesterLabel)) {

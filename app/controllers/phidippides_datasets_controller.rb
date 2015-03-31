@@ -37,15 +37,17 @@ class PhidippidesDatasetsController < ApplicationController
     return render :nothing => true, :status => '400' unless params[:id].present?
 
     if inherit_catalog_lens_permissions?
+      return render :nothing => true, :status => '403' unless can_read_dataset_data?(params[:id])
+
       # Grab permissions from core
       begin
         permissions = fetch_permissions(params[:id])
       rescue NewViewManager::ViewNotFound
         return render :nothing => true, :status => '404'
       rescue NewViewManager::ViewAuthenticationRequired => e
-        return render :json => {error: e.message}, :status => '401'
+        return render :json => { error: e.message }, :status => '401'
       rescue NewViewManager::ViewAccessDenied => e
-        return render :json => {error: e.message}, :status => '403'
+        return render :json => { error: e.message }, :status => '403'
       rescue
         return render :nothing => true, :status => '500'
       end
@@ -81,7 +83,7 @@ class PhidippidesDatasetsController < ApplicationController
   def create
     # By design, cannot create dataset metadata past phase 0
     return render :nothing => true, :status => '404' unless metadata_transition_phase_0?
-    return render :nothing => true, :status => '401' unless can_update_metadata?
+    return render :nothing => true, :status => '401' unless can_create_metadata?
     return render :nothing => true, :status => '400' unless params[:datasetMetadata].present?
 
     begin
@@ -95,7 +97,9 @@ class PhidippidesDatasetsController < ApplicationController
   end
 
   def update
-    return render :nothing => true, :status => '401' unless can_update_metadata?
+    unless (inherit_catalog_lens_permissions? ? dataset(params[:id]).can_edit? : can_create_metadata?)
+      return render :nothing => true, :status => '401'
+    end
 
     begin
       dataset_metadata = json_parameter(:datasetMetadata)
@@ -145,7 +149,17 @@ class PhidippidesDatasetsController < ApplicationController
 
   private
 
-  def dataset
-    View.find(json_parameter(:datasetMetadata)['id'])
+  def dataset(id = nil)
+    View.find(id || json_parameter(:datasetMetadata)['id'])
+  end
+
+  def can_read_dataset_data?(dataset_id)
+    begin
+      JSON.parse(
+        CoreServer::Base.connection.get_request("/id/#{dataset_id}?%24query=select+0+limit+1")
+      )[0]['_0'] == '0'
+    rescue CoreServer::Error
+      false
+    end
   end
 end

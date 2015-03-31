@@ -90,7 +90,7 @@ class PhidippidesPagesController < ApplicationController
       message = "Core error creating catalog lens request ID #{request_id}: #{error}"
       Rails.logger.error(message)
       Airbrake.notify(
-        e,
+        error,
         :error_class => 'NewViewCreation',
         :error_message => message
       )

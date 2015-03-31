@@ -787,8 +787,16 @@ $(function()
     });
 
     function initNewUXLink() {
-        var newUxLink = $('<div class="new-ux-link icon-cards"><div class="icon-close"/>' +
-                          '<a>{0}</a></div>'.format($.t('screens.ds.new_ux_link')));
+        var newUxLink = $('<div class="new-ux-link icon-cards">' +
+                            '<div class="icon-close"/>' +
+                              '<h3>' + $.t('screens.ds.new_ux_title') + '</h3>' +
+                              '<p>' + $.t('screens.ds.new_ux_text') + '</p>' +
+                              '<img class="new-ux-image" src="/images/new-ux-image.png" />' +
+                              '<div class="explore-btn">' +
+                                '<a>' + $.t('screens.ds.new_ux_button') + '</a>' +
+                              '</div>' +
+                            '</div>' +
+                          '</div>');
         var anchor = newUxLink.find('a');
 
         // Restore the state
@@ -806,11 +814,11 @@ $(function()
                 // The dataset metadata endpoint changed in metadata transition phase 1.
                 datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
             }
-            $.get(datasetMetadataUrl.format(blist.dataset.id), function(r) {
+            // $.get(datasetMetadataUrl.format(blist.dataset.id), function(r) {
                 // If we get a 200 response, we can show the link
                 anchor.attr('href', '/view/bootstrap/' + blist.dataset.id);
                 newUxLink.appendTo('body');
-            });
+            // });
         } else {
             // This is an old BE 4x4. Check to see if it's been migrated, and if so, set and show
             // the link.
@@ -833,12 +841,6 @@ $(function()
 
         }).on('click', '.icon-close', function(e) {
             e.stopPropagation();
-            var textElem = $(e.currentTarget).siblings('a');
-            if (!textElem.data('widthSet')) {
-                // Set the expanded width so we can animate to it later
-                textElem.css('width', textElem.css('width'));
-                textElem.data('widthSet', true);
-            }
             // Kick it to the next frame - otherwise, the width doesn't set in time for the
             // start of the animation
             _.defer(function() {

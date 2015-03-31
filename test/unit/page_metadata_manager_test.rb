@@ -611,6 +611,31 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal(2932896, result)
   end
 
+  def test_time_range_in_column_raises_exception_without_min_max
+    manager.expects(:fetch_min_max_date_in_column).with('four-four', 'theFieldName').returns({})
+    assert_raises(Phidippides::NoMinMaxInDateColumnException) do
+      manager.send(:time_range_in_column, 'four-four', 'theFieldName')
+    end
+  end
+
+  def test_time_range_in_column_raises_exception_without_min
+    manager.expects(:fetch_min_max_date_in_column).with('four-four', 'theFieldName').returns(
+      'end' => '1984-01-01T00:00:00.000'
+    )
+    assert_raises(Phidippides::NoMinMaxInDateColumnException) do
+      manager.send(:time_range_in_column, 'four-four', 'theFieldName')
+    end
+  end
+
+  def test_time_range_in_column_raises_exception_without_max
+    manager.expects(:fetch_min_max_date_in_column).with('four-four', 'theFieldName').returns(
+      'start' => '1984-01-01T00:00:00.000'
+    )
+    assert_raises(Phidippides::NoMinMaxInDateColumnException) do
+      manager.send(:time_range_in_column, 'four-four', 'theFieldName')
+    end
+  end
+
   def test_fetch_min_max_date_in_column_calls_api
     fake_field_name = 'live-beef'
     fake_dataset_id = 'five-five'

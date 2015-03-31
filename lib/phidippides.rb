@@ -10,6 +10,7 @@ class Phidippides < SocrataHttp
   class NoPageIdException < RuntimeError; end
   class NoDefaultDateTruncFunction < RuntimeError; end
   class NoDatasetMetadataException < RuntimeError; end
+  class NoMinMaxInDateColumnException < RuntimeError; end
 
   # TODO: Should these actually be ignore-case?
   # Note - these are aligned so as to exemplify the differences between the regexes

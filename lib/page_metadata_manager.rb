@@ -263,6 +263,11 @@ class PageMetadataManager
 
   def time_range_in_column(dataset_id, field_name)
     result = fetch_min_max_date_in_column(dataset_id, field_name)
+    unless result['start'] && result['end']
+      raise Phidippides::NoMinMaxInDateColumnException.new(
+        "unable to fetch min and max from dataset_id: #{dataset_id}, field_name: #{field_name}"
+      )
+    end
     (Date.parse(result['end']) - Date.parse(result['start'])).to_i.abs
   end
 

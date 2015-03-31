@@ -13,9 +13,6 @@ class NewUxBootstrapController < ActionController::Base
   # Keep track of the types of cards we added, so we can give a spread
   attr_accessor :skipped_cards_by_type, :added_card_types, :page_metadata_manager
 
-  # CORE-4770 Skip card creation for latitude/longitude column types (because no one cares)
-  COLUMNS_TO_SKIP = %w(latitude longitude lat lng x y)
-
   def initialize(*args)
     @added_card_types = Set.new
     @skipped_cards_by_type = Hash.new { |h, k| h[k] = [] }
@@ -283,6 +280,13 @@ class NewUxBootstrapController < ActionController::Base
     end
   end
 
+  # CORE-4770 Avoid card creation for latitude/longitude column types (because no one cares)
+  def column_ignored_for_bootstrap?(column)
+    columns_to_avoid = FeatureFlags.derive(nil, defined?(request) ? request : nil)[:field_names_to_avoid_during_bootstrap]
+    columns_to_avoid = columns_to_avoid.kind_of?(Array) ? columns_to_avoid.map(&:to_s).map(&:downcase) : []
+    columns_to_avoid.include?(column[:name].downcase) || Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
+  end
+
   def generate_cards_from_dataset_metadata_columns(columns)
     cached_dataset_size = dataset_size
 
@@ -308,8 +312,7 @@ class NewUxBootstrapController < ActionController::Base
       end.compact
     else
       columns.map do |field_name, column|
-        unless (Phidippides::SYSTEM_COLUMN_ID_REGEX.match(field_name) ||
-                COLUMNS_TO_SKIP.include?(column[:name].downcase))
+        unless column_ignored_for_bootstrap?(column)
           card_type = card_type_for(column, :fred, cached_dataset_size)
           if card_type
             card = page_metadata_manager.merge_new_card_data_with_default(

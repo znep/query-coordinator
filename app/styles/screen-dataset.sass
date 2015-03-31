@@ -516,14 +516,19 @@ html, body
     &::before
       font-family: 'socrata-apps'
 
+  &:before
+    display: none
+
   h3
     font-size: 1.5em
     font-weight: normal
     text-align: center
+    margin-bottom: 0.2em
     color: $new-ux-link-color
   p
     font-size: 1em
     text-align: center
+    margin-bottom: 0.2em
     color: $new-ux-link-color-2
 
   .icon-close
@@ -572,8 +577,11 @@ html, body
     background-color: rgba(255, 255, 255, 0.9)
 
   &.collapsed
-    p, .new-ux-image, .explore-btn, .icon-close
+    h3, p, .new-ux-image, .explore-btn, .icon-close
       display: none
+
+    &:before
+      display: block
 
     &.icon-cards
       cursor: pointer

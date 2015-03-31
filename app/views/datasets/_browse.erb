@@ -276,9 +276,6 @@
             <tbody>
               <%- start_index = (opts[:page].to_i - 1) * opts[:limit].to_i + 1 -%>
               <%- opts[:view_results].each_with_index do |v, i| -%>
-                <%- # Skip rendering new view items if we are not exiting tech preview
-                    next if v.new_view? && !feature_flag?(:exit_tech_preview, request)
-                  -%>
                 <%- view_url = view_url(v)
                     begin
                       if !v.merged_metadata['custom_fields'][opts[:url_override].first][opts[:url_override].last].blank?

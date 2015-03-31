@@ -31,14 +31,6 @@ class AnalyticsController < ApplicationController
     render :json => "OK".to_json
   end
 
-  def esri
-    esri_layer_url = params[:esri_layer_url]
-    png_data = open(esri_layer_url, 'Accept' => 'image/webp')
-    content_size = png_data.length
-    Rails.logger.info("Loaded ESRI Layer #{esri_layer_url} from #{request.referer}; received #{content_size} bytes.")
-    render :text => png_data.read, :content_type => 'image/png'
-  end
-
 
   private
 

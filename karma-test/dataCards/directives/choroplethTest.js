@@ -1,4 +1,4 @@
-describe("A Choropleth Directive", function() {
+describe('A Choropleth Directive', function() {
   'use strict';
 
   // Indices into an rgb array, for greater semantics!
@@ -121,6 +121,7 @@ describe("A Choropleth Directive", function() {
    */
   function aggregateDataForValues(values) {
     return cardVisualizationChoroplethHelpers.aggregateGeoJsonData(
+      'geometryLabel',
       createGeoJsonData(values.length),
       values,
       values,

@@ -53,6 +53,7 @@ describe('Customize card dialog', function() {
         $httpBackend.whenGET(/\/resource\/rook-king.json.*/).respond([]);
         $httpBackend.whenGET(/\/resource\/mash-apes.geojson.*/).respond([]);
         $httpBackend.whenGET(/\/resource\/mash-apes.geojson.*/).respond([]);
+        $httpBackend.whenGET(/\/metadata\/v1\/dataset\/mash-apes.json.*/).respond([]);
 
         testHelpers.overrideMetadataMigrationPhase(phase);
       }));

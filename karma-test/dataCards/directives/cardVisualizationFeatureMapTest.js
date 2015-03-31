@@ -1,10 +1,12 @@
 'use strict';
 
-describe("A FeatureMap Card Visualization", function() {
+describe('A FeatureMap Card Visualization', function() {
   var testHelpers;
   var $rootScope;
   var Model;
   var _$provide;
+  var VectorTileData;
+  var dataset;
 
   beforeEach(module('/angular_templates/dataCards/cardVisualizationFeatureMap.html'));
 
@@ -19,23 +21,39 @@ describe("A FeatureMap Card Visualization", function() {
     Model = $injector.get('Model');
     var $q = $injector.get('$q');
     var mockCardDataService = {
-      getFeatureExtent: function(){ return $q.when([]); },
+      getFeatureExtent: function(){ return $q.when([]); }
     };
     _$provide.value('CardDataService', mockCardDataService);
     testHelpers.mockDirective(_$provide, 'featureMap');
+    VectorTileData = $injector.get('VectorTileData');
   }));
 
   afterEach(function(){
     testHelpers.TestDom.clear();
   });
 
-  it('should not crash given an undefined dataset binding', function() {
+  beforeEach(function() {
+    dataset = new Model();
+    dataset.id = 'cras-hing';
+    dataset.defineObservableProperty('rowDisplayUnit', '');
+    sinon.stub(VectorTileData, 'buildTileGetter');
+  });
+
+  afterEach(function() {
+    VectorTileData.buildTileGetter.restore();
+  });
+
+  function buildElement(options) {
+    options = _.defaults({}, options, {
+      dataset: undefined
+    });
+
     var outerScope = $rootScope.$new();
     var html = '<div class="card-visualization"><card-visualization-feature-map model="model" where-clause="whereClause"></card-visualization-feature-map></div>';
 
     var card = new Model();
     var page = new Model();
-    page.defineObservableProperty('dataset', undefined); // The important bit
+    page.defineObservableProperty('dataset', options.dataset); // The important bit
 
     page.defineObservableProperty('baseSoqlFilter', '');
     page.defineObservableProperty('aggregation', {});
@@ -47,17 +65,59 @@ describe("A FeatureMap Card Visualization", function() {
 
     outerScope.model = card;
 
-    var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
+    return {
+      pageModel: page,
+      cardModel: card,
+      scope: outerScope,
+      element: testHelpers.TestDom.compileAndAppend(html, outerScope)
+    }
+  }
 
-    var dataset = new Model();
-    dataset.id = 'cras-hing';
-    dataset.defineObservableProperty('rowDisplayUnit', '');
+  it('should not crash given an undefined dataset binding', function() {
+    var elementInfo = buildElement();
 
-    var featureMapScope = element.find('feature-map').scope();
+    dataset.defineObservableProperty('permissions', '');
 
-    // Use vectorTileGetter as a proxy for FeatureMap's happiness.
-    expect(featureMapScope.vectorTileGetter).to.equal(undefined);
-    page.set('dataset', dataset);
-    expect(featureMapScope.vectorTileGetter).to.not.equal(undefined);
+    elementInfo.element.find('feature-map').scope();
+
+    // Use buildTileGetter as a proxy for FeatureMap's happiness.
+    expect(VectorTileData.buildTileGetter).to.have.not.been.called;
+    elementInfo.pageModel.set('dataset', dataset);
+    expect(VectorTileData.buildTileGetter).to.have.been.called;
+  });
+
+  describe('tileserver sharding', function() {
+    it('should parallelize tileserver requests if dataset is public', function() {
+      dataset.defineObservableProperty('permissions', { isPublic: true });
+
+      buildElement({
+        dataset: dataset
+      });
+      expect(VectorTileData.buildTileGetter).to.have.been.called;
+      var lastCall = VectorTileData.buildTileGetter.lastCall;
+      expect(lastCall).to.have.been.calledWithMatch(sinon.match.any,sinon.match.any, sinon.match.any, sinon.match.falsy);
+    });
+
+    it('should not parallelize tileserver requests if dataset is private', function() {
+      dataset.defineObservableProperty('permissions', { isPublic: false });
+
+      buildElement({
+        dataset: dataset
+      });
+      expect(VectorTileData.buildTileGetter).to.have.been.called;
+      var lastCall = VectorTileData.buildTileGetter.lastCall;
+      expect(lastCall).to.have.been.calledWithMatch(sinon.match.any,sinon.match.any, sinon.match.any, sinon.match.truthy);
+    });
+
+    it('should not parallelize tileserver request if dataset privacy is not available', function() {
+      dataset.defineObservableProperty('permissions', undefined);
+
+      buildElement({
+        dataset: dataset
+      });
+      expect(VectorTileData.buildTileGetter).to.have.been.called;
+      var lastCall = VectorTileData.buildTileGetter.lastCall;
+      expect(lastCall).to.have.been.calledWithMatch(sinon.match.any,sinon.match.any, sinon.match.any, sinon.match.truthy);
+    });
   });
 });

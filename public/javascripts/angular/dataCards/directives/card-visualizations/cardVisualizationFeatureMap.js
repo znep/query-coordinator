@@ -16,6 +16,7 @@
 
         var model = scope.observe('model');
         var dataset = model.observeOnLatest('page.dataset').filter(_.isPresent);
+        var datasetPermissions = dataset.flatMap(function() { return dataset.observeOnLatest('permissions').filter(_.isPresent); });
         var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
         var dataRequests = new Rx.Subject();
         var dataResponses = new Rx.Subject();
@@ -72,13 +73,19 @@
           featureExtentDataSequence.switchLatest()
         );
 
+        var datasetIsPrivate = datasetPermissions.
+          map(function(permissions) {
+            return !permissions.isPublic;
+          }).
+          startWith(true);
+
         var vectorTileGetterSequence = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
           dataset.pluck('id'),
           scope.observe('whereClause'),
-          Rx.Observable.returnValue(false), // TODO: Replace with dataset privacy
-          function(fieldName, datasetId, whereClause, isDatasetPrivate) {
-            return VectorTileData.buildTileGetter(fieldName, datasetId, whereClause, isDatasetPrivate);
+          datasetIsPrivate,
+          function(fieldName, datasetId, whereClause, datasetIsPrivate) {
+            return VectorTileData.buildTileGetter(fieldName, datasetId, whereClause, datasetIsPrivate);
           });
 
         scope.bindObservable('vectorTileGetter', vectorTileGetterSequence);

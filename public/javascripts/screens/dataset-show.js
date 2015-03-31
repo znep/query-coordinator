@@ -805,33 +805,51 @@ $(function()
         }
 
         if (blist.dataset.newBackend) {
-            var datasetMetadataUrl = '/dataset_metadata/{0}.json';
-            // Kratos shapefiles apparently are datasets, but have no dataset metadata, which we
-            // need to create a newux page. So - check that there's dataset metadata before showing
-            // the link.
-            var metadataTransitionPhase = parseInt(blist.feature_flags.metadata_transition_phase, 10);
-            if (metadataTransitionPhase !== 0) {
-                // The dataset metadata endpoint changed in metadata transition phase 1.
-                datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
-            }
-            // $.get(datasetMetadataUrl.format(blist.dataset.id), function(r) {
+          var datasetMetadataUrl = '/dataset_metadata/{0}.json';
+          // Kratos shapefiles apparently are datasets, but have no dataset metadata, which we
+          // need to create a newux page. So - check that there's dataset metadata before showing
+          // the link.
+          var metadataTransitionPhase = parseInt(blist.feature_flags.metadata_transition_phase, 10);
+          if (metadataTransitionPhase !== 0) {
+            // The dataset metadata endpoint changed in metadata transition phase 1.
+            datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
+          }
+
+          function canUpdateMetadata() {
+            return  _.include(['administrator', 'publisher'], blist.currentUser.roleName) ||
+                    blist.dataset.owner.id === blist.currentUserId ||
+                    _.include(blist.currentUser.flags, 'admin');
+          }
+
+          if (canUpdateMetadata()) {
+            // Using AJAX to overwrite X-Requested-With because we were getting a 406 at this endpoint
+            $.ajax({
+              url: datasetMetadataUrl.format(blist.dataset.id),
+              headers: {
+                'X-Requested-With': ' '
+              },
+              success: function() {
                 // If we get a 200 response, we can show the link
                 anchor.attr('href', '/view/bootstrap/' + blist.dataset.id);
                 newUxLink.appendTo('body');
-            // });
-        } else {
-            // This is an old BE 4x4. Check to see if it's been migrated, and if so, set and show
-            // the link.
-            $.get('/api/migrations/' + blist.dataset.id).done(function(data) {
-                if (data.nbeId) {
-                    anchor.attr('href', '/view/bootstrap/' + data.nbeId);
-                    newUxLink.appendTo('body');
-                }
+              }
             });
+          }
+        } else {
+          // This is an old BE 4x4. Check to see if it's been migrated, and if so, set and show
+          // the link.
+          if (canUpdateMetadata()) {
+            $.get('/api/migrations/' + blist.dataset.id).done(function(data) {
+              if (data.nbeId) {
+                anchor.attr('href', '/view/bootstrap/' + data.nbeId);
+                newUxLink.appendTo('body');
+              }
+            });
+          }
         }
 
         // The collapse/expand functionality
-        newUxLink.on('click', function(e) {
+        newUxLink.on('click', function() {
             var $self = $(this);
             // If we're collapsed, expand ourselves.
             if ($self.hasClass('collapsed')) {
@@ -847,7 +865,7 @@ $(function()
                 newUxLink.addClass('collapsed');
                 $.cookies.set('newUxCollapsed', true);
             });
-        }).on('click', 'a', function(e) {
+        }).on('click', 'a', function() {
           // Add some feedback
           var screenOverlay = $('<div class="overlay"/>');
           var spinner = $(

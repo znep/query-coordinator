@@ -132,7 +132,8 @@
               combineLatest(
                 fieldNameObservable,
                 model.observeOnLatest('column.physicalDatatype'),
-                function(fieldName, physicalDatatype) {
+                $scope.observe('whereClause'),
+                function(fieldName, physicalDatatype, externalWhereClause) {
                   var whereClause;
                   if (physicalDatatype === 'number') {
                     var numericSearchValue = parseInt(searchValue, 10);
@@ -144,7 +145,9 @@
                   } else {
                     whereClause = '{0} = "{1}"'.format(fieldName, searchValue);
                   }
-                  return whereClause;
+                  return _.isPresent(externalWhereClause) ?
+                    '{0} AND {1}'.format(externalWhereClause, whereClause) :
+                    whereClause;
                 }).
                 filter(_.isDefined);
           });

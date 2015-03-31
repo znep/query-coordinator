@@ -45,6 +45,48 @@
         "strategyType": "georegion_match_on_point"
       }
     },
+    "latitude": {
+      "name": "LaTiTUde",
+      "description": "column description",
+      "fred": "name",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    "longitude": {
+      "name": "LONGITUDE",
+      "description": "column description",
+      "fred": "name",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    "lat": {
+      "name": "LAT",
+      "description": "column description",
+      "fred": "name",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    "lng": {
+      "name": "Lng",
+      "description": "column description",
+      "fred": "name",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    "x": {
+      "name": "X",
+      "description": "column description",
+      "fred": "name",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    "y": {
+      "name": "y",
+      "description": "column description",
+      "fred": "name",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
     "below": {
       "name": "below min cardinality",
       "description": "below min cardinality description",

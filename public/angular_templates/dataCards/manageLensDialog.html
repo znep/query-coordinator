@@ -1,4 +1,4 @@
-<h2>Manage Lens</h2>
+<h2>Manage</h2>
 <label>Permissions<soc-select></soc-select></label>
 <div class="right">
   <soc-select ng-model="pageVisibility" ng-disabled="selectDisabled">
@@ -7,24 +7,24 @@
   </soc-select>
   <div class="flavor-text">
     <div ng-if="datasetIsPublic && pageVisibility === 'public'">
-      This lens and its source dataset are both <b>Public</b>, so anyone will be able to
-      view this lens, and it will appear in the public catalog.
+      This view and its source dataset are both <b>Public</b>, so anyone will be able to see this
+      view, and it will appear in the public catalog.
     </div>
     <div ng-if="datasetIsPublic && pageVisibility === 'private'">
-      This lens is set to <b>Private</b>, so only those with privileged access will be
-      able to see it. It will not appear in the public catalog.
+      This view is set to <b>Private</b>, so only those with privileged access will be able to see
+      it. It will not appear in the public catalog.
     </div>
     <div ng-if="!datasetIsPublic && pageVisibility === 'private'">
-      Because this lens's source dataset is set to <b>Private</b>, this lens cannot be
-      made Public. Only those with privileged access will be able to see it, and
-      it will not appear in the public catalog.
+      Because this view’s source dataset is set to <b>Private</b>, this view cannot be made Public.
+      Only those with privileged access will be able to see it, and it will not appear in the public
+      catalog.
     </div>
     <div ng-if="!datasetIsPublic && pageVisibility === 'public'">
       <div class="icon-warning"></div>
-      This lens's source dataset is set to <b>Private</b>, so even though this lens is set to
-      Public, anyone without access to the source dataset will not be able to view it. It will still
-      appear in the public catalog. You should consider setting the dataset to Public, or this lens
-      to Private.
+      This view’s source dataset is set to <b>Private</b>, so even though this view is set to
+      Public, anyone without access to the source dataset will not be able to see it. It will still
+      appear in the public catalog. You should consider setting the dataset to Public, or setting
+      this view to Private
     </div>
   </div>
 </div>

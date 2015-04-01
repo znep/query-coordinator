@@ -1,4 +1,5 @@
 describe('Customize card dialog', function() {
+
   'use strict';
 
   var phases = ['0', '1', '2', '3'];
@@ -30,6 +31,13 @@ describe('Customize card dialog', function() {
       var $rootScope;
       var $templateCache;
       var testHelpers;
+      var _$provide;
+
+      beforeEach(function() {
+        module(function($provide) {
+          _$provide = $provide;
+        });
+      });
 
       beforeEach(inject(function($injector) {
         AngularRxExtensions = $injector.get('AngularRxExtensions');
@@ -60,6 +68,7 @@ describe('Customize card dialog', function() {
         $httpBackend.whenGET(/\/metadata\/v1\/dataset\/mash-apes.json.*/).respond([]);
 
         testHelpers.overrideMetadataMigrationPhase(phase);
+        testHelpers.mockDirective(_$provide, 'suggestionToolPanel');
         ServerConfig.override('useCatalogLensPermissions', true);
       }));
 

@@ -89,6 +89,7 @@ describe('card-layout', function() {
         testHelpers.mockDirective(_$provide, 'cardVisualizationInvalid');
         testHelpers.mockDirective(_$provide, 'spinner');
         testHelpers.mockDirective(_$provide, 'customizeCardDialog');
+        testHelpers.mockDirective(_$provide, 'suggestionToolPanel');
 
         testHelpers.overrideMetadataMigrationPhase(phase);
       }));
@@ -1553,9 +1554,7 @@ describe('card-layout', function() {
         expect(cl.element.find('card')).to.have.length(1);
         expect(cl.element.find('card-visualization-table')).to.exist;
       });
-
     });
-
   });
 
 });

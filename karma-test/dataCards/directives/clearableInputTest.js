@@ -131,6 +131,10 @@
 
     });
 
+    xdescribe('custom events', function() {
+      // TODO: Add tests, maybe?
+    });
+
     it('should not be "clearable" initially', function() {
       var element = addValidElement();
       expect(element.find('.clearable-input-wrapper').hasClass('clearable')).to.be.false;

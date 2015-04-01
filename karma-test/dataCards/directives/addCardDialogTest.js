@@ -7,6 +7,16 @@ describe('addCardDialog', function() {
 
     describe('in metadata transition phase {0}'.format(phase), function() {
 
+      beforeEach(module('dataCards'));
+      beforeEach(module('dataCards.directives'));
+      beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
+      beforeEach(module('/angular_templates/dataCards/socSelect.html'));
+      beforeEach(module('/angular_templates/dataCards/card.html'));
+      beforeEach(module('/angular_templates/dataCards/suggestionToolPanel.html'));
+      beforeEach(module('/angular_templates/dataCards/spinner.html'));
+      beforeEach(module('/angular_templates/common/intractableList.html'));
+      beforeEach(module('dataCards/cards.sass'));
+
       var testHelpers;
       var CardV1;
       var Model;

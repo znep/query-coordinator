@@ -325,7 +325,8 @@ body.state-view-cards
           right: 0
           bottom: 0
           left: 0
-          z-index: 1
+          &[data-card-type="table"]
+            z-index: 1
 
           &.dragged
             position: fixed

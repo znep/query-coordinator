@@ -12,6 +12,7 @@ describe('A Search Card Visualization', function() {
   var getSampleDataStub;
   var toggleExpandedSpy;
   var getRowsStub;
+  var _$provide;
 
   beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
@@ -21,6 +22,13 @@ describe('A Search Card Visualization', function() {
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.services'));
   beforeEach(module('dataCards.directives'));
+
+  beforeEach(function() {
+    module(function($provide) {
+      _$provide = $provide;
+    });
+  });
+  
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     rootScope = $injector.get('$rootScope');
@@ -42,6 +50,7 @@ describe('A Search Card Visualization', function() {
     sinon.stub(CardDataService, 'getRowCount').returns(q.when(ROW_COUNT));
     getSampleDataStub = sinon.stub(CardDataService, 'getSampleData');
     getSampleDataStub.returns(q.when([]));
+    testHelpers.mockDirective(_$provide, 'suggestionToolPanel');
   }));
 
   afterEach(function() {
@@ -52,8 +61,8 @@ describe('A Search Card Visualization', function() {
   var createCard = function(fieldName) {
       var fakeDatasetColumns = {
         'filler_column': {
-          name: 'fillter column title',
-          description: 'fillter column description',
+          name: 'filler column title',
+          description: 'filler column description',
           fred: 'text',
           physicalDatatype: 'text',
           defaultCardType: 'search',
@@ -220,12 +229,23 @@ describe('A Search Card Visualization', function() {
           cardData.scope.$apply(function() {
             cardData.element.find('form').triggerHandler('submit');
           });
-          expect(toggleExpandedSpy.calledOnce).to.equal(true);
+
+          expect(toggleExpandedSpy).to.be.calledOnce;
           var $results = cardData.element.find('.search-card-results');
-          expect($results.is(':visible')).to.equal(true);
-          expect($results.find('.search-card-text').is(':visible')).to.equal(false);
-          expect($results.find('card-visualization-table:visible').length).to.equal(0);
+
+          expect($results).to.be.visible;
+          expect($results.find('.search-card-text')).to.not.be.visible;
+          expect($results.find('card-visualization-table:visible')).to.have.length(0);
         });
+      });
+
+      xdescribe('suggestions', function() {
+        var FIELDNAME = 'test_column_number';
+
+        beforeEach(function() {
+          cardData = createCard(FIELDNAME);
+        });
+
       });
     });
 

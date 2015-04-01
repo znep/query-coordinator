@@ -1,0 +1,25 @@
+<div class="suggestion-tool-panel tool-panel downwards light left" ng-show="shouldShow">
+  <div class="tool-panel-main active">
+    <div class="tool-panel-inner-container">
+      <div class="tool-panel-hint"></div>
+
+      <div class="suggestions-status">
+        <div ng-show="suggestionsLoading">
+          <div class="loading-message">Loading suggestions...</div>
+          <spinner class="spinner"></spinner>
+        </div>
+
+        <span>{{suggestionsStatus}}</span>
+      </div>
+
+      <intractable-list ng-if="suggestions" list-data="suggestions"></intractable-list>
+
+      <div class="suggestion-examples">
+        <div>{{suggestionsAdvice}}</div>
+        <div ng-show="showSamples">
+          (Examples: '{{sampleOne}}'<span ng-show="sampleTwo"> or '{{sampleTwo}}'</span>)
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -71,7 +71,7 @@ describe('CardsViewController', function() {
     module(function($provide) {
       _$provide = $provide;
       $provide.value('UserSessionService', mockUserSessionService);
-      $provide.value('WindowOperations', mockWindowOperations)
+      $provide.value('WindowOperations', mockWindowOperations);
       $provide.value('ConfigurationsService', {
         getThemeConfigurationsObservable: function() {
           return Rx.Observable.returnValue([]);
@@ -125,6 +125,7 @@ describe('CardsViewController', function() {
       $httpBackend = _$httpBackend;
       ServerConfig = _ServerConfig;
       PageDataService = _PageDataService;
+      testHelpers.mockDirective(_$provide, 'suggestionToolPanel');
   }]));
 
   function makeContext(datasetId) {

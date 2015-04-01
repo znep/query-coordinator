@@ -139,12 +139,12 @@ class StylesController < ApplicationController
     render :text => CurrentDomain.properties.govstat_css
   end
 
-protected
-  def get_includes
-    result = STYLE_PACKAGES['includes'].map{ |incl| "@import \"#{incl}.sass\"\n" }.join +
-             get_includes_recurse(CurrentDomain.theme, @@site_theme_parse)
+  protected
 
-    return result
+  def get_includes
+    STYLE_PACKAGES['includes'].map do |incl|
+      "@import \"#{incl}.sass\"\n"
+    end.join + get_includes_recurse(CurrentDomain.theme, @@site_theme_parse)
   end
 
   def with_development_cache(stylesheet_filename)
@@ -160,16 +160,30 @@ protected
                     File.new(stylesheet_filename).mtime.to_s + CurrentDomain.cname)
       cache_path = File.join(tmpdir_path, cache_key)
 
+      if stylesheet_or_siblings_newer_than_cache?(stylesheet_filename, cache_path)
+        File.unlink(cache_path)
+      end
+
       if File.exist?(cache_path)
         Rails.logger.info "Reading cached stylesheet from #{cache_path}"
         render :text => File.read(cache_path)
       else
         result = yield
-        File.open(cache_path, 'w'){ |f| f.write result }
+        File.open(cache_path, 'w') { |f| f.write result }
         render :text => result
       end
     else
       render :text => yield
+    end
+  end
+
+  def stylesheet_or_siblings_newer_than_cache?(stylesheet, cached_file)
+    return false unless File.exist?(cached_file)
+
+    cached_file_mtime = File.mtime(cached_file)
+    stylesheet_dir = File.dirname(stylesheet)
+    Dir.glob(File.join("#{stylesheet_dir}/**", "*.*ss")).any? do |file|
+      File.mtime(file) >= cached_file_mtime
     end
   end
 
@@ -227,9 +241,7 @@ protected
               ")\n"
 
     # default background-color for fallback
-    result += "  background-color: #{first_color}\n"
-
-    return result
+    result + "  background-color: #{first_color}\n"
   end
 
   def get_includes_recurse(hash, definition, path = '')
@@ -286,12 +298,18 @@ protected
         end
       end
     end
-    return result
+
+    result
   end
 
   def generate_cache_key(item)
-    return  "%s.%s.%s.%s.%s" % [CurrentDomain.cname, item, REVISION_NUMBER,
-      CurrentDomain.default_config_id, CurrentDomain.default_config_updated_at]
+    "%s.%s.%s.%s.%s" % [
+      CurrentDomain.cname,
+      item,
+      REVISION_NUMBER,
+      CurrentDomain.default_config_id,
+      CurrentDomain.default_config_updated_at
+    ]
   end
 
   @@site_theme_parse = {

@@ -6,6 +6,7 @@ describe('CardDataService', function() {
   var CardDataService;
   var ConstantsService;
   var fakeDataRequestHandler;
+  var testHelpers;
 
   var fake4x4 = 'fake-data';
 
@@ -23,20 +24,23 @@ describe('CardDataService', function() {
     });
   }
 
+  beforeEach(function () {
+    module('dataCards');
+    module('karma-test/dataCards/test-data/cardDataServiceTest/sampleData.json');
+  });
   function normalizeUrl(url) {
     return url.replace(/\s/g, '+').toLowerCase();
   }
-
-  beforeEach(module('dataCards'));
 
   beforeEach(inject(function($injector) {
     CardDataService = $injector.get('CardDataService');
     ConstantsService = $injector.get('Constants');
     $httpBackend = $injector.get('$httpBackend');
+    testHelpers = $injector.get('testHelpers');
     http = $injector.get('http');
     fakeDataRequestHandler = $httpBackend.whenGET(new RegExp('/api/id/{0}\\.json\\?'.format(fake4x4)));
     fakeDataRequestHandler.respond([
-      { name: 'fakeNumberColumn', value: 3 }
+      {name: 'fakeNumberColumn', value: 3}
     ]);
   }));
 
@@ -47,11 +51,21 @@ describe('CardDataService', function() {
 
   describe('getData', function() {
     it('should throw on bad parameters', function() {
-      expect(function() { CardDataService.getData(); }).to.throw();
-      expect(function() { CardDataService.getData({}); }).to.throw();
-      expect(function() { CardDataService.getData('field'); }).to.throw();
-      expect(function() { CardDataService.getData('field', 'dead-beef', {}); }).to.throw();
-      expect(function() { CardDataService.getData('field', {}); }).to.throw();
+      expect(function() {
+        CardDataService.getData();
+      }).to.throw();
+      expect(function() {
+        CardDataService.getData({});
+      }).to.throw();
+      expect(function() {
+        CardDataService.getData('field');
+      }).to.throw();
+      expect(function() {
+        CardDataService.getData('field', 'dead-beef', {});
+      }).to.throw();
+      expect(function() {
+        CardDataService.getData('field', {});
+      }).to.throw();
     });
 
     it('should access the correct dataset', function(done) {
@@ -123,23 +137,23 @@ describe('CardDataService', function() {
 
     it('should parse the aggregation result as a number', function(done) {
       var fakeData = [
-        { name: 'alreadyInt', value: 3 },
-        { name: 'alreadyFloat', value: 3.14 },
-        { name: 'goodNumberString', value: '123' },
-        { name: 'badNumberString', value: 'asd' },
-        { name: 'null', value: null },
-        { name: 'undef', value: undefined }
+        {name: 'alreadyInt', value: 3},
+        {name: 'alreadyFloat', value: 3.14},
+        {name: 'goodNumberString', value: '123'},
+        {name: 'badNumberString', value: 'asd'},
+        {name: 'null', value: null},
+        {name: 'undef', value: undefined}
       ];
       fakeDataRequestHandler.respond(fakeData);
       var response = CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation);
       response.then(function(data) {
         expect(data).to.deep.equal([
-          { name: 'alreadyInt', value: 3 },
-          { name: 'alreadyFloat', value: 3.14 },
-          { name: 'goodNumberString', value: 123 },
-          { name: 'badNumberString', value: NaN },
-          { name: 'null', value: NaN },
-          { name: 'undef', value: NaN }
+          {name: 'alreadyInt', value: 3},
+          {name: 'alreadyFloat', value: 3.14},
+          {name: 'goodNumberString', value: 123},
+          {name: 'badNumberString', value: NaN},
+          {name: 'null', value: NaN},
+          {name: 'undef', value: NaN}
         ]);
         done();
       });
@@ -150,10 +164,18 @@ describe('CardDataService', function() {
 
   describe('getTimelineDomain', function() {
     it('should throw on bad parameters', function() {
-      expect(function() { CardDataService.getTimelineDomain(); }).to.throw();
-      expect(function() { CardDataService.getTimelineDomain({}); }).to.throw();
-      expect(function() { CardDataService.getTimelineDomain('field'); }).to.throw();
-      expect(function() { CardDataService.getTimelineDomain('field', {}); }).to.throw();
+      expect(function() {
+        CardDataService.getTimelineDomain();
+      }).to.throw();
+      expect(function() {
+        CardDataService.getTimelineDomain({});
+      }).to.throw();
+      expect(function() {
+        CardDataService.getTimelineDomain('field');
+      }).to.throw();
+      expect(function() {
+        CardDataService.getTimelineDomain('field', {});
+      }).to.throw();
     });
 
     it('should access the correct dataset', function(done) {
@@ -219,7 +241,7 @@ describe('CardDataService', function() {
       var fakeDataInvalidMin = [{}];
       fakeDataRequestHandler.respond(fakeDataInvalidMin);
       var response = CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4).
-        then(function(response){
+        then(function(response) {
           expect(response).to.equal(undefined);
           done();
         });
@@ -281,12 +303,24 @@ describe('CardDataService', function() {
 
   describe('getTimelineData', function() {
     it('should throw on bad parameters', function() {
-      expect(function() { CardDataService.getTimelineData(); }).to.throw();
-      expect(function() { CardDataService.getTimelineData({}); }).to.throw();
-      expect(function() { CardDataService.getTimelineData('field'); }).to.throw();
-      expect(function() { CardDataService.getTimelineData('field', 'dead-beef', {}); }).to.throw();
-      expect(function() { CardDataService.getTimelineData('field', {}); }).to.throw();
-      expect(function() { CardDataService.getTimelineData('field', 'dead-beef', '', {}); }).to.throw();
+      expect(function() {
+        CardDataService.getTimelineData();
+      }).to.throw();
+      expect(function() {
+        CardDataService.getTimelineData({});
+      }).to.throw();
+      expect(function() {
+        CardDataService.getTimelineData('field');
+      }).to.throw();
+      expect(function() {
+        CardDataService.getTimelineData('field', 'dead-beef', {});
+      }).to.throw();
+      expect(function() {
+        CardDataService.getTimelineData('field', {});
+      }).to.throw();
+      expect(function() {
+        CardDataService.getTimelineData('field', 'dead-beef', '', {});
+      }).to.throw();
     });
 
     it('should access the correct dataset', function(done) {
@@ -315,10 +349,18 @@ describe('CardDataService', function() {
     });
 
     it('should throw given an unsupported precision', function() {
-      expect(function() { CardDataService.getTimelineData('field', 'dead-beef', '', '', countAggregation); }).to.throw();
-      expect(function() { CardDataService.getTimelineData('field', 'dead-beef', '', 'day', countAggregation); }).to.throw(); // correct one is DAY
-      expect(function() { CardDataService.getTimelineData('field', 'dead-beef', '', 'WEEK', countAggregation); }).to.throw();
-      expect(function() { CardDataService.getTimelineData('field', 'dead-beef', '', 'FOO', countAggregation); }).to.throw();
+      expect(function() {
+        CardDataService.getTimelineData('field', 'dead-beef', '', '', countAggregation);
+      }).to.throw();
+      expect(function() {
+        CardDataService.getTimelineData('field', 'dead-beef', '', 'day', countAggregation);
+      }).to.throw(); // correct one is DAY
+      expect(function() {
+        CardDataService.getTimelineData('field', 'dead-beef', '', 'WEEK', countAggregation);
+      }).to.throw();
+      expect(function() {
+        CardDataService.getTimelineData('field', 'dead-beef', '', 'FOO', countAggregation);
+      }).to.throw();
     });
 
     it('should correctly choose the date truncation function', function() {
@@ -508,15 +550,36 @@ describe('CardDataService', function() {
   });
 
   describe('getSampleData', function() {
-    it('should get the sample data', function() {
-      var TEST_FIELD_NAME = 'my test field';
-      var TEST_DATASET_ID = 'wibl-wobl';
-      var getDataStub = sinon.stub(CardDataService, 'getData');
+    var TEST_FIELD_NAME = 'my test field';
+    it('should format the request correctly', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getSampleData(TEST_FIELD_NAME, fake4x4);
+      $httpBackend.flush();
+      var expected = normalizeUrl(
+        'http://localhost:7019/api/id/{0}.json?$query=select {1} as name LIMIT 10'.format(fake4x4, TEST_FIELD_NAME)
+      );
+      expect(decodeURIComponent(httpSpy.firstCall.args[0]).toLowerCase()).to.equal(expected);
+      http.get.restore();
+    });
 
-      CardDataService.getSampleData(TEST_FIELD_NAME, TEST_DATASET_ID);
+    it('should get the sample data', function(done) {
+      var TEST_RESPONSE = testHelpers.getTestJson('karma-test/dataCards/test-data/cardDataServiceTest/sampleData.json');
 
-      expect(getDataStub.calledOnce).to.be.true;
-      expect(getDataStub.calledWith(TEST_FIELD_NAME, TEST_DATASET_ID)).to.be.true;
+      fakeDataRequestHandler.respond(TEST_RESPONSE);
+
+      var samplePromise = CardDataService.getSampleData(TEST_FIELD_NAME, fake4x4);
+      samplePromise.then(
+        function(data) {
+          expect(data).to.have.length(10);
+          expect(data).to.eql(TEST_RESPONSE);
+          done();
+        },
+        function() {
+          throw new Error('Should not fail');
+        }
+      );
+      $httpBackend.flush();
     });
   });
 

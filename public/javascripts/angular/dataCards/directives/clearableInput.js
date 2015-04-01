@@ -50,6 +50,18 @@
             }
           }).takeUntil($scope.observeDestroy(element)).subscribe(clearInput);
 
+        $scope.emitEventsFromObservable(
+          'clearableInput:keypress',
+          Rx.Observable.fromEvent(element.find('input'), 'keypress')
+        );
+        $scope.emitEventsFromObservable(
+          'clearableInput:click',
+          Rx.Observable.fromEvent(element.find('input'), 'click')
+        );
+        $scope.emitEventsFromObservable(
+          'clearbleInput:blur',
+          Rx.Observable.fromEvent(element.find('input'), 'blur')
+        );
         $scope.bindObservable('placeholder', placeholderObservable);
         $scope.bindObservable('hasInput', hasInputObservable);
 

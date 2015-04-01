@@ -52,6 +52,35 @@ $tool-panel-z-index: 1004
       border-width: 20px
       border-color: $tool-panel-bg-color transparent transparent $tool-panel-bg-color
 
+  &.downwards
+    .tool-panel-hint
+      left: -1px
+      border-width: 0 $tool-panel-hint-size $tool-panel-hint-size 0
+
+  &.light
+    .tool-panel-hint
+      border-color: $tool-panel-border-color-light
+      border-width: 0 $tool-panel-hint-size $tool-panel-hint-size 0
+  &.left
+    .tool-panel-hint
+      border: 0
+      top: -($tool-panel-hint-size + 2)
+      &:before, &:after
+        content: ''
+        border-style: solid
+        display: block
+        position: absolute
+        width: 0
+        height: 0
+      &:after
+        border-color: transparent transparent $tool-panel-bg-color-light $tool-panel-bg-color-light
+        border-width: ($tool-panel-hint-size / 2)
+        top: 2px
+        left: 1px
+      &:before
+        border-color: transparent transparent $tool-panel-border-color-light $tool-panel-border-color-light
+        border-width: ($tool-panel-hint-size / 2) + 1
+
   .tool-panel-inner-container
     position: relative
     padding: $tool-panel-padding

@@ -47,25 +47,15 @@
         var rowCountObservable = rowInfoObservable.pluck('filteredRowCount');
         var rowsLoadedObservable = $scope.eventToObservable('rows:loaded').map(pluckEventArg);
 
-        // Observable that emits the current search term when the card is expanded
-        var expandedSearchValueObservable = Rx.Observable.
-          combineLatest(
-            expandedObservable,
-            searchValueObservable,
-            function(expanded, searchValue) {
-              if (expanded) {
-                return searchValue;
-              }
-            }).
-          filter($.isPresent).
-          distinctUntilChanged();
-
         // Observable that emits the current search term on submit
         var submitValueObservable = submitEventObservable.
           map(function() {
             return $scope.search;
           }).
-          filter($.isPresent);
+          filter($.isPresent).
+          merge($scope.eventToObservable('suggestionToolPanel:selectedItem').map(function(event) {
+            return event.args[0];
+          }));
 
         // Whenever a new value is submitted, clear the invalidSearch flag
         submitValueObservable.
@@ -179,7 +169,54 @@
             }).
           startWith(false);
 
-        // Bind observables to scope
+        $scope.$on('suggestionToolPanel:selectedItem', function(event, selectedItem) {
+          $scope.safeApply(function() {
+            $scope.search = selectedItem;
+          });
+        });
+
+        var SPACE_BAR_KEYCODE = 32;
+        var userActionKeypressObservable = $scope.eventToObservable('clearableInput:keypress').
+          filter(function(event) {
+            var which = event.args[0].which;
+            return which > SPACE_BAR_KEYCODE;
+          });
+
+        var userActionClickObservable = $scope.eventToObservable('clearableInput:click').
+          filter(function() {
+            return _.isPresent($scope.searchValue);
+          });
+        var userActionsWhichShouldShowSuggestionPanelObservable = Rx.Observable.merge(
+          userActionKeypressObservable,
+          userActionClickObservable
+        );
+
+        var userActionsWhichShouldHideSuggestionPanelObservable = Rx.Observable.merge(
+          submitValueObservable,
+          hasInputObservable.filter(_.negate),
+          $scope.eventToObservable('clearbleInput:blur').filter(function(event) {
+            // Only hide the suggestion panel if the blur target is not a suggestion.
+            var newFocusTarget = event.args[0].relatedTarget;
+            if (_.isPresent(newFocusTarget)) {
+              var isNewFocusTargetWithinSuggestions = newFocusTarget.closest(element).length > 0;
+              return !isNewFocusTargetWithinSuggestions;
+            } else {
+              return false;
+            }
+          }),
+          Rx.Observable.fromEvent($(document), 'click').takeUntil($scope.observeDestroy(element)).
+          filter(function(event) {
+            var isEventFromBeyondSuggestionToolPanel = element.find('suggestion-tool-panel').find(event.target).length === 0;
+            var isEventFromOutsideTheSearchInputField = element.find('clearable-input').find(event.target).length === 0;
+            return isEventFromBeyondSuggestionToolPanel && isEventFromOutsideTheSearchInputField;
+          })
+        );
+
+        var shouldShowSuggestionPanelObservable = Rx.Observable.merge(
+          userActionsWhichShouldShowSuggestionPanelObservable.map(_.constant(true)),
+          userActionsWhichShouldHideSuggestionPanelObservable.map(_.constant(false))
+        );
+
         $scope.bindObservable('rowCount', clampedRowsLoadedObservable);
         $scope.bindObservable('totalRowCount', rowCountObservable);
         $scope.bindObservable('isInvalidSearch', invalidSearchInputObservable);
@@ -188,6 +225,9 @@
         $scope.bindObservable('noResults', hasRowsObservable.startWith(true));
         $scope.bindObservable('searchWhere', searchWhereObservable);
         $scope.bindObservable('fieldName', fieldNameObservable);
+        $scope.bindObservable('searchValue', searchValueObservable);
+        $scope.bindObservable('dataset', dataset);
+        $scope.bindObservable('shouldShowSuggestionPanel', shouldShowSuggestionPanelObservable);
 
         handleSampleData($scope, model, dataset);
       }

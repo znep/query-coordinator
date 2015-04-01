@@ -128,12 +128,15 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
      */
     observeDestroy: function observeDestroy(element) {
       var elementScope = element.scope();
-      Assert(
-        // In angular, element.scope() actually returns the directive's parent's scope for isolate
-        // scopes, so check both the parent, or this.
-        elementScope === this.$parent || elementScope === this,
-        'element must be this scope\'s element.'
-      );
+      // TODO determine if we want this kind of assertion to stick around.
+      // It fails if there are intermediate elements between the elementScope
+      // and "this" that introduce a new scope.
+      // Assert(
+      //   // In angular, element.scope() actually returns the directive's parent's scope for isolate
+      //   // scopes, so check both the parent, or this.
+      //   elementScope === this.$parent || elementScope === this,
+      //   'element must be this scope\'s element.'
+      // );
       return Rx.Observable.merge(
         this.eventToObservable('$destroy'),
         Rx.Observable.fromEvent(element, '$destroy')

@@ -1,0 +1,32 @@
+<div class="intractable-list">
+  <div class="animated-list">
+    <ul class="list intractable-list-items-with-paging-animation" ng-repeat="currentPage in [pageNumber]">
+      <li ng-repeat="datum in listData | pageLimitTo:currentPage:maxResults track by $index"
+          ng-class="{active: ($index == activeEntryIndex)}"
+          ng-mouseenter="setActive($index, 'mouseHover', this)"
+          ng-click="selectMatch($index)"
+          role="option">
+        {{datum}}
+      </li>
+    </ul>
+  </div>
+
+  <div class="no-focus no-results" ng-if="listData.length == 0">No Results Found</div>
+  <div class="message" ng-show="showCountMessage">
+    <div class="message-count" ng-if="listData && listData.length > 0 && listData.length <= maxResults">Showing all {{listData.length}} results</div>
+    <div class="message-count" ng-if="listData && listData.length > maxResults && canPage('previous') && canPage('next')">Showing {{listStartIndex}}-{{listEndIndex}} of {{listData.length}} results</div>
+    <div class="message-count" ng-if="!canPage('previous') && listData.length > maxResults"> Showing first {{maxResults}} of {{listData.length}} results</div>
+    <div class="message-count" ng-if="!canPage('next') && listData.length > maxResults"> Showing last {{listData.length % maxResults == 0 ? maxResults : listData.length % maxResults }} of {{listData.length}} results</div>
+    <div class="pagination-buttons" ng-show="listData.length > maxResults">
+      <div class="previous" ng-class="{inactive: !canPage('previous')}" ng-click="pageChanged('previous')">
+        previous {{maxResults}}
+        <span class="previous-icon"></span>
+      </div>
+      <div class="next" ng-class="{inactive: !canPage('next')}" ng-click="pageChanged('next')">
+        <span class="next-icon"></span>
+        next {{maxResults}}
+      </div>
+      <div class="clear-fix"></div>
+    </div>
+  </div>
+</div>

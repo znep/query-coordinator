@@ -11,8 +11,9 @@ module AngularHelper
   def angular_config
     {
       'statsdEnabled' => APP_CONFIG['statsd_enabled'],
-      'oduxCardTypeMapping' => JSON(File.read("#{Rails.root}/lib/data/card-type-mapping.json")),
+      'oduxCardTypeMapping' => CARD_TYPE_MAPPING,
       'assetRevisionKey' => asset_revision_key,
+      'railsEnv' => Rails.env,
       'cname' => CurrentDomain.cname,
       'tileserverHosts' => APP_CONFIG['tileserver_hosts'].present? ? APP_CONFIG['tileserver_hosts'].split(',') : []
     }.tap do |config|

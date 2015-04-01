@@ -3,9 +3,14 @@ class Phidippides < SocrataHttp
   include CommonMetadataTransitionMethods
   include CardTypeMapping
 
+  class NewPageException < RuntimeError; end
+  class PageIdException < RuntimeError; end
   class NoDatasetIdException < RuntimeError; end
   class NoCardsException < RuntimeError; end
   class NoPageIdException < RuntimeError; end
+  class NoDefaultDateTruncFunction < RuntimeError; end
+  class NoDatasetMetadataException < RuntimeError; end
+  class NoMinMaxInDateColumnException < RuntimeError; end
 
   # TODO: Should these actually be ignore-case?
   # Note - these are aligned so as to exemplify the differences between the regexes

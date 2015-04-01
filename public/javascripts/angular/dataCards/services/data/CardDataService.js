@@ -128,7 +128,14 @@
         });
       },
 
-      getTimelineData: function(fieldName, datasetId, whereClauseFragment, precision, aggregationClauseData) {
+      getTimelineData: function(
+        fieldName,
+        datasetId,
+        whereClauseFragment,
+        precision,
+        aggregationClauseData,
+        soqlMetadata
+      ) {
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');
         Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
@@ -140,21 +147,27 @@
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
 
-        var whereClause = "WHERE date_trunc IS NOT NULL AND {0} < '{1}'".
+        var whereClause = "WHERE {0} IS NOT NULL AND {0} < '{1}'".
           format(fieldName, MAX_LEGAL_JAVASCRIPT_DATE_STRING);
         if (!_.isEmpty(whereClauseFragment)) {
           whereClause += ' AND ' + whereClauseFragment;
         }
 
         var aggregationClause = buildAggregationClause(aggregationClauseData);
+        var dateTruncFunction = 'date_trunc_{0}'.format(dateTrunc);
+        if (_.isObject(soqlMetadata)) {
+          soqlMetadata.dateTruncFunctionUsed = dateTruncFunction;
+        }
 
         fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
+
         var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
         url.searchParams.set(
           '$query',
-          'SELECT date_trunc_{2}({0}) AS date_trunc, {3} AS value {1} GROUP BY date_trunc'.
-            format(fieldName, whereClause, dateTrunc, aggregationClause)
+          'SELECT {2}({0}) AS truncated_date, {3} AS value {1} GROUP BY truncated_date'.
+            format(fieldName, whereClause, dateTruncFunction, aggregationClause)
         );
+
         var config = httpConfig.call(this);
 
         return http.get(url.href, config).then(function(response) {
@@ -165,22 +178,23 @@
             return [];
           }
           var data = _.map(response.data, function(d) {
-            d.date_trunc = moment(d.date_trunc, moment.ISO_8601);
+            d.truncated_date = moment(d.truncated_date, moment.ISO_8601);
             return d;
           });
           var invalidDate = _.find(data, function(datum) {
-            return !datum.date_trunc.isValid();
+            return !datum.truncated_date.isValid();
           });
           if (invalidDate) {
             // _i is the original string given in the constructor. Potentially brittle, don't depend on it for anything important.
-            return $q.reject('Bad date: ' + invalidDate.date_trunc._i);
+            return $q.reject('Bad date: ' + invalidDate.truncated_date._i);
           }
-          var dates = _.pluck(data, 'date_trunc');
+
+          var dates = _.pluck(data, 'truncated_date');
           var timeStart = _.min(dates);
           var timeEnd = _.max(dates);
           var timeData = Array(timeEnd.diff(timeStart, precision));
-          _.each(data, function(item) {
-            var date = item.date_trunc;
+          _.each(data, function(item, i) {
+            var date = item.truncated_date;
             var timeSlot = date.diff(timeStart, precision);
             timeData[timeSlot] = { date: date, value: Number(item.value) };
           });

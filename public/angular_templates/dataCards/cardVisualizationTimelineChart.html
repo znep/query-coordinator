@@ -6,7 +6,9 @@
   precision="precision"
   row-display-unit="rowDisplayUnit"
   active-filters="activeFilters"
-  ng-show="!cannotRenderTimelineChart">
+  ng-show="!cannotRenderTimelineChart"
+  unfiltered-soql-rollup-tables-used="unfilteredSoqlRollupTablesUsed"
+  filtered-soql-rollup-tables-used="filteredSoqlRollupTablesUsed">
 </div>
 
 <div class="chart-render-error" ng-if="cannotRenderTimelineChart" ng-switch="cannotRenderTimelineChart.reason">

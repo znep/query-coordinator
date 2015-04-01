@@ -30,6 +30,7 @@
     }
 
     var serviceDefinition = {
+
       getData: function(fieldName, datasetId, whereClauseFragment, aggregationClauseData, options) {
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');
@@ -49,7 +50,7 @@
 
         var aggregationClause = buildAggregationClause(aggregationClauseData);
 
-        fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
+        fieldName = SoqlHelpers.formatFieldName(fieldName);
 
         var queryTemplate;
         if (fieldName === 'name') {
@@ -84,7 +85,7 @@
         Assert(_.isString(datasetId), 'datasetId should be a string');
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-        fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
+        fieldName = SoqlHelpers.formatFieldName(fieldName);
         var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
         url.searchParams.set('$query', "SELECT min({0}) AS start, max({0}) AS end WHERE {0} < '{1}'".
           format(fieldName, MAX_LEGAL_JAVASCRIPT_DATE_STRING));
@@ -159,7 +160,7 @@
           soqlMetadata.dateTruncFunctionUsed = dateTruncFunction;
         }
 
-        fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
+        fieldName = SoqlHelpers.formatFieldName(fieldName);
 
         var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
         url.searchParams.set(
@@ -243,7 +244,7 @@
 
       getSampleData: function(fieldName, datasetId) {
         var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
-        url.searchParams.set('$query', 'select {0} as name LIMIT 10'.format(fieldName));
+        url.searchParams.set('$query', 'select {0} as name LIMIT 10'.format(SoqlHelpers.formatFieldName(fieldName)));
         var config = httpConfig.call(this);
 
         return http.get(url.href, config).then(function(response) {

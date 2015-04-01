@@ -11,6 +11,8 @@ angular.module('dataCards').factory('SoqlHelpers', function(Assert, DateHelpers)
     encodeSoqlDate: encodeSoqlDate,
     encodePrimitive: encodePrimitive,
     replaceHyphensWithUnderscores: replaceHyphensWithUnderscores,
+    wrapInBackticks: wrapInBackticks,
+    formatFieldName: formatFieldName,
     timeIntervalToDateTrunc: timeIntervalToDateTrunc,
     stripWhereClauseFragmentForFieldName: stripWhereClauseFragmentForFieldName
   };
@@ -44,6 +46,14 @@ angular.module('dataCards').factory('SoqlHelpers', function(Assert, DateHelpers)
     return fragment.replace(/\-/g, '_');
   }
 
+  function wrapInBackticks(string) {
+    return '`' + string + '`';
+  }
+
+  function formatFieldName(fieldName) {
+    return wrapInBackticks(replaceHyphensWithUnderscores(fieldName));
+  }
+
   /**
    * @param fieldName - The name of the field for which the where clause will be NOOPed
    * @param whereClause - The existing where clause containing all where clause fragments for all fields
@@ -59,7 +69,6 @@ angular.module('dataCards').factory('SoqlHelpers', function(Assert, DateHelpers)
     }
     Assert(_.isPresent(fieldName), 'fieldName cannot be blank');
     Assert(_.isArray(activeFilters), 'activeFilters must be an array');
-
     var myWhereClauseFragments = _.invoke(activeFilters, 'generateSoqlWhereFragment', fieldName);
 
     _.each(myWhereClauseFragments, function(fragment) {

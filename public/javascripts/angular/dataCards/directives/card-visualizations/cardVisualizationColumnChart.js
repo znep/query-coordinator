@@ -123,9 +123,10 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
         }));
 
       $scope.bindObservable('filterApplied', $scope.observe('whereClause').
-          map(function(whereClause) {
-        return _.isPresent(whereClause);
-      }));
+        map(function(whereClause) {
+          return _.isPresent(whereClause);
+        })
+      );
 
       $scope.bindObservable('expanded', model.observeOnLatest('expanded'));
 

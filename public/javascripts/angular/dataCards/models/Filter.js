@@ -11,7 +11,9 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
   };
 
   BinaryOperatorFilter.prototype.generateSoqlWhereFragment = function(field) {
-    return SoqlHelpers.replaceHyphensWithUnderscores(field) + this.operator + SoqlHelpers.encodePrimitive(this.operand);
+    return SoqlHelpers.formatFieldName(field) +
+      this.operator +
+      SoqlHelpers.encodePrimitive(this.operand);
   };
 
   BinaryOperatorFilter.prototype.serialize = function() {
@@ -39,7 +41,7 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
   };
 
   TimeRangeFilter.prototype.generateSoqlWhereFragment = function(field) {
-    field = SoqlHelpers.replaceHyphensWithUnderscores(field);
+    field = SoqlHelpers.formatFieldName(field);
     var encodedStart = SoqlHelpers.encodePrimitive(this.start);
     var encodedEnd = SoqlHelpers.encodePrimitive(this.end);
     return '{0} >= {1} AND {0} < {2}'.format(field, encodedStart, encodedEnd);
@@ -75,7 +77,7 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
 
   IsNullFilter.prototype.generateSoqlWhereFragment = function(field) {
     var fragment = this.isNull ? 'IS NULL' : 'IS NOT NULL';
-    return SoqlHelpers.replaceHyphensWithUnderscores(field) + ' ' + fragment;
+    return SoqlHelpers.formatFieldName(field) + ' ' + fragment;
   };
 
   IsNullFilter.prototype.serialize = function() {

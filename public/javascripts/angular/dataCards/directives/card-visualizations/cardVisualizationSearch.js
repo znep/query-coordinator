@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CardVisualizationSearch($compile, $http, $q, AngularRxExtensions, CardDataService, Filter) {
+  function CardVisualizationSearch($compile, $http, $q, AngularRxExtensions, CardDataService, Filter, SoqlHelpers) {
 
     function pluckEventArg(val) {
       return val.args[0];
@@ -130,10 +130,10 @@
                     if (_.isNaN(numericSearchValue)) {
                       invalidSearchInputSubject.onNext(true);
                     } else {
-                      whereClause = '{0} = {1}'.format(fieldName, numericSearchValue);
+                      whereClause = '{0} = {1}'.format(SoqlHelpers.formatFieldName(fieldName), numericSearchValue);
                     }
                   } else {
-                    whereClause = '{0} = "{1}"'.format(fieldName, searchValue);
+                    whereClause = '{0} = "{1}"'.format(SoqlHelpers.formatFieldName(fieldName), searchValue);
                   }
                   return _.isPresent(externalWhereClause) ?
                     '{0} AND {1}'.format(externalWhereClause, whereClause) :

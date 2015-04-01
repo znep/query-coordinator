@@ -7,6 +7,7 @@
       scope: {
         shouldShow: '=',
         searchValue: '=',
+        selectedSuggestion: '=',
         dataset: '=',
         fieldName: '=',
         sampleOne: '=',

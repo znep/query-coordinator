@@ -241,8 +241,16 @@
           });
       },
 
-      getSampleData: function(fieldName, datasetId, whereClauseFragment, aggregationClauseData, options) {
-        return serviceDefinition.getData(fieldName, datasetId, whereClauseFragment, aggregationClauseData, options);
+      getSampleData: function(fieldName, datasetId) {
+        var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
+        url.searchParams.set('$query', 'select {0} as name LIMIT 10'.format(fieldName));
+        var config = httpConfig.call(this);
+
+        return http.get(url.href, config).then(function(response) {
+          return _.filter(response.data, function(item) {
+            return _.isPresent(item.name);
+          });
+        });
       },
 
       getRows: function(datasetId, offset, limit, order, timeout, whereClause) {

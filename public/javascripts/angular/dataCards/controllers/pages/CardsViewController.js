@@ -23,7 +23,6 @@
         }
       )
     );
-    $scope.datasetCSVDownloadURL = '#';
 
     // Download menu
     $scope.showDownloadButton = ServerConfig.get('enablePngDownloadUi');
@@ -178,7 +177,9 @@
       }).map(function(response) {
         return response.data.obeId;
       }).
-      catchException(Rx.Observable.never()); // Error means this isn't a migrated dataset. Just don't surface any obeId.
+      // Error means this isn't a migrated dataset. Just don't surface any obeId.
+      catchException(Rx.Observable.never());
+
     $scope.bindObservable('sourceDatasetURL', obeIdObservable.map(function(obeId) {
       // Now construct the source dataset url from the obe id
       return OBE_DATASET_PAGE.format(obeId);
@@ -220,22 +221,6 @@
 
     initDownload($scope, page, obeIdObservable, WindowState, FlyoutService, ServerConfig);
     initManageLens($scope, page);
-
-    /**
-     * If we ever get a 403 from the server while trying to access the dataset, it means we can't view
-     * this page anyway, so redirect to login.
-     */
-    function initPermissionDeniedRedirect(page, userObservable) {
-      Rx.Observable.subscribeLatest(
-        page.observe('dataset.isReadableByCurrentUser').filter(_.negate),
-        userObservable.filter(_.negate),
-        function(isReadable, user) {
-          WindowOperations.navigateTo('/login?referer_redirect=1');
-        }
-      );
-    }
-
-    initPermissionDeniedRedirect(page, currentUserSequence);
 
     /*******************************
     * Filters and the where clause *

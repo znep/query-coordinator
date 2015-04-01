@@ -9,8 +9,8 @@ describe('addCardDialog', function() {
 
       var testHelpers;
       var CardV1;
-      var Page;
       var Model;
+      var Mockumentary;
       var $rootScope;
       var $controller;
       var AngularRxExtensions;
@@ -19,8 +19,6 @@ describe('addCardDialog', function() {
       var $templateCache;
 
       function createDialog() {
-
-        var datasetModel = new Model();
 
         var columns = {
           'spot': {
@@ -33,7 +31,6 @@ describe('addCardDialog', function() {
                 'region': '_mash-apes'
               }
             },
-            'dataset': datasetModel,
             'cardType': 'choropleth',
             'defaultCardType': 'choropleth',
             'availableCardTypes': ['choropleth']
@@ -44,7 +41,6 @@ describe('addCardDialog', function() {
             'fred': 'amount',
             'physicalDatatype': 'number',
             'cardinality': 20,
-            'dataset': datasetModel,
             'cardType': 'column',
             'defaultCardType': 'column',
             'availableCardTypes': ['column', 'search']
@@ -54,7 +50,6 @@ describe('addCardDialog', function() {
             'description': 'Points.',
             'fred': 'location',
             'physicalDatatype': 'point',
-            'dataset': datasetModel,
             'cardType': 'feature',
             'defaultCardType': 'feature',
             'availableCardTypes': ['feature']
@@ -69,7 +64,6 @@ describe('addCardDialog', function() {
                 'region': '_mash-apes'
               }
             },
-            'dataset': datasetModel,
             'cardType': 'choropleth',
             'defaultCardType': 'choropleth',
             'availableCardTypes': ['choropleth']
@@ -80,26 +74,24 @@ describe('addCardDialog', function() {
             'fred': 'text',
             'physicalDatatype': 'text',
             'cardinality': 2000,
-            'dataset': datasetModel,
             'cardType': 'search',
             'defaultCardType': 'search',
             'availableCardTypes': ['column', 'search']
           }
         };
 
-        datasetModel.id = 'rook-king';
-        datasetModel.version = '1';
-        datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
-        datasetModel.defineObservableProperty('columns', columns);
-
-        var pageModel = new Page('asdf-fdsa');
-        pageModel.set('dataset', datasetModel);
-        pageModel.set('baseSoqlFilter', null);
-        pageModel.set('primaryAmountField', null);
-        pageModel.set('primaryAggregation', null);
-        pageModel.set('cards', []);
+        var pageOverrides = {
+          pageId: 'asdf-fdsa',
+          datasetId: 'rook-king'
+        };
+        var datasetOverrides = {
+          id: 'rook-king',
+          columns: columns
+        };
+        var pageModel = Mockumentary.createPage(pageOverrides, datasetOverrides);
 
         // NOTE: This is straight up copied from CardsViewController.
+
         var datasetColumns = Rx.Observable.combineLatest(
           pageModel.observe('dataset'),
           pageModel.observe('dataset.columns'),
@@ -114,8 +106,7 @@ describe('addCardDialog', function() {
                 // We need to ignore 'system' fieldNames that begin with ':' but
                 // retain computed column fieldNames, which (somewhat inconveniently)
                 // begin with ':@'.
-                var matchesSystemColumnsButNotComputed = /\:[\_A-Za-z0-9]/;
-                return columnPair.fieldName.substring(0, 2).match(matchesSystemColumnsButNotComputed) === null &&
+                return columnPair.fieldName.substring(0, 2).match(/\:[\_A-Za-z0-9]/) === null &&
                        columnPair.column.physicalDatatype !== '*';
               }).
               sort(function(a, b) {
@@ -221,7 +212,7 @@ describe('addCardDialog', function() {
         inject([
           'testHelpers',
           'CardV1',
-          'Page',
+          'Mockumentary',
           'Model',
           '$rootScope',
           '$controller',
@@ -232,7 +223,7 @@ describe('addCardDialog', function() {
           function(
             _testHelpers,
             _CardV1,
-            _Page,
+            _Mockumentary,
             _Model,
             _$rootScope,
             _$controller,
@@ -243,7 +234,7 @@ describe('addCardDialog', function() {
 
               testHelpers = _testHelpers;
               CardV1 = _CardV1;
-              Page = _Page,
+              Mockumentary = _Mockumentary;
               Model = _Model;
               $rootScope = _$rootScope;
               $controller = _$controller;

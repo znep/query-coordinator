@@ -1,9 +1,13 @@
 describe('CardsViewController', function() {
   'use strict';
 
-  var Page;
+  var TEST_PAGE_ID = 'boom-poww';
+  var DEFAULT_PAGE_NAME = 'Name';
+  var DEFAULT_PAGE_DESCRIPTION = 'page description';
+
   var CardV1;
-  var DatasetV0;
+  var Page;
+  var Mockumentary;
   var testHelpers;
   var serverMocks;
   var $q;
@@ -17,7 +21,6 @@ describe('CardsViewController', function() {
   var PageDataService;
   var controllerHarness;
   var $scope;
-
   var mockWindowServiceLocationSeq;
   var mockWindowOperations = {
     setTitle: function(title) {
@@ -28,52 +31,8 @@ describe('CardsViewController', function() {
       mockWindowServiceLocationSeq.onNext(url);
     }
   };
-
-  var TEST_PAGE_ID = 'boom-poww';
-  var datasetOwnerId = 'ownr-idxx';
-  var mockDatasetDataService = {
-    getDatasetMetadata: function() {
-      return $q.when({
-        id: 'asdf-fdsa',
-        name: 'test dataset name',
-        defaultAggregateColumn: 'foo',
-        rowDisplayUnit: 'bar',
-        ownerId: datasetOwnerId,
-        updatedAt: '2004-05-20T17:42:55+00:00',
-        columns: {
-          'nonCustomizableFieldName': {
-            'defaultCardType': 'column',
-            'availableCardTypes': ['column', 'search'],
-            'name': 'nonCustomizableFieldName',
-            'physicalDatatype': 'text',
-            'fred': 'text',
-            'description': 'non-customizable test field',
-            'importance': 1
-          },
-          'customizableFieldName': {
-            'defaultCardType': 'feature',
-            'availableCardTypes': ['feature'],
-            'name': 'customizableFieldName',
-            'physicalDatatype': 'point',
-            'fred': 'location',
-            'description': 'customizable test field',
-            'importance': 1
-          }
-        }
-      });
-    },
-    getPagesForDataset: function() {
-      return $q.when({
-        publisher: [],
-        user: []
-      });
-    }
-  };
+  var datasetOwnerId = 'fdsa-asdf';
   var mockUserSessionService = {};
-
-  var mockPageSerializationData = {
-    ping: 'pong'
-  };
 
   beforeEach(module('dataCards'));
   beforeEach(module('socrataCommon.filters'));
@@ -111,7 +70,6 @@ describe('CardsViewController', function() {
   beforeEach(function() {
     module(function($provide) {
       _$provide = $provide;
-      $provide.value('DatasetDataService', mockDatasetDataService);
       $provide.value('UserSessionService', mockUserSessionService);
       $provide.value('WindowOperations', mockWindowOperations)
       $provide.value('ConfigurationsService', {
@@ -123,14 +81,40 @@ describe('CardsViewController', function() {
     });
   });
 
-  beforeEach(inject([
-    '$q', 'CardV1', 'Page', 'DatasetV0', '$rootScope', '$controller', '$document', '$window', 'testHelpers',
-    'serverMocks', '$httpBackend', 'ServerConfig', 'PageDataService',
-    function(_$q, _CardV1, _Page, _DatasetV0, _$rootScope, _$controller, _$document, _$window, _testHelpers,
-             _serverMocks, _$httpBackend, _ServerConfig, _PageDataService) {
+  beforeEach(
+    inject(
+      [
+        '$q',
+        'CardV1',
+        'Page',
+        'Mockumentary',
+        '$rootScope',
+        '$controller',
+        '$document',
+        '$window',
+        'testHelpers',
+        'serverMocks',
+        '$httpBackend',
+        'ServerConfig',
+        'PageDataService',
+        function(
+          _$q,
+          _CardV1,
+          _Page,
+          _Mockumentary,
+          _$rootScope,
+          _$controller,
+          _$document,
+          _$window,
+          _testHelpers,
+          _serverMocks,
+          _$httpBackend,
+          _ServerConfig,
+          _PageDataService) {
+
       CardV1 = _CardV1;
       Page = _Page;
-      DatasetV0 = _DatasetV0;
+      Mockumentary = _Mockumentary;
       $q = _$q;
       $rootScope = _$rootScope;
       $controller = _$controller;
@@ -143,43 +127,32 @@ describe('CardsViewController', function() {
       PageDataService = _PageDataService;
   }]));
 
-  function makeContext() {
-    var $scope = $rootScope.$new();
-    var fakePageId = 'fooo-baar';
-    var pageMetadataPromise = $q.defer();
-
-    sinon.stub(PageDataService, 'getPageMetadata', function() {
-      return pageMetadataPromise.promise
-    });
-
-    var page = new Page(fakePageId);
-    sinon.stub(page, 'serialize', _.constant(mockPageSerializationData));
+  function makeContext(datasetId) {
+    var pageOverrides = {name: DEFAULT_PAGE_NAME, description: DEFAULT_PAGE_DESCRIPTION};
+    var datasetOverrides = {};
+    if (typeof datasetId === 'string') {
+      pageOverrides.datasetId = datasetId;
+      datasetOverrides.id = datasetId;
+    }
+    var page = Mockumentary.createPage(pageOverrides, datasetOverrides);
 
     var currentUserDefer = $q.defer();
     var promise = currentUserDefer.promise;
+
     mockUserSessionService.getCurrentUser = _.constant(promise);
     mockUserSessionService.getCurrentUserObservable = _.constant(Rx.Observable.fromPromise(promise).catch(Rx.Observable.returnValue(null)));
 
+    var $scope = $rootScope.$new();
+
     return {
-      pageMetadataPromise: pageMetadataPromise,
       $scope: $scope,
       page: page,
       currentUserDefer: currentUserDefer
     };
   }
 
-  afterEach(function() {
-    // Restore functions that sinon has mocked out
-    _.each(PageDataService, function(func) {
-      if (func && func.restore) {
-        func.restore();
-      }
-    });
-  });
-
-  function makeController() {
-
-    var context = makeContext();
+  function makeController(datasetId) {
+    var context = makeContext(datasetId);
     var controller = $controller('CardsViewController', context);
     testHelpers.mockDirective(_$provide, 'modalDialog');
     testHelpers.mockDirective(_$provide, 'addCardDialog');
@@ -223,12 +196,13 @@ describe('CardsViewController', function() {
       'fieldName': _.uniqueId('testFieldName'),
       'cardSize': 1,
       'cardType': 'column',
-      'expanded': false
+      'expanded': false,
+      'activeFilters': []
     };
   }
 
   beforeEach(function() {
-    $httpBackend.when('GET', '/api/migrations/fake-fbfr').
+    $httpBackend.when('GET', '/api/migrations/asdf-fdsa').
       respond({
         'controlMapping': '{"destinationDomain":"steve-copy-1.test-socrata.com"}',
         'nbeId': 'fake-fbfr',
@@ -236,28 +210,8 @@ describe('CardsViewController', function() {
         'syncedAt': 1415907664
       });
 
-      mockWindowServiceLocationSeq = new Rx.BehaviorSubject(undefined);
-  });
-
-  describe('not logged in', function() {
-    it('redirects to login when dataset endpoint denies us permission', function(done) {
-      var controllerHarness = makeController();
-      var $scope = controllerHarness.$scope;
-
-      mockWindowServiceLocationSeq.filter(_.identity).subscribe(function(href) {
-        expect(href).to.equal('/login?referer_redirect=1');
-        done();
-      });
-
-      controllerHarness.currentUserDefer.reject({});
-      controllerHarness.pageMetadataPromise.resolve({
-        datasetId: 'fake-fbfr'
-      });
-      $scope.$digest();
-
-      var dataset = $scope.page.getCurrentValue('dataset');
-      dataset.set('isReadableByCurrentUser', false);
-    });
+    mockWindowServiceLocationSeq = new Rx.BehaviorSubject(undefined);
+    ServerConfig.override('useCatalogLensPermissions', true);
   });
 
   describe('page name', function() {
@@ -265,48 +219,22 @@ describe('CardsViewController', function() {
     it('should be used for the document title', function() {
       var controllerHarness = makeController();
       var nameOne = _.uniqueId('name');
-      controllerHarness.pageMetadataPromise.resolve({
-        datasetId: 'fake-fbfr',
-        name: nameOne
-      });
+
       $rootScope.$digest();
-      expect(mockWindowOperations.currentTitle).to.equal('{0} | Socrata'.format(nameOne));
+      expect(mockWindowOperations.currentTitle).to.equal('{0} | Socrata'.format(DEFAULT_PAGE_NAME));
     });
 
     it('should update on the scope when the property changes on the model', function() {
       var controllerHarness = makeController();
       var $scope = controllerHarness.$scope;
+      var newName = _.uniqueId('name');
 
-      var nameOne = _.uniqueId('name');
-      var nameTwo = _.uniqueId('name');
-      controllerHarness.pageMetadataPromise.resolve({
-        datasetId: 'fake-fbfr',
-        name: nameOne
-      });
       $rootScope.$digest();
 
-      expect($scope.pageName).to.equal(nameOne);
+      expect($scope.pageName).to.equal(DEFAULT_PAGE_NAME);
 
-      $scope.page.set('name', nameTwo);
-      expect($scope.pageName).to.equal(nameTwo);
-    });
-
-    it('should default to something falsey', function() {
-      var controllerHarness = makeController();
-
-      var $scope = controllerHarness.$scope;
-
-      var nameTwo = _.uniqueId('name');
-      controllerHarness.pageMetadataPromise.resolve({
-        datasetId: 'fake-fbfr',
-        name: undefined
-      });
-      $rootScope.$digest();
-
-      expect($scope.pageName).not.to.be.ok;
-
-      $scope.page.set('name', nameTwo);
-      expect($scope.pageName).to.equal(nameTwo);
+      $scope.page.set('name', newName);
+      expect($scope.pageName).to.equal(newName);
     });
 
     it('syncs the model and scope references to the page name', function() {
@@ -373,16 +301,10 @@ describe('CardsViewController', function() {
     });
 
     it('grabs the obe 4x4 from the migrations endpoint', function() {
+      $httpBackend.expectGET('/api/migrations/asdf-fdsa');
+
       var controllerHarness = makeController();
       var $scope = controllerHarness.$scope;
-
-      $httpBackend.expectGET('/api/migrations/fake-fbfr');
-
-      controllerHarness.pageMetadataPromise.resolve({
-        datasetId: 'fake-fbfr',
-        name: 'maroon'
-      });
-      $rootScope.$digest();
 
       expect($scope.sourceDatasetURL).not.to.be.ok;
       $httpBackend.flush();
@@ -404,17 +326,11 @@ describe('CardsViewController', function() {
       expect($scope.sourceDatasetURL).to.equal('/d/sooo-old2');
     });
 
-    it('doesn\'t set the sourceDatasetURL if the migration endpoint returns non-200', function() {
-      var controllerHarness = makeController();
+    it("doesn't set the sourceDatasetURL if the migration endpoint returns non-200", function() {
+      $httpBackend.when('GET', '/api/migrations/nach-oids').respond(404);
+
+      var controllerHarness = makeController('nach-oids');
       var $scope = controllerHarness.$scope;
-
-      $httpBackend.expectGET('/api/migrations/fake-fbfr').respond(404, '{"data":{"obeId":1234}}');
-
-      controllerHarness.pageMetadataPromise.resolve({
-        datasetId: 'fake-fbfr',
-        name: 'maroon'
-      });
-      $rootScope.$digest();
 
       expect($scope.sourceDatasetURL).not.to.be.ok;
       $httpBackend.flush();
@@ -442,36 +358,30 @@ describe('CardsViewController', function() {
   describe('page description', function() {
     it('should update on the scope when the property changes on the model', function() {
       var controllerHarness = makeController();
-
       var $scope = controllerHarness.$scope;
+      var newDescription = _.uniqueId('description');
 
-      var descriptionOne = _.uniqueId('description');
-      var descriptionTwo = _.uniqueId('description');
-      controllerHarness.pageMetadataPromise.resolve({
-        datasetId: 'fake-fbfr',
-        description: descriptionOne
-      });
-      $rootScope.$digest();
+      expect($scope.pageDescription).to.equal(DEFAULT_PAGE_DESCRIPTION);
 
-      expect($scope.pageDescription).to.equal(descriptionOne);
-
-      $scope.page.set('description', descriptionTwo);
-      expect($scope.pageDescription).to.equal(descriptionTwo);
+      $scope.page.set('description', newDescription);
+      expect($scope.pageDescription).to.equal(newDescription);
     });
   });
 
   describe('filtering', function() {
+
     function makeMinimalController() {
       var controllerHarness = makeController();
-      var cardBlobs = _.times(3, testCard);
-      controllerHarness.pageMetadataPromise.resolve({
-        datasetId: 'fake-fbfr',
-        name: 'fakeName',
-        cards: cardBlobs
-      });
-      $rootScope.$digest();
+      var cardBlobs = _.times(3, testCard).
+        map(
+          function(cardBlob) {
+            return new CardV1(controllerHarness.page, cardBlob.fieldName, cardBlob);
+          }
+        );
+      controllerHarness.page.set('cards', cardBlobs);
       return controllerHarness;
     }
+
     describe('with no card filters applied', function() {
       describe('with no base filter', function() {
         it('should yield an empty WHERE', function() {
@@ -649,15 +559,20 @@ describe('CardsViewController', function() {
       }
 
       function runCase(isAdmin, isOwner, userRole) {
+        // false, true, 'editor'
         var controllerHarness = makeController();
         var $scope = controllerHarness.$scope;
 
-        controllerHarness.currentUserDefer.resolve(mockUser(isAdmin, isOwner ? datasetOwnerId : 'xnot-ownr', userRole));
-        controllerHarness.pageMetadataPromise.resolve({
-          datasetId: 'fake-fbfr'
-        });
+        controllerHarness.currentUserDefer.resolve(
+          mockUser(
+            isAdmin,
+            isOwner ? datasetOwnerId : 'xnot-ownr',
+            userRole
+          )
+        );
 
         $scope.$digest();
+
         return {
           expect: function(expectation) {
             expect($scope.currentUserHasSaveRight).to.equal(expectation);
@@ -670,9 +585,7 @@ describe('CardsViewController', function() {
         var $scope = controllerHarness.$scope;
 
         controllerHarness.currentUserDefer.reject({});
-        controllerHarness.pageMetadataPromise.resolve({
-          datasetId: 'fake-fbfr'
-        });
+
         $scope.$digest();
         expect($scope.currentUserHasSaveRight).to.be.false;
       });
@@ -715,13 +628,6 @@ describe('CardsViewController', function() {
 
     beforeEach(function() {
       controllerHarness = makeController();
-      // Let serialize actually set the name
-      controllerHarness.page.serialize.restore();
-      controllerHarness.pageMetadataPromise.resolve({
-        datasetId: 'fake-fbfr',
-        name: 'test dataset name'
-      });
-
       $scope = controllerHarness.$scope;
     });
 
@@ -733,7 +639,7 @@ describe('CardsViewController', function() {
       $scope.page.set('name', 'name2');
       expect($scope.hasChanges).to.be.true;
 
-      $scope.page.set('name', 'test dataset name');
+      $scope.page.set('name', DEFAULT_PAGE_NAME);
       expect($scope.hasChanges).not.to.be.ok;
     });
 
@@ -826,25 +732,20 @@ describe('CardsViewController', function() {
     });
 
     it('should become visible when an "add-card-with-size" event is received', function(done) {
+      $scope.allVisualizableColumnsVisualized = false
 
       expect($scope.addCardState.show).to.equal(false);
 
       $scope.$on('add-card-with-size', function() {
-
-        $scope.$apply();
-
         expect($scope.addCardState.show).to.equal(true);
         done();
       });
 
       $rootScope.$broadcast('add-card-with-size', 1);
-
     });
-
   });
 
   describe('customize card modal dialog', function() {
-
     beforeEach(inject(['testHelpers', function(_testHelpers) {
       testHelpers = _testHelpers;
       controllerHarness = makeController();
@@ -860,10 +761,6 @@ describe('CardsViewController', function() {
       var serializedCard;
       var cardModel;
 
-      controllerHarness.pageMetadataPromise.resolve({
-        datasetId: 'fake-fbfr',
-        name: 'some name'
-      });
       controllerHarness.$scope.$digest();
 
       expect($scope.customizeState.show).to.equal(false);
@@ -906,21 +803,15 @@ describe('CardsViewController', function() {
       $scope = controllerHarness.$scope;
     });
 
-    it('should call save on PageDataService with no ID and updated data', function(done) {
-      var expectedPageSerializationData = {
-        ping: 'pong',
-        name: NEW_PAGE_NAME,
-        description: NEW_PAGE_DESCRIPTION
-      };
+    it('should call save on PageDataService with no id and updated data', function(done) {
       var saveStub = sinon.stub(PageDataService, 'save', _.constant(Promise.resolve(
         { data: { pageId: TEST_PAGE_ID } }
       )));
       var saveEvents = $scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
+
       saveEvents.subscribe(function(event) {
         if (event.status === 'saved') {
           expect(saveStub.calledOnce).to.be.true;
-          var saveCall = saveStub.getCall(0);
-          expect(saveCall.calledWithExactly(expectedPageSerializationData)).to.be.true;
           done();
         }
       });
@@ -947,32 +838,15 @@ describe('CardsViewController', function() {
     it('should provide a (correct) csv download link', function() {
       var controllerHarness = makeController();
 
-      expect(controllerHarness.$scope.datasetCSVDownloadURL).to.equal('#');
-
-      controllerHarness.pageMetadataPromise.resolve({
-        datasetId: 'fake-fbfr',
-        name: 'some name'
-      });
-      controllerHarness.$scope.$digest();
-
       expect(controllerHarness.$scope.datasetCSVDownloadURL).
-        to.equal('/api/views/fake-fbfr/rows.csv?accessType=DOWNLOAD');
+        to.equal('/api/views/asdf-fdsa/rows.csv?accessType=DOWNLOAD');
     });
 
     it('uses the obeid for the csv download link if available', function() {
       var controllerHarness = makeController();
-      $httpBackend.expectGET('/api/migrations/fake-fbfr');
-
-      expect(controllerHarness.$scope.datasetCSVDownloadURL).to.equal('#');
-
-      controllerHarness.pageMetadataPromise.resolve({
-        datasetId: 'fake-fbfr',
-        name: 'some name'
-      });
-      controllerHarness.$scope.$digest();
 
       expect(controllerHarness.$scope.datasetCSVDownloadURL).
-        to.equal('/api/views/fake-fbfr/rows.csv?accessType=DOWNLOAD');
+        to.equal('/api/views/asdf-fdsa/rows.csv?accessType=DOWNLOAD');
 
       $httpBackend.flush();
       controllerHarness.$scope.$digest();

@@ -2,6 +2,7 @@ describe('CardV0 model', function() {
   var Model;
   var Page;
   var CardV0;
+  var Mockumentary;
 
   beforeEach(module('dataCards'));
 
@@ -9,6 +10,7 @@ describe('CardV0 model', function() {
     Model = $injector.get('Model');
     CardV0 = $injector.get('CardV0');
     Page = $injector.get('Page');
+    Mockumentary = $injector.get('Mockumentary');
   }));
 
   it('deserialization should return an instance of Card with correct properties set', inject(function(Schemas, Filter) {
@@ -30,8 +32,8 @@ describe('CardV0 model', function() {
     };
 
     var requiredKeys = Schemas.regarding('card_metadata').getSchemaDefinition('0').required;
-
-    var instance = CardV0.deserialize(new Page('fake-asdf'), blob);
+    var pageModel = Mockumentary.createPage({}, {});
+    var instance = CardV0.deserialize(pageModel, blob);
     expect(instance).to.be.instanceof(CardV0);
     expect(instance.page).to.be.instanceof(Page);
 
@@ -72,20 +74,22 @@ describe('CardV0 model', function() {
       'activeFilters': []
     };
 
-    var page = new Page('fake-asdf');
-    var dataset = new Model();
-    dataset.defineObservableProperty('columns', {
-      'test_crime_type': {
-        physicalDatatype: 'number',
-        fred: 'category',
-        cardinality: 10,
-        dataset: dataset
+    var datasetOverrides = {
+      columns: {
+        'test_crime_type': {
+          name: 'name',
+          description: 'description',
+          physicalDatatype: 'number',
+          fred: 'category',
+          cardinality: 10,
+          defaultCardType: 'column',
+          availableCardTypes: ['column', 'search']
+        }
       }
-    });
-    dataset.version = '1';
-    page.set('dataset', dataset);
+    };
+    var pageModel = Mockumentary.createPage({}, datasetOverrides);
 
-    var instance = CardV0.deserialize(page, blob);
+    var instance = CardV0.deserialize(pageModel, blob);
 
     instance.observe('cardType').filter(_.isPresent).subscribe(function(cardType) {
       expect(cardType).to.equal('column');
@@ -105,17 +109,22 @@ describe('CardV0 model', function() {
       'cardType': 'some_magical_card_type'
     };
 
-    var page = new Page('fake-asdf');
-    var dataset = new Model();
-    dataset.defineObservableProperty('columns', {
-      'test_crime_type': {
-        physicalDatatype: 'number',
-        cardinality: 10
+    var datasetOverrides = {
+      columns: {
+        'test_crime_type': {
+          name: 'name',
+          description: 'description',
+          physicalDatatype: 'number',
+          fred: 'category',
+          cardinality: 10,
+          defaultCardType: 'column',
+          availableCardTypes: ['column', 'search']
+        }
       }
-    });
-    page.set('dataset', dataset);
+    };
+    var pageModel = Mockumentary.createPage({}, datasetOverrides);
 
-    var instance = CardV0.deserialize(page, blob);
+    var instance = CardV0.deserialize(pageModel, blob);
 
     instance.observe('cardType').filter(_.isPresent).subscribe(function(cardType) {
       expect(cardType).to.equal('some_magical_card_type');
@@ -137,7 +146,9 @@ describe('CardV0 model', function() {
       'activeFilters': []
     };
 
-    var instance = CardV0.deserialize(new Page('fake-asdf'), blob);
+    var pageModel = Mockumentary.createPage({}, {});
+
+    var instance = CardV0.deserialize(pageModel, blob);
     instance.set('cardSize', '3'); // This property is expected to be an int.
 
     expect(function() { instance.serialize(); }).to.throw();
@@ -154,7 +165,9 @@ describe('CardV0 model', function() {
       'activeFilters': []
     };
 
-    var instance = CardV0.deserialize(new Page('fake-asdf'), blob);
+    var pageModel = Mockumentary.createPage({}, {});
+
+    var instance = CardV0.deserialize(pageModel, blob);
 
     var clone = instance.clone();
 

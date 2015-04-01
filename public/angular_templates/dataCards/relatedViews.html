@@ -1,7 +1,6 @@
 <div class="related-views tool-panel">
 
-  <a
-    type="button"
+  <a type="button"
     ng-class="{ touched: panelActive }"
     class="tool-panel-toggle-btn action-btn"
     ng-click="togglePanel()"
@@ -25,12 +24,11 @@
           <h2>Official Views of this Data</h2>
         </li>
         <li ng-repeat="page in datasetPublisherPages"
-            class="related-views-list-item"
-            scope-bind-from-model="page.name, page.description">
-          <a ng-href="/view/{{page.id}}">
-            <p class="related-view-name">{{name}}</p>
+            class="related-views-list-item">
+          <a ng-href="/view/{{page.pageId}}">
+            <p class="related-view-name">{{page.name}}</p>
 
-            <p class="related-view-description">{{description}}</p>
+            <p class="related-view-description">{{page.description}}</p>
           </a>
         </li>
 

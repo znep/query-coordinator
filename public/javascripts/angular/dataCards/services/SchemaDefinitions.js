@@ -54,8 +54,8 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
           'pages': {
             'type': 'object',
             'properties': {
-              'publisher': { 'type': 'array', 'items': { 'type': 'string', 'pattern': UID_REGEXP } },
-              'user': { 'type': 'array', 'items': { 'type': 'string', 'pattern': UID_REGEXP } }
+              'publisher': { 'type': 'array', 'items': { 'type': 'object' } },
+              'user': { 'type': 'array', 'items': { 'type': 'object' } }
             }
           }
         },
@@ -147,13 +147,13 @@ angular.module('dataCards.services').factory('SchemaDefinitions', function() {
           'pages': {
             'type': 'object',
             'properties': {
-              'publisher': { 'type': 'array', 'items': { 'type': 'string', 'pattern': UID_REGEXP } },
-              'user': { 'type': 'array', 'items': { 'type': 'string', 'pattern': UID_REGEXP } }
+              'publisher': { 'type': 'array', 'items': { 'type': 'object' } },
+              'user': { 'type': 'array', 'items': { 'type': 'object' } }
             }
           },
           'version': {
-            'type': 'string',
-            'enum': [ '1' ] //NOTE: This is not currently required. Hopefully this will change as we coordinate teams.
+            'type': 'number',
+            'enum': [ 1 ] //NOTE: This is not currently required. Hopefully this will change as we coordinate teams.
           }
         },
         'required': [ 'id', 'name', 'ownerId', 'updatedAt', 'columns' ]

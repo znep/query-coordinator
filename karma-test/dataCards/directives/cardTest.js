@@ -15,77 +15,7 @@ describe('card directive', function() {
       var CardV0;
       var CardV1;
       var Page;
-
-      /**
-       * Create Dataset model with options
-       * @param {Object} options
-       * @param {String} [options.version='1']
-       * @param {String} [options.rowDisplayUnit=null]
-       * @param {Object} [options.columns]
-       * @returns {Model}
-       */
-      function createDatasetModel(options) {
-        options = _.defaults({}, options, {
-          rowDisplayUnit: null,
-          version: '1',
-          columns: {
-            myAggregationField: {
-              name: 'My Version 1 Aggregation Field',
-              title: 'My Version 0 Aggregation Field',
-              availableCardTypes: ['column'],
-              defaultCardType: 'column'
-            },
-            myFieldName: {
-              name: 'some title text',
-              description: 'some description text',
-              availableCardTypes: ['column'],
-              defaultCardType: 'column'
-            },
-            '*': {
-              name: 'Table Card',
-              physicalDatatype: '*',
-              fred: '*',
-              availableCardTypes: ['table'],
-              defaultCardType: 'table'
-            }
-          }
-        });
-
-        var datasetModel = new Model();
-
-        _.forEach(options.columns, function(index, key) {
-          options.columns[key]['dataset'] = datasetModel;
-        });
-
-        datasetModel.defineObservableProperty('columns', options.columns);
-        datasetModel.version = options.version;
-        datasetModel.defineObservableProperty('rowDisplayUnit', options.rowDisplayUnit);
-        return datasetModel;
-      }
-
-      /**
-       * Create Page model with options
-       * @param {Model} datasetModel
-       * @param {Object} [options]
-       * @param {String} [options.primaryAggregation=null]
-       * @param {String} [options.primaryAmountField=null]
-       * @returns {Page}
-       */
-      function createPageModel(datasetModel, options) {
-        options = _.defaults({}, options, {
-          primaryAggregation: null,
-          primaryAmountField: null
-        });
-        var pageModel = new Page({
-          pageId: 'page-modl',
-          name: 'name',
-          description: 'description',
-          primaryAmountField: options.primaryAmountField,
-          primaryAggregation: options.primaryAggregation
-        });
-        pageModel.set('dataset', datasetModel);
-        return pageModel;
-      }
+      var Mockumentary;
 
       /**
        * Create Card model with options
@@ -118,8 +48,7 @@ describe('card directive', function() {
           } else {
             cardModel.set('cardType', 'column');
           }
-        }
-        else {
+        } else {
           cardModel.set('cardType', options.cardType);
         }
         return cardModel;
@@ -128,7 +57,6 @@ describe('card directive', function() {
       /**
        * Create and inject a card directive with options
        * @param {Object} [options]
-       * @param {String} [options.version='1']
        * @param {String} [options.phase='0']
        * @param {String} [options.rowDisplayUnit=null]
        * @param {String} [options.primaryAggregation=null]
@@ -141,19 +69,50 @@ describe('card directive', function() {
           fieldName: 'myFieldName',
           primaryAggregation: null,
           primaryAmountField: null,
-          rowDisplayUnit: null,
-          version: '1',
-          phase: '0'
+          rowDisplayUnit: 'row',
+          phase: '0',
+          columns: {
+            'myAggregationField': {
+              name: 'My Version 1 Aggregation Field',
+              description: 'My Version 0 Aggregation Field',
+              physicalDatatype: 'number',
+              availableCardTypes: ['column'],
+              defaultCardType: 'column'
+            },
+            'myFieldName': {
+              name: 'some title text',
+              description: 'some description text',
+              physicalDatatype: 'number',
+              availableCardTypes: ['column'],
+              defaultCardType: 'column'
+            },
+            '*': {
+              name: 'Table Card',
+              description: 'Table Card',
+              physicalDatatype: '*',
+              fred: '*',
+              availableCardTypes: ['table'],
+              defaultCardType: 'table'
+            }
+          }
         });
+
+        var pageOverrides = {
+          primaryAggregation: options.primaryAggregation,
+          primaryAmountField: options.primaryAmountField
+        };
+        var datasetOverrides = {
+          columns: options.columns,
+          rowDisplayUnit: options.rowDisplayUnit,
+        };
+        var pageModel = Mockumentary.createPage(pageOverrides, datasetOverrides);
+
         var scope = $rootScope.$new();
-        var datasetModel = createDatasetModel(options);
-        var pageModel = createPageModel(datasetModel, options);
         scope.cardModel = createCardModel(pageModel, options);
 
         return {
           element: testHelpers.TestDom.compileAndAppend(CARD_HTML, scope),
           scope: scope,
-          datasetModel: datasetModel,
           pageModel: pageModel,
           cardModel : scope.cardModel
         };
@@ -175,7 +134,8 @@ describe('card directive', function() {
           'CardV0',
           'CardV1',
           'Page',
-          function(_$rootScope, _$templateCache, _testHelpers, _Model, _CardV0, _CardV1, _Page) {
+          'Mockumentary',
+          function(_$rootScope, _$templateCache, _testHelpers, _Model, _CardV0, _CardV1, _Page, _Mockumentary) {
 
             $rootScope = _$rootScope;
             testHelpers = _testHelpers;
@@ -183,6 +143,7 @@ describe('card directive', function() {
             CardV0 = _CardV0;
             CardV1 = _CardV1;
             Page = _Page;
+            Mockumentary = _Mockumentary;
 
             // Override the templates of the other directives. We don't need to test them.
             _$templateCache.put('/angular_templates/dataCards/cardVisualizationColumnChart.html', '');
@@ -310,23 +271,24 @@ describe('card directive', function() {
       });
 
       describe('card description text', function() {
-
-        var datasetModel;
+        var directive;
         var initialDescriptionText = 'some description text';
         var truncatedDescriptionElement;
 
         beforeEach(function() {
-          var directive = createDirective({
+          directive = createDirective({
             phase: phase,
             columns: {
               myFieldName: {
+                name: 'name',
                 description: initialDescriptionText,
+                physicalDatatype: 'text',
                 availableCardTypes: ['search'],
                 defaultCardType: 'search'
               }
-            }
+            },
+            version: 1
           });
-          datasetModel = directive.datasetModel;
           truncatedDescriptionElement = directive.element.
             find('.card-text').find('.description-truncated-content');
         });
@@ -343,12 +305,15 @@ describe('card directive', function() {
           it('should be updated when changed', function(done) {
             var newDescriptionText = 'new description';
 
-            datasetModel.set('columns', {
+            directive.pageModel.getCurrentValue('dataset').set('columns', {
               myFieldName: {
-                dataset: datasetModel,
+                name: 'name',
                 description: newDescriptionText,
+                fred: 'text',
+                physicalDatatype: 'text',
                 availableCardTypes: ['search'],
-                defaultCardType: 'search'
+                defaultCardType: 'search',
+                dataset: directive.pageModel.getCurrentValue('dataset')
               }
             });
 
@@ -397,16 +362,6 @@ describe('card directive', function() {
           expect(element.find('.dynamic-title')).to.have.text('Average My Version 1 Aggregation Field by');
         });
 
-        it('should handle the dataset version 0 case', function() {
-          var element = createDirective({
-            version: '0',
-            phase: phase,
-            primaryAggregation: 'sum',
-            primaryAmountField: 'myAggregationField'
-          }).element;
-          expect(element.find('.dynamic-title')).to.have.text('Sum of My Version 0 Aggregation Fields by');
-        });
-
         it('should not display the dynamic title for a table card', function() {
           var element = createDirective({
             phase: phase,
@@ -420,7 +375,10 @@ describe('card directive', function() {
             phase: phase,
             columns: {
               myFieldName: {
+                name: 'name',
                 description: 'search card',
+                fred: 'text',
+                physicalDatatype: 'text',
                 availableCardTypes: ['search'],
                 defaultCardType: 'search'
               }
@@ -436,7 +394,10 @@ describe('card directive', function() {
             phase: phase,
             columns: {
               myFieldName: {
+                name: 'name',
                 description: 'feature',
+                fred: 'location',
+                physicalDatatype: 'point',
                 availableCardTypes: ['feature'],
                 defaultCardType: 'feature'
               }

@@ -1,55 +1,3 @@
-/**
- * @param $injector - The Angular Dependency Injector
- * @param pageId
- * @param onAuthorized - A callback executed when the user is authorized
- * @param onUnauthorized - A callback executed when the user is not authorized
- * @param onUnauthenticated - A callback executed when the user is not
- *   authenticated and we cannot determine if the user is authorized.
- */
-function routeByUserPermissions($injector, options) {
-
-  var PageDataService = $injector.get('PageDataService');
-  var UserSessionService = $injector.get('UserSessionService');
-
-  function resolveUserPermissions() {
-    if (canViewPageMetadata.resolved && userIsAuthenticated.resolved) {
-      if (canViewPageMetadata.value) {
-        options.onAuthorized();
-      } else if (userIsAuthenticated.value) {
-        options.onUnauthorized();
-      } else {
-        options.onUnauthenticated();
-      }
-    }
-  }
-
-  var canViewPageMetadata = { value: undefined, resolved: false };
-  var userIsAuthenticated = { value: undefined, resolved: false };
-
-  var pageData = PageDataService.getPageMetadata(options.pageId).
-    then(
-      function() {
-        canViewPageMetadata = { value: true, resolved: true };
-        resolveUserPermissions();
-      },
-      function() {
-        canViewPageMetadata = { value: false, resolved: true };
-        resolveUserPermissions();
-      });
-
-  var userData = UserSessionService.getCurrentUser().
-    then(
-      function() {
-        userIsAuthenticated = { value: true, resolved: true };
-        resolveUserPermissions();
-      },
-      function() {
-        userIsAuthenticated = { value: false, resolved: true };
-        resolveUserPermissions();
-      });
-
-}
-
 var dependencies = [
   'ui.router',
   'ngSanitize',
@@ -146,44 +94,8 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
     state('view.cards', {
       params: ['id'],
       resolve: {
-        page: function($injector, $state, $stateParams, $q, Page) {
-
-          // Route dataCards page requests according to the user's authentication
-          // and permissions:
-
-          // If the page is public OR the page is private and the user is
-          // authorized to view it, then we instantiate the dataCards page.
-
-          // If the page is private AND the user is unauthorized to view it,
-          // then we redirect to 404.
-
-          // Finally, if the page is private AND the user is unauthenticated,
-          // we redirect to the login page.
-          var pageDataPromise = $q.defer();
-
-          var pageRoutingOptions = {
-            pageId: $stateParams['id'],
-            onAuthorized: function() {
-              pageDataPromise.resolve(new Page($stateParams['id']));
-            },
-            onUnauthorized: function() {
-              $state.go('404');
-            },
-            onUnauthenticated: function () {
-              // Explicitly redirect to the sign-in page including
-              // the option to redirect to the referrer on success.
-              document.location.href = '/login?referer_redirect=1';
-            }
-          }
-
-          routeByUserPermissions($injector, pageRoutingOptions);
-
-          // If we haven't been redirected by the onUnauthorized or
-          // onUnauthenticated handlers, then we need to return the
-          // Page object that has just been instantiated by the
-          // onAuthorized handler. This takes the form of returning
-          // the promise below.
-          return pageDataPromise.promise;
+        page: function(Page, Dataset) {
+          return new Page(pageMetadata, new Dataset(datasetMetadata));
         }
       },
       views: {
@@ -208,23 +120,6 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
           //TODO figure out a way of getting the template dir out of rails.
           templateUrl: '/angular_templates/dataCards/pages/single-card-view.html',
           controller: 'SingleCardViewController'
-        }
-      }
-    }).
-    state('dataset', {
-      template: '<!--Overall chrome--><div ui-view="mainContent"><div>',
-      params: ['datasetId'],
-      resolve: {
-        dataset: function($stateParams, Dataset) {
-          return new Dataset($stateParams['datasetId']);
-        }
-      }
-    }).
-    state('dataset.metadata', {
-      views: {
-        'mainContent': {
-          templateUrl: '/angular_templates/dataCards/pages/dataset-metadata.html',
-          controller: 'DatasetMetadataController'
         }
       }
     });

@@ -6,6 +6,34 @@
  * @param series: a comma-separated list of series to plot
  */
 
+/*
+Base chart visualization colors.
+Reference: http://www.mulinblog.com/a-color-palette-optimized-for-data-visualization/
+
+Colors are evenly distributed over color space.  Prioritizing nuetral colors
+first.
+ */
+var _colors = [
+    '#5DA5DA', // Blue
+    '#FAA43A', // Orange
+    '#60BD68', // Green
+    '#F17CB0', // Pink
+    '#B2912F', // Brown
+    '#B276B2', // Purple
+    '#DECF3F', // Yellow
+    '#F15854', // Red
+    '#4D4D4D'  // Grey
+];
+
+// The old range of colors.
+//var _old_colors = [
+//    '#0071bc',
+//    '#990503',
+//    '#0A8C24',
+//    '#E05D0B',
+//    '#920BE0'
+//];
+
 metricsNS.renderMetricsChart = function(data, $chart, startDate, endDate,
     sliceType, series, options)
 {
@@ -32,13 +60,8 @@ metricsNS.renderMetricsChart = function(data, $chart, startDate, endDate,
         height: $chart.height()
     };
 
-    var color = d3.scale.ordinal().range([
-            '#0071bc',
-            '#990503',
-            '#0A8C24',
-            '#E05D0B',
-            '#920BE0'
-        ]);
+
+    var color = d3.scale.ordinal().range(_colors);
 
     // Translate data into usable structure.
     var dataRange = [moment(data[0].__start__).utc()],
@@ -248,7 +271,7 @@ metricsNS.tooltipFormats = {
     'DAILY': 'dddd MMMM D YYYY', //%A %B %e %Y',
     'WEEKLY': 'MMMM D YYYY', //'%B %e %Y',
     'MONTHLY': 'MMMM YYYY', //'%B %Y',
-    'YEARLY': 'YYYY', //'%Y'
+    'YEARLY': 'YYYY' //'%Y'
 };
 metricsNS.intervalTypes = {
     'HOURLY': 'hour',

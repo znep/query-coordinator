@@ -5,9 +5,6 @@ soc-select
   position: relative
   background-color: $api-panel-border-color
 
-  &[disabled] .arrow-container .arrow
-    display: none
-
   select
     min-width: 10rem
     width: 100%
@@ -49,6 +46,12 @@ soc-select
       border-width: 5px 5px 0 5px
       border-color: white transparent transparent transparent
       pointer-events: none
+
+  select:disabled
+    color: $grey-disabled-color
+
+    + .arrow-container .arrow
+      border-top-color: $grey-disabled-color
 
 input.dark[type="url"]
   color: $dark-input-font-color

@@ -187,7 +187,12 @@
                 dataResponses.onNext(1);
               },
               function(err) {
-                // Do nothing
+                // Show geojson regions request error message.
+                dataResponses.onNext(1);
+
+                scope.safeApply(function() {
+                  scope.geojsonRegionsError = true;
+                });
               }
             );
 
@@ -254,12 +259,22 @@
             model.observeOnLatest('activeFilters'),
             model.pluck('fieldName'),
             dataset.observeOnLatest('columns'),
-            CardVisualizationChoroplethHelpers.aggregateGeoJsonData));
+            CardVisualizationChoroplethHelpers.aggregateGeoJsonData),
+          // The second function argument to bindObservable is called when
+          // there is an error in one of the argument sequences. This can
+          // happen when we reject the regions promise because the extent
+          // query that it depends on fails. We don't actually care about
+          // executing anything but bindObservable will complain if it
+          // encounters an 'unhandled' error so we just _.noop it.
+          _.noop
+        );
 
 
         /*********************************************************
         * Respond to events in the child 'choropleth' directive. *
         *********************************************************/
+
+        scope.geojsonRegionsError = false;
 
         // Handle filter toggle events sent from the choropleth directive.
         scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {

@@ -12,8 +12,8 @@ namespace :test do
   task :karma do
     # Manually enable the coverage reporter. It isn't enabled by default as the instrumentation step makes
     # the product code unintelligible.
-    success = system('karma start karma-test/dataCards/karma-unit.js --browsers PhantomJS --singleRun true --reporters dots,coverage')
-    raise 'Karma test failure' unless success
+    cmd = './node_modules/karma/bin/karma start karma-test/dataCards/karma-unit.js --browsers PhantomJS --singleRun true --reporters dots,coverage'
+    fail($?.exitstatus) unless system(cmd)
   end
 
   def get_supported_browser_launcher_names(critical_only, browser_families)

@@ -7,7 +7,6 @@ describe('A Table Card Visualization', function() {
       'description': 'test column description',
       'fred': 'amount',
       'physicalDatatype': 'number',
-      'isSystemColumn': false,
       'defaultCardType': 'column',
       'availableCardTypes': ['column', 'search']
     },
@@ -15,7 +14,6 @@ describe('A Table Card Visualization', function() {
       'name': 'what time is it',
       'fred': 'time',
       'physicalDatatype': 'timestamp',
-      'isSystemColumn': false,
       'defaultCardType': 'timeline',
       'availableCardTypes': ['timeline']
     },
@@ -23,7 +21,6 @@ describe('A Table Card Visualization', function() {
       'name': 'which time is it',
       'fred': 'time',
       'physicalDatatype': 'floating_timestamp',
-      'isSystemColumn': false,
       'defaultCardType': 'timeline',
       'availableCardTypes': ['timeline']
     },
@@ -39,23 +36,19 @@ describe('A Table Card Visualization', function() {
         'source_columns': ['something_else'],
         'strategy_type': 'georegion_match_on_point'
       },
-      'isSystemColumn': true,
       'defaultCardType': 'column',
       'availableCardTypes': ['column', 'search']
     },
     ':test_system_column': {
       'name': ':test_system_column',
       'fred': 'text',
-      'physicalDatatype': 'row_identifier',
-      'isSystemColumn': true
+      'physicalDatatype': 'row_identifier'
     },
     '*': {
       'name': 'Data Table',
       'description': '',
       'fred': '*',
       'physicalDatatype': '*',
-      'isSystemColumn': false,
-      'fakeColumnGeneratedByFrontEnd': true,
       'defaultCardType': 'table',
       'availableCardTypes': ['table']
     }
@@ -66,8 +59,7 @@ describe('A Table Card Visualization', function() {
   var Model;
   var CardV1;
   var Page;
-  var PageDataService;
-  var pageMetadataPromise;
+  var Mockumentary;
   var $q;
 
   beforeEach(module('/angular_templates/dataCards/table.html'));
@@ -113,13 +105,7 @@ describe('A Table Card Visualization', function() {
     CardV1 = $injector.get('CardV1');
     Page = $injector.get('Page');
     $q = $injector.get('$q');
-    PageDataService = $injector.get('PageDataService');
-    pageMetadataPromise = $q.defer();
-
-    sinon.stub(PageDataService, 'getPageMetadata', function() {
-      return pageMetadataPromise.promise
-    });
-
+    Mockumentary = $injector.get('Mockumentary');
   }));
 
   afterEach(function(){
@@ -137,7 +123,6 @@ describe('A Table Card Visualization', function() {
   }
 
   /**
-   *
    * @param {Object} [options]
    * @param {Array} [options.cardBlobs]
    * @param {String} [options.whereClause]
@@ -151,31 +136,28 @@ describe('A Table Card Visualization', function() {
       whereClause: '',
       firstColumn: undefined,
       columns: COLUMNS,
-      primaryAggregation: 'count'
+      primaryAggregation: 'count',
+      primaryAmountField: null
     });
 
     var model = new Model();
     model.fieldName = '*';
     model.defineObservableProperty('activeFilters', []);
 
-    var datasetModel = new Model();
-    datasetModel.id = 'test-data';
-    datasetModel.version = '1';
-    datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
-    _.each(options.columns, function(column) {
-      column.dataset = datasetModel;
-    });
-
-    datasetModel.defineObservableProperty('columns', options.columns);
-
-    var pageModel = new Page('test-page');
-    pageModel.set('dataset', datasetModel);
-    pageModel.set('baseSoqlFilter', null);
-    pageModel.set('primaryAggregation', options.primaryAggregation);
+    var pageOverrides = {
+      id: 'test-page',
+      cards: options.cardBlobs,
+      primaryAggregation: options.primaryAggregation,
+      primaryAmountField: options.primaryAmountField,
+      baseSoqlFilter: null
+    };
+    var datasetOverrides = {
+      id: 'test-data',
+      columns: options.columns,
+      rowDisplayUnit: 'row'
+    }
+    var pageModel = Mockumentary.createPage(pageOverrides, datasetOverrides);
     model.page = pageModel;
-
-    var cardModels = options.cardBlobs.map(function(cardBlob) { return newCard(pageModel, cardBlob); });
-    model.page.set('cards', cardModels);
 
     var outerScope = rootScope.$new();
     outerScope.whereClause = options.whereClause;
@@ -187,7 +169,6 @@ describe('A Table Card Visualization', function() {
 
     return {
       pageModel: pageModel,
-      datasetModel: datasetModel,
       model: model,
       element: element,
       outerScope: outerScope,
@@ -196,7 +177,6 @@ describe('A Table Card Visualization', function() {
   }
 
   describe('row counts', function() {
-
     it('should be correct for filtered and unfiltered tables', function() {
       var table = createTable();
 
@@ -208,7 +188,6 @@ describe('A Table Card Visualization', function() {
       expect(table.scope.rowCount).to.equal(1337);
       expect(table.scope.filteredRowCount).to.equal(42);
     });
-
   });
 
   describe('default sort', function() {
@@ -278,11 +257,7 @@ describe('A Table Card Visualization', function() {
     });
 
     it('should be correct for sum aggregation', function() {
-      pageMetadataPromise.resolve({
-        primaryAggregation: 'sum',
-        primaryAmountField: 'test_column'
-      });
-      var table = createTable({ primaryAggregation: 'sum' });
+      var table = createTable({ primaryAggregation: 'sum', primaryAmountField: 'test_column' });
       expect(table.scope.defaultSortColumnName).to.equal('test_column');
     })
   });
@@ -290,28 +265,32 @@ describe('A Table Card Visualization', function() {
   describe('custom sort', function() {
 
     it('should include computed columns', function() {
-
-      var cards = [{
-        'fieldName': ':@test_computed_column',
-        'cardSize': 1
-      }, {
-        'fieldName': 'test_column',
-        'cardSize': 2
-      }];
+      var cards = [
+        {
+          fieldName: ':@test_computed_column',
+          cardSize: 1,
+          expanded: false
+        },
+        {
+          fieldName: 'test_column',
+          cardSize: 2,
+          expanded: false
+        }
+      ];
 
       expect(function() {
         createTable({ cardBlobs: cards });
       }).to.not.throw();
-
     });
-
   });
 
   describe('first column', function() {
     it('should be able to be specified', function() {
-      var FIRST_COLUMN_OVERRIDE = 'test_timestamp_column';
-      var table = createTable({ firstColumn: FIRST_COLUMN_OVERRIDE });
-      expect(table.element.find('.th:eq(0)').data('columnId')).to.equal(FIRST_COLUMN_OVERRIDE);
+      var firstColumnOverride = 'test_timestamp_column';
+
+      var table = createTable({ firstColumn: firstColumnOverride });
+
+      expect(table.element.find('.th:eq(0)').data('columnId')).to.equal(firstColumnOverride);
     });
   });
 
@@ -322,25 +301,33 @@ describe('A Table Card Visualization', function() {
         'test_timestamp_column': 1,
         'test_floating_timestamp_column': 3
       };
+
       var newColumns = _.cloneDeep(COLUMNS);
+
       _.each(columnPosition, function(value, key) {
         newColumns[key].position = value;
       });
+
       var table = createTable({ columns: newColumns });
       expect(table.element.find('.th:eq(0)')).to.have.data('columnId', 'test_timestamp_column');
       expect(table.element.find('.th:eq(1)')).to.have.data('columnId', 'test_column');
       expect(table.element.find('.th:eq(2)')).to.have.data('columnId', 'test_floating_timestamp_column');
     });
+
     it('should sort columns without a "position" property to the end', function() {
       var columnPosition = {
         'test_timestamp_column': 2,
         'test_floating_timestamp_column': 1
       };
+
       var newColumns = _.cloneDeep(COLUMNS);
+
       _.each(columnPosition, function(value, key) {
         newColumns[key].position = value;
       });
+
       var table = createTable({ columns: newColumns });
+
       expect(table.element.find('.th:eq(0)')).to.have.data('columnId', 'test_floating_timestamp_column');
       expect(table.element.find('.th:eq(1)')).to.have.data('columnId', 'test_timestamp_column');
       expect(table.element.find('.th:eq(2)')).to.have.data('columnId', 'test_column');
@@ -350,8 +337,11 @@ describe('A Table Card Visualization', function() {
   describe('column visibility', function() {
     it('should hide columns according to "hideInTable" property', function() {
       var newColumns = _.cloneDeep(COLUMNS);
+
       newColumns['test_column'].hideInTable = true;
+
       var table = createTable({ columns: newColumns });
+
       expect(table.element.find('.th')).to.have.length(2);
       expect(table.element.find('.th:eq(0)')).to.have.data('columnId', 'test_timestamp_column');
       expect(table.element.find('.th:eq(1)')).to.have.data('columnId', 'test_floating_timestamp_column');

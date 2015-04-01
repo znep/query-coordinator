@@ -5,7 +5,7 @@
     var $rootScope;
     var $httpBackend;
     var ConfigurationsService;
-    var THEME_URL_MATCHER = new RegExp('/api/configurations\\.json\\?defaultOnly=true&merge=true&type=theme_v3$');
+    var THEME_URL_MATCHER = new RegExp('/api/configurations\\.json.*theme_v3.*');
 
     beforeEach(module('socrataCommon.services'));
 

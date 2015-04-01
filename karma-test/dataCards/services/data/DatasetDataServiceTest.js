@@ -262,16 +262,6 @@ describe('DatasetDataService', function() {
           expect(function() { DatasetDataService.getPagesForDataset(); }).to.throw();
           expect(function() { DatasetDataService.getPagesForDataset('0'); }).to.throw();
         });
-
-        it('should return the correct data', function(done) {
-          var responsePromise = DatasetDataService.getPagesForDataset('0', fake4x4);
-          responsePromise.then(function(response) {
-            // Response should be equvalent to v0 in all cases.
-            expect(response).to.eql(fakePagesForDatasetResponseV0);
-            done();
-          });
-          $httpBackend.flush();
-        })
       });
 
       describe('getGeoJsonInfo', function() {

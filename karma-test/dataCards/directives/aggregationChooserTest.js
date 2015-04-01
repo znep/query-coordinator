@@ -7,33 +7,40 @@ describe('<aggregation-chooser/>', function() {
       name: 'test column title',
       description: 'test column description',
       fred: 'amount',
-      physicalDatatype: 'number'
+      physicalDatatype: 'number',
+      defaultCardType: 'column',
+      availableCardTypes: ['column', 'search']
     },
     column2_number: {
       name: 'second test column title',
       description: 'second test column description',
       fred: 'amount',
-      physicalDatatype: 'number'
+      physicalDatatype: 'number',
+      defaultCardType: 'column',
+      availableCardTypes: ['column', 'search']
     },
     column3_money: {
       name: 'third test column title',
       description: 'third test column description',
       fred: 'amount',
-      physicalDatatype: 'money'
+      physicalDatatype: 'money',
+      defaultCardType: 'column',
+      availableCardTypes: ['column', 'search']
     },
     column4_text: {
       name: 'fourth test column title',
       description: 'fourth test column description',
       fred: 'text',
-      physicalDatatype: 'text'
+      physicalDatatype: 'text',
+      defaultCardType: 'column',
+      availableCardTypes: ['column', 'search']
     }
   };
   var ELEMENT_HTML = '<aggregation-chooser page="page"></aggregation-chooser>';
 
   var testHelpers;
   var $rootScope;
-  var Model;
-  var Page;
+  var Mockumentary;
   var AngularRxExtensions;
   var $q;
   var $compile;
@@ -56,8 +63,7 @@ describe('<aggregation-chooser/>', function() {
     inject(function($injector) {
       testHelpers = $injector.get('testHelpers');
       $rootScope = $injector.get('$rootScope');
-      Model = $injector.get('Model');
-      Page = $injector.get('Page');
+      Mockumentary = $injector.get('Mockumentary');
       AngularRxExtensions = $injector.get('AngularRxExtensions');
       $q = $injector.get('$q');
       $compile = $injector.get('$compile');
@@ -70,70 +76,31 @@ describe('<aggregation-chooser/>', function() {
   });
 
   /**
-   * Create duck-typed Dataset model
-   * @param {Object} options
-   * @returns {Model}
-   */
-  function createDatasetModel(options) {
-    var datasetModel = new Model();
-
-    options = options || {};
-    _.defaults(options, {
-      rowDisplayUnit: DEFAULT_ROW_DISPLAY_UNIT,
-      columns: DEFAULT_COLUMNS
-    });
-    _.forOwn(options.columns, function(column) {
-      column.dataset = datasetModel;
-    });
-    datasetModel.id = 'rant-lerz';
-    datasetModel.fieldName = 'ward';
-    datasetModel.version = '1';
-    datasetModel.defineObservableProperty('rowDisplayUnit', options.rowDisplayUnit);
-    datasetModel.defineObservableProperty('columns', options.columns);
-
-    return datasetModel;
-  }
-
-  /**
-   * Create a page model with defaults
-   * @param {Model} datasetModel
-   * @param {Object} options
-   * @returns {Page}
-   */
-  function createPageModel(datasetModel, options) {
-    options = options || {};
-    _.defaults(options, {
-      primaryAmountField: null,
-      primaryAggregation: null
-    });
-    var pageModel = new Page('asdf-fdsa');
-    pageModel.set('dataset', datasetModel);
-    pageModel.set('baseSoqlFilter', null);
-    pageModel.set('primaryAmountField', options.primaryAmountField);
-    pageModel.set('primaryAggregation', options.primaryAggregation);
-    pageModel.set('cards', []);
-
-    return pageModel;
-  }
-
-  /**
    * Create models for directive
    * @param options
    * @returns {{dataset: *, page: *}}
    */
   function createModels(options) {
     options = options || {};
-    var datasetModel = createDatasetModel({
-      rowDisplayUnits: options.rowDisplayUnits,
-      columns: options.columns
-    });
-    var pageModel = createPageModel(datasetModel, {
-      primaryAmountField: options.primaryAmountField,
-      primaryAggregation: options.primaryAggregation
+
+    _.defaults(options, {
+      primaryAggregation: null,
+      primaryAmountField: null,
+      rowDisplayUnit: DEFAULT_ROW_DISPLAY_UNIT,
+      columns: DEFAULT_COLUMNS
     });
 
+    var pageOptions = {
+      primaryAggregation: options.primaryAggregation,
+      primaryAmountField: options.primaryAmountField
+    }
+    var datasetOptions = {
+      rowDisplayUnit: options.rowDisplayUnit,
+      columns: options.columns
+    };
+    var pageModel = Mockumentary.createPage(pageOptions, datasetOptions);
+
     return {
-      dataset: datasetModel,
       page: pageModel
     };
   }
@@ -158,6 +125,7 @@ describe('<aggregation-chooser/>', function() {
   it('should exist when created', function() {
     var models = createModels();
     var subjectUnderTest = createElement({page: models.page });
+
     expect(subjectUnderTest).to.match('aggregation-chooser');
     expect(subjectUnderTest.find('.aggregation-chooser-static-label').text().toLowerCase()).to.contain(DEFAULT_ROW_DISPLAY_UNIT);
     expect(subjectUnderTest.find('.aggregation-chooser-trigger').text().toLowerCase()).to.contain(DEFAULT_ROW_DISPLAY_UNIT);
@@ -165,10 +133,10 @@ describe('<aggregation-chooser/>', function() {
 
   it('should toggle visibility when clicked', function() {
     var models = createModels();
-    var subjectUnderTest = createElement(
-      { page: models.page }
-    );
+    var subjectUnderTest = createElement({ page: models.page });
+
     testHelpers.fireMouseEvent(subjectUnderTest.find('.aggregation-chooser-trigger')[0], 'click');
+
     expect(subjectUnderTest.isolateScope().panelActive).to.be.true;
     expect(subjectUnderTest.find('.tool-panel-main')).to.have.class('active');
     testHelpers.fireMouseEvent(subjectUnderTest.find('.aggregation-chooser-trigger')[0], 'click');
@@ -179,11 +147,13 @@ describe('<aggregation-chooser/>', function() {
   it('should close when clicked outside of it', function() {
     var models = createModels();
     var subjectUnderTest = createElement({page: models.page });
+
     testHelpers.TestDom.append(subjectUnderTest);
     $rootScope.$apply(function() {
       subjectUnderTest.isolateScope().panelActive = true;
     });
     testHelpers.fireMouseEvent($('#test-root')[0], 'click');
+
     expect(subjectUnderTest.isolateScope().panelActive).to.be.false;
     expect(subjectUnderTest.find('.tool-panel-main')).to.not.have.class('active');
   });
@@ -191,10 +161,12 @@ describe('<aggregation-chooser/>', function() {
   it('should highlight when options are hovered', function() {
     var models = createModels({ primaryAggregation: 'sum', primaryAmountField: 'column1_number'});
     var subjectUnderTest = createElement({page: models.page });
+
     testHelpers.TestDom.append(subjectUnderTest);
     $rootScope.$apply(function() {
       subjectUnderTest.isolateScope().panelActive = true;
     });
+
     var body = document.getElementsByTagName('body')[0];
     var hoverTarget = subjectUnderTest.find('.aggregation-functions [data-aggregation-type="count"]');
     testHelpers.fireMouseEvent(hoverTarget[0], 'mousemove');
@@ -202,9 +174,10 @@ describe('<aggregation-chooser/>', function() {
     expect(subjectUnderTest.find('.aggregation-columns [data-aggregation-type="count"]')).to.have.class('active');
   });
 
-  it('should set attributes on the Page model correctly', function() {
+  it('should set attributes on the page model correctly when changing the primary', function() {
     var models = createModels();
     var subjectUnderTest = createElement({page: models.page });
+
     $rootScope.$apply(function() {
       subjectUnderTest.isolateScope().panelActive = true;
     });
@@ -224,6 +197,7 @@ describe('<aggregation-chooser/>', function() {
   it('should only include money and number columns in the dropdown', function() {
     var models = createModels({ primaryAggregation: 'sum', primaryAmountField: 'column1_number' });
     var subjectUnderTest = createElement({ page: models.page });
+
     var columnEntriesWhereCountIsSupported = subjectUnderTest.find('.aggregation-columns.count');
 
     // 2 number columns (column, column2_number) and 1 money column (column3_money).
@@ -262,6 +236,7 @@ describe('<aggregation-chooser/>', function() {
   it('should select the appropriate aggregation function if one is present', function() {
     var models = createModels({ primaryAggregation: 'sum', primaryAmountField: 'column1_number' });
     var subjectUnderTest = createElement({page: models.page });
+
     expect(subjectUnderTest.find('[data-aggregation-type="sum"]')).to.have.class('active');
     expect(subjectUnderTest.find('[data-column-id="column1_number"]')).to.have.class('active');
   });
@@ -269,13 +244,16 @@ describe('<aggregation-chooser/>', function() {
   it('should display a flyout for invalid selections', function() {
     var models = createModels();
     var subjectUnderTest = createElement({page: models.page });
+
     testHelpers.TestDom.append(subjectUnderTest);
     $rootScope.$apply(function() {
       subjectUnderTest.isolateScope().panelActive = true;
     });
+
     var body = document.getElementsByTagName('body')[0];
     var hoverTarget = subjectUnderTest.find('.aggregation-columns .disabled');
     testHelpers.fireMouseEvent(hoverTarget[0], 'mousemove');
+
     var flyout = $('#uber-flyout');
     expect(flyout).to.exist;
     expect(flyout.text()).to.match(/this column cannot be used with a/i);
@@ -287,19 +265,29 @@ describe('<aggregation-chooser/>', function() {
         pointMap_column: {
           name: 'pointMap_column',
           fred: 'location',
-          physicalDatatype: 'point'
+          physicalDatatype: 'point',
+          defaultCardType: 'feature',
+          availableCardTypes: ['feature']
         },
         search_column: {
           name: 'search_column',
           fred: 'text',
-          physicalDatatype: 'text'
+          physicalDatatype: 'text',
+          defaultCardType: 'search',
+          availableCardTypes: ['column', 'search']
         },
         '*': {
-          fred: '*'
+          name: 'table',
+          description: 'table',
+          fred: '*',
+          physicalDatatype: '*',
+          defaultCardType: 'table',
+          availableCardTypes: ['table']
         }
       }
     });
     var subjectUnderTest = createElement({page: models.page });
+
     testHelpers.TestDom.append(subjectUnderTest);
     expect(subjectUnderTest.find('.aggregation-chooser-static-label')).to.be.visible;
     expect(subjectUnderTest.find('.aggregation-chooser-trigger')).to.not.be.visible;
@@ -310,15 +298,17 @@ describe('<aggregation-chooser/>', function() {
     _.each(_.range(12), function(value, index) {
       var column = {
         name: 'column_{0}'.format(value),
-        title: 'test column title - {0}'.format(value),
         description: 'test column description - {0}'.format(value),
         fred: 'amount',
-        physicalDatatype: index > 6 ? 'money' : 'number'
+        physicalDatatype: index > 6 ? 'money' : 'number',
+        defaultCardType: 'column',
+        availableCardTypes: ['column', 'search']
       };
       columns[column.name] = column;
     });
     var models = createModels({ columns: columns });
     var subjectUnderTest = createElement({page: models.page });
+
     testHelpers.TestDom.append(subjectUnderTest);
     expect(subjectUnderTest.find('.aggregation-chooser-static-label')).to.be.visible;
     expect(subjectUnderTest.find('.aggregation-chooser-trigger')).to.not.be.visible;

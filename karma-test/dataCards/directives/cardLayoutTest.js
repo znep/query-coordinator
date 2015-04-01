@@ -197,11 +197,19 @@ describe('card-layout', function() {
           }
         });
 
-        var pageModel = new Page('asdf-fdsa');
+        var minimalPageMetadata = {
+          cards: [],
+          catalogViewId: 'abcd-1234',
+          datasetId: 'asdf-fdsa',
+          description: 'Description',
+          name: 'Name',
+          pageId: 'asdf-fdsa',
+          primaryAmountField: null,
+          primaryAggregation: null,
+          version: 1
+        };
+        var pageModel = new Page(minimalPageMetadata, datasetModel);
         pageModel.set('dataset', datasetModel);
-        pageModel.set('baseSoqlFilter', null);
-        pageModel.set('primaryAmountField', null);
-        pageModel.set('primaryAggregation', null);
         pageModel.set('cards', options.cards(pageModel, datasetModel));
 
         var outerScope = rootScope.$new();
@@ -1517,7 +1525,7 @@ describe('card-layout', function() {
           var button = cl.element.find('.card-chooser .action-png-export:not(.disabled)');
           button.click();
 
-          expect(mockDownloadService.calledWith[0]).to.deep.equal('./asdf-fdsa/choropleth_column.png');
+          expect(mockDownloadService.calledWith[0]).to.equal('./asdf-fdsa/choropleth_column.png');
         });
       });
 

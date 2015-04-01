@@ -1,76 +1,53 @@
 (function() {
   'use strict';
 
-  function PageModelFactory($q, ServerConfig, Dataset, Card, Model, PageDataService) {
+  function PageModelFactory($q, ServerConfig, Card, Model, PageDataService) {
+
     return Model.extend({
       // Builds a page model from either the page ID (given as a string),
       // or as a full serialized blob.
-      init: function(idOrSerializedBlob) {
+      init: function(pageMetadata, dataset) {
+
+        if (!_.isObject(pageMetadata)) {
+          throw new Error(
+            'Error instantiating Page model: pageMetadata argument is not an object: {0}'.
+              format(pageMetadata)
+          );
+        }
+
+        if (!_.isObject(dataset)) {
+          throw new Error(
+            'Error instantiating Page model: dataset argument is not an object: {0}'.
+              format(dataset)
+          );
+        }
+
         this._super();
 
-        var usingBlob = _.isObject(idOrSerializedBlob);
-        var id = usingBlob ? idOrSerializedBlob.pageId : idOrSerializedBlob;
-
-        if (_.isEmpty(id)) {
-          throw new Error('All pages must have an ID');
-        }
-
         var self = this;
-        this.id = id;
-
-        // Reuse promises across lazy properties.
-        // These are wrapped in functions so that control over when data requests are made
-        // is given to the ModelHelper. If we were to obtain the below promises right away,
-        // the HTTP calls required to fulfill them would be made without any regard to whether
-        // or not the calls are needed.
-
-        var pageMetadataPromise;
-        if (usingBlob) {
-          pageMetadataPromise = function() {
-            return $q.when(idOrSerializedBlob);
-          };
-        } else {
-          pageMetadataPromise = function() {
-            return PageDataService.getPageMetadata(self.id);
-          };
-        }
+        this.id = pageMetadata.pageId;
+        this.version = pageMetadata.version;
 
         var fields = [
           'datasetId',
           'description',
           'name',
-          'layoutMode',
           'primaryAmountField',
-          'isDefaultPage',
-          'pageSource',
+          'primaryAggregation',
           'baseSoqlFilter',
           'defaultDateTruncFunction'
         ];
+
+        var cards = _.map(pageMetadata.cards, function(serializedCard) {
+          return Card.deserialize(self, serializedCard);
+        });
+        self.defineObservableProperty('cards', cards);
+
         _.each(fields, function(field) {
-          self.defineObservableProperty(field, undefined, function() {
-            return pageMetadataPromise().then(_.property(field));
-          });
+          self.defineObservableProperty(field, pageMetadata[field]);
         });
 
-        // Initialize this property to 'invalid' so we can filter it and determine
-        // when the model has actually loaded - no bueno but necessary in the short-term
-        self.defineObservableProperty('primaryAggregation', 'invalid', function() {
-          return pageMetadataPromise().then(_.property('primaryAggregation'));
-        });
-
-        self.defineObservableProperty('dataset', null, function() {
-          return pageMetadataPromise().then(function(data) {
-            return new Dataset(data.datasetId);
-          });
-        });
-
-        self.defineObservableProperty('cards', [], function() {
-          return pageMetadataPromise().then(function(data) {
-            return _.map(data.cards, function(serializedCard) {
-              return Card.deserialize(self, serializedCard);
-            });
-          });
-        });
+        self.defineObservableProperty('dataset', dataset);
 
         var columnAggregatedUpon = self.observe('primaryAmountField').map(function(field) {
           return _.isPresent(field) ?
@@ -149,15 +126,17 @@
           )
         );
 
-        self.defineEphemeralObservableProperty('permissions', null, function() {
-          return pageMetadataPromise().then(_.property('permissions'));
-        });
+        if (ServerConfig.get('useCatalogLensPermissions')) {
+          self.defineEphemeralObservableProperty('permissions', pageMetadata.permissions);
+        }
       },
 
       serialize: function() {
         var dataset = this.getCurrentValue('dataset');
         var serialized = this._super();
+        serialized.pageId = this.id;
         serialized.datasetId = dataset.id;
+        serialized.version = this.version;
         delete serialized.dataset;
         return serialized;
       },

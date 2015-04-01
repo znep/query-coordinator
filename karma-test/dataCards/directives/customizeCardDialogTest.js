@@ -24,6 +24,8 @@ describe('Customize card dialog', function() {
       var Constants;
       var Model;
       var Page;
+      var Mockumentary;
+      var ServerConfig;
       var $httpBackend;
       var $rootScope;
       var $templateCache;
@@ -36,6 +38,8 @@ describe('Customize card dialog', function() {
         Constants = $injector.get('Constants');
         Model = $injector.get('Model');
         Page = $injector.get('Page');
+        Mockumentary = $injector.get('Mockumentary');
+        ServerConfig = $injector.get('ServerConfig');
         $httpBackend = $injector.get('$httpBackend');
         $rootScope = $injector.get('$rootScope');
         $templateCache = $injector.get('$templateCache');
@@ -56,6 +60,7 @@ describe('Customize card dialog', function() {
         $httpBackend.whenGET(/\/metadata\/v1\/dataset\/mash-apes.json.*/).respond([]);
 
         testHelpers.overrideMetadataMigrationPhase(phase);
+        ServerConfig.override('useCatalogLensPermissions', true);
       }));
 
       afterEach(function() {
@@ -69,12 +74,7 @@ describe('Customize card dialog', function() {
        * @property {boolean=false} preexisting Whether or not the card added is a pre-existing card.
        */
       function createDialog(options) {
-
-        var datasetModel = new Model();
-        datasetModel.id = 'rook-king';
-        datasetModel.version = '1';
-        datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
-        datasetModel.defineObservableProperty('permissions', '');
+        options = options || {};
 
         if (phase === '0') {
 
@@ -84,22 +84,25 @@ describe('Customize card dialog', function() {
               description: '???',
               logicalDatatype: 'location',
               physicalDatatype: 'number',
-              dataset: datasetModel,
-              shapefile: 'mash-apes'
+              shapefile: 'mash-apes',
+              availableCardTypes: ['choropleth'],
+              defaultCardType: 'choropleth'
             },
             feature: {
               name: 'Froods who really know where their towels are.',
               description: '???',
               logicalDatatype: 'location',
               physicalDatatype: 'point',
-              dataset: datasetModel
+              availableCardTypes: ['feature'],
+              defaultCardType: 'feature'
             },
             bar: {
               name: 'A bar where cool froods hang out.',
               description: '???',
               logicalDatatype: 'amount',
               physicalDatatype: 'number',
-              dataset: datasetModel
+              availableCardTypes: ['column', 'search'],
+              defaultCardType: 'column'
             }
           };
 
@@ -111,38 +114,6 @@ describe('Customize card dialog', function() {
               description: '???',
               fred: 'location',
               physicalDatatype: 'number',
-              dataset: datasetModel,
-              computationStrategy: {
-                parameters: {
-                  region: '_mash-apes'
-                }
-              }
-            },
-            feature: {
-              name: 'Froods who really know where their towels are.',
-              description: '???',
-              fred: 'location',
-              physicalDatatype: 'point',
-              dataset: datasetModel
-            },
-            bar: {
-              name: 'A bar where cool froods hang out.',
-              description: '???',
-              fred: 'amount',
-              physicalDatatype: 'number',
-              dataset: datasetModel
-            }
-          };
-
-        } else {
-
-          var columns = {
-            choropleth: {
-              name: 'Spot where cool froods hang out.',
-              description: '???',
-              fred: 'location',
-              physicalDatatype: 'number',
-              dataset: datasetModel,
               computationStrategy: {
                 parameters: {
                   region: '_mash-apes'
@@ -156,7 +127,6 @@ describe('Customize card dialog', function() {
               description: '???',
               fred: 'location',
               physicalDatatype: 'point',
-              dataset: datasetModel,
               availableCardTypes: ['feature'],
               defaultCardType: 'feature'
             },
@@ -165,17 +135,46 @@ describe('Customize card dialog', function() {
               description: '???',
               fred: 'amount',
               physicalDatatype: 'number',
-              dataset: datasetModel,
+              availableCardTypes: ['column', 'search'],
+              defaultCardType: 'column'
+            }
+          };
+
+        } else {
+
+          var columns = {
+            choropleth: {
+              name: 'Spot where cool froods hang out.',
+              description: '???',
+              fred: 'location',
+              physicalDatatype: 'number',
+              computationStrategy: {
+                parameters: {
+                  region: '_mash-apes'
+                }
+              },
+              availableCardTypes: ['choropleth'],
+              defaultCardType: 'choropleth'
+            },
+            feature: {
+              name: 'Froods who really know where their towels are.',
+              description: '???',
+              fred: 'location',
+              physicalDatatype: 'point',
+              availableCardTypes: ['feature'],
+              defaultCardType: 'feature'
+            },
+            bar: {
+              name: 'A bar where cool froods hang out.',
+              description: '???',
+              fred: 'amount',
+              physicalDatatype: 'number',
               availableCardTypes: ['column', 'search'],
               defaultCardType: 'column'
             }
           };
 
         }
-
-        datasetModel.defineObservableProperty('columns', columns);
-
-        options = options || {};
 
         // Defaults
         if (phase === '0' || phase === '1') {
@@ -199,14 +198,11 @@ describe('Customize card dialog', function() {
 
         var cards = options.cards || [];
 
-        var pageModel = new Page('asdf-fdsa');
-        pageModel.set('dataset', datasetModel);
-        pageModel.set('baseSoqlFilter', null);
-        pageModel.set('primaryAmountField', null);
-        pageModel.set('primaryAggregation', null);
-        pageModel.set('cards', cards);
-
+        var pageOverrides = {cards: cards};
+        var datasetOverrides = {id: 'rook-king', rowDisplayUnit: 'row', columns: columns};
+        var pageModel = Mockumentary.createPage(pageOverrides, datasetOverrides);
         var outerScope = $rootScope.$new();
+
         AngularRxExtensions.install(outerScope);
 
         outerScope.page = pageModel;

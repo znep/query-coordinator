@@ -9,6 +9,7 @@ describe('CardV1 model', function() {
     Model = $injector.get('Model');
     CardV1 = $injector.get('CardV1');
     Page = $injector.get('Page');
+    Mockumentary = $injector.get('Mockumentary');
   }));
 
   it('deserialization should return an instance of Card with correct properties set', inject(function(Schemas, Filter) {
@@ -28,8 +29,8 @@ describe('CardV1 model', function() {
     };
 
     var requiredKeys = Schemas.regarding('card_metadata').getSchemaDefinition('1').required;
-
-    var instance = CardV1.deserialize(new Page('fake-asdf'), blob);
+    var page = Mockumentary.createPage();
+    var instance = CardV1.deserialize(page, blob);
     expect(instance).to.be.instanceof(CardV1);
     expect(instance.page).to.be.instanceof(Page);
 
@@ -70,7 +71,8 @@ describe('CardV1 model', function() {
       'activeFilters': []
     };
 
-    var instance = CardV1.deserialize(new Page('fake-asdf'), blob);
+    var page = Mockumentary.createPage();
+    var instance = CardV1.deserialize(page, blob);
     instance.set('cardSize', '3'); // This property is expected to be an int.
 
     expect(function() { instance.serialize(); }).to.throw();
@@ -85,8 +87,8 @@ describe('CardV1 model', function() {
       'activeFilters': []
     };
 
-    var instance = CardV1.deserialize(new Page('fake-asdf'), blob);
-
+    var page = Mockumentary.createPage();
+    var instance = CardV1.deserialize(page, blob);
     var clone = instance.clone();
 
     expect(clone.fieldName).to.equal(instance.fieldName);

@@ -8,6 +8,17 @@ module AngularHelper
     javascript_tag("var socrataConfig = #{JSON(angular_config)}")
   end
 
+  def render_user
+    javascript_tag("var currentUser = #{@current_user.to_json}")
+  end
+
+  def render_metadata
+    javascript_tag(
+      "var pageMetadata = #{@page_metadata.to_json}\n" \
+      "var datasetMetadata = #{@dataset_metadata.to_json}"
+    )
+  end
+
   def angular_config
     {
       'statsdEnabled' => APP_CONFIG['statsd_enabled'],
@@ -37,5 +48,4 @@ module AngularHelper
 
     include_javascripts_unminified('exception_notifier')
   end
-
 end

@@ -1,16 +1,17 @@
 describe('manage-lens dialog', function() {
   'use strict';
-  beforeEach(module('/angular_templates/dataCards/manageLensDialog.html'));
-  beforeEach(module('dataCards/cards.sass'));
-  beforeEach(module('dataCards'));
 
   var testHelpers;
   var $rootScope;
   var $httpBackend;
   var _$provide;
-  var Page;
-  var DatasetDataService;
+  var Mockumentary;
+  var ServerConfig;
   var clock;
+
+  beforeEach(module('/angular_templates/dataCards/manageLensDialog.html'));
+  beforeEach(module('dataCards/cards.sass'));
+  beforeEach(module('dataCards'));
 
   beforeEach(module(function($provide) {
     _$provide = $provide;
@@ -20,33 +21,27 @@ describe('manage-lens dialog', function() {
     testHelpers = $injector.get('testHelpers');
     $rootScope = $injector.get('$rootScope');
     $httpBackend = $injector.get('$httpBackend');
-    Page = $injector.get('Page');
-
-    var $q = $injector.get('$q');
-    DatasetDataService = $injector.get('DatasetDataService');
-    sinon.stub(DatasetDataService, 'getDatasetMetadata').returns($q.defer().promise);
+    Mockumentary = $injector.get('Mockumentary');
+    ServerConfig = $injector.get('ServerConfig');
 
     testHelpers.mockDirective(_$provide, 'socSelect');
     testHelpers.mockDirective(_$provide, 'saveButton');
 
     clock = sinon.useFakeTimers();
+    ServerConfig.override('useCatalogLensPermissions', true);
   }));
 
   afterEach(function(){
     testHelpers.TestDom.clear();
     testHelpers.cleanUp();
-    DatasetDataService.getDatasetMetadata.restore();
   });
 
   function createElement() {
     var $scope = $rootScope.$new();
-    $scope.page = new Page({
-      pageId: 'page-eyed',
-      datasetId: 'data-eyed',
-      permissions: {
-        isPublic: true
-      }
-    });
+
+    var pageOverrides = {pageId: 'asdf-fdsa'};
+    var datasetOverrides = {};
+    $scope.page = Mockumentary.createPage(pageOverrides, datasetOverrides);
     $scope.dialogState = {show: true};
     return testHelpers.TestDom.compileAndAppend(
       '<manage-lens-dialog page="page" dialog-state="dialogState" />',
@@ -61,7 +56,7 @@ describe('manage-lens dialog', function() {
     });
 
     it('saves public permissions', function() {
-      $httpBackend.expectPUT('/views/page-eyed.json?method=setPermission&value=public.read').
+      $httpBackend.expectPUT('/views/asdf-fdsa.json?method=setPermission&value=public.read').
         respond({});
 
       var element = createElement();
@@ -85,7 +80,7 @@ describe('manage-lens dialog', function() {
     });
 
     it('saves private permissions', function() {
-      $httpBackend.expectPUT('/views/page-eyed.json?method=setPermission&value=private').
+      $httpBackend.expectPUT('/views/asdf-fdsa.json?method=setPermission&value=private').
         respond({});
 
       var element = createElement();

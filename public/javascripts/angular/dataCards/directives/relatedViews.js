@@ -20,7 +20,7 @@
           pluck('publisher').
           map(function(datasetPages) {
             return _.reject(datasetPages, function(datasetPage) {
-              return datasetPage.id === $scope.page.id;
+              return datasetPage.pageId === $scope.page.id;
             });
           });
 

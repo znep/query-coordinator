@@ -2,10 +2,10 @@ describe('DatasetV0 model', function() {
   var MockDataService = {};
   var mockCardDataService = {};
   var DatasetV0;
-  var Page;
-  var $q;
+  var Mockumentary;
   var $rootScope;
 
+  var pageForDataset = {pageId: 'abcd-1234', datasetId: 'efgh-ijkl'};
   // Minimal DatasetV0 blob which will validate.
   var minimalBlob = {
     id: 'asdf-fdsa',
@@ -14,28 +14,30 @@ describe('DatasetV0 model', function() {
     rowDisplayUnit: 'bar',
     ownerId: 'fdsa-asdf',
     updatedAt: '2004-05-20T17:42:55+00:00',
-    columns: []
+    columns: [],
+    pages: {
+      publisher: [pageForDataset],
+      user: []
+    },
+    version: 0
   };
 
   beforeEach(function() {
     module('dataCards', function($provide) {
-      MockDataService = {};
-      $provide.value('DatasetDataService', MockDataService);
       $provide.value('CardDataService', mockCardDataService);
     })
   });
 
   beforeEach(inject(function($injector) {
     Page = $injector.get('Page');
+    Mockumentary = $injector.get('Mockumentary');
     DatasetV0 = $injector.get('DatasetV0');
-    $q = $injector.get('$q');
     $rootScope = $injector.get('$rootScope');
   }));
 
   it('should correctly report the id passed into the constructor.', inject(function(DatasetV0) {
-    var id = 'dead-beef';
-    var instance = new DatasetV0(id);
-    expect(instance.id).to.equal(id);
+    var instance = new DatasetV0(minimalBlob);
+    expect(instance.id).to.equal(minimalBlob.id);
   }));
 
   it('should reject bad/no 4x4s passed into the constructor.', inject(function(DatasetV0) {
@@ -48,96 +50,22 @@ describe('DatasetV0 model', function() {
   }));
 
   it('should eventually return a value from an arbitrarily-chosen property (rowDisplayUnit)', function(done) {
-    var testId = 'dead-beef';
-    var fakeDisplayUnit = 'test';
-
-    var datasetMetadataDefer = $q.defer();
-    MockDataService.getDatasetMetadata = function(schemaVersion, id) {
-      expect(id).to.equal(testId);
-      return datasetMetadataDefer.promise;
-    };
-
-    var instance = new DatasetV0(testId);
+    var instance = new DatasetV0(minimalBlob);
     instance.observe('rowDisplayUnit').subscribe(function(val) {
       if (val) {
-        expect(val).to.equal(fakeDisplayUnit);
+        expect(val).to.equal(minimalBlob.rowDisplayUnit);
         done();
       }
     });
-
-    datasetMetadataDefer.resolve($.extend({}, minimalBlob, { "rowDisplayUnit": fakeDisplayUnit}));
-    $rootScope.$digest();
   });
 
-  it('should eventually return a bunch of Pages from the pages property', function(done) {
-    var testId = 'dead-beef';
-    var fakePageIds = {
-        'user': _.times(4, function(idx) {
-          return {pageId: _.uniqueId('fakeUserPageId')};
-        }),
-        'publisher': _.times(3, function(idx) {
-          return {pageId: _.uniqueId('fakePublisherPageId')};
-        })
-      };
-
-    MockDataService.getDatasetMetadata = function(schemaVersion, id) {
-      return $q.when(minimalBlob);
-    };
-
-    var def = $q.defer();
-    MockDataService.getPagesForDataset = function(schemaVersion, id) {
-      expect(id).to.equal(testId);
-      return def.promise;
-    };
-
-    var instance = new DatasetV0(testId);
+  it('should eventually return a page from the pages property', function(done) {
+    var instance = new DatasetV0(minimalBlob);
     instance.observe('pages').subscribe(function(pagesBySource) {
       if (!_.isEmpty(pagesBySource)) {
-        _.each(pagesBySource, function(pages, source) {
-          _.each(pages, function(page, idx) {
-            expect(page).to.be.instanceof(Page);
-            expect(page.id).to.equal(fakePageIds[source][idx].pageId);
-          });
-        });
+        expect(pagesBySource.publisher[0]).to.equal(pageForDataset);
         done();
       }
-    });
-
-    def.resolve(fakePageIds);
-    $rootScope.$digest();
-  });
-
-  xdescribe('isReadableByCurrentUser', function() {
-    var def;
-    var instance;
-    var subscription;
-
-    beforeEach(function() {
-      def = $q.defer();
-      mockCardDataService.getRowCount = _.constant(def.promise);
-      instance = new DatasetV0('dead-beef');
-      // subscribe to the rowCount so that it will make a request for the dataset count
-      subscription = instance.observe('rowCount').subscribe(_.noop);
-    });
-
-    afterEach(function() {
-      subscription.dispose();
-      subscription = null;
-    });
-
-    it('sets isReadableByCurrentUser to false if it gets a 403 from the server', function() {
-      expect(instance.getCurrentValue('isReadableByCurrentUser')).to.equal(true);
-      def.reject({ status: 403 });
-      $rootScope.$digest(); // Needed to resolve/reject the angular $q promise
-      expect(instance.getCurrentValue('isReadableByCurrentUser')).to.equal(false);
-    });
-
-    it('does not modify isReadableByCurrentUser if it gets a 200 from the server', function() {
-      instance.set('isReadableByCurrentUser', false);
-      expect(instance.getCurrentValue('isReadableByCurrentUser')).to.equal(false);
-      def.resolve({ status: 200 });
-      $rootScope.$digest(); // Needed to resolve/reject the angular $q promise
-      expect(instance.getCurrentValue('isReadableByCurrentUser')).to.equal(true);
     });
   });
 
@@ -166,14 +94,10 @@ describe('DatasetV0 model', function() {
           importance: 1
         }
       ];
+
       var serializedBlob = $.extend({}, minimalBlob, { "columns": fakeColumns });
+      var instance = new DatasetV0(serializedBlob);
 
-      var def = $q.defer();
-      MockDataService.getDatasetMetadata = function() {
-        return def.promise;
-      };
-
-      var instance = new DatasetV0('fake-data');
       instance.observe('columns').subscribe(function(columns) {
         if (!_.isEmpty(columns)) {
           expect(columns['normal_column'].isSystemColumn).to.be.false;
@@ -182,9 +106,6 @@ describe('DatasetV0 model', function() {
           done();
         }
       });
-
-      def.resolve(serializedBlob);
-      $rootScope.$digest();
     });
 
     it('should include an injected reference back to the Dataset instance.', function(done) {
@@ -197,24 +118,16 @@ describe('DatasetV0 model', function() {
           importance: 1
         }
       ];
-      var serializedBlob = $.extend({}, minimalBlob, { "columns": fakeColumns });
 
-      var def = $q.defer();
-      MockDataService.getDatasetMetadata = function() {
-        return def.promise;
-      };
+      var serializedBlob = $.extend(true, minimalBlob, { "columns": fakeColumns });
+      var instance = new DatasetV0(serializedBlob);
 
-      var instance = new DatasetV0('fake-data');
       instance.observe('columns').subscribe(function(columns) {
         if (!_.isEmpty(columns)) {
           expect(columns['normal_column'].dataset).to.equal(instance);
           done();
         }
       });
-
-      def.resolve(serializedBlob);
-      $rootScope.$digest();
-
     });
 
   });

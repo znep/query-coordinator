@@ -66,14 +66,12 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/feedbackPanel.html'));
   beforeEach(module('/angular_templates/dataCards/customizeBar.html'));
   beforeEach(module('/angular_templates/dataCards/relatedViews.html'));
-  beforeEach(module('/angular_templates/dataCards/suggestionToolPanel.html'));
-  beforeEach(module('/angular_templates/common/intractableList.html'));
 
   beforeEach(function() {
     module(function($provide) {
       _$provide = $provide;
       $provide.value('UserSessionService', mockUserSessionService);
-      $provide.value('WindowOperations', mockWindowOperations)
+      $provide.value('WindowOperations', mockWindowOperations);
       $provide.value('ConfigurationsService', {
         getThemeConfigurationsObservable: function() {
           return Rx.Observable.returnValue([]);
@@ -127,6 +125,7 @@ describe('CardsViewController', function() {
       $httpBackend = _$httpBackend;
       ServerConfig = _ServerConfig;
       PageDataService = _PageDataService;
+      testHelpers.mockDirective(_$provide, 'suggestionToolPanel');
   }]));
 
   function makeContext(datasetId) {

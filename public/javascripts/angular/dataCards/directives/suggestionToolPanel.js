@@ -93,12 +93,17 @@
           }
         });
 
-        $scope.bindObservable('suggestions', suggestionsRequestsObservable.switchLatest().
-          map(function(suggestions) { return (suggestions || []).slice(0, suggestionLimit) }));
+        var suggestionsObservable = suggestionsRequestsObservable.switchLatest().
+          map(function(suggestions) {
+            return (suggestions || []).slice(0, suggestionLimit)
+          });
+        var suggestionsLoadingObservable = searchValueObservable.
+          map(_.constant(true)).
+          merge(suggestionsRequestsObservable.switchLatest().map(_.constant(false)));
+
+        $scope.bindObservable('suggestions', suggestionsObservable);
         $scope.bindObservable('suggestionsStatus', suggestionsStatusObservable);
-        $scope.bindObservable('suggestionsLoading',
-          searchValueObservable.map(_.constant(true)).
-          merge(suggestionsRequestsObservable.switchLatest().map(_.constant(false))));
+        $scope.bindObservable('suggestionsLoading', suggestionsLoadingObservable);
         $scope.bindObservable('suggestionsAdvice', suggestionsAdviceObservable);
       }
     };

@@ -379,23 +379,23 @@ describe('addCardDialog', function() {
       });
 
       it('should change the visualization type of the preview card when a card type option button is clicked', function() {
-            var dialog = createDialog();
+        var dialog = createDialog();
 
-            expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(0);
+        expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(0);
 
-            dialog.scope.dialogState.cardSize = 2;
+        dialog.scope.dialogState.cardSize = 2;
 
-            dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
+        dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
 
-            expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
-            expect(dialog.scope.addCardModel.getCurrentValue('cardType')).to.equal('search');
+        expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
+        expect(dialog.scope.addCardModel.getCurrentValue('cardType')).to.equal('search');
 
-            dialog.element.find('.icon-bar-chart').click();
-            dialog.scope.$digest();
+        dialog.element.find('.icon-bar-chart').click();
+        dialog.scope.$digest();
 
-            expect(dialog.scope.addCardModel.getCurrentValue('cardType')).to.equal('column');
+        expect(dialog.scope.addCardModel.getCurrentValue('cardType')).to.equal('column');
 
-          });
+      });
 
       it('should add a card in the correct CardSize group when an enabled column in the "Choose a column..." select control is selected and the "Add card" button is clicked', function() {
         var dialog = createDialog();

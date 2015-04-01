@@ -131,8 +131,8 @@
 
     });
 
-    describe('custom events', function() {
-
+    xdescribe('custom events', function() {
+      // TODO: Add tests, maybe?
     });
 
     it('should not be "clearable" initially', function() {

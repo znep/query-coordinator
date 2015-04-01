@@ -175,26 +175,30 @@
           });
         });
 
-        var userActionsWhichShouldShowSuggestionPanelObservable = Rx.Observable.merge(
-          $scope.eventToObservable('clearableInput:keypress').
+        var SPACE_BAR_KEYCODE = 32;
+        var userActionKeypressObservable = $scope.eventToObservable('clearableInput:keypress').
           filter(function(event) {
             var which = event.args[0].which;
-            return which > 32;
-          }),
-          $scope.eventToObservable('clearableInput:click').
+            return which > SPACE_BAR_KEYCODE;
+          });
+
+        var userActionClickObservable = $scope.eventToObservable('clearableInput:click').
           filter(function() {
             return _.isPresent($scope.searchValue);
-          })
+          });
+        var userActionsWhichShouldShowSuggestionPanelObservable = Rx.Observable.merge(
+          userActionKeypressObservable,
+          userActionClickObservable
         );
 
         var userActionsWhichShouldHideSuggestionPanelObservable = Rx.Observable.merge(
           submitValueObservable,
-          hasInputObservable.filter(function(value) { return !value; }),
+          hasInputObservable.filter(_.negate),
           $scope.eventToObservable('clearbleInput:blur').filter(function(event) {
             // Only hide the suggestion panel if the blur target is not a suggestion.
             var newFocusTarget = event.args[0].relatedTarget;
             if (_.isPresent(newFocusTarget)) {
-              var isNewFocusTargetWithinSuggestions = element.find('suggestion-tool-panel').find(newFocusTarget).length > 0;
+              var isNewFocusTargetWithinSuggestions = newFocusTarget.closest(element).length > 0;
               return !isNewFocusTargetWithinSuggestions;
             } else {
               return false;

@@ -22,4 +22,8 @@ describe('fromNow filter', function() {
   it('should return an empty string for an invalid date', function() {
     expect(fromNow('invalid')).to.equal('');
   });
+
+  it('makes valid dates from the format soda2 gives us', function() {
+    expect(fromNow('Wed, 25 Mar 2015 23:59:52 GMT')).not.to.equal('');
+  });
 });

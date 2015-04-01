@@ -112,7 +112,7 @@ class PageMetadataManager
     dataset_metadata_result = dataset_metadata(dataset_id, options)
     if dataset_metadata_result.fetch(:status) != '200'
       raise Phidippides::NoDatasetMetadataException.new(
-        "could not fetch dataset metadata for id: #{page_metadata['datasetId']}"
+        "could not fetch dataset metadata for id: #{dataset_id}"
       )
     end
     columns = dataset_metadata_result.fetch(:body).fetch('columns')

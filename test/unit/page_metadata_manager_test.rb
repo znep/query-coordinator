@@ -511,7 +511,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       date_trunc_function: nil,
       column_field_name: 'fieldName',
       logical_datatype_name: 'fred'
-)
+    )
     columns = v1_dataset_metadata.fetch('columns')
     cards = v1_page_metadata.fetch('cards')
     stub_feature_flags_with(:metadata_transition_phase, '2')

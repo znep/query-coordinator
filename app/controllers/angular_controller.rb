@@ -121,7 +121,26 @@ class AngularController < ActionController::Base
         when '401'
           raise AuthenticationRequired.new
         when '403'
-          raise UnauthorizedPageMetadataRequest.new
+          # Core returns a status code of 403 even if the actual intent of the
+          # response is to indicate that authentication is required. For this
+          # reason we need to check the 'code' property of the error response
+          # body. The two relevant codes are:
+          #
+          # 'authentication_required' and
+          # 'permission_denied'
+          #
+          # In the case of 'authentication_required' we want to redirect the
+          # user to the login page. Otherwise we want to render a 403.
+          #
+          # Note that we only need to do this check when a page is public but
+          # its underlying dataset is private.
+          if /authentication_required/.match(result[:body])
+            raise AuthenticationRequired.new
+          elsif /permission_denied/.match(result[:body])
+            raise UnauthorizedPageMetadataRequest.new
+          else
+            raise UnknownRequestError.new result[:body].to_s
+          end
         when '404'
           raise PageMetadataNotFound.new
         else
@@ -166,7 +185,7 @@ class AngularController < ActionController::Base
         when '401'
           raise AuthenticationRequired.new
         when '403'
-          raise UnauthorizedDatasetMetadataRequest.new
+          raise UnauthorizedPageMetadataRequest.new
         when '404'
           raise DatasetMetadataNotFound.new
         else

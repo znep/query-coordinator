@@ -24,7 +24,8 @@
 
       var config = httpConfig.call(this, { headers: {'Cache-Control': 'nocache'}, 'airbrakeShouldIgnore404Errors': true });
 
-      return $http.get('/api/users/current.json', config).then(function(response) {
+      var url = $.baseUrl('/api/users/current.json');
+      return $http.get(url.href, config).then(function(response) {
         // 200s
         if (_.isEmpty(response.data)) {
           return $q.reject(new Errors.UnknownError(null, 'Empty reply from users service API call.'));

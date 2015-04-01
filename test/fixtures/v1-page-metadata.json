@@ -4,7 +4,7 @@
       "description": "Test Card",
       "fieldName": "some_column",
       "cardSize": 2,
-      "cardType": "Column",
+      "cardType": "column",
       "appliedFilters": [],
       "expanded": false
     },
@@ -12,7 +12,15 @@
       "description": "Test Card",
       "fieldName": "some_other_column",
       "cardSize": 2,
-      "cardType": "Column",
+      "cardType": "column",
+      "appliedFilters": [],
+      "expanded": false
+    },
+    {
+      "description": "Timeline Card",
+      "fieldName": "time_column_fine_granularity",
+      "cardSize": 3,
+      "cardType": "timeline",
       "appliedFilters": [],
       "expanded": false
     },
@@ -20,7 +28,7 @@
       "description": "Table",
       "fieldName": "*",
       "cardSize": 3,
-      "cardType": "Table",
+      "cardType": "table",
       "appliedFilters": [],
       "expanded": false
     }
@@ -31,5 +39,7 @@
   "pageId": "iuya-fxdq",
   "primaryAggregation": null,
   "primaryAmountField": null,
-  "version": 1
+  "version": 1,
+  "largestTimeSpanDays": 7500,
+  "defaultDateTruncFunction": "date_trunc_y"
 }

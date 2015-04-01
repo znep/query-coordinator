@@ -61,15 +61,18 @@ describe('manage-lens dialog', function() {
 
       var element = createElement();
       var $scope = element.children().scope();
+      $scope.page.set('permissions', {isPublic: false});
 
       $scope.pageVisibility = 'public';
       $scope.save();
 
       expect($scope.saveStatus).to.equal('saving');
+      expect($scope.page.getCurrentValue('permissions').isPublic).to.equal(false);
 
       $httpBackend.flush();
 
       expect($scope.saveStatus).to.equal('saved');
+      expect($scope.page.getCurrentValue('permissions').isPublic).to.equal(true);
       expect($scope.dialogState.show).to.equal(true);
 
       clock.tick(1501);
@@ -87,10 +90,12 @@ describe('manage-lens dialog', function() {
       $scope.save();
 
       expect($scope.saveStatus).to.equal('saving');
+      expect($scope.page.getCurrentValue('permissions').isPublic).to.equal(true);
 
       $httpBackend.flush();
 
       expect($scope.saveStatus).to.equal('saved');
+      expect($scope.page.getCurrentValue('permissions').isPublic).to.equal(false);
       expect($scope.dialogState.show).to.equal(true);
 
       clock.tick(1501);

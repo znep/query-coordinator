@@ -25,6 +25,7 @@ describe('Customize card dialog', function() {
       var Model;
       var Page;
       var Mockumentary;
+      var ServerConfig;
       var $httpBackend;
       var $rootScope;
       var $templateCache;
@@ -38,6 +39,7 @@ describe('Customize card dialog', function() {
         Model = $injector.get('Model');
         Page = $injector.get('Page');
         Mockumentary = $injector.get('Mockumentary');
+        ServerConfig = $injector.get('ServerConfig');
         $httpBackend = $injector.get('$httpBackend');
         $rootScope = $injector.get('$rootScope');
         $templateCache = $injector.get('$templateCache');
@@ -55,8 +57,10 @@ describe('Customize card dialog', function() {
         $httpBackend.whenGET(/\/resource\/rook-king.json.*/).respond([]);
         $httpBackend.whenGET(/\/resource\/mash-apes.geojson.*/).respond([]);
         $httpBackend.whenGET(/\/resource\/mash-apes.geojson.*/).respond([]);
+        $httpBackend.whenGET(/\/metadata\/v1\/dataset\/mash-apes.json.*/).respond([]);
 
         testHelpers.overrideMetadataMigrationPhase(phase);
+        ServerConfig.override('useCatalogLensPermissions', true);
       }));
 
       afterEach(function() {

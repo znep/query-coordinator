@@ -1,7 +1,6 @@
 (function() {
   'use strict';
 
-  var CONFIGURATION_PATH_TEMPLATE = '/api/configurations.json?type={0}&defaultOnly=true&merge=true';
   var THEME_CONFIGURATION_KEY = 'theme_v3';
 
   /**
@@ -11,11 +10,19 @@
    */
   function ConfigurationsService(http) {
 
+    function getConfigurationUrl(type) {
+      var url = $.baseUrl('/api/configurations.json');
+      url.searchParams.set('defaultOnly', true);
+      url.searchParams.set('merge', true);
+      url.searchParams.set('type', type);
+      return url;
+    }
+
     var self = this;
 
     function getConfigurationObservable(key) {
       return Rx.Observable.
-        fromPromise(http.get(CONFIGURATION_PATH_TEMPLATE.format(key), {requester: self})).
+        fromPromise(http.get(getConfigurationUrl(key).href, {requester: self})).
         filter(function(response) { return response.status === 200; }).
         map(function(response) {
           return _.getPathOrElse(response, 'data.0.properties', []);

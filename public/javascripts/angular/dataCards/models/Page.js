@@ -34,7 +34,8 @@
           'name',
           'primaryAmountField',
           'primaryAggregation',
-          'baseSoqlFilter'
+          'baseSoqlFilter',
+          'defaultDateTruncFunction'
         ];
 
         var cards = _.map(pageMetadata.cards, function(serializedCard) {

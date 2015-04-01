@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function manageLensDialog(AngularRxExtensions, $http) {
+  function manageLensDialog(AngularRxExtensions, http) {
     return {
       restrict: 'E',
       scope: {
@@ -42,19 +42,22 @@
          * Save the permissions.
          */
         $scope.save = function() {
-          var permissions = $scope.page.getCurrentValue('permissions');
-          permissions.isPublic = $scope.pageVisibility === 'public';
-          $scope.page.set('permissions', permissions);
-
+          var isPublic = $scope.pageVisibility === 'public';
           var url = '/views/{0}.json?method=setPermission&value={1}'.format(
             $scope.page.id,
-            permissions.isPublic ? 'public.read' : 'private'
+            isPublic ? 'public.read' : 'private'
           );
 
           $scope.saveStatus = 'saving';
           $scope.dialogState.disableCloseDialog = true;
-          $http.put(url).then(function() {
+          http.put(url).then(function() {
             $scope.saveStatus = 'saved';
+
+            // Update our data model
+            var permissions = $scope.page.getCurrentValue('permissions');
+            permissions.isPublic = isPublic;
+            $scope.page.set('permissions', permissions);
+
             // Now close the dialog after 1.5 seconds
             setTimeout(function() {
               $scope.safeApply(function() {

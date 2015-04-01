@@ -44,6 +44,7 @@ describe('<aggregation-chooser/>', function() {
   var AngularRxExtensions;
   var $q;
   var $compile;
+  var ServerConfig;
 
   beforeEach(function() {
     module('/angular_templates/dataCards/aggregationChooser.html');
@@ -66,6 +67,7 @@ describe('<aggregation-chooser/>', function() {
       AngularRxExtensions = $injector.get('AngularRxExtensions');
       $q = $injector.get('$q');
       $compile = $injector.get('$compile');
+      ServerConfig = $injector.get('ServerConfig');
     });
   });
 
@@ -192,13 +194,38 @@ describe('<aggregation-chooser/>', function() {
     expect(models.page.getCurrentValue('primaryAmountField')).to.equal(null);
   });
 
-  it('should only include aggregatable columns in the dropdown', function() {
+  it('should only include money and number columns in the dropdown', function() {
     var models = createModels({ primaryAggregation: 'sum', primaryAmountField: 'column1_number' });
     var subjectUnderTest = createElement({ page: models.page });
 
     var columnEntriesWhereCountIsSupported = subjectUnderTest.find('.aggregation-columns.count');
 
     // 2 number columns (column, column2_number) and 1 money column (column3_money).
+    expect(subjectUnderTest.find('[data-column-id]').length).to.equal(3);
+    expect(subjectUnderTest.find('[data-column-id="column1_number"]').length).to.equal(1);
+    expect(subjectUnderTest.find('[data-column-id="column2_number"]').length).to.equal(1);
+    expect(subjectUnderTest.find('[data-column-id="column3_money"]').length).to.equal(1);
+  });
+
+  it('should not include field names specified in the field_names_that_cannot_be_aggregated feature flag in the dropdown', function() {
+    ServerConfig.override('fieldNamesThatCannotBeAggregated', ['column2_number']);
+    var models = createModels({ primaryAggregation: 'sum', primaryAmountField: 'column1_number' });
+    var subjectUnderTest = createElement({ page: models.page });
+    var columnEntriesWhereCountIsSupported = subjectUnderTest.find('.aggregation-columns.count');
+
+    // expect only column2_number to be omitted
+    expect(subjectUnderTest.find('[data-column-id]').length).to.equal(2);
+    expect(subjectUnderTest.find('[data-column-id="column1_number"]').length).to.equal(1);
+    expect(subjectUnderTest.find('[data-column-id="column2_number"]').length).to.equal(0);
+    expect(subjectUnderTest.find('[data-column-id="column3_money"]').length).to.equal(1);
+  });
+
+  it('should fallback to including all money and number columns if field_names_that_cannot_be_aggregated feature flag is invalid', function() {
+    ServerConfig.override('fieldNamesThatCannotBeAggregated', 'blah blah blah');
+    var models = createModels({ primaryAggregation: 'sum', primaryAmountField: 'column1_number' });
+    var subjectUnderTest = createElement({ page: models.page });
+    var columnEntriesWhereCountIsSupported = subjectUnderTest.find('.aggregation-columns.count');
+
     expect(subjectUnderTest.find('[data-column-id]').length).to.equal(3);
     expect(subjectUnderTest.find('[data-column-id="column1_number"]').length).to.equal(1);
     expect(subjectUnderTest.find('[data-column-id="column2_number"]').length).to.equal(1);

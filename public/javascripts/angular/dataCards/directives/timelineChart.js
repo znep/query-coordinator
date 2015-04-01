@@ -16,7 +16,15 @@
 
   */
 
-  function timelineChartDirective($timeout, AngularRxExtensions, WindowState, DateHelpers, FlyoutService, Constants) {
+  function timelineChartDirective(
+    $timeout,
+    AngularRxExtensions,
+    WindowState,
+    DateHelpers,
+    FlyoutService,
+    Constants,
+    ServerConfig
+  ) {
 
     return {
       templateUrl: '/angular_templates/dataCards/timelineChart.html',
@@ -26,11 +34,15 @@
         expanded: '=',
         precision: '=',
         rowDisplayUnit: '=',
-        activeFilters: '='
+        activeFilters: '=',
+        unfilteredSoqlRollupTablesUsed: '=',
+        filteredSoqlRollupTablesUsed: '='
       },
       link: function(scope, element, attrs) {
 
         AngularRxExtensions.install(scope);
+
+        scope.developmentMode = ServerConfig.get('railsEnv') === 'development';
 
         // The following cached jQuery/d3 selectors are used throughout the
         // directive.

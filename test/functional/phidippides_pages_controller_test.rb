@@ -49,7 +49,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   test 'show returns data for a given page' do
-    @controller.stubs(can_update_metadata?: true)
+    @controller.stubs(can_create_metadata?: true)
     @phidippides.stubs(
       fetch_page_metadata: {
         body: v0_page_metadata,
@@ -68,7 +68,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   test 'show displays permission:private for views private in core' do
-    @controller.stubs(can_update_metadata?: true)
+    @controller.stubs(can_create_metadata?: true)
     @phidippides.stubs(
       fetch_page_metadata: {
         body: v1_page_metadata,
@@ -87,7 +87,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   test 'show displays permission:public for views public in core' do
-    @controller.stubs(can_update_metadata?: true)
+    @controller.stubs(can_create_metadata?: true)
     @phidippides.stubs(
       fetch_page_metadata: {
         body: v1_page_metadata,
@@ -106,7 +106,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   test 'show returns 401 if the Core view requires authn' do
-    @controller.stubs(can_update_metadata?: true)
+    @controller.stubs(can_create_metadata?: true)
     connection_stub = mock
     connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
     connection_stub.expects(:get_request).with do |url|
@@ -119,7 +119,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   test 'show returns 403 if the Core view requires authz' do
-    @controller.stubs(can_update_metadata?: true)
+    @controller.stubs(can_create_metadata?: true)
     connection_stub = mock
     connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
     connection_stub.expects(:get_request).with do |url|
@@ -132,7 +132,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   test '(phase 0, 1 or 2) create returns 401 if not logged in' do
-    @controller.stubs(can_update_metadata?: false)
+    @controller.stubs(can_create_metadata?: false)
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
     post :create, pageMetadata: { datasetId: 'four-four' }.to_json, format: :json
@@ -148,7 +148,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   test '(phase 0, 1) create works fine if format is not JSON' do
-    @controller.stubs(can_update_metadata?: true)
+    @controller.stubs(can_create_metadata?: true)
     @phidippides.stubs(issue_request: { status: '200' }, issue_soda_fountain_request: '')
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
@@ -161,7 +161,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   test '(phase 2) create returns 406 if format is not JSON' do
-    @controller.stubs(can_update_metadata?: true)
+    @controller.stubs(can_create_metadata?: true)
     @phidippides.stubs(issue_request: { status: '200' }, issue_soda_fountain_request: '')
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
@@ -170,7 +170,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   test '(phase 2) create returns 400 if JSON does not include datasetId' do
-    @controller.stubs(can_update_metadata?: true)
+    @controller.stubs(can_create_metadata?: true)
     @page_metadata_manager.unstub(:create)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
@@ -181,7 +181,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   test '(phase 0, 1 or 2) create returns new page metadata if logged in' do
-    @controller.stubs(can_update_metadata?: true)
+    @controller.stubs(can_create_metadata?: true)
     @page_metadata_manager.stubs(create: { body: v0_page_metadata.to_json, status: '200' })
     stub_feature_flags_with(:metadata_transition_phase, '0')
     post :create, pageMetadata: v0_page_metadata.to_json, format: :json
@@ -202,7 +202,9 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   test '(phase 0, 1) update gets past 406 error if format is not JSON' do
-    @controller.stubs(can_update_metadata?: true)
+    dataset_stub = mock
+    dataset_stub.stubs(can_edit?: true)
+    @controller.stubs(can_create_metadata?: true, dataset: dataset_stub)
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
     put :update, json_post.merge(id: 'four-four', format: :text)
@@ -214,7 +216,9 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   test '(phase 2) update returns 406 if format is not JSON' do
-    @controller.stubs(can_update_metadata?: true)
+    dataset_stub = mock
+    dataset_stub.stubs(can_edit?: true)
+    @controller.stubs(can_create_metadata?: true, dataset: dataset_stub)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
     put :update, json_post.merge(id: 'four-four', format: :text)
@@ -222,7 +226,9 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   test '(phase 0, 1 or 2) update returns 401 if not logged in' do
-    @controller.stubs(can_update_metadata?: false)
+    dataset_stub = mock
+    dataset_stub.stubs(can_edit?: false)
+    @controller.stubs(can_create_metadata?: false, dataset: dataset_stub)
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
     put :update, id: 'four-four', format: :json
@@ -238,7 +244,9 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   test '(phase 0, 1 or 2) update returns 400 if required parameters are not present' do
-    @controller.stubs(can_update_metadata?: true)
+    dataset_stub = mock
+    dataset_stub.stubs(can_edit?: true)
+    @controller.stubs(can_create_metadata?: true, dataset: dataset_stub)
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
     put :update, id: 'four-four', format: :json
@@ -254,7 +262,9 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   test '(phase 2) update returns 400 if JSON does not include datasetId' do
-    @controller.stubs(can_update_metadata?: true)
+    dataset_stub = mock
+    dataset_stub.stubs(can_edit?: true)
+    @controller.stubs(can_create_metadata?: true, dataset: dataset_stub)
     @page_metadata_manager.unstub(:update)
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
@@ -265,7 +275,9 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   test '(phase 0, 1 or 2) update returns success' do
-    @controller.stubs(can_update_metadata?: true)
+    dataset_stub = mock
+    dataset_stub.stubs(can_edit?: true)
+    @controller.stubs(can_create_metadata?: true, dataset: dataset_stub)
     @page_metadata_manager.stubs(update: { body: v0_page_metadata.to_json, status: '200' })
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
@@ -284,7 +296,9 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   end
 
   test '(phase 0, 1 or 2) update returns 406 when body page_id != endpoint id' do
-    @controller.stubs(can_update_metadata?: true)
+    dataset_stub = mock
+    dataset_stub.stubs(can_edit?: true)
+    @controller.stubs(can_create_metadata?: true, dataset: dataset_stub)
 
     stub_feature_flags_with(:metadata_transition_phase, '0')
     put :update, id: 'four-four', pageMetadata: {pageId: 'five-five'}.to_json, format: :json
@@ -315,14 +329,14 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   # forward with delete functionality.
   #
   # test '(phase 2) delete returns 401 for unauthorized users' do
-  #   @controller.stubs(can_update_metadata?: false)
+  #   @controller.stubs(can_create_metadata?: false)
   #   stub_feature_flags_with(:metadata_transition_phase, '2')
   #   delete :destroy, id: 'four-four'
   #   assert_response(401)
   # end
 
   # test '(phase 2) delete returns 405 if the http method is not DELETE' do
-  #   @controller.stubs(can_update_metadata?: true)
+  #   @controller.stubs(can_create_metadata?: true)
 
   #   stub_feature_flags_with(:metadata_transition_phase, '2')
   #   get :destroy, id: 'four-four', format: :json
@@ -334,7 +348,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
   # end
 
   # test '(phase 2) delete returns success' do
-  #   @controller.stubs(can_update_metadata?: true)
+  #   @controller.stubs(can_create_metadata?: true)
   #   Phidippides.any_instance.stubs(delete_page_metadata: { body: nil, status: '200' })
   #   stub_feature_flags_with(:metadata_transition_phase, '2')
   #   delete :destroy, id: 'four-four'
@@ -343,14 +357,14 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
 
   test 'create fails when save as is not enabled' do
     stub_feature_flags_with(:enable_data_lens_save_as_button, false)
-    @controller.stubs(can_update_metadata?: true, save_as_enabled?: false)
+    @controller.stubs(can_create_metadata?: true, save_as_enabled?: false)
 
     post :create, pageMetadata: { datasetId: 'four-four' }.to_json, format: :json
     assert_response(401)
   end
 
   test 'create succeeds when save as is enabled' do
-    @controller.stubs(can_update_metadata?: true, save_as_enabled?: true)
+    @controller.stubs(can_create_metadata?: true, save_as_enabled?: true)
     @page_metadata_manager.stubs(create: { body: v0_page_metadata.to_json, status: '200' })
     stub_feature_flags_with(:metadata_transition_phase, '0')
 

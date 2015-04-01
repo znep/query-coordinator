@@ -59,6 +59,7 @@ describe('A Timeline Chart Card Visualization', function() {
     page.defineObservableProperty('dataset', dataset);
     page.defineObservableProperty('baseSoqlFilter', '');
     page.defineObservableProperty('aggregation', {});
+    page.defineObservableProperty('defaultDateTruncFunction', 'date_trunc_y');
     card.page = page;
     card.defineObservableProperty('expanded', false);
     card.defineObservableProperty('activeFilters', []);
@@ -173,6 +174,106 @@ describe('A Timeline Chart Card Visualization', function() {
     var element = makeDirective();
     var errorMessage = element.find('.chart-render-error');
     expect(errorMessage.text().trim()).to.equal('Chart cannot be rendered due to invalid date values.');
+  });
+
+  it('should have unfilteredSoqlRollupTablesUsed on scope', function() {
+    var outerScope = $rootScope.$new();
+    var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
+
+    // To future self: in this function invocation, we only care about this last value
+    // becuase this is the one we're using to communication state back out.
+    mockCardDataService.getTimelineData = function(a, b, c, d, e, soqlMetadata)
+    {
+      soqlMetadata.dateTruncFunctionUsed = 'date_trunc_y';
+      return $q.when([
+        {
+          date: moment()
+        }
+      ]);
+    };
+    outerScope.model = stubCardModel();
+
+    // If it's going to crash, it's here.
+    var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
+
+    // Use chartData as a proxy for TimelineChart's happiness.
+    var timelineChartScope = element.find('.timeline-chart').scope();
+    expect(timelineChartScope.unfilteredSoqlRollupTablesUsed).to.be.true;
+  });
+
+  it('should have unfilteredSoqlRollupTablesUsed on scope with false', function() {
+    var outerScope = $rootScope.$new();
+    var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
+
+    // To future self: in this function invocation, we only care about this last value
+    // becuase this is the one we're using to communication state back out.
+    mockCardDataService.getTimelineData = function(a, b, c, d, e, soqlMetadata)
+    {
+      soqlMetadata.dateTruncFunctionUsed = 'date_trunc_ym';
+      return $q.when([
+        {
+          date: moment()
+        }
+      ]);
+    };
+    outerScope.model = stubCardModel();
+
+    // If it's going to crash, it's here.
+    var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
+
+    // Use chartData as a proxy for TimelineChart's happiness.
+    var timelineChartScope = element.find('.timeline-chart').scope();
+    expect(timelineChartScope.unfilteredSoqlRollupTablesUsed).to.be.false;
+  });
+
+  it('should have filteredSoqlRollupTablesUsed on scope', function() {
+    var outerScope = $rootScope.$new();
+    var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
+
+    // To future self: in this function invocation, we only care about this last value
+    // becuase this is the one we're using to communication state back out.
+    mockCardDataService.getTimelineData = function(a, b, c, d, e, soqlMetadata)
+    {
+      soqlMetadata.dateTruncFunctionUsed = 'date_trunc_y';
+      return $q.when([
+        {
+          date: moment()
+        }
+      ]);
+    };
+    outerScope.model = stubCardModel();
+
+    // If it's going to crash, it's here.
+    var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
+
+    // Use chartData as a proxy for TimelineChart's happiness.
+    var timelineChartScope = element.find('.timeline-chart').scope();
+    expect(timelineChartScope.filteredSoqlRollupTablesUsed).to.be.true;
+  });
+
+  it('should have filteredSoqlRollupTablesUsed on scope with false', function() {
+    var outerScope = $rootScope.$new();
+    var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
+
+    // To future self: in this function invocation, we only care about this last value
+    // becuase this is the one we're using to communication state back out.
+    mockCardDataService.getTimelineData = function(a, b, c, d, e, soqlMetadata)
+    {
+      soqlMetadata.dateTruncFunctionUsed = 'date_trunc_ym';
+      return $q.when([
+        {
+          date: moment()
+        }
+      ]);
+    };
+    outerScope.model = stubCardModel();
+
+    // If it's going to crash, it's here.
+    var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
+
+    // Use chartData as a proxy for TimelineChart's happiness.
+    var timelineChartScope = element.find('.timeline-chart').scope();
+    expect(timelineChartScope.filteredSoqlRollupTablesUsed).to.be.false;
   });
 
 });

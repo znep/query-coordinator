@@ -13,13 +13,18 @@
         obeIdObservable.startWith(null),
         page.observe('dataset').filter(_.isObject),
         function(obeId, dataset) {
+          var url = $.baseUrl();
+          url.searchParams.set('accessType', 'DOWNLOAD');
+
           if (obeId) {
-            return '/api/views/{0}/rows.csv?accessType=DOWNLOAD&bom=true'.format(obeId);
+            url.pathname = '/api/views/{0}/rows.csv'.format(obeId);
+            url.searchParams.set('bom', true);
           } else if (dataset.hasOwnProperty('id')) {
-            return '/api/views/{0}/rows.csv?accessType=DOWNLOAD'.format(dataset.id);
+            url.pathname = '/api/views/{0}/rows.csv'.format(dataset.id);
           } else {
             return '#';
           }
+          return url.href;
         }
       )
     );
@@ -221,6 +226,7 @@
 
     initDownload($scope, page, obeIdObservable, WindowState, FlyoutService, ServerConfig);
     initManageLens($scope, page);
+
 
     /*******************************
     * Filters and the where clause *
@@ -514,7 +520,8 @@
         pluck('id').
         delay(150). // Extra delay so the user can visually register the 'saved' message.
         subscribe(function(newSavedPageId) {
-          WindowOperations.navigateTo('/view/{0}'.format(newSavedPageId));
+          var url = $.baseUrl('/view/{0}'.format(newSavedPageId));
+          WindowOperations.navigateTo(url.href);
         });
 
       return saveStatusSubject.

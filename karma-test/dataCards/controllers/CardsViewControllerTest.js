@@ -822,7 +822,7 @@ describe('CardsViewController', function() {
       $scope.savePageAs(NEW_PAGE_NAME, NEW_PAGE_DESCRIPTION);
       mockWindowServiceLocationSeq.subscribe(function(href) {
         if (href) {
-          expect(href).to.equal('/view/{0}'.format(TEST_PAGE_ID));
+          expect(href).to.match(new RegExp('/view/{0}$'.format(TEST_PAGE_ID)));
           done();
         }
       });
@@ -839,20 +839,20 @@ describe('CardsViewController', function() {
       var controllerHarness = makeController();
 
       expect(controllerHarness.$scope.datasetCSVDownloadURL).
-        to.equal('/api/views/asdf-fdsa/rows.csv?accessType=DOWNLOAD');
+        to.match(new RegExp('/api/views/asdf-fdsa/rows\\.csv\\?accessType=DOWNLOAD$'));
     });
 
     it('uses the obeid for the csv download link if available', function() {
       var controllerHarness = makeController();
 
       expect(controllerHarness.$scope.datasetCSVDownloadURL).
-        to.equal('/api/views/asdf-fdsa/rows.csv?accessType=DOWNLOAD');
+        to.match(new RegExp('/api/views/asdf-fdsa/rows\\.csv\\?accessType=DOWNLOAD$'));
 
       $httpBackend.flush();
       controllerHarness.$scope.$digest();
 
       expect(controllerHarness.$scope.datasetCSVDownloadURL).
-        to.equal('/api/views/sooo-oold/rows.csv?accessType=DOWNLOAD&bom=true');
+        to.match(new RegExp('/api/views/sooo-oold/rows\\.csv\\?accessType=DOWNLOAD&bom=true$'));
     });
 
     it('closes the dialog when clicking (or hitting esc) outside it', function() {

@@ -95,6 +95,18 @@ describe('Socrata-flavored $http service', function() {
     $httpBackend.flush();
   });
 
+  describe('csrf', function() {
+    it('configures requests to use our csrf token/header', function() {
+      var config = {url: '/test'};
+      http(config);
+      expect(config.xsrfHeaderName).to.equal('X-CSRF-Token');
+      expect(config.xsrfCookieName).to.equal('socrata-csrf-token');
+
+      $httpBackend.whenGET('/test').respond(200, '');
+      expect($httpBackend.flush).to.not.throw();
+    });
+  });
+
   describe('requester tagging', function() {
     var REQUESTER_NAME = 'my-requester';
     var requester;

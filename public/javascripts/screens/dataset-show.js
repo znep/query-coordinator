@@ -787,8 +787,13 @@ $(function()
     });
 
     function initNewUXLink() {
-        var newUxLink = $('<div class="new-ux-link icon-cards"><div class="icon-close"/>' +
-                          '<a>{0}</a></div>'.format($.t('screens.ds.new_ux_link')));
+        var newUxLink = $('<div class="new-ux-link icon-cards">' +
+                            '<div class="icon-close"/>' +
+                            '<h3>' + $.t('screens.ds.new_ux_title') + '</h3>' +
+                            '<p>' + $.t('screens.ds.new_ux_text') + '</p>' +
+                            '<img class="new-ux-image" src="/images/new-ux-image.png"/>' +
+                            '<a class="explore-btn">' + $.t('screens.ds.new_ux_button') + '</a>' +
+                          '</div>');
         var anchor = newUxLink.find('a');
 
         // Restore the state
@@ -797,33 +802,51 @@ $(function()
         }
 
         if (blist.dataset.newBackend) {
-            var datasetMetadataUrl = '/dataset_metadata/{0}.json';
-            // Kratos shapefiles apparently are datasets, but have no dataset metadata, which we
-            // need to create a newux page. So - check that there's dataset metadata before showing
-            // the link.
-            var metadataTransitionPhase = parseInt(blist.feature_flags.metadata_transition_phase, 10);
-            if (metadataTransitionPhase !== 0) {
-                // The dataset metadata endpoint changed in metadata transition phase 1.
-                datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
-            }
-            $.get(datasetMetadataUrl.format(blist.dataset.id), function(r) {
+          var datasetMetadataUrl = '/dataset_metadata/{0}.json';
+          // Kratos shapefiles apparently are datasets, but have no dataset metadata, which we
+          // need to create a newux page. So - check that there's dataset metadata before showing
+          // the link.
+          var metadataTransitionPhase = parseInt(blist.feature_flags.metadata_transition_phase, 10);
+          if (metadataTransitionPhase !== 0) {
+            // The dataset metadata endpoint changed in metadata transition phase 1.
+            datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
+          }
+
+          function canUpdateMetadata() {
+            return  _.include(['administrator', 'publisher'], blist.currentUser.roleName) ||
+                    blist.dataset.owner.id === blist.currentUserId ||
+                    _.include(blist.currentUser.flags, 'admin');
+          }
+
+          if (canUpdateMetadata()) {
+            // Using AJAX to overwrite X-Requested-With because we were getting a 406 at this endpoint
+            $.ajax({
+              url: datasetMetadataUrl.format(blist.dataset.id),
+              headers: {
+                'X-Requested-With': ' '
+              },
+              success: function() {
                 // If we get a 200 response, we can show the link
                 anchor.attr('href', '/view/bootstrap/' + blist.dataset.id);
                 newUxLink.appendTo('body');
+              }
             });
+          }
         } else {
-            // This is an old BE 4x4. Check to see if it's been migrated, and if so, set and show
-            // the link.
+          // This is an old BE 4x4. Check to see if it's been migrated, and if so, set and show
+          // the link.
+          if (canUpdateMetadata()) {
             $.get('/api/migrations/' + blist.dataset.id).done(function(data) {
-                if (data.nbeId) {
-                    anchor.attr('href', '/view/bootstrap/' + data.nbeId);
-                    newUxLink.appendTo('body');
-                }
+              if (data.nbeId) {
+                anchor.attr('href', '/view/bootstrap/' + data.nbeId);
+                newUxLink.appendTo('body');
+              }
             });
+          }
         }
 
         // The collapse/expand functionality
-        newUxLink.on('click', function(e) {
+        newUxLink.on('click', function() {
             var $self = $(this);
             // If we're collapsed, expand ourselves.
             if ($self.hasClass('collapsed')) {
@@ -833,19 +856,13 @@ $(function()
 
         }).on('click', '.icon-close', function(e) {
             e.stopPropagation();
-            var textElem = $(e.currentTarget).siblings('a');
-            if (!textElem.data('widthSet')) {
-                // Set the expanded width so we can animate to it later
-                textElem.css('width', textElem.css('width'));
-                textElem.data('widthSet', true);
-            }
             // Kick it to the next frame - otherwise, the width doesn't set in time for the
             // start of the animation
             _.defer(function() {
                 newUxLink.addClass('collapsed');
                 $.cookies.set('newUxCollapsed', true);
             });
-        }).on('click', 'a', function(e) {
+        }).on('click', 'a', function() {
           // Add some feedback
           var screenOverlay = $('<div class="overlay"/>');
           var spinner = $(

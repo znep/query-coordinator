@@ -501,11 +501,12 @@ html, body
   position: fixed
   bottom: 0
   right: 1em
-  background-color: $new-ux-link-color
+  background-color: $new-ux-link-bg-color
   color: white
-  padding: 0.5em
+  padding: 0.4em 0.7em
   white-space: nowrap
   z-index: 101
+  overflow: hidden
   // Because this element has an icon- class on it (for the icon), our actual text's font gets
   // messed up. So, get the normal font.
   font-family: inherit
@@ -515,25 +516,46 @@ html, body
     &::before
       font-family: 'socrata-apps'
 
-  &.icon-cards::before
-    float: left
+  &:before
+    display: none
 
-  >a
-    cursor: pointer
-    @include prefixer(transition, 'all 0.2s ease-out')
-    margin: 0 1.5em 0 0.5em
-    float: right
-    color: inherit
+  > h3
+    font-size: 1.5em
+    font-weight: normal
+    text-align: center
+    margin-bottom: 0.2em
+    color: $new-ux-link-color
+  > p
+    font-size: 1em
+    text-align: center
+    margin-bottom: 0.2em
+    color: $new-ux-link-color-2
+
+  > img.new-ux-image
+    height: 200px
+    margin: 0 auto
+
+  > a.explore-btn
+    display: block
+    width: 4em
+    margin: 0 auto
+    padding: 0.5em 1.4em
+    background: $new-ux-link-button-color
+    color: $new-ux-link-bg-color
+    font-weight: bold
+    font-size: 0.9em
     text-decoration: none
+    @include border-radius(0.2em)
+    @include prefixer(transition, 'all 0.2s ease-out')
+
 
   .icon-close
     position: absolute
     right: 0.5em
-    top: 0
+    top: 0.2em
     font-size: 0.5em
     line-height: 2em
-    height: 100%
-    padding: 1em
+    padding: 0.2em
     font-weight: 100
     background-color: inherit
     cursor: pointer
@@ -544,29 +566,36 @@ html, body
   .spinner
     @include prefixer(transition, 'all 0.05s ease-out')
     position: absolute
-    bottom: 0
-    left: 0
-    height: 100%
+    top: 50%
+    left: 50%
+    margin-top: -1.5em
+    margin-left: -1.5em
+    height: 3em
     @include prefixer(border-radius, 100px)
     opacity: 0
-    background-color: rgba(255, 255, 255, .9)
+    background-color: rgba(255, 255, 255, 0.9)
 
   &.collapsed
-    >a
-      width: 0 !important
-      margin: 0
-      color: rgba(255, 255, 255, 0)
-
-    .icon-close
+    h3, p, .new-ux-image, .explore-btn, .icon-close
       display: none
+
+    &:before
+      display: block
 
     &.icon-cards
       cursor: pointer
+      opacity: 0.8
+      @include transition-property(opacity)
+      @include transition-duration(0.25s)
+
+      &:hover
+        opacity: 1
 
   // The overlay for the link itself - this one dims the link
   &::after
     content: '\feff'
     opacity: 0
+    position: absolute
     @include prefixer(transition, 'opacity 0.05s ease-out')
 
   // The overlay for the entire page underneath the link
@@ -581,15 +610,9 @@ html, body
     z-index: 100
     @include prefixer(transition, 'all 0.05s ease-out')
     text-align: center
-    padding: 2em
 
   &.loading
-    padding-left: 1.75em
-
-    &::before
-      content: ''
-
     &::after
       position: absolute
-      background-color: rgba(255, 255, 255, .2)
+      background-color: rgba(255, 255, 255, 0.2)
       opacity: 1

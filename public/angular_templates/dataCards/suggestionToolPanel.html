@@ -16,7 +16,9 @@
 
       <div class="suggestion-examples">
         <div>{{suggestionsAdvice}}</div>
-        <div>(Examples: '{{sampleOne}}' or '{{sampleTwo}}')</div>
+        <div ng-show="showSamples">
+          (Examples: '{{sampleOne}}'<span ng-show="sampleTwo"> or '{{sampleTwo}}'</span>)
+        </div>
       </div>
     </div>
   </div>

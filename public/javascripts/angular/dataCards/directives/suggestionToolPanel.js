@@ -14,7 +14,7 @@
         sampleTwo: '='
       },
       templateUrl: '/angular_templates/dataCards/suggestionToolPanel.html',
-      link: function($scope, element, attrs) {
+      link: function($scope) {
 
         AngularRxExtensions.install($scope);
 
@@ -35,37 +35,49 @@
         debounce(300). // Don't hammer the suggestions service.
         map(function(searchOptions) {
           return Rx.Observable.fromPromise(
-            // SuggestionService.suggest.apply(this, searchOptions)
-            // Line below is hack for testing purposes only. Do not merge!
-            SuggestionService.suggest.apply(this, [searchOptions[0], 'crimeType', searchOptions[2]])
+            SuggestionService.suggest.apply(this, searchOptions)
           );
-        }).merge(
+        }).
+        merge(
           // Clear out any suggestions if the user clears the input box.
           // This prevents old suggestions from coming up when the user then
           // types things back into the box.
-          $scope.observe('searchValue').filter(function(value) { return !_.isPresent(value); }).map(_.constant(
-              Rx.Observable.returnValue([])
-          ))
+          $scope.observe('searchValue').
+            filter(function(value) { return !_.isPresent(value); }).
+            map(_.constant(Rx.Observable.returnValue([])))
         ).share();
 
-        var numberOfSuggestionsObservable = suggestionsRequestsObservable.switchLatest().map(function(suggestions) {
-          return suggestions ? suggestions.length : 0;
-        });
+        var numberOfSuggestionsObservable = suggestionsRequestsObservable.
+          switchLatest().
+          map(function(suggestions) {
+            return suggestions ? suggestions.length : 0;
+          });
 
-        var suggestionsStatusObservable = numberOfSuggestionsObservable.map(function(numberOfSuggestions) {
-          if (numberOfSuggestions === 0) {
-            return 'No data found matching your search term.';
-          }
-          if (numberOfSuggestions <= suggestionLimit && numberOfSuggestions > 0) {
-            return 'Showing {0} {1}:'.format(
-              numberOfSuggestions > 1 ? 'all {0}'.format(numberOfSuggestions) : 'the only',
-              numberOfSuggestions > 1 ? 'suggestions' : 'suggestion'
-            );
-          }
-          if (numberOfSuggestions > suggestionLimit) {
-            return 'Showing top {0} of {1} suggestions:'.format(suggestionLimit, numberOfSuggestions);
-          }
-        });
+        var suggestionsStatusObservable = numberOfSuggestionsObservable.
+          map(function(numberOfSuggestions) {
+            if (numberOfSuggestions === 0) {
+              return 'No data found matching your search term.';
+            }
+            if (numberOfSuggestions <= suggestionLimit && numberOfSuggestions > 0) {
+              return 'Showing {0} {1}:'.format(
+                numberOfSuggestions > 1 ? 'all {0}'.format(numberOfSuggestions) : 'the only',
+                numberOfSuggestions > 1 ? 'suggestions' : 'suggestion'
+              );
+            }
+            if (numberOfSuggestions > suggestionLimit) {
+              return 'Showing top {0} of {1} suggestions:'.format(suggestionLimit, numberOfSuggestions);
+            }
+          });
+
+        var showSamplesObservable = Rx.Observable.combineLatest(
+          numberOfSuggestionsObservable.
+            map(function(numberOfSuggestions) { return numberOfSuggestions > 0; }),
+          $scope.observe('sampleOne').map(_.isPresent),
+          function(hasSuggestions, hasSample) {
+            return hasSample && !hasSuggestions;
+          });
+
+        $scope.bindObservable('showSamples', showSamplesObservable);
 
         $scope.$on('intractableList:selectedItem', function(event, selectedItem) {
           if ($scope.shouldShow) {

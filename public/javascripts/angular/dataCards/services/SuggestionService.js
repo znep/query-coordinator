@@ -11,18 +11,22 @@
       Assert(datasetId, 'Must provide a datasetId 4x4');
       Assert(fieldName, 'Must provide a fieldName value');
       Assert(query, 'Must provide a non-empty search query value');
-
-      var url = '/suggest/{0}/{1}?q={2}'.format(datasetId, fieldName, query);
+      var url = $.baseUrl(
+        '/views/{0}/columns/{1}/suggest/{2}'.format(datasetId, fieldName, query)
+      );
       var config = {
         cache: true,
         requester: self
       };
 
-      return http.get(url, config).then(
+      return http.get(url.href, config).then(
         function(response) {
-          return response.data;
+          return _.chain(response).
+            getPathOrElse('data.suggest.0.options', []).
+            pluck('text').
+            value();
         },
-        function(data, status, headers, config) {
+        function(data) {
           $log.error(data);
         }
       );

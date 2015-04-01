@@ -3,7 +3,7 @@
 
   function FromNowFilter() {
     return function(input) {
-      var momentObj = moment(input, moment.ISO_8601);
+      var momentObj = moment(input);
       if (momentObj.isValid()) {
         return momentObj.fromNow();
       } else {

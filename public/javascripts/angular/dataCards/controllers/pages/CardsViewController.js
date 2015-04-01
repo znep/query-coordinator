@@ -225,8 +225,10 @@
 
 
     initDownload($scope, page, obeIdObservable, WindowState, FlyoutService, ServerConfig);
-    initManageLens($scope, page);
 
+    if (ServerConfig.get('useCatalogLensPermissions') === true) {
+      initManageLens($scope, page);
+    }
 
     /*******************************
     * Filters and the where clause *

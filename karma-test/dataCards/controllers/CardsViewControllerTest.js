@@ -224,6 +224,16 @@ describe('CardsViewController', function() {
       expect(mockWindowOperations.currentTitle).to.equal('{0} | Socrata'.format(DEFAULT_PAGE_NAME));
     });
 
+    it('should be used for the document title even if we are not using catalog lens permissions', function() {
+      ServerConfig.override('useCatalogLensPermissions', false);
+
+      var controllerHarness = makeController();
+      var nameOne = _.uniqueId('name');
+
+      $rootScope.$digest();
+      expect(mockWindowOperations.currentTitle).to.equal('{0} | Socrata'.format(DEFAULT_PAGE_NAME));
+    });
+
     it('should update on the scope when the property changes on the model', function() {
       var controllerHarness = makeController();
       var $scope = controllerHarness.$scope;

@@ -182,7 +182,9 @@ class AngularControllerTest < ActionController::TestCase
         :fetch_pages_for_dataset => {
           :status => '200',
           :body => v1_pages_for_dataset
-        }
+        },
+        :migrate_dataset_metadata_to_v1 => {},
+        :set_default_and_available_card_types_to_columns! => {}
       )
     end
 

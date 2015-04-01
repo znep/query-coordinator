@@ -52,6 +52,7 @@ class AngularController < ActionController::Base
       error_message = "Could not serve app: page metadata does not include " \
         "a dataset id: #{@page_metadata.inspect}"
       report_error(error_class, error_message)
+      return render_500
     end
 
     # Then fetch the dataset metadata.
@@ -97,17 +98,7 @@ class AngularController < ActionController::Base
 
     if inherit_catalog_lens_permissions?
       # Grab permissions from core.
-      begin
-        permissions = fetch_permissions(params[:id])
-      rescue NewViewManager::ViewAuthenticationRequired
-        raise AuthenticationRequired.new
-      rescue NewViewManager::ViewAccessDenied
-        raise UnauthorizedPageMetadataRequest.new
-      rescue NewViewManager::ViewNotFound
-        raise PageMetadataNotFound.new
-      rescue => error
-        raise UnknownRequestError.new error.to_s
-      end
+      permissions = fetch_permissions_and_normalize_exceptions(page_id)
     end
 
     result = phidippides.fetch_page_metadata(
@@ -134,9 +125,9 @@ class AngularController < ActionController::Base
           #
           # Note that we only need to do this check when a page is public but
           # its underlying dataset is private.
-          if /authentication_required/.match(result[:body])
+          if /authentication_required/ =~ result[:body]
             raise AuthenticationRequired.new
-          elsif /permission_denied/.match(result[:body])
+          elsif /permission_denied/ =~ result[:body]
             raise UnauthorizedPageMetadataRequest.new
           else
             raise UnknownRequestError.new result[:body].to_s
@@ -161,17 +152,7 @@ class AngularController < ActionController::Base
 
     if inherit_catalog_lens_permissions?
       # Grab permissions from core.
-      begin
-        permissions = fetch_permissions(dataset_id)
-      rescue NewViewManager::ViewAuthenticationRequired
-        raise AuthenticationRequired.new
-      rescue NewViewManager::ViewAccessDenied
-        raise UnauthorizedDatasetMetadataRequest.new
-      rescue NewViewManager::ViewNotFound
-        raise DatasetMetadataNotFound.new
-      rescue => error
-        raise UnknownRequestError.new error.to_s
-      end
+      permissions = fetch_permissions_and_normalize_exceptions(dataset_id)
     end
 
     result = phidippides.fetch_dataset_metadata(
@@ -238,6 +219,20 @@ class AngularController < ActionController::Base
     end
 
     result[:body]
+  end
+
+  def fetch_permissions_and_normalize_exceptions(resource_id)
+    begin
+      fetch_permissions(resource_id)
+    rescue NewViewManager::ViewAuthenticationRequired
+      raise AuthenticationRequired.new
+    rescue NewViewManager::ViewAccessDenied
+      raise UnauthorizedPageMetadataRequest.new
+    rescue NewViewManager::ViewNotFound
+      raise PageMetadataNotFound.new
+    rescue => error
+      raise UnknownRequestError.new error.to_s
+    end
   end
 
   def add_table_column_to_dataset_metadata!(dataset_metadata)

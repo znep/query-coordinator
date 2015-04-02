@@ -235,7 +235,6 @@ class NewUxBootstrapController < ActionController::Base
     end
 
     page_id
-
   end
 
   def generate_page_metadata(new_dataset_metadata)

@@ -10,10 +10,9 @@ class NewViewManagerTest < Test::Unit::TestCase
     CurrentDomain.stubs(domain: stub(cname: 'localhost'))
   end
 
-  def test_create_creates_a_new_data_lens_whose_href_points_to_its_own_4x4
+  def test_create_creates_a_new_data_lens_whose_href_points_to_its_own_4x4_and_is_published
     connection_stub = mock
     created = false
-    published = false
     connection_stub.expects(:create_request).times(1).with do |url, payload|
       if url == '/views.json?accessType=WEBSITE'
         created = true
@@ -23,8 +22,6 @@ class NewViewManagerTest < Test::Unit::TestCase
         assert_equal('', payload[:metadata][:accessPoints][:new_view])
         # Should not have the dataPublicRead flag - ie should default to private
         assert_equal(nil, payload[:flags])
-      elsif url == '/views/niew-veww/publication.json?accessType=WEBSITE'
-        published = true
       end
     end.returns('{"id": "niew-veww"}')
     connection_stub.expects(:update_request).times(1).with do |url, payload|
@@ -35,12 +32,39 @@ class NewViewManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
+    expectant_stub = mock.tap { |stub| stub.expects(:publish) }
+    View.expects(:find).with('niew-veww').returns(expectant_stub)
     Rails.application.routes.url_helpers.stubs(opendata_cards_view_url: 'opendata_url')
 
     result = new_view_manager.create('my title', 'my description')
     assert_equal('niew-veww', result)
     assert(created)
-    assert(!published)
+  end
+
+  def test_create_does_not_raise_on_resource_not_found
+    new_view_manager.stubs(
+      :create_new_view => { :id => '1234-1234' },
+      :update_page_url => nil
+    )
+    Rails.application.routes.url_helpers.stubs(:opendata_cards_view_url => 'url')
+
+    View.expects(:find).raises(CoreServer::ResourceNotFound.new(nil))
+    assert_nothing_raised do
+      new_view_manager.create('title', 'description')
+    end
+  end
+
+  def test_create_does_not_raise_on_core_error
+    new_view_manager.stubs(
+      :create_new_view => { :id => '1234-1234' },
+      :update_page_url => nil
+    )
+    Rails.application.routes.url_helpers.stubs(:opendata_cards_view_url => 'url')
+
+    View.expects(:find).raises(CoreServer::Error)
+    assert_nothing_raised do
+      new_view_manager.create('title', 'description')
+    end
   end
 
   def test_create_raises_when_view_not_created

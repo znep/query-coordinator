@@ -57,6 +57,18 @@ class NewViewManager
 
     update_page_url(new_page_id, page_url)
 
+    begin
+      View.find(new_page_id).publish
+    rescue CoreServer::ResourceNotFound => error
+      report_error(
+        "Failed to mark bootstrapped page as published. Core responded with 404 for new_page_id: #{new_page_id}"
+      )
+    rescue CoreServer::Error => error
+      report_error(
+        "Failed to mark bootstrapped page as published. Unhandled Core exception: #{error.inspect}"
+      )
+    end
+
     new_page_id
   end
 

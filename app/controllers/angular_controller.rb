@@ -250,7 +250,8 @@ class AngularController < ActionController::Base
   end
 
   def redirect_to_login
-    redirect_to '/login?referer_redirect=1'
+    session[:return_to] = request.fullpath
+    redirect_to '/login?referer_redirect=1', :status => 301
   end
 
   def report_error(error_class, error_message)

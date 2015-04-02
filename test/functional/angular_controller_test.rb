@@ -70,6 +70,7 @@ class AngularControllerTest < ActionController::TestCase
 
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
 
+      assert_equal('/view/1234-1234', @controller.session[:return_to])
       assert_redirected_to('/login?referer_redirect=1')
     end
 
@@ -86,6 +87,7 @@ class AngularControllerTest < ActionController::TestCase
 
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
 
+      assert_equal('/view/1234-1234', @controller.session[:return_to])
       assert_redirected_to('/login?referer_redirect=1')
     end
 

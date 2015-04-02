@@ -188,7 +188,7 @@ describe('A Choropleth Card Visualization', function() {
 
     // The choropleth throttles its renderer.
     // Lie to it that enough time has passed, so it renders now.
-    fakeClock.tick(500);
+    fakeClock.tick(1000);
 
     return {
       element: el,
@@ -229,7 +229,7 @@ describe('A Choropleth Card Visualization', function() {
       // Second, test a feature on the second choropleth.
       feature = $('#choropleth-2 .choropleth-container path')[1];
 
-      // expect(feature, 'Could not find second choropleth in DOM').to.be.ok;
+      expect(feature, 'Could not find second choropleth in DOM').to.be.ok;
       testHelpers.fireEvent(feature, 'mousemove');
 
       flyout = $('#uber-flyout');

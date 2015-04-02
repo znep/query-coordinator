@@ -841,9 +841,8 @@ en:
       page_not_found: Page not found.
       were_sorry: We're really sorry, but the page you requested cannot be found.
     permission_denied_403:
-      description_html: If you believe this to be an error, try logging out and back in as a different user <a href="/login">here</a>.
-      no_permission: No permission to access resource.
-      were_sorry: We're sorry, but it appears that you do not have permission to access this page.
+      no_permission: Error
+      were_sorry: The current user doesn’t have access to this lens.
     to_whence_you_came: to where you came from.
   govstat:
     chrome:

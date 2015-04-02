@@ -130,17 +130,16 @@ describe('A Choropleth Card Visualization', function() {
     var testUndefinedColumns = options.testUndefined || false;
     var datasetModel = options.datasetModel || false;
     var version = options.version || '1';
-
-
     var model = new Model();
+
     model.fieldName = 'ward';
     model.defineObservableProperty('cardSize', 1);
     model.defineObservableProperty('activeFilters', []);
     model.defineObservableProperty('baseLayerUrl', 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png');
 
     if (!datasetModel) {
-
       var columnsData;
+
       if (!testUndefinedColumns) {
         columnsData = {
           "points": {
@@ -189,7 +188,7 @@ describe('A Choropleth Card Visualization', function() {
 
     // The choropleth throttles its renderer.
     // Lie to it that enough time has passed, so it renders now.
-    fakeClock.tick(500);
+    fakeClock.tick(1000);
 
     return {
       element: el,
@@ -230,6 +229,7 @@ describe('A Choropleth Card Visualization', function() {
       // Second, test a feature on the second choropleth.
       feature = $('#choropleth-2 .choropleth-container path')[1];
 
+      expect(feature, 'Could not find second choropleth in DOM').to.be.ok;
       testHelpers.fireEvent(feature, 'mousemove');
 
       flyout = $('#uber-flyout');
@@ -245,8 +245,8 @@ describe('A Choropleth Card Visualization', function() {
 
   describe('when created with mock choropleth visualizations', function() {
 
-    // We don't need actual choropleth directives to be instantiated for any of the following tests,
-    // so just mock it out.
+    // We don't need actual choropleth directives to be instantiated for any of
+    // the following tests, so just mock it out.
     beforeEach(function() {
       testHelpers.mockDirective(provide, 'choropleth');
     });

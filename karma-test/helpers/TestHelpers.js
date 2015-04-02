@@ -52,6 +52,12 @@
       if (opts) {
         $.extend(evt, opts);
       }
+      if (!target) {
+        throw new Error(
+          'Cannot dispatchEvent on undefined target. name: {0}, opts: {1}'.
+            format(name, opts)
+        );
+      }
       target.dispatchEvent(evt);
     };
 

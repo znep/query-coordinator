@@ -85,32 +85,6 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
       JSON.parse(@response.body).keys.sort)
   end
 
-  test 'show calls migrate_dataset_metadata_to_v1 on a successful request' do
-    @controller.stubs(can_create_metadata?: true, can_read_dataset_data?: true)
-    @phidippides.stubs(
-      issue_request: { status: '200', body: mock_v1_dataset_metadata }.with_indifferent_access,
-      get_dataset_size: 5_000_000
-    )
-    @phidippides.expects(:migrate_dataset_metadata_to_v1).with do |result|
-      assert_equal('vtvh-wqgq', result[:body][:id])
-    end
-
-    stub_feature_flags_with(:metadata_transition_phase, '3')
-    get :show, id: 'four-four', format: 'json'
-    assert_response(:success)
-  end
-
-  test 'show does not call migrate_dataset_metadata_to_v1 on an unsuccessful request' do
-    @controller.stubs(can_create_metadata?: true, can_read_dataset_data?: true)
-    @phidippides.stubs(
-      issue_request: { status: 404, body: mock_v1_dataset_metadata }.with_indifferent_access,
-      get_dataset_size: 5_000_000
-    )
-    @phidippides.expects(:migrate_dataset_metadata_to_v1).times(0)
-    stub_feature_flags_with(:metadata_transition_phase, '3')
-    get :show, id: 'four-four', format: 'json'
-  end
-
   test '(phase 0) create returns 401 unless logged in' do
     @controller.stubs(can_create_metadata?: false)
     stub_feature_flags_with(:metadata_transition_phase, '0')

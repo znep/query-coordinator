@@ -174,12 +174,6 @@ class AngularController < ActionController::Base
       end
     end
 
-    # This is temporary, but constitutes a rolling migration.
-    # Eventually we can check that every extant dataset metadata
-    # blob has a 'defaultPage' property and remove this migration
-    # step.
-    phidippides.migrate_dataset_metadata_to_v1(result)
-
     # Moving forward, we also compute and insert two card type mapping
     # properties on columns before we send them to the front-end.
     # This method call will check the metadata transition phase

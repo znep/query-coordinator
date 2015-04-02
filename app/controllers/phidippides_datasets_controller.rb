@@ -32,6 +32,11 @@ class PhidippidesDatasetsController < ApplicationController
     end
   end
 
+  # Note that since this method no longer decorates columns with default and
+  # available card types, attempts to instantiate a Data Cards Dataset model
+  # from the response of this endpoint will fail with validation errors.
+  # This endpoint is 'safe' for the public and for checking permissions and
+  # fetching the geometry label of shape files, however.
   def show
     return render :nothing => true, :status => '406' unless request.format.to_s == 'application/json'
     return render :nothing => true, :status => '400' unless params[:id].present?
@@ -55,20 +60,6 @@ class PhidippidesDatasetsController < ApplicationController
 
     begin
       result = phidippides.fetch_dataset_metadata(params[:id], :request_id => request_id, :cookies => forwardable_session_cookies)
-
-      if result[:status] == '200'
-        # This is temporary, but constitutes a rolling migration.
-        # Eventually we can check that every extant dataset metadata
-        # blob has a 'defaultPage' property and remove this migration
-        # step.
-        phidippides.migrate_dataset_metadata_to_v1(result)
-
-        # Moving forward, we also compute and insert two card type mapping
-        # properties on columns before we send them to the front-end.
-        # This method call will check the metadata transition phase
-        # internally and just pass through if it is not set to '3'.
-        phidippides.set_default_and_available_card_types_to_columns!(result)
-      end
 
       dataset_metadata = result[:body]
 

@@ -55,14 +55,7 @@ class BrowseControllerTest < ActionController::TestCase
     assert_select_quiet '.facetSection.limitTo > ul > li > .typeNewView', 1
   end
 
-  test 'it should not show the new view listing by default' do
-    get :show
-    assert_response :success
-    assert_select_quiet %Q(tr[data-viewId="#{@new_view_id}"]), 0
-  end
-
-  test 'it should show the new view listing when exit_tech_preview feature flag is true' do
-    stub_feature_flags_with(:exit_tech_preview, true)
+  test 'it should show the new view listing' do
     get :show
     assert_response :success
     assert_select_quiet %Q(tr[data-viewId="#{@new_view_id}"]), 1
@@ -81,19 +74,7 @@ class BrowseControllerTest < ActionController::TestCase
     assert_select_quiet %Q(tr[data-viewId="#{@new_view_id}"]), 1
   end
 
-  test 'it should send appropriate limitTo for search by default' do
-    expected_limit_to_items = %w(tables href blob maps calendars charts forms apis predeploy_apis)
-    Clytemnestra.
-      expects(:search_views).
-      with() { |actual| actual[:limitTo].eql?(expected_limit_to_items) }.
-      returns(Clytemnestra::ViewSearchResult.from_result(File.open('test/fixtures/catalog_search_results.json').read))
-    get :show
-    assert_response :success
-    Clytemnestra.unstub(:search_views)
-  end
-
-  test 'it should not send a limitTo for search when exit_tech_preview feature flag is false and no facet is selected' do
-    stub_feature_flags_with(:exit_tech_preview, true)
+  test 'it should not send a limitTo for search when no facet is selected' do
     Clytemnestra.
       expects(:search_views).
       with() { |actual| !actual[:limitTo].present? }.

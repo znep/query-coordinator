@@ -225,8 +225,7 @@
 
 
     initDownload($scope, page, obeIdObservable, WindowState, FlyoutService, ServerConfig);
-
-    if (ServerConfig.get('useCatalogLensPermissions') === true) {
+    if (ServerConfig.get('exitTechPreview')) {
       initManageLens($scope, page);
     }
 

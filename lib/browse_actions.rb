@@ -23,7 +23,14 @@ protected
         {:text => t('controls.browse.facets.view_types.blob'), :value => 'blob', :class => 'typeBlob'},
         {:text => t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'}]
     }
-    if feature_flag?(:exit_tech_preview, defined?(request) ? request : nil)
+    if (
+      feature_flag?(:exit_tech_preview, defined?(request) ? request : nil) ||
+      (
+        defined?(current_user) &&
+        CurrentDomain.user_can?(current_user, :create_datasets)
+      )
+    )
+
       datasets_index = vts[:options].index { |option| option[:value] == 'datasets' } || 0
       new_view_option = {:text => t('controls.browse.facets.view_types.new_view'), :value => 'new_view', :class => 'typeNewView', :icon_font_class => 'icon-cards'}
       vts[:options].insert(datasets_index + 1, new_view_option)
@@ -313,9 +320,6 @@ protected
     if browse_options[:view_results].nil? || browse_options[:view_results].empty?
       Rails.logger.info("IT WAS AN EMPTY ARRAY") unless browse_options[:view_results].nil?
       begin
-        if browse_options[:search_options][:limitTo].nil? && !feature_flag?(:exit_tech_preview, request)
-          browse_options[:search_options][:limitTo] = %w(tables href blob maps calendars charts forms apis predeploy_apis)
-        end
         view_results = Clytemnestra.search_views(browse_options[:search_options])
         browse_options[:view_count] = view_results.count
         browse_options[:view_results] = view_results.results

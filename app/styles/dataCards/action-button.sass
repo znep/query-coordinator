@@ -20,6 +20,32 @@ $action-btn-padding-left: 18px
   position: relative
   @include action-button($aqua-font-color, $btn-bg-color, $btn-border-color)
 
+  &.dark
+    @include action-button($dark-btn-font-color, $dark-btn-bg-color, $dark-btn-border-color)
+
+    &:hover, &.active
+      @include action-button($dark-btn-hover-font-color, $dark-btn-hover-bg-color, $dark-btn-hover-border-color)
+
+    &.disabled, &:disabled
+      @include action-button($dark-btn-disabled-font-color, $dark-btn-disabled-bg-color, $dark-btn-disabled-border-color)
+      cursor: default
+
+  &.green
+    @include action-button($green-btn-font-color, $green-btn-bg-color, $green-btn-border-color)
+
+    &:hover
+      @include action-button($green-btn-hover-font-color, $green-btn-hover-bg-color, $green-btn-hover-border-color)
+
+    &.disabled, &:disabled
+      @include action-button($green-btn-disabled-font-color, $green-btn-disabled-bg-color, $green-btn-disabled-border-color)
+      cursor: default
+
+  &.inverted
+    @include action-button($btn-hover-font-color, $btn-hover-bg-color, $btn-hover-border-color)
+    &:hover
+      @include action-button($aqua-font-color, $btn-border-color, $btn-bg-color)
+
+
   &.l-to-r
     margin: 0 10px 10px 0
 
@@ -48,31 +74,5 @@ $action-btn-padding-left: 18px
   &.working
     @include action-button($btn-working-font-color, $btn-working-bg-color, $btn-working-border-color)
 
-.action-btn.dark
-  @include action-button($dark-btn-font-color, $dark-btn-bg-color, $dark-btn-border-color)
-
-  &:hover, &.active
-    @include action-button($dark-btn-hover-font-color, $dark-btn-hover-bg-color, $dark-btn-hover-border-color)
-
-  &.disabled, &:disabled
-    @include action-button($dark-btn-disabled-font-color, $dark-btn-disabled-bg-color, $dark-btn-disabled-border-color)
-    cursor: default
-
-.action-btn.green
-  @include action-button($green-btn-font-color, $green-btn-bg-color, $green-btn-border-color)
-
-  &:hover
-    @include action-button($green-btn-hover-font-color, $green-btn-hover-bg-color, $green-btn-hover-border-color)
-
-  &.disabled, &:disabled
-    @include action-button($green-btn-disabled-font-color, $green-btn-disabled-bg-color, $green-btn-disabled-border-color)
-    cursor: default
-
-.action-btn.inverted
-  @include action-button($btn-hover-font-color, $btn-hover-bg-color, $btn-hover-border-color)
-  &:hover
-    @include action-button($aqua-font-color, $btn-border-color, $btn-bg-color)
-
 .btn-slim
   padding: 0
-

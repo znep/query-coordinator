@@ -3,6 +3,7 @@ describe('A Search Card Visualization', function() {
 
   var ROW_COUNT = 250;
   var testHelpers;
+  var SoqlHelpers;
   var rootScope;
   var Model;
   var Mockumentary;
@@ -28,9 +29,10 @@ describe('A Search Card Visualization', function() {
       _$provide = $provide;
     });
   });
-  
+
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
+    SoqlHelpers = $injector.get('SoqlHelpers');
     rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
     Mockumentary = $injector.get('Mockumentary');
@@ -197,7 +199,7 @@ describe('A Search Card Visualization', function() {
 
             expect(currentSearchWhere()).to.equal('{0} AND {1} = "{2}"'.format(
               cardData.outerScope.whereClause,
-              cardData.model.fieldName,
+              SoqlHelpers.formatFieldName(cardData.model.fieldName),
               SEARCH_TERM));
 
             //Simulate the user changing the page WHERE clause.
@@ -206,7 +208,7 @@ describe('A Search Card Visualization', function() {
 
             expect(currentSearchWhere()).to.equal('{0} AND {1} = "{2}"'.format(
               cardData.outerScope.whereClause,
-              cardData.model.fieldName,
+              SoqlHelpers.formatFieldName(cardData.model.fieldName),
               SEARCH_TERM));
           });
 

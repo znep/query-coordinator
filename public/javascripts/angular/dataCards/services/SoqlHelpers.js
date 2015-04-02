@@ -42,7 +42,7 @@ angular.module('dataCards').factory('SoqlHelpers', function(Assert, DateHelpers)
     if (typeof fieldName !== 'string') {
       throw new Error('Cannot format fieldName for non-string arguments.');
     }
-    return '`' + fieldName.replace(/\-/g, '_') + '`';
+    return '`{0}`'.format(fieldName.replace(/\-/g, '_'));
   }
 
   /**

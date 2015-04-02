@@ -1,5 +1,12 @@
 describe('Filter models', function() {
+  'use strict'
+
+  var SoqlHelpers;
+
   beforeEach(module('dataCards'));
+  beforeEach(inject(function($injector) {
+    SoqlHelpers = $injector.get('SoqlHelpers');
+  }));
 
   function parseAsJson(obj) {
     return JSON.parse(JSON.stringify(obj));
@@ -17,12 +24,16 @@ describe('Filter models', function() {
 
     it('should generate correct SOQL for isNull = true', inject(function(Filter) {
       var filter = new Filter.IsNullFilter(true);
-      expect(filter.generateSoqlWhereFragment(fakeColumnName)).to.equal(fakeColumnName + " IS NULL");
+      expect(filter.generateSoqlWhereFragment(fakeColumnName)).to.equal(
+        SoqlHelpers.formatFieldName(fakeColumnName) + " IS NULL"
+      );
     }));
 
     it('should generate correct SOQL for isNull = false', inject(function(Filter) {
       var filter = new Filter.IsNullFilter(false);
-      expect(filter.generateSoqlWhereFragment(fakeColumnName)).to.equal(fakeColumnName + " IS NOT NULL");
+      expect(filter.generateSoqlWhereFragment(fakeColumnName)).to.equal(
+        SoqlHelpers.formatFieldName(fakeColumnName) + " IS NOT NULL"
+      );
     }));
 
     it('should serialize and deserialize properly', inject(function(Filter) {
@@ -41,7 +52,7 @@ describe('Filter models', function() {
     var fakeColumnName = _.uniqueId();
     it('should generate correct SOQL for the given operator and string operand', inject(function(Filter) {
       var filter = new Filter.BinaryOperatorFilter('>', 'CKAN');
-      expect(filter.generateSoqlWhereFragment('SOCRATA')).to.equal("SOCRATA>'CKAN'");
+      expect(filter.generateSoqlWhereFragment('SOCRATA')).to.equal(SoqlHelpers.formatFieldName('SOCRATA') + ">'CKAN'");
     }));
 
     it('should throw if the constructor is passed bad or unsupported arguments', inject(function(Filter) {
@@ -85,7 +96,7 @@ describe('Filter models', function() {
       var end = '2101-01-10T08:00:00';
       var filter = new Filter.TimeRangeFilter(start, end);
       var expected = "{0} >= {1} AND {0} < {2}".format(
-        fakeColumnName,
+        SoqlHelpers.formatFieldName(fakeColumnName),
         SoqlHelpers.encodePrimitive(start),
         SoqlHelpers.encodePrimitive(end)
       );

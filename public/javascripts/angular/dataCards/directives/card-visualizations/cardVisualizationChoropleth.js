@@ -89,9 +89,9 @@
             }
 
             if (shapeFile === null) {
-              throw new Error(
-                'Dataset metadata column for computed georegion does not include shapeFile.'
-              );
+              scope.safeApply(function() {
+                scope.geojsonRegionsError = true;
+              });
             }
 
             return shapeFile;
@@ -187,7 +187,12 @@
                 dataResponses.onNext(1);
               },
               function(err) {
-                // Do nothing
+                // Show geojson regions request error message.
+                dataResponses.onNext(1);
+
+                scope.safeApply(function() {
+                  scope.geojsonRegionsError = true;
+                });
               }
             );
 
@@ -235,6 +240,11 @@
             return Rx.Observable.fromPromise(dataPromise);
           });
 
+        // NOTE: This needs to be defined on the scope BEFORE
+        // the 'geojsonAggregateData' observable is bound, or
+        // else it sometimes fails to set the value to true
+        // when it encounters an error. WTF.
+        scope.geojsonRegionsError = false;
 
         /****************************************
         * Bind non-busy-indicating observables. *
@@ -254,7 +264,15 @@
             model.observeOnLatest('activeFilters'),
             model.pluck('fieldName'),
             dataset.observeOnLatest('columns'),
-            CardVisualizationChoroplethHelpers.aggregateGeoJsonData));
+            CardVisualizationChoroplethHelpers.aggregateGeoJsonData),
+          // The second function argument to bindObservable is called when
+          // there is an error in one of the argument sequences. This can
+          // happen when we reject the regions promise because the extent
+          // query that it depends on fails.
+          function(e) {
+            $log.error(e);
+          }
+        );
 
 
         /*********************************************************

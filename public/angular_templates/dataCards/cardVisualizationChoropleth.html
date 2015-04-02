@@ -3,9 +3,12 @@
   base-layer-url="baseLayerUrl"
   geojson-aggregate-data="geojsonAggregateData"
   row-display-unit="rowDisplayUnit"
-  ng-class="{ 'card-size-1': cardSize === 1, 'card-size-2': cardSize === 2, 'card-size-3': cardSize === 3 }"
-  >
+  ng-class="{ 'card-size-1': cardSize === 1, 'card-size-2': cardSize === 2, 'card-size-3': cardSize === 3 }">
 </choropleth>
+<div class="choropleth-render-error" ng-show="geojsonRegionsError">
+  <span class="icon-warning"></span>
+  An error was encountered when trying to render this map.
+</div>
 <div class="spinner" ng-class="{busy: busy}">
   <svg width="25px" height="25px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">

@@ -316,6 +316,49 @@
       },
 
       getChoroplethRegionsUsingSourceColumn: function(datasetId, datasetSourceColumn, shapeFileId) {
+
+        function validateExtentResponse(response) {
+
+          if (!response.hasOwnProperty('data')) {
+            throw new Error('response has no property "data".');
+          }
+          if (!response.data.length || response.data.length <= 0) {
+            throw new Error('response.data has invalid length.');
+          }
+          if (typeof response.data[0] !== 'object') {
+            throw new Error('response.data[0] is not an object.');
+          }
+
+          var extentKeys = _.keys(response.data[0]);
+          if (extentKeys.length <= 0) {
+            throw new Error('response.data[0] object has no properties.');
+          }
+
+          var extent = response.data[0][extentKeys[0]];
+          if (!extent.hasOwnProperty('type') || extent.type !== 'MultiPolygon') {
+            throw new Error('extent is not of type "MultiPolygon", (it was "{0}").'.format(extent.type));
+          }
+          if (!extent.hasOwnProperty('coordinates') ||
+            !extent.coordinates.length ||
+            extent.coordinates.length <= 0 ||
+            !extent.coordinates[0].length ||
+            extent.coordinates[0].length <= 0) {
+            throw new Error('extent has no coordinates.');
+          }
+
+          var coordinates = extent.coordinates[0][0];
+          if (coordinates.length !== 5) {
+            throw new Error('extent coordinates are not valid.');
+          }
+
+          return {
+            bottomLeft: coordinates[0].join(' '),
+            topLeft: coordinates[1].join(' '),
+            topRight: coordinates[2].join(' '),
+            bottomRight: coordinates[3].join(' ')
+          };
+        }
+
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
 
         // http://dataspace-demo.test-socrata.com/resource/vtvh-wqgq.json?$select=extent(point)
@@ -329,20 +372,22 @@
           if (response.status === 200) {
             shapeFileId = DeveloperOverrides.dataOverrideForDataset(shapeFileId) || shapeFileId;
 
-            var jsonPayload = response.data[0];
-            var extentKey = _.keys(jsonPayload)[0];
-            var extents = response.data[0][extentKey].coordinates[0][0];
-
-            var bottomLeft = extents[0].join(' ');
-            var topLeft = extents[1].join(' ');
-            var topRight = extents[2].join(' ');
-            var bottomRight = extents[3].join(' ');
+            try {
+              var extent = validateExtentResponse(response);
+            } catch(e) {
+              return $q.reject('Invalid extent response. {0}'.format(e.message));
+            }
 
             //  /resource/bwdd-ss8w.geojson?$select=*&$where=intersects(
             //  the_geom,
             //  'MULTIPOLYGON(((-71.153911%2042.398355,-71.153911%2042.354528,-71.076298%2042.354528,-71.076298%2042.398355,-71.153911%2042.398355)))')
             var multiPolygon = "'MULTIPOLYGON((({0},{1},{2},{3},{0})))'".
-              format(bottomLeft, topLeft, topRight, bottomRight);
+              format(
+                extent.bottomLeft,
+                extent.topLeft,
+                extent.topRight,
+                extent.bottomRight
+              );
 
             var url = $.baseUrl('/resource/{0}.geojson'.format(shapeFileId));
             url.searchParams.set('$select', '*');

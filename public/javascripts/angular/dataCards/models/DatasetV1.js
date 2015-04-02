@@ -64,9 +64,7 @@ angular.module('dataCards.models').factory('DatasetV1', function(
         return CardDataService.getRowCount(self.id);
       });
 
-      if (ServerConfig.get('useCatalogLensPermissions')) {
-        self.defineEphemeralObservableProperty('permissions', datasetMetadata.permissions);
-      }
+      self.defineEphemeralObservableProperty('permissions', datasetMetadata.permissions || {});
     }
   });
 

@@ -69,13 +69,14 @@
           if (!rejection.config.hasOwnProperty('airbrakeShouldIgnore404Errors') &&
               !rejection.config.airbrakeShouldIgnore404Errors) {
             try {
+              rejectionConfig = rejection.config || {};
               errorMsg = 'HTTP response error ({0} {1}): {2}, request: {3} {4}'.
                 format(
                   rejection.status,
                   rejection.statusText,
-                  rejection.data.message,
-                  rejection.config.method,
-                  rejection.config.url
+                  (rejection.data || {}).message,
+                  rejectionConfig.method || '',
+                  rejectionConfig.url || ''
                 );
               pushExceptionToAirbrake(new Error(errorMsg));
             } catch(airbrakeError) {

@@ -1,5 +1,6 @@
 ;var metricsNS = blist.namespace.fetch('blist.metrics');
 blist.namespace.fetch('blist.metrics.transforms');
+var sanitizer = blist.namespace.fetch('blist.util.htmlSanitizer');
 
 metricsNS.SERIES_KEY = 'data-series';
 metricsNS.DATA_KEY   = 'data-metrics';
@@ -41,42 +42,44 @@ metricsNS.renderTopList = function(data, $target)
 
 // Shared data processing function to turn balboa metrics hash, call
 // appropriate transformation then rendering function
-metricsNS.updateTopListWrapper = function($context, data, mapFunction, postProcess)
-{
-    var mapped   = [],
-        sorted   = $context.data('sorted-data');
-    if ($.isBlank(sorted))
-    {
+metricsNS.updateTopListWrapper = function($context, data, mapFunction, postProcess) {
+    var mapped = [],
+      sorted = $context.data('sorted-data');
+    if ($.isBlank(sorted)) {
         // Cache a sorted, arrayified version of the data
         // so we don't generate it every time they click 'Show More'
         sorted = metricsNS.sortData(data);
         $context.data('sorted-data', sorted);
     }
 
-    var count    = $context.data('count'),
-        newCount = count + metricsNS.SHOW_COUNT,
-        dataPart = sorted.slice(count, newCount);
+    var count = $context.data('count'),
+      newCount = count + metricsNS.SHOW_COUNT,
+      dataPart = sorted.slice(count, newCount);
 
     $context.data('count', newCount);
 
-    _.each(dataPart, function(entry)
-    {
-        if (_.isFunction(mapFunction))
-        { mapFunction(entry.item, entry.data, mapped); }
-        else
-        { mapped.push({name: entry.item, value: entry.data,
-               textValue: Highcharts.numberFormat(entry.data, 0)}); }
+    _.each(dataPart, function (entry) {
+        if (_.isFunction(mapFunction)) {
+            mapFunction(entry.item, entry.data, mapped);
+        }
+        else {
+            mapped.push({
+                name: entry.item, value: entry.data,
+                textValue: Highcharts.numberFormat(entry.data, 0)
+            });
+        }
     });
 
     $context
-        .toggleClass('moreDataAvailable', newCount < sorted.length);
+      .toggleClass('moreDataAvailable', newCount < sorted.length);
 
-    if (_.isFunction(postProcess))
-    { postProcess(mapped, $context); }
-    else
-    { metricsNS.renderTopList(mapped, $context); }
+    if (_.isFunction(postProcess)) {
+        postProcess(mapped, $context);
+    }
+    else {
+        metricsNS.renderTopList(mapped, $context);
+    }
 };
-
 metricsNS.showMoreClicked = function(section)
 {
     var $context = $('#' + section.id);
@@ -130,7 +133,7 @@ metricsNS.updateTopSearchesCallback = function($context, key)
     var searchMap = function(term, count, results)
     {
         results.push({
-            linkText: term,
+            linkText: sanitizer.sanitizeHtmlRestrictive(term), // sanitize to prevent javascript injection attack
             value: count,
             textValue: Highcharts.numberFormat(count, 0),
             href: '/browse?q=' + escape(term)
@@ -149,7 +152,8 @@ metricsNS.topDatasetsCallback = function($context)
             $.socrataServer.makeRequest({url: '/views/' + key  + '.json?method=getNoConditional', type: 'get', batch: true,
                 success: function(responseData)
                 {
-                    results.push({linkText: responseData.name,
+                    // sanitize to prevent javascript injection attack
+                    results.push({linkText: sanitizer.sanitizeHtmlRestrictive(responseData.name),
                         value: value,
                         textValue: Highcharts.numberFormat(value, 0),
                         href: new Dataset(responseData).url + (metricsNS.datasetPostfix || '')
@@ -176,7 +180,7 @@ metricsNS.topQueryStringsCallback = function($context)
     {
         var href = "";
         results.push({
-            linkText: term,
+            linkText: sanitizer.sanitizeHtmlRestrictive(term),
             value: count,
             textValue: Highcharts.numberFormat(count, 0),
             href: href
@@ -210,7 +214,7 @@ metricsNS.topAppTokensCallback = function($context)
                             '?size=tiny') : '';
 
                     var owner = new User(response.owner);
-                    results.push({linkText: response.name || $.t('screens.stats.deleted_application'),
+                    results.push({linkText: sanitizer.sanitizeHtmlRestrictive(response.name) || $.t('screens.stats.deleted_application'),
                         extraClass: klass,
                         href: response.owner ? owner.getProfileUrl() + '/app_tokens/' + response.id : null,
                         value: value,
@@ -244,13 +248,13 @@ metricsNS.urlMapCallback = function($context)
                 if (urlHash.hasOwnProperty(subKey))
                 {
                     totalCount += urlHash[subKey];
-                    subLinks.push({linkText: subKey,
+                    subLinks.push({linkText: sanitizer.sanitizeHtmlRestrictive(subKey),
                         href: key + subKey,
                         value: urlHash[subKey]
                     });
                 }
             }
-            results.push({linkText: key, value: totalCount,
+            results.push({linkText: sanitizer.sanitizeHtmlRestrictive(key), value: totalCount,
                 textValue: Highcharts.numberFormat(totalCount, 0),
                 href: '#expand', linkClass: 'expandTopSection',
                 children: _.sortBy(subLinks, function(subItem) {

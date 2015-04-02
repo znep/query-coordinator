@@ -2112,7 +2112,6 @@ it:
         remove_confirm: Sei sicuro di voler eliminare questa vista?
         unpublished_alert: Questo dataset non è stato ancora pubblicato per consentirti di fare dei cambiamenti necessari prima di renderlo disponibile ad altri. Non sarà visibile finché non pubblicherai questo dataset.
       subscribe:
-        google_reader: Aggiungi a Google Reader
         intro_html: '<strong>Per abbonarti a <span class="datasetName">%{name}</span> dataset tramite un reader RSS</strong>, utilizza uno dei seguenti link:'
         rss: Scarica come RSS
         rss_program: Apri in un Programma Esterno

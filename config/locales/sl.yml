@@ -2134,7 +2134,6 @@ sl:
         remove_confirm: Ali ste prepričani, da želite odstraniti ta pogled?
         unpublished_alert: Ta podatkovni niz še ni objavljen, da bi lahko izvajali potrebne spremembe, preden ga omogočite vsem. Ne bo viden, dokler ne objavite ta podatkovni niz.
       subscribe:
-        google_reader: Dodaj v Google Reader
         intro_html: '<strong>Če se želite naročiti na podatkovni niz <span class="datasetName">%{name}</span> prek čitalnika RSS</strong>, uporabite eno izmed naslednjih povezav:'
         rss: Prenesi kot RSS
         rss_program: Odpri v zunanjem programu

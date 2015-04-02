@@ -2113,7 +2113,6 @@ ro:
         remove_confirm: Sunteţi sigur că doriţi să eliminaţi această vizualizare?
         unpublished_alert: Acest set de date nu este încă publicat pentru a vă permite toate modificările necesare înainte de a-l face disponibil tuturor. Nu va fi vizibil până când nu publicaţi acest set de date.
       subscribe:
-        google_reader: Adăugare la Google Reader
         intro_html: '<strong>Pentru a vă abona la <span class="datasetName">%{name}</span> setul de date printr-un cititor RSS</strong>, utilizaţi unul dintre următoarele link-uri:'
         rss: Descărcare ca RSS
         rss_program: Deschideţi în "Program extern"

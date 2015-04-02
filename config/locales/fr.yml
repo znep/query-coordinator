@@ -2099,7 +2099,6 @@ fr:
         remove_confirm: "Êtes-vous certain de vouloir supprimer cette vue ?"
         unpublished_alert: Ce set de données n'est pas encore publié pour vous permettre de faire tout changement nécessaire avant de le mettre à disposition de tout le monde. Il ne sera pas visible jusqu'à ce que vous publiez ce set de données
       subscribe:
-        google_reader: Ajouter à Google Reader
         intro_html: '<strong>Pour vous abonner à la série de données <span class="datasetName">%{name}</span> via un lecteur RSS</strong>, utilisez l’un des liens suivants :'
         rss: Télécharger en RSS
         rss_program: Ouvrir dans un programme externe

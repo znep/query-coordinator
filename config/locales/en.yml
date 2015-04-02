@@ -2134,7 +2134,6 @@ en:
         remove_confirm: Are you sure you want to remove this view?
         unpublished_alert: This dataset is not yet published to allow you to make any necessary changes before making it available to everyone. It will not be visible until you publish this dataset.
       subscribe:
-        google_reader: Add to Google Reader
         intro_html: ! '<strong>To subscribe to the <span class="datasetName">%{name}</span> dataset via an RSS reader</strong>, use one of the following links:'
         rss: Download as RSS
         rss_program: Open in External Program

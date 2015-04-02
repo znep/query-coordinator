@@ -2110,7 +2110,6 @@ zh:
         remove_confirm: "你确定要删除该视图？"
         unpublished_alert: "该数据集尚未发布，供每个人可用前尚无法进行必要的更改。你发布该数据集后该数据集才可见。"
       subscribe:
-        google_reader: "添加到Google Reader"
         intro_html: <strong>通过RSS阅读器订阅 <span class="datasetName">%{name}</span> 数据集</strong>, 可使用以下任意一个链接：
         rss: "下载为RSS"
         rss_program: "在外部程序中打开"

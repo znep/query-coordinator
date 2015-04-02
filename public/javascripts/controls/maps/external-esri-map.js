@@ -55,7 +55,10 @@
                         var objectIdField = _.detect(layer.featureLayer.fields, function(field)
                             { return field.type == 'esriFieldTypeOID'; });
                         if (objectIdField)
-                        { layer.objectIdKey = objectIdField.alias || objectIdField.name; }
+                        {
+                            layer.objectIdField = objectIdField;
+                            layer.objectIdKey = objectIdField.alias || objectIdField.name;
+                        }
 
                         if (layer._metadataReady)
                         { layer.onloadCallback(); }
@@ -326,13 +329,17 @@
                     { return feature.feature ? feature.feature.attributes[objectIdKey]
                                              :         feature.attributes[objectIdKey]; });
 
+                    var objectIdFieldName = (_.detect(layerObj._view.realColumns, function(col) {
+                        return col.name == layerObj._displayLayer.objectIdField.name;
+                    }) || {}).fieldName || objectIdKey;
+
                     // Yes, this is a Core request inside a callback from an ESRI request.
                     // That is how awesome our ESRI integration is.
                     layerObj._view.makeRequest({
                         url: '/resource/' + layerObj._view.id + '.json',
                         isSODA: true,
                         params: { '$$exclude_system_fields': false,
-                                  '$where': 'any_of(' + objectIdKey + ', ' + objectids.join(',') + ')' },
+                                  '$where': 'any_of(' + objectIdFieldName + ', ' + objectids.join(',') + ')' },
                         success: function(results)
                         {
                             var flyoutContent = layerObj.getFlyout(idResults, results);

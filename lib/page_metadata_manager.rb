@@ -56,9 +56,25 @@ class PageMetadataManager
 
     initialize_metadata_transition_phase_key_names
 
+    # Grab the source dataset so we can copy over some metadata.
+    source_dataset_category = nil
+    begin
+      source_dataset = View.find(page_metadata['datasetId'])
+      source_dataset_category = source_dataset.category
+    rescue CoreServer::Error => error
+      report_error(
+        "Core server error while attempting to read source dataset's metadata, using defaults" \
+        "(#{page_metadata['datasetId']}): #{error}"
+      )
+    end
+
     # The core lens id for this page is the same one we use to refer to it in
     # phidippides
-    new_page_id = new_view_manager.create(page_metadata['name'], page_metadata['description'])
+    new_page_id = new_view_manager.create(
+      page_metadata['name'],
+      page_metadata['description'],
+      source_dataset_category
+    )
 
     page_metadata['pageId'] = new_page_id
 
@@ -287,6 +303,18 @@ class PageMetadataManager
       )
       nil
     end
+  end
+
+  def report_error(error_message, exception = nil, options = {})
+    Airbrake.notify(
+      exception,
+      options.merge(
+        :error_class => 'PageMetadataManager',
+        :error_message => error_message
+      )
+    )
+    Rails.logger.error(error_message)
+    nil
   end
 
   def soda_fountain

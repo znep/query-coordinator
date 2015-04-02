@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class PageMetadataManagerTest < Test::Unit::TestCase
+  VIEW_CATEGORY_NAME = 'test_category'
 
   def setup
     CurrentDomain.stubs(domain: stub(cname: 'localhost'))
@@ -15,6 +16,8 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       'port' => '6010'
     })
     manager.stubs(:largest_time_span_in_days_being_used_in_columns).returns(1000)
+
+    View.stubs(find: stub(category: VIEW_CATEGORY_NAME))
   end
 
   def test_create_succeeds
@@ -45,7 +48,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     NewViewManager.any_instance.expects(:create).times(1).with do |name, description|
       assert_equal(v1_page_metadata['name'], name)
       assert_equal(v1_page_metadata['description'], description)
-    end.then.returns('data-lens')
+    end.returns('data-lens')
     result = manager.create(v1_page_metadata)
     assert_equal('200', result.fetch(:status), 'Expected create result status to be 200')
     assert_equal('data-lens', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
@@ -61,15 +64,27 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |page_metadata|
       # Make sure the page_metadata includes the correct id
       assert_equal('fdsa-fdsa', page_metadata['pageId'])
-    end.then.returns(status: '200', body: {})
+    end.returns(status: '200', body: {})
 
     NewViewManager.any_instance.expects(:create).times(1).with do |name, description|
       # Make sure it's creating the new view pointing to the correct page-id
       assert_match(/^Chicago Crimes Loves/, name)
       assert_match(/^This dataset reflects/, description)
-    end.then.returns('fdsa-fdsa')
+    end.returns('fdsa-fdsa')
 
     manager.create(v0_page_metadata)
+  end
+
+  def test_create_creates_data_lens_with_category
+    Phidippides.any_instance.stubs(
+      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns},
+    )
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+    NewViewManager.any_instance.expects(:create).times(1).with do |_, _, category|
+      assert_equal(VIEW_CATEGORY_NAME, category)
+    end.returns('fdsa-fdsa')
+
+    manager.create(v1_page_metadata)
   end
 
   def test_create_raises_no_dataset_metadata_exception_when_phiddy_craps_out_v0
@@ -93,13 +108,13 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     NewViewManager.any_instance.expects(:create).times(1).with do |name, description|
       assert_equal(v1_page_metadata['name'], name)
       assert_equal(v1_page_metadata['description'], description)
-    end.then.returns('data-lens')
+    end.returns('data-lens')
     Phidippides.any_instance.stubs(
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns }
     )
     Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |page_metadata|
       assert_equal(page_metadata['pageId'], 'data-lens')
-    end.then.returns({ body: nil, status: '200' })
+    end.returns({ body: nil, status: '200' })
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
 
@@ -282,7 +297,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       assert(json.fetch('bunch'))
       assert(json.fetch('foo'))
       assert_equal({}, options)
-    end.then.returns(
+    end.returns(
       status: '200',
       body: v0_page_metadata
     )
@@ -299,14 +314,14 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |page_metadata|
       # Make sure the page_metadata includes the correct data lens id
       assert_equal('page-eyed', page_metadata['pageId'])
-    end.then.returns(status: '200', body: {})
+    end.returns(status: '200', body: {})
 
     NewViewManager.any_instance.expects(:update).times(1).with do |lens_id, name, description|
       # Make sure it's creating the new view pointing to the correct page-id
       assert_equal('page-eyed', lens_id)
       assert_equal('new name', name)
       assert_equal('new description', description)
-    end.then.returns('fdsa-fdsa')
+    end.returns('fdsa-fdsa')
 
     manager.update({
       'datasetId' => 'data-eyed',
@@ -331,7 +346,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       assert(json.fetch('bunch'))
       assert(json.fetch('foo'))
       assert_equal({}, options)
-    end.then.returns(
+    end.returns(
       status: '200',
       body: v1_page_metadata_as_v0
     )
@@ -352,7 +367,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       assert(json.fetch('bunch'))
       assert(json.fetch('foo'))
       assert_equal({}, options)
-    end.then.returns(
+    end.returns(
       status: '200',
       body: v1_page_metadata.merge('bunch' => 'other stuff', 'foo' => 'bar')
     )

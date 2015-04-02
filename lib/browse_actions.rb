@@ -32,7 +32,21 @@ protected
     )
 
       datasets_index = vts[:options].index { |option| option[:value] == 'datasets' } || 0
-      new_view_option = {:text => t('controls.browse.facets.view_types.new_view'), :value => 'new_view', :class => 'typeNewView', :icon_font_class => 'icon-cards'}
+      new_view_option = {
+        :text => t('controls.browse.facets.view_types.new_view'),
+        :value => 'new_view',
+        :class => 'typeNewView',
+        :icon_font_class => 'icon-cards'
+      }
+
+      whats_this = FeatureFlags.derive(nil, request)[:data_lens_whats_this_href]
+      if whats_this
+        new_view_option[:help_link] = {
+          :href => whats_this,
+          :text => t('controls.browse.facets.view_types.new_view_help')
+        }
+      end
+
       vts[:options].insert(datasets_index + 1, new_view_option)
     end
     if module_enabled?(:api_foundry)

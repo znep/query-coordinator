@@ -9,6 +9,7 @@
       link: function($scope) {
         AngularRxExtensions.install($scope);
         var lastModified = LastModified.observable.map($filter('fromNow'));
+
         $scope.bindObservable('datasetDaysUnmodified', lastModified);
       }
     }

@@ -3,6 +3,7 @@
 
   function FromNowFilter() {
     return function(input) {
+
       var momentObj = moment(input);
       if (momentObj.isValid()) {
         return momentObj.fromNow();

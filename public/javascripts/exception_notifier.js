@@ -10,6 +10,7 @@
     exceptionInformation = { error: exception, context: {} };
 
     if (cause) {
+      // HMM doesn't appear this is valid in the airbrake json context so it's ignored
       exceptionInformation.context.cause = cause;
     }
 
@@ -68,13 +69,15 @@
           if (!rejection.config.hasOwnProperty('airbrakeShouldIgnore404Errors') &&
               !rejection.config.airbrakeShouldIgnore404Errors) {
             try {
-              Airbrake.push({
-                error: new Error('HTTP response error'),
-                context: {
-                  config: rejection.config,
-                  status: rejection.status
-                }
-              });
+              errorMsg = 'HTTP response error ({0} {1}): {2}, request: {3} {4}'.
+                format(
+                  rejection.status,
+                  rejection.statusText,
+                  rejection.data.message,
+                  rejection.config.method,
+                  rejection.config.url
+                );
+              pushExceptionToAirbrake(new Error(errorMsg));
             } catch(airbrakeError) {
               $log.error("Exception encountered when reporting an HTTP error to Airbrake: ", airbrakeError);
             }

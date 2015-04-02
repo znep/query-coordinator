@@ -73,7 +73,8 @@ class PageMetadataManager
     new_page_id = new_view_manager.create(
       page_metadata['name'],
       page_metadata['description'],
-      source_dataset_category)
+      source_dataset_category
+    )
 
     page_metadata['pageId'] = new_page_id
 

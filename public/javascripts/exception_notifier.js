@@ -73,7 +73,7 @@
               errorMsg = 'HTTP response error ({0} {1}): {2}, request: {3} {4}'.
                 format(
                   rejection.status || '???',
-                  rejection.statusText || 'uknown status',
+                  rejection.statusText || 'unknown status',
                   (rejection.data || {}).message || '',
                   rejectionConfig.method || 'no config.method present',
                   rejectionConfig.url || 'no config.url present'

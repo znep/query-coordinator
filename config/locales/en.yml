@@ -101,6 +101,7 @@ en:
           maps: Maps
           unpublished: Unpublished Datasets
           new_view: Data Lens Pages
+          new_view_help: What's this?
         view_types_singular_title: type
         view_types_title: View Types
       listing:

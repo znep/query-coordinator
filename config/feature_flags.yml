@@ -74,6 +74,9 @@ enable_data_lens_save_as_button:
 enable_data_lens_other_views:
   description: Show the "other views of this data" button in the upper left of data lens pages
   defaultValue: false
+data_lens_whats_this_href:
+  description: The url that the "What's this?" link on the facet filter should point to
+  defaultValue: ''
 enable_opendata_ga_tracking:
   description: Controls behavior of Google Analytics in the new UX. If true, GA is enabled with a default Socrata-wide token. If a custom value is provided, GA is enabled and the custom value is used as the GA token. If false, GA is disabled.
 data_cards_app_token:

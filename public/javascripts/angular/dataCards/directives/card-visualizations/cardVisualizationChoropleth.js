@@ -270,7 +270,7 @@
           // happen when we reject the regions promise because the extent
           // query that it depends on fails.
           function(e) {
-            console.error(e);
+            $log.error(e);
           }
         );
 

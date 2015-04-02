@@ -126,9 +126,7 @@
           )
         );
 
-        if (ServerConfig.get('useCatalogLensPermissions')) {
-          self.defineEphemeralObservableProperty('permissions', pageMetadata.permissions);
-        }
+        self.defineEphemeralObservableProperty('permissions', pageMetadata.permissions || {});
       },
 
       serialize: function() {

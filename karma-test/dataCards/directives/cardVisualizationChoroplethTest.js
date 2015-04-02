@@ -229,6 +229,7 @@ describe('A Choropleth Card Visualization', function() {
       // Second, test a feature on the second choropleth.
       feature = $('#choropleth-2 .choropleth-container path')[1];
 
+      // expect(feature, 'Could not find second choropleth in DOM').to.be.ok;
       testHelpers.fireEvent(feature, 'mousemove');
 
       flyout = $('#uber-flyout');
@@ -244,8 +245,8 @@ describe('A Choropleth Card Visualization', function() {
 
   describe('when created with mock choropleth visualizations', function() {
 
-    // We don't need actual choropleth directives to be instantiated for any of the following tests,
-    // so just mock it out.
+    // We don't need actual choropleth directives to be instantiated for any of
+    // the following tests, so just mock it out.
     beforeEach(function() {
       testHelpers.mockDirective(provide, 'choropleth');
     });

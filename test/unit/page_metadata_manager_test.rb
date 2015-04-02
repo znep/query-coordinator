@@ -78,8 +78,10 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   def test_create_creates_data_lens_with_category
     Phidippides.any_instance.stubs(
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns},
+      update_page_metadata: { status: '200', body: {} }
     )
     stub_feature_flags_with(:metadata_transition_phase, '3')
+
     NewViewManager.any_instance.expects(:create).times(1).with do |_, _, category|
       assert_equal(VIEW_CATEGORY_NAME, category)
     end.returns('fdsa-fdsa')

@@ -25,7 +25,12 @@ protected
     }
     if feature_flag?(:exit_tech_preview, defined?(request) ? request : nil)
       datasets_index = vts[:options].index { |option| option[:value] == 'datasets' } || 0
-      new_view_option = {:text => t('controls.browse.facets.view_types.new_view'), :value => 'new_view', :class => 'typeNewView', :icon_font_class => 'icon-cards'}
+      new_view_option = {
+        :text => t('controls.browse.facets.view_types.new_view'),
+        :value => 'new_view',
+        :class => 'typeNewView',
+        :icon_font_class => 'icon-cards'
+      }
       vts[:options].insert(datasets_index + 1, new_view_option)
     end
     if module_enabled?(:api_foundry)

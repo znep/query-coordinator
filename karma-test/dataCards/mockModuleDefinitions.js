@@ -19,7 +19,8 @@ dataCards.run(function(ServerConfig, testHelpers, serverMocks) {
     oduxCardTypeMapping: serverMocks.CARD_TYPE_MAPPING,
     oduxEnableFeatureMap: true,
     enablePngDownloadUi: true,
-    enableFeedback: true
+    enableFeedback: true,
+    enableSearchSuggestions: true
   });
 
   // Test under phase 3 by default.

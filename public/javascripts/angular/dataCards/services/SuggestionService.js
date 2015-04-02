@@ -4,13 +4,6 @@
 
   function SuggestionService(http, Assert, $log) {
 
-    function httpConfig(config) {
-      return _.extend({
-        requester: this,
-        cache: true
-      }, config);
-    }
-
     var serviceDefinition = {
 
       suggest: function suggest(datasetId, fieldName, query) {
@@ -21,8 +14,12 @@
         var url = $.baseUrl(
           '/views/{0}/columns/{1}/suggest/{2}'.format(datasetId, fieldName, query)
         );
+        var config = {
+          cache: true,
+          requester: serviceDefinition
+        };
 
-        return http.get(url.href, httpConfig()).then(
+        return http.get(url.href, config).then(
           function(response) {
             return _.chain(response).
               getPathOrElse('data.suggest.0.options', []).

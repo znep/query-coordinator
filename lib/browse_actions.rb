@@ -27,7 +27,7 @@ protected
       feature_flag?(:exit_tech_preview, defined?(request) ? request : nil) ||
       (
         defined?(current_user) &&
-        CurrentDomain.user_can?(current_user, :create_datasets)
+        CurrentDomain.user_can?(current_user, :edit_others_datasets)
       )
     )
 

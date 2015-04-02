@@ -328,7 +328,7 @@
 
           var extent = response.data[0][extentKeys[0]];
           if (!extent.hasOwnProperty('type') || extent.type !== 'MultiPolygon') {
-            throw new Error('extent is not of type "MultiPolygon".');
+            throw new Error('extent is not of type "MultiPolygon", (it was "{0}").'.format(extent.type));
           }
           if (!extent.hasOwnProperty('coordinates') ||
             !extent.coordinates.length ||
@@ -367,7 +367,7 @@
             try {
               var extent = validateExtentResponse(response);
             } catch(e) {
-              return $q.reject('Invalid extent response.');
+              return $q.reject('Invalid extent response. {0}'.format(e.message));
             }
 
             //  /resource/bwdd-ss8w.geojson?$select=*&$where=intersects(

@@ -268,10 +268,10 @@
           // The second function argument to bindObservable is called when
           // there is an error in one of the argument sequences. This can
           // happen when we reject the regions promise because the extent
-          // query that it depends on fails. We don't actually care about
-          // executing anything but bindObservable will complain if it
-          // encounters an 'unhandled' error so we just _.noop it.
-          _.noop
+          // query that it depends on fails.
+          function(e) {
+            console.error(e);
+          }
         );
 
 

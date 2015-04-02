@@ -11,10 +11,7 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
   };
 
   BinaryOperatorFilter.prototype.generateSoqlWhereFragment = function(field) {
-    return SoqlHelpers.formatFieldName(field) +
-      this.operator +
-      SoqlHelpers.encodePrimitive(this.operand);
-  };
+    return SoqlHelpers.formatFieldName(field) + this.operator + SoqlHelpers.encodePrimitive(this.operand)};
 
   BinaryOperatorFilter.prototype.serialize = function() {
     return {

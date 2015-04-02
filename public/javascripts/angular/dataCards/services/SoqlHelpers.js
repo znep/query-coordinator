@@ -10,8 +10,6 @@ angular.module('dataCards').factory('SoqlHelpers', function(Assert, DateHelpers)
     encodeSoqlString: encodeSoqlString,
     encodeSoqlDate: encodeSoqlDate,
     encodePrimitive: encodePrimitive,
-    replaceHyphensWithUnderscores: replaceHyphensWithUnderscores,
-    wrapInBackticks: wrapInBackticks,
     formatFieldName: formatFieldName,
     timeIntervalToDateTrunc: timeIntervalToDateTrunc,
     stripWhereClauseFragmentForFieldName: stripWhereClauseFragmentForFieldName
@@ -39,19 +37,12 @@ angular.module('dataCards').factory('SoqlHelpers', function(Assert, DateHelpers)
     }
   }
 
-  function replaceHyphensWithUnderscores(fragment) {
-    if (typeof fragment !== 'string') {
-      throw new Error('Cannot replace hyphens with underscores for non-string arguments.');
-    }
-    return fragment.replace(/\-/g, '_');
-  }
-
-  function wrapInBackticks(string) {
-    return '`' + string + '`';
-  }
-
+  // Wrap fieldName in backticks and replace hyphens with underscores
   function formatFieldName(fieldName) {
-    return wrapInBackticks(replaceHyphensWithUnderscores(fieldName));
+    if (typeof fieldName !== 'string') {
+      throw new Error('Cannot format fieldName for non-string arguments.');
+    }
+    return '`' + fieldName.replace(/\-/g, '_') + '`';
   }
 
   /**

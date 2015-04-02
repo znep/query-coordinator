@@ -321,7 +321,7 @@
             throw new Error('response.data[0] is not an object.');
           }
 
-          var extentKeys = _.keys(jsonPayload);
+          var extentKeys = _.keys(response.data[0]);
           if (extentKeys.length <= 0) {
             throw new Error('response.data[0] object has no properties.');
           }

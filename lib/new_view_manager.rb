@@ -35,10 +35,10 @@ class NewViewManager
   # This will create a new view lens that points to a cards view url of the same
   # 4x4 as itself. Note that it will not create the requisite page_metadata for
   # that url to serve anything meaningful.
-  def create(title, description)
+  def create(title, description, category=nil)
     # Create a new view pointing to nothing, since we don't have the 4x4 to
     # point it to yet.
-    new_view = create_new_view('', title, description)
+    new_view = create_new_view('', title, description, category)
 
     unless new_view.try(:[], :id)
       raise NewViewNotCreatedError.new('Error while creating view in core')
@@ -114,7 +114,9 @@ class NewViewManager
 
   private
 
-  def create_new_view(page_url, title, description)
+  def create_new_view(page_url, title, description, category)
+    #NOTE: Category is not validated. If category is not present in the
+    #domain's defined categories, the category will be ignored by core.
     url = '/views.json?accessType=WEBSITE'
     payload = {
       :name => title,
@@ -133,7 +135,8 @@ class NewViewManager
       },
       :displayType => 'new_view',
       :displayFormat => {},
-      :query => {}
+      :query => {},
+      :category => category
     }
 
     begin

@@ -842,7 +842,7 @@ en:
       were_sorry: We're really sorry, but the page you requested cannot be found.
     permission_denied_403:
       no_permission: Error
-      were_sorry: The current user doesn’t have access to this lens.
+      were_sorry: The current user doesn't have access to this lens.
     to_whence_you_came: to where you came from.
   govstat:
     chrome:

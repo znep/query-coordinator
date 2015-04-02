@@ -131,3 +131,6 @@ enable_newux_page_view_count:
 use_catalog_lens_permissions:
   description: Whether page/dataset metadata should inherit permissions from their catalog lenses.
   defaultValue: false
+enable_search_suggestions:
+  description: Allow search suggestions and type-ahead for data lens search card.
+  defaultValue: true

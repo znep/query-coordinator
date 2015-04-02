@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CardVisualizationSearch($compile, $http, $q, AngularRxExtensions, CardDataService, Filter) {
+  function CardVisualizationSearch(AngularRxExtensions, CardDataService, ServerConfig) {
 
     function pluckEventArg(val) {
       return val.args[0];
@@ -29,7 +29,7 @@
       restrict: 'E',
       scope: { 'model': '=', 'whereClause': '=' },
       templateUrl: '/angular_templates/dataCards/cardVisualizationSearch.html',
-      link: function($scope, element, attrs) {
+      link: function($scope, element) {
 
         AngularRxExtensions.install($scope);
 
@@ -212,10 +212,16 @@
           })
         );
 
-        var shouldShowSuggestionPanelObservable = Rx.Observable.merge(
-          userActionsWhichShouldShowSuggestionPanelObservable.map(_.constant(true)),
-          userActionsWhichShouldHideSuggestionPanelObservable.map(_.constant(false))
-        );
+        var shouldShowSuggestionPanelObservable;
+
+        if (ServerConfig.get('enableSearchSuggestions')) {
+          shouldShowSuggestionPanelObservable = Rx.Observable.merge(
+            userActionsWhichShouldShowSuggestionPanelObservable.map(_.constant(true)),
+            userActionsWhichShouldHideSuggestionPanelObservable.map(_.constant(false))
+          );
+        } else {
+          shouldShowSuggestionPanelObservable = Rx.Observable.returnValue(false);
+        }
 
         $scope.bindObservable('rowCount', clampedRowsLoadedObservable);
         $scope.bindObservable('totalRowCount', rowCountObservable);

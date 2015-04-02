@@ -126,7 +126,7 @@
           )
         );
 
-        self.defineEphemeralObservableProperty('permissions', pageMetadata.permissions || {});
+        self.defineEphemeralObservableProperty('permissions', pageMetadata.permissions || null);
       },
 
       serialize: function() {

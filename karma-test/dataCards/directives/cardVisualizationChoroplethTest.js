@@ -14,6 +14,7 @@ describe('A Choropleth Card Visualization', function() {
   var CardVisualizationChoroplethHelpers;
   var CardDataService;
   var fakeClock = null;
+  var mockCardDataService;
 
   var testWards = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/ward_geojson.json';
   var testAggregates = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/geo_values.json';
@@ -31,44 +32,7 @@ describe('A Choropleth Card Visualization', function() {
     module(function($provide) {
       provide = $provide;
 
-      var mockCardDataService = {
-        getChoroplethRegions: function(shapeFile) {
-          var deferred = q.defer();
-          var json = testHelpers.getTestJson(testWards);
-          json.features = _.map(json.features, function(feature) {
-            feature.properties._feature_id = feature.properties[':feature_id'].split(" ")[1]
-            return feature;
-          });
-
-          deferred.resolve(json);
-          return deferred.promise;
-        },
-        getChoroplethRegionsUsingSourceColumn: function(datasetId, sourceColumn, shapeFile) {
-          var deferred = q.defer();
-          var json = testHelpers.getTestJson(testWards);
-          json.features = _.map(json.features, function(feature) {
-            feature.properties._feature_id = feature.properties[':feature_id'].split(" ")[1]
-            return feature;
-          });
-
-          deferred.resolve(json);
-          return deferred.promise;
-        },
-        getChoroplethGeometryLabel: function(shapeFile) {
-          var deferred = q.defer();
-          deferred.resolve('geometryLabel');
-          return deferred.promise;
-        },
-        getData: function(fieldName, datasetId, whereClause) {
-          var deferred = q.defer();
-          if (whereClause) {
-            deferred.resolve(testHelpers.getTestJson(testAggregatesWhere));
-          } else {
-            deferred.resolve(testHelpers.getTestJson(testAggregates));
-          }
-          return deferred.promise;
-        }
-      };
+      setMockCardDataServiceToDefault();
       $provide.value('CardDataService', mockCardDataService);
     });
   });
@@ -98,6 +62,47 @@ describe('A Choropleth Card Visualization', function() {
     fakeClock = null;
     testHelpers.TestDom.clear();
   });
+
+  function setMockCardDataServiceToDefault() {
+    mockCardDataService = {
+      getChoroplethRegions: function(shapeFile) {
+        var deferred = q.defer();
+        var json = testHelpers.getTestJson(testWards);
+        json.features = _.map(json.features, function(feature) {
+          feature.properties._feature_id = feature.properties[':feature_id'].split(" ")[1]
+          return feature;
+        });
+
+        deferred.resolve(json);
+        return deferred.promise;
+      },
+      getChoroplethRegionsUsingSourceColumn: function(datasetId, sourceColumn, shapeFile) {
+        var deferred = q.defer();
+        var json = testHelpers.getTestJson(testWards);
+        json.features = _.map(json.features, function(feature) {
+          feature.properties._feature_id = feature.properties[':feature_id'].split(" ")[1]
+          return feature;
+        });
+
+        deferred.resolve(json);
+        return deferred.promise;
+      },
+      getChoroplethGeometryLabel: function(shapeFile) {
+        var deferred = q.defer();
+        deferred.resolve('geometryLabel');
+        return deferred.promise;
+      },
+      getData: function(fieldName, datasetId, whereClause) {
+        var deferred = q.defer();
+        if (whereClause) {
+          deferred.resolve(testHelpers.getTestJson(testAggregatesWhere));
+        } else {
+          deferred.resolve(testHelpers.getTestJson(testAggregates));
+        }
+        return deferred.promise;
+      }
+    };
+  }
 
   function createDatasetModelWithColumns(columns, version) {
 
@@ -330,18 +335,15 @@ describe('A Choropleth Card Visualization', function() {
         }
       };
 
-      expect(function() {
-        createChoropleth({
-          id: 'choropleth-1',
-          whereClause: '',
-          testUndefined: false,
-          datasetModel: createDatasetModelWithColumns(columns, '0'),
-          version: '0'
-        })
-      }).to.throw(
-        'Dataset metadata column for computed georegion does not include shapeFile.'
-      );
+      var testSubject = createChoropleth({
+        id: 'choropleth-1',
+        whereClause: '',
+        testUndefined: false,
+        datasetModel: createDatasetModelWithColumns(columns, '0'),
+        version: '0'
+      });
 
+      expect(testSubject.scope.$$childHead.geojsonRegionsError).to.equal(true);
     });
 
     it("should not fail to extract the shapeFile from the column's 'computationStrategy' object if the metadataMigration is in phase 1 or 2", function() {
@@ -407,32 +409,26 @@ describe('A Choropleth Card Visualization', function() {
         }
       };
 
-      expect(function() {
-        createChoropleth({
-          id: 'choropleth-1',
-          whereClause: '',
-          testUndefined: false,
-          datasetModel: createDatasetModelWithColumns(columns, '0'),
-          version: '1'
-        })
-      }).to.throw(
-        'Dataset metadata column for computed georegion does not include shapeFile.'
-      );
+      var testSubject = createChoropleth({
+        id: 'choropleth-1',
+        whereClause: '',
+        testUndefined: false,
+        datasetModel: createDatasetModelWithColumns(columns, '0'),
+        version: '1'
+      });
+      expect(testSubject.scope.$$childHead.geojsonRegionsError).to.equal(true);
 
       testHelpers.overrideMetadataMigrationPhase('2');
 
-      expect(function() {
-        createChoropleth({
-          id: 'choropleth-1',
-          whereClause: '',
-          testUndefined: false,
-          datasetModel: createDatasetModelWithColumns(columns, '1'),
-          version: '1'
-        })
-      }).to.throw(
-        'Dataset metadata column for computed georegion does not include shapeFile.'
-      );
+      testSubject = createChoropleth({
+        id: 'choropleth-1',
+        whereClause: '',
+        testUndefined: false,
+        datasetModel: createDatasetModelWithColumns(columns, '1'),
+        version: '1'
+      });
 
+      expect(testSubject.scope.$$childHead.geojsonRegionsError).to.equal(true);
     });
 
     it("should not use the source column to get the choropleth regions if the source_columns property does not exist in the column's 'computationStrategy' object and the metadataMigration is in phase 1 or 2", function() {
@@ -487,6 +483,49 @@ describe('A Choropleth Card Visualization', function() {
 
     });
 
+    describe('if the extent query used to get the choropleth fails', function() {
+
+      beforeEach(function() {
+        mockCardDataService.getChoroplethRegionsUsingSourceColumn = function(datasetId, sourceColumn, shapeFile) {
+          var deferred = q.defer();
+          deferred.reject('Invalid extent response.');
+          return deferred.promise;
+        };
+      });
+
+      afterEach(function() {
+        setMockCardDataServiceToDefault();
+      });
+
+      it("should display an error message if the extent query used to get the choropleth regions fails", function() {
+        var columns = {
+          "ward": {
+            "name": "Ward where crime was committed.",
+            "description": "Batman has bigger fish to fry sometimes, you know.",
+            "fred": "location",
+            "physicalDatatype": "text",
+            "computationStrategy": {
+              "parameters": {
+                "region": "_snuk-a5kv",
+                "geometryLabel": "geoid10"
+              },
+              "source_columns": ['computed_column_source_column'],
+              "strategy_type": "georegion_match_on_point"
+            }
+          }
+        };
+        var testSubject = createChoropleth({
+          id: 'choropleth-1',
+          whereClause: '',
+          testUndefined: false,
+          datasetModel: createDatasetModelWithColumns(columns, '1'),
+          version: '1'
+        });
+
+        expect(testSubject.scope.$$childHead.geojsonRegionsError).to.equal(true);
+      });
+    });
+
     it("should use the source column to get the choropleth regions if the source_columns property exists in the column's 'computationStrategy' object and the metadataMigration is in phase 1 or 2", function() {
 
       testHelpers.overrideMetadataMigrationPhase('1');
@@ -522,7 +561,7 @@ describe('A Choropleth Card Visualization', function() {
 
       testHelpers.overrideMetadataMigrationPhase('2');
 
-      createChoropleth({
+      var testSubject = createChoropleth({
         id: 'choropleth-1',
         whereClause: '',
         testUndefined: false,
@@ -533,6 +572,7 @@ describe('A Choropleth Card Visualization', function() {
       expect(CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledTwice).to.equal(true);
       expect(CardDataService.getChoroplethRegions.called).to.equal(false);
       expect(CardDataService.getChoroplethRegionsUsingSourceColumn.calledTwice).to.equal(true);
+      expect(testSubject.scope.$$childHead.geojsonRegionsError).to.equal(false);
 
       CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.restore();
       CardDataService.getChoroplethRegions.restore();

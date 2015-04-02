@@ -364,11 +364,11 @@
           if (response.status === 200) {
             shapeFileId = DeveloperOverrides.dataOverrideForDataset(shapeFileId) || shapeFileId;
 
-            // try {
-            //   var extent = validateExtentResponse(response);
-            // } catch(e) {
+            try {
+              var extent = validateExtentResponse(response);
+            } catch(e) {
               return $q.reject('Invalid extent response.');
-            // }
+            }
 
             //  /resource/bwdd-ss8w.geojson?$select=*&$where=intersects(
             //  the_geom,

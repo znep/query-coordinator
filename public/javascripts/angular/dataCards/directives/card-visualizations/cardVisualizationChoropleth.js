@@ -89,9 +89,9 @@
             }
 
             if (shapeFile === null) {
-              throw new Error(
-                'Dataset metadata column for computed georegion does not include shapeFile.'
-              );
+              scope.safeApply(function() {
+                scope.geojsonRegionsError = true;
+              });
             }
 
             return shapeFile;
@@ -240,6 +240,11 @@
             return Rx.Observable.fromPromise(dataPromise);
           });
 
+        // NOTE: This needs to be defined on the scope BEFORE
+        // the 'geojsonAggregateData' observable is bound, or
+        // else it sometimes fails to set the value to true
+        // when it encounters an error. WTF.
+        scope.geojsonRegionsError = false;
 
         /****************************************
         * Bind non-busy-indicating observables. *
@@ -273,8 +278,6 @@
         /*********************************************************
         * Respond to events in the child 'choropleth' directive. *
         *********************************************************/
-
-        scope.geojsonRegionsError = false;
 
         // Handle filter toggle events sent from the choropleth directive.
         scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {

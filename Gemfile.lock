@@ -217,7 +217,6 @@ GEM
     rubyzip (0.9.9)
     sanitize (2.0.3)
       nokogiri (>= 1.4.4, < 1.6)
-      nokogiri (>= 1.4.4, < 1.6)
     sass (3.2.5)
     shoulda-context (1.2.1)
     slop (3.6.0)

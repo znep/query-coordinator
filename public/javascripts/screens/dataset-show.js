@@ -807,7 +807,6 @@ $(function()
                   _.include(blist.currentUser.flags, 'admin');
         }
 
-        //
         var datasetMetadataUrl = '/dataset_metadata/{0}.json';
         // Kratos shapefiles apparently are datasets, but have no dataset metadata, which we
         // need to create a newux page. So - check that there's dataset metadata before showing
@@ -819,28 +818,28 @@ $(function()
         }
         $.get('/api/migrations/' + blist.dataset.id).done(function(migration) {
           if (!_.isNull(migration.nbeId)) {
-            $.ajax({
-              url: datasetMetadataUrl.format(migration.nbeId),
-              headers: {
-                'X-Requested-With': ' '
-              },
-              success: function(metadata) {
-                if (blist.dataset.newBackend) {
-                  if (canUpdateMetadata() || blist.feature_flags.exit_tech_preview) {
-                    anchor.attr('href', '/view/bootstrap/' + blist.dataset.id);
-                    newUxLink.appendTo('body');
-                  }
-                } else {
-                  // User is on OBE - show bootstrap link if lens view is
-                  // public or user has "can update metadata" permissions
+            if (blist.dataset.newBackend) {
+              if (canUpdateMetadata() || blist.feature_flags.exit_tech_preview) {
+                anchor.attr('href', '/view/bootstrap/' + blist.dataset.id);
+                newUxLink.appendTo('body');
+              }
+            } else {
+              // User is on OBE - show bootstrap link if lens view is
+              // public or user has "can update metadata" permissions
+              $.ajax({
+                url: datasetMetadataUrl.format(migration.nbeId),
+                headers: {
+                  'X-Requested-With': ' '
+                },
+                success: function(metadata) {
                   if ((!_.isNull(metadata.defaultPage) && blist.feature_flags.exit_tech_preview)
                     || canUpdateMetadata()) {
                     anchor.attr('href', '/view/bootstrap/' + migration.nbeId);
                     newUxLink.appendTo('body');
                   }
                 }
-              }
-            });
+              });
+            }
           }
         });
 

@@ -63,4 +63,14 @@
       plural
     );
   };
+
+  String.prototype.titleize = function() {
+    var str  = this.toLowerCase();
+    return str.replace(/(?:^|\s|-)\S/g, function(c) { return c.toUpperCase(); });
+  };
+
+  String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+  };
+
 })();

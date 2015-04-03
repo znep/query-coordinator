@@ -61,6 +61,10 @@ angular.module('dataCards.models').factory('DatasetV0', function(
       if (ServerConfig.get('useCatalogLensPermissions')) {
         self.defineEphemeralObservableProperty('permissions', datasetMetadata.permissions);
       }
+
+      self.extractHumanReadableColumnName = function(columnHash) {
+        return columnHash.title;
+      }
     }
   });
 

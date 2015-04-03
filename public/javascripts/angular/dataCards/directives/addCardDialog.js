@@ -28,7 +28,7 @@
             function(datasetColumns) {
               return function(fieldName) {
                 var column = datasetColumns[fieldName];
-                return column.dataset.version === '0' ? column.title : column.name;
+                return column.dataset.extractHumanReadableColumnName(column);
               }
             }
           )

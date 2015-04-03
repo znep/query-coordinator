@@ -12,7 +12,8 @@ describe('table directive', function() {
     columnCount = 0;
 
     _.each(fixtureMetadata.testColumnDetailsAsTableWantsThem, function(column) {
-      column.dataset = { version: '1' };
+      // TODO: Version as a string here is questionable
+      column.dataset = { version: '1', extractHumanReadableColumnName: _.property('name') };
       if (column.fieldName[0].match(/[a-zA-Z0-9]/g)) {
         outerScope.columnDetails.push(column);
         columnCount += 1;

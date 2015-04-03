@@ -137,7 +137,7 @@
               map(function(column, fieldName) {
                 var enabled = aggregationFunction !== 'count';
                 return _.extend(
-                  pluralizeAndCapitalize(column.dataset.version === '0' ? column.title : column.name),
+                  pluralizeAndCapitalize(column.dataset.extractHumanReadableColumnName(column)),
                   { id: fieldName, enabled: enabled }
                 );
               }).
@@ -167,7 +167,7 @@
             if (_.isDefined(column)) {
               return _.extend(
                 { id: activeAggregation },
-                pluralizeAndCapitalize(column.dataset.version === '0' ? column.title : column.name)
+                pluralizeAndCapitalize(column.dataset.extractHumanReadableColumnName(column))
               );
             } else {
               return _.extend(pluralizeAndCapitalize(activeAggregation));
@@ -182,8 +182,10 @@
             return _.extend(type, pluralizeAndCapitalize(fn.name));
           });
 
+        var rowDisplayUnitLabelObservable = aggregationSequence.pluck('rowDisplayUnit').map(pluralizeAndCapitalize);
         $scope.bindObservable('highlightFirstColumn', highlightFirstColumnObservable);
         $scope.bindObservable('canAggregate', canAggregateObservable);
+        $scope.bindObservable('rowDisplayUnitLabel', rowDisplayUnitLabelObservable);
         $scope.bindObservable('unitLabel', unitLabelObservable);
         $scope.bindObservable('aggregationFunction', labeledFunctionObservable);
         $scope.bindObservable('aggregationColumns', aggregationColumnsObservable);

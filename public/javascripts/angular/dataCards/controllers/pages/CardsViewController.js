@@ -135,7 +135,8 @@
     WindowState,
     ServerConfig,
     $http,
-    Schemas
+    Schemas,
+    PageHelpersService
   ) {
 
     AngularRxExtensions.install($scope);
@@ -156,6 +157,7 @@
     $scope.bindObservable('dataset', page.observe('dataset'));
     $scope.bindObservable('datasetPages', page.observe('dataset.pages'));
     $scope.bindObservable('aggregation', page.observe('aggregation'));
+    $scope.bindObservable('dynamicTitle', PageHelpersService.dynamicAggregationTitle(page));
     $scope.bindObservable('datasetDaysUnmodified', page.observe('dataset.updatedAt').map(function(date) {
       // TODO just a placeholder implementation
       if (!date) {

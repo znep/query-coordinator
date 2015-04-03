@@ -1,4 +1,4 @@
-describe('A Choropleth Card Visualization', function() {
+describe.only('A Choropleth Card Visualization', function() {
   'use strict';
 
   var provide;
@@ -343,7 +343,7 @@ describe('A Choropleth Card Visualization', function() {
         version: '0'
       });
 
-      expect(testSubject.scope.$$childHead.geojsonRegionsError).to.equal(true);
+      expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(true);
     });
 
     it("should not fail to extract the shapeFile from the column's 'computationStrategy' object if the metadataMigration is in phase 1 or 2", function() {
@@ -416,7 +416,7 @@ describe('A Choropleth Card Visualization', function() {
         datasetModel: createDatasetModelWithColumns(columns, '0'),
         version: '1'
       });
-      expect(testSubject.scope.$$childHead.geojsonRegionsError).to.equal(true);
+      expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(true);
 
       testHelpers.overrideMetadataMigrationPhase('2');
 
@@ -428,7 +428,7 @@ describe('A Choropleth Card Visualization', function() {
         version: '1'
       });
 
-      expect(testSubject.scope.$$childHead.geojsonRegionsError).to.equal(true);
+      expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(true);
     });
 
     it("should not use the source column to get the choropleth regions if the source_columns property does not exist in the column's 'computationStrategy' object and the metadataMigration is in phase 1 or 2", function() {
@@ -522,7 +522,7 @@ describe('A Choropleth Card Visualization', function() {
           version: '1'
         });
 
-        expect(testSubject.scope.$$childHead.geojsonRegionsError).to.equal(true);
+        expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(true);
       });
     });
 
@@ -572,7 +572,7 @@ describe('A Choropleth Card Visualization', function() {
       expect(CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledTwice).to.equal(true);
       expect(CardDataService.getChoroplethRegions.called).to.equal(false);
       expect(CardDataService.getChoroplethRegionsUsingSourceColumn.calledTwice).to.equal(true);
-      expect(testSubject.scope.$$childHead.geojsonRegionsError).to.equal(false);
+      expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(false);
 
       CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.restore();
       CardDataService.getChoroplethRegions.restore();

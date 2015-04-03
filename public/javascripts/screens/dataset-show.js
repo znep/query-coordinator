@@ -807,15 +807,6 @@ $(function()
                   _.include(blist.currentUser.flags, 'admin');
         }
 
-        var datasetMetadataUrl = '/dataset_metadata/{0}.json';
-        // Kratos shapefiles apparently are datasets, but have no dataset metadata, which we
-        // need to create a newux page. So - check that there's dataset metadata before showing
-        // the link.
-        var metadataTransitionPhase = parseInt(blist.feature_flags.metadata_transition_phase, 10);
-        if (metadataTransitionPhase !== 0) {
-          // The dataset metadata endpoint changed in metadata transition phase 1.
-          datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
-        }
         $.get('/api/migrations/' + blist.dataset.id).done(function(migration) {
           if (!_.isNull(migration.nbeId)) {
             if (blist.dataset.newBackend) {
@@ -824,14 +815,23 @@ $(function()
                 newUxLink.appendTo('body');
               }
             } else {
-              // User is on OBE - show bootstrap link if lens view is
-              // public or user has "can update metadata" permissions
+              var datasetMetadataUrl = '/dataset_metadata/{0}.json';
+              // Kratos shapefiles apparently are datasets, but have no dataset metadata, which we
+              // need to create a newux page. So - check that there's dataset metadata before showing
+              // the link.
+              var metadataTransitionPhase = parseInt(blist.feature_flags.metadata_transition_phase, 10);
+              if (metadataTransitionPhase !== 0) {
+                // The dataset metadata endpoint changed in metadata transition phase 1.
+                datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
+              }
               $.ajax({
                 url: datasetMetadataUrl.format(migration.nbeId),
                 headers: {
                   'X-Requested-With': ' '
                 },
                 success: function(metadata) {
+                  // Show bootstrap link if lens view exists publicly and exit_tech_preview is true,
+                  // or user has "can update metadata" permissions
                   if ((!_.isNull(metadata.defaultPage) && blist.feature_flags.exit_tech_preview)
                     || canUpdateMetadata()) {
                     anchor.attr('href', '/view/bootstrap/' + migration.nbeId);

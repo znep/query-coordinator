@@ -148,8 +148,8 @@
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
 
-        var whereClause = "WHERE `{0}` IS NOT NULL AND `{0}` < '{1}'".
-          format(fieldName, MAX_LEGAL_JAVASCRIPT_DATE_STRING);
+        var whereClause = "WHERE {0} IS NOT NULL AND {0} < '{1}'".
+          format(SoqlHelpers.formatFieldName(fieldName), MAX_LEGAL_JAVASCRIPT_DATE_STRING);
         if (!_.isEmpty(whereClauseFragment)) {
           whereClause += ' AND ' + whereClauseFragment;
         }

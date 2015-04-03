@@ -801,6 +801,12 @@ $(function()
           newUxLink.addClass('collapsed');
         }
 
+        function canUpdateMetadata() {
+          return  _.include(['administrator', 'publisher'], blist.currentUser.roleName) ||
+                  blist.dataset.owner.id === blist.currentUserId ||
+                  _.include(blist.currentUser.flags, 'admin');
+        }
+
         if (blist.dataset.newBackend) {
           var datasetMetadataUrl = '/dataset_metadata/{0}.json';
           // Kratos shapefiles apparently are datasets, but have no dataset metadata, which we
@@ -810,12 +816,6 @@ $(function()
           if (metadataTransitionPhase !== 0) {
             // The dataset metadata endpoint changed in metadata transition phase 1.
             datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
-          }
-
-          function canUpdateMetadata() {
-            return  _.include(['administrator', 'publisher'], blist.currentUser.roleName) ||
-                    blist.dataset.owner.id === blist.currentUserId ||
-                    _.include(blist.currentUser.flags, 'admin');
           }
 
           if (canUpdateMetadata()) {

@@ -3,7 +3,7 @@
 
   var DYNAMIC_TITLE_CARDTYPE_BLACKLIST = ['table', 'feature', 'search'];
 
-  function CardDirective(AngularRxExtensions, DownloadService, $timeout) {
+  function CardDirective(AngularRxExtensions, DownloadService, PageHelpersService, $timeout) {
 
     return {
       restrict: 'E',
@@ -23,7 +23,6 @@
         var modelSubject = $scope.observe('model').filter(_.identity);
         var datasetObservable = modelSubject.pluck('page').observeOnLatest('dataset');
         var columns = datasetObservable.observeOnLatest('columns');
-        var versionSequence = modelSubject.observeOnLatest('column.dataset.version');
 
         $scope.descriptionCollapsed = true;
         $scope.bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
@@ -33,52 +32,16 @@
 
         $scope.bindObservable(
           'title',
-          versionSequence.
-            flatMapLatest(function(version) {
-              return modelSubject.observeOnLatest(version === '0' ? 'column.title' : 'column.name');
-            })
+          modelSubject.observeOnLatest('column').map(function(column) {
+            return column.dataset.extractHumanReadableColumnName(column);
+          })
         );
         $scope.bindObservable('description', modelSubject.observeOnLatest('column.description'));
 
-        var aggregationSequence = modelSubject.
-          observeOnLatest('page.aggregation');
-
-        var primaryAmountFieldSequence = modelSubject.
-          observeOnLatest('page.primaryAmountField').
-          combineLatest(columns, function(fieldName, columns) {
-            return columns[fieldName];
-          }).
-          filter(_.isObject).
-          combineLatest(versionSequence, function(column, version) {
-            return version === '0' ? column['title'] : column['name'];
-          }).
-          filter(_.isPresent);
-
-        var countTitleSequence = Rx.Observable.combineLatest(
-          aggregationSequence.filter(function(value) { return value['function'] === 'count'; }),
-          function(value) {
-            return 'Number of {0} by'.format(value.unit.pluralize());
+        var dynamicTitleSequence = PageHelpersService.dynamicAggregationTitle($scope.model.page).
+          map(function(title) {
+            return '{0} by'.format(title.capitalize());
           });
-
-        var sumTitleSequence = Rx.Observable.combineLatest(
-          primaryAmountFieldSequence.filter(_.isPresent),
-          aggregationSequence.filter(function(value) { return value['function'] === 'sum'; }),
-          function(primaryAmountField) {
-            return 'Sum of {0} by'.format(primaryAmountField.pluralize());
-          });
-
-        var meanTitleSequence = Rx.Observable.combineLatest(
-          primaryAmountFieldSequence.filter(_.isPresent),
-          aggregationSequence.filter(function(value) { return value['function'] === 'mean'; }),
-          function(primaryAmountField) {
-            return 'Average {0} by'.format(primaryAmountField);
-          });
-
-        var dynamicTitleSequence = Rx.Observable.merge(
-          countTitleSequence,
-          sumTitleSequence,
-          meanTitleSequence
-        );
 
         var displayDynamicTitleSequence = modelSubject.
           observeOnLatest('cardType').

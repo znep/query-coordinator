@@ -1008,7 +1008,7 @@ describe('timelineChart', function() {
 
     });
 
-    describe('and the mouse is hovering over the labels in an unlabeld area', function() {
+    describe('and the mouse is hovering over the labels in an unlabeled area', function() {
 
       it('should highlight the chart', function() {
 

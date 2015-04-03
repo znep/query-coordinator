@@ -144,18 +144,10 @@
             // column in the dataset.
             if (sourceColumn === null) {
               _.each(columns, function(column, fieldName) {
-                if (column.dataset.version === '0') {
-                  if (column.physicalDatatype === 'point' &&
-                    column.logicalDatatype === 'location') {
+                if (column.physicalDatatype === 'point' &&
+                  column.fred === 'location') {
 
-                    sourceColumn = fieldName;
-                  }
-                } else {
-                  if (column.physicalDatatype === 'point' &&
-                    column.fred === 'location') {
-
-                    sourceColumn = fieldName;
-                  }
+                  sourceColumn = fieldName;
                 }
               });
             }

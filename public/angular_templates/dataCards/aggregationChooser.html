@@ -24,7 +24,7 @@
             ng-class="{ active: (aggregationFunction.type == 'count') || countFunctionHover }"
             ng-click="setAggregationFunction('count')">
               <span class="label">Number of</span>
-              <span class="sublabel">count {{unitLabel.plural}} per element</span>
+              <span class="sublabel">count {{rowDisplayUnitLabel.plural}} per element</span>
           </a>
           <a
             tabindex="0"
@@ -41,8 +41,8 @@
             tabindex="-1"
             class="aggregation-option count"
             data-aggregation-type="count"
-            ng-class="{ disabled: aggregationFunction.type != 'count', active: (activeAggregation.name == unitLabel.name) || countFunctionHover }"
-            ng-click="setAggregationFunction('count')">{{unitLabel.pluralCapitalized}}</a>
+            ng-class="{ disabled: aggregationFunction.type != 'count', active: (activeAggregation.name == rowDisplayUnitLabel.name) || countFunctionHover }"
+            ng-click="setAggregationFunction('count')">{{rowDisplayUnitLabel.pluralCapitalized}}</a>
           <a
             tabindex="0"
             ng-repeat="column in aggregationColumns"

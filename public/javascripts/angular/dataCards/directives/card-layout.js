@@ -428,7 +428,7 @@
 
         var cardsBySizeSequence = Rx.Observable.combineLatest(
           zipLatestArray(scope.page.observe('cards'), 'cardSize'),
-          scope.page.observe('dataset.rowCount').filter(_.isPresent),
+          scope.page.observe('dataset.rowCount').filter(_.isNumber),
           function(cards, rowCount) {
             if (rowCount <= 1) {
               return _.filter(cards, isTableCard);

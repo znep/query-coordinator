@@ -99,24 +99,24 @@ describe('SoqlHelpers service', function() {
 
   });
 
-  describe('replaceHyphensWithUnderscores', function() {
-    it('should throw on non-strings', inject(function(SoqlHelpers) {
-      expect(function() { SoqlHelpers.replaceHyphensWithUnderscores(); }).to.throw();
-      expect(function() { SoqlHelpers.replaceHyphensWithUnderscores(1); }).to.throw();
-      expect(function() { SoqlHelpers.replaceHyphensWithUnderscores(0); }).to.throw();
-      expect(function() { SoqlHelpers.replaceHyphensWithUnderscores(null); }).to.throw();
-      expect(function() { SoqlHelpers.replaceHyphensWithUnderscores(undefined); }).to.throw();
-      expect(function() { SoqlHelpers.replaceHyphensWithUnderscores({}); }).to.throw();
-      expect(function() { SoqlHelpers.replaceHyphensWithUnderscores([]); }).to.throw();
+  describe('formatFieldName', function() {
+    it('should throw error on non-strings', inject(function(SoqlHelpers) {
+      expect(function() { SoqlHelpers.formatFieldName(); }).to.throw();
+      expect(function() { SoqlHelpers.formatFieldName(1); }).to.throw();
+      expect(function() { SoqlHelpers.formatFieldName(0); }).to.throw();
+      expect(function() { SoqlHelpers.formatFieldName(null); }).to.throw();
+      expect(function() { SoqlHelpers.formatFieldName(undefined); }).to.throw();
+      expect(function() { SoqlHelpers.formatFieldName({}); }).to.throw();
+      expect(function() { SoqlHelpers.formatFieldName([]); }).to.throw();
     }));
-    it('replace hyphens with underscores', inject(function(SoqlHelpers) {
-      expect(SoqlHelpers.replaceHyphensWithUnderscores('')).to.equal('');
-      expect(SoqlHelpers.replaceHyphensWithUnderscores('_')).to.equal('_');
-      expect(SoqlHelpers.replaceHyphensWithUnderscores('-')).to.equal('_');
-      expect(SoqlHelpers.replaceHyphensWithUnderscores('a')).to.equal('a');
-      expect(SoqlHelpers.replaceHyphensWithUnderscores('asdf')).to.equal('asdf');
-      expect(SoqlHelpers.replaceHyphensWithUnderscores('---')).to.equal('___');
-      expect(SoqlHelpers.replaceHyphensWithUnderscores('asd-fds')).to.equal('asd_fds');
+    it('should replace hyphens with underscores and wrap string in backticks', inject(function(SoqlHelpers) {
+      expect(SoqlHelpers.formatFieldName('')).to.equal('``');
+      expect(SoqlHelpers.formatFieldName('_')).to.equal('`_`');
+      expect(SoqlHelpers.formatFieldName('-')).to.equal('`_`');
+      expect(SoqlHelpers.formatFieldName('a')).to.equal('`a`');
+      expect(SoqlHelpers.formatFieldName('asdf')).to.equal('`asdf`');
+      expect(SoqlHelpers.formatFieldName('---')).to.equal('`___`');
+      expect(SoqlHelpers.formatFieldName('asd-fds')).to.equal('`asd_fds`');
     }));
   });
 

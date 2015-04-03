@@ -4,7 +4,7 @@
   var rowsPerBlock = 50;
   var rowHeight = $.relativeToPx('2rem');
 
-  function tableDirectiveFactory(AngularRxExtensions, $q, $timeout) {
+  function tableDirectiveFactory(AngularRxExtensions, $q, $timeout, SoqlHelpers) {
 
     return {
       templateUrl: '/angular_templates/dataCards/table.html',
@@ -104,7 +104,7 @@
 
           var getFormattedSort = function() {
             return (_.isPresent(sortColumnId) && _.isPresent(sortOrdering)) ?
-              '{0} {1}'.format(sortColumnId, sortOrdering) :
+              '{0} {1}'.format(SoqlHelpers.formatFieldName(sortColumnId), sortOrdering) :
               '';
           };
 

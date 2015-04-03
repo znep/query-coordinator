@@ -87,7 +87,7 @@ describe('CardDataService', function() {
       CardDataService.getData('name', fake4x4, null, countAggregation);
       $httpBackend.flush();
       expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
-        /select\+`name`\+as\+name,\+count(\*)\+as\+value\+\+group\+by\+`name`/
+        /select\+`name`\+as\+name,\+count\(\*\)\+as\+value\+\+group\+by\+`name`/
       );
       http.get.restore();
     });

@@ -105,7 +105,7 @@
       <div class="quick-filter-bar" with-spacer>
         <div class="content">
           <span ng-show="aggregation.unit">
-            Showing <span class="light">the {{aggregation.function | aggregationFunctionToDisplayText}} of {{aggregation.unit.pluralize()}}</span>
+            Showing <span class="light">the {{dynamicTitle}}</span>
           </span>
           <div class="filters">
             <div class="filter" ng-repeat="filter in appliedFiltersForDisplay">

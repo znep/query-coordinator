@@ -1,5 +1,6 @@
 (function() {
   'use strict';
+  var DEFAULT_ROW_DISPLAY_UNIT = 'row';
 
   function PageModelFactory($q, ServerConfig, Card, Model, PageDataService) {
 
@@ -49,11 +50,14 @@
 
         self.defineObservableProperty('dataset', dataset);
 
-        var columnAggregatedUpon = self.observe('primaryAmountField').map(function(field) {
-          return _.isPresent(field) ?
-            self.observe('dataset.columns.{0}'.format(field)) :
-            Rx.Observable.returnValue(null);
-        }).switchLatest();
+        var columnAggregatedUpon = self.observe('primaryAmountField').
+          distinctUntilChanged().
+          map(function(field) {
+            return _.isPresent(field) ?
+              self.observe('dataset.columns.{0}'.format(field)) :
+              Rx.Observable.returnValue(null);
+          }).
+          switchLatest();
 
         // Synchronize changes between primaryAmountField and primaryAggregation
         // Normalize aggregation-related fields.
@@ -65,16 +69,15 @@
           function(primaryAggregation, rowDisplayUnit, fieldNameAggregatedUpon, columnAggregatedUpon) {
             var unit = rowDisplayUnit;
             if (columnAggregatedUpon) {
-              unit = columnAggregatedUpon.dataset.version === '1' ?
-                columnAggregatedUpon.name :
-                columnAggregatedUpon.title;
+              unit = columnAggregatedUpon.dataset.extractHumanReadableColumnName(columnAggregatedUpon);
             }
 
             return {
               'function': primaryAggregation || 'count',
               'column': columnAggregatedUpon, // MAY BE NULL IF COUNT(*)
               'fieldName': fieldNameAggregatedUpon, // MAY BE NULL IF COUNT(*)
-              'unit': unit || 'row'
+              'unit': unit || DEFAULT_ROW_DISPLAY_UNIT,
+              'rowDisplayUnit': rowDisplayUnit || DEFAULT_ROW_DISPLAY_UNIT
             };
           }
         ).filter(function(aggregation) {

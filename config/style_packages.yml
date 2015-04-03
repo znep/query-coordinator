@@ -29,6 +29,7 @@ angular-app-dataCards:
 - dataCards/modal-dialog
 - dataCards/feature-map
 - dataCards/feedback-panel
+- dataCards/lens-type
 
 ie9:
 - dataCards/ie9

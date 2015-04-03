@@ -24,13 +24,13 @@
     function buildAggregationClause(aggregationClauseData) {
       Assert(_.isString(aggregationClauseData['function']), 'aggregation function string should be present');
       var aggregationFunction = aggregationClauseData['function'];
-      var aggregationOperand = typeof aggregationClauseData.fieldName === "string" ? SoqlHelpers.formatFieldName(aggregationClauseData.fieldName) : '*';
+      var aggregationOperand = typeof aggregationClauseData.fieldName === "string" ?
+        SoqlHelpers.formatFieldName(aggregationClauseData.fieldName) : '*';
 
       return '{0}({1})'.format(aggregationFunction, aggregationOperand);
     }
 
     var serviceDefinition = {
-
       getData: function(fieldName, datasetId, whereClauseFragment, aggregationClauseData, options) {
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');

@@ -355,6 +355,7 @@ describe('table directive', function() {
 
         verifySortingWithSortApplicator(columnIndexToClick, function(el) {
           var header = el.find('.th').eq(columnIndexToClick);
+
           expect(header.text().trim()).to.equal(columnMeta.name);
           header.click();
         });

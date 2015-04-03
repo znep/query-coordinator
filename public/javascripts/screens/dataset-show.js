@@ -807,43 +807,42 @@ $(function()
                   _.include(blist.currentUser.flags, 'admin');
         }
 
-        if (blist.dataset.newBackend) {
-          var datasetMetadataUrl = '/dataset_metadata/{0}.json';
-          // Kratos shapefiles apparently are datasets, but have no dataset metadata, which we
-          // need to create a newux page. So - check that there's dataset metadata before showing
-          // the link.
-          var metadataTransitionPhase = parseInt(blist.feature_flags.metadata_transition_phase, 10);
-          if (metadataTransitionPhase !== 0) {
-            // The dataset metadata endpoint changed in metadata transition phase 1.
-            datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
-          }
-
-          if (canUpdateMetadata()) {
-            // Using AJAX to overwrite X-Requested-With because we were getting a 406 at this endpoint
+        //
+        var datasetMetadataUrl = '/dataset_metadata/{0}.json';
+        // Kratos shapefiles apparently are datasets, but have no dataset metadata, which we
+        // need to create a newux page. So - check that there's dataset metadata before showing
+        // the link.
+        var metadataTransitionPhase = parseInt(blist.feature_flags.metadata_transition_phase, 10);
+        if (metadataTransitionPhase !== 0) {
+          // The dataset metadata endpoint changed in metadata transition phase 1.
+          datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
+        }
+        $.get('/api/migrations/' + blist.dataset.id).done(function(migration) {
+          if (!_.isNull(migration.nbeId)) {
             $.ajax({
-              url: datasetMetadataUrl.format(blist.dataset.id),
+              url: datasetMetadataUrl.format(migration.nbeId),
               headers: {
                 'X-Requested-With': ' '
               },
-              success: function() {
-                // If we get a 200 response, we can show the link
-                anchor.attr('href', '/view/bootstrap/' + blist.dataset.id);
-                newUxLink.appendTo('body');
+              success: function(metadata) {
+                if (blist.dataset.newBackend) {
+                  if (canUpdateMetadata() || blist.feature_flags.exit_tech_preview) {
+                    anchor.attr('href', '/view/bootstrap/' + blist.dataset.id);
+                    newUxLink.appendTo('body');
+                  }
+                } else {
+                  // User is on OBE - show bootstrap link if lens view is
+                  // public or user has "can update metadata" permissions
+                  if ((!_.isNull(metadata.defaultPage) && blist.feature_flags.exit_tech_preview)
+                    || canUpdateMetadata()) {
+                    anchor.attr('href', '/view/bootstrap/' + migration.nbeId);
+                    newUxLink.appendTo('body');
+                  }
+                }
               }
             });
           }
-        } else {
-          // This is an old BE 4x4. Check to see if it's been migrated, and if so, set and show
-          // the link.
-          if (canUpdateMetadata()) {
-            $.get('/api/migrations/' + blist.dataset.id).done(function(data) {
-              if (data.nbeId) {
-                anchor.attr('href', '/view/bootstrap/' + data.nbeId);
-                newUxLink.appendTo('body');
-              }
-            });
-          }
-        }
+        });
 
         // The collapse/expand functionality
         newUxLink.on('click', function() {
@@ -881,12 +880,7 @@ $(function()
           });
         });
     }
-    blist.configuration.onCurrentUser(function(user) {
-      if (blist.feature_flags.enable_newux_bootstrap_link &&
-          user && (['administrator', 'publisher'].indexOf(user.roleName) >= 0 ||
-                   blist.dataset.owner.id === user.id ||
-                   user.isAdmin())) {
-        initNewUXLink();
-      }
-    });
+    if (blist.feature_flags.enable_newux_bootstrap_link) {
+      initNewUXLink();
+    }
 });

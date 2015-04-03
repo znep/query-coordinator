@@ -1,8 +1,6 @@
 #!/usr/bin/env ruby
 require 'yaml'
 
-DRY_RUN = true
-
 # BEGIN MANUAL CONFIG
 def cachebust_key
   # Sample: 'd5af6cf2e3c49ed01983750698679cace754f58b.236.1427229395'
@@ -72,26 +70,24 @@ def all_package_paths
   (all_style_package_paths + all_js_package_paths + all_angular_template_paths).map { |package_path| "#{package_path}?#{cachebust_key}" }
 end
 
-
-ats_hosts.each do |ats_host|
-  # Generate a set of CURL commands to run on the ATS host.
-  curl_commands = domains_and_aliases.map do |domain|
-    all_package_paths.map do |path|
-      "curl -s -w '%{http_code} ' -H 'Host: #{domain}' -X PURGE 'http://0.0.0.0:8080#{path}'"
+def generate_curl_commands
+  domains_and_aliases.map do |domain|
+    urls = all_package_paths.map do |path|
+      "'http://0.0.0.0:8080#{path}'"
     end
-  end.flatten
-
-  puts "#{ats_host}: "
-  if DRY_RUN
-    puts curl_commands
-  else
-    monster_command = "ssh #{ats_host} \"#{curl_commands.join(' ; ')}\""
-    system(monster_command)
+    "echo -e '\\n#{domain}' && curl -s -w '%{http_code} ' -H 'Host: #{domain}' -X PURGE #{urls.join(' ')}"
   end
-  puts
 end
 
-if DRY_RUN
-  puts 'DRY RUN COMPLETE'
+output_filename = 'purge_assets_generated.sh'
+puts 'Writing script...'
+File.write(output_filename, generate_curl_commands.join("\n"))
+puts "Wrote script #{output_filename}"
+
+puts 'Copying via SCP to each ATS host'
+ats_hosts.each do |ats_host|
+  system "scp #{output_filename} #{ats_host}:"
 end
+
+puts 'Please SSH in to each host and run the script (probably in a screen session)'
 

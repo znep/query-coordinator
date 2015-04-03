@@ -2,7 +2,7 @@
 require 'yaml'
 
 # BEGIN MANUAL CONFIG
-def cachebust_key
+def cachebust_key_for_templates_and_styles
   # Sample: 'd5af6cf2e3c49ed01983750698679cace754f58b.236.1427229395'
   #
   # HOW TO GET:
@@ -10,8 +10,19 @@ def cachebust_key
   # 2) Open the debugger, refresh. Look at the fetched styles. You will see a query parameter tacked on
   #    to each style request.
   # 3) Copy/paste it here, minus the ?.
-  raise 'Please configure a cachebust key (edit the script).'
-  'PASTE HERE'
+  raise 'Please configure a cachebust key for template and style assets (edit the script).'
+end
+
+def cachebust_keys_for_js
+  # Sample: [ '1427229395', '1427229995' ]
+  #
+  # HOW TO GET:
+  # 1) Load any user-facing data lens page on any domain in the environment you care about.
+  # 2) Open the debugger, refresh. Look at the fetched JS assets. You will see a query parameter tacked on
+  #    to each JS request. Note that there are 2 - one for all the minified JS assets, another for all
+  #    the unminified assets.
+  # 3) Copy/paste both here, minus the ?.
+  raise 'Please configure a cachebust key for JS assets (edit the script).'
 end
 
 def ats_hosts
@@ -59,7 +70,9 @@ def all_style_package_paths
 end
 
 def all_js_package_paths
-  all_js_package_names.map { |package_name| "/packages/#{package_name}.js" }
+  all_js_package_names.map do |package_name|
+    [ "/packages/#{package_name}.js", "/packages/unminified/#{package_name}.js" ]
+  end.flatten
 end
 
 def all_angular_template_paths
@@ -67,7 +80,12 @@ def all_angular_template_paths
 end
 
 def all_package_paths
-  (all_style_package_paths + all_js_package_paths + all_angular_template_paths).map { |package_path| "#{package_path}?#{cachebust_key}" }
+  style_cachebust_paths = all_style_package_paths.map { |package_path| "#{package_path}?#{cachebust_key_for_templates_and_styles}" }
+  js_cachebust_paths = all_js_package_paths.map do |package_path|
+    cachebust_keys_for_js.map { |key| "#{package_path}?#{key}" }
+  end.flatten
+  angular_cachebust_paths = all_angular_template_paths.map { |package_path| "#{package_path}?assetRevisionKey=#{cachebust_key_for_templates_and_styles}" }
+  style_cachebust_paths + js_cachebust_paths + angular_cachebust_paths
 end
 
 def generate_curl_commands

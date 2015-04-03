@@ -330,7 +330,7 @@
                                              :         feature.attributes[objectIdKey]; });
 
                     var objectIdFieldName = (_.detect(layerObj._view.realColumns, function(col) {
-                        return col.name == layerObj._displayLayer.objectIdField.name;
+                        return col.name == (layerObj._displayLayer.objectIdField || {}).name;
                     }) || {}).fieldName || objectIdKey;
 
                     // Yes, this is a Core request inside a callback from an ESRI request.

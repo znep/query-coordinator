@@ -17,8 +17,19 @@ module ApplicationHelper
       # use the view's federation resolution but throw away the rest for the resource name instead.
       developer_docs_url(view.route_params.only( :host ).merge( resource: view.resourceName || '' ))
     elsif view.new_view?
-      # use the direct link stored in the metadata for 'new_view' display types
-      view.metadata.accessPoints['new_view']
+      begin
+        # use the direct link stored in the metadata for 'new_view' display types
+        view.metadata.accessPoints['new_view']
+      rescue NoMethodError => error
+        error_message = "Failed to find access point 'new_view' for view with " \
+          "id '#{view.id}; falling back to url '/view/#{view.id}'"
+        Airbrake.notify(
+          :error_class => 'NewUXViewURLFailure',
+          :error_message => error_message
+        )
+        Rails.logger.error(error_message)
+        "/view/#{view.id}"
+      end
     else
       super
     end

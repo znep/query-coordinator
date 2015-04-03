@@ -70,12 +70,15 @@ describe('CardDataService', function() {
       }).to.throw();
     });
 
-    it('should access the correct dataset', function(done) {
-      var response = CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation);
-      response.then(function() {
-        done();
-      });
+    it('should access the correct dataset with the correct query', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation);
       $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /\/api\/id\/fake-data\.json\?\$query=select\+`fakeNumberColumn`\+as\+name,\+count\(\*\)\+as\+value\++group\+by\+`fakeNumberColumn`\+order\+by\+count\(\*\)\+desc\+limit\+200/i
+      );
+      http.get.restore();
     });
 
     it('should not alias a column whose name is "name"', function() {
@@ -83,8 +86,8 @@ describe('CardDataService', function() {
       var httpSpy = sinon.spy(http, 'get');
       CardDataService.getData('name', fake4x4, null, countAggregation);
       $httpBackend.flush();
-      expect(decodeURIComponent(httpSpy.firstCall.args[0]).toLowerCase()).to.equal(
-        normalizeUrl('http://localhost:7019/api/id/fake-data.json?$query=select+`name`+as+name,+count(*)+as+value++group+by+`name`+order+by+count(*)+desc+limit+200')
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /select\+`name`\+as\+name,\+count(\*)\+as\+value\+\+group\+by\+`name`/
       );
       http.get.restore();
     });
@@ -92,14 +95,21 @@ describe('CardDataService', function() {
     it('should pass through the where clause', function() {
       $httpBackend.whenGET(/.*/);
       var httpSpy = sinon.spy(http, 'get');
-      CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation);
       CardDataService.getData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', countAggregation);
       $httpBackend.flush();
-      expect(decodeURIComponent(httpSpy.firstCall.args[0]).toLowerCase()).to.equal(
-        normalizeUrl('http://localhost:7019/api/id/{0}.json?$query=select `fakeNumberColumn` as name, count(*) as value  group by `fakeNumberColumn` order by count(*) desc limit 200'.format(fake4x4))
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /where\+MAGICAL_WHERE_CLAUSE/i
       );
-      expect(decodeURIComponent(httpSpy.secondCall.args[0]).toLowerCase()).to.equal(
-        normalizeUrl('http://localhost:7019/api/id/{0}.json?$query=select `fakeNumberColumn` as name, count(*) as value where MAGICAL_WHERE_CLAUSE group by `fakeNumberColumn` order by count(*) desc limit 200'.format(fake4x4))
+      http.get.restore();
+    });
+
+    it('should not pass through the where clause when it is null', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation);
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).not.to.match(
+        /where/i
       );
       http.get.restore();
     });
@@ -107,14 +117,21 @@ describe('CardDataService', function() {
     it('should pass through the aggregation options', function() {
       $httpBackend.whenGET(/.*/);
       var httpSpy = sinon.spy(http, 'get');
-      CardDataService.getData('fakeNumberColumn', fake4x4, null, { 'function': 'sum', 'column': {}, 'fieldName': 'fakeNumberColumn' });
       CardDataService.getData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', { 'function': 'sum', 'column': {}, 'fieldName': 'fakeNumberColumn' });
       $httpBackend.flush();
-      expect(decodeURIComponent(httpSpy.firstCall.args[0]).toLowerCase()).to.equal(
-        normalizeUrl('http://localhost:7019/api/id/{0}.json?$query=select `fakeNumberColumn` as name, sum(`fakeNumberColumn`) as value  group by `fakeNumberColumn` order by sum(`fakeNumberColumn`) desc limit 200'.format(fake4x4))
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /sum\(`fakeNumberColumn`\)\+as\+value.+where\+MAGICAL_WHERE_CLAUSE.+group\+by\+`fakeNumberColumn`\+order\+by\+sum\(`fakeNumberColumn`\)/i
       );
-      expect(decodeURIComponent(httpSpy.secondCall.args[0]).toLowerCase()).to.equal(
-        normalizeUrl('http://localhost:7019/api/id/{0}.json?$query=select `fakeNumberColumn` as name, sum(`fakeNumberColumn`) as value where MAGICAL_WHERE_CLAUSE group by `fakeNumberColumn` order by sum(`fakeNumberColumn`) desc limit 200'.format(fake4x4))
+      http.get.restore();
+    });
+
+    it('should pass through the aggregation options when where clause is null', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getData('fakeNumberColumn', fake4x4, null, { 'function': 'sum', 'column': {}, 'fieldName': 'fakeNumberColumn' });
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /sum\(`fakeNumberColumn`\)\+as\+value.+group\+by\+`fakeNumberColumn`\+order\+by\+sum\(`fakeNumberColumn`\)/i
       );
       http.get.restore();
     });
@@ -180,17 +197,15 @@ describe('CardDataService', function() {
       }).to.throw();
     });
 
-    it('should access the correct dataset', function(done) {
-      var fakeData = [{
-        start: '1988-01-10T08:00:00.000Z',
-        end: '2101-01-10T08:00:00.000Z'
-      }];
-      fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4);
-      response.then(function() {
-        done();
-      });
+    it('should access the correct dataset', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4);
       $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /\/api\/id\/fake-data\.json/i
+      );
+      http.get.restore();
     });
 
     it('should generate a correct query', function() {
@@ -198,8 +213,8 @@ describe('CardDataService', function() {
       var httpSpy = sinon.spy(http, 'get');
       CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4);
       $httpBackend.flush();
-      expect(decodeURIComponent(httpSpy.firstCall.args[0]).toLowerCase()).to.equal(
-        normalizeUrl("http://localhost:7019/api/id/{1}.json?$query=SELECT min({0}) AS start, max({0}) AS end WHERE {0} < '{2}'".format('`fakeNumberColumn`', fake4x4, ConstantsService['MAX_LEGAL_JAVASCRIPT_DATE_STRING']))
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /\/api\/id\/fake-data\.json\?\$query=SELECT\+min\(`fakeNumberColumn`\)\+AS\+start,\+max\(`fakeNumberColumn`\)\+AS\+end\+WHERE\+`fakeNumberColumn`\+<\+'\d{4}-\d{2}-\d{2}'/i
       );
       http.get.restore();
     });
@@ -325,28 +340,36 @@ describe('CardDataService', function() {
       }).to.throw();
     });
 
-    it('should access the correct dataset', function(done) {
-      var fakeData = [];
-      fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
-      response.then(function() {
-        done();
-      });
+    it('should access the correct dataset', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
       $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /\/api\/id\/fake-data\.json\?\$query=SELECT\+date_trunc_ymd\(`fakeNumberColumn`\)\+AS\+truncated_date,\+count\(\*\)\+AS\+value\+WHERE\+`fakeNumberColumn`\+IS\+NOT\+NULL\+AND\+`fakeNumberColumn`\+<\+'\d{4}-\d{2}-\d{2}'\+GROUP\+BY\+truncated_date/i
+      );
+      http.get.restore();
     });
 
     it('should pass through the where clause fragment', function() {
 
       $httpBackend.whenGET(/.*/);
       var httpSpy = sinon.spy(http, 'get');
-      CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
       CardDataService.getTimelineData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', 'DAY', countAggregation);
       $httpBackend.flush();
-      expect(decodeURIComponent(httpSpy.firstCall.args[0]).toLowerCase()).to.equal(
-        normalizeUrl('http://localhost:7019/api/id/fake-data.json?$query=select+date_trunc_ymd(`fakenumbercolumn`)+as+truncated_date,+count(*)+as+value+where+`fakenumbercolumn`+is+not+null+and+`fakenumbercolumn`+<+\'9999-12-31\'+group+by+truncated_date')
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /where\+`fakenumbercolumn`\+is\+not\+null\+and\+`fakenumbercolumn`\+<\+'\d{4}-\d{2}-\d{2}'\+and\+magical_where_clause/i
       );
-      expect(decodeURIComponent(httpSpy.secondCall.args[0]).toLowerCase()).to.equal(
-        normalizeUrl('http://localhost:7019/api/id/fake-data.json?$query=select+date_trunc_ymd(`fakenumbercolumn`)+as+truncated_date,+count(*)+as+value+where+`fakenumbercolumn`+is+not+null+and+`fakenumbercolumn`+<+\'9999-12-31\'+and+magical_where_clause+group+by+truncated_date')
+      http.get.restore();
+    });
+
+    it('should pass through the where clause fragment when it is empty', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /where\+`fakenumbercolumn`\+is\+not\+null\+and\+`fakenumbercolumn`\+<\+'\d{4}-\d{2}-\d{2}'/i
       );
       http.get.restore();
     });
@@ -502,8 +525,8 @@ describe('CardDataService', function() {
       var httpSpy = sinon.spy(http, 'get');
       CardDataService.getRowCount(fake4x4);
       $httpBackend.flush();
-      expect(decodeURIComponent(httpSpy.firstCall.args[0]).toLowerCase()).to.equal(
-        normalizeUrl('http://localhost:7019/api/id/{0}.json?$query=select count(0)'.format(fake4x4))
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /\/api\/id\/fake-data.json\?\$query=select\+count\(0\)/i
       );
       http.get.restore();
     });
@@ -513,8 +536,8 @@ describe('CardDataService', function() {
       var httpSpy = sinon.spy(http, 'get');
       CardDataService.getRowCount(fake4x4, 'stuff');
       $httpBackend.flush();
-      expect(decodeURIComponent(httpSpy.firstCall.args[0]).toLowerCase()).to.equal(
-        normalizeUrl('http://localhost:7019/api/id/{0}.json?$query=select count(0) where stuff'.format(fake4x4))
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /where\+stuff/i
       );
       http.get.restore();
     });
@@ -559,10 +582,9 @@ describe('CardDataService', function() {
       var httpSpy = sinon.spy(http, 'get');
       CardDataService.getSampleData(TEST_FIELD_NAME, fake4x4);
       $httpBackend.flush();
-      var expected = normalizeUrl(
-        'http://localhost:7019/api/id/{0}.json?$query=select {1} as name LIMIT 10'.format(fake4x4, SoqlHelpers.formatFieldName(TEST_FIELD_NAME))
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /\/api\/id\/fake-data\.json\?\$query=select\+`my\+test\+field`\+as\+name\+LIMIT\+10/i
       );
-      expect(decodeURIComponent(httpSpy.firstCall.args[0]).toLowerCase()).to.equal(expected);
       http.get.restore();
     });
 

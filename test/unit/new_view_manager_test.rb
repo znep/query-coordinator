@@ -41,6 +41,50 @@ class NewViewManagerTest < Test::Unit::TestCase
     assert(created)
   end
 
+  def test_create_creates_a_new_data_lens_with_the_given_category_if_category_provided
+    given_category = 'some_test_category'
+
+    connection_stub = mock
+    created = false
+    connection_stub.expects(:create_request).times(1).with do |url, payload|
+      if url == '/views.json?accessType=WEBSITE'
+        created = true
+        assert_equal(given_category, JSON.parse(payload)['category'])
+      end
+    end.returns('{"id": "niew-veww"}')
+
+    connection_stub.expects(:update_request).returns('{}')
+    CoreServer::Base.stubs(connection: connection_stub)
+
+    expectant_stub = mock.tap { |stub| stub.expects(:publish) }
+    View.expects(:find).with('niew-veww').returns(expectant_stub)
+    Rails.application.routes.url_helpers.stubs(opendata_cards_view_url: 'opendata_url')
+
+    result = new_view_manager.create('my title', 'my description', given_category)
+    assert(created)
+  end
+
+  def test_create_creates_a_new_data_lens_with_the_given_category_if_category_not_provided
+    connection_stub = mock
+    created = false
+    connection_stub.expects(:create_request).times(1).with do |url, payload|
+      if url == '/views.json?accessType=WEBSITE'
+        created = true
+        assert_nil(JSON.parse(payload)['category'])
+      end
+    end.returns('{"id": "niew-veww"}')
+
+    connection_stub.expects(:update_request).returns('{}')
+    CoreServer::Base.stubs(connection: connection_stub)
+
+    expectant_stub = mock.tap { |stub| stub.expects(:publish) }
+    View.expects(:find).with('niew-veww').returns(expectant_stub)
+    Rails.application.routes.url_helpers.stubs(opendata_cards_view_url: 'opendata_url')
+
+    result = new_view_manager.create('my title', 'my description')
+    assert(created)
+  end
+
   def test_create_does_not_raise_on_resource_not_found
     new_view_manager.stubs(
       :create_new_view => { :id => '1234-1234' },

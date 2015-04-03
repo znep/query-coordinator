@@ -1,7 +1,10 @@
 (function() {
   'use strict';
 
-  function SuggestionToolPanel(SuggestionService, AngularRxExtensions) {
+  function SuggestionToolPanel(SuggestionService, AngularRxExtensions, ServerConfig) {
+    if (!ServerConfig.get('enableSearchSuggestions')) {
+      return {};
+    }
     return {
       restrict: 'E',
       scope: {

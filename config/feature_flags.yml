@@ -18,9 +18,6 @@ timeline:
   description: D3 Timeline Charts
   defaultValue: old
   expectedValues: nextgen old
-d3_metrics:
-  description: Use D3 for Metrics Charts
-  defaultValue: true
 hide_decimal_tick_lines:
   description: "Ref: CORE-1951. If set to true, when Decimal Places is 0, hide any tick lines between natural numbers."
   defaultValue: true
@@ -74,6 +71,9 @@ enable_data_lens_save_as_button:
 enable_data_lens_other_views:
   description: Show the "other views of this data" button in the upper left of data lens pages
   defaultValue: false
+data_lens_whats_this_href:
+  description: The url that the "What's this?" link on the facet filter should point to
+  defaultValue: ''
 enable_opendata_ga_tracking:
   description: Controls behavior of Google Analytics in the new UX. If true, GA is enabled with a default Socrata-wide token. If a custom value is provided, GA is enabled and the custom value is used as the GA token. If false, GA is disabled.
 data_cards_app_token:
@@ -131,3 +131,6 @@ enable_newux_page_view_count:
 use_catalog_lens_permissions:
   description: Whether page/dataset metadata should inherit permissions from their catalog lenses.
   defaultValue: false
+enable_search_suggestions:
+  description: Allow search suggestions and type-ahead for data lens search card.
+  defaultValue: true

@@ -14,6 +14,7 @@
     var Model;
     var fakeClock;
     var _$provide;
+    var ServerConfig;
 
     beforeEach(module('/angular_templates/dataCards/suggestionToolPanel.html'));
     beforeEach(module('/angular_templates/common/intractableList.html'));
@@ -32,6 +33,7 @@
     });
 
     beforeEach(inject(function($injector) {
+      ServerConfig = $injector.get('ServerConfig');
       testHelpers = $injector.get('testHelpers');
       rootScope = $injector.get('$rootScope');
       suggestionService = $injector.get('SuggestionService');
@@ -154,6 +156,13 @@
 
       xit('should instruct the user to choose a suggestion when there are one or more search results', function() {
         // working
+      });
+
+      it('should not show if the "enableSearchSuggestions" feature flag is false', function() {
+        ServerConfig.override('enableSearchSuggestions', false);
+
+        suggestionToolPanel = createElement();
+        expect(suggestionToolPanel.element).to.be.empty;
       });
 
       it('show a loading spinner while the request to spandex is in flight', function() {

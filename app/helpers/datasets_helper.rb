@@ -278,6 +278,13 @@ module DatasetsHelper
     end
     ret += h(facet_option[:text])
     ret += '</a>'
+
+    if facet_option[:help_link]
+      ret << %Q{<a class="help-link" href="#{facet_option[:help_link][:href]}" target="_blank">
+        #{facet_option[:help_link][:text]}
+      </a>}
+    end
+
     if options[param] == facet_option[:value] && !(facet_option[:children] || []).empty? ||
       (facet_option[:children] || []).any? { |cc| cc[:value] == options[param] }
       ret += '<ul class="childList">' +

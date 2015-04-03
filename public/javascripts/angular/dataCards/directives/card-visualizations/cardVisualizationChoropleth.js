@@ -90,7 +90,7 @@
 
             if (shapeFile === null) {
               scope.safeApply(function() {
-                scope.geojsonRegionsError = true;
+                scope.choroplethRenderError = true;
               });
             }
 
@@ -112,7 +112,12 @@
                 dataResponses.onNext(1);
               },
               function(err) {
-                // Do nothing
+                // Still increment the counter to stop the spinner
+                dataResponses.onNext(1);
+
+                scope.safeApply(function() {
+                  scope.choroplethRenderError = true;
+                });
               }
             );
 
@@ -183,7 +188,7 @@
                 dataResponses.onNext(1);
 
                 scope.safeApply(function() {
-                  scope.geojsonRegionsError = true;
+                  scope.choroplethRenderError = true;
                 });
               }
             );
@@ -207,7 +212,8 @@
                 dataResponses.onNext(1);
               },
               function(err) {
-                // Do nothing
+                // Still increment the counter to stop the spinner
+                dataResponses.onNext(1);
               });
             return Rx.Observable.fromPromise(dataPromise);
           });
@@ -227,7 +233,8 @@
                 dataResponses.onNext(1);
               },
               function(err) {
-                // Do nothing
+                // Still increment the counter to stop the spinner
+                dataResponses.onNext(1);
               });
             return Rx.Observable.fromPromise(dataPromise);
           });
@@ -236,7 +243,7 @@
         // the 'geojsonAggregateData' observable is bound, or
         // else it sometimes fails to set the value to true
         // when it encounters an error. WTF.
-        scope.geojsonRegionsError = false;
+        scope.choroplethRenderError = false;
 
         /****************************************
         * Bind non-busy-indicating observables. *

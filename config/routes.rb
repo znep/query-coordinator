@@ -278,12 +278,13 @@ Frontend::Application.routes do
       match '/tiles/:page_id/:field_id/:zoom/:x_coord/:y_coord.pbf', :via => :get, :action => 'proxy_request'
     end
 
-    scope :controller => 'angular', :constraints => { :id => UID_REGEXP } do
+    scope :controller => 'angular', :constraints => { :id => UID_REGEXP, :field_id => Phidippides::COLUMN_ID_REGEX } do
       # NOTE: The dataCards angular app is capable of rendering multiple views (Pages and Dataset Metadata, for instance).
       # As of 9/24/2014, the angular app itself figures out what particular view to render.
       # So if you change these routes, make sure public/javascripts/angular/dataCards/app.js is also updated to
       # reflect the changes.
       match '/view/:id', :action => 'serve_app', :app => 'dataCards', :as => :opendata_cards_view
+      match '/view/:id/:field_id', :action => 'serve_app', :app => 'dataCards'
       match '/view/*angularRoute', :action => 'serve_app', :app => 'dataCards' # See angular-app-{:app} in assets.yml.
     end
 

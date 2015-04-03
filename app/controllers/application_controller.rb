@@ -3,12 +3,18 @@
 
 class ApplicationController < ActionController::Base
   include ActionControllerExtensions
+  include UserAuthMethods
+
   before_filter :hook_auth_controller, :create_core_server_connection,
-    :disable_frame_embedding, :adjust_format, :patch_microsoft_office, :sync_logged_in_cookie,
-    :require_user, :set_user, :set_meta, :force_utf8_params, :poll_downtime_config
+    :disable_frame_embedding, :adjust_format, :patch_microsoft_office,
+    :sync_logged_in_cookie, :require_user, :set_user, :set_meta,
+    :force_utf8_params, :poll_downtime_config
+
   helper :all # include all helpers, all the time
+
   helper_method :current_user
   helper_method :current_user_session
+
   layout 'main'
 
   rescue_from CoreServer::ResourceNotFound, :with => :render_404
@@ -48,24 +54,6 @@ class ApplicationController < ActionController::Base
       end
       format.data { render :json => { :error => error } }
     end
-  end
-
-  # See ActionController::Base for details 
-  # Uncomment this to filter the contents of submitted sensitive data parameters
-  # from your application log (in this case, all fields with names like "password").
-  # filter_parameter_logging :password
-
-  hide_action :current_user, :current_user_session, :prerendered_fragment_for, :require_module!, :require_that
-  def current_user
-    @current_user ||= current_user_session ? current_user_session.user : nil
-  end
-
-  def current_user_session
-    @current_user_session ||= UserSession.find
-  end
-
-  def current_user_session=(user_session)
-    @current_user_session = user_session
   end
 
   def require_module!(name)
@@ -143,14 +131,6 @@ protected
   end
 
 private
-  # Allow access to the current controller from the UserSession model.
-  # UserSession itself is an ActiveRecord-like model, but it's mostly
-  # concerned with setting session data, so it's easiest to just plumb
-  # it through.
-  def hook_auth_controller
-    UserSession.controller = self
-    UserSession.update_current_user(nil, nil)
-  end
 
   # create the connection that can be used by all core server calls
   # made by this request
@@ -223,7 +203,7 @@ private
     if globalsign_user_agent?
       # Render a skeleton page with just the GlobalSign domain validator value if their bot is hitting us.
       # Unrelated to the staging lockdown, but this is a convenient place to do this check.
-      # Note that the selection of shared/error here is arbitrary as it won't actually render, 
+      # Note that the selection of shared/error here is arbitrary as it won't actually render,
       # but Rails requires a valid page to be specified.
       return render('shared/error', :layout => 'globalsign')
     elsif CurrentDomain.feature? :staging_lockdown

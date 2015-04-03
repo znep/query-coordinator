@@ -9,9 +9,6 @@
     <p>
       <%- rss_url = @view.nil? ? '' : @view.rss -%>
       <a class="subscribe rss" rel="external" href="<%= rss_url %>"><span class="icon"></span><%= t('screens.ds.subscribe.rss') %></a>
-      <a rel="external" class="greader" href="http://fusion.google.com/add?feedurl=<%= rss_url %>">
-        <%= t('screens.ds.subscribe.google_reader') %>
-      </a>
       <a class="feed" href="feed:<%= rss_url %>"><%= t('screens.ds.subscribe.rss_program') %></a>
     </p>
   </div>

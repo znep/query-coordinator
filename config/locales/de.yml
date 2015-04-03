@@ -2112,7 +2112,6 @@ de:
         remove_confirm: Sie Sie sicher, dass Sie diese Ansicht entfernen möchten?
         unpublished_alert: Dieser Datensatz wurde noch nicht veröffentlicht, damit Sie die notwendigen Änderungen durchführen können, bevor Sie den Datensatz jedem zur Verfügung stellen. Er wird nicht sichtbar sein, bis Sie diesen Datensatz veröffentlicht haben.
       subscribe:
-        google_reader: Zum Google Reader hinzufügen
         intro_html: '<strong>Um diesen <span class="datasetName">%{name}</span> Datensatz per RSS-Rreader</strong> zu abonnieren, nutzen Sie bitte einen der folgenden Links:'
         rss: Als RSS herunterladen
         rss_program: Ein externes Programm öffnen

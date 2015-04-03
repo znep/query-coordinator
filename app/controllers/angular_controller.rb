@@ -15,7 +15,7 @@ class AngularController < ActionController::Base
   before_filter :hook_auth_controller
 
   helper_method :current_user
-  helper_method :current_user_session
+  helper_method :current_user_session_or_basic_auth
 
   layout 'angular'
 

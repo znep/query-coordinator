@@ -331,7 +331,6 @@ class NewUxBootstrapController < ActionController::Base
     end
   end
 
-
   def generate_and_redirect_to_new_page(dataset_metadata)
     default_page_id = create_default_page(dataset_metadata)
 
@@ -351,11 +350,14 @@ class NewUxBootstrapController < ActionController::Base
       JSON.parse(
         CoreServer::Base.connection.get_request("/id/#{params[:id]}?%24query=select+count(0)")
       )[0]['count_0'].to_i
-    rescue CoreServer::Error => e
-      Rails.logger.error(
-        "Core server error while retrieving dataset size of dataset " \
-        "(#{params[:id]}): #{e}"
+    rescue CoreServer::Error => error
+      error_message = "Boostrap failure: error retrieving size of dataset " \
+        "#{params[:id]}: #{error.inspect}"
+      Airbrake.notify(
+        :error_class => "BootstrapUXFailure",
+        :error_message => error_message
       )
+      Rails.logger.error(error_message)
       nil
     end
   end

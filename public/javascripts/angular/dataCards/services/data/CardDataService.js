@@ -52,12 +52,7 @@
 
         fieldName = SoqlHelpers.formatFieldName(fieldName);
 
-        var queryTemplate;
-        if (fieldName === 'name') {
-          queryTemplate = 'select {0}, {2} as value {1} group by {0} order by {2} desc limit {3}';
-        } else {
-          queryTemplate = 'select {0} as name, {2} as value {1} group by {0} order by {2} desc limit {3}';
-        }
+        var queryTemplate = 'select {0} as name, {2} as value {1} group by {0} order by {2} desc limit {3}';
         var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
         // TODO: Implement some method for paging/showing data that has been truncated.
         var params = {

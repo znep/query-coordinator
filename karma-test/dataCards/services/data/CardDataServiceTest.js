@@ -81,17 +81,6 @@ describe('CardDataService', function() {
       http.get.restore();
     });
 
-    it('should not alias a column whose name is "name"', function() {
-      $httpBackend.whenGET(/.*/);
-      var httpSpy = sinon.spy(http, 'get');
-      CardDataService.getData('name', fake4x4, null, countAggregation);
-      $httpBackend.flush();
-      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
-        /select\+`name`\+as\+name,\+count\(\*\)\+as\+value\+\+group\+by\+`name`/
-      );
-      http.get.restore();
-    });
-
     it('should pass through the where clause', function() {
       $httpBackend.whenGET(/.*/);
       var httpSpy = sinon.spy(http, 'get');

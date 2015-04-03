@@ -336,16 +336,17 @@ describe('CardDataService', function() {
     });
 
     it('should pass through the where clause fragment', function() {
+
       $httpBackend.whenGET(/.*/);
       var httpSpy = sinon.spy(http, 'get');
       CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
       CardDataService.getTimelineData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', 'DAY', countAggregation);
       $httpBackend.flush();
       expect(decodeURIComponent(httpSpy.firstCall.args[0]).toLowerCase()).to.equal(
-        normalizeUrl('http://localhost:7019/api/id/fake-data.json?$query=select+date_trunc_ymd(`fakenumbercolumn`)+as+truncated_date,+count(*)+as+value+where+fakenumbercolumn+is+not+null+and+fakenumbercolumn+<+\'9999-12-31\'+group+by+truncated_date')
+        normalizeUrl('http://localhost:7019/api/id/fake-data.json?$query=select+date_trunc_ymd(`fakenumbercolumn`)+as+truncated_date,+count(*)+as+value+where+`fakenumbercolumn`+is+not+null+and+`fakenumbercolumn`+<+\'9999-12-31\'+group+by+truncated_date')
       );
       expect(decodeURIComponent(httpSpy.secondCall.args[0]).toLowerCase()).to.equal(
-        normalizeUrl('http://localhost:7019/api/id/fake-data.json?$query=select+date_trunc_ymd(`fakenumbercolumn`)+as+truncated_date,+count(*)+as+value+where+fakenumbercolumn+is+not+null+and+fakenumbercolumn+<+\'9999-12-31\'+and+magical_where_clause+group+by+truncated_date')
+        normalizeUrl('http://localhost:7019/api/id/fake-data.json?$query=select+date_trunc_ymd(`fakenumbercolumn`)+as+truncated_date,+count(*)+as+value+where+`fakenumbercolumn`+is+not+null+and+`fakenumbercolumn`+<+\'9999-12-31\'+and+magical_where_clause+group+by+truncated_date')
       );
       http.get.restore();
     });

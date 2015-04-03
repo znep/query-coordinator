@@ -45,6 +45,15 @@
         "strategyType": "georegion_match_on_point"
       }
     },
+    "point_city": {
+      "name": "Point (city)",
+      "fred": "text",
+      "description": "",
+      "cardinality": 1,
+      "physicalDatatype": "text",
+      "defaultCardType": "search",
+      "availableCardTypes": ["column", "search"]
+    },
     "latitude": {
       "name": "LaTiTUde",
       "description": "column description",

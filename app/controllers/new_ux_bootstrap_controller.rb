@@ -283,7 +283,26 @@ class NewUxBootstrapController < ActionController::Base
   def field_name_ignored_for_bootstrap?(field_name)
     columns_to_avoid = FeatureFlags.derive(nil, defined?(request) ? request : nil)[:field_names_to_avoid_during_bootstrap]
     columns_to_avoid = columns_to_avoid.kind_of?(Array) ? columns_to_avoid.map(&:to_s).map(&:downcase) : []
-    columns_to_avoid.include?(field_name.downcase) || Phidippides::SYSTEM_COLUMN_ID_REGEX.match(field_name)
+    columns_to_avoid.include?(field_name.downcase)
+  end
+
+  def is_system_column?(field_name)
+    Phidippides::SYSTEM_COLUMN_ID_REGEX.match(field_name)
+  end
+
+  # CORE-4645 OBE datasets can have columns that have sub-columns. When converted to the NBE, these
+  # sub-columns become their own columns. These generally don't have meaning in isolation, so don't
+  # create a card for them.
+  def probably_used_to_be_a_subcolumn_in_the_old_backend_dataset?(column)
+    # The OBE->NBE conversion doesn't add any metadata to allow us to differentiate sub-columns,
+    # except that it has a naming convention of "Parent Column Name (Sub-column Name)"
+    column[:name] =~ /\w +\(.+\)/
+  end
+
+  def is_probably_an_uninteresting_column?(field_name, column)
+    field_name_ignored_for_bootstrap?(field_name) ||
+      is_system_column?(field_name) ||
+      probably_used_to_be_a_subcolumn_in_the_old_backend_dataset?(column)
   end
 
   def generate_cards_from_dataset_metadata_columns(columns)
@@ -311,7 +330,7 @@ class NewUxBootstrapController < ActionController::Base
       end.compact
     else
       columns.map do |field_name, column|
-        unless field_name_ignored_for_bootstrap?(field_name)
+        unless is_probably_an_uninteresting_column?(field_name, column)
           card_type = card_type_for(column, :fred, cached_dataset_size)
           if card_type
             card = page_metadata_manager.merge_new_card_data_with_default(

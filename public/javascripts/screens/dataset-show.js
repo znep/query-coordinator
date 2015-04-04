@@ -830,10 +830,10 @@ $(function()
                   'X-Requested-With': ' '
                 },
                 success: function(metadata) {
-                  // Show bootstrap link if lens view exists publicly and exit_tech_preview is true,
-                  // or user has "can update metadata" permissions
-                  if ((!_.isNull(metadata.defaultPage) && blist.feature_flags.exit_tech_preview)
-                    || canUpdateMetadata()) {
+                  if (!_.isNull(metadata.defaultPage) && blist.feature_flags.exit_tech_preview) {
+                    anchor.attr('href', '/view/' + metadata.defaultPage);
+                    newUxLink.appendTo('body');
+                  } else if (canUpdateMetadata()) {
                     anchor.attr('href', '/view/bootstrap/' + migration.nbeId);
                     newUxLink.appendTo('body');
                   }

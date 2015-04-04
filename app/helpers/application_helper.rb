@@ -454,7 +454,7 @@ module ApplicationHelper
     if options[:type].to_s == "static"
       return "#{options[:href]}"
     elsif options[:type].to_s == "hosted"
-      return "/assets/#{options[:href]}?#{asset_revision_key}"
+      return "/assets/#{options[:href]}?<%= asset_revision_key %>"
     end
   end
 

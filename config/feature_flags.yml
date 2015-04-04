@@ -133,7 +133,7 @@ use_catalog_lens_permissions:
   defaultValue: true
 enable_search_suggestions:
   description: Allow search suggestions and type-ahead for data lens search card.
-  defaultValue: true
+  defaultValue: false
 feature_map_features_per_tile:
   description: The maximum number of features that will be requested for any individual feature map tile.
   defaultValue: 50000

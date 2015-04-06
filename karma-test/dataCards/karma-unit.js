@@ -122,6 +122,13 @@ module.exports = function ( karma ) {
       'app/styles/dataCards/*.sass',
       { pattern: 'public/stylesheets/images/**/*.{jpg,png}', watched: false, included: false, served: true },
 
+      'public/javascripts/util/namespace.js',
+      'public/javascripts/plugins/inheritance.js',
+      'public/javascripts/util/base-model.js',
+      'public/javascripts/util/socrata-server.js',
+      'public/javascripts/util/dataset/dataset.js',
+      'public/javascripts/screens/dataset-show.js',
+
       /* TEST MOCKS */
 
       /* Test datasets */
@@ -134,6 +141,7 @@ module.exports = function ( karma ) {
       /* THE TESTS THEMSELVES */
       'karma-test/helpers/ServerMocks.js',
       'karma-test/dataCards/*.js',
+      'karma-test/old-ux/*.js',
       /* IMPORTANT: If you add/remove/change test groups,
        * please update at the constant TEST_GROUPS in karma_tests.rake.
        * If you don't, your tests may be run multiple times per run.

@@ -1,6 +1,19 @@
 describe('A FeatureMap Card Visualization', function() {
   'use strict';
 
+  var ZOOMED_OUT_EXTENT = {
+    "southwest":[39.9434364619742, -94.10888671875],
+    "northeast":[43.75522505306928, -81.14501953125]
+  };
+  var ZOOMED_IN_EXTENT = {
+    "southwest": [41.87537684702812, -87.6587963104248],
+    "northeast": [41.89026600256849, -87.5951099395752]
+  };
+  var MIDDLE_ZOOM_EXTENT = {
+    "southwest":[41.681944, -87.827778],
+    "northeast":[42.081944, -87.427778]
+  };
+
   var testHelpers;
   var $rootScope;
   var Model;
@@ -23,7 +36,7 @@ describe('A FeatureMap Card Visualization', function() {
     var $q = $injector.get('$q');
     var mockCardDataService = {
       getDefaultFeatureExtent: sinon.stub(),
-      getFeatureExtent: _.constant($q.when([]))
+      getFeatureExtent: sinon.stub().returns($q.when(MIDDLE_ZOOM_EXTENT))
     };
     _$provide.value('CardDataService', mockCardDataService);
     testHelpers.mockDirective(_$provide, 'featureMap');
@@ -95,18 +108,33 @@ describe('A FeatureMap Card Visualization', function() {
   });
 
   describe('explicit extent', function() {
-    it('should use an explicitly specified extent if one is set', function() {
-      var customExtent = {
-        "southwest": [41.87537684702812, -87.6587963104248],
-        "northeast": [41.89026600256849, -87.5951099395752]
-      };
-      CardDataService.getDefaultFeatureExtent.returns(customExtent);
+    beforeEach(function() {
       dataset.defineObservableProperty('permissions', { isPublic: true });
+    });
+
+    it('should use an explicitly specified extent if one is set and it does not contain the server-provided extent', function() {
+      var customExtent = ZOOMED_IN_EXTENT;
+      CardDataService.getDefaultFeatureExtent.returns(customExtent);
       var visualization = buildElement({
         dataset: dataset
       });
       expect(visualization.element.find('feature-map').scope().featureExtent).to.eql(customExtent);
     });
+
+    it('should use the server-provided extent if the explicitly set extent contains the server-provided extent', function() {
+      CardDataService.getDefaultFeatureExtent.returns(ZOOMED_OUT_EXTENT);
+      var visualization = buildElement({
+        dataset: dataset
+      });
+      expect(visualization.element.find('feature-map').scope().featureExtent).to.eql(MIDDLE_ZOOM_EXTENT);
+    });
+
+    it('should use the server-provided extent if no explicit extent is set', function() {
+      var visualization = buildElement({
+        dataset: dataset
+      });
+      expect(visualization.element.find('feature-map').scope().featureExtent).to.eql(MIDDLE_ZOOM_EXTENT);
+    })
   });
 
   describe('tileserver sharding', function() {

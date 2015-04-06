@@ -5,7 +5,8 @@
     ServerConfig,
     AngularRxExtensions,
     CardDataService,
-    VectorTileDataService
+    VectorTileDataService,
+    LeafletHelpersService
   ) {
 
     return {
@@ -59,12 +60,42 @@
           flatMap(function(fieldNameDataset) {
             var fieldName = fieldNameDataset.fieldName;
             var dataset = fieldNameDataset.dataset;
-            var defaultFeatureExtent = CardDataService.getDefaultFeatureExtent();
+            return Rx.Observable.
+              fromPromise(CardDataService.getFeatureExtent(fieldName, dataset.id));
+          });
+
+        var synchronizedFeatureExtentDataSequence = featureExtentDataSequence.
+          combineLatest(
+          Rx.Observable.returnValue(CardDataService.getDefaultFeatureExtent()),
+          function(featureExtent, defaultFeatureExtent) {
             if (defaultFeatureExtent) {
-              return Rx.Observable.returnValue(defaultFeatureExtent);
+              var defaultBounds;
+              var featureBounds;
+              try {
+                defaultBounds = LeafletHelpersService.buildBounds(defaultFeatureExtent);
+              } catch(error) {
+                $log.warn(
+                  'Unable to build bounds from defaultFeatureExtent: \n{0}'.
+                    format(defaultFeatureExtent)
+                );
+                return featureExtent;
+              }
+              try {
+                featureBounds = LeafletHelpersService.buildBounds(featureExtent);
+              } catch(error) {
+                $log.warn(
+                  'Unable to build bounds from featureExtent: \n{0}'.
+                    format(featureExtent)
+                );
+                return featureExtent;
+              }
+              if (defaultBounds.contains(featureBounds)) {
+                return featureExtent;
+              } else {
+                return defaultFeatureExtent;
+              }
             } else {
-              return Rx.Observable.
-                fromPromise(CardDataService.getFeatureExtent(fieldName, dataset.id));
+              return featureExtent;
             }
           });
 
@@ -77,7 +108,7 @@
           model.observeOnLatest('baseLayerUrl')
         );
 
-        scope.bindObservable('featureExtent', featureExtentDataSequence);
+        scope.bindObservable('featureExtent', synchronizedFeatureExtentDataSequence);
 
         var datasetIsPrivate = datasetPermissions.
           map(function(permissions) {

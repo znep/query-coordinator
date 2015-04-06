@@ -301,7 +301,7 @@
         var defaultFeatureExtentString = ServerConfig.get('featureMapDefaultExtent');
         if (_.isPresent(defaultFeatureExtentString)) {
           try {
-            defaultFeatureExtent = JSON.parse(defaultFeatureExtentString.replace(/(^'|'$)/g, ''));
+            defaultFeatureExtent = JSON.parse(_.trim(defaultFeatureExtentString, "'"));
           } catch (error) {
             $log.warn(
               'Unable to parse featureMapDefaultExtent to JSON: {0}\n{1}'.

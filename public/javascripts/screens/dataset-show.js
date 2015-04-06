@@ -809,11 +809,11 @@ $(function()
 
         if (blist.dataset.newBackend) {
           if (canUpdateMetadata() || blist.feature_flags.exit_tech_preview) {
-            anchor.attr('href', '/view/bootstrap/' + blist.dataset.id);
+            anchor.attr('href', '/view/bootstrap/{0}'.format(blist.dataset.id));
             newUxLink.appendTo('body');
           }
         } else {
-          $.get('/api/migrations/' + blist.dataset.id).done(function(migration) {
+          $.get('/api/migrations/{0}'.format(blist.dataset.id)).done(function(migration) {
             if (!_.isNull(migration.nbeId)) {
               var datasetMetadataUrl = '/dataset_metadata/{0}.json';
               // Kratos shapefiles apparently are datasets, but have no dataset metadata, which we
@@ -831,10 +831,10 @@ $(function()
                 },
                 success: function(metadata) {
                   if (!_.isNull(metadata.defaultPage) && blist.feature_flags.exit_tech_preview) {
-                    anchor.attr('href', '/view/' + metadata.defaultPage);
+                    anchor.attr('href', '/view/{0}'.format(metadata.defaultPage));
                     newUxLink.appendTo('body');
                   } else if (canUpdateMetadata()) {
-                    anchor.attr('href', '/view/bootstrap/' + migration.nbeId);
+                    anchor.attr('href', '/view/bootstrap/{0}'.format(migration.nbeId));
                     newUxLink.appendTo('body');
                   }
                 }

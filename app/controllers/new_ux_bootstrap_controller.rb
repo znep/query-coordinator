@@ -286,23 +286,36 @@ class NewUxBootstrapController < ActionController::Base
     columns_to_avoid.include?(field_name.downcase)
   end
 
-  def is_system_column?(field_name)
-    Phidippides::SYSTEM_COLUMN_ID_REGEX.match(field_name)
+  def system_column?(field_name)
+    (field_name =~ Phidippides::SYSTEM_COLUMN_ID_REGEX) != nil
   end
 
   # CORE-4645 OBE datasets can have columns that have sub-columns. When converted to the NBE, these
   # sub-columns become their own columns. These generally don't have meaning in isolation, so don't
   # create a card for them.
-  def probably_used_to_be_a_subcolumn_in_the_old_backend_dataset?(column)
+  def filter_out_subcolumns(columns)
     # The OBE->NBE conversion doesn't add any metadata to allow us to differentiate sub-columns,
     # except that it has a naming convention of "Parent Column Name (Sub-column Name)"
-    column[:name] =~ /\w +\(.+\)/
+    column_names = Set.new(columns.map { |field_name, column| column[:name] })
+    columns.select do |field_name, column|
+      parent_column = column[:name].sub(/(\w) +\(.+\)$/, '\1')
+      # Either this column wasn't named according to the sub-column naming convention at all, or
+      parent_column == column[:name] ||
+        # the inferred parent column isn't actually a column that exists.
+        column_names.exclude?(parent_column)
+    end
   end
 
-  def is_probably_an_uninteresting_column?(field_name, column)
+  def non_bootstrappable_column?(field_name, column)
     field_name_ignored_for_bootstrap?(field_name) ||
-      is_system_column?(field_name) ||
-      probably_used_to_be_a_subcolumn_in_the_old_backend_dataset?(column)
+      system_column?(field_name)
+  end
+
+  def interesting_columns(columns)
+    columns = columns.reject do |field_name, column|
+      non_bootstrappable_column?(field_name, column)
+    end
+    filter_out_subcolumns(columns)
   end
 
   def generate_cards_from_dataset_metadata_columns(columns)
@@ -329,21 +342,19 @@ class NewUxBootstrapController < ActionController::Base
         end
       end.compact
     else
-      columns.map do |field_name, column|
-        unless is_probably_an_uninteresting_column?(field_name, column)
-          card_type = card_type_for(column, :fred, cached_dataset_size)
-          if card_type
-            card = page_metadata_manager.merge_new_card_data_with_default(
-              field_name,
-              card_type
-            )
+      interesting_columns(columns).map do |field_name, column|
+        card_type = card_type_for(column, :fred, cached_dataset_size)
+        if card_type
+          card = page_metadata_manager.merge_new_card_data_with_default(
+            field_name,
+            card_type
+          )
 
-            if added_card_types.add?(card_type)
-              card
-            else
-              skipped_cards_by_type[card_type] << card
-              nil
-            end
+          if added_card_types.add?(card_type)
+            card
+          else
+            skipped_cards_by_type[card_type] << card
+            nil
           end
         end
       end.compact

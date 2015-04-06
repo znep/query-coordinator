@@ -48,7 +48,7 @@
     "point_city": {
       "name": "Point (city)",
       "fred": "text",
-      "description": "",
+      "description": "sub-column card from OBE",
       "cardinality": 1,
       "physicalDatatype": "text",
       "defaultCardType": "search",
@@ -118,74 +118,79 @@
       "cardinality": 36
     },
     "single1": {
-      "name": "single1",
+      "name": "single1 (not a subcolumn)",
       "description": "column description",
       "fred": "amount",
       "physicalDatatype": "invalid physical datatype",
       "cardinality": 34
     },
     "single2": {
-      "name": "single2",
+      "name": "single2 (not a subcolumn)",
       "description": "column description",
       "fred": "category",
       "physicalDatatype": "boolean",
       "cardinality": 36
     },
     "single3": {
-      "name": "single3",
+      "name": "single3 (not a subcolumn)",
       "description": "column description",
       "fred": "identifier",
       "physicalDatatype": "fixed_timestamp",
       "cardinality": 34
     },
     "single4": {
-      "name": "single4",
+      "name": "single4 (not a subcolumn)",
       "description": "column description",
       "fred": "identifier",
       "physicalDatatype": "money",
       "cardinality": 36
     },
     "multi1": {
-      "name": "multi1",
+      "name": "multi1 (not a subcolumn)",
       "description": "column description",
       "fred": "category",
       "physicalDatatype": "number",
       "cardinality": 34
     },
     "multi2": {
-      "name": "multi2",
+      "name": "multi2 (not a subcolumn)",
       "description": "column description",
       "fred": "category",
       "physicalDatatype": "text",
       "cardinality": 36
     },
     "multi3": {
-      "name": "multi3",
+      "name": "multi3 (not a subcolumn)",
       "description": "column description",
       "fred": "identifier",
       "physicalDatatype": "number",
       "cardinality": 34
     },
     "multi4": {
-      "name": "multi4",
+      "name": "multi4 (not a subcolumn)",
       "description": "column description",
       "fred": "identifier",
       "physicalDatatype": "text",
       "cardinality": 36
     },
     "multi5": {
-      "name": "multi5",
+      "name": "multi5 (not a subcolumn)",
       "description": "column description",
       "fred": "name",
       "physicalDatatype": "number",
       "cardinality": 34
     },
     "multi6": {
-      "name": "multi6",
+      "name": "multi6 (not a subcolumn)",
       "description": "column description",
       "fred": "name",
       "physicalDatatype": "text",
       "cardinality": 36
+    },
+    "point": {
+      "name" : "Point",
+      "physicalDatatype" : "text",
+      "description": ""
     }
   }
 }

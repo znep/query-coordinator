@@ -8,7 +8,7 @@
   // Instead, since hyphens are supposed to be rewritten to underscores internally anyway,
   // we can avoid the quoting/truncation issue by rewriting hyphens to underscores before
   // making the request from the front-end.
-  function CardDataService($q, http, Assert, DeveloperOverrides, SoqlHelpers, ServerConfig, $log, Constants) {
+  function CardDataService($q, http, JJV, Assert, DeveloperOverrides, SoqlHelpers, ServerConfig, $log, Constants) {
 
     // Note this does not include the time portion ('23:59:59') on purpose since SoQL will
     // complain about a type mismatch if the column happens to be a date but not a datetime.
@@ -29,6 +29,23 @@
 
       return '{0}({1})'.format(aggregationFunction, aggregationOperand);
     }
+
+    JJV.addSchema('extent', {
+      type: 'object',
+      properties: {
+        southwest: {
+          type: 'array',
+          minItems: 2,
+          maxItems: 2
+        },
+        northeast: {
+          type: 'array',
+          minItems: 2,
+          maxItems: 2
+        }
+      },
+      required: ['southwest', 'northeast']
+    });
 
     var serviceDefinition = {
       getData: function(fieldName, datasetId, whereClauseFragment, aggregationClauseData, options) {
@@ -277,6 +294,31 @@
 
       requesterLabel: function() {
         return 'card-data-service';
+      },
+
+      getDefaultFeatureExtent: function() {
+        var defaultFeatureExtent;
+        var defaultFeatureExtentString = ServerConfig.get('featureMapDefaultExtent');
+        if (_.isPresent(defaultFeatureExtentString)) {
+          try {
+            defaultFeatureExtent = JSON.parse(defaultFeatureExtentString.replace(/(^'|'$)/g, ''));
+          } catch (error) {
+            $log.warn(
+              'Unable to parse featureMapDefaultExtent to JSON: {0}\n{1}'.
+                format(defaultFeatureExtentString, error)
+            );
+            return;
+          }
+          var errors = JJV.validate('extent', defaultFeatureExtent);
+          if (errors) {
+            $log.warn(
+              'Unable to validate featureMapDefaultExtent to JSON: {0}\n{1}'.
+                format(defaultFeatureExtentString, JSON.stringify(errors))
+            );
+            return;
+          }
+        }
+        return defaultFeatureExtent;
       },
 
       getFeatureExtent: function(fieldName, datasetId) {

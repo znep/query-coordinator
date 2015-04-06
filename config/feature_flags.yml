@@ -143,3 +143,6 @@ current_dataset_metadata_version:
 current_page_metadata_version:
   description: The current version of page metadata that the app should read and write.
   defaultValue: 1
+feature_map_default_extent:
+  description: "The site-wide default extent for feature/point maps. Should be a single-quoted JSON object. Ex: '{\"southwest\":[41.681944,-87.827778],\"northeast\":[42.081944,-87.427778]}'"
+  defaultValue: ''

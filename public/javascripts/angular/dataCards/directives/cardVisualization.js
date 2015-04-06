@@ -1,5 +1,5 @@
 (function() {
-  'use stict';
+  'use strict';
 
   function cardVisualization(AngularRxExtensions, ServerConfig, CardTypeMapping) {
 

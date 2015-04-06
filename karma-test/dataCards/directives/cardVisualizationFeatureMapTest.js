@@ -1,11 +1,12 @@
-'use strict';
-
 describe('A FeatureMap Card Visualization', function() {
+  'use strict';
+
   var testHelpers;
   var $rootScope;
   var Model;
   var _$provide;
   var VectorTileDataService;
+  var CardDataService;
   var dataset;
 
   beforeEach(module('/angular_templates/dataCards/cardVisualizationFeatureMap.html'));
@@ -21,11 +22,13 @@ describe('A FeatureMap Card Visualization', function() {
     Model = $injector.get('Model');
     var $q = $injector.get('$q');
     var mockCardDataService = {
-      getFeatureExtent: function() { return $q.when([]); }
+      getDefaultFeatureExtent: sinon.stub(),
+      getFeatureExtent: _.constant($q.when([]))
     };
     _$provide.value('CardDataService', mockCardDataService);
     testHelpers.mockDirective(_$provide, 'featureMap');
     VectorTileDataService = $injector.get('VectorTileDataService');
+    CardDataService = $injector.get('CardDataService');
   }));
 
   afterEach(function(){
@@ -89,6 +92,21 @@ describe('A FeatureMap Card Visualization', function() {
     expect(VectorTileDataService.buildTileGetter).to.have.not.been.called;
     elementInfo.pageModel.set('dataset', dataset);
     expect(VectorTileDataService.buildTileGetter).to.have.been.called;
+  });
+
+  describe('explicit extent', function() {
+    it('should use an explicitly specified extent if one is set', function() {
+      var customExtent = {
+        "southwest": [41.87537684702812, -87.6587963104248],
+        "northeast": [41.89026600256849, -87.5951099395752]
+      };
+      CardDataService.getDefaultFeatureExtent.returns(customExtent);
+      dataset.defineObservableProperty('permissions', { isPublic: true });
+      var visualization = buildElement({
+        dataset: dataset
+      });
+      expect(visualization.element.find('feature-map').scope().featureExtent).to.eql(customExtent);
+    });
   });
 
   describe('tileserver sharding', function() {

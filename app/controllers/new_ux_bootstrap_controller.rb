@@ -296,13 +296,33 @@ class NewUxBootstrapController < ActionController::Base
   def filter_out_subcolumns(columns)
     # The OBE->NBE conversion doesn't add any metadata to allow us to differentiate sub-columns,
     # except that it has a naming convention of "Parent Column Name (Sub-column Name)"
-    column_names = Set.new(columns.map { |field_name, column| column[:name] })
-    columns.select do |field_name, column|
+
+    # Create a mapping from the name, to all field_names that have that name
+    field_name_by_name = Hash.new { |hash, key| hash[key] = [] }
+    columns.each do |field_name, column|
+      field_name_by_name[column[:name]] << field_name
+    end
+
+    # Reject everything that looks like a subcolumn
+    columns.reject do |field_name, column|
       parent_column = column[:name].sub(/(\w) +\(.+\)$/, '\1')
-      # Either this column wasn't named according to the sub-column naming convention at all, or
-      parent_column == column[:name] ||
-        # the inferred parent column isn't actually a column that exists.
-        column_names.exclude?(parent_column)
+      if parent_column == column[:name]
+        # This column wasn't named according to the sub-column naming convention at all, so is not a
+        # subcolumn.
+        false
+      else
+        parent_field_names = field_name_by_name[parent_column]
+        if parent_field_names
+          # There are columns that have the same name as this one, sans parenthetical.
+          # If its field_name naming convention also matches, infer it's a subcolumn.
+          parent_field_names.any? do |parent_field_name|
+            parent_field_name + '_' == field_name[0..parent_field_name.length]
+          end
+        else
+          # the inferred parent column isn't actually a column that exists.
+          false
+        end
+      end
     end
   end
 

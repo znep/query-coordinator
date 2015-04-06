@@ -118,7 +118,7 @@
       "cardinality": 36
     },
     "single1": {
-      "name": "single1 (not a subcolumn)",
+      "name": "RedHerring (not a subcolumn)",
       "description": "column description",
       "fred": "amount",
       "physicalDatatype": "invalid physical datatype",
@@ -190,7 +190,12 @@
     "point": {
       "name" : "Point",
       "physicalDatatype" : "text",
-      "description": ""
+      "description": "This is the parent column to any column with name: 'Point (something else)', AND field_name 'point_*'"
+    },
+    "redherring_parent_column": {
+      "name" : "RedHerring",
+      "physicalDatatype" : "text",
+      "description": "This tests to make sure that columns with names like 'OtherColumn (parenthetical)' - where 'OtherColumn' exists - are not filtered out, unless their fieldName ALSO conforms to the subcolumn naming convention. In this case, it doesn't."
     }
   }
 }

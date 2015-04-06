@@ -826,9 +826,6 @@ $(function()
               }
               $.ajax({
                 url: datasetMetadataUrl.format(migration.nbeId),
-                headers: {
-                  'X-Requested-With': ' '
-                },
                 success: function(metadata) {
                   if (!_.isNull(metadata.defaultPage) && blist.feature_flags.exit_tech_preview) {
                     anchor.attr('href', '/view/{0}'.format(metadata.defaultPage));

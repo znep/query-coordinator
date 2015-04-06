@@ -168,49 +168,6 @@ class Phidippides < SocrataHttp
     end
   end
 
-  def migrate_dataset_metadata_to_v1(dataset_metadata)
-    unless metadata_transition_phase_0?
-
-      dataset_id = dataset_metadata.try(:[], :body).try(:[], :id)
-
-      unless dataset_id.present?
-        error_message = "Could not migrate dataset to v1: could not " \
-          "determine dataset_id (dataset_metadata: #{dataset_metadata.inspect})."
-        Airbrake.notify(
-          :error_class => 'DatasetMetadataMigrationError',
-          :error_message => error_message
-        )
-        Rails.logger.error(error_message)
-        return
-      end
-
-      pages_for_dataset = fetch_pages_for_dataset(dataset_id)
-
-      begin
-        first_page_id = pages_for_dataset.try(:[], :body).try(:[], :publisher).try(:first).try(:[], :pageId)
-      rescue TypeError => error
-        # This TypeError will be recorded by the error condition below in which
-        # first_page_id.present? is falsey.
-        first_page_id = nil
-      end
-
-      if first_page_id.present?
-        dataset_metadata[:body][:defaultPage] = first_page_id
-        update_dataset_metadata(dataset_metadata[:body].to_json)
-      else
-        error_message = "Could not migrate dataset to v1: no valid " \
-          "publisher pageId found (dataset_metadata: " \
-          "#{dataset_metadata.inspect} pages_for_dataset: " \
-          "#{pages_for_dataset.inspect})."
-        Airbrake.notify(
-          :error_class => 'DatasetMetadataMigrationError',
-          :error_message => error_message
-        )
-        Rails.logger.error(error_message)
-      end
-    end
-  end
-
   def set_default_and_available_card_types_to_columns!(dataset_metadata)
     if metadata_transition_phase_3?
 

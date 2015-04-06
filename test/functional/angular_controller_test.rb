@@ -25,7 +25,6 @@ class AngularControllerTest < ActionController::TestCase
         :status => '200',
         :body => v1_pages_for_dataset
       },
-      :migrate_dataset_metadata_to_v1 => {},
       :set_default_and_available_card_types_to_columns! => {}
     )
     stub_feature_flags_with(:use_catalog_lens_permissions, true)
@@ -59,7 +58,6 @@ class AngularControllerTest < ActionController::TestCase
           :status => '200',
           :body => v1_pages_for_dataset
         },
-        :migrate_dataset_metadata_to_v1 => {},
         :set_default_and_available_card_types_to_columns! => {}
       )
       stub_feature_flags_with(:use_catalog_lens_permissions, true)
@@ -123,7 +121,6 @@ class AngularControllerTest < ActionController::TestCase
           :status => '200',
           :body => v1_pages_for_dataset
         },
-        :migrate_dataset_metadata_to_v1 => {},
         :set_default_and_available_card_types_to_columns! => {}
       )
       stub_feature_flags_with(:use_catalog_lens_permissions, true)
@@ -185,7 +182,6 @@ class AngularControllerTest < ActionController::TestCase
           :status => '200',
           :body => v1_pages_for_dataset
         },
-        :migrate_dataset_metadata_to_v1 => {},
         :set_default_and_available_card_types_to_columns! => {}
       )
     end

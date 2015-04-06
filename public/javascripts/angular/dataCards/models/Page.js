@@ -2,7 +2,7 @@
   'use strict';
   var DEFAULT_ROW_DISPLAY_UNIT = 'row';
 
-  function PageModelFactory($q, ServerConfig, Card, Model, PageDataService) {
+  function PageModelFactory(ServerConfig, Card, Model, $log) {
 
     return Model.extend({
       // Builds a page model from either the page ID (given as a string),
@@ -25,9 +25,20 @@
 
         this._super();
 
+        function getDefaultPageMetadataVersion() {
+          var currentPageMetadataVersion = parseInt(ServerConfig.get('currentPageMetadataVersion'), 10);
+          if (_.isNaN(currentPageMetadataVersion)) {
+            currentPageMetadataVersion = 1;
+            $log.warn("currentPageMetadataVersion could not be parsed as an integer; falling back to '1'");
+          }
+          return currentPageMetadataVersion;
+        }
+
         var self = this;
         this.id = pageMetadata.pageId;
-        this.version = pageMetadata.version;
+        this.version = (_.isNumber(pageMetadata.version)) ?
+          pageMetadata.version :
+          getDefaultPageMetadataVersion();
 
         var fields = [
           'datasetId',

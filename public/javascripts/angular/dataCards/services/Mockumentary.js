@@ -3,7 +3,7 @@
 
   function Mockumentary(Page, DatasetV1) {
 
-    function createPage(pageOptions, datasetOptions) {
+    function createPageMetadata(pageOptions) {
 
       var minimalPageMetadata = {
         cards: [],
@@ -19,12 +19,17 @@
         version: 1
       };
 
-      var pageMetadata = $.extend(true, minimalPageMetadata, pageOptions);
+      return $.extend(true, minimalPageMetadata, pageOptions);
+    }
+
+    function createPage(pageOptions, datasetOptions) {
+
+      var pageMetadata = createPageMetadata(pageOptions);
 
       return new Page(pageMetadata, createDataset(datasetOptions));
     }
 
-    function createDataset(datasetOptions) {
+    function createDatasetMetadata(datasetOptions) {
 
       var minimalDatasetMetadata = {
         id: 'asdf-fdsa',
@@ -65,13 +70,20 @@
         version: 1
       };
 
-      var datasetMetadata = $.extend(true, minimalDatasetMetadata, datasetOptions);
+      return $.extend(true, minimalDatasetMetadata, datasetOptions);
+    }
+
+    function createDataset(datasetOptions) {
+
+      var datasetMetadata = createDatasetMetadata(datasetOptions);
 
       return new DatasetV1(datasetMetadata);
     }
 
     return {
+      createPageMetadata: createPageMetadata,
       createPage: createPage,
+      createDatasetMetadata: createDatasetMetadata,
       createDataset: createDataset
     };
   }

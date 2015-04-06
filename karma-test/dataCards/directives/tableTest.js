@@ -12,7 +12,8 @@ describe('table directive', function() {
     columnCount = 0;
 
     _.each(fixtureMetadata.testColumnDetailsAsTableWantsThem, function(column) {
-      column.dataset = { version: '1' };
+      // TODO: Version as a string here is questionable
+      column.dataset = { version: '1', extractHumanReadableColumnName: _.property('name') };
       if (column.fieldName[0].match(/[a-zA-Z0-9]/g)) {
         outerScope.columnDetails.push(column);
         columnCount += 1;
@@ -84,6 +85,7 @@ describe('table directive', function() {
   var AngularRxExtensions;
   var timeout;
   var testHelpers;
+  var SoqlHelpers;
   var $rootScope;
   var outerScope;
   var $q;
@@ -121,6 +123,7 @@ describe('table directive', function() {
       AngularRxExtensions = $injector.get('AngularRxExtensions');
       timeout = $injector.get('$timeout');
       testHelpers = $injector.get('testHelpers');
+      SoqlHelpers = $injector.get('SoqlHelpers');
       $rootScope = $injector.get('$rootScope');
       outerScope = $rootScope.$new();
       $q = $injector.get('$q');
@@ -314,7 +317,7 @@ describe('table directive', function() {
         $rootScope.$digest();
 
         //NOTE: this assumes the column defaults to a DESC sort. Not always true, see story 5.04 for details.
-        expect(lastSort).to.equal(columnMeta.fieldName + ' DESC');
+        expect(lastSort).to.equal(SoqlHelpers.formatFieldName(columnMeta.fieldName) + ' DESC');
         expect(el.find('.th').length).to.equal(columnCount);
         expect(el.find('.row-block .table-row').length).to.equal(rowCount);
         expect(el.find('.row-block .cell').length).to.equal(columnCount * rowCount);
@@ -326,7 +329,7 @@ describe('table directive', function() {
         applicatorFunction(el);
         $rootScope.$digest();
 
-        expect(lastSort).to.equal(columnMeta.fieldName + ' ASC');
+        expect(lastSort).to.equal(SoqlHelpers.formatFieldName(columnMeta.fieldName) + ' ASC');
         expect(el.find('.th').length).to.equal(columnCount);
         expect(el.find('.row-block .table-row').length).to.equal(rowCount);
         expect(el.find('.row-block .cell').length).to.equal(columnCount * rowCount);
@@ -337,10 +340,10 @@ describe('table directive', function() {
 
       it('should only reflect the first value of the default sort', function() {
         var el = getSortableTable();
-        var defaultSortColumnName = el.scope().defaultSortColumnName;
+        var defaultSortColumnName = SoqlHelpers.formatFieldName(el.scope().defaultSortColumnName);
         expect(lastSort).to.equal(defaultSortColumnName + ' ASC');
 
-        el.scope().defaultSortColumnName = 'bad';
+        el.scope().defaultSortColumnName = SoqlHelpers.formatFieldName('bad');
         $rootScope.$digest();
         expect(lastSort).to.equal(defaultSortColumnName + ' ASC'); // shouldn't change
       });

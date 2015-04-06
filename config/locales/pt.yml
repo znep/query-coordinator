@@ -2113,7 +2113,6 @@ pt:
         remove_confirm: Tem a certeza que quer remover esta vista?
         unpublished_alert: Este conjunto de dados ainda não foi publicado, para assim lhe permitir fazer quaisquer alterações necessárias antes de o tornar disponível para todos. Não será visível até que publique este conjunto de dados.
       subscribe:
-        google_reader: Adicionar ao Google Reader
         intro_html: '<strong>Para subscrever ao <span class="datasetName">%{name}</span> conjunto de dados por um leitor RSS</strong>, utilize uma das seguintes hiperligações:'
         rss: Descarregar como RSS
         rss_program: Abrir num programa externo

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function ClearableInput($document, AngularRxExtensions, WindowState) {
+  function ClearableInput(AngularRxExtensions, WindowState) {
     return {
       restrict: 'E',
       scope: { 'search': '=', 'placeholderValue': '@placeholder', 'inputId': '@' },
@@ -59,7 +59,7 @@
           Rx.Observable.fromEvent(element.find('input'), 'click')
         );
         $scope.emitEventsFromObservable(
-          'clearbleInput:blur',
+          'clearableInput:blur',
           Rx.Observable.fromEvent(element.find('input'), 'blur')
         );
         $scope.bindObservable('placeholder', placeholderObservable);

@@ -2116,7 +2116,6 @@ es:
         remove_confirm: "¿Está seguro de que desea eliminar esta vista?"
         unpublished_alert: Este conjunto de datos no está publicado todavía para permitirle hacer cualquier cambio necesario antes de hacerlo disponible a todo el mundo. No será visible hasta que usted no publique este conjunto de datos.
       subscribe:
-        google_reader: Añadir a Google Reader
         intro_html: '<strong>Para suscribirse al <span class="datasetName">%{name}</span>conjunto de datos vía un lector RSS </strong>, usar uno de los siguientes enlaces:'
         rss: 'Descargar como RSS '
         rss_program: Abrir en un programa externo

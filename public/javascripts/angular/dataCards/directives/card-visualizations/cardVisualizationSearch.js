@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CardVisualizationSearch(AngularRxExtensions, CardDataService, ServerConfig) {
+  function CardVisualizationSearch(AngularRxExtensions, CardDataService, ServerConfig, SoqlHelpers) {
 
     function pluckEventArg(val) {
       return val.args[0];
@@ -130,10 +130,10 @@
                     if (_.isNaN(numericSearchValue)) {
                       invalidSearchInputSubject.onNext(true);
                     } else {
-                      whereClause = '{0} = {1}'.format(fieldName, numericSearchValue);
+                      whereClause = '{0} = {1}'.format(SoqlHelpers.formatFieldName(fieldName), numericSearchValue);
                     }
                   } else {
-                    whereClause = '{0} = "{1}"'.format(fieldName, searchValue);
+                    whereClause = '{0} = "{1}"'.format(SoqlHelpers.formatFieldName(fieldName), searchValue);
                   }
                   return _.isPresent(externalWhereClause) ?
                     '{0} AND {1}'.format(externalWhereClause, whereClause) :
@@ -186,30 +186,37 @@
           filter(function() {
             return _.isPresent($scope.searchValue);
           });
+
         var userActionsWhichShouldShowSuggestionPanelObservable = Rx.Observable.merge(
+          hasInputObservable,
           userActionKeypressObservable,
           userActionClickObservable
         );
 
-        var userActionsWhichShouldHideSuggestionPanelObservable = Rx.Observable.merge(
-          submitValueObservable,
-          hasInputObservable.filter(_.negate),
-          $scope.eventToObservable('clearbleInput:blur').filter(function(event) {
-            // Only hide the suggestion panel if the blur target is not a suggestion.
-            var newFocusTarget = event.args[0].relatedTarget;
-            if (_.isPresent(newFocusTarget)) {
-              var isNewFocusTargetWithinSuggestions = newFocusTarget.closest(element).length > 0;
-              return !isNewFocusTargetWithinSuggestions;
-            } else {
-              return false;
-            }
-          }),
-          Rx.Observable.fromEvent($(document), 'click').takeUntil($scope.observeDestroy(element)).
+        var clicksOutsideOfSuggestionUIObservable = Rx.Observable.fromEvent($(document), 'click').
+          takeUntil($scope.observeDestroy(element)).
           filter(function(event) {
             var isEventFromBeyondSuggestionToolPanel = element.find('suggestion-tool-panel').find(event.target).length === 0;
             var isEventFromOutsideTheSearchInputField = element.find('clearable-input').find(event.target).length === 0;
             return isEventFromBeyondSuggestionToolPanel && isEventFromOutsideTheSearchInputField;
-          })
+          });
+
+        var clearableInputBlurTargetNotSuggestionObservable = $scope.eventToObservable('clearableInput:blur')
+          .filter(function(event) {
+            // Only hide the suggestion panel if the blur target is not a suggestion.
+            var newFocusTarget = event.args[0].relatedTarget;
+            if (_.isPresent(newFocusTarget)) {
+              return $(newFocusTarget).closest(element).length > 0;
+            } else {
+              return false;
+            }
+          });
+
+        var userActionsWhichShouldHideSuggestionPanelObservable = Rx.Observable.merge(
+          submitValueObservable,
+          hasInputObservable.filter(_.negate),
+          clearableInputBlurTargetNotSuggestionObservable,
+          clicksOutsideOfSuggestionUIObservable
         );
 
         var shouldShowSuggestionPanelObservable;
@@ -218,7 +225,7 @@
           shouldShowSuggestionPanelObservable = Rx.Observable.merge(
             userActionsWhichShouldShowSuggestionPanelObservable.map(_.constant(true)),
             userActionsWhichShouldHideSuggestionPanelObservable.map(_.constant(false))
-          );
+          ).distinctUntilChanged();
         } else {
           shouldShowSuggestionPanelObservable = Rx.Observable.returnValue(false);
         }

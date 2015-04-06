@@ -276,15 +276,16 @@
             <tbody>
               <%- start_index = (opts[:page].to_i - 1) * opts[:limit].to_i + 1 -%>
               <%- opts[:view_results].each_with_index do |v, i| -%>
-                <%- view_url = view_url(v)
-                    begin
-                      if !v.merged_metadata['custom_fields'][opts[:url_override].first][opts[:url_override].last].blank?
-                        view_url = v.merged_metadata['custom_fields'][opts[:url_override].first][opts[:url_override].last]
-                      end
-                    rescue
-                      # Chomp Chomp
+                <%-
+                  view_url = view_url(v)
+                  begin
+                    if !v.merged_metadata['custom_fields'][opts[:url_override].first][opts[:url_override].last].blank?
+                      view_url = v.merged_metadata['custom_fields'][opts[:url_override].first][opts[:url_override].last]
                     end
-                  -%>
+                  rescue
+                    # Chomp Chomp
+                  end
+                -%>
                 <tr itemscope="itemscope" itemtype="http://schema.org/Dataset" class="item collapsed <%= v.federated? ? v.domainCName.gsub(/\./, "_") : "" %><%= v.federated? ? " federated" : " local" %><%=
                   v.rowResults.present? ? ' withRows' : '' %>" data-viewId="<%= v.id %>">
                   <%- if opts[:grid_items][:index] -%>

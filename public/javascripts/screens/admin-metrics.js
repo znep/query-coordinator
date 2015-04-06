@@ -18,8 +18,19 @@ $(function()
                               {method: 'browser-firefox', label: 'Firefox', options: { stacking: null, type: 'line' }},
                               {method: 'browser-safari', label: 'Safari', options: { stacking: null, type: 'line' }},
                               {method: 'browser-ie', label: 'IE', options: { stacking: null, type: 'line' }},
-                              {method: 'browser-other', label: 'Other', options: { stacking: null, type: 'line' }}
-			     ]},
+                              {method: 'browser-other', label: 'Other', options: { stacking: null, type: 'line' }}]},
+                    {text: 'Page Types',
+                    series: [
+                      {method: 'js-page-view-homepage', label: 'Homepage', options: { stacking: null, type: 'line' }},
+                      {method: 'js-page-view-dataset', label: 'Dataset', options: { stacking: null, type: 'line' }},
+                      {method: 'js-page-view-dataslate', label: 'Dataslate', options: { stacking: null, type: 'line' }},
+                      {method: 'js-page-view-admin', label: 'Admin', options: { stacking: null, type: 'line' }},
+                      {method: 'js-page-view-profile', label: 'Profile', options: { stacking: null, type: 'line' }},
+                      {method: 'js-page-view-govstat', label: 'GovStat', options: { stacking: null, type: 'line' }},
+                      {method: 'js-page-view-browse', label: 'Catalog', options: { stacking: null, type: 'line' }},
+                      {method: 'js-page-view-newux', label: 'DataLens', options: { stacking: null, type: 'line' }},
+                      {method: 'js-page-view-other', label: 'Other', options: { stacking: null, type: 'line' }}
+                    ]},
                     {text: 'Dashboard Views',
                      series: [{method: 'govstat-dash-gets', label: 'Dashboard Requests'}],
                      enabled: blist.configuration.govStatMetricsEnabled || false},

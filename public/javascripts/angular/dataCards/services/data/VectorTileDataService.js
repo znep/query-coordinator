@@ -1,7 +1,6 @@
 (function() {
   'use strict';
 
-  var TILE_SIZE = 256 * 256;
   var lowercase = angular.lowercase;
   var forEach = angular.forEach;
 
@@ -150,6 +149,11 @@
      */
     function buildTileGetter(fieldName, datasetId, whereClause, isPrivateDataset) {
       var self = this;
+      var featuresPerTile = parseInt(ServerConfig.get('featureMapFeaturesPerTile'), 10);
+      if (_.isNaN(featuresPerTile) || featuresPerTile < 0 || featuresPerTile > (256 * 256)) {
+        featuresPerTile = 50000;
+      }
+
       /**
        * Given zoom level, x, and y values, returns an object with an XHR for the corresponding
        * vector tile, and a promise that wraps the completion of the XHR
@@ -162,7 +166,8 @@
        */
       function tileGetter(zoom, x, y) {
         var url = $.baseUrl('/tiles/{0}/{1}/{2}/{3}/{4}.pbf'.format(datasetId, fieldName, zoom, x, y));
-        url.searchParams.set('$limit', TILE_SIZE);
+
+        url.searchParams.set('$limit', featuresPerTile);
         if (_.isPresent(whereClause)) {
           url.searchParams.set('$where', whereClause);
         }

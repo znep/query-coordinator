@@ -22,7 +22,6 @@ module AngularHelper
   def angular_config
     {
       'statsdEnabled' => APP_CONFIG['statsd_enabled'],
-      'oduxCardTypeMapping' => CARD_TYPE_MAPPING,
       'assetRevisionKey' => asset_revision_key,
       'railsEnv' => Rails.env,
       'cname' => CurrentDomain.cname,

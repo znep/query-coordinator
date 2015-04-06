@@ -25,14 +25,12 @@
           scope.includeScreenshot = function(e) {
 
             var usersnapConfig = {
+              emailBox: true,
+              emailRequired: false,
+              commentBox: true,
+              commentRequired: true,
+              commentBoxPlaceholder: 'Please add comments here',
               customfields: [
-                {
-                  name: "email",
-                  type: "email",
-                  placeholder: "E-mail address",
-                  required: false,
-                  pos: 0,
-                },
                 {
                   name: "type",
                   type: "select",
@@ -57,13 +55,6 @@
                   ],
                   required: true,
                   pos: 1
-                },
-                {
-                  name: "comment",
-                  type: "textarea",
-                  placeholder: "Please add comments here",
-                  required: true,
-                  pos: 2,
                 }
               ]
             };

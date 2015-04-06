@@ -2135,7 +2135,6 @@ nl:
         remove_confirm: Weet u zeker dat u deze weergave wilt verwijderen?
         unpublished_alert: Deze dataset is nog niet gepubliceerd zodat u nog noodzakelijke wijzigingen kunt aanbrengen voordat het voor iedereen toegankelijk is. Het zal niet zichtbaar zijn totdat u deze dataset publiceert.
       subscribe:
-        google_reader: Voeg toe aan Google Reader
         intro_html: '<strong> Om u te abonneren op de <span class="datasetName">%{name}</span> dataset via een RSS reader</strong>, gebruikt u een van de volgende links:'
         rss: Downloaden als RSS
         rss_program: Open in extern programma

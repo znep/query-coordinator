@@ -21,13 +21,16 @@
 
         return http.get(url.href, config).then(
           function(response) {
-            return _.chain(response).
-              getPathOrElse('data.suggest.0.options', []).
-              pluck('text').
-              value();
+            var responseValues = _.getPathOrElse(response, 'data.options', []);
+            // TODO - Remove the following once spandex has been updated
+            if (responseValues.length === 0) {
+              responseValues = _.getPathOrElse(response, 'data.suggest.0.options', []);
+            }
+            return _.pluck(responseValues, 'text');
           },
           function(data) {
             $log.error(data);
+            return [];
           }
         );
       },
@@ -38,7 +41,6 @@
     };
 
     return serviceDefinition;
-
   }
 
   angular.

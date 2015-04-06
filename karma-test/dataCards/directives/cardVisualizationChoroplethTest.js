@@ -130,17 +130,16 @@ describe('A Choropleth Card Visualization', function() {
     var testUndefinedColumns = options.testUndefined || false;
     var datasetModel = options.datasetModel || false;
     var version = options.version || '1';
-
-
     var model = new Model();
+
     model.fieldName = 'ward';
     model.defineObservableProperty('cardSize', 1);
     model.defineObservableProperty('activeFilters', []);
     model.defineObservableProperty('baseLayerUrl', 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png');
 
     if (!datasetModel) {
-
       var columnsData;
+
       if (!testUndefinedColumns) {
         columnsData = {
           "points": {
@@ -189,7 +188,7 @@ describe('A Choropleth Card Visualization', function() {
 
     // The choropleth throttles its renderer.
     // Lie to it that enough time has passed, so it renders now.
-    fakeClock.tick(500);
+    fakeClock.tick(1000);
 
     return {
       element: el,
@@ -230,6 +229,7 @@ describe('A Choropleth Card Visualization', function() {
       // Second, test a feature on the second choropleth.
       feature = $('#choropleth-2 .choropleth-container path')[1];
 
+      expect(feature, 'Could not find second choropleth in DOM').to.be.ok;
       testHelpers.fireEvent(feature, 'mousemove');
 
       flyout = $('#uber-flyout');
@@ -245,8 +245,8 @@ describe('A Choropleth Card Visualization', function() {
 
   describe('when created with mock choropleth visualizations', function() {
 
-    // We don't need actual choropleth directives to be instantiated for any of the following tests,
-    // so just mock it out.
+    // We don't need actual choropleth directives to be instantiated for any of
+    // the following tests, so just mock it out.
     beforeEach(function() {
       testHelpers.mockDirective(provide, 'choropleth');
     });
@@ -343,7 +343,7 @@ describe('A Choropleth Card Visualization', function() {
         version: '0'
       });
 
-      expect(testSubject.scope.$$childHead.geojsonRegionsError).to.equal(true);
+      expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(true);
     });
 
     it("should not fail to extract the shapeFile from the column's 'computationStrategy' object if the metadataMigration is in phase 1 or 2", function() {
@@ -416,7 +416,7 @@ describe('A Choropleth Card Visualization', function() {
         datasetModel: createDatasetModelWithColumns(columns, '0'),
         version: '1'
       });
-      expect(testSubject.scope.$$childHead.geojsonRegionsError).to.equal(true);
+      expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(true);
 
       testHelpers.overrideMetadataMigrationPhase('2');
 
@@ -428,7 +428,7 @@ describe('A Choropleth Card Visualization', function() {
         version: '1'
       });
 
-      expect(testSubject.scope.$$childHead.geojsonRegionsError).to.equal(true);
+      expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(true);
     });
 
     it("should not use the source column to get the choropleth regions if the source_columns property does not exist in the column's 'computationStrategy' object and the metadataMigration is in phase 1 or 2", function() {
@@ -522,7 +522,7 @@ describe('A Choropleth Card Visualization', function() {
           version: '1'
         });
 
-        expect(testSubject.scope.$$childHead.geojsonRegionsError).to.equal(true);
+        expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(true);
       });
     });
 
@@ -572,7 +572,7 @@ describe('A Choropleth Card Visualization', function() {
       expect(CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledTwice).to.equal(true);
       expect(CardDataService.getChoroplethRegions.called).to.equal(false);
       expect(CardDataService.getChoroplethRegionsUsingSourceColumn.calledTwice).to.equal(true);
-      expect(testSubject.scope.$$childHead.geojsonRegionsError).to.equal(false);
+      expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(false);
 
       CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.restore();
       CardDataService.getChoroplethRegions.restore();

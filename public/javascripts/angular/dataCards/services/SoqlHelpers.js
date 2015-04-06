@@ -10,7 +10,7 @@ angular.module('dataCards').factory('SoqlHelpers', function(Assert, DateHelpers)
     encodeSoqlString: encodeSoqlString,
     encodeSoqlDate: encodeSoqlDate,
     encodePrimitive: encodePrimitive,
-    replaceHyphensWithUnderscores: replaceHyphensWithUnderscores,
+    formatFieldName: formatFieldName,
     timeIntervalToDateTrunc: timeIntervalToDateTrunc,
     stripWhereClauseFragmentForFieldName: stripWhereClauseFragmentForFieldName
   };
@@ -37,11 +37,12 @@ angular.module('dataCards').factory('SoqlHelpers', function(Assert, DateHelpers)
     }
   }
 
-  function replaceHyphensWithUnderscores(fragment) {
-    if (typeof fragment !== 'string') {
-      throw new Error('Cannot replace hyphens with underscores for non-string arguments.');
+  // Wrap fieldName in backticks and replace hyphens with underscores
+  function formatFieldName(fieldName) {
+    if (typeof fieldName !== 'string') {
+      throw new Error('Cannot format fieldName for non-string arguments.');
     }
-    return fragment.replace(/\-/g, '_');
+    return '`{0}`'.format(fieldName.replace(/\-/g, '_'));
   }
 
   /**
@@ -59,7 +60,6 @@ angular.module('dataCards').factory('SoqlHelpers', function(Assert, DateHelpers)
     }
     Assert(_.isPresent(fieldName), 'fieldName cannot be blank');
     Assert(_.isArray(activeFilters), 'activeFilters must be an array');
-
     var myWhereClauseFragments = _.invoke(activeFilters, 'generateSoqlWhereFragment', fieldName);
 
     _.each(myWhereClauseFragments, function(fragment) {

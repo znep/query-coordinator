@@ -24,7 +24,8 @@
     function buildAggregationClause(aggregationClauseData) {
       Assert(_.isString(aggregationClauseData['function']), 'aggregation function string should be present');
       var aggregationFunction = aggregationClauseData['function'];
-      var aggregationOperand = aggregationClauseData.fieldName || '*';
+      var aggregationOperand = typeof aggregationClauseData.fieldName === "string" ?
+        SoqlHelpers.formatFieldName(aggregationClauseData.fieldName) : '*';
 
       return '{0}({1})'.format(aggregationFunction, aggregationOperand);
     }
@@ -49,14 +50,9 @@
 
         var aggregationClause = buildAggregationClause(aggregationClauseData);
 
-        fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
+        fieldName = SoqlHelpers.formatFieldName(fieldName);
 
-        var queryTemplate;
-        if (fieldName === 'name') {
-          queryTemplate = 'select {0}, {2} as value {1} group by {0} order by {2} desc limit {3}';
-        } else {
-          queryTemplate = 'select {0} as name, {2} as value {1} group by {0} order by {2} desc limit {3}';
-        }
+        var queryTemplate = 'select {0} as name, {2} as value {1} group by {0} order by {2} desc limit {3}';
         var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
         // TODO: Implement some method for paging/showing data that has been truncated.
         var params = {
@@ -84,7 +80,7 @@
         Assert(_.isString(datasetId), 'datasetId should be a string');
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-        fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
+        fieldName = SoqlHelpers.formatFieldName(fieldName);
         var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
         url.searchParams.set('$query', "SELECT min({0}) AS start, max({0}) AS end WHERE {0} < '{1}'".
           format(fieldName, MAX_LEGAL_JAVASCRIPT_DATE_STRING));
@@ -148,7 +144,7 @@
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
 
         var whereClause = "WHERE {0} IS NOT NULL AND {0} < '{1}'".
-          format(fieldName, MAX_LEGAL_JAVASCRIPT_DATE_STRING);
+          format(SoqlHelpers.formatFieldName(fieldName), MAX_LEGAL_JAVASCRIPT_DATE_STRING);
         if (!_.isEmpty(whereClauseFragment)) {
           whereClause += ' AND ' + whereClauseFragment;
         }
@@ -159,7 +155,7 @@
           soqlMetadata.dateTruncFunctionUsed = dateTruncFunction;
         }
 
-        fieldName = SoqlHelpers.replaceHyphensWithUnderscores(fieldName);
+        fieldName = SoqlHelpers.formatFieldName(fieldName);
 
         var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
         url.searchParams.set(
@@ -243,7 +239,7 @@
 
       getSampleData: function(fieldName, datasetId) {
         var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
-        url.searchParams.set('$query', 'select {0} as name LIMIT 10'.format(fieldName));
+        url.searchParams.set('$query', 'select {0} as name LIMIT 10'.format(SoqlHelpers.formatFieldName(fieldName)));
         var config = httpConfig.call(this);
 
         return http.get(url.href, config).then(function(response) {

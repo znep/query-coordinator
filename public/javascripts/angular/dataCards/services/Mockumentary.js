@@ -55,7 +55,7 @@
               primaryAmountField: null,
               primaryAggregation: null,
               version: 1
-            },
+            }
           ],
           user: []
         },

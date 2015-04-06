@@ -2190,7 +2190,6 @@ sw:
         remove_confirm: Je, una uhakika unataka kuondoa mwonekano huu?
         unpublished_alert: Setidata hii bado haijachapishwa ili kukuruhusu kufanya mabadiliko yoyote muhimu kabla ya kuifanya iwepo kwa kila mtu. Haitaonekana mpaka uchapishe Setidata hii.
       subscribe:
-        google_reader: Ongeza katika Google Reader
         intro_html: '<strong>kushiriki kwenye <span class="datasetName">%{name}</span> Setidata kupitia RSS reader</strong>, tumia moja ya viungo vijavyo:'
         rss: Pakua kama RSS
         rss_program: Fungua katika Programu ya Nje

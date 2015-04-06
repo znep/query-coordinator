@@ -5,7 +5,7 @@
   row-display-unit="rowDisplayUnit"
   ng-class="{ 'card-size-1': cardSize === 1, 'card-size-2': cardSize === 2, 'card-size-3': cardSize === 3 }">
 </choropleth>
-<div class="choropleth-render-error" ng-show="geojsonRegionsError">
+<div class="choropleth-render-error" ng-show="choroplethRenderError">
   <span class="icon-warning"></span>
   An error was encountered when trying to render this map.
 </div>

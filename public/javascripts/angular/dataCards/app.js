@@ -110,8 +110,8 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
     state('view.card', {
       params: ['pageId', 'fieldName'],
       resolve: {
-        page: function($stateParams, Page) {
-          return new Page($stateParams['pageId']);
+        page: function(Page, Dataset) {
+          return new Page(pageMetadata, new Dataset(datasetMetadata));
         },
         fieldName: function($stateParams) { return $stateParams.fieldName; }
       },

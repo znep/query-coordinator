@@ -131,8 +131,38 @@
 
     });
 
-    xdescribe('custom events', function() {
-      // TODO: Add tests, maybe?
+    describe('custom events', function() {
+      var element;
+      var button;
+      var input;
+      beforeEach(function() {
+        element = addValidElement();
+        button = element.find('button');
+        input = element.find('input');
+      });
+
+      it('should emit custom event for keypress events', function(done) {
+        $rootScope.$on('clearableInput:keypress', function() {
+          done();
+        });
+        input.trigger('keypress');
+      });
+
+      it('should emit custom event for click events', function(done) {
+        $rootScope.$on('clearableInput:click', function() {
+          done();
+        });
+        input.trigger('click');
+      });
+
+      it('should emit custom event for blur events', function(done) {
+        element.focus();
+        $rootScope.$on('clearableInput:blur', function() {
+          done();
+        });
+        input.trigger('blur');
+      });
+
     });
 
     it('should not be "clearable" initially', function() {

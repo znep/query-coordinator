@@ -20,10 +20,13 @@
         <!-- description -->
         <div class="page-description" expanded="expanded" multiline-ellipsis max-lines="3" tolerance="2" text="{{pageDescription}}"></div>
       </div>
-      <div class="span6">
+      <div class="span6 padded-wrapper">
         <!-- activities -->
         <div class="activities span12">
           <div class="metadata">
+            <div class="metadatum-wrapper row">
+              <lens-type></lens-type>
+            </div>
             <div class="metadatum-wrapper row">
               <last-updated class="metadatum"></last-updated>
             </div>
@@ -105,7 +108,7 @@
       <div class="quick-filter-bar" with-spacer>
         <div class="content">
           <span ng-show="aggregation.unit">
-            Showing <span class="light">the {{aggregation.function | aggregationFunctionToDisplayText}} of {{aggregation.unit.pluralize()}}</span>
+            Showing <span class="light">the {{dynamicTitle}}</span>
           </span>
           <div class="filters">
             <div class="filter" ng-repeat="filter in appliedFiltersForDisplay">

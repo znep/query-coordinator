@@ -117,6 +117,7 @@ describe('card-layout', function() {
         datasetModel.version = '1';
         datasetModel.id = 'bana-nas1';
         datasetModel.fieldName = 'ward';
+        datasetModel.extractHumanReadableColumnName = _.noop;
         datasetModel.defineObservableProperty('rowDisplayUnit', 'row');
         datasetModel.defineObservableProperty('rowCount', options.rowCount);
         datasetModel.defineObservableProperty('columns', {

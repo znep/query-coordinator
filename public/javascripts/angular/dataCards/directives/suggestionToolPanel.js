@@ -21,7 +21,7 @@
 
         AngularRxExtensions.install($scope);
 
-        var suggestionLimit = 10;
+        var SUGGESTION_LIMIT = 10;
 
         var searchValueObservable = $scope.observe('searchValue').filter(_.isPresent);
         var datasetIdObservable = $scope.observe('dataset').filter(_.isPresent).pluck('id');
@@ -35,7 +35,7 @@
             return [datasetId, fieldName, searchValue];
           }
         ).
-        debounce(300). // Don't hammer the suggestions service.
+        debounce(300, Rx.Scheduler.timeout). // Don't hammer the suggestions service.
         map(function(searchOptions) {
           return Rx.Observable.fromPromise(
             SuggestionService.suggest.apply(this, searchOptions)
@@ -61,14 +61,14 @@
             if (numberOfSuggestions === 0) {
               return 'No data found matching your search term.';
             }
-            if (numberOfSuggestions <= suggestionLimit && numberOfSuggestions > 0) {
+            if (numberOfSuggestions <= SUGGESTION_LIMIT && numberOfSuggestions > 0) {
               return 'Showing {0} {1}:'.format(
                 numberOfSuggestions > 1 ? 'all {0}'.format(numberOfSuggestions) : 'the only',
                 numberOfSuggestions > 1 ? 'suggestions' : 'suggestion'
               );
             }
-            if (numberOfSuggestions > suggestionLimit) {
-              return 'Showing top {0} of {1} suggestions:'.format(suggestionLimit, numberOfSuggestions);
+            if (numberOfSuggestions > SUGGESTION_LIMIT) {
+              return 'Showing top {0} of {1} suggestions:'.format(SUGGESTION_LIMIT, numberOfSuggestions);
             }
           });
 
@@ -98,7 +98,7 @@
 
         var suggestionsObservable = suggestionsRequestsObservable.switchLatest().
           map(function(suggestions) {
-            return (suggestions || []).slice(0, suggestionLimit)
+            return (suggestions || []).slice(0, SUGGESTION_LIMIT)
           });
         var suggestionsLoadingObservable = searchValueObservable.
           map(_.constant(true)).

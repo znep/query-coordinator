@@ -241,11 +241,46 @@ describe('A Search Card Visualization', function() {
         });
       });
 
-      xdescribe('suggestions', function() {
+      describe('suggestions', function() {
         var FIELDNAME = 'test_column_number';
 
         beforeEach(function() {
           cardData = createCard(FIELDNAME);
+        });
+
+        it('should dim the initial help text when the panel should show', function() {
+          cardData.scope.$apply(function() {
+            cardData.element.find('card-visualization-search').isolateScope().search = '1';
+          });
+          expect(cardData.element.find('.card-example-text')).to.have.class('dimmed');
+        });
+
+        describe('signal the suggestionToolPanel to show', function() {
+          var suggestionToolPanelScope;
+          beforeEach(function() {
+            suggestionToolPanelScope = cardData.element.find('suggestion-tool-panel').scope();
+          });
+
+          it('should signal based on if there is input', function() {
+            cardData.scope.$apply(function() {
+              cardData.element.find('card-visualization-search').isolateScope().search = '1';
+            });
+            expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(true);
+            cardData.scope.$apply(function() {
+              cardData.element.find('card-visualization-search').isolateScope().search = '';
+            });
+            expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
+          });
+
+          it('should signal to not show if there is a click outside the search panel area', function() {
+            cardData.scope.$apply(function() {
+              cardData.element.find('card-visualization-search').isolateScope().search = '1';
+            });
+            expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(true);
+            $(document).click();
+            expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
+          });
+
         });
 
       });

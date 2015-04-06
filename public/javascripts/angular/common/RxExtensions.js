@@ -75,10 +75,10 @@ Rx.Observable.prototype.dump = function(optionalName) {
 
 // Ensure the first element in the sequence takes at least windowMsec
 // to show up.
-Rx.Observable.prototype.imposeMinimumDelay = function(windowMsec) {
+Rx.Observable.prototype.imposeMinimumDelay = function(windowMsec, scheduler) {
   var self = this;
     // Subscription is shared, so only one timer will be made.
-  var timeout = Rx.Observable.timer(windowMsec).share();
+  var timeout = Rx.Observable.timer(windowMsec, scheduler).share();
 
   return Rx.Observable.mergeAllAndGiveSource(timeout, self). // Surface the sequence which reacts first.
     take(1).
@@ -92,9 +92,9 @@ Rx.Observable.prototype.imposeMinimumDelay = function(windowMsec) {
 
 // Waits until the sequence stops giving elements for the given
 // amount of time. Returns a sequence of the debounced values.
-Rx.Observable.prototype.debounce = function(settleTimeMsec) {
+Rx.Observable.prototype.debounce = function(settleTimeMsec, scheduler) {
   return this.map(function(value) {
-    return Rx.Observable.timer(settleTimeMsec).map(_.constant(value));
+    return Rx.Observable.timer(settleTimeMsec, scheduler).map(_.constant(value));
   }).switchLatest();
 };
 

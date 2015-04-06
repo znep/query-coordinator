@@ -81,6 +81,8 @@ module.exports = function ( karma ) {
       'bower_components/rxjs/rx.aggregates.js',
       'bower_components/rxjs/rx.time.js',
       'bower_components/rxjs/rx.binding.js',
+      'bower_components/rxjs/rx.virtualtime.js',
+      'bower_components/rxjs/rx.testing.js',
 
       'public/javascripts/plugins/leaflet.js',
       'app/styles/leaflet.css',

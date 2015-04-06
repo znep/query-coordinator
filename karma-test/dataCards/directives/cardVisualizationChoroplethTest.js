@@ -1,4 +1,4 @@
-describe.only('A Choropleth Card Visualization', function() {
+describe('A Choropleth Card Visualization', function() {
   'use strict';
 
   var provide;

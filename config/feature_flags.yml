@@ -137,3 +137,9 @@ enable_search_suggestions:
 feature_map_features_per_tile:
   description: The maximum number of features that will be requested for any individual feature map tile.
   defaultValue: 50000
+current_dataset_metadata_version:
+  description: The current version of dataset metadata that the app should read and write.
+  defaultValue: 1
+current_page_metadata_version:
+  description: The current version of page metadata that the app should read and write.
+  defaultValue: 1

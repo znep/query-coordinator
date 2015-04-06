@@ -27,7 +27,7 @@
 
         var self = this;
         this.id = pageMetadata.pageId;
-        this.version = pageMetadata.version;
+        this.version = (_.isNumber(pageMetadata.version)) ? pageMetadata.version : ServerConfig.get('currentPageMetadataVersion');
 
         var fields = [
           'datasetId',

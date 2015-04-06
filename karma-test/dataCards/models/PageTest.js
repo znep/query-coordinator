@@ -1,26 +1,25 @@
 describe('Page model', function() {
   'use strict';
 
-  var DatasetV0;
-  var DatasetV1;
-  var Dataset;
+  var CURRENT_PAGE_METADATA_VERSION = 1;
+
   var injector;
-  var testHelpers;
-  var Model;
   var Mockumentary;
-  var $rootScope;
+  var Page;
+  var Model;
+  var ServerConfig;
 
   beforeEach(module('dataCards'));
 
   beforeEach(inject(function($injector) {
-
-    DatasetV0 = $injector.get('DatasetV0');
-    DatasetV1 = $injector.get('DatasetV1');
     injector = $injector;
-    $rootScope = $injector.get('$rootScope');
-    testHelpers = $injector.get('testHelpers');
-    Model = $injector.get('Model');
     Mockumentary = $injector.get('Mockumentary');
+    Page = $injector.get('Page');
+    Model = $injector.get('Model');
+    ServerConfig = $injector.get('ServerConfig');
+
+    // Set the current page metadata verison to 1
+    ServerConfig.override('currentPageMetadataVersion', CURRENT_PAGE_METADATA_VERSION);
   }));
 
   it('should correctly deserialize serialized page metadata passed into the constructor.', inject(function(Page) {
@@ -44,6 +43,31 @@ describe('Page model', function() {
     instance.set('description', desc2);
     instance.set('description', desc3);
     expect(expectedSequence).to.be.empty;
+  });
+
+  it('should default to the current version if the version property is not present or is not a number', function() {
+    var page;
+    var serialized;
+
+    var datasetOverrides = {id: 'test-data'};
+    var dataset = Mockumentary.createDataset(datasetOverrides);
+    var pageOverrides = {pageId: 'test-page'};
+    var pageMetadata = Mockumentary.createPageMetadata(pageOverrides);
+
+    delete pageMetadata['version'];
+    page = new Page(pageMetadata, dataset);
+    serialized = page.serialize();
+    expect(serialized.version).to.equal(CURRENT_PAGE_METADATA_VERSION);
+
+    pageMetadata.version = 'not a number';
+    page = new Page(pageMetadata, dataset);
+    serialized = page.serialize();
+    expect(serialized.version).to.equal(CURRENT_PAGE_METADATA_VERSION);
+
+    pageMetadata.version = '0';
+    page = new Page(pageMetadata, dataset);
+    serialized = page.serialize();
+    expect(serialized.version).to.equal(CURRENT_PAGE_METADATA_VERSION);
   });
 
   it('should correctly serialize', function() {

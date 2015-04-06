@@ -97,6 +97,25 @@
         expect(_.negate(246)).to.equal(false);
       });
     });
+
+    describe('trim', function() {
+      it('should exist', function() {
+        expect(_).to.respondTo('trim');
+      });
+
+      it('should trim whitespace by default', function() {
+        expect(_.trim('something')).to.equal('something');
+        expect(_.trim(' something ')).to.equal('something');
+        expect(_.trim('\tsomething ')).to.equal('something');
+        expect(_.trim('something\t')).to.equal('something');
+      });
+
+      it('should trim specified character', function() {
+        expect(_.trim('"something', '"')).to.equal('something');
+        expect(_.trim('something"', '"')).to.equal('something');
+        expect(_.trim('"something"', '"')).to.equal('something');
+      });
+    });
   });
 
 })();

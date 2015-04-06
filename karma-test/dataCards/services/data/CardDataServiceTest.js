@@ -5,6 +5,7 @@ describe('CardDataService', function() {
   var http;
   var CardDataService;
   var ConstantsService;
+  var ServerConfig;
   var fakeDataRequestHandler;
   var testHelpers;
   var SoqlHelpers;
@@ -36,6 +37,7 @@ describe('CardDataService', function() {
   beforeEach(inject(function($injector) {
     CardDataService = $injector.get('CardDataService');
     ConstantsService = $injector.get('Constants');
+    ServerConfig = $injector.get('ServerConfig');
     $httpBackend = $injector.get('$httpBackend');
     testHelpers = $injector.get('testHelpers');
     SoqlHelpers = $injector.get('SoqlHelpers');
@@ -561,6 +563,34 @@ describe('CardDataService', function() {
       $httpBackend.flush();
 
       expect(count).to.equal(0);
+    });
+  });
+
+  describe('#getDefaultFeatureExtent', function() {
+    it('should return undefined if no feature flag value is present', function() {
+      expect(CardDataService.getDefaultFeatureExtent()).to.be.undefined;
+    });
+
+    it('should return undefined for an incorrectly formatted feature flag value', function() {
+      ServerConfig.override('featureMapDefaultExtent', '{"southwest":[41.87537684702812,-87.6587963104248]}');
+      expect(CardDataService.getDefaultFeatureExtent()).to.be.undefined;
+    });
+
+    it('should return a feature extent object for a correctly formatted feature flag value', function() {
+      var expectedValue = {
+        "southwest":[41.87537684702812,-87.6587963104248],
+        "northeast":[41.89026600256849,-87.5951099395752]
+      };
+      ServerConfig.override('featureMapDefaultExtent', JSON.stringify(expectedValue));
+      expect(CardDataService.getDefaultFeatureExtent()).to.eql(expectedValue);
+    });
+
+    it('should not throw on improperly formatted JSON', function() {
+      ServerConfig.override('featureMapDefaultExtent', '{"southwest":[41.87537684702812,-87.6587963104248]');
+      expect(function() {
+        var returnValue = CardDataService.getDefaultFeatureExtent();
+        expect(returnValue).to.be.undefined;
+      }).to.not.throw();
     });
   });
 

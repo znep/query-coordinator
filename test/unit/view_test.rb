@@ -326,6 +326,13 @@ class ViewTest < Test::Unit::TestCase
     assert_equal 'some public custom metadata', view.merged_metadata.fetch('custom_fields', {}).fetch('fieldset_foo', {}).fetch('field_bar', nil), 'Unsigned user should see public metadata'
   end
 
+  def test_migrations
+    load_sample_data("test/fixtures/sample-data.json")
+    view = View.find('test-data')
+    CoreServer::Base.connection.expects(:get_request).with('/api/migrations/test-data').returns('{"migrations": "data"}')
+    assert_equal('data', view.migrations['migrations'])
+  end
+
   private
 
   def stub_core_server_connection

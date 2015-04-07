@@ -69,6 +69,11 @@ class View < Model
     parse(CoreServer::Base.connection.get_request(path))
   end
 
+  def migrations
+    path = "/api/migrations/#{id}"
+    JSON.parse(CoreServer::Base.connection.get_request(path)).with_indifferent_access
+  end
+
   def find_related(page, limit = 10, sort_by = 'most_accessed')
     params = {
       method: 'getByTableId',
@@ -1565,10 +1570,10 @@ class View < Model
     'Table' => 'Dataset'
   }
 
-
   private
 
   def cache
     @@cache ||= Rails.cache
   end
+
 end

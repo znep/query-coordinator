@@ -212,7 +212,16 @@
               emitRenderCompleted();
               removeOldFeatureLayers(map);
             },
-            vectorTileGetter: vectorTileGetter
+            vectorTileGetter: function() {
+              var promise = vectorTileGetter.apply(this, Array.prototype.slice.call(arguments));
+              promise.then(_.noop,
+                function() {
+                  scope.safeApply(function() {
+                    scope.$emit('render:error');
+                  });
+                });
+              return promise;
+            }
             // You can interact with mouse events by passing
             // callbacks on three property names: 'mousedown',
             // 'mouseup' and 'mousemove'.

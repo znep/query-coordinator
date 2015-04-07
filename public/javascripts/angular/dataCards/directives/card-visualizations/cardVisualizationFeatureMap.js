@@ -35,7 +35,8 @@
         // underlying feature map and are used for a) toggling the state of the
         // 'busy' spinner and b) performance analytics.
         var renderStartObservable = scope.eventToObservable('render:start');
-        var renderCompleteObservable = scope.eventToObservable('render:complete');
+        var renderErrorObservable = scope.eventToObservable('render:error');
+        var renderCompleteObservable = scope.eventToObservable('render:complete').takeUntil(renderErrorObservable);
 
         // For every renderStart event, start a timer that will either expire on
         // its own, or get cancelled by the renderComplete event firing
@@ -67,6 +68,7 @@
           merge(
             renderTimeoutObservable.map(_.constant(true)),
             directiveTimeoutObservable.map(_.constant(true)),
+            renderErrorObservable.map(_.constant(true)),
             renderCompleteObservable.map(_.constant(false))
           ).
           startWith(false).
@@ -84,8 +86,9 @@
             renderStartObservable.map(_.constant(true)),
             renderTimeoutObservable.map(_.constant(false)),
             directiveTimeoutObservable.map(_.constant(false)),
-            renderCompleteObservable.map(_.constant(false))
-          ).
+            renderCompleteObservable.map(_.constant(false)),
+            renderErrorObservable.map(_.constant(false))
+        ).
           startWith(true).
           distinctUntilChanged();
 

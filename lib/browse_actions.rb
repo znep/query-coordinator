@@ -420,9 +420,6 @@ private
       should_show_data_lenses = current_user_can_edit_others_datasets?
     elsif data_lens_phase_post_beta?
       should_show_data_lenses = true
-    else
-      error_message = "Encountered unknown state for 'data_lens_state' " \
-        "feature flag: #{data_lens_transition_state}"
     end
 
     should_show_data_lenses

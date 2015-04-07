@@ -228,39 +228,29 @@
 
     initDownload($scope, page, obeIdObservable, WindowState, FlyoutService, ServerConfig);
 
-    // This would seem to need to be defined here since the observable is defined just above.
-    var dataLensTransitionStateObservable = Rx.Observable.returnValue(
-      ServerConfig.get('dataLensTransitionState')
-    );
+    $scope.shouldShowManageLens = false;
 
-    // Only show the 'manage lens' UI if the dataLensTransitionState is set to 'post_beta'
-    // and the current user has the 'edit_others_datasets' right.
-    var shouldShowManageLensObservable = Rx.Observable.combineLatest(
-      dataLensTransitionStateObservable,
-      currentUserSequence,
-      function(dataLensTransitionState, currentUser) {
+    currentUserSequence.subscribe(
+      function(currentUser) {
 
         var currentUserCanEditOthersDatasets =
           _.isPresent(currentUser) &&
           currentUser.hasOwnProperty('rights') &&
           currentUser.rights.indexOf('edit_others_datasets') > -1;
 
-        return dataLensTransitionState === 'post_beta' && currentUserCanEditOthersDatasets;
-      }
-    );
-
-    var initManageLensIfItShouldBeShown = shouldShowManageLensObservable.map(
-      function(shouldShowManageLens) {
+        var shouldShowManageLens =
+          ServerConfig.get('dataLensTransitionState') === 'post_beta' &&
+          currentUserCanEditOthersDatasets;
 
         if (shouldShowManageLens) {
-          initManageLens($scope, page);
+
+          $scope.safeApply(function() {
+            $scope.shouldShowManageLens = true;
+            initManageLens($scope, page);
+          });
         }
       }
-    ).
-    // Need to subscribe to trick Rx into actually executing.
-    subscribe();
-
-    $scope.bindObservable('shouldShowManageLens', shouldShowManageLensObservable);
+    );
 
     /*******************************
     * Filters and the where clause *

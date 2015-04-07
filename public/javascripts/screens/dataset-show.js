@@ -787,130 +787,121 @@ $(function()
             'page loaded', blist.dataset.id);
     });
 
+    var datasetShowHelpers = {
+      canUpdateMetadata: function() {
+        return  !_.isNull(blist.currentUser) && !_.isUndefined(blist.currentUser) &&
+                (_.include(['administrator', 'publisher'], blist.currentUser.roleName) ||
+                blist.dataset.owner.id === blist.currentUserId ||
+                _.include(blist.currentUser.flags, 'admin'));
+      },
+      getNewUXLinkParams: function() {
+        var linkParams = {
+          canUpdateMetadata: datasetShowHelpers.canUpdateMetadata(),
+          newBackendPage: blist.dataset.newBackend,
+          exitTechPreview: blist.feature_flags.exit_tech_preview,
+          blistDatasetId: blist.dataset.id,
+          metadataTransitionPhase: blist.feature_flags.metadata_transition_phase
+        };
+        // Restore the state
+        if ($.cookies.get('newUxCollapsed')) {
+          linkParams.collapsed = true;
+        }
 
-    blist.configuration.onCurrentUser(function() {
+        return linkParams;
+      },
+      getNewUXLinkHref: function(linkParams) {
+        var linkHref = null;
+
+        if (linkParams.newBackendPage) {
+          if (linkParams.canUpdateMetadata || linkParams.exitTechPreview) {
+            linkHref = '/view/bootstrap/{0}'.format(linkParams.blistDatasetId);
+            datasetShowHelpers.createNewUXLink(linkParams, linkHref);
+          }
+        } else {
+          $.get('/api/migrations/{0}'.format(linkParams.blistDatasetId)).done(function(migration) {
+            if (migration.nbeId) {
+              var datasetMetadataUrl = '/dataset_metadata/{0}.json';
+              // Kratos shapefiles are datasets, but have no dataset metadata, which we need to
+              // create a newux page. So check that there's dataset metadata before showing the link.
+              var metadataTransitionPhase = parseInt(linkParams.metadataTransitionPhase, 10);
+              if (metadataTransitionPhase !== 0) {
+                // The dataset metadata endpoint changed in metadata transition phase 1.
+                datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
+              }
+              $.ajax({
+                url: datasetMetadataUrl.format(migration.nbeId),
+                success: function(metadata) {
+                  if (metadata.defaultPage && linkParams.exitTechPreview) {
+                    linkHref = '/view/{0}'.format(metadata.defaultPage);
+                  } else if (canUpdateMetadata()) {
+                    linkHref = '/view/bootstrap/{0}'.format(migration.nbeId);
+                  }
+                  datasetShowHelpers.createNewUXLink(linkParams, linkHref);
+                }
+              });
+            }
+          });
+        }
+      },
+      // Append to body, click functionality
+      createNewUXLink: function(linkParams, linkHref) {
+        if (!linkHref || linkHref.length <= 0) return false;
+
+        var newUxLink = $('<div class="new-ux-link icon-cards">' +
+                            '<div class="icon-close"/>' +
+                            '<h3>' + $.t('screens.ds.new_ux_title') + '</h3>' +
+                            '<p>' + $.t('screens.ds.new_ux_text') + '</p>' +
+                            '<img class="new-ux-image" src="/images/new-ux-image.png"/>' +
+                            '<a class="explore-btn">' +
+                              $.t('screens.ds.new_ux_button') +
+                            '</a>');
+        if (linkParams.collapsed) {
+          newUxLink.addClass('collapsed');
+        }
+        newUxLink.find('a.explore-btn').attr('href', linkHref);
+        newUxLink.appendTo('body');
+
+        // The collapse/expand functionality
+        newUxLink.on('click', function() {
+          var $self = $(this);
+          // If we're collapsed, expand ourselves.
+          if ($self.hasClass('collapsed')) {
+              $self.removeClass('collapsed');
+              $.cookies.del('newUxCollapsed');
+          }
+        }).on('click', '.icon-close', function(e) {
+            e.stopPropagation();
+            // Kick it to the next frame - otherwise, the width doesn't set in time for the
+            // start of the animation
+            _.defer(function() {
+                newUxLink.addClass('collapsed');
+                $.cookies.set('newUxCollapsed', true);
+            });
+        }).on('click', 'a', function() {
+          // Add some feedback
+          var screenOverlay = $('<div class="overlay"/>');
+          var spinner = $(
+            '<img class="spinner" ' +
+              'title="{0}" '.format($.t('screens.ds.new_ux_creating_page')) +
+              'src="/stylesheets/images/common/BrandedSpinner.gif" />'
+          );
+
+          newUxLink.addClass('loading').
+            append(spinner).
+            after(screenOverlay);
+
+          // Push the reveal to the next frame so the animation actually happens
+          _.defer(function() {
+            screenOverlay.add(spinner).css('opacity', 1);
+          });
+        });
+      }
+    };
+
+    setTimeout(function(){
       if (blist && blist.feature_flags && blist.feature_flags.enable_newux_bootstrap_link) {
         var linkParams = datasetShowHelpers.getNewUXLinkParams();
-        var linkHref = datasetShowHelpers.getNewUXLinkHref(linkParams);
-        datasetShowHelpers.createNewUXLink(linkParams, linkHref);
+        datasetShowHelpers.getNewUXLinkHref(linkParams);
       }
-    });
+    }, 0);
 });
-
-datasetShowHelpers = {
-  canUpdateMetadata: function() {
-    return  _.include(['administrator', 'publisher'], blist.currentUser.roleName) ||
-            blist.dataset.owner.id === blist.currentUserId ||
-            _.include(blist.currentUser.flags, 'admin');
-  },
-  getNewUXLinkParams: function() {
-    var linkParams = {
-      canUpdateMetadata: datasetShowHelpers.canUpdateMetadata(),
-      newBackendPage: blist.dataset.newBackend,
-      exitTechPreview: blist.feature_flags.exit_tech_preview,
-      blistDatasetId: blist.dataset.id,
-      metadataTransitionPhase: blist.feature_flags.metadata_transition_phase
-    };
-    // Restore the state
-    if ($.cookies.get('newUxCollapsed')) {
-      linkParams.collapsed = true;
-    }
-
-    return linkParams;
-  },
-  getNewUXLinkHref: function(linkParams) {
-
-    var linkHref = null;
-
-    if (linkParams.newBackendPage) {
-      if (linkParams.canUpdateMetadata || linkParams.exitTechPreview) {
-        linkHref = '/view/bootstrap/{0}'.format(linkParams.blistDatasetId);
-      }
-    } else {
-      if (!_.isNull(linkParams.testingUrl)) {
-        // If testing, don't try api calls
-        if (linkParams.exitTechPreview) {
-          linkHref = linkParams.testingUrl;
-        }
-      } else {
-        $.get('/api/migrations/{0}'.format(linkParams.blistDatasetId)).done(function(migration) {
-          if (!_isNull(migration.nbeId)) {
-            var datasetMetadataUrl = '/dataset_metadata/{0}.json';
-            // Kratos shapefiles are datasets, but have no dataset metadata, which we need to
-            // create a newux page. So check that there's dataset metadata before showing the link.
-            var metadataTransitionPhase = parseInt(linkParams.metadataTransitionPhase, 10);
-            if (metadataTransitionPhase !== 0) {
-              // The dataset metadata endpoint changed in metadata transition phase 1.
-              datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
-            }
-            $.ajax({
-              url: datasetMetadataUrl.format(migration.nbeId),
-              success: function(metadata) {
-                if (!_.isNull(metadata.defaultPage) && linkParams.exitTechPreview) {
-                  linkHref = '/view/{0}'.format(metadata.defaultPage);
-                } else if (canUpdateMetadata()) {
-                  linkHref = '/view/bootstrap/{0}'.format(migration.nbeId);
-                }
-              }
-            });
-          }
-        });
-      }
-    }
-    return linkHref;
-  },
-  // Append to body, click functionality
-  createNewUXLink: function(linkParams, linkHref) {
-    if (!linkHref || linkHref.length <= 0) return false;
-
-    var newUxLink = $('<div class="new-ux-link icon-cards">' +
-                        '<div class="icon-close"/>' +
-                        '<h3>' + $.t('screens.ds.new_ux_title') + '</h3>' +
-                        '<p>' + $.t('screens.ds.new_ux_text') + '</p>' +
-                        '<img class="new-ux-image" src="/images/new-ux-image.png"/>' +
-                        '<a class="explore-btn">' +
-                          $.t('screens.ds.new_ux_button') +
-                        '</a>');
-    if (linkParams.collapsed) {
-      newUxLink.addClass('collapsed');
-    }
-    newUxLink.find('a.explore-btn').attr('href', linkHref);
-    newUxLink.appendTo('body');
-
-    // The collapse/expand functionality
-    newUxLink.on('click', function() {
-      var $self = $(this);
-      // If we're collapsed, expand ourselves.
-      if ($self.hasClass('collapsed')) {
-          $self.removeClass('collapsed');
-          $.cookies.del('newUxCollapsed');
-      }
-    }).on('click', '.icon-close', function(e) {
-        e.stopPropagation();
-        // Kick it to the next frame - otherwise, the width doesn't set in time for the
-        // start of the animation
-        _.defer(function() {
-            newUxLink.addClass('collapsed');
-            $.cookies.set('newUxCollapsed', true);
-        });
-    }).on('click', 'a', function() {
-      // Add some feedback
-      var screenOverlay = $('<div class="overlay"/>');
-      var spinner = $(
-        '<img class="spinner" ' +
-          'title="{0}" '.format($.t('screens.ds.new_ux_creating_page')) +
-          'src="/stylesheets/images/common/BrandedSpinner.gif" />'
-      );
-
-      newUxLink.addClass('loading').
-        append(spinner).
-        after(screenOverlay);
-
-      // Push the reveal to the next frame so the animation actually happens
-      _.defer(function() {
-        screenOverlay.add(spinner).css('opacity', 1);
-      });
-    });
-    return true;
-  }
-};

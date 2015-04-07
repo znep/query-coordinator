@@ -122,13 +122,6 @@ module.exports = function ( karma ) {
       'app/styles/dataCards/*.sass',
       { pattern: 'public/stylesheets/images/**/*.{jpg,png}', watched: false, included: false, served: true },
 
-      'public/javascripts/util/namespace.js',
-      'public/javascripts/plugins/inheritance.js',
-      'public/javascripts/util/base-model.js',
-      'public/javascripts/util/socrata-server.js',
-      'public/javascripts/util/dataset/dataset.js',
-      'public/javascripts/screens/dataset-show.js',
-
       /* TEST MOCKS */
 
       /* Test datasets */
@@ -138,10 +131,25 @@ module.exports = function ( karma ) {
       /* Images */
       { pattern: 'public/stubs/images/*.png', watched: false, included: false, served: true },
 
+      /* Old UX */
+      // Began implementing this for dataset-show-test, but its dependencies were breaking
+      // many other tests, so leaving it out for now.
+      // 'public/javascripts/util/namespace.js',
+      // 'public/javascripts/plugins/inheritance.js',
+      // 'public/javascripts/util/base-model.js',
+      // 'public/javascripts/util/socrata-server.js',
+      // 'public/javascripts/util/dataset/dataset.js',
+      // 'public/javascripts/controls/base-control.js',
+      // 'public/javascripts/controls/full-screen.js',
+      // 'public/javascripts/controls/dataset-controls.js',
+      // 'public/javascripts/controls/render-type-manager.js',
+      // 'public/javascripts/controls/grid-sidebar.js',
+      // 'public/javascripts/screens/dataset-show.js',
+
       /* THE TESTS THEMSELVES */
       'karma-test/helpers/ServerMocks.js',
       'karma-test/dataCards/*.js',
-      'karma-test/old-ux/*.js',
+      // 'karma-test/old-ux/*.js',
       /* IMPORTANT: If you add/remove/change test groups,
        * please update at the constant TEST_GROUPS in karma_tests.rake.
        * If you don't, your tests may be run multiple times per run.

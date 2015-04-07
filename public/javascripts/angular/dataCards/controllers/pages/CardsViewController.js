@@ -69,19 +69,27 @@
   }
 
   function initManageLens($scope, page) {
+
     var pageIsPublicObservable = page.observe('permissions').
-        filter(_.isObject).
-        map(_.property('isPublic'));
-    $scope.bindObservable('pagePermissions', pageIsPublicObservable.map(function(isPublic) {
-      return isPublic ? 'public' : 'private';
-    }));
+      filter(_.isObject).
+      map(_.property('isPublic'));
+
+    var datasetIsPublicObservable = page.observe('dataset.permissions').
+      filter(_.isObject).
+      map(_.property('isPublic')).
+      // Default to true, so the warning icon doesn't appear before the actual metadata is fetched
+      startWith(true);
+
+    var pagePermissionsObservable = pageIsPublicObservable.
+      map(
+        function(isPublic) {
+          return isPublic ? 'public' : 'private';
+        }
+      );
+
     $scope.bindObservable('pageIsPublic', pageIsPublicObservable);
-    $scope.bindObservable(
-      'datasetIsPublic',
-      page.observe('dataset.permissions').filter(_.isObject).map(_.property('isPublic')).
-        // Default to true, so the warning icon doesn't appear before the actual metadata is fetched
-        startWith(true)
-    );
+    $scope.bindObservable('datasetIsPublic', datasetIsPublicObservable);
+    $scope.bindObservable('pagePermissions', pagePermissionsObservable);
 
     $scope.manageLensState = {
       show: false
@@ -219,9 +227,40 @@
 
 
     initDownload($scope, page, obeIdObservable, WindowState, FlyoutService, ServerConfig);
-    if (ServerConfig.get('exitTechPreview')) {
-      initManageLens($scope, page);
-    }
+
+    // This would seem to need to be defined here since the observable is defined just above.
+    var dataLensTransitionStateObservable = Rx.Observable.returnValue(
+      ServerConfig.get('dataLensTransitionState')
+    );
+
+    // Only show the 'manage lens' UI if the dataLensTransitionState is set to 'post_beta'
+    // and the current user has the 'edit_others_datasets' right.
+    var shouldShowManageLensObservable = Rx.Observable.combineLatest(
+      dataLensTransitionStateObservable,
+      currentUserSequence,
+      function(dataLensTransitionState, currentUser) {
+
+        var currentUserCanEditOthersDatasets =
+          _.isPresent(currentUser) &&
+          currentUser.hasOwnProperty('rights') &&
+          currentUser.rights.indexOf('edit_others_datasets') > -1;
+
+        return dataLensTransitionState === 'post_beta' && currentUserCanEditOthersDatasets;
+      }
+    );
+
+    var initManageLensIfItShouldBeShown = shouldShowManageLensObservable.map(
+      function(shouldShowManageLens) {
+
+        if (shouldShowManageLens) {
+          initManageLens($scope, page);
+        }
+      }
+    ).
+    // Need to subscribe to trick Rx into actually executing.
+    subscribe();
+
+    $scope.bindObservable('shouldShowManageLens', shouldShowManageLensObservable);
 
     /*******************************
     * Filters and the where clause *

@@ -560,6 +560,118 @@ describe('CardsViewController', function() {
     });
   });
 
+  describe('manage lens dialog initialization', function() {
+
+    function mockUser(hasEditOthersDatasetsRight) {
+      return {
+        rights: hasEditOthersDatasetsRight ? ['edit_others_datasets'] : []
+      };
+    }
+
+    describe("when the dataLensTransitionState feature flag is set to 'pre_beta'", function() {
+
+      beforeEach(function() {
+        ServerConfig.override('dataLensTransitionState', 'pre_beta');
+      });
+
+      it('should not occur if no user is logged in', function() {
+        var controllerHarness = makeController();
+        var $scope = controllerHarness.$scope;
+        $scope.$apply(controllerHarness.currentUserDefer.resolve(null));
+
+        expect($scope.manageLensState).to.equal(undefined);
+        expect($scope.shouldShowManageLens).to.equal(false);
+      });
+
+      it("should not occur if the current user does not have the 'edit_others_datasets' right", function() {
+        var controllerHarness = makeController();
+        var $scope = controllerHarness.$scope;
+        $scope.$apply(controllerHarness.currentUserDefer.resolve(mockUser(false)));
+
+        expect($scope.manageLensState).to.equal(undefined);
+        expect($scope.shouldShowManageLens).to.equal(false);
+      });
+
+      it("should not occur if the current user has the 'edit_others_datasets' right", function() {
+        var controllerHarness = makeController();
+        var $scope = controllerHarness.$scope;
+        $scope.$apply(controllerHarness.currentUserDefer.resolve(mockUser(true)));
+
+        expect($scope.manageLensState).to.equal(undefined);
+        expect($scope.shouldShowManageLens).to.equal(false);
+      });
+    });
+
+    describe("when the dataLensTransitionState feature flag is set to 'beta'", function() {
+
+      beforeEach(function() {
+        ServerConfig.override('dataLensTransitionState', 'beta');
+      });
+
+      it('should not occur if no user is logged in', function() {
+        var controllerHarness = makeController();
+        var $scope = controllerHarness.$scope;
+        $scope.$apply(controllerHarness.currentUserDefer.resolve(null));
+
+        expect($scope.manageLensState).to.equal(undefined);
+        expect($scope.shouldShowManageLens).to.equal(false);
+      });
+
+      it("should not occur if the current user does not have the 'edit_others_datasets' right", function() {
+        var controllerHarness = makeController();
+        var $scope = controllerHarness.$scope;
+        $scope.$apply(controllerHarness.currentUserDefer.resolve(mockUser(false)));
+
+        expect($scope.manageLensState).to.equal(undefined);
+        expect($scope.shouldShowManageLens).to.equal(false);
+      });
+
+      it("should not occur if the current user has the 'edit_others_datasets' right", function() {
+        var controllerHarness = makeController();
+        var $scope = controllerHarness.$scope;
+        $scope.$apply(controllerHarness.currentUserDefer.resolve(mockUser(true)));
+
+        expect($scope.manageLensState).to.equal(undefined);
+        expect($scope.shouldShowManageLens).to.equal(false);
+      });
+    });
+
+    describe("when the dataLensTransitionState feature flag is set to 'post_beta'", function() {
+
+      beforeEach(function() {
+        ServerConfig.override('dataLensTransitionState', 'post_beta');
+      });
+
+      it('should not occur if no user is logged in', function() {
+        var controllerHarness = makeController();
+        var $scope = controllerHarness.$scope;
+        $scope.$apply(controllerHarness.currentUserDefer.resolve(null));
+
+        expect($scope.manageLensState).to.equal(undefined);
+        expect($scope.shouldShowManageLens).to.equal(false);
+      });
+
+      it("should not occur if the current user does not have the 'edit_others_datasets' right", function() {
+        var controllerHarness = makeController();
+        var $scope = controllerHarness.$scope;
+        $scope.$apply(controllerHarness.currentUserDefer.resolve(mockUser(false)));
+
+        expect($scope.manageLensState).to.equal(undefined);
+        expect($scope.shouldShowManageLens).to.equal(false);
+      });
+
+      it("should occur if the current user has the 'edit_others_datasets' right", function() {
+        var controllerHarness = makeController();
+        var $scope = controllerHarness.$scope;
+        $scope.$apply(controllerHarness.currentUserDefer.resolve(mockUser(true)));
+
+        expect($scope.manageLensState.hasOwnProperty('show')).to.equal(true);
+        expect($scope.manageLensState.show).to.equal(false);
+        expect($scope.shouldShowManageLens).to.equal(true);
+      });
+    });
+  });
+
   describe('user save rights', function() {
     describe('currentUserHasSaveRight on scope', function() {
       function mockUser(isAdmin, id, roleName) {

@@ -1,7 +1,13 @@
 (function() {
   'use strict';
 
-  function cardVisualizationFeatureMap(ServerConfig, AngularRxExtensions, CardDataService, VectorTileDataService) {
+  function cardVisualizationFeatureMap(
+    ServerConfig,
+    AngularRxExtensions,
+    CardDataService,
+    VectorTileDataService,
+    LeafletHelpersService
+  ) {
 
     return {
       restrict: 'E',
@@ -10,7 +16,7 @@
         'whereClause': '='
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationFeatureMap.html',
-      link: function(scope) {
+      link: function cardVisualizationFeatureMapLink(scope) {
 
         AngularRxExtensions.install(scope);
 
@@ -18,9 +24,6 @@
         var dataset = model.observeOnLatest('page.dataset').filter(_.isPresent);
         var datasetPermissions = dataset.observeOnLatest('permissions').filter(_.isPresent);
         var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
-        var dataRequests = new Rx.Subject();
-        var dataResponses = new Rx.Subject();
-        var featureExtentDataSequence = new Rx.Subject();
 
         // The 'render:start' and 'render:complete' events are emitted by the
         // underlying feature map and are used for a) toggling the state of the
@@ -41,23 +44,60 @@
           }
         );
 
-        Rx.Observable.subscribeLatest(
+        var synchronizedFieldnameDataset = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
           dataset,
-          baseSoqlFilter, // Used for signalling that this combineLatest should run
+          baseSoqlFilter,
           function(fieldName, dataset) {
-            dataRequests.onNext(1);
-            var dataPromise = CardDataService.getFeatureExtent(fieldName, dataset.id);
-            dataPromise.then(
-              function() {
-                // Ok
-                featureExtentDataSequence.onNext(dataPromise);
-                dataResponses.onNext(1);
-              },
-              _.noop);
-            return Rx.Observable.fromPromise(dataPromise);
+            return {
+              fieldName: fieldName,
+              dataset: dataset
+            };
+          }
+        );
+
+        var featureExtentDataSequence = synchronizedFieldnameDataset.
+          flatMap(function(fieldNameDataset) {
+            var fieldName = fieldNameDataset.fieldName;
+            var dataset = fieldNameDataset.dataset;
+            return Rx.Observable.
+              fromPromise(CardDataService.getFeatureExtent(fieldName, dataset.id));
           });
 
+        var synchronizedFeatureExtentDataSequence = featureExtentDataSequence.
+          combineLatest(
+          Rx.Observable.returnValue(CardDataService.getDefaultFeatureExtent()),
+          function(featureExtent, defaultFeatureExtent) {
+            if (defaultFeatureExtent) {
+              var defaultBounds;
+              var featureBounds;
+              try {
+                defaultBounds = LeafletHelpersService.buildBounds(defaultFeatureExtent);
+              } catch(error) {
+                $log.warn(
+                  'Unable to build bounds from defaultFeatureExtent: \n{0}'.
+                    format(defaultFeatureExtent)
+                );
+                return featureExtent;
+              }
+              try {
+                featureBounds = LeafletHelpersService.buildBounds(featureExtent);
+              } catch(error) {
+                $log.warn(
+                  'Unable to build bounds from featureExtent: \n{0}'.
+                    format(featureExtent)
+                );
+                return featureExtent;
+              }
+              if (defaultBounds.contains(featureBounds)) {
+                return featureExtent;
+              } else {
+                return defaultFeatureExtent;
+              }
+            } else {
+              return featureExtent;
+            }
+          });
 
         /****************************************
         * Bind non-busy-indicating observables. *
@@ -68,10 +108,7 @@
           model.observeOnLatest('baseLayerUrl')
         );
 
-        scope.bindObservable(
-          'featureExtent',
-          featureExtentDataSequence.switchLatest()
-        );
+        scope.bindObservable('featureExtent', synchronizedFeatureExtentDataSequence);
 
         var datasetIsPrivate = datasetPermissions.
           map(function(permissions) {
@@ -85,7 +122,8 @@
           scope.observe('whereClause'),
           datasetIsPrivate,
           function(fieldName, datasetId, whereClause, datasetIsPrivate) {
-            return VectorTileDataService.buildTileGetter(fieldName, datasetId, whereClause, datasetIsPrivate);
+            return VectorTileDataService.
+              buildTileGetter(fieldName, datasetId, whereClause, datasetIsPrivate);
           });
 
         scope.bindObservable('vectorTileGetter', vectorTileGetterSequence);

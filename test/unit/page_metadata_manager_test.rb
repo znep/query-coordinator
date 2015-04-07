@@ -1,7 +1,11 @@
 require 'test_helper'
 
 class PageMetadataManagerTest < Test::Unit::TestCase
-  VIEW_CATEGORY_NAME = 'test_category'
+
+  OBE_CATEGORY_NAME = 'obe_test_category'
+  NBE_CATEGORY_NAME = 'nbe_test_category'
+  NBE_DATASET_ID = 'vtvh-wqgq'
+  OBE_DATASET_ID = 'nrhw-r55e'
 
   def setup
     CurrentDomain.stubs(domain: stub(cname: 'localhost'))
@@ -16,8 +20,12 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       'port' => '6010'
     })
     manager.stubs(:largest_time_span_in_days_being_used_in_columns).returns(1000)
-
-    View.stubs(find: stub(category: VIEW_CATEGORY_NAME))
+    View.stubs(
+      :find => stub(
+        :category => OBE_CATEGORY_NAME,
+        :migrations => stub_migrations
+      )
+    )
   end
 
   def test_create_succeeds
@@ -75,15 +83,39 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     manager.create(v0_page_metadata)
   end
 
-  def test_create_creates_data_lens_with_category
+  def test_create_creates_data_lens_with_category_from_obe_dataset
     Phidippides.any_instance.stubs(
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns},
       update_page_metadata: { status: '200', body: {} }
     )
     stub_feature_flags_with(:metadata_transition_phase, '3')
+    mock_nbe_dataset = stub(:migrations => stub_migrations)
+    mock_obe_dataset = stub(:category => OBE_CATEGORY_NAME)
+    View.expects(:find).with(NBE_DATASET_ID).returns(mock_nbe_dataset)
+    View.expects(:find).with(OBE_DATASET_ID).returns(mock_obe_dataset)
 
     NewViewManager.any_instance.expects(:create).times(1).with do |_, _, category|
-      assert_equal(VIEW_CATEGORY_NAME, category)
+      assert_equal(OBE_CATEGORY_NAME, category)
+    end.returns('fdsa-fdsa')
+
+    manager.create(v1_page_metadata)
+  end
+
+  def test_create_creates_data_lens_with_category_from_nbe_dataset
+    Phidippides.any_instance.stubs(
+      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns},
+      update_page_metadata: { status: '200', body: {} }
+    )
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+    mock_nbe_dataset = stub(
+      :migrations => stub_migrations,
+      :category => NBE_CATEGORY_NAME
+    )
+    View.expects(:find).with(NBE_DATASET_ID).returns(mock_nbe_dataset)
+    View.expects(:find).with(OBE_DATASET_ID).raises(CoreServer::ResourceNotFound.new(nil))
+
+    NewViewManager.any_instance.expects(:create).times(1).with do |_, _, category|
+      assert_equal(NBE_CATEGORY_NAME, category)
     end.returns('fdsa-fdsa')
 
     manager.create(v1_page_metadata)
@@ -563,7 +595,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_dataset_metadata
-    Phidippides.any_instance.expects(:fetch_dataset_metadata).times(1).with('vtvh-wqgq', {}).then.returns(
+    Phidippides.any_instance.expects(:fetch_dataset_metadata).times(1).with(NBE_DATASET_ID, {}).returns(
       status: '200',
       body: v1_page_metadata
     )
@@ -712,7 +744,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   def v1_page_metadata_as_v0
     v1_page_metadata_as_v0 = v0_page_metadata.deep_dup
     v1_page_metadata_as_v0['pageId'] = 'iuya-fxdq'
-    v1_page_metadata_as_v0['datasetId'] = 'vtvh-wqgq'
+    v1_page_metadata_as_v0['datasetId'] = NBE_DATASET_ID
     v1_page_metadata_as_v0['description'] = v1_dataset_metadata['description']
     v1_page_metadata_as_v0['cards'] = [
       {
@@ -795,6 +827,17 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   def assert_page_has_table_card(page_metadata)
     has_table_card = page_metadata['cards'].pluck('cardType').any? { |cardType| cardType == 'table' }
     assert(has_table_card, 'Page metadata should have table card')
+  end
+
+  def stub_migrations
+    JSON.parse(
+      '{
+        "lastSyncJobId" : "acd092ee-008d-4473-8776-7d3e26ddc061",
+        "nbeId" : "up67-qs3z",
+        "obeId" : "nrhw-r55e",
+        "syncedAt" : 1426732353
+      }'
+    )
   end
 
 end

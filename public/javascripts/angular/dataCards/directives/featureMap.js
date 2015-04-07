@@ -1,10 +1,12 @@
 (function() {
   'use strict';
 
-  function featureMap(
+  function FeatureMap(
     Constants,
     AngularRxExtensions,
-    VectorTiles) {
+    VectorTiles,
+    LeafletHelpersService
+  ) {
 
     return {
       restrict: 'E',
@@ -383,13 +385,7 @@
           filter(_.isDefined).
           map(
             function(featureExtent) {
-              var southWest;
-              var northEast;
-              var bounds;
-
-              southWest = L.latLng(featureExtent.southwest[0], featureExtent.southwest[1]);
-              northEast = L.latLng(featureExtent.northeast[0], featureExtent.northeast[1]);
-              bounds = L.latLngBounds(southWest, northEast);
+              var bounds = LeafletHelpersService.buildBounds(featureExtent);
 
               // It is critical to invalidate size prior to updating bounds.
               // Otherwise, leaflet will fit the bounds to an incorrectly sized viewport.
@@ -420,14 +416,5 @@
 
   angular.
     module('dataCards.directives').
-      directive(
-        'featureMap',
-        [
-          'Constants',
-          'AngularRxExtensions',
-          'VectorTiles',
-          'FlyoutService',
-          featureMap
-        ]
-      );
+      directive('featureMap', FeatureMap);
 })();

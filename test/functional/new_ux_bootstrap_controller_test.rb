@@ -21,7 +21,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         stub.stubs(get_request: '[]', reset_counters: {requests: {}, runtime: 0})
       end
       CoreServer::Base.stubs(connection: connection_stub)
-      stub_feature_flags_with(:metadata_transition_phase, '0')
+      stub_multiple_feature_flags_with(metadata_transition_phase: '0', odux_enable_histogram: true)
     end
 
     should 'have no route if no id' do
@@ -525,10 +525,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
           end
 
-          teardown do
-            stub_feature_flags_with(:metadata_transition_phase, '0')
-          end
-
           should 'in phase 0' do
             @phidippides.stubs(
               fetch_dataset_metadata: {
@@ -651,7 +647,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               assert(differing_card_types.present?)
 
               assert(page['cards'].any? do |card|
-                card['fieldName'] == 'none' && card['cardType'] == 'search'
+                card['fieldName'] == 'none' && card['cardType'] == 'histogram'
               end, 'A column with no cardinality should default to its high-cardinality default')
 
               #This was never implemented past phase 2.
@@ -796,6 +792,53 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               assert(page['cards'].none? do |card|
                 card['fieldName'] == 'point_city'
               end, 'should omit sub-columns')
+
+            end.returns(status: '200', body: { pageId: 'neoo-page' })
+
+            get :bootstrap, id: 'four-four'
+            assert_redirected_to('/view/neoo-page')
+          end
+
+          should 'not create a card for number or money columns, if histograms are unsupported' do
+            mock_dataset_metadata = v1_mock_dataset_metadata
+            mock_dataset_metadata[:columns] = {
+              money_column: {
+                name: 'Moneymoneymoneymoooney',
+                description: 'A Money column that should be omitted',
+                fred: 'money',
+                physicalDatatype: 'money'
+              },
+              number_column: {
+                name: 'Onetwothree',
+                description: 'best to conserve numbers afore they run out',
+                fred: 'number',
+                physicalDatatype: 'number'
+              },
+              time_column: {
+                name: 'time column',
+                description: 'this is the only one that should be included',
+                fred: 'time',
+                physicalDatatype: 'fixed_timestamp'
+              }
+            }
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200', body: mock_dataset_metadata
+              },
+              update_dataset_metadata: {
+                status: '200', body: mock_dataset_metadata
+              }
+            )
+            stub_multiple_feature_flags_with(
+              metadata_transition_phase: '3',
+              odux_enable_histogram: false
+            )
+
+            # Make sure the page we're creating doesn't create cards out of money or number columns
+            @page_metadata_manager.expects(:create).with do |page, _|
+              assert_equal(1, page['cards'].length, 'should omit all number/money coumns')
+
+              assert_equal(page['cards'][0]['fieldName'], 'time_column')
 
             end.returns(status: '200', body: { pageId: 'neoo-page' })
 

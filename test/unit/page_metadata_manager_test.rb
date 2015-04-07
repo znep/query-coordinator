@@ -4,7 +4,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   VIEW_CATEGORY_NAME = 'test_category'
 
   def setup
-    CurrentDomain.stubs(domain: stub(cname: 'localhost'))
+    init_current_domain
     NewViewManager.any_instance.stubs(create: 'niew-veww')
     NewViewManager.any_instance.stubs(update: nil)
     Phidippides.any_instance.stubs(connection_details: {

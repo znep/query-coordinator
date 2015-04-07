@@ -326,9 +326,24 @@ class NewUxBootstrapController < ActionController::Base
     end
   end
 
+  def numbers_column?(column)
+    column[:physicalDatatype] == 'number'
+  end
+
+  def money_column?(column)
+    column[:physicalDatatype] == 'money'
+  end
+
   def non_bootstrappable_column?(field_name, column)
     field_name_ignored_for_bootstrap?(field_name) ||
-      system_column?(field_name)
+      system_column?(field_name) ||
+      # CORE-4901: without histograms..
+      (!histogram_supported? && (
+        # number cards aren't useful (who wants to search for a number??)
+        numbers_column?(column) ||
+        # CORE-4901/CORE-4777: search card for money columns are broken
+        money_column?(column)
+      ))
   end
 
   def interesting_columns(columns)

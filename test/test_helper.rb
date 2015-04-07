@@ -100,15 +100,17 @@ module TestHelperMethods
   end
 
   def stub_feature_flags_with(key, value)
-    CurrentDomain.stubs(feature_flags: Hashie::Mash.new.tap { |hash| hash[key] = value })
+    stub_multiple_feature_flags_with(key => value)
   end
 
   def stub_multiple_feature_flags_with(options)
-    feature_flags = Hashie::Mash.new
-    options.each do |key, value|
-      feature_flags[key] = value
+    if @feature_flags != CurrentDomain.feature_flags
+      @feature_flags = Hashie::Mash.new
+      CurrentDomain.stubs(feature_flags: @feature_flags)
     end
-    CurrentDomain.stubs(feature_flags: feature_flags)
+    options.each do |key, value|
+      @feature_flags[key] = value
+    end
   end
 
 end

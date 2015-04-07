@@ -8,7 +8,7 @@ class PhidippidesTest < Test::Unit::TestCase
 
   def setup
     # noinspection RubyArgCount
-    CurrentDomain.stubs(domain: stub(cname: 'localhost'))
+    init_current_domain
     stub_feature_flags_with(:metadata_transition_phase, '0')
     Phidippides.any_instance.stubs(:connection_details => {
       'address' => 'localhost',

@@ -6,7 +6,7 @@ namespace :test do
   # IMPORTANT: If you add/remove/change test groups,
   # please update karma-unit.js (look for the calls to isTestGroupIncluded).
   # If you don't, your tests may be executed multiple times per run.
-  TEST_GROUPS = %w(services controllers directives-card-layout directives-maps directives-other filters integration models util old-ux)
+  TEST_GROUPS = %w(services controllers directives-card-layout directives-maps directives-other filters integration models util)
 
   desc "Run all karma tests and update test-coverage result"
   task :karma do

@@ -789,16 +789,15 @@ $(function()
 
     var datasetShowHelpers = {
       canUpdateMetadata: function() {
-        return  !_.isNull(blist.currentUser) && !_.isUndefined(blist.currentUser) &&
-                (_.include(['administrator', 'publisher'], blist.currentUser.roleName) ||
-                blist.dataset.owner.id === blist.currentUserId ||
-                _.include(blist.currentUser.flags, 'admin'));
+        return !_.isNull(blist.currentUser) && !_.isUndefined(blist.currentUser) &&
+                blist.currentUser.hasOwnProperty('rights') &&
+                blist.currentUser.rights.indexOf('edit_others_datasets') > -1;
       },
       getNewUXLinkParams: function() {
         var linkParams = {
           canUpdateMetadata: datasetShowHelpers.canUpdateMetadata(),
           newBackendPage: blist.dataset.newBackend,
-          exitTechPreview: blist.feature_flags.exit_tech_preview,
+          dataLensState: blist.feature_flags.data_lens_transition_state,
           blistDatasetId: blist.dataset.id,
           metadataTransitionPhase: blist.feature_flags.metadata_transition_phase
         };
@@ -813,7 +812,7 @@ $(function()
         var linkHref = null;
 
         if (linkParams.newBackendPage) {
-          if (linkParams.canUpdateMetadata || linkParams.exitTechPreview) {
+          if (linkParams.canUpdateMetadata) {
             linkHref = '/view/bootstrap/{0}'.format(linkParams.blistDatasetId);
             datasetShowHelpers.createNewUXLink(linkParams, linkHref);
           }
@@ -831,9 +830,12 @@ $(function()
               $.ajax({
                 url: datasetMetadataUrl.format(migration.nbeId),
                 success: function(metadata) {
-                  if (metadata.defaultPage && linkParams.exitTechPreview) {
-                    linkHref = '/view/{0}'.format(metadata.defaultPage);
-                  } else if (canUpdateMetadata()) {
+                  if (metadata.defaultPage) {
+                    if (linkParams.canUpdateMetadata || linkParams.dataLensState === 'post-beta') {
+                      linkHref = '/view/{0}'.format(metadata.defaultPage);
+                    }
+                  } else if (linkParams.canUpdateMetadata) {
+                    // bootstrap new page
                     linkHref = '/view/bootstrap/{0}'.format(migration.nbeId);
                   }
                   datasetShowHelpers.createNewUXLink(linkParams, linkHref);
@@ -845,7 +847,9 @@ $(function()
       },
       // Append to body, click functionality
       createNewUXLink: function(linkParams, linkHref) {
-        if (!linkHref || linkHref.length <= 0) return false;
+        if (!linkHref || linkHref.length <= 0) {
+          return;
+        }
 
         var newUxLink = $('<div class="new-ux-link icon-cards">' +
                             '<div class="icon-close"/>' +
@@ -855,9 +859,11 @@ $(function()
                             '<a class="explore-btn">' +
                               $.t('screens.ds.new_ux_button') +
                             '</a>');
+
         if (linkParams.collapsed) {
           newUxLink.addClass('collapsed');
         }
+
         newUxLink.find('a.explore-btn').attr('href', linkHref);
         newUxLink.appendTo('body');
 
@@ -898,10 +904,11 @@ $(function()
       }
     };
 
-    setTimeout(function(){
-      if (blist && blist.feature_flags && blist.feature_flags.enable_newux_bootstrap_link) {
+    // setTimeout needed for extra frame to run for blist properties =(
+    blist.configuration.onCurrentUserComplete(function() {
+      if (blist && blist.feature_flags && blist.feature_flags.data_lens_transition_state !== 'pre-beta') {
         var linkParams = datasetShowHelpers.getNewUXLinkParams();
         datasetShowHelpers.getNewUXLinkHref(linkParams);
       }
-    }, 0);
+    });
 });

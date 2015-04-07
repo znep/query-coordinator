@@ -16,7 +16,6 @@ class PhidippidesDatasetsController < ApplicationController
   helper_method :current_user_session
 
   def index
-    return render :nothing => true, :status => '406' unless request.format.to_s == 'application/json'
     return render :nothing => true, :status => '400' unless params[:id].present?
 
     begin
@@ -38,7 +37,6 @@ class PhidippidesDatasetsController < ApplicationController
   # This endpoint is 'safe' for the public and for checking permissions and
   # fetching the geometry label of shape files, however.
   def show
-    return render :nothing => true, :status => '406' unless request.format.to_s == 'application/json'
     return render :nothing => true, :status => '400' unless params[:id].present?
 
     if inherit_catalog_lens_permissions?

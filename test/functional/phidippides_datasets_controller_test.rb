@@ -144,17 +144,6 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     assert_response(:success)
   end
 
-  test '(phase 2) update returns 406 unless format is JSON' do
-    dataset_stub = mock
-    dataset_stub.stubs(can_edit?: true)
-    @controller.stubs(can_create_metadata?: true, dataset: dataset_stub)
-    @phidippides.stubs(issue_request: { body: 'not json', status: 200 })
-
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    put :update, id: 'four-four', datasetMetadata: '{}', format: :text
-    assert_response(406)
-  end
-
   test 'update returns 401 unless has necessary rights' do
     dataset_stub = mock
     dataset_stub.stubs(can_edit?: false)

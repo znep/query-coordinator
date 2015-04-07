@@ -125,7 +125,7 @@ class PhidippidesTest < Test::Unit::TestCase
   end
 
   def test_fetch_dataset_metadata
-    phidippides.stubs(:migration_status_or_nil => nil, :dataset_view => nil)
+    phidippides.stubs(:dataset_view => nil)
     prepare_stubs(body: v0_dataset_metadata, path: 'datasets/four-four', verb: :get)
     stub_feature_flags_with(:metadata_transition_phase, '0')
     result = phidippides.fetch_dataset_metadata('four-four', request_id: 'request_id')
@@ -140,14 +140,14 @@ class PhidippidesTest < Test::Unit::TestCase
     stub_feature_flags_with(:metadata_transition_phase, '2')
     result = phidippides.fetch_dataset_metadata('vtvh-wqgq', request_id: 'request_id')
     assert_equal(v1_dataset_metadata, result[:body])
-    phidippides.unstub(:migration_status_or_nil, :dataset_view)
+    phidippides.unstub(:dataset_view)
   end
 
   def test_fetch_dataset_metadata_with_error
     error_body_stub = { 'error' => true }
     error_status = '400'
 
-    phidippides.stubs(:migration_status_or_nil => { :truthy => true }, :dataset_view => {})
+    phidippides.stubs(:dataset_view => {})
     stub_column = { :fieldName => 'fooBar' }.with_indifferent_access
     phidippides.dataset_view.stubs(:columns => [stub_column])
     prepare_stubs(body: error_body_stub, path: 'datasets/four-four', verb: :get, code: error_status)
@@ -169,7 +169,7 @@ class PhidippidesTest < Test::Unit::TestCase
     assert_equal(error_body_stub, result[:body])
     assert_equal(error_status, result[:status])
 
-    phidippides.unstub(:migration_status_or_nil, :dataset_view)
+    phidippides.unstub(:dataset_view)
   end
 
   def test_set_default_and_available_card_types_to_columns_in_phase_3_calls_airbrake_when_it_cannot_find_a_dataset_id
@@ -453,30 +453,29 @@ class PhidippidesTest < Test::Unit::TestCase
     run_test_with_obe_and_v1_nbe
   end
 
-  def test_migration_status_has_status
-    connection_stub = stub.tap do |stub|
-      stub.expects(:get_request).
-        with { |arg| /^\/migrations\//.match(arg) }.
-        returns('{"controlMapping": "", "nbeId": "newb-newb", "obeId": "olds-kool", "syncedAt": 1425592085}')
-    end
-
-    CoreServer::Base.stubs(connection: connection_stub)
-    result = phidippides.migration_status_or_nil('newb-newb')
-    assert_equal('newb-newb', result[:nbeId])
-    assert_equal('olds-kool', result[:obeId])
+  def test_augment_dataset_metadata_with_nbe_dataset
+    stub_migrations = JSON.parse(
+      '{"nbeId": "newb-newb", "obeId": "olds-kool", "syncedAt": 1425592085}'
+    ).with_indifferent_access
+    mock_nbe_dataset = stub(:migrations => stub_migrations)
+    mock_dataset_metadata = {}
+    phidippides.expects(:dataset_view).with('newb-newb').returns(mock_nbe_dataset)
+    phidippides.expects(:dataset_view).with('olds-kool').raises(CoreServer::ResourceNotFound.new(nil))
+    phidippides.expects(:mirror_nbe_column_metadata!).with(mock_nbe_dataset, mock_dataset_metadata)
+    phidippides.augment_dataset_metadata!('newb-newb', mock_dataset_metadata)
   end
 
-  def test_migration_status_has_no_status
-    connection_stub = stub.tap do |stub|
-      stub.expects(:get_request).
-        with { |arg| /^\/migrations\//.match(arg) }.
-        raises(CoreServer::Error)
-    end
-
-    CoreServer::Base.stubs(connection: connection_stub)
-
-    result = phidippides.migration_status_or_nil('newb-newb')
-    assert_nil(result)
+  def test_augment_dataset_metadata_with_obe_dataset
+    stub_migrations = JSON.parse(
+      '{"nbeId": "newb-newb", "obeId": "olds-kool", "syncedAt": 1425592085}'
+    ).with_indifferent_access
+    mock_nbe_dataset = stub(:migrations => stub_migrations)
+    mock_obe_dataset = stub
+    mock_dataset_metadata = {}
+    phidippides.expects(:dataset_view).with('newb-newb').returns(mock_nbe_dataset)
+    phidippides.expects(:dataset_view).with('olds-kool').returns(mock_obe_dataset)
+    phidippides.expects(:mirror_nbe_column_metadata!).with(mock_obe_dataset, mock_dataset_metadata)
+    phidippides.augment_dataset_metadata!('newb-newb', mock_dataset_metadata)
   end
 
   private

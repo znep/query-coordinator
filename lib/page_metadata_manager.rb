@@ -56,24 +56,12 @@ class PageMetadataManager
 
     initialize_metadata_transition_phase_key_names
 
-    # Grab the source dataset so we can copy over some metadata.
-    source_dataset_category = nil
-    begin
-      source_dataset = View.find(page_metadata['datasetId'])
-      source_dataset_category = source_dataset.category
-    rescue CoreServer::Error => error
-      report_error(
-        "Core server error while attempting to read source dataset's metadata, using defaults" \
-        "(#{page_metadata['datasetId']}): #{error}"
-      )
-    end
-
     # The core lens id for this page is the same one we use to refer to it in
     # phidippides
     new_page_id = new_view_manager.create(
       page_metadata['name'],
       page_metadata['description'],
-      source_dataset_category
+      dataset_category(page_metadata['datasetId'])
     )
 
     page_metadata['pageId'] = new_page_id
@@ -327,6 +315,34 @@ class PageMetadataManager
 
   def new_view_manager
     @new_view_manager ||= NewViewManager.new
+  end
+
+  # Attempt to determine the category for a given dataset. First look in the OBE
+  # dataset, then fallback to the NBE dataset, then give up. Since we don't know
+  # with certainty that the datasetId passed in here is NBE or OBE, we just fetch
+  # it and ask for the migrations and look explicitly for an obeId. It's only then
+  # that we can know for sure which flavor of datasetId we're holding.
+  def dataset_category(datasetId)
+    begin
+      ambiguous_dataset = View.find(datasetId)
+      begin
+        obe_dataset = View.find(ambiguous_dataset.migrations['obeId'])
+        dataset_category = obe_dataset.category
+      rescue CoreServer::ResourceNotFound
+        # If a migration cannot be found for the datasetId, then we know at this
+        # point that the datasetId must be for an NBE dataset. Here we try to
+        # fallback to the category on NBE dataset. Notwithstanding expecting
+        # that the NBE dataset category will be nil anyway.
+        dataset_category = ambiguous_dataset.category
+      end
+    rescue CoreServer::Error => error
+      report_error(
+        "Core server error while attempting to read dataset metadata for id: #{datasetId}",
+        error
+      )
+    end
+
+    dataset_category
   end
 
 end

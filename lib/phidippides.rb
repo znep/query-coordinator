@@ -81,18 +81,23 @@ class Phidippides < SocrataHttp
     fetched_response
   end
 
-  # Given a dataset ID and metadata, this decorate the metadata based on whether
+  # Given a dataset ID and metadata, this decorates the metadata based on whether
   # there is a migrated old backend dataset available, otherwise it will use a
   # new backend dataset
   def augment_dataset_metadata!(dataset_id, dataset_metadata)
-    status = migration_status_or_nil(dataset_id)
-    if status.nil?
-      backend_view = dataset_view(dataset_id)
-    else
-      backend_view = dataset_view(status[:obeId])
+    backend_view = dataset_view(dataset_id)
+    return unless backend_view
+
+    begin
+      migrations = backend_view.migrations
+      backend_view = dataset_view(migrations[:obeId])
+    rescue CoreServer::ResourceNotFound
+      # NOOP
     end
 
-    mirror_nbe_column_metadata!(backend_view, dataset_metadata) unless backend_view.nil?
+    if backend_view
+      mirror_nbe_column_metadata!(backend_view, dataset_metadata)
+    end
   end
 
   # Given a backend_view and a new backend dataset, this will attempt to
@@ -119,28 +124,6 @@ class Phidippides < SocrataHttp
       error_message = %Q(Error while retrieving old backend view of "(#{id.inspect}): #{error}")
       Airbrake.notify(
         :error_class => 'DatasetViewError',
-        :error_message => error_message
-      )
-      Rails.logger.warn(error_message)
-      nil
-    end
-  end
-
-  def migration_status_or_nil(id)
-    begin
-      response = CoreServer::Base.connection.get_request(
-        "/migrations/#{id}"
-      )
-      status = JSON.parse(response).with_indifferent_access
-      if status.has_key?(:obeId) && status.has_key?(:nbeId)
-        status
-      else
-        nil
-      end
-    rescue => error
-      error_message = %Q(Error while retrieving migration status of "(#{id.inspect}): #{error}")
-      Airbrake.notify(
-        :error_class => 'MigrationStatusError',
         :error_message => error_message
       )
       Rails.logger.warn(error_message)

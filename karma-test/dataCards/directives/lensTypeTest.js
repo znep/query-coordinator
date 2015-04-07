@@ -25,7 +25,7 @@ describe('lensType directive', function() {
     scope.$$childHead.lensType = 'official';
     scope.$digest();
 
-    expect(lensType.find('span:visible').text()).to.equal('official datalens');
+    expect(lensType.find('span:visible').text()).to.equal('official data lens');
   });
 
   it('should render a community lens type when its type is community', function() {
@@ -34,6 +34,6 @@ describe('lensType directive', function() {
     scope.$$childHead.lensType = 'community';
     scope.$digest();
 
-    expect(lensType.find('span:visible').text()).to.equal('community datalens');
+    expect(lensType.find('span:visible').text()).to.equal('community data lens');
   });
 });

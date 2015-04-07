@@ -143,3 +143,7 @@ current_dataset_metadata_version:
 current_page_metadata_version:
   description: The current version of page metadata that the app should read and write.
   defaultValue: 1
+data_lens_transition_state:
+  description: The transition state tracking when and how data lenses should be surfaced in the old UX (e.g. on browse, profile and admin pages).
+  defaultValue: pre_beta
+  expectedValues: pre_beta beta post_beta

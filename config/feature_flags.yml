@@ -146,3 +146,7 @@ current_page_metadata_version:
 feature_map_default_extent:
   description: "The site-wide default extent for feature/point maps. Should be a single-quoted JSON object. Ex: '{\"southwest\":[41.681944,-87.827778],\"northeast\":[42.081944,-87.427778]}'"
   defaultValue: ''
+data_lens_transition_state:
+  description: The transition state tracking when and how data lenses should be surfaced in the old UX (e.g. on browse, profile and admin pages).
+  defaultValue: pre_beta
+  expectedValues: pre_beta beta post_beta

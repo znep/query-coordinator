@@ -69,19 +69,27 @@
   }
 
   function initManageLens($scope, page) {
+
     var pageIsPublicObservable = page.observe('permissions').
-        filter(_.isObject).
-        map(_.property('isPublic'));
-    $scope.bindObservable('pagePermissions', pageIsPublicObservable.map(function(isPublic) {
-      return isPublic ? 'public' : 'private';
-    }));
+      filter(_.isObject).
+      map(_.property('isPublic'));
+
+    var datasetIsPublicObservable = page.observe('dataset.permissions').
+      filter(_.isObject).
+      map(_.property('isPublic')).
+      // Default to true, so the warning icon doesn't appear before the actual metadata is fetched
+      startWith(true);
+
+    var pagePermissionsObservable = pageIsPublicObservable.
+      map(
+        function(isPublic) {
+          return isPublic ? 'public' : 'private';
+        }
+      );
+
     $scope.bindObservable('pageIsPublic', pageIsPublicObservable);
-    $scope.bindObservable(
-      'datasetIsPublic',
-      page.observe('dataset.permissions').filter(_.isObject).map(_.property('isPublic')).
-        // Default to true, so the warning icon doesn't appear before the actual metadata is fetched
-        startWith(true)
-    );
+    $scope.bindObservable('datasetIsPublic', datasetIsPublicObservable);
+    $scope.bindObservable('pagePermissions', pagePermissionsObservable);
 
     $scope.manageLensState = {
       show: false
@@ -219,9 +227,30 @@
 
 
     initDownload($scope, page, obeIdObservable, WindowState, FlyoutService, ServerConfig);
-    if (ServerConfig.get('exitTechPreview')) {
-      initManageLens($scope, page);
-    }
+
+    $scope.shouldShowManageLens = false;
+
+    currentUserSequence.subscribe(
+      function(currentUser) {
+
+        var currentUserCanEditOthersDatasets =
+          _.isPresent(currentUser) &&
+          currentUser.hasOwnProperty('rights') &&
+          currentUser.rights.indexOf('edit_others_datasets') > -1;
+
+        var shouldShowManageLens =
+          ServerConfig.get('dataLensTransitionState') === 'post_beta' &&
+          currentUserCanEditOthersDatasets;
+
+        if (shouldShowManageLens) {
+
+          $scope.safeApply(function() {
+            $scope.shouldShowManageLens = true;
+            initManageLens($scope, page);
+          });
+        }
+      }
+    );
 
     /*******************************
     * Filters and the where clause *

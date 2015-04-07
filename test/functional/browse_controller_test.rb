@@ -19,11 +19,12 @@ class BrowseControllerTest < ActionController::TestCase
       :route_params => {
         :profile_name => @user.screen_name,
         :id => @user.uid
-      }
+      },
+      :rights => []
     )
     User.stubs(:find_profile => @user)
     @controller.stubs(
-      :user => @user,
+      :current_user => @user,
       :categories_facet => nil
     )
     connection_stub = stub.tap do |stub|
@@ -42,36 +43,150 @@ class BrowseControllerTest < ActionController::TestCase
     Federation.stubs(:find => [])
   end
 
-  test 'it should not show the new view facet by default' do
-    get :show
-    assert_response :success
-    assert_select_quiet '.facetSection.limitTo > ul > li > .typeNewView', 0
-  end
+  test 'it should respond to the data_lens_state feature flag as a query string parameter' do
+    stub_feature_flags_with(:data_lens_transition_state, 'pre_beta')
+    get :show, { 'data_lens_transition_state' => 'post_beta' }
 
-  test 'it should show the new view facet when exit_tech_preview feature flag is true' do
-    stub_feature_flags_with(:exit_tech_preview, true)
-    get :show
     assert_response :success
     assert_select_quiet '.facetSection.limitTo > ul > li > .typeNewView', 1
   end
 
-  test 'it should show the new view listing' do
-    get :show
-    assert_response :success
-    assert_select_quiet %Q(tr[data-viewId="#{@new_view_id}"]), 1
+  context 'when the data_lens_state feature flag is set to "pre_beta"' do
+    setup do
+      stub_feature_flags_with(:data_lens_transition_state, 'pre_beta')
+    end
+
+    should 'not show any new view facet for users unable to edit the datasets of others' do
+      @user.stubs(
+        :followers => [],
+        :friends => [],
+        :route_params => {
+          :profile_name => @user.screen_name,
+          :id => @user.uid
+        },
+        :rights => []
+      )
+      @controller.stubs(
+        :current_user => @user,
+        :categories_facet => nil
+      )
+      get :show
+
+      assert_response :success
+      assert_select_quiet '.facetSection.limitTo > ul > li > .typeNewView', 0
+    end
+
+    should 'not show any new view facet for users able to edit the datasets of others' do
+      @user.stubs(
+        :followers => [],
+        :friends => [],
+        :route_params => {
+          :profile_name => @user.screen_name,
+          :id => @user.uid
+        },
+        :rights => ['edit_others_datasets']
+      )
+      @controller.stubs(
+        :current_user => @user,
+        :categories_facet => nil
+      )
+      get :show
+
+      assert_response :success
+      assert_select_quiet '.facetSection.limitTo > ul > li > .typeNewView', 0
+    end
   end
 
-  test 'a new view catalog entry should link to the new view' do
-    stub_feature_flags_with(:exit_tech_preview, true)
-    get :show
-    assert_response :success
-    assert_select_quiet %Q(.titleLine a.name[href="#{@new_view_url}"]), 1
+  context 'when the data_lens_state feature flag is set to "beta"' do
+    setup do
+      stub_feature_flags_with(:data_lens_transition_state, 'beta')
+    end
+
+    should 'not show any new view facet for users unable to edit the datasets of others' do
+      @user.stubs(
+        :followers => [],
+        :friends => [],
+        :route_params => {
+          :profile_name => @user.screen_name,
+          :id => @user.uid
+        },
+        :rights => []
+      )
+      @controller.stubs(
+        :current_user => @user,
+        :categories_facet => nil
+      )
+      get :show
+
+      assert_response :success
+      assert_select_quiet '.facetSection.limitTo > ul > li > .typeNewView', 0
+    end
+
+    should 'show new view facets for users able to edit the datasets of others' do
+      @user.stubs(
+        :followers => [],
+        :friends => [],
+        :route_params => {
+          :profile_name => @user.screen_name,
+          :id => @user.uid
+        },
+        :rights => ['edit_others_datasets']
+      )
+      @controller.stubs(
+        :current_user => @user,
+        :categories_facet => nil
+      )
+      get :show
+
+      assert_response :success
+      assert_select_quiet '.facetSection.limitTo > ul > li > .typeNewView', 1
+    end
   end
 
-  test 'it should respond to the exit_tech_preview feature flag as a query string parameter' do
-    get :show, { 'exit_tech_preview' => 'true' }
-    assert_response :success
-    assert_select_quiet %Q(tr[data-viewId="#{@new_view_id}"]), 1
+  context 'when the data_lens_state feature flag is set to "post_beta"' do
+    setup do
+      stub_feature_flags_with(:data_lens_transition_state, 'post_beta')
+    end
+
+    should 'show new view facets for users unable to edit the datasets of others' do
+      @user.stubs(
+        :followers => [],
+        :friends => [],
+        :route_params => {
+          :profile_name => @user.screen_name,
+          :id => @user.uid
+        },
+        :rights => []
+      )
+      @controller.stubs(
+        :current_user => @user,
+        :categories_facet => nil
+      )
+      get :show
+
+      assert_response :success
+      assert_select_quiet '.facetSection.limitTo > ul > li > .typeNewView', 1
+    end
+
+    should 'show new view facets for users able to edit the datasets of others' do
+      @user.stubs(
+        :followers => [],
+        :friends => [],
+        :route_params => {
+          :profile_name => @user.screen_name,
+          :id => @user.uid
+        },
+        :rights => ['edit_others_datasets']
+      )
+      @controller.stubs(
+        :current_user => @user,
+        :categories_facet => nil
+      )
+      get :show
+
+      assert_response :success
+      assert_select_quiet '.facetSection.limitTo > ul > li > .typeNewView', 1
+    end
   end
 
   test 'it should not send a limitTo for search when no facet is selected' do

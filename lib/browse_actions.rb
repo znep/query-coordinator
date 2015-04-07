@@ -23,32 +23,9 @@ protected
         {:text => t('controls.browse.facets.view_types.blob'), :value => 'blob', :class => 'typeBlob'},
         {:text => t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'}]
     }
-    if (
-      feature_flag?(:exit_tech_preview, defined?(request) ? request : nil) ||
-      (
-        defined?(current_user) &&
-        CurrentDomain.user_can?(current_user, :edit_others_datasets)
-      )
-    )
 
-      datasets_index = vts[:options].index { |option| option[:value] == 'datasets' } || 0
-      new_view_option = {
-        :text => t('controls.browse.facets.view_types.new_view'),
-        :value => 'new_view',
-        :class => 'typeNewView',
-        :icon_font_class => 'icon-cards'
-      }
+    vts = add_data_lens_view_type_if_enabled_by_feature_flag!(vts)
 
-      whats_this = FeatureFlags.derive(nil, request)[:data_lens_whats_this_href]
-      if whats_this
-        new_view_option[:help_link] = {
-          :href => whats_this,
-          :text => t('controls.browse.facets.view_types.new_view_help')
-        }
-      end
-
-      vts[:options].insert(datasets_index + 1, new_view_option)
-    end
     if module_enabled?(:api_foundry)
       vts[:options] << {:text => t('controls.browse.facets.view_types.apis'), :value => 'apis', :class => 'typeApi'}
     end
@@ -364,6 +341,7 @@ protected
   end
 
 private
+
   def get_title(options, facets)
     title = []
 
@@ -414,6 +392,65 @@ private
   # Unused for now, but this will refresh the cutoffs from the configs service
   def self.clear_cutoff_cache(cname = nil)
     @@cutoff_store.delete(cname || CurrentDomain.cname)
+  end
+
+  def data_lens_transition_state
+    # Ignore feature flags defined in the view metadata (first argument) but
+    # allow feature flag overrides in the query string (second argument)
+    FeatureFlags.derive(nil, request)[:data_lens_transition_state]
+  end
+
+  def data_lens_phase_beta?
+    data_lens_transition_state == 'beta'
+  end
+
+  def data_lens_phase_post_beta?
+    data_lens_transition_state == 'post_beta'
+  end
+
+  def current_user_can_edit_others_datasets?
+    (defined?(current_user) &&
+      CurrentDomain.user_can?(current_user, :edit_others_datasets))
+  end
+
+  def add_data_lens_view_type?
+    should_show_data_lenses = false
+
+    if data_lens_phase_beta?
+      should_show_data_lenses = current_user_can_edit_others_datasets?
+    elsif data_lens_phase_post_beta?
+      should_show_data_lenses = true
+    end
+
+    should_show_data_lenses
+  end
+
+  def add_data_lens_view_type_if_enabled_by_feature_flag!(vts)
+    if add_data_lens_view_type?
+
+      new_view_option = {
+        :text => ::I18n.t('controls.browse.facets.view_types.new_view'),
+        :value => 'new_view',
+        :class => 'typeNewView',
+        :icon_font_class => 'icon-cards',
+        :help_link => {
+          :href => 'http://www.socrata.com/datalens',
+          :text => ::I18n.t('controls.browse.facets.view_types.new_view_help')
+        }
+      }
+
+      datasets_index = vts[:options].index { |option|
+        option[:value] == 'datasets'
+      }
+
+      unless datasets_index.present?
+        datasets_index = 0
+      end
+
+      vts[:options].insert(datasets_index, new_view_option)
+    end
+
+    vts
   end
 
   @@default_cutoffs = {

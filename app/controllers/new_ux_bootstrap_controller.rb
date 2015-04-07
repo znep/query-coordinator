@@ -283,7 +283,59 @@ class NewUxBootstrapController < ActionController::Base
   def field_name_ignored_for_bootstrap?(field_name)
     columns_to_avoid = FeatureFlags.derive(nil, defined?(request) ? request : nil)[:field_names_to_avoid_during_bootstrap]
     columns_to_avoid = columns_to_avoid.kind_of?(Array) ? columns_to_avoid.map(&:to_s).map(&:downcase) : []
-    columns_to_avoid.include?(field_name.downcase) || Phidippides::SYSTEM_COLUMN_ID_REGEX.match(field_name)
+    columns_to_avoid.include?(field_name.downcase)
+  end
+
+  def system_column?(field_name)
+    (field_name =~ Phidippides::SYSTEM_COLUMN_ID_REGEX) != nil
+  end
+
+  # CORE-4645 OBE datasets can have columns that have sub-columns. When converted to the NBE, these
+  # sub-columns become their own columns. These generally don't have meaning in isolation, so don't
+  # create a card for them.
+  def filter_out_subcolumns(columns)
+    # The OBE->NBE conversion doesn't add any metadata to allow us to differentiate sub-columns,
+    # except that it has a naming convention of "Parent Column Name (Sub-column Name)"
+
+    # Create a mapping from the name, to all field_names that have that name
+    field_name_by_name = Hash.new { |hash, key| hash[key] = [] }
+    columns.each do |field_name, column|
+      field_name_by_name[column[:name]] << field_name
+    end
+
+    # Reject everything that looks like a subcolumn
+    columns.reject do |field_name, column|
+      parent_column = column[:name].sub(/(\w) +\(.+\)$/, '\1')
+      if parent_column == column[:name]
+        # This column wasn't named according to the sub-column naming convention at all, so is not a
+        # subcolumn.
+        false
+      else
+        parent_field_names = field_name_by_name[parent_column]
+        if parent_field_names
+          # There are columns that have the same name as this one, sans parenthetical.
+          # If its field_name naming convention also matches, infer it's a subcolumn.
+          parent_field_names.any? do |parent_field_name|
+            parent_field_name + '_' == field_name[0..parent_field_name.length]
+          end
+        else
+          # the inferred parent column isn't actually a column that exists.
+          false
+        end
+      end
+    end
+  end
+
+  def non_bootstrappable_column?(field_name, column)
+    field_name_ignored_for_bootstrap?(field_name) ||
+      system_column?(field_name)
+  end
+
+  def interesting_columns(columns)
+    columns = columns.reject do |field_name, column|
+      non_bootstrappable_column?(field_name, column)
+    end
+    filter_out_subcolumns(columns)
   end
 
   def generate_cards_from_dataset_metadata_columns(columns)
@@ -310,21 +362,19 @@ class NewUxBootstrapController < ActionController::Base
         end
       end.compact
     else
-      columns.map do |field_name, column|
-        unless field_name_ignored_for_bootstrap?(field_name)
-          card_type = card_type_for(column, :fred, cached_dataset_size)
-          if card_type
-            card = page_metadata_manager.merge_new_card_data_with_default(
-              field_name,
-              card_type
-            )
+      interesting_columns(columns).map do |field_name, column|
+        card_type = card_type_for(column, :fred, cached_dataset_size)
+        if card_type
+          card = page_metadata_manager.merge_new_card_data_with_default(
+            field_name,
+            card_type
+          )
 
-            if added_card_types.add?(card_type)
-              card
-            else
-              skipped_cards_by_type[card_type] << card
-              nil
-            end
+          if added_card_types.add?(card_type)
+            card
+          else
+            skipped_cards_by_type[card_type] << card
+            nil
           end
         end
       end.compact

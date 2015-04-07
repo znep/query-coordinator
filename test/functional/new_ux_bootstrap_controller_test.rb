@@ -777,6 +777,31 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             get :bootstrap, id: 'four-four'
             assert_redirected_to('/view/neoo-page')
           end
+
+          should 'not create a card for things that look like OBE sub-columns' do
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata
+              },
+              update_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata
+              }
+            )
+            stub_feature_flags_with(:metadata_transition_phase, '3')
+
+            # Make sure the page we're creating fits certain criteria
+            @page_metadata_manager.expects(:create).with do |page, _|
+              assert_equal(10, page['cards'].length, 'Should create 10 cards')
+
+              assert(page['cards'].none? do |card|
+                card['fieldName'] == 'point_city'
+              end, 'should omit sub-columns')
+
+            end.returns(status: '200', body: { pageId: 'neoo-page' })
+
+            get :bootstrap, id: 'four-four'
+            assert_redirected_to('/view/neoo-page')
+          end
         end
 
         context 'invalid input in feature flag field_names_to_avoid_during_bootstrap' do

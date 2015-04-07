@@ -6,6 +6,12 @@
   zoom-debounce-milliseconds="zoomDebounceMilliseconds"
   vector-tile-getter="vectorTileGetter"
   ></feature-map>
+<div class="visualization-render-error" ng-show="displayRenderError">
+  <div class="row">
+    <div class="span2"><span class="icon-warning"></span></div>
+    <div class="span10">An error was encountered when trying to render this map.</div>
+  </div>
+</div>
 <div class="spinner" ng-class="{busy: busy}">
   <svg width="25px" height="25px" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">

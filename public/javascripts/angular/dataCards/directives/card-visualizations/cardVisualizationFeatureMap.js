@@ -1,6 +1,12 @@
 (function() {
   'use strict';
 
+  var TIMER_TIMEOUT_MILLISECONDS = 5000;
+
+  function createTimerObservable() {
+    return Rx.Observable.timer(TIMER_TIMEOUT_MILLISECONDS, Rx.Scheduler.timeout);
+  }
+
   function cardVisualizationFeatureMap(
     ServerConfig,
     AngularRxExtensions,
@@ -28,21 +34,14 @@
         // The 'render:start' and 'render:complete' events are emitted by the
         // underlying feature map and are used for a) toggling the state of the
         // 'busy' spinner and b) performance analytics.
-        scope.$on('render:start', function(e) {
-          scope.busy = true;
-        });
+        var renderStartObservable = scope.eventToObservable('render:start');
+        var renderCompleteObservable = scope.eventToObservable('render:complete');
 
-        scope.$on('render:complete', function(e) {
-          scope.busy = false;
-        });
-
-        Rx.Observable.combineLatest(
-          scope.observe('whereClause'),
-          baseSoqlFilter,
-          function (whereClause, baseFilter) {
-            return !_.isEmpty(whereClause) && whereClause != baseFilter;
-          }
-        );
+        // For every renderStart event, start a timer that will either expire on
+        // its own, or get cancelled by the renderComplete event firing
+        var renderTimeoutObservable = renderStartObservable.
+          flatMap(createTimerObservable).
+          takeUntil(renderCompleteObservable);
 
         var synchronizedFieldnameDataset = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
@@ -56,13 +55,50 @@
           }
         );
 
+        // Start a timer when the card is ready to render, that will either
+        // expire on its own, or get cancelled by a renderComplete event
+        var directiveTimeoutObservable = synchronizedFieldnameDataset.
+          flatMap(createTimerObservable).
+          takeUntil(renderCompleteObservable);
+
+        // Display the error whenever something has timed out, clear it whenever
+        // we successfully render
+        var displayRenderErrorObservable = Rx.Observable.
+          merge(
+            renderTimeoutObservable.map(_.constant(true)),
+            directiveTimeoutObservable.map(_.constant(true)),
+            renderCompleteObservable.map(_.constant(false))
+          ).
+          startWith(false).
+          distinctUntilChanged();
+
+        scope.bindObservable('displayRenderError', displayRenderErrorObservable);
+
+        // Show the busy indicator when we are ready to render, and when we have
+        // started rendering.  Clear the indicator when things have timed out
+        // (i.e. we are showing the render error), or when rendering has
+        // completed successfully
+        var busyObservable = Rx.Observable.
+          merge(
+            synchronizedFieldnameDataset.map(_.constant(true)),
+            renderStartObservable.map(_.constant(true)),
+            renderTimeoutObservable.map(_.constant(false)),
+            directiveTimeoutObservable.map(_.constant(false)),
+            renderCompleteObservable.map(_.constant(false))
+          ).
+          startWith(true).
+          distinctUntilChanged();
+
+        scope.bindObservable('busy', busyObservable);
+
         var featureExtentDataSequence = synchronizedFieldnameDataset.
           flatMap(function(fieldNameDataset) {
             var fieldName = fieldNameDataset.fieldName;
             var dataset = fieldNameDataset.dataset;
             return Rx.Observable.
               fromPromise(CardDataService.getFeatureExtent(fieldName, dataset.id));
-          });
+          }).
+          onErrorResumeNext(Rx.Observable.empty());  // Promise error becomes empty observable
 
         var synchronizedFeatureExtentDataSequence = featureExtentDataSequence.
           combineLatest(

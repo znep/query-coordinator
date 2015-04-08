@@ -831,7 +831,7 @@ $(function()
                 url: datasetMetadataUrl.format(migration.nbeId),
                 success: function(metadata) {
                   if (metadata.defaultPage) {
-                    if (linkParams.canUpdateMetadata || linkParams.dataLensState === 'post-beta') {
+                    if (linkParams.canUpdateMetadata || linkParams.dataLensState === 'post_beta') {
                       linkHref = '/view/{0}'.format(metadata.defaultPage);
                     }
                   } else if (linkParams.canUpdateMetadata) {
@@ -906,7 +906,7 @@ $(function()
 
     // setTimeout needed for extra frame to run for blist properties =(
     blist.configuration.onCurrentUserComplete(function() {
-      if (blist && blist.feature_flags && blist.feature_flags.data_lens_transition_state !== 'pre-beta') {
+      if (blist && blist.feature_flags && blist.feature_flags.data_lens_transition_state !== 'pre_beta') {
         var linkParams = datasetShowHelpers.getNewUXLinkParams();
         datasetShowHelpers.getNewUXLinkHref(linkParams);
       }

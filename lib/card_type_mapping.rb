@@ -129,7 +129,7 @@ module CardTypeMapping
         if histogram_supported?
           available_card_types = ['column', 'histogram']
         else
-          available_card_types = ['column', 'search']
+          available_card_types = ['column']
         end
       when 'number'
         if has_georegion_computation_strategy?(column)

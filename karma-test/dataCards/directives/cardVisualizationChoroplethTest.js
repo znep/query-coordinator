@@ -65,6 +65,7 @@ describe('A Choropleth Card Visualization', function() {
 
   function setMockCardDataServiceToDefault() {
     mockCardDataService = {
+      getDefaultFeatureExtent: sinon.stub(),
       getChoroplethRegions: function(shapeFile) {
         var deferred = q.defer();
         var json = testHelpers.getTestJson(testWards);
@@ -198,7 +199,7 @@ describe('A Choropleth Card Visualization', function() {
 
   describe('when created with instantiated choropleth visualizations', function() {
 
-    it('should provide a flyout on hover with the current value, and row display unit on the first and second choropleth encountered', function(){
+    it('should provide a flyout on hover with the current value, and row display unit on the first and second choropleth encountered', function() {
 
       this.timeout(15000);
 

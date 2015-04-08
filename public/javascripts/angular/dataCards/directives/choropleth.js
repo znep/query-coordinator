@@ -10,7 +10,8 @@
                       AngularRxExtensions,
                       $timeout,
                       ChoroplethVisualizationService,
-                      WindowState,
+                      CardDataService, // This is an unfortunate leak to get the default extent
+                      LeafletHelpersService,
                       FlyoutService) {
     // The methods by which we determine choropleth styles are wrapped up in the
     // ChoroplethVisualization class, which does a lot of dynamic styles based on the
@@ -687,7 +688,7 @@
                       '</svg>',
                     '</div>',
                   '</div>'].join(''),
-      link: function(scope, element, attrs) {
+      link: function choroplethLink(scope, element, attrs) {
 
         AngularRxExtensions.install(scope);
 
@@ -796,14 +797,23 @@
           // provided and then check the value of a non-existent
           // animate property, causing a TypeError and halting
           // execution.
+          var computedBounds = L.latLngBounds([
+            boundsArray[1][0],
+            boundsArray[1][1]
+          ], [
+            boundsArray[0][0],
+            boundsArray[0][1]
+          ]);
+          var initialBounds = computedBounds;
+          var defaultFeatureExtent = CardDataService.getDefaultFeatureExtent();
+          if (defaultFeatureExtent) {
+            var defaultBounds = LeafletHelpersService.buildBounds(defaultFeatureExtent);
+            if (!defaultBounds.contains(computedBounds)) {
+              initialBounds = defaultBounds;
+            }
+          }
           map.fitBounds(
-            L.latLngBounds([
-              boundsArray[1][0],
-              boundsArray[1][1]
-            ], [
-              boundsArray[0][0],
-              boundsArray[0][1]
-            ]),
+            initialBounds,
             { animate: false }
           );
 
@@ -1214,12 +1224,6 @@
 
   angular.
     module('dataCards.directives').
-      directive('choropleth', ['Constants',
-                               'AngularRxExtensions',
-                               '$timeout',
-                               'ChoroplethVisualizationService',
-                               'WindowState',
-                               'FlyoutService',
-                               choropleth]);
+      directive('choropleth', choropleth);
 
 })();

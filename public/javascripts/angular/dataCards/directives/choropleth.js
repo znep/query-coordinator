@@ -612,7 +612,7 @@
        *
        * @return {d3.scale} a scale mapping from value to color.
        */
-      update: function(data) {
+      update: function(data, dimensions) {
         if (!(data.features && data.features.length)) return;
 
         var values = _.pluck(
@@ -643,6 +643,25 @@
         var colorScale = this._createColorScale(tickStops, scale);
         var gradientSvg = this.element.find('svg.gradient');
         var ticksSvg = this.element.find('svg.legend-ticks');
+
+        // Grab the top and bottom padding from the css.
+        var legendPaddingTop = parseInt(this.element.css('padding-top'), 10);
+        var legendPaddingBottom = parseInt(this.element.css('padding-bottom'), 10);
+        var legendVerticalPadding = legendPaddingTop + legendPaddingBottom;
+
+        // We want the maximum height that will fit inside the visualization,
+        // which comes down to: visualizationHeight - legendVerticalPadding.
+        var legendHeight = Math.min(
+          dimensions.height - legendVerticalPadding,
+          parseInt(this.element.css('maxHeight'), 10)
+        );
+
+        // Assign this height to both the legend container and the gradient.
+        // This will cause the legend to be rendered inside the visualization
+        // in all cases, and at its maximum height if the visualization is
+        // sufficiently tall.
+        this.element.height(legendHeight);
+        gradientSvg.height(legendHeight);
 
         this._drawGradient(gradientSvg, tickStops, colorScale);
         this._drawAxis(ticksSvg, gradientSvg, tickStops, scale, indexOf0);
@@ -1148,7 +1167,7 @@
                 firstRender = false;
               }
 
-              var coloring = legend.update(geojsonAggregateData);
+              var coloring = legend.update(geojsonAggregateData, dimensions);
 
               var geojsonOptions = {
                 onEachFeature: function(feature, layer) {

@@ -21,6 +21,7 @@ describe('A FeatureMap Card Visualization', function() {
   var VectorTileDataService;
   var CardDataService;
   var dataset;
+  var $q;
 
   beforeEach(module('/angular_templates/dataCards/cardVisualizationFeatureMap.html'));
 
@@ -33,7 +34,7 @@ describe('A FeatureMap Card Visualization', function() {
     testHelpers = $injector.get('testHelpers');
     $rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
-    var $q = $injector.get('$q');
+    $q = $injector.get('$q');
     var mockCardDataService = {
       getDefaultFeatureExtent: sinon.stub(),
       getFeatureExtent: sinon.stub().returns($q.when(MIDDLE_ZOOM_EXTENT))
@@ -105,6 +106,25 @@ describe('A FeatureMap Card Visualization', function() {
     expect(VectorTileDataService.buildTileGetter).to.have.not.been.called;
     elementInfo.pageModel.set('dataset', dataset);
     expect(VectorTileDataService.buildTileGetter).to.have.been.called;
+  });
+
+  describe('extent', function() {
+    beforeEach(function() {
+      dataset.defineObservableProperty('permissions', { isPublic: true });
+    });
+
+    it('should not cause an issue if the server request fails', function() {
+      var deferred = $q.defer();
+      CardDataService.getFeatureExtent.returns(deferred.promise);
+      var elementInfo = buildElement({
+        dataset: dataset
+      });
+      elementInfo.scope.$apply(function() {
+        deferred.reject();
+      });
+      expect(elementInfo.element.find('.spinner')).to.have.class('busy');
+    });
+
   });
 
   describe('explicit extent', function() {
@@ -185,5 +205,59 @@ describe('A FeatureMap Card Visualization', function() {
         sinon.match.truthy
       );
     });
+
   });
+
+  describe('timeouts', function() {
+    var testScheduler;
+    var timeoutScheduler;
+    var deferred;
+    var elementInfo;
+
+    beforeEach(function() {
+      dataset.defineObservableProperty('permissions', { isPublic: false });
+      testScheduler = new Rx.TestScheduler();
+      timeoutScheduler = Rx.Scheduler.timeout;
+      Rx.Scheduler.timeout = testScheduler;
+      deferred = $q.defer();
+      CardDataService.getFeatureExtent.returns(deferred.promise);
+      elementInfo = buildElement({
+        dataset: dataset
+      });
+    });
+
+    afterEach(function() {
+      Rx.Scheduler.timeout = timeoutScheduler;
+    });
+
+    it('should show the busy indicator while fetching the extent', function() {
+      expect(elementInfo.element.find('.spinner')).to.have.class('busy');
+      deferred.resolve(MIDDLE_ZOOM_EXTENT);
+      // Synthetically signal render complete since we aren't actually rendering
+      elementInfo.scope.$broadcast('render:complete');
+      expect(elementInfo.element.find('.spinner')).to.not.have.class('busy');
+    });
+
+    it('should hide the busy indicator after 5 seconds if no extent is fetched', function() {
+      expect(elementInfo.element.find('.spinner')).to.have.class('busy');
+      testScheduler.advanceTo(5000);
+      expect(elementInfo.element.find('.spinner')).to.not.have.class('busy');
+    });
+
+    it('should display the error message after 5 seconds if no extent fetched', function() {
+      expect(elementInfo.element.find('.visualization-render-error')).to.have.class('ng-hide');
+      testScheduler.advanceTo(5000);
+      expect(elementInfo.element.find('.visualization-render-error')).to.not.have.class('ng-hide');
+    });
+
+    it('should hide the error message if rendering eventually occurs', function() {
+      testScheduler.advanceTo(5000);
+      expect(elementInfo.element.find('.visualization-render-error')).to.not.have.class('ng-hide');
+      deferred.resolve(MIDDLE_ZOOM_EXTENT);
+      // Synthetically signal render complete since we aren't actually rendering
+      elementInfo.scope.$broadcast('render:complete');
+      expect(elementInfo.element.find('.visualization-render-error')).to.have.class('ng-hide');
+    });
+  });
+
 });

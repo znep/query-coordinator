@@ -100,7 +100,7 @@ en:
           href: External Datasets
           maps: Maps
           unpublished: Unpublished Datasets
-          new_view: Data Lens Pages
+          new_view: Data Lens pages
           new_view_help: What's this?
         view_types_singular_title: type
         view_types_title: View Types
@@ -705,7 +705,7 @@ en:
       map: map
       table: table
       working_copy: working copy
-      new_view: data lens page
+      new_view: Data Lens page
     view_types_plural:
       api: APIs
       calendar: Calendars
@@ -843,7 +843,7 @@ en:
       were_sorry: We're really sorry, but the page you requested cannot be found.
     permission_denied_403:
       no_permission: Error
-      were_sorry: The current user doesn't have access to this lens.
+      were_sorry: The current user doesn't have access to this Data Lens page.
     to_whence_you_came: to where you came from.
   govstat:
     chrome:

@@ -416,10 +416,17 @@
                   <%- end -%>
 
                   <%- if opts[:grid_items][:type] -%>
-                    <td class="type type<%= v.display.type.capitalize %>"
-                      title="<%= v.display.name.capitalize %>">
-                      <a href="<%= view_url %>" rel="<%= rel_type %>"><div class="<%= v.display.icon_class %>"></div></a>
-                    </td>
+                    <%- if v.display.type == 'new_view' -%>
+                      <td class="type type<%= v.display.type.capitalize %>"
+                        title="<%= v.display.name %>">
+                        <a href="<%= view_url %>" rel="<%= rel_type %>"><div class="<%= v.display.icon_class %>"></div></a>
+                      </td>
+                    <%- else -%>
+                      <td class="type type<%= v.display.type.capitalize %>"
+                        title="<%= v.display.name.capitalize %>">
+                        <a href="<%= view_url %>" rel="<%= rel_type %>"><div class="<%= v.display.icon_class %>"></div></a>
+                      </td>
+                    <%- end -%>
                   <%- end -%>
 
                   <%- if opts[:grid_items][:rss] -%>

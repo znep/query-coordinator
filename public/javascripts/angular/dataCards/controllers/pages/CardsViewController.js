@@ -5,7 +5,7 @@
   var MIGRATION_ENDPOINT = '/api/migrations/{0}';
   var OBE_DATASET_PAGE = '/d/{0}';
 
-  function initDownload($scope, page, obeIdObservable, WindowState, FlyoutService, ServerConfig) {
+  function initDownload($scope, page, obeIdObservable, WindowState, ServerConfig) {
     // The CSV download url
     $scope.bindObservable(
       'datasetCSVDownloadURL',
@@ -60,12 +60,6 @@
         }
       }
     };
-
-    FlyoutService.register('download-menu-item-disabled-text', _.constant(
-      '<div class="flyout-title">' +
-      'Please save the page in order to export a visualization as image' +
-      '</div>'
-    ), $scope.eventToObservable('$destroy'));
   }
 
   function initManageLens($scope, page) {
@@ -226,7 +220,7 @@
     );
 
 
-    initDownload($scope, page, obeIdObservable, WindowState, FlyoutService, ServerConfig);
+    initDownload($scope, page, obeIdObservable, WindowState, ServerConfig);
 
     $scope.shouldShowManageLens = false;
 
@@ -326,11 +320,6 @@
         }
       });
     };
-
-    var flyoutContent = $('<div class="flyout-title">Click to reset all filters</div>');
-    FlyoutService.register('clear-all-filters-button',
-                           _.constant(flyoutContent),
-                           $scope.eventToObservable('$destroy'));
 
 
     /************************
@@ -631,6 +620,19 @@
       $scope.page.set('cards', _.without($scope.cardModels, cardModel));
     });
 
+
+    // Set up flyout handlers.
+
+    FlyoutService.register(
+      'download-menu-item-disabled-text',
+      _.constant(
+        '<div class="flyout-title">' +
+          'Please save the page in order to download a visualization as an image' +
+        '</div>'
+      ),
+      $scope.eventToObservable('$destroy')
+    );
+
     //TODO consider extending register() to take a selector, too.
     //TODO The controller shouldn't know about this magical target inside save-button!
     //     There needs to be significant refactoring though to make this right:
@@ -639,31 +641,53 @@
     //BIG FAT NOTE: This handler deals with _all_ save buttons. This includes the Save button
     //in the toolbar, and also the Save button in the Save As dialog. We need to check that this
     //is _our_ save button.
-    FlyoutService.register('save-button-flyout-target', function(element) {
-      if ($(element).closest('.save-this-page').length === 0) { return undefined; }
-      if (currentPageSaveEvents.value.status === 'failed') {
-        return '<div class="flyout-title">An error occurred</div><div>Please contact Socrata Support</div>';
-      } else if (currentPageSaveEvents.value.status === 'idle') {
-        return $scope.hasChanges ? '<div class="flyout-title">Click to save your changes</div>'
-                                 : '<div class="flyout-title">No changes to be saved</div>';
-      }
-    }, $scope.eventToObservable('$destroy'));
+    FlyoutService.register(
+      'save-button-flyout-target',
+      function(element) {
 
-    FlyoutService.register('save-as-button', function() {
-      return $scope.hasChanges ? '<div class="flyout-title">Click to save your changes as a new view</div>'
-                               : '<div class="flyout-title">No changes to be saved</div>';
-    }, $scope.eventToObservable('$destroy'));
+        if ($(element).closest('.save-this-page').length === 0) {
+          return undefined;
+        }
+
+        if (currentPageSaveEvents.value.status === 'failed') {
+
+          return '<div class="flyout-title">An error occurred</div><div>Please contact Socrata Support</div>';
+
+        } else if (currentPageSaveEvents.value.status === 'idle') {
+
+          return $scope.hasChanges ?
+            '<div class="flyout-title">Click to save your changes</div>' :
+            '<div class="flyout-title">No changes to be saved</div>';
+        }
+      },
+      $scope.eventToObservable('$destroy')
+    );
+
+    FlyoutService.register(
+      'save-as-button',
+      function() {
+
+        return $scope.hasChanges ?
+          '<div class="flyout-title">Click to save your changes as a new page</div>' :
+          '<div class="flyout-title">No changes to be saved</div>';
+      },
+      $scope.eventToObservable('$destroy')
+    );
+
+    FlyoutService.register(
+      'clear-all-filters-button',
+      function() {
+
+        return '<div class="flyout-title">Click to reset all filters</div>';
+      },
+      $scope.eventToObservable('$destroy')
+    );
 
     // Since we have a flyout handler whose output depends on currentPageSaveEvents and $scope.hasChanges,
     // we need to poke the FlyoutService. We want the flyout to update immediately.
     currentPageSaveEvents.merge($scope.observe('hasChanges')).subscribe(function() {
       FlyoutService.refreshFlyout();
     });
-
-    FlyoutService.register('clear-all-filters-button', function() {
-      return '<div class="flyout-title">Click to reset all filters</div>';
-    }, $scope.eventToObservable('$destroy'));
-
 
     /******************************************
     * Clean up if/when the scope is destroyed *

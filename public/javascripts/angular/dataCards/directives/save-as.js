@@ -89,7 +89,7 @@
           if (saveEvents.value.status === 'failed') {
             return '<div class="flyout-title">An error occurred</div><div>Please contact Socrata Support</div>';
           } else if (saveEvents.value.status === 'idle') {
-            return '<div class="flyout-title">Click to save your changes</div>';
+            return '<div class="flyout-title">Click to save your changes as a new page</div>';
           }
         }, $scope.observeDestroy(element));
 

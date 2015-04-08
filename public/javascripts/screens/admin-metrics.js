@@ -26,9 +26,9 @@ $(function()
                       {method: 'js-page-view-dataslate', label: 'Dataslate', options: { stacking: null, type: 'line' }},
                       {method: 'js-page-view-admin', label: 'Admin', options: { stacking: null, type: 'line' }},
                       {method: 'js-page-view-profile', label: 'Profile', options: { stacking: null, type: 'line' }},
-                      {method: 'js-page-view-govstat', label: 'GovStat', options: { stacking: null, type: 'line' }},
+                      {method: 'js-page-view-govstat', label: 'OP', options: { stacking: null, type: 'line' }},
                       {method: 'js-page-view-browse', label: 'Catalog', options: { stacking: null, type: 'line' }},
-                      {method: 'js-page-view-newux', label: 'DataLens', options: { stacking: null, type: 'line' }},
+                      {method: 'js-page-view-newux', label: 'Data Lens', options: { stacking: null, type: 'line' }},
                       {method: 'js-page-view-other', label: 'Other', options: { stacking: null, type: 'line' }}
                     ]},
                     {text: 'Dashboard Views',

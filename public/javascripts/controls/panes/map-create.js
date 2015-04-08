@@ -272,12 +272,7 @@
 
             var fv = cpObj._getFormValues();
             if ($.subKeyDefined(fv, 'displayFormat.viewDefinitions.0'))
-            {
-                fv = fv.displayFormat.viewDefinitions[0];
-                if (cpObj._view) {
-                    fv.plot.locationId = cpObj._view.columnForTCID(fv.plot.locationId).fieldName;
-                }
-            }
+            { fv = fv.displayFormat.viewDefinitions[0]; }
             else
             { fv = null; }
 

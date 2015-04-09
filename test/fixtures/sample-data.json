@@ -173,6 +173,42 @@
                         "width": 100,
                         "format": {
                         }
+                    },
+                    {
+                        "id": 47,
+                        "name": "old age",
+                        "dataTypeName": "text",
+                        "fieldName": "old_age",
+                        "position": 3,
+                        "renderTypeName": "text",
+                        "tableColumnId": 47,
+                        "width": 100,
+                        "format": {
+                        }
+                    },
+                    {
+                        "id": 48,
+                        "name": "Thingies",
+                        "dataTypeName": "number",
+                        "fieldName": "thingies",
+                        "position": 4,
+                        "renderTypeName": "number",
+                        "tableColumnId": 48,
+                        "width": 100,
+                        "format": {
+                        }
+                    },
+                    {
+                        "id": 49,
+                        "name": "Moar Things",
+                        "dataTypeName": "text",
+                        "fieldName": "moar_things",
+                        "position": 3,
+                        "renderTypeName": "text",
+                        "tableColumnId": 49,
+                        "width": 100,
+                        "format": {
+                        }
                     }
                 ],
                 "grants": [
@@ -315,6 +351,94 @@
                 "position": 4,
                 "renderTypeName": "number",
                 "tableColumnId": 46,
+                "width": 100,
+                "cachedContents": {
+                    "non_null": 2,
+                    "smallest": "1234",
+                    "sum": "5555",
+                    "null": 0,
+                    "average": "2777.5",
+                    "largest": "4321",
+                    "top": [
+                        {
+                            "count": 20,
+                            "item": "1234"
+                        },
+                        {
+                            "count": 19,
+                            "item": "4321"
+                        }
+                    ]
+                },
+                "format": {
+                }
+            },
+            {
+                "id": 47,
+                "name": "old age",
+                "dataTypeName": "text",
+                "fieldName": "old_age",
+                "position": 3,
+                "renderTypeName": "text",
+                "tableColumnId": 47,
+                "width": 100,
+                "cachedContents": {
+                    "non_null": 2,
+                    "smallest": "30",
+                    "null": 0,
+                    "largest": "32",
+                    "top": [
+                        {
+                            "count": 20,
+                            "item": "32"
+                        },
+                        {
+                            "count": 19,
+                            "item": "30"
+                        }
+                    ]
+                },
+                "format": {
+                }
+            },
+            {
+                "id": 48,
+                "name": "Thingies",
+                "dataTypeName": "number",
+                "fieldName": "thingies",
+                "position": 4,
+                "renderTypeName": "number",
+                "tableColumnId": 48,
+                "width": 100,
+                "cachedContents": {
+                    "non_null": 2,
+                    "smallest": "1234",
+                    "sum": "5555",
+                    "null": 0,
+                    "average": "2777.5",
+                    "largest": "4321",
+                    "top": [
+                        {
+                            "count": 20,
+                            "item": "1234"
+                        },
+                        {
+                            "count": 19,
+                            "item": "4321"
+                        }
+                    ]
+                },
+                "format": {
+                }
+            },
+            {
+                "id": 49,
+                "name": "Moar Things",
+                "dataTypeName": "number",
+                "fieldName": "moar_things",
+                "position": 4,
+                "renderTypeName": "number",
+                "tableColumnId": 49,
                 "width": 100,
                 "cachedContents": {
                     "non_null": 2,

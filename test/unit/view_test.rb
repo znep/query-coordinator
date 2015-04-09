@@ -327,10 +327,24 @@ class ViewTest < Test::Unit::TestCase
   end
 
   def test_migrations
-    load_sample_data("test/fixtures/sample-data.json")
+    load_sample_data('test/fixtures/sample-data.json')
     view = View.find('test-data')
-    CoreServer::Base.connection.expects(:get_request).with('/api/migrations/test-data').returns('{"migrations": "data"}')
+    CoreServer::Base.connection.expects(:get_request).with('/api/migrations/test-data').
+      returns('{"migrations": "data"}')
     assert_equal('data', view.migrations['migrations'])
+  end
+
+  def test_row_count
+    load_sample_data('test/fixtures/sample-data.json')
+    view = View.find('test-data')
+    view.stubs(:new_backend? => true)
+    CoreServer::Base.connection.expects(:get_request).with('/id/test-data?%24query=select+count%28%2A%29').
+      returns('[{"count": 123}]')
+    view.expects(:get_total_rows).never
+    assert_equal(123, view.row_count)
+    view.stubs(:new_backend? => false)
+    view.expects(:get_total_rows).once.returns('123')
+    assert_equal(123, view.row_count)
   end
 
   private

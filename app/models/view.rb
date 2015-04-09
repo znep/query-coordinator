@@ -74,6 +74,16 @@ class View < Model
     JSON.parse(CoreServer::Base.connection.get_request(path)).with_indifferent_access
   end
 
+  # TODO Factor these new_backend methods out into a different container
+  def row_count
+    if new_backend?
+      path = "/id/#{id}?#{{'$query' => 'select count(*)'}.to_param}"
+      JSON.parse(CoreServer::Base.connection.get_request(path)).first['count'].to_i
+    else
+      get_total_rows.to_i
+    end
+  end
+
   def find_related(page, limit = 10, sort_by = 'most_accessed')
     params = {
       method: 'getByTableId',
@@ -520,7 +530,6 @@ class View < Model
     end
     agg_results
   end
-
 
   def json(params)
     url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json"

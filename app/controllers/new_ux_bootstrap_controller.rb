@@ -206,7 +206,6 @@ class NewUxBootstrapController < ActionController::Base
         "Response: #{dataset_metadata_response.inspect}"
       )
     end
-
   end
 
   def create_default_page(dataset_metadata)
@@ -326,7 +325,7 @@ class NewUxBootstrapController < ActionController::Base
     end
   end
 
-  def numbers_column?(column)
+  def number_column?(column)
     column[:physicalDatatype] == 'number'
   end
 
@@ -334,16 +333,25 @@ class NewUxBootstrapController < ActionController::Base
     column[:physicalDatatype] == 'money'
   end
 
+  def point_column?(column)
+    column[:physicalDatatype] == 'point'
+  end
+
+  # If the column is either money or number, then we only support bootstrapping
+  # it if the histogram feature is enabled.
+  def histogram_is_unsupported_on_column?(column)
+    (number_column?(column) || money_column?(column)) && !histogram_enabled?
+  end
+
+  def column_too_large_for_feature_card?(column)
+    point_column?(column) && dataset_size > 100_000
+  end
+
   def non_bootstrappable_column?(field_name, column)
     field_name_ignored_for_bootstrap?(field_name) ||
       system_column?(field_name) ||
-      # CORE-4901: without histograms..
-      (!histogram_supported? && (
-        # number cards aren't useful (who wants to search for a number??)
-        numbers_column?(column) ||
-        # CORE-4901/CORE-4777: search card for money columns are broken
-        money_column?(column)
-      ))
+      histogram_is_unsupported_on_column?(column) ||
+      column_too_large_for_feature_card?(column)
   end
 
   def interesting_columns(columns)
@@ -354,12 +362,10 @@ class NewUxBootstrapController < ActionController::Base
   end
 
   def generate_cards_from_dataset_metadata_columns(columns)
-    cached_dataset_size = dataset_size
-
     if metadata_transition_phase_0?
       columns.map do |column|
         unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
-          card_type = card_type_for(column, :logicalDatatype, cached_dataset_size)
+          card_type = card_type_for(column, :logicalDatatype, dataset_size)
           if card_type
             card = page_metadata_manager.merge_new_card_data_with_default(
               column[:name],
@@ -378,7 +384,7 @@ class NewUxBootstrapController < ActionController::Base
       end.compact
     else
       interesting_columns(columns).map do |field_name, column|
-        card_type = card_type_for(column, :fred, cached_dataset_size)
+        card_type = card_type_for(column, :fred, dataset_size)
         if card_type
           card = page_metadata_manager.merge_new_card_data_with_default(
             field_name,
@@ -406,25 +412,12 @@ class NewUxBootstrapController < ActionController::Base
 
     # Set the newly-created page as the default.
     set_default_page(dataset_metadata, default_page_id)
-    return redirect_to "/view/#{default_page_id}"
+    redirect_to "/view/#{default_page_id}"
   end
 
   def dataset_size
     # Get the size of the dataset so we can compare it against the cardinality when creating cards
-    @dataset_size ||= begin
-      JSON.parse(
-        CoreServer::Base.connection.get_request("/id/#{params[:id]}?%24query=select+count(0)")
-      )[0]['count_0'].to_i
-    rescue CoreServer::Error => error
-      error_message = "Boostrap failure: error retrieving size of dataset " \
-        "#{params[:id]}: #{error.inspect}"
-      Airbrake.notify(
-        :error_class => "BootstrapUXFailure",
-        :error_message => error_message
-      )
-      Rails.logger.error(error_message)
-      nil
-    end
+    @dataset_size ||= dataset.row_count
   end
 
   def dataset

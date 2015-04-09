@@ -39,6 +39,7 @@ group :test do
   gem 'guard-minitest'
   gem 'rb-fsevent'
   gem 'shoulda-context'
+  gem 'factory_girl'
 end
 
 group :development, :test do

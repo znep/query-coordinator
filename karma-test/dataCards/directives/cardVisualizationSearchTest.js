@@ -255,30 +255,100 @@ describe('A Search Card Visualization', function() {
           expect(cardData.element.find('.card-example-text')).to.have.class('dimmed');
         });
 
-        describe('signal the suggestionToolPanel to show', function() {
+        describe('flag to show or hide the suggestionToolPanel', function() {
           var suggestionToolPanelScope;
           beforeEach(function() {
             suggestionToolPanelScope = cardData.element.find('suggestion-tool-panel').scope();
           });
 
-          it('should signal based on if there is input', function() {
+          function setSearchText(text) {
             cardData.scope.$apply(function() {
-              cardData.element.find('card-visualization-search').isolateScope().search = '1';
+              cardData.element.find('card-visualization-search').isolateScope().search = text;
             });
-            expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(true);
-            cardData.scope.$apply(function() {
-              cardData.element.find('card-visualization-search').isolateScope().search = '';
+          }
+
+          function clickOutside() {
+            $(document).click();
+          }
+
+          describe('with no text in the search box', function() {
+            it('should be false', function() {
+              setSearchText('');
+              expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
             });
-            expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
+
+            describe('after a click in the suggestion tool panel', function() {
+              it('should remain false', function() {
+                setSearchText('');
+                clickOutside();
+                suggestionToolPanelScope.$emit('clearableInput:click');
+                expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
+              });
+            });
           });
 
-          it('should signal to not show if there is a click outside the search panel area', function() {
-            cardData.scope.$apply(function() {
-              cardData.element.find('card-visualization-search').isolateScope().search = '1';
+          describe ('with text in the search box', function() {
+            it('should be true', function() {
+              setSearchText('1');
+              expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(true);
             });
-            expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(true);
-            $(document).click();
-            expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
+
+            it('should become false if search text is removed', function() {
+              setSearchText('1');
+              setSearchText('');
+              expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
+            });
+
+            describe('after a click outside the search panel area', function() {
+              it('should become false', function() {
+                setSearchText('1');
+                expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(true);
+                clickOutside();
+                expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
+              });
+
+              it('should remain true if the user then clicks the suggestion tool panel', function() {
+                setSearchText('1');
+                clickOutside();
+                suggestionToolPanelScope.$emit('clearableInput:click');
+                expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(true);
+              });
+            });
+
+            describe('after the input box loses focus', function() {
+              describe('by tabbing to the clear button', function() {
+                it('should become false', function() {
+                  setSearchText('1');
+
+                  var newFocusTarget = cardData.element.find('.clearable-input-trigger');
+
+                  suggestionToolPanelScope.$emit('clearableInput:blur', { relatedTarget: newFocusTarget });
+                  expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
+                });
+
+              });
+
+              // Currently broken, filter condition of
+              // clearableInputBlurTargetNotSuggestionObservable is too strict.
+              xdescribe('to something outside the card', function() {
+                it('should become false', function() {
+                  setSearchText('1');
+
+                  var newFocusTarget = $(document);
+
+                  suggestionToolPanelScope.$emit('clearableInput:blur', { relatedTarget: newFocusTarget });
+                  expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
+                });
+              });
+            });
+
+            describe('upon selecting a suggestion', function() {
+              it('should become false', function() {
+                setSearchText('1');
+                suggestionToolPanelScope.$emit('suggestionToolPanel:selectedItem', 'some suggestion');
+                expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
+              });
+            });
           });
 
         });

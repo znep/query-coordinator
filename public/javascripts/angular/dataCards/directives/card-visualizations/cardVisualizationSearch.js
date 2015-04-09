@@ -182,15 +182,14 @@
             return which > SPACE_BAR_KEYCODE;
           });
 
-        var userActionClickObservable = $scope.eventToObservable('clearableInput:click').
-          filter(function() {
-            return _.isPresent($scope.searchValue);
-          });
+        var userClickedInClearableInputObservable = $scope.eventToObservable('clearableInput:click');
 
         var userActionsWhichShouldShowSuggestionPanelObservable = Rx.Observable.merge(
-          hasInputObservable,
+          hasInputObservable.risingEdge(),
           userActionKeypressObservable,
-          userActionClickObservable
+          userClickedInClearableInputObservable.filter(function() {
+            return _.isPresent($scope.searchValue);
+          })
         );
 
         var clicksOutsideOfSuggestionUIObservable = Rx.Observable.fromEvent($(document), 'click').
@@ -214,7 +213,7 @@
 
         var userActionsWhichShouldHideSuggestionPanelObservable = Rx.Observable.merge(
           submitValueObservable,
-          hasInputObservable.filter(_.negate),
+          hasInputObservable.fallingEdge(),
           clearableInputBlurTargetNotSuggestionObservable,
           clicksOutsideOfSuggestionUIObservable
         );

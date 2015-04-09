@@ -1,4 +1,4 @@
-describe('A Suggestion Tool Panel', function() {
+describe('Suggestion Tool Panel', function() {
   'use strict';
 
   var testHelpers;
@@ -57,6 +57,7 @@ describe('A Suggestion Tool Panel', function() {
   afterEach(function() {
     Rx.Scheduler.timeout = timeoutScheduler;
     testHelpers.cleanUp();
+    testHelpers.TestDom.clear();
     suggestionStub.restore();
     fakeClock.restore();
     fakeClock = null;
@@ -65,233 +66,257 @@ describe('A Suggestion Tool Panel', function() {
   function createElement(scopeOverrides) {
     var scope = rootScope.$new();
     _.extend(scope, {
-        shouldShow: false,
+        shouldShow: true,
         selectedSuggestion: null,
         searchValue: null,
-        dataset: null,
-        fieldName: null,
+        dataset: fakeDataset,
+        fieldName: fakeFieldName,
         sampleOne: 'Sample 1',
         sampleTwo: 'Sample 2'
       },
       scopeOverrides);
 
+    var element = testHelpers.TestDom.compileAndAppend(
+      '<suggestion-tool-panel ' +
+      'should-show="shouldShow"' +
+      'selected-suggestion="selectedSuggestion"' +
+      'search-value="searchValue"' +
+      'field-name="fieldName"' +
+      'sample-one="sampleOne"' +
+      'sample-two="sampleTwo"' +
+      'dataset="dataset" />',
+      scope
+    );
+
     return {
       scope: scope,
-      element: testHelpers.TestDom.compileAndAppend(
-        '<suggestion-tool-panel ' +
-        'should-show="shouldShow"' +
-        'selected-suggestion="selectedSuggestion"' +
-        'search-value="searchValue"' +
-        'field-name="fieldName"' +
-        'sample-one="sampleOne"' +
-        'sample-two="sampleTwo"' +
-        'dataset="dataset" />',
-        scope
-      )
+      element: element
     };
   }
 
-  describe('suggestion tool panel', function() {
-
-    it('should exist in the dom', function() {
-      suggestionToolPanel = createElement();
-      expect(suggestionToolPanel.element.find('.suggestion-tool-panel')).to.exist;
+  function createElementWithSuggestionsAndUserInput(suggestionsArray, userInput) {
+    suggestionStub.returns(q.when(suggestionsArray));
+    var element = createElement({
+      searchValue: userInput
     });
 
-    it('should show when shouldShow is true', function() {
-      suggestionToolPanel = createElement({
-        shouldShow: true
+    // Advance past debounce on data requests.
+    testScheduler.advanceTo(300);
+    element.scope.$apply();
+
+    return element;
+  }
+
+  it('should exist in the dom', function() {
+    suggestionToolPanel = createElement();
+    expect(suggestionToolPanel.element.find('.suggestion-tool-panel')).to.exist;
+  });
+
+  it('should show when shouldShow is true', function() {
+    suggestionToolPanel = createElement({
+      shouldShow: true
+    });
+    expect(suggestionToolPanel.element.find('.suggestion-tool-panel .suggestion-examples')).to.be.visible;
+  });
+
+  it('should be hidden when shouldShow is false', function() {
+    suggestionToolPanel = createElement({
+      shouldShow: false
+    });
+    expect(suggestionToolPanel.element.find('.suggestion-tool-panel *')).to.not.be.visible;
+  });
+
+  describe('item selection', function() {
+    describe('via click', function() {
+      it('should fire a suggestionToolPanel:selectedItem with the correct args', function(done) {
+        var suggestionToolPanel = createElementWithSuggestionsAndUserInput(
+          ['FOO', 'BAR', 'BAZ'],
+          'IRRELEVANT'
+        );
+
+        suggestionToolPanel.scope.$on('suggestionToolPanel:selectedItem', function(source, argument) {
+          expect(argument).to.equal('FOO'); // First suggestion.
+          done();
+        });
+
+        suggestionToolPanel.element.find('intractable-list li').first().click();
       });
-      expect(suggestionToolPanel.element.find('.suggestion-tool-panel .suggestion-examples')).to.be.visible;
     });
 
-    it('should be hidden when shouldShow is false', function() {
-      suggestionToolPanel = createElement({
-        shouldShow: false
+    describe('via enter key', function() {
+      it('should fire a suggestionToolPanel:selectedItem with the correct args', function(done) {
+        var suggestionToolPanel = createElementWithSuggestionsAndUserInput(
+          ['FOO', 'BAR', 'BAZ'],
+          'IRRELEVANT'
+        );
+
+        suggestionToolPanel.scope.$on('suggestionToolPanel:selectedItem', function(source, argument) {
+          expect(argument).to.equal('BAR'); // Second suggestion (we arrowed down).
+          done();
+        });
+        suggestionToolPanel.element.trigger({type: 'keydown', which: 40, keyCode: 40}); // down
+        suggestionToolPanel.element.trigger({type: 'keydown', which: 13, keyCode: 13}); // enter
       });
-      expect(suggestionToolPanel.element.find('.suggestion-tool-panel:first-child')).to.not.be.visible;
+    });
+  });
+
+  it('should show "no search results" heading when there are no search results', function() {
+    suggestionService.suggest = function() {
+      return q.when([]);
+    };
+    suggestionToolPanel = createElement({
+      shouldShow: true,
+      searchValue: 'NAR',
+      dataset: fakeDataset,
+      fieldName: fakeFieldName
     });
 
-    it('should emit suggestionToolPanel:selectedItem when a suggestion is clicked', function(done) {
-      suggestionService.suggest = function() {
-        return q.when(['FOO', 'BAR', 'BAZ']);
-      };
-      suggestionToolPanel = createElement({
-        shouldShow: true,
-        searchValue: 'NAR',
-        dataset: fakeDataset,
-        fieldName: fakeFieldName
-      });
+    testScheduler.advanceTo(300);
+    suggestionToolPanel.scope.$apply();
+    expect(suggestionToolPanel.element.find('.suggestions-status')).to.contain('No data found matching your search term.');
+  });
 
-      testScheduler.advanceTo(300);
-      suggestionToolPanel.scope.$apply();
-
-      suggestionToolPanel.scope.$on('suggestionToolPanel:selectedItem', function() {
-        done()
-      });
-
-      suggestionToolPanel.element.find('intractable-list li').first().click();
+  it('should show the "only search result" heading when there is just one search result', function() {
+    suggestionService.suggest = function() {
+      return q.when(['FOO']);
+    };
+    suggestionToolPanel = createElement({
+      shouldShow: true,
+      searchValue: 'NAR',
+      dataset: fakeDataset,
+      fieldName: fakeFieldName
     });
 
-    it('should show "no search results" heading when there are no search results', function() {
-      suggestionService.suggest = function() {
-        return q.when([]);
-      };
-      suggestionToolPanel = createElement({
-        shouldShow: true,
-        searchValue: 'NAR',
-        dataset: fakeDataset,
-        fieldName: fakeFieldName
-      });
+    testScheduler.advanceTo(300);
+    suggestionToolPanel.scope.$apply();
+    expect(suggestionToolPanel.element.find('.suggestions-status')).to.contain('Showing the only suggestion:');
+  });
 
-      testScheduler.advanceTo(300);
-      suggestionToolPanel.scope.$apply();
-      expect(suggestionToolPanel.element.find('.suggestions-status')).to.contain('No data found matching your search term.');
+  it('should show the "all search results" heading when there are a limited number of search results', function() {
+    suggestionService.suggest = function() {
+      return q.when(['FOO', 'BAR', 'BAZ']);
+    };
+    suggestionToolPanel = createElement({
+      shouldShow: true,
+      searchValue: 'NAR',
+      dataset: fakeDataset,
+      fieldName: fakeFieldName
     });
 
-    it('should show the "only search result" heading when there is just one search result', function() {
-      suggestionService.suggest = function() {
-        return q.when(['FOO']);
-      };
-      suggestionToolPanel = createElement({
-        shouldShow: true,
-        searchValue: 'NAR',
-        dataset: fakeDataset,
-        fieldName: fakeFieldName
-      });
+    testScheduler.advanceTo(300);
+    suggestionToolPanel.scope.$apply();
+    expect(suggestionToolPanel.element.find('.suggestions-status')).to.contain('Showing all 3 suggestions:');
+  });
 
-      testScheduler.advanceTo(300);
-      suggestionToolPanel.scope.$apply();
-      expect(suggestionToolPanel.element.find('.suggestions-status')).to.contain('Showing the only suggestion:');
+  it('should show the "top search results" message when there are large number of search results', function() {
+    suggestionService.suggest = function() {
+      return q.when(_.range(0, 20));
+    };
+    suggestionToolPanel = createElement({
+      shouldShow: true,
+      searchValue: 'NAR',
+      dataset: fakeDataset,
+      fieldName: fakeFieldName
     });
 
-    it('should show the "all search results" heading when there are a limited number of search results', function() {
-      suggestionService.suggest = function() {
-        return q.when(['FOO', 'BAR', 'BAZ']);
-      };
-      suggestionToolPanel = createElement({
-        shouldShow: true,
-        searchValue: 'NAR',
-        dataset: fakeDataset,
-        fieldName: fakeFieldName
-      });
+    testScheduler.advanceTo(300);
+    suggestionToolPanel.scope.$apply();
+    expect(suggestionToolPanel.element.find('.suggestions-status')).to.contain('Showing top 10 of 20 suggestions:');
+  });
 
-      testScheduler.advanceTo(300);
-      suggestionToolPanel.scope.$apply();
-      expect(suggestionToolPanel.element.find('.suggestions-status')).to.contain('Showing all 3 suggestions:');
+  it('should suggest broadening the search criteria when there are no search results', function() {
+    suggestionService.suggest = function() {
+      return q.when([]);
+    };
+    suggestionToolPanel = createElement({
+      shouldShow: true,
+      searchValue: 'NAR',
+      dataset: fakeDataset,
+      fieldName: fakeFieldName
     });
 
-    it('should show the "top search results" message when there are large number of search results', function() {
-      suggestionService.suggest = function() {
-        return q.when(_.range(0, 20));
-      };
-      suggestionToolPanel = createElement({
-        shouldShow: true,
-        searchValue: 'NAR',
-        dataset: fakeDataset,
-        fieldName: fakeFieldName
-      });
+    testScheduler.advanceTo(300);
+    suggestionToolPanel.scope.$apply();
 
-      testScheduler.advanceTo(300);
-      suggestionToolPanel.scope.$apply();
-      expect(suggestionToolPanel.element.find('.suggestions-status')).to.contain('Showing top 10 of 20 suggestions:');
+    var examples = suggestionToolPanel.element.find('.suggestion-examples');
+    expect(examples).
+      to.contain('Try broadening your search for more results.');
+    expect(examples.text()).
+      to.contain("Examples: 'Sample 1' or 'Sample 2'");
+
+  });
+
+  it('should instruct the user to choose a suggestion when there are one or more search results', function() {
+    suggestionService.suggest = function() {
+      return q.when(['FOO', 'BAR', 'BAZ']);
+    };
+    suggestionToolPanel = createElement({
+      shouldShow: true,
+      searchValue: 'NAR',
+      dataset: fakeDataset,
+      fieldName: fakeFieldName
     });
 
-    it('should suggest broadening the search criteria when there are no search results', function() {
-      suggestionService.suggest = function() {
-        return q.when([]);
-      };
-      suggestionToolPanel = createElement({
-        shouldShow: true,
-        searchValue: 'NAR',
-        dataset: fakeDataset,
-        fieldName: fakeFieldName
-      });
+    testScheduler.advanceTo(300);
+    suggestionToolPanel.scope.$apply();
+    expect(suggestionToolPanel.element.find('.suggestion-examples')).
+      to.contain('Choose a suggestion above, or keep typing for more suggestions.');
+  });
 
-      testScheduler.advanceTo(300);
-      suggestionToolPanel.scope.$apply();
+  xit('should not show if the "enableSearchSuggestions" feature flag is false', function() {
+    ServerConfig.override('enableSearchSuggestions', false);
 
-      var examples = suggestionToolPanel.element.find('.suggestion-examples');
-      expect(examples).
-        to.contain('Try broadening your search for more results.');
-      expect(examples.text()).
-        to.contain("Examples: 'Sample 1' or 'Sample 2'");
+    suggestionToolPanel = createElement();
+    expect(suggestionToolPanel.element.length).to.equal(0);
+  });
 
+  it('show a loading spinner while the request to spandex is in flight', function() {
+    var suggestionsDefer = q.defer();
+    var timesSuggestCalled = 0;
+    suggestionService.suggest = function() {
+      timesSuggestCalled++;
+      return suggestionsDefer.promise;
+    };
+
+    suggestionToolPanel = createElement({
+      shouldShow: true,
+      searchValue: 'NAR',
+      dataset: fakeDataset,
+      fieldName: fakeFieldName
     });
 
-    it('should instruct the user to choose a suggestion when there are one or more search results', function() {
-      suggestionService.suggest = function() {
-        return q.when(['FOO', 'BAR', 'BAZ']);
-      };
-      suggestionToolPanel = createElement({
-        shouldShow: true,
-        searchValue: 'NAR',
-        dataset: fakeDataset,
-        fieldName: fakeFieldName
-      });
+    function isSpinnerVisible() {
+      return suggestionToolPanel.element.find('.spinner').scope().suggestionsLoading != false;
+    }
 
-      testScheduler.advanceTo(300);
-      suggestionToolPanel.scope.$apply();
-      expect(suggestionToolPanel.element.find('.suggestion-examples')).
-        to.contain('Choose a suggestion above, or keep typing for more suggestions.');
+    expect(timesSuggestCalled).to.equal(0);
+
+    expect(isSpinnerVisible()).to.equal(true);
+
+    testScheduler.advanceTo(300);
+
+    expect(isSpinnerVisible()).to.equal(true);
+
+    expect(timesSuggestCalled).to.equal(1);
+
+    suggestionsDefer.resolve([]);
+    suggestionToolPanel.scope.$apply();
+
+    expect(isSpinnerVisible()).to.equal(false);
+  });
+
+  it('should not call into the suggestions service until the input of the search field has not changed for 300ms', function() {
+    suggestionToolPanel = createElement({
+      shouldShow: true,
+      searchValue: 'NAR',
+      dataset: fakeDataset,
+      fieldName: fakeFieldName
     });
+    expect(suggestionStub.called, 'Expected suggestionStub to be called').to.be.false;
 
-    it('should not show if the "enableSearchSuggestions" feature flag is false', function() {
-      ServerConfig.override('enableSearchSuggestions', false);
+    testScheduler.advanceTo(300);
 
-      suggestionToolPanel = createElement();
-      expect(suggestionToolPanel.element).to.be.empty;
-    });
-
-    it('show a loading spinner while the request to spandex is in flight', function() {
-      var suggestionsDefer = q.defer();
-      var timesSuggestCalled = 0;
-      suggestionService.suggest = function() {
-        timesSuggestCalled++;
-        return suggestionsDefer.promise;
-      };
-
-      suggestionToolPanel = createElement({
-        shouldShow: true,
-        searchValue: 'NAR',
-        dataset: fakeDataset,
-        fieldName: fakeFieldName
-      });
-
-      function isSpinnerVisible() {
-        return suggestionToolPanel.element.find('.spinner').scope().suggestionsLoading != false;
-      }
-
-      expect(timesSuggestCalled).to.equal(0);
-
-      expect(isSpinnerVisible()).to.equal(true);
-
-      testScheduler.advanceTo(300);
-
-      expect(isSpinnerVisible()).to.equal(true);
-
-      expect(timesSuggestCalled).to.equal(1);
-
-      suggestionsDefer.resolve([]);
-      suggestionToolPanel.scope.$apply();
-
-      expect(isSpinnerVisible()).to.equal(false);
-    });
-
-    it('should not call into the suggestions service until the input of the search field has not changed for 300ms', function() {
-      suggestionToolPanel = createElement({
-        shouldShow: true,
-        searchValue: 'NAR',
-        dataset: fakeDataset,
-        fieldName: fakeFieldName
-      });
-      expect(suggestionStub.called, 'Expected suggestionStub to be called').to.be.false;
-
-      testScheduler.advanceTo(300);
-
-      expect(suggestionStub.called, 'Expected suggestionStub to be called').to.be.true;
-
-    });
+    expect(suggestionStub.called, 'Expected suggestionStub to be called').to.be.true;
 
   });
 

@@ -8,7 +8,7 @@ class Displays::Base
     end
 
     def title
-      self.class.name[10..-1].capitalize
+      name.capitalize
     end
 
     # Access the internal name for this type of display

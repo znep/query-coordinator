@@ -10,7 +10,7 @@ class Displays::NewView < Displays::Base
   end
 
   def title
-    I18n.t('core.view_types.new_view')
+    name
   end
 
   def scrolls_inline?

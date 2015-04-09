@@ -827,17 +827,23 @@ $(function()
                 // The dataset metadata endpoint changed in metadata transition phase 1.
                 datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
               }
-              $.ajax({
-                url: datasetMetadataUrl.format(migration.nbeId),
-                success: function(metadata) {
-                  if (metadata.defaultPage) {
-                    if (linkParams.canUpdateMetadata || linkParams.dataLensState === 'post_beta') {
-                      linkHref = '/view/{0}'.format(metadata.defaultPage);
+              $.get(datasetMetadataUrl.format(migration.nbeId), function(nbeMetadata) {
+                if (nbeMetadata.defaultPage) {
+                  var lensViewId = nbeMetadata.defaultPage;
+                  $.get('/metadata/v1/page/{0}.json'.format(lensViewId), function(lensMetadata) {
+                    // For OBE dataset pages, only show link to the lens view if the user
+                    // is logged in and canUpdateMetadata, or if the domain is post_beta
+                    // and the corresponding lens page is set to public.
+                    if (linkParams.canUpdateMetadata ||
+                       (linkParams.dataLensState === 'post_beta' && lensMetadata.permissions.isPublic)) {
+                      linkHref = '/view/{0}'.format(lensViewId);
+                      datasetShowHelpers.createNewUXLink(linkParams, linkHref);
                     }
-                  } else if (linkParams.canUpdateMetadata) {
-                    // bootstrap new page
-                    linkHref = '/view/bootstrap/{0}'.format(migration.nbeId);
-                  }
+                  });
+                } else if (linkParams.canUpdateMetadata) {
+                  // No view has been bootstrapped yet, only let the user bootstrap if they
+                  // canUpdateMetadata.
+                  linkHref = '/view/bootstrap/{0}'.format(migration.nbeId);
                   datasetShowHelpers.createNewUXLink(linkParams, linkHref);
                 }
               });

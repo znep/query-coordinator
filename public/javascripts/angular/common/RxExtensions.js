@@ -52,8 +52,8 @@ Rx.Observable.prototype.ignoreErrors = function() {
   return this.catchException(Rx.Observable.never());
 };
 
-// Prints out the activity of the sequence to the console.
-// For debugging purposes. Can pass in an optional name
+// Subscribes and prints out the activity of the sequence
+// to the console for debugging purposes. Can pass in an optional name
 // for this sequence to help clarify the output.
 Rx.Observable.prototype.dump = function(optionalName) {
   var name = optionalName ?
@@ -61,6 +61,28 @@ Rx.Observable.prototype.dump = function(optionalName) {
     '';
 
   return this.subscribe(
+    function(value) {
+      console.log(name + 'onNext: ', value);
+    },
+    function(error) {
+      console.log(name + 'onError: ', error);
+    },
+    function() {
+      console.log(name + 'completed');
+    }
+  );
+}
+
+// Prints out the activity of the sequence to the console.
+// For debugging purposes. Can pass in an optional name
+// for this sequence to help clarify the output.
+// Note, does not subscribe (uses doAction);
+Rx.Observable.prototype.doDump = function(optionalName) {
+  var name = optionalName ?
+    (optionalName + ' ') :
+    '';
+
+  return this.doAction(
     function(value) {
       console.log(name + 'onNext: ', value);
     },
@@ -96,6 +118,34 @@ Rx.Observable.prototype.debounce = function(settleTimeMsec, scheduler) {
   return this.map(function(value) {
     return Rx.Observable.timer(settleTimeMsec, scheduler).map(_.constant(value));
   }).switchLatest();
+};
+
+// Returns an observable sequence that contains only the false to true
+// transitions of the source observable sequence.
+// Example:
+// var seq = new Rx.Observable.subject();
+// seq.risingEdge().subscribe(function(value) { console.log(value); })
+// seq.onNext(true);  // Prints 'true'
+// seq.onNext(true);  // Nothing printed
+// seq.onNext(false); // Nothing printed
+// seq.onNext(true);  // Prints 'true'
+Rx.Observable.prototype.risingEdge = function() {
+  return this.distinctUntilChanged().filter(_.identity);
+};
+
+
+// Returns an observable sequence that contains only the true to false
+// transitions of the source observable sequence.
+// Example:
+// var seq = new Rx.Observable.subject();
+// seq.fallingEdge().subscribe(function(value) { console.log(value); })
+// seq.onNext(false); // Prints 'false'
+// seq.onNext(true);  // Nothing printed
+// seq.onNext(false); // Prints 'false'
+// seq.onNext(false); // Nothing printed
+// seq.onNext(true);  // Nothing printed
+Rx.Observable.prototype.fallingEdge = function() {
+  return this.distinctUntilChanged().filter(_.negate);
 };
 
 // Returns a single-element sequence containing the first sequence to produce an element.
@@ -163,3 +213,4 @@ Rx.Observable.fromAllMouseEvents = function(element) {
     Rx.Observable.fromEvent(element, 'mousemove')
   );
 };
+

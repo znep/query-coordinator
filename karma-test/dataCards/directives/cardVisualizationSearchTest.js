@@ -227,25 +227,22 @@ describe('A Search Card Visualization', function() {
       });
 
       describe('without input', function() {
-        it('should respond to submit by expanding the card but not show table', function() {
+        it('should not respond to submit', function() {
           cardData.scope.$apply(function() {
             cardData.element.find('form').triggerHandler('submit');
           });
 
-          expect(toggleExpandedSpy).to.be.calledOnce;
-          var $results = cardData.element.find('.search-card-results');
-
-          expect($results).to.be.visible;
-          expect($results.find('.search-card-text')).to.not.be.visible;
-          expect($results.find('card-visualization-table:visible')).to.have.length(0);
+          expect(toggleExpandedSpy).to.not.be.called;
         });
       });
 
       describe('suggestions', function() {
         var FIELDNAME = 'test_column_number';
 
+        var suggestionToolPanelScope;
         beforeEach(function() {
           cardData = createCard(FIELDNAME);
+          suggestionToolPanelScope = cardData.element.find('suggestion-tool-panel').scope();
         });
 
         it('should dim the initial help text when the panel should show', function() {
@@ -255,12 +252,28 @@ describe('A Search Card Visualization', function() {
           expect(cardData.element.find('.card-example-text')).to.have.class('dimmed');
         });
 
-        describe('flag to show or hide the suggestionToolPanel', function() {
-          var suggestionToolPanelScope;
-          beforeEach(function() {
-            suggestionToolPanelScope = cardData.element.find('suggestion-tool-panel').scope();
+        describe('when selected', function() {
+          it('should expand the card', function() {
+            cardData.scope.$apply(function() {
+              suggestionToolPanelScope.$emit('suggestionToolPanel:selectedItem', 'FOO');
+            });
+
+            expect(toggleExpandedSpy).to.be.calledOnce;
+            var $results = cardData.element.find('.search-card-results');
+
+            expect($results).to.be.visible;
           });
 
+          it('should apply the filter', function() {
+            cardData.scope.$apply(function() {
+              suggestionToolPanelScope.$emit('suggestionToolPanel:selectedItem', 'SHOULD_BE_APPLIED');
+            });
+
+            expect(suggestionToolPanelScope.search).to.equal('SHOULD_BE_APPLIED');
+          });
+        });
+
+        describe('flag to show or hide the suggestionToolPanel', function() {
           function setSearchText(text) {
             cardData.scope.$apply(function() {
               cardData.element.find('card-visualization-search').isolateScope().search = text;

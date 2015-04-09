@@ -27,7 +27,7 @@
             flyoutContent = [
               '<div class="flyout-title">',
                 'To enter customization mode: Collapse the big card using ',
-                'the arrows in its top right corner.',
+                'the arrows in its top right corner',
               '</div>'
             ].join('');
 
@@ -37,7 +37,7 @@
               '<div class="flyout-title">',
                 'To enter customization mode: Exit "Download Visualization ',
                 'as Image" mode by clicking the cancel button in the Info ',
-                'Pane.',
+                'Pane',
               '</div>'
             ].join('');
 
@@ -45,11 +45,11 @@
 
             flyoutContent = [
               '<div class="flyout-title">',
-                'You are now customizing this view.',
+                'You are now customizing this page',
               '</div>',
               '<div>',
                 'You can click this button at any time to preview your ',
-                'changes, and save them at any time.',
+                'changes, and save them at any time',
               '</div>'
             ].join('');
 
@@ -57,7 +57,7 @@
 
             flyoutContent = [
               '<div class="flyout-title">',
-                'Click to customize the layout or display of this view.',
+                'Click to customize the layout or display of this page',
               '</div>'
             ].join('');
 

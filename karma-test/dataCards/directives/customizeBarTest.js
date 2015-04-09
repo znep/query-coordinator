@@ -135,12 +135,16 @@
         testHelpers.fireMouseEvent(customizeButton[0], 'mousemove');
         var flyout = $('#uber-flyout');
         expect(flyout).to.exist;
-        expect(flyout).to.have.text('Click to customize the layout or display of this view.');
+        expect(flyout.text()).to.match(/click to customize the layout/i);
+        expect(flyout.text()).to.match(/\spage/i);
+        expect(flyout.text()).to.not.match(/\sview/i);
         testHelpers.fireMouseEvent(customizeButton[0], 'mouseout');
         scope.editMode = true;
         scope.$digest();
         testHelpers.fireMouseEvent(customizeButton[0], 'mousemove');
-        expect(flyout.text()).to.match(/^You are now customizing this view\./);
+        expect(flyout.text()).to.match(/you are now customizing/i);
+        expect(flyout.text()).to.match(/\spage/i);
+        expect(flyout.text()).to.not.match(/\sview/i);
         testHelpers.fireMouseEvent(customizeButton[0], 'mouseout');
       });
 
@@ -183,9 +187,6 @@
         expect(flyout.text()).to.match(/.*Download Visualization as Image.*/);
         testHelpers.fireMouseEvent(customizeButton[0], 'mouseout');
       });
-
     });
-
   });
-
 })();

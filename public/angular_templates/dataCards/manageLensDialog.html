@@ -7,24 +7,24 @@
   </soc-select>
   <div class="flavor-text">
     <div ng-if="datasetIsPublic && pageVisibility === 'public'">
-      This view and its source dataset are both <b>Public</b>, so anyone will be able to see this
-      view, and it will appear in the public catalog.
+      This page and its source dataset are both <b>Public</b>, so anyone will be able to see this
+      page and it will appear in the public catalog.
     </div>
     <div ng-if="datasetIsPublic && pageVisibility === 'private'">
-      This view is set to <b>Private</b>, so only those with privileged access will be able to see
+      This page is set to <b>Private</b>, so only those with privileged access will be able to see
       it. It will not appear in the public catalog.
     </div>
     <div ng-if="!datasetIsPublic && pageVisibility === 'private'">
-      Because this view’s source dataset is set to <b>Private</b>, this view cannot be made Public.
+      Because this page’s source dataset is set to <b>Private</b>, this page cannot be made Public.
       Only those with privileged access will be able to see it, and it will not appear in the public
       catalog.
     </div>
     <div ng-if="!datasetIsPublic && pageVisibility === 'public'">
       <div class="icon-warning"></div>
-      This view’s source dataset is set to <b>Private</b>, so even though this view is set to
+      This page’s source dataset is set to <b>Private</b>, so even though this page is set to
       Public, anyone without access to the source dataset will not be able to see it. It will still
       appear in the public catalog. You should consider setting the dataset to Public, or setting
-      this view to Private
+      this page to Private.
     </div>
   </div>
 </div>

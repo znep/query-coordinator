@@ -315,11 +315,13 @@ describe('Suggestion Tool Panel', function() {
       dataset: fakeDataset,
       fieldName: fakeFieldName
     });
-    expect(suggestionStub.called, 'Expected suggestionStub to be called').to.be.false;
+    expect(suggestionStub.called, 'Expected suggestionStub to be called').to.equal(false);
+
+    testScheduler.advanceTo(299);
+    expect(suggestionStub.called, 'Expected suggestionStub to be called').to.equal(false);
 
     testScheduler.advanceTo(300);
-
-    expect(suggestionStub.called, 'Expected suggestionStub to be called').to.be.true;
+    expect(suggestionStub.called, 'Expected suggestionStub to be called').to.equal(true);
 
   });
 

@@ -13,11 +13,25 @@
       "name": "system column",
       "description": "is this even possible?"
     },
-    "none": {
+    "no_cardinality": {
       "name": "no cardinality",
       "description": "no cardinality description",
       "fred": "category",
       "physicalDatatype": "number"
+    },
+    "cardinal_biggles": {
+      "name": "Cardinal Biggles",
+      "description": "no cardinality description",
+      "fred": "category",
+      "physicalDatatype": "number",
+      "cardinality": 35000
+    },
+    "cardinal_fang": {
+      "name": "Cardinal Fang",
+      "description": "no cardinality description",
+      "fred": "category",
+      "physicalDatatype": "number",
+      "cardinality": 34
     },
     ":@computed": {
       "name": "computed column",
@@ -186,6 +200,12 @@
       "fred": "name",
       "physicalDatatype": "text",
       "cardinality": 36
+    },
+    "multi7": {
+      "name": "multi7 (not a subcolumn)",
+      "description": "column description",
+      "fred": "category",
+      "physicalDatatype": "text"
     },
     "point": {
       "name" : "Point",

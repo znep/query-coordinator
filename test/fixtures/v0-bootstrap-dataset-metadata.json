@@ -12,9 +12,25 @@
     {
       "title": "no cardinality",
       "description": "column dscription",
-      "name": "none",
+      "name": "no_cardinality",
       "logicalDatatype": "category",
       "physicalDatatype": "number"
+    },
+    {
+      "title": "cardinal biggles",
+      "description": "column dscription",
+      "name": "biggles",
+      "logicalDatatype": "category",
+      "physicalDatatype": "number",
+      "cardinality": 24
+    },
+    {
+      "title": "cardinal fang",
+      "description": "column dscription",
+      "name": "fang",
+      "logicalDatatype": "category",
+      "physicalDatatype": "number",
+      "cardinality": 25
     },
     {
       "title": "below min cardinality",
@@ -133,6 +149,38 @@
     {
       "title": "multi6",
       "name": "multi6",
+      "description": "column dscription",
+      "logicalDatatype": "name",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    {
+      "title": "multi7",
+      "name": "multi7",
+      "description": "column dscription",
+      "logicalDatatype": "name",
+      "physicalDatatype": "number",
+      "cardinality": 34
+    },
+    {
+      "title": "multi8",
+      "name": "multi8",
+      "description": "column dscription",
+      "logicalDatatype": "name",
+      "physicalDatatype": "text",
+      "cardinality": 36
+    },
+    {
+      "title": "multi9",
+      "name": "multi9",
+      "description": "column dscription",
+      "logicalDatatype": "name",
+      "physicalDatatype": "number",
+      "cardinality": 34
+    },
+    {
+      "title": "multi10",
+      "name": "multi10",
       "description": "column dscription",
       "logicalDatatype": "name",
       "physicalDatatype": "text",

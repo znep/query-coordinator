@@ -263,6 +263,9 @@ describe('Suggestion Tool Panel', function() {
       to.contain('Choose a suggestion above, or keep typing for more suggestions.');
   });
 
+  // This test can't work as written right now as enableSearchSuggestions is checked
+  // at directive factory call time, not at directive compile/link time.
+  // Maybe this functionality should live in cardVisualizationSearch instead?
   xit('should not show if the "enableSearchSuggestions" feature flag is false', function() {
     ServerConfig.override('enableSearchSuggestions', false);
 

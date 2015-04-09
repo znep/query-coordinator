@@ -209,8 +209,23 @@
           _.each(data, function(item, i) {
             var date = item.truncated_date;
             var timeSlot = date.diff(timeStart, precision);
-            timeData[timeSlot] = { date: date, value: Number(item.value) };
+
+            // Default to null in case we don't receive a value associated with
+            // this date. If we do not, the result of Number(item.value) is NaN
+            // and the timeline chart breaks because it tries to use NaN to
+            // calculate the height of the chart.
+            var itemValue = _.isDefined(item.value) ?
+              Number(item.value) :
+              null;
+
+            timeData[timeSlot] = {
+              date: date,
+              value: itemValue
+            };
           });
+
+          // The purpose of the below is to make sure every date interval
+          // between the start and end dates is present.
           return _.map(timeData, function(item, i) {
             if (_.isUndefined(item)) {
               item = { date: moment(timeStart, moment.ISO_8601).add(i, precision), value: null };

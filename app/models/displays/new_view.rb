@@ -9,6 +9,10 @@ class Displays::NewView < Displays::Base
     I18n.t('core.view_types.new_view')
   end
 
+  def title
+    I18n.t('core.view_types.new_view')
+  end
+
   def scrolls_inline?
     false
   end

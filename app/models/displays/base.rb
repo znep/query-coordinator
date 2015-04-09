@@ -7,6 +7,10 @@ class Displays::Base
       self.class.name[10..-1]
     end
 
+    def title
+      self.class.name[10..-1].capitalize
+    end
+
     # Access the internal name for this type of display
     def type
       name.underscore

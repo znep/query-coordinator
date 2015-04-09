@@ -54,7 +54,7 @@ angular.module('socrataCommon.directives').directive('intractableList', function
         scope.selectMatch(scope.activeEntryIndex);
       });
 
-      //bind keyboard events: arrows up(38) / down(40), enter(13) and tab(9), esc(27)
+      //bind keyboard events: arrows up(38) / down(40), enter(13), and tab(9)
       Rx.Observable.fromEvent($document, 'keydown').takeUntil(scope.observeDestroy(element)).
         subscribe(function(evt){
           scope.safeApply(function() {

@@ -40,7 +40,6 @@
         var invalidSearchInputSubject = new Rx.BehaviorSubject(false);
         var invalidSearchInputObservable = invalidSearchInputSubject.distinctUntilChanged();
         var searchValueObservable = $scope.observe('search');
-        var submitEventObservable = Rx.Observable.fromEvent(element.find('form'), 'submit');
         var expandedObservable = model.observeOnLatest('expanded');
         var rowInfoObservable = $scope.eventToObservable('rows:info').map(pluckEventArg);
         var hasRowsObservable = rowInfoObservable.pluck('hasRows').distinctUntilChanged();
@@ -48,7 +47,7 @@
         var rowsLoadedObservable = $scope.eventToObservable('rows:loaded').map(pluckEventArg);
 
         // Observable that emits the current search term on submit
-        var submitValueObservable = submitEventObservable.
+        var submitValueObservable = Rx.Observable.fromEvent(element.find('form'), 'submit').
           map(function() {
             return $scope.search;
           }).
@@ -105,7 +104,7 @@
         ).distinctUntilChanged();
 
         // On submit, if not expanded, then expand
-        submitEventObservable.
+        submitValueObservable.
           flatMap(function() { return expandedObservable.take(1); }).
           filter(function(value) { return !value; }).
           subscribe(function() {
@@ -182,15 +181,14 @@
             return which > SPACE_BAR_KEYCODE;
           });
 
-        var userActionClickObservable = $scope.eventToObservable('clearableInput:click').
-          filter(function() {
-            return _.isPresent($scope.searchValue);
-          });
+        var userClickedInClearableInputObservable = $scope.eventToObservable('clearableInput:click');
 
         var userActionsWhichShouldShowSuggestionPanelObservable = Rx.Observable.merge(
-          hasInputObservable,
+          hasInputObservable.risingEdge(),
           userActionKeypressObservable,
-          userActionClickObservable
+          userClickedInClearableInputObservable.filter(function() {
+            return _.isPresent($scope.searchValue);
+          })
         );
 
         var clicksOutsideOfSuggestionUIObservable = Rx.Observable.fromEvent($(document), 'click').
@@ -214,7 +212,7 @@
 
         var userActionsWhichShouldHideSuggestionPanelObservable = Rx.Observable.merge(
           submitValueObservable,
-          hasInputObservable.filter(_.negate),
+          hasInputObservable.fallingEdge(),
           clearableInputBlurTargetNotSuggestionObservable,
           clicksOutsideOfSuggestionUIObservable
         );

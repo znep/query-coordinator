@@ -440,6 +440,23 @@ describe('CardDataService', function() {
       $httpBackend.flush();
     });
 
+    it('should default to null if no value is returned', function(done) {
+      var fakeData = [
+        {"truncated_date":"2014-05-01T00:00:00.000","value":"1508"},
+        {"truncated_date":"2014-05-02T00:00:00.000"},
+        {"truncated_date":"2014-05-03T00:00:00.000","value":"624"},
+        {"truncated_date":"2014-05-04T00:00:00.000","value":"718"}
+      ];
+      fakeDataRequestHandler.respond(fakeData);
+      var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
+      response.then(function(data) {
+        var values = _.pluck(data, 'value');
+        expect(values).to.deep.equal([1508, null, 624, 718]);
+        done();
+      });
+      $httpBackend.flush();
+    });
+
     it('should reject the promise on bad dates', function(done) {
       var fakeData = [
         {"truncated_date":"2014-05-27T00:00:00.000","value":"1508"},

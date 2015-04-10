@@ -196,7 +196,7 @@ jQuery.metrics = {
             if (extra.length > 1)
             { page_type = 'dataset-complex'; }
             else if (extra.length == 1)
-            { page_type = 'dataset-' + extra[0]; }
+            { page_type = "dataset-{0}".format(extra[0]); }
             else
             { page_type = 'dataset'; }
 
@@ -211,8 +211,8 @@ jQuery.metrics = {
         }
 
         // Differentiate embedded pages against non embedded pages.
-        if ($.metrics.in_iframe) {
-            page_type = 'embed-' + page_type;
+        if ($.metrics.in_iframe()) {
+            page_type = "embed-{0}".format(page_type);
         }
         return page_type;
     },

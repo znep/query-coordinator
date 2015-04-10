@@ -270,15 +270,22 @@
       },
 
       getSampleData: function(fieldName, datasetId) {
-        var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
-        url.searchParams.set('$query', 'select {0} as name LIMIT 10'.format(SoqlHelpers.formatFieldName(fieldName)));
+        var url = $.baseUrl(
+          '/views/{0}/columns/{1}/suggest'.format(datasetId, fieldName)
+        );
+
+        url.searchParams.set('size', 2);
         var config = httpConfig.call(this);
 
-        return http.get(url.href, config).then(function(response) {
-          return _.filter(response.data, function(item) {
-            return _.isPresent(item.name);
-          });
-        });
+        return http.get(url.href, config).then(
+          function(response) {
+            return _.chain(response).getPathOrElse('data.options', []).pluck('text').value();
+          },
+          function(data) {
+            $log.error(data);
+            return [];
+          }
+        );
       },
 
       getRows: function(datasetId, offset, limit, order, timeout, whereClause) {

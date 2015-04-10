@@ -614,26 +614,26 @@ describe('CardDataService', function() {
   describe('getSampleData', function() {
     var TEST_FIELD_NAME = 'my test field';
     it('should format the request correctly', function() {
-      $httpBackend.whenGET(/.*/);
+      $httpBackend.whenGET(/.*/).respond('');
       var httpSpy = sinon.spy(http, 'get');
       CardDataService.getSampleData(TEST_FIELD_NAME, fake4x4);
       $httpBackend.flush();
-      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
-        /\/api\/id\/fake-data\.json\?\$query=select\+`my\+test\+field`\+as\+name\+LIMIT\+10/i
-      );
+      var expected = new RegExp('/views/{0}/columns/{1}/suggest\\?size=2$'.format(fake4x4, TEST_FIELD_NAME));
+      expect(decodeURIComponent(httpSpy.firstCall.args[0]).toLowerCase()).to.match(expected);
       http.get.restore();
     });
 
     it('should get the sample data', function(done) {
       var TEST_RESPONSE = testHelpers.getTestJson('karma-test/dataCards/test-data/cardDataServiceTest/sampleData.json');
 
-      fakeDataRequestHandler.respond(TEST_RESPONSE);
+      $httpBackend.whenGET(/.*/).respond(TEST_RESPONSE);
 
       var samplePromise = CardDataService.getSampleData(TEST_FIELD_NAME, fake4x4);
       samplePromise.then(
         function(data) {
           expect(data).to.have.length(10);
-          expect(data).to.eql(TEST_RESPONSE);
+          expect(_.first(data)).to.eql('Zanzibar Leopard');
+          expect(_.last(data)).to.eql('Kingstie');
           done();
         },
         function() {
@@ -641,6 +641,23 @@ describe('CardDataService', function() {
         }
       );
       $httpBackend.flush();
+    });
+
+    it('should return empty results for a failed response', function(done) {
+      $httpBackend.whenGET(/.*/).respond(500, '');
+
+      var samplePromise = CardDataService.getSampleData(TEST_FIELD_NAME, fake4x4);
+      samplePromise.then(
+        function(data) {
+          expect(data).to.be.an('array').and.to.be.empty;
+          done();
+        },
+        function() {
+          throw new Error('Should not fail');
+        }
+      );
+      $httpBackend.flush();
+
     });
   });
 

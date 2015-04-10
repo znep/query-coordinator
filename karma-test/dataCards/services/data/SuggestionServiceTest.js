@@ -9,23 +9,19 @@ describe('SuggestionService', function() {
   var fakeFieldName = 'fieldName';
   var fakeQuery = 'NAR';
   var suggestUrl = '/views/{0}/columns/{1}/suggest/{2}'.format(fake4x4, fakeFieldName, fakeQuery);
-  var testJsonV1Path = 'karma-test/dataCards/test-data/suggestionServiceTest/suggestions.json';
-  var testJsonV2Path = 'karma-test/dataCards/test-data/suggestionServiceTest/suggestionsV2.json';
-  var TEST_V1_RESPONSE;
-  var TEST_V2_RESPONSE;
+  var testJsonPath = 'karma-test/dataCards/test-data/suggestionServiceTest/suggestions.json';
+  var TEST_RESPONSE;
 
   beforeEach(function() {
     module('dataCards');
-    module(testJsonV1Path);
-    module(testJsonV2Path);
+    module(testJsonPath);
   });
 
   beforeEach(inject(function($injector) {
     SuggestionService = $injector.get('SuggestionService');
     testHelpers = $injector.get('testHelpers');
     $httpBackend = $injector.get('$httpBackend');
-    TEST_V1_RESPONSE = testHelpers.getTestJson(testJsonV1Path);
-    TEST_V2_RESPONSE = testHelpers.getTestJson(testJsonV2Path);
+    TEST_RESPONSE = testHelpers.getTestJson(testJsonPath);
     fakeRequestHandler = $httpBackend.whenGET(new RegExp(suggestUrl, 'i'));
     fakeRequestHandler.respond('');
   }));
@@ -56,38 +52,16 @@ describe('SuggestionService', function() {
       $httpBackend.flush();
     });
 
-    describe('with V1 response', function() {
-      beforeEach(function() {
-        fakeRequestHandler.respond(TEST_V1_RESPONSE);
+    it('should return some suggestions', function(done) {
+      var response = SuggestionService.suggest(fake4x4, fakeFieldName, fakeQuery);
+      fakeRequestHandler.respond(TEST_RESPONSE);
+      response.then(function(data) {
+        expect(data).to.have.length(10);
+        expect(_.first(data)).to.equal('six hundred and fifty-nine');
+        expect(_.last(data)).to.equal('seven hundred and thirty-six');
+        done();
       });
-
-      it('should return some suggestions', function(done) {
-        var response = SuggestionService.suggest(fake4x4, fakeFieldName, fakeQuery);
-        response.then(function(data) {
-          expect(data).to.have.length(10);
-          expect(_.first(data)).to.equal('six hundred and fifty-nine');
-          expect(_.last(data)).to.equal('seven hundred and thirty-six');
-          done();
-        });
-        $httpBackend.flush();
-      });
-    });
-
-    describe('with V2 response', function() {
-      beforeEach(function() {
-        fakeRequestHandler.respond(TEST_V2_RESPONSE);
-      });
-
-      it('should return some suggestions', function(done) {
-        var response = SuggestionService.suggest(fake4x4, fakeFieldName, fakeQuery);
-        response.then(function(data) {
-          expect(data).to.have.length(10);
-          expect(_.first(data)).to.equal('six hundred and fifty-nine');
-          expect(_.last(data)).to.equal('seven hundred and thirty-six');
-          done();
-        });
-        $httpBackend.flush();
-      });
+      $httpBackend.flush();
     });
 
     describe('with an unsuccessful response', function() {

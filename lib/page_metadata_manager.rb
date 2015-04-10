@@ -169,10 +169,10 @@ class PageMetadataManager
 
     if !metadata_transition_phase_0? &&
       columns_to_roll_up_by_date_trunc(normalized_columns, cards).any? &&
-        page_metadata['defaultDateTruncFunction'].blank?
-          raise Phidippides::NoDefaultDateTruncFunction.new(
-            "page does not have default date trunc function set for pageId: #{page_metadata['pageId']}"
-          )
+      page_metadata['defaultDateTruncFunction'].blank?
+        raise Phidippides::NoDefaultDateTruncFunction.new(
+          "page does not have default date trunc function set for pageId: #{page_metadata['pageId']}"
+        )
     end
 
     rolled_up_columns_soql = (columns_to_roll_up.pluck(column_field_name) +
@@ -237,7 +237,10 @@ class PageMetadataManager
   # If the max date is > 1 year after the start date: MONTH
   # Else: DAY
   def date_trunc_function(days)
-    return unless days
+    # Default to the largest granularity if we don't have
+    # a time range (possibly because all timestamp columns
+    # have no data).
+    return 'date_trunc_y' if days.to_i == 0
 
     years = (days / 365.25).to_i
     prec = 'y'
@@ -262,7 +265,15 @@ class PageMetadataManager
   end
 
   def largest_time_span_in_days_being_used_in_columns(time_columns, dataset_id)
-    time_columns.map { |column| time_range_in_column(dataset_id, column[column_field_name]) }.compact.max
+    time_columns.map do |column|
+      begin
+        time_range_in_column(dataset_id, column[column_field_name])
+      rescue Phidippides::NoMinMaxInDateColumnException => error
+        report_error("No min and max available for column: #{column_field_name}", error)
+
+        nil
+      end
+    end.compact.max
   end
 
   def time_range_in_column(dataset_id, field_name)

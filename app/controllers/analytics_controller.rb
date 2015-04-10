@@ -157,6 +157,7 @@ module ClientAnalyticsHelper
         ret_val.push "domain-intern/#{functional_bucket}-#{dynamic_metric}"
       end
       ret_val.push "domain/js-page-view-#{functional_bucket}"
+      ret_val.push "domain/js-page-view-embed-#{functional_bucket}"
     end
 
     ret_val.freeze

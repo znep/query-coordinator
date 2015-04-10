@@ -2,6 +2,9 @@
 
 Frontend::Application.routes do
 
+  # NOTE: Currently socrata-analytics.js is dependent on path structure for accurately tracking metrics.
+  # If you decide to change how pages are routed please reflect your changes in socrata-analytics 'determine_page_type'
+
   UID_REGEXP = /\w{4}-\w{4}/
   INTEGER_REGEXP = /-?\d+/
 

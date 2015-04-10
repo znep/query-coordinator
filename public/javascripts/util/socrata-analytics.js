@@ -160,19 +160,29 @@ jQuery.metrics = {
         }
         $.metrics.flush_metrics();
     },
+    in_iframe: function() {
+        try {
+            return window.self !== window.top;
+        } catch (e) {
+            return true;
+        }
+    },
     determine_page_type: function() {
+        var page_type = 'other';
 
         //debugger;
         var path = window.location.pathname;
 
+        // Currently abiding by ISO 639-1 localisation standard
+        var localization_regex = "[a-z]{2}";
         //First, see if this is a homepage.  Treat this a little special.
-        if (!path || path=="/") {
-            return "homepage";
+        if (!path || path.match("^/({0})?/?$".format(localization_regex))) {
+            page_type = 'homepage';
         }
 
         //Next see if it is a dataslate page of any kind
         if ($.subKeyDefined(blist, 'configuration.page')) {
-            return "dataslate";
+            page_type = 'dataslate';
         }
 
         if (blist.dataset) {
@@ -184,23 +194,27 @@ jQuery.metrics = {
                 { return !_.isEmpty($.deepGet(blist.dataset, 'metadata', 'jsonQuery', qPart)) ? name : null; }));
 
             if (extra.length > 1)
-            { return 'dataset-complex'; }
+            { page_type = 'dataset-complex'; }
             else if (extra.length == 1)
-            { return 'dataset-' + extra[0]; }
+            { page_type = 'dataset-' + extra[0]; }
             else
-            { return 'dataset'; }
+            { page_type = 'dataset'; }
 
-        } else if (path.match("^/admin")) {
-            return "admin";
-        } else if (path.match("^/profile")) {
-            return "profile";
-        } else if (path.match("^/browse")) {
-            return "browse" + (window.location.href.indexOf('q=') > -1 ? '-search' : '');
+        } else if (path.match("^/({0}/)?admin".format(localization_regex))) {
+            page_type = 'admin';
+        } else if (path.match("^/({0}/)?profile".format(localization_regex))) {
+            page_type = 'profile';
+        } else if (path.match("^/({0}/)?browse".format(localization_regex))) {
+            page_type = 'browse' + (window.location.href.indexOf('q=') > -1 ? '-search' : '');
         } else if ($.subKeyDefined(blist, 'govstat')) {
-            return "govstat"
+            page_type = 'govstat'
         }
 
-        return "other";
+        // Differentiate embedded pages against non embedded pages.
+        if ($.metrics.in_iframe) {
+            page_type = 'embed-' + page_type;
+        }
+        return page_type;
     },
     browser_name: function() {
         return $.browser.msie ? 'ie' : $.browser.mozilla ? 'firefox' : $.browser.chrome ? 'chrome' :

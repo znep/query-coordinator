@@ -81,11 +81,27 @@ class InternalController < ApplicationController
                                                     parentConfigId)[0].id
       end
 
-      site_theme = ::Configuration.create({'name' => 'Current theme',
-        'default' => true, 'type' => 'site_theme', 'parentId' => parentConfigId,
-        'domainCName' => domain.cname})
-      ::Configuration.create({'name' => 'Feature set',
-        'default' => true, 'type' => 'feature_set', 'domainCName' => domain.cname})
+      ::Configuration.create(
+        'name' => 'Current theme',
+        'default' => true,
+        'type' => 'site_theme',
+        'parentId' => parentConfigId,
+        'domainCName' => domain.cname
+      )
+
+      ::Configuration.create(
+        'name' => 'Feature set',
+        'default' => true,
+        'type' => 'feature_set',
+        'domainCName' => domain.cname
+      )
+
+      ::Configuration.create(
+        'name' => 'Data Lens configuration',
+        'type' => 'theme_v3',
+        'default' => true,
+        'domainCName' => domain.cname
+      )
 
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = e.error_message

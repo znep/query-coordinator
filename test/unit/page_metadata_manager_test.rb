@@ -590,8 +590,12 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal('date_trunc_ymd', manager.send(:date_trunc_function, 20))
   end
 
-  def test_date_trunc_function_with_nil_days_returns_nil
-    refute(manager.send(:date_trunc_function, nil), 'Expect nil when days nil')
+  def test_date_trunc_function_with_nil_days_returns_year_aggregation
+    assert_equal('date_trunc_y', manager.send(:date_trunc_function, nil))
+  end
+
+  def test_date_trunc_function_with_0_days_returns_year_aggregation
+    assert_equal('date_trunc_y', manager.send(:date_trunc_function, 0))
   end
 
   def test_dataset_metadata

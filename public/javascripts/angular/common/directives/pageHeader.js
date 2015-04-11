@@ -21,7 +21,7 @@
         var logoObservable = themeObservable.map(function(configuration) {
           return _.instead(
             ConfigurationsService.getConfigurationValue(configuration, 'logo_url'),
-            '/stylesheets/images/common/socrata_logo.png');
+            '/stylesheets/images/common/socrata_logo_white.png');
         });
 
         function buildUrlStreamValue(configuration, labelKey, defaultValue) {

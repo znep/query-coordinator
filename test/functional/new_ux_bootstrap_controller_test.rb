@@ -828,7 +828,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             assert_redirected_to('/view/neoo-page')
           end
 
-          should 'not create a card for point columns when the dataset sizes is > 100_000' do
+          should 'not create a card for point columns when the dataset size is > 100_000' do
             @phidippides.stubs(
               fetch_dataset_metadata: {
                 status: '200', body: v1_mock_dataset_metadata
@@ -854,6 +854,58 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             get :bootstrap, id: 'four-four'
             assert_redirected_to('/view/neoo-page')
+          end
+
+          context 'on point columns' do
+
+            setup do
+              stub_feature_flags_with(:metadata_transition_phase, '3')
+              @mock_cardinality_metadata = v1_mock_dataset_metadata.deep_dup
+              @mock_cardinality_metadata['columns'][':@computed']['cardinality'] = 1000
+              @mock_cardinality_metadata['columns'][':@computed']['physicalDatatype'] = 'point'
+              @mock_cardinality_metadata['columns'][':@other_computed']['cardinality'] = 1000
+              @mock_cardinality_metadata['columns'][':@other_computed']['physicalDatatype'] = 'point'
+            end
+
+            should 'not create any cards for point columns with insufficient cardinality' do
+              @mock_cardinality_metadata['columns'][':@computed']['cardinality'] = 1
+              @mock_cardinality_metadata['columns'][':@other_computed']['cardinality'] = 1
+
+              @phidippides.stubs(
+                fetch_dataset_metadata: { status: '200', body: @mock_cardinality_metadata }
+              )
+
+              @page_metadata_manager.expects(:create).with do |page, _|
+                assert_equal(10, page['cards'].length, 'Should create 10 cards')
+                point_columns = lambda { |fieldName| fieldName =~ /(other_)?computed/ }
+
+                assert(
+                  page['cards'].pluck('fieldName').map(&:downcase).none?(&point_columns),
+                  'should omit point column cards when the location has insufficient cardinality'
+                )
+              end.returns(status: '200', body: { pageId: 'neoo-page' })
+
+              get :bootstrap, id: 'four-four'
+            end
+
+            should 'create point column cards for columns with sufficient cardinality' do
+              @phidippides.stubs(
+                fetch_dataset_metadata: { status: '200', body: @mock_cardinality_metadata }
+              )
+
+              @page_metadata_manager.expects(:create).with do |page, _|
+                assert_equal(10, page['cards'].length, 'Should create 10 cards')
+                point_columns = lambda { |fieldName| fieldName =~ /(other_)?computed/ }
+
+                assert(
+                  page['cards'].pluck('fieldName').map(&:downcase).any?(&point_columns),
+                  'should include point column cards when the location has sufficient cardinality'
+                )
+              end.returns(status: '200', body: { pageId: 'neoo-page' })
+
+              get :bootstrap, id: 'four-four'
+            end
+
           end
 
         end

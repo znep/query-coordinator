@@ -347,11 +347,21 @@ class NewUxBootstrapController < ActionController::Base
     point_column?(column) && dataset_size > 100_000
   end
 
+  # If a point column has no actual values in it, then the computed cardinality
+  # will be 1 because there is only a single empty value. We use this cardinality
+  # as a proxy for emptiness and omit these columns during the bootstrap process.
+  def point_column_has_insufficient_cardinality?(column)
+    return false unless point_column?(column)
+
+    column['cardinality'].to_i <= 1
+  end
+
   def non_bootstrappable_column?(field_name, column)
     field_name_ignored_for_bootstrap?(field_name) ||
       system_column?(field_name) ||
       histogram_is_unsupported_on_column?(column) ||
-      column_too_large_for_feature_card?(column)
+      column_too_large_for_feature_card?(column) ||
+      point_column_has_insufficient_cardinality?(column)
   end
 
   def interesting_columns(columns)

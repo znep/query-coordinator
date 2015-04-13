@@ -141,6 +141,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               },
               fetch_pages_for_dataset: {
                 status: '200', body: { publisher: [{ pageId: 'olde-page' }, { pageId: 'neww-page' }], user: [] }
+              },
+              fetch_page_metadata: {
+                status: '200'
               }
             )
 
@@ -166,6 +169,12 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               },
               fetch_pages_for_dataset: {
                 status: '200', body: { publisher: [{ pageId: 'page-xist', version: '1' }, { pageId: 'defa-ultp' }, { pageId: 'last-page', version: '1' }], user: [] }
+              },
+              fetch_page_metadata: {
+                status: '200'
+              },
+              update_dataset_metadata: {
+                status: '200'
               }
             )
           end
@@ -185,6 +194,12 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               },
               fetch_pages_for_dataset: {
                 status: '200', body: { publisher: [{ pageId: 'page-xist', version: '1' }, { pageId: 'defa-ultp', version: '1' }, { pageId: 'last-page', version: '1' }], user: [] }
+              },
+              fetch_page_metadata: {
+                status: '200'
+              },
+              update_dataset_metadata: {
+                status: '200'
               }
             )
           end
@@ -316,6 +331,69 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               },
               fetch_pages_for_dataset: {
                 status: '200', body: { publisher: [{ pageId: 'olde-page' }, { pageId: 'neww-page' }], user: [] }
+              }
+            )
+
+            stub_feature_flags_with(:metadata_transition_phase, '1')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+
+            stub_feature_flags_with(:metadata_transition_phase, '2')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+
+            stub_feature_flags_with(:metadata_transition_phase, '3')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+          end
+        end
+
+        context 'create a new default page if default page is set but fetching pages returns a 404' do
+          setup do
+            @page_metadata_manager.stubs(
+              create: {
+                status: '200',
+                body: { pageId: 'abcd-efgh' }
+              }
+            )
+          end
+
+          should 'in phase 0' do
+            @phidippides.expects(:update_dataset_metadata).
+              times(1).
+              returns({ status: '200' }).
+              with do |dataset_metadata|
+                dataset_metadata[:defaultPage] == 'abcd-efgh'
+              end
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200',
+                body: v0_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata[:defaultPage] = 'lost-page'  }
+              },
+              fetch_pages_for_dataset: {
+                status: '404', body: ''
+              }
+            )
+
+            stub_feature_flags_with(:metadata_transition_phase, '0')
+            get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+          end
+
+          should 'in phases 1, 2 and 3' do
+            @phidippides.expects(:update_dataset_metadata).
+              times(3).
+              returns({ status: '200' }).
+              with do |dataset_metadata|
+                dataset_metadata[:defaultPage] == 'abcd-efgh'
+              end
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200',
+                body: v1_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata[:defaultPage] = 'lost-page'  }
+              },
+              fetch_pages_for_dataset: {
+                status: '404', body: ''
               }
             )
 

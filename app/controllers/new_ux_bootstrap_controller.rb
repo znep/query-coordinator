@@ -105,7 +105,7 @@ class NewUxBootstrapController < ActionController::Base
         end
       end
 
-      if default_page.present?
+      if default_page_accessible?(default_page)
         if metadata_transition_phase_0?
           # In metadata transition phase 0 only, we will take any extant
           # default page.
@@ -181,6 +181,13 @@ class NewUxBootstrapController < ActionController::Base
 
   # An arbitrary number of cards to create, if there are that many columns available
   MAX_NUMBER_OF_CARDS = 10
+
+  def default_page_accessible?(default_page)
+    return false unless default_page.present?
+
+    default_page_metadata = phidippides.fetch_page_metadata(default_page)
+    default_page_metadata[:status] == '200'
+  end
 
   def set_default_page(dataset_metadata, page_id)
     # Set the specified page as the default.

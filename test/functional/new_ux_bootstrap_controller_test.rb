@@ -143,6 +143,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                 status: '200', body: { publisher: [{ pageId: 'olde-page' }, { pageId: 'neww-page' }], user: [] }
               }
             )
+            @controller.stubs(:default_page_accessible => true)
 
             stub_feature_flags_with(:metadata_transition_phase, '1')
             get :bootstrap, id: 'data-iden'
@@ -168,6 +169,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                 status: '200', body: { publisher: [{ pageId: 'page-xist', version: '1' }, { pageId: 'defa-ultp' }, { pageId: 'last-page', version: '1' }], user: [] }
               }
             )
+            @controller.stubs(:default_page_accessible => true)
           end
 
           should 'in phase 0' do
@@ -187,6 +189,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                 status: '200', body: { publisher: [{ pageId: 'page-xist', version: '1' }, { pageId: 'defa-ultp', version: '1' }, { pageId: 'last-page', version: '1' }], user: [] }
               }
             )
+            @controller.stubs(:default_page_accessible => true)
           end
 
           should 'in phases 1, 2 and 3' do
@@ -865,7 +868,12 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               @mock_cardinality_metadata['columns'][':@computed']['physicalDatatype'] = 'point'
               @mock_cardinality_metadata['columns'][':@other_computed']['cardinality'] = 1000
               @mock_cardinality_metadata['columns'][':@other_computed']['physicalDatatype'] = 'point'
-            end
+              @phidippides.stubs(
+                  update_dataset_metadata: {
+                  status: '200', body: v1_mock_dataset_metadata
+                }
+              )
+              end
 
             should 'not create any cards for point columns with insufficient cardinality' do
               @mock_cardinality_metadata['columns'][':@computed']['cardinality'] = 1

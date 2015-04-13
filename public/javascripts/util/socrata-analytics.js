@@ -113,7 +113,11 @@ jQuery.metrics = {
                 "-" + $.browser.majorVersion);
 
         var page_type = $.metrics.determine_page_type();
-        $.metrics.mark("domain", 'js-page-view-{0}'.format(page_type));
+        if ($.metrics.in_iframe()) {
+            $.metrics.mark("domain", 'js-page-view-embed-{0}'.format(page_type));
+        } else {
+            $.metrics.mark("domain", 'js-page-view-{0}'.format(page_type));
+        }
 
         // NavigationTiming not supported by safari
         // https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/NavigationTiming
@@ -210,10 +214,6 @@ jQuery.metrics = {
             page_type = 'govstat'
         }
 
-        // Differentiate embedded pages against non embedded pages.
-        if ($.metrics.in_iframe()) {
-            page_type = "embed-{0}".format(page_type);
-        }
         return page_type;
     },
     browser_name: function() {

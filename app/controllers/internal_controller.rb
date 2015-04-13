@@ -257,7 +257,7 @@ class InternalController < ApplicationController
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 
     respond_to do |format|
-      format.html { redirect_to "/internal/orgs/#{params[:org_id]}/domains/#{params[:domain_id]}/feature_flags" }
+      format.html { redirect_to "/internal/orgs/#{@domain.organizationId}/domains/#{params[:domain_id]}/feature_flags" }
       format.data { render :json => { :success => true } }
     end
   end

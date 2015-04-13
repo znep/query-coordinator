@@ -51,6 +51,7 @@
       "description": "adjust your lattitude",
       "fred": "location",
       "physicalDatatype": "point",
+      "cardinality": 1000,
       "computationStrategy": {
         "parameters": {
           "region": "_c8h8-ygvf",

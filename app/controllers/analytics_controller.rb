@@ -18,10 +18,14 @@ class AnalyticsController < ApplicationController
     end
     return render_metric_error("No metrics provided") if data.nil?
     metrics = data["metrics"]
+    all_valid = true
+    errors = Array.new
     metrics.each { |m|
       valid, error = add_metric(m['entity'], m['metric'], m['increment'])
-      return render_metric_error(error) unless valid
+      all_valid = all_valid && valid
+      errors.push("#{m['metric']} : #{error}")
     }
+    return render_metric_error(errors) unless all_valid
     render :json => "OK".to_json
   end
 

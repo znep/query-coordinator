@@ -452,7 +452,7 @@
               // the interval is exactly one year in the case that the
               // start date is not January--otherwise we see a 1-year
               // span that, e.g., starts in June 2000 and ends in June
-              // 2001 still listed as '2000'. 
+              // 2001 still listed as '2000'.
               if (difference === 12 && startDate.getMonth() === 0) {
                 showRange = false;
               } else {
@@ -616,6 +616,12 @@
             selection.
               attr('class', 'selection').
               attr('d', area);
+
+            svgChart.
+              append('path').
+              data(values).
+              attr('class', 'selection-trace').
+              attr('d', line);
 
             selectionStartPosition = Math.floor(d3XScale(transformedMinDate));
             // Subtract one from the scaled and transformed maxDate in order to
@@ -1089,6 +1095,12 @@
             attr('class', 'context').
             attr('d', area);
 
+          svgChart.
+            append('path').
+            data(values).
+            attr('class', 'context-trace').
+            attr('d', line);
+
         }
 
         /**
@@ -1158,6 +1170,12 @@
           selection.
             attr('class', 'shaded').
             attr('d', area);
+
+          svgChart.
+            append('path').
+            data(values).
+            attr('class', 'shaded-trace').
+            attr('d', line);
 
         }
 
@@ -1401,7 +1419,7 @@
               );
 
             } else {
-              
+
               flyoutContent = [
                  '<div class="flyout-title">{0}</div>',
                  '<div class="flyout-row">',

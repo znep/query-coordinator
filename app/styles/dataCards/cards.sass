@@ -164,6 +164,7 @@ body.state-view-cards
             &.label
               text-transform: uppercase
               padding-right: 0.3em
+              vertical-align: top
 
             &.value, &.value a
               text-transform: capitalize
@@ -173,9 +174,12 @@ body.state-view-cards
             &.value a
               color: $aqua-font-color
 
-            &.value.source-dataset-name
-              max-width: 15rem
+            &.value.source-dataset-name a
+              text-overflow: ellipsis
+              white-space: nowrap
+              overflow: hidden
               display: inline-block
+              max-width: 15rem
 
               &.content
                 position: relative

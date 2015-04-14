@@ -26,8 +26,7 @@
     "pbf": "~0.0.3",
     "vector-tile-js": "devTristan/vector-tile-js#~0.1.1",
     "angular-elastic": "~v2.4.2",
-    "js-polyfills": "~0.1.2",
-    "accountingjs": "~0.3.2"
+    "js-polyfills": "~0.1.2"
   },
   "install": {
     "path": {
@@ -41,7 +40,6 @@
       "sinon-browser-only"
     ],
     "sources": {
-      "accountingjs": "bower_components/accountingjs/accounting.min.js",
       "angular": "bower_components/angular/angular.min.js",
       "lodash": "bower_components/lodash/dist/lodash.js",
       "javascript-detect-element-resize": "bower_components/javascript-detect-element-resize/jquery.resize.js",

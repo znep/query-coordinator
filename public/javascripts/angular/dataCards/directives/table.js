@@ -425,24 +425,6 @@
                         }
                       }
                     }
-                  } else if (cellType === 'money') {
-                    if (cellContent) {
-                      var amount = parseFloat(cellContent);
-                      if (!_.isNaN(amount)) {
-                        cellText = accounting.formatMoney(amount, {
-                          format: {
-                            pos: "%s%v",
-                            neg: "-%s%v",
-                            zero: "%s%v"
-                          }
-                        });
-                      }
-                    }
-
-                    // If anything went wrong, default to the original value
-                    if (!cellText) {
-                      cellText = cellContent.toString();
-                    }
                   } else {
                     cellText = _.escape(cellContent);
                   }

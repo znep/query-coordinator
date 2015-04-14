@@ -235,6 +235,11 @@ class InternalController < ApplicationController
       @flags[flag] = fc
       @flags[flag].value = domain_flags[flag]
     end
+
+    respond_to do |format|
+      format.html { render }
+      format.data { render :json => @flags.to_json }
+    end
   end
 
   def set_feature_flags

@@ -428,14 +428,11 @@
                     // TODO: use accountingjs to support non-US formats
                     var dollarAmount = parseFloat(cellContent);
                     if (_.isFinite(dollarAmount)) {
-                      var isNegativeDollarAmount = dollarAmount < 0;
+                      var isNegativeAmount = dollarAmount < 0;
                       cellText = Math.abs(Math.round(dollarAmount * 100)).toString(); // positive cents
                       cellText = ('00' + cellText).slice(Math.min(-cellText.length, -3)); // pad zeroes
                       cellText = cellText.replace(/(\d+)(\d{2})$/, '$1.$2'); // "divide" to get dollars
-                      cellText = $.commaify(cellText).replace(/(\d)/, '$$$1'); // commaify, dollar sign
-                      if (isNegativeDollarAmount) {
-                        cellText = '-' + cellText; // restore negative sign
-                      }
+                      cellText = (isNegativeAmount ? '-' : '') + '$' + $.commaify(cellText); // finish!
                     }
 
                     // Fallback to escaped content if invalid amount

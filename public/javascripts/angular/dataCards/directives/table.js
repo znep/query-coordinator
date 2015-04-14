@@ -378,7 +378,7 @@
                   // Is Boolean?
                   if (cellType === 'boolean') {
                     if (_.isBoolean(cellContent)) {
-                      cellText = cellContent ? '✓' : '✗';
+                      cellText = cellContent ? '✓' : '';
                     }
 
                   } else if (cellType === 'number') {

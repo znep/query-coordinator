@@ -185,12 +185,12 @@ describe('table directive', function() {
       done();
     });
 
-    it('should render boolean cells with checkboxes and exes', function() {
+    it('should render boolean cells with checkboxes for true, empty for false', function() {
       var booleanCells = el.find('.table-row .cell.boolean');
       var cellContent = booleanCells.html();
 
       // The first row in the test fixture is false
-      expect(booleanCells[0].innerHTML).to.equal('✗');
+      expect(booleanCells[0].innerHTML).to.equal('');
       // The second row in the test fixture is true
       expect(booleanCells[1].innerHTML).to.equal('✓');
       // The third row in the test fixture is null

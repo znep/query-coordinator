@@ -174,8 +174,12 @@ body.state-view-cards
             &.value a
               color: $aqua-font-color
 
-            &.value.source-dataset-name
+            &.value.source-dataset-name a
+              text-overflow: ellipsis
+              white-space: nowrap
+              overflow: hidden
               display: inline-block
+              max-width: 15rem
 
               &.content
                 position: relative

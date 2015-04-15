@@ -146,7 +146,7 @@ class InternalController < ApplicationController
   def set_features
     config = ::Configuration.find_by_type('feature_set', true, params[:domain_id])[0]
     if !params['new-feature_name'].blank?
-      config.create_property(params['new-feature_name'],
+      config.create_property(params['new-feature_name'].strip,
                              params['new-feature_enabled'] == 'enabled')
     else
       CoreServer::Base.connection.batch_request do |batch_id|

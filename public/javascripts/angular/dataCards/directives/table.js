@@ -410,7 +410,6 @@
                     }
 
                   } else if (cellType === 'timestamp' || cellType === 'floating_timestamp') {
-                    cellText = '';
                     // Don't instantiate moment at all if we can avoid it.
                     if (_.isPresent(cellContent)) {
                       var time = moment(cellContent);
@@ -425,6 +424,19 @@
                         }
                       }
                     }
+                  } else if (cellType === 'money') {
+                    // TODO: use accountingjs to support non-US formats
+                    var dollarAmount = parseFloat(cellContent);
+                    if (_.isFinite(dollarAmount)) {
+                      var isNegativeAmount = dollarAmount < 0;
+                      cellText = Math.abs(Math.round(dollarAmount * 100)).toString(); // positive cents
+                      cellText = ('00' + cellText).slice(Math.min(-cellText.length, -3)); // pad zeroes
+                      cellText = cellText.replace(/(\d+)(\d{2})$/, '$1.$2'); // "divide" to get dollars
+                      cellText = (isNegativeAmount ? '-' : '') + '$' + $.commaify(cellText); // finish!
+                    }
+
+                    // Fallback to escaped content if invalid amount
+                    cellText = cellText || _.escape(cellContent);
                   } else {
                     cellText = _.escape(cellContent);
                   }

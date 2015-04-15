@@ -1,0 +1,24 @@
+#!/bin/sh
+
+DOT_ONLY_INSTANCES=`grep -IREil '\s*[^\/][^\/]\s*(it|describe)\.only' karma-test/dataCards/*`
+DOT_ONLY_INSTANCE_COUNT=`echo $DOT_ONLY_INSTANCES | wc -w | tr -d '[[:space:]]'`
+
+if [ "$DOT_ONLY_INSTANCE_COUNT" = "0" ]
+then
+    exit 0
+else
+    echo "\n"
+    echo "********************************************************************************"
+    echo "\n"
+    echo "                               (╯°□°)╯︵ ┻━┻"
+    echo "\n"
+    echo "                           P U S H    F A I L E D"
+    echo "\n"
+    echo "Found instances of uncommented '.only' in:"
+    echo "\n"
+    echo "$DOT_ONLY_INSTANCES"
+    echo "\n"
+    echo "********************************************************************************"
+    echo "\n"
+    exit 1
+fi

@@ -10,7 +10,8 @@ var dataCards = angular.module('dataCards', [
   'dataCards.controllers',
   'dataCards.models',
   'dataCards.directives',
-  'dataCards.filters'
+  'dataCards.filters',
+  'LocalStorageModule'
 ]);
 
 dataCards.run(function(ServerConfig, testHelpers, serverMocks) {

@@ -98,6 +98,7 @@ module.exports = function ( karma ) {
       /* Libraries needing Angular */
       'bower_components/angular-sanitize/angular-sanitize.js',
       'bower_components/angular-markdown-directive/markdown.js',
+      'bower_components/angular-local-storage/dist/angular-local-storage.js',
 
       /* END OF PRODUCT DEPENDENCIES */
 

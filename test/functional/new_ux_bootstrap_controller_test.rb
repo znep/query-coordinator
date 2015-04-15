@@ -943,9 +943,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               stub_feature_flags_with(:metadata_transition_phase, '3')
               @mock_cardinality_metadata = v1_mock_dataset_metadata.deep_dup
               @mock_cardinality_metadata['columns'][':@computed']['cardinality'] = 1000
-              @mock_cardinality_metadata['columns'][':@computed']['physicalDatatype'] = 'point'
               @mock_cardinality_metadata['columns'][':@other_computed']['cardinality'] = 1000
-              @mock_cardinality_metadata['columns'][':@other_computed']['physicalDatatype'] = 'point'
               @phidippides.stubs(
                   update_dataset_metadata: {
                   status: '200', body: v1_mock_dataset_metadata

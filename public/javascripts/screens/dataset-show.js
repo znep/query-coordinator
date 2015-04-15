@@ -844,8 +844,10 @@ $(function()
                     // that doesn't correspond to an existing page (i.e. page deleted but metadata
                     // not kept in sync). In this case, attempt to rebootstrap the page, which will
                     // update the metadata appropriately.
-                    linkHref = '/view/bootstrap/{0}'.format(migration.nbeId);
-                    datasetShowHelpers.createNewUXLink(linkParams, linkHref);
+                    if (linkParams.canUpdateMetadata) {
+                        linkHref = '/view/bootstrap/{0}'.format(migration.nbeId);
+                        datasetShowHelpers.createNewUXLink(linkParams, linkHref);
+                    }
                   });
                 } else if (linkParams.canUpdateMetadata) {
                   // No view has been bootstrapped yet, only let the user bootstrap if they

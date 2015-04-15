@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DOT_ONLY_INSTANCES=`egrep -IREil '\s*[^\/]{1}\s*(it|describe)\.only' karma-test/dataCards/*`
+DOT_ONLY_INSTANCES=`grep -IREil '\s*[^\/][^\/]\s*(it|describe)\.only' karma-test/dataCards/*`
 DOT_ONLY_INSTANCE_COUNT=`echo $DOT_ONLY_INSTANCES | wc -l`
 
 if [ "$DOT_ONLY_INSTANCE_COUNT" = "0" ]

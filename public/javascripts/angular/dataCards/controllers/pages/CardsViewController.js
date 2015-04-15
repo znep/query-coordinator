@@ -138,7 +138,8 @@
     ServerConfig,
     $http,
     Schemas,
-    PageHelpersService
+    PageHelpersService,
+    localStorageService
   ) {
 
     AngularRxExtensions.install($scope);
@@ -620,6 +621,18 @@
       $scope.page.set('cards', _.without($scope.cardModels, cardModel));
     });
 
+    var mobileWarningClosed = (localStorageService.get('mobileWarningClosed') !== null);
+    var isMobile = navigator.userAgent.match(/Mobi/);
+
+    $scope.mobileWarningState = {
+      'show': isMobile && !mobileWarningClosed
+    };
+
+    $scope.$watch('mobileWarningState.show', function(newValue) {
+      if (newValue === false) {
+        localStorageService.set('mobileWarningClosed', true);
+      }
+    });
 
     // Set up flyout handlers.
 

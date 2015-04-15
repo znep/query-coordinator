@@ -166,6 +166,14 @@
 
   </modal-dialog>
 
+  <modal-dialog
+    ng-if="mobileWarningState.show"
+    dialog-state="mobileWarningState">
+
+    <mobile-warning-dialog dialog-state="mobileWarningState"></mobile-warning-dialog>
+
+  </modal-dialog>
+
   <feedback-panel></feedback-panel>
 
 </div>

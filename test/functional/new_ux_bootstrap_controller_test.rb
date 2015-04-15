@@ -937,7 +937,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             assert_redirected_to('/view/neoo-page')
           end
 
-          should 'not create any cards for columns with insufficient cardinality' do
+          should 'not create any cards for known uniform columns' do
             @mock_cardinality_metadata = v1_mock_dataset_metadata.deep_dup
             @mock_cardinality_metadata['columns'].each do |col_name, _|
               @mock_cardinality_metadata['columns'][col_name]['cardinality'] = 1000
@@ -988,7 +988,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             @page_metadata_manager.expects(:create).with do |page, _|
               assert_equal(2, page['cards'].length, 'Should create 2 cards')
-              uniform_columns = lambda { |fieldName| fieldName !=~ /(other_)?computed/ }
+              uniform_columns = lambda { |fieldName| !(fieldName =~ /(other_)?computed/) }
 
               assert(
                 page['cards'].pluck('fieldName').map(&:downcase).none?(&uniform_columns),

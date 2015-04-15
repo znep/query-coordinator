@@ -355,8 +355,8 @@ class NewUxBootstrapController < ActionController::Base
   end
 
   # If a column is uniform (cardinality of 1), its data is considered boring.
-  def column_has_insufficient_cardinality?(column)
-    column['cardinality'].to_i <= 1
+  def column_is_known_uniform?(column)
+    column['cardinality'] == 1
   end
 
   def non_bootstrappable_column?(field_name, column)
@@ -364,7 +364,7 @@ class NewUxBootstrapController < ActionController::Base
       system_column?(field_name) ||
       histogram_is_unsupported_on_column?(column) ||
       column_too_large_for_feature_card?(column) ||
-      column_has_insufficient_cardinality?(column)
+      column_is_known_uniform?(column)
   end
 
   def interesting_columns(columns)

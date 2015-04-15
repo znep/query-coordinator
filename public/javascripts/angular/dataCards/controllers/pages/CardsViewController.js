@@ -139,7 +139,8 @@
     $http,
     Schemas,
     PageHelpersService,
-    localStorageService
+    localStorageService,
+    DeviceService
   ) {
 
     AngularRxExtensions.install($scope);
@@ -622,7 +623,7 @@
     });
 
     var mobileWarningClosed = (localStorageService.get('mobileWarningClosed') !== null);
-    var isMobile = navigator.userAgent.match(/Mobi/);
+    var isMobile = DeviceService.isMobile();
 
     $scope.mobileWarningState = {
       'show': isMobile && !mobileWarningClosed

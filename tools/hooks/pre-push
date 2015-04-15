@@ -1,7 +1,7 @@
 #!/bin/sh
 
 DOT_ONLY_INSTANCES=`grep -IREil '\s*[^\/][^\/]\s*(it|describe)\.only' karma-test/dataCards/*`
-DOT_ONLY_INSTANCE_COUNT=`echo $DOT_ONLY_INSTANCES | wc -l`
+DOT_ONLY_INSTANCE_COUNT=`echo $DOT_ONLY_INSTANCES | wc -w | tr -d '[[:space:]]'`
 
 if [ "$DOT_ONLY_INSTANCE_COUNT" = "0" ]
 then

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function mobileWarningDialog(AngularRxExtensions) {
+  function mobileWarningDialog() {
     return {
       restrict: 'E',
       scope: {

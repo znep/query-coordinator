@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function mobileWarningDialog(AngularRxExtensions, localStorageService) {
+  function mobileWarningDialog(AngularRxExtensions) {
     return {
       restrict: 'E',
       scope: {

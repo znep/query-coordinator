@@ -26,8 +26,7 @@
     "pbf": "~0.0.3",
     "vector-tile-js": "devTristan/vector-tile-js#~0.1.1",
     "angular-elastic": "~v2.4.2",
-    "js-polyfills": "~0.1.2",
-    "angular-local-storage": "~0.1.5"
+    "js-polyfills": "~0.1.2"
   },
   "install": {
     "path": {

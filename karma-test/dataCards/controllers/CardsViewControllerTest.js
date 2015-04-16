@@ -20,7 +20,6 @@ describe('CardsViewController', function() {
   var ServerConfig;
   var PageDataService;
   var DeviceService;
-  var localStorageService;
   var controllerHarness;
   var $scope;
   var mockWindowServiceLocationSeq;
@@ -102,7 +101,6 @@ describe('CardsViewController', function() {
         'ServerConfig',
         'PageDataService',
         'DeviceService',
-        'localStorageService',
         function(
           _$q,
           _CardV1,
@@ -117,8 +115,7 @@ describe('CardsViewController', function() {
           _$httpBackend,
           _ServerConfig,
           _PageDataService,
-          _DeviceService,
-          _localStorageService) {
+          _DeviceService) {
 
       CardV1 = _CardV1;
       Page = _Page;
@@ -134,7 +131,6 @@ describe('CardsViewController', function() {
       ServerConfig = _ServerConfig;
       PageDataService = _PageDataService;
       DeviceService = _DeviceService;
-      localStorageService = _localStorageService;
       testHelpers.mockDirective(_$provide, 'suggestionToolPanel');
   }]));
 
@@ -928,6 +924,10 @@ describe('CardsViewController', function() {
 
   describe('mobile warning dialog', function() {
 
+    var cookieSet = function() {
+      return (/(^|;)\s*mobileWarningClosed=/).test(document.cookie);
+    };
+
     describe('on a desktop device', function() {
       it('should not be visible', function() {
         sinon.stub(DeviceService, 'isMobile').returns(false);
@@ -942,17 +942,17 @@ describe('CardsViewController', function() {
       beforeEach(inject(['testHelpers', function(_testHelpers) {
         sinon.stub(DeviceService, 'isMobile').returns(true);
         testHelpers = _testHelpers;
+
+        // Clear mobileWarningClosed cookie
+        document.cookie = 'mobileWarningClosed=1; expires=' + new Date(0).toUTCString();
       }]));
 
       afterEach(function() {
         testHelpers.TestDom.clear();
       });
 
-      it('should not be visible if the localStorage key "mobileWarningClosed" is set to true', function() {
-        sinon.stub(localStorageService, 'get', function(key) {
-          if(key === 'mobileWarningClosed') return 'true';
-          return null;
-        });
+      it('should not be visible if the cookie "mobileWarningClosed" is set', function() {
+        document.cookie = 'mobileWarningClosed=1';
 
         controllerHarness = makeController();
         $scope = controllerHarness.$scope;
@@ -961,11 +961,8 @@ describe('CardsViewController', function() {
       });
 
       // Helper function to render the modal and click an element.
-      // Ensures the modal closes and the appropriate localStorage key is set.
+      // Ensures the modal closes and the appropriate cookie is set.
       var runCaseWithSelector = function(selector) {
-        sinon.stub(localStorageService, 'get').returns(null);
-        var spy = sinon.spy(localStorageService, 'set');
-
         var context = renderCardsView();
         var $scope = context.cardLayout.$scope.$parent;
 
@@ -978,18 +975,18 @@ describe('CardsViewController', function() {
 
         $scope.$digest();
         expect($scope.mobileWarningState.show).to.equal(false);
-        expect(spy.calledWith('mobileWarningClosed', true));
+        expect(cookieSet()).to.equal(true);
       };
 
-      it('should hide and set a localStorage key when the acknowledgement button is clicked', function() {
+      it('should hide and set a cookie when the acknowledgement button is clicked', function() {
         runCaseWithSelector('.mobile-warning-buttons button');
       });
 
-      it('should hide and set a localStorage key when the close button is clicked', function() {
+      it('should hide and set a cookie when the close button is clicked', function() {
         runCaseWithSelector('.modal-close-button');
       });
 
-      it('should hide and set a localStorage key when the modal overlay is clicked', function() {
+      it('should hide and set a cookie when the modal overlay is clicked', function() {
         runCaseWithSelector('.modal-overlay');
       });
     });

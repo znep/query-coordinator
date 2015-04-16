@@ -139,7 +139,6 @@
     $http,
     Schemas,
     PageHelpersService,
-    localStorageService,
     DeviceService
   ) {
 
@@ -622,7 +621,7 @@
       $scope.page.set('cards', _.without($scope.cardModels, cardModel));
     });
 
-    var mobileWarningClosed = (localStorageService.get('mobileWarningClosed') !== null);
+    var mobileWarningClosed = (/(^|;)\s*mobileWarningClosed=/).test(document.cookie);
     var isMobile = DeviceService.isMobile();
 
     $scope.mobileWarningState = {
@@ -631,7 +630,7 @@
 
     $scope.$watch('mobileWarningState.show', function(newValue) {
       if (newValue === false) {
-        localStorageService.set('mobileWarningClosed', true);
+        document.cookie = 'mobileWarningClosed=1';
       }
     });
 

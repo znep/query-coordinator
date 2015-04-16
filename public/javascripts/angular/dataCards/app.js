@@ -3,7 +3,6 @@ var dependencies = [
   'ngSanitize',
   'btford.markdown',
   'monospaced.elastic',
-  'LocalStorageModule',
   'socrataCommon.services',
   'socrataCommon.directives',
   'socrataCommon.filters',
@@ -124,10 +123,6 @@ dataCards.config(function($provide, $stateProvider, $urlRouterProvider, $locatio
         }
       }
     });
-});
-
-dataCards.config(function(localStorageServiceProvider) {
-  localStorageServiceProvider.setPrefix('dataCards');
 });
 
 dataCards.run(function($location, $log, $rootScope, $state, Analytics, Routes, ServerConfig, DeveloperOverrides) {

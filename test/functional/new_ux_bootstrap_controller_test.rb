@@ -909,6 +909,25 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             assert_redirected_to('/view/neoo-page')
           end
 
+          should 'not create a card for any money column' do
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata
+              },
+              update_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata
+              }
+            )
+            stub_feature_flags_with(:metadata_transition_phase, '3')
+
+            @page_metadata_manager.expects(:create).with do |page, _|
+              is_money = lambda { |fieldName| fieldName =~ /single4/ }
+              assert(page['cards'].pluck('fieldName').map(&:downcase).none?(&is_money))
+            end.returns(status: '200', body: { pageId: 'neoo-page' })
+
+            get :bootstrap, id: 'four-four'
+          end
+
           should 'not create a card for point columns when the dataset size is > 100_000' do
             @phidippides.stubs(
               fetch_dataset_metadata: {

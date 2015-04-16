@@ -375,7 +375,8 @@ class NewUxBootstrapController < ActionController::Base
       histogram_is_unsupported_on_column?(column) ||
       column_too_large_for_feature_card?(column) ||
       point_column_has_insufficient_cardinality?(column) ||
-      column_is_known_uniform?(column)
+      column_is_known_uniform?(column) ||
+      money_column?(column)
   end
 
   def interesting_columns(columns)

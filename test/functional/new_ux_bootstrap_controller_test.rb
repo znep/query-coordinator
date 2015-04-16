@@ -640,55 +640,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             assert_redirected_to('/view/neoo-page')
           end
 
-          should 'in phase 1' do
-            @phidippides.stubs(
-              fetch_dataset_metadata: {
-                status: '200', body: v1_mock_dataset_metadata
-              }
-            )
-            stub_feature_flags_with(:metadata_transition_phase, '1')
-
-            # Make sure the page we're creating fits certain criteria
-            @page_metadata_manager.expects(:create).with do |page, _|
-              assert_equal(10, page['cards'].length, 'Should create 10 cards')
-
-              assert(page['cards'].none? do |card|
-                Phidippides::SYSTEM_COLUMN_ID_REGEX.match(card['fieldName'])
-              end, 'should omit system columns')
-
-              # make sure there exists cards that have the same logical and physical types, but
-              # different card types, according to cardinality.
-              differing_card_types = collect_differing_card_types(page['cards'])
-
-              # Make sure we checked some cards
-              assert(differing_card_types.present?)
-
-              assert(page['cards'].any? do |card|
-                card['fieldName'] == 'no_cardinality' && card['cardType'] == 'column'
-              end, 'A column with no cardinality should default to its low-cardinality default')
-
-              assert(page['cards'].none? do |card|
-                card['fieldName'] == 'below'
-              end, 'too-low cardinality columns should be omitted')
-
-              assert(page['cards'].all? do |card|
-                card['cardType']
-              end, 'Every card should have cardType set')
-
-              previous_card = {}
-              page['cards'].first(4).each do |card|
-                assert_not_equal(previous_card['cardType'], card['cardType'],
-                                 'There should be a variety of cards created')
-                previous_card = card
-              end
-
-              next true
-            end.returns({ status: '200', body: { pageId: 'neoo-page' } })
-
-            get :bootstrap, id: 'four-four'
-            assert_redirected_to('/view/neoo-page')
-          end
-
           should 'in phase 3' do
             @phidippides.stubs(
               fetch_dataset_metadata: {
@@ -907,6 +858,25 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             get :bootstrap, id: 'four-four'
             assert_redirected_to('/view/neoo-page')
+          end
+
+          should 'not create a card for any money column' do
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata
+              },
+              update_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata
+              }
+            )
+            stub_feature_flags_with(:metadata_transition_phase, '3')
+
+            @page_metadata_manager.expects(:create).with do |page, _|
+              is_money = lambda { |fieldName| fieldName =~ /single4/ }
+              assert(page['cards'].pluck('fieldName').map(&:downcase).none?(&is_money))
+            end.returns(status: '200', body: { pageId: 'neoo-page' })
+
+            get :bootstrap, id: 'four-four'
           end
 
           should 'not create a card for point columns when the dataset size is > 100_000' do

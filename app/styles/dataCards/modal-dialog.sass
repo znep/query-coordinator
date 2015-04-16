@@ -66,3 +66,16 @@ modal-dialog.second
 
   .modal-dialog
     z-index: $modal-z-start + 3
+
+/* Mobile styles */
+
+@media (max-device-width: 600px)
+  .modal-container
+    .modal-dialog
+      width: 100%
+      left: 0
+      top: 0
+      @include prefixer('transform', 'translate(0, 0)')
+
+      .modal-close-button
+        display: none

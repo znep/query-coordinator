@@ -19,6 +19,7 @@ describe('CardsViewController', function() {
   var $document;
   var ServerConfig;
   var PageDataService;
+  var DeviceService;
   var controllerHarness;
   var $scope;
   var mockWindowServiceLocationSeq;
@@ -49,6 +50,7 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/manageLensDialog.html'));
   beforeEach(module('/angular_templates/dataCards/modalDialog.html'));
   beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
+  beforeEach(module('/angular_templates/dataCards/mobileWarningDialog.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
   beforeEach(module('/angular_templates/dataCards/card.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
@@ -98,6 +100,7 @@ describe('CardsViewController', function() {
         '$httpBackend',
         'ServerConfig',
         'PageDataService',
+        'DeviceService',
         function(
           _$q,
           _CardV1,
@@ -111,7 +114,8 @@ describe('CardsViewController', function() {
           _serverMocks,
           _$httpBackend,
           _ServerConfig,
-          _PageDataService) {
+          _PageDataService,
+          _DeviceService) {
 
       CardV1 = _CardV1;
       Page = _Page;
@@ -126,6 +130,7 @@ describe('CardsViewController', function() {
       $httpBackend = _$httpBackend;
       ServerConfig = _ServerConfig;
       PageDataService = _PageDataService;
+      DeviceService = _DeviceService;
       testHelpers.mockDirective(_$provide, 'suggestionToolPanel');
   }]));
 
@@ -159,6 +164,7 @@ describe('CardsViewController', function() {
     testHelpers.mockDirective(_$provide, 'modalDialog');
     testHelpers.mockDirective(_$provide, 'addCardDialog');
     testHelpers.mockDirective(_$provide, 'manageLensDialog');
+    testHelpers.mockDirective(_$provide, 'mobileWarningDialog');
     context.$scope.$apply();
     expect(context.$scope.page).to.be.instanceof(Page);
 
@@ -914,6 +920,76 @@ describe('CardsViewController', function() {
 
     });
 
+  });
+
+  describe('mobile warning dialog', function() {
+
+    var cookieSet = function() {
+      return (/(^|;)\s*mobileWarningClosed=/).test(document.cookie);
+    };
+
+    describe('on a desktop device', function() {
+      it('should not be visible', function() {
+        sinon.stub(DeviceService, 'isMobile').returns(false);
+
+        controllerHarness = makeController();
+        $scope = controllerHarness.$scope;
+        expect($scope.mobileWarningState.show).to.equal(false);
+      });
+    });
+
+    describe('on a mobile device', function() {
+      beforeEach(inject(['testHelpers', function(_testHelpers) {
+        sinon.stub(DeviceService, 'isMobile').returns(true);
+        testHelpers = _testHelpers;
+
+        // Clear mobileWarningClosed cookie
+        document.cookie = 'mobileWarningClosed=1; expires=' + new Date(0).toUTCString();
+      }]));
+
+      afterEach(function() {
+        testHelpers.TestDom.clear();
+      });
+
+      it('should not be visible if the cookie "mobileWarningClosed" is set', function() {
+        document.cookie = 'mobileWarningClosed=1';
+
+        controllerHarness = makeController();
+        $scope = controllerHarness.$scope;
+
+        expect($scope.mobileWarningState.show).to.equal(false);
+      });
+
+      // Helper function to render the modal and click an element.
+      // Ensures the modal closes and the appropriate cookie is set.
+      var runCaseWithSelector = function(selector) {
+        var context = renderCardsView();
+        var $scope = context.cardLayout.$scope.$parent;
+
+        $scope.$digest();
+        expect($scope.mobileWarningState.show).to.equal(true);
+
+        var element = context.element.find(selector)[0];
+        expect(element).to.exist;
+        testHelpers.fireMouseEvent(element, 'click');
+
+        $scope.$digest();
+        expect($scope.mobileWarningState.show).to.equal(false);
+        expect(cookieSet()).to.equal(true);
+      };
+
+      it('should hide and set a cookie when the acknowledgement button is clicked', function() {
+        runCaseWithSelector('.mobile-warning-buttons button');
+      });
+
+      it('should hide and set a cookie when the close button is clicked', function() {
+        runCaseWithSelector('.modal-close-button');
+      });
+
+      it('should hide and set a cookie when the modal overlay is clicked', function() {
+        runCaseWithSelector('.modal-overlay');
+      });
+    });
   });
 
   describe('savePageAs', function() {

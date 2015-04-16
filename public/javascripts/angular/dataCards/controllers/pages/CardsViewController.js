@@ -138,7 +138,8 @@
     ServerConfig,
     $http,
     Schemas,
-    PageHelpersService
+    PageHelpersService,
+    DeviceService
   ) {
 
     AngularRxExtensions.install($scope);
@@ -620,6 +621,18 @@
       $scope.page.set('cards', _.without($scope.cardModels, cardModel));
     });
 
+    var mobileWarningClosed = (/(^|;)\s*mobileWarningClosed=/).test(document.cookie);
+    var isMobile = DeviceService.isMobile();
+
+    $scope.mobileWarningState = {
+      'show': isMobile && !mobileWarningClosed
+    };
+
+    $scope.$watch('mobileWarningState.show', function(newValue) {
+      if (newValue === false) {
+        document.cookie = 'mobileWarningClosed=1';
+      }
+    });
 
     // Set up flyout handlers.
 

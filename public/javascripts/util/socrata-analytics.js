@@ -179,14 +179,13 @@ jQuery.metrics = {
 
         // Currently abiding by ISO 639-1 localisation standard
         var localization_regex = "[a-z]{2}";
+        if ($.subKeyDefined(blist, 'configuration.page')) {
+            page_type = 'dataslate';
+        }
+
         //First, see if this is a homepage.  Treat this a little special.
         if (!path || path.match("^/({0})?/?$".format(localization_regex))) {
             page_type = 'homepage';
-        }
-
-        //Next see if it is a dataslate page of any kind
-        if ($.subKeyDefined(blist, 'configuration.page')) {
-            page_type = 'dataslate';
         }
 
         if (blist.dataset) {

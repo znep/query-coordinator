@@ -7,7 +7,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var bottomMargin; // Calculated based on label text length
     var horizontalScrollbarHeight = 15; // used to keep horizontal scrollbar within .card-visualization upon expand
     var numberOfDefaultLabels = expanded ? chartData.length : 3;
-    var undefinedPlaceholder = '(No value)';
+    var UNDEFINED_PLACEHOLDER = '(No value)';
     var maximumBottomMargin = 140;
 
     var $chart = element.find('.column-chart-wrapper');
@@ -28,7 +28,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var fixedLabelWidth = computeFixedLabelWidthOrNull(element, expanded);
 
     var labelValueOrPlaceholder = function labelValueOrPlaceholder(value, placeholder) {
-      placeholder = placeholder || undefinedPlaceholder;
+      placeholder = placeholder || UNDEFINED_PLACEHOLDER;
       if ($.isNumeric(value)) { return value; }
       if (_.isBoolean(value)) { value += ''; }
       return $.isBlank(value) ? placeholder : value;
@@ -172,7 +172,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             }
           }).
           classed('undefined', function(d) {
-            return labelValueOrPlaceholder(d.name) === undefinedPlaceholder;
+            return labelValueOrPlaceholder(d.name) === UNDEFINED_PLACEHOLDER;
           }).
           select('span').
             text(function(d) {

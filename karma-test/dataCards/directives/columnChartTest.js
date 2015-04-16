@@ -724,20 +724,20 @@ describe('columnChart', function() {
       var subscription = correctEventRaised.subscribe(function() {
         throw new Error('Clicking on the label wrappers should not raise the event.');
       });
-      element.find('.label div:contains("' + testData[indexOfItemToClick].name + '")').click();
+      element.find('.label div:contains("{0}")'.format(testData[indexOfItemToClick].name)).click();
       scope.expanded = true;
       scope.$digest();
-      element.find('.label div:contains("' + testData[indexOfItemToClick].name + '")').click();
+      element.find('.label div:contains("{0}")'.format(testData[indexOfItemToClick].name)).click();
       subscription.dispose();
     });
 
     it('should be raised when the label text is clicked', function(done) {
       ensureChart();
       var subscription = correctEventRaised.subscribe(_.after(2, done));
-      element.find('.label span:contains("' + testData[indexOfItemToClick].name + '")').click();
+      element.find('.label span:contains("{0}")'.format(testData[indexOfItemToClick].name)).click();
       scope.expanded = true;
       scope.$digest();
-      element.find('.label span:contains("' + testData[indexOfItemToClick].name + '")').click();
+      element.find('.label span:contains("{0}")'.format(testData[indexOfItemToClick].name)).click();
       subscription.dispose();
     });
   });

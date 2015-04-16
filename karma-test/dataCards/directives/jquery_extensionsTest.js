@@ -57,27 +57,6 @@ describe('jquery-extensions', function() {
     });
   });
 
-  describe('when trying to capitalize words', function() {
-
-    it('should capitalize the words when they are present', function() {
-      expect($.capitalizeWithDefault('these are some WORDS')).to.equal('These Are Some Words');
-    });
-
-    it('should use the placeholder when the words are blank', function() {
-      expect($.capitalizeWithDefault('', 'placeholder')).to.equal('placeholder');
-    });
-
-    it('should use a default placeholder when none is specified', function() {
-      expect($.capitalizeWithDefault('')).to.equal('(Blank)');
-    });
-
-    it('should work on booleans', function() {
-      expect($.capitalizeWithDefault(true)).to.equal('True');
-      expect($.capitalizeWithDefault(false)).to.equal('False');
-    });
-
-  });
-
   describe('$.fn.flyout', function() {
     beforeEach(function() {
       $('body').append('<div id="test-root"><div id="container">' +

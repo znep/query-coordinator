@@ -637,8 +637,7 @@ describe('columnChart', function() {
       var labels = element.find('.labels .label .text');
       expect(labels).to.be.length(3);
       labels.each(function(i, label) {
-        var capitalizedName = $.capitalizeWithDefault(testData[i].name);
-        expect($(label).text()).to.equal(capitalizedName);
+        expect($(label).text()).to.equal(testData[i].name);
       });
     });
 
@@ -654,8 +653,7 @@ describe('columnChart', function() {
       expectedLabels.push(testData[specialIndex].name);
 
       labels.each(function(i, label) {
-        var capitalizedName = $.capitalizeWithDefault(expectedLabels[i]);
-        expect($(label).text()).to.equal(capitalizedName);
+        expect($(label).text()).to.equal(expectedLabels[i]);
       });
     });
 
@@ -722,28 +720,24 @@ describe('columnChart', function() {
     });
 
     it('should be raised when the labels are clicked', function() {
-      var capitalizedName = $.capitalizeWithDefault(testData[indexOfItemToClick].name);
-
       ensureChart();
       var subscription = correctEventRaised.subscribe(function() {
         throw new Error('Clicking on the label wrappers should not raise the event.');
       });
-      element.find('.label div:contains("' + capitalizedName + '")').click();
+      element.find('.label div:contains("' + testData[indexOfItemToClick].name + '")').click();
       scope.expanded = true;
       scope.$digest();
-      element.find('.label div:contains("' + capitalizedName + '")').click();
+      element.find('.label div:contains("' + testData[indexOfItemToClick].name + '")').click();
       subscription.dispose();
     });
 
     it('should be raised when the label text is clicked', function(done) {
-      var capitalizedName = $.capitalizeWithDefault(testData[indexOfItemToClick].name);
-
       ensureChart();
       var subscription = correctEventRaised.subscribe(_.after(2, done));
-      element.find('.label span:contains("' + capitalizedName + '")').click();
+      element.find('.label span:contains("' + testData[indexOfItemToClick].name + '")').click();
       scope.expanded = true;
       scope.$digest();
-      element.find('.label span:contains("' + capitalizedName + '")').click();
+      element.find('.label span:contains("' + testData[indexOfItemToClick].name + '")').click();
       subscription.dispose();
     });
   });

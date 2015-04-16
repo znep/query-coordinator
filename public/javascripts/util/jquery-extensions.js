@@ -187,12 +187,6 @@
     return _.isUndefined(value) || _.isNull(value) || value === '';
   };
 
-  $.capitalizeWithDefault = function(value, placeHolder) {
-    placeHolder = placeHolder || '(Blank)';
-    if ($.isNumeric(value)) return value;
-    if (_.isBoolean(value)) value += '';
-    return ($.isBlank(value) || !value.capitalizeEachWord) ? placeHolder : value.capitalizeEachWord();
-  };
   /*
    * flyout is an internal Socrata utility for creating flyouts.
    * It's a jQuery extension that uses a delegate for handling mouseover events.

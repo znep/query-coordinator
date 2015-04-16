@@ -2,10 +2,14 @@
 {
     var getTypes = function(data)
     {
+        var cpObj = this;
         var types = _(blist.datatypes).chain()
             .map(function(t, k)
             {
-                return t.createable && ($.isBlank((data || {}).parentId) ||
+                var createable = t.createable;
+                if (cpObj._view.newBackend)
+                { createable = createable && !t.deprecatedInNbe; }
+                return createable && ($.isBlank((data || {}).parentId) ||
                     !t.excludeInNestedTable) ?
                     {text: $.t('core.data_types.' + t.name), value: k, priority: t.priority} : null;
             })

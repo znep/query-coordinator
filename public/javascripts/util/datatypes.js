@@ -1326,6 +1326,7 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: ['text'],
             createable: true,
             deleteable: true,
+            deprecatedInNbe: true,
             dropDownList: { values: [
                 { id: 'red', description: 'Red',
                     icon: '/stylesheets/images/content/table/flags/red.png'},
@@ -1357,6 +1358,7 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: _.without(numericConvertTypes, 'stars').concat('text'),
             createable: true,
             deleteable: true,
+            deprecatedInNbe: true,
             filterConditions: blist.filter.groups.numeric,
             isInlineEdit: true,
             priority: 13,
@@ -1552,6 +1554,7 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: ['text'],
             createable: true,
             deleteable: true,
+            deprecatedInNbe: true,
             filterConditions: $.extend(true,
                 {details: {
                     'STARTS_WITH': {interfaceType: blist.datatypes.interfaceTypes.text},

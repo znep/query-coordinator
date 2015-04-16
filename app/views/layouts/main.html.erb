@@ -30,7 +30,6 @@ http://www.socrata.com
   <%- unless @link_image_src.blank? -%>
     <link rel="image_src" href="<%= @link_image_src %>" />
   <%- end -%>
-
   <link rel="apple-touch-icon-precomposed" media="screen" href="/stylesheets/images/icons/retina_display_icon.png?<%= asset_revision_key %>"/>
   <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="<%= CurrentDomain.strings.site_title %>" />
   <%= auto_discovery_link_tag(:rss, '/catalog.rss', :title => 'Subscribe to Datasets') %>
@@ -137,7 +136,11 @@ http://www.socrata.com
           <%= render_domain_template(@page_custom_header || 'header_full') %>
         <%- end -%>
       </div>
-      <div id="noticeContainer"></div>
+
+      <div id="noticeContainer">
+        <%== display_homepage_flashes %>
+      </div>
+
       <%- end -%>
 
       <a name="content"  tabindex="-1"></a>

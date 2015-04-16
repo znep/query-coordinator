@@ -286,6 +286,14 @@ module ApplicationHelper
     content_tag 'div', flash_to_display, :class => "flash #{level}"
   end
 
+  def display_homepage_flashes
+    return unless controller.class == CustomContentController && action_name == 'homepage'
+
+    flash.map do |level, message|
+      content_tag('div', message, :class => "flash #{level}")
+    end.join
+  end
+
 # DATE HELPERS
 
   def blist_date(time, no_html = false)

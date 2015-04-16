@@ -267,7 +267,6 @@ Frontend::Application.routes do
 
     scope :controller => 'new_ux_bootstrap', :constraints => { :id => UID_REGEXP } do
       get '/view/bootstrap/:id', :action => 'bootstrap'
-      get '/ux/dataset/:id', :action => 'bootstrap'
     end
 
     scope :controller => 'polaroid', :constraints => { :page_id => UID_REGEXP, :field_id => Phidippides::COLUMN_ID_REGEX } do
@@ -332,6 +331,7 @@ Frontend::Application.routes do
       # Short URLs
       get 'blob/:id', :action => 'blob'
       get 'dataset/:id', :action => 'show'
+      # The ":as" option, provides the short_view_url helper method
       get 'd/:id', :action => 'show', :as => :short_view
 
       get 'd/:id/:row_id', :action => 'show',

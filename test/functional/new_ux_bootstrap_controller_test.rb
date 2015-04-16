@@ -937,6 +937,30 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             assert_redirected_to('/view/neoo-page')
           end
 
+          should 'not create a card for columns with known uniform cardinality' do
+            stub_feature_flags_with(:metadata_transition_phase, '3')
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata
+              },
+              update_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata
+              }
+            )
+
+            @page_metadata_manager.expects(:create).with do |page, _|
+              assert_equal(10, page['cards'].length, 'Should create 10 cards')
+              uniform_columns = lambda { |fieldName| fieldName == 'point_city' }
+
+              assert(
+                page['cards'].pluck('fieldName').map(&:downcase).none?(&uniform_columns),
+                'should not create a card for a column with cardinality of 1'
+              )
+            end.returns(status: '200', body: { pageId: 'neoo-page' })
+
+            get :bootstrap, id: 'four-four'
+          end
+
           context 'on point columns' do
 
             setup do

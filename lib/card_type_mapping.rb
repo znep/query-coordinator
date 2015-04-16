@@ -31,7 +31,7 @@ module CardTypeMapping
 
     cardinality = column.try(:[], :cardinality)
     # If cardinality information is not present, assume it is larger than
-    # the threshnold.
+    # the threshold.
     unless cardinality.present?
       cardinality = CARDINALITY_THRESHOLD + 1
     end

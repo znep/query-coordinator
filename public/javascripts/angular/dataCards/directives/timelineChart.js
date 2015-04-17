@@ -61,12 +61,15 @@
         // can independently update and manipulate the filtered values as
         // selections are made.
         var renderChartUnfilteredValues = generateChartValueRenderer({
-          valueTransformer: function(values) { return [transformValuesForRendering(values)]; },
+          valueTransformer: function(values) {
+            return [transformValuesForRendering(values)];
+          },
           ySelector: function(d) { return d3YScale(d.unfiltered); },
           svgSelector: 'svg.timeline-chart-unfiltered-visualization',
           areaClass: 'context',
           lineClass: 'context-trace'
         });
+
         var renderChartFilteredValues = generateChartValueRenderer({
           valueTransformer: function(values) {
             if (selectionIsCurrentlyRendered) {
@@ -143,27 +146,87 @@
         var mouseMoveOrLeftButtonChangesSubscription;
 
         /**
-         * Because we want the beginning and end of the highlights and
-         * selection ranges to correspond with the ticks, and d3's ordinary
-         * way of rendering area charts with data like ours would place the
-         * ticks at the center of the highlights and selection ranges, we
-         * need to decrement the dates of all the areas we render by one unit
-         * of dataset precision.
+         * Because we want the points representing aggregation values to fall
+         * between ticks but the highlight edges and ticks to straddle the
+         * points representing aggregation values we need to create synthetic
+         * points one-half of a <datasetPrecision> interval at the beginning
+         * and end of a series of values we plan to render.
          *
-         * @return {Array} A nested array (like d3 expects) containing the
-         *                 a query's response data but with all dates offest
-         *                 by half of the dataset precision interval.
+         * If leadingValue and/or trailingValue is falsey then this function
+         * will extend the first and/or last actual point's value to these
+         * synthetic points.
+         *
+         * Otherwise (currently only in the case of rendering the chart
+         * selection) leadingValue will be used for the value of the leading
+         * synthetic point and trailingValue will be used for the value of the
+         * trailing synthetic point. This allows the chart selection to mimic
+         * d3's interpolation between points so that the selection's contour
+         * tracks that of the unfiltered values rendered behind it rather than
+         * extending levelly from the first and last actual selection values.
+         *
+         * @param {Array} values - The array of values to transform.
+         * @param {Number} leadingValue - The optional value to use for the
+         *                                leading half-<datasetPrecision>
+         *                                point.
+         * @param {Number} trailingValue - The optional value to use for the
+         *                                 trailing half-<datasetPrecision>
+         *                                 point.
+         * @return {Array} An array containing the query response data with
+         *                 additional points one-half of a dataset precision
+         *                 unit before the first and after the last datum in
+         *                 order for the visualization to span the full
+         *                 available width while also placing individual points
+         *                 between ticks.
          */
-        function transformValuesForRendering(values) {
+        function transformValuesForRendering(
+          values,
+          leadingValue,
+          trailingValue) {
 
-          return values.map(function(value) {
-            return {
-              date: DateHelpers.decrementDateByHalfInterval(value.date, datasetPrecision),
-              filtered: value.filtered,
-              unfiltered: value.unfiltered
-            };
+          var outputValues = [];
+          var firstValue = values[0];
+          var lastValue = values[values.length - 1];
+          var lastOutputValueIndex = 0;
+
+          outputValues.push({
+            date: DateHelpers.decrementDateByHalfInterval(
+              firstValue.date,
+              datasetPrecision
+            ),
+            filtered: firstValue.filtered,
+            unfiltered: firstValue.unfiltered
           });
 
+          for (var i = 0; i < values.length; i++) {
+            outputValues.push({
+              date: values[i].date,
+              filtered: values[i].filtered,
+              unfiltered: values[i].unfiltered
+            });
+          }
+
+          outputValues.push({
+            date: DateHelpers.incrementDateByHalfInterval(
+              lastValue.date,
+              datasetPrecision
+            ),
+            filtered: lastValue.filtered,
+            unfiltered: lastValue.unfiltered
+          });
+
+          lastOutputValueIndex = outputValues.length - 1;
+
+          if (leadingValue) {
+            outputValues[0].filtered = leadingValue;
+            outputValues[0].unfiltered = leadingValue;
+          }
+
+          if (trailingValue) {
+            outputValues[lastOutputValueIndex].filtered = trailingValue;
+            outputValues[lastOutputValueIndex].unfiltered = trailingValue;
+          }
+
+          return outputValues;
         }
 
         /**
@@ -234,7 +297,6 @@
         }
 
         /**
-         *
          * Returns a bundle of stuff about the data points occurring between
          * two points in time.
          *
@@ -286,7 +348,6 @@
         }
 
         /**
-         *
          * This function renders the white highlight on the visualization.
          * It is agnostic to how the underlying data has been filtered and
          * simply takes a subset of the full chart data and renders it in a
@@ -344,7 +405,6 @@
         }
 
         /**
-         *
          * Converts a date and a unit into a string representation.
          *
          * @param {Date} labelDate - The date to format.
@@ -520,6 +580,112 @@
 
         function renderChartSelection() {
 
+          /**
+           * This function will select the data points that fall between the
+           * selection start and end dates and then create synthetic points one
+           * half of a <datasetPrecision> unit before and after the selection.
+           * This is to support the behavior that the point representing the
+           * value of each interval is drawn in the center of the interval, not
+           * on its left edge.
+           *
+           * The half <datasetPrecision> unit synthetic points must
+           * furthermore have values that are interpolated between the first/
+           * last actual data points and the points just before or after them,
+           * so that the rendered selection mirrors the unfiltered data drawn
+           * behind it.
+           *
+           * In the case that the selection starts at the beginning of the
+           * overall data the first data point's value will be used instead.
+           *
+           * In the case that the selection ends at the end of the overall data
+           * the last data point's value will be used instead.
+           */
+          function deriveSelectionValues(chartData, minDate, maxDate) {
+
+            var chartDataLastIndex = chartData.values.length - 1;
+            var datum;
+            var selectionValues = [];
+            var selectionStartIndex = false;
+            var firstSelectionValueAmount = false;
+            var selectionEndIndex = false;
+            var lastSelectionValueAmount = false;
+
+            for (var i = 0; i < chartData.values.length; i++) {
+              datum = chartData.values[i];
+
+              if (datum.date >= minDate && datum.date <= maxDate) {
+                if (selectionStartIndex === false && i > 0) {
+                  selectionStartIndex = i - 1;
+                }
+                selectionValues.push(datum);
+                selectionEndIndex = i;
+              }
+            }
+
+            // Drop the last selection value since they are all incremented
+            // by half of a dataset precision unit, and the last value to
+            // meet the date range criteria will actually be drawn outside
+            // the range indicated by the x-axis ticks.
+            // We could accomplish the same thing by looking ahead in the
+            // above for loop, but throwing away the last value seemed easier
+            // with regard to bounds checking and so forth.
+            selectionValues.length = selectionValues.length - 1;
+
+            // Because of the way the data is displayed, it is valid for a
+            // selection to begin on the last datum and end on the last datum
+            // + 1 <datasetPrecision> unit. Therefore we need to check to see
+            // our selection's end date is after the last date in the actual
+            // values and append a surrogate value to the filtered array with
+            // an appropriate date to show as the end of the x scale along with
+            // unfiltered and filtered values of 0 to prevent changing
+            // aggregate values.
+            if (chartData.values[chartDataLastIndex].date.getTime() <
+              maxDate.getTime()) {
+
+              selectionValues.push({
+                date: chartData.values[chartDataLastIndex].date,
+                unfiltered: 0,
+                filtered: 0
+              });
+            }
+
+            // If the selection begins at the first interval in the domain then
+            // do not try to adjust the value of the leading synthetic point by
+            // interpolating the value of the first actual selected point with
+            // the value of the point immediately before it.
+            //
+            // Instead leave firstSelectionValueAmount false and let
+            // transformValuesForRendering choose how to extend the selection
+            // area (which it will do if firstSelectionValueAmount is falsey).
+            if (selectionStartIndex > 0) {
+              firstSelectionValueAmount = (
+                selectionValues[0].filtered +
+                cachedChartData.values[selectionStartIndex].filtered
+              ) / 2;
+            }
+
+            // If the selection ends at the last interval in the domain then do
+            // not try to adjust the value of the trailing synthetic point by
+            // interpolating the value of the last actual selected point with
+            // the value of the point immediately after it.
+            //
+            // Instead leave lastSelectionValueAmount false and let
+            // transformValuesForRendering choose how to extend the selection
+            // area (which it will do if lastSelectionValueAmount is falsey).
+            if (selectionEndIndex <= chartData.values.length - 1) {
+              lastSelectionValueAmount = (
+                selectionValues[selectionValues.length - 1].filtered +
+                chartData.values[selectionEndIndex].filtered
+              ) / 2;
+            }
+
+            return transformValuesForRendering(
+              selectionValues,
+              firstSelectionValueAmount,
+              lastSelectionValueAmount
+            );
+          }
+
           var minDate;
           var maxDate;
           var line;
@@ -577,27 +743,9 @@
             chartWidth = cachedChartDimensions.width - margin.left - margin.right;
             chartHeight = cachedChartDimensions.height - margin.top - margin.bottom;
 
-            values = [transformValuesForRendering(
-              cachedChartData.values.filter(function(datum) {
-                return datum.date >= minDate && datum.date <= maxDate;
-              })
-            )];
-
-            // Because of the way the data is displayed, it is valid for a
-            // selection to begin on the last datum and end on the last datum
-            // + 1 <datasetPrecision> unit. Therefore we need to check to see
-            // our selection's end date is after the last date in the actual
-            // values and append a surrogate value to the filtered array with
-            // an appropriate date to show as the end of the x scale along with
-            // unfiltered and filtered values of 0 to prevent changing
-            // aggregate values.
-            if (cachedChartData.values[cachedChartData.values.length - 1].date.getTime() < maxDate.getTime()) {
-              values[0].push({
-                date: DateHelpers.decrementDateByHalfInterval(maxDate, datasetPrecision),
-                unfiltered: 0,
-                filtered: 0
-              });
-            }
+            values = [
+              deriveSelectionValues(cachedChartData, minDate, maxDate)
+            ];
 
             // Reset minDate and maxDate to accurately reflect the 'half-way'
             // interpolated values created by transformValuesForRendering.
@@ -1152,7 +1300,6 @@
           var chartWidth;
           var chartHeight;
 
-
           if (cachedChartDimensions.width <= 0 || cachedChartDimensions.height <= 0) {
             return;
           }
@@ -1166,7 +1313,6 @@
           // we can use the margins to render axis ticks.
           chartWidth = cachedChartDimensions.width - margin.left - margin.right;
           chartHeight = cachedChartDimensions.height - margin.top - margin.bottom;
-
 
           //
           // Set up the scales and the chart-specific stack and area functions.
@@ -1199,7 +1345,6 @@
           //
           renderChartXAxis();
 
-
           //
           // Render the y-axis. Since we eschew d3's built-in y-axis for a
           // custom implementation this calls out to a separate function.
@@ -1210,12 +1355,12 @@
           );
 
 
+
           //
           // Render the unfiltered and filtered values of the chart.
           //
           renderChartUnfilteredValues();
           renderChartFilteredValues();
-
         }
 
         /**
@@ -2077,7 +2222,7 @@
           scope.observe('rowDisplayUnit'),
           function(chartDimensions, chartData, precision, rowDisplayUnit) {
 
-            if (!_.isDefined(chartData) || !_.isDefined(precision)) {
+            if (!_.isDefined(chartData) || chartData === null || !_.isDefined(precision)) {
               return;
             }
 
@@ -2140,16 +2285,21 @@
         Rx.Observable.subscribeLatest(
           scope.observe('activeFilters'),
           scope.observe('chartData').filter(_.isDefined),
-          function(activeFilters) {
-            if (_.isPresent(activeFilters)) {
-              var filter = activeFilters[0];
+          function(activeFilters, chartData) {
 
-              selectionStartDate = filter.start;
-              selectionEndDate = filter.end;
-              renderChartSelection();
-              enterSelectedState();
-            } else {
-              enterDefaultState();
+            // Don't try to enter a chart render state if there is no data.
+            if (chartData !== null) {
+
+              if (_.isPresent(activeFilters)) {
+                var filter = activeFilters[0];
+
+                selectionStartDate = filter.start;
+                selectionEndDate = filter.end;
+                renderChartSelection();
+                enterSelectedState();
+              } else {
+                enterDefaultState();
+              }
             }
           }
         );

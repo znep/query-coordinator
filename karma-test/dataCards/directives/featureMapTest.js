@@ -13,6 +13,7 @@ describe('featureMap', function() {
   var testJson = 'karma-test/dataCards/test-data/featureMapTest/featureMapTestData.json';
   var protocolBufferEndpointResponses = 'karma-test/dataCards/test-data/featureMapTest/protocolBufferEndpointResponses.json';
   var VectorTileDataService;
+  var ServerConfig;
 
   beforeEach(module(testJson));
   beforeEach(module(protocolBufferEndpointResponses));
@@ -48,6 +49,7 @@ describe('featureMap', function() {
     featureExtent = testHelpers.getTestJson(testJson);
     protocolBuffers = deserializeBytes(testHelpers.getTestJson(protocolBufferEndpointResponses));
     VectorTileDataService = $injector.get('VectorTileDataService');
+    ServerConfig = $injector.get('ServerConfig');
   }));
 
   afterEach(function() {
@@ -340,6 +342,24 @@ describe('featureMap', function() {
       });
 
       createFeatureMap();
+    });
+  });
+
+  describe('disable pan and zoom feature flag', function() {
+    beforeEach(function() {
+      ServerConfig.override('featureMapDisablePanZoom', true);
+    });
+
+    it('should not render zoomControl if feature_map_disable_pan_zoom is true', function(done) {
+      AngularRxExtensions.install(scope);
+
+      scope.$on('render:complete', function() {
+        expect($('.leaflet-control-zoom').length).to.equal(0);
+      });
+
+      createFeatureMap();
+
+      done();
     });
   });
 });

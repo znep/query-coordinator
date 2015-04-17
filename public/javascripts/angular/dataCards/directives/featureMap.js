@@ -6,9 +6,9 @@
     AngularRxExtensions,
     VectorTiles,
     LeafletHelpersService,
-    FlyoutService
+    FlyoutService,
+    ServerConfig
   ) {
-
     return {
       restrict: 'E',
       scope: {
@@ -32,7 +32,7 @@
           zoomControlPosition: 'topleft'
         };
         // CORE-4832 - disable pan and zoom on feature map
-        if (socrataConfig.featureMapDisablePanZoom) {
+        if (ServerConfig.get('featureMapDisablePanZoom')) {
           $.extend(mapOptions, {
             dragging: false,
             zoomControl: false,
@@ -42,11 +42,12 @@
             boxZoom: false
           });
           scope.showPanZoomDisabledWarning = true;
+          $(element).children('.feature-map-container').css('cursor', 'default');
 
           FlyoutService.register(
             'pan-zoom-disabled-warning-icon',
             _.constant(
-              '<div class="flyout-title">Pan and zoom have been disabled on this map.</div>'
+              '<div class="flyout-title">Zoom is temporarily unavailable. Please try again later.</div>'
             ),
             scope.eventToObservable('$destroy')
           );

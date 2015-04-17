@@ -48,23 +48,7 @@ _.mixin({
   log10: Math.log10 || function(n) {
     return Math.log(n) / Math.LN10;
   },
-  negate: function(value) {
+  negateValue: function(value) {
     return !value;
-  },
-  /**
-   * Trims characters from the start and end of the provided string.  Defaults to
-   * trimming whitespace.
-   * @param {String} value to be trimmed
-   * @param {String} [trimChar='\s'] to trim from the string
-   * @returns {*}
-   */
-  trim: function(value, trimChar) {
-    if (_.isString(value)) {
-      trimChar = _.isUndefined(trimChar) ? '\\s' : trimChar;
-      var regex = new RegExp('(^{0}*|{0}*$)'.format(trimChar), 'g');
-      return value.replace(regex, '');
-    } else {
-      return value;
-    }
   }
 });

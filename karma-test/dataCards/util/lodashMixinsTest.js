@@ -89,12 +89,12 @@
       });
     });
 
-    describe('negate', function() {
+    describe('negateValue', function() {
       it('negates the parameter', function() {
-        expect(_.negate(true)).to.equal(false);
-        expect(_.negate(false)).to.equal(true);
-        expect(_.negate(null)).to.equal(true);
-        expect(_.negate(246)).to.equal(false);
+        expect(_.negateValue(true)).to.equal(false);
+        expect(_.negateValue(false)).to.equal(true);
+        expect(_.negateValue(null)).to.equal(true);
+        expect(_.negateValue(246)).to.equal(false);
       });
     });
 

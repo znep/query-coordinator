@@ -277,9 +277,13 @@
           unfilteredDataSequence.switchLatest(),
           filteredDataSequence.switchLatest(),
           function(unfilteredData, filteredData) {
-            return TimelineChartVisualizationHelpers.transformChartDataForRendering(
-              aggregateData(unfilteredData, filteredData)
-            );
+            if (unfilteredData.length === 0 || filteredData.length === 0) {
+              return null;
+            } else {
+              return TimelineChartVisualizationHelpers.transformChartDataForRendering(
+                aggregateData(unfilteredData, filteredData)
+              );
+            }
           }
         );
 
@@ -293,10 +297,15 @@
           datasetPrecision.map(_.isUndefined),
           chartDataSequence.startWith(undefined), // Because we never request data w/o datasetPrecision.
           function(badDates, chartData) {
+
+            var noData = chartData === null;
+
             var durationIsZero = _.isPresent(chartData) &&
               (chartData.maxDate - chartData.minDate) <= 0;
 
-            if (badDates) {
+            if (noData) {
+              return { reason: 'noData' };
+            } else if (badDates) {
               return { reason: 'badDates' };
             } else if (durationIsZero){
               return { reason: 'zeroTimeSpan' };

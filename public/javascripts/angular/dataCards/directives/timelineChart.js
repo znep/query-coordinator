@@ -61,12 +61,15 @@
         // can independently update and manipulate the filtered values as
         // selections are made.
         var renderChartUnfilteredValues = generateChartValueRenderer({
-          valueTransformer: function(values) { return [transformValuesForRendering(values)]; },
+          valueTransformer: function(values) {
+            return [transformValuesForRendering(values)];
+          },
           ySelector: function(d) { return d3YScale(d.unfiltered); },
           svgSelector: 'svg.timeline-chart-unfiltered-visualization',
           areaClass: 'context',
           lineClass: 'context-trace'
         });
+
         var renderChartFilteredValues = generateChartValueRenderer({
           valueTransformer: function(values) {
             if (selectionIsCurrentlyRendered) {
@@ -185,35 +188,31 @@
           var lastValue = values[values.length - 1];
           var lastOutputValueIndex = 0;
 
-          if (values.length > 0) {
+          outputValues.push({
+            date: DateHelpers.decrementDateByHalfInterval(
+              firstValue.date,
+              datasetPrecision
+            ),
+            filtered: firstValue.filtered,
+            unfiltered: firstValue.unfiltered
+          });
 
+          for (var i = 0; i < values.length; i++) {
             outputValues.push({
-              date: DateHelpers.decrementDateByHalfInterval(
-                firstValue.date,
-                datasetPrecision
-              ),
-              filtered: firstValue.filtered,
-              unfiltered: firstValue.unfiltered
+              date: values[i].date,
+              filtered: values[i].filtered,
+              unfiltered: values[i].unfiltered
             });
-
-            for (var i = 0; i < values.length; i++) {
-              outputValues.push({
-                date: values[i].date,
-                filtered: values[i].filtered,
-                unfiltered: values[i].unfiltered
-              });
-            }
-
-            outputValues.push({
-              date: DateHelpers.incrementDateByHalfInterval(
-                lastValue.date,
-                datasetPrecision
-              ),
-              filtered: lastValue.filtered,
-              unfiltered: lastValue.unfiltered
-            });
-
           }
+
+          outputValues.push({
+            date: DateHelpers.incrementDateByHalfInterval(
+              lastValue.date,
+              datasetPrecision
+            ),
+            filtered: lastValue.filtered,
+            unfiltered: lastValue.unfiltered
+          });
 
           lastOutputValueIndex = outputValues.length - 1;
 
@@ -590,7 +589,7 @@
            * on its left edge.
            *
            * The half <datasetPrecision> unit synthetic points must
-           * furthoermore have values that are interpolated between the first/
+           * furthermore have values that are interpolated between the first/
            * last actual data points and the points just before or after them,
            * so that the rendered selection mirrors the unfiltered data drawn
            * behind it.
@@ -705,12 +704,6 @@
           var margin;
           var chartWidth;
           var chartHeight;
-          var selectionValues;
-          var selectionStartIndex;
-          var firstSelectionValueAmount;
-          var selectionEndIndex;
-          var lastSelectionValueAmount;
-          var datum;
           var values;
           var transformedMinDate;
           var transformedMaxDate;
@@ -1307,7 +1300,6 @@
           var chartWidth;
           var chartHeight;
 
-
           if (cachedChartDimensions.width <= 0 || cachedChartDimensions.height <= 0) {
             return;
           }
@@ -1321,7 +1313,6 @@
           // we can use the margins to render axis ticks.
           chartWidth = cachedChartDimensions.width - margin.left - margin.right;
           chartHeight = cachedChartDimensions.height - margin.top - margin.bottom;
-
 
           //
           // Set up the scales and the chart-specific stack and area functions.
@@ -1354,7 +1345,6 @@
           //
           renderChartXAxis();
 
-
           //
           // Render the y-axis. Since we eschew d3's built-in y-axis for a
           // custom implementation this calls out to a separate function.
@@ -1365,12 +1355,12 @@
           );
 
 
+
           //
           // Render the unfiltered and filtered values of the chart.
           //
           renderChartUnfilteredValues();
           renderChartFilteredValues();
-
         }
 
         /**
@@ -2232,7 +2222,7 @@
           scope.observe('rowDisplayUnit'),
           function(chartDimensions, chartData, precision, rowDisplayUnit) {
 
-            if (!_.isDefined(chartData) || !_.isDefined(precision)) {
+            if (!_.isDefined(chartData) || chartData === null || !_.isDefined(precision)) {
               return;
             }
 
@@ -2295,16 +2285,21 @@
         Rx.Observable.subscribeLatest(
           scope.observe('activeFilters'),
           scope.observe('chartData').filter(_.isDefined),
-          function(activeFilters) {
-            if (_.isPresent(activeFilters)) {
-              var filter = activeFilters[0];
+          function(activeFilters, chartData) {
 
-              selectionStartDate = filter.start;
-              selectionEndDate = filter.end;
-              renderChartSelection();
-              enterSelectedState();
-            } else {
-              enterDefaultState();
+            // Don't try to enter a chart render state if there is no data.
+            if (chartData !== null) {
+
+              if (_.isPresent(activeFilters)) {
+                var filter = activeFilters[0];
+
+                selectionStartDate = filter.start;
+                selectionEndDate = filter.end;
+                renderChartSelection();
+                enterSelectedState();
+              } else {
+                enterDefaultState();
+              }
             }
           }
         );

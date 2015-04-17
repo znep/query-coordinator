@@ -32,11 +32,11 @@ class Downtime
     begin
       yaml = YAML.load_file(DOWNTIME[:file])
       if yaml
-        @@downtimes = yaml[DOWNTIME[:env]].flatten.compact.collect do |time|
+        @@downtimes = [yaml[DOWNTIME[:env]]].flatten.compact.collect do |time|
           Downtime.new(time['message_start'], time['message_end'],
                        time['downtime_start'], time['downtime_end'])
         end
-        Rails.logger.info("#{Time.now} - Downtimes loaded! #{@@Downtimes.inspect}")
+        Rails.logger.info("#{Time.now} - Downtimes loaded! #{@@downtimes.inspect}")
       else
 
         Rails.logger.warn("#{Time.now} - Unable to load downtime banner file: #{DOWNTIME[:file]}")

@@ -171,9 +171,7 @@ describe('A Search Card Visualization', function() {
         });
 
         it('should submit when you click the search button', function() {
-          cardData.scope.$apply(function() {
-            cardData.element.find('button[type="submit"]').click();
-          });
+          cardData.element.find('button[type="submit"]').click();
           expect(toggleExpandedSpy.calledOnce).to.equal(true);
           expect(cardData.element.find('.search-card-results').is(':visible')).to.equal(true);
         });

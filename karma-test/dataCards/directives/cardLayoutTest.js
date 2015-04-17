@@ -288,7 +288,7 @@ describe('card-layout', function() {
        */
       function createLayoutWithCards(cards, options) {
         if (!cards) {
-          cards = _.map(_.range(NUM_CARDS_IN_DEFAULT_LAYOUT), function(i) {
+          cards = _.map(_.range(NUM_CARDS_IN_DEFAULT_LAYOUT), function() {
             return {
               fieldName: 'invalid_column'
             };
@@ -299,10 +299,11 @@ describe('card-layout', function() {
 
         var cardGenerator = function(pageModel, datasetModel) {
           return _.map(cards, function(card, i) {
+            var c;
             if (phase === '0' || phase === '1') {
-              var c = new CardV0(pageModel, card.fieldName || 'fieldname' + i);
+              c = new CardV0(pageModel, card.fieldName || 'fieldname' + i);
             } else {
-              var c = new CardV1(pageModel, card.fieldName || 'fieldname' + i);
+              c = new CardV1(pageModel, card.fieldName || 'fieldname' + i);
             }
             c.set('expanded', !!card.expanded);
             // Add required fields so this will validate
@@ -1088,7 +1089,7 @@ describe('card-layout', function() {
         it("sets the scope's expandedCard state if there are any expanded cards", function() {
           var cl = createLayoutWithCards([{fieldName: '*'}, {expanded: true}]);
 
-          expect(!!cl.outerScope.expandedCard).to.be.true;
+          expect(!!cl.outerScope.expandedCard).to.equal(true);
         });
 
         it("doesn't set the expandedCard state if there aren't any expanded cards", function() {

@@ -179,11 +179,13 @@ jQuery.metrics = {
 
         // Currently abiding by ISO 639-1 localisation standard
         var localization_regex = "[a-z]{2}";
+        // Front load the dataslate check because it is the only check not dependent on the URL Path
         if ($.subKeyDefined(blist, 'configuration.page')) {
             page_type = 'dataslate';
         }
 
-        //First, see if this is a homepage.  Treat this a little special.
+        // TODO Client end page type classification.  This should instead be replaced with a more robust classify on consume model.
+
         if (!path || path.match("^/({0})?/?$".format(localization_regex))) {
             page_type = 'homepage';
         }

@@ -908,6 +908,7 @@ blist.namespace.fetch('blist.datatypes');
                 .concat(numericConvertTypes),
             createable: true,
             deleteable: true,
+            deprecatedInNbe: true,
             filterConditions: $.extend(true,
                 {details: {
                     'EQUALS': {interfaceType: blist.datatypes.interfaceTypes.text},
@@ -1122,6 +1123,7 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: ['text', 'calendar_date'],
             createable: true,
             deleteable: true,
+            deprecatedInNbe: true,
             filterConditions: blist.filter.groups.date,
             filterValue: function(v)
             {
@@ -1207,6 +1209,7 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: ['text'],
             createable: true,
             deleteable: true,
+            deprecatedInNbe: true,
             filterConditions: $.extend(true,
                 {details: {
                     'STARTS_WITH': {interfaceType: blist.datatypes.interfaceTypes.text},
@@ -1230,6 +1233,7 @@ blist.namespace.fetch('blist.datatypes');
             createable: true,
             defaultFilterSubColumn: 'phone_type',
             deleteable: true,
+            deprecatedInNbe: true,
             priority: 14,
             sortable: true,
             subColumns: {
@@ -1272,6 +1276,7 @@ blist.namespace.fetch('blist.datatypes');
             createable: true,
             defaultFilterSubColumn: 'description',
             deleteable: true,
+            deprecatedInNbe: true,
             inlineType: true,
             priority: 9,
             rollUpAggregates: nonNumericAggs,
@@ -1326,7 +1331,6 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: ['text'],
             createable: true,
             deleteable: true,
-            deprecatedInNbe: true,
             dropDownList: { values: [
                 { id: 'red', description: 'Red',
                     icon: '/stylesheets/images/content/table/flags/red.png'},
@@ -1459,6 +1463,7 @@ blist.namespace.fetch('blist.datatypes');
             aggregates: nonNumericAggs,
             createable: true,
             deleteable: true,
+            deprecatedInNbe: true,
             filterConditions: blist.filter.groups.blob,
             inlineType: true,
             priority: 17
@@ -1483,6 +1488,7 @@ blist.namespace.fetch('blist.datatypes');
             cls: 'photo',
             createable: true,
             deleteable: true,
+            deprecatedInNbe: true,
             filterConditions: blist.filter.groups.blob,
             priority: 16
         },
@@ -1508,6 +1514,7 @@ blist.namespace.fetch('blist.datatypes');
             alignment: alignment,
             createable: true,
             deleteable: true,
+            deprecatedInNbe: true,
             filterConditions: blist.filter.groups.comparable,
             matchValue: function(v, col)
             {

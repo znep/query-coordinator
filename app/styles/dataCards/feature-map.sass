@@ -1,3 +1,4 @@
+@import dataCards/common/layout
 @import dataCards/common/colors
 
 card-visualization-feature-map,
@@ -9,6 +10,18 @@ card-visualization-feature-map,
 
   .feature-map-container
     height: 100%
+
+  .pan-zoom-disabled-warning
+    position: absolute
+    right: 1em
+    top: 1em
+    cursor: default
+    background-color: rgb(255,255,255)
+    @include border-radius($rounded-corners-border-radius)
+    .icon-warning
+      font-size: 1.3em
+      padding: 0.2em
+      color: $yellow-warning-color
 
 .card.dragged
   .feature-map-wrapper

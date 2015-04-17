@@ -5,7 +5,8 @@
     Constants,
     AngularRxExtensions,
     VectorTiles,
-    LeafletHelpersService
+    LeafletHelpersService,
+    FlyoutService
   ) {
 
     return {
@@ -30,6 +31,27 @@
           zoom: 1,
           zoomControlPosition: 'topleft'
         };
+        // CORE-4832 - disable pan and zoom on feature map
+        if (socrataConfig.featureMapDisablePanZoom) {
+          $.extend(mapOptions, {
+            dragging: false,
+            zoomControl: false,
+            touchZoom: false,
+            scrollWheelZoom: false,
+            doubleClickZoom: false,
+            boxZoom: false
+          });
+          scope.showPanZoomDisabledWarning = true;
+
+          FlyoutService.register(
+            'pan-zoom-disabled-warning-icon',
+            _.constant(
+              '<div class="flyout-title">Pan and zoom have been disabled on this map.</div>'
+            ),
+            scope.eventToObservable('$destroy')
+          );
+        }
+
         var map = L.map(element.find('.feature-map-container')[0], mapOptions);
         // We buffer feature layers so that there isn't a visible flash
         // of emptiness when we transition from one to the next. This is accomplished

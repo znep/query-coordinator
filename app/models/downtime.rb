@@ -18,8 +18,9 @@ class Downtime
   end
 
   def self.needs_update?
-    cached = defined?(@@cache_expiry_time) && @@cache_expiry_time > Time.now
-    return false if cached
+    # FIXME: Removing caching because it's designed poorly and consequently not reading the config at deploy time.
+    #cached = defined?(@@cache_expiry_time) && @@cache_expiry_time > Time.now
+    #return false if cached
     @@cache_expiry_time = Time.now + 6.hours
 
     !defined?(@@last_updated) || File.stat(DOWNTIME[:file]).mtime > @@last_updated

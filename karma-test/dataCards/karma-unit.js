@@ -62,7 +62,7 @@ module.exports = function ( karma ) {
 
       /* Libraries which do not depend on Angular. */
       'bower_components/js-polyfills/url.js',
-      'bower_components/lodash/dist/lodash.js',
+      'bower_components/lodash-compat/lodash.js',
       'public/javascripts/util/polyfills.js',
       'public/javascripts/util/lodash-mixins.js',
       'public/javascripts/util/jquery-extensions.js',

@@ -976,6 +976,12 @@ var Dataset = ServerModel.extend({
 
         // Keep track of which columns need to be saved, and only use those values
         var saving = _.keys(row.changed);
+        if (!$.isBlank(ds.rowIdentifierColumnId)) {
+          var rowIdentifierColumn = ds.columnForIdentifier(ds.rowIdentifierColumnId);
+          if (rowIdentifierColumn && !_.include(saving, rowIdentifierColumn.fieldName)) {
+            saving.push(rowIdentifierColumn.fieldName);
+          }
+        }
 
         var sendRow = ds._rowData(row, saving, parCol);
 

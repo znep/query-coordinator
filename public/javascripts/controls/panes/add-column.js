@@ -7,7 +7,7 @@
             .map(function(t, k)
             {
                 var createable = t.createable;
-                if (cpObj._view.newBackend)
+                if (cpObj._view.newBackend || blist.feature_flags.disable_legacy_types)
                 { createable = createable && !t.deprecatedInNbe; }
                 return createable && ($.isBlank((data || {}).parentId) ||
                     !t.excludeInNestedTable) ?

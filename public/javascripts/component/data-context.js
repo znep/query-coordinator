@@ -154,7 +154,7 @@
                     if (!$.subKeyDefined(blist, 'require'))
                     {
                         blist.util.assetLoading.loadAssets({ javascripts:
-                            ['/socket.io/socket.io.js', '/asset/js/client-bridge'] },
+                            ['/asset/js/socket.io', '/asset/js/client-bridge'] },
                             function() { dc.load(callback, errorCallback); });
                         break;
                     }
@@ -557,7 +557,7 @@
             if (!$.subKeyDefined(blist, 'require'))
             {
                 blist.util.assetLoading.loadAssets({ javascripts:
-                    ['/socket.io/socket.io.js', '/asset/js/client-bridge'] },
+                    ['/asset/js/socket.io', '/asset/js/client-bridge'] },
                     function() { dc.load(callback, errorCallback); });
                 return;
             }

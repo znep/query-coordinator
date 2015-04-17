@@ -7,7 +7,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var bottomMargin; // Calculated based on label text length
     var horizontalScrollbarHeight = 15; // used to keep horizontal scrollbar within .card-visualization upon expand
     var numberOfDefaultLabels = expanded ? chartData.length : 3;
-    var undefinedPlaceholder = '(No value)';
+    var UNDEFINED_PLACEHOLDER = '(No value)';
     var maximumBottomMargin = 140;
 
     var $chart = element.find('.column-chart-wrapper');
@@ -27,11 +27,18 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
     var fixedLabelWidth = computeFixedLabelWidthOrNull(element, expanded);
 
+    var labelValueOrPlaceholder = function labelValueOrPlaceholder(value, placeholder) {
+      placeholder = placeholder || UNDEFINED_PLACEHOLDER;
+      if ($.isNumeric(value)) { return value; }
+      if (_.isBoolean(value)) { value += ''; }
+      return $.isBlank(value) ? placeholder : value;
+    };
+
     // Compute chart margins
     if (expanded) {
       var maxLength = _.max(chartData.map(function(item) {
         // The size passed to visualLength() below relates to the width of the div.text in the updateLabels().
-        return $.capitalizeWithDefault(item.name, undefinedPlaceholder).visualLength('1rem');
+        return labelValueOrPlaceholder(item.name).visualLength('1rem');
       }));
       bottomMargin = Math.floor(Math.min(
         maxLength + $.relativeToPx('1rem'),
@@ -165,11 +172,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             }
           }).
           classed('undefined', function(d) {
-            return $.capitalizeWithDefault(d.name, undefinedPlaceholder) === undefinedPlaceholder;
+            return labelValueOrPlaceholder(d.name) === UNDEFINED_PLACEHOLDER;
           }).
           select('span').
             text(function(d) {
-              return $.capitalizeWithDefault(d.name, undefinedPlaceholder);
+              return labelValueOrPlaceholder(d.name);
             });
 
       // These widths relate to the visualLength() method call in the maxLength calculation above.
@@ -247,7 +254,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       // The smaller bar needs to go on top of the other. However, if the bar on top is also the total (can
       // happen for aggregations other than count), the top bar needs to be semitransparent.
       // This function transforms each piece of data (containing filtered and total amounts) into
-      // an ordered pair of objects representing a bar. The order is significant and ultimately determines the 
+      // an ordered pair of objects representing a bar. The order is significant and ultimately determines the
       // order of the bars in the dom.
       // Each object in the pair looks like:
       // {
@@ -364,7 +371,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       },
       title: function($target, $head, options) {
         var data = d3.select($target[0]).datum();
-        return $.capitalizeWithDefault(data.name, undefinedPlaceholder);
+        return labelValueOrPlaceholder(data.name);
       },
       table: function($target, $head, options, $flyout) {
         var data = d3.select($target[0]).datum();

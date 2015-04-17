@@ -1,8 +1,8 @@
 class DatasetsController < ApplicationController
- 
+
   include DatasetsHelper
   include CommonMetadataMethods
- 
+
   prepend_before_filter :check_chrome, :only => [:show, :alt]
   skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :form_success, :form_error, :external, :external_download, :download, :about]
   skip_before_filter :disable_frame_embedding, :only => [:form_success, :form_error]
@@ -41,40 +41,17 @@ class DatasetsController < ApplicationController
     user = @current_user.nil? ? "ANONYMOUS" : @current_user.id
 
     if @view.new_backend?
-      flash.now[:notice] = I18n.t('screens.ds.new_ux_nbe_warning')
+      destination_url = view_redirection_url
 
-      if current_user.nil? || !current_user.is_admin?
-        dataset_metadata_response = phidippides.fetch_dataset_metadata(
-          params[:id],
-          :request_id => request_id,
-          :cookies => forwardable_session_cookies
-        )
-
-        if dataset_metadata_response[:status] == '200'
-          new_ux_page = dataset_metadata_response.try(:[], :body).try(:[], :defaultPage)
+      if current_user.try(:is_admin?)
+        flash[:notice] = I18n.t('screens.ds.new_ux_nbe_warning', url: "<a href=#{destination_url}>#{destination_url}</a>").html_safe
+      else
+        if destination_url == '/'
+          flash[:notice] = I18n.t('screens.ds.unable_to_find_dataset_page')
         end
-
-        return redirect_to "/view/#{new_ux_page}" if new_ux_page.present?
-
-        pages_response = phidippides.fetch_pages_for_dataset(
-          params[:id],
-          :request_id => request_id,
-          :cookies => forwardable_session_cookies
-        )
-
-        case pages_response[:status]
-          when '200'
-            # If has page ids already, redirect to them
-            pages = pages_response.try(:[], :body).try(:[], :publisher)
-
-            if pages.present?
-              return redirect_to "/view/#{pages.last[:pageId]}"
-            end
-
-          else
-            return redirect_to :controller => 'profile', :action => 'index'
-        end
+        return redirect_to destination_url
       end
+
     end
 
     etag = "#{dsmtime}-#{user}"
@@ -755,7 +732,8 @@ protected
     JSON.parse(CoreServer::Base.connection.multipart_post_file('/assets', file))
   end
 
-private
+  private
+
   def fetch_layer_info(layer_url)
     begin
       uri = URI.parse(URI.extract(layer_url).first)
@@ -783,4 +761,41 @@ private
       return layer
     end
   end
+
+  def view_redirection_url
+    dataset_metadata_response = phidippides.fetch_dataset_metadata(
+      params[:id],
+      :request_id => request_id,
+      :cookies => forwardable_session_cookies
+    )
+
+    if dataset_metadata_response[:status] == '200'
+      default_page = dataset_metadata_response.fetch(:body, {})[:defaultPage]
+    end
+
+    if default_page.present? && default_page_accessible?(default_page)
+      return "/view/#{default_page}"
+    end
+
+    begin
+      obeId = @view.migrations['obeId']
+    rescue CoreServer::ResourceNotFound => ignored
+    end
+    if obeId.present?
+      return "/d/#{obeId}"
+    end
+
+    '/'
+  end
+
+  def default_page_accessible?(default_page)
+    begin
+      NewViewManager.new.fetch(default_page)
+    rescue NewViewManager::ViewAccessDenied
+      return false
+    end
+
+    true
+  end
+
 end

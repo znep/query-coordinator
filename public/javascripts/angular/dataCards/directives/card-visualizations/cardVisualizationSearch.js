@@ -46,15 +46,18 @@
         var rowCountObservable = rowInfoObservable.pluck('filteredRowCount');
         var rowsLoadedObservable = $scope.eventToObservable('rows:loaded').map(pluckEventArg);
 
+        var selectedItemObservable = $scope.eventToObservable('suggestionToolPanel:selectedItem').
+          map(function(event) {
+            return event.args[0];
+          });
+
         // Observable that emits the current search term on submit
         var submitValueObservable = Rx.Observable.fromEvent(element.find('form'), 'submit').
           map(function() {
             return $scope.search;
           }).
           filter($.isPresent).
-          merge($scope.eventToObservable('suggestionToolPanel:selectedItem').map(function(event) {
-            return event.args[0];
-          }));
+          merge(selectedItemObservable);
 
         // Whenever a new value is submitted, clear the invalidSearch flag
         submitValueObservable.

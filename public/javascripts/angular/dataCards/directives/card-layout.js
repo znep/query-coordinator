@@ -560,7 +560,9 @@
               newExpandedId = expandedCard && expandedCard.uniqueId;
               // Keep track of whether the layout is an expanded-card layout, so upstream
               // scopes can do things like disable edit buttons
-              scope.expandedCard = expandedCard;
+              scope.safeApply(function() {
+                scope.expandedCard = expandedCard;
+              });
             }
 
             // Terminology:

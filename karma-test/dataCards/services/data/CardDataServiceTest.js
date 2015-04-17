@@ -550,36 +550,35 @@ describe('CardDataService', function() {
       http.get.restore();
     });
 
-    it('throws an error if the response has no data', function() {
+    it('return 0 if the response has no data', function(done) {
       fakeDataRequestHandler.respond({});
-      CardDataService.getRowCount(fake4x4);
-      expect($httpBackend.flush).to.throw();
+      CardDataService.getRowCount(fake4x4).then(function(actual) {
+        expect(actual).to.equal(0);
+        done();
+      });
+      $httpBackend.flush();
     });
 
-    it('returns a promise that provides the count returned by the server', function() {
+    it('returns a promise that provides the count returned by the server', function(done) {
       fakeDataRequestHandler.respond([{count_0: 5}]);
-      var count = -1;
-      CardDataService.getRowCount(fake4x4).then(function(value) {
-        count = value;
+      CardDataService.getRowCount(fake4x4).then(function(actual) {
+        expect(actual).to.equal(5);
+        done();
       });
 
       $httpBackend.flush();
-
-      expect(count).to.equal(5);
     });
 
-    it('returns 0 if the server responds with an empty result.', function() {
+    it('returns 0 if the server responds with an empty result.', function(done) {
       $httpBackend.whenGET(/.*/).
         respond([{}]);
 
-      var count = -1;
-      CardDataService.getRowCount(fake4x4).then(function(value) {
-        count = value;
+      CardDataService.getRowCount(fake4x4).then(function(actual) {
+        expect(actual).to.equal(0);
+        done();
       });
 
       $httpBackend.flush();
-
-      expect(count).to.equal(0);
     });
   });
 

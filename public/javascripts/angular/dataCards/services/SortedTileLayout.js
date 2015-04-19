@@ -29,62 +29,44 @@ angular.module('dataCards.services').factory('SortedTileLayout', function() {
    */
   function splitRows(maxPerRow, items) {
     if (maxPerRow > 4) {
-      throw new Error("Only up to four columns supported for this layout.");
+      throw new Error('Only up to four columns supported for this layout.');
     }
 
     var count = items.length;
+    // One row
     if (count <= maxPerRow) {
       return [items];
     }
 
-    var numFullRows = Math.floor(count / maxPerRow);
     var remainder = count % maxPerRow;
+    var chunkedRows = _(items).drop(remainder).chunk(maxPerRow).value();
 
-    var outputRows = [];
+    // Even number of rows with size maxPerRow
     if (remainder === 0) {
-      for(var i=0; i<numFullRows; i++) {
-        outputRows.push(items.slice(i * maxPerRow, (i + 1) * maxPerRow));
-      }
-    } else {
-      // Try to fill out the firstRow (that's not full) by borrowing from the full rows.
-      // 'gap' is the number of items to borrow from the other rows, to get the firstRow
-      // relatively full without becoming full (ie if we become full by making the
-      // rows below us non-full, that'd look top-heavy. Stay non-full, because /someone/
-      // has to)
-      var gap = maxPerRow - remainder - 1;
-
-      // Borrow one item from each of the full rows until we fill out the firstRow.
-      var numItemsBorrowed = Math.min(numFullRows, gap);
-
-      var firstRowLength = remainder + numItemsBorrowed
-      var firstRow = _.first(items, firstRowLength);
-      var restRows = _.rest(items, firstRowLength);
-
-      // We borrowed one item from each of the reduced rows, so now their length is one
-      // less.
-      var reducedRowLength = maxPerRow - 1;
-      var numReducedRowItems = reducedRowLength * numItemsBorrowed;
-      var reducedRowItems = _.first(restRows, numReducedRowItems);
-      var fullRowItems = _.rest(restRows, numReducedRowItems);
-
-      outputRows.push(firstRow);
-
-      // Slice up the reduced rows data into its rows of length numItemsBorrowed
-      for(var i=0; i<numItemsBorrowed; i++) {
-        outputRows.push(reducedRowItems.slice(
-          i * reducedRowLength,
-          (i + 1) * reducedRowLength));
-      }
-
-      // Now fill up
-      for(var i = 0, fullRowsRemaining = numFullRows - numItemsBorrowed;
-          i < fullRowsRemaining;
-          i++) {
-        outputRows.push(fullRowItems.slice(i * maxPerRow, (i + 1) * maxPerRow));
-      }
+      return chunkedRows;
     }
 
-    return outputRows;
+    // If first whole row, plus remainder, can be combined and evenly distributes over
+    // two rows, do it, and add the other full rows after
+    var fullRowPlusRemainder = (remainder + maxPerRow);
+    if (chunkedRows.length > 1 && fullRowPlusRemainder % 2 === 0) {
+      var firstTwoRows = _(items).take(fullRowPlusRemainder).chunk(fullRowPlusRemainder / 2).value();
+      var restRows = _(items).drop(fullRowPlusRemainder).chunk(maxPerRow).value();
+      return firstTwoRows.concat(restRows);
+    }
+
+    // If the gap between the remainder and the maxPerRow is greater than 1,
+    // recompute rows with a maxPerRow of one fewer
+    // This might not scale up to rows with maxPerRow greater than 4
+    if (remainder < maxPerRow - 1) {
+      return splitRows(maxPerRow - 1, items);
+    }
+
+    // If we've made it this far, we can combine a row made from the remainder,
+    // with the other full rows
+    var remainderRow = _.take(items, remainder);
+    return [remainderRow].concat(chunkedRows);
+
   }
 
   /**
@@ -101,7 +83,7 @@ angular.module('dataCards.services').factory('SortedTileLayout', function() {
     }
 
     this.options = $.extend({}, defaultOptions, options);
-  };
+  }
 
   /**
    * Given an enumeration of item objects, returns an object whose keys are the tier

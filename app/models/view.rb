@@ -1452,52 +1452,40 @@ class View < Model
   }
 
   @@licenses = {
-    "" => "-- #{I18n.t 'core.no_license'} --",
-    "PUBLIC_DOMAIN" => "Public Domain",
-    "OPEN_DATABASE_LICENSE" => "Open Database License",
-    "IODL" => "Italian Open Data License 2.0",
-    "PDDL" => "Open Data Commons Public Domain Dedication and License",
-    'ODC-BY' => 'Open Data Commons Attribution Licence',
-    'ODbL' => 'Open Data Commons Database Licence',
-    'UK-OGLv3.0' => 'UK Open Government Licence v3',
-    'OSODL' => 'OS Open Data Licence',
-    "CC" => "Creative Commons"
+    '' => "-- #{I18n.t 'core.no_license'} --",
+    'PUBLIC_DOMAIN' => 'Public Domain',
+    'OPEN_DATABASE_LICENSE' => 'Open Database License',
+    'IODL' => 'Italian Open Data License 2.0',
+    'PDDL' => 'Open Data Commons Public Domain Dedication and License',
+    'CC' => 'Creative Commons'
   }
 
   @@creative_commons = {
-    "CC0_10" => "1.0 Universal (Public Domain Dedication)",
-    "CC_30_BY" => "Attribution 3.0 Unported",
-    "CC_30_BY_AUS" => "Attribution 3.0 Australia",
-    "CC_30_BY_SA" => "Attribution | Share Alike 3.0 Unported",
-    "CC_30_BY_ND" => "Attribution | No Derivative Works 3.0 Unported",
-    "CC_30_BY_NC" => "Attribution | Noncommercial 3.0 Unported",
-    "CC_30_BY_NC_SA" => "Attribution | Noncommercial | Share Alike 3.0 Unported",
-    "CC_30_BY_NC_ND" => "Attribution | Noncommercial | No Derivative Works 3.0 Unported",
-    'CC_40_BY' => 'Attribution 4.0 International',
-    'CC_40_BY_SA' => 'Attribution-ShareAlike 4.0 International'
+    'CC0_10' => '1.0 Universal',
+    'CC_30_BY' => 'Attribution 3.0 Unported',
+    'CC_30_BY_AUS' => 'Attribution 3.0 Australia',
+    'CC_30_BY_SA' => 'Attribution | Share Alike 3.0 Unported',
+    'CC_30_BY_ND' => 'Attribution | No Derivative Works 3.0 Unported',
+    'CC_30_BY_NC' => 'Attribution | Noncommercial 3.0 Unported',
+    'CC_30_BY_NC_SA' => 'Attribution | Noncommercial | Share Alike 3.0 Unported',
+    'CC_30_BY_NC_ND' => 'Attribution | Noncommercial | No Derivative Works 3.0 Unported'
   }
 
   @@merged_licenses = {
-    "" => "-- #{I18n.t 'core.no_license'} --",
-    "PUBLIC_DOMAIN" => "Public Domain",
-    "OPEN_DATABASE_LICENSE" => "Open Database License",
-    "IODL" => "Italian Open Data License 2.0",
-    "PDDL" => "Open Data Commons Public Domain Dedication and License",
-    'ODC-BY' => 'Open Data Commons Attribution Licence',
-    'ODbL' => 'Open Data Commons Database Licence',
-    'UK-OGLv3.0' => 'UK Open Government Licence v3',
-    'OSODL' => 'OS Open Data Licence',
-    "CC" => "Creative Commons",
-    "CC0_10" => "1.0 Universal (Public Domain Dedication)",
-    "CC_30_BY" => "Attribution 3.0 Unported",
-    "CC_30_BY_AUS" => "Attribution 3.0 Australia",
-    "CC_30_BY_SA" => "Attribution | Share Alike 3.0 Unported",
-    "CC_30_BY_ND" => "Attribution | No Derivative Works 3.0 Unported",
-    "CC_30_BY_NC" => "Attribution | Noncommercial 3.0 Unported",
-    "CC_30_BY_NC_SA" => "Attribution | Noncommercial | Share Alike 3.0 Unported",
-    "CC_30_BY_NC_ND" => "Attribution | Noncommercial | No Derivative Works 3.0 Unported",
-    'CC_40_BY' => 'Attribution 4.0 International',
-    'CC_40_BY_SA' => 'Attribution-ShareAlike 4.0 International'
+    '' => "-- #{I18n.t 'core.no_license'} --",
+    'PUBLIC_DOMAIN' => 'Public Domain',
+    'OPEN_DATABASE_LICENSE' => 'Open Database License',
+    'IODL' => 'Italian Open Data License 2.0',
+    'PDDL' => 'Open Data Commons Public Domain Dedication and License',
+    'CC' => 'Creative Commons',
+    'CC0_10' => '1.0 Universal',
+    'CC_30_BY' => 'Attribution 3.0 Unported',
+    'CC_30_BY_AUS' => 'Attribution 3.0 Australia',
+    'CC_30_BY_SA' => 'Attribution | Share Alike 3.0 Unported',
+    'CC_30_BY_ND' => 'Attribution | No Derivative Works 3.0 Unported',
+    'CC_30_BY_NC' => 'Attribution | Noncommercial 3.0 Unported',
+    'CC_30_BY_NC_SA' => 'Attribution | Noncommercial | Share Alike 3.0 Unported',
+    'CC_30_BY_NC_ND' => 'Attribution | Noncommercial | No Derivative Works 3.0 Unported'
   }
 
   # Sorts are enabled and disabled by feature modules

@@ -397,7 +397,7 @@ private
   def data_lens_transition_state
     # Ignore feature flags defined in the view metadata (first argument) but
     # allow feature flag overrides in the query string (second argument)
-    FeatureFlags.derive(nil, request)[:data_lens_transition_state]
+    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:data_lens_transition_state]
   end
 
   def data_lens_phase_beta?

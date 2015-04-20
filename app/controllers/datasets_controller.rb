@@ -801,7 +801,12 @@ protected
 
     begin
       obeId = @view.migrations['obeId']
-    rescue CoreServer::ResourceNotFound => ignored
+    # This seems a little suspicious since other types of errors are not
+    # handled elsewhere. As a result, we are changing the below line to
+    # rescue all errors and then return '/' by default.
+    #
+    #rescue CoreServer::ResourceNotFound => ignored
+    rescue => error
     end
     if obeId.present?
       return "/d/#{obeId}"

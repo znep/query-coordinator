@@ -27,7 +27,7 @@ default: &default
   rpx_facebook_url: https://socrata-test.rpxnow.com/facebook/start
   rpx_windowslive_url: https://socrata-test.rpxnow.com/liveid/start
   rpx_twitter_url: https://socrata-test.rpxnow.com/twitter/start
-  rpx_openid_url: https://socrata-test.rpxnow.com/openid/start
+  rpx_googleplus_url: https://socrata-test.rpxnow.com/googleplus/start
   app_token: U29jcmF0YS0td2VraWNrYXNz0
   statsd_enabled: false
   polaroid_hostname: polaroid.service.aws-us-west-2-production.socrata.consul
@@ -75,7 +75,7 @@ production:
   rpx_facebook_url: https://socrata.rpxnow.com/facebook/start
   rpx_windowslive_url: https://socrata.rpxnow.com/liveid/start
   rpx_twitter_url: https://socrata.rpxnow.com/twitter/start
-  rpx_openid_url: https://socrata.rpxnow.com/openid/start
+  rpx_googleplus_url: https://socrata.rpxnow.com/googleplus/start
   <<: *default
   mixpanel_token: 1d804068e1d3694468823f3c7f74567d
 

@@ -174,6 +174,7 @@
 
         scope.zoomDebounceMilliseconds = ServerConfig.get('featureMapZoomDebounce');
 
+        scope.disablePanAndZoom = ServerConfig.get('featureMapDisablePanZoom');
       }
     };
 

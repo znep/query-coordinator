@@ -179,8 +179,10 @@ describe('A Choropleth Directive', function() {
 
   afterEach(function() {
     testHelpers.cleanUp();
-    fakeClock.restore();
-    fakeClock = null;
+    if (fakeClock) {
+      fakeClock.restore();
+      fakeClock = null;
+    }
   });
 
 

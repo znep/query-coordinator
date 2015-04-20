@@ -763,19 +763,41 @@ protected
   end
 
   def view_redirection_url
-    dataset_metadata_response = phidippides.fetch_dataset_metadata(
-      params[:id],
-      :request_id => request_id,
-      :cookies => forwardable_session_cookies
-    )
+    #
+    # ONCALL-2309
+    #
+    # On 2015-04-20 we became aware of a certain type of request that caused
+    # Phidippides to decide core servers were dead when they were not, with
+    # the eventual effect of it deciding that there were no core servers
+    # available and therefore responding to legitimate metadata requests
+    # with 500 errors.
+    #
+    # The cause was determined to be requests for federated datasets that
+    # triggered malformed redirects to the 'official' dataset sources that in
+    # turn caused circular redirects.
+    #
+    # In order to avoid these circular redirects while we are investigating
+    # and deploying a more permanent solution, and because the commented-out
+    # code below was already up for replacement with simpler logic, we are
+    # temporarily forgoing the logic used to determine a redirect destination
+    # that depends on a dataset's metadata.
+    #
+    # Instead, we will rely only on the presence or absence of a view's
+    # migration and its old-back-end four-by-four.
 
-    if dataset_metadata_response[:status] == '200'
-      default_page = dataset_metadata_response.fetch(:body, {})[:defaultPage]
-    end
+    # dataset_metadata_response = phidippides.fetch_dataset_metadata(
+    #   params[:id],
+    #   :request_id => request_id,
+    #   :cookies => forwardable_session_cookies
+    # )
 
-    if default_page.present? && default_page_accessible?(default_page)
-      return "/view/#{default_page}"
-    end
+    # if dataset_metadata_response[:status] == '200'
+    #   default_page = dataset_metadata_response.fetch(:body, {})[:defaultPage]
+    # end
+
+    # if default_page.present? && default_page_accessible?(default_page)
+    #   return "/view/#{default_page}"
+    # end
 
     begin
       obeId = @view.migrations['obeId']

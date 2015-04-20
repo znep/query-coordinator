@@ -119,7 +119,8 @@ describe('featureMap', function() {
             'base-layer-url="baseLayerUrl" ',
             'feature-extent="featureExtent" ',
             'vector-tile-getter="vectorTileGetter" ',
-            'row-display-unit="rowDisplayUnit">',
+            'row-display-unit="rowDisplayUnit" ',
+            'disable-pan-and-zoom="disablePanAndZoom">',
           '</feature-map>',
         '</div>',
       '</div>'
@@ -337,6 +338,23 @@ describe('featureMap', function() {
             done();
           }
         }
+      });
+
+      createFeatureMap();
+    });
+  });
+
+  describe('disable pan and zoom feature flag', function() {
+    beforeEach(function() {
+      scope.disablePanAndZoom = true;
+    });
+
+    it('should not render zoomControl if feature_map_disable_pan_zoom is true', function(done) {
+      AngularRxExtensions.install(scope);
+
+      scope.$on('render:complete', function() {
+        expect($('.leaflet-control-zoom').length).to.equal(0);
+        done();
       });
 
       createFeatureMap();

@@ -5,9 +5,9 @@
     Constants,
     AngularRxExtensions,
     VectorTiles,
-    LeafletHelpersService
+    LeafletHelpersService,
+    FlyoutService
   ) {
-
     return {
       restrict: 'E',
       scope: {
@@ -15,7 +15,8 @@
         'featureExtent': '=',
         'zoomDebounceMilliseconds': '=',
         'vectorTileGetter': '=',
-        'rowDisplayUnit': '=?'
+        'rowDisplayUnit': '=?',
+        'disablePanAndZoom': '='
       },
       templateUrl: '/angular_templates/dataCards/featureMap.html',
       link: function(scope, element) {
@@ -30,6 +31,28 @@
           zoom: 1,
           zoomControlPosition: 'topleft'
         };
+        // CORE-4832 - disable pan and zoom on feature map
+        if (scope.disablePanAndZoom === true) {
+          $.extend(mapOptions, {
+            dragging: false,
+            zoomControl: false,
+            touchZoom: false,
+            scrollWheelZoom: false,
+            doubleClickZoom: false,
+            boxZoom: false
+          });
+          scope.showPanZoomDisabledWarning = true;
+          $(element).children('.feature-map-container').css('cursor', 'default');
+
+          FlyoutService.register(
+            'pan-zoom-disabled-warning-icon',
+            _.constant(
+              '<div class="flyout-title">Zoom is temporarily unavailable. Please try again later.</div>'
+            ),
+            scope.eventToObservable('$destroy')
+          );
+        }
+
         var map = L.map(element.find('.feature-map-container')[0], mapOptions);
         // We buffer feature layers so that there isn't a visible flash
         // of emptiness when we transition from one to the next. This is accomplished

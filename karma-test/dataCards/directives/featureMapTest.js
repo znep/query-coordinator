@@ -1,4 +1,4 @@
-describe('featureMap', function() {
+describe.only('featureMap', function() {
   'use strict';
 
   var mockWindowStateService;
@@ -355,11 +355,11 @@ describe('featureMap', function() {
 
       scope.$on('render:complete', function() {
         expect($('.leaflet-control-zoom').length).to.equal(0);
+
+        done();
       });
 
       createFeatureMap();
-
-      done();
     });
   });
 });

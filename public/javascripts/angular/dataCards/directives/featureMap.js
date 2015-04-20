@@ -6,8 +6,7 @@
     AngularRxExtensions,
     VectorTiles,
     LeafletHelpersService,
-    FlyoutService,
-    ServerConfig
+    FlyoutService
   ) {
     return {
       restrict: 'E',
@@ -16,7 +15,8 @@
         'featureExtent': '=',
         'zoomDebounceMilliseconds': '=',
         'vectorTileGetter': '=',
-        'rowDisplayUnit': '=?'
+        'rowDisplayUnit': '=?',
+        'disablePanAndZoom': '='
       },
       templateUrl: '/angular_templates/dataCards/featureMap.html',
       link: function(scope, element) {
@@ -32,7 +32,7 @@
           zoomControlPosition: 'topleft'
         };
         // CORE-4832 - disable pan and zoom on feature map
-        if (ServerConfig.get('featureMapDisablePanZoom')) {
+        if (scope.disablePanAndZoom === true) {
           $.extend(mapOptions, {
             dragging: false,
             zoomControl: false,

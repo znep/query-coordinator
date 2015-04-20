@@ -52,15 +52,18 @@ class DatasetsControllerTest < ActionController::TestCase
     assert_response 200
   end
 
-  test 'redirects to default page for NBE datasets for non-admin users' do
-    setup_nbe_dataset_test(false, false)
-    Phidippides.any_instance.stubs(
-      fetch_dataset_metadata: { status: '200', body: { defaultPage: 'page-xist' } },
-      fetch_page_metadata: { status: '200' }
-    )
-    get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
-    assert_redirected_to '/view/page-xist'
-  end
+  #
+  # See comment at the beginning of `view_redirection_url` in `datasets_controller.rb`
+  #
+  # test 'redirects to default page for NBE datasets for non-admin users' do
+  #   setup_nbe_dataset_test(false, false)
+  #   Phidippides.any_instance.stubs(
+  #     fetch_dataset_metadata: { status: '200', body: { defaultPage: 'page-xist' } },
+  #     fetch_page_metadata: { status: '200' }
+  #   )
+  #   get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
+  #   assert_redirected_to '/view/page-xist'
+  # end
 
   test 'redirects to OBE view page for NBE datasets without default page for non-admin users' do
     setup_nbe_dataset_test(false, true)
@@ -80,16 +83,19 @@ class DatasetsControllerTest < ActionController::TestCase
     assert_redirected_to '/'
   end
 
-  test 'redirects to home page for NBE datasets with inaccessible default page for non-admin users' do
-    setup_nbe_dataset_test(false, false)
-    Phidippides.any_instance.stubs(
-      fetch_dataset_metadata: { status: '200', body: { defaultPage: 'page-xist' } },
-      fetch_page_metadata: { status: '404' }
-    )
-    NewViewManager.any_instance.expects(:fetch).raises(NewViewManager::ViewAccessDenied)
-    get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
-    assert_redirected_to '/'
-  end
+  #
+  # See comment at the beginning of `view_redirection_url` in `datasets_controller.rb`
+  #
+  # test 'redirects to home page for NBE datasets with inaccessible default page for non-admin users' do
+  #   setup_nbe_dataset_test(false, false)
+  #   Phidippides.any_instance.stubs(
+  #     fetch_dataset_metadata: { status: '200', body: { defaultPage: 'page-xist' } },
+  #     fetch_page_metadata: { status: '404' }
+  #   )
+  #   NewViewManager.any_instance.expects(:fetch).raises(NewViewManager::ViewAccessDenied)
+  #   get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
+  #   assert_redirected_to '/'
+  # end
 
   def setup_nbe_dataset_test(is_admin = false, has_page_metadata = false)
     load_sample_data('test/fixtures/sample-data.json')

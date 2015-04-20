@@ -18,7 +18,7 @@
         }
       ).switchLatest();
       var samplesObservable = sampleDataObservable.flatMap(function(data) {
-        return Rx.Observable.fromArray(_.pluck(data, 'name'));
+        return Rx.Observable.fromArray(data);
       }).take(2);
 
       $scope.bindObservable('sampleOne', samplesObservable.take(1));

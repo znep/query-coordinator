@@ -264,25 +264,35 @@ describe('table directive', function() {
 
     it('should load more rows upon scrolling', function(done) {
       this.timeout(20000); // IE10!
+      var didScroll = false;
       var el = createTableCard(true);
       var tableBody = el.find('.table-body');
-      _.defer(function(){
-        expect(el.find('.row-block .cell').length).to.equal(columnCount * blockSize * 3);
-        tableBody.scroll(function() {
+      tableBody.scroll(function() {
+        if (didScroll) {
           _.defer(function() {
             expect(el.find('.th').length).to.equal(columnCount);
             expect(el.find('.row-block .cell').length).to.equal(columnCount * blockSize * 4);
             el.remove();
             done();
           });
-        });
+        }
+      });
+
+      _.defer(function() {
+        expect(el.find('.row-block .cell').length).to.equal(columnCount * blockSize * 3);
         var originalScrollTop = tableBody.scrollTop();
         var targetScrollTop = $.relativeToPx('2rem') * (blockSize + 1);
 
         if (originalScrollTop === targetScrollTop) {
-          throw new Error('Test implementation error - we expect to be triggering a scroll here, but apparently the content is already scrolled to where we want to go. We do not want this. The scroll pos was: ' + targetScrollTop);
+          throw new Error([
+            'Test implementation error -',
+            'we expect to be triggering a scroll here, but apparently the content',
+            'is already scrolled to where we want to go. We do not want this.',
+            'The scroll pos was: {0}'.format(targetScrollTop)
+          ].join(' '));
         }
 
+        didScroll = true;
         tableBody.scrollTop($.relativeToPx('2rem') * (blockSize + 1));
       });
     });
@@ -310,7 +320,8 @@ describe('table directive', function() {
         var el = getSortableTable();
 
         // Value in corresponding cell matches with first data item?
-        expect(el.find('.row-block .cell').eq(columnIndexToClick).text()).to.equal(computeDisplayedValue(_.first(fixtureData)[columnMeta.fieldName]));
+        var expectedFirstDataItem = computeDisplayedValue(_.first(fixtureData)[columnMeta.fieldName]);
+        expect(el.find('.row-block .cell').eq(columnIndexToClick).text()).to.equal(expectedFirstDataItem);
 
         // Apply a sort. Expect it to be DESC
         applicatorFunction(el);
@@ -323,7 +334,8 @@ describe('table directive', function() {
         expect(el.find('.row-block .cell').length).to.equal(columnCount * rowCount);
 
         // Value in corresponding cell matches with last data item (since we're sorting in reverse).
-        expect(el.find('.row-block .cell').eq(columnIndexToClick).text()).to.equal(computeDisplayedValue(_.last(fixtureData)[columnMeta.fieldName]));
+        var expectedLastDataItem = computeDisplayedValue(_.last(fixtureData)[columnMeta.fieldName]);
+        expect(el.find('.row-block .cell').eq(columnIndexToClick).text()).to.equal(expectedLastDataItem);
 
         // Now, reverse the sort.
         applicatorFunction(el);
@@ -335,7 +347,7 @@ describe('table directive', function() {
         expect(el.find('.row-block .cell').length).to.equal(columnCount * rowCount);
 
         // Value in corresponding cell matches with first data item (since we're sorting normally).
-        expect(el.find('.row-block .cell').eq(columnIndexToClick).text()).to.equal(computeDisplayedValue(_.first(fixtureData)[columnMeta.fieldName]));
+        expect(el.find('.row-block .cell').eq(columnIndexToClick).text()).to.equal(expectedFirstDataItem);
       }
 
       it('should only reflect the first value of the default sort', function() {
@@ -447,15 +459,15 @@ describe('table directive', function() {
       describe('sort hint caret', function() {
 
         it('should be correct for numbers', function() {
-          expect(immutableTable.find('.th').eq(idColumnIndex).find('.caret')[0].className).to.not.have.string('sortUp');
+          expect(immutableTable.find('.th').eq(idColumnIndex).find('.caret')).to.not.have.class('sortUp');
         });
 
         it('should be correct for text', function() {
-          expect(immutableTable.find('.th').eq(beatColumnIndex).find('.caret')[0].className).to.have.string('sortUp');
+          expect(immutableTable.find('.th').eq(beatColumnIndex).find('.caret')).to.have.class('sortUp');
         });
 
         it('should be correct for dates', function() {
-          expect(immutableTable.find('.th').eq(dateColumnIndex).find('.caret')[0].className).to.not.have.string('sortUp');
+          expect(immutableTable.find('.th').eq(dateColumnIndex).find('.caret')).to.not.have.class('sortUp');
         });
 
       });
@@ -508,7 +520,7 @@ describe('table directive', function() {
 
     it('should be able to filter', function(done) {
       var filteredData = _.take(fixtureData, 3);
-      var unfilteredData = _.last(fixtureData, 6);
+      var unfilteredData = _.takeRight(fixtureData, 6);
       var firstColumnName = fixtureMetadata.testColumnDetailsAsTableWantsThem[0].fieldName;
       // Sanity check for test data - we need the first rows of filtered/unfiltered to be different in at least
       // their first column's value for the tests to work.

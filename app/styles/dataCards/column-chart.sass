@@ -40,7 +40,7 @@ div.column-chart
         .bar.filtered
           background-color: $selected-bar-color
         .bar.unfiltered
-          background-color: lighten($unfiltered-bar-color, 12%)
+          background-color: $selected-bar-bg-color
 
     // hover colors
     .bar-group.active.hover
@@ -54,8 +54,11 @@ div.column-chart
           background-color: $unfiltered-hover-bar-bg-color
         .bar.filtered
           background-color: $hovered-bar-color
-        &.special .bar.filtered
-          background-color: $filtered-region-bg-color-4
+        &.special
+          .bar.filtered
+            background-color: $filtered-region-bg-color-4
+          .bar.unfiltered
+            background-color: $selected-bar-bg-hover-color
 
     div.truncation-marker
       position: absolute
@@ -118,44 +121,61 @@ div.column-chart
       &.dim
         opacity: 0.1
 
+      &.special
+        div.callout
+          border-bottom: none
+
+        div.contents
+          left: -.4rem
+
+          span.icon-filter, span.icon-close
+            display: inline-block
+
+          span.text
+            padding: 0 0.25rem
+
       div.callout
         position: absolute
         border-bottom: 1px solid $chart-tick-color
         width: 0.5rem
 
-      div.text
+      div.contents
         color: $chart-tick-color
         position: absolute
         font-size: $medium-font-size
         line-height: $base-font-size
         white-space: nowrap
         text-overflow: ellipsis
-        overflow: hidden
-        left: 0.25rem
+        left: 0.75rem
+        cursor: pointer
 
         &.undefined
           font-style: italic
 
-        span
-          cursor: pointer
+        span.icon-filter, span.icon-close
+          display: none
+
+        span.icon-filter
+          color: $filtered-region-bg-color-2
+
+        span.icon-close
+          font-size: 0.5rem
 
       &.orientation-right
 
         div.callout
           border-left: 1px solid $chart-tick-color
 
-        div.text
-          text-indent: $text-spacing - 0.25rem
-
       &.orientation-left
+        left: auto
+        text-align: right
+
         div.callout
           border-right: 1px solid $chart-tick-color
           right: 0
 
-        div.text
-          right: $text-spacing
-          left: auto
-          text-align: right
+        div.contents
+          right: -0.2rem
 
   div.ticks
     position: absolute
@@ -175,7 +195,7 @@ div.column-chart
 
 
 
-  &.expanded
+  &.expanded, &.expanded.special
 
     div.labels
       bottom: auto
@@ -184,10 +204,17 @@ div.column-chart
         div.callout
           display: none
 
-        div.text
+        div.contents
           @include prefixer(transform, rotate(45deg))
           @include prefixer(transform-origin, top left)
           margin-top: -6px
           overflow: hidden
           left: auto
+          text-indent: 0.5rem
+
+          span.icon-filter, span.icon-close
+            display: none
+
+          span.text
+            padding: 0
 

@@ -288,21 +288,22 @@ describe('card-layout', function() {
        */
       function createLayoutWithCards(cards, options) {
         if (!cards) {
-          cards = _.map(_.range(NUM_CARDS_IN_DEFAULT_LAYOUT), function(i) {
+          cards = _.chain().range(NUM_CARDS_IN_DEFAULT_LAYOUT).map(function() {
             return {
               fieldName: 'invalid_column'
             };
-          });
+          }).value();
           // Need a datacard in order to render
           cards[0].fieldName = '*';
         }
 
         var cardGenerator = function(pageModel, datasetModel) {
           return _.map(cards, function(card, i) {
+            var c;
             if (phase === '0' || phase === '1') {
-              var c = new CardV0(pageModel, card.fieldName || 'fieldname' + i);
+              c = new CardV0(pageModel, card.fieldName || 'fieldname' + i);
             } else {
-              var c = new CardV1(pageModel, card.fieldName || 'fieldname' + i);
+              c = new CardV1(pageModel, card.fieldName || 'fieldname' + i);
             }
             c.set('expanded', !!card.expanded);
             // Add required fields so this will validate
@@ -339,25 +340,29 @@ describe('card-layout', function() {
 
         function hasStuckClass(e) {
           return e.hasClass('stuck');
-        };
+        }
 
         it('should be updated to reflect scroll position', function() {
 
           var cl = createCardLayout();
+          var card1;
+          var card2;
+          var card3;
+          var card4;
 
           if (phase === '0' || phase === '1') {
-            var card1 = new CardV0(cl.pageModel, 'testField1');
-            var card2 = new CardV0(cl.pageModel, 'testField2');
-            var card3 = new CardV0(cl.pageModel, 'testField3');
+            card1 = new CardV0(cl.pageModel, 'testField1');
+            card2 = new CardV0(cl.pageModel, 'testField2');
+            card3 = new CardV0(cl.pageModel, 'testField3');
             // Note that the data card (fieldName === '*') is required for layout to happen.
             // If we do not include it in the cardModels, the layout function will terminate
             // early and the tests will fail.
-            var card4 = new CardV0(cl.pageModel, '*');
+            card4 = new CardV0(cl.pageModel, '*');
           } else {
-            var card1 = new CardV1(cl.pageModel, 'testField1');
-            var card2 = new CardV1(cl.pageModel, 'testField2');
-            var card3 = new CardV1(cl.pageModel, 'testField3');
-            var card4 = new CardV1(cl.pageModel, '*');
+            card1 = new CardV1(cl.pageModel, 'testField1');
+            card2 = new CardV1(cl.pageModel, 'testField2');
+            card3 = new CardV1(cl.pageModel, 'testField3');
+            card4 = new CardV1(cl.pageModel, '*');
           }
 
           var cards = [ card1, card2, card3, card4 ];
@@ -396,23 +401,27 @@ describe('card-layout', function() {
         it('should be updated to reflect cardsMetadata height', function(done) {
 
           var cl = createCardLayout();
+          var card1;
+          var card2;
+          var card3;
+          var card4;
 
           if (phase === '0' || phase === '1') {
-            var card1 = new CardV0(cl.pageModel, 'testField1');
-            var card2 = new CardV0(cl.pageModel, 'testField2');
-            var card3 = new CardV0(cl.pageModel, 'testField3');
+            card1 = new CardV0(cl.pageModel, 'testField1');
+            card2 = new CardV0(cl.pageModel, 'testField2');
+            card3 = new CardV0(cl.pageModel, 'testField3');
             // Note that the data card (fieldName === '*') is required for layout to happen.
             // If we do not include it in the cardModels, the layout function will terminate
             // early and the tests will fail.
-            var card4 = new CardV0(cl.pageModel, '*');
+            card4 = new CardV0(cl.pageModel, '*');
           } else {
-            var card1 = new CardV0(cl.pageModel, 'testField1');
-            var card2 = new CardV0(cl.pageModel, 'testField2');
-            var card3 = new CardV0(cl.pageModel, 'testField3');
+            card1 = new CardV0(cl.pageModel, 'testField1');
+            card2 = new CardV0(cl.pageModel, 'testField2');
+            card3 = new CardV0(cl.pageModel, 'testField3');
             // Note that the data card (fieldName === '*') is required for layout to happen.
             // If we do not include it in the cardModels, the layout function will terminate
             // early and the tests will fail.
-            var card4 = new CardV0(cl.pageModel, '*');
+            card4 = new CardV0(cl.pageModel, '*');
           }
 
           var cards = [ card1, card2, card3, card4 ];
@@ -454,20 +463,24 @@ describe('card-layout', function() {
         it('should pop up card-drag-overlay', function() {
 
           var cl = createCardLayout();
+          var card1;
+          var card2;
+          var card3;
+          var card4;
 
           if (phase === '0' || phase === '1') {
-            var card1 = new CardV0(cl.pageModel, 'testField1');
-            var card2 = new CardV0(cl.pageModel, 'testField2');
-            var card3 = new CardV0(cl.pageModel, 'testField3');
+            card1 = new CardV0(cl.pageModel, 'testField1');
+            card2 = new CardV0(cl.pageModel, 'testField2');
+            card3 = new CardV0(cl.pageModel, 'testField3');
             // Note that the data card (fieldName === '*') is required for layout to happen.
             // If we do not include it in the cardModels, the layout function will terminate
             // early and the tests will fail.
-            var card4 = new CardV0(cl.pageModel, '*');
+            card4 = new CardV0(cl.pageModel, '*');
           } else {
-            var card1 = new CardV1(cl.pageModel, 'testField1');
-            var card2 = new CardV1(cl.pageModel, 'testField2');
-            var card3 = new CardV1(cl.pageModel, 'testField3');
-            var card4 = new CardV1(cl.pageModel, '*');
+            card1 = new CardV1(cl.pageModel, 'testField1');
+            card2 = new CardV1(cl.pageModel, 'testField2');
+            card3 = new CardV1(cl.pageModel, 'testField3');
+            card4 = new CardV1(cl.pageModel, '*');
           }
 
           var cards = [ card1, card2, card3, card4 ];
@@ -492,20 +505,24 @@ describe('card-layout', function() {
         it('should display a delete card button', function() {
 
           var cl = createCardLayout();
+          var card1;
+          var card2;
+          var card3;
+          var card4;
 
           if (phase === '0' || phase === '1') {
-            var card1 = new CardV0(cl.pageModel, 'testField1');
-            var card2 = new CardV0(cl.pageModel, 'testField2');
-            var card3 = new CardV0(cl.pageModel, 'testField3');
+            card1 = new CardV0(cl.pageModel, 'testField1');
+            card2 = new CardV0(cl.pageModel, 'testField2');
+            card3 = new CardV0(cl.pageModel, 'testField3');
             // Note that the data card (fieldName === '*') is required for layout to happen.
             // If we do not include it in the cardModels, the layout function will terminate
             // early and the tests will fail.
-            var card4 = new CardV0(cl.pageModel, '*');
+            card4 = new CardV0(cl.pageModel, '*');
           } else {
-            var card1 = new CardV1(cl.pageModel, 'testField1');
-            var card2 = new CardV1(cl.pageModel, 'testField2');
-            var card3 = new CardV1(cl.pageModel, 'testField3');
-            var card4 = new CardV1(cl.pageModel, '*');
+            card1 = new CardV1(cl.pageModel, 'testField1');
+            card2 = new CardV1(cl.pageModel, 'testField2');
+            card3 = new CardV1(cl.pageModel, 'testField3');
+            card4 = new CardV1(cl.pageModel, '*');
           }
 
           var cards = [ card1, card2, card3, card4 ];
@@ -530,20 +547,24 @@ describe('card-layout', function() {
 
         it('should display a flyout when hovering on a delete card button', function() {
           var cl = createCardLayout();
+          var card1;
+          var card2;
+          var card3;
+          var card4;
 
           if (phase === '0' || phase === '1') {
-            var card1 = new CardV0(cl.pageModel, 'testField1');
-            var card2 = new CardV0(cl.pageModel, 'testField2');
-            var card3 = new CardV0(cl.pageModel, 'testField3');
+            card1 = new CardV0(cl.pageModel, 'testField1');
+            card2 = new CardV0(cl.pageModel, 'testField2');
+            card3 = new CardV0(cl.pageModel, 'testField3');
             // Note that the data card (fieldName === '*') is required for layout to happen.
             // If we do not include it in the cardModels, the layout function will terminate
             // early and the tests will fail.
-            var card4 = new CardV0(cl.pageModel, '*');
+            card4 = new CardV0(cl.pageModel, '*');
           } else {
-            var card1 = new CardV1(cl.pageModel, 'testField1');
-            var card2 = new CardV1(cl.pageModel, 'testField2');
-            var card3 = new CardV1(cl.pageModel, 'testField3');
-            var card4 = new CardV1(cl.pageModel, '*');
+            card1 = new CardV1(cl.pageModel, 'testField1');
+            card2 = new CardV1(cl.pageModel, 'testField2');
+            card3 = new CardV1(cl.pageModel, 'testField3');
+            card4 = new CardV1(cl.pageModel, '*');
           }
 
           var cards = [ card1, card2, card3, card4 ];
@@ -566,7 +587,6 @@ describe('card-layout', function() {
 
           var clientX = thirdDeleteButtonPosition.left;
           var clientY = thirdDeleteButtonPosition.top;
-          var hintHeight = 20;
 
           mockWindowStateService.mousePositionSubject.onNext({
             clientX: clientX,
@@ -591,20 +611,24 @@ describe('card-layout', function() {
         it('should remove a card when the delete button is clicked', function(done) {
 
           var cl = createCardLayout();
+          var card1;
+          var card2;
+          var card3;
+          var card4;
 
           if (phase === '0' || phase === '1') {
-            var card1 = new CardV0(cl.pageModel, 'testField1');
-            var card2 = new CardV0(cl.pageModel, 'testField2');
-            var card3 = new CardV0(cl.pageModel, 'testField3');
+            card1 = new CardV0(cl.pageModel, 'testField1');
+            card2 = new CardV0(cl.pageModel, 'testField2');
+            card3 = new CardV0(cl.pageModel, 'testField3');
             // Note that the data card (fieldName === '*') is required for layout to happen.
             // If we do not include it in the cardModels, the layout function will terminate
             // early and the tests will fail.
-            var card4 = new CardV0(cl.pageModel, '*');
+            card4 = new CardV0(cl.pageModel, '*');
           } else {
-            var card1 = new CardV1(cl.pageModel, 'testField1');
-            var card2 = new CardV1(cl.pageModel, 'testField2');
-            var card3 = new CardV1(cl.pageModel, 'testField3');
-            var card4 = new CardV1(cl.pageModel, '*');
+            card1 = new CardV1(cl.pageModel, 'testField1');
+            card2 = new CardV1(cl.pageModel, 'testField2');
+            card3 = new CardV1(cl.pageModel, 'testField3');
+            card4 = new CardV1(cl.pageModel, '*');
           }
 
           var cards = [ card1, card2, card3, card4 ];
@@ -636,20 +660,24 @@ describe('card-layout', function() {
 
         it('should show the correct drop placeholders', function() {
           var cl = createCardLayout();
+          var card1;
+          var card2;
+          var card3;
+          var card4;
 
           if (phase === '0' || phase === '1') {
-            var card1 = new CardV0(cl.pageModel, 'testField1');
-            var card2 = new CardV0(cl.pageModel, 'testField2');
-            var card3 = new CardV0(cl.pageModel, 'testField3');
+            card1 = new CardV0(cl.pageModel, 'testField1');
+            card2 = new CardV0(cl.pageModel, 'testField2');
+            card3 = new CardV0(cl.pageModel, 'testField3');
             // Note that the data card (fieldName === '*') is required for layout to happen.
             // If we do not include it in the cardModels, the layout function will terminate
             // early and the tests will fail.
-            var card4 = new CardV0(cl.pageModel, '*');
+            card4 = new CardV0(cl.pageModel, '*');
           } else {
-            var card1 = new CardV1(cl.pageModel, 'testField1');
-            var card2 = new CardV1(cl.pageModel, 'testField2');
-            var card3 = new CardV1(cl.pageModel, 'testField3');
-            var card4 = new CardV1(cl.pageModel, '*');
+            card1 = new CardV1(cl.pageModel, 'testField1');
+            card2 = new CardV1(cl.pageModel, 'testField2');
+            card3 = new CardV1(cl.pageModel, 'testField3');
+            card4 = new CardV1(cl.pageModel, '*');
           }
 
           var cards = [ card1, card2, card3, card4 ];
@@ -675,7 +703,7 @@ describe('card-layout', function() {
               cl.element.find('.card-group-drop-placeholder[data-group-id=2]').css('display') !== 'none',
               cl.element.find('.card-group-drop-placeholder[data-group-id=3]').css('display') !== 'none'
             ];
-          };
+          }
 
           card1.set('cardSize', 1);
           card2.set('cardSize', 2);
@@ -804,20 +832,24 @@ describe('card-layout', function() {
 
           it('should show the drop placeholder for the dragged card when the mouse is moved 4 pixels from mouse down location, until mouse up', function() {
             var cl = createCardLayout();
+            var card1;
+            var card2;
+            var card3;
+            var card4;
 
             if (phase === '0' || phase === '1') {
-              var card1 = new CardV0(cl.pageModel, 'testField1');
-              var card2 = new CardV0(cl.pageModel, 'testField2');
-              var card3 = new CardV0(cl.pageModel, 'testField3');
+              card1 = new CardV0(cl.pageModel, 'testField1');
+              card2 = new CardV0(cl.pageModel, 'testField2');
+              card3 = new CardV0(cl.pageModel, 'testField3');
               // Note that the data card (fieldName === '*') is required for layout to happen.
               // If we do not include it in the cardModels, the layout function will terminate
               // early and the tests will fail.
-              var card4 = new CardV0(cl.pageModel, '*');
+              card4 = new CardV0(cl.pageModel, '*');
             } else {
-              var card1 = new CardV1(cl.pageModel, 'testField1');
-              var card2 = new CardV1(cl.pageModel, 'testField2');
-              var card3 = new CardV1(cl.pageModel, 'testField3');
-              var card4 = new CardV1(cl.pageModel, '*');
+              card1 = new CardV1(cl.pageModel, 'testField1');
+              card2 = new CardV1(cl.pageModel, 'testField2');
+              card3 = new CardV1(cl.pageModel, 'testField3');
+              card4 = new CardV1(cl.pageModel, '*');
             }
 
             var cards = [ card1, card2, card3, card4 ];
@@ -894,20 +926,24 @@ describe('card-layout', function() {
 
           it('should trade positions when dragged over another card.', function() {
             var cl = createCardLayout();
+            var card1;
+            var card2;
+            var card3;
+            var card4;
 
             if (phase === '0' || phase === '1') {
-              var card1 = new CardV0(cl.pageModel, 'testField1');
-              var card2 = new CardV0(cl.pageModel, 'testField2');
-              var card3 = new CardV0(cl.pageModel, 'testField3');
+              card1 = new CardV0(cl.pageModel, 'testField1');
+              card2 = new CardV0(cl.pageModel, 'testField2');
+              card3 = new CardV0(cl.pageModel, 'testField3');
               // Note that the data card (fieldName === '*') is required for layout to happen.
               // If we do not include it in the cardModels, the layout function will terminate
               // early and the tests will fail.
-              var card4 = new CardV0(cl.pageModel, '*');
+              card4 = new CardV0(cl.pageModel, '*');
             } else {
-              var card1 = new CardV1(cl.pageModel, 'testField1');
-              var card2 = new CardV1(cl.pageModel, 'testField2');
-              var card3 = new CardV1(cl.pageModel, 'testField3');
-              var card4 = new CardV1(cl.pageModel, '*');
+              card1 = new CardV1(cl.pageModel, 'testField1');
+              card2 = new CardV1(cl.pageModel, 'testField2');
+              card3 = new CardV1(cl.pageModel, 'testField3');
+              card4 = new CardV1(cl.pageModel, '*');
             }
 
             var cards = [ card1, card2, card3, card4 ];
@@ -1007,7 +1043,6 @@ describe('card-layout', function() {
             var placeholder2 = cl.element.find('[data-group-id=2]');
 
             // Drag card 1.
-            var cardContainerOffset = cl.element.find('card-layout').offset().top;
             var startPos = card1Dom.offset();
             card1Overlay.trigger(jQuery.Event( 'mousedown', {
               button: 0,
@@ -1088,7 +1123,7 @@ describe('card-layout', function() {
         it("sets the scope's expandedCard state if there are any expanded cards", function() {
           var cl = createLayoutWithCards([{fieldName: '*'}, {expanded: true}]);
 
-          expect(!!cl.outerScope.expandedCard).to.be.true;
+          expect(!!cl.outerScope.expandedCard).to.equal(true);
         });
 
         it("doesn't set the expandedCard state if there aren't any expanded cards", function() {

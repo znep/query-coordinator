@@ -83,7 +83,7 @@ describe('Analytics service', function() {
   }
 
   afterEach(function() {
-    $httpBackend.verifyNoOutstandingExpectation();
+    $httpBackend.verifyNoOutstandingExpectation(false);
     $httpBackend.verifyNoOutstandingRequest();
   });
 

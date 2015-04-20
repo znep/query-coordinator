@@ -447,7 +447,7 @@
 
         var expandedCardsSequence = zipLatestArray(scope.page.observe('cards'), 'expanded').
             map(function(cards) {
-              return _.where(cards, _.property('expanded'));
+              return _.filter(cards, _.property('expanded'));
             });
 
         /**
@@ -560,7 +560,9 @@
               newExpandedId = expandedCard && expandedCard.uniqueId;
               // Keep track of whether the layout is an expanded-card layout, so upstream
               // scopes can do things like disable edit buttons
-              scope.expandedCard = expandedCard;
+              scope.safeApply(function() {
+                scope.expandedCard = expandedCard;
+              });
             }
 
             // Terminology:
@@ -637,7 +639,7 @@
           var cursorY = cardOriginY - containerYOffset;
           var adjustedClientY = clientY - containerYOffset;
 
-          var cardsInMyRow = _.where(scope.cardStates, function(cardStateData) {
+          var cardsInMyRow = _.filter(scope.cardStates, function(cardStateData) {
             return cardStateData.style.top <= adjustedClientY && (
               cardStateData.style.top + cardStateData.style.height) >= adjustedClientY;
           });

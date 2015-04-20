@@ -9,7 +9,7 @@ $.component.Component.extend('GovStat', 'none', {
 
     _getAssets: function()
     {
-        return { javascripts: ['/socket.io/socket.io.js', '/asset/js/client-bridge'] };
+        return { javascripts: ['/asset/js/socket.io', '/asset/js/client-bridge'] };
     },
 
     _render: function()

@@ -278,9 +278,21 @@
                     title: $.t('screens.ds.grid_sidebar.column_common.type.title'),
                     onlyIf: { func: function(c) { return !showLinkSection(c); } },
                     fields: [
-                        {text: $.t('screens.ds.grid_sidebar.column_common.type.type'), type: 'select', required: true,
-                        name: 'dataTypeName', prompt: null, options: convertTypes},
-                        {text: $.t('screens.ds.grid_sidebar.column_common.type.type'), type: 'static', value: staticDataType}
+                        {
+                            text: $.t('screens.ds.grid_sidebar.column_common.type.type'),
+                            type: 'select',
+                            required: true,
+                            name: 'dataTypeName',
+                            prompt: null,
+                            // Changing the column type is not supported in the new backend
+                            disabled: cpObj._view.newBackend,
+                            options: convertTypes
+                        }, {
+                            text: $.t('screens.ds.grid_sidebar.column_common.type.type'),
+                            type: 'static',
+                            disabled: cpObj._view.newBackend,
+                            value: staticDataType
+                        }
                     ]
                 },
 

@@ -62,7 +62,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     // If the chart is not expanded, limit our vert scale computation to what's actually
     // visible. We still render the bars outside the viewport to speed up horizontal resizes.
     var chartDataRelevantForVerticalScale = expanded ?
-      chartData : _.first(chartData, Math.ceil(chartWidth / rangeBand) + 1);
+      chartData : _.take(chartData, Math.ceil(chartWidth / rangeBand) + 1);
     var verticalScale = computeVerticalScale(chartHeight, chartDataRelevantForVerticalScale, showFiltered);
 
     var chartLeftOffset = horizontalScale.range()[0];
@@ -110,7 +110,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       //
       // The displayed set of labels is the union of these two sets.
 
-      var defaultLabelData = _.first(chartData, numberOfDefaultLabels);
+      var defaultLabelData = _.take(chartData, numberOfDefaultLabels);
 
       var specialLabelData = _.filter(chartData, _.property('special'));
       if (specialLabelData.length > 1) { throw new Error('Multiple special labels not supported yet in column chart'); }

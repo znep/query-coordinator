@@ -196,6 +196,9 @@ class Phidippides < SocrataHttp
   # Page Metadata requests
 
   def fetch_page_metadata(page_id, options = {})
+    # Log Access to Page Object
+    log_datalens_access(page_id)
+
     if metadata_transition_phase_0? || metadata_transition_phase_1?
       issue_request(
         :verb => :get,
@@ -211,9 +214,6 @@ class Phidippides < SocrataHttp
         :cookies => options[:cookies]
       )
     end
-
-    # Log Access to Page Object
-    log_datalens_access(page_id)
   end
 
   def update_page_metadata(page_metadata, options = {})
@@ -362,11 +362,11 @@ class Phidippides < SocrataHttp
       # These are used in different ways to populate and sort catalog entries. The following corresponds to
       # the logAction method within core server. We add a new metric, "datalens-loaded" to make these requests
       # distinct w/in the domain entity
-      domainId = CurrentDomain.domain.id.to_s
-      MetricQueue.instance.push_metric(fxf_id, "view-loaded", 1)
+      domainId = CurrentDomain.domain.id.to_s      
+      MetricQueue.instance.push_metric(fxf_id.to_s, "view-loaded", 1)
       MetricQueue.instance.push_metric(domainId, "view-loaded", 1)
       MetricQueue.instance.push_metric(domainId, "datalens-loaded", 1)
-      MetricQueue.instance.push_metric("views-loaded-" + domainId, "view-" + fxf_id, 1)
+      MetricQueue.instance.push_metric("views-loaded-" + domainId, "view-" + fxf_id.to_s, 1)
   end
 
 

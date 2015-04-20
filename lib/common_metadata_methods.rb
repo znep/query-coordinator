@@ -57,6 +57,6 @@ module CommonMetadataMethods
   end
 
   def inherit_catalog_lens_permissions?
-    FeatureFlags.derive(nil, request)[:use_catalog_lens_permissions]
+    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:use_catalog_lens_permissions]
   end
 end

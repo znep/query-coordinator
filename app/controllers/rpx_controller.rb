@@ -72,8 +72,7 @@ private
   @@auth_providers = [
     {:name => 'Facebook', :id => 'facebook', :rpx_url => APP_CONFIG['rpx_facebook_url']},
     {:name => 'Twitter', :id => 'twitter', :rpx_url => APP_CONFIG['rpx_twitter_url']},
-    {:name => 'Google', :id => 'google', :rpx_url => APP_CONFIG['rpx_openid_url'],
-      :openid_identifier => 'https://www.google.com/accounts/o8/id'},
+    {:name => 'Google', :id => 'google', :rpx_url => APP_CONFIG['rpx_googleplus_url']},
     {:name => 'OpenID', :id => 'openid', :rpx_url => APP_CONFIG['rpx_signin_url'],
       :class => 'rpxnow', :href => true}
   ]

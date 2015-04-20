@@ -276,7 +276,11 @@
 
                 {
                     title: $.t('screens.ds.grid_sidebar.column_common.type.title'),
-                    onlyIf: { func: function(c) { return !showLinkSection(c); } },
+                    onlyIf: { func: function(c) {
+                        return !showLinkSection(c) &&
+                            // Changing the column type is not supported in the new backend
+                            !cpObj._view.newBackend;
+                    }},
                     fields: [
                         {
                             text: $.t('screens.ds.grid_sidebar.column_common.type.type'),
@@ -284,13 +288,10 @@
                             required: true,
                             name: 'dataTypeName',
                             prompt: null,
-                            // Changing the column type is not supported in the new backend
-                            disabled: cpObj._view.newBackend,
                             options: convertTypes
                         }, {
                             text: $.t('screens.ds.grid_sidebar.column_common.type.type'),
                             type: 'static',
-                            disabled: cpObj._view.newBackend,
                             value: staticDataType
                         }
                     ]

@@ -145,7 +145,7 @@ Rx.Observable.prototype.risingEdge = function() {
 // seq.onNext(false); // Nothing printed
 // seq.onNext(true);  // Nothing printed
 Rx.Observable.prototype.fallingEdge = function() {
-  return this.distinctUntilChanged().filter(_.negate);
+  return this.distinctUntilChanged().filter(_.negateValue);
 };
 
 // Returns a single-element sequence containing the first sequence to produce an element.

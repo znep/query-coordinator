@@ -649,7 +649,7 @@ describe('columnChart', function() {
       var labels = element.find('.labels .label .text');
       expect(labels).to.be.length(4);
 
-      var expectedLabels = _.pluck(_.first(testData, 3), 'name');
+      var expectedLabels = _(testData).take(3).pluck('name').value();
       expectedLabels.push(testData[specialIndex].name);
 
       labels.each(function(i, label) {

@@ -26,7 +26,8 @@
     "pbf": "~0.0.3",
     "vector-tile-js": "devTristan/vector-tile-js#~0.1.1",
     "angular-elastic": "~v2.4.2",
-    "js-polyfills": "~0.1.2"
+    "js-polyfills": "~0.1.2",
+    "lodash-compat": "~3.7"
   },
   "install": {
     "path": {
@@ -41,7 +42,7 @@
     ],
     "sources": {
       "angular": "bower_components/angular/angular.min.js",
-      "lodash": "bower_components/lodash/dist/lodash.js",
+      "lodash-compat": "bower_components/lodash-compat/lodash.js",
       "javascript-detect-element-resize": "bower_components/javascript-detect-element-resize/jquery.resize.js",
       "pbf": "bower_components/pbf/dist/pbf.min.js",
       "vector-tile-js": "bower_components/vector-tile-js/dist/vectortile.min.js",

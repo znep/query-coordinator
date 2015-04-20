@@ -13,7 +13,6 @@ describe('featureMap', function() {
   var testJson = 'karma-test/dataCards/test-data/featureMapTest/featureMapTestData.json';
   var protocolBufferEndpointResponses = 'karma-test/dataCards/test-data/featureMapTest/protocolBufferEndpointResponses.json';
   var VectorTileDataService;
-  var ServerConfig;
 
   beforeEach(module(testJson));
   beforeEach(module(protocolBufferEndpointResponses));
@@ -49,7 +48,6 @@ describe('featureMap', function() {
     featureExtent = testHelpers.getTestJson(testJson);
     protocolBuffers = deserializeBytes(testHelpers.getTestJson(protocolBufferEndpointResponses));
     VectorTileDataService = $injector.get('VectorTileDataService');
-    ServerConfig = $injector.get('ServerConfig');
   }));
 
   afterEach(function() {

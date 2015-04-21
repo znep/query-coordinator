@@ -248,8 +248,6 @@ describe('A Search Card Visualization', function() {
       });
 
       describe('suggestions', function() {
-        var FIELDNAME = 'test_column_number';
-
         var suggestionToolPanelScope;
         beforeEach(function() {
           cardData = createCard(FIELDNAME);
@@ -258,7 +256,7 @@ describe('A Search Card Visualization', function() {
 
         it('should dim the initial help text when the panel should show', function() {
           cardData.scope.$apply(function() {
-            cardData.element.find('card-visualization-search').isolateScope().search = '1';
+            cardData.element.find('card-visualization-search').isolateScope().search = 'b';
           });
           expect(cardData.element.find('.card-example-text')).to.have.class('dimmed');
         });
@@ -313,26 +311,26 @@ describe('A Search Card Visualization', function() {
 
           describe ('with text in the search box', function() {
             it('should be true', function() {
-              setSearchText('1');
+              setSearchText('b');
               expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(true);
             });
 
             it('should become false if search text is removed', function() {
-              setSearchText('1');
+              setSearchText('b');
               setSearchText('');
               expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
             });
 
             describe('after a click outside the search panel area', function() {
               it('should become false', function() {
-                setSearchText('1');
+                setSearchText('b');
                 expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(true);
                 clickOutside();
                 expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
               });
 
               it('should remain true if the user then clicks the suggestion tool panel', function() {
-                setSearchText('1');
+                setSearchText('b');
                 clickOutside();
                 suggestionToolPanelScope.$emit('clearableInput:click');
                 expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(true);
@@ -342,7 +340,7 @@ describe('A Search Card Visualization', function() {
             describe('after the input box loses focus', function() {
               describe('by tabbing to the clear button', function() {
                 it('should become false', function() {
-                  setSearchText('1');
+                  setSearchText('b');
 
                   var newFocusTarget = cardData.element.find('.clearable-input-trigger');
 
@@ -356,7 +354,7 @@ describe('A Search Card Visualization', function() {
               // clearableInputBlurTargetNotSuggestionObservable is too strict.
               xdescribe('to something outside the card', function() {
                 it('should become false', function() {
-                  setSearchText('1');
+                  setSearchText('b');
 
                   var newFocusTarget = $(document);
 
@@ -368,7 +366,7 @@ describe('A Search Card Visualization', function() {
 
             describe('upon selecting a suggestion', function() {
               it('should become false', function() {
-                setSearchText('1');
+                setSearchText('b');
                 suggestionToolPanelScope.$emit('suggestionToolPanel:selectedItem', 'some suggestion');
                 expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
               });
@@ -382,13 +380,13 @@ describe('A Search Card Visualization', function() {
 
     describe('with physicalDatatype = "number"', function() {
       var FIELDNAME = 'test_column_number';
+      var SEARCH_TERM = '1';
 
       beforeEach(function() {
         cardData = createCard(FIELDNAME);
       });
 
       describe('with valid input', function() {
-        var SEARCH_TERM = '1';
         beforeEach(function() {
           cardData.scope.$apply(function() {
             cardData.element.find('card-visualization-search').isolateScope().search = SEARCH_TERM;
@@ -406,10 +404,10 @@ describe('A Search Card Visualization', function() {
       });
 
       describe('with invalid input', function() {
-        var SEARCH_TERM = 'invalid for number column';
+        var INVALID_SEARCH_TERM = 'invalid for number column';
         beforeEach(function() {
           cardData.scope.$apply(function() {
-            cardData.element.find('card-visualization-search').isolateScope().search = SEARCH_TERM;
+            cardData.element.find('card-visualization-search').isolateScope().search = INVALID_SEARCH_TERM;
           });
         });
 
@@ -423,9 +421,42 @@ describe('A Search Card Visualization', function() {
 
         it('should clear the message when a valid value is submitted', function() {
           cardData.scope.$apply(function() {
-            cardData.element.find('card-visualization-search').isolateScope().search = '1';
+            cardData.element.find('card-visualization-search').isolateScope().search = SEARCH_TERM;
           });
           expect(cardData.element.find('.search-card-text.invalid-value').is(':visible')).to.equal(false);
+        });
+
+      });
+
+      describe('suggestions', function() {
+        var suggestionToolPanelScope;
+        beforeEach(function() {
+          cardData = createCard(FIELDNAME);
+          suggestionToolPanelScope = cardData.element.find('suggestion-tool-panel').scope();
+        });
+
+        it('should not dim the initial help text when a search is in progress', function() {
+          cardData.scope.$apply(function() {
+            cardData.element.find('card-visualization-search').isolateScope().search = SEARCH_TERM;
+          });
+          expect(cardData.element.find('.card-example-text')).not.to.have.class('dimmed');
+        });
+
+        describe('flag to show or hide the suggestionToolPanel', function() {
+          function setSearchText(text) {
+            cardData.scope.$apply(function() {
+              cardData.element.find('card-visualization-search').isolateScope().search = text;
+            });
+          }
+
+          it('should be false regardless of input', function() {
+            expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
+            setSearchText('1');
+            expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
+            setSearchText('');
+            expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
+          });
+
         });
 
       });

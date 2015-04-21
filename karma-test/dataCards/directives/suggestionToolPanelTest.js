@@ -71,6 +71,7 @@ describe('Suggestion Tool Panel', function() {
         searchValue: null,
         dataset: fakeDataset,
         fieldName: fakeFieldName,
+        physicalDatatype: 'text',
         sampleOne: 'Sample 1',
         sampleTwo: 'Sample 2'
       },
@@ -82,6 +83,7 @@ describe('Suggestion Tool Panel', function() {
       'selected-suggestion="selectedSuggestion"' +
       'search-value="searchValue"' +
       'field-name="fieldName"' +
+      'physical-datatype="physicalDatatype" ' +
       'sample-one="sampleOne"' +
       'sample-two="sampleTwo"' +
       'dataset="dataset" />',

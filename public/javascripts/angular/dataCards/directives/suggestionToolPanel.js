@@ -13,6 +13,7 @@
         selectedSuggestion: '=',
         dataset: '=',
         fieldName: '=',
+        physicalDatatype: '=',
         sampleOne: '=',
         sampleTwo: '='
       },
@@ -26,20 +27,30 @@
         var searchValueObservable = $scope.observe('searchValue').filter(_.isPresent);
         var datasetIdObservable = $scope.observe('dataset').filter(_.isPresent).pluck('id');
         var fieldNameObservable = $scope.observe('fieldName').filter(_.isPresent);
+        var physicalDatatypeObservable = $scope.observe('physicalDatatype').filter(_.isPresent);
 
         var suggestionsRequestsObservable = Rx.Observable.combineLatest(
+          physicalDatatypeObservable,
           searchValueObservable,
           datasetIdObservable,
           fieldNameObservable,
-          function(searchValue, datasetId, fieldName) {
-            return [datasetId, fieldName, searchValue];
+          function(physicalDatatype, searchValue, datasetId, fieldName) {
+            return {
+              physicalDatatype: physicalDatatype,
+              searchOptions: [datasetId, fieldName, searchValue]
+            };
           }
         ).
         debounce(300, Rx.Scheduler.timeout). // Don't hammer the suggestions service.
-        map(function(searchOptions) {
-          return Rx.Observable.fromPromise(
-            SuggestionService.suggest.apply(this, searchOptions)
-          );
+        map(function(suggestionRequest) {
+          if (suggestionRequest.physicalDatatype === 'number') {
+            // CORE-5083: don't request suggestions for number columns
+            return Rx.Observable.empty();
+          } else {
+            return Rx.Observable.fromPromise(
+              SuggestionService.suggest.apply(this, suggestionRequest.searchOptions)
+            );
+          }
         }).
         merge(
           // Clear out any suggestions if the user clears the input box.

@@ -44,6 +44,7 @@
 
 <% content_for :js_footer do %>
   <%- unless params[:no_js] == 'true' -%>
+    <%= include_javascripts 'sanitize-html' %>
     <%= include_javascripts 'shared-metrics' %>
     <%= include_javascripts 'internal-metrics' %>
   <%- end -%>

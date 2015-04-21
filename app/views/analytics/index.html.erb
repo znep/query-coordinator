@@ -37,6 +37,7 @@
 <%- end -%>
 
 <% content_for :js_footer do %>
+  <%= include_javascripts 'sanitize-html' %>
   <%= include_javascripts 'shared-metrics' %>
   <%= include_javascripts 'public-analytics' %>
 <% end %>

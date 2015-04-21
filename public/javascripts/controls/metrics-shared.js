@@ -1,6 +1,6 @@
 ;var metricsNS = blist.namespace.fetch('blist.metrics');
 blist.namespace.fetch('blist.metrics.transforms');
-var sanitizer = blist.namespace.fetch('blist.util.htmlSanitizer');
+var sanitizer = blist.util.htmlSanitizer;
 
 metricsNS.SERIES_KEY = 'data-series';
 metricsNS.DATA_KEY   = 'data-metrics';
@@ -43,8 +43,8 @@ metricsNS.renderTopList = function(data, $target)
 // Shared data processing function to turn balboa metrics hash, call
 // appropriate transformation then rendering function
 metricsNS.updateTopListWrapper = function($context, data, mapFunction, postProcess) {
-    var mapped = [],
-      sorted = $context.data('sorted-data');
+    var mapped = [];
+    var sorted = $context.data('sorted-data');
     if ($.isBlank(sorted)) {
         // Cache a sorted, arrayified version of the data
         // so we don't generate it every time they click 'Show More'
@@ -64,7 +64,8 @@ metricsNS.updateTopListWrapper = function($context, data, mapFunction, postProce
         }
         else {
             mapped.push({
-                name: entry.item, value: entry.data,
+                name: entry.item,
+                value: entry.data,
                 textValue: Highcharts.numberFormat(entry.data, 0)
             });
         }

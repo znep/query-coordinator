@@ -67,7 +67,7 @@ class AnalyticsController < ApplicationController
       entity = CurrentDomain.domain.id.to_s + "-intern"
     end
 
-    Rails.logger.info("Pushing client-side metric, #{entity}/#{metric} = #{increment}")
+
     MetricQueue.instance.push_metric(entity, metric, increment)
 
     [true, nil]

@@ -15,6 +15,7 @@ class MetricQueue
   end
 
   def push_metric(entityId, metricName, count = 1)
+    Rails.logger.info("Pushing client-side metric, #{entityId}/#{metricName} = #{count}")
     push_request({
       :timestamp => Time.now.to_i * 1000,
       :entityId => entityId,

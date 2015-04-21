@@ -78,11 +78,11 @@
       it('should set the background color if it is configured', function() {
         var customConfiguration = [{
           "name": "header_background_color",
-          "value": "#deadbee"
+          "value": "#deadbe"
         }];
         stubConfigurationsService(customConfiguration);
         var element = createPageHeader();
-        expect(element.scope().pageHeaderStyle).to.eql({ 'background-color': "#deadbee" });
+        expect(element.scope().pageHeaderStyle).to.eql({ 'background-color': "#deadbe" });
       });
     });
 

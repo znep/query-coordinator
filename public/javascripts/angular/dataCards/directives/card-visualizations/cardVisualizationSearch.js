@@ -11,10 +11,16 @@
       var sampleDataObservable = Rx.Observable.combineLatest(
         model.pluck('fieldName'),
         dataset.pluck('id'),
+        model.observeOnLatest('column.physicalDatatype'),
         model.observeOnLatest('page.baseSoqlFilter'),
         model.observeOnLatest('page.aggregation'),
-        function(fieldName, datasetId, pageBaseSoqlFilter, pageAggregation) {
-          return Rx.Observable.fromPromise(CardDataService.getSampleData(fieldName, datasetId, pageBaseSoqlFilter, pageAggregation));
+        function(fieldName, datasetId, physicalDatatype, pageBaseSoqlFilter, pageAggregation) {
+          if (physicalDatatype === 'number') {
+            // CORE-5083: no samples for numeric columns
+            return Rx.Observable.empty();
+          } else {
+            return Rx.Observable.fromPromise(CardDataService.getSampleData(fieldName, datasetId, pageBaseSoqlFilter, pageAggregation));
+          }
         }
       ).switchLatest();
       var samplesObservable = sampleDataObservable.flatMap(function(data) {

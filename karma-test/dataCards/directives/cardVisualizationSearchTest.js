@@ -61,32 +61,32 @@ describe('A Search Card Visualization', function() {
   });
 
   var createCard = function(fieldName) {
-      var fakeDatasetColumns = {
-        'filler_column': {
-          name: 'filler column title',
-          description: 'filler column description',
-          fred: 'text',
-          physicalDatatype: 'text',
-          defaultCardType: 'search',
-          availableCardTypes: ['column', 'search']
-        },
-        'test_column_number': {
-          name: 'test number column title',
-          description: 'test number column description',
-          fred: 'text',
-          physicalDatatype: 'number',
-          defaultCardType: 'search',
-          availableCardTypes: ['column', 'search']
-        },
-        'test_column_text': {
-          name: 'test text column title',
-          description: 'test text column description',
-          fred: 'text',
-          physicalDatatype: 'text',
-          defaultCardType: 'search',
-          availableCardTypes: ['column', 'search']
-        }
-      };
+    var fakeDatasetColumns = {
+      'filler_column': {
+        name: 'filler column title',
+        description: 'filler column description',
+        fred: 'text',
+        physicalDatatype: 'text',
+        defaultCardType: 'search',
+        availableCardTypes: ['column', 'search']
+      },
+      'test_column_number': {
+        name: 'test number column title',
+        description: 'test number column description',
+        fred: 'text',
+        physicalDatatype: 'number',
+        defaultCardType: 'search',
+        availableCardTypes: ['column', 'search']
+      },
+      'test_column_text': {
+        name: 'test text column title',
+        description: 'test text column description',
+        fred: 'text',
+        physicalDatatype: 'text',
+        defaultCardType: 'search',
+        availableCardTypes: ['column', 'search']
+      }
+    };
 
     var pageOverrides = {
       id: 'asdf-fdsa'
@@ -140,15 +140,28 @@ describe('A Search Card Visualization', function() {
       expect(helpText.find('.one-line').is(':visible')).to.equal(true);
     });
 
-    it('should show the sample data', function() {
+    it('should not show sample data for a number column', function() {
       getSampleDataStub.returns(q.when([
         { name: SAMPLE_1 },
         { name: SAMPLE_2 }
       ]));
-      var cardData = createCard();
+      var cardData = createCard('test_column_number');
+      var sampleText = cardData.element.find('.search-card-text .one-line');
+      expect(sampleText.text()).not.to.contain(SAMPLE_1);
+      expect(sampleText.text()).not.to.contain(SAMPLE_2);
+      expect(sampleText.is(':visible')).to.equal(false);
+    });
+
+    it('should show sample data for a text column', function() {
+      getSampleDataStub.returns(q.when([
+        { name: SAMPLE_1 },
+        { name: SAMPLE_2 }
+      ]));
+      var cardData = createCard('test_column_text');
       var sampleText = cardData.element.find('.search-card-text .one-line');
       expect(sampleText.text()).to.contain(SAMPLE_1);
       expect(sampleText.text()).to.contain(SAMPLE_2);
+      expect(sampleText.is(':visible')).to.equal(true);
     });
   });
 

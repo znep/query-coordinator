@@ -51,10 +51,20 @@
             DEFAULT_VALUES['sign_up']);
         });
 
+        var pageHeaderStyleObservable = themeObservable.
+          map(function(configuration) {
+            return ConfigurationsService.getConfigurationValue(configuration, 'header_background_color');
+          }).
+          filter(_.isPresent).
+          map(function(headerBackgroundColor) {
+            return { 'background-color': headerBackgroundColor };
+          });
+
         $scope.bindObservable('logoUrl', logoObservable);
         $scope.bindObservable('signUp', signUpObservable);
         $scope.bindObservable('signIn', signInObservable);
         $scope.bindObservable('signOut', signOutObservable);
+        $scope.bindObservable('pageHeaderStyle', pageHeaderStyleObservable);
       }
     };
   }

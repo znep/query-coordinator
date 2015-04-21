@@ -127,6 +127,17 @@ describe('CardDataService', function() {
       http.get.restore();
     });
 
+    it('should not create a circular alias when fieldName is name', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getData('name', fake4x4, null, countAggregation);
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /select\+`name`\,/i
+      );
+      http.get.restore();
+    });
+
     it('should reject the promise on 404', function(done) {
       fakeDataRequestHandler.respond(404, []);
       assertReject(CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation), done);

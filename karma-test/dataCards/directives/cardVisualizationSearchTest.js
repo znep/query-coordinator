@@ -167,19 +167,23 @@ describe('A Search Card Visualization', function() {
   describe('card', function() {
     var cardData;
 
+    function setSearchText(text) {
+      cardData.scope.$apply(function() {
+        cardData.element.find('card-visualization-search').isolateScope().search = text;
+      });
+    }
+
     describe('with physicalDatatype = "text"', function() {
       var FIELDNAME = 'test_column_text';
+      var VALID_SEARCH_TERM = 'b';
 
       beforeEach(function() {
         cardData = createCard(FIELDNAME);
       });
 
       describe('with input', function() {
-        var SEARCH_TERM = 'test search';
         beforeEach(function() {
-          cardData.scope.$apply(function() {
-            cardData.element.find('card-visualization-search').isolateScope().search = SEARCH_TERM;
-          });
+          setSearchText(VALID_SEARCH_TERM);
         });
 
         it('should submit when you click the search button', function() {
@@ -210,7 +214,7 @@ describe('A Search Card Visualization', function() {
             expect(currentSearchWhere()).to.equal('{0} AND {1} = "{2}"'.format(
               cardData.outerScope.whereClause,
               SoqlHelpers.formatFieldName(cardData.model.fieldName),
-              SEARCH_TERM));
+              VALID_SEARCH_TERM));
 
             //Simulate the user changing the page WHERE clause.
             cardData.outerScope.whereClause = 'A_NEW_WHERE_CLAUSE';
@@ -219,7 +223,7 @@ describe('A Search Card Visualization', function() {
             expect(currentSearchWhere()).to.equal('{0} AND {1} = "{2}"'.format(
               cardData.outerScope.whereClause,
               SoqlHelpers.formatFieldName(cardData.model.fieldName),
-              SEARCH_TERM));
+              VALID_SEARCH_TERM));
           });
 
           it('should display with the column corresponding to the fieldname of this card in the first position', function() {
@@ -254,9 +258,7 @@ describe('A Search Card Visualization', function() {
         });
 
         it('should dim the initial help text when the panel should show', function() {
-          cardData.scope.$apply(function() {
-            cardData.element.find('card-visualization-search').isolateScope().search = 'b';
-          });
+          setSearchText(VALID_SEARCH_TERM);
           expect(cardData.element.find('.card-example-text')).to.have.class('dimmed');
         });
 
@@ -282,12 +284,6 @@ describe('A Search Card Visualization', function() {
         });
 
         describe('flag to show or hide the suggestionToolPanel', function() {
-          function setSearchText(text) {
-            cardData.scope.$apply(function() {
-              cardData.element.find('card-visualization-search').isolateScope().search = text;
-            });
-          }
-
           function clickOutside() {
             $(document).click();
           }
@@ -310,26 +306,26 @@ describe('A Search Card Visualization', function() {
 
           describe ('with text in the search box', function() {
             it('should be true', function() {
-              setSearchText('b');
+              setSearchText(VALID_SEARCH_TERM);
               expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(true);
             });
 
             it('should become false if search text is removed', function() {
-              setSearchText('b');
+              setSearchText(VALID_SEARCH_TERM);
               setSearchText('');
               expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
             });
 
             describe('after a click outside the search panel area', function() {
               it('should become false', function() {
-                setSearchText('b');
+                setSearchText(VALID_SEARCH_TERM);
                 expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(true);
                 clickOutside();
                 expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
               });
 
               it('should remain true if the user then clicks the suggestion tool panel', function() {
-                setSearchText('b');
+                setSearchText(VALID_SEARCH_TERM);
                 clickOutside();
                 suggestionToolPanelScope.$emit('clearableInput:click');
                 expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(true);
@@ -339,7 +335,7 @@ describe('A Search Card Visualization', function() {
             describe('after the input box loses focus', function() {
               describe('by tabbing to the clear button', function() {
                 it('should become false', function() {
-                  setSearchText('b');
+                  setSearchText(VALID_SEARCH_TERM);
 
                   var newFocusTarget = cardData.element.find('.clearable-input-trigger');
 
@@ -353,7 +349,7 @@ describe('A Search Card Visualization', function() {
               // clearableInputBlurTargetNotSuggestionObservable is too strict.
               xdescribe('to something outside the card', function() {
                 it('should become false', function() {
-                  setSearchText('b');
+                  setSearchText(VALID_SEARCH_TERM);
 
                   var newFocusTarget = $(document);
 
@@ -365,7 +361,7 @@ describe('A Search Card Visualization', function() {
 
             describe('upon selecting a suggestion', function() {
               it('should become false', function() {
-                setSearchText('b');
+                setSearchText(VALID_SEARCH_TERM);
                 suggestionToolPanelScope.$emit('suggestionToolPanel:selectedItem', 'some suggestion');
                 expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
               });
@@ -379,7 +375,8 @@ describe('A Search Card Visualization', function() {
 
     describe('with physicalDatatype = "number"', function() {
       var FIELDNAME = 'test_column_number';
-      var SEARCH_TERM = '1';
+      var VALID_SEARCH_TERM = '1';
+      var INVALID_SEARCH_TERM = 'a';
 
       beforeEach(function() {
         cardData = createCard(FIELDNAME);
@@ -387,9 +384,7 @@ describe('A Search Card Visualization', function() {
 
       describe('with valid input', function() {
         beforeEach(function() {
-          cardData.scope.$apply(function() {
-            cardData.element.find('card-visualization-search').isolateScope().search = SEARCH_TERM;
-          });
+          setSearchText(VALID_SEARCH_TERM);
         });
 
         it('should not show an invalid input message', function() {
@@ -403,11 +398,8 @@ describe('A Search Card Visualization', function() {
       });
 
       describe('with invalid input', function() {
-        var INVALID_SEARCH_TERM = 'invalid for number column';
         beforeEach(function() {
-          cardData.scope.$apply(function() {
-            cardData.element.find('card-visualization-search').isolateScope().search = INVALID_SEARCH_TERM;
-          });
+          setSearchText(INVALID_SEARCH_TERM);
         });
 
         it('should show a message', function() {
@@ -419,9 +411,7 @@ describe('A Search Card Visualization', function() {
         });
 
         it('should clear the message when a valid value is submitted', function() {
-          cardData.scope.$apply(function() {
-            cardData.element.find('card-visualization-search').isolateScope().search = SEARCH_TERM;
-          });
+          setSearchText(VALID_SEARCH_TERM);
           expect(cardData.element.find('.search-card-text.invalid-value').is(':visible')).to.equal(false);
         });
 
@@ -435,22 +425,14 @@ describe('A Search Card Visualization', function() {
         });
 
         it('should not dim the initial help text when a search is in progress', function() {
-          cardData.scope.$apply(function() {
-            cardData.element.find('card-visualization-search').isolateScope().search = SEARCH_TERM;
-          });
+          setSearchText(VALID_SEARCH_TERM);
           expect(cardData.element.find('.card-example-text')).not.to.have.class('dimmed');
         });
 
         describe('flag to show or hide the suggestionToolPanel', function() {
-          function setSearchText(text) {
-            cardData.scope.$apply(function() {
-              cardData.element.find('card-visualization-search').isolateScope().search = text;
-            });
-          }
-
           it('should be false regardless of input', function() {
             expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
-            setSearchText('1');
+            setSearchText(VALID_SEARCH_TERM);
             expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);
             setSearchText('');
             expect(suggestionToolPanelScope.shouldShowSuggestionPanel).to.equal(false);

@@ -79,7 +79,11 @@ class View < Model
   def row_count
     if new_backend?
       path = "/id/#{id}?#{{'$query' => 'select count(*)'}.to_param}"
-      JSON.parse(CoreServer::Base.connection.get_request(path)).first['count'].to_i
+      # Core variously returns as the "name" for the count column, the values:
+      # count, count_0, count_1
+      # It appears to be different according to the environment in which the
+      # request is made, so we just get the first value:
+      JSON.parse(CoreServer::Base.connection.get_request(path)).first.values.first.to_i
     else
       get_total_rows.to_i
     end

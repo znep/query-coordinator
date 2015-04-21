@@ -40,7 +40,6 @@ describe('CardsViewController', function() {
   beforeEach(module('socrataCommon.directives'));
   beforeEach(module('socrataCommon.services'));
   beforeEach(module('/angular_templates/dataCards/pages/cards-view.html'));
-  beforeEach(module('/angular_templates/common/pageHeader.html'));
   beforeEach(module('/angular_templates/dataCards/saveAs.html'));
   beforeEach(module('/angular_templates/dataCards/saveButton.html'));
   beforeEach(module('/angular_templates/dataCards/revertButton.html'));
@@ -75,12 +74,6 @@ describe('CardsViewController', function() {
       _$provide = $provide;
       $provide.value('UserSessionService', mockUserSessionService);
       $provide.value('WindowOperations', mockWindowOperations);
-      $provide.value('ConfigurationsService', {
-        getThemeConfigurationsObservable: function() {
-          return Rx.Observable.returnValue([]);
-        },
-        getConfigurationValue: _.noop
-      });
     });
   });
 
@@ -132,6 +125,7 @@ describe('CardsViewController', function() {
       PageDataService = _PageDataService;
       DeviceService = _DeviceService;
       testHelpers.mockDirective(_$provide, 'suggestionToolPanel');
+      testHelpers.mockDirective(_$provide, 'pageHeader');
   }]));
 
   function makeContext(datasetId) {

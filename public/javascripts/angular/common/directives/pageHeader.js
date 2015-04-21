@@ -60,6 +60,12 @@
             return { 'background-color': headerBackgroundColor };
           });
 
+        var showHeaderObservable = themeObservable.
+          map(_.constant(true)).
+          startWith(false).
+          distinctUntilChanged();
+
+        $scope.bindObservable('showHeader', showHeaderObservable);
         $scope.bindObservable('logoUrl', logoObservable);
         $scope.bindObservable('signUp', signUpObservable);
         $scope.bindObservable('signIn', signInObservable);

@@ -188,6 +188,8 @@ class AngularController < ActionController::Base
 
     add_table_column_to_dataset_metadata!(dataset_metadata)
 
+    flag_subcolumns!(dataset_metadata[:columns])
+
     dataset_metadata
   end
 

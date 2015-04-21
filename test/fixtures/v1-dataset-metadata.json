@@ -27,6 +27,27 @@
       "fred": "text",
       "name": "Sand",
       "physicalDatatype": "floating_timestamp"
+    },
+    "parent_column": {
+      "cardinality": 5,
+      "description": "A column that - in the OBE - had sub-columns.",
+      "fred": "text",
+      "name": "Parent",
+      "physicalDatatype": "number"
+    },
+    "parent_column_child_has_data": {
+      "cardinality": 5,
+      "description": "A column that - in the OBE - was a child column, and had data.",
+      "fred": "text",
+      "name": "Parent (child with data)",
+      "physicalDatatype": "number"
+    },
+    "parent_column_child_no_data": {
+      "cardinality": 1,
+      "description": "A column that - in the OBE - was a child column, and had no data.",
+      "fred": "text",
+      "name": "Parent (child sans data)",
+      "physicalDatatype": "number"
     }
   },
   "defaultPage": "four-four",

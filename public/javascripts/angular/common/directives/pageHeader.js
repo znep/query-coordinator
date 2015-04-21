@@ -17,7 +17,6 @@
         AngularRxExtensions.install($scope);
 
         var themeObservable = ConfigurationsService.getThemeConfigurationsObservable();
-        var curriedGetter = _.curry(ConfigurationsService.getConfigurationValue);
 
         var logoObservable = themeObservable.map(function(configuration) {
           return _.instead(
@@ -31,35 +30,31 @@
           }, defaultValue);
         }
 
-        var curriedBuildUrlStreamValue = _.curry(buildUrlStreamValue);
+        var signInObservable = themeObservable.map(function(configuration) {
+          return buildUrlStreamValue(
+            configuration,
+            'sign_in',
+            DEFAULT_VALUES['sign_in']);
+        });
 
-        var signInObservable = themeObservable.
-          map(curriedBuildUrlStreamValue(_, 'sign_in', DEFAULT_VALUES['sign_in']));
+        var signOutObservable = themeObservable.map(function(configuration) {
+          return buildUrlStreamValue(
+            configuration,
+            'sign_out',
+            DEFAULT_VALUES['sign_out']);
+        });
 
-        var signOutObservable = themeObservable.
-          map(curriedBuildUrlStreamValue(_, 'sign_out', DEFAULT_VALUES['sign_out']));
+        var signUpObservable = themeObservable.map(function(configuration) {
+          return buildUrlStreamValue(
+            configuration,
+            'sign_up',
+            DEFAULT_VALUES['sign_up']);
+        });
 
-        var signUpObservable = themeObservable.
-          map(curriedBuildUrlStreamValue(_, 'sign_up', DEFAULT_VALUES['sign_up']));
-
-        var pageHeaderStyleObservable = themeObservable.
-          map(curriedGetter(_, 'header_background_color')).
-          filter(_.isPresent).
-          map(function(headerBackgroundColor) {
-            return { 'background-color': headerBackgroundColor };
-          });
-
-        var showHeaderObservable = themeObservable.
-          map(_.constant(true)).
-          startWith(false).
-          distinctUntilChanged();
-
-        $scope.bindObservable('showHeader', showHeaderObservable);
         $scope.bindObservable('logoUrl', logoObservable);
         $scope.bindObservable('signUp', signUpObservable);
         $scope.bindObservable('signIn', signInObservable);
         $scope.bindObservable('signOut', signOutObservable);
-        $scope.bindObservable('pageHeaderStyle', pageHeaderStyleObservable);
       }
     };
   }

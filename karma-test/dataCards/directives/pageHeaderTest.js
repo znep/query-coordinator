@@ -74,18 +74,6 @@
       expect(element.find('.page-header-signup-link')).to.have.text('Register').to.have.attr('href').equal('/signup?referer_redirect=1');
     });
 
-    describe('background color', function() {
-      it('should set the background color if it is configured', function() {
-        var customConfiguration = [{
-          "name": "header_background_color",
-          "value": "#deadbe"
-        }];
-        stubConfigurationsService(customConfiguration);
-        var element = createPageHeader();
-        expect(element.scope().pageHeaderStyle).to.eql({ 'background-color': "#deadbe" });
-      });
-    });
-
     describe('logged in', function() {
 
       it('should hide "logged in" links if not logged in', function() {

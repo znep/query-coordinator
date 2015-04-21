@@ -13,7 +13,6 @@
         selectedSuggestion: '=',
         dataset: '=',
         fieldName: '=',
-        physicalDatatype: '=',
         sampleOne: '=',
         sampleTwo: '='
       },
@@ -25,18 +24,17 @@
         var SUGGESTION_LIMIT = 10;
 
         var searchValueObservable = $scope.observe('searchValue').filter(_.isPresent);
-        var datasetIdObservable = $scope.observe('dataset').filter(_.isPresent).pluck('id');
+        var datasetObservable = $scope.observe('dataset').filter(_.isPresent);
         var fieldNameObservable = $scope.observe('fieldName').filter(_.isPresent);
-        var physicalDatatypeObservable = $scope.observe('physicalDatatype').filter(_.isPresent);
 
         var suggestionsRequestsObservable = Rx.Observable.combineLatest(
-          physicalDatatypeObservable,
+          datasetObservable.observeOnLatest('columns'),
           searchValueObservable,
-          datasetIdObservable,
+          datasetObservable.pluck('id'),
           fieldNameObservable,
-          function(physicalDatatype, searchValue, datasetId, fieldName) {
+          function(columns, searchValue, datasetId, fieldName) {
             return {
-              physicalDatatype: physicalDatatype,
+              physicalDatatype: columns[fieldName].physicalDatatype,
               searchOptions: [datasetId, fieldName, searchValue]
             };
           }

@@ -130,7 +130,7 @@
             return Rx.Observable.
               combineLatest(
                 fieldNameObservable,
-                model.observeOnLatest('column.physicalDatatype'),
+                physicalDatatypeObservable,
                 $scope.observe('whereClause'),
                 function(fieldName, physicalDatatype, externalWhereClause) {
                   var whereClause;

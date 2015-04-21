@@ -45,7 +45,7 @@
         map(function(suggestionRequest) {
           if (suggestionRequest.physicalDatatype === 'number') {
             // CORE-5083: don't request suggestions for number columns
-            return Rx.Observable.empty();
+            return Rx.Observable.returnValue([]);
           } else {
             return Rx.Observable.fromPromise(
               SuggestionService.suggest.apply(this, suggestionRequest.searchOptions)

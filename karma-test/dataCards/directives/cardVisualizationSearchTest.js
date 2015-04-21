@@ -147,8 +147,7 @@ describe('A Search Card Visualization', function() {
       ]));
       var cardData = createCard('test_column_number');
       var sampleText = cardData.element.find('.search-card-text .one-line');
-      expect(sampleText.text()).not.to.contain(SAMPLE_1);
-      expect(sampleText.text()).not.to.contain(SAMPLE_2);
+      expect(getSampleDataStub.called).to.equal(false);
       expect(sampleText.is(':visible')).to.equal(false);
     });
 

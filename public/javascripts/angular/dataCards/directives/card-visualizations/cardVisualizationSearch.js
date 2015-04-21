@@ -17,7 +17,7 @@
         function(fieldName, datasetId, physicalDatatype, pageBaseSoqlFilter, pageAggregation) {
           if (physicalDatatype === 'number') {
             // CORE-5083: no samples for number columns
-            return Rx.Observable.empty();
+            return Rx.Observable.returnValue([]);
           } else {
             return Rx.Observable.fromPromise(CardDataService.getSampleData(fieldName, datasetId, pageBaseSoqlFilter, pageAggregation));
           }

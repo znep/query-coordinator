@@ -35,6 +35,17 @@ describe('jquery-extensions', function() {
       expect('SDFS SKDF'.capitalizeEachWord()).to.equal('Sdfs Skdf');
     });
   });
+  describe('String.prototype.escapeSpaces', function() {
+    it('should not modify a string without spaces', function() {
+      expect('abcd'.escapeSpaces()).to.equal('abcd');
+    });
+    it('should espace a single space correctly', function() {
+      expect('a b'.escapeSpaces()).to.equal('a\u00A0b');
+    });
+    it('should escape multiple spaces correctly', function() {
+      expect('a bc   d '.escapeSpaces()).to.equal('a\u00A0bc\u00A0\u00A0\u00A0d\u00A0');
+    });
+  });
   describe('String.prototype.visualSize', function() {
     var string = 'Batman is pretty cool!'
     it('should agree with helper methods', function() {

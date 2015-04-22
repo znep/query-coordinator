@@ -176,7 +176,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           }).
           select('span').
             text(function(d) {
-              return labelValueOrPlaceholder(d.name);
+              return labelValueOrPlaceholder(d.name.escapeSpaces());
             });
 
       // These widths relate to the visualLength() method call in the maxLength calculation above.
@@ -371,7 +371,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       },
       title: function($target, $head, options) {
         var data = d3.select($target[0]).datum();
-        return labelValueOrPlaceholder(data.name);
+        return labelValueOrPlaceholder(data.name.escapeSpaces());
       },
       table: function($target, $head, options, $flyout) {
         var data = d3.select($target[0]).datum();

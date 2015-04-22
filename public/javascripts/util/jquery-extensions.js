@@ -141,6 +141,10 @@
     }).join(' ');
   };
 
+  String.prototype.escapeSpaces = function() {
+    return this.replace(/ /g, '\u00A0');
+  };
+
   var sizeMixin = {
     /* Adapted from http://blog.mastykarz.nl/measuring-the-length-of-a-string-in-pixels-using-javascript/ */
     visualSize: function(fontSize) {

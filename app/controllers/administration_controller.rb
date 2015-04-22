@@ -9,7 +9,17 @@ class AdministrationController < ApplicationController
   before_filter :only => [:datasets] {|c| c.check_auth_levels_any(['edit_others_datasets', 'edit_site_theme']) }
   def datasets
     vtf = view_types_facet
-    vtf[:options].insert(1, {
+
+    datasets_index = vtf[:options].index { |option|
+      option[:value] == 'datasets'
+    }
+
+    unless datasets_index.present?
+      datasets_index = 0
+    end
+
+    # always show "unpublished datasets" after "datasets", or at least after "data lens"
+    vtf[:options].insert(datasets_index + 1, {
       :text => t('screens.admin.datasets.unpublished_datasets'), :value => 'unpublished',
       :class => 'typeUnpublished'})
     facets = [

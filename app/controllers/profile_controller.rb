@@ -59,8 +59,21 @@ class ProfileController < ApplicationController
           browse_options[:publication_stage] = [ 'published', 'unpublished' ]
 
           vtf = view_types_facet
-          vtf[:options].insert(1, {:text => t('controls.browse.facets.view_types.unpublished'), :value => 'unpublished',
-                               :class => 'typeUnpublished'})
+
+          datasets_index = vtf[:options].index { |option|
+            option[:value] == 'datasets'
+          }
+
+          unless datasets_index.present?
+            datasets_index = 0
+          end
+
+          # always show "unpublished datasets" after "datasets", or at least after "data lens"
+          vtf[:options].insert(datasets_index + 1, {
+            :text => t('controls.browse.facets.view_types.unpublished'),
+            :value => 'unpublished',
+            :class => 'typeUnpublished'
+          })
           browse_options[:facets] = [vtf, categories_facet(params)]
         else
           browse_options[:facets] = [view_types_facet, categories_facet(params)]

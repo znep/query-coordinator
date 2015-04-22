@@ -109,14 +109,27 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
               return acc;
             }, {});
 
-            var activeFilterNames = _.pluck(filters, 'operand');
+            var activeFilterNames = _.map(filters, function(filter) {
+              if (filter.hasOwnProperty('isNull') && filter.isNull === true) {
+                return null;
+              } else {
+                return filter.operand;
+              }
+            });
 
             return _.map(_.pluck(unfilteredData, 'name'), function(name) {
+              var datumIsSpecial = false;
+
+              if ((isNaN(name) && _.contains(activeFilterNames, null)) ||
+                _.contains(activeFilterNames, name)) {
+                datumIsSpecial = true;
+              }
+
               return {
                 name: name,
                 total: unfilteredAsHash[name],
                 filtered: filteredAsHash[name] || 0,
-                special: _.contains(activeFilterNames, name)
+                special: datumIsSpecial
               };
             });
 

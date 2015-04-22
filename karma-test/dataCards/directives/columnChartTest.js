@@ -117,6 +117,18 @@ describe('columnChart', function() {
       };
     });
   }
+
+  function testDataWithNaNAndSpecialAtIndex(index) {
+    return _.map(testData, function(d, i) {
+      return {
+        name: i === index ? NaN : d.name,
+        total: d.total,
+        filtered: d.total / 2,
+        special: i === index ? true : false
+      };
+    });
+  }
+
   beforeEach(module('dataCards'));
 
   beforeEach(module('dataCards.directives'));
@@ -748,7 +760,7 @@ describe('columnChart', function() {
     });
   });
 
-  describe('when the name of a datum is blank or undefined', function() {
+  describe('when the name of a datum is blank', function() {
 
     it('should use the placeholder value', function() {
       createNewColumnChart(640, false, testDataWithBlankAtIndex(0));
@@ -782,6 +794,28 @@ describe('columnChart', function() {
     });
 
   });
+
+  // cardVisualizationColumnChart will pass NaN as the name property if there is
+  // no name property on the original datum.
+  describe('when the name of a datum is NaN', function() {
+
+    it('should use the placeholder value', function() {
+      createNewColumnChart(640, false, testDataWithNaNAndSpecialAtIndex(0));
+      expect($('.labels .label').first().find('.contents .text').text()).to.equal('(No value)');
+    });
+
+    it('should style the label by adding classes', function() {
+      createNewColumnChart(640, false, testDataWithNaNAndSpecialAtIndex(0));
+      expect($('.labels .label').first().find('.contents').hasClass('undefined')).to.equal(true);
+      expect($('.labels .label').first().hasClass('special')).to.equal(true);
+    });
+
+    it('should style the bar-group by adding a class', function() {
+      createNewColumnChart(640, false, testDataWithNaNAndSpecialAtIndex(0));
+      expect($('.bar-group').first().hasClass('special')).to.equal(true);
+    });
+  });
+
 
   describe('when displaying labels', function() {
     var chart, scope, element;

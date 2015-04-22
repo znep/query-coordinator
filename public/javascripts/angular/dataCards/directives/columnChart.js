@@ -31,7 +31,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       placeholder = placeholder || UNDEFINED_PLACEHOLDER;
       if ($.isNumeric(value)) { return value; }
       if (_.isBoolean(value)) { value += ''; }
-      return $.isBlank(value) ? placeholder : value;
+      return $.isBlank(value.trim()) ? placeholder : value;
     };
 
     // Compute chart margins

@@ -764,31 +764,17 @@ describe('columnChart', function() {
 
     it('should use the placeholder value', function() {
       createNewColumnChart(640, false, testDataWithBlankAtIndex(0));
-      expect(_.first($('.tooltip .datum .name'), function(el) {
-        return $(el).innerText === '(Undefined)';
-      }));
-    });
-
-    it('should style the placeholder by adding a class to the tooltip text', function() {
-      createNewColumnChart(640, false, testDataWithBlankAtIndex(0));
-      expect(_.first($('.tooltip .datum .name .text'), function(el) {
-        return $(el).hasClassName('undefined');
-      }));
+      expect($('.labels .label').first().find('.contents .text').text()).to.equal('(No value)');
     });
 
     it('should style the placeholder by adding a class to the label text', function() {
       createNewColumnChart(640, false, testDataWithBlankAtIndex(0));
-      expect(_.first($('.labels .label .text'), function(el) {
-        return $(el).hasClass('undefined');
-      }));
+      expect($('.labels .label').first().find('.contents').hasClass('undefined')).to.equal(true);
     });
 
     it('should not add the class to labels with non-blank text', function() {
       createNewColumnChart(640, false, testDataWithBlankAtIndex(-1));
-      expect(_.any($('.tooltip .datum .name .text'), function(el) {
-        return $(el).hasClass('undefined');
-      })).to.equal(false);
-      expect(_.any($('.labels .label .text'), function(el) {
+      expect(_.any($('.labels .label .contents .text'), function(el) {
         return $(el).hasClass('undefined');
       })).to.equal(false);
     });

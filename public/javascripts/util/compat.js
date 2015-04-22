@@ -147,7 +147,15 @@
 $(function()
 {
     var m;
-    if (m = /Chrome\/([0-9.]+)/.exec(navigator.userAgent))
+    if (m = /PhantomJS\/([0-9.]+)/.exec(navigator.userAgent))
+    {
+        $.browser.chrome = false;
+        $.browser.safari = false;
+        $.browser.mozilla = false;
+        $.browser.version = m[1];
+
+    }
+    else if (m = /Chrome\/([0-9.]+)/.exec(navigator.userAgent))
     {
         $.browser.chrome = true;
         $.browser.safari = false;
@@ -157,7 +165,10 @@ $(function()
     else if (/Safari\//.exec(navigator.userAgent) && !($.device.ipad || $.device.mobile))
     {
         m = /Version\/([0-9.]+)/.exec(navigator.userAgent);
-        $.browser.version = m[1];
+        if(m)
+        {
+            $.browser.version = m[1];
+        }
     }
     else if (m = /Trident.*rv:([\w.]+)/.exec(navigator.userAgent))
     {

@@ -16,7 +16,9 @@ describe('table directive', function() {
       column.dataset = { version: '1', extractHumanReadableColumnName: _.property('name') };
       if (column.fieldName[0].match(/[a-zA-Z0-9]/g)) {
         outerScope.columnDetails.push(column);
-        columnCount += 1;
+        if (!(column.cardinality <= 1 && column.isSubcolumn)) {
+          columnCount += 1;
+        }
       }
     });
 
@@ -143,6 +145,21 @@ describe('table directive', function() {
     }
   }));
 
+  describe('subcolumns', function() {
+    var el;
+    beforeEach(function() {
+      if (!el) {
+        el = createTableCard(true, fakeDataSource);
+      }
+    });
+    after(destroyAllTableCards);
+
+    it('are omitted when empty', function() {
+      expect(el.find('.table-head .th:contains("Location (X Coordinate)")').length).to.equal(0);
+      // Make sure non-empty columns are still included
+      expect(el.find('.table-head .th:contains("Location (Y Coordinate)")').length).to.equal(1);
+    });
+  });
   describe('when rendering cell data', function() {
     var el;
 
@@ -246,8 +263,12 @@ describe('table directive', function() {
       var cells = immutableTable.find('.row-block .cell');
       var checkedYear = false;
       expect(cells.length).to.not.equal(0);
+
+      var filteredColumns = _.filter(fixtureMetadata.testColumnDetailsAsTableWantsThem, function(column) {
+        return !(column.isSubcolumn && column.cardinality <= 1);
+      });
       _.each(cells, function(cell) {
-        var column = fixtureMetadata.testColumnDetailsAsTableWantsThem[$(cell).index()];
+        var column = filteredColumns[$(cell).index()];
         var datatype = column.physicalDatatype;
         if (datatype === 'number') {
           expect($(cell).hasClass('number')).to.equal(true);

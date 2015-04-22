@@ -9,7 +9,7 @@ describe('Suggestion Tool Panel', function() {
   var suggestionToolPanel;
   var fakeDataset;
   var fakeFieldName;
-  var Model;
+  var Mockumentary;
   var fakeClock;
   var _$provide;
   var ServerConfig;
@@ -40,13 +40,22 @@ describe('Suggestion Tool Panel', function() {
     testHelpers = $injector.get('testHelpers');
     rootScope = $injector.get('$rootScope');
     suggestionService = $injector.get('SuggestionService');
+    Mockumentary = $injector.get('Mockumentary');
     q = $injector.get('$q');
     suggestionStub = sinon.stub(suggestionService, 'suggest').returns(q.when([]));
     rootScope.$apply();
-    Model = $injector.get('Model');
-    fakeDataset = new Model();
-    fakeFieldName = 'fieldName';
-    fakeDataset.id = 'digg-itty';
+    fakeFieldName = 'test_field';
+    fakeDataset = Mockumentary.createDataset({
+      id: 'digg-itty',
+      columns: {
+        test_field: {
+          physicalDatatype: 'text',
+          name: 'Test Field',
+          defaultCardType: 'search',
+          availableCardTypes: ['search', 'column']
+        }
+      }
+    });
 
     fakeClock = sinon.useFakeTimers();
 

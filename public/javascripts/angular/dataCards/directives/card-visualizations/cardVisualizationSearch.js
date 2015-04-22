@@ -11,14 +11,20 @@
       var sampleDataObservable = Rx.Observable.combineLatest(
         model.pluck('fieldName'),
         dataset.pluck('id'),
+        model.observeOnLatest('column.physicalDatatype'),
         model.observeOnLatest('page.baseSoqlFilter'),
         model.observeOnLatest('page.aggregation'),
-        function(fieldName, datasetId, pageBaseSoqlFilter, pageAggregation) {
-          return Rx.Observable.fromPromise(CardDataService.getSampleData(fieldName, datasetId, pageBaseSoqlFilter, pageAggregation));
+        function(fieldName, datasetId, physicalDatatype, pageBaseSoqlFilter, pageAggregation) {
+          if (physicalDatatype === 'number') {
+            // CORE-5083: no samples for number columns
+            return Rx.Observable.returnValue([]);
+          } else {
+            return Rx.Observable.fromPromise(CardDataService.getSampleData(fieldName, datasetId, pageBaseSoqlFilter, pageAggregation));
+          }
         }
       ).switchLatest();
       var samplesObservable = sampleDataObservable.flatMap(function(data) {
-        return Rx.Observable.fromArray(_.pluck(data, 'name'));
+        return Rx.Observable.fromArray(data);
       }).take(2);
 
       $scope.bindObservable('sampleOne', samplesObservable.take(1));
@@ -36,6 +42,7 @@
         var model = $scope.observe('model');
         var dataset = model.observeOnLatest('page.dataset');
         var fieldNameObservable = model.pluck('fieldName');
+        var physicalDatatypeObservable = model.observeOnLatest('column.physicalDatatype');
 
         var invalidSearchInputSubject = new Rx.BehaviorSubject(false);
         var invalidSearchInputObservable = invalidSearchInputSubject.distinctUntilChanged();
@@ -123,7 +130,7 @@
             return Rx.Observable.
               combineLatest(
                 fieldNameObservable,
-                model.observeOnLatest('column.physicalDatatype'),
+                physicalDatatypeObservable,
                 $scope.observe('whereClause'),
                 function(fieldName, physicalDatatype, externalWhereClause) {
                   var whereClause;
@@ -223,10 +230,21 @@
         var shouldShowSuggestionPanelObservable;
 
         if (ServerConfig.get('enableSearchSuggestions')) {
-          shouldShowSuggestionPanelObservable = Rx.Observable.merge(
-            userActionsWhichShouldShowSuggestionPanelObservable.map(_.constant(true)),
-            userActionsWhichShouldHideSuggestionPanelObservable.map(_.constant(false))
-          ).distinctUntilChanged();
+          shouldShowSuggestionPanelObservable = Rx.Observable.combineLatest(
+            // Time-based observable for user actions which can trigger suggestions
+            Rx.Observable.merge(
+              userActionsWhichShouldShowSuggestionPanelObservable.map(_.constant(true)),
+              userActionsWhichShouldHideSuggestionPanelObservable.map(_.constant(false))
+            ).distinctUntilChanged(),
+            // Metadata-based observable for datatypes which can trigger suggestions
+            physicalDatatypeObservable.map(function(physicalDatatype) {
+              // CORE-5083: hide autocomplete for number columns
+              return physicalDatatype !== 'number';
+            }),
+            function(isActionTriggerForSuggestionPanel, isDatatypeCompatibleWithSuggestionPanel) {
+              return isActionTriggerForSuggestionPanel && isDatatypeCompatibleWithSuggestionPanel;
+            }
+          );
         } else {
           shouldShowSuggestionPanelObservable = Rx.Observable.returnValue(false);
         }
@@ -240,6 +258,7 @@
         $scope.bindObservable('searchWhere', searchWhereObservable);
         $scope.bindObservable('fieldName', fieldNameObservable);
         $scope.bindObservable('searchValue', searchValueObservable);
+        $scope.bindObservable('physicalDatatype', physicalDatatypeObservable);
         $scope.bindObservable('dataset', dataset);
         $scope.bindObservable('shouldShowSuggestionPanel', shouldShowSuggestionPanelObservable);
 

@@ -24,22 +24,31 @@
         var SUGGESTION_LIMIT = 10;
 
         var searchValueObservable = $scope.observe('searchValue').filter(_.isPresent);
-        var datasetIdObservable = $scope.observe('dataset').filter(_.isPresent).pluck('id');
+        var datasetObservable = $scope.observe('dataset').filter(_.isPresent);
         var fieldNameObservable = $scope.observe('fieldName').filter(_.isPresent);
 
         var suggestionsRequestsObservable = Rx.Observable.combineLatest(
+          datasetObservable.observeOnLatest('columns'),
           searchValueObservable,
-          datasetIdObservable,
+          datasetObservable.pluck('id'),
           fieldNameObservable,
-          function(searchValue, datasetId, fieldName) {
-            return [datasetId, fieldName, searchValue];
+          function(columns, searchValue, datasetId, fieldName) {
+            return {
+              physicalDatatype: columns[fieldName].physicalDatatype,
+              searchOptions: [datasetId, fieldName, searchValue]
+            };
           }
         ).
         debounce(300, Rx.Scheduler.timeout). // Don't hammer the suggestions service.
-        map(function(searchOptions) {
-          return Rx.Observable.fromPromise(
-            SuggestionService.suggest.apply(this, searchOptions)
-          );
+        map(function(suggestionRequest) {
+          if (suggestionRequest.physicalDatatype === 'number') {
+            // CORE-5083: don't request suggestions for number columns
+            return Rx.Observable.returnValue([]);
+          } else {
+            return Rx.Observable.fromPromise(
+              SuggestionService.suggest.apply(this, suggestionRequest.searchOptions)
+            );
+          }
         }).
         merge(
           // Clear out any suggestions if the user clears the input box.

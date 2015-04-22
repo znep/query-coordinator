@@ -21,7 +21,12 @@
   </suggestion-tool-panel>
 
   <div class="search-card-text card-example-text" ng-show="!showResults" ng-class="{dimmed: shouldShowSuggestionPanel}">
-    <div>Type some text and press enter to search</div>
+    <div>Type
+      <span ng-switch="physicalDatatype">
+        <span ng-switch-when="number">a number</span>
+        <span ng-switch-default>some text</span>
+      </span>
+      and press enter to search</div>
     <div class="one-line" ng-show="sampleOne">(Examples: '{{sampleOne}}'<span ng-show="sampleTwo"> or '{{sampleTwo}}'</span>)</div>
   </div>
 </div>

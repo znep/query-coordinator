@@ -30,7 +30,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var labelValueOrPlaceholder = function labelValueOrPlaceholder(value, placeholder) {
       placeholder = placeholder || UNDEFINED_PLACEHOLDER;
       if ($.isNumeric(value)) { return value; }
-      if (_.isBoolean(value)) { value = (!!value).toString(); }
+      if (_.isBoolean(value)) { value = value.toString(); }
       value = value || '';
       return $.isBlank(value.trim()) ? placeholder : value;
     };

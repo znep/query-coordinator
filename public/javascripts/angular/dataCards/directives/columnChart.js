@@ -127,14 +127,14 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         var leftHanded = false;
 
         if (!expanded) {
-          var widthOfText = $(this).find('.text').width();
+          var labelWidth = $(this).find('.contents').width();
           var proposedLeftOfText = horizontalScale(datum.name);
 
           var rangeMagnitude = chartRightEdge - chartLeftOffset;
           var spaceAvailableOnRight = rangeMagnitude - (proposedLeftOfText - chartLeftOffset);
           var spaceAvailableOnLeft = proposedLeftOfText - chartLeftOffset;
 
-          var spaceRemainingOnRight = spaceAvailableOnRight - widthOfText;
+          var spaceRemainingOnRight = spaceAvailableOnRight - labelWidth;
 
           leftHanded = spaceRemainingOnRight <= 10 && spaceAvailableOnLeft > spaceAvailableOnRight;
         }
@@ -158,24 +158,36 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         append('div').
         classed('label', true);
 
-      labelDivSelectionEnter.append('div').classed('text', true).append('span');
+      // For new labels, add a contents div containing a span for the filter icon,
+      // a span for the label text, and a span for the clear filter icon.
+      // The filter icon and close icon are toggled via CSS classes.
+      var labelText = labelDivSelectionEnter.append('div').classed('contents', true);
+      labelText.append('span').classed('icon-filter', true);
+      labelText.append('span').classed('text', true);
+      labelText.append('span').classed('icon-close', true);
+
       labelDivSelectionEnter.append('div').classed('callout', true);
 
+      // Re-bind to child spans (d3 does not do this automatically)
+      labelDivSelection.each(function(d) {
+        d3.select(this).selectAll('span').datum(d);
+      });
+
       labelDivSelection.
-        selectAll('.text').
-          style('top', function(d, i, j) {
+        select('.contents').
+          style('top', function(d, i) {
             if (expanded) {
               return '';
-            } else if (isOnlyInSpecial(d, j)) {
-              return verticalPositionOfSpecialLabelRem - 0.5 + 'rem';
+            } else if (isOnlyInSpecial(d, i)) {
+              return verticalPositionOfSpecialLabelRem + 'rem';
             } else {
-              return defaultLabelData.length - 0.5 - Math.min(j, numberOfDefaultLabels - 1) + 'rem';
+              return defaultLabelData.length - 0.5 - Math.min(i, numberOfDefaultLabels - 1) + 'rem';
             }
           }).
           classed('undefined', function(d) {
             return labelValueOrPlaceholder(d.name) === UNDEFINED_PLACEHOLDER;
           }).
-          select('span').
+          select('.text').
             text(function(d) {
               return labelValueOrPlaceholder(d.name);
             });
@@ -183,19 +195,19 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       // These widths relate to the visualLength() method call in the maxLength calculation above.
       if (_.isNumber(fixedLabelWidth)) {
         labelDivSelection.
-          selectAll('.text').style('width', fixedLabelWidth + 'rem');
+          selectAll('.contents').style('width', fixedLabelWidth + 'rem');
       }
 
       labelDivSelection.
-        selectAll('.callout').
-          style('height', function(d, i, j) {
+        select('.callout').
+          style('height', function(d, i) {
             if (expanded) {
               return ''; // Expanded charts have auto-height labels.
             } else {
-              if (isOnlyInSpecial(d, j)) {
+              if (isOnlyInSpecial(d, i)) {
                 return verticalPositionOfSpecialLabelRem + 'rem';
               } else {
-                return (defaultLabelData.length - j) + 'rem';
+                return (defaultLabelData.length - i - (d.special ? 0.75 : 0)) + 'rem';
               }
             }
           });
@@ -232,7 +244,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         }).
         classed('dim', function(d, i) {
           return specialLabelData.length > 0 && !d.special;
-        });
+        }).
+        classed('special', _.property('special'));
 
       labelDivSelection.exit().remove();
     };
@@ -351,8 +364,9 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     barGroupSelection.call(updateBars);
     labelSelection.call(updateLabels);
 
+    // Flyout with bar/filter information
     $chartScroll.flyout({
-      selector: '.bar-group.active, .labels .label .text',
+      selector: '.bar-group.active, .labels .label .contents span:not(.icon-close)',
       parent: document.body,
       direction: 'top',
       inset: {
@@ -385,8 +399,23 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           $flyout.addClass("filtered");
           rows.push(["Filtered Amount", $.toHumaneNumber(data.filtered) + unit]);
         }
+
+        if (data.special) {
+          rows.push(['&#8203;', '&#8203;']);
+          rows.push(['The page is currently filtered by this value, click to clear it.', '']);
+        }
+
         return rows;
       }
+    });
+
+    // Flyout for the clear filter icon
+    $chartScroll.flyout({
+      selector: '.labels .label .contents .icon-close',
+      parent: document.body,
+      direction: 'top',
+      positionOn: _.identity,
+      html: 'Clear this filter'
     });
 
     // Set "Click to Expand" truncation marker + its tooltip
@@ -530,7 +559,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         scope.observeDestroy(element)
       );
 
-      element.parent().delegate('.bar-group, .labels .label span', 'click', function(event) {
+      element.parent().delegate('.bar-group, .labels .label .contents span', 'click', function(event) {
         var clickedDatum = d3.select(event.currentTarget).datum();
         scope.$apply(function() {
           scope.$emit('column-chart:datum-clicked', clickedDatum);

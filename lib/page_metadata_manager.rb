@@ -263,13 +263,12 @@ class PageMetadataManager
     phidippides.fetch_dataset_metadata(dataset_id, options)
   end
 
-  def largest_time_span_in_days_being_used_in_columns(time_columns, dataset_id)
-    time_columns.map do |column|
+  def largest_time_span_in_days_being_used_in_columns(time_column_names, dataset_id)
+    time_column_names.map do |column_name|
       begin
-        time_range_in_column(dataset_id, column[column_field_name])
+        time_range_in_column(dataset_id, column_name)
       rescue Phidippides::NoMinMaxInDateColumnException => error
-        report_error("No min and max available for column: #{column_field_name}", error)
-
+        report_error("No min and max available for column: #{column_name}", error)
         nil
       end
     end.compact.max
@@ -277,7 +276,7 @@ class PageMetadataManager
 
   def time_range_in_column(dataset_id, field_name)
     result = fetch_min_max_date_in_column(dataset_id, field_name)
-    unless result['start'] && result['end']
+    unless result && result['start'] && result['end']
       raise Phidippides::NoMinMaxInDateColumnException.new(
         "unable to fetch min and max from dataset_id: #{dataset_id}, field_name: #{field_name}"
       )

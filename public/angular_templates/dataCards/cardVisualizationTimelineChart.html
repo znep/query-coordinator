@@ -14,7 +14,7 @@
 <div class="chart-render-error" ng-if="cannotRenderTimelineChart" ng-switch="cannotRenderTimelineChart.reason">
   <em ng-switch-when="noData">Chart cannot be rendered with no values.</em>
   <em ng-switch-when="badDates">Chart cannot be rendered due to invalid date values.</em>
-  <em ng-switch-when="zeroTimeSpan">No data available.</em>
+  <em ng-switch-when="zeroTimeSpan">Chart cannot be rendered with less than two date values.</em>
   <em ng-switch-default>Chart cannot be rendered.</em>
 </div>
 

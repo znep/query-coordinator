@@ -163,7 +163,7 @@ describe('A Timeline Chart Card Visualization', function() {
 
     var element = makeDirective();
     var errorMessage = element.find('.chart-render-error');
-    expect(errorMessage.text().trim()).to.equal('No data available.');
+    expect(errorMessage.text().trim()).to.equal('Chart cannot be rendered with less than two date values.');
   });
 
   it('should display a message when the chart cannot be rendered due to bad dates', function() {

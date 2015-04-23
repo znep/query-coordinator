@@ -119,14 +119,14 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         var leftHanded = false;
 
         if (!expanded) {
-          var widthOfText = $(this).find('.contents').width();
+          var labelWidth = $(this).find('.contents').width();
           var proposedLeftOfText = horizontalScale(datum.name);
 
           var rangeMagnitude = chartRightEdge - chartLeftOffset;
           var spaceAvailableOnRight = rangeMagnitude - (proposedLeftOfText - chartLeftOffset);
           var spaceAvailableOnLeft = proposedLeftOfText - chartLeftOffset;
 
-          var spaceRemainingOnRight = spaceAvailableOnRight - widthOfText;
+          var spaceRemainingOnRight = spaceAvailableOnRight - labelWidth;
 
           leftHanded = spaceRemainingOnRight <= 10 && spaceAvailableOnLeft > spaceAvailableOnRight;
         }
@@ -161,7 +161,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       labelDivSelectionEnter.append('div').classed('callout', true);
 
       // Re-bind to child spans (d3 does not do this automatically)
-      labelDivSelection.each(function(d, i) {
+      labelDivSelection.each(function(d) {
         d3.select(this).selectAll('span').datum(d);
       });
 
@@ -406,9 +406,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       selector: '.labels .label .contents .icon-close',
       parent: document.body,
       direction: 'top',
-      positionOn: function($target) {
-        return $target;
-      },
+      positionOn: _.identity,
       html: 'Clear this filter'
     });
 

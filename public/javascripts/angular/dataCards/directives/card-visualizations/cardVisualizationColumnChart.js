@@ -110,7 +110,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
             }, {});
 
             var activeFilterNames = _.map(filters, function(filter) {
-              if (filter.hasOwnProperty('isNull') && filter.isNull === true) {
+              if (_.get(filter, 'isNull', false) === true) {
                 return null;
               } else {
                 return filter.operand;

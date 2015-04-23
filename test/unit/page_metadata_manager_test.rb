@@ -29,28 +29,11 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_create_succeeds
-    PageMetadataManager.any_instance.expects(:update_rollup_table).times(3)
+    PageMetadataManager.any_instance.expects(:update_rollup_table)
 
     Phidippides.any_instance.stubs(
-      update_page_metadata: { status: '200', body: v0_page_metadata },
-      fetch_dataset_metadata: { status: '200', body: v0_dataset_metadata },
-    )
-
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-    result = manager.create(v0_page_metadata)
-    assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
-    assert(result.fetch(:body).fetch('pageId'), 'Expected a non-nil pageId to be created')
-
-    Phidippides.any_instance.stubs(
+      update_page_metadata: { status: '200', body: nil },
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
-    )
-    stub_feature_flags_with(:metadata_transition_phase, '1')
-    result = manager.create(v1_page_metadata_as_v0)
-    assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
-    assert(result.fetch(:body).fetch('pageId'), 'Expected a non-nil pageId to be created')
-
-    Phidippides.any_instance.stubs(
-      update_page_metadata: { status: '200', body: nil }
     )
     stub_feature_flags_with(:metadata_transition_phase, '2')
     NewViewManager.any_instance.expects(:create).times(1).with do |name, description|
@@ -86,6 +69,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   def test_create_creates_data_lens_with_category_from_obe_dataset
     Phidippides.any_instance.stubs(
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns},
+      fetch_page_metadata: { status: '200', body: v1_page_metadata_without_rollup_columns },
       update_page_metadata: { status: '200', body: {} }
     )
     stub_feature_flags_with(:metadata_transition_phase, '3')
@@ -98,12 +82,13 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       assert_equal(OBE_CATEGORY_NAME, category)
     end.returns('fdsa-fdsa')
 
-    manager.create(v1_page_metadata)
+    manager.create(v1_page_metadata_without_rollup_columns)
   end
 
   def test_create_creates_data_lens_with_category_from_nbe_dataset
     Phidippides.any_instance.stubs(
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns},
+      fetch_page_metadata: { status: '200', body: v1_page_metadata_without_rollup_columns },
       update_page_metadata: { status: '200', body: {} }
     )
     stub_feature_flags_with(:metadata_transition_phase, '3')
@@ -118,7 +103,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       assert_equal(NBE_CATEGORY_NAME, category)
     end.returns('fdsa-fdsa')
 
-    manager.create(v1_page_metadata)
+    manager.create(v1_page_metadata_without_rollup_columns)
   end
 
   def test_create_raises_no_dataset_metadata_exception_when_phiddy_craps_out_v0
@@ -144,6 +129,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       assert_equal(v1_page_metadata['description'], description)
     end.returns('data-lens')
     Phidippides.any_instance.stubs(
+      fetch_page_metadata: { status: '200', body: v1_page_metadata_without_rollup_columns },
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns }
     )
     Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |page_metadata|
@@ -152,7 +138,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
     stub_feature_flags_with(:metadata_transition_phase, '2')
 
-    result = manager.create(v1_page_metadata)
+    result = manager.create(v1_page_metadata_without_rollup_columns)
     assert_equal('data-lens', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
   end
 
@@ -230,6 +216,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
     Phidippides.any_instance.stubs(
       update_page_metadata: { status: '200', body: nil },
+      fetch_page_metadata: { status: '200', body: v1_page_metadata_without_rollup_columns },
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns }
     )
     stub_feature_flags_with(:metadata_transition_phase, '2')
@@ -244,23 +231,23 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     end
     assert(rollup_column_exists)
 
-    result = manager.create(v1_page_metadata.except('pageId'))
+    result = manager.create(v1_page_metadata_without_rollup_columns.except('pageId'))
 
     assert_equal('200', result.fetch(:status))
     assert_not_nil(result.fetch(:body).fetch('pageId'))
   end
 
-  def test_create_ensures_table_card_phase0
-    PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
+  # def 'test_create_ensures_table_card_phase0'
+  #   PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
 
-    stub_fetch_dataset_metadata(v0_dataset_metadata)
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-    stub_update_page_metadata(v0_page_metadata).
-      with { |page, _| assert_page_has_table_card(page) }
+  #   stub_fetch_dataset_metadata(v0_dataset_metadata)
+  #   stub_feature_flags_with(:metadata_transition_phase, '0')
+  #   stub_update_page_metadata(v0_page_metadata).
+  #     with { |page, _| assert_page_has_table_card(page) }
 
-    result = manager.create(remove_table_card(v0_page_metadata))
-    assert_equal('200', result.fetch(:status), 'Expected create result status to be 200')
-  end
+  #   result = manager.create(remove_table_card(v0_page_metadata))
+  #   assert_equal('200', result.fetch(:status), 'Expected create result status to be 200')
+  # end
 
   def test_create_ensures_table_card_phase1
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
@@ -314,29 +301,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
     result = manager.create(page_metadata_with_no_cards(v1_page_metadata).except('pageId'))
     assert_equal('200', result.fetch(:status), 'Expected create result status to be 200')
-  end
-
-  def test_update_succeeds_phase_0
-    PageMetadataManager.any_instance.expects(:update_rollup_table).times(2)
-
-    # Phase 0
-    Phidippides.any_instance.stubs(
-      update_page_metadata: { status: '200', body: v0_page_metadata },
-      fetch_dataset_metadata: { status: '200', body: v0_dataset_metadata },
-      fetch_page_metadata: { status: '200', body: v0_page_metadata },
-    )
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-    manager.create(v0_page_metadata)
-    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |json, options|
-      assert(json.fetch('bunch'))
-      assert(json.fetch('foo'))
-      assert_equal({}, options)
-    end.returns(
-      status: '200',
-      body: v0_page_metadata
-    )
-
-    manager.update(v0_page_metadata.merge('bunch' => 'other stuff', 'foo' => 'bar'))
   end
 
   def test_update_creates_data_lens_with_reference_v0
@@ -492,23 +456,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     manager.update(v1_page_metadata)
   end
 
-  # Yes, this is a private method, but it warranted at least some unit testing
-  def test_build_soql_v0
-    manager.stubs(
-      phidippides: stub(fetch_dataset_metadata: { body: v0_dataset_metadata }),
-      date_trunc_function: 'my_date_trunc_func',
-      column_field_name: 'name',
-      logical_datatype_name: 'logicalDatatype'
-    )
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-    columns = v0_dataset_metadata.fetch('columns')
-    cards = v0_page_metadata.fetch('cards')
-    soql = manager.send(:build_rollup_soql, v0_page_metadata, columns, cards)
-    expected = 'select location_description, primary_type, count(*) as value ' <<
-      'group by location_description, primary_type'
-    assert_equal(expected, soql)
-  end
-
   def test_build_soql_v1
     stub_feature_flags_with(:metadata_transition_phase, '2')
     manager.stubs(
@@ -521,8 +468,8 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     )
     columns = v1_dataset_metadata.fetch('columns')
     cards = v1_page_metadata.fetch('cards')
-    expected_soql = 'select some_column, date_trunc_y(time_column_fine_granularity), count(*) as value ' <<
-      'group by some_column, date_trunc_y(time_column_fine_granularity)'
+    expected_soql = 'select some_column, some_other_column, date_trunc_y(time_column_fine_granularity), count(*) as value ' <<
+      'group by some_column, some_other_column, date_trunc_y(time_column_fine_granularity)'
 
     soql = manager.send(:build_rollup_soql, v1_page_metadata, columns, cards)
     assert_equal(expected_soql, soql)
@@ -740,6 +687,10 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-page-metadata.json"))
   end
 
+  def v1_page_metadata_without_rollup_columns
+    JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-page-metadata-without-rollup-columns.json"))
+  end
+
   # We need this because some tests in metadata transition phase 1 match
   # cards in the page metadata to columns in the dataset metadata. The
   # cards in the v0 page metadata stub do not match the columns in the
@@ -755,7 +706,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
         'description' => 'Test Card',
         'fieldName' => 'some_column',
         'cardSize' => 2,
-        'cardType' => 'Column',
+        'cardType' => 'column',
         'appliedFilters' => [],
         'expanded' => false
       },
@@ -763,7 +714,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
         'description' => 'Test Card',
         'fieldName' => 'some_other_column',
         'cardSize' => 2,
-        'cardType' => 'Column',
+        'cardType' => 'column',
         'appliedFilters' => [],
         'expanded' => false
       },
@@ -771,7 +722,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
         'description' => 'Test Card',
         'fieldName' => '*',
         'cardSize' => 3,
-        'cardType' => 'Table',
+        'cardType' => 'table',
         'appliedFilters' => [],
         'expanded' => false
       }

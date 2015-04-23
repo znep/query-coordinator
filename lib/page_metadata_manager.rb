@@ -154,15 +154,14 @@ class PageMetadataManager
   end
 
   def build_rollup_soql(page_metadata, columns, cards, options = {})
+    non_date_card_types_for_rollup = %w{column choropleth}
     normalized_columns = transformed_columns(columns)
 
     # TODO Need to consider the construction of the WHERE clause for page's
     # default filter.
-    columns_to_roll_up = normalized_columns.select do |column|
-      column_used_by_any_card?(column[column_field_name], cards) &&
-        (column[logical_datatype_name] == 'category' ||
-        (column[logical_datatype_name] == 'location' && column['physicalDatatype'] == 'number'))
-    end
+    columns_to_roll_up = cards.
+      select { |card| non_date_card_types_for_rollup.include?(card['cardType']) }.
+      pluck(column_field_name)
 
     # Nothing to roll up
     return if columns_to_roll_up.blank? && columns_to_roll_up_by_date_trunc(normalized_columns, cards).blank?
@@ -175,8 +174,8 @@ class PageMetadataManager
         )
     end
 
-    rolled_up_columns_soql = (columns_to_roll_up.pluck(column_field_name) +
-      columns_to_roll_up_by_date_trunc(normalized_columns, cards).pluck(column_field_name).map do |field_name|
+    rolled_up_columns_soql = (columns_to_roll_up +
+      columns_to_roll_up_by_date_trunc(normalized_columns, cards).map do |field_name|
         "#{page_metadata['defaultDateTruncFunction']}(#{field_name})"
       end).join(', ')
 
@@ -224,7 +223,7 @@ class PageMetadataManager
       columns.select do |column|
         column_used_by_any_card?(column[column_field_name], cards) &&
           column['physicalDatatype'] == 'floating_timestamp'
-      end
+      end.pluck(column_field_name)
     end
   end
 

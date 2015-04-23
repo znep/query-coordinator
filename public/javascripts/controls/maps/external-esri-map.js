@@ -422,7 +422,7 @@
             {
                 var dsRow = _.detect(complementRows, function(cRow) {
                     return cRow[':id'] == feature.attributes[objectIdKey];
-                });
+                }) || {};
 
                 var row = { data: {}, id: dsRow[':id'] };
                 _.each(feature.attributes, function(val, attr)

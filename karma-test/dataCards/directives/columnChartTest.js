@@ -518,7 +518,7 @@ describe('columnChart', function() {
 
     describe('with showFiltered on', function() {
 
-      xit('should create ' + bars + ' filtered and unfiltered bars, with the correct heights', function() {
+      it('should create ' + bars + ' filtered and unfiltered bars, with the correct heights', function() {
         var chart = createNewColumnChart(640, false, testDataWithFiltered);
         var scope = chart.scope;
 

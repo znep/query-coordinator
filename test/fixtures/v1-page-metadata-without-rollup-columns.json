@@ -1,0 +1,21 @@
+{
+  "cards": [
+    {
+      "description": "Table",
+      "fieldName": "*",
+      "cardSize": 3,
+      "cardType": "table",
+      "appliedFilters": [],
+      "expanded": false
+    }
+  ],
+  "datasetId": "vtvh-wqgq",
+  "description": "Cases created since 7/1/2008 with location information",
+  "name": "San Francisco 311",
+  "pageId": "iuya-fxdq",
+  "primaryAggregation": null,
+  "primaryAmountField": null,
+  "version": 1,
+  "largestTimeSpanDays": 7500,
+  "defaultDateTruncFunction": "date_trunc_y"
+}

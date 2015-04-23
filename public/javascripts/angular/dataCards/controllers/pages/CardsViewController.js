@@ -152,7 +152,7 @@
 
     $scope.page = page;
     $scope.showOtherViewsButton = ServerConfig.get('enableDataLensOtherViews');
-    
+
     var pageNameSequence = page.observe('name').filter(_.isPresent);
     $scope.bindObservable('pageName', pageNameSequence);
     $scope.bindObservable('pageDescription', page.observe('description'));
@@ -282,7 +282,11 @@
 
       function humanReadableOperand(filter) {
         if (filter instanceof Filter.BinaryOperatorFilter) {
-          return filter.humanReadableOperand || filter.operand;
+          if (filter.operand.trim().length > 0) {
+            return filter.humanReadableOperand || filter.operand;
+          } else {
+            return 'blank';
+          }
         } else if (filter instanceof Filter.IsNullFilter) {
           return 'blank';
         } else if (filter instanceof Filter.TimeRangeFilter) {

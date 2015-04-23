@@ -515,6 +515,20 @@ describe('CardsViewController', function() {
           expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' ]);
           expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank' ]);
         }));
+
+        it('should render a whitespace-only operand filter the same way as a null filter', inject(function(Filter) {
+          var filterOne = new Filter.IsNullFilter(true);
+          var filterTwo = new Filter.BinaryOperatorFilter('=', ' ');
+
+          var firstCard = harness.page.getCurrentValue('cards')[0];
+          var thirdCard = harness.page.getCurrentValue('cards')[2];
+
+          firstCard.set('activeFilters', [filterOne]);
+          thirdCard.set('activeFilters', [filterTwo]);
+
+          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is' , 'is' ]);
+          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', 'blank' ]);
+        }));
       });
 
       describe('with a base filter', function() {

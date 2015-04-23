@@ -237,18 +237,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_not_nil(result.fetch(:body).fetch('pageId'))
   end
 
-  # def 'test_create_ensures_table_card_phase0'
-  #   PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
-
-  #   stub_fetch_dataset_metadata(v0_dataset_metadata)
-  #   stub_feature_flags_with(:metadata_transition_phase, '0')
-  #   stub_update_page_metadata(v0_page_metadata).
-  #     with { |page, _| assert_page_has_table_card(page) }
-
-  #   result = manager.create(remove_table_card(v0_page_metadata))
-  #   assert_equal('200', result.fetch(:status), 'Expected create result status to be 200')
-  # end
-
   def test_create_ensures_table_card_phase1
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
 

@@ -444,6 +444,13 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     manager.update(v1_page_metadata)
   end
 
+  def test_time_range_in_column_catches_fetch_min_max_date_in_column_returning_nil
+    CoreServer::Base.connection.expects(:get_request).raises(CoreServer::Error.new(nil))
+    assert_raises(Phidippides::NoMinMaxInDateColumnException) do
+      manager.send(:time_range_in_column, 'four-four', 'fieldName')
+    end
+  end
+
   def test_build_soql_v1
     stub_feature_flags_with(:metadata_transition_phase, '2')
     manager.stubs(
@@ -553,7 +560,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert(time_columns.any?, 'Expected time columns in dataset')
     manager.expects(:time_range_in_column).with(fake_dataset_id, 'time_column_large_granularity').returns(300)
     manager.expects(:time_range_in_column).with(fake_dataset_id, 'time_column_fine_granularity').returns(3)
-    result = manager.send(:largest_time_span_in_days_being_used_in_columns, manager.send(:transformed_columns, time_columns), fake_dataset_id)
+    result = manager.send(:largest_time_span_in_days_being_used_in_columns, time_columns.keys, fake_dataset_id)
     assert_equal(300, result)
   end
 
@@ -568,7 +575,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert(time_columns.any?, 'Expected time columns in dataset')
     manager.expects(:time_range_in_column).with(fake_dataset_id, 'time_column_large_granularity').returns(300)
     manager.expects(:time_range_in_column).with(fake_dataset_id, 'time_column_fine_granularity').returns(300)
-    result = manager.send(:largest_time_span_in_days_being_used_in_columns, manager.send(:transformed_columns, time_columns), fake_dataset_id)
+    result = manager.send(:largest_time_span_in_days_being_used_in_columns, time_columns.keys, fake_dataset_id)
     assert_equal(300, result)
   end
 

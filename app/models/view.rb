@@ -78,8 +78,12 @@ class View < Model
   # TODO Factor these new_backend methods out into a different container
   def row_count
     if new_backend?
-      path = "/id/#{id}?#{{'$query' => 'select count(*)'}.to_param}"
-      JSON.parse(CoreServer::Base.connection.get_request(path)).first['count'].to_i
+      # Alias the column to provide a reasonably strong guarantee of uniqueness.
+      # This is necessary because 1) without an alias, Core may return a key of
+      # `count_0` or `count_1` if the customer dataset has a column named `count`
+      # and 2) a parse error may trigger if the alias conflicts with a column.
+      path = "/id/#{id}?#{{'$query' => 'select count(*) as COLUMN_ALIAS_GUARD__count'}.to_param}"
+      JSON.parse(CoreServer::Base.connection.get_request(path)).first['COLUMN_ALIAS_GUARD__count'].to_i
     else
       get_total_rows.to_i
     end

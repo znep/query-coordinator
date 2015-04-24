@@ -32,7 +32,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       if ($.isNumeric(value)) { return value; }
       if (_.isBoolean(value)) { value = value.toString(); }
       value = value || '';
-      return $.isBlank(value.trim()) ? placeholder : value;
+      return $.isBlank(value.trim().escapeSpaces()) ? placeholder : value;
     };
 
     // Compute chart margins
@@ -189,7 +189,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           }).
           select('.text').
             text(function(d) {
-              return labelValueOrPlaceholder(d.name.escapeSpaces());
+              return labelValueOrPlaceholder(d.name);
             });
 
       // These widths relate to the visualLength() method call in the maxLength calculation above.

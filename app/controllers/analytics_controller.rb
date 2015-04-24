@@ -74,6 +74,7 @@ class AnalyticsController < ApplicationController
   end
 
   def render_metric_error(reason)
+    Rails.logger.error "Analytics Controller Metric Error: #{reason}"
     render :json => reason.to_json, :status => 400
   end
 end

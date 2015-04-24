@@ -53,7 +53,7 @@ body.state-view-cards
     .padded-wrapper
       padding: ($metadata-side-padding / 2)
 
-    .edit-page-name
+    .edit-page-name, .edit-page-description
       display: block
       position: relative
       color: inherit
@@ -82,10 +82,11 @@ body.state-view-cards
           font-size: .9em
 
       >textarea
+        height: 1.2em
+      >textarea, >rich-text-editor
         color: inherit
         background: transparent
         font: inherit
-        height: 1.2em
         display: block
         width: 100%
         box-sizing: border-box

@@ -124,7 +124,6 @@
     page.observe('description').filter(_.isString).subscribe(function(description) {
       $scope.safeApply(function() {
         $scope.writablePage.description = $.trim(description);
-        // any limit to description length or anything else that needs validation?
       });
     });
     $scope.observe('writablePage.description').filter(_.isString).subscribe(function(description) {

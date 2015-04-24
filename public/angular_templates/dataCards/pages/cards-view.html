@@ -18,16 +18,14 @@
           <div class="icon-edit placeholder"><span>(Untitled)</span></div>
         </label>
         <!-- description -->
-        <div ng-show="!editMode" class="page-description" expanded="expanded" multiline-ellipsis max-lines="3" tolerance="2" text="{{pageDescription}}"></div>
+        <div ng-show="!editMode" class="page-description" expanded="expanded" multiline-ellipsis max-lines="3" tolerance="2" ng-bind-html="pageDescription"></div>
         <label class="edit-page-description" ng-if="editMode">
-          <div class="icon-warning edit-page-warning"
-            ng-if="writablePage.warnings.description"
-            title="{{ writablePage.warnings.description.join('\n') }}"></div>
-          <textarea
-            msd-elastic
-            ng-model="writablePage.description"
-            >{{writablePage.description}}</textarea>
-          <div class="icon-edit placeholder"><span>(Untitled)</span></div>
+          <rich-text-editor
+            buttons="bold italic link"
+            value="{{writablePage.description}}"
+            content="writablePage.description"
+            ></rich-text-editor>
+          <div class="icon-edit placeholder"><span>Give your Foo a good description that helps people understand the story your data is trying to tell. (Optional)</span></div>
         </label>
       </div>
       <div class="span6 padded-wrapper">

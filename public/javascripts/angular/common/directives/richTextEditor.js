@@ -175,6 +175,10 @@
       element.val(this.getHTML());
 
       element.trigger(e);
+
+      element.isolateScope().safeApply(function() {
+        element.isolateScope().content = element.val();
+      });
     }
     // Event handlers, for squire events.
     var events = {
@@ -196,9 +200,9 @@
     /**
      * Bind the event handlers.
      */
-    function initEvents(editor, element) {
+    function initEvents(scope, element) {
       for (var event in events) {
-        editor.addEventListener(event, _.bind(events[event], editor, element));
+        scope.editor.addEventListener(event, _.bind(events[event], scope.editor, element));
       }
     }
 
@@ -260,8 +264,8 @@
       iframe.on('squire-loaded', function() {
         $scope.safeApply(_.bind(function() {
           $scope.editor = this.contentWindow.editor;
-          initEvents($scope.editor, element);
-          element.val(element.attr('value'));
+          initEvents($scope, element);
+          element.val($scope.content);
           $scope.editor.setHTML(element.val());
           toolbar = new Toolbar(element.find('.toolbar'), attr, $scope.editor);
         }, this));
@@ -284,7 +288,9 @@
 
     return {
       restrict: 'E',
-      scope: {},
+      scope: {
+        content: '='
+      },
       template: ('<div class="toolbar"></div>' +
                  '<iframe allowtransparency="true" scrolling="auto" src="about:blank"/>'),
       link: init

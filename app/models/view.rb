@@ -78,12 +78,10 @@ class View < Model
   # TODO Factor these new_backend methods out into a different container
   def row_count
     if new_backend?
-      path = "/id/#{id}?#{{'$query' => 'select count(*)'}.to_param}"
-      # Core variously returns as the "name" for the count column, the values:
-      # count, count_0, count_1
-      # It appears to be different according to the environment in which the
-      # request is made, so we just get the first value:
-      JSON.parse(CoreServer::Base.connection.get_request(path)).first.values.first.to_i
+      # Core seems to use different `count` column names depending on environment,
+      # so alias the column to provide consistency
+      path = "/id/#{id}?#{{'$query' => 'select count(*) as row_count'}.to_param}"
+      JSON.parse(CoreServer::Base.connection.get_request(path)).first['row_count'].to_i
     else
       get_total_rows.to_i
     end

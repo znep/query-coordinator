@@ -80,9 +80,18 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     get :show, id: 'four-four', format: 'json'
 
     assert_response(:success)
+    metadata = JSON.parse(@response.body).with_indifferent_access
     assert_equal(
       ['permissions', 'columns', 'defaultPage', 'description', 'domain', 'id', 'locale', 'name', 'ownerId', 'updatedAt'].sort,
-      JSON.parse(@response.body).keys.sort)
+      metadata.keys.sort)
+
+    # It should flag subcolumns with no data
+    columns = metadata[:columns]
+    assert(columns[:parent_column_child_no_data][:isSubcolumn])
+    assert(columns[:parent_column_child_has_data][:isSubcolumn])
+    assert(!columns[:time_column_fine_granularity][:isSubcolumn])
+    assert(!columns[:parent_column][:isSubcolumn])
+    assert_equal(columns.count - 2, columns.count { |key, column| !column[:isSubcolumn] })
   end
 
   test '(phase 0) create returns 401 unless logged in' do

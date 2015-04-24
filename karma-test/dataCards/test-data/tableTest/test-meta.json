@@ -131,19 +131,23 @@
       "sortable": true
     },
     {
-      "name": "X Coordinate",
+      "name": "Location (X Coordinate)",
       "fieldName": "x_coordinate",
       "physicalDatatype": "number",
       "fred": "amount",
       "importance": 3,
+      "isSubcolumn": true,
+      "cardinality": 1,
       "sortable": true
     },
     {
-      "name": "Y Coordinate",
+      "name": "Location (Y Coordinate)",
       "fieldName": "y_coordinate",
       "physicalDatatype": "number",
       "fred": "amount",
       "importance": 3,
+      "isSubcolumn": true,
+      "cardinality": 2,
       "sortable": true
     },
     {

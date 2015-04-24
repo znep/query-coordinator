@@ -59,4 +59,38 @@ module CommonMetadataMethods
   def inherit_catalog_lens_permissions?
     FeatureFlags.derive(nil, defined?(request) ? request : nil)[:use_catalog_lens_permissions]
   end
+
+  # CORE-4645 OBE datasets can have columns that have sub-columns. When converted to the NBE, these
+  # sub-columns become their own columns. This function flags them with a 'subcolumn' boolean, via
+  # heuristics (so not guaranteed to be 100% accurate!)
+  def flag_subcolumns!(columns)
+    # The OBE->NBE conversion doesn't add any metadata to allow us to differentiate sub-columns,
+    # except that it has a naming convention of "Parent Column Name (Sub-column Name)"
+
+    # Create a mapping from the name, to all field_names that have that name
+    field_name_by_name = Hash.new { |hash, key| hash[key] = [] }
+    columns.each do |field_name, column|
+      field_name_by_name[column[:name]] << field_name
+    end
+
+    # Flag everything that looks like a subcolumn
+    columns.each do |field_name, column|
+      # The naming convention is that child column names are the parent column name, followed by the
+      # child column name in parentheses. Remove the parentheses to get the parent column's name.
+      parent_column = column[:name].sub(/(\w) +\(.+\)$/, '\1')
+      if parent_column != column[:name]
+        # Look for the parent column
+        parent_field_names = field_name_by_name[parent_column]
+        if (parent_field_names &&
+            # There are columns that have the same name as this one, sans parenthetical.
+            # Its field_name naming convention should also match, for us to infer it's a subcolumn.
+            parent_field_names.any? do |parent_field_name|
+              parent_field_name + '_' == field_name[0..parent_field_name.length]
+            end
+           )
+          column[:isSubcolumn] = true
+        end
+      end
+    end
+  end
 end

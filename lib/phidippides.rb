@@ -78,7 +78,7 @@ class Phidippides < SocrataHttp
       augment_dataset_metadata!(dataset_id, fetched_response[:body])
     end
 
-    fetched_response
+    fetched_response.with_indifferent_access
   end
 
   # Given a dataset ID and metadata, this decorates the metadata based on whether

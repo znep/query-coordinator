@@ -24,6 +24,17 @@
       link: function(scope, element, attrs) {
         AngularRxExtensions.install(scope);
 
+        // CORE-4645: Omit some columns from display.
+        scope.bindObservable(
+          'filteredColumnDetails',
+          scope.observe('columnDetails').
+            filter(_.isPresent).
+            map(function(columnDetails) {
+              return _.filter(columnDetails, function(column) {
+                return !(column.isSubcolumn && column.cardinality <= 1);
+              });
+            }));
+
         // ಠ_ಠ
         // The functions comprising the Table directive have very complex interdependencies that
         // exhibit many (possibly undiscovered) order sensitivities.
@@ -37,7 +48,7 @@
           scope.observe('whereClause').filter(_.isDefined),
           scope.observe('rowCount').filter(_.isNumber),
           scope.observe('filteredRowCount').filter(_.isNumber),
-          scope.observe('columnDetails').filter(_.isPresent),
+          scope.observe('filteredColumnDetails').filter(_.isPresent),
           _.identity
         ).take(1).
           subscribe(setupTable);
@@ -60,7 +71,7 @@
           var $label = element.find('.table-label');
 
           var getColumn = function(fieldName) {
-            return _.find(scope.columnDetails, function(column) {
+            return _.find(scope.filteredColumnDetails, function(column) {
               return column.fieldName === fieldName;
             });
           };
@@ -238,7 +249,7 @@
           };
 
           var updateColumnHeaders = function() {
-            scope.headers = _.map(scope.columnDetails, function(column, i) {
+            scope.headers = _.map(scope.filteredColumnDetails, function(column, i) {
               // Symbols: ▼ ▲
               var ordering = getCurrentOrDefaultSortForColumn(column.fieldName);
 
@@ -270,7 +281,7 @@
                 // row_block.row.cell
                 children().children().children();
               cells = cells.add($head.children());
-              var columns = scope.columnDetails;
+              var columns = scope.filteredColumnDetails;
 
               // Find the widest cell in each column
               cells.each(function(i, cell) {
@@ -361,7 +372,7 @@
                 return;
               }
 
-              var columns = scope.columnDetails;
+              var columns = scope.filteredColumnDetails;
               var blockHtml = '<div class="row-block ' + block +
                 '" data-block-id="' + block + '" style="top: ' + (block * rowsPerBlock * rowHeight) +
                 'px; display: none">';
@@ -560,8 +571,8 @@
               var title = $target.text();
               var index = $target.data('index');
               if (index) { // Should always exist since it's set in ng-repeat, but hey. safe > sorry
-                var columnDetail = scope.columnDetails[index];
-                if (columnDetail) { // ditto - scope.columnDetails mirrors scope.headers
+                var columnDetail = scope.filteredColumnDetails[index];
+                if (columnDetail) { // ditto - scope.filteredColumnDetails mirrors scope.headers
                   var description = columnDetail.description;
                   if (description) { // we may not have a description, so check.
                     return '<div class="title">{0}</div><div class="description">{1}</div>'.format(
@@ -625,9 +636,9 @@
             element.offsetParent().observeDimensions(),
             scope.observe('rowCount'),
             scope.observe('filteredRowCount'),
-            scope.observe('columnDetails'),
+            scope.observe('filteredColumnDetails'),
             scope.observe('infinite'),
-            function(cardDimensions, rowCount, filteredRowCount, columnDetails, infinite) {
+            function(cardDimensions, rowCount, filteredRowCount, filteredColumnDetails, infinite) {
 
               scope.$emit('render:start', {
                 source: 'table_{0}'.format(scope.$id),

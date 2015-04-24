@@ -32,6 +32,8 @@ class AngularControllerTest < ActionController::TestCase
     # i.e. url_for(:action => :serve_app, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
     get :serve_app, :id => '1234-1234', :app => 'dataCards'
     assert_response :success
+    # Should flag subcolumns
+    assert_match(/var datasetMetadata *= *[^\n]*isSubcolumn[^:]+:true/, @response.body)
   end
 
   test 'should raise an error when a non-existent app is requested' do

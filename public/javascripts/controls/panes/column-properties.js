@@ -24,9 +24,11 @@
         if ($.isBlank(c) || !canConvert(this, c.origColumn)) { return 'hidden'; }
         var col = c.origColumn;
 
+        var disableLegacyTypes = blist.feature_flags.disable_legacy_types || this._view.newBackend;
         var t = col.dataType;
         var types = [{text: $.t('core.data_types.' + col.renderTypeName), value: col.renderTypeName}];
         return types.concat(_(t.convertableTypes || []).chain()
+            .reject(function(ct) { return disableLegacyTypes && blist.datatypes[ct].deprecatedInNbe; })
             .sortBy(function(ct) { return blist.datatypes[ct].priority; })
             .map(function(ct) { return {value: ct, text: $.t('core.data_types.' + ct)}; }).value());
     };

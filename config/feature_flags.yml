@@ -153,3 +153,6 @@ data_lens_transition_state:
   description: The transition state tracking when and how data lenses should be surfaced in the old UX (e.g. on browse, profile and admin pages).
   defaultValue: pre_beta
   expectedValues: pre_beta beta post_beta
+disable_legacy_types:
+  description: 'According to CORE-5097, the disabled types are: Formatted Text, Email, Website URL, Date & Time (with timezone), Star, Phone, Multiple Choice, Photo (Image), Document, and Dataset Link.'
+  defaultValue: false

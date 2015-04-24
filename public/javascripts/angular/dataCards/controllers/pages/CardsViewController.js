@@ -121,6 +121,15 @@
     $scope.observe('writablePage.name').filter(_.isString).subscribe(function(name) {
       page.set('name', $.trim(name));
     });
+    page.observe('description').filter(_.isString).subscribe(function(description) {
+      $scope.safeApply(function() {
+        $scope.writablePage.description = $.trim(description);
+        // any limit to description length or anything else that needs validation?
+      });
+    });
+    $scope.observe('writablePage.description').filter(_.isString).subscribe(function(description) {
+      page.set('description', $.trim(description));
+    });
   }
 
   function CardsViewController(

@@ -18,7 +18,17 @@
           <div class="icon-edit placeholder"><span>(Untitled)</span></div>
         </label>
         <!-- description -->
-        <div class="page-description" expanded="expanded" multiline-ellipsis max-lines="3" tolerance="2" text="{{pageDescription}}"></div>
+        <div ng-show="!editMode" class="page-description" expanded="expanded" multiline-ellipsis max-lines="3" tolerance="2" text="{{pageDescription}}"></div>
+        <label class="edit-page-description" ng-if="editMode">
+          <div class="icon-warning edit-page-warning"
+            ng-if="writablePage.warnings.description"
+            title="{{ writablePage.warnings.description.join('\n') }}"></div>
+          <textarea
+            msd-elastic
+            ng-model="writablePage.description"
+            >{{writablePage.description}}</textarea>
+          <div class="icon-edit placeholder"><span>(Untitled)</span></div>
+        </label>
       </div>
       <div class="span6 padded-wrapper">
         <!-- activities -->

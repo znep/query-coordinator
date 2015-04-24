@@ -338,8 +338,8 @@ class ViewTest < Test::Unit::TestCase
     load_sample_data('test/fixtures/sample-data.json')
     view = View.find('test-data')
     view.stubs(:new_backend? => true)
-    CoreServer::Base.connection.expects(:get_request).with('/id/test-data?%24query=select+count%28%2A%29+as+row_count').
-      returns('[{"row_count": 123}]')
+    CoreServer::Base.connection.expects(:get_request).with('/id/test-data?%24query=select+count%28%2A%29+as+COLUMN_ALIAS_GUARD__count').
+      returns('[{"COLUMN_ALIAS_GUARD__count": 123}]')
     view.expects(:get_total_rows).never
     assert_equal(123, view.row_count)
     view.stubs(:new_backend? => false)

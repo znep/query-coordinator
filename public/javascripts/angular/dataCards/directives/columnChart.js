@@ -394,7 +394,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       },
       title: function($target, $head, options) {
         var data = d3.select($target[0]).datum();
-        return labelValueOrPlaceholder(data.name.escapeSpaces());
+        return labelValueOrPlaceholder(data.name);
       },
       table: function($target, $head, options, $flyout) {
         var data = d3.select($target[0]).datum();

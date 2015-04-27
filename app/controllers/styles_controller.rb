@@ -30,7 +30,7 @@ class StylesController < ApplicationController
       #    css, return its output without caching.
 
       if File.exist?(sass_erb_stylesheet_filename)
-        sass_template = ERB.new(File.read(sass_erb_stylesheet_filename)).result
+        sass_template = ERB.new(File.read(sass_erb_stylesheet_filename)).result(binding)
 
         includes = get_includes
         stylesheet = Sass::Engine.new(includes + sass_template,

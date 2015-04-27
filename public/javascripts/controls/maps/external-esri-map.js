@@ -415,14 +415,14 @@
         {
             var layerObj = this;
             var objectIdKey = layerObj._displayLayer.objectIdKey || 'OBJECTID';
-            var objectIdKeyLower = objectIdKey.toLowerCase(); // field names are low case
 
             if (features[0].feature) { features = _.pluck(features, 'feature'); }
 
             var rows = _.map(features, function(feature)
             {
-                var dsRow = _.detect(complementRows, function(cRow)
-                    { return cRow[objectIdKeyLower] == feature.attributes[objectIdKey]; });
+                var dsRow = _.detect(complementRows, function(cRow) {
+                    return cRow[':id'] == feature.attributes[objectIdKey];
+                }) || {};
 
                 var row = { data: {}, id: dsRow[':id'] };
                 _.each(feature.attributes, function(val, attr)

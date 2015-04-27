@@ -21,7 +21,7 @@
       switch(value) {
         case 'bold':
           controls.bold = {
-            element: $('<button class="bold">b</button>').
+            element: $('<button class="bold">B</button>').
               on('click', _.bind(self.toggleBold, self)).
               appendTo(element),
             pathRegex: />B\b/
@@ -29,7 +29,7 @@
           break;
         case 'italic':
           controls.italic = {
-            element: $('<button class="italic">i</button>').
+            element: $('<button class="italic">I</button>').
               on('click', _.bind(self.toggleItalic, self)).
               appendTo(element),
             pathRegex: />I\b/
@@ -46,7 +46,7 @@
         case 'anchor':
         case 'link':
           controls.anchor = {
-            element: $('<button class="anchor">a</button>').
+            element: $('<button class="anchor">A</button>').
               css({position: 'relative'}).
               on('click', _.bind(self.toggleAnchor, self)).
               appendTo(element),
@@ -200,9 +200,9 @@
     /**
      * Bind the event handlers.
      */
-    function initEvents(scope, element) {
+    function initEvents(editor, element) {
       for (var event in events) {
-        scope.editor.addEventListener(event, _.bind(events[event], scope.editor, element));
+        editor.addEventListener(event, _.bind(events[event], editor, element));
       }
     }
 
@@ -224,8 +224,7 @@
         overflow: 'auto',
         boxSizing: 'border-box',
         border: 0,
-        margin: 0,
-        padding: 0
+        margin: 0
       });
     }
 
@@ -264,7 +263,7 @@
       iframe.on('squire-loaded', function() {
         $scope.safeApply(_.bind(function() {
           $scope.editor = this.contentWindow.editor;
-          initEvents($scope, element);
+          initEvents($scope.editor, element);
           element.val($scope.content);
           $scope.editor.setHTML(element.val());
           toolbar = new Toolbar(element.find('.toolbar'), attr, $scope.editor);

@@ -70,41 +70,45 @@ input.dark[type="url"]
 
 rich-text-editor
   display: block
-
-  $toolbar-height: 2rem
+  $toolbar-height: 1.4em
+  $toolbar-bg-color: #ddd
+  $toolbar-btn-border-color: #999
+  $toolbar-btn-border-color-hover: #555
   .toolbar
-    height: $toolbar-height
-    line-height: $toolbar-height
-    padding-left: .5rem
+    background-color: $toolbar-bg-color
+    text-align: right
+    padding: 0.1em 0.3em
+    border-bottom: 1px solid #aaa
+    min-height: $toolbar-height
 
     button
-      margin: 0 .2rem
       cursor: pointer
-      border: 2px solid $btn-border-color
-      background-color: $btn-bg-color
-      color: rgba(0, 0, 0, 0.5)
+      border: 1px solid $toolbar-btn-border-color
+      background-color: transparent
+      color: #000
+      font-size: 0.8rem
+      font-family: times
+      padding: 0.1rem 0.4rem
 
       &:hover
-        border-color: $btn-hover-border-color
-        color: rgba(0, 0, 0, .8)
+        border-color: $toolbar-btn-border-color-hover
 
       &.active
         border-color: $btn-hover-border-color
-        color: rgba(0, 0, 0, 1)
 
       &.bold
         font-weight: bold
 
       &.italic
         font-style: italic
+        font-weight: bold
 
       &.underline
         text-decoration: underline
 
       &.anchor
         text-decoration: underline
-        color: $link-font-color
-
+        &.active
+          color: $link-font-color
   iframe
-    border-top: $toolbar-height solid transparent
-
+    padding: 1em

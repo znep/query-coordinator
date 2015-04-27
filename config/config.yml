@@ -18,6 +18,11 @@
 #  azure-staging.json
 #  azure-rc.json
 #
+# The way this file works is thus:
+# 1. metachef will run chef on all nodes every 20 minutes
+# 2. chef will write its version of this file to /etc/config.yml
+# 3. UPON DEPLOY, frontend will copy /etc/config.yml into config/config.yml
+# 4. frontend starts up, reading its config/config.yml
 
 default: &default
   coreservice_uri: http://localhost:8080

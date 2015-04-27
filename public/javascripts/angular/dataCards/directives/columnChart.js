@@ -151,6 +151,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
       var centering = chartLeftOffset - rangeBand / 2;
       var verticalPositionOfSpecialLabelRem = 2;
+      var labelMargin = 0.75;
+      var specialLabelMargin = -0.4;
 
       var labelDivSelection = labelSelection.data(labelData, _.property('name'));
       var labelDivSelectionEnter = labelDivSelection.
@@ -191,12 +193,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             text(function(d) {
               return labelValueOrPlaceholder(d.name);
             });
-
-      // These widths relate to the visualLength() method call in the maxLength calculation above.
-      if (_.isNumber(fixedLabelWidth)) {
-        labelDivSelection.
-          selectAll('.contents').style('width', fixedLabelWidth + 'rem');
-      }
 
       labelDivSelection.
         select('.callout').
@@ -246,6 +242,18 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           return specialLabelData.length > 0 && !d.special;
         }).
         classed('special', _.property('special'));
+
+      labelDivSelection.
+        select('.contents').
+        style('left', function(d) {
+          if (!d.special) return labelMargin + 'rem';
+
+          if (parseInt($(this).parent().css('left'), 10) < $.relativeToPx((-specialLabelMargin) + 'rem')) {
+            return '0';
+          }
+
+          return specialLabelMargin + 'rem';
+        });
 
       labelDivSelection.exit().remove();
     };
@@ -386,7 +394,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       },
       title: function($target, $head, options) {
         var data = d3.select($target[0]).datum();
-        return labelValueOrPlaceholder(data.name.escapeSpaces());
+        return labelValueOrPlaceholder(data.name);
       },
       table: function($target, $head, options, $flyout) {
         var data = d3.select($target[0]).datum();
@@ -396,13 +404,14 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         }
         var rows = [["Total", $.toHumaneNumber(data.total) + unit]];
         if (showFiltered) {
-          $flyout.addClass("filtered");
-          rows.push(["Filtered Amount", $.toHumaneNumber(data.filtered) + unit]);
+          var filteredAmount = $.toHumaneNumber(data.filtered) + unit;
+          var filteredSpan = '<span class="filtered-row-highlight">{0}</span>';
+          rows.push([filteredSpan.format('Filtered Amount:'), filteredSpan.format(filteredAmount)]);
         }
 
         if (data.special) {
           rows.push(['&#8203;', '&#8203;']);
-          rows.push(['The page is currently filtered by this value, click to clear it.', '']);
+          rows.push(['The page is currently filtered by this value, click to clear it', '']);
         }
 
         return rows;

@@ -643,6 +643,8 @@ class View < Model
       dhash['initialMetaColumns'] = @cached_rows[:meta_columns]
     end
 
+    # Fieldnames beginning :@ are computed columns and should not be displayed.
+    dhash['columns'].reject! { |col| col[:fieldName].starts_with? ':@' }
     dhash
   end
 

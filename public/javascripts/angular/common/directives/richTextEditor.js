@@ -48,11 +48,21 @@
           controls.anchor = {
             element: $('<button class="anchor icon-link"></button>').
               css({position: 'relative'}).
-              on('click', _.bind(self.toggleAnchor, self)).
+              on('click', function(e) {
+                if (e.target.type === 'button' || e.target.type === 'submit') {
+                  self.toggleAnchor();
+                }
+              }).
               appendTo(element),
-            form: $('<form><input type=text /></form>').
+            form:
+              $('<form class="icon-link-edit" action="javascript:void(0);">' +
+                '<p>Insert link</p>' +
+                '<input type="text" name="url" placeholder="Enter URL" />' +
+                '<button type="button" class="cancel">Cancel</button>' +
+                '<button type="submit">OK</button>' +
+              '</form>').
               on('submit', _.bind(self.createAnchor, self)).
-              find('input').on('blur', _.bind(self.hideAnchorInput, self)).
+              find('button.cancel').on('click', _.bind(self.hideAnchorInput, self)).
               end(),
             pathRegex: />A\b/
           };
@@ -86,8 +96,7 @@
         var anchor = this.controls.anchor;
         if (anchor.form.is(':visible')) {
           var form = anchor.form;
-          form[0].reset();
-          form.fadeOut(100, _.bind(form.detach, form));
+          this.hideAnchorInput();
         } else {
           var pos = anchor.element.position();
           anchor.form.css({

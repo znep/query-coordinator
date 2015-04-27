@@ -16,12 +16,29 @@ class StylesController < ApplicationController
         style_path_parts.push(params[:folder])
       end
 
+      headers['Content-Type'] = 'text/css'
+
       sass_stylesheet_filename = File.join(style_path_parts + ["#{params[:stylesheet]}.sass"])
       css_stylesheet_filename = File.join(style_path_parts + ["#{params[:stylesheet]}.css"])
+      sass_erb_stylesheet_filename = File.join(style_path_parts + ["#{params[:stylesheet]}.sass.erb"])
 
-      if File.exist?(sass_stylesheet_filename)
-        headers['Content-Type'] = 'text/css'
+      # We have 3 cases:
+      #  - The extension is .css. Return the css file.
+      #  - The extension is .sass. Compile the sass template, cache its
+      #    output and return it.
+      #  - The extension is .sass.erb. Compile erb to sass, compile sass to
+      #    css, return its output without caching.
 
+      if File.exist?(sass_erb_stylesheet_filename)
+        sass_template = ERB.new(File.read(sass_erb_stylesheet_filename)).result
+
+        includes = get_includes
+        stylesheet = Sass::Engine.new(includes + sass_template,
+                         :style => :nested,
+                         :cache => false,
+                         :load_paths => ["#{Rails.root}/app/styles"]).render
+        render :text => stylesheet
+      elsif File.exist?(sass_stylesheet_filename)
         with_development_cache(sass_stylesheet_filename) do
           stylesheet = File.read(sass_stylesheet_filename)
           includes = get_includes
@@ -31,14 +48,14 @@ class StylesController < ApplicationController
                            :load_paths => ["#{Rails.root}/app/styles"]).render
         end
       elsif File.exist?(css_stylesheet_filename)
-          render :content_type => 'text/css', :text => File.read(css_stylesheet_filename)
+        render :text => File.read(css_stylesheet_filename)
       else
         # Someone asked for a stylesheet that didn't exist.
-        render :nothing => true, :status => :not_found, :content_type => 'text/css'
+        render :nothing => true, :status => :not_found
       end
     else
       # someone's up to no good.
-      render :nothing => true, :status => :not_found, :content_type => 'text/css'
+      render :nothing => true, :status => :not_found
     end
   end
 

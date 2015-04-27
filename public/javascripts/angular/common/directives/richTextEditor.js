@@ -21,7 +21,7 @@
       switch(value) {
         case 'bold':
           controls.bold = {
-            element: $('<button class="bold">B</button>').
+            element: $('<button class="bold icon-bold"></button>').
               on('click', _.bind(self.toggleBold, self)).
               appendTo(element),
             pathRegex: />B\b/
@@ -29,7 +29,7 @@
           break;
         case 'italic':
           controls.italic = {
-            element: $('<button class="italic">I</button>').
+            element: $('<button class="italic icon-italic"></button>').
               on('click', _.bind(self.toggleItalic, self)).
               appendTo(element),
             pathRegex: />I\b/
@@ -37,7 +37,7 @@
           break;
         case 'underline':
           controls.underline = {
-            element: $('<button class="underline">u</button>').
+            element: $('<button class="icon-link">u</button>').
               on('click', _.bind(self.toggleUnderline, self)).
               appendTo(element),
             pathRegex: />U\b/
@@ -46,7 +46,7 @@
         case 'anchor':
         case 'link':
           controls.anchor = {
-            element: $('<button class="anchor">A</button>').
+            element: $('<button class="anchor icon-link"></button>').
               css({position: 'relative'}).
               on('click', _.bind(self.toggleAnchor, self)).
               appendTo(element),

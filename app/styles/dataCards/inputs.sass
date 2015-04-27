@@ -70,8 +70,9 @@ input.dark[type="url"]
 
 rich-text-editor
   display: block
-  $toolbar-height: 1.4em
+  $toolbar-height: 1.3em
   $toolbar-bg-color: #ddd
+  $toolbar-btn-active-background-color: #ccc
   $toolbar-btn-border-color: #999
   $toolbar-btn-border-color-hover: #555
   .toolbar
@@ -80,35 +81,24 @@ rich-text-editor
     padding: 0.1em 0.3em
     border-bottom: 1px solid #aaa
     min-height: $toolbar-height
-
     button
       cursor: pointer
       border: 1px solid $toolbar-btn-border-color
       background-color: transparent
       color: #000
-      font-size: 0.8rem
-      font-family: times
-      padding: 0.1rem 0.4rem
-
+      font-size: 0.9rem
+      font-family: "socrata-apps"
       &:hover
         border-color: $toolbar-btn-border-color-hover
-
       &.active
-        border-color: $btn-hover-border-color
+        background-color: $toolbar-btn-active-background-color
 
-      &.bold
-        font-weight: bold
-
-      &.italic
-        font-style: italic
-        font-weight: bold
-
-      &.underline
-        text-decoration: underline
-
-      &.anchor
-        text-decoration: underline
-        &.active
-          color: $link-font-color
   iframe
     padding: 1em
+
+  .icon-link:before
+    content: "\e613"
+  .icon-italic:before
+    content: "\e614"
+  .icon-bold:before
+    content: "\e615"

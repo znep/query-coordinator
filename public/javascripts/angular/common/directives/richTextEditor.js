@@ -58,8 +58,10 @@
               $('<form class="icon-link-edit" action="javascript:void(0);">' +
                 '<p>Insert link</p>' +
                 '<input type="text" name="url" placeholder="Enter URL" />' +
-                '<button type="button" class="cancel">Cancel</button>' +
-                '<button type="submit">OK</button>' +
+                '<div class="icon-link-edit-buttons">' +
+                  '<button type="button" class="cancel tool-panel-toggle-btn action-btn r-to-l dark">Cancel</button>' +
+                  '<button type="submit" class="tool-panel-toggle-btn action-btn r-to-l dark">OK</button>' +
+                '</div>' +
               '</form>').
               on('submit', _.bind(self.createAnchor, self)).
               find('button.cancel').on('click', _.bind(self.hideAnchorInput, self)).
@@ -100,8 +102,8 @@
         } else {
           var pos = anchor.element.position();
           anchor.form.css({
-            top: '0',
-            left: '100%',
+            top: '2em',
+            left: '50%',
             position: 'absolute'
           }).appendTo(anchor.element).fadeIn(100);
           anchor.form.find('input').eq(0).focus();
@@ -199,10 +201,13 @@
         if ($(this.getHTML()).text() == element.attr('placeholder')) {
           this.setHTML('');
         }
+        // allows css to detect focus based on class, because child iframe's :focus doesn't
+        element.addClass('focus');
       },
       blur: function(element) {
         updateValue
         showPlaceholderIfEmpty(element, this);
+        element.removeClass('focus');
       },
       willPaste: function(element, e) {
         // Only allow pasting of plaintext

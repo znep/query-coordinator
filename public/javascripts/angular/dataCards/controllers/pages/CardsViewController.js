@@ -282,7 +282,7 @@
 
       function humanReadableOperand(filter) {
         if (filter instanceof Filter.BinaryOperatorFilter) {
-          if (filter.operand.toString().trim().length > 0) {
+          if (_.isPresent(filter.operand.toString().trim())) {
             return filter.humanReadableOperand || filter.operand;
           } else {
             return 'blank';

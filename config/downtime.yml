@@ -1,7 +1,17 @@
 #
 # SCHEDULED DOWNTIME NOTIFICATIONS NO LONGER GO HERE!
 #
-# PLEASE SEE THE metachef REPO AND EDIT THE APPROPRIATE json FILE IN THE environments DIRECTORY
+# The way this file works is thus:
+# 1. frontend deploys, determining the location of this file.
+# 2. On every request, the before_filter ApplicationController#poll_downtime_config runs, testing mtime.
+# 3. Make a modification to metachef (see below).
+# 4. Every 20 minutes, metachef runs and updates the config/downtime.yml file.
+# 5. Step #2 catches this modification and updates its Downtime settings accordingly, displaying the message.
+#
+# The location of the downtime configuration is in metachef/environments.
+#  Pick the environment that needs a downtime notification.
+#  Look for a property under webapp.downtime_config.
+# As of this writing, all production environments (sea1 and azure) have such a config.
 #
 # message_start and message_end determine when to display the notification.
 # downtime_start and downtime_end determine the actual time of the downtime.

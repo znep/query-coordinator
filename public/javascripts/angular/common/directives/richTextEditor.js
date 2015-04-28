@@ -181,7 +181,10 @@
      */
     function updateValue(element, e) {
       // Set the val() so we can get the value like a normal textarea
-      element.val(this.getHTML());
+      // Make sure currentHTML isn't set to the placeholder - if it is, blank it
+      var updatedHTML = ($(this.getHTML()).text() !== element.attr('placeholder')) ?
+        this.getHTML() : '';
+      element.val(updatedHTML);
 
       element.trigger(e);
 
@@ -192,7 +195,15 @@
     // Event handlers, for squire events.
     var events = {
       input: updateValue,
-      blur: updateValue,
+      focus: function(element) {
+        if ($(this.getHTML()).text() == element.attr('placeholder')) {
+          this.setHTML('');
+        }
+      },
+      blur: function(element) {
+        updateValue
+        showPlaceholderIfEmpty(element, this);
+      },
       willPaste: function(element, e) {
         // Only allow pasting of plaintext
         var text = disemarkup(e.fragment);
@@ -237,6 +248,16 @@
       });
     }
 
+    // Show placeholder text if editor html is empty (and placeholder attribute exists)
+    function showPlaceholderIfEmpty(element, editor) {
+      if ($(editor.getHTML()).text() == '' && element.attr('placeholder') !== typeof undefined) {
+        editor.setHTML(
+          '<div class="placeholder" style="color:{1}">{0}</div>'.
+            format(element.attr('placeholder'), 'rgba(0,0,0,0.4)')
+        );
+      }
+    }
+
     function initIframe(element, iframe) {
       // Give the iframe some html, and include squire
       var idoc = iframe[0].contentDocument;
@@ -275,6 +296,7 @@
           initEvents($scope.editor, element);
           element.val($scope.content);
           $scope.editor.setHTML(element.val());
+          showPlaceholderIfEmpty(element, $scope.editor);
           toolbar = new Toolbar(element.find('.toolbar'), attr, $scope.editor);
         }, this));
       });

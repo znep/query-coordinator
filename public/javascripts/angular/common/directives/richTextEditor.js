@@ -56,13 +56,14 @@
               appendTo(element),
             form:
               $('<form class="icon-link-edit" action="javascript:void(0);">' +
-                '<p>Insert link</p>' +
-                '<input type="text" name="url" placeholder="Enter URL" />' +
-                '<div class="icon-link-edit-buttons">' +
-                  '<button type="button" class="cancel tool-panel-toggle-btn action-btn r-to-l dark">Cancel</button>' +
-                  '<button type="submit" class="tool-panel-toggle-btn action-btn r-to-l dark">OK</button>' +
-                '</div>' +
-              '</form>').
+                  '<div class="icon-link-edit-hint"></div>' +
+                  '<p>Insert link</p>' +
+                  '<input type="text" name="url" placeholder="Enter URL" />' +
+                  '<div class="icon-link-edit-buttons">' +
+                    '<button type="button" class="cancel tool-panel-toggle-btn action-btn r-to-l dark">Cancel</button>' +
+                    '<button type="submit" class="tool-panel-toggle-btn action-btn r-to-l dark">OK</button>' +
+                  '</div>' +
+                '</form>').
               on('submit', _.bind(self.createAnchor, self)).
               find('button.cancel').on('click', _.bind(self.hideAnchorInput, self)).
               end(),

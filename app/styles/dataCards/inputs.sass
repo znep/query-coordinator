@@ -92,10 +92,20 @@ rich-text-editor
         border-color: $toolbar-btn-border-color-hover
       &.active
         background-color: $toolbar-btn-active-background-color
+    $toolbar-link-edit-border-color: #3f4752
+    $toolbar-link-edit-tip-size: 14px
     .icon-link-edit
       background-color: $view-cards-bg-color
-      border: 1px solid #000
+      border: 1px solid $toolbar-link-edit-border-color
       padding: 0.5em 0.8em 0
+      .icon-link-edit-hint
+        position: absolute
+        left: -1px
+        top: -$toolbar-link-edit-tip-size
+        width: 0
+        height: 0
+        border-right: $toolbar-link-edit-tip-size solid transparent
+        border-bottom: $toolbar-link-edit-tip-size solid $view-cards-bg-color
       p
         color: white
         margin: 0 0 0.5em

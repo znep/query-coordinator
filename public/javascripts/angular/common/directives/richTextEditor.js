@@ -64,6 +64,12 @@
                     '<button type="submit" class="tool-panel-toggle-btn action-btn r-to-l dark">OK</button>' +
                   '</div>' +
                 '</form>').
+              on('keyup', function(e) {
+                if (e.keyCode === 27) {
+                  // Esc key, close link edit
+                  self.toggleAnchor();
+                }
+              }).
               on('submit', _.bind(self.createAnchor, self)).
               find('button.cancel').on('click', _.bind(self.hideAnchorInput, self)).
               end(),

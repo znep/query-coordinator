@@ -6,3 +6,6 @@
 /tmp
 .DS_Store
 .*.swp
+
+# Ignore local database settings
+config/database.yml

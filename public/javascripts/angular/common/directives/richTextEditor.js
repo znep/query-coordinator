@@ -102,26 +102,24 @@
     /**
      * Display an input field, to prompt for a url for the anchor.
      */
-    toggleAnchor: function(e) {
-      if (this.editor.getSelectedText() && this.editor.hasFormat('a')) {
-        // If user clicks link button when they have selected an existing link
-        debugger;
-        // TODO
-        // instead of removing link, we need to show customized link edit window
-        // this.editor.removeLink();
+    toggleAnchor: function() {
+      var anchor = this.controls.anchor;
+      if (anchor.form.is(':visible')) {
+        var form = anchor.form;
+        this.hideAnchorInput();
       } else {
-        var anchor = this.controls.anchor;
-        if (anchor.form.is(':visible')) {
-          var form = anchor.form;
-          this.hideAnchorInput();
-        } else {
-          var pos = anchor.element.position();
-          anchor.form.css({
-            top: '2.2em',
-            left: '50%',
-            position: 'absolute'
-          }).appendTo(anchor.element).fadeIn(100);
-          anchor.form.find('input').eq(0).focus();
+        var pos = anchor.element.position();
+        anchor.form.css({
+          top: '2.2em',
+          left: '50%',
+          position: 'absolute'
+        }).appendTo(anchor.element).fadeIn(100);
+        anchor.form.find('input').eq(0).focus();
+
+        // If user selects an existing link, show it in edit window
+        if (this.editor.getSelectedText() && this.editor.hasFormat('a')) {
+          var url = this.editor.getSelection().startContainer.parentElement.href;
+          anchor.form.find('input').val(url).focus();
         }
       }
     },
@@ -143,16 +141,22 @@
     },
     hideAnchorInput: function(e) {
       var form = this.controls.anchor.form;
-      form.fadeOut(100, _.bind(form.detach, form));
-      form[0].reset();
+      form.fadeOut(100, function() {
+        _.bind(form.detach, form)
+        form[0].reset();
+      });
     },
     /**
      * Update the visual state of all the controls, to highlight the currently-applied ones.
      */
-    updateState: function(path) {
+    updateState: function(path, curToolbar) {
       _.forOwn(this.controls, function(obj) {
         if (obj.pathRegex) {
           obj.element.toggleClass('active', obj.pathRegex.test(path));
+          if (!obj.pathRegex.test(path) || !obj.element.hasClass("anchor")) {
+            // If not clicking on an anchor, close any open anchor edit windows
+            curToolbar.hideAnchorInput();
+          }
         }
       });
     }
@@ -233,11 +237,8 @@
       },
       pathChange: function(element, e) {
         if (toolbar) {
-          toolbar.updateState(e.path);
+          toolbar.updateState(e.path, toolbar);
         }
-      },
-      mouseup: function(element, e) {
-        toolbar.hideAnchorInput();
       }
     };
 

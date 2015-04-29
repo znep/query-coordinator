@@ -34,6 +34,12 @@ module AngularHelper
     end
   end
 
+  def angular_theme_tag
+    theme = CurrentDomain.property('theme', 'theme_v3') || 'default'
+    return ("<link type=\"text/css\" rel=\"stylesheet\" media=\"all\" " +
+            "href=\"/styles/individual/dataCards/theme-#{theme}.css?#{asset_revision_key}\"/>").html_safe
+  end
+
   def angular_stylesheet_tag
     rendered_stylesheet_tag("angular-app-#{angular_app}")
   end

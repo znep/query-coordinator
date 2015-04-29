@@ -21,7 +21,7 @@
       switch(value) {
         case 'bold':
           controls.bold = {
-            element: $('<button class="bold icon-bold"></button>').
+            element: $('<div class="rich-text-editor-button bold icon-bold" title="Bold"></button>').
               on('click', _.bind(self.toggleBold, self)).
               appendTo(element),
             pathRegex: />B\b/
@@ -29,7 +29,7 @@
           break;
         case 'italic':
           controls.italic = {
-            element: $('<button class="italic icon-italic"></button>').
+            element: $('<div class="rich-text-editor-button italic icon-italic" title="Italic"></button>').
               on('click', _.bind(self.toggleItalic, self)).
               appendTo(element),
             pathRegex: />I\b/
@@ -37,7 +37,7 @@
           break;
         case 'underline':
           controls.underline = {
-            element: $('<button class="icon-link">u</button>').
+            element: $('<div class="rich-text-editor-button icon-link" title="Link">u</button>').
               on('click', _.bind(self.toggleUnderline, self)).
               appendTo(element),
             pathRegex: />U\b/
@@ -46,10 +46,10 @@
         case 'anchor':
         case 'link':
           controls.anchor = {
-            element: $('<button class="anchor icon-link"></button>').
+            element: $('<div class="rich-text-editor-button anchor icon-link" title="Link"></button>').
               css({position: 'relative'}).
               on('click', function(e) {
-                if (e.target.type === 'button' || e.target.type === 'submit') {
+                if ($(e.target).hasClass("rich-text-editor-button") || e.target.type === 'submit') {
                   self.toggleAnchor();
                 }
               }).

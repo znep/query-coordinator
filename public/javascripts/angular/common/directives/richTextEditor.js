@@ -49,7 +49,7 @@
             element: $('<div class="rich-text-editor-button anchor icon-link" title="Link"></button>').
               css({position: 'relative'}).
               on('click', function(e) {
-                if ($(e.target).hasClass("rich-text-editor-button") || e.target.type === 'submit') {
+                if ($(e.target).hasClass("rich-text-editor-button")) {
                   self.toggleAnchor();
                 }
               }).
@@ -67,11 +67,15 @@
               on('keyup', function(e) {
                 if (e.keyCode === 27) {
                   // Esc key, close link edit
-                  self.toggleAnchor();
+                  self.hideAnchorInput();
                 }
               }).
-              on('submit', _.bind(self.createAnchor, self)).
-              find('button.cancel').on('click', _.bind(self.hideAnchorInput, self)).
+              on('submit', function(e) {
+                self.createAnchor(e);
+              }).
+              find('button.cancel').on('click', function() {
+                self.hideAnchorInput();
+              }).
               end(),
             pathRegex: />A\b/
           };
@@ -100,7 +104,11 @@
      */
     toggleAnchor: function(e) {
       if (this.editor.getSelectedText() && this.editor.hasFormat('a')) {
-        this.editor.removeLink();
+        // If user clicks link button when they have selected an existing link
+        debugger;
+        // TODO
+        // instead of removing link, we need to show customized link edit window
+        // this.editor.removeLink();
       } else {
         var anchor = this.controls.anchor;
         if (anchor.form.is(':visible')) {
@@ -109,7 +117,7 @@
         } else {
           var pos = anchor.element.position();
           anchor.form.css({
-            top: '2em',
+            top: '2.2em',
             left: '50%',
             position: 'absolute'
           }).appendTo(anchor.element).fadeIn(100);
@@ -136,6 +144,7 @@
     hideAnchorInput: function(e) {
       var form = this.controls.anchor.form;
       form.fadeOut(100, _.bind(form.detach, form));
+      form[0].reset();
     },
     /**
      * Update the visual state of all the controls, to highlight the currently-applied ones.
@@ -226,6 +235,9 @@
         if (toolbar) {
           toolbar.updateState(e.path);
         }
+      },
+      mouseup: function(element, e) {
+        toolbar.hideAnchorInput();
       }
     };
 

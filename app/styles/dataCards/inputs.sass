@@ -84,13 +84,12 @@ rich-text-editor
     .rich-text-editor-button
       display: inline-block
       border: 1px solid $toolbar-btn-border-color
-      height: 1.2em
-      line-height: 1.2em
+      height: 1.3em
+      line-height: 1.3em
       width: 1.5em
       text-align: center
       background-color: transparent
       color: #000
-      font-size: 0.9rem
       font-family: "socrata-apps"
       &:hover
         border-color: $toolbar-btn-border-color-hover
@@ -117,6 +116,9 @@ rich-text-editor
         width: 15em
       input
         width: 100%
+        -webkit-box-sizing: border-box
+        -moz-box-sizing: border-box
+        box-sizing: border-box
       .icon-link-edit-buttons
         text-align: right
         margin: 0.5em 0

@@ -150,7 +150,7 @@ feature_map_disable_pan_zoom:
   description: "Killswitch to turn off pan and zoom abilities on feature maps."
   defaultValue: false
 data_lens_transition_state:
-  description: The transition state tracking when and how data lenses should be surfaced in the old UX (e.g. on browse, profile and admin pages).
+  description: The transition state tracking when and how Data Lenses should be surfaced in the old UX (e.g. on browse, profile and admin pages).
   defaultValue: pre_beta
   expectedValues: pre_beta beta post_beta
 disable_legacy_types:

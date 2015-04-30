@@ -25,6 +25,7 @@ describe('lensType directive', function() {
     scope.$$childHead.lensType = 'official';
     scope.$digest();
 
+    // Note that this text is transformed into OFFICIAL DATA LENS by CSS rule
     expect(lensType.find('span:visible').text()).to.equal('official data lens');
   });
 
@@ -34,6 +35,7 @@ describe('lensType directive', function() {
     scope.$$childHead.lensType = 'community';
     scope.$digest();
 
+    // Note that this text is transformed into COMMUNITY DATA LENS by CSS rule
     expect(lensType.find('span:visible').text()).to.equal('community data lens');
   });
 });

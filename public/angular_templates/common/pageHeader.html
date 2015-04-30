@@ -1,14 +1,14 @@
 <div class="page-header row" ng-style="pageHeaderStyle" ng-show="showHeader">
   <div class="span6">
-    <div class="logo">
+    <div class="page-header-logo">
       <a href="/"><img ng-show="logoUrl" ng-src="{{logoUrl}}" alt="Logo" /></a>
     </div>
   </div>
   <div class="span6">
     <div class="page-header-links">
-      <a ng-hide="currentUser" class="page-header-signup-link" href="{{signUp.url}}" title="{{signUp.label}}">{{signUp.label}}</a>
-      <a ng-hide="currentUser" class="page-header-signin-link" href="{{signIn.url}}" title="{{signIn.label}}">{{signIn.label}}</a>
-      <a ng-show="currentUser" class="page-header-signout-link" href="{{signOut.url}}" title="{{signOut.label}}">{{signOut.label}}</a>
+      <a ng-hide="currentUser" class="page-header-link page-header-link-signup" href="{{signUp.url}}" title="{{signUp.label}}">{{signUp.label}}</a>
+      <a ng-hide="currentUser" class="page-header-link page-header-link-signin" href="{{signIn.url}}" title="{{signIn.label}}">{{signIn.label}}</a>
+      <a ng-show="currentUser" class="page-header-link page-header-link-signout" href="{{signOut.url}}" title="{{signOut.label}}">{{signOut.label}}</a>
     </div>
   </div>
 </div>

@@ -249,7 +249,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           if (!d.special) return labelMargin + 'rem';
 
           if (parseInt($(this).parent().css('left'), 10) < $.relativeToPx((-specialLabelMargin) + 'rem')) {
-            return '0';
+            return '-5px';
           }
 
           return specialLabelMargin + 'rem';
@@ -388,6 +388,9 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         $target.one('mouseout', function() {
           barGroup.removeClass('hover');
         });
+        $target.one('click', function() {
+          $target.trigger('mouseout');
+        });
         return Modernizr.pointerevents ?
           element.find('[data-bar-name="{0}"].bar-group .bar.unfiltered'.format(name)) :
           barGroup;
@@ -405,8 +408,9 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         var rows = [["Total", $.toHumaneNumber(data.total) + unit]];
         if (showFiltered) {
           var filteredAmount = $.toHumaneNumber(data.filtered) + unit;
-          var filteredSpan = '<span class="filtered-row-highlight">{0}</span>';
-          rows.push([filteredSpan.format('Filtered Amount:'), filteredSpan.format(filteredAmount)]);
+          var spanTemplate = '<span class="{0}">{1}</span>';
+          var spanClass = data.special ? 'filtered-row-selected' : 'filtered-row-highlight';
+          rows.push([spanTemplate.format(spanClass, 'Filtered Amount:'), spanTemplate.format(spanClass, filteredAmount)]);
         }
 
         if (data.special) {
@@ -423,8 +427,13 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       selector: '.labels .label .contents .icon-close',
       parent: document.body,
       direction: 'top',
-      positionOn: _.identity,
-      html: 'Clear this filter'
+      positionOn: function($target) {
+        $target.one('click', function() {
+          $target.trigger('mouseout');
+        });
+        return $target;
+      },
+      html: 'Clear filter'
     });
 
     // Set "Click to Expand" truncation marker + its tooltip

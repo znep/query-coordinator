@@ -6,21 +6,19 @@ class StylesController < ApplicationController
 
   # Only used in development
   def individual
-    if params[:stylesheet].present? && params[:stylesheet].match(/^(\w|-|\.)+$/)
+    path = params[:path]
+
+    if path.present? && path.match(/^(\w|-|\.|\/)+$/)
       style_path_parts = [
         Rails.root,
         'app/styles'
       ]
 
-      if params[:folder].present? && params[:folder].match(/^(\w|-|\.)+$/)
-        style_path_parts.push(params[:folder])
-      end
-
       headers['Content-Type'] = 'text/css'
 
-      sass_stylesheet_filename = File.join(style_path_parts + ["#{params[:stylesheet]}.sass"])
-      css_stylesheet_filename = File.join(style_path_parts + ["#{params[:stylesheet]}.css"])
-      sass_erb_stylesheet_filename = File.join(style_path_parts + ["#{params[:stylesheet]}.sass.erb"])
+      sass_stylesheet_filename = File.join(style_path_parts + ["#{path}.sass"])
+      css_stylesheet_filename = File.join(style_path_parts + ["#{path}.css"])
+      sass_erb_stylesheet_filename = File.join(style_path_parts + ["#{path}.sass.erb"])
 
       # We have 3 cases:
       #  - The extension is .css. Return the css file.

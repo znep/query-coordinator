@@ -10,7 +10,7 @@ html, body
     margin: 1em
 
 #datasetBar
-  background-color: #fff
+  background-color: white
   border-top: 1px solid $color_chrome_box_border
   min-height: 5.7em
   position: relative
@@ -121,7 +121,7 @@ html, body
         top: 0.3em
 
   &.unsavedView
-    background: #fff url(/stylesheets/images/interface/dataset_unsaved_fade.png) repeat-y
+    background: white url(/stylesheets/images/interface/dataset_unsaved_fade.png) repeat-y
 
     #infoBox
       .unsavedLine, .basedOnTemp
@@ -166,7 +166,7 @@ html, body
         margin-right: 1em
 
         #searchForm
-          background-color: #fff
+          background-color: white
           border: 1px solid $color_buttons_active_border
           @include border-radius(0.2em)
           @include box-shadow(0, 0, 2px, rgba(0, 0, 0, 0.05))
@@ -415,7 +415,7 @@ html, body
     padding-top: 11em
 
 .outerContainer
-  background-color: #fff
+  background-color: white
   border: 1px solid $color_chrome_box_border
     left: 0
     right: 0
@@ -496,6 +496,7 @@ html, body
     &:last-child
       margin-bottom: 0
 
+$new-ux-z-index: 101
 .new-ux-link
   font-size: 1.5em
   position: fixed
@@ -505,7 +506,7 @@ html, body
   color: white
   padding: 0.4em 0.7em
   white-space: nowrap
-  z-index: 101
+  z-index: $new-ux-z-index
   overflow: hidden
   // Because this element has an icon- class on it (for the icon), our actual text's font gets
   // messed up. So, get the normal font.
@@ -573,7 +574,8 @@ html, body
     height: 3em
     @include prefixer(border-radius, 100px)
     opacity: 0
-    background-color: rgba(255, 255, 255, 0.9)
+    background-color: white
+    z-index: $new-ux-z-index + 1
 
   &.collapsed
     h3, p, .new-ux-image, .explore-btn, .icon-close
@@ -607,7 +609,7 @@ html, body
     right: 0
     background-color: rgba(128, 128, 128, 0.4)
     opacity: 0
-    z-index: 100
+    z-index: $new-ux-z-index - 1
     @include prefixer(transition, 'all 0.05s ease-out')
     text-align: center
 

@@ -37,7 +37,7 @@
           break;
         case 'underline':
           controls.underline = {
-            element: $('<div class="rich-text-editor-button icon-link" title="Link">u</button>').
+            element: $('<div class="rich-text-editor-button underline icon-underline" title="Underline">u</button>').
               on('click', _.bind(self.toggleUnderline, self)).
               appendTo(element),
             pathRegex: />U\b/
@@ -140,11 +140,13 @@
       this.hideAnchorInput();
     },
     hideAnchorInput: function(e) {
-      var form = this.controls.anchor.form;
-      form.fadeOut(100, function() {
-        _.bind(form.detach, form)
-        form[0].reset();
-      });
+      if (this.controls.anchor) {
+        var form = this.controls.anchor.form;
+        form.fadeOut(100, function() {
+          _.bind(form.detach, form)
+          form[0].reset();
+        });
+      }
     },
     /**
      * Update the visual state of all the controls, to highlight the currently-applied ones.

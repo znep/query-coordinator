@@ -1177,9 +1177,9 @@ describe('CardsViewController', function() {
         var downloadButton = context.element.find('.download-menu');
 
         $parentScope.editMode = true;
-        $scope.$digest();
-
+        $httpBackend.when('GET', '/javascripts/plugins/squire.js').respond({});
         testHelpers.fireMouseEvent(downloadButton[0], 'click');
+        $scope.$apply();
         expect(downloadButton.find('dropdown-menu').length).to.equal(0);
       });
   });

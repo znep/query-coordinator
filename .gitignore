@@ -6,6 +6,7 @@
 /tmp
 .DS_Store
 .*.swp
+.ruby-version
 
 # Ignore local database settings
 config/database.yml

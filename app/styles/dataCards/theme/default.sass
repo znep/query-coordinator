@@ -163,6 +163,19 @@ $aggregation-chooser-option-text-color: #fff
 $aggregation-chooser-option-active-text-color: #394047
 $aggregation-chooser-option-disabled-text-color: rgba(#fff, .5)
 
+$customize-bar-background-color: #fff
+$customize-bar-background-opacity: .96
+$customize-bar-border-color: #d7d4d4
+$customize-bar-border-opacity: .8
+$customize-bar-button-border-color: #5bb397
+$customize-bar-button-background-color: #eaf4f1
+$customize-bar-button-color: #4e9981
+$customize-bar-customizing-background-color: #4e9981
+$customize-bar-customizing-border-color: #4e9981
+$customize-bar-customizing-border-opacity: .8
+$customize-bar-customizing-button-background-color: #4c8d78
+$customize-bar-customizing-button-color: #fff
+
 // Theme styles
 // TODO Get rid of the unnestessary amount of nesting
 
@@ -609,3 +622,51 @@ aggregation-chooser
 
     &.disabled
       color: $aggregation-chooser-option-disabled-text-color
+
+
+// customize-bar
+.customize-bar-action-btn
+  @include action-button($customize-bar-button-color, $customize-bar-button-background-color, $customize-bar-button-border-color)
+
+  &:hover, &.active, &.touched
+    @include action-button($customize-bar-customizing-button-color, $customize-bar-customizing-button-background-color, $customize-bar-customizing-button-color)
+
+  &.disabled, &:disabled
+    @extend .action-btn.disabled !optional
+
+  &.working
+    @include action-button($customize-bar-customizing-button-color, $customize-bar-customizing-button-background-color, $customize-bar-customizing-button-color)
+
+.customize-bar
+  background-color: rgba($customize-bar-background-color, $customize-bar-background-opacity)
+  border-top-color: rgba($customize-bar-border-color, $customize-bar-border-opacity)
+  color: $customize-bar-button-color
+
+  .action-btn
+    @extend .customize-bar-action-btn
+    &:hover
+      border-color: $customize-bar-customizing-button-background-color
+      &.disabled
+        @extend .action-btn.disabled !optional
+
+  &.is-customizing
+    background-color: rgba($customize-bar-customizing-background-color, 1)
+    border-top-color: rgba($customize-bar-customizing-background-color, $customize-bar-border-opacity)
+    color: $customize-bar-customizing-button-color
+
+    .action-btn
+      @include action-button($customize-bar-customizing-button-color, $customize-bar-customizing-button-background-color, $customize-bar-customizing-button-color)
+
+      &:hover, &.active
+        @include action-button($customize-bar-customizing-button-background-color, $customize-bar-button-background-color, white)
+
+      &.disabled,&:disabled
+        @extend .action-btn.disabled !optional
+
+    button.save-button, button.save-as-button
+      @extend .customize-bar-action-btn
+      &:hover
+        border-color: $customize-bar-customizing-button-background-color
+
+    .tool-panel
+      @extend .tool-panel !optional

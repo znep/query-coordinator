@@ -1,6 +1,12 @@
 FROM socrata/base
 MAINTAINER Socrata <sysadmin@socrata.com>
 
+# Ridiculous hack to make this Dockerfile work in AWS jenkins.
+# Comment these out for local Dockerfile builds.
+ENV ftp_proxy http://proxy.aws-us-west-2-infrastructure.socrata.net:3128
+ENV http_proxy http://proxy.aws-us-west-2-infrastructure.socrata.net:3128
+ENV https_proxy http://proxy.aws-us-west-2-infrastructure.socrata.net:3128
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y update && \
   DEBIAN_FRONTEND=noninteractive apt-get --force-yes -fuy install software-properties-common && \
   DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:brightbox/ruby-ng && \

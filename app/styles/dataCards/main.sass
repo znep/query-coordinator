@@ -225,49 +225,6 @@ $card-description-transition-duration: 0.5s
       white-space: nowrap
       margin-right: $card-title-margin-right + $card-title-padding
 
-.onRight .card
-  .title-expanded
-    display: inline-block
-    .wrap
-      white-space: normal
-    .wrap:hover
-      overflow: visible
-
-.onLeft .card
-  .title-expanded
-    display: inline-block
-    .wrap:hover
-      max-width: none
-
-$top-nav-height: 40px
-$facets-list-width: 20%
-
-.facets-view
-  ul
-    position: absolute
-    top: $top-nav-height
-    bottom: 10px
-    left: 0
-    width: $facets-list-width
-    li
-      height: 20%
-
-  .main-viz
-    position: absolute
-    top: $top-nav-height
-    right: 10px
-    bottom: 10px
-    left: $facets-list-width
-    background: #555
-
-
-.mock-visualization
-  opacity: 0.2
-  width: 100%
-  height: 100%
-  div
-    height: 100%
-
 #ruler
   position: absolute
   left: -10000px

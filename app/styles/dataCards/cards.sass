@@ -32,6 +32,10 @@ body.state-view-cards
 
     .page-description
       margin-top: 1rem
+      font-size: 1rem
+
+      a
+        color: $link-font-color
 
       .show-more
         height: 1rem
@@ -53,7 +57,7 @@ body.state-view-cards
     .padded-wrapper
       padding: ($metadata-side-padding / 2)
 
-    .edit-page-name
+    .edit-page-name, .edit-page-description
       display: block
       position: relative
       color: inherit
@@ -81,17 +85,19 @@ body.state-view-cards
           font-style: italic
           font-size: .9em
 
+      $customize-section-border: #ccc
       >textarea
+        height: 1.2em
+        padding-left: 1.2em // make room for edit icon
+        margin-bottom: 0.3em
+      >textarea, >rich-text-editor
         color: inherit
         background: transparent
         font: inherit
-        height: 1.2em
         display: block
         width: 100%
         box-sizing: border-box
-        padding-left: 1.2em
-        border: 1px solid $grey-inactive-border-color
-        @include prefixer(border-radius, 2px)
+        border: 1px solid $customize-section-border
 
         // Make sure this is above the placeholder
         position: relative
@@ -100,7 +106,7 @@ body.state-view-cards
         &:empty + .placeholder > span
           display: inline
 
-        &:focus
+        &:focus, &.focus
           outline: 0
           border-color: $blue-active-color
           // webkit doesn't give us box shadows unless we nuke its appearance
@@ -131,6 +137,8 @@ body.state-view-cards
 
     header,.edit-page-name
       font-size: 2rem
+    .edit-page-description
+      font-size: 1rem
 
     .activities
       position: relative

@@ -70,44 +70,65 @@ input.dark[type="url"]
 
 rich-text-editor
   display: block
-  border: 1px solid black
-  width: 50%
-
-  $toolbar-height: 2rem
+  $toolbar-height: 1.3rem
+  $toolbar-bg-color: #ddd
+  $toolbar-btn-active-background-color: #ccc
+  $toolbar-btn-border-color: #999
+  $toolbar-btn-border-color-hover: #555
   .toolbar
-    height: $toolbar-height
-    background-color: $panel-bg-color
-    line-height: $toolbar-height
-    padding-left: .5rem
-
-    button
-      margin: 0 .2rem
-      cursor: pointer
-      border: 2px solid $btn-border-color
-      background-color: $btn-bg-color
-      color: rgba(0, 0, 0, 0.5)
-
+    background-color: $toolbar-bg-color
+    text-align: right
+    padding: 0.1em 0.3em
+    border-bottom: 1px solid #aaa
+    min-height: $toolbar-height
+    .rich-text-editor-button
+      display: inline-block
+      border: 1px solid $toolbar-btn-border-color
+      height: 1.3em
+      line-height: 1.3em
+      width: 1.5em
+      text-align: center
+      background-color: transparent
+      color: #000
+      font-family: "socrata-apps"
       &:hover
-        border-color: $btn-hover-border-color
-        color: rgba(0, 0, 0, .8)
-
+        border-color: $toolbar-btn-border-color-hover
       &.active
-        border-color: $btn-hover-border-color
-        color: rgba(0, 0, 0, 1)
-
-      &.bold
-        font-weight: bold
-
-      &.italic
-        font-style: italic
-
-      &.underline
-        text-decoration: underline
-
-      &.anchor
-        text-decoration: underline
-        color: $link-font-color
+        background-color: $toolbar-btn-active-background-color
+    $toolbar-link-edit-border-color: #3f4752
+    $toolbar-link-edit-tip-size: 14px
+    .icon-link-edit
+      background-color: $view-cards-bg-color
+      border: 1px solid $toolbar-link-edit-border-color
+      padding: 0.5em 0.8em 0
+      .icon-link-edit-hint
+        position: absolute
+        left: -1px
+        top: -$toolbar-link-edit-tip-size
+        width: 0
+        height: 0
+        border-right: $toolbar-link-edit-tip-size solid transparent
+        border-bottom: $toolbar-link-edit-tip-size solid $view-cards-bg-color
+      p
+        color: white
+        margin: 0 0 0.5em
+        text-align: left
+        width: 15em
+      input
+        width: 100%
+        -webkit-box-sizing: border-box
+        -moz-box-sizing: border-box
+        box-sizing: border-box
+      .icon-link-edit-buttons
+        text-align: right
+        margin: 0.5em 0
 
   iframe
-    border-top: $toolbar-height solid transparent
+    padding: 1em
 
+  .icon-link:before
+    content: "\e613"
+  .icon-italic:before
+    content: "\e614"
+  .icon-bold:before
+    content: "\e615"

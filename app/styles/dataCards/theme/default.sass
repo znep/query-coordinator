@@ -95,6 +95,15 @@ $tool-panel-form-text-color: #555
 $tool-panel-form-background-color: #fff
 $tool-panel-form-error-border-color: $red-error-color
 
+$modal-dialog-overlay-color: #141415
+$modal-dialog-background-color: #4d5968
+$modal-dialog-border-color: #3f4752
+$modal-dialog-text-color: #fff
+$modal-dialog-close-button-color: $blue-active-color
+
+$selection-label-background-color: #fff
+$selection-label-text-color: #000
+
 // Theme styles
 // TODO Get rid of the unnestessary amount of nesting
 
@@ -340,3 +349,25 @@ $tool-panel-form-error-border-color: $red-error-color
     background: $tool-panel-form-background-color none
     &.form-error
       border-color: $tool-panel-form-error-border-color
+
+
+// modal-dialog
+.modal-container
+  .modal-overlay
+    background-color: $modal-dialog-overlay-color
+
+  .modal-dialog
+    background-color: $modal-dialog-background-color
+    border: 1px solid $modal-dialog-border-color
+
+    .modal-dialog-content
+      color: $modal-dialog-text-color
+
+    .modal-close-button
+      color: $modal-dialog-close-button-color
+
+
+// selection-label
+.selection-label-outer
+  color: $selection-label-text-color
+  background-color: $selection-label-background-color

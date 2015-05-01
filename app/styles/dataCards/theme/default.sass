@@ -139,6 +139,21 @@ $feedback-panel-background-color:#607550
 $feedback-panel-border-color: #4c613c
 $feedback-panel-link-text-color: #fff
 
+$card-text-color: #8f8f8f
+$card-background-color: #fff
+$card-title-text-color: #68b0cc
+$card-title-dynamic-text-color: #bbb
+$card-description-text-color: rgba(#000, .5)
+$card-description-expand-button-color: rgba(#000, .5)
+$card-description-expanded-content-text-color: #000
+$card-description-expanded-content-background-color: rgba($card-background-color, .9)
+$card-control-color: #888
+$card-control-hover-color: #ccc
+$card-control-hover-settings-color: $blue-active-color
+$card-control-hover-close-color: #f00
+$card-form-group-form-control-text-color: #555
+$card-form-group-form-control-background-color: #fff
+$card-form-group-form-control-border-color: rgba(#000, .5)
 
 // Theme styles
 // TODO Get rid of the unnestessary amount of nesting
@@ -503,3 +518,57 @@ feedback-panel
     a
       font-weight: bold
       color: $feedback-panel-link-text-color
+
+
+// card
+.card
+  color: $card-text-color
+  background: $card-background-color
+
+  .title-one-line
+    color: $card-title-text-color
+
+    &.dynamic-title
+      color: $card-title-dynamic-text-color
+
+    .wrap
+      background-color: $card-background-color
+
+  .description
+    color: $card-description-text-color
+
+    .description-expand-button
+      color: $card-description-expand-button-color
+      background-color: $card-background-color
+
+    .description-expanded-wrapper
+      background: $card-background-color
+
+      .description-expanded-content
+        color: $card-description-expanded-content-text-color
+        background: $card-description-expanded-content-background-color
+
+  .card-controls
+    background-color: $card-background-color
+
+    >.card-control
+      color: $card-control-color
+
+      &:hover
+        color: $card-control-hover-color
+        border-color: $card-control-hover-color
+
+    >.icon-settings
+      &:hover
+        color: $card-control-hover-settings-color
+
+    >.icon-close
+      &:hover
+        color: $card-control-hover-close-color
+
+.card-form-group
+  .form-control
+    color: $card-form-group-form-control-text-color
+    background: $card-form-group-form-control-background-color none
+    border: 3px solid transparent
+    border-bottom: 1px solid $card-form-group-form-control-border-color

@@ -9,8 +9,6 @@ $card-description-transition-duration: 0.5s
 .card
   border-radius: $rounded-corners-border-radius
   padding: $card-padding
-  color: $lt-grey-font-color
-  background: $card-bg-color
   box-sizing: border-box
   -moz-box-sizing: border-box
   height: 100%
@@ -26,13 +24,11 @@ $card-description-transition-duration: 0.5s
     max-width: 100%
     line-height: $card-title-line-height
     font-weight: normal
-    color: $filtered-region-bg-color-1
     display: block
     padding-bottom: 5px
     position: relative
 
     &.dynamic-title
-      color: $card-dynamic-title-color
       font-size: $small-font-size
       line-height: $small-font-size
       padding-bottom: 1px
@@ -72,7 +68,6 @@ $card-description-transition-duration: 0.5s
       opacity: 0
       font-size: inherit
       white-space: initial
-      background-color: $card-bg-color
       &:hover
         opacity: 1
         overflow: visible
@@ -82,7 +77,6 @@ $card-description-transition-duration: 0.5s
     line-height: $card-description-line-height
     padding-right: 30px
     padding-bottom: 1rem
-    color: $lt-grey-font-color-rgba
 
     .description-truncated-content
       position: relative
@@ -90,8 +84,6 @@ $card-description-transition-duration: 0.5s
       visibility: hidden
 
     .description-expand-button
-      color: $expand-button-color
-      background-color: $card-bg-color
       display: none
       position: absolute
       visibility: collapse
@@ -102,7 +94,6 @@ $card-description-transition-duration: 0.5s
       cursor: pointer
 
     .description-expanded-wrapper
-      background: $card-bg-color
       z-index: 1
       position: absolute
       overflow: hidden
@@ -112,8 +103,6 @@ $card-description-transition-duration: 0.5s
       padding-right: 20px
 
       .description-expanded-content
-        color: #000
-        background: rgba($card-bg-color, 0.9)
         overflow-y: auto
         overflow-x: hidden
         padding-bottom: 0
@@ -170,7 +159,6 @@ $card-description-transition-duration: 0.5s
     right: 0.5rem
     top: 0.5rem
     z-index: 1001
-    background-color: white
 
     >.card-control
       width: $icon-size
@@ -180,12 +168,7 @@ $card-description-transition-duration: 0.5s
       position: relative
       text-align: center
       cursor: pointer
-      color: $card-control-color
       display: inline-block
-
-      &:hover
-        color: #ccc
-        border-color: #ccc
 
       span
         display: block
@@ -193,15 +176,8 @@ $card-description-transition-duration: 0.5s
 
 
     >.icon-settings
-      &:hover
-        color: $btn-hover-border-color
-
       &.disabled
         opacity: .25
-
-    >.icon-close
-      &:hover
-        color: red
 
 card-visualization
   display: block
@@ -271,10 +247,6 @@ div[ng-switch="cardType"]
     box-sizing: border-box
     display: block
     padding: $card-input-vertical-padding 1rem $card-input-vertical-padding 6px
-    color: #555
-    background: #fff none
-    border: 3px solid transparent
-    border-bottom: 1px solid $lt-grey-font-color-rgba
     margin-top: 5px
 
 .card-example-text

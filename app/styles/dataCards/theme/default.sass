@@ -215,6 +215,10 @@ $add-card-controls-control-hover-color: #ccc
 $add-card-controls-add-card-settings-hover-color: #fff
 $add-card-controls-add-card-settings-hover-background-color: $blue-active-color
 
+$choropleth-legend-tick-color: #000
+$choropleth-legend-rect-color: #fff
+$choropleth-legend-continuous-text-color: #646464
+
 
 // Theme styles
 // TODO Get rid of the unnestessary amount of nesting
@@ -825,3 +829,27 @@ body.state-view-cards
   >.add-card-settings:hover
     color: $add-card-controls-add-card-settings-hover-color
     background-color: $add-card-controls-add-card-settings-hover-background-color
+
+
+// choropleth
+.choropleth-container
+  .choropleth-legend
+    svg
+      .labels
+        .tick
+          line
+            stroke: $choropleth-legend-tick-color
+
+      rect.choropleth-legend-color
+        stroke: $choropleth-legend-rect-color
+
+    &.continuous
+      svg
+        .tick
+          text
+            color: $choropleth-legend-continuous-text-color
+            fill: $choropleth-legend-continuous-text-color
+
+          line
+            stroke: $choropleth-legend-tick-color
+

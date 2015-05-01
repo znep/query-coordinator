@@ -42,13 +42,7 @@ card.expanded .choropleth-container .choropleth-legend.continuous
       display: block
       overflow: initial
 
-      .labels
-        .tick
-          line
-            stroke: black
-
       rect.choropleth-legend-color
-        stroke: white
         stroke-width: 1px
 
     &.continuous
@@ -81,16 +75,9 @@ card.expanded .choropleth-container .choropleth-legend.continuous
           $font-size: .8rem
           font-size: $font-size
 
-          text
-            color: $dark-grey-font-color
-            fill: $dark-grey-font-color
-
           &.small
             font-size: .75 * $font-size
             opacity: .8
-
-          line
-            stroke: black
 
         path.domain
           display: none
@@ -101,7 +88,7 @@ card.expanded .choropleth-container .choropleth-legend.continuous
   position: absolute
   top: 50%
   left: 50%
-  background-color: rgb(255,255,255)
+  background: #fff
   @include border-radius($rounded-corners-border-radius)
   @include prefixer('transform', 'translate(-50%, -50%)')
 

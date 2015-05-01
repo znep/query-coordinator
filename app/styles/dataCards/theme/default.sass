@@ -155,6 +155,14 @@ $card-form-group-form-control-text-color: #555
 $card-form-group-form-control-background-color: #fff
 $card-form-group-form-control-border-color: rgba(#000, .5)
 
+$aggregation-chooser-trigger-color: #fff
+$aggregation-chooser-tool-panel-hint-border-color: #3f4752
+$aggregation-chooser-option-hover-count-background-color: #394047
+$aggregation-chooser-option-hover-no-count-background-color: #394047
+$aggregation-chooser-option-text-color: #fff
+$aggregation-chooser-option-active-text-color: #394047
+$aggregation-chooser-option-disabled-text-color: rgba(#fff, .5)
+
 // Theme styles
 // TODO Get rid of the unnestessary amount of nesting
 
@@ -572,3 +580,32 @@ feedback-panel
     background: $card-form-group-form-control-background-color none
     border: 3px solid transparent
     border-bottom: 1px solid $card-form-group-form-control-border-color
+
+
+// aggregation-chooser
+aggregation-chooser
+  .aggregation-chooser-trigger
+    color: $aggregation-chooser-trigger-color
+
+    &::after
+      border-color: $aggregation-chooser-trigger-color transparent transparent transparent
+
+  .tool-panel-hint::before
+    border-color: transparent transparent $aggregation-chooser-tool-panel-hint-border-color transparent
+
+  .aggregation-columns.count
+    .aggregation-option.count:hover
+      background-color: $aggregation-chooser-option-hover-count-background-color
+
+  .aggregation-columns.no-count
+    .aggregation-option.no-count:hover
+      background-color: $aggregation-chooser-option-hover-no-count-background-color
+
+  .aggregation-option
+    color: $aggregation-chooser-option-text-color
+
+    &.active
+      background-color: $aggregation-chooser-option-active-text-color
+
+    &.disabled
+      color: $aggregation-chooser-option-disabled-text-color

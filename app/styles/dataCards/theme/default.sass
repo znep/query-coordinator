@@ -76,9 +76,28 @@ $action-btn-green-disabled-bg-color: #f0f
 $action-btn-green-disabled-border-color: #ff0
 $action-btn-green-disabled-font-color: #4b0082
 
+$flyout-border-color: #ccc
+$flyout-background-color: #fff
+$flyout-text-color: #000
+$flyout-chart-background-color: #f1eeee
+$flyout-chart-title-text-color: #676464
+$flyout-chart-text-color: #8a8686
+$flyout-table-description-text-color: rgba(#000, .5)
+$flyout-row-cell-emphasized-color: lighten(#68b0cc, 10%)
+
+$tool-panel-text-color: #fff
+$tool-panel-background-color: #4d5968
+$tool-panel-border-color: #3f4752
+$tool-panel-hint-border-color: #4d5968
+$tool-panel-light-background-color: #eee
+$tool-panel-light-border-color: #d4d4d4
+$tool-panel-form-text-color: #555
+$tool-panel-form-background-color: #fff
+$tool-panel-form-error-border-color: $red-error-color
 
 // Theme styles
 // TODO Get rid of the unnestessary amount of nesting
+
 
 // page-header
 .page-header
@@ -87,6 +106,7 @@ $action-btn-green-disabled-font-color: #4b0082
 .page-header-link
   color: $page-header-link-text-color
   text-shadow: 1px 1px 2px $page-header-link-text-shadow-color
+
 
 // metadata
 .cards-metadata
@@ -129,6 +149,7 @@ $action-btn-green-disabled-font-color: #4b0082
 
             a
               color: $cards-metadata-value-link-text-color
+
 
 // action-button
 .action-btn
@@ -175,3 +196,147 @@ $action-btn-green-disabled-font-color: #4b0082
 
   &.working
     @include action-button($action-btn-working-font-color, $action-btn-working-bg-color, $action-btn-working-border-color)
+
+
+// flyout
+#uber-flyout
+  color: $flyout-chart-text-color
+  background-color: $flyout-chart-background-color
+  border: 1px solid $flyout-border-color
+
+  .flyout-title
+    color: $flyout-chart-title-text-color
+
+  .flyout-row
+    .flyout-cell.emphasis
+      color: $flyout-row-cell-emphasized-color
+
+#uber-flyout.left
+  .hint
+    &:after
+      border-color: $flyout-chart-background-color transparent transparent transparent
+
+    &:before
+      border-color: $flyout-border-color transparent transparent transparent
+
+#uber-flyout.right
+  .hint
+    &:after
+      border-color: transparent $flyout-chart-background-color transparent transparent
+
+    &:before
+      border-color: transparent $flyout-border-color transparent transparent
+
+#uber-flyout.right.horizontal
+  .hint
+    &:after
+      border-color: transparent transparent transparent $flyout-chart-background-color
+
+    &:before
+      border-color: transparent transparent transparent $flyout-border-color
+
+.flyout
+  border: 1px solid $flyout-border-color
+  background-color: $flyout-background-color
+  color: $flyout-text-color
+
+  &.flyout-chart
+    color: $flyout-chart-text-color
+    background-color: $flyout-chart-background-color
+
+    .flyout-title
+      color: $flyout-chart-title-text-color
+
+    &.top
+      .flyout-arrow
+        &.left
+          &:after
+            border-color: $flyout-chart-background-color transparent transparent transparent
+
+          &:before
+            border-color: $flyout-border-color transparent transparent transparent
+
+        &.right
+          &:after
+            border-color: transparent $flyout-chart-background-color transparent transparent
+
+          &:before
+            border-color: transparent $flyout-border-color transparent transparent
+
+        &.center
+          &:after
+            border-color: $flyout-chart-background-color transparent transparent
+
+          &:before
+            border-color: $flyout-border-color transparent transparent
+
+  &.flyout-table
+    .flyout-title
+      border-bottom-color: $flyout-border-color
+
+      .description
+        color: $flyout-table-description-text-color
+
+    &.right
+      .flyout-arrow
+        &:after
+          border-right-color: $flyout-background-color
+
+        &:before
+          border-right-color: $flyout-border-color
+
+    &.left
+      .flyout-arrow
+        &:after
+          border-left-color: $flyout-background-color
+
+        &:before
+          border-left-color: $flyout-border-color
+
+    &.top
+      .flyout-arrow
+        &:after
+          border-top-color: $flyout-background-color
+
+        &:before
+          border-top-color: $flyout-border-color
+
+    &.bottom
+      .flyout-arrow
+        &:after
+          border-bottom-color: $flyout-background-color
+
+        &:before
+          border-bottom-color: $flyout-border-color
+
+
+// tool-panel
+.tool-panel
+  .tool-panel-main
+    color: $tool-panel-text-color
+    background-color: $tool-panel-background-color
+    border: solid 1px $tool-panel-border-color
+
+  .tool-panel-hint
+    border-color: transparent transparent $tool-panel-background-color transparent
+
+  &.upwards
+    .tool-panel-hint
+      border-color: $tool-panel-background-color transparent transparent $tool-panel-background-color
+
+  &.light
+    .tool-panel-hint
+      border-color: $tool-panel-light-border-color
+
+  &.left
+    .tool-panel-hint
+      &:after
+        border-color: transparent transparent $tool-panel-light-background-color $tool-panel-light-background-color
+      &:before
+        border-color: transparent transparent $tool-panel-light-border-color $tool-panel-light-border-color
+
+  .form-control
+    color: $tool-panel-form-text-color
+    background: $tool-panel-form-background-color none
+    &.form-error
+      border-color: $tool-panel-form-error-border-color

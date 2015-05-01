@@ -21,12 +21,9 @@ $tool-panel-z-index: 1004
     margin-top: $tool-panel-hint-size / 2
     right: 50%
     margin-right: -10px
-    color: $tool-panel-white-font-color
-    background-color: $tool-panel-bg-color
     text-align: left
     z-index: $tool-panel-z-index
     width: $tool-panel-width
-    border: solid 1px $tool-panel-border-color
 
   .tool-panel-hint
     position: absolute
@@ -36,7 +33,6 @@ $tool-panel-z-index: 1004
     height: 0
     border-style: solid
     border-width: 0 0 $tool-panel-hint-size $tool-panel-hint-size
-    border-color: transparent transparent $tool-panel-bg-color transparent
 
   &.upwards // An upwards facing tool-panel
     .tool-panel-main
@@ -50,7 +46,6 @@ $tool-panel-z-index: 1004
       left: -1px
       right: inherit
       border-width: 20px
-      border-color: $tool-panel-bg-color transparent transparent $tool-panel-bg-color
 
   &.downwards
     .tool-panel-hint
@@ -59,7 +54,6 @@ $tool-panel-z-index: 1004
 
   &.light
     .tool-panel-hint
-      border-color: $tool-panel-border-color-light
       border-width: 0 $tool-panel-hint-size $tool-panel-hint-size 0
   &.left
     .tool-panel-hint
@@ -73,12 +67,10 @@ $tool-panel-z-index: 1004
         width: 0
         height: 0
       &:after
-        border-color: transparent transparent $tool-panel-bg-color-light $tool-panel-bg-color-light
         border-width: ($tool-panel-hint-size / 2)
         top: 2px
         left: 1px
       &:before
-        border-color: transparent transparent $tool-panel-border-color-light $tool-panel-border-color-light
         border-width: ($tool-panel-hint-size / 2) + 1
 
   .tool-panel-inner-container
@@ -98,12 +90,8 @@ $tool-panel-z-index: 1004
     display: block
     width: 100%
     padding: 8px 6px
-    color: #555
-    background: #fff none
     border: 3px solid transparent
     margin-top: 5px
-    &.form-error
-      border-color: $form-error-border-color
 
   textarea.form-control
     height: auto

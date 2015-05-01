@@ -49,7 +49,7 @@
             element: $('<div class="rich-text-editor-button anchor icon-link" title="Link"></button>').
               css({position: 'relative'}).
               on('click', function(e) {
-                if ($(e.target).hasClass("rich-text-editor-button")) {
+                if ($(e.target).hasClass('rich-text-editor-button')) {
                   self.toggleAnchor();
                 }
               }).
@@ -140,8 +140,9 @@
       this.hideAnchorInput();
     },
     hideAnchorInput: function(e) {
-      if (this.controls.anchor) {
-        var form = this.controls.anchor.form;
+      var anchor = this.controls.anchor;
+      if (anchor) {
+        var form = anchor.form;
         form.fadeOut(100, function() {
           _.bind(form.detach, form)
           form[0].reset();
@@ -155,7 +156,7 @@
       _.forOwn(this.controls, function(obj) {
         if (obj.pathRegex) {
           obj.element.toggleClass('active', obj.pathRegex.test(path));
-          if (!obj.pathRegex.test(path) || !obj.element.hasClass("anchor")) {
+          if (!obj.pathRegex.test(path) || !obj.element.hasClass('anchor')) {
             // If not clicking on an anchor, close any open anchor edit windows
             curToolbar.hideAnchorInput();
           }

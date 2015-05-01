@@ -1206,6 +1206,7 @@ importNS.uploadFilePaneConfig = {
         $pane.find('.uploadFileFormats').addClass(state.type);
 
         // uploader
+        // Only the #scan and #create methods are available on NBE as of now.
         var uploadEndpoint = '/imports2.txt?method=';
         if (state.type == 'blist')
         {

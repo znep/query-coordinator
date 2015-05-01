@@ -186,6 +186,36 @@ $body-state-dataset-metadata-page-hover-background-color: lighten($body-state-da
 $body-state-dataset-metadata-page-link-text-color: #fff
 $body-state-dataset-metadata-page-header-text-color: $aqua-color
 
+$cards-content-background-color: #4d5969
+$cards-content-text-color: #fff
+$cards-content-quick-filter-bar-background-color: #4d5969
+$cards-content-quick-filter-bar-filter-text-color: #fff
+$cards-content-card-spot-card-chooser-background-color: rgba(#000, .5)
+$cards-content-card-spot-card-chooser-hover-background-color: rgba(#000, .1)
+$action-png-export-focus-background-color: $blue-active-color
+$action-png-export-focus-border-color: $blue-active-color
+$action-png-export-focus-color: #fff
+$cards-content-card-group-drop-placeholder-text-color: #fff
+$cards-content-card-group-drop-placeholder-border-color: #fff
+$cards-content-card-drop-placeholder-background-color: #fff
+$add-card-dialog-settings-color: #68b0cc
+$add-card-dialog-settings-before-color: #888
+$add-card-dialog-settings-hover-color: #fff
+$add-card-dialog-settings-hover-background-color: $blue-active-color
+$add-card-dialog-settings-hover-before-color: #fff
+$cards-content-manage-lens-link-warning-color: #debb1e
+$table-icon-grid-lines-fill-color: $aqua-color
+$table-icon-grid-cells-fill-color: lighten($aqua-color, 10%)
+$add-card-select-column-soc-select-background-color: #3f4752
+$add-card-preview-background-color: #6d7988
+$add-card-preview-border-color: #fff
+$add-card-controls-background-color: #fff
+$add-card-controls-control-color: #888
+$add-card-controls-control-hover-color: #ccc
+$add-card-controls-add-card-settings-hover-color: #fff
+$add-card-controls-add-card-settings-hover-background-color: $blue-active-color
+
+
 // Theme styles
 // TODO Get rid of the unnestessary amount of nesting
 
@@ -711,3 +741,87 @@ body
 
             h2
               color: $body-state-dataset-metadata-page-header-text-color
+
+// cards-content
+body.state-view-cards
+  .cards-content
+    color: $cards-content-text-color
+    background-color: $cards-content-background-color
+
+    #quick-filter-bar-container
+      .quick-filter-bar
+        .content
+          background-color: $cards-content-quick-filter-bar-background-color
+
+        .filter
+          color: $cards-content-quick-filter-bar-filter-text-color
+
+    .cards
+      .card-spot
+        .overlay
+          &.card-chooser
+            background-color: $cards-content-card-spot-card-chooser-background-color
+
+            &.enabled:hover
+              background-color: $cards-content-card-spot-card-chooser-hover-background-color
+
+            .action-png-export
+              &:focus
+                background-color: $action-png-export-focus-background-color
+                border: 2px solid $action-png-export-focus-border-color
+                color: $action-png-export-focus-color
+
+      .card-group-drop-placeholder
+        color: $cards-content-card-group-drop-placeholder-text-color
+        border: 2px dashed $cards-content-card-group-drop-placeholder-border-color
+
+      .card-drop-placeholder
+        background-color: $cards-content-card-drop-placeholder-background-color
+
+  add-card-dialog
+    .card-spot
+      .icon-settings
+        color: $add-card-dialog-settings-color
+
+        &::before
+          color: $add-card-dialog-settings-before-color
+
+        &:hover
+          background-color: $add-card-dialog-settings-hover-background-color
+          color: $add-card-dialog-settings-hover-color
+
+          &::before
+            color: $add-card-dialog-settings-hover-before-color
+
+  .manage-lens-link
+    .icon-warning
+      color: $cards-content-manage-lens-link-warning-color
+
+.table-icon
+  .grid-lines
+    fill: $table-icon-grid-lines-fill-color
+
+  .grid-cells
+    fill: $table-icon-grid-cells-fill-color
+
+.add-card-select-column
+  soc-select
+    background-color: $add-card-select-column-soc-select-background-color
+
+.add-card-preview
+  background-color: $add-card-preview-background-color
+  border: 2px dashed $add-card-preview-border-color
+
+.add-card-controls
+  background-color: $add-card-controls-background-color
+
+  >.card-control
+    color: $add-card-controls-control-color
+
+    &:hover
+      color: $add-card-controls-control-hover-color
+      border-color: $add-card-controls-control-hover-color
+
+  >.add-card-settings:hover
+    color: $add-card-controls-add-card-settings-hover-color
+    background-color: $add-card-controls-add-card-settings-hover-background-color

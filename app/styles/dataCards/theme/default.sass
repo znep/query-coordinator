@@ -104,6 +104,12 @@ $modal-dialog-close-button-color: $blue-active-color
 $selection-label-background-color: #fff
 $selection-label-text-color: #000
 
+$related-views-list-item-border-color: rgba(#fff, .3)
+$related-views-list-item-hover-background-color: rgba(#fff, .1)
+$related-view-name-text-color: #68b0cc
+$related-view-description-text-color: #fff
+
+
 // Theme styles
 // TODO Get rid of the unnestessary amount of nesting
 
@@ -371,3 +377,18 @@ $selection-label-text-color: #000
 .selection-label-outer
   color: $selection-label-text-color
   background-color: $selection-label-background-color
+
+
+// related-views
+.related-views-list-item
+  > a
+    border-bottom: 1px solid $related-views-list-item-border-color
+
+  &:hover
+    background-color: $related-views-list-item-hover-background-color
+
+.related-view-name
+  color: $related-view-name-text-color
+
+.related-view-description
+  color: $related-view-description-text-color

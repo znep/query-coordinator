@@ -134,6 +134,12 @@ $rich-text-editor-toolbar-button-active-border-color: $blue-active-color
 $rich-text-editor-toolbar-button-active-text-color: #000
 $rich-text-editor-toolbar-button-anchor-text-color: #68b0cc
 
+$feedback-panel-text-color: #f5f5f5
+$feedback-panel-background-color:#607550
+$feedback-panel-border-color: #4c613c
+$feedback-panel-link-text-color: #fff
+
+
 // Theme styles
 // TODO Get rid of the unnestessary amount of nesting
 
@@ -481,3 +487,19 @@ rich-text-editor
       &.anchor
         color: $rich-text-editor-toolbar-button-anchor-text-color
 
+
+// feedback-panel
+feedback-panel
+  .feedback-panel-button
+    color: $feedback-panel-text-color
+    background-color: $feedback-panel-background-color
+    border: 1px solid $feedback-panel-border-color
+
+  .feedback-panel-content
+    color: $feedback-panel-text-color
+    background-color: $feedback-panel-background-color
+    border: 1px solid $feedback-panel-border-color
+
+    a
+      font-weight: bold
+      color: $feedback-panel-link-text-color

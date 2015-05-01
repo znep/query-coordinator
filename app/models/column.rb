@@ -1,5 +1,5 @@
 class Column < Model
-  cattr_reader :types, :importable_types
+  cattr_reader :types
   attr_accessor :data_position
 
   @@types = {
@@ -31,6 +31,14 @@ class Column < Model
                                'calendar_date', 'date', 'checkbox',
                                'stars', 'location' ].
     collect { |type| [ type, I18n.t("core.data_types.#{type}") ] } ]
+
+  @@legacy_types = [ 'html', 'email', 'url', 'date', 'stars' ]
+
+  def self.importable_types(request = nil)
+    @@importable_types.reject do |k, v|
+      @@legacy_types.include?(k) if FeatureFlags.derive(nil, request).default_imports_to_nbe
+    end
+  end
 
   def self.create(view_id, attributes, parent_id=nil)
     if parent_id.nil?

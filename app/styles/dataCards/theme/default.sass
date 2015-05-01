@@ -111,6 +111,29 @@ $related-view-description-text-color: #fff
 
 $multiline-ellipsis-color: $aqua-color
 
+$lens-type-background-color: #959595
+$lens-type-text-color: #fff
+
+$soc-select-background-color: #3f4752
+$soc-select-text-color: #fff
+$soc-select-option-background-color: #fff
+$soc-select-option-text-color: #000
+$soc-select-option-disabled-text-color: #bebebe
+$soc-select-arrow-color: #fff
+$soc-select-disabled-text-color: #aaa
+$soc-select-disabled-arrow-color: #aaa
+
+$rich-text-editor-border-color: #000
+$rich-text-editor-toolbar-background-color: #394047
+$rich-text-editor-toolbar-button-border-color: #bad9e6
+$rich-text-editor-toolbar-button-background-color: #f0f5f7
+$rich-text-editor-toolbar-button-text-color: rgba(#000, .5)
+$rich-text-editor-toolbar-button-hover-border-color: $blue-active-color
+$rich-text-editor-toolbar-button-hover-text-color: rgba(#000, .8)
+$rich-text-editor-toolbar-button-active-border-color: $blue-active-color
+$rich-text-editor-toolbar-button-active-text-color: #000
+$rich-text-editor-toolbar-button-anchor-text-color: #68b0cc
+
 // Theme styles
 // TODO Get rid of the unnestessary amount of nesting
 
@@ -402,4 +425,59 @@ $multiline-ellipsis-color: $aqua-color
 
   &.less .show-more-arrow
     border-bottom-color: $multiline-ellipsis-color
+
+
+// lens-type
+lens-type
+  span
+    color: $lens-type-text-color
+    background-color: $lens-type-background-color
+
+
+// soc-select
+soc-select
+  background-color: $soc-select-background-color
+
+  select
+    color: $soc-select-text-color
+
+    option
+      background-color: $soc-select-option-background-color
+      color: $soc-select-option-text-color
+      &:disabled
+        color: $soc-select-option-disabled-text-color
+
+  .arrow-container
+    .arrow
+      border-color: $soc-select-arrow-color transparent transparent transparent
+
+  select:disabled
+    color: $soc-select-disabled-text-color
+
+    + .arrow-container .arrow
+      border-top-color: $soc-select-disabled-arrow-color
+
+
+// rich-text-editor
+rich-text-editor
+  border: 1px solid $rich-text-editor-border-color
+
+  .toolbar
+    background-color: $rich-text-editor-toolbar-background-color
+
+    button
+      border: 2px solid $rich-text-editor-toolbar-button-border-color
+      background-color: $rich-text-editor-toolbar-button-background-color
+      color: $rich-text-editor-toolbar-button-text-color
+
+      &:hover
+        border-color: $rich-text-editor-toolbar-button-hover-border-color
+        color: $rich-text-editor-toolbar-button-hover-text-color
+
+      &.active
+        border-color: $rich-text-editor-toolbar-button-active-border-color
+        color: $rich-text-editor-toolbar-button-active-text-color
+
+      &.anchor
+        color: $rich-text-editor-toolbar-button-anchor-text-color
 

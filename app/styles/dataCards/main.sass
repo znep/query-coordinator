@@ -73,26 +73,24 @@ a
 .lowercase
   text-transform: lowercase
 
-.page-header
+// Vertical center the logo if it's shorter than 50px
+.page-header-logo
+  padding: $header-logo-padding
+  display: table-cell
+  vertical-align: middle
+  height: $header-logo-height
 
-  // Vertical center the logo if it's shorter than 50px
-  .page-header-logo
-    padding: $header-logo-padding
-    display: table-cell
-    vertical-align: middle
-    height: $header-logo-height
+  >img
+    position: relative
+    max-height: $header-logo-height
 
-    >img
-      position: relative
-      max-height: $header-logo-height
+.page-header-links
+  text-align: right
+  line-height: (2 * $header-logo-padding-y) + $header-logo-height
+  padding-right: 1rem
 
-  .page-header-links
-    text-align: right
-    line-height: (2 * $header-logo-padding-y) + $header-logo-height
-    padding-right: 1rem
-
-  .page-header-link
-    margin-left: 2rem
+.page-header-link
+  margin-left: 2rem
 
 
 // Why is this not in cards.sass?

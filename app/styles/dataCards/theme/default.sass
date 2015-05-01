@@ -1,11 +1,177 @@
+@import dataCards/common/mixins
+
+// First we define general colors for DRY reasons.
+// Then we define colors for modules
+// Then we apply all of the module colors
+
+// General colors
 $body-background-color: #3f4752
+$blue-active-color: #67aecc
+$red-error-color: #e83e3e
+$aqua-color: #68b0cc
+
+// Module colors
+$page-header-background-color: $body-background-color
+$page-header-link-text-color: #f0edee
+$page-header-link-text-shadow-color: #000
+
+$cards-metadata-background-color: #fff
+$cards-metadata-text-color: #646464
+$cards-metadata-border-color: #d7d4d4
+$cards-metadata-show-more-text-color: $aqua-color
+$cards-metadata-edit-placeholder-text-color: rgba(#000, .4)
+$cards-metadata-edit-placeholder-focused-text-color: $blue-active-color
+$cards-metadata-edit-textarea-background-color: transparent
+$cards-metadata-edit-textarea-border-color: #e9e6e7
+$cards-metadata-edit-textarea-focused-border-color: $blue-active-color
+$cards-metadata-edit-textarea-focused-box-shadow-color: $blue-active-color
+$cards-metadata-edit-textarea-warning-border-color: $red-error-color
+$cards-metadata-edit-warning-color: $red-error-color
+$cards-metadata-value-text-color: #676464
+$cards-metadata-value-link-text-color: $aqua-color
+
+$action-btn-bg-color: #f0f5f7
+$action-btn-border-color: #bad9e6
+$action-btn-font-color: $aqua-color
+$action-btn-hover-bg-color: $blue-active-color
+$action-btn-hover-border-color: $blue-active-color
+$action-btn-hover-font-color: #fff
+$action-btn-disabled-bg-color: #f9f7f8
+$action-btn-disabled-border-color: #e9e6e7
+$action-btn-disabled-font-color: #c6c1bf
+$action-btn-touched-bg-color: $blue-active-color
+$action-btn-touched-border-color: $blue-active-color
+$action-btn-touched-font-color: #fff
+$action-btn-error-bg-color: #cc6667
+$action-btn-error-border-color: #cc6667
+$action-btn-error-font-color: #fff
+$action-btn-success-bg-color: #68cd70
+$action-btn-success-border-color: #68cd70
+$action-btn-success-font-color: #fff
+$action-btn-working-bg-color: $blue-active-color
+$action-btn-working-border-color: $blue-active-color
+$action-btn-working-font-color: #fff
+$action-btn-dark-bg-color: #3f4752
+$action-btn-dark-border-color: $blue-active-color
+$action-btn-dark-font-color: $blue-active-color
+$action-btn-dark-hover-bg-color: $blue-active-color
+$action-btn-dark-hover-border-color: $blue-active-color
+$action-btn-dark-hover-font-color: #fff
+$action-btn-dark-disabled-bg-color: #434d59
+$action-btn-dark-disabled-border-color: #5f6a77
+$action-btn-dark-disabled-font-color: #6d7681
+$action-btn-dark-touched-bg-color: $blue-active-color
+$action-btn-dark-touched-border-color: $blue-active-color
+$action-btn-dark-touched-font-color: #fff
+$action-btn-dark-working-bg-color: $blue-active-color
+$action-btn-dark-working-border-color: $blue-active-color
+$action-btn-dark-working-font-color: #fff
+$action-btn-green-bg-color: #576A4A
+$action-btn-green-border-color: #87B265
+$action-btn-green-font-color: #fff
+$action-btn-green-hover-bg-color: #87B265
+$action-btn-green-hover-border-color: #87B265
+$action-btn-green-hover-font-color: #fff
+$action-btn-green-disabled-bg-color: #f0f
+$action-btn-green-disabled-border-color: #ff0
+$action-btn-green-disabled-font-color: #4b0082
+
+
+// Theme styles
+// TODO Get rid of the unnestessary amount of nesting
 
 // page-header
 .page-header
-  background-color: $body-background-color
+  background-color: $page-header-background-color
 
 .page-header-link
-  color: #f0edee
-  text-shadow: 1px 1px 2px #000
+  color: $page-header-link-text-color
+  text-shadow: 1px 1px 2px $page-header-link-text-shadow-color
 
+// metadata
+.cards-metadata
+  background: $cards-metadata-background-color
+  color: $cards-metadata-text-color
+  border-color: $cards-metadata-border-color
 
+  .page-description
+    .show-more
+      color: $cards-metadata-show-more-text-color
+
+  .edit-page-name
+    >.placeholder
+      span
+        color: $cards-metadata-edit-placeholder-text-color
+
+    >textarea
+      background: $cards-metadata-edit-textarea-background-color
+      border-color: $cards-metadata-edit-textarea-border-color
+
+      &:focused
+        border-color: $cards-metadata-edit-textarea-focused-border-color
+        @include prefixer(box-shadow, 0 0 2px 0 $cards-metadata-edit-textarea-focused-box-shadow-color)
+
+        + .placeholder
+          color: $cards-metadata-edit-placeholder-focused-text-color
+
+    .icon-warning
+      color: $cards-metadata-edit-warning-color
+
+      + textarea
+        border-color: $cards-metadata-edit-textarea-warning-border-color
+
+  .metadata
+    .metadatum-wrapper
+      .metadatum
+        span
+          &.value
+            color: $cards-metadata-value-text-color
+
+            a
+              color: $cards-metadata-value-link-text-color
+
+// action-button
+.action-btn
+  @include action-button($action-btn-font-color, $action-btn-bg-color, $action-btn-border-color)
+
+  &.dark
+    @include action-button($action-btn-dark-font-color, $action-btn-dark-bg-color, $action-btn-dark-border-color)
+
+    &:hover, &.active
+      @include action-button($action-btn-dark-hover-font-color, $action-btn-dark-hover-bg-color, $action-btn-dark-hover-border-color)
+
+    &.disabled, &:disabled
+      @include action-button($action-btn-dark-disabled-font-color, $action-btn-dark-disabled-bg-color, $action-btn-dark-disabled-border-color)
+
+  &.green
+    @include action-button($action-btn-green-font-color, $action-btn-green-bg-color, $action-btn-green-border-color)
+
+    &:hover
+      @include action-button($action-btn-green-hover-font-color, $action-btn-green-hover-bg-color, $action-btn-green-hover-border-color)
+
+    &.disabled, &:disabled
+      @include action-button($action-btn-green-disabled-font-color, $action-btn-green-disabled-bg-color, $action-btn-green-disabled-border-color)
+
+  &.inverted
+    @include action-button($action-btn-hover-font-color, $action-btn-hover-bg-color, $action-btn-hover-border-color)
+
+    &:hover
+      @include action-button($action-btn-font-color, $action-btn-border-color, $action-btn-bg-color)
+
+  &:hover, &.active
+    @include action-button($action-btn-hover-font-color, $action-btn-hover-bg-color, $action-btn-hover-border-color)
+
+  &.disabled, &:disabled
+    @include action-button($action-btn-disabled-font-color, $action-btn-disabled-bg-color, $action-btn-disabled-border-color)
+
+  &.touched
+    @include action-button($action-btn-touched-font-color, $action-btn-touched-bg-color, $action-btn-touched-border-color)
+
+  &.error
+    @include action-button($action-btn-error-font-color, $action-btn-error-bg-color, $action-btn-error-border-color)
+
+  &.success
+    @include action-button($action-btn-success-font-color, $action-btn-success-bg-color, $action-btn-success-border-color)
+
+  &.working
+    @include action-button($action-btn-working-font-color, $action-btn-working-bg-color, $action-btn-working-border-color)

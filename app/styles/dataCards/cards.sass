@@ -24,11 +24,9 @@ body.state-view-cards
 
   .cards-metadata
     position: relative
-    background-color: $metadata-bg-color
-    color: $dark-grey-font-color
     padding: $metadata-top-padding ($metadata-side-padding / 2)
-    border-top: 3px solid $metadata-border-color
-    border-bottom: 3px solid $metadata-border-color
+    border-top: 3px solid
+    border-bottom: 3px solid
 
     .page-description
       margin-top: 1rem
@@ -41,7 +39,6 @@ body.state-view-cards
         height: 1rem
         display: none
         padding-top: 1.5rem
-        color: $aqua-font-color
         cursor: pointer
 
         .show-more-arrow
@@ -79,7 +76,6 @@ body.state-view-cards
 
         span
           display: none
-          color: $placeholder-text-color
           padding-left: .3em
           font: inherit
           font-style: italic
@@ -92,7 +88,6 @@ body.state-view-cards
         margin-bottom: 0.3em
       >textarea, >rich-text-editor
         color: inherit
-        background: transparent
         font: inherit
         display: block
         width: 100%
@@ -108,14 +103,11 @@ body.state-view-cards
 
         &:focus, &.focus
           outline: 0
-          border-color: $blue-active-color
           // webkit doesn't give us box shadows unless we nuke its appearance
           -webkit-appearance: none
           @include prefixer(box-shadow, 0 0 2px 0 $blue-active-color)
 
           + .placeholder
-            color: $blue-active-color
-
             span
               display: none
 
@@ -124,13 +116,9 @@ body.state-view-cards
         top: 0
         left: 100%
         z-index: 1
-        color: $red-error-color
         font-size: .7em
         margin-left: .5rem
         line-height: 1.5em
-
-        + textarea
-          border-color: $form-error-border-color
 
       [class^="icon-"], [class*=" icon-"]
         cursor: default
@@ -177,10 +165,6 @@ body.state-view-cards
             &.value, &.value a
               text-transform: capitalize
               font-weight: bold
-              color: $grey-text-color
-
-            &.value a
-              color: $aqua-font-color
 
             &.value.source-dataset-name a
               text-overflow: ellipsis

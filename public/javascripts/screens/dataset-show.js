@@ -796,9 +796,8 @@ $(function()
       getNewUXLinkParams: function() {
         var linkParams = {
           canUpdateMetadata: datasetShowHelpers.canUpdateMetadata(),
-          newBackendPage: blist.dataset.newBackend,
+          dataset: blist.dataset,
           dataLensState: blist.feature_flags.data_lens_transition_state,
-          blistDatasetId: blist.dataset.id,
           metadataTransitionPhase: blist.feature_flags.metadata_transition_phase
         };
         // Restore the state
@@ -811,51 +810,40 @@ $(function()
       getNewUXLinkHref: function(linkParams) {
         var linkHref = null;
 
-        if (linkParams.newBackendPage) {
+        if (linkParams.dataset.newBackend) {
           if (linkParams.canUpdateMetadata) {
-            linkHref = '/view/bootstrap/{0}'.format(linkParams.blistDatasetId);
+            linkHref = '/view/bootstrap/{0}'.format(linkParams.dataset.id);
             datasetShowHelpers.createNewUXLink(linkParams, linkHref);
           }
         } else {
-          $.get('/api/migrations/{0}'.format(linkParams.blistDatasetId)).done(function(migration) {
-            if (migration.nbeId) {
-              var datasetMetadataUrl = '/dataset_metadata/{0}.json';
-              // Kratos shapefiles are datasets, but have no dataset metadata, which we need to
-              // create a newux page. So check that there's dataset metadata before showing the link.
-              var metadataTransitionPhase = parseInt(linkParams.metadataTransitionPhase, 10);
-              if (metadataTransitionPhase !== 0) {
-                // The dataset metadata endpoint changed in metadata transition phase 1.
-                datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
-              }
-              $.get(datasetMetadataUrl.format(migration.nbeId), function(nbeMetadata) {
-                if (nbeMetadata.defaultPage) {
-                  var lensViewId = nbeMetadata.defaultPage;
-                  $.get('/metadata/v1/page/{0}.json'.format(lensViewId), function(lensMetadata) {
-                    // For OBE dataset pages, only show link to the lens view if the user
-                    // is logged in and canUpdateMetadata, or if the domain is post_beta
-                    // and the corresponding lens page is set to public.
-                    if (linkParams.canUpdateMetadata ||
-                       (linkParams.dataLensState === 'post_beta' && lensMetadata.permissions.isPublic)) {
-                      linkHref = '/view/{0}'.format(lensViewId);
-                      datasetShowHelpers.createNewUXLink(linkParams, linkHref);
-                    }
-                  }).fail(function() {
-                    // This is a workaround because the metadata holds a `defaultPage` reference
-                    // that doesn't correspond to an existing page (i.e. page deleted but metadata
-                    // not kept in sync). In this case, attempt to rebootstrap the page, which will
-                    // update the metadata appropriately.
-                    if (linkParams.canUpdateMetadata) {
-                        linkHref = '/view/bootstrap/{0}'.format(migration.nbeId);
-                        datasetShowHelpers.createNewUXLink(linkParams, linkHref);
-                    }
-                  });
-                } else if (linkParams.canUpdateMetadata) {
-                  // No view has been bootstrapped yet, only let the user bootstrap if they
-                  // canUpdateMetadata.
-                  linkHref = '/view/bootstrap/{0}'.format(migration.nbeId);
+          linkParams.dataset.getNewBackendMetadata().done(function(nbeMetadata) {
+            if (!nbeMetadata) return;
+            if (nbeMetadata.defaultPage) {
+              var lensViewId = nbeMetadata.defaultPage;
+              $.get('/metadata/v1/page/{0}.json'.format(lensViewId), function(lensMetadata) {
+                // For OBE dataset pages, only show link to the lens view if the user
+                // is logged in and canUpdateMetadata, or if the domain is post_beta
+                // and the corresponding lens page is set to public.
+                if (linkParams.canUpdateMetadata ||
+                   (linkParams.dataLensState === 'post_beta' && lensMetadata.permissions.isPublic)) {
+                  linkHref = '/view/{0}'.format(lensViewId);
+                  datasetShowHelpers.createNewUXLink(linkParams, linkHref);
+                }
+              }).fail(function() {
+                // This is a workaround because the metadata holds a `defaultPage` reference
+                // that doesn't correspond to an existing page (i.e. page deleted but metadata
+                // not kept in sync). In this case, attempt to rebootstrap the page, which will
+                // update the metadata appropriately.
+                if (linkParams.canUpdateMetadata) {
+                  linkHref = '/view/bootstrap/{0}'.format(nbeMetadata.id);
                   datasetShowHelpers.createNewUXLink(linkParams, linkHref);
                 }
               });
+            } else if (linkParams.canUpdateMetadata) {
+              // No view has been bootstrapped yet, only let the user bootstrap if they
+              // canUpdateMetadata.
+              linkHref = '/view/bootstrap/{0}'.format(nbeMetadata.id);
+              datasetShowHelpers.createNewUXLink(linkParams, linkHref);
             }
           });
         }

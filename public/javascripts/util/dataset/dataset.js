@@ -606,6 +606,62 @@ var Dataset = ServerModel.extend({
         }
     },
 
+    /**
+     * @return {Promise} that will resolve (ie never call fail()) to the nbeId, or null.
+     */
+    getNewBackendId: function()
+    {
+        var ds = this;
+        if (!ds._nbeId && ds.newBackend) {
+            ds._nbeId = ds.id;
+        }
+        if (!_.isUndefined(ds._nbeId)) {
+            return $.when(ds._nbeId);
+        }
+
+        var deferred = $.Deferred();
+        this.makeRequestWithPromise({
+            url: '/api/migrations/{0}'.format(ds.id)
+        }).done(function(migration) {
+            ds._nbeId = migration.nbeId;
+            deferred.resolve(ds._nbeId);
+        }).fail(function() {
+            ds._nbeId = null;
+        });
+        return deferred.promise();
+    },
+
+    /**
+     * @return {Promise} that will resolve (ie never call fail()) to the nbe metadata, or null.
+     */
+    getNewBackendMetadata: function() {
+        var ds = this;
+        if (!_.isUndefined(ds._newBackendMetadata)) {
+            return $.when(ds._newBackendMetadata);
+        }
+        var deferred = $.Deferred();
+        // TODO: what happens if getNewBackendId errors?
+        ds.getNewBackendId().done(function(newBackendId) {
+            if (newBackendId) {
+                var datasetMetadataUrl = '/dataset_metadata/{0}.json';
+                var metadataTransitionPhase = parseInt(blist.feature_flags.metadata_transition_phase, 10);
+                if (metadataTransitionPhase !== 0) {
+                    // The dataset metadata endpoint changed in metadata transition phase 1.
+                    datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
+                }
+                // TODO: make sure this resolves the promise on error condition
+                $.get(datasetMetadataUrl.format(newBackendId)).done(function(metadata) {
+                    ds._newBackendMetadata = metadata;
+                    deferred.resolve(ds._newBackendMetadata);
+                });
+            } else {
+                ds._newBackendMetadata = null;
+                deferred.resolve(ds._newBackendMetadata);
+            }
+        });
+        return deferred.promise();
+    },
+
     getTotalRows: function(successCallback, errorCallback)
     {
         this._activeRowSet.getTotalRows(successCallback, errorCallback);
@@ -3175,43 +3231,54 @@ var Dataset = ServerModel.extend({
     _loadRelatedViews: function(callback, justCount)
     {
         var ds = this;
-        var processDS = function(views)
-        {
-            views = _.map(views, function(v)
-            {
-                if (v.id == ds.id) { v = ds; }
-                if (v instanceof Dataset) { return v; }
-
-                var nv = new Dataset(v);
-                nv.bind('removed', function() { ds._viewRemoved(this); });
-                if (!$.isBlank(ds.accessType)) { nv.setAccessType(ds.accessType); }
-                return nv;
-            });
-
-            var parDS = _.detect(views, function(v)
-                    { return _.include(v.flags || [], 'default'); });
-            if (!$.isBlank(parDS))
-            {
-                ds._parent = parDS;
-                views = _.without(views, parDS);
+        this._loadRelatedCoreViews(justCount).done(function(result) {
+            if (justCount) {
+                // Subtract one for dataset
+                ds._relViewCount = Math.max(0, result - 1);
+                if (_.isFunction(callback)) { callback(ds._relViewCount); }
+            } else {
+                ds._relatedViews = ds._processRelatedViews(result);
+                if (_.isFunction(callback)) { callback(); }
             }
+        });
+    },
 
-            ds._relatedViews = views;
-
-            if (_.isFunction(callback)) { callback(); }
-        };
-
-        var processCount = function(count)
+    _processRelatedViews: function(views)
+    {
+        var ds = this;
+        views = _.map(views, function(v)
         {
-            // Subtract one for dataset
-            ds._relViewCount = Math.max(0, count - 1);
-            if (_.isFunction(callback)) { callback(ds._relViewCount); }
-        };
+            if (v.id == ds.id) { v = ds; }
+            if (v instanceof Dataset) { return v; }
+
+            var nv = new Dataset(v);
+            nv.bind('removed', function() { ds._viewRemoved(this); });
+            if (!$.isBlank(ds.accessType)) { nv.setAccessType(ds.accessType); }
+            return nv;
+        });
+
+        var parDS = _.detect(views, function(v)
+                { return _.include(v.flags || [], 'default'); });
+        if (!$.isBlank(parDS))
+        {
+            ds._parent = parDS;
+            views = _.without(views, parDS);
+        }
+
+        return views;
+    },
+
+    _loadRelatedCoreViews: function(justCount) {
         // Fully cachable
-        this.makeRequest({url: '/views.json', pageCache: true, type: 'GET',
-                data: { method: justCount ? 'getCountForTableId' : 'getByTableId',
-                tableId: this.tableId },
-                success: justCount ? processCount : processDS});
+        return this.makeRequestWithPromise({
+            url: '/views.json',
+            pageCache: true,
+            type: 'GET',
+            data: {
+                method: justCount ? 'getCountForTableId' : 'getByTableId',
+                tableId: this.tableId
+            }
+        });
     },
 
     _loadPublicationViews: function(callback)

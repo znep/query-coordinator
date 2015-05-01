@@ -176,6 +176,9 @@ $customize-bar-customizing-border-opacity: .8
 $customize-bar-customizing-button-background-color: #4c8d78
 $customize-bar-customizing-button-color: #fff
 
+$body-state-view-card-background-color: #fff
+$body-state-view-cards-background-color: #4d5969
+
 // Theme styles
 // TODO Get rid of the unnestessary amount of nesting
 
@@ -670,3 +673,12 @@ aggregation-chooser
 
     .tool-panel
       @extend .tool-panel !optional
+
+
+// body?
+body
+  &.state-view-cards
+    background-color: $body-state-view-cards-background-color
+
+  &.state-view-card
+    background-color: $body-state-view-card-background-color

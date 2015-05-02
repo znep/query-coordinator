@@ -606,9 +606,6 @@ var Dataset = ServerModel.extend({
         }
     },
 
-    /**
-     * @return {Promise} that will resolve (ie never call fail()) to the nbeId, or null.
-     */
     getNewBackendId: function()
     {
         var ds = this;
@@ -626,39 +623,38 @@ var Dataset = ServerModel.extend({
             ds._nbeId = migration.nbeId;
             deferred.resolve(ds._nbeId);
         }).fail(function() {
-            ds._nbeId = null;
+            deferred.reject();
         });
         return deferred.promise();
     },
 
-    /**
-     * @return {Promise} that will resolve (ie never call fail()) to the nbe metadata, or null.
-     */
     getNewBackendMetadata: function() {
         var ds = this;
-        if (!_.isUndefined(ds._newBackendMetadata)) {
-            return $.when(ds._newBackendMetadata);
-        }
+        if (!_.isUndefined(ds._newBackendMetadata)) { return $.when(ds._newBackendMetadata); }
+
         var deferred = $.Deferred();
-        // TODO: what happens if getNewBackendId errors?
+        var reject = function() { deferred.reject(); };
+
         ds.getNewBackendId().done(function(newBackendId) {
             if (newBackendId) {
-                var datasetMetadataUrl = '/dataset_metadata/{0}.json';
-                var metadataTransitionPhase = parseInt(blist.feature_flags.metadata_transition_phase, 10);
-                if (metadataTransitionPhase !== 0) {
-                    // The dataset metadata endpoint changed in metadata transition phase 1.
-                    datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
-                }
-                // TODO: make sure this resolves the promise on error condition
+                var metadataTransitionPhase = parseInt(
+                    blist.feature_flags.metadata_transition_phase,
+                    10
+                );
+                var datasetMetadataUrl = metadataTransitionPhase === 0 ?
+                        '/dataset_metadata/{0}.json' :
+                        // The dataset metadata endpoint changed in metadata transition phase 1.
+                        '/metadata/v1/dataset/{0}.json';
+
                 $.get(datasetMetadataUrl.format(newBackendId)).done(function(metadata) {
                     ds._newBackendMetadata = metadata;
                     deferred.resolve(ds._newBackendMetadata);
-                });
+                }).fail(reject);
             } else {
                 ds._newBackendMetadata = null;
                 deferred.resolve(ds._newBackendMetadata);
             }
-        });
+        }).fail(reject);
         return deferred.promise();
     },
 
@@ -3231,13 +3227,19 @@ var Dataset = ServerModel.extend({
     _loadRelatedViews: function(callback, justCount)
     {
         var ds = this;
-        this._loadRelatedCoreViews(justCount).done(function(result) {
+        var coreViewsPromise = this._loadRelatedCoreViews(justCount);
+        var dataLensPromise = this._getRelatedDataLenses(justCount);
+
+        $.whenever(coreViewsPromise, dataLensPromise).done(function(coreResult, dataLensResult) {
             if (justCount) {
                 // Subtract one for dataset
-                ds._relViewCount = Math.max(0, result - 1);
+                ds._relViewCount = (
+                    Math.max(0, coreResult[0] - 1) +
+                    dataLensResult[0].length
+                );
                 if (_.isFunction(callback)) { callback(ds._relViewCount); }
             } else {
-                ds._relatedViews = ds._processRelatedViews(result);
+                ds._relatedViews = ds._processRelatedViews(coreResult[0].concat(dataLensResult[0]));
                 if (_.isFunction(callback)) { callback(); }
             }
         });
@@ -3279,6 +3281,44 @@ var Dataset = ServerModel.extend({
                 tableId: this.tableId
             }
         });
+    },
+
+    _getRelatedDataLenses: function(justCount) {
+        var ds = this;
+        var deferred = $.Deferred();
+        var reject = function() { deferred.reject(); };
+
+        // First, we need the NBE id, so we can query what data lenses are on it.
+        this.getNewBackendId().done(function(nbeId) {
+            if (!nbeId) return deferred.resolve([]);
+
+            // Next, get the pages for that id from the NBE / phidippides.
+            ds.makeRequestWithPromise({
+                url: '/metadata/v1/dataset/{0}/pages'.format(nbeId),
+                pageCache: true,
+                type: 'GET',
+            }).then(function(result) {
+                var pages = result.publisher.concat(result.user);
+                if (!pages.length) { return deferred.resolve([]); }
+
+                // The pages are not in the format that we want (they don't have the owner metadata,
+                // for instance). So - grab the OBE representations of those pages.
+                ds.makeRequestWithPromise({
+                    url: '/views.json',
+                    pageCache: true,
+                    type: 'GET',
+                    data: {
+                        method: 'getByIds',
+                        ids: _.pluck(pages, 'pageId').join(',')
+                    }
+                }).then(function() {
+                    deferred.resolveWith(this, arguments);
+
+                }).fail(reject);
+            }).fail(reject);
+        }).fail(reject);
+
+        return deferred.promise();
     },
 
     _loadPublicationViews: function(callback)

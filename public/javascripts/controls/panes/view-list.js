@@ -13,7 +13,11 @@
         var items = cpObj._viewList;
         if (!$.isBlank(cpObj._currentShow) && cpObj._currentShow != 'all')
         {
-            items = _.select(items, function(v) { return v.type == cpObj._currentShow; });
+            if (cpObj._currentShow == 'data_lens') {
+                items = _.select(items, function(v) { return v.displayType == 'new_view'; });
+            } else {
+                items = _.select(items, function(v) { return v.type == cpObj._currentShow; });
+            }
         }
 
         if (!$.isBlank(cpObj._currentSearch))
@@ -191,7 +195,7 @@
                     { text: $.t('core.view_types_plural.filter'), className: 'typeFilter', href: '#filter',
                         onlyIf: _.any(cpObj._viewList,
                             function(v) { return v.type == 'filter'; })},
-                    { text: $.t('core.view_types_plural.data_lens'), className: 'typeNew_view', href: '#lens',
+                    { text: $.t('core.view_types_plural.data_lens'), className: 'typeNew_view', href: '#data_lens',
                         onlyIf: _.any(cpObj._viewList,
                             function(v) { return v.displayType == 'new_view'; })},
                     { text: $.t('core.view_types_plural.api'), className: 'typeApi', href: '#api',

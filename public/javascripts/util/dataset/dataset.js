@@ -2233,6 +2233,8 @@ var Dataset = ServerModel.extend({
         { ds.styleClass = 'Unpublished'; }
         else if (ds.type == 'blist' && ds.isSnapshot())
         { ds.styleClass = 'Snapshotted'; }
+        else if (ds.displayType == 'new_view')
+        { ds.styleClass = 'New_view'; }
         else
         { ds.styleClass = ds.type.capitalize(); }
 

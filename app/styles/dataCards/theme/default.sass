@@ -219,6 +219,18 @@ $choropleth-legend-tick-color: #000
 $choropleth-legend-rect-color: #fff
 $choropleth-legend-continuous-text-color: #646464
 
+$search-card-text-color: #bbb
+$search-card-results-invalid-text-color: #cc6667
+$search-card-suggestions-border-color: #d4d4d4
+$search-card-suggestions-background-color: #eee
+$search-card-suggestions-text-color: #666
+$search-card-suggestions-hint-border-color: #eee
+$search-card-suggestions-status-spinner-fill-color: #888
+$search-card-suggestions-examples-background-color: #d4d4d4
+$search-card-suggestions-intractable-list-item-background-color: #eee
+$search-card-suggestions-intractable-list-item-text-color: #666
+$search-card-suggestions-intractable-list-item-active-background-color: #67aecc
+$search-card-suggestions-intractable-list-item-active-text-color: #eee
 
 // Theme styles
 // TODO Get rid of the unnestessary amount of nesting
@@ -853,3 +865,42 @@ body.state-view-cards
           line
             stroke: $choropleth-legend-tick-color
 
+
+// search
+.search-card-text
+  color: $search-card-text-color
+
+.search-card-results
+  .no-results,
+  .invalid-value
+    color: $search-card-results-invalid-text-color
+
+.tool-panel.suggestion-tool-panel
+  .tool-panel-main
+    border-color: $search-card-suggestions-border-color
+
+  &.light
+    .tool-panel-inner-container
+      background-color: $search-card-suggestions-background-color
+      color: $search-card-suggestions-text-color
+
+    .tool-panel-hint
+      border-color: transparent transparent $search-card-suggestions-hint-border-color transparent
+
+    .suggestions-status
+      spinner
+        path
+          fill: $search-card-suggestions-status-spinner-fill-color
+
+    .suggestion-examples
+      background-color: $search-card-suggestions-examples-background-color
+
+    .intractable-list
+      ul.list
+        li
+          color: $search-card-suggestions-intractable-list-item-background-color
+          background-color: $search-card-suggestions-intractable-list-item-text-color
+
+          &.active
+            color: $search-card-suggestions-intractable-list-item-active-text-color
+            background-color: $search-card-suggestions-intractable-list-item-active-background-color

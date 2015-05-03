@@ -232,6 +232,26 @@ $search-card-suggestions-intractable-list-item-text-color: #666
 $search-card-suggestions-intractable-list-item-active-background-color: #67aecc
 $search-card-suggestions-intractable-list-item-active-text-color: #eee
 
+$column-chart-bar-group-active-bar-unfiltered-background-color: $blue-active-color
+$column-chart-bar-group-active-bar-filtered-background-color: #68b0cc
+$column-chart-filtered-bar-group-active-bar-unfiltered-background-color: #d6d4d5
+$column-chart-filtered-bar-group-active-special-bar-filtered-background-color: #debb1f
+$column-chart-filtered-bar-group-active-special-bar-unfiltered-background-color: rgba(#debb1f, .2)
+$column-chart-bar-group-active-hover-bar-unfiltered-background-color: #00a9f0
+$column-chart-bar-group-active-hover-bar-filtered-background-color: #bbb
+$column-chart-filtered-bar-group-active-hover-bar-unfiltered-background-color: #bbb
+$column-chart-filtered-bar-group-active-hover-bar-filtered-background-color: #00a9f0
+$column-chart-filtered-bar-group-active-hover-special-bar-filtered-background-color: #e0b700
+$column-chart-filtered-bar-group-active-hover-special-bar-unfiltered-background-color: rgba(#debb1f, .4)
+$column-chart-tick-color: #bbb
+$column-chart-tick-origin-color: #666
+$column-chart-truncation-marker-color: $column-chart-tick-color
+$column-chart-field-name-text-color: darken($column-chart-tick-color, 30%)
+$column-chart-field-description-text-color: darken($column-chart-tick-color, 30%)
+$column-chart-labels-label-callout-border-color: $column-chart-tick-color
+$column-chart-labels-label-contents-text-color: $column-chart-tick-color
+$column-chart-labels-label-contents-filter-color: #debb1f
+
 // Theme styles
 // TODO Get rid of the unnestessary amount of nesting
 
@@ -904,3 +924,79 @@ body.state-view-cards
           &.active
             color: $search-card-suggestions-intractable-list-item-active-text-color
             background-color: $search-card-suggestions-intractable-list-item-active-background-color
+
+
+// column-chart
+div.column-chart
+  div.column-chart-wrapper
+    .bar-group.active .bar
+      &.unfiltered
+        background-color: $column-chart-bar-group-active-bar-unfiltered-background-color
+
+      &.filtered
+        background-color: $column-chart-bar-group-active-bar-filtered-background-color
+
+    &.filtered .bar-group.active
+      .bar
+        &.unfiltered
+          background-color: $column-chart-filtered-bar-group-active-bar-unfiltered-background-color
+
+      &.special
+        .bar.filtered
+          background-color: $column-chart-filtered-bar-group-active-special-bar-filtered-background-color
+        .bar.unfiltered
+          background-color: $column-chart-filtered-bar-group-active-special-bar-unfiltered-background-color
+
+    // hover colors
+    .bar-group.active.hover
+      .bar.unfiltered
+        background-color: $column-chart-bar-group-active-hover-bar-unfiltered-background-color
+      .bar.filtered
+        background-color: $column-chart-bar-group-active-hover-bar-filtered-background-color
+    &.filtered
+      .bar-group.active.hover
+        .bar.unfiltered
+          background-color: $column-chart-filtered-bar-group-active-hover-bar-unfiltered-background-color
+        .bar.filtered
+          background-color: $column-chart-filtered-bar-group-active-hover-bar-filtered-background-color
+        &.special
+          .bar.filtered
+            background-color: $column-chart-filtered-bar-group-active-hover-special-bar-filtered-background-color
+          .bar.unfiltered
+            background-color: $column-chart-filtered-bar-group-active-hover-special-bar-unfiltered-background-color
+
+    div.truncation-marker
+      color: $column-chart-truncation-marker-color
+
+    div.field-name
+      color: $column-chart-field-name-text-color
+
+    div.field-description
+      color: $column-chart-field-description-text-color
+
+  div.labels
+    div.label
+      div.callout
+        border-bottom: 1px solid $column-chart-labels-label-callout-border-color
+
+      div.contents
+        color: $column-chart-labels-label-contents-text-color
+
+        span.icon-filter
+          color: $column-chart-labels-label-contents-filter-color
+
+      &.orientation-right
+        div.callout
+          border-left: 1px solid $column-chart-labels-label-callout-border-color
+
+      &.orientation-left
+        div.callout
+          border-right: 1px solid $column-chart-labels-label-callout-border-color
+
+  div.ticks
+    div
+      border-bottom: 1px solid $column-chart-tick-color
+      color: $column-chart-tick-color
+      &.origin
+        border-bottom: 1px solid $column-chart-tick-origin-color
+        color: $column-chart-tick-origin-color

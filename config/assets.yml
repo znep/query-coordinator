@@ -206,6 +206,7 @@ javascripts:
     - public/javascripts/controls/base-visualization.js
     - public/javascripts/controls/calendars/default-calendar.js
   shared-table-render:
+    - public/javascripts/plugins/wellknown.js
     - public/javascripts/controls/table/model.js
     - public/javascripts/controls/table/table.js
     - public/javascripts/controls/table/table_nav.js

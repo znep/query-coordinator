@@ -495,6 +495,14 @@ blist.namespace.fetch('blist.datatypes');
         return rv.join('');
     };
 
+    // Well-Known Text
+    var renderWKT = function(value, column)
+    {
+      if ($.isBlank(value)) { return ''; }
+
+      return WKT.stringify(value);
+    };
+
 
     /* Blobby types */
 
@@ -857,7 +865,7 @@ blist.namespace.fetch('blist.datatypes');
 
         url: { renderer: renderURL },
 
-        point: { renderer: renderObject },
+        point: { renderer: renderWKT },
 
         multiline: { renderer: renderUnknown },
 

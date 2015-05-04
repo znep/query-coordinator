@@ -28,7 +28,7 @@
       return Rx.Observable.merge(
         successfulPromiseObservable.
           map(function(response) {
-            return _.getPathOrElse(response, 'data.0.properties', []);
+            return _.get(response, 'data.0.properties', []);
           }).
           catchException(Rx.Observable.returnValue([])),
         Rx.Observable.timer(GET_CONFIGURATION_TIMER_MS).

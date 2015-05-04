@@ -4,13 +4,16 @@
 
   describe('lo-dash mixins', function() {
 
-    var testObject = {
-      foo: {
-        bar: {
-          baz: 'test value'
-        }
-      }
-    };
+    describe('isDefined', function() {
+      it('should return true for everything but "undefined"', function() {
+        expect(_.isDefined(true)).to.equal(true);
+        expect(_.isDefined(null)).to.equal(true);
+        expect(_.isDefined(false)).to.equal(true);
+        expect(_.isDefined(0)).to.equal(true);
+        expect(_.isDefined(NaN)).to.equal(true);
+        expect(_.isDefined(undefined)).to.equal(false);
+      });
+    });
 
     describe('isPresent', function() {
 
@@ -31,39 +34,6 @@
         expect(_.isPresent(undefined)).to.equal(false);
         expect(_.isPresent(NaN)).to.equal(false);
       });
-
-    });
-
-    describe('getPathOrElse', function() {
-      it('should return the value if the object path exists', function() {
-        expect(_.getPathOrElse(testObject, 'foo.bar.baz')).to.equal('test value');
-        expect(_.getPathOrElse(testObject, 'foo.bar')).to.eql({ baz: 'test value' });
-      });
-
-      it('should return the "else" argument if the object path does not exist', function() {
-        expect(_.getPathOrElse(testObject, 'foo.bar.blah', 'else case')).to.equal('else case');
-        expect(_.getPathOrElse({}, 'foo.bar', 'else case')).to.equal('else case');
-      });
-
-      it('should return undefined if the object path does not exist and there is no "else" argument', function() {
-        expect(_.getPathOrElse(testObject, 'foo.bar.blah')).to.be.undefined;
-      });
-
-    });
-
-    describe('isPathDefined', function() {
-
-      it('should return true if the object path exists', function() {
-        expect(_.isPathDefined(testObject, 'foo')).to.be.true;
-        expect(_.isPathDefined(testObject, 'foo.bar')).to.be.true;
-        expect(_.isPathDefined(testObject, 'foo.bar.baz')).to.be.true;
-      });
-
-      it('should return false if the object path does not exist', function() {
-        expect(_.isPathDefined(testObject, 'far')).to.be.false;
-        expect(_.isPathDefined(testObject, 'foo.baz')).to.be.false;
-        expect(_.isPathDefined(testObject, '')).to.be.false;
-      })
 
     });
 
@@ -98,24 +68,6 @@
       });
     });
 
-    describe('trim', function() {
-      it('should exist', function() {
-        expect(_).to.respondTo('trim');
-      });
-
-      it('should trim whitespace by default', function() {
-        expect(_.trim('something')).to.equal('something');
-        expect(_.trim(' something ')).to.equal('something');
-        expect(_.trim('\tsomething ')).to.equal('something');
-        expect(_.trim('something\t')).to.equal('something');
-      });
-
-      it('should trim specified character', function() {
-        expect(_.trim('"something', '"')).to.equal('something');
-        expect(_.trim('something"', '"')).to.equal('something');
-        expect(_.trim('"something"', '"')).to.equal('something');
-      });
-    });
   });
 
 })();

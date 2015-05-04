@@ -11,26 +11,11 @@ _.mixin({
       return !_.isEmpty(object);
     }
   },
-  isDefined: function(value) {
-    return !_.isUndefined(value);
-  },
   hasValue: function(value) {
     return value !== null && value !== undefined;
   },
   instead: function(value, insteadValue) {
     return _.isPresent(value) ? value : insteadValue;
-  },
-  getPathOrElse: function(object, path, elseCase) {
-    var value = _.reduce(path.split('.'), function(obj, key) {
-      return obj ? obj[key] : obj;
-    }, object);
-    if (_.isUndefined(value) && _.isDefined(elseCase)) {
-      return elseCase;
-    }
-    return value;
-  },
-  isPathDefined: function(object, path) {
-    return _.isDefined(_.getPathOrElse(object, path));
   },
   otherwise: _.instead,
   /**
@@ -48,7 +33,9 @@ _.mixin({
   log10: Math.log10 || function(n) {
     return Math.log(n) / Math.LN10;
   },
-  negateValue: function(value) {
-    return !value;
-  }
+  negateValue: _.negate(_.identity)
+});
+
+_.mixin({
+  isDefined: _.compose(_.negateValue, _.isUndefined)
 });

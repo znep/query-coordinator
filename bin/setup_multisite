@@ -8,9 +8,18 @@ Dir.chdir APP_ROOT do
   # Sets up local development machine to listen to your app on multple hosts
   # e.g. local.dev, storyteller.dev, vertex.dev
 
+  puts "== Installing dependencies =="
+  system "gem install bundler --conservative"
+  system "bundle check || bundle install"
+
   puts "\n== Setting up powder server local wildcard DNS =="
-  system "powder default"
+  system "brew install pow"
+  system "sudo pow --install-system"
+  system "pow --install-local"
+  system "sudo launchctl load -w /Library/LaunchDaemons/cx.pow.firewall.plist"
+  system "launchctl load -w ~/Library/LaunchAgents/cx.pow.powd.plist"
   system "powder up"
+  system "powder default"
 
   puts "\n== Restarting application server =="
   system "mkdir -p tmp"

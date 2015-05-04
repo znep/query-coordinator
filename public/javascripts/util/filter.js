@@ -60,7 +60,7 @@ blist.namespace.fetch('blist.filter');
             soql: function(c, v) { return soqlInfix(c, '>=', v); },
             editorCount: 1, opMatches: function(v, cv) { return v >= cv; } },
         'BETWEEN': { text: $.t('core.filters.informal.between'), editorCount: 2,
-            soql: function(c, v) { return soqlInfix(c, '>=', v[0], newBackend && isText(c) ? toUpperFn : identityFn) + ' AND ' + soqlInfix(c, '<=', v[1], newBackend && isText(c) ? toUpperFn : identityFn); },
+            soql: function(c, v, newBackend) { return soqlInfix(c, '>=', v[0], newBackend && isText(c) ? toUpperFn : identityFn) + ' AND ' + soqlInfix(c, '<=', v[1], newBackend && isText(c) ? toUpperFn : identityFn); },
             opMatches: function(v, cv, cv2)
             {
                 var cva = _.flatten(_.compact([cv, cv2]));

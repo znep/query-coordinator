@@ -13,11 +13,7 @@ Dir.chdir APP_ROOT do
   system "bundle check || bundle install"
 
   puts "\n== Setting up powder server local wildcard DNS =="
-  system "brew install pow"
-  system "mkdir -p ~/Library/Application\ Support/Pow/Hosts"
-  system "ln -s ~/Library/Application\ Support/Pow/Hosts ~/.pow"
-  system "pow --install-local"
-  system "launchctl load -w ~/Library/LaunchAgents/cx.pow.powd.plist"
+  system "curl get.pow.cx | sh"
   system "powder up"
   system "powder default"
 

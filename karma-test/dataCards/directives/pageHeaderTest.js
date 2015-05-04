@@ -3,28 +3,16 @@
 
   describe('<page-header />', function() {
 
-    var ConfigurationsService;
+    var ServerConfig;
     var testHelpers;
     var rootScope;
 
-    var CUSTOM_CONFIGURATION = [
-      {
-        "name": "sign_in",
-        "value": "Login"
-      },
-      {
-        "name": "sign_out",
-        "value": "Logout"
-      },
-      {
-        "name": "sign_up",
-        "value": "Register"
-      },
-      {
-        "name": "logo_url",
-        "value": "http://placekitten.com/g/500/200"
-      }
-    ];
+    var CUSTOM_CONFIGURATION = {
+      'sign_in': 'Login',
+      'sign_out': 'Logout',
+      'sign_up': 'Register',
+      'logo_url': 'http://placekitten.com/g/500/200'
+    };
 
     beforeEach(module('/angular_templates/common/pageHeader.html'));
 
@@ -35,11 +23,12 @@
     beforeEach(inject(function($injector) {
       testHelpers = $injector.get('testHelpers');
       rootScope = $injector.get('$rootScope');
-      ConfigurationsService = $injector.get('ConfigurationsService');
+      ServerConfig = $injector.get('ServerConfig');
     }));
 
     afterEach(function() {
       testHelpers.TestDom.clear();
+      ServerConfig.getTheme.restore();
     });
 
     function createPageHeader(currentUser) {
@@ -50,13 +39,12 @@
       return testHelpers.TestDom.compileAndAppend(html, outerScope);
     }
 
-    function stubConfigurationsService(returnValue) {
-      sinon.stub(ConfigurationsService, 'getThemeConfigurationsObservable').
-        returns(Rx.Observable.returnValue(returnValue));
+    function stubServerConfigGetTheme(returnValue) {
+      sinon.stub(ServerConfig, 'getTheme').returns(returnValue);
     }
 
     it('should display if there is no configuration data', function() {
-      stubConfigurationsService();
+      stubServerConfigGetTheme();
       var element = createPageHeader();
       expect(element).to.have.descendants('img');
       expect(element).to.have.descendants('.page-header-links');
@@ -66,7 +54,7 @@
     });
 
     it('should display if there is configuration data', function() {
-      stubConfigurationsService(CUSTOM_CONFIGURATION);
+      stubServerConfigGetTheme(CUSTOM_CONFIGURATION);
       var element = createPageHeader();
       expect(element.find('img')).to.have.attr('src').equal('http://placekitten.com/g/500/200');
       expect(element.find('.page-header-link-signin')).to.have.text('Login').to.have.attr('href').equal('/login?referer_redirect=1');
@@ -76,11 +64,10 @@
 
     describe('background color', function() {
       it('should set the background color if it is configured', function() {
-        var customConfiguration = [{
-          "name": "header_background_color",
-          "value": "#deadbe"
-        }];
-        stubConfigurationsService(customConfiguration);
+        var customConfiguration = {
+          'header_background_color': '#deadbe'
+        };
+        stubServerConfigGetTheme(customConfiguration);
         var element = createPageHeader();
         expect(element.scope().pageHeaderStyle).to.eql({ 'background-color': "#deadbe" });
       });
@@ -89,7 +76,7 @@
     describe('logged in', function() {
 
       it('should hide "logged in" links if not logged in', function() {
-        stubConfigurationsService();
+        stubServerConfigGetTheme();
         var element = createPageHeader();
         expect(element.find('.page-header-link-signin')).to.not.have.class('ng-hide');
         expect(element.find('.page-header-link-signout')).to.have.class('ng-hide');
@@ -97,7 +84,7 @@
       });
 
       it('should show "logged in" links if logged in', function() {
-        stubConfigurationsService();
+        stubServerConfigGetTheme();
         var element = createPageHeader(true);
         expect(element.find('.page-header-link-signin')).to.have.class('ng-hide');
         expect(element.find('.page-header-link-signout')).to.not.have.class('ng-hide');

@@ -1,6 +1,8 @@
 (function() {
   'use strict';
 
+  var THEME_CONFIGURATION_KEY = 'themeV3';
+
   var configurationStore = {};
   var ServerConfig = {
     get: function(key) {
@@ -13,6 +15,9 @@
     },
     override: function(key, value) {
       configurationStore[key] = value;
+    },
+    getTheme: function() {
+      return ServerConfig.get(THEME_CONFIGURATION_KEY) || {};
     }
   };
 

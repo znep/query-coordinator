@@ -1,4 +1,6 @@
 describe('Socrata config service', function() {
+  'use strict';
+
   var configService;
 
   describe('socrataConfig object present', function() {
@@ -24,14 +26,29 @@ describe('Socrata config service', function() {
       expect(configService.get('notHere')).to.be.undefined;
     });
 
+    describe('getTheme', function() {
+      it('should exist', function() {
+        expect(configService).to.respondTo('getTheme');
+      });
+
+      it('should return the theme if it is present', function() {
+        configService.override('themeV3', { 'logo_url': 'mylogo.jpg' });
+        expect(configService.getTheme()).to.eql({ 'logo_url': 'mylogo.jpg' });
+      });
+
+      it('should return an empty object if not present', function() {
+        expect(configService.getTheme()).to.eql({});
+      });
+    });
+
     describe('override', function() {
       it('should affect what get() returns', function() {
-        configService.override('notHere', 'jk actually here')
+        configService.override('notHere', 'jk actually here');
         expect(configService.get('notHere')).to.equal('jk actually here');
       });
 
       it('should not modify the blob passed to setup()', function() {
-        configService.override('notHere', 'jk actually here')
+        configService.override('notHere', 'jk actually here');
         expect(originalConfigBlob).to.not.have.key('notHere');
       });
     });

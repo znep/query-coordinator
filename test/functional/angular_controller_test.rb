@@ -5,6 +5,7 @@ class AngularControllerTest < ActionController::TestCase
   def setup
     init_core_session
     init_current_domain
+    ::Configuration.stubs(:find_by_type => [])
 
     @phidippides = Phidippides.new
     @new_view_manager = NewViewManager.new

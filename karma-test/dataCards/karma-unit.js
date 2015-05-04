@@ -122,6 +122,7 @@ module.exports = function ( karma ) {
 
       'public/angular_templates/**/*.html',
       'app/styles/dataCards/*.sass',
+      'app/styles/dataCards/theme/default.sass',
       { pattern: 'public/stylesheets/images/**/*.{jpg,png}', watched: false, included: false, served: true },
 
       /* TEST MOCKS */

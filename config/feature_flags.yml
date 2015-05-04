@@ -127,7 +127,7 @@ feature_map_zoom_debounce:
   defaultValue: 500
 enable_newux_page_view_count:
   description: Have new UX pages accumulated toward the global count of all page views.
-  defaultValue: false
+  defaultValue: true
 use_catalog_lens_permissions:
   description: Whether page/dataset metadata should inherit permissions from their catalog lenses.
   defaultValue: true

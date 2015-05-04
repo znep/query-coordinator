@@ -25,6 +25,7 @@ module AngularHelper
       'assetRevisionKey' => asset_revision_key,
       'railsEnv' => Rails.env,
       'cname' => CurrentDomain.cname,
+      'featureSet' => features,
       'themeV3' => theme,
       'tileserverHosts' => APP_CONFIG['tileserver_hosts'].present? ? APP_CONFIG['tileserver_hosts'].split(',') : []
     }.tap do |config|

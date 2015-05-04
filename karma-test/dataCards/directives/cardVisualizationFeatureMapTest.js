@@ -20,6 +20,7 @@ describe('A FeatureMap Card Visualization', function() {
   var _$provide;
   var VectorTileDataService;
   var CardDataService;
+  var ServerConfig;
   var dataset;
   var $q;
 
@@ -43,6 +44,7 @@ describe('A FeatureMap Card Visualization', function() {
     testHelpers.mockDirective(_$provide, 'featureMap');
     VectorTileDataService = $injector.get('VectorTileDataService');
     CardDataService = $injector.get('CardDataService');
+    ServerConfig = $injector.get('ServerConfig');
   }));
 
   afterEach(function(){
@@ -192,6 +194,40 @@ describe('A FeatureMap Card Visualization', function() {
 
     it('should not parallelize tileserver request if dataset privacy is not available', function() {
       dataset.defineObservableProperty('permissions', undefined);
+
+      buildElement({
+        dataset: dataset
+      });
+      expect(VectorTileDataService.buildTileGetter).to.have.been.called;
+      var lastCall = VectorTileDataService.buildTileGetter.lastCall;
+      expect(lastCall).to.have.been.calledWithMatch(
+        sinon.match.any,
+        sinon.match.any,
+        sinon.match.any,
+        sinon.match.truthy
+      );
+    });
+
+    it('should not parallelize tileserver requests if staging_api_lockdown feature is true', function() {
+      dataset.defineObservableProperty('permissions', { isPublic: false });
+      ServerConfig.override('feature_set', { 'staging_api_lockdown': true });
+
+      buildElement({
+        dataset: dataset
+      });
+      expect(VectorTileDataService.buildTileGetter).to.have.been.called;
+      var lastCall = VectorTileDataService.buildTileGetter.lastCall;
+      expect(lastCall).to.have.been.calledWithMatch(
+        sinon.match.any,
+        sinon.match.any,
+        sinon.match.any,
+        sinon.match.truthy
+      );
+    });
+
+    it('should not parallelize tileserver requests if staging_lockdown feature is true', function() {
+      dataset.defineObservableProperty('permissions', { isPublic: false });
+      ServerConfig.override('feature_set', { 'staging_lockdown': true });
 
       buildElement({
         dataset: dataset

@@ -41,6 +41,19 @@ describe('Socrata config service', function() {
       });
     });
 
+    describe('getFeatureSet', function() {
+      it('should exist', function() {
+        expect(configService).to.respondTo('getFeatureSet');
+      });
+      it('should return the feature set if it is present', function() {
+        configService.override('featureSet', { 'staging_lockdown': true });
+        expect(configService.getFeatureSet()).to.eql({ 'staging_lockdown': true });
+      });
+      it('should return an empty object if no feature set is present', function() {
+        expect(configService.getFeatureSet()).to.eql({});
+      });
+    });
+
     describe('override', function() {
       it('should affect what get() returns', function() {
         configService.override('notHere', 'jk actually here');

@@ -22,7 +22,7 @@
         return http.get(url.href, config).then(
           function(response) {
             return _.chain(response).
-              getPathOrElse('data.options', []).
+              get('data.options', []).
               pluck('text').
               value();
           },

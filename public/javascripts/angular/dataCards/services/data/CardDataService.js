@@ -277,7 +277,7 @@
 
         return http.get(url.href, config).then(
           function(response) {
-            return _.chain(response).getPathOrElse('data.options', []).pluck('text').value();
+            return _.chain(response).get('data.options', []).pluck('text').value();
           },
           function(data) {
             $log.error(data);

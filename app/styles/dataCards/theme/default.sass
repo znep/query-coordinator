@@ -252,6 +252,21 @@ $column-chart-labels-label-callout-border-color: $column-chart-tick-color
 $column-chart-labels-label-contents-text-color: $column-chart-tick-color
 $column-chart-labels-label-contents-filter-color: #debb1f
 
+$timeline-chart-highlight-fill-color: rgba(#fff, .75)
+$timeline-chart-highlight-stroke-color: transparent
+$timeline-chart-selection-fill-color: #debb1f
+$timeline-chart-selection-trace-stroke-color: #debb1f
+$timeline-chart-selection-marker-stroke-color: #8a8686
+$timeline-chart-selection-marker-fill-color: #c0bbbb
+$timeline-chart-clear-selection-label-background-color: rgba(#fff, .75)
+$timeline-chart-datum-label-text-color: rgba(#d6d4d5, .5)
+$timeline-chart-context-fill-color: #d6d4d5
+$timeline-chart-context-trace-stroke-color: #d6d4d5
+$timeline-chart-shaded-fill-color: rgba(#6ab0cc, .5)
+$timeline-chart-shaded-trace-stroke-color: #68b0cc
+$timeline-chart-tick-color: #bbb
+$timeline-chart-tick-zero-color: #888
+
 // Theme styles
 // TODO Get rid of the unnestessary amount of nesting
 
@@ -1000,3 +1015,64 @@ div.column-chart
       &.origin
         border-bottom: 1px solid $column-chart-tick-origin-color
         color: $column-chart-tick-origin-color
+
+
+// timeline-chart
+.timeline-chart-highlight-container
+  .timeline-chart-highlight
+    fill: $timeline-chart-highlight-fill-color
+    stroke: $timeline-chart-highlight-stroke-color
+
+.timeline-chart-selection
+  .selection
+    fill: $timeline-chart-selection-fill-color
+
+  .selection-trace
+    stroke: $timeline-chart-selection-trace-stroke-color
+
+.timeline-chart-left-selection-marker,
+.timeline-chart-right-selection-marker
+  svg
+    line
+      stroke: $timeline-chart-selection-marker-stroke-color
+
+    path
+      stroke: $timeline-chart-selection-marker-stroke-color
+      fill: $timeline-chart-selection-marker-fill-color
+
+
+.timeline-chart-clear-selection-label
+  background-color: $timeline-chart-clear-selection-label-background-color
+
+.datum-label
+  color: $timeline-chart-datum-label-text-color
+
+.timeline-chart-unfiltered-visualization,
+.timeline-chart-filtered-visualization
+  .context
+    fill: $timeline-chart-context-fill-color
+
+  .context-trace
+    stroke: $timeline-chart-context-trace-stroke-color
+
+  .shaded
+    fill: $timeline-chart-shaded-fill-color
+
+  .shaded-trace
+    stroke: $timeline-chart-shaded-trace-stroke-color
+
+.x-ticks
+  .x-tick
+    background-color: $timeline-chart-tick-color
+
+  .x-tick-label
+    color: $timeline-chart-tick-color
+
+.y-ticks
+  .y-tick
+    color: $timeline-chart-tick-color
+    border-bottom: 1px solid $timeline-chart-tick-color
+
+  .zero
+    font-weight: bold
+    color: $timeline-chart-tick-zero-color

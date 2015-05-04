@@ -37,10 +37,6 @@ $fill-opacity: 0.5
   overflow: visible
   z-index: 4
 
-  .timeline-chart-highlight
-    fill: $timeline-highlight-fill
-    stroke: $timeline-highlight-stroke
-
 .selecting .timeline-chart-highlight-container
   display: none
 
@@ -51,12 +47,8 @@ $fill-opacity: 0.5
   top: 0
   z-index: 3
 
-  .selection
-    fill: $timeline-selection-fill
-
   .selection-trace
     fill: transparent
-    stroke: $timeline-selection-stroke
     stroke-width: 2px
 
 .timeline-chart-left-selection-marker,
@@ -73,7 +65,6 @@ $fill-opacity: 0.5
     height: 100%
 
     line
-      stroke: #8a8686
       stroke-width: 2px
       stroke-dasharray: 7,3
 
@@ -81,8 +72,6 @@ $fill-opacity: 0.5
       fill: transparent
 
     path
-      stroke: #8a8686
-      fill: #c0bbbb
       stroke-linejoin: round
 
 
@@ -100,7 +89,6 @@ $fill-opacity: 0.5
   font-weight: bold
   line-height: 30px
   text-align: center
-  background-color: rgba(255, 255, 255, 0.75)
   z-index: 5
 
 
@@ -110,7 +98,6 @@ $fill-opacity: 0.5
   width: 100px
   height: 30px
   bottom: 0
-  color: $chart-tick-color
   font-weight: bold
   line-height: 30px
   text-align: center
@@ -138,21 +125,15 @@ $fill-opacity: 0.5
   position: absolute
   top: 0
 
-  .context
-    fill: $timeline-context-fill
-
   .context-trace
     fill: transparent
-    stroke: $timeline-context-stroke
     stroke-width: 2px
 
   .shaded
     display: block
-    fill: $timeline-shaded-fill
 
   .shaded-trace
     fill: transparent
-    stroke: $timeline-shaded-stroke
     stroke-width: 2px
 
 .x-ticks
@@ -165,12 +146,10 @@ $fill-opacity: 0.5
     top: -3px
     width: 3px
     height: 4px
-    background-color: $chart-tick-color
 
   .x-tick-label
     position: absolute
     height: 100%
-    color: $chart-tick-color
     line-height: 30px
     text-align: center
     cursor: pointer
@@ -194,11 +173,8 @@ $fill-opacity: 0.5
     width: 100%
     height: $tick-height
     margin-top: -$tick-height
-    color: $chart-tick-color
     text-align: right
     font-size: $tick-font-size
-    border-bottom: 1px solid $chart-tick-color
 
   .zero
     font-weight: bold
-    color: #888

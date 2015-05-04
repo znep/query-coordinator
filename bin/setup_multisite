@@ -14,9 +14,9 @@ Dir.chdir APP_ROOT do
 
   puts "\n== Setting up powder server local wildcard DNS =="
   system "brew install pow"
-  system "sudo pow --install-system"
+  system "mkdir -p ~/Library/Application\ Support/Pow/Hosts"
+  system "ln -s ~/Library/Application\ Support/Pow/Hosts ~/.pow"
   system "pow --install-local"
-  system "sudo launchctl load -w /Library/LaunchDaemons/cx.pow.firewall.plist"
   system "launchctl load -w ~/Library/LaunchAgents/cx.pow.powd.plist"
   system "powder up"
   system "powder default"

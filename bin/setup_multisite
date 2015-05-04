@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+require 'pathname'
+
+# path to your application root.
+APP_ROOT = Pathname.new File.expand_path('../../',  __FILE__)
+
+Dir.chdir APP_ROOT do
+  # Sets up local development machine to listen to your app on multple hosts
+  # e.g. local.dev, storyteller.dev, vertex.dev
+
+  puts "\n== Setting up powder server local wildcard DNS =="
+  system "powder default"
+  system "powder up"
+
+  puts "\n== Restarting application server =="
+  system "mkdir -p tmp"
+  system "touch tmp/restart.txt"
+end

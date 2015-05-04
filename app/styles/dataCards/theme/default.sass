@@ -1,35 +1,15 @@
-@import dataCards/common/mixins
-
-// First we define general colors for DRY reasons.
-// Then we define colors for modules
-// Then we apply all of the module colors
-
-// General colors
+// General colors, used only in this file
 $body-background-color: #3f4752
 $blue-active-color: #67aecc
 $red-error-color: #e83e3e
 $aqua-color: #68b0cc
+$yellow-color: #debb1e
+$tick-color: #bbb
 
-// Module colors
-$page-header-background-color: $body-background-color
-$page-header-link-text-color: #f0edee
-$page-header-link-text-shadow-color: #000
 
-$cards-metadata-background-color: #fff
-$cards-metadata-text-color: #646464
-$cards-metadata-border-color: #d7d4d4
-$cards-metadata-show-more-text-color: $aqua-color
-$cards-metadata-edit-placeholder-text-color: rgba(#000, .4)
-$cards-metadata-edit-placeholder-focused-text-color: $blue-active-color
-$cards-metadata-edit-textarea-background-color: transparent
-$cards-metadata-edit-textarea-border-color: #e9e6e7
-$cards-metadata-edit-textarea-focused-border-color: $blue-active-color
-$cards-metadata-edit-textarea-focused-box-shadow-color: $blue-active-color
-$cards-metadata-edit-textarea-warning-border-color: $red-error-color
-$cards-metadata-edit-warning-color: $red-error-color
-$cards-metadata-value-text-color: #676464
-$cards-metadata-value-link-text-color: $aqua-color
+// Components
 
+// action-btn
 $action-btn-bg-color: #f0f5f7
 $action-btn-border-color: #bad9e6
 $action-btn-font-color: $aqua-color
@@ -76,6 +56,7 @@ $action-btn-green-disabled-bg-color: #f0f
 $action-btn-green-disabled-border-color: #ff0
 $action-btn-green-disabled-font-color: #4b0082
 
+// flyout
 $flyout-border-color: #ccc
 $flyout-background-color: #fff
 $flyout-text-color: #000
@@ -83,8 +64,45 @@ $flyout-chart-background-color: #f1eeee
 $flyout-chart-title-text-color: #676464
 $flyout-chart-text-color: #8a8686
 $flyout-table-description-text-color: rgba(#000, .5)
-$flyout-row-cell-emphasized-color: lighten(#68b0cc, 10%)
+$flyout-row-cell-emphasized-color: lighten($aqua-color, 10%)
 
+// modal-dialog
+$modal-dialog-overlay-color: #141415
+$modal-dialog-background-color: #4d5968
+$modal-dialog-border-color: #3f4752
+$modal-dialog-text-color: #fff
+$modal-dialog-close-button-color: $blue-active-color
+
+// multiline-ellipsis
+$multiline-ellipsis-color: $aqua-color
+
+// rich-text-editor
+$rich-text-editor-border-color: #000
+$rich-text-editor-toolbar-background-color: #394047
+$rich-text-editor-toolbar-button-border-color: #bad9e6
+$rich-text-editor-toolbar-button-background-color: #f0f5f7
+$rich-text-editor-toolbar-button-text-color: rgba(#000, .5)
+$rich-text-editor-toolbar-button-hover-border-color: $blue-active-color
+$rich-text-editor-toolbar-button-hover-text-color: rgba(#000, .8)
+$rich-text-editor-toolbar-button-active-border-color: $blue-active-color
+$rich-text-editor-toolbar-button-active-text-color: #000
+$rich-text-editor-toolbar-button-anchor-text-color: $aqua-color
+
+// selection-label
+$selection-label-background-color: #fff
+$selection-label-text-color: #000
+
+// soc-select
+$soc-select-background-color: #3f4752
+$soc-select-text-color: #fff
+$soc-select-option-background-color: #fff
+$soc-select-option-text-color: #000
+$soc-select-option-disabled-text-color: #bebebe
+$soc-select-arrow-color: #fff
+$soc-select-disabled-text-color: #aaa
+$soc-select-disabled-arrow-color: #aaa
+
+// tool-panel
 $tool-panel-text-color: #fff
 $tool-panel-background-color: #4d5968
 $tool-panel-border-color: #3f4752
@@ -95,66 +113,117 @@ $tool-panel-form-text-color: #555
 $tool-panel-form-background-color: #fff
 $tool-panel-form-error-border-color: $red-error-color
 
-$modal-dialog-overlay-color: #141415
-$modal-dialog-background-color: #4d5968
-$modal-dialog-border-color: #3f4752
-$modal-dialog-text-color: #fff
-$modal-dialog-close-button-color: $blue-active-color
 
-$selection-label-background-color: #fff
-$selection-label-text-color: #000
+// Visualizations
 
-$related-views-list-item-border-color: rgba(#fff, .3)
-$related-views-list-item-hover-background-color: rgba(#fff, .1)
-$related-view-name-text-color: #68b0cc
-$related-view-description-text-color: #fff
+// choropleth
+$choropleth-legend-tick-color: #000
+$choropleth-legend-rect-color: #fff
+$choropleth-legend-continuous-text-color: #646464
 
-$multiline-ellipsis-color: $aqua-color
+// column-chart
+$column-chart-bar-group-active-bar-unfiltered-background-color: $blue-active-color
+$column-chart-bar-group-active-bar-filtered-background-color: $aqua-color
+$column-chart-filtered-bar-group-active-bar-unfiltered-background-color: #d6d4d5
+$column-chart-filtered-bar-group-active-special-bar-filtered-background-color: $yellow-color
+$column-chart-filtered-bar-group-active-special-bar-unfiltered-background-color: rgba($yellow-color, .2)
+$column-chart-bar-group-active-hover-bar-unfiltered-background-color: #00a9f0
+$column-chart-bar-group-active-hover-bar-filtered-background-color: #bbb
+$column-chart-filtered-bar-group-active-hover-bar-unfiltered-background-color: #bbb
+$column-chart-filtered-bar-group-active-hover-bar-filtered-background-color: #00a9f0
+$column-chart-filtered-bar-group-active-hover-special-bar-filtered-background-color: #e0b700
+$column-chart-filtered-bar-group-active-hover-special-bar-unfiltered-background-color: rgba($yellow-color, .4)
+$column-chart-tick-color: $tick-color
+$column-chart-tick-origin-color: #666
+$column-chart-truncation-marker-color: $tick-color
+$column-chart-field-name-text-color: darken($tick-color, 30%)
+$column-chart-field-description-text-color: darken($tick-color, 30%)
+$column-chart-labels-label-callout-border-color: $tick-color
+$column-chart-labels-label-contents-text-color: $tick-color
+$column-chart-labels-label-contents-filter-color: $yellow-color
 
+// search-card
+$search-card-text-color: #bbb
+$search-card-results-invalid-text-color: #cc6667
+$search-card-suggestions-border-color: #d4d4d4
+$search-card-suggestions-background-color: #eee
+$search-card-suggestions-text-color: #666
+$search-card-suggestions-hint-border-color: #eee
+$search-card-suggestions-status-spinner-fill-color: #888
+$search-card-suggestions-examples-background-color: #d4d4d4
+$search-card-suggestions-intractable-list-item-background-color: #eee
+$search-card-suggestions-intractable-list-item-text-color: #666
+$search-card-suggestions-intractable-list-item-active-background-color: $blue-active-color
+$search-card-suggestions-intractable-list-item-active-text-color: #eee
+
+// table
+$table-body-background-color: #fff
+$table-body-border-color: #f0eeef
+$table-body-cell-border-color: #f0eeef
+$table-body-row-even-background-color: #f0f5f8
+$table-head-background-color: $aqua-color
+$table-head-text-color: #f0edee
+$table-head-th-caret-color: rgba(#f0edee, .5)
+$table-head-th-active-caret-color: #f0edee
+$table-head-th-content-hover-background-color: rgba(#fff, .1)
+$table-resize-active-background-color: #f0eeef
+
+// timeline-chart
+$timeline-chart-highlight-fill-color: rgba(#fff, .75)
+$timeline-chart-highlight-stroke-color: transparent
+$timeline-chart-selection-fill-color: $yellow-color
+$timeline-chart-selection-trace-stroke-color: $yellow-color
+$timeline-chart-selection-marker-stroke-color: #8a8686
+$timeline-chart-selection-marker-fill-color: #c0bbbb
+$timeline-chart-clear-selection-label-background-color: rgba(#fff, .75)
+$timeline-chart-datum-label-text-color: rgba(#d6d4d5, .5)
+$timeline-chart-context-fill-color: #d6d4d5
+$timeline-chart-context-trace-stroke-color: #d6d4d5
+$timeline-chart-shaded-fill-color: rgba(#6ab0cc, .5)
+$timeline-chart-shaded-trace-stroke-color: $aqua-color
+$timeline-chart-tick-color: $tick-color
+$timeline-chart-tick-zero-color: #888
+
+
+// Layout
+
+// body
+$body-state-view-card-background-color: #fff
+$body-state-view-cards-background-color: #4d5969
+$body-state-dataset-metadata-background-color: #fff
+$body-state-dataset-metadata-text-color: #fff
+$body-state-dataset-metadata-row-background-color: #4d5967
+$body-state-dataset-metadata-row-link-text-color: #ddd
+$body-state-dataset-metadata-page-hover-background-color: lighten(#4d5967, 5%)
+$body-state-dataset-metadata-page-link-text-color: #fff
+$body-state-dataset-metadata-page-header-text-color: $aqua-color
+
+// page-header
+$page-header-background-color: $body-background-color
+$page-header-link-text-color: #f0edee
+$page-header-link-text-shadow-color: #000
+
+// cards-metadata
+$cards-metadata-background-color: #fff
+$cards-metadata-text-color: #646464
+$cards-metadata-border-color: #d7d4d4
+$cards-metadata-show-more-text-color: $aqua-color
+$cards-metadata-edit-placeholder-text-color: rgba(#000, .4)
+$cards-metadata-edit-placeholder-focused-text-color: $blue-active-color
+$cards-metadata-edit-textarea-background-color: transparent
+$cards-metadata-edit-textarea-border-color: #e9e6e7
+$cards-metadata-edit-textarea-focused-border-color: $blue-active-color
+$cards-metadata-edit-textarea-focused-box-shadow-color: $blue-active-color
+$cards-metadata-edit-textarea-warning-border-color: $red-error-color
+$cards-metadata-edit-warning-color: $red-error-color
+$cards-metadata-value-text-color: #676464
+$cards-metadata-value-link-text-color: $aqua-color
+
+// lens-type
 $lens-type-background-color: #959595
 $lens-type-text-color: #fff
 
-$soc-select-background-color: #3f4752
-$soc-select-text-color: #fff
-$soc-select-option-background-color: #fff
-$soc-select-option-text-color: #000
-$soc-select-option-disabled-text-color: #bebebe
-$soc-select-arrow-color: #fff
-$soc-select-disabled-text-color: #aaa
-$soc-select-disabled-arrow-color: #aaa
-
-$rich-text-editor-border-color: #000
-$rich-text-editor-toolbar-background-color: #394047
-$rich-text-editor-toolbar-button-border-color: #bad9e6
-$rich-text-editor-toolbar-button-background-color: #f0f5f7
-$rich-text-editor-toolbar-button-text-color: rgba(#000, .5)
-$rich-text-editor-toolbar-button-hover-border-color: $blue-active-color
-$rich-text-editor-toolbar-button-hover-text-color: rgba(#000, .8)
-$rich-text-editor-toolbar-button-active-border-color: $blue-active-color
-$rich-text-editor-toolbar-button-active-text-color: #000
-$rich-text-editor-toolbar-button-anchor-text-color: #68b0cc
-
-$feedback-panel-text-color: #f5f5f5
-$feedback-panel-background-color:#607550
-$feedback-panel-border-color: #4c613c
-$feedback-panel-link-text-color: #fff
-
-$card-text-color: #8f8f8f
-$card-background-color: #fff
-$card-title-text-color: #68b0cc
-$card-title-dynamic-text-color: #bbb
-$card-description-text-color: rgba(#000, .5)
-$card-description-expand-button-color: rgba(#000, .5)
-$card-description-expanded-content-text-color: #000
-$card-description-expanded-content-background-color: rgba($card-background-color, .9)
-$card-control-color: #888
-$card-control-hover-color: #ccc
-$card-control-hover-settings-color: $blue-active-color
-$card-control-hover-close-color: #f00
-$card-form-group-form-control-text-color: #555
-$card-form-group-form-control-background-color: #fff
-$card-form-group-form-control-border-color: rgba(#000, .5)
-
+// aggregation-chooser
 $aggregation-chooser-trigger-color: #fff
 $aggregation-chooser-tool-panel-hint-border-color: #3f4752
 $aggregation-chooser-option-hover-count-background-color: #394047
@@ -163,6 +232,54 @@ $aggregation-chooser-option-text-color: #fff
 $aggregation-chooser-option-active-text-color: #394047
 $aggregation-chooser-option-disabled-text-color: rgba(#fff, .5)
 
+// cards
+$cards-content-background-color: #4d5969
+$cards-content-text-color: #fff
+$cards-content-quick-filter-bar-background-color: #4d5969
+$cards-content-quick-filter-bar-filter-text-color: #fff
+$cards-content-card-spot-card-chooser-background-color: rgba(#000, .5)
+$cards-content-card-spot-card-chooser-hover-background-color: rgba(#000, .1)
+$action-png-export-focus-background-color: $blue-active-color
+$action-png-export-focus-border-color: $blue-active-color
+$action-png-export-focus-color: #fff
+$cards-content-card-group-drop-placeholder-text-color: #fff
+$cards-content-card-group-drop-placeholder-border-color: #fff
+$cards-content-card-drop-placeholder-background-color: #fff
+$add-card-dialog-settings-color: $aqua-color
+$add-card-dialog-settings-before-color: #888
+$add-card-dialog-settings-hover-color: #fff
+$add-card-dialog-settings-hover-background-color: $blue-active-color
+$add-card-dialog-settings-hover-before-color: #fff
+$cards-content-manage-lens-link-warning-color: $yellow-color
+$table-icon-grid-lines-fill-color: $aqua-color
+$table-icon-grid-cells-fill-color: lighten($aqua-color, 10%)
+$add-card-select-column-soc-select-background-color: #3f4752
+$add-card-preview-background-color: #6d7988
+$add-card-preview-border-color: #fff
+$add-card-controls-background-color: #fff
+$add-card-controls-control-color: #888
+$add-card-controls-control-hover-color: #ccc
+$add-card-controls-add-card-settings-hover-color: #fff
+$add-card-controls-add-card-settings-hover-background-color: $blue-active-color
+
+// card
+$card-text-color: #8f8f8f
+$card-background-color: #fff
+$card-title-text-color: $aqua-color
+$card-title-dynamic-text-color: #bbb
+$card-description-text-color: rgba(#000, .5)
+$card-description-expand-button-color: rgba(#000, .5)
+$card-description-expanded-content-text-color: #000
+$card-description-expanded-content-background-color: rgba(#fff, .9)
+$card-control-color: #888
+$card-control-hover-color: #ccc
+$card-control-hover-settings-color: $blue-active-color
+$card-control-hover-close-color: #f00
+$card-form-group-form-control-text-color: #555
+$card-form-group-form-control-background-color: #fff
+$card-form-group-form-control-border-color: rgba(#000, .5)
+
+// customize-bar
 $customize-bar-background-color: #fff
 $customize-bar-background-opacity: .96
 $customize-bar-border-color: #d7d4d4
@@ -176,903 +293,16 @@ $customize-bar-customizing-border-opacity: .8
 $customize-bar-customizing-button-background-color: #4c8d78
 $customize-bar-customizing-button-color: #fff
 
-$body-state-view-card-background-color: #fff
-$body-state-view-cards-background-color: #4d5969
-$body-state-dataset-metadata-background-color: #fff
-$body-state-dataset-metadata-text-color: #fff
-$body-state-dataset-metadata-row-background-color: #4d5967
-$body-state-dataset-metadata-row-link-text-color: #ddd
-$body-state-dataset-metadata-page-hover-background-color: lighten($body-state-dataset-metadata-row-background-color, 5%)
-$body-state-dataset-metadata-page-link-text-color: #fff
-$body-state-dataset-metadata-page-header-text-color: $aqua-color
-
-$cards-content-background-color: #4d5969
-$cards-content-text-color: #fff
-$cards-content-quick-filter-bar-background-color: #4d5969
-$cards-content-quick-filter-bar-filter-text-color: #fff
-$cards-content-card-spot-card-chooser-background-color: rgba(#000, .5)
-$cards-content-card-spot-card-chooser-hover-background-color: rgba(#000, .1)
-$action-png-export-focus-background-color: $blue-active-color
-$action-png-export-focus-border-color: $blue-active-color
-$action-png-export-focus-color: #fff
-$cards-content-card-group-drop-placeholder-text-color: #fff
-$cards-content-card-group-drop-placeholder-border-color: #fff
-$cards-content-card-drop-placeholder-background-color: #fff
-$add-card-dialog-settings-color: #68b0cc
-$add-card-dialog-settings-before-color: #888
-$add-card-dialog-settings-hover-color: #fff
-$add-card-dialog-settings-hover-background-color: $blue-active-color
-$add-card-dialog-settings-hover-before-color: #fff
-$cards-content-manage-lens-link-warning-color: #debb1e
-$table-icon-grid-lines-fill-color: $aqua-color
-$table-icon-grid-cells-fill-color: lighten($aqua-color, 10%)
-$add-card-select-column-soc-select-background-color: #3f4752
-$add-card-preview-background-color: #6d7988
-$add-card-preview-border-color: #fff
-$add-card-controls-background-color: #fff
-$add-card-controls-control-color: #888
-$add-card-controls-control-hover-color: #ccc
-$add-card-controls-add-card-settings-hover-color: #fff
-$add-card-controls-add-card-settings-hover-background-color: $blue-active-color
-
-$choropleth-legend-tick-color: #000
-$choropleth-legend-rect-color: #fff
-$choropleth-legend-continuous-text-color: #646464
-
-$search-card-text-color: #bbb
-$search-card-results-invalid-text-color: #cc6667
-$search-card-suggestions-border-color: #d4d4d4
-$search-card-suggestions-background-color: #eee
-$search-card-suggestions-text-color: #666
-$search-card-suggestions-hint-border-color: #eee
-$search-card-suggestions-status-spinner-fill-color: #888
-$search-card-suggestions-examples-background-color: #d4d4d4
-$search-card-suggestions-intractable-list-item-background-color: #eee
-$search-card-suggestions-intractable-list-item-text-color: #666
-$search-card-suggestions-intractable-list-item-active-background-color: #67aecc
-$search-card-suggestions-intractable-list-item-active-text-color: #eee
-
-$column-chart-bar-group-active-bar-unfiltered-background-color: $blue-active-color
-$column-chart-bar-group-active-bar-filtered-background-color: #68b0cc
-$column-chart-filtered-bar-group-active-bar-unfiltered-background-color: #d6d4d5
-$column-chart-filtered-bar-group-active-special-bar-filtered-background-color: #debb1f
-$column-chart-filtered-bar-group-active-special-bar-unfiltered-background-color: rgba(#debb1f, .2)
-$column-chart-bar-group-active-hover-bar-unfiltered-background-color: #00a9f0
-$column-chart-bar-group-active-hover-bar-filtered-background-color: #bbb
-$column-chart-filtered-bar-group-active-hover-bar-unfiltered-background-color: #bbb
-$column-chart-filtered-bar-group-active-hover-bar-filtered-background-color: #00a9f0
-$column-chart-filtered-bar-group-active-hover-special-bar-filtered-background-color: #e0b700
-$column-chart-filtered-bar-group-active-hover-special-bar-unfiltered-background-color: rgba(#debb1f, .4)
-$column-chart-tick-color: #bbb
-$column-chart-tick-origin-color: #666
-$column-chart-truncation-marker-color: $column-chart-tick-color
-$column-chart-field-name-text-color: darken($column-chart-tick-color, 30%)
-$column-chart-field-description-text-color: darken($column-chart-tick-color, 30%)
-$column-chart-labels-label-callout-border-color: $column-chart-tick-color
-$column-chart-labels-label-contents-text-color: $column-chart-tick-color
-$column-chart-labels-label-contents-filter-color: #debb1f
-
-$timeline-chart-highlight-fill-color: rgba(#fff, .75)
-$timeline-chart-highlight-stroke-color: transparent
-$timeline-chart-selection-fill-color: #debb1f
-$timeline-chart-selection-trace-stroke-color: #debb1f
-$timeline-chart-selection-marker-stroke-color: #8a8686
-$timeline-chart-selection-marker-fill-color: #c0bbbb
-$timeline-chart-clear-selection-label-background-color: rgba(#fff, .75)
-$timeline-chart-datum-label-text-color: rgba(#d6d4d5, .5)
-$timeline-chart-context-fill-color: #d6d4d5
-$timeline-chart-context-trace-stroke-color: #d6d4d5
-$timeline-chart-shaded-fill-color: rgba(#6ab0cc, .5)
-$timeline-chart-shaded-trace-stroke-color: #68b0cc
-$timeline-chart-tick-color: #bbb
-$timeline-chart-tick-zero-color: #888
-
-// Theme styles
-// TODO Get rid of the unnestessary amount of nesting
-
-
-// page-header
-.page-header
-  background-color: $page-header-background-color
-
-.page-header-link
-  color: $page-header-link-text-color
-  text-shadow: 1px 1px 2px $page-header-link-text-shadow-color
-
-
-// metadata
-.cards-metadata
-  background: $cards-metadata-background-color
-  color: $cards-metadata-text-color
-  border-color: $cards-metadata-border-color
-
-  .page-description
-    .show-more
-      color: $cards-metadata-show-more-text-color
-
-  .edit-page-name
-    >.placeholder
-      span
-        color: $cards-metadata-edit-placeholder-text-color
-
-    >textarea
-      background: $cards-metadata-edit-textarea-background-color
-      border-color: $cards-metadata-edit-textarea-border-color
-
-      &:focused
-        border-color: $cards-metadata-edit-textarea-focused-border-color
-        @include prefixer(box-shadow, 0 0 2px 0 $cards-metadata-edit-textarea-focused-box-shadow-color)
-
-        + .placeholder
-          color: $cards-metadata-edit-placeholder-focused-text-color
-
-    .icon-warning
-      color: $cards-metadata-edit-warning-color
-
-      + textarea
-        border-color: $cards-metadata-edit-textarea-warning-border-color
-
-  .metadata
-    .metadatum-wrapper
-      .metadatum
-        span
-          &.value
-            color: $cards-metadata-value-text-color
-
-            a
-              color: $cards-metadata-value-link-text-color
-
-
-// action-button
-.action-btn
-  @include action-button($action-btn-font-color, $action-btn-bg-color, $action-btn-border-color)
-
-  &.dark
-    @include action-button($action-btn-dark-font-color, $action-btn-dark-bg-color, $action-btn-dark-border-color)
-
-    &:hover, &.active
-      @include action-button($action-btn-dark-hover-font-color, $action-btn-dark-hover-bg-color, $action-btn-dark-hover-border-color)
-
-    &.disabled, &:disabled
-      @include action-button($action-btn-dark-disabled-font-color, $action-btn-dark-disabled-bg-color, $action-btn-dark-disabled-border-color)
-
-  &.green
-    @include action-button($action-btn-green-font-color, $action-btn-green-bg-color, $action-btn-green-border-color)
-
-    &:hover
-      @include action-button($action-btn-green-hover-font-color, $action-btn-green-hover-bg-color, $action-btn-green-hover-border-color)
-
-    &.disabled, &:disabled
-      @include action-button($action-btn-green-disabled-font-color, $action-btn-green-disabled-bg-color, $action-btn-green-disabled-border-color)
-
-  &.inverted
-    @include action-button($action-btn-hover-font-color, $action-btn-hover-bg-color, $action-btn-hover-border-color)
-
-    &:hover
-      @include action-button($action-btn-font-color, $action-btn-border-color, $action-btn-bg-color)
-
-  &:hover, &.active
-    @include action-button($action-btn-hover-font-color, $action-btn-hover-bg-color, $action-btn-hover-border-color)
-
-  &.disabled, &:disabled
-    @include action-button($action-btn-disabled-font-color, $action-btn-disabled-bg-color, $action-btn-disabled-border-color)
-
-  &.touched
-    @include action-button($action-btn-touched-font-color, $action-btn-touched-bg-color, $action-btn-touched-border-color)
-
-  &.error
-    @include action-button($action-btn-error-font-color, $action-btn-error-bg-color, $action-btn-error-border-color)
-
-  &.success
-    @include action-button($action-btn-success-font-color, $action-btn-success-bg-color, $action-btn-success-border-color)
-
-  &.working
-    @include action-button($action-btn-working-font-color, $action-btn-working-bg-color, $action-btn-working-border-color)
-
-
-// flyout
-#uber-flyout
-  color: $flyout-chart-text-color
-  background-color: $flyout-chart-background-color
-  border: 1px solid $flyout-border-color
-
-  .flyout-title
-    color: $flyout-chart-title-text-color
-
-  .flyout-row
-    .flyout-cell.emphasis
-      color: $flyout-row-cell-emphasized-color
-
-#uber-flyout.left
-  .hint
-    &:after
-      border-color: $flyout-chart-background-color transparent transparent transparent
-
-    &:before
-      border-color: $flyout-border-color transparent transparent transparent
-
-#uber-flyout.right
-  .hint
-    &:after
-      border-color: transparent $flyout-chart-background-color transparent transparent
-
-    &:before
-      border-color: transparent $flyout-border-color transparent transparent
-
-#uber-flyout.right.horizontal
-  .hint
-    &:after
-      border-color: transparent transparent transparent $flyout-chart-background-color
-
-    &:before
-      border-color: transparent transparent transparent $flyout-border-color
-
-.flyout
-  border: 1px solid $flyout-border-color
-  background-color: $flyout-background-color
-  color: $flyout-text-color
-
-  &.flyout-chart
-    color: $flyout-chart-text-color
-    background-color: $flyout-chart-background-color
-
-    .flyout-title
-      color: $flyout-chart-title-text-color
-
-    &.top
-      .flyout-arrow
-        &.left
-          &:after
-            border-color: $flyout-chart-background-color transparent transparent transparent
-
-          &:before
-            border-color: $flyout-border-color transparent transparent transparent
-
-        &.right
-          &:after
-            border-color: transparent $flyout-chart-background-color transparent transparent
-
-          &:before
-            border-color: transparent $flyout-border-color transparent transparent
-
-        &.center
-          &:after
-            border-color: $flyout-chart-background-color transparent transparent
-
-          &:before
-            border-color: $flyout-border-color transparent transparent
-
-  &.flyout-table
-    .flyout-title
-      border-bottom-color: $flyout-border-color
-
-      .description
-        color: $flyout-table-description-text-color
-
-    &.right
-      .flyout-arrow
-        &:after
-          border-right-color: $flyout-background-color
-
-        &:before
-          border-right-color: $flyout-border-color
-
-    &.left
-      .flyout-arrow
-        &:after
-          border-left-color: $flyout-background-color
-
-        &:before
-          border-left-color: $flyout-border-color
-
-    &.top
-      .flyout-arrow
-        &:after
-          border-top-color: $flyout-background-color
-
-        &:before
-          border-top-color: $flyout-border-color
-
-    &.bottom
-      .flyout-arrow
-        &:after
-          border-bottom-color: $flyout-background-color
-
-        &:before
-          border-bottom-color: $flyout-border-color
-
-
-// tool-panel
-.tool-panel
-  .tool-panel-main
-    color: $tool-panel-text-color
-    background-color: $tool-panel-background-color
-    border: solid 1px $tool-panel-border-color
-
-  .tool-panel-hint
-    border-color: transparent transparent $tool-panel-background-color transparent
-
-  &.upwards
-    .tool-panel-hint
-      border-color: $tool-panel-background-color transparent transparent $tool-panel-background-color
-
-  &.light
-    .tool-panel-hint
-      border-color: $tool-panel-light-border-color
-
-  &.left
-    .tool-panel-hint
-      &:after
-        border-color: transparent transparent $tool-panel-light-background-color $tool-panel-light-background-color
-      &:before
-        border-color: transparent transparent $tool-panel-light-border-color $tool-panel-light-border-color
-
-  .form-control
-    color: $tool-panel-form-text-color
-    background: $tool-panel-form-background-color none
-    &.form-error
-      border-color: $tool-panel-form-error-border-color
-
-
-// modal-dialog
-.modal-container
-  .modal-overlay
-    background-color: $modal-dialog-overlay-color
-
-  .modal-dialog
-    background-color: $modal-dialog-background-color
-    border: 1px solid $modal-dialog-border-color
-
-    .modal-dialog-content
-      color: $modal-dialog-text-color
-
-    .modal-close-button
-      color: $modal-dialog-close-button-color
-
-
-// selection-label
-.selection-label-outer
-  color: $selection-label-text-color
-  background-color: $selection-label-background-color
-
+// feedback-panel
+$feedback-panel-text-color: #f5f5f5
+$feedback-panel-background-color:#607550
+$feedback-panel-border-color: #4c613c
+$feedback-panel-link-text-color: #fff
 
 // related-views
-.related-views-list-item
-  > a
-    border-bottom: 1px solid $related-views-list-item-border-color
-
-  &:hover
-    background-color: $related-views-list-item-hover-background-color
-
-.related-view-name
-  color: $related-view-name-text-color
-
-.related-view-description
-  color: $related-view-description-text-color
-
-
-// multiline-ellipsis
-.show-more
-  .show-more-arrow
-    border-top-color: $multiline-ellipsis-color
-
-  &.less .show-more-arrow
-    border-bottom-color: $multiline-ellipsis-color
-
-
-// lens-type
-lens-type
-  span
-    color: $lens-type-text-color
-    background-color: $lens-type-background-color
-
-
-// soc-select
-soc-select
-  background-color: $soc-select-background-color
-
-  select
-    color: $soc-select-text-color
-
-    option
-      background-color: $soc-select-option-background-color
-      color: $soc-select-option-text-color
-      &:disabled
-        color: $soc-select-option-disabled-text-color
-
-  .arrow-container
-    .arrow
-      border-color: $soc-select-arrow-color transparent transparent transparent
-
-  select:disabled
-    color: $soc-select-disabled-text-color
-
-    + .arrow-container .arrow
-      border-top-color: $soc-select-disabled-arrow-color
-
-
-// rich-text-editor
-rich-text-editor
-  border: 1px solid $rich-text-editor-border-color
-
-  .toolbar
-    background-color: $rich-text-editor-toolbar-background-color
-
-    button
-      border: 2px solid $rich-text-editor-toolbar-button-border-color
-      background-color: $rich-text-editor-toolbar-button-background-color
-      color: $rich-text-editor-toolbar-button-text-color
-
-      &:hover
-        border-color: $rich-text-editor-toolbar-button-hover-border-color
-        color: $rich-text-editor-toolbar-button-hover-text-color
-
-      &.active
-        border-color: $rich-text-editor-toolbar-button-active-border-color
-        color: $rich-text-editor-toolbar-button-active-text-color
-
-      &.anchor
-        color: $rich-text-editor-toolbar-button-anchor-text-color
-
-
-// feedback-panel
-feedback-panel
-  .feedback-panel-button
-    color: $feedback-panel-text-color
-    background-color: $feedback-panel-background-color
-    border: 1px solid $feedback-panel-border-color
-
-  .feedback-panel-content
-    color: $feedback-panel-text-color
-    background-color: $feedback-panel-background-color
-    border: 1px solid $feedback-panel-border-color
-
-    a
-      font-weight: bold
-      color: $feedback-panel-link-text-color
-
-
-// card
-.card
-  color: $card-text-color
-  background: $card-background-color
-
-  .title-one-line
-    color: $card-title-text-color
-
-    &.dynamic-title
-      color: $card-title-dynamic-text-color
-
-    .wrap
-      background-color: $card-background-color
-
-  .description
-    color: $card-description-text-color
-
-    .description-expand-button
-      color: $card-description-expand-button-color
-      background-color: $card-background-color
-
-    .description-expanded-wrapper
-      background: $card-background-color
-
-      .description-expanded-content
-        color: $card-description-expanded-content-text-color
-        background: $card-description-expanded-content-background-color
-
-  .card-controls
-    background-color: $card-background-color
-
-    >.card-control
-      color: $card-control-color
-
-      &:hover
-        color: $card-control-hover-color
-        border-color: $card-control-hover-color
-
-    >.icon-settings
-      &:hover
-        color: $card-control-hover-settings-color
-
-    >.icon-close
-      &:hover
-        color: $card-control-hover-close-color
-
-.card-form-group
-  .form-control
-    color: $card-form-group-form-control-text-color
-    background: $card-form-group-form-control-background-color none
-    border: 3px solid transparent
-    border-bottom: 1px solid $card-form-group-form-control-border-color
-
-
-// aggregation-chooser
-aggregation-chooser
-  .aggregation-chooser-trigger
-    color: $aggregation-chooser-trigger-color
-
-    &::after
-      border-color: $aggregation-chooser-trigger-color transparent transparent transparent
-
-  .tool-panel-hint::before
-    border-color: transparent transparent $aggregation-chooser-tool-panel-hint-border-color transparent
-
-  .aggregation-columns.count
-    .aggregation-option.count:hover
-      background-color: $aggregation-chooser-option-hover-count-background-color
-
-  .aggregation-columns.no-count
-    .aggregation-option.no-count:hover
-      background-color: $aggregation-chooser-option-hover-no-count-background-color
-
-  .aggregation-option
-    color: $aggregation-chooser-option-text-color
-
-    &.active
-      background-color: $aggregation-chooser-option-active-text-color
-
-    &.disabled
-      color: $aggregation-chooser-option-disabled-text-color
-
-
-// customize-bar
-.customize-bar-action-btn
-  @include action-button($customize-bar-button-color, $customize-bar-button-background-color, $customize-bar-button-border-color)
-
-  &:hover, &.active, &.touched
-    @include action-button($customize-bar-customizing-button-color, $customize-bar-customizing-button-background-color, $customize-bar-customizing-button-color)
-
-  &.disabled, &:disabled
-    @extend .action-btn.disabled !optional
-
-  &.working
-    @include action-button($customize-bar-customizing-button-color, $customize-bar-customizing-button-background-color, $customize-bar-customizing-button-color)
-
-.customize-bar
-  background-color: rgba($customize-bar-background-color, $customize-bar-background-opacity)
-  border-top-color: rgba($customize-bar-border-color, $customize-bar-border-opacity)
-  color: $customize-bar-button-color
-
-  .action-btn
-    @extend .customize-bar-action-btn
-    &:hover
-      border-color: $customize-bar-customizing-button-background-color
-      &.disabled
-        @extend .action-btn.disabled !optional
-
-  &.is-customizing
-    background-color: rgba($customize-bar-customizing-background-color, 1)
-    border-top-color: rgba($customize-bar-customizing-background-color, $customize-bar-border-opacity)
-    color: $customize-bar-customizing-button-color
-
-    .action-btn
-      @include action-button($customize-bar-customizing-button-color, $customize-bar-customizing-button-background-color, $customize-bar-customizing-button-color)
-
-      &:hover, &.active
-        @include action-button($customize-bar-customizing-button-background-color, $customize-bar-button-background-color, white)
-
-      &.disabled,&:disabled
-        @extend .action-btn.disabled !optional
-
-    button.save-button, button.save-as-button
-      @extend .customize-bar-action-btn
-      &:hover
-        border-color: $customize-bar-customizing-button-background-color
-
-    .tool-panel
-      @extend .tool-panel !optional
-
-
-// body?
-body
-  &.state-view-cards
-    background-color: $body-state-view-cards-background-color
-
-  &.state-view-card
-    background-color: $body-state-view-card-background-color
-
-  &.state-dataset-metadata
-    background-color: $body-state-dataset-metadata-background-color
-    color: $body-state-dataset-metadata-text-color
-
-    .metadata-boxes
-      .row
-        background-color: $body-state-dataset-metadata-row-background-color
-
-        a
-          color: $body-state-dataset-metadata-row-link-text-color
-
-        &.dataset-related-pages
-          .page
-            &:hover
-              background: $body-state-dataset-metadata-page-hover-background-color
-
-            a
-              color: $body-state-dataset-metadata-page-link-text-color
-
-            h2
-              color: $body-state-dataset-metadata-page-header-text-color
-
-// cards-content
-body.state-view-cards
-  .cards-content
-    color: $cards-content-text-color
-    background-color: $cards-content-background-color
-
-    #quick-filter-bar-container
-      .quick-filter-bar
-        .content
-          background-color: $cards-content-quick-filter-bar-background-color
-
-        .filter
-          color: $cards-content-quick-filter-bar-filter-text-color
-
-    .cards
-      .card-spot
-        .overlay
-          &.card-chooser
-            background-color: $cards-content-card-spot-card-chooser-background-color
-
-            &.enabled:hover
-              background-color: $cards-content-card-spot-card-chooser-hover-background-color
-
-            .action-png-export
-              &:focus
-                background-color: $action-png-export-focus-background-color
-                border: 2px solid $action-png-export-focus-border-color
-                color: $action-png-export-focus-color
-
-      .card-group-drop-placeholder
-        color: $cards-content-card-group-drop-placeholder-text-color
-        border: 2px dashed $cards-content-card-group-drop-placeholder-border-color
-
-      .card-drop-placeholder
-        background-color: $cards-content-card-drop-placeholder-background-color
-
-  add-card-dialog
-    .card-spot
-      .icon-settings
-        color: $add-card-dialog-settings-color
-
-        &::before
-          color: $add-card-dialog-settings-before-color
-
-        &:hover
-          background-color: $add-card-dialog-settings-hover-background-color
-          color: $add-card-dialog-settings-hover-color
-
-          &::before
-            color: $add-card-dialog-settings-hover-before-color
-
-  .manage-lens-link
-    .icon-warning
-      color: $cards-content-manage-lens-link-warning-color
-
-.table-icon
-  .grid-lines
-    fill: $table-icon-grid-lines-fill-color
-
-  .grid-cells
-    fill: $table-icon-grid-cells-fill-color
-
-.add-card-select-column
-  soc-select
-    background-color: $add-card-select-column-soc-select-background-color
-
-.add-card-preview
-  background-color: $add-card-preview-background-color
-  border: 2px dashed $add-card-preview-border-color
-
-.add-card-controls
-  background-color: $add-card-controls-background-color
-
-  >.card-control
-    color: $add-card-controls-control-color
-
-    &:hover
-      color: $add-card-controls-control-hover-color
-      border-color: $add-card-controls-control-hover-color
-
-  >.add-card-settings:hover
-    color: $add-card-controls-add-card-settings-hover-color
-    background-color: $add-card-controls-add-card-settings-hover-background-color
-
-
-// choropleth
-.choropleth-container
-  .choropleth-legend
-    svg
-      .labels
-        .tick
-          line
-            stroke: $choropleth-legend-tick-color
-
-      rect.choropleth-legend-color
-        stroke: $choropleth-legend-rect-color
-
-    &.continuous
-      svg
-        .tick
-          text
-            color: $choropleth-legend-continuous-text-color
-            fill: $choropleth-legend-continuous-text-color
-
-          line
-            stroke: $choropleth-legend-tick-color
-
-
-// search
-.search-card-text
-  color: $search-card-text-color
-
-.search-card-results
-  .no-results,
-  .invalid-value
-    color: $search-card-results-invalid-text-color
-
-.tool-panel.suggestion-tool-panel
-  .tool-panel-main
-    border-color: $search-card-suggestions-border-color
-
-  &.light
-    .tool-panel-inner-container
-      background-color: $search-card-suggestions-background-color
-      color: $search-card-suggestions-text-color
-
-    .tool-panel-hint
-      border-color: transparent transparent $search-card-suggestions-hint-border-color transparent
-
-    .suggestions-status
-      spinner
-        path
-          fill: $search-card-suggestions-status-spinner-fill-color
-
-    .suggestion-examples
-      background-color: $search-card-suggestions-examples-background-color
-
-    .intractable-list
-      ul.list
-        li
-          color: $search-card-suggestions-intractable-list-item-background-color
-          background-color: $search-card-suggestions-intractable-list-item-text-color
-
-          &.active
-            color: $search-card-suggestions-intractable-list-item-active-text-color
-            background-color: $search-card-suggestions-intractable-list-item-active-background-color
-
-
-// column-chart
-div.column-chart
-  div.column-chart-wrapper
-    .bar-group.active .bar
-      &.unfiltered
-        background-color: $column-chart-bar-group-active-bar-unfiltered-background-color
-
-      &.filtered
-        background-color: $column-chart-bar-group-active-bar-filtered-background-color
-
-    &.filtered .bar-group.active
-      .bar
-        &.unfiltered
-          background-color: $column-chart-filtered-bar-group-active-bar-unfiltered-background-color
-
-      &.special
-        .bar.filtered
-          background-color: $column-chart-filtered-bar-group-active-special-bar-filtered-background-color
-        .bar.unfiltered
-          background-color: $column-chart-filtered-bar-group-active-special-bar-unfiltered-background-color
-
-    // hover colors
-    .bar-group.active.hover
-      .bar.unfiltered
-        background-color: $column-chart-bar-group-active-hover-bar-unfiltered-background-color
-      .bar.filtered
-        background-color: $column-chart-bar-group-active-hover-bar-filtered-background-color
-    &.filtered
-      .bar-group.active.hover
-        .bar.unfiltered
-          background-color: $column-chart-filtered-bar-group-active-hover-bar-unfiltered-background-color
-        .bar.filtered
-          background-color: $column-chart-filtered-bar-group-active-hover-bar-filtered-background-color
-        &.special
-          .bar.filtered
-            background-color: $column-chart-filtered-bar-group-active-hover-special-bar-filtered-background-color
-          .bar.unfiltered
-            background-color: $column-chart-filtered-bar-group-active-hover-special-bar-unfiltered-background-color
-
-    div.truncation-marker
-      color: $column-chart-truncation-marker-color
-
-    div.field-name
-      color: $column-chart-field-name-text-color
-
-    div.field-description
-      color: $column-chart-field-description-text-color
-
-  div.labels
-    div.label
-      div.callout
-        border-bottom: 1px solid $column-chart-labels-label-callout-border-color
-
-      div.contents
-        color: $column-chart-labels-label-contents-text-color
-
-        span.icon-filter
-          color: $column-chart-labels-label-contents-filter-color
-
-      &.orientation-right
-        div.callout
-          border-left: 1px solid $column-chart-labels-label-callout-border-color
-
-      &.orientation-left
-        div.callout
-          border-right: 1px solid $column-chart-labels-label-callout-border-color
-
-  div.ticks
-    div
-      border-bottom: 1px solid $column-chart-tick-color
-      color: $column-chart-tick-color
-      &.origin
-        border-bottom: 1px solid $column-chart-tick-origin-color
-        color: $column-chart-tick-origin-color
-
-
-// timeline-chart
-.timeline-chart-highlight-container
-  .timeline-chart-highlight
-    fill: $timeline-chart-highlight-fill-color
-    stroke: $timeline-chart-highlight-stroke-color
-
-.timeline-chart-selection
-  .selection
-    fill: $timeline-chart-selection-fill-color
-
-  .selection-trace
-    stroke: $timeline-chart-selection-trace-stroke-color
-
-.timeline-chart-left-selection-marker,
-.timeline-chart-right-selection-marker
-  svg
-    line
-      stroke: $timeline-chart-selection-marker-stroke-color
-
-    path
-      stroke: $timeline-chart-selection-marker-stroke-color
-      fill: $timeline-chart-selection-marker-fill-color
-
-
-.timeline-chart-clear-selection-label
-  background-color: $timeline-chart-clear-selection-label-background-color
-
-.datum-label
-  color: $timeline-chart-datum-label-text-color
-
-.timeline-chart-unfiltered-visualization,
-.timeline-chart-filtered-visualization
-  .context
-    fill: $timeline-chart-context-fill-color
-
-  .context-trace
-    stroke: $timeline-chart-context-trace-stroke-color
-
-  .shaded
-    fill: $timeline-chart-shaded-fill-color
-
-  .shaded-trace
-    stroke: $timeline-chart-shaded-trace-stroke-color
-
-.x-ticks
-  .x-tick
-    background-color: $timeline-chart-tick-color
-
-  .x-tick-label
-    color: $timeline-chart-tick-color
-
-.y-ticks
-  .y-tick
-    color: $timeline-chart-tick-color
-    border-bottom: 1px solid $timeline-chart-tick-color
-
-  .zero
-    font-weight: bold
-    color: $timeline-chart-tick-zero-color
+$related-views-list-item-border-color: rgba(#fff, .3)
+$related-views-list-item-hover-background-color: rgba(#fff, .1)
+$related-view-name-text-color: $aqua-color
+$related-view-description-text-color: #fff
+
+@import "dataCards/theme/apply"

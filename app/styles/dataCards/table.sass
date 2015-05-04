@@ -29,8 +29,6 @@ $border-radius: 4px
         display: block
         position: relative
         overflow: auto
-        background-color: $table-row-odd-color
-        border: 1px solid $table-border-color
         border-top: none
         border-bottom-right-radius: $border-radius
         border-bottom-left-radius: $border-radius
@@ -40,15 +38,11 @@ $border-radius: 4px
           min-width: 100%
 
         .cell
-          border-right: 1px solid $table-seperator-color
-
           &:last-child
             border-right: none
 
         .table-row
           white-space: nowrap
-          &:nth-child(even)
-            background-color: $table-row-even-color
 
         .table-resize-container
           width: 100%
@@ -65,8 +59,6 @@ $border-radius: 4px
       .table-head
         display: inline-block
         position: relative
-        background-color: $table-head-bg-color
-        color: $table-head-color
         white-space: nowrap
         height: $row-height
         min-width: 100%
@@ -86,7 +78,6 @@ $border-radius: 4px
           .caret
             float: right
             margin-left: 5px
-            color: rgba($table-head-color, 0.5)
             @include prefixer(transform, scaleY(0.5))
 
             &:before
@@ -102,11 +93,6 @@ $border-radius: 4px
           &.sortable
             cursor: pointer
 
-          &.active
-
-            .caret
-              color: $table-head-color
-
           .content
             // Fill up the entire space, so we can have a hover effect on this, but not on other
             // elements in this container
@@ -119,9 +105,6 @@ $border-radius: 4px
             // not so brittle.
             margin: 0 #{-$cell-horiz-padding}
             padding: inherit
-
-            &:hover
-              background-color: rgba(255, 255, 255, .1)
 
       .th, .cell
         font-weight: normal
@@ -148,9 +131,6 @@ $border-radius: 4px
           cursor: col-resize
           z-index: 1
           height: 100%
-
-          &:hover, &:active
-            background-color: $table-seperator-color
 
     .table-label
       height: $row-height

@@ -80,6 +80,7 @@ javascripts:
     - public/javascripts/controls/editors/url-editor.js
     - public/javascripts/controls/editors/phone-editor.js
     - public/javascripts/controls/editors/location-editor.js
+    - public/javascripts/controls/editors/wkt-editor.js
     - public/javascripts/controls/combo.js
     - public/javascripts/controls/editors/lookupList-editor.js
     - public/javascripts/controls/editors/checkbox-editor.js

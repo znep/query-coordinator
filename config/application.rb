@@ -22,5 +22,10 @@ module Storyteller
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
+
+    # Nginx routes urls with /stories from the Open Data platform to this app, 
+    # so respond to /stories as the root url.
+    config.relative_url_root = '/stories'
+
   end
 end

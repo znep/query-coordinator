@@ -95,7 +95,11 @@
                     },
                     '.deleteViewLink@class+': function(a)
                     {
-                        return _.include(a.context.view.rights, 'delete_view') ?  '' : 'hide';
+                        if (a.context.view.displayType === 'new_view' ||
+                            !_.include(a.context.view.rights, 'delete_view')) {
+                            return 'hide';
+                        }
+                        return '';
                     },
                     '.viewItem@class+': 'typeClass'
                 });

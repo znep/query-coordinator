@@ -22,8 +22,6 @@ var ServerModel = Model.extend({
 
     makeRequestWithPromise: function(req) {
         var deferred = $.Deferred();
-        var successEvent = $.Callbacks();
-        var errorEvent = $.Callbacks();
 
         this.makeRequest($.extend({}, req, {
             success: function() {

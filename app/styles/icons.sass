@@ -41,6 +41,7 @@
     background-position: 0 -70px
 
 // icons/menu_icons.png
+$new-view-color: #80acca
 @mixin sprite-menu-icons($subselector: '.icon', $defaultDown: true)
   #{$subselector}
     @include text-hiding
@@ -178,7 +179,7 @@
       content: "\e602"
       font-family: 'socrata-apps'
       font-size: 13px
-      color: #80acca
+      color: $new-view-color
   &.error #{$subselector}
     background-position: 0 -598px
   &.typeUnpublished #{$subselector}
@@ -256,7 +257,7 @@
       content: "\e602"
       font-family: 'socrata-apps'
       font-size: 30px
-      color: #80acca
+      color: $new-view-color
   &.typeUnpublished #{$subselector}
     background-position: 0 -480px
   &.typeSnapshotted #{$subselector}
@@ -315,7 +316,7 @@
       content: "\e602"
       font-family: 'socrata-apps'
       font-size: 50px
-      color: #80acca
+      color: $new-view-color
   &.typeUnpublished #{$subselector}
     background-position: 0 -800px
   &.typeSnapshotted #{$subselector}

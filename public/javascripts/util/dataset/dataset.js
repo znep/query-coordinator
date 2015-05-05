@@ -3236,12 +3236,15 @@ var Dataset = ServerModel.extend({
             if (justCount) {
                 // Subtract one for dataset
                 ds._relViewCount = (
-                    Math.max(0, coreResult[0] - 1) +
-                    dataLensResult[0].length
+                    (coreResult ? Math.max(0, coreResult[0] - 1) : 0) +
+                    (dataLensResult ? dataLensResult[0].length : 0)
                 );
                 if (_.isFunction(callback)) { callback(ds._relViewCount); }
             } else {
-                ds._relatedViews = ds._processRelatedViews(coreResult[0].concat(dataLensResult[0]));
+                ds._relatedViews = ds._processRelatedViews(
+                    (coreResult ? coreResult[0] : []).concat(
+                        dataLensResult ? dataLensResult[0] : []
+                ));
                 if (_.isFunction(callback)) { callback(); }
             }
         });
@@ -3288,11 +3291,16 @@ var Dataset = ServerModel.extend({
     _getRelatedDataLenses: function(justCount) {
         var ds = this;
         var deferred = $.Deferred();
-        var reject = function() { deferred.reject(); };
+        var reject = function() {
+            if (window.console) {
+                console.log(arguments)
+            }
+            deferred.reject();
+        };
 
         // First, we need the NBE id, so we can query what data lenses are on it.
         this.getNewBackendId().done(function(nbeId) {
-            if (!nbeId) return deferred.resolve([]);
+            if (!nbeId) { return deferred.resolve([]); }
 
             // Next, get the pages for that id from the NBE / phidippides.
             ds.makeRequestWithPromise({
@@ -3300,6 +3308,12 @@ var Dataset = ServerModel.extend({
                 pageCache: true,
                 type: 'GET',
             }).then(function(result) {
+                // Fail fast if the server doesn't return what we expect it to.
+                if (!(_.isObject(result) &&
+                      _.isArray(result.publisher) &&
+                      _.isArray(result.user))) {
+                    return reject('Unexpected format from server', result);
+                }
                 var pages = result.publisher.concat(result.user);
                 if (!pages.length) { return deferred.resolve([]); }
 

@@ -1,0 +1,82 @@
+default: &default
+  rpx_signin_url: https://socrata-test.rpxnow.com/openid/v2/signin
+  rpx_facebook_url: https://socrata-test.rpxnow.com/facebook/start
+  rpx_windowslive_url: https://socrata-test.rpxnow.com/liveid/start
+  rpx_twitter_url: https://socrata-test.rpxnow.com/twitter/start
+  rpx_openid_url: https://socrata-test.rpxnow.com/openid/start
+
+  app_token: U29jcmF0YS0td2VraWNrYXNz0
+
+  zk_hosts: '{{ ZOOKEEPER_HOSTS }}'
+  coreservice_uri: http://{{ CORESERVICE_URI }}
+  odysseus_uri: http://localhost:4747
+
+  {% if ACTIVEMQ_HOSTS is defined -%}
+  activemq_hosts: {{ ACTIVEMQ_HOSTS }}
+  {% else %}
+  activemq_hosts: stomp://localhost:61613
+  {%- endif %}
+
+  {% if INTERCESSIO_SERVER is defined -%}
+  intercessio_uri: http://{{ INTERCESSIO_SERVER }}:1313
+  {%- endif %}
+
+  {% if STATSD_ENABLED is defined and STATSD_SERVER is defined -%}
+  statsd_enabled: {{ STATSD_ENABLED }}
+  statsd_server: {{ STATSD_SERVER }}
+  {% else %}
+  statsd_enabled: false
+  {%- endif %}
+
+  {% if METRICS_DIR is defined -%}
+  metrics_dir: {{ METRICS_DIR }}
+  {% else %}
+  metrics_dir: tmp/metriclogs
+  {% endif -%}
+
+  {% if MIXPANEL_TOKEN is defined -%}
+  mixpanel_token: {{ MIXPANEL_TOKEN }}
+  {% else %}
+  mixpanel_token: 59b0b54697603105463834afdf20accf
+  {%- endif %}
+  opendata_ga_tracking_code: UA-52982454-21
+
+  {% if POLAROID_HOSTNAME is defined and POLAROID_PORT is defined -%}
+  polaroid_hostname: {{ POLAROID_HOSTNAME }}
+  polaroid_port: {{ POLAROID_PORT }}
+  {%- endif %}
+
+  {% if TILESERVER_HOSTNAME is defined and TILESERVER_PORT is defined -%}
+  tileserver_hostname: {{ TILESERVER_HOSTNAME }}
+  tileserver_port: {{ TILESERVER_PORT }}
+  {%- endif %}
+
+  {% if TILESERVER_HOSTS is defined -%}
+  tileserver_hosts: '{{ TILESERVER_HOSTS }}'
+  {%- endif %}
+
+  {% if AUTH0_URI is defined and AUTH0_CLIENT_ID is defined and AUTH0_CLIENT_SECRET is defined -%}
+  auth0_uri: {{ AUTH0_URI }}
+  auth0_id: {{ AUTH0_CLIENT_ID }}
+  auth0_secret: {{ AUTH0_CLIENT_SECRET }}
+  {%- endif %}
+
+development:
+  <<: *default
+  max_core_server_requests: 15
+
+staging:
+  <<: *default
+  max_core_server_requests: 15
+
+rc:
+  <<: *default
+  max_core_server_requests: 15
+
+production:
+  <<: *default
+  rpx_signin_url: https://socrata.rpxnow.com/openid/v2/signin
+  rpx_facebook_url: https://socrata.rpxnow.com/facebook/start
+  rpx_windowslive_url: https://socrata.rpxnow.com/liveid/start
+  rpx_twitter_url: https://socrata.rpxnow.com/twitter/start
+  rpx_openid_url: https://socrata.rpxnow.com/openid/start

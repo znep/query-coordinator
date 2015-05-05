@@ -1,0 +1,7 @@
+listen 3000
+{% if WORKER_PROCESSES is defined -%}
+worker_processes {{ WORKER_PROCESSES }}
+{% else %}
+worker_processes 1
+{%- endif %}
+ENV["UNICORN"] = "1"

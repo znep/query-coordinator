@@ -1,0 +1,11 @@
+#!/bin/bash
+
+export ZOOKEEPER_HOSTS=${ZOOKEEPER_HOSTS:-"$EXTERNAL_IP:2181"}
+export CORESERVICE_URI=${CORESERVICE_URI:-"$EXTERNAL_IP:8080"}
+export ACTIVEMQ_HOSTS=${ACTIVEMQ_HOSTS:-"$EXTERNAL_IP"}
+
+/bin/env_parse ${APP_DIR}/docker/config.yml.j2 ${APP_DIR}/config/config.yml
+/bin/env_parse ${APP_DIR}/docker/unicorn.rb.j2 ${APP_DIR}/config/unicorn.rb
+
+cd ${APP_DIR}
+su socrata -c "HOME=${APP_DIR} unicorn -c config/unicorn.rb"

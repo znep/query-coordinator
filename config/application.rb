@@ -55,7 +55,12 @@ module Frontend
     # like if you have constraints or database-specific column types
     # config.active_record.schema_format = :sql
 
-    config.log_tags = [lambda { |req| Time.now}, :domain, :uuid, lambda { |req| "PID-%.5d" % Process.pid }]
+    config.log_tags = [
+      lambda { |req| Time.now},
+      lambda { |req| req.domain || 'unknown' },
+      :uuid,
+      lambda { |req| "PID-%.5d" % Process.pid }
+    ]
 
     # Enforce whitelist mode for mass assignment.
     # This will create an empty whitelist of attributes available for mass-assignment for all models

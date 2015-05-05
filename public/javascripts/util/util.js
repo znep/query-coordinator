@@ -981,6 +981,26 @@ $.fn.exists = function()
 
 $.thunk = function(val) { return function() { return val; } };
 
+/**
+ * Like jQuery.when, but will never exit early. Instead, failed promises will have the value null.
+ *
+ * @param {...Promise} - the promises to wait on. Once resolved, the parent promise will resolve.
+ * @return {Promise} that resolves when all the given
+ */
+$.whenever = function() {
+    var args = Array.prototype.slice.call(arguments);
+    args = _.map(args, function(promise) {
+        var deferred = $.Deferred();
+        promise.done(function() {
+            deferred.resolveWith(null, arguments);
+        }).fail(function() {
+            deferred.resolve(null);
+        });
+        return deferred.promise();
+    });
+    return $.when.apply($, args);
+};
+
 // Wrapper around inlineLogin.verifyUser; simply does nothing
 // if auth fails
 blist.util.doAuthedAction = function(actionText, callback)

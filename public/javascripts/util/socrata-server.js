@@ -20,6 +20,21 @@ var ServerModel = Model.extend({
         this.accessType = accessType;
     },
 
+    makeRequestWithPromise: function(req) {
+        var deferred = $.Deferred();
+
+        this.makeRequest($.extend({}, req, {
+            success: function() {
+                deferred.resolveWith(this, arguments);
+            },
+            error: function() {
+                deferred.rejectWith(this, arguments);
+            }
+        }));
+
+        return deferred.promise();
+    },
+
     makeRequest: function(req)
     {
         var model = this;

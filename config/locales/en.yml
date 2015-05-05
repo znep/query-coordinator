@@ -715,6 +715,7 @@ en:
       form: Forms
       grouped: Grouped Views
       map: Maps
+      data_lens: Data Lenses
     visibility:
       private: private
       public: public

@@ -606,6 +606,58 @@ var Dataset = ServerModel.extend({
         }
     },
 
+    getNewBackendId: function()
+    {
+        var ds = this;
+        if (!ds._nbeId && ds.newBackend) {
+            ds._nbeId = ds.id;
+        }
+        if (!_.isUndefined(ds._nbeId)) {
+            return $.when(ds._nbeId);
+        }
+
+        var deferred = $.Deferred();
+        this.makeRequestWithPromise({
+            url: '/api/migrations/{0}'.format(ds.id)
+        }).done(function(migration) {
+            ds._nbeId = migration.nbeId;
+            deferred.resolve(ds._nbeId);
+        }).fail(function() {
+            deferred.reject();
+        });
+        return deferred.promise();
+    },
+
+    getNewBackendMetadata: function() {
+        var ds = this;
+        if (!_.isUndefined(ds._newBackendMetadata)) { return $.when(ds._newBackendMetadata); }
+
+        var deferred = $.Deferred();
+        var reject = function() { deferred.reject(); };
+
+        ds.getNewBackendId().done(function(newBackendId) {
+            if (newBackendId) {
+                var metadataTransitionPhase = parseInt(
+                    blist.feature_flags.metadata_transition_phase,
+                    10
+                );
+                var datasetMetadataUrl = metadataTransitionPhase === 0 ?
+                        '/dataset_metadata/{0}.json' :
+                        // The dataset metadata endpoint changed in metadata transition phase 1.
+                        '/metadata/v1/dataset/{0}.json';
+
+                $.get(datasetMetadataUrl.format(newBackendId)).done(function(metadata) {
+                    ds._newBackendMetadata = metadata;
+                    deferred.resolve(ds._newBackendMetadata);
+                }).fail(reject);
+            } else {
+                ds._newBackendMetadata = null;
+                deferred.resolve(ds._newBackendMetadata);
+            }
+        }).fail(reject);
+        return deferred.promise();
+    },
+
     getTotalRows: function(successCallback, errorCallback)
     {
         this._activeRowSet.getTotalRows(successCallback, errorCallback);
@@ -2181,6 +2233,8 @@ var Dataset = ServerModel.extend({
         { ds.styleClass = 'Unpublished'; }
         else if (ds.type == 'blist' && ds.isSnapshot())
         { ds.styleClass = 'Snapshotted'; }
+        else if (ds.displayType == 'new_view')
+        { ds.styleClass = 'New_view'; }
         else
         { ds.styleClass = ds.type.capitalize(); }
 
@@ -3175,43 +3229,112 @@ var Dataset = ServerModel.extend({
     _loadRelatedViews: function(callback, justCount)
     {
         var ds = this;
-        var processDS = function(views)
-        {
-            views = _.map(views, function(v)
-            {
-                if (v.id == ds.id) { v = ds; }
-                if (v instanceof Dataset) { return v; }
+        var coreViewsPromise = this._loadRelatedCoreViews(justCount);
+        var dataLensPromise = this._getRelatedDataLenses(justCount);
 
-                var nv = new Dataset(v);
-                nv.bind('removed', function() { ds._viewRemoved(this); });
-                if (!$.isBlank(ds.accessType)) { nv.setAccessType(ds.accessType); }
-                return nv;
-            });
-
-            var parDS = _.detect(views, function(v)
-                    { return _.include(v.flags || [], 'default'); });
-            if (!$.isBlank(parDS))
-            {
-                ds._parent = parDS;
-                views = _.without(views, parDS);
+        $.whenever(coreViewsPromise, dataLensPromise).done(function(coreResult, dataLensResult) {
+            if (justCount) {
+                // Subtract one for dataset
+                ds._relViewCount = (
+                    (coreResult ? Math.max(0, coreResult[0] - 1) : 0) +
+                    (dataLensResult ? dataLensResult[0].length : 0)
+                );
+                if (_.isFunction(callback)) { callback(ds._relViewCount); }
+            } else {
+                ds._relatedViews = ds._processRelatedViews(
+                    (coreResult ? coreResult[0] : []).concat(
+                        dataLensResult ? dataLensResult[0] : []
+                ));
+                if (_.isFunction(callback)) { callback(); }
             }
+        });
+    },
 
-            ds._relatedViews = views;
-
-            if (_.isFunction(callback)) { callback(); }
-        };
-
-        var processCount = function(count)
+    _processRelatedViews: function(views)
+    {
+        var ds = this;
+        views = _.map(views, function(v)
         {
-            // Subtract one for dataset
-            ds._relViewCount = Math.max(0, count - 1);
-            if (_.isFunction(callback)) { callback(ds._relViewCount); }
-        };
+            if (v.id == ds.id) { v = ds; }
+            if (v instanceof Dataset) { return v; }
+
+            var nv = new Dataset(v);
+            nv.bind('removed', function() { ds._viewRemoved(this); });
+            if (!$.isBlank(ds.accessType)) { nv.setAccessType(ds.accessType); }
+            return nv;
+        });
+
+        var parDS = _.detect(views, function(v)
+                { return _.include(v.flags || [], 'default'); });
+        if (!$.isBlank(parDS))
+        {
+            ds._parent = parDS;
+            views = _.without(views, parDS);
+        }
+
+        return views;
+    },
+
+    _loadRelatedCoreViews: function(justCount) {
         // Fully cachable
-        this.makeRequest({url: '/views.json', pageCache: true, type: 'GET',
-                data: { method: justCount ? 'getCountForTableId' : 'getByTableId',
-                tableId: this.tableId },
-                success: justCount ? processCount : processDS});
+        return this.makeRequestWithPromise({
+            url: '/views.json',
+            pageCache: true,
+            type: 'GET',
+            data: {
+                method: justCount ? 'getCountForTableId' : 'getByTableId',
+                tableId: this.tableId
+            }
+        });
+    },
+
+    _getRelatedDataLenses: function(justCount) {
+        var ds = this;
+        var deferred = $.Deferred();
+        var reject = function() {
+            if (window.console) {
+                console.log(arguments)
+            }
+            deferred.reject();
+        };
+
+        // First, we need the NBE id, so we can query what data lenses are on it.
+        this.getNewBackendId().done(function(nbeId) {
+            if (!nbeId) { return deferred.resolve([]); }
+
+            // Next, get the pages for that id from the NBE / phidippides.
+            ds.makeRequestWithPromise({
+                url: '/metadata/v1/dataset/{0}/pages'.format(nbeId),
+                pageCache: true,
+                type: 'GET',
+            }).then(function(result) {
+                // Fail fast if the server doesn't return what we expect it to.
+                if (!(_.isObject(result) &&
+                      _.isArray(result.publisher) &&
+                      _.isArray(result.user))) {
+                    return reject('Unexpected format from server', result);
+                }
+                var pages = result.publisher.concat(result.user);
+                if (!pages.length) { return deferred.resolve([]); }
+
+                // The pages are not in the format that we want (they don't have the owner metadata,
+                // for instance). So - grab the OBE representations of those pages.
+                ds.makeRequestWithPromise({
+                    url: '/views.json',
+                    pageCache: true,
+                    type: 'GET',
+                    data: {
+                        method: 'getByIds',
+                        ids: _.pluck(pages, 'pageId').join(',')
+                    }
+                }).then(function() {
+                    deferred.resolveWith(this, arguments);
+
+                }).fail(reject);
+            }).fail(reject);
+        }).fail(reject);
+
+        return deferred.promise();
     },
 
     _loadPublicationViews: function(callback)

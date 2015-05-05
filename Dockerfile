@@ -25,6 +25,7 @@ RUN cd /opt/socrata/storyteller && \
   bundle install
 
 ADD ship.d /etc/ship.d
+ADD config/database.yml.production config/database.yml
 
 EXPOSE 3010
 

@@ -36,7 +36,7 @@ class Column < Model
 
   def self.importable_types(request = nil)
     @@importable_types.reject do |k, v|
-      @@legacy_types.include?(k) if FeatureFlags.derive(nil, request).default_imports_to_nbe
+      @@legacy_types.include?(k) if FeatureFlags.derive(nil, request).disable_legacy_types
     end
   end
 

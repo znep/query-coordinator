@@ -1,5 +1,15 @@
 == README
 
+# Setup
+
+## Requirements:
+* Ruby 2.2.2
+
+## Setup Commands
+```
+bin/setup
+```
+
 This README would normally document whatever steps are necessary to get the
 application up and running.
 

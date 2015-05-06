@@ -88,6 +88,10 @@ default_configs:
         value: en
     update_data: {}
 
+  theme_v3: !ruby/object:Configuration
+    data:
+      theme: default
+
   site_theme: !ruby/object:Configuration 
     data: 
       id: 4

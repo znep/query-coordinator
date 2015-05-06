@@ -141,28 +141,20 @@ class PhidippidesPagesController < ApplicationController
   end
 
   def destroy
-    # Temporary, used to prevent deletion until we are confident
-    # this will behave as expected.
-    return render :nothing => true, :status => '403'
-
-    return render :nothing => true, :status => '403' unless metadata_transition_phase_2?
+    # TODO: if core dataset doesn't exist, delete the phidippides one. Do this, to provide the
+    # ability to clean up orphaned phiddy datasets
+    # TODO: feature flag the UI
     unless (inherit_catalog_lens_permissions? ? dataset(params[:id]).can_edit? : can_create_metadata?)
       return render :nothing => true, :status => '401'
     end
 
-    # TODO: when we re-enable deletion, make sure to handle error cases here.
-    new_view_manager.delete(params[:id])
+    result = page_metadata_manager.delete(
+      params[:id],
+      :request_id => request_id,
+      :cookies => forwardable_session_cookies
+    )
 
-    begin
-      result = phidippides.delete_page_metadata(
-        params[:id],
-        :request_id => request_id,
-        :cookies => forwardable_session_cookies
-      )
-      render :json => result[:body], :status => result[:status]
-    rescue Phidippides::ConnectionError
-      render :json => { :body => 'Phidippides connection error' }, :status => '500'
-    end
+    render :json => result[:body], :status => result[:status]
   end
 
   private

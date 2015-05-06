@@ -120,9 +120,6 @@ $(function()
                     },
                 '.delete.button@class+': function(v)
                     {
-                        if (v.context.isNewView()) {
-                            return 'hide';
-                        }
                         return v.context.hasRight('delete_view') &&
                             !v.context.isFederated() ? '' : 'hide';
                     },

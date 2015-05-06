@@ -315,45 +315,44 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     assert_response(406)
   end
 
-  test '(phase 0, 1 or 2) delete returns 403' do
-    stub_feature_flags_with(:metadata_transition_phase, '0')
+  test 'delete returns 401 for unauthorized users' do
+    dataset_stub = mock
+    dataset_stub.stubs(can_edit?: false)
+    @controller.stubs(dataset: dataset_stub)
+    stub_feature_flags_with(:metadata_transition_phase, '3')
     delete :destroy, id: 'four-four'
-    assert_response(403)
-
-    stub_feature_flags_with(:metadata_transition_phase, '1')
-    delete :destroy, id: 'four-four'
-    assert_response(403)
+    assert_response(401)
   end
 
-  # These tests are working but disabled until we are confident in moving
-  # forward with delete functionality.
-  #
-  # test '(phase 2) delete returns 401 for unauthorized users' do
-  #   @controller.stubs(can_create_metadata?: false)
-  #   stub_feature_flags_with(:metadata_transition_phase, '2')
-  #   delete :destroy, id: 'four-four'
-  #   assert_response(401)
-  # end
+  test 'delete uses page_metadata_manager to delete' do
+    dataset_stub = mock
+    dataset_stub.stubs(can_edit?: true)
+    @controller.stubs(dataset: dataset_stub)
+    stub_feature_flags_with(:metadata_transition_phase, '3')
 
-  # test '(phase 2) delete returns 405 if the http method is not DELETE' do
-  #   @controller.stubs(can_create_metadata?: true)
+    @page_metadata_manager.expects(:delete).with do |id|
+      assert_equal(id, 'four-four')
+    end.then.returns({ body: nil, status: '200' })
 
-  #   stub_feature_flags_with(:metadata_transition_phase, '2')
-  #   get :destroy, id: 'four-four', format: :json
-  #   assert_response(405)
-  #   post :destroy, id: 'four-four', format: :json
-  #   assert_response(405)
-  #   put :destroy, id: 'four-four', format: :json
-  #   assert_response(405)
-  # end
+    delete :destroy, id: 'four-four'
 
-  # test '(phase 2) delete returns success' do
-  #   @controller.stubs(can_create_metadata?: true)
-  #   Phidippides.any_instance.stubs(delete_page_metadata: { body: nil, status: '200' })
-  #   stub_feature_flags_with(:metadata_transition_phase, '2')
-  #   delete :destroy, id: 'four-four'
-  #   assert_response(200)
-  # end
+    assert_response(200)
+  end
+
+  test 'delete passes along result from page_metadata_manager' do
+    dataset_stub = mock
+    dataset_stub.stubs(can_edit?: true)
+    @controller.stubs(dataset: dataset_stub)
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+
+    @page_metadata_manager.expects(:delete).with do |id|
+      assert_equal(id, 'four-four')
+    end.then.returns({ body: nil, status: '500' })
+
+    delete :destroy, id: 'four-four'
+
+    assert_response(500)
+  end
 
   test 'create fails when save as is not enabled' do
     stub_feature_flags_with(:enable_data_lens_save_as_button, false)

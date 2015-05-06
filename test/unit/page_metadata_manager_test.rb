@@ -444,6 +444,61 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     manager.update(v1_page_metadata)
   end
 
+  def test_delete_deletes_both_core_and_phidippides_representation
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+
+    Phidippides.any_instance.expects(:delete_page_metadata).with do |id, options|
+      assert_equal(id, 'four-four')
+    end.then.returns({ body: nil, status: '200' })
+
+    core_stub = mock
+    core_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    core_stub.expects(:delete_request).with do |url|
+      assert_equal('/views.json?id=four-four&method=delete', url)
+    end.then.returns('{ "body": null, "status": "200" }')
+    CoreServer::Base.stubs(connection: core_stub)
+
+    result = manager.delete('four-four')
+    assert_equal(result[:status], '200')
+  end
+
+  def test_delete_doesnt_delete_phidippides_if_core_fails_for_some_reason
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+
+    Phidippides.any_instance.expects(:delete_page_metadata).never
+
+    core_stub = mock
+    core_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    core_stub.expects(:delete_request).with do |url|
+      assert_equal('/views.json?id=four-four&method=delete', url)
+    end.then.raises(CoreServer::CoreServerError.new(nil, nil, nil))
+    CoreServer::Base.stubs(connection: core_stub)
+
+    result = manager.delete('four-four')
+    assert_equal(result[:status], '500')
+  end
+
+  # This test is mainly here to document a known issue. It's not great that this happens, but it's
+  # more important during a delete that the catalog entry is deleted (so users don't see something
+  # to click on), than the actual metadata is deleted.
+  def test_delete_leaves_things_in_an_inconsistent_state_if_phidippides_fails_for_some_reason
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+
+    Phidippides.any_instance.expects(:delete_page_metadata).with do |id, options|
+      assert_equal(id, 'four-four')
+    end.then.returns({ body: nil, status: '500' })
+
+    core_stub = mock
+    core_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    core_stub.expects(:delete_request).with do |url|
+      assert_equal('/views.json?id=four-four&method=delete', url)
+    end.then.returns('{ "body": null, "status": "200" }')
+    CoreServer::Base.stubs(connection: core_stub)
+
+    result = manager.delete('four-four')
+    assert_equal(result[:status], '500')
+  end
+
   def test_time_range_in_column_catches_fetch_min_max_date_in_column_returning_nil
     CoreServer::Base.connection.expects(:get_request).raises(CoreServer::Error.new(nil))
     assert_raises(Phidippides::NoMinMaxInDateColumnException) do

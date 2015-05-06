@@ -91,6 +91,23 @@ class PageMetadataManager
     update_page_metadata(page_metadata, options)
   end
 
+  def delete(id, options = {})
+    begin
+      result = View.delete(id)
+    rescue CoreServer::Error, CoreServer::ResourceNotFound => error
+      report_error('Core server error', error)
+      return { body: {
+        body: "Core server error (#{error.error_code}): #{error.error_message}"
+      }, status: '500' }
+    end
+
+    begin
+      phidippides.delete_page_metadata(id, options)
+    rescue Phidippides::ConnectionError
+      return { body: { body: 'Phidippides connection error' }, status: '500' }
+    end
+  end
+
   private
 
   def initialize_metadata_transition_phase_key_names

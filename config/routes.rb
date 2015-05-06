@@ -10,10 +10,8 @@ Frontend::Application.routes do
 
   # styling routes
   scope :path => '/styles', :controller => 'styles' do
-    get '/individual/:stylesheet.css', :action => 'individual',
-      :constraints => { :stylesheet => /(\w|-|\.)+/ }
-    get '/individual/:folder/:stylesheet.css', :action => 'individual',
-      :constraints => { :stylesheet => /(\w|-|\.)+/, :folder => /(\w|-|\.)+/ }
+    get '/individual/:path.css', :action => 'individual',
+      :constraints => { :path => /(\w|-|\.|\/)+/ }
     get '/merged/:stylesheet.css', :action => 'merged'
     get '/widget/:customization_id.css', :action => 'widget'
     get '/current_site.css', :action => 'current_site'

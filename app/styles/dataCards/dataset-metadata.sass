@@ -2,9 +2,6 @@
 @import dataCards/common/layout
 
 body.state-dataset-metadata
-  color: $dataset-metadata-fg-color
-  background-color: $dataset-metadata-bg-color
-
   .metadata-boxes
     margin: 3rem
     h1
@@ -26,10 +23,9 @@ body.state-dataset-metadata
 
       margin-bottom: 2rem
       padding: 1.4rem $row-padding-side
-      background-color: $dataset-metadata-box-color
+
       a
         display: block
-        color: $dataset-metadata-box-link-color
 
       &.dataset-related-pages
         .page
@@ -39,13 +35,9 @@ body.state-dataset-metadata
           padding-left: $row-padding-side
           padding-right: $row-padding-side
 
-          &:hover
-            background: lighten($dataset-metadata-box-color, 5)
-          a
-            color: $dataset-metadata-fg-color
           h2
-            color: $link-font-color
             padding-top: 0.3rem
             margin-top: 0
+
           hr
             margin: 0

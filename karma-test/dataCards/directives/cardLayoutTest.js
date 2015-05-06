@@ -27,6 +27,7 @@ describe('card-layout', function() {
       beforeEach(module('/angular_templates/dataCards/card-layout.html'));
       beforeEach(module('/angular_templates/dataCards/card.html'));
       beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
+      beforeEach(module('dataCards/theme/default.sass'));
       beforeEach(module('dataCards/cards.sass'));
       beforeEach(module('dataCards/card.sass'));
       beforeEach(module('dataCards/flyout.sass'));

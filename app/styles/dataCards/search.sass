@@ -7,7 +7,6 @@ suggestion-tool-panel
   height: 0
 
 .search-card-text
-  color: $card-example-text-color
   font-size: $medium-font-size
   line-height: $base-font-size
   overflow: hidden
@@ -18,9 +17,6 @@ suggestion-tool-panel
 
 .search-card-results
   margin-top: 1rem
-  .no-results,
-  .invalid-value
-    color: $btn-error-border-color
 
 .search-card-info
   margin-bottom: 1rem
@@ -30,18 +26,10 @@ suggestion-tool-panel
     left: 15px
     width: 350px
     top: -5px
-    border-color: $tool-panel-border-color-light
 
   &.light
     .tool-panel-inner-container
-      background-color: $tool-panel-bg-color-light
-      color: $tool-panel-text-color-light
-
-    .tool-panel-inner-container
       padding: 0
-
-    .tool-panel-hint
-      border-color: transparent transparent $tool-panel-bg-color-light transparent
 
     .suggestions-status
       padding: 4px 0 0 10px
@@ -56,11 +44,8 @@ suggestion-tool-panel
         display: block
         position: static
         margin: 0.5em 0 0.5em 0
-        path
-          fill: $dark-spinner-fill-color
 
     .suggestion-examples
-      background-color: $tool-panel-border-color-light
       padding: 7px
       text-align: center
       font-weight: normal

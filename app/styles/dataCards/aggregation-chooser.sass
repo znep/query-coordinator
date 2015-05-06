@@ -11,7 +11,6 @@ aggregation-chooser
 
   .aggregation-chooser-trigger
     cursor: pointer
-    color: $dark-input-font-color
     padding-right: 15px
     position: relative
     display: inline-block
@@ -25,7 +24,6 @@ aggregation-chooser
       right: 0
       border-style: solid
       border-width: 5px 5px 0 5px
-      border-color: $dark-input-font-color transparent transparent transparent
 
   .tool-panel .tool-panel-main
     right: 15px
@@ -45,7 +43,6 @@ aggregation-chooser
     z-index: -1
     border-style: solid
     border-width: 0 0 $tool-panel-hint-size + 1 $tool-panel-hint-size + 1
-    border-color: transparent transparent $tool-panel-border-color transparent
 
   .aggregation-functions, .aggregation-columns
 
@@ -53,19 +50,8 @@ aggregation-chooser
       height: 2rem
       margin-bottom: 1rem
 
-  .aggregation-columns.count
-
-    .aggregation-option.count:hover
-      background-color: $panel-bg-color
-
-  .aggregation-columns.no-count
-
-    .aggregation-option.no-count:hover
-      background-color: $panel-bg-color
-
   .aggregation-option
     outline: 0
-    color: $tool-panel-white-font-color
     display: block
     cursor: pointer
     position: relative
@@ -77,12 +63,8 @@ aggregation-chooser
     &.disconnected
       margin-right: 1rem
 
-    &.active
-      background-color: $panel-bg-color
-
     &.disabled
       cursor: default
-      color: rgba($tool-panel-white-font-color, 0.5)
 
     .label, .sublabel
       display: block

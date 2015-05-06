@@ -17,31 +17,23 @@ $api-panel-hint-width: 20px
 
 /* MOBILE/RESPONSIVE DESIGN. SEE DESKTOP-SPECIFIC STYLES BELOW */
 body.state-view-cards
-  background-color: $view-cards-bg-color
-
   *:focus
     outline-width: 2px
 
   .cards-metadata
     position: relative
-    background-color: $metadata-bg-color
-    color: $dark-grey-font-color
     padding: $metadata-top-padding ($metadata-side-padding / 2)
-    border-top: 3px solid $metadata-border-color
-    border-bottom: 3px solid $metadata-border-color
+    border-top: 3px solid
+    border-bottom: 3px solid
 
     .page-description
       margin-top: 1rem
       font-size: 1rem
 
-      a
-        color: $link-font-color
-
       .show-more
         height: 1rem
         display: none
         padding-top: 1.5rem
-        color: $aqua-font-color
         cursor: pointer
 
         .show-more-arrow
@@ -79,25 +71,21 @@ body.state-view-cards
 
         span
           display: none
-          color: $placeholder-text-color
           padding-left: .3em
           font: inherit
           font-style: italic
           font-size: .9em
 
-      $customize-section-border: #ccc
       >textarea
         height: 1.2em
         padding-left: 1.2em // make room for edit icon
         margin-bottom: 0.3em
       >textarea, >rich-text-editor
         color: inherit
-        background: transparent
         font: inherit
         display: block
         width: 100%
         box-sizing: border-box
-        border: 1px solid $customize-section-border
 
         // Make sure this is above the placeholder
         position: relative
@@ -108,14 +96,10 @@ body.state-view-cards
 
         &:focus, &.focus
           outline: 0
-          border-color: $blue-active-color
           // webkit doesn't give us box shadows unless we nuke its appearance
           -webkit-appearance: none
-          @include prefixer(box-shadow, 0 0 2px 0 $blue-active-color)
 
           + .placeholder
-            color: $blue-active-color
-
             span
               display: none
 
@@ -124,13 +108,9 @@ body.state-view-cards
         top: 0
         left: 100%
         z-index: 1
-        color: $red-error-color
         font-size: .7em
         margin-left: .5rem
         line-height: 1.5em
-
-        + textarea
-          border-color: $form-error-border-color
 
       [class^="icon-"], [class*=" icon-"]
         cursor: default
@@ -177,10 +157,6 @@ body.state-view-cards
             &.value, &.value a
               text-transform: capitalize
               font-weight: bold
-              color: $grey-text-color
-
-            &.value a
-              color: $aqua-font-color
 
             &.value.source-dataset-name a
               text-overflow: ellipsis
@@ -229,8 +205,6 @@ body.state-view-cards
 
   .cards-content
     position: relative
-    color: $white-font-color
-    background-color: $view-cards-bg-color
     z-index: 1
 
     #quick-filter-bar-container
@@ -250,7 +224,6 @@ body.state-view-cards
 
         .content
           padding: $metadata-side-padding / 2
-          background-color: $view-cards-bg-color
           width: 100%
           min-height: 4.5rem
           line-height: 2.75rem
@@ -271,7 +244,6 @@ body.state-view-cards
           // TODO: responsive design for filters when narrow
           display: inline-block
           padding-right: 3px
-          color: $white-font-color
 
           span
             opacity: 0.6
@@ -303,11 +275,7 @@ body.state-view-cards
           z-index: 1000
 
           &.card-chooser
-            background-color: rgba(0, 0, 0, .5)
             @include prefixer(transition, 'background-color 0.1s')
-
-            &.enabled:hover
-              background-color: rgba(0, 0, 0, .1)
 
             .action-png-export
               position: absolute
@@ -315,11 +283,6 @@ body.state-view-cards
               left: 50%
               @include prefixer('transform', 'translate(-50%, -50%)')
               @include prefixer(box-shadow, 0 0.2rem 1.3rem -0.1rem rgba(0, 0, 0, 0.3))
-
-              &:focus
-                background-color: $btn-hover-bg-color
-                border: solid 2px $btn-hover-border-color
-                color: $btn-hover-font-color
 
         .card-drag-overlay
           // IE9 ignores this overlay for JUST the column chart labels unless you give this
@@ -361,8 +324,6 @@ body.state-view-cards
         font-size: 1.5em
         line-height: 128px
         text-align: center
-        color: white
-        border: 2px dashed white
         border-radius: $rounded-corners-border-radius
         box-sizing: border-box
 
@@ -372,7 +333,6 @@ body.state-view-cards
         right: 0
         top: 0
         bottom: 0
-        background-color: white
         opacity: 0.5
         border-radius: $rounded-corners-border-radius
 
@@ -429,19 +389,8 @@ body.state-view-cards
       .icon-settings
         white-space: nowrap
         padding: 0.2rem 0.3rem 0.3rem
-        color: $link-font-color
         border-radius: $rounded-corners-border-radius
         display: block
-
-        &::before
-          color: $card-control-color
-
-        &:hover
-          background-color: $btn-hover-bg-color
-          color: $btn-hover-font-color
-
-          &::before
-            color: $btn-hover-font-color
 
       card.preview
         position: relative
@@ -451,7 +400,6 @@ body.state-view-cards
 
   .manage-lens-link
     .icon-warning
-      color: $yellow-warning-color
       margin-left: .3rem
 
     a>small
@@ -507,14 +455,6 @@ body.state-view-cards
 
 /*   ICONS AND COMPONENTS */
 
-.table-icon
-
-  .grid-lines
-    fill: $aqua-font-color
-
-  .grid-cells
-    fill: lighten($aqua-font-color, 10)
-
 .add-card-select-column
   float: left
   width: 19rem
@@ -522,7 +462,6 @@ body.state-view-cards
 
   soc-select
     margin: 0 1em 1em 0
-    background-color: $api-panel-border-color
 
 .add-card-options
   float: left
@@ -590,8 +529,6 @@ body.state-view-cards
   width: 100%
   margin: 1em 0
   text-align: center
-  background-color: #6d7988
-  border: 2px dashed $modal-white-font-color
   border-radius: $rounded-corners-border-radius
   box-sizing: border-box
 
@@ -606,7 +543,6 @@ body.state-view-cards
   position: absolute
   right: 0.5rem
   top: 0.5rem
-  background-color: white
   z-index: 2
 
   >.card-control
@@ -617,12 +553,7 @@ body.state-view-cards
     position: relative
     text-align: center
     cursor: pointer
-    color: $card-control-color
     display: inline-block
-
-    &:hover
-      color: #ccc
-      border-color: #ccc
 
     span
       display: block
@@ -633,10 +564,6 @@ body.state-view-cards
     padding: 0.2rem 0.3rem 0.3rem
     white-space: nowrap
     border-radius: $card-border-width
-
-  >.add-card-settings:hover
-    color: white
-    background-color: $blue-active-color
 
 .add-card-buttons, .mobile-warning-buttons
   text-align: right

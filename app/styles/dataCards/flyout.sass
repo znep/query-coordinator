@@ -1,21 +1,19 @@
 @import dataCards/common/fonts
 @import dataCards/common/colors
 
-$flyout-background: white
 $flyout-padding-vertical: 5px
 $flyout-padding-horizontal: 10px
+$flyout-chart-text-size: 14px
+$flyout-chart-tip-size: 10px
 
 #uber-flyout
   position: fixed
   display: none
   min-width: 130px
   padding: $flyout-padding-vertical $flyout-padding-horizontal
-  color: $flyout-chart-text-color
   font-size: $flyout-chart-text-size
   word-wrap: break-word
   white-space: normal
-  background-color: $flyout-chart-background-color
-  border: 1px solid $flyout-border
   z-index: 99999
   pointer-events: none
 
@@ -36,12 +34,8 @@ $flyout-padding-horizontal: 10px
 
   .flyout-title
     font-weight: bold
-    color: $flyout-chart-title-color
 
   .flyout-row
-
-    .flyout-cell.emphasis
-      color: $filtered-line-color-hover
 
     .flyout-cell:last-child
       margin-left: 15px
@@ -53,11 +47,9 @@ $flyout-padding-horizontal: 10px
     left: 0
 
     &:after
-      border-color: $flyout-chart-background-color transparent transparent transparent
       border-width: $flyout-chart-tip-size $flyout-chart-tip-size 0 0
 
     &:before
-      border-color: $flyout-border transparent transparent transparent
       border-width: ($flyout-chart-tip-size + 1) ($flyout-chart-tip-size + 1) 0 0
       top: 1px
       left: -1px
@@ -68,11 +60,9 @@ $flyout-padding-horizontal: 10px
     right: -10px
 
     &:after
-      border-color: transparent $flyout-chart-background-color transparent transparent
       border-width: 0 $flyout-chart-tip-size $flyout-chart-tip-size 0
 
     &:before
-      border-color: transparent $flyout-border transparent transparent
       border-width: 0 ($flyout-chart-tip-size + 1) ($flyout-chart-tip-size + 1) 0
       top: 1px
 
@@ -84,12 +74,10 @@ $flyout-padding-horizontal: 10px
     left: 100%
 
     &:after
-      border-color: transparent transparent transparent $flyout-chart-background-color
       border-width: ($flyout-chart-tip-size / 2) 0 ($flyout-chart-tip-size / 2) $flyout-chart-tip-size
       margin-top: -($flyout-chart-tip-size / 2)
 
     &:before
-      border-color: transparent transparent transparent $flyout-border
       border-width: (($flyout-chart-tip-size / 2) + 2) 0 (($flyout-chart-tip-size / 2) + 2) ($flyout-chart-tip-size + 2)
       margin-top: -(($flyout-chart-tip-size / 2) + 3)
 
@@ -97,16 +85,13 @@ $flyout-padding-horizontal: 10px
 
 
 .flyout
-  border: 1px solid $flyout-border
   position: absolute
   top: 0
   left: 0
-  background-color: white
   line-height: 1rem
   z-index: 1002
   padding: $flyout-padding-vertical $flyout-padding-horizontal
   max-width: 280px
-  color: black
   font-size: $medium-font-size
   word-wrap: break-word
   white-space: normal
@@ -119,20 +104,11 @@ $flyout-padding-horizontal: 10px
       margin-left: 15px
       float: right
 
-    .filtered-row-selected
-      color: #ba9d26
-
-    .filtered-row-highlight
-      color: $filtered-line-color-hover
-
   &.flyout-chart
     font-size: $flyout-chart-text-size
-    color: $flyout-chart-text-color
-    background-color: $flyout-chart-background-color
 
     .flyout-title
       font-weight: bold
-      color: $flyout-chart-title-color
 
     .flyout-arrow
       height: 0
@@ -156,11 +132,9 @@ $flyout-padding-horizontal: 10px
           left: 0
 
           &:after
-            border-color: $flyout-chart-background-color transparent transparent transparent
             border-width: $flyout-chart-tip-size $flyout-chart-tip-size 0 0
 
           &:before
-            border-color: $flyout-border transparent transparent transparent
             border-width: ($flyout-chart-tip-size + 1) ($flyout-chart-tip-size + 1) 0 0
             top: 1px
             left: -1px
@@ -170,11 +144,9 @@ $flyout-padding-horizontal: 10px
           margin-right: $flyout-chart-tip-size
 
           &:after
-            border-color: transparent $flyout-chart-background-color transparent transparent
             border-width: 0 $flyout-chart-tip-size $flyout-chart-tip-size 0
 
           &:before
-            border-color: transparent $flyout-border transparent transparent
             border-width: 0 ($flyout-chart-tip-size + 1) ($flyout-chart-tip-size + 1) 0
             top: 1px
 
@@ -182,13 +154,11 @@ $flyout-padding-horizontal: 10px
           left: 50%
 
           &:after
-            border-color: $flyout-chart-background-color transparent transparent
             border-width: $flyout-chart-tip-size
             top: 0
             left: -5px
 
           &:before
-            border-color: $flyout-border transparent transparent
             border-width: $flyout-chart-tip-size + 1
             top: 0
             left: -5px
@@ -200,16 +170,13 @@ $flyout-padding-horizontal: 10px
     border-radius: 4px
 
     .flyout-title
-      border-bottom: 1px solid $flyout-border
+      border-bottom: 1px solid
       margin: (-$flyout-padding-vertical) (-$flyout-padding-horizontal)
       margin-bottom: $flyout-padding-vertical
       padding: $flyout-padding-vertical $flyout-padding-horizontal
 
       .title
         font-weight: bold
-
-      .description
-        color: $lt-grey-font-color
 
     .flyout-arrow
       height: 0
@@ -238,11 +205,9 @@ $flyout-padding-horizontal: 10px
         top: 50%
 
         &:after
-          border-right-color: $flyout-background
           margin-top: -5px
 
         &:before
-          border-right-color: $flyout-border
           margin-top: -6px
           margin-left: -2px
 
@@ -252,11 +217,9 @@ $flyout-padding-horizontal: 10px
         left: 100%
 
         &:after
-          border-left-color: $flyout-background
           margin-top: -5px
 
         &:before
-          border-left-color: $flyout-border
           margin-top: -6px
 
     &.top
@@ -265,11 +228,9 @@ $flyout-padding-horizontal: 10px
         left: 50%
 
         &:after
-          border-top-color: $flyout-background
           margin-left: -5px
 
         &:before
-          border-top-color: $flyout-border
           margin-left: -6px
 
     &.bottom
@@ -278,10 +239,8 @@ $flyout-padding-horizontal: 10px
         left: 50%
 
         &:after
-          border-bottom-color: $flyout-background
           margin-left: -5px
 
         &:before
-          border-bottom-color: $flyout-border
           margin-left: -6px
           margin-top: -2px

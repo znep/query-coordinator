@@ -21,7 +21,7 @@ var createSassPreprocessor = function(logger, basePath) {
 
   return function(content, file, done) {
     log.debug('Processing "%s".', file.originalPath);
-    var dir = file.originalPath.split("/").slice(0,-2).join("/")+"/";
+    var dir = file.originalPath.replace(/\/app\/styles.*/, '') + '/app/styles';
     var htmlPath = file.originalPath.replace(basePath + '/', '').replace('app/styles/', '');
     var sassId = htmlPath.replace(/[/.]/g, '-');
 

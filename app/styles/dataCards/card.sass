@@ -1,11 +1,14 @@
 @import dataCards/common/colors
+@import dataCards/common/fonts
 @import dataCards/common/layout
 
+$card-title-padding: 5px
+$card-title-margin-right: 35px
+$card-description-line-height: 1.3em
+$card-description-transition-duration: 0.5s
 .card
   border-radius: $rounded-corners-border-radius
   padding: $card-padding
-  color: $lt-grey-font-color
-  background: $card-bg-color
   box-sizing: border-box
   -moz-box-sizing: border-box
   height: 100%
@@ -18,12 +21,23 @@
     position: relative
 
   .title-one-line
+    max-width: 100%
     line-height: $card-title-line-height
     font-weight: normal
-    color: $filtered-region-bg-color-1
     display: block
     padding-bottom: 5px
     position: relative
+
+    &.dynamic-title
+      font-size: $small-font-size
+      line-height: $small-font-size
+      padding-bottom: 1px
+
+    .wrap
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: nowrap
+      margin-right: $card-title-margin-right + $card-title-padding
 
     &:hover
 
@@ -54,35 +68,97 @@
       opacity: 0
       font-size: inherit
       white-space: initial
-      background-color: $card-bg-color
       &:hover
         opacity: 1
         overflow: visible
 
   .description
+    position: relative
+    line-height: $card-description-line-height
+    padding-right: 30px
     padding-bottom: 1rem
 
     .description-truncated-content
       position: relative
       z-index: 2
+      visibility: hidden
 
     .description-expand-button
-      color: $expand-button-color
-      background-color: $card-bg-color
-
-    &.collapsed .description-expanded-wrapper
-      background: transparent
+      display: none
+      position: absolute
+      visibility: collapse
+      right: 0
+      bottom: 0
+      width: 15px
+      height: 25px
+      cursor: pointer
 
     .description-expanded-wrapper
-      background: $card-bg-color
       z-index: 1
+      position: absolute
+      overflow: hidden
+      opacity: 0.9
+      top: 0
+      display: block
+      padding-right: 20px
+
+      .description-expanded-content
+        overflow-y: auto
+        overflow-x: hidden
+        padding-bottom: 0
+
+      .description-expand-button
+        display: block
+
+    &.clamped
+      .description-expand-button
+        visibility: visible
+
+    &.collapsed
+      max-height: $card-description-line-height * 2
+      .description-expanded-wrapper
+        background: transparent
+
+        .description-expanded-content
+          visibility: collapse
+        /* N.B this !important is here so that animations work - the initial max-height
+           is set via jQuery, but this max-height here must override it if we're collapsed. */
+        max-height: $card-description-line-height * 2 !important
+      .description-truncated-content
+        visibility: visible
+
+    &.with-animation
+      .description-expanded-wrapper
+        .description-expanded-content
+          @include prefixer(transition-property, "visibility")
+          @include prefixer(transition-duration, "0s")
+          @include prefixer(transition-timing-function, "step-end")
+          @include prefixer(transition-delay, "0")
+        @include prefixer(transition-property, "max-height, z-index")
+        @include prefixer(transition-duration, "#{$card-description-transition-duration}, 0s")
+        @include prefixer(transition-timing-function, "ease, step-end")
+        @include prefixer(transition-delay, "0, 0")
+        z-index: 3
+      .description-truncated-content
+        @include prefixer(transition-property, "visibility")
+        @include prefixer(transition-duration, "0")
+        @include prefixer(transition-delay, "0")
+
+      &.collapsed
+        .description-expanded-wrapper
+          .description-expanded-content
+            @include prefixer(transition-duration, "0")
+            @include prefixer(transition-delay, "#{$card-description-transition-duration}")
+          @include prefixer(transition-duration, "#{$card-description-transition-duration}, #{$card-description-transition-duration}")
+          @include prefixer(transition-delay, "0, #{$card-description-transition-duration}")
+        .description-truncated-content
+          @include prefixer(transition-delay, "#{$card-description-transition-duration}")
 
   .card-controls
     position: absolute
     right: 0.5rem
     top: 0.5rem
     z-index: 1001
-    background-color: white
 
     >.card-control
       width: $icon-size
@@ -92,12 +168,7 @@
       position: relative
       text-align: center
       cursor: pointer
-      color: $card-control-color
       display: inline-block
-
-      &:hover
-        color: #ccc
-        border-color: #ccc
 
       span
         display: block
@@ -105,15 +176,8 @@
 
 
     >.icon-settings
-      &:hover
-        color: $btn-hover-border-color
-
       &.disabled
         opacity: .25
-
-    >.icon-close
-      &:hover
-        color: red
 
 card-visualization
   display: block
@@ -183,10 +247,6 @@ div[ng-switch="cardType"]
     box-sizing: border-box
     display: block
     padding: $card-input-vertical-padding 1rem $card-input-vertical-padding 6px
-    color: #555
-    background: #fff none
-    border: 3px solid transparent
-    border-bottom: 1px solid $lt-grey-font-color-rgba
     margin-top: 5px
 
 .card-example-text

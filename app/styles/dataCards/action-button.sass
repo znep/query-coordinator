@@ -1,6 +1,5 @@
 @import dataCards/common/colors
 @import dataCards/common/layout
-@import dataCards/common/mixins
 
 $action-btn-min-width: 40px
 $action-btn-padding-top: 7px
@@ -18,33 +17,6 @@ $action-btn-padding-left: 18px
   font-weight: bold
   cursor: pointer
   position: relative
-  @include action-button($aqua-font-color, $btn-bg-color, $btn-border-color)
-
-  &.dark
-    @include action-button($dark-btn-font-color, $dark-btn-bg-color, $dark-btn-border-color)
-
-    &:hover, &.active
-      @include action-button($dark-btn-hover-font-color, $dark-btn-hover-bg-color, $dark-btn-hover-border-color)
-
-    &.disabled, &:disabled
-      @include action-button($dark-btn-disabled-font-color, $dark-btn-disabled-bg-color, $dark-btn-disabled-border-color)
-      cursor: default
-
-  &.green
-    @include action-button($green-btn-font-color, $green-btn-bg-color, $green-btn-border-color)
-
-    &:hover
-      @include action-button($green-btn-hover-font-color, $green-btn-hover-bg-color, $green-btn-hover-border-color)
-
-    &.disabled, &:disabled
-      @include action-button($green-btn-disabled-font-color, $green-btn-disabled-bg-color, $green-btn-disabled-border-color)
-      cursor: default
-
-  &.inverted
-    @include action-button($btn-hover-font-color, $btn-hover-bg-color, $btn-hover-border-color)
-    &:hover
-      @include action-button($aqua-font-color, $btn-border-color, $btn-bg-color)
-
 
   &.l-to-r
     margin: 0 10px 10px 0
@@ -52,27 +24,11 @@ $action-btn-padding-left: 18px
   &.r-to-l
     margin: 0 0 10px 10px
 
-  &:hover, &.active
-    @include action-button($btn-hover-font-color, $btn-hover-bg-color, $btn-hover-border-color)
-
   &.disabled, &:disabled
-    @include action-button($btn-disabled-font-color, $btn-disabled-bg-color, $btn-disabled-border-color)
     cursor: default
 
   &:focus
     outline: none
-
-  &.touched
-    @include action-button($btn-touched-font-color, $btn-touched-bg-color, $btn-touched-border-color)
-
-  &.error
-    @include action-button($btn-error-font-color, $btn-error-bg-color, $btn-error-border-color)
-
-  &.success
-    @include action-button($btn-success-font-color, $btn-success-bg-color, $btn-success-border-color)
-
-  &.working
-    @include action-button($btn-working-font-color, $btn-working-bg-color, $btn-working-border-color)
 
 .btn-slim
   padding: 0

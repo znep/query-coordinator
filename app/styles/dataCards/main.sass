@@ -73,29 +73,24 @@ a
 .lowercase
   text-transform: lowercase
 
-.page-header
-  background-color: $logo-background-color
+// Vertical center the logo if it's shorter than 50px
+.page-header-logo
+  padding: $header-logo-padding
+  display: table-cell
+  vertical-align: middle
+  height: $header-logo-height
 
-  // Vertical center the logo if it's shorter than 50px
-  .logo
-    padding: $header-logo-padding
-    display: table-cell
-    vertical-align: middle
-    height: $header-logo-height
+  >img
+    position: relative
+    max-height: $header-logo-height
 
-    img
-      position: relative
-      max-height: $header-logo-height
+.page-header-links
+  text-align: right
+  line-height: (2 * $header-logo-padding-y) + $header-logo-height
+  padding-right: 1rem
 
-  .page-header-links
-    text-align: right
-    line-height: (2 * $header-logo-padding-y) + $header-logo-height
-    padding-right: 1rem
-
-    a
-      color: $white-font-color
-      text-shadow: 1px 1px 2px black
-      margin-left: 2rem
+.page-header-link
+  margin-left: 2rem
 
 
 // Why is this not in cards.sass?
@@ -119,159 +114,6 @@ $pageNameMaxLineCount: 2
 
   .hideableMetadata
     margin: 15px
-
-$card-padding: 0
-// Card should not assume padding or margin.
-// Containers within card should have control over padding and margin of card content.
-$card-title-expanded-bg-color: #aaa
-$card-title-padding: 5px
-$card-title-margin-right: 35px
-$card-title-line-height: 1.2em
-$card-description-max-line-count: 2
-$card-description-line-height: 1.3em
-$card-description-transition-duration: 0.5s
-.card
-
-  .description
-    position: relative
-    line-height: $card-description-line-height
-    padding-right: 30px
-    color: $lt-grey-font-color-rgba
-
-    .description-expand-button
-      display: none
-      position: absolute
-      visibility: collapse
-      right: 0
-      bottom: 0
-      width: 15px
-      height: 25px
-      cursor: pointer
-
-    .description-expanded-wrapper
-      position: absolute
-      overflow: hidden
-      opacity: 0.9
-
-      .description-expanded-content
-        color: #000
-        background: rgba($card-bg-color, 0.9)
-        overflow-y: auto
-        overflow-x: hidden
-        padding-bottom: 0
-
-      top: 0
-      display: block
-      padding-right: 20px
-      z-index: 1001
-      /* z-index must override leaflet's z-index (1001) on choropleths */
-
-      .description-expand-button
-        display: block
-
-    .description-truncated-content
-      visibility: hidden
-
-    &.clamped
-      .description-expand-button
-        visibility: visible
-
-    &.collapsed
-      max-height: $card-description-line-height * 2
-      .description-expanded-wrapper
-        .description-expanded-content
-          visibility: collapse
-        /* N.B this !important is here so that animations work - the initial max-height
-           is set via jQuery, but this max-height here must override it if we're collapsed. */
-        max-height: $card-description-line-height * 2 !important
-      .description-truncated-content
-        visibility: visible
-
-    &.with-animation
-      .description-expanded-wrapper
-        .description-expanded-content
-          @include prefixer(transition-property, "visibility")
-          @include prefixer(transition-duration, "0s")
-          @include prefixer(transition-timing-function, "step-end")
-          @include prefixer(transition-delay, "0")
-        @include prefixer(transition-property, "max-height, z-index")
-        @include prefixer(transition-duration, "#{$card-description-transition-duration}, 0s")
-        @include prefixer(transition-timing-function, "ease, step-end")
-        @include prefixer(transition-delay, "0, 0")
-        z-index: 3
-      .description-truncated-content
-        @include prefixer(transition-property, "visibility")
-        @include prefixer(transition-duration, "0")
-        @include prefixer(transition-delay, "0")
-
-      &.collapsed
-        .description-expanded-wrapper
-          .description-expanded-content
-            @include prefixer(transition-duration, "0")
-            @include prefixer(transition-delay, "#{$card-description-transition-duration}")
-          @include prefixer(transition-duration, "#{$card-description-transition-duration}, #{$card-description-transition-duration}")
-          @include prefixer(transition-delay, "0, #{$card-description-transition-duration}")
-        .description-truncated-content
-          @include prefixer(transition-delay, "#{$card-description-transition-duration}")
-
-  .title-one-line
-    line-height: $card-title-line-height
-    display: inline-block
-    font-weight: bold
-    max-width: 100%
-    &.dynamic-title
-      color: $card-dynamic-title-color
-      font-size: $small-font-size
-      line-height: $small-font-size
-      padding-bottom: 1px
-    .wrap
-      overflow: hidden
-      text-overflow: ellipsis
-      white-space: nowrap
-      margin-right: $card-title-margin-right + $card-title-padding
-
-.onRight .card
-  .title-expanded
-    display: inline-block
-    .wrap
-      white-space: normal
-    .wrap:hover
-      overflow: visible
-
-.onLeft .card
-  .title-expanded
-    display: inline-block
-    .wrap:hover
-      max-width: none
-
-$top-nav-height: 40px
-$facets-list-width: 20%
-
-.facets-view
-  ul
-    position: absolute
-    top: $top-nav-height
-    bottom: 10px
-    left: 0
-    width: $facets-list-width
-    li
-      height: 20%
-
-  .main-viz
-    position: absolute
-    top: $top-nav-height
-    right: 10px
-    bottom: 10px
-    left: $facets-list-width
-    background: #555
-
-
-.mock-visualization
-  opacity: 0.2
-  width: 100%
-  height: 100%
-  div
-    height: 100%
 
 #ruler
   position: absolute

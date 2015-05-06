@@ -3,14 +3,12 @@
 soc-select
   display: inline-block
   position: relative
-  background-color: $api-panel-border-color
 
   select
     min-width: 10rem
     width: 100%
     height: 100%
     padding: 0.7rem 2.5rem 0.7rem 1rem
-    color: $modal-white-font-color
     background-color: transparent
     border: none
     outline: none
@@ -19,12 +17,6 @@ soc-select
     appearance: none
     &::-ms-expand
       display: none
-
-    option
-      background-color: $modal-dropdown-background-color
-      color: $modal-dark-font-color
-      &:disabled
-        color: $modal-disabled-font-color
 
   .arrow-container
     position: absolute
@@ -44,14 +36,7 @@ soc-select
       left: 30%
       border-style: solid
       border-width: 5px 5px 0 5px
-      border-color: white transparent transparent transparent
       pointer-events: none
-
-  select:disabled
-    color: $grey-disabled-color
-
-    + .arrow-container .arrow
-      border-top-color: $grey-disabled-color
 
 input.dark[type="url"]
   color: $dark-input-font-color
@@ -71,35 +56,20 @@ input.dark[type="url"]
 rich-text-editor
   display: block
   $toolbar-height: 1.3rem
-  $toolbar-bg-color: #ddd
-  $toolbar-btn-active-background-color: #ccc
-  $toolbar-btn-border-color: #999
-  $toolbar-btn-border-color-hover: #555
   .toolbar
-    background-color: $toolbar-bg-color
     text-align: right
     padding: 0.1em 0.3em
-    border-bottom: 1px solid #aaa
     min-height: $toolbar-height
     .rich-text-editor-button
       display: inline-block
-      border: 1px solid $toolbar-btn-border-color
       height: 1.3em
       line-height: 1.3em
       width: 1.5em
       text-align: center
       background-color: transparent
-      color: #000
       font-family: "socrata-apps"
-      &:hover
-        border-color: $toolbar-btn-border-color-hover
-      &.active
-        background-color: $toolbar-btn-active-background-color
-    $toolbar-link-edit-border-color: #3f4752
     $toolbar-link-edit-tip-size: 14px
     .icon-link-edit
-      background-color: $view-cards-bg-color
-      border: 1px solid $toolbar-link-edit-border-color
       padding: 0.5em 0.8em 0
       .icon-link-edit-hint
         position: absolute
@@ -107,10 +77,9 @@ rich-text-editor
         top: -$toolbar-link-edit-tip-size
         width: 0
         height: 0
-        border-right: $toolbar-link-edit-tip-size solid transparent
-        border-bottom: $toolbar-link-edit-tip-size solid $view-cards-bg-color
+        border-right: $toolbar-link-edit-tip-size solid
+        border-bottom: $toolbar-link-edit-tip-size solid
       p
-        color: white
         margin: 0 0 0.5em
         text-align: left
         width: 15em

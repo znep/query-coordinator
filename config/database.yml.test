@@ -6,4 +6,4 @@ test:
   port: 5432
   database: storyteller_test
   username: storyteller_su
-  password:
+  password: storyteller_su

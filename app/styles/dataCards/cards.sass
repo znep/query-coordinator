@@ -30,9 +30,6 @@ body.state-view-cards
       margin-top: 1rem
       font-size: 1rem
 
-      a
-        color: $link-font-color
-
       .show-more
         height: 1rem
         display: none
@@ -79,7 +76,6 @@ body.state-view-cards
           font-style: italic
           font-size: .9em
 
-      $customize-section-border: #ccc
       >textarea
         height: 1.2em
         padding-left: 1.2em // make room for edit icon
@@ -90,7 +86,6 @@ body.state-view-cards
         display: block
         width: 100%
         box-sizing: border-box
-        border: 1px solid $customize-section-border
 
         // Make sure this is above the placeholder
         position: relative
@@ -103,7 +98,6 @@ body.state-view-cards
           outline: 0
           // webkit doesn't give us box shadows unless we nuke its appearance
           -webkit-appearance: none
-          @include prefixer(box-shadow, 0 0 2px 0 $blue-active-color)
 
           + .placeholder
             span

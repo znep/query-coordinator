@@ -561,19 +561,22 @@ body
   border-color: $cards-metadata-border-color
 
   .page-description
+    a
+      color: $cards-metadata-page-description-link-text-color
+
     .show-more
       color: $cards-metadata-show-more-text-color
 
-  .edit-page-name
+  .edit-page-name, .edit-page-description
     >.placeholder
       span
         color: $cards-metadata-edit-placeholder-text-color
 
-    >textarea
+    >textarea, >rich-text-editor
       background: $cards-metadata-edit-textarea-background-color
-      border-color: $cards-metadata-edit-textarea-border-color
+      border: 1px solid $cards-metadata-edit-textarea-border-color
 
-      &:focused
+      &:focus, &.focus
         border-color: $cards-metadata-edit-textarea-focused-border-color
         @include prefixer(box-shadow, 0 0 2px 0 $cards-metadata-edit-textarea-focused-box-shadow-color)
 

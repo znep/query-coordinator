@@ -1,0 +1,9 @@
+# This database config is used by the jenkins server for running tests at build time
+test:
+  adapter: postgresql
+  encoding: unicode
+  host: localhost
+  port: 5432
+  database: storyteller_test
+  username: storyteller_rwc
+  password:

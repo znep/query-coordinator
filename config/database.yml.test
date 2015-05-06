@@ -1,4 +1,5 @@
 # This database config is used by the jenkins server for running tests at build time
+# The storyteller_su role is a SUPERUSER role in postgres
 test:
   adapter: postgresql
   encoding: unicode

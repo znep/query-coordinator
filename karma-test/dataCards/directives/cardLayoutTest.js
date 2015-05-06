@@ -1207,7 +1207,7 @@ describe('card-layout', function() {
 
           it('should align the top of the card with rest of the container', function() {
             var container = cl.element.find('#card-container');
-            expect(expandedCard.offset().top).to.equal(container.offset().top);
+            expect(expandedCard.offset().top).to.be.closeTo(container.offset().top, 1);
           });
 
           it('should adjust the top of the card when the QFB sticks', function() {
@@ -1215,11 +1215,11 @@ describe('card-layout', function() {
             mockWindowStateService.scrollPositionSubject.onNext(
               cl.cardsMetadataElement.offset().top + cl.cardsMetadataElement.outerHeight() + 10);
             expect(qfb.css('position')).to.equal('fixed');
-            expect(expandedCard.offset().top).to.equal(qfb.offset().top + qfb.height());
+            expect(expandedCard.offset().top).to.be.closeTo(qfb.offset().top + qfb.height(), 1);
           });
 
           it('should maintain the maximum possible card height if the QFB is not stuck', function() {
-            expect(expandedCard.height()).to.equal(getAvailableExpandedCardHeight(winDimensions.height));
+            expect(expandedCard.height()).to.be.closeTo(getAvailableExpandedCardHeight(winDimensions.height), 1);
           });
 
           it('should stick to top of the datacard if the datacard is visible', function() {
@@ -1239,7 +1239,7 @@ describe('card-layout', function() {
 
             it('should not protrude into the info pane if the window is short', function() {
               mockWindowStateService.windowSizeSubject.onNext({width: 768, height: 300});
-              expect(expandedCard.offset().top).to.equal($('#card-container').offset().top);
+              expect(expandedCard.offset().top).to.be.closeTo($('#card-container').offset().top, 1);
             });
 
             it('sticks to the top of #card-container if the window is not scrolled and the window height is small',
@@ -1247,9 +1247,9 @@ describe('card-layout', function() {
                 mockWindowStateService.windowSizeSubject.onNext({width: 768, height: 300});
                 var container = cl.element.find('#card-container');
 
-                expect(expandedCard.offset().top).to.equal(container.offset().top);
+                expect(expandedCard.offset().top).to.be.closeTo(container.offset().top, 1);
                 // The 300 is the value to which we have just set the height of the window.
-                expect(expandedCard.height()).to.equal(getAvailableExpandedCardHeight(300));
+                expect(expandedCard.height()).to.be.closeTo(getAvailableExpandedCardHeight(300), 1);
               }));
 
             it('sticks to the top of the datacard if the datacard is visible',
@@ -1265,7 +1265,7 @@ describe('card-layout', function() {
                 expect(expandedCard.offset().top + expandedCard.height()).
                   to.be.closeTo(dataTableElement.offset().top - scrollTop, 10);
                 // The 300 is the value to which we have just set the height of the window.
-                expect(expandedCard.height()).to.equal(getAvailableExpandedCardHeight(300));
+                expect(expandedCard.height()).to.be.closeTo(getAvailableExpandedCardHeight(300), 1);
                }));
           });
         });

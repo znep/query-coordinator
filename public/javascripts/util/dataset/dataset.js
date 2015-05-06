@@ -1023,8 +1023,14 @@ var Dataset = ServerModel.extend({
         }
         else
         { row = this.rowForID(rowId); }
+
         if ($.isBlank(row))
         { throw 'Row ' + rowId + ' not found while saving'; }
+
+        // NBE does not accept invalid data. Just toss the query.
+        if (_.any(row.invalid) && ds.newBackend) {
+          return;
+        }
 
         // Keep track of which columns need to be saved, and only use those values
         var saving = _.keys(row.changed);

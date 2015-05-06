@@ -12,5 +12,5 @@ Dir.chdir APP_ROOT do
   system "cp config/database.yml.test config/database.yml"
 
   puts "\n== Preparing database =="
-  system "RAILS_ENV=test bin/rake db:setup"
+  system "RAILS_ENV=test rake db:setup"
 end

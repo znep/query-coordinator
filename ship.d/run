@@ -3,4 +3,4 @@
 source /dev/shm/storyteller_secrets.sh
 
 cd /opt/socrata/storyteller
-bin/rails server -p 3010 -b 0.0.0.0
+RAILS_ENV=production bin/rails server -p 3010 -b 0.0.0.0

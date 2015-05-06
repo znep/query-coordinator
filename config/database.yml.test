@@ -1,0 +1,10 @@
+# This database config is used by the jenkins server for running tests at build time
+# The storyteller_su role is a SUPERUSER role in postgres
+test:
+  adapter: postgresql
+  encoding: unicode
+  host: localhost
+  port: 5432
+  database: storyteller_test
+  username: storyteller_su
+  password: storyteller_su

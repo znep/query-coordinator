@@ -3,6 +3,12 @@ MAINTAINER Socrata <sysadmin@socrata.com>
 
 ENV APP_DIR /opt/socrata/storyteller
 
+# Ridiculous hack to make this Dockerfile work in AWS jenkins.
+# Comment these out for local Dockerfile builds.
+ENV ftp_proxy http://proxy.aws-us-west-2-infrastructure.socrata.net:3128
+ENV http_proxy http://proxy.aws-us-west-2-infrastructure.socrata.net:3128
+ENV https_proxy http://proxy.aws-us-west-2-infrastructure.socrata.net:3128
+
 # Install additional packages for building our gems
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -q && \
   DEBIAN_FRONTEND=noninteractive apt-get install -y ruby2.2-dev build-essential libxml2-dev \

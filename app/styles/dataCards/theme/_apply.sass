@@ -61,7 +61,7 @@
 
   .flyout-row
     .flyout-cell.emphasis
-      color: $flyout-row-cell-emphasized-color
+      color: $flyout-row-highlight-text-color
 
 #uber-flyout.left
   .hint
@@ -91,6 +91,13 @@
   border: 1px solid $flyout-border-color
   background-color: $flyout-background-color
   color: $flyout-text-color
+
+  .flyout-row
+    .filtered-row-selected
+      color: $flyout-row-selected-text-color
+
+    .filtered-row-highlight
+      color: $flyout-row-highlight-text-color
 
   &.flyout-chart
     color: $flyout-chart-text-color

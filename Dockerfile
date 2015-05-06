@@ -12,7 +12,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -q && \
 
 ADD . ${APP_DIR}
 
-RUN cd ${APP_DIR} && bundle install
+WORKDIR ${APP_DIR}
+RUN bundle install
 
 ADD ship.d /etc/ship.d
 ADD config/database.yml.production ${APP_DIR}/config/database.yml

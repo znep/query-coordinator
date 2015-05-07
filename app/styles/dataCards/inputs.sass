@@ -92,12 +92,19 @@ rich-text-editor
         text-align: right
         margin: 0.5em 0
 
-  iframe
-    padding: 1em
+      &.bold
+        font-weight: bold
 
-  .icon-link:before
-    content: "\e613"
-  .icon-italic:before
-    content: "\e614"
-  .icon-bold:before
-    content: "\e615"
+      &.italic
+        font-style: italic
+
+      &.underline
+        text-decoration: underline
+
+      &.anchor
+        text-decoration: underline
+        color: $link-font-color
+
+  iframe
+    border-top: $toolbar-height solid transparent
+

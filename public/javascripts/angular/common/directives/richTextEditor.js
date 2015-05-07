@@ -58,7 +58,7 @@
               $('<form class="icon-link-edit" action="javascript:void(0);">' +
                   '<div class="icon-link-edit-hint"></div>' +
                   '<p>Insert link</p>' +
-                  '<input type="text" name="url" placeholder="Enter URL" />' +
+                  '<input type="text" name="url" placeholder="Enter a URL here" />' +
                   '<div class="icon-link-edit-buttons">' +
                     '<button type="button" class="cancel tool-panel-toggle-btn action-btn r-to-l dark">Cancel</button>' +
                     '<button type="submit" class="tool-panel-toggle-btn action-btn r-to-l dark">OK</button>' +

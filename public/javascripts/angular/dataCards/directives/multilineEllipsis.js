@@ -150,7 +150,8 @@
             maxLines = parseInt(maxLines);
             tolerance = parseInt(tolerance);
 
-            // Dotdotdot overrides the default jQuery .text().
+            // Dotdotdot overrides the default jQuery .html()
+            // It will avoid things like inserting ellipses in the middle of an html tag.
             // This sets the stage for the exposure of a nasty
             // bug in dotdotdot (update.dot's handler is not reentrant).
             // What ends up happening is that:
@@ -167,7 +168,7 @@
             // this comment, I give it a 50% chance this has actually happened :)
             if (lastText !== text) {
               lastText = text;
-              content.text(text);
+              content.html(text);
             }
 
             // Since we react to changes in the "expanded" binding, this

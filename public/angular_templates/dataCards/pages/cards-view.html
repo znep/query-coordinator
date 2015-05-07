@@ -30,7 +30,8 @@
              multiline-ellipsis
              max-lines="3"
              tolerance="2"
-             ng-bind-html="pageDescription">
+             text="{{pageDescription}}"
+             show-more-mode="expand-link">
         </div>
         <label class="edit-page-description" ng-if="editMode">
           <rich-text-editor

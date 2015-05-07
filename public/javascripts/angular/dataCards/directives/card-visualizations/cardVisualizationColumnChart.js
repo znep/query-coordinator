@@ -120,9 +120,10 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
             return _.map(_.pluck(unfilteredData, 'name'), function(name) {
               var datumIsSpecial = false;
 
-              if ((isNaN(name) && _.contains(activeFilterNames, null)) ||
-                _.contains(activeFilterNames, name)) {
-                datumIsSpecial = true;
+              if (_.contains(activeFilterNames, null)) {
+                datumIsSpecial = _.isNaN(name) || _.isNull(name) || _.isUndefined(name);
+              } else {
+                datumIsSpecial = _.contains(activeFilterNames, name);
               }
 
               return {

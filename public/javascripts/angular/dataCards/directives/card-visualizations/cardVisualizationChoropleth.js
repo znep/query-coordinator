@@ -133,6 +133,7 @@
           function(dataset, columns, fieldName, shapeFile) {
             var sourceColumn = null;
             var dataPromise;
+            var computationStrategy = _.get(columns[fieldName], 'computationStrategy.strategy_type');
 
             dataRequests.onNext(1);
 
@@ -159,7 +160,8 @@
 
             // If we have successfully found a source column, then make the more
             // specific bounding box query utilizing the source column's extents.
-            if (sourceColumn !== null) {
+            if (sourceColumn !== null &&
+              computationStrategy !== 'georegion_match_on_string') {
 
               dataPromise = CardDataService.getChoroplethRegionsUsingSourceColumn(
                 dataset.id,

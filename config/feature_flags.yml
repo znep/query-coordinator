@@ -24,6 +24,9 @@ hide_decimal_tick_lines:
 hide_interpolated_nulls:
   description: "Ref: SI-5927, if set to true, will hide interpolated nulls in DSG bar charts."
   defaultValue: false
+asteroids:
+  description: Unlocked on datasets by the Konami code.
+  defaultValue: false
 stamen:
   description: Easter egg of map backgrounds. Set false to turn it off. Choose one of the available values to select this base layer for ALL maps on the domain.
   defaultValue: false

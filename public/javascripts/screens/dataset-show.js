@@ -731,6 +731,19 @@ $(function()
         });
     }
 
+    // up up down down left right left right b a start
+    if (blist.feature_flags.asteroids) {
+      var konami = new Konami();
+      konami.code = function()
+      {
+          var elem = document.createElement('script');
+          elem.type = 'text/javascript';
+          document.body.appendChild(elem);
+          elem.src = '/javascripts/util/asteroids.min.js';
+      };
+      konami.load();
+    }
+
     var forceOldVisualize = $.urlParam(window.location.href, 'visualize') == 'old' || blist.configuration.oldChartConfigForced;
     var isNewVisualize = $.urlParam(window.location.href, 'visualize') == 'nextgen' || (blist.configuration.newChartConfig && !forceOldVisualize);
     if (isNewVisualize) {

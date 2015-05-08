@@ -134,6 +134,9 @@ enable_newux_page_view_count:
 use_catalog_lens_permissions:
   description: Whether page/dataset metadata should inherit permissions from their catalog lenses.
   defaultValue: true
+display_catalog_lens_delete_button:
+  description: Whether to show the Delete button for data lenses, in the old UX.
+  defaultValue: false
 enable_search_suggestions:
   description: Allow search suggestions and type-ahead for Data Lens search card.
   defaultValue: false

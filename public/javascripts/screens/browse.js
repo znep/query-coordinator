@@ -120,6 +120,10 @@ $(function()
                     },
                 '.delete.button@class+': function(v)
                     {
+                        if (!blist.feature_flags.display_catalog_lens_delete_button &&
+                            v.context.isNewView()) {
+                            return 'hide';
+                        }
                         return v.context.hasRight('delete_view') &&
                             !v.context.isFederated() ? '' : 'hide';
                     },

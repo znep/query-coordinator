@@ -499,6 +499,24 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal(result[:status], '500')
   end
 
+  def test_delete_deletes_phidippides_if_core_doesnt_exist
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+
+    Phidippides.any_instance.expects(:delete_page_metadata).with do |id, options|
+      assert_equal(id, 'four-four')
+    end.then.returns({ body: nil, status: '200' })
+
+    core_stub = mock
+    core_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    core_stub.expects(:delete_request).with do |url|
+      assert_equal('/views.json?id=four-four&method=delete', url)
+    end.then.raises(CoreServer::ResourceNotFound.new(nil))
+    CoreServer::Base.stubs(connection: core_stub)
+
+    result = manager.delete('four-four')
+    assert_equal(result[:status], '200')
+  end
+
   def test_time_range_in_column_catches_fetch_min_max_date_in_column_returning_nil
     CoreServer::Base.connection.expects(:get_request).raises(CoreServer::Error.new(nil))
     assert_raises(Phidippides::NoMinMaxInDateColumnException) do

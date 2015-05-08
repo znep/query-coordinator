@@ -339,6 +339,20 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     assert_response(200)
   end
 
+  test 'delete still calls delete if core view not found, in case of orphaned phidippides pages' do
+    @controller.expects(:dataset).with do |id|
+      assert_equal('four-four', id)
+    end.then.raises(CoreServer::ResourceNotFound.new(nil))
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+
+    @page_metadata_manager.expects(:delete).with do |id|
+      assert_equal(id, 'four-four')
+    end.then.returns({ body: nil, status: '200' })
+
+    delete :destroy, id: 'four-four'
+    assert_response(200)
+  end
+
   test 'delete passes along result from page_metadata_manager' do
     dataset_stub = mock
     dataset_stub.stubs(can_edit?: true)

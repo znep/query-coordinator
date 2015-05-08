@@ -94,7 +94,13 @@ class PageMetadataManager
   def delete(id, options = {})
     begin
       result = View.delete(id)
-    rescue CoreServer::Error, CoreServer::ResourceNotFound => error
+    rescue CoreServer::ResourceNotFound => error
+      report_error(
+        "Page #{id} not found in core during delete. " +
+        'Proceeding with phidippides delete, in case it was an orphaned page.',
+        error
+      )
+    rescue CoreServer::Error => error
       report_error('Core server error', error)
       return { body: {
         body: "Core server error (#{error.error_code}): #{error.error_message}"

@@ -141,10 +141,15 @@ class PhidippidesPagesController < ApplicationController
   end
 
   def destroy
-    # TODO: if core dataset doesn't exist, delete the phidippides one. Do this, to provide the
-    # ability to clean up orphaned phiddy datasets
     # TODO: feature flag the UI
-    unless (inherit_catalog_lens_permissions? ? dataset(params[:id]).can_edit? : can_create_metadata?)
+    if inherit_catalog_lens_permissions?
+      begin
+        return render :nothing => true, :status => '401' unless dataset(params[:id]).can_edit?
+      rescue CoreServer::ResourceNotFound
+        # Even if the core page doesn't exist, the data lens might have been orphaned, so let the
+        # delete through.
+      end
+    elsif !can_create_metadata?
       return render :nothing => true, :status => '401'
     end
 

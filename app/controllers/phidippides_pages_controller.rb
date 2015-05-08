@@ -141,7 +141,6 @@ class PhidippidesPagesController < ApplicationController
   end
 
   def destroy
-    # TODO: feature flag the UI
     if inherit_catalog_lens_permissions?
       begin
         return render :nothing => true, :status => '401' unless dataset(params[:id]).can_edit?

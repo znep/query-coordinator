@@ -35,7 +35,9 @@ class SocrataHttp
       raise ConnectionError.new(error.to_s)
     end
 
-    if response.kind_of?(Net::HTTPRedirection) && verb == 'Get'
+    if response.kind_of?(Net::HTTPRedirection) && (
+      verb == 'Get' || options.fetch(:follow_redirect, false)
+    )
       if options[:allow_304] && response.kind_of?(Net::HTTPNotModified)
         result = {status: response.code, body: {}}
       else

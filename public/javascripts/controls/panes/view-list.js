@@ -95,8 +95,10 @@
                     },
                     '.deleteViewLink@class+': function(a)
                     {
-                        if (a.context.view.displayType === 'new_view' ||
-                            !_.include(a.context.view.rights, 'delete_view')) {
+                        if (blist.feature_flags.display_catalog_lens_delete_button) {
+                            return _.include(a.context.view.rights, 'delete_view') ? '' : 'hide';
+                        } else if (a.context.view.displayType === 'new_view' ||
+                                   !_.include(a.context.view.rights, 'delete_view')) {
                             return 'hide';
                         }
                         return '';

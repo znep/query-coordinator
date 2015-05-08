@@ -1340,8 +1340,17 @@ var Dataset = ServerModel.extend({
             if (_.isFunction(successCallback)) { successCallback(); }
         };
 
-        ds.makeRequest({url: '/api/views/' + ds.id + '.json',
-            type: 'DELETE', success: dsRemoved, error: errorCallback});
+        if (ds.isNewView()) {
+            // Send a DELETE request to the NFE endpoint, which should propagate the delete to the
+            // OBE representation.
+            ds.makeRequestWithPromise({
+                url: '/metadata/v1/page/{0}'.format(ds.id),
+                type: 'DELETE'
+            }).then(dsRemoved, errorCallback);
+        } else {
+            ds.makeRequest({url: '/api/views/' + ds.id + '.json',
+                type: 'DELETE', success: dsRemoved, error: errorCallback});
+        }
     },
 
     registerOpening: function(referrer)
@@ -2239,7 +2248,7 @@ var Dataset = ServerModel.extend({
         { ds.styleClass = 'Unpublished'; }
         else if (ds.type == 'blist' && ds.isSnapshot())
         { ds.styleClass = 'Snapshotted'; }
-        else if (ds.displayType == 'new_view')
+        else if (ds.isNewView())
         { ds.styleClass = 'New_view'; }
         else
         { ds.styleClass = ds.type.capitalize(); }

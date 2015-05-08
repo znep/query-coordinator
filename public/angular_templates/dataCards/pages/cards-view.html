@@ -5,7 +5,13 @@
   <div class="cards-metadata">
     <div class="row">
       <div class="span6 padded-wrapper">
-        <header ng-show="!editMode" multiline-ellipsis max-lines="2" tolerance="8" text="{{pageName || 'Untitled'}}" show-more-mode="title-attr"></header>
+        <header ng-show="!editMode"
+                multiline-ellipsis
+                max-lines="2"
+                tolerance="8"
+                text="{{pageName || 'Untitled'}}"
+                show-more-mode="title-attr">
+        </header>
         <!-- Text field & decorations for editing page name -->
         <label class="edit-page-name" ng-if="editMode">
           <div class="icon-warning edit-page-warning"
@@ -18,7 +24,22 @@
           <div class="icon-edit placeholder"><span>(Untitled)</span></div>
         </label>
         <!-- description -->
-        <div class="page-description" expanded="expanded" multiline-ellipsis max-lines="3" tolerance="2" text="{{pageDescription}}"></div>
+        <div ng-show="!editMode"
+             class="page-description"
+             expanded="expanded"
+             multiline-ellipsis
+             max-lines="3"
+             tolerance="2"
+             text="{{pageDescription}}"
+             show-more-mode="expand-link">
+        </div>
+        <label class="edit-page-description" ng-if="editMode">
+          <rich-text-editor
+            buttons="bold italic link"
+            content="writablePage.description"
+            placeholder="Give your page a good description that helps people understand the story your data is trying to tell. (Optional)">
+          </rich-text-editor>
+        </label>
       </div>
       <div class="span6 padded-wrapper">
         <!-- activities -->
@@ -53,8 +74,8 @@
               </modal-dialog>
             </div>
             <div class="metadatum-wrapper row">
-              <related-views 
-                page="page" 
+              <related-views
+                page="page"
                 dataset-pages="datasetPages"
                 ng-show="showOtherViewsButton"
                 ></related-views>

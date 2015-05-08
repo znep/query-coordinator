@@ -85,26 +85,26 @@ rich-text-editor
         width: 15em
       input
         width: 100%
+        font-size: 0.7rem
+        padding: 5px
         -webkit-box-sizing: border-box
         -moz-box-sizing: border-box
         box-sizing: border-box
       .icon-link-edit-buttons
         text-align: right
         margin: 0.5em 0
-
-      &.bold
-        font-weight: bold
-
-      &.italic
-        font-style: italic
-
-      &.underline
-        text-decoration: underline
-
-      &.anchor
-        text-decoration: underline
-        color: $link-font-color
+        button
+          font-size: 0.7em
+          padding: 6px 14px
+          margin-top: 6px
+          margin-bottom: 3px
 
   iframe
-    border-top: $toolbar-height solid transparent
+    padding: 1em
 
+  .icon-link:before
+    content: "\e613"
+  .icon-italic:before
+    content: "\e614"
+  .icon-bold:before
+    content: "\e615"

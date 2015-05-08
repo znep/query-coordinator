@@ -65,6 +65,7 @@ javascripts:
     - public/javascripts/plugins/awesomemarkup.js
     - public/javascripts/plugins/backbone.js
     - public/javascripts/util/backbone-exts.js
+    - public/javascripts/util/konami.js
     - public/javascripts/plugins/backbone.orderable.js
     - public/javascripts/screens/govstat/goals/models.js
   shared-editors:
@@ -432,6 +433,7 @@ javascripts:
     - public/javascripts/util/asset-loading.js
     - public/javascripts/controls/combination-list.js
     - public/javascripts/util/inline-login.js
+    - public/javascripts/util/konami.js
     - public/javascripts/controls/wizard-prompt.js
     - public/javascripts/controls/popup-select.js
     - public/javascripts/controls/form-inliner.js

@@ -132,12 +132,22 @@
       var anchor = this.controls.anchor;
       var url = anchor.form.find('input').val();
       anchor.form[0].reset();
+
+      // Clear placeholder text if it exists when inserting a link.
+      // This happens when users add a link before adding any text
+      if ($(this.editor.getHTML()).hasClass('placeholder')) {
+        this.editor.setHTML('');
+      }
+
       if (!/^https?:\/\//.test(url)) {
         url = 'http://' + url;
       }
-      this.editor.makeLink(url);
+      var urlOptions = { target: '_blank' };
+      this.editor.makeLink(url, urlOptions);
 
       this.hideAnchorInput();
+
+      this.editor.fireEvent('input');
     },
     hideAnchorInput: function(e) {
       var anchor = this.controls.anchor;
@@ -227,8 +237,8 @@
         // allows css to detect focus based on class, because child iframe's :focus doesn't
         element.addClass('focus');
       },
-      blur: function(element) {
-        updateValue
+      blur: function(element, e) {
+        updateValue.apply(this, [element, e]);
         showPlaceholderIfEmpty(element, this);
         element.removeClass('focus');
       },

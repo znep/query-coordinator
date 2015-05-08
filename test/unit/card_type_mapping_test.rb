@@ -1344,6 +1344,26 @@ class CardTypeMappingTest < Test::Unit::TestCase
     assert_equal(['choropleth'], available_card_types)
   end
 
+  def test_card_type_mapping_returns_expected_available_card_types_for_computed_match_on_string_text_column_in_phase_3
+    dataset_size = 2500
+
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+    computed_column = fake_column('text', nil, 1)
+    computed_column['computationStrategy'] = {
+      'parameters' => {
+        'region' => '_abcd-efgh',
+        'geometryLabel' => 'label'
+      },
+      'strategy_type' => 'georegion_match_on_string'
+    }.with_indifferent_access
+
+    available_card_types = available_card_types_for(
+      computed_column,
+      dataset_size
+    )
+    assert_equal(['choropleth'], available_card_types)
+  end
+
   def test_card_type_mapping_returns_expected_available_card_types_for_multiline_column_in_phase_3
     dataset_size = 2500
 

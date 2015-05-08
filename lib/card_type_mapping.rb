@@ -70,8 +70,10 @@ module CardTypeMapping
       when 'point'
         card_type = 'feature'
       when 'text'
+        if has_georegion_computation_strategy?(column)
+          card_type = 'choropleth'
         # See: https://socrata.atlassian.net/browse/CORE-4755
-        if dataset_size <= 10
+        elsif dataset_size <= 10
           card_type = 'column'
         elsif is_low_cardinality?(cardinality, dataset_size)
           card_type = 'column'
@@ -144,7 +146,11 @@ module CardTypeMapping
       when 'point'
         available_card_types = ['feature']
       when 'text'
-        available_card_types = ['column', 'search']
+        if has_georegion_computation_strategy?(column)
+          available_card_types = ['choropleth']
+        else
+          available_card_types = ['column', 'search']
+        end
       when 'multipolygon'
         available_card_types = ['invalid']
       when 'multiline'

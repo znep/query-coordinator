@@ -444,9 +444,13 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     manager.update(v1_page_metadata)
   end
 
-  def test_delete_deletes_both_core_and_phidippides_representation
+  def test_delete_deletes_core_and_phidippides_and_rollup_representation
     stub_feature_flags_with(:metadata_transition_phase, '3')
 
+    Phidippides.any_instance.expects(:fetch_page_metadata).returns(
+      status: '200',
+      body: { datasetId: 'data-eyed' }
+    )
     Phidippides.any_instance.expects(:delete_page_metadata).with do |id, options|
       assert_equal(id, 'four-four')
     end.then.returns({ body: nil, status: '200' })
@@ -458,8 +462,12 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     end.then.returns('{ "body": null, "status": "200" }')
     CoreServer::Base.stubs(connection: core_stub)
 
+    SodaFountain.any_instance.expects(:delete_rollup_table).with do |args|
+      assert_equal({dataset_id: 'data-eyed', rollup_name: 'four-four'}, args)
+    end.then.returns({ status: '200' })
+
     result = manager.delete('four-four')
-    assert_equal(result[:status], '200')
+    assert_equal('200', result[:status])
   end
 
   def test_delete_doesnt_delete_phidippides_if_core_fails_for_some_reason
@@ -484,6 +492,10 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   def test_delete_leaves_things_in_an_inconsistent_state_if_phidippides_fails_for_some_reason
     stub_feature_flags_with(:metadata_transition_phase, '3')
 
+    Phidippides.any_instance.expects(:fetch_page_metadata).returns(
+      status: '200',
+      body: { datasetId: 'data-eyed' }
+    )
     Phidippides.any_instance.expects(:delete_page_metadata).with do |id, options|
       assert_equal(id, 'four-four')
     end.then.returns({ body: nil, status: '500' })
@@ -505,6 +517,10 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     Phidippides.any_instance.expects(:delete_page_metadata).with do |id, options|
       assert_equal(id, 'four-four')
     end.then.returns({ body: nil, status: '200' })
+    Phidippides.any_instance.expects(:fetch_page_metadata).returns(
+      status: '200',
+      body: { datasetId: 'data-eyed' }
+    )
 
     core_stub = mock
     core_stub.stubs(reset_counters: {requests: {}, runtime: 0})

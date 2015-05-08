@@ -92,6 +92,7 @@ class PageMetadataManager
   end
 
   def delete(id, options = {})
+    # Delete the core pointer to the page
     begin
       result = View.delete(id)
     rescue CoreServer::ResourceNotFound => error
@@ -107,11 +108,32 @@ class PageMetadataManager
       }, status: '500' }
     end
 
+    # Delete the actual page
+    # Need to get the page_metadata in order to get the dataset_id
+    page_metadata = phidippides.fetch_page_metadata(id, options)
+    if page_metadata[:status] !~ /^2[0-9][0-9]$/
+      return { body: { body: 'Not found' }, status: '404' }
+    end
     begin
-      phidippides.delete_page_metadata(id, options)
+      phidippides_response = phidippides.delete_page_metadata(id, options)
     rescue Phidippides::ConnectionError
       return { body: { body: 'Phidippides connection error' }, status: '500' }
     end
+    if phidippides_response.fetch(:status) !~ /^2[0-9][0-9]$/
+      report_error("Error deleting page #{id} in phidippides: #{phidippides_response.inspect}")
+      return phidippides_response
+    end
+
+    # Delete any rollups created for the page
+    response = soda_fountain.delete_rollup_table(
+      dataset_id: page_metadata.fetch(:body, {}).fetch(:datasetId),
+      rollup_name: id
+    )
+    if response.fetch(:status) !~ /^2[0-9][0-9]$/
+      report_error("Error deleting rollup table for page #{id}: #{response.inspect}")
+    end
+
+    phidippides_response
   end
 
   private

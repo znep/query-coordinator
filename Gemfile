@@ -37,6 +37,9 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'comfortable_mexican_sofa', '~> 1.12.8'
 
 group :development, :test do
+  # Testing framework
+  gem 'rspec-rails', '~> 3.0'
+
   # Make pry the default in rails console
   gem 'pry-rails'
 

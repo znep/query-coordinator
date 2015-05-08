@@ -285,6 +285,22 @@ soc-select
     &.form-error
       border-color: $tool-panel-form-error-border-color
 
+  .tool-panel-input-group
+    .action-btn
+      @extend .action-btn.dark !optional
+
+      &:hover, &.active
+        @extend .action-btn.dark.active !optional
+
+      &.error
+        @extend .action-btn.error !optional
+
+      &.success
+        @extend .action-btn.success !optional
+
+      &.working
+        @extend .action-btn.working !optional
+
 
 // Visualizations
 
@@ -832,6 +848,7 @@ body.state-view-cards
 
       &.disabled,&:disabled
         @extend .action-btn.disabled !optional
+
 
     button.save-button, button.save-as-button
       @extend .customize-bar-action-btn

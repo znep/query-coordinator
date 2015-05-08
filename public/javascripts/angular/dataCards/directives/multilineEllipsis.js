@@ -200,7 +200,10 @@
               var applyEllipsis = function() {
                 content.dotdotdot({
                   height: targetCollapsedHeight,
-                  tolerance: tolerance
+                  tolerance: tolerance,
+                  lastCharacter: {
+                    remove: [ ' ', ' ', '\u3000', ',', ';', '.', '!', '?', '&nbsp;' ]
+                  }
                 });
               }
 

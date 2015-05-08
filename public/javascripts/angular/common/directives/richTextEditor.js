@@ -21,7 +21,7 @@
       switch(value) {
         case 'bold':
           controls.bold = {
-            element: $('<button class="bold">b</button>').
+            element: $('<div class="rich-text-editor-button bold icon-bold" title="Bold"></button>').
               on('click', _.bind(self.toggleBold, self)).
               appendTo(element),
             pathRegex: />B\b/
@@ -29,7 +29,7 @@
           break;
         case 'italic':
           controls.italic = {
-            element: $('<button class="italic">i</button>').
+            element: $('<div class="rich-text-editor-button italic icon-italic" title="Italic"></button>').
               on('click', _.bind(self.toggleItalic, self)).
               appendTo(element),
             pathRegex: />I\b/
@@ -37,7 +37,7 @@
           break;
         case 'underline':
           controls.underline = {
-            element: $('<button class="underline">u</button>').
+            element: $('<div class="rich-text-editor-button underline icon-underline" title="Underline">u</button>').
               on('click', _.bind(self.toggleUnderline, self)).
               appendTo(element),
             pathRegex: />U\b/
@@ -46,13 +46,36 @@
         case 'anchor':
         case 'link':
           controls.anchor = {
-            element: $('<button class="anchor">a</button>').
+            element: $('<div class="rich-text-editor-button anchor icon-link" title="Link"></button>').
               css({position: 'relative'}).
-              on('click', _.bind(self.toggleAnchor, self)).
+              on('click', function(e) {
+                if ($(e.target).hasClass('rich-text-editor-button')) {
+                  self.toggleAnchor();
+                }
+              }).
               appendTo(element),
-            form: $('<form><input type=text /></form>').
-              on('submit', _.bind(self.createAnchor, self)).
-              find('input').on('blur', _.bind(self.hideAnchorInput, self)).
+            form:
+              $('<form class="icon-link-edit" action="javascript:void(0);">' +
+                  '<div class="icon-link-edit-hint"></div>' +
+                  '<p>Insert link</p>' +
+                  '<input type="text" name="url" placeholder="Enter URL" />' +
+                  '<div class="icon-link-edit-buttons">' +
+                    '<button type="button" class="cancel tool-panel-toggle-btn action-btn r-to-l dark">Cancel</button>' +
+                    '<button type="submit" class="tool-panel-toggle-btn action-btn r-to-l dark">OK</button>' +
+                  '</div>' +
+                '</form>').
+              on('keyup', function(e) {
+                if (e.keyCode === 27) {
+                  // Esc key, close link edit
+                  self.hideAnchorInput();
+                }
+              }).
+              on('submit', function(e) {
+                self.createAnchor(e);
+              }).
+              find('button.cancel').on('click', function() {
+                self.hideAnchorInput();
+              }).
               end(),
             pathRegex: />A\b/
           };
@@ -79,23 +102,24 @@
     /**
      * Display an input field, to prompt for a url for the anchor.
      */
-    toggleAnchor: function(e) {
-      if (this.editor.getSelectedText() && this.editor.hasFormat('a')) {
-        this.editor.removeLink();
+    toggleAnchor: function() {
+      var anchor = this.controls.anchor;
+      if (anchor.form.is(':visible')) {
+        var form = anchor.form;
+        this.hideAnchorInput();
       } else {
-        var anchor = this.controls.anchor;
-        if (anchor.form.is(':visible')) {
-          var form = anchor.form;
-          form[0].reset();
-          form.fadeOut(100, _.bind(form.detach, form));
-        } else {
-          var pos = anchor.element.position();
-          anchor.form.css({
-            top: '0',
-            left: '100%',
-            position: 'absolute'
-          }).appendTo(anchor.element).fadeIn(100);
-          anchor.form.find('input').eq(0).focus();
+        var pos = anchor.element.position();
+        anchor.form.css({
+          top: '2.2em',
+          left: '50%',
+          position: 'absolute'
+        }).appendTo(anchor.element).fadeIn(100);
+        anchor.form.find('input').eq(0).focus();
+
+        // If user selects an existing link, show it in edit window
+        if (this.editor.getSelectedText() && this.editor.hasFormat('a')) {
+          var url = this.editor.getSelection().startContainer.parentElement.href;
+          anchor.form.find('input').val(url).focus();
         }
       }
     },
@@ -116,16 +140,26 @@
       this.hideAnchorInput();
     },
     hideAnchorInput: function(e) {
-      var form = this.controls.anchor.form;
-      form.fadeOut(100, _.bind(form.detach, form));
+      var anchor = this.controls.anchor;
+      if (anchor) {
+        var form = anchor.form;
+        form.fadeOut(100, function() {
+          _.bind(form.detach, form)
+          form[0].reset();
+        });
+      }
     },
     /**
      * Update the visual state of all the controls, to highlight the currently-applied ones.
      */
-    updateState: function(path) {
+    updateState: function(path, curToolbar) {
       _.forOwn(this.controls, function(obj) {
         if (obj.pathRegex) {
           obj.element.toggleClass('active', obj.pathRegex.test(path));
+          if (!obj.pathRegex.test(path) || !obj.element.hasClass('anchor')) {
+            // If not clicking on an anchor, close any open anchor edit windows
+            curToolbar.hideAnchorInput();
+          }
         }
       });
     }
@@ -172,14 +206,32 @@
      */
     function updateValue(element, e) {
       // Set the val() so we can get the value like a normal textarea
-      element.val(this.getHTML());
+      // Make sure currentHTML isn't set to the placeholder - if it is, blank it
+      var updatedHTML = ($(this.getHTML()).text() !== element.attr('placeholder')) ?
+        this.getHTML() : '';
+      element.val(updatedHTML);
 
       element.trigger(e);
+
+      element.isolateScope().safeApply(function() {
+        element.isolateScope().content = element.val();
+      });
     }
     // Event handlers, for squire events.
     var events = {
       input: updateValue,
-      blur: updateValue,
+      focus: function(element) {
+        if ($(this.getHTML()).text() == element.attr('placeholder')) {
+          this.setHTML('');
+        }
+        // allows css to detect focus based on class, because child iframe's :focus doesn't
+        element.addClass('focus');
+      },
+      blur: function(element) {
+        updateValue
+        showPlaceholderIfEmpty(element, this);
+        element.removeClass('focus');
+      },
       willPaste: function(element, e) {
         // Only allow pasting of plaintext
         var text = disemarkup(e.fragment);
@@ -188,7 +240,7 @@
       },
       pathChange: function(element, e) {
         if (toolbar) {
-          toolbar.updateState(e.path);
+          toolbar.updateState(e.path, toolbar);
         }
       }
     };
@@ -220,9 +272,18 @@
         overflow: 'auto',
         boxSizing: 'border-box',
         border: 0,
-        margin: 0,
-        padding: 0
+        margin: 0
       });
+    }
+
+    // Show placeholder text if editor html is empty (and placeholder attribute exists)
+    function showPlaceholderIfEmpty(element, editor) {
+      if ($(editor.getHTML()).text() == '' && element.attr('placeholder') !== typeof undefined) {
+        editor.setHTML(
+          '<div class="placeholder" style="color:{1}">{0}</div>'.
+            format(element.attr('placeholder'), 'rgba(0,0,0,0.4)')
+        );
+      }
     }
 
     function initIframe(element, iframe) {
@@ -261,8 +322,9 @@
         $scope.safeApply(_.bind(function() {
           $scope.editor = this.contentWindow.editor;
           initEvents($scope.editor, element);
-          element.val(element.attr('value'));
+          element.val($scope.content);
           $scope.editor.setHTML(element.val());
+          showPlaceholderIfEmpty(element, $scope.editor);
           toolbar = new Toolbar(element.find('.toolbar'), attr, $scope.editor);
         }, this));
       });
@@ -284,7 +346,9 @@
 
     return {
       restrict: 'E',
-      scope: {},
+      scope: {
+        content: '='
+      },
       template: ('<div class="toolbar"></div>' +
                  '<iframe allowtransparency="true" scrolling="auto" src="about:blank"/>'),
       link: init

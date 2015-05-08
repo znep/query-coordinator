@@ -75,7 +75,7 @@ module.exports = function ( karma ) {
       'bower_components/native-promise-only/lib/npo.src.js',
       'bower_components/requestAnimationFrame-polyfill/requestAnimationFrame.js',
       'public/javascripts/plugins/modernizr.js',
-      {pattern: 'public/javascripts/plugins/squire.js', included: false},
+      'public/javascripts/plugins/squire.js',
       'bower_components/rxjs/rx.js',
       'bower_components/rxjs/rx.async.js',
       'bower_components/rxjs/rx.aggregates.js',

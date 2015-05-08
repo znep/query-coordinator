@@ -290,7 +290,8 @@
             // TODO: There's a bug in squire where adding an anchor doesn't fire the 'input' event.
             this.find('iframe')[0].contentWindow.editor.fireEvent('input');
             // Should apply the input
-            expect(this.val()).to.contain('<a href="http://m.xkcd.com">m.xkcd.com</a>');
+            expect(this.val()).to.contain('target="_blank"');
+            expect(this.val()).to.contain('href="http://m.xkcd.com"');
             done();
           });
         });
@@ -309,7 +310,10 @@
             // TODO: There's a bug in squire where adding an anchor doesn't fire the 'input' event.
             this.find('iframe')[0].contentWindow.editor.fireEvent('input');
             // Should apply the input
-            expect(this.val()).to.contain('<b>t<a href="http://m.xkcd.com">ext for lin</a>k</b>');
+            expect(this.val()).to.contain('<b>t');
+            expect(this.val()).to.contain('target="_blank"');
+            expect(this.val()).to.contain('href="http://m.xkcd.com"');
+            expect(this.val()).to.contain('ext for lin');
             done();
           });
         });
@@ -325,7 +329,9 @@
             // TODO: There's a bug in squire where adding an anchor doesn't fire the 'input' event.
             this.find('iframe')[0].contentWindow.editor.fireEvent('input');
             // Should apply the input
-            expect(this.val()).to.contain('<a href="http://m.xkcd.com">m.xkcd.com</a>');
+            expect(this.val()).to.contain('target="_blank"');
+            expect(this.val()).to.contain('href="http://m.xkcd.com"');
+            expect(this.val()).to.contain('>m.xkcd.com</a>');
             done();
           });
         });

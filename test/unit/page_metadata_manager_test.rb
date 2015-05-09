@@ -529,6 +529,10 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     end.then.raises(CoreServer::ResourceNotFound.new(nil))
     CoreServer::Base.stubs(connection: core_stub)
 
+    SodaFountain.any_instance.expects(:delete_rollup_table).with do |args|
+      assert_equal({dataset_id: 'data-eyed', rollup_name: 'four-four'}, args)
+    end.then.returns({ status: '200' })
+
     result = manager.delete('four-four')
     assert_equal(result[:status], '200')
   end

@@ -9,7 +9,9 @@ Dir.chdir APP_ROOT do
   # Add necessary setup steps to this file:
 
   puts "\n== Copying sample files =="
-  system "cp config/database.yml.test config/database.yml"
+  unless File.exist?("config/database.yml")
+    system "cp config/database.yml.test config/database.yml"
+  end
 
   puts "\n== Preparing database =="
   system "RAILS_ENV=test rake db:setup"

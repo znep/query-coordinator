@@ -3,6 +3,10 @@ require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 require 'minitest/autorun'
 require 'minitest/reporters'
+require 'webmock/minitest'
+
+# Don't allow any network connections
+WebMock.disable_net_connect!
 
 if ENV['RM_INFO']
   MiniTest::Reporters.use!

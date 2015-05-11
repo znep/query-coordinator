@@ -394,7 +394,7 @@ $(function()
 
     // toolbar area
     $('#description').expander({
-        contentSelector: 'p',
+        contentSelector: 'div.descriptionContent',
         expanderCollapsedClass: 'rightArrow',
         expandSelector: '.descriptionExpander',
         moveExpandTrigger: true,

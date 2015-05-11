@@ -40,6 +40,7 @@ group :test do
   gem 'rb-fsevent'
   gem 'shoulda-context'
   gem 'factory_girl'
+  gem 'webmock'
 end
 
 group :development, :test do

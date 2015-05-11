@@ -629,7 +629,7 @@ describe('CardDataService', function() {
 
     beforeEach(function() {
       var urlMatcher = new RegExp(
-        '/resource/{1}\\.json\\?%24select=extent\\({0}\\)'.
+        '/resource/{1}\\.json\\?%24select=extent(\\(|%28){0}(\\)|%29)'.
           format(TEST_FIELD_NAME, fake4x4)
       );
       getExpectation = $httpBackend.expectGET(urlMatcher);

@@ -114,7 +114,7 @@
         if (val < 0) {
           result = -result;
         }
-        if (_.isFinite(result)) {
+        if (isFinite(result)) {
           return $.commaify(result) + symbol[i];
         } else {
           return result.toString();

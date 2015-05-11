@@ -8,6 +8,7 @@
   }
 
   function cardVisualizationFeatureMap(
+    $log,
     ServerConfig,
     AngularRxExtensions,
     CardDataService,

@@ -409,29 +409,35 @@
         // Now that everything's hooked up, connect the subscription.
         baseTileLayerObservable.connect();
 
+        var featureExtentObservable = scope.observe('featureExtent');
+
         // We want to set the bounds before we start requesting tiles so that
         // we don't make a bunch of requests for zoom level 1 while we are
         // waiting for the extent query to come back.
-        var boundsSetObservable = scope.
-          observe('featureExtent').
+        featureExtentObservable.
           filter(_.isDefined).
-          map(
-            function(featureExtent) {
-              var bounds = LeafletHelpersService.buildBounds(featureExtent);
+          subscribe(function(featureExtent) {
+            var bounds = LeafletHelpersService.buildBounds(featureExtent);
 
-              // It is critical to invalidate size prior to updating bounds.
-              // Otherwise, leaflet will fit the bounds to an incorrectly sized viewport.
-              // This manifests itself as the map being zoomed all of the way out.
-              map.invalidateSize();
-              fitMapBounds(bounds);
-            }
-          );
+            // It is critical to invalidate size prior to updating bounds.
+            // Otherwise, leaflet will fit the bounds to an incorrectly sized viewport.
+            // This manifests itself as the map being zoomed all of the way out.
+            map.invalidateSize();
+            fitMapBounds(bounds);
+          });
+
+        // If the server-provided extent is undefined, defer to zoom level 1
+        featureExtentObservable.
+          filter(_.isUndefined).
+          subscribe(function() {
+            map.invalidateSize();
+          });
 
         // React to changes to the vectorTileGetter observable
         // (which changes indicate that a re-render is needed).
         Rx.Observable.subscribeLatest(
           scope.observe('vectorTileGetter').filter(_.isFunction),
-          boundsSetObservable, // Used for signaling to create feature layer
+          featureExtentObservable, // Used for signaling to create feature layer
           function(vectorTileGetter) {
             currentVectorTileGetter = vectorTileGetter;
             createNewFeatureLayer(map, vectorTileGetter);

@@ -202,7 +202,7 @@
                   height: targetCollapsedHeight,
                   tolerance: tolerance,
                   lastCharacter: {
-                    remove: [ ' ', ' ', '\u3000', ',', ';', '.', '!', '?', '&nbsp;' ]
+                    remove: [ ' ', '\u00A0', '\u3000', ',', ';', '.', '!', '?', '&nbsp;' ]
                   }
                 });
               }

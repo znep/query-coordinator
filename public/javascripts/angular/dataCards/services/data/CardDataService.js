@@ -329,6 +329,11 @@
             );
             return;
           }
+          // In the event that the feature flag is set to "true" or "false", we
+          // don't need to warn about validating the JSON
+          if (!_.isObject(defaultFeatureExtent)) {
+            return;
+          }
           var errors = JJV.validate('extent', defaultFeatureExtent);
           if (errors) {
             $log.warn(
@@ -352,22 +357,19 @@
 
         return http.get(url.href, config).then(function(response) {
 
-          if (_.isEmpty(response.data)) {
-            return $q.reject('Empty response.');
-          }
-
           try {
-
-            var coordinates = response.data[0]['extent_{0}'.format(fieldName)].coordinates[0][0];
-
-            return {
-              southwest: [ coordinates[0][1], coordinates[0][0] ],
-              northeast: [ coordinates[2][1], coordinates[2][0] ]
-            };
+            var coordinates = _.get(response, 'data[0].extent_{0}.coordinates[0][0]'.format(fieldName));
+            if (_.isDefined(coordinates)) {
+              return {
+                southwest: [coordinates[0][1], coordinates[0][0]],
+                northeast: [coordinates[2][1], coordinates[2][0]]
+              };
+            }
 
           } catch (e) {
-            return $q.reject('Invalid coordinates.');
+            $log.warn('Invalid feature extent coordinates');
           }
+          $log.error('Undefined feature extent for dataset: {0} - {1}'.format(datasetId, fieldName));
 
         });
 

@@ -29,6 +29,7 @@ describe('CardDataService', function() {
   beforeEach(function () {
     module('dataCards');
     module('karma-test/dataCards/test-data/cardDataServiceTest/sampleData.json');
+    module('karma-test/dataCards/test-data/cardDataServiceTest/extentData.json');
   });
   function normalizeUrl(url) {
     return url.replace(/\s/g, '+').toLowerCase();
@@ -49,7 +50,7 @@ describe('CardDataService', function() {
   }));
 
   afterEach(function() {
-    $httpBackend.verifyNoOutstandingExpectation();
+    $httpBackend.verifyNoOutstandingExpectation(false);
     $httpBackend.verifyNoOutstandingRequest();
   });
 
@@ -619,6 +620,56 @@ describe('CardDataService', function() {
         expect(returnValue).to.be.undefined;
       }).to.not.throw();
     });
+  });
+
+  describe('#getFeatureExtent', function() {
+    var TEST_FIELD_NAME = 'coordinates_9';
+    var getExpectation;
+    var featureExtentPromise;
+
+    beforeEach(function() {
+      var urlMatcher = new RegExp(
+        '/resource/{1}\\.json\\?%24select=extent\\({0}\\)'.
+          format(TEST_FIELD_NAME, fake4x4)
+      );
+      getExpectation = $httpBackend.expectGET(urlMatcher);
+      featureExtentPromise = CardDataService.
+        getFeatureExtent(TEST_FIELD_NAME, fake4x4);
+    });
+
+    it('should make an appropriate API request', function(done) {
+      getExpectation.respond('');
+      featureExtentPromise.finally(done);
+      $httpBackend.flush();
+    });
+
+    it('should resolve for a correctly formatted extent', function(done) {
+      var TEST_RESPONSE = testHelpers.getTestJson('karma-test/dataCards/test-data/cardDataServiceTest/extentData.json');
+      getExpectation.respond(TEST_RESPONSE);
+      featureExtentPromise.
+        then(function(value) {
+          expect(value).to.eql({
+            southwest: [41.681944, -87.827778],
+            northeast: [42.081944, -87.427778]
+          });
+          done();
+        }, function() {
+          throw new Error('Should not be rejected');
+        });
+      $httpBackend.flush();
+    });
+
+    it('should resolve for an incorrectly formatted extent', function(done) {
+      getExpectation.respond('[{}]');
+      featureExtentPromise.
+        then(function() {
+          done();
+        }, function() {
+          throw new Error('Should not be rejected');
+        });
+      $httpBackend.flush();
+    });
+
   });
 
   describe('getSampleData', function() {

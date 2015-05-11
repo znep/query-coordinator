@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  // TODO: Check CS wiki and craft documentation around functionality
+  var DEFAULT_LOGO_URL = '/stylesheets/images/common/socrata_logo_white.png';
 
   var DEFAULT_VALUES = {
     'sign_in': { label: 'Sign In', url: '/login?referer_redirect=1' },
@@ -9,68 +9,37 @@
     'sign_up': { label: 'Sign Up', url: '/signup?referer_redirect=1' }
   };
 
-  function pageHeader(AngularRxExtensions, ConfigurationsService) {
+  function pageHeader(AngularRxExtensions, ServerConfig) {
     return {
       restrict: 'E',
       templateUrl: '/angular_templates/common/pageHeader.html',
       link: function($scope) {
         AngularRxExtensions.install($scope);
 
-        var themeObservable = ConfigurationsService.getThemeConfigurationsObservable();
+        var theme = ServerConfig.getTheme();
 
-        var logoObservable = themeObservable.map(function(configuration) {
-          return _.instead(
-            ConfigurationsService.getConfigurationValue(configuration, 'logo_url'),
-            '/stylesheets/images/common/socrata_logo_white.png');
-        });
-
-        function buildUrlStreamValue(configuration, labelKey, defaultValue) {
-          return _.defaults({}, {
-            label: ConfigurationsService.getConfigurationValue(configuration, labelKey)
-          }, defaultValue);
+        function buildLinkValue(theme, key) {
+          var defaultValues = DEFAULT_VALUES[key];
+          return _.defaults(
+            {},
+            { label: _.get(theme, key, defaultValues.label) },
+            defaultValues
+          );
         }
 
-        var signInObservable = themeObservable.map(function(configuration) {
-          return buildUrlStreamValue(
-            configuration,
-            'sign_in',
-            DEFAULT_VALUES['sign_in']);
-        });
+        var signIn = buildLinkValue(theme, 'sign_in');
+        var signOut = buildLinkValue(theme, 'sign_out');
+        var signUp = buildLinkValue(theme, 'sign_up');
+        var logoUrl = _.get(theme, 'logo_url', DEFAULT_LOGO_URL);
+        var pageHeaderStyle = {
+          'background-color' : _.get(theme, 'header_background_color')
+        };
 
-        var signOutObservable = themeObservable.map(function(configuration) {
-          return buildUrlStreamValue(
-            configuration,
-            'sign_out',
-            DEFAULT_VALUES['sign_out']);
-        });
-
-        var signUpObservable = themeObservable.map(function(configuration) {
-          return buildUrlStreamValue(
-            configuration,
-            'sign_up',
-            DEFAULT_VALUES['sign_up']);
-        });
-
-        var pageHeaderStyleObservable = themeObservable.
-          map(function(configuration) {
-            return ConfigurationsService.getConfigurationValue(configuration, 'header_background_color');
-          }).
-          filter(_.isPresent).
-          map(function(headerBackgroundColor) {
-            return { 'background-color': headerBackgroundColor };
-          });
-
-        var showHeaderObservable = themeObservable.
-          map(_.constant(true)).
-          startWith(false).
-          distinctUntilChanged();
-
-        $scope.bindObservable('showHeader', showHeaderObservable);
-        $scope.bindObservable('logoUrl', logoObservable);
-        $scope.bindObservable('signUp', signUpObservable);
-        $scope.bindObservable('signIn', signInObservable);
-        $scope.bindObservable('signOut', signOutObservable);
-        $scope.bindObservable('pageHeaderStyle', pageHeaderStyleObservable);
+        $scope.logoUrl = logoUrl;
+        $scope.signUp = signUp;
+        $scope.signIn = signIn;
+        $scope.signOut = signOut;
+        $scope.pageHeaderStyle = pageHeaderStyle;
       }
     };
   }

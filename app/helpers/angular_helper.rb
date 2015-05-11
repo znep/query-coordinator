@@ -25,6 +25,8 @@ module AngularHelper
       'assetRevisionKey' => asset_revision_key,
       'railsEnv' => Rails.env,
       'cname' => CurrentDomain.cname,
+      'featureSet' => features,
+      'themeV3' => theme,
       'tileserverHosts' => APP_CONFIG['tileserver_hosts'].present? ? APP_CONFIG['tileserver_hosts'].split(',') : []
     }.tap do |config|
       FeatureFlags.list.each do |feature_key|
@@ -38,6 +40,19 @@ module AngularHelper
     theme = CurrentDomain.property('theme', 'theme_v3') || 'default'
     return ("<link type=\"text/css\" rel=\"stylesheet\" media=\"all\" " +
             "href=\"/styles/individual/dataCards/theme/#{theme}.css?#{asset_revision_key}\"/>").html_safe
+  end
+
+  def features
+    configuration_by_type('feature_set')
+  end
+
+  def theme
+    configuration_by_type('theme_v3')
+  end
+
+  def configuration_by_type(key)
+    config = ::Configuration.find_by_type(key, true, CurrentDomain.cname)
+    config.first.properties unless config.empty?
   end
 
   def angular_stylesheet_tag

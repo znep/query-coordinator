@@ -33,6 +33,17 @@ _.mixin({
   log10: Math.log10 || function(n) {
     return Math.log(n) / Math.LN10;
   },
+  /**
+   * Wraps the value in an JavaScript object with the given key
+   * @param {*} value
+   * @param {String} key
+   * @returns {{}}
+   */
+  objectify: function(value, key) {
+    var newObject = {};
+    newObject[key] = value;
+    return newObject;
+  },
   negateValue: _.negate(_.identity)
 });
 

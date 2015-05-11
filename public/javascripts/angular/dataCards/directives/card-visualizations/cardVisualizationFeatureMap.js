@@ -149,21 +149,34 @@
 
         scope.bindObservable('featureExtent', synchronizedFeatureExtentDataSequence);
 
-        var datasetIsPrivate = datasetPermissions.
+        var featureSet = ServerConfig.getFeatureSet();
+
+        var datasetIsPrivateObservable = datasetPermissions.
           map(function(permissions) {
             return !permissions.isPublic;
           }).
           startWith(true);
 
+        var stagingApiLockdownObservable = Rx.Observable.
+          returnValue(_.get(featureSet, 'staging_api_lockdown', false));
+
+        var stagingLockdownObservable = Rx.Observable.
+          returnValue(_.get(featureSet, 'staging_lockdown', false));
+
+        var useOriginHostObservable = Rx.Observable.combineLatest(
+          datasetIsPrivateObservable,
+          stagingApiLockdownObservable,
+          stagingLockdownObservable,
+          function(datasetIsPrivate, stagingApiLockdown, stagingLockdown) {
+            return datasetIsPrivate || stagingApiLockdown || stagingLockdown;
+          });
+
         var vectorTileGetterSequence = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
           dataset.pluck('id'),
           scope.observe('whereClause'),
-          datasetIsPrivate,
-          function(fieldName, datasetId, whereClause, datasetIsPrivate) {
-            return VectorTileDataService.
-              buildTileGetter(fieldName, datasetId, whereClause, datasetIsPrivate);
-          });
+          useOriginHostObservable,
+          VectorTileDataService.buildTileGetter);
 
         scope.bindObservable('vectorTileGetter', vectorTileGetterSequence);
 

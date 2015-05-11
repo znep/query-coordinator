@@ -3,6 +3,8 @@
 
   var lowercase = angular.lowercase;
   var forEach = angular.forEach;
+  var MAX_FEATURES_PER_TILE = 256 * 256;
+  var DEFAULT_FEATURES_PER_TILE = 50000;
 
   /**
    * Standalone string trim, borrowed from angular
@@ -14,7 +16,7 @@
   }
 
   function VectorTileDataService(RequestId, ServerConfig, $q) {
-    var VectorTileDataService;
+    var VectorTileDataService = {};
     var tileserverHosts = ServerConfig.get('tileserverHosts');
     var originHost = $.baseUrl().host;
     /**
@@ -26,14 +28,14 @@
      * @param {Boolean} [useOriginHost]
      * @returns {String}
      */
-    function getHost(x, y, useOriginHost) {
+    VectorTileDataService.getHost = function getHost(x, y, useOriginHost) {
       if (useOriginHost || _.isEmpty(tileserverHosts)) {
         return originHost;
       } else {
         var index = (Math.abs(x) + Math.abs(y)) % tileserverHosts.length;
         return tileserverHosts[index];
       }
-    }
+    };
 
     /**
      * Parse headers into key value object (borrowed from Angular)
@@ -70,7 +72,8 @@
         typeof xhr.responseBody === 'unknown';
     }
 
-    function typedArrayFromArrayBufferResponse(xhr) {
+    VectorTileDataService.typedArrayFromArrayBufferResponse =
+      function typedArrayFromArrayBufferResponse(xhr) {
       if (xhrHasVBArray(xhr)) {
         return new VBArray(xhr.responseBody).toArray();
         // Default for well-behaved browsers.
@@ -79,7 +82,7 @@
       }
 
       return undefined;
-    }
+    };
 
     /**
      * Replicates the functionality of $http, but expects an array buffer as the
@@ -88,7 +91,7 @@
      * @param {{headers: Object}} config
      * @returns {{promise: Promise, xhr: XMLHttpRequest}}
      */
-    function getArrayBuffer(url, config) {
+    VectorTileDataService.getArrayBuffer = function getArrayBuffer(url, config) {
       var xhrDeferred = $q.defer();
       config = _.defaults({}, config, { header: [] });
       var xhr = new XMLHttpRequest();
@@ -136,7 +139,7 @@
       xhr.send();
 
       return xhrDeferred.promise;
-    }
+    };
 
     /**
      * Curries fieldName, datasetId, and whereClause into a function that can
@@ -144,14 +147,18 @@
      * @param {String} fieldName
      * @param {String} datasetId
      * @param {String} [whereClause]
-     * @param {Boolean} [isPrivateDataset]
+     * @param {Boolean} [useOriginHost] True if should only request tiles from origin host
      * @returns {tileGetter} Curried function for fetching vector tile
      */
-    function buildTileGetter(fieldName, datasetId, whereClause, isPrivateDataset) {
-      var self = this;
+    VectorTileDataService.buildTileGetter = function buildTileGetter(
+      fieldName,
+      datasetId,
+      whereClause,
+      useOriginHost
+    ) {
       var featuresPerTile = parseInt(ServerConfig.get('featureMapFeaturesPerTile'), 10);
-      if (_.isNaN(featuresPerTile) || featuresPerTile < 0 || featuresPerTile > (256 * 256)) {
-        featuresPerTile = 50000;
+      if (_.isNaN(featuresPerTile) || featuresPerTile < 0 || featuresPerTile > MAX_FEATURES_PER_TILE) {
+        featuresPerTile = DEFAULT_FEATURES_PER_TILE;
       }
 
       /**
@@ -171,8 +178,8 @@
         if (_.isPresent(whereClause)) {
           url.searchParams.set('$where', whereClause);
         }
-        url.host = self.getHost(x, y, isPrivateDataset);
-        return self.getArrayBuffer(
+        url.host = this.getHost(x, y, useOriginHost);
+        return this.getArrayBuffer(
           url.href,
           {
             headers: {
@@ -184,14 +191,7 @@
         );
       }
 
-      return tileGetter;
-    }
-
-    VectorTileDataService = {
-      getHost: getHost,
-      getArrayBuffer: getArrayBuffer,
-      buildTileGetter: buildTileGetter,
-      typedArrayFromArrayBufferResponse: typedArrayFromArrayBufferResponse
+      return _.bind(tileGetter, VectorTileDataService);
     };
 
     return VectorTileDataService;

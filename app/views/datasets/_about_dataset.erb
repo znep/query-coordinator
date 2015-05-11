@@ -35,7 +35,7 @@
       <%= t('screens.about.description') %>
     </a>
     <div class="sectionContent">
-      <p><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow external' })) || t('screens.about.none') %></p>
+      <p><%= sanitize raw(auto_link(h(raw(@view.description)), :html => { :rel => 'nofollow external' })) || t('screens.about.none') %></p>
     </div>
   </div>
 

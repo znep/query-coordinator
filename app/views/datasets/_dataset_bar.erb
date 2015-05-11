@@ -69,7 +69,7 @@
     <%- end -%>
 
     <div id="description">
-      <p class="collapsed"><%= raw(auto_link(h(@view.description), :html => { :rel => 'nofollow external' })) || '(No description provided)'%></p>
+      <div class="descriptionContent collapsed"><%= sanitize raw(auto_link(h(raw(@view.description)), :html => { :rel => 'nofollow external' })) || '(No description provided)'%></div>
       <a href="#expand" class="descriptionExpander rightArrow" title="<%= t('core.expando.prompt') %>">
         <span class="icon"><%= t('core.expando.expand') %></span>
       </a>

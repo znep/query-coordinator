@@ -343,7 +343,7 @@
                       </div>
 
                       <div class="expandBlock clearfix collapsed">
-                        <div class="description"><%= raw(auto_link(h(v.description), :html => { :rel => 'nofollow external' })) %></div>
+                        <div class="description"><%= sanitize raw(auto_link(h(raw(v.description)), :html => { :rel => 'nofollow external' })) %></div>
                         <div class="rowSearchResults"><% if in_search %><span><%= t('controls.browse.row_results.matching_rows') %></span><% end %></div>
                         <div class="extraInfo <%= opts[:use_federations] ? 'federated' : '' %>">
                           <div class="infoContent"></div>
@@ -382,7 +382,7 @@
                         </div>
                       <% end %>
                       <div class="expandBlock">
-                        <div class="description collapsed"><%= raw(auto_link(h(v.description), :html => { :rel => 'nofollow external' })) %></div>
+                        <div class="description collapsed"><%= sanitize raw(auto_link(h(raw(v.description)), :html => { :rel => 'nofollow external' })) %></div>
                         <a class="expander" title="<%= t('controls.browse.actions.expand_section') %>" href="#Expand">
                           <span class="icon"></span>
                         </a>

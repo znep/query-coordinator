@@ -38,7 +38,7 @@ gem 'comfortable_mexican_sofa', '~> 1.12.8'
 
 group :development, :test do
   # Testing framework
-  gem 'rspec-rails', '~> 3.0'
+  gem 'rspec-rails', '~> 3.2'
 
   # Make pry the default in rails console
   gem 'pry-rails'

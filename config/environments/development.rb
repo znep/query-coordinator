@@ -41,4 +41,10 @@ Frontend::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  if ENV["UNICORN"].to_i > 0
+    config.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
+    config.logger.level = Logger.const_get(ENV['LOG_LEVEL'] ? ENV['LOG_LEVEL'].upcase : 'DEBUG')
+    config.log_level    = (ENV['LOG_LEVEL'] ? ENV['LOG_LEVEL'].downcase : 'debug').to_sym
+  end
 end

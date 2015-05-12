@@ -19,6 +19,18 @@ class CurrentDomainMiddleware
 
   def call(env)
     request = Rack::Request.new(env)
+
+    if env['REQUEST_PATH'].match(/^\/version/)
+      CurrentDomain.set_domain(
+        Domain.new(
+          'cname'=> 'unknown',
+          'name' => 'unknown',
+          'short_name' => 'unknown'
+        )
+      )
+      return @app.call(env)
+    end
+
     unless env['HTTP_X_FORWARDED_HOST'].blank?
       host = env['HTTP_X_FORWARDED_HOST'].gsub(/:\d+\z/, '')
     end

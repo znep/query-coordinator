@@ -638,4 +638,19 @@ ga('send', 'pageview');
     )
   end
 
+  def font_tags
+    out = ''
+
+    if CurrentDomain.properties.typekit_id.present?
+      out << <<-eos
+        <script type="text/javascript" src="//use.typekit.net/#{CurrentDomain.properties.typekit_id}.js"></script>
+        <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+      eos
+    elsif module_enabled?(:govStat)
+      out << '<link href="https://fonts.googleapis.com/css?family=PT+Sans:400italic,400" rel="stylesheet" type="text/css">'
+    end
+
+    out.html_safe
+  end
+
 end

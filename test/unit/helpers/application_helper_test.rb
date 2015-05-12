@@ -49,6 +49,57 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_match(/^[\w\d]+\.1234\.5678$/, application_helper.asset_revision_key)
   end
 
+  def test_font_tags_outputs_typekit_when_config_present
+    init_current_domain
+    CurrentDomain.stubs(:properties => OpenStruct.new(typekit_id: 'abcdef'))
+
+    assert_match(
+      %r{<script type="text/javascript" src="//use.typekit.net/abcdef.js"></script>},
+      application_helper.font_tags
+    )
+    assert_match(
+      %r{<script type="text/javascript">try{Typekit.load\(\);}catch\(e\)\{\}</script>},
+      application_helper.font_tags
+    )
+  end
+
+  def test_font_tags_outputs_google_font_for_govstat
+    init_current_domain
+    application_helper.stubs(:module_enabled?).with(:govStat).returns(true)
+
+    assert_match(
+      '<link href="https://fonts.googleapis.com/css?family=PT+Sans:400italic,400" rel="stylesheet" type="text/css">',
+      application_helper.font_tags
+    )
+  end
+
+  def test_font_tags_outputs_typekit_for_govstat_when_config_present
+    init_current_domain
+    application_helper.stubs(:module_enabled?).with(:govStat).returns(true)
+    CurrentDomain.stubs(:properties => OpenStruct.new(typekit_id: 'abcdef'))
+
+    output = application_helper.font_tags
+    assert_match(%r{//use.typekit.net/abcdef.js}, output)
+  end
+
+  def test_font_tags_does_not_output_google_font_for_govstat_when_typekit
+    init_current_domain
+    application_helper.stubs(:module_enabled?).with(:govStat).returns(true)
+    CurrentDomain.stubs(:properties => OpenStruct.new(typekit_id: 'abcdef'))
+
+    assert_not_match(/fonts.googleapis.com/, application_helper.font_tags)
+  end
+
+  def test_font_tags_does_not_output_font_tags
+    init_current_domain
+    application_helper.stubs(:module_enabled?).with(:govStat).returns(false)
+    CurrentDomain.stubs(:properties => OpenStruct.new())
+
+    output = application_helper.font_tags
+    assert_not_match(%r{//use.typekit.net/abcdef.js}, output)
+    assert_not_match(/fonts.googleapis.com/, output)
+  end
+
   private
 
   def asset_revision_key_regex

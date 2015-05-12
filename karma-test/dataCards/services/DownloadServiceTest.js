@@ -1,32 +1,36 @@
 describe('Download Service', function() {
   'use strict';
   var DownloadService;
-  var fakeClock;
   var testHelpers;
+  var $rootScope;
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.services'));
   beforeEach(inject(function($injector) {
     DownloadService = $injector.get('DownloadService');
     testHelpers = $injector.get('testHelpers');
-
-    fakeClock = sinon.useFakeTimers();
+    $rootScope = $injector.get('$rootScope');
   }));
 
   afterEach(function() {
     testHelpers.cleanUp();
-    fakeClock.restore();
   });
 
 
   describe('download function', function() {
     var fakeIframe;
+    var testScheduler;
+    var timeoutScheduler;
 
     beforeEach(function() {
+      testScheduler = new Rx.TestScheduler();
+      timeoutScheduler = Rx.Scheduler.timeout;
+      Rx.Scheduler.timeout = testScheduler;
       fakeIframe = $('<div id=fakeIframe />');
     });
 
     afterEach(function() {
+      Rx.Scheduler.timeout = timeoutScheduler;
       fakeIframe.remove();
     });
 
@@ -58,19 +62,17 @@ describe('Download Service', function() {
     });
 
     it('runs the error callback on timeout', function() {
-      var success;
-      var error;
+      var successCallback = sinon.spy();
+      var errorCallback = sinon.spy();
 
-      DownloadService.download('/foo', fakeIframe).then(function() {
-        success = true;
-      }, function(obj) {
-        error = obj;
-      });
-      fakeClock.tick(60000);
+      DownloadService.download('/foo', fakeIframe).
+        then(successCallback, errorCallback);
+      testScheduler.advanceTo(60000);
+      $rootScope.$digest();
 
-      expect(success).not.to.equal(true);
-      expect(error).to.be.ok;
-      expect(error.timeout).to.equal(true);
+      expect(successCallback).to.have.not.been.called;
+      expect(errorCallback).to.have.been.called;
+      expect(errorCallback).to.have.been.calledWith({ error: 'timeout' });
 
       // make sure it cleans up
       expect(fakeIframe.closest('body').length).to.equal(0);
@@ -79,7 +81,9 @@ describe('Download Service', function() {
     it('runs the error callback if the page loads', function(done) {
       var realIframe = $('<iframe />');
 
-      DownloadService.download('/stubs/images/generic-logo.png', realIframe).
+      var promise = DownloadService.download('/stubs/images/generic-logo.png', realIframe);
+
+      promise.
         then(function() {
           throw new Error('this promise should not be resolved');
         }, function(error) {
@@ -98,24 +102,24 @@ describe('Download Service', function() {
       // Give it time to load the contentDocument and stuff
       _.defer(function() {
         realIframe.trigger('load');
+        $rootScope.$digest();
       });
     });
 
     it('runs the success callback if the cookie is set, and deletes the cookie', function() {
-      var success;
-      var error;
+      var successCallback = sinon.spy();
+      var errorCallback = sinon.spy();
 
-      DownloadService.download('/foo', fakeIframe).then(function() {
-        success = true;
-      }, function(obj) {
-        error = obj;
-      });
+      DownloadService.download('/foo', fakeIframe).
+        then(successCallback, errorCallback);
+
       var trackingId = fakeIframe.prop('src').split('=')[1];
       document.cookie = 'renderTrackingId_' + trackingId + '=1';
-      fakeClock.tick(1500);
+      testScheduler.advanceTo(1500);
+      $rootScope.$digest();
 
-      expect(success).to.equal(true);
-      expect(error).not.to.be.ok;
+      expect(successCallback).to.have.been.called;
+      expect(errorCallback).to.have.not.been.called;
       // Chrome doesn't like it when the iframe goes away while you're downloading. So it should
       // be left around.
       expect(fakeIframe.closest('body').length).to.equal(1);

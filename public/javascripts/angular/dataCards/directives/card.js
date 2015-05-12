@@ -124,14 +124,14 @@
           DownloadService.download($scope.downloadUrl).then(
             function success() {
 
-              $scope.$apply(function() {
+              $scope.safeApply(function() {
                 $scope.downloadState = 'success';
                 resetDownloadButton();
               });
 
             }, function error() {
 
-              $scope.$apply(function() {
+              $scope.safeApply(function() {
                 $scope.downloadState = 'error';
                 resetDownloadButton();
               });

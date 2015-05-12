@@ -1198,6 +1198,29 @@ class CardTypeMappingTest < Test::Unit::TestCase
     assert_equal('search', computed_card_type)
   end
 
+  def test_card_type_mapping_returns_expected_value_for_text_column_with_computation_strategy_match_on_string_in_phase_3
+    dataset_size = 2500
+
+    stub_feature_flags_with(:metadata_transition_phase, '3')
+    computed_column = fake_column('text', nil, 1)
+    computed_column['computationStrategy'] = {
+      'parameters' => {
+        'region' => '_abcd-efgh',
+        'geometryLabel' => 'label',
+        'column' => 'name'
+      },
+      'strategy_type' => 'georegion_match_on_string'
+    }.with_indifferent_access
+
+    computed_card_type = card_type_for(
+      computed_column,
+      nil,
+      dataset_size
+    )
+    assert_equal('choropleth', computed_card_type)
+  end
+
+
   # Unrecognized physical datatype
 
   def test_card_type_mapping_raises_exception_for_unknown_physical_datatype_column_in_phase_3
@@ -1312,7 +1335,8 @@ class CardTypeMappingTest < Test::Unit::TestCase
     computed_column['computationStrategy'] = {
       'parameters' => {
         'region' => '_abcd-efgh',
-        'geometryLabel' => 'label'
+        'geometryLabel' => 'label',
+        'column' => 'name'
       },
       'strategy_type' => 'georegion_match_on_string'
     }.with_indifferent_access
@@ -1352,7 +1376,8 @@ class CardTypeMappingTest < Test::Unit::TestCase
     computed_column['computationStrategy'] = {
       'parameters' => {
         'region' => '_abcd-efgh',
-        'geometryLabel' => 'label'
+        'geometryLabel' => 'label',
+        'column' => 'name'
       },
       'strategy_type' => 'georegion_match_on_string'
     }.with_indifferent_access

@@ -145,9 +145,18 @@ class PhidippidesDatasetsController < ApplicationController
 
   def can_read_dataset_data?(dataset_id)
     begin
-      JSON.parse(
+      response = JSON.parse(
         CoreServer::Base.connection.get_request("/id/#{dataset_id}?%24query=select+0+limit+1")
-      )[0]['_0'] == '0'
+      )
+
+      # CORE-5321: when requesting a choropleth, requests for the underlying shapefile
+      # will also be made; if the customer has deleted the shapefile, this request
+      # will come back with a 404 and appropriate JSON error data.
+      if response.is_a?(Hash) && response['error'] == true
+        false
+      else
+        response[0]['_0'] == '0'
+      end
     rescue CoreServer::Error
       false
     end

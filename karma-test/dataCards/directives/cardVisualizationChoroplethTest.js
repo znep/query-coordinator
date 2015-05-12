@@ -581,6 +581,49 @@ describe('A Choropleth Card Visualization', function() {
 
     });
 
+    it("should not use the source column to get the choropleth regions if the computation strategy is 'georegion_match_on_string'", function() {
+
+      testHelpers.overrideMetadataMigrationPhase('3');
+
+      var columns = {
+        "ward": {
+          "name": "Some area where the crime was committed that can be described by a string",
+          "description": "Batman has bigger fish to fry sometimes, you know.",
+          "fred": "number",
+          "physicalDatatype": "number",
+          "computationStrategy": {
+            "parameters": {
+              "region": "_snuk-a5kv",
+              "geometryLabel": "geoid10",
+              "column": "someTextColumn"
+            },
+            "source_columns": ['computed_column_source_column'],
+            "strategy_type": "georegion_match_on_string"
+          }
+        }
+      };
+
+      sinon.spy(CardDataService, 'getChoroplethRegions');
+      sinon.spy(CardDataService, 'getChoroplethRegionsUsingSourceColumn');
+
+      var choropleth = createChoropleth({
+        id: 'choropleth-1',
+        whereClause: '',
+        testUndefined: false,
+        datasetModel: createDatasetModelWithColumns(columns, '0'),
+        version: '1'
+      });
+
+      expect(CardDataService.getChoroplethRegions.called).to.equal(true);
+      expect(CardDataService.getChoroplethRegionsUsingSourceColumn.called).to.equal(false);
+      expect(choropleth.scope.$$childHead.choroplethRenderError).to.equal(false);
+
+      CardDataService.getChoroplethRegions.restore();
+      CardDataService.getChoroplethRegionsUsingSourceColumn.restore();
+
+    });
+
+
   });
 
 });

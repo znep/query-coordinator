@@ -133,6 +133,7 @@
           function(dataset, columns, fieldName, shapeFile) {
             var sourceColumn = null;
             var dataPromise;
+            var computationStrategy = _.get(columns[fieldName], 'computationStrategy.strategy_type');
 
             dataRequests.onNext(1);
 
@@ -155,11 +156,18 @@
                   sourceColumn = fieldName;
                 }
               });
+
+              // If we still could not determine the source column, issue a warning.
+              if (sourceColumn === null) {
+                $log.warn('Unable to get source column of computed ' +
+                  'column "{0}"'.format(fieldName));
+              }
             }
 
-            // If we have successfully found a source column, then make the more
-            // specific bounding box query utilizing the source column's extents.
-            if (sourceColumn !== null) {
+            // If we have successfully found a source column and it uses the
+            // georegion_match_on_point strategy, make the more specific bounding
+            // box query utilizing the source column's extents.
+            if (sourceColumn !== null && computationStrategy === 'georegion_match_on_point') {
 
               dataPromise = CardDataService.getChoroplethRegionsUsingSourceColumn(
                 dataset.id,
@@ -169,12 +177,6 @@
 
             // Otherwise, use the less efficient but more robust request.
             } else {
-              $log.warn(
-                'Could not determine source column of computed column "{0}". ' +
-                  'Falling back to default query.'.
-                    format(fieldName)
-              );
-
               dataPromise = CardDataService.getChoroplethRegions(shapeFile);
             }
 

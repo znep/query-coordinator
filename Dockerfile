@@ -3,7 +3,7 @@ FROM socrata/rails3-deps:1.9
 # Ridiculous hack to make this Dockerfile work in AWS jenkins.
 # See: https://github.com/docker/docker/issues/4962
 # Comment this line out for local Dockerfile builds.
-ENV build_proxy=http://proxy.aws-us-west-2-infrastructure.socrata.net:3128
+ENV build_proxy http://proxy.aws-us-west-2-infrastructure.socrata.net:3128
 
 # The proxy config we set above is only valid in the infrastructure environment,
 # not staging/rc/prod which is where the image being built will eventually run.
@@ -19,7 +19,7 @@ ENV build_proxy=http://proxy.aws-us-west-2-infrastructure.socrata.net:3128
 # If and when UNSET becomes an option in Dockerfiles, use that instead.
 # Seems unlikely, as the docker task for UNSET was rejected:
 # https://github.com/docker/docker/issues/3465
-ENV build_proxy_env="export http_proxy=${build_proxy} https_proxy=${build_proxy} ftp_proxy=${build_proxy}"
+ENV build_proxy_env "export http_proxy=${build_proxy} https_proxy=${build_proxy} ftp_proxy=${build_proxy}"
 
 ENV APP_BASE_DIR /opt
 ENV APP_DIR ${APP_BASE_DIR}/frontend

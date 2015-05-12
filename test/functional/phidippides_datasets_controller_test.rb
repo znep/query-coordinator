@@ -57,10 +57,22 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     assert(JSON.parse(@response.body)['publisher'].all? { |page| page['version'] == '1' }, 'expected all pages to be v1')
   end
 
-  test 'show gives forbidden error if can\'t read data from core' do
+  test 'show gives forbidden error if CoreServer raises an error' do
     connection_stub = mock
     connection_stub.stubs(reset_counters: { requests: {}, runtime: 0 })
     connection_stub.stubs(:get_request).raises(CoreServer::Error.new)
+    CoreServer::Base.stubs(connection: connection_stub)
+
+    @controller.stubs(can_create_metadata?: true)
+    @phidippides.stubs(issue_request: { body: mock_v1_dataset_metadata, status: '200' })
+    get :show, id: 'four-four', format: 'json'
+    assert_response(403)
+  end
+
+  test 'show gives forbidden error if CoreServer returns an error object' do
+    connection_stub = mock
+    connection_stub.stubs(reset_counters: { requests: {}, runtime: 0 })
+    connection_stub.stubs(:get_request).returns('{"error":true}')
     CoreServer::Base.stubs(connection: connection_stub)
 
     @controller.stubs(can_create_metadata?: true)

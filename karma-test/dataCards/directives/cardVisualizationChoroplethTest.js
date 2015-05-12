@@ -287,7 +287,7 @@ describe('A Choropleth Card Visualization', function() {
         createChoropleth({
           id: 'choropleth-1',
           whereClause: '',
-          testUndefiend: testUndefinedColumns
+          testUndefined: testUndefinedColumns
         })
       }).to.not.throw();
 
@@ -484,10 +484,10 @@ describe('A Choropleth Card Visualization', function() {
 
     });
 
-    describe('if the extent query used to get the choropleth fails', function() {
+    describe('if the extent query used to get the choropleth regions fails', function() {
 
       beforeEach(function() {
-        mockCardDataService.getChoroplethRegionsUsingSourceColumn = function(datasetId, sourceColumn, shapeFile) {
+        mockCardDataService.getChoroplethRegionsUsingSourceColumn = function() {
           var deferred = q.defer();
           deferred.reject('Invalid extent response.');
           return deferred.promise;
@@ -498,7 +498,7 @@ describe('A Choropleth Card Visualization', function() {
         setMockCardDataServiceToDefault();
       });
 
-      it("should display an error message if the extent query used to get the choropleth regions fails", function() {
+      it("should display an error message", function() {
         var columns = {
           "ward": {
             "name": "Ward where crime was committed.",
@@ -525,6 +525,50 @@ describe('A Choropleth Card Visualization', function() {
 
         expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(true);
       });
+    });
+
+    describe('if the dataset query used to get the shapefile labels fails', function() {
+
+      beforeEach(function() {
+        mockCardDataService.getChoroplethGeometryLabel = function() {
+          var deferred = q.defer();
+          deferred.reject('Shapefile does not exist.');
+          return deferred.promise;
+        }
+      });
+
+      afterEach(function() {
+        setMockCardDataServiceToDefault();
+      });
+
+      it('should display an error message', function() {
+        var columns = {
+          "ward": {
+            "name": "Ward where crime was committed.",
+            "description": "Batman has bigger fish to fry sometimes, you know.",
+            "fred": "location",
+            "physicalDatatype": "text",
+            "computationStrategy": {
+              "parameters": {
+                "region": "_snuk-a5kv",
+                "geometryLabel": "geoid10"
+              },
+              "source_columns": ['computed_column_source_column'],
+              "strategy_type": "georegion_match_on_point"
+            }
+          }
+        };
+        var testSubject = createChoropleth({
+          id: 'choropleth-1',
+          whereClause: '',
+          testUndefined: false,
+          datasetModel: createDatasetModelWithColumns(columns, '1'),
+          version: '1'
+        });
+
+        expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(true);
+      });
+
     });
 
     it("should use the source column to get the choropleth regions if the source_columns property exists in the column's 'computationStrategy' object and the metadataMigration is in phase 1 or 2", function() {

@@ -41,6 +41,12 @@ RUN eval ${build_proxy_env} && bundle install
 
 ADD config/database.yml.production ${APP_DIR}/config/database.yml
 
+ENV RAILS_ENV production
+RUN bundle exec rake assets:precompile
+
+# Note: this is temporary until we have a proper web server setup (not webrick)
+ENV RAILS_SERVE_STATIC_FILES true
+
 EXPOSE 3010
 
 CMD ["run"]

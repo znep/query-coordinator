@@ -1,5 +1,3 @@
-require 'httparty'
-
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -15,6 +13,7 @@ class ApplicationController < ActionController::Base
   #   current_user  # with invalid cookies
   #   => nil
   def current_user
+    # If there are no cookies for the domain, don't bother checking
     return unless cookies[:_core_session_id]
 
     # Request current user from core
@@ -32,6 +31,10 @@ class ApplicationController < ActionController::Base
 
   private
 
+  # Builds a core request with cookies
+  #
+  # ==== Examples
+  #   core_server_get('/users/current.json')
   def core_server_get(path)
     # Join list of cookies into single string to pass to core
     socrata_session_cookies = request.cookies.map{|k,v| "#{k}=#{v}"}.join('; ')

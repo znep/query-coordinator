@@ -41,4 +41,5 @@ Rails.application.configure do
 
   # Core configuration
   config.core_service_uri = "http://localhost:8080"
+  config.frontend_uri = "https://local.dev:9443"
 end

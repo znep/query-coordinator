@@ -188,40 +188,51 @@
           var lastValue = values[values.length - 1];
           var lastOutputValueIndex = 0;
 
-          outputValues.push({
-            date: DateHelpers.decrementDateByHalfInterval(
-              firstValue.date,
-              datasetPrecision
-            ),
-            filtered: firstValue.filtered,
-            unfiltered: firstValue.unfiltered
-          });
-
           for (var i = 0; i < values.length; i++) {
-            outputValues.push({
-              date: values[i].date,
-              filtered: values[i].filtered,
-              unfiltered: values[i].unfiltered
-            });
+            var datum = _.pick(values[i], ['date', 'filtered', 'unfiltered']);
+            var prevDatum = values[i - 1];
+            var nextDatum = values[i + 1];
+
+            /**
+             * If this datum is the first value or if there is a discontinuity
+             * to the left of this datum, add a synthetic half-step left.
+             */
+            if (_.isUndefined(prevDatum) || prevDatum.unfiltered === null) {
+              var dateNudge = DateHelpers.decrementDateByHalfInterval(
+                datum.date,
+                datasetPrecision
+              );
+              outputValues.push(_.extend(_.clone(datum), { date: dateNudge }));
+            }
+
+            /**
+             * Always add the datum.
+             */
+            outputValues.push(datum);
+
+            /**
+             * If this datum is the last value or if there is a discontinuity
+             * to the right of this datum, add a synthetic half-step right.
+             */
+            if (_.isUndefined(nextDatum) || nextDatum.unfiltered === null) {
+              var dateNudge = DateHelpers.incrementDateByHalfInterval(
+                datum.date,
+                datasetPrecision
+              );
+              outputValues.push(_.extend(_.clone(datum), { date: dateNudge }));
+            }
           }
 
-          outputValues.push({
-            date: DateHelpers.incrementDateByHalfInterval(
-              lastValue.date,
-              datasetPrecision
-            ),
-            filtered: lastValue.filtered,
-            unfiltered: lastValue.unfiltered
-          });
-
-          lastOutputValueIndex = outputValues.length - 1;
-
+          /**
+           * Override the leading and trailing values if requested.
+           */
           if (leadingValue) {
             outputValues[0].filtered = leadingValue;
             outputValues[0].unfiltered = leadingValue;
           }
 
           if (trailingValue) {
+            lastOutputValueIndex = outputValues.length - 1;
             outputValues[lastOutputValueIndex].filtered = trailingValue;
             outputValues[lastOutputValueIndex].unfiltered = trailingValue;
           }
@@ -604,6 +615,8 @@
 
             var chartDataLastIndex = chartData.values.length - 1;
             var datum;
+            var prevOutOfBoundsDatum = { filtered: null };
+            var nextOutOfBoundsDatum = { filtered: 0 };
             var selectionValues = [];
             var selectionStartIndex = false;
             var firstSelectionValueAmount = false;
@@ -619,6 +632,11 @@
                 }
                 selectionValues.push(datum);
                 selectionEndIndex = i;
+              } else if (datum.date < minDate) {
+                prevOutOfBoundsDatum = datum;
+              } else if (datum.date > maxDate) {
+                nextOutOfBoundsDatum = datum;
+                break;
               }
             }
 
@@ -657,7 +675,8 @@
             // Instead leave firstSelectionValueAmount false and let
             // transformValuesForRendering choose how to extend the selection
             // area (which it will do if firstSelectionValueAmount is falsey).
-            if (selectionStartIndex > 0) {
+            var isPrevDatumDefined = prevOutOfBoundsDatum.filtered != null;
+            if (selectionStartIndex > 0 && isPrevDatumDefined) {
               firstSelectionValueAmount = (
                 selectionValues[0].filtered +
                 cachedChartData.values[selectionStartIndex].filtered
@@ -672,7 +691,8 @@
             // Instead leave lastSelectionValueAmount false and let
             // transformValuesForRendering choose how to extend the selection
             // area (which it will do if lastSelectionValueAmount is falsey).
-            if (selectionEndIndex <= chartData.values.length - 1) {
+            var isNextDatumDefined = nextOutOfBoundsDatum.filtered != null;
+            if (selectionEndIndex <= chartData.values.length - 1 && isNextDatumDefined) {
               lastSelectionValueAmount = (
                 selectionValues[selectionValues.length - 1].filtered +
                 chartData.values[selectionEndIndex].filtered

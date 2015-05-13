@@ -20,7 +20,7 @@ class CurrentDomainMiddleware
   def call(env)
     request = Rack::Request.new(env)
 
-    if env['REQUEST_PATH'].match(/^\/version/)
+    if running_in_aws? && env['REQUEST_PATH'].to_s.match(/^\/version/)
       CurrentDomain.set_domain(
         Domain.new(
           'cname'=> 'unknown',
@@ -67,6 +67,11 @@ class CurrentDomainMiddleware
   end
 
   private
+
+  def running_in_aws?
+    !!env['ARK_HOST']
+  end
+
   def logger
     Rails.logger || Logger.new
   end

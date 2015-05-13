@@ -35,7 +35,7 @@ class Column < Model
   @@legacy_types = [ 'html', 'email', 'url', 'date', 'stars' ]
 
   def self.importable_types(request = nil)
-    @@importable_types.reject do |k, v|
+    @@importable_types.reject do |k, _|
       @@legacy_types.include?(k) if FeatureFlags.derive(nil, request).disable_legacy_types
     end
   end

@@ -188,40 +188,51 @@
           var lastValue = values[values.length - 1];
           var lastOutputValueIndex = 0;
 
-          outputValues.push({
-            date: DateHelpers.decrementDateByHalfInterval(
-              firstValue.date,
-              datasetPrecision
-            ),
-            filtered: firstValue.filtered,
-            unfiltered: firstValue.unfiltered
-          });
-
           for (var i = 0; i < values.length; i++) {
-            outputValues.push({
-              date: values[i].date,
-              filtered: values[i].filtered,
-              unfiltered: values[i].unfiltered
-            });
+            var datum = _.pick(values[i], ['date', 'filtered', 'unfiltered']);
+            var prevDatum = values[i - 1];
+            var nextDatum = values[i + 1];
+
+            /**
+             * If this datum is the first value or if there is a discontinuity
+             * to the left of this datum, add a synthetic half-step left.
+             */
+            if (_.isUndefined(prevDatum) || prevDatum.unfiltered === null) {
+              var dateNudge = DateHelpers.decrementDateByHalfInterval(
+                datum.date,
+                datasetPrecision
+              );
+              outputValues.push(_.extend(_.clone(datum), { date: dateNudge }));
+            }
+
+            /**
+             * Always add the datum.
+             */
+            outputValues.push(datum);
+
+            /**
+             * If this datum is the last value or if there is a discontinuity
+             * to the right of this datum, add a synthetic half-step right.
+             */
+            if (_.isUndefined(nextDatum) || nextDatum.unfiltered === null) {
+              var dateNudge = DateHelpers.incrementDateByHalfInterval(
+                datum.date,
+                datasetPrecision
+              );
+              outputValues.push(_.extend(_.clone(datum), { date: dateNudge }));
+            }
           }
 
-          outputValues.push({
-            date: DateHelpers.incrementDateByHalfInterval(
-              lastValue.date,
-              datasetPrecision
-            ),
-            filtered: lastValue.filtered,
-            unfiltered: lastValue.unfiltered
-          });
-
-          lastOutputValueIndex = outputValues.length - 1;
-
+          /**
+           * Override the leading and trailing values if requested.
+           */
           if (leadingValue) {
             outputValues[0].filtered = leadingValue;
             outputValues[0].unfiltered = leadingValue;
           }
 
           if (trailingValue) {
+            lastOutputValueIndex = outputValues.length - 1;
             outputValues[lastOutputValueIndex].filtered = trailingValue;
             outputValues[lastOutputValueIndex].unfiltered = trailingValue;
           }
@@ -602,23 +613,32 @@
            */
           function deriveSelectionValues(chartData, minDate, maxDate) {
 
-            var chartDataLastIndex = chartData.values.length - 1;
             var datum;
-            var selectionValues = [];
-            var selectionStartIndex = false;
+            var lastChartDatum = chartData.values[chartData.values.length - 1];
+            var prevOutOfBoundsDatum = { filtered: null };
+            var nextOutOfBoundsDatum = { filtered: null };
+            var firstSelectionDatum = null;
+            var lastSelectionDatum = null;
             var firstSelectionValueAmount = false;
-            var selectionEndIndex = false;
             var lastSelectionValueAmount = false;
+            var selectionValues = [];
 
             for (var i = 0; i < chartData.values.length; i++) {
               datum = chartData.values[i];
 
               if (datum.date >= minDate && datum.date <= maxDate) {
-                if (selectionStartIndex === false && i > 0) {
-                  selectionStartIndex = i - 1;
+                if (firstSelectionDatum === null) {
+                  firstSelectionDatum = datum;
                 }
+                // Track the current datum as "beyond the end of the selection"
+                // instead of "last in selection" because we chop off the last
+                // value below!
+                nextOutOfBoundsDatum = datum;
                 selectionValues.push(datum);
-                selectionEndIndex = i;
+              } else if (datum.date < minDate) {
+                prevOutOfBoundsDatum = datum;
+              } else if (datum.date > maxDate) {
+                break;
               }
             }
 
@@ -636,46 +656,39 @@
             // + 1 <datasetPrecision> unit. Therefore we need to check to see
             // our selection's end date is after the last date in the actual
             // values and append a surrogate value to the filtered array with
-            // an appropriate date to show as the end of the x scale along with
-            // unfiltered and filtered values of 0 to prevent changing
-            // aggregate values.
-            if (chartData.values[chartDataLastIndex].date.getTime() <
-              maxDate.getTime()) {
-
-              selectionValues.push({
-                date: chartData.values[chartDataLastIndex].date,
-                unfiltered: 0,
-                filtered: 0
-              });
+            // an appropriate date to show as the end of the x scale.
+            if (lastChartDatum.date < maxDate) {
+              selectionValues.push(lastChartDatum);
             }
 
-            // If the selection begins at the first interval in the domain then
-            // do not try to adjust the value of the leading synthetic point by
-            // interpolating the value of the first actual selected point with
-            // the value of the point immediately before it.
+            // Only at this point can we define the true "last" datum.
+            lastSelectionDatum = selectionValues[selectionValues.length - 1];
+
+            // If there is a non-null value immediately before the start of the
+            // selection, then force the first value to be halfway between the
+            // first selected datum and the preceding datum in order to keep the
+            // line consistent.
             //
-            // Instead leave firstSelectionValueAmount false and let
+            // Otherwise leave firstSelectionValueAmount false and let
             // transformValuesForRendering choose how to extend the selection
             // area (which it will do if firstSelectionValueAmount is falsey).
-            if (selectionStartIndex > 0) {
+            if (prevOutOfBoundsDatum.filtered != null) {
               firstSelectionValueAmount = (
-                selectionValues[0].filtered +
-                cachedChartData.values[selectionStartIndex].filtered
+                firstSelectionDatum.filtered + prevOutOfBoundsDatum.filtered
               ) / 2;
             }
 
-            // If the selection ends at the last interval in the domain then do
-            // not try to adjust the value of the trailing synthetic point by
-            // interpolating the value of the last actual selected point with
-            // the value of the point immediately after it.
+            // If there is a non-null value immediately after the end of the
+            // selection, then force the last value to be halfway between the
+            // last selected datum and the following datum in order to keep the
+            // line consistent.
             //
-            // Instead leave lastSelectionValueAmount false and let
+            // Otherwise leave lastSelectionValueAmount false and let
             // transformValuesForRendering choose how to extend the selection
             // area (which it will do if lastSelectionValueAmount is falsey).
-            if (selectionEndIndex <= chartData.values.length - 1) {
+            if (nextOutOfBoundsDatum.filtered != null) {
               lastSelectionValueAmount = (
-                selectionValues[selectionValues.length - 1].filtered +
-                chartData.values[selectionEndIndex].filtered
+                lastSelectionDatum.filtered + nextOutOfBoundsDatum.filtered
               ) / 2;
             }
 

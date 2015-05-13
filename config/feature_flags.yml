@@ -162,3 +162,6 @@ data_lens_transition_state:
 disable_legacy_types:
   description: 'According to CORE-5097, the disabled types are: Formatted Text, Email, Website URL, Date & Time (with timezone), Star, Phone, Multiple Choice, Photo (Image), Document, and Dataset Link.'
   defaultValue: false
+default_imports_to_nbe:
+  description: When performing import operations, such as via the wizard or append/replace, the endpoint will be NBE by default rather than needing a migration.
+  defaultValue: false

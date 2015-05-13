@@ -18,6 +18,14 @@ class DatasetsHelperTest < Test::Unit::TestCase
     refute @object.hide_append_replace?, 'Should be false when geo is true'
   end
 
+  def test_hide_append_replace_on_feature_flag
+    @view.stubs( :is_unpublished? => true, :new_backend? => true )
+    assert @object.hide_append_replace?, 'Should be true when new_backend? is true'
+    @view.stubs( :is_unpublished? => true, :new_backend? => false )
+    FeatureFlags.stubs(:derive => Hashie::Mash.new(:default_imports_to_nbe => true))
+    refute @object.hide_append_replace?, 'Should be false when Feature Flag is set'
+  end
+
   def test_hide_export_section_for_print
     @view.stubs(:can_print? => true, :new_backend? => false)
     refute @object.hide_export_section?(:print), ':print section should not be hidden'

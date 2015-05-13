@@ -313,10 +313,12 @@ module DatasetsHelper
   def hide_append_replace?
     # If the dataset is new_backend, it will never be blobby.
     #  It will not (yet) be geo. It will not (yet) be unpublished.
-    (!view.is_unpublished? && !view.is_geo? && !view.is_blobby?) ||
-      view.new_backend? ||  view.is_href? ||
-      (!view.flag?('default') && !view.is_geo?) || # Allow Mondara maps to be editable.
+    [ !view.is_unpublished? && !view.is_geo? && !view.is_blobby?,
+      view.new_backend? && !FeatureFlags.derive(@view, request).default_imports_to_nbe,
+      view.is_href?,
+      !view.flag?('default') && !view.is_geo?, # Allow Mondara maps to be editable.
       !view.has_rights?('add')
+    ].any?
   end
 
   def hide_export_section?(section)

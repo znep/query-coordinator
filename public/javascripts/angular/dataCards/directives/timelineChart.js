@@ -930,13 +930,13 @@
             var widthOfEachLabel = cachedChartDimensions.width / labels.length;
             var labelEveryN;
 
-            if (widthOfEachLabel >= 50) {
+            if (widthOfEachLabel >= 40) {
               labelEveryN = 1;
-            } else if ((widthOfEachLabel * 2) >= 50) {
+            } else if ((widthOfEachLabel * 2) >= 40) {
               labelEveryN = 2;
-            } else if ((widthOfEachLabel * 3) >= 50) {
+            } else if ((widthOfEachLabel * 3) >= 40) {
               labelEveryN = 3;
-            } else if ((widthOfEachLabel * 5) >= 50) {
+            } else if ((widthOfEachLabel * 5) >= 40) {
               labelEveryN = 5;
             } else {
               labelEveryN = 7;
@@ -1054,11 +1054,11 @@
             });
           }
 
-          // Now that we know how many *labels* we can potentailly draw, we
+          // Now that we know how many *labels* we can potentially draw, we
           // decide whether or not we can draw all of them or just some.
           shouldLabelEveryN = deriveXAxisLabelDatumStep(labels);
 
-          // Not ethat allChartLabelsShown is also actually global to the
+          // Note that allChartLabelsShown is also actually global to the
           // directive and is also set within the context of rendering the
           // x-axis since it seems as reasonable to do so as anywhere else.
           allChartLabelsShown = shouldLabelEveryN === 1;
@@ -1912,7 +1912,6 @@
 
           var highlightData;
 
-
           if (mousePositionWithinChartDisplay || mousePositionWithinChartLabels) {
 
             highlightData = filterChartDataByOffset(offsetX);
@@ -1936,7 +1935,7 @@
           var indexIntoChartData;
           var startDate;
           var endDate;
-
+          var currentPrecision;
 
           indexIntoChartData = Math.floor(((offsetX - 1) / cachedChartDimensions.width) * cachedChartData.values.length);
 
@@ -1945,8 +1944,10 @@
           // read by the flyout code.
           currentDatum = cachedChartData.values[indexIntoChartData];
 
+          currentPrecision = (mousePositionWithinChartDisplay) ? datasetPrecision : labelPrecision;
+
           startDate = currentDatum.date;
-          endDate = moment(currentDatum.date).add(1, datasetPrecision).toDate();
+          endDate = moment(currentDatum.date).add(1, currentPrecision).toDate();
 
           // 1. Dim all the existing labels
           // 2. Set the value of the datum label to the startDate

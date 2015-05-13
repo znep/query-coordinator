@@ -656,11 +656,9 @@
             // + 1 <datasetPrecision> unit. Therefore we need to check to see
             // our selection's end date is after the last date in the actual
             // values and append a surrogate value to the filtered array with
-            // an appropriate date to show as the end of the x scale along with
-            // unfiltered and filtered values of 0 to prevent changing
-            // aggregate values.
+            // an appropriate date to show as the end of the x scale.
             if (lastChartDatum.date < maxDate) {
-              selectionValues.push(lastChartDatum); // TODO: unfiltered and filtered should be 0?
+              selectionValues.push(lastChartDatum);
             }
 
             // Only at this point can we define the true "last" datum.

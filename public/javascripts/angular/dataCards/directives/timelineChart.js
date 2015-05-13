@@ -613,10 +613,10 @@
            */
           function deriveSelectionValues(chartData, minDate, maxDate) {
 
-            var chartDataLastIndex = chartData.values.length - 1;
             var datum;
             var prevOutOfBoundsDatum = { filtered: null };
             var nextOutOfBoundsDatum = { filtered: 0 };
+            var lastChartDatum = chartData.values[chartData.values.length - 1];
             var selectionValues = [];
             var selectionStartIndex = false;
             var firstSelectionValueAmount = false;
@@ -657,22 +657,17 @@
             // an appropriate date to show as the end of the x scale along with
             // unfiltered and filtered values of 0 to prevent changing
             // aggregate values.
-            if (chartData.values[chartDataLastIndex].date.getTime() <
-              maxDate.getTime()) {
-
-              selectionValues.push({
-                date: chartData.values[chartDataLastIndex].date,
-                unfiltered: 0,
-                filtered: 0
-              });
+            //
+            if (lastChartDatum.date < maxDate) {
+              selectionValues.push(lastChartDatum); // TODO: unfiltered and filtered should be 0?
             }
 
-            // If the selection begins at the first interval in the domain then
-            // do not try to adjust the value of the leading synthetic point by
-            // interpolating the value of the first actual selected point with
-            // the value of the point immediately before it.
+            // If there is a non-null value immediately before the start of the
+            // selection, then force the first value to be halfway between the
+            // first selected datum and the preceding datum in order to keep the
+            // line consistent.
             //
-            // Instead leave firstSelectionValueAmount false and let
+            // Otherwise leave firstSelectionValueAmount false and let
             // transformValuesForRendering choose how to extend the selection
             // area (which it will do if firstSelectionValueAmount is falsey).
             var isPrevDatumDefined = prevOutOfBoundsDatum.filtered != null;
@@ -683,12 +678,12 @@
               ) / 2;
             }
 
-            // If the selection ends at the last interval in the domain then do
-            // not try to adjust the value of the trailing synthetic point by
-            // interpolating the value of the last actual selected point with
-            // the value of the point immediately after it.
+            // If there is a non-null value immediately after the end of the
+            // selection, then force the last value to be halfway between the
+            // last selected datum and the following datum in order to keep the
+            // line consistent.
             //
-            // Instead leave lastSelectionValueAmount false and let
+            // Otherwise leave lastSelectionValueAmount false and let
             // transformValuesForRendering choose how to extend the selection
             // area (which it will do if lastSelectionValueAmount is falsey).
             var isNextDatumDefined = nextOutOfBoundsDatum.filtered != null;

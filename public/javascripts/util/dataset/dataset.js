@@ -1484,7 +1484,7 @@ var Dataset = ServerModel.extend({
         }
         var ext = type.toLowerCase().split(' ')[0];
         var bom = (type == 'CSV for Excel') ? '&bom=true' : '';
-        if (this.newBackend) {
+        if (this.newBackend && blist.feature_flags.enable_export_service) {
           return '/api/export/v1/' + this.id + '.' + ext;
         } else {
           return '/api/views/' + this.id + '/rows.' + ext + '?accessType=DOWNLOAD' + bom;

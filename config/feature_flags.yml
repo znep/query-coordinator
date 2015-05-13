@@ -180,3 +180,6 @@ force_redirect_to_data_lens:
 shape_file_region_query_limit:
   description: Limit for the number of regions fetched for a shape file when displayed in choropleths.
   defaultValue: 5000
+enable_export_service:
+  description: Use the new Export Service on this domain.
+  defaultValue: false

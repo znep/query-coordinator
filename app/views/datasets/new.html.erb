@@ -341,7 +341,7 @@
         </div>
         <div class="columnTypeCell">
           <select class="columnTypeSelect">
-            <%= options_for_select(Column.importable_types.invert) %>
+            <%= options_for_select(Column.importable_types(request).invert) %>
           </select>
         </div>
         <div class="columnSourceCell"></div>

@@ -1206,10 +1206,11 @@ importNS.uploadFilePaneConfig = {
         $pane.find('.uploadFileFormats').addClass(state.type);
 
         // uploader
+        // Only the #scan and #create methods are available on NBE as of now.
         var uploadEndpoint = '/imports2.txt?method=';
         if (state.type == 'blist')
         {
-            uploadEndpoint += 'scan';
+            uploadEndpoint += 'scan&nbe=' + blist.feature_flags.default_imports_to_nbe;
         }
         else if (state.type == 'shapefile')
         {
@@ -1829,9 +1830,14 @@ importNS.importingPaneConfig = {
             });
         }
 
+        urlParams = { nbe: blist.feature_flags.default_imports_to_nbe };
+        if (state.operation != 'import') {
+          urlParams.method = state.operation;
+        }
+
         $.socrataServer.makeRequest({
             type: 'post',
-            url: '/api/imports2.json' + ((state.operation == 'import') ? '' : ('?method=' + state.operation)),
+            url: '/api/imports2.json?' + $.toParam(urlParams),
             contentType: 'application/x-www-form-urlencoded',
             data: dataPayload,
             success: function(response)

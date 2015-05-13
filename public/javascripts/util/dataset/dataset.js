@@ -60,6 +60,12 @@ var Dataset = ServerModel.extend({
 
         this._adjustProperties();
 
+        // Note: _useSODA2 is set in _adjustProperties.
+        if (!_.isUndefined(this.rowIdentifierColumnId)) {
+          this.rowIdentifierColumn = this.columnForID(this.rowIdentifierColumnId);
+          this.rowsNeedPK = this.newBackend && this._useSODA2; // BASICALLY A TAUTOLOGY.
+        }
+
         var originalQuery = this._getQueryGrouping();
         this._syncQueries(originalQuery.oldJsonQuery, originalQuery.oldQuery, originalQuery.oldGroupings, originalQuery.oldGroupAggs);
 
@@ -911,8 +917,13 @@ var Dataset = ServerModel.extend({
         this._activeRowSet.invalidate();
     },
 
+    createRowWithPK: function(pkValue)
+    {
+        return this.createRow(null, null, null, pkValue);
+    },
+
     // Assume it goes at the end
-    createRow: function(data, parRowId, parColId, successCallback, errorCallback)
+    createRow: function(data, parRowId, parColId, pkValue, successCallback, errorCallback)
     {
         var ds = this;
 
@@ -934,6 +945,19 @@ var Dataset = ServerModel.extend({
         _.each(!$.isBlank(parCol) ? parCol.realChildColumns : ds.realColumns,
             function(c) { newRow.changed[c.lookup] = true; });
 
+        if (ds.rowsNeedPK) {
+          if (pkValue) {
+            newRow.data[ds.rowIdentifierColumn.lookup] = pkValue;
+          } else {
+            // Now what happens is a round-trip to the server, which will return a 500.
+            // We'll take that and render it as an error on the UX.
+            // Because GOOD DESIGN.
+            console.error('tried to create a row without a pk value');
+            newRow.error[ds.rowIdentifierColumn.lookup] = true;
+            newRow.valid = false;
+          }
+        }
+
         if ($.isBlank(parRow))
         {
             ds._addRow(newRow, data.index);
@@ -950,21 +974,39 @@ var Dataset = ServerModel.extend({
 
         var key = newRow.id;
         if (!$.isBlank(parRow)) { key += ':' + parRow.id +  ':' + parCol.id; }
-        ds._pendingRowEdits[key] = [];
 
-        var reqObj = {row: newRow, rowData: ds._rowData(newRow,
-            _.pluck(_.reject(!$.isBlank(parCol) ? parCol.realChildColumns :
-                ds.realColumns, function(c)
-                { return c.dataTypeName == 'nested_table'; }), 'id'), parCol),
-            parentRow: parRow, parentColumn: parCol,
-            success: successCallback, error: errorCallback};
-        if ($.isBlank(ds._pendingRowCreates))
-        {
-            ds._serverCreateRow(reqObj);
-            ds._pendingRowCreates = [];
+        // This feels like a hack.
+        // The purpose of creating this array normally is to anticipate an edit.
+        // Because row creation on an NBE dataset will fail, we need to
+        // NOT anticipate the edit, because it will not be forthcoming.
+        if (!ds.newBackend) {
+          ds._pendingRowEdits[key] = [];
         }
-        else
-        { ds._pendingRowCreates.push(reqObj); }
+
+        var savingLookups;
+        if (ds._useSODA2) {
+          savingLookups = _.pluck(ds.realColumns, 'lookup');
+        } else {
+          savingLookups = _.pluck(_.reject(!$.isBlank(parCol) ? parCol.realChildColumns :
+                ds.realColumns, function(c)
+                { return c.dataTypeName == 'nested_table'; }), 'id')
+        }
+
+        // Don't bother actually doing separate row creation unless it's OBE.
+        // In NBE, the entire purpose of this function is to do some UX work and then
+        // return a temporary ID.
+        if (!ds.newBackend) {
+          var reqObj = {row: newRow, rowData: ds._rowData(newRow, savingLookups, parCol),
+              parentRow: parRow, parentColumn: parCol,
+              success: successCallback, error: errorCallback};
+          if ($.isBlank(ds._pendingRowCreates))
+          {
+              ds._serverCreateRow(reqObj);
+              ds._pendingRowCreates = [];
+          }
+          else
+          { ds._pendingRowCreates.push(reqObj); }
+        }
 
         return newRow.id;
     },
@@ -995,6 +1037,11 @@ var Dataset = ServerModel.extend({
         if ($.isBlank(row))
         { throw 'Row ' + rowId + ' not found while setting value ' + value; }
 
+        // Save this off because we'll need it for upserting.
+        if (col == this.rowIdentifierColumn && _.isUndefined(row.originalPrimaryKeyValue)) {
+          row.originalPrimaryKeyValue = row.data[col.lookup];
+        }
+
         row.data[col.lookup] = value;
 
         delete row.error[col.lookup];
@@ -1002,6 +1049,12 @@ var Dataset = ServerModel.extend({
         row.changed[col.lookup] = true;
 
         row.invalid[col.lookup] = isInvalid || false;
+
+        // If the dataset has no PK, the row is always save-able.
+        // If the dataset has a PK, but it isn't set, the row is not saveable.
+        // This row-level validity has nothing to do with cell-level validity.
+        // Confused yet?
+        row.valid = !this.rowsNeedPK || !_.isUndefined(row.data[this.rowIdentifierColumn.lookup]);
 
         this._activeRowSet.updateRow(parRow || row);
 
@@ -1034,14 +1087,33 @@ var Dataset = ServerModel.extend({
 
         // Keep track of which columns need to be saved, and only use those values
         var saving = _.keys(row.changed);
-        if (!$.isBlank(ds.rowIdentifierColumnId)) {
-          var rowIdentifierColumn = ds.columnForIdentifier(ds.rowIdentifierColumnId);
-          if (rowIdentifierColumn && !_.include(saving, rowIdentifierColumn.fieldName)) {
-            saving.push(rowIdentifierColumn.fieldName);
+        if (ds.rowsNeedPK) {
+          if (!_.include(saving, ds.rowIdentifierColumn.lookup)) {
+            saving.push(ds.rowIdentifierColumn.lookup);
           }
         }
 
         var sendRow = ds._rowData(row, saving, parCol);
+
+        // Cleanup the fallout from a failed attempt to create a row on NBE.
+        if (ds.newBackend && !_.has(row.metadata, 'version')) {
+          delete sendRow[':id'];
+          delete sendRow[':meta'];
+        }
+
+        // When attempting to modify the pk value, need to issue an upsert first.
+        // 1. Throw away our sendRow. We need to re-build the entire row.
+        // 2. Send a delete command on the existing row.
+        // 3. Send an insert on the *entire* row, since "everything" is changed now.
+        if (_.has(row.metadata, 'version')
+            && row.changed[(ds.rowIdentifierColumn || {}).lookup]) {
+          sendRow = [];
+          var deleteCmd = { ':deleted': true };
+          deleteCmd[ds.rowIdentifierColumn.lookup] = row.originalPrimaryKeyValue;
+          sendRow.push(deleteCmd);
+
+          sendRow.push(ds._rowData(row, _.pluck(ds.realColumns, 'lookup'), parCol));
+        }
 
         var reqObj = {row: row, rowData: sendRow, columnsSaving: saving,
             parentRow: parRow, parentColumn: parCol,
@@ -1079,6 +1151,9 @@ var Dataset = ServerModel.extend({
                 var r = ds.rowForID(rId);
                 if ($.isBlank(r)) { return; }
                 uuid = ds._useSODA2 ? r.id : r.metadata.uuid;
+                if (ds.rowsNeedPK) {
+                  uuid = r.data[ds.rowIdentifierColumn.lookup];
+                }
                 ds._removeRow(r);
             }
             else
@@ -3120,7 +3195,7 @@ var Dataset = ServerModel.extend({
         if (!$.isBlank(r.parentRow))
         { url += '/' + r.parentRow.id + '/columns/' + r.parentColumn.id + '/subrows'; }
         url += (ds._useSODA2 ? '' : '/' + r.row.metadata.uuid) + '.json';
-        var data = ds._useSODA2 ? [r.rowData] : r.rowData;
+        var data = ds._useSODA2 ? $.makeArray(r.rowData) : r.rowData;
         ds.makeRequest({url: url, type: ds._useSODA2 ? 'POST' : 'PUT', data: JSON.stringify(data),
             isSODA: ds._useSODA2, batch: isBatch,
             success: rowSaved, error: rowErrored, complete: rowCompleted});
@@ -3133,7 +3208,7 @@ var Dataset = ServerModel.extend({
         });
     },
 
-    _serverRemoveRow: function(rowId, parRowId, parColId, isBatch)
+    _serverRemoveRow: function(rowId, parRowId, parColId, isBatch, pkValue)
     {
         var ds = this;
         var rowRemoved = function() { ds.aggregatesChanged(); };
@@ -3142,8 +3217,21 @@ var Dataset = ServerModel.extend({
         if (!$.isBlank(parRowId))
         { url += parRowId + '/columns/' + parColId + '/subrows/'; }
         if (!ds._useSODA2) { url += rowId + '.json'; }
+
+        var rowData = { ':deleted': true };
+        var idColName = ':id';
+        if (ds.rowsNeedPK) {
+          idColName = ds.rowIdentifierColumn.lookup;
+        }
+        rowData[idColName] = rowId;
+
+        // Because reasons!
+        if (ds.newBackend) {
+          rowData = [rowData];
+        }
+
         ds.makeRequest({batch: isBatch, url: url, type: ds._useSODA2 ? 'POST' : 'DELETE',
-            isSODA: ds._useSODA2, data: JSON.stringify({':deleted': true, ':id': rowId}),
+            isSODA: ds._useSODA2, data: JSON.stringify(rowData),
             success: rowRemoved});
     },
 

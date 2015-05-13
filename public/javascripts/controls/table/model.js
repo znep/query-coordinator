@@ -370,7 +370,12 @@ blist.namespace.fetch('blist.data');
             if (row.type == 'blank')
             {
                 delete row.type;
-                row.id = this.view.createRow();
+
+                if (this.view.newBackend && this.view.rowIdentifierColumn == column) {
+                  row.id = this.view.createRowWithPK(value);
+                } else {
+                  row.id = this.view.createRow();
+                }
                 isCreate = true;
                 row = this.getByID(row.id);
                 if (!skipUndo)
@@ -438,7 +443,9 @@ blist.namespace.fetch('blist.data');
                 if ($.isBlank(childRow))
                 {
                     this.view.setRowValue(value, row.id, column.id, !isValid);
-                    this.view.saveRow(row.id);
+                    if (row.valid) {
+                      this.view.saveRow(row.id);
+                    }
                 }
                 else
                 {

@@ -365,14 +365,14 @@
                 }
                 if (this.settings.editEnabled && context.permissions.canDelete)
                 {
-                    options.push('<li class="delete"><a href="#row-delete_',
+                    options.push('<li class="delete"><a href="#row-delete#',
                             row.id, colAdjust, '">' + $.t('controls.grid.delete_row') + '</a></li>');
                 }
 
                 if (_.isEmpty(options) || row.type == 'blank') { return; }
 
                 //Add DOM for menu drop-down options
-                html.push('<a class="menuLink" href="#row-menu_',
+                html.push('<a class="menuLink" href="#row-menu#',
                         row.id, colAdjust, '"></a>',
                        '<ul class="menu rowMenu" id="row-menu_', row.id,
                        colAdjust, '">', options.join(''),
@@ -437,12 +437,22 @@
         {
             // Href that we care about starts with # and parts are separated with _
             // IE sticks the full thing, so slice everything up to #
-            var s = href.slice(hashIndex + 1).split('_');
+            var s = href.slice(hashIndex + 1).split('#');
             if (s.length < 2)
             { return; }
 
             action = s[0];
             rowId = s[1];
+
+            // Test that it's not a NBE dataset.
+            if (!rowId.match(/row-(?:[a-z0-9]{4}[-_~\.]){2}[a-z0-9]{4}/)) {
+              var splitRowId = rowId.split('_');
+              rowId = rowId[0];
+              // Child row from OBE blist-n-blist type.
+              if (rowId[1]) {
+                s.push(rowId[1]);
+              }
+            }
         }
 
         var $menu = $link.closest('.rowMenu');

@@ -614,28 +614,30 @@
           function deriveSelectionValues(chartData, minDate, maxDate) {
 
             var datum;
-            var prevOutOfBoundsDatum = { filtered: null };
-            var nextOutOfBoundsDatum = { filtered: 0 };
             var lastChartDatum = chartData.values[chartData.values.length - 1];
-            var selectionValues = [];
-            var selectionStartIndex = false;
+            var prevOutOfBoundsDatum = { filtered: null };
+            var nextOutOfBoundsDatum = { filtered: null };
+            var firstSelectionDatum = null;
+            var lastSelectionDatum = null;
             var firstSelectionValueAmount = false;
-            var selectionEndIndex = false;
             var lastSelectionValueAmount = false;
+            var selectionValues = [];
 
             for (var i = 0; i < chartData.values.length; i++) {
               datum = chartData.values[i];
 
               if (datum.date >= minDate && datum.date <= maxDate) {
-                if (selectionStartIndex === false && i > 0) {
-                  selectionStartIndex = i - 1;
+                if (firstSelectionDatum === null) {
+                  firstSelectionDatum = datum;
                 }
+                // Track the current datum as "beyond the end of the selection"
+                // instead of "last in selection" because we chop off the last
+                // value below!
+                nextOutOfBoundsDatum = datum;
                 selectionValues.push(datum);
-                selectionEndIndex = i;
               } else if (datum.date < minDate) {
                 prevOutOfBoundsDatum = datum;
               } else if (datum.date > maxDate) {
-                nextOutOfBoundsDatum = datum;
                 break;
               }
             }
@@ -657,10 +659,12 @@
             // an appropriate date to show as the end of the x scale along with
             // unfiltered and filtered values of 0 to prevent changing
             // aggregate values.
-            //
             if (lastChartDatum.date < maxDate) {
               selectionValues.push(lastChartDatum); // TODO: unfiltered and filtered should be 0?
             }
+
+            // Only at this point can we define the true "last" datum.
+            lastSelectionDatum = selectionValues[selectionValues.length - 1];
 
             // If there is a non-null value immediately before the start of the
             // selection, then force the first value to be halfway between the
@@ -670,11 +674,9 @@
             // Otherwise leave firstSelectionValueAmount false and let
             // transformValuesForRendering choose how to extend the selection
             // area (which it will do if firstSelectionValueAmount is falsey).
-            var isPrevDatumDefined = prevOutOfBoundsDatum.filtered != null;
-            if (selectionStartIndex > 0 && isPrevDatumDefined) {
+            if (prevOutOfBoundsDatum.filtered != null) {
               firstSelectionValueAmount = (
-                selectionValues[0].filtered +
-                cachedChartData.values[selectionStartIndex].filtered
+                firstSelectionDatum.filtered + prevOutOfBoundsDatum.filtered
               ) / 2;
             }
 
@@ -686,11 +688,9 @@
             // Otherwise leave lastSelectionValueAmount false and let
             // transformValuesForRendering choose how to extend the selection
             // area (which it will do if lastSelectionValueAmount is falsey).
-            var isNextDatumDefined = nextOutOfBoundsDatum.filtered != null;
-            if (selectionEndIndex <= chartData.values.length - 1 && isNextDatumDefined) {
+            if (nextOutOfBoundsDatum.filtered != null) {
               lastSelectionValueAmount = (
-                selectionValues[selectionValues.length - 1].filtered +
-                chartData.values[selectionEndIndex].filtered
+                lastSelectionDatum.filtered + nextOutOfBoundsDatum.filtered
               ) / 2;
             }
 

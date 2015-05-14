@@ -10,39 +10,39 @@ bundle exec rake test
 
 export REVISION=`git rev-parse HEAD`
 
-echo "Saving REVISION file - $REVISION"
-echo $REVISION > REVISION
+echo "Saving REVISION file - ${REVISION}"
+echo ${REVISION} > REVISION
 
-SERVICE_SHA=`echo $REVISION | cut -c1-8`
+SERVICE_SHA=`echo ${REVISION} | cut -c1-8`
 
 echo 'Exporting environment variables...'
 
 export REGISTRY=registry.docker.aws-us-west-2-infrastructure.socrata.net:5000
-echo "REGISTRY=$REGISTRY"
+echo "REGISTRY=${REGISTRY}"
 
 export TAG=${SERVICE_SHA}_${BUILD_NUMBER}
-echo ="TAG=$TAG"
+echo ="TAG=${TAG}"
 
-export http_proxy=$HTTP_PROXY
-echo "http_proxy=$http_proxy"
+export http_proxy=${HTTP_PROXY}
+echo "http_proxy=${http_proxy}"
 
-export https_proxy=$HTTPS_PROXY
-echo "https_proxy=$https_proxy"
+export https_proxy=${HTTPS_PROXY}
+echo "https_proxy=${https_proxy}"
 
-export no_proxy=$NO_PROXY
-echo "no_proxy=$no_proxy"
+export no_proxy=${NO_PROXY}
+echo "no_proxy=${no_proxy}"
 
-echo "Building docker image - $JOB_NAME"
-docker build  -t $JOB_NAME .
+echo "Building docker image - ${JOB_NAME}"
+docker build  -t ${JOB_NAME} .
 
-echo "Tagging with $TAG"
-export IMAGE_URL=$REGISTRY/internal/$JOB_NAME:$TAG
-docker tag $JOB_NAME $IMAGE_URL
-docker push $IMAGE_URL
+echo "Tagging with ${TAG}"
+export IMAGE_URL=${REGISTRY}/internal/${JOB_NAME}:${TAG}
+docker tag ${JOB_NAME} ${IMAGE_URL}
+docker push ${IMAGE_URL}
 
 rm -f marathon.properties
 touch marathon.properties
-echo "DOCKER_IMAGE=$IMAGE_URL" >> marathon.properties
-echo "SERVICE=$JOB_NAME" >> marathon.properties
-echo "DOCKER_JOB=$JOB_NAME" >> marathon.properties
-echo "ENVIRONMENT=$ENVIRONMENT" >> marathon.properties
+echo "DOCKER_IMAGE=${IMAGE_URL}" >> marathon.properties
+echo "SERVICE=${JOB_NAME}" >> marathon.properties
+echo "DOCKER_JOB=${JOB_NAME}" >> marathon.properties
+echo "ENVIRONMENT=${ENVIRONMENT}" >> marathon.properties

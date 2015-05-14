@@ -4,7 +4,7 @@
     <id>RxJS-Async</id>
     <title>Reactive Extensions for JavaScript - Async-Based Operations</title>
     <!-- Automatically updated by build, keeping fixed dev build number here in case of local build -->
-    <version>2.2.7</version>
+    <version>$version$</version>
     <authors>Microsoft Corporation</authors>
     <description>Reactive Extensions for JavaScript library with async-based event processing query operations.</description>
     <projectUrl>http://go.microsoft.com/fwlink/?LinkID=179929</projectUrl>
@@ -15,15 +15,16 @@
     <tags>Rx RxJS Reactive Extensions Observable</tags>
     <dependencies>
       <!-- Automatically updated by build, keeping fixed dev build number here in case of local build -->
-      <dependency id="RxJS-Main" version="2.2" />
-      <dependency id="RxJS-Binding" version="2.2" />
+      <dependency id="RxJS-Main" version="$version$" />
+      <dependency id="RxJS-Binding" version="$version$" />
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\rx.async.js" target="content\Scripts\rx.async.js" />
-    <file src="..\..\rx.async.min.js" target="content\Scripts\rx.async.min.js" />
-    <file src="..\..\rx.async.compat.js" target="content\Scripts\rx.async.compat.js" />
-    <file src="..\..\rx.async.compat.min.js" target="content\Scripts\rx.async.compat.min.js" />    
-    <file src="..\..\ts\rx.async.d.ts" target="content\Scripts\rx.async.d.ts" />    
+    <file src="..\..\dist\rx.async.js" target="content\Scripts\rx.async.js" />
+    <file src="..\..\dist\rx.async.min.js" target="content\Scripts\rx.async.min.js" />
+    <file src="..\..\dist\rx.async.compat.js" target="content\Scripts\rx.async.compat.js" />
+    <file src="..\..\dist\rx.async.compat.min.js" target="content\Scripts\rx.async.compat.min.js" />
+    <file src="..\..\ts\rx.async.d.ts" target="content\Scripts\rx.async.d.ts" />
+    <file src="..\..\ts\rx.async-lite.d.ts" target="content\Scripts\rx.async-lite.d.ts" />
   </files>
 </package>

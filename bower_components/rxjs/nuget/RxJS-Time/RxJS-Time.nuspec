@@ -4,7 +4,7 @@
     <id>RxJS-Time</id>
     <title>Reactive Extensions for JavaScript - Time-Based Operations</title>
     <!-- Automatically updated by build, keeping fixed dev build number here in case of local build -->
-    <version>2.2.7</version>
+    <version>$version$</version>
     <authors>Microsoft Corporation</authors>
     <description>Reactive Extensions for JavaScript library with time-based event processing query operations.</description>
     <projectUrl>http://go.microsoft.com/fwlink/?LinkID=179929</projectUrl>
@@ -15,12 +15,13 @@
     <tags>Rx RxJS Reactive Extensions Observable</tags>
     <dependencies>
       <!-- Automatically updated by build, keeping fixed dev build number here in case of local build -->
-      <dependency id="RxJS-Main" version="2.2" />
+      <dependency id="RxJS-Main" version="$version$" />
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\rx.time.js" target="content\Scripts\rx.time.js" />
-    <file src="..\..\rx.time.min.js" target="content\Scripts\rx.time.min.js" />
-    <file src="..\..\ts\rx.time.d.ts" target="content\Scripts\rx.time.d.ts" />  
+    <file src="..\..\dist\rx.time.js" target="content\Scripts\rx.time.js" />
+    <file src="..\..\dist\rx.time.min.js" target="content\Scripts\rx.time.min.js" />
+    <file src="..\..\ts\rx.time.d.ts" target="content\Scripts\rx.time.d.ts" />
+    <file src="..\..\ts\rx.time-lite.d.ts" target="content\Scripts\rx.time-lite.d.ts" />
   </files>
 </package>

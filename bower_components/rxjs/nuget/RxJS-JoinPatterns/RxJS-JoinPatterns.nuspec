@@ -4,7 +4,7 @@
     <id>RxJS-JoinPatterns</id>
     <title>Reactive Extensions for JavaScript - Join Patterns</title>
     <!-- Automatically updated by build, keeping fixed dev build number here in case of local build -->
-    <version>2.2.7</version>
+    <version>$version$</version>
     <authors>Microsoft Corporation</authors>
     <description>Reactive Extensions for JavaScript library with join patterns event processing query operations.</description>
     <projectUrl>http://rx.codeplex.com</projectUrl>
@@ -15,12 +15,12 @@
     <tags>Rx RxJS Reactive Extensions Observable</tags>
     <dependencies>
       <!-- Automatically updated by build, keeping fixed dev build number here in case of local build -->
-      <dependency id="RxJS-Main" version="2.2" />
+      <dependency id="RxJS-Main" version="$version$" />
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\rx.joinpatterns.js" target="content\Scripts\rx.joinpatterns.js" />
-    <file src="..\..\rx.joinpatterns.min.js" target="content\Scripts\rx.joinpatterns.min.js" />
-    <file src="..\..\ts\rx.joinpatterns.d.ts" target="content\Scripts\rx.joinpatterns.d.ts" />  
+    <file src="..\..\dist\rx.joinpatterns.js" target="content\Scripts\rx.joinpatterns.js" />
+    <file src="..\..\dist\rx.joinpatterns.min.js" target="content\Scripts\rx.joinpatterns.min.js" />
+    <file src="..\..\ts\rx.joinpatterns.d.ts" target="content\Scripts\rx.joinpatterns.d.ts" />
   </files>
 </package>

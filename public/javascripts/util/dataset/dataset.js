@@ -900,6 +900,11 @@ var Dataset = ServerModel.extend({
         this._activeRowSet.getRows(ids, null, successCallback, errorCallback);
     },
 
+    rowExists: function(rowId)
+    {
+        return this._activeRowSet.rowExists(rowId);
+    },
+
     loadedRows: function()
     {
         return this._activeRowSet.loadedRows();
@@ -1105,30 +1110,53 @@ var Dataset = ServerModel.extend({
         // 1. Throw away our sendRow. We need to re-build the entire row.
         // 2. Send a delete command on the existing row.
         // 3. Send an insert on the *entire* row, since "everything" is changed now.
+        var waitForRowExists = false;
         if (_.has(row.metadata, 'version')
             && row.changed[(ds.rowIdentifierColumn || {}).lookup]) {
+          // ds.rowIdentifierColumn should be guaranteed since
+          // row.changed[null] should be undefined.
           sendRow = [];
           var deleteCmd = { ':deleted': true };
           deleteCmd[ds.rowIdentifierColumn.lookup] = row.originalPrimaryKeyValue;
           sendRow.push(deleteCmd);
 
-          sendRow.push(ds._rowData(row, _.pluck(ds.realColumns, 'lookup'), parCol));
+          sendRow.unshift(ds._rowData(row, _.pluck(ds.realColumns, 'lookup'), parCol));
+          waitForRowExists = true;
+
+          ds.rowExists(row.data[ds.rowIdentifierColumn.lookup])
+            .done(function(rowExists) {
+              if (rowExists) {
+                console.error('attempted to change primary key to one that already exists');
+                row.error[ds.rowIdentifierColumn.lookup] = true;
+                row.invalid[ds.rowIdentifierColumn.lookup] = true;
+
+                // Update the UX.
+                ds.trigger('row_change', [[row]]);
+              } else {
+                doRequest();
+              }
+            });
         }
 
-        var reqObj = {row: row, rowData: sendRow, columnsSaving: saving,
-            parentRow: parRow, parentColumn: parCol,
-            success: successCallback, error: errorCallback};
+        var doRequest = function() {
+          var reqObj = {row: row, rowData: sendRow, columnsSaving: saving,
+              parentRow: parRow, parentColumn: parCol,
+              success: successCallback, error: errorCallback};
 
-        var key = row.id;
-        if (!$.isBlank(parRow)) { key += ':' + parRow.id + ':' + parCol.id; }
-        if (!$.isBlank(ds._pendingRowEdits[key]))
-        {
-            ds._pendingRowEdits[key].push(reqObj);
-            return;
+          var key = row.id;
+          if (!$.isBlank(parRow)) { key += ':' + parRow.id + ':' + parCol.id; }
+          if (!$.isBlank(ds._pendingRowEdits[key]))
+          {
+              ds._pendingRowEdits[key].push(reqObj);
+              return;
+          }
+
+          ds._pendingRowEdits[key] = [];
+          ds._serverSaveRow(reqObj, useBatch);
+        };
+        if (!waitForRowExists) {
+          doRequest();
         }
-
-        ds._pendingRowEdits[key] = [];
-        ds._serverSaveRow(reqObj, useBatch);
     },
 
     removeRows: function(rowIds, parRowId, parColId,

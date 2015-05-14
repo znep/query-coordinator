@@ -3,4 +3,4 @@
 source /dev/shm/storyteller_secrets.sh
 
 cd $APP_DIR
-bin/rails server -p 3010 -b 0.0.0.0
+exec su socrata -c 'bin/rails server -p 3010 -b 0.0.0.0'

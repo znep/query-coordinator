@@ -44,6 +44,11 @@ ADD config/database.yml.production ${APP_DIR}/config/database.yml
 ENV RAILS_ENV production
 RUN bundle exec rake assets:precompile
 
+# Make and chown the rails tmp dir to the socrata user
+ENV APP_TMP_DIR ${APP_DIR}/tmp
+RUN mkdir -p ${APP_TMP_DIR}
+RUN chown socrata -R ${APP_TMP_DIR}
+
 # Note: this is temporary until we have a proper web server setup (not webrick)
 ENV RAILS_SERVE_STATIC_FILES true
 

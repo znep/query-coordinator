@@ -71,7 +71,7 @@ Rx.Observable.prototype.dump = function(optionalName) {
       console.log(name + 'completed');
     }
   );
-}
+};
 
 // Prints out the activity of the sequence to the console.
 // For debugging purposes. Can pass in an optional name
@@ -93,7 +93,7 @@ Rx.Observable.prototype.doDump = function(optionalName) {
       console.log(name + 'completed');
     }
   );
-}
+};
 
 // Ensure the first element in the sequence takes at least windowMsec
 // to show up.
@@ -110,14 +110,6 @@ Rx.Observable.prototype.imposeMinimumDelay = function(windowMsec, scheduler) {
       else return timeout.map(_.constant(reaction.value)); // Success happened too fast. Return success when the timeout completes.
     }).
     switchLatest(); // Use the sequence from the map above.
-};
-
-// Waits until the sequence stops giving elements for the given
-// amount of time. Returns a sequence of the debounced values.
-Rx.Observable.prototype.debounce = function(settleTimeMsec, scheduler) {
-  return this.map(function(value) {
-    return Rx.Observable.timer(settleTimeMsec, scheduler).map(_.constant(value));
-  }).switchLatest();
 };
 
 // Returns an observable sequence that contains only the false to true

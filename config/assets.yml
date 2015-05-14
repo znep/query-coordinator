@@ -684,7 +684,6 @@ javascripts:
 
   angular-socrata-common:
     - public/javascripts/plugins/modernizr.js
-    - public/javascripts/plugins/leaflet.js
     - public/javascripts/angular/common/services.js
     - public/javascripts/angular/common/**/*.js
 

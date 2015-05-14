@@ -44,6 +44,28 @@ class PageMetadataManager
     end
   end
 
+  def secondary_group_identifier
+    FeatureFlags.derive(nil, nil)[:secondary_group_identifier]
+  end
+
+  def request_soda_fountain_secondary_index(dataset_id, options = {})
+    unless secondary_group_identifier.blank?
+      soda_fountain_secondary = SodaFountain.new(path: '/dataset-copy')
+      options = options.merge(
+        dataset_id: dataset_id,
+        identifier: secondary_group_identifier,
+        verb: :post
+      )
+      response = soda_fountain_secondary.issue_request(options)
+      if response.fetch(:status) !~ /^2[0-9][0-9]$/
+        report_error(
+          "Error requesting secondary index for #{dataset_id} - \n" +
+          "secondary group identifier #{secondary_group_identifier}"
+        )
+      end
+    end
+  end
+
   # Creates a new page
   def create(page_metadata, options = {})
     unless page_metadata.key?('datasetId')
@@ -73,7 +95,13 @@ class PageMetadataManager
 
     page_metadata['cards'] << table_card unless has_table_card
 
-    update_page_metadata(page_metadata, options)
+    result = update_page_metadata(page_metadata, options)
+
+    if result[:status] == '200'
+      request_soda_fountain_secondary_index(page_metadata['datasetId'], options)
+    end
+
+    result
   end
 
   # Updates an existing page.
@@ -127,7 +155,7 @@ class PageMetadataManager
     # Delete any rollups created for the page
     response = soda_fountain.delete_rollup_table(
       dataset_id: page_metadata.fetch(:body, {}).fetch(:datasetId),
-      rollup_name: id
+      identifier: id
     )
     if response.fetch(:status) !~ /^2[0-9][0-9]$/
       report_error("Error deleting rollup table for page #{id}: #{response.inspect}")
@@ -179,7 +207,7 @@ class PageMetadataManager
       if rollup_soql
         args = {
           dataset_id: dataset_id,
-          rollup_name: page_id,
+          identifier: page_id,
           page_id: page_id,
           soql: rollup_soql
         }

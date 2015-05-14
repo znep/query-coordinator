@@ -26,7 +26,7 @@ class SodaFountainTest < Test::Unit::TestCase
     SodaFountain.any_instance.stubs(:issue_request => { 'status' => '204' })
     assert_equal({ 'status' => '204' }, soda_fountain.delete_rollup_table(
       dataset_id: 'q77b-s2zi',
-      rollup_name: 'rollup'
+      identifier: 'rollup'
     ))
   end
 
@@ -34,7 +34,7 @@ class SodaFountainTest < Test::Unit::TestCase
     SodaFountain.any_instance.stubs(:issue_request => { 'status' => '204' })
     assert_equal({ 'status' => '204' }, soda_fountain.create_or_update_rollup_table(
       dataset_id: 'q77b-s2zi',
-      rollup_name: 'rollup',
+      identifier: 'rollup',
       soql: 'select ward, count(*) as value group by ward'
     ))
   end
@@ -43,7 +43,7 @@ class SodaFountainTest < Test::Unit::TestCase
     SodaFountain.any_instance.stubs(:issue_request => { 'status' => '204' })
     assert_equal({ 'status' => '204' }, soda_fountain.create_or_update_rollup_table(
       dataset_id: 'q77b-s2zi',
-      rollup_name: 'rollup',
+      identifier: 'rollup',
       soql: 'select district, count(*) as value group by district'
     ))
   end
@@ -51,7 +51,7 @@ class SodaFountainTest < Test::Unit::TestCase
   def test_includes_request_id_when_present
     args = {
       dataset_id: 'q77b-s2zi',
-      rollup_name: 'rollup',
+      identifier: 'rollup',
       soql: 'select district, count(*) as value group by district',
       request_id: 'request id'
     }
@@ -63,7 +63,7 @@ class SodaFountainTest < Test::Unit::TestCase
   def test_does_not_include_request_id_when_absent
     args = {
       dataset_id: 'q77b-s2zi',
-      rollup_name: 'rollup',
+      identifier: 'rollup',
       soql: 'select district, count(*) as value group by district'
     }
     prepare_stubs(verb: :put, code: '204', data: args)
@@ -74,7 +74,7 @@ class SodaFountainTest < Test::Unit::TestCase
   def test_includes_cookies_when_present
     args = {
       dataset_id: 'q77b-s2zi',
-      rollup_name: 'rollup',
+      identifier: 'rollup',
       soql: 'select district, count(*) as value group by district',
       cookies: 'some cookies'
     }
@@ -86,7 +86,7 @@ class SodaFountainTest < Test::Unit::TestCase
   def test_does_not_include_cookies_when_absent
     args = {
       dataset_id: 'q77b-s2zi',
-      rollup_name: 'rollup',
+      identifier: 'rollup',
       soql: 'select district, count(*) as value group by district'
     }
     prepare_stubs(verb: :put, code: '204', data: args)
@@ -107,7 +107,7 @@ class SodaFountainTest < Test::Unit::TestCase
     @mock_request.expects(:body=).with(JSON.dump(soql: options[:data][:soql]))
     @mock_request.expects(:body).returns(options[:body])
 
-    path = "_#{options[:data][:dataset_id]}/#{options[:data][:rollup_name]}"
+    path = "_#{options[:data][:dataset_id]}/#{options[:data][:identifier]}"
     "Net::HTTP::#{options[:verb].capitalize}".constantize.expects(:new).
       with("#{soda_fountain.end_point}/#{path}").returns(@mock_request)
 

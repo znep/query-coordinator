@@ -26,6 +26,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
         :migrations => stub_migrations
       )
     )
+    @dataset_copy_stub = stub_dataset_copy_request('vtvh-wqgq')
   end
 
   def test_create_succeeds
@@ -45,9 +46,12 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal('data-lens', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
     assert_equal(1000, result.fetch(:body).fetch('largestTimeSpanDays'), 'Expected the value for the largest time span to be set')
     assert_match(/date_trunc_\w+/, result.fetch(:body).fetch('defaultDateTruncFunction'), 'Includes date_trunc function')
+    assert_requested @dataset_copy_stub
   end
 
   def test_create_creates_data_lens_with_reference_v1
+    stub_dataset_copy_request('q77b-s2zi')
+
     Phidippides.any_instance.stubs(
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns},
     )
@@ -165,6 +169,8 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_create_does_not_try_to_create_rollup_table_when_not_given_eligible_columns_in_phase_0
+    stub_dataset_copy_request('q77b-s2zi')
+
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
     Phidippides.any_instance.stubs(
       update_page_metadata: { status: '200', body: v0_page_metadata },
@@ -189,6 +195,8 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_create_does_not_try_to_create_rollup_table_when_not_given_eligible_columns_in_phase_1
+    stub_dataset_copy_request('q77b-s2zi')
+
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
     Phidippides.any_instance.stubs(
       update_page_metadata: { status: '200', body: v0_page_metadata },
@@ -463,7 +471,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     CoreServer::Base.stubs(connection: core_stub)
 
     SodaFountain.any_instance.expects(:delete_rollup_table).with do |args|
-      assert_equal({dataset_id: 'data-eyed', rollup_name: 'four-four'}, args)
+      assert_equal({dataset_id: 'data-eyed', identifier: 'four-four'}, args)
     end.then.returns({ status: '200' })
 
     result = manager.delete('four-four')
@@ -530,7 +538,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     CoreServer::Base.stubs(connection: core_stub)
 
     SodaFountain.any_instance.expects(:delete_rollup_table).with do |args|
-      assert_equal({dataset_id: 'data-eyed', rollup_name: 'four-four'}, args)
+      assert_equal({dataset_id: 'data-eyed', identifier: 'four-four'}, args)
     end.then.returns({ status: '200' })
 
     result = manager.delete('four-four')
@@ -761,7 +769,52 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal('my_date_trunc_func', page_metadata['defaultDateTruncFunction'])
   end
 
+  def test_no_dataset_copy_when_feature_flag_not_set
+    stub_feature_flags_with(:secondary_group_identifier, false)
+
+    PageMetadataManager.any_instance.expects(:update_rollup_table)
+
+    Phidippides.any_instance.stubs(
+      update_page_metadata: { status: '200', body: nil },
+      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
+    )
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    NewViewManager.any_instance.expects(:create).returns('data-lens')
+    manager.create(v1_page_metadata)
+    assert_not_requested @dataset_copy_stub
+  end
+
+  def test_no_dataset_copy_when_feature_flag_is_blank
+    stub_feature_flags_with(:secondary_group_identifier, '')
+
+    PageMetadataManager.any_instance.expects(:update_rollup_table)
+
+    Phidippides.any_instance.stubs(
+      update_page_metadata: { status: '200', body: nil },
+      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
+    )
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    NewViewManager.any_instance.expects(:create).returns('data-lens')
+    manager.create(v1_page_metadata)
+    assert_not_requested @dataset_copy_stub
+  end
+
   private
+
+  def stub_dataset_copy_request(dataset_id)
+    dataset_copy_uri = "http://localhost:6010/dataset-copy/_#{dataset_id}/spandex3"
+    stub_request(:post, dataset_copy_uri).
+      with(
+        :headers => {
+          'Accept' => '*/*',
+          'Content-Type' => 'application/json',
+          'User-Agent' => 'Ruby',
+          'X-Socrata-Federation' => 'Honey Badger',
+          'X-Socrata-Host' => 'localhost'
+        }
+      ).
+      to_return(:status => 200, :body => '', :headers => {})
+  end
 
   def manager
     @manager ||= PageMetadataManager.new

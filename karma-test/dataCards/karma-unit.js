@@ -94,6 +94,7 @@ module.exports = function ( karma ) {
 
       /* Angular itself */
       'bower_components/angular/angular.js',
+      'bower_components/angular-rx/dist/rx.angular.js',
 
       /* Libraries needing Angular */
       'bower_components/angular-sanitize/angular-sanitize.js',

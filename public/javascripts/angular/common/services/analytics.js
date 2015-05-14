@@ -50,7 +50,7 @@
 
     // Set up some inputs to the analytics.
     var renderCompleteEvents = $rootScope.eventToObservable('render:complete');
-    var rendererSettledEvents = renderCompleteEvents.debounce(this.idleTimeForRendererToBeConsideredSettled);
+    var rendererSettledEvents = renderCompleteEvents.debounce(this.idleTimeForRendererToBeConsideredSettled, Rx.Scheduler.timeout);
     var userInteractedEvents = $rootScope.eventToObservable('user-interacted');
 
     // Consider the page settled if the renderer goes idle OR the user does something to the page.

@@ -14,7 +14,7 @@ class InternalController < ApplicationController
   TIERS_WE_STILL_USE = [ 'Plus', 'Ultimate' ]
   def show_org
     @org = Organization.find(params[:id])
-    @tiers = AccountTier.find().select { |tier| TIERS_WE_STILL_USE.include? tier.name }
+    @tiers = AccountTier.find().select { |tier| TIERS_WE_STILL_USE.include?(tier.name) }
     @domains = Organization.find().collect {|o| o.domains}.flatten.compact
     default_domain = @domains.select {|d| d.shortName == 'default'}.first
     @domains.unshift(Hashie::Mash.new(

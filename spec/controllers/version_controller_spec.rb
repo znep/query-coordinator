@@ -20,12 +20,12 @@ RSpec.describe VersionController, type: :controller do
       expect(result['revision']).to eq 'therevisionnumber'
     end
 
-    it "renders revision date" do
+    it 'renders revision date' do
       get :show
       expect(result['buildTimestamp']).to eq 12345678
     end
 
-    it "renders uptime" do
+    it 'renders uptime' do
       get :show
       expect(result['bootedTimestamp']).to eq 98765432
     end

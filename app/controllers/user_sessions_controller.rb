@@ -24,7 +24,8 @@ class UserSessionsController < ApplicationController
     @body_id = 'login'
     @user_session = UserSession.new
     if params[:referer_redirect]
-      session[:return_to] ||= request.referer
+      # If specifying a return_to param, let that override request.referer
+      session[:return_to] ||= params[:return_to] || request.referer
     end
   end
 

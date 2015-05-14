@@ -454,6 +454,13 @@ blist.namespace.fetch('blist.data');
                     this.view.saveRow(childRow.id, parRow.id, parCol.id);
                 }
             }
+
+            // Because NBE does not inform us of the new row id, we need to prevent any
+            // further edits to this row.
+            if (isCreate && !this.view.rowsNeedPK && this.view.newBackend) {
+              row.lockedFromEdit = true;
+            }
+
             return row;
         };
 

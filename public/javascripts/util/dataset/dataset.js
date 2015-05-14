@@ -1087,6 +1087,12 @@ var Dataset = ServerModel.extend({
 
         // NBE does not accept invalid data. Just toss the query.
         if (_.any(row.invalid) && ds.newBackend) {
+          console.error('this row has invalid columns, so we didn\'t submit it.');
+          return;
+        }
+
+        if (row.lockedFromEdit) {
+          console.error('this row is locked from edit because we don\'t know its id.');
           return;
         }
 

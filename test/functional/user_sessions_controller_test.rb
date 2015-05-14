@@ -24,6 +24,17 @@ class UserSessionsControllerTest < ActionController::TestCase
     assert_equal(expected_return_to, actual_return_to)
   end
 
+  def test_return_to_param_overrides_request_referrer
+    # No user session, so we land on the /login page successfully
+    @controller.stubs(:current_user_session).returns(nil)
+    expected_return_to = 'testpath/page2'
+    # Set HTTP_REFERER, to confirm that return_to overrides it
+    @request.env['HTTP_REFERER'] = 'http://test.com/steps/1'
+    get :new, {'referer_redirect' => 1, 'return_to' => expected_return_to}
+    actual_return_to = @controller.session[:return_to]
+    assert_equal(expected_return_to, actual_return_to)
+  end
+
   def test_login_with_login_path_override
     CurrentDomain.properties.stubs(on_login_path_override: '/goats-are-sexy')
     post(:create)

@@ -24,9 +24,8 @@ class UserSessionsController < ApplicationController
     @body_id = 'login'
     @user_session = UserSession.new
     if params[:referer_redirect]
-      # If url is an external app, we will not have a request.referer,
-      # so fall back to the return_to query parameter
-      session[:return_to] ||= request.referer || params[:return_to]
+      # If specifying a return_to param, let that override request.referer
+      session[:return_to] ||= params[:return_to] || request.referer
     end
   end
 

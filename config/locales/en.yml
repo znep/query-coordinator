@@ -343,6 +343,7 @@ en:
       permission_denied: You do not have access to this view.
       previous: Previous
       required_cols_missing: Columns required for this view are missing
+      row_locked_for_edit: Presently, we cannot edit a just-created row. We are working to make that possible. For now, refresh the page before editing this row.
       sort_ascending: Sort Ascending
       sort_descending: Sort Descending
       totals: Totals

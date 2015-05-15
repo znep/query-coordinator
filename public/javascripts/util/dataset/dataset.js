@@ -1093,6 +1093,11 @@ var Dataset = ServerModel.extend({
 
         if (row.lockedFromEdit) {
           console.error('this row is locked from edit because we don\'t know its id.');
+          $('.blist-tr[id*=r' + row.id + '] .blist-td.saving').socrataTip({
+            trigger: 'now',
+            message: $.t('controls.grid.row_locked_for_edit'),
+            'parent': 'body'
+          });
           return;
         }
 

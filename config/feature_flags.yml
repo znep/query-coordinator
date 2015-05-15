@@ -165,3 +165,6 @@ disable_legacy_types:
 default_imports_to_nbe:
   description: When performing import operations, such as via the wizard or append/replace, the endpoint will be NBE by default rather than needing a migration.
   defaultValue: false
+secondary_group_identifier:
+  description: See CORE-5497 - This is the secondary indexing group that should be signaled to index on new UX bootstrap
+  defaultValue: spandex3

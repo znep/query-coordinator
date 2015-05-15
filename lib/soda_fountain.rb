@@ -2,6 +2,12 @@ class SodaFountain
 
   class ConnectionError < RuntimeError; end
 
+  attr_accessor :path
+
+  def initialize(options = {})
+    @path = options[:path] || '/dataset-rollup'
+  end
+
   def connection_details
     # Port is typically 6010 when specified in configuration (/etc/soda.conf) but is randomly assigned otherwise
     zookeeper_path = ENV['ZOOKEEPER_SODA_FOUNTAIN_PATH'] || 'com.socrata/soda/services/soda-fountain'
@@ -23,14 +29,14 @@ class SodaFountain
   end
 
   def end_point
-    "http://#{address}:#{port}/dataset-rollup"
+    "http://#{address}:#{port}#{path}"
   end
 
   def delete_rollup_table(options)
     issue_request(
       verb: :delete,
       dataset_id: options.fetch(:dataset_id),
-      rollup_name: options.fetch(:rollup_name),
+      identifier: options.fetch(:identifier),
       cookies: options[:cookies],
       request_id: options[:request_id]
     )
@@ -40,7 +46,7 @@ class SodaFountain
     issue_request(
       verb: :put,
       dataset_id: options.fetch(:dataset_id),
-      rollup_name: options.fetch(:rollup_name),
+      identifier: options.fetch(:identifier),
       data: options[:soql],
       cookies: options[:cookies],
       request_id: options[:request_id]
@@ -49,11 +55,11 @@ class SodaFountain
 
   def issue_request(options)
     raise ArgumentError.new('Missing option :dataset_id') unless options[:dataset_id].present?
-    raise ArgumentError.new('Missing option :rollup_name') unless options[:rollup_name].present?
+    raise ArgumentError.new('Missing option :identifier') unless options[:identifier].present?
 
     dataset_id        = options.fetch(:dataset_id)
-    rollup_name       = options.fetch(:rollup_name)
-    soda_fountain_url = "#{end_point}/_#{dataset_id}/#{rollup_name}"
+    identifier       = options.fetch(:identifier)
+    soda_fountain_url = "#{end_point}/_#{dataset_id}/#{identifier}"
     verb              = options.fetch(:verb).to_s.capitalize
     request           = "Net::HTTP::#{verb}".constantize.new(soda_fountain_url)
 

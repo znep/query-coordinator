@@ -13,6 +13,8 @@
 # across requests but the code that uses CurrentDomain.____ accessors should
 # be converted to use the rack env['socrata.current_domain'] variable instead.
 class CurrentDomainMiddleware
+  include SocrataDockerHelpers
+
   def initialize(app)
     @app = app
   end
@@ -20,7 +22,7 @@ class CurrentDomainMiddleware
   def call(env)
     request = Rack::Request.new(env)
 
-    if running_in_aws?(env) && env['REQUEST_PATH'].to_s.match(/^\/version/)
+    if socrata_docker_environment? && env['REQUEST_PATH'].to_s.match(/^\/version/)
       CurrentDomain.set_domain(
         Domain.new(
           'cname'=> 'unknown',
@@ -67,10 +69,6 @@ class CurrentDomainMiddleware
   end
 
   private
-
-  def running_in_aws?(env)
-    !!env['ARK_HOST']
-  end
 
   def logger
     Rails.logger || Logger.new

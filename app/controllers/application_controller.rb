@@ -124,6 +124,7 @@ protected
     ActiveSupport::Notifications.instrument :meter, :measurement => name
   end
 
+  # +before_filter+
   def set_user
     if current_user_session
       @current_user = current_user_session.user
@@ -134,6 +135,7 @@ private
 
   # create the connection that can be used by all core server calls
   # made by this request
+  # +before_filter+
   def create_core_server_connection
     CoreServer::Base.connection = CoreServer::Connection.new(Rails.logger, cookies)
   end
@@ -144,10 +146,12 @@ private
     options
   end
 
+  # +before_filter+
   def disable_frame_embedding
     headers['X-Frame-Options'] = 'SAMEORIGIN' if !@suppress_chrome
   end
 
+  # +before_filter+
   def sync_logged_in_cookie
     cookies.delete(:logged_in) unless current_user
   end
@@ -157,6 +161,7 @@ private
     ConditionalRequestHandler.set_cache_control_headers(response, true)
   end
 
+  # +before_filter+
   def require_user(force_login = false)
     unless current_user_session && !force_login
       if @suppress_chrome
@@ -170,6 +175,7 @@ private
     end
   end
 
+  # +before_filter+
   def set_meta
     # Set site meta tags as appropriate
     @meta = {
@@ -228,10 +234,12 @@ private
     session[:return_to] = nil
   end
 
+  # +before_filter+
   def adjust_format
     request.format = :data if request.xhr?
   end
 
+  # +before_filter+
   def patch_microsoft_office
     if request.method == :options
       render :nothing => true, :status => :ok
@@ -266,6 +274,7 @@ private
   # the usual development call stacks:
   # alias_method :rescue_action_locally, :rescue_action_in_public
 
+  # +before_filter+
   def force_utf8_params
     traverse = lambda do |object, block|
       if object.kind_of?(Hash)
@@ -287,6 +296,7 @@ private
     @suppress_chrome = params[:hide_chrome] == 'true'
   end
 
+  # +before_filter+
   def poll_downtime_config
     Downtime.update!
   end

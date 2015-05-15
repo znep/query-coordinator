@@ -1,5 +1,5 @@
 class VersionController < ApplicationController
-  skip_before_filter :require_user, :index
+  skip_before_filter :require_user, :index, :set_meta
   
   def index
     Rails.logger.info 'Getting version information'

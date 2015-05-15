@@ -8,6 +8,10 @@
 
 ### System dependencies
 
+```
+brew update
+```
+
 Install postgres:
 
 ```
@@ -17,7 +21,6 @@ brew install postgres
 Install rbenv and ruby:
 
 ```
-brew update
 brew install rbenv ruby-build
 rbenv install 2.2.2
 ```

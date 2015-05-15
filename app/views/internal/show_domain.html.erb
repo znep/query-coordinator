@@ -90,15 +90,6 @@
           <label>Default?</label>
           <input type='checkbox' name='config[default]' checked='checked' />
         </div>
-        <div class='line'>
-          <label>Parent Config</label>
-          <select name='config[parentId]'>
-            <option value=''>(none)</option>
-            <%- sorted_configs.each do |conf| -%>
-            <option value='<%= conf.id %>'><%= conf.name %></option>
-            <%- end -%>
-          </select>
-        </div>
         <input type='submit' value='Create' />
       <% end %>
 

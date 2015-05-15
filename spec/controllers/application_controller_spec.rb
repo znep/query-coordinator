@@ -6,12 +6,12 @@ describe ApplicationController do
     context 'when the user has no session id' do
       it 'returns nil' do
         request.cookies.clear
-        expect( controller.current_user ).to eq(nil)
+        expect(controller.current_user).to eq(nil)
       end
 
       it 'does not call core' do
         request.cookies.clear
-        expect( controller).to_not receive(:core_server_get)
+        expect(controller).to_not receive(:core_server_get)
       end
     end
 
@@ -24,7 +24,7 @@ describe ApplicationController do
         bad_user_return = {"code"=>"not_found", "error"=>true, "message"=>"User not found"}
         allow(controller).to receive(:core_server_get).and_return(bad_user_return)
 
-        expect( controller.current_user ).to eq(nil)
+        expect(controller.current_user).to eq(nil)
       end
     end
 
@@ -37,8 +37,8 @@ describe ApplicationController do
         allow(controller).to receive(:core_server_get).and_return(good_user_return)
 
         user_actual = controller.current_user
-        expect( user_actual ).to include('id')
-        expect( user_actual ).to include('displayName')
+        expect(user_actual).to include('id')
+        expect(user_actual).to include('displayName')
       end
     end
 

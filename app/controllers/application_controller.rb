@@ -37,7 +37,7 @@ class ApplicationController < ActionController::Base
   #   core_server_get('/users/current.json')
   def core_server_get(path)
     # Join list of cookies into single string to pass to core
-    socrata_session_cookies = request.cookies.map{|k,v| "#{k}=#{v}"}.join('; ')
+    socrata_session_cookies = request.cookies.map{ |k, v| "#{k}=#{v}" }.join('; ')
 
     HTTParty.get("#{Rails.application.config.core_service_uri}#{path}",
       :headers => {

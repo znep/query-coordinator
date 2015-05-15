@@ -1092,12 +1092,6 @@ var Dataset = ServerModel.extend({
           return;
         }
 
-        if (row.lockedFromEdit) {
-          console.error('this row is locked from edit because we don\'t know its id.');
-          ds.trigger('row_error_message', [row]);
-          return;
-        }
-
         // Keep track of which columns need to be saved, and only use those values
         var saving = _.keys(row.changed);
         if (ds.rowsNeedPK) {

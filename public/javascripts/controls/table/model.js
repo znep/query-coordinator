@@ -443,7 +443,10 @@ blist.namespace.fetch('blist.data');
                 if ($.isBlank(childRow))
                 {
                     this.view.setRowValue(value, row.id, column.id, !isValid);
-                    if (row.valid) {
+                    if (row.lockedFromEdit) {
+                      console.error('you cannot edit this row because we don\'t know its id.');
+                      this.view.trigger('row_error_message', [row, column]);
+                    } else if (row.valid) {
                       this.view.saveRow(row.id);
                     }
                 }

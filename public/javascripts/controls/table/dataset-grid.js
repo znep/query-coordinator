@@ -144,12 +144,15 @@
                 this._view = newView;
                 this._model.options({view: newView});
 
-                this._view.bind('row_error_message', function(onRow) {
-                  $('.blist-tr[id*=r' + onRow.id + '] .blist-td.saving').socrataTip({
-                    trigger: 'now',
-                    message: $.t('controls.grid.row_locked_for_edit'),
-                    'parent': 'body'
-                  });
+                var $dom = this.$dom();
+                this._view.bind('row_error_message', function(onRow, onCol) {
+                  $('.blist-tr[id*=r' + onRow.id + '] .blist-td[class*=c' + onCol.id + ']', $dom).
+                    socrataTip({
+                      trigger: 'now',
+                      isSolo: true,
+                      message: $.t('controls.grid.row_locked_for_edit'),
+                      'parent': 'body'
+                    });
                 });
             },
 

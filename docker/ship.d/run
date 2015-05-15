@@ -8,4 +8,6 @@ export ACTIVEMQ_HOSTS=${ACTIVEMQ_HOSTS:-"$EXTERNAL_IP"}
 /bin/env_parse ${APP_DIR}/docker/unicorn.rb.j2 ${APP_DIR}/config/unicorn.rb
 
 cd ${APP_DIR}
-su socrata -c "HOME=${APP_DIR} unicorn -c config/unicorn.rb"
+# Using exec to replace the current bash script running with PID1 with Unicorn
+# This allows docker to send signals to unicorn, allowing for graceful shutdown
+exec su socrata -c "HOME=${APP_DIR} unicorn -c config/unicorn.rb"

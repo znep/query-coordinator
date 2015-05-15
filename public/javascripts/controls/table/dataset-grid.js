@@ -145,12 +145,12 @@
                 this._model.options({view: newView});
 
                 var $dom = this.$dom();
-                this._view.bind('row_error_message', function(onRow, onCol) {
+                this._view.bind('row_error_message', function(onRow, onCol, message) {
                   $('.blist-tr[id*=r' + onRow.id + '] .blist-td[class*=c' + onCol.id + ']', $dom).
                     socrataTip({
                       trigger: 'now',
                       isSolo: true,
-                      message: $.t('controls.grid.row_locked_for_edit'),
+                      message: message,
                       'parent': 'body'
                     });
                 });

@@ -332,6 +332,9 @@ en:
       delete_warning_multi_column: Do you want to delete the selected columns? All data in these columns will be removed!
       delete_warning_single_column: Do you want to delete the selected column? All data in this column will be removed!
       edit_column_properties: Edit Column Properties
+      errors:
+        primary_key_collision: This value already exists as a primary key. You may not overwrite it.
+        row_locked_for_edit: Presently, we cannot edit a just-created row. We are working to make that possible. For now, refresh the page before editing this row.
       filter_this_column: Filter This Column
       geocodes_pending: Rows in the location column are still geocoding. Please wait until they are finished to publish this dataset
       hide_column: Hide Column
@@ -343,7 +346,6 @@ en:
       permission_denied: You do not have access to this view.
       previous: Previous
       required_cols_missing: Columns required for this view are missing
-      row_locked_for_edit: Presently, we cannot edit a just-created row. We are working to make that possible. For now, refresh the page before editing this row.
       sort_ascending: Sort Ascending
       sort_descending: Sort Descending
       totals: Totals

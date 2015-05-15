@@ -1112,7 +1112,6 @@ var Dataset = ServerModel.extend({
         // 1. Throw away our sendRow. We need to re-build the entire row.
         // 2. Send a delete command on the existing row.
         // 3. Send an insert on the *entire* row, since "everything" is changed now.
-        var waitForRowExists = false;
         if (_.has(row.metadata, 'version')
             && row.changed[(ds.rowIdentifierColumn || {}).lookup]) {
           // ds.rowIdentifierColumn should be guaranteed since
@@ -1123,21 +1122,6 @@ var Dataset = ServerModel.extend({
           sendRow.push(deleteCmd);
 
           sendRow.unshift(ds._rowData(row, _.pluck(ds.realColumns, 'lookup'), parCol));
-          waitForRowExists = true;
-
-          ds.rowExists(row.data[ds.rowIdentifierColumn.lookup])
-            .done(function(rowExists) {
-              if (rowExists) {
-                console.error('attempted to change primary key to one that already exists');
-                row.error[ds.rowIdentifierColumn.lookup] = true;
-                row.invalid[ds.rowIdentifierColumn.lookup] = true;
-
-                // Update the UX.
-                ds.trigger('row_change', [[row]]);
-              } else {
-                doRequest();
-              }
-            });
         }
 
         var doRequest = function() {
@@ -1156,7 +1140,25 @@ var Dataset = ServerModel.extend({
           ds._pendingRowEdits[key] = [];
           ds._serverSaveRow(reqObj, useBatch);
         };
-        if (!waitForRowExists) {
+
+        // This check only needs to happen if there's a primary key. You can't modify
+        // the server-generated :id column.
+        if (ds.rowsNeedPK) {
+          ds.rowExists(row.data[ds.rowIdentifierColumn.lookup])
+            .done(function(rowExists) {
+              if (rowExists) {
+                console.error('attempted to change primary key to one that already exists');
+                row.error[ds.rowIdentifierColumn.lookup] = true;
+                row.invalid[ds.rowIdentifierColumn.lookup] = true;
+
+                // Update the UX.
+                ds.trigger('row_change', [[row]]);
+                ds.trigger('row_error_message', [row, ds.rowIdentifierColumn, $.t('controls.grid.errors.primary_key_collision')]);
+              } else {
+                doRequest();
+              }
+            });
+        } else {
           doRequest();
         }
     },

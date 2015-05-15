@@ -2,7 +2,7 @@ class VersionController < ApplicationController
   def show
     render json: {
       revision: Storyteller::REVISION_NUMBER,
-      buildTimestamp: Storyteller::REVISION_DATE,
+      buildTimestamp: Storyteller::BUILD_TIMESTAMP,
       bootedTimestamp: Storyteller::BOOTED_TIMESTAMP
     }
   end

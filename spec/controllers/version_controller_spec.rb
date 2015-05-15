@@ -4,7 +4,7 @@ RSpec.describe VersionController, type: :controller do
   describe '#show' do
     before do
       stub_const('Storyteller::REVISION_NUMBER', 'therevisionnumber')
-      stub_const('Storyteller::REVISION_DATE', 12345678)
+      stub_const('Storyteller::BUILD_TIMESTAMP', 12345678)
       stub_const('Storyteller::BOOTED_TIMESTAMP', 98765432)
     end
 

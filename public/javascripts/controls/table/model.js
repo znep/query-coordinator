@@ -370,7 +370,12 @@ blist.namespace.fetch('blist.data');
             if (row.type == 'blank')
             {
                 delete row.type;
-                row.id = this.view.createRow();
+
+                if (this.view.newBackend && this.view.rowIdentifierColumn == column) {
+                  row.id = this.view.createRowWithPK(value);
+                } else {
+                  row.id = this.view.createRow();
+                }
                 isCreate = true;
                 row = this.getByID(row.id);
                 if (!skipUndo)
@@ -438,7 +443,12 @@ blist.namespace.fetch('blist.data');
                 if ($.isBlank(childRow))
                 {
                     this.view.setRowValue(value, row.id, column.id, !isValid);
-                    this.view.saveRow(row.id);
+                    if (row.lockedFromEdit) {
+                      console.error('you cannot edit this row because we don\'t know its id.');
+                      this.view.trigger('grid_error_message', [row, column, $.t('controls.grid.errors.row_locked_for_edit')]);
+                    } else if (row.valid) {
+                      this.view.saveRow(row.id);
+                    }
                 }
                 else
                 {
@@ -447,6 +457,13 @@ blist.namespace.fetch('blist.data');
                     this.view.saveRow(childRow.id, parRow.id, parCol.id);
                 }
             }
+
+            // Because NBE does not inform us of the new row id, we need to prevent any
+            // further edits to this row.
+            if (isCreate && !this.view.rowsNeedPK && this.view.newBackend) {
+              row.lockedFromEdit = true;
+            }
+
             return row;
         };
 

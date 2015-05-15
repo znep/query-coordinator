@@ -149,7 +149,11 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
       });
 
       $scope.$on('column-chart:datum-clicked', function(event, datum) {
-        var wantsFilterToNull = !_.isPresent(datum.name);
+        var wantsFilterToNull = _.isUndefined(datum.name) ||
+          _.isNull(datum.name) ||
+          _.isNaN(datum.name) ||
+          (_.isNumber(datum.name) && !_.isFinite(datum.name)) ||
+          (_.isString(datum.name) && datum.name.length === 0);
 
         var isFilteringOnClickedDatum = _.any($scope.model.getCurrentValue('activeFilters'), function(filter) {
           if (filter instanceof Filter.BinaryOperatorFilter) {

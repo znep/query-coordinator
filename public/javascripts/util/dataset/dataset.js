@@ -33,7 +33,8 @@ var Dataset = ServerModel.extend({
             'row_count_change', 'column_resized', 'displayformat_change',
             'displaytype_change', 'column_totals_changed', 'removed',
             'permissions_changed', 'new_comment', 'reloaded',
-            'conditionalformatting_change', 'saved', 'dataset_last_modified']);
+            'conditionalformatting_change', 'saved', 'dataset_last_modified',
+            'row_error_message']);
 
         var ds = this;
         // Avoid overwriting functions with static values from Rails (e.g., totalRows)
@@ -1093,11 +1094,7 @@ var Dataset = ServerModel.extend({
 
         if (row.lockedFromEdit) {
           console.error('this row is locked from edit because we don\'t know its id.');
-          $('.blist-tr[id*=r' + row.id + '] .blist-td.saving').socrataTip({
-            trigger: 'now',
-            message: $.t('controls.grid.row_locked_for_edit'),
-            'parent': 'body'
-          });
+          ds.trigger('row_error_message', [row]);
           return;
         }
 

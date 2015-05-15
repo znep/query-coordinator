@@ -137,8 +137,20 @@
 
             setView: function(newView)
             {
+                if (this._view) {
+                  this._view.unbind('row_error_message');
+                }
+
                 this._view = newView;
                 this._model.options({view: newView});
+
+                this._view.bind('row_error_message', function(onRow) {
+                  $('.blist-tr[id*=r' + onRow.id + '] .blist-td.saving').socrataTip({
+                    trigger: 'now',
+                    message: $.t('controls.grid.row_locked_for_edit'),
+                    'parent': 'body'
+                  });
+                });
             },
 
             isValid: function()

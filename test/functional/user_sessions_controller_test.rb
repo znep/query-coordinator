@@ -15,11 +15,11 @@ class UserSessionsControllerTest < ActionController::TestCase
     assert(@response.redirect_url.include?(profile_index_path), 'should redirect to profile')
   end
 
-  def test_set_return_to_with_external_redirect
+  def test_set_return_to_with_return_to_param
     # No user session, so we land on the /login page successfully
     @controller.stubs(:current_user_session).returns(nil)
     expected_return_to = 'testpath/page2'
-    get :new, {'referer_redirect' => 1, 'return_to' => expected_return_to}
+    get :new, {'return_to' => expected_return_to}
     actual_return_to = @controller.session[:return_to]
     assert_equal(expected_return_to, actual_return_to)
   end

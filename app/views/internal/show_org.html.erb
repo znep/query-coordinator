@@ -52,22 +52,8 @@
             <%- end -%>
           </select>
         </div>
-        <div class='line'>
-          <label>Parent theme:</label>
-          <select name="config[parentDomainCName]">
-            <%- @domains.each do |domain| -%>
-            <option value="<%= domain.cname %>"><%= domain.shortName %></option>
-            <%- end -%>
-          </select>
-        </div>
-        <div class='line'>
-          <label>Parent domain:</label>
-          <select name="domain[parentDomainId]">
-            <%- @domains.each do |domain| -%>
-            <option value="<%= domain.id %>"><%= domain.shortName %></option>
-            <%- end -%>
-          </select>
-        </div>
+        <input type="hidden" name="config[parentDomainCName]" value="<%= @domains.first.cname %>" />
+        <input type="hidden" name="domain[parentDomainId]" value="<%= @domains.first.id %>" />
         <input type="submit" value="Create"/>
       <% end %>
     <%- end -%>

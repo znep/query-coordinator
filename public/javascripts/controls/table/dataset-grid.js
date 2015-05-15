@@ -138,14 +138,14 @@
             setView: function(newView)
             {
                 if (this._view) {
-                  this._view.unbind('row_error_message');
+                  this._view.unbind('grid_error_message');
                 }
 
                 this._view = newView;
                 this._model.options({view: newView});
 
                 var $dom = this.$dom();
-                this._view.bind('row_error_message', function(onRow, onCol, message) {
+                this._view.bind('grid_error_message', function(onRow, onCol, message) {
                   $('.blist-tr[id*=r' + onRow.id + '] .blist-td[class*=c' + onCol.id + ']', $dom).
                     socrataTip({
                       trigger: 'now',

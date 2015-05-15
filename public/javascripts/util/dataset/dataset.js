@@ -34,7 +34,7 @@ var Dataset = ServerModel.extend({
             'displaytype_change', 'column_totals_changed', 'removed',
             'permissions_changed', 'new_comment', 'reloaded',
             'conditionalformatting_change', 'saved', 'dataset_last_modified',
-            'row_error_message']);
+            'grid_error_message']);
 
         var ds = this;
         // Avoid overwriting functions with static values from Rails (e.g., totalRows)
@@ -1153,7 +1153,7 @@ var Dataset = ServerModel.extend({
 
                 // Update the UX.
                 ds.trigger('row_change', [[row]]);
-                ds.trigger('row_error_message', [row, ds.rowIdentifierColumn, $.t('controls.grid.errors.primary_key_collision')]);
+                ds.trigger('grid_error_message', [row, ds.rowIdentifierColumn, $.t('controls.grid.errors.primary_key_collision')]);
               } else {
                 doRequest();
               }

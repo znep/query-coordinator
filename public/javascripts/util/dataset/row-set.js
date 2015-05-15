@@ -358,20 +358,22 @@ var RowSet = ServerModel.extend({
         return this._rows;
     },
 
-    rowExists: function(rowId, trueCallback, falseCallback)
+    rowExists: function(rowId)
     {
         var rs = this,
             ds = rs._dataset,
             lookup = (this._dataset.rowIdentifierColumn || {}).lookup || ':id',
-            deferred = $.Deferred(),
-            row;
+            deferred = $.Deferred();
 
         // I wonder how many rows need to be in memory for this to be *slower*
         // than a server roundtrip. Probably not worth optimizing.
-        if (row = _.detect(this._rows, function(row) { return row.data[lookup] == rowId; })) {
+        if (_.detect(this._rows, function(row) {
+            // Check .changed to make sure this is not a newly-set datum.
+            return !row.changed[lookup] && row.data[lookup] == rowId;
+          })) {
           return $.when(true);
         } else {
-          var params = { '$where': encodeURIComponent(lookup + '="' + rowId + '"') };
+          var params = { '$where': lookup + '="' + rowId + '"' };
           var url = '/api/id/' + ds.id + '.json?' + $.toParam(params);
           $.getJSON(url, function(data) { deferred.resolve(data.length > 0); });
         }

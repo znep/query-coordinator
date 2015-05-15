@@ -146,7 +146,7 @@
 
                 var $dom = this.$dom();
                 this._view.bind('grid_error_message', function(onRow, onCol, message) {
-                  $('.blist-tr[id*=r' + onRow.id + '] .blist-td[class*=c' + onCol.id + ']', $dom).
+                  $('.blist-tr[id$="r' + onRow.id + '"] .blist-td[class*="c' + onCol.id + '"]', $dom).
                     socrataTip({
                       trigger: 'now',
                       isSolo: true,

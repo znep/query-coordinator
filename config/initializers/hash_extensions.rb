@@ -94,7 +94,7 @@ class Hash
   # in this hash or its children.
   def deep_string_strip!
     self.each_key do |key|
-      if self[key].respond_to?(:strip!)
+      if self[key].kind_of? String
         self[key].strip!
       end
 

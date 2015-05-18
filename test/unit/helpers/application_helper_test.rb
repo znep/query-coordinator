@@ -93,7 +93,7 @@ class ApplicationHelperTest < ActionView::TestCase
   def test_font_tags_does_not_output_font_tags
     init_current_domain
     application_helper.stubs(:module_enabled?).with(:govStat).returns(false)
-    CurrentDomain.stubs(:properties => OpenStruct.new())
+    CurrentDomain.stubs(:properties => OpenStruct.new)
 
     output = application_helper.font_tags
     assert_not_match(%r{//use.typekit.net/abcdef.js}, output)

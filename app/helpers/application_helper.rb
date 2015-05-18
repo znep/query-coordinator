@@ -647,7 +647,7 @@ ga('send', 'pageview');
         <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
       eos
     elsif module_enabled?(:govStat)
-      out << '<link href="https://fonts.googleapis.com/css?family=PT+Sans:400italic,400" rel="stylesheet" type="text/css">'
+      out << '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,400" rel="stylesheet" type="text/css">'
     end
 
     out.html_safe

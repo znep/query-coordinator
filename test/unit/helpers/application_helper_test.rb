@@ -68,7 +68,7 @@ class ApplicationHelperTest < ActionView::TestCase
     application_helper.stubs(:module_enabled?).with(:govStat).returns(true)
 
     assert_match(
-      '<link href="https://fonts.googleapis.com/css?family=PT+Sans:400italic,400" rel="stylesheet" type="text/css">',
+      '<link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,400" rel="stylesheet" type="text/css">',
       application_helper.font_tags
     )
   end

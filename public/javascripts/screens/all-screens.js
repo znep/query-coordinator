@@ -245,7 +245,8 @@
     $('.dateLocalize').each(function()
     {
         var $d = $(this);
-        $d.text(moment($d.data('rawdatetime') * 1000).format('LLLL'));
+        // In order to use PDT rather than -07:00, we need the moment-timezone library.
+        $d.text(moment($d.data('rawdatetime') * 1000).format('LLLL UTCZ'));
     });
     // Special clean-up for maintenance message
     var $mDates = $('.maintenanceNotice .dateLocalize');

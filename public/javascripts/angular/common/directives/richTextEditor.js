@@ -344,7 +344,7 @@
       initCss(element);
 
       Rx.Observable.combineLatest(
-        $scope.observeDestroy(element),
+        $scope.$destroyAsObservable(element),
         // Mostly for unit tests - Guard against a race condition where the iframe doesn't load
         // before we're done with the test.
         $scope.observe('editor').filter(_.isPresent),

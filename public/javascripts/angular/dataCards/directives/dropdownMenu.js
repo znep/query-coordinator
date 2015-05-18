@@ -55,7 +55,7 @@ angular.module('dataCards.directives').directive('dropdownMenu', function(
           }
       }));
 
-      $scope.observeDestroy(element).subscribe(function() {
+      $scope.$destroyAsObservable(element).subscribe(function() {
         // During unit tests, these subscriptions stick around and cause errors (since element isn't
         // in the dom anymore, so no parent()), so practice good hygiene!
         _.invoke(subscriptions, 'dispose');

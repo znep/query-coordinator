@@ -128,7 +128,7 @@ angular.module('dataCards.directives').directive('animateTo', function(AngularRx
         element.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', transitionEnd);
 
         // Clean up
-        $scope.observeDestroy(element).subscribe(function() {
+        $scope.$destroyAsObservable(element).subscribe(function() {
           element.off('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd',
                       transitionEnd);
         });

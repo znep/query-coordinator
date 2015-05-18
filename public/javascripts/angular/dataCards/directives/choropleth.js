@@ -34,7 +34,7 @@
           element.getAttribute('data-flyout-text')
         );
       },
-      scope.$eventToObservable('$destroy'),
+      scope.$destroyAsObservable(),
       false,
       // The last argument specifies a horizontal display mode.
       true);
@@ -1069,7 +1069,7 @@
           }
 
         },
-        scope.observeDestroy(element),
+        scope.$destroyAsObservable(element),
         // The second-to-last argument specifies whether the flyout should follow
         // the cursor (true) or be fixed to the target element (false).
         true,
@@ -1222,7 +1222,7 @@
             }
           });
 
-        scope.observeDestroy(element).subscribe(function() {
+        scope.$destroyAsObservable(element).subscribe(function() {
           // Leaflet needs to be told to clean up after itself.
           map.remove();
         });

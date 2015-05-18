@@ -90,7 +90,7 @@
           FlyoutService.refreshFlyout();
         });
 
-        FlyoutService.register('customize-button', renderCustomizeButtonFlyout, $scope.observeDestroy(element));
+        FlyoutService.register('customize-button', renderCustomizeButtonFlyout, $scope.$destroyAsObservable(element));
 
       }
     };

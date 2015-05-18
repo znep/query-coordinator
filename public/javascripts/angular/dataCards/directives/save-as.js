@@ -66,7 +66,7 @@
           filter(function(e) {
             return $scope.panelActive && $(e.target).closest(element).length === 0;
           }).
-          takeUntil($scope.observeDestroy(element)).
+          takeUntil($scope.$destroyAsObservable(element)).
           subscribe(function() {
             $scope.safeApply(function() {
               $scope.panelActive = false;
@@ -91,9 +91,9 @@
           } else if (saveEvents.value.status === 'idle') {
             return '<div class="flyout-title">Click to save your changes as a new page</div>';
           }
-        }, $scope.observeDestroy(element));
+        }, $scope.$destroyAsObservable(element));
 
-        $scope.observeDestroy(element).subscribe(function() {
+        $scope.$destroyAsObservable(element).subscribe(function() {
           $scope.$emit('cleaned-up');
         });
       }

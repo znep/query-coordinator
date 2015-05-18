@@ -75,7 +75,7 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
       }
 
       observable.
-        takeUntil(self.$eventToObservable('$destroy')). //TakeUntil to avoid leaks.
+        takeUntil(self.$destroyAsObservable()). //TakeUntil to avoid leaks.
         subscribe(
           set,
           onError ? errorHandler : defaultErrorHandler,
@@ -94,37 +94,7 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
       });
 
       return observable
-        .takeUntil(this.$eventToObservable('$destroy')); //TakeUntil to avoid leaks.
-    },
-
-    /**
-     * Registers a callback to fire when either the scope or element fire the $destroy event.
-     *
-     * When you remove an element, it does not actually fire a $destroy event on the scope - just on
-     * the element. Unless of course, it's an ng-repeat, and an element is removed as a result of
-     * the repeated array changing. This isn't super intuitive, so just register callback for both.
-     *
-     * @see {http://stackoverflow.com/questions/14416894/provide-an-example-of-scopes-destroy-event}
-     *
-     * @param {jQuery|Element} element - The element associated with this scope.
-     * @return {Rx.Observable} an observable for both the scope's $destroy, and the element's
-     *   $destroy events.
-     */
-    observeDestroy: function observeDestroy(element) {
-      var elementScope = element.scope();
-      // TODO determine if we want this kind of assertion to stick around.
-      // It fails if there are intermediate elements between the elementScope
-      // and "this" that introduce a new scope.
-      // Assert(
-      //   // In angular, element.scope() actually returns the directive's parent's scope for isolate
-      //   // scopes, so check both the parent, or this.
-      //   elementScope === this.$parent || elementScope === this,
-      //   'element must be this scope\'s element.'
-      // );
-      return Rx.Observable.merge(
-        this.$eventToObservable('$destroy'),
-        Rx.Observable.fromEvent(element, '$destroy')
-      ).take(1);
+        .takeUntil(this.$destroyAsObservable()); //TakeUntil to avoid leaks.
     },
 
     emitEventsFromObservable: function emitEventsFromObservable(eventName, observable) {
@@ -135,7 +105,7 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
       }
 
       return observable.
-        takeUntil(self.$eventToObservable('$destroy')). //TakeUntil to avoid leaks.
+        takeUntil(self.$destroyAsObservable()). //TakeUntil to avoid leaks.
         subscribe(
           function(value) {
           self.safeApply(function() {

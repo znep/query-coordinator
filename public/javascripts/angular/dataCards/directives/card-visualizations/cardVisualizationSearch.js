@@ -200,7 +200,7 @@
         );
 
         var clicksOutsideOfSuggestionUIObservable = Rx.Observable.fromEvent($(document), 'click').
-          takeUntil($scope.observeDestroy(element)).
+          takeUntil($scope.$destroyAsObservable(element)).
           filter(function(event) {
             var isEventFromBeyondSuggestionToolPanel = element.find('suggestion-tool-panel').find(event.target).length === 0;
             var isEventFromOutsideTheSearchInputField = element.find('clearable-input').find(event.target).length === 0;

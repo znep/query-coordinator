@@ -93,7 +93,7 @@
             });
           });
 
-          scope.observeDestroy(element).subscribe(function() {
+          scope.$destroyAsObservable(element).subscribe(function() {
             $('body').off('.{0}'.format(instanceUniqueNamespace));
           });
 
@@ -685,7 +685,7 @@
           ));
 
 
-          scope.observeDestroy(element).subscribe(function() {
+          scope.$destroyAsObservable(element).subscribe(function() {
             _.invoke(subscriptions, 'dispose');
           });
         }

@@ -140,13 +140,13 @@
             return '<div class="flyout-title">Visualize this column as a {0}</div>'.format(visualizationName);
           }
 
-        }, scope.observeDestroy(element));
+        }, scope.$destroyAsObservable(element));
 
         FlyoutService.register('warning-icon', function(el) {
 
           return EXCESSIVE_COLUMN_WARNING;
 
-        }, scope.observeDestroy(element));
+        }, scope.$destroyAsObservable(element));
 
       }
     };

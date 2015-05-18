@@ -8,6 +8,7 @@ var dataCards = angular.module('dataCards', [
   'socrataCommon.services',
   'socrataCommon.filters',
   'socrataCommon.directives',
+  'socrataCommon.decorators',
   'dataCards.controllers',
   'dataCards.models',
   'dataCards.directives',

@@ -29,7 +29,7 @@
         '<div class="flyout-title">This visualization is not available' +
         '<br/>for image export</div>'
       ),
-      scope.observeDestroy(element)
+      scope.$destroyAsObservable(element)
     );
   }
 
@@ -473,7 +473,7 @@
             };
 
           }
-        ).takeUntil(scope.observeDestroy(cardContainer));
+        ).takeUntil(scope.$destroyAsObservable(cardContainer));
 
         // Figure out the sticky-ness of the QFB onscroll and un/stick appropriately
         subscriptions.push(
@@ -868,7 +868,7 @@
           function(el) {
             return '<div class="flyout-title">{0}</div>'.format($(el).attr('title'));
           },
-          scope.observeDestroy(cardContainer)
+          scope.$destroyAsObservable(cardContainer)
         );
 
         FlyoutService.register(
@@ -878,7 +878,7 @@
               return '<div class="flyout-title">All available cards are already on the page</div>';
             }
           },
-          scope.observeDestroy(cardContainer)
+          scope.$destroyAsObservable(cardContainer)
         );
 
         /******************
@@ -887,7 +887,7 @@
 
         scope.bindObservable('cardModels', scope.page.observe('cards'));
 
-        scope.observeDestroy(cardContainer).subscribe(function() {
+        scope.$destroyAsObservable(cardContainer).subscribe(function() {
           _.invoke(subscriptions, 'dispose');
         });
 

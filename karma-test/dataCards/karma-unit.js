@@ -111,6 +111,7 @@ module.exports = function ( karma ) {
        * OUR CODE BELOW */
 
       /* dataCards ITSELF */
+      'public/javascripts/angular/common/decorators.js',
       'public/javascripts/angular/common/*.js',
       'public/javascripts/angular/common/**/*.js',
 

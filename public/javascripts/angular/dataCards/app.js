@@ -4,6 +4,7 @@ var dependencies = [
   'btford.markdown',
   'monospaced.elastic',
   'socrataCommon.services',
+  'socrataCommon.decorators',
   'socrataCommon.directives',
   'socrataCommon.filters',
   'dataCards.controllers',

@@ -36,7 +36,7 @@
         // Don't double-handle toggling downloadOpened
         !$(e.target).closest('.download-menu').length;
     }).
-    takeUntil($scope.$eventToObservable('$destroy')).
+    takeUntil($scope.$destroyAsObservable()).
     subscribe(function() {
       $scope.$apply(function() {
         $scope.downloadOpened = false;
@@ -564,6 +564,8 @@
         pluck(1); // We're done with the buffer - only care about the current event.
     };
 
+    var destroy$ = $scope.$destroyAsObservable();
+
     FlyoutService.register(
       'edit-page-warning',
       function() {
@@ -573,7 +575,7 @@
           return '';
         }
       },
-      $scope.$eventToObservable('$destroy')
+      destroy$
     );
 
 
@@ -648,7 +650,7 @@
           'Please save the page in order to download a visualization as an image' +
         '</div>'
       ),
-      $scope.$eventToObservable('$destroy')
+      destroy$
     );
 
     //TODO consider extending register() to take a selector, too.
@@ -678,7 +680,7 @@
             '<div class="flyout-title">No changes to be saved</div>';
         }
       },
-      $scope.$eventToObservable('$destroy')
+      destroy$
     );
 
     FlyoutService.register(
@@ -689,7 +691,7 @@
           '<div class="flyout-title">Click to save your changes as a new page</div>' :
           '<div class="flyout-title">No changes to be saved</div>';
       },
-      $scope.$eventToObservable('$destroy')
+      destroy$
     );
 
     FlyoutService.register(
@@ -698,7 +700,7 @@
 
         return '<div class="flyout-title">Click to reset all filters</div>';
       },
-      $scope.$eventToObservable('$destroy')
+      destroy$
     );
 
     // Since we have a flyout handler whose output depends on currentPageSaveEvents and $scope.hasChanges,
@@ -711,7 +713,7 @@
     * Clean up if/when the scope is destroyed *
     ******************************************/
 
-    $scope.$on('$destroy', function() {
+    destroy$.subscribe(function() {
       $('#api-panel-toggle-btn').off('click');
       var $apiUrlDisplay = $('#api-url-display');
       $apiUrlDisplay.off('mousedown');

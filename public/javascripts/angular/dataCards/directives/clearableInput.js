@@ -48,7 +48,7 @@
             else {
               return Rx.Observable.empty();
             }
-          }).takeUntil($scope.observeDestroy(element)).subscribe(clearInput);
+          }).takeUntil($scope.$destroyAsObservable(element)).subscribe(clearInput);
 
         $scope.emitEventsFromObservable(
           'clearableInput:keypress',

@@ -109,7 +109,7 @@
             } else {
               return undefined;
             }
-          }, $scope.observeDestroy(element));
+          }, $scope.$destroyAsObservable(element));
         }
 
         // We _could_ support maintaining the height animation if these are changed

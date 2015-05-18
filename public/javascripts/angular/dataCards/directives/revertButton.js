@@ -22,7 +22,7 @@
                return '<div class="flyout-title">No changes to be reverted</div>';
              }
            },
-           scope.observeDestroy(element)
+           scope.$destroyAsObservable(element)
          );
       }
     };

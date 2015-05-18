@@ -1,5 +1,5 @@
 (function() {
   'use strict';
 
-  angular.module('socrataCommon.services', ['rx']);
+  angular.module('socrataCommon.services', ['rx', 'socrataCommon.decorators']);
 })();

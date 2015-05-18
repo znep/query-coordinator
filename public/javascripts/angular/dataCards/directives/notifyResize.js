@@ -22,7 +22,7 @@ angular.module('dataCards.directives').directive('notifyResize', function(Angula
       };
       element.resize(onElementResize);
 
-      $scope.observeDestroy(element).subscribe(function() {
+      $scope.$destroyAsObservable(element).subscribe(function() {
         element.removeResize(onElementResize);
       });
     }

@@ -34,7 +34,7 @@
           testPoint.left += 1;
           var topMostElement = document.elementFromPoint(testPoint.left, testPoint.top);
           return dialog[0] === topMostElement;
-        }).takeUntil(scope.observeDestroy(element)).subscribe(scope.closeDialog);
+        }).takeUntil(scope.$destroyAsObservable(element)).subscribe(scope.closeDialog);
       }
     };
   }

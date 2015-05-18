@@ -11,7 +11,7 @@
       templateUrl: '/angular_templates/dataCards/relatedViews.html',
       link: function($scope, element) {
         AngularRxExtensions.install($scope);
-        var destroyStream = $scope.observeDestroy(element);
+        var destroyStream = $scope.$destroyAsObservable(element);
 
         $scope.panelActive = false;
 

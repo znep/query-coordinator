@@ -11,6 +11,8 @@
       link: function($scope, element, attrs) {
         AngularRxExtensions.install($scope);
 
+        var destroyObservable = $scope.$destroyAsObservable(element);
+
         /*
          * Scope variables
          */
@@ -100,7 +102,8 @@
         });
 
         // Hide the panel
-        WindowState.closeDialogEventObservable.takeUntil($scope.observeDestroy(element)).
+        WindowState.closeDialogEventObservable.
+          takeUntil(destroyObservable).
           filter(function(e) {
             return $scope.panelActive && $(e.target).closest(element).length === 0;
           }).
@@ -120,7 +123,7 @@
 
 
         // Clean up
-        $scope.observeDestroy(element).subscribe(function() {
+        destroyObservable.subscribe(function() {
           $scope.$emit('cleaned-up');
         });
       }

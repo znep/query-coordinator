@@ -16,7 +16,7 @@ angular.module('dataCards.directives').directive('withSpacer', function(AngularR
         spacer.css(element.css(['width', 'height']));
       });
 
-      $scope.observeDestroy(element).subscribe(function() {
+      $scope.$destroyAsObservable(element).subscribe(function() {
         subscription.dispose();
         spacer.remove();
       });

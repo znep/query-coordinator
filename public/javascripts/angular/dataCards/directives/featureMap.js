@@ -54,7 +54,7 @@
             _.constant(
               '<div class="flyout-title">Zoom is temporarily unavailable. Please try again later.</div>'
             ),
-            scope.eventToObservable('$destroy')
+            scope.$eventToObservable('$destroy')
           );
         }
 

@@ -35,9 +35,9 @@
         // The 'render:start' and 'render:complete' events are emitted by the
         // underlying feature map and are used for a) toggling the state of the
         // 'busy' spinner and b) performance analytics.
-        var renderStartObservable = scope.eventToObservable('render:start');
-        var renderErrorObservable = scope.eventToObservable('render:error');
-        var renderCompleteObservable = scope.eventToObservable('render:complete').takeUntil(renderErrorObservable);
+        var renderStartObservable = scope.$eventToObservable('render:start');
+        var renderErrorObservable = scope.$eventToObservable('render:error');
+        var renderCompleteObservable = scope.$eventToObservable('render:complete').takeUntil(renderErrorObservable);
 
         // For every renderStart event, start a timer that will either expire on
         // its own, or get cancelled by the renderComplete event firing

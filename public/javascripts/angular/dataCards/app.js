@@ -10,7 +10,8 @@ var dependencies = [
   'dataCards.services',
   'dataCards.directives',
   'dataCards.models',
-  'dataCards.filters'
+  'dataCards.filters',
+  'rx'
 ];
 
 if (window['socrataConfig'].enableAirbrakeJs) {
@@ -40,12 +41,12 @@ dataCards.run(function($window, $rootScope, Analytics) {
   // fire unless the user really did do an action (otherwise the reported timings
   // will be very inaccurate).
   var intentionalUserActions = Rx.Observable.merge(
-    $rootScope.eventToObservable('timeline-chart:filter-changed'),
-    $rootScope.eventToObservable('timeline-chart:filter-cleared'),
-    $rootScope.eventToObservable('datset-filter:choropleth'),
-    $rootScope.eventToObservable('dataset-filter-clear:choropleth'),
-    $rootScope.eventToObservable('column-chart:datum-clicked'),
-    $rootScope.eventToObservable('page:dirtied'),
+    $rootScope.$eventToObservable('timeline-chart:filter-changed'),
+    $rootScope.$eventToObservable('timeline-chart:filter-cleared'),
+    $rootScope.$eventToObservable('datset-filter:choropleth'),
+    $rootScope.$eventToObservable('dataset-filter-clear:choropleth'),
+    $rootScope.$eventToObservable('column-chart:datum-clicked'),
+    $rootScope.$eventToObservable('page:dirtied'),
     Rx.Observable.fromEvent($($window), 'unload')   // Navigating away counts as an action.
   );
   $rootScope.emitEventsFromObservable('user-interacted', intentionalUserActions);

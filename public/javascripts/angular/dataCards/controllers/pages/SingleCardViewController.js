@@ -39,7 +39,7 @@
     // So instead, we wait for all images to finish loading (yeah...).
 
     // Sequence of render:complete events.
-    var renderComplete = $rootScope.eventToObservable('render:complete');
+    var renderComplete = $rootScope.$eventToObservable('render:complete');
 
     // Sequence of true/false representing whether or not all images on
     // the page are complete.

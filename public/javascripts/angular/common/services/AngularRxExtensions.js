@@ -75,7 +75,7 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
       }
 
       observable.
-        takeUntil(self.eventToObservable('$destroy')). //TakeUntil to avoid leaks.
+        takeUntil(self.$eventToObservable('$destroy')). //TakeUntil to avoid leaks.
         subscribe(
           set,
           onError ? errorHandler : defaultErrorHandler,
@@ -94,23 +94,7 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
       });
 
       return observable
-        .takeUntil(this.eventToObservable('$destroy')); //TakeUntil to avoid leaks.
-    },
-
-    eventToObservable: function eventToObservable(eventName) {
-      if (_.isEmpty(eventName) || !_.isString(eventName)) {
-        throw new Error('eventToObservable not passed a string event name');
-      }
-
-      var eventSubject = new Rx.Subject();
-      this.$on(eventName, function(event) {
-        eventSubject.onNext( { event: event, args: _.rest(arguments) } );
-      });
-      if (eventName == '$destroy') {
-        return eventSubject.take(1);
-      } else {
-        return eventSubject.takeUntil(this.eventToObservable('$destroy'));
-      }
+        .takeUntil(this.$eventToObservable('$destroy')); //TakeUntil to avoid leaks.
     },
 
     /**
@@ -138,7 +122,7 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
       //   'element must be this scope\'s element.'
       // );
       return Rx.Observable.merge(
-        this.eventToObservable('$destroy'),
+        this.$eventToObservable('$destroy'),
         Rx.Observable.fromEvent(element, '$destroy')
       ).take(1);
     },
@@ -151,7 +135,7 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
       }
 
       return observable.
-        takeUntil(self.eventToObservable('$destroy')). //TakeUntil to avoid leaks.
+        takeUntil(self.$eventToObservable('$destroy')). //TakeUntil to avoid leaks.
         subscribe(
           function(value) {
           self.safeApply(function() {

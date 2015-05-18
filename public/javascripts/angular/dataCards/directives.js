@@ -1,1 +1,1 @@
-angular.module('dataCards.directives', []);
+angular.module('dataCards.directives', ['rx']);

@@ -36,7 +36,7 @@
         // Don't double-handle toggling downloadOpened
         !$(e.target).closest('.download-menu').length;
     }).
-    takeUntil($scope.eventToObservable('$destroy')).
+    takeUntil($scope.$eventToObservable('$destroy')).
     subscribe(function() {
       $scope.$apply(function() {
         $scope.downloadOpened = false;
@@ -573,7 +573,7 @@
           return '';
         }
       },
-      $scope.eventToObservable('$destroy')
+      $scope.$eventToObservable('$destroy')
     );
 
 
@@ -648,7 +648,7 @@
           'Please save the page in order to download a visualization as an image' +
         '</div>'
       ),
-      $scope.eventToObservable('$destroy')
+      $scope.$eventToObservable('$destroy')
     );
 
     //TODO consider extending register() to take a selector, too.
@@ -678,7 +678,7 @@
             '<div class="flyout-title">No changes to be saved</div>';
         }
       },
-      $scope.eventToObservable('$destroy')
+      $scope.$eventToObservable('$destroy')
     );
 
     FlyoutService.register(
@@ -689,7 +689,7 @@
           '<div class="flyout-title">Click to save your changes as a new page</div>' :
           '<div class="flyout-title">No changes to be saved</div>';
       },
-      $scope.eventToObservable('$destroy')
+      $scope.$eventToObservable('$destroy')
     );
 
     FlyoutService.register(
@@ -698,7 +698,7 @@
 
         return '<div class="flyout-title">Click to reset all filters</div>';
       },
-      $scope.eventToObservable('$destroy')
+      $scope.$eventToObservable('$destroy')
     );
 
     // Since we have a flyout handler whose output depends on currentPageSaveEvents and $scope.hasChanges,

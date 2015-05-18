@@ -618,19 +618,19 @@ describe('table directive', function() {
     it('should emit render:start and render:complete events on rendering', function(done) {
       AngularRxExtensions.install(outerScope);
 
-      var renderEvents = outerScope.eventToObservable('render:start').merge(outerScope.eventToObservable('render:complete'));
+      var renderEvents = outerScope.$eventToObservable('render:start').merge(outerScope.$eventToObservable('render:complete'));
 
       renderEvents.take(2).toArray().subscribe(
         function(events) {
           // Vis id is a string and is the same across events.
-          expect(events[0].args[0].source).to.satisfy(_.isString);
-          expect(events[1].args[0].source).to.equal(events[0].args[0].source);
+          expect(events[0].additionalArguments[0].source).to.satisfy(_.isString);
+          expect(events[1].additionalArguments[0].source).to.equal(events[0].additionalArguments[0].source);
 
           // Times are ints and are in order.
-          expect(events[0].args[0].timestamp).to.satisfy(_.isFinite);
-          expect(events[1].args[0].timestamp).to.satisfy(_.isFinite);
+          expect(events[0].additionalArguments[0].timestamp).to.satisfy(_.isFinite);
+          expect(events[1].additionalArguments[0].timestamp).to.satisfy(_.isFinite);
 
-          expect(events[0].args[0].timestamp).to.be.below(events[1].args[0].timestamp);
+          expect(events[0].additionalArguments[0].timestamp).to.be.below(events[1].additionalArguments[0].timestamp);
           done();
         }
       );

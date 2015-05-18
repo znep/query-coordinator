@@ -1,4 +1,6 @@
 describe('lastUpdated directive', function() {
+  'use strict';
+
   var TEST_DATE_VALUE = new Date('Mon, 18 Aug 2014 17:30:21 GMT');
   var TEST_FILTER_VALUE = 'meow!';
   var lastUpdated;

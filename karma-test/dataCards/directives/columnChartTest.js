@@ -218,7 +218,7 @@ describe('columnChart', function() {
       var xAxisPosition = Math.round(xAxis.offset().top + xAxis.outerHeight());
 
       var bars = chart.element.find('.bar');
-      expect(bars.length).to.be.above(1);
+      expect(bars).to.have.length.greaterThan(1);
       bars.each(function() {
         expect(Math.round(this.getBoundingClientRect().bottom + 1)).to.equal(xAxisPosition);
       });
@@ -840,19 +840,19 @@ describe('columnChart', function() {
       scope = chart.scope;
       AngularRxExtensions.install(scope);
 
-      var renderEvents = scope.eventToObservable('render:start').merge(scope.eventToObservable('render:complete'));
+      var renderEvents = scope.$eventToObservable('render:start').merge(scope.$eventToObservable('render:complete'));
 
       renderEvents.take(2).toArray().subscribe(
         function(events) {
           // Vis id is a string and is the same across events.
-          expect(events[0].args[0].source).to.satisfy(_.isString);
-          expect(events[1].args[0].source).to.equal(events[0].args[0].source);
+          expect(events[0].additionalArguments[0].source).to.satisfy(_.isString);
+          expect(events[1].additionalArguments[0].source).to.equal(events[0].additionalArguments[0].source);
 
           // Times are ints and are in order.
-          expect(events[0].args[0].timestamp).to.satisfy(_.isFinite);
-          expect(events[1].args[0].timestamp).to.satisfy(_.isFinite);
+          expect(events[0].additionalArguments[0].timestamp).to.satisfy(_.isFinite);
+          expect(events[1].additionalArguments[0].timestamp).to.satisfy(_.isFinite);
 
-          expect(events[0].args[0].timestamp).to.be.below(events[1].args[0].timestamp);
+          expect(events[0].additionalArguments[0].timestamp).to.be.below(events[1].additionalArguments[0].timestamp);
           done();
         }
       );

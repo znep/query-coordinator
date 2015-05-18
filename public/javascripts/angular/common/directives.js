@@ -1,2 +1,2 @@
 /* Directives */
-angular.module('socrataCommon.directives', []);
+angular.module('socrataCommon.directives', ['rx']);

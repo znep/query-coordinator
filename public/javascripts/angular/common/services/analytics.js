@@ -49,9 +49,9 @@
     };
 
     // Set up some inputs to the analytics.
-    var renderCompleteEvents = $rootScope.eventToObservable('render:complete');
+    var renderCompleteEvents = $rootScope.$eventToObservable('render:complete');
     var rendererSettledEvents = renderCompleteEvents.debounce(this.idleTimeForRendererToBeConsideredSettled, Rx.Scheduler.timeout);
-    var userInteractedEvents = $rootScope.eventToObservable('user-interacted');
+    var userInteractedEvents = $rootScope.$eventToObservable('user-interacted');
 
     // Consider the page settled if the renderer goes idle OR the user does something to the page.
     var pageSettledEvents = Rx.Observable.merge(
@@ -63,7 +63,7 @@
     // time the page settled for the first time.
     var lastRenderEndBeforePageLoadSettled = renderCompleteEvents.sample(pageSettledEvents.take(1));
     lastRenderEndBeforePageLoadSettled.subscribe(function finalizeMeasurement(lastRenderCompleteEvent) {
-      var lastCardRenderedAt = lastRenderCompleteEvent.args[0].timestamp;
+      var lastCardRenderedAt = _.get(lastRenderCompleteEvent, 'additionalArguments[0].timestamp');
       var timeDelta = lastCardRenderedAt - navigationStartTime();
       if (_.isNaN(timeDelta)) {
         $log.debug('timeDelta was NaN');
@@ -115,7 +115,7 @@
     this.start = function(label) {
       var startTime = currentTime();
       renderCompleteEvents.sample(pageSettledEvents.take(1)).subscribe(function(event) {
-        var timeDelta = event.args[0].timestamp - startTime;
+        var timeDelta = _.get(event, 'additionalArguments[0].timestamp') - startTime;
 
         if (_.isNaN(timeDelta)) {
           $log.debug('timeDelta was NaN');

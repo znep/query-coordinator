@@ -4,7 +4,7 @@
   function CardVisualizationSearch(AngularRxExtensions, CardDataService, ServerConfig, SoqlHelpers) {
 
     function pluckEventArg(val) {
-      return val.args[0];
+      return _.get(val, 'additionalArguments[0]');
     }
 
     function handleSampleData($scope, model, dataset) {
@@ -48,20 +48,18 @@
         var invalidSearchInputObservable = invalidSearchInputSubject.distinctUntilChanged();
         var searchValueObservable = $scope.observe('search');
         var expandedObservable = model.observeOnLatest('expanded');
-        var rowInfoObservable = $scope.eventToObservable('rows:info').map(pluckEventArg);
+        var rowInfoObservable = $scope.$eventToObservable('rows:info').map(pluckEventArg);
         var hasRowsObservable = rowInfoObservable.pluck('hasRows').distinctUntilChanged();
         var rowCountObservable = rowInfoObservable.pluck('filteredRowCount');
-        var rowsLoadedObservable = $scope.eventToObservable('rows:loaded').map(pluckEventArg);
+        var rowsLoadedObservable = $scope.$eventToObservable('rows:loaded').map(pluckEventArg);
 
-        var selectedItemObservable = $scope.eventToObservable('suggestionToolPanel:selectedItem').
-          map(function(event) {
-            return event.args[0];
-          });
+        var selectedItemObservable = $scope.$eventToObservable('suggestionToolPanel:selectedItem').
+          map(pluckEventArg);
 
         // Observable that emits the current search term on submit
         var submitValueObservable = Rx.Observable.fromEvent(element.find('form'), 'submit').
-          map(function() {
-            return $scope.search;
+          withLatestFrom(searchValueObservable, function(event, searchValue) {
+            return searchValue;
           }).
           filter($.isPresent).
           merge(selectedItemObservable);
@@ -185,13 +183,13 @@
         });
 
         var SPACE_BAR_KEYCODE = 32;
-        var userActionKeypressObservable = $scope.eventToObservable('clearableInput:keypress').
+        var userActionKeypressObservable = $scope.$eventToObservable('clearableInput:keypress').
           filter(function(event) {
-            var which = event.args[0].which;
+            var which = _.get(event, 'additionalArguments[0].which');
             return which > SPACE_BAR_KEYCODE;
           });
 
-        var userClickedInClearableInputObservable = $scope.eventToObservable('clearableInput:click');
+        var userClickedInClearableInputObservable = $scope.$eventToObservable('clearableInput:click');
 
         var userActionsWhichShouldShowSuggestionPanelObservable = Rx.Observable.merge(
           hasInputObservable.risingEdge(),
@@ -209,10 +207,10 @@
             return isEventFromBeyondSuggestionToolPanel && isEventFromOutsideTheSearchInputField;
           });
 
-        var clearableInputBlurTargetNotSuggestionObservable = $scope.eventToObservable('clearableInput:blur')
+        var clearableInputBlurTargetNotSuggestionObservable = $scope.$eventToObservable('clearableInput:blur')
           .filter(function(event) {
             // Only hide the suggestion panel if the blur target is not a suggestion.
-            var newFocusTarget = event.args[0].relatedTarget;
+            var newFocusTarget = _.get(event, 'additionalArguments[0].relatedTarget');
             if (_.isPresent(newFocusTarget)) {
               return $(newFocusTarget).closest(element).length > 0;
             } else {

@@ -34,7 +34,7 @@
           element.getAttribute('data-flyout-text')
         );
       },
-      scope.eventToObservable('$destroy'),
+      scope.$eventToObservable('$destroy'),
       false,
       // The last argument specifies a horizontal display mode.
       true);

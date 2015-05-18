@@ -1,4 +1,6 @@
 describe('Angular RX Extensions', function() {
+  'use strict';
+
   var _extensions, _$rootScope;
 
   beforeEach(module('socrataCommon.services'));
@@ -139,65 +141,6 @@ describe('Angular RX Extensions', function() {
       expect(function() {
         $scope.bindObservable('prop', new Rx.Subject(), function(){}, {});
       }).to.throw();
-    });
-  });
-
-  describe('eventToObservable', function() {
-    it('should reject bad arguments', function() {
-      var $scope = _$rootScope.$new(true);
-      _extensions.install($scope);
-
-      expect(function() {
-        $scope.eventToObservable();
-      }).to.throw();
-
-      expect(function() {
-        $scope.eventToObservable(123);
-      }).to.throw();
-
-      expect(function() {
-        $scope.eventToObservable({});
-      }).to.throw();
-
-      expect(function() {
-        $scope.eventToObservable([]);
-      }).to.throw();
-
-      expect(function() {
-        $scope.eventToObservable('');
-      }).to.throw();
-    });
-
-    it('should translate events', function() {
-      var $scope = _$rootScope.$new(true);
-      _extensions.install($scope);
-
-      var calls = [];
-      $scope.eventToObservable('myEvent').subscribe(function(event) {
-        calls.push(event);
-      });
-
-      $scope.$emit('myEvent', 'arg1');
-      $scope.$emit('myEvent', 'arg2', 'arg3');
-      $scope.$emit('myEvent');
-      $scope.$emit('myOtherEvent', 123);
-
-      var allArgs = _.pluck(calls, 'args');
-      expect(allArgs).to.deep.equal(
-        [
-          [ 'arg1' ],
-          [ 'arg2', 'arg3' ],
-          []
-        ]
-      );
-
-      expect(calls[0].event.name).to.equal('myEvent');
-      expect(calls[1].event.name).to.equal('myEvent');
-      expect(calls[2].event.name).to.equal('myEvent');
-
-      expect(calls[0].event.targetScope).to.equal($scope);
-      expect(calls[1].event.targetScope).to.equal($scope);
-      expect(calls[2].event.targetScope).to.equal($scope);
     });
   });
 

@@ -4,6 +4,7 @@ var dataCards = angular.module('dataCards', [
   'test',
   'ngSanitize',
   'btford.markdown',
+  'rx',
   'socrataCommon.services',
   'socrataCommon.filters',
   'socrataCommon.directives',

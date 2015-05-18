@@ -1505,7 +1505,6 @@
           var filteredUnit;
           var flyoutContent;
 
-
           if (shouldDisplayFlyout) {
 
             unfilteredUnit = (unfilteredTotal === 1) ?
@@ -1957,7 +1956,7 @@
           // read by the flyout code.
           currentDatum = cachedChartData.values[indexIntoChartData];
 
-          currentPrecision = (mousePositionWithinChartDisplay) ? datasetPrecision : labelPrecision;
+          currentPrecision = (mousePositionWithinChartLabels) ? labelPrecision : datasetPrecision;
 
           startDate = currentDatum.date;
           endDate = moment(currentDatum.date).add(1, currentPrecision).toDate();
@@ -2039,7 +2038,6 @@
          * @return {Boolean}
          */
         function isMouseWithinChartLabels(offsetX, offsetY) {
-
           return offsetX > 0 &&
                  offsetX <= cachedChartDimensions.width &&
                  offsetY > cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN_BOTTOM &&
@@ -2231,10 +2229,11 @@
         //
         Rx.Observable.subscribeLatest(
           element.closest('.card-visualization').observeDimensions(),
+          element.closest('.cards-content').find('.quick-filter-bar').observeDimensions(),
           scope.observe('chartData'),
           scope.observe('precision'),
           scope.observe('rowDisplayUnit'),
-          function(chartDimensions, chartData, precision, rowDisplayUnit) {
+          function(chartDimensions, quickFilterBarDimensions, chartData, precision, rowDisplayUnit) {
 
             if (!_.isDefined(chartData) || chartData === null || !_.isDefined(precision)) {
               return;

@@ -2225,7 +2225,8 @@
           scope.observe('chartData'),
           scope.observe('precision'),
           scope.observe('rowDisplayUnit'),
-          function(chartDimensions, quickFilterBarDimensions, chartData, precision, rowDisplayUnit) {
+          function(chartDimensions, qfbDimensions, chartData, precision, rowDisplayUnit) {
+            // qfbDimensions is not actually used, it is observed to update the cached chart offsets
 
             if (!_.isDefined(chartData) || chartData === null || !_.isDefined(precision)) {
               return;

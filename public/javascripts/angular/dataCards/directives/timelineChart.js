@@ -1955,7 +1955,6 @@
           // user hovers over the visualization. The value of currentDatum is
           // read by the flyout code.
           currentDatum = cachedChartData.values[indexIntoChartData];
-
           currentPrecision = (mousePositionWithinChartLabels) ? labelPrecision : datasetPrecision;
 
           startDate = currentDatum.date;
@@ -1997,18 +1996,10 @@
           var startDate;
           var endDate;
 
-
           startDate = new Date(target.getAttribute('data-start'));
           endDate = new Date(target.getAttribute('data-end'));
 
           hideDatumLabel();
-
-          // TODO: Factor this out. See also filterChartDataByOffset'S use.
-          currentDatum = {
-            unfiltered: target.getAttribute('data-aggregate-unfiltered'),
-            filtered: target.getAttribute('data-aggregate-filtered'),
-            flyoutLabel: target.getAttribute('data-flyout-label')
-          };
 
           highlightChart(startDate, endDate);
 

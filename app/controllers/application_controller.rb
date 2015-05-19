@@ -1,3 +1,5 @@
+require 'core/auth/client'
+
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -13,38 +15,16 @@ class ApplicationController < ActionController::Base
   #   current_user  # with invalid cookies
   #   => nil
   def current_user
-    # If there are no cookies for the domain, don't bother checking
+    # If there are no cookies for the domain, don't bother checking core
     return unless cookies[:_core_session_id]
-
-    # Request current user from core
-    response = core_server_get('/users/current.json')
-
-    # If cookies are invalid, response will be formatted as:
-    # {"code"=>"not_found", "error"=>true, "message"=>"User not found"}
-    if response.include?('error')
-      return nil
-    else
-      # Return user object
-      response
-    end
-  end
-
-  private
-
-  # Builds a core request with cookies
-  #
-  # ==== Examples
-  #   core_server_get('/users/current.json')
-  def core_server_get(path)
-    # Join list of cookies into single string to pass to core
     socrata_session_cookies = request.cookies.map{ |k, v| "#{k}=#{v}" }.join('; ')
 
-    HTTParty.get("#{Rails.application.config.core_service_uri}#{path}",
-      :headers => {
-        'X-Socrata-Host' => "#{request.host}",
-        'Cookie' => socrata_session_cookies
-      }
-    )
+    auth = Core::Auth::Client.new(request.host, port: '9443', cookie: socrata_session_cookies, verify_ssl_cert: false)
+    if auth.logged_in?
+      auth.current_user
+    else
+      nil
+    end
   end
 
 end

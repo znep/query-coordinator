@@ -39,7 +39,8 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
-  # Core configuration
+  # TODO: Put environment configuration in discovery service
   config.core_service_uri = "http://localhost:8080"
+  config.frontend_port = '9443'
 
 end

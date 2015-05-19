@@ -85,3 +85,8 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 =end
 end
+
+def logged_in_state
+  good_user_object = {"id"=>"tugg-xxxx", "createdAt"=>1425577015, "displayName"=>"testuser"}
+  allow(@controller).to receive(:current_user).and_return(good_user_object)
+end

@@ -7,7 +7,7 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-<%= current_user ? "Hello, #{current_user['screenName']}!" : "You're not logged in!" %>
+<%= current_user ? "Hello, #{current_user['displayName']}!" : "You're not logged in!" %>
 <%= yield %>
 
 </body>

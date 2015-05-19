@@ -1,3 +1,13 @@
+GIT
+  remote: git@github.com:socrata/core-auth-ruby.git
+  revision: 391178a8644b6e2f4feae6232f51fd132419591f
+  branch: master
+  specs:
+    core-auth-ruby (0.2.2)
+      addressable (~> 2.3)
+      httparty (~> 0.13)
+      nokogiri (~> 1.6)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -38,6 +48,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    addressable (2.3.8)
     arel (6.0.0)
     autoprefixer-rails (5.1.9)
       execjs
@@ -245,7 +256,7 @@ DEPENDENCIES
   byebug
   coffee-rails (~> 4.1.0)
   comfortable_mexican_sofa (~> 1.12.8)
-  httparty
+  core-auth-ruby!
   jbuilder (~> 2.0)
   jquery-rails
   pg

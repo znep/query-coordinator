@@ -560,7 +560,7 @@
               newExpandedId = expandedCard && expandedCard.uniqueId;
               // Keep track of whether the layout is an expanded-card layout, so upstream
               // scopes can do things like disable edit buttons
-              scope.safeApply(function() {
+              scope.$safeApply(function() {
                 scope.expandedCard = expandedCard;
               });
             }
@@ -691,7 +691,7 @@
             mouseIsDown = false;
             mouseDownClientX = null;
             mouseDownClientY = null;
-            scope.safeApply(function() {
+            scope.$safeApply(function() {
               if (scope.grabbedCard) {
                 // Reset the element to default
                 scope.grabbedCard.jqEl.css({top: '', left: ''});
@@ -712,7 +712,7 @@
             // If we're out of the dead zone, start the drag operation.
             if (distanceSinceDragStart > 3) {
 
-              scope.safeApply(function() {
+              scope.$safeApply(function() {
 
                 var jqEl = $(position.target);
                 scope.grabbedCard = {
@@ -757,7 +757,7 @@
 
               newCards.splice(targetModelIndex, 0, cardModel);
 
-              scope.safeApply(function() {
+              scope.$safeApply(function() {
                 scope.page.set('cards', newCards);
               });
 
@@ -776,7 +776,7 @@
               });
 
               if (cardSize !== null) {
-                scope.safeApply(function() {
+                scope.$safeApply(function() {
                   cardModel.set('cardSize', cardSize);
                 });
               }

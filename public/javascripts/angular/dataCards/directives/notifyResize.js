@@ -16,7 +16,7 @@ angular.module('dataCards.directives').directive('notifyResize', function(Angula
         throw new Error('Expected a non-blank event name');
       }
       var onElementResize = function() {
-        $scope.safeApply(function() {
+        $scope.$safeApply(function() {
           $scope.$broadcast(eventName, element.dimensions());
         });
       };

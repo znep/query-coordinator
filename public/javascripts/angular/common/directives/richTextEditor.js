@@ -223,7 +223,7 @@
 
       element.trigger(e);
 
-      element.isolateScope().safeApply(function() {
+      element.isolateScope().$safeApply(function() {
         element.isolateScope().content = element.val();
       });
     }
@@ -330,7 +330,7 @@
 
       // Grab a reference to squire after it loads.
       iframe.on('squire-loaded', function() {
-        $scope.safeApply(_.bind(function() {
+        $scope.$safeApply(_.bind(function() {
           $scope.editor = this.contentWindow.editor;
           initEvents($scope.editor, element);
           element.val($scope.content);

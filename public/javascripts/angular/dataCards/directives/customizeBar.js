@@ -71,7 +71,7 @@
 
         $scope.toggleCustomizeMode = function() {
           if ($scope.canCustomize) {
-            $scope.safeApply(function() {
+            $scope.$safeApply(function() {
               $scope.editMode = !$scope.expandedCard && !$scope.editMode;
             });
           }

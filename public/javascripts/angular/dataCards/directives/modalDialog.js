@@ -20,7 +20,7 @@
         // The various conditions under which we can close the dialog
         scope.closeDialog = function() {
           if (!scope.state.disableCloseDialog) {
-            scope.safeApply(function() {
+            scope.$safeApply(function() {
               scope.state.show = false;
             });
           }

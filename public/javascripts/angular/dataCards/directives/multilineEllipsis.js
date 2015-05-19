@@ -228,7 +228,7 @@
 
             var isClamped = forceReportAsClamped || content.triggerHandler('isTruncated');
 
-            $scope.safeApply(function() {
+            $scope.$safeApply(function() {
               $scope.textClamped = isClamped;
               $scope.contentTitleAttr = ($scope.showMoreMode === 'title-attr' && isClamped) ? text : null;
             });

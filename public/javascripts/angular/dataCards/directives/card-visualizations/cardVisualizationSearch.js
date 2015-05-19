@@ -179,7 +179,7 @@
           startWith(false);
 
         $scope.$on('suggestionToolPanel:selectedItem', function(event, selectedItem) {
-          $scope.safeApply(function() {
+          $scope.$safeApply(function() {
             $scope.search = selectedItem;
           });
         });

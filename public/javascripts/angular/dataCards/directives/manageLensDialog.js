@@ -60,14 +60,14 @@
 
             // Now close the dialog after 1.5 seconds
             setTimeout(function() {
-              $scope.safeApply(function() {
+              $scope.$safeApply(function() {
                 $scope.dialogState.show = false;
               });
             }, 1500);
           })['catch'](function() {
             $scope.saveStatus = 'failed';
             setTimeout(function() {
-              $scope.safeApply(function() {
+              $scope.$safeApply(function() {
                 $scope.saveStatus = null;
               });
             }, 8000);

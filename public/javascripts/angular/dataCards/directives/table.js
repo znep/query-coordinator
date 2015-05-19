@@ -86,7 +86,7 @@
             if ($(e.currentTarget).parent().data('table-id') !== instanceUniqueNamespace) {
               return; // The flyout might not be our own!
             }
-            scope.safeApply(function() {
+            scope.$safeApply(function() {
               var columnId = $(e.currentTarget).parent().data('column-id');
 
               sortOnColumn(columnId);
@@ -536,7 +536,7 @@
           var scrollLeft = $body.scrollLeft(), scrollTop = $body.scrollTop();
 
           $body.scroll(function(e) {
-            scope.safeApply(function() {
+            scope.$safeApply(function() {
               if (scrollLeft !== (scrollLeft = $body.scrollLeft())) {
                 moveHeader();
               }

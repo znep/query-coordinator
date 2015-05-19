@@ -146,5 +146,18 @@ describe('Scope RX Extensions', function() {
       });
     });
 
-  })
+  });
+
+  describe('#$safeApply', function() {
+    it('should safely $apply on scope when a digest cycle is in process', function() {
+      var $scope = $rootScope.$new(true);
+      $scope.$apply(function() {
+        $scope.$safeApply(function() {
+          $scope.foo = 'bar';
+        });
+      });
+      expect($scope.foo).to.equal('bar');
+    });
+  });
+
 });

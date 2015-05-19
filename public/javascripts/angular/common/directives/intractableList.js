@@ -57,7 +57,7 @@ angular.module('socrataCommon.directives').directive('intractableList', function
       //bind keyboard events: arrows up(38) / down(40), enter(13), and tab(9)
       Rx.Observable.fromEvent($document, 'keydown').takeUntil(scope.$destroyAsObservable(element)).
         subscribe(function(evt){
-          scope.safeApply(function() {
+          scope.$safeApply(function() {
             if (evt.which === 38){
               gotoPreviousItem();
             } else if (evt.which === 40){

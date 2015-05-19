@@ -109,7 +109,7 @@
             return $scope.panelActive && $(e.target).closest(element).length === 0;
           }).
           subscribe(function() {
-            $scope.safeApply(function() {
+            $scope.$safeApply(function() {
               $scope.panelActive = false;
             });
           });

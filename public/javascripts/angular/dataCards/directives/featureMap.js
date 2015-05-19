@@ -247,7 +247,7 @@
               var promise = vectorTileGetter.apply(this, Array.prototype.slice.call(arguments));
               promise.then(_.noop,
                 function() {
-                  scope.safeApply(function() {
+                  scope.$safeApply(function() {
                     scope.$emit('render:error');
                   });
                 });
@@ -308,7 +308,7 @@
          * and by the analytics system to record render timings.
          */
         function emitRenderStarted() {
-          scope.safeApply(function() {
+          scope.$safeApply(function() {
             scope.$emit('render:start', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'vector_tile_render' });
           });
         }
@@ -319,7 +319,7 @@
          * and by the analytics system to record render timings.
          */
         function emitRenderCompleted() {
-          scope.safeApply(function() {
+          scope.$safeApply(function() {
             scope.$emit('render:complete', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'vector_tile_render' });
           });
         }

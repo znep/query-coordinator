@@ -2,22 +2,6 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
   'use strict';
 
   var extensions = {
-    // Execute the given function immediately if an angular digest-apply is
-    // already in progress, otherwise starts a digest-apply cycle then executes
-    // the function within that cycle.
-    // This is often useful when combining Observables of arbitrary origin to
-    // angular-related Observables.
-    safeApply: function safeApply(fn) {
-      var phase = this.$root.$$phase;
-      if (phase == '$apply' || phase == '$digest') {
-        if (fn && (typeof(fn) === 'function')) {
-          fn();
-        }
-      } else {
-        this.$apply(fn);
-      }
-    },
-
     // Bind an observable sequence to a scope's property.
     // For example, this will cause the 'ticks' property
     // on scope $scope to increment every second:
@@ -40,7 +24,7 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
 
       var self = this;
       function set(newValue) {
-        self.safeApply(function() {
+        self.$safeApply(function() {
           self[propName] = newValue;
         });
       }
@@ -94,7 +78,7 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
         takeUntil(self.$destroyAsObservable()). //TakeUntil to avoid leaks.
         subscribe(
           function(value) {
-          self.safeApply(function() {
+          self.$safeApply(function() {
             self.$emit(eventName, value);
           }
         );

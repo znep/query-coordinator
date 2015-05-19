@@ -60,7 +60,7 @@
 
           var isClamped = descriptionTruncatedContent.triggerHandler('isTruncated');
 
-          $scope.safeApply(function() {
+          $scope.$safeApply(function() {
             $scope.descriptionClamped = isClamped;
             $scope.animationsOn = true;
           });
@@ -124,14 +124,14 @@
           DownloadService.download($scope.downloadUrl).then(
             function success() {
 
-              $scope.safeApply(function() {
+              $scope.$safeApply(function() {
                 $scope.downloadState = 'success';
                 resetDownloadButton();
               });
 
             }, function error() {
 
-              $scope.safeApply(function() {
+              $scope.$safeApply(function() {
                 $scope.downloadState = 'error';
                 resetDownloadButton();
               });

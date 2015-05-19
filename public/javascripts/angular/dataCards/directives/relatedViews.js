@@ -60,7 +60,7 @@
           }).
           takeUntil(destroyStream).
           subscribe(function() {
-            $scope.safeApply(function() {
+            $scope.$safeApply(function() {
               $scope.panelActive = false;
             });
           });

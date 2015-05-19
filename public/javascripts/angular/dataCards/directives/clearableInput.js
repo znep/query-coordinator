@@ -28,7 +28,7 @@
            * was in the input in Firefox.
            */
           _.defer(function() {
-            $scope.safeApply(function() {
+            $scope.$safeApply(function() {
               $scope.search = '';
             });
           });

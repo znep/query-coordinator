@@ -109,7 +109,7 @@
       warnings: {}
     };
     page.observe('name').filter(_.isString).subscribe(function(name) {
-      $scope.safeApply(function() {
+      $scope.$safeApply(function() {
         $scope.writablePage.name = $.trim(name);
         if (name.length > 255) {
           $scope.writablePage.warnings.name = [VALIDATION_ERROR_STRINGS.name.maxLength];
@@ -122,7 +122,7 @@
       page.set('name', $.trim(name));
     });
     page.observe('description').filter(_.isString).subscribe(function(description) {
-      $scope.safeApply(function() {
+      $scope.$safeApply(function() {
         $scope.writablePage.description = $.trim(description);
       });
     });
@@ -247,7 +247,7 @@
 
         if (shouldShowManageLens) {
 
-          $scope.safeApply(function() {
+          $scope.$safeApply(function() {
             $scope.shouldShowManageLens = true;
             initManageLens($scope, page);
           });

@@ -84,7 +84,7 @@
             );
 
             if (shapeFile === null) {
-              scope.safeApply(function() {
+              scope.$safeApply(function() {
                 scope.choroplethRenderError = true;
               });
             }
@@ -110,7 +110,7 @@
                 // Still increment the counter to stop the spinner
                 dataResponses.onNext(1);
 
-                scope.safeApply(function() {
+                scope.$safeApply(function() {
                   scope.choroplethRenderError = true;
                 });
               }
@@ -182,7 +182,7 @@
                 // Show geojson regions request error message.
                 dataResponses.onNext(1);
 
-                scope.safeApply(function() {
+                scope.$safeApply(function() {
                   scope.choroplethRenderError = true;
                 });
               }

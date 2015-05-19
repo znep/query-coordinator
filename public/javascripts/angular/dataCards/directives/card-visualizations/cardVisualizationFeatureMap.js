@@ -27,10 +27,11 @@
 
         AngularRxExtensions.install(scope);
 
-        var model = scope.observe('model');
+        var model = scope.$observe('model');
         var dataset = model.observeOnLatest('page.dataset').filter(_.isPresent);
         var datasetPermissions = dataset.observeOnLatest('permissions').filter(_.isPresent);
         var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
+        var whereClauseObservable = scope.$observe('whereClause');
 
         // The 'render:start' and 'render:complete' events are emitted by the
         // underlying feature map and are used for a) toggling the state of the
@@ -175,7 +176,7 @@
         var vectorTileGetterSequence = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
           dataset.pluck('id'),
-          scope.observe('whereClause'),
+          whereClauseObservable,
           useOriginHostObservable,
           VectorTileDataService.buildTileGetter);
 

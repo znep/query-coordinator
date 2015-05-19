@@ -18,7 +18,7 @@
 
         scope.bindObservable(
           'columnHumanNameFn',
-          scope.observe('page').observeOnLatest('dataset.columns').map(
+          scope.$observe('page').observeOnLatest('dataset.columns').map(
             function(datasetColumns) {
               return function(fieldName) {
                 var column = datasetColumns[fieldName];
@@ -44,10 +44,10 @@
         scope.availableCardTypes = [];
 
         Rx.Observable.subscribeLatest(
-          scope.observe('addCardSelectedColumnFieldName'),
-          scope.observe('datasetColumns').filter(_.isDefined),
-          scope.observe('page').observeOnLatest('dataset').filter(_.isDefined),
-          scope.observe('page').observeOnLatest('dataset.columns').filter(_.isDefined),
+          scope.$observe('addCardSelectedColumnFieldName'),
+          scope.$observe('datasetColumns').filter(_.isDefined),
+          scope.$observe('page').observeOnLatest('dataset').filter(_.isDefined),
+          scope.$observe('page').observeOnLatest('dataset.columns').filter(_.isDefined),
           function(fieldName, scopeDatasetColumns, dataset, columns) {
             var columnCardinality;
 
@@ -117,7 +117,7 @@
 
         scope.bindObservable(
           'isCustomizable',
-          scope.observe('addCardModel').observeOnLatest('isCustomizable')
+          scope.$observe('addCardModel').observeOnLatest('isCustomizable')
         );
 
         var EXCESSIVE_COLUMN_WARNING = [

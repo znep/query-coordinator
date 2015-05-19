@@ -12,10 +12,11 @@
       link: function($scope, element) {
         AngularRxExtensions.install($scope);
         var destroyStream = $scope.$destroyAsObservable(element);
+        var datasetPagesObservable = $scope.$observe('datasetPages');
 
         $scope.panelActive = false;
 
-        var datasetPublisherPagesSequence = $scope.observe('datasetPages').
+        var datasetPublisherPagesSequence = datasetPagesObservable.
           filter(_.isPresent).
           pluck('publisher').
           map(function(datasetPages) {

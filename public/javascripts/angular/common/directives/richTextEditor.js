@@ -326,6 +326,7 @@
       AngularRxExtensions.install($scope);
 
       var iframe = element.find('iframe');
+      var editorObservable = $scope.$observe('editor');
 
       // Grab a reference to squire after it loads.
       iframe.on('squire-loaded', function() {
@@ -347,7 +348,7 @@
         $scope.$destroyAsObservable(element),
         // Mostly for unit tests - Guard against a race condition where the iframe doesn't load
         // before we're done with the test.
-        $scope.observe('editor').filter(_.isPresent),
+        editorObservable.filter(_.isPresent),
         _.identity
       ).subscribe(function() {
         cleanupEvents($scope.editor);

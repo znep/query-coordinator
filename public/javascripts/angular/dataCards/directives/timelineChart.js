@@ -41,6 +41,10 @@
       link: function(scope, element, attrs) {
 
         AngularRxExtensions.install(scope);
+        var chartDataObservable = scope.$observe('chartData');
+        var precisionObservable = scope.$observe('precision');
+        var rowDisplayUnitObservable = scope.$observe('rowDisplayUnit');
+        var activeFiltersObservable = scope.$observe('activeFilters');
 
         scope.developmentMode = ServerConfig.get('railsEnv') === 'development';
 
@@ -2235,9 +2239,9 @@
         Rx.Observable.subscribeLatest(
           element.closest('.card-visualization').observeDimensions(),
           element.closest('.cards-content').find('.quick-filter-bar').observeDimensions(),
-          scope.observe('chartData'),
-          scope.observe('precision'),
-          scope.observe('rowDisplayUnit'),
+          chartDataObservable,
+          precisionObservable,
+          rowDisplayUnitObservable,
           function(chartDimensions, qfbDimensions, chartData, precision, rowDisplayUnit) {
             // qfbDimensions is not actually used, it is observed to update the cached chart offsets
 
@@ -2302,8 +2306,8 @@
 
         // React to the activeFilters being cleared when a selection is active
         Rx.Observable.subscribeLatest(
-          scope.observe('activeFilters'),
-          scope.observe('chartData').filter(_.isDefined),
+          activeFiltersObservable,
+          chartDataObservable.filter(_.isDefined),
           function(activeFilters, chartData) {
 
             // Don't try to enter a chart render state if there is no data.

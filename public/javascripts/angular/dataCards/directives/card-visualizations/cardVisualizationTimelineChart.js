@@ -14,7 +14,7 @@
 
         AngularRxExtensions.install(scope);
 
-        var cardModelSequence = scope.observe('model');
+        var cardModelSequence = scope.$observe('model');
         var dataset = cardModelSequence.observeOnLatest('page.dataset').filter(_.isPresent);
         var baseSoqlFilter = cardModelSequence.observeOnLatest('page.baseSoqlFilter');
         var aggregationObservable = cardModelSequence.observeOnLatest('page.aggregation');
@@ -25,6 +25,7 @@
         var filteredDataSequence = new Rx.Subject();
         var filteredSoqlRollupTablesUsedSequence = new Rx.Subject();
         var unfilteredSoqlRollupTablesUsedSequence = new Rx.Subject();
+        var whereClauseObservable = scope.$observe('whereClause');
 
         // Keep track of the number of requests that have been made and the number of
         // responses that have come back.
@@ -211,7 +212,7 @@
         var filteredData = Rx.Observable.subscribeLatest(
           cardModelSequence.pluck('fieldName'),
           dataset,
-          scope.observe('whereClause'),
+          whereClauseObservable,
           datasetPrecision,
           aggregationObservable,
           cardModelSequence,

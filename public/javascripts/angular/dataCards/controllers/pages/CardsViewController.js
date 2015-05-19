@@ -118,7 +118,7 @@
         }
       });
     });
-    $scope.observe('writablePage.name').filter(_.isString).subscribe(function(name) {
+    $scope.$observe('writablePage.name').filter(_.isString).subscribe(function(name) {
       page.set('name', $.trim(name));
     });
     page.observe('description').filter(_.isString).subscribe(function(description) {
@@ -126,7 +126,7 @@
         $scope.writablePage.description = $.trim(description);
       });
     });
-    $scope.observe('writablePage.description').filter(_.isString).subscribe(function(description) {
+    $scope.$observe('writablePage.description').filter(_.isString).subscribe(function(description) {
       page.set('description', $.trim(description));
     });
   }
@@ -705,7 +705,7 @@
 
     // Since we have a flyout handler whose output depends on currentPageSaveEvents and $scope.hasChanges,
     // we need to poke the FlyoutService. We want the flyout to update immediately.
-    currentPageSaveEvents.merge($scope.observe('hasChanges')).subscribe(function() {
+    currentPageSaveEvents.merge($scope.$observe('hasChanges')).subscribe(function() {
       FlyoutService.refreshFlyout();
     });
 

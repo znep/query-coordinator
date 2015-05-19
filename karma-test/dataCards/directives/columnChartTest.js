@@ -220,7 +220,8 @@ describe('columnChart', function() {
       var bars = chart.element.find('.bar');
       expect(bars).to.have.length.greaterThan(1);
       bars.each(function() {
-        expect(Math.round(this.getBoundingClientRect().bottom + 1)).to.equal(xAxisPosition);
+        // Made this fuzzy because it would generate different results if I was at home or at the office (wat!?)
+        expect(Math.round(this.getBoundingClientRect().bottom)).to.be.within(xAxisPosition - 1, xAxisPosition + 1);
       });
     });
 

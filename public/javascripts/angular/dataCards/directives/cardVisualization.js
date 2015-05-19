@@ -14,7 +14,7 @@
 
         AngularRxExtensions.install($scope);
 
-        var modelSubject = $scope.observe('model').filter(_.identity);
+        var modelSubject = $scope.$observe('model').filter(_.identity);
 
         $scope.bindObservable(
           'cardType',

@@ -20,7 +20,7 @@
 
         AngularRxExtensions.install($scope);
 
-        var modelSubject = $scope.observe('model').filter(_.identity);
+        var modelSubject = $scope.$observe('model').filter(_.identity);
         var datasetObservable = modelSubject.pluck('page').observeOnLatest('dataset');
         var columns = datasetObservable.observeOnLatest('columns');
 

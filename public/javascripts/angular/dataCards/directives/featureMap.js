@@ -22,6 +22,9 @@
       link: function(scope, element) {
 
         AngularRxExtensions.install(scope);
+        var baseLayerUrlObservable = scope.$observe('baseLayerUrl');
+        var featureExtentObservable = scope.$observe('featureExtent');
+        var vectorTileGetterObservable = scope.$observe('vectorTileGetter');
 
         var mapOptions = {
           attributionControl: false,
@@ -365,7 +368,7 @@
         });
 
         // Keep the baseTileLayer in sync with the baseLayerUrl observable.
-        baseTileLayerObservable = scope.observe('baseLayerUrl').
+        baseTileLayerObservable = baseLayerUrlObservable.
           map(function(url) {
             if (!_.isDefined(url)) {
               return {
@@ -414,8 +417,6 @@
         // Now that everything's hooked up, connect the subscription.
         baseTileLayerObservable.connect();
 
-        var featureExtentObservable = scope.observe('featureExtent');
-
         // We want to set the bounds before we start requesting tiles so that
         // we don't make a bunch of requests for zoom level 1 while we are
         // waiting for the extent query to come back.
@@ -441,7 +442,7 @@
         // React to changes to the vectorTileGetter observable
         // (which changes indicate that a re-render is needed).
         Rx.Observable.subscribeLatest(
-          scope.observe('vectorTileGetter').filter(_.isFunction),
+          vectorTileGetterObservable.filter(_.isFunction),
           featureExtentObservable, // Used for signaling to create feature layer
           function(vectorTileGetter) {
             currentVectorTileGetter = vectorTileGetter;

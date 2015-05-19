@@ -44,7 +44,8 @@
         /*
          * Streams
          */
-        var selectedFormatStream = $scope.observe('selectedFormat');
+        var selectedFormatStream = $scope.$observe('selectedFormat');
+
         var datasetIdStream = $scope.datasetObservable.map(function(dataset) {
           if (dataset) {
             return dataset.id;

@@ -1,1 +1,1 @@
-angular.module('dataCards.directives', ['rx']);
+angular.module('dataCards.directives', ['rx', 'socrataCommon.decorators']);

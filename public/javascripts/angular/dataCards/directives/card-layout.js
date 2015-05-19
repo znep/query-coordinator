@@ -531,9 +531,9 @@
         subscriptions.push(Rx.Observable.subscribeLatest(
           cardsBySizeSequence,
           expandedCardsSequence,
-          scope.observe('editMode'),
+          scope.$observe('editMode'),
           WindowState.windowSizeSubject,
-          scope.observe('allowAddCard'),
+          scope.$observe('allowAddCard'),
           function layoutFn(cardsBySize, expandedCards, editMode, windowSize) {
             if (_.isEmpty(cardsBySize.normal) && _.isEmpty(cardsBySize.dataCard)) {
               return;

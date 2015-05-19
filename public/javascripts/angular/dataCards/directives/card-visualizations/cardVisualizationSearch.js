@@ -39,19 +39,20 @@
 
         AngularRxExtensions.install($scope);
 
-        var model = $scope.observe('model');
+        var model = $scope.$observe('model');
         var dataset = model.observeOnLatest('page.dataset');
         var fieldNameObservable = model.pluck('fieldName');
         var physicalDatatypeObservable = model.observeOnLatest('column.physicalDatatype');
 
         var invalidSearchInputSubject = new Rx.BehaviorSubject(false);
         var invalidSearchInputObservable = invalidSearchInputSubject.distinctUntilChanged();
-        var searchValueObservable = $scope.observe('search');
+        var searchValueObservable = $scope.$observe('search');
         var expandedObservable = model.observeOnLatest('expanded');
         var rowInfoObservable = $scope.$eventToObservable('rows:info').map(pluckEventArg);
         var hasRowsObservable = rowInfoObservable.pluck('hasRows').distinctUntilChanged();
         var rowCountObservable = rowInfoObservable.pluck('filteredRowCount');
         var rowsLoadedObservable = $scope.$eventToObservable('rows:loaded').map(pluckEventArg);
+        var whereClauseObservable = $scope.$observe('whereClause');
 
         var selectedItemObservable = $scope.$eventToObservable('suggestionToolPanel:selectedItem').
           map(pluckEventArg);
@@ -113,7 +114,9 @@
 
         // On submit, if not expanded, then expand
         submitValueObservable.
-          flatMap(function() { return expandedObservable.take(1); }).
+          withLatestFrom(expandedObservable, function(submitValue, expanded) {
+            return expanded;
+          }).
           filter(function(value) { return !value; }).
           subscribe(function() {
             $scope.model.page.toggleExpanded($scope.model);
@@ -124,30 +127,29 @@
         // that combines it with the field name, checking if the datatype is a number or not, and creating
         // the appropriate 'WHERE' clause
         var searchWhereObservable = submitValueObservable.
-          flatMapLatest(function(searchValue) {
-            return Rx.Observable.
-              combineLatest(
-                fieldNameObservable,
-                physicalDatatypeObservable,
-                $scope.observe('whereClause'),
-                function(fieldName, physicalDatatype, externalWhereClause) {
-                  var whereClause;
-                  if (physicalDatatype === 'number') {
-                    var numericSearchValue = parseInt(searchValue, 10);
-                    if (_.isNaN(numericSearchValue)) {
-                      invalidSearchInputSubject.onNext(true);
-                    } else {
-                      whereClause = '{0} = {1}'.format(SoqlHelpers.formatFieldName(fieldName), numericSearchValue);
-                    }
-                  } else {
-                    whereClause = '{0} = "{1}"'.format(SoqlHelpers.formatFieldName(fieldName), searchValue);
-                  }
-                  return _.isPresent(externalWhereClause) ?
-                    '{0} AND {1}'.format(externalWhereClause, whereClause) :
-                    whereClause;
-                }).
-                filter(_.isDefined);
-          });
+          merge(whereClauseObservable).
+          withLatestFrom(
+            submitValueObservable,
+            fieldNameObservable,
+            physicalDatatypeObservable,
+            whereClauseObservable,
+            function(signal, searchValue, fieldName, physicalDatatype, externalWhereClause) {
+              var whereClause;
+              if (physicalDatatype === 'number') {
+                var numericSearchValue = parseInt(searchValue, 10);
+                if (_.isNaN(numericSearchValue)) {
+                  invalidSearchInputSubject.onNext(true);
+                } else {
+                  whereClause = '{0} = {1}'.format(SoqlHelpers.formatFieldName(fieldName), numericSearchValue);
+                }
+              } else {
+                whereClause = '{0} = "{1}"'.format(SoqlHelpers.formatFieldName(fieldName), searchValue);
+              }
+              return _.isPresent(externalWhereClause) ?
+                '{0} AND {1}'.format(externalWhereClause, whereClause) :
+                whereClause;
+            }).
+            filter(_.isDefined);
 
         // When the card contracts, clear the invalid search flag
         expandedObservable.subscribe(function(val) {

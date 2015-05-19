@@ -27,7 +27,7 @@
         // CORE-4645: Omit some columns from display.
         scope.bindObservable(
           'filteredColumnDetails',
-          scope.observe('columnDetails').
+          scope.$observe('columnDetails').
             filter(_.isPresent).
             map(function(columnDetails) {
               return _.filter(columnDetails, function(column) {
@@ -45,10 +45,10 @@
         // This directive is expected to be rewritten or at least refactored soon.
         // Dating for the eventual lulz: 2/12/2015
         Rx.Observable.combineLatest(
-          scope.observe('whereClause').filter(_.isDefined),
-          scope.observe('rowCount').filter(_.isNumber),
-          scope.observe('filteredRowCount').filter(_.isNumber),
-          scope.observe('filteredColumnDetails').filter(_.isPresent),
+          scope.$observe('whereClause').filter(_.isDefined),
+          scope.$observe('rowCount').filter(_.isNumber),
+          scope.$observe('filteredRowCount').filter(_.isNumber),
+          scope.$observe('filteredColumnDetails').filter(_.isPresent),
           _.identity
         ).take(1).
           subscribe(setupTable);
@@ -634,10 +634,10 @@
 
           subscriptions.push(Rx.Observable.subscribeLatest(
             element.offsetParent().observeDimensions(),
-            scope.observe('rowCount'),
-            scope.observe('filteredRowCount'),
-            scope.observe('filteredColumnDetails'),
-            scope.observe('infinite'),
+            scope.$observe('rowCount'),
+            scope.$observe('filteredRowCount'),
+            scope.$observe('filteredColumnDetails'),
+            scope.$observe('infinite'),
             function(cardDimensions, rowCount, filteredRowCount, filteredColumnDetails, infinite) {
 
               scope.$emit('render:start', {
@@ -676,7 +676,7 @@
           ));
 
           subscriptions.push(Rx.Observable.subscribeLatest(
-            scope.observe('whereClause'),
+            scope.$observe('whereClause'),
             function(whereClause) {
               if (scope.getRows) {
                 reloadRows();

@@ -1,4 +1,5 @@
 angular.module('dataCards.directives').directive('cardVisualizationColumnChart', function(AngularRxExtensions, CardDataService, Filter) {
+  'use strict';
 
   return {
     restrict: 'E',
@@ -8,7 +9,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
 
       AngularRxExtensions.install($scope);
 
-      var model = $scope.observe('model');
+      var model = $scope.$observe('model');
       var dataset = model.observeOnLatest('page.dataset');
       var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
       var aggregationObservable = model.observeOnLatest('page.aggregation');
@@ -16,6 +17,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
       var dataResponses = new Rx.Subject();
       var unfilteredDataSequence = new Rx.Subject();
       var filteredDataSequence = new Rx.Subject();
+      var whereClauseObservable = $scope.$observe('whereClause');
 
       // Keep track of the number of requests that have been made and the number of
       // responses that have come back.
@@ -36,7 +38,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
           }));
 
       var nonBaseFilterApplied = Rx.Observable.combineLatest(
-          $scope.observe('whereClause'),
+        whereClauseObservable,
           baseSoqlFilter,
           function (whereClause, baseFilter) {
             return !_.isEmpty(whereClause) && whereClause != baseFilter;
@@ -66,7 +68,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
       var filteredData = Rx.Observable.subscribeLatest(
         model.pluck('fieldName'),
         dataset,
-        $scope.observe('whereClause'),
+        whereClauseObservable,
         nonBaseFilterApplied,
         aggregationObservable,
         function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied, aggregationData) {
@@ -136,7 +138,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
 
         }));
 
-      $scope.bindObservable('filterApplied', $scope.observe('whereClause').
+      $scope.bindObservable('filterApplied', whereClauseObservable.
         map(function(whereClause) {
           return _.isPresent(whereClause);
         })

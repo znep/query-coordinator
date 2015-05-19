@@ -83,20 +83,6 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
         );
     },
 
-    observe: function observe(expression) {
-      var evaluatedExpression = this.$eval(expression);
-      var observable = new Rx.BehaviorSubject(evaluatedExpression);
-      this.$watch(expression, function(value) {
-        if (value !== evaluatedExpression) {
-          evaluatedExpression = value;
-          observable.onNext(value);
-        }
-      });
-
-      return observable
-        .takeUntil(this.$destroyAsObservable()); //TakeUntil to avoid leaks.
-    },
-
     emitEventsFromObservable: function emitEventsFromObservable(eventName, observable) {
       var self = this;
 

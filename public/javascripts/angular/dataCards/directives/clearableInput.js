@@ -17,7 +17,7 @@
           blurEventObservable.map(function() { return $scope.placeholderValue; }),
           focusEventObservable.map(function() { return ''; })
         );
-        var searchInputObservable = $scope.observe('search');
+        var searchInputObservable = $scope.$observe('search');
         var hasInputObservable = searchInputObservable.
           map($.isPresent).
           distinctUntilChanged();

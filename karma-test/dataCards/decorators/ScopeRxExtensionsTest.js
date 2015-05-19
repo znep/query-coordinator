@@ -120,4 +120,31 @@ describe('Scope RX Extensions', function() {
     });
   });
 
+  describe('#$observe', function() {
+
+    it('should observe scope expressions', function(done) {
+      var expectedValues = ['fooValueOne', 'fooValueTwo'];
+
+      var $scope = $rootScope.$new(true);
+
+      $scope.$apply(function() {
+        $scope.foo = 'fooValueOne';
+      });
+
+      $scope.$observe('foo').
+        subscribe(function(val) {
+          expect(val).to.equal(expectedValues.shift());
+          if (expectedValues.length == 0) {
+            done();
+          }
+        });
+
+      $scope.$digest();
+
+      $scope.$apply(function() {
+        $scope.foo = 'fooValueTwo';
+      });
+    });
+
+  })
 });

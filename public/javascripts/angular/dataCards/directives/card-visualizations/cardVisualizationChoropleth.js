@@ -15,7 +15,7 @@
 
         AngularRxExtensions.install(scope);
 
-        var model = scope.observe('model').filter(_.isPresent);
+        var model = scope.$observe('model').filter(_.isPresent);
         var dataset = model.observeOnLatest('page.dataset');
         var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
         var aggregationObservable = model.observeOnLatest('page.aggregation');
@@ -23,6 +23,7 @@
         var dataResponses = new Rx.Subject();
         var unfilteredDataSequence = new Rx.Subject();
         var filteredDataSequence = new Rx.Subject();
+        var whereClauseObservable = scope.$observe('whereClause');
 
         // Keep track of the number of requests that have been made and the number of
         // responses that have come back.
@@ -59,7 +60,7 @@
         ******************************************/
 
         Rx.Observable.combineLatest(
-          scope.observe('whereClause'),
+          whereClauseObservable,
           baseSoqlFilter,
           function (whereClause, baseFilter) {
             return !_.isEmpty(whereClause) && whereClause != baseFilter;
@@ -215,7 +216,7 @@
         Rx.Observable.subscribeLatest(
           model.pluck('fieldName'),
           dataset,
-          scope.observe('whereClause'),
+          whereClauseObservable,
           aggregationObservable,
           function(fieldName, dataset, whereClauseFragment, aggregationData) {
             dataRequests.onNext(1);

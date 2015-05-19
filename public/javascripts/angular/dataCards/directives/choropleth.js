@@ -698,6 +698,8 @@
 
         var LegendType = attrs.stops === 'continuous' ? LegendContinuous : LegendDiscrete;
         var legend = new LegendType(element.find('.choropleth-legend'), element, scope);
+        var baseLayerUrlObservable = scope.$observe('baseLayerUrl');
+        var geojsonAggregateDataObservable = scope.$observe('geojsonAggregateData');
 
         /***********************
          * Mutate Leaflet state *
@@ -1125,7 +1127,7 @@
         * React to changes in bound data *
         *********************************/
 
-        var tileLayer = scope.observe('baseLayerUrl').
+        var tileLayer = baseLayerUrlObservable.
           map(function(url) {
             if (!_.isDefined(url)) {
               return {
@@ -1164,7 +1166,7 @@
 
         Rx.Observable.subscribeLatest(
           element.observeDimensions().throttle(500, Rx.Scheduler.timeout),
-          scope.observe('geojsonAggregateData'),
+          geojsonAggregateDataObservable,
           function(dimensions, geojsonAggregateData) {
 
             if (_.isDefined(geojsonAggregateData)) {

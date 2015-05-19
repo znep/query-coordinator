@@ -17,36 +17,11 @@ describe('Angular RX Extensions', function() {
     _extensions.install($scope);
 
     // Try to overwrite existing keys.
-    var $scopeWithObserve = _$rootScope.$new(true);
-    $scopeWithObserve.observe = function(){};
-    expect(function() {
-      _extensions.install($scopeWithObserve);
-    }).to.throw();
-
     var $scopeWithBindObservable = _$rootScope.$new(true);
     $scopeWithBindObservable.bindObservable = function(){};
     expect(function() {
       _extensions.install($scopeWithBindObservable);
     }).to.throw();
-  });
-
-  it('should observe scope expressions', function(done) {
-    var expectedValues = ['fooValueOne', 'fooValueTwo'];
-
-    var $scope = _$rootScope.$new(true);
-    _extensions.install($scope);
-
-    $scope.foo = 'fooValueOne';
-    $scope.$apply();
-    $scope.observe('foo').subscribe(function(val) {
-      expect(val).to.equal(expectedValues.shift());
-      if (expectedValues.length == 0) {
-        done();
-      }
-    });
-
-    $scope.foo = 'fooValueTwo';
-    $scope.$apply();
   });
 
   describe('bindObservable', function() {

@@ -560,6 +560,10 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     link: function(scope, element, attrs) {
 
       AngularRxExtensions.install(scope);
+      var chartDataObservable = scope.$observe('chartData');
+      var showFilteredObservable = scope.$observe('showFiltered');
+      var expandedObservable = scope.$observe('expanded');
+      var rowDisplayUnitObservable = scope.$observe('rowDisplayUnit');
 
       if (_.isEmpty(element.closest('.card-visualization'))) {
         throw new Error("[columnChart] column-chart is missing a .card-visualization (grand)parent.");
@@ -591,10 +595,10 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             height: Math.max(dimensions.height, 0)
           };
         }),
-        scope.observe('chartData'),
-        scope.observe('showFiltered'),
-        scope.observe('expanded'),
-        scope.observe('rowDisplayUnit'),
+        chartDataObservable,
+        showFilteredObservable,
+        expandedObservable,
+        rowDisplayUnitObservable,
         function(cardVisualizationDimensions, chartData, showFiltered, expanded, rowDisplayUnit) {
           if (!chartData) return;
           scope.$emit('render:start', { source: 'columnChart_{0}'.format(scope.$id), timestamp: _.now() });

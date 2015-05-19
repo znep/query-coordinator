@@ -18,6 +18,9 @@
       templateUrl: '/angular_templates/dataCards/customizeBar.html',
       link: function($scope, element) {
         AngularRxExtensions.install($scope);
+        var expandedCardObservable = $scope.$observe('expandedCard');
+        var exportingVisualizationObservable = $scope.$observe('exportingVisualization');
+        var editModeObservable = $scope.$observe('editMode');
 
         function renderCustomizeButtonFlyout() {
           var flyoutContent = '';
@@ -77,8 +80,8 @@
         $scope.showSaveAsButton = ServerConfig.get('enableDataLensSaveAsButton');
 
         var canCustomizeObservable = Rx.Observable.combineLatest(
-          $scope.observe('expandedCard'),
-          $scope.observe('exportingVisualization'),
+          expandedCardObservable,
+          exportingVisualizationObservable,
           function(expandedCard, exportingVisualization) {
             return !expandedCard && !exportingVisualization;
           }
@@ -86,7 +89,7 @@
         $scope.bindObservable('canCustomize', canCustomizeObservable);
 
         // Flyout
-        $scope.observe('editMode').subscribe(function() {
+        editModeObservable.subscribe(function() {
           FlyoutService.refreshFlyout();
         });
 

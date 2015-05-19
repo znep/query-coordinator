@@ -10,7 +10,8 @@ describe ApplicationController do
       #stub out core auth calls
       auth = double()
       expect(Core::Auth::Client).to receive(:new).with(
-        request.host, port: '9443',
+        request.host,
+        port: nil,
         cookie: '_core_session_id=we_have_a_session_id',
         verify_ssl_cert: false
       ).and_return(auth)
@@ -28,7 +29,7 @@ describe ApplicationController do
 
       it 'does not call core' do
         request.cookies.clear
-        expect(controller.current_user).to eq(nil)
+        controller.current_user
         expect(Core::Auth::Client).to_not receive(:new)
       end
     end

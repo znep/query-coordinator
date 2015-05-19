@@ -19,7 +19,12 @@ class ApplicationController < ActionController::Base
     return unless cookies[:_core_session_id]
     socrata_session_cookies = request.cookies.map{ |k, v| "#{k}=#{v}" }.join('; ')
 
-    auth = Core::Auth::Client.new(request.host, port: '9443', cookie: socrata_session_cookies, verify_ssl_cert: false)
+    auth = Core::Auth::Client.new(
+      request.host,
+      port: Rails.application.config.frontend_port,
+      cookie: socrata_session_cookies,
+      verify_ssl_cert: false
+    )
     if auth.logged_in?
       auth.current_user
     else

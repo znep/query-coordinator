@@ -28,5 +28,10 @@ module Storyteller
     # so respond to /stories as the root url.
     config.relative_url_root = '/stories'
 
+    config.frontend_port = if Rails.env.development?
+      ENV['FRONTEND_PORT'] || '9443'
+    else
+      nil
+    end
   end
 end

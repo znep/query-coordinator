@@ -41,6 +41,5 @@ Rails.application.configure do
 
   # TODO: Put environment configuration in discovery service
   config.core_service_uri = "http://localhost:8080"
-  config.frontend_port = '9443'
 
 end

@@ -86,7 +86,7 @@ RSpec.configure do |config|
 =end
 end
 
-def logged_in_state
+def stub_logged_in
   good_user_object = {"id"=>"tugg-xxxx", "createdAt"=>1425577015, "displayName"=>"testuser"}
   allow(@controller).to receive(:current_user).and_return(good_user_object)
 end

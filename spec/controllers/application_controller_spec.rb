@@ -4,6 +4,22 @@ describe ApplicationController do
 
   describe '#current_user' do
 
+    it 'calls Core::Auth::Client with params' do
+      request.cookies[:_core_session_id] = "we_have_a_session_id"
+
+      #stub out core auth calls
+      auth = double()
+      expect(Core::Auth::Client).to receive(:new).with(
+        request.host, port: '9443',
+        cookie: '_core_session_id=we_have_a_session_id',
+        verify_ssl_cert: false
+      ).and_return(auth)
+      expect(auth).to receive(:logged_in?).and_return(false)
+
+      # Call that hits the expect/allow above
+      controller.current_user
+    end
+
     context 'when the user has no session id' do
       it 'returns nil' do
         request.cookies.clear
@@ -12,6 +28,7 @@ describe ApplicationController do
 
       it 'does not call core' do
         request.cookies.clear
+        expect(controller.current_user).to eq(nil)
         expect(Core::Auth::Client).to_not receive(:new)
       end
     end
@@ -33,24 +50,13 @@ describe ApplicationController do
       end
     end # end user not logged in context
 
+
     context 'when the user is logged in' do
 
-      it 'returns the user object' do
-        # TODO: wtf is this even testing?
-        # Stub out Auth object
-        auth = double()
-        allow(Core::Auth::Client).to receive(:new).and_return(auth)
-        good_user_object = {"id"=>"tugg-xxxx", "createdAt"=>1425577015, "displayName"=>"testuser"}
-        allow(auth).to receive(:logged_in?).and_return(true)
-        allow(auth).to receive(:current_user).and_return(good_user_object)
+      it 'returns the user object'
+      # TODO: test this with an integration test
+      # Leaving as a pending test to remind us to fix this
 
-        # Set cookie so we make an auth object
-        request.cookies[:_core_session_id] = "we_have_a_valid_session_id"
-
-        user_actual = controller.current_user
-        expect(user_actual).to include('id')
-        expect(user_actual).to include('displayName')
-      end
     end
 
   end  #end user logged in context

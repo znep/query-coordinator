@@ -941,9 +941,12 @@
           function deriveXAxisLabelDatumStep(labels) {
 
             var numberOfLabels = labels.length;
-            var requiredLabelWidth = 50;
+            var requiredLabelWidth = 50; // 50 is the min required for labels with month ("Oct '15")
             var labelsWeHaveRoomFor = Math.floor(cachedChartDimensions.width / requiredLabelWidth);
             var labelEveryN;
+
+            // TODO - write integration tests for the number of labels shown at given screen widths
+            // and ensuring that they are interactive.
 
             if (numberOfLabels <= labelsWeHaveRoomFor) {
               labelEveryN = 1; // show every label

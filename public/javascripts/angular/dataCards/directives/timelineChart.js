@@ -940,16 +940,21 @@
 
           function deriveXAxisLabelDatumStep(labels) {
 
-            var widthOfEachLabel = cachedChartDimensions.width / labels.length;
+            var numberOfLabels = labels.length;
+            var requiredLabelWidth = 50; // 50 is the min required for labels with month ("Oct '15")
+            var labelsWeHaveRoomFor = Math.floor(cachedChartDimensions.width / requiredLabelWidth);
             var labelEveryN;
 
-            if (widthOfEachLabel >= 50) {
-              labelEveryN = 1;
-            } else if ((widthOfEachLabel * 2) >= 50) {
-              labelEveryN = 2;
-            } else if ((widthOfEachLabel * 3) >= 50) {
-              labelEveryN = 3;
-            } else if ((widthOfEachLabel * 5) >= 50) {
+            // TODO - write integration tests for the number of labels shown at given screen widths
+            // and ensuring that they are interactive.
+
+            if (numberOfLabels <= labelsWeHaveRoomFor) {
+              labelEveryN = 1; // show every label
+            } else if (numberOfLabels / 2 <= labelsWeHaveRoomFor) {
+              labelEveryN = 2; // show every other label
+            } else if (numberOfLabels / 3 <= labelsWeHaveRoomFor) {
+              labelEveryN = 3; // etc.
+            } else if (numberOfLabels / 5 <= labelsWeHaveRoomFor) {
               labelEveryN = 5;
             } else {
               labelEveryN = 7;
@@ -1067,16 +1072,16 @@
             });
           }
 
-          // Now that we know how many *labels* we can potentailly draw, we
+          // Now that we know how many *labels* we can potentially draw, we
           // decide whether or not we can draw all of them or just some.
           shouldLabelEveryN = deriveXAxisLabelDatumStep(labels);
 
-          // Not ethat allChartLabelsShown is also actually global to the
+          // Note that allChartLabelsShown is also actually global to the
           // directive and is also set within the context of rendering the
           // x-axis since it seems as reasonable to do so as anywhere else.
           allChartLabelsShown = shouldLabelEveryN === 1;
 
-          // Finally, we filter the the group of all labels so that we only
+          // Finally, we filter the group of all labels so that we only
           // label every Nth one.
           labels = labels.filter(function(label, i) {
             return (i % shouldLabelEveryN) === 0;
@@ -1505,7 +1510,6 @@
           var filteredUnit;
           var flyoutContent;
 
-
           if (shouldDisplayFlyout) {
 
             unfilteredUnit = (unfilteredTotal === 1) ?
@@ -1925,7 +1929,6 @@
 
           var highlightData;
 
-
           if (mousePositionWithinChartDisplay || mousePositionWithinChartLabels) {
 
             highlightData = filterChartDataByOffset(offsetX);
@@ -1949,7 +1952,7 @@
           var indexIntoChartData;
           var startDate;
           var endDate;
-
+          var currentPrecision;
 
           indexIntoChartData = Math.floor(((offsetX - 1) / cachedChartDimensions.width) * cachedChartData.values.length);
 
@@ -1957,9 +1960,14 @@
           // user hovers over the visualization. The value of currentDatum is
           // read by the flyout code.
           currentDatum = cachedChartData.values[indexIntoChartData];
+          currentPrecision = (mousePositionWithinChartLabels) ? labelPrecision : datasetPrecision;
 
           startDate = currentDatum.date;
-          endDate = moment(currentDatum.date).add(1, datasetPrecision).toDate();
+          // endDate is either one full unit of precision above the current highlight target
+          // or the maxDate stored in cachedChartData
+          endDate = new Date(Math.min(
+            moment(currentDatum.date).add(1, currentPrecision).toDate(),
+            cachedChartData.maxDate));
 
           // 1. Dim all the existing labels
           // 2. Set the value of the datum label to the startDate
@@ -1997,18 +2005,10 @@
           var startDate;
           var endDate;
 
-
           startDate = new Date(target.getAttribute('data-start'));
           endDate = new Date(target.getAttribute('data-end'));
 
           hideDatumLabel();
-
-          // TODO: Factor this out. See also filterChartDataByOffset'S use.
-          currentDatum = {
-            unfiltered: target.getAttribute('data-aggregate-unfiltered'),
-            filtered: target.getAttribute('data-aggregate-filtered'),
-            flyoutLabel: target.getAttribute('data-flyout-label')
-          };
 
           highlightChart(startDate, endDate);
 
@@ -2038,7 +2038,6 @@
          * @return {Boolean}
          */
         function isMouseWithinChartLabels(offsetX, offsetY) {
-
           return offsetX > 0 &&
                  offsetX <= cachedChartDimensions.width &&
                  offsetY > cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN_BOTTOM &&
@@ -2230,10 +2229,12 @@
         //
         Rx.Observable.subscribeLatest(
           element.closest('.card-visualization').observeDimensions(),
+          element.closest('.cards-content').find('.quick-filter-bar').observeDimensions(),
           scope.observe('chartData'),
           scope.observe('precision'),
           scope.observe('rowDisplayUnit'),
-          function(chartDimensions, chartData, precision, rowDisplayUnit) {
+          function(chartDimensions, qfbDimensions, chartData, precision, rowDisplayUnit) {
+            // qfbDimensions is not actually used, it is observed to update the cached chart offsets
 
             if (!_.isDefined(chartData) || chartData === null || !_.isDefined(precision)) {
               return;

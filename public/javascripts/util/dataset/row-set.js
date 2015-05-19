@@ -185,75 +185,111 @@ var RowSet = ServerModel.extend({
 
         if (len && !$.isBlank(start))
         {
-            while (start <= finish &&
-                ($.isBlank(rs._totalCount) || start < rs._totalCount))
-            {
-                var r = rs._rows[start];
-                // If this is an expired pending row, clean it out and mark
-                // it null so it gets reloaded
-                if (!$.isBlank(r) && r.pending && now > r.expires)
-                {
-                    delete rs._rows[r.index];
-                    delete rs._rowIDLookup[r.id];
-                    pendingRemoved.push(r);
-                    r = null;
-                }
+            // In NBE, we want to make fewer, but larger, requests for rows.
+            // Current strategy is to bucket in chunks of 1000.
+            //
+            // This code block ignores things like "rowsLoading" because there's not an
+            // apparent need for it.
+            if (rs._dataset.newBackend && false !== blist.feature_flags.nbe_bucket_size) {
+              var bucketSize = parseInt(blist.feature_flags.nbe_bucket_size, 10) || 1000;
+              var bucket = {
+                start: Math.floor(finish/bucketSize) * bucketSize,
+                finish: (Math.ceil(finish/bucketSize) * bucketSize) - 1
+              };
 
-                if ($.isBlank(r))
-                {
-                    doLoaded();
-                    if (rs._rowsLoading[start])
-                    {
-                        if (!$.isBlank(curReq))
-                        {
-                            reqs.push(curReq);
-                            curReq = null;
-                        }
+              if (_.isUndefined(rs._rowBuckets)) {
+                rs._rowBuckets = [];
+              }
 
-                        if ($.isBlank(pendReq))
-                        {
-                            pendReq = {start: start, length: 1,
-                                successCallback: successCallback, errorCallback: errorCallback};
-                        }
-                        else
-                        { pendReq.length++; }
-                    }
-                    else
-                    {
-                        if (!$.isBlank(pendReq))
-                        {
-                            rs._pendingRowReqs.push(pendReq);
-                            pendReq = null;
-                        }
+              if (!_.contains(rs._rowBuckets, bucket.start)) {
+                reqs.push(bucket);
 
-                        if ($.isBlank(curReq))
-                        { curReq = {start: start, finish: start}; }
-                        else
-                        {
-                            if (start - curReq.start + 1 > pageSize)
-                            {
-                                reqs.push(curReq);
-                                curReq = {start: start};
-                            }
-                            else { curReq.finish = start; }
-                        }
-                    }
+                // The bucket is being requested; do not fetch it again.
+                // Only saving the `start` value to cargo cult for speed.
+                rs._rowBuckets.push(bucket.start);
+                rs._rowBuckets.sort();
+              } else {
+                // The while loop is back! These numbers are based off the screen size,
+                // so it's unlikely to be insane.
+                while (start <= finish) {
+                  if (rs._rows[start]) {
+                    loaded.push(rs._rows[start]);
+                  }
+                  start++;
                 }
-                else
-                {
-                    if (!$.isBlank(curReq))
-                    {
-                        reqs.push(curReq);
-                        curReq = null;
-                    }
-                    if (!$.isBlank(pendReq))
-                    {
-                        rs._pendingRowReqs.push(pendReq);
-                        pendReq = null;
-                    }
-                    loaded.push(r);
-                }
-                start++;
+              }
+
+            } else {
+              while (start <= finish &&
+                  ($.isBlank(rs._totalCount) || start < rs._totalCount))
+              {
+                  var r = rs._rows[start];
+                  // If this is an expired pending row, clean it out and mark
+                  // it null so it gets reloaded
+                  if (!$.isBlank(r) && r.pending && now > r.expires)
+                  {
+                      delete rs._rows[r.index];
+                      delete rs._rowIDLookup[r.id];
+                      pendingRemoved.push(r);
+                      r = null;
+                  }
+
+                  if ($.isBlank(r))
+                  {
+                      doLoaded();
+                      if (rs._rowsLoading[start])
+                      {
+                          if (!$.isBlank(curReq))
+                          {
+                              reqs.push(curReq);
+                              curReq = null;
+                          }
+
+                          if ($.isBlank(pendReq))
+                          {
+                              pendReq = {start: start, length: 1,
+                                  successCallback: successCallback, errorCallback: errorCallback};
+                          }
+                          else
+                          { pendReq.length++; }
+                      }
+                      else
+                      {
+                          if (!$.isBlank(pendReq))
+                          {
+                              rs._pendingRowReqs.push(pendReq);
+                              pendReq = null;
+                          }
+
+                          if ($.isBlank(curReq))
+                          { curReq = {start: start, finish: start}; }
+                          else
+                          {
+                              if (start - curReq.start + 1 > pageSize)
+                              {
+                                  reqs.push(curReq);
+                                  curReq = {start: start};
+                              }
+                              else { curReq.finish = start; }
+                          }
+                      }
+                  }
+                  else
+                  {
+                      if (!$.isBlank(curReq))
+                      {
+                          reqs.push(curReq);
+                          curReq = null;
+                      }
+                      if (!$.isBlank(pendReq))
+                      {
+                          rs._pendingRowReqs.push(pendReq);
+                          pendReq = null;
+                      }
+                      loaded.push(r);
+                  }
+                  start++;
+              }
             }
         }
         else

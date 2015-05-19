@@ -168,3 +168,6 @@ default_imports_to_nbe:
 secondary_group_identifier:
   description: See CORE-5497 - This is the secondary indexing group that should be signaled to index on new UX bootstrap
   defaultValue: spandex3
+nbe_bucket_size:
+  description: Bucket-ize the fetching of rows when hitting NBE.
+  defaultValue: false

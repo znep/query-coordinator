@@ -29,7 +29,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
 
       // If the number of requests is greater than the number of responses, we have
       // a request in progress and we should display the spinner.
-      $scope.bindObservable('busy',
+      $scope.$bindObservable('busy',
         Rx.Observable.combineLatest(
           dataRequestCount,
           dataResponseCount,
@@ -87,9 +87,9 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
           return Rx.Observable.fromPromise(dataPromise);
         });
 
-      $scope.bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
+      $scope.$bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
 
-      $scope.bindObservable('chartData', Rx.Observable.combineLatest(
+      $scope.$bindObservable('chartData', Rx.Observable.combineLatest(
           unfilteredDataSequence.switchLatest(),
           filteredDataSequence.switchLatest(),
           model.observeOnLatest('activeFilters'),
@@ -138,13 +138,13 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
 
         }));
 
-      $scope.bindObservable('filterApplied', whereClauseObservable.
+      $scope.$bindObservable('filterApplied', whereClauseObservable.
         map(function(whereClause) {
           return _.isPresent(whereClause);
         })
       );
 
-      $scope.bindObservable('expanded', model.observeOnLatest('expanded'));
+      $scope.$bindObservable('expanded', model.observeOnLatest('expanded'));
 
       $scope.$on('column-chart:truncation-marker-clicked', function(event, datum) {
         $scope.model.page.toggleExpanded($scope.model);

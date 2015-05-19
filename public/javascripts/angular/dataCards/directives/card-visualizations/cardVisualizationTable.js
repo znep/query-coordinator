@@ -105,7 +105,7 @@
 
         // If the number of requests is greater than the number of responses, we have
         // a request in progress and we should display the spinner.
-        $scope.bindObservable('busy',
+        $scope.$bindObservable('busy',
           Rx.Observable.combineLatest(
             dataRequestCount,
             dataResponseCount,
@@ -185,11 +185,11 @@
           nonAggregatedColumnSequence
         ).distinctUntilChanged();
 
-        $scope.bindObservable('whereClause', whereClause);
-        $scope.bindObservable('rowCount', rowCount.switchLatest());
-        $scope.bindObservable('filteredRowCount', filteredRowCount.switchLatest());
-        $scope.bindObservable('columnDetails', columnDetailsAsArray);
-        $scope.bindObservable('defaultSortColumnName', defaultSortColumnName);
+        $scope.$bindObservable('whereClause', whereClause);
+        $scope.$bindObservable('rowCount', rowCount.switchLatest());
+        $scope.$bindObservable('filteredRowCount', filteredRowCount.switchLatest());
+        $scope.$bindObservable('columnDetails', columnDetailsAsArray);
+        $scope.$bindObservable('defaultSortColumnName', defaultSortColumnName);
 
       }
     };

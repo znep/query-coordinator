@@ -25,7 +25,7 @@
         AngularRxExtensions.install(scope);
 
         // CORE-4645: Omit some columns from display.
-        scope.bindObservable(
+        scope.$bindObservable(
           'filteredColumnDetails',
           scope.$observe('columnDetails').
             filter(_.isPresent).

@@ -16,7 +16,7 @@
       link: function(scope, element, attrs) {
         AngularRxExtensions.install(scope);
 
-        scope.bindObservable(
+        scope.$bindObservable(
           'columnHumanNameFn',
           scope.$observe('page').observeOnLatest('dataset.columns').map(
             function(datasetColumns) {
@@ -115,7 +115,7 @@
           scope.$emit('customize-card-with-model', addCardModel);
         };
 
-        scope.bindObservable(
+        scope.$bindObservable(
           'isCustomizable',
           scope.$observe('addCardModel').observeOnLatest('isCustomizable')
         );

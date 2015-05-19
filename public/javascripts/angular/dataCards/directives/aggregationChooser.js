@@ -56,7 +56,7 @@
           startWith(false).
           distinctUntilChanged();
 
-        $scope.bindObservable('countFunctionHover', countFunctionHoverObservable);
+        $scope.$bindObservable('countFunctionHover', countFunctionHoverObservable);
 
         // Observable that goes true when hovering a non-'count' aggregation-type selector
         var aggregateFunctionHoverObservable = aggregationHoverObservable.
@@ -66,7 +66,7 @@
           startWith(false).
           distinctUntilChanged();
 
-        $scope.bindObservable('aggregateFunctionHover', aggregateFunctionHoverObservable);
+        $scope.$bindObservable('aggregateFunctionHover', aggregateFunctionHoverObservable);
 
         /*
          * Setup Dataset Observables
@@ -183,13 +183,13 @@
           });
 
         var rowDisplayUnitLabelObservable = aggregationSequence.pluck('rowDisplayUnit').map(pluralizeAndCapitalize);
-        $scope.bindObservable('highlightFirstColumn', highlightFirstColumnObservable);
-        $scope.bindObservable('canAggregate', canAggregateObservable);
-        $scope.bindObservable('rowDisplayUnitLabel', rowDisplayUnitLabelObservable);
-        $scope.bindObservable('unitLabel', unitLabelObservable);
-        $scope.bindObservable('aggregationFunction', labeledFunctionObservable);
-        $scope.bindObservable('aggregationColumns', aggregationColumnsObservable);
-        $scope.bindObservable('activeAggregation', labeledFieldObservable);
+        $scope.$bindObservable('highlightFirstColumn', highlightFirstColumnObservable);
+        $scope.$bindObservable('canAggregate', canAggregateObservable);
+        $scope.$bindObservable('rowDisplayUnitLabel', rowDisplayUnitLabelObservable);
+        $scope.$bindObservable('unitLabel', unitLabelObservable);
+        $scope.$bindObservable('aggregationFunction', labeledFunctionObservable);
+        $scope.$bindObservable('aggregationColumns', aggregationColumnsObservable);
+        $scope.$bindObservable('activeAggregation', labeledFieldObservable);
 
         /*
          * Panel toggling

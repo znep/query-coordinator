@@ -118,9 +118,9 @@
         /*
          * Bind streams to scope
          */
-        $scope.bindObservable('selectedUrl', selectedUrlStream);
-        $scope.bindObservable('datasetDocumentationUrl', datasetDocumentationUrlStream);
-        $scope.bindObservable('multipleFormatsAvailable', multipleFormatsAvailableStream);
+        $scope.$bindObservable('selectedUrl', selectedUrlStream);
+        $scope.$bindObservable('datasetDocumentationUrl', datasetDocumentationUrlStream);
+        $scope.$bindObservable('multipleFormatsAvailable', multipleFormatsAvailableStream);
 
 
         // Clean up

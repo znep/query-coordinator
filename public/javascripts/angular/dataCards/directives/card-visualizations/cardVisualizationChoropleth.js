@@ -46,7 +46,7 @@
         // SUPER IMPORTANT NOTE: Because of the way that RxJS works, we need to bind
         // this one here and not below with the other bound observables... so unfortunately
         // this code is location-dependent within the file.
-        scope.bindObservable('busy',
+        scope.$bindObservable('busy',
           Rx.Observable.combineLatest(
             dataRequestCount,
             dataResponseCount,
@@ -244,11 +244,11 @@
         * Bind non-busy-indicating observables. *
         ****************************************/
 
-        scope.bindObservable('fieldName', model.pluck('fieldName'));
-        scope.bindObservable('baseLayerUrl', model.observeOnLatest('baseLayerUrl'));
-        scope.bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
+        scope.$bindObservable('fieldName', model.pluck('fieldName'));
+        scope.$bindObservable('baseLayerUrl', model.observeOnLatest('baseLayerUrl'));
+        scope.$bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
 
-        scope.bindObservable(
+        scope.$bindObservable(
           'geojsonAggregateData',
           Rx.Observable.combineLatest(
             geometryLabelObservable.switchLatest(),
@@ -291,7 +291,7 @@
           }
         });
 
-        scope.bindObservable('cardSize', model.observeOnLatest('cardSize'));
+        scope.$bindObservable('cardSize', model.observeOnLatest('cardSize'));
 
       }
     };

@@ -210,7 +210,7 @@ describe('card-layout', function() {
     outerScope.page = pageModel;
     outerScope.where = '';
     outerScope.editMode = false;
-    outerScope.bindObservable('cardModels', pageModel.observe('cards'));
+    outerScope.$bindObservable('cardModels', pageModel.observe('cards'));
     outerScope.chooserMode = {};
 
     var html = [

@@ -96,6 +96,75 @@
             enumerable: false,
             configurable: true,
             writable: true
+          },
+          '$bindObservable': {
+            // Bind an observable sequence to a scope's property.
+            // For example, this will cause the 'ticks' property
+            // on scope $scope to increment every second:
+            // $scope.bindObservable('ticks', Rx.Observable.interval(1000));
+            // Separate optional callbacks are provided for error and completed cases.
+            // In these, the value returned from the callback is applied to the scope's property.
+            value: function $bindObservable(propName, observable, onError, onCompleted) {
+              if (_.isEmpty(propName) || !_.isString(propName)) {
+                throw new Error('Expected non-empty string property name');
+              }
+              if (!(observable instanceof Rx.Observable)) {
+                throw new Error('Expected Rx.Observable instance');
+              }
+              if (onError && !_.isFunction(onError)) {
+                throw new Error('onError provided, but it is not a function.');
+              }
+              if (onCompleted && !_.isFunction(onCompleted)) {
+                throw new Error('onCompleted provided, but it is not a function.');
+              }
+
+              var scope = this;
+              function set(newValue) {
+                scope.$safeApply(function() {
+                  scope[propName] = newValue;
+                });
+              }
+
+              function errorHandler(error) {
+                set(onError.apply(this, arguments));
+              }
+
+              function completedHandler() {
+                set(onCompleted.apply(this, arguments));
+              }
+
+              /**
+               * The default error handler for Rx.Observable.fromPromise will throw whatever parameter it's
+               * given, if the promise goes to the error state. For $http promises, this is just the response
+               * object, so we lose stack information, etc. So - only throw actual Errors.
+               *
+               * Exceptions are passed through but are augmented with a tag (extra message),
+               * causeScope, and causeBoundProperty.
+               */
+              function defaultErrorHandler(e) {
+                var genericErrorMessage = '$bindObservable: Unhandled error in sequence bound to property {0} of scope {1}'.
+                  format(propName, scope.$id);
+                if (e instanceof Error) {
+                  // For debugging, place the message on the Error instance.
+                  e.tag = genericErrorMessage;
+                  e.causeScope = scope;
+                  e.causeBoundProperty = propName;
+                  throw e;
+                }
+                $log.error(genericErrorMessage, e);
+              }
+
+              observable.
+                takeUntil(scope.$eventToObservable('$destroy')). //TakeUntil to avoid leaks.
+                subscribe(
+                set,
+                onError ? errorHandler : defaultErrorHandler,
+                onCompleted ? completedHandler : undefined
+              );
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
           }
         });
 

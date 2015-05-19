@@ -76,7 +76,7 @@
           startWith(false).
           distinctUntilChanged();
 
-        scope.bindObservable('displayRenderError', displayRenderErrorObservable);
+        scope.$bindObservable('displayRenderError', displayRenderErrorObservable);
 
         // Show the busy indicator when we are ready to render, and when we have
         // started rendering.  Clear the indicator when things have timed out
@@ -94,7 +94,7 @@
           startWith(true).
           distinctUntilChanged();
 
-        scope.bindObservable('busy', busyObservable);
+        scope.$bindObservable('busy', busyObservable);
 
         var featureExtentDataSequence = synchronizedFieldnameDataset.
           flatMap(function(fieldNameDataset) {
@@ -144,12 +144,12 @@
         * Bind non-busy-indicating observables. *
         ****************************************/
 
-        scope.bindObservable(
+        scope.$bindObservable(
           'baseLayerUrl',
           model.observeOnLatest('baseLayerUrl')
         );
 
-        scope.bindObservable('featureExtent', synchronizedFeatureExtentDataSequence);
+        scope.$bindObservable('featureExtent', synchronizedFeatureExtentDataSequence);
 
         var featureSet = ServerConfig.getFeatureSet();
 
@@ -180,9 +180,9 @@
           useOriginHostObservable,
           VectorTileDataService.buildTileGetter);
 
-        scope.bindObservable('vectorTileGetter', vectorTileGetterSequence);
+        scope.$bindObservable('vectorTileGetter', vectorTileGetterSequence);
 
-        scope.bindObservable(
+        scope.$bindObservable(
           'rowDisplayUnit',
           dataset.observeOnLatest('rowDisplayUnit')
         );

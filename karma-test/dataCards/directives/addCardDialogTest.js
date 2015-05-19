@@ -155,8 +155,8 @@ describe('addCardDialog', function() {
     AngularRxExtensions.install(outerScope);
 
     outerScope.page = pageModel;
-    outerScope.bindObservable('cardModels', pageModel.observe('cards'));
-    outerScope.bindObservable('datasetColumns', datasetColumns);
+    outerScope.$bindObservable('cardModels', pageModel.observe('cards'));
+    outerScope.$bindObservable('datasetColumns', datasetColumns);
     outerScope.dialogState = {
       'cardSize': 1,
       'show': true

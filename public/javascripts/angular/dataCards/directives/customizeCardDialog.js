@@ -19,7 +19,7 @@
     $scope.TILEURL_REGEX = Constants.TILEURL_REGEX;
 
     // Map the actual baseLayerUrl to the selected option
-    $scope.bindObservable('baseLayerOption', baseLayerObservable.map(
+    $scope.$bindObservable('baseLayerOption', baseLayerObservable.map(
       function(url) {
         switch(url) {
           case null:

@@ -25,18 +25,18 @@
         var columns = datasetObservable.observeOnLatest('columns');
 
         $scope.descriptionCollapsed = true;
-        $scope.bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
+        $scope.$bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
 
-        $scope.bindObservable('isCustomizable', modelSubject.observeOnLatest('isCustomizable'));
-        $scope.bindObservable('isExportable', modelSubject.observeOnLatest('isExportable'));
+        $scope.$bindObservable('isCustomizable', modelSubject.observeOnLatest('isCustomizable'));
+        $scope.$bindObservable('isExportable', modelSubject.observeOnLatest('isExportable'));
 
-        $scope.bindObservable(
+        $scope.$bindObservable(
           'title',
           modelSubject.observeOnLatest('column').map(function(column) {
             return column.dataset.extractHumanReadableColumnName(column);
           })
         );
-        $scope.bindObservable('description', modelSubject.observeOnLatest('column.description'));
+        $scope.$bindObservable('description', modelSubject.observeOnLatest('column.description'));
 
         var dynamicTitleSequence = PageHelpersService.dynamicAggregationTitle($scope.model.page).
           map(function(title) {
@@ -49,8 +49,8 @@
             return !_(DYNAMIC_TITLE_CARDTYPE_BLACKLIST).contains(cardType);
           });
 
-        $scope.bindObservable('displayDynamicTitle', displayDynamicTitleSequence);
-        $scope.bindObservable('dynamicTitle', dynamicTitleSequence);
+        $scope.$bindObservable('displayDynamicTitle', displayDynamicTitleSequence);
+        $scope.$bindObservable('dynamicTitle', dynamicTitleSequence);
 
         var updateCardLayout = _.throttle(function(textHeight) {
           descriptionTruncatedContent.dotdotdot({

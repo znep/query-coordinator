@@ -20,17 +20,17 @@
             filter(_.isObject).
             map(_.property('isPublic'));
 
-        $scope.bindObservable(
+        $scope.$bindObservable(
           'pageVisibility',
           pageIsPublicObservable.map(function(isPublic) { return isPublic ? 'public' : 'private'; })
         );
 
-        $scope.bindObservable(
+        $scope.$bindObservable(
           'datasetIsPublic',
           datasetIsPublicObservable
         );
 
-        $scope.bindObservable('selectDisabled', Rx.Observable.combineLatest(
+        $scope.$bindObservable('selectDisabled', Rx.Observable.combineLatest(
           pageIsPublicObservable,
           datasetIsPublicObservable,
           function(pageIsPublic, datasetIsPublic) {

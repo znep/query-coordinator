@@ -23,15 +23,15 @@
     *************************/
 
     $scope.page = page;
-    $scope.bindObservable('card', cardObservable);
+    $scope.$bindObservable('card', cardObservable);
 
-    $scope.bindObservable('windowSize', WindowState.windowSizeSubject);
+    $scope.$bindObservable('windowSize', WindowState.windowSizeSubject);
 
     /*******************************
     * Filters and the where clause *
     *******************************/
 
-    $scope.bindObservable('globalWhereClauseFragment', globalWhereClauseFragmentSequence);
+    $scope.$bindObservable('globalWhereClauseFragment', globalWhereClauseFragmentSequence);
 
     // Choropleth doesn't consider map tiles while deciding whether to emit
     // render:complete (by design, as the event is intended for internal timing

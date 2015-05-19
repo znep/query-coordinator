@@ -14,7 +14,7 @@
 
         var saveEvents = new Rx.BehaviorSubject({ status: 'idle' });
 
-        $scope.bindObservable('saveStatus', saveEvents.pluck('status'));
+        $scope.$bindObservable('saveStatus', saveEvents.pluck('status'));
 
         // Since we have a flyout handler whose output depends on currentPageSaveEvents and $scope.hasChanges,
         // we need to poke the FlyoutService. We want the flyout to update immediately.
@@ -54,7 +54,7 @@
           } else if ($scope.saveStatus !== 'saving' && $scope.saveStatus !== 'saved') {
             $scope.savePageAs($scope.name.trim(), $scope.description.trim()).
               subscribe(saveEvents);
-            $scope.bindObservable('saveStatus', Rx.Observable.returnValue('saving'));
+            $scope.$bindObservable('saveStatus', Rx.Observable.returnValue('saving'));
           }
         };
 

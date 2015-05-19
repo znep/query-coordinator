@@ -62,8 +62,8 @@
           'clearableInput:blur',
           Rx.Observable.fromEvent(element.find('input'), 'blur')
         );
-        $scope.bindObservable('placeholder', placeholderObservable);
-        $scope.bindObservable('hasInput', hasInputObservable);
+        $scope.$bindObservable('placeholder', placeholderObservable);
+        $scope.$bindObservable('hasInput', hasInputObservable);
 
       }
     };

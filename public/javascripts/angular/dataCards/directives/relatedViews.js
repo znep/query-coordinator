@@ -31,8 +31,8 @@
           }).
           startWith(true);
 
-        $scope.bindObservable('enablePublisherPages', enablePublisherPagesSequence);
-        $scope.bindObservable('datasetPublisherPages', datasetPublisherPagesSequence.startWith([]));
+        $scope.$bindObservable('enablePublisherPages', enablePublisherPagesSequence);
+        $scope.$bindObservable('datasetPublisherPages', datasetPublisherPagesSequence.startWith([]));
         $scope.togglePanel = function() {
           $scope.panelActive = !$scope.panelActive;
         };

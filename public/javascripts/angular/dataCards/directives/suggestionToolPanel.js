@@ -90,7 +90,7 @@
             return hasSample && !hasSuggestions;
           });
 
-        $scope.bindObservable('showSamples', showSamplesObservable);
+        $scope.$bindObservable('showSamples', showSamplesObservable);
 
         $scope.$on('intractableList:selectedItem', function(event, selectedItem) {
           if ($scope.shouldShow) {
@@ -115,10 +115,10 @@
           map(_.constant(true)).
           merge(suggestionsRequestsObservable.switchLatest().map(_.constant(false)));
 
-        $scope.bindObservable('suggestions', suggestionsObservable);
-        $scope.bindObservable('suggestionsStatus', suggestionsStatusObservable);
-        $scope.bindObservable('suggestionsLoading', suggestionsLoadingObservable);
-        $scope.bindObservable('suggestionsAdvice', suggestionsAdviceObservable);
+        $scope.$bindObservable('suggestions', suggestionsObservable);
+        $scope.$bindObservable('suggestionsStatus', suggestionsStatusObservable);
+        $scope.$bindObservable('suggestionsLoading', suggestionsLoadingObservable);
+        $scope.$bindObservable('suggestionsAdvice', suggestionsAdviceObservable);
       }
     };
   }

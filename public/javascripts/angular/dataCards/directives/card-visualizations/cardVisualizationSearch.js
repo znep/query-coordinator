@@ -27,8 +27,8 @@
         return Rx.Observable.fromArray(data);
       }).take(2);
 
-      $scope.bindObservable('sampleOne', samplesObservable.take(1));
-      $scope.bindObservable('sampleTwo', samplesObservable.skip(1).take(1));
+      $scope.$bindObservable('sampleOne', samplesObservable.take(1));
+      $scope.$bindObservable('sampleTwo', samplesObservable.skip(1).take(1));
     }
 
     return {
@@ -249,18 +249,18 @@
           shouldShowSuggestionPanelObservable = Rx.Observable.returnValue(false);
         }
 
-        $scope.bindObservable('rowCount', clampedRowsLoadedObservable);
-        $scope.bindObservable('totalRowCount', rowCountObservable);
-        $scope.bindObservable('isInvalidSearch', invalidSearchInputObservable);
-        $scope.bindObservable('showResults', showResultsObservable);
-        $scope.bindObservable('tableRendered', tableRenderedObservable);
-        $scope.bindObservable('noResults', hasRowsObservable.startWith(true));
-        $scope.bindObservable('searchWhere', searchWhereObservable);
-        $scope.bindObservable('fieldName', fieldNameObservable);
-        $scope.bindObservable('searchValue', searchValueObservable);
-        $scope.bindObservable('physicalDatatype', physicalDatatypeObservable);
-        $scope.bindObservable('dataset', dataset);
-        $scope.bindObservable('shouldShowSuggestionPanel', shouldShowSuggestionPanelObservable);
+        $scope.$bindObservable('rowCount', clampedRowsLoadedObservable);
+        $scope.$bindObservable('totalRowCount', rowCountObservable);
+        $scope.$bindObservable('isInvalidSearch', invalidSearchInputObservable);
+        $scope.$bindObservable('showResults', showResultsObservable);
+        $scope.$bindObservable('tableRendered', tableRenderedObservable);
+        $scope.$bindObservable('noResults', hasRowsObservable.startWith(true));
+        $scope.$bindObservable('searchWhere', searchWhereObservable);
+        $scope.$bindObservable('fieldName', fieldNameObservable);
+        $scope.$bindObservable('searchValue', searchValueObservable);
+        $scope.$bindObservable('physicalDatatype', physicalDatatypeObservable);
+        $scope.$bindObservable('dataset', dataset);
+        $scope.$bindObservable('shouldShowSuggestionPanel', shouldShowSuggestionPanelObservable);
 
         handleSampleData($scope, model, dataset);
       }

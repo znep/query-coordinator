@@ -86,7 +86,7 @@
             return !expandedCard && !exportingVisualization;
           }
         );
-        $scope.bindObservable('canCustomize', canCustomizeObservable);
+        $scope.$bindObservable('canCustomize', canCustomizeObservable);
 
         // Flyout
         editModeObservable.subscribe(function() {

@@ -7,7 +7,7 @@
 
   function initDownload($scope, page, obeIdObservable, WindowState, ServerConfig) {
     // The CSV download url
-    $scope.bindObservable(
+    $scope.$bindObservable(
       'datasetCSVDownloadURL',
       Rx.Observable.combineLatest(
         obeIdObservable.startWith(null),
@@ -81,9 +81,9 @@
         }
       );
 
-    $scope.bindObservable('pageIsPublic', pageIsPublicObservable);
-    $scope.bindObservable('datasetIsPublic', datasetIsPublicObservable);
-    $scope.bindObservable('pagePermissions', pagePermissionsObservable);
+    $scope.$bindObservable('pageIsPublic', pageIsPublicObservable);
+    $scope.$bindObservable('datasetIsPublic', datasetIsPublicObservable);
+    $scope.$bindObservable('pagePermissions', pagePermissionsObservable);
 
     $scope.manageLensState = {
       show: false
@@ -162,15 +162,15 @@
     $scope.showOtherViewsButton = ServerConfig.get('enableDataLensOtherViews');
 
     var pageNameSequence = page.observe('name').filter(_.isPresent);
-    $scope.bindObservable('pageName', pageNameSequence);
-    $scope.bindObservable('pageDescription', page.observe('description'));
+    $scope.$bindObservable('pageName', pageNameSequence);
+    $scope.$bindObservable('pageDescription', page.observe('description'));
 
-    $scope.bindObservable('dataset', page.observe('dataset'));
-    $scope.bindObservable('datasetPages', page.observe('dataset.pages'));
-    $scope.bindObservable('aggregation', page.observe('aggregation'));
-    $scope.bindObservable('dynamicTitle', PageHelpersService.dynamicAggregationTitle(page));
-    $scope.bindObservable('sourceDatasetName', page.observe('dataset.name'));
-    $scope.bindObservable('cardModels', page.observe('cards'));
+    $scope.$bindObservable('dataset', page.observe('dataset'));
+    $scope.$bindObservable('datasetPages', page.observe('dataset.pages'));
+    $scope.$bindObservable('aggregation', page.observe('aggregation'));
+    $scope.$bindObservable('dynamicTitle', PageHelpersService.dynamicAggregationTitle(page));
+    $scope.$bindObservable('sourceDatasetName', page.observe('dataset.name'));
+    $scope.$bindObservable('cardModels', page.observe('cards'));
 
     pageNameSequence.subscribe(function(pageName) {
       WindowOperations.setTitle('{0} | Socrata'.format(pageName));
@@ -190,7 +190,7 @@
       // Error means this isn't a migrated dataset. Just don't surface any obeId.
       catchException(Rx.Observable.never());
 
-    $scope.bindObservable('sourceDatasetURL', obeIdObservable.map(function(obeId) {
+    $scope.$bindObservable('sourceDatasetURL', obeIdObservable.map(function(obeId) {
       // Now construct the source dataset url from the obe id
       return OBE_DATASET_PAGE.format(obeId);
     }));
@@ -202,7 +202,7 @@
     // Bind the current user to the scope, or null if no user is logged in or there was an error
     // fetching the current user.
     var currentUserSequence = UserSessionService.getCurrentUserObservable();
-    $scope.bindObservable('currentUser', currentUserSequence);
+    $scope.$bindObservable('currentUser', currentUserSequence);
 
     var isCurrentUserAdminOrPublisher =
       currentUserSequence.
@@ -221,7 +221,7 @@
           return ownerId === userId;
         });
 
-    $scope.bindObservable(
+    $scope.$bindObservable(
       'currentUserHasSaveRight',
       isCurrentUserAdminOrPublisher.
       combineLatest(isCurrentUserOwnerOfDataset, function(a, b) { return a || b; }).
@@ -261,7 +261,7 @@
 
     var allCardsFilters = page.observe('activeFilters');
 
-    $scope.bindObservable('globalWhereClauseFragment', page.observe('computedWhereClauseFragment'));
+    $scope.$bindObservable('globalWhereClauseFragment', page.observe('computedWhereClauseFragment'));
 
     var datasetColumnsObservable = page.observe('dataset.columns');
 
@@ -324,7 +324,7 @@
       }, []);
 
     });
-    $scope.bindObservable('appliedFiltersForDisplay', appliedFiltersForDisplayObservable);
+    $scope.$bindObservable('appliedFiltersForDisplay', appliedFiltersForDisplayObservable);
 
     $scope.clearAllFilters = function() {
       _.each($scope.page.getCurrentValue('cards'), function(card) {
@@ -403,7 +403,7 @@
 
       });
 
-    $scope.bindObservable('datasetColumns', datasetColumns);
+    $scope.$bindObservable('datasetColumns', datasetColumns);
 
 
     /***************************
@@ -424,13 +424,13 @@
     var currentPageSaveEvents = new Rx.BehaviorSubject({ status: 'idle' });
 
     // Bind save status related things so the UI reflects them.
-    $scope.bindObservable('saveStatus', currentPageSaveEvents.pluck('status'));
+    $scope.$bindObservable('saveStatus', currentPageSaveEvents.pluck('status'));
 
     // Track whether there've been changes to the page.
     // If we save the page, reset the dirtiness of the model.
     currentPageSaveEvents.filter(function(event) { return event.status === 'saved'; }).
       subscribe(_.bind(page.resetDirtied, page));
-    $scope.bindObservable('hasChanges', page.observeDirtied());
+    $scope.$bindObservable('hasChanges', page.observeDirtied());
 
     $scope.$emitEventsFromObservable('page:dirtied', page.observeDirtied().filter(_.identity));
 

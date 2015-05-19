@@ -44,7 +44,7 @@
         // SUPER IMPORTANT NOTE: Because of the way that RxJS works, we need to bind
         // this one here and not below with the other bound observables... so unfortunately
         // this code is location-dependent within the file.
-        scope.bindObservable('busy',
+        scope.$bindObservable('busy',
           Rx.Observable.combineLatest(
             dataRequestCount,
             dataResponseCount,
@@ -316,14 +316,14 @@
           }
         );
 
-        scope.bindObservable('chartData', chartDataSequence);
-        scope.bindObservable('expanded', cardModelSequence.observeOnLatest('expanded'));
-        scope.bindObservable('precision', datasetPrecision);
-        scope.bindObservable('activeFilters', cardModelSequence.observeOnLatest('activeFilters'));
-        scope.bindObservable('rowDisplayUnit', cardModelSequence.observeOnLatest('page.aggregation.unit'));
-        scope.bindObservable('cannotRenderTimelineChart', cannotRenderTimelineChart);
-        scope.bindObservable('unfilteredSoqlRollupTablesUsed', unfilteredSoqlRollupTablesUsedSequence);
-        scope.bindObservable('filteredSoqlRollupTablesUsed', filteredSoqlRollupTablesUsedSequence);
+        scope.$bindObservable('chartData', chartDataSequence);
+        scope.$bindObservable('expanded', cardModelSequence.observeOnLatest('expanded'));
+        scope.$bindObservable('precision', datasetPrecision);
+        scope.$bindObservable('activeFilters', cardModelSequence.observeOnLatest('activeFilters'));
+        scope.$bindObservable('rowDisplayUnit', cardModelSequence.observeOnLatest('page.aggregation.unit'));
+        scope.$bindObservable('cannotRenderTimelineChart', cannotRenderTimelineChart);
+        scope.$bindObservable('unfilteredSoqlRollupTablesUsed', unfilteredSoqlRollupTablesUsedSequence);
+        scope.$bindObservable('filteredSoqlRollupTablesUsed', filteredSoqlRollupTablesUsedSequence);
 
         // Handle filtering
         scope.$on('filter-timeline-chart',

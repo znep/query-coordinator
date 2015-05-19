@@ -4,6 +4,8 @@
 # it's important to put this after that in the middleware chain.
 
 class LocaleMiddleware
+  include SocrataDockerHelpers
+
   def initialize(app)
     @app = app
   end
@@ -15,6 +17,12 @@ class LocaleMiddleware
     end
     host = request.host if host.blank?
 
+    if socrata_docker_environment? && env['REQUEST_PATH'].to_s.match(/^\/version/)
+      env['socrata.locale'] = 'en'
+      env['socrata.available_locales'] = ['en']
+      I18n.locale = 'en'
+      return @app.call(env)
+    end
 
     locales = CurrentDomain.configuration(:locales)
 

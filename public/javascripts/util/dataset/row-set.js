@@ -201,7 +201,7 @@ var RowSet = ServerModel.extend({
                 rs._rowBuckets = [];
               }
 
-              if (!_.contains(rs._rowBuckets, bucket.start)) {
+              if (!_.contains(rs._rowBuckets, bucket.start) && bucket.start < bucket.finish) {
                 reqs.push(bucket);
 
                 // The bucket is being requested; do not fetch it again.

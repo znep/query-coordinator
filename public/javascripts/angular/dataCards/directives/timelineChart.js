@@ -942,7 +942,7 @@
 
             var widthOfEachLabel = cachedChartDimensions.width / labels.length;
             var labelEveryN;
-            var labelWidthBreakpoint = 40;
+            var labelWidthBreakpoint = 50;
 
             if (widthOfEachLabel >= labelWidthBreakpoint) {
               labelEveryN = 1;
@@ -1077,7 +1077,7 @@
           // x-axis since it seems as reasonable to do so as anywhere else.
           allChartLabelsShown = shouldLabelEveryN === 1;
 
-          // Finally, we filter the the group of all labels so that we only
+          // Finally, we filter the group of all labels so that we only
           // label every Nth one.
           labels = labels.filter(function(label, i) {
             return (i % shouldLabelEveryN) === 0;
@@ -1959,7 +1959,11 @@
           currentPrecision = (mousePositionWithinChartLabels) ? labelPrecision : datasetPrecision;
 
           startDate = currentDatum.date;
-          endDate = moment(currentDatum.date).add(1, currentPrecision).toDate();
+          // endDate is either one full unit of precision above the current highlight target
+          // or the maxDate stored in cachedChartData
+          endDate = new Date(Math.min(
+            moment(currentDatum.date).add(1, currentPrecision).toDate(),
+            cachedChartData.maxDate));
 
           // 1. Dim all the existing labels
           // 2. Set the value of the datum label to the startDate

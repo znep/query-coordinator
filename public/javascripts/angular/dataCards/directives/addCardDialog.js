@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function addCardDialog(AngularRxExtensions, Constants, Card, FlyoutService, ServerConfig, $log) {
+  function addCardDialog(Constants, Card, FlyoutService, $log) {
     return {
       restrict: 'E',
       scope: {
@@ -14,8 +14,6 @@
       },
       templateUrl: '/angular_templates/dataCards/addCardDialog.html',
       link: function(scope, element, attrs) {
-        AngularRxExtensions.install(scope);
-
         scope.$bindObservable(
           'columnHumanNameFn',
           scope.$observe('page').observeOnLatest('dataset.columns').map(

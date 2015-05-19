@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function ApiExplorer(AngularRxExtensions, DatasetDataService, WindowState) {
+  function ApiExplorer(DatasetDataService, WindowState) {
     return {
       restrict: 'E',
       templateUrl: '/angular_templates/dataCards/apiExplorer.html',
@@ -9,8 +9,6 @@
         datasetObservable: '=datasetObservable'
       },
       link: function($scope, element, attrs) {
-        AngularRxExtensions.install($scope);
-
         var destroyObservable = $scope.$destroyAsObservable(element);
 
         /*

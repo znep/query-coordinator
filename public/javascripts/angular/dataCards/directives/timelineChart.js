@@ -18,7 +18,6 @@
 
   function timelineChartDirective(
     $timeout,
-    AngularRxExtensions,
     WindowState,
     DateHelpers,
     FlyoutService,
@@ -39,8 +38,6 @@
         filteredSoqlRollupTablesUsed: '='
       },
       link: function(scope, element, attrs) {
-
-        AngularRxExtensions.install(scope);
         var chartDataObservable = scope.$observe('chartData');
         var precisionObservable = scope.$observe('precision');
         var rowDisplayUnitObservable = scope.$observe('rowDisplayUnit');

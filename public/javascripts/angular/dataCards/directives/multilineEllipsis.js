@@ -41,7 +41,7 @@
    *     show-more-mode="expand-link"
    *     text="{{large_multi_line_content}}"></div>
   */
-  angular.module('dataCards.directives').directive('multilineEllipsis', function($q, AngularRxExtensions, FlyoutService) {
+  angular.module('dataCards.directives').directive('multilineEllipsis', function($q, FlyoutService) {
     return {
       scope: {
         'maxLines': '@',
@@ -63,7 +63,6 @@
         var content = element.find('.content');
         var contentFlyoutClass;
 
-        AngularRxExtensions.install($scope);
         var textObservable = $scope.$observe('text');
         var maxLinesObservable = $scope.$observe('maxLines');
         var toleranceObservable = $scope.$observe('tolerance');

@@ -12,7 +12,6 @@ describe('timelineChart', function() {
   var scope;
   var timeout;
   var testData;
-  var AngularRxExtensions;
   var testJson = 'karma-test/dataCards/test-data/timelineChartTest/timelineChartTestData.json';
   var allLabelsTestJson = 'karma-test/dataCards/test-data/timelineChartTest/allLabelsTimelineChartTestData.json';
   var hiddenLabelTestJson = 'karma-test/dataCards/test-data/timelineChartTest/hiddenLabelTimelineChartTestData.json';
@@ -66,7 +65,6 @@ describe('timelineChart', function() {
     rootScope = $injector.get('$rootScope');
     scope = rootScope.$new();
     timeout = $injector.get('$timeout');
-    AngularRxExtensions = $injector.get('AngularRxExtensions');
     unfilteredTestData = unpickleTestData(testHelpers.getTestJson(testJson), false);
     allLabelsTestData = unpickleTestData(testHelpers.getTestJson(allLabelsTestJson), false);
     filteredTestData = unpickleTestData(testHelpers.getTestJson(testJson), true);

@@ -1,14 +1,12 @@
 (function() {
   'use strict';
 
-  function ClearableInput(AngularRxExtensions, WindowState) {
+  function ClearableInput(WindowState) {
     return {
       restrict: 'E',
       scope: { 'search': '=', 'placeholderValue': '@placeholder', 'inputId': '@' },
       templateUrl: '/angular_templates/dataCards/clearableInput.html',
       link: function($scope, element, attrs) {
-        AngularRxExtensions.install($scope);
-
         var searchInput = element.find('input');
         var blurEventObservable = Rx.Observable.fromEvent(searchInput, 'blur');
         var focusEventObservable = Rx.Observable.fromEvent(searchInput, 'focus');

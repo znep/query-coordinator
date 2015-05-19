@@ -1,4 +1,4 @@
-angular.module('socrataCommon.directives').directive('columnChart', function($parse, $timeout, AngularRxExtensions, FlyoutService) {
+angular.module('socrataCommon.directives').directive('columnChart', function($parse, $timeout, FlyoutService) {
   'use strict';
 
   var renderColumnChart = function(element, chartData, showFiltered, dimensions, expanded, rowDisplayUnit) {
@@ -558,8 +558,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       rowDisplayUnit: '='
     },
     link: function(scope, element, attrs) {
-
-      AngularRxExtensions.install(scope);
       var chartDataObservable = scope.$observe('chartData');
       var showFilteredObservable = scope.$observe('showFiltered');
       var expandedObservable = scope.$observe('expanded');

@@ -13,7 +13,6 @@ describe('Customize card dialog', function() {
   beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
   beforeEach(module('/angular_templates/dataCards/clearableInput.html'));
 
-  var AngularRxExtensions;
   var Card;
   var Constants;
   var Model;
@@ -33,7 +32,6 @@ describe('Customize card dialog', function() {
   });
 
   beforeEach(inject(function($injector) {
-    AngularRxExtensions = $injector.get('AngularRxExtensions');
     Card = $injector.get('Card');
     Constants = $injector.get('Constants');
     Model = $injector.get('Model');
@@ -121,8 +119,6 @@ describe('Customize card dialog', function() {
     var datasetOverrides = {id: 'rook-king', rowDisplayUnit: 'row', columns: columns};
     var pageModel = Mockumentary.createPage(pageOverrides, datasetOverrides);
     var outerScope = $rootScope.$new();
-
-    AngularRxExtensions.install(outerScope);
 
     outerScope.page = pageModel;
 

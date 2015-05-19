@@ -12,9 +12,7 @@
    *
    * @constructor
    */
-  function Analytics($log, $window, http, ServerConfig, Assert, $rootScope, AngularRxExtensions) {
-    AngularRxExtensions.install($rootScope);
-
+  function Analytics($log, $window, http, ServerConfig, $rootScope) {
     // *** Set up utility functions. ***
 
     // We consider the renderer settled/done/idle if it hasn't

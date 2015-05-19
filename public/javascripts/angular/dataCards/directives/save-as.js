@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function saveAs($window, AngularRxExtensions, WindowState, FlyoutService) {
+  function saveAs($window, WindowState, FlyoutService) {
     return {
       restrict: 'E',
       scope: {
@@ -10,8 +10,6 @@
       },
       templateUrl: '/angular_templates/dataCards/saveAs.html',
       link: function($scope, element, attrs) {
-        AngularRxExtensions.install($scope);
-
         var saveEvents = new Rx.BehaviorSubject({ status: 'idle' });
 
         $scope.$bindObservable('saveStatus', saveEvents.pluck('status'));

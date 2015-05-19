@@ -4,7 +4,7 @@
   var rowsPerBlock = 50;
   var rowHeight = $.relativeToPx('2rem');
 
-  function tableDirectiveFactory(AngularRxExtensions, $q, $timeout, SoqlHelpers) {
+  function tableDirectiveFactory($q, $timeout, SoqlHelpers) {
 
     return {
       templateUrl: '/angular_templates/dataCards/table.html',
@@ -22,8 +22,6 @@
       },
 
       link: function(scope, element, attrs) {
-        AngularRxExtensions.install(scope);
-
         // CORE-4645: Omit some columns from display.
         scope.$bindObservable(
           'filteredColumnDetails',

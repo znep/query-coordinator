@@ -21,7 +21,7 @@
     };
   };
 
-  function AggregationChooser(AngularRxExtensions, FlyoutService, WindowState, ServerConfig) {
+  function AggregationChooser(FlyoutService, WindowState, ServerConfig) {
 
     return {
       restrict: 'E',
@@ -30,8 +30,6 @@
         page: '='
       },
       link: function($scope, element) {
-        AngularRxExtensions.install($scope);
-
         /*
          * Scope variables
          */

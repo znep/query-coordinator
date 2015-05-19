@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationTimelineChart(AngularRxExtensions, CardDataService, Filter, TimelineChartVisualizationHelpers, $log, DateHelpers, SoqlHelpers) {
+  function cardVisualizationTimelineChart(CardDataService, Filter, TimelineChartVisualizationHelpers, $log, DateHelpers, SoqlHelpers) {
 
     return {
       restrict: 'E',
@@ -11,9 +11,6 @@
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationTimelineChart.html',
       link: function(scope, element, attrs) {
-
-        AngularRxExtensions.install(scope);
-
         var cardModelSequence = scope.$observe('model');
         var dataset = cardModelSequence.observeOnLatest('page.dataset').filter(_.isPresent);
         var baseSoqlFilter = cardModelSequence.observeOnLatest('page.baseSoqlFilter');

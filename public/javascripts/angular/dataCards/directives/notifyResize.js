@@ -5,12 +5,10 @@
 //
 // If the div is resized, myDivResized will be broadcast with the new size as the arguments to the event
 // contained within an object of the form: { height: N, width: N } -- not including outer margins.
-angular.module('dataCards.directives').directive('notifyResize', function(AngularRxExtensions) {
+angular.module('dataCards.directives').directive('notifyResize', function() {
   return {
     restrict: 'A',
     link: function($scope, element, attrs) {
-      AngularRxExtensions.install($scope);
-
       var eventName = attrs.notifyResize;
       if (_.isEmpty(eventName)) {
         throw new Error('Expected a non-blank event name');

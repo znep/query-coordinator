@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CardVisualizationSearch(AngularRxExtensions, CardDataService, ServerConfig, SoqlHelpers) {
+  function CardVisualizationSearch(CardDataService, ServerConfig, SoqlHelpers) {
 
     function pluckEventArg(val) {
       return _.get(val, 'additionalArguments[0]');
@@ -36,9 +36,6 @@
       scope: { 'model': '=', 'whereClause': '=' },
       templateUrl: '/angular_templates/dataCards/cardVisualizationSearch.html',
       link: function($scope, element) {
-
-        AngularRxExtensions.install($scope);
-
         var model = $scope.$observe('model');
         var dataset = model.observeOnLatest('page.dataset');
         var fieldNameObservable = model.pluck('fieldName');

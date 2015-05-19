@@ -1,10 +1,7 @@
 (function() {
   'use strict';
 
-  function SingleCardViewController($scope, $rootScope, $log, AngularRxExtensions, page, fieldName, WindowState) {
-
-    AngularRxExtensions.install($scope);
-
+  function SingleCardViewController($scope, $rootScope, $log, page, fieldName, WindowState) {
     var cardObservable = page.
       observe('cards').
       map(function(allCards) {

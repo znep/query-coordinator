@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationChoropleth(Constants, AngularRxExtensions, CardDataService, Filter,
+  function cardVisualizationChoropleth(Constants, CardDataService, Filter,
                                        ServerConfig, CardVisualizationChoroplethHelpers, $log) {
 
     return {
@@ -12,9 +12,6 @@
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationChoropleth.html',
       link: function(scope, element, attrs) {
-
-        AngularRxExtensions.install(scope);
-
         var model = scope.$observe('model').filter(_.isPresent);
         var dataset = model.observeOnLatest('page.dataset');
         var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');

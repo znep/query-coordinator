@@ -7,7 +7,6 @@
   // 'highlighted' is what happens when you mouseover a feature (this is currently a white stroke).
 
   function choropleth(Constants,
-                      AngularRxExtensions,
                       $timeout,
                       ChoroplethVisualizationService,
                       CardDataService, // This is an unfortunate leak to get the default extent
@@ -693,9 +692,6 @@
                     '</div>',
                   '</div>'].join(''),
       link: function choroplethLink(scope, element, attrs) {
-
-        AngularRxExtensions.install(scope);
-
         var LegendType = attrs.stops === 'continuous' ? LegendContinuous : LegendDiscrete;
         var legend = new LegendType(element.find('.choropleth-legend'), element, scope);
         var baseLayerUrlObservable = scope.$observe('baseLayerUrl');

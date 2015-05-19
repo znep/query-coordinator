@@ -35,7 +35,6 @@
 
   function cardLayout(
     Constants,
-    AngularRxExtensions,
     WindowState,
     SortedTileLayout,
     FlyoutService,
@@ -58,8 +57,6 @@
       },
       templateUrl: '/angular_templates/dataCards/card-layout.html',
       link: function(scope, cardContainer) {
-        AngularRxExtensions.install(scope);
-
         scope.grabbedCard = null;
 
         var jqueryWindow = $(window);

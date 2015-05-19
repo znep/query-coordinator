@@ -2,8 +2,7 @@
  * A dropdown menu that positions itself underneath its parent.
  */
 angular.module('dataCards.directives').directive('dropdownMenu', function(
-  WindowState,
-  AngularRxExtensions
+  WindowState
 ) {
   'use strict';
 
@@ -15,7 +14,6 @@ angular.module('dataCards.directives').directive('dropdownMenu', function(
     transclude: true,
 
     link: function($scope, element, attrs) {
-      AngularRxExtensions.install($scope);
       var subscriptions = [];
 
       // Disable anchors that don't have urls

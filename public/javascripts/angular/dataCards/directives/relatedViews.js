@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function relatedViews(AngularRxExtensions, WindowState, Constants) {
+  function relatedViews(WindowState, Constants) {
     return {
       restrict: 'E',
       scope: {
@@ -10,7 +10,6 @@
       },
       templateUrl: '/angular_templates/dataCards/relatedViews.html',
       link: function($scope, element) {
-        AngularRxExtensions.install($scope);
         var destroyStream = $scope.$destroyAsObservable(element);
         var datasetPagesObservable = $scope.$observe('datasetPages');
 

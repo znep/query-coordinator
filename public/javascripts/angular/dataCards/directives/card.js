@@ -3,7 +3,7 @@
 
   var DYNAMIC_TITLE_CARDTYPE_BLACKLIST = ['table', 'feature', 'search'];
 
-  function CardDirective(AngularRxExtensions, DownloadService, PageHelpersService, $timeout) {
+  function CardDirective(DownloadService, PageHelpersService, $timeout) {
 
     return {
       restrict: 'E',
@@ -17,9 +17,6 @@
       },
       templateUrl: '/angular_templates/dataCards/card.html',
       link: function($scope, element) {
-
-        AngularRxExtensions.install($scope);
-
         var modelSubject = $scope.$observe('model').filter(_.identity);
         var datasetObservable = modelSubject.pluck('page').observeOnLatest('dataset');
         var columns = datasetObservable.observeOnLatest('columns');

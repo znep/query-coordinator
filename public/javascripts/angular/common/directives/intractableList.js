@@ -1,4 +1,4 @@
-angular.module('socrataCommon.directives').directive('intractableList', function ($document, AngularRxExtensions) {
+angular.module('socrataCommon.directives').directive('intractableList', function ($document) {
   var DEFAULT_MAX_RESULTS = 10,
       VIEWPORT_BOTTOM_PADDING = 10,
       COUNT_MESSAGES_CONTAINER_HEIGHT = 20;
@@ -18,7 +18,6 @@ angular.module('socrataCommon.directives').directive('intractableList', function
       totalAmount: '='
     },
     link: function (scope,element,attrs) {
-      AngularRxExtensions.install(scope);
       var firstEntryIndex = 0;
       scope.pageNumber = 0;
       scope.maxResults = (attrs.maxResults || DEFAULT_MAX_RESULTS);

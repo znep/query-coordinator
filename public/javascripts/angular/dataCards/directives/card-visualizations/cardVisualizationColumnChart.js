@@ -1,4 +1,4 @@
-angular.module('dataCards.directives').directive('cardVisualizationColumnChart', function(AngularRxExtensions, CardDataService, Filter) {
+angular.module('dataCards.directives').directive('cardVisualizationColumnChart', function(CardDataService, Filter) {
   'use strict';
 
   return {
@@ -6,9 +6,6 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
     scope: { 'model': '=', 'whereClause': '=' },
     templateUrl: '/angular_templates/dataCards/cardVisualizationColumnChart.html',
     link: function($scope, element, attrs) {
-
-      AngularRxExtensions.install($scope);
-
       var model = $scope.$observe('model');
       var dataset = model.observeOnLatest('page.dataset');
       var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');

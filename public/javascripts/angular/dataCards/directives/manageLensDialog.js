@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function manageLensDialog(AngularRxExtensions, http) {
+  function manageLensDialog(http) {
     return {
       restrict: 'E',
       scope: {
@@ -10,8 +10,6 @@
       },
       templateUrl: '/angular_templates/dataCards/manageLensDialog.html',
       link: function($scope, element, attrs) {
-        AngularRxExtensions.install($scope);
-
         var pageIsPublicObservable = $scope.page.observe('permissions').
             filter(_.isObject).
             map(_.property('isPublic'));

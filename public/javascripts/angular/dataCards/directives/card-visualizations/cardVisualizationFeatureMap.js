@@ -10,7 +10,6 @@
   function cardVisualizationFeatureMap(
     $log,
     ServerConfig,
-    AngularRxExtensions,
     CardDataService,
     VectorTileDataService,
     LeafletHelpersService
@@ -24,9 +23,6 @@
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationFeatureMap.html',
       link: function cardVisualizationFeatureMapLink(scope) {
-
-        AngularRxExtensions.install(scope);
-
         var model = scope.$observe('model');
         var dataset = model.observeOnLatest('page.dataset').filter(_.isPresent);
         var datasetPermissions = dataset.observeOnLatest('permissions').filter(_.isPresent);

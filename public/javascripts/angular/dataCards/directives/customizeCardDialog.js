@@ -63,7 +63,7 @@
   }
 
 
-  function customizeCardDialog(Constants, AngularRxExtensions) {
+  function customizeCardDialog(Constants) {
     return {
       restrict: 'E',
       scope: {
@@ -73,8 +73,6 @@
       },
       templateUrl: '/angular_templates/dataCards/customizeCardDialog.html',
       link: function($scope, element, attrs) {
-        AngularRxExtensions.install($scope);
-
         // Clone the card, so we can cancel without having made any changes
         $scope.customizedCard = $scope.dialogState.cardModel.clone();
 

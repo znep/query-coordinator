@@ -135,7 +135,6 @@
     $scope,
     $log,
     $q,
-    AngularRxExtensions,
     Filter,
     PageDataService,
     UserSessionService,
@@ -149,9 +148,6 @@
     PageHelpersService,
     DeviceService
   ) {
-
-    AngularRxExtensions.install($scope);
-
     bindWritableProperties($scope, page);
 
     /*************************

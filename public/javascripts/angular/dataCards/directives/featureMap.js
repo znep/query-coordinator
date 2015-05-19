@@ -3,7 +3,6 @@
 
   function FeatureMap(
     Constants,
-    AngularRxExtensions,
     VectorTiles,
     LeafletHelpersService,
     FlyoutService
@@ -20,8 +19,6 @@
       },
       templateUrl: '/angular_templates/dataCards/featureMap.html',
       link: function(scope, element) {
-
-        AngularRxExtensions.install(scope);
         var baseLayerUrlObservable = scope.$observe('baseLayerUrl');
         var featureExtentObservable = scope.$observe('featureExtent');
         var vectorTileGetterObservable = scope.$observe('vectorTileGetter');

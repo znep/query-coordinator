@@ -139,7 +139,6 @@ describe('A Choropleth Directive', function() {
   var scope;
   var testHelpers;
   var timeout;
-  var AngularRxExtensions;
   var testData;
   var el;
   var cardVisualizationChoroplethHelpers;
@@ -179,7 +178,6 @@ describe('A Choropleth Directive', function() {
     rootScope = $injector.get('$rootScope');
     scope = rootScope.$new();
     timeout = $injector.get('$timeout');
-    AngularRxExtensions = $injector.get('AngularRxExtensions');
     testData = testHelpers.getTestJson(testJson);
     Constants = $injector.get('Constants');
     Constants.DISABLE_LEAFLET_ZOOM_ANIMATION = true;
@@ -206,8 +204,6 @@ describe('A Choropleth Directive', function() {
   describe('with a valid geojsonAggregateData input', function() {
     describe('render timing events', function() {
       it('should emit render:start and render:complete events on rendering', function(done) {
-        AngularRxExtensions.install(rootScope);
-
         var renderEvents = Rx.Observable.merge(
           rootScope.$eventToObservable('render:start').first(),
           rootScope.$eventToObservable('render:complete').first()

@@ -5,7 +5,7 @@
   var unsortable = ['geo_entity'];
   var validColumnRegex = new RegExp('^[\\d\\w_]{2}');
 
-  function cardVisualizationTableDirectiveFactory(AngularRxExtensions, CardDataService, SortedTileLayout) {
+  function cardVisualizationTableDirectiveFactory(CardDataService, SortedTileLayout) {
 
     return {
       restrict: 'E',
@@ -17,9 +17,6 @@
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationTable.html',
       link: function($scope) {
-
-        AngularRxExtensions.install($scope);
-
         var model = $scope.$observe('model');
         var dataset = model.observeOnLatest('page.dataset');
         var whereClause = $scope.$observe('whereClause');

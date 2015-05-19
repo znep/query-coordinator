@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function modalDialog(WindowState, AngularRxExtensions) {
+  function modalDialog(WindowState) {
     return {
       restrict: 'E',
       scope: {
@@ -11,8 +11,6 @@
       transclude: true,
       templateUrl: '/angular_templates/dataCards/modalDialog.html',
       link: function (scope, element, attrs) {
-        AngularRxExtensions.install(scope);
-
         if (!scope.state) {
           scope.state = {show: false};
         }

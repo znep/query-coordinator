@@ -7,7 +7,6 @@ describe('featureMap', function() {
   var $q;
   var scope;
   var timeout;
-  var AngularRxExtensions;
   var featureExtent;
   var protocolBuffers;
   var testJson = 'karma-test/dataCards/test-data/featureMapTest/featureMapTestData.json';
@@ -44,7 +43,6 @@ describe('featureMap', function() {
     rootScope = $injector.get('$rootScope');
     scope = rootScope.$new();
     timeout = $injector.get('$timeout');
-    AngularRxExtensions = $injector.get('AngularRxExtensions');
     featureExtent = testHelpers.getTestJson(testJson);
     protocolBuffers = deserializeBytes(testHelpers.getTestJson(protocolBufferEndpointResponses));
     VectorTileDataService = $injector.get('VectorTileDataService');
@@ -212,8 +210,6 @@ describe('featureMap', function() {
 
     it('should emit render:start and render:complete events appropriately and in the correct order', function(done) {
 
-      AngularRxExtensions.install(scope);
-
       var renderEvents = scope.$eventToObservable('render:start').merge(scope.$eventToObservable('render:complete'));
 
       renderEvents.take(2).toArray().subscribe(
@@ -350,8 +346,6 @@ describe('featureMap', function() {
     });
 
     it('should not render zoomControl if feature_map_disable_pan_zoom is true', function(done) {
-      AngularRxExtensions.install(scope);
-
       scope.$on('render:complete', function() {
         expect($('.leaflet-control-zoom').length).to.equal(0);
         done();

@@ -4,14 +4,13 @@
  *   The position of the element is either fixed or absolute.
  *   There is one child element, and it is the one setting the background color.
  */
-angular.module('dataCards.directives').directive('animateTo', function(AngularRxExtensions) {
+angular.module('dataCards.directives').directive('animateTo', function() {
   var ANIMATION_DURATION = .5;
   var ANIMATION_STAGGER = .04;
   return {
     restrict: 'A',
 
     link: function($scope, element, attrs) {
-      AngularRxExtensions.install($scope);
       var jqueryWindow = $(window);
       var oldStyles;
       var child;

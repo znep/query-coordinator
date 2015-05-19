@@ -84,7 +84,6 @@ describe('table directive', function() {
     }
   }
 
-  var AngularRxExtensions;
   var timeout;
   var testHelpers;
   var SoqlHelpers;
@@ -122,7 +121,6 @@ describe('table directive', function() {
 
   beforeEach(inject(function($injector) {
     try {
-      AngularRxExtensions = $injector.get('AngularRxExtensions');
       timeout = $injector.get('$timeout');
       testHelpers = $injector.get('testHelpers');
       SoqlHelpers = $injector.get('SoqlHelpers');
@@ -616,9 +614,8 @@ describe('table directive', function() {
   describe('render timing events', function() {
     afterEach(destroyAllTableCards);
     it('should emit render:start and render:complete events on rendering', function(done) {
-      AngularRxExtensions.install(outerScope);
-
-      var renderEvents = outerScope.$eventToObservable('render:start').merge(outerScope.$eventToObservable('render:complete'));
+      var renderEvents = outerScope.$eventToObservable('render:start').
+        merge(outerScope.$eventToObservable('render:complete'));
 
       renderEvents.take(2).toArray().subscribe(
         function(events) {

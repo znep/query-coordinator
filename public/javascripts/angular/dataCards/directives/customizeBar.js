@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function customizeBar(AngularRxExtensions, FlyoutService, ServerConfig) {
+  function customizeBar(FlyoutService, ServerConfig) {
     return {
       scope: {
         'editMode': '=',
@@ -17,7 +17,6 @@
       restrict: 'E',
       templateUrl: '/angular_templates/dataCards/customizeBar.html',
       link: function($scope, element) {
-        AngularRxExtensions.install($scope);
         var expandedCardObservable = $scope.$observe('expandedCard');
         var exportingVisualizationObservable = $scope.$observe('exportingVisualization');
         var editModeObservable = $scope.$observe('editMode');

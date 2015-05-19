@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function SuggestionToolPanel(SuggestionService, AngularRxExtensions, ServerConfig) {
+  function SuggestionToolPanel(SuggestionService, ServerConfig) {
     if (!ServerConfig.get('enableSearchSuggestions')) {
       return {};
     }
@@ -18,9 +18,6 @@
       },
       templateUrl: '/angular_templates/dataCards/suggestionToolPanel.html',
       link: function($scope) {
-
-        AngularRxExtensions.install($scope);
-
         var SUGGESTION_LIMIT = 10;
 
         var searchValueObservable = $scope.$observe('searchValue');

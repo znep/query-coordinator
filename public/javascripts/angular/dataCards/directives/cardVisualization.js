@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualization(AngularRxExtensions) {
+  function cardVisualization() {
 
     return {
       restrict: 'E',
@@ -11,8 +11,6 @@
       },
       templateUrl: '/angular_templates/dataCards/cardVisualization.html',
       link: function($scope, element, attrs) {
-
-        AngularRxExtensions.install($scope);
 
         var modelSubject = $scope.$observe('model').filter(_.identity);
 

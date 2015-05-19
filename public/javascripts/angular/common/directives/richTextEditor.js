@@ -205,7 +205,6 @@
    * A <rich-text-editor /> is meant to replace a <textarea />, and provide limited html formatting.
    */
   angular.module('socrataCommon.directives').directive('richTextEditor', function(
-    AngularRxExtensions,
     $http
   ) {
     var toolbar;
@@ -323,8 +322,6 @@
     }
 
     function init($scope, element, attr) {
-      AngularRxExtensions.install($scope);
-
       var iframe = element.find('iframe');
       var editorObservable = $scope.$observe('editor');
 

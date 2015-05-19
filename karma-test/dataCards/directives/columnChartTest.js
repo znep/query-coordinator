@@ -1,5 +1,12 @@
 describe('columnChart', function() {
-  var th, compile, httpBackend, rootScope, scope, timeout, AngularRxExtensions;
+  'use strict';
+
+  var th;
+  var compile;
+  var httpBackend;
+  var rootScope;
+  var scope;
+  var timeout;
 
   var minSmallCardBarWidth = 8;
   var maxSmallCardBarWidth = 30;
@@ -142,7 +149,6 @@ describe('columnChart', function() {
     rootScope = $injector.get('$rootScope');
     scope = rootScope.$new();
     timeout = $injector.get('$timeout');
-    AngularRxExtensions = $injector.get('AngularRxExtensions');
   }));
 
   after(function() {
@@ -839,7 +845,6 @@ describe('columnChart', function() {
 
       chart = createNewColumnChart();
       scope = chart.scope;
-      AngularRxExtensions.install(scope);
 
       var renderEvents = scope.$eventToObservable('render:start').merge(scope.$eventToObservable('render:complete'));
 

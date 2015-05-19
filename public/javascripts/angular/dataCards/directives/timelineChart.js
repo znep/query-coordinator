@@ -940,17 +940,18 @@
 
           function deriveXAxisLabelDatumStep(labels) {
 
-            var widthOfEachLabel = cachedChartDimensions.width / labels.length;
+            var numberOfLabels = labels.length;
+            var requiredLabelWidth = 50;
+            var labelsWeHaveRoomFor = Math.floor(cachedChartDimensions.width / requiredLabelWidth);
             var labelEveryN;
-            var labelWidthBreakpoint = 50;
 
-            if (widthOfEachLabel >= labelWidthBreakpoint) {
-              labelEveryN = 1;
-            } else if ((widthOfEachLabel * 2) >= labelWidthBreakpoint) {
-              labelEveryN = 2;
-            } else if ((widthOfEachLabel * 3) >= labelWidthBreakpoint) {
-              labelEveryN = 3;
-            } else if ((widthOfEachLabel * 5) >= labelWidthBreakpoint) {
+            if (numberOfLabels <= labelsWeHaveRoomFor) {
+              labelEveryN = 1; // show every label
+            } else if (numberOfLabels / 2 <= labelsWeHaveRoomFor) {
+              labelEveryN = 2; // show every other label
+            } else if (numberOfLabels / 3 <= labelsWeHaveRoomFor) {
+              labelEveryN = 3; // etc.
+            } else if (numberOfLabels / 5 <= labelsWeHaveRoomFor) {
               labelEveryN = 5;
             } else {
               labelEveryN = 7;

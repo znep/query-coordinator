@@ -6,7 +6,7 @@ grep '^ruby' Gemfile | sed -n "s/ruby '\(.*\)'/\1/p" > .ruby-version
 #      these tests since we're also running in the
 #    storyteller pull request builder.
 bin/test_setup
-bundle exec rake test
+bundle exec rake spec
 
 export REVISION=`git rev-parse HEAD`
 

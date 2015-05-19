@@ -57,6 +57,25 @@
             configurable: true,
             writable: true
           },
+          '$emitEventsFromObservable': {
+            value: function $emitEventsFromObservable(eventName, observable) {
+              var scope = this;
+
+              if (_.isEmpty(eventName) || !_.isString(eventName)) {
+                throw new Error('$emitEventsFromObservable not passed a string event name');
+              }
+
+              return observable.
+                takeUntil(scope.$eventToObservable('$destroy')). //TakeUntil to avoid leaks.
+                safeApply(scope, function(value) {
+                  scope.$emit(eventName, value);
+                }).
+                subscribe();
+            },
+            enumerable: false,
+            configurable: true,
+            writable: true
+          },
           '$safeApply': {
             // Execute the given function immediately if an angular digest-apply is
             // already in progress, otherwise starts a digest-apply cycle then executes

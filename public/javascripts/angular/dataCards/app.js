@@ -50,7 +50,7 @@ dataCards.run(function($window, $rootScope, Analytics) {
     $rootScope.$eventToObservable('page:dirtied'),
     Rx.Observable.fromEvent($($window), 'unload')   // Navigating away counts as an action.
   );
-  $rootScope.emitEventsFromObservable('user-interacted', intentionalUserActions);
+  $rootScope.$emitEventsFromObservable('user-interacted', intentionalUserActions);
 
   function onEventStart(label) {
     return function() {

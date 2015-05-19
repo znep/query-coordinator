@@ -148,6 +148,20 @@ describe('Scope RX Extensions', function() {
 
   });
 
+  describe('#$emitEventsFromObservable', function() {
+    it('should emit events when the observable produces values', function() {
+      var eventSpy = sinon.spy();
+      var testSubjectName = new Rx.Subject();
+      var $scope = $rootScope.$new(true);
+
+      $scope.$on('my-event', eventSpy);
+      $scope.$emitEventsFromObservable('my-event', testSubjectName);
+      expect(eventSpy).to.have.not.been.called;
+      testSubjectName.onNext('value');
+      expect(eventSpy).to.have.been.calledWith(sinon.match.any, 'value');
+    });
+  });
+
   describe('#$safeApply', function() {
     it('should safely $apply on scope when a digest cycle is in process', function() {
       var $scope = $rootScope.$new(true);

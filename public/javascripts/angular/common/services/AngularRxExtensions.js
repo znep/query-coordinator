@@ -65,24 +65,6 @@ angular.module('socrataCommon.services').factory('AngularRxExtensions', function
           onError ? errorHandler : defaultErrorHandler,
           onCompleted ? completedHandler : undefined
         );
-    },
-
-    emitEventsFromObservable: function emitEventsFromObservable(eventName, observable) {
-      var self = this;
-
-      if (_.isEmpty(eventName) || !_.isString(eventName)) {
-        throw new Error('emitEventsFromObservable not passed a string event name');
-      }
-
-      return observable.
-        takeUntil(self.$destroyAsObservable()). //TakeUntil to avoid leaks.
-        subscribe(
-          function(value) {
-          self.$safeApply(function() {
-            self.$emit(eventName, value);
-          }
-        );
-      });
     }
   };
 

@@ -432,7 +432,7 @@
       subscribe(_.bind(page.resetDirtied, page));
     $scope.bindObservable('hasChanges', page.observeDirtied());
 
-    $scope.emitEventsFromObservable('page:dirtied', page.observeDirtied().filter(_.identity));
+    $scope.$emitEventsFromObservable('page:dirtied', page.observeDirtied().filter(_.identity));
 
     function notifyUserOfSaveProgress(savePromise, publishTo) {
       var savedMessagePersistenceMsec = 3000;

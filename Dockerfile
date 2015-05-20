@@ -29,6 +29,7 @@ COPY . $APP_DIR
 COPY docker/ship.d/run /etc/ship.d/run
 
 RUN eval ${build_proxy_env} \
-  && bundle install
+  && bundle install --without=development --deployment \
+  && bundle exec rake assets:unminified
 
 EXPOSE 3000

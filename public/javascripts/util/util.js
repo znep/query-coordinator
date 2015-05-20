@@ -238,6 +238,8 @@ $.urlParam = function(url, name, value)
     }
 };
 
+$.hasParam = $.urlParam.curry(window.location.href);
+
 $.toParam = function(hash)
 {
     return _.map(hash, function(v, k) { return escape(k) + '=' + escape(v); }).join('&');
@@ -999,6 +1001,32 @@ $.whenever = function() {
         return deferred.promise();
     });
     return $.when.apply($, args);
+};
+
+// @param ary - takes an array of functions.
+// Each function must return a promise.
+//
+// Each function will be executed sequentially, waiting for the
+// previous promise to resolve before firing.
+//
+$.serialPromiser = function(ary) {
+  var result = $.Deferred(),
+      promises = _.select($.makeArray(ary), _.isFunction);
+
+  var promiseIterator = function(promiseFactory, args) {
+    promiseFactory.apply(null, args).then(function() {
+      if (promises.length > 0) {
+        promiseIterator(promises.shift(), arguments);
+      } else {
+        result.resolveWith(null, arguments);
+      }
+    }).fail(function() {
+      result.reject();
+    });
+  };
+  promiseIterator(promises.shift());
+
+  return result.promise();
 };
 
 // Wrapper around inlineLogin.verifyUser; simply does nothing

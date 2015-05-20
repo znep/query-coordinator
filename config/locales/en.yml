@@ -2275,6 +2275,7 @@ en:
     import_pane:
       analyzing: Analyzing your file...
       assure_accessible: Please ensure that your file is accessible and valid and try again.
+      bytes_imported: ! '%{num} bytes imported so far.'
       combine_multiple_cols: (Combine Multiple Columns...)
       downloading: Downloading your file...
       filetype_error_blist: Please choose a CSV, TSV, XLS, or XLSX file.

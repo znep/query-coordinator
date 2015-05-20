@@ -401,6 +401,7 @@ javascripts:
     - public/javascripts/screens/dataset-about.js
   dataset-new:
     - public/javascripts/util/serialize.js
+    - public/javascripts/util/datasync.js
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/plugins/fileuploader.js
     - public/javascripts/plugins/blist.fileuploader.js
@@ -410,6 +411,7 @@ javascripts:
     - public/javascripts/screens/import-pane.js
     - public/javascripts/screens/dataset-new.js
   dataset-edit:
+    - public/javascripts/util/datasync.js
     - public/javascripts/plugins/ajaxupload.js
     - public/javascripts/plugins/fileuploader.js
     - public/javascripts/plugins/blist.fileuploader.js

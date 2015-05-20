@@ -1210,7 +1210,7 @@ importNS.uploadFilePaneConfig = {
         var uploadEndpoint = '/imports2.txt?method=';
         if (state.type == 'blist')
         {
-            uploadEndpoint += 'scan&nbe=' + blist.feature_flags.default_imports_to_nbe;
+            uploadEndpoint += 'scan&nbe=' + !!blist.feature_flags.default_imports_to_nbe;
         }
         else if (state.type == 'shapefile')
         {
@@ -1291,6 +1291,8 @@ importNS.uploadFilePaneConfig = {
                         .addClass('error');
                     return false;
                 }
+
+                state.fileObj = uploader._handler._files[id];
 
                 // if it happens too fast it's bewildering
                 setTimeout(function()
@@ -1830,43 +1832,154 @@ importNS.importingPaneConfig = {
             });
         }
 
-        urlParams = { nbe: blist.feature_flags.default_imports_to_nbe };
+        var urlParams = { nbe: !!blist.feature_flags.default_imports_to_nbe };
         if (state.operation != 'import') {
           urlParams.method = state.operation;
         }
 
-        $.socrataServer.makeRequest({
-            type: 'post',
-            url: '/api/imports2.json?' + $.toParam(urlParams),
-            contentType: 'application/x-www-form-urlencoded',
-            data: dataPayload,
-            success: function(response)
-            {
-                state.submittedView = new Dataset(response);
-                command.next($.subKeyDefined(state.submittedView, 'metadata.warnings') ?
-                    'importWarnings' : (isReimport ? 'finish' : 'metadata'));
-            },
-            error: function(request)
-            {
-                setTimeout(function()
-                {
-                    submitError = (request.status == 500) ?
-                                   (t('unknown_error') + '. ' + t('try_again')) :
-                                   JSON.parse(request.responseText).message;
-                    command.prev();
-                }, 2000);
-            },
-            pending: function(response)
-            {
-                if ($.subKeyDefined(response, 'details.progress'))
-                {
-                    var message = t('rows_imported', { num: response.details.progress });
-                    if ($.subKeyDefined(response, 'details.layer'))
-                        message = t('layer') + '  ' + response.details.layer + ": " + message;
-                    $pane.find('.importStatus').text(message);
-                }
+        // Delta Importer implementation requires Web Workers.
+        var useDI2 = _.isFunction(Worker)
+            && blist.feature_flags.default_imports_to_nbe == 'delta-importer';
+
+        if (useDI2) {
+          var promiseQueue = [];
+
+          if (isReimport) {
+            dataset = blist.importer.dataset;
+          } else {
+
+            // Before we can DI2, we must create the view...
+            promiseQueue.push(function() {
+              return $.socrataServer.makeRequestWithPromise({
+                type: 'post',
+                url: '/views?nbe=true',
+                data: JSON.stringify({ name: state.fileName })
+              })
+            });
+
+            // ...and we must add the columns to that view.
+            promiseQueue.push(function(dataset, statusMsg, xhr) {
+              // Adding the name to the file object for funsies.
+              dataset.name = state.fileName;
+
+              var deferred = $.Deferred();
+              $.serialPromiser(_.map(blueprint.columns, function(column, index) {
+                var colSpec = {};
+                colSpec.name = column.name;
+                colSpec.dataTypeName = column.datatype;
+                colSpec.position = index + 1; // REMOVE: This doesn't work.
+
+                return function() {
+                  return $.socrataServer.makeRequestWithPromise({
+                    type: 'post',
+                    url: '/views/' + dataset.id + '/columns?nbe=true',
+                    data: JSON.stringify(colSpec)
+                  }).then(function(columnData) {
+                    // Adding column data to local object in order to save visibility later.
+                    dataset.columns.push(columnData);
+                  });
+                };
+              })).then(function() {
+                deferred.resolve(dataset);
+              }).fail(function() {
+                deferred.reject();
+              });
+              return deferred.promise();
+            });
+          }
+
+          promiseQueue.push(function(dataset) {
+            // A dataset should be passed in. If not, then this should
+            // be an append, and the DS should be in blist.importer.
+            dataset = dataset || blist.importer.dataset;
+
+            // Bcuz core importer thinks skip:1 means 'header at line 0',
+            // but delta importer thinks skip:1 means 'header at line 1'.
+            // Sigh.
+            blueprint.skip -= 1;
+
+            var ext = state.fileName.match(/\.(\w+)$/)[1];
+            var operation;
+            if (state.operation == 'import') {
+              operation = 'replace';
+            } else {
+              operation = state.operation;
             }
-        });
+
+            return $.dataSync.upload(state.fileObj, {
+              datasetId: dataset.id,
+              blueprint: blueprint,
+              action: operation,
+              fileType: ext,
+              onComplete: function(p) {
+                state.submittedView = new Dataset(dataset);
+                var nextState;
+                if ($.subKeyDefined(state.submittedView, 'metadata.warnings')) {
+                  nextState = 'importWarnings';
+                } else {
+                  if (isReimport) {
+                    nextState = 'finish';
+                  } else {
+                    nextState = 'metadata'
+                  }
+                }
+                command.next(nextState);
+              },
+              onError: function(errObj) {
+                setTimeout(function() {
+                  if ($.deepGet(errObj, 'details', 'response', 'status') === 500) {
+                    submitError = t('unknown_error') + '. ' + t('try_again');
+                  } else {
+                    // TODO: Build a way to parse the error messages.
+                    submitError = 'blargh'; // JSON.parse(request.responseText).message;
+                  }
+                    
+                  command.prev();
+                }, 2000);
+              },
+              //onProgress: function(p) { console.log('progress', p); }
+              onProgress: function(p) {
+                console.info('progress', p);
+                var message = t('bytes_imported', { num: p.bytes_uploaded });
+                $pane.find('.importStatus').text(message);
+              }
+            });
+          });
+          $.serialPromiser(promiseQueue);
+        } else {
+          $.socrataServer.makeRequest({
+              type: 'post',
+              url: '/api/imports2.json?' + $.toParam(urlParams),
+              contentType: 'application/x-www-form-urlencoded',
+              data: dataPayload,
+              success: function(response)
+              {
+                  state.submittedView = new Dataset(response);
+                  command.next($.subKeyDefined(state.submittedView, 'metadata.warnings') ?
+                      'importWarnings' : (isReimport ? 'finish' : 'metadata'));
+              },
+              error: function(request)
+              {
+                  setTimeout(function()
+                  {
+                      submitError = (request.status == 500) ?
+                                     (t('unknown_error') + '. ' + t('try_again')) :
+                                     JSON.parse(request.responseText).message;
+                      command.prev();
+                  }, 2000);
+              },
+              pending: function(response)
+              {
+                  if ($.subKeyDefined(response, 'details.progress'))
+                  {
+                      var message = t('rows_imported', { num: response.details.progress });
+                      if ($.subKeyDefined(response, 'details.layer'))
+                          message = t('layer') + '  ' + response.details.layer + ": " + message;
+                      $pane.find('.importStatus').text(message);
+                  }
+              }
+          });
+        }
     }
 };
 

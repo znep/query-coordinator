@@ -2,6 +2,7 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'dataset-new' %>
   <title><%= t("#{prefix}.title") %> | <%= CurrentDomain.strings.site_title %></title>
+  <script src="/datasync/api.js" type="text/javascript"></script>
 <% end %>
 
 <% content_for :skip_links do %>

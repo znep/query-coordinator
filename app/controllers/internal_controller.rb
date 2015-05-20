@@ -263,15 +263,25 @@ class InternalController < ApplicationController
     end
 
     properties = config.properties
+    infos = []
+    errors = []
     CoreServer::Base.connection.batch_request do |batch_id|
       params['feature_flags'].each do |flag, value|
-        next unless FeatureFlags.list.include? flag
+        unless FeatureFlags.list.include? flag
+          errors << "#{flag} is not a valid feature flag."
+          next
+        end
         processed_value = FeatureFlags.process_value(value).to_s
-        next if properties[flag] == processed_value
+        if properties[flag] == processed_value
+          infos << "#{flag} was already set to \"#{processed_value}\"."
+          next
+        end
         if properties.has_key?(flag)
           config.update_property(flag, processed_value, batch_id)
+          infos << "#{flag} was updated with value \"#{processed_value}\"."
         else
           config.create_property(flag, processed_value, batch_id)
+          infos << "#{flag} was created with value \"#{processed_value}\"."
         end
       end
     end
@@ -280,7 +290,7 @@ class InternalController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to "/internal/orgs/#{@domain.organizationId}/domains/#{params[:domain_id]}/feature_flags" }
-      format.data { render :json => { :success => true } }
+      format.data { render :json => { :success => errors.empty?, :errors => errors, :infos => infos } }
     end
   end
 

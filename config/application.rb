@@ -11,6 +11,7 @@ module Storyteller
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
+    config.autoload_paths << Rails.root.join('lib')
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -27,5 +28,10 @@ module Storyteller
     # so respond to /stories as the root url.
     config.relative_url_root = '/stories'
 
+    config.frontend_port = if Rails.env.development?
+      ENV['FRONTEND_PORT'] || '9443'
+    else
+      nil
+    end
   end
 end

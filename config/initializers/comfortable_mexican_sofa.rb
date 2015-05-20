@@ -19,7 +19,7 @@ ComfortableMexicanSofa.configure do |config|
   # Module responsible for public authentication. Similar to the above. You also
   # will have access to @cms_site, @cms_layout, @cms_page so you can use them in
   # your logic. Default module doesn't do anything.
-  #   config.public_auth = 'ComfyPublicAuthentication'
+  config.public_auth = 'CmsPagesAuth'
 
   # When arriving at /cms-admin you may chose to redirect to arbirtary path,
   # for example '/cms-admin/users'

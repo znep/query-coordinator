@@ -913,7 +913,7 @@
               }
             }, singleClickSuppressionThreshold);
           }
-        };
+        }
 
 
         /*********************************************************
@@ -1084,6 +1084,10 @@
           zoomControlPosition: 'topleft'
         };
 
+        if (Constants.DISABLE_LEAFLET_ZOOM_ANIMATION) {
+          options.zoomAnimation = false;
+        }
+
         var map = L.map(element.find('.choropleth-map-container')[0], options);
         // Manage the layers in a layerGroup, so we can clear them all at once.
         var layerGroup = L.layerGroup().addTo(map);
@@ -1155,7 +1159,7 @@
         tileLayer.connect();
 
         Rx.Observable.subscribeLatest(
-          element.observeDimensions().throttle(500),
+          element.observeDimensions().throttle(500, Rx.Scheduler.timeout),
           scope.observe('geojsonAggregateData'),
           function(dimensions, geojsonAggregateData) {
 

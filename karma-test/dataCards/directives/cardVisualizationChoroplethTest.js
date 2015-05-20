@@ -9,11 +9,13 @@ describe('A Choropleth Card Visualization', function() {
   var compile;
   var scope;
   var Model;
+  var Constants;
   var q;
   var timeout;
   var CardVisualizationChoroplethHelpers;
   var CardDataService;
-  var fakeClock = null;
+  var testTimeoutScheduler;
+  var normalTimeoutScheduler;
   var mockCardDataService;
 
   var testWards = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/ward_geojson.json';
@@ -49,17 +51,16 @@ describe('A Choropleth Card Visualization', function() {
     timeout = $injector.get('$timeout');
     CardVisualizationChoroplethHelpers = $injector.get('CardVisualizationChoroplethHelpers');
     CardDataService = $injector.get('CardDataService');
+    Constants = $injector.get('Constants');
+    Constants.DISABLE_LEAFLET_ZOOM_ANIMATION = true;
+    testTimeoutScheduler = new Rx.TestScheduler();
+    normalTimeoutScheduler = Rx.Scheduler.timeout;
+    Rx.Scheduler.timeout = testTimeoutScheduler;
   }));
 
-  beforeEach(function() {
-    fakeClock = sinon.useFakeTimers();
-  });
-
   afterEach(function() {
+    Rx.Scheduler.timeout = normalTimeoutScheduler;
     testHelpers.cleanUp();
-    fakeClock.restore();
-
-    fakeClock = null;
     testHelpers.TestDom.clear();
   });
 
@@ -187,9 +188,10 @@ describe('A Choropleth Card Visualization', function() {
     var html = '<card-visualization-choropleth id="{0}" model="model" where-clause="whereClause"></card-visualization-choropleth>'.format(id);
     var el = testHelpers.TestDom.compileAndAppend(html, childScope);
 
-    // The choropleth throttles its renderer.
-    // Lie to it that enough time has passed, so it renders now.
-    fakeClock.tick(1000);
+    // The choropleth throttles its renderer via Rx.throttle
+    // Advance the scheduler to get it to render
+    // Using advanceBy instead of advanceTo, since we test rendering multiple churros
+    testTimeoutScheduler.advanceBy(500);
 
     return {
       element: el,

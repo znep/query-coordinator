@@ -27,7 +27,8 @@
     "vector-tile-js": "devTristan/vector-tile-js#~0.1.1",
     "angular-elastic": "~v2.4.2",
     "js-polyfills": "~0.1.2",
-    "lodash-compat": "~3.7"
+    "lodash-compat": "~3.7",
+    "leaflet": "~0.7.3"
   },
   "install": {
     "path": {
@@ -55,6 +56,10 @@
         "bower_components/rxjs/rx.binding.js"
       ],
       "flexgrid": [],
+      "leaflet": [
+        "bower_components/leaflet/dist/leaflet.js",
+        {"bower_components/leaflet/dist/leaflet.css": "../leaflet.css"}
+      ],
       "showdown": "bower_components/showdown/src/showdown.js"
     }
   },

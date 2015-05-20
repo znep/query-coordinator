@@ -1607,7 +1607,12 @@
           selectionIsCurrentlyRendered = false;
           clearChartSelection();
           hideDatumLabel();
-          renderChartFilteredValues();
+          if (d3XScale && d3YScale) {
+            // Check if d3 scales exist before attempting to render filtered values.
+            // This is mainly needed for the onload case when enterDefaultState is called
+            // and the chart has a width/height of zero, so the scales are still null.
+            renderChartFilteredValues();
+          }
           jqueryBodyElement.removeClass('prevent-user-select');
           jqueryChartElement.removeClass('selecting').removeClass('selected');
         }

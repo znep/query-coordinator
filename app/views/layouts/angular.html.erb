@@ -31,7 +31,7 @@
   <%# See also: app/views/angular/serve_app.html.erb %>
 
   <body ng-app="<%= angular_app %>">
-    <div id="skipLinks">
+    <div id="skip-links">
       <%= link_to 'Go to an accessible version of this page', get_alt_dataset_link(@migration_info[:obeId]) %>
     </div>
     <%= render_noscript(@migration_info[:obeId]) %>

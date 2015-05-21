@@ -58,6 +58,44 @@ class AngularControllerTest < ActionController::TestCase
     end
   end
 
+  context 'accessibility' do
+    setup do
+      NewViewManager.any_instance.stubs(:fetch).returns({})
+      View.stubs(
+        :migrations => {
+          :nbeId => "1234-1234",
+          :obeId => "1234-1234"
+        }
+      )
+      Phidippides.any_instance.stubs(
+        :fetch_page_metadata => {
+          :status => '200',
+          :body => v1_page_metadata
+        },
+        :fetch_dataset_metadata => {
+          :status => '200',
+          :body => v1_dataset_metadata
+        },
+        :fetch_pages_for_dataset => {
+          :status => '200',
+          :body => v1_pages_for_dataset
+        },
+        :set_default_and_available_card_types_to_columns! => {}
+      )
+
+      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+    end
+
+    should 'render skip-links in html' do
+      assert_match(/<div id=\"skip-links\">/, @response.body)
+      assert_match(/Go to an accessible version of this page/, @response.body)
+    end
+
+    should 'render noscript in html' do
+      assert_match(/<noscript>/, @response.body)
+    end
+  end
+
   context 'when unauthenticated' do
     setup do
       Phidippides.any_instance.stubs(
@@ -121,8 +159,8 @@ class AngularControllerTest < ActionController::TestCase
     end
   end
 
-   context 'when authenticated' do
-     setup do
+  context 'when authenticated' do
+    setup do
       Phidippides.any_instance.stubs(
         :fetch_page_metadata => {
           :status => '200',

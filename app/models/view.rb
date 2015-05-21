@@ -69,8 +69,12 @@ class View < Model
     parse(CoreServer::Base.connection.get_request(path))
   end
 
-  # Will raise CoreServer::ResourceNotFound if no migration is found
   def migrations
+    self.class.migrations(id)
+  end
+
+  # Will raise CoreServer::ResourceNotFound if no migration is found
+  def self.migrations(id)
     path = "/api/migrations/#{id}"
     JSON.parse(CoreServer::Base.connection.get_request(path)).with_indifferent_access
   end

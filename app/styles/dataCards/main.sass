@@ -120,6 +120,25 @@ $pageNameMaxLineCount: 2
   left: -10000px
   visibility: hidden
 
+#skipLinks
+  position: absolute
+  left: 5px
+  top: -495px
+
+  a
+    @include gradient_chrome_nav_buttons_background
+    @include border-radius(0.2em)
+    @include box-shadow(0, 0, 0.5em, rgba(0, 0, 0, 0.3))
+    color: #fff
+    font-size: 1rem
+    font-weight: bold
+    padding: 0.6em
+    position: absolute
+    width: 30em
+    &:focus, &:active
+      top: 500px
+      z-index: 10000
+
 //
 // For modern browsers
 // 1. The space content is one way to avoid an Opera bug when the
@@ -145,3 +164,12 @@ $pageNameMaxLineCount: 2
 //
 .cf
   *zoom: 1
+
+//
+// noscript - JavaScript disabled notifaction
+//
+noscript
+  .noscript-notification
+    text-align: center
+    p, a
+      color: black

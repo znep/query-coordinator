@@ -331,6 +331,7 @@ Frontend::Application.routes do
       get 'dataset/:id', :action => 'show'
       # The ":as" option, provides the short_view_url helper method
       get 'd/:id', :action => 'show', :as => :short_view
+      get 'd/:id/alt', :action => 'alt'
 
       get 'd/:id/:row_id', :action => 'show',
         :constraints => {:row_id => /\d+/}

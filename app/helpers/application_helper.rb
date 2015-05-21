@@ -653,4 +653,16 @@ ga('send', 'pageview');
     out.html_safe
   end
 
+  # Takes dataset id and returns link to the alternate version of the dataset
+  def get_alt_dataset_link(id)
+    "/d/#{id}/alt"
+  end
+
+  def render_noscript(id)
+    return ('<noscript><div class="noscript-notification">' +
+              '<p>THAONEHUTNAOEHUTNAOHEUTNAOHEUTNAHOETUNHATOE</p>' +
+              "<p><a href=\"#{get_alt_dataset_link(id)}\">Name of link</a></p>" +
+            '</div></noscript>').html_safe
+  end
+
 end

@@ -1,29 +1,30 @@
-describe("multilineEllipsis directive", function(FlyoutService) {
+describe('multilineEllipsis directive', function(FlyoutService) {
+  'use strict';
+  
   var $rootScope;
   var testHelpers;
+  var testTimeoutScheduler;
+  var normalTimeoutScheduler;
   var lotsOfText = _.times(100, function() {
-    return "This is a test of the emergency broadcast system. This is only a test. ";
+    return 'This is a test of the emergency broadcast system. This is only a test. ';
   }).join('');
   var mockFlyoutService = {
     register: function() {}
   };
 
-
   beforeEach(module('test'));
 
   beforeEach(module('dataCards'));
 
-  // NOTE! We mock out the clock, as rendering is throttled (async).
-  var fakeClock = null;
-
   beforeEach(function() {
-    fakeClock = sinon.useFakeTimers();
+    testTimeoutScheduler = new Rx.TestScheduler();
+    normalTimeoutScheduler = Rx.Scheduler.timeout;
+    Rx.Scheduler.timeout = testTimeoutScheduler;
   });
 
   afterEach(function() {
+    Rx.Scheduler.timeout = normalTimeoutScheduler;
     testHelpers.cleanUp();
-    fakeClock.restore();
-    fakeClock = null;
   });
 
   // Overriding providers must occur _after_ the dataCards module has been loaded because load order...
@@ -56,7 +57,7 @@ describe("multilineEllipsis directive", function(FlyoutService) {
           scope.lotsOfText = lotsOfText;
           el = testHelpers.TestDom.compileAndAppend(html, scope);
           el.css('font-size', '38px');
-          fakeClock.tick(1000);
+          testTimeoutScheduler.advanceTo(1000);
         }
 
         it('should show an ellipsis when there are more than two lines of text', function() {
@@ -85,7 +86,7 @@ describe("multilineEllipsis directive", function(FlyoutService) {
           var scope = $rootScope.$new();
           scope.lotsOfText = lotsOfText;
           el = testHelpers.TestDom.compileAndAppend(html, scope);
-          fakeClock.tick(1000);
+          testTimeoutScheduler.advanceTo(1000);
         }
 
         it('should show the full amount of text and no ellipsis', function() {
@@ -108,7 +109,7 @@ describe("multilineEllipsis directive", function(FlyoutService) {
           var scope = $rootScope.$new();
           scope.lotsOfText = lotsOfText;
           var el = testHelpers.TestDom.compileAndAppend(html, scope);
-          fakeClock.tick(1000);
+          testTimeoutScheduler.advanceTo(1000);
           expect(el.text()).to.contain('...');
           expect(el.find('.content').attr('title')).to.equal(lotsOfText);
         });
@@ -120,7 +121,7 @@ describe("multilineEllipsis directive", function(FlyoutService) {
           var scope = $rootScope.$new();
           scope.lotsOfText = lotsOfText;
           var el = testHelpers.TestDom.compileAndAppend(html, scope);
-          fakeClock.tick(1000);
+          testTimeoutScheduler.advanceTo(1000);
           expect(el.text()).to.equal(lotsOfText);
           expect(el.find('.content').attr('title')).to.be.empty;
         });
@@ -138,7 +139,7 @@ describe("multilineEllipsis directive", function(FlyoutService) {
           var registrationSpy = sinon.spy(mockFlyoutService, 'register');
           var element = testHelpers.TestDom.compileAndAppend(html, scope);
           var content = element.find('.content');
-          fakeClock.tick(1000);
+          testTimeoutScheduler.advanceTo(1000);
 
           expect(content.text()).to.contain('...');
           expect(content.attr('title')).to.be.empty;
@@ -162,7 +163,7 @@ describe("multilineEllipsis directive", function(FlyoutService) {
         var registrationSpy = sinon.spy(mockFlyoutService, 'register');
         var element = testHelpers.TestDom.compileAndAppend(html, scope);
         var content = element.find('.content');
-        fakeClock.tick(1000);
+        testTimeoutScheduler.advanceTo(1000);
 
         expect(content.text()).to.contain('...');
         expect(content.attr('title')).to.be.empty;

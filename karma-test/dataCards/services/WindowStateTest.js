@@ -1,4 +1,6 @@
 describe('WindowState service', function() {
+  'use strict';
+
   beforeEach(module('dataCards.services'));
 
   var WindowState;
@@ -17,7 +19,7 @@ describe('WindowState service', function() {
       ev.pageX = 1337;
       ev.pageY = 666;
       return ev;
-    };
+    }
 
     function generateFakeMouseUp(button) {
       var ev = document.createEvent('HTMLEvents');
@@ -26,7 +28,7 @@ describe('WindowState service', function() {
       ev.pageX = 1337;
       ev.pageY = 666;
       return ev;
-    };
+    }
 
     it('should react to left mousedown', function() {
       expect(WindowState.mouseLeftButtonPressedSubject.value).to.be.false;
@@ -64,14 +66,13 @@ describe('WindowState service', function() {
 
   describe('mousePositionSubject', function() {
 
-    function generateFakeMouseMove(clientX, clientY, target) {
+    function generateFakeMouseMove(clientX, clientY) {
       var ev = document.createEvent('HTMLEvents');
       ev.initEvent('mousemove', true, true);
-      ev.clientX = clientX,
-      ev.clientY = clientY,
-      ev.target = target
+      ev.clientX = clientX;
+      ev.clientY = clientY;
       return ev;
-    };
+    }
 
     it('should report the correct mouse position on mousemove', function() {
       var body = document.getElementsByTagName('body')[0];
@@ -82,7 +83,7 @@ describe('WindowState service', function() {
         target: document.body
       });
 
-      body.dispatchEvent(generateFakeMouseMove(10, 20, body));
+      body.dispatchEvent(generateFakeMouseMove(10, 20));
 
       expect(WindowState.mousePositionSubject.value).to.deep.equal({
         clientX: 10,
@@ -92,7 +93,7 @@ describe('WindowState service', function() {
       expect(WindowState.mouseClientX).to.equal(10);
       expect(WindowState.mouseClientY).to.equal(20);
 
-      body.dispatchEvent(generateFakeMouseMove(100, 200, body));
+      body.dispatchEvent(generateFakeMouseMove(100, 200));
 
       expect(WindowState.mousePositionSubject.value).to.deep.equal({
         clientX: 100,

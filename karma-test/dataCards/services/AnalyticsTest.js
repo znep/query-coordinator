@@ -1,13 +1,16 @@
 describe('Analytics service', function() {
   'use strict';
 
-  var Analytics, $httpBackend, moment, $rootScope;
+  var Analytics;
+  var $httpBackend;
+  var $rootScope;
   var INITIAL_NAVIGATION_START_TIME = 222;
   var INITIAL_MOMENT_TIME = 1234;
-  var INITIAL_TIME_DELTA = INITIAL_MOMENT_TIME - INITIAL_NAVIGATION_START_TIME;
   var DOM_READY_TIME = 4119;
   var fakeClock;
   var ServerConfig;
+  var testTimeoutScheduler;
+  var normalTimeoutScheduler;
 
   var mockWindowPerformance = {
     timing: {
@@ -36,6 +39,9 @@ describe('Analytics service', function() {
   });
 
   beforeEach(inject(function($injector) {
+    testTimeoutScheduler = new Rx.TestScheduler();
+    normalTimeoutScheduler = Rx.Scheduler.timeout;
+    Rx.Scheduler.timeout = testTimeoutScheduler;
     $rootScope = $injector.get('$rootScope');
     $httpBackend = $injector.get('$httpBackend');
     ServerConfig = $injector.get('ServerConfig');
@@ -45,13 +51,13 @@ describe('Analytics service', function() {
     Analytics.setMetricsQueueCapacity(1);
   }));
 
-
   // *** Fake synchronous timing. ***
   beforeEach(function() {
     fakeClock = sinon.useFakeTimers(INITIAL_MOMENT_TIME);
   });
 
   afterEach(function() {
+    Rx.Scheduler.timeout = normalTimeoutScheduler;
     fakeClock.reset();
     fakeClock.restore();
     fakeClock = undefined;
@@ -60,14 +66,14 @@ describe('Analytics service', function() {
   // Analytics has a timeout to let the page settle.
   // Synchronously force that timeout to complete.
   function allowPageToSettle() {
-    fakeClock.tick(Analytics.idleTimeForRendererToBeConsideredSettled * 2);
+    testTimeoutScheduler.advanceBy(Analytics.idleTimeForRendererToBeConsideredSettled * 2);
   }
 
   // *** Helpers to verify calls to /analytics/add. ***
   function expectAnalyticsHttpPost(optionalMetricName, optionalMetricValue) {
     if (optionalMetricName || optionalMetricValue) {
-      $httpBackend.expectPOST('/analytics/add', function verifier(blob) {
-        var blob = JSON.parse(blob);
+      $httpBackend.expectPOST('/analytics/add', function verifier(payload) {
+        var blob = JSON.parse(payload);
         return blob.metrics &&
                blob.metrics.length === 1 &&
                (_.isUndefined(optionalMetricName) || blob.metrics[0].metric === optionalMetricName) &&
@@ -271,7 +277,6 @@ describe('Analytics service', function() {
 
       it('should handle multiple in-flight http request timings with same label and different start times', function() {
         var DURATION_OF_REQUEST_1 = 1000;
-        var DURATION_OF_REQUEST_2 = 500;
         var SECOND_REQUEST_START_OFFSET = 200;
 
         Analytics.startHttpRequest('label', INITIAL_MOMENT_TIME);

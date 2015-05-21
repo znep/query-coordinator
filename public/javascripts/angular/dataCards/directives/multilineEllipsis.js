@@ -128,7 +128,7 @@
         var everRendered = false;
 
         Rx.Observable.subscribeLatest(
-          element.observeDimensions().throttle(100), // Mild throttling. This is to:
+          element.observeDimensions().throttle(100, Rx.Scheduler.timeout), // Mild throttling. This is to:
                                                      // 1) Not waste time on spurious size changes on initial load.
                                                      // 2) Ignore spurious incorrect size notifications on IE9,
                                                      //    which can cause infinite loops (IE will notify us of

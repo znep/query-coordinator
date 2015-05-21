@@ -1,4 +1,5 @@
 User-agent: *
 <% if !Rails.env.end_with?('production') || CurrentDomain.truthy?('suppress_robots') -%>Disallow: /<% end -%>
 Disallow: /OData.svc/
+Disallow: /reset_password/
 Sitemap: http://<%= CurrentDomain.cname %>/sitemap-<%= CurrentDomain.cname %>.xml

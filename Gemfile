@@ -24,7 +24,7 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 # Core Auth
-gem 'core-auth-ruby', git: 'git@github.com:socrata/core-auth-ruby.git', branch: 'master', tag: 'v0.2.3'
+gem 'core-auth-ruby', '0.2.3', path: 'vendor/gems/core-auth-ruby-0.2.3'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

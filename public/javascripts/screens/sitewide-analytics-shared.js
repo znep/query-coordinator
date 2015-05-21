@@ -3,7 +3,7 @@
 var datasetsMetricName;
 
 if(blist.feature_flags.dataset_count_v2){
-  datasetsMetricName = 'datasets-v2';
+  datasetsMetricName = 'datasets-published-v2';
 } else {
   datasetsMetricName = 'datasets';
 }

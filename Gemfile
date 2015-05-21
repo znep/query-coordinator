@@ -58,5 +58,7 @@ group :development, :test do
 
   # Allows setting up an instance with multiple domains
   gem 'powder'
+
+  gem 'simplecov', require: false
 end
 

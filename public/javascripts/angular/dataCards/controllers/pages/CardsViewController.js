@@ -369,38 +369,31 @@
             return a.fieldName > b.fieldName;
           });
 
-        var i = 0;
-        var j = 0;
         var available = false;
         var availableCardCount = sortedColumns.length;
         var availableColumns = [];
         var alreadyOnPageColumns = [];
         var visualizationUnsupportedColumns = [];
 
-        for (i = 0; i < sortedColumns.length; i++) {
+        _.forEach(sortedColumns, function(column) {
+          available = !_.any(sortedCards, function(card) {
+            return card.fieldName === column.fieldName;
+          });
 
-          available = true;
-
-          for (j = 0; j < sortedCards.length; j++) {
-            if (sortedColumns[i].fieldName === sortedCards[j].fieldName) {
-              available = false;
-              availableCardCount--;
-            }
+          if (!available) {
+            availableCardCount--;
           }
 
-          sortedColumns[i].available = available;
+          column.available = available;
 
-          if (sortedColumns[i].defaultCardType !== 'invalid') {
-            if (available) {
-              availableColumns.push(sortedColumns[i].fieldName);
-            } else {
-              alreadyOnPageColumns.push(sortedColumns[i].fieldName);
-            }
+          if (column.defaultCardType === 'invalid') {
+            visualizationUnsupportedColumns.push(column.fieldName);
+          } else if (column.available) {
+            availableColumns.push(column.fieldName);
           } else {
-            visualizationUnsupportedColumns.push(sortedColumns[i].fieldName);
+            alreadyOnPageColumns.push(column.fieldName);
           }
-
-        }
+        });
 
         return {
           available: availableColumns.sort(),

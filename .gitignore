@@ -9,6 +9,7 @@
 .ruby-version
 REVISION
 marathon.properties
+/coverage
 
 # Ignore local database settings
 config/database.yml

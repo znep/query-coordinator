@@ -30,7 +30,7 @@ describe('Page model', function() {
     expect(instance.id).to.equal('test-page');
   });
 
-  it('should return a DatasetV1 model from the dataset property', function(done) {
+  it('should return a Dataset model from the dataset property', function(done) {
     var pageOverrides = {pageId: 'test-page'};
     var datasetOverrides = {id: 'test-data'};
     var instance = Mockumentary.createPage(pageOverrides, datasetOverrides);

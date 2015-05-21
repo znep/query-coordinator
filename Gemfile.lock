@@ -1,7 +1,5 @@
-GIT
-  remote: git@github.com:socrata/core-auth-ruby.git
-  revision: 69ee26da1a0229749c7b4052d21367f0f9686a96
-  branch: master
+PATH
+  remote: vendor/gems/core-auth-ruby-0.2.3
   specs:
     core-auth-ruby (0.2.3)
       addressable (~> 2.3)
@@ -256,7 +254,7 @@ DEPENDENCIES
   byebug
   coffee-rails (~> 4.1.0)
   comfortable_mexican_sofa (~> 1.12.8)
-  core-auth-ruby!
+  core-auth-ruby (= 0.2.3)!
   jbuilder (~> 2.0)
   jquery-rails
   pg

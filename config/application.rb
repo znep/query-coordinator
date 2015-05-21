@@ -5,6 +5,7 @@ require 'action_controller/railtie'
 require 'active_resource/railtie'
 require 'rails/test_unit/railtie'
 require 'active_support/core_ext/numeric/time'
+require 'semver'
 # require 'sprockets/railtie'
 
 require File.join(File.dirname(__FILE__), '..', 'lib/core_server/railtie')
@@ -19,6 +20,10 @@ end
 module Frontend
   class << self
     attr_accessor :statsd
+  end
+
+  def self.version
+    Application.config.version
   end
 
   class Application < Rails::Application
@@ -89,5 +94,7 @@ module Frontend
     # reinitialize a search. This is set on a per-manifest basis; so individual dataslate pages
     # may have differing TTLs.
     config.manifest_check_age = 15.minutes
+
+    config.version = SemVer.find.format '%M.%m.%p'
   end
 end

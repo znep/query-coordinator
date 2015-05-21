@@ -2,7 +2,7 @@ describe('addCardDialog', function() {
   'use strict';
 
   var testHelpers;
-  var CardV1;
+  var Card;
   var Mockumentary;
   var Page;
   var Model;
@@ -205,7 +205,7 @@ describe('addCardDialog', function() {
   beforeEach(
     inject([
       'testHelpers',
-      'CardV1',
+      'Card',
       'Mockumentary',
       'Model',
       '$rootScope',
@@ -215,7 +215,7 @@ describe('addCardDialog', function() {
       '$templateCache',
       function(
         _testHelpers,
-        _CardV1,
+        _Card,
         _Mockumentary,
         _Model,
         _$rootScope,
@@ -225,7 +225,7 @@ describe('addCardDialog', function() {
         _$templateCache) {
 
           testHelpers = _testHelpers;
-          CardV1 = _CardV1;
+          Card = _Card;
           Mockumentary = _Mockumentary;
           Model = _Model;
           $rootScope = _$rootScope;
@@ -287,7 +287,7 @@ describe('addCardDialog', function() {
       cardType: 'column',
       expanded: false
     };
-    dialog.scope.page.set('cards', [CardV1.deserialize(dialog.scope.page, serializedCard)]);
+    dialog.scope.page.set('cards', [Card.deserialize(dialog.scope.page, serializedCard)]);
 
     var selectableColumnOptions = dialog.element.find('option:enabled');
 
@@ -386,7 +386,7 @@ describe('addCardDialog', function() {
       expanded: false
     };
 
-    dialog.scope.page.set('cards', [CardV1.deserialize(dialog.scope.page, serializedCard)]);
+    dialog.scope.page.set('cards', [Card.deserialize(dialog.scope.page, serializedCard)]);
 
     dialog.scope.dialogState.cardSize = 2;
     dialog.element.find('option[value=ward]').prop('selected', true).trigger('change');

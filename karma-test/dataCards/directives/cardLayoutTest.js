@@ -6,7 +6,7 @@ describe('card-layout', function() {
   var CUSTOMIZE_BAR_HEIGHT = 40;
 
   var AngularRxExtensions;
-  var CardV1;
+  var Card;
   var mockWindowStateService = null;
   var mockDownloadService;
   var Model;
@@ -63,7 +63,7 @@ describe('card-layout', function() {
     testHelpers = $injector.get('testHelpers');
     rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
-    CardV1 = $injector.get('CardV1');
+    Card = $injector.get('Card');
     Page = $injector.get('Page');
     AngularRxExtensions = $injector.get('AngularRxExtensions');
     $q = $injector.get('$q');
@@ -290,7 +290,7 @@ describe('card-layout', function() {
 
     var cardGenerator = function(pageModel, datasetModel) {
       return _.map(cards, function(card, i) {
-        var c = new CardV1(pageModel, card.fieldName || 'fieldname' + i);
+        var c = new Card(pageModel, card.fieldName || 'fieldname' + i);
         c.set('expanded', !!card.expanded);
         // Add required fields so this will validate
         c.set('cardSize', 1);
@@ -331,10 +331,10 @@ describe('card-layout', function() {
     it('should be updated to reflect scroll position', function() {
 
       var cl = createCardLayout();
-      var card1 = new CardV1(cl.pageModel, 'testField1');
-      var card2 = new CardV1(cl.pageModel, 'testField2');
-      var card3 = new CardV1(cl.pageModel, 'testField3');
-      var card4 = new CardV1(cl.pageModel, '*');
+      var card1 = new Card(cl.pageModel, 'testField1');
+      var card2 = new Card(cl.pageModel, 'testField2');
+      var card3 = new Card(cl.pageModel, 'testField3');
+      var card4 = new Card(cl.pageModel, '*');
 
       var cards = [ card1, card2, card3, card4 ];
 
@@ -372,13 +372,13 @@ describe('card-layout', function() {
     it('should be updated to reflect cardsMetadata height', function(done) {
 
       var cl = createCardLayout();
-      var card1 = new CardV1(cl.pageModel, 'testField1');
-      var card2 = new CardV1(cl.pageModel, 'testField2');
-      var card3 = new CardV1(cl.pageModel, 'testField3');
+      var card1 = new Card(cl.pageModel, 'testField1');
+      var card2 = new Card(cl.pageModel, 'testField2');
+      var card3 = new Card(cl.pageModel, 'testField3');
       // Note that the data card (fieldName === '*') is required for layout to happen.
       // If we do not include it in the cardModels, the layout function will terminate
       // early and the tests will fail.
-      var card4 = new CardV1(cl.pageModel, '*');
+      var card4 = new Card(cl.pageModel, '*');
 
       var cards = [ card1, card2, card3, card4 ];
 
@@ -419,10 +419,10 @@ describe('card-layout', function() {
     it('should pop up card-drag-overlay', function() {
 
       var cl = createCardLayout();
-      var card1 = new CardV1(cl.pageModel, 'testField1');
-      var card2 = new CardV1(cl.pageModel, 'testField2');
-      var card3 = new CardV1(cl.pageModel, 'testField3');
-      var card4 = new CardV1(cl.pageModel, '*');
+      var card1 = new Card(cl.pageModel, 'testField1');
+      var card2 = new Card(cl.pageModel, 'testField2');
+      var card3 = new Card(cl.pageModel, 'testField3');
+      var card4 = new Card(cl.pageModel, '*');
 
       var cards = [ card1, card2, card3, card4 ];
 
@@ -446,10 +446,10 @@ describe('card-layout', function() {
     it('should display a delete card button', function() {
 
       var cl = createCardLayout();
-      var card1 = new CardV1(cl.pageModel, 'testField1');
-      var card2 = new CardV1(cl.pageModel, 'testField2');
-      var card3 = new CardV1(cl.pageModel, 'testField3');
-      var card4 = new CardV1(cl.pageModel, '*');
+      var card1 = new Card(cl.pageModel, 'testField1');
+      var card2 = new Card(cl.pageModel, 'testField2');
+      var card3 = new Card(cl.pageModel, 'testField3');
+      var card4 = new Card(cl.pageModel, '*');
 
       var cards = [ card1, card2, card3, card4 ];
 
@@ -473,10 +473,10 @@ describe('card-layout', function() {
 
     it('should display a flyout when hovering on a delete card button', function() {
       var cl = createCardLayout();
-      var card1 = new CardV1(cl.pageModel, 'testField1');
-      var card2 = new CardV1(cl.pageModel, 'testField2');
-      var card3 = new CardV1(cl.pageModel, 'testField3');
-      var card4 = new CardV1(cl.pageModel, '*');
+      var card1 = new Card(cl.pageModel, 'testField1');
+      var card2 = new Card(cl.pageModel, 'testField2');
+      var card3 = new Card(cl.pageModel, 'testField3');
+      var card4 = new Card(cl.pageModel, '*');
 
       var cards = [ card1, card2, card3, card4 ];
 
@@ -522,10 +522,10 @@ describe('card-layout', function() {
     it('should remove a card when the delete button is clicked', function(done) {
 
       var cl = createCardLayout();
-      var card1 = new CardV1(cl.pageModel, 'testField1');
-      var card2 = new CardV1(cl.pageModel, 'testField2');
-      var card3 = new CardV1(cl.pageModel, 'testField3');
-      var card4 = new CardV1(cl.pageModel, '*');
+      var card1 = new Card(cl.pageModel, 'testField1');
+      var card2 = new Card(cl.pageModel, 'testField2');
+      var card3 = new Card(cl.pageModel, 'testField3');
+      var card4 = new Card(cl.pageModel, '*');
 
       var cards = [ card1, card2, card3, card4 ];
 
@@ -556,10 +556,10 @@ describe('card-layout', function() {
 
     it('should show the correct drop placeholders', function() {
       var cl = createCardLayout();
-      var card1 = new CardV1(cl.pageModel, 'testField1');
-      var card2 = new CardV1(cl.pageModel, 'testField2');
-      var card3 = new CardV1(cl.pageModel, 'testField3');
-      var card4 = new CardV1(cl.pageModel, '*');
+      var card1 = new Card(cl.pageModel, 'testField1');
+      var card2 = new Card(cl.pageModel, 'testField2');
+      var card3 = new Card(cl.pageModel, 'testField3');
+      var card4 = new Card(cl.pageModel, '*');
 
       var cards = [ card1, card2, card3, card4 ];
 
@@ -713,10 +713,10 @@ describe('card-layout', function() {
 
       it('should show the drop placeholder for the dragged card when the mouse is moved 4 pixels from mouse down location, until mouse up', function() {
         var cl = createCardLayout();
-        var card1 = new CardV1(cl.pageModel, 'testField1');
-        var card2 = new CardV1(cl.pageModel, 'testField2');
-        var card3 = new CardV1(cl.pageModel, 'testField3');
-        var card4 = new CardV1(cl.pageModel, '*');
+        var card1 = new Card(cl.pageModel, 'testField1');
+        var card2 = new Card(cl.pageModel, 'testField2');
+        var card3 = new Card(cl.pageModel, 'testField3');
+        var card4 = new Card(cl.pageModel, '*');
 
         var cards = [ card1, card2, card3, card4 ];
 
@@ -792,10 +792,10 @@ describe('card-layout', function() {
 
       it('should trade positions when dragged over another card.', function() {
         var cl = createCardLayout();
-        var card1 = new CardV1(cl.pageModel, 'testField1');
-        var card2 = new CardV1(cl.pageModel, 'testField2');
-        var card3 = new CardV1(cl.pageModel, 'testField3');
-        var card4 = new CardV1(cl.pageModel, '*');
+        var card1 = new Card(cl.pageModel, 'testField1');
+        var card2 = new Card(cl.pageModel, 'testField2');
+        var card3 = new Card(cl.pageModel, 'testField3');
+        var card4 = new Card(cl.pageModel, '*');
 
         var cards = [ card1, card2, card3, card4 ];
 

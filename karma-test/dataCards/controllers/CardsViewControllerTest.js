@@ -5,7 +5,7 @@ describe('CardsViewController', function() {
   var DEFAULT_PAGE_NAME = 'Name';
   var DEFAULT_PAGE_DESCRIPTION = 'page description';
 
-  var CardV1;
+  var Card;
   var Page;
   var Mockumentary;
   var testHelpers;
@@ -81,7 +81,7 @@ describe('CardsViewController', function() {
     inject(
       [
         '$q',
-        'CardV1',
+        'Card',
         'Page',
         'Mockumentary',
         '$rootScope',
@@ -96,7 +96,7 @@ describe('CardsViewController', function() {
         'DeviceService',
         function(
           _$q,
-          _CardV1,
+          _Card,
           _Page,
           _Mockumentary,
           _$rootScope,
@@ -110,7 +110,7 @@ describe('CardsViewController', function() {
           _PageDataService,
           _DeviceService) {
 
-      CardV1 = _CardV1;
+      Card = _Card;
       Page = _Page;
       Mockumentary = _Mockumentary;
       $q = _$q;
@@ -387,7 +387,7 @@ describe('CardsViewController', function() {
       var cardBlobs = _.times(3, testCard).
         map(
           function(cardBlob) {
-            return new CardV1(controllerHarness.page, cardBlob.fieldName, cardBlob);
+            return new Card(controllerHarness.page, cardBlob.fieldName, cardBlob);
           }
         );
       controllerHarness.page.set('cards', cardBlobs);
@@ -922,7 +922,7 @@ describe('CardsViewController', function() {
         'fieldName': 'customizableFieldName'
       };
 
-      cardModel = CardV1.deserialize($scope.page, serializedCard);
+      cardModel = Card.deserialize($scope.page, serializedCard);
 
       $rootScope.$broadcast('customize-card-with-model', cardModel);
 

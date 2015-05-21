@@ -6,7 +6,7 @@ describe('card directive', function() {
   var $rootScope;
   var testHelpers;
   var Model;
-  var CardV1;
+  var Card;
   var Page;
   var Mockumentary;
 
@@ -15,7 +15,7 @@ describe('card directive', function() {
    * @param {Page} pageModel
    * @param {Object} options
    * @param {String} [options.fieldName='myFieldName']
-   * @returns {CardV1}
+   * @returns {Card}
    */
   function createCardModel(pageModel, options) {
     options = _.defaults({}, options, {
@@ -23,7 +23,7 @@ describe('card directive', function() {
       cardType: null
     });
 
-    var cardModel = new CardV1(pageModel, options.fieldName);
+    var cardModel = new Card(pageModel, options.fieldName);
 
     cardModel.set('expanded', false);
     cardModel.set('cardSize', 1);
@@ -115,15 +115,15 @@ describe('card directive', function() {
       '$templateCache',
       'testHelpers',
       'Model',
-      'CardV1',
+      'Card',
       'Page',
       'Mockumentary',
-      function(_$rootScope, _$templateCache, _testHelpers, _Model, _CardV1, _Page, _Mockumentary) {
+      function(_$rootScope, _$templateCache, _testHelpers, _Model, _Card, _Page, _Mockumentary) {
 
         $rootScope = _$rootScope;
         testHelpers = _testHelpers;
         Model = _Model;
-        CardV1 = _CardV1;
+        Card = _Card;
         Page = _Page;
         Mockumentary = _Mockumentary;
 

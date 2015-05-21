@@ -75,7 +75,8 @@ class View < Model
 
   # Will raise CoreServer::ResourceNotFound if no migration is found
   def self.migrations(id)
-    path = "/api/migrations/#{id}"
+    # This is hitting core migrations, which is at /migrations/4x4. NOT /api/migrations/4x4
+    path = "/migrations/#{id}"
     JSON.parse(CoreServer::Base.connection.get_request(path)).with_indifferent_access
   end
 

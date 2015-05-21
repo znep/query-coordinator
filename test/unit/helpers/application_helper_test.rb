@@ -100,6 +100,10 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_not_match(/fonts.googleapis.com/, output)
   end
 
+  def test_get_alt_dataset_link
+    assert(application_helper.get_alt_dataset_link('test-name') =~ /\/d\/test-name\/alt/)
+  end
+
   private
 
   def asset_revision_key_regex

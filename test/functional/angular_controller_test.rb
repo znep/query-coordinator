@@ -9,10 +9,22 @@ class AngularControllerTest < ActionController::TestCase
 
     @phidippides = Phidippides.new
     @new_view_manager = NewViewManager.new
+    View.stubs(
+      :migrations => {
+        :nbeId => "1234-1234",
+        :obeId => "1234-1234"
+      }
+    )
   end
 
   test 'should successfully get serve_app' do
     NewViewManager.any_instance.stubs(:fetch).returns({})
+    View.stubs(
+      :migrations => {
+        :nbeId => "1234-1234",
+        :obeId => "1234-1234"
+      }
+    )
     Phidippides.any_instance.stubs(
       :fetch_page_metadata => {
         :status => '200',

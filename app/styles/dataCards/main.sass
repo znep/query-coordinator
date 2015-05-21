@@ -126,14 +126,16 @@ $pageNameMaxLineCount: 2
   top: -495px
 
   a
-    @include gradient_chrome_nav_buttons_background
     @include border-radius(0.2em)
     @include box-shadow(0, 0, 0.5em, rgba(0, 0, 0, 0.3))
+    background: $view-cards-bg-color
     color: #fff
     font-size: 1rem
     font-weight: bold
     padding: 0.6em
     position: absolute
+    margin-top: 0.4em
+    left: 0.4em
     width: 30em
     &:focus, &:active
       top: 500px

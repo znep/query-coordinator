@@ -174,7 +174,7 @@ class DatasetsController < ApplicationController
     end
 
     # Taken from `show` method, allows alt pages to have name expansions
-    # /d/abcd-1234/alt  becomes:  /dataset/My-test-data/abcd/1234/alt
+    # /d/abcd-1234/alt  becomes:  /dataset/My-test-data/abcd-1234/alt
 
     href = Proc.new{ |params| alt_view_path(@view.route_params.merge(params || {})) }
 

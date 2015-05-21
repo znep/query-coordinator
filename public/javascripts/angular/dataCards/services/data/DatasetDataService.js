@@ -6,13 +6,7 @@
     var datasetMetadataSchemas = Schemas.regarding('dataset_metadata');
 
     function fetch(schemaVersion, id) {
-      var url;
-
-      if(ServerConfig.metadataMigration.datasetMetadata.shouldReadWriteFromNewEndpoint()) {
-        url = $.baseUrl('/metadata/v1/dataset/{0}.json'.format(id));
-      } else {
-        url = $.baseUrl('/dataset_metadata/{0}.json'.format(id));
-      }
+      var url = $.baseUrl('/metadata/v1/dataset/{0}.json'.format(id));
 
       var config = {
         cache: true,
@@ -38,10 +32,7 @@
 
     this.getDatasetMetadata = function(schemaVersion, id) {
       Assert(_.isString(id), 'id should be a string');
-      Assert(
-        schemaVersion === '1' || ServerConfig.metadataMigration.datasetMetadata.allowUseOfOldEndpoint(),
-        'V0 dataset metadata endpoint is not supported'
-      );
+      Assert(schemaVersion === '1', 'Only schema V1 of dataset metadata is supported.');
 
       return fetch.call(this, schemaVersion, id).then(function(data) {
         datasetMetadataSchemas.assertValidAgainstVersion(schemaVersion, data);
@@ -74,14 +65,7 @@
       Assert(pageSchemaVersion === '0', 'only page metadata schema v0 is supported.');
       Assert(_.isString(datasetId), 'datasetId should be a string');
 
-      var url;
-      if(ServerConfig.metadataMigration.datasetMetadata.shouldReadWriteFromNewEndpoint()) {
-        url = $.baseUrl('/metadata/v1/dataset/{0}/pages.json'.format(datasetId));
-      } else {
-        url = $.baseUrl('/dataset_metadata/');
-        url.searchParams.set('id', datasetId);
-        url.searchParams.set('format', 'json');
-      }
+      var url = $.baseUrl('/metadata/v1/dataset/{0}/pages.json'.format(datasetId));
 
       var config = {
         cache: true,

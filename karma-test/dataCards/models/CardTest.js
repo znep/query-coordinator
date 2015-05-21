@@ -1,13 +1,13 @@
-describe('CardV1 model', function() {
+describe('Card model', function() {
   var Model;
   var Page;
-  var CardV1;
+  var Card;
 
   beforeEach(module('dataCards'));
 
   beforeEach(inject(function($injector) {
     Model = $injector.get('Model');
-    CardV1 = $injector.get('CardV1');
+    Card = $injector.get('Card');
     Page = $injector.get('Page');
     Mockumentary = $injector.get('Mockumentary');
   }));
@@ -30,8 +30,8 @@ describe('CardV1 model', function() {
 
     var requiredKeys = Schemas.regarding('card_metadata').getSchemaDefinition('1').required;
     var page = Mockumentary.createPage();
-    var instance = CardV1.deserialize(page, blob);
-    expect(instance).to.be.instanceof(CardV1);
+    var instance = Card.deserialize(page, blob);
+    expect(instance).to.be.instanceof(Card);
     expect(instance.page).to.be.instanceof(Page);
 
     // Call observe() on all required properties, and record
@@ -50,7 +50,7 @@ describe('CardV1 model', function() {
         expect(instance[field]).to.exist;
       } else {
         expect(instance.observe(field)).to.exist;
-        instance.observe(field).subscribe(function(v) { 
+        instance.observe(field).subscribe(function(v) {
           readBackProperties[field] = v;
         });
       }
@@ -72,7 +72,7 @@ describe('CardV1 model', function() {
     };
 
     var page = Mockumentary.createPage();
-    var instance = CardV1.deserialize(page, blob);
+    var instance = Card.deserialize(page, blob);
     instance.set('cardSize', '3'); // This property is expected to be an int.
 
     expect(function() { instance.serialize(); }).to.throw();
@@ -88,7 +88,7 @@ describe('CardV1 model', function() {
     };
 
     var page = Mockumentary.createPage();
-    var instance = CardV1.deserialize(page, blob);
+    var instance = Card.deserialize(page, blob);
     var clone = instance.clone();
 
     expect(clone.fieldName).to.equal(instance.fieldName);

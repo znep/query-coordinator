@@ -57,7 +57,7 @@ describe('A Table Card Visualization', function() {
   var testHelpers;
   var rootScope;
   var Model;
-  var CardV1;
+  var Card;
   var Page;
   var Mockumentary;
   var $q;
@@ -102,7 +102,7 @@ describe('A Table Card Visualization', function() {
     testHelpers = $injector.get('testHelpers');
     rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
-    CardV1 = $injector.get('CardV1');
+    Card = $injector.get('Card');
     Page = $injector.get('Page');
     $q = $injector.get('$q');
     Mockumentary = $injector.get('Mockumentary');
@@ -119,7 +119,7 @@ describe('A Table Card Visualization', function() {
       'cardType': 'table'
     };
 
-    return CardV1.deserialize(pageModel, $.extend({}, baseCard, blob));
+    return Card.deserialize(pageModel, $.extend({}, baseCard, blob));
   }
 
   /**

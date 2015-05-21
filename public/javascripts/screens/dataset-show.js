@@ -810,8 +810,7 @@ $(function()
         var linkParams = {
           canUpdateMetadata: datasetShowHelpers.canUpdateMetadata(),
           dataset: blist.dataset,
-          dataLensState: blist.feature_flags.data_lens_transition_state,
-          metadataTransitionPhase: blist.feature_flags.metadata_transition_phase
+          dataLensState: blist.feature_flags.data_lens_transition_state
         };
         // Restore the state
         if ($.cookies.get('newUxCollapsed')) {

@@ -255,11 +255,6 @@
       return (r << 16) + (g << 8) + b;
     }
 
-    function overrideMetadataMigrationPhase(phase) {
-      var ServerConfig = $injector.get('ServerConfig');
-      ServerConfig.override('metadataTransitionPhase', phase);
-    }
-
     return {
       TestDom: TestDom,
       getTestJson: getTestJson,
@@ -270,7 +265,6 @@
       mockDirective: mockDirective,
       normalizeColor: normalizeColor,
       waitForSatisfy: waitForSatisfy,
-      overrideMetadataMigrationPhase: overrideMetadataMigrationPhase,
       cleanUp: cleanUp
     };
   });

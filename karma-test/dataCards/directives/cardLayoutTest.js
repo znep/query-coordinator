@@ -79,6 +79,7 @@ describe('card-layout', function() {
     testHelpers.mockDirective(_$provide, 'cardVisualizationChoropleth');
     testHelpers.mockDirective(_$provide, 'cardVisualizationTimelineChart');
     testHelpers.mockDirective(_$provide, 'cardVisualizationSearch');
+    testHelpers.mockDirective(_$provide, 'cardVisualizationHistogram');
     testHelpers.mockDirective(_$provide, 'cardVisualizationInvalid');
     testHelpers.mockDirective(_$provide, 'spinner');
     testHelpers.mockDirective(_$provide, 'customizeCardDialog');

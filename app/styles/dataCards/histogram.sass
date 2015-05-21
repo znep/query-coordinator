@@ -1,0 +1,38 @@
+$tick-font-size: 0.75rem
+
+.histogram-axis
+  shape-rendering: crispEdges
+
+.histogram-axis-x, .histogram-axis-y
+  path
+    fill: none
+    stroke: none
+
+  .tick
+    line
+      fill: none
+
+    text
+      cursor: default
+
+  .tick.is-zero
+    text
+      font-weight: bold
+
+.histogram-axis-x
+  .tick
+    line
+      stroke-width: 3px
+
+.histogram-axis-y
+  .tick
+    line
+      stroke-width: 1px
+
+    text
+      font-size: $tick-font-size
+
+
+.histogram-trace
+  fill: none
+  stroke-width: 2px

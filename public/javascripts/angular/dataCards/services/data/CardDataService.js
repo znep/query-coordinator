@@ -47,24 +47,25 @@
       required: ['southwest', 'northeast']
     });
 
+    function buildWhereClause(whereClauseFragment) {
+      Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
+      if (_.isEmpty(whereClauseFragment)) {
+        return '';
+      } else {
+        return 'WHERE ' + whereClauseFragment;
+      }
+    }
+
     var serviceDefinition = {
       getData: function(fieldName, datasetId, whereClauseFragment, aggregationClauseData, options) {
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');
-        Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
         Assert(_.isObject(aggregationClauseData), 'aggregationClauseData object must be provided');
         options = _.defaults({ limit: 200 }, options);
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
 
-        var whereClause;
-
-        if (_.isEmpty(whereClauseFragment)) {
-          whereClause = '';
-        } else {
-          whereClause = 'WHERE ' + whereClauseFragment;
-        }
-
+        var whereClause = buildWhereClause(whereClauseFragment);
         var aggregationClause = buildAggregationClause(aggregationClauseData);
 
         // Make sure we don't create a circular alias
@@ -88,6 +89,40 @@
             };
           });
         });
+      },
+
+      getMagnitudeData: function(fieldName, datasetId, whereClauseFragment, aggregationClauseData) {
+        Assert(_.isString(fieldName), 'fieldName should be a string');
+        Assert(_.isString(datasetId), 'datasetId should be a string');
+        Assert(_.isObject(aggregationClauseData), 'aggregationClauseData object must be provided');
+
+        datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+
+        var whereClause = buildWhereClause(whereClauseFragment);
+        var aggregationClause = buildAggregationClause(aggregationClauseData);
+
+        fieldName = SoqlHelpers.formatFieldName(fieldName);
+
+        var queryTemplate = 'select signed_magnitude_10({0}) as magnitude, {2} as value {1} group by magnitude order by magnitude limit 200';
+
+        // TODO: Implement some method for paging/showing data that has been truncated.
+        var params = {
+          $query: queryTemplate.format(fieldName, whereClause, aggregationClause)
+        };
+        var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
+        var config = httpConfig.call(this);
+        url.searchParams.set('$query', queryTemplate.format(fieldName, whereClause, aggregationClause));
+
+        return http.get(url.href, config).
+          then(function(result) {
+            var data = result['data'];
+            return _.map(data, function(item) {
+              return {
+                magnitude: parseFloat(item.magnitude),
+                value: parseFloat(item.value)
+              };
+            });
+          });
       },
 
       // This function's return value is undefined if the domain of the
@@ -496,6 +531,63 @@
           }
 
           return geometryLabel;
+        });
+      },
+
+      // Get the minimum and maximum value of a column
+      getColumnDomain: function(fieldName, datasetId, whereClauseFragment) {
+        Assert(_.isString(fieldName), 'fieldName should be a string');
+        Assert(_.isString(datasetId), 'datasetId should be a string');
+
+        datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+
+        var whereClause = buildWhereClause(whereClauseFragment);
+
+        // Wrap field name in ticks and replace dashes with underscores
+        fieldName = SoqlHelpers.formatFieldName(fieldName);
+
+        // Rollup?  Precomputation?  Backend should make this easier.
+        var queryTemplate = 'select min({0}) as `min`, max({0}) as `max` {1}';
+        var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
+        url.searchParams.set('$query', queryTemplate.format(fieldName, whereClause));
+        var config = httpConfig.call(this);
+
+        return http.get(url.href, config).then(function(response) {
+
+          // response.data comes back as [{min:, max:}]
+          return _.isEmpty(response.data) ? response.data : response.data[0];
+        });
+      },
+
+      // Group data from fieldName into buckets of size options.bucketSize
+      getBucketedData: function(fieldName, datasetId, whereClauseFragment, aggregationClauseData, options) {
+        Assert(_.isString(fieldName), 'fieldName should be a string');
+        Assert(_.isString(datasetId), 'datasetId should be a string');
+        Assert(_.isNumber(options.bucketSize), 'options.bucketSize is a required argument');
+
+        datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+
+        var whereClause = buildWhereClause(whereClauseFragment);
+        var aggregationClause = buildAggregationClause(aggregationClauseData);
+
+        // Wrap field name in ticks and replace dashes with underscores
+        fieldName = SoqlHelpers.formatFieldName(fieldName);
+
+        var queryTemplate = 'select signed_magnitude_lin({0}) as magnitude, {2} as value {1} group by magnitude order by magnitude';
+        var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
+        url.searchParams.set('$query', queryTemplate.format(fieldName, whereClause, aggregationClause));
+        var config = httpConfig.call(this);
+
+        return http.get(url.href, config).then(function(response) {
+          var data = repsonse.data;
+          return _.map(data, function(item) {
+            return {
+              magnitude: parseFloat(item.magnitude),
+              value: parseFloat(item.value)
+            };
+          });
+        }, function(error) {
+          return $q.reject(error);
         });
       }
     };

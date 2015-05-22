@@ -48,7 +48,6 @@ class DatasetsController < ApplicationController
       else
         if FeatureFlags.derive(@view, request).force_redirect_to_data_lens === true
           pages = fetch_pages_for_dataset(@view.id).fetch(:publisher, [])
-          puts pages
           return redirect_to "/view/#{pages.first[:pageId]}" unless pages.empty?
         end
         if destination_url == '/'

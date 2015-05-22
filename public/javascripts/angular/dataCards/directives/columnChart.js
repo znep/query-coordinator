@@ -382,6 +382,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       },
       positionOn: function($target) {
         var name = d3.select($target[0]).datum().name.toString();
+        name = name.replace(/\\/g, '\\\\');
         var barGroup = element.find('[data-bar-name="{0}"].bar-group'.format(name));
         barGroup.addClass('hover');
         $target.one('mouseout', function() {

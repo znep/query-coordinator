@@ -2,10 +2,12 @@ describe('SoqlHelpers service', function() {
   'use strict';
 
   var DateHelpers;
+  var Constants;
 
   beforeEach(module('dataCards'));
   beforeEach(inject(function($injector) {
     DateHelpers = $injector.get('DateHelpers');
+    Constants = $injector.get('Constants');
   }));
 
   describe('SOQL string encoder', function() {
@@ -117,6 +119,17 @@ describe('SoqlHelpers service', function() {
       expect(SoqlHelpers.formatFieldName('asdf')).to.equal('`asdf`');
       expect(SoqlHelpers.formatFieldName('---')).to.equal('`___`');
       expect(SoqlHelpers.formatFieldName('asd-fds')).to.equal('`asd_fds`');
+    }));
+  });
+
+  describe('getFieldNameAlias', function() {
+    it('should return field names uppercased and prefixed', inject(function(SoqlHelpers) {
+      var prefix = Constants.COLUMN_ALIAS_GUARD_PREFIX;
+      expect(SoqlHelpers.getFieldNameAlias('')).to.equal('');
+      expect(SoqlHelpers.getFieldNameAlias('value')).to.equal(prefix + 'VALUE');
+      expect(SoqlHelpers.getFieldNameAlias('value_underscore')).to.equal(prefix + 'VALUE_UNDERSCORE');
+      expect(SoqlHelpers.getFieldNameAlias('value_2')).to.equal(prefix + 'VALUE_2');
+      expect(SoqlHelpers.getFieldNameAlias('!@#$%^&*()PuRpLE_0ATm3AL@!')).to.equal(prefix + 'PURPLE_0ATM3AL');
     }));
   });
 

@@ -67,24 +67,33 @@
 
         var aggregationClause = buildAggregationClause(aggregationClauseData);
 
-        // Make sure we don't create a circular alias
-        var fieldNameAlias = (fieldName === 'name') ? '' : ' as name';
+        var nameAlias = SoqlHelpers.getFieldNameAlias('name');
+        var valueAlias = SoqlHelpers.getFieldNameAlias('value');
 
         // Wrap field name in ticks and replace dashes with underscores
         fieldName = SoqlHelpers.formatFieldName(fieldName);
 
-        var queryTemplate = 'select {0}{4}, {2} as value {1} group by {0} order by {2} desc limit {3}';
+        var queryTemplate = 'select {0} as {4}, {2} as {5} {1} group by {0} order by {2} desc limit {3}';
         var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
         // TODO: Implement some method for paging/showing data that has been truncated.
-        url.searchParams.set('$query', queryTemplate.format(fieldName, whereClause, aggregationClause, options.limit, fieldNameAlias));
+        var query = queryTemplate.format(
+          fieldName,
+          whereClause,
+          aggregationClause,
+          options.limit,
+          nameAlias,
+          valueAlias
+        );
+
+        url.searchParams.set('$query', query);
         var config = httpConfig.call(this);
 
         return http.get(url.href, config).then(function(response) {
           return _.map(response.data, function(item) {
-            var name = options.namePhysicalDatatype === 'number' ? parseFloat(item.name) : item.name;
+            var name = options.namePhysicalDatatype === 'number' ? parseFloat(item[nameAlias]) : item[nameAlias];
             return {
               name: name,
-              value: parseFloat(item.value)
+              value: parseFloat(item[valueAlias])
             };
           });
         });
@@ -99,9 +108,11 @@
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
         fieldName = SoqlHelpers.formatFieldName(fieldName);
+        var startAlias = SoqlHelpers.getFieldNameAlias('start');
+        var endAlias = SoqlHelpers.getFieldNameAlias('end');
         var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
-        url.searchParams.set('$query', "SELECT min({0}) AS start, max({0}) AS end WHERE {0} < '{1}'".
-          format(fieldName, MAX_LEGAL_JAVASCRIPT_DATE_STRING));
+        url.searchParams.set('$query', "SELECT min({0}) AS {2}, max({0}) AS {3} WHERE {0} < '{1}'".
+          format(fieldName, MAX_LEGAL_JAVASCRIPT_DATE_STRING, startAlias, endAlias));
         var config =  httpConfig.call(this);
 
         return http.get(url.href, config).then(function(response) {
@@ -113,10 +124,10 @@
           var firstRow = response.data[0];
           var domain;
 
-          if (firstRow.hasOwnProperty('start') && firstRow.hasOwnProperty('end')) {
+          if (firstRow.hasOwnProperty(startAlias) && firstRow.hasOwnProperty(endAlias)) {
 
-            var domainStartDate = firstRow.start;
-            var domainEndDate = firstRow.end;
+            var domainStartDate = firstRow[startAlias];
+            var domainEndDate = firstRow[endAlias];
             var domainStart = moment(domainStartDate, moment.ISO_8601);
             var domainEnd = moment(domainEndDate, moment.ISO_8601);
 
@@ -167,6 +178,9 @@
           whereClause += ' AND ' + whereClauseFragment;
         }
 
+        var dateAlias = SoqlHelpers.getFieldNameAlias('truncated_date');
+        var valueAlias = SoqlHelpers.getFieldNameAlias('value');
+
         var aggregationClause = buildAggregationClause(aggregationClauseData);
         var dateTruncFunction = 'date_trunc_{0}'.format(dateTrunc);
         if (_.isObject(soqlMetadata)) {
@@ -178,8 +192,8 @@
         var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
         url.searchParams.set(
           '$query',
-          'SELECT {2}({0}) AS truncated_date, {3} AS value {1} GROUP BY truncated_date'.
-            format(fieldName, whereClause, dateTruncFunction, aggregationClause)
+          'SELECT {2}({0}) AS {4}, {3} AS {5} {1} GROUP BY {4}'.
+            format(fieldName, whereClause, dateTruncFunction, aggregationClause, dateAlias, valueAlias)
         );
 
         var config = httpConfig.call(this);
@@ -192,31 +206,31 @@
             return [];
           }
           var data = _.map(response.data, function(d) {
-            d.truncated_date = moment(d.truncated_date, moment.ISO_8601);
+            d[dateAlias] = moment(d[dateAlias], moment.ISO_8601);
             return d;
           });
           var invalidDate = _.find(data, function(datum) {
-            return !datum.truncated_date.isValid();
+            return !datum[dateAlias].isValid();
           });
           if (invalidDate) {
             // _i is the original string given in the constructor. Potentially brittle, don't depend on it for anything important.
-            return $q.reject('Bad date: ' + invalidDate.truncated_date._i);
+            return $q.reject('Bad date: ' + invalidDate[dateAlias]._i);
           }
 
-          var dates = _.pluck(data, 'truncated_date');
+          var dates = _.pluck(data, dateAlias);
           var timeStart = _.min(dates);
           var timeEnd = _.max(dates);
           var timeData = Array(timeEnd.diff(timeStart, precision));
           _.each(data, function(item, i) {
-            var date = item.truncated_date;
+            var date = item[dateAlias];
             var timeSlot = date.diff(timeStart, precision);
 
             // Default to null in case we don't receive a value associated with
             // this date. If we do not, the result of Number(item.value) is NaN
             // and the timeline chart breaks because it tries to use NaN to
             // calculate the height of the chart.
-            var itemValue = _.isDefined(item.value) ?
-              Number(item.value) :
+            var itemValue = _.isDefined(item[valueAlias]) ?
+              Number(item[valueAlias]) :
               null;
 
             timeData[timeSlot] = {

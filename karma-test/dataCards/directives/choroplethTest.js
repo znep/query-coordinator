@@ -13,12 +13,12 @@ describe('A Choropleth Directive', function() {
   }
 
   function legendFlyoutValues() {
-    return _.map(el.find(legendColorSelector), function(el, i){
+    return _.map(el.find(legendColorSelector), function(el, i) {
       var text = $(el).data('flyout-text');
       var num = Number(text);
       if (!num) {
         var numTexts = text.split(' ');
-        i == 0 ? num = Number(numTexts[0]) : num = Number(numTexts[2]);
+        num = i == 0 ? Number(numTexts[0]) : Number(numTexts[2]);
       }
       return num;
     });
@@ -39,9 +39,13 @@ describe('A Choropleth Directive', function() {
         'style="height: 400px; display: block">' +
         '</choropleth>';
     var el = testHelpers.TestDom.compileAndAppend(html, scope);
-    // The choropleth throttles its renderer.
-    // Lie to it that enough time has passed, so it renders now.
+
+    // Choropleth has "interesting" double-click detection, so we need to
+    // manipulate time to get it to register clicks correctly
     fakeClock.tick(500);
+
+    // Advance the Rx scheduler for dimension de-bouncing
+    testTimeoutScheduler.advanceTo(500);
 
     return el;
   }
@@ -140,7 +144,6 @@ describe('A Choropleth Directive', function() {
   var el;
   var cardVisualizationChoroplethHelpers;
   var testJson = 'karma-test/dataCards/test-data/choroplethTest/data.json';
-  var testJsonGeo = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/ward_geojson.json';
   var legendSelector = '.choropleth-legend';
   var legendColorSelector = legendSelector + ' .choropleth-legend-color';
   var featureGeometrySelector = '.leaflet-map-pane .leaflet-objects-pane .leaflet-overlay-pane svg path';
@@ -148,9 +151,22 @@ describe('A Choropleth Directive', function() {
   var featureMergedValueName = '__SOCRATA_FILTERED_VALUE__';
   var Constants;
 
+  var testTimeoutScheduler;
+  var normalTimeoutScheduler;
+
+  beforeEach(function() {
+    testTimeoutScheduler = new Rx.TestScheduler();
+    normalTimeoutScheduler = Rx.Scheduler.timeout;
+    Rx.Scheduler.timeout = testTimeoutScheduler;
+  });
+
+  afterEach(function() {
+    Rx.Scheduler.timeout = normalTimeoutScheduler;
+  });
+
+
   // NOTE! We mock out the clock.
-  // This is done to get around choropleth
-  // throttling its rendering.
+  // This is done because we handle double-clicking features manually
   var fakeClock = null;
 
   beforeEach(module('dataCards'));
@@ -166,6 +182,7 @@ describe('A Choropleth Directive', function() {
     AngularRxExtensions = $injector.get('AngularRxExtensions');
     testData = testHelpers.getTestJson(testJson);
     Constants = $injector.get('Constants');
+    Constants.DISABLE_LEAFLET_ZOOM_ANIMATION = true;
     cardVisualizationChoroplethHelpers = $injector.get('CardVisualizationChoroplethHelpers');
   }));
 
@@ -258,22 +275,6 @@ describe('A Choropleth Directive', function() {
 
         expect(el.find(featureGeometrySelector).length).to.equal(7);
       });
-    });
-
-    xit('should render a map with a bounding box that contains all the features', function() {
-      scope.geojsonAggregateData = testData.easyBoundsData;
-      el = createChoropleth();
-      var expectedBounds = {
-        northEast: { lat: 2, lng: 2 },
-        southWest: { lat: -2, lng: -2 }
-      };
-
-      var scopeBounds = el.isolateScope().bounds;
-
-      expect(scopeBounds.northEast.lat).to.deep.equal(expectedBounds.northEast.lat);
-      expect(scopeBounds.northEast.lng).to.deep.equal(expectedBounds.northEast.lng);
-      expect(scopeBounds.southWest.lat).to.deep.equal(expectedBounds.southWest.lat);
-      expect(scopeBounds.southWest.lng).to.deep.equal(expectedBounds.southWest.lng);
     });
 
     describe('value display', function() {
@@ -558,33 +559,29 @@ describe('A Choropleth Directive', function() {
           expect(colorCount.red).to.be.greaterThan(0);
         });
 
-        it('always includes a 0 label', function() {
-          function testForCount(featureCount) {
-            var start = -Math.floor(featureCount / 3);
-            var values = _.map(_.range(start, start + featureCount), function(value, i) {
-              var xOffset = .23 * start;
-              var yOffset = -featureCount / 3;
-              var y = yOffset + Math.pow(value - xOffset, 2)
-              return { name: '' + i, value: Math.round(featureCount % 2 ? y : -y) };
-            });
-            scope.geojsonAggregateData = aggregateDataForValues(values);
-            el = createChoropleth();
+        describe('always includes a 0 label for', function() {
+          var X_OFFSET_SCALING_VALUE = 0.23;
 
-            var legend = el.find(legendSelector);
-            var ticks = legend.find('.labels .tick');
-            var found = false;
-            ticks.each(function() {
-              if (/^0(.0)?$/.test($(this).text())) {
-                found = true;
-                return false;
-              }
+          // Run test 3 times with random counts (ie number of features) between 3 and 103
+          _.each([3, 50, 103], function(featureCount) {
+            it('{0} features'.format(featureCount), function() {
+              var start = -Math.floor(featureCount / 3);
+              var values = _.map(_.range(start, start + featureCount), function(value, i) {
+                var xOffset = X_OFFSET_SCALING_VALUE * start;
+                var yOffset = -featureCount / 3;
+                var y = yOffset + Math.pow(value - xOffset, 2);
+                return { name: '' + i, value: Math.round(featureCount % 2 ? y : -y) };
+              });
+              scope.geojsonAggregateData = aggregateDataForValues(values);
+              el = createChoropleth();
+
+              var legend = el.find(legendSelector);
+              var ticks = legend.find('.labels .tick');
+              var foundZero = _.reduce(ticks.toArray(), function(found, tick) {
+                return /^0(\.0)?$/.test($(tick).text()) || found;
+              }, false);
+              expect(foundZero).to.equal(true);
             });
-            expect(found).to.equal(true);
-          }
-          // Run testForCount 3 times with random counts (ie number of features) between 3 and 103
-          _.each(_.range(3), function() {
-            testForCount(Math.floor(3 + Math.random() * 100));
-            testHelpers.TestDom.clear();
           });
         });
 
@@ -851,7 +848,7 @@ describe('A Choropleth Directive', function() {
             expect(isBlue(elementColor)).to.equal(true);
 
             var gradient = el.find(legendSelector).
-                find('#gradient').
+                find('[id^=gradient]').
                 find('stop[offset="100%"]');
             expect(gradient.length).to.equal(1);
             var elementColor = chroma.color(gradient.css('stop-color')).rgb();
@@ -870,7 +867,7 @@ describe('A Choropleth Directive', function() {
             expect(isRed(elementColor)).to.equal(true);
 
             var gradient = el.find(legendSelector).
-                find('#gradient').
+                find('[id^=gradient]').
                 find('stop[offset="0%"]');
             expect(gradient.length).to.equal(1);
             var elementColor = chroma.color(gradient.css('stop-color')).rgb();
@@ -889,7 +886,7 @@ describe('A Choropleth Directive', function() {
             expect(isGray(elementColor)).to.equal(true);
 
             var gradient = el.find(legendSelector).
-                find('#gradient').
+                find('[id^=gradient]').
                 find('stop[offset="0%"]');
             expect(gradient.length).to.equal(1);
             var elementColor = chroma.color(gradient.css('stop-color')).rgb();
@@ -900,24 +897,21 @@ describe('A Choropleth Directive', function() {
     });
 
     describe('double-click effects', function() {
-      it('should zoom the map if a map tile was double clicked', function(done) {
+      it('should zoom the map if a map tile was double clicked', function() {
         scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
         el = createChoropleth();
 
-        // Listen for the zoom events
-        var zoomStart = null;
-        var zoomEnd = null;
-        scope.$on('zoomstart', function(e, map) {
-          zoomStart = map.getZoom();
-        });
-        scope.$on('zoomend', function(e, map) {
-          zoomEnd = map.getZoom();
-          expect(zoomStart).to.not.equal(null);
-          expect(zoomStart).to.be.below(zoomEnd);
-          done();
-        });
+        var zoomStartSpy = sinon.spy();
+        var zoomEndSpy = sinon.spy();
 
-        testHelpers.fireMouseEvent(el.find('.leaflet-tile')[0], 'dblclick');
+        scope.$on('zoomstart', zoomStartSpy);
+        scope.$on('zoomend', zoomEndSpy);
+
+        scope.$apply(function() {
+          testHelpers.fireMouseEvent(el.find('.leaflet-tile')[0], 'dblclick');
+        });
+        expect(zoomStartSpy).to.have.been.called;
+        expect(zoomEndSpy).to.have.been.called;
       });
 
       it('should zoom the map if a choropleth feature was double clicked', function(done) {
@@ -936,7 +930,7 @@ describe('A Choropleth Directive', function() {
           expect(zoomStart).to.be.below(zoomEnd);
           done();
         });
-        
+
         var polygon = el.find('path')[0];
         testHelpers.fireMouseEvent(polygon, 'click');
         fakeClock.tick(50);
@@ -988,23 +982,19 @@ describe('A Choropleth Directive', function() {
 
 
       it('should signal the region to toggle in the active filter names', function() {
+        var toggleDatasetFilterCallback = sinon.spy();
         scope.geojsonAggregateData = testData.polygonData2;
         el = createChoropleth();
 
         var polygon = el.find('path')[0];
-        var secondLine = el.find('path')[1];
-        var defaultStrokeWidth = parseInt($(polygon).css('strokeWidth'));
-        var toggleFilterByRegionEventReceived = false;
 
-        scope.$on('toggle-dataset-filter:choropleth', function() {
-          toggleFilterByRegionEventReceived = true;
-        });
+        scope.$on('toggle-dataset-filter:choropleth', toggleDatasetFilterCallback);
 
         testHelpers.fireEvent(polygon, 'click');
 
         timeout.flush(); // click promise (lastTimer on geojsonClick in Choropleth.js)
 
-        expect(toggleFilterByRegionEventReceived).to.equal(true);
+        expect(toggleDatasetFilterCallback).to.have.been.called;
       });
     });
 

@@ -53,7 +53,8 @@
       // as a string in Javascript.  We set it to 01/01 so we can still use rollups
       // aggregated at the yearly level if possible.
       // NOTE! Do not include the time in this string or SoQL queries will break!
-      'MAX_LEGAL_JAVASCRIPT_DATE_STRING': '9999-01-01'
+      'MAX_LEGAL_JAVASCRIPT_DATE_STRING': '9999-01-01',
+      'DISABLE_LEAFLET_ZOOM_ANIMATION': false
     };
 
   }

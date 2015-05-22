@@ -12,6 +12,9 @@
     // attributes expected from Markdown rendering.
     sanitizerUtilsNS.sanitizeHtmlPermissive = function(inputHtml)
     {
+        if (!inputHtml) {
+            return inputHtml
+        }
         if(!permissiveHtmlSanitizer)
         {
             // Fully-permissive URI rewriter. The sanitizer already does scheme
@@ -41,6 +44,9 @@
     // Only class attributes are allowed.
     sanitizerUtilsNS.sanitizeHtmlRestrictive = function(inputHtml)
     {
+        if (!inputHtml) {
+            return inputHtml
+        }
         if(!restrictiveHtmlSanitizer)
         {
             var tagPolicy = html.makeTagPolicy(

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function Mockumentary(Page, DatasetV1) {
+  function Mockumentary(Page, Dataset) {
 
     function createPageMetadata(pageOptions) {
 
@@ -77,7 +77,7 @@
 
       var datasetMetadata = createDatasetMetadata(datasetOptions);
 
-      return new DatasetV1(datasetMetadata);
+      return new Dataset(datasetMetadata);
     }
 
     return {

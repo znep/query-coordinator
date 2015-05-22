@@ -31,6 +31,11 @@
           zoom: 1,
           zoomControlPosition: 'topleft'
         };
+
+        if (Constants.DISABLE_LEAFLET_ZOOM_ANIMATION) {
+          options.zoomAnimation = false;
+        }
+
         // CORE-4832 - disable pan and zoom on feature map
         if (scope.disablePanAndZoom === true) {
           $.extend(mapOptions, {

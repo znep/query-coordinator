@@ -171,3 +171,9 @@ secondary_group_identifier:
 nbe_bucket_size:
   description: Bucket-ize the fetching of rows when hitting NBE.
   defaultValue: false
+dataset_count_v2:
+  description: Display the new metric was created that computes dataset count based more closely on our contractual definition of dataset.
+  defaultValue: false
+force_redirect_to_data_lens:
+  description: Automatically redirect to the default Data Lens page for a given NBE dataset.
+  defaultValue: false

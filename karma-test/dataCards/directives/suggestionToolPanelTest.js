@@ -10,7 +10,6 @@ describe('Suggestion Tool Panel', function() {
   var fakeDataset;
   var fakeFieldName;
   var Mockumentary;
-  var fakeClock;
   var _$provide;
   var ServerConfig;
   var timeoutScheduler;
@@ -57,8 +56,6 @@ describe('Suggestion Tool Panel', function() {
       }
     });
 
-    fakeClock = sinon.useFakeTimers();
-
     testHelpers.mockDirective(_$provide, 'spinner');
     testHelpers.mockDirective(_$provide, 'clearableInput');
   }));
@@ -68,8 +65,6 @@ describe('Suggestion Tool Panel', function() {
     testHelpers.cleanUp();
     testHelpers.TestDom.clear();
     suggestionStub.restore();
-    fakeClock.restore();
-    fakeClock = null;
   });
 
   function createElement(scopeOverrides) {

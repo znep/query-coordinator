@@ -6,17 +6,11 @@
     var schemas = Schemas.regarding('page_metadata');
 
     function fetch(id) {
-      var url = $.baseUrl();
+      var url = $.baseUrl('/metadata/v1/page/{0}.json'.format(id));
       var config = {
         cache: true,
         requester: this
       };
-
-      if (ServerConfig.metadataMigration.pageMetadata.shouldReadWriteFromNewEndpoint()) {
-        url.pathname = '/metadata/v1/page/{0}.json'.format(id);
-      } else {
-        url.pathname = '/page_metadata/{0}.json'.format(id);
-      }
 
       return http.get(url.href, config).
         then(function(response) {
@@ -50,20 +44,13 @@
       }
 
       var json = JSON.stringify(pageData);
+      var url = $.baseUrl(idIsDefined ? '/metadata/v1/page/{0}.json'.format(id) : '/metadata/v1/page.json');
       var config = {
+        data: json,
         method: idIsDefined ? 'PUT' : 'POST',
+        url: url.href,
         requester: this
       };
-      var url = $.baseUrl();
-
-      if (ServerConfig.metadataMigration.pageMetadata.shouldReadWriteFromNewEndpoint()) {
-        config.data = json;
-        url.pathname = idIsDefined ? '/metadata/v1/page/{0}.json'.format(id) : '/metadata/v1/page.json';
-      } else {
-        config.data = { pageMetadata:  json };
-        url.pathname = idIsDefined ? '/page_metadata/{0}.json'.format(id) : '/page_metadata.json';
-      }
-      config.url = url.href;
 
       return http(config);
     };

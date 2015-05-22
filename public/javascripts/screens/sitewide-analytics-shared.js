@@ -1,5 +1,13 @@
 ;blist.namespace.fetch('blist.metrics');
 
+var datasetsMetricName;
+
+if(blist.feature_flags.dataset_count_v2){
+  datasetsMetricName = 'datasets-published-v2';
+} else {
+  datasetsMetricName = 'datasets';
+}
+
 blist.metrics.sitewideShared = {
     urlBase: '/api/site_metrics.json',
     chartSections:  [
@@ -77,7 +85,7 @@ blist.metrics.sitewideShared = {
         {
             id: 'summaryDatasets',    displayName: 'Total Datasets',
             summary: {
-                plus: 'datasets',
+                plus: datasetsMetricName,
 		range: false,
                 verbPhrase: 'datasets created', 
 		verbPhraseSingular: 'dataset created'

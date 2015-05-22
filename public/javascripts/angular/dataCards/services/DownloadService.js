@@ -5,12 +5,16 @@
   var POLL_INTERVAL = 1000;
   var TIMEOUT = 30000;
 
+  function cleanupIframe(iframe) {
+    iframe.remove();
+  }
+
   /**
    * A service that lets you download files (assuming the server sets
    * Content-Disposition:attachment) without risking navigating away from the page if the server
    * responds incorrectly.
    */
-  angular.module('dataCards.services').factory('DownloadService', function() {
+  angular.module('dataCards.services').factory('DownloadService', function($q) {
     /**
      * Have the user's browser download the specified path.
      *
@@ -22,6 +26,8 @@
      * function callback, and the error function callback.
      */
     function download(path, _iframe) {
+      var deferred = $q.defer();
+
       // Give the server a tracking id for this request, so it can let us know when a request is
       // finished.
       var trackingId = _.uniqueId();
@@ -33,73 +39,61 @@
       }
       path += TRACKING_ID_PARAM + '=' + encodeURIComponent(trackingId);
 
-      var timeout = new Rx.Subject().timeout(TIMEOUT);
-
       // Add the iframe that does the actual work
       var iframe = (_iframe || $('<iframe/>')).
-          css('display', 'none').appendTo('body');
+        css('display', 'none').appendTo('body');
+
+      var timeoutObservable = Rx.Observable.timer(TIMEOUT, Rx.Scheduler.timeout);
+      var timeoutErrorObservable = timeoutObservable.
+        flatMap(function() {
+          return Rx.Observable['throw'](new Error('timeout'));
+        });
+
       // downloads that have the Content-Disposition: attachment set do not fire the 'load' event
       // (except in FireFox < 3) So if the load event fires, assume it's a 500 or some such
-      var errorObservable = Rx.Observable.fromEvent(iframe, 'load').take(1).map(function(e) {
-        try {
-          return {error: e.target.contentDocument.body.innerHTML};
-        } catch(e) {
-          // This happens on IE9 if the server returns non-200 - it loads some IE error page from
-          // a file: url or some ridiculousness that causes cross-domain errors.
-          return {error: true};
-        }
-      }).share();
+      var errorObservable = Rx.Observable.fromEvent(iframe, 'load').
+        flatMap(function(e) {
+          return Rx.Observable['throw'](new Error(_.get(e, 'target.contentDocument.body.innerHTML', true)));
+        });
 
       // Poll for the existence of the cookie that confirms that this request has connected.
-      var successObservable = Rx.Observable.timer(POLL_INTERVAL, POLL_INTERVAL).takeUntil(timeout).
-          filter(function poll() {
-            if (document.cookie.indexOf(cookieName + '=') >= 0) {
-              document.cookie = cookieName + '=;path=/;expires=' + (new Date(0).toUTCString());
-              return true;
-            }
-          }).take(1).map(function() {
-            return {};
-          }).share();
+      var successObservable = Rx.Observable.timer(POLL_INTERVAL, POLL_INTERVAL, Rx.Scheduler.timeout).
+        takeUntil(timeoutObservable).
+        map(function() {
+          return document.cookie;
+        }).
+        filter(function(cookie) {
+          return cookie.indexOf(cookieName + '=') >= 0;
+        }).
+        share();
 
-      // Create an observable to terminate our event streams, that is triggered by the success or
-      // error callback firing.
-      var completeObservable = Rx.Observable.amb(
+      successObservable.
+        subscribe(function() {
+          document.cookie = cookieName + '=;path=/;expires=' + (new Date(0).toUTCString());
+        });
+
+      // Create an observable to terminate our event streams, that is triggered when the success,
+      // error, or timeout observables emit
+      var completeObservable = Rx.Observable.merge(
         successObservable,
+        timeoutErrorObservable,
         errorObservable
       );
 
-      function cleanupIframe() {
-        iframe.remove();
-      }
-      // Chrome doesn't like it when you remove the iframe while it's downloading. So only do the
-      // cleanup if it's not successful
-      completeObservable.filter(function(result) {
-        return _.has(result, 'error');
-      }).subscribe(cleanupIframe, cleanupIframe);
+      completeObservable.
+        // Chrome doesn't like it when you remove the iframe while it's downloading. So only do the
+        // cleanup if it's not successful
+        finallyAction(_.bind(cleanupIframe, this, iframe)).
+        subscribe(function() {
+          deferred.resolve();
+        }, function(e) {
+          deferred.reject({ error: e.message });
+        });
 
       // Trigger the actual load
       iframe.prop('src', path);
 
-      // Implement the promise interface, so we can lazily add subscribers
-      var promise = {
-        then: function(success, error) {
-          var onNext = !success ? _.noop : function onNext(result) {
-            if (_.has(result, 'error')) {
-              error(result);
-            } else {
-              success();
-            }
-          };
-          var onError = !error ? _.noop : function onError() {
-            error({timeout: true});
-          };
-
-          completeObservable.subscribe(onNext, onError);
-          return promise;
-        }
-      };
-
-      return promise;
+      return deferred.promise;
     }
 
     return {

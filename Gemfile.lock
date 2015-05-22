@@ -226,6 +226,7 @@ GEM
     sanitize (2.0.3)
       nokogiri (>= 1.4.4, < 1.6)
     sass (3.2.5)
+    semver2 (3.4.2)
     shoulda-context (1.2.1)
     slop (3.6.0)
     snappy (0.0.8)
@@ -298,6 +299,7 @@ DEPENDENCIES
   rinku
   sanitize
   sass (~> 3.2)
+  semver2
   shoulda-context
   snappy
   statsd-ruby!

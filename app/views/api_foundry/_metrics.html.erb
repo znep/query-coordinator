@@ -50,6 +50,7 @@
       blist.namespace.fetch('blist.metrics');
       blist.metrics.viewID = '<%= @view.id %>';
     </script>
+    <%= include_javascripts 'sanitize-html' %>
     <%= include_javascripts 'shared-metrics' %>
     <%= include_javascripts 'api-metrics' %>
   <%- end -%>

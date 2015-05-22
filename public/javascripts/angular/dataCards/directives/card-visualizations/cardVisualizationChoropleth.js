@@ -76,17 +76,11 @@
               return Rx.Observable.never();
             }
 
-            if (ServerConfig.metadataMigration.shouldConsumeComputationStrategy()) {
-              // The shapeFile and the sourceColumn are both found in the
-              // computationStrategy blob that is attached to computed columns.
-              shapeFile = CardVisualizationChoroplethHelpers.extractShapeFileFromColumn(
-                columns[fieldName]
-              );
-            } else {
-              if (columns[fieldName].hasOwnProperty('shapefile')) {
-                shapeFile = columns[fieldName].shapefile;
-              }
-            }
+            // The shapeFile and the sourceColumn are both found in the
+            // computationStrategy blob that is attached to computed columns.
+            shapeFile = CardVisualizationChoroplethHelpers.extractShapeFileFromColumn(
+              columns[fieldName]
+            );
 
             if (shapeFile === null) {
               scope.safeApply(function() {
@@ -137,11 +131,9 @@
 
             dataRequests.onNext(1);
 
-            if (ServerConfig.metadataMigration.shouldConsumeComputationStrategy()) {
-              sourceColumn = CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn(
-                columns[fieldName]
-              );
-            }
+            sourceColumn = CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn(
+              columns[fieldName]
+            );
 
             // If we were unable to extract the source column from the
             // computationStrategy, attempt to find a location/point column

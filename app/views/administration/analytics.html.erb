@@ -54,6 +54,7 @@
     <script type="text/javascript">
         blist.configuration.govStatMetricsEnabled = <%= module_enabled?(:govStat) == true %>;
     </script>
+    <%= include_javascripts 'sanitize-html' %>
     <%= include_javascripts 'shared-metrics' %>
     <%= include_javascripts 'admin-metrics' %>
   <%- end -%>

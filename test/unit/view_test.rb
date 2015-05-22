@@ -329,7 +329,8 @@ class ViewTest < Test::Unit::TestCase
   def test_migrations
     load_sample_data('test/fixtures/sample-data.json')
     view = View.find('test-data')
-    CoreServer::Base.connection.expects(:get_request).with('/api/migrations/test-data').
+    # This is hitting core for migration info, which is at /migrations. Not /api/migrations
+    CoreServer::Base.connection.expects(:get_request).with('/migrations/test-data').
       returns('{"migrations": "data"}')
     assert_equal('data', view.migrations['migrations'])
   end

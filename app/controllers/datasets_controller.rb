@@ -104,19 +104,19 @@ class DatasetsController < ApplicationController
     @user_session = UserSession.new unless current_user
 
     if @row.nil?
-      href = Proc.new{ |params| view_path(@view.route_params.merge(params || {})) }
+      href = Proc.new { |params| view_path(@view.route_params.merge(params || {})) }
     else
-      href = Proc.new{ |params| view_row_path(@view.route_params.merge(row_id: @row['sid']).merge(params || {})) }
+      href = Proc.new { |params| view_row_path(@view.route_params.merge(row_id: @row['sid']).merge(params || {})) }
     end
 
     # See if it matches the authoritative URL; if not, redirect
-    if request.path != href.call( locale: nil )
+    unless request.path == href.call( locale: nil )
       # Log redirects in development
       if Rails.env.production? && request.path =~ /^\/dataset\/\w{4}-\w{4}/
         logger.info("Doing a dataset redirect from #{request.referrer}")
       end
       flash.keep
-      return redirect_to(href.call + '?' + request.query_string)
+      return redirect_to "#{href.call}?#{request.query_string}"
     end
 
     # If we're displaying a single dataset, set the meta tags as appropriate.
@@ -180,6 +180,21 @@ class DatasetsController < ApplicationController
 
     if !current_user && params[:force_login]
       return require_user(true)
+    end
+
+    # Taken from `show` method, allows alt pages to have name expansions
+    # /d/abcd-1234/alt  becomes:  /dataset/My-test-data/abcd-1234/alt
+
+    href = Proc.new { |params| alt_view_path(@view.route_params.merge(params || {})) }
+
+    # See if it matches the authoritative URL; if not, redirect
+    unless request.path == href.call( locale: nil )
+      # Log redirects in development
+      if Rails.env.production? && request.path =~ /^\/dataset\/\w{4}-\w{4}/
+        logger.info("Doing a dataset redirect from #{request.referrer}")
+      end
+      flash.keep
+      return redirect_to "#{href.call}?#{request.query_string}"
     end
 
     @conditions = parse_alt_conditions(params)

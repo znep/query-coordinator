@@ -653,4 +653,16 @@ ga('send', 'pageview');
     out.html_safe
   end
 
+  # Takes dataset id and returns link to the alternate version of the dataset
+  def get_alt_dataset_link(id)
+    "/d/#{id}/alt"
+  end
+
+  def render_noscript(id)
+    return ('<noscript><div class="noscript-notification">' +
+              '<h4>You need to enable Javascript in your web browser to interact with the Data Lens experience.</h4>' +
+              "<p>You can alternatively explore the data using the <a href=\"#{get_alt_dataset_link(id)}\">accessible version</a> of this Data Lens page.</p>" +
+            '</div></noscript>').html_safe
+  end
+
 end

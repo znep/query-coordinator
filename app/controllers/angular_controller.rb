@@ -83,6 +83,14 @@ class AngularController < ActionController::Base
       report_error(error_class, error_message)
       return render_500
     end
+
+    # Fetch migration info to get mapping from nbe to obe for skipLinks
+    begin
+      @migration_info = View.migrations(@page_metadata[:datasetId])
+    rescue
+      @migration_info = {}
+    end
+
   end
 
   private

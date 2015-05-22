@@ -2,7 +2,7 @@
 
 errors=0
 
-CATCH_METHOD_INSTANCES=`grep --include='*.js' -RE '\.catch\(' public/javascripts/angular | \
+CATCH_METHOD_INSTANCES=`grep --include='*.js' -RE '\.catch\(' public/javascripts | \
                         grep -vE '\s*//\s*' | \
                         cut -d \: -f 1`
 if [ -n "$CATCH_METHOD_INSTANCES" ]; then

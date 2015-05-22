@@ -1,24 +1,61 @@
 #!/bin/sh
 
-DOT_ONLY_INSTANCES=`grep -IREil '\s*[^\/][^\/]\s*(it|describe)\.only' karma-test/dataCards/*`
-DOT_ONLY_INSTANCE_COUNT=`echo $DOT_ONLY_INSTANCES | wc -w | tr -d '[[:space:]]'`
+errors=0
 
-if [ "$DOT_ONLY_INSTANCE_COUNT" = "0" ]
-then
-    exit 0
+CATCH_METHOD_INSTANCES=`grep --include='*.js' -RE '\.catch\(' public/javascripts | \
+                        grep -vE '\s*//\s*' | \
+                        cut -d \: -f 1`
+if [ -n "$CATCH_METHOD_INSTANCES" ]; then
+  echo "Found instances of '.catch' method invocations:"
+  echo "$CATCH_METHOD_INSTANCES\n"
+  ((errors++))
+fi
+
+DOT_ONLY_INSTANCES=`grep --include='*.js' -RE '\b(it|describe)\.only' karma-test/dataCards/* | \
+                    grep -vE '\s*//\s*' | \
+                    cut -d \: -f 1`
+if [ -n "$DOT_ONLY_INSTANCES" ]; then
+  echo "Found instances of '.only' test file restrictions:"
+  echo "$DOT_ONLY_INSTANCES\n"
+  ((errors++))
+fi
+
+### end of static analysis section
+
+CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
+PUSH_COMMAND=( `ps -ocommand= -p $PPID` )
+PUSH_BRANCH=`echo ${PUSH_COMMAND[@]:(-1)} | tr -d ^:`
+
+# stricter check: PROTECTED_BRANCHES="(^| )(master|release|rc-[[:print:]]+)$"
+PROTECTED_BRANCHES="(^| )master$"
+
+if [[ $CURRENT_BRANCH =~ $PROTECTED_BRANCHES ]]; then
+  echo "Attempted push from protected branch: $CURRENT_BRANCH\n"
+  ((errors++))
+elif [[ $PUSH_BRANCH =~ $PROTECTED_BRANCHES ]]; then
+  echo "Attempted push to protected branch: $PUSH_BRANCH\n"
+  ((errors++))
+fi
+
+### end of branch restriction section
+
+if [ $errors -eq 0 ]; then
+  exit 0
 else
-    echo "\n"
-    echo "********************************************************************************"
-    echo "\n"
-    echo "                               (╯°□°)╯︵ ┻━┻"
-    echo "\n"
-    echo "                           P U S H    F A I L E D"
-    echo "\n"
-    echo "Found instances of uncommented '.only' in:"
-    echo "\n"
-    echo "$DOT_ONLY_INSTANCES"
-    echo "\n"
-    echo "********************************************************************************"
-    echo "\n"
-    exit 1
+  cat <<EOF
+********************************************************************************
+
+                                   (╯°□°)╯︵ ┻━┻
+                               P U S H    F A I L E D
+
+Please correct the errors noted above.
+
+If this hook script has detected ONLY false positives, re-run this command with
+the --no-verify flag. Update the hook script to avoid these false positives or
+document their occurrence in the README if you are able to.
+
+********************************************************************************
+
+EOF
+  exit 1
 fi

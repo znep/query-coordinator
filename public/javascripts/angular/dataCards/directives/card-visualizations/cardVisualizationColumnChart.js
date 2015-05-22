@@ -127,7 +127,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
               }
 
               return {
-                name: name,
+                name: (_.isNull(name) || _.isUndefined(name)) ? '' : name,
                 total: unfilteredAsHash[name],
                 filtered: filteredAsHash[name] || 0,
                 special: datumIsSpecial

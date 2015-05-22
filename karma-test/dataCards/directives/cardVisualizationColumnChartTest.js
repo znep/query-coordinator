@@ -12,22 +12,6 @@ describe('A Column Chart Card Visualization', function() {
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
-  beforeEach(function() {
-    module(function($provide) {
-      var mockCardDataService = {
-        getData: function(){ return q.when([]);}
-      };
-      $provide.value('CardDataService', mockCardDataService);
-    });
-  });
-  beforeEach(inject(function($injector) {
-    testHelpers = $injector.get('testHelpers');
-    rootScope = $injector.get('$rootScope');
-    Model = $injector.get('Model');
-    Mockumentary = $injector.get('Mockumentary');
-    q = $injector.get('$q');
-    Filter = $injector.get('Filter');
-  }));
 
   afterEach(function(){
     testHelpers.TestDom.clear();
@@ -74,7 +58,51 @@ describe('A Column Chart Card Visualization', function() {
     };
   }
 
+  function createMockDataService(fakeData) {
+    beforeEach(function() {
+      module(function($provide) {
+        var mockCardDataService = {
+          getData: function(){ return q.when(fakeData);}
+        };
+        $provide.value('CardDataService', mockCardDataService);
+      });
+    });
+  }
+
+  function initInjector() {
+    beforeEach(inject(function($injector) {
+      testHelpers = $injector.get('testHelpers');
+      rootScope = $injector.get('$rootScope');
+      Model = $injector.get('Model');
+      Mockumentary = $injector.get('Mockumentary');
+      q = $injector.get('$q');
+      Filter = $injector.get('Filter');
+    }));
+  }
+
+  describe('preparing column chart data', function() {
+
+    createMockDataService([{
+      name: undefined,
+      total: 100,
+      filtered: 100,
+      special: false
+    }]);
+    initInjector();
+
+    it('should use empty strings for bars with undefined names', function() {
+
+      var chart = createChart();
+
+      expect(/No value/.test(chart.element[0].innerText));
+    });
+  });
+
   describe('filtering via column-chart:datum-clicked event', function() {
+
+    createMockDataService([]);
+    initInjector();
+
     it('should toggle a BinaryOperatorFilter for a non-null value', function() {
       var chart = createChart();
 

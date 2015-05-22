@@ -193,30 +193,6 @@ class AngularController < ActionController::Base
     dataset_metadata
   end
 
-  def fetch_pages_for_dataset(dataset_id)
-
-    result = phidippides.fetch_pages_for_dataset(
-      dataset_id,
-      :request_id => request_id,
-      :cookies => forwardable_session_cookies
-    )
-
-    if result[:status] != '200'
-      case result[:status]
-        when '401'
-          raise AuthenticationRequired.new
-        when '403'
-          raise UnauthorizedDatasetMetadataRequest.new
-        when '404'
-          raise DatasetMetadataNotFound.new
-        else
-          raise UnknownRequestError.new result[:body].to_s
-      end
-    end
-
-    result[:body]
-  end
-
   def fetch_permissions_and_normalize_exceptions(resource_id)
     begin
       fetch_permissions(resource_id)

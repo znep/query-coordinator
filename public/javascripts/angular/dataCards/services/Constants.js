@@ -16,6 +16,7 @@
       'TRANSITION_DURATION': 0.5,
 
       // Dataset field names and internal calculated values.
+      'COLUMN_ALIAS_GUARD_PREFIX': 'COLUMN_ALIAS_GUARD__',
       'INTERNAL_DATASET_FEATURE_ID': '_feature_id',
       'UNFILTERED_VALUE_PROPERTY_NAME': '__SOCRATA_UNFILTERED_VALUE__',
       'FILTERED_VALUE_PROPERTY_NAME': '__SOCRATA_FILTERED_VALUE__',

@@ -1,4 +1,4 @@
-angular.module('dataCards').factory('SoqlHelpers', function(Assert, DateHelpers) {
+angular.module('dataCards').factory('SoqlHelpers', function(Constants, Assert, DateHelpers) {
   'use strict';
 
   var timeIntervalToDateTrunc = {
@@ -11,6 +11,7 @@ angular.module('dataCards').factory('SoqlHelpers', function(Assert, DateHelpers)
     encodeSoqlDate: encodeSoqlDate,
     encodePrimitive: encodePrimitive,
     formatFieldName: formatFieldName,
+    getFieldNameAlias: getFieldNameAlias,
     timeIntervalToDateTrunc: timeIntervalToDateTrunc,
     stripWhereClauseFragmentForFieldName: stripWhereClauseFragmentForFieldName
   };
@@ -43,6 +44,16 @@ angular.module('dataCards').factory('SoqlHelpers', function(Assert, DateHelpers)
       throw new Error('Cannot format fieldName for non-string arguments.');
     }
     return '`{0}`'.format(fieldName.replace(/\-/g, '_'));
+  }
+
+  // Returns an alias for a field that is very unlikely to cause a circular alias error.
+  function getFieldNameAlias(fieldName) {
+    if (!_.isPresent(fieldName)) {
+      return '';
+    }
+
+    var plainFieldName = fieldName.replace(/[^\w]*/g, '');
+    return Constants.COLUMN_ALIAS_GUARD_PREFIX + plainFieldName.toUpperCase();
   }
 
   /**

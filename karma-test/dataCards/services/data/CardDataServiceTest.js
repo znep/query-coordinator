@@ -26,6 +26,15 @@ describe('CardDataService', function() {
     });
   }
 
+  function addFieldNameAliases(data) {
+    return _.map(data, function(item) {
+      return _.reduce(item, function(result, value, key) {
+        result[SoqlHelpers.getFieldNameAlias(key)] = value;
+        return result;
+      }, {});
+    });
+  }
+
   beforeEach(function () {
     module('dataCards');
     module('karma-test/dataCards/test-data/cardDataServiceTest/sampleData.json');
@@ -79,7 +88,7 @@ describe('CardDataService', function() {
       CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation);
       $httpBackend.flush();
       expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
-        /\/api\/id\/fake-data\.json\?\$query=select\+`fakeNumberColumn`\+as\+name,\+count\(\*\)\+as\+value\++group\+by\+`fakeNumberColumn`\+order\+by\+count\(\*\)\+desc\+limit\+200/i
+        /\/api\/id\/fake-data\.json\?\$query=select\+`fakeNumberColumn`\+as\+\w+,\+count\(\*\)\+as\+\w+\++group\+by\+`fakeNumberColumn`\+order\+by\+count\(\*\)\+desc\+limit\+200/i
       );
       http.get.restore();
     });
@@ -112,7 +121,7 @@ describe('CardDataService', function() {
       CardDataService.getData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', { 'function': 'sum', 'column': {}, 'fieldName': 'fakeNumberColumn' });
       $httpBackend.flush();
       expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
-        /sum\(`fakeNumberColumn`\)\+as\+value.+where\+MAGICAL_WHERE_CLAUSE.+group\+by\+`fakeNumberColumn`\+order\+by\+sum\(`fakeNumberColumn`\)/i
+        /sum\(`fakeNumberColumn`\)\+as\+\w+.+where\+MAGICAL_WHERE_CLAUSE.+group\+by\+`fakeNumberColumn`\+order\+by\+sum\(`fakeNumberColumn`\)/i
       );
       http.get.restore();
     });
@@ -123,7 +132,7 @@ describe('CardDataService', function() {
       CardDataService.getData('fakeNumberColumn', fake4x4, null, { 'function': 'sum', 'column': {}, 'fieldName': 'fakeNumberColumn' });
       $httpBackend.flush();
       expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
-        /sum\(`fakeNumberColumn`\)\+as\+value.+group\+by\+`fakeNumberColumn`\+order\+by\+sum\(`fakeNumberColumn`\)/i
+        /sum\(`fakeNumberColumn`\)\+as\+\w+.+group\+by\+`fakeNumberColumn`\+order\+by\+sum\(`fakeNumberColumn`\)/i
       );
       http.get.restore();
     });
@@ -133,9 +142,24 @@ describe('CardDataService', function() {
       var httpSpy = sinon.spy(http, 'get');
       CardDataService.getData('name', fake4x4, null, countAggregation);
       $httpBackend.flush();
-      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
-        /select\+`name`\,/i
-      );
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.not.match(/select\+`name`\+as\+name/i);
+      http.get.restore();
+    });
+
+    it('should not create a circular alias when aggregation field is value', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+
+      var sumValueAggregation = {
+        'function': 'sum',
+        'column': {},
+        'fieldName': 'value',
+        'unit': 'rowDisplayUnit'
+      };
+
+      CardDataService.getData('fakeNumberColumn', fake4x4, null, sumValueAggregation);
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.not.match(/sum(`value`)\+as\+value/i);
       http.get.restore();
     });
 
@@ -158,14 +182,16 @@ describe('CardDataService', function() {
     });
 
     it('should parse the aggregation result as a number', function(done) {
-      var fakeData = [
+      var fakeData = addFieldNameAliases([
         {name: 'alreadyInt', value: 3},
         {name: 'alreadyFloat', value: 3.14},
         {name: 'goodNumberString', value: '123'},
         {name: 'badNumberString', value: 'asd'},
         {name: 'null', value: null},
-        {name: 'undef', value: undefined}
-      ];
+        {name: 'undef', value: undefined},
+        {name: 'nan', value: NaN}
+      ]);
+
       fakeDataRequestHandler.respond(fakeData);
       var response = CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation);
       response.then(function(data) {
@@ -175,7 +201,8 @@ describe('CardDataService', function() {
           {name: 'goodNumberString', value: 123},
           {name: 'badNumberString', value: NaN},
           {name: 'null', value: NaN},
-          {name: 'undef', value: NaN}
+          {name: 'undef', value: NaN},
+          {name: 'nan', value: NaN}
         ]);
         done();
       });
@@ -217,7 +244,7 @@ describe('CardDataService', function() {
       CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4);
       $httpBackend.flush();
       expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
-        /\/api\/id\/fake-data\.json\?\$query=SELECT\+min\(`fakeNumberColumn`\)\+AS\+start,\+max\(`fakeNumberColumn`\)\+AS\+end\+WHERE\+`fakeNumberColumn`\+<\+'\d{4}-\d{2}-\d{2}'/i
+        /\/api\/id\/fake-data\.json\?\$query=SELECT\+min\(`fakeNumberColumn`\)\+AS\+\w+,\+max\(`fakeNumberColumn`\)\+AS\+\w+\+WHERE\+`fakeNumberColumn`\+<\+'\d{4}-\d{2}-\d{2}'/i
       );
       http.get.restore();
     });
@@ -241,10 +268,11 @@ describe('CardDataService', function() {
     });
 
     it('should parse valid results as dates', function(done) {
-      var fakeData = [{
+      var fakeData = addFieldNameAliases([{
         start: '1988-01-10T08:00:00.000Z',
         end: '2101-01-10T08:00:00.000Z'
-      }];
+      }]);
+
       fakeDataRequestHandler.respond(fakeData);
       var response = CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4);
       response.then(function(data) {
@@ -269,10 +297,10 @@ describe('CardDataService', function() {
     });
 
     it('should return null value for startDate when bad start date is given', function(done) {
-      var fakeDataInvalidMin = [{
+      var fakeDataInvalidMin = addFieldNameAliases([{
         start: '01101988',
         end: '2101-01-10T08:00:00.000Z'
-      }];
+      }]);
       fakeDataRequestHandler.respond(fakeDataInvalidMin);
       var response = CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4).
         then(function(response) {
@@ -283,10 +311,10 @@ describe('CardDataService', function() {
     });
 
     it('should return null value for endDate when bad end date is given', function(done) {
-      var fakeDataInvalidMax = [{
+      var fakeDataInvalidMax = addFieldNameAliases([{
         start: '1988-01-10T08:00:00.000Z',
         end: 'trousers'
-      }];
+      }]);
       fakeDataRequestHandler.respond(fakeDataInvalidMax);
       var response = CardDataService.getTimelineDomain('fakeNumberColumn', fake4x4).
         then(function(response) {
@@ -349,7 +377,7 @@ describe('CardDataService', function() {
       CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
       $httpBackend.flush();
       expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
-        /\/api\/id\/fake-data\.json\?\$query=SELECT\+date_trunc_ymd\(`fakeNumberColumn`\)\+AS\+truncated_date,\+count\(\*\)\+AS\+value\+WHERE\+`fakeNumberColumn`\+IS\+NOT\+NULL\+AND\+`fakeNumberColumn`\+<\+'\d{4}-\d{2}-\d{2}'\+GROUP\+BY\+truncated_date/i
+        /\/api\/id\/fake-data\.json\?\$query=SELECT\+date_trunc_ymd\(`fakeNumberColumn`\)\+AS\+\w+,\+count\(\*\)\+AS\+\w+\+WHERE\+`fakeNumberColumn`\+IS\+NOT\+NULL\+AND\+`fakeNumberColumn`\+<\+'\d{4}-\d{2}-\d{2}'\+GROUP\+BY\+\w+/i
       );
       http.get.restore();
     });
@@ -412,12 +440,12 @@ describe('CardDataService', function() {
     });
 
     it('should correctly parse valid dates', function(done) {
-      var fakeData = [
+      var fakeData = addFieldNameAliases([
         {"truncated_date":"2014-05-27T00:00:00.000","value":"1508"},
         {"truncated_date":"2014-05-09T00:00:00.000","value":"238"},
         {"truncated_date":"2014-05-07T00:00:00.000","value":"624"},
         {"truncated_date":"2014-05-13T00:00:00.000","value":"718"}
-      ];
+      ]);
       fakeDataRequestHandler.respond(fakeData);
       var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
       response.then(function(data) {
@@ -432,12 +460,12 @@ describe('CardDataService', function() {
     });
 
     it('should correctly parse valid values', function(done) {
-      var fakeData = [
+      var fakeData = addFieldNameAliases([
         {"truncated_date":"2014-05-27T00:00:00.000","value":"1508"},
         {"truncated_date":"2014-05-09T00:00:00.000","value":"238"},
         {"truncated_date":"2014-05-07T00:00:00.000","value":"624"},
         {"truncated_date":"2014-05-13T00:00:00.000","value":"718"}
-      ];
+      ]);
       fakeDataRequestHandler.respond(fakeData);
       var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
       response.then(function(data) {
@@ -453,12 +481,12 @@ describe('CardDataService', function() {
     });
 
     it('should default to null if no value is returned', function(done) {
-      var fakeData = [
+      var fakeData = addFieldNameAliases([
         {"truncated_date":"2014-05-01T00:00:00.000","value":"1508"},
         {"truncated_date":"2014-05-02T00:00:00.000"},
         {"truncated_date":"2014-05-03T00:00:00.000","value":"624"},
         {"truncated_date":"2014-05-04T00:00:00.000","value":"718"}
-      ];
+      ]);
       fakeDataRequestHandler.respond(fakeData);
       var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
       response.then(function(data) {
@@ -470,12 +498,12 @@ describe('CardDataService', function() {
     });
 
     it('should reject the promise on bad dates', function(done) {
-      var fakeData = [
+      var fakeData = addFieldNameAliases([
         {"truncated_date":"2014-05-27T00:00:00.000","value":"1508"},
         {"truncated_date":"2014-05-09T00:00:00.000","value":"238"},
         {"truncated_date":"pants","value":"624"},
         {"truncated_date":"2014-05-13T00:00:00.000","value":"718"}
-      ];
+      ]);
       fakeDataRequestHandler.respond(fakeData);
       assertReject(CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation), done);
       $httpBackend.flush();

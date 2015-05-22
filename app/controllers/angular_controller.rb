@@ -5,13 +5,6 @@ class AngularController < ActionController::Base
   include UserAuthMethods
   include UnminifiedAssetsHelper
 
-  class AuthenticationRequired < RuntimeError; end
-  class UnauthorizedPageMetadataRequest < RuntimeError; end
-  class PageMetadataNotFound < RuntimeError; end
-  class UnauthorizedDatasetMetadataRequest < RuntimeError; end
-  class DatasetMetadataNotFound < RuntimeError; end
-  class UnknownRequestError < RuntimeError; end
-
   before_filter :hook_auth_controller
 
   helper_method :current_user
@@ -191,30 +184,6 @@ class AngularController < ActionController::Base
     flag_subcolumns!(dataset_metadata[:columns])
 
     dataset_metadata
-  end
-
-  def fetch_pages_for_dataset(dataset_id)
-
-    result = phidippides.fetch_pages_for_dataset(
-      dataset_id,
-      :request_id => request_id,
-      :cookies => forwardable_session_cookies
-    )
-
-    if result[:status] != '200'
-      case result[:status]
-        when '401'
-          raise AuthenticationRequired.new
-        when '403'
-          raise UnauthorizedDatasetMetadataRequest.new
-        when '404'
-          raise DatasetMetadataNotFound.new
-        else
-          raise UnknownRequestError.new result[:body].to_s
-      end
-    end
-
-    result[:body]
   end
 
   def fetch_permissions_and_normalize_exceptions(resource_id)

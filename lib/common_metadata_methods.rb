@@ -2,6 +2,13 @@ module CommonMetadataMethods
 
   include CommonSocrataMethods
 
+  class AuthenticationRequired < RuntimeError; end
+  class UnauthorizedPageMetadataRequest < RuntimeError; end
+  class PageMetadataNotFound < RuntimeError; end
+  class UnauthorizedDatasetMetadataRequest < RuntimeError; end
+  class DatasetMetadataNotFound < RuntimeError; end
+  class UnknownRequestError < RuntimeError; end
+
   # A user's right to write to phidippides is currently determined by role.
   # This is not sustainable but adding a right to a role involves writing a
   # migration what parses JSON. The risk associated with that was deemed worse
@@ -92,5 +99,29 @@ module CommonMetadataMethods
         end
       end
     end
+  end
+
+  def fetch_pages_for_dataset(dataset_id)
+
+    result = phidippides.fetch_pages_for_dataset(
+      dataset_id,
+      :request_id => request_id,
+      :cookies => forwardable_session_cookies
+    )
+
+    if result[:status] != '200'
+      case result[:status]
+        when '401'
+          raise AuthenticationRequired.new
+        when '403'
+          raise UnauthorizedDatasetMetadataRequest.new
+        when '404'
+          raise DatasetMetadataNotFound.new
+        else
+          raise UnknownRequestError.new result[:body].to_s
+      end
+    end
+
+    result[:body]
   end
 end

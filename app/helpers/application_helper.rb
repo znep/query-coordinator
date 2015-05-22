@@ -660,8 +660,8 @@ ga('send', 'pageview');
 
   def render_noscript(id)
     return ('<noscript><div class="noscript-notification">' +
-              '<p>THAONEHUTNAOEHUTNAOHEUTNAOHEUTNAHOETUNHATOE</p>' +
-              "<p><a href=\"#{get_alt_dataset_link(id)}\">Name of link</a></p>" +
+              '<h4>You need to enable Javascript in your web browser to interact with the Data Lens experience.</h4>' +
+              "<p>You can alternatively explore the data using the <a href=\"#{get_alt_dataset_link(id)}\">accessible version</a> of this Data Lens page.</p>" +
             '</div></noscript>').html_safe
   end
 

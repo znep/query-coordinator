@@ -60,5 +60,7 @@ group :development, :test do
   gem 'powder'
 
   gem 'simplecov', require: false
+  gem 'simplecov-cobertura', require: false
+  gem 'nyan-cat-formatter', require: false
 end
 

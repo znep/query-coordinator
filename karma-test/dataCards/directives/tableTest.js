@@ -13,7 +13,7 @@ describe('table directive', function() {
 
     _.each(fixtureMetadata.testColumnDetailsAsTableWantsThem, function(column) {
       // TODO: Version as a string here is questionable
-      column.dataset = { version: '1', extractHumanReadableColumnName: _.property('name') };
+      column.dataset = { version: '1' };
       if (column.fieldName[0].match(/[a-zA-Z0-9]/g)) {
         outerScope.columnDetails.push(column);
         if (!(column.cardinality <= 1 && column.isSubcolumn)) {

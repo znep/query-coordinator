@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function addCardDialog(Constants, Card, FlyoutService, $log) {
+  function addCardDialog(Constants, Card, Dataset, FlyoutService, $log) {
     return {
       restrict: 'E',
       scope: {
@@ -20,7 +20,7 @@
             function(datasetColumns) {
               return function(fieldName) {
                 var column = datasetColumns[fieldName];
-                return column.dataset.extractHumanReadableColumnName(column);
+                return Dataset.extractHumanReadableColumnName(column);
               }
             }
           )

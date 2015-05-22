@@ -4,7 +4,7 @@
   var rowsPerBlock = 50;
   var rowHeight = $.relativeToPx('2rem');
 
-  function tableDirectiveFactory($q, $timeout, Constants, SoqlHelpers) {
+  function tableDirectiveFactory(Constants, Dataset, SoqlHelpers, $q, $timeout) {
 
     return {
       templateUrl: '/angular_templates/dataCards/table.html',
@@ -260,7 +260,7 @@
               return {
                 index: i,
                 columnId: column.fieldName,
-                name: column.dataset.extractHumanReadableColumnName(column),
+                name: Dataset.extractHumanReadableColumnName(column),
                 active: isSortedOnColumn(column.fieldName),
                 sortUp: ordering === 'ASC',
                 width: columnWidths[column.fieldName],

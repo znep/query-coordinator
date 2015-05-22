@@ -21,7 +21,7 @@
     };
   };
 
-  function AggregationChooser(FlyoutService, WindowState, ServerConfig) {
+  function AggregationChooser(Dataset, FlyoutService, WindowState, ServerConfig) {
 
     return {
       restrict: 'E',
@@ -135,7 +135,7 @@
               map(function(column, fieldName) {
                 var enabled = aggregationFunction !== 'count';
                 return _.extend(
-                  pluralizeAndCapitalize(column.dataset.extractHumanReadableColumnName(column)),
+                  pluralizeAndCapitalize(Dataset.extractHumanReadableColumnName(column)),
                   { id: fieldName, enabled: enabled }
                 );
               }).
@@ -165,7 +165,7 @@
             if (_.isDefined(column)) {
               return _.extend(
                 { id: activeAggregation },
-                pluralizeAndCapitalize(column.dataset.extractHumanReadableColumnName(column))
+                pluralizeAndCapitalize(Dataset.extractHumanReadableColumnName(column))
               );
             } else {
               return _.extend(pluralizeAndCapitalize(activeAggregation));

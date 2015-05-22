@@ -3,7 +3,7 @@
 
   var DYNAMIC_TITLE_CARDTYPE_BLACKLIST = ['table', 'feature', 'search'];
 
-  function CardTitleDirective(PageHelpersService) {
+  function CardTitleDirective(Dataset, PageHelpersService) {
     return {
       restrict: 'E',
       scope: {
@@ -40,9 +40,7 @@
         $scope.$bindObservable(
           'title',
           model$.observeOnLatest('column').
-            map(function(column) {
-              return column.dataset.extractHumanReadableColumnName(column);
-            })
+            map(Dataset.extractHumanReadableColumnName)
         );
       }
     };

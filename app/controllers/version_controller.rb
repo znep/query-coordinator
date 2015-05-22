@@ -1,6 +1,6 @@
 class VersionController < ApplicationController
   skip_before_filter :require_user, :index, :set_meta
-  
+
   def index
     Rails.logger.info 'Getting version information'
     respond_to do |format|
@@ -12,6 +12,7 @@ class VersionController < ApplicationController
       format.json do
         render json: {
           facility: 'frontend',
+          version: Frontend.version,
           revision: REVISION_NUMBER,
           timestamp: REVISION_DATE
         }

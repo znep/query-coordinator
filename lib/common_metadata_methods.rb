@@ -2,6 +2,13 @@ module CommonMetadataMethods
 
   include CommonSocrataMethods
 
+  class AuthenticationRequired < RuntimeError; end
+  class UnauthorizedPageMetadataRequest < RuntimeError; end
+  class PageMetadataNotFound < RuntimeError; end
+  class UnauthorizedDatasetMetadataRequest < RuntimeError; end
+  class DatasetMetadataNotFound < RuntimeError; end
+  class UnknownRequestError < RuntimeError; end
+
   # A user's right to write to phidippides is currently determined by role.
   # This is not sustainable but adding a right to a role involves writing a
   # migration what parses JSON. The risk associated with that was deemed worse

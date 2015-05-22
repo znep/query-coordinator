@@ -47,8 +47,13 @@ class DatasetsController < ApplicationController
         flash[:notice] = I18n.t('screens.ds.new_ux_nbe_warning', url: "<a href=#{destination_url}>#{destination_url}</a>").html_safe
       else
         if FeatureFlags.derive(@view, request).force_redirect_to_data_lens === true
-          pages = fetch_pages_for_dataset(@view.id).fetch(:publisher, [])
-          return redirect_to "/view/#{pages.first[:pageId]}" unless pages.empty?
+          begin
+            pages = fetch_pages_for_dataset(@view.id).fetch(:publisher, [])
+            return redirect_to "/view/#{pages.first[:pageId]}" unless pages.empty?
+          rescue AuthenticationRequired, UnauthorizedDatasetMetadataRequest,
+                 DatasetMetadataNotFound, UnknownRequestError
+            # Do nothing.
+          end
         end
         if destination_url == '/'
           flash[:notice] = I18n.t('screens.ds.unable_to_find_dataset_page')

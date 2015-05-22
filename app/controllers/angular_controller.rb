@@ -5,13 +5,6 @@ class AngularController < ActionController::Base
   include UserAuthMethods
   include UnminifiedAssetsHelper
 
-  class AuthenticationRequired < RuntimeError; end
-  class UnauthorizedPageMetadataRequest < RuntimeError; end
-  class PageMetadataNotFound < RuntimeError; end
-  class UnauthorizedDatasetMetadataRequest < RuntimeError; end
-  class DatasetMetadataNotFound < RuntimeError; end
-  class UnknownRequestError < RuntimeError; end
-
   before_filter :hook_auth_controller
 
   helper_method :current_user

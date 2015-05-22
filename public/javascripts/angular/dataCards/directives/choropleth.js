@@ -368,6 +368,7 @@
     function LegendContinuous(element, container) {
       this.element = element.addClass('continuous');
       this.container = container;
+      this.gradientId = 'gradient-' + _.uniqueId();
     }
 
     $.extend(LegendContinuous.prototype, {
@@ -410,17 +411,20 @@
        * @private
        */
       _drawGradient: function(gradientSvg, tickStops, colorScale) {
-          var gradientSvgSelection = d3.select(gradientSvg[0]);
-          // Create the gradient that's referenced later when the containing rectangle is drawn.
+
+        var gradientSvgSelection = d3.select(gradientSvg[0]);
+
+        if (d3.select('#' + this.gradientId).empty()) {
           gradientSvgSelection.append('linearGradient').attr({
-            id: 'gradient',
+            id: this.gradientId,
             gradientUnits: 'userSpaceOnUse',
-            // x,y are actually left,top
             y1: '100%', x1: 0, x2: 0, y2: 0
           });
+        }
+
         // Due to a webkit bug (https://bugs.webkit.org/show_bug.cgi?id=83438), we can't select a
         // camelCase element. So select it by id
-        var gradient = gradientSvgSelection.selectAll('#gradient');
+        var gradient = gradientSvgSelection.selectAll('#' + this.gradientId);
 
         // Create a scale for positioning values by percentage
         var positionScale = colorScale.copy().range([0, 100]);
@@ -458,7 +462,7 @@
               }
               return Math.abs(positionScale(value) - positionScale(tickStops[i - 1])) + '%';
             },
-            fill: 'url(#gradient)'
+            fill: 'url(#{0})'.format(this.gradientId)
           });
         rectangles.exit().remove();
       },
@@ -590,7 +594,7 @@
           // Eligible for logarithmic scale, if all-positive or all-negative values
           var deltaMagnitude = _.log10(max - min);
           if (deltaMagnitude >= 3) {
-            // Only logarithmic if we've got a alarge change in magnitude
+            // Only logarithmic if we've got a large change in magnitude
             scale = d3.scale.log();
           } else {
             scale = d3.scale.linear();
@@ -1154,7 +1158,7 @@
         tileLayer.subscribe(function(layer) {
           layer.addTo(map);
         });
-        
+
         // Now that everything's hooked up, connect the subscription.
         tileLayer.connect();
 

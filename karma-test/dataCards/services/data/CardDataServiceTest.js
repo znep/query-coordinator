@@ -28,11 +28,10 @@ describe('CardDataService', function() {
 
   function addFieldNameAliases(data) {
     return _.map(data, function(item) {
-      var result = {};
-      _.each(item, function(value, key) {
+      return _.reduce(item, function(result, value, key) {
         result[SoqlHelpers.getFieldNameAlias(key)] = value;
-      });
-      return result;
+        return result;
+      }, {});
     });
   }
 
@@ -158,7 +157,7 @@ describe('CardDataService', function() {
         'unit': 'rowDisplayUnit'
       };
 
-      CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation);
+      CardDataService.getData('fakeNumberColumn', fake4x4, null, sumValueAggregation);
       $httpBackend.flush();
       expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.not.match(/sum(`value`)\+as\+value/i);
       http.get.restore();
@@ -189,7 +188,8 @@ describe('CardDataService', function() {
         {name: 'goodNumberString', value: '123'},
         {name: 'badNumberString', value: 'asd'},
         {name: 'null', value: null},
-        {name: 'undef', value: undefined}
+        {name: 'undef', value: undefined},
+        {name: 'nan', value: NaN}
       ]);
 
       fakeDataRequestHandler.respond(fakeData);
@@ -201,7 +201,8 @@ describe('CardDataService', function() {
           {name: 'goodNumberString', value: 123},
           {name: 'badNumberString', value: NaN},
           {name: 'null', value: NaN},
-          {name: 'undef', value: NaN}
+          {name: 'undef', value: NaN},
+          {name: 'nan', value: NaN}
         ]);
         done();
       });

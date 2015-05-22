@@ -1,9 +1,7 @@
 (function() {
   'use strict';
 
-  var DYNAMIC_TITLE_CARDTYPE_BLACKLIST = ['table', 'feature', 'search'];
-
-  function CardDirective(DownloadService, PageHelpersService, $timeout) {
+  function CardDirective(DownloadService, $timeout) {
 
     return {
       restrict: 'E',
@@ -27,27 +25,7 @@
         $scope.$bindObservable('isCustomizable', modelSubject.observeOnLatest('isCustomizable'));
         $scope.$bindObservable('isExportable', modelSubject.observeOnLatest('isExportable'));
 
-        $scope.$bindObservable(
-          'title',
-          modelSubject.observeOnLatest('column').map(function(column) {
-            return column.dataset.extractHumanReadableColumnName(column);
-          })
-        );
         $scope.$bindObservable('description', modelSubject.observeOnLatest('column.description'));
-
-        var dynamicTitleSequence = PageHelpersService.dynamicAggregationTitle($scope.model.page).
-          map(function(title) {
-            return '{0} by'.format(title.capitalize());
-          });
-
-        var displayDynamicTitleSequence = modelSubject.
-          observeOnLatest('cardType').
-          map(function(cardType) {
-            return !_(DYNAMIC_TITLE_CARDTYPE_BLACKLIST).contains(cardType);
-          });
-
-        $scope.$bindObservable('displayDynamicTitle', displayDynamicTitleSequence);
-        $scope.$bindObservable('dynamicTitle', dynamicTitleSequence);
 
         var updateCardLayout = _.throttle(function(textHeight) {
           descriptionTruncatedContent.dotdotdot({

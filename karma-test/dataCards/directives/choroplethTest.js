@@ -848,7 +848,7 @@ describe('A Choropleth Directive', function() {
             expect(isBlue(elementColor)).to.equal(true);
 
             var gradient = el.find(legendSelector).
-                find('#gradient').
+                find('[id^=gradient]').
                 find('stop[offset="100%"]');
             expect(gradient.length).to.equal(1);
             var elementColor = chroma.color(gradient.css('stop-color')).rgb();
@@ -867,7 +867,7 @@ describe('A Choropleth Directive', function() {
             expect(isRed(elementColor)).to.equal(true);
 
             var gradient = el.find(legendSelector).
-                find('#gradient').
+                find('[id^=gradient]').
                 find('stop[offset="0%"]');
             expect(gradient.length).to.equal(1);
             var elementColor = chroma.color(gradient.css('stop-color')).rgb();
@@ -886,7 +886,7 @@ describe('A Choropleth Directive', function() {
             expect(isGray(elementColor)).to.equal(true);
 
             var gradient = el.find(legendSelector).
-                find('#gradient').
+                find('[id^=gradient]').
                 find('stop[offset="0%"]');
             expect(gradient.length).to.equal(1);
             var elementColor = chroma.color(gradient.css('stop-color')).rgb();

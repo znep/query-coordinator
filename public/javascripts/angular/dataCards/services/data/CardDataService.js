@@ -586,8 +586,6 @@
               value: parseFloat(item.value)
             };
           });
-        }, function(error) {
-          return $q.reject(error);
         });
       }
     };

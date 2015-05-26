@@ -79,7 +79,18 @@ describe('A Table Card Visualization', function() {
     module(function($provide) {
       var mockCardDataService = {
         getRowCount: function(id, whereClause) {
-          return $q.when(_.isEmpty(whereClause) ? 1337 : 42);
+          var returnValue = 42;
+          if (_.isEmpty(whereClause)) {
+            returnValue = 1337;
+          }
+          if (/empty/.test(whereClause)) {
+            returnValue = 0;
+          }
+          if (/one/.test(whereClause)) {
+            returnValue = 1;
+          }
+
+          return $q.when(returnValue);
         },
         getRows: function(/*datasetId, offset, limit, order, timeout, whereClause*/) {
           return $q.when([{
@@ -373,6 +384,22 @@ describe('A Table Card Visualization', function() {
       expect(table.element.find('.th:eq(0)')).to.have.data('columnId', 'test_timestamp_column');
       expect(table.element.find('.th:eq(1)')).to.have.data('columnId', 'test_floating_timestamp_column');
       expect(table.element.find('.th:eq(2)')).to.have.data('columnId', 'test_location_column');
+    });
+  });
+
+  describe('customTitle', function() {
+    it('should set it on the card model', function() {
+      var table = createTable();
+      expect(table.model.getCurrentValue('customTitle')).to.equal('Showing all 1337 rows');
+      table.outerScope.whereClause = 'invalid where clause';
+      table.outerScope.$digest();
+      expect(table.model.getCurrentValue('customTitle')).to.equal('Showing 42 rows <span class="subtitle">out of 1,337</span>');
+      table.outerScope.whereClause = 'empty';
+      table.outerScope.$digest();
+      expect(table.model.getCurrentValue('customTitle')).to.equal('Showing 0 rows <span class="subtitle">out of 1,337</span>');
+      table.outerScope.whereClause = 'one';
+      table.outerScope.$digest();
+      expect(table.model.getCurrentValue('customTitle')).to.equal('Showing 1 row <span class="subtitle">out of 1,337</span>');
     });
   });
 

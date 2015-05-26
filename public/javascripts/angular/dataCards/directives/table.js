@@ -18,6 +18,7 @@
         getRows: '=',
         infinite: '=',
         columnDetails: '=',
+        rowDisplayUnit: '=',
         defaultSortColumnName: '='    // When the table is first created, it will be sorted on this column.
       },
 
@@ -518,11 +519,13 @@
               bottomRow
             );
 
-            $label.text('Showing {0} to {1} of {2} (Total: {3})'.format(
-                topRow,
-                bottomRow,
-                scope.filteredRowCount,
-                scope.rowCount)
+            $label.html(
+              '{0} <strong>{1}-{2} out of {3}</strong>'.format(
+                scope.rowDisplayUnit.capitalize(),
+                $.commaify(topRow),
+                $.commaify(bottomRow),
+                $.commaify(scope.filteredRowCount)
+              )
             );
           };
 

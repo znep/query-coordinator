@@ -619,20 +619,30 @@ $.Control.registerMixin('d3_impl_pie', {
             if (legendDetails.showValues === true && vizObj._chartConfig.chartRenderSnapshot)
             {
                 var firstSlice = vizObj._chartConfig.chartRenderSnapshot.firstSlice;
-                var lastSlice = vizObj._chartConfig.chartRenderSnapshot.lastSlice;
+                var lastSlice = vizObj._chartConfig.chartRenderSnapshot.lastSlice; 
 
                 if (firstSlice)
-                {
+                { 
                     _.each(vizObj._fillInSliceRange(firstSlice, lastSlice), function(slice)
-                    {
+                    { 
                         if (_.any(vizObj._chartConfig.chartRenderSnapshot.seriesInformation, function(series)
                             {
                                 return !vizObj._tooSmallForDisplay(slice, series);
                             }))
-                        {
+                        { 
                             addLine(slice.getColor(), slice.getName());
                         }
                     });
+  
+                    var seriesInformation = vizObj._chartConfig.chartRenderSnapshot.seriesInformation; 
+                    var cachedPiePieces = seriesInformation[Object.keys(seriesInformation)[0]].cachedPiePieces;    
+
+                    // Determine if we need to add 'Other' label
+                    var otherPlaceholderExists = _.last(cachedPiePieces).data.getName() === 'Other';
+                    if (otherPlaceholderExists)
+                    { 
+                        addLine('gray', 'Other'); 
+                    }  
                 }
             }
         });
@@ -986,11 +996,10 @@ $.Control.registerMixin('d3_impl_pie', {
             var primarySeriesInfo = seriesInformation[primaryColumn.column.lookup];
             var primaryValueResolver = primarySeriesInfo.valueResolver;
             var primaryNameResolver = primarySeriesInfo.nameResolver;
-            var primaryColorResolver = primarySeriesInfo.colorResolver;
+            var primaryColorResolver = primarySeriesInfo.colorResolver; 
 
             var firstSlice = new vizObj.Slice(data[0].index, primaryValueResolver, primaryNameResolver, primaryColorResolver);
-
-            var lastSlice = new vizObj.Slice(data[data.length - 1].index, primaryValueResolver, primaryNameResolver, primaryColorResolver);
+            var lastSlice = new vizObj.Slice(data[data.length - 1].index, primaryValueResolver, primaryNameResolver, primaryColorResolver);  
 
             if (vizObj.debugEnabled)
             {
@@ -1018,6 +1027,8 @@ $.Control.registerMixin('d3_impl_pie', {
                 lastDisplaySlice = lastSlice;
             }
 
+            // TODO deal with "Other" slice correctly
+
             var anchorSlice;
 
             if (cc.chartRenderSnapshot)
@@ -1033,7 +1044,7 @@ $.Control.registerMixin('d3_impl_pie', {
                 anchorSlice = firstSlice.asAnchor(firstSlice.getAngleRadians(primarySeriesInfo) / 2);
             }
 
-            var nothingToDisplay = _.isUndefined(lastDisplaySlice);
+            var nothingToDisplay = _.isUndefined(lastDisplaySlice); 
 
             cc.chartRenderSnapshot =
             {
@@ -1102,7 +1113,7 @@ $.Control.registerMixin('d3_impl_pie', {
 
     _renderSnapshot: function(snapshot, enableTransitions)
     {
-        this.renderLegend();
+        // this.renderLegend();
         this._updateSizeBasedStyling();
 
         // Update the fill area after the legend renders, otherwise we might
@@ -1128,8 +1139,10 @@ $.Control.registerMixin('d3_impl_pie', {
                 snapshot.anchorSlice,
                 snapshot.fillArea,
                 seriesInformation,
-                enableTransitions);
+                enableTransitions); 
         }
+
+        this.renderLegend();
     },
 
     //TODO just get rid of _renderPie, and start passing around just the layout.
@@ -1355,7 +1368,7 @@ $.Control.registerMixin('d3_impl_pie', {
 
                 otherPlaceholder.data = new this.Slice(undefined, valueResolver, nameResolver, colorResolver);
                 segmentsToRender.push(otherPlaceholder);
-                result = segmentsToRender;
+                result = segmentsToRender; 
             }
 
             seriesInformation.cachedPiePieces = result;
@@ -1454,11 +1467,11 @@ $.Control.registerMixin('d3_impl_pie', {
                     return -1;
                 }
             };
-
+        
         var sliceClass = 'sliceSeries'+colIndex;
         var slices = cc.chartD3.selectAll('.'+sliceClass)
             .data(pieces, idFunction);
-
+        
         slices
             .enter()
                 .append('path')
@@ -1712,8 +1725,8 @@ $.Control.registerMixin('d3_impl_pie', {
                      showable: filtered};
         };
 
-        var filterResult = filterToShowable(pieces);
-
+        var filterResult = filterToShowable(pieces); 
+    
         vizObj.debugOut('Unshowable labels:' + filterResult.unshowableLabelsWithSpace);
         // If we can't show a bunch of labels due to line placement issues, remove the labels
         // and re-run layout so it looks better (and maybe makes better use of the available
@@ -1788,7 +1801,7 @@ $.Control.registerMixin('d3_impl_pie', {
         };
 
         var labels = cc.chartD3.selectAll('.label')
-            .data(filterResult.showable, idFunction);
+            .data(filterResult.showable, idFunction); 
 
         labels
             .enter()
@@ -1978,8 +1991,8 @@ $.Control.registerMixin('d3_impl_pie', {
         {
             output.push(currentSlice);
             currentSlice = currentSlice.neighbor(true);
-        }
-
+        } 
+        
         return output;
     },
 

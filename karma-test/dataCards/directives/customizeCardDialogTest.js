@@ -51,6 +51,7 @@ describe('Customize card dialog', function() {
     $templateCache.put('/angular_templates/dataCards/cardVisualizationChoropleth.html', '');
     $templateCache.put('/angular_templates/dataCards/cardVisualizationTable.html', '');
     $templateCache.put('/angular_templates/dataCards/cardVisualizationFeatureMap.html', '');
+    $templateCache.put('/angular_templates/dataCards/cardVisualizationHistogram.html', '');
     $templateCache.put('/angular_templates/dataCards/cardVisualizationInvalid.html', '');
 
     $httpBackend.whenGET(/\/api\/id\/rook-king.json.*/).respond([]);

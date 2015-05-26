@@ -59,6 +59,7 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
+  beforeEach(module('/angular_templates/dataCards/cardVisualizationHistogram.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationInvalid.html'));
   beforeEach(module('/angular_templates/dataCards/featureMap.html'));
   beforeEach(module('/angular_templates/dataCards/clearableInput.html'));

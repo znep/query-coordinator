@@ -1,0 +1,16 @@
+<histogram
+  card-data="cardData"
+  row-display-unit="rowDisplayUnit"
+  filter-applied="filterApplied"
+  expanded="expanded">
+</histogram>
+<load-spinner></load-spinner>
+<div class="visualization-render-error" ng-show="histogramRenderError">
+  <div class="row">
+    <div class="span2"><span class="icon-warning"></span></div>
+    <div class="span10" ng-switch="histogramRenderError">
+      <div ng-switch-when="noData">There is no data to display.</div>
+      <div ng-switch-default>An error was encountered when trying to render this card.</div>
+    </div>
+  </div>
+</div>

@@ -77,6 +77,15 @@
         </button>
       <span>Column Chart</span>
     </li>
+    <li ng-show="availableCardTypes.indexOf('histogram') > -1">
+      <button
+        class="add-card-type-option icon-warning"
+        ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'histogram' }"
+        ng-click="setCardType('histogram')"
+        data-visualization-name="Histogram">
+        </button>
+      <span>Histogram</span>
+    </li>
     <li ng-show="availableCardTypes.indexOf('choropleth') > -1">
       <button
         class="add-card-type-option icon-region"

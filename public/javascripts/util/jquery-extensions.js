@@ -91,10 +91,10 @@
     val = parseFloat(val);
     var absVal = Math.abs(val);
     var result;
-    var beforeLength = val.toFixed(0).length;
+    var beforeLength = absVal.toFixed(0).length;
 
     if (beforeLength <= maxLetters) {
-      var parts = val.toString().split('.');
+      var parts = absVal.toString().split('.');
       var afterLength = (parts[1] || '').length;
       var maxAfterLength = maxLetters - beforeLength;
       if (afterLength > maxAfterLength) {
@@ -114,6 +114,7 @@
         if (val < 0) {
           result = -result;
         }
+        result = parseFloat(result);
         if (isFinite(result)) {
           return $.commaify(result) + symbol[i];
         } else {

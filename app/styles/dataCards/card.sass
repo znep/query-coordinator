@@ -265,3 +265,22 @@ card-visualization-invalid
   display: block
   height: 100%
   overflow: hidden
+
+.visualization-render-error
+  display: block
+  padding: 0.5rem
+  position: absolute
+  top: 50%
+  left: 50%
+  background: #fff
+  @include border-radius($rounded-corners-border-radius)
+  @include prefixer('transform', 'translate(-50%, -50%)')
+
+  .icon-warning
+    display: block
+    float: left
+    padding: 0 1rem 0 0
+    font-size: 1.5rem
+    line-height: 2rem
+    color: $yellow-warning-color
+

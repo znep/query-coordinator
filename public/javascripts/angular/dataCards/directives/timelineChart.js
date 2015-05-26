@@ -749,7 +749,12 @@
               return;
             }
 
-            margin = { top: 0, right: 0, bottom: Constants.TIMELINE_CHART_MARGIN_BOTTOM, left: 0 };
+            margin = {
+              top: Constants.TIMELINE_CHART_MARGIN_TOP,
+              right: Constants.TIMELINE_CHART_MARGIN_RIGHT,
+              bottom: Constants.TIMELINE_CHART_MARGIN_BOTTOM,
+              left: Constants.TIMELINE_CHART_MARGIN_LEFT
+            };
 
             // chartWidth and chartHeight do not include margins so that
             // we can use the margins to render axis ticks.

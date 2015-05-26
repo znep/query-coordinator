@@ -414,6 +414,39 @@ div.column-chart
         color: $column-chart-tick-origin-color
 
 
+// histogram
+.histogram-area-unfiltered
+  fill: $histogram-area-unfiltered-fill-color
+
+.histogram-trace-unfiltered
+  stroke: $histogram-trace-unfiltered-stroke-color
+
+.histogram-area-filtered
+  fill: $histogram-area-filtered-fill-color
+
+.histogram-trace-filtered
+  stroke: $histogram-trace-filtered-stroke-color
+
+.histogram-axis-x, .histogram-axis-y
+  .tick
+    line
+      stroke: $histogram-axis-tick-color
+
+.histogram-axis-x
+  text
+    fill: $histogram-axis-tick-color
+
+.histogram-axis-y
+  text
+    fill: $histogram-axis-y-tick-text-color
+
+.histogram-axis-x, .histogram-axis-y
+  .tick.is-zero
+    line
+      stroke: $histogram-axis-tick-zero-color
+    text
+      fill: $histogram-axis-tick-zero-color
+
 // search-card
 .search-card-text
   color: $search-card-text-color

@@ -39,6 +39,7 @@ describe('cardVisualization directive', function() {
         _$templateCache.put('/angular_templates/dataCards/cardVisualizationSearch.html', '');
         _$templateCache.put('/angular_templates/dataCards/cardVisualizationInvalid.html', '');
         _$templateCache.put('/angular_templates/dataCards/cardVisualizationFeatureMap.html', '');
+        _$templateCache.put('/angular_templates/dataCards/cardVisualizationHistogram.html', '');
       }
     ])
   );

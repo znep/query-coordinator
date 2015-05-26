@@ -637,8 +637,10 @@ $.Control.registerMixin('d3_impl_pie', {
                     var seriesInformation = vizObj._chartConfig.chartRenderSnapshot.seriesInformation;
                     var cachedPiePieces = seriesInformation[Object.keys(seriesInformation)[0]].cachedPiePieces;
 
-                    // Determine if we need to add 'Other' label
-                    var otherPlaceholderExists = _.last(cachedPiePieces).data.getName() === 'Other';
+                    // Determine here if we need to add an 'Other' label.
+                    // Check if the index is undefined as opposed to the name being
+                    // equal to "Other" because "Other" is a valid data label.
+                    var otherPlaceholderExists = _.last(cachedPiePieces).data.index === undefined;
                     if (otherPlaceholderExists)
                     {
                         addLine('gray', 'Other');

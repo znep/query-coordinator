@@ -46,6 +46,8 @@ class CreateStoryTables < ActiveRecord::Migration
       execute 'ALTER TABLE draft_stories ALTER COLUMN created_at SET DEFAULT LOCALTIMESTAMP'
       execute 'ALTER TABLE published_stories ALTER COLUMN created_at SET DEFAULT LOCALTIMESTAMP'
       execute 'ALTER TABLE blocks ALTER COLUMN created_at SET DEFAULT LOCALTIMESTAMP'
+    else
+      raise 'Please update the migration to target non-PostgreSQL databases.'
     end
   end
 

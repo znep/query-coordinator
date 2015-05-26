@@ -62,5 +62,6 @@ group :development, :test do
   gem 'simplecov', require: false
   gem 'simplecov-cobertura', require: false
   gem 'nyan-cat-formatter', require: false
+  gem 'factory_girl_rails'
 end
 

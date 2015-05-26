@@ -633,6 +633,18 @@ $.Control.registerMixin('d3_impl_pie', {
                             addLine(slice.getColor(), slice.getName());
                         }
                     });
+
+                    var seriesInformation = vizObj._chartConfig.chartRenderSnapshot.seriesInformation;
+                    var cachedPiePieces = seriesInformation[Object.keys(seriesInformation)[0]].cachedPiePieces;
+
+                    // Determine here if we need to add an 'Other' label.
+                    // Check if the index is undefined as opposed to the name being
+                    // equal to "Other" because "Other" is a valid data label.
+                    var otherPlaceholderExists = _.last(cachedPiePieces).data.index === undefined;
+                    if (otherPlaceholderExists)
+                    {
+                        addLine('gray', 'Other');
+                    }
                 }
             }
         });
@@ -989,7 +1001,6 @@ $.Control.registerMixin('d3_impl_pie', {
             var primaryColorResolver = primarySeriesInfo.colorResolver;
 
             var firstSlice = new vizObj.Slice(data[0].index, primaryValueResolver, primaryNameResolver, primaryColorResolver);
-
             var lastSlice = new vizObj.Slice(data[data.length - 1].index, primaryValueResolver, primaryNameResolver, primaryColorResolver);
 
             if (vizObj.debugEnabled)
@@ -1102,7 +1113,6 @@ $.Control.registerMixin('d3_impl_pie', {
 
     _renderSnapshot: function(snapshot, enableTransitions)
     {
-        this.renderLegend();
         this._updateSizeBasedStyling();
 
         // Update the fill area after the legend renders, otherwise we might
@@ -1130,6 +1140,10 @@ $.Control.registerMixin('d3_impl_pie', {
                 seriesInformation,
                 enableTransitions);
         }
+
+        // Render legend after pie chart so that we can determine
+        // whether or not an 'Other' label is needed
+        this.renderLegend();
     },
 
     //TODO just get rid of _renderPie, and start passing around just the layout.

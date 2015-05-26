@@ -8,6 +8,20 @@ describe('<card-title />', function() {
   var Card;
   var Mockumentary;
 
+  beforeEach(module('/angular_templates/dataCards/card.html'));
+  beforeEach(module('/angular_templates/dataCards/spinner.html'));
+  beforeEach(module('dataCards/cards.sass'));
+  beforeEach(module('dataCards/card.sass'));
+  beforeEach(module('test'));
+  beforeEach(module('dataCards'));
+  beforeEach(module('dataCards.services'));
+  beforeEach(inject(function($injector) {
+    $rootScope = $injector.get('$rootScope');
+    testHelpers = $injector.get('testHelpers');
+    Card = $injector.get('Card');
+    Mockumentary = $injector.get('Mockumentary');
+  }));
+
   /**
    * Create Card model with options
    * @param {Page} pageModel
@@ -100,19 +114,6 @@ describe('<card-title />', function() {
     };
   }
 
-  beforeEach(module('/angular_templates/dataCards/card.html'));
-  beforeEach(module('/angular_templates/dataCards/spinner.html'));
-  beforeEach(module('dataCards/cards.sass'));
-  beforeEach(module('dataCards/card.sass'));
-  beforeEach(module('test'));
-  beforeEach(module('dataCards'));
-  beforeEach(inject(function($injector) {
-    $rootScope = $injector.get('$rootScope');
-    testHelpers = $injector.get('testHelpers');
-    Card = $injector.get('Card');
-    Mockumentary = $injector.get('Mockumentary');
-  }));
-
   describe('card title', function() {
     it('should display the title', function() {
       var element = createDirective().element;
@@ -193,6 +194,36 @@ describe('<card-title />', function() {
       expect(element.find('.dynamic-title')).to.not.be.visible;
     });
 
+  });
+
+  describe('custom title', function() {
+    it('should display the customTitle when present on the card model', function() {
+      var directive = createDirective({
+        fieldName: '*'
+      });
+
+      directive.cardModel.set('customTitle', 'This is a custom title');
+
+      expect(directive.element.find('.custom-title')).to.have.html('This is a custom title');
+    });
+
+    it('should allow html formatting', function() {
+      var directive = createDirective({
+        fieldName: '*'
+      });
+
+      directive.cardModel.set('customTitle', 'This is a <span>formatted</span> custom title');
+
+      expect(directive.element.find('.custom-title')).to.have.html('This is a <span>formatted</span> custom title');
+    });
+
+    it('should not display the customTitle when not present on the card model', function() {
+      var directive = createDirective({
+        fieldName: '*'
+      });
+
+      expect(directive.element.find('.custom-title')).to.not.be.visible;
+    });
   });
 
 });

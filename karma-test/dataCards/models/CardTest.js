@@ -1,7 +1,17 @@
 describe('Card model', function() {
+  'use strict';
+
   var Model;
   var Page;
   var Card;
+  var Mockumentary;
+  var TEST_CARD_BLOB = {
+    'fieldName': 'testField',
+    'cardSize': 2,
+    'cardType': 'column',
+    'expanded': false,
+    'activeFilters': []
+  };
 
   beforeEach(module('dataCards'));
 
@@ -11,6 +21,11 @@ describe('Card model', function() {
     Page = $injector.get('Page');
     Mockumentary = $injector.get('Mockumentary');
   }));
+
+  function makeCard(cardBlob) {
+    var page = Mockumentary.createPage();
+    return Card.deserialize(page, cardBlob);
+  }
 
   it('deserialization should return an instance of Card with correct properties set', inject(function(Schemas, Filter) {
     var blob = {
@@ -27,10 +42,9 @@ describe('Card model', function() {
         }
       ]
     };
+    var instance = makeCard(blob);
 
     var requiredKeys = Schemas.regarding('card_metadata').getSchemaDefinition('1').required;
-    var page = Mockumentary.createPage();
-    var instance = Card.deserialize(page, blob);
     expect(instance).to.be.instanceof(Card);
     expect(instance.page).to.be.instanceof(Page);
 
@@ -63,32 +77,14 @@ describe('Card model', function() {
   // Models handling exceptions badly. Instead of breaking on serialization we need
   // to break on property set. Right now the models will break badly if we do that.
   it('should throw an exception on serialization when the model values do not conform to the schema.', function() {
-    var blob = {
-      'fieldName': 'testField',
-      'cardSize': 2,
-      'cardType': 'column',
-      'expanded': false,
-      'activeFilters': []
-    };
-
-    var page = Mockumentary.createPage();
-    var instance = Card.deserialize(page, blob);
+    var instance = makeCard(TEST_CARD_BLOB);
     instance.set('cardSize', '3'); // This property is expected to be an int.
 
     expect(function() { instance.serialize(); }).to.throw();
   });
 
   it('should create a clone with the same properties, including the unique id', function() {
-    var blob = {
-      'fieldName': 'testField',
-      'cardSize': 2,
-      'cardType': 'column',
-      'expanded': false,
-      'activeFilters': []
-    };
-
-    var page = Mockumentary.createPage();
-    var instance = Card.deserialize(page, blob);
+    var instance = makeCard(TEST_CARD_BLOB);
     var clone = instance.clone();
 
     expect(clone.fieldName).to.equal(instance.fieldName);
@@ -96,5 +92,25 @@ describe('Card model', function() {
     expect(clone.getCurrentValue('cardType')).to.equal(instance.getCurrentValue('cardType'));
     expect(clone.getCurrentValue('expanded')).to.equal(instance.getCurrentValue('expanded'));
     expect(clone.uniqueId).to.equal(instance.uniqueId);
+  });
+
+  describe('customTitle', function() {
+    var instance;
+    beforeEach(function() {
+      instance = makeCard(TEST_CARD_BLOB);
+    });
+
+    it('should exist', function() {
+      expect(instance.getCurrentValue('customTitle')).to.not.be.undefined;
+    });
+
+    it('should default to null', function() {
+      expect(instance.getCurrentValue('customTitle')).to.equal(null);
+    });
+
+    it('should be able to be set', function() {
+      instance.set('customTitle', 'custom value');
+      expect(instance.getCurrentValue('customTitle')).to.equal('custom value');
+    });
   });
 });

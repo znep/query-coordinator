@@ -150,6 +150,7 @@ describe('A Table Card Visualization', function() {
     var model = new Model();
     model.fieldName = '*';
     model.defineObservableProperty('activeFilters', []);
+    model.defineObservableProperty('customTitle', null);
 
     var pageOverrides = {
       id: 'test-page',
@@ -162,7 +163,7 @@ describe('A Table Card Visualization', function() {
       id: 'test-data',
       columns: options.columns,
       rowDisplayUnit: 'row'
-    }
+    };
     var pageModel = Mockumentary.createPage(pageOverrides, datasetOverrides);
     model.page = pageModel;
 

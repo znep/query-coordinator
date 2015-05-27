@@ -7,7 +7,7 @@
     // Move trailing spaces inside elements to just outside them. Ref: STAT-647
     var fixEmbeddedSpacesInTags = function(html)
     {
-      return html.replace(/( |&nbsp;)(<\/\w+>)/, '$2 ');
+      return html.replace(/( |&nbsp;)(<\/\w+>)/g, '$2 ');
     };
 
     // The typical use case for sanitizeHtmlPermissive is to clean DOM
@@ -26,7 +26,7 @@
     sanitizerUtilsNS.sanitizeHtmlPermissive = function(inputHtml)
     {
         if (!inputHtml) {
-            return inputHtml
+            return inputHtml;
         }
         if(!permissiveHtmlSanitizer)
         {

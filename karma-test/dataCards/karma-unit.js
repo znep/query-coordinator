@@ -137,19 +137,7 @@ module.exports = function ( karma ) {
       { pattern: 'public/stubs/images/*.png', watched: false, included: false, served: true },
 
       /* Old UX */
-      // Began implementing this for dataset-show-test, but its dependencies were breaking
-      // many other tests, so leaving it out for now.
-      // 'public/javascripts/util/namespace.js',
-      // 'public/javascripts/plugins/inheritance.js',
-      // 'public/javascripts/util/base-model.js',
-      // 'public/javascripts/util/socrata-server.js',
-      // 'public/javascripts/util/dataset/dataset.js',
-      // 'public/javascripts/controls/base-control.js',
-      // 'public/javascripts/controls/full-screen.js',
-      // 'public/javascripts/controls/dataset-controls.js',
-      // 'public/javascripts/controls/render-type-manager.js',
-      // 'public/javascripts/controls/grid-sidebar.js',
-      // 'public/javascripts/screens/dataset-show.js',
+      // moved to karma-test/old-ux
 
       /* THE TESTS THEMSELVES */
       'karma-test/helpers/ServerMocks.js',

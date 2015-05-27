@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationHistogram(Constants, AngularRxExtensions, CardDataService, HistogramService, Filter, $log) {
+  function cardVisualizationHistogram(Constants, CardDataService, HistogramService, Filter, $log) {
 
     /**
      * Fetches both unfiltered and filtered data.  Requests the data bucketed
@@ -50,11 +50,9 @@
       templateUrl: '/angular_templates/dataCards/cardVisualizationHistogram.html',
       link: function($scope) {
 
-        AngularRxExtensions.install($scope);
-
-        var whereClause$ = $scope.observe('whereClause');
+        var whereClause$ = $scope.$observe('whereClause');
         var filterApplied$ = whereClause$.map(_.isPresent);
-        var cardModel = $scope.observe('model');
+        var cardModel = $scope.$observe('model');
         var datasetModel$ = cardModel.observeOnLatest('page.dataset');
         var baseSoqlFilter$ = cardModel.observeOnLatest('page.baseSoqlFilter');
         var aggregation$ = cardModel.observeOnLatest('page.aggregation');
@@ -157,10 +155,10 @@
           return Rx.Observable.returnValue({error: $scope.histogramRenderError});
         });
 
-        $scope.bindObservable('rowDisplayUnit', rowDisplayUnit$);
-        $scope.bindObservable('cardData', cardData$);
-        $scope.bindObservable('filterApplied', filterApplied$);
-        $scope.bindObservable('expanded', expanded$);
+        $scope.$bindObservable('rowDisplayUnit', rowDisplayUnit$);
+        $scope.$bindObservable('cardData', cardData$);
+        $scope.$bindObservable('filterApplied', filterApplied$);
+        $scope.$bindObservable('expanded', expanded$);
       }
     };
   }

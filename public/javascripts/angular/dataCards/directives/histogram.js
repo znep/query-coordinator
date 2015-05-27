@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function histogramDirective(AngularRxExtensions, HistogramVisualizationService) {
+  function histogramDirective(HistogramVisualizationService) {
     return {
       restrict: 'E',
       scope: {
@@ -12,8 +12,6 @@
       },
       template: '<div class="histogram"></div>',
       link: function($scope, element) {
-        AngularRxExtensions.install($scope);
-
         var service = HistogramVisualizationService;
         var container = element.find('.histogram')[0];
 
@@ -24,7 +22,7 @@
         var svg = service.setupSVG();
 
         // Observables
-        var cardData$ = $scope.observe('cardData').
+        var cardData$ = $scope.$observe('cardData').
           map(function(data) {
             if (_.isObject(data) && _.isPresent(data.error)) {
               dom = service.setupDOM(container);

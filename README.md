@@ -1,10 +1,23 @@
 # Socrata Frontend
 
-## Karma tests for angular components
+## Tests
 
-TODO, this needs to be integrated as a Rake task and generalized. For now:
+tl; dr: Run the Setup steps below, then
+```
+bundle exec rake test
+```
+This will run all Ruby and Javascript tests.
 
-### Setup
+### Karma tests
+
+We use karma to test our Javascript code. These tests live under karma-test.
+There are multiple test suites defined by files named karma-unit.js.
+
+Test suites:
+1. Old UX tests: karma-test/old-ux/karma-unit.js
+2. Data Lens and Angular common components: karma-test/dataCards/karma-unit.js
+
+#### Setup
 
 Ensure that you are using Ruby version 1.9.3 or greater.
 
@@ -13,25 +26,44 @@ Make sure you've installed karma-cli and phantomjs globally:
 npm install -g karma-cli phantomjs karma-phantomjs-launcher grunt
 ```
 
-### To run unit tests once in all supported browsers:
+#### To run all Javascript tests once
+
 ```
-(cd karma-test/dataCards && karma start karma-unit.js)
+bundle exec rake test:karma
 ```
 
-### To watch file changes and run tests in phantom:
+#### To watch file changes and run tests in phantom:
+
+Note that this specifies a particular karma test suite. If you want to watch _all_
+karma suites, you'll have to run all the below commands.
+
+Note that if you change the contents of karma-unit.js, you'll have to restart
+the command.
+
+1. Old UX
+```
+(cd karma-test/old-ux && karma start karma-unit.js --browsers PhantomJS --singleRun false)
+```
+2. Data Lens
 ```
 (cd karma-test/dataCards && karma start karma-unit.js --browsers PhantomJS --singleRun false)
 ```
 
-### To watch file changes and run tests in Chrome (so you can open up the inspector for app or test code):
+#### To watch file changes and run tests in Chrome (so you can open up the inspector for app or test code):
+
+1. Old UX
+```
+(cd karma-test/old-ux && karma start karma-unit.js --browsers Chrome --singleRun false)
+```
+2. Data Lens
 ```
 (cd karma-test/dataCards && karma start karma-unit.js --browsers Chrome --singleRun false)
 ```
 
-### To generate coverage results
-Just run `rake`, the karma test task will run karma configured to compute coverage. Coverage results will live in frontend/karma-test/coverage-reports/dataCards/
+#### To generate coverage results
+Just run `bundle exec rake test:karma`, the karma test task will run karma configured to compute coverage. Coverage results will live in frontend/karma-test/coverage-reports/ for all tested projects.
 
-### To run tests in SauceLabs
+#### To run tests in SauceLabs
 
 Karma knows how to launch tests against browsers specified in supported_browsers.json
 (see karma-unit/dataCards/karma-unit.js to see how we teach this to Karma).
@@ -66,7 +98,7 @@ Examples:
 
   See supported_browsers.json for a list of values we support. You can add new browsers to this file - see https://saucelabs.com/platforms/webdriver for a list of browsers SauceLabs supports.
 
-### To exclude groups of tests
+#### To exclude groups of tests
 
 NOTE: THIS IS NOT SUPPORTED IN THE RAKE TASKS
 When launching karma directly, you may pass an --exclude-groups flag to not run a certain subset of tests. Groups are defined in karma-unit.js and as of this writing are: controllers directives filters integration services models util.
@@ -76,6 +108,8 @@ Example:
 ```
 (cd karma-test/dataCards && karma start karma-unit.js --browsers PhantomJS --singleRun false --exclude-groups "directives integration")
 ```
+
+This only works for Data Lens/Angular component tests (not old UX).
 
 ## Javascript/other asset package management
 

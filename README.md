@@ -4,7 +4,7 @@
 
 tl; dr: Run the Setup steps below, then
 ```
-rake test
+bundle exec rake test
 ```
 This will run all Ruby and Javascript tests.
 
@@ -29,7 +29,7 @@ npm install -g karma-cli phantomjs karma-phantomjs-launcher grunt
 #### To run all Javascript tests once
 
 ```
-rake test:karma
+bundle exec rake test:karma
 ```
 
 #### To watch file changes and run tests in phantom:
@@ -61,7 +61,7 @@ the command.
 ```
 
 #### To generate coverage results
-Just run `rake`, the karma test task will run karma configured to compute coverage. Coverage results will live in frontend/karma-test/coverage-reports/ for all tested projects
+Just run `bundle exec rake test:karma`, the karma test task will run karma configured to compute coverage. Coverage results will live in frontend/karma-test/coverage-reports/ for all tested projects.
 
 #### To run tests in SauceLabs
 

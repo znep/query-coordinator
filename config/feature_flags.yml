@@ -177,3 +177,6 @@ dataset_count_v2:
 force_redirect_to_data_lens:
   description: Automatically redirect to the default Data Lens page for a given NBE dataset.
   defaultValue: false
+hide_search_form:
+  description: Hide the search form on a dataset grid view.
+  defaultValue: false

@@ -90,18 +90,19 @@
     &.bottom, &.top
       max-height: 20em
       width: auto
-      left: 0
-      right: 0
       margin: auto
       & .legendLines
         width: auto
         max-height: 15em
-        max-width: 70%
         overflow-y: auto
     &.bottom
+      left: 50%
+      transform: translateX(-50%)
       position: absolute
       bottom: 1.5em
     &.top
+      left: 0
+      right: 0
       position: absolute
       top: 1em
 

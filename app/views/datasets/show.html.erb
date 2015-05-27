@@ -69,7 +69,7 @@
         <%- end -%>
       </li>
       <%- if @view.is_tabular? && !@view.is_form? && !FeatureFlags.derive(@view, request).disable_dataset_search_box -%>
-      <li>
+      <li<%= FeatureFlags.derive(@view, request).hide_search_form ? ' class="hide"'.html_safe : '' %>>
         <form id="searchForm" action="#">
           <span class="icon"></span>
           <input type="text" class="searchField textPrompt" title="<%= t('screens.ds.bar.find_prompt') %>"

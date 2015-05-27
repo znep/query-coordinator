@@ -68,4 +68,5 @@ module AngularHelper
 
     include_javascripts_unminified('exception_notifier')
   end
+
 end

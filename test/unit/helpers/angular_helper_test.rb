@@ -45,4 +45,5 @@ class AngularHelperTest < ActionView::TestCase
     result = application_helper.configuration_by_type 'feature_set'
     assert(result['staging_api_lockdown'] != nil, 'result has value')
   end
+
 end

@@ -65,6 +65,58 @@ describe('Socrata config service', function() {
         expect(originalConfigBlob).to.not.have.key('notHere');
       });
     });
+
+    describe('getScalarValue', function() {
+      it('should return a scalar value', function() {
+        configService.override('testScalar', 123);
+        expect(configService.getScalarValue('testScalar')).to.eql(123);
+      });
+      it('should return a numeric string as a scalar value', function() {
+        configService.override('testScalar', '123');
+        expect(configService.getScalarValue('testScalar')).to.eql(123);
+      });
+      describe('non-scalar values', function() {
+        it('should return "undefined"', function() {
+          configService.override('testScalar', null);
+          expect(configService.getScalarValue('testScalar')).to.eql(undefined);
+          configService.override('testScalar', NaN);
+          expect(configService.getScalarValue('testScalar')).to.eql(undefined);
+          configService.override('testScalar', undefined);
+          expect(configService.getScalarValue('testScalar')).to.eql(undefined);
+          configService.override('testScalar', 'foo');
+          expect(configService.getScalarValue('testScalar')).to.eql(undefined);
+          configService.override('testScalar', '');
+          expect(configService.getScalarValue('testScalar')).to.eql(undefined);
+          configService.override('testScalar', {});
+          expect(configService.getScalarValue('testScalar')).to.eql(undefined);
+          configService.override('testScalar', []);
+          expect(configService.getScalarValue('testScalar')).to.eql(undefined);
+        });
+        it('should return the default value', function() {
+          configService.override('testScalar', null);
+          expect(configService.getScalarValue('testScalar', 321)).to.eql(321);
+          configService.override('testScalar', NaN);
+          expect(configService.getScalarValue('testScalar', 321)).to.eql(321);
+          configService.override('testScalar', undefined);
+          expect(configService.getScalarValue('testScalar', 321)).to.eql(321);
+          configService.override('testScalar', 'foo');
+          expect(configService.getScalarValue('testScalar', 321)).to.eql(321);
+          configService.override('testScalar', '');
+          expect(configService.getScalarValue('testScalar', 321)).to.eql(321);
+          configService.override('testScalar', {});
+          expect(configService.getScalarValue('testScalar', 321)).to.eql(321);
+          configService.override('testScalar', []);
+          expect(configService.getScalarValue('testScalar', 321)).to.eql(321);
+        });
+      });
+      it('should return the default value when provided and the key is not present', function() {
+        expect(configService.getScalarValue('testScalarNotHere', 321)).to.eql(321);
+      });
+      it('should not return the default value when provided and the key is present', function() {
+        configService.override('testScalar', 123);
+        expect(configService.getScalarValue('testScalar', 321)).to.eql(123);
+      });
+    });
   });
 
   it('should not fail if not setup', function() {

@@ -82,13 +82,24 @@ describe('CardDataService', function() {
       }).to.throw();
     });
 
-    it('should access the correct dataset with the correct query', function() {
+    it('should access the correct dataset with the correct query using default limit', function() {
       $httpBackend.whenGET(/.*/);
       var httpSpy = sinon.spy(http, 'get');
       CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation);
       $httpBackend.flush();
       expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
         /\/api\/id\/fake-data\.json\?\$query=select\+`fakeNumberColumn`\+as\+\w+,\+count\(\*\)\+as\+\w+\++group\+by\+`fakeNumberColumn`\+order\+by\+count\(\*\)\+desc\+limit\+200/i
+      );
+      http.get.restore();
+    });
+
+    it('should access the correct dataset with the correct query using default limit', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation, {limit: 5432});
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /\/api\/id\/fake-data\.json\?\$query=select\+`fakeNumberColumn`\+as\+\w+,\+count\(\*\)\+as\+\w+\++group\+by\+`fakeNumberColumn`\+order\+by\+count\(\*\)\+desc\+limit\+5432/i
       );
       http.get.restore();
     });

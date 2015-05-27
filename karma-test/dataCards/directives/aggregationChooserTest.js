@@ -41,7 +41,6 @@ describe('<aggregation-chooser/>', function() {
   var testHelpers;
   var $rootScope;
   var Mockumentary;
-  var AngularRxExtensions;
   var $q;
   var $compile;
   var ServerConfig;
@@ -64,7 +63,6 @@ describe('<aggregation-chooser/>', function() {
       testHelpers = $injector.get('testHelpers');
       $rootScope = $injector.get('$rootScope');
       Mockumentary = $injector.get('Mockumentary');
-      AngularRxExtensions = $injector.get('AngularRxExtensions');
       $q = $injector.get('$q');
       $compile = $injector.get('$compile');
       ServerConfig = $injector.get('ServerConfig');
@@ -93,7 +91,7 @@ describe('<aggregation-chooser/>', function() {
     var pageOptions = {
       primaryAggregation: options.primaryAggregation,
       primaryAmountField: options.primaryAmountField
-    }
+    };
     var datasetOptions = {
       rowDisplayUnit: options.rowDisplayUnit,
       columns: options.columns

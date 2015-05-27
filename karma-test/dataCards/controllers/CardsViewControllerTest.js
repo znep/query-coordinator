@@ -261,7 +261,7 @@ describe('CardsViewController', function() {
 
       expect(pageDirtied).to.equal(false);
       // Make sure changing the scope updates the model
-      $scope.safeApply(function() {
+      $scope.$safeApply(function() {
         $scope.writablePage.name = 'Hello there I am a new name';
       });
 

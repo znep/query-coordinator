@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function relatedViews(AngularRxExtensions, WindowState, Constants) {
+  function relatedViews(WindowState, Constants) {
     return {
       restrict: 'E',
       scope: {
@@ -10,12 +10,12 @@
       },
       templateUrl: '/angular_templates/dataCards/relatedViews.html',
       link: function($scope, element) {
-        AngularRxExtensions.install($scope);
-        var destroyStream = $scope.observeDestroy(element);
+        var destroyStream = $scope.$destroyAsObservable(element);
+        var datasetPagesObservable = $scope.$observe('datasetPages');
 
         $scope.panelActive = false;
 
-        var datasetPublisherPagesSequence = $scope.observe('datasetPages').
+        var datasetPublisherPagesSequence = datasetPagesObservable.
           filter(_.isPresent).
           pluck('publisher').
           map(function(datasetPages) {
@@ -30,8 +30,8 @@
           }).
           startWith(true);
 
-        $scope.bindObservable('enablePublisherPages', enablePublisherPagesSequence);
-        $scope.bindObservable('datasetPublisherPages', datasetPublisherPagesSequence.startWith([]));
+        $scope.$bindObservable('enablePublisherPages', enablePublisherPagesSequence);
+        $scope.$bindObservable('datasetPublisherPages', datasetPublisherPagesSequence.startWith([]));
         $scope.togglePanel = function() {
           $scope.panelActive = !$scope.panelActive;
         };
@@ -59,7 +59,7 @@
           }).
           takeUntil(destroyStream).
           subscribe(function() {
-            $scope.safeApply(function() {
+            $scope.$safeApply(function() {
               $scope.panelActive = false;
             });
           });

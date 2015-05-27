@@ -94,6 +94,7 @@ module.exports = function ( karma ) {
 
       /* Angular itself */
       'bower_components/angular/angular.js',
+      'bower_components/angular-rx/dist/rx.angular.js',
 
       /* Libraries needing Angular */
       'bower_components/angular-sanitize/angular-sanitize.js',
@@ -110,6 +111,7 @@ module.exports = function ( karma ) {
        * OUR CODE BELOW */
 
       /* dataCards ITSELF */
+      'public/javascripts/angular/common/decorators.js',
       'public/javascripts/angular/common/*.js',
       'public/javascripts/angular/common/**/*.js',
 

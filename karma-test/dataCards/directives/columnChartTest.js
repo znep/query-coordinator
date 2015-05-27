@@ -1,5 +1,12 @@
 describe('columnChart', function() {
-  var th, compile, httpBackend, rootScope, scope, timeout, AngularRxExtensions;
+  'use strict';
+
+  var th;
+  var compile;
+  var httpBackend;
+  var rootScope;
+  var scope;
+  var timeout;
 
   var minSmallCardBarWidth = 8;
   var maxSmallCardBarWidth = 30;
@@ -142,7 +149,6 @@ describe('columnChart', function() {
     rootScope = $injector.get('$rootScope');
     scope = rootScope.$new();
     timeout = $injector.get('$timeout');
-    AngularRxExtensions = $injector.get('AngularRxExtensions');
   }));
 
   after(function() {
@@ -218,9 +224,10 @@ describe('columnChart', function() {
       var xAxisPosition = Math.round(xAxis.offset().top + xAxis.outerHeight());
 
       var bars = chart.element.find('.bar');
-      expect(bars.length).to.be.above(1);
+      expect(bars).to.have.length.greaterThan(1);
       bars.each(function() {
-        expect(Math.round(this.getBoundingClientRect().bottom + 1)).to.equal(xAxisPosition);
+        // Made this fuzzy because it would generate different results if I was at home or at the office (wat!?)
+        expect(Math.round(this.getBoundingClientRect().bottom)).to.be.within(xAxisPosition - 1, xAxisPosition + 1);
       });
     });
 
@@ -838,21 +845,20 @@ describe('columnChart', function() {
 
       chart = createNewColumnChart();
       scope = chart.scope;
-      AngularRxExtensions.install(scope);
 
-      var renderEvents = scope.eventToObservable('render:start').merge(scope.eventToObservable('render:complete'));
+      var renderEvents = scope.$eventToObservable('render:start').merge(scope.$eventToObservable('render:complete'));
 
       renderEvents.take(2).toArray().subscribe(
         function(events) {
           // Vis id is a string and is the same across events.
-          expect(events[0].args[0].source).to.satisfy(_.isString);
-          expect(events[1].args[0].source).to.equal(events[0].args[0].source);
+          expect(events[0].additionalArguments[0].source).to.satisfy(_.isString);
+          expect(events[1].additionalArguments[0].source).to.equal(events[0].additionalArguments[0].source);
 
           // Times are ints and are in order.
-          expect(events[0].args[0].timestamp).to.satisfy(_.isFinite);
-          expect(events[1].args[0].timestamp).to.satisfy(_.isFinite);
+          expect(events[0].additionalArguments[0].timestamp).to.satisfy(_.isFinite);
+          expect(events[1].additionalArguments[0].timestamp).to.satisfy(_.isFinite);
 
-          expect(events[0].args[0].timestamp).to.be.below(events[1].args[0].timestamp);
+          expect(events[0].additionalArguments[0].timestamp).to.be.below(events[1].additionalArguments[0].timestamp);
           done();
         }
       );

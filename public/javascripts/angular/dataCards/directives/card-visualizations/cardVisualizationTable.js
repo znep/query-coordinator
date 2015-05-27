@@ -5,7 +5,7 @@
   var unsortable = ['geo_entity'];
   var validColumnRegex = new RegExp('^[\\d\\w_]{2}');
 
-  function cardVisualizationTableDirectiveFactory(AngularRxExtensions, CardDataService, SortedTileLayout) {
+  function cardVisualizationTableDirectiveFactory(CardDataService, SortedTileLayout) {
 
     return {
       restrict: 'E',
@@ -17,16 +17,14 @@
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationTable.html',
       link: function($scope) {
-
-        AngularRxExtensions.install($scope);
-
-        var model = $scope.observe('model');
+        var model = $scope.$observe('model');
         var dataset = model.observeOnLatest('page.dataset');
-        var whereClause = $scope.observe('whereClause');
+        var whereClause = $scope.$observe('whereClause');
         var dataRequests = new Rx.Subject();
         var dataResponses = new Rx.Subject();
         var rowCountSequence = new Rx.Subject();
         var filteredRowCountSequence = new Rx.Subject();
+        var firstColumnObservable = $scope.$observe('firstColumn');
 
         var cardsSequence = model.observeOnLatest('page.cards');
         var aggregationSequence = model.observeOnLatest('page.aggregation');
@@ -77,7 +75,7 @@
             return _(columns).chain().toArray().sortBy('position').value();
           }).
           combineLatest(
-            $scope.observe('firstColumn'),
+            firstColumnObservable,
             function(asArray, firstColumnFieldName) {
               if ($.isPresent(firstColumnFieldName)) {
                 // Move the column specified by firstColumnFieldName to
@@ -104,7 +102,7 @@
 
         // If the number of requests is greater than the number of responses, we have
         // a request in progress and we should display the spinner.
-        $scope.bindObservable('busy',
+        $scope.$bindObservable('busy',
           Rx.Observable.combineLatest(
             dataRequestCount,
             dataResponseCount,
@@ -171,22 +169,24 @@
 
         var aggregatedColumnSequence = aggregationSequence.
           filter(function(value) { return value['function'] !== 'count'; }).
-          map(_.property('fieldName'));
+          pluck('fieldName');
 
         var nonAggregatedColumnSequence = aggregationSequence.
           filter(function(value) { return value['function'] === 'count'; }).
-          flatMap(_.constant(firstCardSequence));
+          combineLatest(firstCardSequence, function(aggregation, firstCard) {
+            return firstCard;
+          });
 
         var defaultSortColumnName = Rx.Observable.merge(
           aggregatedColumnSequence,
           nonAggregatedColumnSequence
         ).distinctUntilChanged();
 
-        $scope.bindObservable('whereClause', whereClause);
-        $scope.bindObservable('rowCount', rowCount.switchLatest());
-        $scope.bindObservable('filteredRowCount', filteredRowCount.switchLatest());
-        $scope.bindObservable('columnDetails', columnDetailsAsArray);
-        $scope.bindObservable('defaultSortColumnName', defaultSortColumnName);
+        $scope.$bindObservable('whereClause', whereClause);
+        $scope.$bindObservable('rowCount', rowCount.switchLatest());
+        $scope.$bindObservable('filteredRowCount', filteredRowCount.switchLatest());
+        $scope.$bindObservable('columnDetails', columnDetailsAsArray);
+        $scope.$bindObservable('defaultSortColumnName', defaultSortColumnName);
 
       }
     };

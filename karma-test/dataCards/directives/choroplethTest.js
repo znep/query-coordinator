@@ -139,7 +139,6 @@ describe('A Choropleth Directive', function() {
   var scope;
   var testHelpers;
   var timeout;
-  var AngularRxExtensions;
   var testData;
   var el;
   var cardVisualizationChoroplethHelpers;
@@ -179,7 +178,6 @@ describe('A Choropleth Directive', function() {
     rootScope = $injector.get('$rootScope');
     scope = rootScope.$new();
     timeout = $injector.get('$timeout');
-    AngularRxExtensions = $injector.get('AngularRxExtensions');
     testData = testHelpers.getTestJson(testJson);
     Constants = $injector.get('Constants');
     Constants.DISABLE_LEAFLET_ZOOM_ANIMATION = true;
@@ -206,24 +204,22 @@ describe('A Choropleth Directive', function() {
   describe('with a valid geojsonAggregateData input', function() {
     describe('render timing events', function() {
       it('should emit render:start and render:complete events on rendering', function(done) {
-        AngularRxExtensions.install(rootScope);
-
         var renderEvents = Rx.Observable.merge(
-          rootScope.eventToObservable('render:start').first(),
-          rootScope.eventToObservable('render:complete').first()
+          rootScope.$eventToObservable('render:start').first(),
+          rootScope.$eventToObservable('render:complete').first()
         );
 
         renderEvents.take(2).toArray().subscribe(
           function(events) {
             // Vis id is a string and is the same across events.
-            expect(events[0].args[0].source).to.satisfy(_.isString);
-            expect(events[1].args[0].source).to.equal(events[0].args[0].source);
+            expect(events[0].additionalArguments[0].source).to.satisfy(_.isString);
+            expect(events[1].additionalArguments[0].source).to.equal(events[0].additionalArguments[0].source);
 
             // Times are ints and are in order.
-            expect(events[0].args[0].timestamp).to.satisfy(_.isFinite);
-            expect(events[1].args[0].timestamp).to.satisfy(_.isFinite);
+            expect(events[0].additionalArguments[0].timestamp).to.satisfy(_.isFinite);
+            expect(events[1].additionalArguments[0].timestamp).to.satisfy(_.isFinite);
 
-            expect(events[0].args[0].timestamp).to.be.below(events[1].args[0].timestamp);
+            expect(events[0].additionalArguments[0].timestamp).to.be.below(events[1].additionalArguments[0].timestamp);
             done();
           }
         );

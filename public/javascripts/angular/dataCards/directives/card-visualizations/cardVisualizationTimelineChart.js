@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationTimelineChart(AngularRxExtensions, CardDataService, Filter, TimelineChartVisualizationHelpers, $log, DateHelpers, SoqlHelpers) {
+  function cardVisualizationTimelineChart(CardDataService, Filter, TimelineChartVisualizationHelpers, $log, DateHelpers, SoqlHelpers) {
 
     return {
       restrict: 'E',
@@ -11,10 +11,7 @@
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationTimelineChart.html',
       link: function(scope, element, attrs) {
-
-        AngularRxExtensions.install(scope);
-
-        var cardModelSequence = scope.observe('model');
+        var cardModelSequence = scope.$observe('model');
         var dataset = cardModelSequence.observeOnLatest('page.dataset').filter(_.isPresent);
         var baseSoqlFilter = cardModelSequence.observeOnLatest('page.baseSoqlFilter');
         var aggregationObservable = cardModelSequence.observeOnLatest('page.aggregation');
@@ -25,6 +22,7 @@
         var filteredDataSequence = new Rx.Subject();
         var filteredSoqlRollupTablesUsedSequence = new Rx.Subject();
         var unfilteredSoqlRollupTablesUsedSequence = new Rx.Subject();
+        var whereClauseObservable = scope.$observe('whereClause');
 
         // Keep track of the number of requests that have been made and the number of
         // responses that have come back.
@@ -43,7 +41,7 @@
         // SUPER IMPORTANT NOTE: Because of the way that RxJS works, we need to bind
         // this one here and not below with the other bound observables... so unfortunately
         // this code is location-dependent within the file.
-        scope.bindObservable('busy',
+        scope.$bindObservable('busy',
           Rx.Observable.combineLatest(
             dataRequestCount,
             dataResponseCount,
@@ -211,7 +209,7 @@
         var filteredData = Rx.Observable.subscribeLatest(
           cardModelSequence.pluck('fieldName'),
           dataset,
-          scope.observe('whereClause'),
+          whereClauseObservable,
           datasetPrecision,
           aggregationObservable,
           cardModelSequence,
@@ -315,14 +313,14 @@
           }
         );
 
-        scope.bindObservable('chartData', chartDataSequence);
-        scope.bindObservable('expanded', cardModelSequence.observeOnLatest('expanded'));
-        scope.bindObservable('precision', datasetPrecision);
-        scope.bindObservable('activeFilters', cardModelSequence.observeOnLatest('activeFilters'));
-        scope.bindObservable('rowDisplayUnit', cardModelSequence.observeOnLatest('page.aggregation.unit'));
-        scope.bindObservable('cannotRenderTimelineChart', cannotRenderTimelineChart);
-        scope.bindObservable('unfilteredSoqlRollupTablesUsed', unfilteredSoqlRollupTablesUsedSequence);
-        scope.bindObservable('filteredSoqlRollupTablesUsed', filteredSoqlRollupTablesUsedSequence);
+        scope.$bindObservable('chartData', chartDataSequence);
+        scope.$bindObservable('expanded', cardModelSequence.observeOnLatest('expanded'));
+        scope.$bindObservable('precision', datasetPrecision);
+        scope.$bindObservable('activeFilters', cardModelSequence.observeOnLatest('activeFilters'));
+        scope.$bindObservable('rowDisplayUnit', cardModelSequence.observeOnLatest('page.aggregation.unit'));
+        scope.$bindObservable('cannotRenderTimelineChart', cannotRenderTimelineChart);
+        scope.$bindObservable('unfilteredSoqlRollupTablesUsed', unfilteredSoqlRollupTablesUsedSequence);
+        scope.$bindObservable('filteredSoqlRollupTablesUsed', filteredSoqlRollupTablesUsedSequence);
 
         // Handle filtering
         scope.$on('filter-timeline-chart',

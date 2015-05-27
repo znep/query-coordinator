@@ -1,11 +1,8 @@
 (function() {
   'use strict';
 
-  function TestPageController($scope, $rootScope, $log, AngularRxExtensions) {
-
-    AngularRxExtensions.install($scope);
-
-  };
+  function TestPageController($scope, $rootScope, $log) {
+  }
 
   angular.
   module('dataCards.controllers').

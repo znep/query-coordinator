@@ -1,10 +1,7 @@
 (function() {
   'use strict';
 
-  function SingleCardViewController($scope, $rootScope, $log, AngularRxExtensions, page, fieldName, WindowState) {
-
-    AngularRxExtensions.install($scope);
-
+  function SingleCardViewController($scope, $rootScope, $log, page, fieldName, WindowState) {
     var cardObservable = page.
       observe('cards').
       map(function(allCards) {
@@ -23,15 +20,15 @@
     *************************/
 
     $scope.page = page;
-    $scope.bindObservable('card', cardObservable);
+    $scope.$bindObservable('card', cardObservable);
 
-    $scope.bindObservable('windowSize', WindowState.windowSizeSubject);
+    $scope.$bindObservable('windowSize', WindowState.windowSizeSubject);
 
     /*******************************
     * Filters and the where clause *
     *******************************/
 
-    $scope.bindObservable('globalWhereClauseFragment', globalWhereClauseFragmentSequence);
+    $scope.$bindObservable('globalWhereClauseFragment', globalWhereClauseFragmentSequence);
 
     // Choropleth doesn't consider map tiles while deciding whether to emit
     // render:complete (by design, as the event is intended for internal timing
@@ -39,7 +36,7 @@
     // So instead, we wait for all images to finish loading (yeah...).
 
     // Sequence of render:complete events.
-    var renderComplete = $rootScope.eventToObservable('render:complete');
+    var renderComplete = $rootScope.$eventToObservable('render:complete');
 
     // Sequence of true/false representing whether or not all images on
     // the page are complete.

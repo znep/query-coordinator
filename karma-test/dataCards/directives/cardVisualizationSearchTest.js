@@ -217,8 +217,9 @@ describe('A Search Card Visualization', function() {
               VALID_SEARCH_TERM));
 
             //Simulate the user changing the page WHERE clause.
-            cardData.outerScope.whereClause = 'A_NEW_WHERE_CLAUSE';
-            cardData.outerScope.$apply();
+            cardData.outerScope.$apply(function() {
+              cardData.outerScope.whereClause = 'A_NEW_WHERE_CLAUSE';
+            });
 
             expect(currentSearchWhere()).to.equal('{0} AND {1} = "{2}"'.format(
               cardData.outerScope.whereClause,
@@ -231,7 +232,7 @@ describe('A Search Card Visualization', function() {
           });
 
           it('should display the row count', function(done) {
-            cardData.element.find('card-visualization-search').isolateScope().observe('rowCount').subscribe(function(rowCount) {
+            cardData.element.find('card-visualization-search').isolateScope().$observe('rowCount').subscribe(function(rowCount) {
               expect(getRowsStub.called).to.equal(true);
               expect(cardData.element.find('.search-card-info').text()).to.equal('Showing {0} of {1} matching results'.format(rowCount, ROW_COUNT));
               done();

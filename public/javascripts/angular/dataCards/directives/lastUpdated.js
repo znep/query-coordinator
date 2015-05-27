@@ -1,16 +1,15 @@
 (function() {
   'use strict';
 
-  function LastUpdated($filter, AngularRxExtensions, LastModified) {
+  function LastUpdated($filter, LastModified) {
     return {
       templateUrl: '/angular_templates/dataCards/lastUpdated.html',
       restrict: 'E',
       scope: {},
       link: function($scope) {
-        AngularRxExtensions.install($scope);
         var lastModified = LastModified.observable.map($filter('fromNow'));
 
-        $scope.bindObservable('datasetDaysUnmodified', lastModified);
+        $scope.$bindObservable('datasetDaysUnmodified', lastModified);
       }
     }
   }

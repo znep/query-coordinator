@@ -29,13 +29,12 @@
         '<div class="flyout-title">This visualization is not available' +
         '<br/>for image export</div>'
       ),
-      scope.observeDestroy(element)
+      scope.$destroyAsObservable(element)
     );
   }
 
   function cardLayout(
     Constants,
-    AngularRxExtensions,
     WindowState,
     SortedTileLayout,
     FlyoutService,
@@ -58,8 +57,6 @@
       },
       templateUrl: '/angular_templates/dataCards/card-layout.html',
       link: function(scope, cardContainer) {
-        AngularRxExtensions.install(scope);
-
         scope.grabbedCard = null;
 
         var jqueryWindow = $(window);
@@ -473,7 +470,7 @@
             };
 
           }
-        ).takeUntil(scope.observeDestroy(cardContainer));
+        ).takeUntil(scope.$destroyAsObservable(cardContainer));
 
         // Figure out the sticky-ness of the QFB onscroll and un/stick appropriately
         subscriptions.push(
@@ -531,9 +528,9 @@
         subscriptions.push(Rx.Observable.subscribeLatest(
           cardsBySizeSequence,
           expandedCardsSequence,
-          scope.observe('editMode'),
+          scope.$observe('editMode'),
           WindowState.windowSizeSubject,
-          scope.observe('allowAddCard'),
+          scope.$observe('allowAddCard'),
           function layoutFn(cardsBySize, expandedCards, editMode, windowSize) {
             if (_.isEmpty(cardsBySize.normal) && _.isEmpty(cardsBySize.dataCard)) {
               return;
@@ -560,7 +557,7 @@
               newExpandedId = expandedCard && expandedCard.uniqueId;
               // Keep track of whether the layout is an expanded-card layout, so upstream
               // scopes can do things like disable edit buttons
-              scope.safeApply(function() {
+              scope.$safeApply(function() {
                 scope.expandedCard = expandedCard;
               });
             }
@@ -691,7 +688,7 @@
             mouseIsDown = false;
             mouseDownClientX = null;
             mouseDownClientY = null;
-            scope.safeApply(function() {
+            scope.$safeApply(function() {
               if (scope.grabbedCard) {
                 // Reset the element to default
                 scope.grabbedCard.jqEl.css({top: '', left: ''});
@@ -712,7 +709,7 @@
             // If we're out of the dead zone, start the drag operation.
             if (distanceSinceDragStart > 3) {
 
-              scope.safeApply(function() {
+              scope.$safeApply(function() {
 
                 var jqEl = $(position.target);
                 scope.grabbedCard = {
@@ -757,7 +754,7 @@
 
               newCards.splice(targetModelIndex, 0, cardModel);
 
-              scope.safeApply(function() {
+              scope.$safeApply(function() {
                 scope.page.set('cards', newCards);
               });
 
@@ -776,7 +773,7 @@
               });
 
               if (cardSize !== null) {
-                scope.safeApply(function() {
+                scope.$safeApply(function() {
                   cardModel.set('cardSize', cardSize);
                 });
               }
@@ -868,7 +865,7 @@
           function(el) {
             return '<div class="flyout-title">{0}</div>'.format($(el).attr('title'));
           },
-          scope.observeDestroy(cardContainer)
+          scope.$destroyAsObservable(cardContainer)
         );
 
         FlyoutService.register(
@@ -878,16 +875,16 @@
               return '<div class="flyout-title">All available cards are already on the page</div>';
             }
           },
-          scope.observeDestroy(cardContainer)
+          scope.$destroyAsObservable(cardContainer)
         );
 
         /******************
         * Bind observable *
         ******************/
 
-        scope.bindObservable('cardModels', scope.page.observe('cards'));
+        scope.$bindObservable('cardModels', scope.page.observe('cards'));
 
-        scope.observeDestroy(cardContainer).subscribe(function() {
+        scope.$destroyAsObservable(cardContainer).subscribe(function() {
           _.invoke(subscriptions, 'dispose');
         });
 

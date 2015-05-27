@@ -10,7 +10,6 @@
   function cardVisualizationFeatureMap(
     $log,
     ServerConfig,
-    AngularRxExtensions,
     CardDataService,
     VectorTileDataService,
     LeafletHelpersService
@@ -24,20 +23,18 @@
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationFeatureMap.html',
       link: function cardVisualizationFeatureMapLink(scope) {
-
-        AngularRxExtensions.install(scope);
-
-        var model = scope.observe('model');
+        var model = scope.$observe('model');
         var dataset = model.observeOnLatest('page.dataset').filter(_.isPresent);
         var datasetPermissions = dataset.observeOnLatest('permissions').filter(_.isPresent);
         var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
+        var whereClauseObservable = scope.$observe('whereClause');
 
         // The 'render:start' and 'render:complete' events are emitted by the
         // underlying feature map and are used for a) toggling the state of the
         // 'busy' spinner and b) performance analytics.
-        var renderStartObservable = scope.eventToObservable('render:start');
-        var renderErrorObservable = scope.eventToObservable('render:error');
-        var renderCompleteObservable = scope.eventToObservable('render:complete').takeUntil(renderErrorObservable);
+        var renderStartObservable = scope.$eventToObservable('render:start');
+        var renderErrorObservable = scope.$eventToObservable('render:error');
+        var renderCompleteObservable = scope.$eventToObservable('render:complete').takeUntil(renderErrorObservable);
 
         // For every renderStart event, start a timer that will either expire on
         // its own, or get cancelled by the renderComplete event firing
@@ -75,7 +72,7 @@
           startWith(false).
           distinctUntilChanged();
 
-        scope.bindObservable('displayRenderError', displayRenderErrorObservable);
+        scope.$bindObservable('displayRenderError', displayRenderErrorObservable);
 
         // Show the busy indicator when we are ready to render, and when we have
         // started rendering.  Clear the indicator when things have timed out
@@ -93,7 +90,7 @@
           startWith(true).
           distinctUntilChanged();
 
-        scope.bindObservable('busy', busyObservable);
+        scope.$bindObservable('busy', busyObservable);
 
         var featureExtentDataSequence = synchronizedFieldnameDataset.
           flatMap(function(fieldNameDataset) {
@@ -143,12 +140,12 @@
         * Bind non-busy-indicating observables. *
         ****************************************/
 
-        scope.bindObservable(
+        scope.$bindObservable(
           'baseLayerUrl',
           model.observeOnLatest('baseLayerUrl')
         );
 
-        scope.bindObservable('featureExtent', synchronizedFeatureExtentDataSequence);
+        scope.$bindObservable('featureExtent', synchronizedFeatureExtentDataSequence);
 
         var featureSet = ServerConfig.getFeatureSet();
 
@@ -175,13 +172,13 @@
         var vectorTileGetterSequence = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
           dataset.pluck('id'),
-          scope.observe('whereClause'),
+          whereClauseObservable,
           useOriginHostObservable,
           VectorTileDataService.buildTileGetter);
 
-        scope.bindObservable('vectorTileGetter', vectorTileGetterSequence);
+        scope.$bindObservable('vectorTileGetter', vectorTileGetterSequence);
 
-        scope.bindObservable(
+        scope.$bindObservable(
           'rowDisplayUnit',
           dataset.observeOnLatest('rowDisplayUnit')
         );

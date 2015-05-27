@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function modalDialog(WindowState, AngularRxExtensions) {
+  function modalDialog(WindowState) {
     return {
       restrict: 'E',
       scope: {
@@ -11,8 +11,6 @@
       transclude: true,
       templateUrl: '/angular_templates/dataCards/modalDialog.html',
       link: function (scope, element, attrs) {
-        AngularRxExtensions.install(scope);
-
         if (!scope.state) {
           scope.state = {show: false};
         }
@@ -20,7 +18,7 @@
         // The various conditions under which we can close the dialog
         scope.closeDialog = function() {
           if (!scope.state.disableCloseDialog) {
-            scope.safeApply(function() {
+            scope.$safeApply(function() {
               scope.state.show = false;
             });
           }
@@ -34,7 +32,7 @@
           testPoint.left += 1;
           var topMostElement = document.elementFromPoint(testPoint.left, testPoint.top);
           return dialog[0] === topMostElement;
-        }).takeUntil(scope.observeDestroy(element)).subscribe(scope.closeDialog);
+        }).takeUntil(scope.$destroyAsObservable(element)).subscribe(scope.closeDialog);
       }
     };
   }

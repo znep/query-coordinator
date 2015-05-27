@@ -1,14 +1,12 @@
-angular.module('dataCards.directives').directive('cardVisualizationColumnChart', function(AngularRxExtensions, CardDataService, Filter) {
+angular.module('dataCards.directives').directive('cardVisualizationColumnChart', function(CardDataService, Filter) {
+  'use strict';
 
   return {
     restrict: 'E',
     scope: { 'model': '=', 'whereClause': '=' },
     templateUrl: '/angular_templates/dataCards/cardVisualizationColumnChart.html',
     link: function($scope, element, attrs) {
-
-      AngularRxExtensions.install($scope);
-
-      var model = $scope.observe('model');
+      var model = $scope.$observe('model');
       var dataset = model.observeOnLatest('page.dataset');
       var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
       var aggregationObservable = model.observeOnLatest('page.aggregation');
@@ -16,6 +14,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
       var dataResponses = new Rx.Subject();
       var unfilteredDataSequence = new Rx.Subject();
       var filteredDataSequence = new Rx.Subject();
+      var whereClauseObservable = $scope.$observe('whereClause');
 
       // Keep track of the number of requests that have been made and the number of
       // responses that have come back.
@@ -27,7 +26,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
 
       // If the number of requests is greater than the number of responses, we have
       // a request in progress and we should display the spinner.
-      $scope.bindObservable('busy',
+      $scope.$bindObservable('busy',
         Rx.Observable.combineLatest(
           dataRequestCount,
           dataResponseCount,
@@ -36,7 +35,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
           }));
 
       var nonBaseFilterApplied = Rx.Observable.combineLatest(
-          $scope.observe('whereClause'),
+        whereClauseObservable,
           baseSoqlFilter,
           function (whereClause, baseFilter) {
             return !_.isEmpty(whereClause) && whereClause != baseFilter;
@@ -66,7 +65,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
       var filteredData = Rx.Observable.subscribeLatest(
         model.pluck('fieldName'),
         dataset,
-        $scope.observe('whereClause'),
+        whereClauseObservable,
         nonBaseFilterApplied,
         aggregationObservable,
         function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied, aggregationData) {
@@ -85,9 +84,9 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
           return Rx.Observable.fromPromise(dataPromise);
         });
 
-      $scope.bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
+      $scope.$bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
 
-      $scope.bindObservable('chartData', Rx.Observable.combineLatest(
+      $scope.$bindObservable('chartData', Rx.Observable.combineLatest(
           unfilteredDataSequence.switchLatest(),
           filteredDataSequence.switchLatest(),
           model.observeOnLatest('activeFilters'),
@@ -136,13 +135,13 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
 
         }));
 
-      $scope.bindObservable('filterApplied', $scope.observe('whereClause').
+      $scope.$bindObservable('filterApplied', whereClauseObservable.
         map(function(whereClause) {
           return _.isPresent(whereClause);
         })
       );
 
-      $scope.bindObservable('expanded', model.observeOnLatest('expanded'));
+      $scope.$bindObservable('expanded', model.observeOnLatest('expanded'));
 
       $scope.$on('column-chart:truncation-marker-clicked', function(event, datum) {
         $scope.model.page.toggleExpanded($scope.model);

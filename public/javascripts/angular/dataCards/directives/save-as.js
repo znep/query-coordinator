@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function saveAs($window, AngularRxExtensions, WindowState, FlyoutService) {
+  function saveAs($window, WindowState, FlyoutService) {
     return {
       restrict: 'E',
       scope: {
@@ -10,11 +10,9 @@
       },
       templateUrl: '/angular_templates/dataCards/saveAs.html',
       link: function($scope, element, attrs) {
-        AngularRxExtensions.install($scope);
-
         var saveEvents = new Rx.BehaviorSubject({ status: 'idle' });
 
-        $scope.bindObservable('saveStatus', saveEvents.pluck('status'));
+        $scope.$bindObservable('saveStatus', saveEvents.pluck('status'));
 
         // Since we have a flyout handler whose output depends on currentPageSaveEvents and $scope.hasChanges,
         // we need to poke the FlyoutService. We want the flyout to update immediately.
@@ -54,7 +52,7 @@
           } else if ($scope.saveStatus !== 'saving' && $scope.saveStatus !== 'saved') {
             $scope.savePageAs($scope.name.trim(), $scope.description.trim()).
               subscribe(saveEvents);
-            $scope.bindObservable('saveStatus', Rx.Observable.returnValue('saving'));
+            $scope.$bindObservable('saveStatus', Rx.Observable.returnValue('saving'));
           }
         };
 
@@ -66,9 +64,9 @@
           filter(function(e) {
             return $scope.panelActive && $(e.target).closest(element).length === 0;
           }).
-          takeUntil($scope.observeDestroy(element)).
+          takeUntil($scope.$destroyAsObservable(element)).
           subscribe(function() {
-            $scope.safeApply(function() {
+            $scope.$safeApply(function() {
               $scope.panelActive = false;
             });
           });
@@ -91,9 +89,9 @@
           } else if (saveEvents.value.status === 'idle') {
             return '<div class="flyout-title">Click to save your changes as a new page</div>';
           }
-        }, $scope.observeDestroy(element));
+        }, $scope.$destroyAsObservable(element));
 
-        $scope.observeDestroy(element).subscribe(function() {
+        $scope.$destroyAsObservable(element).subscribe(function() {
           $scope.$emit('cleaned-up');
         });
       }

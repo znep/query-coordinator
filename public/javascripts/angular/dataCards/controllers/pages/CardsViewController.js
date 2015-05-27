@@ -7,7 +7,7 @@
 
   function initDownload($scope, page, obeIdObservable, WindowState, ServerConfig) {
     // The CSV download url
-    $scope.bindObservable(
+    $scope.$bindObservable(
       'datasetCSVDownloadURL',
       Rx.Observable.combineLatest(
         obeIdObservable.startWith(null),
@@ -36,7 +36,7 @@
         // Don't double-handle toggling downloadOpened
         !$(e.target).closest('.download-menu').length;
     }).
-    takeUntil($scope.eventToObservable('$destroy')).
+    takeUntil($scope.$destroyAsObservable()).
     subscribe(function() {
       $scope.$apply(function() {
         $scope.downloadOpened = false;
@@ -81,9 +81,9 @@
         }
       );
 
-    $scope.bindObservable('pageIsPublic', pageIsPublicObservable);
-    $scope.bindObservable('datasetIsPublic', datasetIsPublicObservable);
-    $scope.bindObservable('pagePermissions', pagePermissionsObservable);
+    $scope.$bindObservable('pageIsPublic', pageIsPublicObservable);
+    $scope.$bindObservable('datasetIsPublic', datasetIsPublicObservable);
+    $scope.$bindObservable('pagePermissions', pagePermissionsObservable);
 
     $scope.manageLensState = {
       show: false
@@ -109,7 +109,7 @@
       warnings: {}
     };
     page.observe('name').filter(_.isString).subscribe(function(name) {
-      $scope.safeApply(function() {
+      $scope.$safeApply(function() {
         $scope.writablePage.name = $.trim(name);
         if (name.length > 255) {
           $scope.writablePage.warnings.name = [VALIDATION_ERROR_STRINGS.name.maxLength];
@@ -118,15 +118,15 @@
         }
       });
     });
-    $scope.observe('writablePage.name').filter(_.isString).subscribe(function(name) {
+    $scope.$observe('writablePage.name').filter(_.isString).subscribe(function(name) {
       page.set('name', $.trim(name));
     });
     page.observe('description').filter(_.isString).subscribe(function(description) {
-      $scope.safeApply(function() {
+      $scope.$safeApply(function() {
         $scope.writablePage.description = $.trim(description);
       });
     });
-    $scope.observe('writablePage.description').filter(_.isString).subscribe(function(description) {
+    $scope.$observe('writablePage.description').filter(_.isString).subscribe(function(description) {
       page.set('description', $.trim(description));
     });
   }
@@ -135,7 +135,6 @@
     $scope,
     $log,
     $q,
-    AngularRxExtensions,
     Filter,
     PageDataService,
     UserSessionService,
@@ -149,9 +148,6 @@
     PageHelpersService,
     DeviceService
   ) {
-
-    AngularRxExtensions.install($scope);
-
     bindWritableProperties($scope, page);
 
     /*************************
@@ -162,15 +158,15 @@
     $scope.showOtherViewsButton = ServerConfig.get('enableDataLensOtherViews');
 
     var pageNameSequence = page.observe('name').filter(_.isPresent);
-    $scope.bindObservable('pageName', pageNameSequence);
-    $scope.bindObservable('pageDescription', page.observe('description'));
+    $scope.$bindObservable('pageName', pageNameSequence);
+    $scope.$bindObservable('pageDescription', page.observe('description'));
 
-    $scope.bindObservable('dataset', page.observe('dataset'));
-    $scope.bindObservable('datasetPages', page.observe('dataset.pages'));
-    $scope.bindObservable('aggregation', page.observe('aggregation'));
-    $scope.bindObservable('dynamicTitle', PageHelpersService.dynamicAggregationTitle(page));
-    $scope.bindObservable('sourceDatasetName', page.observe('dataset.name'));
-    $scope.bindObservable('cardModels', page.observe('cards'));
+    $scope.$bindObservable('dataset', page.observe('dataset'));
+    $scope.$bindObservable('datasetPages', page.observe('dataset.pages'));
+    $scope.$bindObservable('aggregation', page.observe('aggregation'));
+    $scope.$bindObservable('dynamicTitle', PageHelpersService.dynamicAggregationTitle(page));
+    $scope.$bindObservable('sourceDatasetName', page.observe('dataset.name'));
+    $scope.$bindObservable('cardModels', page.observe('cards'));
 
     pageNameSequence.subscribe(function(pageName) {
       WindowOperations.setTitle('{0} | Socrata'.format(pageName));
@@ -190,7 +186,7 @@
       // Error means this isn't a migrated dataset. Just don't surface any obeId.
       catchException(Rx.Observable.never());
 
-    $scope.bindObservable('sourceDatasetURL', obeIdObservable.map(function(obeId) {
+    $scope.$bindObservable('sourceDatasetURL', obeIdObservable.map(function(obeId) {
       // Now construct the source dataset url from the obe id
       return OBE_DATASET_PAGE.format(obeId);
     }));
@@ -202,7 +198,7 @@
     // Bind the current user to the scope, or null if no user is logged in or there was an error
     // fetching the current user.
     var currentUserSequence = UserSessionService.getCurrentUserObservable();
-    $scope.bindObservable('currentUser', currentUserSequence);
+    $scope.$bindObservable('currentUser', currentUserSequence);
 
     var isCurrentUserAdminOrPublisher =
       currentUserSequence.
@@ -221,7 +217,7 @@
           return ownerId === userId;
         });
 
-    $scope.bindObservable(
+    $scope.$bindObservable(
       'currentUserHasSaveRight',
       isCurrentUserAdminOrPublisher.
       combineLatest(isCurrentUserOwnerOfDataset, function(a, b) { return a || b; }).
@@ -247,7 +243,7 @@
 
         if (shouldShowManageLens) {
 
-          $scope.safeApply(function() {
+          $scope.$safeApply(function() {
             $scope.shouldShowManageLens = true;
             initManageLens($scope, page);
           });
@@ -261,7 +257,7 @@
 
     var allCardsFilters = page.observe('activeFilters');
 
-    $scope.bindObservable('globalWhereClauseFragment', page.observe('computedWhereClauseFragment'));
+    $scope.$bindObservable('globalWhereClauseFragment', page.observe('computedWhereClauseFragment'));
 
     var datasetColumnsObservable = page.observe('dataset.columns');
 
@@ -324,7 +320,7 @@
       }, []);
 
     });
-    $scope.bindObservable('appliedFiltersForDisplay', appliedFiltersForDisplayObservable);
+    $scope.$bindObservable('appliedFiltersForDisplay', appliedFiltersForDisplayObservable);
 
     $scope.clearAllFilters = function() {
       _.each($scope.page.getCurrentValue('cards'), function(card) {
@@ -403,7 +399,7 @@
 
       });
 
-    $scope.bindObservable('datasetColumns', datasetColumns);
+    $scope.$bindObservable('datasetColumns', datasetColumns);
 
 
     /***************************
@@ -424,15 +420,15 @@
     var currentPageSaveEvents = new Rx.BehaviorSubject({ status: 'idle' });
 
     // Bind save status related things so the UI reflects them.
-    $scope.bindObservable('saveStatus', currentPageSaveEvents.pluck('status'));
+    $scope.$bindObservable('saveStatus', currentPageSaveEvents.pluck('status'));
 
     // Track whether there've been changes to the page.
     // If we save the page, reset the dirtiness of the model.
     currentPageSaveEvents.filter(function(event) { return event.status === 'saved'; }).
       subscribe(_.bind(page.resetDirtied, page));
-    $scope.bindObservable('hasChanges', page.observeDirtied());
+    $scope.$bindObservable('hasChanges', page.observeDirtied());
 
-    $scope.emitEventsFromObservable('page:dirtied', page.observeDirtied().filter(_.identity));
+    $scope.$emitEventsFromObservable('page:dirtied', page.observeDirtied().filter(_.identity));
 
     function notifyUserOfSaveProgress(savePromise, publishTo) {
       var savedMessagePersistenceMsec = 3000;
@@ -564,6 +560,8 @@
         pluck(1); // We're done with the buffer - only care about the current event.
     };
 
+    var destroy$ = $scope.$destroyAsObservable();
+
     FlyoutService.register(
       'edit-page-warning',
       function() {
@@ -573,7 +571,7 @@
           return '';
         }
       },
-      $scope.eventToObservable('$destroy')
+      destroy$
     );
 
 
@@ -648,7 +646,7 @@
           'Please save the page in order to download a visualization as an image' +
         '</div>'
       ),
-      $scope.eventToObservable('$destroy')
+      destroy$
     );
 
     //TODO consider extending register() to take a selector, too.
@@ -678,7 +676,7 @@
             '<div class="flyout-title">No changes to be saved</div>';
         }
       },
-      $scope.eventToObservable('$destroy')
+      destroy$
     );
 
     FlyoutService.register(
@@ -689,7 +687,7 @@
           '<div class="flyout-title">Click to save your changes as a new page</div>' :
           '<div class="flyout-title">No changes to be saved</div>';
       },
-      $scope.eventToObservable('$destroy')
+      destroy$
     );
 
     FlyoutService.register(
@@ -698,12 +696,12 @@
 
         return '<div class="flyout-title">Click to reset all filters</div>';
       },
-      $scope.eventToObservable('$destroy')
+      destroy$
     );
 
     // Since we have a flyout handler whose output depends on currentPageSaveEvents and $scope.hasChanges,
     // we need to poke the FlyoutService. We want the flyout to update immediately.
-    currentPageSaveEvents.merge($scope.observe('hasChanges')).subscribe(function() {
+    currentPageSaveEvents.merge($scope.$observe('hasChanges')).subscribe(function() {
       FlyoutService.refreshFlyout();
     });
 
@@ -711,7 +709,7 @@
     * Clean up if/when the scope is destroyed *
     ******************************************/
 
-    $scope.$on('$destroy', function() {
+    destroy$.subscribe(function() {
       $('#api-panel-toggle-btn').off('click');
       var $apiUrlDisplay = $('#api-url-display');
       $apiUrlDisplay.off('mousedown');

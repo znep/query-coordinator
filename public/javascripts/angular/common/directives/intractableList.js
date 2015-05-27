@@ -1,4 +1,4 @@
-angular.module('socrataCommon.directives').directive('intractableList', function ($document, AngularRxExtensions) {
+angular.module('socrataCommon.directives').directive('intractableList', function ($document) {
   var DEFAULT_MAX_RESULTS = 10,
       VIEWPORT_BOTTOM_PADDING = 10,
       COUNT_MESSAGES_CONTAINER_HEIGHT = 20;
@@ -18,7 +18,6 @@ angular.module('socrataCommon.directives').directive('intractableList', function
       totalAmount: '='
     },
     link: function (scope,element,attrs) {
-      AngularRxExtensions.install(scope);
       var firstEntryIndex = 0;
       scope.pageNumber = 0;
       scope.maxResults = (attrs.maxResults || DEFAULT_MAX_RESULTS);
@@ -55,9 +54,9 @@ angular.module('socrataCommon.directives').directive('intractableList', function
       });
 
       //bind keyboard events: arrows up(38) / down(40), enter(13), and tab(9)
-      Rx.Observable.fromEvent($document, 'keydown').takeUntil(scope.observeDestroy(element)).
+      Rx.Observable.fromEvent($document, 'keydown').takeUntil(scope.$destroyAsObservable(element)).
         subscribe(function(evt){
-          scope.safeApply(function() {
+          scope.$safeApply(function() {
             if (evt.which === 38){
               gotoPreviousItem();
             } else if (evt.which === 40){

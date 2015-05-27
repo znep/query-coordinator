@@ -3,7 +3,6 @@
 
   function FeatureMap(
     Constants,
-    AngularRxExtensions,
     VectorTiles,
     LeafletHelpersService,
     FlyoutService
@@ -20,8 +19,9 @@
       },
       templateUrl: '/angular_templates/dataCards/featureMap.html',
       link: function(scope, element) {
-
-        AngularRxExtensions.install(scope);
+        var baseLayerUrlObservable = scope.$observe('baseLayerUrl');
+        var featureExtentObservable = scope.$observe('featureExtent');
+        var vectorTileGetterObservable = scope.$observe('vectorTileGetter');
 
         var mapOptions = {
           attributionControl: false,
@@ -54,7 +54,7 @@
             _.constant(
               '<div class="flyout-title">Zoom is temporarily unavailable. Please try again later.</div>'
             ),
-            scope.eventToObservable('$destroy')
+            scope.$destroyAsObservable()
           );
         }
 
@@ -244,7 +244,7 @@
               var promise = vectorTileGetter.apply(this, Array.prototype.slice.call(arguments));
               promise.then(_.noop,
                 function() {
-                  scope.safeApply(function() {
+                  scope.$safeApply(function() {
                     scope.$emit('render:error');
                   });
                 });
@@ -305,7 +305,7 @@
          * and by the analytics system to record render timings.
          */
         function emitRenderStarted() {
-          scope.safeApply(function() {
+          scope.$safeApply(function() {
             scope.$emit('render:start', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'vector_tile_render' });
           });
         }
@@ -316,7 +316,7 @@
          * and by the analytics system to record render timings.
          */
         function emitRenderCompleted() {
-          scope.safeApply(function() {
+          scope.$safeApply(function() {
             scope.$emit('render:complete', { source: 'feature_map_{0}'.format(scope.$id), timestamp: _.now(), tag: 'vector_tile_render' });
           });
         }
@@ -365,7 +365,7 @@
         });
 
         // Keep the baseTileLayer in sync with the baseLayerUrl observable.
-        baseTileLayerObservable = scope.observe('baseLayerUrl').
+        baseTileLayerObservable = baseLayerUrlObservable.
           map(function(url) {
             if (!_.isDefined(url)) {
               return {
@@ -414,8 +414,6 @@
         // Now that everything's hooked up, connect the subscription.
         baseTileLayerObservable.connect();
 
-        var featureExtentObservable = scope.observe('featureExtent');
-
         // We want to set the bounds before we start requesting tiles so that
         // we don't make a bunch of requests for zoom level 1 while we are
         // waiting for the extent query to come back.
@@ -441,7 +439,7 @@
         // React to changes to the vectorTileGetter observable
         // (which changes indicate that a re-render is needed).
         Rx.Observable.subscribeLatest(
-          scope.observe('vectorTileGetter').filter(_.isFunction),
+          vectorTileGetterObservable.filter(_.isFunction),
           featureExtentObservable, // Used for signaling to create feature layer
           function(vectorTileGetter) {
             currentVectorTileGetter = vectorTileGetter;

@@ -5,7 +5,6 @@ describe('card-layout', function() {
   var QUICK_FILTER_BAR_HEIGHT = 74;
   var CUSTOMIZE_BAR_HEIGHT = 40;
 
-  var AngularRxExtensions;
   var Card;
   var mockWindowStateService = null;
   var mockDownloadService;
@@ -65,7 +64,6 @@ describe('card-layout', function() {
     Model = $injector.get('Model');
     Card = $injector.get('Card');
     Page = $injector.get('Page');
-    AngularRxExtensions = $injector.get('AngularRxExtensions');
     $q = $injector.get('$q');
     Constants = $injector.get('Constants');
 
@@ -207,11 +205,10 @@ describe('card-layout', function() {
     pageModel.set('cards', options.cards(pageModel, datasetModel));
 
     var outerScope = rootScope.$new();
-    AngularRxExtensions.install(outerScope);
     outerScope.page = pageModel;
     outerScope.where = '';
     outerScope.editMode = false;
-    outerScope.bindObservable('cardModels', pageModel.observe('cards'));
+    outerScope.$bindObservable('cardModels', pageModel.observe('cards'));
     outerScope.chooserMode = {};
 
     var html = [

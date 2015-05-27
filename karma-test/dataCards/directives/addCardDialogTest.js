@@ -4,11 +4,9 @@ describe('addCardDialog', function() {
   var testHelpers;
   var Card;
   var Mockumentary;
-  var Page;
   var Model;
   var $rootScope;
   var $controller;
-  var AngularRxExtensions;
   var $httpBackend;
   var $templateCache;
 
@@ -152,11 +150,9 @@ describe('addCardDialog', function() {
 
     var outerScope = $rootScope.$new();
 
-    AngularRxExtensions.install(outerScope);
-
     outerScope.page = pageModel;
-    outerScope.bindObservable('cardModels', pageModel.observe('cards'));
-    outerScope.bindObservable('datasetColumns', datasetColumns);
+    outerScope.$bindObservable('cardModels', pageModel.observe('cards'));
+    outerScope.$bindObservable('datasetColumns', datasetColumns);
     outerScope.dialogState = {
       'cardSize': 1,
       'show': true
@@ -203,7 +199,6 @@ describe('addCardDialog', function() {
       'Model',
       '$rootScope',
       '$controller',
-      'AngularRxExtensions',
       '$httpBackend',
       '$templateCache',
       function(
@@ -213,7 +208,6 @@ describe('addCardDialog', function() {
         _Model,
         _$rootScope,
         _$controller,
-        _AngularRxExtensions,
         _$httpBackend,
         _$templateCache) {
 
@@ -223,7 +217,6 @@ describe('addCardDialog', function() {
           Model = _Model;
           $rootScope = _$rootScope;
           $controller = _$controller;
-          AngularRxExtensions = _AngularRxExtensions;
           $httpBackend = _$httpBackend;
           $templateCache = _$templateCache;
 

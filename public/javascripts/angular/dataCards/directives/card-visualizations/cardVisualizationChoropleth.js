@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationChoropleth(Constants, AngularRxExtensions, CardDataService, Filter,
+  function cardVisualizationChoropleth(Constants, CardDataService, Filter,
                                        ServerConfig, CardVisualizationChoroplethHelpers, $log) {
 
     return {
@@ -12,10 +12,7 @@
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationChoropleth.html',
       link: function(scope, element, attrs) {
-
-        AngularRxExtensions.install(scope);
-
-        var model = scope.observe('model').filter(_.isPresent);
+        var model = scope.$observe('model').filter(_.isPresent);
         var dataset = model.observeOnLatest('page.dataset');
         var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
         var aggregationObservable = model.observeOnLatest('page.aggregation');
@@ -23,6 +20,7 @@
         var dataResponses = new Rx.Subject();
         var unfilteredDataSequence = new Rx.Subject();
         var filteredDataSequence = new Rx.Subject();
+        var whereClauseObservable = scope.$observe('whereClause');
 
         // Keep track of the number of requests that have been made and the number of
         // responses that have come back.
@@ -45,7 +43,7 @@
         // SUPER IMPORTANT NOTE: Because of the way that RxJS works, we need to bind
         // this one here and not below with the other bound observables... so unfortunately
         // this code is location-dependent within the file.
-        scope.bindObservable('busy',
+        scope.$bindObservable('busy',
           Rx.Observable.combineLatest(
             dataRequestCount,
             dataResponseCount,
@@ -59,7 +57,7 @@
         ******************************************/
 
         Rx.Observable.combineLatest(
-          scope.observe('whereClause'),
+          whereClauseObservable,
           baseSoqlFilter,
           function (whereClause, baseFilter) {
             return !_.isEmpty(whereClause) && whereClause != baseFilter;
@@ -83,7 +81,7 @@
             );
 
             if (shapeFile === null) {
-              scope.safeApply(function() {
+              scope.$safeApply(function() {
                 scope.choroplethRenderError = true;
               });
             }
@@ -109,7 +107,7 @@
                 // Still increment the counter to stop the spinner
                 dataResponses.onNext(1);
 
-                scope.safeApply(function() {
+                scope.$safeApply(function() {
                   scope.choroplethRenderError = true;
                 });
               }
@@ -181,7 +179,7 @@
                 // Show geojson regions request error message.
                 dataResponses.onNext(1);
 
-                scope.safeApply(function() {
+                scope.$safeApply(function() {
                   scope.choroplethRenderError = true;
                 });
               }
@@ -215,7 +213,7 @@
         Rx.Observable.subscribeLatest(
           model.pluck('fieldName'),
           dataset,
-          scope.observe('whereClause'),
+          whereClauseObservable,
           aggregationObservable,
           function(fieldName, dataset, whereClauseFragment, aggregationData) {
             dataRequests.onNext(1);
@@ -243,11 +241,11 @@
         * Bind non-busy-indicating observables. *
         ****************************************/
 
-        scope.bindObservable('fieldName', model.pluck('fieldName'));
-        scope.bindObservable('baseLayerUrl', model.observeOnLatest('baseLayerUrl'));
-        scope.bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
+        scope.$bindObservable('fieldName', model.pluck('fieldName'));
+        scope.$bindObservable('baseLayerUrl', model.observeOnLatest('baseLayerUrl'));
+        scope.$bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
 
-        scope.bindObservable(
+        scope.$bindObservable(
           'geojsonAggregateData',
           Rx.Observable.combineLatest(
             geometryLabelObservable.switchLatest(),
@@ -290,7 +288,7 @@
           }
         });
 
-        scope.bindObservable('cardSize', model.observeOnLatest('cardSize'));
+        scope.$bindObservable('cardSize', model.observeOnLatest('cardSize'));
 
       }
     };

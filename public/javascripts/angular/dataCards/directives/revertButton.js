@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function revertButton(AngularRxExtensions, FlyoutService) {
+  function revertButton(FlyoutService) {
     return {
       restrict: 'E',
       scope: {
@@ -10,9 +10,6 @@
       },
       templateUrl: '/angular_templates/dataCards/revertButton.html',
       link: function(scope, element) {
-
-        AngularRxExtensions.install(scope);
-
          FlyoutService.register(
            'revert-btn',
            function() {
@@ -22,7 +19,7 @@
                return '<div class="flyout-title">No changes to be reverted</div>';
              }
            },
-           scope.observeDestroy(element)
+           scope.$destroyAsObservable(element)
          );
       }
     };

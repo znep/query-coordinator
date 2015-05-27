@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function manageLensDialog(AngularRxExtensions, http) {
+  function manageLensDialog(http) {
     return {
       restrict: 'E',
       scope: {
@@ -10,8 +10,6 @@
       },
       templateUrl: '/angular_templates/dataCards/manageLensDialog.html',
       link: function($scope, element, attrs) {
-        AngularRxExtensions.install($scope);
-
         var pageIsPublicObservable = $scope.page.observe('permissions').
             filter(_.isObject).
             map(_.property('isPublic'));
@@ -20,17 +18,17 @@
             filter(_.isObject).
             map(_.property('isPublic'));
 
-        $scope.bindObservable(
+        $scope.$bindObservable(
           'pageVisibility',
           pageIsPublicObservable.map(function(isPublic) { return isPublic ? 'public' : 'private'; })
         );
 
-        $scope.bindObservable(
+        $scope.$bindObservable(
           'datasetIsPublic',
           datasetIsPublicObservable
         );
 
-        $scope.bindObservable('selectDisabled', Rx.Observable.combineLatest(
+        $scope.$bindObservable('selectDisabled', Rx.Observable.combineLatest(
           pageIsPublicObservable,
           datasetIsPublicObservable,
           function(pageIsPublic, datasetIsPublic) {
@@ -60,14 +58,14 @@
 
             // Now close the dialog after 1.5 seconds
             setTimeout(function() {
-              $scope.safeApply(function() {
+              $scope.$safeApply(function() {
                 $scope.dialogState.show = false;
               });
             }, 1500);
           })['catch'](function() {
             $scope.saveStatus = 'failed';
             setTimeout(function() {
-              $scope.safeApply(function() {
+              $scope.$safeApply(function() {
                 $scope.saveStatus = null;
               });
             }, 8000);

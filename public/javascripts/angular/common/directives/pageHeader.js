@@ -9,13 +9,11 @@
     'sign_up': { label: 'Sign Up', url: '/signup?referer_redirect=1' }
   };
 
-  function pageHeader(AngularRxExtensions, ServerConfig) {
+  function pageHeader(ServerConfig) {
     return {
       restrict: 'E',
       templateUrl: '/angular_templates/common/pageHeader.html',
       link: function($scope) {
-        AngularRxExtensions.install($scope);
-
         var theme = ServerConfig.getTheme();
 
         function buildLinkValue(theme, key) {

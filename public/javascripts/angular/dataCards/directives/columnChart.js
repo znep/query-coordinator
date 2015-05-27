@@ -1,4 +1,4 @@
-angular.module('socrataCommon.directives').directive('columnChart', function($parse, $timeout, AngularRxExtensions, FlyoutService) {
+angular.module('socrataCommon.directives').directive('columnChart', function($parse, $timeout, FlyoutService) {
   'use strict';
 
   var renderColumnChart = function(element, chartData, showFiltered, dimensions, expanded, rowDisplayUnit) {
@@ -558,8 +558,10 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       rowDisplayUnit: '='
     },
     link: function(scope, element, attrs) {
-
-      AngularRxExtensions.install(scope);
+      var chartDataObservable = scope.$observe('chartData');
+      var showFilteredObservable = scope.$observe('showFiltered');
+      var expandedObservable = scope.$observe('expanded');
+      var rowDisplayUnitObservable = scope.$observe('rowDisplayUnit');
 
       if (_.isEmpty(element.closest('.card-visualization'))) {
         throw new Error("[columnChart] column-chart is missing a .card-visualization (grand)parent.");
@@ -574,7 +576,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       FlyoutService.register(
         'truncation-marker',
         _.constant('<div class="flyout-title">Click to expand</div>'),
-        scope.observeDestroy(element)
+        scope.$destroyAsObservable(element)
       );
 
       element.parent().delegate('.bar-group, .labels .label .contents span', 'click', function(event) {
@@ -591,10 +593,10 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             height: Math.max(dimensions.height, 0)
           };
         }),
-        scope.observe('chartData'),
-        scope.observe('showFiltered'),
-        scope.observe('expanded'),
-        scope.observe('rowDisplayUnit'),
+        chartDataObservable,
+        showFilteredObservable,
+        expandedObservable,
+        rowDisplayUnitObservable,
         function(cardVisualizationDimensions, chartData, showFiltered, expanded, rowDisplayUnit) {
           if (!chartData) return;
           scope.$emit('render:start', { source: 'columnChart_{0}'.format(scope.$id), timestamp: _.now() });
@@ -612,7 +614,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           });
         }
       );
-      scope.observeDestroy(element).subscribe(function() {
+      scope.$destroyAsObservable(element).subscribe(function() {
         element.parent().undelegate();
         element.find('.chart-scroll').undelegate();
       });

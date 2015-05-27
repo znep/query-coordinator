@@ -1,10 +1,10 @@
 (function() {
   'use strict';
 
-  function CardVisualizationSearch(AngularRxExtensions, CardDataService, ServerConfig, SoqlHelpers) {
+  function CardVisualizationSearch(CardDataService, ServerConfig, SoqlHelpers) {
 
     function pluckEventArg(val) {
-      return val.args[0];
+      return _.get(val, 'additionalArguments[0]');
     }
 
     function handleSampleData($scope, model, dataset) {
@@ -27,8 +27,8 @@
         return Rx.Observable.fromArray(data);
       }).take(2);
 
-      $scope.bindObservable('sampleOne', samplesObservable.take(1));
-      $scope.bindObservable('sampleTwo', samplesObservable.skip(1).take(1));
+      $scope.$bindObservable('sampleOne', samplesObservable.take(1));
+      $scope.$bindObservable('sampleTwo', samplesObservable.skip(1).take(1));
     }
 
     return {
@@ -36,32 +36,28 @@
       scope: { 'model': '=', 'whereClause': '=' },
       templateUrl: '/angular_templates/dataCards/cardVisualizationSearch.html',
       link: function($scope, element) {
-
-        AngularRxExtensions.install($scope);
-
-        var model = $scope.observe('model');
+        var model = $scope.$observe('model');
         var dataset = model.observeOnLatest('page.dataset');
         var fieldNameObservable = model.pluck('fieldName');
         var physicalDatatypeObservable = model.observeOnLatest('column.physicalDatatype');
 
         var invalidSearchInputSubject = new Rx.BehaviorSubject(false);
         var invalidSearchInputObservable = invalidSearchInputSubject.distinctUntilChanged();
-        var searchValueObservable = $scope.observe('search');
+        var searchValueObservable = $scope.$observe('search');
         var expandedObservable = model.observeOnLatest('expanded');
-        var rowInfoObservable = $scope.eventToObservable('rows:info').map(pluckEventArg);
+        var rowInfoObservable = $scope.$eventToObservable('rows:info').map(pluckEventArg);
         var hasRowsObservable = rowInfoObservable.pluck('hasRows').distinctUntilChanged();
         var rowCountObservable = rowInfoObservable.pluck('filteredRowCount');
-        var rowsLoadedObservable = $scope.eventToObservable('rows:loaded').map(pluckEventArg);
+        var rowsLoadedObservable = $scope.$eventToObservable('rows:loaded').map(pluckEventArg);
+        var whereClauseObservable = $scope.$observe('whereClause');
 
-        var selectedItemObservable = $scope.eventToObservable('suggestionToolPanel:selectedItem').
-          map(function(event) {
-            return event.args[0];
-          });
+        var selectedItemObservable = $scope.$eventToObservable('suggestionToolPanel:selectedItem').
+          map(pluckEventArg);
 
         // Observable that emits the current search term on submit
         var submitValueObservable = Rx.Observable.fromEvent(element.find('form'), 'submit').
-          map(function() {
-            return $scope.search;
+          withLatestFrom(searchValueObservable, function(event, searchValue) {
+            return searchValue;
           }).
           filter($.isPresent).
           merge(selectedItemObservable);
@@ -115,7 +111,9 @@
 
         // On submit, if not expanded, then expand
         submitValueObservable.
-          flatMap(function() { return expandedObservable.take(1); }).
+          withLatestFrom(expandedObservable, function(submitValue, expanded) {
+            return expanded;
+          }).
           filter(function(value) { return !value; }).
           subscribe(function() {
             $scope.model.page.toggleExpanded($scope.model);
@@ -126,30 +124,29 @@
         // that combines it with the field name, checking if the datatype is a number or not, and creating
         // the appropriate 'WHERE' clause
         var searchWhereObservable = submitValueObservable.
-          flatMapLatest(function(searchValue) {
-            return Rx.Observable.
-              combineLatest(
-                fieldNameObservable,
-                physicalDatatypeObservable,
-                $scope.observe('whereClause'),
-                function(fieldName, physicalDatatype, externalWhereClause) {
-                  var whereClause;
-                  if (physicalDatatype === 'number') {
-                    var numericSearchValue = parseInt(searchValue, 10);
-                    if (_.isNaN(numericSearchValue)) {
-                      invalidSearchInputSubject.onNext(true);
-                    } else {
-                      whereClause = '{0} = {1}'.format(SoqlHelpers.formatFieldName(fieldName), numericSearchValue);
-                    }
-                  } else {
-                    whereClause = '{0} = "{1}"'.format(SoqlHelpers.formatFieldName(fieldName), searchValue);
-                  }
-                  return _.isPresent(externalWhereClause) ?
-                    '{0} AND {1}'.format(externalWhereClause, whereClause) :
-                    whereClause;
-                }).
-                filter(_.isDefined);
-          });
+          merge(whereClauseObservable).
+          withLatestFrom(
+            submitValueObservable,
+            fieldNameObservable,
+            physicalDatatypeObservable,
+            whereClauseObservable,
+            function(signal, searchValue, fieldName, physicalDatatype, externalWhereClause) {
+              var whereClause;
+              if (physicalDatatype === 'number') {
+                var numericSearchValue = parseInt(searchValue, 10);
+                if (_.isNaN(numericSearchValue)) {
+                  invalidSearchInputSubject.onNext(true);
+                } else {
+                  whereClause = '{0} = {1}'.format(SoqlHelpers.formatFieldName(fieldName), numericSearchValue);
+                }
+              } else {
+                whereClause = '{0} = "{1}"'.format(SoqlHelpers.formatFieldName(fieldName), searchValue);
+              }
+              return _.isPresent(externalWhereClause) ?
+                '{0} AND {1}'.format(externalWhereClause, whereClause) :
+                whereClause;
+            }).
+            filter(_.isDefined);
 
         // When the card contracts, clear the invalid search flag
         expandedObservable.subscribe(function(val) {
@@ -179,19 +176,19 @@
           startWith(false);
 
         $scope.$on('suggestionToolPanel:selectedItem', function(event, selectedItem) {
-          $scope.safeApply(function() {
+          $scope.$safeApply(function() {
             $scope.search = selectedItem;
           });
         });
 
         var SPACE_BAR_KEYCODE = 32;
-        var userActionKeypressObservable = $scope.eventToObservable('clearableInput:keypress').
+        var userActionKeypressObservable = $scope.$eventToObservable('clearableInput:keypress').
           filter(function(event) {
-            var which = event.args[0].which;
+            var which = _.get(event, 'additionalArguments[0].which');
             return which > SPACE_BAR_KEYCODE;
           });
 
-        var userClickedInClearableInputObservable = $scope.eventToObservable('clearableInput:click');
+        var userClickedInClearableInputObservable = $scope.$eventToObservable('clearableInput:click');
 
         var userActionsWhichShouldShowSuggestionPanelObservable = Rx.Observable.merge(
           hasInputObservable.risingEdge(),
@@ -202,17 +199,17 @@
         );
 
         var clicksOutsideOfSuggestionUIObservable = Rx.Observable.fromEvent($(document), 'click').
-          takeUntil($scope.observeDestroy(element)).
+          takeUntil($scope.$destroyAsObservable(element)).
           filter(function(event) {
             var isEventFromBeyondSuggestionToolPanel = element.find('suggestion-tool-panel').find(event.target).length === 0;
             var isEventFromOutsideTheSearchInputField = element.find('clearable-input').find(event.target).length === 0;
             return isEventFromBeyondSuggestionToolPanel && isEventFromOutsideTheSearchInputField;
           });
 
-        var clearableInputBlurTargetNotSuggestionObservable = $scope.eventToObservable('clearableInput:blur')
+        var clearableInputBlurTargetNotSuggestionObservable = $scope.$eventToObservable('clearableInput:blur')
           .filter(function(event) {
             // Only hide the suggestion panel if the blur target is not a suggestion.
-            var newFocusTarget = event.args[0].relatedTarget;
+            var newFocusTarget = _.get(event, 'additionalArguments[0].relatedTarget');
             if (_.isPresent(newFocusTarget)) {
               return $(newFocusTarget).closest(element).length > 0;
             } else {
@@ -249,18 +246,18 @@
           shouldShowSuggestionPanelObservable = Rx.Observable.returnValue(false);
         }
 
-        $scope.bindObservable('rowCount', clampedRowsLoadedObservable);
-        $scope.bindObservable('totalRowCount', rowCountObservable);
-        $scope.bindObservable('isInvalidSearch', invalidSearchInputObservable);
-        $scope.bindObservable('showResults', showResultsObservable);
-        $scope.bindObservable('tableRendered', tableRenderedObservable);
-        $scope.bindObservable('noResults', hasRowsObservable.startWith(true));
-        $scope.bindObservable('searchWhere', searchWhereObservable);
-        $scope.bindObservable('fieldName', fieldNameObservable);
-        $scope.bindObservable('searchValue', searchValueObservable);
-        $scope.bindObservable('physicalDatatype', physicalDatatypeObservable);
-        $scope.bindObservable('dataset', dataset);
-        $scope.bindObservable('shouldShowSuggestionPanel', shouldShowSuggestionPanelObservable);
+        $scope.$bindObservable('rowCount', clampedRowsLoadedObservable);
+        $scope.$bindObservable('totalRowCount', rowCountObservable);
+        $scope.$bindObservable('isInvalidSearch', invalidSearchInputObservable);
+        $scope.$bindObservable('showResults', showResultsObservable);
+        $scope.$bindObservable('tableRendered', tableRenderedObservable);
+        $scope.$bindObservable('noResults', hasRowsObservable.startWith(true));
+        $scope.$bindObservable('searchWhere', searchWhereObservable);
+        $scope.$bindObservable('fieldName', fieldNameObservable);
+        $scope.$bindObservable('searchValue', searchValueObservable);
+        $scope.$bindObservable('physicalDatatype', physicalDatatypeObservable);
+        $scope.$bindObservable('dataset', dataset);
+        $scope.$bindObservable('shouldShowSuggestionPanel', shouldShowSuggestionPanelObservable);
 
         handleSampleData($scope, model, dataset);
       }

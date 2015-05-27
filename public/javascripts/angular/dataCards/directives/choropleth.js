@@ -7,7 +7,6 @@
   // 'highlighted' is what happens when you mouseover a feature (this is currently a white stroke).
 
   function choropleth(Constants,
-                      AngularRxExtensions,
                       $timeout,
                       ChoroplethVisualizationService,
                       CardDataService, // This is an unfortunate leak to get the default extent
@@ -34,7 +33,7 @@
           element.getAttribute('data-flyout-text')
         );
       },
-      scope.eventToObservable('$destroy'),
+      scope.$destroyAsObservable(),
       false,
       // The last argument specifies a horizontal display mode.
       true);
@@ -693,11 +692,10 @@
                     '</div>',
                   '</div>'].join(''),
       link: function choroplethLink(scope, element, attrs) {
-
-        AngularRxExtensions.install(scope);
-
         var LegendType = attrs.stops === 'continuous' ? LegendContinuous : LegendDiscrete;
         var legend = new LegendType(element.find('.choropleth-legend'), element, scope);
+        var baseLayerUrlObservable = scope.$observe('baseLayerUrl');
+        var geojsonAggregateDataObservable = scope.$observe('geojsonAggregateData');
 
         /***********************
          * Mutate Leaflet state *
@@ -1069,7 +1067,7 @@
           }
 
         },
-        scope.observeDestroy(element),
+        scope.$destroyAsObservable(element),
         // The second-to-last argument specifies whether the flyout should follow
         // the cursor (true) or be fixed to the target element (false).
         true,
@@ -1125,7 +1123,7 @@
         * React to changes in bound data *
         *********************************/
 
-        var tileLayer = scope.observe('baseLayerUrl').
+        var tileLayer = baseLayerUrlObservable.
           map(function(url) {
             if (!_.isDefined(url)) {
               return {
@@ -1164,7 +1162,7 @@
 
         Rx.Observable.subscribeLatest(
           element.observeDimensions().throttle(500, Rx.Scheduler.timeout),
-          scope.observe('geojsonAggregateData'),
+          geojsonAggregateDataObservable,
           function(dimensions, geojsonAggregateData) {
 
             if (_.isDefined(geojsonAggregateData)) {
@@ -1222,7 +1220,7 @@
             }
           });
 
-        scope.observeDestroy(element).subscribe(function() {
+        scope.$destroyAsObservable(element).subscribe(function() {
           // Leaflet needs to be told to clean up after itself.
           map.remove();
         });

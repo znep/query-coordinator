@@ -84,7 +84,6 @@ describe('table directive', function() {
     }
   }
 
-  var AngularRxExtensions;
   var timeout;
   var testHelpers;
   var SoqlHelpers;
@@ -122,7 +121,6 @@ describe('table directive', function() {
 
   beforeEach(inject(function($injector) {
     try {
-      AngularRxExtensions = $injector.get('AngularRxExtensions');
       timeout = $injector.get('$timeout');
       testHelpers = $injector.get('testHelpers');
       SoqlHelpers = $injector.get('SoqlHelpers');
@@ -616,21 +614,20 @@ describe('table directive', function() {
   describe('render timing events', function() {
     afterEach(destroyAllTableCards);
     it('should emit render:start and render:complete events on rendering', function(done) {
-      AngularRxExtensions.install(outerScope);
-
-      var renderEvents = outerScope.eventToObservable('render:start').merge(outerScope.eventToObservable('render:complete'));
+      var renderEvents = outerScope.$eventToObservable('render:start').
+        merge(outerScope.$eventToObservable('render:complete'));
 
       renderEvents.take(2).toArray().subscribe(
         function(events) {
           // Vis id is a string and is the same across events.
-          expect(events[0].args[0].source).to.satisfy(_.isString);
-          expect(events[1].args[0].source).to.equal(events[0].args[0].source);
+          expect(events[0].additionalArguments[0].source).to.satisfy(_.isString);
+          expect(events[1].additionalArguments[0].source).to.equal(events[0].additionalArguments[0].source);
 
           // Times are ints and are in order.
-          expect(events[0].args[0].timestamp).to.satisfy(_.isFinite);
-          expect(events[1].args[0].timestamp).to.satisfy(_.isFinite);
+          expect(events[0].additionalArguments[0].timestamp).to.satisfy(_.isFinite);
+          expect(events[1].additionalArguments[0].timestamp).to.satisfy(_.isFinite);
 
-          expect(events[0].args[0].timestamp).to.be.below(events[1].args[0].timestamp);
+          expect(events[0].additionalArguments[0].timestamp).to.be.below(events[1].additionalArguments[0].timestamp);
           done();
         }
       );

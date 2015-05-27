@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function addCardDialog(AngularRxExtensions, Constants, Card, FlyoutService, ServerConfig, $log) {
+  function addCardDialog(Constants, Card, FlyoutService, $log) {
     return {
       restrict: 'E',
       scope: {
@@ -14,11 +14,9 @@
       },
       templateUrl: '/angular_templates/dataCards/addCardDialog.html',
       link: function(scope, element, attrs) {
-        AngularRxExtensions.install(scope);
-
-        scope.bindObservable(
+        scope.$bindObservable(
           'columnHumanNameFn',
-          scope.observe('page').observeOnLatest('dataset.columns').map(
+          scope.$observe('page').observeOnLatest('dataset.columns').map(
             function(datasetColumns) {
               return function(fieldName) {
                 var column = datasetColumns[fieldName];
@@ -44,10 +42,10 @@
         scope.availableCardTypes = [];
 
         Rx.Observable.subscribeLatest(
-          scope.observe('addCardSelectedColumnFieldName'),
-          scope.observe('datasetColumns').filter(_.isDefined),
-          scope.observe('page').observeOnLatest('dataset').filter(_.isDefined),
-          scope.observe('page').observeOnLatest('dataset.columns').filter(_.isDefined),
+          scope.$observe('addCardSelectedColumnFieldName'),
+          scope.$observe('datasetColumns').filter(_.isDefined),
+          scope.$observe('page').observeOnLatest('dataset').filter(_.isDefined),
+          scope.$observe('page').observeOnLatest('dataset.columns').filter(_.isDefined),
           function(fieldName, scopeDatasetColumns, dataset, columns) {
             var columnCardinality;
 
@@ -115,9 +113,9 @@
           scope.$emit('customize-card-with-model', addCardModel);
         };
 
-        scope.bindObservable(
+        scope.$bindObservable(
           'isCustomizable',
-          scope.observe('addCardModel').observeOnLatest('isCustomizable')
+          scope.$observe('addCardModel').observeOnLatest('isCustomizable')
         );
 
         var EXCESSIVE_COLUMN_WARNING = [
@@ -140,13 +138,13 @@
             return '<div class="flyout-title">Visualize this column as a {0}</div>'.format(visualizationName);
           }
 
-        }, scope.observeDestroy(element));
+        }, scope.$destroyAsObservable(element));
 
         FlyoutService.register('warning-icon', function(el) {
 
           return EXCESSIVE_COLUMN_WARNING;
 
-        }, scope.observeDestroy(element));
+        }, scope.$destroyAsObservable(element));
 
       }
     };

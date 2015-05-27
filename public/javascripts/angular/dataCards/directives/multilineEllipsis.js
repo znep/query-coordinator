@@ -41,7 +41,7 @@
    *     show-more-mode="expand-link"
    *     text="{{large_multi_line_content}}"></div>
   */
-  angular.module('dataCards.directives').directive('multilineEllipsis', function($q, AngularRxExtensions, FlyoutService) {
+  angular.module('dataCards.directives').directive('multilineEllipsis', function($q, FlyoutService) {
     return {
       scope: {
         'maxLines': '@',
@@ -63,7 +63,10 @@
         var content = element.find('.content');
         var contentFlyoutClass;
 
-        AngularRxExtensions.install($scope);
+        var textObservable = $scope.$observe('text');
+        var maxLinesObservable = $scope.$observe('maxLines');
+        var toleranceObservable = $scope.$observe('tolerance');
+        var expandedObservable = $scope.$observe('expanded');
 
         $scope.showMoreMode = attrs['showMoreMode'] || 'expand-link';
 
@@ -109,7 +112,7 @@
             } else {
               return undefined;
             }
-          }, $scope.observeDestroy(element));
+          }, $scope.$destroyAsObservable(element));
         }
 
         // We _could_ support maintaining the height animation if these are changed
@@ -117,10 +120,10 @@
         // Note that this does _not_ care about element dimensions, as otherwise
         // we'd cancel the animation by virtue of animating the height :)
         Rx.Observable.merge(
-          $scope.observe('text'),
-          $scope.observe('maxLines'),
-          $scope.observe('tolerance'),
-          $scope.observe('expanded')
+          textObservable,
+          maxLinesObservable,
+          toleranceObservable,
+          expandedObservable
         ).subscribe(resetHeightAnimation);
 
         // Track whether or not we ever rendered. This is used to prevent expansion animations
@@ -134,10 +137,10 @@
                                                      //    which can cause infinite loops (IE will notify us of
                                                      //    old sizes occasionally and then immediately correct
                                                      //    itself. This causes us to bounce between two sizes).
-          $scope.observe('text'),
-          $scope.observe('maxLines'),
-          $scope.observe('tolerance'),
-          $scope.observe('expanded'),
+          textObservable,
+          maxLinesObservable,
+          toleranceObservable,
+          expandedObservable,
           function(dimensions, text, maxLines, tolerance, expanded) {
             // If something important changed, the previous merge will cancel the animation.
             if (animationRunning) return;
@@ -224,7 +227,7 @@
 
             var isClamped = forceReportAsClamped || content.triggerHandler('isTruncated');
 
-            $scope.safeApply(function() {
+            $scope.$safeApply(function() {
               $scope.textClamped = isClamped;
               $scope.contentTitleAttr = ($scope.showMoreMode === 'title-attr' && isClamped) ? text : null;
             });

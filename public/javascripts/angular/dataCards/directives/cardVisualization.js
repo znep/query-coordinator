@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualization(AngularRxExtensions, ServerConfig) {
+  function cardVisualization() {
 
     return {
       restrict: 'E',
@@ -12,11 +12,9 @@
       templateUrl: '/angular_templates/dataCards/cardVisualization.html',
       link: function($scope, element, attrs) {
 
-        AngularRxExtensions.install($scope);
+        var modelSubject = $scope.$observe('model').filter(_.identity);
 
-        var modelSubject = $scope.observe('model').filter(_.identity);
-
-        $scope.bindObservable(
+        $scope.$bindObservable(
           'cardType',
           Rx.Observable.combineLatest(
             modelSubject.observeOnLatest('cardType'),
@@ -54,13 +52,13 @@
           )
         );
 
-        $scope.bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
-        $scope.bindObservable('cardSize', modelSubject.observeOnLatest('cardSize'));
+        $scope.$bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
+        $scope.$bindObservable('cardSize', modelSubject.observeOnLatest('cardSize'));
 
       }
     };
 
-  };
+  }
 
   angular.
     module('socrataCommon.directives').

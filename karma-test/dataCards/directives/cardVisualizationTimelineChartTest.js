@@ -1,6 +1,6 @@
-'use strict';
-
 describe('A Timeline Chart Card Visualization', function() {
+  'use strict';
+
   var testHelpers;
   var $q;
   var $rootScope;

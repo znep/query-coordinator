@@ -21,7 +21,7 @@
     };
   };
 
-  function AggregationChooser(AngularRxExtensions, FlyoutService, WindowState, ServerConfig) {
+  function AggregationChooser(FlyoutService, WindowState, ServerConfig) {
 
     return {
       restrict: 'E',
@@ -30,8 +30,6 @@
         page: '='
       },
       link: function($scope, element) {
-        AngularRxExtensions.install($scope);
-
         /*
          * Scope variables
          */
@@ -43,7 +41,7 @@
 
         // Observable of hovers over a aggregation-type selector
         var aggregationHoverObservable = WindowState.mousePositionSubject.
-          takeUntil($scope.observeDestroy(element)).
+          takeUntil($scope.$destroyAsObservable(element)).
           map(function(positionData) {
             return $(positionData.target).closest('[data-aggregation-type]');
           });
@@ -56,7 +54,7 @@
           startWith(false).
           distinctUntilChanged();
 
-        $scope.bindObservable('countFunctionHover', countFunctionHoverObservable);
+        $scope.$bindObservable('countFunctionHover', countFunctionHoverObservable);
 
         // Observable that goes true when hovering a non-'count' aggregation-type selector
         var aggregateFunctionHoverObservable = aggregationHoverObservable.
@@ -66,7 +64,7 @@
           startWith(false).
           distinctUntilChanged();
 
-        $scope.bindObservable('aggregateFunctionHover', aggregateFunctionHoverObservable);
+        $scope.$bindObservable('aggregateFunctionHover', aggregateFunctionHoverObservable);
 
         /*
          * Setup Dataset Observables
@@ -183,23 +181,23 @@
           });
 
         var rowDisplayUnitLabelObservable = aggregationSequence.pluck('rowDisplayUnit').map(pluralizeAndCapitalize);
-        $scope.bindObservable('highlightFirstColumn', highlightFirstColumnObservable);
-        $scope.bindObservable('canAggregate', canAggregateObservable);
-        $scope.bindObservable('rowDisplayUnitLabel', rowDisplayUnitLabelObservable);
-        $scope.bindObservable('unitLabel', unitLabelObservable);
-        $scope.bindObservable('aggregationFunction', labeledFunctionObservable);
-        $scope.bindObservable('aggregationColumns', aggregationColumnsObservable);
-        $scope.bindObservable('activeAggregation', labeledFieldObservable);
+        $scope.$bindObservable('highlightFirstColumn', highlightFirstColumnObservable);
+        $scope.$bindObservable('canAggregate', canAggregateObservable);
+        $scope.$bindObservable('rowDisplayUnitLabel', rowDisplayUnitLabelObservable);
+        $scope.$bindObservable('unitLabel', unitLabelObservable);
+        $scope.$bindObservable('aggregationFunction', labeledFunctionObservable);
+        $scope.$bindObservable('aggregationColumns', aggregationColumnsObservable);
+        $scope.$bindObservable('activeAggregation', labeledFieldObservable);
 
         /*
          * Panel toggling
          */
-        WindowState.closeDialogEventObservable.takeUntil($scope.observeDestroy(element)).
+        WindowState.closeDialogEventObservable.takeUntil($scope.$destroyAsObservable(element)).
           filter(function(e) {
             return e.type === 'keydown' || ($scope.panelActive && $(e.target).closest(element).length === 0);
           }).
           subscribe(function() {
-            $scope.safeApply(function() {
+            $scope.$safeApply(function() {
               $scope.panelActive = false;
             });
           });
@@ -213,7 +211,7 @@
             return '<span class="flyout-cell">{0}</span>'.
               format('This column cannot be used with a<br>number of aggregate');
           }
-        }, $scope.observeDestroy(element), true);
+        }, $scope.$destroyAsObservable(element), true);
 
         /*
          * Callback functions

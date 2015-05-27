@@ -4,7 +4,7 @@
   var rowsPerBlock = 50;
   var rowHeight = $.relativeToPx('2rem');
 
-  function tableDirectiveFactory(AngularRxExtensions, $q, $timeout, SoqlHelpers) {
+  function tableDirectiveFactory($q, $timeout, SoqlHelpers) {
 
     return {
       templateUrl: '/angular_templates/dataCards/table.html',
@@ -22,12 +22,10 @@
       },
 
       link: function(scope, element, attrs) {
-        AngularRxExtensions.install(scope);
-
         // CORE-4645: Omit some columns from display.
-        scope.bindObservable(
+        scope.$bindObservable(
           'filteredColumnDetails',
-          scope.observe('columnDetails').
+          scope.$observe('columnDetails').
             filter(_.isPresent).
             map(function(columnDetails) {
               return _.filter(columnDetails, function(column) {
@@ -45,10 +43,10 @@
         // This directive is expected to be rewritten or at least refactored soon.
         // Dating for the eventual lulz: 2/12/2015
         Rx.Observable.combineLatest(
-          scope.observe('whereClause').filter(_.isDefined),
-          scope.observe('rowCount').filter(_.isNumber),
-          scope.observe('filteredRowCount').filter(_.isNumber),
-          scope.observe('filteredColumnDetails').filter(_.isPresent),
+          scope.$observe('whereClause').filter(_.isDefined),
+          scope.$observe('rowCount').filter(_.isNumber),
+          scope.$observe('filteredRowCount').filter(_.isNumber),
+          scope.$observe('filteredColumnDetails').filter(_.isPresent),
           _.identity
         ).take(1).
           subscribe(setupTable);
@@ -86,14 +84,14 @@
             if ($(e.currentTarget).parent().data('table-id') !== instanceUniqueNamespace) {
               return; // The flyout might not be our own!
             }
-            scope.safeApply(function() {
+            scope.$safeApply(function() {
               var columnId = $(e.currentTarget).parent().data('column-id');
 
               sortOnColumn(columnId);
             });
           });
 
-          scope.observeDestroy(element).subscribe(function() {
+          scope.$destroyAsObservable(element).subscribe(function() {
             $('body').off('.{0}'.format(instanceUniqueNamespace));
           });
 
@@ -536,7 +534,7 @@
           var scrollLeft = $body.scrollLeft(), scrollTop = $body.scrollTop();
 
           $body.scroll(function(e) {
-            scope.safeApply(function() {
+            scope.$safeApply(function() {
               if (scrollLeft !== (scrollLeft = $body.scrollLeft())) {
                 moveHeader();
               }
@@ -634,10 +632,10 @@
 
           subscriptions.push(Rx.Observable.subscribeLatest(
             element.offsetParent().observeDimensions(),
-            scope.observe('rowCount'),
-            scope.observe('filteredRowCount'),
-            scope.observe('filteredColumnDetails'),
-            scope.observe('infinite'),
+            scope.$observe('rowCount'),
+            scope.$observe('filteredRowCount'),
+            scope.$observe('filteredColumnDetails'),
+            scope.$observe('infinite'),
             function(cardDimensions, rowCount, filteredRowCount, filteredColumnDetails, infinite) {
 
               scope.$emit('render:start', {
@@ -676,7 +674,7 @@
           ));
 
           subscriptions.push(Rx.Observable.subscribeLatest(
-            scope.observe('whereClause'),
+            scope.$observe('whereClause'),
             function(whereClause) {
               if (scope.getRows) {
                 reloadRows();
@@ -685,7 +683,7 @@
           ));
 
 
-          scope.observeDestroy(element).subscribe(function() {
+          scope.$destroyAsObservable(element).subscribe(function() {
             _.invoke(subscriptions, 'dispose');
           });
         }

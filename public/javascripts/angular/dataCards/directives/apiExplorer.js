@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function ApiExplorer(AngularRxExtensions, DatasetDataService, WindowState) {
+  function ApiExplorer(DatasetDataService, WindowState) {
     return {
       restrict: 'E',
       templateUrl: '/angular_templates/dataCards/apiExplorer.html',
@@ -9,7 +9,7 @@
         datasetObservable: '=datasetObservable'
       },
       link: function($scope, element, attrs) {
-        AngularRxExtensions.install($scope);
+        var destroyObservable = $scope.$destroyAsObservable(element);
 
         /*
          * Scope variables
@@ -42,7 +42,8 @@
         /*
          * Streams
          */
-        var selectedFormatStream = $scope.observe('selectedFormat');
+        var selectedFormatStream = $scope.$observe('selectedFormat');
+
         var datasetIdStream = $scope.datasetObservable.map(function(dataset) {
           if (dataset) {
             return dataset.id;
@@ -100,12 +101,13 @@
         });
 
         // Hide the panel
-        WindowState.closeDialogEventObservable.takeUntil($scope.observeDestroy(element)).
+        WindowState.closeDialogEventObservable.
+          takeUntil(destroyObservable).
           filter(function(e) {
             return $scope.panelActive && $(e.target).closest(element).length === 0;
           }).
           subscribe(function() {
-            $scope.safeApply(function() {
+            $scope.$safeApply(function() {
               $scope.panelActive = false;
             });
           });
@@ -114,13 +116,13 @@
         /*
          * Bind streams to scope
          */
-        $scope.bindObservable('selectedUrl', selectedUrlStream);
-        $scope.bindObservable('datasetDocumentationUrl', datasetDocumentationUrlStream);
-        $scope.bindObservable('multipleFormatsAvailable', multipleFormatsAvailableStream);
+        $scope.$bindObservable('selectedUrl', selectedUrlStream);
+        $scope.$bindObservable('datasetDocumentationUrl', datasetDocumentationUrlStream);
+        $scope.$bindObservable('multipleFormatsAvailable', multipleFormatsAvailableStream);
 
 
         // Clean up
-        $scope.observeDestroy(element).subscribe(function() {
+        destroyObservable.subscribe(function() {
           $scope.$emit('cleaned-up');
         });
       }

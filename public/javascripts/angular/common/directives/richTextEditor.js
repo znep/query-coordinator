@@ -205,7 +205,6 @@
    * A <rich-text-editor /> is meant to replace a <textarea />, and provide limited html formatting.
    */
   angular.module('socrataCommon.directives').directive('richTextEditor', function(
-    AngularRxExtensions,
     $http
   ) {
     var toolbar;
@@ -223,7 +222,7 @@
 
       element.trigger(e);
 
-      element.isolateScope().safeApply(function() {
+      element.isolateScope().$safeApply(function() {
         element.isolateScope().content = element.val();
       });
     }
@@ -323,13 +322,12 @@
     }
 
     function init($scope, element, attr) {
-      AngularRxExtensions.install($scope);
-
       var iframe = element.find('iframe');
+      var editorObservable = $scope.$observe('editor');
 
       // Grab a reference to squire after it loads.
       iframe.on('squire-loaded', function() {
-        $scope.safeApply(_.bind(function() {
+        $scope.$safeApply(_.bind(function() {
           $scope.editor = this.contentWindow.editor;
           initEvents($scope.editor, element);
           element.val($scope.content);
@@ -344,10 +342,10 @@
       initCss(element);
 
       Rx.Observable.combineLatest(
-        $scope.observeDestroy(element),
+        $scope.$destroyAsObservable(element),
         // Mostly for unit tests - Guard against a race condition where the iframe doesn't load
         // before we're done with the test.
-        $scope.observe('editor').filter(_.isPresent),
+        editorObservable.filter(_.isPresent),
         _.identity
       ).subscribe(function() {
         cleanupEvents($scope.editor);

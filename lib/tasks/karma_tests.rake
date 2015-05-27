@@ -13,6 +13,7 @@ namespace :test do
     # Manually enable the coverage reporter. It isn't enabled by default as the instrumentation step makes
     # the product code unintelligible.
     cmd = './node_modules/karma/bin/karma start karma-test/dataCards/karma-unit.js --browsers PhantomJS --singleRun true --reporters dots,coverage'
+    cmd += ' && ./node_modules/karma/bin/karma start karma-test/old-ux/karma-unit.js --browsers PhantomJS --singleRun true --reporters dots,coverage'
     fail($?.exitstatus) unless system(cmd)
   end
 
@@ -25,7 +26,7 @@ namespace :test do
     unsupported_browser_families = browser_families - all_supported_browser_families
 
     unless unsupported_browser_families.empty?
-      raise "Unsupported browser families: #{unsupported_browser_families}. Supported families: #{all_supported_browser_families}" 
+      raise "Unsupported browser families: #{unsupported_browser_families}. Supported families: #{all_supported_browser_families}"
     end
 
     browser_names = []
@@ -84,9 +85,14 @@ namespace :test do
         puts "Launching batch: #{this_slice_browser_names} minus groups: #{excluded_groups}"
         command = "karma start karma-test/dataCards/karma-unit.js --browsers \"#{this_slice_browser_names.join(',')}\" --exclude-groups \"#{excluded_groups.join(',')}\" --singleRun true"
         success = system(command)
-        raise 'Karma test failure' unless success
+        raise 'Data Lens Karma test failure' unless success
       end
     end
+
+    puts "Launching Old UX Tests for: #{browser_names}"
+    command = "karma start karma-test/old-ux/karma-unit.js --browsers \"#{browser_names.join(',')}\" --singleRun true"
+    success = system(command)
+    raise 'Old UX Karma test failure' unless success
 
     puts 'Overall run passed without failures'
 

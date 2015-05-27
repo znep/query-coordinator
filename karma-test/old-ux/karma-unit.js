@@ -28,6 +28,10 @@ module.exports = function ( karma ) {
      */
     basePath: '../../',
 
+     preprocessors: {
+      'public/javascripts/**/!(jquery-1.7.1.js)': ['coverage'],
+    },
+
     /**
      * This is the list of file patterns to load into the browser during testing.
      */

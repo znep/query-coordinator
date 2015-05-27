@@ -15,10 +15,10 @@ ui-tests/failures
 ui-tests/node_modules
 karma-test/coverage-reports
 /.idea/
+/node_modules/karma-sauce-launcher/
 /node_modules/karma-phantomjs-launcher/
 /node_modules/.bin/phantomjs
 /node_modules/phantomjs/
-/node_modules/karma-browserstack-launcher/node_modules/browserstacktunnel-wrapper/bin
 .sass-cache
 dev-server/logs
 dev-server/*.pid

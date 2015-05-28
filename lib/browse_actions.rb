@@ -21,17 +21,21 @@ protected
         {:text => t('controls.browse.facets.view_types.filters'), :value => 'filters', :class => 'typeFilter'},
         {:text => t('controls.browse.facets.view_types.href'), :value => 'href', :class => 'typeHref'},
         {:text => t('controls.browse.facets.view_types.blob'), :value => 'blob', :class => 'typeBlob'},
-        {:text => t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'}]
+        {:text => t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'}
+      ]
     }
 
+
     vts = add_data_lens_view_type_if_enabled_by_feature_flag!(vts)
+    # TODO: add_data_lens_view_types_options_if_enabled!(vts[:options])
+    add_stories_view_types_options_if_enabled!(vts[:options])
 
     if module_enabled?(:api_foundry)
       vts[:options] << {:text => t('controls.browse.facets.view_types.apis'), :value => 'apis', :class => 'typeApi'}
     end
-    view_types = CurrentDomain.property(:view_types_facet, :catalog)
-    return vts if view_types.nil?
-    vts[:options].select!{ |opt| view_types.include?(opt[:value]) }
+    override_allowed_view_types = CurrentDomain.property(:view_types_facet, :catalog)
+    return vts if override_allowed_view_types.nil?
+    vts[:options].select!{ |opt| override_allowed_view_types.include?(opt[:value]) }
     vts
   end
 
@@ -451,6 +455,31 @@ private
     end
 
     vts
+  end
+
+
+  def stories_catalog_entries_enabled?
+    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:enable_stories]
+  end
+
+  def add_stories_view_types_options_if_enabled!(view_type_list_options)
+    if stories_catalog_entries_enabled?
+
+      stories_options = {
+        :text => ::I18n.t('controls.browse.facets.view_types.story'),
+        :value => 'story',
+        :class => 'typeNewView',
+        :icon_font_class => 'icon-cards',
+        :help_link => {
+          :href => 'http://www.socrata.com/datalens',
+          :text => ::I18n.t('controls.browse.facets.view_types.story_help')
+        }
+      }
+
+      view_type_list_options.insert(0, stories_options)
+    end
+
+    view_type_list_options
   end
 
   @@default_cutoffs = {

@@ -15,4 +15,6 @@ class Block < ActiveRecord::Base
   validates :components, presence: true
   validates :created_by, presence: true
   validates :created_at, presence: true
+
+  scope :for_story, ->(story) { where(id: story.blocks) }
 end

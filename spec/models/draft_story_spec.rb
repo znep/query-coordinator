@@ -39,4 +39,22 @@ RSpec.describe DraftStory, type: :model do
       expect(invalid_draft_story.errors[:created_at].length).to eq(1)
     end
   end
+
+  describe '#retrieve_blocks' do
+
+    context 'when story does not have blocks' do
+      it 'returns no blocks' do
+        story = FactoryGirl.build(:draft_story)
+        expect(story.retrieve_blocks).to eq([])
+      end
+    end
+
+    context 'when story has blocks' do
+      it 'returns blocks' do
+        block_count = 3
+        story = FactoryGirl.build(:published_story_with_blocks, block_count: block_count)
+        expect(story.retrieve_blocks.size).to eq(block_count)
+      end
+    end
+  end
 end

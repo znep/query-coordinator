@@ -639,28 +639,26 @@ describe('table directive', function() {
 
   describe('table flyout events', function() {
     var el;
-    var text;
+    var textWhichCausesEllipsis = Array(100).join('a');
     beforeEach(function() {
       if (!el) {
         el = createTableCard(true, fakeDataSource);
-      }
-      $('.flyout').remove();
-
-      text = Array(100).join('a');
+      } 
     });
     afterEach(destroyAllTableCards);
     afterEach(function() {
       $('.flyout').remove();
+      el = null;
     });
 
     it('should display a flyout if cell text ends in an ellipsis', function() {
       var cell = el.find('.cell.text').first();
-      cell.html(text);
+      cell.html(textWhichCausesEllipsis);
       cell.
         trigger('mouseover');
 
       var flyout = cell.find('.flyout');
-      expect(flyout).to.not.equal(null);
+      expect(flyout).to.have.length(0);
     });
   });
 });

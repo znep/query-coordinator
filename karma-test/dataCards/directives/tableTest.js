@@ -639,17 +639,18 @@ describe('table directive', function() {
 
   describe('table flyout events', function() {
     var el;
+    var text;
     beforeEach(function() {
       if (!el) {
         el = createTableCard(true, fakeDataSource);
       }
       $('.flyout').remove();
 
-      var text = Array(100).join('a');
+      text = Array(100).join('a');
     });
     afterEach(destroyAllTableCards);
     afterEach(function() {
-      $('.flyout').remove(); 
+      $('.flyout').remove();
     });
 
     it('should display a flyout if cell text ends in an ellipsis', function() {
@@ -660,17 +661,6 @@ describe('table directive', function() {
 
       var flyout = cell.find('.flyout');
       expect(flyout).to.not.equal(null);
-    });
-
-    it('should not fire any event if hovering over the flyout (in order to enable text selection)', function() {
-      var cell = el.find('.cell.text').first();
-      cell.html(text);
-      cell.
-        trigger('mouseover');
-
-      var flyout = cell.find('.flyout');
-      flyout.
-        trigger('mouseover.soc-layout');
     });
   });
 });

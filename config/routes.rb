@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   get 'version' => 'version#show'
 
   resources :published_stories # HMMM do we want the standard crud?
-  get 'id/:four_by_four' => 'published_stories#show'
+  get 'v(/:vanity_text)/:four_by_four' => 'published_stories#show'
 
   comfy_route :cms_admin, :path => '/admin'
 

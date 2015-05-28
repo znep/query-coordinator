@@ -12,6 +12,11 @@ RSpec.describe PublishedStoriesController, type: :controller do
         expect(response).to render_template(:show)
       end
 
+      it 'ignores vanity_text' do
+        get :show, four_by_four: @story_revision.four_by_four, vanity_text: 'haha'
+        expect(assigns(:published_story)).to eq(@story_revision)
+      end
+
       it 'renders 404' do
         get :show, four_by_four: 'fourOfour'
         expect(response).to be_not_found

@@ -637,4 +637,28 @@ describe('table directive', function() {
     });
   });
 
+  describe('table flyout events', function() {
+    var el;
+    var textWhichCausesEllipsis = Array(100).join('a');
+    beforeEach(function() {
+      if (!el) {
+        el = createTableCard(true, fakeDataSource);
+      } 
+    });
+    afterEach(destroyAllTableCards);
+    afterEach(function() {
+      $('.flyout').remove();
+      el = null;
+    });
+
+    it('should display a flyout if cell text ends in an ellipsis', function() {
+      var cell = el.find('.cell.text').first();
+      cell.html(textWhichCausesEllipsis);
+      cell.
+        trigger('mouseover');
+
+      var flyout = cell.find('.flyout');
+      expect(flyout).to.have.length(0);
+    });
+  });
 });

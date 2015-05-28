@@ -14,7 +14,14 @@ class Block < ActiveRecord::Base
   validates :layout, presence: true, inclusion: { in: VALID_BLOCK_LAYOUTS }
   validates :components, presence: true
   validates :created_by, presence: true
-  validates :created_at, presence: true
 
   scope :for_story, ->(story) { where(id: story.blocks) }
+
+  def self.from_json(json_block)
+    Block.new(
+      layout: json_block[:layout],
+      components: json_block[:components],
+      created_by: json_block[:created_by]
+    )
+  end
 end

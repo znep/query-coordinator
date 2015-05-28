@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe StoryCreator do
+RSpec.describe StoryDraftCreator do
 
   describe 'create' do
   end

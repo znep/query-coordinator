@@ -1,8 +1,14 @@
 (function() {
   'use strict';
 
-  function cardVisualizationChoropleth(Constants, CardDataService, Filter,
-                                       ServerConfig, CardVisualizationChoroplethHelpers, $log) {
+  function cardVisualizationChoropleth(
+    Constants,
+    CardDataService,
+    Filter,
+    ServerConfig,
+    CardVisualizationChoroplethHelpers,
+    $log
+  ) {
 
     return {
       restrict: 'E',
@@ -33,6 +39,11 @@
         var shapeFileObservable;
         var geometryLabelObservable;
         var geojsonRegionsObservable;
+
+        var shapeFileRegionQueryLimit = ServerConfig.getScalarValue(
+          'shapeFileRegionQueryLimit',
+          Constants['DEFAULT_SHAPE_FILE_REGION_QUERY_LIMIT']
+        );
 
         /*************************************
         * FIRST set up the 'busy' indicator. *
@@ -196,7 +207,7 @@
           aggregationObservable,
           function(fieldName, dataset, whereClauseFragment, aggregationData) {
             dataRequests.onNext(1);
-            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData, { limit: 5000 });
+            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData, { limit: shapeFileRegionQueryLimit });
             dataPromise.then(
               function(res) {
                 // Ok
@@ -217,7 +228,7 @@
           aggregationObservable,
           function(fieldName, dataset, whereClauseFragment, aggregationData) {
             dataRequests.onNext(1);
-            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData, { limit: 5000 });
+            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData, { limit: shapeFileRegionQueryLimit });
             dataPromise.then(
               function(res) {
                 // Ok

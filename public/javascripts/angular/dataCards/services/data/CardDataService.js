@@ -1,5 +1,6 @@
 (function() {
   'use strict';
+
   // The implementation of the SoQL spec is incomplete at the moment, causing it to choke
   // when it encounters a column name containing a hyphen. The spec states that quoting
   // the column name with backticks should ensure the entire field name is used rather
@@ -13,6 +14,16 @@
     // Note this does not include the time portion ('23:59:59') on purpose since SoQL will
     // complain about a type mismatch if the column happens to be a date but not a datetime.
     var MAX_LEGAL_JAVASCRIPT_DATE_STRING = Constants['MAX_LEGAL_JAVASCRIPT_DATE_STRING'];
+
+    // It is important to use this value both for fetching the shape file regions
+    // as well as the aggregated data for those regions, otherwise we can end up
+    // drawing regions on the map that appear as though they have no data.
+    function shapeFileRegionQueryLimit() {
+      return ServerConfig.getScalarValue(
+        'shapeFileRegionQueryLimit',
+        Constants['DEFAULT_SHAPE_FILE_REGION_QUERY_LIMIT']
+      );
+    }
 
     function httpConfig(config) {
       return _.extend({
@@ -61,7 +72,7 @@
         Assert(_.isString(fieldName), 'fieldName should be a string');
         Assert(_.isString(datasetId), 'datasetId should be a string');
         Assert(_.isObject(aggregationClauseData), 'aggregationClauseData object must be provided');
-        options = _.defaults({ limit: 200 }, options);
+        options = _.defaults(options || {}, { limit: 200 });
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
 
@@ -290,7 +301,7 @@
       getChoroplethRegions: function(shapeFileId) {
         shapeFileId = DeveloperOverrides.dataOverrideForDataset(shapeFileId) || shapeFileId;
         var url = $.baseUrl('/resource/{0}.geojson'.format(shapeFileId));
-        url.searchParams.set('$limit', 5000);
+        url.searchParams.set('$limit', shapeFileRegionQueryLimit());
         var config = httpConfig.call(this, { headers: { 'Accept': 'application/vnd.geo+json' } });
         return http.get(url.href, config).
           then(function(response) {
@@ -501,7 +512,7 @@
             var url = $.baseUrl('/resource/{0}.geojson'.format(shapeFileId));
             url.searchParams.set('$select', '*');
             url.searchParams.set('$where', 'intersects(the_geom,{0})'.format(multiPolygon));
-            url.searchParams.set('$limit', 5000);
+            url.searchParams.set('$limit', shapeFileRegionQueryLimit());
 
             var config = httpConfig.call(self, {
               headers: {

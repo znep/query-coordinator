@@ -22,6 +22,16 @@
     },
     getTheme: function() {
       return ServerConfig.get(THEME_CONFIGURATION_KEY) || {};
+    },
+    getScalarValue: function(key, defaultValue) {
+      var value = defaultValue;
+      if (_.isDefined(configurationStore[key])) {
+        value = parseInt(configurationStore[key], 10);
+        if (_.isNaN(value) || value < 0) {
+          value = defaultValue;
+        }
+      }
+      return value;
     }
   };
 

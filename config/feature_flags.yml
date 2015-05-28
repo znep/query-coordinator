@@ -177,3 +177,6 @@ dataset_count_v2:
 force_redirect_to_data_lens:
   description: Automatically redirect to the default Data Lens page for a given NBE dataset.
   defaultValue: false
+shape_file_region_query_limit:
+  description: Limit for the number of regions fetched for a shape file when displayed in choropleths.
+  defaultValue: 5000

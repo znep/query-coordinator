@@ -35,10 +35,5 @@ RSpec.describe Block, type: :model do
       invalid_block = FactoryGirl.build(:block, created_by: nil)
       expect(invalid_block).to_not be_valid
     end
-
-    it 'does not allow a null value for :created_at' do
-      invalid_block = FactoryGirl.build(:block, created_at: nil)
-      expect(invalid_block).to_not be_valid
-    end
   end
 end

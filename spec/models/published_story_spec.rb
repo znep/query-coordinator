@@ -32,12 +32,6 @@ RSpec.describe PublishedStory, type: :model do
       invalid_published_story.valid?
       expect(invalid_published_story.errors[:created_by].length).to eq(1)
     end
-
-    it 'does not allow a null value for :created_at' do
-      invalid_published_story = FactoryGirl.build(:published_story, created_at: nil)
-      invalid_published_story.valid?
-      expect(invalid_published_story.errors[:created_at].length).to eq(1)
-    end
   end
 
   describe '#retrieve_blocks' do

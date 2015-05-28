@@ -14,7 +14,6 @@ class Block < ActiveRecord::Base
   validates :layout, presence: true, inclusion: { in: VALID_BLOCK_LAYOUTS }
   validates :components, presence: true
   validates :created_by, presence: true
-  validates :created_at, presence: true
 
   scope :for_story, ->(story) { where(id: story.blocks) }
 end

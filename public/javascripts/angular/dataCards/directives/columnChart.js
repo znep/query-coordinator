@@ -246,7 +246,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       labelDivSelection.
         select('.contents').
         style('left', function(d) {
-          if (!d.special) return labelMargin + 'rem';
+          if (!d.special || expanded) return labelMargin + 'rem';
 
           if (parseInt($(this).parent().css('left'), 10) < $.relativeToPx((-specialLabelMargin) + 'rem')) {
             return '-5px';

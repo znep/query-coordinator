@@ -439,11 +439,11 @@
     // in a render loop.
     self.undelegate(options.selector, '.soc-flyout');
 
-    self.delegate(options.selector, 'mouseover.soc-flyout', function(e) {    
+    self.delegate(options.selector, 'mouseover.soc-flyout', function(e) {
       if (!$(e.target).parents().hasClass('dragged') &&
           !$(e.target).is(flyout)) {
         var canRenderFlyout = true;
-        if (options.hasOwnProperty('onBeforeRender') && _(options.onBeforeRender).isFunction() ) {
+        if (options.hasOwnProperty('onBeforeRender') && _(options.onBeforeRender).isFunction()) {
           canRenderFlyout = options.onBeforeRender.call(self, e.target);
         }
         if (canRenderFlyout) {

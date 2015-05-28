@@ -1,0 +1,2 @@
+module PublishedStoriesHelper
+end

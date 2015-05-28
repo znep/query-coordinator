@@ -1,7 +1,46 @@
 (function() {
   'use strict';
 
-  function HistogramService($log) {
+  function HistogramService(Constants, $log) {
+
+    /**
+     * Input: {min:, max:}
+     * Determines bucketing strategy for histogram card. Adds a bucketType
+     * key to the input object that is either 'linear' or 'logarithmic'.
+     * If the bucketType is 'linear', adds a bucketSize key to the input
+     * object, which is the size of each bucket as calculated by d3.
+     *
+     * returns {min:, max:, bucketType:[, bucketSize:]}, mutates input
+     */
+    function getBucketingOptions(input) {
+      if (!_.isObject(input) ||
+          !_.isFinite(input.min) ||
+          !_.isFinite(input.max)) {
+        throw new Error('Bad input to HistogramService.getBucketingOptions');
+      }
+
+      var absMax = Math.max(Math.abs(input.min), Math.abs(input.max));
+      var threshold = Constants.HISTOGRAM_LOGARITHMIC_BUCKETING_THRESHOLD;
+      input.bucketType = (absMax >= threshold) ? 'logarithmic' : 'linear';
+
+      if (input.bucketType === 'linear') {
+
+        var buckets = d3.scale.linear().
+          nice().
+          domain([input.min, input.max]).
+          ticks(20);
+
+        if (buckets.length >= 2) {
+          var bucketSize = buckets[1] - buckets[0];
+          input.bucketSize = bucketSize;
+        }
+        else {
+          input.bucketSize = 1;
+        }
+      }
+
+      return input;
+    }
 
     /**
      * Given an array of buckets, normalizes the data to an array of bucket
@@ -14,7 +53,8 @@
      */
     function bucketData(data, options) {
 
-      // Returns an object mapping magnitudes to buckets. Also merges the bucket with magnitude zero into the bucket with // magnitude one.
+      // Returns an object mapping magnitudes to buckets. Also merges the
+      // bucket with magnitude zero into the bucket with magnitude one.
       function getDataByMagnitude(data) {
         var dataByMagnitude = _.indexBy(data, 'magnitude');
 
@@ -135,6 +175,7 @@
     }
 
     return {
+      getBucketingOptions: getBucketingOptions,
       bucketData: bucketData
     };
   }

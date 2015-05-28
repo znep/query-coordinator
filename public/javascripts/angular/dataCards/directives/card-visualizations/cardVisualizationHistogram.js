@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationHistogram(Constants, CardDataService, HistogramService, Filter, $log) {
+  function cardVisualizationHistogram(CardDataService, HistogramService, Filter, $log) {
 
     /**
      * Fetches both unfiltered and filtered data.  Requests the data bucketed
@@ -74,36 +74,11 @@
           baseSoqlFilter$,
           function(fieldName, dataset, baseSoqlFilter) {
 
-            // First we get the min and max value of the column...
-            var dataPromise = CardDataService.getColumnDomain(fieldName, dataset.id, null);
-
-            // Then we decide on a bucketing type (and bucket size if linear)
-            dataPromise.then(function(summary) {
-
-              // TODO factor into service.
-              var absMax = Math.max(Math.abs(summary.min), Math.abs(summary.max));
-              var threshold = Constants.HISTOGRAM_LOGARITHMIC_BUCKETING_THRESHOLD;
-              summary.bucketType = (absMax >= threshold) ? 'logarithmic' : 'linear';
-
-              if (summary.bucketType === 'linear') {
-
-                // Go away d3
-                var buckets = d3.scale.linear().
-                  nice().
-                  domain([summary.min, summary.max]).
-                  ticks(20);
-
-                if (buckets.length >= 2) {
-                  var bucketSize = buckets[1] - buckets[0];
-                  summary.bucketSize = bucketSize;
-                }
-                else {
-                  summary.bucketSize = 1;
-                }
-              }
-
-              return summary;
-            });
+            // This promise will ultimately return an object in the form:
+            // {min:, max:, bucketType:, bucketSize:}
+            // See HistogramService.getBucketingOptions
+            var dataPromise = CardDataService.getColumnDomain(fieldName, dataset.id, null).
+              then(HistogramService.getBucketingOptions);
 
             return Rx.Observable.fromPromise(dataPromise);
           }).switchLatest();
@@ -126,6 +101,7 @@
           _.curry(fetchHistogramData)($scope)
           ).switchLatest();
 
+        // Combine the filtered and unfiltered data into an object.
         var cardData$ = Rx.Observable.combineLatest(
           unfilteredData$,
           filteredData$,

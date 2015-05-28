@@ -2,11 +2,165 @@ describe('HistogramService', function() {
   'use strict';
 
   var HistogramService;
+  var Constants;
 
   beforeEach(module('dataCards.services'));
   beforeEach(inject(function($injector) {
     HistogramService = $injector.get('HistogramService');
+    Constants = $injector.get('Constants');
   }));
+
+  describe('getBucketingOptions', function() {
+
+    var threshold;
+
+    beforeEach(function() {
+      threshold = Constants.HISTOGRAM_LOGARITHMIC_BUCKETING_THRESHOLD;
+    });
+
+    function run(input) {
+      return HistogramService.getBucketingOptions(input);
+    }
+
+    describe('input handling', function() {
+      it('should throw an error if no input is provided', function() {
+        expect(_.curry(run)).to.throw;
+        expect(_.curry(run, null)).to.throw;
+      });
+
+      it('should throw an error if the input object does not have min and max keys', function() {
+        var input = {color: 'purple'};
+        expect(_.curry(run, input)).to.throw;
+      });
+
+      it('should throw an error if either the min or the max is NaN', function() {
+        var input;
+
+        input = {min: NaN, max: 19};
+        expect(_.curry(run, input)).to.throw;
+
+        input = {min: -19, max: NaN};
+        expect(_.curry(run, input)).to.throw;
+      });
+
+      it('should throw an error if either the min or the max is Infinity', function() {
+        var input;
+
+        input = {min: -Infinity, max: 19};
+        expect(_.curry(run, input)).to.throw;
+
+        input = {min: 0, max: Infinity};
+        expect(_.curry(run, input)).to.throw;
+      });
+    });
+
+    describe('bucketType computation', function() {
+      it('should select the correct bucketType based on the threshold value', function() {
+        var input;
+
+        // Minimum is not below the threshold
+        input = {min: -threshold + 1, max: 0};
+        input = run(input);
+        expect(input.bucketType).to.equal('linear');
+
+        // Minimum is below the threshold
+        input = {min: -threshold, max: 0};
+        input = run(input);
+        expect(input.bucketType).to.equal('logarithmic');
+
+        // Maximum does not exceed the threshold
+        input = {min: 0, max: threshold - 1};
+        input = run(input);
+        expect(input.bucketType).to.equal('linear');
+
+        // Maximum exceeds the threshold
+        input = {min: 0, max: threshold};
+        input = run(input);
+        expect(input.bucketType).to.equal('logarithmic');
+
+        // Both exceed the threshold
+        input = {min: -threshold, max: threshold};
+        input = run(input);
+        expect(input.bucketType).to.equal('logarithmic');
+      });
+    });
+
+    describe('bucketSize computation', function() {
+      it('should not add a bucketSize key if the bucketType is "logarithmic"', function() {
+        var input;
+
+        input = {min: -threshold, max: threshold};
+        input = run(input);
+        expect(input.bucketType).to.equal('logarithmic');
+        expect(input.bucketSize).to.not.exist;
+      });
+
+      it('should default to a bucketSize of one if the range is empty', function() {
+        var input = {min: 17, max: 17};
+
+        input = run(input);
+        expect(input.bucketType).to.equal('linear');
+        expect(input.bucketSize).to.equal(1);
+      });
+
+      it('should return approximately twenty buckets in various cases', function() {
+        var input;
+
+        input = {min: -threshold / 2, max: threshold / 2};
+        input = run(input);
+        expect(input.bucketType).to.equal('linear');
+        expect((input.max - input.min) / input.bucketSize).to.be.closeTo(20, 5);
+
+        input = {min: 0, max: threshold - 1};
+        input = run(input);
+        expect(input.bucketType).to.equal('linear');
+        expect((input.max - input.min) / input.bucketSize).to.be.closeTo(20, 5);
+
+        input = {min: -threshold + 1, max: threshold - 1};
+        input = run(input);
+        expect(input.bucketType).to.equal('linear');
+        expect((input.max - input.min) / input.bucketSize).to.be.closeTo(20, 5);
+      });
+    });
+
+    describe('edge cases', function() {
+      it('should not freak out if the minimum is greater than the maximum', function() {
+        var input = {min: threshold, max: -threshold};
+        input = run(input);
+        expect(input).to.deep.equal({min: threshold, max: -threshold, bucketType: 'logarithmic'});
+      });
+
+      it('should not freak out if both the minimum and the maximum are positive', function() {
+        var input;
+
+        input = {min: threshold / 2, max: threshold * 2};
+        input = run(input);
+        expect(input).to.deep.equal({min: threshold / 2, max: threshold * 2, bucketType: 'logarithmic'});
+
+        input = {min: 5, max: 10};
+        input = run(input);
+        expect(input.bucketType).to.equal('linear');
+      });
+
+      it('should not freak out if both the minimum and the maximum are negative', function() {
+        var input;
+
+        input = {min: -threshold * 2, max: -threshold / 2};
+        input = run(input);
+        expect(input).to.deep.equal({min: -threshold * 2, max: -threshold / 2, bucketType: 'logarithmic'});
+
+        input = {min: -10, max: -5};
+        input = run(input);
+        expect(input.bucketType).to.equal('linear');
+      });
+
+      it('should not freak out if both the minimum and maximum are zero', function() {
+        var input = {min: 0, max: 0};
+        input = run(input);
+        expect(input).to.deep.equal({min: 0, max: 0, bucketType: 'linear', bucketSize: 1});
+      });
+    });
+  });
 
   describe('bucketData', function() {
 

@@ -569,7 +569,8 @@
         return http.get(url.href, config).then(function(response) {
 
           // response.data comes back as [{min:, max:}]
-          return _.isEmpty(response.data) ? response.data : response.data[0];
+          var data = response.data;
+          return _.isEmpty(data) ? data : _.mapValues(data[0], parseFloat);
         });
       },
 

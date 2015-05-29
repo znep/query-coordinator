@@ -18,6 +18,7 @@ class Block < ActiveRecord::Base
   scope :for_story, ->(story) { where(id: story.blocks) }
 
   def self.from_json(json_block)
+    # TODO: Validate before returning or throw exception?
     Block.new(
       layout: json_block[:layout],
       components: json_block[:components],

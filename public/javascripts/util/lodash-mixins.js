@@ -1,6 +1,6 @@
 _.mixin({
   isPresent: function(object) {
-    if (_.isBoolean(object)) {
+    if (_.isBoolean(object) || _.isFunction(object)) {
       return true;
     } else if (_.isNumber(object)) {
       // Just cast the number to a boolean.

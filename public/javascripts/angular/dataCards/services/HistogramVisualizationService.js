@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function HistogramVisualizationService(Constants) {
+  function HistogramVisualizationService(Constants, FlyoutService) {
 
     function setupDOM(container) {
       var dom = {};
@@ -29,6 +29,15 @@
         classed('histogram-axis histogram-axis-x', true);
       dom.yTicks = dom.chart.append('g').
         classed('histogram-axis histogram-axis-y', true);
+
+      dom.hoverBlock = dom.chart.append('rect').
+        classed('histogram-hover-block', true);
+
+      dom.hoverTarget = dom.chart.append('line').
+        classed('histogram-hover-target', true);
+
+      dom.hoverShield = dom.svg.append('rect').
+        classed('histogram-hover-shield', true);
 
       return dom;
     }
@@ -79,6 +88,61 @@
           line: generateSVGRenderer('line')
         }
       };
+    }
+
+    function setupHover(dom) {
+      var hover = {
+        unfilteredBucket: null,
+        filteredBucket: null,
+        isFiltered: false,
+        rowDisplayUnit: ''
+      };
+
+      FlyoutService.register({
+        className: 'histogram-hover-shield',
+        render: function() {
+          var unfilteredBucket = hover.unfilteredBucket;
+          var filteredBucket = hover.filteredBucket;
+          var lines = [];
+
+          if (_.isPresent(unfilteredBucket) && _.isPresent(filteredBucket)) {
+            lines = lines.concat([
+              '<div class="flyout-title">{0} to {1}</div>',
+              '<div class="flyout-row">',
+                '<span class="flyout-cell">Total:</span>',
+                '<span class="flyout-cell">{2} {4}</span>',
+              '</div>'
+            ]);
+
+            if (hover.isFiltered) {
+              lines = lines.concat([
+                '<div class="flyout-row">',
+                  '<span class="flyout-cell is-highlighted">Filtered Amount:</span>',
+                  '<span class="flyout-cell is-highlighted">{3} {5}</span>',
+                '</div>'
+              ]);
+            }
+          }
+
+          return lines.join('').format(
+            $.toHumaneNumber(unfilteredBucket.start),
+            $.toHumaneNumber(unfilteredBucket.end),
+            $.toHumaneNumber(unfilteredBucket.value),
+            $.toHumaneNumber(filteredBucket.value),
+            (unfilteredBucket.value === 1) ? hover.rowDisplayUnit : hover.rowDisplayUnit.pluralize(),
+            (filteredBucket.value === 1) ? hover.rowDisplayUnit : hover.rowDisplayUnit.pluralize()
+          );
+        },
+        positionOn: function(element) {
+          return dom.hoverTarget.node();
+        }
+      });
+
+      dom.svg.on('mouseout', function() {
+        dom.hoverBlock.attr('visibility', 'hidden');
+      });
+
+      return hover;
     }
 
     function updateScale(scale, data, dimensions) {
@@ -152,12 +216,13 @@
               var scaledValue = scale.y(d.value);
 
               // Values close to but not equal zero be at least 2 pixels away
-              // from the axis line for readability.
+              // from the axis line for readability. Note the flipped plus and
+              // minus signs due to the fact that the y axis is reversed.
               if (d.value !== 0 && Math.round(scaledValue) === Math.round(axisLine)) {
                 if (d.value > 0) {
-                  return axisLine + Constants.HISTOGRAM_NONZERO_PIXEL_THRESHOLD;
-                } else {
                   return axisLine - Constants.HISTOGRAM_NONZERO_PIXEL_THRESHOLD;
+                } else {
+                  return axisLine + Constants.HISTOGRAM_NONZERO_PIXEL_THRESHOLD;
                 }
               } else {
                 return scaledValue;
@@ -174,6 +239,38 @@
       return svg;
     }
 
+    function updateHover(hover, data, isFiltered, rowDisplayUnit, dom, scale) {
+      dom.svg.on('mousemove', function() {
+        var mouseX = d3.mouse(dom.hoverShield.node())[0];
+        var bucketWidth = scale.x.rangeBand();
+        var bucketIndex = Math.floor(mouseX / bucketWidth);
+
+        hover.unfilteredBucket = data.unfiltered[bucketIndex];
+        hover.filteredBucket = data.filtered[bucketIndex];
+
+        var hoverBlockExtraHeight = 1;
+
+        dom.hoverBlock.
+          attr('visibility', 'visible').
+          attr('x', bucketIndex * bucketWidth).
+          attr('y', -Constants.HISTOGRAM_HOVER_BLOCK_EXTRA_HEIGHT).
+          attr('width', bucketWidth);
+
+        var maxValueOrZero = Math.max(0, hover.filteredBucket.value, hover.unfilteredBucket.value);
+        var hoverTargetY = scale.y(maxValueOrZero);
+        dom.hoverTarget.
+          attr('x1', bucketIndex * bucketWidth).
+          attr('x2', bucketIndex * bucketWidth + bucketWidth).
+          attr('y1', hoverTargetY).
+          attr('y2', hoverTargetY);
+      });
+
+      hover.isFiltered = isFiltered;
+      hover.rowDisplayUnit = rowDisplayUnit;
+
+      return hover;
+    }
+
     // Renders the card
     function render(dom, data, dimensions, scale, axis, svg) {
       var margin = dom.margin;
@@ -183,6 +280,13 @@
       dom.svg.
         attr('width', width + margin.left + margin.right).
         attr('height', height + margin.top + margin.bottom);
+
+      dom.hoverShield.
+        attr('width', dom.svg.attr('width')).
+        attr('height', dom.svg.attr('height'));
+
+      dom.hoverBlock.
+        attr('height', height + Constants.HISTOGRAM_HOVER_BLOCK_EXTRA_HEIGHT);
 
       dom.chart.
         attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
@@ -267,8 +371,10 @@
       setupScale: setupScale,
       setupAxis: setupAxis,
       setupSVG: setupSVG,
+      setupHover: setupHover,
       updateScale: updateScale,
       updateSVG: updateSVG,
+      updateHover: updateHover,
       render: render
     };
   }

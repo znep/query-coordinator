@@ -23,14 +23,14 @@
     element
   ) {
 
-    FlyoutService.register(
-      'export-visualization-disabled',
-      _.constant(
+    FlyoutService.register({
+      className: 'export-visualization-disabled',
+      render: _.constant(
         '<div class="flyout-title">This visualization is not available' +
         '<br/>for image export</div>'
       ),
-      scope.$destroyAsObservable(element)
-    );
+      destroySignal: scope.$destroyAsObservable(element)
+    });
   }
 
   function cardLayout(
@@ -860,23 +860,23 @@
         /**
          * Flyouts.
          */
-        FlyoutService.register(
-          'card-control',
-          function(el) {
+        FlyoutService.register({
+          className: 'card-control',
+          render: function(el) {
             return '<div class="flyout-title">{0}</div>'.format($(el).attr('title'));
           },
-          scope.$destroyAsObservable(cardContainer)
-        );
+          destroySignal: scope.$destroyAsObservable(cardContainer)
+        });
 
-        FlyoutService.register(
-          'add-card-button',
-          function(el) {
+        FlyoutService.register({
+          className: 'add-card-button',
+          render: function(el) {
             if ($(el).hasClass('disabled')) {
               return '<div class="flyout-title">All available cards are already on the page</div>';
             }
           },
-          scope.$destroyAsObservable(cardContainer)
-        );
+          destroySignal: scope.$destroyAsObservable(cardContainer)
+        });
 
         /******************
         * Bind observable *

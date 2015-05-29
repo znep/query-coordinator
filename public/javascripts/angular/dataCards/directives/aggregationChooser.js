@@ -206,12 +206,17 @@
          * Register flyout for disabled aggregation columns
          */
 
-        FlyoutService.register('aggregation-option', function(element) {
-          if ($(element).is('.disabled.no-count')) {
-            return '<span class="flyout-cell">{0}</span>'.
-              format('This column cannot be used with a<br>number of aggregate');
-          }
-        }, $scope.$destroyAsObservable(element), true);
+        FlyoutService.register({
+          className: 'aggregation-option',
+          render: function(element) {
+            if ($(element).is('.disabled.no-count')) {
+              return '<span class="flyout-cell">{0}</span>'.
+                format('This column cannot be used with a<br>number of aggregate');
+            }
+          },
+          destroySignal: $scope.$destroyAsObservable(element),
+          trackCursor: true
+        });
 
         /*
          * Callback functions

@@ -409,7 +409,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         if (showFiltered) {
           var filteredAmount = $.toHumaneNumber(data.filtered) + unit;
           var spanTemplate = '<span class="{0}">{1}</span>';
-          var spanClass = data.special ? 'filtered-row-selected' : 'filtered-row-highlight';
+          var spanClass = data.special ? 'is-selected' : 'is-highlighted';
           rows.push([spanTemplate.format(spanClass, 'Filtered Amount:'), spanTemplate.format(spanClass, filteredAmount)]);
         }
 
@@ -573,11 +573,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         });
       });
 
-      FlyoutService.register(
-        'truncation-marker',
-        _.constant('<div class="flyout-title">Click to expand</div>'),
-        scope.$destroyAsObservable(element)
-      );
+      FlyoutService.register({
+        className: 'truncation-marker',
+        render: _.constant('<div class="flyout-title">Click to expand</div>'),
+        destroySignal: scope.$destroyAsObservable(element)
+      });
 
       element.parent().delegate('.bar-group, .labels .label .contents span', 'click', function(event) {
         var clickedDatum = d3.select(event.currentTarget).datum();

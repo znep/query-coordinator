@@ -92,8 +92,11 @@
           FlyoutService.refreshFlyout();
         });
 
-        FlyoutService.register('customize-button', renderCustomizeButtonFlyout, $scope.$destroyAsObservable(element));
-
+        FlyoutService.register({
+          className: 'customize-button',
+          render: renderCustomizeButtonFlyout,
+          destroySignal: $scope.$destroyAsObservable(element)
+        });
       }
     };
   }

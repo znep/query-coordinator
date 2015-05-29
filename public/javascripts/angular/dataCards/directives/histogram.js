@@ -7,7 +7,7 @@
       scope: {
         cardData: '=',
         rowDisplayUnit: '=',
-        filterApplied: '=',
+        isFiltered: '=',
         expanded: '='
       },
       template: '<div class="histogram"></div>',
@@ -20,6 +20,7 @@
         var scale = service.setupScale();
         var axis = service.setupAxis(scale);
         var svg = service.setupSVG();
+        var hover = service.setupHover(dom);
 
         // Observables
         var cardData$ = $scope.$observe('cardData').
@@ -50,8 +51,13 @@
           cardData$,
           cardDimensions$,
           function(data, dimensions) {
+            var isFiltered = $scope.isFiltered;
+            var rowDisplayUnit = $scope.rowDisplayUnit;
+
             scale = service.updateScale(scale, data, dimensions);
             svg = service.updateSVG(svg, data, scale);
+            hover = service.updateHover(hover, data, isFiltered, rowDisplayUnit, dom, scale);
+
             service.render(dom, data, dimensions, scale, axis, svg);
           }
         );

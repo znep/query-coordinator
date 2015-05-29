@@ -124,27 +124,35 @@
           'it might be slower than other charts',
           '</div>'
         ].join('');
-        FlyoutService.register('add-card-type-option', function(el) {
+        FlyoutService.register({
+          className: 'add-card-type-option',
+          render: function(el) {
 
-          var visualizationName = el.getAttribute('data-visualization-name');
+            var visualizationName = el.getAttribute('data-visualization-name');
 
-          if (visualizationName === null) {
-            return;
-          }
+            if (visualizationName === null) {
+              return;
+            }
 
-          if (scope.showCardinalityWarning && $(el).hasClass('warn')) {
+            if (scope.showCardinalityWarning && $(el).hasClass('warn')) {
+              return EXCESSIVE_COLUMN_WARNING;
+            } else {
+              return '<div class="flyout-title">Visualize this column as a {0}</div>'.format(visualizationName);
+            }
+
+          },
+          destroySignal: scope.$destroyAsObservable(element)
+        });
+
+        FlyoutService.register({
+          className: 'warning-icon',
+          render: function(el) {
+
             return EXCESSIVE_COLUMN_WARNING;
-          } else {
-            return '<div class="flyout-title">Visualize this column as a {0}</div>'.format(visualizationName);
-          }
 
-        }, scope.$destroyAsObservable(element));
-
-        FlyoutService.register('warning-icon', function(el) {
-
-          return EXCESSIVE_COLUMN_WARNING;
-
-        }, scope.$destroyAsObservable(element));
+          },
+          destroySignal: scope.$destroyAsObservable(element)
+        });
 
       }
     };

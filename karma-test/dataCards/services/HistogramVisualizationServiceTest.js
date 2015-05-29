@@ -4,6 +4,7 @@ describe('HistogramVisualizationService', function() {
   var HistogramVisualizationService;
   var Constants;
 
+  beforeEach(module('dataCards'));
   beforeEach(module('dataCards.services'));
   beforeEach(inject(function($injector) {
     HistogramVisualizationService = $injector.get('HistogramVisualizationService');

@@ -37,7 +37,7 @@ your local storyteller instance with blah.dev, vertex.dev, etc.
 
 ## How to run the test suite
 
-`bin/rake test`
+`bin/rake spec`
 
 ## Services
 

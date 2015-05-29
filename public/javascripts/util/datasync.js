@@ -3,6 +3,11 @@
   var _ssync;
 
   var DataSync = Model.extend({
+    _init: function() {
+      this._super();
+      this.ssync(); // Initialize this ASAP.
+    },
+
     ssync: function() {
       if (!_ssync) {
         _ssync = new DatasyncUpload({

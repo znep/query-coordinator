@@ -53,6 +53,9 @@
       'HISTOGRAM_NONZERO_PIXEL_THRESHOLD': 2,
       'HISTOGRAM_HOVER_BLOCK_EXTRA_HEIGHT': 1,
 
+      // Table card visualization parameters.
+      'TABLE_UNSORTABLE_PHYSICAL_DATATYPES': ['geo_entity', 'point'],
+
       // Related Views
       'RELATED_VIEWS_LIST_HEIGHT_OFFSET': 150,
 

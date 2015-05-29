@@ -4,7 +4,7 @@
   var rowsPerBlock = 50;
   var rowHeight = $.relativeToPx('2rem');
 
-  function tableDirectiveFactory($q, $timeout, SoqlHelpers) {
+  function tableDirectiveFactory($q, $timeout, Constants, SoqlHelpers) {
 
     return {
       templateUrl: '/angular_templates/dataCards/table.html',
@@ -173,6 +173,12 @@
 
           // Apply a sort on the column corresponding to the given columnId.
           var sortOnColumn = function(columnId) {
+
+            var unsortableTypes = Constants.TABLE_UNSORTABLE_PHYSICAL_DATATYPES;
+            if (_.contains(unsortableTypes, getColumn(columnId).physicalDatatype)) {
+              return;
+            }
+
             var newOrdering = getNextSortForColumn(columnId);
 
             setSort(columnId, newOrdering);

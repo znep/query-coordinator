@@ -2,10 +2,9 @@
 
   'use strict';
 
-  var unsortable = ['geo_entity'];
   var validColumnRegex = new RegExp('^[\\d\\w_]{2}');
 
-  function cardVisualizationTableDirectiveFactory(CardDataService, SortedTileLayout) {
+  function cardVisualizationTableDirectiveFactory(Constants, CardDataService, SortedTileLayout) {
 
     return {
       restrict: 'E',
@@ -56,7 +55,8 @@
         function addExtraAttributesToColumns(columns) {
           return _.transform(columns, function(result, column, fieldName) {
             var newColumn = Object.create(column);
-            newColumn.sortable = !_.contains(unsortable, column.physicalDatatype);
+            var unsortableTypes = Constants.TABLE_UNSORTABLE_PHYSICAL_DATATYPES;
+            newColumn.sortable = !_.contains(unsortableTypes, column.physicalDatatype);
             // SIGH. I'd love to not do this, but we'd have to change a whole heap of table and
             // table test code to support that sort of idealism. The main issue is that table
             // expects its column information in a significant-order array.
@@ -147,25 +147,39 @@
         // The default sort is on the first card in the page layout.
         var layout = new SortedTileLayout();
 
-        var firstCardSequence = cardsSequence.map(function(cards) {
-          var sizedCards = _.compact(_.map(cards, function(card) {
-            // Sorting on the table card doesn't make any sense; computed and
-            // system columns are not included either.
-            if (card.fieldName === '*' || card.fieldName.charAt(0) === ':') {
+        var firstCardSequence = cardsSequence.combineLatest(
+          columnDetails,
+          function(cards, columnDetails) {
+            var sizedCards = _.compact(_.map(cards, function(card) {
+              // Sorting on the table card doesn't make any sense; computed and
+              // system columns are not included either. Also exclude columns that
+              // are unsortable, such as points.
+              var unsortableTypes = Constants.TABLE_UNSORTABLE_PHYSICAL_DATATYPES;
+              var columnPhysicalType = _.get(columnDetails[card.fieldName], 'physicalDatatype');
+              var isUnsortable = _.contains(unsortableTypes, columnPhysicalType);
+              if (card.fieldName === '*' ||
+                card.fieldName.charAt(0) === ':' ||
+                isUnsortable
+                ) {
+                return null;
+              } else {
+                return {
+                  cardSize: card.getCurrentValue('cardSize'),
+                  model: card
+                };
+              }
+            }));
+
+            if (_.isEmpty(sizedCards)) {
               return null;
-            } else {
-              return {
-                cardSize: card.getCurrentValue('cardSize'),
-                model: card
-              };
             }
-          }));
-          if (_.isEmpty(sizedCards)) return null;
-          var computedLayout = layout.doLayout(sizedCards);
-          var sortedCardSizes = _.keys(computedLayout).sort();
-          var cardsInFirstSize = _.flatten(computedLayout[_.first(sortedCardSizes)]);
-          return _.first(cardsInFirstSize).model.fieldName;
-        });
+
+            var computedLayout = layout.doLayout(sizedCards);
+            var sortedCardSizes = _.keys(computedLayout).sort();
+            var cardsInFirstSize = _.flatten(computedLayout[_.first(sortedCardSizes)]);
+            return _.first(cardsInFirstSize).model.fieldName;
+          }
+        );
 
         var aggregatedColumnSequence = aggregationSequence.
           filter(function(value) { return value['function'] !== 'count'; }).

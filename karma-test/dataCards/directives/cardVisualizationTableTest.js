@@ -24,6 +24,13 @@ describe('A Table Card Visualization', function() {
       'defaultCardType': 'timeline',
       'availableCardTypes': ['timeline']
     },
+    'test_location_column': {
+      'name': 'which place i am in',
+      'fred': 'point',
+      'physicalDatatype': 'point',
+      'defaultCardType': 'feature',
+      'availableCardTypes': ['feature']
+    },
     ':@test_computed_column': {
       'name': 'Community Districts',
       'description': 'Community district reporting 311 request',
@@ -282,6 +289,25 @@ describe('A Table Card Visualization', function() {
         createTable({ cardBlobs: cards });
       }).to.not.throw();
     });
+
+    it('should not include point columns', function() {
+      var cards = [
+        {
+          fieldName: 'test_location_column',
+          cardSize: 1,
+          expanded: false
+        },
+        {
+          fieldName: 'test_column',
+          cardSize: 2,
+          expanded: false
+        }
+      ];
+
+      // Make sure it doesn't pick the first card to sort by.
+      var table = createTable({ cardBlobs: cards });
+      expect(table.scope.defaultSortColumnName).to.equal('test_column');
+    });
   });
 
   describe('first column', function() {
@@ -342,9 +368,10 @@ describe('A Table Card Visualization', function() {
 
       var table = createTable({ columns: newColumns });
 
-      expect(table.element.find('.th')).to.have.length(2);
+      expect(table.element.find('.th')).to.have.length(3);
       expect(table.element.find('.th:eq(0)')).to.have.data('columnId', 'test_timestamp_column');
       expect(table.element.find('.th:eq(1)')).to.have.data('columnId', 'test_floating_timestamp_column');
+      expect(table.element.find('.th:eq(2)')).to.have.data('columnId', 'test_location_column');
     });
   });
 

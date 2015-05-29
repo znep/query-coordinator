@@ -417,6 +417,13 @@ describe('table directive', function() {
         expect(lastSort).to.equal(origSort);
       });
 
+      it('should not trigger a sort on unsortable columns', function() {
+        var origSort = lastSort;
+        getSortableTable().find('.th[data-column-id="point"]').click();
+        $rootScope.$digest();
+        expect(lastSort).to.equal(origSort);
+      });
+
       it('should not show flyout when hovering over the header resize handle', function() { // CORE-3140
         var resizeHandle = getSortableTable().find('.th .resize').eq(beatColumnIndex);
         expect(resizeHandle.length).to.not.equal(0);
@@ -643,7 +650,7 @@ describe('table directive', function() {
     beforeEach(function() {
       if (!el) {
         el = createTableCard(true, fakeDataSource);
-      } 
+      }
     });
     afterEach(destroyAllTableCards);
     afterEach(function() {

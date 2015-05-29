@@ -1161,8 +1161,14 @@
         // Now that everything's hooked up, connect the subscription.
         tileLayer.connect();
 
+        var dimensions$ = element.observeDimensions().
+          throttle(500, Rx.Scheduler.timeout).
+          filter(function(dimensions) {
+            return dimensions.width > 0 && dimensions.height > 0;
+          });
+
         Rx.Observable.subscribeLatest(
-          element.observeDimensions().throttle(500, Rx.Scheduler.timeout),
+          dimensions$,
           geojsonAggregateDataObservable,
           function(dimensions, geojsonAggregateData) {
 

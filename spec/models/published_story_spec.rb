@@ -2,6 +2,11 @@ require 'rails_helper'
 
 RSpec.describe PublishedStory, type: :model do
 
+  subject { FactoryGirl.create(:published_story) }
+
+  it_behaves_like 'has_block_operations'
+  it_behaves_like 'has_story_queries'
+
   describe 'validations' do
 
     it 'has a valid factory' do

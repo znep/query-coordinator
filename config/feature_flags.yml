@@ -162,9 +162,11 @@ data_lens_transition_state:
 disable_legacy_types:
   description: 'According to CORE-5097, the disabled types are: Formatted Text, Email, Website URL, Date & Time (with timezone), Star, Phone, Multiple Choice, Photo (Image), Document, and Dataset Link.'
   defaultValue: false
+  category: obe deprecation
 default_imports_to_nbe:
   description: When performing import operations, such as via the wizard or append/replace, the endpoint will be NBE by default rather than needing a migration.
   defaultValue: false
+  category: obe deprecation
 secondary_group_identifier:
   description: See CORE-5497 - This is the secondary indexing group that should be signaled to index on new UX bootstrap
   defaultValue: spandex3
@@ -180,3 +182,7 @@ force_redirect_to_data_lens:
 shape_file_region_query_limit:
   description: Limit for the number of regions fetched for a shape file when displayed in choropleths.
   defaultValue: 5000
+enable_export_service:
+  description: Use the new Export Service on this domain.
+  defaultValue: false
+  category: obe deprecation

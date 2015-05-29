@@ -191,6 +191,7 @@
             var pluralRowDisplayUnit = filteredRowCount === 1 ?
               rowDisplayUnit :
               rowDisplayUnit.pluralize();
+            pluralRowDisplayUnit = $.htmlEncode(pluralRowDisplayUnit);
             if (rowCount === filteredRowCount) {
               customTitle = 'Showing all {0} {1}'.
                 format(

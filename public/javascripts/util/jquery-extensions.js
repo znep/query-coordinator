@@ -55,6 +55,14 @@
     return value;
   };
 
+  $.htmlEncode = function(value) {
+    return $('<div/>').text(value).html();
+  };
+
+  $.htmlDecode = function(value) {
+    return $('<div/>').html(value).text();
+  };
+
   $.toFixedHumaneNumber = function(val, precision) {
     var symbol = ['K', 'M', 'B', 'T'];
     var step = 1000;

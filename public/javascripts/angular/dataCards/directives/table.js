@@ -519,14 +519,14 @@
               bottomRow
             );
 
-            $label.html(
-              '{0} <strong>{1}-{2} out of {3}</strong>'.format(
-                scope.rowDisplayUnit.capitalize(),
+            scope.$safeApply(function() {
+              scope.tableLabel = '{0} <strong>{1}-{2} out of {3}</strong>'.format(
+                $.htmlEncode(scope.rowDisplayUnit.capitalize()),
                 $.commaify(topRow),
                 $.commaify(bottomRow),
                 $.commaify(scope.filteredRowCount)
-              )
-            );
+              );
+            });
           };
 
           var reloadRows = function() {

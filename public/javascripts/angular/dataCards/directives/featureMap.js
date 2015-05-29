@@ -49,13 +49,13 @@
           scope.showPanZoomDisabledWarning = true;
           $(element).children('.feature-map-container').css('cursor', 'default');
 
-          FlyoutService.register(
-            'pan-zoom-disabled-warning-icon',
-            _.constant(
+          FlyoutService.register({
+            className: 'pan-zoom-disabled-warning-icon',
+            render: _.constant(
               '<div class="flyout-title">Zoom is temporarily unavailable. Please try again later.</div>'
             ),
-            scope.$destroyAsObservable()
-          );
+            destroySignal: scope.$destroyAsObservable()
+          });
         }
 
         var map = L.map(element.find('.feature-map-container')[0], mapOptions);

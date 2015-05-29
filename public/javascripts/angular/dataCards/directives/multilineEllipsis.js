@@ -106,13 +106,17 @@
         }
 
         if ($scope.showMoreMode === 'flyout') {
-          FlyoutService.register(contentFlyoutClass, function() {
-            if (content.triggerHandler('isTruncated')) {
-              return '<div class="flyout-title">{0}</div>'.format($scope.text);
-            } else {
-              return undefined;
-            }
-          }, $scope.$destroyAsObservable(element));
+          FlyoutService.register({
+            className: contentFlyoutClass,
+            render: function() {
+              if (content.triggerHandler('isTruncated')) {
+                return '<div class="flyout-title">{0}</div>'.format($scope.text);
+              } else {
+                return undefined;
+              }
+            },
+            destroySignal: $scope.$destroyAsObservable(element)
+          });
         }
 
         // We _could_ support maintaining the height animation if these are changed

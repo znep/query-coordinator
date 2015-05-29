@@ -32,7 +32,11 @@ describe('Flyout service', function() {
 
   it('should create a flyout with the given string on hover by the target', function() {
     var text = 'Let\'s go flaigh a kite...';
-    flyoutService.register('flyout-test', function() { return text; }, testCompletedObservable);
+    flyoutService.register({
+      className: 'flyout-test',
+      render: function() { return text; },
+      destroySignal: testCompletedObservable
+    });
 
     var target = $('<div class="flyout-test" />');
     container.append(target);
@@ -55,10 +59,13 @@ describe('Flyout service', function() {
   });
 
   it('should position correctly when on the right edge of the screen', function() {
-    flyoutService.register('right-edge',
-                           // A string of 20 words separated by spaces
-                           _.constant(_.map(_.range(20), _.constant('text')).join(' ')),
-                           testCompletedObservable);
+    flyoutService.register({
+      className: 'right-edge',
+      // A string of 20 words separated by spaces
+      render: _.constant(_.map(_.range(20), _.constant('text')).join(' ')),
+      destroySignal: testCompletedObservable
+    });
+
     var target = $('<div class="right-edge" />').css({
       position: 'absolute',
       right: 5,
@@ -84,13 +91,13 @@ describe('Flyout service', function() {
   it('should update the flyout message when refreshFlyout is called.', function() {
     var someMagicalState = true;
 
-    flyoutService.register(
-      'dynamic-flyout-test',
-      function() {
+    flyoutService.register({
+      className: 'dynamic-flyout-test',
+      render: function() {
         return someMagicalState ? 'initial' : 'final';
       },
-      testCompletedObservable
-    );
+      destroySignal: testCompletedObservable
+    });
 
     var target = $('<div class="dynamic-flyout-test" />');
     container.append(target);

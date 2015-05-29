@@ -112,23 +112,25 @@
 
         fieldName = SoqlHelpers.formatFieldName(fieldName);
 
-        var queryTemplate = 'select signed_magnitude_10({0}) as magnitude, {2} as value {1} group by magnitude order by magnitude limit 200';
+        var magnitudeAlias = SoqlHelpers.getFieldNameAlias('magnitude');
+        var valueAlias = SoqlHelpers.getFieldNameAlias('value');
+
+        var queryTemplate = 'select signed_magnitude_10({0}) as {3}, {2} as {4} {1} group by {3} order by {3} limit 200';
 
         // TODO: Implement some method for paging/showing data that has been truncated.
-        var params = {
-          $query: queryTemplate.format(fieldName, whereClause, aggregationClause)
-        };
         var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
         var config = httpConfig.call(this);
-        url.searchParams.set('$query', queryTemplate.format(fieldName, whereClause, aggregationClause));
+        url.searchParams.set('$query',
+          queryTemplate.format(fieldName, whereClause, aggregationClause, magnitudeAlias, valueAlias)
+        );
 
         return http.get(url.href, config).
           then(function(result) {
             var data = result['data'];
             return _.map(data, function(item) {
               return {
-                magnitude: parseFloat(item.magnitude),
-                value: parseFloat(item.value)
+                magnitude: parseFloat(item[magnitudeAlias]),
+                value: parseFloat(item[valueAlias])
               };
             });
           });

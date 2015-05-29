@@ -25,18 +25,19 @@
       this.container = container;
 
       // Initialize the flyout handler
-      FlyoutService.register('choropleth-legend-color', function(element) {
-        if ($(element).parents('.card').hasClass('dragged')) {
-          return;
-        }
-        return '<div class="flyout-title">{0}</div>'.format(
-          element.getAttribute('data-flyout-text')
-        );
-      },
-      scope.$destroyAsObservable(),
-      false,
-      // The last argument specifies a horizontal display mode.
-      true);
+      FlyoutService.register({
+        className: 'choropleth-legend-color',
+        render: function(element) {
+          if ($(element).parents('.card').hasClass('dragged')) {
+            return;
+          }
+          return '<div class="flyout-title">{0}</div>'.format(
+            element.getAttribute('data-flyout-text')
+          );
+        },
+        destroySignal: scope.$destroyAsObservable(),
+        horizontal: true
+      });
     }
 
     $.extend(LegendDiscrete.prototype, {
@@ -934,7 +935,7 @@
               weight: 4
             });
 
-            // IE HACK (CORE-3566): IE exhibits (not fully-characterized) pointer madness if you bring a layer 
+            // IE HACK (CORE-3566): IE exhibits (not fully-characterized) pointer madness if you bring a layer
             // containing a MultiPolygon which actually contains more than one polygon to the
             // front in a featureMouseOver. The rough cause is that the paths corresponding to this
             // layer get removed and re-added elsewhere in the dom while the mouseover is getting handled.
@@ -991,87 +992,87 @@
           }
         }
 
-        FlyoutService.register('leaflet-clickable', function(element) {
+        FlyoutService.register({
+          className: 'leaflet-clickable',
+          render: function(element) {
 
-          var featureHumanReadableName;
-          var value;
-          var unfilteredValue;
-          var filteredValue;
-          var filterApplied;
-          var html;
+            var featureHumanReadableName;
+            var value;
+            var unfilteredValue;
+            var filteredValue;
+            var filterApplied;
+            var html;
 
-          // To ensure that only one choropleth instance will ever draw
-          // a flyout at a given point in time, we check to see if the
-          // directive's private scope includes a non-null currentFeature.
-          // This is set to a non-null value when a feature controlled by
-          // the choropleth raises a mousemove event, and reset to null
-          // when a feature controlled by the choropleth raises a mouseout
-          // event. (See onFeatureMouseMove and onFeatureMouseOut).
-          if (null === currentFeature) {
-            return;
-          }
+            // To ensure that only one choropleth instance will ever draw
+            // a flyout at a given point in time, we check to see if the
+            // directive's private scope includes a non-null currentFeature.
+            // This is set to a non-null value when a feature controlled by
+            // the choropleth raises a mousemove event, and reset to null
+            // when a feature controlled by the choropleth raises a mouseout
+            // event. (See onFeatureMouseMove and onFeatureMouseOut).
+            if (null === currentFeature) {
+              return;
+            }
 
-          if ($(element).parents('.card').hasClass('dragged')) {
-            return;
-          }
+            if ($(element).parents('.card').hasClass('dragged')) {
+              return;
+            }
 
-          featureHumanReadableName = currentFeature.properties[Constants['HUMAN_READABLE_PROPERTY_NAME']];
-          value = currentFeature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']];
-          unfilteredValue = currentFeature.properties[Constants['UNFILTERED_VALUE_PROPERTY_NAME']];
-          filteredValue = 0;
+            featureHumanReadableName = currentFeature.properties[Constants['HUMAN_READABLE_PROPERTY_NAME']];
+            value = currentFeature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']];
+            unfilteredValue = currentFeature.properties[Constants['UNFILTERED_VALUE_PROPERTY_NAME']];
+            filteredValue = 0;
 
-          filterApplied = (value !== unfilteredValue);
+            filterApplied = (value !== unfilteredValue);
 
-          if (typeof unfilteredValue !== 'number') {
-            unfilteredValue = Constants['NULL_VALUE_LABEL'];
-          } else {
-            unfilteredValue = applyRowDisplayUnit($.toHumaneNumber(unfilteredValue));
-          }
+            if (typeof unfilteredValue !== 'number') {
+              unfilteredValue = Constants['NULL_VALUE_LABEL'];
+            } else {
+              unfilteredValue = applyRowDisplayUnit($.toHumaneNumber(unfilteredValue));
+            }
 
-          if (typeof value !== 'number') {
-            // filtered value should show as 0, if null/undefined.
-            filteredValue = applyRowDisplayUnit('0');
-          } else {
-            filteredValue = applyRowDisplayUnit($.toHumaneNumber(value));
-          }
+            if (typeof value !== 'number') {
+              // filtered value should show as 0, if null/undefined.
+              filteredValue = applyRowDisplayUnit('0');
+            } else {
+              filteredValue = applyRowDisplayUnit($.toHumaneNumber(value));
+            }
 
-          if (filterApplied) {
+            if (filterApplied) {
 
-            html = '<div class="flyout-title">{0}</div>'
-                 + '<div class="flyout-row">'
-                 + '<span class="flyout-cell">{1}</span>'
-                 + '<span class="flyout-cell">{2}</span>'
-                 + '</div>'
-                 + '<div class="flyout-row">'
-                 + '<span class="flyout-cell emphasis">{3}</span>'
-                 + '<span class="flyout-cell emphasis">{4}</span>'
-                 + '</div>';
+              html = '<div class="flyout-title">{0}</div>'
+                   + '<div class="flyout-row">'
+                   + '<span class="flyout-cell">{1}</span>'
+                   + '<span class="flyout-cell">{2}</span>'
+                   + '</div>'
+                   + '<div class="flyout-row">'
+                   + '<span class="flyout-cell emphasis">{3}</span>'
+                   + '<span class="flyout-cell emphasis">{4}</span>'
+                   + '</div>';
 
-            return html.format(featureHumanReadableName.capitalizeEachWord(),
-                               'Total',
-                               unfilteredValue,
-                               'Filtered amount',
-                               filteredValue);
-          } else {
+              return html.format(featureHumanReadableName.capitalizeEachWord(),
+                                 'Total',
+                                 unfilteredValue,
+                                 'Filtered amount',
+                                 filteredValue);
+            } else {
 
-            html = '<div class="flyout-title">{0}</div>'
-                 + '<div class="flyout-row">'
-                 + '<span class="flyout-cell">{1}</span>'
-                 + '<span class="flyout-cell">{2}</span>'
-                 + '</div>';
+              html = '<div class="flyout-title">{0}</div>'
+                   + '<div class="flyout-row">'
+                   + '<span class="flyout-cell">{1}</span>'
+                   + '<span class="flyout-cell">{2}</span>'
+                   + '</div>';
 
-            return html.format(featureHumanReadableName.capitalizeEachWord(),
-                               'Total',
-                               unfilteredValue);
+              return html.format(featureHumanReadableName.capitalizeEachWord(),
+                                 'Total',
+                                 unfilteredValue);
 
-          }
+            }
 
-        },
-        scope.$destroyAsObservable(element),
-        // The second-to-last argument specifies whether the flyout should follow
-        // the cursor (true) or be fixed to the target element (false).
-        true,
-        false);
+          },
+          destroySignal: scope.$destroyAsObservable(element),
+          trackCursor: true
+        });
 
         /***************
         * Set up state *

@@ -51,7 +51,7 @@
       link: function($scope) {
 
         var whereClause$ = $scope.$observe('whereClause');
-        var filterApplied$ = whereClause$.map(_.isPresent);
+        var isFiltered$ = whereClause$.map(_.isPresent);
         var cardModel = $scope.$observe('model');
         var datasetModel$ = cardModel.observeOnLatest('page.dataset');
         var baseSoqlFilter$ = cardModel.observeOnLatest('page.baseSoqlFilter');
@@ -140,6 +140,25 @@
 
             $scope.histogramRenderError = false;
 
+            // While the filtered data doesn't have the same number of buckets as the unfiltered,
+            // we need to create the missing buckets and give them values of zero.
+            var i = 0;
+            while (unfiltered.length !== filtered.length && i < unfiltered.length) {
+              // If the filtered array doesn't contain an object with the same 'start' index as the
+              // current unfiltered object, create new bucket and insert it into the filtered array.
+              if ($.grep(filtered, function(e) {
+                return e.start === unfiltered[i].start;
+              }).length === 0) {
+                var newBucket = {
+                  start: unfiltered[i].start,
+                  end: unfiltered[i].end,
+                  value: 0
+                };
+                filtered.splice(i, 0, newBucket);
+              }
+              i++;
+            }
+
             return {
               unfiltered: unfiltered,
               filtered: filtered
@@ -157,7 +176,7 @@
 
         $scope.$bindObservable('rowDisplayUnit', rowDisplayUnit$);
         $scope.$bindObservable('cardData', cardData$);
-        $scope.$bindObservable('filterApplied', filterApplied$);
+        $scope.$bindObservable('isFiltered', isFiltered$);
         $scope.$bindObservable('expanded', expanded$);
       }
     };

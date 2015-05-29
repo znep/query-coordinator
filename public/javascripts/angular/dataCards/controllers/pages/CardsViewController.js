@@ -562,17 +562,17 @@
 
     var destroy$ = $scope.$destroyAsObservable();
 
-    FlyoutService.register(
-      'edit-page-warning',
-      function() {
+    FlyoutService.register({
+      className: 'edit-page-warning',
+      render: function() {
         if ($scope.writablePage.warnings && $scope.writablePage.warnings.name) {
           return $scope.writablePage.warnings.name.join('\n');
         } else {
           return '';
         }
       },
-      destroy$
-    );
+      destroySignal: destroy$
+    });
 
 
     /**
@@ -639,15 +639,15 @@
 
     // Set up flyout handlers.
 
-    FlyoutService.register(
-      'download-menu-item-disabled-text',
-      _.constant(
+    FlyoutService.register({
+      className: 'download-menu-item-disabled-text',
+      render: _.constant(
         '<div class="flyout-title">' +
           'Please save the page in order to download a visualization as an image' +
         '</div>'
       ),
-      destroy$
-    );
+      destroySignal: destroy$
+    });
 
     //TODO consider extending register() to take a selector, too.
     //TODO The controller shouldn't know about this magical target inside save-button!
@@ -657,9 +657,9 @@
     //BIG FAT NOTE: This handler deals with _all_ save buttons. This includes the Save button
     //in the toolbar, and also the Save button in the Save As dialog. We need to check that this
     //is _our_ save button.
-    FlyoutService.register(
-      'save-button-flyout-target',
-      function(element) {
+    FlyoutService.register({
+      className: 'save-button-flyout-target',
+      render: function(element) {
 
         if ($(element).closest('.save-this-page').length === 0) {
           return undefined;
@@ -676,28 +676,28 @@
             '<div class="flyout-title">No changes to be saved</div>';
         }
       },
-      destroy$
-    );
+      destroySignal: destroy$
+    });
 
-    FlyoutService.register(
-      'save-as-button',
-      function() {
+    FlyoutService.register({
+      className: 'save-as-button',
+      render: function() {
 
         return $scope.hasChanges ?
           '<div class="flyout-title">Click to save your changes as a new page</div>' :
           '<div class="flyout-title">No changes to be saved</div>';
       },
-      destroy$
-    );
+      destroySignal: destroy$
+    });
 
-    FlyoutService.register(
-      'clear-all-filters-button',
-      function() {
+    FlyoutService.register({
+      className: 'clear-all-filters-button',
+      render: function() {
 
         return '<div class="flyout-title">Click to reset all filters</div>';
       },
-      destroy$
-    );
+      destroySignal: destroy$
+    });
 
     // Since we have a flyout handler whose output depends on currentPageSaveEvents and $scope.hasChanges,
     // we need to poke the FlyoutService. We want the flyout to update immediately.

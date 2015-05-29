@@ -2206,11 +2206,30 @@
         //
         // Set up flyout registrations and event handlers.
         //
-        FlyoutService.register('timeline-chart-highlight-target', renderFlyout);
-        FlyoutService.register('x-tick-label', renderIntervalFlyout);
-        FlyoutService.register('selection-marker', renderSelectionMarkerFlyout);
-        FlyoutService.register('timeline-chart-clear-selection-label', renderClearSelectionMarkerFlyout);
-        FlyoutService.register('timeline-chart-clear-selection-button', renderClearSelectionMarkerFlyout);
+        FlyoutService.register({
+          className: 'timeline-chart-highlight-target',
+          render: renderFlyout
+        });
+
+        FlyoutService.register({
+          className: 'x-tick-label',
+          render: renderIntervalFlyout
+        });
+
+        FlyoutService.register({
+          className: 'selection-marker',
+          render: renderSelectionMarkerFlyout
+        });
+
+        FlyoutService.register({
+          className: 'timeline-chart-clear-selection-label',
+          render: renderClearSelectionMarkerFlyout
+        });
+
+        FlyoutService.register({
+          className: 'timeline-chart-clear-selection-button',
+          render: renderClearSelectionMarkerFlyout
+        });
 
         jqueryChartElement.on('mouseleave', handleChartMouseleaveEvent);
         jqueryClearSelectionLabel.on('mousedown', handleClearSelectionLabelMousedownEvent);
@@ -2224,11 +2243,30 @@
           mouseLeftButtonChangesSubscription.dispose();
           mouseMoveOrLeftButtonChangesSubscription.dispose();
 
-          FlyoutService.deregister('timeline-chart-highlight-target', renderFlyout);
-          FlyoutService.deregister('x-tick-label', renderIntervalFlyout);
-          FlyoutService.deregister('selection-marker', renderSelectionMarkerFlyout);
-          FlyoutService.deregister('timeline-chart-clear-selection-label', renderClearSelectionMarkerFlyout);
-          FlyoutService.deregister('timeline-chart-clear-selection-button', renderClearSelectionMarkerFlyout);
+          FlyoutService.deregister({
+            className: 'timeline-chart-highlight-target',
+            render: renderFlyout
+          });
+
+          FlyoutService.deregister({
+            className: 'x-tick-label',
+            render: renderIntervalFlyout
+          });
+
+          FlyoutService.deregister({
+            className: 'selection-marker',
+            render: renderSelectionMarkerFlyout
+          });
+
+          FlyoutService.deregister({
+            className: 'timeline-chart-clear-selection-label',
+            render: renderClearSelectionMarkerFlyout
+          });
+
+          FlyoutService.deregister({
+            className: 'timeline-chart-clear-selection-button',
+            render: renderClearSelectionMarkerFlyout
+          });
 
           jqueryChartElement.off('mouseleave', handleChartMouseleaveEvent);
           jqueryClearSelectionLabel.off('mousedown', handleClearSelectionLabelMousedownEvent);

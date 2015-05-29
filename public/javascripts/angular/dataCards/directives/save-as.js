@@ -81,15 +81,19 @@
         // We need to make sure that the save-button we're rendering the flyout for is actually
         // our instance of save-button. save-button-flyout-target is not under our control.
         var mySaveButtonScope = element.find('save-button').scope();
-        FlyoutService.register('save-button-flyout-target', function(element) {
-          var closestSaveButtonScope = $(element).closest('save-button').scope();
-          if (closestSaveButtonScope != mySaveButtonScope) { return undefined; }
-          if (saveEvents.value.status === 'failed') {
-            return '<div class="flyout-title">An error occurred</div><div>Please contact Socrata Support</div>';
-          } else if (saveEvents.value.status === 'idle') {
-            return '<div class="flyout-title">Click to save your changes as a new page</div>';
-          }
-        }, $scope.$destroyAsObservable(element));
+        FlyoutService.register({
+          className: 'save-button-flyout-target',
+          render: function(element) {
+            var closestSaveButtonScope = $(element).closest('save-button').scope();
+            if (closestSaveButtonScope != mySaveButtonScope) { return undefined; }
+            if (saveEvents.value.status === 'failed') {
+              return '<div class="flyout-title">An error occurred</div><div>Please contact Socrata Support</div>';
+            } else if (saveEvents.value.status === 'idle') {
+              return '<div class="flyout-title">Click to save your changes as a new page</div>';
+            }
+          },
+          destroySignal: $scope.$destroyAsObservable(element)
+        });
 
         $scope.$destroyAsObservable(element).subscribe(function() {
           $scope.$emit('cleaned-up');

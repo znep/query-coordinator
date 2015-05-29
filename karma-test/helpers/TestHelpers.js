@@ -64,11 +64,41 @@
     // D3 doesn't have a jQuery-like trigger. So if you want to simulate mouse events,
     // we need to use real browser events.
     var fireMouseEvent = function(elem, evtName, eventProps) {
-      var evt = document.createEvent("MouseEvents");
-      evt.initMouseEvent(evtName, true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-      if (eventProps) {
-        $.extend(evt, eventProps);
-      }
+      var evt = document.createEvent('MouseEvents');
+      var params = $.extend({
+        type: evtName,
+        canBubble: true,
+        cancelable: true,
+        view: window,
+        detail: 0,
+        screenX: 0,
+        screenY: 0,
+        clientX: 0,
+        clientY: 0,
+        ctrlKey: false,
+        altKey: false,
+        shiftKey: false,
+        metaKey: false,
+        button: 0,
+        relatedTarget: null
+      }, eventProps);
+      evt.initMouseEvent(
+        params.type,
+        params.canBubble,
+        params.cancelable,
+        params.view,
+        params.detail,
+        params.screenX,
+        params.screenY,
+        params.clientX,
+        params.clientY,
+        params.ctrlKey,
+        params.altKey,
+        params.shiftKey,
+        params.metaKey,
+        params.button,
+        params.relatedTarget
+      );
       elem.dispatchEvent(evt);
     };
 

@@ -1,4 +1,4 @@
-angular.module('dataCards.services').factory('FlyoutService', function(WindowState) {
+angular.module('dataCards.services').factory('FlyoutService', function(WindowState, Assert) {
   'use strict';
 
   var handlers = {};
@@ -6,6 +6,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
   var uberFlyoutContent;
   var hintWidth;
   var hintHeight;
+  var windowPadding = 26; // Keep flyout this many pixels away from edge of window
 
   // To support refreshFlyout, we have an additional stream of mouse positions
   // that replays events from WindowState.mousePositionSubject when needed.
@@ -22,9 +23,11 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
     var i;
     var handlerCount;
     var j;
+    var handler;
     var flyoutContent;
     var flyoutWidth;
     var flyoutHeight;
+    var flyoutElement;
     var horizontalHint;
     var rightSideHint;
     var targetBoundingClientRect;
@@ -61,7 +64,10 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
 
             for (j = 0; j < handlerCount; j++) {
 
-              flyoutContent = handlers[className][j].render(e.target);
+              handler = handlers[className][j];
+
+              flyoutElement = handler.positionOn(e.target);
+              flyoutContent = handler.render(flyoutElement);
 
               if (_.isDefined(flyoutContent)) {
 
@@ -70,17 +76,16 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                 flyoutWidth = uberFlyout.outerWidth();
                 flyoutHeight = uberFlyout.outerHeight();
 
-                horizontalHint = handlers[className][j].horizontal;
+                horizontalHint = handler.horizontal;
                 rightSideHint = false;
 
                 var css = {right: '', left: ''};
-
 
                 // Hints can be horizontal or cursor-tracking, but not both.
 
                 if (horizontalHint) {
 
-                  targetBoundingClientRect = e.target.getBoundingClientRect();
+                  targetBoundingClientRect = flyoutElement.getBoundingClientRect();
 
                   css.left = (targetBoundingClientRect.left) -
                     (flyoutWidth + Math.floor(hintWidth * 0.5));
@@ -93,7 +98,28 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
 
                 } else  {
 
-                  if (handlers[className][j].trackCursor) {
+                  var $flyoutHint = $('#uber-flyout').find('.hint');
+
+                  // If we are near the right edge of the window, fix flyout to the right edge of
+                  // the window (+ padding) and adjust the offset of the hint arrow to point at the
+                  // proper segment.
+                  var clampFlyoutToEdgeOfWindow = function() {
+                    var rightEdgeOfFlyout = css.left + flyoutWidth;
+                    var windowWidth = $(window).width();
+                    if (rightEdgeOfFlyout >= windowWidth - windowPadding) {
+                      rightSideHint = true;
+                      var offsetForFlyoutHint = rightEdgeOfFlyout - windowWidth + windowPadding
+                      offsetForFlyoutHint -= $flyoutHint.width() / 2 + 2;
+                      $flyoutHint.css('left', offsetForFlyoutHint);
+                      css.right = windowPadding;
+                      css.left = '';
+                    }
+                  }
+
+                  $flyoutHint.css('left', '');
+                  $flyoutHint.css('right', '');
+
+                  if (handler.trackCursor) {
 
                     // Subtract the flyout's height so that flyout hovers above,
                     // and the hint points to, the cursor.
@@ -103,32 +129,29 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                     if (css.left + flyoutWidth > window.innerWidth) {
                       css.left = css.left - flyoutWidth;
                       rightSideHint = true;
+                      $flyoutHint.css('right', -10);
                     }
+
                     if (css.top - flyoutHeight < 0) {
                       css.top = flyoutHeight;
                     }
 
                   } else {
 
-                    targetBoundingClientRect = e.target.getBoundingClientRect();
+                    targetBoundingClientRect = flyoutElement.getBoundingClientRect();
 
                     css.left = (targetBoundingClientRect.left)
                                + Math.floor(targetBoundingClientRect.width / 2);
 
+                    clampFlyoutToEdgeOfWindow();
+
                     css.top = (targetBoundingClientRect.top)
                               - (flyoutHeight + Math.floor(hintHeight * 0.5));
 
-                    if (css.left + flyoutWidth > window.innerWidth) {
-                      css.right = $(window).width() - css.left;
-                      css.left = '';
-                      rightSideHint = true;
-                    }
                     if (css.top < 0) {
                       css.top = 0;
                     }
-
                   }
-
                 }
 
                 uberFlyout.
@@ -169,49 +192,57 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
   return {
     /**
      * Register a flyout under a CSS class.
-     * @param {string} className - CSS class this flyout is attached to.
-     *                            Treated as unique in this context (should it be an id? maybe so!)
-     * @param {function} renderCallback - Called to render the flyout. Should return a string that
-     *                                    will be interpreted as HTML.
-     * @param {Observable} destroySignal - The flyout handler will be destroyed when this sequence
-     *                                    first emits.
-     *                                    Temporary hack to prevent severe memory leaks, ideally we
-     *                                    would not store the handlers in a global object.
-     * @param {boolean} [trackCursor=false] - Whether or not the flyout should track the mouse.
-     *                               Optional, default false.
-     * @param {boolean} [horizontal=false] - Whether or not the flyout should lay out horizontally.
-     *                               Optional, default false (vertical).
+     * @param {Object} options - A hash of options to control how the flyout
+     * @param {string} options.className - CSS class this flyout is attached to.
+     *   Treated as unique in this context (should it be an id? maybe so!).
+     *   Required.
+     * @param {function} options.render - Called to render the flyout. Should
+     *   return a string that will be interpreted as HTML. Required.
+     * @param {Observable} options.destroySignal - The flyout handler will be
+     *   destroyed when this sequence first emits. Temporary hack to prevent
+     *   severe memory leaks, ideally we would not store the handlers globally.
+     *   Optional, default null.
+     * @param {Function} options.positionOn - A function that returns an HTML
+     *   element to position the flyout over. This can be used to trigger a
+     *   flyout on a certain element but render it over a different one.
+     *   Optional, default _.identity.
+     * @param {boolean} [options.trackCursor=false] - Whether or not the flyout
+     *   should track the mouse. Optional, default false.
+     * @param {boolean} [options.horizontal=false] - Whether or not the flyout
+     *   should lay out horizontally. Optional, default false (vertical).
      */
-    register: function(className, renderCallback, destroySignal, trackCursor, horizontal) {
-      if (_.isDefined(destroySignal) && !_.isFunction(destroySignal.asObservable)) {
-        throw new Error('Flyouts must be given a destroySignal Observable.');
-      }
+    register: function(options) {
 
-      if (trackCursor !== true) {
-        trackCursor = false;
-      }
-      if (horizontal !== true) {
-        horizontal = false;
-      }
+      options = _.defaults(options || {}, {
+        className: null,
+        render: null,
+        destroySignal: null,
+        positionOn: _.identity,
+        trackCursor: false,
+        horizontal: false
+      });
 
-      if (trackCursor === true && horizontal === true) {
-        throw new Error('Cannot set both trackCursor and horizontal modes on the same flyout.');
-      }
+      Assert(_.isPresent(options.className), 'className must be present.');
+      Assert(_.isPresent(options.render), 'render function must be present.');
+      Assert(!_.isPresent(options.destroySignal) ||
+        _.isFunction(options.destroySignal.asObservable), 'destroySignal must be an observable.');
+      Assert(options.trackCursor !== true || options.horizontal !== true,
+        'Cannot set both trackCursor and horizontal modes on the same flyout.');
 
       // TODO: Figure out what to do here. Should we be using ids instead of classes?
       // Or just warn that a duplicate selector has been found rather than throwing
       // an exception?
-      if (!handlers.hasOwnProperty(className)) {
-        handlers[className] = [];
+      if (!handlers.hasOwnProperty(options.className)) {
+        handlers[options.className] = [];
       }
 
-      var handler = { render: renderCallback, trackCursor: trackCursor, horizontal: horizontal };
+      var handler = _.clone(options);
 
-      handlers[className].push(handler);
+      handlers[options.className].push(handler);
 
-      if (_.isDefined(destroySignal)) {
-        destroySignal.asObservable().take(1).subscribe(function() {
-          _.pull(handlers[className], handler);
+      if (_.isPresent(options.destroySignal)) {
+        options.destroySignal.asObservable().take(1).subscribe(function() {
+          _.pull(handlers[options.className], handler);
         });
       }
     },

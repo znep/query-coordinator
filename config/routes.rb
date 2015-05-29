@@ -2,7 +2,9 @@ Rails.application.routes.draw do
   get 'version' => 'version#show'
 
   resources :published_stories # HMMM do we want the standard crud?
-  get 'v(/:vanity_text)/:four_by_four' => 'published_stories#show'
+  get 'v(/:vanity_text)/:four_by_four' => 'published_stories#show', constraints: {
+    four_by_four: UNANCHORED_FOUR_BY_FOUR_PATTERN
+  }
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

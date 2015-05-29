@@ -18,7 +18,7 @@ RSpec.describe PublishedStoriesController, type: :controller do
       end
 
       it 'renders 404' do
-        get :show, four_by_four: 'fourOfour'
+        get :show, four_by_four: 'notf-ound'
         expect(response).to be_not_found
       end
 

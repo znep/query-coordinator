@@ -2114,7 +2114,8 @@
             }
 
             offsetX = mousePosition.clientX - cachedChartOffsets.left;
-            offsetY = mousePosition.clientY + scrollPosition - cachedChartOffsets.top;
+            // offsetY = mousePosition.clientY + scrollPosition - cachedChartOffsets.top;
+            offsetY = mousePosition.clientY - element.get(0).getBoundingClientRect().top;
 
             // mousePositionWithinChartElement is a global variable that is
             // used elsewhere as well

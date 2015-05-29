@@ -20,6 +20,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       'port' => '6010'
     })
     manager.stubs(:largest_time_span_in_days_being_used_in_columns).returns(1000)
+    manager.stubs(:magnitude_function_for_column).returns('signed_magnitude_10')
     View.stubs(
       :find => stub(
         :category => OBE_CATEGORY_NAME,
@@ -545,9 +546,9 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal(result[:status], '200')
   end
 
-  def test_time_range_in_column_catches_fetch_min_max_date_in_column_returning_nil
+  def test_time_range_in_column_catches_fetch_min_max_in_column_returning_nil
     CoreServer::Base.connection.expects(:get_request).raises(CoreServer::Error.new(nil))
-    assert_raises(Phidippides::NoMinMaxInDateColumnException) do
+    assert_raises(Phidippides::NoMinMaxInColumnException) do
       manager.send(:time_range_in_column, 'four-four', 'fieldName')
     end
   end
@@ -564,8 +565,9 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     )
     columns = v1_dataset_metadata.fetch('columns')
     cards = v1_page_metadata.fetch('cards')
-    expected_soql = 'select some_column, some_other_column, date_trunc_y(time_column_fine_granularity), count(*) as value ' <<
-      'group by some_column, some_other_column, date_trunc_y(time_column_fine_granularity)'
+    expected_soql = 'select some_column, some_other_column, date_trunc_y(time_column_fine_granularity), ' <<
+      'signed_magnitude_10(some_number_column), count(*) as value group by some_column, some_other_column, ' <<
+      'date_trunc_y(time_column_fine_granularity), signed_magnitude_10(some_number_column)'
 
     soql = manager.send(:build_rollup_soql, v1_page_metadata, columns, cards)
     assert_equal(expected_soql, soql)
@@ -595,6 +597,24 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     cards = v1_page_metadata.fetch('cards')
     soql = manager.send(:build_rollup_soql, v1_page_metadata, columns, cards)
     assert_match(/date_trunc/, soql)
+  end
+
+  def test_build_rollup_soql_has_magnitudes
+    manager.stubs(
+      dataset_metadata: { body: v1_dataset_metadata },
+      column_field_name: 'some_number_column',
+      logical_datatype_name: 'fred'
+    )
+    manager.unstub(:magnitude_function_for_column)
+    manager.expects(:magnitude_function_for_column).
+      with(v1_dataset_metadata['id'], 'some_number_column').
+      returns('signed_magnitude_10')
+
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    columns = v1_dataset_metadata.fetch('columns')
+    cards = v1_page_metadata.fetch('cards')
+    soql = manager.send(:build_rollup_soql, v1_page_metadata, columns, cards)
+    assert_match(/signed_magnitude_10\(some_number_column\)/, soql)
   end
 
   def test_raise_when_missing_default_date_trunc_function
@@ -681,77 +701,135 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_time_range_in_column_dates_equal
-    manager.expects(:fetch_min_max_date_in_column).with('four-four', 'theFieldName').returns(
-      'start' => '1987-08-15T00:00:00.000',
-      'end' => '1987-08-15T00:00:00.000'
+    manager.expects(:fetch_min_max_in_column).with('four-four', 'theFieldName').returns(
+      'min' => '1987-08-15T00:00:00.000',
+      'max' => '1987-08-15T00:00:00.000'
     )
     result = manager.send(:time_range_in_column, 'four-four', 'theFieldName')
     assert_equal(0, result)
   end
 
   def test_time_range_in_column_dates_reversed
-    manager.expects(:fetch_min_max_date_in_column).with('four-four', 'theFieldName').returns(
-      'start' => '1987-08-31T00:00:00.000',
-      'end' => '1987-08-01T00:00:00.000'
+    manager.expects(:fetch_min_max_in_column).with('four-four', 'theFieldName').returns(
+      'min' => '1987-08-31T00:00:00.000',
+      'max' => '1987-08-01T00:00:00.000'
     )
     result = manager.send(:time_range_in_column, 'four-four', 'theFieldName')
     assert_equal(30, result)
   end
 
   def test_time_range_in_column_pathologically_large_dates
-    manager.expects(:fetch_min_max_date_in_column).with('four-four', 'theFieldName').returns(
-      'start' => '1970-01-01T00:00:00.000',
-      'end' => '9999-12-31T23:59:59.999'
+    manager.expects(:fetch_min_max_in_column).with('four-four', 'theFieldName').returns(
+      'min' => '1970-01-01T00:00:00.000',
+      'max' => '9999-12-31T23:59:59.999'
     )
     result = manager.send(:time_range_in_column, 'four-four', 'theFieldName')
     assert_equal(2932896, result)
   end
 
   def test_time_range_in_column_raises_exception_without_min_max
-    manager.expects(:fetch_min_max_date_in_column).with('four-four', 'theFieldName').returns({})
-    assert_raises(Phidippides::NoMinMaxInDateColumnException) do
+    manager.expects(:fetch_min_max_in_column).with('four-four', 'theFieldName').returns({})
+    assert_raises(Phidippides::NoMinMaxInColumnException) do
       manager.send(:time_range_in_column, 'four-four', 'theFieldName')
     end
   end
 
   def test_time_range_in_column_raises_exception_without_min
-    manager.expects(:fetch_min_max_date_in_column).with('four-four', 'theFieldName').returns(
-      'end' => '1984-01-01T00:00:00.000'
+    manager.expects(:fetch_min_max_in_column).with('four-four', 'theFieldName').returns(
+      'max' => '1984-01-01T00:00:00.000'
     )
-    assert_raises(Phidippides::NoMinMaxInDateColumnException) do
+    assert_raises(Phidippides::NoMinMaxInColumnException) do
       manager.send(:time_range_in_column, 'four-four', 'theFieldName')
     end
   end
 
   def test_time_range_in_column_raises_exception_without_max
-    manager.expects(:fetch_min_max_date_in_column).with('four-four', 'theFieldName').returns(
-      'start' => '1984-01-01T00:00:00.000'
+    manager.expects(:fetch_min_max_in_column).with('four-four', 'theFieldName').returns(
+      'min' => '1984-01-01T00:00:00.000'
     )
-    assert_raises(Phidippides::NoMinMaxInDateColumnException) do
+    assert_raises(Phidippides::NoMinMaxInColumnException) do
       manager.send(:time_range_in_column, 'four-four', 'theFieldName')
     end
   end
 
-  def test_fetch_min_max_date_in_column_calls_api
+  def test_magnitude_function_for_column_returns_smaglin_if_column_range_is_small
+    manager.expects(:fetch_min_max_in_column).with('four-four', 'some_number_column').returns(
+      'min' => -1000,
+      'max' => 1000
+    )
+    manager.unstub(:magnitude_function_for_column)
+    result = manager.send(:magnitude_function_for_column, 'four-four', 'some_number_column')
+    assert_equal(result, 'signed_magnitude_lin')
+  end
+
+  def test_magnitude_function_for_column_returns_smag_if_column_max_is_large
+    manager.expects(:fetch_min_max_in_column).with('four-four', 'some_number_column').returns(
+      'min' => -1000,
+      'max' => 3000
+    )
+    manager.unstub(:magnitude_function_for_column)
+    result = manager.send(:magnitude_function_for_column, 'four-four', 'some_number_column')
+    assert_equal(result, 'signed_magnitude_10')
+  end
+
+  def test_magnitude_function_for_column_returns_smag_if_column_min_is_large
+    manager.expects(:fetch_min_max_in_column).with('four-four', 'some_number_column').returns(
+      'min' => -3000,
+      'max' => 1000
+    )
+    manager.unstub(:magnitude_function_for_column)
+    result = manager.send(:magnitude_function_for_column, 'four-four', 'some_number_column')
+    assert_equal(result, 'signed_magnitude_10')
+  end
+
+  def test_magnitude_function_for_column_raises_exception_without_min_max
+    manager.expects(:fetch_min_max_in_column).with('four-four', 'some_number_column').returns({})
+    manager.unstub(:magnitude_function_for_column)
+    assert_raises(Phidippides::NoMinMaxInColumnException) do
+      manager.send(:magnitude_function_for_column, 'four-four', 'some_number_column')
+    end
+  end
+
+  def test_magnitude_function_for_column_raises_exception_without_min
+    manager.expects(:fetch_min_max_in_column).with('four-four', 'some_number_column').returns(
+      'max' => 0
+    )
+    manager.unstub(:magnitude_function_for_column)
+    assert_raises(Phidippides::NoMinMaxInColumnException) do
+      manager.send(:magnitude_function_for_column, 'four-four', 'some_number_column')
+    end
+  end
+
+  def test_magnitude_function_for_column_raises_exception_without_max
+    manager.expects(:fetch_min_max_in_column).with('four-four', 'some_number_column').returns(
+      'min' => 0
+    )
+    manager.unstub(:magnitude_function_for_column)
+    assert_raises(Phidippides::NoMinMaxInColumnException) do
+      manager.send(:magnitude_function_for_column, 'four-four', 'some_number_column')
+    end
+  end
+
+  def test_fetch_min_max_in_column_calls_api
     fake_field_name = 'live-beef'
     fake_dataset_id = 'five-five'
     CoreServer::Base.connection.expects(:get_request).with do |args|
-      assert_match(/min\(#{fake_field_name}\)%20AS%20start/i, args)
-      assert_match(/max\(#{fake_field_name}\)%20AS%20end/i, args)
+      assert_match(/min\(#{fake_field_name}\)%20AS%20min/i, args)
+      assert_match(/max\(#{fake_field_name}\)%20AS%20max/i, args)
       assert_match(/^\/id\/#{fake_dataset_id}/i, args)
     end.returns('[]')
-    manager.send(:fetch_min_max_date_in_column, fake_dataset_id, fake_field_name)
+    manager.send(:fetch_min_max_in_column, fake_dataset_id, fake_field_name)
   end
 
-  def test_fetch_min_max_date_in_column_returns_nil
+  def test_fetch_min_max_in_column_returns_nil
     CoreServer::Base.connection.expects(:get_request).raises(CoreServer::Error)
-    refute(manager.send(:fetch_min_max_date_in_column, 'dead-beef', 'human'), 'Expects nil when error')
+    refute(manager.send(:fetch_min_max_in_column, 'dead-beef', 'human'), 'Expects nil when error')
   end
 
-  def test_fetch_min_max_date_in_column_notifies_airbrake_on_error
+  def test_fetch_min_max_in_column_notifies_airbrake_on_error
     CoreServer::Base.connection.expects(:get_request).raises(CoreServer::Error)
     Airbrake.expects(:notify)
-    manager.send(:fetch_min_max_date_in_column, 'dead-beef', 'human')
+    manager.send(:fetch_min_max_in_column, 'dead-beef', 'human')
   end
 
   def test_update_date_trunc_function

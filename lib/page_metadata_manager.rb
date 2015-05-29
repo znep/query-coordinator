@@ -237,7 +237,9 @@ class PageMetadataManager
       pluck(column_field_name)
 
     # Nothing to roll up
-    return if columns_to_roll_up.blank? && columns_to_roll_up_by_date_trunc(normalized_columns, cards).blank?
+    return if columns_to_roll_up.blank? &&
+      columns_to_roll_up_by_date_trunc(normalized_columns, cards).blank?
+      columns_to_roll_up_by_magnitude(normalized_columns, cards).blank?
 
     if !metadata_transition_phase_0? &&
       columns_to_roll_up_by_date_trunc(normalized_columns, cards).any? &&
@@ -250,6 +252,9 @@ class PageMetadataManager
     rolled_up_columns_soql = (columns_to_roll_up +
       columns_to_roll_up_by_date_trunc(normalized_columns, cards).map do |field_name|
         "#{page_metadata['defaultDateTruncFunction']}(#{field_name})"
+      end +
+      columns_to_roll_up_by_magnitude(normalized_columns, cards).map do |field_name|
+        "#{magnitude_function_for_column(page_metadata['datasetId'], field_name)}(#{field_name})"
       end).join(', ')
 
     soql = 'select '
@@ -300,8 +305,16 @@ class PageMetadataManager
     end
   end
 
-  def column_used_by_any_card?(field_name, cards)
-    cards.any? { |card| card['fieldName'] == field_name }
+  def columns_to_roll_up_by_magnitude(columns, cards)
+    columns.select do |column|
+      column_used_by_any_card?(column[column_field_name], cards, 'histogram')
+    end.pluck(column_field_name)
+  end
+
+  def column_used_by_any_card?(field_name, cards, card_type = nil)
+    cards.any? do |card|
+      card['fieldName'] == field_name && (card_type.nil? || card['cardType'] == card_type)
+    end
   end
 
   # This is pulled from datasetPrecision calculation in cardVisualizationTimelineChart
@@ -319,6 +332,18 @@ class PageMetadataManager
     prec << 'm' if years <= 20
     prec << 'd' if years <= 1
     "date_trunc_#{prec}"
+  end
+
+  def magnitude_function_for_column(dataset_id, field_name)
+    logarithmic_threshold = 2000
+    result = fetch_min_max_in_column(dataset_id, field_name)
+    unless result && result['min'] && result['max']
+      raise Phidippides::NoMinMaxInColumnException.new(
+        "unable to fetch min and max from dataset_id: #{dataset_id}, field_name: #{field_name}"
+      )
+    end
+    result.values_at('min', 'max').map { |val| val.to_i.abs }.max >= logarithmic_threshold ?
+      'signed_magnitude_10' : 'signed_magnitude_lin'
   end
 
   def update_rollup_table(args)
@@ -340,31 +365,31 @@ class PageMetadataManager
     time_column_names.map do |column_name|
       begin
         time_range_in_column(dataset_id, column_name)
-      rescue Phidippides::NoMinMaxInDateColumnException => error
-        report_error("No min and max available for column: #{column_name}", error)
+      rescue Phidippides::NoMinMaxInColumnException => error
+        report_error("No min and max available for date column: #{column_name}", error)
         nil
       end
     end.compact.max
   end
 
   def time_range_in_column(dataset_id, field_name)
-    result = fetch_min_max_date_in_column(dataset_id, field_name)
-    unless result && result['start'] && result['end']
-      raise Phidippides::NoMinMaxInDateColumnException.new(
+    result = fetch_min_max_in_column(dataset_id, field_name)
+    unless result && result['min'] && result['max']
+      raise Phidippides::NoMinMaxInColumnException.new(
         "unable to fetch min and max from dataset_id: #{dataset_id}, field_name: #{field_name}"
       )
     end
-    (Date.parse(result['end']) - Date.parse(result['start'])).to_i.abs
+    (Date.parse(result['max']) - Date.parse(result['min'])).to_i.abs
   end
 
-  def fetch_min_max_date_in_column(dataset_id, field_name)
+  def fetch_min_max_in_column(dataset_id, field_name)
     begin
       JSON.parse(CoreServer::Base.connection.get_request(
         "/id/#{dataset_id}.json?" <<
-        URI.encode("$query=select min(#{field_name}) AS start, max(#{field_name}) AS end")
+        URI.encode("$query=select min(#{field_name}) AS min, max(#{field_name}) AS max")
       )).first
     rescue CoreServer::Error => error
-      error_msg = "Core server error while retrieving min and max of date column #{field_name} " <<
+      error_msg = "Core server error while retrieving min and max of column #{field_name} " <<
         "(#{dataset_id}): #{error}"
       Rails.logger.error(error_msg)
       Airbrake.notify(

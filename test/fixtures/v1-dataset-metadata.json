@@ -14,6 +14,13 @@
       "name": "Numbers",
       "physicalDatatype": "number"
     },
+    "some_number_column":{
+      "cardinality": 80,
+      "description": "",
+      "fred": "number",
+      "name": "number",
+      "physicalDatatype": "number"
+    },
     "time_column_large_granularity":{
       "cardinality": 3,
       "description": "",

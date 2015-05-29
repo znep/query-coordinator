@@ -64,3 +64,7 @@ group :development, :test do
   gem 'nyan-cat-formatter', require: false
 end
 
+group :development do
+  gem 'rack-mini-profiler', require: false
+  gem 'flamegraph'
+end

@@ -36,7 +36,7 @@ describe('A Choropleth Directive', function() {
         'geojson-aggregate-data="geojsonAggregateData" ' +
         (attrs || '') +
         ' row-display-unit="rowDisplayUnit" ' +
-        'style="height: 400px; display: block">' +
+        (/style="[^"]"/.test(attrs) ? '' : 'style="height: 400px; display: block">') +
         '</choropleth>';
     var el = testHelpers.TestDom.compileAndAppend(html, scope);
 
@@ -241,6 +241,22 @@ describe('A Choropleth Directive', function() {
 
       expect(el.find('.choropleth-map-container').length).to.equal(1);
       expect(el.find('.leaflet-map-pane').length).to.equal(1);
+    });
+
+    it('should not render a map if the width of the element is zero', function() {
+      el = createChoropleth(false, 'style="width: 1px; display: block;"');
+      expect(el.find('.choropleth-legend').find('.gradient')[0].textContent).to.not.be.empty;
+
+      el = createChoropleth(false, 'style="width: 0; display: block;"');
+      expect(el.find('.choropleth-legend').find('.gradient')[0].textContent).to.be.empty;
+    });
+
+    it('should not render a map if the height of the element is zero', function() {
+      el = createChoropleth(false, 'style="height: 1px; display: block;"');
+      expect(el.find('.choropleth-legend').find('.gradient')[0].textContent).to.not.be.empty;
+
+      el = createChoropleth(false, 'style="height: 0; display: block;"');
+      expect(el.find('.choropleth-legend').find('.gradient')[0].textContent).to.be.empty;
     });
 
     describe('shapes', function() {

@@ -25,6 +25,14 @@
       "expanded": false
     },
     {
+      "description": "Number Card",
+      "fieldName": "some_number_column",
+      "cardSize": 3,
+      "cardType": "histogram",
+      "appliedFilters": [],
+      "expanded": false
+    },
+    {
       "description": "Table",
       "fieldName": "*",
       "cardSize": 3,

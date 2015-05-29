@@ -72,12 +72,8 @@ class StoryDraftCreator
   # Interactions with Core Server
 
   def provision_new_four_by_four
-    begin
-      # TODO: Risky business
-      'abcd-efgh'
-    rescue
-      raise RuntimeError.new('could not provision four_by_four')
-    end
+    # TODO: Risky business
+    'abcd-efgh'
   end
 
   # Interactions with the Data Model

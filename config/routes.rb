@@ -4,11 +4,6 @@ Rails.application.routes.draw do
   resources :published_stories # HMMM do we want the standard crud?
   get 'v(/:vanity_text)/:four_by_four' => 'published_stories#show'
 
-  comfy_route :cms_admin, :path => '/admin'
-
-  # Make sure this routeset is defined last
-  comfy_route :cms, :path => '/', :sitemap => false
-
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

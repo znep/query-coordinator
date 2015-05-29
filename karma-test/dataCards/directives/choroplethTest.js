@@ -243,22 +243,6 @@ describe('A Choropleth Directive', function() {
       expect(el.find('.leaflet-map-pane').length).to.equal(1);
     });
 
-    it('should not render a map if the width of the element is zero', function() {
-      el = createChoropleth(false, 'style="width: 1px; display: block;"');
-      expect(el.find('.choropleth-legend').find('.gradient')[0].textContent).to.not.be.empty;
-
-      el = createChoropleth(false, 'style="width: 0; display: block;"');
-      expect(el.find('.choropleth-legend').find('.gradient')[0].textContent).to.be.empty;
-    });
-
-    it('should not render a map if the height of the element is zero', function() {
-      el = createChoropleth(false, 'style="height: 1px; display: block;"');
-      expect(el.find('.choropleth-legend').find('.gradient')[0].textContent).to.not.be.empty;
-
-      el = createChoropleth(false, 'style="height: 0; display: block;"');
-      expect(el.find('.choropleth-legend').find('.gradient')[0].textContent).to.be.empty;
-    });
-
     describe('shapes', function() {
       it('should render Polygons on the map, if the geojson contains Polygons', function() {
         scope.geojsonAggregateData = testData.polygonData3;

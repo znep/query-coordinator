@@ -105,13 +105,14 @@ describe('featureMap', function() {
 
     options = _.defaults(options || {}, {
       width: 640,
+      height: 300,
       vectorTileGetter: jqVectorTileGetter
     });
 
     var chartId = $('#test-feature-map').length === 0 ? 'test-feature-map' : 'alternate-test-feature-map';
     var html = [
       '<div id="{0}">'.format(chartId),
-        '<div class="card-visualization" style="width: {0}px; height: 300px;">'.format(options.width),
+        '<div class="card-visualization" style="width: {0}px; height: {1}px;">'.format(options.width, options.height),
           '<feature-map ',
             'class="feature-map" ',
             'base-layer-url="baseLayerUrl" ',
@@ -231,6 +232,20 @@ describe('featureMap', function() {
       );
 
       createFeatureMap();
+    });
+
+    it('should not render the map if the height of the element is zero', function() {
+
+      var fm = createFeatureMap({height: 0});
+      expect(fm.find('.leaflet-tile-loaded').length).to.equal(0);
+
+    });
+
+    it('should not render the map if the width of the element is zero', function() {
+
+      var fm = createFeatureMap({width: 0});
+      expect(fm.find('.leaflet-tile-loaded').length).to.equal(0);
+
     });
   });
 

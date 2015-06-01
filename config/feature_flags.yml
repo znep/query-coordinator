@@ -188,4 +188,5 @@ enable_export_service:
   category: obe deprecation
 enable_stories:
   description: Enable the Storyteller appliation, including catalog link.
+  category: storyteller
   defaultValue: false

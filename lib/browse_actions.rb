@@ -25,16 +25,18 @@ protected
       ]
     }
 
-    vts[:options] = add_data_lens_view_type_if_enabled!(vts[:options])
-    vts[:options] = add_stories_view_type_if_enabled!(vts[:options])
+    add_data_lens_view_type_if_enabled!(vts[:options])
+    add_stories_view_type_if_enabled!(vts[:options])
 
     if module_enabled?(:api_foundry)
       vts[:options] << {:text => t('controls.browse.facets.view_types.apis'), :value => 'apis', :class => 'typeApi'}
     end
 
     override_allowed_view_types = CurrentDomain.property(:view_types_facet, :catalog)
-    return vts if override_allowed_view_types.nil?
+
+    return vts unless override_allowed_view_types.present?
     vts[:options].select!{ |opt| override_allowed_view_types.include?(opt[:value]) }
+
     vts
   end
 
@@ -442,18 +444,11 @@ private
         }
       }
 
-      datasets_index = view_type_list.index { |option|
-        option[:value] == 'datasets'
-      }
-
-      unless datasets_index.present?
-        datasets_index = 0
-      end
-
+      # Data lens pages are the new way to look at datasets, so insert above datasets
+      datasets_index = view_type_list.pluck(:value).index('datasets') || 0
       view_type_list.insert(datasets_index, new_view_option)
     end
 
-    view_type_list
   end
 
 
@@ -475,18 +470,12 @@ private
         }
       }
 
-      dataset_index = view_type_list.index { |option|
-        option[:value] == 'datasets'
-      }
+      # Stories are more contextualized than datasets, so put them above dataset entry
+      datasets_index = view_type_list.pluck(:value).index('datasets') || 0
+      view_type_list.insert(datasets_index, stories)
 
-      unless dataset_index.present?
-        dataset_index = 3
-      end
-
-      view_type_list.insert(dataset_index, stories)
     end
 
-    view_type_list
   end
 
   @@default_cutoffs = {

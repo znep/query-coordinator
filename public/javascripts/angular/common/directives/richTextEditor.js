@@ -220,8 +220,6 @@
         this.getHTML() : '';
       element.val(updatedHTML);
 
-      element.trigger(e);
-
       element.isolateScope().$safeApply(function() {
         element.isolateScope().content = element.val();
       });

@@ -61,6 +61,11 @@
             service.render(dom, data, dimensions, scale, axis, svg);
           }
         );
+
+        // Clean up after ourselves
+        $scope.$destroyAsObservable(element).subscribe(function() {
+          service.destroyHover(hover);
+        });
       }
     }
   }

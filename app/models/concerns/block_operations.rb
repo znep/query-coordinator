@@ -3,7 +3,7 @@ module BlockOperations
 
   included do
 
-    def retrieve_blocks
+    def blocks
       # The order in which block rows are returned from the database is not
       # guaranteed to match the order in which the ids were supplied to the
       # select query, so we need to apply the story's ordering of the blocks

@@ -46,5 +46,5 @@ AUTH0_ID = APP_CONFIG['auth0_id']
 AUTH0_SECRET = APP_CONFIG['auth0_secret']
 AUTH0_CONFIGURED = !(AUTH0_URI.nil? || AUTH0_ID.nil? || AUTH0_SECRET.nil?)
 
-{ #uniqId: 'filename'
+{ downtime: "#{Rails.root}/config/downtime.yml"
 }.collect { |uniqId, filename| ExternalConfig.new(uniqId, filename) }

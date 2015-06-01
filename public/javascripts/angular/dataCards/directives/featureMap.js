@@ -69,6 +69,7 @@
         var startResizeFn = null;
         var completeResizeFn = null;
         var baseTileLayerObservable;
+        var dimensions$;
         var RESIZE_DEBOUNCE_INTERVAL = 250;
 
         /**
@@ -397,6 +398,14 @@
         // Only subscribe once everything is wired up, otherwise some
         // subscribers may miss the first value from the scope.observe().
         publish();
+
+        // Observe map dimensions exist and have a height and width.
+        // Ensures user has the window open, which avoids rendering bugs.
+        dimensions$ = element.observeDimensions().
+          filter(function(dimensions) {
+            return _.isObject(dimensions) && dimensions.width > 0 && dimensions.height > 0;
+          });
+
         // Remove old map layers.
         baseTileLayerObservable.
           bufferWithCount(2, 1).
@@ -417,9 +426,10 @@
         // We want to set the bounds before we start requesting tiles so that
         // we don't make a bunch of requests for zoom level 1 while we are
         // waiting for the extent query to come back.
-        featureExtentObservable.
-          filter(_.isDefined).
-          subscribe(function(featureExtent) {
+        Rx.Observable.subscribeLatest(
+          featureExtentObservable.filter(_.isDefined),
+          dimensions$.take(1),
+          function(featureExtent) {
             var bounds = LeafletHelpersService.buildBounds(featureExtent);
 
             // It is critical to invalidate size prior to updating bounds.
@@ -430,9 +440,10 @@
           });
 
         // If the server-provided extent is undefined, defer to zoom level 1
-        featureExtentObservable.
-          filter(_.isUndefined).
-          subscribe(function() {
+        Rx.Observable.subscribeLatest(
+          featureExtentObservable.filter(_.isUndefined),
+          dimensions$,
+          function() {
             map.invalidateSize();
           });
 
@@ -441,16 +452,16 @@
         Rx.Observable.subscribeLatest(
           vectorTileGetterObservable.filter(_.isFunction),
           featureExtentObservable, // Used for signaling to create feature layer
+          dimensions$,
           function(vectorTileGetter) {
             currentVectorTileGetter = vectorTileGetter;
             createNewFeatureLayer(map, vectorTileGetter);
           }
         );
 
-        element.observeDimensions().filter(_.property('height')).
-          subscribe(function() {
-            map.invalidateSize();
-          });
+        dimensions$.subscribe(function() {
+          map.invalidateSize();
+        });
       }
     }
   }

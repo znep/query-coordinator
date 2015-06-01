@@ -25,14 +25,13 @@ protected
       ]
     }
 
-
-    vts = add_data_lens_view_type_if_enabled_by_feature_flag!(vts)
-    # TODO: add_data_lens_view_types_options_if_enabled!(vts[:options])
-    add_stories_view_types_options_if_enabled!(vts[:options])
+    vts[:options] = add_data_lens_view_type_if_enabled!(vts[:options])
+    vts[:options] = add_stories_view_type_if_enabled!(vts[:options])
 
     if module_enabled?(:api_foundry)
       vts[:options] << {:text => t('controls.browse.facets.view_types.apis'), :value => 'apis', :class => 'typeApi'}
     end
+
     override_allowed_view_types = CurrentDomain.property(:view_types_facet, :catalog)
     return vts if override_allowed_view_types.nil?
     vts[:options].select!{ |opt| override_allowed_view_types.include?(opt[:value]) }
@@ -429,7 +428,7 @@ private
     should_show_data_lenses
   end
 
-  def add_data_lens_view_type_if_enabled_by_feature_flag!(vts)
+  def add_data_lens_view_type_if_enabled!(view_type_list)
     if add_data_lens_view_type?
 
       new_view_option = {
@@ -443,7 +442,7 @@ private
         }
       }
 
-      datasets_index = vts[:options].index { |option|
+      datasets_index = view_type_list.index { |option|
         option[:value] == 'datasets'
       }
 
@@ -451,10 +450,10 @@ private
         datasets_index = 0
       end
 
-      vts[:options].insert(datasets_index, new_view_option)
+      view_type_list.insert(datasets_index, new_view_option)
     end
 
-    vts
+    view_type_list
   end
 
 
@@ -462,24 +461,32 @@ private
     FeatureFlags.derive(nil, defined?(request) ? request : nil)[:enable_stories]
   end
 
-  def add_stories_view_types_options_if_enabled!(view_type_list_options)
+  def add_stories_view_type_if_enabled!(view_type_list)
     if stories_catalog_entries_enabled?
 
-      stories_options = {
+      stories = {
         :text => ::I18n.t('controls.browse.facets.view_types.story'),
         :value => 'story',
-        :class => 'typeNewView',
-        :icon_font_class => 'icon-cards',
+        :class => 'typeStory',
+        :icon_font_class => 'icon-settings',
         :help_link => {
-          :href => 'http://www.socrata.com/datalens',
+          :href => 'http://www.socrata.com',
           :text => ::I18n.t('controls.browse.facets.view_types.story_help')
         }
       }
 
-      view_type_list_options.insert(0, stories_options)
+      dataset_index = view_type_list.index { |option|
+        option[:value] == 'datasets'
+      }
+
+      unless dataset_index.present?
+        dataset_index = 3
+      end
+
+      view_type_list.insert(dataset_index, stories)
     end
 
-    view_type_list_options
+    view_type_list
   end
 
   @@default_cutoffs = {

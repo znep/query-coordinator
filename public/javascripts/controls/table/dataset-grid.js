@@ -462,10 +462,10 @@
             // Test that it's not a NBE dataset.
             if (!rowId.match(/row-(?:[a-z0-9]{4}[-_~\.]){2}[a-z0-9]{4}/)) {
               var splitRowId = rowId.split('_');
-              rowId = rowId[0];
+              rowId = splitRowId[0];
               // Child row from OBE blist-n-blist type.
-              if (rowId[1]) {
-                s.push(rowId[1]);
+              if (splitRowId[1]) {
+                s.push(splitRowId[1]);
               }
             }
         }

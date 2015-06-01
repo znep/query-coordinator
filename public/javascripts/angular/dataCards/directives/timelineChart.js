@@ -2114,7 +2114,11 @@
             }
 
             offsetX = mousePosition.clientX - cachedChartOffsets.left;
-            offsetY = mousePosition.clientY + scrollPosition - cachedChartOffsets.top;
+
+            // The method 'getBoundingClientRect().top' must be used here
+            // because the offset of expanded cards changes as the window
+            // scrolls.
+            offsetY = mousePosition.clientY - element.get(0).getBoundingClientRect().top;
 
             // mousePositionWithinChartElement is a global variable that is
             // used elsewhere as well

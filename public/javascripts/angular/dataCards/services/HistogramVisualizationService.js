@@ -95,54 +95,66 @@
         unfilteredBucket: null,
         filteredBucket: null,
         isFiltered: false,
-        rowDisplayUnit: ''
+        rowDisplayUnit: '',
+        deregisterFlyout: function() {
+          FlyoutService.deregister('histogram-hover-shield', renderFlyout);
+        }
       };
 
-      FlyoutService.register({
-        className: 'histogram-hover-shield',
-        render: function() {
-          var unfilteredBucket = hover.unfilteredBucket;
-          var filteredBucket = hover.filteredBucket;
-          var lines = [];
+      function renderFlyout() {
+        var unfilteredBucket = hover.unfilteredBucket;
+        var filteredBucket = hover.filteredBucket;
+        var lines = [];
 
-          if (_.isPresent(unfilteredBucket) && _.isPresent(filteredBucket)) {
+        if (_.isPresent(unfilteredBucket) && _.isPresent(filteredBucket)) {
+          lines = lines.concat([
+            '<div class="flyout-title">{0} to {1}</div>',
+            '<div class="flyout-row">',
+              '<span class="flyout-cell">Total:</span>',
+              '<span class="flyout-cell">{2} {4}</span>',
+            '</div>'
+          ]);
+
+          if (hover.isFiltered) {
             lines = lines.concat([
-              '<div class="flyout-title">{0} to {1}</div>',
               '<div class="flyout-row">',
-                '<span class="flyout-cell">Total:</span>',
-                '<span class="flyout-cell">{2} {4}</span>',
+                '<span class="flyout-cell is-highlighted">Filtered Amount:</span>',
+                '<span class="flyout-cell is-highlighted">{3} {5}</span>',
               '</div>'
             ]);
-
-            if (hover.isFiltered) {
-              lines = lines.concat([
-                '<div class="flyout-row">',
-                  '<span class="flyout-cell is-highlighted">Filtered Amount:</span>',
-                  '<span class="flyout-cell is-highlighted">{3} {5}</span>',
-                '</div>'
-              ]);
-            }
           }
-
-          return lines.join('').format(
-            $.toHumaneNumber(unfilteredBucket.start),
-            $.toHumaneNumber(unfilteredBucket.end),
-            $.toHumaneNumber(unfilteredBucket.value),
-            $.toHumaneNumber(filteredBucket.value),
-            (unfilteredBucket.value === 1) ? hover.rowDisplayUnit : hover.rowDisplayUnit.pluralize(),
-            (filteredBucket.value === 1) ? hover.rowDisplayUnit : hover.rowDisplayUnit.pluralize()
-          );
-        },
-        positionOn: function(element) {
-          return dom.hoverTarget.node();
         }
+
+        return lines.join('').format(
+          $.toHumaneNumber(unfilteredBucket.start),
+          $.toHumaneNumber(unfilteredBucket.end),
+          $.toHumaneNumber(unfilteredBucket.value),
+          $.toHumaneNumber(filteredBucket.value),
+          (unfilteredBucket.value === 1) ? hover.rowDisplayUnit : hover.rowDisplayUnit.pluralize(),
+          (filteredBucket.value === 1) ? hover.rowDisplayUnit : hover.rowDisplayUnit.pluralize()
+        );
+      }
+
+      dom.svg.on('mouseover', function() {
+        FlyoutService.register({
+          className: 'histogram-hover-shield',
+          render: renderFlyout,
+          positionOn: function() {
+            return dom.hoverTarget.node();
+          }
+        });
       });
 
       dom.svg.on('mouseout', function() {
+        hover.deregisterFlyout();
         dom.hoverBlock.attr('visibility', 'hidden');
       });
 
       return hover;
+    }
+
+    function destroyHover(hover) {
+      hover.deregisterFlyout();
     }
 
     function updateScale(scale, data, dimensions) {
@@ -372,6 +384,7 @@
       setupAxis: setupAxis,
       setupSVG: setupSVG,
       setupHover: setupHover,
+      destroyHover: destroyHover,
       updateScale: updateScale,
       updateSVG: updateSVG,
       updateHover: updateHover,

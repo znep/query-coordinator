@@ -76,19 +76,23 @@ describe('HistogramChart', function() {
 
     it('should render on hover', function() {
       histogram = createHistogram();
-      testHelpers.fireMouseEvent($('.histogram-hover-shield')[0], 'mousemove');
+      var hoverShield = $('.histogram-hover-shield')[0];
+      testHelpers.fireMouseEvent(hoverShield, 'mouseover');
+      testHelpers.fireMouseEvent(hoverShield, 'mousemove');
       var $flyoutTitle = $('.flyout-title');
-      expect($flyoutTitle.length === 1).to.equal(true);
+      expect($flyoutTitle).to.have.length(1);
     })
 
     it('should trigger the nth flyout for the nth data bucket', function() {
       histogram = createHistogram();
+      var hoverShield = $('.histogram-hover-shield')[0];
       var chartWidth = $('.histogram svg').attr('width');
       var chartHeight = $('.histogram svg').attr('height');
       var bucketWidth = Math.ceil(chartWidth / testData.unfiltered.length);
       for (var i = 0; i < testData.unfiltered.length; i++) {
         var offsetX = bucketWidth * i;
-        testHelpers.fireMouseEvent($('.histogram-hover-shield')[0], 'mousemove', {
+        testHelpers.fireMouseEvent(hoverShield, 'mouseover');
+        testHelpers.fireMouseEvent(hoverShield, 'mousemove', {
           clientX: offsetX,
           clientY: chartHeight / 2
         });
@@ -99,7 +103,9 @@ describe('HistogramChart', function() {
 
     it('should show the total and filtered amounts when a filter is active', function() {
       histogram = createHistogram({isFiltered: true});
-      testHelpers.fireMouseEvent($('.histogram-hover-shield')[0], 'mousemove');
+      var hoverShield = $('.histogram-hover-shield')[0];
+      testHelpers.fireMouseEvent(hoverShield, 'mouseover');
+      testHelpers.fireMouseEvent(hoverShield, 'mousemove');
       var $flyoutTitle = $('#uber-flyout');
       expect($flyoutTitle.text()).to.match(new RegExp('Total'));
       expect($flyoutTitle.text()).to.match(new RegExp(testData.unfiltered[0].value));

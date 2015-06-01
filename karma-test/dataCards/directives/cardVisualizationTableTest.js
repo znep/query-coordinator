@@ -79,7 +79,18 @@ describe('A Table Card Visualization', function() {
     module(function($provide) {
       var mockCardDataService = {
         getRowCount: function(id, whereClause) {
-          return $q.when(_.isEmpty(whereClause) ? 1337 : 42);
+          var returnValue = 42;
+          if (_.isEmpty(whereClause)) {
+            returnValue = 1337;
+          }
+          if (/empty/.test(whereClause)) {
+            returnValue = 0;
+          }
+          if (/one/.test(whereClause)) {
+            returnValue = 1;
+          }
+
+          return $q.when(returnValue);
         },
         getRows: function(/*datasetId, offset, limit, order, timeout, whereClause*/) {
           return $q.when([{
@@ -144,12 +155,14 @@ describe('A Table Card Visualization', function() {
       firstColumn: undefined,
       columns: COLUMNS,
       primaryAggregation: 'count',
-      primaryAmountField: null
+      primaryAmountField: null,
+      rowDisplayUnit: 'row'
     });
 
     var model = new Model();
     model.fieldName = '*';
     model.defineObservableProperty('activeFilters', []);
+    model.defineObservableProperty('customTitle', null);
 
     var pageOverrides = {
       id: 'test-page',
@@ -161,8 +174,8 @@ describe('A Table Card Visualization', function() {
     var datasetOverrides = {
       id: 'test-data',
       columns: options.columns,
-      rowDisplayUnit: 'row'
-    }
+      rowDisplayUnit: options.rowDisplayUnit
+    };
     var pageModel = Mockumentary.createPage(pageOverrides, datasetOverrides);
     model.page = pageModel;
 
@@ -372,6 +385,34 @@ describe('A Table Card Visualization', function() {
       expect(table.element.find('.th:eq(0)')).to.have.data('columnId', 'test_timestamp_column');
       expect(table.element.find('.th:eq(1)')).to.have.data('columnId', 'test_floating_timestamp_column');
       expect(table.element.find('.th:eq(2)')).to.have.data('columnId', 'test_location_column');
+    });
+  });
+
+  describe('customTitle', function() {
+    it('should set it on the card model', function() {
+      var table = createTable();
+      expect(table.model.getCurrentValue('customTitle')).
+        to.equal('Showing all 1337 rows');
+      table.outerScope.whereClause = 'invalid where clause';
+      table.outerScope.$digest();
+      expect(table.model.getCurrentValue('customTitle')).
+        to.equal('Showing 42 rows <span class="subtitle">out of 1,337</span>');
+      table.outerScope.whereClause = 'empty';
+      table.outerScope.$digest();
+      expect(table.model.getCurrentValue('customTitle')).
+        to.equal('Showing 0 rows <span class="subtitle">out of 1,337</span>');
+      table.outerScope.whereClause = 'one';
+      table.outerScope.$digest();
+      expect(table.model.getCurrentValue('customTitle')).
+        to.equal('Showing 1 row <span class="subtitle">out of 1,337</span>');
+    });
+
+    it('should not allow 1337 haxxorz', function() {
+      var table = createTable({
+        rowDisplayUnit: '<img src="http://placehold.it/100x100" />'
+      });
+      expect(table.model.getCurrentValue('customTitle')).
+        to.equal('Showing all 1337 &lt;img src="http://placehold.it/100x100" /&gt;s');
     });
   });
 

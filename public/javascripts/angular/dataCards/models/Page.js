@@ -2,7 +2,7 @@
   'use strict';
   var DEFAULT_ROW_DISPLAY_UNIT = 'row';
 
-  function PageModelFactory(ServerConfig, Card, Model, $log) {
+  function PageModelFactory(ServerConfig, Card, Dataset, Model, $log) {
 
     return Model.extend({
       // Builds a page model from either the page ID (given as a string),
@@ -80,7 +80,7 @@
           function(primaryAggregation, rowDisplayUnit, fieldNameAggregatedUpon, columnAggregatedUpon) {
             var unit = rowDisplayUnit;
             if (columnAggregatedUpon) {
-              unit = columnAggregatedUpon.dataset.extractHumanReadableColumnName(columnAggregatedUpon);
+              unit = Dataset.extractHumanReadableColumnName(columnAggregatedUpon);
             }
 
             return {

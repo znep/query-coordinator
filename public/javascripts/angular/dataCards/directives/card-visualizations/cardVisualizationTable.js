@@ -21,10 +21,8 @@
         var whereClause = $scope.$observe('whereClause');
         var dataRequests = new Rx.Subject();
         var dataResponses = new Rx.Subject();
-        var rowCountSequence = new Rx.Subject();
-        var filteredRowCountSequence = new Rx.Subject();
         var firstColumnObservable = $scope.$observe('firstColumn');
-
+        var rowDisplayUnit$ = model.observeOnLatest('page.aggregation.unit');
         var cardsSequence = model.observeOnLatest('page.cards');
         var aggregationSequence = model.observeOnLatest('page.aggregation');
 
@@ -110,39 +108,27 @@
               return requests === 0 || (requests > responses);
             }));
 
-        var rowCount = dataset.map(
-          function(dataset) {
-            dataRequests.onNext(1);
-            var dataPromise = CardDataService.getRowCount(dataset.id);
-            dataPromise.then(
-              function(res) {
-                // Ok
-                rowCountSequence.onNext(dataPromise);
-                dataResponses.onNext(1);
-              },
-              function(err) {
-                // Do nothing
-              });
-            return Rx.Observable.fromPromise(dataPromise);
+        var reconcileRequestPromise = function(promise) {
+          dataRequests.onNext(1);
+          promise.then(function() {
+            dataResponses.onNext(1);
           });
+        };
 
-        var filteredRowCount = Rx.Observable.combineLatest(
-          dataset,
+        var rowCount$ = dataset.
+          map(function(dataset) {
+            return CardDataService.getRowCount(dataset.id);
+          }).
+          doAction(reconcileRequestPromise).
+          flatMapLatest(Rx.Observable.fromPromise);
+
+        var filteredRowCount$ = dataset.combineLatest(
           whereClause,
           function(dataset, whereClause) {
-            dataRequests.onNext(1);
-            var dataPromise = CardDataService.getRowCount(dataset.id, whereClause);
-            dataPromise.then(
-              function(res) {
-                // Ok
-                filteredRowCountSequence.onNext(dataPromise);
-                dataResponses.onNext(1);
-              },
-              function(err) {
-                // Do nothing
-              });
-            return Rx.Observable.fromPromise(dataPromise);
-          });
+            return CardDataService.getRowCount(dataset.id, whereClause);
+          }).
+          doAction(reconcileRequestPromise).
+          flatMapLatest(Rx.Observable.fromPromise);
 
         // The default sort is on the first card in the page layout.
         var layout = new SortedTileLayout();
@@ -196,9 +182,37 @@
           nonAggregatedColumnSequence
         ).distinctUntilChanged();
 
+        Rx.Observable.subscribeLatest(
+          filteredRowCount$,
+          rowCount$,
+          rowDisplayUnit$,
+          function(filteredRowCount, rowCount, rowDisplayUnit) {
+            var customTitle;
+            var pluralRowDisplayUnit = filteredRowCount === 1 ?
+              rowDisplayUnit :
+              rowDisplayUnit.pluralize();
+            pluralRowDisplayUnit = $.htmlEncode(pluralRowDisplayUnit);
+            if (rowCount === filteredRowCount) {
+              customTitle = 'Showing all {0} {1}'.
+                format(
+                  rowCount,
+                  pluralRowDisplayUnit
+                );
+            } else {
+              customTitle = 'Showing {0} {1} <span class="subtitle">out of {2}</span>'.
+                format(
+                  $.commaify(filteredRowCount),
+                  pluralRowDisplayUnit,
+                  $.commaify(rowCount)
+              );
+            }
+            $scope.model.set('customTitle', customTitle);
+          });
+
+        $scope.$bindObservable('rowDisplayUnit', rowDisplayUnit$);
         $scope.$bindObservable('whereClause', whereClause);
-        $scope.$bindObservable('rowCount', rowCount.switchLatest());
-        $scope.$bindObservable('filteredRowCount', filteredRowCount.switchLatest());
+        $scope.$bindObservable('rowCount', rowCount$);
+        $scope.$bindObservable('filteredRowCount', filteredRowCount$);
         $scope.$bindObservable('columnDetails', columnDetailsAsArray);
         $scope.$bindObservable('defaultSortColumnName', defaultSortColumnName);
 

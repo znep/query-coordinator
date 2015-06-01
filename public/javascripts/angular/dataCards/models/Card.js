@@ -63,6 +63,8 @@
           )
         );
 
+        self.defineEphemeralObservableProperty('customTitle', null);
+
       },
 
       /**

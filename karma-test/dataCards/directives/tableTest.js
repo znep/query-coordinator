@@ -1,19 +1,20 @@
 describe('table directive', function() {
   'use strict';
 
-  function createTableCard(expanded, getRows, rowCount, showCount) {
+  function createTableCard(expanded, getRows, rowCount, showCount, rowDisplayUnit) {
     outerScope.expanded = expanded || false;
     outerScope.rowCount = rowCount >= 0 ? rowCount : 200;
     outerScope.filteredRowCount = rowCount >= 0 ? rowCount : 170;
     outerScope.columnDetails = [];
     outerScope.showCount = showCount;
     outerScope.whereClause = '';
+    outerScope.rowDisplayUnit = rowDisplayUnit || 'row';
 
     columnCount = 0;
 
     _.each(fixtureMetadata.testColumnDetailsAsTableWantsThem, function(column) {
       // TODO: Version as a string here is questionable
-      column.dataset = { version: '1', extractHumanReadableColumnName: _.property('name') };
+      column.dataset = { version: '1' };
       if (column.fieldName[0].match(/[a-zA-Z0-9]/g)) {
         outerScope.columnDetails.push(column);
         if (!(column.cardinality <= 1 && column.isSubcolumn)) {
@@ -44,7 +45,7 @@ describe('table directive', function() {
       format(expanded ? 'expanded': '') +
         '<div table class="table" row-count="rowCount" get-rows="getRows" where-clause="whereClause" ' +
         'filtered-row-count="filteredRowCount" expanded="expanded" column-details="columnDetails" ' +
-        'show-count="showCount" ' +
+        'show-count="showCount" row-display-unit="rowDisplayUnit" ' +
         'default-sort-column-name="defaultSortColumnName"></div>' +
       '</div>';
 
@@ -596,7 +597,7 @@ describe('table directive', function() {
       $rootScope.$digest();
 
       expect(el.find('.has-rows').length).to.equal(0);
-      expect(el.find('.table-label').text()).to.equal("Showing 0 to 0 of 0 (Total: 103)");
+      expect(el.find('.table-label').text()).to.equal('Row 0-0 out of 0');
     });
 
     it('should update if there are rows', function() {
@@ -607,7 +608,7 @@ describe('table directive', function() {
       outerScope.filteredRowCount = 10;
       $rootScope.$digest();
       expect(el.find('.has-rows').length).to.equal(1);
-      expect(el.find('.table-label').text()).to.equal("Showing 1 to 10 of 10 (Total: 101)");
+      expect(el.find('.table-label').text()).to.equal('Row 1-10 out of 10');
     });
 
     it('should not show the row count if the "show-count" attribute is false', function() {
@@ -615,6 +616,13 @@ describe('table directive', function() {
       var rowCountLabel = el.find('.table-label');
       expect(rowCountLabel.length).to.not.equal(0);
       expect(rowCountLabel.is(':visible')).to.be.false;
+    });
+
+    it('should escape rowDisplayUnit', function() {
+      var el = createTableCard(true, _.constant($q.when([])), 103, true, '<img src="http://placehold.it/100x100" />');
+      outerScope.filteredRowCount = 0;
+      $rootScope.$digest();
+      expect(el.find('.table-label').text()).to.equal('<img src="http://placehold.it/100x100" /> 0-0 out of 0');
     });
   });
 

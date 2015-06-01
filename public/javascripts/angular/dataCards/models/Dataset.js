@@ -59,12 +59,10 @@ angular.module('dataCards.models').factory('Dataset', function(
       });
 
       self.defineEphemeralObservableProperty('permissions', datasetMetadata.permissions || null);
-
-      self.extractHumanReadableColumnName = function(columnHash) {
-        return columnHash.name;
-      }
     }
   });
+
+  Dataset.extractHumanReadableColumnName = _.property('name');
 
   return Dataset;
 });

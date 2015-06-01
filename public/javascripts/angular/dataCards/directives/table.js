@@ -4,7 +4,7 @@
   var rowsPerBlock = 50;
   var rowHeight = $.relativeToPx('2rem');
 
-  function tableDirectiveFactory($q, $timeout, Constants, SoqlHelpers) {
+  function tableDirectiveFactory(Constants, Dataset, SoqlHelpers, $q, $timeout) {
 
     return {
       templateUrl: '/angular_templates/dataCards/table.html',
@@ -18,6 +18,7 @@
         getRows: '=',
         infinite: '=',
         columnDetails: '=',
+        rowDisplayUnit: '=',
         defaultSortColumnName: '='    // When the table is first created, it will be sorted on this column.
       },
 
@@ -260,7 +261,7 @@
               return {
                 index: i,
                 columnId: column.fieldName,
-                name: column.dataset.extractHumanReadableColumnName(column),
+                name: Dataset.extractHumanReadableColumnName(column),
                 active: isSortedOnColumn(column.fieldName),
                 sortUp: ordering === 'ASC',
                 width: columnWidths[column.fieldName],
@@ -518,12 +519,14 @@
               bottomRow
             );
 
-            $label.text('Showing {0} to {1} of {2} (Total: {3})'.format(
-                topRow,
-                bottomRow,
-                scope.filteredRowCount,
-                scope.rowCount)
-            );
+            scope.$safeApply(function() {
+              scope.tableLabel = '{0} <strong>{1}-{2} out of {3}</strong>'.format(
+                $.htmlEncode(scope.rowDisplayUnit.capitalize()),
+                $.commaify(topRow),
+                $.commaify(bottomRow),
+                $.commaify(scope.filteredRowCount)
+              );
+            });
           };
 
           var reloadRows = function() {

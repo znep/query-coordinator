@@ -1,11 +1,5 @@
 <div class="card-text">
-  <div class="title-one-line dynamic-title" ng-show="displayDynamicTitle">{{dynamicTitle}}</div>
-  <div class="title-one-line">
-    <div class="wrap">{{title}}</div>
-    <div class="title-expanded">
-      <div class="wrap">{{title}}</div>
-    </div>
-  </div>
+  <card-title model="model"></card-title>
   <div class="description"
     ng-class="{
       clamped: descriptionClamped,

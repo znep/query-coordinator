@@ -7,8 +7,8 @@ describe('card directive', function() {
   var testHelpers;
   var Model;
   var Card;
-  var Page;
   var Mockumentary;
+  var $provide;
 
   /**
    * Create Card model with options
@@ -108,6 +108,9 @@ describe('card directive', function() {
   beforeEach(module('dataCards/card.sass'));
   beforeEach(module('test'));
   beforeEach(module('dataCards'));
+  beforeEach(module(['$provide', function(_$provide_) {
+    $provide = _$provide_;
+  }]));
 
   beforeEach(
     inject([
@@ -116,15 +119,13 @@ describe('card directive', function() {
       'testHelpers',
       'Model',
       'Card',
-      'Page',
       'Mockumentary',
-      function(_$rootScope, _$templateCache, _testHelpers, _Model, _Card, _Page, _Mockumentary) {
+      function(_$rootScope, _$templateCache, _testHelpers, _Model, _Card, _Mockumentary) {
 
         $rootScope = _$rootScope;
         testHelpers = _testHelpers;
         Model = _Model;
         Card = _Card;
-        Page = _Page;
         Mockumentary = _Mockumentary;
 
         // Override the templates of the other directives. We don't need to test them.
@@ -136,7 +137,7 @@ describe('card directive', function() {
         _$templateCache.put('/angular_templates/dataCards/cardVisualization.html', '');
         _$templateCache.put('/angular_templates/dataCards/cardVisualizationInvalid.html', '');
         _$templateCache.put('/angular_templates/dataCards/clearableInput.html', '');
-
+        testHelpers.mockDirective($provide, 'cardTitle');
         // The css styles are scoped to the body class
         $('body').addClass('state-view-cards');
       }
@@ -203,7 +204,7 @@ describe('card directive', function() {
     });
 
     it('should be set whenever the description height changes', function(done) {
-      var textElement = el.find('.card-text').find('.title-one-line').text('');
+      var textElement = el.find('.description-truncated-content').text('');
       var visualizationElement = el.find('card-visualization');
       var originalHeight = visualizationElement.height();
 
@@ -302,81 +303,6 @@ describe('card directive', function() {
       });
 
     });
-  });
-
-  describe('dynamic card title', function() {
-    it('should display the "count" dynamic title when "count" aggregation is selected', function() {
-      var element = createDirective({
-        rowDisplayUnit: 'my row unit',
-        primaryAggregation: 'count'
-      }).element;
-      expect(element.find('.dynamic-title')).to.have.text('Number of my row units by');
-    });
-
-    it('should default to "rows" for the rowDisplayUnit if none is specified', function() {
-      var element = createDirective({}).element;
-      expect(element.find('.dynamic-title')).to.have.text('Number of rows by');
-    });
-
-    it('should display the "sum" dynamic title when "sum" aggregation is selected', function() {
-      var element = createDirective({
-        primaryAggregation: 'sum',
-        primaryAmountField: 'myAggregationField'
-      }).element;
-      expect(element.find('.dynamic-title')).to.have.text('Sum of My Version 1 Aggregation Fields by');
-    });
-
-    it('should display the "mean" dynamic title when "mean" aggregation is selected', function() {
-      var element = createDirective({
-        primaryAggregation: 'mean',
-        primaryAmountField: 'myAggregationField'
-      }).element;
-      expect(element.find('.dynamic-title')).to.have.text('Average My Version 1 Aggregation Field by');
-    });
-
-    it('should not display the dynamic title for a table card', function() {
-      var element = createDirective({
-        fieldName: '*'
-      }).element;
-      expect(element.find('.dynamic-title')).to.not.be.visible;
-    });
-
-    it('should not display the dynamic title for a search card', function() {
-      var element = createDirective({
-        columns: {
-          myFieldName: {
-            name: 'name',
-            description: 'search card',
-            fred: 'text',
-            physicalDatatype: 'text',
-            availableCardTypes: ['search'],
-            defaultCardType: 'search'
-          }
-        },
-        fieldName: 'myFieldName',
-        cardType: 'search'
-      }).element;
-      expect(element.find('.dynamic-title')).to.not.be.visible;
-    });
-
-    it('should not display the dynamic title for a feature/point-map card', function() {
-      var element = createDirective({
-        columns: {
-          myFieldName: {
-            name: 'name',
-            description: 'feature',
-            fred: 'location',
-            physicalDatatype: 'point',
-            availableCardTypes: ['feature'],
-            defaultCardType: 'feature'
-          }
-        },
-        fieldName: 'myFieldName',
-        cardType: 'feature'
-      }).element;
-      expect(element.find('.dynamic-title')).to.not.be.visible;
-    });
-
   });
 
 });

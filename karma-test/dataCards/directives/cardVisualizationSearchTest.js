@@ -103,13 +103,14 @@ describe('A Search Card Visualization', function() {
     model.fieldName = fieldName ? fieldName : 'test_column_text';
     model.defineObservableProperty('activeFilters', []);
     model.defineObservableProperty('expanded', false);
+    model.defineObservableProperty('customTitle', null);
     model.defineObservableProperty('column', fakeDatasetColumns[model.fieldName]);
     model.page = pageModel;
 
     var outerScope = rootScope.$new();
     outerScope.whereClause = '';
     outerScope.model = model;
-    outerScope.whereClause = "PRETEND_PAGE_FILTER";
+    outerScope.whereClause = 'PRETEND_PAGE_FILTER';
 
     var html = '<div class="card-visualization"><card-visualization-search model="model" where-clause="whereClause"></card-visualization-search></div>';
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);

@@ -1933,7 +1933,7 @@ importNS.importingPaneConfig = {
                     // TODO: Build a way to parse the error messages.
                     submitError = 'blargh'; // JSON.parse(request.responseText).message;
                   }
-                    
+
                   command.prev();
                 }, 2000);
               },

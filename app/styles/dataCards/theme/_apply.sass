@@ -872,6 +872,9 @@ body.state-view-cards
   &.working
     @include action-button($customize-bar-customizing-button-color, $customize-bar-customizing-button-background-color, $customize-bar-customizing-button-color)
 
+  &.error, &.error:hover
+    @extend .action-btn.error !optional
+
 .customize-bar
   background-color: rgba($customize-bar-background-color, $customize-bar-background-opacity)
   border-top-color: rgba($customize-bar-border-color, $customize-bar-border-opacity)
@@ -898,9 +901,9 @@ body.state-view-cards
       &.disabled, &.disabled:hover
         @extend .action-btn.disabled !optional
 
-
     button.save-button, button.save-as-button
       @extend .customize-bar-action-btn
+
       &:hover
         border-color: $customize-bar-customizing-button-background-color
 

@@ -2,10 +2,29 @@ require 'rails_helper'
 
 RSpec.describe DraftStory, type: :model do
 
-  subject { FactoryGirl.create(:draft_story) }
+  let(:subject) { FactoryGirl.create(:draft_story) }
 
   it_behaves_like 'has_block_operations'
   it_behaves_like 'has_story_queries'
+
+  describe 'immutability' do
+
+    context 'when it has not been saved' do
+
+      let(:subject) { FactoryGirl.build(:draft_story) }
+
+      it 'can be saved once' do
+        expect(subject.save).to eq(true)
+      end
+
+      it 'cannot be saved twice' do
+        expect(subject.save).to eq(true)
+        expect {
+          subject.save
+        }.to raise_error
+      end
+    end
+  end
 
   describe 'validations' do
 

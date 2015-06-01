@@ -1,4 +1,5 @@
 class Block < ActiveRecord::Base
+  include Immutable
 
   # We assume a 12-column grid.
   # Given this assumption, these layouts correspond to (respectively):

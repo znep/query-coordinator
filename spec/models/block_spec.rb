@@ -2,6 +2,25 @@ require 'rails_helper'
 
 RSpec.describe Block, type: :model do
 
+  let(:subject) { FactoryGirl.build(:block) }
+
+  describe 'immutability' do
+
+    context 'when it has not been saved' do
+
+      it 'can be saved once' do
+        expect(subject.save).to eq(true)
+      end
+
+      it 'cannot be saved twice' do
+        expect(subject.save).to eq(true)
+        expect {
+          subject.save
+        }.to raise_error
+      end
+    end
+  end
+
   describe 'validations' do
 
     it 'has a valid factory' do

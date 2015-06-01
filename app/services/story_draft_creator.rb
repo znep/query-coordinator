@@ -2,6 +2,7 @@ class StoryDraftCreator
   attr_reader :new_blocks, :story
 
   class InvalidBlockIdsError < StandardError ; end
+  class InvalidNewBlocksError < StandardError ; end
   class CreateTransactionError < StandardError ; end
 
   def initialize(user, attributes)
@@ -24,6 +25,10 @@ class StoryDraftCreator
 
     unless existing_block_ids_in_previous_story_version?
       raise InvalidBlockIdsError.new('invalid block ids')
+    end
+
+    unless all_new_blocks_valid?
+      raise InvalidNewBlocksError.new('invalid new blocks')
     end
 
     begin
@@ -112,5 +117,9 @@ class StoryDraftCreator
         block_id_or_nil
       end
     end
+  end
+
+  def all_new_blocks_valid?
+    new_blocks.all?(&:valid?)
   end
 end

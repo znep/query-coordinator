@@ -163,6 +163,7 @@ describe('A Table Card Visualization', function() {
     model.fieldName = '*';
     model.defineObservableProperty('activeFilters', []);
     model.defineObservableProperty('customTitle', null);
+    model.defineObservableProperty('showDescription', true);
 
     var pageOverrides = {
       id: 'test-page',
@@ -392,7 +393,7 @@ describe('A Table Card Visualization', function() {
     it('should set it on the card model', function() {
       var table = createTable();
       expect(table.model.getCurrentValue('customTitle')).
-        to.equal('Showing all 1337 rows');
+        to.equal('Showing all 1,337 rows');
       table.outerScope.whereClause = 'invalid where clause';
       table.outerScope.$digest();
       expect(table.model.getCurrentValue('customTitle')).
@@ -412,7 +413,7 @@ describe('A Table Card Visualization', function() {
         rowDisplayUnit: '<img src="http://placehold.it/100x100" />'
       });
       expect(table.model.getCurrentValue('customTitle')).
-        to.equal('Showing all 1337 &lt;img src="http://placehold.it/100x100" /&gt;s');
+        to.equal('Showing all 1,337 &lt;img src="http://placehold.it/100x100" /&gt;s');
     });
   });
 

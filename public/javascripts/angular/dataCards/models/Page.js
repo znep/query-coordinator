@@ -61,7 +61,9 @@
 
         self.defineObservableProperty('dataset', dataset);
 
-        var columnAggregatedUpon = self.observe('primaryAmountField').
+        var primaryAmountField$ = self.observe('primaryAmountField');
+
+        var columnAggregatedUpon = primaryAmountField$.
           distinctUntilChanged().
           map(function(field) {
             return _.isPresent(field) ?
@@ -70,14 +72,25 @@
           }).
           switchLatest();
 
+        var validPrimaryAggregation$ = self.observe('primaryAggregation').
+          filter(function(value) {
+            return value !== 'invalid';
+          });
+        var rowDisplayUnit$ = self.observe('dataset.rowDisplayUnit');
+
         // Synchronize changes between primaryAmountField and primaryAggregation
         // Normalize aggregation-related fields.
         var aggregationObservable = Rx.Observable.combineLatest(
-          self.observe('primaryAggregation').filter(function(value) { return value !== 'invalid'; }),
-          self.observe('dataset.rowDisplayUnit'),
-          self.observe('primaryAmountField'),
+          validPrimaryAggregation$,
+          rowDisplayUnit$,
+          primaryAmountField$,
           columnAggregatedUpon,
-          function(primaryAggregation, rowDisplayUnit, fieldNameAggregatedUpon, columnAggregatedUpon) {
+          function(
+            primaryAggregation,
+            rowDisplayUnit,
+            fieldNameAggregatedUpon,
+            columnAggregatedUpon
+          ) {
             var unit = rowDisplayUnit;
             if (columnAggregatedUpon) {
               unit = Dataset.extractHumanReadableColumnName(columnAggregatedUpon);
@@ -104,7 +117,11 @@
             }
           });
 
-        self.defineEphemeralObservablePropertyFromSequence('aggregation', aggregationObservable);
+        self.defineEphemeralObservablePropertyFromSequence('aggregation',
+          aggregationObservable);
+
+        self.defineEphemeralObservablePropertyFromSequence('rowDisplayUnit',
+          rowDisplayUnit$.filter(_.isDefined).startWith(DEFAULT_ROW_DISPLAY_UNIT));
 
         var allCardsFilters = self.observe('cards').flatMap(function(cards) {
           if (!cards) {
@@ -117,7 +134,8 @@
           });
         });
 
-        self.defineEphemeralObservablePropertyFromSequence('activeFilters', allCardsFilters);
+        self.defineEphemeralObservablePropertyFromSequence('activeFilters',
+          allCardsFilters);
 
         var allCardsWheres = allCardsFilters.map(function(filters) {
           var wheres = _.map(filters, function(operators, field) {
@@ -140,7 +158,8 @@
           )
         );
 
-        self.defineEphemeralObservableProperty('permissions', pageMetadata.permissions || null);
+        self.defineEphemeralObservableProperty('permissions',
+          pageMetadata.permissions || null);
       },
 
       serialize: function() {

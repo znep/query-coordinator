@@ -64,6 +64,7 @@
         );
 
         self.defineEphemeralObservableProperty('customTitle', null);
+        self.defineEphemeralObservableProperty('showDescription', true);
 
       },
 

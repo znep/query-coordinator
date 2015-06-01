@@ -20,9 +20,6 @@ rescue
   REVISION_DATE = nil
 end
 
-DOWNTIME = { file: File.join(Rails.root, 'config/downtime.yml'), env: Rails.env }
-Downtime.update!
-
 begin
   assets = YAML.load_file(File.join(Rails.root, "config/assets.yml"))
   ASSET_MAP = AssetMapper.new(assets, assets['dump'])

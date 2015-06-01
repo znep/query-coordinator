@@ -3,50 +3,12 @@ class Downtime
 
   attr_accessor :message_start, :message_finish, :downtime_start, :downtime_finish
 
-  @@downtimes = []
-
   def self.any? &block
-    @@downtimes.any?(&block)
+    ExternalConfig.for(:downtime).downtimes.any?(&block)
   end
 
   def self.map &block
-    @@downtimes.map(&block)
-  end
-
-  def self.uncache!
-    @@cache_expiry_time = Time.now
-  end
-
-  def self.needs_update?
-    # FIXME: Removing caching because it's designed poorly and consequently not reading the config at deploy time.
-    #cached = defined?(@@cache_expiry_time) && @@cache_expiry_time > Time.now
-    #return false if cached
-    @@cache_expiry_time = Time.now + 6.hours
-
-    !defined?(@@last_updated) || File.stat(DOWNTIME[:file]).mtime > @@last_updated
-  end
-
-  def self.update!
-    return unless needs_update?
-
-    begin
-      yaml = YAML.load_file(DOWNTIME[:file])
-      if yaml
-        @@downtimes = [yaml[DOWNTIME[:env]]].flatten.compact.collect do |time|
-          Downtime.new(time['message_start'], time['message_end'],
-                       time['downtime_start'], time['downtime_end'])
-        end
-        Rails.logger.info("#{Time.now} - Downtimes loaded! #{@@downtimes.inspect}")
-      else
-
-        Rails.logger.warn("#{Time.now} - Unable to load downtime banner file: #{DOWNTIME[:file]}")
-      end
-    rescue StandardError => e
-      # Ignore all errors/typos from the downtime parsing
-      puts("#{Time.now} - Error loading downtime banner file: #{DOWNTIME[:file]} - #{e}")
-    end
-
-    @@last_updated = Time.now
+    ExternalConfig.for(:downtime).downtimes.map(&block)
   end
 
   def initialize(m_start, m_finish, d_start, d_finish)
@@ -73,7 +35,7 @@ class Downtime
     (@message_start || @message_finish).to_i
   end
 
-  def should_display(current_time)
+  def should_display?(current_time)
     @downtime_start.present? && @downtime_finish.present? &&
       (@message_start.nil? || @message_start < current_time) &&
       (@message_finish.nil?  || @message_finish > current_time)
@@ -91,4 +53,29 @@ class Downtime
   end
 end
 
+class DowntimeConfig < ExternalConfig
+  def env
+    Rails.env
+  end
 
+  def update!
+    begin
+      yaml = YAML.load_file(filename)
+      if yaml
+        @downtimes = [yaml[env]].flatten.compact.collect do |time|
+          Downtime.new(time['message_start'], time['message_end'],
+                       time['downtime_start'], time['downtime_end'])
+        end
+        Rails.logger.info("#{Time.now} - Downtimes loaded! #{@@downtimes.inspect}")
+      else
+
+        Rails.logger.warn("#{Time.now} - Unable to load downtime banner file: #{filename}")
+      end
+    rescue StandardError => e
+      # Ignore all errors/typos from the downtime parsing
+      puts("#{Time.now} - Error loading downtime banner file: #{filename} - #{e}")
+    end
+  end
+
+  attr_reader :downtimes
+end

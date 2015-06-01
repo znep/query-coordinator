@@ -1,8 +1,8 @@
 class ExternalConfig
 
   @@configs = {}
-  def self.register(uniqId, filename)
-    @@configs[uniqId] ||= ExternalConfig.new(uniqId, filename)
+  def self.register(config)
+    @@configs[config.uniqId] ||= config
   end
 
   def self.for(uniqId)
@@ -18,8 +18,10 @@ class ExternalConfig
   def initialize(uniqId, filename)
     @uniqId = uniqId
     @filename = filename
+
     uncache!
     update!
+    ExternalConfig.register(self)
   end
   attr_reader :uniqId, :filename
 
@@ -27,14 +29,18 @@ class ExternalConfig
     return false if @cache > Time.now
     @cache = Time.now + cache_period
 
-    mtime = File.mtime(filename)
+    begin
+      mtime = File.mtime(filename)
+    rescue Errno::ENOENT
+      Rails.logger.error("Config file for #{uniqId} does not exist. Looking in #{filename}")
+    end
     has_changed = @last_updated.nil? || mtime > @last_updated
     @last_updated = mtime
     has_changed
   end
 
   def cache_period
-    # Implement me
+    # Implement me if you want caching. Caching is silly.
     0.seconds
   end
 
@@ -43,8 +49,11 @@ class ExternalConfig
   end
 
   def update!
+    # Implement this method in a subclass. Required.
     # Example implementation:
     #
-    # @config = YAML.load_file(filename)
+    # @things = YAML.load_file(filename)
+    # do_things!
+    Rails.logger.info("Config Update [#{uniqId}] from #{filename}")
   end
 end

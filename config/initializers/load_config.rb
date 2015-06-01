@@ -1,3 +1,4 @@
+# Values in this config will only be picked up on deploy.
 APP_CONFIG = begin
   conf = YAML.load_file("#{Rails.root}/config/config.yml") || {}
   conf[Rails.env]
@@ -46,5 +47,6 @@ AUTH0_ID = APP_CONFIG['auth0_id']
 AUTH0_SECRET = APP_CONFIG['auth0_secret']
 AUTH0_CONFIGURED = !(AUTH0_URI.nil? || AUTH0_ID.nil? || AUTH0_SECRET.nil?)
 
-{ downtime: "#{Rails.root}/config/downtime.yml"
-}.collect { |uniqId, filename| ExternalConfig.new(uniqId, filename) }
+# Values in these configs will be picked up when their files are written to.
+{ downtime: { klass: DowntimeConfig, filename: "#{Rails.root}/config/downtime.yml" }
+}.collect { |uniqId, definition| definition[:klass].new(uniqId, definition[:filename]) }

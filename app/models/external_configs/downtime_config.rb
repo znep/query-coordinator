@@ -4,6 +4,8 @@ class DowntimeConfig < ExternalConfig
   end
 
   def update!
+    super
+    @downtimes ||= []
     begin
       yaml = YAML.load_file(filename)
       if yaml

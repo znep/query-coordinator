@@ -20,7 +20,8 @@ ActiveRecord::Schema.define(version: 20150522212815) do
     t.string   "layout",     null: false
     t.json     "components", null: false
     t.string   "created_by", null: false
-    t.datetime "created_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
   end
 
@@ -145,9 +146,10 @@ ActiveRecord::Schema.define(version: 20150522212815) do
 
   create_table "draft_stories", force: :cascade do |t|
     t.string   "four_by_four", limit: 9,              null: false
-    t.integer  "blocks",                 default: [], null: false, array: true
+    t.integer  "block_ids",              default: [], null: false, array: true
     t.string   "created_by",                          null: false
-    t.datetime "created_at",                          null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
   end
 
@@ -156,9 +158,10 @@ ActiveRecord::Schema.define(version: 20150522212815) do
 
   create_table "published_stories", force: :cascade do |t|
     t.string   "four_by_four", limit: 9,              null: false
-    t.integer  "blocks",                 default: [], null: false, array: true
+    t.integer  "block_ids",              default: [], null: false, array: true
     t.string   "created_by",                          null: false
-    t.datetime "created_at",                          null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
   end
 

@@ -33,7 +33,7 @@ class StoryDraftCreator
 
         @story = DraftStory.new(
           four_by_four: four_by_four,
-          blocks: merge_existing_and_new_block_ids,
+          block_ids: merge_existing_and_new_block_ids,
           created_by: user
         )
         @story.save!
@@ -62,7 +62,7 @@ class StoryDraftCreator
       story = DraftStory.from_four_by_four(four_by_four)
 
       if story.present?
-        story.blocks
+        story.block_ids
       else
         []
       end

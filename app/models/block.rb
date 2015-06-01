@@ -15,7 +15,7 @@ class Block < ActiveRecord::Base
   validates :components, presence: true
   validates :created_by, presence: true
 
-  scope :for_story, ->(story) { where(id: story.blocks) }
+  scope :for_story, ->(story) { where(id: story.block_ids) }
 
   def self.from_json(json_block)
     # TODO: Validate before returning or throw exception?

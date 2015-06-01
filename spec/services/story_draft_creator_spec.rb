@@ -1,45 +1,53 @@
 require 'rails_helper'
 
-# user
-valid_user = 'test_user@socrata.com'
-
-# four_by_four
-valid_four_by_four = 'test-data'
-invalid_four_by_four = 'invalid'
-
-# block id
-FactoryGirl.build(:block).save!
-valid_existing_block_id = Block.last.id
-
-# individual block
-valid_new_block = { layout: '12', components: [ { type: 'text', value: 'Hello, world!'} ] }.freeze
-valid_existing_block = { id: valid_existing_block_id }.freeze
-invalid_new_block = { invalid: true }
-invalid_existing_block_1 = { id: 0 }.freeze
-invalid_existing_block_2 = { id: -1 }.freeze
-invalid_existing_block_3 = { id: 'what' }.freeze
-
-# block id arrays
-valid_existing_block_ids = [ valid_existing_block_id ]
-
-# json block arrays
-valid_all_new_blocks = [ valid_new_block.dup ]
-valid_some_new_blocks = [ valid_new_block.dup, valid_existing_block.dup ]
-invalid_new_blocks = [ invalid_new_block.dup ]
-invalid_existing_blocks_1 = [ valid_new_block.dup, invalid_existing_block_1.dup ]
-invalid_existing_blocks_2 = [ valid_new_block.dup, invalid_existing_block_2.dup ]
-invalid_existing_blocks_3 = [ valid_new_block.dup, invalid_existing_block_3.dup ]
-
-# stories
-story_with_no_existing_blocks = FactoryGirl.build(
-  :draft_story,
-  four_by_four: valid_four_by_four,
-  blocks: [],
-  created_by: valid_user
-).save!
-
-
 RSpec.describe StoryDraftCreator do
+
+  let(:valid_user) { 'test_user@socrata.com' }
+  let(:valid_four_by_four) { 'test-data' }
+  let(:invalid_four_by_four) { 'invalid' }
+  let(:valid_existing_block_id) { FactoryGirl.create(:block).id }
+  # block id arrays
+  let(:valid_existing_block_ids) { [ valid_existing_block_id ] }
+  # json block arrays
+  let(:valid_all_new_blocks) { [ valid_new_block.dup ] }
+  let(:valid_some_new_blocks) { [ valid_new_block.dup, valid_existing_block.dup ] }
+  let(:invalid_new_blocks) { [ invalid_new_block.dup ] }
+  let(:invalid_existing_blocks_1) { [ valid_new_block.dup, invalid_existing_block_1.dup ] }
+  let(:invalid_existing_blocks_2) { [ valid_new_block.dup, invalid_existing_block_2.dup ] }
+  let(:invalid_existing_blocks_3) { [ valid_new_block.dup, invalid_existing_block_3.dup ] }
+  # stories
+  let(:story_with_no_existing_blocks) {
+    FactoryGirl.create(
+      :draft_story,
+      four_by_four: valid_four_by_four,
+      created_by: valid_user
+    )
+  }
+
+  # individual blocks
+  def valid_new_block
+    { layout: '12', components: [ { type: 'text', value: 'Hello, world!'} ] }.freeze
+  end
+
+  def valid_existing_block
+    { id: valid_existing_block_id }.freeze
+  end
+
+  def invalid_new_block
+    { invalid: true }
+  end
+
+  def invalid_existing_block_1
+    { id: 0 }.freeze
+  end
+
+  def invalid_existing_block_2
+    { id: -1 }.freeze
+  end
+
+  def invalid_existing_block_3
+    { id: 'what' }.freeze
+  end
 
   context 'when instantiated with a non-array value for attributes[:blocks]' do
 
@@ -72,7 +80,7 @@ RSpec.describe StoryDraftCreator do
           end
 
           it 'creates new blocks' do
-            expect(Block.find(@story.blocks.first)).to be_a(Block)
+            expect(Block.find(@story.block_ids.first)).to be_a(Block)
           end
 
           it 'creates a new draft story' do
@@ -110,7 +118,6 @@ RSpec.describe StoryDraftCreator do
             FactoryGirl.build(
               :draft_story,
               four_by_four: valid_four_by_four,
-              blocks: [],
               created_by: valid_user
             ).save!
 
@@ -127,7 +134,7 @@ RSpec.describe StoryDraftCreator do
           end
 
           it 'creates new blocks' do
-            expect(Block.find(@story.blocks.first)).to be_a(Block)
+            expect(Block.find(@story.block_ids.first)).to be_a(Block)
           end
 
           it 'creates a new draft story' do
@@ -142,7 +149,7 @@ RSpec.describe StoryDraftCreator do
             FactoryGirl.build(
               :draft_story,
               four_by_four: valid_four_by_four,
-              blocks: valid_existing_block_ids,
+              block_ids: valid_existing_block_ids,
               created_by: valid_user
             ).save!
 
@@ -159,7 +166,7 @@ RSpec.describe StoryDraftCreator do
           end
 
           it 'creates new blocks' do
-            expect(Block.find(@story.blocks.first)).to be_a(Block)
+            expect(Block.find(@story.block_ids.first)).to be_a(Block)
           end
 
           it 'creates a new draft story' do

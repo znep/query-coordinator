@@ -26,34 +26,16 @@ RSpec.describe DraftStory, type: :model do
       expect(invalid_draft_story.errors[:four_by_four].length).to eq(1)
     end
 
-    it 'does not allow a non-array value for :blocks' do
-      invalid_draft_story = FactoryGirl.build(:draft_story, blocks: nil)
+    it 'does not allow a non-array value for :block_ids' do
+      invalid_draft_story = FactoryGirl.build(:draft_story, block_ids: nil)
       invalid_draft_story.valid?
-      expect(invalid_draft_story.errors[:blocks].length).to eq(1)
+      expect(invalid_draft_story.errors[:block_ids].length).to eq(1)
     end
 
     it 'does not allow a null value for :created_by' do
       invalid_draft_story = FactoryGirl.build(:draft_story, created_by: nil)
       invalid_draft_story.valid?
       expect(invalid_draft_story.errors[:created_by].length).to eq(1)
-    end
-  end
-
-  describe '#retrieve_blocks' do
-
-    context 'when story does not have blocks' do
-      it 'returns no blocks' do
-        story = FactoryGirl.build(:draft_story)
-        expect(story.retrieve_blocks).to eq([])
-      end
-    end
-
-    context 'when story has blocks' do
-      it 'returns blocks' do
-        block_count = 3
-        story = FactoryGirl.build(:published_story_with_blocks, block_count: block_count)
-        expect(story.retrieve_blocks.size).to eq(block_count)
-      end
     end
   end
 end

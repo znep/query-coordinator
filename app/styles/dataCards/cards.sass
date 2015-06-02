@@ -178,10 +178,10 @@ body.state-view-cards
         $border-width: 2px
         position: relative
         border-width: $border-width
-        z-index: 5
         overflow: visible
 
         dropdown-menu
+          z-index: 1003
           position: absolute
           top: 100%
           // Compensate for the border on the containing button
@@ -207,7 +207,6 @@ body.state-view-cards
 
   .cards-content
     position: relative
-    z-index: 1
 
     #quick-filter-bar-container
       position: relative

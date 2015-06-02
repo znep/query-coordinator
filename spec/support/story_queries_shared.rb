@@ -2,19 +2,19 @@ require 'rails_helper'
 
 shared_examples 'has_story_queries' do
 
-  describe '#from_four_by_four' do
+  describe '#find_by_four_by_four' do
 
     context 'if a story with the specified four_by_four exists' do
 
       it 'returns a valid story' do
-        result = subject.class.from_four_by_four(subject.four_by_four)
+        result = subject.class.find_by_four_by_four(subject.four_by_four)
         expect(result).to eq(subject)
       end
     end
 
     context 'if a story with the specified four_by_four does not exist' do
       it 'returns nil' do
-        result = subject.class.from_four_by_four('does_not_exist')
+        result = subject.class.find_by_four_by_four('does_not_exist')
         expect(result).to be_nil
       end
     end

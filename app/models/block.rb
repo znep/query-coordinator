@@ -30,7 +30,6 @@ class Block < ActiveRecord::Base
   }
 
   def self.from_json(json_block)
-    # TODO: Validate before returning or throw exception?
     Block.new(
       layout: json_block[:layout],
       components: json_block[:components],

@@ -3,7 +3,7 @@ module StoryQueries
 
   included do
 
-    def self.from_four_by_four(four_by_four)
+    def self.find_by_four_by_four(four_by_four)
       self.where(four_by_four: four_by_four).order(created_at: :desc).first
     end
 

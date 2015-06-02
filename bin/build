@@ -20,7 +20,9 @@ echo 'Exporting environment variables...'
 export REGISTRY=registry.docker.aws-us-west-2-infrastructure.socrata.net:5000
 echo "REGISTRY=${REGISTRY}"
 
-export TAG=${SERVICE_SHA}_${BUILD_NUMBER}
+export VERSION=$(date +%s) # temporary version stand-in until a semver version is introduced
+
+export TAG=${VERSION}_${BUILD_NUMBER}_${SERVICE_SHA}
 echo "TAG=${TAG}"
 
 export http_proxy=${HTTP_PROXY}

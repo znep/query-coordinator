@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 # Test auth module itself
-describe 'CmsPagesAuth', 'included in a' do
+RSpec.describe 'CmsPagesAuth', 'included in a' do
 
   describe "AnonymousController", type: :controller do
     controller do

@@ -216,21 +216,29 @@ RSpec.describe StoryDraftCreator do
 
       context 'with no existing blocks' do
 
+        let(:blocks) { [] }
+
         it 'raises an exception' do
           expect {
-            @story = story_creator.create
-          }.to raise_error
+            StoryDraftCreator.new(
+              user,
+              four_by_four: four_by_four,
+              blocks: blocks
+            )
+          }.to raise_error(ArgumentError)
         end
 
-        it 'does not create a DraftStory object and allows enumeration of validation errors' do
+        it 'does not create a DraftStory object' do
           expect {
             begin
-              story_creator.create
+              StoryDraftCreator.new(
+                user,
+                four_by_four: four_by_four,
+                blocks: blocks
+              )
             rescue => error
             end
           }.to_not change { DraftStory.count }
-
-          expect(story_creator.story.errors).to_not be_empty
         end
       end
 
@@ -240,14 +248,20 @@ RSpec.describe StoryDraftCreator do
 
         it 'raises an exception and does not create a DraftStory object' do
           expect {
-            @story = story_creator.create
-          }.to raise_error(StoryDraftCreator::InvalidBlockIdsError)
-
-          expect(@story).to be_nil
+            StoryDraftCreator.new(
+              user,
+              four_by_four: four_by_four,
+              blocks: blocks
+            )
+          }.to raise_error
 
           expect {
             begin
-              story_creator.create
+              StoryDraftCreator.new(
+                user,
+                four_by_four: four_by_four,
+                blocks: blocks
+              )
             rescue => error
             end
           }.to_not change { DraftStory.count }
@@ -277,7 +291,33 @@ RSpec.describe StoryDraftCreator do
         end
       end
 
-      context 'with existing blocks' do
+      context 'with an existing block that is not a hash' do
+
+        let(:blocks) { [1] }
+
+        it 'raises an exception and does not create a DraftStory object' do
+          expect {
+            StoryDraftCreator.new(
+              user,
+              four_by_four: four_by_four,
+              blocks: blocks
+            )
+          }.to raise_error(ArgumentError)
+
+          expect {
+            begin
+              StoryDraftCreator.new(
+                user,
+                four_by_four: four_by_four,
+                blocks: blocks
+              )
+            rescue => error
+            end
+          }.to_not change { DraftStory.count }
+        end
+      end
+
+      context 'with existing blocks that are hashes' do
 
         context 'with an existing block with an id < 1' do
 

@@ -23,19 +23,13 @@ class Block < ActiveRecord::Base
     # select query, so we need to apply the story's ordering of the blocks
     # to the query result before returning it.
     block_objects = where(id: story.block_ids)
-    ordered_block_objects = []
 
-    story.block_ids.each do |block_id|
-      ordered_block_objects << block_objects.detect { |block_object|
-        block_object.id == block_id
-      }
+    story.block_ids.map do |block_id|
+      block_objects.detect { |block_object| block_object.id == block_id }
     end
-
-    ordered_block_objects
   }
 
   def self.from_json(json_block)
-    # TODO: Validate before returning or throw exception?
     Block.new(
       layout: json_block[:layout],
       components: json_block[:components],

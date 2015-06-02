@@ -1,14 +1,17 @@
 require 'rails_helper'
 
-describe ApplicationController do
+RSpec.describe ApplicationController do
 
   describe '#current_user' do
+    let(:auth) { double('auth') }
+
+    before do
+      allow(Core::Auth::Client).to receive(:new).and_return(auth)
+      request.cookies[:_core_session_id] = "we_have_a_session_id"
+    end
 
     it 'calls Core::Auth::Client with params' do
-      request.cookies[:_core_session_id] = "we_have_a_session_id"
-
       #stub out core auth calls
-      auth = double()
       expect(Core::Auth::Client).to receive(:new).with(
         request.host,
         port: nil,
@@ -22,44 +25,42 @@ describe ApplicationController do
     end
 
     context 'when the user has no session id' do
-      it 'returns nil' do
+      before do
         request.cookies.clear
+      end
+
+      it 'returns nil' do
         expect(controller.current_user).to eq(nil)
       end
 
       it 'does not call core' do
-        request.cookies.clear
-        controller.current_user
         expect(Core::Auth::Client).to_not receive(:new)
+        controller.current_user
       end
     end
 
-    # TODO: test that core auth client gets called
-
     context 'when the user is not logged in' do
-
       before do
-        auth = double()
-        allow(Core::Auth::Client).to receive(:new).and_return(auth)
         allow(auth).to receive(:logged_in?).and_return(false)
       end
 
       it 'returns nil' do
-        # Set a cookie so we make an auth object
-        request.cookies[:_core_session_id] = "we_have_a_session_id"
         expect(controller.current_user).to eq(nil)
       end
     end # end user not logged in context
 
 
     context 'when the user is logged in' do
+      before do
+        allow(auth).to receive(:logged_in?).and_return(true)
+      end
 
-      it 'returns the user object'
-      # TODO: test this with an integration test
-      # Leaving as a pending test to remind us to fix this
-
-    end
-
-  end  #end user logged in context
+      it 'returns the user object' do
+        user = double('user')
+        expect(auth).to receive(:current_user).and_return(user)
+        expect(controller.current_user).to equal(user)
+      end
+    end # end user logged in context
+  end # end describe #current_user
 
 end

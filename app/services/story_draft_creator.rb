@@ -5,14 +5,24 @@ class StoryDraftCreator
   class InvalidNewBlocksError < StandardError ; end
   class CreateTransactionError < StandardError ; end
 
+  #TODO: Make user another attribute rather than its own thing.
   def initialize(user, attributes)
-    unless attributes[:blocks].is_a?(Array)
-      raise ArgumentError.new('attributes[:blocks] is not array')
+    @user = user
+
+    @four_by_four = attributes[:four_by_four]
+    if @four_by_four.present? && @four_by_four !~ FOUR_BY_FOUR_PATTERN
+      raise ArgumentError.new("attributes[:four_by_four] is not valid: '#{@four_by_four}'")
     end
 
-    @user = user
-    @four_by_four = attributes.fetch(:four_by_four, nil)
-    @json_blocks = attributes[:blocks]
+    # This will raise an exception if :blocks is not present.
+    @json_blocks = attributes.fetch(:blocks)
+    unless @json_blocks.is_a?(Array)
+      raise ArgumentError.new('attributes[:blocks] is not array')
+    end
+    unless all_json_blocks_are_hashes?
+      raise ArgumentError.new("attributes[:blocks] contains non-hashes: '#{@json_blocks}'")
+    end
+
     @new_blocks = build_nonexisting_blocks
   end
 
@@ -31,22 +41,18 @@ class StoryDraftCreator
       raise InvalidNewBlocksError.new('invalid new blocks')
     end
 
-    begin
-      ActiveRecord::Base.transaction do
+    ActiveRecord::Base.transaction do
 
-        new_blocks.each do |block|
-          block.save!
-        end
-
-        @story = DraftStory.new(
-          four_by_four: four_by_four,
-          block_ids: merge_existing_and_new_block_ids,
-          created_by: user
-        )
-        @story.save!
+      new_blocks.each do |block|
+        block.save!
       end
-    rescue => error
-      raise CreateTransactionError.new('transaction failed')
+
+      @story = DraftStory.new(
+        four_by_four: four_by_four,
+        block_ids: merge_existing_and_new_block_ids,
+        created_by: user
+      )
+      @story.save!
     end
 
     @story
@@ -67,7 +73,7 @@ class StoryDraftCreator
 
   def block_ids_from_previous_story_version
     @block_ids_from_previous_story_version ||= begin
-      story = DraftStory.from_four_by_four(four_by_four)
+      story = DraftStory.find_by_four_by_four(four_by_four)
 
       if story.present?
         story.block_ids
@@ -85,6 +91,12 @@ class StoryDraftCreator
   end
 
   # Interactions with the Data Model
+
+  def all_json_blocks_are_hashes?
+    @json_blocks.all? do |json_block|
+      json_block.is_a?(Hash)
+    end
+  end
 
   def build_nonexisting_blocks
     json_blocks.map do |json_block|

@@ -79,3 +79,12 @@ bundle exec gem unpack core-auth-ruby --target vendor/gems/
 
 If the version number has changed, edit core-auth-ruby's entry in Storyteller's
 Gemfile to match.
+
+## Profiling
+
+The `rack_mini_profiler` and `flamegraph` gems have been installed and are automatically
+loaded in development mode.
+
+The profiler tool adds a widget to the top left that profiles rendering and database calls.
+
+To view the flamegraph for a page, append `?pp=flamegraph` to any url.

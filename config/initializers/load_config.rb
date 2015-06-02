@@ -48,5 +48,9 @@ AUTH0_SECRET = APP_CONFIG['auth0_secret']
 AUTH0_CONFIGURED = !(AUTH0_URI.nil? || AUTH0_ID.nil? || AUTH0_SECRET.nil?)
 
 # Values in these configs will be picked up when their files are written to.
-{ downtime: { klass: DowntimeConfig, filename: "#{Rails.root}/config/downtime.yml" }
+{
+  downtime: {
+    klass: DowntimeConfig,
+    filename: "#{Rails.root}/config/downtime.yml"
+  }
 }.collect { |uniqId, definition| definition[:klass].new(uniqId, definition[:filename]) }

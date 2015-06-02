@@ -52,8 +52,9 @@ class ExternalConfig
     # Implement this method in a subclass. Required.
     # Example implementation:
     #
+    # Rails.logger.info("Config Update [#{uniqId}] from #{filename}")
     # @things = YAML.load_file(filename)
     # do_things!
-    Rails.logger.info("Config Update [#{uniqId}] from #{filename}")
+    raise NotImplementedError.new "#{self.class}#update!"
   end
 end

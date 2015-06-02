@@ -4,7 +4,7 @@ class DowntimeConfig < ExternalConfig
   end
 
   def update!
-    super
+    Rails.logger.info("Config Update [#{uniqId}] from #{filename}")
     @downtimes ||= []
     begin
       yaml = YAML.load_file(filename)
@@ -26,4 +26,3 @@ class DowntimeConfig < ExternalConfig
 
   attr_reader :downtimes
 end
-

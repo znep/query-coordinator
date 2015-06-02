@@ -49,7 +49,13 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
         function(fieldName, dataset, whereClauseFragment, aggregationData) {
           dataRequests.onNext(1);
           var columnData = _.defaults({}, dataset.getCurrentValue('columns')[fieldName]);
-          var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData, { namePhysicalDatatype: columnData.physicalDatatype });
+          var dataPromise = CardDataService.getData(
+            fieldName,
+            dataset.id,
+            whereClauseFragment,
+            aggregationData,
+            { namePhysicalDatatype: columnData.physicalDatatype, nullValueOrder: 'null last' }
+          );
           dataPromise.then(
             function(res) {
               // Ok
@@ -71,7 +77,13 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
         function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied, aggregationData) {
           dataRequests.onNext(1);
           var columnData = _.defaults({}, dataset.getCurrentValue('columns')[fieldName]);
-          var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData, { namePhysicalDatatype: columnData.physicalDatatype });
+          var dataPromise = CardDataService.getData(
+            fieldName,
+            dataset.id,
+            whereClauseFragment,
+            aggregationData,
+            { namePhysicalDatatype: columnData.physicalDatatype, nullValueOrder: 'null last' }
+          );
           dataPromise.then(
             function(res) {
               // Ok

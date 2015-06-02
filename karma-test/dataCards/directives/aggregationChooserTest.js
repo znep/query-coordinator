@@ -44,6 +44,7 @@ describe('<aggregation-chooser/>', function() {
   var $q;
   var $compile;
   var ServerConfig;
+  var Constants;
 
   beforeEach(function() {
     module('/angular_templates/dataCards/aggregationChooser.html');
@@ -66,6 +67,7 @@ describe('<aggregation-chooser/>', function() {
       $q = $injector.get('$q');
       $compile = $injector.get('$compile');
       ServerConfig = $injector.get('ServerConfig');
+      Constants = $injector.get('Constants');
     });
   });
 
@@ -291,14 +293,16 @@ describe('<aggregation-chooser/>', function() {
     expect(subjectUnderTest.find('.aggregation-chooser-trigger')).to.not.be.visible;
   });
 
-  it('should not be a dropdown if there are more than 10 number or money fields', function() {
+  it('should not be a dropdown if there are more than 15 number or money fields', function() {
     var columns = {};
-    _.each(_.range(12), function(value, index) {
+    var numberColumns = Constants.AGGREGATION_MAX_COLUMN_COUNT + 2;
+    var moneyThreshold = Math.floor(numberColumns / 2);
+    _.each(_.range(numberColumns), function(value, index) {
       var column = {
         name: 'column_{0}'.format(value),
         description: 'test column description - {0}'.format(value),
         fred: 'amount',
-        physicalDatatype: index > 6 ? 'money' : 'number',
+        physicalDatatype: index > moneyThreshold ? 'money' : 'number',
         defaultCardType: 'column',
         availableCardTypes: ['column', 'search']
       };

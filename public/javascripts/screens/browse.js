@@ -393,7 +393,7 @@ $(function()
                     newOpts.sortBy = 'relevance';
                 }
 
-                if(!mixpanel)
+                if(!blist.mixpanelLoaded)
                 {
                     doBrowse(newOpts);
                 }

@@ -81,7 +81,7 @@ describe('Flyout service', function() {
       var targetOffset = target.offset();
 
       expect(hintOffset.top + hint.outerHeight()).to.be.closeTo(targetOffset.top, 11);
-      expect(hintOffset.left).to.be.closeTo(targetOffset.left, 10);
+      expect(hintOffset.left + hint.outerWidth() / 2).to.be.closeTo(targetOffset.left, 10);
     } finally {
       // be a good citizen and clean up after ourselves
       target.remove();

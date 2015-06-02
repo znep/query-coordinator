@@ -9,7 +9,6 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
 
   // Padding between flyout and window
   var WINDOW_PADDING = 26;
-  var WINDOW_WIDTH = window.innerWidth;
 
   // To support refreshFlyout, we have an additional stream of mouse positions
   // that replays events from WindowState.mousePositionSubject when needed.
@@ -94,22 +93,13 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                   rightSideHint = true;
 
                 // If hint is not horizontal
-                } else  {
+                } else {
 
                   var $flyoutHint = $('#uber-flyout').find('.hint');
-
-                  // If we are near the right edge of the window, fix flyout to the right edge of
-                  // the window (+ padding) and adjust the offset of the hint arrow to point at the
-                  // proper segment.
-                  var clampFlyoutToEdgeOfWindow = function() {
-                    var offsetForFlyoutHint = css.left + flyoutWidth - WINDOW_WIDTH + WINDOW_PADDING;
-                    if (offsetForFlyoutHint >= 0) {
-                      $flyoutHint.css('left', offsetForFlyoutHint);
-                      css.right = WINDOW_PADDING;
-                      css.left = '';
-                      rightSideHint = true;
-                    }
-                  };
+                  
+                  // Use $(window).width() instead of window.innerWidth because
+                  // the latter includes scrollbars depending on the browser.
+                  var windowWidth = $(window).width();
 
                   $flyoutHint.css({
                     left: '',
@@ -119,33 +109,55 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                   // Check if cursor tracking
                   if (handler.trackCursor) {
 
-                    // Subtract the flyout's height so that flyout hovers above,
-                    // and the hint points to, the cursor.
+                    // Position the flyout perfectly so that the hint points
+                    // on the cursor pointer.
                     css.left = e.clientX;
-                    css.top = e.clientY - (flyoutHeight + Math.floor(hintHeight * 0.75));
+                    css.top = e.clientY - (flyoutHeight + hintHeight);
 
-                    if (css.left + flyoutWidth > WINDOW_WIDTH) {
+                    // If the right side of the flyout will be cut off
+                    // by the window, right-align the flyout.
+                    if (css.left + flyoutWidth > windowWidth) {
                       css.left -= flyoutWidth;
-                      $flyoutHint.css('right', -10);
+                      $flyoutHint.css('right', 0);
                       rightSideHint = true;
                     }
 
+                    // If the top of the flyout will be cut off
+                    // by the window, top-align the flyout.
                     if (css.top - flyoutHeight < 0) {
                       css.top = flyoutHeight;
                     }
 
                   } else {
-
                     targetBoundingClientRect = flyoutElement.getBoundingClientRect();
 
-                    css.left = (targetBoundingClientRect.left)
+                    // Set the left of the flyout to the exact middle of the
+                    // target element.
+                    css.left = targetBoundingClientRect.left
                       + Math.floor(targetBoundingClientRect.width / 2);
 
-                    clampFlyoutToEdgeOfWindow();
+                    // If the right side of the flyout is greater than our
+                    // predefined WINDOW_PADDING, right-align the flyout.
+                    var offsetForFlyoutHint = css.left + flyoutWidth + WINDOW_PADDING - windowWidth;
+                    if (offsetForFlyoutHint >= 0) {
+                      css.right = WINDOW_PADDING;
+                      css.left = '';
+                      $flyoutHint.css('left', offsetForFlyoutHint);
+                    }
+                    
+                    // If the hint is halfway across the flyout, change
+                    // its orientation.
+                    if (offsetForFlyoutHint > Math.floor(flyoutWidth / 2)) {
+                      $flyoutHint.css('left', offsetForFlyoutHint - hintWidth);
+                      rightSideHint = true;
+                    }
 
-                    css.top = (targetBoundingClientRect.top)
-                      - (flyoutHeight + Math.floor(hintHeight / 2));
+                    // Set the top of the flyout
+                    css.top = targetBoundingClientRect.top -
+                      (flyoutHeight + Math.floor(hintHeight / 2));
 
+                    // If top of flyout is cut off by window,
+                    // top-align the flyout.
                     if (css.top < 0) {
                       css.top = 0;
                     }
@@ -178,7 +190,9 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
 
   // Ensure we only ever have one #uber-flyout
   $('#uber-flyout').remove();
-  $('body').append('<div id="uber-flyout"><div class="content"></div><div class="hint"></div></div>');
+  $('body').append('<div id="uber-flyout">' +
+    '<div class="content"></div><div class="hint"></div>' +
+    '</div>');
 
   uberFlyout = $('#uber-flyout');
   uberFlyoutContent = uberFlyout.children('.content');
@@ -255,5 +269,4 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
       replayedMousePositionSubject.onNext(WindowState.mousePositionSubject.value);
     }
   };
-
 });

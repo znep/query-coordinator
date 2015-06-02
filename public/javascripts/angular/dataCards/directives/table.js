@@ -271,7 +271,7 @@
             });
 
             // Update flyout if present
-            var columnId = $(".flyout").data('column-id');
+            var columnId = $('.flyout').data('column-id');
 
             if (_.isPresent(columnId)) {
               $head.find('.th:contains({0})'.format(getColumn(columnId).title)).mouseenter();
@@ -343,7 +343,7 @@
             if (scope.infinite) {
               $expander.height(rowHeight * filteredRowCount);
             } else {
-              var lastLoadedBlock = _.max(element.find(".row-block"), function(block) {
+              var lastLoadedBlock = _.max(element.find('.row-block'), function(block) {
                 return $(block).data().blockId;
               });
               var height = 0;
@@ -361,7 +361,7 @@
 
           var loadBlockOfRows = function(block) {
             // Check if is being loaded or block exists
-            if (_.has(httpRequests, block) || element.find(".row-block." + block).length > 0) {
+            if (_.has(httpRequests, block) || element.find('.row-block.' + block).length > 0) {
               return;
             }
             var canceler = $q.defer();
@@ -492,7 +492,7 @@
 
             _.each(currentBlocks, function(blockId) {
               if (!_.contains(blocksToLoad, blockId)) {
-                $expander.find(".row-block." + blockId).remove();
+                $expander.find('.row-block.' + blockId).remove();
                 // Cancel HTTP request if in progress.
                 if (httpRequests[blockId]) {
                   httpRequests[blockId].resolve();

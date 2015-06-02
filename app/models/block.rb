@@ -9,7 +9,8 @@ class Block < ActiveRecord::Base
     '6-6',
     '8-4',
     '4-8',
-    '4-4-4-4'
+    '4-4-4',
+    '3-3-3-3'
   ]
 
   validates :layout, presence: true, inclusion: { in: VALID_BLOCK_LAYOUTS }

@@ -187,3 +187,7 @@ enable_export_service:
   description: Use the new Export Service on this domain.
   defaultValue: false
   category: obe deprecation
+enable_stories:
+  description: Enable the Storyteller appliation, including catalog link.
+  category: storyteller
+  defaultValue: false

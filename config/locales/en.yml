@@ -102,6 +102,8 @@ en:
           unpublished: Unpublished Datasets
           new_view: Data Lens pages
           new_view_help: What's this?
+          story: Stories
+          story_help: Learn about Stories
         view_types_singular_title: type
         view_types_title: View Types
       listing:

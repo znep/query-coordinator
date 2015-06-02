@@ -21,17 +21,22 @@ protected
         {:text => t('controls.browse.facets.view_types.filters'), :value => 'filters', :class => 'typeFilter'},
         {:text => t('controls.browse.facets.view_types.href'), :value => 'href', :class => 'typeHref'},
         {:text => t('controls.browse.facets.view_types.blob'), :value => 'blob', :class => 'typeBlob'},
-        {:text => t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'}]
+        {:text => t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'}
+      ]
     }
 
-    vts = add_data_lens_view_type_if_enabled_by_feature_flag!(vts)
+    add_data_lens_view_type_if_enabled!(vts[:options])
+    add_stories_view_type_if_enabled!(vts[:options])
 
     if module_enabled?(:api_foundry)
       vts[:options] << {:text => t('controls.browse.facets.view_types.apis'), :value => 'apis', :class => 'typeApi'}
     end
-    view_types = CurrentDomain.property(:view_types_facet, :catalog)
-    return vts if view_types.nil?
-    vts[:options].select!{ |opt| view_types.include?(opt[:value]) }
+
+    override_allowed_view_types = CurrentDomain.property(:view_types_facet, :catalog)
+
+    return vts unless override_allowed_view_types.present?
+    vts[:options].select!{ |opt| override_allowed_view_types.include?(opt[:value]) }
+
     vts
   end
 
@@ -425,7 +430,7 @@ private
     should_show_data_lenses
   end
 
-  def add_data_lens_view_type_if_enabled_by_feature_flag!(vts)
+  def add_data_lens_view_type_if_enabled!(view_type_list)
     if add_data_lens_view_type?
 
       new_view_option = {
@@ -439,18 +444,38 @@ private
         }
       }
 
-      datasets_index = vts[:options].index { |option|
-        option[:value] == 'datasets'
-      }
-
-      unless datasets_index.present?
-        datasets_index = 0
-      end
-
-      vts[:options].insert(datasets_index, new_view_option)
+      # Data lens pages are the new way to look at datasets, so insert above datasets
+      datasets_index = view_type_list.pluck(:value).index('datasets') || 0
+      view_type_list.insert(datasets_index, new_view_option)
     end
 
-    vts
+  end
+
+
+  def stories_catalog_entries_enabled?
+    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:enable_stories]
+  end
+
+  def add_stories_view_type_if_enabled!(view_type_list)
+    if stories_catalog_entries_enabled?
+
+      stories = {
+        :text => ::I18n.t('controls.browse.facets.view_types.story'),
+        :value => 'story',
+        :class => 'typeStory',
+        :icon_font_class => 'icon-settings',
+        :help_link => {
+          :href => 'http://www.socrata.com',
+          :text => ::I18n.t('controls.browse.facets.view_types.story_help')
+        }
+      }
+
+      # Stories are more contextualized than datasets, so put them above dataset entry
+      datasets_index = view_type_list.pluck(:value).index('datasets') || 0
+      view_type_list.insert(datasets_index, stories)
+
+    end
+
   end
 
   @@default_cutoffs = {

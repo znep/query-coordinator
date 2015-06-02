@@ -95,7 +95,7 @@
           options.limit,
           nameAlias,
           valueAlias,
-          options.nullValueOrder || ''
+          (options.nullLast === true) ? 'null last' : ''
         );
 
         url.searchParams.set('$query', query);

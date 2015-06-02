@@ -411,7 +411,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         if (rowDisplayUnit) {
           unit = ' ' + rowDisplayUnit.pluralize();
         }
-        var rows = [['Total', (!_.isNaN(data.total) ? $.toHumaneNumber(data.total) + unit : '(No value)')]];
+        var rows = [['Total', (_.isFinite(data.total) ? $.toHumaneNumber(data.total) + unit : '(No value)')]];
         if (showFiltered) {
           var filteredAmount = $.toHumaneNumber(data.filtered) + unit;
           var spanTemplate = '<span class="{0}">{1}</span>';

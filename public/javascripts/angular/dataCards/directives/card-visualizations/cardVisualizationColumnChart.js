@@ -54,7 +54,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
             dataset.id,
             whereClauseFragment,
             aggregationData,
-            { namePhysicalDatatype: columnData.physicalDatatype, nullValueOrder: 'null last' }
+            { namePhysicalDatatype: columnData.physicalDatatype, nullLast: true }
           );
           dataPromise.then(
             function(res) {
@@ -82,7 +82,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
             dataset.id,
             whereClauseFragment,
             aggregationData,
-            { namePhysicalDatatype: columnData.physicalDatatype, nullValueOrder: 'null last' }
+            { namePhysicalDatatype: columnData.physicalDatatype, nullLast: true }
           );
           dataPromise.then(
             function(res) {

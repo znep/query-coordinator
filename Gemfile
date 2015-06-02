@@ -65,3 +65,7 @@ group :development, :test do
   gem 'factory_girl_rails'
 end
 
+group :development do
+  gem 'rack-mini-profiler', require: false
+  gem 'flamegraph'
+end

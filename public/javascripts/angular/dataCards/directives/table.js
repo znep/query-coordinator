@@ -220,14 +220,15 @@
             _.each(columnWidths, function(width, columnId) {
               var $cell = $('<div class="cell"><span class="resize"></span></div>').width(width);
 
-              $cell.find('.resize').data('columnId', columnId);
+              $cell.data('columnId', columnId);
               $resizeContainer.append($cell);
             });
 
             element.on('mousedown', '.table-head .resize, .table-resize-container .resize', function(e) {
+              var $parent = $(this).parent();
               currentX = e.pageX;
-              columnIndex = $(this).parent().index();
-              columnId = $(this).data('columnId');
+              columnIndex = $parent.index();
+              columnId = $parent.data('columnId');
               columnDrag = true;
               e.preventDefault();
             });

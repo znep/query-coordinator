@@ -3,13 +3,14 @@ class Block < ActiveRecord::Base
 
   # We assume a 12-column grid.
   # Given this assumption, these layouts correspond to (respectively):
-  # 100%, 50%/50%, 66%/33%, 33%/66% and 25%/25%/25%/25%
+  # 100%, 50%/50%, 66%/33%, 33%/66%, 33%/33%/33% and 25%/25%/25%/25%
   VALID_BLOCK_LAYOUTS = [
     '12',
     '6-6',
     '8-4',
     '4-8',
-    '4-4-4-4'
+    '4-4-4',
+    '3-3-3-3'
   ]
 
   validates :layout, presence: true, inclusion: { in: VALID_BLOCK_LAYOUTS }

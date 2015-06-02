@@ -176,7 +176,7 @@ nbe_bucket_size:
   defaultValue: false
 dataset_count_v2:
   description: Display the new metric was created that computes dataset count based more closely on our contractual definition of dataset.
-  defaultValue: false
+  defaultValue: true
 force_redirect_to_data_lens:
   description: Automatically redirect to the default Data Lens page for a given NBE dataset.
   defaultValue: false

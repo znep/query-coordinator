@@ -2,10 +2,7 @@ class PublishedStoriesController < ApplicationController
   # rescue_from ActiveRecord::RecordNotFound, with: :tmp_render_404
 
   def show
-    @published_story = PublishedStory.where(
-      four_by_four: params[:four_by_four],
-      deleted_at: nil
-    ).order(:created_at).last
+    @published_story = PublishedStory.find_by_four_by_four(params[:four_by_four])
 
     if @published_story
       respond_to do |format|

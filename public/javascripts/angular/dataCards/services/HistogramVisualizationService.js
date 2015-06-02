@@ -13,6 +13,11 @@
       dom.svg = d3.select(dom.container).append('svg');
       dom.chart = dom.svg.append('g');
 
+      dom.xTicks = dom.chart.append('g').
+        classed('histogram-axis histogram-axis-x', true);
+      dom.yTicks = dom.chart.append('g').
+        classed('histogram-axis histogram-axis-y', true);
+
       dom.area = {};
       dom.line = {};
       dom.area.unfiltered = dom.chart.append('path').
@@ -24,11 +29,6 @@
         classed('histogram-area histogram-area-filtered', true);
       dom.line.filtered = dom.chart.append('path').
         classed('histogram-trace histogram-trace-filtered', true);
-
-      dom.xTicks = dom.chart.append('g').
-        classed('histogram-axis histogram-axis-x', true);
-      dom.yTicks = dom.chart.append('g').
-        classed('histogram-axis histogram-axis-y', true);
 
       dom.hoverBlock = dom.chart.append('rect').
         classed('histogram-hover-block', true);

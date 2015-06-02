@@ -1,4 +1,12 @@
 class ExternalConfig
+  # External Configs are configurations wrapped around files that we
+  # anticipate changes pushed to from external sources. In order to
+  # update the Rails configuration to match these without requiring
+  # a restart, we simply watch those files for changes and react by
+  # updating our state appropriately.
+  #
+  # ExternalConfig is an abstract class for handling it.
+  # Please make sure to throw in some logging to your subclass.
 
   @@configs = {}
   def self.register(config)
@@ -45,11 +53,14 @@ class ExternalConfig
   end
 
   def uncache!
+    # If you implement #cache_period, you should expose this method as an endpoint
+    # so that we can do hacky surgery in an emergency.
     @cache = Time.now
   end
 
   def update!
     # Implement this method in a subclass. Required.
+    # NOTE: Implement this method defensively, with sane defaults and lots of error handling.
     # Example implementation:
     #
     # Rails.logger.info("Config Update [#{uniqId}] from #{filename}")

@@ -7,7 +7,7 @@ RSpec.describe 'published stories routing', type: :routing do
 
     # NOTE: Should be /stories/v/#{vanity_text}/#{four_by_four},
     # but RSpec routing tests seem to ignore relative_url_root.
-    expect(get: "/v/#{vanity_text}/#{four_by_four}").to route_to(
+    expect(get: "/s/#{vanity_text}/#{four_by_four}").to route_to(
       controller: 'published_stories',
       action: 'show',
       four_by_four: four_by_four,
@@ -20,7 +20,7 @@ RSpec.describe 'published stories routing', type: :routing do
 
     # NOTE: Should be /stories/v/vanity_text/#{bad_four_by_four},
     # but RSpec routing tests seem to ignore relative_url_root.
-    expect(get: "/v/vanity_text/#{bad_four_by_four}").to_not be_routable
+    expect(get: "/s/vanity_text/#{bad_four_by_four}").to_not be_routable
   end
 
   it 'supports no vanity text' do
@@ -28,7 +28,7 @@ RSpec.describe 'published stories routing', type: :routing do
 
     # NOTE: Should be /stories/v/#{four_by_four},
     # but RSpec routing tests seem to ignore relative_url_root.
-    expect(get: "/v/#{four_by_four}").to route_to(
+    expect(get: "/s/#{four_by_four}").to route_to(
       controller: 'published_stories',
       action: 'show',
       four_by_four: four_by_four
@@ -40,6 +40,6 @@ RSpec.describe 'published stories routing', type: :routing do
 
     # NOTE: Should be /stories/v/#{bad_four_by_four},
     # but RSpec routing tests seem to ignore relative_url_root.
-    expect(get: "/v/#{bad_four_by_four}").to_not be_routable
+    expect(get: "/s/#{bad_four_by_four}").to_not be_routable
   end
 end

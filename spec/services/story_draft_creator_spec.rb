@@ -344,7 +344,16 @@ RSpec.describe StoryDraftCreator do
 
         context 'with an existing block with an id > the largest block id' do
 
-          let(:blocks) { [ { id: (Block.last.id + 1) } ] }
+          before do
+            @new_block = FactoryGirl.create(:block)
+            existing_story = FactoryGirl.create(
+              :draft_story,
+              four_by_four: four_by_four,
+              block_ids: [ @new_block.id ]
+            )
+          end
+
+          let(:blocks) { [ { id: (@new_block.id + 1) } ] }
 
           it 'raises an exception and does not create a DraftStory object' do
 

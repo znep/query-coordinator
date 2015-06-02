@@ -156,6 +156,22 @@ describe('<aggregation-chooser/>', function() {
     expect(subjectUnderTest.find('.tool-panel-main')).to.not.have.class('active');
   });
 
+  it('should not close when its controls are clicked', function() {
+    var models = createModels();
+    var subjectUnderTest = createElement({page: models.page });
+
+    testHelpers.TestDom.append(subjectUnderTest);
+    $rootScope.$apply(function() {
+      subjectUnderTest.isolateScope().panelActive = true;
+    });
+
+    $(subjectUnderTest).find('.aggregation-option').each(function() {
+      testHelpers.fireMouseEvent(this, 'click');
+      expect(subjectUnderTest.isolateScope().panelActive).to.be.true;
+      expect(subjectUnderTest.find('.tool-panel-main')).to.have.class('active');
+    });
+  });
+
   it('should highlight when options are hovered', function() {
     var models = createModels({ primaryAggregation: 'sum', primaryAmountField: 'column1_number'});
     var subjectUnderTest = createElement({page: models.page });
@@ -179,6 +195,7 @@ describe('<aggregation-chooser/>', function() {
     $rootScope.$apply(function() {
       subjectUnderTest.isolateScope().panelActive = true;
     });
+
     expect(models.page.getCurrentValue('primaryAggregation')).to.equal(null);
     expect(models.page.getCurrentValue('primaryAmountField')).to.equal(null);
     testHelpers.fireMouseEvent(subjectUnderTest.find('[data-aggregation-type="sum"]')[0], 'click');

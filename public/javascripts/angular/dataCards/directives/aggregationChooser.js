@@ -223,7 +223,7 @@
          */
 
         // Callback for setting the page aggregation function
-        $scope.setAggregationFunction = function(value, currentFunction, newColumn) {
+        $scope.setAggregationFunction = function($event, value, currentFunction, newColumn) {
           $scope.page.set('primaryAggregation', value);
           // In the case we're selecting from count to something else, also set the primaryAmountField
           // Otherwise, set it to null (i.e. the rowDisplayUnit)
@@ -232,13 +232,17 @@
           } else if (value === 'count') {
             $scope.page.set('primaryAmountField', null);
           }
+
+          $event.stopPropagation();
         };
 
         // Callback for setting the page aggregation field
-        $scope.setAggregationColumn = function(value, enabled) {
+        $scope.setAggregationColumn = function($event, value, enabled) {
           if (_.isUndefined(enabled) || enabled) {
             $scope.page.set('primaryAmountField', value);
           }
+
+          $event.stopPropagation();
         };
 
       }

@@ -1,10 +1,10 @@
-module BlockOperations
+module Immutable
   extend ActiveSupport::Concern
 
   included do
 
-    def blocks
-      Block.for_story(self)
+    def readonly?
+      persisted?
     end
   end
 end

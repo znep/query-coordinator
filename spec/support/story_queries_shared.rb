@@ -15,7 +15,7 @@ shared_examples 'has_story_queries' do
     context 'if a story with the specified four_by_four does not exist' do
       it 'returns nil' do
         result = subject.class.from_four_by_four('does_not_exist')
-        expect(result).to eq(nil)
+        expect(result).to be_nil
       end
     end
   end

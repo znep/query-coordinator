@@ -2,15 +2,19 @@ FactoryGirl.define do
 
   factory :draft_story do
     four_by_four 'test-test'
-    blocks []
+    block_ids []
     created_by 'test_user@socrata.com'
-    created_at { Time.now }
-  end
 
-  factory :draft_story_with_block, class: DraftStory do
-    four_by_four 'test-test'
-    blocks { [ FactoryGirl.bulid(:block) ] }
-    created_by 'test_user@socrata.com'
-    created_at { Time.now }
+    factory :draft_story_with_blocks do
+      transient do
+        block_count 2
+      end
+
+      after(:build) do |story, evaluator|
+        evaluator.block_count.times do
+          story.block_ids.push(FactoryGirl.create(:block).id)
+        end
+      end
+    end
   end
 end

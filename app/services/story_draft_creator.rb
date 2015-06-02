@@ -1,6 +1,9 @@
 class StoryDraftCreator
+  attr_reader :new_blocks, :story
 
-  attr_reader :user, :four_by_four, :json_blocks, :new_blocks, :story
+  class InvalidBlockIdsError < StandardError ; end
+  class InvalidNewBlocksError < StandardError ; end
+  class CreateTransactionError < StandardError ; end
 
   def initialize(user, attributes)
     unless attributes[:blocks].is_a?(Array)
@@ -21,7 +24,11 @@ class StoryDraftCreator
     end
 
     unless existing_block_ids_in_previous_story_version?
-      raise RuntimeError.new('invalid block ids')
+      raise InvalidBlockIdsError.new('invalid block ids')
+    end
+
+    unless all_new_blocks_valid?
+      raise InvalidNewBlocksError.new('invalid new blocks')
     end
 
     begin
@@ -33,26 +40,27 @@ class StoryDraftCreator
 
         @story = DraftStory.new(
           four_by_four: four_by_four,
-          blocks: merge_existing_and_new_block_ids,
+          block_ids: merge_existing_and_new_block_ids,
           created_by: user
         )
         @story.save!
       end
     rescue => error
-      raise RuntimeError.new('transaction failed')
+      raise CreateTransactionError.new('transaction failed')
     end
 
     @story
   end
 
   private
+  attr_reader :user, :four_by_four, :json_blocks
 
   # Instance variable memoization
 
   def block_ids_or_nils
     @block_ids_or_nils ||= begin
       json_blocks.map do |block|
-        block.fetch(:id, nil)
+        block[:id]
       end
     end
   end
@@ -62,7 +70,7 @@ class StoryDraftCreator
       story = DraftStory.from_four_by_four(four_by_four)
 
       if story.present?
-        story.blocks
+        story.block_ids
       else
         []
       end
@@ -80,7 +88,7 @@ class StoryDraftCreator
 
   def build_nonexisting_blocks
     json_blocks.map do |json_block|
-      if json_block.fetch(:id, nil).nil?
+      if json_block[:id].nil?
         Block.from_json(json_block.merge(created_by: user))
       else
         nil
@@ -97,7 +105,6 @@ class StoryDraftCreator
     (block_ids_or_nils.compact - block_ids_from_previous_story_version).empty?
   end
 
-
   def merge_existing_and_new_block_ids
     new_block_index = 0
 
@@ -110,5 +117,9 @@ class StoryDraftCreator
         block_id_or_nil
       end
     end
+  end
+
+  def all_new_blocks_valid?
+    new_blocks.all?(&:valid?)
   end
 end

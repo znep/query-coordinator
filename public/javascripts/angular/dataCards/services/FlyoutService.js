@@ -96,7 +96,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                 } else {
 
                   var $flyoutHint = $('#uber-flyout').find('.hint');
-                  
+
                   // Use $(window).width() instead of window.innerWidth because
                   // the latter includes scrollbars depending on the browser.
                   var windowWidth = $(window).width();
@@ -144,11 +144,13 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                       css.left = '';
                       $flyoutHint.css('left', offsetForFlyoutHint);
                     }
-                    
+
                     // If the hint is halfway across the flyout, change
                     // its orientation.
                     if (offsetForFlyoutHint > Math.floor(flyoutWidth / 2)) {
-                      $flyoutHint.css('left', offsetForFlyoutHint - hintWidth);
+
+                      // -1 to account for any slight pixel inaccuracies.
+                      $flyoutHint.css('left', offsetForFlyoutHint - hintWidth - 1);
                       rightSideHint = true;
                     }
 

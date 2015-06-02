@@ -2221,6 +2221,11 @@
         });
 
         FlyoutService.register({
+          className: 'datum-label',
+          render: renderIntervalFlyout
+        });
+
+        FlyoutService.register({
           className: 'selection-marker',
           render: renderSelectionMarkerFlyout
         });

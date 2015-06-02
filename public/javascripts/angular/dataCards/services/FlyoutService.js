@@ -91,8 +91,8 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                     (flyoutWidth + Math.floor(hintWidth * 0.5));
 
                   css.top = (targetBoundingClientRect.top +
-                             Math.floor(targetBoundingClientRect.height / 2)) -
-                            Math.floor(flyoutHeight / 2);
+                    Math.floor(targetBoundingClientRect.height / 2)) -
+                    Math.floor(flyoutHeight / 2);
 
                   rightSideHint = true;
 

@@ -6,7 +6,10 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
   var uberFlyoutContent;
   var hintWidth;
   var hintHeight;
-  var windowPadding = 26; // Keep flyout this many pixels away from edge of window
+
+  // Padding between flyout and window
+  var WINDOW_PADDING = 26;
+  var WINDOW_WIDTH = window.innerWidth;
 
   // To support refreshFlyout, we have an additional stream of mouse positions
   // that replays events from WindowState.mousePositionSubject when needed.
@@ -19,11 +22,6 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
 
     var className = null;
     var classList;
-    var classCount;
-    var i;
-    var handlerCount;
-    var j;
-    var handler;
     var flyoutContent;
     var flyoutWidth;
     var flyoutHeight;
@@ -31,8 +29,12 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
     var horizontalHint;
     var rightSideHint;
     var targetBoundingClientRect;
+    var css;
 
     if (!_.isEmpty(uberFlyout)) {
+
+      // First hide any existing flyout
+      uberFlyout.hide();
 
       // This is a double-fisted workaround for IE9:
       //
@@ -42,83 +44,78 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
       // We used to use a polyfill for classList, but the
       // polyfill itself would have required a polyfill,
       // so we chose to just do this the messy way instead.
-
+      
       if (typeof e.target.className === 'string') {
         className = e.target.className;
       } else {
         className = e.target.className.animVal;
       }
-
+ 
       if (e.target !== null && className !== null) {
-
         classList = (className === '') ? [] : className.split(/\s+/);
-        classCount = classList.length;
-
-        for (i = 0; i < classCount; i++) {
-
-          className = classList[i];
-
-          if (handlers.hasOwnProperty(className)) {
-
-            handlerCount = handlers[className].length;
-
-            for (j = 0; j < handlerCount; j++) {
-
-              handler = handlers[className][j];
-
+        
+        // For each handler on each class in classList
+        _.each(classList, function(classProp) {
+          if (handlers.hasOwnProperty(classProp)) {
+            _.each(handlers[classProp], function(handler) {
+              
+              // Save the flyout element and content
               flyoutElement = handler.positionOn(e.target);
               flyoutContent = handler.render(flyoutElement);
 
+              // Check that the content is defined
               if (_.isDefined(flyoutContent)) {
-
+                
                 uberFlyoutContent.html(flyoutContent);
-
                 flyoutWidth = uberFlyout.outerWidth();
                 flyoutHeight = uberFlyout.outerHeight();
 
                 horizontalHint = handler.horizontal;
                 rightSideHint = false;
 
-                var css = {right: '', left: ''};
+                css = {
+                  right: '', 
+                  left: ''
+                };
 
-                // Hints can be horizontal or cursor-tracking, but not both.
-
+                // Hints can be horizontal or cursor-tracking, but not both
                 if (horizontalHint) {
 
                   targetBoundingClientRect = flyoutElement.getBoundingClientRect();
 
-                  css.left = (targetBoundingClientRect.left) -
-                    (flyoutWidth + Math.floor(hintWidth * 0.5));
+                  css.left = targetBoundingClientRect.left -
+                    flyoutWidth + Math.floor(hintWidth / 2);
 
-                  css.top = (targetBoundingClientRect.top +
-                    Math.floor(targetBoundingClientRect.height / 2)) -
+                  css.top = targetBoundingClientRect.top +
+                    Math.floor(targetBoundingClientRect.height / 2) -
                     Math.floor(flyoutHeight / 2);
 
                   rightSideHint = true;
 
+                // If hint is not horizontal
                 } else  {
 
                   var $flyoutHint = $('#uber-flyout').find('.hint');
 
                   // If we are near the right edge of the window, fix flyout to the right edge of
                   // the window (+ padding) and adjust the offset of the hint arrow to point at the
-                  // proper segment.
+                  // proper segment.          
                   var clampFlyoutToEdgeOfWindow = function() {
-                    var rightEdgeOfFlyout = css.left + flyoutWidth;
-                    var windowWidth = $(window).width();
-                    if (rightEdgeOfFlyout >= windowWidth - windowPadding) {
-                      rightSideHint = true;
-                      var offsetForFlyoutHint = rightEdgeOfFlyout - windowWidth + windowPadding
-                      offsetForFlyoutHint -= $flyoutHint.width() / 2 + 2;
+                    var offsetForFlyoutHint = css.left + flyoutWidth - WINDOW_WIDTH + WINDOW_PADDING;
+                    if (offsetForFlyoutHint >= 0) {
                       $flyoutHint.css('left', offsetForFlyoutHint);
-                      css.right = windowPadding;
+                      css.right = WINDOW_PADDING;
                       css.left = '';
+                      rightSideHint = true;
                     }
-                  }
+                  };
+                  
+                  $flyoutHint.css({
+                    left: '',
+                    right: ''
+                  });
 
-                  $flyoutHint.css('left', '');
-                  $flyoutHint.css('right', '');
-
+                  // Check if cursor tracking
                   if (handler.trackCursor) {
 
                     // Subtract the flyout's height so that flyout hovers above,
@@ -126,10 +123,10 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                     css.left = e.clientX;
                     css.top = e.clientY - (flyoutHeight + Math.floor(hintHeight * 0.75));
 
-                    if (css.left + flyoutWidth > window.innerWidth) {
-                      css.left = css.left - flyoutWidth;
-                      rightSideHint = true;
+                    if (css.left + flyoutWidth > WINDOW_WIDTH) {
+                      css.left -= flyoutWidth;
                       $flyoutHint.css('right', -10);
+                      rightSideHint = true;
                     }
 
                     if (css.top - flyoutHeight < 0) {
@@ -141,19 +138,19 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                     targetBoundingClientRect = flyoutElement.getBoundingClientRect();
 
                     css.left = (targetBoundingClientRect.left)
-                               + Math.floor(targetBoundingClientRect.width / 2);
+                      + Math.floor(targetBoundingClientRect.width / 2);
 
                     clampFlyoutToEdgeOfWindow();
 
                     css.top = (targetBoundingClientRect.top)
-                              - (flyoutHeight + Math.floor(hintHeight * 0.5));
+                      - (flyoutHeight + Math.floor(hintHeight / 2));
 
                     if (css.top < 0) {
                       css.top = 0;
                     }
                   }
                 }
-
+                
                 uberFlyout.
                   toggleClass('left', !rightSideHint).
                   toggleClass('right', rightSideHint).
@@ -164,13 +161,10 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                 return;
 
               }
-            }
+            });
           }
-        }
+        });
       }
-
-      uberFlyout.hide();
-
     }
   });
 

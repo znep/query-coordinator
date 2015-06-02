@@ -1927,12 +1927,7 @@ importNS.importingPaneConfig = {
               },
               onError: function(errObj) {
                 setTimeout(function() {
-                  if ($.deepGet(errObj, 'details', 'response', 'status') === 500) {
-                    submitError = t('unknown_error') + '. ' + t('try_again');
-                  } else {
-                    // TODO: Build a way to parse the error messages.
-                    submitError = 'blargh'; // JSON.parse(request.responseText).message;
-                  }
+                  submitError = t('unknown_error') + '. ' + t('try_again');
 
                   command.prev();
                 }, 2000);

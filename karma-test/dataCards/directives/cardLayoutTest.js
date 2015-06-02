@@ -491,10 +491,10 @@ describe('card-layout', function() {
       cl.outerScope.$apply();
       cl.scope.$digest();
 
-      var thirdDeleteButtonPosition = $(cl.element.find('.card-control[title^="Remove"]')[2]).offset();
+      var thirdDeleteButton = $(cl.element.find('.card-control[title^="Remove"]')[2]);
 
-      var clientX = thirdDeleteButtonPosition.left;
-      var clientY = thirdDeleteButtonPosition.top;
+      var clientX = thirdDeleteButton.offset().left + (thirdDeleteButton.width() / 2);
+      var clientY = thirdDeleteButton.offset().top;
 
       mockWindowStateService.mousePositionSubject.onNext({
         clientX: clientX,
@@ -507,7 +507,7 @@ describe('card-layout', function() {
       // The flyout could bind towards the left or right depending on the edge of the
       // screen, so just make sure the hint (ie the triangle attached to the flyout) is
       // close enough.
-      expect(hintOffset.left + hint[0].clientWidth / 2).to.be.closeTo(clientX, 5);
+      expect(hintOffset.left).to.be.closeTo(clientX, 5);
 
       // NOTE: The flyout should be positioned along the Y axis at
       // (clientY - flyoutHeight - hintHeight * 0.75).
@@ -1234,10 +1234,7 @@ describe('card-layout', function() {
           expect(targetOffset.top - (hintOffset.top + hint.outerHeight())).
             to.be.within(-TOLERANCE, TOLERANCE);
           // A 'right' flyout aligns its right edge to the middle of the target
-          expect((targetOffset.left + target.width() / 2)
-                 // Turns out the right edge of the hint actually happens in the center of
-                 // the element -_-;
-                 - (hintOffset.left + hint.width() / 2)).
+          expect((targetOffset.left + target.width() / 2) - hintOffset.left).
             to.be.within(-2, 2);
         }
       }

@@ -20,6 +20,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
     replayedMousePositionSubject
   ).subscribe(function(e) {
 
+    var target = e.target;
     var className = null;
     var classList;
     var flyoutContent;
@@ -44,28 +45,28 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
       // We used to use a polyfill for classList, but the
       // polyfill itself would have required a polyfill,
       // so we chose to just do this the messy way instead.
-      
-      if (typeof e.target.className === 'string') {
-        className = e.target.className;
+
+      if (typeof target.className === 'string') {
+        className = target.className;
       } else {
-        className = e.target.className.animVal;
+        className = target.className.animVal;
       }
- 
-      if (e.target !== null && className !== null) {
-        classList = (className === '') ? [] : className.split(/\s+/);
-        
+
+      if (!_.isNull(target) && !_.isEmpty(className)) {
+        classList = className.split(/\s+/);
+
         // For each handler on each class in classList
         _.each(classList, function(classProp) {
           if (handlers.hasOwnProperty(classProp)) {
             _.each(handlers[classProp], function(handler) {
-              
+
               // Save the flyout element and content
-              flyoutElement = handler.positionOn(e.target);
+              flyoutElement = handler.positionOn(target);
               flyoutContent = handler.render(flyoutElement);
 
               // Check that the content is defined
               if (_.isDefined(flyoutContent)) {
-                
+
                 uberFlyoutContent.html(flyoutContent);
                 flyoutWidth = uberFlyout.outerWidth();
                 flyoutHeight = uberFlyout.outerHeight();
@@ -74,7 +75,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                 rightSideHint = false;
 
                 css = {
-                  right: '', 
+                  right: '',
                   left: ''
                 };
 
@@ -99,7 +100,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
 
                   // If we are near the right edge of the window, fix flyout to the right edge of
                   // the window (+ padding) and adjust the offset of the hint arrow to point at the
-                  // proper segment.          
+                  // proper segment.
                   var clampFlyoutToEdgeOfWindow = function() {
                     var offsetForFlyoutHint = css.left + flyoutWidth - WINDOW_WIDTH + WINDOW_PADDING;
                     if (offsetForFlyoutHint >= 0) {
@@ -109,7 +110,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                       rightSideHint = true;
                     }
                   };
-                  
+
                   $flyoutHint.css({
                     left: '',
                     right: ''
@@ -150,7 +151,8 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                     }
                   }
                 }
-                
+
+                // Show the uber flyout
                 uberFlyout.
                   toggleClass('left', !rightSideHint).
                   toggleClass('right', rightSideHint).

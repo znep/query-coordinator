@@ -21,7 +21,7 @@
     };
   };
 
-  function AggregationChooser(Dataset, FlyoutService, WindowState, ServerConfig) {
+  function AggregationChooser(Constants, Dataset, FlyoutService, WindowState, ServerConfig) {
 
     return {
       restrict: 'E',
@@ -117,7 +117,8 @@
         // Observable that goes true if we should show the dropdown selector, false otherwise
         var canAggregateObservable = columnsObservable.map(function(columns) {
           var numberColumns = _(columns).filter(validColumnFilter).value();
-          return numberColumns.length > 0 && numberColumns.length <= 10;
+          var maxNumberColumns = Constants.AGGREGATION_MAX_COLUMN_COUNT;
+          return numberColumns.length > 0 && numberColumns.length <= maxNumberColumns;
         });
 
         // Observable that maps all columns to just number columns and augments with

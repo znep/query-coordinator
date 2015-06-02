@@ -59,6 +59,9 @@
       // Related Views
       'RELATED_VIEWS_LIST_HEIGHT_OFFSET': 150,
 
+      // Aggregation Chooser
+      'AGGREGATION_MAX_COLUMN_COUNT': 15,
+
       // This is a filter we use to exclude dates outside the maximum legal date value
       // as a string in Javascript.  We set it to 01/01 so we can still use rollups
       // aggregated at the yearly level if possible.

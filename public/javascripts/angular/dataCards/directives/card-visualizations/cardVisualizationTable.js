@@ -22,7 +22,7 @@
         var dataRequests = new Rx.Subject();
         var dataResponses = new Rx.Subject();
         var firstColumnObservable = $scope.$observe('firstColumn');
-        var rowDisplayUnit$ = model.observeOnLatest('page.aggregation.unit');
+        var rowDisplayUnit$ = model.observeOnLatest('page.rowDisplayUnit');
         var cardsSequence = model.observeOnLatest('page.cards');
         var aggregationSequence = model.observeOnLatest('page.aggregation');
 
@@ -31,6 +31,8 @@
             scope.showCount = true;
           }
         });
+
+        $scope.model.set('showDescription', false);
 
         // TODO: Let's figure out how to functional-reactify this request as well.
         $scope.getRows = function() {
@@ -191,11 +193,12 @@
             var pluralRowDisplayUnit = filteredRowCount === 1 ?
               rowDisplayUnit :
               rowDisplayUnit.pluralize();
+            var rowCountWithCommas = $.commaify(rowCount);
             pluralRowDisplayUnit = $.htmlEncode(pluralRowDisplayUnit);
             if (rowCount === filteredRowCount) {
               customTitle = 'Showing all {0} {1}'.
                 format(
-                  rowCount,
+                  rowCountWithCommas,
                   pluralRowDisplayUnit
                 );
             } else {
@@ -203,7 +206,7 @@
                 format(
                   $.commaify(filteredRowCount),
                   pluralRowDisplayUnit,
-                  $.commaify(rowCount)
+                  rowCountWithCommas
               );
             }
             $scope.model.set('customTitle', customTitle);

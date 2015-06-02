@@ -24,6 +24,7 @@
 
         $scope.$bindObservable('isCustomizable', modelSubject.observeOnLatest('isCustomizable'));
         $scope.$bindObservable('isExportable', modelSubject.observeOnLatest('isExportable'));
+        $scope.$bindObservable('showDescription', modelSubject.observeOnLatest('showDescription'));
 
         $scope.$bindObservable('description', modelSubject.observeOnLatest('column.description'));
 

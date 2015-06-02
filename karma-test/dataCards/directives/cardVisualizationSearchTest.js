@@ -104,6 +104,7 @@ describe('A Search Card Visualization', function() {
     model.defineObservableProperty('activeFilters', []);
     model.defineObservableProperty('expanded', false);
     model.defineObservableProperty('customTitle', null);
+    model.defineObservableProperty('showDescription', true);
     model.defineObservableProperty('column', fakeDatasetColumns[model.fieldName]);
     model.page = pageModel;
 

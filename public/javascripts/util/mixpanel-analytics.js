@@ -1,4 +1,4 @@
-if (mixpanel)
+if (blist.mixpanelLoaded)
 {
     //Track entering certain pages
     $(document).ready(function()
@@ -105,7 +105,7 @@ if (mixpanel)
     //Panes in sidebar (Needs a delegated .on since they are not present in the DOM from the beginning)
     mixpanel.delegate_links('#gridSidebar', 'a.headerLink', "Clicked Pane in Sidebar", false,
         function(element)
-        {   
+        {
             return {'Pane Name': element.text};
         }
     );

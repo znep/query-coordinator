@@ -196,22 +196,24 @@ $.mixpanelMeta = function()
     var pathName = window.location.pathname;
     var time = Math.round(new Date().getTime() / 1000) - blist.pageOpened;
 
-    mixpanel.register({
-        'User Id': userId,
-        'Socrata Employee': isSocrata,
-        'User Role Name': userRoleName,
-        'Dataset Owner': datasetOwner,
-        'User Owns Dataset': userOwnsDataset,
-        'View Id': viewId,
-        'View Type': viewType,
-        'Domain': domain,
-        'On Page': pathName,
-        'Time Since Page Opened (sec)': time
-    });
+    if (blist.mixpanelLoaded) {
+        mixpanel.register({
+            'User Id': userId,
+            'Socrata Employee': isSocrata,
+            'User Role Name': userRoleName,
+            'Dataset Owner': datasetOwner,
+            'User Owns Dataset': userOwnsDataset,
+            'View Id': viewId,
+            'View Type': viewType,
+            'Domain': domain,
+            'On Page': pathName,
+            'Time Since Page Opened (sec)': time
+        });
 
-    //set user ID to mixpanels user ID if not logged in
-    userId = _.isUndefined(blist.currentUser) ? mixpanel.get_distinct_id() : userId;
-    mixpanel.identify(userId);
+        //set user ID to mixpanels user ID if not logged in
+        userId = _.isUndefined(blist.currentUser) ? mixpanel.get_distinct_id() : userId;
+        mixpanel.identify(userId);
+    }
 }
 
 $.hashHref = function(href)

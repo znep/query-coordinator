@@ -1,66 +1,34 @@
 require 'rails_helper'
 
-RSpec.describe ApplicationController do
-
-  describe '#current_user' do
-    let(:auth) { double('auth') }
-
-    before do
-      allow(Core::Auth::Client).to receive(:new).and_return(auth)
-      request.cookies[:_core_session_id] = "we_have_a_session_id"
+RSpec.describe ApplicationController, :type => :controller do
+  controller do
+    def test_action
+      render :text => 'content text', :status => 200
     end
+  end
 
-    it 'calls Core::Auth::Client with params' do
-      #stub out core auth calls
-      expect(Core::Auth::Client).to receive(:new).with(
-        request.host,
-        port: nil,
-        cookie: '_core_session_id=we_have_a_session_id',
-        verify_ssl_cert: false
-      ).and_return(auth)
-      expect(auth).to receive(:logged_in?).and_return(false)
+  before do
+    routes.draw { get 'test_action' => 'anonymous#test_action' }
+  end
 
-      # Call that hits the expect/allow above
-      controller.current_user
-    end
+  describe '#current_user'
 
-    context 'when the user has no session id' do
-      before do
-        request.cookies.clear
-      end
-
-      it 'returns nil' do
-        expect(controller.current_user).to eq(nil)
-      end
-
-      it 'does not call core' do
-        expect(Core::Auth::Client).to_not receive(:new)
-        controller.current_user
+  describe 'require_logged_in_user' do
+    context 'with a logged in user' do
+      it 'should render the page' do
+        stub_logged_in
+        get :test_action
+        expect(response).to have_http_status(200)
       end
     end
 
-    context 'when the user is not logged in' do
-      before do
-        allow(auth).to receive(:logged_in?).and_return(false)
+    context 'with no logged in user' do
+      it 'should redirect to a login page with the correct return_to query param' do
+        get :test_action
+        expect(response).to redirect_to("/login?return_to=/stories/test_action")
       end
+    end
 
-      it 'returns nil' do
-        expect(controller.current_user).to eq(nil)
-      end
-    end # end user not logged in context
-
-
-    context 'when the user is logged in' do
-      before do
-        allow(auth).to receive(:logged_in?).and_return(true)
-      end
-
-      it 'returns the user object' do
-        user = double('user')
-        expect(auth).to receive(:current_user).and_return(user)
-        expect(controller.current_user).to equal(user)
-      end
-    end # end user logged in context
-  end # end describe #current_user
+  end
 
 end

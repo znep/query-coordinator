@@ -129,12 +129,10 @@ describe('CardsViewController', function() {
       testHelpers.mockDirective(_$provide, 'pageHeader');
   }]));
 
-  function makeContext(datasetId) {
+  function makeContext(datasetOverrides) {
     var pageOverrides = {name: DEFAULT_PAGE_NAME, description: DEFAULT_PAGE_DESCRIPTION};
-    var datasetOverrides = {};
-    if (typeof datasetId === 'string') {
-      pageOverrides.datasetId = datasetId;
-      datasetOverrides.id = datasetId;
+    if (datasetOverrides && datasetOverrides.id) {
+      pageOverrides.datasetId = datasetOverrides.id;
     }
     var page = Mockumentary.createPage(pageOverrides, datasetOverrides);
 
@@ -153,8 +151,8 @@ describe('CardsViewController', function() {
     };
   }
 
-  function makeController(datasetId) {
-    var context = makeContext(datasetId);
+  function makeController(datasetOverrides) {
+    var context = makeContext(datasetOverrides);
     var controller = $controller('CardsViewController', context);
     testHelpers.mockDirective(_$provide, 'modalDialog');
     testHelpers.mockDirective(_$provide, 'addCardDialog');
@@ -342,7 +340,7 @@ describe('CardsViewController', function() {
     it("doesn't set the sourceDatasetURL if the migration endpoint returns non-200", function() {
       $httpBackend.when('GET', '/api/migrations/nach-oids').respond(404);
 
-      var controllerHarness = makeController('nach-oids');
+      var controllerHarness = makeController({ id: 'nach-oids' });
       var $scope = controllerHarness.$scope;
 
       expect($scope.sourceDatasetURL).not.to.be.ok;

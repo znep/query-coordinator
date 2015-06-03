@@ -29,7 +29,7 @@ class SocrataSession
   private
 
   # Returns true if all these hold on the request's cookies:
-  # A) mere presence of _socrata_session_id and _core_session_id
+  # A) mere presence of _core_session_id
   # B) logged_in is set to true
   #
   # Does not do _any_ verification beyond this.
@@ -50,7 +50,7 @@ class SocrataSession
       env['HTTP_HOST'], #TODO we need to make sure we're actually talking to core, not some random host.
       port: Rails.application.config.frontend_port,
       cookie: socrata_session_cookies,
-      verify_ssl_cert: false
+      verify_ssl_cert: false #TODO this needs to be configurable.
     )
   end
 end

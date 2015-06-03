@@ -4,7 +4,7 @@ module StoryQueries
   included do
 
     def self.find_by_four_by_four(four_by_four)
-      self.where(four_by_four: four_by_four).order(created_at: :desc).first
+      self.where(four_by_four: four_by_four, deleted_at: nil).order(created_at: :desc).first
     end
 
     # This method will eventually be useful for restoring drafts to previous

@@ -1,10 +1,10 @@
 Rails.application.routes.draw do
   get 'version' => 'version#show'
 
-  comfy_route :cms_admin, :path => '/admin'
-
-  # Make sure this routeset is defined last
-  comfy_route :cms, :path => '/', :sitemap => false
+  resources :published_stories # HMMM do we want the standard crud?
+  get 's(/:vanity_text)/:four_by_four' => 'published_stories#show', constraints: {
+    four_by_four: UNANCHORED_FOUR_BY_FOUR_PATTERN
+  }
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

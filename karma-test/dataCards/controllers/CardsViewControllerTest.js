@@ -15,7 +15,6 @@ describe('CardsViewController', function() {
   var $controller;
   var _$provide;
   var $httpBackend;
-  var $window;
   var $document;
   var ServerConfig;
   var PageDataService;
@@ -88,7 +87,6 @@ describe('CardsViewController', function() {
         '$rootScope',
         '$controller',
         '$document',
-        '$window',
         'testHelpers',
         'serverMocks',
         '$httpBackend',
@@ -103,7 +101,6 @@ describe('CardsViewController', function() {
           _$rootScope,
           _$controller,
           _$document,
-          _$window,
           _testHelpers,
           _serverMocks,
           _$httpBackend,
@@ -117,7 +114,6 @@ describe('CardsViewController', function() {
       $q = _$q;
       $rootScope = _$rootScope;
       $controller = _$controller;
-      $window = _$window;
       $document = _$document;
       testHelpers = _testHelpers;
       serverMocks = _serverMocks;
@@ -1042,11 +1038,18 @@ describe('CardsViewController', function() {
       testHelpers.TestDom.clear();
     });
 
-    it('should provide a (correct) csv download link', function() {
+    it('should provide a default download link for the CSV', function() {
       var controllerHarness = makeController();
 
       expect(controllerHarness.$scope.datasetCSVDownloadURL).
         to.match(new RegExp('/api/views/asdf-fdsa/rows\\.csv\\?accessType=DOWNLOAD$'));
+    });
+
+    it('should allow the metadata to override the download link', function() {
+      var controllerHarness = makeController({ downloadOverride: 'https://example.com' });
+
+      expect(controllerHarness.$scope.datasetCSVDownloadURL).
+        to.equal('https://example.com');
     });
 
     it('uses the obeid for the csv download link if available', function() {

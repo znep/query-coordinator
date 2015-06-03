@@ -22,7 +22,7 @@
             class="aggregation-option"
             data-aggregation-type="count"
             ng-class="{ active: (aggregationFunction.type == 'count') || countFunctionHover }"
-            ng-click="setAggregationFunction('count')">
+            ng-click="setAggregationFunction($event, 'count')">
               <span class="label">Number of</span>
               <span class="sublabel">count {{rowDisplayUnitLabel.plural}} per element</span>
           </a>
@@ -31,7 +31,7 @@
             class="aggregation-option disconnected"
             data-aggregation-type="sum"
             ng-class="{ active: aggregationFunction.type == 'sum' || aggregateFunctionHover }"
-            ng-click="setAggregationFunction('sum', aggregationFunction.type, aggregationColumns[0].id)">
+            ng-click="setAggregationFunction($event, 'sum', aggregationFunction.type, aggregationColumns[0].id)">
               <span class="label">The sum of</span>
               <span class="sublabel">add for each {{unitLabel.name}}</span>
           </a>
@@ -42,14 +42,14 @@
             class="aggregation-option count"
             data-aggregation-type="count"
             ng-class="{ disabled: aggregationFunction.type != 'count', active: (activeAggregation.name == rowDisplayUnitLabel.name) || countFunctionHover }"
-            ng-click="setAggregationFunction('count')">{{rowDisplayUnitLabel.pluralCapitalized}}</a>
+            ng-click="setAggregationFunction($event, 'count')">{{rowDisplayUnitLabel.pluralCapitalized}}</a>
           <a
             tabindex="0"
             ng-repeat="column in aggregationColumns"
             data-column-id="{{column.id}}"
             class="aggregation-option no-count"
             ng-class="{ disabled: !column.enabled, active: (activeAggregation.id == column.id) || ($first && highlightFirstColumn) }"
-            ng-click="setAggregationColumn(column.id, column.enabled)" title="{{column.pluralCapitalized}}">{{column.pluralCapitalized}}</a>
+            ng-click="setAggregationColumn($event, column.id, column.enabled)" title="{{column.pluralCapitalized}}">{{column.pluralCapitalized}}</a>
         </div>
       </div>
 

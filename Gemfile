@@ -35,9 +35,6 @@ gem 'core-auth-ruby', '0.2.3', path: 'vendor/gems/core-auth-ruby-0.2.3'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
-# CMS gem
-gem 'comfortable_mexican_sofa', '~> 1.12.8'
-
 group :development, :test do
   # Testing framework
   gem 'rspec-rails', '~> 3.2'

@@ -1,4 +1,4 @@
-describe.only('Flyout service', function() {
+describe('Flyout service', function() {
   var FLYOUT_SELECTOR = '#uber-flyout';
   var flyoutService;
   var testHelpers;
@@ -8,7 +8,13 @@ describe.only('Flyout service', function() {
   // minimum distance a flyout can be from the
   // right edge of the window.
   var WINDOW_PADDING = 26;
+  
+  // Currently the default bottom padding for
+  // flyouts is 6px.
   var FLYOUT_BOTTOM_PADDING = 6;
+  
+  // Error tolerance given we test on multiple
+  // mediums.
   var TOLERANCE = 5;
 
   var testCompletedObservable = new Rx.Subject();
@@ -37,10 +43,10 @@ describe.only('Flyout service', function() {
   });
 
   it('should create a flyout with the given string on hover by the target', function() {
-    var text = 'Let\'s go flaigh a kite...';
+    var testText = 'Let\'s go flaigh a kite...';
     flyoutService.register({
       className: 'flyout-test',
-      render: function() { return text; },
+      render: function() { return testText; },
       destroySignal: testCompletedObservable
     });
 
@@ -51,8 +57,7 @@ describe.only('Flyout service', function() {
 
     var flyout = $(FLYOUT_SELECTOR);
     expect(flyout.is(':visible')).to.be.true;
-
-    expect(flyout.text()).to.equal(text);
+    expect(flyout.text()).to.equal(testText);
 
     var flyoutOffset = flyout.offset();
     var targetOffset = target.offset();
@@ -66,10 +71,11 @@ describe.only('Flyout service', function() {
   });
 
   it('should position correctly when on the right edge of the screen', function() {
+    var longTestText = _.constant(_.map(_.range(20), _.constant('text')).join(' '));
     flyoutService.register({
       className: 'right-edge',
       // A string of 20 words separated by spaces
-      render: _.constant(_.map(_.range(20), _.constant('text')).join(' ')),
+      render: longTestText,
       destroySignal: testCompletedObservable
     });
 

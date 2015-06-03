@@ -15,7 +15,7 @@ describe('Flyout service', function() {
   
   // Error tolerance given we test on multiple
   // mediums.
-  var TOLERANCE = 5;
+  var TOLERANCE = 10;
 
   var testCompletedObservable = new Rx.Subject();
 

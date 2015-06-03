@@ -1,8 +1,15 @@
-describe('Flyout service', function() {
+describe.only('Flyout service', function() {
   var FLYOUT_SELECTOR = '#uber-flyout';
   var flyoutService;
   var testHelpers;
   var container;
+
+  // Currently a window padding of 26px is the
+  // minimum distance a flyout can be from the
+  // right edge of the window.
+  var WINDOW_PADDING = 26;
+  var FLYOUT_BOTTOM_PADDING = 6;
+  var TOLERANCE = 5;
 
   var testCompletedObservable = new Rx.Subject();
 
@@ -10,7 +17,6 @@ describe('Flyout service', function() {
   beforeEach(module('dataCards.services'));
   beforeEach(module('test'));
   beforeEach(module('dataCards/flyout.sass'));
-
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     flyoutService = $injector.get('FlyoutService');
@@ -50,10 +56,11 @@ describe('Flyout service', function() {
 
     var flyoutOffset = flyout.offset();
     var targetOffset = target.offset();
-    expect(flyoutOffset.top + flyout.outerHeight()).to.be.closeTo(targetOffset.top, 11);
-    expect(flyoutOffset.left).to.be.closeTo(targetOffset.left, 10);
+    expect(flyoutOffset.top + flyout.height() + FLYOUT_BOTTOM_PADDING)
+      .to.be.closeTo(targetOffset.top, TOLERANCE);
+    expect(flyoutOffset.left).to.be.closeTo(targetOffset.left, TOLERANCE);
 
-    // Make sure it disappears too
+    // Make sure it disappears when we lose hover focus
     testHelpers.fireMouseEvent($('body')[0], 'mousemove');
     expect(flyout.is(':visible')).to.be.false;
   });
@@ -68,7 +75,7 @@ describe('Flyout service', function() {
 
     var target = $('<div class="right-edge" />').css({
       position: 'absolute',
-      right: 5,
+      right: WINDOW_PADDING,
       top: 100
     }).appendTo('body');
 
@@ -76,14 +83,14 @@ describe('Flyout service', function() {
       testHelpers.fireMouseEvent(target[0], 'mousemove');
 
       var hint = $(FLYOUT_SELECTOR).find('.hint');
-
       var hintOffset = hint.offset();
       var targetOffset = target.offset();
 
-      expect(hintOffset.top + hint.outerHeight()).to.be.closeTo(targetOffset.top, 11);
-      expect(hintOffset.left + hint.outerWidth() / 2).to.be.closeTo(targetOffset.left, 10);
+      expect(hintOffset.top + hint.height() + FLYOUT_BOTTOM_PADDING)
+        .to.be.closeTo(targetOffset.top, TOLERANCE);
+      expect(hintOffset.left + hint.width()).to.be.closeTo(targetOffset.left, TOLERANCE);
+
     } finally {
-      // be a good citizen and clean up after ourselves
       target.remove();
     }
   });
@@ -111,8 +118,7 @@ describe('Flyout service', function() {
     flyoutService.refreshFlyout();
     expect(flyout.text()).to.equal('final');
 
-
-    // Make sure it disappears too
+    // Make sure it disappears when losing hover focus
     testHelpers.fireMouseEvent($('body')[0], 'mousemove');
     expect(flyout.is(':visible')).to.be.false;
   });

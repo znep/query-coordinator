@@ -85,7 +85,7 @@
         // Wrap field name in ticks and replace dashes with underscores
         fieldName = SoqlHelpers.formatFieldName(fieldName);
 
-        var queryTemplate = 'select {0} as {4}, {2} as {5} {1} group by {0} order by {2} desc limit {3}';
+        var queryTemplate = 'select {0} as {4}, {2} as {5} {1} group by {0} order by {2} desc {6} limit {3}';
         var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
         // TODO: Implement some method for paging/showing data that has been truncated.
         var query = queryTemplate.format(
@@ -94,7 +94,8 @@
           aggregationClause,
           options.limit,
           nameAlias,
-          valueAlias
+          valueAlias,
+          (options.nullLast === true) ? 'null last' : ''
         );
 
         url.searchParams.set('$query', query);

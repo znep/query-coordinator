@@ -347,12 +347,18 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       bars.
         style('width', rangeBand + 'px').
         style('height', function (d) {
+          if (_.isNaN(d.value)) {
+            return 0;
+          }
           return Math.max(
             d.value === 0 ? 0 : 1,  // Always show at least one pixel for non-zero-valued bars.
             Math.abs(verticalScale(d.value) - verticalScale(0))
           ) + 'px';
         }).
         style('bottom', function(d) {
+          if (_.isNaN(d.value)) {
+            return 0;
+          }
           return verticalScale(Math.min(0, d.value)) + 'px';
         }).
         classed('bar', true).
@@ -405,7 +411,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         if (rowDisplayUnit) {
           unit = ' ' + rowDisplayUnit.pluralize();
         }
-        var rows = [["Total", $.toHumaneNumber(data.total) + unit]];
+        var rows = [['Total', (_.isFinite(data.total) ? $.toHumaneNumber(data.total) + unit : '(No value)')]];
         if (showFiltered) {
           var filteredAmount = $.toHumaneNumber(data.filtered) + unit;
           var spanTemplate = '<span class="{0}">{1}</span>';

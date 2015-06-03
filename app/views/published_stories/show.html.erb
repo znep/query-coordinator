@@ -1,1 +1,5 @@
-<%= @published_story.inspect %>
+<% @published_story.blocks.each do |block| -%>
+
+  <%= render_block(block) %>
+
+<% end -%>

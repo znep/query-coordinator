@@ -5,6 +5,10 @@ describe('card-layout', function() {
   var QUICK_FILTER_BAR_HEIGHT = 74;
   var CUSTOMIZE_BAR_HEIGHT = 40;
 
+  // Currently, FlyoutService pads the bottom of each
+  // flyout hint with 6px.
+  var FLYOUT_BOTTOM_PADDING = 6;
+
   var Card;
   var mockWindowStateService = null;
   var mockDownloadService;
@@ -491,15 +495,16 @@ describe('card-layout', function() {
       cl.outerScope.$apply();
       cl.scope.$digest();
 
-      var thirdDeleteButtonPosition = $(cl.element.find('.card-control[title^="Remove"]')[2]).offset();
+      var thirdDeleteButton = $(cl.element.find('.card-control[title^="Remove"]')[2]);
 
-      var clientX = thirdDeleteButtonPosition.left;
-      var clientY = thirdDeleteButtonPosition.top;
+      var clientX = thirdDeleteButton.offset().left +
+         Math.floor(thirdDeleteButton.width() / 2);
+      var clientY = thirdDeleteButton.offset().top;
 
       mockWindowStateService.mousePositionSubject.onNext({
         clientX: clientX,
         clientY: clientY,
-        target: cl.element.find('.card-control[title^="Remove"]')[2]
+        target: thirdDeleteButton.get(0)
       });
 
       var hint = $('#uber-flyout .hint');
@@ -507,11 +512,10 @@ describe('card-layout', function() {
       // The flyout could bind towards the left or right depending on the edge of the
       // screen, so just make sure the hint (ie the triangle attached to the flyout) is
       // close enough.
-      expect(hintOffset.left + hint[0].clientWidth / 2).to.be.closeTo(clientX, 5);
+      expect(hintOffset.left + hint.width()).to.be.closeTo(clientX, 5);
 
-      // NOTE: The flyout should be positioned along the Y axis at
-      // (clientY - flyoutHeight - hintHeight * 0.75).
-      expect(hintOffset.top + hint.height() / 2).to.be.closeTo(clientY, 3);
+
+      expect(hintOffset.top + hint.height() + FLYOUT_BOTTOM_PADDING).to.be.closeTo(clientY, 3);
 
       expect($('#uber-flyout').text()).to.equal('Remove this card');
     });
@@ -1215,30 +1219,36 @@ describe('card-layout', function() {
       // For some reason, a tolerance of 20 fails ONLY in jenkins+PhantomJS. Can't figure
       // out why, so just up the tolerance and leave it to integration tests to make more
       // sane tests.
-      var TOLERANCE = 100;
+      var TOLERANCE = 5;
+
+      // A helper function to test the accuracy of the flyout's position
       function expectFlyoutPosition(target, flyout) {
         var hint = flyout.find('.hint');
         var hintOffset = hint.offset();
         var targetOffset = target.offset();
-        if (flyout.hasClass('left')) {
-          if ((targetOffset.top - flyout.height()) < 0) {
-            expect(hintOffset.top).to.be.within(-TOLERANCE, TOLERANCE);
-          } else {
-            expect(targetOffset.top - (hintOffset.top + hint.outerHeight())).
-              to.be.within(-TOLERANCE, TOLERANCE);
-          }
-          // A 'left' flyout aligns its left edge to the middle of the target
-          expect((targetOffset.left + target.width() / 2) - hintOffset.left).
-            to.be.within(-2, 2);
+
+        // Test y-position
+        if (targetOffset.top < flyout.height()) {
+          expect(hintOffset.top).to.be.within(-TOLERANCE, TOLERANCE);
         } else {
-          expect(targetOffset.top - (hintOffset.top + hint.outerHeight())).
-            to.be.within(-TOLERANCE, TOLERANCE);
-          // A 'right' flyout aligns its right edge to the middle of the target
-          expect((targetOffset.left + target.width() / 2)
-                 // Turns out the right edge of the hint actually happens in the center of
-                 // the element -_-;
-                 - (hintOffset.left + hint.width() / 2)).
-            to.be.within(-2, 2);
+          expect(targetOffset.top -
+          (hintOffset.top + hint.height() + FLYOUT_BOTTOM_PADDING)).
+          to.be.within(-TOLERANCE, TOLERANCE);
+        }
+
+        // Test x-position
+        if (flyout.hasClass('left')) {
+
+          // A left flyout aligns the left edge of hint
+          // to the middle of the target.
+          expect((targetOffset.left + target.width() / 2) -
+            hintOffset.left).to.be.within(-2, 2);
+        } else {
+
+          // A right flyout aligns the right edge of hint
+          // to the middle of the target.
+          expect((targetOffset.left + target.width() / 2) -
+            (hintOffset.left + hint.width())).to.be.within(-2, 2);
         }
       }
       afterEach(function() {
@@ -1258,10 +1268,7 @@ describe('card-layout', function() {
           target: expand[0]
         });
 
-        // Verify position
-        // mostly we care about the arrow position
         expectFlyoutPosition(expand, flyout);
-
         expect(flyout.is(':visible')).to.be.true;
         expect(flyout.text()).to.equal('Expand this card');
       });
@@ -1271,19 +1278,18 @@ describe('card-layout', function() {
         var flyout = $('#uber-flyout');
         expect(flyout.is(':visible')).to.be.false;
 
-        var card = cl.element.find('card').eq(5);
-        card.find('.card-control[title^="Expand"]').click();
+        var card = cl.element.find('card').eq(1);
+        var expandButton = card.find('.card-control[title^="Expand"]');
+
+        expandButton.click();
         mockWindowStateService.mousePositionSubject.onNext({
           clientX: 0,
           clientY: 0,
           // Re-find the expand button, because expanding re-draws it
-          target: card.find('.card-control[title^="Collapse"]')[0]
+          target: card.find('.card-control[title^="Collapse"]').get(0)
         });
 
-        // Verify position
-        // mostly we care about the arrow position
         expectFlyoutPosition(card.find('.card-control[title^="Collapse"]'), flyout);
-
         expect(flyout.is(':visible')).to.be.true;
         expect(flyout.text()).to.equal('Collapse this card');
       });

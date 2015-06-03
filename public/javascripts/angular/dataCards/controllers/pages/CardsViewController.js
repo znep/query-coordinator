@@ -13,18 +13,24 @@
         obeIdObservable.startWith(null),
         page.observe('dataset').filter(_.isObject),
         function(obeId, dataset) {
-          var url = $.baseUrl();
-          url.searchParams.set('accessType', 'DOWNLOAD');
-
-          if (obeId) {
-            url.pathname = '/api/views/{0}/rows.csv'.format(obeId);
-            url.searchParams.set('bom', true);
-          } else if (dataset.hasOwnProperty('id')) {
-            url.pathname = '/api/views/{0}/rows.csv'.format(dataset.id);
+          var downloadOverride = dataset.getCurrentValue('downloadOverride');
+          if (downloadOverride) {
+            return downloadOverride;
           } else {
-            return '#';
+            var url = $.baseUrl();
+            url.searchParams.set('accessType', 'DOWNLOAD');
+
+            if (obeId) {
+              url.pathname = '/api/views/{0}/rows.csv'.format(obeId);
+              url.searchParams.set('bom', true);
+            } else if (dataset.hasOwnProperty('id')) {
+              url.pathname = '/api/views/{0}/rows.csv'.format(dataset.id);
+            } else {
+              return '#';
+            }
+            return url.href;
           }
-          return url.href;
+
         }
       )
     );

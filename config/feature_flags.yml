@@ -191,3 +191,7 @@ enable_stories:
   description: Enable the Storyteller appliation, including catalog link.
   category: storyteller
   defaultValue: false
+show_newux_page_header:
+  description: Show the header logo and sign in/up/out links.
+  defaultValue: true
+  category: data lens

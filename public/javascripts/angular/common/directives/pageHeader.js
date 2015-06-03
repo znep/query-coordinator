@@ -38,6 +38,7 @@
         $scope.signIn = signIn;
         $scope.signOut = signOut;
         $scope.pageHeaderStyle = pageHeaderStyle;
+        $scope.pageHeaderEnabled = ServerConfig.get('showNewuxPageHeader');
       }
     };
   }

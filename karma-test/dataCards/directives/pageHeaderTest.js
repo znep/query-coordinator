@@ -43,6 +43,26 @@
       sinon.stub(ServerConfig, 'getTheme').returns(returnValue);
     }
 
+    it('should display if the feature flag is set to true', function() {
+      stubServerConfigGetTheme();
+      sinon.stub(ServerConfig, 'get').withArgs('showNewuxPageHeader').returns(true);
+
+      var element = createPageHeader();
+      expect(element.find('.page-header')).to.not.have.class('ng-hide');
+
+      ServerConfig.get.restore();
+    });
+
+    it('should not display if the feature flag is set to false', function() {
+      stubServerConfigGetTheme();
+      sinon.stub(ServerConfig, 'get').withArgs('showNewuxPageHeader').returns(false);
+
+      var element = createPageHeader();
+      expect(element.find('.page-header')).to.have.class('ng-hide');
+
+      ServerConfig.get.restore();
+    });
+
     it('should display if there is no configuration data', function() {
       stubServerConfigGetTheme();
       var element = createPageHeader();

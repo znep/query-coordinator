@@ -2,6 +2,10 @@ require 'rails_helper'
 
 RSpec.describe PublishedStoriesController, type: :controller do
   describe '#show' do
+    before do
+      stub_logged_in
+    end
+
     context 'when story lives in current domain' do
       before do
         @story_revision = FactoryGirl.create(:published_story)

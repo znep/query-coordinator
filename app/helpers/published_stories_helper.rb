@@ -4,12 +4,12 @@ module PublishedStoriesHelper
     block_html = '<div class="block">'
 
     block.layout.split('-').each_with_index do |component_width, index|
-      block_html += "<div class=\"col#{component_width}\">"
-      block_html += render_component(block.components[index])
-      block_html += '</div>'
+      block_html << "<div class=\"col#{component_width}\">"
+      block_html << render_component(block.components[index])
+      block_html << '</div>'
     end
 
-    block_html += '</div>'
+    block_html << '</div>'
 
     block_html.html_safe
   end

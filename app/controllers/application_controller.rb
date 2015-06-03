@@ -7,6 +7,8 @@ class ApplicationController < ActionController::Base
   # Expose helper_methods for use in all views
   helper_method :current_user
 
+  prepend_before_filter :require_logged_in_user
+
   # Returns the current user, or nil
   #
   # ==== Examples
@@ -15,21 +17,12 @@ class ApplicationController < ActionController::Base
   #   current_user  # with invalid cookies
   #   => nil
   def current_user
-    # If there are no cookies for the domain, don't bother checking core
-    return unless cookies[:_core_session_id]
-    socrata_session_cookies = request.cookies.map{ |k, v| "#{k}=#{v}" }.join('; ')
-
-    auth = Core::Auth::Client.new(
-      request.host,
-      port: Rails.application.config.frontend_port,
-      cookie: socrata_session_cookies,
-      verify_ssl_cert: false
-    )
-    if auth.logged_in?
-      auth.current_user
-    else
-      nil
-    end
+    env['socrata.current_user']
   end
 
+  def require_logged_in_user
+    # If no current_user, send to main login page
+    redirect_to "/login?return_to=#{request.path}" unless current_user
+  end
 end
+

@@ -30,9 +30,7 @@ class SocrataSession
 
   private
 
-  # Returns true if all these hold on the request's cookies:
-  # A) mere presence of _core_session_id
-  # B) logged_in is set to true
+  # Returns true if _core_session_id is set on the cookie.
   #
   # Does not do _any_ verification beyond this.
   #
@@ -41,7 +39,13 @@ class SocrataSession
   end
 
   def authenticate(request)
-    socrata_session_cookie = "_core_session_id=#{request.cookies['_core_session_id']}"
+    socrata_session_cookie =
+      "_core_session_id=#{request.cookies['_core_session_id']}"
+
+    if request.cookies.has_key?('socrata-csrf-token')
+      socrata_session_cookie <<
+        "; socrata-csrf-token=#{request.cookies['socrata-csrf-token']}"
+    end
 
     Core::Auth::Client.new(
       request.host, #TODO we need to make sure we're actually talking to core, not some random host.

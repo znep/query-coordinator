@@ -5,10 +5,6 @@ describe('card-layout', function() {
   var QUICK_FILTER_BAR_HEIGHT = 74;
   var CUSTOMIZE_BAR_HEIGHT = 40;
 
-  // Currently, FlyoutService pads the bottom of each
-  // flyout hint with 6px.
-  var FLYOUT_BOTTOM_PADDING = 6;
-
   var Card;
   var mockWindowStateService = null;
   var mockDownloadService;
@@ -515,7 +511,7 @@ describe('card-layout', function() {
       expect(hintOffset.left + hint.width()).to.be.closeTo(clientX, 5);
 
 
-      expect(hintOffset.top + hint.height() + FLYOUT_BOTTOM_PADDING).to.be.closeTo(clientY, 3);
+      expect(hintOffset.top + hint.height() + Constants.FLYOUT_BOTTOM_PADDING).to.be.closeTo(clientY, 3);
 
       expect($('#uber-flyout').text()).to.equal('Remove this card');
     });
@@ -1232,7 +1228,7 @@ describe('card-layout', function() {
           expect(hintOffset.top).to.be.within(-TOLERANCE, TOLERANCE);
         } else {
           expect(targetOffset.top -
-          (hintOffset.top + hint.height() + FLYOUT_BOTTOM_PADDING)).
+          (hintOffset.top + hint.height() + Constants.FLYOUT_BOTTOM_PADDING)).
           to.be.within(-TOLERANCE, TOLERANCE);
         }
 

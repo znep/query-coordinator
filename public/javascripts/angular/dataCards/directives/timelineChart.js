@@ -1573,7 +1573,7 @@
         }
 
         function renderSelectionMarkerFlyout() {
-          if (mousePositionWithinChartDisplay && !currentlyDragging) {
+          if (!currentlyDragging) {
             return '<div class="flyout-title">Drag to change filter range</div>';
           }
         }
@@ -2227,7 +2227,13 @@
 
         FlyoutService.register({
           className: 'selection-marker',
-          render: renderSelectionMarkerFlyout
+          render: renderSelectionMarkerFlyout,
+          
+          // CORE-4384: The flyout should be centered on the drag
+          // handles, not the .selection-marker.
+          positionOn: function(target) {
+            return $(target).siblings('path').get(0);
+          }
         });
 
         FlyoutService.register({

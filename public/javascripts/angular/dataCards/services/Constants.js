@@ -56,6 +56,11 @@
       // Table card visualization parameters.
       'TABLE_UNSORTABLE_PHYSICAL_DATATYPES': ['geo_entity', 'point'],
 
+      // Flyout parameters
+      'FLYOUT_WINDOW_PADDING': 22,
+      'FLYOUT_BOTTOM_PADDING': 6,
+      'FLYOUT_ERROR_THRESHOLD': 2,
+
       // Related Views
       'RELATED_VIEWS_LIST_HEIGHT_OFFSET': 150,
 

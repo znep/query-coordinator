@@ -3,15 +3,7 @@ describe('Flyout service', function() {
   var flyoutService;
   var testHelpers;
   var container;
-
-  // Currently a window padding of 26px is the
-  // minimum distance a flyout can be from the
-  // right edge of the window.
-  var WINDOW_PADDING = 26;
-  
-  // Currently the default bottom padding for
-  // flyouts is 6px.
-  var FLYOUT_BOTTOM_PADDING = 6;
+  var Constants;
   
   // Error tolerance given we test on multiple
   // mediums.
@@ -26,6 +18,7 @@ describe('Flyout service', function() {
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     flyoutService = $injector.get('FlyoutService');
+    Constants = $injector.get('Constants');
   }));
   beforeEach(function() {
     container = $('<div />').appendTo('body').css({
@@ -61,7 +54,7 @@ describe('Flyout service', function() {
 
     var flyoutOffset = flyout.offset();
     var targetOffset = target.offset();
-    expect(flyoutOffset.top + flyout.height() + FLYOUT_BOTTOM_PADDING)
+    expect(flyoutOffset.top + flyout.height() + Constants.FLYOUT_BOTTOM_PADDING)
       .to.be.closeTo(targetOffset.top, TOLERANCE);
     expect(flyoutOffset.left).to.be.closeTo(targetOffset.left, TOLERANCE);
 
@@ -81,7 +74,7 @@ describe('Flyout service', function() {
 
     var target = $('<div class="right-edge" />').css({
       position: 'absolute',
-      right: WINDOW_PADDING,
+      right: Constants.FLYOUT_WINDOW_PADDING,
       top: 100
     }).appendTo('body');
 
@@ -92,7 +85,7 @@ describe('Flyout service', function() {
       var hintOffset = hint.offset();
       var targetOffset = target.offset();
 
-      expect(hintOffset.top + hint.height() + FLYOUT_BOTTOM_PADDING)
+      expect(hintOffset.top + hint.height() + Constants.FLYOUT_BOTTOM_PADDING)
         .to.be.closeTo(targetOffset.top, TOLERANCE);
       expect(hintOffset.left + hint.width()).to.be.closeTo(targetOffset.left, TOLERANCE);
 

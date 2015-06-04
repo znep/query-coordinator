@@ -1,4 +1,4 @@
-angular.module('dataCards.services').factory('FlyoutService', function(WindowState, Assert) {
+angular.module('dataCards.services').factory('FlyoutService', function(Constants, WindowState, Assert) {
   'use strict';
 
   var handlers = {};
@@ -6,11 +6,6 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
   var uberFlyoutContent;
   var hintWidth;
   var hintHeight;
-
-  // Padding between flyout and window
-  var WINDOW_PADDING = 26;
-  var FLYOUT_BOTTOM_PADDING = 6;
-  var ERROR_THRESHOLD = 2;
 
   // To support refreshFlyout, we have an additional stream of mouse positions
   // that replays events from WindowState.mousePositionSubject when needed.
@@ -113,7 +108,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                     // to the cursor pointer.
                     cssFlyout.left = e.clientX;
                     cssFlyout.top = e.clientY - flyoutHeight - hintHeight -
-                      FLYOUT_BOTTOM_PADDING;
+                      Constants.FLYOUT_BOTTOM_PADDING;
 
                     // If the right side of the flyout will be cut off
                     // by the window, right-align the flyout.
@@ -138,12 +133,12 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                       + Math.floor(targetBoundingClientRect.width / 2);
 
                     var hintOffsest = Math.round(cssFlyout.left +
-                      flyoutWidth + WINDOW_PADDING - windowWidth);
+                      flyoutWidth + Constants.FLYOUT_WINDOW_PADDING - windowWidth);
 
                     // If the right side of the flyout is past our
                     // predefined WINDOW_PADDING, right-align the flyout.
                     if (hintOffsest >= 0) {
-                      cssFlyout.right = WINDOW_PADDING;
+                      cssFlyout.right = Constants.FLYOUT_WINDOW_PADDING;
                       cssFlyout.left = '';
                       cssHint.left = hintOffsest;
                     }
@@ -157,7 +152,8 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
 
                     // If hint is past the flyoutWidth, stick it to
                     // the right of the flyout.
-                    if (flyoutWidth - hintOffsest <= ERROR_THRESHOLD) {
+                    if (flyoutWidth - hintOffsest <=
+                      Constants.FLYOUT_ERROR_THRESHOLD) {
                       cssHint.left = '';
                       cssHint.right = 0;
                     }
@@ -165,7 +161,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(WindowSta
                     // Set the top of the flyout.
                     cssFlyout.top = targetBoundingClientRect.top -
                       (flyoutHeight + Math.floor(hintHeight / 2)) -
-                      FLYOUT_BOTTOM_PADDING;
+                      Constants.FLYOUT_BOTTOM_PADDING;
 
                     // If top of flyout is cut off by window,
                     // top-align the flyout.

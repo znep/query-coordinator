@@ -10,10 +10,14 @@
 
     ssync: function() {
       if (!_ssync) {
-        _ssync = new DatasyncUpload({
-          // log : function(thing) { console.log(thing); },
-          // forceWorkerReload : true
-        });
+        try {
+          _ssync = new DatasyncUpload({
+            // log : function(thing) { console.log(thing); },
+            // forceWorkerReload : true
+          });
+        } catch(e) {
+          _ssync = null;
+        }
       }
       return _ssync;
     },

@@ -31,6 +31,7 @@ angular.module('dataCards.models').factory('Dataset', function(
         'defaultPage',
         'description',
         'domain',
+        'downloadOverride',
         'locale',
         'name',
         'ownerId',

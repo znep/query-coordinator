@@ -223,7 +223,6 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
-  coffee-rails (~> 4.1.0)
   core-auth-ruby (= 0.2.3)!
   factory_girl_rails
   flamegraph

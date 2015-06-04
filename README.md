@@ -27,9 +27,13 @@ rbenv install 2.2.2
 
 ### Configuration
 
-To get started, run `bin/setup` from within the storyteller root. This will install
+#### Set up the database
+
+Run `bin/setup` from within the storyteller root. This will install
 dependencies and create and install the database and migrations. It will also
 create a good starting `database.yml` for development and test.
+
+#### Multisite Setup
 
 On your local development instance, you'll likely want to have a nice multi-site
 setup. run `bin/setup_multisite` to setup pow and have it so that you can reach

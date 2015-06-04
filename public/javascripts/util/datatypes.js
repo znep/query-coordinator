@@ -1339,6 +1339,7 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: ['text'],
             createable: true,
             deleteable: true,
+            deprecatedInNbe: true,
             dropDownList: { values: [
                 { id: 'red', description: 'Red',
                     icon: '/stylesheets/images/content/table/flags/red.png'},
@@ -1389,6 +1390,7 @@ blist.namespace.fetch('blist.datatypes');
             createable: true,
             defaultFilterSubColumn: 'human_address',
             deleteable: true,
+            deprecatedInNbe: true,
             priority: 8,
             disableNBEFilter: true,
             matchValue: function(v)

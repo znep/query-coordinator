@@ -260,9 +260,9 @@
     blist.sidebarPosition = '<%= sidebar_position %>';
     blist.defaultPane = '<%= default_pane %>';
 
-    $.extend(blist.configuration, <%= raw configuration.to_json %>);
+    $.extend(blist.configuration, <%= raw json_escape(configuration.to_json) %>);
 
-    blist.sidebarHidden = <%= raw sidebar_hidden.to_json %>;
+    blist.sidebarHidden = <%= raw json_escape(sidebar_hidden.to_json) %>;
 
     <%# Please see admin_controller#add_custom_layer for explanation %>
     <%# custom_layer_config = Configuration.find_by_type('custom_layers', true).first

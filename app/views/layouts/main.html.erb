@@ -199,7 +199,7 @@ http://www.socrata.com
   <%- end -%>
 
   <script type="text/javascript">
-    blist.feature_flags = <%= raw FeatureFlags.derive(@view, request).to_json %>;
+    blist.feature_flags = <%= raw json_escape(FeatureFlags.derive(@view, request).to_json) %>;
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
     blist.configuration.logging = <%= ENV.fetch('JS_LOGGING', false) %>;

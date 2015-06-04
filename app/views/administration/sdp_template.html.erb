@@ -108,8 +108,8 @@
     blist.namespace.fetch('blist.publish');
     blist.publish.currentThemeMeta = { 'name': '<%= @widget_customization.name %>',
                                        'id': '<%= @widget_customization.uid %>' };
-    blist.publish.currentTheme = <%= raw @customization.to_json %>;
-    blist.publish.v2Theme = <%= raw WidgetCustomization.default_theme(1).to_json %>;
+    blist.publish.currentTheme = <%= raw json_escape(@customization.to_json) %>;
+    blist.publish.v2Theme = <%= raw json_escape(WidgetCustomization.default_theme(1).to_json) %>;
 
     blist.publish.viewId = '<%= @view.id %>';
     blist.publish.viewIsGrid = <%= !@view.is_alt_view? %>;

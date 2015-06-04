@@ -85,7 +85,7 @@
     <script type="text/javascript">
       blist.namespace.fetch('blist.sdpTemplates');
 
-      blist.sdpTemplates.templates = <%= @templates.to_json.html_safe %>;
+      blist.sdpTemplates.templates = <%= raw json_escape(@templates.to_json) %>;
     </script>
 
     <%= include_javascripts 'admin-sdp-templates' %>

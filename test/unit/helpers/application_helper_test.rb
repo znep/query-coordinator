@@ -50,6 +50,25 @@ class ApplicationHelperTest < ActionView::TestCase
     assert_match(/^[\w\d]+\.1234\.5678$/, application_helper.asset_revision_key)
   end
 
+  def test_json_escape_produces_sanitized_json
+    # sourced from https://github.com/rails/rails/blob/3e36db4406beea32772b1db1e9a16cc1e8aea14c/actionview/test/template/erb_util_test.rb
+    #
+    # we can get rid of this test case and the json_escape helper once we upgrade
+    # to Rails 4, since all we're doing is patching our Rails 3 code
+    input_to_output = [
+      ['1', '1'],
+      ['null', 'null'],
+      ['"&"', '"\u0026"'],
+      ['"</script>"', '"\u003c/script\u003e"'],
+      ['["</script>"]', '["\u003c/script\u003e"]'],
+      ['{"name":"</script>"}', '{"name":"\u003c/script\u003e"}'],
+      [%({"name":"d\u2028h\u2029h"}), '{"name":"d\u2028h\u2029h"}']
+    ]
+    input_to_output.each do |(raw, expected)|
+      assert_equal expected, json_escape(raw)
+    end
+  end
+
   def test_font_tags_outputs_typekit_when_config_present
     init_current_domain
     CurrentDomain.stubs(:properties => OpenStruct.new(typekit_id: 'abcdef'))

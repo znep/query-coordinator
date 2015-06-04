@@ -559,8 +559,18 @@ module ApplicationHelper
     render :partial => 'datasets/browse', :locals => { :opts => options }
   end
 
+  # This may be redundant with json_escape; to be determined.
   def safe_json(obj)
     ('JSON.parse($.unescapeQuotes("' + h(obj.to_json.gsub(/\\/, '\\\\\\')) + '"))').html_safe
+  end
+
+  # Patch json_escape because in Rails 3.x it will devour quotes
+  # (copied from https://github.com/rails/rails/blob/master/activesupport/lib/active_support/core_ext/string/output_safety.rb)
+  JSON_ESCAPE_REGEXP = /[\u2028\u2029&><]/u
+  JSON_ESCAPE = { '&' => '\u0026', '>' => '\u003e', '<' => '\u003c', "\u2028" => '\u2028', "\u2029" => '\u2029' }
+  def json_escape(s)
+    result = s.to_s.gsub(JSON_ESCAPE_REGEXP, JSON_ESCAPE)
+    s.html_safe? ? result.html_safe : result
   end
 
   def localized_link_to(name, options, *args, &block)

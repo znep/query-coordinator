@@ -30,12 +30,21 @@ describe('addCardDialog', function() {
       'bar': {
         'name': 'A bar where cool froods hang out.',
         'description': '???',
-        'fred': 'amount',
-        'physicalDatatype': 'number',
-        'cardinality': 20,
+        'fred': 'text',
+        'physicalDatatype': 'text',
         'cardType': 'column',
         'defaultCardType': 'column',
         'availableCardTypes': ['column', 'search']
+      },
+      'distribution': {
+        'name': 'Place where things are distributed',
+        'description': '???',
+        'fred': 'amount',
+        'physicalDatatype': 'number',
+        'cardinality': 20,
+        'cardType': 'histogram',
+        'defaultCardType': 'histogram',
+        'availableCardTypes': ['histogram', 'search']
       },
       'point': {
         'name': 'Points where crimes have been committed.',
@@ -261,7 +270,7 @@ describe('addCardDialog', function() {
 
     var selectableColumnOptions = dialog.element.find('option:enabled');
 
-    expect(selectableColumnOptions.length).to.equal(5);
+    expect(selectableColumnOptions.length).to.equal(6);
   });
 
   it('should disable columns that are represented by cards in the "Choose a column..." select control', function() {
@@ -277,7 +286,7 @@ describe('addCardDialog', function() {
 
     var selectableColumnOptions = dialog.element.find('option:enabled');
 
-    expect(selectableColumnOptions.length).to.equal(4);
+    expect(selectableColumnOptions.length).to.equal(5);
   });
 
   it('should disable the "Add card" button when no column in the "Choose a column..." select control is selected', function() {

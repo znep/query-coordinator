@@ -769,7 +769,7 @@ class CardTypeMappingTest < Test::Unit::TestCase
       nil,
       dataset_size
     )
-    assert_equal('search', computed_card_type)
+    assert_equal('column', computed_card_type)
 
     stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     computed_card_type = card_type_for(
@@ -801,7 +801,7 @@ class CardTypeMappingTest < Test::Unit::TestCase
       nil,
       dataset_size
     )
-    assert_equal('search', computed_card_type)
+    assert_equal('column', computed_card_type)
 
     stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     computed_card_type = card_type_for(
@@ -821,7 +821,7 @@ class CardTypeMappingTest < Test::Unit::TestCase
       nil,
       dataset_size
     )
-    assert_equal('search', computed_card_type)
+    assert_equal('column', computed_card_type)
 
     stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     computed_card_type = card_type_for(
@@ -841,7 +841,7 @@ class CardTypeMappingTest < Test::Unit::TestCase
       nil,
       dataset_size
     )
-    assert_equal('search', computed_card_type)
+    assert_equal('column', computed_card_type)
 
     stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     computed_card_type = card_type_for(
@@ -861,7 +861,7 @@ class CardTypeMappingTest < Test::Unit::TestCase
       nil,
       dataset_size
     )
-    assert_equal('search', computed_card_type)
+    assert_equal('column', computed_card_type)
 
     stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     computed_card_type = card_type_for(
@@ -883,7 +883,7 @@ class CardTypeMappingTest < Test::Unit::TestCase
       nil,
       dataset_size
     )
-    assert_equal('search', computed_card_type)
+    assert_equal('column', computed_card_type)
 
     stub_multiple_feature_flags_with({ :metadata_transition_phase => '3', :odux_enable_histogram => true })
     computed_card_type = card_type_for(
@@ -1427,7 +1427,7 @@ class CardTypeMappingTest < Test::Unit::TestCase
       fake_column('number', nil, 2500),
       dataset_size
     )
-    assert_equal(['column', 'histogram'], available_card_types)
+    assert_equal(['histogram', 'search'], available_card_types)
   end
 
   def test_card_type_mapping_returns_expected_available_card_types_for_point_column_in_phase_3

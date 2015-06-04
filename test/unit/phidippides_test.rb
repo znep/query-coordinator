@@ -214,19 +214,19 @@ class PhidippidesTest < Test::Unit::TestCase
     phidippides.set_default_and_available_card_types_to_columns!(v1_dataset_metadata_response)
 
     assert_equal(
-      'column',
+      'histogram',
       v1_dataset_metadata_response[:body][:columns][:some_column][:defaultCardType]
     )
     assert_equal(
-      ['column', 'histogram'],
+      ['histogram', 'search'],
       v1_dataset_metadata_response[:body][:columns][:some_column][:availableCardTypes]
     )
     assert_equal(
-      'column',
+      'histogram',
       v1_dataset_metadata_response[:body][:columns][:some_other_column][:defaultCardType]
     )
     assert_equal(
-      ['column', 'histogram'],
+      ['histogram', 'search'],
       v1_dataset_metadata_response[:body][:columns][:some_other_column][:availableCardTypes]
     )
   end

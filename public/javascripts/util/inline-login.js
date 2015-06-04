@@ -80,6 +80,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                     var $form = $(this);
                     $.ajax({
                         url: '/login.json',
+                        type: 'POST',
                         data: $form.find('input[name=authenticity_token], input#user_session_login, input#user_session_password, input#user_session_remember_me:checked'),
                         dataType: 'json',
                         success: function(responseData)
@@ -143,6 +144,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                         });
                         $.ajax({
                             url: '/signup.json',
+                            type: 'POST',
                             data: data,
                             dataType: 'json',
                             success: signupSuccess

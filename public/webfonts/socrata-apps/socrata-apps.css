@@ -95,6 +95,10 @@
   content: "\e606";
 }
 
+.icon-distribution:before {
+  content: "\e617";
+}
+
 .icon-map:before {
   content: "\e607";
 }

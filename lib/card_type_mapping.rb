@@ -46,26 +46,20 @@ module CardTypeMapping
       when 'geo_entity'
         card_type = 'feature'
       when 'money'
-        if is_low_cardinality?(cardinality, dataset_size)
-          card_type = 'column'
+        if histogram_enabled?
+          card_type = 'histogram'
         else
-          if histogram_enabled?
-            card_type = 'histogram'
-          else
-            card_type = 'search'
-          end
+          card_type = 'column'
         end
       when 'number'
         if has_georegion_computation_strategy?(column)
           card_type = 'choropleth'
+        elsif histogram_enabled?
+          card_type = 'histogram'
         elsif is_low_cardinality?(cardinality, dataset_size)
           card_type = 'column'
         else
-          if histogram_enabled?
-            card_type = 'histogram'
-          else
-            card_type = 'search'
-          end
+          card_type = 'search'
         end
       when 'point'
         card_type = 'feature'
@@ -136,12 +130,10 @@ module CardTypeMapping
       when 'number'
         if has_georegion_computation_strategy?(column)
           available_card_types = ['choropleth']
+        elsif histogram_enabled?
+          available_card_types = ['histogram', 'search']
         else
-          if histogram_enabled?
-            available_card_types = ['column', 'histogram']
-          else
-            available_card_types = ['column', 'search']
-          end
+          available_card_types = ['column', 'search']
         end
       when 'point'
         available_card_types = ['feature']

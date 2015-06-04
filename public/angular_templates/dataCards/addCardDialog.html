@@ -10,7 +10,7 @@
 
     <soc-option
       value="{{fieldName}}"
-      title="Add this card"      
+      title="Add this card"
       ng-repeat="fieldName in datasetColumns.available">{{columnHumanNameFn(fieldName)}}</soc-option>
 
     <soc-option value="null" disabled="disabled" ng-if="datasetColumns.alreadyOnPage.length > 0"></soc-option>
@@ -79,12 +79,12 @@
     </li>
     <li ng-show="availableCardTypes.indexOf('histogram') > -1">
       <button
-        class="add-card-type-option icon-warning"
+        class="add-card-type-option icon-distribution"
         ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'histogram' }"
         ng-click="setCardType('histogram')"
-        data-visualization-name="Histogram">
+        data-visualization-name="Distribution Chart">
         </button>
-      <span>Histogram</span>
+      <span>Distribution Chart</span>
     </li>
     <li ng-show="availableCardTypes.indexOf('choropleth') > -1">
       <button

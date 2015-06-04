@@ -10,6 +10,8 @@
 REVISION
 marathon.properties
 /coverage
+# Compiled assets
+/public/assets/*
 
 # Ignore local database settings
 config/database.yml

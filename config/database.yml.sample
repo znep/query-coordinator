@@ -12,7 +12,7 @@ test:
   encoding: unicode
   database: storyteller_test
 
-aws:
+aws_migrations:
   adapter: postgresql
   encoding: unicode
   host: <%= ENV['PG_DB_HOST'] %>

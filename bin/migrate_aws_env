@@ -8,7 +8,6 @@
 #
 # Usage: bin/migrate_aws_env ENVIRONMENT
 #
-
 puts 'This script requires a connection to the VPN AND admin credentials for AWS.'
 
 require_relative '../config/boot'
@@ -27,7 +26,6 @@ def decrypt_data_key(blob)
   return res[:plaintext]
 end
 
-ENV['RAILS_ENV'] = 'aws'
 KNOWN_ENVS = %w( staging rc prod )
 
 # Set AWS environment and region
@@ -52,7 +50,19 @@ marathon_config_url = "http://marathon.aws-us-west-2-#{environment}.socrata.net/
 
 puts "Getting environment configuration from #{marathon_config_url}..."
 
-response = HTTParty.get(marathon_config_url)
+response = nil
+begin
+  response = HTTParty.get(marathon_config_url, timeout: 5)
+rescue
+  puts 'ERROR Could not get marathon config. Are you connected to the VPN?'
+  exit(1)
+end
+
+unless response && response['app'] && response['app']['env']
+  puts 'ERROR Could not get environment config from marathon.'
+  exit(1)
+end
+
 config = response['app']['env']
 
 ENV['PG_DB_HOST'] = db_host = config['PG_DB_HOST']
@@ -118,6 +128,8 @@ if ENV['PG_DB_PASSWORD'].nil? or ENV['PG_DB_PASSWORD'].empty?
   exit(1)
 end
 
+# We're using a RAILS_ENV
+ENV['RAILS_ENV'] = 'aws_migrations'
 rake = Rake.application
 rake.init
 rake.load_rakefile
@@ -128,7 +140,7 @@ puts "Are you sure you want to continue? (Y/n)"
 confirmed = STDIN.gets.chomp
 
 unless confirmed == 'Y'
-  puts 'Cancelled!'
+  puts 'CANCELLED by user input. No migrations have been run.'
   exit(1)
 end
 

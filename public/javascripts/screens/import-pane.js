@@ -1838,7 +1838,7 @@ importNS.importingPaneConfig = {
         }
 
         // Delta Importer implementation requires Web Workers.
-        var useDI2 = _.isFunction(Worker)
+        var useDI2 = _.isFunction(Worker) && !_.isNull($.dataSync.ssync())
             && blist.feature_flags.default_imports_to_nbe == 'delta-importer';
 
         if (useDI2) {

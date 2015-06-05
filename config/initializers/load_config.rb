@@ -1,3 +1,4 @@
+# Values in this config will only be picked up on deploy.
 APP_CONFIG = begin
   conf = YAML.load_file("#{Rails.root}/config/config.yml") || {}
   conf[Rails.env]
@@ -19,9 +20,6 @@ rescue
   REVISION_NUMBER = nil
   REVISION_DATE = nil
 end
-
-DOWNTIME = { file: File.join(Rails.root, 'config/downtime.yml'), env: Rails.env }
-Downtime.update!
 
 begin
   assets = YAML.load_file(File.join(Rails.root, "config/assets.yml"))
@@ -48,3 +46,11 @@ AUTH0_URI = APP_CONFIG['auth0_uri']
 AUTH0_ID = APP_CONFIG['auth0_id']
 AUTH0_SECRET = APP_CONFIG['auth0_secret']
 AUTH0_CONFIGURED = !(AUTH0_URI.nil? || AUTH0_ID.nil? || AUTH0_SECRET.nil?)
+
+# Values in these configs will be picked up when their files are written to.
+{
+  downtime: {
+    klass: DowntimeConfig,
+    filename: "#{Rails.root}/config/downtime.yml"
+  }
+}.collect { |uniqId, definition| definition[:klass].new(uniqId, definition[:filename]) }

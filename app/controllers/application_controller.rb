@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   before_filter :hook_auth_controller, :create_core_server_connection,
     :disable_frame_embedding, :adjust_format, :patch_microsoft_office,
     :sync_logged_in_cookie, :require_user, :set_user, :set_meta,
-    :force_utf8_params, :poll_downtime_config
+    :force_utf8_params, :poll_external_configs
 
   helper :all # include all helpers, all the time
 
@@ -297,7 +297,7 @@ private
   end
 
   # +before_filter+
-  def poll_downtime_config
-    Downtime.update!
+  def poll_external_configs
+    ExternalConfig.update_all!
   end
 end

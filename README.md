@@ -25,6 +25,8 @@ brew install rbenv ruby-build
 rbenv install 2.2.2
 ```
 
+Install node and npm (optional, for tests): https://nodejs.org/download/
+
 ### Configuration
 
 #### Set up the database
@@ -41,7 +43,18 @@ your local storyteller instance with blah.dev, vertex.dev, etc.
 
 ## How to run the test suite
 
+### Ruby tests
 `bin/rake spec`
+
+### Javascript tests
+
+We use Karma to test our Javascript.
+
+Run all Karma tests locally in PhantomJS:
+`bin/rake karma`
+
+Same, but watch for changes (while developing):
+`bin/rake karma:watch`
 
 ## Services
 

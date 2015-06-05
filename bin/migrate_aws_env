@@ -1,0 +1,149 @@
+#!/usr/bin/env ruby
+
+# This script will attempt to run database migrations in a particular environment.
+# Running this script presumes a few things:
+#   * You have an admin account in AWS and those credentials are stored in ~/.aws/credentials
+#   * You have a database.yml with a 'production' config.
+#     That production config is set with environment variables.
+#
+# Usage: bin/migrate_aws_env ENVIRONMENT
+#
+puts 'This script requires a connection to the VPN AND admin credentials for AWS.'
+
+require_relative '../config/boot'
+require 'rubygems'
+require 'rake'
+require 'httparty'
+require 'aws-sdk-core'
+require 'aws-sdk-resources'
+require 'yaml'
+require 'base64'
+
+def decrypt_data_key(blob)
+  kms = Aws::KMS::Client.new
+  res = kms.decrypt(ciphertext_blob: blob)
+  puts "Decrypted #{res[:plaintext].size} bytes of key data."
+  return res[:plaintext]
+end
+
+KNOWN_ENVS = %w( staging rc prod )
+
+# Set AWS environment and region
+environment = ARGV[0]
+
+unless KNOWN_ENVS.include?(environment)
+  puts "ENVIRONMENT not valid. Expected one of [#{KNOWN_ENVS.join(', ')}]."
+  exit(1)
+end
+
+if ENV['AWS_REGION'].nil?
+  Aws.config[:region] = 'us-west-2'
+  puts 'AWS_REGION unset. Defaulting to "us-west-2".'
+end
+
+puts "Running in #{environment} environment in #{Aws.config[:region]} region..."
+
+Aws.config[:profile] = environment
+
+# Pull config from marathon for the storyteller app
+marathon_config_url = "http://marathon.aws-us-west-2-#{environment}.socrata.net/v2/apps/#{environment}/storyteller"
+
+puts "Getting environment configuration from #{marathon_config_url}..."
+
+response = nil
+begin
+  response = HTTParty.get(marathon_config_url, timeout: 5)
+rescue
+  puts 'ERROR Could not get marathon config. Are you connected to the VPN?'
+  exit(1)
+end
+
+unless response && response['app'] && response['app']['env']
+  puts 'ERROR Could not get environment config from marathon.'
+  exit(1)
+end
+
+config = response['app']['env']
+
+ENV['PG_DB_HOST'] = db_host = config['PG_DB_HOST']
+ENV['PG_DB_NAME'] = config['PG_DB_NAME'] || 'storyteller_production'
+ENV['PG_DB_PORT'] = config['PG_DB_PORT'] || 5432
+ENV['PG_DB_USER'] = config['PG_DB_USER'] || 'storyteller_rwc'
+
+bucket = config['CLORTHO_BUCKET']
+file = config['CLORTHO_PATH']
+
+unless db_host
+  puts "ERROR Could not set PG_DB_HOST."
+  exit(1)
+end
+
+unless bucket
+  puts 'ERROR Could not set CLORTHO_BUCKET.'
+  exit(1)
+end
+
+unless file
+  puts "ERROR Could not set CLORTHO_PATH."
+  exit(1)
+end
+
+# Get DB password from aws-kms store, CLORTHO-GET-style
+# This code was lifted from https://github.com/socrata/shipyard/blob/master/base/clortho-get
+data_key = begin
+  key_file = "#{file}.key"
+  s3c = Aws::S3::Client.new
+  res = s3c.get_object(bucket: bucket,
+                       key: key_file)
+  puts "Got #{res[:body].size} bytes of encrypted key data."
+  key_blob_strio = res[:body]
+  key_blob = key_blob_strio.read
+  decrypt_data_key(key_blob)
+rescue Aws::S3::Errors::ServiceError => e
+  puts "ERROR S3 error while downloading #{key_file}: #{e}"
+  exit(1)
+rescue Seahorse::Client::NetworkingError => e
+  puts "ERROR Network issue while retrieving #{key_file}: #{e}"
+  exit(1)
+end
+
+decrypted = begin
+  s3c = Aws::S3::Encryption::Client.new(encryption_key: data_key)
+  res = s3c.get_object(bucket: bucket,
+                       key: file)
+
+  res[:body].read
+rescue Aws::S3::Errors::ServiceError => e
+  puts "ERROR S3 error while retrieving #{file}: #{e}"
+  exit(1)
+rescue Seahorse::Client::NetworkingError => e
+  puts "ERROR Network issue while retrieving #{file}: #{e}"
+  exit(1)
+end
+
+ENV['PG_DB_PASSWORD'] = $1 if decrypted =~ /PG_DB_PASSWORD=(.+)\n/
+
+if ENV['PG_DB_PASSWORD'].nil? or ENV['PG_DB_PASSWORD'].empty?
+  puts 'ERROR Count not retrive DB password.'
+  exit(1)
+end
+
+# We're using a RAILS_ENV
+ENV['RAILS_ENV'] = 'aws_migrations'
+rake = Rake.application
+rake.init
+rake.load_rakefile
+
+puts "Ready to run migrations in #{Aws.config[:region]} #{Aws.config[:profile]}."
+puts "Are you sure you want to continue? (y/N)"
+
+confirmed = STDIN.gets.chomp.downcase
+
+unless confirmed == 'y'
+  puts 'CANCELLED by user input. No migrations have been run.'
+  exit(1)
+end
+
+rake['db:migrate'].invoke
+
+puts 'Fin.'

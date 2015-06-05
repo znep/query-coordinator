@@ -8,7 +8,7 @@ RSpec.describe 'published stories routing', type: :routing do
     # NOTE: Should be /stories/s/#{vanity_text}/#{four_by_four},
     # but RSpec routing tests seem to ignore relative_url_root.
     expect(get: "/s/#{vanity_text}/#{four_by_four}").to route_to(
-      controller: 'published_stories',
+      controller: 'stories',
       action: 'show',
       four_by_four: four_by_four,
       vanity_text: vanity_text
@@ -29,7 +29,7 @@ RSpec.describe 'published stories routing', type: :routing do
     # NOTE: Should be /stories/s/#{four_by_four},
     # but RSpec routing tests seem to ignore relative_url_root.
     expect(get: "/s/#{four_by_four}").to route_to(
-      controller: 'published_stories',
+      controller: 'stories',
       action: 'show',
       four_by_four: four_by_four
     )

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe PublishedStoriesController, type: :controller do
+RSpec.describe StoriesController, type: :controller do
   describe '#show' do
     before do
       stub_logged_in
@@ -18,7 +18,7 @@ RSpec.describe PublishedStoriesController, type: :controller do
 
       it 'ignores vanity_text' do
         get :show, four_by_four: @story_revision.four_by_four, vanity_text: 'haha'
-        expect(assigns(:published_story)).to eq(@story_revision)
+        expect(assigns(:story)).to eq(@story_revision)
       end
 
       it 'renders 404' do
@@ -28,7 +28,7 @@ RSpec.describe PublishedStoriesController, type: :controller do
 
       it 'assigns the :published_story' do
         get :show, four_by_four: @story_revision.four_by_four
-        expect(assigns(:published_story)).to eq(@story_revision)
+        expect(assigns(:story)).to eq(@story_revision)
       end
 
       it 'return the story with the latest created_at' do
@@ -45,7 +45,7 @@ RSpec.describe PublishedStoriesController, type: :controller do
         )
 
         get :show, four_by_four: four_by_four
-        expect(assigns(:published_story)).to eq(@newer_story_revision)
+        expect(assigns(:story)).to eq(@newer_story_revision)
       end
 
       it 'does not include stories marked deleted' do
@@ -63,7 +63,7 @@ RSpec.describe PublishedStoriesController, type: :controller do
         )
 
         get :show, four_by_four: four_by_four
-        expect(assigns(:published_story)).to eq(@older_story_revision)
+        expect(assigns(:story)).to eq(@older_story_revision)
       end
 
       it 'renders 404 when all revisions of story have been marked deleted' do

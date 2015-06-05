@@ -23,8 +23,16 @@ module Storyteller
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
+    # Do not automatically create style, script, or helper files when using rails generate
+    config.generators.stylesheets = false
+    config.generators.javascripts = false
+    config.generators.helper      = false
+
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
+
+    # Set up multiple js manifest files
+    config.assets.precompile += %w( editor.js )
 
     # Nginx routes urls with /stories from the Open Data platform to this app,
     # so respond to /stories as the root url.

@@ -1,24 +1,24 @@
 require 'rails_helper'
 
 RSpec.describe StoriesController, type: :controller do
-  describe '#show' do
-    before do
-      stub_logged_in
-    end
+  before do
+    stub_logged_in
+  end
 
-    context 'when story lives in current domain' do
-      before do
-        @story_revision = FactoryGirl.create(:published_story)
-      end
+  describe '#show' do
+
+    context 'when there is a story with the given four_by_four' do
+
+      let!(:story_revision) { FactoryGirl.create(:published_story) }
 
       it 'renders show template' do
-        get :show, four_by_four: @story_revision.four_by_four
+        get :show, four_by_four: story_revision.four_by_four
         expect(response).to render_template(:show)
       end
 
       it 'ignores vanity_text' do
-        get :show, four_by_four: @story_revision.four_by_four, vanity_text: 'haha'
-        expect(assigns(:story)).to eq(@story_revision)
+        get :show, four_by_four: story_revision.four_by_four, vanity_text: 'haha'
+        expect(assigns(:story)).to eq(story_revision)
       end
 
       it 'renders 404' do
@@ -26,73 +26,58 @@ RSpec.describe StoriesController, type: :controller do
         expect(response).to be_not_found
       end
 
-      it 'assigns the :published_story' do
-        get :show, four_by_four: @story_revision.four_by_four
-        expect(assigns(:story)).to eq(@story_revision)
+      it 'assigns the :story' do
+        get :show, four_by_four: story_revision.four_by_four
+        expect(assigns(:story)).to eq(story_revision)
       end
 
-      it 'return the story with the latest created_at' do
-        four_by_four = 'abcd-efgh'
-        @newer_story_revision = FactoryGirl.create(
-          :published_story,
-          four_by_four: four_by_four,
-          created_at: Time.now
-        )
-        @older_story_revision = FactoryGirl.create(
-          :published_story,
-          four_by_four: four_by_four,
-          created_at: Time.now - 1.day
-        )
-
-        get :show, four_by_four: four_by_four
-        expect(assigns(:story)).to eq(@newer_story_revision)
-      end
-
-      it 'does not include stories marked deleted' do
-        four_by_four = 'abcd-9876'
-        @deleted_story_revision = FactoryGirl.create(
-          :published_story,
-          four_by_four: four_by_four,
-          created_at: Time.now,
-          deleted_at: Time.now
-        )
-        @older_story_revision = FactoryGirl.create(
-          :published_story,
-          four_by_four: four_by_four,
-          created_at: Time.now - 1.day
-        )
-
-        get :show, four_by_four: four_by_four
-        expect(assigns(:story)).to eq(@older_story_revision)
-      end
-
-      it 'renders 404 when all revisions of story have been marked deleted' do
-        four_by_four = '1234-efgh'
-        @deleted_story_revision = FactoryGirl.create(
-          :published_story,
-          four_by_four: four_by_four,
-          created_at: Time.now,
-          deleted_at: Time.now
-        )
-        @deleted_older_story_revision = FactoryGirl.create(
-          :published_story,
-          four_by_four: four_by_four,
-          created_at: Time.now - 1.day,
-          deleted_at: Time.now
-        )
-
-        get :show, four_by_four: four_by_four
-        expect(response).to be_not_found
-      end
-
-      it 'renders json' do
-        get :show, four_by_four: @story_revision.four_by_four, format: :json
-        expect(response.body).to eq(@story_revision.to_json)
+      it 'renders json when requested' do
+        get :show, four_by_four: story_revision.four_by_four, format: :json
+        expect(response.body).to eq(story_revision.to_json)
       end
     end
 
-    context 'when story lives in different domain' do
-      it 'renders 404'
+    context 'when there is no story with the given four_by_four' do
+      it 'renders 404' do
+        get :show, four_by_four: 'notf-ound'
+        expect(response).to have_http_status(404)
+      end
     end
+  end
+
+  describe '#edit' do
+
+    context 'and there is a story' do
+
+      let!(:draft_story) { FactoryGirl.create(:draft_story) }
+
+      it 'calls find_by_four_by_four' do
+        expect(DraftStory).to receive(:find_by_four_by_four)
+        get :edit, four_by_four: draft_story.four_by_four
+      end
+
+      it 'assigns :story' do
+        get :edit, four_by_four: draft_story.four_by_four
+        expect(assigns(:story)).to eq draft_story
+      end
+
+      it 'responds to json' do
+        get :edit, four_by_four: draft_story.four_by_four, format: :json
+        expect(response.body).to eq(draft_story.to_json)
+      end
+
+      it 'renders the edit layout' do
+        get :edit, four_by_four: draft_story.four_by_four
+        expect(response).to render_template('editor')
+      end
+    end
+
+    context 'and there is no matching story' do
+      it 'returns a 404' do
+        get :edit, four_by_four: 'notf-ound'
+        expect(response).to have_http_status(404)
+      end
+    end
+
   end
 end

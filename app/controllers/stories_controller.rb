@@ -31,6 +31,6 @@ class StoriesController < ApplicationController
 
   # TODO replace this with the real solution
   def tmp_render_404
-    render status: 404
+    render text: 'Whoops! 404. Probably an invalid 4x4', status: 404
   end
 end

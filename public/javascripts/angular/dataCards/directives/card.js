@@ -123,6 +123,14 @@
 
         var dimensionsObservable = element.observeDimensions();
 
+        // CORE-5475: set <card> height to the height of its parent <card-spot> to prevent
+        // the height from filling the whole screen on drag.
+        Rx.Observable.subscribeLatest(
+          dimensionsObservable,
+          function(elementDimensions) {
+            element.css('height', element.parent().height());
+          });
+
         // Give the visualization all the height that the description isn't using.
         // Note that we set the height on a wrapper instead of the card-visualization itself.
         // This is because the card-visualization DOM node itself can be ripped out and replaced

@@ -782,7 +782,8 @@
 
             scope.grabbedCard.jqEl.css({
               top: cardOriginY,
-              left: cardOriginX
+              left: cardOriginX,
+              height: newHeight
             });
 
             $window.requestAnimationFrame(checkForScroll);

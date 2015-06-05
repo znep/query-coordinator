@@ -10,7 +10,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha'],
+    frameworks: ['mocha', 'sprockets', 'chai'],
 
 
     // list of files / patterns to load in the browser
@@ -18,6 +18,14 @@ module.exports = function(config) {
       'spec/karma/**/*.js'
     ],
 
+    sprocketsPath: [
+      'app/assets/javascripts'
+    ],
+
+    sprocketsBundles: [
+      'application.js',
+      'editor.js'
+    ],
 
     // list of files to exclude
     exclude: [
@@ -28,7 +36,6 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
     },
-
 
     // test results reporter to use
     // possible values: 'dots', 'progress'

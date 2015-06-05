@@ -2968,16 +2968,14 @@ Proj4js.Proj.somerc = {
             * Math.log(Math.tan(Math.PI / 4.0 + phy0 / 2.0))
             + this.alpha
             * e / 2
-            * Math.log((1 + e * sinPhy0)
-            / (1 - e * sinPhy0));
+            * Math.log((1 + e * sinPhy0) / (1 - e * sinPhy0));
   },
 
 
   forward: function(p) {
     var Sa1 = Math.log(Math.tan(Math.PI / 4.0 - p.y / 2.0));
     var Sa2 = this.e / 2.0
-            * Math.log((1 + this.e * Math.sin(p.y))
-            / (1 - this.e * Math.sin(p.y)));
+            * Math.log((1 + this.e * Math.sin(p.y)) / (1 - this.e * Math.sin(p.y)));
     var S = -this.alpha * (Sa1 + Sa2) + this.K;
 
         // spheric latitude
@@ -2987,8 +2985,7 @@ Proj4js.Proj.somerc = {
     var I = this.alpha * (p.x - this.lambda0);
 
         // psoeudo equatorial rotation
-    var rotI = Math.atan(Math.sin(I)
-            / (Math.sin(this.b0) * Math.tan(b) +
+    var rotI = Math.atan(Math.sin(I) / (Math.sin(this.b0) * Math.tan(b) +
                Math.cos(this.b0) * Math.cos(I)));
 
     var rotB = Math.asin(Math.cos(this.b0) * Math.sin(b) -
@@ -3010,8 +3007,7 @@ Proj4js.Proj.somerc = {
 
     var b = Math.asin(Math.cos(this.b0) * Math.sin(rotB)
             + Math.sin(this.b0) * Math.cos(rotB) * Math.cos(rotI));
-    var I = Math.atan(Math.sin(rotI)
-            / (Math.cos(this.b0) * Math.cos(rotI) - Math.sin(this.b0)
+    var I = Math.atan(Math.sin(rotI) / (Math.cos(this.b0) * Math.cos(rotI) - Math.sin(this.b0)
             * Math.tan(rotB)));
 
     var lambda = this.lambda0 + I / this.alpha;
@@ -3028,13 +3024,11 @@ Proj4js.Proj.somerc = {
         return;
       }
       //S = Math.log(Math.tan(Math.PI / 4.0 + phy / 2.0));
-      S = 1.0
-              / this.alpha
+      S = 1.0 / this.alpha
               * (Math.log(Math.tan(Math.PI / 4.0 + b / 2.0)) - this.K)
               + this.e
               * Math.log(Math.tan(Math.PI / 4.0
-              + Math.asin(this.e * Math.sin(phy))
-              / 2.0));
+              + Math.asin(this.e * Math.sin(phy)) / 2.0));
       prevPhy = phy;
       phy = 2.0 * Math.atan(Math.exp(S)) - Math.PI / 2.0;
     }

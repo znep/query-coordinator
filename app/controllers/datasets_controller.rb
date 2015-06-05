@@ -140,6 +140,10 @@ class DatasetsController < ApplicationController
       end
       needs_view_js @view.modifyingViewUid, parent_view
     end
+    if FeatureFlags.derive(@view, request).swap_in_nbe_view === true && !@view.newBackend?
+      @view.nbe_view_id = @view.nbe_view.id
+      needs_view_js @view.nbe_view.id, @view.nbe_view
+    end
   end
 
   def blob

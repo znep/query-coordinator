@@ -348,6 +348,47 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
         { _.defer(function() { (cont.view || cont).trigger('columns_changed', [changeType]); }); }
     };
 
+    // defines: replaceColumns, replaceChildColumns
+    props['replace' + capSet + 'WithNBECols'] = function(nbeCols)
+    {
+      if ($.isBlank(nbeCols)) { return; }
+
+      var cont = this;
+
+      _columnIDLookup = {};
+      _columnTCIDLookup = {};
+      _columnFieldNameLookup = {};
+      _metaColumnLookup = {};
+      this[colSet] = _.map(nbeCols, function(c, i) {
+        if (!(c instanceof Column)) {
+          c = new Column(c, cont);
+        }
+        else if ($.isBlank(c.view)) {
+          c.setParent(cont);
+        }
+        _columnIDLookup[c.id] = c;
+        if (c.lookup != c.id) {
+          _columnIDLookup[c.lookup] = c;
+        }
+        _columnTCIDLookup[c.tableColumnId] = c;
+        _columnFieldNameLookup[c.fieldName] = c;
+        if (c.isMeta) {
+          _metaColumnLookup[c.name] = c;
+        }
+        if (!$.isBlank(cont.accessType)) {
+          c.setAccessType(cont.accessType);
+        }
+        return c;
+      });
+      this['real' + capSet] = _.reject(this[colSet], function(c) {
+        return c.isMeta;
+      });
+      this['visible' + capSet] = _(realSet(this)).chain()
+        .reject(function(c) { return c.hidden; })
+        .sortBy(function(c) { return c.position; })
+        .value();
+    };
+
     return props;
 };
 

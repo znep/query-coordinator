@@ -53,6 +53,12 @@ var Dataset = ServerModel.extend({
         Dataset.addProperties(this, ColumnContainer('column',
                 selfUrl + '.json', selfUrl + '/columns'), $.extend({}, this));
 
+        if (ds.nbe_view_id && blist.feature_flags.swap_in_nbe_view) {
+          ds.nbeView = blist.viewCache[ds.nbe_view_id];
+          ds.newBackend = true;
+          ds.replaceColumnsWithNBECols(ds.nbeView.columns);
+        }
+
         if (!$.isBlank(this.approvalHistory))
         { Dataset.addProperties(this, Dataset.modules.approvalHistory, $.extend({}, this)); }
 

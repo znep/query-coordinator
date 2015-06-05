@@ -1,5 +1,5 @@
-// This is a manifest file that'll be compiled into admin.js, which will include all the files
-// under the admin directory.
+// This is a manifest file that'll be compiled into editor.js, which will include all the files
+// under the editor directory.
 //
 // It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
 // compiled file.

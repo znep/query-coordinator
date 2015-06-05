@@ -65,4 +65,7 @@ end
 group :development do
   gem 'rack-mini-profiler', require: false
   gem 'flamegraph'
+
+  # We use aws-sdk in the migration script for AWS
+  gem 'aws-sdk'
 end

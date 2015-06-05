@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 grep '^ruby' Gemfile | sed -n "s/ruby '\(.*\)'/\1/p" > .ruby-version
 
 # TODO maybe have to create a new db to use for

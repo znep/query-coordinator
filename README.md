@@ -56,6 +56,12 @@ Run all Karma tests locally in PhantomJS:
 Same, but watch for changes (while developing):
 `bin/rake karma:watch`
 
+## Code coverage
+The ```spec``` and ```karma``` tasks generate code coverage reports. They can be found here:
+
+* Ruby: ```coverage/index.html```
+* JS: ```coverage/<browser name>/index.html```
+
 ## Services
 
 As we add services (job queues, cache servers, search engines, etc.), document them here.

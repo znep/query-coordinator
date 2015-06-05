@@ -12,7 +12,6 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['mocha', 'sprockets', 'chai'],
 
-
     // list of files / patterns to load in the browser
     files: [
       'spec/karma/**/*.js'
@@ -35,13 +34,23 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      'app/assets/javascripts/**/*.js': ['coverage']
     },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
+    //
+    // Note, not including coverage here as the instrumentation process
+    // makes the code completely unreadable and undebuggable. The rake
+    // test task manually enables coverage. See lib/tasks/karma_tests.rake
+    //
     reporters: ['progress'],
 
+    coverageReporter: {
+      type : 'html',
+      dir : 'coverage/'
+    },
 
     // web server port
     port: 9886,

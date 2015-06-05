@@ -934,6 +934,48 @@ describe('card-layout', function() {
       });
     });
 
+    it('should set the card height when dragging the card', function() {
+      var cl = createLayoutWithCards([{}, {fieldName: '*'}]);
+        cl.outerScope.editMode = true;
+        cl.outerScope.$apply();
+
+        var cards = cl.pageModel.getCurrentValue('cards');
+        var card1 = cards[0];
+
+        // Find DOM nodes for various bits we need.
+        var card1Dom = cl.findCardForModel(card1);
+        var card1Overlay = cl.findDragOverlayForModel(card1);
+        var placeholder1 = cl.element.find('[data-group-id=1]');
+        var placeholder2 = cl.element.find('[data-group-id=2]');
+
+        expect(card1Dom.height() === 0).to.be.true
+
+        // Drag card 1.
+        var startPos = card1Dom.offset();
+        card1Overlay.trigger(jQuery.Event( 'mousedown', {
+          button: 0,
+          clientX: startPos.left + card1Dom.width() / 2,
+          clientY: startPos.top + card1Dom.height() / 2
+        }));
+
+        // We only start tracking the movement of the card after it's grabbed. We only
+        // grab the card after we move the mouse a bit on the overlay. So do a move.
+        mockWindowStateService.mousePositionSubject.onNext({
+          // Move enough so we start tracking it
+          clientX: startPos.left + 100,
+          clientY: startPos.top + 100,
+          // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+          // not a jQuery object (hence the [0]).
+          target: card1Overlay[0]
+        });
+
+        // Release the card.
+        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+
+        // Check that the card now has a height
+        expect(card1Dom.height() > 0).to.be.true
+      });
+
   });
 
   describe('expanded card', function() {

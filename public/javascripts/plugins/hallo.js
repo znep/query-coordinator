@@ -1360,16 +1360,16 @@
         limit: 5
       },
       _create: function() {
-        return this.element.html('<div>\
-        <form method="get">\
-          <input type="text" class="searchInput" placeholder="Search" />\
-          <input type="submit" class="btn searchButton" value="OK" />\
-        </form>\
-        <div class="searchResults imageThumbnailContainer">\
-          <div class="activitySpinner">Loading images...</div>\
-          <ul></ul>\
-        </div>\
-      </div>');
+        return this.element.html('<div>' +
+        '<form method="get">' +
+          '<input type="text" class="searchInput" placeholder="Search" />' +
+          '<input type="submit" class="btn searchButton" value="OK" />' +
+        '</form>' +
+        '<div class="searchResults imageThumbnailContainer">' +
+          '<div class="activitySpinner">Loading images...</div>' +
+          '<ul></ul>' +
+        '</div>' +
+      '</div>');
       },
       _init: function() {
         var _this = this;
@@ -1464,14 +1464,14 @@
         entity: null
       },
       _create: function() {
-        return this.element.html('\
-        <form class="upload">\
-        <input type="file" class="file" name="userfile" accept="image/*" />\
-        <input type="hidden" name="tags" value="" />\
-        <input type="text" class="caption" name="caption" placeholder="Title" />\
-        <button class="uploadSubmit">Upload</button>\
-        </form>\
-      ');
+        return this.element.html(
+          '<form class="upload">' +
+          '<input type="file" class="file" name="userfile" accept="image/*" />' +
+          '<input type="hidden" name="tags" value="" />' +
+          '<input type="text" class="caption" name="caption" placeholder="Title" />' +
+          '<button class="uploadSubmit">Upload</button>' +
+          '</form>' +
+        );
       },
       _init: function() {
         var widget;
@@ -1543,13 +1543,14 @@
         thumbnailUri: '<http://dbpedia.org/ontology/thumbnail>'
       },
       _create: function() {
-        return this.element.html('\
-      <div id="' + this.options.uuid + '-tab-suggestions">\
-        <div class="imageThumbnailContainer">\
-          <div class="activitySpinner">Loading images...</div>\
-          <ul></ul>\
-        </div>\
-      </div>');
+        return this.element.html(
+          '<div id="' + this.options.uuid + '-tab-suggestions">' +
+            '<div class="imageThumbnailContainer">' +
+              '<div class="activitySpinner">Loading images...</div>' +
+              '<ul></ul>' +
+            '</div>' +
+          '</div>'
+        );
       },
       _init: function() {
         return jQuery('.activitySpinner', this.element).hide();
@@ -1662,15 +1663,15 @@
         maxHeight: 200
       },
       _create: function() {
-        this.element.html('<div>\
-        <div class="activeImageContainer">\
-          <div class="rotationWrapper">\
-            <div class="hintArrow"></div>\
-              <img src="" class="activeImage" />\
-            </div>\
-            <img src="" class="activeImage activeImageBg" />\
-          </div>\
-        </div>');
+        this.element.html('<div>' +
+        '<div class="activeImageContainer">' +
+          '<div class="rotationWrapper">' +
+            '<div class="hintArrow"></div>' +
+              '<img src="" class="activeImage" />' +
+            '</div>' +
+            '<img src="" class="activeImage activeImageBg" />' +
+          '</div>' +
+        '</div>');
         this.element.hide();
         return this._prepareDnD();
       },

@@ -209,7 +209,7 @@ define("ace/mode/css", ["require", "exports", "module", "pilot/oop", "ace/mode/t
     (function() {
         this.checkOutdent = function(a, b) {
             if (!/^\s+$/.test(a)) return !1;
-            return /^\s*\}/.test(b)
+            return (/^\s*\}/).test(b)
         }, this.autoOutdent = function(a, b) {
             var c = a.getLine(b),
                 e = c.match(/^(\s*\})/);

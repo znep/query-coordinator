@@ -6827,8 +6827,7 @@ d3.layout.pie = function() {
     // Compute the angular scale factor: from value to radians.
     var k = ((typeof endAngle === "function"
         ? endAngle.apply(this, arguments)
-        : endAngle) - startAngle)
-        / d3.sum(values);
+        : endAngle) - startAngle) / d3.sum(values);
 
     // Optionally sort the data.
     var index = d3.range(data.length);
@@ -8181,7 +8180,7 @@ function d3_csv_formatRow(row) {
 }
 
 function d3_csv_formatValue(text) {
-  return /[",\n]/.test(text)
+  return (/[",\n]/).test(text)
       ? "\"" + text.replace(/\"/g, "\"\"") + "\""
       : text;
 }

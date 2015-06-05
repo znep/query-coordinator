@@ -25,6 +25,13 @@ brew install rbenv ruby-build
 rbenv install 2.2.2
 ```
 
+To run unit tests, install node and npm: https://nodejs.org/download/,
+then install npm dependencies:
+
+```
+npm install
+```
+
 ### Configuration
 
 #### Set up the database
@@ -41,7 +48,24 @@ your local storyteller instance with blah.dev, vertex.dev, etc.
 
 ## How to run the test suite
 
+### Ruby tests
 `bin/rake spec`
+
+### Javascript tests
+
+We use Karma to test our Javascript.
+
+Run all Karma tests locally in PhantomJS:
+`bin/rake karma`
+
+Same, but watch for changes (while developing):
+`bin/rake karma:watch`
+
+## Code coverage
+The ```spec``` and ```karma``` tasks generate code coverage reports. They can be found here:
+
+* Ruby: ```coverage/index.html```
+* JS: ```coverage/<browser name>/index.html```
 
 ## Services
 

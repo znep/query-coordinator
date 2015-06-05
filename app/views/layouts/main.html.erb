@@ -205,7 +205,7 @@ http://www.socrata.com
     blist.configuration.logging = <%= ENV.fetch('JS_LOGGING', false) %>;
     <% right_now = DateTime.now -%>
 
-    <%- if Downtime.any? { |downtime_message| downtime_message.should_display(right_now) } -%>
+    <%- if Downtime.any? { |downtime_message| downtime_message.should_display?(right_now) } -%>
       blist.configuration.maintenance_hash = '<%= Downtime.map(&:hash).to_json %>';
       blist.configuration.maintenance_message = [<%= raw Downtime.map { |message| message.html(right_now) }.map { |message| "'#{escape_javascript(message)}'" }.join(',') %>];
     <%- end -%>

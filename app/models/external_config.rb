@@ -37,12 +37,13 @@ class ExternalConfig
     return false if @cache > Time.now
     @cache = Time.now + cache_period
 
+    has_changed = false
     begin
       mtime = File.mtime(filename)
+      has_changed = @last_updated.nil? || mtime > @last_updated
     rescue Errno::ENOENT
       Rails.logger.error("Config file for #{uniqId} does not exist. Looking in #{filename}")
     end
-    has_changed = @last_updated.nil? || mtime > @last_updated
     @last_updated = mtime
     has_changed
   end

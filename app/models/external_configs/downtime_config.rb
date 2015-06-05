@@ -1,6 +1,8 @@
 class DowntimeConfig < ExternalConfig
-  def env
-    Rails.env
+  include Enumerable
+
+  def each(&block)
+    @downtimes.each(&block)
   end
 
   def update!
@@ -9,7 +11,7 @@ class DowntimeConfig < ExternalConfig
     begin
       yaml = YAML.load_file(filename)
       if yaml
-        @downtimes = [yaml[env]].flatten.compact.collect do |time|
+        @downtimes = [yaml[Rails.env]].flatten.compact.collect do |time|
           Downtime.new(time['message_start'], time['message_end'],
                        time['downtime_start'], time['downtime_end'])
         end

@@ -21,4 +21,15 @@ class ExternalConfigTest < Test::Unit::TestCase
     assert @test_config.has_changed?
   end
 
+  def test_config_updates_when_last_updated_is_nil
+    @test_config = TestConfig.new(:test, "doesn't matter")
+    File.stubs(:mtime => Time.now)
+    assert @test_config.has_changed?
+  end
+
+  def test_config_updates_when_file_does_not_exist
+    @test_config = TestConfig.new(:test, "doesn't matter")
+    File.stubs(:mtime).raises(Errno::ENOENT)
+    refute @test_config.has_changed?
+  end
 end

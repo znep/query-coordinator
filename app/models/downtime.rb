@@ -4,11 +4,11 @@ class Downtime
   attr_accessor :message_start, :message_finish, :downtime_start, :downtime_finish
 
   def self.any? &block
-    ExternalConfig.for(:downtime).downtimes.any?(&block)
+    ExternalConfig.for(:downtime).any?(&block)
   end
 
   def self.map &block
-    ExternalConfig.for(:downtime).downtimes.map(&block)
+    ExternalConfig.for(:downtime).map(&block)
   end
 
   def initialize(m_start, m_finish, d_start, d_finish)
@@ -43,7 +43,7 @@ class Downtime
 
   def html(date_time)
     %Q{
-    <div class="flash notice maintenanceNotice" data-hash="#{hash}" data-active="#{should_display(date_time)}">
+    <div class="flash notice maintenanceNotice" data-hash="#{hash}" data-active="#{should_display?(date_time)}">
       <a href="#" class="close"><span class="icon">close</span></a>
       #{I18n.t('core.maintenance_notice',
           :start => (%Q{<span class="dateLocalize" data-rawdatetime="#{@downtime_start.to_i}"></span>}),

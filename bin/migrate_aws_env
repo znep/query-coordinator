@@ -135,11 +135,11 @@ rake.init
 rake.load_rakefile
 
 puts "Ready to run migrations in #{Aws.config[:region]} #{Aws.config[:profile]}."
-puts "Are you sure you want to continue? (Y/n)"
+puts "Are you sure you want to continue? (y/N)"
 
-confirmed = STDIN.gets.chomp
+confirmed = STDIN.gets.chomp.downcase
 
-unless confirmed == 'Y'
+unless confirmed == 'y'
   puts 'CANCELLED by user input. No migrations have been run.'
   exit(1)
 end

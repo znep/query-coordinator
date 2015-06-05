@@ -125,7 +125,6 @@ Frontend::Application.routes do
       put :save_featured_views
       get :catalog_widget
       get :routing_approval, :as => 'routing_approval_administration'
-      match '/tos', :via => [:get, :post]
 
       put '/users/:user_id/promote/:role', :action => 'set_user_role'
       put '/users/update', :action => 'set_user_role'

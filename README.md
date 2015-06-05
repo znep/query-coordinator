@@ -25,7 +25,12 @@ brew install rbenv ruby-build
 rbenv install 2.2.2
 ```
 
-Install node and npm (optional, for tests): https://nodejs.org/download/
+To run unit tests, install node and npm: https://nodejs.org/download/,
+then install npm dependencies:
+
+```
+npm install
+```
 
 ### Configuration
 

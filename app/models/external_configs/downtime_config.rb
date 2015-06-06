@@ -1,9 +1,8 @@
 class DowntimeConfig < ExternalConfig
   include Enumerable
+  extend Forwardable
 
-  def each(&block)
-    @downtimes.each(&block)
-  end
+  def_delegator :@downtimes, :each
 
   def update!
     Rails.logger.info("Config Update [#{uniqId}] from #{filename}")

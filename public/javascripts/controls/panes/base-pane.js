@@ -1217,8 +1217,13 @@
         // adding _selected attrib = true in the desired option.
         var isSelected = (curVal === '_selected' && opt.selected === true) ||
             (opt.value || '').toLowerCase() === (curVal || '').toLowerCase();
-        var item = {tagName: 'option', value: opt.value,
-            selected: isSelected, contents: opt.text, disabled: opt.disabled};
+        var item = {
+            tagName: 'option',
+            value: opt.value,
+            selected: isSelected,
+            contents: opt.text,
+            disabled: opt.disabled
+        };
         var dataKeys = [];
         _.each(opt.data || {}, function(v, k)
             {
@@ -1773,7 +1778,7 @@
             {
                 options.push(renderSelectOption(o, curValue || defValue));
                 // Collect all selected options' indexes.
-                if (options[options.length - 1].selected) {
+                if (_.last(options).selected) {
                     selected.push(options.length - 1);
                 }
             });

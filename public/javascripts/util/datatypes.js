@@ -137,11 +137,11 @@ blist.namespace.fetch('blist.datatypes');
         var prefix = null;
         var suffix = null;
 
-        if (column.format.precisionStyle == 'currency') {
+        if (column.format.precisionStyle === 'currency') {
             prefix = blist.datatypes.money.currencies[column.format.currencyStyle];
         }
 
-        if (column.format.precisionStyle == 'percentage') {
+        if (column.format.precisionStyle === 'percentage') {
             suffix = '%';
         }
 

@@ -370,7 +370,7 @@
                             defaultValue: 'USD',
                             onlySelectFirst: true,
                             onlyIf: {
-                                field:'format.precisionStyle',
+                                field: 'format.precisionStyle',
                                 value: 'currency'
                             },
                             prompt: null

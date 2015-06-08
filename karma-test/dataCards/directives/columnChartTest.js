@@ -138,6 +138,8 @@ describe('columnChart', function() {
 
   beforeEach(module('dataCards'));
 
+  beforeEach(module('dataCards.services'));
+
   beforeEach(module('dataCards.directives'));
 
   beforeEach(module('dataCards/column-chart.sass'));
@@ -151,12 +153,11 @@ describe('columnChart', function() {
     timeout = $injector.get('$timeout');
   }));
 
-  after(function() {
-    removeColumnChart();
+  afterEach(function() {
+    removeColumnCharts();
   });
 
-  var createNewColumnChart = function(width, expanded, data) {
-    removeColumnChart();
+  var createColumnChart = function(width, expanded, data) {
     if (!width) width = 640;
     if (!expanded) expanded = false;
     if (!data) data = testData;
@@ -168,10 +169,11 @@ describe('columnChart', function() {
           ' chart-data="testData" show-filtered="showFiltered" expanded="expanded">' +
         '</div>' +
       '</div>';
+
     var elem = angular.element(html);
 
-    $('body').append('<div id="columnChartTest"></div>');
-    $('#columnChartTest').append(elem);
+    $('body').append('<div class="columnChartTest"></div>');
+    $('.columnChartTest').append(elem);
 
     var compiledElem = compile(elem)(scope);
 
@@ -185,8 +187,9 @@ describe('columnChart', function() {
       scope: scope
     };
   };
-  var removeColumnChart = function() {
-    $('#columnChartTest').remove();
+
+  var removeColumnCharts = function() {
+    $('.columnChartTest').remove();
   };
 
   var bars = testData.length;
@@ -195,24 +198,24 @@ describe('columnChart', function() {
   describe('when not expanded at 640px', function() {
 
     it('should create ' + bars + ' bars and 3 labels', function() {
-      createNewColumnChart();
+      createColumnChart();
       expect($('.bar-group').length).to.equal(bars);
       expect($('.bar.unfiltered').length).to.equal(bars);
       expect($('.labels div.label').length).to.equal(3);
     });
 
     it('should create bars with a defined width', function() {
-      createNewColumnChart();
+      createColumnChart();
       expect(typeof $('.bar.unfiltered').width() == 'number').to.equal(true);
     });
 
     it('should not show the moar marker', function() {
-      createNewColumnChart();
+      createColumnChart();
       expect($('.truncation-marker').css('display')).to.equal('none');
     });
 
     it('should place the bars above the axis', function() {
-      var chart = createNewColumnChart();
+      var chart = createColumnChart();
       // Find the x-axis. It's the bottommost one of the ticks
       var xAxis = $(_.reduce(chart.element.find('.ticks').children(), function(accum, element) {
         if ($(accum).position().top < $(element).position().top) {
@@ -236,7 +239,7 @@ describe('columnChart', function() {
       var testData = [
         {"name": "THEFT", "total": 10}
       ];
-      var chart = createNewColumnChart(null, null, testData);
+      var chart = createColumnChart(null, null, testData);
       var bars = chart.element.find('.bar.unfiltered');
       // the column chart adds padding and stuff. Get the ACTUAL height we want to be.
       var maxHeight = bars.eq(0).height();
@@ -272,7 +275,7 @@ describe('columnChart', function() {
         {"name": "TOTAL_POSITIVE_FILTERED_NEGATIVE", "total": 10, "filtered": -10},
         {"name": "TOTAL_NEGATIVE_FILTERED_POSITIVE", "total": -10, "filtered": 10}
       ];
-      var chart = createNewColumnChart(null, null, testData);
+      var chart = createColumnChart(null, null, testData);
       var bars = chart.element.find('.bar.unfiltered');
 
       function findName(name) {
@@ -351,14 +354,15 @@ describe('columnChart', function() {
       it('should base the y scale on all data', function() {
         // Make a prototypal chart with only small values.
         // Then grab the height of the columns.
-        var chartWithOnlySmall = createNewColumnChart(50, true, testDataOnlySmall); // 50px wide is too small to show all the bars.
+        // 50px wide is too small to show all the bars.
+        var chartWithOnlySmall = createColumnChart(50, true, testDataOnlySmall);
         var heightOfSmallColumns = chartWithOnlySmall.element.find('.bar').height();
         expect(heightOfSmallColumns).to.be.above(0);
-        removeColumnChart();
+        removeColumnCharts();
 
         // Now, make almost the same chart, but tack on one huge value at the end.
         // It should not affect the scale.
-        var chartWithBigToo = createNewColumnChart(50, true, testDataWithOneBigAtEnd);
+        var chartWithBigToo = createColumnChart(50, true, testDataWithOneBigAtEnd);
         var heightOfColumnsWithBigToo = chartWithBigToo.element.find('.bar').height();
 
         expect(heightOfColumnsWithBigToo).to.be.below(heightOfSmallColumns); // Big data means small bars.
@@ -371,14 +375,14 @@ describe('columnChart', function() {
       it('should only base the y scale on the visible bars', function() {
         // Make a prototypal chart with only small values.
         // Then grab the height of the columns.
-        var chartWithOnlySmall = createNewColumnChart(50, false, testDataOnlySmall); // 50px wide is too small to show all the bars.
+        var chartWithOnlySmall = createColumnChart(50, false, testDataOnlySmall); // 50px wide is too small to show all the bars.
         var heightOfSmallColumns = chartWithOnlySmall.element.find('.bar').height();
         expect(heightOfSmallColumns).to.be.above(0);
-        removeColumnChart();
+        removeColumnCharts();
 
         // Now, make almost the same chart, but tack on one huge value at the end.
         // It should not affect the scale.
-        var chartWithBigToo = createNewColumnChart(50, false, testDataWithOneBigAtEnd);
+        var chartWithBigToo = createColumnChart(50, false, testDataWithOneBigAtEnd);
         var heightOfColumnsWithBigToo = chartWithBigToo.element.find('.bar').height();
 
         expect(heightOfColumnsWithBigToo).to.equal(heightOfSmallColumns);
@@ -393,7 +397,7 @@ describe('columnChart', function() {
     var expanded = false;
 
     it('should show the moar marker', function() {
-      createNewColumnChart(width, expanded);
+      createColumnChart(width, expanded);
       expect($('.truncation-marker').css('display')).to.equal('block');
     });
   });
@@ -403,14 +407,14 @@ describe('columnChart', function() {
     var expanded = true;
 
     it('should create ' + bars + ' bars and ' + labels + ' labels', function() {
-      createNewColumnChart(width, expanded);
+      createColumnChart(width, expanded);
       expect($('.bar-group').length).to.equal(bars);
       expect($('.bar.unfiltered').length).to.equal(bars);
       expect($('.labels div.label').length).to.equal(testData.length);
     });
 
     it('should not show the moar marker', function() {
-      createNewColumnChart(width, expanded);
+      createColumnChart(width, expanded);
       expect($('.truncation-marker').css('display')).to.equal('none');
     });
 
@@ -426,17 +430,17 @@ describe('columnChart', function() {
     var expanded = false;
 
     it('should maintain a bar width >= minSmallCardBarWidth (' + minSmallCardBarWidth + 'px)', function() {
-      createNewColumnChart(width, expanded);
+      createColumnChart(width, expanded);
       expect($('.bar.unfiltered').width() >= minSmallCardBarWidth).to.equal(true);
     });
 
     it('should maintain a bar width <= maxSmallCardBarWidth (' + maxSmallCardBarWidth + 'px)', function() {
-      createNewColumnChart(width, expanded);
+      createColumnChart(width, expanded);
       expect($('.bar.unfiltered').width() <= maxSmallCardBarWidth).to.equal(true);
     });
 
     it('should maintain spacing between bars', function() {
-      createNewColumnChart(width, expanded);
+      createColumnChart(width, expanded);
       var barGroup1 = $('.bar-group')[0];
       var barGroup2 = $('.bar-group')[1];
       var barGroup1Left = parseInt(barGroup1.style.left);
@@ -445,6 +449,7 @@ describe('columnChart', function() {
       expect(barGroup2Left - barGroup1Left > barWidth).to.equal(true);
     });
     it('should hide some bars', function() {
+      createColumnChart(width, expanded);
       expect($('.bar-group:not(.active)').length).to.not.equal(0);
     });
   });
@@ -454,17 +459,17 @@ describe('columnChart', function() {
     var expanded = false;
 
     it('should maintain a bar width >=  minSmallCardBarWidth (' + minSmallCardBarWidth + 'px)', function() {
-      createNewColumnChart(width, expanded);
+      createColumnChart(width, expanded);
       expect($('.bar.unfiltered').width()).to.be.at.least(minSmallCardBarWidth);
     });
 
     it('should maintain a bar width <= maxSmallCardBarWidth (' + maxSmallCardBarWidth + 'px)', function() {
-      createNewColumnChart(width, expanded);
+      createColumnChart(width, expanded);
       expect($('.bar.unfiltered').width()).to.be.at.most(maxSmallCardBarWidth);
     });
 
     it('should maintain spacing between bars', function() {
-      createNewColumnChart(width, expanded);
+      createColumnChart(width, expanded);
       var barGroup1 = $('.bar-group')[0];
       var barGroup2 = $('.bar-group')[1];
       var barGroup1Left = parseInt(barGroup1.style.left);
@@ -473,8 +478,8 @@ describe('columnChart', function() {
       expect(barGroup2Left - barGroup1Left).to.be.above(barWidth);
     });
 
-    it('should not show the moar marker', function() {
-      createNewColumnChart(width, expanded);
+    it('should not show the more marker', function() {
+      createColumnChart(width, expanded);
       expect($('.truncation-marker').css('display')).to.equal('none');
     });
   });
@@ -484,12 +489,12 @@ describe('columnChart', function() {
     var expanded = true;
 
     it('should maintain a bar width >= minExpandedCardBarWidth (' + minExpandedCardBarWidth + 'px)', function() {
-      createNewColumnChart(width, expanded);
+      createColumnChart(width, expanded);
       expect($('.bar.unfiltered').width()).to.be.at.least(minExpandedCardBarWidth);
     });
 
     it('should maintain spacing between bars', function() {
-      createNewColumnChart(width, expanded);
+      createColumnChart(width, expanded);
       var barGroup1 = $('.bar-group')[0];
       var barGroup2 = $('.bar-group')[1];
       var barGroup1Left = parseInt(barGroup1.style.left);
@@ -504,12 +509,12 @@ describe('columnChart', function() {
     var expanded = true;
 
     it('should maintain a bar width <= maxExpandedCardBarWidth (' + maxExpandedCardBarWidth + 'px)', function() {
-      createNewColumnChart(width, expanded);
+      createColumnChart(width, expanded);
       expect($('.bar.unfiltered').width()).to.be.at.most(maxExpandedCardBarWidth);
     });
 
     it('should maintain spacing between bars', function() {
-      createNewColumnChart(width, expanded);
+      createColumnChart(width, expanded);
       var barGroup1 = $('.bar-group')[0];
       var barGroup2 = $('.bar-group')[1];
       var barGroup1Left = parseInt(barGroup1.style.left);
@@ -519,7 +524,7 @@ describe('columnChart', function() {
     });
 
     it('should not show the moar marker', function() {
-      createNewColumnChart(width, expanded);
+      createColumnChart(width, expanded);
       expect($('.truncation-marker').css('display')).to.equal('none');
     });
   });
@@ -537,10 +542,16 @@ describe('columnChart', function() {
 
     describe('with showFiltered on', function() {
 
-      it('should create ' + bars + ' filtered and unfiltered bars, with the correct heights', function() {
-        var chart = createNewColumnChart(640, false, testDataWithFiltered);
-        var scope = chart.scope;
+      var chart;
+      var scope;
 
+      beforeEach(function() {
+        chart = createColumnChart(640, false, testDataWithFiltered);
+        scope = chart.scope;
+        $('#uber-flyout').hide();
+      });
+
+      it('should create ' + bars + ' filtered and unfiltered bars, with the correct heights', function() {
         scope.showFiltered = true;
         scope.$digest();
         expect($('.bar.filtered').length).to.equal(bars);
@@ -555,39 +566,46 @@ describe('columnChart', function() {
           expect(Math.abs(unfilteredHeight / 2 - filteredHeight) <= 0.5).to.equal(true);
         });
       });
+
       it('should add class hover to bar on flyout event, and remove class on exit', function() {
-        var chart = createNewColumnChart(640, false, testDataWithFiltered);
-        var scope = chart.scope;
+        var barGroup = chart.element.find('.bar-group').get(0);
         scope.showFiltered = true;
         scope.$digest();
 
-        chart.element.find('.bar-group').eq(1).mouseover();
+        th.fireMouseEvent(barGroup, 'mousemove');
         expect(chart.element.find('.bar-group').hasClass('hover')).to.equal(true);
-        chart.element.find('.bar-group').eq(1).mouseout();
+        th.fireMouseEvent(barGroup, 'mouseout');
         expect(chart.element.find('.bar-group').hasClass('hover')).to.equal(false);
       });
+
       it('should show the filtered count in the flyout', function() {
-        var chart = createNewColumnChart(640, false, testDataWithFiltered);
-        var scope = chart.scope;
+        var barGroup = chart.element.find('.bar-group').get(0);
+        var flyout = $('#uber-flyout');
+
         scope.showFiltered = true;
         scope.$digest();
 
-        chart.element.find('.bar-group').eq(1).mouseover();
-        expect($('.flyout').is(':contains(Filtered Amount)')).to.equal(true);
-        chart.element.find('.bar-group').eq(1).mouseout();
-        expect($('.flyout').is(':contains(Filtered Amount)')).to.equal(false);
+        th.fireMouseEvent(barGroup, 'mousemove');
+        expect(flyout.find('.flyout-cell:contains(Filtered amount)').length).to.equal(1);
       });
 
     });
 
     describe('with showFiltered off', function() {
-      it('should show the filtered count in the flyout', function() {
-        var chart = createNewColumnChart(640, false, testDataWithFiltered);
 
-        chart.element.find('.bar-group').eq(1).mouseover();
-        expect($('.flyout').is(':contains(Filtered Amount)')).to.equal(false);
-        chart.element.find('.bar-group').eq(1).mouseout();
-        expect($('.flyout').length).to.equal(0);
+      var chart;
+
+      beforeEach(function() {
+        chart = createColumnChart(640, false, testDataWithFiltered);
+        $('#uber-flyout').hide();
+      });
+
+      it('should not show the filtered count in the flyout', function() {
+        var barGroup = chart.element.find('.bar-group').get(0);
+        var flyout = $('#uber-flyout');
+
+        th.fireMouseEvent(barGroup, 'mousemove');
+        expect(flyout.find('.flyout-cell:contains(Filtered amount)').length).to.equal(0);
       });
     });
 
@@ -598,7 +616,7 @@ describe('columnChart', function() {
 
     it('should create 1 special bar-group', function() {
       var testDataWithSpecial = testDataWithSpecialAtIndex(specialIndex);
-      createNewColumnChart(640, false, testDataWithSpecial);
+      createColumnChart(640, false, testDataWithSpecial);
       expect($('.bar-group.special').length).to.equal(1);
       expect($('.bar-group.special')[0].__data__.name).to.equal(testDataWithSpecial[specialIndex].name);
     });
@@ -608,7 +626,7 @@ describe('columnChart', function() {
   describe('when data changes dynamically', function() {
 
     it('should hide all existing bars when the data is cleared', function() {
-      var scope = createNewColumnChart().scope;
+      var scope = createColumnChart().scope;
 
       scope.testData = [];
       scope.$digest();
@@ -618,13 +636,15 @@ describe('columnChart', function() {
   });
 
   describe('when there are a small number of columns', function() {
-    var chart, scope, element;
+    var chart;
+    var scope;
+    var element;
     var ensureChart = _.once(function() {
       var testDataSubset = _.select(testData, function(object, index) {
         return index < 4;
       });
       expect(testDataSubset.length).to.equal(4);
-      chart = createNewColumnChart(1000, false, testDataSubset);
+      chart = createColumnChart(1000, false, testDataSubset);
       scope = chart.scope;
       element = chart.element;
     });
@@ -644,9 +664,11 @@ describe('columnChart', function() {
   });
 
   describe('column labels', function() {
-    var chart, scope, element;
+    var chart;
+    var scope;
+    var element;
     var ensureChart = _.once(function() {
-      chart = createNewColumnChart(100, false, testData);
+      chart = createColumnChart(100, false, testData);
       scope = chart.scope;
       element = chart.element;
     });
@@ -699,7 +721,7 @@ describe('columnChart', function() {
   describe('when the truncation marker is clicked', function() {
 
     it('should emit the column-chart:truncation-marker-clicked event', function() {
-      var scope = createNewColumnChart(300, false, testData).scope;
+      var scope = createColumnChart(300, false, testData).scope;
       var moarMarker = $('.truncation-marker');
       var receivedEvent = false;
 
@@ -716,10 +738,12 @@ describe('columnChart', function() {
 
   describe('column-chart:datum-clicked event', function() {
     var indexOfItemToClick = 2;
-    var chart, scope, element;
+    var chart;
+    var scope;
+    var element;
     var correctEventRaised = new Rx.Subject();
-    var ensureChart = _.once(function() {
-      chart = createNewColumnChart(300, false, testData);
+    var ensureChart = function() {
+      chart = createColumnChart(300, false, testData);
       scope = chart.scope;
       element = chart.element;
 
@@ -727,7 +751,7 @@ describe('columnChart', function() {
         expect(args).to.equal(testData[indexOfItemToClick]);
         correctEventRaised.onNext();
       });
-    });
+    };
 
     it('should be raised when the bar-groups are clicked', function(done) {
       ensureChart();
@@ -764,17 +788,17 @@ describe('columnChart', function() {
   describe('when the name of a datum is blank', function() {
 
     it('should use the placeholder value', function() {
-      createNewColumnChart(640, false, testDataWithBlankAtIndex(0));
+      createColumnChart(640, false, testDataWithBlankAtIndex(0));
       expect($('.labels .label').first().find('.contents .text').text()).to.equal('(No value)');
     });
 
     it('should style the placeholder by adding a class to the label text', function() {
-      createNewColumnChart(640, false, testDataWithBlankAtIndex(0));
+      createColumnChart(640, false, testDataWithBlankAtIndex(0));
       expect($('.labels .label').first().find('.contents').hasClass('undefined')).to.equal(true);
     });
 
     it('should not add the class to labels with non-blank text', function() {
-      createNewColumnChart(640, false, testDataWithBlankAtIndex(-1));
+      createColumnChart(640, false, testDataWithBlankAtIndex(-1));
       expect(_.any($('.labels .label .contents .text'), function(el) {
         return $(el).hasClass('undefined');
       })).to.equal(false);
@@ -787,27 +811,29 @@ describe('columnChart', function() {
   describe('when the name of a datum is NaN', function() {
 
     it('should use the placeholder value', function() {
-      createNewColumnChart(640, false, testDataWithNaNAndSpecialAtIndex(0));
+      createColumnChart(640, false, testDataWithNaNAndSpecialAtIndex(0));
       expect($('.labels .label').first().find('.contents .text').text()).to.equal('(No value)');
     });
 
     it('should style the label by adding classes', function() {
-      createNewColumnChart(640, false, testDataWithNaNAndSpecialAtIndex(0));
+      createColumnChart(640, false, testDataWithNaNAndSpecialAtIndex(0));
       expect($('.labels .label').first().find('.contents').hasClass('undefined')).to.equal(true);
       expect($('.labels .label').first().hasClass('special')).to.equal(true);
     });
 
     it('should style the bar-group by adding a class', function() {
-      createNewColumnChart(640, false, testDataWithNaNAndSpecialAtIndex(0));
+      createColumnChart(640, false, testDataWithNaNAndSpecialAtIndex(0));
       expect($('.bar-group').first().hasClass('special')).to.equal(true);
     });
   });
 
 
   describe('when displaying labels', function() {
-    var chart, scope, element;
+    var chart;
+    var scope;
+    var element;
     var ensureChart = _.once(function() {
-      chart = createNewColumnChart(499, false, testData);
+      chart = createColumnChart(499, false, testData);
       scope = chart.scope;
       element = chart.element;
     });
@@ -841,9 +867,11 @@ describe('columnChart', function() {
 
   describe('render timing events', function() {
     it('should emit render:start and render:complete events on rendering', function(done) {
-      var chart, scope, element;
+      var chart;
+      var scope;
+      var element;
 
-      chart = createNewColumnChart();
+      chart = createColumnChart();
       scope = chart.scope;
 
       var renderEvents = scope.$eventToObservable('render:start').merge(scope.$eventToObservable('render:complete'));
@@ -867,6 +895,66 @@ describe('columnChart', function() {
       scope.testData = testData.concat([]);
       scope.$digest();
       timeout.flush(); // Needed to simulate a frame. Render:complete won't be emitted otherwise.
+    });
+
+  });
+
+  describe('flyouts', function() {
+
+    var chart;
+    var labelContents = '.labels .label .contents';
+    var labelSubContents = 'span:not(.icon-close)';
+
+    var testDataWithFiltered = _.map(testData, function(d) {
+      return {
+        name: d.name,
+        total: d.total,
+        filtered: d.total / 2
+      };
+    });
+
+    beforeEach(function() {
+      chart = createColumnChart(640, false, testDataWithFiltered);
+      $('#uber-flyout').hide();
+    });
+
+    it('should appear on mouseover of a bar', function() {
+      var flyout = $('#uber-flyout');
+      var barGroup = chart.element.find('.bar-group').get(0);
+
+      expect(flyout.is(':hidden')).to.equal(true);
+      th.fireMouseEvent(barGroup, 'mousemove');
+      expect(flyout.is(':visible')).to.equal(true);
+    });
+
+    it('should appear on mouseover of a bar\'s label', function() {
+      var flyout = $('#uber-flyout');
+      var barLabel = $(labelContents).eq(0);
+
+      expect(flyout.is(':hidden')).to.equal(true);
+      th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
+      expect(flyout.is(':visible')).to.equal(true);
+    });
+
+    it('should have the correct title', function() {
+      var barLabel = $(labelContents).eq(0);
+      var labelText = barLabel.find('.text').text();
+      var flyoutTitle;
+      var flyout = $('#uber-flyout');
+
+      th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
+      flyoutTitle = flyout.find('.flyout-title').text();
+      expect(labelText).to.equal(flyoutTitle);
+    });
+
+    it('should disappear on mouseout of a bar and mouseover the flyout', function() {
+      var flyout = $('#uber-flyout');
+      var barGroup = chart.element.find('.bar-group').get(0);
+
+      th.fireMouseEvent(barGroup, 'mousemove');
+      expect(flyout.is(':visible')).to.equal(true);
+      th.fireMouseEvent(flyout.get(0), 'mousemove');
+      expect(flyout.is(':hidden')).to.equal(true);
     });
 
   });

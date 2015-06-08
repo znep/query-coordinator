@@ -82,7 +82,7 @@
         // our instance of save-button. save-button-flyout-target is not under our control.
         var mySaveButtonScope = element.find('save-button').scope();
         FlyoutService.register({
-          className: 'save-button-flyout-target',
+          selector: '.save-button-flyout-target',
           render: function(element) {
             var closestSaveButtonScope = $(element).closest('save-button').scope();
             if (closestSaveButtonScope != mySaveButtonScope) { return undefined; }

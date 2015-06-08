@@ -378,68 +378,162 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     barGroupSelection.call(updateBars);
     labelSelection.call(updateLabels);
 
-    // Flyout with bar/filter information
-    $chartScroll.flyout({
-      selector: '.bar-group.active, .labels .label .contents span:not(.icon-close)',
-      parent: document.body,
-      direction: 'top',
-      inset: {
-        vertical: -4
-      },
-      positionOn: function($target) {
-        var name = d3.select($target[0]).datum().name.toString();
-        name = name.replace(/\\/g, '\\\\');
-        var barGroup = element.find('[data-bar-name="{0}"].bar-group'.format(name));
-        barGroup.addClass('hover');
-        $target.one('mouseout', function() {
-          barGroup.removeClass('hover');
-        });
-        $target.one('click', function() {
-          $target.trigger('mouseout');
-        });
-        return Modernizr.pointerevents ?
-          element.find('[data-bar-name="{0}"].bar-group .bar.unfiltered'.format(name)) :
-          barGroup;
-      },
-      title: function($target, $head, options) {
-        var data = d3.select($target[0]).datum();
-        return labelValueOrPlaceholder(data.name);
-      },
-      table: function($target, $head, options, $flyout) {
-        var data = d3.select($target[0]).datum();
-        var unit = '';
-        if (rowDisplayUnit) {
-          unit = ' ' + rowDisplayUnit.pluralize();
+    // Render the content of the column chart flyout by grabbing
+    // the parent barGroup element's d3 data and constructing
+    // the markup of the flyout.
+    function renderFlyout(target) {
+      var data;
+      var unfilteredValue;
+      var filteredValue;
+      var barGroup;
+      var flyoutTitle;
+      var flyoutContent;
+      var flyoutSpanClass;
+
+      // Helper function to properly format flyout values.
+      var formatFlyoutValue = function(value) {
+        var formattedValue;
+
+        if (_.isFinite(value)) {
+          if (rowDisplayUnit) {
+            formattedValue = (value === 1) ?
+              rowDisplayUnit : rowDisplayUnit.pluralize();
+            formattedValue = ' ' + formattedValue;
+          }
+
+          formattedValue = $.toHumaneNumber(value) + formattedValue;
+        } else {
+          formattedValue = '(No value)';
         }
-        var rows = [['Total', (_.isFinite(data.total) ? $.toHumaneNumber(data.total) + unit : '(No value)')]];
+
+        return formattedValue;
+      };
+
+      // Make sure that target is defined before we
+      // start using it to grab data and build the
+      // flyout content.
+      if (_.isDefined(target)) {
+
+        barGroup = $(target).parent().get(0);
+        data = d3.select(barGroup).datum();
+        flyoutTitle = labelValueOrPlaceholder(data.name);
+        unfilteredValue = formatFlyoutValue(data.total);
+
+        flyoutContent = [
+          '<div class="flyout-title">{0}</div>',
+          '<div class="flyout-row">',
+            '<span class="flyout-cell">Total</span>',
+            '<span class="flyout-cell">{1}</span>',
+          '</div>'
+        ];
+
+        // If we are showing filtered data, then
+        // show the filtered data on the flyout.
         if (showFiltered) {
-          var filteredAmount = $.toHumaneNumber(data.filtered) + unit;
-          var spanTemplate = '<span class="{0}">{1}</span>';
-          var spanClass = data.special ? 'is-selected' : 'is-highlighted';
-          rows.push([spanTemplate.format(spanClass, 'Filtered Amount:'), spanTemplate.format(spanClass, filteredAmount)]);
+
+          filteredValue = formatFlyoutValue(data.filtered);
+          flyoutSpanClass = 'emphasis';
+          flyoutContent.push(
+            '<div class="flyout-row">',
+              '<span class="flyout-cell {2}">Filtered amount</span>',
+              '<span class="flyout-cell {2}">{3}</span>',
+            '</div>');
+
+          // If we are hovering over a bar we are
+          // currently filtering by, then display a special
+          // flyout message.
+          if (data.special) {
+
+            flyoutSpanClass = 'is-selected';
+            flyoutContent.push(
+              '<div class="flyout-row">',
+                '<span class="flyout-cell">&#8203;</span>',
+                '<span class="flyout-cell">&#8203;</span>',
+              '</div>',
+              '<div class="flyout-row">',
+                '<span class="flyout-cell">The page is currently ',
+                'filtered by this value, click to clear it</span>',
+                '<span class="flyout-cell"></span>',
+              '</div>');
+           }
+
+           flyoutContent = flyoutContent.
+             join('').
+             format(flyoutTitle, unfilteredValue,
+               flyoutSpanClass, filteredValue);
+
+        } else {
+
+          flyoutContent = flyoutContent.
+            join('').
+            format(flyoutTitle, unfilteredValue);
+
         }
 
-        if (data.special) {
-          rows.push(['&#8203;', '&#8203;']);
-          rows.push(['The page is currently filtered by this value, click to clear it', '']);
+        return flyoutContent;
+      }
+    }
+
+    var flyoutSelectors = [
+      '.bar-group.active',
+      '.bar-group.active .bar',
+      '.labels .label .contents span:not(.icon-close)'
+    ];
+
+    FlyoutService.register({
+      selector: flyoutSelectors.join(', '),
+      render: renderFlyout,
+      positionOn: function(target) {
+        var barName;
+        var barGroup;
+        var unfilteredValue;
+        var filteredValue;
+        var flyoutTarget;
+
+        // If we're hovering over a .bar within
+        // .bar-group, update the target reference.
+        if ($(target).is('.bar-group.active .bar')) {
+          target = $(target).parent().get(0);
         }
 
-        return rows;
+        // Select the barGroup using d3 datum().
+        barName = d3.select(target).
+          datum().
+          name.
+          toString().
+          replace(/\\/g, '\\\\');
+        barGroup = element.
+          find('.bar-group[data-bar-name="{0}"]'.format(barName)).
+          get(0);
+
+        if (_.isDefined(barGroup)) {
+
+          // Add hover effects to the barGroup.
+          $(barGroup).addClass('hover');
+          $(target).one('mouseout', function() {
+            $(barGroup).removeClass('hover');
+          });
+
+          // Save the unfiltered and filtered values.
+          unfilteredValue = d3.select(barGroup).datum().total;
+          filteredValue = d3.select(barGroup).datum().filtered;
+
+          // Position the flyout over the bar (filtered v. unfiltered)
+          // with the greater value.
+          if (filteredValue > unfilteredValue) {
+            flyoutTarget = $(barGroup).find('.filtered').get(0);
+          } else {
+            flyoutTarget = $(barGroup).find('.unfiltered').get(0);
+          }
+
+          return flyoutTarget;
+        }
       }
     });
 
-    // Flyout for the clear filter icon
-    $chartScroll.flyout({
+    FlyoutService.register({
       selector: '.labels .label .contents .icon-close',
-      parent: document.body,
-      direction: 'top',
-      positionOn: function($target) {
-        $target.one('click', function() {
-          $target.trigger('mouseout');
-        });
-        return $target;
-      },
-      html: 'Clear filter'
+      render: _.constant('<div class="flyout-title">Clear filter</div>')
     });
 
     // Set "Click to Expand" truncation marker + its tooltip
@@ -580,7 +674,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       });
 
       FlyoutService.register({
-        className: 'truncation-marker',
+        selector: '.truncation-marker',
         render: _.constant('<div class="flyout-title">Click to expand</div>'),
         destroySignal: scope.$destroyAsObservable(element)
       });

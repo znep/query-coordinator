@@ -24,7 +24,7 @@
   ) {
 
     FlyoutService.register({
-      className: 'export-visualization-disabled',
+      selector: '.export-visualization-disabled',
       render: _.constant(
         '<div class="flyout-title">This visualization is not available' +
         '<br/>for image export</div>'
@@ -861,7 +861,7 @@
          * Flyouts.
          */
         FlyoutService.register({
-          className: 'card-control',
+          selector: '.card-control',
           render: function(el) {
             return '<div class="flyout-title">{0}</div>'.format($(el).attr('title'));
           },
@@ -869,7 +869,7 @@
         });
 
         FlyoutService.register({
-          className: 'add-card-button',
+          selector: '.add-card-button',
           render: function(el) {
             if ($(el).hasClass('disabled')) {
               return '<div class="flyout-title">All available cards are already on the page</div>';

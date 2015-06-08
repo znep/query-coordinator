@@ -569,7 +569,7 @@
     var destroy$ = $scope.$destroyAsObservable();
 
     FlyoutService.register({
-      className: 'edit-page-warning',
+      selector: '.edit-page-warning',
       render: function() {
         if ($scope.writablePage.warnings && $scope.writablePage.warnings.name) {
           return $scope.writablePage.warnings.name.join('\n');
@@ -646,7 +646,7 @@
     // Set up flyout handlers.
 
     FlyoutService.register({
-      className: 'download-menu-item-disabled-text',
+      selector: '.download-menu-item-disabled-text',
       render: _.constant(
         '<div class="flyout-title">' +
           'Please save the page in order to download a visualization as an image' +
@@ -664,7 +664,7 @@
     //in the toolbar, and also the Save button in the Save As dialog. We need to check that this
     //is _our_ save button.
     FlyoutService.register({
-      className: 'save-button-flyout-target',
+      selector: '.save-button-flyout-target',
       render: function(element) {
 
         if ($(element).closest('.save-this-page').length === 0) {
@@ -686,7 +686,7 @@
     });
 
     FlyoutService.register({
-      className: 'save-as-button',
+      selector: '.save-as-button',
       render: function() {
 
         return $scope.hasChanges ?
@@ -697,7 +697,7 @@
     });
 
     FlyoutService.register({
-      className: 'clear-all-filters-button',
+      selector: '.clear-all-filters-button',
       render: function() {
 
         return '<div class="flyout-title">Click to reset all filters</div>';

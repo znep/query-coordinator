@@ -2211,22 +2211,22 @@
         // Set up flyout registrations and event handlers.
         //
         FlyoutService.register({
-          className: 'timeline-chart-highlight-target',
+          selector: '.timeline-chart-highlight-target',
           render: renderFlyout
         });
 
         FlyoutService.register({
-          className: 'x-tick-label',
+          selector: '.x-tick-label',
           render: renderIntervalFlyout
         });
 
         FlyoutService.register({
-          className: 'datum-label',
+          selector: '.datum-label',
           render: renderIntervalFlyout
         });
 
         FlyoutService.register({
-          className: 'selection-marker',
+          selector: '.selection-marker',
           render: renderSelectionMarkerFlyout,
           
           // CORE-4384: The flyout should be centered on the drag
@@ -2237,12 +2237,12 @@
         });
 
         FlyoutService.register({
-          className: 'timeline-chart-clear-selection-label',
+          selector: '.timeline-chart-clear-selection-label',
           render: renderClearSelectionMarkerFlyout
         });
 
         FlyoutService.register({
-          className: 'timeline-chart-clear-selection-button',
+          selector: '.timeline-chart-clear-selection-button',
           render: renderClearSelectionMarkerFlyout
         });
 
@@ -2259,27 +2259,27 @@
           mouseMoveOrLeftButtonChangesSubscription.dispose();
 
           FlyoutService.deregister({
-            className: 'timeline-chart-highlight-target',
+            selector: '.timeline-chart-highlight-target',
             render: renderFlyout
           });
 
           FlyoutService.deregister({
-            className: 'x-tick-label',
+            selector: '.x-tick-label',
             render: renderIntervalFlyout
           });
 
           FlyoutService.deregister({
-            className: 'selection-marker',
+            selector: '.selection-marker',
             render: renderSelectionMarkerFlyout
           });
 
           FlyoutService.deregister({
-            className: 'timeline-chart-clear-selection-label',
+            selector: '.timeline-chart-clear-selection-label',
             render: renderClearSelectionMarkerFlyout
           });
 
           FlyoutService.deregister({
-            className: 'timeline-chart-clear-selection-button',
+            selector: '.timeline-chart-clear-selection-button',
             render: renderClearSelectionMarkerFlyout
           });
 

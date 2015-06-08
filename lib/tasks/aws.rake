@@ -4,6 +4,11 @@ namespace :aws do
     database_mainainter(args).migrate
   end
 
+  desc 'Check database migration status in AWS'
+  task 'migrate:status', [:region, :environment] do |t, args|
+    database_mainainter(args).status
+  end
+
   desc 'Rollback database in AWS'
   task :rollback, [:region, :environment] do |t, args|
     database_mainainter(args).rollback

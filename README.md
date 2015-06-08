@@ -78,6 +78,52 @@ the master branch.
 
 https://docs.google.com/a/socrata.com/document/d/1LVjxsNdhd6V5XI4nfFb_9B0NJjWSadimaSh98FtaUy0/edit?usp=sharing
 
+If a deployment has any migrations that need to be run, they must be run
+manually against the production databases. See below for example commands.
+
+Migrations are not run as part of the automatic deployment scripts because
+they are high risk, need to be supervised, and typically are run once.
+
+There is a task for checking whether migrations need to be run. See `rake aws:migrate:status` below.
+
+### Migrations
+
+Running rails database migrations against our production RDS
+instances in AWS can be done with a handful of rake tasks.
+
+```
+$ rake -T aws
+rake aws:migrate[region,environment]   # Migrate database in AWS
+rake aws:rollback[region,environment]  # Rollback database in AWS
+rake aws:seed[region,environment]      # Seed database in AWS
+rake aws:migrate:status[region,environment]  # Check database migration status in AWS
+```
+
+Before running the migration rake tasks, ensure you have AWS admin access to staging/rc
+and that you're connected to the VPN.
+
+AWS admin credentials must be set up by an OPS team member.
+
+To perform migrations against `staging` or `rc` in the `us-west-2` region:
+
+```
+rake aws:migrate[us-west-2,staging]
+rake aws:migrate[us-west-2,rc]
+```
+
+Additionally, `rollback` and `seed` are supported.
+
+```
+rake aws:rollback[us-west-2,staging]
+rake aws:seed[us-west-2,staging]
+```
+
+And migrating a different region might look like this:
+
+```
+rake aws:migrate[eu-west-1,staging]
+```
+
 ### Special notes
 
 This project depends on Socrata's core-auth-ruby gem, which is only available

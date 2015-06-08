@@ -48,6 +48,10 @@ module Aws
       rake['db:seed'].invoke
     end
 
+    def status
+      rake['db:migrate:status'].invoke
+    end
+
     private
     attr_reader :environment, :region
 

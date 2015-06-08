@@ -117,4 +117,16 @@ RSpec.describe Aws::DatabaseMaintainer do
       end
     end
   end
+
+  describe "#status" do
+    subject { Aws::DatabaseMaintainer.new(environment: environment, region: region) }
+
+    it "invokes db:migrate:status rake task" do
+      task_spy = spy('task')
+      expect(rake_application).to receive(:[]).with("db:migrate:status").and_return(task_spy)
+      expect(task_spy).to receive(:invoke)
+      subject.status
+    end
+  end
+
 end

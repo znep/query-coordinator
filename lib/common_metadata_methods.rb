@@ -63,10 +63,6 @@ module CommonMetadataMethods
     @new_view_manager ||= NewViewManager.new
   end
 
-  def inherit_catalog_lens_permissions?
-    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:use_catalog_lens_permissions]
-  end
-
   # CORE-4645 OBE datasets can have columns that have sub-columns. When converted to the NBE, these
   # sub-columns become their own columns. This function flags them with a 'subcolumn' boolean, via
   # heuristics (so not guaranteed to be 100% accurate!)

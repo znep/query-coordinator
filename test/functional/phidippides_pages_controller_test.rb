@@ -23,7 +23,6 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
       create: { body: '', status: '200' },
       update: { body: '', status: '200' }
     )
-    stub_feature_flags_with(:use_catalog_lens_permissions, true)
   end
 
   def json_post(body = nil)

@@ -19,7 +19,6 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
       :phidippides => @phidippides,
       :new_view_manager => @new_view_manager
     )
-    stub_feature_flags_with(:use_catalog_lens_permissions, true)
   end
 
   def set_up_json_request(body = nil)

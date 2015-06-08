@@ -38,22 +38,19 @@ class PhidippidesDatasetsController < ApplicationController
   # fetching the geometry label of shape files, however.
   def show
     return render :nothing => true, :status => '400' unless params[:id].present?
+    return render :nothing => true, :status => '403' unless can_read_dataset_data?(params[:id])
 
-    if inherit_catalog_lens_permissions?
-      return render :nothing => true, :status => '403' unless can_read_dataset_data?(params[:id])
-
-      # Grab permissions from core
-      begin
-        permissions = fetch_permissions(params[:id])
-      rescue NewViewManager::ViewNotFound
-        return render :nothing => true, :status => '404'
-      rescue NewViewManager::ViewAuthenticationRequired => e
-        return render :json => { error: e.message }, :status => '401'
-      rescue NewViewManager::ViewAccessDenied => e
-        return render :json => { error: e.message }, :status => '403'
-      rescue
-        return render :nothing => true, :status => '500'
-      end
+    # Grab permissions from core
+    begin
+      permissions = fetch_permissions(params[:id])
+    rescue NewViewManager::ViewNotFound
+      return render :nothing => true, :status => '404'
+    rescue NewViewManager::ViewAuthenticationRequired => e
+      return render :json => { error: e.message }, :status => '401'
+    rescue NewViewManager::ViewAccessDenied => e
+      return render :json => { error: e.message }, :status => '403'
+    rescue
+      return render :nothing => true, :status => '500'
     end
 
     begin
@@ -87,7 +84,7 @@ class PhidippidesDatasetsController < ApplicationController
   end
 
   def update
-    unless (inherit_catalog_lens_permissions? ? dataset(params[:id]).can_edit? : can_create_metadata?)
+    unless dataset(params[:id]).can_edit?
       return render :nothing => true, :status => '401'
     end
 

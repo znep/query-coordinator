@@ -22,26 +22,24 @@ class PhidippidesPagesController < ApplicationController
   def show
     return render :nothing => true, :status => '400' unless params[:id].present?
 
-    if inherit_catalog_lens_permissions?
-      # Inherit the permissions from the catalog entry that points to this page.
-      begin
-        permissions = fetch_permissions(params[:id])
-      rescue NewViewManager::ViewNotFound
-        return render :nothing => true, :status => '404'
-      rescue NewViewManager::ViewAuthenticationRequired => error
-        return render :json => { error: error.message }, :status => '401'
-      rescue NewViewManager::ViewAccessDenied => error
-        return render :json => { error: error.message }, :status => '403'
-      rescue => error
-        message = "Unknown error while fetching permissions for pageId #{params[:id]}: #{error}"
-        Rails.logger.error(message)
-        Airbrake.notify(
-          error,
-          :error_class => 'PermissionRetrieval',
-          :error_message => message
-        )
-        return render :nothing => true, :status => '500'
-      end
+    # Inherit the permissions from the catalog entry that points to this page.
+    begin
+      permissions = fetch_permissions(params[:id])
+    rescue NewViewManager::ViewNotFound
+      return render :nothing => true, :status => '404'
+    rescue NewViewManager::ViewAuthenticationRequired => error
+      return render :json => { error: error.message }, :status => '401'
+    rescue NewViewManager::ViewAccessDenied => error
+      return render :json => { error: error.message }, :status => '403'
+    rescue => error
+      message = "Unknown error while fetching permissions for pageId #{params[:id]}: #{error}"
+      Rails.logger.error(message)
+      Airbrake.notify(
+        error,
+        :error_class => 'PermissionRetrieval',
+        :error_message => message
+      )
+      return render :nothing => true, :status => '500'
     end
 
     begin
@@ -98,7 +96,7 @@ class PhidippidesPagesController < ApplicationController
   end
 
   def update
-    unless (inherit_catalog_lens_permissions? ? dataset(params[:id]).can_edit? : can_create_metadata?)
+    unless dataset(params[:id]).can_edit?
       return render :nothing => true, :status => '401'
     end
 
@@ -141,15 +139,11 @@ class PhidippidesPagesController < ApplicationController
   end
 
   def destroy
-    if inherit_catalog_lens_permissions?
-      begin
-        return render :nothing => true, :status => '401' unless dataset(params[:id]).can_edit?
-      rescue CoreServer::ResourceNotFound
-        # Even if the core page doesn't exist, the data lens might have been orphaned, so let the
-        # delete through.
-      end
-    elsif !can_create_metadata?
-      return render :nothing => true, :status => '401'
+    begin
+      return render :nothing => true, :status => '401' unless dataset(params[:id]).can_edit?
+    rescue CoreServer::ResourceNotFound
+      # Even if the core page doesn't exist, the data lens might have been orphaned, so let the
+      # delete through.
     end
 
     result = page_metadata_manager.delete(

@@ -97,10 +97,8 @@ class AngularController < ActionController::Base
 
   def fetch_page_metadata(page_id)
 
-    if inherit_catalog_lens_permissions?
-      # Grab permissions from core.
-      permissions = fetch_permissions_and_normalize_exceptions(page_id)
-    end
+    # Grab permissions from core.
+    permissions = fetch_permissions_and_normalize_exceptions(page_id)
 
     result = phidippides.fetch_page_metadata(
       params[:id],
@@ -141,20 +139,14 @@ class AngularController < ActionController::Base
     end
 
     page_metadata = result[:body]
-
-    if inherit_catalog_lens_permissions?
-      page_metadata[:permissions] = permissions if page_metadata
-    end
-
+    page_metadata[:permissions] = permissions if page_metadata
     page_metadata
   end
 
   def fetch_dataset_metadata(dataset_id)
 
-    if inherit_catalog_lens_permissions?
-      # Grab permissions from core.
-      permissions = fetch_permissions_and_normalize_exceptions(dataset_id)
-    end
+    # Grab permissions from core.
+    permissions = fetch_permissions_and_normalize_exceptions(dataset_id)
 
     result = phidippides.fetch_dataset_metadata(
       dataset_id,
@@ -182,10 +174,7 @@ class AngularController < ActionController::Base
     phidippides.set_default_and_available_card_types_to_columns!(result)
 
     dataset_metadata = result[:body]
-
-    if inherit_catalog_lens_permissions?
-      dataset_metadata[:permissions] = permissions if dataset_metadata && result[:status] =~ /^20[0-9]$/
-    end
+    dataset_metadata[:permissions] = permissions if dataset_metadata && result[:status] =~ /^20[0-9]$/
 
     add_table_column_to_dataset_metadata!(dataset_metadata)
 

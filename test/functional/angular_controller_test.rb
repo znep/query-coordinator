@@ -40,7 +40,6 @@ class AngularControllerTest < ActionController::TestCase
       },
       :set_default_and_available_card_types_to_columns! => {}
     )
-    stub_feature_flags_with(:use_catalog_lens_permissions, true)
 
     # i.e. url_for(:action => :serve_app, :controller => :angular, :id => '1234-1234', :app => 'dataCards')
     get :serve_app, :id => '1234-1234', :app => 'dataCards'
@@ -113,7 +112,6 @@ class AngularControllerTest < ActionController::TestCase
         },
         :set_default_and_available_card_types_to_columns! => {}
       )
-      stub_feature_flags_with(:use_catalog_lens_permissions, true)
     end
 
     should 'should redirect to the login page if the page is private' do
@@ -176,7 +174,6 @@ class AngularControllerTest < ActionController::TestCase
         },
         :set_default_and_available_card_types_to_columns! => {}
       )
-      stub_feature_flags_with(:use_catalog_lens_permissions, true)
     end
 
     should 'should redirect to the 403 page if the page is private' do
@@ -242,8 +239,7 @@ class AngularControllerTest < ActionController::TestCase
     should 'not render google analytics JS if feature flag is not set' do
       FeatureFlags.stubs(
         :derive => {
-          :enable_opendata_ga_tracking => false,
-          :use_catalog_lens_permissions => false
+          :enable_opendata_ga_tracking => false
         }
       )
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
@@ -253,8 +249,7 @@ class AngularControllerTest < ActionController::TestCase
     should 'render google analytics JS if feature flag is set' do
       FeatureFlags.stubs(
         :derive => {
-          :enable_opendata_ga_tracking => true,
-          :use_catalog_lens_permissions => false
+          :enable_opendata_ga_tracking => true
         }
       )
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
@@ -264,8 +259,7 @@ class AngularControllerTest < ActionController::TestCase
     should 'render google analytics JS with explicit ga code if specified' do
       FeatureFlags.stubs(
         :derive => {
-          :enable_opendata_ga_tracking => 'UA-1234-567890',
-          :use_catalog_lens_permissions => false
+          :enable_opendata_ga_tracking => 'UA-1234-567890'
         }
       )
       get :serve_app, :id => '1234-1234', :app => 'dataCards'

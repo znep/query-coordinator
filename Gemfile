@@ -58,6 +58,11 @@ group :development, :test do
   gem 'simplecov-cobertura', require: false
   gem 'nyan-cat-formatter', require: false
   gem 'factory_girl_rails'
+
+end
+
+group :test do
+  gem 'webmock'
 end
 
 group :development do

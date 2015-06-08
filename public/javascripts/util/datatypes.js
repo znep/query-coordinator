@@ -1096,6 +1096,7 @@ blist.namespace.fetch('blist.datatypes');
                 "ZWD": "Z$"
             },
             deleteable: true,
+            deprecatedInNbe: true,
             filterConditions: blist.filter.groups.numeric,
             soqlFilterValue: function(v)
             { return 'to_usd(' + v + ')'; },
@@ -1120,6 +1121,7 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: _.without(numericConvertTypes, 'percent').concat('text'),
             createable: true,
             deleteable: true,
+            deprecatedInNbe: true,
             filterConditions: blist.filter.groups.numeric,
             matchValue: function(v)
             {

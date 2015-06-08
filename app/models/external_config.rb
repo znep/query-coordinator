@@ -9,10 +9,6 @@ class ExternalConfig
   # Please make sure to throw in some logging to your subclass.
 
   @@configs = {}
-  def self.register(config)
-    @@configs[config.uniqId] ||= config
-  end
-
   def self.for(uniqId)
     @@configs[uniqId] ||= begin
                             "#{uniqId.capitalize}Config".constantize.new
@@ -29,12 +25,8 @@ class ExternalConfig
   end
 
   def initialize#(uniqId, filename)
-    #@uniqId = uniqId
-    #@filename = filename
-
     uncache!
     update!
-    ExternalConfig.register(self)
   end
   attr_reader :uniqId, :filename
 

@@ -1427,7 +1427,7 @@ class CardTypeMappingTest < Test::Unit::TestCase
       fake_column('number', nil, 2500),
       dataset_size
     )
-    assert_equal(['histogram', 'search'], available_card_types)
+    assert_equal(['histogram', 'column', 'search'], available_card_types)
   end
 
   def test_card_type_mapping_returns_expected_available_card_types_for_point_column_in_phase_3

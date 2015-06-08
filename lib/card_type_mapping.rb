@@ -131,7 +131,7 @@ module CardTypeMapping
         if has_georegion_computation_strategy?(column)
           available_card_types = ['choropleth']
         elsif histogram_enabled?
-          available_card_types = ['histogram', 'search']
+          available_card_types = ['histogram', 'column', 'search']
         else
           available_card_types = ['column', 'search']
         end

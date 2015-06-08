@@ -97,16 +97,10 @@ RSpec.describe Aws::DatabaseMaintainer do
       end
     end
 
-    describe 'sets up rake' do
-      before do
+    describe 'Rails.env' do
+      it 'is set to "aws_migrations"' do
         Aws::DatabaseMaintainer.new(environment: environment, region: region)
-      end
-      # it 'sets RAILS_ENV' do
-      #   expect(ENV['RAILS_ENV']).to eq('aws_migrations')
-      # end
-      it 'inits and loads rakefile' do
-        expect(rake_application).to have_received(:init)
-        expect(rake_application).to have_received(:load_rakefile)
+        expect(Rails.env).to eq('aws_migrations')
       end
     end
   end
@@ -114,12 +108,6 @@ RSpec.describe Aws::DatabaseMaintainer do
   %w( migrate rollback seed ).each do |task|
     describe "##{task}" do
       subject { Aws::DatabaseMaintainer.new(environment: environment, region: region) }
-
-      it 'sets different environment for migrations' do
-        expect(ActiveRecord::Base).to receive(:establish_connection).with(:aws_migrations)
-        expect(ActiveRecord::Base).to receive(:establish_connection).with(ENV['RAILS_ENV'].to_sym)
-        subject.send(task)
-      end
 
       it "invokes db:#{task} rake task" do
         task_spy = spy('task')

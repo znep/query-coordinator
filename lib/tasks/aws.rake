@@ -15,6 +15,6 @@ namespace :aws do
   end
 
   def database_mainainter(args)
-    Aws::DatabaseMaintainer.new(region: args[:region], environment: args[:environment])
+    Aws::DatabaseMaintainer.new(args)
   end
 end

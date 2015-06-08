@@ -44,6 +44,7 @@ group :development, :test do
   gem 'byebug'
   gem 'pry-byebug', '~> 1.3.3'
   gem 'pry-remote'
+  gem 'pry-stack_explorer'
 
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2.0'

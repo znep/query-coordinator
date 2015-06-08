@@ -25,43 +25,31 @@ module Aws
       @environment = args[:environment]
       @region = args[:region]
 
+      Rails.env = RAILS_ENV_FOR_MIGRATIONS
+
       validate_args
       update_aws_config
       set_environment_vars_from_marathon_config
       set_secret_db_password
-      setup_rake
     end
 
     # This script will attempt to run database migrations in a particular environment
     def migrate
-      with_aws_database_connection do
-        rake['db:migrate'].invoke
-      end
+      rake['db:migrate'].invoke
     end
 
     # This script will attempt to rollback database migrations in a particular environment
     def rollback
-      with_aws_database_connection do
-        rake['db:rollback'].invoke
-      end
+      rake['db:rollback'].invoke
     end
 
     # This script will attempt to seed the database in a particular environment.
     def seed
-      with_aws_database_connection do
-        rake['db:seed'].invoke
-      end
+      rake['db:seed'].invoke
     end
 
     private
-    attr_reader :environment, :region, :rake
-
-    # Sets enviroment for migrations, runs the task, then reverts the RAILS_ENV back.
-    def with_aws_database_connection(&block)
-      ActiveRecord::Base.establish_connection(RAILS_ENV_FOR_MIGRATIONS.to_sym)
-      yield
-      ActiveRecord::Base.establish_connection(ENV['RAILS_ENV'].to_sym)
-    end
+    attr_reader :environment, :region
 
     def validate_args
       unless KNOWN_ENVS.include?(environment)
@@ -106,10 +94,8 @@ module Aws
       "http://marathon.aws-us-west-2-#{environment}.socrata.net/v2/apps/#{environment}/storyteller"
     end
 
-    def setup_rake
-      @rake = Rake.application
-      @rake.init
-      @rake.load_rakefile
+    def rake
+      Rake.application
     end
 
     # Get DB password from aws-kms store, CLORTHO-GET-style
@@ -135,7 +121,6 @@ module Aws
       s3c = Aws::S3::Client.new
       res = s3c.get_object(bucket: ENV['CLORTHO_BUCKET'],
                            key: key_file)
-      puts "Got #{res[:body].size} bytes of encrypted key data."
       key_blob_strio = res[:body]
       key_blob = key_blob_strio.read
       decrypt_data_key(key_blob)
@@ -144,8 +129,7 @@ module Aws
     def decrypt_data_key(blob)
       kms = Aws::KMS::Client.new
       res = kms.decrypt(ciphertext_blob: blob)
-      puts "Decrypted #{res[:plaintext].size} bytes of key data."
-      return res[:plaintext]
+      res[:plaintext]
     end
 
   end

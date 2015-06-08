@@ -410,8 +410,10 @@ module ApplicationHelper
     license_logo = @view.property_or_default(['license', 'logoUrl'])
     license_name = @view.property_or_default(['license', 'name'])
 
+    license_logo = "/#{license_logo}" unless license_logo.start_with? 'http'
+
     html = license_name
-    html = %Q{<img src="/#{license_logo}" alt="#{license_name}" />} if license_logo.present?
+    html = %Q{<img src="#{license_logo}" alt="#{license_name}" />} if license_logo.present?
     html = %Q{<a href="#{license_link}" rel="nofollow external">#{html}</a>} if license_link.present?
     html
   end

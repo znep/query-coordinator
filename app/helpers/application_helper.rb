@@ -403,6 +403,19 @@ module ApplicationHelper
     link_to name, "#{APP_CONFIG['rpx_signin_url']}?token_url=#{return_url}", options
   end
 
+  def render_license
+    return t('screens.about.none') if @view.property_or_default(['license']).nil?
+
+    license_link = @view.property_or_default(['license', 'termsLink'])
+    license_logo = @view.property_or_default(['license', 'logoUrl'])
+    license_name = @view.property_or_default(['license', 'name'])
+
+    html = license_name
+    html = %Q{<img src="/#{license_logo}" alt="#{license_name}" />} if license_logo.present?
+    html = %Q{<a href="#{license_link}" rel="nofollow external">#{html}</a>} if license_link.present?
+    html
+  end
+
   def extent_html(nwLat, nwLong, seLat, seLong)
     # Repeating the first point is intentional.
     path_data = [

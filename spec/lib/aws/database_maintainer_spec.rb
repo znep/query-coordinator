@@ -65,7 +65,7 @@ RSpec.describe Aws::DatabaseMaintainer do
         Aws::DatabaseMaintainer.new(environment: environment, region: region)
       end
       it 'sets PG_DB_HOST' do
-        expect(ENV['PG_DB_HOST']).to eq('storyteller-staging.csepcvkx1zi9.us-west-2.rds.amazonaws.com')
+        expect(ENV['PG_DB_HOST']).to eq('storyteller-staging.abcdefghij.us-west-2.rds.amazonaws.com')
       end
       it 'sets PG_DB_NAME' do
         expect(ENV['PG_DB_NAME']).to eq('storyteller_production')
@@ -77,7 +77,7 @@ RSpec.describe Aws::DatabaseMaintainer do
         expect(ENV['PG_DB_USER']).to eq('storyteller_rwc')
       end
       it 'sets CLORTHO_BUCKET' do
-        expect(ENV['CLORTHO_BUCKET']).to eq('staging-credentials-bucket-credsbucket-1a037t6uqqrmd')
+        expect(ENV['CLORTHO_BUCKET']).to eq('staging-credentials-bucket-credsbucket-abcdefghij')
       end
       it 'sets CLORTHO_PATH' do
         expect(ENV['CLORTHO_PATH']).to eq('storyteller_secrets.sh')

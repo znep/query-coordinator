@@ -1,134 +1,13 @@
 {
   "app": {
     "id": "/staging/storyteller",
-    "cmd": null,
-    "args": [],
-    "user": null,
     "env": {
-      "no_proxy": "localhost,127.0.0.1,localaddress,.localdomain.com,169.254.169.254,jenkins",
       "PG_DB_PORT": "5432",
       "PG_DB_NAME": "storyteller_production",
-      "http_proxy": "http://proxy.aws-us-west-2-staging.socrata.net:3128",
       "PG_DB_USER": "storyteller_rwc",
-      "CLORTHO_BUCKET": "staging-credentials-bucket-credsbucket-1a037t6uqqrmd",
+      "CLORTHO_BUCKET": "staging-credentials-bucket-credsbucket-abcdefghij",
       "CLORTHO_PATH": "storyteller_secrets.sh",
-      "https_proxy": "http://proxy.aws-us-west-2-staging.socrata.net:3128",
-      "PG_DB_HOST": "storyteller-staging.csepcvkx1zi9.us-west-2.rds.amazonaws.com"
-    },
-    "instances": 2,
-    "cpus": 1.0,
-    "mem": 1024.0,
-    "disk": 0.0,
-    "executor": "",
-    "constraints": [
-      [
-        "hostname",
-        "UNIQUE"
-      ],
-      [
-        "az",
-        "GROUP_BY"
-      ],
-      [
-        "dmz",
-        "LIKE",
-        "false"
-      ]
-    ],
-    "uris": [],
-    "storeUrls": [],
-    "ports": [
-      26
-    ],
-    "requirePorts": false,
-    "backoffSeconds": 1,
-    "backoffFactor": 1.15,
-    "maxLaunchDelaySeconds": 3600,
-    "container": {
-      "type": "DOCKER",
-      "volumes": [],
-      "docker": {
-        "image": "registry.docker.aws-us-west-2-infrastructure.socrata.net:5000/internal/storyteller:1433537896_53_5ba1bdbb",
-        "network": "BRIDGE",
-        "portMappings": [
-          {
-            "containerPort": 3010,
-            "hostPort": 3010,
-            "servicePort": 26,
-            "protocol": "tcp"
-          }
-        ],
-        "privileged": false,
-        "parameters": []
-      }
-    },
-    "healthChecks": [
-      {
-        "path": "/stories/version",
-        "protocol": "HTTP",
-        "portIndex": 0,
-        "gracePeriodSeconds": 300,
-        "intervalSeconds": 60,
-        "timeoutSeconds": 5,
-        "maxConsecutiveFailures": 0
-      }
-    ],
-    "dependencies": [],
-    "upgradeStrategy": {
-      "minimumHealthCapacity": 1.0,
-      "maximumOverCapacity": 1.0
-    },
-    "labels": {},
-    "version": "2015-06-05T21:03:46.114Z",
-    "tasksStaged": 0,
-    "tasksRunning": 2,
-    "tasksHealthy": 2,
-    "tasksUnhealthy": 0,
-    "deployments": [],
-    "tasks": [
-      {
-        "id": "staging_storyteller.5b9b1b41-0bc6-11e5-a557-56847afe9799",
-        "host": "ip-10-110-43-241.us-west-2.compute.internal",
-        "ports": [
-          3010
-        ],
-        "startedAt": "2015-06-05T21:06:33.204Z",
-        "stagedAt": "2015-06-05T21:03:47.299Z",
-        "version": "2015-06-05T21:03:46.114Z",
-        "appId": "/staging/storyteller",
-        "healthCheckResults": [
-          {
-            "alive": true,
-            "consecutiveFailures": 0,
-            "firstSuccess": "2015-06-06T18:06:34.656Z",
-            "lastFailure": null,
-            "lastSuccess": "2015-06-08T15:55:28.660Z",
-            "taskId": "staging_storyteller.5b9b1b41-0bc6-11e5-a557-56847afe9799"
-          }
-        ]
-      },
-      {
-        "id": "staging_storyteller.5b9aa610-0bc6-11e5-a557-56847afe9799",
-        "host": "ip-10-110-36-53.us-west-2.compute.internal",
-        "ports": [
-          3010
-        ],
-        "startedAt": "2015-06-05T21:04:39.752Z",
-        "stagedAt": "2015-06-05T21:03:47.297Z",
-        "version": "2015-06-05T21:03:46.114Z",
-        "appId": "/staging/storyteller",
-        "healthCheckResults": [
-          {
-            "alive": true,
-            "consecutiveFailures": 0,
-            "firstSuccess": "2015-06-06T18:06:34.611Z",
-            "lastFailure": null,
-            "lastSuccess": "2015-06-08T15:55:28.658Z",
-            "taskId": "staging_storyteller.5b9aa610-0bc6-11e5-a557-56847afe9799"
-          }
-        ]
-      }
-    ],
-    "lastTaskFailure": null
+      "PG_DB_HOST": "storyteller-staging.abcdefghij.us-west-2.rds.amazonaws.com"
+    }
   }
 }

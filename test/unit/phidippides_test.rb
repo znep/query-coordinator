@@ -218,7 +218,7 @@ class PhidippidesTest < Test::Unit::TestCase
       v1_dataset_metadata_response[:body][:columns][:some_column][:defaultCardType]
     )
     assert_equal(
-      ['histogram', 'search'],
+      ['histogram', 'column', 'search'],
       v1_dataset_metadata_response[:body][:columns][:some_column][:availableCardTypes]
     )
     assert_equal(
@@ -226,7 +226,7 @@ class PhidippidesTest < Test::Unit::TestCase
       v1_dataset_metadata_response[:body][:columns][:some_other_column][:defaultCardType]
     )
     assert_equal(
-      ['histogram', 'search'],
+      ['histogram', 'column', 'search'],
       v1_dataset_metadata_response[:body][:columns][:some_other_column][:availableCardTypes]
     )
   end

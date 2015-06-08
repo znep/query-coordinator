@@ -44,7 +44,7 @@ describe('addCardDialog', function() {
         'cardinality': 20,
         'cardType': 'histogram',
         'defaultCardType': 'histogram',
-        'availableCardTypes': ['histogram', 'search']
+        'availableCardTypes': ['histogram', 'column', 'search']
       },
       'point': {
         'name': 'Points where crimes have been committed.',

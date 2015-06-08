@@ -11,7 +11,7 @@ class ExternalConfig
   @@configs = {}
   def self.for(uniqId)
     @@configs[uniqId] ||= begin
-                            "#{uniqId.capitalize}Config".constantize.new
+                            "#{uniqId.camelcase}Config".constantize.new
                           rescue NameError
                             Rails.logger.error("Please define the config classname correctly.")
                             raise
@@ -31,7 +31,7 @@ class ExternalConfig
   attr_reader :uniqId, :filename
 
   def uniqId
-    @uniqId ||= self.class.name[0...-6].downcase.to_sym
+    @uniqId ||= self.class.name[0...-6].underscore.to_sym
   end
 
   def filename

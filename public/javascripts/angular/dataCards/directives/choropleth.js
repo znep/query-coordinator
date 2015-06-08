@@ -26,7 +26,7 @@
 
       // Initialize the flyout handler
       FlyoutService.register({
-        className: 'choropleth-legend-color',
+        selector: '.choropleth-legend-color',
         render: function(element) {
           if ($(element).parents('.card').hasClass('dragged')) {
             return;
@@ -993,7 +993,7 @@
         }
 
         FlyoutService.register({
-          className: 'leaflet-clickable',
+          selector: '.leaflet-clickable',
           render: function(element) {
 
             var featureHumanReadableName;

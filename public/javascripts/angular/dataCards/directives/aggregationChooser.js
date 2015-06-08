@@ -208,7 +208,7 @@
          */
 
         FlyoutService.register({
-          className: 'aggregation-option',
+          selector: '.aggregation-option',
           render: function(element) {
             if ($(element).is('.disabled.no-count')) {
               return '<span class="flyout-cell">{0}</span>'.

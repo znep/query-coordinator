@@ -50,7 +50,7 @@
           $(element).children('.feature-map-container').css('cursor', 'default');
 
           FlyoutService.register({
-            className: 'pan-zoom-disabled-warning-icon',
+            selector: '.pan-zoom-disabled-warning-icon',
             render: _.constant(
               '<div class="flyout-title">Zoom is temporarily unavailable. Please try again later.</div>'
             ),

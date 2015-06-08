@@ -130,7 +130,7 @@ describe('multilineEllipsis directive', function(FlyoutService) {
     });
 
     describe('with show-more-mode as flyout', function() {
-      it('should register a flyout and add a custom classname when show-more-mode is flyout', function(done) {
+      it('should register a flyout and add a custom selector when show-more-mode is flyout', function(done) {
         try {
           var html = '<div expanded="false" multiline-ellipsis max-lines="1" tolerance="1" text="{{lotsOfText}}" show-more-mode="flyout" animation-duration="0">';
           var scope = $rootScope.$new();
@@ -144,7 +144,7 @@ describe('multilineEllipsis directive', function(FlyoutService) {
           expect(content.text()).to.contain('...');
           expect(content.attr('title')).to.be.empty;
           expect(registrationSpy.calledOnce, 'FlyoutService.register never called').to.be.true;
-          expect(registrationSpy.getCall(0).args[0].className).to.match(/multiline-ellipsis-flyout-\d?/);
+          expect(registrationSpy.getCall(0).args[0].selector).to.match(/\.multiline-ellipsis-flyout-\d?/);
           mockFlyoutService.register.restore();
           done();
         } catch (err) {

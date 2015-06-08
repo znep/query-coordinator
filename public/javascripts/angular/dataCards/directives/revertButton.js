@@ -11,7 +11,7 @@
       templateUrl: '/angular_templates/dataCards/revertButton.html',
       link: function(scope, element) {
          FlyoutService.register({
-           className: 'revert-btn',
+           selector: '.revert-btn',
            render: function() {
              if (scope.pageHasChanges) {
                return '<div class="flyout-title">Click to undo all changes since you last saved</div>';

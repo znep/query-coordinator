@@ -61,7 +61,7 @@
 
       link: function($scope, element, attrs) {
         var content = element.find('.content');
-        var contentFlyoutClass;
+        var contentFlyoutSelector;
 
         var textObservable = $scope.$observe('text');
         var maxLinesObservable = $scope.$observe('maxLines');
@@ -71,8 +71,8 @@
         $scope.showMoreMode = attrs['showMoreMode'] || 'expand-link';
 
         if ($scope.showMoreMode === 'flyout') {
-          contentFlyoutClass = _.uniqueId('multiline-ellipsis-flyout-');
-          content.addClass(contentFlyoutClass);
+          contentFlyoutSelector = _.uniqueId('multiline-ellipsis-flyout-');
+          content.addClass(contentFlyoutSelector);
         }
 
         var lastText = null;
@@ -107,7 +107,7 @@
 
         if ($scope.showMoreMode === 'flyout') {
           FlyoutService.register({
-            className: contentFlyoutClass,
+            selector: '.' + contentFlyoutSelector,
             render: function() {
               if (content.triggerHandler('isTruncated')) {
                 return '<div class="flyout-title">{0}</div>'.format($scope.text);

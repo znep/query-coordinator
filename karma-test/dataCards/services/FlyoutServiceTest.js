@@ -38,7 +38,7 @@ describe('Flyout service', function() {
   it('should create a flyout with the given string on hover by the target', function() {
     var testText = 'Let\'s go flaigh a kite...';
     flyoutService.register({
-      className: 'flyout-test',
+      selector: '.flyout-test',
       render: function() { return testText; },
       destroySignal: testCompletedObservable
     });
@@ -66,7 +66,7 @@ describe('Flyout service', function() {
   it('should position correctly when on the right edge of the screen', function() {
     var longTestText = _.constant(_.map(_.range(20), _.constant('text')).join(' '));
     flyoutService.register({
-      className: 'right-edge',
+      selector: '.right-edge',
       // A string of 20 words separated by spaces
       render: longTestText,
       destroySignal: testCompletedObservable
@@ -98,7 +98,7 @@ describe('Flyout service', function() {
     var someMagicalState = true;
 
     flyoutService.register({
-      className: 'dynamic-flyout-test',
+      selector: '.dynamic-flyout-test',
       render: function() {
         return someMagicalState ? 'initial' : 'final';
       },

@@ -125,7 +125,7 @@
           '</div>'
         ].join('');
         FlyoutService.register({
-          className: 'add-card-type-option',
+          selector: '.add-card-type-option',
           render: function(el) {
 
             var visualizationName = el.getAttribute('data-visualization-name');
@@ -145,7 +145,7 @@
         });
 
         FlyoutService.register({
-          className: 'warning-icon',
+          selector: '.warning-icon',
           render: function(el) {
 
             return EXCESSIVE_COLUMN_WARNING;

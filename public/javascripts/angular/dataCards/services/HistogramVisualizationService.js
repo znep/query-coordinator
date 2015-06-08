@@ -97,7 +97,7 @@
         isFiltered: false,
         rowDisplayUnit: '',
         deregisterFlyout: function() {
-          FlyoutService.deregister('histogram-hover-shield', renderFlyout);
+          FlyoutService.deregister('.histogram-hover-shield', renderFlyout);
         }
       };
 
@@ -137,7 +137,7 @@
 
       dom.svg.on('mouseover', function() {
         FlyoutService.register({
-          className: 'histogram-hover-shield',
+          selector: '.histogram-hover-shield',
           render: renderFlyout,
           positionOn: function() {
             return dom.hoverTarget.node();

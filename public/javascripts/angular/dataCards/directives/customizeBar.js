@@ -93,7 +93,7 @@
         });
 
         FlyoutService.register({
-          className: 'customize-button',
+          selector: '.customize-button',
           render: renderCustomizeButtonFlyout,
           destroySignal: $scope.$destroyAsObservable(element)
         });

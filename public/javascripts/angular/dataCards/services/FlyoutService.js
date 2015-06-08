@@ -17,8 +17,6 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
   ).subscribe(function(e) {
 
     var target = e.target;
-    var className = null;
-    var classList;
     var flyoutContent;
     var flyoutWidth;
     var flyoutHeight;
@@ -32,36 +30,21 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
 
       // First hide any existing flyout
       uberFlyout.hide();
+      if (!_.isNull(target)) {
 
-      // This is a double-fisted workaround for IE9:
-      //
-      // 1. SVG elements apparently do not have classNames
-      // 2. IE9 does not support <DOM Element>.classList
-      //
-      // We used to use a polyfill for classList, but the
-      // polyfill itself would have required a polyfill,
-      // so we chose to just do this the messy way instead.
+        // Loop through each selector and check to see if our mouse
+        // targtet is selected by one of the selectors.  If so,
+        // execute each of the target's handlers.
+        _.each(handlers, function(selectorHandlers, selector) {
+          if ($(target).is($(selector))) {
+            _.each(selectorHandlers, function(handler) {
 
-      if (typeof target.className === 'string') {
-        className = target.className;
-      } else {
-        className = target.className.animVal;
-      }
-
-      if (!_.isNull(target) && !_.isEmpty(className)) {
-        classList = className.split(/\s+/);
-
-        // For each handler on each class in classList
-        _.each(classList, function(classProp) {
-          if (handlers.hasOwnProperty(classProp)) {
-            _.each(handlers[classProp], function(handler) {
-
-              // Save the flyout element and content
+              // Correctly position and render the flyout element
               flyoutElement = handler.positionOn(target);
               flyoutContent = handler.render(flyoutElement);
 
               // Check that the content is defined
-              if (_.isDefined(flyoutContent)) {
+              if (_.isDefined(flyoutContent) && _.isDefined(flyoutElement)) {
 
                 uberFlyoutContent.html(flyoutContent);
                 flyoutWidth = uberFlyout.outerWidth();
@@ -77,7 +60,6 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
 
                 // Hints can be horizontal or cursor-tracking, but not both
                 if (horizontalHint) {
-
                   targetBoundingClientRect = flyoutElement.getBoundingClientRect();
 
                   cssFlyout.left = targetBoundingClientRect.left -
@@ -212,8 +194,8 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
     /**
      * Register a flyout under a CSS class.
      * @param {Object} options - A hash of options to control how the flyout
-     * @param {string} options.className - CSS class this flyout is attached to.
-     *   Treated as unique in this context (should it be an id? maybe so!).
+     * @param {string} options.selector - JQuery selector this flyout is attached to.
+     *   Treated as unique in this context.
      *   Required.
      * @param {function} options.render - Called to render the flyout. Should
      *   return a string that will be interpreted as HTML. Required.
@@ -233,7 +215,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
     register: function(options) {
 
       options = _.defaults(options || {}, {
-        className: null,
+        selector: null,
         render: null,
         destroySignal: null,
         positionOn: _.identity,
@@ -241,33 +223,36 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
         horizontal: false
       });
 
-      Assert(_.isPresent(options.className), 'className must be present.');
-      Assert(_.isPresent(options.render), 'render function must be present.');
+      Assert(_.isPresent(options.selector),
+        'selector must be present.');
+      Assert(_.isPresent(options.render),
+        'render function must be present.');
       Assert(!_.isPresent(options.destroySignal) ||
-        _.isFunction(options.destroySignal.asObservable), 'destroySignal must be an observable.');
+        _.isFunction(options.destroySignal.asObservable),
+        'destroySignal must be an observable.');
       Assert(options.trackCursor !== true || options.horizontal !== true,
-        'Cannot set both trackCursor and horizontal modes on the same flyout.');
+        'cannot set both trackCursor and horizontal modes on the same flyout.');
 
       // TODO: Figure out what to do here. Should we be using ids instead of classes?
       // Or just warn that a duplicate selector has been found rather than throwing
       // an exception?
-      if (!handlers.hasOwnProperty(options.className)) {
-        handlers[options.className] = [];
+      if (!handlers.hasOwnProperty(options.selector)) {
+        handlers[options.selector] = [];
       }
 
       var handler = _.clone(options);
 
-      handlers[options.className].push(handler);
+      handlers[options.selector].push(handler);
 
       if (_.isPresent(options.destroySignal)) {
         options.destroySignal.asObservable().take(1).subscribe(function() {
-          _.pull(handlers[options.className], handler);
+          _.pull(handlers[options.selector], handler);
         });
       }
     },
-    deregister: function(className, renderCallback) {
-      if (handlers.hasOwnProperty(className)) {
-        handlers[className] = handlers[className].filter(function(handler) {
+    deregister: function(selector, renderCallback) {
+      if (handlers.hasOwnProperty(selector)) {
+        handlers[selector] = handlers[selector].filter(function(handler) {
           return handler.render !== renderCallback;
         });
       }

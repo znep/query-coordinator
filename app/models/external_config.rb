@@ -14,7 +14,12 @@ class ExternalConfig
   end
 
   def self.for(uniqId)
-    @@configs[uniqId]
+    @@configs[uniqId] ||= begin
+                            "#{uniqId.capitalize}Config".constantize.new
+                          rescue NameError
+                            Rails.logger.error("Please define the config classname correctly.")
+                            raise
+                          end
   end
 
   def self.update_all!
@@ -23,15 +28,23 @@ class ExternalConfig
     end
   end
 
-  def initialize(uniqId, filename)
-    @uniqId = uniqId
-    @filename = filename
+  def initialize#(uniqId, filename)
+    #@uniqId = uniqId
+    #@filename = filename
 
     uncache!
     update!
     ExternalConfig.register(self)
   end
   attr_reader :uniqId, :filename
+
+  def uniqId
+    @uniqId ||= self.class.name[0...-6].downcase.to_sym
+  end
+
+  def filename
+    @filename || (raise NotImplementedError.new "#{self.class.name} has no associated file!")
+  end
 
   def has_changed?
     return false if @cache > Time.now

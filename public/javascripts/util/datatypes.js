@@ -134,8 +134,19 @@ blist.namespace.fetch('blist.datatypes');
 
     var renderNumber = function(value, column)
     {
+        var prefix = null;
+        var suffix = null;
+
+        if (column.format.precisionStyle === 'currency') {
+            prefix = blist.datatypes.money.currencies[column.format.currencyStyle];
+        }
+
+        if (column.format.precisionStyle === 'percentage') {
+            suffix = '%';
+        }
+
         return numberHelper(value, column.format.precision,
-            column.format.precisionStyle, null, null, false,
+            column.format.precisionStyle, prefix, suffix, false,
             column.format.noCommas, column.format.mask,
             { groupSeparator: column.format.groupSeparator,
                 decimalSeparator: column.format.decimalSeparator });
@@ -950,8 +961,12 @@ blist.namespace.fetch('blist.datatypes');
                 v = parseFloat(v);
                 return _.isNaN(v) ? null : v;
             },
-            precisionStyle: [{text: $.t('core.precision_style.standard'), value: 'standard'},
-                {text: $.t('core.precision_style.scientific'), value: 'scientific'}],
+            precisionStyle: [
+                {text: $.t('core.precision_style.standard'), value: 'standard'},
+                {text: $.t('core.precision_style.scientific'), value: 'scientific'},
+                {text: 'Currency ($1020.40)', value: 'currency'},
+                {text: 'Precentage (1020.40%)', value: 'percentage'}
+            ],
             priority: 3,
             rollUpAggregates: aggs,
             sortable: true
@@ -1081,6 +1096,7 @@ blist.namespace.fetch('blist.datatypes');
                 "ZWD": "Z$"
             },
             deleteable: true,
+            deprecatedInNbe: true,
             filterConditions: blist.filter.groups.numeric,
             soqlFilterValue: function(v)
             { return 'to_usd(' + v + ')'; },
@@ -1105,6 +1121,7 @@ blist.namespace.fetch('blist.datatypes');
             convertableTypes: _.without(numericConvertTypes, 'percent').concat('text'),
             createable: true,
             deleteable: true,
+            deprecatedInNbe: true,
             filterConditions: blist.filter.groups.numeric,
             matchValue: function(v)
             {

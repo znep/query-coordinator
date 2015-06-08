@@ -192,7 +192,10 @@
                {
                   + text: label for input
                   + type: required, one of: 'static', 'text', 'textarea',
-                      'checkbox', 'select', 'columnSelect', 'radioGroup', 'slider'
+                      'checkbox', 'columnSelect', 'radioGroup', 'slider'
+                      - 'select is a select tag.
+                          + onlySelectFirst: Only allow one selected attribute
+                            on the options in the select.
                       - 'color' is a color picker.  If you add lineClass
                           'colorCollapse', this will display on the right end
                           of the following line
@@ -1215,7 +1218,7 @@
         var isSelected = (curVal === '_selected' && opt.selected === true) ||
             (opt.value || '').toLowerCase() === (curVal || '').toLowerCase();
         var item = {tagName: 'option', value: opt.value,
-            selected: isSelected, contents: opt.text};
+            selected: isSelected, contents: opt.text, disabled: opt.disabled};
         var dataKeys = [];
         _.each(opt.data || {}, function(v, k)
             {
@@ -1765,10 +1768,23 @@
         var tag = {tagName: 'select', contents: options};
         if (_.isArray(args.item.options))
         {
+            var selected = [];
             _.each(args.item.options, function(o)
             {
                 options.push(renderSelectOption(o, curValue || defValue));
+                // Collect all selected options' indexes.
+                if (options[options.length - 1].selected) {
+                    selected.push(options.length - 1);
+                }
             });
+
+            if (args.item.onlySelectFirst) {
+                // Falsify all selected options other than
+                // the first one.
+                _.rest(selected).forEach(function (option) {
+                    options[option].selected = false;
+                });
+            }
         }
         else if (_.isFunction(args.item.options))
         {

@@ -8,3 +8,12 @@ test:
   database: storyteller_test
   username: storyteller_su
   password: storyteller_su
+
+aws_migrations:
+  adapter: postgresql
+  encoding: unicode
+  host: <%= ENV['PG_DB_HOST'] %>
+  database: <%= ENV['PG_DB_NAME'] %>
+  port: <%= ENV['PG_DB_PORT'] %>
+  username: <%= ENV['PG_DB_USER'] %>
+  password: <%= ENV['PG_DB_PASSWORD'] %>

@@ -49,7 +49,6 @@
 //         },
 //         feature_flags: {
 //           enable_newux_bootstrap_link: true,
-//           metadata_transition_phase: 3,
 //           exit_tech_preview: true
 //         }
 //       });
@@ -78,7 +77,6 @@
 //         },
 //         feature_flags: {
 //           enable_newux_bootstrap_link: true,
-//           metadata_transition_phase: 3,
 //           exit_tech_preview: true
 //         }
 //       });
@@ -104,7 +102,6 @@
 //         },
 //         feature_flags: {
 //           enable_newux_bootstrap_link: true,
-//           metadata_transition_phase: 3,
 //           exit_tech_preview: true
 //         }
 //       });
@@ -127,7 +124,6 @@
 //         },
 //         feature_flags: {
 //           enable_newux_bootstrap_link: true,
-//           metadata_transition_phase: 3,
 //           exit_tech_preview: true
 //         },
 //         currentUser: {},
@@ -152,7 +148,6 @@
 //         },
 //         feature_flags: {
 //           enable_newux_bootstrap_link: true,
-//           metadata_transition_phase: 3,
 //           exit_tech_preview: true
 //         },
 //         currentUser: {},
@@ -175,7 +170,6 @@
 //         },
 //         feature_flags: {
 //           enable_newux_bootstrap_link: false,
-//           metadata_transition_phase: 3,
 //           exit_tech_preview: false
 //         },
 //         currentUser: {},

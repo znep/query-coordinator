@@ -30,18 +30,10 @@ class PageMetadataManager
   end
 
   def merge_new_card_data_with_default(field_name, card_type, cardinality=nil)
-    if metadata_transition_phase_0? || metadata_transition_phase_1?
-      V0_CARD_TEMPLATE.deep_dup.merge(
-        'fieldName' => field_name,
-        'cardinality' => cardinality,
-        'cardType' => card_type
-      )
-    else
-      V1_CARD_TEMPLATE.deep_dup.merge(
-        'fieldName' => field_name,
-        'cardType' => card_type
-      )
-    end
+    V1_CARD_TEMPLATE.deep_dup.merge(
+      'fieldName' => field_name,
+      'cardType' => card_type
+    )
   end
 
   def secondary_group_identifier
@@ -76,7 +68,8 @@ class PageMetadataManager
       raise Phidippides::NoCardsException.new('no cards entry on page metadata')
     end
 
-    initialize_metadata_transition_phase_key_names
+    @column_field_name = 'fieldName'
+    @logical_datatype_name = 'fred'
 
     # The core lens id for this page is the same one we use to refer to it in
     # phidippides
@@ -111,7 +104,8 @@ class PageMetadataManager
     raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id') unless page_metadata.key?('datasetId')
     raise Phidippides::NoPageIdException.new('cannot create page with no page id') unless page_metadata.key?('pageId')
 
-    initialize_metadata_transition_phase_key_names
+    @column_field_name = 'fieldName'
+    @logical_datatype_name = 'fred'
 
     new_view_manager.update(page_metadata['pageId'], page_metadata['name'], page_metadata['description'])
 
@@ -166,15 +160,6 @@ class PageMetadataManager
 
   private
 
-  def initialize_metadata_transition_phase_key_names
-    if metadata_transition_phase_0?
-      @column_field_name = 'name'
-      @logical_datatype_name = 'logicalDatatype'
-    else
-      @column_field_name = 'fieldName'
-      @logical_datatype_name = 'fred'
-    end
-  end
 
   # Creates or updates a page. This takes care of updating phidippides, as well
   # as rollup tables in soda fountain and the core datalens link.
@@ -219,9 +204,7 @@ class PageMetadataManager
     # Replace the page metadata in the result, since FlexPhidippides
     # actually will not return the metadata blob that we just posted
     # to it.
-    if !metadata_transition_phase_0? && !metadata_transition_phase_1?
-      result[:body] = page_metadata
-    end
+    result[:body] = page_metadata
 
     result
   end
@@ -241,9 +224,8 @@ class PageMetadataManager
       columns_to_roll_up_by_date_trunc(normalized_columns, cards).blank?
       columns_to_roll_up_by_magnitude(normalized_columns, cards).blank?
 
-    if !metadata_transition_phase_0? &&
-      columns_to_roll_up_by_date_trunc(normalized_columns, cards).any? &&
-      page_metadata['defaultDateTruncFunction'].blank?
+    if columns_to_roll_up_by_date_trunc(normalized_columns, cards).any? &&
+       page_metadata['defaultDateTruncFunction'].blank?
         raise Phidippides::NoDefaultDateTruncFunction.new(
           "page does not have default date trunc function set for pageId: #{page_metadata['pageId']}"
         )
@@ -284,25 +266,17 @@ class PageMetadataManager
     # (not the array that it was before) we can create an intermediate
     # representation in order to avoid modifying the logic that determines
     # whether a column should be rolled up.
-    if metadata_transition_phase_0?
-      columns
-    else
-      columns.map do |key, value|
-        value[column_field_name] = key
-        value
-      end
+    columns.map do |key, value|
+      value[column_field_name] = key
+      value
     end
   end
 
   def columns_to_roll_up_by_date_trunc(columns, cards)
-    if metadata_transition_phase_0?
-      []
-    else
-      columns.select do |column|
-        column_used_by_any_card?(column[column_field_name], cards) &&
-          column['physicalDatatype'] == 'floating_timestamp'
-      end.pluck(column_field_name)
-    end
+    columns.select do |column|
+      column_used_by_any_card?(column[column_field_name], cards) &&
+        column['physicalDatatype'] == 'floating_timestamp'
+    end.pluck(column_field_name)
   end
 
   def columns_to_roll_up_by_magnitude(columns, cards)

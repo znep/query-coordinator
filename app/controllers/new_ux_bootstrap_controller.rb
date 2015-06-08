@@ -106,40 +106,25 @@ class NewUxBootstrapController < ActionController::Base
       end
 
       if default_page_accessible?(default_page)
-        if metadata_transition_phase_0?
-          # In metadata transition phase 0 only, we will take any extant
-          # default page.
+        # If we found a default page as specified in the dataset_metadata,
+        # check its metadata version.
+        # Note that the .to_i will coerce potential nil results into 0.
+        if default_page[:version].to_i > 0
+          # If the default page version is greater than or equal to 1,
+          # immediately redirect to the default page.
           return redirect_to "/view/#{default_page[:pageId]}"
         else
-          # If we found a default page as specified in the dataset_metadata,
-          # check its metadata version.
-          # Note that the .to_i will coerce potential nil results into 0.
-          if default_page[:version].to_i > 0
-            # If the default page version is greater than or equal to 1,
-            # immediately redirect to the default page.
-            return redirect_to "/view/#{default_page[:pageId]}"
-          else
-            # Otherwise, generate a new default page and redirect to it.
-            generate_and_redirect_to_new_page(dataset_metadata_response_body)
-          end
+          # Otherwise, generate a new default page and redirect to it.
+          generate_and_redirect_to_new_page(dataset_metadata_response_body)
         end
       else
-        if metadata_transition_phase_0?
-          # In metadata transition phase 0 only, we will take any extant page
-          # as a default.
-          some_page = pages.find do |page|
-            # Note that this may be nil and, if so, will be coerced by .to_i into 0
-            page[:version].to_i == 0
-          end
-        else
-          # In any other metadata transition phase, however, if no pages match
-          # the default page listed in the dataset_metadata, we attempt to find
-          # a page in the collection that is of at least version 1 page
-          # metadata.
-          some_page = pages.find do |page|
-            # Note that this may be nil and, if so, will be coerced by .to_i into 0
-            page[:version].to_i > 0
-          end
+        # In any other metadata transition phase, however, if no pages match
+        # the default page listed in the dataset_metadata, we attempt to find
+        # a page in the collection that is of at least version 1 page
+        # metadata.
+        some_page = pages.find do |page|
+          # Note that this may be nil and, if so, will be coerced by .to_i into 0
+          page[:version].to_i > 0
         end
 
         if some_page.present?
@@ -265,24 +250,15 @@ class NewUxBootstrapController < ActionController::Base
       cards = cards.first(MAX_NUMBER_OF_CARDS)
     end
 
-    if metadata_transition_phase_0? || metadata_transition_phase_1?
-      {
-        'cards' => cards,
-        'datasetId' => new_dataset_metadata[:id],
-        'description' => new_dataset_metadata[:description],
-        'name' => new_dataset_metadata[:name]
-      }
-    else
-      {
-        'cards' => cards,
-        'datasetId' => new_dataset_metadata[:id],
-        'description' => new_dataset_metadata[:description],
-        'name' => new_dataset_metadata[:name],
-        'primaryAggregation' => nil,
-        'primaryAmountField' => nil,
-        'version' => 1
-      }
-    end
+    {
+      'cards' => cards,
+      'datasetId' => new_dataset_metadata[:id],
+      'description' => new_dataset_metadata[:description],
+      'name' => new_dataset_metadata[:name],
+      'primaryAggregation' => nil,
+      'primaryAmountField' => nil,
+      'version' => 1
+    }
   end
 
   # CORE-4770 Avoid card creation for latitude/longitude column types (because no one cares)
@@ -360,44 +336,22 @@ class NewUxBootstrapController < ActionController::Base
   end
 
   def generate_cards_from_dataset_metadata_columns(columns)
-    if metadata_transition_phase_0?
-      columns.map do |column|
-        unless Phidippides::SYSTEM_COLUMN_ID_REGEX.match(column[:name])
-          card_type = card_type_for(column, :logicalDatatype, dataset_size)
-          if card_type
-            card = page_metadata_manager.merge_new_card_data_with_default(
-              column[:name],
-              card_type,
-              column[:cardinality]
-            )
+    interesting_columns(columns).map do |field_name, column|
+      card_type = card_type_for(column, :fred, dataset_size)
+      if card_type
+        card = page_metadata_manager.merge_new_card_data_with_default(
+          field_name,
+          card_type
+        )
 
-            if added_card_types.add?(card_type)
-              card
-            else
-              skipped_cards_by_type[card_type] << card
-              nil
-            end
-          end
+        if added_card_types.add?(card_type)
+          card
+        else
+          skipped_cards_by_type[card_type] << card
+          nil
         end
-      end.compact
-    else
-      interesting_columns(columns).map do |field_name, column|
-        card_type = card_type_for(column, :fred, dataset_size)
-        if card_type
-          card = page_metadata_manager.merge_new_card_data_with_default(
-            field_name,
-            card_type
-          )
-
-          if added_card_types.add?(card_type)
-            card
-          else
-            skipped_cards_by_type[card_type] << card
-            nil
-          end
-        end
-      end.compact
-    end
+      end
+    end.compact
   end
 
   def generate_and_redirect_to_new_page(dataset_metadata)

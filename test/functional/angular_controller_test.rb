@@ -234,6 +234,7 @@ class AngularControllerTest < ActionController::TestCase
         },
         :set_default_and_available_card_types_to_columns! => {}
       )
+      NewViewManager.any_instance.stubs(:fetch).returns({})
     end
 
     should 'not render google analytics JS if feature flag is not set' do

@@ -67,22 +67,6 @@ class PhidippidesDatasetsController < ApplicationController
     end
   end
 
-  def create
-    # By design, cannot create dataset metadata past phase 0
-    return render :nothing => true, :status => '404' unless metadata_transition_phase_0?
-    return render :nothing => true, :status => '401' unless can_create_metadata?
-    return render :nothing => true, :status => '400' unless params[:datasetMetadata].present?
-
-    begin
-      result = phidippides.create_dataset_metadata(JSON.parse(params[:datasetMetadata]), :request_id => request_id, :cookies => forwardable_session_cookies)
-      render :json => result[:body], :status => result[:status]
-    rescue Phidippides::ConnectionError
-      render :json => { :body => 'Phidippides connection error' }, :status => '500'
-    rescue JSON::ParserError => error
-      render :json => { :body => "Invalid JSON payload. Error: #{error}" }, :status => '400'
-    end
-  end
-
   def update
     unless dataset(params[:id]).can_edit?
       return render :nothing => true, :status => '401'
@@ -116,22 +100,14 @@ class PhidippidesDatasetsController < ApplicationController
         :request_id => request_id,
         :cookies => forwardable_session_cookies
       )
-      if metadata_transition_phase_0?
-        render :json => result[:body], :status => result[:status]
-      else
-        return head :status => '204'
-      end
+      return head :status => '204'
     rescue Phidippides::ConnectionError
       render :json => { :body => 'Phidippides connection error' }, :status => '500'
     end
   end
 
   def destroy
-    if metadata_transition_phase_0?
-      render :nothing => true, :status => '403'
-    else
-      render :nothing => true, :status => '400'
-    end
+    render :nothing => true, :status => '400'
   end
 
   private

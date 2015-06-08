@@ -30,46 +30,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     @dataset_copy_stub = stub_dataset_copy_request('vtvh-wqgq')
   end
 
-  def test_create_succeeds
-    PageMetadataManager.any_instance.expects(:update_rollup_table)
-
-    Phidippides.any_instance.stubs(
-      update_page_metadata: { status: '200', body: nil },
-      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
-    )
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    NewViewManager.any_instance.expects(:create).times(1).with do |name, description|
-      assert_equal(v1_page_metadata['name'], name)
-      assert_equal(v1_page_metadata['description'], description)
-    end.returns('data-lens')
-    result = manager.create(v1_page_metadata)
-    assert_equal('200', result.fetch(:status), 'Expected create result status to be 200')
-    assert_equal('data-lens', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
-    assert_equal(1000, result.fetch(:body).fetch('largestTimeSpanDays'), 'Expected the value for the largest time span to be set')
-    assert_match(/date_trunc_\w+/, result.fetch(:body).fetch('defaultDateTruncFunction'), 'Includes date_trunc function')
-    assert_requested @dataset_copy_stub
-  end
-
-  def test_create_creates_data_lens_with_reference_v1
-    stub_dataset_copy_request('q77b-s2zi')
-
-    Phidippides.any_instance.stubs(
-      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns},
-    )
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |page_metadata|
-      # Make sure the page_metadata includes the correct id
-      assert_equal('fdsa-fdsa', page_metadata['pageId'])
-    end.returns(status: '200', body: {})
-
-    NewViewManager.any_instance.expects(:create).times(1).with do |name, description|
-      # Make sure it's creating the new view pointing to the correct page-id
-      assert_match(/^Chicago Crimes Loves/, name)
-      assert_match(/^This dataset reflects/, description)
-    end.returns('fdsa-fdsa')
-
-    manager.create(v0_page_metadata)
-  end
 
   def test_create_creates_data_lens_with_category_from_obe_dataset
     Phidippides.any_instance.stubs(
@@ -77,7 +37,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       fetch_page_metadata: { status: '200', body: v1_page_metadata_without_rollup_columns },
       update_page_metadata: { status: '200', body: {} }
     )
-    stub_feature_flags_with(:metadata_transition_phase, '3')
     mock_nbe_dataset = stub(:migrations => stub_migrations)
     mock_obe_dataset = stub(:category => OBE_CATEGORY_NAME)
     View.expects(:find).with(NBE_DATASET_ID).returns(mock_nbe_dataset)
@@ -96,7 +55,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       fetch_page_metadata: { status: '200', body: v1_page_metadata_without_rollup_columns },
       update_page_metadata: { status: '200', body: {} }
     )
-    stub_feature_flags_with(:metadata_transition_phase, '3')
     mock_nbe_dataset = stub(
       :migrations => stub_migrations,
       :category => NBE_CATEGORY_NAME
@@ -111,351 +69,14 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     manager.create(v1_page_metadata_without_rollup_columns)
   end
 
-  def test_create_raises_no_dataset_metadata_exception_when_phiddy_craps_out_v0
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-    manager.stubs(:dataset_metadata => { status: '500', body: nil })
-    assert_raises(Phidippides::NoDatasetMetadataException) do
-      manager.create(v0_page_metadata)
-    end
-  end
-
   def test_create_raises_no_dataset_metadata_exception_when_phiddy_craps_out_v1
-    stub_feature_flags_with(:metadata_transition_phase, '3')
     manager.stubs(:dataset_metadata => { status: '500', body: nil })
     assert_raises(Phidippides::NoDatasetMetadataException) do
       manager.create(v1_page_metadata)
     end
   end
 
-  def test_create_ignores_provided_pageId
-    PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
-    NewViewManager.any_instance.expects(:create).times(1).with do |name, description|
-      assert_equal(v1_page_metadata['name'], name)
-      assert_equal(v1_page_metadata['description'], description)
-    end.returns('data-lens')
-    Phidippides.any_instance.stubs(
-      fetch_page_metadata: { status: '200', body: v1_page_metadata_without_rollup_columns },
-      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns }
-    )
-    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |page_metadata|
-      assert_equal(page_metadata['pageId'], 'data-lens')
-    end.returns({ body: nil, status: '200' })
-
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-
-    result = manager.create(v1_page_metadata_without_rollup_columns)
-    assert_equal('data-lens', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
-  end
-
-  def test_create_raises_an_error_if_dataset_id_is_not_present_in_new_page_metadata
-    PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
-    Phidippides.any_instance.stubs(
-      update_page_metadata: { body: nil, status: '200' }
-    )
-
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-    assert_raises(Phidippides::NoDatasetIdException) do
-      manager.create(v1_page_metadata.except('datasetId').except('pageId'))
-    end
-
-    stub_feature_flags_with(:metadata_transition_phase, '1')
-    assert_raises(Phidippides::NoDatasetIdException) do
-      manager.create(v1_page_metadata.except('datasetId').except('pageId'))
-    end
-
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    assert_raises(Phidippides::NoDatasetIdException) do
-      manager.create(v1_page_metadata.except('datasetId').except('pageId'))
-    end
-  end
-
-  def test_create_does_not_try_to_create_rollup_table_when_not_given_eligible_columns_in_phase_0
-    stub_dataset_copy_request('q77b-s2zi')
-
-    PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
-    Phidippides.any_instance.stubs(
-      update_page_metadata: { status: '200', body: v0_page_metadata },
-      fetch_dataset_metadata: { status: '200', body: v0_dataset_metadata_without_rollup_columns }
-    )
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-
-    # Make sure our assumptions about the dataset we're using are true
-    rollup_column_doesnt_exist = v0_dataset_metadata_without_rollup_columns['columns'].none? do |column|
-      column['logicalDatatype'] == 'category'
-    end
-    assert(rollup_column_doesnt_exist)
-    rollup_column_exists = v0_dataset_metadata['columns'].find do |column|
-      column['logicalDatatype'] == 'category'
-    end
-    assert(rollup_column_exists)
-
-    result = manager.create(v0_page_metadata)
-
-    assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
-    assert(result.fetch(:body).fetch('pageId'), 'Expected a non-nil pageId to be created')
-  end
-
-  def test_create_does_not_try_to_create_rollup_table_when_not_given_eligible_columns_in_phase_1
-    stub_dataset_copy_request('q77b-s2zi')
-
-    PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
-    Phidippides.any_instance.stubs(
-      update_page_metadata: { status: '200', body: v0_page_metadata },
-      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns }
-    )
-    stub_feature_flags_with(:metadata_transition_phase, '1')
-
-    # Make sure our assumptions about the dataset we're using are true
-    rollup_column_doesnt_exist = v1_dataset_metadata_without_rollup_columns['columns'].none? do |field_name, column|
-      column['fred'] == 'category'
-    end
-    assert(rollup_column_doesnt_exist)
-    rollup_column_exists = v1_dataset_metadata['columns'].find do |field_name, column|
-      column['fred'] == 'category'
-    end
-    assert(rollup_column_exists)
-
-    result = manager.create(v0_page_metadata)
-
-    assert(result.fetch(:status) == '200', 'Expected create result status to be 200')
-    assert(result.fetch(:body).fetch('pageId'), 'Expected a non-nil pageId to be created')
-  end
-
-  def test_create_does_not_try_to_create_rollup_table_when_not_given_eligible_columns_in_phase_2
-    PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
-    Phidippides.any_instance.stubs(
-      update_page_metadata: { status: '200', body: nil },
-      fetch_page_metadata: { status: '200', body: v1_page_metadata_without_rollup_columns },
-      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns }
-    )
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-
-    # Make sure our assumptions about the dataset we're using are true
-    rollup_column_doesnt_exist = v1_dataset_metadata_without_rollup_columns['columns'].none? do |field_name, column|
-      column['fred'] == 'category'
-    end
-    assert(rollup_column_doesnt_exist)
-    rollup_column_exists = v1_dataset_metadata['columns'].find do |field_name, column|
-      column['fred'] == 'category'
-    end
-    assert(rollup_column_exists)
-
-    result = manager.create(v1_page_metadata_without_rollup_columns.except('pageId'))
-
-    assert_equal('200', result.fetch(:status))
-    assert_not_nil(result.fetch(:body).fetch('pageId'))
-  end
-
-  def test_create_ensures_table_card_phase1
-    PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
-
-    stub_fetch_dataset_metadata(v1_dataset_metadata)
-    stub_feature_flags_with(:metadata_transition_phase, '1')
-    stub_update_page_metadata(v1_page_metadata_as_v0).
-      with { |page, _| assert_page_has_table_card(page) }
-
-    result = manager.create(remove_table_card(v1_page_metadata_as_v0))
-    assert_equal('200', result.fetch(:status), 'Expected create result status to be 200')
-  end
-
-  def test_create_ensures_table_card_phase2
-    PageMetadataManager.any_instance.expects(:update_rollup_table).times(1)
-
-    stub_fetch_dataset_metadata(v1_dataset_metadata)
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    stub_update_page_metadata(v1_page_metadata).
-      with { |page, _| assert_page_has_table_card(page) }
-
-    result = manager.create(remove_table_card(v1_page_metadata).except('pageId'))
-    assert_equal('200', result.fetch(:status))
-  end
-
-  def test_create_ensures_table_card_when_no_cards_phase0
-    stub_fetch_dataset_metadata(v0_dataset_metadata)
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-    stub_update_page_metadata(v0_page_metadata).
-      with { |page, _| assert_page_has_table_card(page) }
-
-    result = manager.create(page_metadata_with_no_cards(v1_page_metadata).except('pageId'))
-    assert_equal('200', result.fetch(:status), 'Expected create result status to be 200')
-  end
-
-  def test_create_ensures_table_card_when_no_cards_phase1
-    stub_fetch_dataset_metadata(v1_dataset_metadata)
-    stub_feature_flags_with(:metadata_transition_phase, '1')
-    stub_update_page_metadata(v1_page_metadata_as_v0).
-      with { |page, _| assert_page_has_table_card(page) }
-
-    result = manager.create(page_metadata_with_no_cards(v1_page_metadata).except('pageId'))
-    assert_equal('200', result.fetch(:status), 'Expected create result status to be 200')
-  end
-
-  def test_create_ensures_table_card_when_no_cards_phase2
-    stub_fetch_dataset_metadata(v1_dataset_metadata)
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    stub_update_page_metadata(v1_page_metadata).
-      with { |page, _| assert_page_has_table_card(page) }
-
-    result = manager.create(page_metadata_with_no_cards(v1_page_metadata).except('pageId'))
-    assert_equal('200', result.fetch(:status), 'Expected create result status to be 200')
-  end
-
-  def test_update_creates_data_lens_with_reference_v0
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-    manager.stubs(
-      build_rollup_soql: nil,
-      dataset_metadata: { status: '200', body: v0_dataset_metadata }
-    )
-    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |page_metadata|
-      # Make sure the page_metadata includes the correct data lens id
-      assert_equal('page-eyed', page_metadata['pageId'])
-    end.returns(status: '200', body: {})
-
-    NewViewManager.any_instance.expects(:update).times(1).with do |lens_id, name, description|
-      # Make sure it's creating the new view pointing to the correct page-id
-      assert_equal('page-eyed', lens_id)
-      assert_equal('new name', name)
-      assert_equal('new description', description)
-    end.returns('fdsa-fdsa')
-
-    manager.update({
-      'datasetId' => 'data-eyed',
-      'pageId' => 'page-eyed',
-      'name' => 'new name',
-      'description' => 'new description'
-    })
-  end
-
-  def test_update_succeeds_phase_1
-    PageMetadataManager.any_instance.expects(:update_rollup_table).times(2)
-
-    Phidippides.any_instance.stubs(
-      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata },
-      update_page_metadata: { status: '200', body: v1_page_metadata },
-      fetch_page_metadata: { status: '200', body: v1_page_metadata },
-    )
-
-    stub_feature_flags_with(:metadata_transition_phase, '1')
-    manager.create(v1_page_metadata_as_v0)
-    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |json, options|
-      assert(json.fetch('bunch'))
-      assert(json.fetch('foo'))
-      assert_equal({}, options)
-    end.returns(
-      status: '200',
-      body: v1_page_metadata_as_v0
-    )
-    manager.update(v1_page_metadata_as_v0.merge('bunch' => 'other stuff', 'foo' => 'bar'))
-  end
-
-  def test_update_succeeds_phase_2
-    PageMetadataManager.any_instance.expects(:update_rollup_table).times(2)
-
-    Phidippides.any_instance.stubs(
-      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata },
-      update_page_metadata: { status: '200', body: nil },
-      fetch_page_metadata: { status: '200', body: {} },
-    )
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    manager.create(v1_page_metadata.except('pageId'))
-    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |json, options|
-      assert(json.fetch('bunch'))
-      assert(json.fetch('foo'))
-      assert_equal({}, options)
-    end.returns(
-      status: '200',
-      body: v1_page_metadata.merge('bunch' => 'other stuff', 'foo' => 'bar')
-    )
-
-    manager.update(v1_page_metadata.merge('bunch' => 'other stuff', 'foo' => 'bar'))
-  end
-
-  def test_update_raises_an_error_if_dataset_id_is_not_present_in_page_metadata
-    PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
-    Phidippides.any_instance.stubs(
-      update_page_metadata: { body: nil, status: '200' }
-    )
-
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-    assert_raises(Phidippides::NoDatasetIdException) do
-      manager.update(v1_page_metadata.except('datasetId'))
-    end
-
-    stub_feature_flags_with(:metadata_transition_phase, '1')
-    assert_raises(Phidippides::NoDatasetIdException) do
-      manager.update(v1_page_metadata.except('datasetId'))
-    end
-
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    assert_raises(Phidippides::NoDatasetIdException) do
-      manager.update(v1_page_metadata.except('datasetId'))
-    end
-  end
-
-  def test_update_raises_an_error_if_page_id_is_not_present_in_page_metadata
-    PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
-    Phidippides.any_instance.stubs(
-      update_page_metadata: { body: nil, status: '200' }
-    )
-
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-    assert_raises(Phidippides::NoPageIdException) do
-      manager.update(v1_page_metadata.except('pageId'))
-    end
-
-    stub_feature_flags_with(:metadata_transition_phase, '1')
-    assert_raises(Phidippides::NoPageIdException) do
-      manager.update(v1_page_metadata.except('pageId'))
-    end
-
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    assert_raises(Phidippides::NoPageIdException) do
-      manager.update(v1_page_metadata.except('pageId'))
-    end
-  end
-
-  def test_update_does_not_delete_rollup_first
-    SodaFountain.any_instance.expects(:delete_rollup_table).never
-    SodaFountain.any_instance.stubs(create_or_update_rollup_table: { status: 204 })
-
-    # Phase 0
-    Phidippides.any_instance.stubs(
-      update_page_metadata: { status: '200', body: v0_page_metadata },
-      fetch_dataset_metadata: { status: '200', body: v0_dataset_metadata },
-      fetch_page_metadata: { status: '200', body: v0_page_metadata },
-      update_page_metadata: { status: '200', body: v0_page_metadata }
-    )
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-    result = manager.update(v0_page_metadata)
-    assert(result[:status] == '200', 'Expected create result status to be 200')
-    # Call update a second time to try to trick it into deleting and
-    # re-creating the rollup table(?)
-    manager.update(v0_page_metadata)
-
-    # Phase 1
-    Phidippides.any_instance.stubs(
-      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
-    )
-    stub_feature_flags_with(:metadata_transition_phase, '1')
-    result = manager.update(v0_page_metadata)
-    assert(result[:status] == '200', 'Expected create result status to be 200')
-    manager.update(v0_page_metadata)
-
-    # Phase 2
-    Phidippides.any_instance.stubs(
-      update_page_metadata: { status: '200', body: nil },
-      fetch_page_metadata: { status: '200', body: v1_page_metadata },
-      update_page_metadata: { status: '200', body: nil }
-    )
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    result = manager.update(v1_page_metadata)
-    assert(result[:status] == '200', 'Expected create result status to be 200')
-    manager.update(v1_page_metadata)
-  end
-
   def test_delete_deletes_core_and_phidippides_and_rollup_representation
-    stub_feature_flags_with(:metadata_transition_phase, '3')
-
     Phidippides.any_instance.expects(:fetch_page_metadata).returns(
       status: '200',
       body: { datasetId: 'data-eyed' }
@@ -480,8 +101,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_delete_doesnt_delete_phidippides_if_core_fails_for_some_reason
-    stub_feature_flags_with(:metadata_transition_phase, '3')
-
     Phidippides.any_instance.expects(:delete_page_metadata).never
 
     core_stub = mock
@@ -499,8 +118,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   # more important during a delete that the catalog entry is deleted (so users don't see something
   # to click on), than the actual metadata is deleted.
   def test_delete_leaves_things_in_an_inconsistent_state_if_phidippides_fails_for_some_reason
-    stub_feature_flags_with(:metadata_transition_phase, '3')
-
     Phidippides.any_instance.expects(:fetch_page_metadata).returns(
       status: '200',
       body: { datasetId: 'data-eyed' }
@@ -521,8 +138,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_delete_deletes_phidippides_if_core_doesnt_exist
-    stub_feature_flags_with(:metadata_transition_phase, '3')
-
     Phidippides.any_instance.expects(:delete_page_metadata).with do |id, options|
       assert_equal(id, 'four-four')
     end.then.returns({ body: nil, status: '200' })
@@ -554,7 +169,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_build_soql_v1
-    stub_feature_flags_with(:metadata_transition_phase, '2')
     manager.stubs(
       phidippides: stub(
         fetch_dataset_metadata: { body: v1_dataset_metadata },
@@ -571,66 +185,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
     soql = manager.send(:build_rollup_soql, v1_page_metadata, columns, cards)
     assert_equal(expected_soql, soql)
-  end
-
-  def test_build_rollup_soql_for_phase_0_does_not_have_date_trunc
-    manager.stubs(
-      phidippides: stub(fetch_dataset_metadata: { body: v0_dataset_metadata }),
-      column_field_name: 'name',
-      logical_datatype_name: 'logicalDatatype'
-    )
-    stub_feature_flags_with(:metadata_transition_phase, '0')
-    columns = v0_dataset_metadata.fetch('columns')
-    cards = v0_page_metadata.fetch('cards')
-    soql = manager.send(:build_rollup_soql, v0_page_metadata, columns, cards)
-    refute_match(/date_trunc/, soql)
-  end
-
-  def test_build_rollup_soql_has_date_trunc
-    manager.stubs(
-      dataset_metadata: { body: v1_dataset_metadata },
-      column_field_name: 'fieldName',
-      logical_datatype_name: 'fred'
-    )
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    columns = v1_dataset_metadata.fetch('columns')
-    cards = v1_page_metadata.fetch('cards')
-    soql = manager.send(:build_rollup_soql, v1_page_metadata, columns, cards)
-    assert_match(/date_trunc/, soql)
-  end
-
-  def test_build_rollup_soql_has_magnitudes
-    manager.stubs(
-      dataset_metadata: { body: v1_dataset_metadata },
-      column_field_name: 'some_number_column',
-      logical_datatype_name: 'fred'
-    )
-    manager.unstub(:magnitude_function_for_column)
-    manager.expects(:magnitude_function_for_column).
-      with(v1_dataset_metadata['id'], 'some_number_column').
-      returns('signed_magnitude_10')
-
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    columns = v1_dataset_metadata.fetch('columns')
-    cards = v1_page_metadata.fetch('cards')
-    soql = manager.send(:build_rollup_soql, v1_page_metadata, columns, cards)
-    assert_match(/signed_magnitude_10\(some_number_column\)/, soql)
-  end
-
-  def test_raise_when_missing_default_date_trunc_function
-    manager.stubs(
-      phidippides: stub(fetch_dataset_metadata: { body: v1_dataset_metadata }),
-      date_trunc_function: nil,
-      column_field_name: 'fieldName',
-      logical_datatype_name: 'fred'
-    )
-    columns = v1_dataset_metadata.fetch('columns')
-    cards = v1_page_metadata.fetch('cards')
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-
-    assert_raises(Phidippides::NoDefaultDateTruncFunction) do
-      manager.send(:build_rollup_soql, v1_page_metadata.except('defaultDateTruncFunction'), columns, cards)
-    end
   end
 
   def test_date_trunc_function_with_decades_of_days
@@ -671,7 +225,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_largest_time_span_in_days_being_used_in_columns
-    stub_feature_flags_with(:metadata_transition_phase, '3')
     manager.stubs(column_field_name: 'fieldName', logical_datatype_name: 'fred')
     fake_dataset_id = 'four-four'
     manager.unstub(:largest_time_span_in_days_being_used_in_columns)
@@ -686,7 +239,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_largest_time_span_in_days_being_used_in_columns_equal
-    stub_feature_flags_with(:metadata_transition_phase, '3')
     manager.stubs(column_field_name: 'fieldName', logical_datatype_name: 'fred')
     fake_dataset_id = 'four-four'
     manager.unstub(:largest_time_span_in_days_being_used_in_columns)
@@ -833,7 +385,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_update_date_trunc_function
-    stub_feature_flags_with(:metadata_transition_phase, '3')
     manager.stubs(
       largest_time_span_in_days_being_used_in_columns: 12345678,
       date_trunc_function: 'my_date_trunc_func',
@@ -845,36 +396,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     manager.send(:update_date_trunc_function, page_metadata, [], [], {})
     assert_equal(12345678, page_metadata['largestTimeSpanDays'])
     assert_equal('my_date_trunc_func', page_metadata['defaultDateTruncFunction'])
-  end
-
-  def test_no_dataset_copy_when_feature_flag_not_set
-    stub_feature_flags_with(:secondary_group_identifier, false)
-
-    PageMetadataManager.any_instance.expects(:update_rollup_table)
-
-    Phidippides.any_instance.stubs(
-      update_page_metadata: { status: '200', body: nil },
-      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
-    )
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    NewViewManager.any_instance.expects(:create).returns('data-lens')
-    manager.create(v1_page_metadata)
-    assert_not_requested @dataset_copy_stub
-  end
-
-  def test_no_dataset_copy_when_feature_flag_is_blank
-    stub_feature_flags_with(:secondary_group_identifier, '')
-
-    PageMetadataManager.any_instance.expects(:update_rollup_table)
-
-    Phidippides.any_instance.stubs(
-      update_page_metadata: { status: '200', body: nil },
-      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
-    )
-    stub_feature_flags_with(:metadata_transition_phase, '2')
-    NewViewManager.any_instance.expects(:create).returns('data-lens')
-    manager.create(v1_page_metadata)
-    assert_not_requested @dataset_copy_stub
   end
 
   private

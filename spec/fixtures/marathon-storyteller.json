@@ -1,0 +1,13 @@
+{
+  "app": {
+    "id": "/staging/storyteller",
+    "env": {
+      "PG_DB_PORT": "5432",
+      "PG_DB_NAME": "storyteller_production",
+      "PG_DB_USER": "storyteller_rwc",
+      "CLORTHO_BUCKET": "staging-credentials-bucket-credsbucket-abcdefghij",
+      "CLORTHO_PATH": "storyteller_secrets.sh",
+      "PG_DB_HOST": "storyteller-staging.abcdefghij.us-west-2.rds.amazonaws.com"
+    }
+  }
+}

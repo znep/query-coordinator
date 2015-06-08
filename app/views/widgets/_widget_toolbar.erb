@@ -44,17 +44,7 @@
         <%- end -%>
         <%- if @view.property_or_default(['license']) -%>
           <dt>License</dt>
-          <dd>
-            <%- if @view.property_or_default(['license']).nil? -%>
-              (none)
-            <%- elsif @view.property_or_default(['license', 'logoUrl']).blank? -%>
-              <%= @view.property_or_default(['license', 'name']) %>
-            <%- else -%>
-              <a href="<%= @view.property_or_default(['license', 'termsLink']) %>" rel="nofollow external">
-                <img src="/<%= @view.property_or_default(['license', 'logoUrl']) %>" alt="<%= @view.property_or_default(['license', 'name']) %>" />
-              </a>
-            <%- end -%>
-          </dd>
+          <dd><%== render_license %></dd>
         <%- end -%>
         <%- if @view.property_or_default(['termsAndConditions']) -%>
           <dt>Terms of Use</dt>

@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'nokogiri'
 
 class ApplicationHelperTest < ActionView::TestCase
 
@@ -102,6 +103,48 @@ class ApplicationHelperTest < ActionView::TestCase
 
   def test_get_alt_dataset_link
     assert(application_helper.get_alt_dataset_link('test-name') =~ /\/d\/test-name\/alt/)
+  end
+
+  def test_render_license
+    @view = View.new({})
+    assert render_license == '(none)'
+    @view = View.new({ 'license' => { 'name' => 'license test' } })
+    assert render_license == 'license test'
+
+    @view = View.new({ 'license' => {
+      'name' => 'license test',
+      'termsLink' => 'http://www.example.com/'
+    } })
+    html = Nokogiri::HTML(render_license)
+    assert html.text == 'license test'
+    assert html.css('body').children.first.name == 'a'
+    assert html.css('a').attribute('href').value == 'http://www.example.com/'
+
+    @view = View.new({ 'license' => {
+      'name' => 'license test',
+      'logoUrl' => 'http://www.example.org/logo.jpg',
+      'termsLink' => 'http://www.example.com/'
+    } })
+    html = Nokogiri::HTML(render_license)
+    assert html.text == ''
+    assert html.css('body').children.first.name == 'a'
+    assert html.css('a').attribute('href').value == 'http://www.example.com/'
+    assert html.css('a').children.first.name == 'img'
+    assert html.css('img').attribute('src').value == 'http://www.example.org/logo.jpg'
+    assert html.css('img').attribute('alt').value == 'license test'
+
+    @view = View.new({ 'license' => {
+      'name' => 'license test',
+      'logoUrl' => 'images/logo.jpg',
+      'termsLink' => 'http://www.example.com/'
+    } })
+    html = Nokogiri::HTML(render_license)
+    assert html.text == ''
+    assert html.css('body').children.first.name == 'a'
+    assert html.css('a').attribute('href').value == 'http://www.example.com/'
+    assert html.css('a').children.first.name == 'img'
+    assert html.css('img').attribute('src').value == '/images/logo.jpg'
+    assert html.css('img').attribute('alt').value == 'license test'
   end
 
   private

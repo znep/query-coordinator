@@ -5,7 +5,7 @@ class DowntimeConfig < ExternalConfig
   def_delegator :@downtimes, :each
 
   def filename
-    "#{Rails.root}/config/downtime.yml"
+    @filename ||= "#{Rails.root}/config/downtime.yml"
   end
 
   def update!

@@ -11,7 +11,7 @@ class ExternalConfig
   @@configs = {}
   def self.for(uniqId)
     @@configs[uniqId] ||= begin
-                            "#{uniqId.camelcase}Config".constantize.new
+                            "#{uniqId.to_s.camelcase}Config".constantize.new
                           rescue NameError
                             Rails.logger.error("Please define the config classname correctly.")
                             raise
@@ -24,7 +24,7 @@ class ExternalConfig
     end
   end
 
-  def initialize#(uniqId, filename)
+  def initialize
     uncache!
     update!
   end
@@ -35,7 +35,7 @@ class ExternalConfig
   end
 
   def filename
-    @filename || (raise NotImplementedError.new "#{self.class.name} has no associated file!")
+    @filename || (raise NotImplementedError.new("#{self.class.name} has no associated file!"))
   end
 
   def has_changed?

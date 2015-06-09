@@ -261,13 +261,6 @@ class NewUxBootstrapController < ActionController::Base
     }
   end
 
-  # CORE-4770 Avoid card creation for latitude/longitude column types (because no one cares)
-  def field_name_ignored_for_bootstrap?(field_name)
-    columns_to_avoid = FeatureFlags.derive(nil, defined?(request) ? request : nil)[:field_names_to_avoid_during_bootstrap]
-    columns_to_avoid = columns_to_avoid.kind_of?(Array) ? columns_to_avoid.map(&:to_s).map(&:downcase) : []
-    columns_to_avoid.include?(field_name.downcase)
-  end
-
   def system_column?(field_name)
     (field_name =~ Phidippides::SYSTEM_COLUMN_ID_REGEX) != nil
   end
@@ -319,7 +312,7 @@ class NewUxBootstrapController < ActionController::Base
   end
 
   def non_bootstrappable_column?(field_name, column)
-    field_name_ignored_for_bootstrap?(field_name) ||
+      # TODO - get field_names_to_avoid_during_bootstrap from metachef config bag
       system_column?(field_name) ||
       histogram_is_unsupported_on_column?(column) ||
       column_too_large_for_feature_card?(column) ||

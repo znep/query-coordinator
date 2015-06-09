@@ -441,30 +441,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
         context 'skip cards we do not care about' do
 
-          should 'not create a card for columns specified in field_names_to_avoid_during_bootstrap feature flag' do
-            @phidippides.stubs(
-              fetch_dataset_metadata: {
-                status: '200', body: v1_mock_dataset_metadata
-              },
-              update_dataset_metadata: {
-                status: '200', body: v1_mock_dataset_metadata
-              }
-            )
-
-            # Make sure the page we're creating fits certain criteria
-            @page_metadata_manager.expects(:create).with do |page, _|
-              assert_equal(10, page['cards'].length, 'Should create 10 cards')
-
-              assert(page['cards'].none? do |card|
-                 %w(latitude longitude lat lng x y).include?(card['fieldName'].downcase)
-              end, 'should omit latitude and longitude columns')
-
-            end.returns(status: '200', body: { pageId: 'neoo-page' })
-
-            get :bootstrap, id: 'four-four'
-            assert_redirected_to('/view/neoo-page')
-          end
-
           should 'not create a card for things that look like OBE sub-columns' do
             @phidippides.stubs(
               fetch_dataset_metadata: {
@@ -660,36 +636,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
           end
 
-        end
-
-        context 'invalid input in feature flag field_names_to_avoid_during_bootstrap' do
-          should 'not skip any cards' do
-            invalid_because_not_array = 'single3'
-            stub_multiple_feature_flags_with(
-              :field_names_to_avoid_during_bootstrap => invalid_because_not_array
-            )
-
-            @phidippides.stubs(
-              fetch_dataset_metadata: {
-                status: '200', body: v1_mock_dataset_metadata
-              },
-              update_dataset_metadata: {
-                status: '200', body: v1_mock_dataset_metadata
-              }
-            )
-
-            # Make sure the page we're creating fits certain criteria
-            @page_metadata_manager.expects(:create).with do |page, _|
-              assert_equal(10, page['cards'].length, 'Should create 10 cards')
-
-              # still expect card because filter was invalid
-              assert(page['cards'].any? { |card| card['fieldName'] == 'single3' })
-
-            end.returns({ status: '200', body: { pageId: 'neoo-page' } })
-
-            get :bootstrap, id: 'four-four'
-            assert_redirected_to('/view/neoo-page')
-          end
         end
       end
     end

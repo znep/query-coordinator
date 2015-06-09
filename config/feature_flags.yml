@@ -82,24 +82,6 @@ enable_feedback:
 domain_decommissioning:
   description: Enable a banner indicating that the domain is being decommissionsed.
   defaultValue: false
-field_names_to_avoid_during_bootstrap:
-  description: Do not create cards for these field names on bootstrap. Must be an array of fieldNames!
-  defaultValue:
-    - latitude
-    - longitude
-    - lat
-    - lng
-    - x
-    - y
-field_names_that_cannot_be_aggregated:
-  description: Do not include these field names in aggregation chooser. Must be an array of fieldNames!
-  defaultValue:
-    - latitude
-    - longitude
-    - lat
-    - lng
-    - x
-    - y
 debug_assets:
   description: Switch over to using unpackaged Javascript files.
   defaultValue: false
@@ -109,9 +91,6 @@ odux_enable_histogram:
 use_soql_for_clustering:
   description: Use the (currently unwritten) core method soql_clustering for clustering.
   defaultValue: false
-feature_map_zoom_debounce:
-  description: Milliseconds after user interaction to delay before requesting vector tiles
-  defaultValue: 500
 enable_newux_page_view_count:
   description: Have new UX pages accumulated toward the global count of all page views.
   defaultValue: true
@@ -121,9 +100,6 @@ display_catalog_lens_delete_button:
 enable_search_suggestions:
   description: Allow search suggestions and type-ahead for Data Lens search card.
   defaultValue: false
-feature_map_features_per_tile:
-  description: The maximum number of features that will be requested for any individual feature map tile.
-  defaultValue: 50000
 current_dataset_metadata_version:
   description: The current version of dataset metadata that the app should read and write.
   defaultValue: 1
@@ -149,9 +125,6 @@ default_imports_to_nbe:
   defaultValue: false
   expectedValues: delta-importer
   category: obe deprecation
-secondary_group_identifier:
-  description: See CORE-5497 - This is the secondary indexing group that should be signaled to index on new UX bootstrap
-  defaultValue: spandex3
 nbe_bucket_size:
   description: Bucket-ize the fetching of rows when hitting NBE.
   defaultValue: false
@@ -161,9 +134,6 @@ dataset_count_v2:
 force_redirect_to_data_lens:
   description: Automatically redirect to the default Data Lens page for a given NBE dataset.
   defaultValue: false
-shape_file_region_query_limit:
-  description: Limit for the number of regions fetched for a shape file when displayed in choropleths.
-  defaultValue: 5000
 enable_export_service:
   description: Use the new Export Service on this domain.
   defaultValue: false

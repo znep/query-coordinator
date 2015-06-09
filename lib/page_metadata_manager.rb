@@ -36,25 +36,19 @@ class PageMetadataManager
     )
   end
 
-  def secondary_group_identifier
-    FeatureFlags.derive(nil, nil)[:secondary_group_identifier]
-  end
-
   def request_soda_fountain_secondary_index(dataset_id, options = {})
-    unless secondary_group_identifier.blank?
-      soda_fountain_secondary = SodaFountain.new(path: '/dataset-copy')
-      options = options.merge(
-        dataset_id: dataset_id,
-        identifier: secondary_group_identifier,
-        verb: :post
+    # unless secondary_group_indentifier.blank?  # TODO we need to check this from metachef config bag
+    soda_fountain_secondary = SodaFountain.new(path: '/dataset-copy')
+    options = options.merge(
+      dataset_id: dataset_id,
+      identifier: 'spandex3', # TODO - get this from metachef config bag secondary_group_indentifier
+      verb: :post
+    )
+    response = soda_fountain_secondary.issue_request(options)
+    if response.fetch(:status) !~ /^2[0-9][0-9]$/
+      report_error(
+        "Error requesting secondary index for #{dataset_id}"
       )
-      response = soda_fountain_secondary.issue_request(options)
-      if response.fetch(:status) !~ /^2[0-9][0-9]$/
-        report_error(
-          "Error requesting secondary index for #{dataset_id} - \n" +
-          "secondary group identifier #{secondary_group_identifier}"
-        )
-      end
     end
   end
 

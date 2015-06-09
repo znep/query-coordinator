@@ -50,18 +50,12 @@ enable_fullstory_tracking:
 enable_airbrake_js:
   description: Enable Airbrake error tracking of Javascript errors (see CORE-3365 for more information)
   defaultValue: false
-enable_png_download_ui:
-  description: Enable the UI for downloading PNG versions of datacard visualizations
-  defaultValue: true
 include_sr_in_esri:
   description: ESRI-only; stop using SRs in the export URL.
   defaultValue: false
 kill_esri_reprojection_and_pass_different_webm:
   description: 'Special magic for Iowa, whose ArcGIS server appears to hate EPSG:900913 and projected maps'
   defaultValue: false
-odux_enable_feature_map:
-  description: Enable feature maps.
-  defaultValue: true
 enable_api_foundry_pane:
   description: Will allow the api_foundry pane to be displayed. If there is another reason for the api_foundry pane to be hidden, it will still be hidden.
   defaultValue: false
@@ -93,9 +87,6 @@ enable_newux_page_view_count:
   defaultValue: true
 display_catalog_lens_delete_button:
   description: Whether to show the Delete button for data lenses, in the old UX.
-  defaultValue: false
-enable_search_suggestions:
-  description: Allow search suggestions and type-ahead for Data Lens search card.
   defaultValue: false
 current_dataset_metadata_version:
   description: The current version of dataset metadata that the app should read and write.

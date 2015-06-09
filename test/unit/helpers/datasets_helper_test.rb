@@ -5,7 +5,7 @@ require_relative '../../../app/helpers/datasets_helper'
 class DatasetsHelperTest < Test::Unit::TestCase
 
   def setup
-    FeatureFlags.stubs(:derive => Hashie::Mash.new)
+    init_current_domain
     @object = Object.new.tap { |object| object.extend(DatasetsHelper) }
     @view = View.new.tap { |view| view.stubs(default_view_state) }
     @object.stubs(:view => @view, :request => nil)
@@ -68,6 +68,9 @@ class DatasetsHelperTest < Test::Unit::TestCase
     assert @object.hide_embed_sdp?, 'Embed pane should be hidden'
     @view.stubs(:is_published? => true, :is_api? => false, :new_backend? => true)
     assert @object.hide_embed_sdp?, 'Embed pane should be hidden'
+    FeatureFlags.stubs(:derive => Hashie::Mash.new({ :reenable_ui_for_nbe => true }))
+    @view.stubs(:is_published? => true, :is_api? => false, :new_backend? => true)
+    refute @object.hide_embed_sdp?, 'Embed pane should not be hidden'
   end
 
   def test_row_identifier_select_tag

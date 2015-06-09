@@ -333,7 +333,10 @@ module DatasetsHelper
   end
 
   def hide_embed_sdp?
-    !view.is_published? || view.is_api? || view.new_backend?
+    [ !view.is_published?,
+      view.is_api?,
+      view.new_backend? && FeatureFlags.derive(@view, request).reenable_ui_for_nbe === false
+    ].any?
   end
 
   def row_identifier_select_tag

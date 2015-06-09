@@ -197,3 +197,7 @@ show_newux_page_header:
   description: Show the header logo and sign in/up/out links.
   defaultValue: true
   category: data lens
+reenable_ui_for_nbe:
+  description: Some pieces of the UI were disabled for NBE; setting this to true renables them.
+  defaultValue: false
+  category: obe deprecation

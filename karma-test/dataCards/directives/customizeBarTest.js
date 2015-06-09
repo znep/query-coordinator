@@ -84,13 +84,13 @@
       expect(customizeBar.find('save-as')).to.exist;
     });
 
-    it('should not show save-as button when the enable_data_lens_save_as_button feature flag is false', function(){
+    it('should not show save-as button when the enable_data_lens_other_views feature flag is false', function(){
       ServerConfig.override('enableDataLensSaveAsButton', false);
       var customizeBar = createElement().element;
       expect(customizeBar.find('save-as')).to.have.class('ng-hide');
     });
 
-    it('should show save-as button when the enable_data_lens_save_as_button feature flag is true', function(){
+    it('should show save-as button when the enable_data_lens_other_views feature flag is true', function(){
       ServerConfig.override('enableDataLensSaveAsButton', true);
       var customizeBar = createElement().element;
       expect(customizeBar.find('save-as')).to.not.have.class('ng-hide');

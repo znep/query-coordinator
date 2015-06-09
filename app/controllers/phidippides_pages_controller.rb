@@ -162,6 +162,6 @@ class PhidippidesPagesController < ApplicationController
   end
 
   def save_as_enabled?
-    FeatureFlags.derive(nil, request)[:enable_data_lens_save_as_button]
+    FeatureFlags.derive(nil, request)[:enable_data_lens_other_views]
   end
 end

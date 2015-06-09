@@ -75,6 +75,7 @@ group :development, :test do
   gem 'nyan-cat-formatter', require: false
   gem 'factory_girl_rails'
 
+  gem 'foreman'
 end
 
 group :test do

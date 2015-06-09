@@ -59,7 +59,7 @@ describe('Block class', function() {
     describe('when `blockData` is valid', function() {
 
       it('creates a new Block', function() {
-        assert(new Block(generateBlockData()) instanceof Block, 'instantiated block is an instance of Block');
+        assert.instanceOf(new Block(generateBlockData()), Block, 'instantiated block is an instance of Block');
       });
     });
   });
@@ -130,7 +130,7 @@ describe('Block class', function() {
       var newBlock = new Block(blockData);
       var components = newBlock.getComponents();
 
-      assert(components.hasOwnProperty('length'), '`length` is present on block components');
+      assert.property(components, 'length', '`length` is present on block components');
     });
   });
 
@@ -406,23 +406,27 @@ describe('Block class', function() {
     });
   });
 
-  describe('.save()', function() {
+  describe('.serialize()', function() {
 
     var newBlock;
 
     beforeEach(function() {
-      newBlock = new Block(generateBlockData());
+      newBlock = new Block(
+        generateBlockData({
+          id: 99
+        })
+      );
     });
 
     describe('on a non-dirty Block', function() {
 
       it('should return an object with the same value for id as its parent and no other properties', function() {
 
-        var savedBlock = newBlock.save();
+        var savedBlock = newBlock.serialize();
 
-        assert(savedBlock['id'] === 1, "block `id` is 1");
-        assert.isFalse(savedBlock.hasOwnProperty('layout'), '`layout` is not present in block data');
-        assert.isFalse(savedBlock.hasOwnProperty('components'), '`components` is not present in block data');
+        assert(savedBlock['id'] === 99, "block `id` is 99");
+        assert.notProperty(savedBlock, 'layout', '`layout` is not present in block data');
+        assert.notProperty(savedBlock, 'components', '`components` is not present in block data');
       });
     });
 
@@ -432,11 +436,12 @@ describe('Block class', function() {
 
         newBlock.markDirty();
 
-        var savedBlock = newBlock.save();
+        var savedBlock = newBlock.serialize();
 
-        assert.isFalse(savedBlock.hasOwnProperty('id'), '`id` is not present in block data');
+        assert.notProperty(savedBlock, 'id', '`id` is not present in block data');
         assert(savedBlock['layout'] === '12', 'block `layout` is "12"');
-        assert(savedBlock['components'].hasOwnProperty('length') && savedBlock['components'].length === 1, 'block `components` is of length 1');
+        assert.property(savedBlock['components'], 'length', 'block `components` has `length`');
+        assert(savedBlock['components'].length === 1, 'block `components` is of length 1');
       });
     });
   });
@@ -453,7 +458,7 @@ describe('Block class', function() {
 
     it('returns a new, dirty instance of Block class with identical properties', function() {
 
-      assert.isTrue(clonedBlock instanceof Block, 'cloned block is an instance of Block');
+      assert.instanceOf(clonedBlock, Block, 'cloned block is an instance of Block');
       assert.isTrue(clonedBlock.isDirty(), 'cloned block is dirty');
       assert(clonedBlock.getLayout() === parentBlock.getLayout(), 'cloned block `layout` is equal to parent block `layout`');
       assert.deepEqual(clonedBlock.getComponents(), parentBlock.getComponents(), 'cloned block `components` is equal to parent block `components`');

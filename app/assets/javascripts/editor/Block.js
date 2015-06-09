@@ -6,7 +6,7 @@
 
     if (typeof blockData !== 'object') {
       throw new Error(
-        '`blockData` argument must be an object (is of type ' + typeof blockData + ').'
+        '`blockData` argument must be an object (is of type ' + (typeof blockData) + ').'
       )
     }
 
@@ -51,7 +51,7 @@
 
       if (typeof layout !== 'string') {
         throw new Error(
-          '`layout` argument must be a string (is of type ' + typeof layout + ').'
+          '`layout` argument must be a string (is of type ' + (typeof layout) + ').'
         );
       }
 
@@ -79,7 +79,7 @@
 
       if (typeof componentType !== 'string') {
         throw new Error(
-          '`componentType` argument must be a string (is of type ' + typeof componentType + ').'
+          '`componentType` argument must be a string (is of type ' + (typeof componentType) + ').'
         );
       }
 
@@ -102,7 +102,7 @@
       this.markDirty();
     };
 
-    this.save = function() {
+    this.serialize = function() {
 
       var blockData = {
         id: _id
@@ -144,6 +144,13 @@
       var newComponents = [];
 
       for (var i = 0; i < components.length; i++) {
+
+        if (typeof components[i].value !== 'string') {
+          throw new Error(
+            'component value must be of type string (is a ' + (typeof components[i].value) + ').'
+          );
+        }
+
         newComponents.push(
           {
             type: components[i].type,
@@ -159,7 +166,7 @@
 
       if (typeof text !== 'string') {
         throw new Error(
-          '`text` argument must be a string (is of type ' + typeof text + ').'
+          '`text` argument must be a string (is of type ' + (typeof text) + ').'
         );
       }
 
@@ -173,7 +180,7 @@
 
       if (typeof imageUrl !== 'string') {
         throw new Error(
-          '`imageUrl` argument must be a string (is of type ' + typeof imageUrl + ').'
+          '`imageUrl` argument must be a string (is of type ' + (typeof imageUrl) + ').'
         );
       }
 
@@ -187,7 +194,7 @@
 
       if (typeof visualizationUrl !== 'string') {
         throw new Error(
-          '`visualizationUrl` argument must be a string (is of type ' + typeof visualizationUrl + ').'
+          '`visualizationUrl` argument must be a string (is of type ' + (typeof visualizationUrl) + ').'
         );
       }
 

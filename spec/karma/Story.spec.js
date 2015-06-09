@@ -102,7 +102,7 @@ describe('Story class', function() {
     describe('when `storyData` is valid', function() {
 
       it('creates a new Story', function() {
-        assert(new Story(generateStoryData()) instanceof Story, 'instantiated story is an instance of Story');
+        assert.instanceOf(new Story(generateStoryData()), Story, 'instantiated story is an instance of Story');
       });
     });
   });
@@ -181,7 +181,7 @@ describe('Story class', function() {
       var newStory = new Story(storyData);
       var blocks = newStory.getBlocks();
 
-      assert(blocks.hasOwnProperty('length'), '`length` is present on story blocks');
+      assert.property(blocks, 'length', '`length` is present on story blocks');
     });
   });
 
@@ -632,7 +632,7 @@ describe('Story class', function() {
     });
   });
 
-  describe('.save()', function() {
+  describe('.serialize()', function() {
 
     var newStory;
 
@@ -649,13 +649,13 @@ describe('Story class', function() {
     describe('when called on a story with no dirty blocks', function() {
       it('returns a serialized story in which the block objects have only `id` properties', function() {
 
-        var savedStory = newStory.save();
+        var savedStory = newStory.serialize();
 
-        assert.isTrue(savedStory.blocks[0].hasOwnProperty('id'));
-        assert.isFalse(savedStory.blocks[0].hasOwnProperty('layout'));
+        assert.property(savedStory.blocks[0], 'id', 'unchanged block has `id`');
+        assert.notProperty(savedStory.blocks[0], 'layout', 'uncahnged block does not have `layout`');
 
-        assert.isTrue(savedStory.blocks[1].hasOwnProperty('id'));
-        assert.isFalse(savedStory.blocks[1].hasOwnProperty('layout'));
+        assert.property(savedStory.blocks[1], 'id', 'unchanged block has `id`');
+        assert.notProperty(savedStory.blocks[1], 'layout', 'unchanged block does not have `layout`');
       });
     });
 
@@ -666,13 +666,13 @@ describe('Story class', function() {
 
         dirtyBlock.updateComponentAtIndex(0, 'text', 'Updated block');
 
-        var savedStory = newStory.save();
+        var savedStory = newStory.serialize();
 
-        assert.isFalse(savedStory.blocks[0].hasOwnProperty('id'));
-        assert.isTrue(savedStory.blocks[0].hasOwnProperty('layout'));
+        assert.notProperty(savedStory.blocks[0], 'id', 'changed block does not have `id`');
+        assert.property(savedStory.blocks[0], 'layout', 'changed block has `layout`');
 
-        assert.isTrue(savedStory.blocks[1].hasOwnProperty('id'));
-        assert.isFalse(savedStory.blocks[1].hasOwnProperty('layout'));
+        assert.property(savedStory.blocks[1], 'id', 'unchanged block has `id`');
+        assert.notProperty(savedStory.blocks[1], 'layout', 'unchanged block does not have `layout`');
       });
     });
   });

@@ -8,7 +8,7 @@
 
     if (typeof storyData !== 'object') {
       throw new Error(
-        '`storyData` argument must be an object (is of type ' + typeof storyData + ').'
+        '`storyData` argument must be an object (is of type ' + (typeof storyData) + ').'
       )
     }
 
@@ -17,7 +17,7 @@
     }
 
     if (storyData.fourByFour.match(FOUR_BY_FOUR_PATTERN) === null) {
-      throw new Error('`fourByFour` property is not a valid four-by-four');
+      throw new Error('`fourByFour` property is not a valid four-by-four: "' + storyData.fourByFour + '".');
     }
 
     if (!storyData.hasOwnProperty('title')) {
@@ -80,7 +80,7 @@
 
       if (!(block instanceof Block)) {
         throw new Error(
-          '`block` argument must be a Block (is of type ' + typeof block + ').'
+          '`block` argument must be a Block (is of type ' + (typeof block) + ').'
         );
       }
 
@@ -126,13 +126,13 @@
       _blocks[index2] = tempBlock;
     };
 
-    this.save = function() {
+    this.serialize = function() {
 
       return {
         fourByFour: _fourByFour,
         title: _title,
         blocks: _blocks.map(function(block) {
-          return block.save();
+          return block.serialize();
         })
       };
     };
@@ -145,7 +145,7 @@
 
       if (typeof blockDataArray !== 'object' || !(blockDataArray instanceof Array)) {
         throw new Error(
-          '`blockDataArray` argument must be an array (is of type ' + typeof blockData + ').'
+          '`blockDataArray` argument must be an array (is of type ' + (typeof blockData) + ').'
         );
       }
 

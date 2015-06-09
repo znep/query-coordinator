@@ -28,14 +28,13 @@ class ExternalConfig
     uncache!
     update!
   end
-  attr_reader :uniqId, :filename
 
   def uniqId
     @uniqId ||= self.class.name[0...-6].underscore.to_sym
   end
 
   def filename
-    @filename || (raise NotImplementedError.new("#{self.class.name} has no associated file!"))
+    raise NotImplementedError.new "#{self.class.name} has no associated file!"
   end
 
   def has_changed?

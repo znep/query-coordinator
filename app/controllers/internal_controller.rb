@@ -232,7 +232,9 @@ class InternalController < ApplicationController
     @domain = Domain.find(params[:domain_id])
     @flags = Hashie::Mash.new
     domain_flags = @domain.feature_flags
-    FEATURE_FLAGS.each do |flag, fc|
+    category = params[:category].try(:sub, '+', ' ')
+    ExternalConfig.for(:feature_flag).each do |flag, fc|
+      next unless category.nil? || category == fc['category']
       @flags[flag] = fc
       @flags[flag].value = domain_flags[flag]
     end
@@ -240,6 +242,7 @@ class InternalController < ApplicationController
     respond_to do |format|
       format.html { render }
       format.data { render :json => @flags.to_json }
+      format.json { render :json => @flags.to_json }
     end
   end
 

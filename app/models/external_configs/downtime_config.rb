@@ -28,6 +28,4 @@ class DowntimeConfig < ExternalConfig
       puts("#{Time.now} - Error loading downtime banner file: #{filename} - #{e}")
     end
   end
-
-  attr_reader :downtimes
 end

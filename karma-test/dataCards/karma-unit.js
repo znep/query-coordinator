@@ -117,6 +117,7 @@ module.exports = function ( karma ) {
 
       'karma-test/helpers/TestHelpers.js', // Requirement for mockModuleDefinitions.
       'karma-test/dataCards/mockModuleDefinitions.js', // Mock out module('dataCards').
+      'karma-test/dataCards/mockTranslations.js',
 
       'public/javascripts/angular/dataCards/controllers.js',
       'public/javascripts/angular/dataCards/models.js',

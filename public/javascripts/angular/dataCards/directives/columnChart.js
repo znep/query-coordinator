@@ -1,4 +1,4 @@
-angular.module('socrataCommon.directives').directive('columnChart', function($parse, $timeout, FlyoutService) {
+angular.module('socrataCommon.directives').directive('columnChart', function($parse, $timeout, FlyoutService, I18n) {
   'use strict';
 
   var renderColumnChart = function(element, chartData, showFiltered, dimensions, expanded, rowDisplayUnit) {
@@ -7,7 +7,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
     var bottomMargin; // Calculated based on label text length
     var horizontalScrollbarHeight = 15; // used to keep horizontal scrollbar within .card-visualization upon expand
     var numberOfDefaultLabels = expanded ? chartData.length : 3;
-    var UNDEFINED_PLACEHOLDER = '(No value)';
+    var UNDEFINED_PLACEHOLDER = '({0})'.format(I18n.common.noValue);
     var maximumBottomMargin = 140;
 
     var $chart = element.find('.column-chart-wrapper');
@@ -403,7 +403,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
           formattedValue = $.toHumaneNumber(value) + formattedValue;
         } else {
-          formattedValue = '(No value)';
+          formattedValue = UNDEFINED_PLACEHOLDER;
         }
 
         return formattedValue;
@@ -422,8 +422,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         flyoutContent = [
           '<div class="flyout-title">{0}</div>',
           '<div class="flyout-row">',
-            '<span class="flyout-cell">Total</span>',
             '<span class="flyout-cell">{1}</span>',
+            '<span class="flyout-cell">{2}</span>',
           '</div>'
         ];
 
@@ -435,8 +435,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           flyoutSpanClass = 'emphasis';
           flyoutContent.push(
             '<div class="flyout-row">',
-              '<span class="flyout-cell {2}">Filtered amount</span>',
-              '<span class="flyout-cell {2}">{3}</span>',
+              '<span class="flyout-cell {3}">{4}</span>',
+              '<span class="flyout-cell {3}">{5}</span>',
             '</div>');
 
           // If we are hovering over a bar we are
@@ -451,22 +451,28 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
                 '<span class="flyout-cell">&#8203;</span>',
               '</div>',
               '<div class="flyout-row">',
-                '<span class="flyout-cell">The page is currently ',
-                'filtered by this value, click to clear it</span>',
+                '<span class="flyout-cell">{6}</span>',
                 '<span class="flyout-cell"></span>',
               '</div>');
-           }
+          }
 
-           flyoutContent = flyoutContent.
-             join('').
-             format(flyoutTitle, unfilteredValue,
-               flyoutSpanClass, filteredValue);
+          flyoutContent = flyoutContent.
+            join('').
+            format(
+              flyoutTitle,
+              I18n.flyout.total,
+              unfilteredValue,
+              flyoutSpanClass,
+              I18n.flyout.filteredAmount,
+              filteredValue,
+              I18n.flyout.clearFilterLong
+            );
 
         } else {
 
           flyoutContent = flyoutContent.
             join('').
-            format(flyoutTitle, unfilteredValue);
+            format(flyoutTitle, I18n.flyout.total, unfilteredValue);
 
         }
 
@@ -533,7 +539,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
     FlyoutService.register({
       selector: '.labels .label .contents .icon-close',
-      render: _.constant('<div class="flyout-title">Clear filter</div>')
+      render: _.constant('<div class="flyout-title">{0}</div>'.format(I18n.flyout.clearFilter))
     });
 
     // Set "Click to Expand" truncation marker + its tooltip
@@ -675,7 +681,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
       FlyoutService.register({
         selector: '.truncation-marker',
-        render: _.constant('<div class="flyout-title">Click to expand</div>'),
+        render: _.constant('<div class="flyout-title">{0}</div>'.format(I18n.flyout.expand)),
         destroySignal: scope.$destroyAsObservable(element)
       });
 

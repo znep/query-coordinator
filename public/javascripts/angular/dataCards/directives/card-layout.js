@@ -20,15 +20,15 @@
     scope,
     FlyoutService,
     $timeout,
-    element
+    element,
+    I18n
   ) {
 
     FlyoutService.register({
       selector: '.export-visualization-disabled',
       render: _.constant(
-        '<div class="flyout-title">This visualization is not available' +
-        '<br/>for image export</div>'
-      ),
+        '<div class="flyout-title">{0}</div>'.
+          format(I18n.common.errors.exportVisualizationDisabled)),
       destroySignal: scope.$destroyAsObservable(element)
     });
   }
@@ -40,7 +40,8 @@
     FlyoutService,
     Card,
     $timeout,
-    $window
+    $window,
+    I18n
   ) {
 
     sortedTileLayout = new SortedTileLayout();
@@ -854,7 +855,8 @@
           scope,
           FlyoutService,
           $timeout,
-          cardContainer
+          cardContainer,
+          I18n
         );
 
 

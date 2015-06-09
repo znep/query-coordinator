@@ -96,13 +96,8 @@
     };
   }
 
-  var VALIDATION_ERROR_STRINGS = {
-    name: {
-      minLength: 'Please enter a title',
-      maxLength: 'Your title is too long',
-      required: 'Please enter a title'
-    }
-  };
+  var VALIDATION_ERROR_STRINGS;
+
   /**
    * Binds the writable properties of page to the scope, such that changes to the scope will
    * propagate to the page model.
@@ -152,9 +147,19 @@
     $http,
     Schemas,
     PageHelpersService,
-    DeviceService
+    DeviceService,
+    I18n
   ) {
-    bindWritableProperties($scope, page);
+
+    VALIDATION_ERROR_STRINGS = {
+      name: {
+        minLength: I18n.metadata.validationErrorMinLength,
+        maxLength: I18n.metadata.validationErrorMaxLength,
+        required: I18n.metadata.validationErrorRequired
+      }
+    };
+
+    bindWritableProperties($scope, page, I18n);
 
     /*************************
     * General metadata stuff *
@@ -273,17 +278,17 @@
       function humanReadableOperator(filter) {
         if (filter instanceof Filter.BinaryOperatorFilter) {
           if (filter.operator === '=') {
-            return 'is';
+            return I18n.filter.is;
           } else {
             throw new Error('Only the "=" filter is currently supported.');
           }
         } else if (filter instanceof Filter.TimeRangeFilter) {
-          return 'is';
+          return I18n.filter.is;
         } else if (filter instanceof Filter.IsNullFilter) {
           if (filter.isNull) {
-            return 'is';
+            return I18n.filter.is;
           } else {
-            return 'is not';
+            return I18n.filter.isNot;
           }
         } else {
           throw new Error('Cannot apply filter of unsupported type "' + filter + '".');
@@ -295,13 +300,13 @@
           if (_.isPresent(filter.operand.toString().trim())) {
             return filter.humanReadableOperand || filter.operand;
           } else {
-            return 'blank';
+            return I18n.filter.blank;
           }
         } else if (filter instanceof Filter.IsNullFilter) {
-          return 'blank';
+          return I18n.filter.blank;
         } else if (filter instanceof Filter.TimeRangeFilter) {
           var format = 'YYYY MMMM DD';
-          return '{0} to {1}'.format(
+          return I18n.t('filter.dateRange',
             moment(filter.start).format(format),
             moment(filter.end).format(format)
           );
@@ -648,9 +653,8 @@
     FlyoutService.register({
       selector: '.download-menu-item-disabled-text',
       render: _.constant(
-        '<div class="flyout-title">' +
-          'Please save the page in order to download a visualization as an image' +
-        '</div>'
+        '<div class="flyout-title">{0}</div>'.
+          format(I18n.metadata.visualizationAsImageDisabledFlyout)
       ),
       destroySignal: destroy$
     });
@@ -673,7 +677,8 @@
 
         if (currentPageSaveEvents.value.status === 'failed') {
 
-          return '<div class="flyout-title">An error occurred</div><div>Please contact Socrata Support</div>';
+          return '<div class="flyout-title">{0}</div><div>{1}</div>'.
+            format(I18n.saveButton.flyoutFailedTitle, I18n.saveButton.flyoutFailedBody);
 
         } else if (currentPageSaveEvents.value.status === 'idle') {
 
@@ -690,8 +695,8 @@
       render: function() {
 
         return $scope.hasChanges ?
-          '<div class="flyout-title">Click to save your changes as a new page</div>' :
-          '<div class="flyout-title">No changes to be saved</div>';
+          '<div class="flyout-title">{0}</div>'.format(I18n.saveAs.flyoutIdle) :
+          '<div class="flyout-title">{0}</div>'.format(I18n.saveAs.flyoutNoChanges);
       },
       destroySignal: destroy$
     });
@@ -700,7 +705,8 @@
       selector: '.clear-all-filters-button',
       render: function() {
 
-        return '<div class="flyout-title">Click to reset all filters</div>';
+        return '<div class="flyout-title">{0}</div>'.
+          format(I18n.quickFilterBar.clearAllFlyout);
       },
       destroySignal: destroy$
     });

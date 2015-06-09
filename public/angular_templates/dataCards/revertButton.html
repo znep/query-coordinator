@@ -2,7 +2,7 @@
   type="button"
   class="customize-bar-action-btn revert-btn action-btn r-to-l"
   ng-class="{working: revertInitiated, disabled: !pageHasChanges}">
-  Revert Changes
+  {{'revertButton.text' | I18n}}
   <spinner ng-if="revertInitiated"></spinner>
 </button>
 

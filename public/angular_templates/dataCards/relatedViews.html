@@ -6,13 +6,13 @@
     ng-click="togglePanel()"
     ng-show="enablePublisherPages">
     <span class="icon-chart"></span>
-    Other views of this data ({{datasetPublisherPages.length}})
+    {{'relatedViews.button' | I18n}} ({{datasetPublisherPages.length}})
   </a>
 
   <span
     class="tool-panel-toggle-btn action-btn disabled"
     ng-hide="enablePublisherPages">
-    <span class="icon-chart"></span> Other views of this data (0)
+    <span class="icon-chart"></span> {{'relatedViews.button' | I18n}} (0)
   </span>
 
   <div ng-class="{ active: panelActive }" class="tool-panel-main">
@@ -21,7 +21,7 @@
 
       <ul class="related-views-list">
         <li class="related-views-list-heading">
-          <h2>Official Views of this Data</h2>
+        <h2>{{'relatedViews.official' | I18n}}</h2>
         </li>
         <li ng-repeat="page in datasetPublisherPages"
             class="related-views-list-item">

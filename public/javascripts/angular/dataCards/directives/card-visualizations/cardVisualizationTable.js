@@ -4,7 +4,7 @@
 
   var validColumnRegex = new RegExp('^[\\d\\w_]{2}');
 
-  function cardVisualizationTableDirectiveFactory(Constants, CardDataService, SortedTileLayout) {
+  function cardVisualizationTableDirectiveFactory(Constants, CardDataService, SortedTileLayout, I18n) {
 
     return {
       restrict: 'E',
@@ -196,17 +196,15 @@
             var rowCountWithCommas = $.commaify(rowCount);
             pluralRowDisplayUnit = $.htmlEncode(pluralRowDisplayUnit);
             if (rowCount === filteredRowCount) {
-              customTitle = 'Showing all {0} {1}'.
-                format(
-                  rowCountWithCommas,
-                  pluralRowDisplayUnit
-                );
+              customTitle = I18n.t('table.rangeLabelAll',
+                rowCountWithCommas,
+                pluralRowDisplayUnit
+              );
             } else {
-              customTitle = 'Showing {0} {1} <span class="subtitle">out of {2}</span>'.
-                format(
-                  $.commaify(filteredRowCount),
-                  pluralRowDisplayUnit,
-                  rowCountWithCommas
+              customTitle = I18n.t('table.rangeLabelSubtitle',
+                $.commaify(filteredRowCount),
+                pluralRowDisplayUnit,
+                rowCountWithCommas
               );
             }
             $scope.model.set('customTitle', customTitle);

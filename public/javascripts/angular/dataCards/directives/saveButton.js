@@ -19,11 +19,11 @@
 
   angular.
     module('dataCards.directives').
-    filter('saveStatusText', function() {
+    filter('saveStatusText', function(I18n) {
       return function saveStatusTextMapping(status) {
-        if (status === 'saving') { return 'Saving'; }
-        if (status === 'saved') { return 'Saved!'; }
-        if (status === 'failed') { return 'Failed'; }
+        if (status === 'saving') { return I18n.saveButton.saving; }
+        if (status === 'saved') { return I18n.saveButton.saved; }
+        if (status === 'failed') { return I18n.saveButton.failed; }
 
         return 'Save';
       };

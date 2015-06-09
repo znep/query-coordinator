@@ -22,7 +22,8 @@
     DateHelpers,
     FlyoutService,
     Constants,
-    ServerConfig
+    ServerConfig,
+    I18n
   ) {
 
     return {
@@ -1447,7 +1448,7 @@
                 $.toHumaneNumber(currentDatum.unfiltered),
                 unfilteredUnit
               ) :
-              '(No value)';
+              I18n.common.noValue;
 
             filteredUnit = (currentDatum.filtered === 1) ?
               cachedRowDisplayUnit :
@@ -1458,35 +1459,41 @@
                 $.toHumaneNumber(currentDatum.filtered),
                 filteredUnit
               ) :
-              '(No value)';
+              I18n.common.noValue;
 
             if (currentDatum.filtered !== currentDatum.unfiltered) {
 
               flyoutContent = [
                   '<div class="flyout-title">{0}</div>',
                   '<div class="flyout-row">',
-                    '<span class="flyout-cell">Total</span>',
                     '<span class="flyout-cell">{1}</span>',
+                    '<span class="flyout-cell">{2}</span>',
                   '</div>',
                   '<div class="flyout-row">',
-                    '<span class="flyout-cell emphasis">Filtered amount</span>',
-                    '<span class="flyout-cell emphasis">{2}</span>',
+                    '<span class="flyout-cell emphasis">{3}</span>',
+                    '<span class="flyout-cell emphasis">{4}</span>',
                   '</div>'
                ].
                join('').
-               format(dateString, unfilteredValue, filteredValue);
+               format(
+                 dateString,
+                 I18n.flyout.total,
+                 unfilteredValue,
+                 I18n.flyout.filteredAmount,
+                 filteredValue
+               );
 
             } else {
 
               flyoutContent = [
                  '<div class="flyout-title">{0}</div>',
                  '<div class="flyout-row">',
-                   '<span class="flyout-cell">Total</span>',
                    '<span class="flyout-cell">{1}</span>',
+                   '<span class="flyout-cell">{2}</span>',
                  '</div>'
                ].
                join('').
-               format(dateString, unfilteredValue);
+               format(dateString, I18n.flyout.total, unfilteredValue);
 
             }
 
@@ -1531,19 +1538,21 @@
               flyoutContent = [
                   '<div class="flyout-title">{0}</div>',
                   '<div class="flyout-row">',
-                    '<span class="flyout-cell">Total</span>',
-                    '<span class="flyout-cell">{1} {2}</span>',
+                    '<span class="flyout-cell">{1}</span>',
+                    '<span class="flyout-cell">{2} {3}</span>',
                   '</div>',
                   '<div class="flyout-row">',
-                    '<span class="flyout-cell emphasis">Filtered amount</span>',
-                    '<span class="flyout-cell emphasis">{3} {4}</span>',
+                    '<span class="flyout-cell emphasis">{4}</span>',
+                    '<span class="flyout-cell emphasis">{5} {6}</span>',
                   '</div>'
               ].
               join('').
               format(
                 label,
+                I18n.flyout.total,
                 $.toHumaneNumber(parseFloat(unfilteredTotal)),
                 unfilteredUnit,
+                I18n.flyout.filteredAmount,
                 $.toHumaneNumber(parseFloat(filteredTotal)),
                 filteredUnit
               );
@@ -1553,13 +1562,14 @@
               flyoutContent = [
                  '<div class="flyout-title">{0}</div>',
                  '<div class="flyout-row">',
-                   '<span class="flyout-cell">Total</span>',
-                   '<span class="flyout-cell">{1} {2}</span>',
+                   '<span class="flyout-cell">{1}</span>',
+                   '<span class="flyout-cell">{2} {3}</span>',
                  '</div>'
               ].
               join('').
               format(
                 label,
+                I18n.flyout.total,
                 $.toHumaneNumber(parseFloat(unfilteredTotal)),
                 unfilteredUnit
               );
@@ -1574,13 +1584,13 @@
 
         function renderSelectionMarkerFlyout() {
           if (!currentlyDragging) {
-            return '<div class="flyout-title">Drag to change filter range</div>';
+            return '<div class="flyout-title">{0}</div>'.format(I18n.timelineChart.dragHelp);
           }
         }
 
         function renderClearSelectionMarkerFlyout() {
           if (mousePositionWithinChartLabels) {
-            return '<div class="flyout-title">Clear filter range</div>';
+            return '<div class="flyout-title">{0}</div>'.format(I18n.timelineChart.dragClearHelp);
           }
         }
 

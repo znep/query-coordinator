@@ -5,7 +5,7 @@
 
       <div class="suggestions-status">
         <div ng-show="suggestionsLoading">
-          <div class="loading-message">Loading suggestions...</div>
+          <div class="loading-message">{{'searchCard.loading' | I18n}}</div>
           <spinner class="spinner"></spinner>
         </div>
 
@@ -16,9 +16,8 @@
 
       <div class="suggestion-examples">
         <div>{{suggestionsAdvice}}</div>
-        <div ng-show="showSamples">
-          (Examples: '{{sampleOne}}'<span ng-show="sampleTwo"> or '{{sampleTwo}}'</span>)
-        </div>
+        <div ng-show="showSamples && sampleOne && !sampleTwo">({{'searchCard.oneExample' | I18n:sampleOne}})</div>
+        <div ng-show="showSamples && sampleOne && sampleTwo">({{'searchCard.twoExamples' | I18n:sampleOne:sampleTwo}})</div>
       </div>
     </div>
   </div>

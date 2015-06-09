@@ -13,6 +13,7 @@
       module('socrataCommon.services');
       module('dataCards.directives');
       module('dataCards.services');
+      module('dataCards.filters');
       module('test');
       inject(['$window', 'testHelpers', function(_$window, _testHelpers) {
         $window = _$window;

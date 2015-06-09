@@ -12,7 +12,9 @@ describe('lastUpdated directive', function() {
   beforeEach(function() {
     module('/angular_templates/dataCards/lastUpdated.html');
     module('socrataCommon.services');
+    module('dataCards');
     module('dataCards.directives');
+    module('dataCards.filters');
     element = angular.element('<last-updated />');
     fromNowStub = sinon.stub();
     fromNowStub.returns(TEST_FILTER_VALUE);

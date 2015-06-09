@@ -34,18 +34,18 @@
     ng-class="{ disabled: !isCustomizable }"
     ng-click="customizeCardIfCustomizable(isCustomizable)"
     ng-show="editMode && interactive"
-    title="{{ isCustomizable ?
-      'Customize this card' :
-      'There are no customization options for this card yet' }}">
+    title="{{ (isCustomizable ?
+      'cardControls.customizeEnabled' :
+      'cardControls.customizeDisabled') | I18n}}">
   </div>
-  <div ng-attr-title="{{ expanded ? 'Collapse this card' : 'Expand this card' }}"
+  <div ng-attr-title="{{ (expanded ? 'cardControls.collapseCard' : 'cardControls.expandCard') | I18n }}"
     ng-click="toggleExpanded()"
     ng-class="{'icon-expand': !expanded, 'icon-collapse': expanded}"
     ng-show="!editMode && interactive"
     class="card-control">
   </div>
   <div class="card-control icon-close"
-    title="Remove this card"
+    title="{{'cardControls.removeCard' | I18n}}"
     ng-click="deleteCard()"
     ng-show="editMode && interactive && model.fieldName !== '*'">
   </div>

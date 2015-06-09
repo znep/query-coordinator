@@ -1,15 +1,15 @@
 (function() {
   'use strict';
 
-  var DEFAULT_LOGO_URL = '/stylesheets/images/common/socrata_logo_white.png';
+  function pageHeader(ServerConfig, I18n) {
+    var DEFAULT_LOGO_URL = '/stylesheets/images/common/socrata_logo_white.png';
 
-  var DEFAULT_VALUES = {
-    'sign_in': { label: 'Sign In', url: '/login?referer_redirect=1' },
-    'sign_out': { label: 'Sign Out', url: '/logout' },
-    'sign_up': { label: 'Sign Up', url: '/signup?referer_redirect=1' }
-  };
+    var DEFAULT_VALUES = {
+      'sign_in': { label: I18n.pageHeader.signIn, url: '/login?referer_redirect=1' },
+      'sign_out': { label: I18n.pageHeader.signOut, url: '/logout' },
+      'sign_up': { label: I18n.pageHeader.signUp, url: '/signup?referer_redirect=1' }
+    };
 
-  function pageHeader(ServerConfig) {
     return {
       restrict: 'E',
       templateUrl: '/angular_templates/common/pageHeader.html',

@@ -8,8 +8,15 @@ namespace :test do
   # If you don't, your tests may be executed multiple times per run.
   TEST_GROUPS = %w(services controllers directives-card-layout directives-maps directives-other filters integration models util)
 
+  task :update_datacards_translations do
+    translations_filename = 'config/locales/en.yml'
+    output_filename = 'karma-test/dataCards/mockTranslations.js'
+    translations = YAML.load_file(translations_filename)['en']['angular']['dataCards']
+    File.write(output_filename, 'window.translations = ' + translations.to_json.html_safe + ';')
+  end
+
   desc "Run all karma tests and update test-coverage result"
-  task :karma do
+  task :karma => 'update_datacards_translations' do
     # Manually enable the coverage reporter. It isn't enabled by default as the instrumentation step makes
     # the product code unintelligible.
     cmd = './node_modules/karma/bin/karma start karma-test/dataCards/karma-unit.js --browsers PhantomJS --singleRun true --reporters dots,coverage'

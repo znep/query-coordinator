@@ -21,6 +21,14 @@ class UserSessionsController < ApplicationController
       Rails.logger.warn("User landed on login page but was already logged in: #{current_user_session.inspect}")
       return redirect_back_or_default('/')
     end
+
+    # Auth0 Redirection when auth0 configuration is set
+    auth0_redirect = CurrentDomain.configuration('auth0').try(:properties).try(:always_redirect_to)
+    # Just make sure it's a valid URI.
+    if auth0_redirect.present? && auth0_redirect =~ URI::regexp
+      return redirect_to(auth0_redirect)
+    end
+
     @body_id = 'login'
     @user_session = UserSession.new
     if params[:referer_redirect] || params[:return_to]

@@ -6,13 +6,16 @@
   <%- if FeatureFlags.derive.use_auth0 && AUTH0_CONFIGURED # Display auth0 login widget-%>
     <%- url_base = "https://#{CurrentDomain.cname}:#{APP_CONFIG['ssl_port']}" -%>
     <div id="auth0login" style="width: 280px; margin: 10px auto;"></div>
-    <script src="https://cdn.auth0.com/js/lock-6.2.min.js"></script>
+    <script src="https://cdn.auth0.com/js/lock-7.5.min.js"></script>
     <script>
       var lock = new Auth0Lock('<%= AUTH0_ID %>', '<%= AUTH0_URI %>');
       lock.show({
         container: 'auth0login',
         callbackURL: '<%= url_base %>/auth/auth0/callback',
         responseType: 'code',
+      <%- if FeatureFlags.derive.use_custom_auth0_connections -%>
+        //connections: <%=raw FeatureFlags.derive.use_custom_auth0_connections %>,
+      <%- end -%>
         authParams: {
           scope: 'openid profile'
         },

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e
+
+# TODO maybe have to create a new db to use for
+#      these tests since we're also running in the
+#    storyteller pull request builder.
+bin/test_setup
+bundle exec rake test

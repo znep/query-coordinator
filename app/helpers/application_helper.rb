@@ -410,7 +410,7 @@ module ApplicationHelper
     license_logo = @view.property_or_default(['license', 'logoUrl'])
     license_name = @view.property_or_default(['license', 'name'])
 
-    license_logo = "/#{license_logo}" unless license_logo.start_with? 'http'
+    license_logo = "/#{license_logo}" if license_logo.present? && URI(license_logo).scheme.nil?
 
     html = license_name
     html = %Q{<img src="#{license_logo}" alt="#{license_name}" />} if license_logo.present?

@@ -109,7 +109,6 @@ class ApplicationHelperTest < ActionView::TestCase
     @view = View.new({})
     assert render_license == '(none)'
     @view = View.new({ 'license' => { 'name' => 'license test' } })
-    puts render_license
     assert render_license == 'license test'
 
     @view = View.new({ 'license' => {

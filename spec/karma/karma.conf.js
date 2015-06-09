@@ -19,7 +19,8 @@ module.exports = function(config) {
     ],
 
     sprocketsPath: [
-      'app/assets/javascripts'
+      'app/assets/javascripts',
+      'vendor/assets/javascripts'
     ],
 
     sprocketsBundles: [

@@ -2,7 +2,7 @@ module FeatureFlags
   def self.merge(base = {}, other = {})
     flags = Hashie::Mash.new
     other_with_indifferent_access = other.with_indifferent_access
-    FEATURE_FLAGS.each do |flag, config|
+    ExternalConfig.for(:feature_flag).each do |flag, config|
       # No restrictions on value. Anything goes.
       if config['expectedValues'].nil?
         value = other_with_indifferent_access[flag]
@@ -40,7 +40,11 @@ module FeatureFlags
   end
 
   def self.list
-    FEATURE_FLAGS.keys
+    ExternalConfig.for(:feature_flag).keys
+  end
+
+  def self.categories
+    ExternalConfig.for(:feature_flag).categories
   end
 
   def self.derive(view = nil, request = nil, is_iframe = false)

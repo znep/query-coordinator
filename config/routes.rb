@@ -93,6 +93,10 @@ Frontend::Application.routes do
         :action => 'feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/}
       match '/domains/:domain_id/feature_flags',
         :action => 'feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/}
+      match '/orgs/:org_id/domains/:domain_id/feature_flags/:category',
+        :action => 'feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/}
+      match '/domains/:domain_id/feature_flags/:category',
+        :action => 'feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/}
       post '/orgs/:org_id/domains/:domain_id/set_feature_flags',
         :action => 'set_feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/}
       post '/domains/:domain_id/set_feature_flags',

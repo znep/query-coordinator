@@ -1,3 +1,12 @@
+###
+#
+#  META NOTE!
+#  Despite the comment below, on our local dev boxes this config file is INDEED
+#  manually updated and not dynamically chef'd.
+#
+###
+
+
 ###############################################################################
 # NOTE! All configuration information in this file are overwritten by chef when
 # the app is deployed. If you wish to ensure that new configuration information
@@ -38,6 +47,7 @@ default: &default
   polaroid_hostname: polaroid.service.aws-us-west-2-production.socrata.consul
   polaroid_port: 13379
   opendata_ga_tracking_code: UA-52982454-21
+  secondary_group_identifier: 'spandex3'
 
 # Local development
 development:

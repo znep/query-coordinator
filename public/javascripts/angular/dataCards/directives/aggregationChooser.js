@@ -21,7 +21,7 @@
     };
   };
 
-  function AggregationChooser(Constants, Dataset, FlyoutService, WindowState, ServerConfig) {
+  function AggregationChooser(Constants, Dataset, FlyoutService, WindowState, ServerConfig, I18n) {
 
     return {
       restrict: 'E',
@@ -212,7 +212,7 @@
           render: function(element) {
             if ($(element).is('.disabled.no-count')) {
               return '<span class="flyout-cell">{0}</span>'.
-                format('This column cannot be used with a<br>number of aggregate');
+                format(I18n.aggregationChooser.optionDisabled);
             }
           },
           destroySignal: $scope.$destroyAsObservable(element),

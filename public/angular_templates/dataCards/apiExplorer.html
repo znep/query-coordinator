@@ -1,23 +1,24 @@
 <div class="tool-panel">
 
-  <button type="button" title="Access this Dataset via API" ng-class="{touched: panelActive}" class="tool-panel-toggle-btn action-btn r-to-l" ng-click="panelActive = !panelActive">API</button>
+  <button type="button" title="{{'apiExplorer.apiButtonTitle' | I18n}}" ng-class="{touched: panelActive}" class="tool-panel-toggle-btn action-btn r-to-l" ng-click="panelActive = !panelActive">{{'apiExplorer.apiButton' | I18n}}</button>
   <div ng-class="{active: panelActive}" class="tool-panel-main">
     <div class="tool-panel-inner-container">
       <div class="tool-panel-hint"></div>
-      <h2>API</h2>
+      <h2>{{'apiExplorer.title' | I18n}}</h2>
 
-      <p>You can access this data via the Socrata Open Data API at this URL:</p>
+      <p>{{'apiExplorer.url' | I18n}}</p>
       <selection-label content="selectedUrl"></selection-label>
 
       <div class="tool-panel-input-group">
         <div ng-show="multipleFormatsAvailable">
-          <p>This data is available in several formats:</p>
-          <button type="button" title="JSON" class="tool-panel-btn action-btn l-to-r" ng-class="{active: selectedFormat == 'JSON'}" ng-click="selectedFormat = 'JSON'">JSON</button>
-          <button type="button" title="GeoJSON" class="tool-panel-btn action-btn l-to-r" ng-class="{active: selectedFormat == 'GeoJSON'}" ng-click="selectedFormat = 'GeoJSON'">GeoJSON</button>
+          <p>{{'apiExplorer.formats' | I18n}}</p>
+          <button type="button" title="{{'apiExplorer.json' | I18n}}" class="tool-panel-btn action-btn l-to-r" ng-class="{active: selectedFormat == 'JSON'}" ng-click="selectedFormat = 'JSON'">{{'apiExplorer.json' | I18n}}</button>
+          <button type="button" title="{{'apiExplorer.geojson' | I18n}}" class="tool-panel-btn action-btn l-to-r" ng-class="{active: selectedFormat == 'GeoJSON'}" ng-click="selectedFormat = 'GeoJSON'">{{'apiExplorer.geojson' | I18n}}</button>
         </div>
-        <p>Additional resources for this API:</p>
-        <a href="{{datasetDocumentationUrl}}" title="View API documentation" data-action="documentation" class="tool-panel-btn action-btn l-to-r">Documentation</a>
-        <a href="http://dev.socrata.com/libraries/" title="Download API clients from the Code Library" class="tool-panel-btn action-btn l-to-r">Code Libraries</a>
+        <p></p>
+        <p>{{'apiExplorer.additionalResources' | I18n}}</p>
+        <a href="{{datasetDocumentationUrl}}" title="{{'apiExplorer.documentationTitle' | I18n}}" data-action="documentation" class="tool-panel-btn action-btn l-to-r">{{'apiExplorer.documentation' | I18n}}</a>
+        <a href="http://dev.socrata.com/libraries/" title="{{'apiExplorer.codeLibrariesTitle' | I18n}}" class="tool-panel-btn action-btn l-to-r">{{'apiExplorer.codeLibraries' | I18n}}</a>
       </div>
     </div>
   </div>

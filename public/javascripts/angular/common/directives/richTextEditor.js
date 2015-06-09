@@ -10,7 +10,7 @@
   /**
    * A toolbar that controls the iframe, via squire.
    */
-  function Toolbar(element, attrs, editor) {
+  function Toolbar(element, attrs, editor, I18n) {
     this.editor = editor;
     this.element = element;
     var controls = this.controls = {};
@@ -21,7 +21,7 @@
       switch(value) {
         case 'bold':
           controls.bold = {
-            element: $('<div class="rich-text-editor-button bold icon-bold" title="Bold"></button>').
+            element: $('<div class="rich-text-editor-button bold icon-bold" title="' + I18n.richTextEditor.bold + '"></button>').
               on('click', _.bind(self.toggleBold, self)).
               appendTo(element),
             pathRegex: />B\b/
@@ -29,7 +29,7 @@
           break;
         case 'italic':
           controls.italic = {
-            element: $('<div class="rich-text-editor-button italic icon-italic" title="Italic"></button>').
+            element: $('<div class="rich-text-editor-button italic icon-italic" title="' + I18n.richTextEditor.italic + '"></button>').
               on('click', _.bind(self.toggleItalic, self)).
               appendTo(element),
             pathRegex: />I\b/
@@ -37,7 +37,7 @@
           break;
         case 'underline':
           controls.underline = {
-            element: $('<div class="rich-text-editor-button underline icon-underline" title="Underline">u</button>').
+            element: $('<div class="rich-text-editor-button underline icon-underline" title="' + I18n.richTextEditor.underline + '">u</button>').
               on('click', _.bind(self.toggleUnderline, self)).
               appendTo(element),
             pathRegex: />U\b/
@@ -46,7 +46,7 @@
         case 'anchor':
         case 'link':
           controls.anchor = {
-            element: $('<div class="rich-text-editor-button anchor icon-link" title="Link"></button>').
+            element: $('<div class="rich-text-editor-button anchor icon-link" title="' + I18n.richTextEditor.link + '"></button>').
               css({position: 'relative'}).
               on('click', function(e) {
                 if ($(e.target).hasClass('rich-text-editor-button')) {
@@ -57,11 +57,11 @@
             form:
               $('<form class="icon-link-edit" action="javascript:void(0);">' +
                   '<div class="icon-link-edit-hint"></div>' +
-                  '<p>Insert link</p>' +
-                  '<input type="text" name="url" placeholder="Enter a URL here" />' +
+                  '<p>' + I18n.richTextEditor.insertLink + '</p>' +
+                  '<input type="text" name="url" placeholder="' + I18n.richTextEditor.linkPlaceholder + '" />' +
                   '<div class="icon-link-edit-buttons">' +
-                    '<button type="button" class="cancel tool-panel-toggle-btn action-btn r-to-l dark">Cancel</button>' +
-                    '<button type="submit" class="tool-panel-toggle-btn action-btn r-to-l dark">OK</button>' +
+                    '<button type="button" class="cancel tool-panel-toggle-btn action-btn r-to-l dark">' + I18n.common.cancel + '</button>' +
+                    '<button type="submit" class="tool-panel-toggle-btn action-btn r-to-l dark">' + I18n.common.ok + '</button>' +
                   '</div>' +
                 '</form>').
               on('keyup', function(e) {
@@ -205,7 +205,8 @@
    * A <rich-text-editor /> is meant to replace a <textarea />, and provide limited html formatting.
    */
   angular.module('socrataCommon.directives').directive('richTextEditor', function(
-    $http
+    $http,
+    I18n
   ) {
     var toolbar;
     /**
@@ -331,7 +332,7 @@
           element.val($scope.content);
           $scope.editor.setHTML(element.val());
           showPlaceholderIfEmpty(element, $scope.editor);
-          toolbar = new Toolbar(element.find('.toolbar'), attr, $scope.editor);
+          toolbar = new Toolbar(element.find('.toolbar'), attr, $scope.editor, I18n);
         }, this));
       });
 

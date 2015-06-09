@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function feedbackPanel(ServerConfig) {
+  function feedbackPanel(ServerConfig, I18n) {
     return {
       restrict: 'E',
       scope: { },
@@ -38,19 +38,19 @@
                   options: [
                     {
                       key: "I like this",
-                      value: "I like this"
+                      value: I18n.feedbackPanel.like
                     },
                     {
                       key: "I\'m missing a feature",
-                      value: "I\'m missing a feature"
+                      value: I18n.feedbackPanel.missing
                     },
                     {
                       key: "Something seems broken",
-                      value: "Something seems broken"
+                      value: I18n.feedbackPanel.broken
                     },
                     {
                       key: "Other",
-                      value: "Other"
+                      value: I18n.feedbackPanel.other
                     }
                   ],
                   required: true,
@@ -125,7 +125,7 @@
               '<!-- End of Zendesk Widget script -->',
               '<script>',
                 'zE(function(){',
-                  'zE.activate();',  
+                  'zE.activate();',
                 '});',
               '</script>'
             ].join('');

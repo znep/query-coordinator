@@ -4,7 +4,7 @@
   var rowsPerBlock = 50;
   var rowHeight = $.relativeToPx('2rem');
 
-  function tableDirectiveFactory(Constants, Dataset, SoqlHelpers, $q, $timeout) {
+  function tableDirectiveFactory(Constants, Dataset, SoqlHelpers, $q, $timeout, I18n) {
 
     return {
       templateUrl: '/angular_templates/dataCards/table.html',
@@ -419,11 +419,11 @@
                     var latitudeCoordinateIndex = 1;
                     var longitudeCoordinateIndex = 0;
                     if (_.isArray(cellContent.coordinates)) {
-                      cellText = '(<span title="Latitude">' +
-                      cellContent.coordinates[latitudeCoordinateIndex] +
-                      '°</span>, <span title="Longitude">' +
-                      cellContent.coordinates[longitudeCoordinateIndex] +
-                      '°</span>)';
+                      cellText = '(<span title="{0}">'.format(I18n.common.latitude) +
+                        cellContent.coordinates[latitudeCoordinateIndex] +
+                        '°</span>, <span title="{0}">'.format(I18n.common.longitude) +
+                        cellContent.coordinates[longitudeCoordinateIndex] +
+                        '°</span>)';
                     }
 
                   } else if (cellType === 'timestamp' || cellType === 'floating_timestamp') {
@@ -521,7 +521,7 @@
             );
 
             scope.$safeApply(function() {
-              scope.tableLabel = '{0} <strong>{1}-{2} out of {3}</strong>'.format(
+              scope.tableLabel = I18n.t('table.rangeLabel',
                 $.htmlEncode(scope.rowDisplayUnit.capitalize()),
                 $.commaify(topRow),
                 $.commaify(bottomRow),
@@ -598,24 +598,24 @@
               var column = getColumn(columnId);
               var sortUp = sortOrdering === 'ASC';
               var html = [];
-              var ascendingString = 'ascending';
-              var descendingString = 'descending';
+              var ascendingString = I18n.table.ascending;
+              var descendingString = I18n.table.descending;
 
               switch (column.physicalDatatype) {
                 case 'number':
-                  ascendingString = 'smallest first';
-                  descendingString = 'largest first';
+                  ascendingString = I18n.table.smallestFirst;
+                  descendingString = I18n.table.largestFirst;
                   break;
 
                 case 'text':
-                  ascendingString = 'A-Z';
-                  descendingString = 'Z-A';
+                  ascendingString = I18n.table.aToZ;
+                  descendingString = I18n.table.zToA;
                   break;
 
                 case 'timestamp':
                 case 'floating_timestamp':
-                  ascendingString = 'oldest first';
-                  descendingString = 'newest first';
+                  ascendingString = I18n.table.oldestFirst;
+                  descendingString = I18n.table.newestFirst;
                   break;
               }
 
@@ -624,12 +624,12 @@
 
               if (column.sortable) {
                 if (isSortedOnColumn(columnId)) {
-                  html.push('Sorted {0}'.format(sortUp ? ascendingString : descendingString));
+                  html.push(I18n.t('table.sorted', sortUp ? ascendingString : descendingString));
                 }
                 var wouldSortUp = getNextSortForColumn(columnId) === 'ASC';
 
-                html.push('<a class="caret" href="#">Click to sort {0}</a>'.
-                  format(wouldSortUp ? ascendingString : descendingString));
+                html.push('<a class="caret" href="#">{0}</a>'.
+                  format(I18n.t('table.sort', wouldSortUp ? ascendingString : descendingString)));
                 return html.join('<br>');
               } else {
                 return 'No sort available';

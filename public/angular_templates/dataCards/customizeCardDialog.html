@@ -6,12 +6,12 @@
 
 <div class="configurable">
   <div>
-    <h3>Map base layer</h3>
+    <h3>{{'customizeCardDialog.mapLayer.title' | I18n}}</h3>
     <div>
       <soc-select ng-model="baseLayerOption">
-        <soc-option value="standard">Standard</soc-option>
+        <soc-option value="standard">{{'customizeCardDialog.mapLayer.standard' | I18n}}</soc-option>
         <soc-option value="esri">Esri</soc-option>
-        <soc-option value="custom">Custom Map</soc-option>
+        <soc-option value="custom">{{'customizeCardDialog.mapLayer.custom' | I18n}}</soc-option>
       </soc-select>
       <input name="customLayerUrl"
              type="url"
@@ -28,6 +28,6 @@
 </div>
 
 <div class="controls">
-  <button class="action-btn dark" ng-click="updateCard()">Done</button>
-  <button class="action-btn dark" ng-click="dialogState.show = false">Cancel</button>
+  <button class="action-btn dark" ng-click="updateCard()">{{'common.done' | I18n}}</button>
+  <button class="action-btn dark" ng-click="dialogState.show = false">{{'common.cancel' | I18n}}</button>
 </div>

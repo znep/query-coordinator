@@ -4,8 +4,16 @@ module AngularHelper
     params[:app]
   end
 
+  def angular_translations
+    I18n.t('angular.' + angular_app, :default => {})
+  end
+
   def render_angular_config
     javascript_tag("var socrataConfig = #{JSON(angular_config)}")
+  end
+
+  def render_angular_translations
+    javascript_tag("var translations = #{angular_translations.to_json.html_safe};")
   end
 
   def render_user

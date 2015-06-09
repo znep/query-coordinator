@@ -4,13 +4,13 @@
     <soc-option
       value="null"
       disabled="disabled"
-      ng-selected="addCardSelectedColumnFieldName === null">Choose a column...</soc-option>
+      ng-selected="addCardSelectedColumnFieldName === null">{{'addCardDialog.chooseColumn' | I18n}}</soc-option>
 
     <soc-option value="null" disabled="disabled" ng-if="datasetColumns.available.length > 0"></soc-option>
 
     <soc-option
       value="{{fieldName}}"
-      title="Add this card"
+      title="{{'addCardDialog.addThisCard' | I18n}}"
       ng-repeat="fieldName in datasetColumns.available">{{columnHumanNameFn(fieldName)}}</soc-option>
 
     <soc-option value="null" disabled="disabled" ng-if="datasetColumns.alreadyOnPage.length > 0"></soc-option>
@@ -18,11 +18,11 @@
     <soc-option
       value="null"
       disabled="disabled"
-      ng-if="datasetColumns.alreadyOnPage.length > 0"><b>Card already on page</b></soc-option>
+      ng-if="datasetColumns.alreadyOnPage.length > 0"><b>{{'addCardDialog.cardOnPage' | I18n}}</b></soc-option>
 
     <soc-option
       value="{{fieldName}}"
-      title="This card is already on the page"
+      title="{{'addCardDialog.cardOnPageLong' | I18n}}"
       disabled="disabled"
       ng-repeat="fieldName in datasetColumns.alreadyOnPage">-{{columnHumanNameFn(fieldName)}}</soc-option>
 
@@ -31,11 +31,11 @@
     <soc-option
       value="null"
       disabled="disabled"
-      ng-if="datasetColumns.visualizationUnsupported.length > 0">Not currently supported</soc-option>
+      ng-if="datasetColumns.visualizationUnsupported.length > 0">{{'addCardDialog.notSupported' | I18n}}</soc-option>
 
     <soc-option
       value="{{fieldName}}"
-      title="This card type is currently unsupported"
+      title="{{'addCardDialog.notSupportedLong' | I18n}}"
       disabled="disabled"
       ng-repeat="fieldName in datasetColumns.visualizationUnsupported">-{{columnHumanNameFn(fieldName)}}</soc-option>
 
@@ -48,56 +48,56 @@
         class="add-card-type-option icon-line-chart"
         ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'timeline' }"
         ng-click="setCardType('timeline')"
-        data-visualization-name="Timeline Chart"></button>
-      <span>Timeline Chart</span>
+        data-visualization-name="{{'common.cards.timelineChart' | I18n}}"></button>
+      <span>{{'common.cards.timelineChart' | I18n}}</span>
     </li>
     <li ng-show="availableCardTypes.indexOf('search') > -1">
       <button
       class="add-card-type-option icon-search"
       ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'search' }"
       ng-click="setCardType('search')"
-      data-visualization-name="Search Card"></button>
-      <span>Search Card</span>
+      data-visualization-name="{{'common.cards.searchCard' | I18n}}"></button>
+      <span>{{'common.cards.searchCard' | I18n}}</span>
     </li>
     <li ng-show="availableCardTypes.indexOf('feature') > -1">
       <button
         class="add-card-type-option icon-map"
         ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'feature' }"
         ng-click="setCardType('feature')"
-        data-visualization-name="Feature Map"></button>
-      <span>Feature Map</span>
+        data-visualization-name="{{'common.cards.featureMap' | I18n}}"></button>
+      <span>{{'common.cards.featureMap' | I18n}}</span>
     </li>
     <li ng-show="availableCardTypes.indexOf('column') > -1">
       <button
         class="add-card-type-option icon-bar-chart"
         ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'column', warn: showCardinalityWarning }"
         ng-click="setCardType('column')"
-        data-visualization-name="Column Chart">
+        data-visualization-name="{{'common.cards.columnChart' | I18n}}">
           <span class="warning-icon icon-warning"></span>
         </button>
-      <span>Column Chart</span>
+      <span>{{'common.cards.columnChart' | I18n}}</span>
     </li>
     <li ng-show="availableCardTypes.indexOf('histogram') > -1">
       <button
         class="add-card-type-option icon-distribution"
         ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'histogram' }"
         ng-click="setCardType('histogram')"
-        data-visualization-name="Distribution Chart">
+        data-visualization-name="{{'common.cards.distributionChart' | I18n}}">
         </button>
-      <span>Distribution Chart</span>
+        <span>{{'common.cards.distributionChart' | I18n}}</span>
     </li>
     <li ng-show="availableCardTypes.indexOf('choropleth') > -1">
       <button
         class="add-card-type-option icon-region"
         ng-class="{ selected: addCardModel.getCurrentValue('cardType') === 'choropleth' }"
         ng-click="setCardType('choropleth')"
-        data-visualization-name="Choropleth"></button>
-      <span>Choropleth</span>
+        data-visualization-name="{{'common.cards.choropleth' | I18n}}"></button>
+      <span>{{'common.cards.choropleth' | I18n}}</span>
     </li>
   </ul>
 </div>
 <div class="add-card-preview">
-  <span ng-if="addCardModel === null">Choose a column from the dropdown above to add a new card</span>
+  <span ng-if="addCardModel === null">{{'addCardDialog.prompt' | I18n}}</span>
   <div class="card-spot" ng-if="addCardModel !== null">
     <card model="addCardModel"
       interactive="false"
@@ -105,10 +105,10 @@
     </card>
     <div class="add-card-controls">
       <div class="card-control add-card-settings icon-settings"
-        title="Customize this card"
+        title="{{'addCardDialog.customizePrompt' | I18n}}"
         ng-if="isCustomizable"
         ng-click="onCustomizeCard(addCardModel)">
-        Settings
+        {{'addCardDialog.settings' | I18n}}
       </div>
     </div>
   </div>
@@ -116,9 +116,9 @@
 <div class="add-card-buttons">
   <button type="button"
     class="action-btn dark r-to-l"
-    ng-click="dialogState.show = false">Cancel</button>
+    ng-click="dialogState.show = false">{{'common.cancel' | I18n}}</button>
   <button type="button"
     class="action-btn dark r-to-l"
     ng-class="{disabled: addCardModel === null}"
-    ng-click="addCard()">Add card</button>
+    ng-click="addCard()">{{'addCardDialog.addCard' | I18n}}</button>
 </div>

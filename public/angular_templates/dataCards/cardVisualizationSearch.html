@@ -21,22 +21,23 @@
   </suggestion-tool-panel>
 
   <div class="search-card-text card-example-text" ng-show="!showResults" ng-class="{dimmed: shouldShowSuggestionPanel}">
-    <div>Type
+    <div>
       <span ng-switch="physicalDatatype">
-        <span ng-switch-when="number">a number</span>
-        <span ng-switch-default>some text</span>
+        <span ng-switch-when="number">{{'searchCard.promptNumber' | I18n}}</span>
+        <span ng-switch-default>{{'searchCard.promptText' | I18n}}</span>
       </span>
-      and press enter to search</div>
-    <div class="one-line" ng-show="sampleOne">(Examples: '{{sampleOne}}'<span ng-show="sampleTwo"> or '{{sampleTwo}}'</span>)</div>
+    </div>
+    <div class="one-line" ng-show="sampleOne && !sampleTwo">({{'searchCard.oneExample' | I18n:sampleOne}})</div>
+    <div class="one-line" ng-show="sampleOne && sampleTwo">({{'searchCard.twoExamples' | I18n:sampleOne:sampleTwo}})</div>
   </div>
 </div>
 <div ng-show="isInvalidSearch" class="search-card-results">
-  <div class="search-card-text invalid-value">Try searching for a number containing no letters.</div>
+  <div class="search-card-text invalid-value">{{'searchCard.invalidSearch' | I18n}}</div>
 </div>
 <div ng-class="{invisible: !showResults}" class="search-card-results">
-  <div ng-hide="noResults" class="search-card-text no-results">Your search returned no results. Check your spelling, or try a different term.</div>
+  <div ng-hide="noResults" class="search-card-text no-results">{{'searchCard.noResults' | I18n}}</div>
   <div ng-if="showResults && searchWhere" ng-class="{invisible: !tableRendered}">
-    <div class="search-card-info">Showing {{rowCount}} of {{totalRowCount}} matching results</div>
+    <div class="search-card-info">{{'searchCard.searchInfo' | I18n:rowCount:totalRowCount}}</div>
     <card-visualization-table model="model" where-clause="searchWhere" show-count="false" first-column="fieldName"></card-visualization-table>
   </div>
 </div>

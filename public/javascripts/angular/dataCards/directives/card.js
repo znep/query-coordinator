@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CardDirective(DownloadService, $timeout) {
+  function CardDirective(DownloadService, $timeout, I18n) {
 
     return {
       restrict: 'E',
@@ -62,11 +62,11 @@
         $scope.downloadStateText = function(state) {
           switch(state) {
             case 'success':
-              return 'Downloading';
+              return I18n.common.downloading;
             case 'error':
-              return 'Error';
+              return I18n.common.error;
             default:
-              return 'Download';
+              return I18n.common.download;
           }
         };
 

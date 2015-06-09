@@ -17,6 +17,9 @@
     beforeEach(module('/angular_templates/common/pageHeader.html'));
 
     beforeEach(module('test'));
+    beforeEach(module('dataCards'));
+    beforeEach(module('dataCards.services'));
+    beforeEach(module('dataCards.filters'));
     beforeEach(module('socrataCommon.services'));
     beforeEach(module('socrataCommon.directives'));
 

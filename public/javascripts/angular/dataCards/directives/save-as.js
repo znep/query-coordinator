@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function saveAs($window, WindowState, FlyoutService) {
+  function saveAs($window, WindowState, FlyoutService, I18n) {
     return {
       restrict: 'E',
       scope: {
@@ -87,9 +87,11 @@
             var closestSaveButtonScope = $(element).closest('save-button').scope();
             if (closestSaveButtonScope != mySaveButtonScope) { return undefined; }
             if (saveEvents.value.status === 'failed') {
-              return '<div class="flyout-title">An error occurred</div><div>Please contact Socrata Support</div>';
+              return '<div class="flyout-title">{0}</div><div>{1}</div>'.
+                format(I18n.saveAs.flyoutFailedTitle, I18n.saveAs.flyoutFailedBody);
             } else if (saveEvents.value.status === 'idle') {
-              return '<div class="flyout-title">Click to save your changes as a new page</div>';
+              return '<div class="flyout-title">{0}</div>'.
+                format(I18n.saveAs.flyoutIdle);
             }
           },
           destroySignal: $scope.$destroyAsObservable(element)

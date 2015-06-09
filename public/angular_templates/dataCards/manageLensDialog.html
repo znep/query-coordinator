@@ -1,30 +1,22 @@
-<h2>Manage</h2>
-<label>Permissions<soc-select></soc-select></label>
+<h2>{{'manageLensDialog.title' | I18n}}</h2>
+<label>{{'common.permissions.permissions' | I18n}}<soc-select></soc-select></label>
 <div class="right">
   <soc-select ng-model="pageVisibility" ng-disabled="selectDisabled">
-    <soc-option value="public">Public</soc-option>
-    <soc-option value="private">Private</soc-option>
+    <soc-option value="public">{{'common.permissions.public' | I18n}}</soc-option>
+    <soc-option value="private">{{'common.permissions.private' | I18n}}</soc-option>
   </soc-select>
   <div class="flavor-text">
-    <div ng-if="datasetIsPublic && pageVisibility === 'public'">
-      This page and its source dataset are both <b>Public</b>, so anyone will be able to see this
-      page and it will appear in the public catalog.
+    <div ng-if="datasetIsPublic && pageVisibility === 'public'"
+      ng-bind-html="'manageLensDialog.datasetPublicPagePublic' | I18n">
     </div>
-    <div ng-if="datasetIsPublic && pageVisibility === 'private'">
-      This page is set to <b>Private</b>, so only those with privileged access will be able to see
-      it. It will not appear in the public catalog.
+    <div ng-if="datasetIsPublic && pageVisibility === 'private'"
+      ng-bind-html="'manageLensDialog.datasetPublicPagePrivate' | I18n">
     </div>
-    <div ng-if="!datasetIsPublic && pageVisibility === 'private'">
-      Because this page’s source dataset is set to <b>Private</b>, this page cannot be made Public.
-      Only those with privileged access will be able to see it, and it will not appear in the public
-      catalog.
+    <div ng-if="!datasetIsPublic && pageVisibility === 'private'"
+      ng-bind-html="'manageLensDialog.datasetPrivatePagePrivate' | I18n">
     </div>
-    <div ng-if="!datasetIsPublic && pageVisibility === 'public'">
-      <div class="icon-warning"></div>
-      This page’s source dataset is set to <b>Private</b>, so even though this page is set to
-      Public, anyone without access to the source dataset will not be able to see it. It will still
-      appear in the public catalog. You should consider setting the dataset to Public, or setting
-      this page to Private.
+    <div ng-if="!datasetIsPublic && pageVisibility === 'public'"
+      ng-bind-html="'manageLensDialog.datasetPrivatePagePublic' | I18n">
     </div>
   </div>
 </div>
@@ -38,5 +30,5 @@
   <button
     ng-disabled="dialogState.disableCloseDialog"
     class="action-btn dark"
-    ng-click="dialogState.show = false">Cancel</button>
+    ng-click="dialogState.show = false">{{'common.cancel' | I18n}}</button>
 </div>

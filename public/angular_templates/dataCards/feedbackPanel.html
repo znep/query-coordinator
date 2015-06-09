@@ -1,7 +1,7 @@
 <div class="feedback-panel-content" ng-class="{ active: showFeedbackContent }" ng-click="switchFeedbackInterfaceState($event)">
-  <h2>Do you want to include a screenshot in your feedback?</h2>
-  <p>With a screenshot you can show us exactly what you have feedback on. We are using <a href="https://usersnap.com" title="Visit UserSnap's homepage">UserSnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy" title="Read UserSnap's privacy policy">privacy policy</a>.</p>
-  <button class="action-btn green l-to-r include-screenshot" ng-click="includeScreenshot($event)">Yes, include a screenshot</button>
-  <button class="action-btn green l-to-r do-not-include-screenshot" ng-click="doNotIncludeScreenshot($event)">No thanks</button>
+  <h2>{{'feedbackPanel.screenshotPrompt' | I18n}}</h2>
+  <p ng-bind-html="'feedbackPanel.screenshotDescription' | I18n"></p>
+  <button class="action-btn green l-to-r include-screenshot" ng-click="includeScreenshot($event)">{{'feedbackPanel.screenshotYes' | I18n}}</button>
+  <button class="action-btn green l-to-r do-not-include-screenshot" ng-click="doNotIncludeScreenshot($event)">{{'feedbackPanel.screenshotNo' | I18n}}</button>
 </div>
-<button class="feedback-panel-button" ng-class="{ active: showFeedbackButton }" ng-click="switchFeedbackInterfaceState($event)">Feedback</button>
+<button class="feedback-panel-button" ng-class="{ active: showFeedbackButton }" ng-click="switchFeedbackInterfaceState($event)">{{'feedbackPanel.feedback' | I18n}}</button>

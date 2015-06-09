@@ -11,7 +11,8 @@
                       ChoroplethVisualizationService,
                       CardDataService, // This is an unfortunate leak to get the default extent
                       LeafletHelpersService,
-                      FlyoutService) {
+                      FlyoutService,
+                      I18n) {
     // The methods by which we determine choropleth styles are wrapped up in the
     // ChoroplethVisualization class, which does a lot of dynamic styles based on the
     // individual dataset.
@@ -1051,9 +1052,9 @@
                    + '</div>';
 
               return html.format(featureHumanReadableName.capitalizeEachWord(),
-                                 'Total',
+                                 I18n.flyout.total,
                                  unfilteredValue,
-                                 'Filtered amount',
+                                 I18n.flyout.filteredAmount,
                                  filteredValue);
             } else {
 
@@ -1064,7 +1065,7 @@
                    + '</div>';
 
               return html.format(featureHumanReadableName.capitalizeEachWord(),
-                                 'Total',
+                                 I18n.flyout.total,
                                  unfilteredValue);
 
             }

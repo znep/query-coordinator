@@ -1,18 +1,18 @@
 <div class="tool-panel upwards">
 
-  <button type="button" ng-class="{touched: panelActive, disabled: !hasChanges}" class="save-as-button tool-panel-toggle-btn action-btn r-to-l" ng-click="conditionallyShowPanel()">Save As</button>
+  <button type="button" ng-class="{touched: panelActive, disabled: !hasChanges}" class="save-as-button tool-panel-toggle-btn action-btn r-to-l" ng-click="conditionallyShowPanel()">{{'saveAs.text' | I18n}}</button>
   <div id="save-as-panel" ng-class="{active: panelActive}" class="tool-panel-main">
     <div id="save-as-panel-inner-container" class="tool-panel-inner-container">
       <div class="tool-panel-hint"></div>
-      <h2>Save As</h2>
+      <h2>{{'saveAsPanel.title' | I18n}}</h2>
 
       <div class="tool-panel-input-group">
-        <label for="save-as-name">Save the current page with a new name</label>
+        <label for="save-as-name">{{'saveAsPanel.newName' | I18n}}</label>
         <input id="save-as-name" class="form-control" type="text" placeholder="{{namePlaceholder}}" ng-focus="namePlaceholder = ''" ng-blur="namePlaceholder = defaultNamePlaceholder" />
       </div>
 
       <div class="tool-panel-input-group">
-        <label for="save-as-description">Enter a description for your new page (optional)</label>
+        <label for="save-as-description">{{'saveAsPanel.description' | I18n}}</label>
         <textarea id="save-as-description" class="form-control no-resize" rows="5"></textarea>
       </div>
 
@@ -22,7 +22,7 @@
           enabled="hasChanges"
           save-status="saveStatus">
         </save-button>
-        <button title="Cancel" data-action="cancel" class="tool-panel-btn action-btn l-to-r" ng-click="cancel()">Cancel</button>
+        <button title="{{'common.cancel' | I18n}}" data-action="cancel" class="tool-panel-btn action-btn l-to-r" ng-click="cancel()">{{'common.cancel' | I18n}}</button>
       </div>
     </div>
   </div>

@@ -2549,3 +2549,213 @@ en:
     array_or:
       last_word_connector: ! ', or '
       two_words_connector: ! ' or '
+  angular:
+    dataCards:
+      common:
+        cancel: Cancel
+        change: Change
+        done: Done
+        download: Download
+        downloading: Downloading
+        error: Error
+        no_value: No value
+        ok: OK
+        latitude: Latitude
+        longitude: Longitude
+        errors:
+          map_render_error: An error was encountered when trying to render this map.
+          invalid_card: Invalid Card Visualization
+          export_visualization_disabled: This visualization is not available<br/>for image export
+        permissions:
+          permissions: Permissions
+          public: Public
+          private: Private
+        cards:
+          timeline_chart: Timeline Chart
+          search_card: Search Card
+          feature_map: Feature Map
+          column_chart: Column Chart
+          distribution_chart: Distribution Chart
+          choropleth: Choropleth
+      page_header:
+        sign_in: Sign In
+        sign_out: Sign Out
+        sign_up: Sign Up
+        logo: Logo
+      metadata:
+        page_name_placeholder: Untitled
+        edit_description_prompt: Give your page a good description that helps people understand the story your data is trying to tell. (Optional)
+        source_dataset: source dataset
+        data_as_csv: Data as CSV (Excel)
+        visualization_as_image: Visualization as image
+        visualization_as_image_disabled_flyout: Please save the page in order to download a visualization as an image
+        validation_error_min_length: Please enter a title
+        validation_error_max_length: Your title is too long
+        validation_error_required: Please enter a title
+      lens_type:
+        official: official data lens
+        community: community data lens
+      manage_lens_dialog:
+        title: Manage
+        dataset_public_page_public: This page and its source dataset are both <b>Public</b>, so anyone will be able to see this page and it will appear in the public catalog.
+        dataset_public_page_private: This page is set to <b>Private</b>, so only those with privileged access will be able to see it. It will not appear in the public catalog.
+        dataset_private_page_private: Because this page’s source dataset is set to <b>Private</b>, this page cannot be made Public.  Only those with privileged access will be able to see it, and it will not appear in the public catalog.
+        dataset_private_page_public: <div class="icon-warning"> This page’s source dataset is set to <b>Private</b>, so even though this page is set to Public, anyone without access to the source dataset will not be able to see it. It will still appear in the public catalog. You should consider setting the dataset to Public, or setting this page to Private.
+      save_button:
+        saving: Saving
+        saved: Saved!
+        failed: Failed
+        flyoutFailedTitle: An error occurred
+        flyoutFailedBody: Please contact Socrata Support
+      related_views:
+        button: Other views of this data
+        official: Official Views of this Data
+      api_explorer:
+        title: API
+        api_button: API
+        api_button_title: Access this Dataset via API
+        url: "You can access this data via the Socrata Open Data API at this URL:"
+        formats: "This data is available in several formats:"
+        json: JSON
+        geojson: GeoJSON
+        additional_resources: "Additional resources for this API:"
+        documentation: Documentation
+        documentation_title: View API documentation
+        code_libraries: Code Libraries
+        code_libraries_title: Download API clients from the Code Library
+      customize_bar:
+        customizing: Customizing
+        customize: Customize
+        changes_warning: You have made changes to this page.
+        collapse_card: "To enter customization mode: Collapse the big card using the arrows in its top right corner"
+        exit_visualization_export: 'To enter customization mode: Exit "Download Visualization as Image" mode by clicking the cancel button in the Info Pane'
+        customizing_flyout: You are now customizing this page
+        customizing_flyout_instructions: You can click this button at any time to preview your changes, and save them at any time
+        customize_flyout: Click to customize the layout or display of this page
+      revert_button:
+        text: Revert Changes
+        flyoutHasChanges: Click to undo all changes since you last saved
+        flyoutNoChanges: No changes to be reverted
+      save_as:
+        text: Save As
+        flyoutIdle: Click to save your changes as a new page
+        flyoutNoChanges: No changes to be saved
+        flyoutFailedTitle: An error occurred
+        flyoutFailedBody: Please contact Socrata Support
+      save_as_panel:
+        title: Save As
+        new_name: Save the current page with a new name
+        description: Enter a description for your new page (optional)
+      flyout:
+        total: Total
+        filtered_amount: Filtered amount
+        clear_filter: Clear filter
+        clear_filter_long: The page is currently filtered by this value, click to clear it
+        expand: Click to expand
+      timeline_chart:
+        drag_help: Drag to change filter range
+        drag_clear_help: Clear filter range
+        errors:
+          no_data: Chart cannot be rendered with no values.
+          bad_dates: Chart cannot be rendered due to invalid date values.
+          zero_time_span: Chart cannot be rendered with less than two date values.
+          default: Chart cannot be rendered.
+      distribution_chart:
+        errors:
+          no_data: There is no data to display.
+          error: An error was encountered when trying to render this card.
+      feature_map:
+        zoom_disabled: Zoom is temporarily unavailable. Please try again later.
+      add_card_dialog:
+        choose_column: Choose a column...
+        add_this_card: Add this card
+        card_on_page: Card already on page
+        card_on_page_long: This card is already on the page
+        not_supported: Not currently supported
+        not_supported_long: This card type is currently unsupported
+        prompt: Choose a column from the dropdown above to add a new card
+        customize_prompt: Customize this card
+        settings: Settings
+        add_card: Add card
+        column_chart_warning: "Note: This would result in a barchart with over a hundred bars, it might be slower than other charts"
+        visualize_flyout: Visualize this column as a {0}
+      customize_card_dialog:
+        map_layer:
+          title: Map base layer
+          standard: Standard
+          custom: Custom Map
+      aggregation_chooser:
+        title: Aggregation
+        description: "See data elements sized or colored by:"
+        information: by the
+        number_of: Number of
+        sum_of: Sum of
+        the_sum_of: The sum of
+        count_label: count {0} per element
+        sum_label: add for each {0}
+        option_disabled: This column cannot be used with a<br>number of aggregate
+      card_layout:
+        add_card_here: Add card here
+      card_controls:
+        customize_enabled: Customize this card
+        customize_disabled: There are no customization options for this card yet
+        collapse_card: Collapse this card
+        expand_card: Expand this card
+        remove_card: Remove this card
+      search_card:
+        prompt_number: Type a number and press enter to search
+        prompt_text: Type some text and press enter to search
+        invalid_search: Try searching for a number containing no letters.
+        no_results: Your search returned no results. Check your spelling, or try a different term.
+        search_info: Showing {0} of {1} matching results
+        loading: Loading suggestions...
+        one_example: "Example: '{0}'"
+        two_examples: "Examples: '{0}' or '{1}'"
+      feedback_panel:
+        feedback: Feedback
+        screenshot_prompt: Do you want to include a screenshot in your feedback?
+        screenshot_description: With a screenshot you can show us exactly what you have feedback on. We are using <a href="https://usersnap.com" title="Visit UserSnap's homepage">UserSnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy" title="Read UserSnap's privacy policy">privacy policy</a>.
+        screenshot_yes: Yes, include a screenshot
+        screenshot_no: No thanks
+        like: I like this
+        missing: I'm missing a feature
+        broken: Something seems broken
+        other: Other
+      last_updated:
+        label: last updated
+      mobile_warning_dialog:
+        description: We're working on improving the mobile experience on this site.
+        acknowledgement: Okay, got it!
+      table:
+        loading: Loading...
+        no_rows: No rows to display
+        range_label: "{0} <strong>{1}-{2} out of {3}</strong>"
+        range_label_subtitle: 'Showing {0} {1} <span class="subtitle">out of {2}</span>'
+        range_label_all: Showing all {0} {1}
+        ascending: ascending
+        descending: descending
+        smallest_first: smallest first
+        largest_first: largest first
+        a_to_z: A-Z
+        z_to_a: Z-A
+        oldest_first: oldest first
+        newest_first: newest first
+        sorted: Sorted {0}
+        sort: Click to sort {0}
+      quick_filter_bar:
+        clear_all_flyout: Click to reset all filters
+        filter_title: 'Showing <span class="light">the {0}</span>'
+      filter:
+        where: where
+        and: and
+        is: is
+        is_not: is not
+        blank: blank
+        date_range: "{0} to {1}"
+      rich_text_editor:
+        bold: Bold
+        italic: Italic
+        underline: Underline
+        link: Link
+        insert_link: Insert link
+        link_placeholder: Enter a URL here

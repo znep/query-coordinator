@@ -5,7 +5,8 @@
     Constants,
     VectorTiles,
     LeafletHelpersService,
-    FlyoutService
+    FlyoutService,
+    I18n
   ) {
     return {
       restrict: 'E',
@@ -52,7 +53,7 @@
           FlyoutService.register({
             selector: '.pan-zoom-disabled-warning-icon',
             render: _.constant(
-              '<div class="flyout-title">Zoom is temporarily unavailable. Please try again later.</div>'
+              '<div class="flyout-title">{0}</div>'.format(I18n.featureMap.zoomDisabled)
             ),
             destroySignal: scope.$destroyAsObservable()
           });

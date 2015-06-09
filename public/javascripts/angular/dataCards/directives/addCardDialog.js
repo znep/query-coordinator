@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function addCardDialog(Constants, Card, Dataset, FlyoutService, $log) {
+  function addCardDialog(Constants, Card, Dataset, FlyoutService, $log, I18n) {
     return {
       restrict: 'E',
       scope: {
@@ -120,8 +120,7 @@
 
         var EXCESSIVE_COLUMN_WARNING = [
           '<div class="flyout-title">',
-          'Note: This would result in a barchart with over a hundred bars, ',
-          'it might be slower than other charts',
+          I18n.addCardDialog.columnChartWarning,
           '</div>'
         ].join('');
         FlyoutService.register({
@@ -137,7 +136,8 @@
             if (scope.showCardinalityWarning && $(el).hasClass('warn')) {
               return EXCESSIVE_COLUMN_WARNING;
             } else {
-              return '<div class="flyout-title">Visualize this column as a {0}</div>'.format(visualizationName);
+              return '<div class="flyout-title">{0}</div>'.
+                format(I18n.t('addCardDialog.visualizeFlyout', visualizationName));
             }
 
           },

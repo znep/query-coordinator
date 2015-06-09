@@ -9,7 +9,7 @@
                 multiline-ellipsis
                 max-lines="2"
                 tolerance="8"
-                text="{{pageName || 'Untitled'}}"
+                text="{{pageName || ('metadata.pageNamePlaceholder' | I18n)}}"
                 show-more-mode="title-attr">
         </header>
         <!-- Text field & decorations for editing page name -->
@@ -21,7 +21,7 @@
             msd-elastic
             ng-model="writablePage.name"
             >{{writablePage.name}}</textarea>
-          <div class="icon-edit placeholder"><span>(Untitled)</span></div>
+          <div class="icon-edit placeholder"><span>({{'metadata.pageNamePlaceholder' | I18n}})</span></div>
         </label>
         <!-- description -->
         <div ng-show="!editMode"
@@ -37,7 +37,7 @@
           <rich-text-editor
             buttons="bold italic link"
             content="writablePage.description"
-            placeholder="Give your page a good description that helps people understand the story your data is trying to tell. (Optional)">
+            placeholder="{{'metadata.editDescriptionPrompt' | I18n}}">
           </rich-text-editor>
         </label>
       </div>
@@ -56,7 +56,7 @@
             -->
             <div class="metadatum-wrapper row" ng-show="sourceDatasetURL">
               <div class="metadatum">
-                <span class="label">source dataset</span>
+                <span class="label">{{'metadata.sourceDataset' | I18n}}</span>
                 <span class="value source-dataset-name">
                   <a href="{{sourceDatasetURL}}" title="{{sourceDatasetName}}" target="_parent">{{sourceDatasetName}}</a>
                 </span>
@@ -64,9 +64,9 @@
             </div>
             <div class="metadatum-wrapper row manage-lens-link" ng-if="shouldShowManageLens && pagePermissions && currentUserHasSaveRight">
               <div class="metadatum">
-                <span class="label">permissions</span>
+                <span class="label">{{'common.permissions.permissions' | I18n}}</span>
                 <span class="value">
-                  <a href=# ng-click="manageLensState.show = true">{{ pagePermissions }} <small>(change)</small><span class="icon-warning" ng-if="pageIsPublic && !datasetIsPublic"></span></a>
+                  <a href=# ng-click="manageLensState.show = true">{{ pagePermissions }} <small>({{'common.change' | I18n}})</small><span class="icon-warning" ng-if="pageIsPublic && !datasetIsPublic"></span></a>
                 </span>
               </div>
               <modal-dialog ng-if="manageLensState.show" dialog-state="manageLensState">
@@ -86,22 +86,22 @@
             class="action-btn r-to-l download-menu"
             ng-class="{active: downloadOpened || chooserMode.show, disabled: editMode}"
             ng-if="showDownloadButton"
-            >{{ chooserMode.show ? 'Cancel' : 'Download' }}
+            >{{ (chooserMode.show ? 'common.cancel' : 'common.download') | I18n }}
             <dropdown-menu ng-if="downloadOpened">
-              <a href="{{datasetCSVDownloadURL}}">Data as CSV (Excel)</a>
+            <a href="{{datasetCSVDownloadURL}}">{{'metadata.dataAsCsv' | I18n}}</a>
               <a href='#'
                  ng-class="{'download-menu-item-disabled': hasChanges}"
                  ng-click="chooserMode.show = !hasChanges"
                  >
                 <span ng-class="{'download-menu-item-disabled-text': hasChanges}">
-                  Visualization as image
+                  {{'metadata.visualizationAsImage' | I18n}}
                 </span>
               </a>
             </dropdown-menu>
           </div>
           <a ng-if="!showDownloadButton"
              class="action-btn r-to-l"
-             href="{{datasetCSVDownloadURL}}">Download</a>
+             href="{{datasetCSVDownloadURL}}">{{'common.download' | I18n}}</a>
           <api-explorer dataset-observable="page.observe('dataset')"></api-explorer>
         </div>
       </div>
@@ -124,13 +124,14 @@
     <div id="quick-filter-bar-container">
       <div class="quick-filter-bar" with-spacer>
         <div class="content">
-          <span ng-show="aggregation.unit">
-            Showing <span class="light">the {{dynamicTitle}}</span>
+          <span
+            ng-show="aggregation.unit"
+            ng-bind-html="'quickFilterBar.filterTitle' | I18n:dynamicTitle">
           </span>
           <div class="filters">
             <div class="filter" ng-repeat="filter in appliedFiltersForDisplay">
-              <span ng-if="$first">where</span>
-              <span ng-if="!$first">and</span>
+              <span ng-if="$first">{{'filter.where' | I18n}}</span>
+              <span ng-if="!$first">{{'filter.and' | I18n}}</span>
               <span class="light lowercase">{{filter.column.version === '0' ? filter.column.title : filter.column.name}}</span>
               <span>{{filter.operator}}</span>
               <span class="light">{{filter.operand}}</span>

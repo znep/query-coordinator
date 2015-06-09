@@ -21,6 +21,6 @@
   <div class="table-body">
     <div class="table-expander"></div>
   </div>
-  <div ng-show="showCount" class="table-label" ng-bind-html="tableLabel">Loading...</div>
-  <div class="table-has-no-rows-message">No rows to display</div>
+  <div ng-show="showCount" class="table-label" ng-bind-html="tableLabel">{{'table.loading' | I18n}}</div>
+  <div class="table-has-no-rows-message">{{'table.noRows' | I18n}}</div>
 </div>

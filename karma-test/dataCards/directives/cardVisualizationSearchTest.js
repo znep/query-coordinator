@@ -135,8 +135,8 @@ describe('A Search Card Visualization', function() {
       var helpText = cardData.element.find('.search-card-text');
       expect(helpText.find('.one-line').is(':visible')).to.equal(false);
       deferred.resolve([
-        { name: SAMPLE_1 },
-        { name: SAMPLE_2 }
+        SAMPLE_1,
+        SAMPLE_2
       ]);
       cardData.scope.$apply();
       expect(helpText.find('.one-line').is(':visible')).to.equal(true);
@@ -144,8 +144,8 @@ describe('A Search Card Visualization', function() {
 
     it('should not show sample data for a number column', function() {
       getSampleDataStub.returns(q.when([
-        { name: SAMPLE_1 },
-        { name: SAMPLE_2 }
+        SAMPLE_1,
+        SAMPLE_2
       ]));
       var cardData = createCard('test_column_number');
       var sampleText = cardData.element.find('.search-card-text .one-line');
@@ -155,14 +155,14 @@ describe('A Search Card Visualization', function() {
 
     it('should show sample data for a text column', function() {
       getSampleDataStub.returns(q.when([
-        { name: SAMPLE_1 },
-        { name: SAMPLE_2 }
+        SAMPLE_1,
+        SAMPLE_2
       ]));
       var cardData = createCard('test_column_text');
-      var sampleText = cardData.element.find('.search-card-text .one-line');
+      var sampleText = cardData.element.find('.search-card-text .one-line:visible');
+      expect(sampleText).to.have.length(1);
       expect(sampleText.text()).to.contain(SAMPLE_1);
       expect(sampleText.text()).to.contain(SAMPLE_2);
-      expect(sampleText.is(':visible')).to.equal(true);
     });
   });
 

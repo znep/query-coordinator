@@ -48,7 +48,14 @@ your local storyteller instance with blah.dev, vertex.dev, etc.
 
 ## How to run the test suite
 
+### tl;dr: All tests
+
+`bin/rake test`
+
+Coverage results are in ```coverage/```
+
 ### Ruby tests
+
 `bin/rake spec`
 
 ### Javascript tests

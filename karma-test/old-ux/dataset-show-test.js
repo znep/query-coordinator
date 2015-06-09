@@ -46,10 +46,6 @@
 //           owner: {
 //             id: 'Bob admin'
 //           }
-//         },
-//         feature_flags: {
-//           enable_newux_bootstrap_link: true,
-//           exit_tech_preview: true
 //         }
 //       });
 //       var params = datasetShowHelpers.getNewUXLinkParams();
@@ -74,10 +70,6 @@
 //           owner: {
 //             id: 'Bob admin'
 //           }
-//         },
-//         feature_flags: {
-//           enable_newux_bootstrap_link: true,
-//           exit_tech_preview: true
 //         }
 //       });
 //       var params = datasetShowHelpers.getNewUXLinkParams();
@@ -99,10 +91,6 @@
 //           owner: {
 //             id: 'Bob admin'
 //           }
-//         },
-//         feature_flags: {
-//           enable_newux_bootstrap_link: true,
-//           exit_tech_preview: true
 //         }
 //       });
 //       var params = $.extend(datasetShowHelpers.getNewUXLinkParams(), {
@@ -121,10 +109,6 @@
 //           owner: {
 //             id: 'Tom public'
 //           }
-//         },
-//         feature_flags: {
-//           enable_newux_bootstrap_link: true,
-//           exit_tech_preview: true
 //         },
 //         currentUser: {},
 //         currentUserId: null
@@ -146,10 +130,6 @@
 //             id: 'Tom public'
 //           }
 //         },
-//         feature_flags: {
-//           enable_newux_bootstrap_link: true,
-//           exit_tech_preview: true
-//         },
 //         currentUser: {},
 //         currentUserId: null
 //       });
@@ -158,27 +138,5 @@
 //       var href = datasetShowHelpers.getNewUXLinkHref(params);
 //       expect(datasetShowHelpers.createNewUXLink(params, href)).to.be.true;
 //     });
-
-//     it('should not create a newUX link if exit_tech_preview and enable_newux_bootstrap_link are false', function() {
-//       $.extend(blist, {
-//         dataset: {
-//           newBackend: true,
-//           id: '1234-5678',
-//           owner: {
-//             id: 'Tom public'
-//           }
-//         },
-//         feature_flags: {
-//           enable_newux_bootstrap_link: false,
-//           exit_tech_preview: false
-//         },
-//         currentUser: {},
-//         currentUserId: null
-//       });
-//       var params = datasetShowHelpers.getNewUXLinkParams();
-//       var href = datasetShowHelpers.getNewUXLinkHref(params);
-//       expect(datasetShowHelpers.createNewUXLink(params, href)).to.be.false;
-//     });
-
 //   });
 // }());

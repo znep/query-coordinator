@@ -200,7 +200,6 @@ class BrowseControllerTest < ActionController::TestCase
   end
 
   test 'it should send an appropriate limitTo for search when new_view type facet is selected' do
-    stub_feature_flags_with(:exit_tech_preview, true)
     Clytemnestra.
       expects(:search_views).
       with() { |actual| actual[:limitTo].eql? 'new_view' }.

@@ -65,23 +65,14 @@ odux_enable_feature_map:
 enable_api_foundry_pane:
   description: Will allow the api_foundry pane to be displayed. If there is another reason for the api_foundry pane to be hidden, it will still be hidden.
   defaultValue: false
-enable_newux_bootstrap_link:
-  description: Will display a link in the old UX, to its corresponding new UX page.
-  defaultValue: false
 enable_data_lens_save_as_button:
   description: Will enable the "Save As" button on the Customize bar of the Data Lens pages.
   defaultValue: false
 enable_data_lens_other_views:
   description: Show the "other views of this data" button in the upper left of Data Lens pages
   defaultValue: false
-data_lens_whats_this_href:
-  description: The url that the "What's this?" link on the facet filter should point to
-  defaultValue: ''
 enable_opendata_ga_tracking:
   description: Controls behavior of Google Analytics in the new UX. If true, GA is enabled with a default Socrata-wide token. If a custom value is provided, GA is enabled and the custom value is used as the GA token. If false, GA is disabled.
-data_cards_app_token:
-  description: The SODA application token to be used by the dataCards app.
-  defaultValue: zvQamMSTi4GNuZWWDwjLdLPhW
 use_auth0:
   description: Force use of Auth0 to authenticate users. DO NOT ENABLE ON ANY ENVIRONMENT OTHER THAN STAGING OR LOCAL.
   defaultValue: false
@@ -90,9 +81,6 @@ enable_feedback:
   defaultValue: true
 domain_decommissioning:
   description: Enable a banner indicating that the domain is being decommissionsed.
-  defaultValue: false
-exit_tech_preview:
-  description: Enable to display transitionary New Backend features (currently scoped to Catalog/Browse)
   defaultValue: false
 field_names_to_avoid_during_bootstrap:
   description: Do not create cards for these field names on bootstrap. Must be an array of fieldNames!

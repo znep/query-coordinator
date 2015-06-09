@@ -5,6 +5,7 @@ require 'webmock/rspec'
 SimpleCov.profiles.define 'filtered' do
   load_profile 'rails'
   add_filter 'vendor' # Don't include vendored stuff
+  coverage_dir 'coverage/ruby'
 end
 SimpleCov.formatters = [
   SimpleCov::Formatter::HTMLFormatter,

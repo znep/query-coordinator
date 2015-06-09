@@ -48,7 +48,14 @@ your local storyteller instance with blah.dev, vertex.dev, etc.
 
 ## How to run the test suite
 
+### tl;dr: All tests
+
+`bin/rake test`
+
+Coverage results are in ```coverage/```
+
 ### Ruby tests
+
 `bin/rake spec`
 
 ### Javascript tests
@@ -64,7 +71,7 @@ Same, but watch for changes (while developing):
 ## Code coverage
 The ```spec``` and ```karma``` tasks generate code coverage reports. They can be found here:
 
-* Ruby: ```coverage/index.html```
+* Ruby: ```coverage/ruby/index.html```
 * JS: ```coverage/<browser name>/index.html```
 
 ## Services

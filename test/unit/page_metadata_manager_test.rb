@@ -398,6 +398,37 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal('my_date_trunc_func', page_metadata['defaultDateTruncFunction'])
   end
 
+  def test_no_dataset_copy_when_feature_flag_not_set
+
+    APP_CONFIG['secondary_group_identifier'] = false
+
+    PageMetadataManager.any_instance.expects(:update_rollup_table)
+
+    Phidippides.any_instance.stubs(
+      update_page_metadata: { status: '200', body: nil },
+      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
+    )
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    NewViewManager.any_instance.expects(:create).returns('data-lens')
+    manager.create(v1_page_metadata)
+    assert_not_requested @dataset_copy_stub
+  end
+
+  def test_no_dataset_copy_when_feature_flag_is_blank
+    APP_CONFIG['secondary_group_identifier'] = ''
+
+    PageMetadataManager.any_instance.expects(:update_rollup_table)
+
+    Phidippides.any_instance.stubs(
+      update_page_metadata: { status: '200', body: nil },
+      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
+    )
+    stub_feature_flags_with(:metadata_transition_phase, '2')
+    NewViewManager.any_instance.expects(:create).returns('data-lens')
+    manager.create(v1_page_metadata)
+    assert_not_requested @dataset_copy_stub
+  end
+
   private
 
   def stub_dataset_copy_request(dataset_id)

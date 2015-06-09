@@ -48,8 +48,17 @@ module.exports = function(config) {
     reporters: ['progress'],
 
     coverageReporter: {
-      type : 'html',
-      dir : 'coverage/'
+      reporters: [
+        {
+          type: 'html',
+          dir: 'coverage/'
+        },
+        {
+          type: 'cobertura',
+          dir: 'coverage/',
+          file: 'coverage.xml' // To match simplecov
+        }
+      ]
     },
 
     // web server port

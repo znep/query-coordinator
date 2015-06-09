@@ -64,7 +64,7 @@ Same, but watch for changes (while developing):
 ## Code coverage
 The ```spec``` and ```karma``` tasks generate code coverage reports. They can be found here:
 
-* Ruby: ```coverage/index.html```
+* Ruby: ```coverage/ruby/index.html```
 * JS: ```coverage/<browser name>/index.html```
 
 ## Services

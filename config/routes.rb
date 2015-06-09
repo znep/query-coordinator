@@ -1,8 +1,12 @@
 Rails.application.routes.draw do
   get 'version' => 'version#show'
 
-  resources :published_stories # HMMM do we want the standard crud?
-  get 's(/:vanity_text)/:four_by_four' => 'published_stories#show', constraints: {
+  resources :stories # HMMM do we want the standard crud?
+  get 's(/:vanity_text)/:four_by_four' => 'stories#show', constraints: {
+    four_by_four: UNANCHORED_FOUR_BY_FOUR_PATTERN
+  }
+
+  get 's(/:vanity_text)/:four_by_four/edit' => 'stories#edit', constraints: {
     four_by_four: UNANCHORED_FOUR_BY_FOUR_PATTERN
   }
 

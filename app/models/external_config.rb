@@ -9,12 +9,13 @@ class ExternalConfig
   # Please make sure to throw in some logging to your subclass.
 
   @@configs = {}
-  def self.register(config)
-    @@configs[config.uniqId] ||= config
-  end
-
   def self.for(uniqId)
-    @@configs[uniqId]
+    @@configs[uniqId] ||= begin
+                            "#{uniqId.to_s.camelcase}Config".constantize.new
+                          rescue NameError
+                            Rails.logger.error("Please define the config classname correctly.")
+                            raise
+                          end
   end
 
   def self.update_all!
@@ -23,15 +24,19 @@ class ExternalConfig
     end
   end
 
-  def initialize(uniqId, filename)
-    @uniqId = uniqId
-    @filename = filename
-
+  def initialize
     uncache!
     update!
-    ExternalConfig.register(self)
   end
   attr_reader :uniqId, :filename
+
+  def uniqId
+    @uniqId ||= self.class.name[0...-6].underscore.to_sym
+  end
+
+  def filename
+    @filename || (raise NotImplementedError.new("#{self.class.name} has no associated file!"))
+  end
 
   def has_changed?
     return false if @cache > Time.now

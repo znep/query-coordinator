@@ -9,6 +9,7 @@ grep '^ruby' Gemfile | sed -n "s/ruby '\(.*\)'/\1/p" > .ruby-version
 #    storyteller pull request builder.
 bin/test_setup
 bundle exec rspec spec
+bundle exec rake karma:phantomjs
 
 export REVISION=`git rev-parse HEAD`
 

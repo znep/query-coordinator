@@ -55,12 +55,9 @@ describe SocrataSession do
 
         let(:env) { env_with_csrf_token }
 
-        before do
-          expect(app).to receive(:call).with(env)
-        end
-
         it 'adds a "socrata-csrf-token" key-value pair to the Core request cookie' do
 
+          expect(app).to receive(:call).with(env)
           expect(Core::Auth::Client).to receive(:new).with(
             anything,
             hash_including(

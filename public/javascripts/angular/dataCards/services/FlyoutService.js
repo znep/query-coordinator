@@ -20,7 +20,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
     var flyoutContent;
     var flyoutWidth;
     var flyoutHeight;
-    var flyoutElement;
+    var flyoutTarget;
     var horizontalHint;
     var rightSideHint;
     var targetBoundingClientRect;
@@ -40,11 +40,11 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
             _.each(selectorHandlers, function(handler) {
 
               // Correctly position and render the flyout element
-              flyoutElement = handler.positionOn(target);
-              flyoutContent = handler.render(flyoutElement);
+              flyoutTarget = handler.positionOn(target);
+              flyoutContent = handler.render(flyoutTarget);
 
               // Check that the content is defined
-              if (_.isDefined(flyoutContent) && _.isDefined(flyoutElement)) {
+              if (_.isDefined(flyoutContent) && _.isDefined(flyoutTarget)) {
 
                 uberFlyoutContent.html(flyoutContent);
                 flyoutWidth = uberFlyout.outerWidth();
@@ -60,7 +60,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
 
                 // Hints can be horizontal or cursor-tracking, but not both
                 if (horizontalHint) {
-                  targetBoundingClientRect = flyoutElement.getBoundingClientRect();
+                  targetBoundingClientRect = flyoutTarget.getBoundingClientRect();
 
                   cssFlyout.left = targetBoundingClientRect.left -
                     flyoutWidth + Math.floor(hintWidth / 2);
@@ -107,42 +107,32 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
                     }
 
                   } else {
-                    targetBoundingClientRect = flyoutElement.getBoundingClientRect();
+                    targetBoundingClientRect = flyoutTarget.getBoundingClientRect();
 
                     // Set the left of the flyout to the exact middle of the
                     // target element.
-                    cssFlyout.left = targetBoundingClientRect.left
-                      + Math.floor(targetBoundingClientRect.width / 2);
-
-                    var hintOffsest = Math.round(cssFlyout.left +
-                      flyoutWidth + Constants.FLYOUT_WINDOW_PADDING - windowWidth);
+                    cssFlyout.left = targetBoundingClientRect.left +
+                      (targetBoundingClientRect.width / 2);
 
                     // If the right side of the flyout is past our
                     // predefined WINDOW_PADDING, right-align the flyout.
-                    if (hintOffsest >= 0) {
+                    if (cssFlyout.left + flyoutWidth >= windowWidth - Constants.FLYOUT_WINDOW_PADDING) {
+                      cssHint.left = cssFlyout.left -
+                        (windowWidth - Constants.FLYOUT_WINDOW_PADDING - flyoutWidth);
                       cssFlyout.right = Constants.FLYOUT_WINDOW_PADDING;
                       cssFlyout.left = '';
-                      cssHint.left = hintOffsest;
                     }
 
                     // If hint is at least halfway across the flyout,
                     // change its orientation.
-                    if (hintOffsest > Math.floor(flyoutWidth / 2)) {
-                      cssHint.left = hintOffsest - hintWidth;
+                    if (cssHint.left > flyoutWidth / 2) {
+                      cssHint.left = cssHint.left - hintWidth;
                       rightSideHint = true;
-                    }
-
-                    // If hint is past the flyoutWidth, stick it to
-                    // the right of the flyout.
-                    if (flyoutWidth - hintOffsest <=
-                      Constants.FLYOUT_ERROR_THRESHOLD) {
-                      cssHint.left = '';
-                      cssHint.right = 0;
                     }
 
                     // Set the top of the flyout.
                     cssFlyout.top = targetBoundingClientRect.top -
-                      (flyoutHeight + Math.floor(hintHeight / 2)) -
+                      (flyoutHeight + hintHeight) -
                       Constants.FLYOUT_BOTTOM_PADDING;
 
                     // If top of flyout is cut off by window,
@@ -187,8 +177,8 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
 
   uberFlyout = $('#uber-flyout');
   uberFlyoutContent = uberFlyout.children('.content');
-  hintWidth = uberFlyout.children('.hint').width();
-  hintHeight = uberFlyout.children('.hint').height();
+  hintWidth = uberFlyout.children('.hint').outerWidth();
+  hintHeight = uberFlyout.children('.hint').outerHeight();
 
   return {
     /**

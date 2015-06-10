@@ -4,11 +4,10 @@ describe('Flyout service', function() {
   var testHelpers;
   var container;
   var Constants;
-  
+
   // Error tolerance given we test on multiple
   // mediums.
   var TOLERANCE = 10;
-
   var testCompletedObservable = new Rx.Subject();
 
   beforeEach(module('dataCards'));
@@ -30,41 +29,61 @@ describe('Flyout service', function() {
       height: 10
     });
   });
+
   afterEach(function() {
     container.remove();
     testCompletedObservable.onNext();
   });
 
+  // Function to test that the flyout hint is positioned correctly
+  // on the target element.
+  var expectFlyoutHintPosition = function(hint, target, right) {
+    var hintOffset = hint.offset();
+    var targetOffset = target.offset();
+    var hintEdge = hintOffset.left + (right ? hint.width() : 0);
+
+    // Vertically positioned correctly.
+    expect(hintOffset.top + hint.height() + Constants.FLYOUT_BOTTOM_PADDING).
+      to.be.closeTo(targetOffset.top, TOLERANCE);
+
+    // Horizontally positioned correctly.
+    expect(hintEdge).to.be.closeTo(targetOffset.left + (target.width() / 2), TOLERANCE);
+  }
+
   it('should create a flyout with the given string on hover by the target', function() {
     var testText = 'Let\'s go flaigh a kite...';
+    var target = $('<div class="flyout-test" />');
+
     flyoutService.register({
       selector: '.flyout-test',
       render: function() { return testText; },
       destroySignal: testCompletedObservable
     });
 
-    var target = $('<div class="flyout-test" />');
     container.append(target);
-
     testHelpers.fireMouseEvent(target[0], 'mousemove');
 
     var flyout = $(FLYOUT_SELECTOR);
+    var hint = flyout.find('.hint');
+
     expect(flyout.is(':visible')).to.be.true;
     expect(flyout.text()).to.equal(testText);
 
-    var flyoutOffset = flyout.offset();
-    var targetOffset = target.offset();
-    expect(flyoutOffset.top + flyout.height() + Constants.FLYOUT_BOTTOM_PADDING)
-      .to.be.closeTo(targetOffset.top, TOLERANCE);
-    expect(flyoutOffset.left).to.be.closeTo(targetOffset.left, TOLERANCE);
+    expectFlyoutHintPosition(hint, target, false);
 
     // Make sure it disappears when we lose hover focus
     testHelpers.fireMouseEvent($('body')[0], 'mousemove');
-    expect(flyout.is(':visible')).to.be.false;
+    expect(flyout.is(':hidden')).to.be.true;
   });
 
   it('should position correctly when on the right edge of the screen', function() {
     var longTestText = _.constant(_.map(_.range(20), _.constant('text')).join(' '));
+    var target = $('<div class="right-edge" />').css({
+      position: 'absolute',
+      right: Constants.FLYOUT_WINDOW_PADDING,
+      top: 100
+    })
+
     flyoutService.register({
       selector: '.right-edge',
       // A string of 20 words separated by spaces
@@ -72,22 +91,14 @@ describe('Flyout service', function() {
       destroySignal: testCompletedObservable
     });
 
-    var target = $('<div class="right-edge" />').css({
-      position: 'absolute',
-      right: Constants.FLYOUT_WINDOW_PADDING,
-      top: 100
-    }).appendTo('body');
+    target.appendTo('body');
 
     try {
       testHelpers.fireMouseEvent(target[0], 'mousemove');
 
       var hint = $(FLYOUT_SELECTOR).find('.hint');
-      var hintOffset = hint.offset();
-      var targetOffset = target.offset();
 
-      expect(hintOffset.top + hint.height() + Constants.FLYOUT_BOTTOM_PADDING)
-        .to.be.closeTo(targetOffset.top, TOLERANCE);
-      expect(hintOffset.left + hint.width()).to.be.closeTo(targetOffset.left, TOLERANCE);
+      expectFlyoutHintPosition(hint, target, true);
 
     } finally {
       target.remove();
@@ -96,6 +107,7 @@ describe('Flyout service', function() {
 
   it('should update the flyout message when refreshFlyout is called.', function() {
     var someMagicalState = true;
+    var target = $('<div class="dynamic-flyout-test" />');
 
     flyoutService.register({
       selector: '.dynamic-flyout-test',
@@ -105,7 +117,6 @@ describe('Flyout service', function() {
       destroySignal: testCompletedObservable
     });
 
-    var target = $('<div class="dynamic-flyout-test" />');
     container.append(target);
 
     testHelpers.fireMouseEvent(target[0], 'mousemove');
@@ -113,12 +124,14 @@ describe('Flyout service', function() {
     var flyout = $(FLYOUT_SELECTOR);
 
     expect(flyout.text()).to.equal('initial');
+
     someMagicalState = false;
     flyoutService.refreshFlyout();
+
     expect(flyout.text()).to.equal('final');
 
     // Make sure it disappears when losing hover focus
     testHelpers.fireMouseEvent($('body')[0], 'mousemove');
-    expect(flyout.is(':visible')).to.be.false;
+    expect(flyout.is(':hidden')).to.be.true;
   });
 });

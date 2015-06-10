@@ -22,10 +22,10 @@
 en:
   hello: "Hello world"
   inspiration_story:
-    textBlock1:
+    text_block_1:
       title: 'This is my story'
       text: 'Write freely and as rapidly as possible and throw the whole thing on paper. Never correct or rewrite until the whole thing is down. Rewrite in process is usually found to be an excuse for not going on. It also interferes with flow and rhythm which can only come from a kind of unconscious association with the material.'
-    textBlock2:
+    text_block_2:
       title: 'I am a Master Storyteller'
       text: 'Abandon the idea that you are ever going to finish. Lose track of the 400 pages and write just one page for each day, it helps. Then when it gets finished, you are always surprised.'
 

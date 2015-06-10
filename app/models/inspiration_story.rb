@@ -6,7 +6,7 @@ class InspirationStory
     @json = story_template.result
   end
 
-  def as_json
+  def to_json
     @json
   end
 

@@ -16,6 +16,7 @@ class StoriesController < ApplicationController
 
   def edit
     @story = DraftStory.find_by_four_by_four(params[:four_by_four])
+    @inspiration_story = InspirationStory.new().as_json
 
     if @story
       respond_to do |format|

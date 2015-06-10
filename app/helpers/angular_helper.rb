@@ -20,17 +20,29 @@ module AngularHelper
   end
 
   def angular_config
+    # Keys from APP_CONFIG that we want to include in FeatureFlags for use in the JS
+    app_config_whitelist = %w(
+      statsd_enabled
+      tileserver_hosts
+      data_cards_app_token
+      feature_map_zoom_debounce
+      feature_map_features_per_tile
+      shape_file_region_query_limit
+    )
+
     {
-      'statsdEnabled' => APP_CONFIG['statsd_enabled'],
       'assetRevisionKey' => asset_revision_key,
       'railsEnv' => Rails.env,
       'cname' => CurrentDomain.cname,
       'featureSet' => features,
-      'themeV3' => theme,
-      'tileserverHosts' => APP_CONFIG['tileserver_hosts'].present? ? APP_CONFIG['tileserver_hosts'].split(',') : []
+      'themeV3' => theme
     }.tap do |config|
+      app_config_whitelist.each do |config_key|
+        js_config_key = config_key.camelize(:lower)
+        config.merge!(js_config_key => APP_CONFIG[config_key])
+      end
       FeatureFlags.list.each do |feature_key|
-        js_feature_key = "#{feature_key[0]}#{feature_key.camelize[1..-1]}"
+        js_feature_key = feature_key.camelize(:lower)
         config.merge!(js_feature_key => FeatureFlags.derive(nil, request)[feature_key.to_sym])
       end
     end

@@ -63,7 +63,11 @@ class LocaleMiddleware
 
     env['socrata.locale'] = locale
     env['socrata.available_locales'] = domain_locales
-    I18n.locale = locale
+    begin
+      I18n.locale = locale
+    rescue I18n::InvalidLocale
+      I18n.locale = 'en'
+    end
     @app.call(env)
   end
 end

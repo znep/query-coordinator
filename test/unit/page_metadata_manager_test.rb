@@ -408,7 +408,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       update_page_metadata: { status: '200', body: nil },
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
     )
-    stub_feature_flags_with(:metadata_transition_phase, '2')
     NewViewManager.any_instance.expects(:create).returns('data-lens')
     manager.create(v1_page_metadata)
     assert_not_requested @dataset_copy_stub
@@ -423,7 +422,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       update_page_metadata: { status: '200', body: nil },
       fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata }
     )
-    stub_feature_flags_with(:metadata_transition_phase, '2')
     NewViewManager.any_instance.expects(:create).returns('data-lens')
     manager.create(v1_page_metadata)
     assert_not_requested @dataset_copy_stub

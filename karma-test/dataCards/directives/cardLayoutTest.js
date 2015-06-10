@@ -943,8 +943,6 @@ describe('card-layout', function() {
         var placeholder1 = cl.element.find('[data-group-id=1]');
         var placeholder2 = cl.element.find('[data-group-id=2]');
 
-        expect(card1Dom.height(), 'card1Dom height should be equal to zero').to.equal(0);
-
         // Drag card 1.
         var startPos = card1Dom.offset();
         card1Overlay.trigger(jQuery.Event( 'mousedown', {

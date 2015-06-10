@@ -52,9 +52,7 @@
 //       expect(typeof params).to.equal('object');
 //       expect(params.canUpdateMetadata !== null).to.be.true;
 //       expect(params.newBackendPage !== null).to.be.true;
-//       expect(params.exitTechPreview !== null).to.be.true;
 //       expect(params.blistDatasetId !== null).to.be.true;
-//       expect(params.metadataTransitionPhase !== null).to.be.true;
 //     });
 
 //     it('should create a newUX link for an administrator on new backend', function() {

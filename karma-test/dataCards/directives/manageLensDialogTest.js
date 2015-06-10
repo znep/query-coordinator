@@ -28,7 +28,6 @@ describe('manage-lens dialog', function() {
     testHelpers.mockDirective(_$provide, 'saveButton');
 
     clock = sinon.useFakeTimers();
-    ServerConfig.override('useCatalogLensPermissions', true);
   }));
 
   afterEach(function(){

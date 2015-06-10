@@ -59,7 +59,6 @@ describe('Customize card dialog', function() {
     $httpBackend.whenGET(/\/metadata\/v1\/dataset\/mash-apes.json.*/).respond([]);
 
     testHelpers.mockDirective(_$provide, 'suggestionToolPanel');
-    ServerConfig.override('useCatalogLensPermissions', true);
   }));
 
   afterEach(function() {

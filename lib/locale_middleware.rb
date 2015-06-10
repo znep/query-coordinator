@@ -58,7 +58,7 @@ class LocaleMiddleware
 
     else
       # none of the above worked; fall back to domainwide default.
-      locale = locales.properties['*']
+      locale = locales.properties['*'] || 'en'
     end
 
     env['socrata.locale'] = locale

@@ -1,6 +1,7 @@
 require 'socrata_session'
 
 describe SocrataSession do
+
   let(:app) { double(:app) }
   let(:env) { Hash.new }
 
@@ -24,6 +25,7 @@ describe SocrataSession do
   end
 
   context 'with a core session present in the cookies' do
+
     let(:env) { env_with_session }
     let(:auth) { double('auth') }
 
@@ -48,9 +50,31 @@ describe SocrataSession do
 
         subject.call(env)
       end
+
+      context 'with a "socrata-csrf-token" key-value pair present in the request cookie' do
+
+        let(:env) { env_with_csrf_token }
+
+        before do
+          expect(app).to receive(:call).with(env)
+        end
+
+        it 'adds a "socrata-csrf-token" key-value pair to the Core request cookie' do
+
+          expect(Core::Auth::Client).to receive(:new).with(
+            anything,
+            hash_including(
+              :cookie => '_core_session_id=core321; socrata-csrf-token=rOCiUjEHDsMTx7+nPv05tOI6MVOXW4ZtlXlqJI7+Zuo='
+            )
+          ).and_return(auth)
+
+          subject.call(env)
+        end
+      end
     end
 
     context 'which is not valid' do
+
       before do
         expect(auth).to receive(:logged_in?).and_return(false)
       end
@@ -61,33 +85,6 @@ describe SocrataSession do
         )
         subject.call(env)
       end
-    end
-  end
-
-  context 'with a "socrata-csrf-token" key-value pair present in the request cookie' do
-
-    let(:env) { env_with_csrf_token }
-    let(:auth) { double('auth') }
-    let(:mock_current_user) do
-      { id: 'four-four' }
-    end
-
-    before do
-      expect(auth).to receive(:logged_in?).and_return(true)
-      expect(auth).to receive(:current_user).and_return(mock_current_user)
-      expect(app).to receive(:call).with(env)
-    end
-
-    it 'adds a "socrata-csrf-token" key-value pair to the Core request cookie' do
-
-      expect(Core::Auth::Client).to receive(:new).with(
-        anything,
-        hash_including(
-          :cookie => '_core_session_id=core321; socrata-csrf-token=rOCiUjEHDsMTx7+nPv05tOI6MVOXW4ZtlXlqJI7+Zuo='
-        )
-      ).and_return(auth)
-
-      subject.call(env)
     end
   end
 

@@ -4,7 +4,7 @@ RSpec.describe StoriesHelper, type: :helper do
 
   context '#render_block' do
 
-    context 'with passed a block with a text component' do
+    context 'when passed a block with a text component' do
 
       let(:block) do
         FactoryGirl.build(
@@ -24,7 +24,7 @@ RSpec.describe StoriesHelper, type: :helper do
       end
     end
 
-    context 'with passed a block with an unrecognized component type' do
+    context 'when passed a block with an unrecognized component type' do
 
       let(:block) do
         FactoryGirl.build(

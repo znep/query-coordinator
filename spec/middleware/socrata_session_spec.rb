@@ -1,6 +1,7 @@
 require 'socrata_session'
 
 describe SocrataSession do
+
   let(:app) { double(:app) }
   let(:env) { Hash.new }
 
@@ -24,6 +25,7 @@ describe SocrataSession do
   end
 
   context 'with a core session present in the cookies' do
+
     let(:env) { env_with_session }
     let(:auth) { double('auth') }
 
@@ -48,9 +50,28 @@ describe SocrataSession do
 
         subject.call(env)
       end
+
+      context 'with a "socrata-csrf-token" key-value pair present in the request cookie' do
+
+        let(:env) { env_with_csrf_token }
+
+        it 'adds a "socrata-csrf-token" key-value pair to the Core request cookie' do
+
+          expect(app).to receive(:call).with(env)
+          expect(Core::Auth::Client).to receive(:new).with(
+            anything,
+            hash_including(
+              :cookie => '_core_session_id=core321; socrata-csrf-token=rOCiUjEHDsMTx7+nPv05tOI6MVOXW4ZtlXlqJI7+Zuo='
+            )
+          ).and_return(auth)
+
+          subject.call(env)
+        end
+      end
     end
 
     context 'which is not valid' do
+
       before do
         expect(auth).to receive(:logged_in?).and_return(false)
       end
@@ -67,11 +88,11 @@ describe SocrataSession do
   def env_without_session
     {
       "REQUEST_METHOD"=>"GET",
-      "REQUEST_URI"=>"http://domain.in.host.header.com/some_path?query=value",
+      "REQUEST_URI"=>"http://domain.in.host.header.example.com/some_path?query=value",
       "SCRIPT_NAME"=>"/some_path",
-      "SERVER_NAME"=>"domain.in.host.header.com",
+      "SERVER_NAME"=>"domain.in.host.header.example.com",
       "SERVER_PORT"=>"80",
-      "HTTP_HOST"=>"domain.in.host.header.com",
+      "HTTP_HOST"=>"domain.in.host.header.example.com",
       "REQUEST_PATH"=>"/stories/admin",
     }
   end
@@ -80,6 +101,15 @@ describe SocrataSession do
     env_without_session.merge(
       'rack.request.cookie_hash' => {
         '_core_session_id' => 'core321'
+      }
+    )
+  end
+
+  def env_with_csrf_token
+    env_without_session.merge(
+      'rack.request.cookie_hash' => {
+        '_core_session_id' => 'core321',
+        'socrata-csrf-token' => 'rOCiUjEHDsMTx7+nPv05tOI6MVOXW4ZtlXlqJI7+Zuo='
       }
     )
   end

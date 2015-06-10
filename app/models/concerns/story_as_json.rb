@@ -1,4 +1,4 @@
-module AsJson
+module StoryAsJson
   extend ActiveSupport::Concern
 
   included do

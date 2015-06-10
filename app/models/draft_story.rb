@@ -4,6 +4,6 @@ class DraftStory < ActiveRecord::Base
   include StoryQueries
   include BlockOperations
   include StoryTitle
-  include AsJson
+  include StoryAsJson
 
 end

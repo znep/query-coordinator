@@ -94,9 +94,11 @@ form.wide
 .featureFlags form
   > div
     border-bottom: solid 1px #444
-    margin-bottom: 2em
-    padding-bottom: 1em
+    margin: 0
+    padding: 1.75em 1.5em
     font-size: 1.3em
+  &:nth-child(even)
+    background-color: #F9F9F9
 
   div.flagBox
     float: left
@@ -111,7 +113,6 @@ form.wide
 
   div.valueBox
     float: right
-    width: 30em
     text-align: left
 
     label
@@ -122,3 +123,8 @@ form.wide
 
     input
       width: auto
+
+    input[type=submit]
+      float: right
+      font-size: 1em
+      cursor: pointer

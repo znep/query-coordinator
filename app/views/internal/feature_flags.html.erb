@@ -7,9 +7,9 @@
 <%= render :partial => 'left_nav' %>
 
 <div class="contentBox withLeftNavigation featureFlags">
+  <%- @flags.each do |flag, flag_config| %>
   <%= form_tag('/internal/orgs/' + @domain.organizationId.to_s +
     '/domains/' + @domain.cname + '/set_feature_flags') do %>
-  <%- @flags.each do |flag, flag_config| %>
     <div class="clearfix" style="clear: both">
         <div class="flagBox">
             <div><%= flag %></div>
@@ -18,10 +18,11 @@
         <div class="valueBox">
             <p>Default Value: <%= flag_config.defaultValue %></p>
             <%= feature_flag_input flag, flag_config, flag_config.value %>
+            <br>
+            <input type="submit" value="Update" />
         </div>
     </div>
-  <%- end %>
-    <input type="submit" value="Update" />
+    <%- end %>
   <%- end %>
 </div>
 

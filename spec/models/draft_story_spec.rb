@@ -6,6 +6,7 @@ RSpec.describe DraftStory, type: :model do
 
   it_behaves_like 'has_block_operations'
   it_behaves_like 'has_story_queries'
+  it_behaves_like 'has_story_title'
 
   describe 'immutability' do
 

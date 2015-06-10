@@ -106,10 +106,7 @@
 
         var validColumnFilter = function(column, fieldName) {
           // TODO: Once a "logical" type property is available, this will need to be updated
-          var fieldNamesThatCannotBeAggregated = ServerConfig.get('fieldNamesThatCannotBeAggregated');
-          if (!_.isArray(fieldNamesThatCannotBeAggregated)) {
-            fieldNamesThatCannotBeAggregated = [];
-          }
+          var fieldNamesThatCannotBeAggregated = ['latitude', 'longitude', 'lat', 'lng', 'long', 'x', 'y']
           return (column.physicalDatatype === 'number' || column.physicalDatatype === 'money') &&
             (!_.contains(fieldNamesThatCannotBeAggregated, fieldName));
         };

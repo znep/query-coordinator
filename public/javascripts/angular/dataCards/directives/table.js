@@ -560,6 +560,7 @@
             interact: true,
             style: 'table',
             direction: 'horizontal',
+            parent: document.body,
 
             html: function($target, $head, options) {
               if ($target[0].clientWidth < $target[0].scrollWidth) {

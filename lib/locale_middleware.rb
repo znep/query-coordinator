@@ -58,12 +58,16 @@ class LocaleMiddleware
 
     else
       # none of the above worked; fall back to domainwide default.
-      locale = locales.properties['*']
+      locale = locales.properties['*'] || 'en'
     end
 
     env['socrata.locale'] = locale
     env['socrata.available_locales'] = domain_locales
-    I18n.locale = locale
+    begin
+      I18n.locale = locale
+    rescue I18n::InvalidLocale
+      I18n.locale = 'en'
+    end
     @app.call(env)
   end
 end

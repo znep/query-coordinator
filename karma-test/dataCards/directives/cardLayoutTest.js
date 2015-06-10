@@ -505,14 +505,9 @@ describe('card-layout', function() {
 
       var hint = $('#uber-flyout .hint');
       var hintOffset = hint.offset();
-      // The flyout could bind towards the left or right depending on the edge of the
-      // screen, so just make sure the hint (ie the triangle attached to the flyout) is
-      // close enough.
+
       expect(hintOffset.left + hint.width()).to.be.closeTo(clientX, 5);
-
-
-      expect(hintOffset.top + hint.height() + Constants.FLYOUT_BOTTOM_PADDING).to.be.closeTo(clientY, 3);
-
+      expect(hintOffset.top + hint.height() + Constants.FLYOUT_BOTTOM_PADDING).to.be.closeTo(clientY, 5);
       expect($('#uber-flyout').text()).to.equal('Remove this card');
     });
 
@@ -948,7 +943,7 @@ describe('card-layout', function() {
         var placeholder1 = cl.element.find('[data-group-id=1]');
         var placeholder2 = cl.element.find('[data-group-id=2]');
 
-        expect(card1Dom.height() === 0).to.be.true
+        expect(card1Dom.height(), 'card1Dom height should be equal to zero').to.equal(0);
 
         // Drag card 1.
         var startPos = card1Dom.offset();
@@ -973,7 +968,7 @@ describe('card-layout', function() {
         mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
 
         // Check that the card now has a height
-        expect(card1Dom.height() > 0).to.be.true
+        expect(card1Dom.height(), 'card1Dom height should be greater than zero').to.be.above(0);
       });
 
   });
@@ -1254,18 +1249,15 @@ describe('card-layout', function() {
     }
 
     describe('flyout', function() {
-      // For some reason, a tolerance of 20 fails ONLY in jenkins+PhantomJS. Can't figure
-      // out why, so just up the tolerance and leave it to integration tests to make more
-      // sane tests.
       var TOLERANCE = 5;
 
-      // A helper function to test the accuracy of the flyout's position
+      // A helper function to test the accuracy of the flyout's position.
       function expectFlyoutPosition(target, flyout) {
         var hint = flyout.find('.hint');
         var hintOffset = hint.offset();
         var targetOffset = target.offset();
 
-        // Test y-position
+        // Test vertical positioning.
         if (targetOffset.top < flyout.height()) {
           expect(hintOffset.top).to.be.within(-TOLERANCE, TOLERANCE);
         } else {
@@ -1274,7 +1266,7 @@ describe('card-layout', function() {
           to.be.within(-TOLERANCE, TOLERANCE);
         }
 
-        // Test x-position
+        // Test horizontal positioning.
         if (flyout.hasClass('left')) {
 
           // A left flyout aligns the left edge of hint
@@ -1290,7 +1282,6 @@ describe('card-layout', function() {
         }
       }
       afterEach(function() {
-        // Get rid of the flyout
         $('#uber-flyout').remove();
       });
 

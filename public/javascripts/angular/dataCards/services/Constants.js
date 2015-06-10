@@ -58,7 +58,7 @@
 
       // Flyout parameters
       'FLYOUT_WINDOW_PADDING': 22,
-      'FLYOUT_BOTTOM_PADDING': 6,
+      'FLYOUT_BOTTOM_PADDING': 1,
       'FLYOUT_ERROR_THRESHOLD': 2,
 
       // Related Views

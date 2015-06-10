@@ -188,8 +188,8 @@ describe('A Search Card Visualization', function() {
           setSearchText(VALID_SEARCH_TERM);
         });
 
-        it('should submit when you click the search button', function() {
-          cardData.element.find('button[type="submit"]').click();
+        it.only('should submit when you click the search button', function() {
+          cardData.element.find('button[type="submit"]').submit();
           expect(toggleExpandedSpy.calledOnce).to.equal(true);
           expect(cardData.element.find('.search-card-results').is(':visible')).to.equal(true);
         });

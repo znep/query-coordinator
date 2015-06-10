@@ -13,32 +13,21 @@
 
     var VectorTileUtil = {
 
-      getTileId: function(tilePoint, zoom) {
-        return [zoom, tilePoint.x, tilePoint.y].join(':');
+      getTileId: function(tile) {
+        return _.at(tile, ['zoom', 'x', 'y']).join(':');
       },
 
       getTileInfoByPointAndZoomLevel: function(point, zoom) {
 
-        function deg2rad(degrees) {
-          return degrees * Math.PI / 180;
-        }
+        var lat = point.lat * Math.PI / 180;
 
-        var lat = deg2rad(point.lat);
-        var lng = deg2rad(point.lng);
-
-        var tileY = Math.floor(
-          (lng + 180) / 360 * (1 << zoom)
-        );
-
-        var tileX = Math.floor(
-          (1 - Math.log(Math.tan(deg2rad(lat)) + 1 /
-          Math.cos(deg2rad(lat))) / Math.PI) / 2 * (1 << zoom)
-        );
+        var x = parseInt(Math.floor((point.lng + 180) / 360 * (1 << zoom)));
+        var y = parseInt(Math.floor((1 - Math.log(Math.tan(lat) + 1 / Math.cos(lat)) / Math.PI) / 2 * (1 << zoom)));
 
         return {
           zoom: zoom,
-          tileX: tileX,
-          tileY: tileY
+          x: x,
+          y: y
         };
       },
 
@@ -347,6 +336,7 @@
         this.tileManager = tileManager;
         this.styleFn = options.style;
         this.featuresByTile = {};
+        this.quadTreesByTile = {};
       },
 
       onAdd: function(map) {
@@ -362,9 +352,10 @@
       // a result of needing to fetch and parse protocol buffers.
       drawTile: function(canvas, tilePoint, zoom) {
 
-        var tileId = VectorTileUtil.getTileId(tilePoint, zoom);
+        var tileId = VectorTileUtil.getTileId({x: tilePoint.x, y: tilePoint.y, zoom: zoom});
 
         this.featuresByTile[tileId] = [];
+        this.quadTreesByTile[tileId] = this.tileManager.quadTreeFactory([]);
 
         return this;
       },
@@ -376,21 +367,28 @@
         var featureCount = features.length;
         var feature;
         var featureArray;
+        var quadTree;
 
         if (!this.featuresByTile.hasOwnProperty(tileId) && featureCount > 0) {
           this.featuresByTile[tileId] = [];
         }
 
+        if (!this.quadTreesByTile.hasOwnProperty(tileId) && featureCount > 0) {
+          this.quadTreesByTile[tileId] = this.tileManager.quadTreeFactory([]);
+        }
+
         featureArray = this.featuresByTile[tileId];
+        quadTree = this.quadTreesByTile[tileId];
 
         for (i = 0; i < featureCount; i++) {
 
           feature = features[i];
 
-          featureArray.push(
-            new VectorTileFeature(this, feature, this.styleFn(feature))
-          );
+          var vectorTileFeature = new VectorTileFeature(this, feature, this.styleFn(feature));
+          var projectedPoint = vectorTileFeature.projectGeometryToTilePoint(vectorTileFeature.coordinates[0][0]);
+          quadTree.add(projectedPoint);
 
+          featureArray.push(vectorTileFeature);
         }
 
         this.renderTile(tileId, tileRenderedCallback);
@@ -468,8 +466,10 @@
           tileSize: 256,
           debounceMilliseconds: 500,
           onRenderStart: function() {},
-          onRenderComplete: function() {}
+          onRenderComplete: function() {},
+          hoverThreshold: 8 // px near neighboring points
         };
+
         L.Util.setOptions(this, options);
 
         // Layers present in the protocol buffer responses.
@@ -482,11 +482,28 @@
           this.flushOutstandingQueue,
           this.options.debounceMilliseconds
         );
+
+        /*
+         * Each tile has its own quad tree containing points in that tile.
+         * On hover, for tiles within the threshold but not containing the hover
+         * point, we map the mouse coordinates to the coordinate space of the
+         * neighboring tile to test the neighboring tile's points that lie within
+         * the threshold of the hover point.
+         *
+         * We create a quad tree factory here to make it easier to make many quad
+         * trees with the same parameters.
+         */
+        var threshold = this.options.hoverThreshold;
+        var size = this.options.tileSize;
+        this.quadTreeFactory = d3.geom.quadtree();
+        this.quadTreeFactory.extent([[-threshold, -threshold], [size + threshold, size + threshold]]);
+        this.quadTreeFactory.x(_.property('x'));
+        this.quadTreeFactory.y(_.property('y'));
       },
 
       onAdd: function(map) {
 
-        function getTileInfo(e) {
+        function addTileInfo(e) {
           e.tileInfo = VectorTileUtil.getTileInfoByPointAndZoomLevel(e.latlng, map.getZoom());
         }
 
@@ -519,8 +536,136 @@
 
         if (_.isFunction(this.options.mousemove)) {
 
+          var self = this;
           mapMousemoveCallback = function(e) {
             addTileInfo(e);
+            var layer = self.layers.get('main'); // TODO handle selecting layers and/or multiple layers better.
+            var tileId = VectorTileUtil.getTileId(e.tileInfo);
+            var tileCanvas = VectorTileUtil.getTileLayerCanvas(layer, tileId);
+            var tileSize = self.options.tileSize;
+            var hoverThreshold = self.options.hoverThreshold;
+            var mouseTileOffset = { // mouse coordinates in px
+              x: e.layerPoint.x - tileCanvas.offsetLeft,
+              y: e.layerPoint.y - tileCanvas.offsetTop
+            };
+
+            var zoom = e.tileInfo.zoom;
+
+            // Which edges are we close to?
+            var edgeTests = {
+              top:    mouseTileOffset.y < hoverThreshold,
+              left:   mouseTileOffset.x < hoverThreshold,
+              bottom: tileSize - mouseTileOffset.y < hoverThreshold,
+              right:  tileSize - mouseTileOffset.x < hoverThreshold
+            };
+
+            // Get neighboring tileId for a tile's edge
+            var tileIdModifiers = {
+              top: function(tile) {
+                tile.y--;
+                return tile;
+              },
+              left: function(tile) {
+                tile.x--;
+                return tile;
+              },
+              bottom: function(tile) {
+                tile.y++;
+                return tile;
+              },
+              right: function(tile) {
+                tile.x++;
+                return tile;
+              }
+            };
+
+            // Modify tile pixel offsets
+            // tileOffset = {x: tileOffsetX, y: tileOffsetY}
+            var tileOffsetModifiers = {
+              top: function(tileOffset) {
+                tileOffset.y += tileSize;
+                return tileOffset;
+              },
+              left: function(tileOffset) {
+                tileOffset.x += tileSize;
+                return tileOffset;
+              },
+              bottom: function(tileOffset) {
+                tileOffset.y -= tileSize;
+                return tileOffset;
+              },
+              right: function(tileOffset) {
+                tileOffset.x -= tileSize;
+                return tileOffset;
+              }
+            };
+
+            // Find all edges and corners that the mouse is near
+            var edges = [['top'], ['left'], ['bottom'], ['right']];
+            var corners = _.zip(['top', 'top', 'bottom', 'bottom'], ['left', 'right', 'left', 'right']);
+            var hotspots = _.union(edges, corners);
+
+            // Now get those neighboring tile ids
+            var tiles = [{id: tileId, offset: mouseTileOffset}];
+            var neighboringTiles = _.compact(_.map(hotspots, function(hotspot) {
+
+              /*
+                hotspot is either ['left'], ['left', 'top'], etc...
+                This ensures that all edgeTests for the given hotspot values
+                are true, which means that the mouse is within threshold of
+                all hotspot values (aka edges).
+              */
+              if (_.all(_.at(edgeTests, hotspot), _.identity)) {
+                var neighborTile = _.clone(e.tileInfo);
+                var neighborOffset = _.clone(mouseTileOffset);
+
+                _.each(hotspot, function(dir) {
+                  tileIdModifiers[dir](neighborTile);
+                  tileOffsetModifiers[dir](neighborOffset);
+                });
+
+                var relativeTileOffset = {
+                  x: neighborOffset.x - mouseTileOffset.x,
+                  y: neighborOffset.y - mouseTileOffset.y
+                };
+
+                return {
+                  id: VectorTileUtil.getTileId(neighborTile),
+                  offset: neighborOffset,
+                  relativeTileOffset: relativeTileOffset
+                };
+              }
+
+              return false;
+            }));
+
+            tiles = tiles.concat(neighboringTiles);
+
+            var nearbyPoints = [];
+            _.each(tiles, function(tile) {
+              var qt = layer.quadTreesByTile[tile.id];
+              var point = tile.offset;
+
+              if (qt) {
+                qt.visit(function(node, x1, y1, x2, y2) {
+                  var nodePoint = node.point;
+                  if (nodePoint) {
+                    var dx = Math.pow(nodePoint.x - point.x, 2);
+                    var dy = Math.pow(nodePoint.y - point.y, 2);
+                    if (dx + dy < Math.pow(hoverThreshold, 2)) {
+                      nearbyPoints.push(nodePoint);
+                    }
+                  }
+
+                  return (x1 > point.x + hoverThreshold) ||
+                    (x2 < point.x - hoverThreshold) ||
+                    (y1 > point.y + hoverThreshold) ||
+                    (y2 < point.y - hoverThreshold);
+                });
+              }
+            });
+
+            e.neighboringPoints = nearbyPoints;
             self.options.mousemove(e);
           };
 
@@ -579,7 +724,7 @@
             zoom: zoom,
             callback: callback
           });
-          this.tileLoading(VectorTileUtil.getTileId(tilePoint, zoom));
+          this.tileLoading(VectorTileUtil.getTileId({x: tilePoint.x, y: tilePoint.y, zoom: zoom}));
         } else {
           this.getTileData(tilePoint, zoom, callback);
         }
@@ -594,7 +739,7 @@
           if (request.zoom === self.lastCommitedZoomLevel) {
             self.getTileData(request.tilePoint, request.zoom, request.callback);
           } else {
-            self.tileLoaded(VectorTileUtil.getTileId(request.tilePoint, request.zoom));
+            self.tileLoaded(VectorTileUtil.getTileId(request));
           }
         });
         this.delayedTileDataRequests.length = 0;
@@ -602,7 +747,7 @@
 
       getTileData: function(tilePoint, zoom, callback) {
         var self = this;
-        var tileId = VectorTileUtil.getTileId(tilePoint, zoom);
+        var tileId = VectorTileUtil.getTileId({x: tilePoint.x, y: tilePoint.y, zoom: zoom});
         var getterPromise;
 
         // Don't re-request tiles that are already outstanding.

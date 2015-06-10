@@ -59,6 +59,35 @@
           });
         }
 
+        // Register hover flyout
+        var hoverPointCount = 0;
+        var hoverPointOffset = {x: 0, y: 0};
+        var hoverTimeout = null;
+        FlyoutService.register({
+          selector: 'canvas',
+          render: function(target) {
+            if (hoverPointCount === 0) {
+              target.style.cursor = 'inherit';
+              return undefined;
+            }
+
+            var unit = hoverPointCount === 1 ? scope.rowDisplayUnit : scope.rowDisplayUnit.pluralize();
+
+            var template = [
+              '<div class="flyout-title">{0} {1}</div>',
+              'Click to see details'
+            ].join('');
+
+            target.style.cursor = 'pointer';
+
+            return template.format(hoverPointCount, unit);
+          },
+          getOffset: function() {
+            return hoverPointOffset;
+          },
+          destroySignal: scope.$destroyAsObservable()
+        });
+
         var map = L.map(element.find('.feature-map-container')[0], mapOptions);
         // We buffer feature layers so that there isn't a visible flash
         // of emptiness when we transition from one to the next. This is accomplished
@@ -251,6 +280,17 @@
                   });
                 });
               return promise;
+            },
+            mousemove: function(e) {
+              hoverPointCount = 0;
+              hoverPointOffset = {x: e.originalEvent.clientX, y: e.originalEvent.clientY + 5};
+              if (hoverTimeout) {
+                clearTimeout(hoverTimeout);
+              }
+              hoverTimeout = setTimeout(function() {
+                hoverPointCount = e.neighboringPoints.length;
+                FlyoutService.refreshFlyout();
+              }, 200);
             }
             // You can interact with mouse events by passing
             // callbacks on three property names: 'mousedown',

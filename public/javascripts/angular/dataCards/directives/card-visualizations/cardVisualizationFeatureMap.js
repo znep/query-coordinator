@@ -180,7 +180,7 @@
 
         scope.$bindObservable(
           'rowDisplayUnit',
-          dataset.observeOnLatest('rowDisplayUnit')
+          model.observeOnLatest('page.aggregation.unit')
         );
 
         scope.zoomDebounceMilliseconds = ServerConfig.get('featureMapZoomDebounce');

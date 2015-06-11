@@ -11,7 +11,7 @@
       scope: {
         'model': '=',
         'whereClause': '=',
-        'showCount': '=?',
+        'isEmbedded': '=?',
         'firstColumn': '=?'
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationTable.html',
@@ -26,11 +26,13 @@
         var cardsSequence = model.observeOnLatest('page.cards');
         var aggregationSequence = model.observeOnLatest('page.aggregation');
 
-        $scope.$watch('showCount', function(newVal, oldVal, scope) {
-          if (!angular.isDefined(newVal)){
-            scope.showCount = true;
+        $scope.$watch('isEmbedded', function(newVal, oldVal, scope) {
+          if (!angular.isDefined(newVal)) {
+            scope.isEmbedded = false;
           }
         });
+
+        $scope.showCount = !$scope.isEmbedded;
 
         $scope.model.set('showDescription', false);
 
@@ -207,7 +209,9 @@
                 rowCountWithCommas
               );
             }
-            $scope.model.set('customTitle', customTitle);
+            if (!$scope.isEmbedded) {
+              $scope.model.set('customTitle', customTitle);
+            }
           });
 
         $scope.$bindObservable('rowDisplayUnit', rowDisplayUnit$);

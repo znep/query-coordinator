@@ -18,7 +18,7 @@
     var self = this;
     var dimensionsSubject = self.data('dimensionsSubject');
     if (!dimensionsSubject) {
-      dimensionsSubject = new Rx.BehaviorSubject(self.dimensions())
+      dimensionsSubject = new Rx.BehaviorSubject(self.dimensions());
       self.data('dimensionsSubject', dimensionsSubject);
 
       self.resize(function() {
@@ -133,16 +133,13 @@
     }
   };
 
-  String.prototype.format = function() {
-    var self = this;
-    var i = arguments.length;
-
-    while (i--) {
-      self = self.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
-    }
-
-    return self;
+  String.prototype.format = function(objectMaybe) {
+    var values = _.isPlainObject(objectMaybe) ? objectMaybe :_.slice(arguments);
+    return _(values).chain().keys().reduce(function(stringToFormat, key) {
+      return stringToFormat.replace(new RegExp('\\{' + key + '\\}', 'gm'), values[key]);
+    }, this).value();
   };
+
 
   String.prototype.capitalizeEachWord = function() {
     return this.split(' ').map(function(word) {

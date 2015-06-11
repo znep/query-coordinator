@@ -3,7 +3,6 @@ class StoriesController < ApplicationController
 
   def show
     @story = PublishedStory.find_by_four_by_four(params[:four_by_four])
-
     if @story
       respond_to do |format|
         format.html { render 'stories/show' }
@@ -15,13 +14,12 @@ class StoriesController < ApplicationController
   end
 
   def edit
+    @inspiration_story = InspirationStory.new()
     @story = DraftStory.find_by_four_by_four(params[:four_by_four])
-    @inspiration_story = InspirationStory.new().to_json
 
     if @story
       respond_to do |format|
         format.html { render 'stories/edit', layout: 'editor' }
-        format.json { render json: @story }
       end
     else
       tmp_render_404

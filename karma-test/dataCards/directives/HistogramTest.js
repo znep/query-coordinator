@@ -45,7 +45,8 @@ describe('HistogramChart', function() {
       cardData: testData,
       isFiltered: null,
       rowDisplayUnit: 'cuttlefish',
-      expanded: true
+      expanded: true,
+      selectedExtent: null
     }, scopeData);
 
     var scope = $rootScope.$new();
@@ -76,21 +77,25 @@ describe('HistogramChart', function() {
 
     it('should render on hover', function() {
       histogram = createHistogram();
-      var hoverShield = $('.histogram-hover-shield')[0];
+      var hoverShield = histogram.element.find('.histogram-hover-shield')[0];
+
       testHelpers.fireMouseEvent(hoverShield, 'mouseover');
       testHelpers.fireMouseEvent(hoverShield, 'mousemove');
+
       var $flyoutTitle = $('.flyout-title');
       expect($flyoutTitle).to.have.length(1);
-    })
+    });
 
     it('should trigger the nth flyout for the nth data bucket', function() {
       histogram = createHistogram();
-      var hoverShield = $('.histogram-hover-shield')[0];
-      var chartWidth = $('.histogram svg').attr('width');
-      var chartHeight = $('.histogram svg').attr('height');
+      var element = histogram.element;
+      var hoverShield = element.find('.histogram-hover-shield')[0];
+      var svg = element.find('svg');
+      var chartWidth = svg.attr('width');
+      var chartHeight = svg.attr('height');
       var bucketWidth = Math.ceil(chartWidth / testData.unfiltered.length);
       for (var i = 0; i < testData.unfiltered.length; i++) {
-        var offsetX = bucketWidth * i;
+        var offsetX = (bucketWidth * i) + (bucketWidth / 2);
         testHelpers.fireMouseEvent(hoverShield, 'mouseover');
         testHelpers.fireMouseEvent(hoverShield, 'mousemove', {
           clientX: offsetX,
@@ -109,7 +114,7 @@ describe('HistogramChart', function() {
       var $flyoutTitle = $('#uber-flyout');
       expect($flyoutTitle.text()).to.match(new RegExp('Total'));
       expect($flyoutTitle.text()).to.match(new RegExp(testData.unfiltered[0].value));
-      expect($flyoutTitle.text()).to.match(new RegExp(/Filtered Amount/));
+      expect($flyoutTitle.text()).to.match(new RegExp(/Filtered amount/));
       expect($flyoutTitle.text()).to.match(new RegExp(testData.filtered[0].value));
     });
 

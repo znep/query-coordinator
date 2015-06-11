@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationHistogram(CardDataService, HistogramService, Filter, $log) {
+  function cardVisualizationHistogram(Constants, CardDataService, HistogramService, HistogramBrushService, Filter, $log) {
 
     /**
      * Fetches both unfiltered and filtered data.  Requests the data bucketed
@@ -9,7 +9,7 @@
      * (CardDataService.getBucketedData), depending on contents of
      * columnDataSummary.
      */
-    function fetchHistogramData($scope, fieldName, dataset, whereClauseFragment, aggregationData, columnDataSummary) {
+    function fetchHistogramData(fieldName, dataset, whereClauseFragment, aggregationData, columnDataSummary) {
       var dataPromise;
       var bucketingOptions = _.pick(columnDataSummary, 'bucketType', 'bucketSize');
       var bucketData = _.curry(HistogramService.bucketData)(_, bucketingOptions);
@@ -49,7 +49,6 @@
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationHistogram.html',
       link: function($scope) {
-
         var whereClause$ = $scope.$observe('whereClause');
         var isFiltered$ = whereClause$.map(_.isPresent);
         var cardModel = $scope.$observe('model');
@@ -60,6 +59,53 @@
         var fieldName$ = cardModel.pluck('fieldName');
         var expanded$ = cardModel.observeOnLatest('expanded');
         var rowDisplayUnit$ = cardModel.observeOnLatest('page.aggregation.unit');
+
+        var filterSelected$ = $scope.$eventToObservable('toggle-dataset-filter:histogram').
+          map(_.property('additionalArguments[0]'));
+
+        var selectionExtent$ = activeFilters$.map(function(filters) {
+          if (_.isPresent(filters)) {
+            var valueRangeFilter = _(filters).chain().
+              select(function(filter) { return filter instanceof Filter.ValueRangeFilter; }).
+              first().value();
+            if (_.isDefined(valueRangeFilter)) {
+              return [valueRangeFilter.start, valueRangeFilter.end];
+            }
+          }
+          return [0, 0];
+        });
+
+        var activeFiltersExcludingOwn$ = cardModel.observeOnLatest('page.activeFilters').
+          withLatestFrom(
+            fieldName$,
+            activeFilters$,
+            function(activeFilters, fieldName, ownFilters) {
+              var cardFilters = _(activeFilters).chain().get(fieldName).difference(ownFilters).value();
+              var filterHolder = _.extend({}, activeFilters);
+              filterHolder[fieldName] = cardFilters;
+              return filterHolder;
+            });
+
+        var whereClauseExcludingOwn$ = activeFiltersExcludingOwn$.
+          map(function(filters) {
+            var wheres = _.map(filters, function(operators, field) {
+              if (_.isEmpty(operators)) {
+                return null;
+              } else {
+                return _.invoke(operators, 'generateSoqlWhereFragment', field).join(' AND ');
+              }
+            });
+            return _.compact(wheres).join(' AND ');
+          }).startWith('');
+
+        filterSelected$.subscribe(function(filterValues) {
+          if (_.isDefined(filterValues)) {
+            var filter = new Filter.ValueRangeFilter(filterValues[0], filterValues[1]);
+            $scope.model.set('activeFilters', [filter]);
+          } else {
+            $scope.model.set('activeFilters', []);
+          }
+        });
 
         var nonBaseFilterApplied$ = Rx.Observable.combineLatest(
           whereClause$,
@@ -89,17 +135,17 @@
           baseSoqlFilter$,
           aggregation$,
           columnDataSummary$,
-          _.curry(fetchHistogramData)($scope)
-          ).switchLatest();
+          fetchHistogramData
+        ).switchLatest();
 
         var filteredData$ = Rx.Observable.combineLatest(
           fieldName$,
           datasetModel$,
-          whereClause$,
+          whereClauseExcludingOwn$,
           aggregation$,
           columnDataSummary$,
-          _.curry(fetchHistogramData)($scope)
-          ).switchLatest();
+          fetchHistogramData
+        ).switchLatest();
 
         // Combine the filtered and unfiltered data into an object.
         var cardData$ = Rx.Observable.combineLatest(
@@ -154,6 +200,7 @@
         $scope.$bindObservable('cardData', cardData$);
         $scope.$bindObservable('isFiltered', isFiltered$);
         $scope.$bindObservable('expanded', expanded$);
+        $scope.$bindObservable('selectionExtent', selectionExtent$);
       }
     };
   }

@@ -59,6 +59,7 @@ describe('Histogram Visualization', function() {
     page.defineObservableProperty('dataset', dataset);
     page.defineObservableProperty('baseSoqlFilter', '');
     page.defineObservableProperty('aggregation', {});
+    page.defineObservableProperty('activeFilters', []);
     card.page = page;
     card.defineObservableProperty('expanded', false);
     card.defineObservableProperty('activeFilters', []);

@@ -52,6 +52,8 @@
       'HISTOGRAM_Y_TICK_LABEL_OFFSET': 8,
       'HISTOGRAM_NONZERO_PIXEL_THRESHOLD': 2,
       'HISTOGRAM_HOVER_BLOCK_EXTRA_HEIGHT': 1,
+      'HISTOGRAM_CLEAR_X_OFFSET': 2,
+      'HISTOGRAM_MARGIN': 15,
 
       // Table card visualization parameters.
       'TABLE_UNSORTABLE_PHYSICAL_DATATYPES': ['geo_entity', 'point'],

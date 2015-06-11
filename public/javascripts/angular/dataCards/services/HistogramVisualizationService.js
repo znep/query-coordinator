@@ -1,22 +1,22 @@
 (function() {
   'use strict';
 
-  function HistogramVisualizationService(Constants, FlyoutService) {
+  function HistogramVisualizationService(Constants, FlyoutService, I18n) {
 
     function setupDOM(container) {
       var dom = {};
 
-      dom.margin = {top: 5, right: 0, bottom: 30, left: 0};
+      dom.margin = {
+        top: 5,
+        right: Constants.HISTOGRAM_MARGIN,
+        bottom: 30,
+        left: Constants.HISTOGRAM_MARGIN
+      };
 
       container.innerHTML = '';
       dom.container = container;
       dom.svg = d3.select(dom.container).append('svg');
       dom.chart = dom.svg.append('g');
-
-      dom.xTicks = dom.chart.append('g').
-        classed('histogram-axis histogram-axis-x', true);
-      dom.yTicks = dom.chart.append('g').
-        classed('histogram-axis histogram-axis-y', true);
 
       dom.area = {};
       dom.line = {};
@@ -30,14 +30,18 @@
       dom.line.filtered = dom.chart.append('path').
         classed('histogram-trace histogram-trace-filtered', true);
 
-      dom.hoverBlock = dom.chart.append('rect').
-        classed('histogram-hover-block', true);
+      dom.xTicks = dom.chart.append('g').
+        classed('histogram-axis histogram-axis-x', true);
+      dom.yTicks = dom.chart.append('g').
+        classed('histogram-axis histogram-axis-y', true);
 
       dom.hoverTarget = dom.chart.append('line').
         classed('histogram-hover-target', true);
 
-      dom.hoverShield = dom.svg.append('rect').
-        classed('histogram-hover-shield', true);
+      dom.hoverDispatcher = d3.dispatch('hover');
+
+      dom.blockHoverTarget = dom.chart.selectAll('.block-hover-target').data([[0,0]]);
+      dom.blockHoverTarget.enter().append('line').classed('block-hover-target', true);
 
       return dom;
     }
@@ -86,6 +90,10 @@
         filtered: {
           area: generateSVGRenderer('area'),
           line: generateSVGRenderer('line')
+        },
+        selected: {
+          area: generateSVGRenderer('area'),
+          line: generateSVGRenderer('line')
         }
       };
     }
@@ -94,55 +102,172 @@
       var hover = {
         unfilteredBucket: null,
         filteredBucket: null,
+        selectedBuckets: null,
         isFiltered: false,
         rowDisplayUnit: '',
+        showFlyout: true,
         deregisterFlyout: function() {
-          FlyoutService.deregister('.histogram-hover-shield', renderFlyout);
+          FlyoutService.deregister('.histogram-hover-shield', renderFilterFlyout);
         }
       };
 
-      function renderFlyout() {
-        var unfilteredBucket = hover.unfilteredBucket;
-        var filteredBucket = hover.filteredBucket;
+      function renderHoverFlyoutTemplate(
+        unfilteredBucket,
+        filteredBucket,
+        hoverOutsideSelection
+      ) {
         var lines = [];
 
         if (_.isPresent(unfilteredBucket) && _.isPresent(filteredBucket)) {
           lines = lines.concat([
-            '<div class="flyout-title">{0} to {1}</div>',
+            '<div class="flyout-title">{valueRange}</div>',
             '<div class="flyout-row">',
-              '<span class="flyout-cell">Total:</span>',
-              '<span class="flyout-cell">{2} {4}</span>',
+              '<span class="flyout-cell">{total}:</span>',
+              '<span class="flyout-cell">{rangeTotal} {rangeTotalRowDisplayUnit}</span>',
             '</div>'
           ]);
 
-          if (hover.isFiltered) {
+          if (hover.selectionActive && !hoverOutsideSelection) {
             lines = lines.concat([
               '<div class="flyout-row">',
-                '<span class="flyout-cell is-highlighted">Filtered Amount:</span>',
-                '<span class="flyout-cell is-highlighted">{3} {5}</span>',
+                '<span class="flyout-cell is-selected">{currentFilter}:</span>',
+                '<span class="flyout-cell is-selected">',
+                '{rangeFilteredAmount} {rangeFilteredRowDisplayUnit}',
+                '</span>',
+              '</div>',
+              '<div class="flyout-row">',
+                '<span class="flyout-cell">{clearRangeFilterLong}</span>',
+                '<span class="flyout-cell"></span>',
               '</div>'
             ]);
+
+          } else {
+
+            if (hover.isFiltered || hoverOutsideSelection) {
+              lines = lines.concat([
+                '<div class="flyout-row">',
+                  '<span class="flyout-cell is-highlighted">{filteredAmount}:</span>',
+                  '<span class="flyout-cell is-highlighted">',
+                    '{rangeFilteredAmount} {rangeFilteredRowDisplayUnit}',
+                  '</span>',
+                '</div>'
+              ]);
+            }
           }
         }
+        return lines.join('');
+      }
 
-        return lines.join('').format(
-          $.toHumaneNumber(unfilteredBucket.start),
-          $.toHumaneNumber(unfilteredBucket.end),
-          $.toHumaneNumber(unfilteredBucket.value),
-          $.toHumaneNumber(filteredBucket.value),
-          (unfilteredBucket.value === 1) ? hover.rowDisplayUnit : hover.rowDisplayUnit.pluralize(),
-          (filteredBucket.value === 1) ? hover.rowDisplayUnit : hover.rowDisplayUnit.pluralize()
+      function renderFilterFlyout() {
+        if (!hover.showFlyout || hover.selectionInProgress) {
+          return;
+        }
+        var unfilteredBucket = hover.unfilteredBucket;
+        var filteredBucket = hover.filteredBucket;
+        var selectedBuckets = hover.selectedBuckets;
+
+        if (_.isEmpty(unfilteredBucket) || _.isEmpty(filteredBucket)) {
+          return;
+        }
+        var hoverOutsideSelection = _.isEmpty(selectedBuckets) ?
+          false :
+          filteredBucket.start < selectedBuckets.start ||
+          filteredBucket.end > selectedBuckets.end;
+
+        var template = renderHoverFlyoutTemplate(
+          unfilteredBucket,
+          filteredBucket,
+          hoverOutsideSelection
         );
+
+        var valueRange = I18n.filter.valueRange.format(
+          $.toHumaneNumber(unfilteredBucket.start),
+          $.toHumaneNumber(unfilteredBucket.end)
+        );
+
+        return template.format({
+            valueRange: valueRange,
+            total: I18n.flyout.total,
+            currentFilter: I18n.flyout.currentFilter,
+            clearRangeFilterLong: I18n.flyout.clearRangeFilterLong,
+            filteredAmount: I18n.flyout.filteredAmount,
+            rangeTotal: $.toHumaneNumber(unfilteredBucket.value),
+            rangeTotalRowDisplayUnit: (unfilteredBucket.value === 1) ?
+              hover.rowDisplayUnit :
+              hover.rowDisplayUnit.pluralize(),
+            rangeFilteredAmount: $.toHumaneNumber(hoverOutsideSelection ?
+              0 :
+              filteredBucket.value),
+            rangeFilteredRowDisplayUnit: (filteredBucket.value === 1) ?
+              hover.rowDisplayUnit :
+              hover.rowDisplayUnit.pluralize()
+          }
+        );
+      }
+
+      function renderFilteredRangeFlyout() {
+        var unfilteredBucket = hover.unfilteredBucket;
+        var selectedBuckets = hover.selectedBuckets;
+        if (_.isEmpty(selectedBuckets)) {
+          return;
+        }
+        var template = renderHoverFlyoutTemplate(unfilteredBucket, selectedBuckets);
+
+        var valueRange = I18n.filter.valueRange.format(
+          $.toHumaneNumber(selectedBuckets.start),
+          $.toHumaneNumber(selectedBuckets.end)
+        );
+
+        return template.format({
+            valueRange: valueRange,
+            total: I18n.flyout.total,
+            currentFilter: I18n.flyout.currentFilter,
+            clearRangeFilterLong: I18n.flyout.clearRangeFilterLong,
+            filteredAmount: I18n.flyout.filteredAmount,
+            rangeTotal: $.toHumaneNumber(selectedBuckets.unfilteredValue),
+            rangeTotalRowDisplayUnit: (selectedBuckets.unfilteredValue === 1) ?
+              hover.rowDisplayUnit :
+              hover.rowDisplayUnit.pluralize(),
+            rangeFilteredAmount: $.toHumaneNumber(selectedBuckets.value),
+            rangeFilteredRowDisplayUnit: (selectedBuckets.value === 1) ?
+              hover.rowDisplayUnit :
+              hover.rowDisplayUnit.pluralize()
+
+          });
       }
 
       dom.svg.on('mouseover', function() {
         FlyoutService.register({
           selector: '.histogram-hover-shield',
-          render: renderFlyout,
+          render: renderFilterFlyout,
           positionOn: function() {
             return dom.hoverTarget.node();
           }
         });
+      });
+
+      FlyoutService.register({
+        selector: '.brush-clear-background',
+        render: renderFilteredRangeFlyout,
+        positionOn: function() {
+          return dom.blockHoverTarget.node();
+        }
+      });
+
+      FlyoutService.register({
+        selector: '.brush-clear-text',
+        render: renderFilteredRangeFlyout,
+        positionOn: function() {
+          return dom.blockHoverTarget.node();
+        }
+      });
+
+      FlyoutService.register({
+        selector: '.filter-icon',
+        render: renderFilteredRangeFlyout,
+        positionOn: function() {
+          return dom.blockHoverTarget.node();
+        }
       });
 
       dom.svg.on('mouseout', function() {
@@ -196,7 +321,7 @@
     }
 
     function updateSVG(svg, data, scale) {
-      _.each(['filtered', 'unfiltered'], function(type) {
+      _.each(['filtered', 'unfiltered', 'selected'], function(type) {
         var first = _.first(data[type]).value;
         var last = _.last(data[type]).value;
 
@@ -251,60 +376,141 @@
       return svg;
     }
 
-    function updateHover(hover, data, isFiltered, rowDisplayUnit, dom, scale) {
-      dom.svg.on('mousemove', function() {
-        var mouseX = d3.mouse(dom.hoverShield.node())[0];
-        var bucketWidth = scale.x.rangeBand();
-        var bucketIndex = Math.floor(mouseX / bucketWidth);
+    function updateHistogramHoverTarget(dom, position) {
+      dom.blockHoverTarget.
+        data([position]).
+        attr('x1', function(d) { return d.x - 10; }).
+        attr('x2', function(d) { return d.x + 10; }).
+        attr('y1', function(d) { return d.y; }).
+        attr('y2', function(d) { return d.y; });
+    }
 
-        hover.unfilteredBucket = data.unfiltered[bucketIndex];
-        hover.filteredBucket = data.filtered[bucketIndex];
+    function updateHover(options) {
+      var leftOffset = _.get(options, 'dom.margin.left', 0);
 
-        var hoverBlockExtraHeight = 1;
+      if (!options.dom.hoverShield) {
+        // We need to insert the hoverShield into the brush node hierarchy in order
+        // to maintain functionality of both
+        options.dom.hoverShield = options.dom.brush.
+          insert('rect', '.resize.e').
+          classed('histogram-hover-shield', true);
+      }
 
-        dom.hoverBlock.
-          attr('visibility', 'visible').
-          attr('x', bucketIndex * bucketWidth).
-          attr('y', -Constants.HISTOGRAM_HOVER_BLOCK_EXTRA_HEIGHT).
-          attr('width', bucketWidth);
+      if (!options.dom.hoverBlock) {
+        options.dom.hoverBlock = options.dom.brush.
+          insert('rect', '.histogram-hover-shield').
+          classed('histogram-hover-block', true).
+          attr('transform', 'translate({0}, 0)'.format(leftOffset));
+      }
 
-        var maxValueOrZero = Math.max(0, hover.filteredBucket.value, hover.unfilteredBucket.value);
-        var hoverTargetY = scale.y(maxValueOrZero);
-        dom.hoverTarget.
-          attr('x1', bucketIndex * bucketWidth).
-          attr('x2', bucketIndex * bucketWidth + bucketWidth).
-          attr('y1', hoverTargetY).
-          attr('y2', hoverTargetY);
+      if (_.isPresent(options.selectionValues) && _.isPresent(options.selectionIndices)) {
+        var unfilteredValueInSelection = _(options.data.unfiltered).chain().
+          slice(options.selectionIndices[0], options.selectionIndices[1] + 1).
+          reduce(function(total, bucket) { return total + bucket.value; }, 0).
+          value();
+
+        var filteredValueInSelection = _(options.data.filtered).chain().
+          slice(options.selectionIndices[0], options.selectionIndices[1] + 1).
+          reduce(function(total, bucket) { return total + bucket.value; }, 0).
+          value();
+
+        options.hover.selectedBuckets = {
+          start: options.selectionValues[0],
+          end: options.selectionValues[1],
+          unfilteredValue: unfilteredValueInSelection,
+          value: filteredValueInSelection
+        };
+      } else {
+        options.hover.selectedBuckets = {};
+      }
+
+      options.dom.svg.on('mousemove', function() {
+        var mouseX = Math.max(0, d3.mouse(options.dom.hoverShield.node())[0] - leftOffset);
+        var bucketWidth = options.scale.x.rangeBand();
+        var bucketIndex = (mouseX === 0 || bucketWidth === 0) ?
+          0 :
+          Math.floor(mouseX / bucketWidth);
+
+        if (bucketIndex < 0 || bucketIndex >= options.data.unfiltered.length) {
+          return;
+        }
+        options.hover.unfilteredBucket = options.data.unfiltered[bucketIndex];
+        options.hover.filteredBucket = options.data.filtered[bucketIndex];
+
+        if (options.hover.showFlyout) {
+          options.dom.hoverBlock.
+            attr('visibility', 'visible').
+            attr('x', bucketIndex * bucketWidth).
+            attr('y', 0).
+            attr('width', bucketWidth);
+          var filteredValue = _.get(options.hover, 'filteredBucket.value', 0);
+          var unfilteredValue = _.get(options.hover, 'unfilteredBucket.value', 0);
+          var maxValueOrZero = Math.max(0, filteredValue, unfilteredValue);
+          var hoverTargetY = options.scale.y(maxValueOrZero);
+          options.dom.hoverTarget.
+            attr('x1', bucketIndex * bucketWidth).
+            attr('x2', bucketIndex * bucketWidth + bucketWidth).
+            attr('y1', hoverTargetY).
+            attr('y2', hoverTargetY);
+        }
       });
 
-      hover.isFiltered = isFiltered;
-      hover.rowDisplayUnit = rowDisplayUnit;
+      options.dom.hoverDispatcher.on('hover', function(brushLeft, brushRight) {
+        if (_.isUndefined(brushLeft) && _.isUndefined(brushRight)) {
+          options.hover.showFlyout = true;
+          options.dom.hoverBlock.
+            attr('visibility', 'hidden');
+        } else {
+          options.hover.showFlyout = false;
+          options.dom.hoverBlock.
+            attr('visibility', 'visible').
+            attr('x', brushLeft).
+            attr('y', 0).
+            attr('width', brushRight - brushLeft);
 
-      return hover;
+          var filteredBucket = _.get(options.hover, 'filteredBucket.value', 0);
+          var unfilteredBucket = _.get(options.hover, 'unfilteredBucket.value', 0);
+          var maxValueOrZero = Math.max(0, filteredBucket, unfilteredBucket);
+          var hoverTargetY = options.scale.y(maxValueOrZero);
+          options.dom.hoverTarget.
+            attr('x1', brushLeft).
+            attr('x2', brushRight).
+            attr('y1', hoverTargetY).
+            attr('y2', hoverTargetY);
+
+        }
+      });
+
+      options.hover.isFiltered = options.isFiltered;
+      options.hover.selectionActive = options.selectionActive;
+      options.hover.selectionInProgress = options.selectionInProgress;
+      options.hover.rowDisplayUnit = options.rowDisplayUnit;
+
+      return options.hover;
     }
 
     // Renders the card
-    function render(dom, data, dimensions, scale, axis, svg) {
-      var margin = dom.margin;
-      var width = dimensions.width;
-      var height = dimensions.height;
+    function render(options) {
+      var margin = options.dom.margin;
+      var width = options.dimensions.width;
+      var height = options.dimensions.height;
 
-      dom.svg.
+      options.dom.svg.
         attr('width', width + margin.left + margin.right).
         attr('height', height + margin.top + margin.bottom);
 
-      dom.hoverShield.
-        attr('width', dom.svg.attr('width')).
-        attr('height', dom.svg.attr('height'));
+      options.dom.hoverShield.
+        attr('width', options.dom.svg.attr('width')).
+        attr('height', options.dom.svg.attr('height'));
 
-      dom.hoverBlock.
-        attr('height', height + Constants.HISTOGRAM_HOVER_BLOCK_EXTRA_HEIGHT);
+      options.dom.hoverBlock.
+        attr('height', height + margin.top);
 
-      dom.chart.
+      options.dom.chart.
         attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-      dom.xTicks.attr('transform', 'translate(0,' + height + ')');
-      dom.yTicks.attr('transform', 'translate(' + width + ',0)');
+      options.dom.xTicks.attr('transform', 'translate(0,' + height + ')');
+      options.dom.yTicks.attr('transform', 'translate(' + width + ',0)');
 
       // Custom x axis positioning/rendering.
       function positionXTicks(selection) {
@@ -327,8 +533,8 @@
           classed('is-zero', true);
       }
 
-      dom.xTicks.
-        call(axis.x).
+      options.dom.xTicks.
+        call(options.axis.x).
         call(positionXTicks).
         call(fixXTickEdgeLabels).
         call(applyXTickZeroClass);
@@ -346,36 +552,43 @@
           });
       }
 
+      // Apply a class to the zero tick (it is bolder/darker than other ticks).
       function applyYTickZeroClass(selection) {
         selection.selectAll('.tick').
           filter(function(d) { return d === 0; }).
           classed('is-zero', true);
       }
 
-      dom.yTicks.
-        call(axis.y.tickSize(width)).
+      options.dom.yTicks.
+        call(options.axis.y.tickSize(width)).
         call(positionYLabels).
         call(applyYTickZeroClass);
 
-      // Apply a class to the zero tick (it is bolder/darker than other ticks).
       // Helper function to render areas + lines.
-      function renderArea(filterType) {
+      function renderArea(filterType, domElement) {
+        domElement = domElement || filterType;
 
         // Introduce artificial start and end points, which are handled as
         // a special case by the svg accessors (updateSVG)
-        var dataWithEndpoints = ['start'].concat(data[filterType]).concat('end');
+        var dataWithEndpoints = ['start'].concat(options.data[filterType]).concat('end');
 
-        dom.area[filterType].
+        options.dom.area[domElement].
           datum(dataWithEndpoints).
-          attr('d', svg[filterType].area);
+          attr('d', options.svg[filterType].area);
 
-        dom.line[filterType].
+        options.dom.line[domElement].
           datum(dataWithEndpoints).
-          attr('d', svg[filterType].line);
+          attr('d', options.svg[filterType].line);
       }
 
       renderArea('unfiltered');
       renderArea('filtered');
+      renderArea('selected');
+      renderArea('unfiltered', 'selectedUnfiltered');
+      _.each(['area','line'], function(value) {
+        options.dom[value].filtered.style('visibility', options.data.hasSelection ? 'hidden' : null);
+      });
+
     }
 
     return {
@@ -388,6 +601,7 @@
       updateScale: updateScale,
       updateSVG: updateSVG,
       updateHover: updateHover,
+      updateHistogramHoverTarget: updateHistogramHoverTarget,
       render: render
     };
   }

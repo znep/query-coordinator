@@ -18,6 +18,12 @@ describe('HistogramVisualizationService', function() {
       {start: 0, end: 10, value: 13},
       {start: 10, end: 100, value: 91}
     ],
+    selected: [
+      {start: -100, end: -10, value: 4},
+      {start: -10, end: 0, value: 743},
+      {start: 0, end: 10, value: 13},
+      {start: 10, end: 100, value: 91}
+    ],
     filtered: [
       {start: -100, end: -10, value: 4},
       {start: -10, end: 0, value: 743},
@@ -169,7 +175,8 @@ describe('HistogramVisualizationService', function() {
       // Exaggerate the scale to be sure that close-to-zero values would get squashed.
       var lopsidedData = {
         unfiltered: [{start: 0, end: 10, value: .0000001}, {start: 10, end: 100, value: 1000000}],
-        filtered: [{start: 0, end: 10, value: .0000001}, {start: 10, end: 100, value: -1000000}],
+        selected: [{start: 0, end: 10, value: .0000001}, {start: 10, end: 100, value: 1000000}],
+        filtered: [{start: 0, end: 10, value: .0000001}, {start: 10, end: 100, value: -1000000}]
       };
 
       updateWithData(lopsidedData);

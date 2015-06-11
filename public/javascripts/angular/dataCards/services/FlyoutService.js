@@ -247,8 +247,9 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
     },
     // Flyout handlers are typically rechecked on mouse movement. If you've made changes to the handlers or their
     // source data and want to see the changes immediately, this function will force a refresh.
-    refreshFlyout: function() {
-      replayedMousePositionSubject.onNext(WindowState.mousePositionSubject.value);
+    refreshFlyout: function(value) {
+      value = value || WindowState.mousePositionSubject.value;
+      replayedMousePositionSubject.onNext(value);
     }
   };
 });

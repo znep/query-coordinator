@@ -1,1 +1,0 @@
-//= require published_story

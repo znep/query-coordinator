@@ -167,6 +167,14 @@ describe('Customize card dialog', function() {
     expect(dialog.element.find('option:contains("Standard")').length).to.equal(1);
   });
 
+  // CORE-5814: Verify that the card height is not manually set for customizeCardDialog
+  it('should not set the height of the card element', function() {
+    var dialog = createDialog();
+    var card = dialog.element.find('card');
+    var styles = $(card).attr('style') || '';
+    expect(styles.indexOf('height')).to.equal(-1);
+  });
+
   it('should provide baselayer options that change the choropleth baseLayerUrl', function() {
     var dialog = createDialog();
     var cardModel = dialog.scope.customizedCard;

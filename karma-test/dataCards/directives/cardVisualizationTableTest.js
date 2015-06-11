@@ -184,8 +184,13 @@ describe('A Table Card Visualization', function() {
     outerScope.whereClause = options.whereClause;
     outerScope.model = model;
     outerScope.firstColumn = options.firstColumn;
-
-    var html = '<div style="position: relative"><card-visualization-table model="model" where-clause="whereClause" first-column="firstColumn"></card-visualization-table></div>';
+    var html;
+    if (_.isUndefined(options.isEmbedded)) {
+       html = '<div style="position: relative"><card-visualization-table model="model" where-clause="whereClause" first-column="firstColumn"></card-visualization-table></div>';
+    } else {
+      outerScope.isEmbedded = options.isEmbedded;
+      html = '<div style="position: relative"><card-visualization-table model="model" where-clause="whereClause" first-column="firstColumn" is-embedded="isEmbedded"></card-visualization-table></div>';
+    }
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
 
     return {
@@ -389,6 +394,15 @@ describe('A Table Card Visualization', function() {
     });
   });
 
+  describe('showCount', function() {
+    it('should set "showCount" to false if "isEmbedded" is true', function() {
+      var table = createTable({
+        isEmbedded: true
+      });
+      expect(table.scope.showCount).to.equal(false);
+    })
+  });
+
   describe('customTitle', function() {
     it('should set it on the card model', function() {
       var table = createTable();
@@ -414,6 +428,13 @@ describe('A Table Card Visualization', function() {
       });
       expect(table.model.getCurrentValue('customTitle')).
         to.equal('Showing all 1,337 &lt;img src="http://placehold.it/100x100" /&gt;s');
+    });
+
+    it('should not update card title if "isEmbedded" is true', function() {
+      var table = createTable({
+        isEmbedded: true
+      });
+      expect(table.model.getCurrentValue('customTitle')).to.equal(null);
     });
   });
 

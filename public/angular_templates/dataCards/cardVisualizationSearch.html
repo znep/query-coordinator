@@ -38,6 +38,6 @@
   <div ng-hide="noResults" class="search-card-text no-results">{{'searchCard.noResults' | I18n}}</div>
   <div ng-if="showResults && searchWhere" ng-class="{invisible: !tableRendered}">
     <div class="search-card-info">{{'searchCard.searchInfo' | I18n:rowCount:totalRowCount}}</div>
-    <card-visualization-table model="model" where-clause="searchWhere" show-count="false" first-column="fieldName"></card-visualization-table>
+    <card-visualization-table model="model" where-clause="searchWhere" is-embedded="true" first-column="fieldName"></card-visualization-table>
   </div>
 </div>

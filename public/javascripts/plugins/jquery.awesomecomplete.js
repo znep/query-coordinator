@@ -143,7 +143,7 @@
             // stupid hack to get around loss of focus on mousedown
             var mouseDown = false;
             var blurWait = false;
-            $(document).bind('mousedown.awesomecomplete' + (++ident), function()
+            $(document).bind('mousedown.awesomecomplete' + ++ident, function()
             {
                 mouseDown = true;
             });

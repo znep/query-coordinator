@@ -464,7 +464,7 @@ describe('card-layout', function() {
       cl.outerScope.editMode = true;
       cl.outerScope.$apply();
 
-      expect(cl.element.find('.card-control[title^="Remove"]:visible').length).to.equal(3);
+      expect(cl.element.find('.card-control.icon-close:visible').length).to.equal(3);
 
     });
 
@@ -491,7 +491,7 @@ describe('card-layout', function() {
       cl.outerScope.$apply();
       cl.scope.$digest();
 
-      var thirdDeleteButton = $(cl.element.find('.card-control[title^="Remove"]')[2]);
+      var thirdDeleteButton = $(cl.element.find('.card-control.icon-close')[2]);
 
       var clientX = thirdDeleteButton.offset().left +
          Math.floor(thirdDeleteButton.width() / 2);
@@ -508,7 +508,7 @@ describe('card-layout', function() {
 
       expect(hintOffset.left + hint.width()).to.be.closeTo(clientX, 5);
       expect(hintOffset.top + hint.height() + Constants.FLYOUT_BOTTOM_PADDING).to.be.closeTo(clientY, 5);
-      expect($('#uber-flyout').text()).to.equal('Remove this card');
+      expect($('#uber-flyout').text()).to.match(/Remove this card/);
     });
 
     it('should remove a card when the delete button is clicked', function(done) {
@@ -541,7 +541,7 @@ describe('card-layout', function() {
         done();
       });
 
-      var thirdDeleteButton = $(cl.element.find('.card-control[title^="Remove"]')[2]);
+      var thirdDeleteButton = $(cl.element.find('.card-control.icon-close')[2]);
       thirdDeleteButton.trigger('click');
 
     });
@@ -990,7 +990,7 @@ describe('card-layout', function() {
     it('should expand a card when clicking the expand-card button', function() {
       var cl = createLayoutWithCards();
 
-      cl.element.find('.card-control[title^="Expand"]').eq(3).click();
+      cl.element.find('.card-control.icon-expand').eq(3).click();
       expect(cl.element.find('card').eq(3).hasClass('expanded')).to.be.true;
     });
 
@@ -999,7 +999,7 @@ describe('card-layout', function() {
 
       var expanded = cl.element.find('.expanded');
       expect(expanded.length).to.equal(1);
-      expanded.find('.card-control[title^="Collapse"]').click();
+      expanded.find('.card-control.icon-collapse').click();
       expect(cl.element.find('.expanded').length).to.equal(0);
     });
 
@@ -1019,7 +1019,7 @@ describe('card-layout', function() {
       var cl = createLayoutWithCards();
       expect(!!cl.scope.expandedCard).not.to.be.ok;
 
-      cl.element.find('.card-control[title^="Expand"]').eq(0).click();
+      cl.element.find('.card-control.icon-expand').eq(0).click();
       cl.scope.$digest();
       expect(!!cl.scope.expandedCard).to.be.true;
     });
@@ -1032,7 +1032,7 @@ describe('card-layout', function() {
       cl.outerScope.$apply();
 
       var choropleth = cl.element.find('card-visualization-choropleth').closest('.card-spot');
-      var customize = choropleth.find('.card-control[title^="Customize"]');
+      var customize = choropleth.find('.card-control.icon-settings');
 
       expect(eventEmitted).to.equal(false);
 
@@ -1159,7 +1159,7 @@ describe('card-layout', function() {
           var cl = createLayoutWithCards([{fieldName: '*'}, {}, {expanded: true}]);
           testHelpers.overrideTransitions(.1);
           var card = cl.element.find('card.expanded').parent();
-          card.find('.card-control[title^="Collapse"]').click();
+          card.find('.card-control.icon-collapse').click();
           cl.scope.$digest();
 
           // The expanded card should start fixed position, and end absolute positioned
@@ -1182,7 +1182,7 @@ describe('card-layout', function() {
           var cl = createLayoutWithCards();
           testHelpers.overrideTransitions(.1);
           var card = cl.element.find('card').eq(3).parent();
-          card.find('.card-control[title^="Expand"]').click();
+          card.find('.card-control.icon-expand').click();
           cl.scope.$digest();
 
           // The expanding card should start absolute position, and end fixed positioned
@@ -1212,7 +1212,7 @@ describe('card-layout', function() {
           var expandedOriginalPosition = expandedCard.position();
           var normalCardOriginalPosition = normalCard.position();
 
-          expandedCard.find('.card-control[title^="Collapse"]').click();
+          expandedCard.find('.card-control.icon-collapse').click();
           cl.scope.$digest();
 
           expect(expandedCard.css('position')).to.equal('absolute');
@@ -1232,7 +1232,7 @@ describe('card-layout', function() {
           var expandingOriginalPosition = expandingCard.position();
           var normalCardOriginalPosition = normalCard.position();
 
-          expandingCard.find('.card-control[title^="Expand"]').click();
+          expandingCard.find('.card-control.icon-expand').click();
           cl.scope.$digest();
 
           // The expanding card should immediately be fixed-position
@@ -1288,7 +1288,7 @@ describe('card-layout', function() {
         var flyout = $('#uber-flyout');
         expect(flyout.is(':visible')).to.be.false;
 
-        var expand = cl.element.find('.card-control[title^="Expand"]').eq(0);
+        var expand = cl.element.find('.card-control.icon-expand').eq(0);
         mockWindowStateService.mousePositionSubject.onNext({
           clientX: 0,
           clientY: 0,
@@ -1297,7 +1297,7 @@ describe('card-layout', function() {
 
         expectFlyoutPosition(expand, flyout);
         expect(flyout.is(':visible')).to.be.true;
-        expect(flyout.text()).to.equal('Expand this card');
+        expect(flyout.text()).to.match(/Expand this card/);
       });
 
       it('should display "Collapse" over the collapse button', function() {
@@ -1306,19 +1306,19 @@ describe('card-layout', function() {
         expect(flyout.is(':visible')).to.be.false;
 
         var card = cl.element.find('card').eq(1);
-        var expandButton = card.find('.card-control[title^="Expand"]');
+        var expandButton = card.find('.card-control.icon-expand');
 
         expandButton.click();
         mockWindowStateService.mousePositionSubject.onNext({
           clientX: 0,
           clientY: 0,
           // Re-find the expand button, because expanding re-draws it
-          target: card.find('.card-control[title^="Collapse"]').get(0)
+          target: card.find('.card-control.icon-collapse').get(0)
         });
 
-        expectFlyoutPosition(card.find('.card-control[title^="Collapse"]'), flyout);
+        expectFlyoutPosition(card.find('.card-control.icon-collapse'), flyout);
         expect(flyout.is(':visible')).to.be.true;
-        expect(flyout.text()).to.equal('Collapse this card');
+        expect(flyout.text()).to.match(/Collapse this card/);
       });
 
       it('should display "Customize" only over the customize button on the choropleth', function() {
@@ -1331,14 +1331,14 @@ describe('card-layout', function() {
 
         var choropleth = cl.element.find('card-visualization-choropleth').closest('.card-spot');
         expect(choropleth.length).to.equal(1);
-        var customize = choropleth.find('.card-control[title^="Customize"]:visible');
+        var customize = choropleth.find('.card-control.icon-settings:visible');
         // Shouldn't show up unless you're in edit mode
         expect(customize.length).to.equal(0);
 
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
 
-        customize = choropleth.find('.card-control[title^="Customize"]:visible');
+        customize = choropleth.find('.card-control.icon-settings:visible');
         expect(customize.length).to.equal(choropleth.length);
 
         mockWindowStateService.mousePositionSubject.onNext({
@@ -1368,7 +1368,7 @@ describe('card-layout', function() {
             children('card-visualization-timeline-chart').
             closest('.card-spot');
         expect(visualizations.length).to.equal(1);
-        expect(visualizations.find('.card-control[title^="Customize"]:visible').length).to.equal(0);
+        expect(visualizations.find('.card-control.icon-settings:visible').length).to.equal(0);
 
         var disabled = visualizations.find('.card-control.disabled:visible');
         // Shouldn't show up unless you're in edit mode

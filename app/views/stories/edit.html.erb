@@ -2,3 +2,7 @@
 <% @story.blocks.each do |block| -%>
   <%= render_block(block) %>
 <% end -%>
+<script type="text/javascript">
+  inspirationStoryData = <%== @inspiration_story.to_json %>;
+  userStoryData = <%== @story.to_json %>;
+</script>

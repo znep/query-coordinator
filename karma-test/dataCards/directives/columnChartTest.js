@@ -7,6 +7,7 @@ describe('columnChart', function() {
   var rootScope;
   var scope;
   var timeout;
+  var Constants;
 
   var minSmallCardBarWidth = 8;
   var maxSmallCardBarWidth = 30;
@@ -151,6 +152,7 @@ describe('columnChart', function() {
     rootScope = $injector.get('$rootScope');
     scope = rootScope.$new();
     timeout = $injector.get('$timeout');
+    Constants = $injector.get('Constants');
   }));
 
   afterEach(function() {
@@ -957,6 +959,29 @@ describe('columnChart', function() {
       expect(flyout.is(':hidden')).to.equal(true);
     });
 
+  });
+
+  describe('column bars', function() {
+
+    var testDataWithFiltered = _.map(testData, function(d) {
+      return {
+        name: d.name,
+        total: d.total,
+        filtered: d.total / 2
+      };
+    });
+
+    it('multiple bars should not highlight on hover ' +
+      'if they have the same data-bar-name property', function () {
+
+      var chart = createColumnChart(640, false, testDataWithFiltered);
+      var anotherChart = createColumnChart(640, false, testDataWithFiltered);
+      var barGroup = chart.element.find('.bar-group').get(0);
+
+      th.fireMouseEvent(barGroup, 'mousemove');
+
+      expect($('.bar-group.hover').length).to.equal(1);
+    })
   });
 
 });

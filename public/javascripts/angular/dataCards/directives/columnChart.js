@@ -1,7 +1,7 @@
 angular.module('socrataCommon.directives').directive('columnChart', function($parse, $timeout, FlyoutService, I18n) {
   'use strict';
 
-  var renderColumnChart = function(element, chartData, showFiltered, dimensions, expanded, rowDisplayUnit) {
+  var renderColumnChart = function(scope, element, chartData, showFiltered, dimensions, expanded, rowDisplayUnit) {
 
     var topMargin = 0; // Set to zero so .card-text could control padding b/t text & visualization
     var bottomMargin; // Calculated based on label text length
@@ -508,7 +508,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           name.
           toString().
           replace(/\\/g, '\\\\');
-        barGroup = element.
+        barGroup = $(target).closest(element).
           find('.bar-group[data-bar-name="{0}"]'.format(barName)).
           get(0);
 
@@ -534,12 +534,14 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
           return flyoutTarget;
         }
-      }
+      },
+      destroySignal: scope.$destroyAsObservable(element)
     });
 
     FlyoutService.register({
       selector: '.labels .label .contents .icon-close',
-      render: _.constant('<div class="flyout-title">{0}</div>'.format(I18n.flyout.clearFilter))
+      render: _.constant('<div class="flyout-title">{0}</div>'.format(I18n.flyout.clearFilter)),
+      destroySignal: scope.$destroyAsObservable(element)
     });
 
     // Set "Click to Expand" truncation marker + its tooltip
@@ -707,6 +709,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           if (!chartData) return;
           scope.$emit('render:start', { source: 'columnChart_{0}'.format(scope.$id), timestamp: _.now() });
           renderColumnChart(
+            scope,
             element,
             chartData,
             showFiltered,

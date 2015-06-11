@@ -65,18 +65,7 @@
 
       FlyoutService.register({
         selector: '.histogram-brush-handle-target',
-        render: _.constant(I18n.distributionChart.dragHelp),
-        positionOn: function(element) {
-          return $(element).closest('.resize').get(0);
-        }
-      });
-
-      FlyoutService.register({
-        selector: '.histogram-brush-line',
-        render: _.constant(I18n.distributionChart.dragHelp),
-        positionOn: function(element) {
-          return $(element).closest('.resize').get(0);
-        }
+        render: _.constant(I18n.distributionChart.dragHelp)
       });
     }
 

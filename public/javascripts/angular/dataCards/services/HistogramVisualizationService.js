@@ -6,12 +6,7 @@
     function setupDOM(container) {
       var dom = {};
 
-      dom.margin = {
-        top: 5,
-        right: Constants.HISTOGRAM_MARGIN,
-        bottom: 30,
-        left: Constants.HISTOGRAM_MARGIN
-      };
+      dom.margin = Constants.HISTOGRAM_MARGINS;
 
       container.innerHTML = '';
       dom.container = container;
@@ -246,24 +241,14 @@
         });
       });
 
-      FlyoutService.register({
-        selector: '.brush-clear-background',
-        render: renderFilteredRangeFlyout,
-        positionOn: function() {
-          return dom.blockHoverTarget.node();
-        }
-      });
+      var renderFilteredRangeSelectors = [
+        '.brush-clear-background',
+        '.brush-clear-text',
+        '.filter-icon'
+      ];
 
       FlyoutService.register({
-        selector: '.brush-clear-text',
-        render: renderFilteredRangeFlyout,
-        positionOn: function() {
-          return dom.blockHoverTarget.node();
-        }
-      });
-
-      FlyoutService.register({
-        selector: '.filter-icon',
+        selector: renderFilteredRangeSelectors.join(', '),
         render: renderFilteredRangeFlyout,
         positionOn: function() {
           return dom.blockHoverTarget.node();

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationHistogram(Constants, CardDataService, HistogramService, HistogramBrushService, Filter, $log) {
+  function cardVisualizationHistogram(CardDataService, HistogramService, Filter, $log) {
 
     /**
      * Fetches both unfiltered and filtered data.  Requests the data bucketed
@@ -169,7 +169,7 @@
               // If the filtered array doesn't contain an object with the same 'start' index as the
               // current unfiltered object, create new bucket and insert it into the filtered array.
               if ($.grep(filtered, function(e) {
-                return e.start === unfiltered[i].start;
+                  return e.start === unfiltered[i].start;
               }).length === 0) {
                 var newBucket = {
                   start: unfiltered[i].start,

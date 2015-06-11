@@ -436,10 +436,10 @@ div.column-chart
   stroke: $histogram-trace-filtered-stroke-color
 
 .histogram-area-selected
-  fill: $timeline-chart-selection-fill-color
+  fill: $histogram-area-selected-fill-color
 
 .histogram-trace-selected
-  stroke: $timeline-chart-selection-trace-stroke-color
+  stroke: $histogram-trace-selected-stroke-color
 
 .histogram-area-selected-unfiltered
   fill: $histogram-area-selected-unfiltered-fill-color
@@ -481,20 +481,21 @@ div.column-chart
   fill: $histogram-hover-block-fill-color
 
 .histogram-brush-handle
-  stroke: $timeline-chart-selection-marker-stroke-color
-  fill: $timeline-chart-selection-marker-fill-color
+  stroke: $histogram-brush-handle-stroke-color
+  fill: $histogram-brush-handle-fill-color
 
 .histogram-brush-line
   stroke: #8a8686
 
-.brush-clear
-  fill: $histogram-clear-block-fill-color
+.histogram
+  .brush-clear
+    fill: $histogram-clear-block-fill-color
 
-.brush-clear-text, .brush-clear-x
-  fill: $card-text-color
+  .brush-clear-text, .brush-clear-x
+    fill: $histogram-brush-clear-text-fill-color
 
-.filter-icon
-  fill: $histogram-filter-icon-fill-color
+  .filter-icon
+    fill: $histogram-filter-icon-fill-color
 
 // search-card
 .search-card-text

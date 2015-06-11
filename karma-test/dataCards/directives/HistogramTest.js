@@ -114,7 +114,7 @@ describe('HistogramChart', function() {
       var $flyoutTitle = $('#uber-flyout');
       expect($flyoutTitle.text()).to.match(new RegExp('Total'));
       expect($flyoutTitle.text()).to.match(new RegExp(testData.unfiltered[0].value));
-      expect($flyoutTitle.text()).to.match(new RegExp(/Filtered amount/));
+      expect($flyoutTitle.text()).to.match(new RegExp('Filtered amount'));
       expect($flyoutTitle.text()).to.match(new RegExp(testData.filtered[0].value));
     });
 

@@ -54,6 +54,12 @@
       'HISTOGRAM_HOVER_BLOCK_EXTRA_HEIGHT': 1,
       'HISTOGRAM_CLEAR_X_OFFSET': 2,
       'HISTOGRAM_MARGIN': 15,
+      'HISTOGRAM_MARGINS': {
+        left: 15,
+        right: 15,
+        top: 5,
+        bottom: 30
+      },
 
       // Table card visualization parameters.
       'TABLE_UNSORTABLE_PHYSICAL_DATATYPES': ['geo_entity', 'point'],

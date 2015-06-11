@@ -20,7 +20,10 @@
           $log.error('Tried to internationalize unknown key "' + key + '"');
         }
 
-        return template.format.apply(template, Array.prototype.slice.call(arguments, 1));
+        // This logic is needed to prevent an IE9 bug where strings would be
+        // wrapped with quotation marks.
+        return (arguments.length <= 1) ? template :
+          template.format.apply(template, Array.prototype.slice.call(arguments, 1));
       }
       else {
         return '';

@@ -2755,6 +2755,7 @@ en:
         is_not: is not
         blank: blank
         date_range: "{0} to {1}"
+        value_range: "{0} to {1}"
       rich_text_editor:
         bold: Bold
         italic: Italic

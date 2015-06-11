@@ -12,4 +12,3 @@
 //
 
 //= require jquery2
-//= require published_stories

@@ -875,6 +875,9 @@ body.state-view-cards
 
   &.disabled, &:disabled
     @extend .action-btn.disabled !optional
+    // We need to manually set the background and text colors despite the extend because of css
+    // priority being overwritten by load order
+    @include action-button($action-btn-disabled-font-color, $action-btn-disabled-bg-color, $action-btn-disabled-border-color)
 
   &.working
     @include action-button($customize-bar-customizing-button-color, $customize-bar-customizing-button-background-color, $customize-bar-customizing-button-color)

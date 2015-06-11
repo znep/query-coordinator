@@ -57,7 +57,6 @@ GEM
     crack (0.4.2)
       safe_yaml (~> 1.0.0)
     crass (1.0.2)
-    cssmin (1.0.3)
     daemons (1.2.2)
     debug_inspector (0.0.2)
     debugger (1.6.8)
@@ -103,9 +102,8 @@ GEM
     hitimes (1.2.2)
     htmlentities (4.3.3)
     i18n (0.7.0)
-    jammit (0.6.6)
-      cssmin (>= 1.0.3)
-      jsmin (>= 1.0.1)
+    jammit (0.6.5)
+      yui-compressor (>= 0.9.3)
     jazz_hands (0.5.2)
       awesome_print (~> 1.2)
       coolline (>= 0.4.2)
@@ -119,7 +117,6 @@ GEM
       pry-stack_explorer (~> 0.4.9)
       railties (>= 3.0, < 5.0)
     journey (1.0.4)
-    jsmin (1.0.1)
     json (1.8.3)
     jwt (1.5.0)
     kgio (2.9.3)
@@ -276,6 +273,7 @@ GEM
       crack (>= 0.3.2)
     xray (1.1)
     yard (0.8.7.6)
+    yui-compressor (0.12.0)
     zip (2.0.2)
     zk (1.9.5)
       logging (~> 1.8.2)
@@ -294,7 +292,7 @@ DEPENDENCIES
   guard
   guard-minitest
   hashie (= 2.0.5)
-  jammit (~> 0.6.5)
+  jammit (= 0.6.5)
   jazz_hands
   memcache-client (~> 1.8.5)
   minitest (~> 4.0)
@@ -330,6 +328,3 @@ DEPENDENCIES
   zip
   zk (~> 1.9.2)
   zookeeper (~> 1.4.9)
-
-BUNDLED WITH
-   1.10.3

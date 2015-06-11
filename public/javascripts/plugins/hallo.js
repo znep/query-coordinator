@@ -1470,7 +1470,7 @@
           '<input type="hidden" name="tags" value="" />' +
           '<input type="text" class="caption" name="caption" placeholder="Title" />' +
           '<button class="uploadSubmit">Upload</button>' +
-          '</form>' +
+          '</form>'
         );
       },
       _init: function() {

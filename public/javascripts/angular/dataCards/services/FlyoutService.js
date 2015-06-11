@@ -26,139 +26,137 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
     var targetBoundingClientRect;
     var cssFlyout;
 
-    if (!_.isEmpty(uberFlyout)) {
+    if (!_.isEmpty(uberFlyout) && target) {
 
-      // First hide any existing flyout
-      uberFlyout.hide();
-      if (!_.isNull(target)) {
+      // Find a selector that matches our target, if it exists.
+      var selectorHandler = _.find(handlers, function(selectorHandlers, selector) {
+        return $(target).is($(selector));
+      });
 
-        // Loop through each selector and check to see if our mouse
-        // targtet is selected by one of the selectors.  If so,
-        // execute each of the target's handlers.
-        _.each(handlers, function(selectorHandlers, selector) {
-          if ($(target).is($(selector))) {
-            _.each(selectorHandlers, function(handler) {
+      // If this selector exists, execute its handlers.
+      if (selectorHandler) {
+        _.each(selectorHandler, function(handler) {
 
-              // Correctly position and render the flyout element
-              flyoutTarget = handler.positionOn(target);
-              flyoutContent = handler.render(flyoutTarget);
+          // Correctly position and render the flyout element
+          flyoutTarget = handler.positionOn(target);
+          flyoutContent = handler.render(flyoutTarget);
 
-              // Check that the content is defined
-              if (_.isDefined(flyoutContent) && _.isDefined(flyoutTarget)) {
+          // Check that the content is defined
+          if (_.isDefined(flyoutContent) && _.isDefined(flyoutTarget)) {
 
-                uberFlyoutContent.html(flyoutContent);
-                flyoutWidth = uberFlyout.outerWidth();
-                flyoutHeight = uberFlyout.outerHeight();
+            uberFlyoutContent.html(flyoutContent);
+            flyoutWidth = uberFlyout.outerWidth();
+            flyoutHeight = uberFlyout.outerHeight();
 
-                horizontalHint = handler.horizontal;
-                rightSideHint = false;
+            horizontalHint = handler.horizontal;
+            rightSideHint = false;
 
-                cssFlyout = {
-                  right: '',
-                  left: ''
-                };
+            cssFlyout = {
+              right: '',
+              left: ''
+            };
 
-                // Hints can be horizontal or cursor-tracking, but not both
-                if (horizontalHint) {
-                  targetBoundingClientRect = flyoutTarget.getBoundingClientRect();
+            // Hints can be horizontal or cursor-tracking, but not both
+            if (horizontalHint) {
+              targetBoundingClientRect = flyoutTarget.getBoundingClientRect();
 
-                  cssFlyout.left = targetBoundingClientRect.left -
-                    flyoutWidth + Math.floor(hintWidth / 2);
+              cssFlyout.left = targetBoundingClientRect.left -
+                flyoutWidth + Math.floor(hintWidth / 2);
 
-                  cssFlyout.top = targetBoundingClientRect.top +
-                    Math.floor(targetBoundingClientRect.height / 2) -
-                    Math.floor(flyoutHeight / 2);
+              cssFlyout.top = targetBoundingClientRect.top +
+                Math.floor(targetBoundingClientRect.height / 2) -
+                Math.floor(flyoutHeight / 2);
 
+              rightSideHint = true;
+
+            // If hint is not horizontal
+            } else {
+
+              // Use $(window).width() instead of window.innerWidth because
+              // the latter includes scrollbars depending on the browser.
+              var windowWidth = $(window).width();
+              var $flyoutHint = $('#uber-flyout').find('.hint');
+              var cssHint = {
+                left: '',
+                right: ''
+              };
+
+              // Check if cursor tracking
+              if (handler.trackCursor) {
+
+                // Position the flyout perfectly so that the hint points
+                // to the cursor pointer.
+                cssFlyout.left = e.clientX;
+                cssFlyout.top = e.clientY - flyoutHeight - hintHeight -
+                  Constants.FLYOUT_BOTTOM_PADDING;
+
+                // If the right side of the flyout will be cut off
+                // by the window, right-align the flyout.
+                if (cssFlyout.left + flyoutWidth > windowWidth) {
+                  cssFlyout.left -= flyoutWidth;
+                  cssHint.right = 0;
                   rightSideHint = true;
-
-                // If hint is not horizontal
-                } else {
-
-                  // Use $(window).width() instead of window.innerWidth because
-                  // the latter includes scrollbars depending on the browser.
-                  var windowWidth = $(window).width();
-                  var $flyoutHint = $('#uber-flyout').find('.hint');
-                  var cssHint = {
-                    left: '',
-                    right: ''
-                  };
-
-                  // Check if cursor tracking
-                  if (handler.trackCursor) {
-
-                    // Position the flyout perfectly so that the hint points
-                    // to the cursor pointer.
-                    cssFlyout.left = e.clientX;
-                    cssFlyout.top = e.clientY - flyoutHeight - hintHeight -
-                      Constants.FLYOUT_BOTTOM_PADDING;
-
-                    // If the right side of the flyout will be cut off
-                    // by the window, right-align the flyout.
-                    if (cssFlyout.left + flyoutWidth > windowWidth) {
-                      cssFlyout.left -= flyoutWidth;
-                      cssHint.right = 0;
-                      rightSideHint = true;
-                    }
-
-                    // If the top of the flyout will be cut off
-                    // by the window, top-align the flyout.
-                    if (cssFlyout.top - flyoutHeight < 0) {
-                      cssFlyout.top = flyoutHeight;
-                    }
-
-                  } else {
-                    targetBoundingClientRect = flyoutTarget.getBoundingClientRect();
-
-                    // Set the left of the flyout to the exact middle of the
-                    // target element.
-                    cssFlyout.left = targetBoundingClientRect.left +
-                      (targetBoundingClientRect.width / 2);
-
-                    // If the right side of the flyout is past our
-                    // predefined WINDOW_PADDING, right-align the flyout.
-                    if (cssFlyout.left + flyoutWidth >= windowWidth - Constants.FLYOUT_WINDOW_PADDING) {
-                      cssHint.left = cssFlyout.left -
-                        (windowWidth - Constants.FLYOUT_WINDOW_PADDING - flyoutWidth);
-                      cssFlyout.right = Constants.FLYOUT_WINDOW_PADDING;
-                      cssFlyout.left = '';
-                    }
-
-                    // If hint is at least halfway across the flyout,
-                    // change its orientation.
-                    if (cssHint.left > flyoutWidth / 2) {
-                      cssHint.left = cssHint.left - hintWidth;
-                      rightSideHint = true;
-                    }
-
-                    // Set the top of the flyout.
-                    cssFlyout.top = targetBoundingClientRect.top -
-                      (flyoutHeight + hintHeight) -
-                      Constants.FLYOUT_BOTTOM_PADDING;
-
-                    // If top of flyout is cut off by window,
-                    // top-align the flyout.
-                    if (cssFlyout.top < 0) {
-                      cssFlyout.top = 0;
-                    }
-                  }
-
-                  // Apply css to flyout hint.
-                  $flyoutHint.css(cssHint);
                 }
 
-                // Show the uber flyout.
-                uberFlyout.
-                  toggleClass('left', !rightSideHint).
-                  toggleClass('right', rightSideHint).
-                  toggleClass('horizontal', horizontalHint).
-                  css(cssFlyout).
-                  show();
+                // If the top of the flyout will be cut off
+                // by the window, top-align the flyout.
+                if (cssFlyout.top - flyoutHeight < 0) {
+                  cssFlyout.top = flyoutHeight;
+                }
 
-                return;
+              } else {
+                targetBoundingClientRect = flyoutTarget.getBoundingClientRect();
+
+                // Set the left of the flyout to the exact middle of the
+                // target element.
+                cssFlyout.left = targetBoundingClientRect.left +
+                  (targetBoundingClientRect.width / 2);
+
+                // If the right side of the flyout is past our
+                // predefined WINDOW_PADDING, right-align the flyout.
+                if (cssFlyout.left + flyoutWidth >= windowWidth - Constants.FLYOUT_WINDOW_PADDING) {
+                  cssHint.left = cssFlyout.left -
+                    (windowWidth - Constants.FLYOUT_WINDOW_PADDING - flyoutWidth);
+                  cssFlyout.right = Constants.FLYOUT_WINDOW_PADDING;
+                  cssFlyout.left = '';
+                }
+
+                // If hint is at least halfway across the flyout,
+                // change its orientation.
+                if (cssHint.left > flyoutWidth / 2) {
+                  cssHint.left = cssHint.left - hintWidth;
+                  rightSideHint = true;
+                }
+
+                // Set the top of the flyout.
+                cssFlyout.top = targetBoundingClientRect.top -
+                  (flyoutHeight + hintHeight) -
+                  Constants.FLYOUT_BOTTOM_PADDING;
+
+                // If top of flyout is cut off by window,
+                // top-align the flyout.
+                if (cssFlyout.top < 0) {
+                  cssFlyout.top = 0;
+                }
               }
-            });
+
+              // Apply css to flyout hint.
+              $flyoutHint.css(cssHint);
+            }
+
+            // Show the uber flyout.
+            uberFlyout.
+              toggleClass('left', !rightSideHint).
+              toggleClass('right', rightSideHint).
+              toggleClass('horizontal', horizontalHint).
+              css(cssFlyout).
+              show();
+
+            return;
           }
         });
+      } else {
+        uberFlyout.hide();
       }
     }
   });

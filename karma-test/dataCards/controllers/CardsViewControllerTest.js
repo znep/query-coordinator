@@ -876,6 +876,31 @@ describe('CardsViewController', function() {
 
       $rootScope.$broadcast('add-card-with-size', 1);
     });
+
+    it('should not add subcolumns to the available columns', function(done) {
+      var serializedCard;
+      var cardModel;
+
+      controllerHarness.$scope.$digest();
+
+      $scope.$on('add-card-with-size', function() {
+
+        $scope.$apply();
+
+        expect($scope.datasetColumns.available.length).to.equal(0);
+        done();
+      });
+
+      serializedCard = {
+        'cardSize': 1,
+        'cardType': 'choropleth',
+        'expanded': false,
+        'fieldName': 'customizableFieldName',
+        'isSubcolumn': true
+      };
+
+      $rootScope.$broadcast('add-card-with-size', 1);
+    });
   });
 
   describe('customize card modal dialog', function() {

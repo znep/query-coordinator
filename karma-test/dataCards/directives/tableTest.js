@@ -17,7 +17,7 @@ describe('table directive', function() {
       column.dataset = { version: '1' };
       if (column.fieldName[0].match(/[a-zA-Z0-9]/g)) {
         outerScope.columnDetails.push(column);
-        if (!(column.cardinality <= 1 && column.isSubcolumn)) {
+        if (!(column.cardinality <= 1 || column.isSubcolumn)) {
           columnCount += 1;
         }
       }
@@ -153,10 +153,11 @@ describe('table directive', function() {
     });
     after(destroyAllTableCards);
 
-    it('are omitted when empty', function() {
+    // CORE-4645: Never show subcolumns in table card
+    it('are omitted', function() {
       expect(el.find('.table-head .th:contains("Location (X Coordinate)")').length).to.equal(0);
       // Make sure non-empty columns are still included
-      expect(el.find('.table-head .th:contains("Location (Y Coordinate)")').length).to.equal(1);
+      expect(el.find('.table-head .th:contains("Location (Y Coordinate)")').length).to.equal(0);
     });
   });
   describe('when rendering cell data', function() {
@@ -264,7 +265,7 @@ describe('table directive', function() {
       expect(cells.length).to.not.equal(0);
 
       var filteredColumns = _.filter(fixtureMetadata.testColumnDetailsAsTableWantsThem, function(column) {
-        return !(column.isSubcolumn && column.cardinality <= 1);
+        return !(column.isSubcolumn || column.cardinality <= 1);
       });
       _.each(cells, function(cell) {
         var column = filteredColumns[$(cell).index()];

@@ -126,8 +126,28 @@ blist.namespace.fetch('blist.datatypes');
             }
         }
 
-        if (prefix) { value = prefix + value; }
-        if (suffix) { value += suffix; }
+        var isNegative = value[0] === '-';
+
+        if (precisionStyle === 'currency') {
+          if (isNegative) {
+            value = '-' + prefix + value.substring(1);
+          }
+          else {
+            value = prefix + value;
+          }
+        }
+        else if (precisionStyle === 'financial') {
+          if (isNegative) {
+            value = prefix + value.substring(1) + suffix;
+          }
+        }
+        else if (prefix) {
+          value = prefix + value;
+        }
+
+        if(precisionStyle !== 'financial' && suffix) {
+          value += suffix;
+        }
 
         return value;
     };
@@ -137,12 +157,17 @@ blist.namespace.fetch('blist.datatypes');
         var prefix = null;
         var suffix = null;
 
-        if (column.format.precisionStyle === 'currency') {
+        switch(column.format.precisionStyle) {
+          case 'currency':
             prefix = blist.datatypes.money.currencies[column.format.currencyStyle];
-        }
-
-        if (column.format.precisionStyle === 'percentage') {
+            break;
+          case 'percentage':
             suffix = '%';
+            break;
+          case 'financial':
+            prefix = '(';
+            suffix = ')';
+            break;
         }
 
         return numberHelper(value, column.format.precision,
@@ -964,8 +989,9 @@ blist.namespace.fetch('blist.datatypes');
             precisionStyle: [
                 {text: $.t('core.precision_style.standard'), value: 'standard'},
                 {text: $.t('core.precision_style.scientific'), value: 'scientific'},
-                {text: 'Currency ($1020.40)', value: 'currency'},
-                {text: 'Precentage (1020.40%)', value: 'percentage'}
+                {text: $.t('core.precision_style.currency'), value: 'currency'},
+                {text: $.t('core.precision_style.percentage'), value: 'percentage'},
+                {text: $.t('core.precision_style.financial'), value: 'financial'}
             ],
             priority: 3,
             rollUpAggregates: aggs,

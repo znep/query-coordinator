@@ -666,8 +666,8 @@ hi:
       page: "पृष्ठ"
       previous_page: "पिछला पृष्‍ठ"
     precision_style:
-      scientific: "वैज्ञानिक (1.0204e+3)"
-      standard: "स्‍टैंडर्ड (1020.4)"
+      scientific: "वैज्ञानिक: 1.0204e+3"
+      standard: "स्‍टैंडर्ड: 1020.4"
     required: "आवश्यक"
     share_types:
       contributor: "योगदानकर्ता"

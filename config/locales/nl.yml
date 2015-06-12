@@ -684,8 +684,8 @@ nl:
       page: pagina
       previous_page: Vorige pagina
     precision_style:
-      scientific: Wetenschappelijk (1.0204e+3)
-      standard: Standaard (1020.4)
+      scientific: "Wetenschappelijk: 1.0204e+3"
+      standard: "Standaard: 1020.4"
     required: Vereist
     share_types:
       contributor: Bijdrager

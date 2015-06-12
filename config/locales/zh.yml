@@ -666,8 +666,8 @@ zh:
       page: "页"
       previous_page: "上一页"
     precision_style:
-      scientific: "科学 (1.0204e+3)"
-      standard: "标准 (1020.4)"
+      scientific: "科学 : 1.0204e+3"
+      standard: "标准 : 1020.4"
     required: "必填"
     share_types:
       contributor: "参与者"

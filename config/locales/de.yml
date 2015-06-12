@@ -666,8 +666,8 @@ de:
       page: Seite
       previous_page: Vorherige Seite
     precision_style:
-      scientific: Wissenschaftlich (1,0204e+3)
-      standard: Standard (1024,4)
+      scientific: "Wissenschaftlich: 1,0204e+3"
+      standard: "Standard: 1024,4"
     required: Erforderlich
     share_types:
       contributor: Beitragender

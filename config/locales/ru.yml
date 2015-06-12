@@ -666,8 +666,8 @@ ru:
       page: "страница"
       previous_page: "Предыдущая страница"
     precision_style:
-      scientific: "Научный (1.0204e+3)"
-      standard: "Стандартный (1020.4)"
+      scientific: "Научный: 1.0204e+3"
+      standard: "Стандартный: 1020.4"
     required: "Требуется"
     share_types:
       contributor: "Автор"

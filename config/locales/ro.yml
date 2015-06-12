@@ -667,8 +667,8 @@ ro:
       page: pagină
       previous_page: Pagina anterioară
     precision_style:
-      scientific: "Ştiinţific (1.0204e+3) "
-      standard: Standard (1020.4)
+      scientific: "Ştiinţific: 1.0204e+3"
+      standard: "Standard: 1020.4"
     required: Obligatoriu
     share_types:
       contributor: Colaborator

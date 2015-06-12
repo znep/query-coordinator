@@ -674,8 +674,8 @@ sl:
       page: stran
       previous_page: Prejšnja stran
     precision_style:
-      scientific: Znanstveni (1,0204e+3)
-      standard: Standardni (1020,4)
+      scientific: "Znanstveni: 1,0204e+3"
+      standard: "Standardni: 1020,4"
     required: Zahtevano
     share_types:
       contributor: Sodelavec

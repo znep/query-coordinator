@@ -167,6 +167,7 @@
 
     $scope.page = page;
     $scope.showOtherViewsButton = ServerConfig.get('enableDataLensOtherViews');
+    $scope.pageHeaderEnabled = ServerConfig.get('showNewuxPageHeader');
 
     var pageNameSequence = page.observe('name').filter(_.isPresent);
     $scope.$bindObservable('pageName', pageNameSequence);

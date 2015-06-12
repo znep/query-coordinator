@@ -793,9 +793,14 @@ var RowSet = ServerModel.extend({
 
         if (!_.isEmpty(rs._jsonQuery.order))
         {
+            var selectCols = _.reject((args.params['$select'] || '').split(','), _.isEmpty).map($.trim),
+                selectingAllCols = _.isEmpty(selectCols) || _.include(selectCols, '*');
             // Just apply all orderBys, because they can safely be applied on top without harm
             args.params['$order'] = _.compact(_.map(rs._jsonQuery.order, function(ob)
             {
+                if (!(selectingAllCols || _.include(selectCols, ob.columnFieldName))) {
+                  return null;
+                }
                 var orderByColumn = rs._dataset.columnForIdentifier(ob.columnFieldName);
                 if ($.isBlank(orderByColumn)) { return null; }
                 var qbC = Dataset.translateColumnToQueryBase(orderByColumn, rs._dataset);

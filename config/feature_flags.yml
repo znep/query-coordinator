@@ -82,9 +82,6 @@ odux_enable_histogram:
 use_soql_for_clustering:
   description: Use the (currently unwritten) core method soql_clustering for clustering.
   defaultValue: false
-enable_newux_page_view_count:
-  description: Have new UX pages accumulated toward the global count of all page views.
-  defaultValue: true
 display_catalog_lens_delete_button:
   description: Whether to show the Delete button for data lenses, in the old UX.
   defaultValue: false

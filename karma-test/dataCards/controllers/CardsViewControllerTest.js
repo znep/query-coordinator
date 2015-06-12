@@ -301,6 +301,18 @@ describe('CardsViewController', function() {
     });
   });
 
+  describe('page header', function() {
+    it('should not display if a feature flag is set', function() {
+      ServerConfig.override('showNewuxPageHeader', false);
+      var context = renderCardsView();
+      var pageHeader = context.element.find('page-header');
+      var metadata = context.element.find('.cards-metadata');
+      expect(pageHeader).to.have.class('ng-hide');
+      expect(metadata).to.not.have.class('page-header-enabled');
+      testHelpers.TestDom.clear();
+    });
+  });
+
   describe('source dataset link', function() {
     afterEach(function() {
       $httpBackend.verifyNoOutstandingExpectation();

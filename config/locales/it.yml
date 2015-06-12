@@ -666,8 +666,8 @@ it:
       page: pagina
       previous_page: Pagina Precedente
     precision_style:
-      scientific: Scientifica (1.0204e+3)
-      standard: Standard (1020.4)
+      scientific: "Scientifica: 1.0204e+3"
+      standard: "Standard: 1020.4"
     required: Richiesto
     share_types:
       contributor: Collaboratore

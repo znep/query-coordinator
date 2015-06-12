@@ -668,8 +668,8 @@ ca:
       page: pàgina
       previous_page: Pàgina anterior
     precision_style:
-      scientific: Científic (1.0204e+3)
-      standard: Estàndard (1020.4)
+      scientific: "Científic: 1.0204e+3"
+      standard: "Estàndard: 1020.4"
     required: Requerit
     share_types:
       contributor: Col·laborador

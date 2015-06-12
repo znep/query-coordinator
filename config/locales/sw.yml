@@ -693,8 +693,8 @@ sw:
       page: ukurasa
       previous_page: Ukurasa Uliotangulia
     precision_style:
-      scientific: Ya kisayansi (1.0204e+3)
-      standard: Kiwango (1020.4)
+      scientific: "Ya kisayansi: 1.0204e+3"
+      standard: "Kiwango: 1020.4"
     required: Inahitajika
     share_types:
       contributor: Mchangiaji

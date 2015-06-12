@@ -672,8 +672,11 @@ en:
       page: page
       previous_page: Previous Page
     precision_style:
-      scientific: Scientific (1.0204e+3)
-      standard: Standard (1020.4)
+      currency: "Currency: $1020.40"
+      financial: "Financial: (1020.40)"
+      percentage: "Percent: 1020.40%"
+      scientific: "Scientific: 1.0204e+3"
+      standard: "Standard: 1020.4"
     required: Required
     share_types:
       contributor: Contributor

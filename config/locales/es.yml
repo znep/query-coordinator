@@ -670,8 +670,8 @@ es:
       page: página
       previous_page: Página anterior
     precision_style:
-      scientific: Científico (1.0204e+3)
-      standard: Estándar (1020.4)
+      scientific: "Científico: 1.0204e+3"
+      standard: "Estándar: 1020.4"
     required: Requerido
     share_types:
       contributor: Colaborador

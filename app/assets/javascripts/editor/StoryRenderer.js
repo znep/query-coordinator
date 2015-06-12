@@ -2,83 +2,83 @@
 
   'use strict';
 
-  function StoryRenderer(inspirationStory, userStory, textEditorManager) {
+  function StoryRenderer(options) {
 
     var BLOCK_VERTICAL_PADDING = 20;
-    var hasInspirationStory = false;
-    var inspirationStoryError = $('.inspiration-story-error');
-    var inspirationStoryContainer = $('.inspiration-story');
-    var inspirationStoryScaleFactor = 0.5;
 
-    var userStoryContainer = $('.user-story');
-    var userStoryScaleFactor = 1;
-
-    var insertionHint = $('.user-story-insertion-hint');
-    var insertionHintHeight = insertionHint.outerHeight(true);
+    var story = options.story || null;
+    var container = options.storyContainerElement || null;
+    var scaleFactor = options.scaleFactor || 1;
+    var editable = options.editable || false;
+    var insertionHint = options.insertionHintElement || false;
+    var textEditorManager = options.textEditorManager || null;
+    var onRenderError = options.onRenderError || function() {};
+    var insertionHintHeight = 0;
     var insertionHintIndex = -1;
-
-    var storyRenderers = {
-      'INSPIRATION_STORY': function() {
-        _renderStory({
-          story: 'INSPIRATION_STORY',
-          container: inspirationStoryContainer,
-          model: inspirationStory,
-          editable: false,
-          scaleFactor: inspirationStoryScaleFactor
-        });
-      },
-      'INSPIRATION_STORY_ERROR': function() {
-        inspirationStoryError.removeClass('hidden');
-      },
-      'USER_STORY': function() {
-        _renderStory({
-          story: 'USER_STORY',
-          container: userStoryContainer,
-          model: userStory,
-          editable: true,
-          scaleFactor: userStoryScaleFactor
-        });
-      }
-    };
-
     var componentRenderers = {
       'text': _renderTextComponent,
       'image': _renderImageComponent,
       'visualization': _renderVisualizationComponent
     };
-
     var blockCache = {};
 
-    if (inspirationStory instanceof Story) {
-      hasInspirationStory = true;
-    }
+    if (options.hasOwnProperty('onRenderError') &&
+      ((typeof options.onRenderError) !== 'function')) {
 
-    if (!userStory instanceof Story) {
       throw new Error(
-        '`userStory` must be a Story (is a ' +
-        (typeof userStory) +
+        '`options.onRenderError` must be a function (is a ' +
+        (typeof onRenderError) +
         ').'
       );
+    }
+
+    if (!(story instanceof Story)) {
+
+      onRenderError();
+      throw new Error(
+        '`options.story` must be a Story (is a ' +
+        (typeof story) +
+        ').'
+      );
+    }
+
+    if (!(container instanceof jQuery)) {
+
+      onRenderError();
+      throw new Error(
+        '`options.storyContainerElement` must be a jQuery element (is a ' +
+        (typeof container) +
+        ').'
+      );
+    }
+
+    if (editable && !(textEditorManager instanceof TextEditorManager)) {
+
+      onRenderError();
+      throw new Error(
+        'editable stories must have a reference to a valid TextEditorManager'
+      );
+    }
+
+    if ((insertionHint instanceof jQuery)) {
+      insertionHintHeight = insertionHint.outerHeight(true);
     }
 
     /**
      * Public methods
      */
 
-    this.renderInspirationStory = function() {
-      if (hasInspirationStory) {
-        storyRenderers['INSPIRATION_STORY']();
-      } else {
-        storyRenderers['INSPIRATION_STORY_ERROR']();
-      }
-    };
-
-    this.renderUserStory = function() {
-      storyRenderers['USER_STORY']();
+    this.render = function() {
+      _renderStory();
     };
 
     this.showInsertionHintAtIndex = function(index) {
-      insertionHintIndex = index;
+      // A falsey value for insertionHintHeight signifies that there is no
+      // insertionHintElement and will prevent the renderer from attempting
+      // to modify the properties of a non-existent element.
+      if (insertionHintHeight) {
+        insertionHintIndex = index;
+      }
     };
 
     this.hideInsertionHint = function() {
@@ -122,14 +122,9 @@
       return blockCache[blockId];
     }
 
-    function _renderStory(options) {
+    function _renderStory() {
 
-      var story = options.story;
-      var container = options.container;
-      var model = options.model;
-      var editable = options.editable;
-      var scaleFactor = options.scaleFactor;
-      var blocks = model.getBlocks();
+      var blocks = story.getBlocks();
       var renderedBlocks;
       var layoutHeight;
 
@@ -138,7 +133,7 @@
         map(function(block) {
 
           if (!_blockElementIsCached(block)) {
-            var newBlock = _renderBlock(story, block, editable);
+            var newBlock = _renderBlock(block);
             _cacheBlockElement(block, newBlock);
             container.append(newBlock);
             return newBlock;
@@ -160,7 +155,11 @@
         // If we are supposed to display the insertion hint at this
         // block index, first position the insertion hint and adjust
         // the overall layout height.
-        if (insertionHintIndex === i) {
+        // A falsey value for insertionHintHeight signifies that there
+        // is no insertion hint element so will prevent the insertion
+        // hint from being drawn regardless of the specified
+        // insertionHintIndex.
+        if (insertionHintHeight && insertionHintIndex === i) {
 
           translation = 'translate(0,' + layoutHeight + 'px)';
           insertionHint.css('transform', translation).removeClass('hidden');
@@ -176,15 +175,17 @@
       container.height(layoutHeight * scaleFactor);
     }
 
-    function _renderBlock(story, block, editable) {
+    function _renderBlock(block) {
 
       if (!(block instanceof Block)) {
+        onRenderError();
         throw new Error(
           '`block` is must be a Block (is of type ' +
           (typeof block) +
           ').' 
         );
       }
+
       var id = block.getId();
       var layout = block.getLayout();
       var componentWidths = layout.split('-');
@@ -194,15 +195,14 @@
       var blockElement;
 
       if (componentWidths.length !== componentData.length) {
+        onRenderError();
         throw new Error(
           'number of layout components does not equal number of components'
         );
       }
 
       componentOptions = {
-        story: story,
-        block: block,
-        editable: editable
+        block: block
       };
 
       components = componentData.
@@ -257,7 +257,7 @@
       var editorId;
       var component = options.componentValue;
 
-      if (options.editable) {
+      if (editable) {
 
         editorId = options.block.getId() + '-' + options.componentIndex;
         component = textEditorManager.getEditor(editorId);
@@ -275,7 +275,7 @@
       var component = $('<img>', { src: '/stories/' + options.componentValue });
 
       component[0].onload = function(e) {
-        storyRenderers[options.story]();
+        _renderStory();
       };
 
       return component;

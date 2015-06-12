@@ -102,6 +102,10 @@ class DatasetsHelperTest < Test::Unit::TestCase
     refute @object.show_save_as_button?, 'show_save_as_button should be false for non-published api datasets'
     @view.stubs(:is_published? => false, :is_api? => true, :dataset? => false)
     refute @object.show_save_as_button?, 'show_save_as_button should be false for non-published api non-datasets'
+
+    FeatureFlags.stubs(:derive => Hashie::Mash.new({ :reenable_ui_for_nbe => true }))
+    @view.stubs(:is_published? => true, :is_api? => false, :dataset? => false)
+    assert @object.show_save_as_button?, 'show_save_as_button should be true for published non-api non-datasets'
   end
 
   def test_hide_filter_dataset

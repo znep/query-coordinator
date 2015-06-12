@@ -424,7 +424,13 @@ module DatasetsHelper
   end
 
   def show_save_as_button?
-    view.is_published? && !view.is_api? && (view.new_backend? ? view.dataset? : true)
+    [ view.is_published?,
+      !view.is_api?,
+      [ !view.new_backend?,
+        view.dataset?,
+        FeatureFlags.derive(view, request).reenable_ui_for_nbe
+      ].any?
+    ].all?
   end
 
   def format_link_tag(format)

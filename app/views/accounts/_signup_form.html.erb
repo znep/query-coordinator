@@ -4,9 +4,9 @@
     <%- @flashes_displayed = true -%>
   <%- end -%>
   <div class="authProvider socrata">
-    <span class="iconContainer"> <span class="icon"></span> </span>
-    <span class="description"><%= t('screens.sign_up.prompt_html') %></span>
-    <p class="loginTips"><%= t('screens.sign_in.tips_html') %></p>
+    <div class="login-description-container">
+      <span class="login-description"><%= t('screens.sign_up.prompt_html') %></span>
+    </div>
   </div>
 
   <%- if !CurrentDomain.strings.disclaimer.nil? -%>

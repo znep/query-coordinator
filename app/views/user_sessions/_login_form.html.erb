@@ -1,38 +1,68 @@
 <div class="loginForm">
+
   <%- unless defined? @flashes_displayed -%>
     <%= display_standard_flashes %>
     <%- @flashes_displayed = true -%>
   <%- end -%>
-  <%- if FeatureFlags.derive.use_auth0 && AUTH0_CONFIGURED # Display auth0 login widget-%>
-    <%- url_base = "https://#{CurrentDomain.cname}:#{APP_CONFIG['ssl_port']}" -%>
-    <div id="auth0login" style="width: 280px; margin: 10px auto;"></div>
-    <script src="https://cdn.auth0.com/js/lock-7.5.min.js"></script>
-    <script>
-      var lock = new Auth0Lock('<%= AUTH0_ID %>', '<%= AUTH0_URI %>');
-      lock.show({
-        container: 'auth0login',
-        callbackURL: '<%= url_base %>/auth/auth0/callback',
-        responseType: 'code',
-      <%- if FeatureFlags.derive.use_custom_auth0_connections -%>
-        //connections: <%=raw FeatureFlags.derive.use_custom_auth0_connections %>,
+
+  <%- if @auth0_connections && @auth0_connections.length > 0 %>
+    <%= render_translations LocalePart.screens.sign_in %>
+
+    <div class="auth0login">
+      <%- @auth0_connections.each do |connection| %>
+        <%- if connection.image %>
+          <style>.btn-<%= connection.name.downcase.gsub(/\s/, '-').gsub(/[^A-Za-z-]/, '') %>::before { background-image: url(<%= connection.image %>) }</style>
+        <%- end -%>
+        <button class="btn-login btn-<%= connection.name.downcase %>" data-connection="<%= connection.connection %>">Log in with <%= connection.name %></button>
       <%- end -%>
-        authParams: {
-          scope: 'openid profile'
-        },
-        resetLink: '<%= url_base %>/forgot_password',
-        signupLink: '<%= url_base %>/signup'
-      });
-    </script>
-  <%- else # Display legacy Socrata login page -%>
-    <div class="authProvider socrata">
-      <span class="iconContainer">
-        <span class="icon"></span>
-      </span>
-      <span class="description"><%= t('screens.sign_in.prompt_html') %></span>
-      <p class="loginTips"><%= t('screens.sign_in.tips_html') %></p>
+      <%- if @auth0_connections.length > 1 %>
+        <hr>
+      <%- end -%>
+      <button class="btn-login btn-socrata" data-connection="socrata.com">Log in with Socrata ID</button>
+      <p>Or, <a href="/signup" class="login-signup-link">sign up for a Socrata ID</a>.</p>
     </div>
-    <%= form_for @user_session do |f| %>
-      <%= render :partial => 'user_sessions/login_form_data', :locals => {:f => f} %>
-    <%- end -%>
+    <div class="authProvider socrata">
+      <div class="login-description-container">
+        <span class="login-description"><%= t('screens.sign_in.prompt_html') %></span>
+      </div>
+      <%= form_for @user_session do |f| %>
+        <%= render :partial => 'user_sessions/login_form_data', :locals => {:f => f} %>
+      <%- end -%>
+      <p>Or, <a class="login-back" href="">back to Login Options</a>.</p>
+    </div>
+
+  <%- elsif @use_auth0 %>
+
+    <div class="auth0login" id="auth0login"></div>
+
+  <%- else %>
+    <%= render_translations LocalePart.screens.sign_in %>
+
+    <div class="authProvider socrata">
+      <div class="login-description-container">
+        <span class="login-description"><%= t('screens.sign_in.prompt_html') %></span>
+      </div>
+      <%= form_for @user_session do |f| %>
+        <%= render :partial => 'user_sessions/login_form_data', :locals => {:f => f} %>
+      <%- end -%>
+    </div>
+
+  <%- end -%>
+
+  <%- if FeatureFlags.derive.use_auth0 && AUTH0_ID.present? && AUTH0_URI.present? %>
+    <% content_for :js_footer do %>
+
+      <script src="https://cdn.auth0.com/js/lock-7.5.min.js"></script>
+      <script type="text/javascript">
+        blist.configuration.auth0 = {
+          id: '<%= AUTH0_ID %>',
+          uri: '<%= AUTH0_URI %>',
+          base_uri: '<%= CurrentDomain.base_uri %>'
+        };
+      </script>
+
+      <%= include_javascripts 'screen-login-auth0' %>
+
+    <% end %>
   <%- end -%>
 </div>

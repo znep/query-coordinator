@@ -15,6 +15,7 @@ $(function() {
         });
         $('.modalContentBox').removeClass('loginModal').addClass('signupModal');
     });
+    /*
     $('.signInLink').click(function(event)
     {
         event.preventDefault();
@@ -27,5 +28,10 @@ $(function() {
             $this.html($.t('account.common.rpx.providers.' + $this.attr('data-providerid') + '.sign_in_html'));
         });
         $('.modalContentBox').removeClass('signupModal').addClass('loginModal');
+    });
+    */
+
+    $('.login-description strong').socrataTip({
+      content: $.t('screens.sign_in.tips_html')
     });
 });

@@ -11,6 +11,7 @@
 
 <%- openid_login = CurrentDomain.module_enabled?(:openid_login) -%>
 
+<h1 class="login-site-name"><%= CurrentDomain.strings.company %></h1>
 <div class="modalContentBox loginModal siteContent <%= openid_login ? 'wide' : 'narrow' %>">
   <div class="contentHeader">
     <%= render :partial => 'accounts/login_header' %>

@@ -366,7 +366,7 @@ Frontend::Application.routes do
 
     if AUTH0_CONFIGURED
       scope :protocol => 'https' do
-        match '/auth/auth0/callback' => 'auth0#callback'
+        match '/auth/auth0/callback' => 'auth0#callback', :as => 'auth0_callback'
         match '/auth/failure' => 'auth0#failure'
       end
     end

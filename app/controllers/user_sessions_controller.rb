@@ -22,11 +22,34 @@ class UserSessionsController < ApplicationController
       return redirect_back_or_default('/')
     end
 
-    # Auth0 Redirection when auth0 configuration is set
-    auth0_redirect = CurrentDomain.configuration('auth0').try(:properties).try(:always_redirect_to)
-    # Just make sure it's a valid URI.
-    if auth0_redirect.present? && auth0_redirect =~ URI::regexp
-      return redirect_to(auth0_redirect)
+    @use_auth0 = FeatureFlags.derive.use_auth0 && AUTH0_CONFIGURED
+    properties = CurrentDomain.configuration('auth0').try(:properties)
+
+    if @use_auth0
+      # Auth0 Redirection when auth0 configuration is set
+      auth0_redirect_connection = properties.try(:auth0_always_redirect_connection)
+      auth0_callback_uri = properties.try(:auth0_callback_uri)
+      # Only redirect if this isn't a redirect from /logout.
+      if auth0_redirect_connection.present? && !flash[:notice].present?
+        parameters = {
+          :scope => "openid profile",
+          :response_type => "code",
+          :connection => auth0_redirect_connection,
+          :callbackURL => auth0_callback_uri,
+          :sso => true,
+          :client_id => AUTH0_ID,
+          :redirect_uri => auth0_callback_uri
+        };
+
+        uri = URI::escape(
+          "https://#{AUTH0_URI}/authorize?" <<
+          parameters.map { |key, value| key.to_s << '=' << value.to_s }.join('&')
+        )
+
+        return redirect_to(uri)
+      else
+        @auth0_connections = properties.try(:auth0_connections) || {}
+      end
     end
 
     @body_id = 'login'

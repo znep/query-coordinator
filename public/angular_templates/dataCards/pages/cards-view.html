@@ -1,8 +1,8 @@
 <div class="cards-view" notify-resize="headerContent">
   <!-- HEADER -->
-  <page-header current-user="currentUser"></page-header>
+  <page-header ng-show="pageHeaderEnabled" current-user="currentUser"></page-header>
   <!-- METADATA BAR -->
-  <div class="cards-metadata">
+  <div class="cards-metadata" ng-class="{'page-header-enabled': pageHeaderEnabled}">
     <div class="row">
       <div class="span6 padded-wrapper">
         <header ng-show="!editMode"

@@ -10,6 +10,7 @@
         'whereClause': '=',
         'editMode': '=',
         'interactive': '=',
+        'draggable': '=',
         'isChoosingForExport': '=',
         'isGrabbed': '='
       },
@@ -123,14 +124,17 @@
 
         var dimensionsObservable = element.observeDimensions();
 
-        // CORE-5475: set <card> height to the height of its parent <card-spot> to prevent
-        // the height from filling the whole screen on drag.
-        dimensionsObservable.
-          map(function() { return element.parent().height(); }).
-          // Only set the height if it's > 0 to avoid height issues where we use cards in other
-          // places, such as customizeCardDialog. (See CORE-5814)
-          filter(function(parentHeight) { return parentHeight > 0; }).
-          subscribe(function(parentHeight) {  element.css('height', parentHeight); });
+        if ($scope.draggable) {
+
+          // CORE-5475: set <card> height to the height of its parent <card-spot> to prevent
+          // the height from filling the whole screen on drag.
+          dimensionsObservable.
+            map(function() { return element.parent().height(); }).
+            // Only set the height if it's > 0 to avoid height issues where we use cards in other
+            // places, such as customizeCardDialog. (See CORE-5814)
+            filter(function(parentHeight) { return parentHeight > 0; }).
+            subscribe(function(parentHeight) {  element.css('height', parentHeight); });
+        }
 
         // Give the visualization all the height that the description isn't using.
         // Note that we set the height on a wrapper instead of the card-visualization itself.

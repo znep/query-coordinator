@@ -56,6 +56,7 @@ describe('Block class', function() {
         });
       });
     });
+
     describe('when `blockData` is valid', function() {
 
       it('creates a new Block', function() {
@@ -448,27 +449,46 @@ describe('Block class', function() {
 
   describe('.clone()', function() {
 
-    var parentBlock;
-    var clonedBlock;
+    describe('when called on a block with a non-string component value', function() {
 
-    beforeEach(function() {
-      parentBlock = new Block(generateBlockData());
-      clonedBlock = parentBlock.clone();
+      it('raises an exception', function() {
+
+        var parentBlock = new Block(
+          generateBlockData({
+            components: [ { type: 'text', value: 1 } ]
+          })
+        );
+
+        assert.throws(function() {
+          parentBlock.clone();
+        });
+      });
     });
 
-    it('returns a new, dirty instance of Block class with identical properties', function() {
+    describe('when called on a block with all valid components', function() {
 
-      assert.instanceOf(clonedBlock, Block, 'cloned block is an instance of Block');
-      assert.isTrue(clonedBlock.isDirty(), 'cloned block is dirty');
-      assert(clonedBlock.getLayout() === parentBlock.getLayout(), 'cloned block `layout` is equal to parent block `layout`');
-      assert.deepEqual(clonedBlock.getComponents(), parentBlock.getComponents(), 'cloned block `components` is equal to parent block `components`');
-    });
+      var parentBlock;
+      var clonedBlock;
 
-    it('does not reflect changes to the parent Block', function() { 
+      beforeEach(function() {
+        parentBlock = new Block(generateBlockData());
+        clonedBlock = parentBlock.clone();
+      });
 
-      assert.deepEqual(clonedBlock.getComponents(), parentBlock.getComponents(), 'cloned block `components` is equal to parent block `components`');
-      parentBlock.updateComponentAtIndex(0, 'text', 'not propagated');
-      assert.notDeepEqual(clonedBlock.getComponents(), parentBlock.getComponents(), 'cloned block `components` is not equal to parent block `components`');
+      it('returns a new, dirty instance of Block class with identical properties', function() {
+
+        assert.instanceOf(clonedBlock, Block, 'cloned block is an instance of Block');
+        assert.isTrue(clonedBlock.isDirty(), 'cloned block is dirty');
+        assert(clonedBlock.getLayout() === parentBlock.getLayout(), 'cloned block `layout` is equal to parent block `layout`');
+        assert.deepEqual(clonedBlock.getComponents(), parentBlock.getComponents(), 'cloned block `components` is equal to parent block `components`');
+      });
+
+      it('does not reflect changes to the parent Block', function() { 
+
+        assert.deepEqual(clonedBlock.getComponents(), parentBlock.getComponents(), 'cloned block `components` is equal to parent block `components`');
+        parentBlock.updateComponentAtIndex(0, 'text', 'not propagated');
+        assert.notDeepEqual(clonedBlock.getComponents(), parentBlock.getComponents(), 'cloned block `components` is not equal to parent block `components`');
+      });
     });
   });
 });

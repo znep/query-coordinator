@@ -9,4 +9,5 @@
 //
 
 //= require jquery2
+//= require squire-min
 //= require_tree ./editor

@@ -129,23 +129,16 @@ blist.namespace.fetch('blist.datatypes');
         var isNegative = value[0] === '-';
 
         if (precisionStyle === 'currency') {
-          if (isNegative) {
-            value = '-' + prefix + value.substring(1);
-          }
-          else {
-            value = prefix + value;
-          }
+          value = (isNegative) ? '-' + prefix + value.substring(1) : prefix + value;
         }
-        else if (precisionStyle === 'financial') {
-          if (isNegative) {
-            value = prefix + value.substring(1) + suffix;
-          }
+        else if (precisionStyle === 'financial' && isNegative) {
+          value = prefix + value.substring(1) + suffix;
         }
-        else if (prefix) {
+        else if (precisionStyle !== 'financial' && prefix) {
           value = prefix + value;
         }
 
-        if(precisionStyle !== 'financial' && suffix) {
+        if (precisionStyle !== 'financial' && suffix) {
           value += suffix;
         }
 

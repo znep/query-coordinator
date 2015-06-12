@@ -396,7 +396,10 @@
           if (column.defaultCardType === 'invalid') {
             visualizationUnsupportedColumns.push(column.fieldName);
           } else if (column.available) {
-            availableColumns.push(column.fieldName);
+            // CORE-4645: Do not allow subColumns to be available as cards to add
+            if (!column.column.isSubcolumn) {
+              availableColumns.push(column.fieldName);
+            }
           } else {
             alreadyOnPageColumns.push(column.fieldName);
           }

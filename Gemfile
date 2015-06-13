@@ -18,7 +18,7 @@ gem 'omniauth', '~> 1.2'
 gem 'omniauth-auth0', '~> 1.1'
 gem 'rack', '~>1.4.5'
 gem 'rails', '~>3.2.21', :require => nil
-gem 'recaptcha', :require => 'recaptcha/rails'
+gem 'recaptcha', '0.3.5', :require => 'recaptcha/rails'
 gem 'redcarpet'
 gem 'rinku', :require => 'rails_rinku'
 gem 'sanitize'

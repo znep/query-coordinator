@@ -213,8 +213,10 @@
 
       // Save any previous onmousemove handler
       var existingMouseMoveHandler = 
-        (iframe.hasOwnProperty('contentWindow') && iframe.contentWindow.hasOwnProperty('onmousemove')) ?
-        iframe.contentWindow.onmousemove : false;
+        (iframe.hasOwnProperty('contentWindow') &&
+          iframe.contentWindow.hasOwnProperty('onmousemove')) ?
+        iframe.contentWindow.onmousemove :
+        false;
 
       iframe.contentWindow.onmousemove = function(e) {
 

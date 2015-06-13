@@ -14,6 +14,10 @@
       EXPORTABLE_CARD_TYPES.push('feature');
     }
 
+    if (ServerConfig.get('oduxEnableHistogram')) {
+      EXPORTABLE_CARD_TYPES.push('histogram');
+    }
+
     var Card = Model.extend({
       init: function(parentPageModel, fieldName, initialValues) {
         this._super();

@@ -39,7 +39,7 @@
 
     if (typeof editorId !== 'number' && typeof editorId !== 'string') {
       throw new Error(
-        '`editorId` must be a number or a string (is a ' +
+        '`editorId` must be a number or a string (is of type ' +
         (typeof editorId) +
         ').'
       );
@@ -47,7 +47,7 @@
 
     if (typeof preloadContent !== 'undefined' && typeof preloadContent !== 'string') {
       throw new Error(
-        '`preloadContent` must be a string (is a ' +
+        '`preloadContent` must be a string (is of type ' +
         (typeof preloadContent) +
         ').'
       );

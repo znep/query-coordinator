@@ -240,7 +240,7 @@
 
         if (typeof components[i].value !== 'string') {
           throw new Error(
-            'component value must be of type string (is a ' +
+            'component value must be of type string (is of type ' +
             (typeof components[i].value) +
             ').'
           );

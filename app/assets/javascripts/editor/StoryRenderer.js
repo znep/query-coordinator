@@ -11,10 +11,9 @@
     var scaleFactor = options.scaleFactor || 1;
     var editable = options.editable || false;
     var insertionHint = options.insertionHintElement || false;
+    var insertionHintIndex = -1;
     var textEditorManager = options.textEditorManager || null;
     var onRenderError = options.onRenderError || function() {};
-    var insertionHintHeight = 0;
-    var insertionHintIndex = -1;
     var componentRenderers = {
       'text': _renderTextComponent,
       'image': _renderImageComponent,
@@ -26,7 +25,7 @@
       ((typeof options.onRenderError) !== 'function')) {
 
       throw new Error(
-        '`options.onRenderError` must be a function (is a ' +
+        '`options.onRenderError` must be a function (is of type ' +
         (typeof onRenderError) +
         ').'
       );
@@ -36,7 +35,7 @@
 
       onRenderError();
       throw new Error(
-        '`options.story` must be a Story (is a ' +
+        '`options.story` must be a Story (is of type ' +
         (typeof story) +
         ').'
       );
@@ -46,8 +45,19 @@
 
       onRenderError();
       throw new Error(
-        '`options.storyContainerElement` must be a jQuery element (is a ' +
+        '`options.storyContainerElement` must be a jQuery element (is of type ' +
         (typeof container) +
+        ').'
+      );
+    }
+
+    if (options.hasOwnProperty('insertionHintElement') &&
+      !(options.insertionHintElement instanceof jQuery)) {
+
+      onRenderError();
+      throw new Error(
+        '`options.insertionHintElement` must be a jQuery object (is of type ' +
+        (typeof options.insertionHintElement) +
         ').'
       );
     }
@@ -60,10 +70,6 @@
       );
     }
 
-    if ((insertionHint instanceof jQuery)) {
-      insertionHintHeight = insertionHint.outerHeight(true);
-    }
-
     /**
      * Public methods
      */
@@ -73,15 +79,11 @@
     };
 
     this.showInsertionHintAtIndex = function(index) {
-      // A falsey value for insertionHintHeight signifies that there is no
-      // insertionHintElement and will prevent the renderer from attempting
-      // to modify the properties of a non-existent element.
-      if (insertionHintHeight) {
-        insertionHintIndex = index;
-      }
+      insertionHintIndex = index;
     };
 
     this.hideInsertionHint = function() {
+      insertionHint.addClass('hidden');
       insertionHintIndex = -1;
     };
 
@@ -96,9 +98,7 @@
       blockCache[blockId] = blockElement;
     }
 
-    function _removeCachedBlockElement(block) {
-
-      var blockId = block.getId();
+    function _removeCachedBlockElement(blockId) {
 
       if (!blockCache.hasOwnProperty(blockId)) {
         throw new Error('block is not present in cache');
@@ -122,11 +122,31 @@
       return blockCache[blockId];
     }
 
+    function _removeAbsentBlocks(blocks) {
+
+      var currentBlockIds = blocks.map(function(block) {
+        return block.getId();
+      });
+
+      var blockIdsToRemove = Object.
+        keys(blockCache).
+        filter(function(blockId) {
+          return currentBlockIds.indexOf(blockId) === -1;
+        });
+
+      blockIdsToRemove.forEach(function(blockId) {
+        blockCache[blockId].remove();
+        _removeCachedBlockElement(blockId);
+      });
+    }
+
     function _renderStory() {
 
       var blocks = story.getBlocks();
       var renderedBlocks;
       var layoutHeight;
+
+      _removeAbsentBlocks(blocks);
 
       // Render each block.
       renderedBlocks = blocks.
@@ -155,15 +175,11 @@
         // If we are supposed to display the insertion hint at this
         // block index, first position the insertion hint and adjust
         // the overall layout height.
-        // A falsey value for insertionHintHeight signifies that there
-        // is no insertion hint element so will prevent the insertion
-        // hint from being drawn regardless of the specified
-        // insertionHintIndex.
-        if (insertionHintHeight && insertionHintIndex === i) {
+        if (insertionHint && insertionHintIndex === i) {
 
           translation = 'translate(0,' + layoutHeight + 'px)';
           insertionHint.css('transform', translation).removeClass('hidden');
-          layoutHeight += insertionHintHeight + BLOCK_VERTICAL_PADDING;
+          layoutHeight += insertionHint.outerHeight(true) + BLOCK_VERTICAL_PADDING;
         }
 
         // Render the current block according to the current layout height.

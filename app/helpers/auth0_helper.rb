@@ -2,8 +2,6 @@ require 'base64'
 require 'digest/sha1'
 require 'securerandom'
 require 'httparty'
-require 'jwt'
-require 'base64'
 
 module Auth0Helper
   def gen_cookie(uid)

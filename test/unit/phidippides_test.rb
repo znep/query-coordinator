@@ -48,6 +48,67 @@ class PhidippidesTest < Test::Unit::TestCase
     refute(@mock_request['Cookie'])
   end
 
+  def test_update_dataset_metadata
+    prepare_stubs(body: nil, path: 'v1/id/vtvh-wqgq/dataset', verb: :put, request_body: v1_dataset_metadata)
+    result = phidippides.update_dataset_metadata(v1_dataset_metadata, request_id: 'request_id')
+    assert_equal('200', result[:status])
+  end
+
+  def test_fetch_page_metadata
+    prepare_stubs(body: v1_page_metadata, path: 'v1/pages/iuya-fxdq', verb: :get)
+    result = phidippides.fetch_page_metadata('iuya-fxdq', request_id: 'request_id')
+    assert_equal(v1_page_metadata, result[:body])
+  end
+
+  def test_update_page_metadata
+    prepare_stubs(body: nil, path: 'v1/id/vtvh-wqgq/pages/iuya-fxdq', verb: :put, request_body: v1_page_metadata)
+    result = phidippides.update_page_metadata(v1_page_metadata, request_id: 'request_id')
+    assert_equal('200', result[:status])
+  end
+
+  def test_delete_page_metadata
+    prepare_stubs(body: nil, path: 'v1/pages/iuya-fxdq', verb: :delete, request_body: nil)
+    result = phidippides.delete_page_metadata('iuya-fxdq', request_id: 'request_id')
+    assert_equal('200', result[:status])
+  end
+
+  def test_fetch_pages_for_dataset
+    Phidippides.any_instance.stubs(
+      issue_request: normalized_v1_pages_for_dataset
+    )
+    result = phidippides.fetch_pages_for_dataset('four-four', request_id: 'request_id')
+    assert_equal(normalized_v1_pages_for_dataset, result)
+  end
+
+  def test_fetch_dataset_metadata
+    prepare_stubs(body: v1_dataset_metadata, path: 'v1/id/vtvh-wqgq/dataset', verb: :get)
+    Phidippides.any_instance.stubs(
+      augment_dataset_metadata!: v1_dataset_metadata
+    )
+    result = phidippides.fetch_dataset_metadata('vtvh-wqgq', request_id: 'request_id')
+    assert_equal(v1_dataset_metadata, result[:body])
+    phidippides.unstub(:dataset_view)
+  end
+
+  def test_fetch_dataset_metadata_with_error
+    error_body_stub = { 'error' => true }
+    error_status = '400'
+
+    phidippides.stubs(:dataset_view => {})
+    stub_column = { :fieldName => 'fooBar' }.with_indifferent_access
+    phidippides.dataset_view.stubs(:columns => [stub_column])
+    Phidippides.any_instance.stubs(
+      fetch_dataset_metadata: { :body => error_body_stub, :status => error_status },
+      augment_dataset_metadata!: v1_dataset_metadata
+    )
+
+    result = phidippides.fetch_dataset_metadata('vtvh-wqgq', request_id: 'request_id')
+    assert_equal(error_body_stub, result[:body])
+    assert_equal(error_status, result[:status])
+
+    phidippides.unstub(:dataset_view)
+  end
+
   def test_set_default_and_available_card_types_to_columns_calls_airbrake_when_it_cannot_find_a_dataset_id
     v1_dataset_metadata_without_dataset_id = {
       status: '200',
@@ -82,7 +143,7 @@ class PhidippidesTest < Test::Unit::TestCase
       status: '200',
       body: v1_dataset_metadata
     }
-    stub_multiple_feature_flags_with({ :odux_enable_histogram => true })
+    stub_feature_flags_with(:odux_enable_histogram, true)
     CoreServer::Base.stubs(connection: connection_stub)
 
     phidippides.set_default_and_available_card_types_to_columns!(v1_dataset_metadata_response)
@@ -271,32 +332,6 @@ class PhidippidesTest < Test::Unit::TestCase
     Net::HTTP.unstub(:start)
   end
 
-  def v0_page_metadata
-    @page_metadata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/v0-page-metadata.json")).with_indifferent_access
-  end
-
-  def v0_dataset_metadata
-    @dataset_metdata ||= JSON.parse(File.read("#{Rails.root}/test/fixtures/v0-dataset-metadata.json")).with_indifferent_access
-  end
-
-  def new_v0_dataset_metadata
-    {
-      'columns' => [],
-      'defaultAggregateColumn' => ':count',
-      'description' => 'Cases created since 7/1/2008',
-      'domain' => 'dataspace-demo.test-socrata.com',
-      'id' => 'vtvh-wqgq',
-      'name' => 'Case Data from San Francisco 311',
-      'ownerId' => '8ueb-zucv',
-      'rowDisplayUnit' => 'Case',
-      'updatedAt' => '2014-08-17T04:07:03.000Z'
-    }
-  end
-
-  def v0_pages_for_dataset
-    JSON.parse('{"publisher":[{"id":"q77b-s2zi","pageId":"vwwn-6r7g"}, {"id":"q77b-s2zi","pageId":"test-page"}],"user":[]}').with_indifferent_access
-  end
-
   def v1_pages_for_dataset
     JSON.parse('{"vwwn-6r7g":{"datasetId":"q77b-s2zi","pageId":"vwwn-6r7g"}, "test-page":{"datasetId":"q77b-s2zi","pageId":"test-page"}}').with_indifferent_access
   end
@@ -305,16 +340,8 @@ class PhidippidesTest < Test::Unit::TestCase
     JSON.parse('{"publisher":[{"datasetId":"q77b-s2zi","pageId":"vwwn-6r7g"}, {"datasetId":"q77b-s2zi","pageId":"test-page"}], "user":[]}').with_indifferent_access
   end
 
-  def old_mixed_v0_and_v1_pages_for_dataset
-    JSON.parse('{"publisher":[{"datasetId":"q77b-s2zi","pageId":"vwwn-6r7g"}, {"datasetId":"q77b-s2zi","pageId":"test-page","version":"1"}], "user":[]}').with_indifferent_access
-  end
-
   def new_mixed_v0_and_v1_pages_for_dataset
     JSON.parse('{"vwwn-6r7g":{"datasetId":"q77b-s2zi","pageId":"vwwn-6r7g"}, "test-page":{"datasetId":"q77b-s2zi","pageId":"test-page","version":"1"}}').with_indifferent_access
-  end
-
-  def new_v0_page_metadata
-    JSON.parse('{"datasetId":"q77b-s2zi","pageId":"vwwn-6r7g"}').with_indifferent_access
   end
 
   def new_v1_page_metadata

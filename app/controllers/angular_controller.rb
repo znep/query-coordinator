@@ -174,7 +174,7 @@ class AngularController < ActionController::Base
     phidippides.set_default_and_available_card_types_to_columns!(result)
 
     dataset_metadata = result[:body]
-    dataset_metadata[:permissions] = permissions if dataset_metadata && result[:status] =~ /^20[0-9]$/
+    dataset_metadata[:permissions] = permissions if dataset_metadata && result[:status] =~ /\A20[0-9]\z/
 
     add_table_column_to_dataset_metadata!(dataset_metadata)
 

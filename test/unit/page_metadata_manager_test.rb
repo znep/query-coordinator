@@ -76,6 +76,46 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     end
   end
 
+  def test_create_ignores_provided_pageId
+    PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
+    NewViewManager.any_instance.expects(:create).times(1).with do |name, description|
+      assert_equal(v1_page_metadata['name'], name)
+      assert_equal(v1_page_metadata['description'], description)
+    end.returns('data-lens')
+    Phidippides.any_instance.stubs(
+      fetch_page_metadata: { status: '200', body: v1_page_metadata_without_rollup_columns },
+      fetch_dataset_metadata: { status: '200', body: v1_dataset_metadata_without_rollup_columns }
+    )
+    Phidippides.any_instance.expects(:update_page_metadata).times(1).with do |page_metadata|
+      assert_equal(page_metadata['pageId'], 'data-lens')
+    end.returns({ body: nil, status: '200' })
+
+    result = manager.create(v1_page_metadata_without_rollup_columns)
+    assert_equal('data-lens', result.fetch(:body).fetch('pageId'), 'Expected the new pageId to be returned')
+  end
+
+  def test_update_raises_an_error_if_dataset_id_is_not_present_in_page_metadata
+    PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
+    Phidippides.any_instance.stubs(
+      update_page_metadata: { body: nil, status: '200' }
+    )
+
+    assert_raises(Phidippides::NoDatasetIdException) do
+      manager.update(v1_page_metadata.except('datasetId'))
+    end
+  end
+
+  def test_update_raises_an_error_if_page_id_is_not_present_in_page_metadata
+    PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
+    Phidippides.any_instance.stubs(
+      update_page_metadata: { body: nil, status: '200' }
+    )
+
+    assert_raises(Phidippides::NoPageIdException) do
+      manager.update(v1_page_metadata.except('pageId'))
+    end
+  end
+
   def test_delete_deletes_core_and_phidippides_and_rollup_representation
     Phidippides.any_instance.expects(:fetch_page_metadata).returns(
       status: '200',
@@ -185,6 +225,50 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
     soql = manager.send(:build_rollup_soql, v1_page_metadata, columns, cards)
     assert_equal(expected_soql, soql)
+  end
+
+  def test_build_rollup_soql_has_date_trunc
+    manager.stubs(
+      dataset_metadata: { body: v1_dataset_metadata },
+      column_field_name: 'fieldName',
+      logical_datatype_name: 'fred'
+    )
+    columns = v1_dataset_metadata.fetch('columns')
+    cards = v1_page_metadata.fetch('cards')
+    soql = manager.send(:build_rollup_soql, v1_page_metadata, columns, cards)
+    assert_match(/date_trunc/, soql)
+  end
+
+  def test_build_rollup_soql_has_magnitudes
+    manager.stubs(
+      dataset_metadata: { body: v1_dataset_metadata },
+      column_field_name: 'some_number_column',
+      logical_datatype_name: 'fred'
+    )
+    manager.unstub(:magnitude_function_for_column)
+    manager.expects(:magnitude_function_for_column).
+      with(v1_dataset_metadata['id'], 'some_number_column').
+      returns('signed_magnitude_10')
+
+    columns = v1_dataset_metadata.fetch('columns')
+    cards = v1_page_metadata.fetch('cards')
+    soql = manager.send(:build_rollup_soql, v1_page_metadata, columns, cards)
+    assert_match(/signed_magnitude_10\(some_number_column\)/, soql)
+  end
+
+  def test_raise_when_missing_default_date_trunc_function
+    manager.stubs(
+      phidippides: stub(fetch_dataset_metadata: { body: v1_dataset_metadata }),
+      date_trunc_function: nil,
+      column_field_name: 'fieldName',
+      logical_datatype_name: 'fred'
+    )
+    columns = v1_dataset_metadata.fetch('columns')
+    cards = v1_page_metadata.fetch('cards')
+
+    assert_raises(Phidippides::NoDefaultDateTruncFunction) do
+      manager.send(:build_rollup_soql, v1_page_metadata.except('defaultDateTruncFunction'), columns, cards)
+    end
   end
 
   def test_date_trunc_function_with_decades_of_days
@@ -430,7 +514,8 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   private
 
   def stub_dataset_copy_request(dataset_id)
-    dataset_copy_uri = "http://localhost:6010/dataset-copy/_#{dataset_id}/spandex3"
+    secondary_group_identifier = APP_CONFIG['secondary_group_identifier'] || 'spandex'
+    dataset_copy_uri = "http://localhost:6010/dataset-copy/_#{dataset_id}/#{secondary_group_identifier}"
     stub_request(:post, dataset_copy_uri).
       with(
         :headers => {

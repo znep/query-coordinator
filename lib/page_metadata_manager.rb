@@ -65,8 +65,7 @@ class PageMetadataManager
       raise Phidippides::NoCardsException.new('no cards entry on page metadata')
     end
 
-    @column_field_name = 'fieldName'
-    @logical_datatype_name = 'fred'
+    initialize_metadata_key_names
 
     # The core lens id for this page is the same one we use to refer to it in
     # phidippides
@@ -101,8 +100,7 @@ class PageMetadataManager
     raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id') unless page_metadata.key?('datasetId')
     raise Phidippides::NoPageIdException.new('cannot create page with no page id') unless page_metadata.key?('pageId')
 
-    @column_field_name = 'fieldName'
-    @logical_datatype_name = 'fred'
+    initialize_metadata_key_names
 
     new_view_manager.update(page_metadata['pageId'], page_metadata['name'], page_metadata['description'])
 
@@ -157,6 +155,10 @@ class PageMetadataManager
 
   private
 
+  def initialize_metadata_key_names
+    @column_field_name = 'fieldName'
+    @logical_datatype_name = 'fred'
+  end
 
   # Creates or updates a page. This takes care of updating phidippides, as well
   # as rollup tables in soda fountain and the core datalens link.

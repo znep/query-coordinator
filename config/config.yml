@@ -51,7 +51,7 @@ default: &default
   feature_map_zoom_debounce: 500
   feature_map_features_per_tile: 50000
   shape_file_region_query_limit: 5000
-  secondary_group_identifier: 'spandex3'
+  secondary_group_identifier: 'spandex'
   enable_png_download_ui: true
   odux_enable_feature_map: true
   enable_search_suggestions: true

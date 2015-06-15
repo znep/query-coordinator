@@ -10,7 +10,7 @@
         'whereClause': '=',
         'editMode': '=',
         'interactive': '=',
-        'draggable': '=',
+        'cardDraggable': '=',
         'isChoosingForExport': '=',
         'isGrabbed': '='
       },
@@ -124,7 +124,7 @@
 
         var dimensionsObservable = element.observeDimensions();
 
-        if ($scope.draggable) {
+        if ($scope.cardDraggable) {
 
           // CORE-5475: set <card> height to the height of its parent <card-spot> to prevent
           // the height from filling the whole screen on drag.

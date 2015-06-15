@@ -1,7 +1,28 @@
-<h3>Edit template</h3>
-<% @story.blocks.each do |block| -%>
-  <%= render_block(block) %>
-<% end -%>
+<header class="header">
+  Storyteller
+</header>
+
+<section class="inspiration-story-container">
+  <div class="inspiration-story"></div>
+  <div class="inspiration-story-error hidden">There was an error</div>
+</section>
+
+<section class="toolbar">
+  <div class="text-editor-toolbar"></div>
+</section>
+
+<main class="user-story-container">
+
+  <div class="user-story"></div>
+
+  <div id="story-insertion-hint" class="hidden"></div>
+
+</main>
+
+<button class="btn preview-btn">Preview</button>
+
+<div id="block-swatch" class="block hidden"></div>
+
 <script type="text/javascript">
   inspirationStoryData = <%== @inspiration_story.to_json %>;
   userStoryData = <%== @story.to_json %>;

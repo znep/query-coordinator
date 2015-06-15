@@ -55,8 +55,16 @@
   }
 
   function HistogramVisualizationService(Constants, FlyoutService, I18n) {
+    function bucketedIndexValue(bucketWidth, bucketQuantity, pixelValue, index) {
+      var offsetIntialValue = pixelValue;
+      var fixedValue = (offsetIntialValue / bucketWidth).toFixed(1);
+      var bucketIndex = Math[index === 0 ? 'floor' : 'ceil'](fixedValue);
+      var boundedBucketIndex = Math.min(bucketIndex, bucketQuantity);
+      bucketIndex = index === 1 ? boundedBucketIndex : bucketIndex;
+      return bucketIndex;
+    }
 
-    function setupDOM(container) {
+    function setupDOM(id, container) {
       var dom = {};
 
       dom.margin = Constants.HISTOGRAM_MARGINS;
@@ -66,6 +74,7 @@
       dom.svg = d3.select(dom.container).append('svg');
       dom.chart = dom.svg.append('g');
 
+      // Normal areas and lines
       dom.area = {};
       dom.line = {};
       dom.area.unfiltered = dom.chart.append('path').
@@ -78,6 +87,38 @@
       dom.line.filtered = dom.chart.append('path').
         classed('histogram-trace histogram-trace-filtered', true);
 
+      // Selected areas and lines
+      dom.area.selectedUnfiltered = dom.chart.
+        selectAll('.histogram-area.histogram-area-selected-unfiltered').data([0]);
+      dom.line.selectedUnfiltered = dom.chart.
+        selectAll('.histogram-area.histogram-trace-selected-unfiltered').data([0]);
+
+      dom.area.selectedUnfiltered.enter().
+        append('path').
+        attr('clip-path', 'url(#clip-{0})'.format(id)).
+        classed('histogram-area histogram-area-selected-unfiltered', true);
+
+      dom.line.selectedUnfiltered.enter().
+        append('path').
+        attr('clip-path', 'url(#clip-{0})'.format(id)).
+        classed('histogram-trace histogram-trace-selected-unfiltered', true);
+
+      dom.area.selected = dom.chart.
+        selectAll('.histogram-area.histogram-area-selected').data([0]);
+      dom.line.selected = dom.chart.
+        selectAll('.histogram-area.histogram-trace-selected').data([0]);
+
+      dom.area.selected.enter().
+        append('path').
+        attr('clip-path', 'url(#clip-{0})'.format(id)).
+        classed('histogram-area histogram-area-selected', true);
+
+      dom.line.selected.enter().
+        append('path').
+        attr('clip-path', 'url(#clip-{0})'.format(id)).
+        classed('histogram-trace histogram-trace-selected', true);
+
+      // Axes
       dom.xTicks = dom.chart.append('g').
         classed('histogram-axis histogram-axis-x', true);
       dom.yTicks = dom.chart.append('g').
@@ -90,6 +131,26 @@
 
       dom.blockHoverTarget = dom.chart.selectAll('.block-hover-target').data([[0,0]]);
       dom.blockHoverTarget.enter().append('line').classed('block-hover-target', true);
+
+      // Brush
+      dom.brush = dom.svg.selectAll('.brush').data([0]);
+
+      dom.brush.enter().
+        append('g').classed('brush', true).
+        attr('transform', 'translate(0, 0)').
+        append('clipPath').
+        attr('id', 'clip-{0}'.format(id)).
+        append('rect').
+        classed('extent', true);
+
+      dom.hoverBlock = dom.brush.
+        append('rect').
+        classed('histogram-hover-block', true).
+        attr('transform', 'translate({0}, 0)'.format(dom.margin.left));
+
+      dom.hoverShield = dom.brush.
+        append('rect').
+        classed('histogram-hover-shield', true);
 
       return dom;
     }
@@ -156,8 +217,8 @@
           _.isEmpty(unfilteredBucket) ||
           _.isEmpty(filteredBucket);
         var selectionActive = !renderFilteredRange &&
-          !hover.showFlyout ||
-          hover.selectionInProgress;
+          (!hover.showFlyout ||
+          hover.selectionInProgress);
 
         if (emptyRangeWithSelection || emptyBucketsWithoutSelection || selectionActive) {
           return;
@@ -165,8 +226,8 @@
 
         var hoverOutsideSelection = (!renderFilteredRange && _.isEmpty(selectedBuckets)) ?
           false :
-          filteredBucket.start < selectedBuckets.start ||
-          filteredBucket.end > selectedBuckets.end;
+          unfilteredBucket.start < selectedBuckets.start ||
+          unfilteredBucket.end > selectedBuckets.end;
 
         var bucketOfInterest = renderFilteredRange ?
           selectedBuckets :
@@ -215,8 +276,8 @@
       var renderFilteredRangeFlyout = _.partial(renderFilteredFlyout, _, true);
 
       var renderFilteredRangeSelectors = [
-        '.brush-clear-background',
-        '.brush-clear-text',
+        '.histogram-brush-clear-background',
+        '.histogram-brush-clear-text',
         '.filter-icon'
       ].join(', ');
 
@@ -229,7 +290,7 @@
         showFlyout: true,
         deregisterFlyout: function() {
           FlyoutService.deregister('.histogram-hover-shield', renderFilteredFlyout);
-          FlyoutService.deregister(renderFilteredRangeSelectors, renderFilteredFlyout);
+          FlyoutService.deregister(renderFilteredRangeSelectors, renderFilteredRangeFlyout);
         }
       };
 
@@ -259,8 +320,42 @@
       return hover;
     }
 
+    function setupBrush(scale) {
+      var brush = {};
+      brush.control = d3.svg.brush();
+      brush.brushDispatcher = d3.dispatch('clear');
+      brush.selectionClearFlyout = _.constant(I18n.distributionChart.dragClearHelp);
+      brush.brushDragFlyout = _.constant(I18n.distributionChart.dragHelp);
+
+      brush.control.
+        x(scale.x).
+        clamp(true);
+
+      FlyoutService.register({
+        selector: '.histogram-brush-clear-x',
+        render: brush.selectionClearFlyout
+      });
+
+      FlyoutService.register({
+        selector: '.histogram-brush-handle-target',
+        render: brush.brushDragFlyout
+      });
+
+      return brush;
+    }
+
     function destroyHover(hover) {
       hover.deregisterFlyout();
+    }
+
+    function destroyBrush(brush) {
+      FlyoutService.deregister('.histogram-brush-clear-x',
+        brush.selectionClearFlyout
+      );
+
+      FlyoutService.deregister('.histogram-brush-handle-target',
+        brush.brushDragFlyout
+      );
     }
 
     function updateScale(scale, data, dimensions) {
@@ -378,22 +473,6 @@
       selectionInProgress,
       selectionValues
     ) {
-      var leftOffset = _.get(dom, 'margin.left', 0);
-
-      if (!dom.hoverShield) {
-        // We need to insert the hoverShield into the brush node hierarchy in order
-        // to maintain functionality of both
-        dom.hoverShield = dom.brush.
-          insert('rect', '.resize.e').
-          classed('histogram-hover-shield', true);
-      }
-
-      if (!dom.hoverBlock) {
-        dom.hoverBlock = dom.brush.
-          insert('rect', '.histogram-hover-shield').
-          classed('histogram-hover-block', true).
-          attr('transform', 'translate({0}, 0)'.format(leftOffset));
-      }
 
       if (_.isPresent(selectionValues) && _.isPresent(selectionIndices)) {
         var unfilteredValueInSelection = _(data.unfiltered).chain().
@@ -417,15 +496,14 @@
       }
 
       dom.svg.on('mousemove', function() {
-        var mouseX = Math.max(0, d3.mouse(dom.hoverShield.node())[0] - leftOffset);
+        var mouseX = Math.max(0, d3.mouse(dom.hoverShield.node())[0] - dom.margin.left);
         var bucketWidth = scale.x.rangeBand();
-        var bucketIndex = (mouseX === 0 || bucketWidth === 0) ?
-          0 :
-          Math.floor(mouseX / bucketWidth);
+        var bucketIndex = bucketedIndexValue(bucketWidth, data.unfiltered.length, mouseX, 0);
 
         if (bucketIndex < 0 || bucketIndex >= data.unfiltered.length) {
           return;
         }
+
         hover.unfilteredBucket = data.unfiltered[bucketIndex];
         hover.filteredBucket = data.filtered[bucketIndex];
 
@@ -481,6 +559,183 @@
         rowDisplayUnit: rowDisplayUnit
       });
     }
+
+    function updateBrush(dom, brush, height, valueExtent, rangeExtent) {
+
+      // TODO
+      function setupBrushHandles(selection, height, leftOffset) {
+
+        var handleHeight = 8;
+
+        function brushLine(gBrush) {
+          gBrush.append('line').
+            classed('histogram-brush-line', true).
+            attr('transform', 'translate({0}, 0)'.format(leftOffset)).
+            attr('y1', 0);
+        }
+
+        function brushHandle(path, gBrush) {
+          gBrush.append('path').
+            attr('class', 'histogram-brush-handle').
+            attr('transform', 'translate({0}, 0)'.format(leftOffset)).
+            attr('d', path);
+        }
+
+        function brushHoverTarget(xTranslation, gBrush) {
+          gBrush.append('rect').
+            attr('class', 'histogram-brush-handle-target').
+            style('fill', 'transparent').
+            attr('height', '100%').
+            attr('width', function() {
+              return gBrush.node().getBoundingClientRect().width;
+            }).
+            attr('transform', function() {
+              return 'translate({0}, 0)'.format(xTranslation + leftOffset);
+            });
+        }
+
+        function buildBrushHandle(side, path) {
+          var direction = side === 'right' ? 'e' : 'w';
+          if (selection.select('.histogram-brush-{0}'.format(side)).empty()) {
+            selection.select('.resize.{0}'.format(direction)).
+              attr('transform', 'translate({0}, 0)'.format(
+                Constants.HISTOGRAM_DRAG_TARGET_WIDTH
+              )).
+              append('g').attr('class', 'histogram-brush-{0}'.format(side)).
+              call(brushLine).
+              call(_.partial(brushHandle, path, _)).
+              call(_.partial(brushHoverTarget, side === 'right' ? 0 : -10, _));
+          }
+          selection.selectAll('.histogram-brush-line').
+            attr('y2', height + handleHeight);
+        }
+
+        buildBrushHandle('right', 'M0,0L10,0L10,8L0,16Z');
+        buildBrushHandle('left', 'M0,0L-10,0L-10,8L0,16Z');
+      }
+
+      dom.brush.
+        call(brush.control).
+        select('.extent').
+        attr('height', height);
+
+      var brushClearData = [{
+        brushLeft: brush.control.extent()[0],
+        brushRight: brush.control.extent()[1],
+        brushHasExtent: !brush.control.empty(),
+        valueExtent: valueExtent,
+        offset: 5,
+        leftOffset: dom.margin.left,
+        backgroundHeight: '3em',
+        top: height
+      }];
+
+      var brushClear = dom.brush.selectAll('.histogram-brush-clear').
+        data(brushClearData);
+
+      brushClear.enter().
+        append('g').classed('histogram-brush-clear', true).
+        on('mouseover.histogram-brush-clear', function(d) {
+          FlyoutService.refreshFlyout();
+          dom.hoverDispatcher.hover(d.brushLeft, d.brushRight);
+        }).
+        on('mouseout.histogram-brush-clear', function() {
+          FlyoutService.refreshFlyout();
+          dom.hoverDispatcher.hover();
+        }).
+        on('mousedown.histogram-brush-clear-text', function() {
+          d3.event.stopPropagation();
+          brush.brushDispatcher.clear();
+        });
+
+      var brushClearBackground = brushClear.selectAll('.histogram-brush-clear-background').
+        data(brushClearData);
+
+      brushClearBackground.enter().
+        insert('rect').
+        classed('histogram-brush-clear-background', true);
+
+      brushClearBackground.
+        attr('height', _.property('backgroundHeight')).
+        attr('width', function(d) {
+          return Math.max(0, d.brushRight - d.brushLeft);
+        });
+
+      var brushClearText = brushClear.selectAll('.histogram-brush-clear-text').
+        data(brushClearData);
+
+      brushClearText.enter().
+        insert('text').
+        classed('histogram-brush-clear-text', true);
+
+      brushClearText.
+        text(function(d) {
+          if (_.isArray(d.valueExtent)) {
+            return I18n.t('filter.valueRange', $.toHumaneNumber(d.valueExtent[0]), $.toHumaneNumber(d.valueExtent[1]));
+          }
+        }).
+        attr('transform', function(d) {
+          var halfTextWidth = this.getBoundingClientRect().width / 2;
+          var halfSelectionWidth = (d.brushRight - d.brushLeft) / 2;
+          var offset = halfSelectionWidth - halfTextWidth;
+          return 'translate({0}, {1})'.format(offset, this.getBoundingClientRect().height);
+        });
+
+      var brushClearX = brushClear.selectAll('.histogram-brush-clear-x').
+        data(brushClearData);
+
+      brushClearX.enter().
+        append('text').
+        classed('histogram-brush-clear-x', true);
+
+      brushClearX.
+        text('×').
+        attr('transform', function(d) {
+          var brushTextBBox = brushClearText.node().getBoundingClientRect();
+          var halfTextWidth = brushTextBBox.width / 2;
+          var halfSelectionWidth = (d.brushRight - d.brushLeft) / 2;
+          var offset = halfSelectionWidth + halfTextWidth + Constants.HISTOGRAM_CLEAR_X_OFFSET;
+          return 'translate({0}, {1})'.format(offset, brushTextBBox.height);
+        });
+
+      var filterIcon = brushClear.selectAll('.filter-icon').
+        data(brushClearData);
+
+      filterIcon.enter().
+        insert('path').
+        classed('filter-icon', true).
+        attr('d', Constants.FILTER_ICON_SVG_PATH);
+
+      filterIcon.
+        attr('transform', function(d) {
+          var brushTextBBox = brushClearText.node().getBoundingClientRect();
+          var halfTextWidth = brushTextBBox.width / 2;
+          var halfSelectionWidth = (d.brushRight - d.brushLeft) / 2;
+          var offset = halfSelectionWidth - halfTextWidth;
+          return 'translate({0}, {1}) translate(0, 1) rotate(180) scale(0.015)'.format(offset, brushTextBBox.height);
+        });
+
+      brushClear.
+        style('display', function(d) { return d.brushHasExtent ? null : 'none'; }).
+        attr('transform', function(d) {
+          return 'translate({0}, {1})'.format(d.brushLeft + d.leftOffset, d.top + d.offset);
+        }).
+        attr('height', function(d) {
+          return '2em';
+        }).
+        attr('width', function(d) {
+          return d.brushRight - d.brushLeft;
+        });
+
+      brushClear.exit().remove();
+
+      dom.brush.select('.background').
+        attr('style', 'fill: transparent; cursor: pointer; pointer-events: all;');
+
+      dom.svg.call(setupBrushHandles, height, dom.margin.left);
+
+      return brush;
+    };
 
     // Renders the card
     function render(axis, data, dimensions, dom, svg) {
@@ -582,19 +837,25 @@
         dom[value].filtered.style('visibility', data.hasSelection ? 'hidden' : null);
       });
 
+      dom.brush.selectAll('.histogram-brush-clear').style('visibility', data.hasSelection ? null : 'none');
+
     }
 
     return {
+      bucketedIndexValue: bucketedIndexValue,
       setupDOM: setupDOM,
       setupScale: setupScale,
       setupAxis: setupAxis,
       setupSVG: setupSVG,
       setupHover: setupHover,
+      setupBrush: setupBrush,
       destroyHover: destroyHover,
+      destroyBrush: destroyBrush,
       updateScale: updateScale,
       updateSVG: updateSVG,
       updateHover: updateHover,
       updateHistogramHoverTarget: updateHistogramHoverTarget,
+      updateBrush: updateBrush,
       render: render
     };
   }

@@ -63,7 +63,7 @@
         var filterSelected$ = $scope.$eventToObservable('toggle-dataset-filter:histogram').
           map(_.property('additionalArguments[0]'));
 
-        var selectionExtent$ = activeFilters$.map(function(filters) {
+        var selectionRange$ = activeFilters$.map(function(filters) {
           if (_.isPresent(filters)) {
             var valueRangeFilter = _(filters).chain().
               select(function(filter) { return filter instanceof Filter.ValueRangeFilter; }).
@@ -199,8 +199,9 @@
         $scope.$bindObservable('rowDisplayUnit', rowDisplayUnit$);
         $scope.$bindObservable('cardData', cardData$);
         $scope.$bindObservable('isFiltered', isFiltered$);
+        $scope.$bindObservable('activeFilters', activeFilters$);
         $scope.$bindObservable('expanded', expanded$);
-        $scope.$bindObservable('selectionExtent', selectionExtent$);
+        $scope.$bindObservable('selectionRange', selectionRange$);
       }
     };
   }

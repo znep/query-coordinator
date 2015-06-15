@@ -10,15 +10,16 @@
     }
   }
 
-  function histogramDirective(FlyoutService, HistogramVisualizationService, HistogramBrushService, WindowState) {
+  function histogramDirective(FlyoutService, HistogramVisualizationService, WindowState) {
     return {
       restrict: 'E',
       scope: {
         cardData: '=',
         rowDisplayUnit: '=',
         isFiltered: '=',
+        activeFilters: '=',
         expanded: '=',
-        selectionExtent: '='
+        selectionRange: '='
       },
       template: '<div class="histogram" ng-class="{\'has-selection\': hasSelection}"></div>',
       link: function($scope, element) {
@@ -26,13 +27,11 @@
         var container = element.find('.histogram')[0];
 
         // Setup
-        var dom = service.setupDOM(container);
-        var histogramBrush = HistogramBrushService.create($scope.$id, dom);
-        histogramBrush.setupDOM(dom);
+        var dom = service.setupDOM($scope.$id, container);
         var scale = service.setupScale();
         var axis = service.setupAxis(scale);
         var svg = service.setupSVG();
-        var brush = histogramBrush.setupBrush(scale);
+        var brush = service.setupBrush(scale);
         var hover = service.setupHover(dom);
 
         // Observables
@@ -62,16 +61,12 @@
           distinctUntilChanged();
 
         // Emitted while brushing/selecting in chart
-        var brushEvent$ = Rx.Observable.fromEventPattern(_.partial(brush.on, 'brush', _)).
+        var brushEvent$ = Rx.Observable.fromEventPattern(_.partial(brush.control.on, 'brush', _)).
           map(function() {
-            return brush.extent();
+            return brush.control.extent();
           }).
           distinctUntilChanged(_.identity, extentComparer).
           share();
-
-        var mouseInChart$ = WindowState.mousePositionSubject.map(function(positionInfo) {
-          return $(positionInfo.target).closest(element).length === 1;
-        });
 
         // Emitted when mousing down in the brushable area
         var brushMouseDown$ = Rx.Observable.fromEventPattern(function(handler) {
@@ -87,12 +82,12 @@
 
         // Brush / selection start and end events emitted by D3
         var brushStartEvents$ = Rx.Observable.
-          fromEventPattern(_.partial(brush.on, 'brushstart', _)).
+          fromEventPattern(_.partial(brush.control.on, 'brushstart', _)).
           share().
           map(_.constant(true));
 
         var brushEndEvent$ = Rx.Observable.
-          fromEventPattern(_.partial(brush.on, 'brushend', _)).
+          fromEventPattern(_.partial(brush.control.on, 'brushend', _)).
           share().
           map(_.constant(false));
 
@@ -116,9 +111,15 @@
           startWith(false).
           distinctUntilChanged();
 
+        var activeFilters$ = $scope.$observe('activeFilters').
+          filter(function(activeFilters) {
+            return _.isArray(activeFilters) && _.isEmpty(activeFilters);
+          });
+
         var brushClear$ = Rx.Observable.fromEventPattern(function(handler) {
-          histogramBrush.brushDispatcher.on('clear', handler);
+          brush.brushDispatcher.on('clear', handler);
         }).
+        merge(activeFilters$).
         map(_.constant(undefined)).
         share();
 
@@ -128,31 +129,14 @@
           });
         });
 
-        function bucketedIndexValue(bucketWidth, bucketQuantity, initialValue, index) {
-          var offsetIntialValue = (index === 0) ? initialValue : initialValue - dom.margin.left;
-          var fixedValue = (offsetIntialValue / bucketWidth).toFixed(1);
-          var bucketIndex = Math[index === 0 ? 'floor' : 'ceil'](fixedValue);
-          var boundedBucketIndex = Math.min(bucketIndex, bucketQuantity);
-          bucketIndex = index === 1 ? boundedBucketIndex : bucketIndex;
-          return bucketIndex;
-        }
-
-        function bucketedPixelValue(bucketWidth, bucketQuantity, initialValue, index) {
-          var bucketIndex = bucketedIndexValue.apply(null, _.slice(arguments));
-          return bucketIndex * bucketWidth;
-        }
-
         var bucketedSelectionIndices$ = brushEvent$.
           combineLatest(cardData$, cardDimensions$, function (bucketedSelectionInPixels, cardData) {
             var bucketWidth = scale.x.rangeBand();
 
             return _.map(
               bucketedSelectionInPixels,
-              _.partial(bucketedIndexValue, bucketWidth, cardData.unfiltered.length)
+              _.partial(service.bucketedIndexValue, bucketWidth, cardData.unfiltered.length)
             );
-          }).
-          filter(function(bucketedSelectionIndices) {
-            return bucketedSelectionIndices[0] !== bucketedSelectionIndices[1];
           });
 
         var bucketedSelectionInPixels$ = bucketedSelectionIndices$.
@@ -162,7 +146,7 @@
           });
 
         bucketedSelectionInPixels$.subscribe(function(bucketedSelectionInPixels) {
-          dom.brush.call(brush.extent(bucketedSelectionInPixels)).call(brush.event);
+          dom.brush.call(brush.control.extent(bucketedSelectionInPixels)).call(brush.control.event);
         });
 
         var bucketedSelectionValues$ = bucketedSelectionIndices$.
@@ -227,38 +211,35 @@
         Rx.Observable.merge(brushEnd$, bucketedSelectionValues$, cardDimensions$).
           subscribe(function() {
             var extentCenter = { x: 0, y: 0 };
-
-            // TODO - Think about this more...
-            function findXPositionOnPath(x, path) {
-              var pointOnPath = path.getPointAtLength(x);
-              var xOnPath = pointOnPath.x;
-              var steps = 10;
-              var delta = x - xOnPath;
-              while (xOnPath < x && steps > 0) {
-                delta += Math.abs(x - xOnPath) / 2;
-                pointOnPath = path.getPointAtLength(x + delta);
-                xOnPath = pointOnPath.x;
-                steps -= 1;
-              }
-              steps = 10;
-              while (xOnPath > x && steps > 0) {
-                delta -= 10;
-                pointOnPath = path.getPointAtLength(x + delta);
-                xOnPath = pointOnPath.x;
-                steps -= 1;
-              }
-              return pointOnPath;
-            }
-            var extent = brush.extent();
-            var unfilteredPath = _.get(dom, 'line.unfiltered');
-            unfilteredPath = unfilteredPath.node() || null;
+            var extent = brush.control.extent();
+            var path = _.get(dom, 'line.unfiltered');
+            path = path.node() || null;
             _.defer(function() {
-              if (_.isPresent(unfilteredPath)) {
-                var centerPosition = extent[0] + (extent[1] - extent[0]) / 2;
-                var centerPointOnPath = findXPositionOnPath(centerPosition, unfilteredPath);
+              if (_.isPresent(path)) {
+                var targetX = extent[0] + (extent[1] - extent[0]) / 2;
+                var pathLength = path.getTotalLength();
+
+                var point = (function findXPositionOnPath(low, high, mid) {
+                  var point = path.getPointAtLength(mid);
+
+                  if (Math.abs(point.x - targetX) < 1) {
+                    return point;
+                  }
+                  else if (point.x < targetX) {
+                    low = mid;
+                    mid = (low + high) / 2;
+                  }
+                  else {
+                    high = mid;
+                    mid = (low + high) / 2;
+                  }
+
+                  return findXPositionOnPath(low, high, mid);
+                })(0, pathLength, pathLength / 2);
+
                 extentCenter = {
-                  x: centerPosition,
-                  y: centerPointOnPath.y
+                  x: targetX,
+                  y: point.y
                 };
               }
 
@@ -281,24 +262,24 @@
             }).
           subscribe(function(selectionStatus) {
             if (selectionStatus.didNotChange && selectionStatus.singleBucket) {
-              _.defer(function() { histogramBrush.brushDispatcher.clear() });
+              _.defer(function() { brush.brushDispatcher.clear() });
             }
           });
 
-        var selectionExtent$ = $scope.$observe('selectionExtent');
-        var selectionIndices$ = selectionExtent$.
-          combineLatest(cardData$, function(selectionExtent, cardData) {
+        var selectionRange$ = $scope.$observe('selectionRange');
+        var selectionIndices$ = selectionRange$.
+          combineLatest(cardData$, function(selectionRange, cardData) {
             if (
-              !_.isArray(selectionExtent) ||
-              (selectionExtent[0] === 0 && selectionExtent[1] === 0)
+              !_.isArray(selectionRange) ||
+              (selectionRange[0] === 0 && selectionRange[1] === 0)
             ) {
               return;
             }
             var start = _.findIndex(cardData.unfiltered, function(item) {
-              return item.start === selectionExtent[0];
+              return item.start === selectionRange[0];
             });
             var end = _.findIndex(cardData.unfiltered, function(item) {
-              return item.end === selectionExtent[1];
+              return item.end === selectionRange[1];
             });
             return [start, end];
           });
@@ -310,7 +291,7 @@
           bucketedSelectionValues$,
           selectionIndices$,
           brushEnd$.startWith(null),
-          function(data, dimensions, selectionValues, selectionIndices) {
+          function(data, dimensions, selectionValues, selectionRange) {
             return {
               axis: axis,
               brush: brush,
@@ -322,7 +303,7 @@
               selectionActive: _.isPresent(selectionValues),
               rowDisplayUnit: $scope.rowDisplayUnit,
               scale: scale,
-              selectionIndices: selectionIndices,
+              selectionRange: selectionRange,
               selectionValues: selectionValues,
               svg: svg
             };
@@ -345,11 +326,12 @@
               options.data,
               options.scale
             );
-            histogramBrush.updateBrush(
+            brush = service.updateBrush(
               options.dom,
               options.brush,
               options.dimensions.height,
-              options.selectionValues
+              options.selectionValues,
+              options.selectionRange
             );
             hover = service.updateHover(
               options.data,
@@ -359,7 +341,7 @@
               options.rowDisplayUnit,
               options.scale,
               options.selectionActive,
-              options.selectionIndices,
+              options.selectionRange,
               options.selectionInProgress,
               options.selectionValues
             );
@@ -381,6 +363,7 @@
         $scope.$destroyAsObservable(element).
           subscribe(function() {
             service.destroyHover(hover);
+            service.destroyBrush(brush);
           });
 
         selectionIndices$.combineLatest(
@@ -397,7 +380,7 @@
           }).
           distinctUntilChanged(_.identity, extentComparer).
           subscribe(function(extent) {
-            dom.brush.call(brush.extent(extent)).call(brush.event);
+            dom.brush.call(brush.control.extent(extent)).call(brush.control.event);
           });
 
         var hasSelection$ = cardDataWithSelection$.pluck('hasSelection');

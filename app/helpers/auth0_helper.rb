@@ -1,6 +1,9 @@
 require 'base64'
 require 'digest/sha1'
 require 'securerandom'
+require 'httparty'
+require 'jwt'
+require 'base64'
 
 module Auth0Helper
   def gen_cookie(uid)
@@ -21,7 +24,6 @@ module Auth0Helper
     Digest::SHA1.hexdigest("#{COOKIE_SECRET} #{uid} #{expiration} #{salt}")
   end
 
-  
   def valid_token?(auth0Hash)
     contains_valid_email?(auth0Hash) &&
       contains_valid_name?(auth0Hash) &&
@@ -40,9 +42,9 @@ module Auth0Helper
         !displayName.empty?
       true
     else
-      firstName = auth0Hash['given_name']; 
+      firstName = auth0Hash['given_name'];
       lastName = auth0Hash ['last_name'];
-      !firstName.nil? && !lastName.nil    
+      !firstName.nil? && !lastName.nil
     end
   end
 
@@ -68,11 +70,39 @@ module Auth0Helper
   def username_password_connection?(socrata_user_id)
     socrata_user_id.start_with?('auth0|')
   end
+
   # In the username and password flow, the UID is set as part of authentication
   # It's going to come in with the form "auth0|abcd-efgh|connection_name"
   # Use a regex to attempt to extract it
   def extract_uid(socrata_user_id)
     trimmed_id = socrata_user_id.sub('auth0|','')
     trimmed_id.match(/(\w{4}-\w{4})(?=\|)/)
+  end
+
+  def connection_exists(name)
+    response = HTTParty.get("https://#{AUTH0_URI}/api/v2/connections?fields=name", headers: {
+      'Authorization' => "Bearer #{AUTH0_JWT}"
+    })
+
+    if response.is_a? Array
+      response.any? { |connection| connection['name'] == name }
+    end
+  end
+
+  def generate_authorize_uri(connection, callback_uri)
+    parameters = {
+      :scope => "openid profile",
+      :response_type => "code",
+      :connection => connection,
+      :callbackURL => callback_uri,
+      :sso => true,
+      :client_id => AUTH0_ID,
+      :redirect_uri => callback_uri
+    };
+
+    URI::escape(
+      "https://#{AUTH0_URI}/authorize?" <<
+      parameters.map { |key, value| key.to_s << '=' << value.to_s }.join('&')
+    )
   end
 end

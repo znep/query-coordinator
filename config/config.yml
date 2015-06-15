@@ -54,6 +54,7 @@ development:
   auth0_uri: socrata.auth0.com
   auth0_id: w59XZV0YDqx7us3GFHnHncXrAzFWkCnG
   auth0_secret: rbmrUAUiWZqp3aADhu1aWGy6tp15jKefajxO6qYndAZ6djmF80V2kD_m-ajpS3uI
+  auth0_jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJKQmdZMlROdWJrNTlNbEkwTXl2N3Uzb0VLcGFDbVdDSCIsInNjb3BlcyI6eyJjb25uZWN0aW9ucyI6eyJhY3Rpb25zIjpbInJlYWQiXX19LCJpYXQiOjE0MzQzODY4MDgsImp0aSI6ImE3NmU5YTBmZDMzY2M4YTBiN2NlM2FjODM0Mjk3MWI5In0.tcDv8lxJVf0-f6fKBfRnj5ab4F5PerGDIP-6sHtSGIk
 
 # Running unit tests; NOT test.socrata.com
 test:

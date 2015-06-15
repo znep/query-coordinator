@@ -55,10 +55,11 @@ default: &default
   tileserver_hosts: '{{ TILESERVER_HOSTS }}'
   {%- endif %}
 
-  {% if AUTH0_URI is defined and AUTH0_CLIENT_ID is defined and AUTH0_CLIENT_SECRET is defined -%}
+  {% if AUTH0_URI is defined and AUTH0_CLIENT_ID is defined and AUTH0_CLIENT_SECRET is defined and AUTH0_JWT is defined -%}
   auth0_uri: {{ AUTH0_URI }}
   auth0_id: {{ AUTH0_CLIENT_ID }}
   auth0_secret: {{ AUTH0_CLIENT_SECRET }}
+  auth0_jwt: {{ AUTH0_JWT }}
   {%- endif %}
 
 development:

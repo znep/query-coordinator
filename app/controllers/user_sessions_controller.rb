@@ -1,6 +1,8 @@
 class UserSessionsController < ApplicationController
   include ActionView::Helpers::TranslationHelper
+  include Auth0Helper
   include UserSessionsHelper
+
   skip_before_filter :require_user
   protect_from_forgery :except => [:rpx]
 
@@ -22,35 +24,8 @@ class UserSessionsController < ApplicationController
       return redirect_back_or_default('/')
     end
 
-    @use_auth0 = FeatureFlags.derive.use_auth0 && AUTH0_CONFIGURED
-    properties = CurrentDomain.configuration('auth0').try(:properties)
-
-    if @use_auth0
-      # Auth0 Redirection when auth0 configuration is set
-      auth0_redirect_connection = properties.try(:auth0_always_redirect_connection)
-      auth0_callback_uri = properties.try(:auth0_callback_uri)
-      # Only redirect if this isn't a redirect from /logout.
-      if auth0_redirect_connection.present? && !flash[:notice].present?
-        parameters = {
-          :scope => "openid profile",
-          :response_type => "code",
-          :connection => auth0_redirect_connection,
-          :callbackURL => auth0_callback_uri,
-          :sso => true,
-          :client_id => AUTH0_ID,
-          :redirect_uri => auth0_callback_uri
-        };
-
-        uri = URI::escape(
-          "https://#{AUTH0_URI}/authorize?" <<
-          parameters.map { |key, value| key.to_s << '=' << value.to_s }.join('&')
-        )
-
-        return redirect_to(uri)
-      else
-        @auth0_connections = properties.try(:auth0_connections) || {}
-      end
-    end
+    # Attempt to configure Auth0. This method may result in a redirect.
+    auth0()
 
     @body_id = 'login'
     @user_session = UserSession.new
@@ -130,5 +105,34 @@ class UserSessionsController < ApplicationController
     cookies.delete :remember_token
     flash[:notice] = t('core.dialogs.logout')
     redirect_to(login_path)
+  end
+
+  private
+  def auth0
+    @use_auth0 = FeatureFlags.derive.use_auth0 && AUTH0_CONFIGURED
+    properties = CurrentDomain.configuration('auth0').try(:properties)
+
+    if @use_auth0
+      # Auth0 Redirection when auth0 configuration is set
+      auth0_redirect_connection = properties.try(:auth0_always_redirect_connection)
+      auth0_callback_uri = properties.try(:auth0_callback_uri)
+
+      # Booleans to determine validity of redirect request
+      connection_is_present = auth0_redirect_connection.present?
+      connection_is_valid = connection_exists(auth0_redirect_connection)
+      is_fresh_login = !flash[:notice].present?
+
+      # Only redirect if this isn't a redirect from /logout.
+      if connection_is_present && connection_is_valid && is_fresh_login
+        uri = generate_authorize_uri(auth0_redirect_connection, auth0_callback_uri)
+        return redirect_to(uri)
+      else
+        if connection_is_present && !connection_is_valid
+          Rails.logger.warn("A non-working connection string, #{auth0_redirect_connection}, has been specified in Auth0 configuration.")
+        end
+
+        @auth0_connections = properties.try(:auth0_connections) || {}
+      end
+    end
   end
 end

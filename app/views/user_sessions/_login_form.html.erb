@@ -24,6 +24,7 @@
     <div class="authProvider socrata">
       <div class="login-description-container">
         <span class="login-description"><%= t('screens.sign_in.prompt_html') %></span>
+        <p class="loginTips"><%= t('screens.sign_in.tips_html') %></p>
       </div>
       <%= form_for @user_session do |f| %>
         <%= render :partial => 'user_sessions/login_form_data', :locals => {:f => f} %>
@@ -36,11 +37,11 @@
     <div class="auth0login" id="auth0login"></div>
 
   <%- else %>
-    <%= render_translations LocalePart.screens.sign_in %>
 
     <div class="authProvider socrata">
       <div class="login-description-container">
         <span class="login-description"><%= t('screens.sign_in.prompt_html') %></span>
+        <p class="loginTips"><%= t('screens.sign_in.tips_html') %></p>
       </div>
       <%= form_for @user_session do |f| %>
         <%= render :partial => 'user_sessions/login_form_data', :locals => {:f => f} %>

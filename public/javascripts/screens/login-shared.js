@@ -30,8 +30,4 @@ $(function() {
         $('.modalContentBox').removeClass('signupModal').addClass('loginModal');
     });
     */
-
-    $('.login-description strong').socrataTip({
-      content: $.t('screens.sign_in.tips_html')
-    });
 });

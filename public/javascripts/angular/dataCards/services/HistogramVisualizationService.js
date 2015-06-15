@@ -430,9 +430,10 @@
         hover.filteredBucket = data.filtered[bucketIndex];
 
         if (hover.showFlyout) {
+          var totalWidth = bucketIndex * bucketWidth;
           dom.hoverBlock.
             attr('visibility', 'visible').
-            attr('x', bucketIndex * bucketWidth).
+            attr('x', totalWidth).
             attr('y', 0).
             attr('width', bucketWidth);
           var filteredValue = _.get(hover, 'filteredBucket.value', 0);
@@ -440,8 +441,8 @@
           var maxValueOrZero = Math.max(0, filteredValue, unfilteredValue);
           var hoverTargetY = scale.y(maxValueOrZero);
           dom.hoverTarget.
-            attr('x1', bucketIndex * bucketWidth).
-            attr('x2', bucketIndex * bucketWidth + bucketWidth).
+            attr('x1', totalWidth).
+            attr('x2', totalWidth + bucketWidth).
             attr('y1', hoverTargetY).
             attr('y2', hoverTargetY);
         }

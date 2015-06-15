@@ -128,39 +128,51 @@
           });
         });
 
-        var bucketedSelectionInPixels$ = brushEvent$.
+        function bucketedIndexValue(bucketWidth, bucketQuantity, initialValue, index) {
+          var offsetIntialValue = (index === 0) ? initialValue : initialValue - dom.margin.left;
+          var fixedValue = (offsetIntialValue / bucketWidth).toFixed(1);
+          var bucketIndex = Math[index === 0 ? 'floor' : 'ceil'](fixedValue);
+          var boundedBucketIndex = Math.min(bucketIndex, bucketQuantity);
+          bucketIndex = index === 1 ? boundedBucketIndex : bucketIndex;
+          return bucketIndex;
+        }
+
+        function bucketedPixelValue(bucketWidth, bucketQuantity, initialValue, index) {
+          var bucketIndex = bucketedIndexValue.apply(null, _.slice(arguments));
+          return bucketIndex * bucketWidth;
+        }
+
+        var bucketedSelectionIndices$ = brushEvent$.
           combineLatest(cardData$, cardDimensions$, function (bucketedSelectionInPixels, cardData) {
             var bucketWidth = scale.x.rangeBand();
 
-            return _.map(bucketedSelectionInPixels, function(value, index) {
-              var fixedValue = (value / bucketWidth).toFixed(1);
-              var bucketIndex = Math[index === 0 ? 'floor' : 'ceil'](fixedValue);
-              var boundedBucketIndex = Math.min(bucketIndex, cardData.unfiltered.length);
-              bucketIndex = index === 1 ? boundedBucketIndex : bucketIndex;
-              return bucketIndex * bucketWidth;
-            });
+            return _.map(
+              bucketedSelectionInPixels,
+              _.partial(bucketedIndexValue, bucketWidth, cardData.unfiltered.length)
+            );
+          }).
+          filter(function(bucketedSelectionIndices) {
+            return bucketedSelectionIndices[0] !== bucketedSelectionIndices[1];
+          });
+
+        var bucketedSelectionInPixels$ = bucketedSelectionIndices$.
+          map(function(bucketedSelectionIndices) {
+            var bucketWidth = scale.x.rangeBand();
+            return _.map(bucketedSelectionIndices, function(value) { return value * bucketWidth; });
           });
 
         bucketedSelectionInPixels$.subscribe(function(bucketedSelectionInPixels) {
           dom.brush.call(brush.extent(bucketedSelectionInPixels)).call(brush.event);
         });
 
-        var bucketedSelectionIndices$ = bucketedSelectionInPixels$.
-          map(function(bucketedSelectionInPixels) {
-            var bucketWidth = scale.x.rangeBand();
-
-            return _.map(bucketedSelectionInPixels, function(value) {
-              return Math.round(value / bucketWidth);
-            });
-          });
-
         var bucketedSelectionValues$ = bucketedSelectionIndices$.
           withLatestFrom(cardData$, function(bucketedSelectionIndices, cardData) {
             if (bucketedSelectionIndices[0] === 0 && bucketedSelectionIndices[1] === 0) {
               return;
             }
-            var start = cardData.unfiltered[Math.max(0, Math.min(cardData.unfiltered.length - 1, bucketedSelectionIndices[0]))].start;
-            var end = cardData.unfiltered[Math.min(cardData.unfiltered.length - 1, bucketedSelectionIndices[1] - 1)].end;
+            var endIndex = cardData.unfiltered.length - 1;
+            var start = cardData.unfiltered[Math.max(0, Math.min(endIndex, bucketedSelectionIndices[0]))].start;
+            var end = cardData.unfiltered[Math.min(endIndex, bucketedSelectionIndices[1] - 1)].end;
             return [start, end];
           }).
           startWith(undefined).

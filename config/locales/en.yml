@@ -2455,7 +2455,7 @@ en:
         sign_in_button: Sign In
       headline: Start Working With Open Data
       mismatch: Passwords do not match; please try again
-      prompt_html: Sign in with your <img src="/stylesheets/images/common/large_logo.png"> <strong>Socrata ID</strong>.
+      prompt_html: <img src="/stylesheets/images/common/large_logo.png"> Sign in with your <strong>Socrata ID</strong>.
       tips_html: Use your Email and Password to sign into all <strong>Socrata powered</strong> sites.
     sign_up:
       form:

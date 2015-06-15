@@ -79,6 +79,9 @@ module Auth0Helper
     trimmed_id.match(/(\w{4}-\w{4})(?=\|)/)
   end
 
+  ##
+  # Contact Auth0's API to test if the domain-specified connections
+  # are in the set of Socrata's connections.
   def connection_exists(name)
     response = HTTParty.get("https://#{AUTH0_URI}/api/v2/connections?fields=name", headers: {
       'Authorization' => "Bearer #{AUTH0_JWT}"
@@ -89,6 +92,12 @@ module Auth0Helper
     end
   end
 
+  ##
+  # Generate an authorization URI that can be used to
+  # authenticate a user with the give Auth0 connection string.
+  #
+  # Connection strings correspond to providers. If the provider
+  # is unavailable, then the system will fail.
   def generate_authorize_uri(connection, callback_uri)
     parameters = {
       :scope => "openid profile",

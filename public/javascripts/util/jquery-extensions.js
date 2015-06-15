@@ -134,7 +134,7 @@
   };
 
   String.prototype.format = function(objectMaybe) {
-    var values = _.isPlainObject(objectMaybe) ? objectMaybe :_.slice(arguments);
+    var values = _.isPlainObject(objectMaybe) ? objectMaybe : _.slice(arguments);
     return _(values).chain().keys().reduce(function(stringToFormat, key) {
       return stringToFormat.replace(new RegExp('\\{' + key + '\\}', 'gm'), values[key]);
     }, this).value();

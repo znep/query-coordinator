@@ -10,7 +10,7 @@
     }
   }
 
-  function histogramDirective(FlyoutService, HistogramVisualizationService, HistogramBrushService) {
+  function histogramDirective(FlyoutService, HistogramVisualizationService, HistogramBrushService, WindowState) {
     return {
       restrict: 'E',
       scope: {
@@ -69,6 +69,10 @@
           distinctUntilChanged(_.identity, extentComparer).
           share();
 
+        var mouseInChart$ = WindowState.mousePositionSubject.map(function(positionInfo) {
+          return $(positionInfo.target).closest(element).length === 1;
+        });
+
         // Emitted when mousing down in the brushable area
         var brushMouseDown$ = Rx.Observable.fromEventPattern(function(handler) {
           dom.brush.call(function(g) {
@@ -76,12 +80,10 @@
           });
         }).share();
 
-        // Emitted when mousing up in the brushable area
-        var brushMouseUp$ = Rx.Observable.fromEventPattern(function(handler) {
-          dom.brush.call(function(g) {
-            g.on('mouseup', handler);
-          });
-        }).share();
+        // Emitted when mousing up after initially mousing down in the chart
+        var brushMouseUp$ = brushMouseDown$.flatMapLatest(function() {
+          return Rx.Observable.fromEvent(document, 'mouseup');
+        });
 
         // Brush / selection start and end events emitted by D3
         var brushStartEvents$ = Rx.Observable.
@@ -299,6 +301,7 @@
           function(data, dimensions, selectionValues, selectionIndices) {
             return {
               axis: axis,
+              brush: brush,
               data: data,
               dimensions: dimensions,
               dom: dom,
@@ -315,21 +318,51 @@
           // Using withLatestFrom here to avoid a (Rx?) issue where combineLatest
           // with both brushStart and brushEnd events would not trigger brushing
           withLatestFrom(selectionInProgress$, function(options, selectionInProgress) {
-            return _.extend({ selectionInProgress: selectionInProgress }, options);
+            return _.extend(options, { selectionInProgress: selectionInProgress });
           }).
           // Using doAction for these side-effects to guarantee ordering with
           // subscriptions below
           doAction(function(options) {
-            scale = service.updateScale(scale, options.data, options.dimensions);
-            svg = service.updateSVG(svg, options.data, scale);
-            histogramBrush.updateBrush(dom, brush, options.dimensions.height, options.selectionValues);
-            hover = service.updateHover(options);
+            scale = service.updateScale(
+              options.scale,
+              options.data,
+              options.dimensions
+            );
+            svg = service.updateSVG(
+              options.svg,
+              options.data,
+              options.scale
+            );
+            histogramBrush.updateBrush(
+              options.dom,
+              options.brush,
+              options.dimensions.height,
+              options.selectionValues
+            );
+            hover = service.updateHover(
+              options.data,
+              options.dom,
+              options.hover,
+              options.isFiltered,
+              options.rowDisplayUnit,
+              options.scale,
+              options.selectionActive,
+              options.selectionIndices,
+              options.selectionInProgress,
+              options.selectionValues
+            );
           }).
           share();
 
         uiUpdate$.
           subscribe(function(options) {
-            service.render(options);
+            service.render(
+              options.axis,
+              options.data,
+              options.dimensions,
+              options.dom,
+              options.svg
+            );
           });
 
         // Clean up after ourselves

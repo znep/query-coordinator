@@ -108,6 +108,13 @@ class UserSessionsController < ApplicationController
   end
 
   private
+
+  ##
+  # Sets use_auth0 template variable.
+  # Detects if automatic redirect is set and performs that redirect safely.
+  #
+  # If automatic redirect is not set, configured connections are set as
+  # template variables.
   def auth0
     @use_auth0 = FeatureFlags.derive.use_auth0 && AUTH0_CONFIGURED
     properties = CurrentDomain.configuration('auth0').try(:properties)
@@ -128,9 +135,12 @@ class UserSessionsController < ApplicationController
         return redirect_to(uri)
       else
         if connection_is_present && !connection_is_valid
-          Rails.logger.warn("A non-working connection string, #{auth0_redirect_connection}, has been specified in Auth0 configuration.")
+          Rails.logger.error("A non-working connection string, #{auth0_redirect_connection}, has been specified in Auth0 configuration.")
         end
 
+        # If auth0 redirection is not possible/configured
+        # we send the auth0_connections to the template and render
+        # out appropriate buttons.
         @auth0_connections = properties.try(:auth0_connections) || {}
       end
     end

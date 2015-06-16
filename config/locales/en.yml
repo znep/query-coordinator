@@ -21,6 +21,8 @@
 
 en:
   hello: "Hello world"
+  sample_story:
+    intro_content: 'Welcome to Storyteller! Drag and drop blocks to get started'
   inspiration_story:
     text_block_1:
       title: 'This is my story'

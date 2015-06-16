@@ -364,7 +364,7 @@ Frontend::Application.routes do
     match '/reset_password/:uid/:reset_code', :to => 'accounts#reset_password', :as => 'reset_password',
       :conditions => {:uid => UID_REGEXP}
 
-    if AUTH0_CONFIGURED
+    if Frontend.auth0_configured?
       scope :protocol => 'https' do
         match '/auth/auth0/callback' => 'auth0#callback', :as => 'auth0_callback'
         match '/auth/failure' => 'auth0#failure'

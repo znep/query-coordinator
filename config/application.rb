@@ -20,6 +20,10 @@ end
 module Frontend
   class << self
     attr_accessor :statsd
+
+    def auth0_configured?
+      AUTH0_CONFIGURED
+    end
   end
 
   def self.version

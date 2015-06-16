@@ -59,4 +59,11 @@ class Auth0HelperTest < ActionView::TestCase
     refute(valid_token?(authHash))
   end
 
+  test 'Generate authorization URI' do
+    assert_match(
+      'https://exists/authorize?scope=openid%20profile&response_type=code&connection=test&callbackURL=/test/callback&sso=true&client_id=exists&redirect_uri=/test/callback',
+      generate_authorize_uri('test', '/test/callback')
+    )
+    print generate_authorize_uri(nil, nil)
+  end
 end

@@ -4,11 +4,17 @@ require 'ostruct'
 class Auth0ControllerTest < ActionController::TestCase
   include UserSessionsHelper
   def setup
+    Frontend.stubs(:auth0_configured? => true)
+    Frontend::Application.reload_routes!
     init_core_session
     init_current_domain
     OmniAuth.config.test_mode = true
     @request.env['HTTPS'] = 'on'
     @user = login
+  end
+
+  def teardown
+    Frontend::Application.reload_routes!
   end
 
   def get_mock_token(provider,uid,socrata_user_id)
@@ -60,7 +66,7 @@ class Auth0ControllerTest < ActionController::TestCase
                            )
     token
   end
-  
+
   test 'a valid uid should create a valid cookie' do
     OmniAuth.config.mock_auth[:auth0] = get_mock_token('auth0','auth0|abcd-efgh','auth0|abcd-edfg|username-password-staging')
 
@@ -71,7 +77,7 @@ class Auth0ControllerTest < ActionController::TestCase
     assert(@response.cookies['logged_in'])
   end
 
-  test 'an invalid uid should not create a cookie' do
+  test 'an invalid uid should not create a cookie foo' do
     OmniAuth.config.mock_auth[:auth0] = get_mock_token('auth0','auth0|thisisgarbage','auth0|thisisgarbage|username-password-staging')
 
     @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]

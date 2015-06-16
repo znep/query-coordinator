@@ -1,7 +1,7 @@
 FactoryGirl.define do
 
   factory :draft_story do
-    four_by_four 'test-test'
+    uid 'test-test'
     block_ids []
     created_by 'test_user@socrata.com'
 

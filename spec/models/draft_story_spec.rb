@@ -35,16 +35,16 @@ RSpec.describe DraftStory, type: :model do
       expect(valid_draft_story).to be_valid
     end
 
-    it 'does not allow a null value for :four_by_four' do
-      invalid_draft_story = FactoryGirl.build(:draft_story, four_by_four: nil)
+    it 'does not allow a null value for :uid' do
+      invalid_draft_story = FactoryGirl.build(:draft_story, uid: nil)
       invalid_draft_story.valid?
-      expect(invalid_draft_story.errors[:four_by_four].length).to eq(2)
+      expect(invalid_draft_story.errors[:uid].length).to eq(2)
     end
 
-    it 'does not allow a non-pattern-matching value for :four_by_four' do
-      invalid_draft_story = FactoryGirl.build(:draft_story, four_by_four: 'test')
+    it 'does not allow a non-pattern-matching value for :uid' do
+      invalid_draft_story = FactoryGirl.build(:draft_story, uid: 'test')
       invalid_draft_story.valid?
-      expect(invalid_draft_story.errors[:four_by_four].length).to eq(1)
+      expect(invalid_draft_story.errors[:uid].length).to eq(1)
     end
 
     it 'does not allow a non-array value for :block_ids' do

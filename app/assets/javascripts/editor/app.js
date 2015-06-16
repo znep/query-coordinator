@@ -13,9 +13,10 @@ $(document).on('ready', function() {
   var inspirationStoryRenderer = new StoryRenderer(inspirationStoryOptions);
 
   // Temporary fix until version is being added/populated
-  if (typeof userStoryData.version === 'undefined') {
+  if (userStoryData.version === null) {
     userStoryData.version = '';
   }
+
   // If we're loading an empty story for the first time, add example content
   if ((userStoryData.version === '') && (userStoryData.blocks.length === 0)) {
     userStoryData.blocks = sampleBlocks;

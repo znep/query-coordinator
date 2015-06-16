@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150603215653) do
+ActiveRecord::Schema.define(version: 20150615204029) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,27 +26,28 @@ ActiveRecord::Schema.define(version: 20150603215653) do
   end
 
   create_table "draft_stories", force: :cascade do |t|
-    t.string   "four_by_four", limit: 9,              null: false
-    t.integer  "block_ids",              default: [], null: false, array: true
-    t.string   "created_by",                          null: false
+    t.string   "uid",        limit: 9,              null: false
+    t.integer  "block_ids",            default: [], null: false, array: true
+    t.string   "created_by",                        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
+    t.string   "version"
   end
 
   add_index "draft_stories", ["created_by"], name: "index_draft_stories_on_created_by", using: :btree
-  add_index "draft_stories", ["four_by_four"], name: "index_draft_stories_on_four_by_four", using: :btree
+  add_index "draft_stories", ["uid"], name: "index_draft_stories_on_uid", using: :btree
 
   create_table "published_stories", force: :cascade do |t|
-    t.string   "four_by_four", limit: 9,              null: false
-    t.integer  "block_ids",              default: [], null: false, array: true
-    t.string   "created_by",                          null: false
+    t.string   "uid",        limit: 9,              null: false
+    t.integer  "block_ids",            default: [], null: false, array: true
+    t.string   "created_by",                        null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
   end
 
   add_index "published_stories", ["created_by"], name: "index_published_stories_on_created_by", using: :btree
-  add_index "published_stories", ["four_by_four"], name: "index_published_stories_on_four_by_four", using: :btree
+  add_index "published_stories", ["uid"], name: "index_published_stories_on_uid", using: :btree
 
 end

@@ -35,16 +35,16 @@ RSpec.describe PublishedStory, type: :model do
       expect(valid_published_story).to be_valid
     end
 
-    it 'does not allow a null value for :four_by_four' do
-      invalid_published_story = FactoryGirl.build(:published_story, four_by_four: nil)
+    it 'does not allow a null value for :uid' do
+      invalid_published_story = FactoryGirl.build(:published_story, uid: nil)
       invalid_published_story.valid?
-      expect(invalid_published_story.errors[:four_by_four].length).to eq(2)
+      expect(invalid_published_story.errors[:uid].length).to eq(2)
     end
 
-    it 'does not allow a non-pattern-matching value for :four_by_four' do
-      invalid_published_story = FactoryGirl.build(:published_story, four_by_four: 'test')
+    it 'does not allow a non-pattern-matching value for :uid' do
+      invalid_published_story = FactoryGirl.build(:published_story, uid: 'test')
       invalid_published_story.valid?
-      expect(invalid_published_story.errors[:four_by_four].length).to eq(1)
+      expect(invalid_published_story.errors[:uid].length).to eq(1)
     end
 
     it 'does not allow a non-array value for :block_ids' do

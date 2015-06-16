@@ -8,17 +8,17 @@ RSpec.describe StoriesController, type: :controller do
 
   describe '#show' do
 
-    context 'when there is a story with the given four_by_four' do
+    context 'when there is a story with the given four by four' do
 
       let!(:story_revision) { FactoryGirl.create(:published_story) }
 
       it 'renders show template' do
-        get :show, four_by_four: story_revision.four_by_four
+        get :show, four_by_four: story_revision.uid
         expect(response).to render_template(:show)
       end
 
       it 'ignores vanity_text' do
-        get :show, four_by_four: story_revision.four_by_four, vanity_text: 'haha'
+        get :show, four_by_four: story_revision.uid, vanity_text: 'haha'
         expect(assigns(:story)).to eq(story_revision)
       end
 
@@ -28,17 +28,17 @@ RSpec.describe StoriesController, type: :controller do
       end
 
       it 'assigns the :story' do
-        get :show, four_by_four: story_revision.four_by_four
+        get :show, four_by_four: story_revision.uid
         expect(assigns(:story)).to eq(story_revision)
       end
 
       it 'renders json when requested' do
-        get :show, four_by_four: story_revision.four_by_four, format: :json
+        get :show, four_by_four: story_revision.uid, format: :json
         expect(response.body).to eq(story_revision.to_json)
       end
     end
 
-    context 'when there is no story with the given four_by_four' do
+    context 'when there is no story with the given four by four' do
 
       it 'renders 404' do
         get :show, four_by_four: 'notf-ound'
@@ -55,16 +55,16 @@ RSpec.describe StoriesController, type: :controller do
 
       it 'calls find_by_four_by_four' do
         expect(DraftStory).to receive(:find_by_four_by_four)
-        get :edit, four_by_four: draft_story.four_by_four
+        get :edit, four_by_four: draft_story.uid
       end
 
       it 'assigns :story' do
-        get :edit, four_by_four: draft_story.four_by_four
+        get :edit, four_by_four: draft_story.uid
         expect(assigns(:story)).to eq draft_story
       end
 
       it 'renders the edit layout' do
-        get :edit, four_by_four: draft_story.four_by_four
+        get :edit, four_by_four: draft_story.uid
         expect(response).to render_template('editor')
       end
 
@@ -73,17 +73,17 @@ RSpec.describe StoriesController, type: :controller do
         render_views
 
         it 'renders a json object for inspirationStoryData' do
-          get :edit, four_by_four: draft_story.four_by_four
+          get :edit, four_by_four: draft_story.uid
           expect(response.body).to match(/inspirationStoryData = {/)
         end
 
         it 'renders a json object for userStoryData' do
-          get :edit, four_by_four: draft_story.four_by_four
+          get :edit, four_by_four: draft_story.uid
           expect(response.body).to match(/userStoryData = {/)
         end
 
         it 'renders an array of json objects for sampleBlocks' do
-          get :edit, four_by_four: draft_story.four_by_four
+          get :edit, four_by_four: draft_story.uid
           expect(response.body).to match(/sampleBlocks = \[/)
         end
       end

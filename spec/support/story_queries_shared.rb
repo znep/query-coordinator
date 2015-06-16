@@ -7,7 +7,7 @@ shared_examples 'has_story_queries' do
     context 'if a story with the specified four_by_four exists' do
 
       it 'returns a valid story' do
-        result = subject.class.find_by_four_by_four(subject.four_by_four)
+        result = subject.class.find_by_four_by_four(subject.uid)
         expect(result).to eq(subject)
       end
 
@@ -16,14 +16,14 @@ shared_examples 'has_story_queries' do
         # Deleted story
         FactoryGirl.create(
           subject.class,
-          four_by_four: four_by_four,
+          uid: four_by_four,
           created_at: Time.now,
           deleted_at: Time.now
         )
         # Existing story
         first_non_deleted_story_revision = FactoryGirl.create(
           subject.class,
-          four_by_four: four_by_four,
+          uid: four_by_four,
           created_at: Time.now - 1.day
         )
         result = subject.class.find_by_four_by_four(four_by_four)
@@ -46,13 +46,13 @@ shared_examples 'has_story_queries' do
         four_by_four = '1234-efgh'
         FactoryGirl.create(
           subject.class,
-          four_by_four: four_by_four,
+          uid: four_by_four,
           created_at: Time.now,
           deleted_at: Time.now
         )
         FactoryGirl.create(
           subject.class,
-          four_by_four: four_by_four,
+          uid: four_by_four,
           created_at: Time.now - 1.day,
           deleted_at: Time.now
         )

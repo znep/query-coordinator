@@ -51,6 +51,11 @@ published_story = PublishedStory.create(
 )
 draft_story = DraftStory.create(
   four_by_four: 'test-test',
+  block_ids: [],
+  created_by: 'storyteller@socrata.com'
+)
+draft_story = DraftStory.create(
+  four_by_four: 'hasb-lock',
   block_ids: [block_1.id, block_2.id, block_3.id, block_4.id],
   created_by: 'storyteller@socrata.com'
 )

@@ -83,7 +83,7 @@ RSpec.describe StoriesController, type: :controller do
         end
 
         it 'renders an array of json objects for sampleBlocks' do
-          get :edit, four_by_four: draft_story.four_by_four
+          get :edit, four_by_four: draft_story.uid
           expect(response.body).to match(/sampleBlocks = \[/)
         end
       end

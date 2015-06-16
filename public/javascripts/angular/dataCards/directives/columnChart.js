@@ -385,7 +385,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       var data;
       var unfilteredValue;
       var filteredValue;
-      var barGroup;
       var flyoutTitle;
       var flyoutContent;
       var flyoutSpanClass;
@@ -409,13 +408,18 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         return formattedValue;
       };
 
+      // If we're hovering over a .bar within
+      // .bar-group, update the target reference.
+      if ($(target).is('.bar-group.active .bar')) {
+        target = $(target).parent().get(0);
+      }
+
       // Make sure that target is defined before we
       // start using it to grab data and build the
       // flyout content.
       if (_.isDefined(target)) {
 
-        barGroup = $(target).parent().get(0);
-        data = d3.select(barGroup).datum();
+        data = d3.select(target).datum();
         flyoutTitle = labelValueOrPlaceholder(data.name);
         unfilteredValue = formatFlyoutValue(data.total);
 

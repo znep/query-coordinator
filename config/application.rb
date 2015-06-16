@@ -18,6 +18,9 @@ if defined?(Bundler)
 end
 
 module Frontend
+  UID_REGEXP = /\w{4}-\w{4}/
+  INTEGER_REGEXP = /-?\d+/
+
   class << self
     attr_accessor :statsd
 

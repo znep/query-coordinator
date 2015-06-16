@@ -127,6 +127,11 @@ class Auth0ControllerTest < ActionController::TestCase
     assert_redirected_to(login_redirect_url)
   end
 
+  test 'Failure route should redirect to a 500' do
+    get :failure, :protocol => 'https'
+    assert_redirected_to('/500')
+  end
+
   class StubAuth0Authentication < ActionController::TestCase
     def initialize(token)
     end

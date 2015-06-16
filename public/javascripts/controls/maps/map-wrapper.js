@@ -545,13 +545,8 @@
             {
                 case 'Google':
                     options = $.extend(options, { type: google.maps.MapTypeId[options.type] });
-                    layer = new OpenLayers.Layer.Google(config.key, options); break;
-                case 'Bing':
-                    options = $.extend(options, {
-                        key: 'ApOZ5wmDJp3UOXVryHpTocVSrsAbi-7FC-JQznJC4ZdAhgG5H7nnyr27wPNxzChd',
-                        transitionEffect: 'resize'
-                    });
-                    layer = new OpenLayers.Layer.Bing(options); break;
+                    layer = new OpenLayers.Layer.Google(config.key, options);
+                    break;
                 case 'ESRI':
                     var url = config.key == 'custom' ? config.custom_url
                                 : 'https://server.arcgisonline.com/ArcGIS/rest/services/'

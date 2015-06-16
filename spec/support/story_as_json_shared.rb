@@ -8,10 +8,6 @@ shared_examples 'has_story_as_json' do
       expect(subject.as_json['id']).to_not eq(subject.id)
     end
 
-    it "exposes the four by four as 'id'" do
-      expect(subject.as_json['id']).to eq(subject.uid)
-    end
-
     it "filters out 'block_ids'" do
       expect(subject.as_json).to_not include('block_ids')
     end

@@ -13,8 +13,8 @@ module StoryAsJson
 
     def serializable_attributes
       attributes.
-        except('id', 'uid', 'block_ids', 'deleted_at').
-        merge(:id => attributes['uid'], :title => title, :blocks => blocks)
+        except('id', 'block_ids', 'deleted_at').
+        merge(:title => title, :blocks => blocks)
     end
   end
 end

@@ -15,6 +15,11 @@ body {
   background-color: $body-bg-color;
 }
 
+.dragging, .dragging .block, .dragging button {
+  cursor: -webkit-grabbing !important;
+  cursor: grabbing !important;
+}
+
 .header {
   @include unselectable();
   @include clearfix();
@@ -103,6 +108,7 @@ body {
   .component.image {
     img {
       width: 100%;
+      -webkit-user-drag: none;
     }
   }
 }
@@ -141,6 +147,22 @@ body {
         width: 100%;
       }
     }
+  }
+}
+
+#block-ghost {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: $user-story-container-width;
+  z-index: $block-ghost-z-index;
+  transform-origin: top left;
+  transform: scale(0.25);
+  transition: transform $transition-duration;
+  pointer-events: none;
+
+  &.full-size {
+    transform: scale(1.0);
   }
 }
 

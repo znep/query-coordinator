@@ -649,7 +649,21 @@
                 { return nonStandardRender(view); });
 
             vizObj._rowsLoaded = 0;
-            _.each(viewsToRender, function(view) { vizObj.getDataForView(view); });
+            var actualFetchRows = function() {
+              _.each(viewsToRender, function(view) { vizObj.getDataForView(view); });
+            };
+
+            var timesPolled = 0;
+            // _boundViewEvents is set by #ready, which is called when the view is ready.
+            // We poll to make sure that aggregate fetching is done before getting row data.
+            var interval = setInterval(function() {
+              timesPolled++;
+              // Oh god I hope this is safe. Code audit says it should be okay. =/
+              if (vizObj._boundViewEvents || timesPolled > 10) {
+                clearInterval(interval);
+                actualFetchRows();
+              }
+            }, 50);
         },
 
         getDataForView: function(view)

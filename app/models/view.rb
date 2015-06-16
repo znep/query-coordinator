@@ -80,6 +80,20 @@ class View < Model
     JSON.parse(CoreServer::Base.connection.get_request(path)).with_indifferent_access
   end
 
+  def nbe_view
+    @nbe_view ||= begin
+      if newBackend?
+        self
+      elsif parent_view.nil?
+        View.find migrations[:nbeId]
+      else
+        View.find parent_view.migrations[:nbeId]
+      end
+    rescue CoreServer::CoreServerError => e
+      raise e
+    end
+  end
+
   # TODO Factor these new_backend methods out into a different container
   def row_count
     if new_backend?

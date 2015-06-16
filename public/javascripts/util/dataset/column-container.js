@@ -348,6 +348,71 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
         { _.defer(function() { (cont.view || cont).trigger('columns_changed', [changeType]); }); }
     };
 
+    // defines: replaceColumns, replaceChildColumns
+    props['replace' + capSet + 'WithNBECols'] = function(nbeCols)
+    {
+      if ($.isBlank(nbeCols)) { return; }
+
+      var cont = this;
+
+      // Setting this variable to an empty object.
+      _columnIDLookup = {};
+      // Setting this variable to an empty object.
+      _columnTCIDLookup = {};
+      // Setting this variable to an empty object.
+      _columnFieldNameLookup = {};
+      // Setting this variable to an empty object.
+      _metaColumnLookup = {};
+
+      // Setting this.columns based on the passed in nbe columns.
+      this[colSet] = _.map(nbeCols, function(c, i) {
+
+        // If this column is just a plain object, make it into a Column object.
+        if (!(c instanceof Column)) {
+          c = new Column(c, cont);
+        // If this column is a child column, set its parent.
+        } else if ($.isBlank(c.view)) {
+          c.setParent(cont);
+        }
+
+        // Make it so that you can look up the column by its id.
+        _columnIDLookup[c.id] = c;
+
+        // Also make it so that you can lookup the column by its lookup.
+        if (c.lookup != c.id) {
+          _columnIDLookup[c.lookup] = c;
+        }
+
+        // Make it so that you can look up the column by its table column id.
+        _columnTCIDLookup[c.tableColumnId] = c;
+
+        // Make it so that you can look up the column by its fieldname.
+        _columnFieldNameLookup[c.fieldName] = c;
+
+        // If it's a meta column, make it so you can look it up by name.
+        if (c.isMeta) {
+          _metaColumnLookup[c.name] = c;
+        }
+
+        // If it has an access type, make sure it's set.
+        if (!$.isBlank(cont.accessType)) {
+          c.setAccessType(cont.accessType);
+        }
+        return c;
+      });
+
+      // this.realColumns is all non-meta columns.
+      this['real' + capSet] = _.reject(this[colSet], function(c) {
+        return c.isMeta;
+      });
+
+      // this.visibleColumns is all real columns not explicitly set to be hidden.
+      this['visible' + capSet] = _(realSet(this)).chain()
+        .reject(function(c) { return c.hidden; })
+        .sortBy(function(c) { return c.position; })
+        .value();
+    };
+
     return props;
 };
 

@@ -53,6 +53,14 @@ var Dataset = ServerModel.extend({
         Dataset.addProperties(this, ColumnContainer('column',
                 selfUrl + '.json', selfUrl + '/columns'), $.extend({}, this));
 
+        if (ds.nbe_view_id && blist.feature_flags.swap_in_nbe_view) {
+          ds.nbeView = blist.viewCache[ds.nbe_view_id];
+          ds.newBackend = true;
+          // Save off the old columns so that we can use them during a save.
+          ds.oldColumns = _.map(ds.columns, function(col) { return $.extend({}, col); });
+          ds.replaceColumnsWithNBECols(ds.nbeView.columns);
+        }
+
         if (!$.isBlank(this.approvalHistory))
         { Dataset.addProperties(this, Dataset.modules.approvalHistory, $.extend({}, this)); }
 
@@ -4113,6 +4121,10 @@ function getDisplayName(ds)
 function cleanViewForSave(ds, allowedKeys)
 {
     var dsCopy = ds.cleanCopy(allowedKeys);
+    if (ds.oldColumns) {
+      // If we swapped in NBE columns, swap them out when saving.
+      dsCopy.columns = ds.oldColumns;
+    }
     dsCopy = ds._cleanUnsaveable(dsCopy);
 
     // cleanCopy already removes namedFilters, so we just need to get the updated fc here

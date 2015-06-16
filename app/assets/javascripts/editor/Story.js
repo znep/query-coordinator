@@ -8,7 +8,7 @@
  * constructor, like so:
  *
  * var story = new Story({
- *   fourByFour: 'test-test',
+ *   uid: 'test-test',
  *   title: 'Test Story',
  *   blocks: [
  *     {
@@ -42,7 +42,7 @@
   /**
    * @constructor
    * @param {object} storyData
-   *   @property {string} fourByFour
+   *   @property {string} uid
    *   @property {string} title
    *   @property {object[]} blocks
    *     @property {(number|string)} id
@@ -57,12 +57,12 @@
       )
     }
 
-    if (!storyData.hasOwnProperty('fourByFour')) {
-      throw new Error('`storyData` argument contains no `fourByFour` property.');
+    if (!storyData.hasOwnProperty('uid')) {
+      throw new Error('`storyData` argument contains no `uid` property.');
     }
 
-    if (storyData.fourByFour.match(FOUR_BY_FOUR_PATTERN) === null) {
-      throw new Error('`fourByFour` property is not a valid four-by-four: "' + storyData.fourByFour + '".');
+    if (storyData.uid.match(FOUR_BY_FOUR_PATTERN) === null) {
+      throw new Error('`uid` property is not a valid four-by-four: "' + storyData.uid + '".');
     }
 
     if (!storyData.hasOwnProperty('title')) {
@@ -73,7 +73,7 @@
       throw new Error('`storyData` argument contains no `blocks` property.');
     }
 
-    var _fourByFour = storyData.fourByFour;
+    var _uid = storyData.uid;
     var _title = storyData.title;
     var _blocks = _rehydrateBlocks(storyData.blocks);
 
@@ -84,8 +84,8 @@
     /**
      * @return {string}
      */
-    this.getFourByFour = function() {
-      return _fourByFour;
+    this.getUid = function() {
+      return _uid;
     };
 
     /**
@@ -206,7 +206,7 @@
 
     /**
      * @return {object}
-     *   @property {string} fourByFour
+     *   @property {string} uid
      *   @property {string} title
      *   @property {object[]} blocks
      *     @property {(number|string)} [id]
@@ -218,7 +218,7 @@
     this.serialize = function() {
 
       return {
-        fourByFour: _fourByFour,
+        uid: _uid,
         title: _title,
         blocks: _blocks.map(function(block) {
           return block.serialize();

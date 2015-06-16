@@ -23,7 +23,7 @@ function generateBlockData(options) {
 function generateStoryData(options) {
 
   var storyData = {
-    fourByFour: 'test-test',
+    uid: 'test-test',
     title: 'Test Story',
     blocks: [ generateBlockData() ]
   };

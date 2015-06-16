@@ -20,11 +20,11 @@ describe('Story class', function() {
         storyData = generateStoryData();
       });
 
-      describe('and `fourByFour` is missing', function() {
+      describe('and `uid` is missing', function() {
 
         it('raises an exception', function() {
 
-          delete storyData['fourByFour'];
+          delete storyData['uid'];
 
           assert.throw(function() {
             new Story(storyData)
@@ -32,11 +32,11 @@ describe('Story class', function() {
         });
       });
 
-      describe('and `fourByFour` is not a valid four-by-four', function() {
+      describe('and `uid` is not a valid four-by-four', function() {
 
         it('raises an exception', function() {
 
-          storyData['fourByFour'] = 'testtest';
+          storyData['uid'] = 'testtest';
 
           assert.throw(function() {
             new Story(storyData)
@@ -109,25 +109,25 @@ describe('Story class', function() {
 
   describe('instance variables', function() {
 
-    it('should should not expose `_fourByFour` directly', function() {
+    it('should should not expose `_uid` directly', function() {
 
       var storyData = generateStoryData({
-        fourByFour: 'test-test'
+        uid: 'test-test'
       });
       var newStory = new Story(storyData);
 
-      assert.isUndefined(newStory._fourByFour, '`_fourByFour` is undefined on story');
+      assert.isUndefined(newStory._uid, '`_uid` is undefined on story');
     });
 
-    it('should return fourByFour when .getFourByFour() is called', function() {
+    it('should return a four-by-four when .getUid() is called', function() {
 
       var storyData = generateStoryData({
-        fourByFour: 'test-test'
+        uid: 'test-test'
       });
       var newStory = new Story(storyData);
-      var fourByFour = newStory.getFourByFour();
+      var uid = newStory.getUid();
 
-      assert.equal(fourByFour, 'test-test', 'story `_fourByFour` is "test-test"');
+      assert.equal(uid, 'test-test', 'story `_uid` is "test-test"');
     });
 
     it('should should not expose `_title` directly', function() {

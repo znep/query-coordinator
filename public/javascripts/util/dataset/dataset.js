@@ -644,14 +644,7 @@ var Dataset = ServerModel.extend({
 
         ds.getNewBackendId().done(function(newBackendId) {
             if (newBackendId) {
-                var metadataTransitionPhase = parseInt(
-                    blist.feature_flags.metadata_transition_phase,
-                    10
-                );
-                var datasetMetadataUrl = metadataTransitionPhase === 0 ?
-                        '/dataset_metadata/{0}.json' :
-                        // The dataset metadata endpoint changed in metadata transition phase 1.
-                        '/metadata/v1/dataset/{0}.json';
+                var datasetMetadataUrl = '/metadata/v1/dataset/{0}.json';
 
                 $.get(datasetMetadataUrl.format(newBackendId)).done(function(metadata) {
                     ds._newBackendMetadata = metadata;

@@ -107,10 +107,7 @@ describe('Analytics service', function() {
    * metrics are the same as the order they are sent.  See analytics.js
    */
   function expectDefaultMetrics(optionalCardsPageLoadTime) {
-    if (ServerConfig.get('enable_newux_page_view_count')) {
-      expectAnalyticsHttpPost('js-page-view', 1); // Emitted if configured
-    }
-    // Always emitted.
+    expectAnalyticsHttpPost('js-page-view', 1);
     expectAnalyticsHttpPost('js-page-view-newux', 1);
     if (_.isDefined(optionalCardsPageLoadTime)) {
       expectAnalyticsHttpPost('js-cardsview-page-load-time', optionalCardsPageLoadTime);

@@ -20,7 +20,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       load_sample_data('test/fixtures/sample-data.json')
       test_view = View.find('test-data')
       View.any_instance.stubs(:find => test_view)
-      stub_multiple_feature_flags_with(metadata_transition_phase: '0', odux_enable_histogram: true)
+      stub_multiple_feature_flags_with(odux_enable_histogram: true)
     end
 
     should 'have no route if no id' do
@@ -99,18 +99,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       end
 
       context 'bootstrapping old backend datasets should error' do
-        should 'in phases 1, 2 and 3' do
+        should 'show 400 error' do
           @controller.stubs(:dataset_is_new_backend? => false)
 
-          stub_feature_flags_with(:metadata_transition_phase, '1')
-          get :bootstrap, id: 'data-iden'
-          assert_response(400)
-
-          stub_feature_flags_with(:metadata_transition_phase, '2')
-          get :bootstrap, id: 'data-iden'
-          assert_response(400)
-
-          stub_feature_flags_with(:metadata_transition_phase, '3')
           get :bootstrap, id: 'data-iden'
           assert_response(400)
         end
@@ -127,9 +118,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             )
           end
 
-          should 'in phases 1, 2 and 3' do
+          should 'create a new page' do
             @phidippides.expects(:update_dataset_metadata).
-              times(3).
               returns({ status: '200' }).
               with do |dataset_metadata|
                 dataset_metadata[:defaultPage] == 'abcd-efgh'
@@ -148,15 +138,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             )
             @controller.stubs(:default_page_accessible => true)
 
-            stub_feature_flags_with(:metadata_transition_phase, '1')
-            get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/abcd-efgh')
-
-            stub_feature_flags_with(:metadata_transition_phase, '2')
-            get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/abcd-efgh')
-
-            stub_feature_flags_with(:metadata_transition_phase, '3')
             get :bootstrap, id: 'data-iden'
             assert_redirected_to('/view/abcd-efgh')
           end
@@ -181,11 +162,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             @controller.stubs(:default_page_accessible => true)
           end
 
-          should 'in phase 0' do
-            stub_feature_flags_with(:metadata_transition_phase, '0')
-            get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/defa-ultp')
-          end
         end
 
         context 'redirect to the default page if there is already a default page and the default page is v1' do
@@ -207,16 +183,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             @controller.stubs(:default_page_accessible => true)
           end
 
-          should 'in phases 1, 2 and 3' do
-            stub_feature_flags_with(:metadata_transition_phase, '1')
-            get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/defa-ultp')
-
-            stub_feature_flags_with(:metadata_transition_phase, '2')
-            get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/defa-ultp')
-
-            stub_feature_flags_with(:metadata_transition_phase, '3')
+          should 'redirect to the default page' do
             get :bootstrap, id: 'data-iden'
             assert_redirected_to('/view/defa-ultp')
           end
@@ -232,31 +199,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             )
           end
 
-          should 'in phase 0' do
+          should 'createa  new default page' do
             @phidippides.expects(:update_dataset_metadata).
-              times(1).
-              returns({ status: '200' }).
-              with do |dataset_metadata|
-                dataset_metadata[:defaultPage] == 'abcd-efgh'
-              end
-            @phidippides.stubs(
-              fetch_dataset_metadata: {
-                status: '200',
-                body: v0_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata.delete(:defaultPage)  }
-              },
-              fetch_pages_for_dataset: {
-                status: '200', body: { publisher: [], user: [] }
-              }
-            )
-
-            stub_feature_flags_with(:metadata_transition_phase, '0')
-            get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/abcd-efgh')
-          end
-
-          should 'in phases 1, 2 and 3' do
-            @phidippides.expects(:update_dataset_metadata).
-              times(3).
               returns({ status: '200' }).
               with do |dataset_metadata|
                 dataset_metadata[:defaultPage] == 'abcd-efgh'
@@ -271,42 +215,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               }
             )
 
-            stub_feature_flags_with(:metadata_transition_phase, '1')
             get :bootstrap, id: 'data-iden'
             assert_redirected_to('/view/abcd-efgh')
-
-            stub_feature_flags_with(:metadata_transition_phase, '2')
-            get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/abcd-efgh')
-
-            stub_feature_flags_with(:metadata_transition_phase, '3')
-            get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/abcd-efgh')
-          end
-        end
-
-        context 'create a new default page if no default page is set and there are already pages' do
-
-          should 'in phase 0' do
-            @phidippides.expects(:update_dataset_metadata).
-              times(1).
-              returns({ status: '200' }).
-              with do |dataset_metadata|
-                dataset_metadata[:defaultPage] == 'olde-page'
-              end
-            @phidippides.stubs(
-              fetch_dataset_metadata: {
-                status: '200',
-                body: v0_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata.delete(:defaultPage)  }
-              },
-              fetch_pages_for_dataset: {
-                status: '200', body: { publisher: [{ pageId: 'olde-page' }, { pageId: 'neww-page' }], user: [] }
-              }
-            )
-
-            stub_feature_flags_with(:metadata_transition_phase, '0')
-            get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/olde-page')
           end
         end
 
@@ -320,9 +230,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             )
           end
 
-          should 'in phases 1, 2 and 3' do
+          should 'create a new default page' do
             @phidippides.expects(:update_dataset_metadata).
-              times(3).
               returns({ status: '200' }).
               with do |dataset_metadata|
                 dataset_metadata[:defaultPage] == 'abcd-efgh'
@@ -337,15 +246,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               }
             )
 
-            stub_feature_flags_with(:metadata_transition_phase, '1')
-            get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/abcd-efgh')
-
-            stub_feature_flags_with(:metadata_transition_phase, '2')
-            get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/abcd-efgh')
-
-            stub_feature_flags_with(:metadata_transition_phase, '3')
             get :bootstrap, id: 'data-iden'
             assert_redirected_to('/view/abcd-efgh')
           end
@@ -361,31 +261,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             )
           end
 
-          should 'in phase 0' do
+          should 'create a new default page' do
             @phidippides.expects(:update_dataset_metadata).
-              times(1).
-              returns({ status: '200' }).
-              with do |dataset_metadata|
-                dataset_metadata[:defaultPage] == 'abcd-efgh'
-              end
-            @phidippides.stubs(
-              fetch_dataset_metadata: {
-                status: '200',
-                body: v0_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata[:defaultPage] = 'lost-page'  }
-              },
-              fetch_pages_for_dataset: {
-                status: '404', body: ''
-              }
-            )
-
-            stub_feature_flags_with(:metadata_transition_phase, '0')
-            get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/abcd-efgh')
-          end
-
-          should 'in phases 1, 2 and 3' do
-            @phidippides.expects(:update_dataset_metadata).
-              times(3).
               returns({ status: '200' }).
               with do |dataset_metadata|
                 dataset_metadata[:defaultPage] == 'abcd-efgh'
@@ -400,15 +277,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               }
             )
 
-            stub_feature_flags_with(:metadata_transition_phase, '1')
-            get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/abcd-efgh')
-
-            stub_feature_flags_with(:metadata_transition_phase, '2')
-            get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/abcd-efgh')
-
-            stub_feature_flags_with(:metadata_transition_phase, '3')
             get :bootstrap, id: 'data-iden'
             assert_redirected_to('/view/abcd-efgh')
           end
@@ -424,31 +292,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             )
           end
 
-          should 'in phase 0' do
+          should 'create a new default page' do
             @phidippides.expects(:update_dataset_metadata).
-              times(1).
-              returns({ status: '200' }).
-              with do |dataset_metadata|
-                dataset_metadata[:defaultPage] == 'abcd-efgh'
-              end
-            @phidippides.stubs(
-              fetch_dataset_metadata: {
-                status: '200',
-                body: v0_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata[:defaultPage] = 'lost-page'  }
-              },
-              fetch_pages_for_dataset: {
-                status: '200', body: { publisher: [], user: [] }
-              }
-            )
-
-            stub_feature_flags_with(:metadata_transition_phase, '0')
-            get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/abcd-efgh')
-          end
-
-          should 'in phases 1, 2 and 3' do
-            @phidippides.expects(:update_dataset_metadata).
-              times(3).
               returns({ status: '200' }).
               with do |dataset_metadata|
                 dataset_metadata[:defaultPage] == 'abcd-efgh'
@@ -463,44 +308,14 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               }
             )
 
-            stub_feature_flags_with(:metadata_transition_phase, '1')
-            get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/abcd-efgh')
-
-            stub_feature_flags_with(:metadata_transition_phase, '2')
-            get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/abcd-efgh')
-
-            stub_feature_flags_with(:metadata_transition_phase, '3')
             get :bootstrap, id: 'data-iden'
             assert_redirected_to('/view/abcd-efgh')
           end
         end
 
         context 'set an existing page as default and redirect to it if no default page is set and there are already pages and at least one is v1' do
-          should 'in phase 0' do
-            @phidippides.expects(:update_dataset_metadata).
-              times(1).
-              returns({ status: '200' }).
-              with do |dataset_metadata|
-                dataset_metadata[:defaultPage] == 'olde-page'
-              end
-            @phidippides.stubs(
-              fetch_dataset_metadata: {
-                status: '200',
-                body: v0_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata.delete(:defaultPage)  }
-              },
-              fetch_pages_for_dataset: {
-                status: '200', body: { publisher: [{ pageId: 'olde-page' }, { pageId: 'neww-page', version: '1' }], user: [] }
-              }
-            )
 
-            stub_feature_flags_with(:metadata_transition_phase, '0')
-            get :bootstrap, id: 'data-iden'
-            assert_redirected_to('/view/olde-page')
-          end
-
-          should 'in phase 1, 2 and 3' do
+          should 'set an existing page as default' do
 
             # Apparently stub responses are cached or memoized or kept by
             # reference or something, so we need to re-stub
@@ -521,24 +336,12 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             end
 
             @phidippides.expects(:update_dataset_metadata).
-              times(3).
               returns({ status: '200' }).
               with do |dataset_metadata|
                 dataset_metadata[:defaultPage] == 'neww-page'
               end
 
             stub_fetch_dataset_metadata_without_default_page_and_fetch_pages_for_dataset
-            stub_feature_flags_with(:metadata_transition_phase, '1')
-            get :bootstrap, id: 'four-four'
-            assert_redirected_to('/view/neww-page')
-
-            stub_fetch_dataset_metadata_without_default_page_and_fetch_pages_for_dataset
-            stub_feature_flags_with(:metadata_transition_phase, '2')
-            get :bootstrap, id: 'four-four'
-            assert_redirected_to('/view/neww-page')
-
-            stub_fetch_dataset_metadata_without_default_page_and_fetch_pages_for_dataset
-            stub_feature_flags_with(:metadata_transition_phase, '3')
             get :bootstrap, id: 'four-four'
             assert_redirected_to('/view/neww-page')
           end
@@ -591,62 +394,12 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
           end
 
-          should 'in phase 0' do
-            @phidippides.stubs(
-              fetch_dataset_metadata: {
-                status: '200', body: v0_mock_dataset_metadata
-              }
-            )
-            stub_feature_flags_with(:metadata_transition_phase, '0')
-
-            # Make sure the page we're creating fits certain criteria
-            @page_metadata_manager.expects(:create).with do |page, _|
-              assert_equal(10, page['cards'].length, 'Should create 10 cards')
-
-              assert(page['cards'].none? do |card|
-                Phidippides::SYSTEM_COLUMN_ID_REGEX.match(card['fieldName'])
-              end, 'should omit system columns')
-
-              # make sure there exists cards that have the same logical and physical types, but
-              # different card types, according to cardinality.
-              differing_card_types = collect_differing_card_types(page['cards'])
-
-              # Make sure we checked some cards
-              assert(differing_card_types.present?)
-
-              assert(page['cards'].any? do |card|
-                card['fieldName'] == 'no_cardinality' && card['cardType'] == 'column'
-              end, 'A column with no cardinality should default to its low-cardinality default')
-
-              assert(page['cards'].none? do |card|
-                card['fieldName'] == 'below'
-              end, 'too-low cardinality columns should be omitted')
-
-              assert(page['cards'].all? do |card|
-                card['cardType']
-              end, 'Every card should have cardType set')
-
-              previous_card = {}
-              page['cards'].first(4).each do |card|
-                assert_not_equal(previous_card['cardType'], card['cardType'],
-                                 'There should be a variety of cards created')
-                previous_card = card
-              end
-
-              next true
-            end.returns({ status: '200', body: { pageId: 'neoo-page' } })
-
-            get :bootstrap, id: 'four-four'
-            assert_redirected_to('/view/neoo-page')
-          end
-
-          should 'in phase 3' do
+          should 'create and redirect' do
             @phidippides.stubs(
               fetch_dataset_metadata: {
                 status: '200', body: v1_mock_dataset_metadata
               }
             )
-            stub_feature_flags_with(:metadata_transition_phase, '3')
 
             # Make sure the page we're creating fits certain criteria
             @page_metadata_manager.expects(:create).with do |page, _|
@@ -667,12 +420,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                 card['fieldName'] == 'no_cardinality' && card['cardType'] == 'histogram'
               end, 'A column with no cardinality should default to its high-cardinality default')
 
-              #This was never implemented past phase 2.
-              #See CORE-4843
-              #assert(page['cards'].none? do |card|
-              #  card['fieldName'] == 'below'
-              #end, 'too-low cardinality columns should be omitted')
-
               assert(page['cards'].all? do |card|
                 card['cardType']
               end, 'Every card should have cardType set')
@@ -692,100 +439,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
           end
         end
 
-        context 'create page omitting column charts where cardinality == dataset_size' do
-
-          setup do
-            @page_metadata_manager.stubs(:dataset_size => 34)
-
-            @phidippides.expects(:update_dataset_metadata).
-              returns({ status: '200' }).
-              with do |dataset_metadata|
-                dataset_metadata[:defaultPage] == 'neoo-page'
-              end
-          end
-
-          teardown do
-            stub_feature_flags_with(:metadata_transition_phase, '0')
-          end
-
-          should 'in phase 0' do
-            @phidippides.stubs(
-              fetch_dataset_metadata: {
-                status: '200', body: v0_mock_dataset_metadata_with_uninteresting_column_chart
-              }
-            )
-            stub_feature_flags_with(:metadata_transition_phase, '0')
-
-            # Make sure the page we're creating fits certain criteria
-            @page_metadata_manager.expects(:create).
-              with { |page, _| assert_no_cards(page) }.
-              returns({ status: '200', body: { pageId: 'neoo-page' } })
-
-            get :bootstrap, id: 'four-four'
-            assert_redirected_to('/view/neoo-page')
-          end
-
-          should 'in phase 1' do
-            @phidippides.stubs(
-              fetch_dataset_metadata: {
-                status: '200', body: v1_mock_dataset_metadata_with_uninteresting_column_chart
-              }
-            )
-            stub_feature_flags_with(:metadata_transition_phase, '1')
-
-            # Make sure the page we're creating fits certain criteria
-            @page_metadata_manager.expects(:create).
-              with { |page, _| assert_no_cards(page) }.
-              returns({ status: '200', body: { pageId: 'neoo-page' } })
-
-            get :bootstrap, id: 'four-four'
-            assert_redirected_to('/view/neoo-page')
-          end
-
-          should 'in phase 2' do
-            @phidippides.stubs(
-              fetch_dataset_metadata: {
-                status: '200', body: v1_mock_dataset_metadata_with_uninteresting_column_chart
-              }
-            )
-            stub_feature_flags_with(:metadata_transition_phase, '2')
-
-            # Make sure the page we're creating fits certain criteria
-            @page_metadata_manager.expects(:create).
-              with { |page, _| assert_no_cards(page) }.
-              returns({ status: '200', body: { pageId: 'neoo-page' } })
-
-            get :bootstrap, id: 'four-four'
-            assert_redirected_to('/view/neoo-page')
-          end
-        end
-
         context 'skip cards we do not care about' do
-
-          should 'not create a card for columns specified in field_names_to_avoid_during_bootstrap feature flag' do
-            @phidippides.stubs(
-              fetch_dataset_metadata: {
-                status: '200', body: v1_mock_dataset_metadata
-              },
-              update_dataset_metadata: {
-                status: '200', body: v1_mock_dataset_metadata
-              }
-            )
-            stub_feature_flags_with(:metadata_transition_phase, '3')
-
-            # Make sure the page we're creating fits certain criteria
-            @page_metadata_manager.expects(:create).with do |page, _|
-              assert_equal(10, page['cards'].length, 'Should create 10 cards')
-
-              assert(page['cards'].none? do |card|
-                 %w(latitude longitude lat lng x y).include?(card['fieldName'].downcase)
-              end, 'should omit latitude and longitude columns')
-
-            end.returns(status: '200', body: { pageId: 'neoo-page' })
-
-            get :bootstrap, id: 'four-four'
-            assert_redirected_to('/view/neoo-page')
-          end
 
           should 'not create a card for things that look like OBE sub-columns' do
             @phidippides.stubs(
@@ -796,7 +450,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                 status: '200', body: v1_mock_dataset_metadata
               }
             )
-            stub_feature_flags_with(:metadata_transition_phase, '3')
 
             # Make sure the page we're creating fits certain criteria
             @page_metadata_manager.expects(:create).with do |page, _|
@@ -843,7 +496,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               }
             )
             stub_multiple_feature_flags_with(
-              metadata_transition_phase: '3',
               odux_enable_histogram: false
             )
 
@@ -869,7 +521,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                 status: '200', body: v1_mock_dataset_metadata
               }
             )
-            stub_feature_flags_with(:metadata_transition_phase, '3')
 
             @page_metadata_manager.expects(:create).with do |page, _|
               is_money = lambda { |fieldName| fieldName =~ /single4/ }
@@ -878,6 +529,27 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
             get :bootstrap, id: 'four-four'
           end
+
+          should 'not create a card for a latitude or longitude column' do
+            @phidippides.stubs(
+              fetch_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata
+              },
+              update_dataset_metadata: {
+                status: '200', body: v1_mock_dataset_metadata
+              }
+            )
+
+            @page_metadata_manager.expects(:create).with do |page, _|
+              is_latitude = lambda { |fieldName| fieldName =~ /latitude/ }
+              assert(page['cards'].pluck('fieldName').map(&:downcase).none?(&is_latitude))
+              is_longitude = lambda { |fieldName| fieldName =~ /latitude/ }
+              assert(page['cards'].pluck('fieldName').map(&:downcase).none?(&is_longitude))
+            end.returns(status: '200', body: { pageId: 'neoo-page' })
+
+            get :bootstrap, id: 'four-four'
+          end
+
 
           should 'not create a card for point columns when the dataset size is > 100_000' do
             @phidippides.stubs(
@@ -888,7 +560,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                 status: '200', body: v1_mock_dataset_metadata
               }
             )
-            stub_feature_flags_with(:metadata_transition_phase, '3')
             @controller.stubs(:dataset_size => 200_000)
 
             # Make sure the page we're creating fits certain criteria
@@ -908,7 +579,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
           end
 
           should 'not create a card for columns with known uniform cardinality' do
-            stub_feature_flags_with(:metadata_transition_phase, '3')
             @phidippides.stubs(
               fetch_dataset_metadata: {
                 status: '200', body: v1_mock_dataset_metadata
@@ -934,7 +604,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
           context 'on point columns' do
 
             setup do
-              stub_feature_flags_with(:metadata_transition_phase, '3')
               @mock_cardinality_metadata = v1_mock_dataset_metadata.deep_dup
               @mock_cardinality_metadata['columns'][':@computed']['cardinality'] = 1000
               @mock_cardinality_metadata['columns'][':@computed']['physicalDatatype'] = 'point'
@@ -988,52 +657,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
           end
 
-        end
-
-        context 'invalid input in feature flag field_names_to_avoid_during_bootstrap' do
-          should 'not skip any cards' do
-            invalid_because_not_array = 'single3'
-            stub_multiple_feature_flags_with(
-              :field_names_to_avoid_during_bootstrap => invalid_because_not_array,
-              :metadata_transition_phase => '3'
-            )
-
-            @phidippides.stubs(
-              fetch_dataset_metadata: {
-                status: '200', body: v1_mock_dataset_metadata
-              },
-              update_dataset_metadata: {
-                status: '200', body: v1_mock_dataset_metadata
-              }
-            )
-
-            # Make sure the page we're creating fits certain criteria
-            @page_metadata_manager.expects(:create).with do |page, _|
-              assert_equal(10, page['cards'].length, 'Should create 10 cards')
-
-              # still expect card because filter was invalid
-              assert(page['cards'].any? { |card| card['fieldName'] == 'single3' })
-
-            end.returns({ status: '200', body: { pageId: 'neoo-page' } })
-
-            get :bootstrap, id: 'four-four'
-            assert_redirected_to('/view/neoo-page')
-          end
-        end
-
-        should 'redirect to dataset page with error if error while creating page' do
-          @page_metadata_manager.stubs(
-            create: { status: '500' },
-          )
-          @phidippides.stubs(
-            fetch_dataset_metadata: {
-              status: '200',
-              body: v0_mock_dataset_metadata
-            }
-          )
-          get :bootstrap, id: 'four-four'
-          assert_redirected_to('/datasets/four-four')
-          assert_equal(@controller.flash[:error], 'A preview is not available for this dataset.')
         end
       end
     end

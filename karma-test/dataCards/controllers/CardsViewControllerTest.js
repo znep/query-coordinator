@@ -208,22 +208,11 @@ describe('CardsViewController', function() {
       });
 
     mockWindowServiceLocationSeq = new Rx.BehaviorSubject(undefined);
-    ServerConfig.override('useCatalogLensPermissions', true);
   });
 
   describe('page name', function() {
 
     it('should be used for the document title', function() {
-      var controllerHarness = makeController();
-      var nameOne = _.uniqueId('name');
-
-      $rootScope.$digest();
-      expect(mockWindowOperations.currentTitle).to.equal('{0} | Socrata'.format(DEFAULT_PAGE_NAME));
-    });
-
-    it('should be used for the document title even if we are not using catalog lens permissions', function() {
-      ServerConfig.override('useCatalogLensPermissions', false);
-
       var controllerHarness = makeController();
       var nameOne = _.uniqueId('name');
 

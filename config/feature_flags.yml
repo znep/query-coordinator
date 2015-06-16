@@ -52,38 +52,20 @@ enable_fullstory_tracking:
 enable_airbrake_js:
   description: Enable Airbrake error tracking of Javascript errors (see CORE-3365 for more information)
   defaultValue: false
-enable_png_download_ui:
-  description: Enable the UI for downloading PNG versions of datacard visualizations
-  defaultValue: true
 include_sr_in_esri:
   description: ESRI-only; stop using SRs in the export URL.
   defaultValue: false
 kill_esri_reprojection_and_pass_different_webm:
   description: 'Special magic for Iowa, whose ArcGIS server appears to hate EPSG:900913 and projected maps'
   defaultValue: false
-odux_enable_feature_map:
-  description: Enable feature maps.
-  defaultValue: true
 enable_api_foundry_pane:
   description: Will allow the api_foundry pane to be displayed. If there is another reason for the api_foundry pane to be hidden, it will still be hidden.
   defaultValue: false
-enable_newux_bootstrap_link:
-  description: Will display a link in the old UX, to its corresponding new UX page.
-  defaultValue: false
-enable_data_lens_save_as_button:
-  description: Will enable the "Save As" button on the Customize bar of the Data Lens pages.
-  defaultValue: false
 enable_data_lens_other_views:
-  description: Show the "other views of this data" button in the upper left of Data Lens pages
+  description: Show the "other views of this data" button in the upper left of Data Lens pages. Will also enable the "Save As" button on the Customize bar of the Data Lens pages.
   defaultValue: false
-data_lens_whats_this_href:
-  description: The url that the "What's this?" link on the facet filter should point to
-  defaultValue: ''
 enable_opendata_ga_tracking:
   description: Controls behavior of Google Analytics in the new UX. If true, GA is enabled with a default Socrata-wide token. If a custom value is provided, GA is enabled and the custom value is used as the GA token. If false, GA is disabled.
-data_cards_app_token:
-  description: The SODA application token to be used by the dataCards app.
-  defaultValue: zvQamMSTi4GNuZWWDwjLdLPhW
 use_auth0:
   description: Force use of Auth0 to authenticate users. DO NOT ENABLE ON ANY ENVIRONMENT OTHER THAN STAGING OR LOCAL.
   defaultValue: false
@@ -93,31 +75,6 @@ enable_feedback:
 domain_decommissioning:
   description: Enable a banner indicating that the domain is being decommissionsed.
   defaultValue: false
-metadata_transition_phase:
-  description: 'Controls which phase of the ongoing metadata migration the site should operate under. Only ODUX should change this. Phases are documented here: https://docs.google.com/a/socrata.com/document/d/13KWv-5xugmWr-w4vnfXjIus4n9zLWOUEU1KxxnhMSrw/'
-  defaultValue: 3
-  expectedValues: 0 1 2 3
-exit_tech_preview:
-  description: Enable to display transitionary New Backend features (currently scoped to Catalog/Browse)
-  defaultValue: false
-field_names_to_avoid_during_bootstrap:
-  description: Do not create cards for these field names on bootstrap. Must be an array of fieldNames!
-  defaultValue:
-    - latitude
-    - longitude
-    - lat
-    - lng
-    - x
-    - y
-field_names_that_cannot_be_aggregated:
-  description: Do not include these field names in aggregation chooser. Must be an array of fieldNames!
-  defaultValue:
-    - latitude
-    - longitude
-    - lat
-    - lng
-    - x
-    - y
 debug_assets:
   description: Switch over to using unpackaged Javascript files.
   defaultValue: false
@@ -127,24 +84,9 @@ odux_enable_histogram:
 use_soql_for_clustering:
   description: Use the (currently unwritten) core method soql_clustering for clustering.
   defaultValue: false
-feature_map_zoom_debounce:
-  description: Milliseconds after user interaction to delay before requesting vector tiles
-  defaultValue: 500
-enable_newux_page_view_count:
-  description: Have new UX pages accumulated toward the global count of all page views.
-  defaultValue: true
-use_catalog_lens_permissions:
-  description: Whether page/dataset metadata should inherit permissions from their catalog lenses.
-  defaultValue: true
 display_catalog_lens_delete_button:
   description: Whether to show the Delete button for data lenses, in the old UX.
   defaultValue: false
-enable_search_suggestions:
-  description: Allow search suggestions and type-ahead for Data Lens search card.
-  defaultValue: false
-feature_map_features_per_tile:
-  description: The maximum number of features that will be requested for any individual feature map tile.
-  defaultValue: 50000
 current_dataset_metadata_version:
   description: The current version of dataset metadata that the app should read and write.
   defaultValue: 1
@@ -154,12 +96,9 @@ current_page_metadata_version:
 feature_map_default_extent:
   description: "The site-wide default extent for feature/point maps. Should be a single-quoted JSON object. Ex: '{\"southwest\":[41.681944,-87.827778],\"northeast\":[42.081944,-87.427778]}'"
   defaultValue: ''
-feature_map_disable_pan_zoom:
-  description: "Killswitch to turn off pan and zoom abilities on feature maps."
-  defaultValue: false
 data_lens_transition_state:
   description: The transition state tracking when and how Data Lenses should be surfaced in the old UX (e.g. on browse, profile and admin pages).
-  defaultValue: pre_beta
+  defaultValue: post_beta
   expectedValues: pre_beta beta post_beta
 disable_legacy_types:
   description: 'According to CORE-5097, the disabled types are: Formatted Text, Email, Website URL, Date & Time (with timezone), Star, Phone, Multiple Choice, Photo (Image), Document, and Dataset Link.'
@@ -170,9 +109,6 @@ default_imports_to_nbe:
   defaultValue: false
   expectedValues: delta-importer
   category: obe deprecation
-secondary_group_identifier:
-  description: See CORE-5497 - This is the secondary indexing group that should be signaled to index on new UX bootstrap
-  defaultValue: spandex3
 nbe_bucket_size:
   description: Bucket-ize the fetching of rows when hitting NBE.
   defaultValue: false
@@ -182,9 +118,6 @@ dataset_count_v2:
 force_redirect_to_data_lens:
   description: Automatically redirect to the default Data Lens page for a given NBE dataset.
   defaultValue: false
-shape_file_region_query_limit:
-  description: Limit for the number of regions fetched for a shape file when displayed in choropleths.
-  defaultValue: 5000
 enable_export_service:
   description: Use the new Export Service on this domain.
   defaultValue: false

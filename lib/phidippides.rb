@@ -58,21 +58,12 @@ class Phidippides < SocrataHttp
   # Dataset Metadata requests
 
   def fetch_dataset_metadata(dataset_id, options = {})
-    if metadata_transition_phase_0?
-      fetched_response = issue_request(
-        :verb => :get,
-        :path => "datasets/#{dataset_id}",
-        :request_id => options[:request_id],
-        :cookies => options[:cookies]
-      )
-    else
-      fetched_response = issue_request(
-        :verb => :get,
-        :path => "v1/id/#{dataset_id}/dataset",
-        :request_id => options[:request_id],
-        :cookies => options[:cookies]
-      )
-    end
+    fetched_response = issue_request(
+      :verb => :get,
+      :path => "v1/id/#{dataset_id}/dataset",
+      :request_id => options[:request_id],
+      :cookies => options[:cookies]
+    )
 
     unless fetched_response[:body].blank? || fetched_response[:status] != '200'
       augment_dataset_metadata!(dataset_id, fetched_response[:body])
@@ -104,11 +95,8 @@ class Phidippides < SocrataHttp
   # decorate the metadata with position and hidden properties
   def mirror_nbe_column_metadata!(backend_view, nbe_dataset)
     backend_view.columns.each do |column|
-      if metadata_transition_phase_0?
-        nbe_column = nbe_dataset['columns'].detect { |nbe_column| nbe_column[:name] == column.fieldName }
-      else
-        nbe_column = nbe_dataset[:columns][column.fieldName.to_sym]
-      end
+      nbe_column = nbe_dataset[:columns][column.fieldName.to_sym]
+
       unless nbe_column.nil?
         nbe_column[:position] = column.position
         nbe_column[:hideInTable] = column.flag?('hidden')
@@ -132,63 +120,50 @@ class Phidippides < SocrataHttp
   end
 
   def update_dataset_metadata(dataset_metadata, options = {})
-    if metadata_transition_phase_0?
-      issue_request(
-        :verb => :put,
-        :path => "datasets/#{dataset_metadata['id']}",
-        :data => dataset_metadata,
-        :request_id => options[:request_id],
-        :cookies => options[:cookies]
-      )
-    else
-      issue_request(
-        :verb => :put,
-        :path => "v1/id/#{dataset_metadata['id']}/dataset",
-        :data => dataset_metadata,
-        :request_id => options[:request_id],
-        :cookies => options[:cookies]
-      )
-    end
+    issue_request(
+      :verb => :put,
+      :path => "v1/id/#{dataset_metadata['id']}/dataset",
+      :data => dataset_metadata,
+      :request_id => options[:request_id],
+      :cookies => options[:cookies]
+    )
   end
 
   def set_default_and_available_card_types_to_columns!(dataset_metadata)
-    if metadata_transition_phase_3?
+    dataset_id = dataset_metadata.try(:[], :body).try(:[], :id)
+    unless dataset_id.present?
+      error_message = 'Could not compute default and available card types ' \
+        'for dataset: unable to determine dataset id.'
+      Airbrake.notify(
+        :error_class => 'DatasetMetadataCardTypeComputationError',
+        :error_message => error_message
+      )
+      Rails.logger.error(error_message)
+      return
+    end
 
-      dataset_id = dataset_metadata.try(:[], :body).try(:[], :id)
-      unless dataset_id.present?
-        error_message = 'Could not compute default and available card types ' \
-          'for dataset: unable to determine dataset id.'
-        Airbrake.notify(
-          :error_class => 'DatasetMetadataCardTypeComputationError',
-          :error_message => error_message
-        )
-        Rails.logger.error(error_message)
-        return
-      end
+    columns = dataset_metadata.try(:[], :body).try(:[], :columns)
 
-      columns = dataset_metadata.try(:[], :body).try(:[], :columns)
+    unless columns.present?
+      error_message = "Could not compute default and available card types " \
+        "for dataset: no columns found (dataset_metadata: " \
+        "#{dataset_metadata.inspect})."
+      Airbrake.notify(
+        :error_class => 'DatasetMetadataCardTypeComputationError',
+        :error_message => error_message,
+      )
+      Rails.logger.error(error_message)
+      return
+    end
 
-      unless columns.present?
-        error_message = "Could not compute default and available card types " \
-          "for dataset: no columns found (dataset_metadata: " \
-          "#{dataset_metadata.inspect})."
-        Airbrake.notify(
-          :error_class => 'DatasetMetadataCardTypeComputationError',
-          :error_message => error_message,
-        )
-        Rails.logger.error(error_message)
-        return
-      end
+    this_dataset_size = get_dataset_size(dataset_id)
 
-      this_dataset_size = get_dataset_size(dataset_id)
-
-      # Note that this mutates the columns in-place.
-      columns.each do |field_name, column|
-        # Only compute card types for non-system columns
-        unless SYSTEM_COLUMN_ID_REGEX.match(field_name)
-          column['defaultCardType'] = default_card_type_for(column, this_dataset_size)
-          column['availableCardTypes'] = available_card_types_for(column, this_dataset_size)
-        end
+    # Note that this mutates the columns in-place.
+    columns.each do |field_name, column|
+      # Only compute card types for non-system columns
+      unless SYSTEM_COLUMN_ID_REGEX.match(field_name)
+        column['defaultCardType'] = default_card_type_for(column, this_dataset_size)
+        column['availableCardTypes'] = available_card_types_for(column, this_dataset_size)
       end
     end
   end
@@ -199,45 +174,25 @@ class Phidippides < SocrataHttp
     # Log Access to Page Object
     log_datalens_access(page_id)
 
-    if metadata_transition_phase_0? || metadata_transition_phase_1?
-      issue_request(
-        :verb => :get,
-        :path => "pages/#{page_id}",
-        :request_id => options[:request_id],
-        :cookies => options[:cookies]
-      )
-    else
-      issue_request(
-        :verb => :get,
-        :path => "v1/pages/#{page_id}",
-        :request_id => options[:request_id],
-        :cookies => options[:cookies]
-      )
-    end
+    issue_request(
+      :verb => :get,
+      :path => "v1/pages/#{page_id}",
+      :request_id => options[:request_id],
+      :cookies => options[:cookies]
+    )
   end
 
   def update_page_metadata(page_metadata, options = {})
     raise ArgumentError.new('pageId is required') unless page_metadata.key?('pageId')
+    raise ArgumentError.new('datasetId is required') unless page_metadata.key?('datasetId')
 
-    if metadata_transition_phase_0? || metadata_transition_phase_1?
-      issue_request(
-        :verb => :put,
-        :path => "pages/#{page_metadata['pageId']}",
-        :data => page_metadata,
-        :request_id => options[:request_id],
-        :cookies => options[:cookies]
-      )
-    else
-      raise ArgumentError.new('datasetId is required') unless page_metadata.key?('datasetId')
-
-      issue_request(
-        :verb => :put,
-        :path => "v1/id/#{page_metadata['datasetId']}/pages/#{page_metadata['pageId']}",
-        :data => page_metadata,
-        :request_id => options[:request_id],
-        :cookies => options[:cookies]
-      )
-    end
+    issue_request(
+      :verb => :put,
+      :path => "v1/id/#{page_metadata['datasetId']}/pages/#{page_metadata['pageId']}",
+      :data => page_metadata,
+      :request_id => options[:request_id],
+      :cookies => options[:cookies]
+    )
   end
 
   def delete_page_metadata(page_id, options = {})
@@ -277,25 +232,16 @@ class Phidippides < SocrataHttp
 
     raise ArgumentError.new('could not determine dataset id') unless dataset_id =~ UID_REGEXP
 
-    if metadata_transition_phase_0? || metadata_transition_phase_1?
-      issue_request(
-        :verb => :get,
-        :path => "datasets/#{dataset_id}/pages",
-        :request_id => options[:request_id],
-        :cookies => options[:cookies]
-      )
-    else
-      normalize_pages_for_dataset_response!(
-        exclude_non_v1_or_above_pages_in_phase_3!(
-          issue_request(
-            :verb => :get,
-            :path => "v1/id/#{dataset_id}/pages",
-            :request_id => options[:request_id],
-            :cookies => options[:cookies]
-          )
+    normalize_pages_for_dataset_response!(
+      exclude_non_v1_or_above_pages!(
+        issue_request(
+          :verb => :get,
+          :path => "v1/id/#{dataset_id}/pages",
+          :request_id => options[:request_id],
+          :cookies => options[:cookies]
         )
       )
-    end
+    )
   end
 
   private
@@ -303,8 +249,7 @@ class Phidippides < SocrataHttp
   def normalize_pages_for_dataset_response!(pages_for_dataset_response)
 
     if pages_for_dataset_response[:status] == '200' &&
-      pages_for_dataset_response[:body].present? &&
-      (metadata_transition_phase_2? || metadata_transition_phase_3?)
+      pages_for_dataset_response[:body].present?
 
       response_body = pages_for_dataset_response[:body]
       if response_body.respond_to?('values')
@@ -314,11 +259,10 @@ class Phidippides < SocrataHttp
     pages_for_dataset_response
   end
 
-  def exclude_non_v1_or_above_pages_in_phase_3!(pages_for_dataset_response)
+  def exclude_non_v1_or_above_pages!(pages_for_dataset_response)
 
     if pages_for_dataset_response[:status] == '200' &&
-      pages_for_dataset_response[:body].present? &&
-      metadata_transition_phase_3?
+      pages_for_dataset_response[:body].present?
 
       pages_for_dataset_response[:body].select! do |page_id, page_data|
         page_data[:version].to_i > 0

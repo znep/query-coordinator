@@ -8,11 +8,7 @@ module CardTypeMapping
   CARDINALITY_THRESHOLD = 35
 
   def card_type_for(column, logical_datatype_key, dataset_size=nil)
-    if metadata_transition_phase_3?
-      default_card_type_for(column, dataset_size)
-    else
-      old_card_type_for(column, logical_datatype_key, dataset_size)
-    end
+    default_card_type_for(column, dataset_size)
   end
 
   def default_card_type_for(column, dataset_size)

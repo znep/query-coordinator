@@ -38,22 +38,19 @@ class PhidippidesDatasetsController < ApplicationController
   # fetching the geometry label of shape files, however.
   def show
     return render :nothing => true, :status => '400' unless params[:id].present?
+    return render :nothing => true, :status => '403' unless can_read_dataset_data?(params[:id])
 
-    if inherit_catalog_lens_permissions?
-      return render :nothing => true, :status => '403' unless can_read_dataset_data?(params[:id])
-
-      # Grab permissions from core
-      begin
-        permissions = fetch_permissions(params[:id])
-      rescue NewViewManager::ViewNotFound
-        return render :nothing => true, :status => '404'
-      rescue NewViewManager::ViewAuthenticationRequired => e
-        return render :json => { error: e.message }, :status => '401'
-      rescue NewViewManager::ViewAccessDenied => e
-        return render :json => { error: e.message }, :status => '403'
-      rescue
-        return render :nothing => true, :status => '500'
-      end
+    # Grab permissions from core
+    begin
+      permissions = fetch_permissions(params[:id])
+    rescue NewViewManager::ViewNotFound
+      return render :nothing => true, :status => '404'
+    rescue NewViewManager::ViewAuthenticationRequired => e
+      return render :json => { error: e.message }, :status => '401'
+    rescue NewViewManager::ViewAccessDenied => e
+      return render :json => { error: e.message }, :status => '403'
+    rescue
+      return render :nothing => true, :status => '500'
     end
 
     begin
@@ -61,7 +58,7 @@ class PhidippidesDatasetsController < ApplicationController
 
       dataset_metadata = result[:body]
 
-      dataset_metadata[:permissions] = permissions if dataset_metadata && result[:status] =~ /^20[0-9]$/
+      dataset_metadata[:permissions] = permissions if dataset_metadata && result[:status] =~ /\A20[0-9]\z/
       flag_subcolumns!(dataset_metadata[:columns])
 
       render :json => dataset_metadata, :status => result[:status]
@@ -70,24 +67,8 @@ class PhidippidesDatasetsController < ApplicationController
     end
   end
 
-  def create
-    # By design, cannot create dataset metadata past phase 0
-    return render :nothing => true, :status => '404' unless metadata_transition_phase_0?
-    return render :nothing => true, :status => '401' unless can_create_metadata?
-    return render :nothing => true, :status => '400' unless params[:datasetMetadata].present?
-
-    begin
-      result = phidippides.create_dataset_metadata(JSON.parse(params[:datasetMetadata]), :request_id => request_id, :cookies => forwardable_session_cookies)
-      render :json => result[:body], :status => result[:status]
-    rescue Phidippides::ConnectionError
-      render :json => { :body => 'Phidippides connection error' }, :status => '500'
-    rescue JSON::ParserError => error
-      render :json => { :body => "Invalid JSON payload. Error: #{error}" }, :status => '400'
-    end
-  end
-
   def update
-    unless (inherit_catalog_lens_permissions? ? dataset(params[:id]).can_edit? : can_create_metadata?)
+    unless dataset(params[:id]).can_edit?
       return render :nothing => true, :status => '401'
     end
 
@@ -119,22 +100,14 @@ class PhidippidesDatasetsController < ApplicationController
         :request_id => request_id,
         :cookies => forwardable_session_cookies
       )
-      if metadata_transition_phase_0?
-        render :json => result[:body], :status => result[:status]
-      else
-        return head :status => '204'
-      end
+      return head :status => '204'
     rescue Phidippides::ConnectionError
       render :json => { :body => 'Phidippides connection error' }, :status => '500'
     end
   end
 
   def destroy
-    if metadata_transition_phase_0?
-      render :nothing => true, :status => '403'
-    else
-      render :nothing => true, :status => '400'
-    end
+    render :nothing => true, :status => '400'
   end
 
   private

@@ -1,3 +1,12 @@
+###
+#
+#  META NOTE!
+#  Despite the comment below, on our local dev boxes this config file is INDEED
+#  manually updated and not dynamically chef'd.
+#
+###
+
+
 ###############################################################################
 # NOTE! All configuration information in this file are overwritten by chef when
 # the app is deployed. If you wish to ensure that new configuration information
@@ -38,6 +47,15 @@ default: &default
   polaroid_hostname: polaroid.service.aws-us-west-2-production.socrata.consul
   polaroid_port: 13379
   opendata_ga_tracking_code: UA-52982454-21
+  data_cards_app_token: 'zvQamMSTi4GNuZWWDwjLdLPhW'
+  feature_map_zoom_debounce: 500
+  feature_map_features_per_tile: 50000
+  shape_file_region_query_limit: 5000
+  secondary_group_identifier: 'spandex'
+  enable_png_download_ui: true
+  odux_enable_feature_map: true
+  enable_search_suggestions: true
+  feature_map_disable_pan_zoom: false
 
 # Local development
 development:

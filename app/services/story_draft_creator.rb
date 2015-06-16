@@ -48,7 +48,7 @@ class StoryDraftCreator
       end
 
       @story = DraftStory.new(
-        four_by_four: four_by_four,
+        uid: four_by_four,
         block_ids: merge_existing_and_new_block_ids,
         created_by: user
       )

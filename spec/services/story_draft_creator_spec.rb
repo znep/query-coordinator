@@ -9,7 +9,7 @@ RSpec.describe StoryDraftCreator do
   let(:story_with_no_existing_blocks) {
     FactoryGirl.create(
       :draft_story,
-      four_by_four: four_by_four,
+      uid: four_by_four,
       created_by: user
     )
   }
@@ -85,7 +85,7 @@ RSpec.describe StoryDraftCreator do
     @existing_draft_story ||= begin
       FactoryGirl.create(
         :draft_story,
-        four_by_four: four_by_four,
+        uid: four_by_four,
         created_by: user
       )
     end
@@ -109,7 +109,7 @@ RSpec.describe StoryDraftCreator do
 
     context 'when called on an instance created with valid attributes' do
 
-      context 'with no four by four' do
+      context 'with no uid' do
 
         let(:story_creator) { StoryDraftCreator.new(user, blocks: blocks) }
 
@@ -155,7 +155,7 @@ RSpec.describe StoryDraftCreator do
         end
       end
 
-      context 'with a four by four' do
+      context 'with a uid' do
 
         let(:story_creator) {
           StoryDraftCreator.new(
@@ -189,7 +189,7 @@ RSpec.describe StoryDraftCreator do
           before do
             FactoryGirl.create(
               :draft_story,
-              four_by_four: four_by_four,
+              uid: four_by_four,
               block_ids: [ existing_block_id ],
               created_by: user
             )
@@ -388,7 +388,7 @@ RSpec.describe StoryDraftCreator do
             @new_block = FactoryGirl.create(:block)
             existing_story = FactoryGirl.create(
               :draft_story,
-              four_by_four: four_by_four,
+              uid: four_by_four,
               block_ids: [ @new_block.id ]
             )
           end

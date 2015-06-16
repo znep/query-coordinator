@@ -6,17 +6,31 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
   var uberFlyoutContent;
   var hintWidth;
   var hintHeight;
+  var target;
+  var mouseX;
+  var mouseY;
 
   // To support refreshFlyout, we have an additional stream of mouse positions
   // that replays events from WindowState.mousePositionSubject when needed.
   var replayedMousePositionSubject = new Rx.Subject();
 
+  // Only update the saved target and mouse position on
+  // these observables.
   Rx.Observable.merge(
     WindowState.mousePositionSubject,
     replayedMousePositionSubject
   ).subscribe(function(e) {
+    target = e.target;
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
 
-    var target = e.target;
+  Rx.Observable.merge(
+    WindowState.mousePositionSubject,
+    WindowState.scrollPositionSubject,
+    replayedMousePositionSubject
+  ).subscribe(function(e) {
+
     var flyoutContent;
     var flyoutWidth;
     var flyoutHeight;
@@ -28,6 +42,9 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
 
     if (!_.isEmpty(uberFlyout) && target) {
 
+      // Work-around for browsers with no pointer-event support.
+      target = targetUnder();
+
       // Find a selector that matches our target, if it exists.
       var selectorHandler = _.find(handlers, function(selectorHandlers, selector) {
         return $(target).is($(selector));
@@ -37,9 +54,9 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
       if (selectorHandler) {
         _.each(selectorHandler, function(handler) {
 
-          // Correctly position and render the flyout element
+          // Correctly position and render the flyout target
           flyoutTarget = handler.positionOn(target);
-          flyoutContent = handler.render(flyoutTarget);
+          flyoutContent = handler.render(target, flyoutTarget);
 
           // Check that the content is defined
           if (_.isDefined(flyoutContent) && _.isDefined(flyoutTarget)) {
@@ -86,8 +103,8 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
 
                 // Position the flyout perfectly so that the hint points
                 // to the cursor pointer.
-                cssFlyout.left = e.clientX;
-                cssFlyout.top = e.clientY - flyoutHeight - hintHeight -
+                cssFlyout.left = mouseX;
+                cssFlyout.top = mouseY - flyoutHeight - hintHeight -
                   Constants.FLYOUT_BOTTOM_PADDING;
 
                 // If the right side of the flyout will be cut off
@@ -178,6 +195,19 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
   hintWidth = uberFlyout.children('.hint').outerWidth();
   hintHeight = uberFlyout.children('.hint').outerHeight();
 
+  // If pointer-events are not supported and we are hovering over the
+  // flyout, this hack will get the target element underneath it.
+  function targetUnder() {
+    var mouseoverFlyout = uberFlyout.has($(target)).length > 0;
+
+    if (!Modernizr.pointerEvents && mouseoverFlyout) {
+      uberFlyout.hide();
+      target = document.elementFromPoint(mouseX, mouseY);
+      uberFlyout.show();
+    }
+    return target;
+  }
+
   return {
     /**
      * Register a flyout under a CSS class.
@@ -245,11 +275,14 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
         });
       }
     },
-    // Flyout handlers are typically rechecked on mouse movement. If you've made changes to the handlers or their
-    // source data and want to see the changes immediately, this function will force a refresh.
+    // Flyout handlers are typically rechecked on mouse movement.
+    // If you've made changes to the handlers or their source data
+    // and want to see the changes immediately, this function
+    // will force a refresh.
     refreshFlyout: function(value) {
       value = value || WindowState.mousePositionSubject.value;
       replayedMousePositionSubject.onNext(value);
-    }
+    },
+    targetUnder: targetUnder
   };
 });

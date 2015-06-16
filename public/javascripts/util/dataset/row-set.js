@@ -780,7 +780,7 @@ var RowSet = ServerModel.extend({
 
         var viewId = this._dataset.nbe_view_id || this._dataset._queryBase.id;
         args.isSODA = true;
-        args.url = args.url || '/api/id/' + viewId + '.json';
+        args.url = args.url || '/api/id/{0}.json'.format(viewId);
         args.params = args.params || {};
         args.params['$$version'] = '2.0';
 

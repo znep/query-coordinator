@@ -24,8 +24,9 @@ module DatasetsHelper
   end
 
   def license_select_options(selected_license = nil)
-    selected_license = "CC" if selected_license.include?("CC")
-    selected_license = "ODC" if selected_license.include?("ODC")
+    selected_license = '' if selected_license.nil?
+    selected_license = 'CC' if selected_license.include?('CC')
+    selected_license = 'ODC' if View.open_data_commons.keys.include? selected_license
     options_for_select(View.licenses.invert.sort { |a, b| a.first <=> b.first },
                        selected_license)
   end

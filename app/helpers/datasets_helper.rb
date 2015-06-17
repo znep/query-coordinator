@@ -24,15 +24,20 @@ module DatasetsHelper
   end
 
   def license_select_options(selected_license = nil)
-    if selected_license.include?("CC")
-      selected_license = "CC"
-    end
+    selected_license = '' if selected_license.nil?
+    selected_license = 'CC' if selected_license.include?('CC')
+    selected_license = 'ODC' if View.open_data_commons.keys.include? selected_license
     options_for_select(View.licenses.invert.sort { |a, b| a.first <=> b.first },
                        selected_license)
   end
 
   def creative_commons_select_options(selected_option = nil)
     options_for_select(View.creative_commons.invert.sort { |a, b|
+      a.first <=> b.first }, selected_option)
+  end
+
+  def open_data_commons_select_options(selected_option = nil)
+    options_for_select(View.open_data_commons.invert.sort { |a, b|
       a.first <=> b.first }, selected_option)
   end
 

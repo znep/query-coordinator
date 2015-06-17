@@ -105,6 +105,14 @@ $(document).on('ready', function() {
     dragDrop.drag(e.clientX, e.clientY, block);
   });
 
+  $('.inspiration-story').on('dblclick', '.block', function(e) {
+    var blockId = e.currentTarget.getAttribute('data-block-id');
+    var blockToInsert = inspirationStory.getBlockWithId(blockId);
+
+    userStory.appendBlock(blockToInsert);
+    userStoryRenderer.render();
+  });
+
   $('.user-story-container').on('mouesenter', function() {
 
     if (dragDrop.isDragging()) {
@@ -136,4 +144,5 @@ $(document).on('ready', function() {
       userStoryRenderer.render();
     }
   });
+
 });

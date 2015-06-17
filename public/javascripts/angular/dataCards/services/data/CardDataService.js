@@ -148,6 +148,49 @@
           });
       },
 
+      // Group data from fieldName into buckets of size options.bucketSize
+      getBucketedData: function(fieldName, datasetId, whereClauseFragment, aggregationClauseData, options) {
+        Assert(_.isString(fieldName), 'fieldName should be a string');
+        Assert(_.isString(datasetId), 'datasetId should be a string');
+        Assert(_.isObject(options) && _.isFinite(options.bucketSize),
+          'options.bucketSize is a required argument');
+
+        datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
+
+        var whereClause = buildWhereClause(whereClauseFragment);
+        var aggregationClause = buildAggregationClause(aggregationClauseData);
+
+        var magnitudeAlias = SoqlHelpers.getFieldNameAlias('magnitude');
+        var valueAlias = SoqlHelpers.getFieldNameAlias('value');
+
+        // Wrap field name in ticks and replace dashes with underscores
+        fieldName = SoqlHelpers.formatFieldName(fieldName);
+
+        var queryTemplate = 'select signed_magnitude_linear({0}, {5}) as {3}, {2} as {4} {1} group by {3} order by {3}';
+        var query = queryTemplate.format(
+          fieldName,
+          whereClause,
+          aggregationClause,
+          magnitudeAlias,
+          valueAlias,
+          options.bucketSize
+        );
+
+        var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
+        url.searchParams.set('$query', query);
+        var config = httpConfig.call(this);
+
+        return http.get(url.href, config).then(function(response) {
+          var data = response.data;
+          return _.map(data, function(item) {
+            return {
+              magnitude: parseFloat(item[magnitudeAlias]),
+              value: parseFloat(item[valueAlias])
+            };
+          });
+        });
+      },
+
       // This function's return value is undefined if the domain of the
       // dataset is undefined. The cardVisualizationTimelineChart checks for
       // undefined values and responds accordingly.
@@ -586,37 +629,8 @@
           var data = response.data;
           return _.isEmpty(data) ? data : _.mapValues(data[0], parseFloat);
         });
-      },
-
-      // Group data from fieldName into buckets of size options.bucketSize
-      getBucketedData: function(fieldName, datasetId, whereClauseFragment, aggregationClauseData, options) {
-        Assert(_.isString(fieldName), 'fieldName should be a string');
-        Assert(_.isString(datasetId), 'datasetId should be a string');
-        Assert(_.isNumber(options.bucketSize), 'options.bucketSize is a required argument');
-
-        datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
-
-        var whereClause = buildWhereClause(whereClauseFragment);
-        var aggregationClause = buildAggregationClause(aggregationClauseData);
-
-        // Wrap field name in ticks and replace dashes with underscores
-        fieldName = SoqlHelpers.formatFieldName(fieldName);
-
-        var queryTemplate = 'select signed_magnitude_lin({0}) as magnitude, {2} as value {1} group by magnitude order by magnitude';
-        var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
-        url.searchParams.set('$query', queryTemplate.format(fieldName, whereClause, aggregationClause));
-        var config = httpConfig.call(this);
-
-        return http.get(url.href, config).then(function(response) {
-          var data = repsonse.data;
-          return _.map(data, function(item) {
-            return {
-              magnitude: parseFloat(item.magnitude),
-              value: parseFloat(item.value)
-            };
-          });
-        });
       }
+
     };
 
     return serviceDefinition;

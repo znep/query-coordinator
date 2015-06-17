@@ -164,7 +164,9 @@ describe('CardDataService', function() {
       var httpSpy = sinon.spy(http, 'get');
       CardDataService.getData('name', fake4x4, null, countAggregation);
       $httpBackend.flush();
-      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.not.match(/select\+`name`\+as\+name/i);
+      var request = decodeURIComponent(httpSpy.firstCall.args[0]);
+      expect(request).to.not.match(/select\+`name`\+as\+name/i);
+      expect(request).to.not.match(/select\+`name`\+as\+`name`/i);
       http.get.restore();
     });
 
@@ -181,7 +183,9 @@ describe('CardDataService', function() {
 
       CardDataService.getData('fakeNumberColumn', fake4x4, null, sumValueAggregation);
       $httpBackend.flush();
-      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.not.match(/sum(`value`)\+as\+value/i);
+      var request = decodeURIComponent(httpSpy.firstCall.args[0]);
+      expect(request).to.not.match(/sum(`value`)\+as\+value/i);
+      expect(request).to.not.match(/sum(`value`)\+as\+`value`/i);
       http.get.restore();
     });
 
@@ -231,6 +235,211 @@ describe('CardDataService', function() {
       $httpBackend.flush();
     });
 
+  });
+
+  describe('getMagnitudeData', function() {
+    it('should throw on bad parameters', function() {
+      expect(function() {
+        CardDataService.getMagnitudeData();
+      }).to.throw();
+      expect(function() {
+        CardDataService.getMagnitudeData({});
+      }).to.throw();
+      expect(function() {
+        CardDataService.getMagnitudeData('field');
+      }).to.throw();
+      expect(function() {
+        CardDataService.getMagnitudeData('field', 'dead-beef', null, {});
+      }).to.throw();
+    });
+
+    it('should request the correct url', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getMagnitudeData('fakeNumberColumn', fake4x4, null, countAggregation);
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /\/api\/id\/fake-data\.json\?\$query=select\+signed_magnitude_10\(`fakeNumberColumn`\)\+as\+\w+,\+count\(\*\)\+as\+\w+\++\+group\+by\+\w+\+order\+by\+\w+\+limit\+200/i
+      );
+      http.get.restore();
+    });
+
+    it('should pass through the where clause', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getMagnitudeData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', countAggregation);
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /where\+MAGICAL_WHERE_CLAUSE/i
+      );
+      http.get.restore();
+    });
+
+    it('should pass through the aggregation options', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getMagnitudeData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', { 'function': 'sum', 'column': {}, 'fieldName': 'fakeNumberColumn' });
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /sum\(`fakeNumberColumn`\)\+as\+\w+.+where\+MAGICAL_WHERE_CLAUSE/i
+      );
+      http.get.restore();
+    });
+
+    it('should not create a circular alias when fieldName is magnitude', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getMagnitudeData('magnitude', fake4x4, null, countAggregation);
+      $httpBackend.flush();
+      var request = decodeURIComponent(httpSpy.firstCall.args[0]);
+      expect(request).to.not.match(/select\+signed_magnitude_10\(`magnitude`\)\+as\+magnitude/i);
+      expect(request).to.not.match(/select\+signed_magnitude_10\(`magnitude`\)\+as\+`magnitude`/i);
+      http.get.restore();
+    });
+
+    it('should not create a circular alias when aggregation field is value', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+
+      var sumValueAggregation = {
+        'function': 'sum',
+        'column': {},
+        'fieldName': 'value',
+        'unit': 'rowDisplayUnit'
+      };
+
+      CardDataService.getMagnitudeData('fakeNumberColumn', fake4x4, null, sumValueAggregation);
+      $httpBackend.flush();
+      var request = decodeURIComponent(httpSpy.firstCall.args[0]);
+      expect(request).to.not.match(/sum(`value`)\+as\+value/i);
+      expect(request).to.not.match(/sum(`value`)\+as\+`value`/i);
+      http.get.restore();
+    });
+
+    it('should reject the promise on 404', function(done) {
+      fakeDataRequestHandler.respond(404, []);
+      assertReject(CardDataService.getMagnitudeData('fakeNumberColumn', fake4x4, null, countAggregation), done);
+      $httpBackend.flush();
+    });
+
+    it('should reject the promise on 500', function(done) {
+      fakeDataRequestHandler.respond(500, []);
+      assertReject(CardDataService.getMagnitudeData('fakeNumberColumn', fake4x4, null, countAggregation), done);
+      $httpBackend.flush();
+    });
+
+    it('should reject the promise on 503', function(done) {
+      fakeDataRequestHandler.respond(503, []);
+      assertReject(CardDataService.getMagnitudeData('fakeNumberColumn', fake4x4, null, countAggregation), done);
+      $httpBackend.flush();
+    });
+  });
+
+  describe('getBucketedData', function() {
+    var defaultOptions;
+
+    beforeEach(function() {
+      defaultOptions = {bucketSize: 10};
+    });
+
+    it('should throw on bad parameters', function() {
+      expect(function() {
+        CardDataService.getBucketedData();
+      }).to.throw();
+      expect(function() {
+        CardDataService.getBucketedData({});
+      }).to.throw();
+      expect(function() {
+        CardDataService.getBucketedData('field');
+      }).to.throw();
+      expect(function() {
+        CardDataService.getBucketedData('field', 'dead-beef', null, {});
+      }).to.throw();
+      expect(function() {
+        CardDataService.getBucketedData('field', 'dead-beef', null, {}, {color: 'purple'});
+      }).to.throw();
+    });
+
+    it('should request the correct url', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getBucketedData('fakeNumberColumn', fake4x4, null, countAggregation, defaultOptions);
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /\/api\/id\/fake-data\.json\?\$query=select\+signed_magnitude_linear\(`fakeNumberColumn`\,\+\d+\)\+as\+\w+,\+count\(\*\)\+as\+\w+\++\+group\+by\+\w+\+order\+by\+\w+/i
+      );
+      http.get.restore();
+    });
+
+    it('should pass through the where clause', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getBucketedData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', countAggregation, defaultOptions);
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /where\+MAGICAL_WHERE_CLAUSE/i
+      );
+      http.get.restore();
+    });
+
+    it('should pass through the aggregation options', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getBucketedData('fakeNumberColumn', fake4x4, 'MAGICAL_WHERE_CLAUSE', { 'function': 'sum', 'column': {}, 'fieldName': 'fakeNumberColumn' }, defaultOptions);
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /sum\(`fakeNumberColumn`\)\+as\+\w+.+where\+MAGICAL_WHERE_CLAUSE/i
+      );
+      http.get.restore();
+    });
+
+    it('should not create a circular alias when fieldName is magnitude', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getBucketedData('magnitude', fake4x4, null, countAggregation, defaultOptions);
+      $httpBackend.flush();
+      var request = decodeURIComponent(httpSpy.firstCall.args[0]);
+      expect(request).to.not.match(/select\+signed_magnitude_linear\(`magnitude`\)\+as\+magnitude/i);
+      expect(request).to.not.match(/select\+signed_magnitude_linear\(`magnitude`\,\+\d+\)\+as\+`magnitude`/i);
+      http.get.restore();
+    });
+
+    it('should not create a circular alias when aggregation field is value', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+
+      var sumValueAggregation = {
+        'function': 'sum',
+        'column': {},
+        'fieldName': 'value',
+        'unit': 'rowDisplayUnit'
+      };
+
+      CardDataService.getBucketedData('fakeNumberColumn', fake4x4, null, sumValueAggregation, defaultOptions);
+      $httpBackend.flush();
+      var request = decodeURIComponent(httpSpy.firstCall.args[0]);
+      expect(request).to.not.match(/sum(`value`)\+as\+value/i);
+      expect(request).to.not.match(/sum(`value`)\+as\+`value`/i);
+      http.get.restore();
+    });
+
+    it('should reject the promise on 404', function(done) {
+      fakeDataRequestHandler.respond(404, []);
+      assertReject(CardDataService.getBucketedData('fakeNumberColumn', fake4x4, null, countAggregation, defaultOptions), done);
+      $httpBackend.flush();
+    });
+
+    it('should reject the promise on 500', function(done) {
+      fakeDataRequestHandler.respond(500, []);
+      assertReject(CardDataService.getBucketedData('fakeNumberColumn', fake4x4, null, countAggregation, defaultOptions), done);
+      $httpBackend.flush();
+    });
+
+    it('should reject the promise on 503', function(done) {
+      fakeDataRequestHandler.respond(503, []);
+      assertReject(CardDataService.getBucketedData('fakeNumberColumn', fake4x4, null, countAggregation, defaultOptions), done);
+      $httpBackend.flush();
+    });
   });
 
   describe('getTimelineDomain', function() {

@@ -151,7 +151,6 @@
       var blocks = story.getBlocks();
       var renderedBlocks;
       var layoutHeight;
-      var translation;
 
       _removeAbsentBlocks(blocks);
 
@@ -176,15 +175,13 @@
       blocks.forEach(function(block, i) {
 
         var blockElement = _getCachedBlockElement(block);
+        var translation;
 
         // If we are supposed to display the insertion hint at this
         // block index, first position the insertion hint and adjust
         // the overall layout height.
         if (insertionHint && insertionHintIndex === i) {
-
-          translation = 'translate(0,' + layoutHeight + 'px)';
-          insertionHint.css('transform', translation).removeClass('hidden');
-          layoutHeight += insertionHint.outerHeight(true) + BLOCK_VERTICAL_PADDING;
+          layoutHeight += _layoutInsertionHint(layoutHeight);
         }
 
         // Render the current block according to the current layout height.
@@ -194,13 +191,18 @@
       });
 
       if (insertionHint && insertionHintIndex === blocks.length) {
-
-        translation = 'translate(0,' + layoutHeight + 'px)';
-        insertionHint.css('transform', translation).removeClass('hidden');
-        layoutHeight += insertionHint.outerHeight(true) + BLOCK_VERTICAL_PADDING;
+        layoutHeight += _layoutInsertionHint(layoutHeight);
       }
 
       container.height(layoutHeight * scaleFactor);
+    }
+
+    function _layoutInsertionHint(layoutHeight) {
+
+      var translation = 'translate(0,' + layoutHeight + 'px)';
+
+      insertionHint.css('transform', translation).removeClass('hidden');
+      return (insertionHint.outerHeight(true) + BLOCK_VERTICAL_PADDING);
     }
 
     function _renderBlock(block) {

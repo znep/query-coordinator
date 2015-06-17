@@ -542,6 +542,17 @@ describe('table directive', function() {
           expect($('.flyout a').text()).to.equal('Click to sort newest first');
         });
 
+        it('should be correct for the first column', function() {
+          fixtureMetadata['testColumnDetailsAsTableWantsThem'][0].description = 'duhscreepshin';
+          var table = createTableCard(true);
+          table.find('.th').eq(0).trigger('mouseenter');
+
+          // Verify the title and description are there
+          var element = $('.flyout .flyout-title');
+          var description = element.children().eq(1).html();
+          expect($.trim(description)).to.equal('duhscreepshin');
+        });
+
       });
 
     });

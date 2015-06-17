@@ -579,21 +579,16 @@
             interact: true,
 
             title: function($target, $head, options) {
-              var title = $target.text();
+              var title = _.escape($target.text());
               var index = $target.data('index');
-              if (index) { // Should always exist since it's set in ng-repeat, but hey. safe > sorry
-                var columnDetail = scope.filteredColumnDetails[index];
-                if (columnDetail) { // ditto - scope.filteredColumnDetails mirrors scope.headers
-                  var description = columnDetail.description;
-                  if (description) { // we may not have a description, so check.
-                    return '<div class="title">{0}</div><div class="description">{1}</div>'.format(
-                      _.escape(title),
-                      description
-                    );
-                  }
-                }
+              var description = _.get(scope.filteredColumnDetails, index + '.description');
+              if (_.isDefined(description)) {
+                return '<div class="title">{0}</div><div class="description">{1}</div>'.format(
+                  title,
+                  description
+                );
               }
-              return _.escape(title);
+              return title;
             },
 
             html: function($target, $head, options, $element) {

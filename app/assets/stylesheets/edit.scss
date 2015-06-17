@@ -20,6 +20,15 @@ body {
   cursor: grabbing !important;
 }
 
+.dragging iframe {
+  /* Temporary hack - this workaround does not work on all browsers.
+   * We can't currently detect drops over an iframe
+   * as the iframe eats all mouse events. While we figure out a better
+   * approach, this works around the issue.
+   */
+  pointer-events: none;
+}
+
 .header {
   @include unselectable();
   @include clearfix();

@@ -27,7 +27,7 @@ $(document).on('ready', function() {
     story: userStory,
     storyContainerElement: $('.user-story'),
     editable: true,
-    insertionHintElement: $('.user-story-insertion-hint'),
+    insertionHintElement: $('#story-insertion-hint'),
     textEditorManager: textEditorManager,
     onRenderError: function() {}
   };

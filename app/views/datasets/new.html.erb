@@ -257,6 +257,11 @@
                 <div class="additionalHelp"><%= t("#{prefix}.license_help") %></div>
               </div>
 
+              <div class="line openDataCommonsLine clearfix">
+                <label for="view_ccLicenseId" class="required"><%= t("screens.dataset_new.metadata.creative_commons_type") %></label>
+                <%= select_tag("view_odcLicenseId", open_data_commons_select_options) %>
+              </div>
+
               <div class="line creativeCommonsLine clearfix">
                 <label for="view_ccLicenseId" class="required"><%= t("screens.dataset_new.metadata.creative_commons_type") %></label>
                 <%= select_tag("view_ccLicenseId", creative_commons_select_options) %>

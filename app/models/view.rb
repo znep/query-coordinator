@@ -1,7 +1,7 @@
 class View < Model
   include Rails.application.routes.url_helpers
 
-  cattr_accessor :licenses, :creative_commons, :merged_licenses,
+  cattr_accessor :licenses, :creative_commons, :open_data_commons, :merged_licenses,
     :filter_type1s
   attr_accessor :custom_vis_cols, :sodacan
 
@@ -1482,14 +1482,16 @@ class View < Model
   @@licenses = {
     '' => "-- #{I18n.t 'core.no_license'} --",
     'PUBLIC_DOMAIN' => 'Public Domain',
-    'OPEN_DATABASE_LICENSE' => 'Open Database License',
     'IODL' => 'Italian Open Data License 2.0',
+    'UK_OGLV3.0' => 'UK Open Government Licence v3',
+    'ODC' => 'Open Data Commons',
+    'CC' => 'Creative Commons'
+  }
+
+  @@open_data_commons = {
     'PDDL' => 'Open Data Commons Public Domain Dedication and License',
     'ODC_BY' => 'Open Data Commons Attribution Licence',
     'ODBL' => 'Open Data Commons Database Licence',
-    'UK_OGLV3.0' => 'UK Open Government Licence v3',
-    'OSODL' => 'OS Open Data Licence',
-    'CC' => 'Creative Commons'
   }
 
   @@creative_commons = {
@@ -1508,13 +1510,12 @@ class View < Model
   @@merged_licenses = {
     '' => "-- #{I18n.t 'core.no_license'} --",
     'PUBLIC_DOMAIN' => 'Public Domain',
-    'OPEN_DATABASE_LICENSE' => 'Open Database License',
     'IODL' => 'Italian Open Data License 2.0',
+    'UK_OGLV3.0' => 'UK Open Government Licence v3',
+    'ODC' => 'Open Data Commons',
     'PDDL' => 'Open Data Commons Public Domain Dedication and License',
     'ODC_BY' => 'Open Data Commons Attribution Licence',
     'ODBL' => 'Open Data Commons Database Licence',
-    'UK_OGLV3.0' => 'UK Open Government Licence v3',
-    'OSODL' => 'OS Open Data Licence',
     'CC' => 'Creative Commons',
     'CC0_10' => '1.0 Universal (Public Domain Dedication)',
     'CC_30_BY' => 'Attribution 3.0 Unported',

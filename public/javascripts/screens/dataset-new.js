@@ -267,6 +267,11 @@ $wizard.wizard({
                                 messages: { required: $.t('screens.dataset_new.errors.missing_data_provider') }
                             });
                     }
+                    else if ($(this).val() == 'ODC') {
+                        $this.attr('name', '');
+                        $pane.find('#view_odcLicenseId').attr('name', 'view[licenseId]');
+                        $pane.find('.openDataCommonsLine').slideDown();
+                    }
                     else
                     {
                         $this.attr('name', 'view[licenseId]');

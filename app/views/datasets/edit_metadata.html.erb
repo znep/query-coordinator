@@ -66,8 +66,21 @@
     <h2><%= t('screens.edit_metadata.licensing_attr') %></h2>
 
     <div class="line clearfix">
-      <label for="view_licenseId"><%= t('screens.edit_metadata.licensing') %></label>
-      <%= select_tag("view[licenseId]", merged_license_select_options(@view.licenseId)) %>
+      <label for="view_licenseType"><%= t('screens.edit_metadata.license_type') %></label>
+      <%= select_tag("view[licenseType]", license_select_options(@view.licenseId)) %>
+    </div>
+
+    <div class="line openDataCommonsLine clearfix">
+      <label for="view_ccLicenseId" class="required"><%= t("screens.edit_metadata.licensing") %></label>
+      <%= select_tag("view_odcLicenseId", open_data_commons_select_options) %>
+    </div>
+
+    <div class="line creativeCommonsLine clearfix">
+      <label for="view_ccLicenseId" class="required"><%= t("screens.edit_metadata.licensing") %></label>
+      <%= select_tag("view_ccLicenseId", creative_commons_select_options) %>
+    </div>
+
+    <div class="line clearfix">
       <div class="additionalHelp"><%= t('screens.edit_metadata.license_help') %></div>
     </div>
 

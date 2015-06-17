@@ -664,6 +664,12 @@
       var brushClearText = brushClear.selectAll('.histogram-brush-clear-text').
         data(brushClearData);
 
+      var filterIcon = brushClear.selectAll('.filter-icon').
+        data(brushClearData);
+
+      var brushClearX = brushClear.selectAll('.histogram-brush-clear-x').
+        data(brushClearData);
+
       brushClearText.enter().
         insert('text').
         classed('histogram-brush-clear-text', true);
@@ -681,9 +687,6 @@
           return 'translate({0}, {1})'.format(offset, this.getBoundingClientRect().height);
         });
 
-      var brushClearX = brushClear.selectAll('.histogram-brush-clear-x').
-        data(brushClearData);
-
       brushClearX.enter().
         append('text').
         classed('histogram-brush-clear-x', true);
@@ -698,9 +701,6 @@
           return 'translate({0}, {1})'.format(offset, brushTextBBox.height);
         });
 
-      var filterIcon = brushClear.selectAll('.filter-icon').
-        data(brushClearData);
-
       filterIcon.enter().
         insert('path').
         classed('filter-icon', true).
@@ -712,13 +712,32 @@
           var halfTextWidth = brushTextBBox.width / 2;
           var halfSelectionWidth = (d.brushRight - d.brushLeft) / 2;
           var offset = halfSelectionWidth - halfTextWidth;
-          return 'translate({0}, {1}) translate(0, 1) rotate(180) scale(0.015)'.format(offset, brushTextBBox.height);
+          return 'translate({0}, {1}) translate(0, 1) rotate(180) scale(0.015)'.
+            format(offset, brushTextBBox.height);
         });
 
       brushClear.
         style('display', function(d) { return d.brushHasExtent ? null : 'none'; }).
         attr('transform', function(d) {
-          return 'translate({0}, {1})'.format(d.brushLeft + d.leftOffset, d.top + d.offset);
+          // Since we are in the middle of modifying this node, we can't trust
+          // its reported width
+          var width = (
+            brushClearText.node().getBoundingClientRect().width +
+            brushClearX.node().getBoundingClientRect().width +
+            filterIcon.node().getBoundingClientRect().width
+          );
+          var svgWidth = dom.svg.node().getBoundingClientRect().width;
+          var baseOffset = d.brushLeft + d.leftOffset;
+          var clampedLeftOffset = baseOffset;
+          // Only if the width of the content is wider than the width of the selection
+          // do we need to clamp left
+          if (width > (d.brushRight - d.brushLeft)) {
+            var clampedLeftMin = (width / 2) - d.leftOffset;
+            clampedLeftOffset = Math.max(clampedLeftMin, baseOffset);
+          }
+          var clampedRightMax = svgWidth - width;
+          return 'translate({0}, {1})'.
+            format(Math.min(clampedLeftOffset, clampedRightMax), d.top + d.offset);
         }).
         attr('height', function(d) {
           return '2em';
@@ -735,7 +754,7 @@
       dom.svg.call(setupBrushHandles, height, dom.margin.left);
 
       return brush;
-    };
+    }
 
     // Renders the card
     function render(axis, data, dimensions, dom, svg) {

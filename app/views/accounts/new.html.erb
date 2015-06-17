@@ -12,7 +12,6 @@
 
 <%- openid_login = CurrentDomain.module_enabled?(:openid_login) -%>
 
-<h1 class="signup-site-name"><%= CurrentDomain.strings.company %></h1>
 <div class="modalContentBox signupModal siteContent <%= openid_login ? 'wide' : 'narrow' %>">
   <div class="contentHeader">
     <%= render :partial => 'accounts/login_header' %> 

@@ -44,7 +44,7 @@
       };
     };
 
-    var links = document.querySelectorAll('.btn-login');
+    var links = document.querySelectorAll('.auth0login .button');
     var back = document.querySelector('.login-back');
 
     links = Array.prototype.slice.apply(links);

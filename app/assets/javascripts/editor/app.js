@@ -109,7 +109,7 @@ $(document).on('ready', function() {
     var blockId = e.currentTarget.getAttribute('data-block-id');
     var blockToInsert = inspirationStory.getBlockWithId(blockId);
 
-    userStory.appendBlock(blockToInsert);
+    userStory.appendBlock(blockToInsert.clone());
     userStoryRenderer.render();
   });
 
@@ -140,7 +140,7 @@ $(document).on('ready', function() {
 
       var blockToInsert = dragDrop.drop();
 
-      userStory.appendBlock(blockToInsert);
+      userStory.appendBlock(blockToInsert.clone());
       userStoryRenderer.render();
     }
   });

@@ -11,6 +11,7 @@ describe('timelineChart', function() {
   var rootScope;
   var scope;
   var timeout;
+  var Constants;
   var testData;
   var testJson = 'karma-test/dataCards/test-data/timelineChartTest/timelineChartTestData.json';
   var allLabelsTestJson = 'karma-test/dataCards/test-data/timelineChartTest/allLabelsTimelineChartTestData.json';
@@ -43,6 +44,7 @@ describe('timelineChart', function() {
 
   beforeEach(module('dataCards/timeline-chart.sass'));
   beforeEach(module('dataCards/flyout.sass'));
+  beforeEach(module('dataCards/theme/default.sass'));
 
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
 
@@ -65,6 +67,7 @@ describe('timelineChart', function() {
     rootScope = $injector.get('$rootScope');
     scope = rootScope.$new();
     timeout = $injector.get('$timeout');
+    Constants = $injector.get('Constants');
     unfilteredTestData = unpickleTestData(testHelpers.getTestJson(testJson), false);
     allLabelsTestData = unpickleTestData(testHelpers.getTestJson(allLabelsTestJson), false);
     filteredTestData = unpickleTestData(testHelpers.getTestJson(testJson), true);
@@ -496,7 +499,7 @@ describe('timelineChart', function() {
       target: $('.timeline-chart-highlight-target')[0]
     });
 
-    var wasThenHighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 1;
+    var wasThenHighlighted = $('.timeline-chart-highlight-container').children('g').children().length !== 0;
 
     expect(wasUnhighlighted).to.equal(true);
     expect(wasThenHighlighted).to.equal(true);
@@ -515,7 +518,7 @@ describe('timelineChart', function() {
       target: $('.timeline-chart-highlight-target')[0]
     });
 
-    var wasThenHighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 1;
+    var wasThenHighlighted = $('.timeline-chart-highlight-container').children('g').children().length !== 0;
 
     mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
     mockWindowStateService.mousePositionSubject.onNext({
@@ -544,7 +547,7 @@ describe('timelineChart', function() {
       target: $('.x-tick-label')[0]
     });
 
-    var wasThenHighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 1;
+    var wasThenHighlighted = $('.timeline-chart-highlight-container').children('g').children().length !== 0;
 
     expect(wasUnhighlighted).to.equal(true);
     expect(wasThenHighlighted).to.equal(true);
@@ -1026,7 +1029,7 @@ describe('timelineChart', function() {
           target: $('.timeline-chart-highlight-target')[0]
         });
 
-        var wasThenHighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 1;
+        var wasThenHighlighted = $('.timeline-chart-highlight-container').children('g').children().length !== 0;
 
         expect(wasUnhighlighted).to.equal(true);
         expect(wasThenHighlighted).to.equal(true);
@@ -1079,7 +1082,7 @@ describe('timelineChart', function() {
           target: $('.timeline-chart-highlight-target')[0]
         });
 
-        var wasThenHighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 1;
+        var wasThenHighlighted = $('.timeline-chart-highlight-container').children('g').children().length !== 0;
 
         expect(wasUnhighlighted).to.equal(true);
         expect(wasThenHighlighted).to.equal(true);
@@ -1186,4 +1189,94 @@ describe('timelineChart', function() {
 
   });
 
+  describe('flyouts', function() {
+
+    var chart;
+    var chartHeight;
+    var chartWidth = 640;
+    var chartTop;
+    var flyout;
+    var hint;
+    var TOLERANCE = 5;
+
+    beforeEach(function() {
+      chart = createTimelineChart(chartWidth, false);
+      chartHeight = chart.height();
+      chart.css({
+        'margin-top': 200
+      });
+      flyout = $('#uber-flyout');
+      hint = flyout.find('.hint');
+      chartTop = chart.offset().top;
+    });
+
+    function simulateMouseover(x, y, target) {
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: x,
+        clientY: y,
+        target: target
+      });
+      mockWindowStateService.mousePositionSubject.onNext({
+        clientX: x,
+        clientY: y,
+        target: target
+      });
+    }
+
+    /* This function tests that the flyout is positioned properly.
+     * @param {Boolean} interval - Whether or not we are hovering over an interval.
+     */
+    function expectFlyoutPosition(interval) {
+      var flyoutTargetDimensions = $('.timeline-chart-flyout-target').get(0).getBoundingClientRect();
+      var flyoutTargetMiddle = flyoutTargetDimensions.left + (flyoutTargetDimensions.width / 2);
+      var hintOffsetLeft = hint.offset().left;
+      var flyoutTargetTop = flyoutTargetDimensions.top;
+      var hintOffsetTop = hint.offset().top;
+      var chartOffsetTop = chart.offset().top;
+
+      expect(flyoutTargetMiddle - hintOffsetLeft).to.be.within(-TOLERANCE, TOLERANCE);
+      if (interval) {
+        expect(chartOffsetTop - hintOffsetTop - hint.height() - Constants.FLYOUT_BOTTOM_PADDING).
+          to.be.within(-TOLERANCE, TOLERANCE);
+      } else {
+        expect(flyoutTargetTop - hintOffsetTop - hint.height() - Constants.FLYOUT_BOTTOM_PADDING).
+          to.be.within(-TOLERANCE, TOLERANCE);
+      }
+    }
+
+    it('should appear on hover over the chart display', function() {
+      var highlightTarget = $('.timeline-chart-highlight-target')[0];
+      simulateMouseover(chartWidth / 2, (chartHeight / 2) + chartTop, highlightTarget);
+      expect(flyout.is(':visible')).to.be.true;
+    });
+
+    it('should appear on hover over the chart labels', function() {
+      var labelTarget = $('.x-tick-label')[0];
+      simulateMouseover(chartWidth / 2, (chartHeight - 5) + chartTop, labelTarget);
+      expect(flyout.is(':visible')).to.be.true;
+    });
+
+    it('should be positioned correctly on the timeline path if hovering over chart display', function() {
+      var highlightTarget = $('.timeline-chart-highlight-target')[0];
+      simulateMouseover(chartWidth / 2, (chartHeight / 2) + chartTop, highlightTarget);
+      expectFlyoutPosition();
+    });
+
+    it('should be positioned correctly above the timeline if hovering on a large interval', function() {
+      var labelTarget = $('.x-tick-label')[0];
+      simulateMouseover(chartWidth / 2, (chartHeight - 5) + chartTop, labelTarget);
+      expectFlyoutPosition(true);
+    });
+
+    it('should have the correct title', function() {
+      var labelTarget = $('.x-tick-label')[0];
+      var labelTitle = $(labelTarget).attr('data-flyout-label');
+      simulateMouseover(chartWidth / 2, (chartHeight - 5) + chartTop, labelTarget);
+
+      var flyoutTitle = flyout.find('.flyout-title').text();
+      expect(flyoutTitle).to.equal(labelTitle);
+    });
+  });
 });

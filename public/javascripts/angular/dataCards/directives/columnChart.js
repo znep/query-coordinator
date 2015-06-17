@@ -388,6 +388,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       var flyoutTitle;
       var flyoutContent;
       var flyoutSpanClass;
+      var $target = $(target);
 
       // Helper function to properly format flyout values.
       var formatFlyoutValue = function(value) {
@@ -410,8 +411,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
       // If we're hovering over a .bar within
       // .bar-group, update the target reference.
-      if ($(target).is('.bar-group.active .bar')) {
-        target = $(target).parent().get(0);
+      if ($target.is('.bar-group.active .bar')) {
+        target = $target.parent().get(0);
       }
 
       // Make sure that target is defined before we

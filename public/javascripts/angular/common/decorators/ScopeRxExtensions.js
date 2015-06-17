@@ -4,7 +4,7 @@
   angular.
     module('socrataCommon.decorators').
     config(['$provide', function($provide) {
-      $provide.decorator('$rootScope', ['$delegate', '$log', 'rx', 'observeOnScope', function($delegate, rx) {
+      $provide.decorator('$rootScope', ['$delegate', '$log', 'rx', function($delegate, $log, rx) {
         Object.defineProperties($delegate.constructor.prototype, {
           '$destroyAsObservable': {
             value: function $destroyAsObservable(element) {

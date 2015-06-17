@@ -125,6 +125,24 @@ $(document).on('ready', function() {
     if (dragDrop.isDragging()) {
       dragDrop.removeGhostClass('full-size');
     }
+
+    userStoryRenderer.hideInsertionHint();
+  });
+
+  $('.user-story-container').on('mousemove', '.block', function(e) {
+    if (dragDrop.isDragging()) {
+      var blockElement = $(e.currentTarget);
+      var blockId = blockElement.attr('data-block-id');
+
+      if (blockId) {
+        var indexToHint = _.invoke(userStory.getBlocks(), 'getId').indexOf(blockId);
+        if (indexToHint >= 0) {
+          userStoryRenderer.showInsertionHintAtIndex(indexToHint + 1);
+        }
+      } else {
+        userStoryRenderer.hideInsertionHint();
+      }
+    }
   });
 
   $(window).on('mouseup', function(e) {
@@ -132,6 +150,8 @@ $(document).on('ready', function() {
     if (dragDrop.isDragging()) {
       dragDrop.drop();
     }
+
+    userStoryRenderer.hideInsertionHint();
   });
 
   $('.user-story-container').on('mouseup', function(e) {

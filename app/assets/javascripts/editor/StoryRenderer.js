@@ -79,12 +79,18 @@
     };
 
     this.showInsertionHintAtIndex = function(index) {
-      insertionHintIndex = index;
+      if (index !== insertionHintIndex) {
+        insertionHintIndex = index;
+        this.render();
+      }
     };
 
     this.hideInsertionHint = function() {
-      insertionHint.addClass('hidden');
-      insertionHintIndex = -1;
+      if (insertionHintIndex !== -1) {
+        insertionHint.addClass('hidden');
+        insertionHintIndex = -1;
+        this.render();
+      }
     };
 
     /**

@@ -10,4 +10,5 @@
 
 //= require jquery2
 //= require squire-min
+//= require lodash
 //= require_tree ./editor

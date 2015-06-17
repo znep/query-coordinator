@@ -208,7 +208,8 @@
     }
 
     function setupHover(dom) {
-      function renderFilteredFlyout(ignored, renderFilteredRange) {
+      function renderFilteredFlyout(target, flyoutTarget, renderFilteredRange) {
+
         var unfilteredBucket = hover.unfilteredBucket;
         var filteredBucket = hover.filteredBucket;
         var selectedBuckets = hover.selectedBuckets;

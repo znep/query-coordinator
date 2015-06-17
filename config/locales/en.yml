@@ -2458,6 +2458,8 @@ en:
       prompt_html: <img src="/stylesheets/images/common/large_logo.png"> Sign in with your <strong>Socrata ID</strong>.
       tips_html: Use your Email and Password to sign into all <strong>Socrata powered</strong> sites.
       auth0_intro: There are several ways you can sign in. If you haven't signed up for an account yet, choose the option that is most convenient for you. If you have, use the same option now.
+      sign_in_with: <strong>Sign in</strong> with %{provider}
+      back_to_login_selection: Or, <a class="login-back">back to Login Options</a>.
     sign_up:
       form:
         create_account_button: Create My Account

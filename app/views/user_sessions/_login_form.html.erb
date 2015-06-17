@@ -14,7 +14,7 @@
         <span class="iconContainer">
           <img src="/stylesheets/images/common/large_logo.png">
         </span>
-        <strong>Sign in</strong> with Socrata ID</a>
+        <%=raw t('screens.sign_in.sign_in_with', provider: 'Socrata ID') %>
       <%- if @auth0_connections.length > 1 %>
         <hr>
       <%- end -%>
@@ -25,7 +25,7 @@
             <img src="<%= connection.image %>">
           </span>
           <%- end -%>
-          <span class="description"><strong>Sign in</strong> with <%= connection.name %></span>
+          <span class="description"><%=raw t('screens.sign_in.sign_in_with', provider: connection.name) %></span>
         </a>
       <%- end -%>
     </div>
@@ -37,7 +37,7 @@
       <%= form_for @user_session do |f| %>
         <%= render :partial => 'user_sessions/login_form_data', :locals => {:f => f} %>
       <%- end -%>
-      <p>Or, <a class="login-back" href="">back to Login Options</a>.</p>
+      <p><%=raw t('screens.sign_in.back_to_login_selection') %></p>
     </div>
 
   <%- elsif @use_auth0 %>

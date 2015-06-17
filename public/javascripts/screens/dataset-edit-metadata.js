@@ -82,12 +82,16 @@
         else
         {
             // Not creative commons option; collapse cascade
-            $licenseId.hide();
+            if ($licenseId) {
+              $licenseId.hide();
+            }
             $('#view_attribution').siblings('label').removeClass('required');
             $("#view_attribution").rules("remove");
 
             $licenseType.attr('name', 'view[licenseId]');
-            $licenseId.find('select').attr('name', '');
+            if ($licenseId) {
+                $licenseId.find('select').attr('name', '');
+            }
         }
     };
     $licenseType.change(updateCascadingDropdown);

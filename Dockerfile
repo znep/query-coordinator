@@ -23,13 +23,14 @@ ENV build_proxy_env "export http_proxy=${build_proxy} https_proxy=${build_proxy}
 
 ENV APP_BASE_DIR /opt
 ENV APP_DIR ${APP_BASE_DIR}/frontend
+ENV GEM_DIR ${APP_BASE_DIR}/gems
 RUN mkdir -p $APP_DIR && mkdir -p $APP_DIR/tmp && chown socrata:socrata $APP_DIR/tmp
 WORKDIR $APP_DIR
 COPY . $APP_DIR
 COPY docker/ship.d/run /etc/ship.d/run
 
 RUN eval ${build_proxy_env} \
-  && bundle install --without=development --deployment \
+  && bundle install --path ${GEM_DIR} --without=development --deployment \
   && bundle exec rake assets:unminified
 
 EXPOSE 3000

@@ -97,6 +97,16 @@ $(document).on('ready', function() {
 
   var dragDrop = new DragDrop($('#block-ghost'));
 
+  var lastInsertionHintIndex = -1;
+  function showInsertionHintAtIndex(index) {
+    userStoryRenderer.showInsertionHintAtIndex(index);
+    lastInsertionHintIndex = index;
+  }
+  function hideInsertionHint() {
+    userStoryRenderer.hideInsertionHint();
+    lastInsertionHintIndex = -1;
+  }
+
   $('.inspiration-story').on('mousedown', '.block', function(e) {
 
     var blockId = e.currentTarget.getAttribute('data-block-id');
@@ -126,7 +136,7 @@ $(document).on('ready', function() {
       dragDrop.removeGhostClass('full-size');
     }
 
-    userStoryRenderer.hideInsertionHint();
+    hideInsertionHint();
   });
 
   $('.user-story-container').on('mousemove', '.block', function(e) {
@@ -137,10 +147,10 @@ $(document).on('ready', function() {
       if (blockId) {
         var indexToHint = _.invoke(userStory.getBlocks(), 'getId').indexOf(blockId);
         if (indexToHint >= 0) {
-          userStoryRenderer.showInsertionHintAtIndex(indexToHint + 1);
+          showInsertionHintAtIndex(indexToHint + 1);
         }
       } else {
-        userStoryRenderer.hideInsertionHint();
+        hideInsertionHint();
       }
     }
   });
@@ -151,16 +161,21 @@ $(document).on('ready', function() {
       dragDrop.drop();
     }
 
-    userStoryRenderer.hideInsertionHint();
+    hideInsertionHint();
   });
 
   $('.user-story-container').on('mouseup', function(e) {
 
     if (dragDrop.isDragging()) {
 
-      var blockToInsert = dragDrop.drop();
+      var blockToInsert = dragDrop.drop().clone();
 
-      userStory.appendBlock(blockToInsert.clone());
+      if (lastInsertionHintIndex >= 0) {
+        userStory.insertBlockAtIndex(lastInsertionHintIndex, blockToInsert);
+      } else {
+        userStory.appendBlock(blockToInsert);
+      }
+
       userStoryRenderer.render();
     }
   });

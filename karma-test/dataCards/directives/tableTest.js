@@ -162,77 +162,129 @@ describe('table directive', function() {
   });
   describe('when rendering cell data', function() {
     var el;
+    var TIMESTAMP_REGEX = /\d{4}\s\w{3}\s\d{2}\s\d{2}:\d{2}:\d{2}/;
+    var LATLNG_REGEX = /-?\d+\.\d+°/;
+    var PERCENT_REGEX = /-?\d+(?:\.\d+)?%/;
 
     beforeEach(function() {
-      if (!el) {
-        el = createTableCard(true, fakeDataSource);
-      }
+      el = createTableCard(true, fakeDataSource);
     });
-    after(destroyAllTableCards);
+    afterEach(destroyAllTableCards);
 
-    it('should render point cells with latitude & longitude', function(done) {
-      var pointCell = el.find('.table-row .cell.point').first();
-      var cellContent = pointCell.html();
+    it('should render point cells with latitude & longitude', function() {
+      var rows = el.find('.table-row');
 
-      expect(cellContent).to.match(/span.*Longitude.*-122\.511054.*\/span/);
-      expect(cellContent).to.match(/span.*Latitude.*37\.771343.*\/span.*,/);
-      done();
-    });
+      rows.each(function(index, row) {
+        var pointCell = $(row).find('.cell.point').first();
+        var pointCellSpans = pointCell.children('span');
 
-    it('should render timestamp cells with date & time as YYYY MMM DD HH:mm:ss', function(done) {
-      var timestampCell = el.find('.table-row .cell.timestamp').first();
-
-      expect(timestampCell.html()).to.match(/\d{4}\s\w{3}\s\d{2}\s\d{2}:\d{2}:\d{2}/);
-      done();
+        expect(pointCellSpans).to.have.length(2);
+        expect(pointCellSpans.first().attr('title')).to.equal('Latitude');
+        expect(pointCellSpans.first().html()).to.match(LATLNG_REGEX);
+        expect(pointCellSpans.last().attr('title')).to.equal('Longitude');
+        expect(pointCellSpans.last().html()).to.match(LATLNG_REGEX);
+      });
     });
 
-    it('should render floating_timestamp cells with date & time as YYYY MMM DD HH:mm:ss', function(done) {
-      var floatingTimestampCell = el.find('.table-row .cell.floating_timestamp').first();
+    it('should render timestamp cells with date & time as YYYY MMM DD HH:mm:ss', function() {
+      var rows = el.find('.table-row');
 
-      expect(floatingTimestampCell.html()).to.match(/\d{4}\s\w{3}\s\d{2}\s\d{2}:\d{2}:\d{2}/);
-      done();
+      rows.each(function(index, row) {
+        var timestampCell = $(row).find('.cell.timestamp').first();
+        var cellContent = timestampCell.html();
+
+        expect(cellContent).to.match(TIMESTAMP_REGEX);
+      });
     });
 
-    it('should render number cells with commas when number of digits is greater than 4', function(done) {
-      var timestampCell = el.find('.table-row .cell.number').first();
-      var cellContent = timestampCell.html();
+    it('should render floating_timestamp cells with date & time as YYYY MMM DD HH:mm:ss', function() {
+      var rows = el.find('.table-row');
 
-      expect(cellContent).to.match(/\d+,\d+/);
-      expect(cellContent.length).to.equal('12,345'.length);
-      done();
+      rows.each(function(index, row) {
+        var floatingTimestampCell = $(row).find('.cell.floating_timestamp').first();
+        var cellContent = floatingTimestampCell.html();
+
+        expect(cellContent).to.match(TIMESTAMP_REGEX);
+      });
+    });
+
+    it('should render number cells with commas by default', function() {
+      var rows = el.find('.table-row');
+
+      rows.each(function(index, row) {
+        var idCell = $(row).find('.cell.number').first();
+        var cellContent = idCell.html();
+
+        expect(cellContent).to.match(/\d+,\d+/);
+        expect(cellContent).to.have.length('12,345'.length);
+      });
+    });
+
+    it('should render number cells without commas when a noCommas format property is present', function() {
+      var rows = el.find('.table-row');
+
+      rows.each(function(index, row) {
+        var idNoCommasCell = $(row).find('.cell.number').eq(1);
+        var cellContent = idNoCommasCell.html();
+
+        expect(cellContent).to.match(/\d+/);
+        expect(cellContent).to.have.length('12345'.length);
+      });
+    });
+
+    it('should render number cells without commas when number of digits is 4 or less', function() {
+      var rows = el.find('.table-row');
+
+      rows.each(function(index, row) {
+        var yearCell = $(row).find('.cell.number').last();
+        var cellContent = yearCell.html();
+
+        expect(cellContent).to.match(/\d+/);
+        expect(cellContent).to.have.length('1234'.length);
+      });
+    });
+
+    it('should render number cells as percent values when the dataTypeName is percent', function() {
+      var rows = el.find('.table-row');
+
+      rows.each(function(index, row) {
+        var percentCell = $(row).find('.cell.number').eq(-2);
+        var cellContent = percentCell.html();
+
+        expect(cellContent).to.match(PERCENT_REGEX);
+      });
     });
 
     it('should render boolean cells with checkboxes for true, empty for false', function() {
-      var booleanCells = el.find('.table-row .cell.boolean');
-      var cellContent = booleanCells.html();
+      var rows = el.find('.table-row');
 
-      // The first row in the test fixture is false
-      expect(booleanCells[0].innerHTML).to.equal('');
-      // The second row in the test fixture is true
-      expect(booleanCells[1].innerHTML).to.equal('✓');
-      // The third row in the test fixture is null
-      expect(booleanCells[2].innerHTML).to.equal('');
-      // The fourth row in the test fixture is undefined
-      expect(booleanCells[3].innerHTML).to.equal('');
+      rows.each(function(index, row) {
+        var booleanCell = $(row).find('.cell.boolean');
+        var cellContent = booleanCell.html();
+
+        if (fixtureData[index].checkbox_test) {
+          expect(cellContent).to.equal('✓');
+        } else {
+          expect(cellContent).to.equal('');
+        }
+      });
     });
 
     it('should not hide columns with cardinality of 1', function() {
       var columnDetails = fixtureMetadata.testColumnDetailsAsTableWantsThem;
-      var columnName;
-      var columnElement;
       var columnHeader = $('.content > .ng-binding');
 
-      // Find the name of a column with a cardinality of one.
-      columnName = _.find(columnDetails, function(column) {
-        return column.cardinality === 1;
-      }).name;
+      // Find the names of all columns with a cardinality of one.
+      var uniformColumnNames = _(columnDetails).filter(function(column) {
+        return column.cardinality === 1 && !column.isSubcolumn;
+      }).pluck('name').value();
 
-      // Test to see of this column is present in the table
-      columnElement = columnHeader.filter(function() {
-        return $(this).text() === columnName;
+      // Find all column elements whose text matches one of the above column names.
+      var uniformColumnElements = columnHeader.filter(function() {
+        return _.includes(uniformColumnNames, $(this).text());
       });
 
-      expect(columnElement.length).to.equal(1);
+      expect(uniformColumnElements.length).to.equal(uniformColumnNames.length);
     });
 
   });

@@ -84,6 +84,17 @@
       "sortable": true
     },
     {
+      "name": "Id (no commas)",
+      "fieldName": "id_nocommas",
+      "physicalDatatype": "number",
+      "fred": "identifier",
+      "importance": 3,
+      "sortable": true,
+      "format": {
+        "noCommas": true
+      }
+    },
+    {
       "name": "IUCR",
       "fieldName": "iucr",
       "physicalDatatype": "text",
@@ -150,6 +161,16 @@
       "isSubcolumn": true,
       "cardinality": 2,
       "sortable": true
+    },
+    {
+      "name": "Likelihood of Being an Accident",
+      "fieldName": "accident_likelihood",
+      "physicalDatatype": "number",
+      "fred": "amount",
+      "importance": 3,
+      "sortable": true,
+      "dataTypeName": "percent",
+      "renderTypeName": "percent"
     },
     {
       "name": "Year",

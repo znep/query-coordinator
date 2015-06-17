@@ -278,9 +278,7 @@ class PhidippidesTest < Test::Unit::TestCase
     phidippides.augment_dataset_metadata!('newb-newb', mock_dataset_metadata)
   end
 
-  private
-
-  def run_test_with_obe_and_v1_nbe
+  def test_mirror_nbe_column_metadata
     obe_dataset = View.new(old_backend_columns)
     nbe_dataset = new_backend_columns
 
@@ -292,7 +290,12 @@ class PhidippidesTest < Test::Unit::TestCase
       assert_equal(obe_column.position, column[:position])
       assert_equal(key == 'primary_type', column[:hideInTable])
     end
+    assert_equal(true, result[:columns]['thing_without_commas']['format']['noCommas'])
+    assert_equal('percent', result[:columns]['voice_roughness']['dataTypeName'])
+    assert_equal('percent', result[:columns]['voice_roughness']['renderTypeName'])
   end
+
+  private
 
   # noinspection RubyArgCount
   def prepare_stubs(options)

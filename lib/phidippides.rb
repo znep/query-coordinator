@@ -99,6 +99,23 @@ class Phidippides < SocrataHttp
 
       unless nbe_column.nil?
         nbe_column[:position] = column.position
+        nbe_column[:format] = column.format.data.reduce({}) do |acc, (key, val)|
+          if key == 'noCommas'
+            # this property's value should be coerced to the proper type;
+            # we'll pass through any non-boolean-string values because that
+            # will help diagnose an improperly stored value
+            acc[key] = case val
+              when 'true' then true
+              when 'false' then false
+              else val
+            end
+          else
+            acc[key] = val
+          end
+          acc
+        end
+        nbe_column[:dataTypeName] = column.dataTypeName
+        nbe_column[:renderTypeName] = column.renderTypeName
         nbe_column[:hideInTable] = column.flag?('hidden')
       end
     end
@@ -305,7 +322,7 @@ class Phidippides < SocrataHttp
       # These are used in different ways to populate and sort catalog entries. The following corresponds to
       # the logAction method within core server. We add a new metric, "datalens-loaded" to make these requests
       # distinct w/in the domain entity
-      domainId = CurrentDomain.domain.id.to_s      
+      domainId = CurrentDomain.domain.id.to_s
       MetricQueue.instance.push_metric(fxf_id.to_s, "view-loaded", 1)
       MetricQueue.instance.push_metric(domainId, "view-loaded", 1)
       MetricQueue.instance.push_metric(domainId, "datalens-loaded", 1)

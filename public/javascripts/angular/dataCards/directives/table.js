@@ -409,12 +409,34 @@
                       }
                     }
 
+                    var shouldCommaify = !(column.format || {}).noCommas;
                     // TODO: Remove this. This is just to satisfy Clint's pet peeve about years.
-                    if (cellContent.length >= 5) {
-                      cellText = _.escape($.commaify(cellContent));
-                    } else {
-                      cellText = _.escape(cellContent);
+                    if (cellContent.length === 4) {
+                      shouldCommaify = false;
                     }
+                    if (shouldCommaify) {
+                      cellContent = $.commaify(cellContent);
+                    }
+                    if (column.dataTypeName === 'percent') {
+                      var parts = cellContent.split('.');
+                      if (parts.length === 1) {
+                        // integers are multiples of 100%
+                        cellContent += '00%';
+                      } else {
+                        // shift the decimal point two places right string-wise
+                        // because we can't trust multiplying floats by 100
+                        var decimalValues = parts[1].split('');
+                        while (decimalValues.length < 2) {
+                          decimalValues.push('0');
+                        }
+                        cellContent = parts[0] + decimalValues.splice(0, 2).join('');
+                        if (decimalValues.length) {
+                          cellContent += '.' + decimalValues.join('');
+                        }
+                        cellContent = cellContent.replace(/^(-?)0+(.+)/, '$1$2') + '%';
+                      }
+                    }
+                    cellText = _.escape(cellContent);
 
                   } else if (cellType === 'geo_entity' || cellType === 'point') {
                     var latitudeCoordinateIndex = 1;

@@ -70,9 +70,9 @@
             $licenseId.show();
             if (licenseType == 'CC' || $licenseId.find('select').val() == 'ODC_BY') {
               $('#view_attribution').siblings('label').addClass('required');
-              $("#view_attribution").rules("add", {
+              $('#view_attribution').rules('add', {
                 required: true,
-                messages: { required: " " + $.t('screens.edit_metadata.data_provider_required') }
+                messages: { required: ' ' + $.t('screens.edit_metadata.data_provider_required') }
               });
             }
 

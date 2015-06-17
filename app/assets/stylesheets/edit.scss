@@ -10,6 +10,7 @@ html {
 }
 
 body {
+  margin: 0;
   padding-bottom: $user-story-container-vertical-padding;
   min-height: calc(100vh - (#{$header-total-height} + (#{$user-story-container-vertical-padding} * 2)));
   background-color: $body-bg-color;
@@ -89,7 +90,22 @@ body {
 }
 
 .user-story-container {
+  position: relative;
   padding: $header-total-height + $user-story-container-vertical-padding 0;
+
+  #story-insertion-hint {
+    @include unselectable();
+
+    position: absolute;
+    display: inline-block;
+    margin: 0 29%;
+    width: 42%;
+    height: 0.5rem;
+    top: $header-total-height + $user-story-container-vertical-padding;
+    left: 0;
+    text-align: center;
+    background-color: $story-insertion-hint-bg-color;
+  }
 }
 
 .user-story {
@@ -148,7 +164,7 @@ body {
   .block {
     position: relative;
     margin-left: $block-edit-controls-width + $block-edit-controls-padding;
-    width: $user-story-container-width - $block-edit-controls-width;
+    width: $user-story-container-width - $block-edit-controls-width - $block-edit-controls-padding;
     transition: none;
 
     .text-editor {

@@ -60,6 +60,8 @@
         bottom: 30
       },
       'HISTOGRAM_DRAG_TARGET_WIDTH': 11,
+      'HISTOGRAM_HOVER_TARGET_SIZE': 10,
+      'HISTOGRAM_HANDLE_HEIGHT': 8,
 
       // Table card visualization parameters.
       'TABLE_UNSORTABLE_PHYSICAL_DATATYPES': ['geo_entity', 'point'],

@@ -324,8 +324,13 @@
       var brush = {};
       brush.control = d3.svg.brush();
       brush.brushDispatcher = d3.dispatch('clear');
-      brush.selectionClearFlyout = _.constant(I18n.distributionChart.dragClearHelp);
-      brush.brushDragFlyout = _.constant(I18n.distributionChart.dragHelp);
+      brush.selectionClearFlyout = _.constant(
+        '<div class="flyout-title">{0}</div>'.
+          format(I18n.distributionChart.dragClearHelp)
+      );
+      brush.brushDragFlyout = _.constant('<div class="flyout-title">{0}</div>'.
+        format(I18n.distributionChart.dragHelp)
+      );
 
       brush.control.
         x(scale.x).
@@ -455,8 +460,8 @@
     function updateHistogramHoverTarget(dom, position) {
       dom.blockHoverTarget.
         data([position]).
-        attr('x1', function(d) { return d.x - 10; }).
-        attr('x2', function(d) { return d.x + 10; }).
+        attr('x1', function(d) { return d.x - Constants.HISTOGRAM_HOVER_TARGET_SIZE; }).
+        attr('x2', function(d) { return d.x + Constants.HISTOGRAM_HOVER_TARGET_SIZE; }).
         attr('y1', function(d) { return d.y; }).
         attr('y2', function(d) { return d.y; });
     }
@@ -516,7 +521,9 @@
             attr('width', bucketWidth);
           var filteredValue = _.get(hover, 'filteredBucket.value', 0);
           var unfilteredValue = _.get(hover, 'unfilteredBucket.value', 0);
-          var maxValueOrZero = Math.max(0, filteredValue, unfilteredValue);
+          var maxValueOrZero = _.isEmpty(hover.selectedBuckets) ?
+            Math.max(0, filteredValue, unfilteredValue) :
+            Math.max(0, unfilteredValue);
           var hoverTargetY = scale.y(maxValueOrZero);
           dom.hoverTarget.
             attr('x1', totalWidth).
@@ -565,7 +572,7 @@
       // TODO
       function setupBrushHandles(selection, height, leftOffset) {
 
-        var handleHeight = 8;
+        var handleHeight = Constants.HISTOGRAM_HANDLE_HEIGHT;
 
         function brushLine(gBrush) {
           gBrush.append('line').
@@ -646,6 +653,12 @@
         on('mousedown.histogram-brush-clear-text', function() {
           d3.event.stopPropagation();
           brush.brushDispatcher.clear();
+          var evt = new MouseEvent('mousemove', {
+            'view': window,
+            'bubbles': true,
+            'cancelable': true
+          });
+          document.body.dispatchEvent(evt);
         });
 
       var brushClearBackground = brushClear.selectAll('.histogram-brush-clear-background').

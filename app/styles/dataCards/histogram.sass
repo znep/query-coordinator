@@ -1,5 +1,10 @@
 $tick-font-size: 0.75rem
 
+[data-card-type="histogram"]
+  .card-visualization-wrapper
+    margin-left: -15px
+    margin-right: -15px
+
 .histogram-axis
   shape-rendering: crispEdges
 
@@ -39,3 +44,19 @@ $tick-font-size: 0.75rem
 .histogram-hover-shield
   fill: transparent // so it still receives pointer events
   cursor: pointer
+
+.histogram-brush-handle
+  stroke-linejoin: round
+
+.histogram-brush-line
+  stroke-width: 1px
+  stroke-dasharray: 7,3
+
+.histogram-brush-clear
+  cursor: pointer
+
+.histogram-brush-clear-text, .histogram-brush-clear-x
+  font-weight: bold
+
+.histogram-brush-clear-x
+  font-size: larger

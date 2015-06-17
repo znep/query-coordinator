@@ -285,6 +285,8 @@
           }
         } else if (filter instanceof Filter.TimeRangeFilter) {
           return I18n.filter.is;
+        } else if (filter instanceof Filter.ValueRangeFilter) {
+          return I18n.filter.is;
         } else if (filter instanceof Filter.IsNullFilter) {
           if (filter.isNull) {
             return I18n.filter.is;
@@ -310,6 +312,11 @@
           return I18n.t('filter.dateRange',
             moment(filter.start).format(format),
             moment(filter.end).format(format)
+          );
+        } else if (filter instanceof Filter.ValueRangeFilter) {
+          return I18n.t('filter.valueRange',
+            $.toHumaneNumber(filter.start),
+            $.toHumaneNumber(filter.end)
           );
         } else {
           throw new Error('Cannot apply filter of unsupported type "' + filter + '".');

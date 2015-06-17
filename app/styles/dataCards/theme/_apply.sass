@@ -435,6 +435,18 @@ div.column-chart
 .histogram-trace-filtered
   stroke: $histogram-trace-filtered-stroke-color
 
+.histogram-area-selected
+  fill: $histogram-area-selected-fill-color
+
+.histogram-trace-selected
+  stroke: $histogram-trace-selected-stroke-color
+
+.histogram-area-selected-unfiltered
+  fill: $histogram-area-selected-unfiltered-fill-color
+
+.histogram-trace-selected-unfiltered
+  stroke: $histogram-trace-selected-unfiltered-stroke-color
+
 .histogram-axis-x, .histogram-axis-y
   .tick
     line
@@ -455,8 +467,35 @@ div.column-chart
     text
       fill: $histogram-axis-tick-zero-color
 
+.histogram.has-selection
+  .histogram-axis-x
+    text
+      fill: $histogram-has-selection-axis-tick-color
+
+  .histogram-axis-x
+    .tick.is-zero
+      text
+        fill: $histogram-has-selection-axis-tick-color
+
 .histogram-hover-block
   fill: $histogram-hover-block-fill-color
+
+.histogram-brush-handle
+  stroke: $histogram-brush-handle-stroke-color
+  fill: $histogram-brush-handle-fill-color
+
+.histogram-brush-line
+  stroke: $histogram-brush-handle-stroke-color
+
+.histogram
+  .histogram-brush-clear
+    fill: $histogram-clear-block-fill-color
+
+  .histogram-brush-clear-text, .histogram-brush-clear-x
+    fill: $histogram-brush-clear-text-fill-color
+
+  .filter-icon
+    fill: $histogram-filter-icon-fill-color
 
 // search-card
 .search-card-text

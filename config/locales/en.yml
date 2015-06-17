@@ -2650,10 +2650,12 @@ en:
         new_name: Save the current page with a new name
         description: Enter a description for your new page (optional)
       flyout:
+        current_filter: Current Filter
         total: Total
         filtered_amount: Filtered amount
         clear_filter: Clear filter
         clear_filter_long: The page is currently filtered by this value, click to clear it
+        clear_range_filter_long: The page is currently filtered by this selection, click to clear it
         expand: Click to expand
       timeline_chart:
         drag_help: Drag to change filter range
@@ -2664,6 +2666,8 @@ en:
           zero_time_span: Chart cannot be rendered with less than two date values.
           default: Chart cannot be rendered.
       distribution_chart:
+        drag_help: Drag to change filter range
+        drag_clear_help: Clear filter range
         errors:
           no_data: There is no data to display.
           error: An error was encountered when trying to render this card.
@@ -2755,6 +2759,7 @@ en:
         is_not: is not
         blank: blank
         date_range: "{0} to {1}"
+        value_range: "{0} to {1}"
       rich_text_editor:
         bold: Bold
         italic: Italic

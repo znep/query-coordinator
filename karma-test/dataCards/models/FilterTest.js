@@ -1,5 +1,5 @@
 describe('Filter models', function() {
-  'use strict'
+  'use strict';
 
   var SoqlHelpers;
 
@@ -10,7 +10,7 @@ describe('Filter models', function() {
 
   function parseAsJson(obj) {
     return JSON.parse(JSON.stringify(obj));
-  };
+  }
 
   describe('IsNullFilter', function() {
     var fakeColumnName = _.uniqueId();
@@ -49,7 +49,6 @@ describe('Filter models', function() {
   });
 
   describe('BinaryOperatorFilter', function() {
-    var fakeColumnName = _.uniqueId();
     it('should generate correct SOQL for the given operator and string operand', inject(function(Filter) {
       var filter = new Filter.BinaryOperatorFilter('>', 'CKAN');
       expect(filter.generateSoqlWhereFragment('SOCRATA')).to.equal(SoqlHelpers.formatFieldName('SOCRATA') + ">'CKAN'");
@@ -123,7 +122,7 @@ describe('Filter models', function() {
       var serializedFilter = parseAsJson(filter.serialize());
 
       // Hack the serialized form to have a malformed end time.
-      serializedFilter['arguments'].end = 'bad date' // Not valid
+      serializedFilter['arguments'].end = 'bad date'; // Not valid
 
       expect(function() {
         Filter.deserialize(serializedFilter);
@@ -150,4 +149,32 @@ describe('Filter models', function() {
       });
     }).to.throw();
   }));
+
+  describe('ValueRangeFilter', function() {
+    it('should generate correct SOQL', inject(function(Filter, SoqlHelpers) {
+      var fakeColumnName = _.uniqueId();
+      var start = '-1000';
+      var end = '0';
+      var filter = new Filter.ValueRangeFilter(start, end);
+      var expected = "{0} >= {1} AND {0} < {2}".format(
+        SoqlHelpers.formatFieldName(fakeColumnName),
+        SoqlHelpers.encodePrimitive(start),
+        SoqlHelpers.encodePrimitive(end)
+      );
+
+      expect(filter.generateSoqlWhereFragment(fakeColumnName)).to.equal(expected);
+    }));
+
+    it('should serialize and deserialize properly', inject(function(Filter) {
+      var start = '-1000';
+      var end = '10';
+      var filter = new Filter.ValueRangeFilter(start, end);
+
+      var deserializedFilter = Filter.deserialize(parseAsJson(filter.serialize()));
+
+      expect(deserializedFilter.start).to.equal(filter.start);
+      expect(deserializedFilter.end).to.equal(filter.end);
+    }));
+
+  });
 });

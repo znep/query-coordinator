@@ -34,8 +34,12 @@ module AngularHelper
       tileserver_hosts
       data_cards_app_token
       feature_map_zoom_debounce
+      enable_search_suggestions
+      odux_enable_feature_map
+      feature_map_disable_pan_zoom
       feature_map_features_per_tile
       shape_file_region_query_limit
+      enable_png_download_ui
     )
 
     {

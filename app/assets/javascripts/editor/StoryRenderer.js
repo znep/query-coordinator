@@ -149,6 +149,7 @@
     function _renderStory() {
 
       var blocks = story.getBlocks();
+      var blockCount = blocks.length;
       var renderedBlocks;
       var layoutHeight;
 
@@ -177,6 +178,14 @@
         var blockElement = _getCachedBlockElement(block);
         var translation;
 
+        // Disable or enable buttons depending on the index of this block
+        // relative to the total number of blocks.
+        // E.g. disable the 'move up' button for the first block and the
+        // 'move down' button for the last block.
+        if (editable) {
+          _updateBlockEditControls(blockElement, i, blockCount);
+        }
+
         // If we are supposed to display the insertion hint at this
         // block index, first position the insertion hint and adjust
         // the overall layout height.
@@ -203,6 +212,24 @@
 
       insertionHint.css('transform', translation).removeClass('hidden');
       return (insertionHint.outerHeight(true) + BLOCK_VERTICAL_PADDING);
+    }
+
+    function _updateBlockEditControls(blockElement, blockIndex, blockCount) {
+
+      var moveUpButton = blockElement.find('.block-edit-controls-move-up-btn');
+      var moveDownButton = blockElement.find('.block-edit-controls-move-down-btn');
+
+      if (blockIndex === 0) {
+        moveUpButton.attr('disabled', 'disabled');
+      } else {
+        moveUpButton.removeAttr('disabled');
+      }
+
+      if (blockIndex === blockCount - 1) {
+        moveDownButton.attr('disabled', 'disabled');
+      } else {
+        moveDownButton.removeAttr('disabled');
+      }
     }
 
     function _renderBlock(block) {
@@ -250,7 +277,7 @@
 
       if (editable) {
         blockElement = $('<div>', { class: 'block-edit' }).append([
-          _renderBlockEditControls(),
+          _renderBlockEditControls(id),
           blockElement
         ]);
       }
@@ -258,11 +285,14 @@
       return blockElement;
     }
 
-    function _renderBlockEditControls() {
+    function _renderBlockEditControls(blockId) {
       return $('<div>', { class: 'block-edit-controls' }).append([
-        $('<button>', { class: 'block-edit-controls-move-up-btn' }),
-        $('<button>', { class: 'block-edit-controls-move-down-btn' }),
-        $('<button>', { class: 'block-edit-controls-delete-btn' })
+        $('<button>',
+          { class: 'block-edit-controls-move-up-btn', 'data-block-id': blockId }).append('&#9650;'),
+        $('<button>',
+          { class: 'block-edit-controls-move-down-btn', 'data-block-id': blockId }).append('&#9660;'),
+        $('<button>',
+          { class: 'block-edit-controls-delete-btn', 'data-block-id': blockId }).append('&#9587;')
       ]);
     }
 

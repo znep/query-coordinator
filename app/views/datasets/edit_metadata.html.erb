@@ -63,36 +63,8 @@
               :class => 'extensionField textPrompt', :title => t('screens.edit_metadata.optional') %>
       </div>
     <%- end -%>
-    <h2><%= t('screens.edit_metadata.licensing_attr') %></h2>
 
-    <div class="line clearfix">
-      <label for="view_licenseType"><%= t('screens.edit_metadata.license_type') %></label>
-      <%= select_tag("view[licenseType]", license_select_options(@view.licenseId)) %>
-    </div>
-
-    <div class="line openDataCommonsLine clearfix">
-      <label for="view_ccLicenseId" class="required"><%= t("screens.edit_metadata.licensing") %></label>
-      <%= select_tag("view_odcLicenseId", open_data_commons_select_options) %>
-    </div>
-
-    <div class="line creativeCommonsLine clearfix">
-      <label for="view_ccLicenseId" class="required"><%= t("screens.edit_metadata.licensing") %></label>
-      <%= select_tag("view_ccLicenseId", creative_commons_select_options) %>
-    </div>
-
-    <div class="line clearfix">
-      <div class="additionalHelp"><%= t('screens.edit_metadata.license_help') %></div>
-    </div>
-
-    <div class="line clearfix">
-      <label for="view_attribution"><%= t('screens.edit_metadata.data_provided_by') %></label>
-      <%= text_field_tag("view[attribution]", @view.attribution, :title => t('screens.edit_metadata.data_provided_prompt'), :class => "textPrompt") %>
-    </div>
-
-    <div class="line clearfix">
-      <label for="view_attributionLink"><%= t('screens.edit_metadata.source_link') %></label>
-      <%= text_field_tag("view[attributionLink]", @view.attributionLink, :title => t('screens.edit_metadata.source_link_prompt'), :class => "textPrompt") %>
-    </div>
+    <%= render :partial => 'edit_license' %>
 
     <%= render :partial => 'metadata', :locals =>
         {:meta_fields => @view.merged_metadata['custom_fields'], :fieldsets => merge_custom_metadata(@view)} %>
@@ -270,6 +242,8 @@
 <% content_for :js_footer do %>
   <script type='text/javascript'>
     blist.viewId = '<%= @view.id %>'
+    blist.namespace.fetch('blist.licenses');
+    blist.licenses = <%= safe_json(ExternalConfig.for(:license).licenses) %>;
   </script>
   <script type="text/javascript">
     $(function() {

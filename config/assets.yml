@@ -410,6 +410,7 @@ javascripts:
     - public/javascripts/controls/wizard.js
     - public/javascripts/screens/import-pane.js
     - public/javascripts/screens/dataset-new.js
+    - public/javascripts/screens/edit-license.js
   dataset-edit:
     - public/javascripts/util/datasync.js
     - public/javascripts/plugins/ajaxupload.js
@@ -492,6 +493,7 @@ javascripts:
     - public/javascripts/controls/attachments-editor.js
     - public/javascripts/controls/image-uploader.js
     - public/javascripts/screens/dataset-edit-metadata.js
+    - public/javascripts/screens/edit-license.js
   dataset-edit-rr:
     - public/javascripts/plugins/jquery.colorPicker.js
     - public/javascripts/controls/navigation.js

@@ -23,27 +23,11 @@ module DatasetsHelper
     options_for_select(cats, selected_category)
   end
 
-  def license_select_options(selected_license = nil)
-    selected_license = '' if selected_license.nil?
-    selected_license = 'CC' if selected_license.include?('CC')
-    selected_license = 'ODC' if View.open_data_commons.keys.include? selected_license
-    options_for_select(View.licenses.invert.sort { |a, b| a.first <=> b.first },
-                       selected_license)
-  end
+  def license_options(selected_license = '')
+    licenses = ExternalConfig.for(:license).merged_licenses
+    licenses["-- #{t 'core.no_license'} --"] = ''
 
-  def creative_commons_select_options(selected_option = nil)
-    options_for_select(View.creative_commons.invert.sort { |a, b|
-      a.first <=> b.first }, selected_option)
-  end
-
-  def open_data_commons_select_options(selected_option = nil)
-    options_for_select(View.open_data_commons.invert.sort { |a, b|
-      a.first <=> b.first }, selected_option)
-  end
-
-  def merged_license_select_options(selected_license = nil)
-    options_for_select(View.merged_licenses.invert.sort { |a, b|
-      a.first <=> b.first }, selected_license)
+    options_for_select(licenses.sort_by(&:first), selected_license)
   end
 
   def socialize_menu_options(view)

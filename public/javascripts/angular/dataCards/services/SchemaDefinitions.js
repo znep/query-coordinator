@@ -240,6 +240,35 @@
         }
       );
 
+      cardMetadataSchemas.addSchemaWithVersion(
+        '2',
+        {
+          'type': 'object',
+          'properties': {
+            'activeFilters': {'type': 'array'},
+            'baseLayerUrl': {'type': 'string'},
+            'cardSize': {'type': 'integer', 'minimum': 1, 'maximum': 3},
+            'cardType': {'type': 'string'},
+            'expanded': {'type': 'boolean'},
+            'fieldName': {'type': 'string', 'minLength': 1},
+            'cardOptions': {'type': 'object'}
+          },
+          'required': ['fieldName', 'cardSize', 'expanded']
+        }
+      );
+
+      var cardOptionsMetadataSchemas = schemasService.regarding('card_options');
+      cardOptionsMetadataSchemas.addSchemaWithVersion(
+        '2', // This is the same version as the card schema
+        {
+          'type': 'object',
+          'properties': {
+            'mapExtent': {'type': 'object'}
+          },
+          'required': []
+        }
+      );
+
       schemasService.regarding('page_metadata').addSchemaWithVersion('0', {
         type: 'object',
         properties: {

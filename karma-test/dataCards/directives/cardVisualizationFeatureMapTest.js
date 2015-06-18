@@ -85,6 +85,10 @@ describe('A FeatureMap Card Visualization', function() {
     card.defineObservableProperty('expanded', false);
     card.defineObservableProperty('activeFilters', []);
     card.defineObservableProperty('baseLayerUrl', '');
+    card.defineObservableProperty('cardOptions', {
+      mapExtent:options.mapExtent || {}
+    });
+    card.setOption = _.noop;
     card.fieldName = 'foo';
 
     outerScope.model = card;

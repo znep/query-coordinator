@@ -34,7 +34,8 @@
         // 'busy' spinner and b) performance analytics.
         var renderStartObservable = scope.$eventToObservable('render:start');
         var renderErrorObservable = scope.$eventToObservable('render:error');
-        var renderCompleteObservable = scope.$eventToObservable('render:complete').takeUntil(renderErrorObservable);
+        var renderCompleteObservable = scope.$eventToObservable('render:complete').
+          takeUntil(renderErrorObservable);
 
         // For every renderStart event, start a timer that will either expire on
         // its own, or get cancelled by the renderComplete event firing

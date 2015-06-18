@@ -156,7 +156,7 @@ describe('A FeatureMap Card Visualization', function() {
         dataset: dataset
       });
       expect(visualization.element.find('feature-map').scope().featureExtent).to.eql(MIDDLE_ZOOM_EXTENT);
-    })
+    });
   });
 
   describe('tileserver sharding', function() {

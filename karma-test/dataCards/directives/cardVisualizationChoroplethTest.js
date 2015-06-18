@@ -67,29 +67,29 @@ describe('A Choropleth Card Visualization', function() {
   function setMockCardDataServiceToDefault() {
     mockCardDataService = {
       getDefaultFeatureExtent: sinon.stub(),
-      getChoroplethRegions: function(shapeFile) {
+      getChoroplethRegions: function() {
         var deferred = q.defer();
         var json = testHelpers.getTestJson(testWards);
         json.features = _.map(json.features, function(feature) {
-          feature.properties._feature_id = feature.properties[':feature_id'].split(" ")[1]
+          feature.properties._feature_id = feature.properties[':feature_id'].split(' ')[1];
           return feature;
         });
 
         deferred.resolve(json);
         return deferred.promise;
       },
-      getChoroplethRegionsUsingSourceColumn: function(datasetId, sourceColumn, shapeFile) {
+      getChoroplethRegionsUsingSourceColumn: function() {
         var deferred = q.defer();
         var json = testHelpers.getTestJson(testWards);
         json.features = _.map(json.features, function(feature) {
-          feature.properties._feature_id = feature.properties[':feature_id'].split(" ")[1]
+          feature.properties._feature_id = feature.properties[':feature_id'].split(' ')[1];
           return feature;
         });
 
         deferred.resolve(json);
         return deferred.promise;
       },
-      getChoroplethGeometryLabel: function(shapeFile) {
+      getChoroplethGeometryLabel: function() {
         var deferred = q.defer();
         deferred.resolve('geometryLabel');
         return deferred.promise;
@@ -205,15 +205,14 @@ describe('A Choropleth Card Visualization', function() {
 
       this.timeout(15000);
 
-      var choropleth1 = createChoropleth({ id: 'choropleth-1' });
-      var choropleth2 = createChoropleth({ id: 'choropleth-2' });
+      createChoropleth({ id: 'choropleth-1' });
+      createChoropleth({ id: 'choropleth-2' });
 
       scope.$apply();
 
       var feature;
       var flyout;
       var flyoutTitle;
-      var flyoutText;
 
       // First, test a feature on the first choropleth.
       feature = $('#choropleth-1 .choropleth-container path')[0];
@@ -222,7 +221,7 @@ describe('A Choropleth Card Visualization', function() {
 
       flyout = $('#uber-flyout');
       flyoutTitle = flyout.find('.flyout-title').text();
-      flyoutText = flyout.find('.content').text();
+      flyout.find('.content').text();
 
       expect(flyoutTitle).to.equal('');
       expect(flyout.is(':visible')).to.be.true;
@@ -237,7 +236,7 @@ describe('A Choropleth Card Visualization', function() {
 
       flyout = $('#uber-flyout');
       flyoutTitle = flyout.find('.flyout-title').text();
-      flyoutText = flyout.find('.content').text();
+      flyout.find('.content').text();
 
       expect(flyoutTitle).to.equal('');
       expect(flyout.is(':visible')).to.be.true;
@@ -262,11 +261,11 @@ describe('A Choropleth Card Visualization', function() {
       var choropleth1 = createChoropleth({ id: 'choropleth-1' });
       var choropleth2 = createChoropleth({ id: 'choropleth-2' });
 
-      choropleth1.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
+      choropleth1.scope.$on('toggle-dataset-filter:choropleth', function() {
         choropleth1Fired = true;
       });
 
-      choropleth2.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
+      choropleth2.scope.$on('toggle-dataset-filter:choropleth', function() {
         choropleth2Fired = true;
       });
 

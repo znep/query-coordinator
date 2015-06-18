@@ -1093,6 +1093,7 @@
         }
 
         var map = L.map(element.find('.choropleth-map-container')[0], options);
+
         // Manage the layers in a layerGroup, so we can clear them all at once.
         var layerGroup = L.layerGroup().addTo(map);
         // emit a zoom event, so tests can check it
@@ -1143,7 +1144,13 @@
           map(function(layerInfo) {
             var url = layerInfo.url;
             var opacity = layerInfo.opacity;
-            return L.tileLayer(url, { attribution: '', detectRetina: false, opacity: opacity, unloadInvisibleTiles: true });
+            var layerOptions = {
+              attribution: '',
+              detectRetina: false,
+              opacity: opacity,
+              unloadInvisibleTiles: true
+            };
+            return L.tileLayer(url, layerOptions);
           }).
           publish(); // Only subscribe once everything is wired up,
                      // otherwise some subscribers may miss the first
@@ -1207,8 +1214,8 @@
 
               setGeojsonData(geojsonAggregateData, geojsonOptions);
 
-              // Iterate over selecteded features and ensure that they are 'on top'.
-              // Otherwise, the selecteded stroke is likely to be hidden behind the
+              // Iterate over selected features and ensure that they are 'on top'.
+              // Otherwise, the selected stroke is likely to be hidden behind the
               // non-selected stroke.
               Object.
                 keys(map._layers).

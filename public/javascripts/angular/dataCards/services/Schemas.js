@@ -102,7 +102,7 @@
     function flattenLeaves(hash) {
       var keys = _.keys(hash);
       if (_.isString(hash[keys[0]])) {
-        return _.map(hash, function(value, key) {
+        return _.map(hash, function(value) {
           return value;
         });
       } else {
@@ -159,7 +159,7 @@
         * the object being validated, and an optional custom message.
         * @param {String} schemaVersion The schema version to validate against.
         * @param {Object} objectToValidate The object to validate against the schema.
-        * @param {message} Custom message for error. Optional.
+        * @param {message} message Custom message for error. Optional.
         */
         assertValidAgainstVersion: function(schemaVersion, objectToValidate, message) {
           var validation = this.validateAgainstVersion(schemaVersion, objectToValidate);

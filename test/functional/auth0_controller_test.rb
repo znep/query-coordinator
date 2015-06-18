@@ -77,7 +77,7 @@ class Auth0ControllerTest < ActionController::TestCase
     assert(@response.cookies['logged_in'])
   end
 
-  test 'an invalid uid should not create a cookie foo' do
+  test 'an invalid uid should not create a cookie' do
     OmniAuth.config.mock_auth[:auth0] = get_mock_token('auth0','auth0|thisisgarbage','auth0|thisisgarbage|username-password-staging')
 
     @request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:auth0]

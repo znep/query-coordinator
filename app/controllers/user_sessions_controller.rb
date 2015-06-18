@@ -128,9 +128,10 @@ class UserSessionsController < ApplicationController
       connection_is_present = auth0_redirect_connection.present?
       connection_is_valid = connection_exists(auth0_redirect_connection)
       is_fresh_login = !flash[:notice].present?
+      has_redirect_param = params[:redirect].present? && params[:redirect] == 'false'
 
       # Only redirect if this isn't a redirect from /logout.
-      if connection_is_present && connection_is_valid && is_fresh_login
+      if connection_is_present && connection_is_valid && is_fresh_login && !has_redirect_param
         uri = generate_authorize_uri(auth0_redirect_connection, auth0_callback_uri)
         return redirect_to(uri)
       else

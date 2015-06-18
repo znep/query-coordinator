@@ -258,6 +258,7 @@ $wizard.wizard({
                     if ($(this).val() == 'CC')
                     {
                         $this.attr('name', '');
+                        $pane.find('.openDataCommonsLine').slideUp();
                         $pane.find('#view_ccLicenseId').attr('name', 'view[licenseId]');
                         $pane.find('.creativeCommonsLine').slideDown();
                         $pane.find('#view_attribution')
@@ -269,6 +270,7 @@ $wizard.wizard({
                     }
                     else if ($(this).val() == 'ODC') {
                         $this.attr('name', '');
+                        $pane.find('.creativeCommonsLine').slideUp();
                         $pane.find('#view_odcLicenseId').attr('name', 'view[licenseId]');
                         $pane.find('.openDataCommonsLine').slideDown();
                     }
@@ -276,6 +278,7 @@ $wizard.wizard({
                     {
                         $this.attr('name', 'view[licenseId]');
                         $pane.find('#view_ccLicenseId').attr('name', '');
+                        $pane.find('.openDataCommonsLine').slideUp();
                         $pane.find('.creativeCommonsLine').slideUp();
                         $pane.find('#view_attribution')
                             .prev('label').removeClass('required').end()

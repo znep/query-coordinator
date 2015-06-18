@@ -99,7 +99,7 @@ Running rails database migrations against our production RDS
 instances in AWS can be done with a handful of rake tasks.
 
 ```
-$ rake -T aws
+$ bin/rake -T aws
 rake aws:migrate[region,environment]   # Migrate database in AWS
 rake aws:rollback[region,environment]  # Rollback database in AWS
 rake aws:seed[region,environment]      # Seed database in AWS
@@ -107,28 +107,29 @@ rake aws:migrate:status[region,environment]  # Check database migration status i
 ```
 
 Before running the migration rake tasks, ensure you have AWS admin access to staging/rc
-and that you're connected to the VPN.
+and that you're connected to the VPN. You must also have the `aws_migrations` key in
+your `database.yml` file, which can be found in `database.yml.sample`.
 
 AWS admin credentials must be set up by an OPS team member.
 
 To perform migrations against `staging` or `rc` in the `us-west-2` region:
 
 ```
-rake aws:migrate[us-west-2,staging]
-rake aws:migrate[us-west-2,rc]
+bin/rake aws:migrate[us-west-2,staging]
+bin/rake aws:migrate[us-west-2,rc]
 ```
 
 Additionally, `rollback` and `seed` are supported.
 
 ```
-rake aws:rollback[us-west-2,staging]
-rake aws:seed[us-west-2,staging]
+bin/rake aws:rollback[us-west-2,staging]
+bin/rake aws:seed[us-west-2,staging]
 ```
 
 And migrating a different region might look like this:
 
 ```
-rake aws:migrate[eu-west-1,staging]
+bin/rake aws:migrate[eu-west-1,staging]
 ```
 
 ### Special notes

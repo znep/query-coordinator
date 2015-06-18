@@ -258,12 +258,12 @@
               </div>
 
               <div class="line openDataCommonsLine clearfix">
-                <label for="view_ccLicenseId" class="required"><%= t("screens.edit_metadata.licensing") %></label>
+                <label for="view_ccLicenseId" class="required"><%= t("#{prefix}.license_type") %></label>
                 <%= select_tag("view_odcLicenseId", open_data_commons_select_options) %>
               </div>
 
               <div class="line creativeCommonsLine clearfix">
-                <label for="view_ccLicenseId" class="required"><%= t("screens.edit_metadata.licensing") %></label>
+                <label for="view_ccLicenseId" class="required"><%= t("#{prefix}.licensing") %></label>
                 <%= select_tag("view_ccLicenseId", creative_commons_select_options) %>
               </div>
 

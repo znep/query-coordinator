@@ -256,6 +256,18 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_match(/signed_magnitude_10\(some_number_column\)/, soql)
   end
 
+  def test_build_rollup_soql_has_aggregation
+    manager.stubs(
+      dataset_metadata: { body: v1_dataset_metadata },
+      column_field_name: 'some_number_column',
+      logical_datatype_name: 'fred'
+    )
+    columns = v1_dataset_metadata.fetch('columns')
+    cards = v1_page_metadata.fetch('cards')
+    soql = manager.send(:build_rollup_soql, v1_page_metadata_with_aggregation, columns, cards)
+    assert_match(/sum\([^\)]+\) as value/, soql)
+  end
+
   def test_raise_when_missing_default_date_trunc_function
     manager.stubs(
       phidippides: stub(fetch_dataset_metadata: { body: v1_dataset_metadata }),
@@ -543,6 +555,13 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def v1_page_metadata_without_rollup_columns
     JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-page-metadata-without-rollup-columns.json"))
+  end
+
+  def v1_page_metadata_with_aggregation
+    metadata = v1_page_metadata
+    metadata['primaryAmountField'] = 'column'
+    metadata['primaryAggregation'] = 'sum'
+    metadata
   end
 
   # We need this because some tests in metadata transition phase 1 match

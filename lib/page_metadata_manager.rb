@@ -212,8 +212,6 @@ class PageMetadataManager
     non_date_card_types_for_rollup = %w{column choropleth}
     normalized_columns = transformed_columns(columns)
 
-    # TODO Need to consider the construction of the WHERE clause for page's
-    # default filter.
     columns_to_roll_up = cards.
       select { |card| non_date_card_types_for_rollup.include?(card['cardType']) }.
       pluck(column_field_name)
@@ -224,7 +222,7 @@ class PageMetadataManager
       columns_to_roll_up_by_magnitude(normalized_columns, cards).blank?
 
     if columns_to_roll_up_by_date_trunc(normalized_columns, cards).any? &&
-       page_metadata['defaultDateTruncFunction'].blank?
+      page_metadata['defaultDateTruncFunction'].blank?
         raise Phidippides::NoDefaultDateTruncFunction.new(
           "page does not have default date trunc function set for pageId: #{page_metadata['pageId']}"
         )
@@ -238,11 +236,15 @@ class PageMetadataManager
         "#{magnitude_function_for_column(page_metadata['datasetId'], field_name)}(#{field_name})"
       end).join(', ')
 
+    aggregation_function = page_metadata['primaryAggregation'] || 'count'
+    aggregation_field = page_metadata['primaryAmountField'] || '*'
+    aggregation_clause = "#{aggregation_function}(#{aggregation_field}) as value"
+
     soql = 'select '
-    # TODO This will have to respect different aggregation functions, i.e. "sum"
     soql << rolled_up_columns_soql
-    soql << ', count(*) as value '
-    soql << 'group by '
+    soql << ', '
+    soql << aggregation_clause
+    soql << ' group by '
     soql << rolled_up_columns_soql
   end
 

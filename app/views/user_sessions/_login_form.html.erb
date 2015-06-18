@@ -30,6 +30,7 @@
       <%- end -%>
     </div>
     <div class="authProvider socrata">
+      <p><%=raw t('screens.sign_in.back_to_sign_in_selection') %></p>
       <div class="login-description-container">
         <span class="login-description"><%= t('screens.sign_in.prompt_html') %></span>
         <p class="loginTips"><%= t('screens.sign_in.tips_html') %></p>
@@ -37,7 +38,6 @@
       <%= form_for @user_session do |f| %>
         <%= render :partial => 'user_sessions/login_form_data', :locals => {:f => f} %>
       <%- end -%>
-      <p><%=raw t('screens.sign_in.back_to_login_selection') %></p>
     </div>
 
   <%- elsif @use_auth0 %>

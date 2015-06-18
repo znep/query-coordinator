@@ -2459,7 +2459,7 @@ en:
       tips_html: Use your Email and Password to sign into all <strong>Socrata powered</strong> sites.
       auth0_intro: There are several ways you can sign in. If you haven't signed up for an account yet, choose the option that is most convenient for you. If you have, use the same option now.
       sign_in_with: <strong>Sign in</strong> with %{provider}
-      back_to_login_selection: Or, <a class="login-back">back to Login Options</a>.
+      back_to_sign_in_selection: <a class="login-back">Back to sign in options</a>
     sign_up:
       form:
         create_account_button: Create My Account

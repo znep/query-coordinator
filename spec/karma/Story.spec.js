@@ -325,7 +325,7 @@ describe('Story class', function() {
 
         var blockIndex = newStory.getBlockIndexWithId('test');
 
-        assert.deepEqual(
+        assert.equal(
           blockIndex,
           1,
           'the correct index is returned'
@@ -339,7 +339,7 @@ describe('Story class', function() {
 
         var blockIndex = newStory.getBlockIndexWithId(101);
 
-        assert.deepEqual(
+        assert.equal(
           blockIndex,
           2,
           'the correct index is returned'

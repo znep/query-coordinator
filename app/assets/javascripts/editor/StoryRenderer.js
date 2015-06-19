@@ -219,17 +219,8 @@
       var moveUpButton = blockElement.find('.block-edit-controls-move-up-btn');
       var moveDownButton = blockElement.find('.block-edit-controls-move-down-btn');
 
-      if (blockIndex === 0) {
-        moveUpButton.attr('disabled', 'disabled');
-      } else {
-        moveUpButton.removeAttr('disabled');
-      }
-
-      if (blockIndex === blockCount - 1) {
-        moveDownButton.attr('disabled', 'disabled');
-      } else {
-        moveDownButton.removeAttr('disabled');
-      }
+      moveUpButton.prop('disabled', blockIndex === 0);
+      moveDownButton.prop('disabled', blockIndex === (blockCount - 1));
     }
 
     function _renderBlock(block) {

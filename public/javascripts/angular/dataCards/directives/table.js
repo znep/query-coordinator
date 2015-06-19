@@ -30,9 +30,8 @@
             filter(_.isPresent).
             map(function(columnDetails) {
               return _.filter(columnDetails, function(column) {
-                // Filter out columns if they are subcolumns of another column, or if they have a
-                // cardinality <= 1 (meaning there is the same value for every row in the column)
-                return !(column.isSubcolumn || column.cardinality <= 1);
+                // Filter out columns if they are subcolumns of another column
+                return !column.isSubcolumn;
               });
             }));
 

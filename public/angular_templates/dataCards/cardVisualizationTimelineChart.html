@@ -14,7 +14,6 @@
 <div class="chart-render-error" ng-if="cannotRenderTimelineChart" ng-switch="cannotRenderTimelineChart.reason">
   <em ng-switch-when="noData">{{'timelineChart.errors.noData' | I18n}}</em>
   <em ng-switch-when="badDates">{{'timelineChart.errors.badDates' | I18n}}</em>
-  <em ng-switch-when="zeroTimeSpan">{{'timelineChart.errors.zeroTimeSpan' | I18n}}</em>
   <em ng-switch-default>{{'timelineChart.errors.default' | I18n}}</em>
 </div>
 

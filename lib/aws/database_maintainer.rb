@@ -28,6 +28,7 @@ module Aws
       Rails.env = RAILS_ENV_FOR_MIGRATIONS
 
       validate_args
+      ensure_local_matches_deployed_code
       update_aws_config
       set_environment_vars_from_marathon_config
       set_secret_db_password
@@ -63,6 +64,17 @@ module Aws
       unless KNOWN_REGIONS.include?(region)
         raise ArgumentError.new("AWS_REGION not valid. Expected one of [#{KNOWN_REGIONS.join(', ')}].")
       end
+    end
+
+    def ensure_local_matches_deployed_code
+      deploy = DecimaClient.new.get_deploys(environments: [environment], services: ['storyteller']).first
+      unless local_repository_sha.index(deploy.service_sha) == 0
+        raise "Code mismatch. Try `git pull && git checkout #{deploy.service_sha}` and run again."
+      end
+    end
+
+    def local_repository_sha
+      `git rev-parse HEAD`
     end
 
     def update_aws_config

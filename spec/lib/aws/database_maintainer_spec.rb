@@ -12,7 +12,13 @@ RSpec.describe Aws::DatabaseMaintainer do
     stub_request(:get, marathon_config_url).
       to_return(status: 200, body: fixture('marathon-storyteller.json'), headers: {'Content-Type' => 'application/json; charset=utf-8'})
 
+    stub_request(:get, 'http://decima.app.marathon.aws-us-west-2-infrastructure.socrata.net/deploy').
+      with(query: { environment: environment, service: 'storyteller' }).
+      to_return(status: 200, body: fixture('decima-storyteller.json'), headers: {'Content-Type' => 'application/json; charset=utf-8'})
+
     allow_any_instance_of(Aws::DatabaseMaintainer).to receive(:decrypted_db_password).and_return('database_password')
+    allow_any_instance_of(Aws::DatabaseMaintainer).to receive(:local_repository_sha).and_return('f89a7929abcdef234875ed')
+
     allow(Rake).to receive(:application).and_return(rake_application)
   end
 
@@ -57,6 +63,18 @@ RSpec.describe Aws::DatabaseMaintainer do
         expect {
           Aws::DatabaseMaintainer.new(environment: environment, region: region)
         }.to raise_error('Could not get environment config from marathon.')
+      end
+    end
+
+    context 'when deployed version does not match' do
+      before do
+        allow_any_instance_of(Aws::DatabaseMaintainer).to receive(:local_repository_sha).and_return('987654321abcdef123456')
+      end
+
+      it 'fails on initialization' do
+        expect {
+          Aws::DatabaseMaintainer.new(environment: environment, region: region)
+        }.to raise_error('Code mismatch. Try `git pull && git checkout f89a7929` and run again.')
       end
     end
 

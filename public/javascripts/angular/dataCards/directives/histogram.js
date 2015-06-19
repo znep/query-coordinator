@@ -42,8 +42,10 @@
               data;
           }).
           doAction(function(data) {
+            // If the histogram gets into an error-like state, re-render a blank
+            // chart so that the error doesn't appear over previously valid data
             if (_.isNull(data)) {
-              dom = service.setupDOM(container);
+              dom = service.setupDOM($scope.$id, container);
             }
           }).
           filter(_.isPresent);

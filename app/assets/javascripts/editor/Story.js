@@ -133,6 +133,24 @@
     };
 
     /**
+     * @param {(number|text)} id
+     */
+    this.getBlockIndexWithId = function(id) {
+
+      var index = null;
+
+      for (var i = 0; i < _blocks.length; i++) {
+        if (_blocks[i].getId() === id) {
+
+          index = i;
+          break;
+        }
+      }
+
+      return index;
+    };
+
+    /**
      * @param {number} index
      * @param {Block} block
      */

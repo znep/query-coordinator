@@ -294,6 +294,60 @@ describe('Story class', function() {
     });
   });
 
+  describe('.getBlockIndexWithId()', function() {
+
+    var newStory;
+
+    beforeEach(function() {
+      var storyData = generateStoryData({
+        blocks: [
+          generateBlockData({ id: 100 }),
+          generateBlockData({ id: 'test' }),
+          generateBlockData({ id: 101 })
+        ]
+      });
+      newStory = new Story(storyData);
+    });
+
+    describe('when called with an id that does not exist', function() {
+
+      it('returns null', function() {
+
+        var noBlock = newStory.getBlockIndexWithId('does not exist');
+
+        assert(noBlock === null, 'returns null')
+      });
+    });
+
+    describe('when called with a string id that exists', function() {
+
+      it('returns the index with the specified id', function() {
+
+        var blockIndex = newStory.getBlockIndexWithId('test');
+
+        assert.equal(
+          blockIndex,
+          1,
+          'the correct index is returned'
+        );
+      });
+    });
+
+    describe('when called with a numeric id that exists', function() {
+
+      it('returns the index with the specified id', function() {
+
+        var blockIndex = newStory.getBlockIndexWithId(101);
+
+        assert.equal(
+          blockIndex,
+          2,
+          'the correct index is returned'
+        );
+      });
+    });
+  });
+
   describe('.insertBlockAtIndex()', function() {
 
     var newStory;

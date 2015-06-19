@@ -37,6 +37,39 @@ $(document).on('ready', function() {
   userStoryRenderer.render();
 
 
+  $('.user-story-container').on('click', '.block-edit-controls-move-up-btn', function(e) {
+
+    var blockId = e.currentTarget.getAttribute('data-block-id');
+
+    if (blockId === null) {
+      throw new Error(
+        'Element does not have a `data-block-id` attribute: ' +
+        e.currentTarget.toString()
+      );
+    }
+
+    var blockIndex = userStory.getBlockIndexWithId(blockId);
+
+    userStory.swapBlocksAtIndices(blockIndex, blockIndex - 1);
+    userStoryRenderer.render();
+  });
+
+  $('.user-story-container').on('click', '.block-edit-controls-move-down-btn', function(e) {
+
+    var blockId = e.currentTarget.getAttribute('data-block-id');
+
+    if (blockId === null) {
+      throw new Error(
+        'Element does not have a `data-block-id` attribute: ' +
+        e.currentTarget.toString()
+      );
+    }
+
+    var blockIndex = userStory.getBlockIndexWithId(blockId);
+
+    userStory.swapBlocksAtIndices(blockIndex, blockIndex + 1);
+    userStoryRenderer.render();
+  });
 
 
   function DragDrop(ghostElement) {

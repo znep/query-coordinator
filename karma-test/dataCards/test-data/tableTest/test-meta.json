@@ -56,6 +56,7 @@
       "physicalDatatype": "text",
       "fred": "text",
       "importance": 3,
+      "cardinality": 1,
       "sortable": true
     },
     {

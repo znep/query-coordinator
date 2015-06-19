@@ -2663,7 +2663,6 @@ en:
         errors:
           no_data: Chart cannot be rendered with no values.
           bad_dates: Chart cannot be rendered due to invalid date values.
-          zero_time_span: Chart cannot be rendered with less than two date values.
           default: Chart cannot be rendered.
       distribution_chart:
         drag_help: Drag to change filter range

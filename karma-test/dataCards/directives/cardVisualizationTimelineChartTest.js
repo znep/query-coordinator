@@ -151,7 +151,7 @@ describe('A Timeline Chart Card Visualization', function() {
     expect(timelineChartScope.chartData).to.not.equal(undefined);
   });
 
-  it('should display a warning when all the data has the same timestamp', function() {
+  it('should not display a warning if all the data has the same timestamp', function() {
     var now = moment();
     mockCardDataService.getTimelineData = function(){
       return $q.when([
@@ -163,17 +163,17 @@ describe('A Timeline Chart Card Visualization', function() {
 
     var element = makeDirective();
     var errorMessage = element.find('.chart-render-error');
-    expect(errorMessage.text().trim()).to.equal('Chart cannot be rendered with less than two date values.');
+    expect(errorMessage.length).to.equal(0);
   });
 
-  it('should display a message when the chart cannot be rendered due to bad dates', function() {
+  it('should display a message when the chart cannot be rendered due to undefined data', function() {
     mockCardDataService.getTimelineDomain = function(){
       return $q.when(undefined);
     };
 
     var element = makeDirective();
     var errorMessage = element.find('.chart-render-error');
-    expect(errorMessage.text().trim()).to.equal('Chart cannot be rendered due to invalid date values.');
+    expect(errorMessage.text().trim()).to.equal('Chart cannot be rendered with no values.');
   });
 
   it('should have unfilteredSoqlRollupTablesUsed on scope', function() {

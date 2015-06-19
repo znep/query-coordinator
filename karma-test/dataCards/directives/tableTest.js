@@ -17,7 +17,7 @@ describe('table directive', function() {
       column.dataset = { version: '1' };
       if (column.fieldName[0].match(/[a-zA-Z0-9]/g)) {
         outerScope.columnDetails.push(column);
-        if (!(column.cardinality <= 1 || column.isSubcolumn)) {
+        if (!column.isSubcolumn) {
           columnCount += 1;
         }
       }
@@ -216,6 +216,25 @@ describe('table directive', function() {
       expect(booleanCells[3].innerHTML).to.equal('');
     });
 
+    it('should not hide columns with cardinality of 1', function() {
+      var columnDetails = fixtureMetadata.testColumnDetailsAsTableWantsThem;
+      var columnName;
+      var columnElement;
+      var columnHeader = $('.content > .ng-binding');
+
+      // Find the name of a column with a cardinality of one.
+      columnName = _.find(columnDetails, function(column) {
+        return column.cardinality === 1;
+      }).name;
+
+      // Test to see of this column is present in the table
+      columnElement = columnHeader.filter(function() {
+        return $(this).text() === columnName;
+      });
+
+      expect(columnElement.length).to.equal(1);
+    });
+
   });
 
   describe('when rendering null cell data', function() {
@@ -265,7 +284,7 @@ describe('table directive', function() {
       expect(cells.length).to.not.equal(0);
 
       var filteredColumns = _.filter(fixtureMetadata.testColumnDetailsAsTableWantsThem, function(column) {
-        return !(column.isSubcolumn || column.cardinality <= 1);
+        return !column.isSubcolumn;
       });
       _.each(cells, function(cell) {
         var column = filteredColumns[$(cell).index()];

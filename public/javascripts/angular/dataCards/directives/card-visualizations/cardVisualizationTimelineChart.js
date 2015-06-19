@@ -296,17 +296,12 @@
           chartDataSequence.startWith(undefined), // Because we never request data w/o datasetPrecision.
           function(badDates, chartData) {
 
-            var noData = chartData === null;
-
-            var durationIsZero = _.isPresent(chartData) &&
-              (chartData.maxDate - chartData.minDate) <= 0;
+            var noData = _.isNull(chartData) || _.isUndefined(chartData);
 
             if (noData) {
               return { reason: 'noData' };
             } else if (badDates) {
               return { reason: 'badDates' };
-            } else if (durationIsZero){
-              return { reason: 'zeroTimeSpan' };
             } else {
               return false;
             }

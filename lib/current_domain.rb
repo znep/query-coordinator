@@ -65,11 +65,6 @@ class CurrentDomain
     end
   end
 
-  def self.base_uri
-    port = APP_CONFIG['ssl_port'] ?  ':' << APP_CONFIG['ssl_port'].to_s : ''
-    "https://#{@@current_domain[:data].cname}#{port}"
-  end
-
   def self.short_name
     @@current_domain[:data].shortName
   end

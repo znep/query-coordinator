@@ -98,8 +98,8 @@ module Auth0Helper
   # is unavailable, then the system will fail.
   def generate_authorize_uri(connection, callback_uri)
     parameters = {
-      :scope => "openid profile",
-      :response_type => "code",
+      :scope => 'openid profile',
+      :response_type => 'code',
       :connection => connection,
       :callbackURL => callback_uri,
       :sso => true,
@@ -109,7 +109,7 @@ module Auth0Helper
 
     URI::escape(
       "https://#{AUTH0_URI}/authorize?" <<
-      parameters.map { |key, value| key.to_s << '=' << value.to_s }.join('&')
+      parameters.map { |key, value| "#{key}=#{value}" }.join('&')
     )
   end
 end

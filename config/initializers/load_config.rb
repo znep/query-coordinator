@@ -40,8 +40,8 @@ end
 
 STYLE_PACKAGES = YAML.load_file("#{Rails.root}/config/style_packages.yml") || {}
 
-AUTH0_URI = APP_CONFIG['auth0_uri']
-AUTH0_ID = APP_CONFIG['auth0_id']
-AUTH0_SECRET = APP_CONFIG['auth0_secret']
-AUTH0_JWT = APP_CONFIG['auth0_jwt']
+AUTH0_URI = ENV['AUTH0_URI'] || APP_CONFIG['auth0_uri']
+AUTH0_ID = ENV['AUTH0_ID'] || APP_CONFIG['auth0_id']
+AUTH0_SECRET = ENV['AUTH0_SECRET'] || APP_CONFIG['auth0_secret']
+AUTH0_JWT = ENV['AUTH0_JWT'] || APP_CONFIG['auth0_jwt']
 AUTH0_CONFIGURED = !(AUTH0_URI.nil? || AUTH0_ID.nil? || AUTH0_SECRET.nil? || AUTH0_JWT.nil?)

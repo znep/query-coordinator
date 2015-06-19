@@ -164,7 +164,7 @@
           return getLogarithmicBucket(magnitude, value);
         }
         else {
-          if (options.bucketType === 'linear') {
+          if (options.bucketType !== 'linear') {
             $log.warn('Unknown bucket type ' +
               '"{0}", defaulting to linear'.format(options.bucketType));
           }

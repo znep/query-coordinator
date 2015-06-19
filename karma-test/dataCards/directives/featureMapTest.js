@@ -129,7 +129,7 @@ describe('featureMap', function() {
     scope.featureExtent = featureExtent;
     scope.vectorTileGetter = options.vectorTileGetter;
     scope.zoomDebounceMilliseconds = 0;
-    scope.rowDisplayUnit = 'rowDisplayUnit';
+    scope.rowDisplayUnit = 'row';
 
     return testHelpers.TestDom.compileAndAppend(html, scope);
   }
@@ -354,6 +354,47 @@ describe('featureMap', function() {
       createFeatureMap();
     });
   });
+
+  // describe('flyouts', function() {
+  //   var map;
+  //   var flyout;
+  //   var hint;
+  //   var ghost;
+
+  //   beforeEach(function() {
+  //     map = createFeatureMap();
+  //     flyout = $('#uber-flyout');
+  //     hint = flyout.find('.hint');
+  //   });
+
+  //   function simulateMouseover(x, y, target) {
+  //   testHelpers.fireMouseEvent(target, 'mouseover');
+  //   testHelpers.fireMouseEvent(target, 'mousemove', {
+  //     clientX: x,
+  //     clientY: y,
+  //     relatedTarget: target
+  //   });
+  //   // ghost red px to help with debugging
+  //   ghost = $("<div style='background-color:red; width:2px; height: 2px; position: absolute; top: " + y + "px; left: " + x + "px'></div>");
+  //   $(map).append(ghost);
+
+  //   }
+
+  //   it('should render a flyout when hovering on a point', function() {
+  //     // var highlightTarget = map.find('.feature-map-container')[0];
+  //     var highlightTarget = map.find('canvas')[0];
+  //     var mapWidth = $('.feature-map-container').width();
+  //     var mapHeight = $('.feature-map-container').height();
+
+  //     if (highlightTarget) {
+  //       simulateMouseover(mapWidth / 2, mapHeight / 2, highlightTarget);
+  //     }
+  //     expect(flyout.is(':visible')).to.be.true;
+  //     console.log(flyout.text())
+  //     expect(flyout.text()).to.match(/\d+ rows/);
+  //     expect(flyout.text()).to.match(/Click to see details/);
+  //   });
+  // });
 
   describe('disable pan and zoom feature flag', function() {
     beforeEach(function() {

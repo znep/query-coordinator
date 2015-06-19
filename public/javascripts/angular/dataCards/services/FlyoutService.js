@@ -35,6 +35,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
     var flyoutWidth;
     var flyoutHeight;
     var flyoutTarget;
+    var flyoutOffset;
     var horizontalHint;
     var rightSideHint;
     var targetBoundingClientRect;
@@ -57,9 +58,10 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
           // Correctly position and render the flyout target
           flyoutTarget = handler.positionOn(target);
           flyoutContent = handler.render(target, flyoutTarget);
+          flyoutOffset = handler.getOffset(target);
 
           // Check that the content is defined
-          if (_.isDefined(flyoutContent) && _.isDefined(flyoutTarget)) {
+          if (_.isDefined(flyoutContent) && (_.isDefined(flyoutTarget) || _.isDefined(flyoutOffset))) {
 
             uberFlyoutContent.html(flyoutContent);
             flyoutWidth = uberFlyout.outerWidth();
@@ -74,7 +76,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
             };
 
             // Hints can be horizontal or cursor-tracking, but not both
-            if (horizontalHint) {
+            if (horizontalHint && flyoutTarget) {
               targetBoundingClientRect = flyoutTarget.getBoundingClientRect();
 
               cssFlyout.left = targetBoundingClientRect.left -
@@ -98,29 +100,17 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
                 right: ''
               };
 
-              // Check if cursor tracking
-              if (handler.trackCursor) {
+              // Set the left and top of flyout depending on its type
+              if (handler.trackCursor || _.isDefined(flyoutOffset)) {
+
+                var left = _.get(flyoutOffset, 'x', mouseX);
+                var top = _.get(flyoutOffset, 'y', mouseY);
 
                 // Position the flyout perfectly so that the hint points
                 // to the cursor pointer.
-                cssFlyout.left = mouseX;
-                cssFlyout.top = mouseY - flyoutHeight - hintHeight -
+                cssFlyout.left = left;
+                cssFlyout.top = top - flyoutHeight - hintHeight -
                   Constants.FLYOUT_BOTTOM_PADDING;
-
-                // If the right side of the flyout will be cut off
-                // by the window, right-align the flyout.
-                if (cssFlyout.left + flyoutWidth > windowWidth) {
-                  cssFlyout.left -= flyoutWidth;
-                  cssHint.right = 0;
-                  rightSideHint = true;
-                }
-
-                // If the top of the flyout will be cut off
-                // by the window, top-align the flyout.
-                if (cssFlyout.top - flyoutHeight < 0) {
-                  cssFlyout.top = flyoutHeight;
-                }
-
               } else {
                 targetBoundingClientRect = flyoutTarget.getBoundingClientRect();
 
@@ -129,32 +119,32 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
                 cssFlyout.left = targetBoundingClientRect.left +
                   (targetBoundingClientRect.width / 2);
 
-                // If the right side of the flyout is past our
-                // predefined WINDOW_PADDING, right-align the flyout.
-                if (cssFlyout.left + flyoutWidth >= windowWidth - Constants.FLYOUT_WINDOW_PADDING) {
-                  cssHint.left = cssFlyout.left -
-                    (windowWidth - Constants.FLYOUT_WINDOW_PADDING - flyoutWidth);
-                  cssFlyout.right = Constants.FLYOUT_WINDOW_PADDING;
-                  cssFlyout.left = '';
-                }
-
-                // If hint is at least halfway across the flyout,
-                // change its orientation.
-                if (cssHint.left > flyoutWidth / 2) {
-                  cssHint.left = cssHint.left - hintWidth;
-                  rightSideHint = true;
-                }
-
                 // Set the top of the flyout.
                 cssFlyout.top = targetBoundingClientRect.top -
                   (flyoutHeight + hintHeight) -
                   Constants.FLYOUT_BOTTOM_PADDING;
+              }
 
-                // If top of flyout is cut off by window,
-                // top-align the flyout.
-                if (cssFlyout.top < 0) {
-                  cssFlyout.top = 0;
-                }
+              // If the right side of the flyout is past our
+              // predefined WINDOW_PADDING, right-align the flyout.
+              if (cssFlyout.left + flyoutWidth >= windowWidth - Constants.FLYOUT_WINDOW_PADDING) {
+                cssHint.left = cssFlyout.left -
+                  (windowWidth - Constants.FLYOUT_WINDOW_PADDING - flyoutWidth);
+                cssFlyout.right = Constants.FLYOUT_WINDOW_PADDING;
+                cssFlyout.left = '';
+              }
+
+              // If hint is at least halfway across the flyout,
+              // change its orientation.
+              if (cssHint.left > flyoutWidth / 2) {
+                cssHint.left = cssHint.left - hintWidth;
+                rightSideHint = true;
+              }
+
+              // If top of flyout is cut off by window,
+              // top-align the flyout.
+              if (cssFlyout.top < 0) {
+                cssFlyout.top = 0;
               }
 
               // Apply css to flyout hint.
@@ -191,6 +181,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
     '</div>');
 
   uberFlyout = $('#uber-flyout');
+  uberFlyout.hide();
   uberFlyoutContent = uberFlyout.children('.content');
   hintWidth = uberFlyout.children('.hint').outerWidth();
   hintHeight = uberFlyout.children('.hint').outerHeight();
@@ -237,6 +228,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
         render: null,
         destroySignal: null,
         positionOn: _.identity,
+        getOffset: _.noop,
         trackCursor: false,
         horizontal: false
       });

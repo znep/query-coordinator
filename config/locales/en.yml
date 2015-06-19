@@ -2661,6 +2661,7 @@ en:
         clear_filter_long: The page is currently filtered by this value, click to clear it
         clear_range_filter_long: The page is currently filtered by this selection, click to clear it
         expand: Click to expand
+        details: Click to see details
       timeline_chart:
         drag_help: Drag to change filter range
         drag_clear_help: Clear filter range

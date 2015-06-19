@@ -59,31 +59,36 @@
           });
         }
 
-        // Register hover flyout
-        var hoverPointCount = 0;
-        var hoverPointOffset = {x: 0, y: 0};
-        var hoverTimeout = null;
+        // Holds flyout-related state. Offset is specified in absolute pixels
+        // because we don't have an element to position the flyout on.
+        var flyoutData = {
+          count: 0,
+          offset: {x: 0, y: 0}
+        };
+
         FlyoutService.register({
           selector: 'canvas',
           render: function(target) {
-            if (hoverPointCount === 0) {
-              target.style.cursor = 'inherit';
-              return undefined;
-            }
+            var noPoints = (flyoutData.count === 0);
 
-            var unit = hoverPointCount === 1 ? scope.rowDisplayUnit : scope.rowDisplayUnit.pluralize();
+            // Set the appropriate cursor
+            target.style.cursor = noPoints ? 'inherit' : 'pointer';
+
+            // Hide the flyout if there are no nearby points
+            if (noPoints) {
+              return;
+            }
 
             var template = [
               '<div class="flyout-title">{0} {1}</div>',
-              'Click to see details'
+              I18n.flyout.details
             ].join('');
 
-            target.style.cursor = 'pointer';
-
-            return template.format(hoverPointCount, unit);
+            var unit = scope.rowDisplayUnit.pluralize();
+            return template.format(flyoutData.count, unit);
           },
           getOffset: function() {
-            return hoverPointOffset;
+            return flyoutData.offset;
           },
           destroySignal: scope.$destroyAsObservable()
         });
@@ -282,21 +287,11 @@
               return promise;
             },
             mousemove: function(e) {
-              hoverPointCount = 0;
-              hoverPointOffset = {x: e.originalEvent.clientX, y: e.originalEvent.clientY + 5};
-              if (hoverTimeout) {
-                clearTimeout(hoverTimeout);
-              }
-              hoverTimeout = setTimeout(function() {
-                hoverPointCount = e.neighboringPoints.length;
-                FlyoutService.refreshFlyout();
-              }, 200);
+              // Set flyout data and force a refresh of the flyout
+              flyoutData.offset = {x: e.originalEvent.clientX, y: e.originalEvent.clientY + 5};
+              flyoutData.count = _.sum(e.points, 'count');
+              FlyoutService.refreshFlyout(e.originalEvent);
             }
-            // You can interact with mouse events by passing
-            // callbacks on three property names: 'mousedown',
-            // 'mouseup' and 'mousemove'.
-            // E.g.
-            // mousemove: function(e) { /* do stuff with e.latLng */ }
           };
 
           // Don't create duplicate layers.

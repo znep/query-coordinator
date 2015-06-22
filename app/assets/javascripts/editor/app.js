@@ -37,10 +37,13 @@ $(document).on('ready', function() {
   userStoryRenderer.render();
 
 
-  $('.user-story-container').on('click', '.block-edit-controls-move-up-btn', function(e) {
+  $('.user-story-container').on('click', '.block-edit-control-btn', function(e) {
+    var classes = e.target.getAttribute('class');
+    var blockId;
+    var blockIndex;
 
-    var blockId = e.currentTarget.getAttribute('data-block-id');
-
+    // ensure our element has a block to fetch
+    blockId = e.target.getAttribute('data-block-id');
     if (blockId === null) {
       throw new Error(
         'Element does not have a `data-block-id` attribute: ' +
@@ -48,28 +51,25 @@ $(document).on('ready', function() {
       );
     }
 
-    var blockIndex = userStory.getBlockIndexWithId(blockId);
+    blockIndex = userStory.getBlockIndexWithId(blockId);
 
-    userStory.swapBlocksAtIndices(blockIndex, blockIndex - 1);
-    userStoryRenderer.render();
-  });
-
-  $('.user-story-container').on('click', '.block-edit-controls-move-down-btn', function(e) {
-
-    var blockId = e.currentTarget.getAttribute('data-block-id');
-
-    if (blockId === null) {
-      throw new Error(
-        'Element does not have a `data-block-id` attribute: ' +
-        e.currentTarget.toString()
-      );
+    // perform the edits requested
+    if (classes.indexOf('block-edit-controls-move-up-btn') !== -1) {
+      userStory.swapBlocksAtIndices(blockIndex, blockIndex - 1);
+    }
+    else if (classes.indexOf('block-edit-controls-move-down-btn') !== -1) {
+      userStory.swapBlocksAtIndices(blockIndex, blockIndex + 1);
+    }
+    else if (classes.indexOf('block-edit-controls-delete-btn') !== -1) {
+      userStory.removeBlockWithId(blockId);
+    }
+    else {
+      return;
     }
 
-    var blockIndex = userStory.getBlockIndexWithId(blockId);
-
-    userStory.swapBlocksAtIndices(blockIndex, blockIndex + 1);
     userStoryRenderer.render();
   });
+
 
 
   function DragDrop(ghostElement) {

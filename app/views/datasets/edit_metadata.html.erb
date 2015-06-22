@@ -158,7 +158,10 @@
 
      <div class="line clearfix">
        <label for="view_metadata_rowIdentifier"><%= t('screens.edit_metadata.row_identifier') %></label>
-       <%= row_identifier_select_tag %>
+       <%= row_identifier_select_tag(@isPublishedNBEView) %>
+       <%- if @isPublishedNBEView %>
+         <div class="additionalHelp"><%= t('screens.edit_metadata.row_identifier_help_text') %></div>
+       <%- end %>
      </div>
 
     <%- end -%>

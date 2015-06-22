@@ -92,6 +92,16 @@ blist.metrics.sitewideShared = {
             }
         },
         {
+            id: 'summaryLenses',
+            displayName: 'Total Data Lenses',
+            summary: {
+                plus: 'lense-new_view-published-v1',
+                range: false,
+                verbPhrase: 'lenses created',
+                verbPhraseSingular: 'lens created'
+            }
+        },
+        {
             id: 'summaryRows',        displayName: 'Total Rows',
             summary: {
 		plus: 'rows-created', 

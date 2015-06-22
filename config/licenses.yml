@@ -68,7 +68,7 @@
     terms_link: http://creativecommons.org/licenses/by/4.0/legalcode
     attribution_required: true
   - id: CC_40_BY_SA
-    name: Attribution | ShareAlike 4.0 International
+    name: Attribution | Share Alike 4.0 International
     logo: images/licenses/cc30bysa.png
     terms_link: http://creativecommons.org/licenses/by-sa/4.0/legalcode
     attribution_required: true
@@ -79,7 +79,7 @@
     name: Public Domain Dedication and License
     terms_link: http://opendatacommons.org/licenses/pddl/1.0/
   - id: ODBL
-    display_name: Open Database License
+    name: Open Database License
     terms_link: http://opendatacommons.org/licenses/odbl/1.0/
   - id: ODC_BY
     name: Attribution License

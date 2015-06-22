@@ -249,33 +249,7 @@
             </div>
 
             <div class="licensingMetadata">
-              <h2><%= t('screens.edit_metadata.licensing_attr') %></h2>
-
-              <div class="line clearfix">
-                <label for="view_licenseId"><%= t("#{prefix}.license_type") %></label>
-                <%= select_tag("view[licenseId]", license_select_options('')) %>
-                <div class="additionalHelp"><%= t("#{prefix}.license_help") %></div>
-              </div>
-
-              <div class="line openDataCommonsLine clearfix">
-                <label for="view_ccLicenseId" class="required"><%= t("#{prefix}.license_type") %></label>
-                <%= select_tag("view_odcLicenseId", open_data_commons_select_options) %>
-              </div>
-
-              <div class="line creativeCommonsLine clearfix">
-                <label for="view_ccLicenseId" class="required"><%= t("#{prefix}.licensing") %></label>
-                <%= select_tag("view_ccLicenseId", creative_commons_select_options) %>
-              </div>
-
-              <div class="line clearfix">
-                <label for="view_attribution"><%= t("#{prefix}.data_provided_by") %></label>
-                <%= text_field_tag("view[attribution]", '', :title => t("#{prefix}.data_provided_prompt"), :class => "textPrompt") %>
-              </div>
-
-              <div class="line clearfix">
-                <label for="view_attributionLink"><%= t("#{prefix}.source_link") %></label>
-                <%= text_field_tag("view[attributionLink]", '', :title => t("#{prefix}.source_link_prompt"), :class => "textPrompt") %>
-              </div>
+              <%= render :partial => 'edit_license' %>
             </div>
 
             <div class="attachmentsMetadata">
@@ -379,10 +353,15 @@
 <% end %>
 
 <% content_for :js_footer do %>
+  <script type="text/javascript">
+    blist.namespace.fetch('blist.licenses');
+    blist.licenses = <%= safe_json(ExternalConfig.for(:license).licenses) %>;
+  </script>
   <%= include_javascripts 'dataset-new' %>
 <% end %>
 <%= render_translations LocalePart.screens.import_pane %>
 <%= render_translations LocalePart.screens.wizard %>
 <%= render_translations LocalePart.screens.dataset_new.upload_file %>
 <%= render_translations LocalePart.screens.dataset_new.errors %>
+<%= render_translations LocalePart.screens.edit_metadata.license_type %>
 <%= render_translations LocalePart.plugins.fileuploader %>

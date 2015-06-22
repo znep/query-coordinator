@@ -1,0 +1,87 @@
+# This is the truth file for licenses.
+# If the metadb does not agree with the contents here, it is wrong.
+# • In that case, run tools/license_parity.rb to figure out the necessary changes.
+#
+# Your IDs must be ALLCAPS. This is because core will automatically upcase
+# the ID that you save.
+#
+# The `selector_name` is the name displayed in the /edit_metadata dropdown.
+# The `display_name` is the name displayed on the /about description and the view JSON.
+# Both will fallback to `name` if unavailable.
+#
+--- 
+- id: PUBLIC_DOMAIN
+  name: Public Domain
+- id: IODL
+  name: Italian Open Data License 2.0
+  logo: images/licenses/iodl.png
+  terms_link: http://www.dati.gov.it/iodl/2.0/
+- id: UK_OGLV3.0
+  name: UK Open Government Licence v3
+  logo: images/licenses/ogl.png
+  terms_link: http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/
+- id: CC
+  name: Creative Commons
+  licenses:
+  - id: CC0_10
+    name: 1.0 Universal (Public Domain Dedication)
+    logo: images/licenses/ccZero.png
+    terms_link: http://creativecommons.org/publicdomain/zero/1.0/legalcode
+  - id: CC_30_BY
+    name: Attribution 3.0 Unported
+    logo: images/licenses/cc30by.png
+    terms_link: http://creativecommons.org/licenses/by/3.0/legalcode
+    attribution_required: true
+  - id: CC_30_BY_SA
+    name: Attribution | Share Alike 3.0 Unported
+    logo: images/licenses/cc30bysa.png
+    terms_link: http://creativecommons.org/licenses/by-sa/3.0/legalcode
+    attribution_required: true
+  - id: CC_30_BY_ND
+    name: Attribution | No Derivative Works 3.0 Unported
+    logo: images/licenses/cc30bynd.png
+    terms_link: http://creativecommons.org/licenses/by-nd/3.0/legalcode
+    attribution_required: true
+  - id: CC_30_BY_NC
+    name: Attribution | Noncommercial 3.0 Unported
+    logo: images/licenses/cc30bync.png
+    terms_link: http://creativecommons.org/licenses/by-nc/3.0/legalcode
+    attribution_required: true
+  - id: CC_30_BY_NC_SA
+    name: Attribution | Noncommercial | Share Alike 3.0 Unported
+    logo: images/licenses/cc30byncsa.png
+    terms_link: http://creativecommons.org/licenses/by-nc-sa/3.0/legalcode
+    attribution_required: true
+  - id: CC_30_BY_NC_ND
+    name: Attribution | Noncommercial | No Derivative Works 3.0 Unported
+    logo: images/licenses/cc30byncnd.png
+    terms_link: http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode
+    attribution_required: true
+  - id: CC_30_BY_AUS
+    name: Attribution 3.0 Australia
+    logo: images/licenses/cc30by.png
+    terms_link: http://creativecommons.org/licenses/by/3.0/au/deed.en
+    attribution_required: true
+  - id: CC_40_BY
+    name: Attribution 4.0 International
+    logo: images/licenses/cc30by.png
+    terms_link: http://creativecommons.org/licenses/by/4.0/legalcode
+    attribution_required: true
+  - id: CC_40_BY_SA
+    name: Attribution | ShareAlike 4.0 International
+    logo: images/licenses/cc30bysa.png
+    terms_link: http://creativecommons.org/licenses/by-sa/4.0/legalcode
+    attribution_required: true
+- id: ODC
+  name: Open Data Commons
+  licenses:
+  - id: PDDL
+    name: Public Domain Dedication and License
+    terms_link: http://opendatacommons.org/licenses/pddl/1.0/
+  - id: ODBL
+    display_name: Open Database License
+    terms_link: http://opendatacommons.org/licenses/odbl/1.0/
+  - id: ODC_BY
+    name: Attribution License
+    terms_link: http://opendatacommons.org/licenses/by/1.0/
+    attribution_required: true

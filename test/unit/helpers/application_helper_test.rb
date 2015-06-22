@@ -108,23 +108,25 @@ class ApplicationHelperTest < ActionView::TestCase
   def test_render_license
     @view = View.new({})
     assert render_license == '(none)'
-    @view = View.new({ 'license' => { 'name' => 'license test' } })
+
+    LicenseConfig.any_instance.stubs(find_by_id: { :name => 'license test' })
+    @view = View.new({ 'licenseId' => 'test' })
     assert render_license == 'license test'
 
-    @view = View.new({ 'license' => {
-      'name' => 'license test',
-      'termsLink' => 'http://www.example.com/'
-    } })
+    LicenseConfig.any_instance.stubs(find_by_id: {
+      name: 'license test',
+      terms_link: 'http://www.example.com/'
+    })
     html = Nokogiri::HTML(render_license)
     assert html.text == 'license test'
     assert html.css('body').children.first.name == 'a'
     assert html.css('a').attribute('href').value == 'http://www.example.com/'
 
-    @view = View.new({ 'license' => {
-      'name' => 'license test',
-      'logoUrl' => 'http://www.example.org/logo.jpg',
-      'termsLink' => 'http://www.example.com/'
-    } })
+    LicenseConfig.any_instance.stubs(find_by_id: {
+      name: 'license test',
+      logo: 'http://www.example.org/logo.jpg',
+      terms_link: 'http://www.example.com/'
+    })
     html = Nokogiri::HTML(render_license)
     assert html.text == ''
     assert html.css('body').children.first.name == 'a'
@@ -133,11 +135,11 @@ class ApplicationHelperTest < ActionView::TestCase
     assert html.css('img').attribute('src').value == 'http://www.example.org/logo.jpg'
     assert html.css('img').attribute('alt').value == 'license test'
 
-    @view = View.new({ 'license' => {
-      'name' => 'license test',
-      'logoUrl' => 'images/logo.jpg',
-      'termsLink' => 'http://www.example.com/'
-    } })
+    LicenseConfig.any_instance.stubs(find_by_id: {
+      name: 'license test',
+      logo: 'images/logo.jpg',
+      terms_link: 'http://www.example.com/'
+    })
     html = Nokogiri::HTML(render_license)
     assert html.text == ''
     assert html.css('body').children.first.name == 'a'

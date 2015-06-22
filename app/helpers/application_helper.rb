@@ -410,11 +410,13 @@ module ApplicationHelper
   end
 
   def render_license
-    return t('screens.about.none') if @view.property_or_default(['license']).nil?
+    licenseId = @view.property_or_default(['licenseId'])
+    return t('screens.about.none') if licenseId.nil?
 
-    license_link = @view.property_or_default(['license', 'termsLink'])
-    license_logo = @view.property_or_default(['license', 'logoUrl'])
-    license_name = @view.property_or_default(['license', 'name'])
+    license = ExternalConfig.for(:license).find_by_id licenseId
+    license_link = license[:terms_link]
+    license_logo = license[:logo]
+    license_name = license[:display_name] || license[:name]
 
     license_logo = "/#{license_logo}" if license_logo.present? && URI(license_logo).scheme.nil?
 

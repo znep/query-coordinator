@@ -153,7 +153,13 @@ module ApplicationHelper
     end
   end
 
-  DEFAULT_TRANSLATIONS = [ LocalePart.core, LocalePart.account.common, LocalePart.controls.common, LocalePart.plugins.jquery_ui ]
+  DEFAULT_TRANSLATIONS = [
+    LocalePart.core,
+    LocalePart.account.common,
+    LocalePart.controls.common,
+    LocalePart.controls.charts,
+    LocalePart.plugins.jquery_ui
+  ]
   def render_translations(part = nil)
     @rendered_translations ||= Set.new()
     to_render = [part].concat(DEFAULT_TRANSLATIONS)

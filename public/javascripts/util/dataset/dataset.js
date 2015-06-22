@@ -56,8 +56,6 @@ var Dataset = ServerModel.extend({
         if (ds.nbe_view_id && blist.feature_flags.swap_in_nbe_view) {
           ds.nbeView = blist.viewCache[ds.nbe_view_id];
           ds.newBackend = true;
-          // Save off the old columns so that we can use them during a save.
-          ds.oldColumns = _.map(ds.columns, function(col) { return $.extend({}, col); });
           ds.replaceColumnsWithNBECols(ds.nbeView.columns);
         }
 

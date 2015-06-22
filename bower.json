@@ -1,0 +1,21 @@
+{
+  "name": "storyteller",
+  "version": "0.0.1",
+  "homepage": "https://github.com/socrata/storyteller",
+  "authors": [
+    "<vertex-l@socrata.com>"
+  ],
+  "license": "proprietary",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "vendor/assets/components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "squire-rte": "^1.2.0"
+  }
+}

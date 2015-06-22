@@ -9,6 +9,6 @@
 //
 
 //= require jquery2
-//= require squire-min
 //= require lodash
+//= require squire-rte/build/squire
 //= require_tree ./editor

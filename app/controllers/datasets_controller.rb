@@ -449,6 +449,8 @@ class DatasetsController < ApplicationController
         flash.now[:error] = "An error occurred during your request: #{e.error_message}"
       end
     end
+
+    @isPublishedNBEView = @view.publicationStage == 'published' && @view.newBackend
   end
 
   def edit_rr

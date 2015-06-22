@@ -63,7 +63,7 @@
         var filterSelected$ = $scope.$eventToObservable('toggle-dataset-filter:histogram').
           map(_.property('additionalArguments[0]'));
 
-        var selectionRange$ = activeFilters$.map(function(filters) {
+        var currentRangeFilterValues$ = activeFilters$.map(function(filters) {
           if (_.isPresent(filters)) {
             var valueRangeFilter = _(filters).chain().
               select(function(filter) { return filter instanceof Filter.ValueRangeFilter; }).
@@ -72,7 +72,7 @@
               return [valueRangeFilter.start, valueRangeFilter.end];
             }
           }
-          return [0, 0];
+          return null;
         });
 
         var activeFiltersExcludingOwn$ = cardModel.observeOnLatest('page.activeFilters').
@@ -99,20 +99,13 @@
           }).startWith('');
 
         filterSelected$.subscribe(function(filterValues) {
-          if (_.isDefined(filterValues)) {
+          if (_.isPresent(filterValues)) {
             var filter = new Filter.ValueRangeFilter(filterValues[0], filterValues[1]);
             $scope.model.set('activeFilters', [filter]);
           } else {
             $scope.model.set('activeFilters', []);
           }
         });
-
-        var nonBaseFilterApplied$ = Rx.Observable.combineLatest(
-          whereClause$,
-          baseSoqlFilter$,
-          function (whereClause, baseSoqlFilter) {
-            return !_.isEmpty(whereClause) && whereClause != baseSoqlFilter;
-          }).distinctUntilChanged();
 
         var columnDataSummary$ = Rx.Observable.combineLatest(
           fieldName$,
@@ -199,9 +192,8 @@
         $scope.$bindObservable('rowDisplayUnit', rowDisplayUnit$);
         $scope.$bindObservable('cardData', cardData$);
         $scope.$bindObservable('isFiltered', isFiltered$);
-        $scope.$bindObservable('activeFilters', activeFilters$);
         $scope.$bindObservable('expanded', expanded$);
-        $scope.$bindObservable('selectionRange', selectionRange$);
+        $scope.$bindObservable('currentRangeFilterValues', currentRangeFilterValues$);
       }
     };
   }

@@ -211,7 +211,7 @@ describe('timelineChart', function() {
 
   describe('axis creation', function() {
 
-    it('should recover from having all data at same timestamp', function() {
+    it('correctly updates tick and label count if underlying data is changed', function() {
       var chart = createTimelineChart(640, false, allDataAtSameTimestampData);
 
       chart.scope().chartData = unfilteredTestData;
@@ -219,6 +219,13 @@ describe('timelineChart', function() {
 
       expect($('.x-tick').length).to.be.above(1);
       expect($('.x-tick-label').length).to.be.above(1);
+
+    });
+
+    it('should draw a single label if all data is at the same timestamp', function() {
+      var chart = createTimelineChart(640, false, allDataAtSameTimestampData);
+
+      expect($('.x-tick-label').length).to.equal(1);
 
     });
 

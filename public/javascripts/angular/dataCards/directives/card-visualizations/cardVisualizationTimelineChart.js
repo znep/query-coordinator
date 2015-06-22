@@ -102,18 +102,14 @@
           return aggregatedData;
         }
 
-        var reportInvalidTimelineDomain = _.once(
-          function() {
-            $log.error(
-              [
-                'Cannot render timeline chart with invalid domain (',
-                'column fieldName: "',
-                scope.model.fieldName,
-                '").'
-              ].join('')
-            );
-          }
-        );
+        var reportInvalidTimelineDomain = _.once(function() {
+          $log.error(
+            [
+              'Cannot render timeline chart with invalid domain',
+              '(column fieldName: "{0}").'
+            ].join('').format(scope.model.fieldName)
+          );
+        });
 
         var datasetPrecision = Rx.Observable.combineLatest(
           cardModelSequence.pluck('fieldName'),
@@ -127,11 +123,17 @@
           function(domain) {
             var precision;
 
-            if (_.isUndefined(domain) || domain.start === null || domain.end === null) {
+            // Return undefined if the domain is undefined, null, or malformed
+            // in some way.  Later on, we will test if datasetPrecision is
+            // undefined and display the proper error message.
+            // By examining the return of getTimelineDomain, these are the
+            // only checks we need.
+            if (_.isUndefined(domain) ||  _.isNull(domain.start) || _.isNull(domain.end)) {
               reportInvalidTimelineDomain();
               return;
             }
 
+            // Otherwise, return a the precision as a string.
             // Moment objects are inherently mutable. Therefore, the .add()
             // call in the first condition will need to be accounted for in
             // the second condition. We're doing this instead of just cloning
@@ -139,6 +141,7 @@
             // like 40ms).
             if (domain.start.add('years', 1).isAfter(domain.end)) {
               precision = 'DAY';
+
             // We're actually checking for 20 years but have already added one
             // to the original domain start date in the if block above.
             } else if (domain.start.add('years', 19).isAfter(domain.end)) {
@@ -200,8 +203,6 @@
                   // Do nothing
                 }
               );
-
-              return Rx.Observable.fromPromise(dataPromise);
             }
           }
         );
@@ -265,8 +266,6 @@
                   // Do nothing
                 }
               );
-
-              return Rx.Observable.fromPromise(dataPromise);
             }
           }
         );
@@ -275,7 +274,7 @@
           unfilteredDataSequence.switchLatest(),
           filteredDataSequence.switchLatest(),
           function(unfilteredData, filteredData) {
-            if (unfilteredData.length === 0 || filteredData.length === 0) {
+            if (_.isEmpty(unfilteredData) || _.isEmpty(filteredData)) {
               return null;
             } else {
               return TimelineChartVisualizationHelpers.transformChartDataForRendering(
@@ -293,18 +292,21 @@
         //   sense when they're zero in duration).
         var cannotRenderTimelineChart = Rx.Observable.combineLatest(
           datasetPrecision.map(_.isUndefined),
-          chartDataSequence.startWith(undefined), // Because we never request data w/o datasetPrecision.
+          chartDataSequence.startWith(undefined),
           function(badDates, chartData) {
+            var cannotRender = false;
 
-            var noData = _.isNull(chartData) || _.isUndefined(chartData);
-
-            if (noData) {
-              return { reason: 'noData' };
+            if (_.isNull(chartData)) {
+              cannotRender = {
+                reason: 'noData'
+              };
             } else if (badDates) {
-              return { reason: 'badDates' };
-            } else {
-              return false;
+              cannotRender = {
+                reason: 'badDates'
+              };
             }
+
+            return cannotRender;
           }
         );
 

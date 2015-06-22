@@ -476,7 +476,7 @@
               if (useFullMonthNames) {
                 label = '{0} {1} {2}'.format(
                   labelDate.getDate(),
-                  moment(labelDate).format('MMM'),
+                  moment(labelDate).format('MMMM'),
                   labelDate.getFullYear()
                 );
               } else {
@@ -1027,6 +1027,7 @@
           var filteredAggregate;
           var labelText;
           var jqueryAxisTickLabel;
+          var finalEndDate;
 
           // Note that labelPrecision is actually global to the directive, but
           // it is set within the context of rendering the x-axis since it
@@ -1087,32 +1088,31 @@
 
           intervalEndDate = moment(cachedChartData.maxDate).add(1, datasetPrecision).toDate();
 
-          if (labels.length > 0) {
-
-            // If the last date is not a tick, we still need a label to extend
-            // from the last tick to the end of the visualization.
-            // Additionally, moment has no notion of decades so we need to catch
-            // that case and add 10 years instead.
-            if (labelPrecision === 'DECADE') {
-              maxDatePlusLabelPrecision =
-                moment(_.last(labels).endDate).add(10, 'YEAR').toDate();
-            } else {
-              maxDatePlusLabelPrecision =
-                moment(_.last(labels).endDate).add(1, labelPrecision).toDate();
-            }
-
-            labels.push({
-              startDate: intervalStartDate,
-              endDate: intervalEndDate,
-              width: cachedChartDimensions.width - d3XScale(intervalStartDate) +
-                (2 * halfTickWidth) + halfVisualizedDatumWidth,
-              left: d3XScale(intervalStartDate) - halfVisualizedDatumWidth,
-              // If the distance from the last tick to the end of the visualization is
-              // equal to one labelPrecision unit, then we should label the interval.
-              // Otherwise, we should draw it but not label it.
-              shouldLabel: maxDatePlusLabelPrecision.getTime() === intervalEndDate.getTime()
-            });
+          // If the last date is not a tick, we still need a label to extend
+          // from the last tick to the end of the visualization.
+          // Additionally, moment has no notion of decades so we need to catch
+          // that case and add 10 years instead.
+          finalEndDate = _.isEmpty(labels) ? intervalEndDate : _.last(labels).endDate;
+          if (labelPrecision === 'DECADE') {
+            maxDatePlusLabelPrecision =
+              moment(finalEndDate).add(10, 'YEAR').toDate();
+          } else {
+            maxDatePlusLabelPrecision =
+              moment(finalEndDate).add(1, labelPrecision).toDate();
           }
+
+          labels.push({
+            startDate: intervalStartDate,
+            endDate: intervalEndDate,
+            width: cachedChartDimensions.width - d3XScale(intervalStartDate) +
+              (2 * halfTickWidth) + halfVisualizedDatumWidth,
+            left: d3XScale(intervalStartDate) - halfVisualizedDatumWidth,
+            // If the distance from the last tick to the end of the visualization is
+            // equal to one labelPrecision unit or if we have no labels, then we
+            // should label the interval.  Otherwise, we should draw it but not label it.
+            shouldLabel: (maxDatePlusLabelPrecision.getTime() === intervalEndDate.getTime()) ||
+              _.isEmpty(labels)
+          });
 
           // Now that we know how many *labels* we can potentially draw, we
           // decide whether or not we can draw all of them or just some.

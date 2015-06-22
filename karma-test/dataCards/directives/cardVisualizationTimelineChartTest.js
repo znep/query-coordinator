@@ -8,6 +8,12 @@ describe('A Timeline Chart Card Visualization', function() {
   var timelineChartVisualizationHelpers;
   var _$provide;
   var mockCardDataService;
+  var html = [
+    '<div class="card-visualization">',
+      '<card-visualization-timeline-chart model="model" where-clause="whereClause">',
+      '</card-visualization-timeline-chart>',
+    '</div>'
+  ].join('');
 
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTimelineChart.html'));
 
@@ -24,13 +30,13 @@ describe('A Timeline Chart Card Visualization', function() {
     timelineChartVisualizationHelpers = $injector.get('TimelineChartVisualizationHelpers');
 
     mockCardDataService = {
-      getTimelineDomain: function(){
+      getTimelineDomain: function() {
         return $q.when({
           start: moment().subtract('years', 10),
           end: moment()
         });
       },
-      getTimelineData: function(){
+      getTimelineData: function() {
         return $q.when([
           {
             date: moment().subtract('years', 10)
@@ -38,8 +44,8 @@ describe('A Timeline Chart Card Visualization', function() {
           {
             date: moment()
           }
-        ]
-      )}
+        ]);
+      }
     };
     _$provide.value('CardDataService', mockCardDataService);
     testHelpers.mockDirective(_$provide, 'timelineChart');
@@ -69,7 +75,6 @@ describe('A Timeline Chart Card Visualization', function() {
 
   function makeDirective() {
     var outerScope = $rootScope.$new();
-    var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
 
     outerScope.model = stubCardModel();
 
@@ -111,7 +116,6 @@ describe('A Timeline Chart Card Visualization', function() {
 
   it('should successfully render when given an undefined dataset binding, and then also successfully render when that dataset is populated', function() {
     var outerScope = $rootScope.$new();
-    var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
 
     // STUBS
     var card = stubCardModel();
@@ -137,7 +141,6 @@ describe('A Timeline Chart Card Visualization', function() {
 
   it('should not crash given an undefined whereClause', function() {
     var outerScope = $rootScope.$new();
-    var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
 
     outerScope.model = stubCardModel();
 
@@ -151,23 +154,33 @@ describe('A Timeline Chart Card Visualization', function() {
     expect(timelineChartScope.chartData).to.not.equal(undefined);
   });
 
-  it('should not display a warning if all the data has the same timestamp', function() {
+  it('should not display an error message all timeline data has the same timestamp', function() {
     var now = moment();
-    mockCardDataService.getTimelineData = function(){
+    mockCardDataService.getTimelineData = function() {
       return $q.when([
         {
           date: now
         }
-      ]
-    )};
+      ]);
+    };
 
     var element = makeDirective();
     var errorMessage = element.find('.chart-render-error');
     expect(errorMessage.length).to.equal(0);
   });
 
-  it('should display a message when the chart cannot be rendered due to undefined data', function() {
-    mockCardDataService.getTimelineDomain = function(){
+  it('should display an error message if the timeline data is null', function() {
+    mockCardDataService.getTimelineData = function() {
+      return $q.when(null);
+    };
+
+    var element = makeDirective();
+    var errorMessage = element.find('.chart-render-error');
+    expect(errorMessage.text().trim()).to.equal('Chart cannot be rendered with no values.');
+  });
+
+  it('should display an error message if the timeline data is undefined', function() {
+    mockCardDataService.getTimelineData = function() {
       return $q.when(undefined);
     };
 
@@ -176,14 +189,45 @@ describe('A Timeline Chart Card Visualization', function() {
     expect(errorMessage.text().trim()).to.equal('Chart cannot be rendered with no values.');
   });
 
+  it('should display an error message if the timeline data is empty', function() {
+    mockCardDataService.getTimelineData = function() {
+      return $q.when([]);
+    };
+
+    var element = makeDirective();
+    var errorMessage = element.find('.chart-render-error');
+    expect(errorMessage.text().trim()).to.equal('Chart cannot be rendered with no values.');
+  });
+
+  it('should display an error message if the timeline domain is undefined', function() {
+    mockCardDataService.getTimelineDomain = function() {
+      return $q.when(undefined);
+    };
+
+    var element = makeDirective();
+    var errorMessage = element.find('.chart-render-error');
+    expect(errorMessage.text().trim()).to.equal('Chart cannot be rendered due to invalid date values.');
+  });
+
+  it('should display an error message if the timeline domain start and end values are null', function() {
+    mockCardDataService.getTimelineDomain = function() {
+      return $q.when({
+        start: null,
+        end: null
+      });
+    };
+
+    var element = makeDirective();
+    var errorMessage = element.find('.chart-render-error');
+    expect(errorMessage.text().trim()).to.equal('Chart cannot be rendered due to invalid date values.');
+  });
+
   it('should have unfilteredSoqlRollupTablesUsed on scope', function() {
     var outerScope = $rootScope.$new();
-    var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
 
     // To future self: in this function invocation, we only care about this last value
     // becuase this is the one we're using to communication state back out.
-    mockCardDataService.getTimelineData = function(a, b, c, d, e, soqlMetadata)
-    {
+    mockCardDataService.getTimelineData = function(a, b, c, d, e, soqlMetadata) {
       soqlMetadata.dateTruncFunctionUsed = 'date_trunc_y';
       return $q.when([
         {
@@ -203,12 +247,10 @@ describe('A Timeline Chart Card Visualization', function() {
 
   it('should have unfilteredSoqlRollupTablesUsed on scope with false', function() {
     var outerScope = $rootScope.$new();
-    var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
 
     // To future self: in this function invocation, we only care about this last value
     // becuase this is the one we're using to communication state back out.
-    mockCardDataService.getTimelineData = function(a, b, c, d, e, soqlMetadata)
-    {
+    mockCardDataService.getTimelineData = function(a, b, c, d, e, soqlMetadata) {
       soqlMetadata.dateTruncFunctionUsed = 'date_trunc_ym';
       return $q.when([
         {
@@ -228,12 +270,10 @@ describe('A Timeline Chart Card Visualization', function() {
 
   it('should have filteredSoqlRollupTablesUsed on scope', function() {
     var outerScope = $rootScope.$new();
-    var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
 
     // To future self: in this function invocation, we only care about this last value
     // becuase this is the one we're using to communication state back out.
-    mockCardDataService.getTimelineData = function(a, b, c, d, e, soqlMetadata)
-    {
+    mockCardDataService.getTimelineData = function(a, b, c, d, e, soqlMetadata) {
       soqlMetadata.dateTruncFunctionUsed = 'date_trunc_y';
       return $q.when([
         {
@@ -253,7 +293,6 @@ describe('A Timeline Chart Card Visualization', function() {
 
   it('should have filteredSoqlRollupTablesUsed on scope with false', function() {
     var outerScope = $rootScope.$new();
-    var html = '<div class="card-visualization"><card-visualization-timeline-chart model="model" where-clause="whereClause"></card-visualization-timeline-chart></div>';
 
     // To future self: in this function invocation, we only care about this last value
     // becuase this is the one we're using to communication state back out.

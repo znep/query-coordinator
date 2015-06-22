@@ -10,6 +10,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
     var capName = colName.capitalize();
     var colSet = colName + 's';
     var capSet = colSet.capitalize();
+    var oldCapSet = 'old' + capSet;
 
     // Convenience methods
     var forID = function(item, id) { return item[colName + 'ForID'](id); };
@@ -323,11 +324,25 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
                 { c = new Column(c, cont); }
                 else if ($.isBlank(c.view))
                 { c.setParent(cont); }
+
                 _columnIDLookup[c.id] = c;
                 if (c.lookup != c.id)
                 { _columnIDLookup[c.lookup] = c; }
                 _columnTCIDLookup[c.tableColumnId] = c;
                 _columnFieldNameLookup[c.fieldName] = c;
+
+                if (cont[oldCapSet]) {
+                  var oldC = _.detect(cont[oldCapSet],
+                    function(oc) { return oc.fieldName == c.fieldName; });
+                  if (oldC) {
+                    _columnIDLookup[oldC.id] = c;
+                    if (oldC.lookup != c.id)
+                    { _columnIDLookup[oldC.lookup] = c; }
+                    _columnTCIDLookup[oldC.tableColumnId] = c;
+                    _columnFieldNameLookup[oldC.fieldName] = c;
+                  }
+                }
+
                 if (c.isMeta)
                 { _metaColumnLookup[c.name] = c; }
                 if (!$.isBlank(cont.accessType))
@@ -364,6 +379,8 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
       // Setting this variable to an empty object.
       _metaColumnLookup = {};
 
+      this[oldCapSet] = _.map(this[colSet], function(col) { return $.extend({}, col); });
+
       // Setting this.columns based on the passed in nbe columns.
       this[colSet] = _.map(nbeCols, function(c, i) {
 
@@ -375,23 +392,31 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
           c.setParent(cont);
         }
 
+        var oldC = _.detect(cont[oldCapSet],
+          function(oc) { return oc.fieldName == c.fieldName; });
+
         // Make it so that you can look up the column by its id.
         _columnIDLookup[c.id] = c;
+        _columnIDLookup[oldC.id] = c;
 
         // Also make it so that you can lookup the column by its lookup.
         if (c.lookup != c.id) {
           _columnIDLookup[c.lookup] = c;
+          _columnIDLookup[oldC.lookup] = c;
         }
 
         // Make it so that you can look up the column by its table column id.
         _columnTCIDLookup[c.tableColumnId] = c;
+        _columnTCIDLookup[oldC.tableColumnId] = c;
 
         // Make it so that you can look up the column by its fieldname.
         _columnFieldNameLookup[c.fieldName] = c;
+        _columnFieldNameLookup[oldC.fieldName] = c;
 
         // If it's a meta column, make it so you can look it up by name.
         if (c.isMeta) {
           _metaColumnLookup[c.name] = c;
+          _metaColumnLookup[oldC.name] = c;
         }
 
         // If it has an access type, make sure it's set.

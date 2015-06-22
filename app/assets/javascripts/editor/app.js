@@ -36,9 +36,8 @@ $(document).on('ready', function() {
   inspirationStoryRenderer.render();
   userStoryRenderer.render();
 
-
-  $('.user-story-container').on('click', '.block-edit-control-btn', function(e) {
-    var classes = e.target.getAttribute('class');
+  $('.user-story-container').on('click', '[data-block-edit-action]', function(e) {
+    var action = e.target.getAttribute('data-block-edit-action');
     var blockId;
     var blockIndex;
 
@@ -54,13 +53,13 @@ $(document).on('ready', function() {
     blockIndex = userStory.getBlockIndexWithId(blockId);
 
     // perform the edits requested
-    if (classes.indexOf('block-edit-controls-move-up-btn') !== -1) {
+    if (action === 'move-up') {
       userStory.swapBlocksAtIndices(blockIndex, blockIndex - 1);
     }
-    else if (classes.indexOf('block-edit-controls-move-down-btn') !== -1) {
+    else if (action === 'move-down') {
       userStory.swapBlocksAtIndices(blockIndex, blockIndex + 1);
     }
-    else if (classes.indexOf('block-edit-controls-delete-btn') !== -1) {
+    else if (action === 'delete') {
       userStory.removeBlockWithId(blockId);
     }
     else {

@@ -34,6 +34,20 @@
       "description": "Batman has bigger fish to fry sometimes, you know.",
       "fred": "location",
       "physicalDatatype": "text"
+    },
+    "voice_roughness": {
+      "cardinality": 12,
+      "name": "Voice roughness",
+      "description": "Percentage measurement of gravelly voice.",
+      "fred": "number",
+      "physicalDatatype": "number"
+    },
+    "thing_without_commas": {
+      "cardinality": 12,
+      "name": "Something without any commas",
+      "description": "He's a bat, man.",
+      "fred": "number",
+      "physicalDatatype": "number"
     }
   }
 }

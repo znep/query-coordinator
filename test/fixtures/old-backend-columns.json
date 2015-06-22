@@ -2,26 +2,45 @@
   "columns": [
     {
       "fieldName": "location_description",
-      "position": 3
+      "position": 3,
+      "format": {}
     },
     {
       "fieldName": "primary_type",
       "position": 1,
       "flags": [
         "hidden"
-      ]
+      ],
+      "format": {}
     },
     {
       "fieldName": "x_coordinate",
-      "position": 5
+      "position": 5,
+      "format": {}
     },
     {
       "fieldName": "updated_on",
-      "position": 4
+      "position": 4,
+      "format": {}
     },
     {
       "fieldName": "ward",
-      "position": 2
+      "position": 2,
+      "format": {}
+    },
+    {
+      "fieldName": "thing_without_commas",
+      "position": 7,
+      "format": {
+        "noCommas": "true"
+      }
+    },
+    {
+      "fieldName": "voice_roughness",
+      "position": 6,
+      "dataTypeName": "percent",
+      "renderTypeName": "percent",
+      "format": {}
     }
   ]
 }

@@ -27,11 +27,14 @@ module AngularHelper
     )
   end
 
+  def tileserver_hosts
+    APP_CONFIG['tileserver_hosts'].present? ? APP_CONFIG['tileserver_hosts'].split(',') : []
+  end
+
   def angular_config
     # Keys from APP_CONFIG that we want to include in FeatureFlags for use in the JS
     app_config_whitelist = %w(
       statsd_enabled
-      tileserver_hosts
       data_cards_app_token
       feature_map_zoom_debounce
       enable_search_suggestions
@@ -47,7 +50,8 @@ module AngularHelper
       'railsEnv' => Rails.env,
       'cname' => CurrentDomain.cname,
       'featureSet' => features,
-      'themeV3' => theme
+      'themeV3' => theme,
+      'tileserverHosts' => tileserver_hosts
     }.tap do |config|
       app_config_whitelist.each do |config_key|
         js_config_key = config_key.camelize(:lower)

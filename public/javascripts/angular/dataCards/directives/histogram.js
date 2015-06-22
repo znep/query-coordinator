@@ -214,40 +214,42 @@
           subscribe(function() {
             var extentCenter = { x: 0, y: 0 };
             var extent = brush.control.extent();
-            var path = _.get(dom, 'line.unfiltered');
-            path = path.node() || null;
-            _.defer(function() {
-              if (_.isPresent(path)) {
-                var targetX = extent[0] + (extent[1] - extent[0]) / 2;
-                var pathLength = path.getTotalLength();
+            var targetX = extent[0] + (extent[1] - extent[0]) / 2;
+            var yValues = _(['filtered', 'unfiltered']).
+              map(function(selector) {
+                var path = _.get(dom, 'line.{0}'.format(selector));
+                path = path.node() || null;
+                if (_.isPresent(path)) {
+                  var pathLength = path.getTotalLength();
 
-                var point = (function findXPositionOnPath(low, high, mid) {
-                  var point = path.getPointAtLength(mid);
+                  var point = (function findXPositionOnPath(low, high, mid) {
+                    var point = path.getPointAtLength(mid);
 
-                  if (Math.abs(point.x - targetX) < 1) {
-                    return point;
-                  }
-                  else if (point.x < targetX) {
-                    low = mid;
-                    mid = (low + high) / 2;
-                  }
-                  else {
-                    high = mid;
-                    mid = (low + high) / 2;
-                  }
+                    if (Math.abs(point.x - targetX) < 1) {
+                      return point;
+                    }
+                    else if (point.x < targetX) {
+                      low = mid;
+                      mid = (low + high) / 2;
+                    }
+                    else {
+                      high = mid;
+                      mid = (low + high) / 2;
+                    }
 
-                  return findXPositionOnPath(low, high, mid);
-                })(0, pathLength, pathLength / 2);
+                    return findXPositionOnPath(low, high, mid);
+                  })(0, pathLength, pathLength / 2);
 
-                extentCenter = {
-                  x: targetX,
-                  y: point.y
-                };
-              }
+                  return point.y;
+                }
+              }).
+              filter(_.isNumber).
+              value();
 
-              HistogramVisualizationService.updateHistogramHoverTarget(dom, extentCenter);
-            });
-          });
+            extentCenter = {
+              x: targetX,
+              y: Math.min.apply(null, yValues.concat([scale.y(0)]))
+            };
 
         // Handles selection start and ends, clearing the selection if a single
         // bucket selection is clicked on

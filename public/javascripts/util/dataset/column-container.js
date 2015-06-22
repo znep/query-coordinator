@@ -10,6 +10,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
     var capName = colName.capitalize();
     var colSet = colName + 's';
     var capSet = colSet.capitalize();
+    var oldCapSet = 'old' + capSet;
 
     // Convenience methods
     var forID = function(item, id) { return item[colName + 'ForID'](id); };
@@ -330,8 +331,8 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
                 _columnTCIDLookup[c.tableColumnId] = c;
                 _columnFieldNameLookup[c.fieldName] = c;
 
-                if (cont['old' + capSet]) {
-                  var oldC = _.detect(cont['old' + capSet],
+                if (cont[oldCapSet]) {
+                  var oldC = _.detect(cont[oldCapSet],
                     function(oc) { return oc.fieldName == c.fieldName; });
                   if (oldC) {
                     _columnIDLookup[oldC.id] = c;
@@ -378,7 +379,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
       // Setting this variable to an empty object.
       _metaColumnLookup = {};
 
-      this['old' + capSet] = _.map(this[colSet], function(col) { return $.extend({}, col); });
+      this[oldCapSet] = _.map(this[colSet], function(col) { return $.extend({}, col); });
 
       // Setting this.columns based on the passed in nbe columns.
       this[colSet] = _.map(nbeCols, function(c, i) {
@@ -391,7 +392,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
           c.setParent(cont);
         }
 
-        var oldC = _.detect(cont['old' + capSet],
+        var oldC = _.detect(cont[oldCapSet],
           function(oc) { return oc.fieldName == c.fieldName; });
 
         // Make it so that you can look up the column by its id.

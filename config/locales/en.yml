@@ -2209,6 +2209,7 @@ en:
       return: Return to Dataset
       row_class: Row Class
       row_identifier: Row Identifier
+      row_identifier_help_text: The row identifier cannot be changed once a view is published.
       save: Save
       save_changes: Save changes
       semantics_rdf: Semantics & RDF

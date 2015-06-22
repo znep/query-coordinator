@@ -344,7 +344,7 @@ module DatasetsHelper
     ].any?
   end
 
-  def row_identifier_select_tag(disabled)
+  def row_identifier_select_tag(disabled = false)
     select_tag(
       'view[metadata[rowIdentifier]]',
       rdf_subject_select_options(view.columns, h(view.metadata.try(:rowIdentifier).to_s)),

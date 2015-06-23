@@ -535,6 +535,8 @@ javascripts:
     - public/javascripts/util/asset-loading.js
     - public/javascripts/screens/login-shared.js
     - public/javascripts/screens/signup-screen.js
+  screen-login-auth0:
+    - public/javascripts/screens/login-auth0.js
   screen-forgot-password:
     - public/javascripts/screens/forgot-password-screen.js
   screen-reset-password:

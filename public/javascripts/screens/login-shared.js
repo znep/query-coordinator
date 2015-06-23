@@ -15,6 +15,7 @@ $(function() {
         });
         $('.modalContentBox').removeClass('loginModal').addClass('signupModal');
     });
+    /*
     $('.signInLink').click(function(event)
     {
         event.preventDefault();
@@ -28,4 +29,5 @@ $(function() {
         });
         $('.modalContentBox').removeClass('signupModal').addClass('loginModal');
     });
+    */
 });

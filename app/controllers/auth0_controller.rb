@@ -6,13 +6,13 @@ class Auth0Controller < ApplicationController
   cattr_accessor :auth_providers
 
   def callback
-    
+
     # This stores all the user information that came from Auth0 and the IdP
     userinfo_hash = request.env['omniauth.auth']
     socrata_user_id = userinfo_hash[:extra][:raw_info][:socrata_user_id]
-    # Check to see if it's a username and password connection.  
+    # Check to see if it's a username and password connection.
     if username_password_connection?(socrata_user_id)
-      # In the username and password flow, the UID is set as part of authentication 
+      # In the username and password flow, the UID is set as part of authentication
       # It's going to come in with the form "auth0|abcd-efgh|connection_name"
       # Use the Auth0Helper to attempt to extract it
       extracted_uid = extract_uid(socrata_user_id)

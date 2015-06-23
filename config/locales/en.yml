@@ -2456,14 +2456,17 @@ en:
         sign_in_button: Sign In
       headline: Sign In to %{site}
       mismatch: Passwords do not match; please try again
-      prompt_html: Sign in with your <strong>Socrata ID</strong>
-      tips_html: Use your Email and Password to sign into all <strong><a href="http://www.socrata.com" rel="external">Socrata</a> powered</strong> sites.
+      prompt_html: <img src="/stylesheets/images/common/large_logo.png"> Sign in with your <strong>Socrata ID</strong>.
+      tips_html: Use your Email and Password to sign into all <strong>Socrata powered</strong> sites.
+      auth0_intro: There are several ways you can sign in. If you haven't signed up for an account yet, choose the option that is most convenient for you. If you have, use the same option now.
+      sign_in_with: <strong>Sign in</strong> with %{provider}
+      back_to_sign_in_selection: <a class="login-back">Back to sign in options</a>
     sign_up:
       form:
         create_account_button: Create My Account
         have_account_link: I already have an account
       headline: We're glad you want to join %{site}!
-      prompt_html: Create a new <strong>Socrata ID</strong>
+      prompt_html: <img src="/stylesheets/images/common/large_logo.png"> Create a new <strong>Socrata ID</strong>.
       terms_html: By clicking on "Create My Account" below, you are agreeing to our <a href="http://www.socrata.com/terms-of-service" rel="external">Terms of Service</a> and <a href="http://www.socrata.com/privacy" rel="external">Privacy Policy.</a>
       third_party: After signing in, your 3rd-party credentials will be associated with this account.
       third_party_return: Before using these credentials, you must

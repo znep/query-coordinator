@@ -18,8 +18,15 @@ if defined?(Bundler)
 end
 
 module Frontend
+  UID_REGEXP = /\w{4}-\w{4}/
+  INTEGER_REGEXP = /-?\d+/
+
   class << self
     attr_accessor :statsd
+
+    def auth0_configured?
+      AUTH0_CONFIGURED
+    end
   end
 
   def self.version

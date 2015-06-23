@@ -11,5 +11,4 @@ module UserSessionsHelper
     end
     url ||= profile_index_path # Fallback to SOMEthing
   end
-
 end

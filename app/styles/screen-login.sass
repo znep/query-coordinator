@@ -1,12 +1,24 @@
 .modalContentBox.narrow
   max-width: 40em
 
+.modalContentBox
+  .contentHeader
+    .loginHeader, .signupHeader h1
+      border-bottom: solid 1px #cecece
+      padding: 1em 0
+      margin: 0
+
 .signupModal
   .loginHeader, .loginForm
     display: none
 .loginModal
   .signupHeader, .signupForm
     display: none
+  .flash.notice
+    margin-top: 0
+.loginModal, .signupModal
+  border: solid 1px #cecece
+  box-shadow: 0 0 3px 6px #efefef
 
 .contentHeader
   .explanation
@@ -64,8 +76,8 @@
 
     #a0-lock
       .a0-panel
-        -webkit-box-shadow: 0 0 0 rgba(0,0,0,0)
-        box-shadow: 0 0 0 rgba(0,0,0,0)
+        -webkit-box-shadow: none
+        box-shadow: none
 
     .loginTips
       margin-top: 0.5em
@@ -143,14 +155,35 @@
   .authProvider
     @include authentication-icons
 
+    &.socrata
+      > p
+        margin-bottom: 1em
+        background-image: url(/stylesheets/images/icons/menu_icons.png)
+        background-repeat: no-repeat
+        background-position-y: -91px
+        padding-left: 1.5em
+      .login-back
+        cursor: pointer
+        &:visited
+          color: #3b5998
+
     .iconContainer
       float: left
       padding: 0.7em
       margin-right: 1.5em
 
+    .login-description-container
+      text-align: left
+      margin-bottom: 2em
+    .login-description, .description
+      line-height: 2.4em
     .description
       font-size: 1.4em
-      line-height: 2.4em
+    .login-description
+      font-size: 1.5em
+      img
+        vertical-align: middle
+        height: 18px
 
   .rpxLoginPane
     float: right
@@ -175,3 +208,44 @@
         padding-left: 3.2em
         text-align: left
         width: 20em
+
+.auth0login
+  text-align: center
+  margin-top: 0.5em
+  p
+    text-align: left
+    padding: 0 0 1em 0.75em
+  a
+    font-size: 14px
+  hr
+    width: 25%
+    margin-top: 18px
+    border: none
+    border-top: solid 1px #c0c0c0
+  .button
+    text-align: left
+    position: relative
+    margin-top: 10px
+    font-weight: normal
+    width: 95%
+    box-sizing: border-box
+    font-size: 1.35em
+    padding: 0.8625em
+    padding-left: 3.75em
+  + .socrata
+    display: none
+  .iconContainer
+    position: absolute
+    top: 0
+    left: 0
+    bottom: 0
+    border-right: solid 1px #cecece
+    padding: .5em
+    img
+      width: 25px
+      height: 25px
+  a:active img
+    box-shadow: none
+
+.a0-onestep
+  margin: 0 auto

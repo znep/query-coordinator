@@ -1,6 +1,8 @@
 class UserSessionsController < ApplicationController
   include ActionView::Helpers::TranslationHelper
+  include Auth0Helper
   include UserSessionsHelper
+
   skip_before_filter :require_user
   protect_from_forgery :except => [:rpx]
 
@@ -21,6 +23,10 @@ class UserSessionsController < ApplicationController
       Rails.logger.warn("User landed on login page but was already logged in: #{current_user_session.inspect}")
       return redirect_back_or_default('/')
     end
+
+    # Attempt to configure Auth0. This method may result in a redirect.
+    auth0
+
     @body_id = 'login'
     @user_session = UserSession.new
     if params[:referer_redirect] || params[:return_to]
@@ -99,5 +105,56 @@ class UserSessionsController < ApplicationController
     cookies.delete :remember_token
     flash[:notice] = t('core.dialogs.logout')
     redirect_to(login_path)
+  end
+
+  private
+
+  ##
+  # Check to see if auth0 is available.
+  def use_auth0?
+    AUTH0_CONFIGURED && FeatureFlags.derive.use_auth0
+  end
+
+  helper_method :use_auth0?
+
+  def should_auth0_redirect?(connection)
+      # Booleans to determine validity of redirect request
+      connection_is_present = connection.present?
+      connection_is_valid = connection_exists(connection)
+      is_fresh_login = !(flash[:notice].present? && flash[:notice] == t('core.dialogs.logout'))
+      has_redirect_param = params.fetch(:redirect, false)
+
+      if connection_is_present && !connection_is_valid
+        Rails.logger.error("A non-working connection string, #{connection}, has been specified in Auth0 configuration.")
+      end
+
+      connection_is_present && connection_is_valid && is_fresh_login && !has_redirect_param
+  end
+
+  ##
+  # Sets use_auth0 template variable.
+  # Detects if automatic redirect is set and performs that redirect safely.
+  #
+  # If automatic redirect is not set, configured connections are set as
+  # template variables.
+  def auth0
+    properties = CurrentDomain.configuration('auth0').try(:properties)
+
+    if use_auth0? && !properties.nil?
+      # Auth0 Redirection when auth0 configuration is set
+      connection = properties.try(:auth0_always_redirect_connection)
+      callback_uri = properties.try(:auth0_callback_uri)
+
+      # Only redirect if this isn't a redirect from /logout.
+      if should_auth0_redirect?(connection)
+        uri = generate_authorize_uri(connection, callback_uri)
+        return redirect_to(uri)
+      else
+        # If auth0 redirection is not possible/configured
+        # we send the auth0_connections to the template and render
+        # out appropriate buttons.
+        @auth0_connections = properties.try(:auth0_connections) || {}
+      end
+    end
   end
 end

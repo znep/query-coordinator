@@ -8,6 +8,9 @@ class UserSessionsControllerTest < ActionController::TestCase
     UserSession.any_instance.stubs(save: Net::HTTPSuccess.new(1.1, 200, 'Success'),
                                    find_token: true)
     User.stubs(current_user: User.new(some_user))
+    stub_request(:get, "http://localhost:8080/configurations.json?defaultOnly=true&merge=true&type=auth0").
+      with(:headers => {'Accept'=>'*/*', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
+      to_return(:status => 200, :body => "[]", :headers => {})
   end
 
   def test_login

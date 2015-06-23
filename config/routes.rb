@@ -5,9 +5,6 @@ Frontend::Application.routes do
   # NOTE: Currently socrata-analytics.js is dependent on path structure for accurately tracking metrics.
   # If you decide to change how pages are routed please reflect your changes in socrata-analytics 'determine_page_type'
 
-  UID_REGEXP = /\w{4}-\w{4}/
-  INTEGER_REGEXP = /-?\d+/
-
   # styling routes
   scope :path => '/styles', :controller => 'styles' do
     get '/individual/:path.css', :action => 'individual',
@@ -164,10 +161,10 @@ Frontend::Application.routes do
       post '/home/catalog_config', :action => 'modify_catalog_config'
       post '/datasets/sidebar_config', :action => 'modify_sidebar_config'
       post '/views/:id/set/:approved', :action => 'set_view_moderation_status',
-        :constraints => {:id => UID_REGEXP}
+        :constraints => {:id => Frontend::UID_REGEXP}
       get '/routing_approval/queue', :action => 'routing_approval_queue'
       post '/routing_approval/view/:id/set/:approval_type',
-        :action => 'approve_view', :constraints => {:id => UID_REGEXP}
+        :action => 'approve_view', :constraints => {:id => Frontend::UID_REGEXP}
       get '/routing_approval/manage', :action => 'routing_approval_manage'
       post '/routing_approval/manage', :action => 'routing_approval_manage_save'
 
@@ -204,7 +201,7 @@ Frontend::Application.routes do
     post '/analytics/add' => 'analytics#add_all'
 
     scope :controller => 'profile', :path => '/profile',
-          :constraints => {:id => UID_REGEXP, :profile_name => /(\w|-)+/} do
+          :constraints => {:id => Frontend::UID_REGEXP, :profile_name => /(\w|-)+/} do
       get 'account', :action => 'generic_account', :as => 'generic_account'
       get ':profile_name/:id/create_friend', :action => 'create_friend'
       get ':profile_name/:id/delete_friend', :action => 'delete_friend'
@@ -230,7 +227,7 @@ Frontend::Application.routes do
       end
     end
 
-    scope :controller => 'widgets', :constraints => {:id => UID_REGEXP} do
+    scope :controller => 'widgets', :constraints => {:id => Frontend::UID_REGEXP} do
       get 'widgets/:id/:customization_id', :action => 'show'
       get 'widgets/:id', :action => 'show'
       get 'w/:id/:customization_id', :action => 'show', :as => 'widget'
@@ -266,26 +263,26 @@ Frontend::Application.routes do
       end
     end
 
-    scope :controller => 'new_ux_bootstrap', :constraints => { :id => UID_REGEXP } do
+    scope :controller => 'new_ux_bootstrap', :constraints => { :id => Frontend::UID_REGEXP } do
       get '/view/bootstrap/:id', :action => 'bootstrap'
     end
 
-    scope :controller => 'polaroid', :constraints => { :page_id => UID_REGEXP, :field_id => Phidippides::COLUMN_ID_REGEX } do
+    scope :controller => 'polaroid', :constraints => { :page_id => Frontend::UID_REGEXP, :field_id => Phidippides::COLUMN_ID_REGEX } do
       match '/view/:page_id/:field_id.png', :via => :get, :action => 'proxy_request'
     end
 
     # Temporary proxy for tileserver, while ops finishes the work to expose AWS services to the 'net directly.
     scope :controller => 'tile_server', :constraints => {
-        :page_id => UID_REGEXP,
+        :page_id => Frontend::UID_REGEXP,
         :field_id => Phidippides::COLUMN_ID_REGEX,
-        :zoom => INTEGER_REGEXP,
-        :x_coord => INTEGER_REGEXP,
-        :y_coord => INTEGER_REGEXP
+        :zoom => Frontend::INTEGER_REGEXP,
+        :x_coord => Frontend::INTEGER_REGEXP,
+        :y_coord => Frontend::INTEGER_REGEXP
       } do
       match '/tiles/:page_id/:field_id/:zoom/:x_coord/:y_coord.pbf', :via => :get, :action => 'proxy_request'
     end
 
-    scope :controller => 'angular', :constraints => { :id => UID_REGEXP, :field_id => Phidippides::COLUMN_ID_REGEX } do
+    scope :controller => 'angular', :constraints => { :id => Frontend::UID_REGEXP, :field_id => Phidippides::COLUMN_ID_REGEX } do
       # NOTE: The dataCards angular app is capable of rendering multiple views (Pages and Dataset Metadata, for instance).
       # As of 9/24/2014, the angular app itself figures out what particular view to render.
       # So if you change these routes, make sure public/javascripts/angular/dataCards/app.js is also updated to
@@ -297,12 +294,12 @@ Frontend::Application.routes do
 
     # Dataset SEO URLs (only add here if the action has a view with it;
     # otherwise just add to the :member key in the datasets resource above.)
-    scope :controller => 'datasets', :constraints => {:id => UID_REGEXP,
+    scope :controller => 'datasets', :constraints => {:id => Frontend::UID_REGEXP,
           :view_name => /(\w|-)+/, :category => /(\w|-)+/} do
 
       get ':category/:view_name/:id', :action => 'show', :as => :view
       get ':category/:view_name/:id/:row_id', :action => 'show',
-        :constraints => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+        :constraints => {:id => Frontend::UID_REGEXP, :view_name => /(\w|-)+/,
           :category => /(\w|-)+/, :row_id => /\d+/}, :as => :view_row
       get ':category/:view_name/:id/widget_preview', :action => 'widget_preview', :as => :preview_view_widget
       get ':category/:view_name/:id/edit', :action => 'edit', :as => :edit_view
@@ -323,7 +320,7 @@ Frontend::Application.routes do
     get 'proxy/verify_layer_url' => 'datasets#verify_layer_url'
     get 'proxy/wkt_to_wkid' => 'datasets#wkt_to_wkid'
 
-    scope :controller => 'datasets', :constraints => {:id => UID_REGEXP} do
+    scope :controller => 'datasets', :constraints => {:id => Frontend::UID_REGEXP} do
       # Redirect bounce for metric snatching
       get 'download/:id/:type', :action => 'download',
         :constraints => {:type => /.*/},
@@ -346,7 +343,7 @@ Frontend::Application.routes do
       get "#{prefix}/:name(/:row_id)(.:format)" => 'resources#show'
     end
 
-    scope :controller => 'datasets', :constraints => {:id => UID_REGEXP} do
+    scope :controller => 'datasets', :constraints => {:id => Frontend::UID_REGEXP} do
       get 'r/:id/:name', :action => 'bare'
       get ':category/:view_name/:id/stats', :action => 'stats',
         :constraints => {:view_name => /(\w|-)+/, :category => /(\w|-)+/}
@@ -362,11 +359,11 @@ Frontend::Application.routes do
     # Auth/login/register paths
     match '/forgot_password', :to => 'accounts#forgot_password', :as => 'forgot_password'
     match '/reset_password/:uid/:reset_code', :to => 'accounts#reset_password', :as => 'reset_password',
-      :conditions => {:uid => UID_REGEXP}
+      :conditions => {:uid => Frontend::UID_REGEXP}
 
-    if AUTH0_CONFIGURED
+    if Frontend.auth0_configured?
       scope :protocol => 'https' do
-        match '/auth/auth0/callback' => 'auth0#callback'
+        match '/auth/auth0/callback' => 'auth0#callback', :as => 'auth0_callback'
         match '/auth/failure' => 'auth0#failure'
       end
     end
@@ -387,7 +384,7 @@ Frontend::Application.routes do
       match '/login/rpx_signup', :to => 'rpx#signup', :as => 'rpx_signup'
       match '/account/add_rpx_token', :to => 'accounts#add_rpx_token', :as => 'add_rpx_token'
       match  '/profile/:id/update_account', :to => 'profile#update_account', :as => 'update_account_profile',
-        :via => [:post, :put], :constraints => { :id => UID_REGEXP }
+        :via => [:post, :put], :constraints => { :id => Frontend::UID_REGEXP }
       match '/oauth/authorize' => 'oauth#authorize'
     end
 
@@ -407,7 +404,7 @@ Frontend::Application.routes do
     scope :controller => 'govstat' do
       match '/goals-new', :action => 'goals'
 
-      match '/goal/:id', :action => 'goal_page', :constraints => { :id => UID_REGEXP }
+      match '/goal/:id', :action => 'goal_page', :constraints => { :id => Frontend::UID_REGEXP }
 
       match '/manage', :action => 'manage'
       match '/manage/data', :action => 'manage_data'
@@ -419,18 +416,18 @@ Frontend::Application.routes do
 
     # V1 dataset metadata endpoints
     scope :controller => 'phidippides_datasets' do
-      match '/metadata/v1/dataset/:id', :to => 'phidippides_datasets#show', :via => [:get], :constraints => { :id => UID_REGEXP }
-      match '/metadata/v1/dataset/:id', :to => 'phidippides_datasets#update', :via => [:put], :constraints => { :id => UID_REGEXP }
+      match '/metadata/v1/dataset/:id', :to => 'phidippides_datasets#show', :via => [:get], :constraints => { :id => Frontend::UID_REGEXP }
+      match '/metadata/v1/dataset/:id', :to => 'phidippides_datasets#update', :via => [:put], :constraints => { :id => Frontend::UID_REGEXP }
       # This endpoint should eventually be routed to the phidippides_pages_controller instead
-      match '/metadata/v1/dataset/:id/pages', :to => 'phidippides_datasets#index', :via => [:get], :constraints => { :id => UID_REGEXP }
+      match '/metadata/v1/dataset/:id/pages', :to => 'phidippides_datasets#index', :via => [:get], :constraints => { :id => Frontend::UID_REGEXP }
     end
 
     # V1 page metadata endpoints
     scope :controller => 'phidippides_pages' do
-      match '/metadata/v1/page/:id', :to => 'phidippides_pages#show', :via => [:get], :constraints => { :id => UID_REGEXP }
+      match '/metadata/v1/page/:id', :to => 'phidippides_pages#show', :via => [:get], :constraints => { :id => Frontend::UID_REGEXP }
       match '/metadata/v1/page', :to => 'phidippides_pages#create', :via => [:post]
-      match '/metadata/v1/page/:id', :to => 'phidippides_pages#update', :via => [:put], :constraints => { :id => UID_REGEXP }
-      match '/metadata/v1/page/:id', :to => 'phidippides_pages#destroy', :via => [:delete], :constraints => { :id => UID_REGEXP }
+      match '/metadata/v1/page/:id', :to => 'phidippides_pages#update', :via => [:put], :constraints => { :id => Frontend::UID_REGEXP }
+      match '/metadata/v1/page/:id', :to => 'phidippides_pages#destroy', :via => [:delete], :constraints => { :id => Frontend::UID_REGEXP }
     end
 
     # Custom pages, catalogs, facets

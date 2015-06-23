@@ -73,6 +73,57 @@ describe('HistogramVisualizationService', function() {
     });
   });
 
+  describe('setupBrush', function() {
+    var dom;
+    var brush;
+    beforeEach(function() {
+      scale = HistogramVisualizationService.setupScale();
+      scale = HistogramVisualizationService.updateScale(scale, testData, dimensions);
+      dom = {
+        brush: d3.selection()
+      };
+      brush = HistogramVisualizationService.setupBrush(dom, scale);
+
+    });
+
+    it('should create an object with a D3 brush control, a brushDispatcher, and flyouts', function() {
+      expect(brush.control).to.exist;
+      expect(brush.brushDispatcher).to.exist;
+      expect(brush.selectionClearFlyout).to.exist;
+      expect(brush.brushDragFlyout).to.exist;
+    });
+
+    describe('indexFromPoint', function() {
+      it('should return an index given a point', function() {
+        var result = brush.indexFromPoint(10);
+        expect(result).to.equal(0);
+        result = brush.indexFromPoint(dimensions.width / 2);
+        expect(result).to.equal(2);
+        result = brush.indexFromPoint(dimensions.width - 10);
+        expect(result).to.equal(4);
+      });
+      it('should use the operation if provides', function() {
+        var result = brush.indexFromPoint(10, 'ceil');
+        expect(result).to.equal(1);
+        result = brush.indexFromPoint(dimensions.width - 10, 'floor');
+        expect(result).to.equal(3);
+      });
+    });
+
+    describe('pointFromIndex', function() {
+      it('should return a point from an index', function() {
+        var result = brush.pointFromIndex(0);
+        expect(result).to.equal(0);
+        result = brush.pointFromIndex(1);
+        var sectionWidth = dimensions.width / 4;
+        expect(result).to.equal(sectionWidth);
+        result = brush.pointFromIndex(4);
+        expect(result).to.equal(dimensions.width);
+      });
+    });
+
+  });
+
   describe('setupSVG', function() {
     it('should create an object with line and area keys for each filter type', function() {
       expect(svg.unfiltered.area).to.exist;
@@ -92,7 +143,8 @@ describe('HistogramVisualizationService', function() {
 
       var scaleCopy = {
         x: scale.x.copy(),
-        y: scale.y.copy()
+        y: scale.y.copy(),
+        linearX: scale.linearX.copy()
       };
 
       scale = HistogramVisualizationService.updateScale(scale, testData, dimensions);
@@ -102,8 +154,10 @@ describe('HistogramVisualizationService', function() {
 
       expect(scale.x.domain()).to.deep.equal(scaleCopy.x.domain());
       expect(scale.y.domain()).to.deep.equal(scaleCopy.y.domain());
+      expect(scale.linearX.domain()).to.deep.equal(scaleCopy.linearX.domain());
       expect(scale.x.range()).to.deep.equal(scaleCopy.x.range());
       expect(scale.y.range()).to.deep.equal(scaleCopy.y.range());
+      expect(scale.linearX.range()).to.deep.equal(scaleCopy.linearX.range());
     });
 
     it('should set the domain of the x scale to be the union of all start and end keys of the unfiltered data', function() {

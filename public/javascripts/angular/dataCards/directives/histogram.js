@@ -61,6 +61,7 @@
           }).
           distinctUntilChanged();
 
+        // Listen for our custom brush start and end events
         var brushStartIndices$ = Rx.Observable.fromEventPattern(function(handler) {
           brush.brushDispatcher.on('start', handler);
         }).share();
@@ -70,6 +71,7 @@
         }).
         share();
 
+        // Merge brush start / ends into an observable indication brushing in progress
         var selectionInProgress$ = Rx.Observable.merge(
             brushStartIndices$.map(_.constant(true)),
             brushEndIndices$.map(_.constant(false))
@@ -77,6 +79,7 @@
           share().
           startWith(false);
 
+        // Listen for brush clears emitted from the chart
         var brushClearIndices$ = Rx.Observable.fromEventPattern(function(handler) {
             brush.brushDispatcher.on('clear', handler);
           }).
@@ -85,6 +88,7 @@
             brush.brushDispatcher.end(null);
           });
 
+        // Combine the brush indices with data to get indices and values
         var brushIndicesAndValues$ = brushEndIndices$.
           combineLatest(cardData$, function(brushIndices, cardData) {
             if (_.isNull(brushIndices)) {
@@ -103,6 +107,8 @@
           }).
           share();
 
+        // Signal to the card visualization layer when brushing has happened
+        // sending the new filter values
         var filter$ = brushIndicesAndValues$.
           pluck('values').
           distinctUntilChanged(_.identity, extentComparer).
@@ -167,6 +173,7 @@
             HistogramVisualizationService.updateHistogramHoverTarget(dom, extentCenter);
           });
 
+        // This is the current range coming from the filters "source of truth"
         var currentRangeFilterValues$ = $scope.$observe('currentRangeFilterValues').
           distinctUntilChanged(_.identity, extentComparer);
 
@@ -179,10 +186,12 @@
           function(cardData, dimensions, currentRangeFilterValues) {
             var indices = null;
             var selectionPixels = [0, 0];
+            // Add a selected path/area to our data that duplicates the filtered version
             var cardDataWithSelection = _.extend({
               selected: _.slice(cardData.filtered)
             }, cardData);
 
+            // Find the indicies of the filtered selection
             if (_.isArray(currentRangeFilterValues)) {
               var start = _.findIndex(cardData.unfiltered, function(item) {
                 return item.start === currentRangeFilterValues[0];
@@ -264,6 +273,7 @@
             service.destroyBrush(brush);
           });
 
+        // This modifies html classes on the chart
         var hasSelection$ = uiUpdate$.pluck('hasSelection');
         $scope.$bindObservable('hasSelection', hasSelection$);
 

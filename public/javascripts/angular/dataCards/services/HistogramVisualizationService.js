@@ -390,9 +390,10 @@
           startLocation = null;
         }
 
+        // Add / subtract one to prevent floating point precision issues with floor/ceil
         var extentAsIndices = [
           brush.indexFromPoint(extentInPixels[0] + 1, 'floor'),
-          brush.indexFromPoint(extentInPixels[1] + 1, 'ceil')
+          brush.indexFromPoint(extentInPixels[1] - 1, 'ceil')
         ];
         var newExtentInPixels = [
           scale.linearX(extentAsIndices[0]),
@@ -736,7 +737,8 @@
       dom.brush.
         call(brush.control).
         select('.extent').
-        attr('height', dimensions.height);
+        attr('y', -(Constants.HISTOGRAM_HANDLE_HEIGHT / 2)).
+        attr('height', dimensions.height + Constants.HISTOGRAM_HANDLE_HEIGHT);
 
       dom.hoverBlock = dom.brush.selectAll('.histogram-hover-block').data([0]);
       dom.hoverBlock.enter().
@@ -1023,7 +1025,6 @@
     }
 
     return {
-      bucketedIndexValue: bucketedIndexValue,
       setupDOM: setupDOM,
       setupScale: setupScale,
       setupAxis: setupAxis,

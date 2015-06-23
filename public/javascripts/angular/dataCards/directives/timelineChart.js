@@ -2193,7 +2193,7 @@
         FlyoutService.register({
           selector: '.selection-marker',
           render: renderSelectionMarkerFlyout,
-          
+
           // CORE-4384: The flyout should be centered on the drag
           // handles, not the .selection-marker.
           positionOn: function(target) {

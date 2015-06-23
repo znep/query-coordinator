@@ -409,19 +409,13 @@
                       }
                     }
 
-                    var shouldCommaify = !(column.format || {}).noCommas;
-                    // TODO: Remove this. This is just to satisfy Clint's pet peeve about years.
-                    if (cellContent.length === 4) {
-                      shouldCommaify = false;
-                    }
-                    if (shouldCommaify) {
-                      cellContent = $.commaify(cellContent);
-                    }
                     if (column.dataTypeName === 'percent') {
                       var parts = cellContent.split('.');
                       if (parts.length === 1) {
-                        // integers are multiples of 100%
-                        cellContent += '00%';
+                        // non-zero integers are multiples of 100%
+                        if (cellContent !== '0') {
+                          cellContent += '00';
+                        }
                       } else {
                         // shift the decimal point two places right string-wise
                         // because we can't trust multiplying floats by 100
@@ -433,9 +427,29 @@
                         if (decimalValues.length) {
                           cellContent += '.' + decimalValues.join('');
                         }
-                        cellContent = cellContent.replace(/^(-?)0+(.+)/, '$1$2') + '%';
+                        // strip leading zeroes except just before decimal point
+                        cellContent = cellContent.replace(/^(-?)0*(\d+(?:\.\d+)?)/, '$1$2');
                       }
                     }
+
+                    var shouldCommaify = !(column.format || {}).noCommas;
+                    // Special case for thousands-place numbers.
+                    // The primary justification is that it makes year columns
+                    // look bad; awaiting further feedback from customers.
+                    // This check should be removed or reworked once the API for
+                    // logical type detection is in place.
+                    if (/^-?\d{4}\b/.test(cellContent)) {
+                      shouldCommaify = false;
+                    }
+                    if (shouldCommaify) {
+                      cellContent = $.commaify(cellContent);
+                    }
+
+                    // Add percent sign after commaify because it affects length
+                    if (column.dataTypeName === 'percent') {
+                      cellContent += '%'
+                    }
+
                     cellText = _.escape(cellContent);
 
                   } else if (cellType === 'geo_entity' || cellType === 'point') {

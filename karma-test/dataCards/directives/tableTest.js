@@ -162,14 +162,27 @@ describe('table directive', function() {
   });
   describe('when rendering cell data', function() {
     var el;
-    var TIMESTAMP_REGEX = /\d{4}\s\w{3}\s\d{2}\s\d{2}:\d{2}:\d{2}/;
-    var LATLNG_REGEX = /-?\d+\.\d+°/;
-    var PERCENT_REGEX = /-?\d+(?:\.\d+)?%/;
+    var TIMESTAMP_REGEX = /^\d{4}\s\w{3}\s\d{2}\s\d{2}:\d{2}:\d{2}$/;
+    var LATLNG_REGEX = /^-?\d+\.\d+°$/;
+    var NUMBER_REGEX = /^-?(?:\d{1,4}|\d{1,3}(?:,\d{3})*)(?:\.\d+)?$/;
+    var NUMBER_NOCOMMAS_REGEX = /^-?\d+(?:\.\d+)?$/;
+    var PERCENT_REGEX = /^-?(?:\d{1,4}|\d{1,3}(?:,\d{3})*)(?:\.\d+)?%$/;
+    var PERCENT_NOCOMMAS_REGEX = /^-?\d+(?:\.\d+)?%$/;
 
     beforeEach(function() {
+      // This test file relies heavily on its global beforeEach handlers and
+      // several helper functions, which in turn rely on state variables.
+      // It may have been an accident that the `rowCount` variable isn't passed
+      // as an argument to the `fake[Null]DataSource` functions, but in lieu of
+      // a significant refactor we can override the value here and reset it for
+      // other tests which are depending on the globally-set value.
+      rowCount = 50;
       el = createTableCard(true, fakeDataSource);
     });
-    afterEach(destroyAllTableCards);
+    afterEach(function() {
+      destroyAllTableCards();
+      rowCount = 5;
+    });
 
     it('should render point cells with latitude & longitude', function() {
       var rows = el.find('.table-row');
@@ -215,8 +228,7 @@ describe('table directive', function() {
         var idCell = $(row).find('.cell.number').first();
         var cellContent = idCell.html();
 
-        expect(cellContent).to.match(/\d+,\d+/);
-        expect(cellContent).to.have.length('12,345'.length);
+        expect(cellContent).to.match(NUMBER_REGEX);
       });
     });
 
@@ -227,20 +239,18 @@ describe('table directive', function() {
         var idNoCommasCell = $(row).find('.cell.number').eq(1);
         var cellContent = idNoCommasCell.html();
 
-        expect(cellContent).to.match(/\d+/);
-        expect(cellContent).to.have.length('12345'.length);
+        expect(cellContent).to.match(NUMBER_NOCOMMAS_REGEX);
       });
     });
 
-    it('should render number cells without commas when number of digits is 4 or less', function() {
+    it('should render number cells without commas when number of digits is 4 as a special case', function() {
       var rows = el.find('.table-row');
 
       rows.each(function(index, row) {
         var yearCell = $(row).find('.cell.number').last();
         var cellContent = yearCell.html();
 
-        expect(cellContent).to.match(/\d+/);
-        expect(cellContent).to.have.length('1234'.length);
+        expect(cellContent).to.match(/\d{4}/);
       });
     });
 
@@ -252,6 +262,19 @@ describe('table directive', function() {
         var cellContent = percentCell.html();
 
         expect(cellContent).to.match(PERCENT_REGEX);
+        expect(cellContent).to.not.match(/^0\d/); // no leading zeroes in integer portion after string shift
+      });
+    });
+
+    it('should render number cells as percent values in combination with a noCommas format property', function() {
+      var rows = el.find('.table-row');
+
+      rows.each(function(index, row) {
+        var percentNoCommasCell = $(row).find('.cell.number').eq(-3);
+        var cellContent = percentNoCommasCell.html();
+
+        expect(cellContent).to.match(PERCENT_NOCOMMAS_REGEX);
+        expect(cellContent).to.not.match(/^0\d/); // no leading zeroes in integer portion after string shift
       });
     });
 

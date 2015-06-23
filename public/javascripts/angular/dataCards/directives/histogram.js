@@ -217,6 +217,11 @@
               options.data,
               options.dimensions
             );
+            axis = service.updateAxis(
+              options.scale,
+              options.dimensions,
+              options.axis
+            );
             svg = service.updateSVG(
               options.svg,
               options.data,

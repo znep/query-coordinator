@@ -443,7 +443,7 @@
         var action;
         var rowId;
         // If # isn't present, but ends with /\d+ then it is a row URL
-        if (hashIndex < 0 && !$.isBlank(href.match(/\/\d+$/)))
+        if (hashIndex < 0 && (!$.isBlank(href.match(/\/\d+$/)) || !$.isBlank(href.match(/\/row-/))))
         {
             action = 'view-row';
             rowId = href.slice(href.lastIndexOf('/') + 1);

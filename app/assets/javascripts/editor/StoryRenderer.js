@@ -12,7 +12,7 @@
     var editable = options.editable || false;
     var insertionHint = options.insertionHintElement || false;
     var insertionHintIndex = -1;
-    var textEditorManager = options.textEditorManager || null;
+    var richTextEditorManager = options.richTextEditorManager || null;
     var onRenderError = options.onRenderError || function() {};
     var componentRenderers = {
       'text': _renderTextComponent,
@@ -62,11 +62,11 @@
       );
     }
 
-    if (editable && !(textEditorManager instanceof TextEditorManager)) {
+    if (editable && !(richTextEditorManager instanceof RichTextEditorManager)) {
 
       onRenderError();
       throw new Error(
-        'editable stories must have a reference to a valid TextEditorManager'
+        'editable stories must have a reference to a valid richTextEditorManager'
       );
     }
 
@@ -311,10 +311,10 @@
       if (editable) {
 
         editorId = options.block.getId() + '-' + options.componentIndex;
-        component = textEditorManager.getEditor(editorId);
+        component = richTextEditorManager.getEditor(editorId);
 
         if (component === null) {
-          component = textEditorManager.createEditor(editorId, options.componentValue);
+          component = richTextEditorManager.createEditor(editorId, options.componentValue);
         }
       }
 

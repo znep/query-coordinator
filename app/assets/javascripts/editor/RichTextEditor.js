@@ -1,23 +1,10 @@
-;var TextEditorUI = (function() {
+;var RichTextEditor = (function(window) {
 
-  var _FORMATS = [
-    { id: 'heading1', tag: 'h2', name: 'Heading 1', dropdown: true },
-    { id: 'heading2', tag: 'h3', name: 'Heading 2', dropdown: true },
-    { id: 'heading3', tag: 'h4', name: 'Heading 3', dropdown: true },
-    { id: 'heading4', tag: 'h5', name: 'Heading 4', dropdown: true },
-    { id: 'text', tag: null, name: 'Paragraph', dropdown: true },
-    { id: 'bold', tag: 'b', name: 'Bold', dropdown: false, group: 0 },
-    { id: 'italic', tag: 'i', name: 'Italic', dropdown: false, group: 0 },
-    { id: 'left', tag: 'p', name: 'Align Left', dropdown: false, group: 1 },
-    { id: 'center', tag: 'p', name: 'Center', dropdown: false, group: 1 },
-    { id: 'right', tag: 'p', name: 'Align Right', dropdown: false, group: 1 },
-    { id: 'orderedList', tag: 'ol', name: 'Ordered List', dropdown: false, group: 2 },
-    { id: 'unorderedList', tag: 'ul', name: 'Unordered List', dropdown: false, group: 2 },
-    { id: 'blockquote', tag: 'blockquote', name: 'Block Quote', dropdown: false, group: 2 },
-    { id: 'link', tag: 'a', name: 'Link', dropdown: false, group: 3 }
-  ];
+  var _ATTRIBUTE_WHITELIST = {
+    'a': ['href']
+  };
 
-  function TextEditorUI(element, editorId, preloadContent) {
+  function RichTextEditor(element, editorId, preloadContent) {
 
     if (!_elementIsJQueryObject(element)) {
       throw new Error(
@@ -89,14 +76,9 @@
 
       $(_editorElement).load(function (e) {
 
-      //_editorElement.on('load', function(e) {
-
         _editor = new Squire(e.target.contentWindow.document);
 
-        _formatController = new TextEditorFormatController(
-          _editor,
-          _FORMATS
-        );
+        _formatController = new RichTextEditorFormatController(_editor);
 
         _editor.addEventListener(
           'input',
@@ -128,6 +110,11 @@
           _broadcastFormatChange
         );
 
+        _editor.addEventListener(
+          'willPaste',
+          _sanitizeClipboardInput
+        );
+
         // Pre-load existing content (e.g. if we are editing an
         // existing resource).
         if (_preloadContent !== null) {
@@ -144,7 +131,7 @@
     function _broadcastFocus(e) {
 
       var e = new CustomEvent(
-        'TextEditorUI::focus-change',
+        'rich-text-editor::focus-change',
         {
           detail: {
             id: editorId,
@@ -160,7 +147,7 @@
     function _broadcastBlur(e) {
 
       var e = new CustomEvent(
-        'TextEditorUI::focus-change',
+        'rich-text-editor::focus-change',
         {
           detail: {
             id: editorId,
@@ -176,7 +163,7 @@
     function _broadcastContentChange(e) {
 
       var e = new CustomEvent(
-        'TextEditorUI::content-change',
+        'rich-text-editor::content-change',
         {
           detail: {
             id: editorId,
@@ -192,7 +179,7 @@
     function _broadcastFormatChange(e) {
 
       var e = new CustomEvent(
-        'TextEditorUI::format-change',
+        'rich-text-editor::format-change',
         {
           detail: {
             id: editorId,
@@ -203,6 +190,98 @@
       );
 
       _editorElement[0].dispatchEvent(e);
+    }
+
+    function _sanitizeClipboardInput(e) {
+
+      function _addWhitelistedAttributes(dirtyEl, cleanEl) {
+
+        function _attributeIsAllowedForElement(nodeName, attributeName, attributeWhitelist) {
+          return (
+            attributeWhitelist.hasOwnProperty(nodeName) &&
+            attributeWhitelist[nodeName].indexOf(attributeName) > -1
+          );
+        }
+
+        var attributes = dirtyEl.attributes;
+        var attributeCount = attributes.length;
+
+        for (var i = 0; i < attributeCount; i++) {
+
+          var attribute = attributes[i];
+
+          var attributeIsAllowed = _attributeIsAllowedForElement(
+            dirtyEl.nodeName.toLowerCase(),
+            attribute.name.toLowerCase(),
+            _ATTRIBUTE_WHITELIST
+          );
+
+          if (attributeIsAllowed) {
+            cleanEl.setAttribute(attribute.name, attribute.value);
+          }
+        }
+      }
+
+      function _sanitizeElement(el, attributeWhitelist) {
+
+        function _isSupportedHeaderElement(nodeName) {
+          var supportedHeaderElements = ['h1', 'h2', 'h3', 'h4'];
+          return supportedHeaderElements.indexOf(nodeName) > -1;
+        }
+
+        var nodeName = el.nodeName.toLowerCase();
+        var cleanEl = null;
+        var childNodes;
+        var childEl;
+
+        if (el.nodeType === 1) {
+
+          // We want to collapse divs and spans into more meaningful
+          // nodes so we ignore them and let their children accumulate
+          // on the span's parent element.
+          if (nodeName === 'div' || nodeName === 'span') {
+            cleanEl = document.createDocumentFragment();
+          } else if (_isSupportedHeaderElement(nodeName)) {
+            cleanEl = document.createElement(nodeName);
+          } else {
+
+            if (nodeName === 'p') {
+              cleanEl = document.createElement('div');
+            } else if (nodeName === 'br') {
+              cleanEl = document.createDocumentFragment();
+            } else {
+              cleanEl = document.createElement(nodeName);
+            }
+          }
+
+          _addWhitelistedAttributes(el, cleanEl, attributeWhitelist);
+
+        } else if (el.nodeType === 3) {
+
+          cleanEl = document.createTextNode(el.textContent);
+        } else if (el.nodeType === 11) {
+
+          cleanEl = document.createDocumentFragment();
+        }
+
+        if (cleanEl !== null) {
+
+          childNodes = el.childNodes;
+
+          for (var i = 0; i < childNodes.length; i++) {
+
+            childEl = _sanitizeElement(childNodes[i]);
+
+            if (childEl !== null) {
+              cleanEl.appendChild(childEl);
+            }
+          }
+        }
+
+        return cleanEl;
+      }
+
+      e.fragment = _sanitizeElement(e.fragment, _ATTRIBUTE_WHITELIST);
     }
 
     // See: http://stackoverflow.com/a/15318321
@@ -257,5 +336,5 @@
     }
   }
 
-  return TextEditorUI;
-})();
+  return RichTextEditor;
+})(window);

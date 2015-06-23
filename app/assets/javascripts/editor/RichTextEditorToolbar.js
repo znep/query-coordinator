@@ -1,4 +1,4 @@
-function TextEditorToolbar(element, formats) {
+function RichTextEditorToolbar(element, formats) {
 
   function elementIsJQueryObject(el) {
     return el instanceof jQuery;
@@ -60,7 +60,7 @@ function TextEditorToolbar(element, formats) {
   this.createLinkPanel();
 }
 
-TextEditorToolbar.prototype.createToolbar = function() {
+RichTextEditorToolbar.prototype.createToolbar = function() {
 
   function renderSelect(selectFormats) {
     var html;
@@ -165,7 +165,7 @@ TextEditorToolbar.prototype.createToolbar = function() {
   this.toolbarLinkButton = this.element.find('.toolbar-btn-link');
 }
 
-TextEditorToolbar.prototype.createLinkPanel = function() {
+RichTextEditorToolbar.prototype.createLinkPanel = function() {
 
   var linkPanelElement = $('<div class="create-link-panel clearfix">');
 
@@ -218,14 +218,14 @@ TextEditorToolbar.prototype.createLinkPanel = function() {
   this.element.append(linkPanelElement);
 }
 
-TextEditorToolbar.prototype.link = function(editorFormatController) {
+RichTextEditorToolbar.prototype.link = function(editorFormatController) {
 
   this.formatController = editorFormatController;
 
   this.element.removeClass('dim');
 }
 
-TextEditorToolbar.prototype.unlink = function() {
+RichTextEditorToolbar.prototype.unlink = function() {
 
   if (this.formatController !== null) {
     this.formatController.clearSelection();
@@ -237,7 +237,7 @@ TextEditorToolbar.prototype.unlink = function() {
   this.element.removeClass('active').addClass('dim');
 }
 
-TextEditorToolbar.prototype.updateActiveFormats = function(activeFormats) {
+RichTextEditorToolbar.prototype.updateActiveFormats = function(activeFormats) {
 
   this.element.find('.toolbar-btn').removeClass('active');
 
@@ -262,7 +262,7 @@ TextEditorToolbar.prototype.updateActiveFormats = function(activeFormats) {
   }
 }
 
-TextEditorToolbar.prototype.handleToolbarSelectChange = function(e) {
+RichTextEditorToolbar.prototype.handleToolbarSelectChange = function(e) {
 
   if (this.formatController !== null) {
 
@@ -272,7 +272,7 @@ TextEditorToolbar.prototype.handleToolbarSelectChange = function(e) {
   }
 }
 
-TextEditorToolbar.prototype.handleToolbarButtonClick = function(e) {
+RichTextEditorToolbar.prototype.handleToolbarButtonClick = function(e) {
 
   if (this.formatController !== null) {
 
@@ -287,7 +287,7 @@ TextEditorToolbar.prototype.handleToolbarButtonClick = function(e) {
   }
 }
 
-TextEditorToolbar.prototype.handleLinkButtonClick = function() {
+RichTextEditorToolbar.prototype.handleLinkButtonClick = function() {
 
   if (this.formatController !== null) {
 
@@ -301,7 +301,7 @@ TextEditorToolbar.prototype.handleLinkButtonClick = function() {
   }
 }
 
-TextEditorToolbar.prototype.handleLinkPanelAddClick = function(e) {
+RichTextEditorToolbar.prototype.handleLinkPanelAddClick = function(e) {
 
   if (this.formatController !== null) {
 
@@ -312,7 +312,7 @@ TextEditorToolbar.prototype.handleLinkPanelAddClick = function(e) {
   }
 }
 
-TextEditorToolbar.prototype.handleLinkPanelCancelClick = function(e) {
+RichTextEditorToolbar.prototype.handleLinkPanelCancelClick = function(e) {
 
   if (this.formatController !== null) {
     this.linkPanelElement.find('input').val('');
@@ -320,11 +320,11 @@ TextEditorToolbar.prototype.handleLinkPanelCancelClick = function(e) {
   }
 }
 
-TextEditorToolbar.prototype.getLinkPanelUrl = function() {
+RichTextEditorToolbar.prototype.getLinkPanelUrl = function() {
   return this.linkPanelElement.find('input').val();
 }
 
-TextEditorToolbar.prototype.toggleLinkPanel = function() {
+RichTextEditorToolbar.prototype.toggleLinkPanel = function() {
 
   if (this.showLinkPanel) {
     this.showLinkPanel = false;
@@ -337,7 +337,7 @@ TextEditorToolbar.prototype.toggleLinkPanel = function() {
   }
 }
 
-TextEditorToolbar.prototype.destroy = function() {
+RichTextEditorToolbar.prototype.destroy = function() {
 
   this.element.remove();
   this.linkPanelElement.remove();

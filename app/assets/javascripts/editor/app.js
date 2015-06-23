@@ -1,6 +1,6 @@
 $(document).on('ready', function() {
 
-  var textEditorManager = new TextEditorManager();
+  var richTextEditorManager = new RichTextEditorManager();
 
   var inspirationStory = new Story(inspirationStoryData);
   var inspirationStoryOptions = {
@@ -28,7 +28,7 @@ $(document).on('ready', function() {
     storyContainerElement: $('.user-story'),
     editable: true,
     insertionHintElement: $('#story-insertion-hint'),
-    textEditorManager: textEditorManager,
+    richTextEditorManager: richTextEditorManager,
     onRenderError: function() {}
   };
   var userStoryRenderer = new StoryRenderer(userStoryOptions);

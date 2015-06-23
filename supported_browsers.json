@@ -30,66 +30,46 @@
   ],
   "chrome": [
     {
-      "version": "38",
-      "platform": "Windows 7",
+      "version": "43",
+      "platform": "Windows 8.1",
       "critical": false
     },
     {
-      "version": "38",
+      "version": "43",
+      "platform": "Windows 8",
+      "critical": false
+    },
+    {
+      "version": "43",
       "platform": "OS X 10.9",
       "critical": true
     },
     {
-      "version": "37",
+      "version": "42",
+      "platform": "Windows 8",
+      "critical": false
+    },
+    {
+      "version": "42",
       "platform": "Windows 7",
       "critical": false
     },
     {
-      "version": "37",
-      "platform": "OS X 10.9",
-      "critical": false
-    },
-    {
-      "version": "36",
-      "platform": "Windows 7",
-      "critical": true
-    },
-    {
-      "version": "36",
+      "version": "42",
       "platform": "OS X 10.9",
       "critical": false
     }
   ],
   "firefox" : [
     {
-      "version": "33",
-      "platform": "Windows 7",
-      "critical": false
-    },
-    {
-      "version": "33",
-      "platform": "OS X 10.9",
-      "critical": true
-    },
-    {
-      "version": "32",
+      "version": "38",
       "platform": "Windows 7",
       "critical": true
     },
     {
-      "version": "32",
+      "version": "38",
       "platform": "OS X 10.9",
-      "critical": false
-    },
-    {
-      "version": "31",
-      "platform": "Windows 7",
-      "critical": false
-    },
-    {
-      "version": "31",
-      "platform": "OS X 10.9",
-      "critical": false
+      "critical": true
     }
   ]
 }

@@ -2,8 +2,6 @@
 
   'use strict';
 
-  var validColumnRegex = new RegExp('^[\\d\\w_]{2}');
-
   function cardVisualizationTableDirectiveFactory(Constants, CardDataService, SortedTileLayout, I18n) {
 
     return {
@@ -44,7 +42,7 @@
         };
 
         function isDisplayableColumn(column, fieldName) {
-          return !column.hideInTable && validColumnRegex.test(fieldName);
+          return !column.hideInTable && !column.isSystemColumn && fieldName !== '*';
         }
 
         function keepOnlyDisplayableColumns(columns) {

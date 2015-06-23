@@ -4,7 +4,7 @@
     'a': ['href']
   };
 
-  function RichTextEditor(element, editorId, preloadContent) {
+  function RichTextEditor(element, editorId, assetFinder, preloadContent) {
 
     if (!_elementIsJQueryObject(element)) {
       throw new Error(
@@ -32,6 +32,14 @@
       );
     }
 
+    if (!(assetFinder instanceof AssetFinder)) {
+      throw new Error(
+        '`assetFinder` must be an AssetFinder (is of type ' +
+        (typeof assetFinder) +
+        ').'
+      );
+    }
+
     if (typeof preloadContent !== 'undefined' && typeof preloadContent !== 'string') {
       throw new Error(
         '`preloadContent` must be a string (is of type ' +
@@ -41,10 +49,12 @@
     }
 
     var _containerElement = element;
+    var _assetFinder = assetFinder;
     var _preloadContent = null;
     var _editorElement = null;
     var _editor = null;
     var _formatController = null;
+    var _lastContentHeight = 0;
     var _lastActiveFormatsAsString = '';
 
     if (typeof preloadContent !== 'undefined') {
@@ -57,9 +67,13 @@
      * Public methods
      */
 
+    this.getContentHeight = function() {
+      return _lastContentHeight;
+    };
+
     this.destroy = function() {
       _editorElement.remove();
-    }
+    };
 
     /**
      * Private methods
@@ -76,9 +90,15 @@
 
       $(_editorElement).load(function (e) {
 
+        _overrideDefaultStyles(e.target.contentWindow.document);
         _editor = new Squire(e.target.contentWindow.document);
 
         _formatController = new RichTextEditorFormatController(_editor);
+
+        _editor.addEventListener(
+          'input',
+          _monitorContentHeight
+        );
 
         _editor.addEventListener(
           'input',
@@ -123,62 +143,60 @@
         }
 
         _setupMouseMoveEventBroadcast();
+        _monitorContentHeight();
       });
 
       _containerElement.append(_editorElement);
     }
 
-    function _broadcastFocus(e) {
-
-      var e = new CustomEvent(
-        'rich-text-editor::focus-change',
-        {
-          detail: {
-            id: editorId,
-            content: true
-          },
-          bubbles: true
-        }
-      );
-
-      _editorElement[0].dispatchEvent(e);
+    function _overrideDefaultStyles(document) {
+      var styleEl = document.createElement('link');
+      styleEl.setAttribute('rel', 'stylesheet');
+      styleEl.setAttribute('type', 'text/css');
+      styleEl.setAttribute('href', _assetFinder.getStyleAssetPath('iframe'));
+      document.head.appendChild(styleEl);
     }
 
-    function _broadcastBlur(e) {
+    function _monitorContentHeight() {
 
-      var e = new CustomEvent(
-        'rich-text-editor::focus-change',
-        {
-          detail: {
-            id: editorId,
-            content: false
-          },
-          bubbles: true
-        }
-      );
+      var bodyElement = $(_editor.getDocument()).find('body');
+      var contentHeight = 0;
 
-      _editorElement[0].dispatchEvent(e);
+      bodyElement.
+        children().
+        each(function() {
+          contentHeight += $(this).outerHeight(true);
+        });
+
+      contentHeight += parseInt(bodyElement.css('margin-top'), 10);
+      contentHeight += parseInt(bodyElement.css('margin-bottom'), 10);
+      contentHeight += parseInt(bodyElement.css('padding-top'), 10);
+      contentHeight += parseInt(bodyElement.css('padding-bottom'), 10);
+
+      if (contentHeight !== _lastContentHeight) {
+        _lastContentHeight = contentHeight;
+        _broadcastHeightChange(contentHeight);
+      }
     }
 
-    function _broadcastContentChange(e) {
+    function _broadcastHeightChange(contentHeight) {
 
-      var e = new CustomEvent(
-        'rich-text-editor::content-change',
+      var event = new CustomEvent(
+        'rich-text-editor::height-change',
         {
           detail: {
-            id: editorId,
-            content: _editor.getHTML()
+            id: editorId
           },
           bubbles: true
         }
       );
 
-      _editorElement[0].dispatchEvent(e);
+      _editorElement[0].dispatchEvent(event);
     }
 
     function _broadcastFormatChange(e) {
 
-      var e = new CustomEvent(
+      var event = new CustomEvent(
         'rich-text-editor::format-change',
         {
           detail: {
@@ -189,7 +207,55 @@
         }
       );
 
-      _editorElement[0].dispatchEvent(e);
+      _editorElement[0].dispatchEvent(event);
+    }
+
+    function _broadcastFocus(e) {
+
+      var event = new CustomEvent(
+        'rich-text-editor::focus-change',
+        {
+          detail: {
+            id: editorId,
+            content: true
+          },
+          bubbles: true
+        }
+      );
+
+      _editorElement[0].dispatchEvent(event);
+    }
+
+    function _broadcastBlur(e) {
+
+      var event = new CustomEvent(
+        'rich-text-editor::focus-change',
+        {
+          detail: {
+            id: editorId,
+            content: false
+          },
+          bubbles: true
+        }
+      );
+
+      _editorElement[0].dispatchEvent(event);
+    }
+
+    function _broadcastContentChange(e) {
+
+      var event = new CustomEvent(
+        'rich-text-editor::content-change',
+        {
+          detail: {
+            id: editorId,
+            content: _editor.getHTML()
+          },
+          bubbles: true
+        }
+      );
+
+      _editorElement[0].dispatchEvent(event);
     }
 
     function _sanitizeClipboardInput(e) {

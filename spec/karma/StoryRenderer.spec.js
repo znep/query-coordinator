@@ -82,12 +82,12 @@ describe('StoryRenderer class', function() {
         });
       });
 
-      describe('with with editable set to true but no textEditorManager', function() {
+      describe('with with editable set to true but no richTextEditorManager', function() {
 
         it('raises an exception', function() {
 
           options.editable = true;
-          options.textEditorManager = {};
+          options.richTextEditorManager = {};
 
           assert.throws(function() {
             var renderer = new StoryRenderer(options);
@@ -198,15 +198,19 @@ describe('StoryRenderer class', function() {
 
       describe('that is editable', function() {
 
+        var validAssetFinder;
+
         beforeEach(function() {
 
           $('body').append(
             $('<div>', { class: 'insertion-hint hidden' })
           );
 
+          AssetFinderMocker.mock();
+          validAssetFinder = new AssetFinder();
           SquireMocker.mock();
           options.editable = true;
-          options.textEditorManager = new TextEditorManager();
+          options.richTextEditorManager = new RichTextEditorManager(validAssetFinder);
         });
 
         afterEach(function() {
@@ -214,6 +218,7 @@ describe('StoryRenderer class', function() {
           $('.insertion-hint').remove();
 
           SquireMocker.unmock();
+          AssetFinderMocker.unmock();
         });
 
         describe('with no insertion hint element defined', function() {
@@ -258,16 +263,20 @@ describe('StoryRenderer class', function() {
 
   describe('.showInsertionHintAtIndex()', function() {
 
+    var validAssetFinder;
+
     beforeEach(function() {
 
       $('body').append(
         $('<div>', { class: 'insertion-hint hidden' })
       );
 
+      AssetFinderMocker.mock();
+      validAssetFinder = new AssetFinder();
       SquireMocker.mock();
       options.editable = true;
       options.insertionHintElement = $('.insertion-hint');
-      options.textEditorManager = new TextEditorManager();
+      options.richTextEditorManager = new RichTextEditorManager(validAssetFinder);
     });
 
     afterEach(function() {
@@ -275,6 +284,7 @@ describe('StoryRenderer class', function() {
       $('.insertion-hint').remove();
 
       SquireMocker.unmock();
+      AssetFinderMocker.unmock();
     });
 
     it('renders blocks and an insertion hint', function() {
@@ -291,16 +301,20 @@ describe('StoryRenderer class', function() {
 
   describe('.hideInsertionHint()', function() {
 
+    var validAssetFinder;
+
     beforeEach(function() {
 
       $('body').append(
         $('<div>', { class: 'insertion-hint hidden' })
       );
 
+      AssetFinderMocker.mock();
+      validAssetFinder = new AssetFinder();
       SquireMocker.mock();
       options.editable = true;
       options.insertionHintElement = $('.insertion-hint');
-      options.textEditorManager = new TextEditorManager();
+      options.richTextEditorManager = new RichTextEditorManager(validAssetFinder);
     });
 
     afterEach(function() {
@@ -308,6 +322,7 @@ describe('StoryRenderer class', function() {
       $('.insertion-hint').remove();
 
       SquireMocker.unmock();
+      AssetFinderMocker.unmock();
     });
 
     it('hides the insertion hint after it has been rendered', function() {

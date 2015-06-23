@@ -1,6 +1,7 @@
 $(document).on('ready', function() {
 
-  var richTextEditorManager = new RichTextEditorManager();
+  var assetFinder = new AssetFinder();
+  var richTextEditorManager = new RichTextEditorManager(assetFinder);
 
   var inspirationStory = new Story(inspirationStoryData);
   var inspirationStoryOptions = {
@@ -36,6 +37,10 @@ $(document).on('ready', function() {
   inspirationStoryRenderer.render();
   userStoryRenderer.render();
 
+
+  $(window).on('rich-text-editor::height-change', function(e) {
+    userStoryRenderer.render();
+  });
 
   $('.user-story-container').on('click', '.block-edit-controls-move-up-btn', function(e) {
 
@@ -212,5 +217,4 @@ $(document).on('ready', function() {
       userStoryRenderer.render();
     }
   });
-
 });

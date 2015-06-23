@@ -2,15 +2,24 @@
 
   'use strict';
 
-  function RichTextEditorManager() {
+  function RichTextEditorManager(assetFinder) {
 
+    if (!(assetFinder instanceof AssetFinder)) {
+      throw new Error(
+        '`assetFinder` must be an AssetFinder (is of type ' +
+        (typeof assetFinder) +
+        ').'
+      );
+    }
+
+    var _assetFinder = assetFinder;
     var _editors = {};
 
     this.createEditor = function(editorId, preloadText) {
 
       var element = $('<div>', { class: 'text-editor', 'data-editor-id': editorId });
 
-      _editors[editorId] = new RichTextEditor(element, editorId, preloadText);
+      _editors[editorId] = new RichTextEditor(element, editorId, _assetFinder, preloadText);
 
       return element;
     };

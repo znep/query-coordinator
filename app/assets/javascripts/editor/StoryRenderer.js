@@ -230,7 +230,7 @@
         throw new Error(
           '`block` is must be a Block (is of type ' +
           (typeof block) +
-          ').' 
+          ').'
         );
       }
 
@@ -279,11 +279,23 @@
     function _renderBlockEditControls(blockId) {
       return $('<div>', { class: 'block-edit-controls' }).append([
         $('<button>',
-          { class: 'block-edit-controls-move-up-btn', 'data-block-id': blockId }).append('&#9650;'),
+          { class: 'block-edit-controls-move-up-btn',
+            'data-block-id': blockId,
+            'data-block-edit-action': 'move-up'
+          }
+          ).append('&#9650;'),
         $('<button>',
-          { class: 'block-edit-controls-move-down-btn', 'data-block-id': blockId }).append('&#9660;'),
+          { class: 'block-edit-controls-move-down-btn',
+            'data-block-id': blockId,
+            'data-block-edit-action': 'move-down'
+          }
+          ).append('&#9660;'),
         $('<button>',
-          { class: 'block-edit-controls-delete-btn', 'data-block-id': blockId }).append('&#9587;')
+          { class: 'block-edit-controls-delete-btn',
+            'data-block-id': blockId,
+            'data-block-edit-action': 'delete'
+          }
+        ).append('&#9587;')
       ]);
     }
 

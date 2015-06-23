@@ -16,7 +16,7 @@
       if (!_.isObject(input) ||
           !_.isFinite(input.min) ||
           !_.isFinite(input.max)) {
-        throw new Error('Bad input to HistogramService.getBucketingOptions');
+        throw new Error('Bad input to HistogramService.getBucketingOptions {0}'.format(JSON.stringify(input)));
       }
 
       var absMax = Math.max(Math.abs(input.min), Math.abs(input.max));
@@ -31,8 +31,7 @@
           ticks(20);
 
         if (buckets.length >= 2) {
-          var bucketSize = buckets[1] - buckets[0];
-          input.bucketSize = bucketSize;
+          input.bucketSize = buckets[1] - buckets[0];
         }
         else {
           input.bucketSize = 1;

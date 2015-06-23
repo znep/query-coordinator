@@ -55,15 +55,6 @@
   }
 
   function HistogramVisualizationService(Constants, FlyoutService, I18n) {
-    function bucketedIndexValue(bucketWidth, bucketQuantity, pixelValue, index) {
-      var offsetIntialValue = pixelValue;
-      var fixedValue = (offsetIntialValue / bucketWidth).toFixed(1);
-      var bucketIndex = Math[index === 0 ? 'floor' : 'ceil'](fixedValue);
-      var boundedBucketIndex = Math.min(bucketIndex, bucketQuantity);
-      bucketIndex = index === 1 ? boundedBucketIndex : bucketIndex;
-      return bucketIndex;
-    }
-
     function setupDOM(id, container) {
       var dom = {};
 
@@ -133,7 +124,7 @@
       dom.blockHoverTarget.enter().append('line').classed('block-hover-target', true);
 
       // Brush
-      dom.brush = dom.svg.selectAll('.brush').data([0]);
+      dom.brush = dom.chart.selectAll('.brush').data([0]);
 
       dom.brush.enter().
         append('g').classed('brush', true).
@@ -143,22 +134,14 @@
         append('rect').
         classed('extent', true);
 
-      dom.hoverBlock = dom.brush.
-        append('rect').
-        classed('histogram-hover-block', true).
-        attr('transform', 'translate({0}, 0)'.format(dom.margin.left));
-
-      dom.hoverShield = dom.brush.
-        append('rect').
-        classed('histogram-hover-shield', true);
-
       return dom;
     }
 
     function setupScale() {
       return {
         x: d3.scale.ordinal(),
-        y: d3.scale.linear()
+        y: d3.scale.linear(),
+        linearX: d3.scale.linear()
       };
     }
 
@@ -321,10 +304,10 @@
       return hover;
     }
 
-    function setupBrush(scale) {
+    function setupBrush(dom, scale) {
       var brush = {};
       brush.control = d3.svg.brush();
-      brush.brushDispatcher = d3.dispatch('clear');
+      brush.brushDispatcher = d3.dispatch('clear', 'start', 'end');
       brush.selectionClearFlyout = _.constant(
         '<div class="flyout-title">{0}</div>'.
           format(I18n.distributionChart.dragClearHelp)
@@ -335,7 +318,146 @@
 
       brush.control.
         x(scale.x).
-        clamp(true);
+        clamp(true).
+        on('brushstart', brushstart).
+        on('brush', brushmove).
+        on('brushend', brushend);
+
+      brush.bisectPath = function(path, targetX) {
+        var pathLength = path.getTotalLength();
+
+        return (function findXPositionOnPath(low, high, mid) {
+          var point = path.getPointAtLength(mid);
+
+          if (Math.abs(point.x - targetX) < 1) {
+            return point;
+          }
+          else if (point.x < targetX) {
+            low = mid;
+            mid = (low + high) / 2;
+          }
+          else {
+            high = mid;
+            mid = (low + high) / 2;
+          }
+
+          return findXPositionOnPath(low, high, mid);
+        })(0, pathLength, pathLength / 2);
+      };
+
+      brush.indexFromPoint = function indexFromPoint(point, operation) {
+        var scaledPoint = scale.linearX.invert(point);
+        return operation ? Math[operation](scaledPoint) : d3.round(scaledPoint);
+      };
+
+      brush.pointFromIndex = function pointFromIndex(index) {
+        var bucketWidth = scale.x.rangeBand();
+        return index * bucketWidth;
+      };
+
+      brush.updateExtent = function updateExtent(newExtentInPixels) {
+        var extent = dom.brush.select('.extent');
+        var resize = [
+          dom.brush.select('.resize.w'),
+          dom.brush.select('.resize.e')
+        ];
+
+        if (newExtentInPixels[0] === newExtentInPixels[1]) {
+          brush.control.clear();
+        } else {
+          brush.control.extent(newExtentInPixels);
+        }
+        extent.
+          attr('x', newExtentInPixels[0]).
+          attr('width', newExtentInPixels[1] - newExtentInPixels[0]);
+        resize[0].
+          style('display', brush.control.empty() ? 'none' : null).
+          attr('transform', 'translate(' + newExtentInPixels[0] + ', 0)');
+        resize[1].
+          style('display', brush.control.empty() ? 'none' : null).
+          attr('transform', 'translate(' + newExtentInPixels[1] + ', 0)');
+      };
+
+      var startLocation;
+      var startExtent;
+      var startedEmpty;
+
+      function brushstart() {
+        startLocation = d3.mouse(this)[0];
+        startExtent = d3.event.target.extent();
+        startExtent = [
+          d3.round(startExtent[0]),
+          d3.round(startExtent[1])
+        ];
+        startedEmpty = d3.event.target.empty();
+        brush.brushDispatcher.start([
+          brush.indexFromPoint(startExtent[0]),
+          brush.indexFromPoint(startExtent[1])
+        ]);
+
+      }
+
+      function brushmove() {
+        var extentInPixels = d3.event.target.extent();
+        if ((startLocation !== null) && (startLocation !== d3.mouse(this)[0])) {
+          startLocation = null;
+        }
+
+        // Add / subtract one to prevent floating point precision issues with floor/ceil
+        var extentAsIndices = [
+          brush.indexFromPoint(extentInPixels[0] + 1, 'floor'),
+          brush.indexFromPoint(extentInPixels[1] - 1, 'ceil')
+        ];
+        var newExtentInPixels = [
+          scale.linearX(extentAsIndices[0]),
+          scale.linearX(extentAsIndices[1])
+        ];
+        brush.updateExtent(newExtentInPixels);
+      }
+
+      function brushend() {
+        var pixelValues;
+        if (startLocation !== null) { // click, no move
+          var startIndex = brush.indexFromPoint(startLocation, 'floor');
+          var indices = [
+            startIndex,
+            startIndex + 1
+          ];
+          if (startedEmpty) { // clicked empty extent
+            pixelValues = [scale.linearX(indices[0]), scale.linearX(indices[1])];
+          }
+          else if (startLocation < startExtent[0] || startExtent[1] < startLocation) {
+            // click outside existing extent
+            pixelValues = [scale.linearX(indices[0]), scale.linearX(indices[1])];
+          }
+          else { // clicked in existing extent
+            var startIndices = [
+              brush.indexFromPoint(startExtent[0]),
+              brush.indexFromPoint(startExtent[1])
+            ];
+            if (Math.abs(startIndices[0] - startIndices[1]) !== 1) { // clicked existing multi bucket extent
+              pixelValues = [scale.linearX(indices[0]), scale.linearX(indices[1])];
+            } else {
+              pixelValues = [0, 0];
+            }
+          }
+        }
+        if (pixelValues) {
+          brush.updateExtent(pixelValues);
+        }
+
+        if (brush.control.empty()) {
+          brush.brushDispatcher.end(null);
+        }
+        else {
+          var newExtent = brush.control.extent();
+
+          brush.brushDispatcher.end([
+            brush.indexFromPoint(newExtent[0]),
+            brush.indexFromPoint(newExtent[1])
+          ]);
+        }
+      }
 
       FlyoutService.register({
         selector: '.histogram-brush-clear-x',
@@ -398,6 +520,11 @@
       // there to smoosh the first and last buckets to the edge of the chart.
       scale.x.rangeBands([0, dimensions.width], 0, -0.5);
       scale.y.range([dimensions.height, 0]);
+
+      scale.linearX.
+        domain([0, scale.x.range().length - 1]).
+        range([0, dimensions.width]).
+        clamp(true);
 
       return scale;
     }
@@ -468,6 +595,7 @@
     }
 
     function updateHover(
+      brush,
       data,
       dom,
       hover,
@@ -502,9 +630,9 @@
       }
 
       dom.svg.on('mousemove', function() {
-        var mouseX = Math.max(0, d3.mouse(dom.hoverShield.node())[0] - dom.margin.left);
+        var mouseX = Math.max(0, d3.mouse(dom.hoverShield.node())[0]);
         var bucketWidth = scale.x.rangeBand();
-        var bucketIndex = bucketedIndexValue(bucketWidth, data.unfiltered.length, mouseX, 0);
+        var bucketIndex = brush.indexFromPoint(mouseX, 'floor');
 
         if (bucketIndex < 0 || bucketIndex >= data.unfiltered.length) {
           return;
@@ -518,7 +646,7 @@
           dom.hoverBlock.
             attr('visibility', 'visible').
             attr('x', totalWidth).
-            attr('y', 0).
+            attr('y', -1).
             attr('width', bucketWidth);
           var filteredValue = _.get(hover, 'filteredBucket.value', 0);
           var unfilteredValue = _.get(hover, 'unfilteredBucket.value', 0);
@@ -544,7 +672,7 @@
           dom.hoverBlock.
             attr('visibility', 'visible').
             attr('x', brushLeft).
-            attr('y', 0).
+            attr('y', -1).
             attr('width', brushRight - brushLeft);
 
           var filteredBucket = _.get(hover, 'filteredBucket.value', 0);
@@ -568,9 +696,8 @@
       });
     }
 
-    function updateBrush(dom, brush, height, valueExtent, rangeExtent) {
+    function updateBrush(dom, brush, selectionValues, dimensions, selectionInProgress) {
 
-      // TODO
       function setupBrushHandles(selection, height, leftOffset) {
 
         var handleHeight = Constants.HISTOGRAM_HANDLE_HEIGHT;
@@ -578,14 +705,12 @@
         function brushLine(gBrush) {
           gBrush.append('line').
             classed('histogram-brush-line', true).
-            attr('transform', 'translate({0}, 0)'.format(leftOffset)).
             attr('y1', 0);
         }
 
         function brushHandle(path, gBrush) {
           gBrush.append('path').
             attr('class', 'histogram-brush-handle').
-            attr('transform', 'translate({0}, 0)'.format(leftOffset)).
             attr('d', path);
         }
 
@@ -598,7 +723,7 @@
               return gBrush.node().getBoundingClientRect().width;
             }).
             attr('transform', function() {
-              return 'translate({0}, 0)'.format(xTranslation + leftOffset);
+              return 'translate({0}, 0)'.format(xTranslation);
             });
         }
 
@@ -607,7 +732,7 @@
           if (selection.select('.histogram-brush-{0}'.format(side)).empty()) {
             selection.select('.resize.{0}'.format(direction)).
               attr('transform', 'translate({0}, 0)'.format(
-                Constants.HISTOGRAM_DRAG_TARGET_WIDTH
+                Constants.HISTOGRAM_DRAG_TARGET_WIDTH + leftOffset
               )).
               append('g').attr('class', 'histogram-brush-{0}'.format(side)).
               call(brushLine).
@@ -625,17 +750,29 @@
       dom.brush.
         call(brush.control).
         select('.extent').
-        attr('height', height);
+        attr('y', -(Constants.HISTOGRAM_HANDLE_HEIGHT / 2)).
+        attr('height', dimensions.height + Constants.HISTOGRAM_HANDLE_HEIGHT);
+
+      dom.hoverBlock = dom.brush.selectAll('.histogram-hover-block').data([0]);
+      dom.hoverBlock.enter().
+        insert('rect', '.resize').
+        classed('histogram-hover-block', true);
+
+      dom.hoverShield = dom.brush.selectAll('.histogram-hover-shield').data([0]);
+      dom.hoverShield.enter().
+        insert('rect', '.resize').
+        classed('histogram-hover-shield', true);
 
       var brushClearData = [{
         brushLeft: brush.control.extent()[0],
         brushRight: brush.control.extent()[1],
         brushHasExtent: !brush.control.empty(),
-        valueExtent: valueExtent,
+        valueExtent: selectionValues,
         offset: 5,
         leftOffset: dom.margin.left,
         backgroundHeight: '3em',
-        top: height
+        top: dimensions.height,
+        selectionInProgress: selectionInProgress
       }];
 
       var brushClear = dom.brush.selectAll('.histogram-brush-clear').
@@ -731,7 +868,9 @@
         });
 
       brushClear.
-        style('display', function(d) { return d.brushHasExtent ? null : 'none'; }).
+        style('display', function(d) {
+          return (d.brushHasExtent && !d.selectionInProgress) ? null : 'none';
+        }).
         attr('transform', function(d) {
           // Since we are in the middle of modifying this node, we can't trust
           // its reported width
@@ -741,7 +880,7 @@
             filterIcon.node().getBoundingClientRect().width
           );
           var svgWidth = dom.svg.node().getBoundingClientRect().width;
-          var baseOffset = d.brushLeft + d.leftOffset;
+          var baseOffset = d.brushLeft;
           var clampedLeftOffset = baseOffset;
           // Only if the width of the content is wider than the width of the selection
           // do we need to clamp left
@@ -762,19 +901,23 @@
 
       brushClear.exit().remove();
 
-      dom.brush.select('.background').
+      dom.brush.selectAll('.background').
+        attr('width', dimensions.width).
+        attr('height', dimensions.height).
+        attr('transform', 'translate({0}, 0)'.format(-dom.margin.left)).
         attr('style', 'fill: transparent; cursor: pointer; pointer-events: all;');
 
-      dom.svg.call(setupBrushHandles, height, dom.margin.left);
+      dom.svg.call(setupBrushHandles, dimensions.height, dom.margin.left);
 
       return brush;
     }
 
     // Renders the card
-    function render(axis, data, dimensions, dom, svg) {
+    function render(axis, data, dimensions, dom, svg, selectionIndices, brush) {
       var margin = dom.margin;
       var width = dimensions.width;
       var height = dimensions.height;
+      var hasSelection = _.isPresent(selectionIndices);
 
       dom.svg.
         attr('width', width + margin.left + margin.right).
@@ -867,15 +1010,35 @@
       renderArea('selected');
       renderArea('unfiltered', 'selectedUnfiltered');
       _.each(['area', 'line'], function(value) {
-        dom[value].filtered.style('visibility', data.hasSelection ? 'hidden' : null);
+        dom[value].filtered.style('visibility', hasSelection ? 'hidden' : null);
       });
 
-      dom.brush.selectAll('.histogram-brush-clear').style('visibility', data.hasSelection ? null : 'none');
+      dom.brush.selectAll('.histogram-brush-clear').style('visibility', hasSelection ? null : 'none');
 
+      var selectionPixels;
+      if (_.isPresent(selectionIndices)) {
+        selectionPixels = [
+          brush.pointFromIndex(selectionIndices[0]),
+          brush.pointFromIndex(selectionIndices[1] + 1)
+        ];
+        brush.updateExtent(selectionPixels);
+      } else {
+        brush.updateExtent([0, 0]);
+      }
+      if (brush.control.empty()) {
+        brush.brushDispatcher.end(null);
+      }
+      else {
+        var newExtent = brush.control.extent();
+
+        brush.brushDispatcher.end([
+          brush.indexFromPoint(newExtent[0]),
+          brush.indexFromPoint(newExtent[1])
+        ]);
+      }
     }
 
     return {
-      bucketedIndexValue: bucketedIndexValue,
       setupDOM: setupDOM,
       setupScale: setupScale,
       setupAxis: setupAxis,

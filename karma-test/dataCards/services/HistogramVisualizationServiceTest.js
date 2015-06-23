@@ -73,6 +73,141 @@ describe('HistogramVisualizationService', function() {
     });
   });
 
+  describe('setupBrush', function() {
+    var dom;
+    var brush;
+    beforeEach(function() {
+      scale = HistogramVisualizationService.setupScale();
+      scale = HistogramVisualizationService.updateScale(scale, testData, dimensions);
+      dom = {
+        brush: d3.selection()
+      };
+      brush = HistogramVisualizationService.setupBrush(dom, scale);
+
+    });
+
+    it('should create an object with a D3 brush control, a brushDispatcher, and flyouts', function() {
+      expect(brush.control).to.exist;
+      expect(brush.brushDispatcher).to.exist;
+      expect(brush.selectionClearFlyout).to.exist;
+      expect(brush.brushDragFlyout).to.exist;
+    });
+
+    describe('bisectPath', function() {
+      it('should find the center of a path', function() {
+
+        /*
+                                                                                         
+                                                      I................,.7
+                                                     7                    +              
+                                                    I                      ,             
+                                                   7                        +
+                                                   7                         7           
+                                                  I                           I          
+                                                  ?                            7         
+                                                 7                             I
+                                                 :                              I        
+                                                7                                I       
+                                                ,                                 I
+                      ~ ~                      7                                  7
+                    7+    7                    =                                   I     
+                  I        :,                 7                                    ?     
+                I            ?                I                                     7    
+               $              ?              7                                      I
+             7                 +             7                                       I   
+            I                   ,           7                                         ?  
+          ~,                    ,           7                                         7  
+         7                       +         7                                           + 
+                                  I        =                                             
+                                   I      7                                              
+                                    :,   ?                                               
+                                      I ?                                                
+                                                                                         
+                                                                                         
+         */
+        var data = [
+          [new Date(2001, 0, 1), 1],
+          [new Date(2002, 0, 1), 3],
+          [new Date(2003, 0, 1), 0],
+          [new Date(2004, 0, 1), 6],
+          [new Date(2005, 0, 1), 6],
+          [new Date(2006, 0, 1), 1]
+        ];
+
+        var margin = {top: 20, right: 30, bottom: 30, left: 40},
+          width = 960 - margin.left - margin.right,
+          height = 500 - margin.top - margin.bottom;
+
+        var x = d3.time.scale()
+          .domain([new Date(2001, 0, 1), new Date(2006, 0, 1)])
+          .range([0, width]);
+
+        var y = d3.scale.linear()
+          .domain([0, 6])
+          .range([height, 0]);
+
+        var line = d3.svg.line()
+          .interpolate('monotone')
+          .x(function(d) { return x(d[0]); })
+          .y(function(d) { return y(d[1]); });
+
+        var svg = d3.selection().append('svg')
+          .datum(data)
+          .attr('width', width + margin.left + margin.right)
+          .attr('height', height + margin.top + margin.bottom)
+          .append('g')
+          .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+        var path = svg.append('path')
+          .attr('class', 'line')
+          .attr('d', line);
+
+        // Bottom of chart
+        var result = brush.bisectPath(path.node(), (width / 5) * 2);
+        expect(result.y).to.be.within(height - 5, height + 5);
+
+        // Top of chart
+        result = brush.bisectPath(path.node(), (width / 5) * 3.5);
+        expect(result.y).to.be.within(-5, 5);
+
+        // Middle of chart
+        result = brush.bisectPath(path.node(), (width / 5) * 2.5);
+        var centerPoint = 190; // Found through experimentation
+        expect(result.y).to.be.within(centerPoint - 5, centerPoint + 5)
+      });
+    });
+
+    describe('indexFromPoint', function() {
+      it('should return an index given a point', function() {
+        var result = brush.indexFromPoint(10);
+        expect(result).to.equal(0);
+        result = brush.indexFromPoint(dimensions.width / 2);
+        expect(result).to.equal(2);
+        result = brush.indexFromPoint(dimensions.width - 10);
+        expect(result).to.equal(4);
+      });
+      it('should use the operation if provides', function() {
+        var result = brush.indexFromPoint(10, 'ceil');
+        expect(result).to.equal(1);
+        result = brush.indexFromPoint(dimensions.width - 10, 'floor');
+        expect(result).to.equal(3);
+      });
+    });
+
+    describe('pointFromIndex', function() {
+      it('should return a point from an index', function() {
+        var result = brush.pointFromIndex(0);
+        expect(result).to.equal(0);
+        result = brush.pointFromIndex(1);
+        var sectionWidth = dimensions.width / 4;
+        expect(result).to.equal(sectionWidth);
+        result = brush.pointFromIndex(4);
+        expect(result).to.equal(dimensions.width);
+      });
+    });
+
+  });
+
   describe('setupSVG', function() {
     it('should create an object with line and area keys for each filter type', function() {
       expect(svg.unfiltered.area).to.exist;
@@ -92,7 +227,8 @@ describe('HistogramVisualizationService', function() {
 
       var scaleCopy = {
         x: scale.x.copy(),
-        y: scale.y.copy()
+        y: scale.y.copy(),
+        linearX: scale.linearX.copy()
       };
 
       scale = HistogramVisualizationService.updateScale(scale, testData, dimensions);
@@ -102,8 +238,10 @@ describe('HistogramVisualizationService', function() {
 
       expect(scale.x.domain()).to.deep.equal(scaleCopy.x.domain());
       expect(scale.y.domain()).to.deep.equal(scaleCopy.y.domain());
+      expect(scale.linearX.domain()).to.deep.equal(scaleCopy.linearX.domain());
       expect(scale.x.range()).to.deep.equal(scaleCopy.x.range());
       expect(scale.y.range()).to.deep.equal(scaleCopy.y.range());
+      expect(scale.linearX.range()).to.deep.equal(scaleCopy.linearX.range());
     });
 
     it('should set the domain of the x scale to be the union of all start and end keys of the unfiltered data', function() {

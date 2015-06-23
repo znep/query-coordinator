@@ -115,10 +115,13 @@ class UserSessionsController < ApplicationController
     AUTH0_CONFIGURED && FeatureFlags.derive.use_auth0
   end
 
+  helper_method :use_auth0?
+
   def should_auth0_redirect?(connection)
       # Booleans to determine validity of redirect request
       connection_is_present = connection.present?
       connection_is_valid = connection_exists(connection)
+      binding.pry
       is_fresh_login = !(flash[:notice].present? && flash[:notice] == t('core.dialogs.logout'))
       has_redirect_param = params.fetch(:redirect, false)
 
@@ -136,10 +139,9 @@ class UserSessionsController < ApplicationController
   # If automatic redirect is not set, configured connections are set as
   # template variables.
   def auth0
-    @use_auth0 = use_auth0?
     properties = CurrentDomain.configuration('auth0').try(:properties)
 
-    if @use_auth0 && !properties.nil?
+    if use_auth0? && !properties.nil?
       # Auth0 Redirection when auth0 configuration is set
       connection = properties.try(:auth0_always_redirect_connection)
       callback_uri = properties.try(:auth0_callback_uri)

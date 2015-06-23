@@ -121,7 +121,6 @@ class UserSessionsController < ApplicationController
       # Booleans to determine validity of redirect request
       connection_is_present = connection.present?
       connection_is_valid = connection_exists(connection)
-      binding.pry
       is_fresh_login = !(flash[:notice].present? && flash[:notice] == t('core.dialogs.logout'))
       has_redirect_param = params.fetch(:redirect, false)
 

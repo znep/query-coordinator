@@ -99,8 +99,6 @@ Dataset.map.backgroundLayers = [
         zoomLevels: 20, options: { type: 'SATELLITE' }},
     { key: 'Google Terrain', alias: $.t('core.map_layers.terrain'), className: 'Google',
         zoomLevels: 16, options: { type: 'TERRAIN' }},
-    { key: 'Bing Road', alias: $.t('core.map_layers.roadmap'), className: 'Bing', zoomLevels: 20 },
-    { key: 'Bing Aerial', alias: $.t('core.map_layers.aerial'), className: 'Bing', options: { type: 'Aerial' }},
     { key: 'World Street Map (ESRI)', alias: $.t('core.map_layers.esri_world_street_map_alias'), className: 'ESRI',
         zoomLevels: 20, options: { url: 'World_Street_Map' }},
     { key: 'Satellite Imagery (ESRI)', alias: $.t('core.map_layers.satellite'), className: 'ESRI',
@@ -126,6 +124,12 @@ Dataset.map.backgroundLayerSet.Bing = [
     { layerKey: 'Bing Aerial', alias: $.t('core.map_layers.aerial'), opacity: 1}
 ];
 
+// Deprecation Support: Bing maps are now rendered as Google Maps.
+Dataset.map.backgroundLayerDeprecationMap = {
+  'Bing Road': 'Google Roadmap',
+  'Bing Aerial': 'Google Satellite'
+};
+
 Dataset.modules['map'] =
 {
     supportsSnapshotting: function()
@@ -146,6 +150,15 @@ Dataset.modules['map'] =
         var view = this;
         if (view._convertedLegacy) { return; }
         view._convertedLegacy = true;
+
+        // Legacy Support: Replace Bing keys with Google equivalents.
+        if ($.subKeyDefined(view, 'displayFormat.bkgdLayers')) {
+          view.displayFormat.bkgdLayers.forEach(function (layer) {
+            if (Dataset.map.backgroundLayerDeprecationMap[layer.layerKey]) {
+              layer.layerKey = Dataset.map.backgroundLayerDeprecationMap[layer.layerKey];
+            }
+          });
+        }
 
         if ($.subKeyDefined(view, 'displayFormat.viewDefinitions'))
         {

@@ -1,8 +1,10 @@
 ;(function($) {
     var mapConfigNS = blist.namespace.fetch('blist.configs.map');
 
-    var mapTypes = _.map(_.pluck(Dataset.map.backgroundLayers, 'key'),
-            function(x) { return { text: x, value: x }; });
+    var mapTypes = _.map(_.pluck(Dataset.map.backgroundLayers, 'key'), function(x) {
+      return { text: x, value: x };
+    });
+
     var regionTypes = [
         {text: $.t('screens.ds.grid_sidebar.map.regions.countries'), value: 'countries'},
         {text: $.t('screens.ds.grid_sidebar.map.regions.state'), value: 'state'},

@@ -158,16 +158,12 @@ $pageNameMaxLineCount: 2
 .cf:after
   clear: both
 
-//
 // For IE 6/7 only
 // Include this rule to trigger hasLayout and contain floats.
-//
 .cf
   *zoom: 1
 
-//
 // noscript - JavaScript disabled notifaction
-//
 noscript
   .noscript-notification
     text-align: center
@@ -175,3 +171,9 @@ noscript
       color: black
       a
         color: $link-font-color
+
+// CORE-5209: Fixes the vertical scrollbar being un-draggable in
+// Safari because the browser dedicates room for scrollbars (through
+// overflow: auto).
+.resize-triggers > div
+  overflow: hidden !important

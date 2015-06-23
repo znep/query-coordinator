@@ -93,6 +93,90 @@ describe('HistogramVisualizationService', function() {
       expect(brush.brushDragFlyout).to.exist;
     });
 
+    describe('bisectPath', function() {
+      it('should find the center of a path', function() {
+
+        /*
+                                                                                         
+                                                      I................,.7
+                                                     7                    +              
+                                                    I                      ,             
+                                                   7                        +
+                                                   7                         7           
+                                                  I                           I          
+                                                  ?                            7         
+                                                 7                             I
+                                                 :                              I        
+                                                7                                I       
+                                                ,                                 I
+                      ~ ~                      7                                  7
+                    7+    7                    =                                   I     
+                  I        :,                 7                                    ?     
+                I            ?                I                                     7    
+               $              ?              7                                      I
+             7                 +             7                                       I   
+            I                   ,           7                                         ?  
+          ~,                    ,           7                                         7  
+         7                       +         7                                           + 
+                                  I        =                                             
+                                   I      7                                              
+                                    :,   ?                                               
+                                      I ?                                                
+                                                                                         
+                                                                                         
+         */
+        var data = [
+          [new Date(2001, 0, 1), 1],
+          [new Date(2002, 0, 1), 3],
+          [new Date(2003, 0, 1), 0],
+          [new Date(2004, 0, 1), 6],
+          [new Date(2005, 0, 1), 6],
+          [new Date(2006, 0, 1), 1]
+        ];
+
+        var margin = {top: 20, right: 30, bottom: 30, left: 40},
+          width = 960 - margin.left - margin.right,
+          height = 500 - margin.top - margin.bottom;
+
+        var x = d3.time.scale()
+          .domain([new Date(2001, 0, 1), new Date(2006, 0, 1)])
+          .range([0, width]);
+
+        var y = d3.scale.linear()
+          .domain([0, 6])
+          .range([height, 0]);
+
+        var line = d3.svg.line()
+          .interpolate('monotone')
+          .x(function(d) { return x(d[0]); })
+          .y(function(d) { return y(d[1]); });
+
+        var svg = d3.selection().append('svg')
+          .datum(data)
+          .attr('width', width + margin.left + margin.right)
+          .attr('height', height + margin.top + margin.bottom)
+          .append('g')
+          .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+        var path = svg.append('path')
+          .attr('class', 'line')
+          .attr('d', line);
+
+        // Bottom of chart
+        var result = brush.bisectPath(path.node(), (width / 5) * 2);
+        expect(result.y).to.be.within(height - 5, height + 5);
+
+        // Top of chart
+        result = brush.bisectPath(path.node(), (width / 5) * 3.5);
+        expect(result.y).to.be.within(-5, 5);
+
+        // Middle of chart
+        result = brush.bisectPath(path.node(), (width / 5) * 2.5);
+        var centerPoint = 190; // Found through experimentation
+        expect(result.y).to.be.within(centerPoint - 5, centerPoint + 5)
+      });
+    });
+
     describe('indexFromPoint', function() {
       it('should return an index given a point', function() {
         var result = brush.indexFromPoint(10);

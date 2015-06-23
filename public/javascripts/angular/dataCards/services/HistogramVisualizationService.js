@@ -55,15 +55,6 @@
   }
 
   function HistogramVisualizationService(Constants, FlyoutService, I18n) {
-    function bucketedIndexValue(bucketWidth, bucketQuantity, pixelValue, index) {
-      var offsetIntialValue = (index === 0 ) ? pixelValue : pixelValue - Constants.HISTOGRAM_MARGINS.left;
-      var fixedValue = (offsetIntialValue / bucketWidth).toFixed(1);
-      var bucketIndex = Math[index === 0 ? 'floor' : 'ceil'](fixedValue);
-      var boundedBucketIndex = Math.min(bucketIndex, bucketQuantity);
-      bucketIndex = index === 1 ? boundedBucketIndex : bucketIndex;
-      return bucketIndex;
-    }
-
     function setupDOM(id, container) {
       var dom = {};
 
@@ -332,6 +323,28 @@
         on('brush', brushmove).
         on('brushend', brushend);
 
+      brush.bisectPath = function(path, targetX) {
+        var pathLength = path.getTotalLength();
+
+        return (function findXPositionOnPath(low, high, mid) {
+          var point = path.getPointAtLength(mid);
+
+          if (Math.abs(point.x - targetX) < 1) {
+            return point;
+          }
+          else if (point.x < targetX) {
+            low = mid;
+            mid = (low + high) / 2;
+          }
+          else {
+            high = mid;
+            mid = (low + high) / 2;
+          }
+
+          return findXPositionOnPath(low, high, mid);
+        })(0, pathLength, pathLength / 2);
+      };
+
       brush.indexFromPoint = function indexFromPoint(point, operation) {
         var scaledPoint = scale.linearX.invert(point);
         return operation ? Math[operation](scaledPoint) : d3.round(scaledPoint);
@@ -343,10 +356,10 @@
       };
 
       brush.updateExtent = function updateExtent(newExtentInPixels) {
-        var extent = dom.brush.selectAll('.extent');
+        var extent = dom.brush.select('.extent');
         var resize = [
-          dom.brush.selectAll('.resize.w'),
-          dom.brush.selectAll('.resize.e')
+          dom.brush.select('.resize.w'),
+          dom.brush.select('.resize.e')
         ];
 
         if (newExtentInPixels[0] === newExtentInPixels[1]) {
@@ -412,7 +425,6 @@
           ];
           if (startedEmpty) { // clicked empty extent
             pixelValues = [scale.linearX(indices[0]), scale.linearX(indices[1])];
-
           }
           else if (startLocation < startExtent[0] || startExtent[1] < startLocation) {
             // click outside existing extent
@@ -583,6 +595,7 @@
     }
 
     function updateHover(
+      brush,
       data,
       dom,
       hover,
@@ -617,9 +630,9 @@
       }
 
       dom.svg.on('mousemove', function() {
-        var mouseX = Math.max(0, d3.mouse(dom.hoverShield.node())[0] - dom.margin.left);
+        var mouseX = Math.max(0, d3.mouse(dom.hoverShield.node())[0]);
         var bucketWidth = scale.x.rangeBand();
-        var bucketIndex = bucketedIndexValue(bucketWidth, data.unfiltered.length, mouseX, 0);
+        var bucketIndex = brush.indexFromPoint(mouseX, 'floor');
 
         if (bucketIndex < 0 || bucketIndex >= data.unfiltered.length) {
           return;

@@ -64,7 +64,8 @@
         // Listen for our custom brush start and end events
         var brushStartIndices$ = Rx.Observable.fromEventPattern(function(handler) {
           brush.brushDispatcher.on('start', handler);
-        }).share();
+        }).
+        share();
 
         var brushEndIndices$ = Rx.Observable.fromEventPattern(function(handler) {
           brush.brushDispatcher.on('end', handler);
@@ -139,30 +140,11 @@
                 var path = _.get(dom, 'line.{0}'.format(selector));
                 path = path.node() || null;
                 if (_.isPresent(path)) {
-                  var pathLength = path.getTotalLength();
-
-                  var point = (function findXPositionOnPath(low, high, mid) {
-                    var point = path.getPointAtLength(mid);
-
-                    if (Math.abs(point.x - targetX) < 1) {
-                      return point;
-                    }
-                    else if (point.x < targetX) {
-                      low = mid;
-                      mid = (low + high) / 2;
-                    }
-                    else {
-                      high = mid;
-                      mid = (low + high) / 2;
-                    }
-
-                    return findXPositionOnPath(low, high, mid);
-                  })(0, pathLength, pathLength / 2);
-
+                  var point = brush.bisectPath(path, targetX);
                   return point.y;
                 }
               }).
-              filter(_.isNumber).
+              filter(_.isFinite).
               value();
 
             extentCenter = {
@@ -243,6 +225,7 @@
               options.selectionInProgress
             );
             hover = service.updateHover(
+              options.brush,
               options.data,
               options.dom,
               options.hover,

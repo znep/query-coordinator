@@ -1,15 +1,32 @@
-;var TextEditorFormatController = (function() {
+;var RichTextEditorFormatController = (function() {
 
   'use strict';
 
-  function TextEditorFormatController(editor, formats) {
+  var _FORMATS = [
+    { id: 'heading1', tag: 'h1', name: 'Heading 1', dropdown: true },
+    { id: 'heading2', tag: 'h2', name: 'Heading 2', dropdown: true },
+    { id: 'heading3', tag: 'h3', name: 'Heading 3', dropdown: true },
+    { id: 'heading4', tag: 'h4', name: 'Heading 4', dropdown: true },
+    { id: 'text', tag: null, name: 'Paragraph', dropdown: true },
+    { id: 'bold', tag: 'b', name: 'Bold', dropdown: false, group: 0 },
+    { id: 'italic', tag: 'i', name: 'Italic', dropdown: false, group: 0 },
+    { id: 'left', tag: 'p', name: 'Align Left', dropdown: false, group: 1 },
+    { id: 'center', tag: 'p', name: 'Center', dropdown: false, group: 1 },
+    { id: 'right', tag: 'p', name: 'Align Right', dropdown: false, group: 1 },
+    { id: 'orderedList', tag: 'ol', name: 'Ordered List', dropdown: false, group: 2 },
+    { id: 'unorderedList', tag: 'ul', name: 'Unordered List', dropdown: false, group: 2 },
+    { id: 'blockquote', tag: 'blockquote', name: 'Block Quote', dropdown: false, group: 2 },
+    { id: 'link', tag: 'a', name: 'Link', dropdown: false, group: 3 }
+  ];
+
+  function RichTextEditorFormatController(editor) {
 
     if (!_editorIsSquireInstance(editor)) {
       throw new Error('`editor` argument is not an instance of Squire.');
     }
 
     var _editor = editor;
-    var _formats = formats;
+    var _formats = _FORMATS;
 
     /**
      * Public methods
@@ -73,16 +90,16 @@
 
       switch (commandName) {
         case 'heading1':
-          _toggleHeading('h2');
+          _toggleHeading('h1');
           break;
         case 'heading2':
-          _toggleHeading('h3');
+          _toggleHeading('h2');
           break;
         case 'heading3':
-          _toggleHeading('h4');
+          _toggleHeading('h3');
           break;
         case 'heading4':
-          _toggleHeading('h5');
+          _toggleHeading('h4');
           break;
         case 'text':
           _clearFormat();
@@ -130,6 +147,44 @@
       return editor instanceof Squire;
     }
 
+    function _elementIsBlockLevel(element) {
+
+      var nodeName = element.nodeName.toLowerCase();
+      var blockElements = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'p'];
+
+      return blockElements.indexOf(nodeName) > -1;
+    }
+
+    function _updateBlockType(blockType) {
+
+      _editor.modifyBlocks(function(blockFragment) {
+
+        var newFragment = document.createDocumentFragment();
+        var containerBlock = document.createElement(blockType);
+
+        if (blockFragment.childNodes.length > 0) {
+
+          var firstChild = blockFragment.childNodes[0];
+
+          if (blockFragment.childNodes.length === 1 &&
+            _elementIsBlockLevel(firstChild)) {
+
+            var grandchildCount = firstChild.childNodes.length;
+
+            for (var i = 0; i < grandchildCount; i++) {
+              containerBlock.appendChild(firstChild.childNodes[i].cloneNode());
+            }
+          }
+        } else {
+
+          containerBlock.appendChild(blockFragment);
+        }
+
+        newFragment.appendChild(containerBlock);
+        return newFragment;
+      });
+    }
+
     function _clearSelection() {
 
       var range = document.createRange();
@@ -138,40 +193,16 @@
 
     function _clearFormat(selection) {
 
-      // Iterate over each supported format and manually clear it from
-      // the selection.
-      for (var i = 0; i < _formats.length; i++) {
-
-        var tagName = _formats[i].tag;
-
-        if (tagName !== null) {
-
-          // Selection is optional and will be ignored by changeFormat if
-          // it is falsey.
-          _editor.changeFormat(
-            false,
-            { tag: tagName },
-            selection
-          );
-        }
+      if (_editor.hasOwnProperty('removeAllFormatting')) {
+        _editor.removeAllFormatting(selection);
       }
+
+      _updateBlockType('div');
     }
 
     function _toggleHeading(headingTag) {
 
-      // If a range is not selected, this action should apply to the entire block.
-      var selection = _editor.getSelection();
-      if (selection.endOffset - selection.startOffset === 0) {
-        selection.selectNodeContents(selection.startContainer);
-      }
-
-      _clearFormat(selection);
-
-      if (_editor.hasFormat(headingTag)) {
-        _editor.changeFormat(false, { tag: headingTag }, selection);
-      } else {
-        _editor.changeFormat({ tag: headingTag }, false, selection);
-      }
+      _updateBlockType(headingTag);
     }
 
     function _toggleBold(headingTag) {
@@ -244,5 +275,5 @@
     }
   }
 
-  return TextEditorFormatController;
+  return RichTextEditorFormatController;
 })();

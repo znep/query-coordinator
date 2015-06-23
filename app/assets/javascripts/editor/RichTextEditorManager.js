@@ -1,8 +1,8 @@
-;var TextEditorManager = (function() {
+;var RichTextEditorManager = (function() {
 
   'use strict';
 
-  function TextEditorManager() {
+  function RichTextEditorManager() {
 
     var _editors = {};
 
@@ -10,7 +10,7 @@
 
       var element = $('<div>', { class: 'text-editor', 'data-editor-id': editorId });
 
-      _editors[editorId] = new TextEditorUI(element, editorId, preloadText);
+      _editors[editorId] = new RichTextEditor(element, editorId, preloadText);
 
       return element;
     };
@@ -27,5 +27,5 @@
     };
   }
 
-  return TextEditorManager;
+  return RichTextEditorManager;
 })();

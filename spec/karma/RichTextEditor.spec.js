@@ -1,4 +1,4 @@
-describe('TextEditorUI class', function() {
+describe('RichTextEditor', function() {
 
   var validEditorId = '1';
   var validPreloadContent = 'Hello, world!';
@@ -10,7 +10,7 @@ describe('TextEditorUI class', function() {
       it('raises an exception', function() {
 
         assert.throws(function() {
-          var editor = new TextEditorUI(null, validEditorId, validPreloadContent);
+          var editor = new RichTextEditor(null, validEditorId, validPreloadContent);
         });
       });
     });
@@ -22,7 +22,7 @@ describe('TextEditorUI class', function() {
         var jqueryObject = $('.text-editor');
 
         assert.throws(function() {
-          var editor = new TextEditorUI(jqueryObject, validEditorId, validPreloadContent);
+          var editor = new RichTextEditor(jqueryObject, validEditorId, validPreloadContent);
         });
       });
     });
@@ -45,7 +45,7 @@ describe('TextEditorUI class', function() {
         var jqueryObject = $('.text-editor');
 
         assert.throws(function() {
-          var editor = new TextEditorUI(jqueryObject, validEditorId, validPreloadContent);
+          var editor = new RichTextEditor(jqueryObject, validEditorId, validPreloadContent);
         });
       });
     });
@@ -74,41 +74,41 @@ describe('TextEditorUI class', function() {
 
           var jqueryObject = $('.text-editor');
           assert.throws(function() {
-            var editor = new TextEditorUI(jqueryObject, false, validPreloadContent);
+            var editor = new RichTextEditor(jqueryObject, false, validPreloadContent);
           });
         });
       });
 
       describe('and an editorId that is a number', function() {
 
-        it('creates a new TextEditorUI', function() {
+        it('creates a new RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
-          var editor = new TextEditorUI(jqueryObject, 12, validPreloadContent);
+          var editor = new RichTextEditor(jqueryObject, 12, validPreloadContent);
 
-          assert.instanceOf(editor, TextEditorUI, 'editor is an instance of TextEditorUI');
+          assert.instanceOf(editor, RichTextEditor, 'editor is an instance of RichTextEditor');
         });
       });
 
       describe('and an editorId that is a string', function() {
 
-        it('creates a new TextEditorUI', function() {
+        it('creates a new RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
-          var editor = new TextEditorUI(jqueryObject, '12', validPreloadContent);
+          var editor = new RichTextEditor(jqueryObject, '12', validPreloadContent);
 
-          assert.instanceOf(editor, TextEditorUI, 'editor is an instance of TextEditorUI');
+          assert.instanceOf(editor, RichTextEditor, 'editor is an instance of RichTextEditor');
         });
       });
 
       describe('and no preloadContent', function() {
 
-        it('creates a new TextEditorUI', function() {
+        it('creates a new RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
-          var editor = new TextEditorUI(jqueryObject, validEditorId);
+          var editor = new RichTextEditor(jqueryObject, validEditorId);
 
-          assert.instanceOf(editor, TextEditorUI, 'editor is an instance of TextEditorUI');
+          assert.instanceOf(editor, RichTextEditor, 'editor is an instance of RichTextEditor');
         });
       });
 
@@ -118,19 +118,19 @@ describe('TextEditorUI class', function() {
 
           var jqueryObject = $('.text-editor');
           assert.throws(function() {
-            var editor = new TextEditorUI(jqueryObject, validEditorId, 12);
+            var editor = new RichTextEditor(jqueryObject, validEditorId, 12);
           });
         });
       });
 
       describe('and a preloadContent that is a string', function() {
 
-        it('creates a new TextEditorUI', function() {
+        it('creates a new RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
-          var editor = new TextEditorUI(jqueryObject, validEditorId, 'Hello, world!');
+          var editor = new RichTextEditor(jqueryObject, validEditorId, 'Hello, world!');
 
-          assert.instanceOf(editor, TextEditorUI, 'editor is an instance of TextEditorUI');
+          assert.instanceOf(editor, RichTextEditor, 'editor is an instance of RichTextEditor');
         });
       });
     });
@@ -157,9 +157,9 @@ describe('TextEditorUI class', function() {
     it('removes the editor element from the container', function() {
 
       var jqueryObject = $('.text-editor');
-      var editor = new TextEditorUI(jqueryObject, validEditorId, 'Hello, world!');
+      var editor = new RichTextEditor(jqueryObject, validEditorId, 'Hello, world!');
 
-      assert.instanceOf(editor, TextEditorUI, 'editor is an instance of TextEditorUI');
+      assert.instanceOf(editor, RichTextEditor, 'editor is an instance of RichTextEditor');
       assert.isTrue($('iframe').length > 0, 'an iframe exists');
 
       editor.destroy();

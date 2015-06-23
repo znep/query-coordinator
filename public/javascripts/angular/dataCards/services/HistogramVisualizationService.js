@@ -633,7 +633,7 @@
           dom.hoverBlock.
             attr('visibility', 'visible').
             attr('x', totalWidth).
-            attr('y', 0).
+            attr('y', -1).
             attr('width', bucketWidth);
           var filteredValue = _.get(hover, 'filteredBucket.value', 0);
           var unfilteredValue = _.get(hover, 'unfilteredBucket.value', 0);
@@ -659,7 +659,7 @@
           dom.hoverBlock.
             attr('visibility', 'visible').
             attr('x', brushLeft).
-            attr('y', 0).
+            attr('y', -1).
             attr('width', brushRight - brushLeft);
 
           var filteredBucket = _.get(hover, 'filteredBucket.value', 0);
@@ -904,6 +904,7 @@
       var margin = dom.margin;
       var width = dimensions.width;
       var height = dimensions.height;
+      var hasSelection = _.isPresent(selectionIndices);
 
       dom.svg.
         attr('width', width + margin.left + margin.right).
@@ -996,10 +997,10 @@
       renderArea('selected');
       renderArea('unfiltered', 'selectedUnfiltered');
       _.each(['area', 'line'], function(value) {
-        dom[value].filtered.style('visibility', data.hasSelection ? 'hidden' : null);
+        dom[value].filtered.style('visibility', hasSelection ? 'hidden' : null);
       });
 
-      dom.brush.selectAll('.histogram-brush-clear').style('visibility', data.hasSelection ? null : 'none');
+      dom.brush.selectAll('.histogram-brush-clear').style('visibility', hasSelection ? null : 'none');
 
       var selectionPixels;
       if (_.isPresent(selectionIndices)) {

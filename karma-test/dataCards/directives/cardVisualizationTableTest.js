@@ -380,7 +380,7 @@ describe('A Table Card Visualization', function() {
   });
 
   describe('column visibility', function() {
-    it('should hide columns according to "hideInTable" property', function() {
+    it('should hide columns according to "hideInTable" and "isSystemColumn" properties', function() {
       var newColumns = _.cloneDeep(COLUMNS);
 
       newColumns['test_column'].hideInTable = true;
@@ -392,6 +392,54 @@ describe('A Table Card Visualization', function() {
       expect(table.element.find('.th:eq(1)')).to.have.data('columnId', 'test_floating_timestamp_column');
       expect(table.element.find('.th:eq(2)')).to.have.data('columnId', 'test_location_column');
     });
+
+    it('should correctly show columns with the following "edge case" names', function() {
+      var edgeCaseColumns = {
+        'a': {
+          'name': 'a',
+          'fred': 'time',
+          'physicalDatatype': 'timestamp',
+          'defaultCardType': 'timeline',
+          'availableCardTypes': ['timeline']
+        },
+        '_': {
+          'name': '_',
+          'fred': 'time',
+          'physicalDatatype': 'timestamp',
+          'defaultCardType': 'timeline',
+          'availableCardTypes': ['timeline']
+        },
+        ' b': {
+          'name': ' b',
+          'fred': 'time',
+          'physicalDatatype': 'timestamp',
+          'defaultCardType': 'timeline',
+          'availableCardTypes': ['timeline']
+        },
+        '1:': {
+          'name': '1:',
+          'fred': 'time',
+          'physicalDatatype': 'timestamp',
+          'defaultCardType': 'timeline',
+          'availableCardTypes': ['timeline']
+        },
+        '*a': {
+          'name': '*a',
+          'fred': 'time',
+          'physicalDatatype': 'timestamp',
+          'defaultCardType': 'timeline',
+          'availableCardTypes': ['timeline']
+        }
+      };
+      var table = createTable({ columns: edgeCaseColumns });
+
+      expect(table.element.find('.th')).to.have.length(5);
+      expect(table.element.find('.th:eq(0)')).to.have.data('columnId', 'a');
+      expect(table.element.find('.th:eq(1)')).to.have.data('columnId', '_');
+      expect(table.element.find('.th:eq(2)')).to.have.data('columnId', ' b');
+      expect(table.element.find('.th:eq(3)')).to.have.data('columnId', '1:');
+      expect(table.element.find('.th:eq(4)')).to.have.data('columnId', '*a');
+    })
   });
 
   describe('showCount', function() {

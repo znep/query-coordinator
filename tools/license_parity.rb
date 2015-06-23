@@ -54,7 +54,8 @@ licenses.collect { |license| license['licenses'] || license }.flatten.each do |t
     when 'name', 'display_name'
       true_name = truth['display_name'] || [category['name'], truth['name']].compact.join(' ')
       if db_version['name'] != true_name
-        errors << Error.new(Sql.new('name', true_name, truth['id']), "#{truth['id']}##{k} should be #{true_name}.")
+        errors << Error.new(Sql.new('name', true_name, truth['id']),
+                            "#{truth['id']}##{k} should be #{true_name}.")
       end
     when 'logo'
       unless db_version['logo_url'] == v || (db_version['logo_url'].empty? && v.nil?)

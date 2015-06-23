@@ -37,7 +37,7 @@ class LicenseConfig < ExternalConfig
     @merged_licenses ||= @licenses.reduce({}) do |merged, license|
       if license[:licenses].present?
         license[:licenses].each do |categorized_license|
-          name = get_name_for categorized_license
+          name = get_name_for categorized_license, license
           merged[name] = categorized_license[:id]
         end
       else
@@ -49,7 +49,10 @@ class LicenseConfig < ExternalConfig
   end
 
   private
-  def get_name_for license
-    license[:selector_name] || license[:name] || license[:display_name]
+  def get_name_for license, category = {}
+    name = license[:selector_name]
+    name ||= [category[:name], license[:name]].compact.join(' ') unless license[:name].nil?
+    name ||= license[:display_name]
+    name
   end
 end

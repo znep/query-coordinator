@@ -11,10 +11,10 @@
    * @param {jQuery} element
    * @param {string} editorId
    * @param {AssetFinder} assetFinder
-   * @param {string} [preloadContent] - The content that should be inserted
+   * @param {string} [contentToPreload] - The content that should be inserted
    *   into the newly-created editor.
    */
-  function RichTextEditor(element, editorId, assetFinder, formats, preloadContent) {
+  function RichTextEditor(element, editorId, assetFinder, formats, contentToPreload) {
 
     if (!(element instanceof jQuery)) {
       throw new Error(
@@ -60,10 +60,10 @@
       );
     }
 
-    if (typeof preloadContent !== 'undefined' && typeof preloadContent !== 'string') {
+    if (typeof contentToPreload !== 'undefined' && typeof contentToPreload !== 'string') {
       throw new Error(
-        '`preloadContent` must be a string (is of type ' +
-        (typeof preloadContent) +
+        '`contentToPreload` must be a string (is of type ' +
+        (typeof contentToPreload) +
         ').'
       );
     }
@@ -71,15 +71,17 @@
     var _containerElement = element;
     var _assetFinder = assetFinder;
     var _formats = formats;
-    var _preloadContent = null;
-    var _editorElement = null;
+    var _contentToPreload = null;
+    // _editor is the Squire instance.
     var _editor = null;
+    // _editorElement is the <iframe> associated with the Squire instance.
+    var _editorElement = null;
     var _formatController = null;
     var _lastContentHeight = 0;
     var _lastActiveFormatsAsString = '';
 
-    if (typeof preloadContent !== 'undefined') {
-      _preloadContent = preloadContent;
+    if (typeof contentToPreload !== 'undefined') {
+      _contentToPreload = contentToPreload;
     }
 
     _editor = _createEditor();
@@ -123,7 +125,7 @@
           _formats
         );
 
-        _editor.addEventListener('input', _handleInput);
+        _editor.addEventListener('input', _handleContentChange);
         _editor.addEventListener('focus', _broadcastFocus);
         _editor.addEventListener('focus', _broadcastFormatChange);
         _editor.addEventListener('blur', _broadcastBlur);
@@ -133,13 +135,13 @@
 
         // Pre-load existing content (e.g. if we are editing an
         // existing resource).
-        if (_preloadContent !== null) {
-          _editor.setHTML(_preloadContent);
+        if (_contentToPreload !== null) {
+          _editor.setHTML(_contentToPreload);
           _broadcastFormatChange();
         }
 
         _setupMouseMoveEventBroadcast();
-        _handleInput();
+        _handleContentChange();
       });
 
       _containerElement.append(_editorElement);
@@ -153,7 +155,7 @@
      *
      * Because we need to access the iframe's `contentWindow.document.head` in
      * order to append a node to the internal document's head, however, we must
-     * wait until the iframe's intenral document has actually loaded.
+     * wait until the iframe's internal document has actually loaded.
      */
     function _overrideDefaultStyles(document) {
 
@@ -165,7 +167,7 @@
       styleEl.setAttribute('rel', 'stylesheet');
       styleEl.setAttribute('type', 'text/css');
       styleEl.setAttribute('href', _assetFinder.getStyleAssetPath('iframe'));
-      styleEl.onload = function(){ _handleInput(); }
+      styleEl.onload = function(){ _handleContentChange(); }
 
       document.head.appendChild(styleEl);
     }
@@ -186,7 +188,7 @@
      * In a future refactor, these two purposes might be unified by causing
      * changes to the model to directly trigger a re-render.
      */
-    function _handleInput() {
+    function _handleContentChange() {
 
       var bodyElement = $(_editor.getDocument()).find('body');
       // These calculations have a tendency to be extremely inconsistent
@@ -226,14 +228,14 @@
 
     function _emitEvent(name, payload) {
 
-      var detailObj = {
+      var eventDetail = {
         id: editorId
       };
 
       if (typeof payload === 'object') {
         for (var prop in payload) {
           if (prop !== 'id' && payload.hasOwnProperty(prop)) {
-            detailObj[prop] = payload[prop];
+            eventDetail[prop] = payload[prop];
           }
         }
       }
@@ -241,7 +243,7 @@
       _editorElement[0].dispatchEvent(
         new CustomEvent(
           name,
-          { detail: detailObj, bubbles: true }
+          { detail: eventDetail, bubbles: true }
         )
       );
     }
@@ -286,15 +288,23 @@
      * semantic value of multiple nested divs with different classes, for
      * example, is lost in the process.
      *
+     * Note that we mutate the value of e.fragment, which is inserted
+     * by Squire into the text editor document at the cursror location
+     * after this function returns.
+     *
      * @param {Event} e
      *   @prop {DocumentFragment} fragment
-     * @return {DocumentFragment}
      */
     function _sanitizeClipboardInput(e) {
 
-      var _addWhitelistedAttributes = function(dirtyEl, cleanEl) {
+      var _copyWhitelistedAttributes = function(dirtyEl, cleanEl) {
 
-        var _isAttributeAllowed = function(nodeName, attrName, whitelist) {
+        // This function checks the attribute whitelist on a tag-by-tag
+        // basis to determine whether or not the specified element
+        // attribute should be copied from the 'dirty' element received
+        // from the clipboard into the 'clean' element that will be
+        // inserted into the editor iframe's internal document.
+        var _attributeIsAllowed = function(nodeName, attrName, whitelist) {
           return (
             whitelist.hasOwnProperty(nodeName) &&
             whitelist[nodeName].indexOf(attrName) > -1
@@ -307,7 +317,7 @@
 
           var attribute = attributes[i];
 
-          var attributeIsAllowed = _isAttributeAllowed(
+          var attributeIsAllowed = _attributeIsAllowed(
             dirtyEl.nodeName.toLowerCase(),
             attribute.name.toLowerCase(),
             _ATTRIBUTE_WHITELIST
@@ -329,6 +339,22 @@
         var childNodes;
         var childEl;
 
+        // Node Types
+        //
+        // var Node = {
+        //   ELEMENT_NODE                :  1,
+        //   ATTRIBUTE_NODE              :  2,
+        //   TEXT_NODE                   :  3,
+        //   CDATA_SECTION_NODE          :  4,
+        //   ENTITY_REFERENCE_NODE       :  5,
+        //   ENTITY_NODE                 :  6,
+        //   PROCESSING_INSTRUCTION_NODE :  7,
+        //   COMMENT_NODE                :  8,
+        //   DOCUMENT_NODE               :  9,
+        //   DOCUMENT_TYPE_NODE          : 10,
+        //   DOCUMENT_FRAGMENT_NODE      : 11,
+        //   NOTATION_NODE               : 12
+        // };
         if (el.nodeType === 1) {
 
           if (_isHeaderElement(nodeName)) {
@@ -344,7 +370,7 @@
             cleanEl = document.createElement(nodeName);
           }
 
-          _addWhitelistedAttributes(el, cleanEl, attributeWhitelist);
+          _copyWhitelistedAttributes(el, cleanEl, attributeWhitelist);
         } else if (el.nodeType === 3) {
           cleanEl = document.createTextNode(el.textContent);
         } else if (el.nodeType === 11) {
@@ -368,6 +394,10 @@
         return cleanEl;
       }
 
+      // See function documentation above for:
+      //
+      // 1. Why this value is reassigned here
+      // 2. Why there is no return value
       e.fragment = _sanitizeElement(e.fragment, _ATTRIBUTE_WHITELIST);
     }
 
@@ -378,11 +408,13 @@
       var existingMosueMoveHandler = null;
 
       // Save any previous onmousemove handler
-      var existingMouseMoveHandler = 
-        (iframe.hasOwnProperty('contentWindow') &&
-          iframe.contentWindow.hasOwnProperty('onmousemove')) ?
-        iframe.contentWindow.onmousemove :
-        false;
+      var existingMouseMoveHandler = false;
+
+      if (iframe.hasOwnProperty('contentWindow') &&
+        iframe.contentWindow.hasOwnProperty('onmousemove')) {
+
+        existingMouseMoveHandler = iframe.contentWindow.onmousemove;
+      }
 
       iframe.contentWindow.onmousemove = function(e) {
 

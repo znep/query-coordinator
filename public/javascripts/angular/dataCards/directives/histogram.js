@@ -207,6 +207,11 @@
 
         uiUpdate$.
           subscribe(function(options) {
+            $scope.$emit('render:start', {
+              source: 'histogram_{0}'.format($scope.$id),
+              timestamp: _.now()
+            });
+
             scale = service.updateScale(
               options.scale,
               options.data,
@@ -247,6 +252,11 @@
               options.selectionIndices,
               options.brush
             );
+
+            $scope.$emit('render:complete', {
+              source: 'histogram_{0}'.format($scope.$id),
+              timestamp: _.now()
+            });
           });
 
         // Clean up after ourselves

@@ -118,5 +118,30 @@ describe('HistogramChart', function() {
       expect($flyoutTitle.text()).to.match(new RegExp(testData.filtered[0].value));
     });
 
+    it('should emit render:start and render:complete events on rendering', function(done) {
+      var renderEvents = Rx.Observable.merge(
+        $rootScope.$eventToObservable('render:start').first(),
+        $rootScope.$eventToObservable('render:complete').first()
+      );
+
+      renderEvents.take(2).toArray().subscribe(
+        function(events) {
+
+          expect(events[0].additionalArguments[0].source).to.satisfy(_.isString);
+          expect(events[1].additionalArguments[0].source).to.equal(events[0].additionalArguments[0].source);
+
+          // Times are ints and are in order.
+          expect(events[0].additionalArguments[0].timestamp).to.satisfy(_.isFinite);
+          expect(events[1].additionalArguments[0].timestamp).to.satisfy(_.isFinite);
+
+          expect(events[0].additionalArguments[0].timestamp).to.be.below(events[1].additionalArguments[0].timestamp);
+          done();
+        }
+      );
+
+      createHistogram();
+      timeout.flush();
+    });
+
   });
 });

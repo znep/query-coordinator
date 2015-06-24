@@ -1040,7 +1040,7 @@ var RowSet = ServerModel.extend({
                     newCols.push({ id: -1, name: 'id', fieldName: ':id',
                                 dataTypeName: 'meta_data', renderTypeName: 'meta_data' });
                 }
-                rs.trigger('metadata_update', [ { columns: newCols } ]);
+                rs.trigger('metadata_update', [ { columns: newCols }, false, true ]);
             }
             // If we loaded without meta but don't have meta available, bail
             else if ($.isBlank(rs._totalCount))

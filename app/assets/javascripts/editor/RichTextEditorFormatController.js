@@ -7,6 +7,8 @@
     { id: 'heading2', tag: 'h2', name: 'Heading 2', dropdown: true },
     { id: 'heading3', tag: 'h3', name: 'Heading 3', dropdown: true },
     { id: 'heading4', tag: 'h4', name: 'Heading 4', dropdown: true },
+    { id: 'heading5', tag: 'h5', name: 'Heading 5', dropdown: true },
+    { id: 'heading6', tag: 'h6', name: 'Heading 6', dropdown: true },
     { id: 'text', tag: null, name: 'Paragraph', dropdown: true },
     { id: 'bold', tag: 'b', name: 'Bold', dropdown: false, group: 0 },
     { id: 'italic', tag: 'i', name: 'Italic', dropdown: false, group: 0 },
@@ -27,6 +29,25 @@
 
     var _editor = editor;
     var _formats = _FORMATS;
+    var _commandDispatcher = {
+      'heading1': function() { _toggleHeading('h1'); },
+      'heading2': function() { _toggleHeading('h2'); },
+      'heading3': function() { _toggleHeading('h3'); },
+      'heading4': function() { _toggleHeading('h4'); },
+      'heading5': function() { _toggleHeading('h5'); },
+      'heading6': function() { _toggleHeading('h6'); },
+      'text': function() { _clearFormat(); },
+      'bold': function() { _toggleBold(); },
+      'italic': function() { _toggleItalic(); },
+      'left': function() { _blockAlignLeft(); },
+      'center': function() { _blockAlignCenter(); },
+      'right': function() { _blockAlignRight(); },
+      'orderedList': function() { _toggleOrderedList(); },
+      'unorderedList': function() { _toggleUnorderedList(); },
+      'blockquote': function() { _toggleBlockquote(); },
+      'addLink': function() { _addLink(data); },
+      'removeLink': function() { _removeLink(); }
+    };
 
     /**
      * Public methods
@@ -84,60 +105,14 @@
       recordChildFormats(childNodes, _formats, foundFormats);
 
       return foundFormats;
-    }
+    };
 
-    this.execute = function(commandName, data) {
+    this.execute = function(commandName) {
 
-      switch (commandName) {
-        case 'heading1':
-          _toggleHeading('h1');
-          break;
-        case 'heading2':
-          _toggleHeading('h2');
-          break;
-        case 'heading3':
-          _toggleHeading('h3');
-          break;
-        case 'heading4':
-          _toggleHeading('h4');
-          break;
-        case 'text':
-          _clearFormat();
-          break;
-        case 'bold':
-          _toggleBold();
-          break;
-        case 'italic':
-          _toggleItalic();
-          break;
-        case 'left':
-          _blockAlignLeft();
-          break;
-        case 'center':
-          _blockAlignCenter();
-          break;
-        case 'right':
-          _blockAlignRight();
-          break;
-        case 'orderedList':
-          _toggleOrderedList();
-          break;
-        case 'unorderedList':
-          _toggleUnorderedList();
-          break;
-        case 'blockquote':
-          _toggleBlockquote();
-          break;
-        case 'addLink':
-          _addLink(data);
-          break;
-        case 'removeLink':
-          _removeLink();
-          break;
-        default:
-          break;
+      if (_commandDispatcher.hasOwnProperty(commandName)) {
+        _commandDispatcher[commandName]();
       }
-    }
+    };
 
     /**
      * Private methods

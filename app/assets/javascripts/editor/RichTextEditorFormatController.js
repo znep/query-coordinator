@@ -21,9 +21,13 @@
     { id: 'link', tag: 'a', name: 'Link', dropdown: false, group: 3 }
   ];
 
+  /**
+   * @constructor
+   * @param {Squire} editor
+   */
   function RichTextEditorFormatController(editor) {
 
-    if (!_editorIsSquireInstance(editor)) {
+    if (!(editor instanceof Squire)) {
       throw new Error('`editor` argument is not an instance of Squire.');
     }
 
@@ -45,7 +49,7 @@
       'orderedList': function() { _toggleOrderedList(); },
       'unorderedList': function() { _toggleUnorderedList(); },
       'blockquote': function() { _toggleBlockquote(); },
-      'addLink': function() { _addLink(data); },
+      'addLink': function(data) { _addLink(data); },
       'removeLink': function() { _removeLink(); }
     };
 
@@ -53,38 +57,59 @@
      * Public methods
      */
 
+    /**
+     * Execute a formatting command.
+     *
+     * @param {string} commandName
+     * @param {string} [data] - An optional data parameter (such as URL)
+     */
+    this.execute = function(commandName, data) {
+      if (_commandDispatcher.hasOwnProperty(commandName)) {
+        _commandDispatcher[commandName](data);
+      }
+    };
+
+    /**
+     * This method iterates over the current selection (or, if there is no
+     * selection, the node that contains the cursor) to accumulate a list of
+     * all the styles that are currently active.
+     *
+     * This list is used to decide which buttons in the UI to mark as active.
+     */
     this.getActiveFormats = function() {
 
-      function recordChildFormats(childNodes, supportedFormats, foundFormats) {
+      // Recursively descend the DocumentFragment representing the current
+      // selection.
+      var _recordChildFormats = function(children, supported, found) {
 
+        var child;
         var tagName;
         var format;
 
         for (var i = 0; i < childNodes.length; i++) {
 
-          if (childNodes[i].nodeType === 1) {
+          child = children[i];
 
-            tagName = childNodes[i].nodeName.toLowerCase();
-            format = supportedFormats.filter(function(format) {
+          if (child.nodeType === 1) {
+
+            tagName = child.nodeName.toLowerCase();
+            format = supported.filter(function(format) {
               return format.tag === tagName;
             });
 
-            if (format.length === 1 &&
-              // Check that this format doesn't exist in accumulatedFormats here so
-              // that we don't have to de-dupe later, although it probably could go
-              // either way.
-              foundFormats.indexOf(tagName) === -1) {
-
-              foundFormats.push(format[0]);
+            // Check that this format doesn't exist in accumulatedFormats here so
+            // that we don't have to de-dupe later, although it probably could go
+            // either way.
+            if (format.length === 1 && found.indexOf(tagName) === -1) {
+              found.push(format[0]);
             }
 
-            recordChildFormats(childNodes[i].childNodes, supportedFormats, foundFormats);
+            _recordChildFormats(child.childNodes, supported, found);
           }
         }
 
-        return foundFormats;
-      }
-
+        return found;
+      };
       var selection = _editor.getSelection();
       var childNodes = selection.cloneContents().childNodes;
       var thisFormat;
@@ -107,29 +132,32 @@
       return foundFormats;
     };
 
-    this.execute = function(commandName) {
-
-      if (_commandDispatcher.hasOwnProperty(commandName)) {
-        _commandDispatcher[commandName]();
-      }
-    };
-
     /**
      * Private methods
      */
 
-    function _editorIsSquireInstance(editor) {
-      return editor instanceof Squire;
-    }
-
     function _elementIsBlockLevel(element) {
-
-      var nodeName = element.nodeName.toLowerCase();
-      var blockElements = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'p'];
-
-      return blockElements.indexOf(nodeName) > -1;
+      return (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'p'].
+        indexOf(element.nodeName.toLowerCase()) > -1);
     }
 
+    /**
+     * This is a utility method that changes every block-level container
+     * that contains the current selection. It is used in practice to toggle
+     * headings and the default paragraph style.
+     *
+     * The argument that .modifyBlocks() passes to the function it itself
+     * receives as an argument is a DocumentFragment with live references to
+     * the DOM; it will replace that fragment with the return value of the
+     * supplied function.
+     *
+     * For this reason, we actually clone nodes into a fresh DocumentFragment
+     * in order to avoid sticky stuff like modifying the collection over which
+     * we are currently iterating.
+     *
+     * @param {string} blockType - The nodeType to which the block-level
+     *   container should be changed.
+     */
     function _updateBlockType(blockType) {
 
       _editor.modifyBlocks(function(blockFragment) {
@@ -161,9 +189,7 @@
     }
 
     function _clearSelection() {
-
-      var range = document.createRange();
-      _editor.setSelection(range);
+      _editor.setSelection(document.createRange());
     }
 
     function _clearFormat(selection) {
@@ -176,7 +202,6 @@
     }
 
     function _toggleHeading(headingTag) {
-
       _updateBlockType(headingTag);
     }
 

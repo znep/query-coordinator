@@ -43,7 +43,7 @@ class DatasetsController < ApplicationController
     if @view.new_backend?
       destination_url = view_redirection_url
 
-      if current_user.try(:is_admin?)
+      if current_user.try(:is_admin?) || FeatureFlags.derive(@view, request).disable_obe_redirection === true
         flash[:notice] = I18n.t('screens.ds.new_ux_nbe_warning', url: "<a href=#{destination_url}>#{destination_url}</a>").html_safe
       else
         if FeatureFlags.derive(@view, request).force_redirect_to_data_lens === true

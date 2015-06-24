@@ -1,5 +1,7 @@
 ;var RichTextEditor = (function(window) {
 
+  'use strict';
+
   var _ATTRIBUTE_WHITELIST = {
     'a': ['href']
   };
@@ -9,7 +11,8 @@
    * @param {jQuery} element
    * @param {string} editorId
    * @param {AssetFinder} assetFinder
-   * @param {string} [preloadContent]
+   * @param {string} [preloadContent] - The content that should be inserted
+   *   into the newly-created editor.
    */
   function RichTextEditor(element, editorId, assetFinder, preloadContent) {
 

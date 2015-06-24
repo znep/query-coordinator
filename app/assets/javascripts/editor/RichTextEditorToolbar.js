@@ -186,7 +186,10 @@
       });
 
       // Render the button groups and the format select.
-      controls.push(_renderButtonGroup(buttonGroups[0]));
+      if (buttonGroups.length > 0) {
+        controls.push(_renderButtonGroup(buttonGroups[0]));
+      }
+
       controls.push(_renderSelect(dropdownFormats));
 
       for (var i = 1; i < buttonGroups.length; i++) {

@@ -199,24 +199,33 @@ describe('StoryRenderer class', function() {
       describe('that is editable', function() {
 
         var validAssetFinder;
+        var validFormats;
+        var validToolbarElement;
 
         beforeEach(function() {
 
-          $('body').append(
-            $('<div>', { class: 'insertion-hint hidden' })
-          );
+          $('body').append([
+            $('<div>', { class: 'insertion-hint hidden' }),
+            $('<div>', { id: 'rich-text-editor-toolbar' })
+          ]);
 
           AssetFinderMocker.mock();
           validAssetFinder = new AssetFinder();
+          validFormats = [];
+          validToolbarElement = $('#rich-text-editor-toolbar');
           SquireMocker.mock();
           options.editable = true;
-          options.richTextEditorManager = new RichTextEditorManager(validAssetFinder);
+          options.richTextEditorManager = new RichTextEditorManager(
+            validAssetFinder,
+            validFormats,
+            validToolbarElement
+          );
         });
 
         afterEach(function() {
 
           $('.insertion-hint').remove();
-
+          $('#rich-text-editor-toolbar').remove();
           SquireMocker.unmock();
           AssetFinderMocker.unmock();
         });
@@ -264,25 +273,34 @@ describe('StoryRenderer class', function() {
   describe('.showInsertionHintAtIndex()', function() {
 
     var validAssetFinder;
+    var validFormats;
+    var validToolbarElement;
 
     beforeEach(function() {
 
-      $('body').append(
-        $('<div>', { class: 'insertion-hint hidden' })
-      );
+      $('body').append([
+        $('<div>', { class: 'insertion-hint hidden' }),
+        $('<div>', { id: 'rich-text-editor-toolbar' })
+      ]);
 
       AssetFinderMocker.mock();
       validAssetFinder = new AssetFinder();
+      validFormats = [];
+      validToolbarElement = $('#rich-text-editor-toolbar');
       SquireMocker.mock();
       options.editable = true;
       options.insertionHintElement = $('.insertion-hint');
-      options.richTextEditorManager = new RichTextEditorManager(validAssetFinder);
+      options.richTextEditorManager = new RichTextEditorManager(
+        validAssetFinder,
+        validFormats,
+        validToolbarElement
+      );
     });
 
     afterEach(function() {
 
       $('.insertion-hint').remove();
-
+      $('#rich-text-editor-toolbar').remove();
       SquireMocker.unmock();
       AssetFinderMocker.unmock();
     });
@@ -302,25 +320,34 @@ describe('StoryRenderer class', function() {
   describe('.hideInsertionHint()', function() {
 
     var validAssetFinder;
+    var validFormats;
+    var validToolbarElement;
 
     beforeEach(function() {
 
-      $('body').append(
-        $('<div>', { class: 'insertion-hint hidden' })
-      );
+      $('body').append([
+        $('<div>', { class: 'insertion-hint hidden' }),
+        $('<div>', { id: 'rich-text-editor-toolbar' })
+      ]);
 
       AssetFinderMocker.mock();
       validAssetFinder = new AssetFinder();
+      validFormats = [];
+      validToolbarElement = $('#rich-text-editor-toolbar');
       SquireMocker.mock();
       options.editable = true;
       options.insertionHintElement = $('.insertion-hint');
-      options.richTextEditorManager = new RichTextEditorManager(validAssetFinder);
+      options.richTextEditorManager = new RichTextEditorManager(
+        validAssetFinder,
+        validFormats,
+        validToolbarElement
+      );
     });
 
     afterEach(function() {
 
       $('.insertion-hint').remove();
-
+      $('#rich-text-editor-toolbar');
       SquireMocker.unmock();
       AssetFinderMocker.unmock();
     });

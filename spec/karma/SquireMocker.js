@@ -7,6 +7,9 @@ var SquireMocker = {
       getDocument: function() {
         return document.createDocumentFragment();
       },
+      getHTML: function() {
+        return '';
+      },
       getSelection: function() {
         return {
           cloneContents: function() {

@@ -332,6 +332,3 @@ DEPENDENCIES
   zip
   zk (~> 1.9.2)
   zookeeper (~> 1.4.9)
-
-BUNDLED WITH
-   1.10.2

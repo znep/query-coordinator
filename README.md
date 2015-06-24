@@ -1,8 +1,20 @@
 # Socrata Frontend
 
+## Starting up
+
+The basic bootstrap command is:
+
+    JS_LOGGING=true rails s
+
+Or if you want to start a pool of workers using Unicorn:
+
+    bundle exec unicorn_rails -c config/unicorn.rb
+
+_Note: The example above that uses Unicorn is required if you want to run Polaroid locally and be able to download PNG images from Data Lens._
+
 ## Tests
 
-tl; dr: Run the Setup steps below, then
+tl;dr: Run the Setup steps below, then
 ```
 bundle exec rake test
 ```

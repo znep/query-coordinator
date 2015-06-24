@@ -21,7 +21,8 @@ $(document).on('ready', function() {
 
   var richTextEditorManager = new RichTextEditorManager(
     assetFinder,
-    richTextFormats
+    richTextFormats,
+    $('#rich-text-editor-toolbar')
   );
 
   var inspirationStory = new Story(inspirationStoryData);

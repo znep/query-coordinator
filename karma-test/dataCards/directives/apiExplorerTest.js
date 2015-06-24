@@ -25,9 +25,14 @@
       model.defineObservableProperty('domain', TEST_DOMAIN);
       var scope = $rootScope.$new();
       scope.myTestObservable = Rx.Observable.returnValue(model);
-      var element = testHelpers.TestDom.compileAndAppend(
-        '<api-explorer class="cards-metadata" dataset-observable="myTestObservable"></api-explorer>',
-        scope);
+      var apiExplorerHtml = [
+        '<api-explorer',
+          'class="cards-metadata"',
+          'dataset-observable="myTestObservable"',
+          'edit-mode="editMode">',
+        '</api-explorer>'
+      ].join(' ');
+      var element = testHelpers.TestDom.compileAndAppend(apiExplorerHtml, scope);
       $httpBackend.flush();
       $rootScope.$digest();
       return element;
@@ -229,6 +234,33 @@
 
         expect(cleanedUp).to.be.true;
       }));
+    });
+
+    describe('if editMode is true', function() {
+      var element;
+      var scope;
+
+      beforeEach(function() {
+        $httpBackend.whenGET(new RegExp('/resource/[^.]+\\.geojson\\?\\$limit=1')).
+          respond({});
+        element = addValidElement();
+        scope = element.scope();
+      });
+
+      it('should give the api-explorer button class "disabled"', function() {
+         scope.$safeApply(function() {
+           scope.editMode = true;
+         });
+         expect(element.find('button').hasClass('disabled')).to.be.true;
+      });
+
+      it('should not open the panel on click', function() {
+         scope.$safeApply(function() {
+           scope.editMode = true;
+         });
+        testHelpers.fireMouseEvent(element.find('button')[0], 'click');
+        expect(element.find('.tool-panel-inner-container:visible').length).to.equal(0);
+      });
     });
   });
 })();

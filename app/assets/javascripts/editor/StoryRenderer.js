@@ -4,8 +4,6 @@
 
   function StoryRenderer(options) {
 
-    var BLOCK_VERTICAL_PADDING = 20;
-
     var story = options.story || null;
     var container = options.storyContainerElement || null;
     var scaleFactor = options.scaleFactor || 1;
@@ -196,8 +194,11 @@
 
         // Render the current block according to the current layout height.
         translation = 'translate(0,' + layoutHeight + 'px)';
+
         blockElement.css('transform', translation);
-        layoutHeight += blockElement.outerHeight(true) + BLOCK_VERTICAL_PADDING;
+
+        layoutHeight += blockElement.outerHeight(true);
+        layoutHeight += parseInt(blockElement.css('margin-bottom'), 10);
       });
 
       if (insertionHint && insertionHintIndex === blocks.length) {
@@ -210,9 +211,12 @@
     function _layoutInsertionHint(layoutHeight) {
 
       var translation = 'translate(0,' + layoutHeight + 'px)';
-
       insertionHint.css('transform', translation).removeClass('hidden');
-      return (insertionHint.outerHeight(true) + BLOCK_VERTICAL_PADDING);
+
+      return (
+        insertionHint.outerHeight(true) +
+        parseInt(insertionHint.css('margin-bottom'), 10)
+      );
     }
 
     function _updateBlockEditControls(blockElement, blockIndex, blockCount) {

@@ -12,14 +12,6 @@
       );
     }
 
-    if (!(toolbarElement instanceof jQuery)) {
-      throw new Error(
-        '`toolbarElement` must be a jQuery object (is of type ' +
-        (typeof toolbarElement) +
-        ').'
-      );
-    }
-
     if (!(formats instanceof Array)) {
       throw new Error(
         '`formats` must be an array (is of type ' +
@@ -28,9 +20,17 @@
       );
     }
 
+    if (!(toolbarElement instanceof jQuery)) {
+      throw new Error(
+        '`toolbarElement` must be a jQuery object (is of type ' +
+        (typeof toolbarElement) +
+        ').'
+      );
+    }
+
     var _assetFinder = assetFinder;
-    var _toolbar = new RichTextEditorToolbar(toolbarElement, formats);
     var _formats = formats;
+    var _toolbar = new RichTextEditorToolbar(toolbarElement, formats);
     var _editors = {};
 
     this.createEditor = function(editorId, preloadText) {

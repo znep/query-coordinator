@@ -2,6 +2,7 @@ describe('RichTextEditor', function() {
 
   var validEditorId = '1';
   var validAssetFinder;
+  var validFormats = [];
   var validPreloadContent = 'Hello, world!';
 
   // Squire does not attach itself to the window if it detects that
@@ -30,7 +31,13 @@ describe('RichTextEditor', function() {
       it('raises an exception', function() {
 
         assert.throws(function() {
-          var editor = new RichTextEditor(null, validEditorId, validPreloadContent);
+          var editor = new RichTextEditor(
+            null,
+            validEditorId,
+            validAssetFinder,
+            validFormats,
+            validPreloadContent
+          );
         });
       });
     });
@@ -39,10 +46,15 @@ describe('RichTextEditor', function() {
 
       it('raises an exception', function() {
 
-        var jqueryObject = $('.text-editor');
-
+        var jqueryObject = $('.does-not-match-any-elements');
         assert.throws(function() {
-          var editor = new RichTextEditor(jqueryObject, validEditorId, validPreloadContent);
+          var editor = new RichTextEditor(
+            jqueryObject,
+            validEditorId,
+            validAssetFinder,
+            validFormats,
+            validPreloadContent
+          );
         });
       });
     });
@@ -65,7 +77,13 @@ describe('RichTextEditor', function() {
         var jqueryObject = $('.text-editor');
 
         assert.throws(function() {
-          var editor = new RichTextEditor(jqueryObject, validEditorId, validPreloadContent);
+          var editor = new RichTextEditor(
+            jqueryObject,
+            validEditorId,
+            validAssetFinder,
+            validFormats,
+            validPreloadContent
+          );
         });
       });
     });
@@ -78,7 +96,13 @@ describe('RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
           assert.throws(function() {
-            var editor = new RichTextEditor(jqueryObject, false, validAssetFinder, validPreloadContent);
+            var editor = new RichTextEditor(
+              jqueryObject,
+              false,
+              validAssetFinder,
+              validFormats,
+              validPreloadContent
+            );
           });
         });
       });
@@ -88,7 +112,13 @@ describe('RichTextEditor', function() {
         it('creates a new RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
-          var editor = new RichTextEditor(jqueryObject, 12, validAssetFinder, validPreloadContent);
+          var editor = new RichTextEditor(
+            jqueryObject,
+            12,
+            validAssetFinder,
+            validFormats,
+            validPreloadContent
+          );
 
           assert.instanceOf(editor, RichTextEditor, 'editor is an instance of RichTextEditor');
         });
@@ -99,7 +129,13 @@ describe('RichTextEditor', function() {
         it('creates a new RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
-          var editor = new RichTextEditor(jqueryObject, '12', validAssetFinder, validPreloadContent);
+          var editor = new RichTextEditor(
+            jqueryObject,
+            '12',
+            validAssetFinder,
+            validFormats,
+            validPreloadContent
+          );
 
           assert.instanceOf(editor, RichTextEditor, 'editor is an instance of RichTextEditor');
         });
@@ -111,7 +147,13 @@ describe('RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
           assert.throws(function() {
-            var editor = new RichTextEditor(jqueryObject, '12', null, validPreloadContent);
+            var editor = new RichTextEditor(
+              jqueryObject,
+              '12',
+              null,
+              validFormats,
+              validPreloadContent
+            );
           });
         });
       });
@@ -121,7 +163,47 @@ describe('RichTextEditor', function() {
         it('creates a new RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
-          var editor = new RichTextEditor(jqueryObject, '12', validAssetFinder, validPreloadContent);
+          var editor = new RichTextEditor(
+            jqueryObject,
+            '12',
+            validAssetFinder,
+            validFormats,
+            validPreloadContent
+          );
+
+          assert.instanceOf(editor, RichTextEditor, 'editor is an instance of RichTextEditor');
+        });
+      });
+
+      describe('and a formats that is not an instance of Array', function() {
+
+        it('raises an exception', function() {
+
+          var jqueryObject = $('.text-editor');
+          assert.throws(function() {
+            var editor = new RichTextEditor(
+              jqueryObject,
+              '12',
+              validAssetFinder,
+              false,
+              validPreloadContent
+            );
+          });
+        });
+      });
+
+      describe('and a formats that is an instance of Array', function() {
+
+        it('creates a new RichTextEditor', function() {
+
+          var jqueryObject = $('.text-editor');
+          var editor = new RichTextEditor(
+            jqueryObject,
+            '12',
+            validAssetFinder,
+            validFormats,
+            validPreloadContent
+          );
 
           assert.instanceOf(editor, RichTextEditor, 'editor is an instance of RichTextEditor');
         });
@@ -132,7 +214,12 @@ describe('RichTextEditor', function() {
         it('creates a new RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
-          var editor = new RichTextEditor(jqueryObject, validEditorId, validAssetFinder);
+          var editor = new RichTextEditor(
+            jqueryObject,
+            validEditorId,
+            validAssetFinder,
+            validFormats
+          );
 
           assert.instanceOf(editor, RichTextEditor, 'editor is an instance of RichTextEditor');
         });
@@ -144,7 +231,13 @@ describe('RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
           assert.throws(function() {
-            var editor = new RichTextEditor(jqueryObject, validEditorId, validAssetFinder, 12);
+            var editor = new RichTextEditor(
+              jqueryObject,
+              validEditorId,
+              validAssetFinder,
+              validFormats,
+              12
+            );
           });
         });
       });
@@ -154,7 +247,13 @@ describe('RichTextEditor', function() {
         it('creates a new RichTextEditor', function() {
 
           var jqueryObject = $('.text-editor');
-          var editor = new RichTextEditor(jqueryObject, validEditorId, validAssetFinder, 'Hello, world!');
+          var editor = new RichTextEditor(
+            jqueryObject,
+            validEditorId,
+            validAssetFinder,
+            validFormats,
+            'Hello, world!'
+          );
 
           assert.instanceOf(editor, RichTextEditor, 'editor is an instance of RichTextEditor');
         });
@@ -167,7 +266,13 @@ describe('RichTextEditor', function() {
     it('removes the editor element from the container', function() {
 
       var jqueryObject = $('.text-editor');
-      var editor = new RichTextEditor(jqueryObject, validEditorId, validAssetFinder, 'Hello, world!');
+      var editor = new RichTextEditor(
+        jqueryObject,
+        validEditorId,
+        validAssetFinder,
+        validFormats,
+        'Hello, world!'
+      );
 
       assert.instanceOf(editor, RichTextEditor, 'editor is an instance of RichTextEditor');
       assert.isTrue($('iframe').length > 0, 'an iframe exists');

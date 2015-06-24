@@ -118,6 +118,9 @@ dataset_count_v2:
 force_redirect_to_data_lens:
   description: Automatically redirect to the default Data Lens page for a given NBE dataset.
   defaultValue: false
+disable_obe_redirection:
+  description: When clicking on an NBE dataset, you are no longer redirected to the OBE dataset.
+  defaultValue: false
 enable_export_service:
   description: Use the new Export Service on this domain.
   defaultValue: false

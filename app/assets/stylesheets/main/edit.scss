@@ -109,7 +109,7 @@ body {
 
     position: absolute;
     display: inline-block;
-    margin: 0 29%;
+    margin: 0 29% 0.5rem 29%;
     width: 42%;
     height: 0.5rem;
     top: $header-total-height + $user-story-container-vertical-padding;
@@ -149,6 +149,7 @@ body {
 }
 
 .block-edit {
+  margin-bottom: 0.5rem;
   background-color: transparent;
 
   .block-edit-controls {

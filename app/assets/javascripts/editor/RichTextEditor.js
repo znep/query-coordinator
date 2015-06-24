@@ -4,9 +4,16 @@
     'a': ['href']
   };
 
+  /**
+   * @constructor
+   * @param {jQuery} element
+   * @param {string} editorId
+   * @param {AssetFinder} assetFinder
+   * @param {string} [preloadContent]
+   */
   function RichTextEditor(element, editorId, assetFinder, preloadContent) {
 
-    if (!_elementIsJQueryObject(element)) {
+    if (!(element instanceof jQuery)) {
       throw new Error(
         '`element` argument must be a jQuery object.'
       );
@@ -71,6 +78,11 @@
       return _lastContentHeight;
     };
 
+    /**
+     * This method assumes that jQuery's .remove() function will correctly
+     * remove any event listeners attached to _editorElement or any of its
+     * children.
+     */
     this.destroy = function() {
       _editorElement.remove();
     };
@@ -78,10 +90,6 @@
     /**
      * Private methods
      */
-
-    function _elementIsJQueryObject(el) {
-      return el instanceof jQuery;
-    }
 
     function _createEditor() {
 
@@ -92,48 +100,15 @@
 
         _overrideDefaultStyles(e.target.contentWindow.document);
         _editor = new Squire(e.target.contentWindow.document);
-
         _formatController = new RichTextEditorFormatController(_editor);
 
-        _editor.addEventListener(
-          'input',
-          _monitorContentHeight
-        );
-
-        _editor.addEventListener(
-          'input',
-          _broadcastContentChange
-        );
-
-        _editor.addEventListener(
-          'focus',
-          _broadcastFocus
-        );
-
-        _editor.addEventListener(
-          'focus',
-          _broadcastFormatChange
-        );
-
-        _editor.addEventListener(
-          'blur',
-          _broadcastBlur
-        );
-
-        _editor.addEventListener(
-          'select',
-          _broadcastFormatChange
-        );
-
-        _editor.addEventListener(
-          'pathChange',
-          _broadcastFormatChange
-        );
-
-        _editor.addEventListener(
-          'willPaste',
-          _sanitizeClipboardInput
-        );
+        _editor.addEventListener('input', _handleInput);
+        _editor.addEventListener('focus', _broadcastFocus);
+        _editor.addEventListener('focus', _broadcastFormatChange);
+        _editor.addEventListener('blur', _broadcastBlur);
+        _editor.addEventListener('select', _broadcastFormatChange);
+        _editor.addEventListener('pathChange', _broadcastFormatChange);
+        _editor.addEventListener('willPaste', _sanitizeClipboardInput);
 
         // Pre-load existing content (e.g. if we are editing an
         // existing resource).
@@ -143,132 +118,167 @@
         }
 
         _setupMouseMoveEventBroadcast();
-        _monitorContentHeight();
+        _handleInput();
       });
 
       _containerElement.append(_editorElement);
     }
 
+    /**
+     * Since we will want to override the default browser styles but we are
+     * programmatically creating the iframe, we dynamically insert a link tag
+     * that points to our override stylesheet once the iframe element has been
+     * instantiated.
+     *
+     * Because we need to access the iframe's `contentWindow.document.head` in
+     * order to append a node to the internal document's head, however, we must
+     * wait until the iframe's intenral document has actually loaded.
+     */
     function _overrideDefaultStyles(document) {
+
+      // Prevent flash of unstyled text by setting opacity to zero
+      // and then overriding it in the stylesheet.
+      $(document.body).css('opacity', 0);
+
       var styleEl = document.createElement('link');
       styleEl.setAttribute('rel', 'stylesheet');
       styleEl.setAttribute('type', 'text/css');
       styleEl.setAttribute('href', _assetFinder.getStyleAssetPath('iframe'));
+      styleEl.onload = function(){ _handleInput(); }
+
       document.head.appendChild(styleEl);
     }
 
-    function _monitorContentHeight() {
+    /**
+     * This function is called whenever the content of the editor changes.
+     * We need to respond to content changes for two reasons:
+     *
+     * 1. To adjust the height of the editor element, which is accomplished
+     *    by calculating the height of the iframe's internal body and then
+     *    alerting the containing scope of the need to re-render (which will
+     *    query each text editor for its current height in order to keep the
+     *    container elements' heights consistent with the heights of the
+     *    editors' content heights).
+     * 2. Alert the data layer that the component content associated with this
+     *    editor has changed and that it should respond accordingly.
+     *
+     * In a future refactor, these two purposes might be unified by causing
+     * changes to the model to directly trigger a re-render.
+     */
+    function _handleInput() {
 
       var bodyElement = $(_editor.getDocument()).find('body');
-      var contentHeight = 0;
+      // These calculations have a tendency to be extremely inconsistent
+      // if the internal elements and/or the body have both a top and bottom
+      // margin or padding. By adding a margin-bottom to block-level elements
+      // and a padding-top to the body itself the browser's layout seems to
+      // become a lot more consistent, which translates directly into the
+      // height the iframe's content being consistently calculated correctly.
+      //
+      // I have no idea why having both a top and bottom modifier on the layout
+      // of block elements causes things to get so fiddly.
+      var contentHeight = parseInt(bodyElement.css('padding-top'), 10);
 
+      // We need to recalculate the height of each individual element rather
+      // than just checking the outerHeight of the body because the body
+      // height has a tendency of getting out of sync with the visible height
+      // of its child elements when you, e.g., add a new line and then delete
+      // it. Weird, I know.
       bodyElement.
         children().
         each(function() {
           contentHeight += $(this).outerHeight(true);
         });
 
-      contentHeight += parseInt(bodyElement.css('margin-top'), 10);
-      contentHeight += parseInt(bodyElement.css('margin-bottom'), 10);
-      contentHeight += parseInt(bodyElement.css('padding-top'), 10);
-      contentHeight += parseInt(bodyElement.css('padding-bottom'), 10);
+      // Sub-pixel heights and other iframe weirdness can sometimes cause
+      // the scrollbar to appear with a tiny distance to scroll.
+      // Adding one to the computed content height seems to solve this and
+      // is more or less imperceptible.
+      contentHeight += 1;
 
       if (contentHeight !== _lastContentHeight) {
         _lastContentHeight = contentHeight;
-        _broadcastHeightChange(contentHeight);
+        _broadcastHeightChange();
       }
+      _broadcastContentChange();
     }
 
-    function _broadcastHeightChange(contentHeight) {
+    function _emitEvent(name, payload) {
 
-      var event = new CustomEvent(
-        'rich-text-editor::height-change',
-        {
-          detail: {
-            id: editorId
-          },
-          bubbles: true
+      var detailObj = {
+        id: editorId
+      };
+
+      if (typeof payload === 'object') {
+        for (var prop in payload) {
+          if (prop !== 'id' && payload.hasOwnProperty(prop)) {
+            detailObj[prop] = payload[prop];
+          }
         }
-      );
+      }
 
-      _editorElement[0].dispatchEvent(event);
+      _editorElement[0].dispatchEvent(
+        new CustomEvent(
+          name,
+          { detail: detailObj, bubbles: true }
+        )
+      );
     }
 
-    function _broadcastFormatChange(e) {
-
-      var event = new CustomEvent(
-        'rich-text-editor::format-change',
-        {
-          detail: {
-            id: editorId,
-            content: _formatController.getActiveFormats()
-          },
-          bubbles: true
-        }
-      );
-
-      _editorElement[0].dispatchEvent(event);
-    }
-
-    function _broadcastFocus(e) {
-
-      var event = new CustomEvent(
-        'rich-text-editor::focus-change',
-        {
-          detail: {
-            id: editorId,
-            content: true
-          },
-          bubbles: true
-        }
-      );
-
-      _editorElement[0].dispatchEvent(event);
-    }
-
-    function _broadcastBlur(e) {
-
-      var event = new CustomEvent(
-        'rich-text-editor::focus-change',
-        {
-          detail: {
-            id: editorId,
-            content: false
-          },
-          bubbles: true
-        }
-      );
-
-      _editorElement[0].dispatchEvent(event);
+    function _broadcastHeightChange() {
+      _emitEvent('rich-text-editor::height-change');
     }
 
     function _broadcastContentChange(e) {
-
-      var event = new CustomEvent(
+      _emitEvent(
         'rich-text-editor::content-change',
-        {
-          detail: {
-            id: editorId,
-            content: _editor.getHTML()
-          },
-          bubbles: true
-        }
+        { content: _editor.getHTML() }
       );
-
-      _editorElement[0].dispatchEvent(event);
     }
 
+    function _broadcastFormatChange(e) {
+      _emitEvent(
+        'rich-text-editor::format-change',
+        { content: _formatController.getActiveFormats() }
+      );
+    }
+
+    function _broadcastFocus(e) {
+      _emitEvent('rich-text-editor::focus-change', { content: true });
+    }
+
+    function _broadcastBlur(e) {
+      _emitEvent('rich-text-editor::focus-change', { content: false });
+    }
+
+    /**
+     * Handles the 'willPaste' event emitted by Squire.
+     *
+     * The event object will include a `fragment` property which is a
+     * document-fragment.
+     *
+     * This function recursively descends the document-fragment and performs
+     * a whitelisting filter operation on the fragment's child nodes.
+     * This filter operation will replace non-header block elements with divs
+     * and collapse nested container elements into single divs. This is often
+     * necessary because the whitelist strips most element attributes and the
+     * semantic value of multiple nested divs with different classes, for
+     * example, is lost in the process.
+     *
+     * @param {Event} e
+     *   @prop {DocumentFragment} fragment
+     * @return {DocumentFragment}
+     */
     function _sanitizeClipboardInput(e) {
 
-      function _addWhitelistedAttributes(dirtyEl, cleanEl) {
+      var _addWhitelistedAttributes = function(dirtyEl, cleanEl) {
 
-        function _attributeIsAllowedForElement(nodeName, attributeName, attributeWhitelist) {
+        var _isAttributeAllowed = function(nodeName, attrName, whitelist) {
           return (
-            attributeWhitelist.hasOwnProperty(nodeName) &&
-            attributeWhitelist[nodeName].indexOf(attributeName) > -1
+            whitelist.hasOwnProperty(nodeName) &&
+            whitelist[nodeName].indexOf(attrName) > -1
           );
-        }
-
+        };
         var attributes = dirtyEl.attributes;
         var attributeCount = attributes.length;
 
@@ -276,7 +286,7 @@
 
           var attribute = attributes[i];
 
-          var attributeIsAllowed = _attributeIsAllowedForElement(
+          var attributeIsAllowed = _isAttributeAllowed(
             dirtyEl.nodeName.toLowerCase(),
             attribute.name.toLowerCase(),
             _ATTRIBUTE_WHITELIST
@@ -286,15 +296,13 @@
             cleanEl.setAttribute(attribute.name, attribute.value);
           }
         }
-      }
+      };
 
       function _sanitizeElement(el, attributeWhitelist) {
 
-        function _isSupportedHeaderElement(nodeName) {
-          var supportedHeaderElements = ['h1', 'h2', 'h3', 'h4'];
-          return supportedHeaderElements.indexOf(nodeName) > -1;
-        }
-
+        var _isHeaderElement = function(nodeName) {
+          return ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].indexOf(nodeName) > -1;
+        };
         var nodeName = el.nodeName.toLowerCase();
         var cleanEl = null;
         var childNodes;
@@ -302,31 +310,23 @@
 
         if (el.nodeType === 1) {
 
-          // We want to collapse divs and spans into more meaningful
-          // nodes so we ignore them and let their children accumulate
-          // on the span's parent element.
-          if (nodeName === 'div' || nodeName === 'span') {
-            cleanEl = document.createDocumentFragment();
-          } else if (_isSupportedHeaderElement(nodeName)) {
+          if (_isHeaderElement(nodeName)) {
             cleanEl = document.createElement(nodeName);
+          } else if (nodeName === 'div' || nodeName === 'span' || nodeName === 'br') {
+            // We want to collapse divs and spans into more meaningful
+            // nodes so we ignore them and let their children accumulate
+            // on the span's parent element.
+            cleanEl = document.createDocumentFragment();
+          } else if (nodeName === 'p') {
+            cleanEl = document.createElement('div');
           } else {
-
-            if (nodeName === 'p') {
-              cleanEl = document.createElement('div');
-            } else if (nodeName === 'br') {
-              cleanEl = document.createDocumentFragment();
-            } else {
-              cleanEl = document.createElement(nodeName);
-            }
+            cleanEl = document.createElement(nodeName);
           }
 
           _addWhitelistedAttributes(el, cleanEl, attributeWhitelist);
-
         } else if (el.nodeType === 3) {
-
           cleanEl = document.createTextNode(el.textContent);
         } else if (el.nodeType === 11) {
-
           cleanEl = document.createDocumentFragment();
         }
 

@@ -163,6 +163,19 @@
       "sortable": true
     },
     {
+      "name": "Very Good Odds",
+      "fieldName": "very_good_odds",
+      "physicalDatatype": "number",
+      "fred": "amount",
+      "importance": 3,
+      "sortable": true,
+      "dataTypeName": "percent",
+      "renderTypeName": "percent",
+      "format": {
+        "noCommas": true
+      }
+    },
+    {
       "name": "Likelihood of Being an Accident",
       "fieldName": "accident_likelihood",
       "physicalDatatype": "number",

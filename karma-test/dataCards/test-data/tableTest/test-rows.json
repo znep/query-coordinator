@@ -20,6 +20,7 @@
     "ward": "24",
     "x_coordinate": "1152609",
     "y_coordinate": "1891295",
+    "very_good_odds": "100000",
     "accident_likelihood": "1.1",
     "year": "2013.00000",
     "point": {
@@ -52,6 +53,7 @@
     "ward": "24",
     "x_coordinate": "1146414",
     "y_coordinate": "1895983",
+    "very_good_odds": "100000.001",
     "accident_likelihood": "0.25",
     "year": "2013",
     "point": {
@@ -84,6 +86,7 @@
     "ward": "29",
     "x_coordinate": "1136462",
     "y_coordinate": "1902583",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.33",
     "year": "2013",
     "point": {
@@ -116,6 +119,7 @@
     "ward": "3",
     "x_coordinate": "1178397",
     "y_coordinate": "1875092",
+    "very_good_odds": "100000",
     "accident_likelihood": "2.25",
     "year": "2013",
     "point": {
@@ -147,6 +151,7 @@
     "ward": "25",
     "x_coordinate": "1168002",
     "y_coordinate": "1889586",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2013",
     "point": {
@@ -179,6 +184,7 @@
     "ward": "6",
     "x_coordinate": "1176554",
     "y_coordinate": "1857632",
+    "very_good_odds": "45.0",
     "accident_likelihood": "0.25",
     "year": "2013",
     "point": {
@@ -211,6 +217,7 @@
     "ward": "34",
     "x_coordinate": "1176222",
     "y_coordinate": "1829295",
+    "very_good_odds": "100",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -242,6 +249,7 @@
     "ward": "4",
     "x_coordinate": "1180447",
     "y_coordinate": "1879619",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.00025",
     "year": "2014",
     "point": {
@@ -274,6 +282,7 @@
     "ward": "15",
     "x_coordinate": "1157643",
     "y_coordinate": "1862679",
+    "very_good_odds": "0",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -306,6 +315,7 @@
     "ward": "15",
     "x_coordinate": "1160768",
     "y_coordinate": "1862074",
+    "very_good_odds": "-100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -338,6 +348,7 @@
     "ward": "20",
     "x_coordinate": "1181344",
     "y_coordinate": "1863894",
+    "very_good_odds": "-1",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -370,6 +381,7 @@
     "ward": "24",
     "x_coordinate": "1150406",
     "y_coordinate": "1897368",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.05",
     "year": "2014",
     "point": {
@@ -402,6 +414,7 @@
     "ward": "22",
     "x_coordinate": "1154845",
     "y_coordinate": "1888565",
+    "very_good_odds": "-100",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -434,6 +447,7 @@
     "ward": "6",
     "x_coordinate": "1172139",
     "y_coordinate": "1858377",
+    "very_good_odds": "1000",
     "accident_likelihood": "-0.25",
     "year": "2014",
     "point": {
@@ -466,6 +480,7 @@
     "ward": "37",
     "x_coordinate": "1143221",
     "y_coordinate": "1904227",
+    "very_good_odds": "-1000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -498,7 +513,8 @@
     "ward": "21",
     "x_coordinate": "1175762",
     "y_coordinate": "1850229",
-    "accident_likelihood": "0.25",
+    "very_good_odds": "0.000001",
+    "accident_likelihood": "1000001.25",
     "year": "2014",
     "point": {
       "type": "Point",
@@ -530,6 +546,7 @@
     "ward": "15",
     "x_coordinate": "1160810",
     "y_coordinate": "1863404",
+    "very_good_odds": "99999.99",
     "accident_likelihood": "-3.5",
     "year": "2014",
     "point": {
@@ -562,7 +579,8 @@
     "ward": "10",
     "x_coordinate": "1197774",
     "y_coordinate": "1844878",
-    "accident_likelihood": "0.25",
+    "very_good_odds": "100000",
+    "accident_likelihood": "0.00025",
     "year": "2014",
     "point": {
       "type": "Point",
@@ -594,7 +612,8 @@
     "ward": "10",
     "x_coordinate": "1197774",
     "y_coordinate": "1844878",
-    "accident_likelihood": "",
+    "very_good_odds": "100000",
+    "accident_likelihood": "0.045",
     "year": "2014",
     "point": {
       "type": "Point",
@@ -626,6 +645,7 @@
     "ward": "45",
     "x_coordinate": "1142128",
     "y_coordinate": "1928177",
+    "very_good_odds": "100000",
     "accident_likelihood": "0",
     "year": "2014",
     "point": {
@@ -658,6 +678,7 @@
     "ward": "17",
     "x_coordinate": "1169479",
     "y_coordinate": "1858783",
+    "very_good_odds": "100000",
     "accident_likelihood": "3",
     "year": "2014",
     "point": {
@@ -690,6 +711,7 @@
     "ward": "17",
     "x_coordinate": "1161915",
     "y_coordinate": "1857794",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -722,6 +744,7 @@
     "ward": "22",
     "x_coordinate": "1151090",
     "y_coordinate": "1886487",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -754,6 +777,7 @@
     "ward": "3",
     "x_coordinate": "1172543",
     "y_coordinate": "1870994",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -786,6 +810,7 @@
     "ward": "22",
     "x_coordinate": "1149222",
     "y_coordinate": "1884428",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -818,6 +843,7 @@
     "ward": "6",
     "x_coordinate": "1182500",
     "y_coordinate": "1852826",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -850,6 +876,7 @@
     "ward": "25",
     "x_coordinate": "1164635",
     "y_coordinate": "1890743",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -882,6 +909,7 @@
     "ward": "17",
     "x_coordinate": "1173624",
     "y_coordinate": "1854210",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -914,6 +942,7 @@
     "ward": "35",
     "x_coordinate": "1154132",
     "y_coordinate": "1913140",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -946,6 +975,7 @@
     "ward": "49",
     "x_coordinate": "1163713",
     "y_coordinate": "1944998",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -978,6 +1008,7 @@
     "ward": "21",
     "x_coordinate": "1166802",
     "y_coordinate": "1850602",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1010,6 +1041,7 @@
     "ward": "12",
     "x_coordinate": "1160279",
     "y_coordinate": "1874793",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1042,6 +1074,7 @@
     "ward": "28",
     "x_coordinate": "1146072",
     "y_coordinate": "1899237",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1074,6 +1107,7 @@
     "ward": "2",
     "x_coordinate": "1167766",
     "y_coordinate": "1893814",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1106,6 +1140,7 @@
     "ward": "20",
     "x_coordinate": "1180348",
     "y_coordinate": "1864290",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1138,6 +1173,7 @@
     "ward": "29",
     "x_coordinate": "1138946",
     "y_coordinate": "1901626",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1170,6 +1206,7 @@
     "ward": "16",
     "x_coordinate": "1171309",
     "y_coordinate": "1863726",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1202,6 +1239,7 @@
     "ward": "5",
     "x_coordinate": "1188507",
     "y_coordinate": "1859406",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1234,6 +1272,7 @@
     "ward": "29",
     "x_coordinate": "1136798",
     "y_coordinate": "1899317",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1266,6 +1305,7 @@
     "ward": "3",
     "x_coordinate": "1174939",
     "y_coordinate": "1880140",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1298,6 +1338,7 @@
     "ward": "28",
     "x_coordinate": "1141377",
     "y_coordinate": "1901135",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1330,6 +1371,7 @@
     "ward": "7",
     "x_coordinate": "1198399",
     "y_coordinate": "1849647",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1362,6 +1404,7 @@
     "ward": "27",
     "x_coordinate": "1153558",
     "y_coordinate": "1904060",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1394,6 +1437,7 @@
     "ward": "24",
     "x_coordinate": "1150571",
     "y_coordinate": "1895549",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1426,6 +1470,7 @@
     "ward": "16",
     "x_coordinate": "1167221",
     "y_coordinate": "1868658",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1458,6 +1503,7 @@
     "ward": "21",
     "x_coordinate": "1171335",
     "y_coordinate": "1851463",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1490,6 +1536,7 @@
     "ward": "20",
     "x_coordinate": "1165410",
     "y_coordinate": "1874236",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1507,7 +1554,7 @@
     "case_number": "HX168795",
     "community_area": "63",
     "date": "2014-03-01T14:22:00.000",
-    "gtime": "2014-03-01T15:22:00.000",
+    "time": "2014-03-01T15:22:00.000",
     "description": "FIRST DEGREE MURDER",
     "district": "008",
     "fbi_code": "01A",
@@ -1522,6 +1569,7 @@
     "ward": "16",
     "x_coordinate": "1162053",
     "y_coordinate": "1866784",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1554,6 +1602,7 @@
     "ward": "9",
     "x_coordinate": "1178720",
     "y_coordinate": "1836075",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {
@@ -1586,6 +1635,7 @@
     "ward": "34",
     "x_coordinate": "1175495",
     "y_coordinate": "1827365",
+    "very_good_odds": "100000",
     "accident_likelihood": "0.25",
     "year": "2014",
     "point": {

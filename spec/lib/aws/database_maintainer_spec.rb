@@ -5,6 +5,7 @@ RSpec.describe Aws::DatabaseMaintainer do
   let(:region) { 'us-west-2' }
   let(:marathon_config_url) { "http://marathon.aws-us-west-2-#{environment}.socrata.net/v2/apps/#{environment}/storyteller" }
   let(:rake_application) { spy('rake_application') }
+  let(:decima_client) { double('decima_client') }
 
   let(:subject) { Aws::DatabaseMaintainer.new(environment: environment, region: region) }
 
@@ -12,9 +13,10 @@ RSpec.describe Aws::DatabaseMaintainer do
     stub_request(:get, marathon_config_url).
       to_return(status: 200, body: fixture('marathon-storyteller.json'), headers: {'Content-Type' => 'application/json; charset=utf-8'})
 
-    stub_request(:get, 'http://decima.app.marathon.aws-us-west-2-infrastructure.socrata.net/deploy').
-      with(query: { environment: environment, service: 'storyteller' }).
-      to_return(status: 200, body: fixture('decima-storyteller.json'), headers: {'Content-Type' => 'application/json; charset=utf-8'})
+    allow(Decima::Client).to receive(:new).and_return(decima_client)
+    allow(decima_client).to receive(:get_deploys).
+      with(environments: [environment], services: ['storyteller']).
+      and_return([instance_double('Decima::Deploy', service_sha: 'f89a7929')])
 
     allow_any_instance_of(Aws::DatabaseMaintainer).to receive(:decrypted_db_password).and_return('database_password')
     allow_any_instance_of(Aws::DatabaseMaintainer).to receive(:local_repository_sha).and_return('f89a7929abcdef234875ed')
@@ -75,6 +77,20 @@ RSpec.describe Aws::DatabaseMaintainer do
         expect {
           Aws::DatabaseMaintainer.new(environment: environment, region: region)
         }.to raise_error('Code mismatch. Try `git pull && git checkout f89a7929` and run again.')
+      end
+    end
+
+    context 'when no deployed version' do
+      before do
+        allow(decima_client).to receive(:get_deploys).
+          with(environments: [environment], services: ['storyteller']).
+          and_return([])
+      end
+
+      it 'fails on initialization' do
+        expect {
+          Aws::DatabaseMaintainer.new(environment: environment, region: region)
+        }.to raise_error('Not deployed in the current environment.')
       end
     end
 

@@ -69,4 +69,6 @@ group :development do
 
   # We use aws-sdk in the migration script for AWS
   gem 'aws-sdk'
+
+  gem 'decima-ruby', '0.1.0', path: 'vendor/gems/decima-ruby-0.1.0'
 end

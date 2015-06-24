@@ -1,344 +1,339 @@
-function RichTextEditorToolbar(element, formats) {
+;var RichTextEditorToolbar = (function() {
 
-  function elementIsJQueryObject(el) {
-    return el instanceof jQuery;
-  }
+  'use strict';
 
-  function elementIsDomNode(el) {
-    // nodeType 1 is an ELEMENT_NODE.
-    return el.hasOwnProperty('nodeType') && el.nodeType === 1;
-  }
+  /**
+   * @constructor
+   * @param {jQuery} element
+   * @param {object[]} formats
+   */
+  function RichTextEditorToolbar(element, formats) {
 
-  var DEFAULT_FORMATS = [
-    { id: 'heading1', tag: 'h2', name: 'Heading 1', dropdown: true },
-    { id: 'heading2', tag: 'h3', name: 'Heading 2', dropdown: true },
-    { id: 'heading3', tag: 'h4', name: 'Heading 3', dropdown: true },
-    { id: 'heading4', tag: 'h5', name: 'Heading 4', dropdown: true },
-    { id: 'text', tag: null, name: 'Paragraph', dropdown: true },
-    { id: 'bold', tag: 'b', name: 'Bold', dropdown: false, group: 0 },
-    { id: 'italic', tag: 'i', name: 'Italic', dropdown: false, group: 0 },
-    { id: 'left', tag: 'p', name: 'Align Left', dropdown: false, group: 1 },
-    { id: 'center', tag: 'p', name: 'Align Center', dropdown: false, group: 1 },
-    { id: 'right', tag: 'p', name: 'Align Right', dropdown: false, group: 1 },
-    { id: 'orderedList', tag: 'ol', name: 'Ordered List', dropdown: false, group: 2 },
-    { id: 'unorderedList', tag: 'ul', name: 'Unordered List', dropdown: false, group: 2 },
-    { id: 'blockquote', tag: 'blockquote', name: 'Block Quote', dropdown: false, group: 2 },
-    { id: 'link', tag: 'a', name: 'Link', dropdown: false, group: 3 }
-  ];
-  var containerElement;
-
-  if (!elementIsJQueryObject(element) && !elementIsDomNode(element)) {
-    throw new Error(
-      '`element` argument must be a jQuery object or a DOM element.'
-    );
-  }
-
-  containerElement = $(element);
-
-  if (containerElement.length === 0) {
-    throw new Error(
-      '`element` did not match any DOM nodes: $(element) is of length 0.'
-    );
-  }
-
-  containerElement.addClass('dim');
-
-  if (typeof formats === 'object') {
-    this.formats = formats;
-  } else {
-    this.formats = DEFAULT_FORMATS;
-  }
-
-  this.element = containerElement;
-  this.showLinkPanel = false;
-  this.linkPanelElement = null;
-  this.toolbarLinkButton = null;
-
-  this.formatController = null;
-
-  this.createToolbar();
-  this.createLinkPanel();
-}
-
-RichTextEditorToolbar.prototype.createToolbar = function() {
-
-  function renderSelect(selectFormats) {
-    var html;
-
-    // First add the format select dropdown.
-    html = [
-      '<div class="toolbar-select-group">',
-        '<div class="toolbar-select-container">',
-          '<select class="toolbar-select inactive" ',
-            'data-editor-action="change-format">'
-    ].
-    join('');
-
-    for (var i = 0; i < selectFormats.length; i++) {
-      html += '<option value="{0}"{1}>{2}</option>'.
-        format(
-          selectFormats[i].id,
-          (selectFormats[i].tag === null) ? ' selected="selected"' : '',
-          selectFormats[i].name
-        );
-    }
-    html += [
-          '</select>',
-          '<div class="toolbar-select-hint"></div>',
-        '</div>',
-      '</div>'
-    ].join('');
-
-    return html;
-  }
-
-  function renderButtonGroup(group) {
-    var html;
-
-    html = '<div class="toolbar-btn-group">';
-
-    for (var i = 0; i < group.length; i++) {
-      html += [
-        '<button class="toolbar-btn toolbar-btn-{0} unselectable inactive" ',
-          'data-editor-action="toggle-format" ',
-          'data-editor-command="{0}" ',
-          'data-label="{1}">',
-        '</button>'
-      ].
-      join('').
-      format(
-        group[i].id,
-        group[i].name
+    if (!(element instanceof jQuery)) {
+      throw new Error(
+        '`element` must be a jQuery object (is of type ' +
+        (typeof element) +
+        ').'
       );
     }
 
-    html += '</div>';
-
-    return html;
-  }
-
-  var dropdownFormats = this.formats.
-    filter(function(format) {
-      return format.dropdown === true;
-    });
-  var buttonFormats = this.formats.
-    filter(function(format) {
-      return format.dropdown === false;
-    });
-  var buttonGroups = [];
-  var html;
-
-  // Split buttons into button groups.
-  buttonFormats.forEach(function(format) {
-    if (format.group >= buttonGroups.length) {
-      buttonGroups.push([]);
+    if (element.length === 0) {
+      throw new Error(
+        '`element` did not match any DOM nodes.'
+      );
     }
 
-    buttonGroups[format.group].push(format);
-  });
+    if (element.length > 1) {
+      throw new Error(
+        '`element` matches more than one DOM node.'
+      );
+    }
 
-  // Render the button groups and the format select.
-  html = renderButtonGroup(buttonGroups[0]);
-  this.element.append($(html));
+    if (!(formats instanceof Array)) {
+      throw new Error(
+        '`formats` must be an array (is of type ' +
+        (typeof formats) +
+        ').'
+      );
+    }
 
-  html = renderSelect(dropdownFormats);
-  this.element.append($(html));
+    var _element = element;
+    var _formats = formats;
+    var _showLinkPanel = false;
+    var _linkPanelElement = null;
+    var _toolbarLinkButton = null;
+    var _formatController = null;
 
-  for (var i = 1; i < buttonGroups.length; i++) {
-    html = renderButtonGroup(buttonGroups[i]);
-    this.element.append($(html));
-  }
+    _createToolbar();
+    _createLinkPanel();
 
-  // Finally, set up events and add the toolbar to the container.
-  this.element.on(
-    'change',
-    '[data-editor-action="change-format"]',
-    this.handleToolbarSelectChange.bind(this)
-  );
+    /**
+     * Public methods
+     */
 
-  this.element.on(
-    'click',
-    '[data-editor-action="toggle-format"]',
-    this.handleToolbarButtonClick.bind(this)
-  );
+    this.link = function(editorFormatController) {
 
-  this.toolbarLinkButton = this.element.find('.toolbar-btn-link');
-}
+      _formatController = editorFormatController;
 
-RichTextEditorToolbar.prototype.createLinkPanel = function() {
+      _element.removeClass('dim');
+    };
 
-  var linkPanelElement = $('<div class="create-link-panel clearfix">');
+    this.unlink = function() {
 
-  var linkInputElement = $(
-    [
-      '<span class="add-link-label"></span>',
-      '<input class="link-panel-input" ',
-        'placeholder="http://www.socrata.com">',
-      '</input>'
-    ].
-    join('')
-  );
+      if (_formatController !== null) {
+        _formatController.clearSelection();
+      }
 
-  var addLinkButtonElement = $(
-    [
-      '<button class="link-panel-btn add-link-btn" ',
-        'data-editor-action="create-link" ',
-        'data-editor-command="link">',
-      '</button>'
-    ].
-    join('').
-    format(this.id)
-  );
+      _formatController = null;
 
-  var cancelLinkButtonElement = $(
-    [
-      '<button class="link-panel-btn cancel-link-btn" ',
-        'data-editor-action="cancel-link">',
-      '</button>',
-    ].
-    join('')
-  );
+      _element.addClass('dim');
+      _element.removeClass('active').addClass('dim');
+    };
 
-  addLinkButtonElement.on(
-    'click',
-    this.handleLinkPanelAddClick.bind(this)
-  );
+    this.updateActiveFormats = function(activeFormats) {
 
-  cancelLinkButtonElement.on(
-    'click',
-    this.handleLinkPanelCancelClick.bind(this)
-  );
+      _element.find('.toolbar-btn').removeClass('active');
 
-  linkPanelElement.hide();
-  linkPanelElement.append(linkInputElement);
-  linkPanelElement.append(addLinkButtonElement);
-  linkPanelElement.append(cancelLinkButtonElement);
+      if (activeFormats.length === 0) {
 
-  this.linkPanelElement = linkPanelElement;
-  this.element.append(linkPanelElement);
-}
+        _element.find('.toolbar-select').val('text');
 
-RichTextEditorToolbar.prototype.link = function(editorFormatController) {
-
-  this.formatController = editorFormatController;
-
-  this.element.removeClass('dim');
-}
-
-RichTextEditorToolbar.prototype.unlink = function() {
-
-  if (this.formatController !== null) {
-    this.formatController.clearSelection();
-  }
-
-  this.formatController = null;
-
-  this.element.addClass('dim');
-  this.element.removeClass('active').addClass('dim');
-}
-
-RichTextEditorToolbar.prototype.updateActiveFormats = function(activeFormats) {
-
-  this.element.find('.toolbar-btn').removeClass('active');
-
-  if (activeFormats.length === 0) {
-
-    this.element.find('.toolbar-select').val('text');
-
-  } else {
-
-    this.element.find('.toolbar-select').val('text');
-
-    for (var i = 0; i < activeFormats.length; i++) {
-
-      var thisFormat = activeFormats[i];
-
-      if (thisFormat.dropdown === true) {
-        this.element.find('.toolbar-select').val(thisFormat.id);
       } else {
-        this.element.find('.toolbar-btn-' + thisFormat.id).addClass('active');
+
+        _element.find('.toolbar-select').val('text');
+
+        for (var i = 0; i < activeFormats.length; i++) {
+
+          var thisFormat = activeFormats[i];
+
+          if (thisFormat.dropdown === true) {
+            _element.find('.toolbar-select').val(thisFormat.id);
+          } else {
+            _element.find('.toolbar-btn-' + thisFormat.id).addClass('active');
+          }
+        }
+      }
+    };
+
+    this.destroy = function() {
+      _element.remove();
+      _linkPanelElement.remove();
+    };
+
+    /**
+     * Private methods
+     */
+
+    function _createToolbar() {
+
+      function _renderSelect(selectFormats) {
+
+        var selectFormatElements = [];
+        var option;
+
+        for (var i = 0; i < selectFormats.length; i++) {
+          option = $('<option>', { 'value': selectFormats[i].id });
+          option.text(selectFormats[i].name);
+
+          if (selectFormats[i].tag === null) {
+            option.prop('selected', true);
+          }
+
+          selectFormatElements.push(option);
+        }
+
+        return $('<div>', { 'class': 'toolbar-select-group' }).
+          append($('<div>', { 'class': 'toolbar-select-container' }).
+            append([
+              $(
+                '<select>',
+                {
+                  'class': 'toolbar-select inactive',
+                  'data-editor-action': 'change-format'
+                }
+              ).append(selectFormatElements),
+              $('<div>', { 'class': 'toolbar-select-hint' })
+            ])
+          );
+      }
+
+      function _renderButtonGroup(group) {
+
+        var toolbarButtons = [];
+
+        for (var i = 0; i < group.length; i++) {
+
+          var buttonClass = 'toolbar-btn toolbar-btn-' +
+            group[i].id +
+            ' inactive';
+
+          toolbarButtons.push(
+            $(
+              '<button>',
+              {
+                'class': buttonClass,
+                'data-editor-action': 'toggle-format',
+                'data-editor-command': group[i].id,
+                'data-label': group[i].name
+              }
+            )
+          );
+        }
+
+        return $('<div>', { 'class': 'toolbar-btn-group' }).
+          append(toolbarButtons);
+      }
+
+      var dropdownFormats = _formats.
+        filter(function(format) {
+          return format.dropdown === true;
+        });
+      var buttonFormats = _formats.
+        filter(function(format) {
+          return format.dropdown === false;
+        });
+      var buttonGroups = [];
+      var controls = [];
+
+      // Split buttons into button groups.
+      buttonFormats.forEach(function(format) {
+
+        if (format.group >= buttonGroups.length) {
+          buttonGroups.push([]);
+        }
+
+        buttonGroups[format.group].push(format);
+      });
+
+      // Render the button groups and the format select.
+      controls.push(_renderButtonGroup(buttonGroups[0]));
+      controls.push(_renderSelect(dropdownFormats));
+
+      for (var i = 1; i < buttonGroups.length; i++) {
+        controls.push(_renderButtonGroup(buttonGroups[i]));
+      }
+
+      _element.append(controls);
+
+      // Finally, set up events and add the toolbar to the container.
+      _element.on(
+        'change',
+        '[data-editor-action="change-format"]',
+        _handleToolbarSelectChange
+      );
+
+      _element.on(
+        'click',
+        '[data-editor-action="toggle-format"]',
+        _handleToolbarButtonClick
+      );
+
+      _element.addClass('dim');
+
+      _toolbarLinkButton = _element.find('.toolbar-btn-link');
+    }
+
+    function _createLinkPanel() {
+
+      var linkPanelElement = $(
+        '<div>',
+        { 'class':'create-link-panel' }
+      );
+
+      var linkInputElement = $('<div>').
+        append([
+          $(
+            '<span>',
+            { 'class': 'add-link-label' }
+          ),
+          $(
+            '<input>',
+            { 'class': 'link-panel-input', 'placeholder': 'http://www.socrata.com' }
+          )
+        ]);
+
+      var addLinkButtonElement = $(
+        '<button>',
+        {
+          'class': 'link-panel-btn add-link-btn',
+          'data-editor-action': 'create-link',
+          'data-editor-command': 'link'
+        }
+      );
+
+      var cancelLinkButtonElement = $(
+        '<button>',
+        {
+          'class': 'link-panel-btn cancel-link-btn',
+          'data-editor-action': 'cancel-link'
+        }
+      );
+
+      addLinkButtonElement.on('click', _handleLinkPanelAddClick);
+
+      cancelLinkButtonElement.on('click', _handleLinkPanelCancelClick);
+
+      linkPanelElement.hide();
+      linkPanelElement.append(linkInputElement);
+      linkPanelElement.append(addLinkButtonElement);
+      linkPanelElement.append(cancelLinkButtonElement);
+
+      _linkPanelElement = linkPanelElement;
+      _element.append(linkPanelElement);
+    }
+
+    function _handleToolbarSelectChange(e) {
+
+      if (_formatController !== null) {
+
+        var command = e.target.value;
+
+        _formatController.execute(command);
+      }
+    }
+
+    function _handleToolbarButtonClick(e) {
+
+      if (_formatController !== null) {
+
+        var command = e.target.getAttribute('data-editor-command');
+
+        if (command === 'link') {
+          _handleLinkButtonClick();
+        } else {
+          _formatController.execute(command);
+        }
+      }
+    }
+
+    function _handleLinkButtonClick() {
+
+      if (_formatController !== null) {
+
+        if (_formatController.hasLink()) {
+          _formatController.execute('removeLink');
+        } else {
+          _toggleLinkPanel();
+        }
+      }
+    }
+
+    function _handleLinkPanelAddClick(e) {
+
+      if (_formatController !== null) {
+
+        _formatController.execute('addLink', _getLinkPanelUrl());
+        _linkPanelElement.find('input').val('');
+        _toggleLinkPanel();
+      }
+    }
+
+    function _handleLinkPanelCancelClick(e) {
+
+      if (_formatController !== null) {
+
+        _linkPanelElement.find('input').val('');
+        _toggleLinkPanel();
+      }
+    }
+
+    function _getLinkPanelUrl() {
+      return _linkPanelElement.find('input').val();
+    }
+
+    function _toggleLinkPanel() {
+
+      if (_showLinkPanel) {
+        _showLinkPanel = false;
+        _toolbarLinkButton.removeClass('active');
+        _linkPanelElement.addClass('hidden');
+      } else {
+        _showLinkPanel = true;
+        _toolbarLinkButton.addClass('active');
+        _linkPanelElement.removeClass('hidden');
       }
     }
   }
-}
 
-RichTextEditorToolbar.prototype.handleToolbarSelectChange = function(e) {
-
-  if (this.formatController !== null) {
-
-    var command = e.target.value;
-
-    this.formatController.execute(command);
-  }
-}
-
-RichTextEditorToolbar.prototype.handleToolbarButtonClick = function(e) {
-
-  if (this.formatController !== null) {
-
-    var command = e.target.getAttribute('data-editor-command');
-
-    if (command === 'link') {
-      this.handleLinkButtonClick();
-    } else {
-
-      this.formatController.execute(command);
-    }
-  }
-}
-
-RichTextEditorToolbar.prototype.handleLinkButtonClick = function() {
-
-  if (this.formatController !== null) {
-
-    if (this.formatController.hasLink()) {
-
-      this.formatController.execute('removeLink');
-
-    } else {
-      this.toggleLinkPanel();
-    }
-  }
-}
-
-RichTextEditorToolbar.prototype.handleLinkPanelAddClick = function(e) {
-
-  if (this.formatController !== null) {
-
-    this.formatController.execute('addLink', this.getLinkPanelUrl());
-
-    this.linkPanelElement.find('input').val('');
-    this.toggleLinkPanel();
-  }
-}
-
-RichTextEditorToolbar.prototype.handleLinkPanelCancelClick = function(e) {
-
-  if (this.formatController !== null) {
-    this.linkPanelElement.find('input').val('');
-    this.toggleLinkPanel();
-  }
-}
-
-RichTextEditorToolbar.prototype.getLinkPanelUrl = function() {
-  return this.linkPanelElement.find('input').val();
-}
-
-RichTextEditorToolbar.prototype.toggleLinkPanel = function() {
-
-  if (this.showLinkPanel) {
-    this.showLinkPanel = false;
-    this.toolbarLinkButton.removeClass('active');
-    this.linkPanelElement.addClass('hidden');
-  } else {
-    this.showLinkPanel = true;
-    this.toolbarLinkButton.addClass('active');
-    this.linkPanelElement.removeClass('hidden');
-  }
-}
-
-RichTextEditorToolbar.prototype.destroy = function() {
-
-  this.element.remove();
-  this.linkPanelElement.remove();
-}
+  return RichTextEditorToolbar;
+})();

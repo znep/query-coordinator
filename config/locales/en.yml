@@ -2593,7 +2593,7 @@ en:
         page_name_placeholder: Untitled
         edit_description_prompt: Give your page a good description that helps people understand the story your data is trying to tell. (Optional)
         source_dataset: source dataset
-        data_as_csv: Data as CSV (Excel)
+        data_as_csv: Full source data as CSV (Excel)
         visualization_as_image: Visualization as image
         visualization_as_image_disabled_flyout: Please save the page in order to download a visualization as an image
         validation_error_min_length: Please enter a title

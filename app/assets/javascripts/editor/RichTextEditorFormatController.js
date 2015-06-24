@@ -2,37 +2,26 @@
 
   'use strict';
 
-  var _FORMATS = [
-    { id: 'heading1', tag: 'h1', name: 'Heading 1', dropdown: true },
-    { id: 'heading2', tag: 'h2', name: 'Heading 2', dropdown: true },
-    { id: 'heading3', tag: 'h3', name: 'Heading 3', dropdown: true },
-    { id: 'heading4', tag: 'h4', name: 'Heading 4', dropdown: true },
-    { id: 'heading5', tag: 'h5', name: 'Heading 5', dropdown: true },
-    { id: 'heading6', tag: 'h6', name: 'Heading 6', dropdown: true },
-    { id: 'text', tag: null, name: 'Paragraph', dropdown: true },
-    { id: 'bold', tag: 'b', name: 'Bold', dropdown: false, group: 0 },
-    { id: 'italic', tag: 'i', name: 'Italic', dropdown: false, group: 0 },
-    { id: 'left', tag: 'p', name: 'Align Left', dropdown: false, group: 1 },
-    { id: 'center', tag: 'p', name: 'Center', dropdown: false, group: 1 },
-    { id: 'right', tag: 'p', name: 'Align Right', dropdown: false, group: 1 },
-    { id: 'orderedList', tag: 'ol', name: 'Ordered List', dropdown: false, group: 2 },
-    { id: 'unorderedList', tag: 'ul', name: 'Unordered List', dropdown: false, group: 2 },
-    { id: 'blockquote', tag: 'blockquote', name: 'Block Quote', dropdown: false, group: 2 },
-    { id: 'link', tag: 'a', name: 'Link', dropdown: false, group: 3 }
-  ];
-
   /**
    * @constructor
    * @param {Squire} editor
    */
-  function RichTextEditorFormatController(editor) {
+  function RichTextEditorFormatController(editor, formats) {
 
     if (!(editor instanceof Squire)) {
       throw new Error('`editor` argument is not an instance of Squire.');
     }
 
+    if (!(formats instanceof Array)) {
+      throw new Error(
+        '`formats` must be an array (is of type ' +
+        (typeof formats) +
+        ').'
+      );
+    }
+
     var _editor = editor;
-    var _formats = _FORMATS;
+    var _formats = formats;
     var _commandDispatcher = {
       'heading1': function() { _toggleHeading('h1'); },
       'heading2': function() { _toggleHeading('h2'); },
@@ -127,7 +116,7 @@
 
       // Then record formats whose opening and closing tags both occur within the
       // selection.
-      recordChildFormats(childNodes, _formats, foundFormats);
+      _recordChildFormats(childNodes, _formats, foundFormats);
 
       return foundFormats;
     };

@@ -1,6 +1,13 @@
 <div class="tool-panel">
 
-  <button type="button" title="{{'apiExplorer.apiButtonTitle' | I18n}}" ng-class="{touched: panelActive}" class="tool-panel-toggle-btn action-btn r-to-l" ng-click="panelActive = !panelActive">{{'apiExplorer.apiButton' | I18n}}</button>
+  <button
+    type="button"
+    title="{{'apiExplorer.apiButtonTitle' | I18n}}"
+    ng-class="{touched: panelActive, disabled: editMode}"
+    class="tool-panel-toggle-btn action-btn r-to-l"
+    ng-click="panelActive = editMode ? false : !panelActive">
+    {{'apiExplorer.apiButton' | I18n}}
+  </button>
   <div ng-class="{active: panelActive}" class="tool-panel-main">
     <div class="tool-panel-inner-container">
       <div class="tool-panel-hint"></div>

@@ -6,7 +6,8 @@
       restrict: 'E',
       templateUrl: '/angular_templates/dataCards/apiExplorer.html',
       scope: {
-        datasetObservable: '=datasetObservable'
+        datasetObservable: '=',
+        editMode: '='
       },
       link: function($scope, element, attrs) {
         var destroyObservable = $scope.$destroyAsObservable(element);
@@ -111,7 +112,6 @@
               $scope.panelActive = false;
             });
           });
-
 
         /*
          * Bind streams to scope

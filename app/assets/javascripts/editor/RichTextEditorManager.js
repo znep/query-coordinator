@@ -2,12 +2,20 @@
 
   'use strict';
 
-  function RichTextEditorManager(assetFinder, formats) {
+  function RichTextEditorManager(assetFinder, formats, toolbarElement) {
 
     if (!(assetFinder instanceof AssetFinder)) {
       throw new Error(
         '`assetFinder` must be an AssetFinder (is of type ' +
         (typeof assetFinder) +
+        ').'
+      );
+    }
+
+    if (!(toolbarElement instanceof jQuery)) {
+      throw new Error(
+        '`toolbarElement` must be a jQuery object (is of type ' +
+        (typeof toolbarElement) +
         ').'
       );
     }
@@ -21,6 +29,7 @@
     }
 
     var _assetFinder = assetFinder;
+    var _toolbar = new RichTextEditorToolbar(toolbarElement, formats);
     var _formats = formats;
     var _editors = {};
 
@@ -42,6 +51,10 @@
       }
 
       return editor;
+    };
+
+    this.linkEditorToToolbar = function(editorId) {
+      _toolbar.link(this.getEditor(editorId).getFormatController());
     };
   }
 

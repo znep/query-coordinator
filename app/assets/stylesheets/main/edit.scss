@@ -82,6 +82,15 @@ body {
       cursor: -webkit-grab;
       cursor: grab;
 
+      .image {
+
+        img {
+          @include unselectable();
+
+          pointer-events: none;
+        }
+      }
+
       .grab-target {
         display: block;
       }
@@ -91,6 +100,7 @@ body {
 
 .user-story-container {
   position: relative;
+  display: block;
   padding: $header-total-height + $user-story-container-vertical-padding 0;
   z-index: $user-story-container-z-index;
 
@@ -172,14 +182,18 @@ body {
     margin-left: $block-edit-controls-width + $block-edit-controls-padding;
     width: $user-story-container-width - $block-edit-controls-width - $block-edit-controls-padding;
     transition: none;
+    border: 1px solid $block-edit-content-border-color;
+    box-sizing: border-box;
 
     .text-editor {
 
       iframe {
-        width: 100%;
+        margin: 0 3%;
+        width: 94%;
         height: 0;
         min-height: 0;
         border: 0;
+        overflow: hidden;
       }
     }
   }

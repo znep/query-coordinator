@@ -83,6 +83,13 @@ class DatasetsControllerTest < ActionController::TestCase
     assert_redirected_to '/d/olde-four'
   end
 
+  test 'stops redirection to OBE view page when the feature flag disable_obe_redirection is true' do
+    setup_nbe_dataset_test(false, true)
+    FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |x| x.stubs(disable_obe_redirection: true) })
+    get :show, :category => 'dataset', :view_name => 'dataset', :id => 'four-four'
+    assert_response :success
+  end
+
   test 'redirects to Lens page for NBE datasets for non-admin users when feature flag set' do
     setup_nbe_dataset_test(false, true)
     FeatureFlags.stubs(derive: Hashie::Mash.new.tap { |x| x.stubs(force_redirect_to_data_lens: true ) })

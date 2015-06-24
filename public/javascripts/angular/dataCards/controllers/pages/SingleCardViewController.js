@@ -21,7 +21,6 @@
 
     $scope.page = page;
     $scope.$bindObservable('card', cardObservable);
-
     $scope.$bindObservable('windowSize', WindowState.windowSizeSubject);
 
     /*******************************
@@ -61,6 +60,10 @@
           $log.error('Snapshot ready, but a PhantomJS instance is not listening.');
         }
       });
+
+    // Disable mouse interaction to prevent flyouts and hover effects if
+    // polaroid is taking a picture of us.
+    $scope.interactive = !window._phantom;
 
   }
 

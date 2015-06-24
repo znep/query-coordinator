@@ -14,11 +14,13 @@
    * @param {string} [preloadContent] - The content that should be inserted
    *   into the newly-created editor.
    */
-  function RichTextEditor(element, editorId, assetFinder, preloadContent) {
+  function RichTextEditor(element, editorId, assetFinder, formats, preloadContent) {
 
     if (!(element instanceof jQuery)) {
       throw new Error(
-        '`element` argument must be a jQuery object.'
+        '`element` argument must be a jQuery object (is of type ' +
+        (typeof element) +
+        ').'
       );
     }
 
@@ -50,6 +52,14 @@
       );
     }
 
+    if (!(formats instanceof Array)) {
+      throw new Error(
+        '`formats` must be an array (is of type ' +
+        (typeof formats) +
+        ').'
+      );
+    }
+
     if (typeof preloadContent !== 'undefined' && typeof preloadContent !== 'string') {
       throw new Error(
         '`preloadContent` must be a string (is of type ' +
@@ -60,6 +70,7 @@
 
     var _containerElement = element;
     var _assetFinder = assetFinder;
+    var _formats = formats;
     var _preloadContent = null;
     var _editorElement = null;
     var _editor = null;
@@ -71,7 +82,7 @@
       _preloadContent = preloadContent;
     }
 
-    _editor = _createEditor(_containerElement, editorId);
+    _editor = _createEditor();
 
     /**
      * Public methods
@@ -79,6 +90,10 @@
 
     this.getContentHeight = function() {
       return _lastContentHeight;
+    };
+
+    this.getFormatController = function() {
+      return _formatController;
     };
 
     /**
@@ -103,7 +118,10 @@
 
         _overrideDefaultStyles(e.target.contentWindow.document);
         _editor = new Squire(e.target.contentWindow.document);
-        _formatController = new RichTextEditorFormatController(_editor);
+        _formatController = new RichTextEditorFormatController(
+          _editor,
+          _formats
+        );
 
         _editor.addEventListener('input', _handleInput);
         _editor.addEventListener('focus', _broadcastFocus);

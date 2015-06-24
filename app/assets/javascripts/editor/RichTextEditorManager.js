@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function RichTextEditorManager(assetFinder) {
+  function RichTextEditorManager(assetFinder, formats) {
 
     if (!(assetFinder instanceof AssetFinder)) {
       throw new Error(
@@ -12,14 +12,23 @@
       );
     }
 
+    if (!(formats instanceof Array)) {
+      throw new Error(
+        '`formats` must be an array (is of type ' +
+        (typeof formats) +
+        ').'
+      );
+    }
+
     var _assetFinder = assetFinder;
+    var _formats = formats;
     var _editors = {};
 
     this.createEditor = function(editorId, preloadText) {
 
       var element = $('<div>', { class: 'text-editor', 'data-editor-id': editorId });
 
-      _editors[editorId] = new RichTextEditor(element, editorId, _assetFinder, preloadText);
+      _editors[editorId] = new RichTextEditor(element, editorId, _assetFinder, _formats, preloadText);
 
       return element;
     };

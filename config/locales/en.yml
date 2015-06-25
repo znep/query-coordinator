@@ -2127,7 +2127,7 @@ en:
       new_ux_text: See this data in the new Data Lens experience
       new_ux_button: Show Me
       new_ux_nbe_warning: 'Internal Only: Old UX view of New Backend dataset. Ordinary users would have been redirected to %{url}'
-      unable_to_find_dataset_page: 'We were unable to find an Data Lens page for this dataset.'
+      unable_to_find_dataset_page: 'We were unable to find a Data Lens page for this dataset.'
       save_dialog:
         descriptions:
           leaving: You have unsaved data that will be lost if you leave this page. Please choose whether or not you wish to save this view before you leave; or choose Cancel to return to the page.

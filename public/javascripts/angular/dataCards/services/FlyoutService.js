@@ -163,14 +163,14 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
           }
         });
       } else {
-        uberFlyout.hide();
+        hide();
       }
     }
   });
 
   WindowState.mouseLeftButtonPressedSubject.subscribe(function(e) {
     if (!_.isEmpty(uberFlyout)) {
-      uberFlyout.hide();
+      hide();
     }
   });
 
@@ -181,7 +181,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
     '</div>');
 
   uberFlyout = $('#uber-flyout');
-  uberFlyout.hide();
+  hide();
   uberFlyoutContent = uberFlyout.children('.content');
   hintWidth = uberFlyout.children('.hint').outerWidth();
   hintHeight = uberFlyout.children('.hint').outerHeight();
@@ -192,11 +192,16 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
     var mouseoverFlyout = uberFlyout.has($(target)).length > 0;
 
     if (!Modernizr.pointerEvents && mouseoverFlyout) {
-      uberFlyout.hide();
+      hide();
       target = document.elementFromPoint(mouseX, mouseY);
       uberFlyout.show();
     }
     return target;
+  }
+
+  // Hides the flyout
+  function hide() {
+    uberFlyout.hide();
   }
 
   return {
@@ -275,6 +280,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
       value = value || WindowState.mousePositionSubject.value;
       replayedMousePositionSubject.onNext(value);
     },
-    targetUnder: targetUnder
+    targetUnder: targetUnder,
+    hide: hide
   };
 });

@@ -76,6 +76,7 @@
 
             // Hide the flyout if there are no nearby points
             if (noPoints) {
+              FlyoutService.hide();
               return;
             }
 
@@ -172,6 +173,7 @@
         function getPointStyle() {
           return {
             color: 'rgba(48,134,171,1.0)',
+            highlightColor: 'rgba(255, 255, 255, .3)',
             radius: scalePointFeatureRadiusByZoomLevel,
             lineWidth: 1,
             strokeStyle: 'rgba(255,255,255,1.0)'

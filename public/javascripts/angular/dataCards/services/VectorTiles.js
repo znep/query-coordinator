@@ -62,7 +62,7 @@
 
       getTileLayerCanvas: function(tileLayer, tileId) {
         var leafletTileId = tileId.split(':').slice(1, 3).join(':');
-        return tileLayer._tiles[leafletTileId];
+        return _.get(tileLayer, '_tiles.' + leafletTileId);
       }
     };
 
@@ -387,6 +387,7 @@
           var vectorTileFeature = new VectorTileFeature(this, feature, this.styleFn(feature));
           var projectedPoint = vectorTileFeature.projectGeometryToTilePoint(vectorTileFeature.coordinates[0][0]);
           projectedPoint.count = vectorTileFeature.properties.count;
+          projectedPoint.tile = tileId;
           quadTree.add(projectedPoint);
 
           featureArray.push(vectorTileFeature);
@@ -500,6 +501,34 @@
         this.quadTreeFactory.extent([[-threshold, -threshold], [size + threshold, size + threshold]]);
         this.quadTreeFactory.x(_.property('x'));
         this.quadTreeFactory.y(_.property('y'));
+
+        // Add a canvas layer for drawing highlighted points.
+        this.highlightLayer = L.tileLayer.canvas({zIndex: 2}); // zIndex breaks tooltips
+
+        this.currentHoverPoints = [];
+
+        this.highlightLayer.drawTile = function(canvas, tilePoint, zoom) {
+          var style = this.style({type: 1}); // getPointStyle in featureMap.js
+          var ctx = canvas.getContext('2d');
+          var tileId = VectorTileUtil.getTileId({x: tilePoint.x, y: tilePoint.y, zoom: zoom});
+
+          ctx.fillStyle = style.highlightColor;
+          ctx.strokeStyle = style.strokeStyle;
+          ctx.lineWidth = style.lineWidth;
+
+          var points = _.filter(this.currentHoverPoints, function(point) {
+            return point.tile === tileId;
+          });
+
+          _.each(points, function(point) {
+            ctx.beginPath();
+            ctx.arc(point.x, point.y, style.radius(zoom), 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.fill();
+          });
+
+          ctx.restore();
+        }.bind(this);
       },
 
       onAdd: function(map) {
@@ -510,6 +539,7 @@
         var mapMousemoveCallback;
 
         this.map = map;
+        this.highlightLayer.addTo(map);
 
         // Given a mouse event object, adds useful tile-related information to
         // the event, such as the tile the mouse is hovering over and any points
@@ -531,6 +561,11 @@
           var tileCanvas = VectorTileUtil.getTileLayerCanvas(layer, e.tile.id);
           var tileSize = self.options.tileSize;
           var hoverThreshold = self.options.hoverThreshold;
+
+          if (_.isUndefined(tileCanvas)) {
+            e.points = [];
+            return;
+          }
 
           var mouseTileOffset = e.tilePoint = { // mouse coordinates relative to tile
             x: e.layerPoint.x - tileCanvas.offsetLeft,
@@ -648,6 +683,11 @@
               });
             }
           });
+
+          if (!_.isEqual(self.currentHoverPoints, points)) {
+            self.currentHoverPoints = points;
+            self.highlightLayer.redraw();
+          }
 
           e.points = points;
         }

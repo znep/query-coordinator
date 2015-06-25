@@ -162,7 +162,8 @@ describe('table directive', function() {
   });
   describe('when rendering cell data', function() {
     var el;
-    var TIMESTAMP_REGEX = /^\d{4}\s\w{3}\s\d{2}\s\d{2}:\d{2}:\d{2}$/;
+    var TIMESTAMP_REGEX = /^\d{4}\s\w{3}\s[0-3][0-9]\s[01][0-9]:[0-5][0-9]:[0-5][0-9]\s[AP]M$/;
+    var TIMESTAMP_WITH_USER_FORMAT_REGEX = /^\w{3}\s[0-3][0-9],\s\d{4}\s[01][0-9]:[0-5][0-9]\s[AP]M$/;
     var LATLNG_REGEX = /^-?\d+\.\d+°$/;
     var NUMBER_REGEX = /^-?(?:\d{1,4}|\d{1,3}(?:,\d{3})*)(?:\.\d+)?$/;
     var NUMBER_NOCOMMAS_REGEX = /^-?\d+(?:\.\d+)?$/;
@@ -199,7 +200,7 @@ describe('table directive', function() {
       });
     });
 
-    it('should render timestamp cells with date & time as YYYY MMM DD HH:mm:ss', function() {
+    it('should render timestamp cells with date & time as YYYY MMM DD hh:mm:ss A by default', function() {
       var rows = el.find('.table-row');
 
       rows.each(function(index, row) {
@@ -210,7 +211,18 @@ describe('table directive', function() {
       });
     });
 
-    it('should render floating_timestamp cells with date & time as YYYY MMM DD HH:mm:ss', function() {
+    it('should render timestamp cells with a custom timestamp format property', function() {
+      var rows = el.find('.table-row');
+
+      rows.each(function(index, row) {
+        var timestampCell = $(row).find('.cell.timestamp').eq(1);
+        var cellContent = timestampCell.html();
+
+        expect(cellContent).to.match(TIMESTAMP_WITH_USER_FORMAT_REGEX);
+      });
+    });
+
+    it('should render floating_timestamp cells with date & time as YYYY MMM DD hh:mm:ss A by default', function() {
       var rows = el.find('.table-row');
 
       rows.each(function(index, row) {

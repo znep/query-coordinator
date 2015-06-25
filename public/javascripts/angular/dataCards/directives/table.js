@@ -360,6 +360,113 @@
             }
           };
 
+          var renderBooleanCell = function(cellContent, column) {
+            return _.isBoolean(cellContent) && cellContent ? '✓' : '';
+          };
+
+          var renderNumberCell = function(cellContent, column) {
+            // CORE-4533: Preserve behavior of old UX - truncate precision
+            if (cellContent && !_.isNumber(cellContent)) {
+              var number = parseFloat(cellContent);
+              // Just in case, default to the given cell content if parsing fails
+              if (!_.isNaN(number)) {
+                cellContent = number.toString();
+              }
+            }
+
+            if (column.dataTypeName === 'percent') {
+              var parts = cellContent.split('.');
+              if (parts.length === 1) {
+                // non-zero integers are multiples of 100%
+                if (cellContent !== '0') {
+                  cellContent += '00';
+                }
+              } else {
+                // shift the decimal point two places right string-wise
+                // because we can't trust multiplying floats by 100
+                var decimalValues = parts[1].split('');
+                while (decimalValues.length < 2) {
+                  decimalValues.push('0');
+                }
+                cellContent = parts[0] + decimalValues.splice(0, 2).join('');
+                if (decimalValues.length) {
+                  cellContent += '.' + decimalValues.join('');
+                }
+                // strip leading zeroes except just before decimal point
+                cellContent = cellContent.replace(/^(-?)0*(\d+(?:\.\d+)?)/, '$1$2');
+              }
+            }
+
+            var shouldCommaify = !(column.format || {}).noCommas;
+            // Special case for thousands-place numbers.
+            // The primary justification is that it makes year columns
+            // look bad; awaiting further feedback from customers.
+            // This check should be removed or reworked once the API for
+            // logical type detection is in place.
+            if (/^-?\d{4}\b/.test(cellContent)) {
+              shouldCommaify = false;
+            }
+            if (shouldCommaify) {
+              cellContent = $.commaify(cellContent);
+            }
+
+            // Add percent sign after commaify because it affects length
+            if (column.dataTypeName === 'percent') {
+              cellContent += '%'
+            }
+
+            return cellContent;
+          };
+
+          var renderGeoCell = function(cellContent, column) {
+            var latitudeIndex = 1;
+            var longitudeIndex = 0;
+            if (_.isArray(cellContent.coordinates)) {
+              var template = '<span title="{0}">{1}°</span>';
+              var latitude = template.format(I18n.common.latitude, cellContent.coordinates[latitudeIndex]);
+              var longitude = template.format(I18n.common.longitude, cellContent.coordinates[longitudeIndex]);
+              return '({0}, {1})'.format(latitude, longitude);
+            } else {
+              return '';
+            }
+          };
+
+          var renderMoneyColumn = function (cellContent, column) {
+            // TODO: use accountingjs to support non-US formats?
+            var dollarAmount = parseFloat(cellContent);
+            if (_.isFinite(dollarAmount)) {
+              cellContent = Math.abs(Math.round(dollarAmount * 100)).toString();
+              cellContent = ('00' + cellContent).slice(Math.min(-cellContent.length, -3));
+              cellContent = cellContent.replace(/(\d+)(\d{2})$/, function(match, dollars, cents) {
+                return '{0}${1}.{2}'.format(
+                  (dollarAmount < 0 ? '-' : ''),
+                  $.commaify(dollars),
+                  cents
+                );
+              });
+            }
+            return cellContent;
+          }
+
+          var renderTimestampCell = function(cellContent, column) {
+            if (_.isPresent(cellContent)) {
+              var time = moment(cellContent);
+              if (time.isValid()) {
+                if (column.format && column.format.formatString) {
+                  // Option A: format using user-specified format string
+                  return time.format(column.format.formatString);
+                } else if (time.hour() + time.minute() + time.second() + time.millisecond() === 0) {
+                  // Option B: infer date-only string format
+                  return time.format('YYYY MMM DD');
+                } else {
+                  // Option C: use date-with-time format
+                  return time.format('YYYY MMM DD hh:mm:ss A');
+                }
+              }
+            }
+            return '';
+          };
+
           var loadBlockOfRows = function(block) {
             // Check if is being loaded or block exists
             if (_.has(httpRequests, block) || element.find('.row-block.' + block).length > 0) {
@@ -393,106 +500,32 @@
                   var cellType = column.physicalDatatype;
                   var cellClasses = 'cell ' + cellType;
 
-                  // Is Boolean?
-                  if (cellType === 'boolean') {
-                    if (_.isBoolean(cellContent)) {
-                      cellText = cellContent ? '✓' : '';
-                    }
-
-                  } else if (cellType === 'number') {
-                    // CORE-4533: Preserve behavior of old UX - truncate precision
-                    if (cellContent && !_.isNumber(cellContent)) {
-                      var number = parseFloat(cellContent);
-                      // Just in case, default to the given cell content if parsing fails
-                      if (!_.isNaN(number)) {
-                        cellContent = number.toString();
-                      }
-                    }
-
-                    if (column.dataTypeName === 'percent') {
-                      var parts = cellContent.split('.');
-                      if (parts.length === 1) {
-                        // non-zero integers are multiples of 100%
-                        if (cellContent !== '0') {
-                          cellContent += '00';
-                        }
-                      } else {
-                        // shift the decimal point two places right string-wise
-                        // because we can't trust multiplying floats by 100
-                        var decimalValues = parts[1].split('');
-                        while (decimalValues.length < 2) {
-                          decimalValues.push('0');
-                        }
-                        cellContent = parts[0] + decimalValues.splice(0, 2).join('');
-                        if (decimalValues.length) {
-                          cellContent += '.' + decimalValues.join('');
-                        }
-                        // strip leading zeroes except just before decimal point
-                        cellContent = cellContent.replace(/^(-?)0*(\d+(?:\.\d+)?)/, '$1$2');
-                      }
-                    }
-
-                    var shouldCommaify = !(column.format || {}).noCommas;
-                    // Special case for thousands-place numbers.
-                    // The primary justification is that it makes year columns
-                    // look bad; awaiting further feedback from customers.
-                    // This check should be removed or reworked once the API for
-                    // logical type detection is in place.
-                    if (/^-?\d{4}\b/.test(cellContent)) {
-                      shouldCommaify = false;
-                    }
-                    if (shouldCommaify) {
-                      cellContent = $.commaify(cellContent);
-                    }
-
-                    // Add percent sign after commaify because it affects length
-                    if (column.dataTypeName === 'percent') {
-                      cellContent += '%'
-                    }
-
-                    cellText = _.escape(cellContent);
-
-                  } else if (cellType === 'geo_entity' || cellType === 'point') {
-                    var latitudeCoordinateIndex = 1;
-                    var longitudeCoordinateIndex = 0;
-                    if (_.isArray(cellContent.coordinates)) {
-                      cellText = '(<span title="{0}">'.format(I18n.common.latitude) +
-                        cellContent.coordinates[latitudeCoordinateIndex] +
-                        '°</span>, <span title="{0}">'.format(I18n.common.longitude) +
-                        cellContent.coordinates[longitudeCoordinateIndex] +
-                        '°</span>)';
-                    }
-
-                  } else if (cellType === 'timestamp' || cellType === 'floating_timestamp') {
-                    // Don't instantiate moment at all if we can avoid it.
-                    if (_.isPresent(cellContent)) {
-                      var time = moment(cellContent);
-
-                      // We still need to check if the date is valid even if cellContent is not empty.
-                      if (time.isValid()) {
-                        // Check if Date or Date/Time
-                        if (time.hour() + time.minute() + time.second() + time.millisecond() === 0) {
-                          cellText = time.format('YYYY MMM D');
-                        } else {
-                          cellText = time.format('YYYY MMM DD HH:mm:ss');
-                        }
-                      }
-                    }
-                  } else if (cellType === 'money') {
-                    // TODO: use accountingjs to support non-US formats
-                    var dollarAmount = parseFloat(cellContent);
-                    if (_.isFinite(dollarAmount)) {
-                      var isNegativeAmount = dollarAmount < 0;
-                      cellText = Math.abs(Math.round(dollarAmount * 100)).toString(); // positive cents
-                      cellText = ('00' + cellText).slice(Math.min(-cellText.length, -3)); // pad zeroes
-                      cellText = cellText.replace(/(\d+)(\d{2})$/, '$1.$2'); // "divide" to get dollars
-                      cellText = (isNegativeAmount ? '-' : '') + '$' + $.commaify(cellText); // finish!
-                    }
-
-                    // Fallback to escaped content if invalid amount
-                    cellText = cellText || _.escape(cellContent);
-                  } else {
-                    cellText = _.escape(cellContent);
+                  switch (cellType) {
+                    case 'boolean':
+                      cellText = renderBooleanCell(cellContent, column);
+                      cellText = _.escape(cellText);
+                      break;
+                    case 'number':
+                      cellText = renderNumberCell(cellContent, column);
+                      cellText = _.escape(cellText);
+                      break;
+                    case 'geo_entity':
+                    case 'point':
+                      cellText = renderGeoCell(cellContent, column);
+                      // no escape call — content is HTML
+                      break;
+                    case 'timestamp':
+                    case 'floating_timestamp':
+                      cellText = renderTimestampCell(cellContent, column);
+                      cellText = _.escape(cellText);
+                      break;
+                    case 'money':
+                      cellText = renderMoneyColumn(cellContent, column);
+                      cellText = _.escape(cellText);
+                      break;
+                    default:
+                      cellText = _.escape(cellContent);
+                      break;
                   }
 
                   blockHtml += '<div class="' + cellClasses +

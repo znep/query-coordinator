@@ -42,6 +42,18 @@
       "sortable": true
     },
     {
+      "name": "Date with Custom Format",
+      "description": "the oblong edible fruit of a palm, pressed into a square",
+      "fieldName": "date_custom",
+      "physicalDatatype": "timestamp",
+      "fred": "time",
+      "importance": 1,
+      "sortable": true,
+      "format": {
+        "formatString": "MMM DD, YYYY hh:mm A"
+      }
+    },
+    {
       "name": "Time",
       "fieldName": "time",
       "physicalDatatype": "floating_timestamp",

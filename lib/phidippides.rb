@@ -92,7 +92,8 @@ class Phidippides < SocrataHttp
   end
 
   # Given a backend_view and a new backend dataset, this will attempt to
-  # decorate the metadata with position and hidden properties
+  # decorate the metadata with properties for position, visibility in table, and
+  # various kinds of format options
   def mirror_nbe_column_metadata!(backend_view, nbe_dataset)
     backend_view.columns.each do |column|
       nbe_column = nbe_dataset[:columns][column.fieldName.to_sym]
@@ -108,6 +109,32 @@ class Phidippides < SocrataHttp
               when 'true' then true
               when 'false' then false
               else val
+            end
+          elsif key == 'view'
+            # based on conversion from `baseDTFormats` in datatypes.js
+            # but using moment-specific format strings
+            acc[:formatString] = case val
+              when 'date'                         then 'MM/DD/YYYY'
+              when 'date_dmonthy'                 then 'DD MMMM YYYY'
+              when 'date_dmy'                     then 'DD/MM/YYYY'
+              when 'date_dmy_time'                then 'DD/MM/YYYY hh:mm:ss A'
+              when 'date_monthdy'                 then 'MMMM DD, YYYY'
+              when 'date_monthdy_shorttime'       then 'MMMM DD, YYYY hh:mm A'
+              when 'date_monthdy_time'            then 'MMMM DD, YYYY hh:mm:ss A'
+              when 'date_monthy'                  then 'MMMM YYYY'
+              when 'date_my'                      then 'MM/YYYY'
+              when 'date_shortmonthdy'            then 'MMM DD, YYYY'
+              when 'date_shortmonthdy_shorttime'  then 'MMM DD, YYYY hh:mm A'
+              when 'date_shortmonthy'             then 'MMM YYYY'
+              when 'date_time'                    then 'MM/DD/YYYY hh:mm:ss A'
+              when 'date_y'                       then 'YYYY'
+              when 'date_ym'                      then 'YYYY/MM'
+              when 'date_ymd'                     then 'YYYY/MM/DD'
+              when 'date_ymd_time'                then 'YYYY/MM/DD hh:mm:ss A'
+              when 'date_ymonth'                  then 'YYYY MMMM'
+              when 'date_ymonthd'                 then 'YYYY MMMM DD'
+              when 'date_ymonthd_time'            then 'YYYY MMMM DD hh:mm:ss A'
+              when 'date_yshortmonth'             then 'YYYY MMM'
             end
           else
             acc[key] = val

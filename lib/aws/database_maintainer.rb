@@ -4,6 +4,7 @@ require 'aws-sdk-core'
 require 'aws-sdk-resources'
 require 'yaml'
 require 'base64'
+require 'decima'
 
 module Aws
   class DatabaseMaintainer
@@ -67,7 +68,10 @@ module Aws
     end
 
     def ensure_local_matches_deployed_code
-      deploy = DecimaClient.new.get_deploys(environments: [environment], services: ['storyteller']).first
+      deploy = Decima::Client.new.get_deploys(environments: [environment], services: ['storyteller']).first
+      unless deploy.present?
+        raise 'Not deployed in the current environment.'
+      end
       unless local_repository_sha.index(deploy.service_sha) == 0
         raise "Code mismatch. Try `git pull && git checkout #{deploy.service_sha}` and run again."
       end

@@ -174,14 +174,21 @@ class InternalController < ApplicationController
   end
 
   def update_aliases
+    new_cname = params[:new_cname].strip
+
     begin
-      Domain.update_aliases(params[:domain_id], params[:new_cname], params[:aliases])
+      unless valid_cname?(new_cname)
+        flash.now[:error] = "Invalid Primary CName: #{new_cname}"
+        return render 'shared/error', :status => :internal_server_error
+      end
+
+      Domain.update_aliases(params[:domain_id], new_cname, params[:aliases])
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = e.error_message
-      return (render 'shared/error', :status => :internal_server_error)
+      return render 'shared/error', :status => :internal_server_error
     end
     CurrentDomain.flag_out_of_date!(params[:domain_id])
-    redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' + params[:new_cname]
+    redirect_to "/internal/orgs/#{params[:org_id]}/domains/#{new_cname}"
   end
 
 
@@ -325,4 +332,17 @@ private
     end
     return new_value
   end
+
+  ##
+  # Hand it a string, it hands you back a yes/no answer.
+  # A CName here is roughly:
+  # - Something alphanumeric
+  # - Can have separators: .-_
+  # - Cannot have stacked separators.
+  # - Cannot start/end with a separator.
+  # e.g. localhost, hello.com, hello-world.com, www.hello.com
+  def valid_cname?(candidate)
+    (/^[a-zA-Z\d]+([a-zA-Z\d]+|\.(?!(\.|-|_))|-(?!(-|\.|_))|_(?!(_|\.|-)))*[a-zA-Z\d]+$/ =~ candidate) == 0
+  end
+
 end

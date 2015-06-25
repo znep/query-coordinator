@@ -3,8 +3,24 @@
   'use strict';
 
   /**
+   * The Formats configuration block is used by the RichTextEditorToolbar and
+   * the RichTextEditorFormatController to specify which format options are
+   * supported, how they should be displayed on the toolbar and what action
+   * should be taken when they are executed.
+   *
    * @constructor
    * @param {Squire} editor
+   * @param {object[]} formats
+   *   @property {string} id - The internal name of the operation that is
+   *     associated with this format.
+   *   @property {string} tag
+   *   @property {string} name - The human-readable name that will appear
+   *     as a tool-tip if the user hovers the cursor over the option or button.
+   *   @property {boolean} dropdown - Whether or not this format should appear
+   *     as an option in the block format select control. False indicates that
+   *     the format should appear as a button.
+   *   @property {number} [group] - The button group in which this format's
+   *     button should appear.
    */
   function RichTextEditorFormatController(editor, formats) {
 
@@ -23,12 +39,12 @@
     var _editor = editor;
     var _formats = formats;
     var _commandDispatcher = {
-      'heading1': function() { _toggleHeading('h1'); },
-      'heading2': function() { _toggleHeading('h2'); },
-      'heading3': function() { _toggleHeading('h3'); },
-      'heading4': function() { _toggleHeading('h4'); },
-      'heading5': function() { _toggleHeading('h5'); },
-      'heading6': function() { _toggleHeading('h6'); },
+      'heading1': function() { _setHeading('h1'); },
+      'heading2': function() { _setHeading('h2'); },
+      'heading3': function() { _setHeading('h3'); },
+      'heading4': function() { _setHeading('h4'); },
+      'heading5': function() { _setHeading('h5'); },
+      'heading6': function() { _setHeading('h6'); },
       'text': function() { _clearFormat(); },
       'bold': function() { _toggleBold(); },
       'italic': function() { _toggleItalic(); },
@@ -53,9 +69,10 @@
      * @param {string} [data] - An optional data parameter (such as URL)
      */
     this.execute = function(commandName, data) {
-      if (_commandDispatcher.hasOwnProperty(commandName)) {
-        _commandDispatcher[commandName](data);
+      if (!_commandDispatcher.hasOwnProperty(commandName)) {
+        throw new Error('command `' + commandName + '` not found.');
       }
+      _commandDispatcher[commandName](data);
     };
 
     /**
@@ -125,11 +142,6 @@
      * Private methods
      */
 
-    function _elementIsBlockLevel(element) {
-      return (['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'p'].
-        indexOf(element.nodeName.toLowerCase()) > -1);
-    }
-
     /**
      * This is a utility method that changes every block-level container
      * that contains the current selection. It is used in practice to toggle
@@ -148,33 +160,9 @@
      *   container should be changed.
      */
     function _updateBlockType(blockType) {
-
-      _editor.modifyBlocks(function(blockFragment) {
-
-        var newFragment = document.createDocumentFragment();
-        var containerBlock = document.createElement(blockType);
-
-        if (blockFragment.childNodes.length > 0) {
-
-          var firstChild = blockFragment.childNodes[0];
-
-          if (blockFragment.childNodes.length === 1 &&
-            _elementIsBlockLevel(firstChild)) {
-
-            var grandchildCount = firstChild.childNodes.length;
-
-            for (var i = 0; i < grandchildCount; i++) {
-              containerBlock.appendChild(firstChild.childNodes[i].cloneNode());
-            }
-          }
-        } else {
-
-          containerBlock.appendChild(blockFragment);
-        }
-
-        newFragment.appendChild(containerBlock);
-        return newFragment;
-      });
+      _editor.modifyBlocks(
+        RichTextEditorUtil.generateUpdateBlockTypeFn(blockType)
+      );
     }
 
     function _clearSelection() {
@@ -183,6 +171,13 @@
 
     function _clearFormat(selection) {
 
+      // As of 6/25/2015 the version of Squire provided by Bower does not yet
+      // include this method, but it is currently implemented in master:
+      //
+      // https://github.com/neilj/Squire
+      //
+      // Eventually we will be able to remove this check altogether and just
+      // call `_editor.removeAllFormatting(selection)` directly.
       if (_editor.hasOwnProperty('removeAllFormatting')) {
         _editor.removeAllFormatting(selection);
       }
@@ -190,7 +185,7 @@
       _updateBlockType('div');
     }
 
-    function _toggleHeading(headingTag) {
+    function _setHeading(headingTag) {
       _updateBlockType(headingTag);
     }
 

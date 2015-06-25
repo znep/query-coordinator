@@ -199,8 +199,8 @@ describe('StoryRenderer class', function() {
       describe('that is editable', function() {
 
         var validAssetFinder;
+        var validToolbar;
         var validFormats;
-        var validToolbarElement;
 
         beforeEach(function() {
 
@@ -211,14 +211,14 @@ describe('StoryRenderer class', function() {
 
           AssetFinderMocker.mock();
           validAssetFinder = new AssetFinder();
+          validToolbar = Object.create(RichTextEditorToolbar.prototype);
           validFormats = [];
-          validToolbarElement = $('#rich-text-editor-toolbar');
           SquireMocker.mock();
           options.editable = true;
           options.richTextEditorManager = new RichTextEditorManager(
             validAssetFinder,
-            validFormats,
-            validToolbarElement
+            validToolbar,
+            validFormats
           );
         });
 
@@ -273,8 +273,8 @@ describe('StoryRenderer class', function() {
   describe('.showInsertionHintAtIndex()', function() {
 
     var validAssetFinder;
+    var validToolbar;
     var validFormats;
-    var validToolbarElement;
 
     beforeEach(function() {
 
@@ -285,15 +285,15 @@ describe('StoryRenderer class', function() {
 
       AssetFinderMocker.mock();
       validAssetFinder = new AssetFinder();
+      validToolbar = Object.create(RichTextEditorToolbar.prototype);
       validFormats = [];
-      validToolbarElement = $('#rich-text-editor-toolbar');
       SquireMocker.mock();
       options.editable = true;
       options.insertionHintElement = $('.insertion-hint');
       options.richTextEditorManager = new RichTextEditorManager(
         validAssetFinder,
-        validFormats,
-        validToolbarElement
+        validToolbar,
+        validFormats
       );
     });
 
@@ -320,8 +320,8 @@ describe('StoryRenderer class', function() {
   describe('.hideInsertionHint()', function() {
 
     var validAssetFinder;
+    var validToolbar;
     var validFormats;
-    var validToolbarElement;
 
     beforeEach(function() {
 
@@ -332,15 +332,15 @@ describe('StoryRenderer class', function() {
 
       AssetFinderMocker.mock();
       validAssetFinder = new AssetFinder();
+      validToolbar = Object.create(RichTextEditorToolbar.prototype);
       validFormats = [];
-      validToolbarElement = $('#rich-text-editor-toolbar');
       SquireMocker.mock();
       options.editable = true;
       options.insertionHintElement = $('.insertion-hint');
       options.richTextEditorManager = new RichTextEditorManager(
         validAssetFinder,
-        validFormats,
-        validToolbarElement
+        validToolbar,
+        validFormats
       );
     });
 

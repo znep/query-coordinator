@@ -166,7 +166,10 @@
       var styleEl = document.createElement('link');
       styleEl.setAttribute('rel', 'stylesheet');
       styleEl.setAttribute('type', 'text/css');
-      styleEl.setAttribute('href', _assetFinder.getStyleAssetPath('iframe'));
+      styleEl.setAttribute(
+        'href',
+        _assetFinder.getStyleAssetPath('rich-text-editor-iframe')
+      );
       styleEl.onload = function(){ _handleContentChange(); }
 
       document.head.appendChild(styleEl);

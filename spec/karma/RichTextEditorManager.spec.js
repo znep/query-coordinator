@@ -2,13 +2,13 @@ describe('RichTextEditorManager', function() {
 
   var validAssetFinder;
   var validFormats = [];
-  var validToolbarElement;
+  var validToolbar;
 
   beforeEach(function() {
     AssetFinderMocker.mock();
     validAssetFinder = new AssetFinder();
     $('body').append('<div id="rich-text-editor-toolbar"></div>');
-    validToolbarElement = $('#rich-text-editor-toolbar');
+    validToolbar = Object.create(RichTextEditorToolbar.prototype);
   });
 
   afterEach(function() {
@@ -25,8 +25,8 @@ describe('RichTextEditorManager', function() {
         assert.throw(function() {
           var manager = new RichTextEditorManager(
             null,
-            validFormats,
-            validToolbarElement
+            validToolbar,
+            validFormats
           );
         });
       });
@@ -38,8 +38,36 @@ describe('RichTextEditorManager', function() {
 
         var manager = new RichTextEditorManager(
           validAssetFinder,
-          validFormats,
-          validToolbarElement
+          validToolbar,
+          validFormats
+        );
+
+        assert.instanceOf(manager, RichTextEditorManager, 'returns an instance of RichTextEditorManager');
+      });
+    });
+
+    describe('when called with an invalid toolbar', function() {
+
+      it('throws an error', function() {
+
+        assert.throw(function() {
+          var manager = new RichTextEditorManager(
+            validAssetFinder,
+            null,
+            validFormats
+          );
+        });
+      });
+    });
+
+    describe('when called with a valid toolbarElement', function() {
+
+      it('returns an instance of RichTextEditorManager', function() {
+
+        var manager = new RichTextEditorManager(
+          validAssetFinder,
+          validToolbar,
+          validFormats
         );
 
         assert.instanceOf(manager, RichTextEditorManager, 'returns an instance of RichTextEditorManager');
@@ -53,8 +81,8 @@ describe('RichTextEditorManager', function() {
         assert.throw(function() {
           var manager = new RichTextEditorManager(
             validAssetFinder,
-            null,
-            validToolbarElement
+            validToolbar,
+            null
           );
         });
       });
@@ -66,36 +94,8 @@ describe('RichTextEditorManager', function() {
 
         var manager = new RichTextEditorManager(
           validAssetFinder,
-          validFormats,
-          validToolbarElement
-        );
-
-        assert.instanceOf(manager, RichTextEditorManager, 'returns an instance of RichTextEditorManager');
-      });
-    });
-
-    describe('when called with an invalid toolbarElement', function() {
-
-      it('throws an error', function() {
-
-        assert.throw(function() {
-          var manager = new RichTextEditorManager(
-            validAssetFinder,
-            validFormats,
-            null
-          );
-        });
-      });
-    });
-
-    describe('when called with a valid toolbarElement', function() {
-
-      it('returns an instance of RichTextEditorManager', function() {
-
-        var manager = new RichTextEditorManager(
-          validAssetFinder,
-          validFormats,
-          validToolbarElement
+          validToolbar,
+          validFormats
         );
 
         assert.instanceOf(manager, RichTextEditorManager, 'returns an instance of RichTextEditorManager');
@@ -109,8 +109,8 @@ describe('RichTextEditorManager', function() {
 
       var manager = new RichTextEditorManager(
         validAssetFinder,
-        validFormats,
-        validToolbarElement
+        validToolbar,
+        validFormats
       );
 
       assert.isUndefined(manager._editors, '`_editors` is undefined on text editor manager');
@@ -124,8 +124,8 @@ describe('RichTextEditorManager', function() {
     beforeEach(function() {
       manager = new RichTextEditorManager(
         validAssetFinder,
-        validFormats,
-        validToolbarElement
+        validToolbar,
+        validFormats
       );
     });
 

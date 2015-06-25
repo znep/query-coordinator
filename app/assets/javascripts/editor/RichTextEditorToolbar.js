@@ -3,9 +3,24 @@
   'use strict';
 
   /**
+   * The Formats configuration block is used by the RichTextEditorToolbar and
+   * the RichTextEditorFormatController to specify which format options are
+   * supported, how they should be displayed on the toolbar and what action
+   * should be taken when they are executed.
+   *
    * @constructor
    * @param {jQuery} element
    * @param {object[]} formats
+   *   @property {string} id - The internal name of the operation that is
+   *     associated with this format.
+   *   @property {string} tag
+   *   @property {string} name - The human-readable name that will appear
+   *     as a tool-tip if the user hovers the cursor over the option or button.
+   *   @property {boolean} dropdown - Whether or not this format should appear
+   *     as an option in the block format select control. False indicates that
+   *     the format should appear as a button.
+   *   @property {number} [group] - The button group in which this format's
+   *     button should appear.
    */
   function RichTextEditorToolbar(element, formats) {
 

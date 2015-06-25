@@ -69,6 +69,7 @@ $(document).on('ready', function() {
   });
 
   $('.user-story-container').on('click', '[data-block-edit-action]', function(e) {
+
     var action = e.target.getAttribute('data-block-edit-action');
     var blockId;
     var blockIndex;

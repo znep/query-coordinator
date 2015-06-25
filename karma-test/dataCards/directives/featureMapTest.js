@@ -251,7 +251,7 @@ describe('featureMap', function() {
 
   describe('at the default calculated zoom level', function() {
 
-    it('should render visible points at expected locations', function(done) {
+    xit('should render visible points at expected locations', function(done) {
 
       var expectedPointColor = 'rgba(48,134,171,1.0)';
       var point1Color;
@@ -354,47 +354,6 @@ describe('featureMap', function() {
       createFeatureMap();
     });
   });
-
-  // describe('flyouts', function() {
-  //   var map;
-  //   var flyout;
-  //   var hint;
-  //   var ghost;
-
-  //   beforeEach(function() {
-  //     map = createFeatureMap();
-  //     flyout = $('#uber-flyout');
-  //     hint = flyout.find('.hint');
-  //   });
-
-  //   function simulateMouseover(x, y, target) {
-  //   testHelpers.fireMouseEvent(target, 'mouseover');
-  //   testHelpers.fireMouseEvent(target, 'mousemove', {
-  //     clientX: x,
-  //     clientY: y,
-  //     relatedTarget: target
-  //   });
-  //   // ghost red px to help with debugging
-  //   ghost = $("<div style='background-color:red; width:2px; height: 2px; position: absolute; top: " + y + "px; left: " + x + "px'></div>");
-  //   $(map).append(ghost);
-
-  //   }
-
-  //   it('should render a flyout when hovering on a point', function() {
-  //     // var highlightTarget = map.find('.feature-map-container')[0];
-  //     var highlightTarget = map.find('canvas')[0];
-  //     var mapWidth = $('.feature-map-container').width();
-  //     var mapHeight = $('.feature-map-container').height();
-
-  //     if (highlightTarget) {
-  //       simulateMouseover(mapWidth / 2, mapHeight / 2, highlightTarget);
-  //     }
-  //     expect(flyout.is(':visible')).to.be.true;
-  //     console.log(flyout.text())
-  //     expect(flyout.text()).to.match(/\d+ rows/);
-  //     expect(flyout.text()).to.match(/Click to see details/);
-  //   });
-  // });
 
   describe('disable pan and zoom feature flag', function() {
     beforeEach(function() {

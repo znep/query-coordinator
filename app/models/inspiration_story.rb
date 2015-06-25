@@ -1,9 +1,7 @@
 class InspirationStory
 
   def initialize
-    json_file = File.read("#{Rails.root}/app/views/stories/inspiration_story.json.erb")
-    story_template = ERB.new(json_file)
-    @json = story_template.result
+    @json = ActionView::Base.new.render file: "#{Rails.root}/app/views/stories/inspiration_story.json.erb"
   end
 
   def to_json

@@ -56,7 +56,7 @@
       'HISTOGRAM_LOGARITHMIC_BUCKETING_THRESHOLD': 2000,
       'HISTOGRAM_Y_TICK_LABEL_OFFSET': 8,
       'HISTOGRAM_NONZERO_PIXEL_THRESHOLD': 2,
-      'HISTOGRAM_CLEAR_X_OFFSET': 2,
+      'HISTOGRAM_TSPAN_OFFSET': 2,
       'HISTOGRAM_MARGINS': {
         left: 15,
         right: 15,
@@ -70,8 +70,8 @@
       // Table card visualization parameters.
       'TABLE_UNSORTABLE_PHYSICAL_DATATYPES': ['geo_entity', 'point'],
 
-      // SVG Paths
-      'FILTER_ICON_SVG_PATH': 'M617.661 322.068l-25.462-309.228h-164.531l-25.467 309.228-317.215 518.712h849.894l-317.22-518.712z',
+      // Icon Font
+      'FILTER_ICON_UNICODE_GLYPH': '\ue610',
 
       // Flyout parameters
       'FLYOUT_WINDOW_PADDING': 22,

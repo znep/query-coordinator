@@ -261,8 +261,9 @@
 
       var renderFilteredRangeSelectors = [
         '.histogram-brush-clear-background',
-        '.histogram-brush-clear-text',
-        '.filter-icon'
+        '.histogram-brush-clear-range',
+        '.histogram-brush-clear-label',
+        '.histogram-filter-icon'
       ].join(', ');
 
       var hover = {
@@ -461,7 +462,10 @@
 
       FlyoutService.register({
         selector: '.histogram-brush-clear-x',
-        render: brush.selectionClearFlyout
+        render: brush.selectionClearFlyout,
+        positionOn: function() {
+          return brush.brushClearTarget;
+        }
       });
 
       FlyoutService.register({
@@ -684,7 +688,6 @@
             attr('x2', brushRight).
             attr('y1', hoverTargetY).
             attr('y2', hoverTargetY);
-
         }
       });
 
@@ -696,7 +699,15 @@
       });
     }
 
-    function updateBrush(dom, brush, selectionValues, dimensions, selectionInProgress) {
+    function updateBrush(
+      dom,
+      brush,
+      selectionValues,
+      dimensions,
+      selectionInProgress,
+      selectionIndices,
+      maxIndex
+    ) {
 
       function setupBrushHandles(selection, height, leftOffset) {
 
@@ -763,16 +774,33 @@
         insert('rect', '.resize').
         classed('histogram-hover-shield', true);
 
+      var brushLeft = 0;
+      var brushRight = 0;
+
+      if (_.isPresent(selectionIndices)) {
+        brushLeft = brush.pointFromIndex(selectionIndices[0]);
+        brushRight = brush.pointFromIndex(selectionIndices[1] + 1);
+      }
+
+      var labelString = _.isPresent(selectionValues) ?
+        I18n.t(
+          'filter.valueRange',
+          $.toHumaneNumber(selectionValues[0]),
+          $.toHumaneNumber(selectionValues[1])
+        ) :
+        '';
+
       var brushClearData = [{
-        brushLeft: brush.control.extent()[0],
-        brushRight: brush.control.extent()[1],
+        brushLeft: brushLeft,
+        brushRight: brushRight,
+        brushWidth: brushRight - brushLeft,
+        brushMax: brush.pointFromIndex(maxIndex) - dom.margin.left,
         brushHasExtent: !brush.control.empty(),
-        valueExtent: selectionValues,
         offset: 5,
-        leftOffset: dom.margin.left,
         backgroundHeight: '3em',
         top: dimensions.height,
-        selectionInProgress: selectionInProgress
+        selectionInProgress: selectionInProgress,
+        labelString: labelString
       }];
 
       var brushClear = dom.brush.selectAll('.histogram-brush-clear').
@@ -799,14 +827,15 @@
           document.body.dispatchEvent(evt);
         });
 
-      var brushClearBackground = brushClear.selectAll('.histogram-brush-clear-background').
+      var brushClearRange = brushClear.selectAll('.histogram-brush-clear-range').
         data(brushClearData);
 
-      brushClearBackground.enter().
+      brushClearRange.enter().
         insert('rect').
-        classed('histogram-brush-clear-background', true);
+        classed('histogram-brush-clear-range', true).
+        style('fill', 'none');
 
-      brushClearBackground.
+      brushClearRange.
         attr('height', _.property('backgroundHeight')).
         attr('width', function(d) {
           return Math.max(0, d.brushRight - d.brushLeft);
@@ -815,56 +844,65 @@
       var brushClearText = brushClear.selectAll('.histogram-brush-clear-text').
         data(brushClearData);
 
-      var filterIcon = brushClear.selectAll('.filter-icon').
-        data(brushClearData);
-
-      var brushClearX = brushClear.selectAll('.histogram-brush-clear-x').
-        data(brushClearData);
-
       brushClearText.enter().
         insert('text').
         classed('histogram-brush-clear-text', true);
 
+      var brushClearFilter = brushClearText.
+        selectAll('.histogram-filter-icon').
+        data([0]);
+
+      brushClearFilter.
+        enter().
+        append('tspan').
+        classed('histogram-filter-icon', true).
+        text(Constants.FILTER_ICON_UNICODE_GLYPH);
+
+      var brushClearLabel = brushClearText.
+        selectAll('.histogram-brush-clear-label').
+        data(function(d) { return [d]; });
+
+      brushClearLabel.
+        enter().
+        append('tspan').
+        classed('histogram-brush-clear-label', true);
+
+      brushClearLabel.
+        attr('dx', Constants.HISTOGRAM_TSPAN_OFFSET).
+        text(_.property('labelString'));
+
       brushClearText.
-        text(function(d) {
-          if (_.isArray(d.valueExtent)) {
-            return I18n.t('filter.valueRange', $.toHumaneNumber(d.valueExtent[0]), $.toHumaneNumber(d.valueExtent[1]));
+        selectAll('.histogram-brush-clear-x').
+        data([0]).
+        enter().
+        append('tspan').
+        classed('histogram-brush-clear-x', true).
+        attr('dx', Constants.HISTOGRAM_TSPAN_OFFSET).
+        text('×');
+
+      brushClearText.
+        attr('dy', '1em').
+        attr('dx', function(d) {
+          var rect = this.getBoundingClientRect();
+          // Firefox doesn't report a width until the rectangle has
+          // been rendered in the DOM, so we estimate it
+          var width = rect.width === 0 ?
+            (d.labelString.length + 2) * 6 :
+            rect.width;
+          var dx = d.brushWidth / 2;
+          dx -= (width / 2);
+          if (width > d.brushWidth) {
+            var dxLeft = d.brushLeft + dx;
+            if (dxLeft < 0) {
+              dx = 0;
+            } else {
+              var dxRight = dxLeft + width;
+              if (dxRight > d.brushMax) {
+                dx = d.brushMax - dxRight;
+              }
+            }
           }
-        }).
-        attr('transform', function(d) {
-          var halfTextWidth = this.getBoundingClientRect().width / 2;
-          var halfSelectionWidth = (d.brushRight - d.brushLeft) / 2;
-          var offset = halfSelectionWidth - halfTextWidth;
-          return 'translate({0}, {1})'.format(offset, this.getBoundingClientRect().height);
-        });
-
-      brushClearX.enter().
-        append('text').
-        classed('histogram-brush-clear-x', true);
-
-      brushClearX.
-        text('×').
-        attr('transform', function(d) {
-          var brushTextBBox = brushClearText.node().getBoundingClientRect();
-          var halfTextWidth = brushTextBBox.width / 2;
-          var halfSelectionWidth = (d.brushRight - d.brushLeft) / 2;
-          var offset = halfSelectionWidth + halfTextWidth + Constants.HISTOGRAM_CLEAR_X_OFFSET;
-          return 'translate({0}, {1})'.format(offset, brushTextBBox.height);
-        });
-
-      filterIcon.enter().
-        insert('path').
-        classed('filter-icon', true).
-        attr('d', Constants.FILTER_ICON_SVG_PATH);
-
-      filterIcon.
-        attr('transform', function(d) {
-          var brushTextBBox = brushClearText.node().getBoundingClientRect();
-          var halfTextWidth = brushTextBBox.width / 2;
-          var halfSelectionWidth = (d.brushRight - d.brushLeft) / 2;
-          var offset = halfSelectionWidth - halfTextWidth;
-          return 'translate({0}, {1}) translate(0, 1) rotate(180) scale(0.015)'.
-            format(offset, brushTextBBox.height);
+          return dx;
         });
 
       brushClear.
@@ -872,34 +910,65 @@
           return (d.brushHasExtent && !d.selectionInProgress) ? null : 'none';
         }).
         attr('transform', function(d) {
-          // Since we are in the middle of modifying this node, we can't trust
-          // its reported width
-          var width = (
-            brushClearText.node().getBoundingClientRect().width +
-            brushClearX.node().getBoundingClientRect().width +
-            filterIcon.node().getBoundingClientRect().width
-          );
-          var svgWidth = dom.svg.node().getBoundingClientRect().width;
-          var baseOffset = d.brushLeft;
-          var clampedLeftOffset = baseOffset;
-          // Only if the width of the content is wider than the width of the selection
-          // do we need to clamp left
-          if (width > (d.brushRight - d.brushLeft)) {
-            var clampedLeftMin = (width / 2) - d.leftOffset;
-            clampedLeftOffset = Math.max(clampedLeftMin, baseOffset);
-          }
-          var clampedRightMax = svgWidth - width;
-          return 'translate({0}, {1})'.
-            format(Math.min(clampedLeftOffset, clampedRightMax), d.top + d.offset);
+          return 'translate({0}, {1})'.format(d.brushLeft, d.top + dom.margin.top);
         }).
-        attr('height', function(d) {
-          return '2em';
-        }).
-        attr('width', function(d) {
-          return d.brushRight - d.brushLeft;
-        });
+        attr('height', '2em').
+        attr('width', _.property('brushWidth'));
 
       brushClear.exit().remove();
+
+      var brushClearBackground = brushClear.selectAll('.histogram-brush-clear-background').
+        data(function(d) {
+          var rect = brushClearText.node().getBoundingClientRect();
+          return [{
+            brushWidth: d.brushWidth,
+            left: rect.left,
+            top: rect.top,
+            width: rect.width,
+            height: rect.height
+          }];
+        });
+
+      brushClearBackground.enter().
+        insert('rect', '.histogram-brush-clear-text').
+        classed('histogram-brush-clear-background', true);
+
+      brushClearBackground.
+        attr('width', _.property('width')).
+        attr('height', _.property('height')).
+        attr('transform', function(d) {
+          var dx = d.brushWidth / 2;
+          dx -= (d.width / 2);
+          dx = Math.max(0, dx);
+
+          return 'translate({0}, 0)'.format(dx);
+        });
+
+      var brushClearTarget = brushClear.
+        selectAll('.histogram-brush-clear-target').
+        data([0]);
+
+      brushClearTarget.
+        enter().
+        append('rect').
+        attr('width', '1em').
+        attr('height', '1em').
+        attr('pointer-events', 'none').
+        style('fill', 'none').
+        classed('histogram-brush-clear-target', true);
+
+      brushClearTarget.
+        attr('transform', function() {
+          var brushClearLeft = brushClear.node().getBoundingClientRect().left;
+          var brushClearTextRight = brushClearText.node().getBoundingClientRect().right;
+          var brushClearX = brushClearTextRight - brushClearLeft - 15;
+          return 'translate({0}, {1})'.format(
+            _.isFinite(brushClearX) ? brushClearX : 0,
+            0
+          );
+        });
+
+      brush.brushClearTarget = brushClearTarget.node();
 
       dom.brush.selectAll('.background').
         attr('width', dimensions.width).

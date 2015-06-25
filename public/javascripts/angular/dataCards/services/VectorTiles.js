@@ -512,6 +512,8 @@
           var ctx = canvas.getContext('2d');
           var tileId = VectorTileUtil.getTileId({x: tilePoint.x, y: tilePoint.y, zoom: zoom});
 
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
           ctx.fillStyle = style.highlightColor;
           ctx.strokeStyle = style.strokeStyle;
           ctx.lineWidth = style.lineWidth;
@@ -686,7 +688,12 @@
 
           if (!_.isEqual(self.currentHoverPoints, points)) {
             self.currentHoverPoints = points;
-            self.highlightLayer.redraw();
+
+            _.each(self.highlightLayer._tiles, function(canvas, tileId) {
+              var coordinates = tileId.split(':');
+              var tile = {x: coordinates[0], y: coordinates[1]};
+              self.highlightLayer.drawTile(canvas, tile, map.getZoom());
+            });
           }
 
           e.points = points;

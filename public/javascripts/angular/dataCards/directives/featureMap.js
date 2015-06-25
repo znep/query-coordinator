@@ -157,7 +157,7 @@
           // as the map is zoomed in. It can be replaced with
           // any function which computes a number that makes
           // sense as the radius of a point feature in pixels.
-          return Math.pow(zoomLevel * 0.125, 2) + 1;
+          return Math.pow(zoomLevel * 0.125, 3) + 1;
         }
 
         /**
@@ -173,7 +173,7 @@
         function getPointStyle() {
           return {
             color: 'rgba(48,134,171,1.0)',
-            highlightColor: 'rgba(255, 255, 255, .3)',
+            highlightColor: 'rgba(255, 255, 255, .5)',
             radius: scalePointFeatureRadiusByZoomLevel,
             lineWidth: 1,
             strokeStyle: 'rgba(255,255,255,1.0)'

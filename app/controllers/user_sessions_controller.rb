@@ -109,14 +109,6 @@ class UserSessionsController < ApplicationController
 
   private
 
-  ##
-  # Check to see if auth0 is available.
-  def use_auth0?
-    AUTH0_CONFIGURED && FeatureFlags.derive.use_auth0
-  end
-
-  helper_method :use_auth0?
-
   def should_auth0_redirect?(connection)
       # Booleans to determine validity of redirect request
       connection_is_present = connection.present?

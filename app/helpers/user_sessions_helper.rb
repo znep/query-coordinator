@@ -11,4 +11,10 @@ module UserSessionsHelper
     end
     url ||= profile_index_path # Fallback to SOMEthing
   end
+
+  ##
+  # Check to see if auth0 is available.
+  def use_auth0?
+    AUTH0_CONFIGURED && FeatureFlags.derive.use_auth0
+  end
 end

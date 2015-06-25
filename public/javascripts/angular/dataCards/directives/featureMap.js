@@ -85,7 +85,10 @@
               I18n.flyout.details
             ].join('');
 
-            var unit = scope.rowDisplayUnit.pluralize();
+            var unit = (flyoutData.count === 1) ?
+              scope.rowDisplayUnit :
+              scope.rowDisplayUnit.pluralize();
+
             return template.format(flyoutData.count, unit);
           },
           getOffset: function() {
@@ -290,7 +293,10 @@
             },
             mousemove: function(e) {
               // Set flyout data and force a refresh of the flyout
-              flyoutData.offset = {x: e.originalEvent.clientX, y: e.originalEvent.clientY + 5};
+              flyoutData.offset = {
+                x: e.originalEvent.clientX,
+                y: e.originalEvent.clientY + Constants.FEATURE_MAP_FLYOUT_Y_OFFSET
+              };
               flyoutData.count = _.sum(e.points, 'count');
               FlyoutService.refreshFlyout(e.originalEvent);
             }

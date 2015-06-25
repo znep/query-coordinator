@@ -3,7 +3,7 @@
 
   // This is the Angular wrapper around VectorTileUtil, VectorTileFeature,
   // VectorTileLayer and VectorTileManager.
-  function VectorTiles() {
+  function VectorTiles(Constants) {
 
     /****************************************************************************
      *
@@ -17,17 +17,24 @@
         return _.at(tile, ['zoom', 'x', 'y']).join(':');
       },
 
+      // Given a point and zoom level, return the x, y, and z values
+      // of the tile containing this point.  The point should be specified
+      // as an object containing lat and lng keys.
       getTileInfoByPointAndZoomLevel: function(point, zoom) {
 
         var lat = point.lat * Math.PI / 180;
+        var lon = point.lng;
 
-        var x = parseInt(Math.floor((point.lng + 180) / 360 * (1 << zoom)));
-        var y = parseInt(Math.floor((1 - Math.log(Math.tan(lat) + 1 / Math.cos(lat)) / Math.PI) / 2 * (1 << zoom)));
+        var x = (lon + 180) / 360;
+        var y = (1 - Math.log(Math.tan(lat) + 1 / Math.cos(lat)) / Math.PI) / 2;
+
+        x = x * (1 << zoom);
+        y = y * (1 << zoom);
 
         return {
           zoom: zoom,
-          x: x,
-          y: y
+          x: parseInt(Math.floor(x)),
+          y: parseInt(Math.floor(y))
         };
       },
 
@@ -367,7 +374,6 @@
         var featureCount = features.length;
         var feature;
         var featureArray;
-        var quadTree;
 
         if (!this.featuresByTile.hasOwnProperty(tileId) && featureCount > 0) {
           this.featuresByTile[tileId] = [];
@@ -378,7 +384,6 @@
         }
 
         featureArray = this.featuresByTile[tileId];
-        quadTree = this.quadTreesByTile[tileId];
 
         for (i = 0; i < featureCount; i++) {
 
@@ -388,7 +393,7 @@
           var projectedPoint = vectorTileFeature.projectGeometryToTilePoint(vectorTileFeature.coordinates[0][0]);
           projectedPoint.count = vectorTileFeature.properties.count;
           projectedPoint.tile = tileId;
-          quadTree.add(projectedPoint);
+          this.quadTreesByTile[tileId].add(projectedPoint);
 
           featureArray.push(vectorTileFeature);
         }
@@ -402,7 +407,7 @@
         var featureCount;
         var i;
 
-        //First, clear the canvas
+        // First, clear the canvas
         if (this._tiles.hasOwnProperty(tileId)) {
           this.clearTile(tileId);
         }
@@ -467,9 +472,9 @@
           headers: {},
           tileSize: 256,
           debounceMilliseconds: 500,
-          onRenderStart: function() {},
-          onRenderComplete: function() {},
-          hoverThreshold: 8 // px near neighboring points
+          onRenderStart: _.noop,
+          onRenderComplete: _.noop,
+          hoverThreshold: Constants.FEATURE_MAP_HOVER_THRESHOLD // Distance to neighboring points in px
         };
 
         L.Util.setOptions(this, options);
@@ -503,7 +508,7 @@
         this.quadTreeFactory.y(_.property('y'));
 
         // Add a canvas layer for drawing highlighted points.
-        this.highlightLayer = L.tileLayer.canvas({zIndex: 2}); // zIndex breaks tooltips
+        this.highlightLayer = L.tileLayer.canvas({zIndex: 2});
 
         this.currentHoverPoints = [];
 
@@ -543,6 +548,89 @@
         this.map = map;
         this.highlightLayer.addTo(map);
 
+        // Find all edges and corners that the mouse is near
+        var edges = [['top'], ['left'], ['bottom'], ['right']];
+        var corners = _.zip(['top', 'top', 'bottom', 'bottom'], ['left', 'right', 'left', 'right']);
+        var hotspots = Array.prototype.concat.call(edges, corners);
+
+        // For a given tile, mouse offset coordinates, and threshold,
+        // calculate the neighboring tiles (tiles other than the current tile
+        // that the user's mouse is within the threshold of.
+        // Returns array of neighboringTile objects containing
+        // tile id, offset.
+        function getNeighboringTiles(tile, mouseTileOffset, hoverThreshold) {
+          var neighboringTiles;
+          var tileSize = self.options.tileSize;
+
+          // Which tile edges are we close to?
+          var edgeTests = {
+            top:    mouseTileOffset.y < hoverThreshold,
+            left:   mouseTileOffset.x < hoverThreshold,
+            bottom: tileSize - mouseTileOffset.y < hoverThreshold,
+            right:  tileSize - mouseTileOffset.x < hoverThreshold
+          };
+
+          // Get neighboring tile id for a tile's edge
+          var tileIdModifiers = {
+            top: function(tile) {
+              tile.y--;
+            },
+            left: function(tile) {
+              tile.x--;
+            },
+            bottom: function(tile) {
+              tile.y++;
+            },
+            right: function(tile) {
+              tile.x++;
+            }
+          };
+
+          // Modify tile pixel offsets
+          // tileOffset = {x: tileOffsetX, y: tileOffsetY}
+          var tileOffsetModifiers = {
+            top: function(tileOffset) {
+              tileOffset.y += tileSize;
+            },
+            left: function(tileOffset) {
+              tileOffset.x += tileSize;
+            },
+            bottom: function(tileOffset) {
+              tileOffset.y -= tileSize;
+            },
+            right: function(tileOffset) {
+              tileOffset.x -= tileSize;
+            }
+          };
+
+          // Now get those neighboring tile ids
+          neighboringTiles = _.compact(_.map(hotspots, function(hotspot) {
+
+            // hotspot is ['left'], ['left', 'top'], etc...
+            // This ensures that all edgeTests for the given hotspot values
+            // are true, which means that the mouse is within threshold of
+            // all hotspot values (aka edges).
+            if (_.all(_.at(edgeTests, hotspot), _.identity)) {
+              var neighborTile = _.clone(tile);
+              var neighborOffset = _.clone(mouseTileOffset);
+
+              _.each(hotspot, function(dir) {
+                tileIdModifiers[dir](neighborTile);
+                tileOffsetModifiers[dir](neighborOffset);
+              });
+
+              return {
+                id: VectorTileUtil.getTileId(neighborTile),
+                offset: neighborOffset
+              };
+            }
+
+            return false;
+          }));
+
+          return neighboringTiles;
+        }
+
         // Given a mouse event object, adds useful tile-related information to
         // the event, such as the tile the mouse is hovering over and any points
         // near the mouse (accounting for neighboring tiles). Keys added:
@@ -561,7 +649,6 @@
 
           var layer = self.layers.get('main'); // TODO handle selecting layers and/or multiple layers better.
           var tileCanvas = VectorTileUtil.getTileLayerCanvas(layer, e.tile.id);
-          var tileSize = self.options.tileSize;
           var hoverThreshold = self.options.hoverThreshold;
 
           if (_.isUndefined(tileCanvas)) {
@@ -574,94 +661,11 @@
             y: e.layerPoint.y - tileCanvas.offsetTop
           };
 
-          // Which edges are we close to?
-          var edgeTests = {
-            top:    mouseTileOffset.y < hoverThreshold,
-            left:   mouseTileOffset.x < hoverThreshold,
-            bottom: tileSize - mouseTileOffset.y < hoverThreshold,
-            right:  tileSize - mouseTileOffset.x < hoverThreshold
-          };
+          var tiles = [{id: e.tile.id, offset: mouseTileOffset}].
+            concat(getNeighboringTiles(e.tile, mouseTileOffset, hoverThreshold));
 
-          // Get neighboring tile id for a tile's edge
-          var tileIdModifiers = {
-            top: function(tile) {
-              tile.y--;
-              return tile;
-            },
-            left: function(tile) {
-              tile.x--;
-              return tile;
-            },
-            bottom: function(tile) {
-              tile.y++;
-              return tile;
-            },
-            right: function(tile) {
-              tile.x++;
-              return tile;
-            }
-          };
-
-          // Modify tile pixel offsets
-          // tileOffset = {x: tileOffsetX, y: tileOffsetY}
-          var tileOffsetModifiers = {
-            top: function(tileOffset) {
-              tileOffset.y += tileSize;
-              return tileOffset;
-            },
-            left: function(tileOffset) {
-              tileOffset.x += tileSize;
-              return tileOffset;
-            },
-            bottom: function(tileOffset) {
-              tileOffset.y -= tileSize;
-              return tileOffset;
-            },
-            right: function(tileOffset) {
-              tileOffset.x -= tileSize;
-              return tileOffset;
-            }
-          };
-
-          // Find all edges and corners that the mouse is near
-          var edges = [['top'], ['left'], ['bottom'], ['right']];
-          var corners = _.zip(['top', 'top', 'bottom', 'bottom'], ['left', 'right', 'left', 'right']);
-          var hotspots = _.union(edges, corners);
-
-          // Now get those neighboring tile ids
-          var tiles = [{id: e.tile.id, offset: mouseTileOffset}];
-          var neighboringTiles = _.compact(_.map(hotspots, function(hotspot) {
-
-            // hotspot is ['left'], ['left', 'top'], etc...
-            // This ensures that all edgeTests for the given hotspot values
-            // are true, which means that the mouse is within threshold of
-            // all hotspot values (aka edges).
-            if (_.all(_.at(edgeTests, hotspot), _.identity)) {
-              var neighborTile = _.clone(e.tile);
-              var neighborOffset = _.clone(mouseTileOffset);
-
-              _.each(hotspot, function(dir) {
-                tileIdModifiers[dir](neighborTile);
-                tileOffsetModifiers[dir](neighborOffset);
-              });
-
-              var relativeTileOffset = {
-                x: neighborOffset.x - mouseTileOffset.x,
-                y: neighborOffset.y - mouseTileOffset.y
-              };
-
-              return {
-                id: VectorTileUtil.getTileId(neighborTile),
-                offset: neighborOffset,
-                relativeTileOffset: relativeTileOffset
-              };
-            }
-
-            return false;
-          }));
-
-          tiles = tiles.concat(neighboringTiles);
-
+          // For each tile near the mouse, visit nodes of its quad tree and
+          // push any nearby points onto an array.
           var points = [];
           _.each(tiles, function(tile) {
             var qt = layer.quadTreesByTile[tile.id];
@@ -670,6 +674,9 @@
             if (qt) {
               qt.visit(function(node, x1, y1, x2, y2) {
                 var nodePoint = node.point;
+
+                // If this node has a point and it is near the mouse, push it
+                // onto the result array.
                 if (nodePoint) {
                   var dx = Math.pow(nodePoint.x - point.x, 2);
                   var dy = Math.pow(nodePoint.y - point.y, 2);
@@ -678,6 +685,9 @@
                   }
                 }
 
+                // return false if this node's bounding box does not intersect
+                // the square around the mouse to prevent descending into
+                // children that will definitely not contain any nearby points.
                 return (x1 > point.x + hoverThreshold) ||
                   (x2 < point.x - hoverThreshold) ||
                   (y1 > point.y + hoverThreshold) ||
@@ -686,6 +696,7 @@
             }
           });
 
+          // Redraw highlight layer, but only if set of hover points has changed
           if (!_.isEqual(self.currentHoverPoints, points)) {
             self.currentHoverPoints = points;
 

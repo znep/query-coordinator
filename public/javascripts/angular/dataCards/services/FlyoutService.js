@@ -221,6 +221,9 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
      *   element to position the flyout over. This can be used to trigger a
      *   flyout on a certain element but render it over a different one.
      *   Optional, default _.identity.
+     * @param {Function} options.getOffset - A function that returns an object
+     *   containing x and y keys (in screen coordinates). The flyout will be
+     *   positioned at these coordinates.
      * @param {boolean} [options.trackCursor=false] - Whether or not the flyout
      *   should track the mouse. Optional, default false.
      * @param {boolean} [options.horizontal=false] - Whether or not the flyout

@@ -67,6 +67,10 @@
       'HISTOGRAM_HOVER_TARGET_SIZE': 10,
       'HISTOGRAM_HANDLE_HEIGHT': 8,
 
+      // Feature Maps
+      'FEATURE_MAP_HOVER_THRESHOLD': 8,
+      'FEATURE_MAP_FLYOUT_Y_OFFSET': 5,
+
       // Table card visualization parameters.
       'TABLE_UNSORTABLE_PHYSICAL_DATATYPES': ['geo_entity', 'point'],
 

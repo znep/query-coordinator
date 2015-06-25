@@ -307,52 +307,6 @@ describe('featureMap', function() {
 
       createFeatureMap();
     });
-
-    // This test is too brittle... Leaflet handles the creation and removal
-    // of canvas tiles, and we can't reliably guess which tiles to check for
-    // rendered points. Similarly, we can't iterate over every pixel to check
-    // for rendered pionts because that would be far too slow for a test.
-    xit('should render visible points at expected locations', function(done) {
-
-      var expectedPointColor = 'rgba(48,134,171,1.0)';
-      var point1Color;
-      var point2Color;
-      var point3Color;
-      var hasZoomed = false;
-
-      // Wait for rendering to complete before checking the content of the canvas tiles.
-      scope.$on('render:complete', function() {
-
-        var canvases = $('canvas');
-
-        if (canvases.length > 0) {
-
-          if (!hasZoomed) {
-
-            testHelpers.fireEvent($('.leaflet-control-zoom-in')[0], 'click');
-            hasZoomed = true;
-
-          } else {
-
-            expect(canvases.length).to.be.above(0);
-
-            var canvasWithPointsRendered = canvases[21];
-
-            point1Color = getCanvasColorAt(canvasWithPointsRendered, { x: 128, y: 1 });
-            point2Color = getCanvasColorAt(canvasWithPointsRendered, { x: 197, y: 86 });
-            point3Color = getCanvasColorAt(canvasWithPointsRendered, { x: 249, y: 91 });
-
-            expect(point1Color).to.equal(expectedPointColor);
-            expect(point2Color).to.equal(expectedPointColor);
-            expect(point3Color).to.equal(expectedPointColor);
-
-            done();
-          }
-        }
-      });
-
-      createFeatureMap();
-    });
   });
 
   describe('disable pan and zoom feature flag', function() {

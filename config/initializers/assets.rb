@@ -11,4 +11,4 @@ Rails.application.config.assets.version = '1.0'
 # Rails.application.config.assets.precompile += %w( search.js )
 
 Rails.application.config.assets.precompile += %w( AssetFinder.js )
-Rails.application.config.assets.precompile += %w( iframe/iframe.css )
+Rails.application.config.assets.precompile += %w( rich-text-editor-iframe/rich-text-editor-iframe.css )

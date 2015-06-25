@@ -64,7 +64,7 @@
 
       onRenderError();
       throw new Error(
-        'editable stories must have a reference to a valid richTextEditorManager'
+        'editable stories must have a reference to a valid RichTextEditorManager'
       );
     }
 
@@ -244,7 +244,11 @@
           editor = richTextEditorManager.getEditor(editorId);
           editorHeight = editor.getContentHeight();
 
-          blockElement.find('.component').eq(i).find('iframe').height(editorHeight);
+          blockElement.
+            find('.component').
+            eq(i).
+            find('iframe').
+            height(editorHeight);
         }
       }
     }

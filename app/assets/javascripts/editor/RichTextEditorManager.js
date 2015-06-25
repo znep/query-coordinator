@@ -2,12 +2,20 @@
 
   'use strict';
 
-  function RichTextEditorManager(assetFinder, formats, toolbarElement) {
+  function RichTextEditorManager(assetFinder, toolbar, formats) {
 
     if (!(assetFinder instanceof AssetFinder)) {
       throw new Error(
         '`assetFinder` must be an AssetFinder (is of type ' +
         (typeof assetFinder) +
+        ').'
+      );
+    }
+
+    if (!(toolbar instanceof RichTextEditorToolbar)) {
+      throw new Error(
+        '`toolbar` must be a RichTextEditorToolbar (is of type ' +
+        (typeof toolbar) +
         ').'
       );
     }
@@ -20,17 +28,9 @@
       );
     }
 
-    if (!(toolbarElement instanceof jQuery)) {
-      throw new Error(
-        '`toolbarElement` must be a jQuery object (is of type ' +
-        (typeof toolbarElement) +
-        ').'
-      );
-    }
-
     var _assetFinder = assetFinder;
     var _formats = formats;
-    var _toolbar = new RichTextEditorToolbar(toolbarElement, formats);
+    var _toolbar = toolbar;
     var _editors = {};
 
     this.createEditor = function(editorId, preloadText) {
@@ -53,7 +53,7 @@
       return editor;
     };
 
-    this.linkEditorToToolbar = function(editorId) {
+    this.linkToolbarToEditor = function(editorId) {
       _toolbar.link(this.getEditor(editorId).getFormatController());
     };
   }

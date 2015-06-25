@@ -19,10 +19,15 @@ $(document).on('ready', function() {
     { id: 'link', tag: 'a', name: 'Link', dropdown: false, group: 3 }
   ];
 
+  var richTextEditorToolbar = new RichTextEditorToolbar(
+    $('#rich-text-editor-toolbar'),
+    richTextFormats
+  );
+
   var richTextEditorManager = new RichTextEditorManager(
     assetFinder,
-    richTextFormats,
-    $('#rich-text-editor-toolbar')
+    richTextEditorToolbar,
+    richTextFormats
   );
 
   var inspirationStory = new Story(inspirationStoryData);

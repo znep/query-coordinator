@@ -184,6 +184,7 @@
         // 'move down' button for the last block.
         if (editable) {
           _updateBlockEditControls(blockElement, i, blockCount);
+          _updateEditorHeights(block, blockElement);
         }
 
         // If we are supposed to display the insertion hint at this
@@ -221,6 +222,27 @@
 
       moveUpButton.prop('disabled', blockIndex === 0);
       moveDownButton.prop('disabled', blockIndex === (blockCount - 1));
+    }
+
+    function _updateEditorHeights(block, blockElement) {
+
+      var components = block.getComponents();
+      var componentCount = components.length;
+      var editorId;
+      var editor;
+      var editorHeight;
+
+      for (var i = 0; i < componentCount; i++) {
+
+        if (components[i].type === 'text') {
+
+          editorId = block.getId() + '-' + i;
+          editor = richTextEditorManager.getEditor(editorId);
+          editorHeight = editor.getContentHeight();
+
+          blockElement.find('.component').eq(i).find('iframe').height(editorHeight);
+        }
+      }
     }
 
     function _renderBlock(block) {

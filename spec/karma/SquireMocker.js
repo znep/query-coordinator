@@ -4,8 +4,9 @@ var SquireMocker = {
     var Squire = function() {}
     Squire.prototype = {
       addEventListener: function() {},
-      setHTML: function() {},
-      hasFormat: function() {},
+      getDocument: function() {
+        return document.createDocumentFragment();
+      },
       getSelection: function() {
         return {
           cloneContents: function() {
@@ -14,7 +15,9 @@ var SquireMocker = {
             }
           }
         };
-      }
+      },
+      hasFormat: function() {},
+      setHTML: function() {}
     };
     window.Squire = Squire;
   },

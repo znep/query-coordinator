@@ -1,0 +1,16 @@
+;var AssetFinder = (function() {
+
+  function AssetFinder() {
+
+    this.getStyleAssetPath = function(name) {
+
+      var assetPaths = {
+        'iframe': '<%= asset_path("iframe/iframe.css") %>'
+      }
+
+      return assetPaths[name];
+    };
+  }
+
+  return AssetFinder;
+})();

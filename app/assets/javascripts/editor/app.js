@@ -1,6 +1,7 @@
 $(document).on('ready', function() {
 
-  var richTextEditorManager = new RichTextEditorManager();
+  var assetFinder = new AssetFinder();
+  var richTextEditorManager = new RichTextEditorManager(assetFinder);
 
   var inspirationStory = new Story(inspirationStoryData);
   var inspirationStoryOptions = {
@@ -36,13 +37,18 @@ $(document).on('ready', function() {
   inspirationStoryRenderer.render();
   userStoryRenderer.render();
 
+  $(window).on('rich-text-editor::height-change', function(e) {
+    userStoryRenderer.render();
+  });
+
   $('.user-story-container').on('click', '[data-block-edit-action]', function(e) {
     var action = e.target.getAttribute('data-block-edit-action');
     var blockId;
     var blockIndex;
 
-    // ensure our element has a block to fetch
+    // Ensure our element has a block to fetch.
     blockId = e.target.getAttribute('data-block-id');
+
     if (blockId === null) {
       throw new Error(
         'Element does not have a `data-block-id` attribute: ' +
@@ -211,5 +217,4 @@ $(document).on('ready', function() {
       userStoryRenderer.render();
     }
   });
-
 });

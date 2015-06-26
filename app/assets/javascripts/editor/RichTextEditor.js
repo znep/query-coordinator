@@ -348,6 +348,9 @@
         var _isHeaderElement = function(nodeName) {
           return ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].indexOf(nodeName) > -1;
         };
+        var _isBlockElement = function(nodeName) {
+          return ['p', 'tr'].indexOf(nodeName) > -1;
+        }
         var nodeName = el.nodeName.toLowerCase();
         var cleanEl = null;
         var childNodes;
@@ -373,15 +376,10 @@
 
           if (_isHeaderElement(nodeName)) {
             cleanEl = document.createElement(nodeName);
-          } else if (nodeName === 'div' || nodeName === 'span' || nodeName === 'br') {
-            // We want to collapse divs and spans into more meaningful
-            // nodes so we ignore them and let their children accumulate
-            // on the span's parent element.
-            cleanEl = document.createDocumentFragment();
-          } else if (nodeName === 'p') {
+          } else if (_isBlockElement(nodeName)) {
             cleanEl = document.createElement('div');
           } else {
-            cleanEl = document.createElement(nodeName);
+            cleanEl = document.createDocumentFragment();
           }
 
           _copyWhitelistedAttributes(el, cleanEl, attributeWhitelist);

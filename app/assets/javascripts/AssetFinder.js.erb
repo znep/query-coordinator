@@ -1,0 +1,16 @@
+;var AssetFinder = (function() {
+
+  function AssetFinder() {
+
+    this.getStyleAssetPath = function(name) {
+
+      var assetPaths = {
+        'rich-text-editor-iframe': '<%= asset_path("rich-text-editor-iframe/rich-text-editor-iframe.css") %>'
+      }
+
+      return assetPaths[name];
+    };
+  }
+
+  return AssetFinder;
+})();

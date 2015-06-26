@@ -33,6 +33,7 @@ module Storyteller
 
     # Set up multiple js manifest files
     config.assets.precompile += %w( editor.js )
+    config.assets.paths << Rails.root.join('vendor', 'assets', 'components')
 
     # Nginx routes urls with /stories from the Open Data platform to this app,
     # so respond to /stories as the root url.

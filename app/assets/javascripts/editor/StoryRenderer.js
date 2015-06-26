@@ -4,15 +4,13 @@
 
   function StoryRenderer(options) {
 
-    var BLOCK_VERTICAL_PADDING = 20;
-
     var story = options.story || null;
     var container = options.storyContainerElement || null;
     var scaleFactor = options.scaleFactor || 1;
     var editable = options.editable || false;
     var insertionHint = options.insertionHintElement || false;
     var insertionHintIndex = -1;
-    var textEditorManager = options.textEditorManager || null;
+    var richTextEditorManager = options.richTextEditorManager || null;
     var onRenderError = options.onRenderError || function() {};
     var componentRenderers = {
       'text': _renderTextComponent,
@@ -62,11 +60,11 @@
       );
     }
 
-    if (editable && !(textEditorManager instanceof TextEditorManager)) {
+    if (editable && !(richTextEditorManager instanceof RichTextEditorManager)) {
 
       onRenderError();
       throw new Error(
-        'editable stories must have a reference to a valid TextEditorManager'
+        'editable stories must have a reference to a valid RichTextEditorManager'
       );
     }
 
@@ -184,6 +182,7 @@
         // 'move down' button for the last block.
         if (editable) {
           _updateBlockEditControls(blockElement, i, blockCount);
+          _updateEditorHeights(block, blockElement);
         }
 
         // If we are supposed to display the insertion hint at this
@@ -195,8 +194,11 @@
 
         // Render the current block according to the current layout height.
         translation = 'translate(0,' + layoutHeight + 'px)';
+
         blockElement.css('transform', translation);
-        layoutHeight += blockElement.outerHeight(true) + BLOCK_VERTICAL_PADDING;
+
+        layoutHeight += blockElement.outerHeight(true);
+        layoutHeight += parseInt(blockElement.css('margin-bottom'), 10);
       });
 
       if (insertionHint && insertionHintIndex === blocks.length) {
@@ -209,9 +211,12 @@
     function _layoutInsertionHint(layoutHeight) {
 
       var translation = 'translate(0,' + layoutHeight + 'px)';
-
       insertionHint.css('transform', translation).removeClass('hidden');
-      return (insertionHint.outerHeight(true) + BLOCK_VERTICAL_PADDING);
+
+      return (
+        insertionHint.outerHeight(true) +
+        parseInt(insertionHint.css('margin-bottom'), 10)
+      );
     }
 
     function _updateBlockEditControls(blockElement, blockIndex, blockCount) {
@@ -221,6 +226,31 @@
 
       moveUpButton.prop('disabled', blockIndex === 0);
       moveDownButton.prop('disabled', blockIndex === (blockCount - 1));
+    }
+
+    function _updateEditorHeights(block, blockElement) {
+
+      var components = block.getComponents();
+      var componentCount = components.length;
+      var editorId;
+      var editor;
+      var editorHeight;
+
+      for (var i = 0; i < componentCount; i++) {
+
+        if (components[i].type === 'text') {
+
+          editorId = block.getId() + '-' + i;
+          editor = richTextEditorManager.getEditor(editorId);
+          editorHeight = editor.getContentHeight();
+
+          blockElement.
+            find('.component').
+            eq(i).
+            find('iframe').
+            height(editorHeight);
+        }
+      }
     }
 
     function _renderBlock(block) {
@@ -323,10 +353,10 @@
       if (editable) {
 
         editorId = options.block.getId() + '-' + options.componentIndex;
-        component = textEditorManager.getEditor(editorId);
+        component = richTextEditorManager.getEditor(editorId);
 
         if (component === null) {
-          component = textEditorManager.createEditor(editorId, options.componentValue);
+          component = richTextEditorManager.createEditor(editorId, options.componentValue);
         }
       }
 

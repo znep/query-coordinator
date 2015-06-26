@@ -1,0 +1,15 @@
+{
+  "name": "storyteller",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "vendor/assets/components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "squire-rte": "^1.2.0"
+  }
+}

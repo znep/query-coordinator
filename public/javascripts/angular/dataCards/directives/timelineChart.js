@@ -425,7 +425,9 @@
         }
 
         function clearChartHighlight() {
-          $('.timeline-chart-highlight-container > g > path').remove();
+          element.find('.timeline-chart-highlight-container > g > path').remove();
+          element.find('.timeline-chart-highlight-container').
+            css('height', cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN.BOTTOM);
         }
 
         /**
@@ -2295,6 +2297,7 @@
             cachedChartData = chartData;
 
             renderChart();
+            clearChartHighlight();
 
             // Make sure we also re-render the chart selection if it is visible
             // (such as in the case of a visualization re-render triggered by

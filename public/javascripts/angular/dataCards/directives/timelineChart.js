@@ -366,9 +366,18 @@
             return;
           }
 
+          var targetMargin = Constants.TIMELINE_CHART_HIGHLIGHT_TARGET_MARGIN;
+          var gutter = Constants.TIMELINE_CHART_GUTTER;
+
+          var cardWidth = cachedChartDimensions.width;
+          var width = highlightData.width + (targetMargin * 2);
+          var leftPos = highlightData.left - targetMargin;
+          width = Math.min(width, cardWidth + gutter - leftPos);
+          leftPos = Math.max(leftPos , -gutter);
+
           jqueryHighlightTargetElement.css({
-            left: highlightData.left - Constants.TIMELINE_CHART_HIGHLIGHT_TARGET_MARGIN,
-            width: highlightData.width + (Constants.TIMELINE_CHART_HIGHLIGHT_TARGET_MARGIN * 2),
+            left: leftPos,
+            width: width,
             height: cachedChartDimensions.height - Constants.TIMELINE_CHART_MARGIN.BOTTOM
           });
 

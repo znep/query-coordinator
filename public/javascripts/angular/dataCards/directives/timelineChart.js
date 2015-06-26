@@ -1755,6 +1755,7 @@
           }
 
           var offsetX;
+          var offsetY;
           var candidateStartDate;
           var targetIsClearSelection =
             $(mouseStatus.position.target).is('.timeline-chart-clear-selection-button') ||
@@ -1771,6 +1772,7 @@
           }
 
           offsetX = mouseStatus.position.clientX - cachedChartOffsets.left + halfVisualizedDatumWidth;
+          offsetY = mouseStatus.position.clientY - element.get(0).getBoundingClientRect().top;
 
           // Mouse down while not dragging (start selecting):
           if (mouseStatus.leftButtonPressed && !currentlyDragging) {
@@ -1823,6 +1825,13 @@
                     }
 
                   } else {
+
+                    // If the mouse is above the chart, do not enter a dragging
+                    // state because this will try to filter using the topmost
+                    // y-tick as a target, which will cause unexpected behavior.
+                    if (offsetY < 0) {
+                      return;
+                    }
 
                     // If the mouse is inside the chart element but outside the
                     // chart display, then it must be in the left or right
@@ -2170,6 +2179,7 @@
 
                 jqueryChartElement.find('.x-tick-label').removeClass('emphasis');
                 hideDatumLabel();
+                clearChartHighlight();
 
               }
 

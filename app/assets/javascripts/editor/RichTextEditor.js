@@ -170,7 +170,18 @@
         'href',
         _assetFinder.getStyleAssetPath('rich-text-editor-iframe')
       );
-      styleEl.onload = function(){ _handleContentChange(); }
+
+      // There seems to be a race condition in Firefox whereby the onload
+      // event triggers before all styles have been applied to the DOM.
+      // This manifests itself as the bottom padding on elements not always
+      // being taken into account in the height calculation done in
+      // _handleContentChange().
+      //
+      // For the time being I am getting around that issue by letting the
+      // browser have 10ms to finalize its layout before invoking
+      // _handleContentChange(), which seems to do the trick. This delay
+      // is small enough that it should be imperceptible to users.
+      styleEl.onload = function(){ setTimeout(_handleContentChange, 10); }
 
       document.head.appendChild(styleEl);
     }

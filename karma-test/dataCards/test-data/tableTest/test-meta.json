@@ -224,6 +224,42 @@
       "sortable": true
     },
     {
+      "name": "Property Damage",
+      "description": "",
+      "fieldName": "property_damage",
+      "physicalDatatype": "money",
+      "fred": "money",
+      "importance": 1,
+      "sortable": true
+    },
+    {
+      "name": "Property Damage with Funky Format",
+      "description": "",
+      "fieldName": "property_damage_funky",
+      "physicalDatatype": "money",
+      "fred": "money",
+      "importance": 1,
+      "sortable": true,
+      "format": {
+        "precision": 1,
+        "groupSeparator": ".",
+        "decimalSeparator": ",",
+        "currency": "£"
+      }
+    },
+    {
+      "name": "Property Damage Humane",
+      "description": "",
+      "fieldName": "property_damage_humane",
+      "physicalDatatype": "money",
+      "fred": "money",
+      "importance": 1,
+      "sortable": true,
+      "format": {
+        "humane": true
+      }
+    },
+    {
       "name": "Checkbox test",
       "description": "For boolean datatype",
       "fieldName": "checkbox_test",

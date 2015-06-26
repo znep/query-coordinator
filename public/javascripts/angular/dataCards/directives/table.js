@@ -431,18 +431,71 @@
             }
           };
 
-          var renderMoneyColumn = function (cellContent, column) {
-            // TODO: use accountingjs to support non-US formats?
-            var dollarAmount = parseFloat(cellContent);
-            if (_.isFinite(dollarAmount)) {
-              cellContent = Math.abs(Math.round(dollarAmount * 100)).toString();
-              cellContent = ('00' + cellContent).slice(Math.min(-cellContent.length, -3));
-              cellContent = cellContent.replace(/(\d+)(\d{2})$/, function(match, dollars, cents) {
-                return '{0}${1}.{2}'.format(
-                  (dollarAmount < 0 ? '-' : ''),
-                  $.commaify(dollars),
-                  cents
+          var renderMoneyCell = function(cellContent, column) {
+            var format = _.extend({
+              currency: '$',
+              decimalSeparator: '.',
+              groupSeparator: ',',
+              humane: false,
+              precision: 2
+            }, column.format || {});
+            var amount = parseFloat(cellContent);
+
+            if (_.isFinite(amount)) {
+              if (format.humane) {
+                // We can't use $.toHumaneNumber here because this use case is
+                // slightly different — we want to enforce a certain precision,
+                // whereas the normal humane numbers want to use the fewest
+                // digits possible at all times.
+                // The handling on thousands-scale numbers is also different,
+                // because humane currency will always be expressed with the K
+                // scale suffix, whereas our normal humane numbers allow four-
+                // digit thousands output.
+                var absVal = Math.abs(amount);
+                if (absVal < 1000) {
+                  cellContent = absVal.toFixed(format.precision).
+                    replace('.', format.decimalSeparator);
+                } else {
+                  // At this point, we know that we're going to use a suffix for
+                  // scale, so we lean on commaify to split up the scale groups.
+                  // The number of groups can be used to select the correct
+                  // scale suffix, and we can do precision-related formatting
+                  // by taking the first two scale groups and treating them
+                  // as a float.
+                  // For instance, "12,345,678" will become an array of three
+                  // substrings, and the first two will combine into "12.345"
+                  // so that our toFixed call can work its magic.
+                  var scaleGroupedVal = $.commaify(Math.floor(absVal)).split(',');
+                  var symbols = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
+                  var symbolIndex = scaleGroupedVal.length - 2;
+
+                  var value = parseFloat(scaleGroupedVal[0] + '.' + scaleGroupedVal[1]);
+                  value = value.toFixed(format.precision);
+                  if (parseFloat(value) === 1000) {
+                    // The only edge case is when rounding takes us into the
+                    // next scale group: 999,999 should be 1M not 1000K.
+                    value = '1';
+                    if (format.precision > 0) {
+                      value += '.' + _.repeat('0', format.precision);
+                    }
+                    symbolIndex++;
+                  }
+
+                  cellContent = value.replace('.', format.decimalSeparator) + symbols[symbolIndex];
+                }
+              } else {
+                // Normal formatting without abbreviation.
+                cellContent = $.commaify(
+                  Math.abs(amount).toFixed(format.precision).
+                    replace('.', format.decimalSeparator),
+                  format.groupSeparator,
+                  format.decimalSeparator
                 );
+              }
+              cellContent = '{neg}{sym}{value}'.format({
+                neg: (amount < 0 ? '-' : ''),
+                sym: format.currency,
+                value: cellContent
               });
             }
             return cellContent;
@@ -520,7 +573,7 @@
                       cellText = _.escape(cellText);
                       break;
                     case 'money':
-                      cellText = renderMoneyColumn(cellContent, column);
+                      cellText = renderMoneyCell(cellContent, column);
                       cellText = _.escape(cellText);
                       break;
                     default:

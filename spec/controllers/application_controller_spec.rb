@@ -16,7 +16,7 @@ RSpec.describe ApplicationController, :type => :controller do
   describe 'require_logged_in_user' do
     context 'with a logged in user' do
       it 'should render the page' do
-        stub_logged_in
+        stub_valid_session
         get :test_action
         expect(response).to have_http_status(200)
       end
@@ -24,6 +24,7 @@ RSpec.describe ApplicationController, :type => :controller do
 
     context 'with no logged in user' do
       it 'should redirect to a login page with the correct return_to query param' do
+        stub_invalid_session
         get :test_action
         expect(response).to redirect_to("/login?return_to=/stories/test_action")
       end

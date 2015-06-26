@@ -188,7 +188,7 @@ describe('timelineChart', function() {
 
       // If we do not flush the timeout, the 'render:complete'
       // event will not be emitted.
-      timeout.flush(); 
+      timeout.flush();
 
     });
   });
@@ -578,6 +578,32 @@ describe('timelineChart', function() {
       clientX: 10,
       clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
       target: $('.x-tick-label')[0]
+    });
+
+    var wasThenSelected = $('.timeline-chart-wrapper').hasClass('selected');
+
+    expect(wasNotSelected).to.equal(true);
+    expect(wasThenSelected).to.equal(true);
+  });
+
+  it('should not create a selection when the mouse is clicked on the third y tick', function() {
+    var chart = createTimelineChart(640, false);
+
+    var wasNotSelected = !$('.timeline-chart-wrapper').hasClass('selected');
+
+    mockWindowStateService.scrollPositionSubject.onNext(0);
+    mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
+    mockWindowStateService.mousePositionSubject.onNext({
+      clientX: 10,
+      clientY: $('#test-timeline-chart').offset().top + $('.y-tick:last-child').offset().top + 5,
+      target: $('.y-tick:last-child')[0]
+    });
+
+    mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+    mockWindowStateService.mousePositionSubject.onNext({
+      clientX: 10,
+      clientY: $('#test-timeline-chart').offset().top + $('.y-tick:last-child').offset().top + 5,
+      target: $('.y-tick:last-child')[0]
     });
 
     var wasThenSelected = $('.timeline-chart-wrapper').hasClass('selected');

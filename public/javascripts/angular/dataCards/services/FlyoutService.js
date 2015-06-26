@@ -19,16 +19,12 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
   Rx.Observable.merge(
     WindowState.mousePositionSubject,
     replayedMousePositionSubject
-  ).subscribe(function(e) {
+  ).doAction(function(e) {
     target = e.target;
     mouseX = e.clientX;
     mouseY = e.clientY;
-  });
-
-  Rx.Observable.merge(
-    WindowState.mousePositionSubject,
-    WindowState.scrollPositionSubject,
-    replayedMousePositionSubject
+  }).merge(
+    WindowState.scrollPositionSubject
   ).subscribe(function(e) {
 
     var flyoutContent;

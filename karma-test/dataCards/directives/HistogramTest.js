@@ -20,6 +20,7 @@ describe('HistogramChart', function() {
         'card-data="cardData" ',
         'is-filtered="isFiltered" ',
         'row-display-unit="rowDisplayUnit" ',
+        'current-range-filter-value="currentRangeFilterValue"',
         'expanded="expanded">',
       '</histogram>',
     '</div>'
@@ -46,6 +47,7 @@ describe('HistogramChart', function() {
       isFiltered: null,
       rowDisplayUnit: 'cuttlefish',
       expanded: true,
+      currentRangeFilterValues: null,
       selectedExtent: null
     }, scopeData);
 

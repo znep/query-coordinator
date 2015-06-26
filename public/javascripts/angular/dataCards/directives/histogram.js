@@ -227,7 +227,9 @@
               options.brush,
               options.selectionValues,
               options.dimensions,
-              options.selectionInProgress
+              options.selectionInProgress,
+              options.selectionIndices,
+              options.data.unfiltered.length
             );
             hover = service.updateHover(
               options.brush,

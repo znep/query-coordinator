@@ -23,7 +23,7 @@ RSpec.describe DraftStory, type: :model do
         expect(subject.save).to eq(true)
         expect {
           subject.save
-        }.to raise_error
+        }.to raise_error(ActiveRecord::ReadOnlyRecord)
       end
     end
   end

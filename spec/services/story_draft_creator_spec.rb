@@ -253,7 +253,7 @@ RSpec.describe StoryDraftCreator do
               four_by_four: four_by_four,
               blocks: blocks
             )
-          }.to raise_error
+          }.to raise_error(ArgumentError)
 
           expect {
             begin

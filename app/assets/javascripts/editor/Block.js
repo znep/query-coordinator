@@ -9,7 +9,7 @@
  * constructor, like so:
  *
  * var block = new Block({
- *   id: 1,
+ *   id: '1',
  *   layout: '6-6',
  *   components: [
  *     { type: 'text', value: 'Hello, world!' },
@@ -35,6 +35,9 @@
   'use strict';
 
   /**
+   * Note that numeric ids are permitted but will be cast as strings upon
+   * instantiation.
+   *
    * @constructor
    * @param {object} blockData
    *   @property {(number|string)} id
@@ -70,7 +73,7 @@
     }
 
     var _dirty = false;
-    var _id = blockData.id;
+    var _id = String(blockData.id);
     var _layout = blockData.layout;
     var _components = blockData.components;
 
@@ -177,7 +180,7 @@
 
     /**
      * @return {object}
-     *   @property {(number|string)} [id]
+     *   @property {string} [id]
      *   @property {string} [layout]
      *   @property {object[]} [components]
      *     @property {string} type

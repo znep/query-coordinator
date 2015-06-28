@@ -60,6 +60,14 @@
       );
     }
 
+    if (typeof blockData.id !== 'string') {
+      throw new Error(
+        '`blockData` argument `id` property must be a string (is of type ' +
+        (typeof blockData.id) +
+        ').'
+      );
+    }
+
     if (!blockData.hasOwnProperty('layout')) {
       throw new Error(
         '`blockData` argument contains no `layout` property.'
@@ -73,7 +81,7 @@
     }
 
     var _dirty = false;
-    var _id = String(blockData.id);
+    var _id = blockData.id;
     var _layout = blockData.layout;
     var _components = blockData.components;
 

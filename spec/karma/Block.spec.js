@@ -12,6 +12,19 @@ describe('Block class', function() {
       });
     });
 
+    describe('when the `id` property of `blockData` is not a string', function() {
+
+      it ('raises an exception', function() {
+
+        var blockData = generateBlockData();
+        blockData['id'] = 1;
+
+        assert.throw(function() {
+          new Block(blockData);
+        });
+      });
+    });
+
     describe('when `blockData` is incomplete', function() {
 
       var blockData;
@@ -70,7 +83,7 @@ describe('Block class', function() {
     it('should should not expose `_id` directly', function() {
 
       var blockData = generateBlockData({
-        id: 99
+        id: '99'
       });
       var newBlock = new Block(blockData);
 
@@ -80,12 +93,12 @@ describe('Block class', function() {
     it('should return layout when .getLayout() is called', function() {
 
       var blockData = generateBlockData({
-        id: 99
+        id: '99'
       });
       var newBlock = new Block(blockData);
       var id = newBlock.getId();
 
-      assert.equal(id, 99, 'block `id` is 99');
+      assert.equal(id, '99', 'block `id` is 99');
     });
 
     it('should should not expose `_layout` directly', function() {
@@ -414,7 +427,7 @@ describe('Block class', function() {
     beforeEach(function() {
       newBlock = new Block(
         generateBlockData({
-          id: 99
+          id: '99'
         })
       );
     });
@@ -425,7 +438,7 @@ describe('Block class', function() {
 
         var savedBlock = newBlock.serialize();
 
-        assert(savedBlock['id'] === 99, "block `id` is 99");
+        assert(savedBlock['id'] === '99', "block `id` is '99'");
         assert.notProperty(savedBlock, 'layout', '`layout` is not present in block data');
         assert.notProperty(savedBlock, 'components', '`components` is not present in block data');
       });

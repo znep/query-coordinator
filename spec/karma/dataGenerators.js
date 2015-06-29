@@ -1,7 +1,7 @@
 function generateBlockData(options) {
 
   var blockData = {
-    id: 1,
+    id: '1',
     layout: '12',
     components: [
       {

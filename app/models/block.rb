@@ -29,6 +29,12 @@ class Block < ActiveRecord::Base
     end
   }
 
+  def as_json(options = nil)
+    block_as_hash = self.attributes
+    block_as_hash['id'] = block_as_hash['id'].to_s
+    block_as_hash
+  end
+
   def self.from_json(json_block)
     Block.new(
       layout: json_block[:layout],

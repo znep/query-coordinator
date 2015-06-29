@@ -247,9 +247,9 @@ describe('Story class', function() {
     beforeEach(function() {
       var storyData = generateStoryData({
         blocks: [
-          generateBlockData({ id: 100 }),
+          generateBlockData({ id: '100' }),
           generateBlockData({ id: 'test' }),
-          generateBlockData({ id: 101 })
+          generateBlockData({ id: '101' })
         ]
       });
       newStory = new Story(storyData);
@@ -283,7 +283,7 @@ describe('Story class', function() {
 
       it('returns the block with the specified id', function() {
 
-        var block = newStory.getBlockWithId(101);
+        var block = newStory.getBlockWithId('101');
 
         assert.deepEqual(
           block,
@@ -301,9 +301,9 @@ describe('Story class', function() {
     beforeEach(function() {
       var storyData = generateStoryData({
         blocks: [
-          generateBlockData({ id: 100 }),
+          generateBlockData({ id: '100' }),
           generateBlockData({ id: 'test' }),
-          generateBlockData({ id: 101 })
+          generateBlockData({ id: '101' })
         ]
       });
       newStory = new Story(storyData);
@@ -337,7 +337,7 @@ describe('Story class', function() {
 
       it('returns the index with the specified id', function() {
 
-        var blockIndex = newStory.getBlockIndexWithId(101);
+        var blockIndex = newStory.getBlockIndexWithId('101');
 
         assert.equal(
           blockIndex,
@@ -356,8 +356,8 @@ describe('Story class', function() {
     beforeEach(function() {
       var storyData = generateStoryData({
         blocks: [
-          generateBlockData({ id: 100 }),
-          generateBlockData({ id: 101 })
+          generateBlockData({ id: '100' }),
+          generateBlockData({ id: '101' })
         ]
       });
       newStory = new Story(storyData);
@@ -436,8 +436,8 @@ describe('Story class', function() {
     beforeEach(function() {
       var storyData = generateStoryData({
         blocks: [
-          generateBlockData({ id: 100 }),
-          generateBlockData({ id: 101 })
+          generateBlockData({ id: '100' }),
+          generateBlockData({ id: '101' })
         ]
       });
       newStory = new Story(storyData);
@@ -480,7 +480,7 @@ describe('Story class', function() {
       var storyData = generateStoryData({
         blocks: [
           generateBlockData({ id: 'first' }),
-          generateBlockData({ id: 2 }),
+          generateBlockData({ id: '2' }),
           generateBlockData({ id: 'third' })
         ]
       });
@@ -516,7 +516,7 @@ describe('Story class', function() {
         assert(newStory.getBlocks().length === 2, 'only two blocks remain');
         assert.deepEqual(
           newStory.getBlockAtIndex(0).getId(),
-          2,
+          '2',
           'the first remaining block is the one that was originally at index 1'
         );
         assert.deepEqual(
@@ -536,7 +536,7 @@ describe('Story class', function() {
       var storyData = generateStoryData({
         blocks: [
           generateBlockData({ id: 'first' }),
-          generateBlockData({ id: 2 }),
+          generateBlockData({ id: '2' }),
           generateBlockData({ id: 'third' })
         ]
       });
@@ -557,7 +557,7 @@ describe('Story class', function() {
         );
         assert.deepEqual(
           newStory.getBlockAtIndex(1).getId(),
-          2,
+          '2',
           'the second remaining block is the one that was originally at index 1'
         );
         assert.deepEqual(
@@ -577,7 +577,7 @@ describe('Story class', function() {
         assert(newStory.getBlocks().length === 2, 'only two blocks remain');
         assert.deepEqual(
           newStory.getBlockAtIndex(0).getId(),
-          2,
+          '2',
           'the first remaining block is the one that was originally at index 1'
         );
         assert.deepEqual(
@@ -592,7 +592,7 @@ describe('Story class', function() {
 
       it('removes the block at the specified index', function() {
 
-        newStory.removeBlockWithId(2);
+        newStory.removeBlockWithId('2');
 
         assert(newStory.getBlocks().length === 2, 'only two blocks remain');
         assert.deepEqual(

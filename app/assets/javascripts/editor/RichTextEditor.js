@@ -289,28 +289,20 @@
     }
 
     /**
-     * Handles the 'willPaste' event emitted by Squire.
+     * Makes an element and all child nodes conform to our set of supported
+     * element types.
      *
-     * The event object will include a `fragment` property which is a
-     * document-fragment.
-     *
-     * This function recursively descends the document-fragment and performs
-     * a whitelisting filter operation on the fragment's child nodes.
-     * This filter operation will replace non-header block elements with divs
-     * and collapse nested container elements into single divs. This is often
-     * necessary because the whitelist strips most element attributes and the
-     * semantic value of multiple nested divs with different classes, for
-     * example, is lost in the process.
-     *
-     * Note that we mutate the value of e.fragment, which is inserted
-     * by Squire into the text editor document at the cursror location
-     * after this function returns.
-     *
-     * @param {Event} e
-     *   @prop {DocumentFragment} fragment
+     * @param {DOMNode} el
+     * @param {object} attributeWhitelist
      */
-    function _sanitizeClipboardInput(e) {
+    function _sanitizeElement(el, attributeWhitelist) {
 
+      var _isHeaderElement = function(nodeName) {
+        return ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].indexOf(nodeName) > -1;
+      };
+      var _isBlockElement = function(nodeName) {
+        return ['p', 'tr'].indexOf(nodeName) > -1;
+      };
       var _copyWhitelistedAttributes = function(dirtyEl, cleanEl) {
 
         // This function checks the attribute whitelist on a tag-by-tag
@@ -342,70 +334,83 @@
           }
         }
       };
+      var nodeName = el.nodeName.toLowerCase();
+      var cleanEl = null;
+      var childNodes;
+      var childEl;
 
-      function _sanitizeElement(el, attributeWhitelist) {
+      // Node Types
+      //
+      // var Node = {
+      //   ELEMENT_NODE                :  1,
+      //   ATTRIBUTE_NODE              :  2,
+      //   TEXT_NODE                   :  3,
+      //   CDATA_SECTION_NODE          :  4,
+      //   ENTITY_REFERENCE_NODE       :  5,
+      //   ENTITY_NODE                 :  6,
+      //   PROCESSING_INSTRUCTION_NODE :  7,
+      //   COMMENT_NODE                :  8,
+      //   DOCUMENT_NODE               :  9,
+      //   DOCUMENT_TYPE_NODE          : 10,
+      //   DOCUMENT_FRAGMENT_NODE      : 11,
+      //   NOTATION_NODE               : 12
+      // };
+      if (el.nodeType === 1) {
 
-        var _isHeaderElement = function(nodeName) {
-          return ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].indexOf(nodeName) > -1;
-        };
-        var _isBlockElement = function(nodeName) {
-          return ['p', 'tr'].indexOf(nodeName) > -1;
-        }
-        var nodeName = el.nodeName.toLowerCase();
-        var cleanEl = null;
-        var childNodes;
-        var childEl;
-
-        // Node Types
-        //
-        // var Node = {
-        //   ELEMENT_NODE                :  1,
-        //   ATTRIBUTE_NODE              :  2,
-        //   TEXT_NODE                   :  3,
-        //   CDATA_SECTION_NODE          :  4,
-        //   ENTITY_REFERENCE_NODE       :  5,
-        //   ENTITY_NODE                 :  6,
-        //   PROCESSING_INSTRUCTION_NODE :  7,
-        //   COMMENT_NODE                :  8,
-        //   DOCUMENT_NODE               :  9,
-        //   DOCUMENT_TYPE_NODE          : 10,
-        //   DOCUMENT_FRAGMENT_NODE      : 11,
-        //   NOTATION_NODE               : 12
-        // };
-        if (el.nodeType === 1) {
-
-          if (_isHeaderElement(nodeName)) {
-            cleanEl = document.createElement(nodeName);
-          } else if (_isBlockElement(nodeName)) {
-            cleanEl = document.createElement('div');
-          } else {
-            cleanEl = document.createDocumentFragment();
-          }
-
-          _copyWhitelistedAttributes(el, cleanEl, attributeWhitelist);
-        } else if (el.nodeType === 3) {
-          cleanEl = document.createTextNode(el.textContent);
-        } else if (el.nodeType === 11) {
+        if (_isHeaderElement(nodeName)) {
+          cleanEl = document.createElement(nodeName);
+        } else if (_isBlockElement(nodeName)) {
+          cleanEl = document.createElement('div');
+        } else {
           cleanEl = document.createDocumentFragment();
         }
 
-        if (cleanEl !== null) {
-
-          childNodes = el.childNodes;
-
-          for (var i = 0; i < childNodes.length; i++) {
-
-            childEl = _sanitizeElement(childNodes[i]);
-
-            if (childEl !== null) {
-              cleanEl.appendChild(childEl);
-            }
-          }
-        }
-
-        return cleanEl;
+        _copyWhitelistedAttributes(el, cleanEl, attributeWhitelist);
+      } else if (el.nodeType === 3) {
+        cleanEl = document.createTextNode(el.textContent);
+      } else if (el.nodeType === 11) {
+        cleanEl = document.createDocumentFragment();
       }
 
+      if (cleanEl !== null) {
+
+        childNodes = el.childNodes;
+
+        for (var i = 0; i < childNodes.length; i++) {
+
+          childEl = _sanitizeElement(childNodes[i]);
+
+          if (childEl !== null) {
+            cleanEl.appendChild(childEl);
+          }
+        }
+      }
+
+      return cleanEl;
+    }
+
+    /**
+     * Handles the 'willPaste' event emitted by Squire.
+     *
+     * The event object will include a `fragment` property which is a
+     * document-fragment.
+     *
+     * This function recursively descends the document-fragment and performs
+     * a whitelisting filter operation on the fragment's child nodes.
+     * This filter operation will replace non-header block elements with divs
+     * and collapse nested container elements into single divs. This is often
+     * necessary because the whitelist strips most element attributes and the
+     * semantic value of multiple nested divs with different classes, for
+     * example, is lost in the process.
+     *
+     * Note that we mutate the value of e.fragment, which is inserted
+     * by Squire into the text editor document at the cursror location
+     * after this function returns.
+     *
+     * @param {Event} e
+     *   @prop {DocumentFragment} fragment
+     */
+    function _sanitizeClipboardInput(e) {
       // See function documentation above for:
       //
       // 1. Why this value is reassigned here

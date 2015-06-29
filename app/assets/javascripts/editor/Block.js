@@ -9,7 +9,7 @@
  * constructor, like so:
  *
  * var block = new Block({
- *   id: 1,
+ *   id: '1',
  *   layout: '6-6',
  *   components: [
  *     { type: 'text', value: 'Hello, world!' },
@@ -37,7 +37,7 @@
   /**
    * @constructor
    * @param {object} blockData
-   *   @property {(number|string)} id
+   *   @property {string} id
    *   @property {string} layout
    *   @property {object[]} components
    */
@@ -54,6 +54,14 @@
     if (!blockData.hasOwnProperty('id')) {
       throw new Error(
         '`blockData` argument contains no `id` property.'
+      );
+    }
+
+    if (typeof blockData.id !== 'string') {
+      throw new Error(
+        '`blockData` argument `id` property must be a string (is of type ' +
+        (typeof blockData.id) +
+        ').'
       );
     }
 
@@ -177,7 +185,7 @@
 
     /**
      * @return {object}
-     *   @property {(number|string)} [id]
+     *   @property {string} [id]
      *   @property {string} [layout]
      *   @property {object[]} [components]
      *     @property {string} type

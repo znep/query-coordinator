@@ -52,6 +52,9 @@
       'TIMELINE_CHART_MIN_LABEL_WIDTH': 150,
       'TIMELINE_CHART_REQUIRED_LABEL_WIDTH': 50,
 
+      // Timeline chart and Histogram common visualization parameters
+      'AXIS_LABEL_SETS': [1, 2, 3, 5, 7, 10], // include every nth label on either side of 0
+
       // Histogram visualization parameters.
       'HISTOGRAM_LOGARITHMIC_BUCKETING_THRESHOLD': 2000,
       'HISTOGRAM_Y_TICK_LABEL_OFFSET': 8,
@@ -66,6 +69,7 @@
       'HISTOGRAM_DRAG_TARGET_WIDTH': 11,
       'HISTOGRAM_HOVER_TARGET_SIZE': 10,
       'HISTOGRAM_HANDLE_HEIGHT': 8,
+      'HISTOGRAM_REQUIRED_LABEL_WIDTH': 42, // based off of "-1,000" label
 
       // Table card visualization parameters.
       'TABLE_UNSORTABLE_PHYSICAL_DATATYPES': ['geo_entity', 'point'],

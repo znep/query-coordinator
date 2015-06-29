@@ -146,8 +146,10 @@
     }
 
     function setupAxis(scale) {
+
       var axis = {
         x: d3.svg.axis(),
+        xLabels: [],
         y: d3.svg.axis()
       };
 
@@ -531,6 +533,48 @@
         clamp(true);
 
       return scale;
+    }
+
+    function updateAxis(scale, dimensions, axis) {
+
+      var xDomain = scale.x.domain();
+      var defaultNumberOfLabels = xDomain.length;
+      var visibleLabels;
+
+      var zeroIndex = xDomain.indexOf(0); // zero is always present in the domain
+      var totalNegativeLabels = zeroIndex;
+      var totalPositiveLabels = defaultNumberOfLabels - zeroIndex - 1;
+
+      var maxPossibleLabels = Math.floor(dimensions.width / Constants.HISTOGRAM_REQUIRED_LABEL_WIDTH);
+
+      // Calculate the number of labels that will be shown when labeling every n
+      // numbers to the right and left of 0
+      var calculateLabels = function(n) {
+        if (n === 1) {
+          return defaultNumberOfLabels;
+        }
+        return (Math.floor(totalPositiveLabels / n) + Math.floor(totalNegativeLabels / n) + 1);
+      }
+
+      // Determine the labels that will be displayed, equally spacing them.
+      var labelEveryN = _.find(Constants.AXIS_LABEL_SETS, function(n) {
+        return calculateLabels(n) <= maxPossibleLabels;
+      });
+
+      // Set every n labels that can be shown on either side of 0 to be visible.
+      // If only one label can be shown, only mark 0 as visible.
+      if (_.isUndefined(labelEveryN)) { // none of the standard label sets will fit
+        visibleLabels = xDomain.map(function() { return false; });
+        visibleLabels[zeroIndex] = true;
+      } else {
+        var referencePoint = zeroIndex % labelEveryN;
+        visibleLabels = xDomain.map(function(tick, i) {
+          return (i % labelEveryN) === referencePoint;
+        });
+      }
+      axis.xLabels = visibleLabels;
+
+      return axis;
     }
 
     function updateSVG(svg, data, scale) {
@@ -1012,6 +1056,15 @@
           attr('y2', 2);
       }
 
+      // Limit visible x axis labels to only those that will fit within the
+      // given card width, equally spaced and including 0
+      function filterXLabels(selection) {
+        selection.selectAll('.tick text').
+          style('visibility',  function(d, i) {
+            return axis.xLabels[i] ? null : 'hidden';
+          });
+      }
+
       function fixXTickEdgeLabels(selection) {
         var labels = selection.selectAll('.tick text')[0];
         if (labels.length >= 2) {
@@ -1029,6 +1082,7 @@
       dom.xTicks.
         call(axis.x).
         call(positionXTicks).
+        call(filterXLabels).
         call(fixXTickEdgeLabels).
         call(applyXTickZeroClass);
 
@@ -1117,6 +1171,7 @@
       destroyHover: destroyHover,
       destroyBrush: destroyBrush,
       updateScale: updateScale,
+      updateAxis: updateAxis,
       updateSVG: updateSVG,
       updateHover: updateHover,
       updateHistogramHoverTarget: updateHistogramHoverTarget,

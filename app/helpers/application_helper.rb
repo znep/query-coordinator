@@ -632,10 +632,7 @@ module ApplicationHelper
   # If it's set to a specific value, use that value. If it is false, return false.
   def get_ga_tracking_code
     code = FeatureFlags.derive(nil, request)[:enable_opendata_ga_tracking]
-    if code == true || code.to_s.empty?
-      # Fallback to default GA code
-      code = APP_CONFIG['opendata_ga_tracking_code']
-    end
+    (code == true || code.to_s.empty?) ? APP_CONFIG['opendata_ga_tracking_code'] : code
   end
 
   # Given that the Google Analytics feature flag is either set to true or an explicit value

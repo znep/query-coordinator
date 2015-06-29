@@ -922,7 +922,8 @@
         append('tspan').
         classed('histogram-brush-clear-x', true).
         attr('dx', Constants.HISTOGRAM_TSPAN_OFFSET).
-        text('×');
+        attr('dy', '-0.25em').
+        text(Constants.CLOSE_ICON_UNICODE_GLYPH);
 
       brushClearText.
         attr('dy', '1em').
@@ -992,7 +993,7 @@
 
       var brushClearTarget = brushClear.
         selectAll('.histogram-brush-clear-target').
-        data(function(d) {
+        data(function() {
           return [{
             brushClearTextWidth: brushClearTextWidth,
             brushClearTextOffset: brushClearTextOffset
@@ -1002,7 +1003,7 @@
       brushClearTarget.
         enter().
         append('rect').
-        attr('width', '1em').
+        attr('width', '0.5em').
         attr('height', '1em').
         style('fill', 'none').
         classed('histogram-brush-clear-target', true);

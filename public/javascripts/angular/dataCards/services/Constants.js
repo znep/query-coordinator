@@ -76,6 +76,7 @@
 
       // Icon Font
       'FILTER_ICON_UNICODE_GLYPH': '\ue610',
+      'CLOSE_ICON_UNICODE_GLYPH': '\ue60f',
 
       // Flyout parameters
       'FLYOUT_WINDOW_PADDING': 22,

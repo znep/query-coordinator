@@ -39,7 +39,6 @@ $modal-z-start: 9999
 
         &::before
           margin-right: 0.5rem
-          vertical-align: bottom
 
     .modal-close-button
       position: absolute
@@ -49,11 +48,13 @@ $modal-z-start: 9999
       cursor: pointer
       font-size: 20px
       display: inline-block
-      font-family: 'arial', 'sans-serif'
       opacity: 0.6
 
       &:hover
         opacity: 1
+        
+      .icon-close
+        font-size: 0.75rem
 
 modal-dialog.second
   .modal-overlay

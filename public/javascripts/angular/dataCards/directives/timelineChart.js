@@ -106,7 +106,6 @@
         // Cache a bunch of stuff that is useful in a lot of places that don't
         // need to be wrapped in Rx mojo.
         var cachedChartDimensions = null;
-        var cachedChartOffsets = null;
         var cachedChartData = null;
         var cachedRowDisplayUnit = null;
 
@@ -1762,7 +1761,7 @@
             $(mouseStatus.position.target).is('.timeline-chart-clear-selection-label');
           var chartHasNotRendered =
             _.isNull(cachedChartDimensions) ||
-            _.isNull(cachedChartOffsets);
+            _.isNull(element.offset());
 
 
           // Fail early if the chart hasn't rendered itself at all yet or
@@ -1771,7 +1770,7 @@
             return;
           }
 
-          offsetX = mouseStatus.position.clientX - cachedChartOffsets.left + halfVisualizedDatumWidth;
+          offsetX = mouseStatus.position.clientX - element.offset().left + halfVisualizedDatumWidth;
           offsetY = mouseStatus.position.clientY - element.get(0).getBoundingClientRect().top;
 
           // Mouse down while not dragging (start selecting):
@@ -2090,11 +2089,11 @@
               hasClass('timeline-chart-clear-selection-label');
 
             // Fail early if the chart hasn't rendered itself at all yet.
-            if (_.isNull(cachedChartDimensions) || _.isNull(cachedChartOffsets)) {
+            if (_.isNull(cachedChartDimensions) || _.isNull(element.offset())) {
               return;
             }
 
-            offsetX = mousePosition.clientX - cachedChartOffsets.left;
+            offsetX = mousePosition.clientX - element.offset().left;
 
             // The method 'getBoundingClientRect().top' must be used here
             // because the offset of expanded cards changes as the window
@@ -2281,13 +2280,6 @@
               source: 'timelineChart_{0}'.format(scope.$id),
               timestamp: _.now()
             });
-
-            // Only update the chartOffset sequence if we have done a full
-            // re-render. This is used by renderHighlightedChartSegment but
-            // that function will potentially fire many times per second so we
-            // want to cache this value instead of listening to it directly.
-            // NOTE THAT THIS IS ABSOLUTE OFFSET, NOT SCROLL OFFSET.
-            cachedChartOffsets = element.offset();
 
             // Because we are about to divide by the number of values in the
             // provided chart data, we need to first check to make sure we

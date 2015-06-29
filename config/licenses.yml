@@ -89,3 +89,7 @@
   name: Open Database License
   terms_link: http://opendatacommons.org/licenses/odbl/1.0/
   hide_selector: true
+- id: OSODL
+  name: OS Open Data Licence
+  terms_link: http://www.ordnancesurvey.co.uk/docs/licences/os-opendata-licence.pdf
+  hide_selector: true

@@ -2,7 +2,6 @@ class LicenseConfig < ExternalConfig
   extend Forwardable
 
   def_delegators :@licenses, :each
-  attr_reader :licenses
 
   def filename
     @filename ||= "#{Rails.root}/config/licenses.yml"
@@ -40,12 +39,16 @@ class LicenseConfig < ExternalConfig
           name = get_name_for categorized_license, license
           merged[name] = categorized_license[:id]
         end
-      else
+      elsif license[:hide_selector] != true
         name = get_name_for license
         merged[name] = license[:id]
       end
       merged
     end
+  end
+
+  def licenses
+    @licenses.reject { |license| license[:hide_selector] }
   end
 
   private

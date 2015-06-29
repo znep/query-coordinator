@@ -1,5 +1,10 @@
 $(document).on('ready', function() {
 
+  window.dispatcher = new Dispatcher();
+  window.dispatcher.register(function(payload) {
+    console.info('Dispatcher action: ', payload);
+  });
+
   var assetFinder = new AssetFinder();
 
   var richTextFormats = [
@@ -88,12 +93,30 @@ $(document).on('ready', function() {
 
     // perform the edits requested
     if (action === 'move-up') {
+      window.dispatcher.dispatch({
+        actionType: Constants.STORY_MOVE_BLOCK_UP,
+        storyId: userStory.getId(),
+        blockId: blockId
+      });
+
       userStory.swapBlocksAtIndices(blockIndex, blockIndex - 1);
     }
     else if (action === 'move-down') {
+      window.dispatcher.dispatch({
+        actionType: Constants.STORY_MOVE_BLOCK_DOWN,
+        storyId: userStory.getId(),
+        blockId: blockId
+      });
+
       userStory.swapBlocksAtIndices(blockIndex, blockIndex + 1);
     }
     else if (action === 'delete') {
+      window.dispatcher.dispatch({
+        actionType: Constants.STORY_DELETE_BLOCK,
+        storyId: userStory.getId(),
+        blockId: blockId
+      });
+
       userStory.removeBlockWithId(blockId);
     }
     else {

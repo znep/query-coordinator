@@ -35,12 +35,9 @@
   'use strict';
 
   /**
-   * Note that numeric ids are permitted but will be cast as strings upon
-   * instantiation.
-   *
    * @constructor
    * @param {object} blockData
-   *   @property {(number|string)} id
+   *   @property {string} id
    *   @property {string} layout
    *   @property {object[]} components
    */

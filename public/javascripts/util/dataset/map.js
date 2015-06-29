@@ -81,9 +81,10 @@ Dataset.map.convertToVersion2 = function(view, df)
     if (view.isGeoDataset())
     {
         df.exclusiveLayers = true;
-        df.bkgdLayers = [{ layerKey: 'Google Roadmap', alias: $.t('core.map_layers.google_roadmap_alias'), opacity: 1.0 },
-                         { layerKey: 'Bing Road', alias: $.t('core.map_layers.bing_roadmap_alias'), opacity: 1.0 },
-                         { layerKey: 'World Street Map (ESRI)', alias: 'ESRI', opacity: 1.0 }];
+        df.bkgdLayers = [
+          { layerKey: 'Google Roadmap', alias: $.t('core.map_layers.google_roadmap_alias'), opacity: 1.0 },
+          { layerKey: 'World Street Map (ESRI)', alias: 'ESRI', opacity: 1.0 }
+        ];
         delete df.viewDefinitions[0].plotStyle;
         delete df.viewDefinitions[0].plot;
     }

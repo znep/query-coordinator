@@ -17,12 +17,12 @@ class ApplicationController < ActionController::Base
   #   current_user  # with invalid cookies
   #   => nil
   def current_user
-    env['socrata.current_user']
+    env['socrata.session'].authenticate(env)
   end
 
   def require_logged_in_user
     # If no current_user, send to main login page
-    redirect_to "/login?return_to=#{request.path}" unless current_user
+    redirect_to "/login?return_to=#{request.path}" unless current_user.present?
   end
 end
 

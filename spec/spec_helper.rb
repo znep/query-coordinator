@@ -107,9 +107,13 @@ RSpec.configure do |config|
 =end
 end
 
-def stub_logged_in
+def stub_valid_session
   good_user_object = {"id"=>"tugg-xxxx", "createdAt"=>1425577015, "displayName"=>"testuser"}
   allow(@controller).to receive(:current_user).and_return(good_user_object)
+end
+
+def stub_invalid_session
+  allow(@controller).to receive(:current_user).and_return(nil)
 end
 
 def fixture_path

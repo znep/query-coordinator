@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe StoriesController, type: :controller do
 
   before do
-    stub_logged_in
+    stub_valid_session
   end
 
   describe '#show' do

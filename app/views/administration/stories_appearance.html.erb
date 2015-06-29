@@ -87,7 +87,7 @@
 <% content_for :js_footer do %>
   <script type="text/javascript">
     blist.namespace.fetch('blist.publish');
-    blist.publish.currentTheme = <%= raw @story_theme.to_json %>;
+    blist.publish.currentTheme = <%= raw json_escape(@story_theme.to_json) %>;
   </script>
 
   <%= include_javascripts 'admin-stories-appearance' %>

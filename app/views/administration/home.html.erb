@@ -98,7 +98,7 @@
   <%- content_for :js_footer do -%>
     <script type="text/javascript">
       blist.namespace.fetch('blist.home');
-      blist.home.features = <%= raw @features.to_json %>;
+      blist.home.features = <%= raw json_escape(@features.to_json) %>;
     </script>
   <%- end -%>
 

@@ -90,8 +90,8 @@
     blist.publish.browseWidgetHeight = <%= @widget_height %>;
     blist.publish.browseWidgetWidth  = <%= @widget_width %>;
 
-    blist.publish.currentTheme       = <%= raw @embed_options.to_json %>;
-    blist.publish.selectOptions      = <%= raw @browse_select_options.to_json %>;
+    blist.publish.currentTheme       = <%= raw json_escape(@embed_options.to_json) %>;
+    blist.publish.selectOptions      = <%= raw json_escape(@browse_select_options.to_json) %>;
     blist.publish.customFacets       = <%= safe_json @custom_facets %>;
   </script>
   <%- unless params[:no_js].present? -%>

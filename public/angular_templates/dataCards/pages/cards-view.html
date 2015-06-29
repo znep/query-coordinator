@@ -140,7 +140,10 @@
               <span class="light">{{filter.operand}}</span>
             </div>
           </div>
-          <button class="clear-all-filters-button action-btn dark" ng-if="appliedFiltersForDisplay.length > 0" ng-click="clearAllFilters()">Clear All ×</button>
+          <button class="clear-all-filters-button action-btn dark" ng-if="appliedFiltersForDisplay.length > 0" ng-click="clearAllFilters()">
+            Clear All
+            <span class="icon-close"></span>
+          </button>
           <aggregation-chooser page="page"></aggregation-chooser>
         </div>
       </div>

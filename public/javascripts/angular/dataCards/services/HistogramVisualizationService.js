@@ -463,11 +463,8 @@
       }
 
       FlyoutService.register({
-        selector: '.histogram-brush-clear-x',
-        render: brush.selectionClearFlyout,
-        positionOn: function() {
-          return brush.brushClearTarget;
-        }
+        selector: '.histogram-brush-clear-target',
+        render: brush.selectionClearFlyout
       });
 
       FlyoutService.register({
@@ -554,7 +551,7 @@
           return defaultNumberOfLabels;
         }
         return (Math.floor(totalPositiveLabels / n) + Math.floor(totalNegativeLabels / n) + 1);
-      }
+      };
 
       // Determine the labels that will be displayed, equally spacing them.
       var labelEveryN = _.find(Constants.AXIS_LABEL_SETS, function(n) {
@@ -847,6 +844,9 @@
         labelString: labelString
       }];
 
+      var brushClearTextOffset;
+      var brushClearTextWidth;
+
       var brushClear = dom.brush.selectAll('.histogram-brush-clear').
         data(brushClearData);
 
@@ -922,7 +922,8 @@
         append('tspan').
         classed('histogram-brush-clear-x', true).
         attr('dx', Constants.HISTOGRAM_TSPAN_OFFSET).
-        text('×');
+        attr('dy', '-0.25em').
+        text(Constants.CLOSE_ICON_UNICODE_GLYPH);
 
       brushClearText.
         attr('dy', '1em').
@@ -940,12 +941,14 @@
             if (dxLeft < 0) {
               dx = 0;
             } else {
-              var dxRight = dxLeft + width;
+              var dxRight = dxLeft + width + dom.margin.right;
               if (dxRight > d.brushMax) {
                 dx = d.brushMax - dxRight;
               }
             }
           }
+          brushClearTextOffset = dx;
+          brushClearTextWidth = width;
           return dx;
         });
 
@@ -990,26 +993,28 @@
 
       var brushClearTarget = brushClear.
         selectAll('.histogram-brush-clear-target').
-        data([0]);
+        data(function() {
+          return [{
+            brushClearTextWidth: brushClearTextWidth,
+            brushClearTextOffset: brushClearTextOffset
+          }];
+        });
 
       brushClearTarget.
         enter().
         append('rect').
-        attr('width', '1em').
+        attr('width', '0.5em').
         attr('height', '1em').
-        attr('pointer-events', 'none').
         style('fill', 'none').
         classed('histogram-brush-clear-target', true);
 
       brushClearTarget.
-        attr('transform', function() {
-          var brushClearLeft = brushClear.node().getBoundingClientRect().left;
-          var brushClearTextRight = brushClearText.node().getBoundingClientRect().right;
-          var brushClearX = brushClearTextRight - brushClearLeft - 15;
-          return 'translate({0}, {1})'.format(
-            _.isFinite(brushClearX) ? brushClearX : 0,
-            0
-          );
+        attr('transform', function(d) {
+          var width = this.getBoundingClientRect().width;
+          var brushClearTextWidth = d.brushClearTextWidth;
+          var brushClearTextOffset = d.brushClearTextOffset;
+          return 'translate({0}, 0)'.
+            format(brushClearTextOffset + brushClearTextWidth - width);
         });
 
       brush.brushClearTarget = brushClearTarget.node();

@@ -96,6 +96,14 @@ describe('Customize card dialog', function() {
         availableCardTypes: ['feature'],
         defaultCardType: 'feature'
       },
+      many_kinds: {
+        name: 'A column suffering an identity crisis.',
+        description: '???',
+        fred: 'amount',
+        physicalDatatype: 'number',
+        availableCardTypes: ['feature', 'choropleth', 'column', 'histogram', 'search'],
+        defaultCardType: 'search'
+      },
       bar: {
         name: 'A bar where cool froods hang out.',
         description: '???',
@@ -174,124 +182,74 @@ describe('Customize card dialog', function() {
     expect(styles.indexOf('height')).to.equal(-1);
   });
 
-  it('should provide baselayer options that change the choropleth baseLayerUrl', function() {
-    var dialog = createDialog();
-    var cardModel = dialog.scope.customizedCard;
-
-    var standard = dialog.element.find('option:contains("Standard")');
-    var esri = dialog.element.find('option:contains("Esri")');
-    var custom = dialog.element.find('option:contains("Custom")');
-
-    expect(standard.length).to.equal(1);
-    expect(esri.length).to.equal(1);
-    expect(custom.length).to.equal(1);
-
-    // Assert the default is right
-    expect(standard.is(':selected')).to.be.true;
-    expect(esri.is(':selected')).to.be.false;
-
-    // Select the Esri
-    esri.prop('selected', true).change();
-    dialog.scope.$digest();
-
-    expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_URL);
-
-    // Select Standard
-    standard.prop('selected', true).change();
-    dialog.scope.$digest();
-
-    expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
-
-    // Select Custom
-    var input = dialog.element.find('input[name=customLayerUrl]')
-    expect(input.is(':visible')).to.equal(false);
-
-    custom.prop('selected', true).change();
-    dialog.scope.$digest();
-
-    expect(input.is(':visible')).to.equal(true);
-    // Shouldn't change the baseLayerUrl yet
-    expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
-
-    // Shouldn't change the baseLayerUrl when given a non-url
-    input.val('foobar').trigger('input').trigger('change');
-    dialog.scope.$digest();
-    expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
-
-    // Shouldn't change the baseLayerUrl when given a url without {x}, {y}, {z}
-    input.val('http://www.google.com/').trigger('input').trigger('change');
-    dialog.scope.$digest();
-    expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
-
-    // Should change the baseLayerUrl when given a url with {x}, {y}, {z}
-    input.val('http://www.socrata.com/{x}/{y}/{z}').trigger('input').trigger('change');
-    dialog.scope.$digest();
-    expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal('http://www.socrata.com/{x}/{y}/{z}');
+  it('should display visualization choices when more than one type is available', function() {
+    var dialog = createDialog({
+      fieldName: 'bar',
+      cardSize: 2,
+      cardType: 'column',
+      expanded: false
+    });
+    var visualizationOptions = dialog.element.find('ul.visualization-options');
+    expect(visualizationOptions.find('li')).to.have.length(2);
   });
 
-  it('should provide baselayer options that change the feature map baseLayerUrl', function() {
-    var options = {
-      'card': {
-        fieldName: 'feature',
-        cardSize: 1,
-        cardType: 'feature',
-        expanded: false
+  it('should not display visualization choices when only one type is available', function() {
+    var dialog = createDialog({
+      fieldName: 'feature',
+      cardSize: 2,
+      cardType: 'feature',
+      expanded: false
+    });
+    var visualizationOptions = dialog.element.find('ul.visualization-options');
+    expect(visualizationOptions).to.have.length(0);
+  });
+
+  it('should display a maximum of three visualization choices per row', function() {
+    var dialog = createDialog({
+      fieldName: 'many_kinds',
+      cardSize: 2,
+      cardType: 'search',
+      expanded: false
+    });
+    var visualizationOptionItems = dialog.element.find('ul.visualization-options li');
+    expect(visualizationOptionItems).to.have.length(5);
+    var thirdOption = visualizationOptionItems.eq(2);
+    var fourthOption = visualizationOptionItems.eq(3);
+    expect(thirdOption.offset().top).to.be.lessThan(fourthOption.offset().top);
+  });
+
+  // TODO: refine this test based on the actual DOM structure of how visualization
+  // option list items are displayed.
+  it('should wrap visualization labels when space is limited', function() {
+    var dialog = createDialog({
+      fieldName: 'bar',
+      cardSize: 2,
+      cardType: 'column',
+      expanded: false
+    });
+    var visualizationOptionItems = dialog.element.find('ul.visualization-options li');
+    visualizationOptionItems.each(function() {
+      var item = $(this);
+      if (/Column Chart/.test(item.html())) {
+        var cursor = $('<span />').text("\ufeff");
+        var firstLine = cursor.prependTo(item).offset();
+        var secondLine = cursor.appendTo(item).offset();
+        expect(firstLine.top).to.be.lessthan(secondLine.top);
       }
-    };
+    });
+  });
 
-    var dialog = createDialog(options);
+  xit('should show a warning indicator on suboptimal visualization icons', function() {
 
-    var cardModel = dialog.scope.customizedCard;
+  });
 
-    var standard = dialog.element.find('option:contains("Standard")');
-    var esri = dialog.element.find('option:contains("Esri")');
-    var custom = dialog.element.find('option:contains("Custom")');
+  xit('should show a warning flyout when suboptimal visualizations are selected', function() {
 
-    expect(standard.length).to.equal(1);
-    expect(esri.length).to.equal(1);
-    expect(custom.length).to.equal(1);
+  });
 
-    // Assert the default is right
-    expect(standard.is(':selected')).to.be.true;
-    expect(esri.is(':selected')).to.be.false;
+  // TODO: default visualization or currently selected visualization?
+  xit('should select the default visualization type when the dialog is displayed', function() {
 
-    // Select the Esri
-    esri.prop('selected', true).change();
-    dialog.scope.$digest();
-
-    expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_URL);
-
-    // Select Standard
-    standard.prop('selected', true).change();
-    dialog.scope.$digest();
-
-    expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
-
-    // Select Custom
-    var input = dialog.element.find('input[name=customLayerUrl]')
-    expect(input.is(':visible')).to.equal(false);
-
-    custom.prop('selected', true).change();
-    dialog.scope.$digest();
-
-    expect(input.is(':visible')).to.equal(true);
-    // Shouldn't change the baseLayerUrl yet
-    expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
-
-    // Shouldn't change the baseLayerUrl when given a non-url
-    input.val('foobar').trigger('input').trigger('change');
-    dialog.scope.$digest();
-    expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
-
-    // Shouldn't change the baseLayerUrl when given a url without {x}, {y}, {z}
-    input.val('http://www.google.com/').trigger('input').trigger('change');
-    dialog.scope.$digest();
-    expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
-
-    // Should change the baseLayerUrl when given a url with {x}, {y}, {z}
-    input.val('http://www.socrata.com/{x}/{y}/{z}').trigger('input').trigger('change');
-    dialog.scope.$digest();
-    expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal('http://www.socrata.com/{x}/{y}/{z}');
   });
 
   it('should update the given model when clicking "Done"', function() {
@@ -340,28 +298,150 @@ describe('Customize card dialog', function() {
     expect(dialog.element.find('input[name=customLayerUrl]').val()).to.equal(url);
   });
 
-  it('should set back to custom baselayer when coming back to customize', function() {
-    var dialog = createDialog();
-    var card = dialog.scope.customizedCard;
-    var custom = dialog.element.find('option:contains("Custom")');
-    var customInput = dialog.element.find('input[name=customLayerUrl]');
-    var standard = dialog.element.find('option:contains("Standard")');
+  describe('map-specific settings', function() {
+    it('should provide baselayer options that change the choropleth baseLayerUrl', function() {
+      var dialog = createDialog();
+      var cardModel = dialog.scope.customizedCard;
 
-    // Set a custom url
-    var url = 'http://www.socrata.com/{x}/{y}/{z}';
-    custom.prop('selected', true).change();
-    expect(customInput.is(':visible')).to.equal(true);
-    customInput.val(url).trigger('input').trigger('change');
-    dialog.scope.$digest();
-    expect(card.getCurrentValue('baseLayerUrl')).to.equal(url);
+      var standard = dialog.element.find('option:contains("Standard")');
+      var esri = dialog.element.find('option:contains("Esri")');
+      var custom = dialog.element.find('option:contains("Custom")');
 
-    // Now go back to the standard
-    standard.prop('selected', true).change();
-    expect(card.getCurrentValue('baseLayerUrl')).to.equal(undefined);
+      expect(standard.length).to.equal(1);
+      expect(esri.length).to.equal(1);
+      expect(custom.length).to.equal(1);
 
-    // Now back to custom
-    custom.prop('selected', true).change();
-    // It should set the base layer back to the custom url from before
-    expect(card.getCurrentValue('baseLayerUrl')).to.equal(url);
+      // Assert the default is right
+      expect(standard.is(':selected')).to.be.true;
+      expect(esri.is(':selected')).to.be.false;
+
+      // Select the Esri
+      esri.prop('selected', true).change();
+      dialog.scope.$digest();
+
+      expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_URL);
+
+      // Select Standard
+      standard.prop('selected', true).change();
+      dialog.scope.$digest();
+
+      expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+      // Select Custom
+      var input = dialog.element.find('input[name=customLayerUrl]')
+      expect(input.is(':visible')).to.equal(false);
+
+      custom.prop('selected', true).change();
+      dialog.scope.$digest();
+
+      expect(input.is(':visible')).to.equal(true);
+      // Shouldn't change the baseLayerUrl yet
+      expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+      // Shouldn't change the baseLayerUrl when given a non-url
+      input.val('foobar').trigger('input').trigger('change');
+      dialog.scope.$digest();
+      expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+      // Shouldn't change the baseLayerUrl when given a url without {x}, {y}, {z}
+      input.val('http://www.google.com/').trigger('input').trigger('change');
+      dialog.scope.$digest();
+      expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+      // Should change the baseLayerUrl when given a url with {x}, {y}, {z}
+      input.val('http://www.socrata.com/{x}/{y}/{z}').trigger('input').trigger('change');
+      dialog.scope.$digest();
+      expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal('http://www.socrata.com/{x}/{y}/{z}');
+    });
+
+    it('should provide baselayer options that change the feature map baseLayerUrl', function() {
+      var options = {
+        'card': {
+          fieldName: 'feature',
+          cardSize: 1,
+          cardType: 'feature',
+          expanded: false
+        }
+      };
+
+      var dialog = createDialog(options);
+
+      var cardModel = dialog.scope.customizedCard;
+
+      var standard = dialog.element.find('option:contains("Standard")');
+      var esri = dialog.element.find('option:contains("Esri")');
+      var custom = dialog.element.find('option:contains("Custom")');
+
+      expect(standard.length).to.equal(1);
+      expect(esri.length).to.equal(1);
+      expect(custom.length).to.equal(1);
+
+      // Assert the default is right
+      expect(standard.is(':selected')).to.be.true;
+      expect(esri.is(':selected')).to.be.false;
+
+      // Select the Esri
+      esri.prop('selected', true).change();
+      dialog.scope.$digest();
+
+      expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_URL);
+
+      // Select Standard
+      standard.prop('selected', true).change();
+      dialog.scope.$digest();
+
+      expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+      // Select Custom
+      var input = dialog.element.find('input[name=customLayerUrl]')
+      expect(input.is(':visible')).to.equal(false);
+
+      custom.prop('selected', true).change();
+      dialog.scope.$digest();
+
+      expect(input.is(':visible')).to.equal(true);
+      // Shouldn't change the baseLayerUrl yet
+      expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+      // Shouldn't change the baseLayerUrl when given a non-url
+      input.val('foobar').trigger('input').trigger('change');
+      dialog.scope.$digest();
+      expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+      // Shouldn't change the baseLayerUrl when given a url without {x}, {y}, {z}
+      input.val('http://www.google.com/').trigger('input').trigger('change');
+      dialog.scope.$digest();
+      expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+      // Should change the baseLayerUrl when given a url with {x}, {y}, {z}
+      input.val('http://www.socrata.com/{x}/{y}/{z}').trigger('input').trigger('change');
+      dialog.scope.$digest();
+      expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal('http://www.socrata.com/{x}/{y}/{z}');
+    });
+
+    it('should set back to custom baselayer when coming back to customize', function() {
+      var dialog = createDialog();
+      var card = dialog.scope.customizedCard;
+      var custom = dialog.element.find('option:contains("Custom")');
+      var customInput = dialog.element.find('input[name=customLayerUrl]');
+      var standard = dialog.element.find('option:contains("Standard")');
+
+      // Set a custom url
+      var url = 'http://www.socrata.com/{x}/{y}/{z}';
+      custom.prop('selected', true).change();
+      expect(customInput.is(':visible')).to.equal(true);
+      customInput.val(url).trigger('input').trigger('change');
+      dialog.scope.$digest();
+      expect(card.getCurrentValue('baseLayerUrl')).to.equal(url);
+
+      // Now go back to the standard
+      standard.prop('selected', true).change();
+      expect(card.getCurrentValue('baseLayerUrl')).to.equal(undefined);
+
+      // Now back to custom
+      custom.prop('selected', true).change();
+      // It should set the base layer back to the custom url from before
+      expect(card.getCurrentValue('baseLayerUrl')).to.equal(url);
+    });
   });
 });

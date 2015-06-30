@@ -24,7 +24,7 @@ http://www.socrata.com
 
   <%= rendered_stylesheet_tag 'base-sdp' %>
   <link type="text/css" media="all" rel="stylesheet" href="/webfonts/socrata-apps/socrata-apps.css?<%= asset_revision_key %>"/>
-  <% unless !get_ga_tracking_code || (params[:no_cookie] == 'true') %>
+  <% unless !use_ga_tracking_code? || (params[:no_cookie] == 'true') %>
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '<%= get_ga_tracking_code %>'],

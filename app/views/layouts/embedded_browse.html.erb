@@ -56,7 +56,7 @@ http://www.socrata.com
   <%= rendered_stylesheet_tag 'strip-chrome' %>
   <link rel="shortcut icon" href="<%= theme_image_url(CurrentDomain.theme.images.favicon) %>" />
 
-  <% if get_ga_tracking_code %>
+  <% if use_ga_tracking_code? %>
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '<%= get_ga_tracking_code %>'],

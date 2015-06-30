@@ -628,6 +628,11 @@ module ApplicationHelper
     ")
   end
 
+  # Returns true unless the opendata_ga_tracking_code feature flag is set to false
+  def use_ga_tracking_code?
+    FeatureFlags.derive(nil, request)[:enable_opendata_ga_tracking] != false
+  end
+
   # If code is true or an empty string, fallback to the default GA code in APP_CONFIG.
   # If it's set to a specific value, use that value. If it is false, return false.
   def get_ga_tracking_code
@@ -638,9 +643,7 @@ module ApplicationHelper
   # Given that the Google Analytics feature flag is either set to true or an explicit value
   # render the Google Analytics tracking JavaScript code.
   def render_ga_tracking
-    ga_tracking_code = get_ga_tracking_code
-
-    if ga_tracking_code
+    if use_ga_tracking_code?
       # Google analytics namespaced for multi tenant applications
       # http://benfoster.io/blog/google-analytics-multi-tenant-applications
       javascript_tag(<<-eos)
@@ -649,7 +652,7 @@ module ApplicationHelper
             m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','//www.google-analytics.com/analytics.js','_gaSocrata');
 
-        _gaSocrata('create', '#{ga_tracking_code}', 'auto', 'socrata');
+        _gaSocrata('create', '#{get_ga_tracking_code}', 'auto', 'socrata');
         _gaSocrata('socrata.send', 'pageview');
       eos
     end

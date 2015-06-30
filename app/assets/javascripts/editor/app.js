@@ -1,9 +1,8 @@
 $(document).on('ready', function() {
 
-  window.dispatcher = new Dispatcher();
-  window.dispatcher.register(function(payload) {
-    console.info('Dispatcher action: ', payload);
-  });
+  /**
+   * Setup
+   */
 
   var assetFinder = new AssetFinder();
 
@@ -35,16 +34,6 @@ $(document).on('ready', function() {
     richTextFormats
   );
 
-  var inspirationStory = new Story(inspirationStoryData);
-  var inspirationStoryOptions = {
-    story: inspirationStory,
-    storyContainerElement: $('.inspiration-story'),
-    scaleFactor: 0.5,
-    editable: false,
-    onRenderError: function() { $('.inspiration-story-error').removeClass('hidden'); }
-  };
-  var inspirationStoryRenderer = new StoryRenderer(inspirationStoryOptions);
-
   // Temporary fix until version is being added/populated
   if (userStoryData.version === null) {
     userStoryData.version = '';
@@ -55,9 +44,32 @@ $(document).on('ready', function() {
     userStoryData.blocks = sampleBlocks;
   }
 
-  var userStory = new Story(userStoryData);
+  /**
+   * FLUX
+   */
+
+  window.dispatcher = new Dispatcher();
+  window.dispatcher.register(function(payload) {
+    console.info('Dispatcher action: ', payload);
+  });
+
+  window.storyStore = new StoryStore();
+  window.blockStore = new BlockStore();
+
+  window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: inspirationStoryData });
+  window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
+
+  var inspirationStoryOptions = {
+    storyUid: inspirationStoryData.uid,
+    storyContainerElement: $('.inspiration-story'),
+    scaleFactor: 0.5,
+    editable: false,
+    onRenderError: function() { $('.inspiration-story-error').removeClass('hidden'); }
+  };
+  var inspirationStoryRenderer = new StoryRenderer(inspirationStoryOptions);
+
   var userStoryOptions = {
-    story: userStory,
+    storyUid: userStoryData.uid,
     storyContainerElement: $('.user-story'),
     editable: true,
     insertionHintElement: $('#story-insertion-hint'),
@@ -66,67 +78,13 @@ $(document).on('ready', function() {
   };
   var userStoryRenderer = new StoryRenderer(userStoryOptions);
 
-  inspirationStoryRenderer.render();
-  userStoryRenderer.render();
+  /**
+   * LEGACY
+   */
 
   $(window).on('rich-text-editor::height-change', function(e) {
     userStoryRenderer.render();
   });
-
-  $('.user-story-container').on('click', '[data-block-edit-action]', function(e) {
-
-    var action = e.target.getAttribute('data-block-edit-action');
-    var blockId;
-    var blockIndex;
-
-    // Ensure our element has a block to fetch.
-    blockId = e.target.getAttribute('data-block-id');
-
-    if (blockId === null) {
-      throw new Error(
-        'Element does not have a `data-block-id` attribute: ' +
-        e.currentTarget.toString()
-      );
-    }
-
-    blockIndex = userStory.getBlockIndexWithId(blockId);
-
-    // perform the edits requested
-    if (action === 'move-up') {
-      window.dispatcher.dispatch({
-        actionType: Constants.STORY_MOVE_BLOCK_UP,
-        storyId: userStory.getId(),
-        blockId: blockId
-      });
-
-      userStory.swapBlocksAtIndices(blockIndex, blockIndex - 1);
-    }
-    else if (action === 'move-down') {
-      window.dispatcher.dispatch({
-        actionType: Constants.STORY_MOVE_BLOCK_DOWN,
-        storyId: userStory.getId(),
-        blockId: blockId
-      });
-
-      userStory.swapBlocksAtIndices(blockIndex, blockIndex + 1);
-    }
-    else if (action === 'delete') {
-      window.dispatcher.dispatch({
-        actionType: Constants.STORY_DELETE_BLOCK,
-        storyId: userStory.getId(),
-        blockId: blockId
-      });
-
-      userStory.removeBlockWithId(blockId);
-    }
-    else {
-      return;
-    }
-
-    userStoryRenderer.render();
-  });
-
-
 
   function DragDrop(ghostElement) {
 

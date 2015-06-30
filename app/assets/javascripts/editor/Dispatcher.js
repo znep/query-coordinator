@@ -1,4 +1,5 @@
 ;var Dispatcher = (function() {
+
   'use strict';
 
   /**

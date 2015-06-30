@@ -4,7 +4,7 @@
 
   function StoryRenderer(options) {
 
-    var story = options.story || null;
+    var storyUid = options.storyUid || null;
     var container = options.storyContainerElement || null;
     var scaleFactor = options.scaleFactor || 1;
     var editable = options.editable || false;
@@ -29,12 +29,12 @@
       );
     }
 
-    if (!(story instanceof Story)) {
+    if (typeof storyUid !== 'string') {
 
       onRenderError();
       throw new Error(
-        '`options.story` must be a Story (is of type ' +
-        (typeof story) +
+        '`options.storyUid` must be a string (is of type ' +
+        (typeof storyUid) +
         ').'
       );
     }
@@ -68,6 +68,27 @@
       );
     }
 
+    container.on(
+      'click',
+      '[data-block-edit-action]',
+      function(e) {
+
+        var payload = {
+          action: e.target.getAttribute('data-block-edit-action'),
+          storyUid: storyUid,
+          blockId: e.target.getAttribute('data-block-id')
+        };
+
+        dispatcher.dispatch(payload);
+      }
+    );
+
+    window.storyStore.addChangeListener(function() {
+      _renderStory();
+    });
+
+    _renderStory();
+
     /**
      * Public methods
      */
@@ -95,9 +116,7 @@
      * Private methods
      */
 
-    function _cacheBlockElement(block, blockElement) {
-
-      var blockId = block.getId();
+    function _cacheBlockElement(blockId, blockElement) {
 
       blockCache[blockId] = blockElement;
     }
@@ -111,26 +130,22 @@
       delete blockCache[blockId];
     };
 
-    function _blockElementIsCached(block) {
-      return blockCache.hasOwnProperty(block.getId());
+    function _blockElementIsCached(blockId) {
+      return blockCache.hasOwnProperty(blockId);
     }
 
-    function _getCachedBlockElement(block) {
-
-      var blockId = block.getId();
+    function _getCachedBlockElement(blockId) {
 
       if (!blockCache.hasOwnProperty(blockId)) {
-        throw new Error('block is not present in cache');
+        throw new Error(
+          'block with id "' + blockId + '" is not present in cache'
+        );
       }
 
       return blockCache[blockId];
     }
 
-    function _removeAbsentBlocks(blocks) {
-
-      var currentBlockIds = blocks.map(function(block) {
-        return block.getId();
-      });
+    function _removeAbsentBlocks(currentBlockIds) {
 
       var blockIdsToRemove = Object.
         keys(blockCache).
@@ -146,35 +161,28 @@
 
     function _renderStory() {
 
-      var blocks = story.getBlocks();
-      var blockCount = blocks.length;
+      var blockIds = storyStore.getBlockIds(storyUid);
+      var blockCount = blockIds.length;
       var renderedBlocks;
-      var layoutHeight;
+      var layoutHeight = 0;
 
-      _removeAbsentBlocks(blocks);
+      _removeAbsentBlocks(blockIds);
 
-      // Render each block.
-      renderedBlocks = blocks.
-        map(function(block) {
+      blockIds.forEach(function(blockId, i) {
 
-          if (!_blockElementIsCached(block)) {
-            var newBlock = _renderBlock(block);
-            _cacheBlockElement(block, newBlock);
-            container.append(newBlock);
-            return newBlock;
-          } else {
-            return _getCachedBlockElement(block);
-          }
-        });
-
-      // Perform the layout calculations and update the top offset of each
-      // block.
-      layoutHeight = 0;
-
-      blocks.forEach(function(block, i) {
-
-        var blockElement = _getCachedBlockElement(block);
+        var blockElement;
         var translation;
+
+        if (!_blockElementIsCached(blockId)) {
+
+          blockElement = _renderBlock(blockId);
+
+          _cacheBlockElement(blockId, blockElement);
+          container.append(blockElement);
+
+        } else {
+          blockElement = _getCachedBlockElement(blockId);
+        }
 
         // Disable or enable buttons depending on the index of this block
         // relative to the total number of blocks.
@@ -182,7 +190,7 @@
         // 'move down' button for the last block.
         if (editable) {
           _updateBlockEditControls(blockElement, i, blockCount);
-          _updateEditorHeights(block, blockElement);
+          _updateEditorHeights(blockId, blockElement);
         }
 
         // If we are supposed to display the insertion hint at this
@@ -201,7 +209,7 @@
         layoutHeight += parseInt(blockElement.css('margin-bottom'), 10);
       });
 
-      if (insertionHint && insertionHintIndex === blocks.length) {
+      if (insertionHint && insertionHintIndex === blockIds.length) {
         layoutHeight += _layoutInsertionHint(layoutHeight);
       }
 
@@ -228,9 +236,9 @@
       moveDownButton.prop('disabled', blockIndex === (blockCount - 1));
     }
 
-    function _updateEditorHeights(block, blockElement) {
+    function _updateEditorHeights(blockId, blockElement) {
 
-      var components = block.getComponents();
+      var components = window.blockStore.getComponents(blockId);
       var componentCount = components.length;
       var editorId;
       var editor;
@@ -240,7 +248,7 @@
 
         if (components[i].type === 'text') {
 
-          editorId = block.getId() + '-' + i;
+          editorId = blockId + '-' + i;
           editor = richTextEditorManager.getEditor(editorId);
           editorHeight = editor.getContentHeight();
 
@@ -253,22 +261,21 @@
       }
     }
 
-    function _renderBlock(block) {
+    function _renderBlock(blockId) {
 
-      if (!(block instanceof Block)) {
+      if (typeof blockId !== 'string') {
         onRenderError();
         throw new Error(
-          '`block` is must be a Block (is of type ' +
-          (typeof block) +
+          '`blockId` must be a string (is of type ' +
+          (typeof blockId) +
           ').'
         );
       }
 
-      var id = block.getId();
-      var layout = block.getLayout();
+      var layout = blockStore.getLayout(blockId);
       var componentWidths = layout.split('-');
       var componentOptions;
-      var componentData = block.getComponents();
+      var componentData = blockStore.getComponents(blockId);
       var components;
       var blockElement;
 
@@ -280,7 +287,7 @@
       }
 
       componentOptions = {
-        block: block
+        blockId: blockId
       };
 
       components = componentData.
@@ -294,11 +301,11 @@
           return _renderComponent(componentOptions);
         });
 
-      blockElement = $('<div>', { class: 'block', 'data-block-id': id }).append(components);
+      blockElement = $('<div>', { class: 'block', 'data-block-id': blockId }).append(components);
 
       if (editable) {
         blockElement = $('<div>', { class: 'block-edit' }).append([
-          _renderBlockEditControls(id),
+          _renderBlockEditControls(blockId),
           blockElement
         ]);
       }
@@ -311,19 +318,19 @@
         $('<button>',
           { class: 'block-edit-controls-move-up-btn',
             'data-block-id': blockId,
-            'data-block-edit-action': 'move-up'
+            'data-block-edit-action': Constants.STORY_MOVE_BLOCK_UP
           }
           ).append('&#9650;'),
         $('<button>',
           { class: 'block-edit-controls-move-down-btn',
             'data-block-id': blockId,
-            'data-block-edit-action': 'move-down'
+            'data-block-edit-action': Constants.STORY_MOVE_BLOCK_DOWN
           }
           ).append('&#9660;'),
         $('<button>',
           { class: 'block-edit-controls-delete-btn',
             'data-block-id': blockId,
-            'data-block-edit-action': 'delete'
+            'data-block-edit-action': Constants.STORY_DELETE_BLOCK
           }
         ).append('&#9587;')
       ]);
@@ -352,7 +359,7 @@
 
       if (editable) {
 
-        editorId = options.block.getId() + '-' + options.componentIndex;
+        editorId = options.blockId + '-' + options.componentIndex;
         component = richTextEditorManager.getEditor(editorId);
 
         if (component === null) {

@@ -1,4 +1,4 @@
-describe('Story class', function() {
+describe('Story', function() {
 
   describe('constructor', function() {
 
@@ -151,7 +151,7 @@ describe('Story class', function() {
       assert.equal(title, 'Story Title', 'story `_title` is "Story Title"');
     });
 
-    it('should should not expose `_blocks` directly', function() {
+    it('should should not expose `_blockIds` directly', function() {
 
       var storyData = generateStoryData({
         blocks: [
@@ -164,10 +164,10 @@ describe('Story class', function() {
       });
       var newStory = new Story(storyData);
 
-      assert.isUndefined(newStory._blocks, '`_blocks` is undefined on story');
+      assert.isUndefined(newStory._blockIds, '`_blockIds` is undefined on story');
     });
 
-    it('should return valid blocks when .getBlocks() is called', function() {
+    it('should return valid block ids when .getBlockIds() is called', function() {
 
       var storyData = generateStoryData({
         blocks: [
@@ -179,13 +179,13 @@ describe('Story class', function() {
         ]
       });
       var newStory = new Story(storyData);
-      var blocks = newStory.getBlocks();
+      var blockIds = newStory.getBlockIds();
 
-      assert.property(blocks, 'length', '`length` is present on story blocks');
+      assert.property(blockIds, 'length', '`length` is present on story blocks');
     });
   });
 
-  describe('.getBlockAtIndex()', function() {
+  describe('.getBlockIdAtIndex()', function() {
 
     var newStory;
 
@@ -193,11 +193,13 @@ describe('Story class', function() {
       var storyData = generateStoryData({
         blocks: [
           generateBlockData({
+            id: 'first',
             components: [
               { type: 'text', value: 'First' }
             ]
           }),
           generateBlockData({
+            id: 'second',
             components: [
               { type: 'text', value: 'Second' }
             ]
@@ -212,7 +214,7 @@ describe('Story class', function() {
       it('raises an exception', function() {
 
         assert.throws(function() {
-          newStory.getBlockAtIndex(-1);
+          newStory.getBlockIdAtIndex(-1);
         });
       });
     });
@@ -222,7 +224,7 @@ describe('Story class', function() {
       it('raises an exception', function() {
 
         assert.throws(function() {
-          newStory.getBlockAtIndex(2);
+          newStory.getBlockIdAtIndex(2);
         });
       });
     });
@@ -232,63 +234,9 @@ describe('Story class', function() {
       it('returns the correct block', function() {
 
         assert.deepEqual(
-          newStory.getBlockAtIndex(1).getComponentAtIndex(0),
-          { type: 'text', value: 'Second' },
+          newStory.getBlockIdAtIndex(1),
+          'second',
           'the returned block is correct'
-        );
-      });
-    });
-  });
-
-  describe('.getBlockWithId()', function() {
-
-    var newStory;
-
-    beforeEach(function() {
-      var storyData = generateStoryData({
-        blocks: [
-          generateBlockData({ id: '100' }),
-          generateBlockData({ id: 'test' }),
-          generateBlockData({ id: '101' })
-        ]
-      });
-      newStory = new Story(storyData);
-    });
-
-    describe('when called with an id that does not exist', function() {
-
-      it('returns null', function() {
-
-        var noBlock = newStory.getBlockWithId('does not exist');
-
-        assert(noBlock === null, 'returns null')
-      });
-    });
-
-    describe('when called with a string id that exists', function() {
-
-      it('returns the block with the specified id', function() {
-
-        var block = newStory.getBlockWithId('test');
-
-        assert.deepEqual(
-          block,
-          newStory.getBlockAtIndex(1),
-          'the correct block is returned'
-        );
-      });
-    });
-
-    describe('when called with a numeric id that exists', function() {
-
-      it('returns the block with the specified id', function() {
-
-        var block = newStory.getBlockWithId('101');
-
-        assert.deepEqual(
-          block,
-          newStory.getBlockAtIndex(2),
-          'the correct block is returned'
         );
       });
     });
@@ -351,7 +299,6 @@ describe('Story class', function() {
   describe('.insertBlockAtIndex()', function() {
 
     var newStory;
-    var newBlock;
 
     beforeEach(function() {
       var storyData = generateStoryData({
@@ -361,31 +308,36 @@ describe('Story class', function() {
         ]
       });
       newStory = new Story(storyData);
-      newBlock = new Block(
-        generateBlockData({
-          id: 'inserted'
-        })
-      );
     });
 
-    describe('when called with an invalid block', function() {
+    describe('when called with no block id', function() {
 
       it('raises an exception', function() {
 
         assert.throws(function() {
-          newStory.insertBlockAtIndex(0, 'not a block');
+          newStory.insertBlockAtIndex(0);
         });
       });
     });
 
-    describe('when called with a valid block', function() {
+    describe('when called with an invalid block id', function() {
+
+      it('raises an exception', function() {
+
+        assert.throws(function() {
+          newStory.insertBlockAtIndex(0, null);
+        });
+      });
+    });
+
+    describe('when called with a valid block id', function() {
 
       describe('and index < 0', function() {
 
         it('raises an exception', function() {
 
           assert.throws(function() {
-            newStory.insertBlockAtIndex(-1, newBlock);
+            newStory.insertBlockAtIndex(-1, 'newBlockId');
           });
         });
       });
@@ -395,7 +347,7 @@ describe('Story class', function() {
         it('raises an exception', function() {
 
           assert.throws(function() {
-            newStory.insertBlockAtIndex(3, newBlock);
+            newStory.insertBlockAtIndex(3, 'newBlockId');
           });
         });
       });
@@ -404,10 +356,10 @@ describe('Story class', function() {
 
         it('inserts a new block into the existing blocks at the specified index', function() {
 
-          newStory.insertBlockAtIndex(1, newBlock);
-          assert.deepEqual(
-            newStory.getBlockAtIndex(1),
-            newBlock,
+          newStory.insertBlockAtIndex(1, 'newBlockId');
+          assert.equal(
+            newStory.getBlockIdAtIndex(1),
+            'newBlockId',
             'new block was inserted at the specified index'
           );
         });
@@ -417,10 +369,10 @@ describe('Story class', function() {
 
         it('appends a new block to the existing blocks', function() {
 
-          newStory.insertBlockAtIndex(2, newBlock);
-          assert.deepEqual(
-            newStory.getBlockAtIndex(2),
-            newBlock,
+          newStory.insertBlockAtIndex(2, 'newBlockId');
+          assert.equal(
+            newStory.getBlockIdAtIndex(2),
+            'newBlockId',
             'new block was inserted at the specified index'
           );
         });
@@ -431,7 +383,6 @@ describe('Story class', function() {
   describe('.appendBlock()', function() {
 
     var newStory;
-    var newBlock;
 
     beforeEach(function() {
       var storyData = generateStoryData({
@@ -441,31 +392,36 @@ describe('Story class', function() {
         ]
       });
       newStory = new Story(storyData);
-      newBlock = new Block(
-        generateBlockData({
-          id: 'inserted'
-        })
-      );
     });
 
-    describe('when called with an invalid block', function() {
+    describe('when called with no block id', function() {
 
       it('raises an exception', function() {
 
         assert.throws(function() {
-          newStory.appendBlock('not a block');
+          newStory.appendBlock();
         });
       });
     });
 
-    describe('when called with a valid block', function() {
+    describe('when called with an invalid block id', function() {
+
+      it('raises an exception', function() {
+
+        assert.throws(function() {
+          newStory.appendBlock(null);
+        });
+      });
+    });
+
+    describe('when called with a valid block id', function() {
 
       it('appends a new block to the existing blocks', function() {
 
-        newStory.appendBlock(newBlock);
-        assert.deepEqual(
-          newStory.getBlockAtIndex(2),
-          newBlock,
+        newStory.appendBlock('newBlockId');
+        assert.equal(
+          newStory.getBlockIdAtIndex(2),
+          'newBlockId',
           'new block was inserted at the specified index'
         );
       });
@@ -513,14 +469,14 @@ describe('Story class', function() {
 
         newStory.removeBlockAtIndex(0);
 
-        assert(newStory.getBlocks().length === 2, 'only two blocks remain');
-        assert.deepEqual(
-          newStory.getBlockAtIndex(0).getId(),
+        assert(newStory.getBlockIds().length === 2, 'only two blocks remain');
+        assert.equal(
+          newStory.getBlockIdAtIndex(0),
           '2',
           'the first remaining block is the one that was originally at index 1'
         );
-        assert.deepEqual(
-          newStory.getBlockAtIndex(1).getId(),
+        assert.equal(
+          newStory.getBlockIdAtIndex(1),
           'third',
           'the second remaining block is the one that was originally at index 2'
         );
@@ -549,19 +505,19 @@ describe('Story class', function() {
 
         newStory.removeBlockWithId('does not exist');
 
-        assert(newStory.getBlocks().length === 3, 'only two blocks remain');
-        assert.deepEqual(
-          newStory.getBlockAtIndex(0).getId(),
+        assert(newStory.getBlockIds().length === 3, 'only two blocks remain');
+        assert.equal(
+          newStory.getBlockIdAtIndex(0),
           'first',
           'the first remaining block is the one that was originally at index 0'
         );
-        assert.deepEqual(
-          newStory.getBlockAtIndex(1).getId(),
+        assert.equal(
+          newStory.getBlockIdAtIndex(1),
           '2',
           'the second remaining block is the one that was originally at index 1'
         );
-        assert.deepEqual(
-          newStory.getBlockAtIndex(2).getId(),
+        assert.equal(
+          newStory.getBlockIdAtIndex(2),
           'third',
           'the third remaining block is the one that was originally at index 2'
         );
@@ -574,14 +530,14 @@ describe('Story class', function() {
 
         newStory.removeBlockWithId('first');
 
-        assert(newStory.getBlocks().length === 2, 'only two blocks remain');
-        assert.deepEqual(
-          newStory.getBlockAtIndex(0).getId(),
+        assert(newStory.getBlockIds().length === 2, 'only two blocks remain');
+        assert.equal(
+          newStory.getBlockIdAtIndex(0),
           '2',
           'the first remaining block is the one that was originally at index 1'
         );
-        assert.deepEqual(
-          newStory.getBlockAtIndex(1).getId(),
+        assert.equal(
+          newStory.getBlockIdAtIndex(1),
           'third',
           'the second remaining block is the one that was originally at index 2'
         );
@@ -594,14 +550,14 @@ describe('Story class', function() {
 
         newStory.removeBlockWithId('2');
 
-        assert(newStory.getBlocks().length === 2, 'only two blocks remain');
-        assert.deepEqual(
-          newStory.getBlockAtIndex(0).getId(),
+        assert(newStory.getBlockIds().length === 2, 'only two blocks remain');
+        assert.equal(
+          newStory.getBlockIdAtIndex(0),
           'first',
           'the first remaining block is the one that was originally at index 0'
         );
-        assert.deepEqual(
-          newStory.getBlockAtIndex(1).getId(),
+        assert.equal(
+          newStory.getBlockIdAtIndex(1),
           'third',
           'the second remaining block is the one that was originally at index 2'
         );
@@ -667,18 +623,18 @@ describe('Story class', function() {
 
       it('swaps the positions of the blocks at the specified indices', function() {
 
-        var blockAtIndex0 = newStory.getBlockAtIndex(0);
-        var blockAtIndex1 = newStory.getBlockAtIndex(1);
+        var blockAtIndex0 = newStory.getBlockIdAtIndex(0);
+        var blockAtIndex1 = newStory.getBlockIdAtIndex(1);
 
         newStory.swapBlocksAtIndices(0, 1);
 
-        assert.deepEqual(
-          newStory.getBlockAtIndex(0),
+        assert.equal(
+          newStory.getBlockIdAtIndex(0),
           blockAtIndex1,
           'the block at index 0 is the block that was originally at index 1'
         );
-        assert.deepEqual(
-          newStory.getBlockAtIndex(1),
+        assert.equal(
+          newStory.getBlockIdAtIndex(1),
           blockAtIndex0,
           'the block at index 1 is the block that was originally at index 0'
         );
@@ -686,7 +642,8 @@ describe('Story class', function() {
     });
   });
 
-  describe('.serialize()', function() {
+  // TODO: Come back to this once we have fleshed out the save story.
+  xdescribe('.serialize()', function() {
 
     var newStory;
 
@@ -716,7 +673,7 @@ describe('Story class', function() {
     describe('when called on a story with one dirty block', function() {
       it('returns a serialized story in which the first block object has only an `id` property and the second block object has other properties but no `id`', function() {
 
-        var dirtyBlock = newStory.getBlockAtIndex(0);
+        var dirtyBlock = newStory.getBlockIdAtIndex(0);
 
         dirtyBlock.updateComponentAtIndex(0, 'text', 'Updated block');
 

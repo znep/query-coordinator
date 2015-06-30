@@ -75,7 +75,7 @@
 
     var _uid = storyData.uid;
     var _title = storyData.title;
-    var _blocks = _rehydrateBlocks(storyData.blocks);
+    var _blockIds = _extractBlockIds(storyData.blocks);
 
     /**
      * Public methods
@@ -96,51 +96,33 @@
     };
 
     /**
-     * @return {Block[]}
+     * @return {string[]}
      */
-    this.getBlocks = function() {
-      return _blocks;
+    this.getBlockIds = function() {
+      return _blockIds;
     };
 
     /**
      * @param {number} index
      */
-    this.getBlockAtIndex = function(index) {
+    this.getBlockIdAtIndex = function(index) {
 
-      if (index < 0 || index >= _blocks.length) {
+      if (index < 0 || index >= _blockIds.length) {
         throw new Error('`index` argument is out of bounds.');
       }
 
-      return _blocks[index];
+      return _blockIds[index];
     };
 
     /**
-     * @param {(number|text)} id
+     * @param {string} blockId
      */
-    this.getBlockWithId = function(id) {
-
-      var block = null;
-
-      for (var i = 0; i < _blocks.length; i++) {
-        if (_blocks[i].getId() === id) {
-
-          block = _blocks[i];
-          break;
-        }
-      }
-
-      return block;
-    };
-
-    /**
-     * @param {(number|text)} id
-     */
-    this.getBlockIndexWithId = function(id) {
+    this.getBlockIndexWithId = function(blockId) {
 
       var index = null;
 
-      for (var i = 0; i < _blocks.length; i++) {
-        if (_blocks[i].getId() === id) {
+      for (var i = 0; i < _blockIds.length; i++) {
+        if (_blockIds[i] === blockId) {
 
           index = i;
           break;
@@ -152,32 +134,34 @@
 
     /**
      * @param {number} index
-     * @param {Block} block
+     * @param {string} blockId
      */
-    this.insertBlockAtIndex = function(index, block) {
+    this.insertBlockAtIndex = function(index, blockId) {
 
-      if (index < 0 || index > _blocks.length) {
+      if (index < 0 || index > _blockIds.length) {
         throw new Error('`index` argument is out of bounds.');
       }
 
-      if (!(block instanceof Block)) {
+      if (typeof blockId !== 'string') {
         throw new Error(
-          '`block` argument must be a Block (is of type ' + (typeof block) + ').'
+          '`blockId` argument must be a string (is of type ' +
+          (typeof blockId) +
+          ').'
         );
       }
 
-      if (index === _blocks.length) {
-        _blocks.push(block);
+      if (index === _blockIds.length) {
+        _blockIds.push(blockId);
       } else {
-        _blocks.splice(index, 0, block);
+        _blockIds.splice(index, 0, blockId);
       }
     };
 
     /**
-     * @param {Block} block
+     * @param {string} blockId
      */
-    this.appendBlock = function(block) {
-      this.insertBlockAtIndex(_blocks.length, block);
+    this.appendBlock = function(blockId) {
+      this.insertBlockAtIndex(_blockIds.length, blockId);
     };
 
     /**
@@ -185,21 +169,20 @@
      */
     this.removeBlockAtIndex = function(index) {
 
-      if (index < 0 || index >= _blocks.length) {
+      if (index < 0 || index >= _blockIds.length) {
         throw new Error('`index` argument is out of bounds.');
       }
 
-      _blocks.splice(index, 1);
+      _blockIds.splice(index, 1);
     };
 
     /**
-     * @param {(number|string)} id
-     * @return {Block}
+     * @param {string} blockId
      */
-    this.removeBlockWithId = function(id) {
+    this.removeBlockWithId = function(blockId) {
 
-      _blocks = _blocks.filter(function(block) {
-        return block.getId() !== id;
+      _blockIds = _blockIds.filter(function(testBlockId) {
+        return testBlockId !== blockId;
       });
     };
 
@@ -209,38 +192,31 @@
      */
     this.swapBlocksAtIndices = function(index1, index2) {
 
-      if (index1 < 0 || index1 >= _blocks.length) {
+      if (index1 < 0 || index1 >= _blockIds.length) {
         throw new Error('`index1` argument is out of bounds.');
       }
 
-      if (index2 < 0 || index2 >= _blocks.length) {
+      if (index2 < 0 || index2 >= _blockIds.length) {
         throw new Error('`index2` argument is out of bounds.');
       }
 
-      var tempBlock = _blocks[index1];
-      _blocks[index1] = _blocks[index2];
-      _blocks[index2] = tempBlock;
+      var tempBlock = _blockIds[index1];
+      _blockIds[index1] = _blockIds[index2];
+      _blockIds[index2] = tempBlock;
     };
 
     /**
      * @return {object}
-     *   @property {string} uid
+     *   @property {string} id
      *   @property {string} title
-     *   @property {object[]} blocks
-     *     @property {(number|string)} [id]
-     *     @property {string} [layout]
-     *     @property {object[]} [components]
-     *       @property {string} type
-     *       @property {string} value
+     *   @property {string[]} blockIds
      */
     this.serialize = function() {
 
       return {
         uid: _uid,
         title: _title,
-        blocks: _blocks.map(function(block) {
-          return block.serialize();
-        })
+        blocks: _blockIds
       };
     };
 
@@ -249,24 +225,26 @@
      */
 
     /**
-     * @param {object[]} blockDataArray
-     *   @property {(number|string)} id
+     * @param {object[]} blockData
+     *   @property {string} id
      *   @property {string} layout
      *   @property {object[]} components
      *     @property {string} type
      *     @property {string} value
-     * @return {Block[]}
+     * @return {string[]}
      */
-    function _rehydrateBlocks(blockDataArray) {
+    function _extractBlockIds(blockData) {
+      return blockData.map(function(blockDatum) {
 
-      if (typeof blockDataArray !== 'object' || !(blockDataArray instanceof Array)) {
-        throw new Error(
-          '`blockDataArray` argument must be an array (is of type ' + (typeof blockData) + ').'
-        );
-      }
+        if (_.isUndefined(blockDatum.id)) {
+          throw new Error(
+            '`blocks` argument block has no id property: ' +
+            JSON.stringify(blockDatum) +
+            '.'
+          );
+        }
 
-      return blockDataArray.map(function(blockData) {
-        return new Block(blockData);
+        return blockDatum.id;
       });
     }
   }

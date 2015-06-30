@@ -82,7 +82,7 @@ describe('StoryStore', function() {
 
       describe('given invalid story data', function() {
 
-        it('should throw', function() {
+        it('should throw an error', function() {
 
           var invalidStoryData = generateStoryData({
             uid: null
@@ -96,7 +96,7 @@ describe('StoryStore', function() {
 
       describe('given a story uid that already exists', function() {
 
-        it('should throw', function() {
+        it('should throw an error', function() {
 
           var invalidStoryData = generateStoryData({
             uid: story1Uid
@@ -131,7 +131,7 @@ describe('StoryStore', function() {
 
       describe('given an invalid story uid', function() {
 
-        it('should throw', function() {
+        it('should throw an error', function() {
 
           assert.throw(function() {
             dispatch({
@@ -144,6 +144,7 @@ describe('StoryStore', function() {
       });
 
       describe('given a valid story uid', function() {
+
         it('should update the story', function() {
 
           dispatch({
@@ -161,7 +162,7 @@ describe('StoryStore', function() {
 
       describe('given an invalid story uid', function() {
 
-        it('should throw', function() {
+        it('should throw an error', function() {
 
           assert.throw(function() {
             dispatch({
@@ -191,7 +192,7 @@ describe('StoryStore', function() {
 
       describe('given an invalid story uid', function() {
 
-        it('should throw', function() {
+        it('should throw an error', function() {
 
           assert.throw(function() {
             dispatch({
@@ -221,7 +222,7 @@ describe('StoryStore', function() {
     // Proper tests for these actions live in Story.spec.js.
     // describe('story:insertBlockAtIndex', function() {
     //   describe('given a bad story ID', function() {
-    //     it('should throw', function() {
+    //     it('should throw an error', function() {
     //       assert.throw(function() {
     //         dispatch({
     //           name: 'story:insertBlockAtIndex',

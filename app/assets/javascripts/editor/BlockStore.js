@@ -17,7 +17,7 @@
           _createBlock(payload);
           break;
 
-        case Constants.BLOCK_UPDATE_COMPONENT_AT_INDEX:
+        case Constants.BLOCK_UPDATE_COMPONENT:
           _updateComponentAtIndex(payload);
           break;
       }

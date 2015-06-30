@@ -559,6 +559,32 @@ describe('A Choropleth Card Visualization', function() {
 
     });
 
+  });
+
+  describe('extents', function() {
+    var testExtent = {
+      'southwest': [41.79998325207397, -87.85079956054688],
+      'northeast': [41.95540515378059, -86.95953369140625]
+    };
+
+    it('uses the cardOptions.mapExtent if it has been saved', function() {
+      var choropleth = createChoropleth({ mapExtent: testExtent });
+      expect(choropleth.element.isolateScope().defaultExtent).to.be.undefined;
+      expect(choropleth.element.isolateScope().savedExtent).to.eql(testExtent);
+    });
+
+    it('uses the default extent if it has been set and there is no saved mapExtent', function() {
+      CardDataService.getDefaultFeatureExtent.returns(testExtent);
+      var choropleth = createChoropleth({});
+      expect(choropleth.element.isolateScope().defaultExtent).to.eql(testExtent);
+      expect(choropleth.element.isolateScope().savedExtent).to.be.undefined;
+    });
+
+    it('defers to the choropleth visualization for extent if there is neither a saved nor default extent', function() {
+      var choropleth = createChoropleth({});
+      expect(choropleth.element.isolateScope().defaultExtent).to.be.undefined;
+      expect(choropleth.element.isolateScope().savedExtent).to.be.undefined;
+    });
 
   });
 

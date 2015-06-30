@@ -12,7 +12,8 @@
     ServerConfig,
     CardDataService,
     VectorTileDataService,
-    LeafletHelpersService
+    LeafletHelpersService,
+    LeafletVisualizationHelpersService
   ) {
 
     return {
@@ -28,6 +29,9 @@
         var datasetPermissions = dataset.observeOnLatest('permissions').filter(_.isPresent);
         var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
         var whereClauseObservable = scope.$observe('whereClause');
+        var savedExtent$ = model.observeOnLatest('cardOptions.mapExtent').take(1);
+        var defaultExtent$ = Rx.Observable.
+          returnValue(CardDataService.getDefaultFeatureExtent());
 
         // The 'render:start' and 'render:complete' events are emitted by the
         // underlying feature map and are used for a) toggling the state of the
@@ -36,6 +40,8 @@
         var renderErrorObservable = scope.$eventToObservable('render:error');
         var renderCompleteObservable = scope.$eventToObservable('render:complete').
           takeUntil(renderErrorObservable);
+
+        LeafletVisualizationHelpersService.setObservedExtentOnModel(scope, scope.model);
 
         // For every renderStart event, start a timer that will either expire on
         // its own, or get cancelled by the renderComplete event firing
@@ -93,7 +99,7 @@
 
         scope.$bindObservable('busy', busyObservable);
 
-        var featureExtentDataSequence = synchronizedFieldnameDataset.
+        var serverExtent$ = synchronizedFieldnameDataset.
           flatMap(function(fieldNameDataset) {
             var fieldName = fieldNameDataset.fieldName;
             var dataset = fieldNameDataset.dataset;
@@ -102,38 +108,44 @@
           }).
           onErrorResumeNext(Rx.Observable.empty());  // Promise error becomes empty observable
 
-        var synchronizedFeatureExtentDataSequence = featureExtentDataSequence.
+        // TODO - Fix synchronization here - not getting saved value
+        var synchronizedFeatureExtentDataSequence = serverExtent$.
+          startWith(undefined).
           combineLatest(
-          Rx.Observable.returnValue(CardDataService.getDefaultFeatureExtent()),
-          function(featureExtent, defaultFeatureExtent) {
-            if (defaultFeatureExtent) {
+          defaultExtent$,
+          savedExtent$,
+          function(serverExtent, defaultExtent, savedExtent) {
+            if (_.isPresent(savedExtent)) {
+              return savedExtent;
+            }
+            else if (defaultExtent) {
               var defaultBounds;
               var featureBounds;
               try {
-                defaultBounds = LeafletHelpersService.buildBounds(defaultFeatureExtent);
+                defaultBounds = LeafletHelpersService.buildBounds(defaultExtent);
               } catch(error) {
                 $log.warn(
-                  'Unable to build bounds from defaultFeatureExtent: \n{0}'.
-                    format(defaultFeatureExtent)
+                  'Unable to build bounds from defaultExtent: \n{0}'.
+                    format(defaultExtent)
                 );
-                return featureExtent;
+                return serverExtent;
               }
               try {
-                featureBounds = LeafletHelpersService.buildBounds(featureExtent);
+                featureBounds = LeafletHelpersService.buildBounds(serverExtent);
               } catch(error) {
                 $log.warn(
-                  'Unable to build bounds from featureExtent: \n{0}'.
-                    format(featureExtent)
+                  'Unable to build bounds from serverExtent: \n{0}'.
+                    format(serverExtent)
                 );
-                return featureExtent;
+                return serverExtent;
               }
               if (defaultBounds.contains(featureBounds)) {
-                return featureExtent;
+                return serverExtent;
               } else {
-                return defaultFeatureExtent;
+                return defaultExtent;
               }
             } else {
-              return featureExtent;
+              return serverExtent;
             }
           });
 

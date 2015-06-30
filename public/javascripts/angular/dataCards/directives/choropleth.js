@@ -9,8 +9,8 @@
   function choropleth(Constants,
                       $timeout,
                       ChoroplethVisualizationService,
-                      CardDataService, // This is an unfortunate leak to get the default extent
                       LeafletHelpersService,
+                      LeafletVisualizationHelpersService,
                       FlyoutService,
                       I18n) {
     // The methods by which we determine choropleth styles are wrapped up in the
@@ -682,6 +682,8 @@
       scope: {
         'baseLayerUrl': '=',
         'geojsonAggregateData': '=',
+        'savedExtent': '=',
+        'defaultExtent': '=',
         'rowDisplayUnit': '=?'
       },
       template: ['<div class="choropleth-container">',
@@ -698,6 +700,8 @@
         var legend = new LegendType(element.find('.choropleth-legend'), element, scope);
         var baseLayerUrlObservable = scope.$observe('baseLayerUrl');
         var geojsonAggregateDataObservable = scope.$observe('geojsonAggregateData');
+        var savedExtent$ = scope.$observe('savedExtent');
+        var defaultExtent$ = scope.$observe('defaultExtent');
 
         /***********************
          * Mutate Leaflet state *
@@ -711,7 +715,7 @@
           geojsonBaseLayer.addTo(map);
         }
 
-        function updateBounds(geojsonData) {
+        function updateBounds(geojsonData, defaultExtent, savedExtent) {
 
           function buildPositionArray(positions) {
 
@@ -795,12 +799,6 @@
 
           }
 
-          // We need to explicitly pass an options object with
-          // animate set to false because (in some cases) Leaflet
-          // will default to an empty object if none is explicitly
-          // provided and then check the value of a non-existent
-          // animate property, causing a TypeError and halting
-          // execution.
           var computedBounds = L.latLngBounds([
             boundsArray[1][0],
             boundsArray[1][1]
@@ -809,13 +807,21 @@
             boundsArray[0][1]
           ]);
           var initialBounds = computedBounds;
-          var defaultFeatureExtent = CardDataService.getDefaultFeatureExtent();
-          if (defaultFeatureExtent) {
-            var defaultBounds = LeafletHelpersService.buildBounds(defaultFeatureExtent);
+          if (_.isDefined(savedExtent)) {
+            initialBounds = LeafletHelpersService.buildBounds(savedExtent);
+          } else if (_.isDefined(defaultExtent)) {
+            var defaultBounds = LeafletHelpersService.buildBounds(defaultExtent);
             if (!defaultBounds.contains(computedBounds)) {
               initialBounds = defaultBounds;
             }
           }
+
+          // We need to explicitly pass an options object with
+          // animate set to false because (in some cases) Leaflet
+          // will default to an empty object if none is explicitly
+          // provided and then check the value of a non-existent
+          // animate property, causing a TypeError and halting
+          // execution.
           map.fitBounds(
             initialBounds,
             { animate: false }
@@ -1101,6 +1107,8 @@
           scope.$emit(e.type, e.target);
         });
 
+        LeafletVisualizationHelpersService.emitExtentEventsFromMap(scope, map);
+
         // Keep track of the geojson layers so that we can remove them cleanly.
         // Every redraw of the map forces us to remove the layer entirely because
         // there is no way to mutate already-rendered geojson objects.
@@ -1178,7 +1186,9 @@
         Rx.Observable.subscribeLatest(
           dimensions$,
           geojsonAggregateDataObservable,
-          function(dimensions, geojsonAggregateData) {
+          defaultExtent$,
+          savedExtent$,
+          function(dimensions, geojsonAggregateData, defaultExtent, savedExtent) {
 
             if (_.isDefined(geojsonAggregateData)) {
 
@@ -1194,7 +1204,7 @@
               // Only update bounds on the first render so we can persist
               // users' panning and zooming.
               if (firstRender) {
-                updateBounds(geojsonAggregateData);
+                updateBounds(geojsonAggregateData, defaultExtent, savedExtent);
                 firstRender = false;
               }
 

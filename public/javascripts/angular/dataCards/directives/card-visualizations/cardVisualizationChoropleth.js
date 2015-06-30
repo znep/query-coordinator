@@ -4,9 +4,10 @@
   function cardVisualizationChoropleth(
     Constants,
     CardDataService,
-    Filter,
-    ServerConfig,
     CardVisualizationChoroplethHelpers,
+    Filter,
+    LeafletVisualizationHelpersService,
+    ServerConfig,
     $log
   ) {
 
@@ -312,6 +313,26 @@
           }
         });
 
+        LeafletVisualizationHelpersService.setObservedExtentOnModel(scope, scope.model);
+
+        var savedExtent$ = model.observeOnLatest('cardOptions.mapExtent');
+        var defaultExtent$ = Rx.Observable.
+          returnValue(CardDataService.getDefaultFeatureExtent());
+
+        var extent$ = Rx.Observable.combineLatest(
+          savedExtent$,
+          defaultExtent$,
+          function(savedExtent, defaultExtent) {
+            if (_.isPresent(savedExtent)) {
+              return { savedExtent: savedExtent };
+            } else {
+              return { defaultExtent: defaultExtent };
+            }
+          }).
+          take(1);
+
+        scope.$bindObservable('savedExtent', extent$.pluck('savedExtent'));
+        scope.$bindObservable('defaultExtent', extent$.pluck('defaultExtent'));
         scope.$bindObservable('cardSize', model.observeOnLatest('cardSize'));
 
       }

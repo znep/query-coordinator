@@ -118,7 +118,7 @@
         throw new Error('`blockId` property is required.');
       }
 
-      var story = _getStoryByUid(payload.storyUid)
+      var story = _getStoryByUid(payload.storyUid);
 
       story.insertBlockAtIndex(payload.insertAt, payload.blockId);
 
@@ -138,7 +138,7 @@
       if (typeof payload.blockId !== 'string') {
         throw new Error(
           '`blockId` must be a string (is of type ' +
-          (typeof paylaod.blockId) +
+          (typeof payload.blockId) +
           '.'
         );
       }
@@ -164,7 +164,7 @@
       if (typeof payload.blockId !== 'string') {
         throw new Error(
           '`blockId` must be a string (is of type ' +
-          (typeof paylaod.blockId) +
+          (typeof payload.blockId) +
           '.'
         );
       }
@@ -190,7 +190,7 @@
       if (typeof payload.blockId !== 'string') {
         throw new Error(
           '`blockId` must be a string (is of type ' +
-          (typeof paylaod.blockId) +
+          (typeof payload.blockId) +
           '.'
         );
       }

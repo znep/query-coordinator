@@ -88,12 +88,14 @@ $(document).on('ready', function() {
   };
   var userStoryRenderer = new StoryRenderer(userStoryOptions);
 
+  var inspirationStoryElement = $('.inspiration-story-container');
+  var userStoryElement = $('.user-story-container');
 
   /**
    * LEGACY
    */
 
-  $(window).on('rich-text-editor::height-change', function(e) {
+  $(window).on('rich-text-editor::height-change', function() {
     userStoryRenderer.render();
   });
 
@@ -113,7 +115,6 @@ $(document).on('ready', function() {
       $('body').addClass('dragging');
       var inspirationBlock = $('[data-block-id=' + blockId + ']');
       var inspirationBlockHtml = inspirationBlock.html();
-      var inspirationBlockOffset = inspirationBlock.offset();
 
       _dragging = blockId;
       _ghostElement.
@@ -168,14 +169,14 @@ $(document).on('ready', function() {
     lastInsertionHintIndex = -1;
   }
 
-  $('.inspiration-story').on('mousedown', '.block', function(e) {
+  inspirationStoryElement.on('mousedown', '.block', function(e) {
 
     var blockId = e.currentTarget.getAttribute('data-block-id');
 
     dragDrop.drag(e.clientX, e.clientY, blockId);
   });
 
-  $('.inspiration-story').on('dblclick', '.block', function(e) {
+  inspirationStoryElement.on('dblclick', '.block', function(e) {
 
     window.dispatcher.dispatch({
       action: Constants.BLOCK_COPY_INTO_STORY,
@@ -185,14 +186,14 @@ $(document).on('ready', function() {
     });
   });
 
-  $('.user-story-container').on('mouesenter', function() {
+  userStoryElement.on('mouseenter', function() {
 
     if (dragDrop.isDragging()) {
       dragDrop.addGhostClass('full-size');
     }
   });
 
-  $('.user-story-container').on('mouseleave', function() {
+  userStoryElement.on('mouseleave', function() {
 
     if (dragDrop.isDragging()) {
       dragDrop.removeGhostClass('full-size');
@@ -201,7 +202,7 @@ $(document).on('ready', function() {
     hideInsertionHint();
   });
 
-  $('.user-story-container').on('mousemove', '.block', function(e) {
+  userStoryElement.on('mousemove', '.block', function(e) {
     if (dragDrop.isDragging()) {
       var blockElement = $(e.currentTarget);
       var blockId = blockElement.attr('data-block-id');
@@ -217,7 +218,7 @@ $(document).on('ready', function() {
     }
   });
 
-  $(window).on('mouseup', function(e) {
+  $(window).on('mouseup', function() {
 
     if (dragDrop.isDragging()) {
       dragDrop.drop();
@@ -226,7 +227,7 @@ $(document).on('ready', function() {
     hideInsertionHint();
   });
 
-  $('.user-story-container').on('mouseup', function(e) {
+  userStoryElement.on('mouseup', function() {
 
     if (dragDrop.isDragging()) {
 

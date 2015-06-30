@@ -15,7 +15,7 @@
     /**
      * Dispatches a payload to all registered callbacks.
      *
-     * @param {anything} payload
+     * @param {*} payload
      */
     this.dispatch = function(payload) {
       _callbacks.forEach(function(callback) {
@@ -53,7 +53,7 @@
     this.unregister = function(id) {
       _.remove(_callbacks, 'id', id);
     };
-  };
+  }
 
   return Dispatcher;
 })();

@@ -128,7 +128,7 @@
       }
 
       delete blockCache[blockId];
-    };
+    }
 
     function _blockElementIsCached(blockId) {
       return blockCache.hasOwnProperty(blockId);
@@ -163,7 +163,6 @@
 
       var blockIds = storyStore.getBlockIds(storyUid);
       var blockCount = blockIds.length;
-      var renderedBlocks;
       var layoutHeight = 0;
 
       _removeAbsentBlocks(blockIds);

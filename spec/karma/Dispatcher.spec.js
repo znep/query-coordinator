@@ -1,5 +1,5 @@
 describe('Dispatcher', function() {
-  describe('constuctor', function() {
+  describe('constructor', function() {
     it('accepts zero arguments', function() {
       var dispatcher = new Dispatcher();
       assert.instanceOf(dispatcher, Dispatcher);
@@ -67,7 +67,7 @@ describe('Dispatcher', function() {
         });
       });
 
-      it('should not throw when theargument is a function', function() {
+      it('should not throw when the argument is a function', function() {
         dispatcher.register(function() { });
       });
 

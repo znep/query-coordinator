@@ -109,7 +109,7 @@ describe('Story', function() {
 
   describe('instance variables', function() {
 
-    it('should should not expose `_uid` directly', function() {
+    it('should not expose `_uid` directly', function() {
 
       var storyData = generateStoryData({
         uid: 'test-test'
@@ -130,7 +130,7 @@ describe('Story', function() {
       assert.equal(uid, 'test-test', 'story `_uid` is "test-test"');
     });
 
-    it('should should not expose `_title` directly', function() {
+    it('should not expose `_title` directly', function() {
 
       var storyData = generateStoryData({
         title: 'Story Title'
@@ -151,7 +151,7 @@ describe('Story', function() {
       assert.equal(title, 'Story Title', 'story `_title` is "Story Title"');
     });
 
-    it('should should not expose `_blockIds` directly', function() {
+    it('should not expose `_blockIds` directly', function() {
 
       var storyData = generateStoryData({
         blocks: [

@@ -28,13 +28,24 @@
       'DEFAULT_MAP_BASE_LAYER_URL': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
       'ESRI_BASE_URL': 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
       'TILEURL_REGEX': /^ *https?:\/\/(.*(\{|%7b)[xyz](\}|%7d)){3}/i,
+      'DEFAULT_MAP_BASE_LAYER_OPACITY': 0.15,
+      'DEFINED_MAP_BASE_LAYER_OPACITY': 0.35,
 
       // Column chart visualization parameters.
       'COLUMN_CHART_CARDINALITY_WARNING_THRESHOLD': 100,
 
       // Choropleth visualization parameters.
+      'CHOROPLETH_SELECTION_BOX_LEFT': 10,
+      'CHOROPLETH_SELECTION_BOX_RIGHT': 145,
+      'CHOROPLETH_DEFAULT_WIDTH': 1,
+      'CHOROPLETH_HIGHLIGHT_WIDTH': 4,
       'MAXIMUM_NUMBER_OF_CLASSES_ALLOWED': 7,
-      'CLASS_BREAK_THRESHOLD': 6,
+      'CONTINUOUS_LEGEND_ZERO_COLOR': '#ffffff',
+      'CONTINUOUS_LEGEND_POSITIVE_COLOR': '#003747',
+      'CONTINUOUS_LEGEND_NEGATIVE_COLOR': '#c6663d',
+      'DISCRETE_LEGEND_ZERO_COLOR': '#eeeeee',
+      'DISCRETE_LEGEND_POSITIVE_COLOR': '#408499',
+      'DISCRETE_LEGEND_NEGATIVE_COLOR': '#c6663d',
 
       // Timeline chart visualization parameters.
       'TIMELINE_CHART_MARGIN': {

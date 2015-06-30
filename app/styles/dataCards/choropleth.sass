@@ -81,6 +81,34 @@ card.expanded .choropleth-container .choropleth-legend.continuous
         path.domain
           display: none
 
+  .choropleth-selection-box
+    border-radius: $rounded-corners-border-radius
+    bottom: 10px
+    cursor: pointer
+    display: none
+    left: 10px
+    opacity: 0.9
+    padding: 10px
+    position: absolute
+
+    .icon-filter
+      vertical-align: middle
+
+    .choropleth-selection-value
+      display: inline-block
+      font-weight: bold
+      margin: 0 10px
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: nowrap
+      vertical-align: middle
+
+    .icon-close
+      cursor: pointer
+      font-size: 0.5rem
+      padding: 5px
+      vertical-align: middle
+
 .card.dragged
   .choropleth-container
     .choropleth-map-container

@@ -10,6 +10,7 @@ describe('A Choropleth Card Visualization', function() {
   var scope;
   var Model;
   var Constants;
+  var I18n;
   var q;
   var timeout;
   var CardVisualizationChoroplethHelpers;
@@ -52,6 +53,7 @@ describe('A Choropleth Card Visualization', function() {
     CardVisualizationChoroplethHelpers = $injector.get('CardVisualizationChoroplethHelpers');
     CardDataService = $injector.get('CardDataService');
     Constants = $injector.get('Constants');
+    I18n = $injector.get('I18n');
     Constants.DISABLE_LEAFLET_ZOOM_ANIMATION = true;
     testTimeoutScheduler = new Rx.TestScheduler();
     normalTimeoutScheduler = Rx.Scheduler.timeout;
@@ -200,6 +202,88 @@ describe('A Choropleth Card Visualization', function() {
       scope: childScope
     };
   }
+
+  describe('clear selection box', function() {
+
+    var choropleth;
+    var feature;
+    var selectionBox;
+    var selectionBoxClearButton;
+    var flyout;
+
+    beforeEach(function() {
+      choropleth = createChoropleth({}).element;
+      selectionBox = choropleth.find('.choropleth-selection-box');
+      selectionBoxClearButton = selectionBox.find('.icon-close');
+      feature = choropleth.find('.choropleth-container path')[0];
+      flyout = $('#uber-flyout').hide();
+    });
+
+    it('should be displayed if a region is filtered, and hidden if not', function() {
+
+      // Selection box should be hidden on first render, for no filter has been applied
+      expect(selectionBox.is(':hidden')).to.be.true;
+
+      testHelpers.fireEvent(feature, 'click');
+      timeout.flush();
+
+      // Selection box should be visible because feature is filtered upon
+      expect(selectionBox.is(':visible')).to.be.true;
+    });
+
+    it('should be hidden if a selected feature is clicked', function() {
+      testHelpers.fireEvent(feature, 'click');
+      testHelpers.fireEvent(feature, 'click');
+      timeout.flush();
+
+      expect(selectionBox.is(':hidden')).to.be.true;
+    });
+
+    it('should display a flyout on mouseover', function() {
+      testHelpers.fireEvent(feature, 'click');
+      timeout.flush();
+
+      expect(flyout.is(':hidden')).to.be.true;
+
+      testHelpers.fireEvent(selectionBox[0], 'mousemove');
+
+      expect(flyout.is(':visible')).to.be.true;
+    });
+
+    it('should display a clear filter range flyout on mouseover of the "icon-close"', function() {
+      testHelpers.fireEvent(feature, 'click');
+      timeout.flush();
+
+      expect(flyout.is(':hidden')).to.be.true;
+
+      testHelpers.fireEvent(selectionBoxClearButton[0], 'mousemove');
+
+      expect(flyout.is(':visible')).to.be.true;
+      expect(flyout.find('.flyout-title').text()).to.equal(I18n.timelineChart.dragClearHelp);
+    });
+
+    it('should hide on click of the clear button', function() {
+      testHelpers.fireEvent(feature, 'click');
+      timeout.flush();
+
+      expect(selectionBox.is(':visible')).to.be.true;
+
+      testHelpers.fireEvent(selectionBoxClearButton[0], 'click');
+
+      expect(selectionBox.is(':hidden')).to.be.true;
+    });
+
+    it('should hide on click of the box itself', function() {
+      testHelpers.fireEvent(feature, 'click');
+      timeout.flush();
+
+      expect(selectionBox.is(':visible')).to.be.true;
+
+      testHelpers.fireEvent(selectionBox[0], 'click');
+
+      expect(selectionBox.is(':hidden')).to.be.true;
+    });
+  });
 
   describe('when created with instantiated choropleth visualizations', function() {
 

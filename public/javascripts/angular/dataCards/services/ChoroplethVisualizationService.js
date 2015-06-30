@@ -150,14 +150,17 @@
       if (!feature.hasOwnProperty('properties') ||
           !feature.properties.hasOwnProperty(Constants['FILTERED_VALUE_PROPERTY_NAME']) ||
           feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']] === null ||
-          !_.isDefined(feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']])) {
+          !_.isFinite(feature.properties[Constants['UNFILTERED_VALUE_PROPERTY_NAME']])) {
         return this.nullColor;
       }
 
       if (colorScale) {
-        return String(
-          colorScale(Number(feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']]))
-        );
+        var value = Number(feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']]);
+        if (!_.isFinite(value)) {
+          value = 0;
+        }
+
+        return String(colorScale(value));
       } else {
         return 'transparent';
       }
@@ -179,7 +182,7 @@
       if (!feature.hasOwnProperty('properties') ||
           !feature.properties.hasOwnProperty(Constants['FILTERED_VALUE_PROPERTY_NAME']) ||
           feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']] === null ||
-          !_.isDefined(feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']])) {
+          !_.isFinite(feature.properties[Constants['UNFILTERED_VALUE_PROPERTY_NAME']])) {
         return this.nullColor;
       }
 

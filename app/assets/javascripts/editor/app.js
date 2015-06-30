@@ -1,4 +1,10 @@
+'use strict';
+
 $(document).on('ready', function() {
+
+  /**
+   * Setup
+   */
 
   var assetFinder = new AssetFinder();
 
@@ -30,16 +36,6 @@ $(document).on('ready', function() {
     richTextFormats
   );
 
-  var inspirationStory = new Story(inspirationStoryData);
-  var inspirationStoryOptions = {
-    story: inspirationStory,
-    storyContainerElement: $('.inspiration-story'),
-    scaleFactor: 0.5,
-    editable: false,
-    onRenderError: function() { $('.inspiration-story-error').removeClass('hidden'); }
-  };
-  var inspirationStoryRenderer = new StoryRenderer(inspirationStoryOptions);
-
   // Temporary fix until version is being added/populated
   if (userStoryData.version === null) {
     userStoryData.version = '';
@@ -50,9 +46,40 @@ $(document).on('ready', function() {
     userStoryData.blocks = sampleBlocks;
   }
 
-  var userStory = new Story(userStoryData);
+  /**
+   * FLUX
+   */
+
+  window.inspirationStoryUid = inspirationStoryData.uid;
+  window.userStoryUid = userStoryData.uid;
+
+  window.dispatcher = new Dispatcher();
+  window.dispatcher.register(function(payload) {
+    console.info('Dispatcher action: ', payload);
+    if (typeof payload.action !== 'string') {
+      throw new Error(
+        'Undefined action.'
+      );
+    }
+  });
+
+  window.storyStore = new StoryStore();
+  window.blockStore = new BlockStore();
+
+  window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: inspirationStoryData });
+  window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
+
+  var inspirationStoryOptions = {
+    storyUid: window.inspirationStoryUid,
+    storyContainerElement: $('.inspiration-story'),
+    scaleFactor: 0.5,
+    editable: false,
+    onRenderError: function() { $('.inspiration-story-error').removeClass('hidden'); }
+  };
+  var inspirationStoryRenderer = new StoryRenderer(inspirationStoryOptions);
+
   var userStoryOptions = {
-    story: userStory,
+    storyUid: window.userStoryUid,
     storyContainerElement: $('.user-story'),
     editable: true,
     insertionHintElement: $('#story-insertion-hint'),
@@ -61,49 +88,16 @@ $(document).on('ready', function() {
   };
   var userStoryRenderer = new StoryRenderer(userStoryOptions);
 
-  inspirationStoryRenderer.render();
-  userStoryRenderer.render();
+  var inspirationStoryElement = $('.inspiration-story-container');
+  var userStoryElement = $('.user-story-container');
 
-  $(window).on('rich-text-editor::height-change', function(e) {
+  /**
+   * LEGACY
+   */
+
+  $(window).on('rich-text-editor::height-change', function() {
     userStoryRenderer.render();
   });
-
-  $('.user-story-container').on('click', '[data-block-edit-action]', function(e) {
-
-    var action = e.target.getAttribute('data-block-edit-action');
-    var blockId;
-    var blockIndex;
-
-    // Ensure our element has a block to fetch.
-    blockId = e.target.getAttribute('data-block-id');
-
-    if (blockId === null) {
-      throw new Error(
-        'Element does not have a `data-block-id` attribute: ' +
-        e.currentTarget.toString()
-      );
-    }
-
-    blockIndex = userStory.getBlockIndexWithId(blockId);
-
-    // perform the edits requested
-    if (action === 'move-up') {
-      userStory.swapBlocksAtIndices(blockIndex, blockIndex - 1);
-    }
-    else if (action === 'move-down') {
-      userStory.swapBlocksAtIndices(blockIndex, blockIndex + 1);
-    }
-    else if (action === 'delete') {
-      userStory.removeBlockWithId(blockId);
-    }
-    else {
-      return;
-    }
-
-    userStoryRenderer.render();
-  });
-
-
 
   function DragDrop(ghostElement) {
 
@@ -116,14 +110,13 @@ $(document).on('ready', function() {
       return _dragging !== null;
     };
 
-    this.drag = function(mouseX, mouseY, block) {
+    this.drag = function(mouseX, mouseY, blockId) {
 
       $('body').addClass('dragging');
-      var inspirationBlock = $('[data-block-id=' + block.getId() + ']');
+      var inspirationBlock = $('[data-block-id=' + blockId + ']');
       var inspirationBlockHtml = inspirationBlock.html();
-      var inspirationBlockOffset = inspirationBlock.offset();
 
-      _dragging = block;
+      _dragging = blockId;
       _ghostElement.
         html(inspirationBlockHtml).
         css({
@@ -163,6 +156,9 @@ $(document).on('ready', function() {
 
   var dragDrop = new DragDrop($('#block-ghost'));
 
+
+
+
   var lastInsertionHintIndex = -1;
   function showInsertionHintAtIndex(index) {
     userStoryRenderer.showInsertionHintAtIndex(index);
@@ -173,30 +169,31 @@ $(document).on('ready', function() {
     lastInsertionHintIndex = -1;
   }
 
-  $('.inspiration-story').on('mousedown', '.block', function(e) {
+  inspirationStoryElement.on('mousedown', '.block', function(e) {
 
     var blockId = e.currentTarget.getAttribute('data-block-id');
-    var block = inspirationStory.getBlockWithId(blockId);
 
-    dragDrop.drag(e.clientX, e.clientY, block);
+    dragDrop.drag(e.clientX, e.clientY, blockId);
   });
 
-  $('.inspiration-story').on('dblclick', '.block', function(e) {
-    var blockId = e.currentTarget.getAttribute('data-block-id');
-    var blockToInsert = inspirationStory.getBlockWithId(blockId);
+  inspirationStoryElement.on('dblclick', '.block', function(e) {
 
-    userStory.appendBlock(blockToInsert.clone());
-    userStoryRenderer.render();
+    window.dispatcher.dispatch({
+      action: Constants.BLOCK_COPY_INTO_STORY,
+      blockId: e.currentTarget.getAttribute('data-block-id'),
+      storyUid: window.userStoryUid,
+      insertAt: window.storyStore.getBlockIds(window.userStoryUid).length
+    });
   });
 
-  $('.user-story-container').on('mouesenter', function() {
+  userStoryElement.on('mouseenter', function() {
 
     if (dragDrop.isDragging()) {
       dragDrop.addGhostClass('full-size');
     }
   });
 
-  $('.user-story-container').on('mouseleave', function() {
+  userStoryElement.on('mouseleave', function() {
 
     if (dragDrop.isDragging()) {
       dragDrop.removeGhostClass('full-size');
@@ -205,13 +202,13 @@ $(document).on('ready', function() {
     hideInsertionHint();
   });
 
-  $('.user-story-container').on('mousemove', '.block', function(e) {
+  userStoryElement.on('mousemove', '.block', function(e) {
     if (dragDrop.isDragging()) {
       var blockElement = $(e.currentTarget);
       var blockId = blockElement.attr('data-block-id');
 
       if (blockId) {
-        var indexToHint = _.invoke(userStory.getBlocks(), 'getId').indexOf(blockId);
+        var indexToHint = storyStore.getBlockIds(window.userStoryUid).indexOf(blockId);
         if (indexToHint >= 0) {
           showInsertionHintAtIndex(indexToHint + 1);
         }
@@ -221,7 +218,7 @@ $(document).on('ready', function() {
     }
   });
 
-  $(window).on('mouseup', function(e) {
+  $(window).on('mouseup', function() {
 
     if (dragDrop.isDragging()) {
       dragDrop.drop();
@@ -230,19 +227,25 @@ $(document).on('ready', function() {
     hideInsertionHint();
   });
 
-  $('.user-story-container').on('mouseup', function(e) {
+  userStoryElement.on('mouseup', function() {
 
     if (dragDrop.isDragging()) {
 
-      var blockToInsert = dragDrop.drop().clone();
+      var blockIdToInsert = dragDrop.drop();
+      var insertAt;
 
       if (lastInsertionHintIndex >= 0) {
-        userStory.insertBlockAtIndex(lastInsertionHintIndex, blockToInsert);
+        insertAt = lastInsertionHintIndex;
       } else {
-        userStory.appendBlock(blockToInsert);
+        insertAt = storyStore.getBlockIds(window.userStoryUid).length;
       }
 
-      userStoryRenderer.render();
+      dispatcher.dispatch({
+        action: Constants.BLOCK_COPY_INTO_STORY,
+        blockId: blockIdToInsert,
+        storyUid: window.userStoryUid,
+        insertAt: insertAt
+      });
     }
   });
 });

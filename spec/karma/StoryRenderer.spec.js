@@ -1,15 +1,51 @@
-describe('StoryRenderer class', function() {
+describe('StoryRenderer', function() {
 
+  var storyUid = 'rend-erer';
+  var imageBlockId = '1000';
+  var textBlockId = '1001';
   var options;
 
+  function createSampleStories() {
+
+    var userStoryData = generateStoryData({
+      uid: storyUid,
+      blocks: [
+        generateBlockData({
+          id: imageBlockId,
+          components: [
+            { type: 'image', value: 'fakeImageFile.png' }
+          ]
+        }),
+        generateBlockData({
+          id: textBlockId,
+          components: [
+            { type: 'text', value: 'some-text' }
+          ]
+        })
+      ]
+    });
+
+    window.dispatcher = new Dispatcher();
+    window.storyStore = new StoryStore();
+    window.blockStore = new BlockStore();
+
+    dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
+  }
+
+  function clearFixtures() {
+    delete window.storyStore;
+  }
+
   beforeEach(function() {
+
+    createSampleStories();
 
     $('body').append(
       $('<div>', { class: 'story-container' })
     );
 
     options = {
-      story: new Story(generateStoryData()),
+      storyUid: storyUid,
       storyContainerElement: $('.story-container'),
       onRenderError: function() {}
     };
@@ -46,11 +82,11 @@ describe('StoryRenderer class', function() {
         });
       });
 
-      describe('with a story property that is not an instance of Story', function() {
+      describe('with a storyUid property that is not a string', function() {
 
         it('raises an exception', function() {
 
-          options.story = {};
+          options.storyUid = {};
 
           assert.throws(function() {
             var renderer = new StoryRenderer(options);
@@ -101,7 +137,7 @@ describe('StoryRenderer class', function() {
 
           it('calls the custom onRenderError function', function(done) {
 
-            options.story = {};
+            options.storyUid = {};
             options.onRenderError = function() {
               assert.isTrue(true);
               done();
@@ -127,25 +163,19 @@ describe('StoryRenderer class', function() {
           it('renders blocks', function() {
 
             var renderer = new StoryRenderer(options);
-            renderer.render();
 
-            assert.isTrue($('.block').length > 0, 'there is at least one block');
+            assert.equal($('.block').length, 2);
           });
 
           it('does not render deleted blocks', function() {
 
-            var story = new Story(generateStoryData());
-            options.story = story;
-
             var renderer = new StoryRenderer(options);
-            renderer.render();
 
-            assert.isTrue($('.block').length > 0, 'there is at least one block');
+            assert.equal($('.block').length, 2);
 
-            story.removeBlockAtIndex(0);
-            renderer.render();
+            dispatcher.dispatch({ action: Constants.STORY_DELETE_BLOCK, storyUid: storyUid, blockId: imageBlockId });
 
-            assert.isFalse($('.block').length > 0, 'there are no blocks');
+            assert.equal($('.block').length, 1);
           });
         });
 
@@ -153,22 +183,23 @@ describe('StoryRenderer class', function() {
 
           it('renders blocks', function() {
 
-            options.story = new Story(
-              generateStoryData({
-                blocks: [
-                  generateBlockData({
-                    components: [
-                      { type: 'image', value: 'image' }
-                    ]
-                  })
-                ]
-              })
-            );
+            var storyWithImage = generateStoryData({
+              uid: 'with-imge',
+              blocks: [
+                generateBlockData({
+                  components: [
+                    { type: 'image', value: 'image' }
+                  ]
+                })
+              ]
+            });
 
+            dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyWithImage });
+
+            options.storyUid = 'with-imge';
             var renderer = new StoryRenderer(options);
-            renderer.render();
 
-            assert.isTrue($('.block').length > 0, 'there is at least one block');
+            assert.equal($('.block').length, 1);
           });
         });
 
@@ -176,22 +207,23 @@ describe('StoryRenderer class', function() {
 
           it('renders blocks', function() {
 
-            options.story = new Story(
-              generateStoryData({
-                blocks: [
-                  generateBlockData({
-                    components: [
-                      { type: 'visualization', value: 'visualization' }
-                    ]
-                  })
-                ]
-              })
-            );
+            var storyWithVisualization = generateStoryData({
+              uid: 'with-visu',
+              blocks: [
+                generateBlockData({
+                  components: [
+                    { type: 'visualization', value: 'visualization' }
+                  ]
+                })
+              ]
+            });
 
+            dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyWithVisualization });
+
+            options.storyUid = 'with-visu';
             var renderer = new StoryRenderer(options);
-            renderer.render();
 
-            assert($('.block').length > 0, 'there is more than one block');
+            assert.equal($('.block').length, 1);
           });
         });
       });

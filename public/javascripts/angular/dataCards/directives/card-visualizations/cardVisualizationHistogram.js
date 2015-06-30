@@ -232,13 +232,20 @@
               unfiltered: unfilteredData,
               filtered: filteredData
             };
+          }).map(function(data) {
+            return HistogramService.shouldRenderDataAsColumnChart(data) ? HistogramService.transformDataForColumnChart(data) : data;
           });
+
+        var visualizationType$ = cardData$.map(function(data) {
+          return HistogramService.shouldRenderDataAsColumnChart(data) ? 'columnChart' : 'histogram';
+        });
 
         $scope.$bindObservable('rowDisplayUnit', rowDisplayUnit$);
         $scope.$bindObservable('cardData', cardData$);
         $scope.$bindObservable('isFiltered', isFiltered$);
         $scope.$bindObservable('expanded', expanded$);
         $scope.$bindObservable('currentRangeFilterValues', currentRangeFilterValues$);
+        $scope.$bindObservable('visualizationType', visualizationType$);
       }
     };
   }

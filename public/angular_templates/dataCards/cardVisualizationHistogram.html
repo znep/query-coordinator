@@ -1,10 +1,22 @@
-<histogram
-  card-data="cardData"
-  row-display-unit="rowDisplayUnit"
-  is-filtered="isFiltered"
-  current-range-filter-values="currentRangeFilterValues"
-  expanded="expanded">
-</histogram>
+<div ng-switch="visualizationType">
+  <div ng-switch-when="histogram">
+    <histogram
+      card-data="cardData"
+      row-display-unit="rowDisplayUnit"
+      is-filtered="isFiltered"
+      current-range-filter-values="currentRangeFilterValues"
+      expanded="expanded">
+    </histogram>
+  </div>
+  <div ng-switch-when="columnChart">
+    <div column-chart
+      chart-data="cardData"
+      row-display-unit="rowDisplayUnit"
+      show-filtered="isFiltered"
+      expanded="expanded">
+    </div>
+  </div>
+</div>
 <load-spinner></load-spinner>
 <div class="visualization-render-error" ng-show="histogramRenderError">
   <div class="row">

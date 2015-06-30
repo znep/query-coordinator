@@ -177,9 +177,32 @@
       });
     }
 
+    function shouldRenderDataAsColumnChart(data) {
+      return true;
+    }
+
+    function transformDataForColumnChart(data) {
+      var result = [];
+
+      _.each(data.unfiltered, function(bucket, i) {
+        result[i] = {
+          name: bucket.start,
+          total: bucket.value
+        };
+      });
+
+      _.each(data.filtered, function(bucket, i) {
+        result[i].filtered = bucket.value;
+      });
+
+      return result;
+    }
+
     return {
       getBucketingOptions: getBucketingOptions,
-      bucketData: bucketData
+      bucketData: bucketData,
+      shouldRenderDataAsColumnChart: shouldRenderDataAsColumnChart,
+      transformDataForColumnChart: transformDataForColumnChart
     };
   }
 

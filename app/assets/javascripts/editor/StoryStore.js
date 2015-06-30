@@ -17,6 +17,10 @@
           _createStory(payload);
           break;
 
+        case Constants.STORY_INSERT_BLOCK:
+          _insertBlock(payload);
+          break;
+
         case Constants.STORY_MOVE_BLOCK_UP:
           _moveBlockUp(payload);
           break;
@@ -100,7 +104,44 @@
       _emitter.emit();
     }
 
+    function _insertBlock(payload) {
+
+      if (!payload.hasOwnProperty('storyUid')) {
+        throw new Error('`storyUid` property is required.');
+      }
+
+      if (!payload.hasOwnProperty('insertAt')) {
+        throw new Error('`insertAt` property is required.');
+      }
+
+      if (!payload.hasOwnProperty('blockId')) {
+        throw new Error('`blockId` property is required.');
+      }
+
+      var story = _getStoryByUid(payload.storyUid)
+
+      story.insertBlockAtIndex(payload.insertAt, payload.blockId);
+
+      _emitter.emit();
+    }
+
     function _moveBlockUp(payload) {
+
+      if (!payload.hasOwnProperty('storyUid')) {
+        throw new Error('`storyUid` property is required.');
+      }
+
+      if (!payload.hasOwnProperty('blockId')) {
+        throw new Error('`blockId` property is required.');
+      }
+
+      if (typeof payload.blockId !== 'string') {
+        throw new Error(
+          '`blockId` must be a string (is of type ' +
+          (typeof paylaod.blockId) +
+          '.'
+        );
+      }
 
       var story = _getStoryByUid(payload.storyUid);
       var blockIndex = story.getBlockIndexWithId(payload.blockId);
@@ -112,6 +153,22 @@
 
     function _moveBlockDown(payload) {
 
+      if (!payload.hasOwnProperty('storyUid')) {
+        throw new Error('`storyUid` property is required.');
+      }
+
+      if (!payload.hasOwnProperty('blockId')) {
+        throw new Error('`blockId` property is required.');
+      }
+
+      if (typeof payload.blockId !== 'string') {
+        throw new Error(
+          '`blockId` must be a string (is of type ' +
+          (typeof paylaod.blockId) +
+          '.'
+        );
+      }
+
       var story = _getStoryByUid(payload.storyUid);
       var blockIndex = story.getBlockIndexWithId(payload.blockId);
 
@@ -121,6 +178,22 @@
     }
 
     function _deleteBlock(payload) {
+
+      if (!payload.hasOwnProperty('storyUid')) {
+        throw new Error('`storyUid` property is required.');
+      }
+
+      if (!payload.hasOwnProperty('blockId')) {
+        throw new Error('`blockId` property is required.');
+      }
+
+      if (typeof payload.blockId !== 'string') {
+        throw new Error(
+          '`blockId` must be a string (is of type ' +
+          (typeof paylaod.blockId) +
+          '.'
+        );
+      }
 
       var story = _getStoryByUid(payload.storyUid);
 

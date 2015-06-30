@@ -1,3 +1,5 @@
+'use strict';
+
 $(document).on('ready', function() {
 
   /**
@@ -48,9 +50,17 @@ $(document).on('ready', function() {
    * FLUX
    */
 
+  window.inspirationStoryUid = inspirationStoryData.uid;
+  window.userStoryUid = userStoryData.uid;
+
   window.dispatcher = new Dispatcher();
   window.dispatcher.register(function(payload) {
     console.info('Dispatcher action: ', payload);
+    if (typeof payload.action !== 'string') {
+      throw new Error(
+        'Undefined action.'
+      );
+    }
   });
 
   window.storyStore = new StoryStore();
@@ -60,7 +70,7 @@ $(document).on('ready', function() {
   window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
 
   var inspirationStoryOptions = {
-    storyUid: inspirationStoryData.uid,
+    storyUid: window.inspirationStoryUid,
     storyContainerElement: $('.inspiration-story'),
     scaleFactor: 0.5,
     editable: false,
@@ -69,7 +79,7 @@ $(document).on('ready', function() {
   var inspirationStoryRenderer = new StoryRenderer(inspirationStoryOptions);
 
   var userStoryOptions = {
-    storyUid: userStoryData.uid,
+    storyUid: window.userStoryUid,
     storyContainerElement: $('.user-story'),
     editable: true,
     insertionHintElement: $('#story-insertion-hint'),
@@ -77,6 +87,7 @@ $(document).on('ready', function() {
     onRenderError: function() {}
   };
   var userStoryRenderer = new StoryRenderer(userStoryOptions);
+
 
   /**
    * LEGACY
@@ -97,14 +108,14 @@ $(document).on('ready', function() {
       return _dragging !== null;
     };
 
-    this.drag = function(mouseX, mouseY, block) {
+    this.drag = function(mouseX, mouseY, blockId) {
 
       $('body').addClass('dragging');
-      var inspirationBlock = $('[data-block-id=' + block.getId() + ']');
+      var inspirationBlock = $('[data-block-id=' + blockId + ']');
       var inspirationBlockHtml = inspirationBlock.html();
       var inspirationBlockOffset = inspirationBlock.offset();
 
-      _dragging = block;
+      _dragging = blockId;
       _ghostElement.
         html(inspirationBlockHtml).
         css({
@@ -144,6 +155,9 @@ $(document).on('ready', function() {
 
   var dragDrop = new DragDrop($('#block-ghost'));
 
+
+
+
   var lastInsertionHintIndex = -1;
   function showInsertionHintAtIndex(index) {
     userStoryRenderer.showInsertionHintAtIndex(index);
@@ -157,17 +171,18 @@ $(document).on('ready', function() {
   $('.inspiration-story').on('mousedown', '.block', function(e) {
 
     var blockId = e.currentTarget.getAttribute('data-block-id');
-    var block = inspirationStory.getBlockWithId(blockId);
 
-    dragDrop.drag(e.clientX, e.clientY, block);
+    dragDrop.drag(e.clientX, e.clientY, blockId);
   });
 
   $('.inspiration-story').on('dblclick', '.block', function(e) {
-    var blockId = e.currentTarget.getAttribute('data-block-id');
-    var blockToInsert = inspirationStory.getBlockWithId(blockId);
 
-    userStory.appendBlock(blockToInsert.clone());
-    userStoryRenderer.render();
+    window.dispatcher.dispatch({
+      action: Constants.BLOCK_COPY_INTO_STORY,
+      blockId: e.currentTarget.getAttribute('data-block-id'),
+      storyUid: window.userStoryUid,
+      insertAt: window.storyStore.getBlockIds(window.userStoryUid).length
+    });
   });
 
   $('.user-story-container').on('mouesenter', function() {
@@ -192,7 +207,7 @@ $(document).on('ready', function() {
       var blockId = blockElement.attr('data-block-id');
 
       if (blockId) {
-        var indexToHint = _.invoke(userStory.getBlocks(), 'getId').indexOf(blockId);
+        var indexToHint = storyStore.getBlockIds(window.userStoryUid).indexOf(blockId);
         if (indexToHint >= 0) {
           showInsertionHintAtIndex(indexToHint + 1);
         }
@@ -215,15 +230,21 @@ $(document).on('ready', function() {
 
     if (dragDrop.isDragging()) {
 
-      var blockToInsert = dragDrop.drop().clone();
+      var blockIdToInsert = dragDrop.drop();
+      var insertAt;
 
       if (lastInsertionHintIndex >= 0) {
-        userStory.insertBlockAtIndex(lastInsertionHintIndex, blockToInsert);
+        insertAt = lastInsertionHintIndex;
       } else {
-        userStory.appendBlock(blockToInsert);
+        insertAt = storyStore.getBlockIds(window.userStoryUid).length;
       }
 
-      userStoryRenderer.render();
+      dispatcher.dispatch({
+        action: Constants.BLOCK_COPY_INTO_STORY,
+        blockId: blockIdToInsert,
+        storyUid: window.userStoryUid,
+        insertAt: insertAt
+      });
     }
   });
 });

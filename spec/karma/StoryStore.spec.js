@@ -127,6 +127,74 @@ describe('StoryStore', function() {
       });
     });
 
+
+    describe('STORY_INSERT_BLOCK', function() {
+
+      var validInsertedBlockId = 'clonedBlock';
+      var validInsertionIndex = 1;
+
+      xdescribe('given a block that is already present in the story', function() {
+      });
+
+      describe('given an invalid story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_INSERT_BLOCK,
+              storyUid: null,
+              blockId: validInsertedBlockId,
+              insertAt: validInsertionIndex
+            });
+          });
+        });
+      });
+
+      describe('not given a blockId', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_INSERT_BLOCK,
+              storyUid: story1Uid,
+              insertAt: validInsertionIndex
+            });
+          });
+        });
+      });
+
+      describe('not given an insertion index', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_INSERT_BLOCK,
+              storyUid: story1Uid,
+              blockId: validInsertedBlockId
+            });
+          });
+        });
+      });
+
+      describe('given valid data', function() {
+
+        it('should insert the block', function() {
+
+          dispatch({
+            action: Constants.STORY_INSERT_BLOCK,
+            storyUid: story1Uid,
+            blockId: validInsertedBlockId,
+            insertAt: validInsertionIndex
+          });
+
+          assert.deepEqual(store.getBlockIds(story1Uid), [ firstBlockId, validInsertedBlockId, secondBlockId ]);
+        });
+      });
+    });
+
     describe('STORY_MOVE_BLOCK_UP', function() {
 
       describe('given an invalid story uid', function() {

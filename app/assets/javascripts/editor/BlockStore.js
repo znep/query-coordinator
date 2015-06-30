@@ -20,6 +20,10 @@
         case Constants.BLOCK_UPDATE_COMPONENT:
           _updateComponentAtIndex(payload);
           break;
+
+        case Constants.BLOCK_COPY_INTO_STORY:
+          _copyBlockIntoStory(payload);
+          break;
       }
     });
 
@@ -97,6 +101,29 @@
       block.updateComponentAtIndex(index, type, value);
 
       _emitter.emit();
+    }
+
+    function _copyBlockIntoStory(payload) {
+
+      if (!payload.hasOwnProperty('storyUid')) {
+        throw new Error('`storyUid` property is required.');
+      }
+
+      if (!payload.hasOwnProperty('insertAt')) {
+        throw new Error('`insertAt` property is required.');
+      }
+
+      var newBlock = _getBlockById(payload.blockId).clone();
+      var newBlockId = newBlock.getId();
+
+      _blocks[newBlockId] = newBlock;
+
+      window.dispatcher.dispatch({
+        action: Constants.STORY_INSERT_BLOCK,
+        storyUid: payload.storyUid,
+        blockId: newBlockId,
+        insertAt: payload.insertAt
+      });
     }
   }
 

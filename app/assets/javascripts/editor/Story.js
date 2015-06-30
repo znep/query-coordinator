@@ -107,6 +107,14 @@
      */
     this.getBlockIdAtIndex = function(index) {
 
+      if (typeof index !== 'number') {
+        throw new Error(
+          '`index` argument must be a number (is of type ' +
+          (typeof index) +
+          ').'
+        );
+      }
+
       if (index < 0 || index >= _blockIds.length) {
         throw new Error('`index` argument is out of bounds.');
       }
@@ -137,6 +145,14 @@
      * @param {string} blockId
      */
     this.insertBlockAtIndex = function(index, blockId) {
+
+      if (typeof index !== 'number') {
+        throw new Error(
+          '`index` argument must be a number (is of type ' +
+          (typeof index) +
+          ').'
+        );
+      }
 
       if (index < 0 || index > _blockIds.length) {
         throw new Error('`index` argument is out of bounds.');
@@ -169,6 +185,14 @@
      */
     this.removeBlockAtIndex = function(index) {
 
+      if (typeof index !== 'number') {
+        throw new Error(
+          '`index` argument must be a number (is of type ' +
+          (typeof index) +
+          ').'
+        );
+      }
+
       if (index < 0 || index >= _blockIds.length) {
         throw new Error('`index` argument is out of bounds.');
       }
@@ -191,6 +215,22 @@
      * @param {number} index2
      */
     this.swapBlocksAtIndices = function(index1, index2) {
+
+      if (typeof index1 !== 'number') {
+        throw new Error(
+          '`index1` argument must be a number (is of type ' +
+          (typeof index1) +
+          ').'
+        );
+      }
+
+      if (typeof index2 !== 'number') {
+        throw new Error(
+          '`index2` argument must be a number (is of type ' +
+          (typeof index2) +
+          ').'
+        );
+      }
 
       if (index1 < 0 || index1 >= _blockIds.length) {
         throw new Error('`index1` argument is out of bounds.');

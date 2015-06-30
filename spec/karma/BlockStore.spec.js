@@ -320,5 +320,80 @@ describe('BlockStore', function() {
         });
       });
     });
+
+    describe('BLOCK_COPY_INTO_STORY', function() {
+
+      var validStoryUid = 'test-test';
+      var validInsertionIndex = 0;
+
+      describe('given an invalid block id', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.BLOCK_COPY_INTO_STORY,
+              blockId: null,
+              storyUid: validStoryUid,
+              insertAt: validInsertionIndex
+            });
+          });
+        });
+      });
+
+      describe('not given a story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.BLOCK_COPY_INTO_STORY,
+              blockId: block1Id,
+              insertAt: validInsertionIndex
+            });
+          });
+        });
+      });
+
+      describe('not given an insertion index', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.BLOCK_COPY_INTO_STORY,
+              blockId: block1Id,
+              storyUid: validStoryUid
+            });
+          });
+        });
+      });
+
+      describe('given valid data', function() {
+
+        it('should emit a STORY_INSERT_BLOCK action', function(done) {
+
+          window.dispatcher.register(function(payload) {
+            if (payload.action === Constants.STORY_INSERT_BLOCK) {
+
+              assert.property(payload, 'blockId');
+              assert.notEqual(payload.blockId, block1Id);
+              assert.equal(store.getLayout(payload.blockId), block1Layout);
+
+              assert.propertyVal(payload, 'storyUid', validStoryUid);
+              assert.propertyVal(payload, 'insertAt', validInsertionIndex);
+              done();
+            }
+          });
+
+          dispatch({
+            action: Constants.BLOCK_COPY_INTO_STORY,
+            blockId: block1Id,
+            storyUid: validStoryUid,
+            insertAt: validInsertionIndex
+          });
+        });
+      });
+    });
   });
 });

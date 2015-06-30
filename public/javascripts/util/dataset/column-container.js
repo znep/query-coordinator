@@ -397,26 +397,36 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
 
         // Make it so that you can look up the column by its id.
         _columnIDLookup[c.id] = c;
-        _columnIDLookup[oldC.id] = c;
+        if (oldC) {
+          _columnIDLookup[oldC.id] = c;
+        }
 
         // Also make it so that you can lookup the column by its lookup.
         if (c.lookup != c.id) {
           _columnIDLookup[c.lookup] = c;
-          _columnIDLookup[oldC.lookup] = c;
+          if (oldC) {
+            _columnIDLookup[oldC.lookup] = c;
+          }
         }
 
         // Make it so that you can look up the column by its table column id.
         _columnTCIDLookup[c.tableColumnId] = c;
-        _columnTCIDLookup[oldC.tableColumnId] = c;
+        if (oldC) {
+          _columnTCIDLookup[oldC.tableColumnId] = c;
+        }
 
         // Make it so that you can look up the column by its fieldname.
         _columnFieldNameLookup[c.fieldName] = c;
-        _columnFieldNameLookup[oldC.fieldName] = c;
+        if (oldC) {
+          _columnFieldNameLookup[oldC.fieldName] = c;
+        }
 
         // If it's a meta column, make it so you can look it up by name.
         if (c.isMeta) {
           _metaColumnLookup[c.name] = c;
-          _metaColumnLookup[oldC.name] = c;
+          if (oldC) {
+            _metaColumnLookup[oldC.name] = c;
+          }
         }
 
         // If it has an access type, make sure it's set.

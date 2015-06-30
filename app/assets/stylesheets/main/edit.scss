@@ -46,8 +46,143 @@ body {
   z-index: $site-header-z-index;
 }
 
-.toolbar {
-  display: none;
+#rich-text-editor-toolbar {
+  @include unselectable();
+  @include clearfix();
+
+  position: fixed;
+  width: $rich-text-editor-toolbar-width;
+  left: $rich-text-editor-toolbar-left-offset;
+  top: $rich-text-editor-toolbar-top-offset;
+  background-color: $rich-text-editor-toolbar-bg-color;
+  z-index: $rich-text-editor-toolbar-z-index;
+
+  .rich-text-editor-toolbar-btn-group,
+  .rich-text-editor-toolbar-select-group {
+    float: left;
+    margin-right: $rich-text-editor-toolbar-btn-group-margin-right;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  .rich-text-editor-toolbar-btn,
+  .rich-text-editor-toolbar-select,
+  .rich-text-editor-toolbar-select-hint {
+    color: $rich-text-editor-toolbar-inactive-color;
+  }
+
+  .rich-text-editor-toolbar-btn {
+    width: $rich-text-editor-toolbar-btn-width;
+    height: $rich-text-editor-toolbar-btn-height;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-family: 'icomoon';
+  }
+
+  .rich-text-editor-toolbar-btn-bold:before {
+    content: '\ee9a';
+  }
+
+  .rich-text-editor-toolbar-btn-italic:before {
+    content: '\ee9c';
+  }
+
+  .rich-text-editor-toolbar-btn-left:before {
+    content: '\eebe';
+  }
+
+  .rich-text-editor-toolbar-btn-center:before {
+    content: '\eebf';
+  }
+
+  .rich-text-editor-toolbar-btn-right:before {
+    content: '\eec0';
+  }
+
+  .rich-text-editor-toolbar-btn-link:before {
+    content: '\ec96';
+  }
+
+  .rich-text-editor-toolbar-btn-orderedList:before {
+    content: '\ec55';
+  }
+
+  .rich-text-editor-toolbar-btn-unorderedList:before {
+    content: '\ec57';
+  }
+
+  .rich-text-editor-toolbar-btn-blockquote:before {
+    content: '\eb18';
+  }
+
+  .rich-text-editor-toolbar-btn-clearFormatting:before {
+    content: '\eb99';
+  }
+
+  .rich-text-editor-toolbar-select-container {
+    position: relative;
+    display: block;
+    height: $rich-text-editor-toolbar-btn-height;
+    width: $rich-text-editor-toolbar-select-width;
+    border: 1px solid transparent;
+    box-sizing: border-box;
+
+    .rich-text-editor-toolbar-select,
+    .rich-text-editor-toolbar-select-hint {
+      position: absolute;
+      display: block;
+    }
+
+    .rich-text-editor-toolbar-select {
+      left: 0;
+      width: 16rem;
+      height: $text-editor-toolbar-height;
+      padding: 0 0 0 $rich-text-editor-toolbar-select-padding-left;
+      font-size: $rich-text-editor-toolbar-btn-height / 2;
+      background-color: transparent;
+      border: 1px solid transparent;
+      outline: none;
+      z-index: 2;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      -webkit-border-radius: 0px;
+    }
+
+    .rich-text-editor-toolbar-select-hint {
+      right: 0;
+      width: $rich-text-editor-toolbar-btn-height;
+      height: $rich-text-editor-toolbar-btn-width;
+      text-align: center;
+      line-height: $rich-text-editor-toolbar-btn-height;
+      z-index: 1;
+      font-family: 'icomoon';
+
+      &:before {
+        content: '\edbd';
+      }
+    }
+  }
+
+  &.active {
+
+    .rich-text-editor-toolbar-btn,
+    .rich-text-editor-toolbar-select,
+    .rich-text-editor-toolbar-select-hint {
+      color: $rich-text-editor-toolbar-color;
+    }
+
+    .rich-text-editor-toolbar-btn {
+
+      &.active {
+        background-color: $rich-text-editor-toolbar-active-bg-color;
+      }
+    }
+  }
 }
 
 .inspiration-story-container {

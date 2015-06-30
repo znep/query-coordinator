@@ -47,6 +47,10 @@
       _emitter.removeListener(callback);
     };
 
+    this.forceChange = function() {
+      _emitter.emit();
+    };
+
     this.getTitle = function(storyUid) {
 
       var story = _getStoryByUid(storyUid);

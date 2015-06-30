@@ -1,7 +1,19 @@
+$main-content-width: 64rem;
+
 // header
 $header-height: 4rem;
 $header-vertical-padding: 1rem;
 $header-total-height: $header-height + $header-vertical-padding;
+
+// rich text editor toolbar
+$rich-text-editor-toolbar-width: $main-content-width;
+$rich-text-editor-toolbar-left-offset: calc((100vw - #{$main-content-width}) / 2);
+$rich-text-editor-toolbar-top-offset: $header-total-height + 3rem;
+$rich-text-editor-toolbar-btn-group-margin-right: 1rem;
+$rich-text-editor-toolbar-btn-width: 3rem;
+$rich-text-editor-toolbar-btn-height: 3rem;
+$rich-text-editor-toolbar-select-width: 16rem;
+$rich-text-editor-toolbar-select-padding-left: 0.5rem;
 
 // inspiration story container
 $inspiration-story-container-width: 13.25rem;
@@ -13,7 +25,7 @@ $text-editor-toolbar-height: 3rem;
 $text-editor-toolbar-vertical-padding: 1rem;
 
 // user story container
-$user-story-container-width: 64rem;
+$user-story-container-width: $main-content-width;
 $user-story-container-vertical-padding: 8rem;
 
 // blocks

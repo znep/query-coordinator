@@ -9,32 +9,24 @@ $(document).on('ready', function() {
   var assetFinder = new AssetFinder();
 
   var richTextFormats = [
-    { id: 'heading1', tag: 'h2', name: 'Heading 1', dropdown: true },
-    { id: 'heading2', tag: 'h3', name: 'Heading 2', dropdown: true },
-    { id: 'heading3', tag: 'h4', name: 'Heading 3', dropdown: true },
-    { id: 'heading4', tag: 'h5', name: 'Heading 4', dropdown: true },
+    { id: 'heading1', tag: 'h1', name: 'Heading 1', dropdown: true },
+    { id: 'heading2', tag: 'h2', name: 'Heading 2', dropdown: true },
+    { id: 'heading3', tag: 'h3', name: 'Heading 3', dropdown: true },
+    { id: 'heading4', tag: 'h4', name: 'Heading 4', dropdown: true },
+    { id: 'heading5', tag: 'h5', name: 'Heading 5', dropdown: true },
+    { id: 'heading6', tag: 'h6', name: 'Heading 6', dropdown: true },
     { id: 'text', tag: null, name: 'Paragraph', dropdown: true },
     { id: 'bold', tag: 'b', name: 'Bold', dropdown: false, group: 0 },
     { id: 'italic', tag: 'i', name: 'Italic', dropdown: false, group: 0 },
-    { id: 'left', tag: 'p', name: 'Align Left', dropdown: false, group: 1 },
-    { id: 'center', tag: 'p', name: 'Align Center', dropdown: false, group: 1 },
-    { id: 'right', tag: 'p', name: 'Align Right', dropdown: false, group: 1 },
+    { id: 'left', tag: null, name: 'Align Left', dropdown: false, group: 1 },
+    { id: 'center', tag: null, name: 'Align Center', dropdown: false, group: 1 },
+    { id: 'right', tag: null, name: 'Align Right', dropdown: false, group: 1 },
     { id: 'orderedList', tag: 'ol', name: 'Ordered List', dropdown: false, group: 2 },
     { id: 'unorderedList', tag: 'ul', name: 'Unordered List', dropdown: false, group: 2 },
     { id: 'blockquote', tag: 'blockquote', name: 'Block Quote', dropdown: false, group: 2 },
-    { id: 'link', tag: 'a', name: 'Link', dropdown: false, group: 3 }
+    { id: 'link', tag: 'a', name: 'Link', dropdown: false, group: 3 },
+    { id: 'clearFormatting', tag: null, name: 'Clear Formatting', dropdown: false, group: 4 }
   ];
-
-  var richTextEditorToolbar = new RichTextEditorToolbar(
-    $('#rich-text-editor-toolbar'),
-    richTextFormats
-  );
-
-  var richTextEditorManager = new RichTextEditorManager(
-    assetFinder,
-    richTextEditorToolbar,
-    richTextFormats
-  );
 
   // Temporary fix until version is being added/populated
   if (userStoryData.version === null) {
@@ -69,6 +61,17 @@ $(document).on('ready', function() {
   window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: inspirationStoryData });
   window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
 
+  var richTextEditorToolbar = new RichTextEditorToolbar(
+    $('#rich-text-editor-toolbar'),
+    richTextFormats
+  );
+
+  var richTextEditorManager = new RichTextEditorManager(
+    assetFinder,
+    richTextEditorToolbar,
+    richTextFormats
+  );
+
   var inspirationStoryOptions = {
     storyUid: window.inspirationStoryUid,
     storyContainerElement: $('.inspiration-story'),
@@ -91,13 +94,75 @@ $(document).on('ready', function() {
   var inspirationStoryElement = $('.inspiration-story-container');
   var userStoryElement = $('.user-story-container');
 
+
+  /**
+   * RichTextEditorToolbar events
+   */
+
+  $(window).on('rich-text-editor::focus-change', function(event) {
+
+    if (event.originalEvent.detail.content === true) {
+
+      richTextEditorManager.linkToolbar(event.originalEvent.detail.id);
+
+      // window.dispatcher.dispatch({
+      //   action: Constants.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
+      //   activeFormats: event.originalEvent.detail.content
+      // });
+      //textEditorToolbar.updateActiveFormats(event.originalEvent.detail.content);
+    }
+  });
+
+  $(window).on('click', function(event) {
+
+    var target = $(event.target);
+
+    // If the target of the click event is not the toolbar, unlink
+    // the toolbar from the current ext editor (which also dims the
+    // toolbar).
+    if (!target.is($('#rich-text-editor-toolbar')) &&
+      target.parents('#rich-text-editor-toolbar').length === 0) {
+
+      richTextEditorManager.unlinkToolbar();
+
+      window.dispatcher.dispatch({
+        action: Constants.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
+        activeFormats: []
+      });
+    }
+  });
+
+  $(window).on('rich-text-editor::format-change', function(event) {
+
+    window.dispatcher.dispatch({
+      action: Constants.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
+      activeFormats: event.originalEvent.detail.content
+    });
+  });
+
+  // Handle updates to block content.
+  $(window).on('rich-text-editor::content-change', function(event) {
+
+    var blockId = event.originalEvent.detail.id.split('-')[0];
+    var blockContentIndex = event.originalEvent.detail.id.split('-')[1];
+    var blockContent = event.originalEvent.detail.content;
+
+    window.dispatcher.dispatch({
+      action: Constants.BLOCK_UPDATE_COMPONENT,
+      blockId: blockId,
+      index: blockContentIndex,
+      type: 'text',
+      value: blockContent
+    });
+  });
+
+  $(window).on('rich-text-editor::height-change', function(event) {
+    storyStore.forceChange();
+  });
+
   /**
    * LEGACY
    */
-
-  $(window).on('rich-text-editor::height-change', function() {
-    userStoryRenderer.render();
-  });
 
   function DragDrop(ghostElement) {
 

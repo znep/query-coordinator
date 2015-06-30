@@ -208,15 +208,15 @@
     }
 
     function _blockAlignLeft() {
-
+      _editor.setTextAlignment('left');
     };
 
     function _blockAlignCenter() {
-
+      _editor.setTextAlignment('center');
     };
 
     function _blockAlignRight() {
-
+      _editor.setTextAlignment('right');
     };
 
     function _toggleOrderedList() {

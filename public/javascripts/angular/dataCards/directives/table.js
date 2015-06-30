@@ -649,7 +649,7 @@
             title: function($target, $head, options) {
               var title = _.escape($target.text());
               var index = $target.data('index');
-              var description = _.get(scope.filteredColumnDetails, index + '.description');
+              var description = _.escape(_.get(scope.filteredColumnDetails, index + '.description'));
               if (_.isDefined(description)) {
                 return '<div class="title">{0}</div><div class="description">{1}</div>'.format(
                   title,

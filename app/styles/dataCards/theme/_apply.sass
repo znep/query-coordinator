@@ -320,6 +320,12 @@ soc-select
 
 // choropleth
 .choropleth-container
+  .choropleth-selection-box
+    background: $choropleth-selection-box-background-color
+
+  .icon-filter
+    color: $choropleth-selection-box-filter-icon
+
   .choropleth-legend
     svg
       .labels
@@ -339,7 +345,6 @@ soc-select
 
           line
             stroke: $choropleth-legend-tick-color
-
 
 // column-chart
 div.column-chart

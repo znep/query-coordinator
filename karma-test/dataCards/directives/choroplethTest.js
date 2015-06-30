@@ -658,7 +658,7 @@ describe('A Choropleth Directive', function() {
         expect(nullColors.length).to.equal(1);
       });
 
-      it('should not color features that have null values', function(){
+      it('should not color features that have null values', function() {
         scope.geojsonAggregateData = testData.polygonData2ValueNull;
         el = createChoropleth();
 
@@ -678,7 +678,7 @@ describe('A Choropleth Directive', function() {
         expect(nullColors.length).to.equal(1);
       });
 
-      it('should not color features that have undefined values', function(){
+      it('should not color features that have undefined values', function() {
         scope.geojsonAggregateData = testData.polygonData2ValueUndefined;
         el = createChoropleth();
 
@@ -973,9 +973,8 @@ describe('A Choropleth Directive', function() {
 
     /* ---- FILTERING EVENTS -------------------------------- */
 
-    describe('on clicking a region', function(){
+    describe('on clicking a region', function() {
       // TODO: UNSUCCESSFUL FILTERING?
-
 
       it('should signal the region to toggle in the active filter names', function() {
         var toggleDatasetFilterCallback = sinon.spy();
@@ -993,7 +992,6 @@ describe('A Choropleth Directive', function() {
         expect(toggleDatasetFilterCallback).to.have.been.called;
       });
     });
-
 
     describe('legend', function() {
       _.each([true, false], function(expanded) {
@@ -1034,7 +1032,7 @@ describe('A Choropleth Directive', function() {
               expect($flyout.find('.flyout-title').html()).to.equal(legendColorFlyoutText);
             });
 
-            it('should contain labels that are not rounded for small enough legend class breaks', function(){
+            it('should contain labels that are not rounded for small enough legend class breaks', function() {
               // NOTE: important to test for each individual small case (1,2,3) to ensure proper edge case management.
               scope.geojsonAggregateData = testData.lineStringData3SmallNumbers;
               el = createChoropleth(expanded);

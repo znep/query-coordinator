@@ -266,6 +266,7 @@
         scope.$bindObservable('fieldName', model.pluck('fieldName'));
         scope.$bindObservable('baseLayerUrl', model.observeOnLatest('baseLayerUrl'));
         scope.$bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
+        scope.$bindObservable('isFiltered', whereClauseObservable.map(_.isPresent));
 
         scope.$bindObservable(
           'geojsonAggregateData',

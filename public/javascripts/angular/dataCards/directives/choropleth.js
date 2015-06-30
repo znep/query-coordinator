@@ -3,16 +3,17 @@
 
   // A WORD ON TERMINOLOGY:
   //
-  // 'selected' is what happens when you are filtering by a feature (this is currently an orange stroke).
+  // 'selected' is what happens when you are filtering by a feature (this is currently a yellow stroke).
   // 'highlighted' is what happens when you mouseover a feature (this is currently a white stroke).
 
   function choropleth(Constants,
-                      $timeout,
-                      ChoroplethVisualizationService,
-                      LeafletHelpersService,
-                      LeafletVisualizationHelpersService,
-                      FlyoutService,
-                      I18n) {
+    $timeout,
+    ChoroplethVisualizationService,
+    LeafletHelpersService,
+    LeafletVisualizationHelpersService,
+    FlyoutService,
+    I18n) {
+
     // The methods by which we determine choropleth styles are wrapped up in the
     // ChoroplethVisualization class, which does a lot of dynamic styles based on the
     // individual dataset.
@@ -32,9 +33,9 @@
           if ($(element).parents('.card').hasClass('dragged')) {
             return;
           }
-          return '<div class="flyout-title">{0}</div>'.format(
-            element.getAttribute('data-flyout-text')
-          );
+
+          return '<div class="flyout-title">{0}</div>'.
+            format(element.getAttribute('data-flyout-text'));
         },
         destroySignal: scope.$destroyAsObservable(),
         horizontal: true
@@ -42,9 +43,6 @@
     }
 
     $.extend(LegendDiscrete.prototype, {
-      ZERO_COLOR: '#eeeeee',
-      NEGATIVE_COLOR: '#c6663d',
-      POSITIVE_COLOR: '#408499',
 
       /**
        * Generates a color scale for the given classBreaks.
@@ -53,20 +51,32 @@
        * @return {Object} an object with 'colors' and 'scale' functions, that mirror a chroma scale.
        */
       colorScaleFor: function(classBreaks) {
-        var marginallyNegative = chroma.interpolate(this.ZERO_COLOR, this.NEGATIVE_COLOR, 0.1);
-        var marginallyPositive = chroma.interpolate(this.ZERO_COLOR, this.POSITIVE_COLOR, 0.1);
+        var marginallyNegative = chroma.interpolate(
+          Constants['DISCRETE_LEGEND_ZERO_COLOR'],
+          Constants['DISCRETE_LEGEND_NEGATIVE_COLOR'],
+          0.1
+        );
+        var marginallyPositive = chroma.interpolate(
+          Constants['DISCRETE_LEGEND_ZERO_COLOR'],
+          Constants['DISCRETE_LEGEND_POSITIVE_COLOR'],
+          0.1
+        );
+
         if (classBreaks.length === 1) {
+
           // There's only one value. So give it only one color.
           var color;
           if (classBreaks[0] < 0) {
-            color = this.NEGATIVE_COLOR;
+            color = Constants['DISCRETE_LEGEND_NEGATIVE_COLOR'];
           } else if (classBreaks[0] > 0) {
-            color = this.POSITIVE_COLOR;
+            color = Constants['DISCRETE_LEGEND_POSITIVE_COLOR'];
           } else {
-            color = this.ZERO_COLOR;
+            color = Constants['DISCRETE_LEGEND_ZERO_COLOR'];
           }
+
           var singleColorScale = _.constant([color]);
           singleColorScale.colors = _.constant([color]);
+
           return singleColorScale;
         }
 
@@ -74,12 +84,13 @@
 
           // If we have values that straddle zero, add the zero point as one of our breaks
           if (_.last(classBreaks) > 0) {
-            var indexOf0 = classBreaks.indexOf(0);
-            if (indexOf0 < 0) {
+            var indexOfZero = classBreaks.indexOf(0);
+            if (indexOfZero < 0) {
               throw 'Expecting classBreaks to contain a break at 0, if the values straddle 0';
             }
-            var negatives = classBreaks.slice(0, indexOf0 + 1);
-            var positives = classBreaks.slice(indexOf0);
+
+            var negatives = classBreaks.slice(0, indexOfZero + 1);
+            var positives = classBreaks.slice(indexOfZero);
 
             // When the values straddle 0 unevenly, we want the brightness of the colors to be
             // proportional to how far from 0 it is. In particular, we want eg 5 and -5 to have
@@ -87,29 +98,31 @@
             // distance from zero.
             var negativeHeavy = -classBreaks[0] > _.last(classBreaks);
             if (negativeHeavy) {
+
               // The last value of classBreaks is interpreted as the highest value that's in the
               // last class. Since we're adding another value to the end, it's meaning changes - now
               // it is the lowest value (inclusive) of the last break. Since we actually want that
               // value to be included in the last class, we have to increment it.
-              positives[positives.length - 1] += (
-                -classBreaks[0] - _.last(positives)) / 100;
+              positives[positives.length - 1] += (-classBreaks[0] - _.last(positives)) / 100;
               positives.push(-classBreaks[0]);
             } else {
               negatives.unshift(-_.last(classBreaks));
             }
 
             var negativeColorScale = visualizationUtils.calculateColoringScale(
-              [this.NEGATIVE_COLOR, marginallyNegative], negatives
+              [Constants['DISCRETE_LEGEND_NEGATIVE_COLOR'], marginallyNegative],
+              negatives
             );
             var positiveColorScale = visualizationUtils.calculateColoringScale(
-              [marginallyPositive, this.POSITIVE_COLOR], positives
+              [marginallyPositive, Constants['DISCRETE_LEGEND_POSITIVE_COLOR']],
+              positives
             );
 
             // Create a faux colorScale that implements the interface, but delegates to the positive
             // or negative actual-scale depending on what you're trying to scale.
             var fauxColorScale = _.bind(function(value) {
               if (value === 0) {
-                return chroma(this.ZERO_COLOR);
+                return chroma(Constants['DISCRETE_LEGEND_ZERO_COLOR']);
               } else {
                 return (value < 0 ? negativeColorScale : positiveColorScale)(value);
               }
@@ -150,13 +163,15 @@
 
             // All the numbers are negative. Give them the negative color scale.
             return visualizationUtils.calculateColoringScale(
-              [this.NEGATIVE_COLOR, marginallyNegative], classBreaks
+              [Constants['DISCRETE_LEGEND_NEGATIVE_COLOR'], marginallyNegative],
+              classBreaks
             );
           }
         } else {
           // Otherwise, it's all positive, so give them the positive color scale.
           return visualizationUtils.calculateColoringScale(
-            [marginallyPositive, this.POSITIVE_COLOR], classBreaks
+            [marginallyPositive, Constants['DISCRETE_LEGEND_POSITIVE_COLOR']],
+            classBreaks
           );
         }
       },
@@ -170,24 +185,28 @@
        */
       update: function(data) {
         var classBreaks = visualizationUtils.calculateDataClassBreaks(
-          data, Constants['UNFILTERED_VALUE_PROPERTY_NAME']
+          data,
+          Constants['UNFILTERED_VALUE_PROPERTY_NAME']
         );
 
         visualizationUtils.addZeroIfNecessary(classBreaks);
 
-        var position = 'bottomright';
         var numTicks = 3;
         var tickValues;
         var colorScale = this.colorScaleFor(classBreaks);
 
         switch(classBreaks.length) {
+
           case 0:
             this.element.hide();
             return null;
+
           case 1:
             tickValues = classBreaks.slice(0);
+
             // If there is just 1 value, make it range from 0 to that value.
             if (classBreaks[0] === 0) {
+
               // ...the only value is 0. Give 'em a fake range. It's all they deserve.
               classBreaks.push(1);
             } else if (classBreaks[0] < 0) {
@@ -196,11 +215,14 @@
               classBreaks.unshift(0);
             }
             break;
+
           case 2:
+
             // If there are two values, duplicate the max value, to allow there to be a color stop
             tickValues = classBreaks.slice(0);
             classBreaks = [classBreaks[0], classBreaks[1], classBreaks[1]]
             break;
+
           default:
             if (this.container.height() < 250) {
               numTicks = 3;
@@ -222,7 +244,9 @@
         var colors = colorScale.colors();
 
         // Give the svg an empty datum, so that it will create/reuse one svg
-        var svg = d3.select(this.element[0]).selectAll('svg').data([{}]);
+        var svg = d3.select(this.element[0]).
+          selectAll('svg').
+          data([{}]);
 
         svg.enter().
           append('svg');
@@ -231,19 +255,19 @@
 
         var yTickScale = d3.scale.linear().range([colorBarHeight - 1, 1]);
         var yLabelScale = d3.scale.linear().range([colorBarHeight, 0]);
-
         var yAxis = d3.svg.
-                      axis().
-                      scale(yTickScale).
-                      orient('left');
+          axis().
+          scale(yTickScale).
+          orient('left');
+
         if (tickValues) {
           yAxis.tickValues(tickValues);
         } else {
           yAxis.ticks(numTicks);
         }
 
-        // ensure that there's always a 0 tick
-        /* TODO(jerjou): 2015-02-04 I can't seem to get a d3 range to NOT give me a 0 if it
+        // Ensure that there's always a 0 tick
+        /* FIXME (jerjou): 2015-02-04 I can't seem to get a d3 range to NOT give me a 0 if it
          * straddles 0. So while I could leave this block in, I can't figure out a way to verify
          * that it works.
         if (minBreak <= 0 && maxBreak >= 0) {
@@ -259,9 +283,11 @@
         var yTickScaleDomain = yTickScale.domain([minBreak, maxBreak]);
         var yLabelScaleDomain = yLabelScale.domain([minBreak, maxBreak]);
 
+        // 'ss' is simple_statistics.js
         var isLargeRange = ss.standard_deviation(classBreaks) > 10;
 
         if (isLargeRange) {
+
           // d3 quirk: using a #tickFormat formatter that just returns the value
           // gives unexpected results due to floating point math.
           // We want to just return the value for "small-ranged" data.
@@ -272,22 +298,23 @@
           // floating point math issues.
           yTickScaleDomain.nice();
           yLabelScaleDomain.nice();
-          // update first and last class breaks to nice y domain
+
+          // Update first and last class breaks to nice y domain
           classBreaks[0] = yTickScale.domain()[0];
           classBreaks[classBreaks.length - 1] = yTickScale.domain()[1];
         }
 
+        // Give it some data so it creates the container element
         var labels = svg.selectAll('.labels').
-            // Give it some data so it creates the container element
             data([null]);
 
         labels.enter().
           append('g').
           attr('class', 'labels');
 
+        // Remove axis line that comes with d3 axis
         labels.
           call(yAxis).
-          // remove axis line that comes with d3 axis
           select('path').
           remove();
 
@@ -295,7 +322,8 @@
           exit().
           remove();
 
-        var maxLabelWidth = _.reduce(this.element.find('.labels > .tick > text'), function(accumulator, element) {
+        var labelTextElement = this.element.find('.labels > .tick > text');
+        var maxLabelWidth = _.reduce(labelTextElement, function(accumulator, element) {
           return Math.max(accumulator, $(element).width());
         }, 0);
         var tickAreaWidth = maxLabelWidth + yAxis.tickSize() + yAxis.tickPadding();
@@ -309,13 +337,13 @@
         svg.attr('width', tickAreaWidth + COLOR_BAR_WIDTH);
 
         // draw legend colors
-        var rects = svg.selectAll('.choropleth-legend-color').data(colors);
+        var rects = svg.
+          selectAll('.choropleth-legend-color').
+          data(colors);
 
         rects.enter().
           append('rect');
 
-        var minVal = classBreaks[0];
-        var maxVal = _.last(classBreaks);
         rects.
           attr('class', 'choropleth-legend-color').
           attr('width', COLOR_BAR_WIDTH).
@@ -329,7 +357,9 @@
           attr('y', function(c, i) {
             return Math.floor(yLabelScale(classBreaks[i + 1]));
           }).
-          style('fill', function(c, i) { return c; });
+          style('fill', function(c, i) {
+            return c;
+          });
 
         if ((tickValues ? tickValues.length : numTicks) === 1) {
           var value = _.filter(classBreaks)[0];
@@ -350,7 +380,7 @@
           } else {
             rects.
               attr('data-flyout-text', function(color, i) {
-                return classBreaks[i] + ' – ' + classBreaks[i + 1];
+                return '{0} – {1}'.format(classBreaks[i], classBreaks[i + 1]);
               });
           }
         }
@@ -369,13 +399,10 @@
     function LegendContinuous(element, container) {
       this.element = element.addClass('continuous');
       this.container = container;
-      this.gradientId = 'gradient-' + _.uniqueId();
+      this.gradientId = 'gradient-{0}'.format(_.uniqueId());
     }
 
     $.extend(LegendContinuous.prototype, {
-      ZERO_COLOR: '#ffffff',
-      NEGATIVE_COLOR: '#c6663d',
-      POSITIVE_COLOR: '#003747',
 
       /**
        * Finds an array of values, including the min, max, and numStops - 2 more values,
@@ -395,9 +422,11 @@
           _.range(0, 1, 1 / (numStops - 1)),
           _.bind(scaleForReversing.invert, scaleForReversing)
         ).concat(_.last(scaleForReversing.domain()));
+
         if (_.last(stops) - stops[0] > 5) {
           stops = _.map(stops, Math.round);
         }
+
         return stops;
       },
 
@@ -419,13 +448,16 @@
           gradientSvgSelection.append('linearGradient').attr({
             id: this.gradientId,
             gradientUnits: 'userSpaceOnUse',
-            y1: '100%', x1: 0, x2: 0, y2: 0
+            y1: '100%',
+            x1: 0,
+            x2: 0,
+            y2: 0
           });
         }
 
         // Due to a webkit bug (https://bugs.webkit.org/show_bug.cgi?id=83438), we can't select a
         // camelCase element. So select it by id
-        var gradient = gradientSvgSelection.selectAll('#' + this.gradientId);
+        var gradient = gradientSvgSelection.selectAll('#{0}'.format(this.gradientId));
 
         // Create a scale for positioning values by percentage
         var positionScale = colorScale.copy().range([0, 100]);
@@ -440,31 +472,38 @@
         gradientStops.enter().append('stop');
         gradientStops.attr({
           offset: function(value) {
-            return positionScale(value) + '%';
+            return '{0}%'.format(positionScale(value));
           },
           'stop-color': colorScale
         });
         gradientStops.exit().remove();
 
         // Draw the rectangles in pieces, so as to store the data, so the ticks can access them.
-        var rectangles = gradientSvgSelection.selectAll('rect').data(tickStops);
-        rectangles.enter().append('rect');
+        var rectangles = gradientSvgSelection.
+          selectAll('rect').
+          data(tickStops);
+
+        rectangles.enter().
+          append('rect');
+
         rectangles.attr({
             x: 0,
             y: function(value) {
+
               // Since y is actually 'top', and we want the lowest value at the bottom, subtract
               // from 100
-              return (100 - positionScale(value)) + '%';
+              return '{0}%'.format(100 - positionScale(value));
             },
             width: '100%',
             height: function(value, i) {
               if (i === 0) {
                 return 0;
               }
-              return Math.abs(positionScale(value) - positionScale(tickStops[i - 1])) + '%';
+              return '{0}%'.format(Math.abs(positionScale(value) - positionScale(tickStops[i - 1])));
             },
             fill: 'url(#{0})'.format(this.gradientId)
           });
+
         rectangles.exit().remove();
       },
 
@@ -480,18 +519,26 @@
        */
       _createColorScale: function(tickStops, scale) {
         var domain;
-        var range = [this.NEGATIVE_COLOR, this.ZERO_COLOR, this.POSITIVE_COLOR];
+        var range = [
+          Constants['CONTINUOUS_LEGEND_NEGATIVE_COLOR'],
+          Constants['CONTINUOUS_LEGEND_ZERO_COLOR'],
+          Constants['CONTINUOUS_LEGEND_POSITIVE_COLOR']
+        ];
         var min = tickStops[0];
         var max = _.last(tickStops);
+
         if (min >= 0) {
+
           // All positive values
           domain = [min, max];
           range = range.slice(1);
         } else if (max <= 0) {
+
           // All negative values
           domain = [min, max];
           range = range.slice(0, 2);
         } else {
+
           // Straddle zero
           domain = [min, 0, max];
         }
@@ -509,13 +556,12 @@
        * @param {Number[]} tickStops the values at which ticks will be drawn. The first value should
        *   be the minimum value, and the last value should be the maximum.
        * @param {d3.scale} colorScale a scale from a value, to a color.
-       * @param {Number} indexOf0 The index of the origin in ticks.
+       * @param {Number} indexOfZero The index of the origin in ticks.
        *
        * @private
        */
-      _drawAxis: function(ticksSvg, gradientSvg, tickStops, scale, indexOf0) {
+      _drawAxis: function(ticksSvg, gradientSvg, tickStops, scale, indexOfZero) {
         var ticksGroup = ticksSvg.find('g.ticks');
-
         var positionScale = scale.copy().range([this.element.height(), 0]);
         var axis = d3.svg.axis().
           scale(positionScale).
@@ -530,19 +576,26 @@
 
         // We want to size the ticks differently than d3's default. Do that manually.
         var ticks = d3.select(ticksGroup[0]).selectAll('g.tick');
-        var isSmall = true; // Alternate small/big, starting with big.
+
+        // Alternate small/big, starting with big.
+        var isSmall = true;
+
         ticks.classed('small', function(value, i) {
-          if (i === indexOf0) {
-            // zero was added artificially. Show a tick, but make it small.
+
+          // Zero was added artificially. Show a tick, but make it small.
+          if (i === indexOfZero) {
             return true;
           }
+
+          // Always make the end ticks big
           if (tickStops.length === (i + 1)) {
-            // Always make the end ticks big
             return false;
           }
+
           // For normal ticks, alternate big and small
           isSmall = !isSmall;
           return isSmall;
+
         }).style('opacity', ''); // d3 sets an opacity for some reason. unset it.
 
         // D3's axis draws ticks left-of-origin, which causes issues with browsers that won't render
@@ -587,14 +640,17 @@
        * @return {d3.scale} a d3 scale of the determined type, with the domain set.
        */
       _scaleForValues: function(values, min, max) {
-        min = min || _.min(values);
-        max = max || _.max(values);
         var scale;
 
+        min = min || _.min(values);
+        max = max || _.max(values);
+
         if (min > 0 || max < 0) {
+
           // Eligible for logarithmic scale, if all-positive or all-negative values
           var deltaMagnitude = _.log10(max - min);
           if (deltaMagnitude >= 3) {
+
             // Only logarithmic if we've got a large change in magnitude
             scale = d3.scale.log();
           } else {
@@ -627,7 +683,9 @@
         );
         var min = _.min(values);
         var max = _.max(values);
+
         if (min === max) {
+
           // If there's only one value, make it a scale from 0 to that value.
           if (max < 0) {
             values.push(0);
@@ -635,8 +693,9 @@
           } else if (min > 0) {
             values.unshift(0);
             min = 0;
+
+          // ...the only value is 0. Give 'em a fake range. It's all they deserve.
           } else {
-            // ...the only value is 0. Give 'em a fake range. It's all they deserve.
             values.push(1);
             max = 1;
           }
@@ -644,7 +703,7 @@
 
         var scale = this._scaleForValues(values, min, max);
         var tickStops = this._findTickStops(scale, Math.min(values.length, this.NUM_TICKS));
-        var indexOf0 = visualizationUtils.addZeroIfNecessary(tickStops);
+        var indexOfZero = visualizationUtils.addZeroIfNecessary(tickStops);
 
         var colorScale = this._createColorScale(tickStops, scale);
         var gradientSvg = this.element.find('svg.gradient');
@@ -670,7 +729,7 @@
         gradientSvg.height(legendHeight);
 
         this._drawGradient(gradientSvg, tickStops, colorScale);
-        this._drawAxis(ticksSvg, gradientSvg, tickStops, scale, indexOf0);
+        this._drawAxis(ticksSvg, gradientSvg, tickStops, scale, indexOfZero);
 
         return colorScale;
       }
@@ -684,7 +743,8 @@
         'geojsonAggregateData': '=',
         'savedExtent': '=',
         'defaultExtent': '=',
-        'rowDisplayUnit': '=?'
+        'rowDisplayUnit': '=?',
+        'isFiltered': '='
       },
       template: ['<div class="choropleth-container">',
                     '<div class="choropleth-map-container"></div>',
@@ -694,21 +754,35 @@
                         '<g class="ticks"></g>',
                       '</svg>',
                     '</div>',
+                    '<div class="choropleth-selection-box">',
+                      '<span class="icon-filter"></span>',
+                      '<span class="choropleth-selection-value"></span>',
+                      '<span class="icon-close"></span>',
+                    '</div>',
                   '</div>'].join(''),
       link: function choroplethLink(scope, element, attrs) {
         var LegendType = attrs.stops === 'continuous' ? LegendContinuous : LegendDiscrete;
         var legend = new LegendType(element.find('.choropleth-legend'), element, scope);
-        var baseLayerUrlObservable = scope.$observe('baseLayerUrl');
-        var geojsonAggregateDataObservable = scope.$observe('geojsonAggregateData');
         var savedExtent$ = scope.$observe('savedExtent');
         var defaultExtent$ = scope.$observe('defaultExtent');
+        var baseLayerUrl$ = scope.$observe('baseLayerUrl');
+        var geojsonAggregateData$ = scope.$observe('geojsonAggregateData');
+        var selectionBox = element.find('.choropleth-selection-box');
+        var selectionBoxFilterIcon = selectionBox.find('.icon-filter');
+        var selectionBoxValue = selectionBox.find('.choropleth-selection-value');
+        var clearSelectionButton = selectionBox.find('.icon-close');
+
+        // After creating the selection box, bind a click event to it.
+        selectionBox.on('click', function() {
+          clearDatasetFilter(selectedFeature);
+        });
 
         /***********************
          * Mutate Leaflet state *
          ***********************/
 
         function setGeojsonData(data, options) {
-          if (geojsonBaseLayer !== null) {
+          if (!_.isNull(geojsonBaseLayer)) {
             map.removeLayer(geojsonBaseLayer);
           }
           geojsonBaseLayer = L.geoJson(data, options);
@@ -720,27 +794,29 @@
           function buildPositionArray(positions) {
 
             var cleanPositions = positions.filter(function(position) {
-              return typeof position[0] === 'number' && typeof position[1] === 'number';
+              return _.isNumber(position[0]) && _.isNumber(position[1]);
             });
 
             // IMPORTANT NOTE: in geojson, positions are denoted as [longitude, latitude] pairs
-            var lngs = _.map(cleanPositions, function(lngLat){ return lngLat[0]; });
-            var lats = _.map(cleanPositions, function(lngLat){ return lngLat[1]; });
+            var lngs = _.map(cleanPositions, function(lngLat) { return lngLat[0]; });
+            var lats = _.map(cleanPositions, function(lngLat) { return lngLat[1]; });
 
             // Clamp values to min and max
             if (_.min(lngs) < minLng) {
               minLng = _.min(lngs);
             }
+
             if (_.max(lngs) > maxLng) {
               maxLng = _.max(lngs);
             }
+
             if (_.min(lats) < minLat) {
               minLat = _.min(lats);
             }
+
             if (_.max(lats) > maxLat) {
               maxLat = _.max(lats);
             }
-
           }
 
           var minLng = 180;
@@ -756,40 +832,32 @@
               throw new Error('Cannot calculate geojson bounds: geojsonData is not of type <FeatureCollection>.');
             }
 
-            _.each(geojsonData.features, function(feature){
-
+            _.each(geojsonData.features, function(feature) {
               coordinates = feature.geometry.coordinates;
 
               switch (feature.geometry.type) {
+
+                // Polygon or MultiLineString coordinates
+                // = arrays of position arrays
                 case 'Polygon':
-                  // Polygon coordinates = arrays of position arrays
-                  _.each(coordinates, function(positionArrays){
+                case 'MultiLineString':
+                  _.each(coordinates, function(positionArrays) {
                     buildPositionArray(positionArrays);
                   });
                   break;
+
+                // MultiPolygon coordinates = an array of Polygon coordinate arrays
                 case 'MultiPolygon':
-                  // MultiPolygon coordinates = an array of Polygon coordinate arrays
-                  _.each(coordinates, function(polygonCoordinates){
-                    _.each(polygonCoordinates, function(positionArrays){
+                  _.each(coordinates, function(polygonCoordinates) {
+                    _.each(polygonCoordinates, function(positionArrays) {
                       buildPositionArray(positionArrays);
                     });
                   });
                   break;
-                case 'MultiLineString':
-                  // MultiLineString coordinates
-                  // = an array of LineString coordinate arrays
-                  // = an array of arrays of position arrays
-                  // (same as Polygon coordinates)
-                  _.each(coordinates, function(positionArrays){
-                    buildPositionArray(positionArrays);
-                  });
-                  break;
+
+                // LineString coordinates = position array
                 case 'LineString':
-                  // LineString coordinates = position array
                   buildPositionArray(coordinates);
-                  break;
-                case 'Point':
-                  clampCoordinates([coordinates[1]],[coordinates[0]]);
                   break;
               }
 
@@ -807,10 +875,12 @@
             boundsArray[0][1]
           ]);
           var initialBounds = computedBounds;
+
           if (_.isDefined(savedExtent)) {
             initialBounds = LeafletHelpersService.buildBounds(savedExtent);
           } else if (_.isDefined(defaultExtent)) {
             var defaultBounds = LeafletHelpersService.buildBounds(defaultExtent);
+
             if (!defaultBounds.contains(computedBounds)) {
               initialBounds = defaultBounds;
             }
@@ -833,28 +903,50 @@
         * Handle dataset filtering *
         ***************************/
 
+        // Determines whether or not the given layer
+        // is selected.
+        function isLayerSelected(layer) {
+          var selectedPropertyName = 'feature.properties.{0}'.
+            format(Constants['SELECTED_PROPERTY_NAME']);
+
+          return _.get(layer, selectedPropertyName);
+        }
+
         // Send the toggle filter event up the scope to the parent, where it can
         // be handled by the model.
-        function filterDataset(selectedFeature, callback) {
-          selectedFeature.properties[Constants['SELECTED_PROPERTY_NAME']] = true;
+        function setDatasetFilter(feature) {
+          feature.properties[Constants['SELECTED_PROPERTY_NAME']] = true;
           scope.$emit('dataset-filter:choropleth');
-          scope.$emit(
-            'toggle-dataset-filter:choropleth',
-            selectedFeature,
-            callback);
+          scope.$emit('toggle-dataset-filter:choropleth', feature);
         }
 
-        // Send the toggle filter event up the scope to the parent, where it can
-        // be handled by the model.
-        function clearDatasetFilter(selectedFeature, callback) {
-          selectedFeature.properties[Constants['SELECTED_PROPERTY_NAME']] = false;
+        function clearDatasetFilter(feature) {
+          feature.properties[Constants['SELECTED_PROPERTY_NAME']] = false;
           scope.$emit('dataset-filter-clear:choropleth');
-          scope.$emit(
-            'toggle-dataset-filter:choropleth',
-            selectedFeature,
-            callback);
+          scope.$emit('toggle-dataset-filter:choropleth', feature);
         }
 
+        // Display the bottom-left clear selection box
+        function showSelectionBox() {
+          var boxValue = selectedFeature.properties[Constants['HUMAN_READABLE_PROPERTY_NAME']];
+
+          // The max-width of the selection box is the width of the map minus
+          // the left/right padding we want on each side.
+          var maxWidth = element.width() -
+            Constants['CHOROPLETH_SELECTION_BOX_LEFT'] -
+            Constants['CHOROPLETH_SELECTION_BOX_RIGHT'];
+
+          selectionBoxValue.
+            text(boxValue).
+            css('max-width', maxWidth);
+
+          selectionBox.show();
+        }
+
+        // Hide the bottom-left clear selection box
+        function hideSelectionBox() {
+          selectionBox.hide();
+        }
 
         /**********************
         * Handle mouse events *
@@ -886,13 +978,12 @@
         }
 
         function onFeatureClick(e) {
-
           var now = Date.now();
           var delay = now - lastClick;
-          var featureIsSelected = false;
           lastClick = now;
           if (delay < doubleClickThreshold) {
-            if (lastClickTimeout !== null) {
+            if (!_.isNull(lastClickTimeout)) {
+
               // If this is actually a double click, cancel the timeout which selects
               // the feature and zoom in instead.
               $timeout.cancel(lastClickTimeout);
@@ -900,26 +991,10 @@
             }
           } else {
             lastClickTimeout = $timeout(function() {
-              if (e.target.hasOwnProperty('feature') &&
-                  e.target.feature.hasOwnProperty('properties') &&
-                  e.target.feature.properties.hasOwnProperty(Constants['SELECTED_PROPERTY_NAME'])) {
-
-                featureIsSelected = e.target.feature[Constants['SELECTED_PROPERTY_NAME']];
-                // single click --> filters dataset
-                if (featureIsSelected) {
-                  clearDatasetFilter(e.target.feature, function(ok) {
-                    if (ok) {
-                      // TODO: Do something on filter clear?
-                    }
-                  });
-                } else {
-
-                  filterDataset(e.target.feature, function(ok) {
-                    if (ok) {
-                      // TODO: Do something on filter?
-                    }
-                  });
-                }
+              if (isLayerSelected(e.target)) {
+                clearDatasetFilter(e.target.feature);
+              } else {
+                setDatasetFilter(e.target.feature);
               }
             }, singleClickSuppressionThreshold);
           }
@@ -933,13 +1008,9 @@
         function addHighlight(e) {
           var layer = e.target;
 
-          if (layer.hasOwnProperty('feature') &&
-              layer.feature.hasOwnProperty('properties') &&
-              layer.feature.properties.hasOwnProperty(Constants['SELECTED_PROPERTY_NAME']) &&
-              !layer.feature.properties[Constants['SELECTED_PROPERTY_NAME']]) {
-
+          if (!isLayerSelected(layer)) {
             layer.setStyle({
-              weight: 4
+              weight: Constants['CHOROPLETH_HIGHLIGHT_WIDTH']
             });
 
             // IE HACK (CORE-3566): IE exhibits (not fully-characterized) pointer madness if you bring a layer
@@ -947,9 +1018,6 @@
             // front in a featureMouseOver. The rough cause is that the paths corresponding to this
             // layer get removed and re-added elsewhere in the dom while the mouseover is getting handled.
             // The symptoms of this are IE spewing mouseout events all over the place on each mousemove.
-            // Since we've spent well over 4 dev days across the team trying to fix this, we'll just
-            // sacrifice some prettiness (= getting a uniform stroke highlight) in exchange for actually
-            // getting a featureMouseOut later.
             if (!L.Browser.ie) {
               layer.bringToFront();
             }
@@ -959,124 +1027,148 @@
         function removeHighlight(e) {
           var layer = e.target;
 
-          if (layer.hasOwnProperty('feature') &&
-              layer.feature.hasOwnProperty('properties') &&
-              layer.feature.properties.hasOwnProperty(Constants['SELECTED_PROPERTY_NAME']) &&
-              !layer.feature.properties[Constants['SELECTED_PROPERTY_NAME']]) {
-
+          if (!isLayerSelected(layer)) {
             layer.setStyle({
-              weight: 1
+              weight: Constants['CHOROPLETH_DEFAULT_WIDTH']
             });
             layer.bringToBack();
           }
         }
 
-        function clearHighlights(layer) {
-          _.each(layer._map._layers, function(l) {
-            if (_.isPresent(l.feature) &&
-                l.hasOwnProperty('feature') &&
-                l.feature.hasOwnProperty('properties') &&
-                l.feature.properties.hasOwnProperty(Constants['SELECTED_PROPERTY_NAME']) &&
-                l.feature.properties[Constants['SELECTED_PROPERTY_NAME']]) {
-
-              l.setStyle({
-                weight: 1
-              });
-            }
-          });
-        }
-
-
         /*************************
         * Handle flyout behavior *
         *************************/
 
-        function applyRowDisplayUnit(value) {
-          if (value !== '1') {
-            return value + ' ' + scope.rowDisplayUnit.pluralize();
-          } else {
-            return value + ' ' + scope.rowDisplayUnit;
+        function formatValue(value) {
+          if (!_.isFinite(value)) {
+            return Constants['NULL_VALUE_LABEL'];
           }
+
+          var rowDisplayUnit = value !== 1 ?
+            scope.rowDisplayUnit.pluralize() :
+            scope.rowDisplayUnit;
+
+          return '{0} {1}'.format($.toHumaneNumber(value), rowDisplayUnit);
+        }
+
+        function renderFlyout(ignored, element) {
+
+          var feature;
+          var featureHumanReadableName;
+
+          var unfilteredValue;
+          var filteredValue;
+          var unfilteredValueIsValid;
+          var filteredValueIsValid;
+
+          var isFiltered;
+          var isSelected;
+
+          var flyoutContent;
+          var flyoutSpanClass;
+          var dragging = $(element).parents('.card').hasClass('dragged');
+
+          // To ensure that only one choropleth instance will ever draw
+          // a flyout at a given point in time, we check to see if the
+          // directive's private scope includes a non-null currentFeature.
+          // This is set to a non-null value when a feature controlled by
+          // the choropleth raises a mousemove event, and reset to null
+          // when a feature controlled by the choropleth raises a mouseout
+          // event. (See onFeatureMouseMove and onFeatureMouseOut).
+          if (dragging || (_.isNull(currentFeature) && _.isNull(selectedFeature))) {
+            return;
+          }
+
+          feature = _.isNull(currentFeature) ? selectedFeature : currentFeature;
+          featureHumanReadableName = feature.properties[Constants['HUMAN_READABLE_PROPERTY_NAME']];
+
+          unfilteredValue = feature.properties[Constants['UNFILTERED_VALUE_PROPERTY_NAME']];
+          filteredValue = feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']];
+          unfilteredValueIsValid = _.isFinite(unfilteredValue);
+          filteredValueIsValid = _.isFinite(filteredValue);
+
+          if (unfilteredValueIsValid && !filteredValueIsValid) {
+            filteredValue = 0;
+            filteredValueIsValid = true;
+          }
+
+          isFiltered = scope.isFiltered;
+          isSelected = feature.properties[Constants['SELECTED_PROPERTY_NAME']];
+
+          unfilteredValue = formatValue(unfilteredValue);
+          filteredValue = formatValue(filteredValue);
+
+          flyoutContent = [
+             '<div class="flyout-title">{0}</div>',
+             '<div class="flyout-row">',
+               '<span class="flyout-cell">{1}</span>',
+               '<span class="flyout-cell">{2}</span>',
+             '</div>'
+          ];
+
+          if (isFiltered || isSelected) {
+
+            flyoutSpanClass = 'emphasis';
+            flyoutContent.push(
+              '<div class="flyout-row">',
+                '<span class="flyout-cell {3}">{4}</span>',
+                '<span class="flyout-cell {3}">{5}</span>',
+              '</div>'
+            );
+          }
+
+          if (isSelected) {
+
+            flyoutSpanClass = 'is-selected';
+            flyoutContent.push(
+              '<div class="flyout-row">',
+                '<span class="flyout-cell">&#8203;</span>',
+                '<span class="flyout-cell">&#8203;</span>',
+              '</div>',
+              '<div class="flyout-row">',
+                '<span class="flyout-cell">{6}</span>',
+                '<span class="flyout-cell"></span>',
+              '</div>'
+            );
+          }
+
+          return flyoutContent.
+            join('').
+            format(
+              featureHumanReadableName.capitalizeEachWord(),
+              I18n.flyout.total,
+              unfilteredValue,
+              flyoutSpanClass,
+              I18n.flyout.filteredAmount,
+              filteredValue,
+              I18n.flyout.clearFilterLong
+            );
+
         }
 
         FlyoutService.register({
-          selector: '.leaflet-clickable',
-          render: function(element) {
-
-            var featureHumanReadableName;
-            var value;
-            var unfilteredValue;
-            var filteredValue;
-            var filterApplied;
-            var html;
-
-            // To ensure that only one choropleth instance will ever draw
-            // a flyout at a given point in time, we check to see if the
-            // directive's private scope includes a non-null currentFeature.
-            // This is set to a non-null value when a feature controlled by
-            // the choropleth raises a mousemove event, and reset to null
-            // when a feature controlled by the choropleth raises a mouseout
-            // event. (See onFeatureMouseMove and onFeatureMouseOut).
-            if (null === currentFeature) {
-              return;
+          selector: '{0}, {1}, {2}'.format(
+            selectionBox.selector,
+            selectionBoxFilterIcon.selector,
+            selectionBoxValue.selector
+          ),
+          render: renderFlyout,
+          positionOn: function(target) {
+            if (!$(target).parent().is(selectionBox.selector)) {
+              return selectionBox[0];
             }
-
-            if ($(element).parents('.card').hasClass('dragged')) {
-              return;
-            }
-
-            featureHumanReadableName = currentFeature.properties[Constants['HUMAN_READABLE_PROPERTY_NAME']];
-            value = currentFeature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']];
-            unfilteredValue = currentFeature.properties[Constants['UNFILTERED_VALUE_PROPERTY_NAME']];
-            filteredValue = 0;
-
-            filterApplied = (value !== unfilteredValue);
-
-            if (typeof unfilteredValue !== 'number') {
-              unfilteredValue = Constants['NULL_VALUE_LABEL'];
-            } else {
-              unfilteredValue = applyRowDisplayUnit($.toHumaneNumber(unfilteredValue));
-            }
-
-            if (typeof value !== 'number') {
-              // filtered value should show as 0, if null/undefined.
-              filteredValue = applyRowDisplayUnit('0');
-            } else {
-              filteredValue = applyRowDisplayUnit($.toHumaneNumber(value));
-            }
-
-            if (filterApplied) {
-
-              html = '<div class="flyout-title">{0}</div>'
-                   + '<div class="flyout-row">'
-                   + '<span class="flyout-cell">{1}</span>'
-                   + '<span class="flyout-cell">{2}</span>'
-                   + '</div>'
-                   + '<div class="flyout-row">'
-                   + '<span class="flyout-cell emphasis">{3}</span>'
-                   + '<span class="flyout-cell emphasis">{4}</span>'
-                   + '</div>';
-
-              return html.format(featureHumanReadableName.capitalizeEachWord(),
-                                 I18n.flyout.total,
-                                 unfilteredValue,
-                                 I18n.flyout.filteredAmount,
-                                 filteredValue);
-            } else {
-
-              html = '<div class="flyout-title">{0}</div>'
-                   + '<div class="flyout-row">'
-                   + '<span class="flyout-cell">{1}</span>'
-                   + '<span class="flyout-cell">{2}</span>'
-                   + '</div>';
-
-              return html.format(featureHumanReadableName.capitalizeEachWord(),
-                                 I18n.flyout.total,
-                                 unfilteredValue);
-
-            }
-
           },
+          destroySignal: scope.$destroyAsObservable(element)
+        });
+
+        FlyoutService.register({
+          selector: clearSelectionButton.selector,
+          render: _.constant('<div class="flyout-title">{0}</div>'.format(I18n.timelineChart.dragClearHelp))
+        });
+
+        FlyoutService.register({
+          selector: '.leaflet-clickable',
+          render: renderFlyout,
           destroySignal: scope.$destroyAsObservable(element),
           trackCursor: true
         });
@@ -1100,8 +1192,6 @@
 
         var map = L.map(element.find('.choropleth-map-container')[0], options);
 
-        // Manage the layers in a layerGroup, so we can clear them all at once.
-        var layerGroup = L.layerGroup().addTo(map);
         // emit a zoom event, so tests can check it
         map.on('zoomstart zoomend', function(e) {
           scope.$emit(e.type, e.target);
@@ -1126,25 +1216,26 @@
         var lastClick = 0;
         var lastClickTimeout = null;
 
-        // Keep track of the currently-hovered-over feature so we can render flyouts outside
-        // of Leaflet.
+        // Keep track of the currently-hovered-over and currently-selected features
+        // so we can render flyouts outside of Leaflet.
         var currentFeature = null;
+        var selectedFeature = null;
 
         /*********************************
         * React to changes in bound data *
         *********************************/
 
-        var tileLayer = baseLayerUrlObservable.
+        var tileLayer = baseLayerUrl$.
           map(function(url) {
-            if (!_.isDefined(url)) {
+            if (_.isUndefined(url)) {
               return {
                 url: Constants['DEFAULT_MAP_BASE_LAYER_URL'],
-                opacity: 0.15
+                opacity: Constants['DEFAULT_MAP_BASE_LAYER_OPACITY']
               };
             } else {
               return {
                 url: url,
-                opacity: 0.35
+                opacity: Constants['DEFINED_MAP_BASE_LAYER_OPACITY']
               };
             }
           }).
@@ -1160,9 +1251,11 @@
             };
             return L.tileLayer(url, layerOptions);
           }).
-          publish(); // Only subscribe once everything is wired up,
-                     // otherwise some subscribers may miss the first
-                     // value from the scope.observe().
+          publish();
+
+          // Only subscribe once everything is wired up,
+          // otherwise some subscribers may miss the first
+          // value from the scope.observe().
 
         // Remove old map layers.
         tileLayer.bufferWithCount(2, 1).subscribe(function(layers) {
@@ -1185,7 +1278,7 @@
 
         Rx.Observable.subscribeLatest(
           dimensions$,
-          geojsonAggregateDataObservable,
+          geojsonAggregateData$,
           defaultExtent$,
           savedExtent$,
           function(dimensions, geojsonAggregateData, defaultExtent, savedExtent) {
@@ -1193,7 +1286,8 @@
             if (_.isDefined(geojsonAggregateData)) {
 
               scope.$emit('render:start', {
-                source: 'choropleth_{0}'.format(scope.$id), timestamp: _.now()
+                source: 'choropleth_{0}'.format(scope.$id),
+                timestamp: _.now()
               });
 
               // Critical to invalidate size prior to updating bounds
@@ -1208,6 +1302,9 @@
                 firstRender = false;
               }
 
+              // First, hide the clear selection box on re-render
+              hideSelectionBox();
+
               var coloring = legend.update(geojsonAggregateData, dimensions);
 
               var geojsonOptions = {
@@ -1218,35 +1315,30 @@
                     mousemove: onFeatureMouseMove,
                     click: onFeatureClick
                   });
+
+                  // Then, if a layer is selected, show a clear selection box for it
+                  if (isLayerSelected(layer)) {
+                    selectedFeature = feature;
+                    showSelectionBox();
+                  }
                 },
                 style: visualizationUtils.getStyleFn(coloring)
               };
 
               setGeojsonData(geojsonAggregateData, geojsonOptions);
 
-              // Iterate over selected features and ensure that they are 'on top'.
-              // Otherwise, the selected stroke is likely to be hidden behind the
-              // non-selected stroke.
-              Object.
-                keys(map._layers).
-                forEach(function(k) {
-                  if (map._layers[k].hasOwnProperty('feature') &&
-                      map._layers[k].feature.hasOwnProperty('properties') &&
-                      map._layers[k].feature.properties.hasOwnProperty(Constants['SELECTED_PROPERTY_NAME']) &&
-                      map._layers[k].feature.properties[Constants['SELECTED_PROPERTY_NAME']]) {
-                    map._layers[k].bringToFront();
-                  }
-                });
-
               // Yield execution to the browser to render, then notify that render is complete
               $timeout(function() {
-                scope.$emit('render:complete', { source: 'choropleth_{0}'.format(scope.$id), timestamp: _.now() });
+                scope.$emit('render:complete', {
+                  source: 'choropleth_{0}'.format(scope.$id),
+                  timestamp: _.now()
+                });
               });
             }
           });
 
+        // Leaflet needs to be told to clean up after itself.
         scope.$destroyAsObservable(element).subscribe(function() {
-          // Leaflet needs to be told to clean up after itself.
           map.remove();
         });
       }

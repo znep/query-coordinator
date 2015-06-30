@@ -94,7 +94,6 @@ $(document).on('ready', function() {
   var inspirationStoryElement = $('.inspiration-story-container');
   var userStoryElement = $('.user-story-container');
 
-
   /**
    * RichTextEditorToolbar events
    */
@@ -102,14 +101,7 @@ $(document).on('ready', function() {
   $(window).on('rich-text-editor::focus-change', function(event) {
 
     if (event.originalEvent.detail.content === true) {
-
       richTextEditorManager.linkToolbar(event.originalEvent.detail.id);
-
-      // window.dispatcher.dispatch({
-      //   action: Constants.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
-      //   activeFormats: event.originalEvent.detail.content
-      // });
-      //textEditorToolbar.updateActiveFormats(event.originalEvent.detail.content);
     }
   });
 

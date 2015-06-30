@@ -55,7 +55,8 @@
       'unorderedList': function() { _toggleUnorderedList(); },
       'blockquote': function() { _toggleBlockquote(); },
       'addLink': function(data) { _addLink(data); },
-      'removeLink': function() { _removeLink(); }
+      'removeLink': function() { _removeLink(); },
+      'clearFormatting': function() { _clearFormat(); }
     };
 
     /**
@@ -84,22 +85,80 @@
      */
     this.getActiveFormats = function() {
 
+      var _recordAlignments = function(element) {
+
+        var _isBlockLevelElement = function(testElement) {
+          return ([
+            'h1',
+            'h2',
+            'h3',
+            'h4',
+            'h5',
+            'h6',
+            'div',
+            'blockquote',
+            'ol',
+            'ul'
+          ].indexOf(testElement.nodeName.toLowerCase()) > -1);
+        };
+
+        if (typeof element.nodeName === 'string') {
+
+          if (element.nodeName.toLowerCase() === 'body') {
+
+            return [];
+
+          } else if (_isBlockLevelElement(element)) {
+
+            var align = [];
+
+            if (element.className.match(/center/)) {
+              align.push(
+                _formats.filter(function(format) {
+                  return format.id === 'center';
+                })[0]
+              );
+            }
+
+            if (element.className.match(/right/)) {
+              align.push(
+                _formats.filter(function(format) {
+                  return format.id === 'right';
+                })[0]
+              );
+            }
+
+            if (element.className.match(/left/) || align.length === 0) {
+              align.push(
+                _formats.filter(function(format) {
+                  return format.id === 'left';
+                })[0]
+              );
+            }
+
+            return align;
+
+          } else {
+            return _recordAlignments(element.parentNode);
+          }
+        }
+      };
       // Recursively descend the DocumentFragment representing the current
       // selection.
-      var _recordChildFormats = function(children, supported, found) {
+      var _recordChildFormats = function(children, found) {
 
         var child;
         var tagName;
         var format;
 
-        for (var i = 0; i < childNodes.length; i++) {
+        for (var i = 0; i < children.length; i++) {
 
           child = children[i];
 
           if (child.nodeType === 1) {
 
             tagName = child.nodeName.toLowerCase();
-            format = supported.filter(function(format) {
+            format = _formats.filter(function(format) {
               return format.tag === tagName;
             });
 
@@ -110,7 +169,7 @@
               found.push(format[0]);
             }
 
-            _recordChildFormats(child.childNodes, supported, found);
+            _recordChildFormats(child.childNodes, found);
           }
         }
 
@@ -119,7 +178,7 @@
       var selection = _editor.getSelection();
       var childNodes = selection.cloneContents().childNodes;
       var thisFormat;
-      var foundFormats = [];
+      var foundFormats = _recordAlignments(selection.commonAncestorContainer);
 
       // First record all the containing formats that are applied to the selection.
       for (var i = 0; i < _formats.length; i++) {
@@ -133,7 +192,7 @@
 
       // Then record formats whose opening and closing tags both occur within the
       // selection.
-      _recordChildFormats(childNodes, _formats, foundFormats);
+      _recordChildFormats(childNodes, foundFormats);
 
       return foundFormats;
     };

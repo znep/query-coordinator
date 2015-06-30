@@ -866,6 +866,11 @@ $(function()
           return;
         }
 
+        // Send GA event for showing bootstrap link
+        if (typeof _gaSocrata !== 'undefined') {
+            _gaSocrata('send', 'event', 'bootstrap-link', 'show');
+        }
+
         var newUxLink = $('<div class="new-ux-link icon-cards">' +
                             '<div class="icon-close"/>' +
                             '<h3>' + $.t('screens.ds.new_ux_title') + '</h3>' +
@@ -899,6 +904,11 @@ $(function()
                 $.cookies.set('newUxCollapsed', true);
             });
         }).on('click', 'a', function() {
+          // Send GA event for user clicking bootstrap link
+          if (typeof _gaSocrata !== 'undefined') {
+            _gaSocrata('send', 'event', 'bootstrap-link', 'click');
+          }
+
           // Add some feedback
           var screenOverlay = $('<div class="overlay"/>');
           var spinner = $(

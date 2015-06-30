@@ -92,6 +92,15 @@ describe('Histogram Visualization', function() {
     expect(histogram.scope.histogramRenderError).to.exist;
   });
 
+  it('should display an error if obtaining the column domain returns an empty object', function() {
+    mockCardDataService.getColumnDomain = function() {
+      return $q.when({});
+    };
+
+    var histogram = createHistogram();
+    expect(histogram.scope.histogramRenderError).to.equal('noData');
+  });
+
   it('should display an error if fetching the data fails', function() {
     mockCardDataService.getMagnitudeData = mockCardDataService.getBucketedData = function() {
       return $q.reject('not hot on high level abstraction');

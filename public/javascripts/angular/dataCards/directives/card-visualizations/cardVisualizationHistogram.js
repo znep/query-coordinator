@@ -117,10 +117,19 @@
             // {min:, max:, bucketType:, bucketSize:}
             // See HistogramService.getBucketingOptions
             var dataPromise = CardDataService.getColumnDomain(fieldName, dataset.id, null).
-              then(HistogramService.getBucketingOptions);
+              then(function(domain) {
+                if(_.has(domain, 'min') && _.has(domain, 'max')) {
+                  return HistogramService.getBucketingOptions(domain);
+                } else {
+                  $scope.histogramRenderError = 'noData';
+                }
+              }
+            );
 
             return Rx.Observable.fromPromise(dataPromise);
-          }).switchLatest();
+          }).
+          switchLatest().
+          filter(_.isDefined);
 
         var unfilteredData$ = Rx.Observable.combineLatest(
           fieldName$,

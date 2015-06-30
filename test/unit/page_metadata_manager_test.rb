@@ -430,32 +430,29 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal(result, 'signed_magnitude_10')
   end
 
-  def test_magnitude_function_for_column_raises_exception_without_min_max
+  def test_magnitude_function_for_column_returns_nil_without_min_max
     manager.expects(:fetch_min_max_in_column).with('four-four', 'some_number_column').returns({})
     manager.unstub(:magnitude_function_for_column)
-    assert_raises(Phidippides::NoMinMaxInColumnException) do
-      manager.send(:magnitude_function_for_column, 'four-four', 'some_number_column')
-    end
+    result = manager.send(:magnitude_function_for_column, 'four-four', 'some_number_column')
+    assert_nil(result)
   end
 
-  def test_magnitude_function_for_column_raises_exception_without_min
+  def test_magnitude_function_for_column_returns_nil_without_min
     manager.expects(:fetch_min_max_in_column).with('four-four', 'some_number_column').returns(
       'max' => 0
     )
     manager.unstub(:magnitude_function_for_column)
-    assert_raises(Phidippides::NoMinMaxInColumnException) do
-      manager.send(:magnitude_function_for_column, 'four-four', 'some_number_column')
-    end
+    result = manager.send(:magnitude_function_for_column, 'four-four', 'some_number_column')
+    assert_nil(result)
   end
 
-  def test_magnitude_function_for_column_raises_exception_without_max
+  def test_magnitude_function_for_column_returns_nil_without_max
     manager.expects(:fetch_min_max_in_column).with('four-four', 'some_number_column').returns(
       'min' => 0
     )
     manager.unstub(:magnitude_function_for_column)
-    assert_raises(Phidippides::NoMinMaxInColumnException) do
-      manager.send(:magnitude_function_for_column, 'four-four', 'some_number_column')
-    end
+    result = manager.send(:magnitude_function_for_column, 'four-four', 'some_number_column')
+    assert_nil(result)
   end
 
   def test_fetch_min_max_in_column_calls_api

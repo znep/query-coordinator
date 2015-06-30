@@ -5,6 +5,7 @@
     Constants,
     VectorTiles,
     LeafletHelpersService,
+    LeafletVisualizationHelpersService,
     FlyoutService,
     I18n
   ) {
@@ -365,6 +366,8 @@
           // milliseconds after the resize event is captured by this handler.
           completeResizeFn();
         });
+
+        LeafletVisualizationHelpersService.emitExtentEventsFromMap(scope, map);
 
         // Keep the baseTileLayer in sync with the baseLayerUrl observable.
         baseTileLayerObservable = baseLayerUrlObservable.

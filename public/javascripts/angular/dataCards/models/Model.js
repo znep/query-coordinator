@@ -35,7 +35,9 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         _.invoke(oldChildrenUnderThisProperty, '_setParentModel', null);
         delete self._children[changeNotification.property];
 
-        var candidateModels = _.isArray(changeNotification.newValue) ? changeNotification.newValue : [changeNotification.newValue];
+        var candidateModels = _.isArray(changeNotification.newValue) ?
+          changeNotification.newValue :
+          [changeNotification.newValue];
 
         var actualModels = [];
         _.each(candidateModels, function(maybeModel) {
@@ -77,14 +79,25 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       }
 
       if (this._propertyObservables.hasOwnProperty(propertyName)) {
-        throw new Error('Object ' + this + ' already has property: ' + propertyName);
+        var errorMessage = 'Object {0} already has property: {1}'.
+          format(JSON.stringify(this.serialize()), propertyName);
+        throw new Error(errorMessage);
       }
 
       var writesSequence;
       if (_.isFunction(defaultGenerator)) {
-        writesSequence = ModelHelper.addPropertyWithLazyDefault(propertyName, this._propertyObservables, initialValue, defaultGenerator);
+        writesSequence = ModelHelper.addPropertyWithLazyDefault(
+          propertyName,
+          this._propertyObservables,
+          initialValue,
+          defaultGenerator
+        );
       } else {
-        writesSequence = ModelHelper.addProperty(propertyName, this._propertyObservables, initialValue);
+        writesSequence = ModelHelper.addProperty(
+          propertyName,
+          this._propertyObservables,
+          initialValue
+        );
       }
 
       // Push write notifications for this property to the writes sequence.
@@ -126,7 +139,12 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
         throw new Error('Object ' + this + ' already has property: ' + propertyName);
       }
 
-      ModelHelper.addReadOnlyProperty(propertyName, this._propertyObservables, valueSequence.asObservable()).
+      ModelHelper.
+        addReadOnlyProperty(
+          propertyName,
+          this._propertyObservables,
+          valueSequence.asObservable()
+        ).
         subscribe(function(value) {
           self._writes.onNext({
             model: self,
@@ -201,7 +219,9 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
     set: function(propertyName, value) {
       this._assertProperty(propertyName);
       if (!this._isObservablePropertyWritable(propertyName)) {
-        throw new TypeError('Property "{0}" is read-only (it is computed).'.format(propertyName));
+        var errorMessage = 'Property "{0}" is read-only (it is computed).'.
+          format(propertyName);
+        throw new TypeError(errorMessage);
       }
       var oldValue = this.getCurrentValue(propertyName);
       this._writes.take(1).map(function(change) {
@@ -477,7 +497,8 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       this._assertProperty(propertyName);
       // Properties are writable if the corresponding entry in _propertyObservables
       // has a setter.
-      var propertyDefinition = Object.getOwnPropertyDescriptor(this._propertyObservables, propertyName);
+      var propertyDefinition = Object.
+        getOwnPropertyDescriptor(this._propertyObservables, propertyName);
       return _.isFunction(propertyDefinition.set);
     },
 
@@ -490,7 +511,9 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
      */
     _assertProperty: function(propertyName) {
       if (!this._propertyObservables.hasOwnProperty(propertyName)) {
-        throw new TypeError('Object {0} has no such property: {1}'.format(this.serialize(), propertyName));
+        var errorMessage = 'Object {0} has no such property: {1}'.
+          format(JSON.stringify(this.serialize()), propertyName);
+        throw new TypeError(errorMessage);
       }
     },
 
@@ -512,12 +535,13 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       if (parentModel) {
         // Start telling our new parent about our property changes.
         // Store the subscription so we can detach it later.
-        this._observePropertyChangesSubscriptionForParent = this.observePropertyChangesRecursively().subscribe(function(changeNotification) {
-          parentModel._recursiveSets.onNext(changeNotification);
-        });
+        this._observePropertyChangesSubscriptionForParent =
+          this.observePropertyChangesRecursively().
+            subscribe(function(changeNotification) {
+              parentModel._recursiveSets.onNext(changeNotification);
+            });
       }
     }
-
 
   });
 

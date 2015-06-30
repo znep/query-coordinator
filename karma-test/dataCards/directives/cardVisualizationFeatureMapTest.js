@@ -85,6 +85,10 @@ describe('A FeatureMap Card Visualization', function() {
     card.defineObservableProperty('expanded', false);
     card.defineObservableProperty('activeFilters', []);
     card.defineObservableProperty('baseLayerUrl', '');
+    card.defineObservableProperty('cardOptions', {
+      mapExtent:options.mapExtent || {}
+    });
+    card.setOption = _.noop;
     card.fieldName = 'foo';
 
     outerScope.model = card;
@@ -134,7 +138,7 @@ describe('A FeatureMap Card Visualization', function() {
       dataset.defineObservableProperty('permissions', { isPublic: true });
     });
 
-    it('should use an explicitly specified extent if one is set and it does not contain the server-provided extent', function() {
+    it('should use an explicitly specified default extent if one is set and it does not contain the server-provided extent', function() {
       var customExtent = ZOOMED_IN_EXTENT;
       CardDataService.getDefaultFeatureExtent.returns(customExtent);
       var visualization = buildElement({
@@ -156,7 +160,16 @@ describe('A FeatureMap Card Visualization', function() {
         dataset: dataset
       });
       expect(visualization.element.find('feature-map').scope().featureExtent).to.eql(MIDDLE_ZOOM_EXTENT);
-    })
+    });
+
+    it('uses the saved extent if one is set', function() {
+      var customExtent = ZOOMED_IN_EXTENT;
+      var visualization = buildElement({
+        mapExtent: customExtent
+      });
+
+      expect(visualization.element.find('feature-map').scope().featureExtent).to.eql(customExtent);
+    });
   });
 
   describe('tileserver sharding', function() {

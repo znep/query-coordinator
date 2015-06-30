@@ -113,4 +113,22 @@ describe('Card model', function() {
       expect(instance.getCurrentValue('customTitle')).to.equal('custom value');
     });
   });
+
+  describe('setOption', function() {
+    var instance;
+    beforeEach(function() {
+      instance = makeCard(TEST_CARD_BLOB);
+    });
+
+    it('exists', function() {
+      expect(instance).to.respondTo('setOption');
+    });
+
+    it('sets the value of the given option property', function() {
+      var testValue = {foo: 'bar'};
+      instance.setOption('mapExtent', testValue);
+      expect(instance.getCurrentValue('cardOptions').getCurrentValue('mapExtent')).to.eql(testValue);
+    });
+
+  });
 });

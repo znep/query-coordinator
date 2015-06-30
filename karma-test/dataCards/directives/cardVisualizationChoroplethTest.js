@@ -67,29 +67,29 @@ describe('A Choropleth Card Visualization', function() {
   function setMockCardDataServiceToDefault() {
     mockCardDataService = {
       getDefaultFeatureExtent: sinon.stub(),
-      getChoroplethRegions: function(shapeFile) {
+      getChoroplethRegions: function() {
         var deferred = q.defer();
         var json = testHelpers.getTestJson(testWards);
         json.features = _.map(json.features, function(feature) {
-          feature.properties._feature_id = feature.properties[':feature_id'].split(" ")[1]
+          feature.properties._feature_id = feature.properties[':feature_id'].split(' ')[1];
           return feature;
         });
 
         deferred.resolve(json);
         return deferred.promise;
       },
-      getChoroplethRegionsUsingSourceColumn: function(datasetId, sourceColumn, shapeFile) {
+      getChoroplethRegionsUsingSourceColumn: function() {
         var deferred = q.defer();
         var json = testHelpers.getTestJson(testWards);
         json.features = _.map(json.features, function(feature) {
-          feature.properties._feature_id = feature.properties[':feature_id'].split(" ")[1]
+          feature.properties._feature_id = feature.properties[':feature_id'].split(' ')[1];
           return feature;
         });
 
         deferred.resolve(json);
         return deferred.promise;
       },
-      getChoroplethGeometryLabel: function(shapeFile) {
+      getChoroplethGeometryLabel: function() {
         var deferred = q.defer();
         deferred.resolve('geometryLabel');
         return deferred.promise;
@@ -135,9 +135,11 @@ describe('A Choropleth Card Visualization', function() {
     var model = new Model();
 
     model.fieldName = 'ward';
+    model.defineObservableProperty('cardOptions', {mapExtent: options.mapExtent || {}});
     model.defineObservableProperty('cardSize', 1);
     model.defineObservableProperty('activeFilters', []);
     model.defineObservableProperty('baseLayerUrl', 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png');
+    model.setOption = _.noop;
 
     if (!datasetModel) {
       var columnsData;
@@ -205,15 +207,14 @@ describe('A Choropleth Card Visualization', function() {
 
       this.timeout(15000);
 
-      var choropleth1 = createChoropleth({ id: 'choropleth-1' });
-      var choropleth2 = createChoropleth({ id: 'choropleth-2' });
+      createChoropleth({ id: 'choropleth-1' });
+      createChoropleth({ id: 'choropleth-2' });
 
       scope.$apply();
 
       var feature;
       var flyout;
       var flyoutTitle;
-      var flyoutText;
 
       // First, test a feature on the first choropleth.
       feature = $('#choropleth-1 .choropleth-container path')[0];
@@ -222,7 +223,7 @@ describe('A Choropleth Card Visualization', function() {
 
       flyout = $('#uber-flyout');
       flyoutTitle = flyout.find('.flyout-title').text();
-      flyoutText = flyout.find('.content').text();
+      flyout.find('.content').text();
 
       expect(flyoutTitle).to.equal('');
       expect(flyout.is(':visible')).to.be.true;
@@ -237,7 +238,7 @@ describe('A Choropleth Card Visualization', function() {
 
       flyout = $('#uber-flyout');
       flyoutTitle = flyout.find('.flyout-title').text();
-      flyoutText = flyout.find('.content').text();
+      flyout.find('.content').text();
 
       expect(flyoutTitle).to.equal('');
       expect(flyout.is(':visible')).to.be.true;
@@ -262,11 +263,11 @@ describe('A Choropleth Card Visualization', function() {
       var choropleth1 = createChoropleth({ id: 'choropleth-1' });
       var choropleth2 = createChoropleth({ id: 'choropleth-2' });
 
-      choropleth1.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
+      choropleth1.scope.$on('toggle-dataset-filter:choropleth', function() {
         choropleth1Fired = true;
       });
 
-      choropleth2.scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
+      choropleth2.scope.$on('toggle-dataset-filter:choropleth', function() {
         choropleth2Fired = true;
       });
 
@@ -558,6 +559,32 @@ describe('A Choropleth Card Visualization', function() {
 
     });
 
+  });
+
+  describe('extents', function() {
+    var testExtent = {
+      'southwest': [41.79998325207397, -87.85079956054688],
+      'northeast': [41.95540515378059, -86.95953369140625]
+    };
+
+    it('uses the cardOptions.mapExtent if it has been saved', function() {
+      var choropleth = createChoropleth({ mapExtent: testExtent });
+      expect(choropleth.element.isolateScope().defaultExtent).to.be.undefined;
+      expect(choropleth.element.isolateScope().savedExtent).to.eql(testExtent);
+    });
+
+    it('uses the default extent if it has been set and there is no saved mapExtent', function() {
+      CardDataService.getDefaultFeatureExtent.returns(testExtent);
+      var choropleth = createChoropleth({});
+      expect(choropleth.element.isolateScope().defaultExtent).to.eql(testExtent);
+      expect(choropleth.element.isolateScope().savedExtent).to.be.undefined;
+    });
+
+    it('defers to the choropleth visualization for extent if there is neither a saved nor default extent', function() {
+      var choropleth = createChoropleth({});
+      expect(choropleth.element.isolateScope().defaultExtent).to.be.undefined;
+      expect(choropleth.element.isolateScope().savedExtent).to.be.undefined;
+    });
 
   });
 

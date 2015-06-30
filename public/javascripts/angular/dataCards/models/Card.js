@@ -1,7 +1,8 @@
 (function() {
   'use strict';
 
-  angular.module('dataCards.models').factory('Card', function(ServerConfig, Model, Schemas, Filter) {
+  angular.module('dataCards.models').
+    factory('Card', function(ServerConfig, CardOptions, Model, Schemas, Filter) {
 
     var schemas = Schemas.regarding('card_metadata');
     var schemaVersion = '1';
@@ -29,17 +30,22 @@
           initialValues = {};
         }
         var self = this;
-        this.version = '1';
+        this.version = parentPageModel.version;
         this.page = parentPageModel;
         this.fieldName = fieldName;
         this.uniqueId = initialValues.id || _.uniqueId();
 
-        _.each(_.keys(schemas.getSchemaDefinition(schemaVersion).properties), function(field) {
-          if (field === 'fieldName') {
-            // fieldName isn't observable.
-            return;
-          }
-          self.defineObservableProperty(field, initialValues[field]);
+        var cardOptions = CardOptions.deserialize(self, initialValues.cardOptions);
+        this.defineObservableProperty('cardOptions', cardOptions);
+
+        var unserializableProperties = ['fieldName', 'cardOptions'];
+        var serializableProperties = _.chain(schemas.getSchemaDefinition(this.version).properties).
+          keys().
+          difference(unserializableProperties).
+          value();
+
+        _.each(serializableProperties, function(propertyName) {
+          self.defineObservableProperty(propertyName, initialValues[propertyName]);
         });
 
         self.set('activeFilters', []);
@@ -78,7 +84,7 @@
        * Useful for modifying the card's contents without committing them.
        */
       clone: function() {
-        return Card.deserialize(this.page, this.serialize(), this.uniqueId);
+        return Card.deserialize(this.page, _.extend({id: this.uniqueId}, this.serialize()));
       },
 
       serialize: function() {
@@ -86,10 +92,16 @@
         serialized.fieldName = this.fieldName;
         validateCardBlobSchema(serialized);
         return serialized;
+      },
+
+      setOption: function(key, value) {
+        var cardOptions = this.getCurrentValue('cardOptions');
+        cardOptions.set(key, value);
+        return value;
       }
     });
 
-    Card.deserialize = function(page, blob, id) {
+    Card.deserialize = function(page, blob) {
       validateCardBlobSchema(blob);
 
       // Since cardType was expected to be required but was later decided
@@ -102,7 +114,7 @@
         blob.cardType = null;
       }
 
-      var instance = new Card(page, blob.fieldName, {id: id});
+      var instance = new Card(page, blob.fieldName, blob);
       _.each(_.keys(schemas.getSchemaDefinition(schemaVersion).properties), function(field) {
         if (field === 'fieldName') {
           // fieldName isn't observable.

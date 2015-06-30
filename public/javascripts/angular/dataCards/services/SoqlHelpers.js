@@ -1,4 +1,4 @@
-angular.module('dataCards').factory('SoqlHelpers', function(Constants, Assert, DateHelpers) {
+angular.module('dataCards.services').factory('SoqlHelpers', function(Constants, Assert, DateHelpers) {
   'use strict';
 
   var timeIntervalToDateTrunc = {

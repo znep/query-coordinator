@@ -4,9 +4,10 @@
   function cardVisualizationChoropleth(
     Constants,
     CardDataService,
-    Filter,
-    ServerConfig,
     CardVisualizationChoroplethHelpers,
+    Filter,
+    LeafletVisualizationHelpersService,
+    ServerConfig,
     $log
   ) {
 
@@ -17,7 +18,7 @@
         'whereClause': '='
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationChoropleth.html',
-      link: function(scope, element, attrs) {
+      link: function cardVisualizationChoroplethLink(scope) {
         var model = scope.$observe('model').filter(_.isPresent);
         var dataset = model.observeOnLatest('page.dataset');
         var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
@@ -33,8 +34,8 @@
         // .scan() is necessary because the usual aggregation suspect reduce actually
         // will not execute over a sequence until it has been completed; scan is happy
         // to operate on active sequences.
-        var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
-        var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
+        var dataRequestCount = dataRequests.scan(0, function(acc) { return acc + 1; });
+        var dataResponseCount = dataResponses.scan(0, function(acc) { return acc + 1; });
 
         var shapeFileObservable;
         var geometryLabelObservable;
@@ -79,15 +80,13 @@
           model.pluck('fieldName'),
           dataset.observeOnLatest('columns'),
           function(fieldName, columns) {
-            var shapeFile = null;
-
             if (_.isEmpty(columns)) {
               return Rx.Observable.never();
             }
 
             // The shapeFile and the sourceColumn are both found in the
             // computationStrategy blob that is attached to computed columns.
-            shapeFile = CardVisualizationChoroplethHelpers.extractShapeFileFromColumn(
+            var shapeFile = CardVisualizationChoroplethHelpers.extractShapeFileFromColumn(
               columns[fieldName]
             );
 
@@ -110,11 +109,11 @@
             dataPromise = CardDataService.getChoroplethGeometryLabel(shapeFile);
 
             dataPromise.then(
-              function(res) {
+              function() {
                 // Ok
                 dataResponses.onNext(1);
               },
-              function(err) {
+              function() {
                 // Still increment the counter to stop the spinner
                 dataResponses.onNext(1);
 
@@ -182,11 +181,11 @@
             }
 
             dataPromise.then(
-              function(res) {
+              function() {
                 // Ok
                 dataResponses.onNext(1);
               },
-              function(err) {
+              function() {
                 // Show geojson regions request error message.
                 dataResponses.onNext(1);
 
@@ -207,14 +206,20 @@
           aggregationObservable,
           function(fieldName, dataset, whereClauseFragment, aggregationData) {
             dataRequests.onNext(1);
-            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData, { limit: shapeFileRegionQueryLimit });
+            var dataPromise = CardDataService.getData(
+              fieldName,
+              dataset.id,
+              whereClauseFragment,
+              aggregationData,
+              { limit: shapeFileRegionQueryLimit }
+            );
             dataPromise.then(
-              function(res) {
+              function() {
                 // Ok
                 unfilteredDataSequence.onNext(dataPromise);
                 dataResponses.onNext(1);
               },
-              function(err) {
+              function() {
                 // Still increment the counter to stop the spinner
                 dataResponses.onNext(1);
               });
@@ -228,14 +233,20 @@
           aggregationObservable,
           function(fieldName, dataset, whereClauseFragment, aggregationData) {
             dataRequests.onNext(1);
-            var dataPromise = CardDataService.getData(fieldName, dataset.id, whereClauseFragment, aggregationData, { limit: shapeFileRegionQueryLimit });
+            var dataPromise = CardDataService.getData(
+              fieldName,
+              dataset.id,
+              whereClauseFragment,
+              aggregationData,
+              { limit: shapeFileRegionQueryLimit }
+            );
             dataPromise.then(
-              function(res) {
+              function() {
                 // Ok
                 filteredDataSequence.onNext(dataPromise);
                 dataResponses.onNext(1);
               },
-              function(err) {
+              function() {
                 // Still increment the counter to stop the spinner
                 dataResponses.onNext(1);
               });
@@ -282,13 +293,16 @@
         *********************************************************/
 
         // Handle filter toggle events sent from the choropleth directive.
-        scope.$on('toggle-dataset-filter:choropleth', function(event, feature, callback) {
+        scope.$on('toggle-dataset-filter:choropleth', function(event, feature) {
           var featureId = feature.properties[Constants['INTERNAL_DATASET_FEATURE_ID']];
           var humanReadableName = feature.properties[Constants['HUMAN_READABLE_PROPERTY_NAME']];
 
-          var hasFiltersOnCard = _.any(scope.model.getCurrentValue('activeFilters'), function(filter) {
-            return filter.operand === featureId;
-          });
+          var hasFiltersOnCard = _.any(
+            scope.model.getCurrentValue('activeFilters'),
+            function(filter) {
+              return filter.operand === featureId;
+            });
+
           if (hasFiltersOnCard) {
             scope.model.set('activeFilters', []);
           } else {
@@ -299,6 +313,26 @@
           }
         });
 
+        LeafletVisualizationHelpersService.setObservedExtentOnModel(scope, scope.model);
+
+        var savedExtent$ = model.observeOnLatest('cardOptions.mapExtent');
+        var defaultExtent$ = Rx.Observable.
+          returnValue(CardDataService.getDefaultFeatureExtent());
+
+        var extent$ = Rx.Observable.combineLatest(
+          savedExtent$,
+          defaultExtent$,
+          function(savedExtent, defaultExtent) {
+            if (_.isPresent(savedExtent)) {
+              return { savedExtent: savedExtent };
+            } else {
+              return { defaultExtent: defaultExtent };
+            }
+          }).
+          take(1);
+
+        scope.$bindObservable('savedExtent', extent$.pluck('savedExtent'));
+        scope.$bindObservable('defaultExtent', extent$.pluck('defaultExtent'));
         scope.$bindObservable('cardSize', model.observeOnLatest('cardSize'));
 
       }

@@ -244,17 +244,29 @@ class AngularControllerTest < ActionController::TestCase
         }
       )
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
-      assert_no_match(/ga\('create', 'UA-.+-.+', 'auto'\);/, @response.body)
+      assert_no_match(/_gaSocrata\('create', 'UA-.+-.+'/, @response.body)
     end
 
-    should 'render google analytics JS if feature flag is set' do
+    should 'render google analytics JS using the app config token if feature flag is set to true' do
+      APP_CONFIG['opendata_ga_tracking_code'] = 'UA-9046230'
       FeatureFlags.stubs(
         :derive => {
           :enable_opendata_ga_tracking => true
         }
       )
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
-      assert_match(/ga\('create', 'UA-.+-.+', 'auto'\);/, @response.body)
+      assert_match(/_gaSocrata\('create', 'UA-9046230', 'auto', 'socrata'\);/, @response.body)
+    end
+
+    should 'render google analytics JS using the app config token if feature flag is an empty string' do
+      APP_CONFIG['opendata_ga_tracking_code'] = 'UA-9046230'
+      FeatureFlags.stubs(
+        :derive => {
+          :enable_opendata_ga_tracking => ''
+        }
+      )
+      get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      assert_match(/_gaSocrata\('create', 'UA-9046230', 'auto', 'socrata'\);/, @response.body)
     end
 
     should 'render google analytics JS with explicit ga code if specified' do
@@ -264,7 +276,7 @@ class AngularControllerTest < ActionController::TestCase
         }
       )
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
-      assert_match(/ga\('create', 'UA-1234-567890', 'auto'\);/, @response.body)
+      assert_match(/_gaSocrata\('create', 'UA-1234-567890', 'auto', 'socrata'\);/, @response.body)
     end
   end
 

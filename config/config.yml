@@ -85,7 +85,6 @@ test:
 # test.socrata.com
 staging:
   coreservice_uri: http://vm01.ord1.socrata.com:8081
-  google_analytics_id: UA-9046230-2
   max_core_server_requests: 15
   <<: *default
   mixpanel_token: ce548d5c95f7671fadd0174cc067dc69
@@ -94,7 +93,6 @@ staging:
 production:
   coreservice_uri: http://lb-vip.sea1.socrata.com:8081
   activemq_hosts: stomp://activemq01.sea1.socrata.com:61613,stomp://activemq02.sea1.socrata.com:61613
-  google_analytics_id: UA-9046230-1
   rpx_signin_url: https://socrata.rpxnow.com/openid/v2/signin
   rpx_facebook_url: https://socrata.rpxnow.com/facebook/start
   rpx_windowslive_url: https://socrata.rpxnow.com/liveid/start

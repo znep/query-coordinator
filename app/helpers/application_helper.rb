@@ -638,26 +638,34 @@ module ApplicationHelper
     ")
   end
 
+  # Returns true unless the opendata_ga_tracking_code feature flag is set to false
+  def use_ga_tracking_code?
+    FeatureFlags.derive(nil, request)[:enable_opendata_ga_tracking] != false
+  end
+
+  # If code is true or an empty string, fallback to the default GA code in APP_CONFIG.
+  # If it's set to a specific value, use that value. If it is false, return false.
+  def get_ga_tracking_code
+    code = FeatureFlags.derive(nil, request)[:enable_opendata_ga_tracking]
+    (code == true || code.to_s.empty?) ? APP_CONFIG['opendata_ga_tracking_code'] : code
+  end
+
   # Given that the Google Analytics feature flag is either set to true or an explicit value
-  # render the Google Analytics tracking JavaScript code.  If an explicit value is provided,
-  # use that as the tracking code, otherwise fallback to a default value, either from config.yml
-  # or an environment variable
+  # render the Google Analytics tracking JavaScript code.
   def render_ga_tracking
-    ga_tracking_code = FeatureFlags.derive(nil, request)[:enable_opendata_ga_tracking]
-    return if ga_tracking_code.blank?
-    if ga_tracking_code === true
-      ga_tracking_code = ENV['OPENDATA_GA_TRACKING_CODE'] || APP_CONFIG['opendata_ga_tracking_code']
+    if use_ga_tracking_code?
+      # Google analytics namespaced for multi tenant applications
+      # http://benfoster.io/blog/google-analytics-multi-tenant-applications
+      javascript_tag(<<-eos)
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','_gaSocrata');
+
+        _gaSocrata('create', '#{get_ga_tracking_code}', 'auto', 'socrata');
+        _gaSocrata('socrata.send', 'pageview');
+      eos
     end
-
-    javascript_tag(<<-eos)
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-ga('create', '#{ga_tracking_code}', 'auto');
-ga('send', 'pageview');
-    eos
   end
 
   def render_airbrake_shim

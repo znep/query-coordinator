@@ -24,19 +24,14 @@ http://www.socrata.com
 
   <%= rendered_stylesheet_tag 'base-sdp' %>
   <link type="text/css" media="all" rel="stylesheet" href="/webfonts/socrata-apps/socrata-apps.css?<%= asset_revision_key %>"/>
-  <% unless CurrentDomain.google_analytics_id.blank? || (params[:no_cookie] == 'true') %>
+  <% unless !use_ga_tracking_code? || (params[:no_cookie] == 'true') %>
     <script type="text/javascript">
       var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', '<%= CurrentDomain.google_analytics_id %>'],
+      _gaq.push(['_setAccount', '<%= get_ga_tracking_code %>'],
                 ['_trackPageview'],
                 ['_trackPageLoadTime']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
     </script>
+    <%= render_ga_tracking %>
   <% end %>
 
   <%= render :partial => 'templates/mixpanel_tracking' %>

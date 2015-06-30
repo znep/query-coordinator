@@ -13,6 +13,52 @@ class ApplicationHelperTest < ActionView::TestCase
     assert(application_helper.render_fullstory_tracking =~ /fullstory\.com/)
   end
 
+  def test_use_ga_tracking_code
+    FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: true })
+    assert(application_helper.use_ga_tracking_code? == true)
+
+    FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: '' })
+    assert(application_helper.use_ga_tracking_code? == true)
+
+    FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: 'UA-123456' })
+    assert(application_helper.use_ga_tracking_code? == true)
+
+    FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: false })
+    assert(application_helper.use_ga_tracking_code? == false)
+  end
+
+  def test_get_ga_tracking_code
+    FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: true })
+    APP_CONFIG['opendata_ga_tracking_code'] = 'UA-9999999'
+    assert(application_helper.get_ga_tracking_code =~ /UA-9999999/)
+
+    FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: '' })
+    APP_CONFIG['opendata_ga_tracking_code'] = 'UA-9999999'
+    assert(application_helper.get_ga_tracking_code =~ /UA-9999999/)
+
+    FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: 'UA-123456' })
+    assert(application_helper.get_ga_tracking_code =~ /UA-123456/)
+
+    FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: false })
+    assert(application_helper.get_ga_tracking_code == false)
+  end
+
+  def test_render_ga_tracking
+    FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: true })
+    APP_CONFIG['opendata_ga_tracking_code'] = 'UA-9999999'
+    assert(application_helper.render_ga_tracking =~ /_gaSocrata\('create', 'UA-9999999', 'auto', 'socrata'\);/)
+
+    FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: '' })
+    APP_CONFIG['opendata_ga_tracking_code'] = 'UA-9999999'
+    assert(application_helper.render_ga_tracking =~ /_gaSocrata\('create', 'UA-9999999', 'auto', 'socrata'\);/)
+
+    FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: 'UA-123456' })
+    assert(application_helper.render_ga_tracking =~ /_gaSocrata\('create', 'UA-123456', 'auto', 'socrata'\);/)
+
+    FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: false })
+    assert(application_helper.render_ga_tracking !~ /_gaSocrata\('create'/)
+  end
+
   def test_render_airbrake_shim_does_not_render
     FeatureFlags.stubs(:derive => { enable_airbrake_js: false })
     refute application_helper.render_airbrake_shim

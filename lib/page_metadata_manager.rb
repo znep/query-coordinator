@@ -234,7 +234,7 @@ class PageMetadataManager
       end +
       columns_to_roll_up_by_magnitude(normalized_columns, cards).map do |field_name|
         "#{magnitude_function_for_column(page_metadata['datasetId'], field_name)}(#{field_name})"
-      end).join(', ')
+      end).compact.join(', ')
 
     aggregation_function = page_metadata['primaryAggregation'] || 'count'
     aggregation_field = page_metadata['primaryAmountField'] || '*'
@@ -312,11 +312,7 @@ class PageMetadataManager
   def magnitude_function_for_column(dataset_id, field_name)
     logarithmic_threshold = 2000
     result = fetch_min_max_in_column(dataset_id, field_name)
-    unless result && result['min'] && result['max']
-      raise Phidippides::NoMinMaxInColumnException.new(
-        "unable to fetch min and max from dataset_id: #{dataset_id}, field_name: #{field_name}"
-      )
-    end
+    return nil unless result && result['min'] && result['max']
     result.values_at('min', 'max').map { |val| val.to_i.abs }.max >= logarithmic_threshold ?
       'signed_magnitude_10' : 'signed_magnitude_lin'
   end

@@ -119,13 +119,13 @@ module ApplicationHelper
         'charset="utf-8"></script>').html_safe
     else
       str = <<-EOS
-        <script type="text/javascript">
+        <script type="text/javascript">//<![CDATA[
           document.write([
             "\\<script src='",
             "//ajax.googleapis.com/ajax/libs/jquery/#{version}/jquery.min.js'",
             " type='text/javascript'>\\<\\/script>"
           ].join(''));
-        </script>
+        //]]></script>
       EOS
       str.html_safe
     end

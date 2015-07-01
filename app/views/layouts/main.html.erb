@@ -187,7 +187,7 @@ http://www.socrata.com
     </script>
   <%- end -%>
 
-  <script type="text/javascript">
+  <script type="text/javascript">//<![CDATA[
     blist.feature_flags = <%= raw json_escape(FeatureFlags.derive(@view, request).to_json) %>;
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
@@ -240,7 +240,7 @@ http://www.socrata.com
         blist.configuration.onCurrentUserComplete(blist.configuration.govstat_links_cb)
       }
     <%- end -%>
-  </script>
+  //]]></script>
 
   <div id="modals">
     <%= yield :modals %>

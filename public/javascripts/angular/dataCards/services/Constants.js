@@ -82,6 +82,10 @@
       'HISTOGRAM_HANDLE_HEIGHT': 8,
       'HISTOGRAM_REQUIRED_LABEL_WIDTH': 42, // based off of "-1,000" label
 
+      // Feature Maps
+      'FEATURE_MAP_HOVER_THRESHOLD': 8,
+      'FEATURE_MAP_FLYOUT_Y_OFFSET': 5,
+
       // Table card visualization parameters.
       'TABLE_UNSORTABLE_PHYSICAL_DATATYPES': ['geo_entity', 'point'],
 

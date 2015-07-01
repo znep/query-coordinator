@@ -7,7 +7,8 @@
     LeafletHelpersService,
     LeafletVisualizationHelpersService,
     FlyoutService,
-    I18n
+    I18n,
+    ServerConfig
   ) {
     return {
       restrict: 'E',
@@ -59,6 +60,44 @@
             destroySignal: scope.$destroyAsObservable()
           });
         }
+
+        // Holds flyout-related state. Offset is specified in absolute pixels
+        // because we don't have an element to position the flyout on.
+        var flyoutData = {
+          count: 0,
+          offset: {x: 0, y: 0}
+        };
+
+        FlyoutService.register({
+          selector: 'canvas',
+          render: function(target) {
+            var noPoints = (flyoutData.count === 0);
+
+            // Set the appropriate cursor
+            target.style.cursor = noPoints ? 'inherit' : 'pointer';
+
+            // Hide the flyout if there are no nearby points
+            if (noPoints) {
+              FlyoutService.hide();
+              return;
+            }
+
+            var template = [
+              '<div class="flyout-title">{0} {1}</div>',
+              I18n.flyout.details
+            ].join('');
+
+            var unit = (flyoutData.count === 1) ?
+              scope.rowDisplayUnit :
+              scope.rowDisplayUnit.pluralize();
+
+            return template.format(flyoutData.count, unit);
+          },
+          getOffset: function() {
+            return flyoutData.offset;
+          },
+          destroySignal: scope.$destroyAsObservable()
+        });
 
         var map = L.map(element.find('.feature-map-container')[0], mapOptions);
         // We buffer feature layers so that there isn't a visible flash
@@ -123,7 +162,7 @@
           // as the map is zoomed in. It can be replaced with
           // any function which computes a number that makes
           // sense as the radius of a point feature in pixels.
-          return Math.pow(zoomLevel * 0.125, 2) + 1;
+          return Math.pow(zoomLevel * 0.125, 3) + 1;
         }
 
         /**
@@ -139,6 +178,7 @@
         function getPointStyle() {
           return {
             color: 'rgba(48,134,171,1.0)',
+            highlightColor: 'rgba(255, 255, 255, .5)',
             radius: scalePointFeatureRadiusByZoomLevel,
             lineWidth: 1,
             strokeStyle: 'rgba(255,255,255,1.0)'
@@ -230,6 +270,21 @@
          * @param {Object} map - The Leaflet map object.
          * @param {Function} vectorTileGetter - Function that gets a vector tile
          */
+
+        var mousemoveHandler = _.noop;
+        if (ServerConfig.get('oduxEnableFeatureMapHover')) {
+          mousemoveHandler = function(e) {
+
+            // Set flyout data and force a refresh of the flyout
+            flyoutData.offset = {
+              x: e.originalEvent.clientX,
+              y: e.originalEvent.clientY + Constants.FEATURE_MAP_FLYOUT_Y_OFFSET
+            };
+            flyoutData.count = _.sum(e.points, 'count');
+            FlyoutService.refreshFlyout(e.originalEvent);
+          }
+        }
+
         function createNewFeatureLayer(map, vectorTileGetter) {
           var featureLayerOptions = {
             debug: false,
@@ -252,12 +307,8 @@
                   });
                 });
               return promise;
-            }
-            // You can interact with mouse events by passing
-            // callbacks on three property names: 'mousedown',
-            // 'mouseup' and 'mousemove'.
-            // E.g.
-            // mousemove: function(e) { /* do stuff with e.latLng */ }
+            },
+            mousemove: mousemoveHandler
           };
 
           // Don't create duplicate layers.

@@ -3,7 +3,7 @@
 
   // This is the Angular wrapper around VectorTileUtil, VectorTileFeature,
   // VectorTileLayer and VectorTileManager.
-  function VectorTiles() {
+  function VectorTiles(Constants, ServerConfig) {
 
     /****************************************************************************
      *
@@ -13,32 +13,28 @@
 
     var VectorTileUtil = {
 
-      getTileId: function(tilePoint, zoom) {
-        return [zoom, tilePoint.x, tilePoint.y].join(':');
+      getTileId: function(tile) {
+        return _.at(tile, ['zoom', 'x', 'y']).join(':');
       },
 
+      // Given a point and zoom level, return the x, y, and z values
+      // of the tile containing this point.  The point should be specified
+      // as an object containing lat and lng keys.
       getTileInfoByPointAndZoomLevel: function(point, zoom) {
 
-        function deg2rad(degrees) {
-          return degrees * Math.PI / 180;
-        }
+        var lat = point.lat * Math.PI / 180;
+        var lon = point.lng;
 
-        var lat = deg2rad(point.lat);
-        var lng = deg2rad(point.lng);
+        var x = (lon + 180) / 360;
+        var y = (1 - Math.log(Math.tan(lat) + 1 / Math.cos(lat)) / Math.PI) / 2;
 
-        var tileY = Math.floor(
-          (lng + 180) / 360 * (1 << zoom)
-        );
-
-        var tileX = Math.floor(
-          (1 - Math.log(Math.tan(deg2rad(lat)) + 1 /
-          Math.cos(deg2rad(lat))) / Math.PI) / 2 * (1 << zoom)
-        );
+        x = x * (1 << zoom);
+        y = y * (1 << zoom);
 
         return {
           zoom: zoom,
-          tileX: tileX,
-          tileY: tileY
+          x: parseInt(Math.floor(x)),
+          y: parseInt(Math.floor(y))
         };
       },
 
@@ -73,7 +69,7 @@
 
       getTileLayerCanvas: function(tileLayer, tileId) {
         var leafletTileId = tileId.split(':').slice(1, 3).join(':');
-        return tileLayer._tiles[leafletTileId];
+        return _.get(tileLayer, '_tiles.' + leafletTileId);
       }
     };
 
@@ -347,6 +343,7 @@
         this.tileManager = tileManager;
         this.styleFn = options.style;
         this.featuresByTile = {};
+        this.quadTreesByTile = {};
       },
 
       onAdd: function(map) {
@@ -362,9 +359,10 @@
       // a result of needing to fetch and parse protocol buffers.
       drawTile: function(canvas, tilePoint, zoom) {
 
-        var tileId = VectorTileUtil.getTileId(tilePoint, zoom);
+        var tileId = VectorTileUtil.getTileId({x: tilePoint.x, y: tilePoint.y, zoom: zoom});
 
         this.featuresByTile[tileId] = [];
+        this.quadTreesByTile[tileId] = this.tileManager.quadTreeFactory([]);
 
         return this;
       },
@@ -381,16 +379,23 @@
           this.featuresByTile[tileId] = [];
         }
 
+        if (!this.quadTreesByTile.hasOwnProperty(tileId) && featureCount > 0) {
+          this.quadTreesByTile[tileId] = this.tileManager.quadTreeFactory([]);
+        }
+
         featureArray = this.featuresByTile[tileId];
 
         for (i = 0; i < featureCount; i++) {
 
           feature = features[i];
 
-          featureArray.push(
-            new VectorTileFeature(this, feature, this.styleFn(feature))
-          );
+          var vectorTileFeature = new VectorTileFeature(this, feature, this.styleFn(feature));
+          var projectedPoint = vectorTileFeature.projectGeometryToTilePoint(vectorTileFeature.coordinates[0][0]);
+          projectedPoint.count = vectorTileFeature.properties.count;
+          projectedPoint.tile = tileId;
+          this.quadTreesByTile[tileId].add(projectedPoint);
 
+          featureArray.push(vectorTileFeature);
         }
 
         this.renderTile(tileId, tileRenderedCallback);
@@ -402,7 +407,7 @@
         var featureCount;
         var i;
 
-        //First, clear the canvas
+        // First, clear the canvas
         if (this._tiles.hasOwnProperty(tileId)) {
           this.clearTile(tileId);
         }
@@ -467,9 +472,11 @@
           headers: {},
           tileSize: 256,
           debounceMilliseconds: 500,
-          onRenderStart: function() {},
-          onRenderComplete: function() {}
+          onRenderStart: _.noop,
+          onRenderComplete: _.noop,
+          hoverThreshold: Constants.FEATURE_MAP_HOVER_THRESHOLD // Distance to neighboring points in px
         };
+
         L.Util.setOptions(this, options);
 
         // Layers present in the protocol buffer responses.
@@ -482,13 +489,56 @@
           this.flushOutstandingQueue,
           this.options.debounceMilliseconds
         );
+
+        /*
+         * Each tile has its own quad tree containing points in that tile.
+         * On hover, for tiles within the threshold but not containing the hover
+         * point, we map the mouse coordinates to the coordinate space of the
+         * neighboring tile to test the neighboring tile's points that lie within
+         * the threshold of the hover point.
+         *
+         * We create a quad tree factory here to make it easier to make many quad
+         * trees with the same parameters.
+         */
+        var threshold = this.options.hoverThreshold;
+        var size = this.options.tileSize;
+        this.quadTreeFactory = d3.geom.quadtree();
+        this.quadTreeFactory.extent([[-threshold, -threshold], [size + threshold, size + threshold]]);
+        this.quadTreeFactory.x(_.property('x'));
+        this.quadTreeFactory.y(_.property('y'));
+
+        // Add a canvas layer for drawing highlighted points.
+        this.highlightLayer = L.tileLayer.canvas({zIndex: 2});
+
+        this.currentHoverPoints = [];
+
+        this.highlightLayer.drawTile = function(canvas, tilePoint, zoom) {
+          var style = this.style({type: 1}); // getPointStyle in featureMap.js
+          var ctx = canvas.getContext('2d');
+          var tileId = VectorTileUtil.getTileId({x: tilePoint.x, y: tilePoint.y, zoom: zoom});
+
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = style.highlightColor;
+          ctx.strokeStyle = style.strokeStyle;
+          ctx.lineWidth = style.lineWidth;
+
+          var points = _.filter(this.currentHoverPoints, function(point) {
+            return point.tile === tileId;
+          });
+
+          _.each(points, function(point) {
+            ctx.beginPath();
+            ctx.arc(point.x, point.y, style.radius(zoom), 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.fill();
+          });
+
+          ctx.restore();
+        }.bind(this);
       },
 
       onAdd: function(map) {
-
-        function getTileInfo(e) {
-          e.tileInfo = VectorTileUtil.getTileInfoByPointAndZoomLevel(e.latlng, map.getZoom());
-        }
 
         var self = this;
         var mapMousedownCallback;
@@ -496,11 +546,175 @@
         var mapMousemoveCallback;
 
         this.map = map;
+        this.highlightLayer.addTo(map);
+
+        // Find all edges and corners that the mouse is near
+        var edges = [['top'], ['left'], ['bottom'], ['right']];
+        var corners = _.zip(['top', 'top', 'bottom', 'bottom'], ['left', 'right', 'left', 'right']);
+        var hotspots = Array.prototype.concat.call(edges, corners);
+
+        // For a given tile, mouse offset coordinates, and threshold,
+        // calculate the neighboring tiles (tiles other than the current tile
+        // that the user's mouse is within the threshold of.
+        // Returns array of neighboringTile objects containing
+        // tile id, offset.
+        function getNeighboringTiles(tile, mouseTileOffset, hoverThreshold) {
+          var neighboringTiles;
+          var tileSize = self.options.tileSize;
+
+          // Which tile edges are we close to?
+          var edgeTests = {
+            top:    mouseTileOffset.y < hoverThreshold,
+            left:   mouseTileOffset.x < hoverThreshold,
+            bottom: tileSize - mouseTileOffset.y < hoverThreshold,
+            right:  tileSize - mouseTileOffset.x < hoverThreshold
+          };
+
+          // Get neighboring tile id for a tile's edge
+          var tileIdModifiers = {
+            top: function(tile) {
+              tile.y--;
+            },
+            left: function(tile) {
+              tile.x--;
+            },
+            bottom: function(tile) {
+              tile.y++;
+            },
+            right: function(tile) {
+              tile.x++;
+            }
+          };
+
+          // Modify tile pixel offsets
+          // tileOffset = {x: tileOffsetX, y: tileOffsetY}
+          var tileOffsetModifiers = {
+            top: function(tileOffset) {
+              tileOffset.y += tileSize;
+            },
+            left: function(tileOffset) {
+              tileOffset.x += tileSize;
+            },
+            bottom: function(tileOffset) {
+              tileOffset.y -= tileSize;
+            },
+            right: function(tileOffset) {
+              tileOffset.x -= tileSize;
+            }
+          };
+
+          // Now get those neighboring tile ids
+          neighboringTiles = _.compact(_.map(hotspots, function(hotspot) {
+
+            // hotspot is ['left'], ['left', 'top'], etc...
+            // This ensures that all edgeTests for the given hotspot values
+            // are true, which means that the mouse is within threshold of
+            // all hotspot values (aka edges).
+            if (_.all(_.at(edgeTests, hotspot), _.identity)) {
+              var neighborTile = _.clone(tile);
+              var neighborOffset = _.clone(mouseTileOffset);
+
+              _.each(hotspot, function(dir) {
+                tileIdModifiers[dir](neighborTile);
+                tileOffsetModifiers[dir](neighborOffset);
+              });
+
+              return {
+                id: VectorTileUtil.getTileId(neighborTile),
+                offset: neighborOffset
+              };
+            }
+
+            return false;
+          }));
+
+          return neighboringTiles;
+        }
+
+        // Given a mouse event object, adds useful tile-related information to
+        // the event, such as the tile the mouse is hovering over and any points
+        // near the mouse (accounting for neighboring tiles). Keys added:
+        //  - tile: An object containing the x, y, and zoom values of the tile,
+        //          as well as an id in the form 'z:x:y'.
+        //  - tilePoint: Similar to layerPoint, containerPoint, etc. The mouse
+        //               coordinates relative to the current tile.
+        //  - points: An array of points near the mouse (see
+        //            VectorTileManager.options.hoverThreshold). Coordinates are
+        //            relative to the tile containing the point. Each point also
+        //            contains a 'count' key representing the number of rows of
+        //            data that the point represents.
+        function injectTileInfo(e) {
+          e.tile = VectorTileUtil.getTileInfoByPointAndZoomLevel(e.latlng, map.getZoom());
+          e.tile.id = VectorTileUtil.getTileId(e.tile);
+
+          var layer = self.layers.get('main'); // TODO handle selecting layers and/or multiple layers better.
+          var tileCanvas = VectorTileUtil.getTileLayerCanvas(layer, e.tile.id);
+          var hoverThreshold = self.options.hoverThreshold;
+
+          if (_.isUndefined(tileCanvas)) {
+            e.points = [];
+            return;
+          }
+
+          var canvasBoundingRect = tileCanvas.getBoundingClientRect();
+          var mouseTileOffset = e.tilePoint = { // mouse coordinates relative to tile
+            x: e.originalEvent.clientX - canvasBoundingRect.left,
+            y: e.originalEvent.clientY - canvasBoundingRect.top
+          };
+
+          var tiles = [{id: e.tile.id, offset: mouseTileOffset}].
+            concat(getNeighboringTiles(e.tile, mouseTileOffset, hoverThreshold));
+
+          // For each tile near the mouse, visit nodes of its quad tree and
+          // push any nearby points onto an array.
+          var points = [];
+          _.each(tiles, function(tile) {
+            var qt = layer.quadTreesByTile[tile.id];
+            var point = tile.offset;
+
+            if (qt) {
+              qt.visit(function(node, x1, y1, x2, y2) {
+                var nodePoint = node.point;
+
+                // If this node has a point and it is near the mouse, push it
+                // onto the result array.
+                if (nodePoint) {
+                  var dx = Math.pow(nodePoint.x - point.x, 2);
+                  var dy = Math.pow(nodePoint.y - point.y, 2);
+                  if (dx + dy < Math.pow(hoverThreshold, 2)) {
+                    points.push(nodePoint);
+                  }
+                }
+
+                // return false if this node's bounding box does not intersect
+                // the square around the mouse to prevent descending into
+                // children that will definitely not contain any nearby points.
+                return (x1 > point.x + hoverThreshold) ||
+                  (x2 < point.x - hoverThreshold) ||
+                  (y1 > point.y + hoverThreshold) ||
+                  (y2 < point.y - hoverThreshold);
+              });
+            }
+          });
+
+          // Redraw highlight layer, but only if set of hover points has changed
+          if (!_.isEqual(self.currentHoverPoints, points)) {
+            self.currentHoverPoints = points;
+
+            _.each(self.highlightLayer._tiles, function(canvas, tileId) {
+              var coordinates = tileId.split(':');
+              var tile = {x: coordinates[0], y: coordinates[1]};
+              self.highlightLayer.drawTile(canvas, tile, map.getZoom());
+            });
+          }
+
+          e.points = points;
+        }
 
         if (_.isFunction(this.options.mousedown)) {
 
           mapMousedownCallback = function(e) {
-            addTileInfo(e);
+            injectTileInfo(e);
             self.options.mousedown(e);
           };
 
@@ -510,7 +724,7 @@
         if (_.isFunction(this.options.mouseup)) {
 
           mapMouseupCallback = function(e) {
-            addTileInfo(e);
+            injectTileInfo(e);
             self.options.mouseup(e);
           };
 
@@ -520,7 +734,10 @@
         if (_.isFunction(this.options.mousemove)) {
 
           mapMousemoveCallback = function(e) {
-            addTileInfo(e);
+            if (ServerConfig.get('oduxEnableFeatureMapHover')) {
+              injectTileInfo(e);
+            }
+
             self.options.mousemove(e);
           };
 
@@ -579,7 +796,7 @@
             zoom: zoom,
             callback: callback
           });
-          this.tileLoading(VectorTileUtil.getTileId(tilePoint, zoom));
+          this.tileLoading(VectorTileUtil.getTileId({x: tilePoint.x, y: tilePoint.y, zoom: zoom}));
         } else {
           this.getTileData(tilePoint, zoom, callback);
         }
@@ -594,7 +811,7 @@
           if (request.zoom === self.lastCommitedZoomLevel) {
             self.getTileData(request.tilePoint, request.zoom, request.callback);
           } else {
-            self.tileLoaded(VectorTileUtil.getTileId(request.tilePoint, request.zoom));
+            self.tileLoaded(VectorTileUtil.getTileId(request));
           }
         });
         this.delayedTileDataRequests.length = 0;
@@ -602,7 +819,7 @@
 
       getTileData: function(tilePoint, zoom, callback) {
         var self = this;
-        var tileId = VectorTileUtil.getTileId(tilePoint, zoom);
+        var tileId = VectorTileUtil.getTileId({x: tilePoint.x, y: tilePoint.y, zoom: zoom});
         var getterPromise;
 
         // Don't re-request tiles that are already outstanding.

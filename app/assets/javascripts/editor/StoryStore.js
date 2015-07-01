@@ -41,6 +41,10 @@
      * Public methods
      */
 
+    this.storyExists = function(storyUid) {
+      return _stories.hasOwnProperty(storyUid);
+    };
+
     this.getTitle = function(storyUid) {
 
       var story = _getStoryByUid(storyUid);

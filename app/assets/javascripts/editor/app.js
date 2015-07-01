@@ -65,6 +65,7 @@ $(document).on('ready', function() {
 
   window.storyStore = new StoryStore();
   window.blockStore = new BlockStore();
+  window.dragDropStore = new DragDropStore();
 
   window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: inspirationStoryData });
   window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
@@ -99,119 +100,107 @@ $(document).on('ready', function() {
     userStoryRenderer.render();
   });
 
-  //TODO eurgh
-  var lastInsertionHintIndex = -1;
+  /*
+   * Responsible for:
+   *  - Providing STORY_DRAG_ENTER, STORY_DRAG_OVER, STORY_DRAG_LEAVE, and STORY_DROP
+   *    actions.
+   *  - Providing a ghost visual that follows the pointer.
+   *
+   *  handles: An array of block elements that can be dragged.
+   *  ghostElement: The DOM node to manage as the ghost visual.
+   *                All contents will be replaced.
+   */
+  function DragDrop(handles, ghostElement) {
 
-  function DragDrop(element, handles, ghostElement) {
+    var self = this;
 
-    var _self = this;
-    var _dragging = null;
-    var _ghostElement = ghostElement;
+    var _draggedBlockId = null;
     var _ghostCursorOffset = 20;
+    var _storyUidDraggedOver = undefined;
 
-    _self.handles = handles;
+    self.handles = handles; // Needed for unidragger integration.
 
     this.dragStart = function(event, pointer) {
-      lastInsertionHintIndex = -1;
+      _storyUidDraggedOver = undefined;
       $('body').addClass('dragging');
-      var inspirationBlock = $(pointer.target).parent('.block');
 
-      _dragging = inspirationBlock.attr('data-block-id');
+      var sourceBlockElement = $(pointer.target).parent('.block');
 
-      var inspirationBlockHtml = inspirationBlock.html();
+      _draggedBlockId = sourceBlockElement.attr('data-block-id');
 
-      _ghostElement.
-        html(inspirationBlockHtml).
+      var sourceBlockHtml = sourceBlockElement.html();
+
+      ghostElement.
+        html(sourceBlockHtml).
         removeClass('hidden');
     };
 
     this.dragMove = function(event, pointer, moveVector) {
-      _ghostElement.
+      var storyUidOver = $(pointer.target).closest('.story').attr('data-story-uid');
+
+      if (storyUidOver !== _storyUidDraggedOver) {
+        if (_storyUidDraggedOver) {
+          dispatcher.dispatch({
+            action: Constants.STORY_DRAG_LEAVE,
+            storyUid: _storyUidDraggedOver
+          });
+          _storyUidDraggedOver = undefined;
+        }
+
+        if (storyUidOver) {
+          dispatcher.dispatch({
+            action: Constants.STORY_DRAG_ENTER,
+            storyUid: storyUidOver
+          });
+          _storyUidDraggedOver = storyUidOver;
+        }
+      }
+
+      if (_storyUidDraggedOver) {
+        dispatcher.dispatch({
+          action: Constants.STORY_DRAG_OVER,
+          storyUid: _storyUidDraggedOver,
+          blockId: $(pointer.target).closest('.block').attr('data-block-id')
+        });
+      }
+
+      ghostElement.
         css({
-          left: _self.dragStartPoint.x + moveVector.x - _ghostCursorOffset,
-          top: _self.dragStartPoint.y + moveVector.y - _ghostCursorOffset
+          left: self.dragStartPoint.x + moveVector.x - _ghostCursorOffset,
+          top: self.dragStartPoint.y + moveVector.y - _ghostCursorOffset
         });
     };
 
     this.dragEnd = function() {
 
-      var dragged = _dragging;
+      var dragged = _draggedBlockId;
 
       $('body').removeClass('dragging');
-      _dragging = null;
-      _ghostElement.addClass('hidden');
-
-      var insertAt;
-
-      if (lastInsertionHintIndex >= 0) {
-        insertAt = lastInsertionHintIndex;
-      } else {
-        insertAt = storyStore.getBlockIds(window.userStoryUid).length;
-      }
+      _draggedBlockId = null;
+      ghostElement.addClass('hidden');
 
       dispatcher.dispatch({
-        action: Constants.BLOCK_COPY_INTO_STORY,
+        action: Constants.STORY_DROP,
         blockId: dragged,
-        storyUid: window.userStoryUid,
-        insertAt: insertAt
+        storyUid: window.userStoryUid
       });
     };
 
-    this.addGhostClass = function(className) {
-      _ghostElement.addClass(className);
-    };
-
-    this.removeGhostClass = function(className) {
-      _ghostElement.removeClass(className);
-    };
-
     this.bindHandles();
+
+    window.dragDropStore.addChangeListener(function() {
+      if (window.dragDropStore.isDraggingOverStory(userStoryUid)) {
+        ghostElement.addClass('full-size');
+      } else {
+        ghostElement.removeClass('full-size');
+      }
+    });
+
   };
 
   DragDrop.prototype = Unidragger.prototype;
 
-  var dragDrop = new DragDrop(inspirationStoryElement[0], inspirationStoryElement.find('.block'), $('#block-ghost'));
-
-
-  function showInsertionHintAtIndex(index) {
-    userStoryRenderer.showInsertionHintAtIndex(index);
-    lastInsertionHintIndex = index;
-  }
-  function hideInsertionHint() {
-    userStoryRenderer.hideInsertionHint();
-  }
-
-  // Handlers for mouse events on user story.
-  window.dispatcher.register(function(payload) {
-    if (payload.storyUid !== userStoryUid) {
-      return;
-    }
-
-    switch(payload.action) {
-      case Constants.STORY_MOUSE_ENTER:
-        if (dragDrop.isDragging) {
-          dragDrop.addGhostClass('full-size');
-        }
-        break;
-      case Constants.STORY_MOUSE_LEAVE:
-        if (dragDrop.isDragging) {
-          dragDrop.removeGhostClass('full-size');
-        }
-
-        hideInsertionHint();
-        break;
-      case Constants.BLOCK_MOUSE_MOVE:
-        if (dragDrop.isDragging) {
-          var indexToHint = storyStore.getBlockIds(window.userStoryUid).indexOf(payload.blockId);
-          if (indexToHint >= 0) {
-            showInsertionHintAtIndex(indexToHint + 1);
-          }
-        } else {
-          hideInsertionHint();
-        }
-        break;
-    }
-  });
+  var dragDrop = new DragDrop(inspirationStoryElement.find('.block'), $('#block-ghost'));
 
   // Handlers for mouse events on inspiration story.
   window.dispatcher.register(function(payload) {

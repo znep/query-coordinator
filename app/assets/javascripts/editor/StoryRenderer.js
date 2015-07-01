@@ -4,6 +4,7 @@
 
   function StoryRenderer(options) {
 
+    var self = this;
     var storyUid = options.storyUid || null;
     var container = options.storyContainerElement || null;
     var scaleFactor = options.scaleFactor || 1;
@@ -87,6 +88,16 @@
       _renderStory();
     });
 
+    window.dragDropStore.addChangeListener(function() {
+      var hintPosition = window.dragDropStore.getReorderHintPosition();
+
+      if (hintPosition && hintPosition.storyUid === storyUid) {
+        _showInsertionHintAtIndex(hintPosition.dropIndex);
+      } else {
+        _hideInsertionHint();
+      }
+    });
+
     _renderStory();
 
     /**
@@ -95,21 +106,6 @@
 
     this.render = function() {
       _renderStory();
-    };
-
-    this.showInsertionHintAtIndex = function(index) {
-      if (index !== insertionHintIndex) {
-        insertionHintIndex = index;
-        this.render();
-      }
-    };
-
-    this.hideInsertionHint = function() {
-      if (insertionHintIndex !== -1) {
-        insertionHint.addClass('hidden');
-        insertionHintIndex = -1;
-        this.render();
-      }
     };
 
     _attachEvents();
@@ -161,6 +157,22 @@
       });
     }
 
+    function _showInsertionHintAtIndex(index) {
+      if (index !== insertionHintIndex) {
+        insertionHintIndex = index;
+        _renderStory();
+      }
+    };
+
+    function _hideInsertionHint() {
+      if (insertionHintIndex !== -1 && insertionHint) {
+        insertionHint.addClass('hidden');
+        insertionHintIndex = -1;
+        _renderStory();
+      }
+    };
+
+
     function _cacheBlockElement(blockId, blockElement) {
 
       blockCache[blockId] = blockElement;
@@ -209,6 +221,9 @@
       var blockIds = storyStore.getBlockIds(storyUid);
       var blockCount = blockIds.length;
       var layoutHeight = 0;
+
+      container.addClass('story');
+      container.attr('data-story-uid', storyUid);
 
       _removeAbsentBlocks(blockIds);
 

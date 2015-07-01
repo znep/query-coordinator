@@ -135,14 +135,20 @@ $(document).on('ready', function() {
   // Handle updates to block content.
   $(window).on('rich-text-editor::content-change', function(event) {
 
-    var blockId = event.originalEvent.detail.id.split('-')[0];
-    var blockContentIndex = event.originalEvent.detail.id.split('-')[1];
+    var editorIdComponents = event.originalEvent.detail.id.split('-');
+    var editorIdComponentCount = editorIdComponents.length - 1;
+    var componentIndex = editorIdComponents[editorIdComponentCount];
+
+    // Remove the last (component index) element
+    editorIdComponents.length = editorIdComponentCount;
+    var blockId = editorIdComponents.join('-');
+
     var blockContent = event.originalEvent.detail.content;
 
     window.dispatcher.dispatch({
       action: Constants.BLOCK_UPDATE_COMPONENT,
       blockId: blockId,
-      index: blockContentIndex,
+      index: componentIndex,
       type: 'text',
       value: blockContent
     });

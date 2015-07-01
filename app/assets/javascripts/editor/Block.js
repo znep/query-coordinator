@@ -78,11 +78,7 @@
     }
 
     var _dirty = false;
-    // Elsewhere in the code base we split editor ids on hyphens. In order
-    // to avoid needing to split on hyphen and then join the first 0 to n -1,
-    // simply convert hyphens to underscores in block ids as they are
-    // instantiated.
-    var _id = blockData.id.replace(/\-/g, '_');
+    var _id = blockData.id;
     var _layout = blockData.layout;
     var _components = blockData.components;
 

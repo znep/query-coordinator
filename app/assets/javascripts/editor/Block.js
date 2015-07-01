@@ -231,7 +231,7 @@
      * @return {string}
      */
     function _generateTemporaryId() {
-      return 'temp-' + String(Date.now());
+      return 'temp_' + String(Date.now());
     }
 
     /**

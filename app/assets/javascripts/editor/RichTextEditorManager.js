@@ -53,8 +53,12 @@
       return editor;
     };
 
-    this.linkToolbarToEditor = function(editorId) {
+    this.linkToolbar = function(editorId) {
       _toolbar.link(this.getEditor(editorId).getFormatController());
+    };
+
+    this.unlinkToolbar = function() {
+      _toolbar.unlink();
     };
   }
 

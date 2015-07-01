@@ -347,7 +347,10 @@ describe('StoryRenderer', function() {
       window.dispatcher.dispatch({
         action: Constants.STORY_DRAG_OVER,
         storyUid: storyUid,
-        blockId: blockId
+        blockId: blockId,
+        pointer: {},
+        storyElement: {},
+        draggedBlockId: 'draggedBlockId'
       });
     };
 

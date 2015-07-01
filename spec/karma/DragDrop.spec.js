@@ -23,9 +23,8 @@ describe('DragDrop', function() {
 
     ghost.css('position', 'absolute');
 
-    story.append('<div class="block" data-block-id="block1"><span>content1</span></div>');
-    story.append('<div class="block" data-block-id="block2"><span>content2</span></div>');
-    story.append('<div class="block" data-block-id="block3"><span>content3</span></div>');
+    story.append('<div class="block" data-block-id="' + standardMocks.firstBlockId + '"><span>content1</span></div>');
+    story.append('<div class="block" data-block-id="' + standardMocks.secondBlockId + '"><span>content2</span></div>');
 
     blocks = story.find('.block');
     testDom.root().append(story);
@@ -54,7 +53,7 @@ describe('DragDrop', function() {
 
       // Manually invoke dragStart - usually UniDragger does this for us.
       fakeDragStartEvent = {
-        target: testDom.root().find('[data-block-id="block1"] span')
+        target: testDom.root().find('[data-block-id="' + standardMocks.firstBlockId + '"] span')
       };
       fakeDragStartPointer = fakeDragStartEvent;
       dragDrop.dragStart(fakeDragStartEvent, fakeDragStartPointer);
@@ -80,7 +79,7 @@ describe('DragDrop', function() {
 
       beforeEach(function() {
         fakeDragMoveEvent = {
-          target: testDom.root().find('[data-block-id="block1"] span')
+          target: testDom.root().find('[data-block-id="' + standardMocks.firstBlockId + '"] span')
         };
         fakeDragMovePointer = fakeDragMoveEvent;
 
@@ -121,7 +120,9 @@ describe('DragDrop', function() {
         assert.deepEqual(dispatchedEvents[1], {
           action: Constants.STORY_DRAG_OVER,
           storyUid: standardMocks.validStoryUid,
-          blockId: 'block1'
+          storyElement: story[0],
+          draggedBlockId: standardMocks.firstBlockId,
+          pointer: fakeDragMovePointer
         })
       });
 
@@ -148,10 +149,11 @@ describe('DragDrop', function() {
       });
 
       describe('to another story', function() {
+        var anotherStory;
         var anotherStoryUid = 'batt-mann';
 
         beforeEach(function() {
-          var anotherStory = $('<div class="story story2" data-story-uid="' + anotherStoryUid + '">');
+          anotherStory = $('<div class="story story2" data-story-uid="' + anotherStoryUid + '">');
           anotherStory.append('<div class="block" data-block-id="otherBlockId"><span>other</span></div>');
           testDom.root().append(anotherStory);
 
@@ -179,7 +181,9 @@ describe('DragDrop', function() {
           assert.deepEqual(dispatchedEvents[4], {
             action: Constants.STORY_DRAG_OVER,
             storyUid: anotherStoryUid,
-            blockId: 'otherBlockId'
+            storyElement: anotherStory[0],
+            draggedBlockId: standardMocks.firstBlockId,
+            pointer: fakeDragMovePointer
           });
         });
 
@@ -191,7 +195,7 @@ describe('DragDrop', function() {
         beforeEach(function() {
           // Manually invoke dragEnd - usually UniDragger does this for us.
           fakeDragEndEvent = {
-            target: testDom.root().find('[data-block-id="block1"] span')
+            target: testDom.root().find('[data-block-id="' + standardMocks.firstBlockId + '"] span')
           };
           fakeDragEndPointer = fakeDragEndEvent;
           dragDrop.dragEnd(fakeDragEndEvent, fakeDragEndPointer);
@@ -203,7 +207,7 @@ describe('DragDrop', function() {
           assert.deepEqual(dispatchedEvents[2], {
             action: Constants.STORY_DROP,
             storyUid: standardMocks.validStoryUid,
-            blockId: 'block1'
+            blockId: standardMocks.firstBlockId
           });
 
         });

@@ -49,7 +49,18 @@
     };
 
     this.dragMove = function(event, pointer, moveVector) {
-      var storyUidOver = $(pointer.target).closest('.story').attr('data-story-uid');
+      var target = $(pointer.target);
+      var storyOver = target.closest('.story');
+
+      // Hack for insertion hint.
+      // The insertion hint is not a direct child of the story container.
+      // To obtain its associated storyUid, we must search the siblings
+      // of the insertion hint for a story DOM.
+      if (storyOver.length === 0 && target.attr('id') === 'story-insertion-hint') {
+        storyOver = target.parent().children('.story');
+      }
+
+      var storyUidOver = storyOver.attr('data-story-uid');
 
       if (storyUidOver !== _storyUidDraggedOver) {
         if (_storyUidDraggedOver) {
@@ -73,7 +84,9 @@
         dispatcher.dispatch({
           action: Constants.STORY_DRAG_OVER,
           storyUid: _storyUidDraggedOver,
-          blockId: $(pointer.target).closest('.block').attr('data-block-id')
+          draggedBlockId: _draggedBlockId,
+          pointer: pointer,
+          storyElement: storyOver[0]
         });
       }
 

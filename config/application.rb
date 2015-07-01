@@ -31,10 +31,6 @@ module Storyteller
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
 
-    # Set up multiple js manifest files
-    config.assets.precompile += %w( editor.js )
-    config.assets.paths << Rails.root.join('vendor', 'assets', 'components')
-
     # Nginx routes urls with /stories from the Open Data platform to this app,
     # so respond to /stories as the root url.
     config.relative_url_root = '/stories'

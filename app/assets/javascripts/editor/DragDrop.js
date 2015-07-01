@@ -10,11 +10,21 @@
    *                All contents will be replaced.
    */
   function DragDrop(handles, ghostElement) {
+    if (!handles.hasOwnProperty('length')) {
+      throw new Error('`handles` argument must be an array-like');
+    }
+
+    if (ghostElement.length != 1) {
+      throw new Error('`ghostElement` argument must point to exactly one element');
+    }
 
     var self = this;
 
     var _draggedBlockId = null;
-    var _ghostCursorOffset = 20;
+
+    // TODO calculate from mouse down location.
+    var _ghostCursorOffset = 0;
+
     var _storyUidDraggedOver = undefined;
 
     self.handles = handles; // Needed for unidragger integration.
@@ -70,7 +80,9 @@
         });
     };
 
-    this.dragEnd = function() {
+    this.dragEnd = function(event, pointer) {
+
+      var storyUidOver = $(pointer.target).closest('.story').attr('data-story-uid');
 
       var dragged = _draggedBlockId;
 
@@ -81,21 +93,12 @@
       dispatcher.dispatch({
         action: Constants.STORY_DROP,
         blockId: dragged,
-        storyUid: window.userStoryUid
+        storyUid: storyUidOver
       });
     };
 
     this.setup = function() {
       this.bindHandles();
-
-      // TODO this doesn't belong here.
-      window.dragDropStore.addChangeListener(function() {
-        if (window.dragDropStore.isDraggingOverStory(userStoryUid)) {
-          ghostElement.addClass('full-size');
-        } else {
-          ghostElement.removeClass('full-size');
-        }
-      });
     };
 
   };

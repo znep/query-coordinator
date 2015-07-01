@@ -92,16 +92,21 @@ $(document).on('ready', function() {
   var inspirationStoryElement = $('.inspiration-story-container');
   var userStoryElement = $('.user-story-container');
 
-  /**
-   * LEGACY
-   */
-
   $(window).on('rich-text-editor::height-change', function() {
     userStoryRenderer.render();
   });
 
-  var dragDrop = new DragDrop(inspirationStoryElement.find('.block'), $('#block-ghost'));
+  var ghostElement = $('#block-ghost');
+  var dragDrop = new DragDrop(inspirationStoryElement.find('.block'), ghostElement);
   dragDrop.setup();
+
+  window.dragDropStore.addChangeListener(function() {
+    if (window.dragDropStore.isDraggingOverStory(userStoryUid)) {
+      ghostElement.addClass('full-size');
+    } else {
+      ghostElement.removeClass('full-size');
+    }
+  });
 
   // Handlers for mouse events on inspiration story.
   window.dispatcher.register(function(payload) {

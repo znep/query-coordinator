@@ -15,6 +15,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'spec/karma/StandardMocks.js',
+      'spec/karma/TestDom.js',
       'spec/karma/AssetFinderMocker.js',
       'spec/karma/SquireMocker.js',
       'spec/karma/dataGenerators.js',

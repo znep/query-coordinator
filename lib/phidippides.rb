@@ -167,6 +167,7 @@ class Phidippides < SocrataHttp
                 when 'JEP' then '£'
                 when 'JMD' then 'J$'
                 when 'JPY' then '¥'
+                when 'KES' then 'KSh'
                 when 'KGS' then 'лв'
                 when 'KHR' then '៛'
                 when 'KPW' then '₩'

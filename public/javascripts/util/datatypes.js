@@ -1053,6 +1053,7 @@ blist.namespace.fetch('blist.datatypes');
                 "ISK": "kr",
                 "JEP": "£",
                 "JMD": "J$",
+                "KES": "KSh",
                 "KGS": "лв",
                 "KHR": "៛",
                 "KPW": "₩",

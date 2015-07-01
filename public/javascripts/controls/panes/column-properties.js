@@ -139,6 +139,7 @@
         {value: "JMD", text: "Jamaica, Dollars"},
         {value: 'JPY', text: "Japanese Yen"},
         {value: "KZT", text: "Kazakhstan, Tenge"},
+        {value: "KES", text: "Kenya, Shilling"},
         {value: "KRW", text: "Korea, Won"},
         {value: "KGS", text: "Kyrgyzstan, Soms"},
         {value: "LAK", text: "Laos, Kips"},

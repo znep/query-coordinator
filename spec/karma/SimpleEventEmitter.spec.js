@@ -1,10 +1,10 @@
-describe('EventEmitter', function() {
+describe('SimpleEventEmitter', function() {
   'use strict';
 
   var emitter;
 
   beforeEach(function() {
-    emitter = new EventEmitter();
+    emitter = new SimpleEventEmitter();
   });
 
   describe('.emit', function() {

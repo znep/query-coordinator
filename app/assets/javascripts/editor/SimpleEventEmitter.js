@@ -1,8 +1,8 @@
-;var EventEmitter = (function() {
+;var SimpleEventEmitter = (function() {
 
   'use strict';
 
-  function EventEmitter() {
+  function SimpleEventEmitter() {
 
     var _listeners = [];
 
@@ -52,6 +52,6 @@
     };
   }
 
-  return EventEmitter;
+  return SimpleEventEmitter;
 
 })();

@@ -4,7 +4,7 @@
 
   function StoryStore() {
 
-    var _emitter = new EventEmitter();
+    var _emitter = new SimpleEventEmitter();
     var _stories = {};
 
     window.dispatcher.register(function(payload) {

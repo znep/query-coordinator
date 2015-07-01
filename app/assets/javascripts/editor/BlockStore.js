@@ -4,7 +4,7 @@
 
   function BlockStore() {
 
-    var _emitter = new EventEmitter();
+    var _emitter = new SimpleEventEmitter();
     var _blocks = {};
 
     window.dispatcher.register(function(payload) {

@@ -53,6 +53,9 @@
       var storyOver = target.closest('.story');
 
       // Hack for insertion hint.
+      // The insertion hint is not a direct child of the story container.
+      // To obtain its associated storyUid, we must search the siblings
+      // of the insertion hint for a story DOM.
       if (storyOver.length === 0 && target.attr('id') === 'story-insertion-hint') {
         storyOver = target.parent().children('.story');
       }

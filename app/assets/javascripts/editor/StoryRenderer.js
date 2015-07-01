@@ -112,9 +112,54 @@
       }
     };
 
+    _attachEvents();
+
     /**
      * Private methods
      */
+
+    function _attachEvents() {
+      container.on('mouseenter', function() {
+        window.dispatcher.dispatch({
+          action: Constants.STORY_MOUSE_ENTER,
+          storyUid: storyUid
+        });
+      });
+
+      container.on('mouseleave', function() {
+        window.dispatcher.dispatch({
+          action: Constants.STORY_MOUSE_LEAVE,
+          storyUid: storyUid
+        });
+      });
+
+      container.on('mousemove', '.block', function(e) {
+        var blockElement = $(e.currentTarget);
+        var blockId = blockElement.attr('data-block-id');
+
+        if (blockId) {
+          window.dispatcher.dispatch({
+            action: Constants.BLOCK_MOUSE_MOVE,
+            storyUid: storyUid,
+            blockId: blockId
+          });
+        }
+      });
+
+      container.on('dblclick', '.block', function(e) {
+        var blockElement = $(e.currentTarget);
+        var blockId = blockElement.attr('data-block-id');
+
+        if (blockId) {
+          window.dispatcher.dispatch({
+            action: Constants.BLOCK_DOUBLE_CLICK,
+            storyUid: storyUid,
+            blockId: blockId
+          });
+        }
+
+      });
+    }
 
     function _cacheBlockElement(blockId, blockElement) {
 

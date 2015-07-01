@@ -6,6 +6,19 @@
   STORY_DELETE_BLOCK: 'STORY_DELETE_BLOCK',
   BLOCK_CREATE: 'BLOCK_CREATE',
   BLOCK_UPDATE_COMPONENT: 'BLOCK_UPDATE_COMPONENT',
-  BLOCK_COPY_INTO_STORY: 'BLOCK_COPY_INTO_STORY'
+  BLOCK_COPY_INTO_STORY: 'BLOCK_COPY_INTO_STORY',
+
+  STORY_MOUSE_ENTER: 'STORY_MOUSE_ENTER',
+  STORY_MOUSE_LEAVE: 'STORY_MOUSE_LEAVE',
+
+  BLOCK_MOUSE_MOVE: 'BLOCK_MOUSE_MOVE',
+  BLOCK_DOUBLE_CLICK: 'BLOCK_DOUBLE_CLICK'
 };
+
+(function() {
+  var values = _.values(Constants);
+  if (values.length != _.uniq(values).length) {
+    throw new Error('Constants contains non-unique values');
+  }
+})();
 

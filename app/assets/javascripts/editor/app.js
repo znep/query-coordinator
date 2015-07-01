@@ -181,50 +181,55 @@ $(document).on('ready', function() {
     userStoryRenderer.hideInsertionHint();
   }
 
-  userStoryElement.on('mouseenter', function() {
-
-    if (dragDrop.isDragging) {
-      dragDrop.addGhostClass('full-size');
-    }
-  });
-
-  userStoryElement.on('mouseleave', function() {
-
-    if (dragDrop.isDragging) {
-      dragDrop.removeGhostClass('full-size');
+  // Handlers for mouse events on user story.
+  window.dispatcher.register(function(payload) {
+    if (payload.storyUid !== userStoryUid) {
+      return;
     }
 
-    hideInsertionHint();
-  });
-
-  userStoryElement.on('mousemove', '.block', function(e) {
-    if (dragDrop.isDragging) {
-      var blockElement = $(e.currentTarget);
-      var blockId = blockElement.attr('data-block-id');
-
-      if (blockId) {
-        var indexToHint = storyStore.getBlockIds(window.userStoryUid).indexOf(blockId);
-        if (indexToHint >= 0) {
-          showInsertionHintAtIndex(indexToHint + 1);
+    switch(payload.action) {
+      case Constants.STORY_MOUSE_ENTER:
+        if (dragDrop.isDragging) {
+          dragDrop.addGhostClass('full-size');
         }
-      } else {
+        break;
+      case Constants.STORY_MOUSE_LEAVE:
+        if (dragDrop.isDragging) {
+          dragDrop.removeGhostClass('full-size');
+        }
+
         hideInsertionHint();
-      }
+        break;
+      case Constants.BLOCK_MOUSE_MOVE:
+        if (dragDrop.isDragging) {
+          var indexToHint = storyStore.getBlockIds(window.userStoryUid).indexOf(payload.blockId);
+          if (indexToHint >= 0) {
+            showInsertionHintAtIndex(indexToHint + 1);
+          }
+        } else {
+          hideInsertionHint();
+        }
+        break;
     }
   });
 
-  $(window).on('mouseup', function() {
-    hideInsertionHint();
-  });
+  // Handlers for mouse events on inspiration story.
+  window.dispatcher.register(function(payload) {
+    if (payload.storyUid !== inspirationStoryUid) {
+      return;
+    }
 
-  inspirationStoryElement.on('dblclick', '.block', function(e) {
+    switch(payload.action) {
+      case Constants.BLOCK_DOUBLE_CLICK:
+        window.dispatcher.dispatch({
+          action: Constants.BLOCK_COPY_INTO_STORY,
+          blockId: payload.blockId,
+          storyUid: window.userStoryUid,
+          insertAt: window.storyStore.getBlockIds(window.userStoryUid).length
+        });
 
-    window.dispatcher.dispatch({
-      action: Constants.BLOCK_COPY_INTO_STORY,
-      blockId: e.currentTarget.getAttribute('data-block-id'),
-      storyUid: window.userStoryUid,
-      insertAt: window.storyStore.getBlockIds(window.userStoryUid).length
-    });
+        break;
+    }
   });
 
 });

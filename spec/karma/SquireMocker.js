@@ -16,7 +16,8 @@ var SquireMocker = {
             return {
               childNodes: []
             }
-          }
+          },
+          commonAncestorContainer: document.createElement('div')
         };
       },
       hasFormat: function() {},

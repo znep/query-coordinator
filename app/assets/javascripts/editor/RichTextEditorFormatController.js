@@ -36,20 +36,25 @@
       );
     }
 
-    function _stripAllFormats(element) {
-      return ([
-        'h1',
-        'h2',
-        'h3',
-        'h4',
-        'h5',
-        'h6',
-        'div',
-        'blockquote',
-        'ol',
-        'ul',
-        'li'
-      ].indexOf(element.nodeName.toLowerCase()) > -1);
+    function _shouldStripElementNodes(node) {
+      return (
+        [
+          'h1',
+          'h2',
+          'h3',
+          'h4',
+          'h5',
+          'h6',
+          'div',
+          'p',
+          'blockquote',
+          'ol',
+          'ul',
+          'li'
+        ].indexOf(
+          node.nodeName.toLowerCase()
+        ) > -1
+      );
     }
 
     var _editor = editor;
@@ -101,35 +106,14 @@
      */
     this.getActiveFormats = function() {
 
-      var _recordAlignments = function(element) {
+      function _recordAlignmentFormats(element) {
 
-        var _isBlockLevelElement = function(testElement) {
-          return ([
-            'h1',
-            'h2',
-            'h3',
-            'h4',
-            'h5',
-            'h6',
-            'div',
-            'blockquote',
-            'ol',
-            'ul'
-          ].indexOf(testElement.nodeName.toLowerCase()) > -1);
-        };
+        function _recordElementAlignment(element, foundAlignments) {
 
-        if (typeof element.nodeName === 'string') {
-
-          if (element.nodeName.toLowerCase() === 'body') {
-
-            return [];
-
-          } else if (_isBlockLevelElement(element)) {
-
-            var align = [];
+          if (typeof element.className === 'string') {
 
             if (element.className.match(/center/)) {
-              align.push(
+              foundAlignments.push(
                 _formats.filter(function(format) {
                   return format.id === 'center';
                 })[0]
@@ -137,80 +121,89 @@
             }
 
             if (element.className.match(/right/)) {
-              align.push(
+              foundAlignments.push(
                 _formats.filter(function(format) {
                   return format.id === 'right';
                 })[0]
               );
             }
 
-            if (element.className.match(/left/) || align.length === 0) {
-              align.push(
+            if (element.className.match(/left/)) {
+              foundAlignments.push(
                 _formats.filter(function(format) {
                   return format.id === 'left';
                 })[0]
               );
             }
-
-            return align;
-
-          } else {
-            return _recordAlignments(element.parentNode);
-          }
-        }
-      };
-      // Recursively descend the DocumentFragment representing the current
-      // selection.
-      var _recordChildFormats = function(children, found) {
-
-        var child;
-        var tagName;
-        var format;
-
-        for (var i = 0; i < children.length; i++) {
-
-          child = children[i];
-
-          if (child.nodeType === 1) {
-
-            tagName = child.nodeName.toLowerCase();
-            format = _formats.filter(function(format) {
-              return format.tag === tagName;
-            });
-
-            // Check that this format doesn't exist in accumulatedFormats here so
-            // that we don't have to de-dupe later, although it probably could go
-            // either way.
-            if (format.length === 1 && found.indexOf(tagName) === -1) {
-              found.push(format[0]);
-            }
-
-            _recordChildFormats(child.childNodes, found);
           }
         }
 
-        return found;
-      };
-      var selection = _editor.getSelection();
-      var childNodes = selection.cloneContents().childNodes;
-      var thisFormat;
-      var foundFormats = _recordAlignments(selection.commonAncestorContainer);
+        var foundAlignments = window.Util.reduceDOMFragmentAscending(
+          element,
+          _recordElementAlignment,
+          function() { return false; },
+          []
+        );
 
-      // First record all the containing formats that are applied to the selection.
-      for (var i = 0; i < _formats.length; i++) {
-
-        thisFormat = _formats[i];
-
-        if (thisFormat.tag !== null && _editor.hasFormat(thisFormat.tag)) {
-          foundFormats.push(thisFormat);
+        if (foundAlignments.length === 0) {
+          foundAlignments.push(
+            _formats.filter(function(format) {
+              return format.id === 'left';
+            })[0]
+          );
         }
+
+        return foundAlignments;
       }
 
-      // Then record formats whose opening and closing tags both occur within the
-      // selection.
-      _recordChildFormats(childNodes, foundFormats);
+      function _recordStyleFormats(element) {
 
-      return foundFormats;
+        function _recordElementStyleFormat(element, foundStyles) {
+
+          var tagName = element.nodeName.toLowerCase();
+
+          var format = _formats.filter(function(format) {
+            return format.tag === tagName;
+          });
+
+          // Check that this format doesn't exist in accumulatedFormats here so
+          // that we don't have to de-dupe later, although it probably could go
+          // either way.
+          if (format.length === 1 && foundStyles.indexOf(tagName) === -1) {
+            foundStyles.push(format[0]);
+          }
+        }
+
+        var foundFormats = [];
+        var thisFormat;
+
+        // First record all the containing formats that are applied to the selection.
+        for (var i = 0; i < _formats.length; i++) {
+
+          thisFormat = _formats[i];
+
+          if (thisFormat.tag !== null && _editor.hasFormat(thisFormat.tag)) {
+            foundFormats.push(thisFormat);
+          }
+        }
+
+        foundFormats.concat(
+          window.Util.reduceDOMFragmentDescending(
+            element,
+            _recordElementStyleFormat,
+            function() { return false; },
+            []
+          )
+        );
+
+        return foundFormats;
+      }
+
+      var selection = _editor.getSelection();
+      var foundAlignmentFormats = _recordAlignmentFormats(selection.commonAncestorContainer);
+      var foundStyleFormats = _recordStyleFormats(selection.cloneContents());
+
+      return foundAlignmentFormats.concat(foundStyleFormats);
     };
 
     /**
@@ -262,7 +255,7 @@
         alert('Support for the `removeAllFormatting()` method exists in Squire but not yet in the bower package that we are using.');
       }
 
-      _updateBlockType('div', _stripAllFormats);
+      _updateBlockType('div', _shouldStripElementNodes);
     }
 
     function _setHeading(headingTag) {
@@ -320,7 +313,7 @@
     function _toggleBlockquote() {
 
        if (_editor.hasFormat('blockquote')) {
-        _updateBlockType('div', _stripAllFormats);
+        _updateBlockType('div', _shouldStripElementNodes);
        } else {
         _updateBlockType('blockquote');
 

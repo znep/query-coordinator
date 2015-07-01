@@ -13,9 +13,7 @@ var SquireMocker = {
       getSelection: function() {
         return {
           cloneContents: function() {
-            return {
-              childNodes: []
-            }
+            return document.createElement('div');
           },
           commonAncestorContainer: document.createElement('div')
         };

@@ -54,11 +54,12 @@
       Util.assertHasProperties(payload, 'storyUid', 'blockId');
 
       if (window.storyStore.storyExists(payload.storyUid)) {
-        var dropIndex = _.indexOf(
+        var indexOfBlock = _.indexOf(
           window.storyStore.getBlockIds(payload.storyUid),
           payload.blockId);
+        if (indexOfBlock >= 0) {
+          var dropIndex = indexOfBlock + 1; // Drop after the hovered block.
 
-        if (dropIndex >= 0) {
           _setReorderHintPosition({
             storyUid: payload.storyUid,
             dropIndex: dropIndex

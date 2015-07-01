@@ -1,4 +1,6 @@
 ;(function() {
+  'use strict';
+
   /*
    * Responsible for:
    *  - Providing STORY_DRAG_ENTER, STORY_DRAG_OVER, STORY_DRAG_LEAVE, and STORY_DROP
@@ -19,8 +21,6 @@
       throw new Error('`ghostElement` argument must point to exactly one element');
     }
 
-    var self = this;
-
     var _draggedBlockId = null;
 
     // TODO calculate from mouse down location.
@@ -28,7 +28,7 @@
 
     var _storyUidDraggedOver = undefined;
 
-    self.handles = handles; // Needed for unidragger integration.
+    this.handles = handles; // Needed for unidragger integration.
 
     this.dragStart = function(event, pointer) {
       var sourceBlockElement;
@@ -79,8 +79,8 @@
 
       ghostElement.
         css({
-          left: self.dragStartPoint.x + moveVector.x - _ghostCursorOffset,
-          top: self.dragStartPoint.y + moveVector.y - _ghostCursorOffset
+          left: this.dragStartPoint.x + moveVector.x - _ghostCursorOffset,
+          top: this.dragStartPoint.y + moveVector.y - _ghostCursorOffset
         });
     };
 

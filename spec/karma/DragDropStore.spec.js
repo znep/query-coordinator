@@ -1,4 +1,6 @@
 describe('DragDropStore', function() {
+  'use strict';
+
   beforeEach(standardMocks);
   afterEach(standardMocks.unmock);
 

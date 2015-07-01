@@ -1,4 +1,6 @@
 describe('DragDrop', function() {
+  'use strict';
+
   var story;
   var blocks;
   var ghost;
@@ -184,7 +186,7 @@ describe('DragDrop', function() {
       });
 
       describe('and the user has dropped', function() {
-        var fakeDragEntEvent;
+        var fakeDragEndEvent;
         var fakeDragEndPointer;
         beforeEach(function() {
           // Manually invoke dragEnd - usually UniDragger does this for us.

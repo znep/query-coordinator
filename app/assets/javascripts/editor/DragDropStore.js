@@ -1,4 +1,6 @@
 ;(function() {
+  'use strict';
+
   function DragDropStore() {
     var self = this;
 
@@ -56,7 +58,9 @@
       if (window.storyStore.storyExists(payload.storyUid)) {
         var indexOfBlock = _.indexOf(
           window.storyStore.getBlockIds(payload.storyUid),
-          payload.blockId);
+          payload.blockId
+        );
+
         if (indexOfBlock >= 0) {
           var dropIndex = indexOfBlock + 1; // Drop after the hovered block.
 

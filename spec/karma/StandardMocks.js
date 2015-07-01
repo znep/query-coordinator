@@ -1,8 +1,10 @@
+'use strict';
 
 function standardMocks() {
   var storyUid = 'test-test';
   var imageBlockId = '1000';
   var textBlockId = '1001';
+  var imageAndTextBlockId = '1002';
 
   var storyData = generateStoryData({
     uid: storyUid,
@@ -16,6 +18,13 @@ function standardMocks() {
       generateBlockData({
         id: textBlockId,
         components: [
+          { type: 'text', value: 'some-text' }
+        ]
+      }),
+      generateBlockData({
+        id: imageAndTextBlockId,
+        components: [
+          { type: 'image', value: 'anotherFakeImageFile.png' },
           { type: 'text', value: 'some-text' }
         ]
       })
@@ -41,11 +50,13 @@ function standardMocks() {
   standardMocks.validStoryUid = storyUid;
   standardMocks.imageBlockId = imageBlockId;
   standardMocks.textBlockId = textBlockId;
+  standardMocks.imageAndTextBlockId = imageAndTextBlockId;
   standardMocks.validBlockId = textBlockId;
 
   standardMocks.firstBlockId = imageBlockId;
   standardMocks.secondBlockId = textBlockId;
-  standardMocks.lastBlockId = textBlockId;
+  standardMocks.thirdBlockId = imageAndTextBlockId;
+  standardMocks.lastBlockId = imageAndTextBlockId;
 
   standardMocks.invalidBlockId = 'NotValidBlockId';
   standardMocks.invalidStoryUid = 'NotValidStoryUid';

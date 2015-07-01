@@ -4,7 +4,6 @@
 
   function StoryRenderer(options) {
 
-    var self = this;
     var storyUid = options.storyUid || null;
     var container = options.storyContainerElement || null;
     var scaleFactor = options.scaleFactor || 1;
@@ -130,8 +129,7 @@
       });
 
       container.on('mousemove', '.block', function(e) {
-        var blockElement = $(e.currentTarget);
-        var blockId = blockElement.attr('data-block-id');
+        var blockId = e.currentTarget.getAttribute('data-block-id');
 
         if (blockId) {
           window.dispatcher.dispatch({
@@ -143,8 +141,7 @@
       });
 
       container.on('dblclick', '.block', function(e) {
-        var blockElement = $(e.currentTarget);
-        var blockId = blockElement.attr('data-block-id');
+        var blockId = e.currentTarget.getAttribute('data-block-id');
 
         if (blockId) {
           window.dispatcher.dispatch({

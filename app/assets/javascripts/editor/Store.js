@@ -19,7 +19,7 @@
       _emitter.removeListener(callback);
     };
 
-    this._emitChange = _.bind(_emitter.emit, this);
+    this._emitChange = _emitter.emit;
   };
 
 

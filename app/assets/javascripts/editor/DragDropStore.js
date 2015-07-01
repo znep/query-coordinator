@@ -51,22 +51,41 @@
      */
 
     function _storyDragOver(payload) {
-      Util.assertHasProperties(payload, 'storyUid', 'blockId');
+      Util.assertHasProperties(payload, 'storyUid', 'pointer', 'storyElement', 'draggedBlockId');
 
-      if (window.storyStore.storyExists(payload.storyUid)) {
-        var indexOfBlock = _.indexOf(
-          window.storyStore.getBlockIds(payload.storyUid),
-          payload.blockId);
-        if (indexOfBlock >= 0) {
-          var dropIndex = indexOfBlock + 1; // Drop after the hovered block.
+      if (window.storyStore.storyExists(payload.storyUid) && !window.storyStore.hasBlock(payload.storyUid, payload.draggedBlockId)) {
+        var dropIndex;
 
-          _setReorderHintPosition({
-            storyUid: payload.storyUid,
-            dropIndex: dropIndex
+        var pointerY = Unipointer.getPointerPoint(payload.pointer).y;
+
+        var blocksSortedByVerticalPosition = _.chain($(payload.storyElement).find('.block')).
+          map(function(block) { return block.getBoundingClientRect(); }).
+          sortBy('top').
+          value();
+
+        // From the bottom, give me first block where the top extent
+        // is above the pointer. This is the block we're over.
+        var indexOfBlockUnderPointer = _.findLastIndex(
+          blocksSortedByVerticalPosition,
+          function(rect) {
+            return rect.top <= pointerY;
           });
+
+        if (indexOfBlockUnderPointer >= 0) {
+          var blockExtents = blocksSortedByVerticalPosition[indexOfBlockUnderPointer];
+          var height = blockExtents.bottom - blockExtents.top;
+          var isOverBottomHalf = pointerY >= blockExtents.top + height/2;
+
+          dropIndex = indexOfBlockUnderPointer + (isOverBottomHalf ? 1 : 0);
         } else {
-          _setReorderHintPosition(null);
+          var storyBlocks = window.storyStore.getBlockIds(payload.storyUid);
+          dropIndex = storyBlocks.length;
         }
+
+        _setReorderHintPosition({
+          storyUid: payload.storyUid,
+          dropIndex: dropIndex
+        });
       } else {
         _setReorderHintPosition(null);
       }

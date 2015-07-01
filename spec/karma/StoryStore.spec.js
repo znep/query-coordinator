@@ -72,6 +72,9 @@ describe('StoryStore', function() {
         assert.equal(store.getTitle(story2Uid), 'Test Story');
         assert.deepEqual(store.getBlockIds(story2Uid), [ thirdBlockId ]);
         assert.equal(store.getBlockIdAtIndex(story2Uid, 0), thirdBlockId);
+
+        assert.isTrue(store.hasBlock(story2Uid, thirdBlockId));
+        assert.isFalse(store.hasBlock(story2Uid, 'notthere'));
       });
     });
   });

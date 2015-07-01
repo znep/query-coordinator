@@ -66,6 +66,10 @@
       return story.getBlockIdAtIndex(index);
     };
 
+    this.hasBlock = function(storyUid, blockId) {
+      return _.includes(this.getBlockIds(storyUid), blockId);
+    };
+
     /**
      * Private methods
      */

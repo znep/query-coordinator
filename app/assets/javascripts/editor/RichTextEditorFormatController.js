@@ -36,6 +36,22 @@
       );
     }
 
+    function _stripAllFormats(element) {
+      return ([
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
+        'div',
+        'blockquote',
+        'ol',
+        'ul',
+        'li'
+      ].indexOf(element.nodeName.toLowerCase()) > -1);
+    }
+
     var _editor = editor;
     var _formats = formats;
     var _commandDispatcher = {
@@ -220,7 +236,10 @@
      */
     function _updateBlockType(blockType, shouldStripFormatFn) {
       _editor.modifyBlocks(
-        RichTextEditorUtil.generateUpdateBlockTypeFn(blockType, shouldStripFormatFn)
+        RichTextEditorUtil.generateUpdateBlockTypeFn(
+          blockType,
+          shouldStripFormatFn
+        )
       );
     }
 
@@ -229,22 +248,6 @@
     }
 
     function _clearFormat(selection) {
-
-      var stripFormatFn = function(element) {
-        return ([
-          'h1',
-          'h2',
-          'h3',
-          'h4',
-          'h5',
-          'h6',
-          'div',
-          'blockquote',
-          'ol',
-          'ul',
-          'li'
-        ].indexOf(element.nodeName.toLowerCase()) > -1);
-      };
 
       // As of 6/25/2015 the version of Squire provided by Bower does not yet
       // include this method, but it is currently implemented in master:
@@ -259,7 +262,7 @@
         alert('Support for the `removeAllFormatting()` method exists in Squire but not yet in the bower package that we are using.');
       }
 
-      _updateBlockType('div', stripFormatFn);
+      _updateBlockType('div', _stripAllFormats);
     }
 
     function _setHeading(headingTag) {
@@ -317,9 +320,10 @@
     function _toggleBlockquote() {
 
        if (_editor.hasFormat('blockquote')) {
-        _editor.decreaseQuoteLevel();
+        _updateBlockType('div', _stripAllFormats);
        } else {
-        _editor.increaseQuoteLevel();
+        _updateBlockType('blockquote');
+
        }
     }
 

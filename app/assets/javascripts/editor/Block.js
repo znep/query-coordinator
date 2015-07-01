@@ -78,7 +78,11 @@
     }
 
     var _dirty = false;
-    var _id = blockData.id;
+    // Elsewhere in the code base we split editor ids on hyphens. In order
+    // to avoid needing to split on hyphen and then join the first 0 to n -1,
+    // simply convert hyphens to underscores in block ids as they are
+    // instantiated.
+    var _id = blockData.id.replace(/\-/g, '_');
     var _layout = blockData.layout;
     var _components = blockData.components;
 
@@ -231,7 +235,7 @@
      * @return {string}
      */
     function _generateTemporaryId() {
-      return 'temp-' + String(Date.now());
+      return 'temp_' + String(Date.now());
     }
 
     /**

@@ -155,7 +155,7 @@ $(document).on('ready', function() {
   });
 
   $(window).on('rich-text-editor::height-change', function(event) {
-    storyStore.forceChange();
+    userStoryRenderer.render();
   });
 
   /**

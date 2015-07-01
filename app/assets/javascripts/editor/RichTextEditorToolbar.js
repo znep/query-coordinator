@@ -279,7 +279,7 @@
       }
 
       var activeFormats = payload.activeFormats;
-      var selectElement = $('.rich-text-editor-toolbar-select');
+      var selectElement = _element.find('.rich-text-editor-toolbar-select');
 
       _element.find('.rich-text-editor-toolbar-btn').removeClass('active');
 

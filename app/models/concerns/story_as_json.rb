@@ -4,7 +4,7 @@ module StoryAsJson
   included do
 
     def as_json(options = nil)
-      story_data = serializable_attributes.transform_keys do |key|
+      serializable_attributes.transform_keys do |key|
         key.to_s.camelize(:lower)
       end
     end

@@ -9,7 +9,7 @@
           <spinner class="spinner"></spinner>
         </div>
 
-        <span>{{suggestionsStatus}}</span>
+        <span ng-hide="suggestionsLoading">{{suggestionsStatus}}</span>
       </div>
 
       <intractable-list ng-if="suggestions" list-data="suggestions"></intractable-list>

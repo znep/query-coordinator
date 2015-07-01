@@ -10,6 +10,7 @@
     "tests"
   ],
   "dependencies": {
-    "squire-rte": "^1.2.0"
+    "squire-rte": "^1.2.0",
+    "unidragger": "~1.1.3"
   }
 }

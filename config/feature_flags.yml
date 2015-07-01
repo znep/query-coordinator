@@ -138,3 +138,7 @@ swap_in_nbe_view:
   description: Utility flag to make frontend views use their NBE counterparts.
   defaultValue: false
   category: obe deprecation
+odux_enable_feature_map_hover:
+  description: Enable hover functionality in point maps.
+  defaultValue: false
+  category: data lens

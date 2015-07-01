@@ -6,7 +6,8 @@
     VectorTiles,
     LeafletHelpersService,
     FlyoutService,
-    I18n
+    I18n,
+    ServerConfig
   ) {
     return {
       restrict: 'E',
@@ -268,6 +269,21 @@
          * @param {Object} map - The Leaflet map object.
          * @param {Function} vectorTileGetter - Function that gets a vector tile
          */
+
+        var mousemoveHandler = _.noop;
+        if (ServerConfig.get('oduxEnableFeatureMapHover')) {
+          mousemoveHandler = function(e) {
+
+            // Set flyout data and force a refresh of the flyout
+            flyoutData.offset = {
+              x: e.originalEvent.clientX,
+              y: e.originalEvent.clientY + Constants.FEATURE_MAP_FLYOUT_Y_OFFSET
+            };
+            flyoutData.count = _.sum(e.points, 'count');
+            FlyoutService.refreshFlyout(e.originalEvent);
+          }
+        }
+
         function createNewFeatureLayer(map, vectorTileGetter) {
           var featureLayerOptions = {
             debug: false,
@@ -291,15 +307,7 @@
                 });
               return promise;
             },
-            mousemove: function(e) {
-              // Set flyout data and force a refresh of the flyout
-              flyoutData.offset = {
-                x: e.originalEvent.clientX,
-                y: e.originalEvent.clientY + Constants.FEATURE_MAP_FLYOUT_Y_OFFSET
-              };
-              flyoutData.count = _.sum(e.points, 'count');
-              FlyoutService.refreshFlyout(e.originalEvent);
-            }
+            mousemove: mousemoveHandler
           };
 
           // Don't create duplicate layers.

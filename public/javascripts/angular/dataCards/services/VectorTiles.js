@@ -3,7 +3,7 @@
 
   // This is the Angular wrapper around VectorTileUtil, VectorTileFeature,
   // VectorTileLayer and VectorTileManager.
-  function VectorTiles(Constants) {
+  function VectorTiles(Constants, ServerConfig) {
 
     /****************************************************************************
      *
@@ -734,7 +734,10 @@
         if (_.isFunction(this.options.mousemove)) {
 
           mapMousemoveCallback = function(e) {
-            injectTileInfo(e);
+            if (ServerConfig.get('oduxEnableFeatureMapHover')) {
+              injectTileInfo(e);
+            }
+
             self.options.mousemove(e);
           };
 

@@ -259,7 +259,7 @@ describe('A Choropleth Card Visualization', function() {
       testHelpers.fireEvent(selectionBoxClearButton[0], 'mousemove');
 
       expect(flyout.is(':visible')).to.be.true;
-      expect(flyout.find('.flyout-title').text()).to.equal(I18n.timelineChart.dragClearHelp);
+      expect(flyout.find('.flyout-title').text()).to.equal(I18n.flyout.clearFilter);
     });
 
     it('should hide on click of the clear button', function() {

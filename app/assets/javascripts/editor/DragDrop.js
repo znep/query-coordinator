@@ -5,9 +5,10 @@
    *    actions.
    *  - Providing a ghost visual that follows the pointer.
    *
-   *  handles: An array of block elements that can be dragged.
-   *  ghostElement: The DOM node to manage as the ghost visual.
-   *                All contents will be replaced.
+   *  @constructor
+   *  @param {Object} handles - An array of block elements that can be dragged.
+   *  @param {Object} ghostElement - The DOM node to manage as the ghost visual.
+   *                                 All contents will be replaced.
    */
   function DragDrop(handles, ghostElement) {
     if (!handles.hasOwnProperty('length')) {
@@ -30,14 +31,17 @@
     self.handles = handles; // Needed for unidragger integration.
 
     this.dragStart = function(event, pointer) {
+      var sourceBlockElement;
+      var sourceBlockHtml;
+
       _storyUidDraggedOver = undefined;
       $('body').addClass('dragging');
 
-      var sourceBlockElement = $(pointer.target).parent('.block');
+      sourceBlockElement = $(pointer.target).parent('.block');
 
       _draggedBlockId = sourceBlockElement.attr('data-block-id');
 
-      var sourceBlockHtml = sourceBlockElement.html();
+      sourceBlockHtml = sourceBlockElement.html();
 
       ghostElement.
         html(sourceBlockHtml).

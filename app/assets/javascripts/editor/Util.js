@@ -6,7 +6,14 @@
       }
     },
     assertHasProperties: function(object) {
-      _.each(_.rest(arguments), _.partial(window.Util.assertHasProperty, object));
+      // Apply all arguments (minus `object`)
+      // to assertHasProperty(object, argument).
+      _.each(
+        _.rest(arguments),
+        function(argument) {
+          window.Util.assertHasProperty(object, argument);
+        }
+      );
     }
   };
 })();

@@ -118,42 +118,41 @@
           scope.$observe('addCardModel').observeOnLatest('isCustomizable')
         );
 
-        var EXCESSIVE_COLUMN_WARNING = [
-          '<div class="flyout-title">',
-          I18n.addCardDialog.columnChartWarning,
-          '</div>'
-        ].join('');
         FlyoutService.register({
-          selector: '.add-card-type-option',
+          selector: '.add-card-type-option, .warning-icon',
           render: function(el) {
+            var $el = $(el);
+            var flyoutContents = null;
+            var shouldShowCardinalityWarning = scope.showCardinalityWarning &&
+              $el.is('.warn, .icon-warning');
 
-            var visualizationName = el.getAttribute('data-visualization-name');
+            if (shouldShowCardinalityWarning) {
 
-            if (visualizationName === null) {
-              return;
-            }
+              flyoutContents = I18n.addCardDialog.columnChartWarning;
 
-            if (scope.showCardinalityWarning && $(el).hasClass('warn')) {
-              return EXCESSIVE_COLUMN_WARNING;
             } else {
-              return '<div class="flyout-title">{0}</div>'.
-                format(I18n.t('addCardDialog.visualizeFlyout', visualizationName));
+              var visualizationName = el.getAttribute('data-visualization-name');
+
+              if (visualizationName === null) {
+                return;
+              }
+
+              flyoutContents = I18n.t('addCardDialog.visualizeFlyout', visualizationName);
             }
 
+            return '<div class="flyout-title">{0}</div>'.format(flyoutContents);
+          },
+          positionOn: function(target) {
+            var $target = $(target);
+
+            if ($target.hasClass('icon-warning')) {
+              return $target.parent()[0];
+            }
+
+            return target;
           },
           destroySignal: scope.$destroyAsObservable(element)
         });
-
-        FlyoutService.register({
-          selector: '.warning-icon',
-          render: function(el) {
-
-            return EXCESSIVE_COLUMN_WARNING;
-
-          },
-          destroySignal: scope.$destroyAsObservable(element)
-        });
-
       }
     };
   }

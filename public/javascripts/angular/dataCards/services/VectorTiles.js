@@ -656,9 +656,10 @@
             return;
           }
 
+          var canvasBoundingRect = tileCanvas.getBoundingClientRect();
           var mouseTileOffset = e.tilePoint = { // mouse coordinates relative to tile
-            x: e.layerPoint.x - tileCanvas.offsetLeft,
-            y: e.layerPoint.y - tileCanvas.offsetTop
+            x: e.originalEvent.clientX - canvasBoundingRect.left,
+            y: e.originalEvent.clientY - canvasBoundingRect.top
           };
 
           var tiles = [{id: e.tile.id, offset: mouseTileOffset}].

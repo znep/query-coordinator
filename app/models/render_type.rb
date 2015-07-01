@@ -169,10 +169,10 @@ class RenderType
     rows.each_with_index do |r, i|
       t << '<tr class="' + (i % 2 == 0 ? 'odd' : 'even') + '">'
       row_index = i + 1 + page_adjust
-      t << '<th scope="row" header="' + t_id + '_header_row_number" class="row_number">' +
+      t << '<th scope="row" headers="' + t_id + '_header_row_number" class="row_number">' +
         row_index.to_s + '</th>'
       vis_cols.each do |column|
-        t << '<td header="' + t_id + '_header_' + column.fieldName +
+        t << '<td headers="' + t_id + '_header_' + column.fieldName +
           '" class="type_' + column.client_type + '"' +
           (column.is_nested_table ? ' colspan="' +
            (column.viewable_children.length + 1).to_s + '"' : '') + '>'

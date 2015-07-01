@@ -36,27 +36,6 @@
       );
     }
 
-    function _shouldStripElementNodes(node) {
-      return (
-        [
-          'h1',
-          'h2',
-          'h3',
-          'h4',
-          'h5',
-          'h6',
-          'div',
-          'p',
-          'blockquote',
-          'ol',
-          'ul',
-          'li'
-        ].indexOf(
-          node.nodeName.toLowerCase()
-        ) > -1
-      );
-    }
-
     var _editor = editor;
     var _formats = formats;
     var _commandDispatcher = {
@@ -227,12 +206,59 @@
      * @param {string} blockType - The nodeType to which the block-level
      *   container should be changed.
      */
-    function _updateBlockType(blockType, shouldStripFormatFn) {
+    function _updateBlockType(blockType, stripFormatsFn) {
+
+      function _stripBlockElements(element) {
+
+        var blockElements = [
+          'h1',
+          'h2',
+          'h3',
+          'h4',
+          'h5',
+          'h6',
+          'div',
+          'p',
+          'blockquote',
+          'ol',
+          'ul',
+          'li'
+        ];
+
+        if ((blockElements).indexOf(element.nodeName.toLowerCase()) > -1) {
+          return document.createDocumentFragment();
+        } else {
+          return element;
+        }
+      }
+
+      if (typeof stripFormatsFn === 'undefined') {
+        stripFormatsFn = _stripBlockElements;
+      }
+
+      if (typeof stripFormatsFn !== 'function') {
+        throw new Error(
+          '`stripFormatsFn` argument must be a function or undefined.'
+        );
+      }
+
       _editor.modifyBlocks(
-        RichTextEditorUtil.generateUpdateBlockTypeFn(
-          blockType,
-          shouldStripFormatFn
-        )
+        function(blockFragment) {
+
+          var newFragment = document.createElement(blockType);
+
+          for (var i = 0; i < blockFragment.childNodes.length; i++) {
+            newFragment.appendChild(
+              window.Util.mapDOMFragmentDescending(
+                blockFragment.childNodes[i],
+                stripFormatsFn,
+                function() { return false; }
+              )
+            );
+          }
+
+          return newFragment;
+        }
       );
     }
 
@@ -255,7 +281,7 @@
         alert('Support for the `removeAllFormatting()` method exists in Squire but not yet in the bower package that we are using.');
       }
 
-      _updateBlockType('div', _shouldStripElementNodes);
+      _updateBlockType('div');
     }
 
     function _setHeading(headingTag) {
@@ -313,7 +339,7 @@
     function _toggleBlockquote() {
 
        if (_editor.hasFormat('blockquote')) {
-        _updateBlockType('div', _shouldStripElementNodes);
+        _updateBlockType('div');
        } else {
         _updateBlockType('blockquote');
 

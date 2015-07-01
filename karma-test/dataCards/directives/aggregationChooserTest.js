@@ -306,4 +306,26 @@ describe('<aggregation-chooser/>', function() {
     expect(subjectUnderTest.find('.aggregation-chooser-static-label')).to.be.visible;
     expect(subjectUnderTest.find('.aggregation-chooser-trigger')).to.not.be.visible;
   });
+
+  it('should not be a dropdown if the only number columns are system columns', function() {
+    var columns = {
+      ':@computed_column': {
+        name: ':@computed_column',
+        description: 'test column description',
+        computationStrategy: {},
+        fred: 'location',
+        physicalDatatype: 'number',
+        defaultCardType: 'choropleth',
+        availableCardTypes: ['choropleth'],
+        isSystemColumn: true
+      }
+    };
+
+    var models = createModels({ columns: columns });
+    var subjectUnderTest = createElement({page: models.page });
+
+    testHelpers.TestDom.append(subjectUnderTest);
+    expect(subjectUnderTest.find('.aggregation-chooser-static-label')).to.be.visible;
+    expect(subjectUnderTest.find('.aggregation-chooser-trigger')).to.not.be.visible;
+  });
 });

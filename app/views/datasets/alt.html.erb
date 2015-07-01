@@ -273,9 +273,9 @@
       <%= label_tag "publishCodeTemplate", "You can publish this dataset  and its views on your blog or website by embedding it in a Social Data Player.  You can do so by simply copying and pasting the below HTML into your site." %>
     </p>
     <%= text_area_tag("publishCodeTemplate",
-      get_publish_embed_code_for_view(@view,
+      String.new(get_publish_embed_code_for_view(@view,
       {:dimensions => { :width => '500',  :height => '425' }},
-      CurrentDomain.default_widget_customization_id)) %>
+      CurrentDomain.default_widget_customization_id)), :rows => 10, :cols => 60) %>
 
     <a id="previewWidgetLink" href="<%= preview_view_widget_path(@view.route_params.merge( width: 500, height: 425, variation: CurrentDomain.default_widget_customization_id )) %>">
       See Preview

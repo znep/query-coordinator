@@ -1,29 +1,38 @@
 <h2><span class="icon-settings"></span> Settings</h2>
-<card ng-if="customizedCard"
-      model="customizedCard"
-      interactive="false"
-      card-draggable="false"
-      class="card preview"></card>
+<div class="row">
+  <div class="span8">
+    <div class="customize-card-preview">
+      <card ng-if="customizedCard"
+        model="customizedCard"
+        interactive="false"
+        card-draggable="false"
+        class="card preview"></card>
+    </div>
+  </div>
 
-<div class="configurable">
-  <div>
-    <h3>{{'customizeCardDialog.mapLayer.title' | I18n}}</h3>
-    <div>
-      <soc-select ng-model="baseLayerOption">
-        <soc-option value="standard">{{'customizeCardDialog.mapLayer.standard' | I18n}}</soc-option>
-        <soc-option value="esri">Esri</soc-option>
-        <soc-option value="custom">{{'customizeCardDialog.mapLayer.custom' | I18n}}</soc-option>
-      </soc-select>
-      <input name="customLayerUrl"
-             type="url"
-             class="dark"
-             placeholder="http://domain.com/.../{x}/{y}/{z}.png"
-             ng-model="customLayerUrl"
-             ng-pattern="TILEURL_REGEX"
-             ng-show="baseLayerOption === 'custom'"
-             ng-min-length="5"
-             ng-max-length="5165"
-      />
+  <div class="span4 customize-card-options">
+    <visualization-type-selector card-model="customizedCard" ng-show="availableCardTypes.length > 1">
+    </visualization-type-selector>
+
+    <div class="configure-map-base-layer" ng-show="showBaseMapLayerDropdown">
+      <h3>{{'customizeCardDialog.mapLayer.title' | I18n}}</h3>
+      <div>
+        <soc-select class="base-layer-selector" ng-model="baseLayerOption">
+          <soc-option value="standard">{{'customizeCardDialog.mapLayer.standard' | I18n}}</soc-option>
+          <soc-option value="esri">Esri</soc-option>
+          <soc-option value="custom">{{'customizeCardDialog.mapLayer.custom' | I18n}}</soc-option>
+        </soc-select>
+        <input name="customLayerUrl"
+               type="url"
+               class="dark"
+               placeholder="http://domain.com/.../{x}/{y}/{z}.png"
+               ng-model="customLayerUrl"
+               ng-pattern="TILEURL_REGEX"
+               ng-show="baseLayerOption === 'custom'"
+               ng-min-length="5"
+               ng-max-length="5165"
+        />
+      </div>
     </div>
   </div>
 </div>

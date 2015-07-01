@@ -355,25 +355,11 @@ body.state-view-cards
         font-size: 0.9rem
 
     card
-      float: left
       width: 100%
-      max-width: 500px
-      margin: 0 1rem 1rem 0
 
-    .configurable
-      >div
-        display: inline-block
-        min-width: 15rem
-      h3
-        white-space: nowrap
-        display: inline-block
-        margin: 0 0 1rem
-        min-width: 10rem
-
-      input
+    .customize-card-options
+      .base-layer-selector
         display: block
-        margin-top: 1rem
-        width: 15rem
 
     .controls
       overflow: hidden
@@ -392,6 +378,9 @@ body.state-view-cards
         line-height: 1.5rem
         font-size: 1.5rem
         font-weight: bold
+
+    .customize-card-options
+      padding-top: 3rem
 
     .card-spot
       position: relative
@@ -450,7 +439,7 @@ body.state-view-cards
         float: right
         margin-bottom: 0
 
-/*  DESKTOP-SPECIFIC STYLES  */
+/* DESKTOP-SPECIFIC STYLES */
 
 @media screen
   @media (min-width: 768px)
@@ -462,20 +451,27 @@ body.state-view-cards
               // left-hand activities on full-width
               margin-right: 35px
 
+/* VISUALIZATION OPTION CONFIGURATION */
+// used when customizing or adding a card
+.customize-card-options
+  padding-left: 1.875rem
+  margin: 1em 0
 
-/*   ICONS AND COMPONENTS */
+  h3
+    white-space: nowrap
+    display: inline-block
+    margin: 0 0 1rem
+    min-width: 10rem
 
-.add-card-select-column
-  float: left
-  width: 19rem
-  height: 5.55rem
+.configure-map-base-layer
+  input
+    display: block
+    margin-top: 1rem
+    width: 100%
 
-  soc-select
-    margin: 0 1em 1em 0
-
-.add-card-options
-  float: left
-  width: 28.5rem
+visualization-type-selector
+  position: top
+  margin-bottom: 1rem
 
   ul
     margin: 0
@@ -484,12 +480,15 @@ body.state-view-cards
     text-align: right
 
   ul li
-    float: right
-    margin: 0 0 0.5rem 0.25rem
-    width: 6rem
+    float: left
+    margin: 0 0 1rem
+    padding: 0 0.25rem
+    width: 33.33%
+    min-width: 6rem
     text-align: center
+    box-sizing: border-box
 
-    .add-card-type-option
+    .visualization-type
       position: relative
       display: block
       margin: 0 auto 0.5rem auto
@@ -532,7 +531,10 @@ body.state-view-cards
         left: 73%
         color: white
 
-.add-card-preview
+
+/* ICONS AND COMPONENTS */
+// card preview used for adding or customizing a card
+.customize-card-preview
   position: relative
   display: block
   float: left
@@ -548,6 +550,14 @@ body.state-view-cards
   >.card-spot
     >card
       z-index: 1
+
+// add card styling
+.add-card-select-column
+  float: left
+  width: 19rem
+
+  .column-selector
+    margin: 0 1em 0.4em 0
 
 .add-card-controls
   position: absolute

@@ -2695,6 +2695,8 @@ en:
         column_chart_warning: "Note: This would result in a barchart with over a hundred bars, it might be slower than other charts"
         visualize_flyout: Visualize this column as a {0}
       customize_card_dialog:
+        visualization_options:
+          title: Card Type
         map_layer:
           title: Map base layer
           standard: Standard

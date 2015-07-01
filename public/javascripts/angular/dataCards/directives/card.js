@@ -24,6 +24,7 @@
         $scope.$bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
 
         $scope.$bindObservable('isCustomizable', modelSubject.observeOnLatest('isCustomizable'));
+        $scope.$bindObservable('isCustomizableMap', modelSubject.observeOnLatest('isCustomizableMap'));
         $scope.$bindObservable('isExportable', modelSubject.observeOnLatest('isExportable'));
         $scope.$bindObservable('showDescription', modelSubject.observeOnLatest('showDescription'));
 

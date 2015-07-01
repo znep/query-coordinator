@@ -8,6 +8,7 @@ describe('Customize card dialog', function() {
   beforeEach(module('/angular_templates/dataCards/card.html'));
   beforeEach(module('/angular_templates/dataCards/spinner.html'));
   beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
+  beforeEach(module('/angular_templates/dataCards/visualizationTypeSelector.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
@@ -111,6 +112,15 @@ describe('Customize card dialog', function() {
         physicalDatatype: 'number',
         availableCardTypes: ['column', 'search'],
         defaultCardType: 'column'
+      },
+      high_cardinality: {
+        name: 'A bar where cool froods hang out.',
+        description: '???',
+        fred: 'amount',
+        physicalDatatype: 'number',
+        availableCardTypes: ['column', 'search'],
+        defaultCardType: 'column',
+        cardinality: 1000
       }
     };
 
@@ -184,72 +194,59 @@ describe('Customize card dialog', function() {
 
   it('should display visualization choices when more than one type is available', function() {
     var dialog = createDialog({
-      fieldName: 'bar',
-      cardSize: 2,
-      cardType: 'column',
-      expanded: false
+      card: {
+        fieldName: 'bar',
+        cardSize: 2,
+        cardType: 'column',
+        expanded: false
+      }
     });
-    var visualizationOptions = dialog.element.find('ul.visualization-options');
-    expect(visualizationOptions.find('li')).to.have.length(2);
+    var visualizationOptions = dialog.element.find('visualization-type-selector');
+    expect(visualizationOptions.find('button.icon-search').is(':visible')).to.be.true;
+    expect(visualizationOptions.find('button.icon-bar-chart').is(':visible')).to.be.true;
   });
 
   it('should not display visualization choices when only one type is available', function() {
     var dialog = createDialog({
-      fieldName: 'feature',
-      cardSize: 2,
-      cardType: 'feature',
-      expanded: false
-    });
-    var visualizationOptions = dialog.element.find('ul.visualization-options');
-    expect(visualizationOptions).to.have.length(0);
-  });
-
-  it('should display a maximum of three visualization choices per row', function() {
-    var dialog = createDialog({
-      fieldName: 'many_kinds',
-      cardSize: 2,
-      cardType: 'search',
-      expanded: false
-    });
-    var visualizationOptionItems = dialog.element.find('ul.visualization-options li');
-    expect(visualizationOptionItems).to.have.length(5);
-    var thirdOption = visualizationOptionItems.eq(2);
-    var fourthOption = visualizationOptionItems.eq(3);
-    expect(thirdOption.offset().top).to.be.lessThan(fourthOption.offset().top);
-  });
-
-  // TODO: refine this test based on the actual DOM structure of how visualization
-  // option list items are displayed.
-  it('should wrap visualization labels when space is limited', function() {
-    var dialog = createDialog({
-      fieldName: 'bar',
-      cardSize: 2,
-      cardType: 'column',
-      expanded: false
-    });
-    var visualizationOptionItems = dialog.element.find('ul.visualization-options li');
-    visualizationOptionItems.each(function() {
-      var item = $(this);
-      if (/Column Chart/.test(item.html())) {
-        var cursor = $('<span />').text("\ufeff");
-        var firstLine = cursor.prependTo(item).offset();
-        var secondLine = cursor.appendTo(item).offset();
-        expect(firstLine.top).to.be.lessthan(secondLine.top);
+      card: {
+        fieldName: 'feature',
+        cardSize: 2,
+        cardType: 'feature',
+        expanded: false
       }
     });
+    var visualizationOptions = dialog.element.find('visualization-type-selector');
+    expect(visualizationOptions).to.be.hidden;
   });
 
-  xit('should show a warning indicator on suboptimal visualization icons', function() {
+  // Wrapping of visualization icons and their labels should be tested in an end to end
+  // test, rather than a unit test. Icons should be 3 per row, and icon labels should not overlap.
 
+  it('should show a warning on suboptimal visualization icons (will include icon and flyout)', function() {
+    var dialog = createDialog({
+      card: {
+        fieldName: 'high_cardinality',
+        cardSize: 2,
+        cardType: 'column',
+        expanded: false
+      }
+    });
+    var visualizationOptions = dialog.element.find('visualization-type-selector');
+    expect(visualizationOptions.isolateScope().showCardinalityWarning).to.equal(true);
   });
 
-  xit('should show a warning flyout when suboptimal visualizations are selected', function() {
+  it('should select the currently selected visualization type when the dialog is displayed', function() {
+    var dialog = createDialog({
+      card: {
+        fieldName: 'bar',
+        cardSize: 2,
+        cardType: 'search',
+        expanded: false
+      }
+    });
+    var card = dialog.scope.customizedCard;
 
-  });
-
-  // TODO: default visualization or currently selected visualization?
-  xit('should select the default visualization type when the dialog is displayed', function() {
-
+    expect(card.getCurrentValue('cardType')).to.equal('search');
   });
 
   it('should update the given model when clicking "Done"', function() {

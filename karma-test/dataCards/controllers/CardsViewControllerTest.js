@@ -51,6 +51,7 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/mobileWarningDialog.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
   beforeEach(module('/angular_templates/dataCards/card.html'));
+  beforeEach(module('/angular_templates/dataCards/visualizationTypeSelector.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationChoropleth.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationColumnChart.html'));

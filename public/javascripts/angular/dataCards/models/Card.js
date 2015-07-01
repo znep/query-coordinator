@@ -7,11 +7,12 @@
     var schemas = Schemas.regarding('card_metadata');
     var schemaVersion = '1';
 
-    var CUSTOMIZABLE_CARD_TYPES = ['choropleth'];
+    var CUSTOMIZABLE_MAP_TYPES = ['choropleth'];
     var EXPORTABLE_CARD_TYPES = ['choropleth', 'column', 'timeline'];
+    var CUSTOMIZATION_DISABLED_TYPES = ['timeline'];
 
     if (ServerConfig.get('oduxEnableFeatureMap')) {
-      CUSTOMIZABLE_CARD_TYPES.push('feature');
+      CUSTOMIZABLE_MAP_TYPES.push('feature');
       EXPORTABLE_CARD_TYPES.push('feature');
     }
 
@@ -56,10 +57,19 @@
         );
 
         self.defineEphemeralObservablePropertyFromSequence(
+          'isCustomizableMap',
+          self.observe('cardType').map(
+            function(cardType) {
+              return _.contains(CUSTOMIZABLE_MAP_TYPES, cardType);
+            }
+          )
+        );
+
+        self.defineEphemeralObservablePropertyFromSequence(
           'isCustomizable',
           self.observe('cardType').map(
             function(cardType) {
-              return CUSTOMIZABLE_CARD_TYPES.indexOf(cardType) > -1;
+              return !_.contains(CUSTOMIZATION_DISABLED_TYPES, cardType);
             }
           )
         );
@@ -68,7 +78,7 @@
           'isExportable',
           self.observe('cardType').map(
             function(cardType) {
-              return EXPORTABLE_CARD_TYPES.indexOf(cardType) > -1;
+              return _.contains(EXPORTABLE_CARD_TYPES, cardType);
             }
           )
         );

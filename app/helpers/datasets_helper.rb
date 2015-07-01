@@ -161,22 +161,24 @@ module DatasetsHelper
   def stars_control_interactive(rating_type, value, view, extra_class = '')
     @@stars_id ||= 1
     id = 'stars_' + (@@stars_id += 1).to_s
-    ('<form id="' + id + '" method="POST" action="' + update_rating_dataset_path(view) +
-     '" class="starsControl blueStars enabled ' + extra_class +
-     '" data-rating="' + (value || 0).to_s +
-     '" data-rating-type="' + rating_type +
-     '" title="' + t('controls.common.stars.tooltip', { number: (value || 0) }) + '">' +
-      '<span class="accessibleValue">Current value: ' + (value || 0).to_s + ' out of 5</span>' +
-      '<input type="hidden" name="ratingType" value="' + rating_type + '" />' +
-      '<input type="hidden" name="authenticity_token" value="' +
-        form_authenticity_token + '" />' +
-      (0..5).map do |i|
-        c_id = id + '_' + i.to_s
-        '<input type="radio" class="noUniform" id="' + c_id + '" name="starsRating" value="' + i.to_s + '" ' +
-          (value.to_i == i || (i == 0 && value.nil?) ? 'checked="checked" ' : '') + '/>' +
-        '<label for="' + c_id + '" class="starsLabel">' + i.to_s + '/5</label>'
-      end.join('') +
-      '<input type="submit" value="Save" /></form>').html_safe
+    form_tag(update_rating_dataset_path(view), :id => id, :method => :post,
+             :class => "starsControl blueStars enabled #{extra_class}",
+             :'data-rating' => (value || 0).to_s,
+             :'data-rating-type' => rating_type,
+             :title => t('controls.common.stars.tooltip', { number: (value || 0) })) do
+      content_tag(:div, "Current value: #{(value || 0).to_s}", :class => 'accessibleValue')
+      content_tag :div do
+        hidden_field_tag('ratingType', rating_type)
+        hidden_field_tag('authenticity_token', form_authenticity_token)
+        (0..5).each do |i|
+          c_id = id + '_' + i.to_s
+          concat(radio_button_tag('starsRating', i.to_s, value.to_i == i || (i == 0 && value.nil?),
+                           :class => 'noUniform', :id => c_id))
+          concat(label_tag(c_id, "#{i.to_s}/5", :class => 'starsLabel'))
+        end
+        submit_tag('Save')
+      end
+    end
   end
 
   # include only url and text column types.

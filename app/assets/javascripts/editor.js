@@ -15,4 +15,6 @@
 //= require eventie/eventie
 //= require unipointer/unipointer
 //= require unidragger/unidragger
+//= require editor/SimpleEventEmitter
+//= require editor/Store
 //= require_tree ./editor

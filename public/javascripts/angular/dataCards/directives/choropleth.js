@@ -1135,7 +1135,7 @@
           return flyoutContent.
             join('').
             format(
-              featureHumanReadableName.capitalizeEachWord(),
+              featureHumanReadableName,
               I18n.flyout.total,
               unfilteredValue,
               flyoutSpanClass,
@@ -1163,7 +1163,7 @@
 
         FlyoutService.register({
           selector: clearSelectionButton.selector,
-          render: _.constant('<div class="flyout-title">{0}</div>'.format(I18n.timelineChart.dragClearHelp))
+          render: _.constant('<div class="flyout-title">{0}</div>'.format(I18n.flyout.clearFilter))
         });
 
         FlyoutService.register({

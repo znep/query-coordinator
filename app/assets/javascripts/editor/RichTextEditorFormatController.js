@@ -218,9 +218,9 @@
      * @param {string} blockType - The nodeType to which the block-level
      *   container should be changed.
      */
-    function _updateBlockType(blockType) {
+    function _updateBlockType(blockType, shouldStripFormatFn) {
       _editor.modifyBlocks(
-        RichTextEditorUtil.generateUpdateBlockTypeFn(blockType)
+        RichTextEditorUtil.generateUpdateBlockTypeFn(blockType, shouldStripFormatFn)
       );
     }
 
@@ -229,6 +229,22 @@
     }
 
     function _clearFormat(selection) {
+
+      var stripFormatFn = function(element) {
+        return ([
+          'h1',
+          'h2',
+          'h3',
+          'h4',
+          'h5',
+          'h6',
+          'div',
+          'blockquote',
+          'ol',
+          'ul',
+          'li'
+        ].indexOf(element.nodeName.toLowerCase()) > -1);
+      };
 
       // As of 6/25/2015 the version of Squire provided by Bower does not yet
       // include this method, but it is currently implemented in master:
@@ -239,9 +255,11 @@
       // call `_editor.removeAllFormatting(selection)` directly.
       if (_editor.hasOwnProperty('removeAllFormatting')) {
         _editor.removeAllFormatting(selection);
+      } else {
+        alert('Support for the `removeAllFormatting()` method exists in Squire but not yet in the bower package that we are using.');
       }
 
-      _updateBlockType('div');
+      _updateBlockType('div', stripFormatFn);
     }
 
     function _setHeading(headingTag) {

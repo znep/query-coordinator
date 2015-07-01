@@ -53,11 +53,14 @@
     function _storyDragOver(payload) {
       Util.assertHasProperties(payload, 'storyUid', 'pointer', 'storyElement', 'draggedBlockId');
 
-      if (window.storyStore.storyExists(payload.storyUid) && !window.storyStore.hasBlock(payload.storyUid, payload.draggedBlockId)) {
+      if (window.storyStore.storyExists(payload.storyUid) &&
+          !window.storyStore.hasBlock(payload.storyUid, payload.draggedBlockId)) {
         var dropIndex;
 
         var pointerY = Unipointer.getPointerPoint(payload.pointer).y;
 
+        // _.chain allows you to chain lodash calls together, vs. having to nest individual
+        // calls.
         var blocksSortedByVerticalPosition = _.chain($(payload.storyElement).find('.block')).
           map(function(block) { return block.getBoundingClientRect(); }).
           sortBy('top').

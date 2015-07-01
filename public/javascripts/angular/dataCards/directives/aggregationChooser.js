@@ -108,6 +108,7 @@
           // TODO: Once a "logical" type property is available, this will need to be updated
           var fieldNamesThatCannotBeAggregated = ['latitude', 'longitude', 'lat', 'lng', 'long', 'x', 'y']
           return (column.physicalDatatype === 'number' || column.physicalDatatype === 'money') &&
+            !column.isSystemColumn &&
             (!_.contains(fieldNamesThatCannotBeAggregated, fieldName));
         };
 

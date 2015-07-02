@@ -37,7 +37,7 @@
       _storyUidDraggedOver = undefined;
       $('body').addClass('dragging');
 
-      sourceBlockElement = $(pointer.target).parent('.block');
+      sourceBlockElement = $(pointer.target).closest('.block');
 
       _draggedBlockId = sourceBlockElement.attr('data-block-id');
 

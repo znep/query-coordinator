@@ -28,7 +28,7 @@
      * @param {L.Map} map
      */
     this.emitExtentEventsFromMap = function emitExtentEventsFromMap(scope, map) {
-      map.on('zoomend dragend', function(e) {
+      map.on('zoomend dragend resize', function(e) {
         scope.$emit(
           EXTENT_EVENT_ID,
           LeafletHelpersService.buildExtents(e.target.getBounds())

@@ -75,11 +75,17 @@ describe('LeafletVisualizationHelpersService', function() {
 
   describe('#emitExtentEventsFromMap', function() {
     var map;
+    var $mapContainer;
     var scope;
 
     beforeEach(function() {
-      testHelpers.TestDom.append($('<div id="map" />'));
-      map = L.map('map');
+      $mapContainer = $('<div/>', {
+        id: 'map',
+        width: 1024,
+        height: 768
+      });
+      testHelpers.TestDom.append($mapContainer);
+      map = L.map('map').setView([51.505, -0.09], 13);
       scope = $rootScope.$new();
       LeafletVisualizationHelpersService.emitExtentEventsFromMap(scope, map);
     });
@@ -96,6 +102,14 @@ describe('LeafletVisualizationHelpersService', function() {
       var eventSpy = sinon.spy();
       scope.$on('set-extent', eventSpy);
       map.fitBounds(LeafletHelpersService.buildBounds(testExtent1));
+      expect(eventSpy).to.have.been.called;
+    });
+
+    it('should emit an event on map resize', function() {
+      var eventSpy = sinon.spy();
+      scope.$on('set-extent', eventSpy);
+      $mapContainer.width(640).height(480);
+      map.invalidateSize();
       expect(eventSpy).to.have.been.called;
     });
   });

@@ -232,6 +232,17 @@ $(function()
         });
     }
 
+    var replaceBrokenThumbnails = function() {
+        $browse.find('.results td.largeImage .datasetImage').each(function() {
+            if (this.naturalWidth === 0) {
+                // Whenever a custom dataset image URL is found, we render that
+                // image node but also add a hidden dataset icon for backup.
+                $(this).hide().next().show();
+            }
+        });
+    }
+    replaceBrokenThumbnails();
+
     var renderRows = function()
     {
         // Render row search results, if any

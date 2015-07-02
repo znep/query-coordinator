@@ -297,26 +297,25 @@
      */
     function _sanitizeElement(el, attributeWhitelist) {
 
-      var _isHeaderElement = function(nodeName) {
-        return ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].indexOf(nodeName) > -1;
-      };
-      var _isInlineElement = function(nodeName) {
-        return ['b', 'i', 'em', 'a'].indexOf(nodeName) > -1;
-      };
-      var _isBlockElement = function(nodeName) {
-        return ['div', 'p', 'tr', 'ul', 'ol', 'li'].indexOf(nodeName) > -1;
-      };
-      var _isDocumentElement = function(nodeName) {
+      function _isNodeTypeSafeToUse(nodeName) {
+        return [
+          'h1', 'h2', 'h3', 'h4', 'h5', 'h6', // Headers
+           'b', 'i', 'em', 'a',               // Inline
+           'div', 'p', 'tr', 'ul', 'ol', 'li' // Block
+        ].indexOf(nodeName) > -1;
+      }
+
+      function _isDocumentElement(nodeName) {
         return ['#document-fragment', 'document'].indexOf(nodeName) > -1;
       };
-      var _copyWhitelistedAttributes = function(dirtyEl, cleanEl) {
+      function _copyWhitelistedAttributes(dirtyEl, cleanEl) {
 
         // This function checks the attribute whitelist on a tag-by-tag
         // basis to determine whether or not the specified element
         // attribute should be copied from the 'dirty' element received
         // from the clipboard into the 'clean' element that will be
         // inserted into the editor iframe's internal document.
-        var _attributeIsAllowed = function(nodeName, attrName, whitelist) {
+        function _attributeIsAllowed(nodeName, attrName, whitelist) {
           return (
             whitelist.hasOwnProperty(nodeName) &&
             whitelist[nodeName].indexOf(attrName) > -1
@@ -363,11 +362,7 @@
       // };
       if (el.nodeType === 1) {
 
-        if (_isHeaderElement(nodeName)) {
-          cleanEl = document.createElement(nodeName);
-        } else if (_isInlineElement(nodeName)) {
-          cleanEl = document.createElement(nodeName);
-        } else if (_isBlockElement(nodeName)) {
+        if (_isNodeTypeSafeToUse(nodeName)) {
           cleanEl = document.createElement(nodeName);
         } else if (_isDocumentElement(nodeName)) {
           cleanEl = document.createDocumentFragment();

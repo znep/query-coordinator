@@ -10,14 +10,15 @@
       },
       templateUrl: '/angular_templates/dataCards/revertButton.html',
       link: function(scope, element) {
+
          FlyoutService.register({
-           selector: '.revert-btn',
+           selector: '.customize-bar .revert-btn',
            render: function() {
-             if (scope.pageHasChanges) {
-               return '<div class="flyout-title">{0}</div>'.format(I18n.revertButton.flyoutHasChanges);
-             } else {
-               return '<div class="flyout-title">{0}</div>'.format(I18n.revertButton.flyoutNoChanges);
-             }
+             var flyoutTitle = scope.pageHasChanges ?
+               I18n.revertButton.flyoutHasChanges :
+               I18n.revertButton.flyoutNoChanges;
+
+             return '<div class="flyout-title">{0}</div>'.format(flyoutTitle);
            },
            destroySignal: scope.$destroyAsObservable(element)
          });

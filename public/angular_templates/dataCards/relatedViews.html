@@ -21,14 +21,12 @@
 
       <ul class="related-views-list">
         <li class="related-views-list-heading">
-        <h2>{{'relatedViews.official' | I18n}}</h2>
+        <h2>{{'relatedViews.other' | I18n}}</h2>
         </li>
         <li ng-repeat="page in datasetPublisherPages"
             class="related-views-list-item">
           <a ng-href="/view/{{page.pageId}}">
             <p class="related-view-name">{{page.name}}</p>
-
-            <p class="related-view-description">{{page.description}}</p>
           </a>
         </li>
 

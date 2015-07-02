@@ -62,6 +62,18 @@
       expect(modal.element.find('.modal-container').is(':visible')).to.equal(false);
     });
 
+    it('should toggle the class ".disabled" on the dialog close button when disableCloseDialog is toggled', function() {
+      var modal = createModal(true);
+
+      modal.scope.state.disableCloseDialog = true;
+      modal.scope.$digest();
+      expect(modal.element.find('.modal-close-button').hasClass('disabled')).to.be.true;
+
+      modal.scope.state.disableCloseDialog = false;
+      modal.scope.$digest();
+      expect(modal.element.find('.modal-close-button').hasClass('disabled')).to.be.false;
+    });
+
     it('should not close the modal when dialogState.disableCloseDialog is true', function() {
       var modal = createModal(true);
 

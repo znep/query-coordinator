@@ -43,12 +43,17 @@
   &.error
     @include action-button($action-btn-error-font-color, $action-btn-error-bg-color, $action-btn-error-border-color)
 
+    &:hover, &.active
+      @include action-button($action-btn-error-hover-font-color, $action-btn-error-hover-bg-color, $action-btn-error-hover-border-color)
+
   &.success
     @include action-button($action-btn-success-font-color, $action-btn-success-bg-color, $action-btn-success-border-color)
 
+    &:hover, &.active
+      @include action-button($action-btn-success-hover-font-color, $action-btn-success-hover-bg-color, $action-btn-success-hover-border-color)
+
   &.working
     @include action-button($action-btn-working-font-color, $action-btn-working-bg-color, $action-btn-working-border-color)
-
 
 // flyout
 #uber-flyout
@@ -191,6 +196,9 @@
 
     .modal-close-button
       color: $modal-dialog-close-button-color
+
+    .modal-close-button.disabled
+      color: $modal-dialog-disabled-close-button-color
 
 
 // multiline-ellipsis
@@ -939,8 +947,10 @@ body.state-view-cards
 
   .action-btn
     @extend .customize-bar-action-btn
-    &:hover
+
+    &:hover, &.touched, &.working
       border-color: $customize-bar-customizing-button-background-color
+
       &.disabled
         @extend .action-btn.disabled !optional
 
@@ -985,17 +995,12 @@ feedback-panel
 // related-views
 .related-views-list-item
   > a
-    border-bottom: 1px solid $related-views-list-item-border-color
 
-  &:hover
-    background-color: $related-views-list-item-hover-background-color
+    &:hover
+      background-color: $related-views-list-item-hover-background-color
 
 .related-view-name
   color: $related-view-name-text-color
-
-.related-view-description
-  color: $related-view-description-text-color
-
 
 // skip-links
 #skip-links

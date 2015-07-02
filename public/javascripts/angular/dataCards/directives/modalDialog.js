@@ -12,10 +12,11 @@
       templateUrl: '/angular_templates/dataCards/modalDialog.html',
       link: function (scope, element, attrs) {
         if (!scope.state) {
-          scope.state = {show: false};
+          scope.state = { show: false };
         }
 
-        // The various conditions under which we can close the dialog
+        // Close the dialog unless we have disabled closing the dialog
+        // (i.e. during saving).
         scope.closeDialog = function() {
           if (!scope.state.disableCloseDialog) {
             scope.$safeApply(function() {

@@ -100,6 +100,16 @@ describe('manage-lens dialog', function() {
       clock.tick(1501);
       expect($scope.dialogState.show).to.equal(false);
     });
+
+    it('should disable the on click handler if no changes are on the manage lens dialog', function() {
+
+      var element = createElement();
+      var $scope = element.children().scope();
+      testHelpers.fireMouseEvent(element.find('save-button')[0], 'click');
+
+      // '$scope.saveStatus' should not equal to 'saving'
+      expect($scope.saveStatus).to.be.undefined;
+    });
   });
 });
 

@@ -301,7 +301,7 @@
         return [
           'h1', 'h2', 'h3', 'h4', 'h5', 'h6', // Headers
           'b', 'i', 'em', 'a',                // Inline
-          'div', 'p', 'tr', 'ul', 'ol', 'li'  // Block
+          'div', 'ul', 'ol', 'li'             // Block
         ].indexOf(nodeName) > -1;
       }
 

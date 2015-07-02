@@ -301,7 +301,10 @@
         return ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].indexOf(nodeName) > -1;
       };
       var _isBlockElement = function(nodeName) {
-        return ['p', 'tr'].indexOf(nodeName) > -1;
+        return ['div', 'p', 'tr', 'ul', 'ol', 'li'].indexOf(nodeName) > -1;
+      };
+      var _isDocumentElement = function(nodeName) {
+        return ['#document-fragment', 'document'].indexOf(nodeName) > -1;
       };
       var _copyWhitelistedAttributes = function(dirtyEl, cleanEl) {
 

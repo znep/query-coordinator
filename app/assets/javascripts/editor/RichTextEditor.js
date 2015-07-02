@@ -305,9 +305,6 @@
         ].indexOf(nodeName) > -1;
       }
 
-      function _isDocumentElement(nodeName) {
-        return ['#document-fragment', 'document'].indexOf(nodeName) > -1;
-      };
       function _copyWhitelistedAttributes(dirtyEl, cleanEl) {
 
         // This function checks the attribute whitelist on a tag-by-tag
@@ -364,10 +361,10 @@
 
         if (_isNodeTypeSafeToUse(nodeName)) {
           cleanEl = document.createElement(nodeName);
-        } else if (_isDocumentElement(nodeName)) {
-          cleanEl = document.createDocumentFragment();
         } else {
-          cleanEl = document.createElement('span');
+          // DocumentFragments are ignored by squire.
+          // We use them here to maintain the DOM structure.
+          cleanEl = document.createDocumentFragment();
         }
 
         _copyWhitelistedAttributes(el, cleanEl, attributeWhitelist);

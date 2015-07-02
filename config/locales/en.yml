@@ -2607,16 +2607,19 @@ en:
         dataset_public_page_public: This page and its source dataset are both <b>Public</b>, so anyone will be able to see this page and it will appear in the public catalog.
         dataset_public_page_private: This page is set to <b>Private</b>, so only those with privileged access will be able to see it. It will not appear in the public catalog.
         dataset_private_page_private: Because this page’s source dataset is set to <b>Private</b>, this page cannot be made Public.  Only those with privileged access will be able to see it, and it will not appear in the public catalog.
-        dataset_private_page_public: <div class="icon-warning"> This page’s source dataset is set to <b>Private</b>, so even though this page is set to Public, anyone without access to the source dataset will not be able to see it. It will still appear in the public catalog. You should consider setting the dataset to Public, or setting this page to Private.
+        dataset_private_page_public: <span class="icon-warning"></span> This page’s source dataset is set to <b>Private</b>, so even though this page is set to Public, anyone without access to the source dataset will not be able to see it. It will still appear in the public catalog. You should consider setting the dataset to Public, or setting this page to Private.
       save_button:
-        saving: Saving
+        saving: Saving...
         saved: Saved!
         failed: Failed
+        flyoutIdle: Click to save your changes
+        flyoutNoChanges: No changes to be saved
         flyoutFailedTitle: An error occurred
         flyoutFailedBody: Please contact Socrata Support
+        flyoutNoChanges: No changes to be saved
       related_views:
         button: Other views of this data
-        official: Official Views of this Data
+        other: Other views of this data
       api_explorer:
         title: API
         api_button: API

@@ -56,6 +56,12 @@ $modal-z-start: 9999
       .icon-close
         font-size: 0.75rem
 
+    .modal-close-button.disabled
+      cursor: default
+
+      &:hover
+        opacity: 0.6
+
 modal-dialog.second
   .modal-overlay
     z-index: $modal-z-start + 2

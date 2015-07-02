@@ -626,6 +626,7 @@
       'cardSize': null,
       'show': false
     };
+
     $scope.$on('add-card-with-size', function(e, cardSize) {
       if (!$scope.allVisualizableColumnsVisualized) {
         $scope.addCardState.cardSize = cardSize;
@@ -670,44 +671,41 @@
       destroySignal: destroy$
     });
 
-    //TODO consider extending register() to take a selector, too.
-    //TODO The controller shouldn't know about this magical target inside save-button!
-    //     There needs to be significant refactoring though to make this right:
-    //     1- Make flyouts capable of registering on trees, not individual elements.
-    //     2- Make refreshing the flyout on data changes more automatic.
-    //BIG FAT NOTE: This handler deals with _all_ save buttons. This includes the Save button
-    //in the toolbar, and also the Save button in the Save As dialog. We need to check that this
-    //is _our_ save button.
     FlyoutService.register({
-      selector: '.save-button-flyout-target',
+      selector: '.save-this-page .save-button',
       render: function(element) {
+        var buttonStatus = currentPageSaveEvents.value.status;
+        var flyoutContent = {
+          title: {
+            failed: I18n.saveButton.flyoutFailedTitle,
+            idle: $scope.hasChanges ? I18n.saveButton.flyoutIdle : I18n.saveButton.flyoutNoChanges,
+            saving: I18n.saveButton.saving,
+            saved: I18n.saveButton.saved
+          },
+          body: {
+            failed: I18n.saveButton.flyoutFailedBody,
+            idle: '',
+            saving: '',
+            saved: ''
+          }
+        };
 
-        if ($(element).closest('.save-this-page').length === 0) {
-          return undefined;
-        }
-
-        if (currentPageSaveEvents.value.status === 'failed') {
-
-          return '<div class="flyout-title">{0}</div><div>{1}</div>'.
-            format(I18n.saveButton.flyoutFailedTitle, I18n.saveButton.flyoutFailedBody);
-
-        } else if (currentPageSaveEvents.value.status === 'idle') {
-
-          return $scope.hasChanges ?
-            '<div class="flyout-title">Click to save your changes</div>' :
-            '<div class="flyout-title">No changes to be saved</div>';
-        }
+        return '<div class="flyout-title">{0}</div><div>{1}</div>'.format(
+          flyoutContent.title[buttonStatus],
+          flyoutContent.body[buttonStatus]
+        );
       },
       destroySignal: destroy$
     });
 
     FlyoutService.register({
-      selector: '.save-as-button',
+      selector: '.customize-bar .save-as-button',
       render: function() {
+        var flyoutTitle = $scope.hasChanges ?
+          I18n.saveAs.flyoutIdle :
+          I18n.saveAs.flyoutNoChanges;
 
-        return $scope.hasChanges ?
-          '<div class="flyout-title">{0}</div>'.format(I18n.saveAs.flyoutIdle) :
-          '<div class="flyout-title">{0}</div>'.format(I18n.saveAs.flyoutNoChanges);
+        return '<div class="flyout-title">{0}</div>'.format(flyoutTitle);
       },
       destroySignal: destroy$
     });

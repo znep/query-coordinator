@@ -1,7 +1,11 @@
 (function() {
   'use strict';
 
-  function manageLensDialog(http) {
+  function manageLensDialog(
+    http,
+    FlyoutService,
+    I18n
+  ) {
     return {
       restrict: 'E',
       scope: {
@@ -10,6 +14,8 @@
       },
       templateUrl: '/angular_templates/dataCards/manageLensDialog.html',
       link: function($scope, element, attrs) {
+        var currentVisibility;
+
         var pageIsPublicObservable = $scope.page.observe('permissions').
             filter(_.isObject).
             map(_.property('isPublic'));
@@ -35,6 +41,19 @@
             return !pageIsPublic && !datasetIsPublic;
           }
         ));
+
+        currentVisibility = $scope.pageVisibility;
+        $scope.$observe('pageVisibility').
+          subscribe(function(changedVisibility) {
+            $scope.dialogHasChanges = (changedVisibility !== currentVisibility);
+          }
+        );
+
+        FlyoutService.register({
+          selector: 'manage-lens-dialog .save-button.disabled',
+          render: _.constant('<div class="flyout-title">{0}</div>'.
+            format(I18n.saveButton.flyoutNoChanges))
+        });
 
         /**
          * Save the permissions.

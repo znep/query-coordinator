@@ -78,25 +78,6 @@
             }
           });
 
-        // We need to make sure that the save-button we're rendering the flyout for is actually
-        // our instance of save-button. save-button-flyout-target is not under our control.
-        var mySaveButtonScope = element.find('save-button').scope();
-        FlyoutService.register({
-          selector: '.save-button-flyout-target',
-          render: function(element) {
-            var closestSaveButtonScope = $(element).closest('save-button').scope();
-            if (closestSaveButtonScope != mySaveButtonScope) { return undefined; }
-            if (saveEvents.value.status === 'failed') {
-              return '<div class="flyout-title">{0}</div><div>{1}</div>'.
-                format(I18n.saveAs.flyoutFailedTitle, I18n.saveAs.flyoutFailedBody);
-            } else if (saveEvents.value.status === 'idle') {
-              return '<div class="flyout-title">{0}</div>'.
-                format(I18n.saveAs.flyoutIdle);
-            }
-          },
-          destroySignal: $scope.$destroyAsObservable(element)
-        });
-
         $scope.$destroyAsObservable(element).subscribe(function() {
           $scope.$emit('cleaned-up');
         });

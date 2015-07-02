@@ -297,20 +297,22 @@
      */
     function _sanitizeElement(el, attributeWhitelist) {
 
-      var _isHeaderElement = function(nodeName) {
-        return ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].indexOf(nodeName) > -1;
-      };
-      var _isBlockElement = function(nodeName) {
-        return ['p', 'tr'].indexOf(nodeName) > -1;
-      };
-      var _copyWhitelistedAttributes = function(dirtyEl, cleanEl) {
+      function _isNodeTypeSafeToUse(nodeName) {
+        return [
+          'h1', 'h2', 'h3', 'h4', 'h5', 'h6', // Headers
+          'b', 'i', 'em', 'a',                // Inline
+          'div', 'ul', 'ol', 'li'             // Block
+        ].indexOf(nodeName) > -1;
+      }
+
+      function _copyWhitelistedAttributes(dirtyEl, cleanEl) {
 
         // This function checks the attribute whitelist on a tag-by-tag
         // basis to determine whether or not the specified element
         // attribute should be copied from the 'dirty' element received
         // from the clipboard into the 'clean' element that will be
         // inserted into the editor iframe's internal document.
-        var _attributeIsAllowed = function(nodeName, attrName, whitelist) {
+        function _attributeIsAllowed(nodeName, attrName, whitelist) {
           return (
             whitelist.hasOwnProperty(nodeName) &&
             whitelist[nodeName].indexOf(attrName) > -1
@@ -357,11 +359,11 @@
       // };
       if (el.nodeType === 1) {
 
-        if (_isHeaderElement(nodeName)) {
+        if (_isNodeTypeSafeToUse(nodeName)) {
           cleanEl = document.createElement(nodeName);
-        } else if (_isBlockElement(nodeName)) {
-          cleanEl = document.createElement('div');
         } else {
+          // DocumentFragments are ignored by squire.
+          // We use them here to maintain the DOM structure.
           cleanEl = document.createDocumentFragment();
         }
 
@@ -415,7 +417,15 @@
       //
       // 1. Why this value is reassigned here
       // 2. Why there is no return value
-      e.fragment = _sanitizeElement(e.fragment, _ATTRIBUTE_WHITELIST);
+      var sanitizedFragment;
+      try {
+        sanitizedFragment = _sanitizeElement(e.fragment, _ATTRIBUTE_WHITELIST);
+      } catch (error) {
+        sanitizedFragment = document.createDocumentFragment();
+        window.console && console.warn('Error sanitizing clipboard input: ', error);
+      } finally {
+        e.fragment = sanitizedFragment;
+      }
     }
 
     // See: http://stackoverflow.com/a/15318321

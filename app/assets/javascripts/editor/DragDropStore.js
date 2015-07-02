@@ -59,7 +59,7 @@
           !window.storyStore.hasBlock(payload.storyUid, payload.draggedBlockId)) {
         var dropIndex;
 
-        var pointerY = Unipointer.getPointerPoint(payload.pointer).y;
+        var pointerY = Unipointer.getPointerPoint(payload.pointer).y - window.scrollY;
 
         // _.chain allows you to chain lodash calls together, vs. having to nest individual
         // calls.

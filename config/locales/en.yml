@@ -2711,6 +2711,9 @@ en:
         count_label: count {0} per element
         sum_label: add for each {0}
         option_disabled: This column cannot be used with a<br>number of aggregate
+        too_many_columns:
+          title: Looks like this dataset contains more than {0} number columns
+          message: At this time we are not able to provide summing as an aggregate for Data Lens pages that have more than {0} columns of type Number or Money.
       card_layout:
         add_card_here: Add card here
       card_controls:

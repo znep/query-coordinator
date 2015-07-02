@@ -284,7 +284,7 @@ describe('<aggregation-chooser/>', function() {
     expect(subjectUnderTest.find('.aggregation-chooser-trigger')).to.not.be.visible;
   });
 
-  it('should not be a dropdown if there are more than 15 number or money fields', function() {
+  it('should be disabled with a flyout if there are more than 15 number or money fields', function() {
     var columns = {};
     var numberColumns = Constants.AGGREGATION_MAX_COLUMN_COUNT + 2;
     var moneyThreshold = Math.floor(numberColumns / 2);
@@ -303,8 +303,20 @@ describe('<aggregation-chooser/>', function() {
     var subjectUnderTest = createElement({page: models.page });
 
     testHelpers.TestDom.append(subjectUnderTest);
-    expect(subjectUnderTest.find('.aggregation-chooser-static-label')).to.be.visible;
-    expect(subjectUnderTest.find('.aggregation-chooser-trigger')).to.not.be.visible;
+
+    var trigger = subjectUnderTest.find('.aggregation-chooser-trigger');
+    expect(trigger).to.have.class('disabled');
+
+    testHelpers.fireMouseEvent(trigger[0], 'click');
+    expect(subjectUnderTest.isolateScope().panelActive).to.be.false;
+
+    var body = document.getElementsByTagName('body')[0];
+    testHelpers.fireMouseEvent(trigger[0], 'mousemove');
+
+    var flyout = $('#uber-flyout');
+    expect(flyout).to.exist;
+    expect(flyout).to.have.class('aggregation-chooser');
+    expect(flyout.text()).to.match(/looks like this dataset contains more than/i);
   });
 
   it('should not be a dropdown if the only number columns are system columns', function() {

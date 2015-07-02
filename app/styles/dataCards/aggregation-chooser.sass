@@ -11,19 +11,28 @@ aggregation-chooser
 
   .aggregation-chooser-trigger
     cursor: pointer
-    padding-right: 15px
     position: relative
     display: inline-block
 
-    &::after
-      content: ''
-      position: absolute
-      width: 0
-      height: 0
-      top: 50%
-      right: 0
-      border-style: solid
-      border-width: 5px 5px 0 5px
+    &.disabled
+      cursor: default
+
+    span
+      display: inline-block
+      margin-right: 3px
+      padding: 1px 6px
+      position: relative
+      vertical-align: middle
+
+      &::after
+        content: ''
+        position: absolute
+        width: 0
+        height: 0
+        top: 0
+        right: 0
+        border-style: solid
+        border-width: 5px 5px 0 5px
 
   .tool-panel .tool-panel-main
     right: 15px
@@ -75,3 +84,14 @@ aggregation-chooser
 
     .sublabel
       font-size: smaller
+
+#uber-flyout.aggregation-chooser
+  max-width: 500px
+  padding-top: 0.5em
+
+  .content
+    text-align: center
+
+  .icon-warning
+    color: $yellow-warning-color
+    padding-right: 0.5em

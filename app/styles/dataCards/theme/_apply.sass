@@ -768,8 +768,11 @@ aggregation-chooser
   .aggregation-chooser-trigger
     color: $aggregation-chooser-trigger-color
 
-    &::after
+    span::after
       border-color: $aggregation-chooser-trigger-color transparent transparent transparent
+
+    &.disabled span::after
+      border-color: $aggregation-chooser-trigger-disabled-color transparent transparent transparent
 
   .tool-panel-hint::before
     border-color: transparent transparent $aggregation-chooser-tool-panel-hint-border-color transparent

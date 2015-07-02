@@ -38,7 +38,7 @@ describe('DragDropStore', function() {
         window.dragDropStore.addChangeListener(function() {
           var hint = window.dragDropStore.getReorderHintPosition();
           assert.equal(hint.storyUid, standardMocks.validStoryUid);
-          assert.equal(hint.dropIndex, 2);
+          assert.equal(hint.dropIndex, 0);
           done();
         });
 
@@ -119,7 +119,7 @@ describe('DragDropStore', function() {
           if(payload.action === Constants.BLOCK_COPY_INTO_STORY) {
             assert.propertyVal(payload, 'blockId', standardMocks.validBlockId);
             assert.propertyVal(payload, 'storyUid', standardMocks.validStoryUid);
-            assert.propertyVal(payload, 'insertAt', 2);
+            assert.propertyVal(payload, 'insertAt', 0);
             done();
           }
         });

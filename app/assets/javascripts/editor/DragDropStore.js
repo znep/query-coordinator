@@ -83,8 +83,7 @@
 
           dropIndex = indexOfBlockUnderPointer + (isOverBottomHalf ? 1 : 0);
         } else {
-          var storyBlocks = window.storyStore.getBlockIds(payload.storyUid);
-          dropIndex = storyBlocks.length;
+          dropIndex = 0;
         }
 
         _setReorderHintPosition({

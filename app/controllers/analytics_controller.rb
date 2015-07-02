@@ -45,7 +45,7 @@ class AnalyticsController < ApplicationController
       return [false, "Entity/Metric not properly formed"]
     end
 
-    unless ClientAnalyticsHelper.is_allowed(entity, metric)
+    unless ClientAnalyticsHelper.is_allowed?(entity, metric)
       return [false, "Entity/Metric not allowed: #{entity}/#{metric}"]
     end
 
@@ -191,12 +191,12 @@ module ClientAnalyticsHelper
     allowed
   end
 
-  def self.is_allowed(entity, metric)
+  def self.is_allowed?(entity, metric)
     # Allow statically defined metrics and timezone timing metrics
     # Special handling for browser metrics so we don't have to hard-code a bunch of stuff
-    allowed = ALLOWED_METRICS.include?(entity + '/' + metric) ||  !!(/-tz-[-0-9]+-time/ =~ metric) ||
-      metric.match(/^browser-[a-z]+(-\d+)?$/)
-    allowed
+    allowed ||= ALLOWED_METRICS.include?(entity + '/' + metric)
+    allowed ||=  !!(/-tz-[-0-9]+-time/ =~ metric)
+    allowed ||= metric.match(/^browser-[a-z]+(-\d+)?\z/)
   end
 
 end

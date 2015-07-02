@@ -300,6 +300,9 @@
       var _isHeaderElement = function(nodeName) {
         return ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].indexOf(nodeName) > -1;
       };
+      var _isInlineElement = function(nodeName) {
+        return ['b', 'i', 'em', 'a'].indexOf(nodeName) > -1;
+      };
       var _isBlockElement = function(nodeName) {
         return ['div', 'p', 'tr', 'ul', 'ol', 'li'].indexOf(nodeName) > -1;
       };
@@ -361,6 +364,8 @@
       if (el.nodeType === 1) {
 
         if (_isHeaderElement(nodeName)) {
+          cleanEl = document.createElement(nodeName);
+        } else if (_isInlineElement(nodeName)) {
           cleanEl = document.createElement(nodeName);
         } else if (_isBlockElement(nodeName)) {
           cleanEl = document.createElement(nodeName);

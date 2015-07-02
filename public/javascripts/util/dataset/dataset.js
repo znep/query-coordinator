@@ -900,9 +900,9 @@ var Dataset = ServerModel.extend({
         this._activeRowSet.getRows(ids, null, successCallback, errorCallback);
     },
 
-    rowExists: function(rowId)
+    primaryKeyExists: function(candidatePrimaryKey)
     {
-        return this._activeRowSet.rowExists(rowId);
+        return this._activeRowSet.primaryKeyExists(candidatePrimaryKey);
     },
 
     loadedRows: function()
@@ -1143,21 +1143,39 @@ var Dataset = ServerModel.extend({
         // This check only needs to happen if there's a primary key. You can't modify
         // the server-generated :id column.
         if (ds.rowsNeedPK) {
-          ds.rowExists(row.data[ds.rowIdentifierColumn.lookup])
-            .done(function(rowExists) {
-              if (rowExists) {
-                console.error('attempted to change primary key to one that already exists');
-                row.error[ds.rowIdentifierColumn.lookup] = true;
-                row.invalid[ds.rowIdentifierColumn.lookup] = true;
+          var primaryKeyColumnID = ds.rowIdentifierColumn.lookup;
+          var hasChangedPrimaryKey = row.changed[primaryKeyColumnID];
 
-                // Update the UX.
-                ds.trigger('row_change', [[row]]);
-                ds.trigger('grid_error_message', [row, ds.rowIdentifierColumn, $.t('controls.grid.errors.primary_key_collision')]);
-              } else {
-                doRequest();
-              }
-            });
-        } else {
+          if (hasChangedPrimaryKey) {
+            var candidatePrimaryKey = row.data[primaryKeyColumnID];
+
+            ds.primaryKeyExists(candidatePrimaryKey)
+              .done(function(primaryKeyRow) {
+                var hasPrimaryKeyRow = typeof primaryKeyRow === 'object';
+                var isDifferentRow = row.id !== (hasPrimaryKeyRow && primaryKeyRow.id);
+
+                if (hasPrimaryKeyRow && isDifferentRow) {
+                  console.error('Attempted to change primary key to one that already exists.');
+                  row.error[ds.rowIdentifierColumn.lookup] = true;
+                  row.invalid[ds.rowIdentifierColumn.lookup] = true;
+
+                  // Update the UX.
+                  ds.trigger('row_change', [[row]]);
+                  ds.trigger('grid_error_message', [row, ds.rowIdentifierColumn, $.t('controls.grid.errors.primary_key_collision')]);
+                }
+                else {
+                  doRequest();
+                }
+              })
+              .fail(function () {
+                ds.trigger('grid_error_message', [row, ds.rowIdentifierColumn, $.t('controls.grid.errors.cannot_edit_at_this_time')])
+              });
+          }
+          else {
+            doRequest();
+          }
+        }
+        else {
           doRequest();
         }
     },

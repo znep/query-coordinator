@@ -394,27 +394,54 @@ var RowSet = ServerModel.extend({
         return this._rows;
     },
 
-    rowExists: function(rowId)
+    /**
+     * @function primaryKeyExists
+     * @description
+     * Ensures there is not a row with the candidate primary key.
+     *
+     * Methodology:
+     * - Look through all loaded rows, if found return row, otherwise
+     * - Attempt to contact the API for this dataset and
+     *   ask for any rows that have the candidate primary key.
+     * @param {Any} candidatePrimaryKey - The candidate key that has been requested as an addition.
+     * @return {Promise}
+     */
+    primaryKeyExists: function(candidatePrimaryKey)
     {
-        var rs = this,
-            ds = rs._dataset,
-            lookup = (this._dataset.rowIdentifierColumn || {}).lookup || ':id',
-            deferred = $.Deferred();
+        var rs = this;
+        var ds = rs._dataset;
+        var primaryKeyColumnID = (ds.rowIdentifierColumn || {}).lookup || ':id';
 
-        // I wonder how many rows need to be in memory for this to be *slower*
-        // than a server roundtrip. Probably not worth optimizing.
-        if (_.detect(this._rows, function(row) {
-            // Check .changed to make sure this is not a newly-set datum.
-            return !row.changed[lookup] && row.data[lookup] == rowId;
-          })) {
-          return $.when(true);
-        } else {
-          var params = { '$where': lookup + '="' + rowId + '"' };
-          var url = '/api/id/' + ds.id + '.json?' + $.toParam(params);
-          $.getJSON(url, function(data) { deferred.resolve(data.length > 0); });
+        // Check all loaded rows for the primary key candidate.
+        var row = _.detect(rs._rows, function(row) {
+          var unchanged = !row.changed[primaryKeyColumnID];
+          var alreadyHasPrimaryKey = row.data[primaryKeyColumnID] == candidatePrimaryKey;
+
+          return unchanged && alreadyHasPrimaryKey;
+        });
+
+        if (row) {
+          return $.when(row);
         }
+        // Check API rows for the primary key candidate.
+        else {
+          var deferred = $.Deferred();
+          var params = {'$where': primaryKeyColumnID + '="' + candidatePrimaryKey + '"'};
+          var url = '/api/id/' + ds.id + '.json?' + $.toParam(params);
 
-        return deferred.promise();
+          $.getJSON(url)
+            .done(function (rows) {
+              if (Array.isArray(rows)) {
+                deferred.resolve(rows[0]);
+              }
+              else {
+                deferred.reject();
+              }
+            })
+            .fail(deferred.reject);
+
+          return deferred.promise();
+        }
     },
 
     addRow: function(newRow, idx)

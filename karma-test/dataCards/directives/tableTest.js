@@ -162,13 +162,26 @@ describe('table directive', function() {
   });
   describe('when rendering cell data', function() {
     var el;
+    // 2014 Jun 28 12:34:56 PM
     var TIMESTAMP_REGEX = /^\d{4}\s\w{3}\s[0-3][0-9]\s[01][0-9]:[0-5][0-9]:[0-5][0-9]\s[AP]M$/;
+    // Jun 28, 2014 12:34 PM
     var TIMESTAMP_WITH_USER_FORMAT_REGEX = /^\w{3}\s[0-3][0-9],\s\d{4}\s[01][0-9]:[0-5][0-9]\s[AP]M$/;
+    // -23.198741°
     var LATLNG_REGEX = /^-?\d+\.\d+°$/;
+    // 1234 | -12,345.67
     var NUMBER_REGEX = /^-?(?:\d{1,4}|\d{1,3}(?:,\d{3})*)(?:\.\d+)?$/;
+    // 12345 | -12345.67
     var NUMBER_NOCOMMAS_REGEX = /^-?\d+(?:\.\d+)?$/;
+    // 1234% | -12,345.67%
     var PERCENT_REGEX = /^-?(?:\d{1,4}|\d{1,3}(?:,\d{3})*)(?:\.\d+)?%$/;
+    // 12345% | -12345.67%
     var PERCENT_NOCOMMAS_REGEX = /^-?\d+(?:\.\d+)?%$/;
+    // -$12,345.67
+    var MONEY_REGEX = /^-?\$\d{1,3}(?:,\d{3})*\.\d{2}$/;
+    // -£12.345,6
+    var MONEY_WITH_USER_FORMAT_REGEX = /^-?£\d{1,3}(?:\.\d{3})*,\d{1}$/;
+    // -$123.45 | -$12.3K
+    var MONEY_HUMANE_FORMAT_REGEX = /^-?\$(?:\d{1,3}\.\d{2}|\d{1,3}(?:\.\d{1,2})?[KMBTPEZY])$/;
 
     beforeEach(function() {
       // This test file relies heavily on its global beforeEach handlers and
@@ -274,7 +287,7 @@ describe('table directive', function() {
         var cellContent = percentCell.html();
 
         expect(cellContent).to.match(PERCENT_REGEX);
-        expect(cellContent).to.not.match(/^0\d/); // no leading zeroes in integer portion after string shift
+        expect(cellContent).to.not.match(/^-?0\d/); // no leading zeroes in integer portion after string shift
       });
     });
 
@@ -286,7 +299,7 @@ describe('table directive', function() {
         var cellContent = percentNoCommasCell.html();
 
         expect(cellContent).to.match(PERCENT_NOCOMMAS_REGEX);
-        expect(cellContent).to.not.match(/^0\d/); // no leading zeroes in integer portion after string shift
+        expect(cellContent).to.not.match(/^-?0\d/); // no leading zeroes in integer portion after string shift
       });
     });
 
@@ -302,6 +315,30 @@ describe('table directive', function() {
         } else {
           expect(cellContent).to.equal('');
         }
+      });
+    });
+
+    it('should render money cells as US currency with cents by default', function() {
+      var rows = el.find('.table-row');
+
+      rows.each(function(index, row) {
+        var moneyCell = $(row).find('.cell.money').first();
+        var cellContent = moneyCell.html();
+
+        expect(cellContent).to.match(MONEY_REGEX);
+      });
+    });
+
+    it('should render money cells with custom format properties', function() {
+      var rows = el.find('.table-row');
+
+      rows.each(function(index, row) {
+        var moneyCells = $(row).find('.cell.money');
+        var cellContentFunky = moneyCells.eq(1).html();
+        var cellContentHumane = moneyCells.eq(2).html();
+
+        expect(cellContentFunky).to.match(MONEY_WITH_USER_FORMAT_REGEX);
+        expect(cellContentHumane).to.match(MONEY_HUMANE_FORMAT_REGEX);
       });
     });
 

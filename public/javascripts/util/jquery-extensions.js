@@ -39,16 +39,19 @@
     return !_.isEmpty(argument);
   };
 
-  $.commaify = function(value) {
+  $.commaify = function(value, groupCharacter, decimalCharacter) {
     value = value + '';
-    var pos = value.indexOf('.');
+    groupCharacter = groupCharacter || ',';
+    decimalCharacter = decimalCharacter || '.';
+
+    var pos = value.indexOf(decimalCharacter);
 
     if (pos == -1) {
       pos = value.length;
     }
     pos -= 3;
     while (pos > 0 && value.charAt(pos - 1) >= '0' && value.charAt(pos - 1) <= '9') {
-      value = value.substring(0, pos) + ',' + value.substring(pos);
+      value = value.substring(0, pos) + groupCharacter + value.substring(pos);
       pos -= 3;
     }
 
@@ -63,35 +66,13 @@
     return $('<div/>').html(value).text();
   };
 
-  $.toFixedHumaneNumber = function(val, precision) {
-    var symbol = ['K', 'M', 'B', 'T'];
-    var step = 1000;
-    var divider = Math.pow(step, symbol.length);
-    var absVal = Math.abs(val);
-    var result;
-
-    val = parseFloat(val);
-
-    for (var i = symbol.length - 1; i >= 0; i--) {
-      if (absVal >= divider) {
-        result = (absVal / divider).toFixed(precision);
-        if (val < 0) {
-          result = -result;
-        }
-        return result + symbol[i];
-      }
-
-      divider = divider / step;
+  $.toHumaneNumber = function(val, groupCharacter, decimalCharacter) {
+    if (typeof val !== 'number') {
+      throw new Error("toHumaneNumber requires numeric input");
     }
+    groupCharacter = groupCharacter || ',';
+    decimalCharacter = decimalCharacter || '.';
 
-    result = val.toFixed(precision);
-    return result === 0 ? 0 : result;
-  };
-
-  $.toHumaneNumber = function(val) {
-    if (typeof val != 'number') {
-      throw new Error("Invalid input");
-    }
     var maxLetters = 4;
     var symbol = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
     var step = 1000;
@@ -102,13 +83,13 @@
     var beforeLength = absVal.toFixed(0).length;
 
     if (beforeLength <= maxLetters) {
-      var parts = absVal.toString().split('.');
+      var parts = absVal.toString().split(decimalCharacter);
       var afterLength = (parts[1] || '').length;
       var maxAfterLength = maxLetters - beforeLength;
       if (afterLength > maxAfterLength) {
         afterLength = maxAfterLength;
       }
-      return $.commaify(val.toFixed(afterLength));
+      return $.commaify(val.toFixed(afterLength), groupCharacter, decimalCharacter);
     }
 
     for (var i = symbol.length - 1; i >= 0; i--) {
@@ -124,7 +105,7 @@
         }
         result = parseFloat(result);
         if (isFinite(result)) {
-          return $.commaify(result) + symbol[i];
+          return $.commaify(result, groupCharacter, decimalCharacter) + symbol[i];
         } else {
           return result.toString();
         }

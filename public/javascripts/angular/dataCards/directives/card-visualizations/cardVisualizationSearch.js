@@ -181,6 +181,18 @@
           });
         });
 
+        // preventDefault on up/down arrow keys to prevent cursor from moving
+        // to start/end of input (must use keydown event for weird browser
+        // reasons).
+        $scope.$eventToObservable('clearableInput:keydown').
+          filter(function(event) {
+            var keyCode = event.additionalArguments[0].keyCode;
+            return keyCode === 38 || keyCode === 40;
+          }).
+          forEach(function(event) {
+            event.additionalArguments[0].preventDefault();
+          });
+
         var SPACE_BAR_KEYCODE = 32;
         var userActionKeypressObservable = $scope.$eventToObservable('clearableInput:keypress').
           filter(function(event) {

@@ -47,7 +47,7 @@ $(document).on('ready', function() {
 
   window.dispatcher = new Dispatcher();
   window.dispatcher.register(function(payload) {
-    console.info('Dispatcher action: ', payload);
+    window.console && console.info('Dispatcher action: ', payload);
     if (typeof payload.action !== 'string') {
       throw new Error(
         'Undefined action.'

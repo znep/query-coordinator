@@ -81,6 +81,7 @@ describe('A FeatureMap Card Visualization', function() {
 
     page.defineObservableProperty('baseSoqlFilter', '');
     page.defineObservableProperty('aggregation', {});
+    page.defineObservableProperty('rowDisplayUnit', 'row');
     card.defineObservableProperty('page', page);
     card.defineObservableProperty('expanded', false);
     card.defineObservableProperty('activeFilters', []);

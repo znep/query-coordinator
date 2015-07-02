@@ -415,7 +415,15 @@
       //
       // 1. Why this value is reassigned here
       // 2. Why there is no return value
-      e.fragment = _sanitizeElement(e.fragment, _ATTRIBUTE_WHITELIST);
+      var sanitizedFragment;
+      try {
+        sanitizedFragment = _sanitizeElement(e.fragment, _ATTRIBUTE_WHITELIST);
+      } catch (error) {
+        sanitizedFragment = document.createDocumentFragment();
+        window.console && console.warn('Error sanitizing clipboard input: ', error);
+      } finally {
+        e.fragment = sanitizedFragment;
+      }
     }
 
     // See: http://stackoverflow.com/a/15318321

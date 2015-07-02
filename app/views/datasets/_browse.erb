@@ -357,11 +357,14 @@
                     <td class="largeImage">
                       <%- img_url = v.preferred_image(opts[:port]) -%>
                       <%- if !img_url.nil? -%>
-                        <img itemprop="image" class="datasetImage datasetIcon <%= v.preferred_image_type %>"
-                          src="<%= img_url %>" alt="<%= v.name %>" />
+                        <img itemprop="image" class="datasetImage datasetIcon <%= v.preferred_image_type %>" src="<%= img_url %>" alt="<%= v.name %>" />
+                        <div class="datasetIcon type type<%= v.display.type.capitalize %>" title="<%= v.display.name.capitalize %>" style="display: none;">
+                          <span class="<%= v.display.icon_class %>"></span>
+                        </div>
                       <%- else -%>
-                        <div class="datasetIcon type type<%= v.display.type.capitalize %>"
-                          title="<%= v.display.name.capitalize %>"><span class="<%= v.display.icon_class %>"></span></div>
+                        <div class="datasetIcon type type<%= v.display.type.capitalize %>" title="<%= v.display.name.capitalize %>">
+                          <span class="<%= v.display.icon_class %>"></span>
+                        </div>
                       <%- end -%>
                   </td>
                   <%- end -%>

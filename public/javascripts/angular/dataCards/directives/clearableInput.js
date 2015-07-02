@@ -49,20 +49,23 @@
           }).takeUntil($scope.$destroyAsObservable(element)).subscribe(clearInput);
 
         $scope.$emitEventsFromObservable(
+          'clearableInput:keydown',
+          Rx.Observable.fromEvent(searchInput, 'keydown')
+        );
+        $scope.$emitEventsFromObservable(
           'clearableInput:keypress',
-          Rx.Observable.fromEvent(element.find('input'), 'keypress')
+          Rx.Observable.fromEvent(searchInput, 'keypress')
         );
         $scope.$emitEventsFromObservable(
           'clearableInput:click',
-          Rx.Observable.fromEvent(element.find('input'), 'click')
+          Rx.Observable.fromEvent(searchInput, 'click')
         );
         $scope.$emitEventsFromObservable(
           'clearableInput:blur',
-          Rx.Observable.fromEvent(element.find('input'), 'blur')
+          Rx.Observable.fromEvent(searchInput, 'blur')
         );
         $scope.$bindObservable('placeholder', placeholderObservable);
         $scope.$bindObservable('hasInput', hasInputObservable);
-
       }
     };
   }

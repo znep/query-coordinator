@@ -202,6 +202,7 @@
         // Render the current block according to the current layout height.
         translation = 'translate(0,' + layoutHeight + 'px)';
 
+        blockElement.attr('data-translate-y', layoutHeight);
         blockElement.css('transform', translation);
 
         layoutHeight += blockElement.outerHeight(true);
@@ -303,7 +304,7 @@
       blockElement = $('<div>', { class: 'block', 'data-block-id': blockId }).append(components);
 
       if (editable) {
-        blockElement = $('<div>', { class: 'block-edit' }).append([
+        blockElement = $('<div>', { class: 'block-edit', 'data-block-id': blockId }).append([
           _renderBlockEditControls(blockId),
           blockElement
         ]);

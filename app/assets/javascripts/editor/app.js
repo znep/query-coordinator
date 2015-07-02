@@ -94,6 +94,48 @@ $(document).on('ready', function() {
   var inspirationStoryElement = $('.inspiration-story-container');
   var userStoryElement = $('.user-story-container');
 
+  // Respond to changes in the user story's block ordering by scrolling the
+  // window to always show the top of the moved block.
+  dispatcher.register(
+    function(payload) {
+
+      if (payload.storyUid === userStoryUid) {
+        switch (payload.action) {
+
+          case Constants.STORY_MOVE_BLOCK_UP:
+          case Constants.STORY_MOVE_BLOCK_DOWN:
+
+            // Ensure that the layout is performed before we try to read
+            // back the y translate value. Since the renderer is synchronous
+            // a minimal setTimeout here should cause this block to be executed
+            // after the renderer has completed.
+            setTimeout(function() {
+
+              var blockEditElement = document.querySelectorAll(
+                '.block-edit[data-block-id="' + payload.blockId + '"]'
+              )[0];
+
+              var blockEditElementTranslateY =
+                parseInt(
+                  blockEditElement.getAttribute('data-translate-y'),
+                  10
+                ) || 0;
+
+              $('html, body').animate({
+                scrollTop: blockEditElementTranslateY
+              });
+            // The duration of the layout translations is specified in
+            // `layout.scss`.
+            }, 200);
+            break;
+
+          default:
+            break;
+        }
+      }
+    }
+  );
+
   /**
    * RichTextEditorToolbar events
    */

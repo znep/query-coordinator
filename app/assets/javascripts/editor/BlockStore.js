@@ -4,7 +4,8 @@
 
   function BlockStore() {
 
-    var _emitter = new EventEmitter();
+    var self = this;
+
     var _blocks = {};
 
     window.dispatcher.register(function(payload) {
@@ -27,17 +28,11 @@
       }
     });
 
+    _.extend(self, new Store());
+
     /**
      * Public methods
      */
-
-    this.addChangeListener = function(callback) {
-      _emitter.addListener(callback);
-    };
-
-    this.removeChangeListener = function(callback) {
-      _emitter.removeListener(callback);
-    };
 
     this.getLayout = function(blockId) {
 
@@ -88,7 +83,7 @@
 
       _blocks[newBlockId] = newBlock;
 
-      _emitter.emit();
+      self._emitChange();
     }
 
     function _updateComponentAtIndex(payload) {
@@ -100,7 +95,7 @@
 
       block.updateComponentAtIndex(index, type, value);
 
-      _emitter.emit();
+      self._emitChange();
     }
 
     function _copyBlockIntoStory(payload) {

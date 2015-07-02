@@ -28,6 +28,7 @@ describe('StoryRenderer', function() {
     window.dispatcher = new Dispatcher();
     window.storyStore = new StoryStore();
     window.blockStore = new BlockStore();
+    window.dragDropStore = new DragDropStore();
 
     dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
   }
@@ -302,8 +303,9 @@ describe('StoryRenderer', function() {
     });
   });
 
-  describe('.showInsertionHintAtIndex()', function() {
+  describe('drag-and-drop insertion hint', function() {
 
+    var renderer;
     var validAssetFinder;
     var validToolbar;
     var validFormats;
@@ -327,6 +329,8 @@ describe('StoryRenderer', function() {
         validToolbar,
         validFormats
       );
+
+      renderer = new StoryRenderer(options);
     });
 
     afterEach(function() {
@@ -337,67 +341,68 @@ describe('StoryRenderer', function() {
       AssetFinderMocker.unmock();
     });
 
-    it('renders blocks and an insertion hint', function() {
+    function hintAtStoryAndBlock(storyUid, blockId) {
+      // Cause DragDropStore to indicate we're dragging over
+      // the given story and block.
+      window.dispatcher.dispatch({
+        action: Constants.STORY_DRAG_OVER,
+        storyUid: storyUid,
+        blockId: blockId,
+        pointer: {},
+        storyElement: {},
+        draggedBlockId: 'draggedBlockId'
+      });
+    };
 
-      var renderer = new StoryRenderer(options);
+    function noHint() {
+      // Cause DragDropStore to indicate we're dragging over
+      // nothing at all.
+      window.dispatcher.dispatch({
+        action: Constants.STORY_DRAG_LEAVE,
+        storyUid: storyUid
+      });
+    };
 
-      renderer.showInsertionHintAtIndex(0);
-      renderer.render();
+    describe('with a drag hint not on this story', function() {
+      beforeEach(function() {
+        hintAtStoryAndBlock('notm-ystr', 0);
+      });
 
-      assert($('.block').length > 0, 'there is more than one block');
-      assert.isFalse($('.insertion-hint').hasClass('hidden'), 'insertion hint is shown');
-    });
-  });
-
-  describe('.hideInsertionHint()', function() {
-
-    var validAssetFinder;
-    var validToolbar;
-    var validFormats;
-
-    beforeEach(function() {
-
-      $('body').append([
-        $('<div>', { class: 'insertion-hint hidden' }),
-        $('<div>', { id: 'rich-text-editor-toolbar' })
-      ]);
-
-      AssetFinderMocker.mock();
-      validAssetFinder = new AssetFinder();
-      validToolbar = Object.create(RichTextEditorToolbar.prototype);
-      validFormats = [];
-      SquireMocker.mock();
-      options.editable = true;
-      options.insertionHintElement = $('.insertion-hint');
-      options.richTextEditorManager = new RichTextEditorManager(
-        validAssetFinder,
-        validToolbar,
-        validFormats
-      );
+      it('should be hidden', function() {
+        assert.isTrue($('.insertion-hint').hasClass('hidden'), 'insertion hint is not shown');
+      });
     });
 
-    afterEach(function() {
+    describe('with a drag hint on this story', function() {
+      beforeEach(function() {
+        hintAtStoryAndBlock(storyUid, textBlockId);
+      });
 
-      $('.insertion-hint').remove();
-      $('#rich-text-editor-toolbar');
-      SquireMocker.unmock();
-      AssetFinderMocker.unmock();
-    });
+      it('is shown', function() {
+        assert.isFalse($('.insertion-hint').hasClass('hidden'), 'insertion hint is shown');
+      });
 
-    it('hides the insertion hint after it has been rendered', function() {
+      describe('that was removed by clearing all hints', function() {
+        beforeEach(function() {
+          noHint();
+        });
 
-      var renderer = new StoryRenderer(options);
+        it('is not shown', function() {
+          assert.isTrue($('.insertion-hint').hasClass('hidden'), 'insertion hint is not shown');
+        });
 
-      renderer.showInsertionHintAtIndex(0);
-      renderer.render();
+      });
 
-      assert($('.block').length > 0, 'there is more than one block');
-      assert.isFalse($('.insertion-hint').hasClass('hidden'), 'insertion hint is shown');
+      describe('that was removed by changing to another story', function() {
+        beforeEach(function() {
+          hintAtStoryAndBlock('notm-ystr', 0);
+        });
 
-      renderer.hideInsertionHint();
-      renderer.render();
+        it('is not shown', function() {
+          assert.isTrue($('.insertion-hint').hasClass('hidden'), 'insertion hint is not shown');
+        });
 
-      assert.isTrue($('.insertion-hint').hasClass('hidden'), 'insertion hint is not shown');                
+      });
     });
   });
 });

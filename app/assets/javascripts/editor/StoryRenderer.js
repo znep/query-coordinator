@@ -87,6 +87,16 @@
       _renderStory();
     });
 
+    window.dragDropStore.addChangeListener(function() {
+      var hintPosition = window.dragDropStore.getReorderHintPosition();
+
+      if (hintPosition && hintPosition.storyUid === storyUid) {
+        _showInsertionHintAtIndex(hintPosition.dropIndex);
+      } else {
+        _hideInsertionHint();
+      }
+    });
+
     _renderStory();
 
     /**
@@ -97,24 +107,68 @@
       _renderStory();
     };
 
-    this.showInsertionHintAtIndex = function(index) {
-      if (index !== insertionHintIndex) {
-        insertionHintIndex = index;
-        this.render();
-      }
-    };
-
-    this.hideInsertionHint = function() {
-      if (insertionHintIndex !== -1) {
-        insertionHint.addClass('hidden');
-        insertionHintIndex = -1;
-        this.render();
-      }
-    };
+    _attachEvents();
 
     /**
      * Private methods
      */
+
+    function _attachEvents() {
+      container.on('mouseenter', function() {
+        window.dispatcher.dispatch({
+          action: Constants.STORY_MOUSE_ENTER,
+          storyUid: storyUid
+        });
+      });
+
+      container.on('mouseleave', function() {
+        window.dispatcher.dispatch({
+          action: Constants.STORY_MOUSE_LEAVE,
+          storyUid: storyUid
+        });
+      });
+
+      container.on('mousemove', '.block', function(e) {
+        var blockId = e.currentTarget.getAttribute('data-block-id');
+
+        if (blockId) {
+          window.dispatcher.dispatch({
+            action: Constants.BLOCK_MOUSE_MOVE,
+            storyUid: storyUid,
+            blockId: blockId
+          });
+        }
+      });
+
+      container.on('dblclick', '.block', function(e) {
+        var blockId = e.currentTarget.getAttribute('data-block-id');
+
+        if (blockId) {
+          window.dispatcher.dispatch({
+            action: Constants.BLOCK_DOUBLE_CLICK,
+            storyUid: storyUid,
+            blockId: blockId
+          });
+        }
+
+      });
+    }
+
+    function _showInsertionHintAtIndex(index) {
+      if (index !== insertionHintIndex) {
+        insertionHintIndex = index;
+        _renderStory();
+      }
+    };
+
+    function _hideInsertionHint() {
+      if (insertionHintIndex !== -1 && insertionHint) {
+        insertionHint.addClass('hidden');
+        insertionHintIndex = -1;
+        _renderStory();
+      }
+    };
+
 
     function _cacheBlockElement(blockId, blockElement) {
 
@@ -164,6 +218,9 @@
       var blockIds = storyStore.getBlockIds(storyUid);
       var blockCount = blockIds.length;
       var layoutHeight = 0;
+
+      container.addClass('story');
+      container.attr('data-story-uid', storyUid);
 
       _removeAbsentBlocks(blockIds);
 

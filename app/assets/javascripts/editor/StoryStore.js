@@ -4,7 +4,7 @@
 
   function StoryStore() {
 
-    var _emitter = new EventEmitter();
+    var self = this;
     var _stories = {};
 
     window.dispatcher.register(function(payload) {
@@ -35,16 +35,14 @@
       }
     });
 
+    _.extend(self, new Store());
+
     /**
      * Public methods
      */
 
-    this.addChangeListener = function(callback) {
-      _emitter.addListener(callback);
-    };
-
-    this.removeChangeListener = function(callback) {
-      _emitter.removeListener(callback);
+    this.storyExists = function(storyUid) {
+      return _stories.hasOwnProperty(storyUid);
     };
 
     this.getTitle = function(storyUid) {
@@ -66,6 +64,10 @@
       var story = _getStoryByUid(storyUid);
 
       return story.getBlockIdAtIndex(index);
+    };
+
+    this.hasBlock = function(storyUid, blockId) {
+      return _.includes(this.getBlockIds(storyUid), blockId);
     };
 
     /**
@@ -101,7 +103,7 @@
 
       _stories[newStoryUid] = newStory;
 
-      _emitter.emit();
+      self._emitChange();
     }
 
     function _insertBlock(payload) {
@@ -122,7 +124,7 @@
 
       story.insertBlockAtIndex(payload.insertAt, payload.blockId);
 
-      _emitter.emit();
+      self._emitChange();
     }
 
     function _moveBlockUp(payload) {
@@ -148,7 +150,7 @@
 
       story.swapBlocksAtIndices(blockIndex, blockIndex - 1);
 
-      _emitter.emit();
+      self._emitChange();
     }
 
     function _moveBlockDown(payload) {
@@ -174,7 +176,7 @@
 
       story.swapBlocksAtIndices(blockIndex, blockIndex + 1);
 
-      _emitter.emit();
+      self._emitChange();
     }
 
     function _deleteBlock(payload) {
@@ -199,7 +201,7 @@
 
       story.removeBlockWithId(payload.blockId);
 
-      _emitter.emit();
+      self._emitChange();
     }
   }
 

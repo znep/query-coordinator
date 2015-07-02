@@ -47,7 +47,7 @@ $(document).on('ready', function() {
 
   window.dispatcher = new Dispatcher();
   window.dispatcher.register(function(payload) {
-    console.info('Dispatcher action: ', payload);
+    window.console && console.info('Dispatcher action: ', payload);
     if (typeof payload.action !== 'string') {
       throw new Error(
         'Undefined action.'
@@ -57,6 +57,7 @@ $(document).on('ready', function() {
 
   window.storyStore = new StoryStore();
   window.blockStore = new BlockStore();
+  window.dragDropStore = new DragDropStore();
 
   window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: inspirationStoryData });
   window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
@@ -93,48 +94,9 @@ $(document).on('ready', function() {
 
   var inspirationStoryElement = $('.inspiration-story-container');
   var userStoryElement = $('.user-story-container');
-
-  // Respond to changes in the user story's block ordering by scrolling the
-  // window to always show the top of the moved block.
-  dispatcher.register(
-    function(payload) {
-
-      if (payload.storyUid === userStoryUid) {
-        switch (payload.action) {
-
-          case Constants.STORY_MOVE_BLOCK_UP:
-          case Constants.STORY_MOVE_BLOCK_DOWN:
-
-            // Ensure that the layout is performed before we try to read
-            // back the y translate value. Since the renderer is synchronous
-            // a minimal setTimeout here should cause this block to be executed
-            // after the renderer has completed.
-            setTimeout(function() {
-
-              var blockEditElement = document.querySelectorAll(
-                '.block-edit[data-block-id="' + payload.blockId + '"]'
-              )[0];
-
-              var blockEditElementTranslateY =
-                parseInt(
-                  blockEditElement.getAttribute('data-translate-y'),
-                  10
-                ) || 0;
-
-              $('html, body').animate({
-                scrollTop: blockEditElementTranslateY
-              });
-            // The duration of the layout translations is specified in
-            // `layout.scss`.
-            }, 200);
-            break;
-
-          default:
-            break;
-        }
-      }
-    }
-  );
+  var ghostElement = $('#block-ghost');
+  var dragDrop = new DragDrop(inspirationStoryElement.find('.block'), ghostElement);
+  dragDrop.setup();
 
   /**
    * RichTextEditorToolbar events
@@ -200,157 +162,73 @@ $(document).on('ready', function() {
     userStoryRenderer.render();
   });
 
-  /**
-   * LEGACY
-   */
+  window.dragDropStore.addChangeListener(function() {
+    if (window.dragDropStore.isDraggingOverStory(userStoryUid)) {
+      ghostElement.addClass('full-size');
+    } else {
+      ghostElement.removeClass('full-size');
+    }
+  });
 
-  function DragDrop(ghostElement) {
+  // Handlers for mouse events on inspiration story.
+  window.dispatcher.register(function(payload) {
+    if (payload.storyUid !== inspirationStoryUid) {
+      return;
+    }
 
-    var _self = this;
-    var _dragging = null;
-    var _ghostElement = ghostElement;
-    var _ghostCursorOffset = 20;
-
-    this.isDragging = function() {
-      return _dragging !== null;
-    };
-
-    this.drag = function(mouseX, mouseY, blockId) {
-
-      $('body').addClass('dragging');
-      var inspirationBlock = $('[data-block-id=' + blockId + ']');
-      var inspirationBlockHtml = inspirationBlock.html();
-
-      _dragging = blockId;
-      _ghostElement.
-        html(inspirationBlockHtml).
-        css({
-          left: mouseX - _ghostCursorOffset,
-          top: mouseY - _ghostCursorOffset
-        }).
-        removeClass('hidden');
-    };
-
-    this.drop = function() {
-
-      var dragged = _dragging;
-
-      $('body').removeClass('dragging');
-      _dragging = null;
-      _ghostElement.addClass('hidden');
-      return dragged;
-    };
-
-    this.addGhostClass = function(className) {
-      _ghostElement.addClass(className);
-    };
-
-    this.removeGhostClass = function(className) {
-      _ghostElement.removeClass(className);
-    };
-
-    $(window).on('mousemove', function(e) {
-      if (_self.isDragging()) {
-        _ghostElement.css({
-          left: e.clientX - _ghostCursorOffset,
-          top: e.clientY - _ghostCursorOffset
+    switch(payload.action) {
+      case Constants.BLOCK_DOUBLE_CLICK:
+        window.dispatcher.dispatch({
+          action: Constants.BLOCK_COPY_INTO_STORY,
+          blockId: payload.blockId,
+          storyUid: window.userStoryUid,
+          insertAt: window.storyStore.getBlockIds(window.userStoryUid).length
         });
-      }
-    });
-  };
 
-  var dragDrop = new DragDrop($('#block-ghost'));
-
-
-
-
-  var lastInsertionHintIndex = -1;
-  function showInsertionHintAtIndex(index) {
-    userStoryRenderer.showInsertionHintAtIndex(index);
-    lastInsertionHintIndex = index;
-  }
-  function hideInsertionHint() {
-    userStoryRenderer.hideInsertionHint();
-    lastInsertionHintIndex = -1;
-  }
-
-  inspirationStoryElement.on('mousedown', '.block', function(e) {
-
-    var blockId = e.currentTarget.getAttribute('data-block-id');
-
-    dragDrop.drag(e.clientX, e.clientY, blockId);
-  });
-
-  inspirationStoryElement.on('dblclick', '.block', function(e) {
-
-    window.dispatcher.dispatch({
-      action: Constants.BLOCK_COPY_INTO_STORY,
-      blockId: e.currentTarget.getAttribute('data-block-id'),
-      storyUid: window.userStoryUid,
-      insertAt: window.storyStore.getBlockIds(window.userStoryUid).length
-    });
-  });
-
-  userStoryElement.on('mouseenter', function() {
-
-    if (dragDrop.isDragging()) {
-      dragDrop.addGhostClass('full-size');
+        break;
     }
   });
 
-  userStoryElement.on('mouseleave', function() {
+  // Respond to changes in the user story's block ordering by scrolling the
+  // window to always show the top of the moved block.
+  dispatcher.register(
+    function(payload) {
 
-    if (dragDrop.isDragging()) {
-      dragDrop.removeGhostClass('full-size');
-    }
+      if (payload.storyUid === userStoryUid) {
+        switch (payload.action) {
 
-    hideInsertionHint();
-  });
+          case Constants.STORY_MOVE_BLOCK_UP:
+          case Constants.STORY_MOVE_BLOCK_DOWN:
 
-  userStoryElement.on('mousemove', '.block', function(e) {
-    if (dragDrop.isDragging()) {
-      var blockElement = $(e.currentTarget);
-      var blockId = blockElement.attr('data-block-id');
+            // Ensure that the layout is performed before we try to read
+            // back the y translate value. Since the renderer is synchronous
+            // a minimal setTimeout here should cause this block to be executed
+            // after the renderer has completed.
+            setTimeout(function() {
 
-      if (blockId) {
-        var indexToHint = storyStore.getBlockIds(window.userStoryUid).indexOf(blockId);
-        if (indexToHint >= 0) {
-          showInsertionHintAtIndex(indexToHint + 1);
+              var blockEditElement = document.querySelectorAll(
+                '.block-edit[data-block-id="' + payload.blockId + '"]'
+              )[0];
+
+              var blockEditElementTranslateY =
+                parseInt(
+                  blockEditElement.getAttribute('data-translate-y'),
+                  10
+                ) || 0;
+
+              $('html, body').animate({
+                scrollTop: blockEditElementTranslateY
+              });
+            // The duration of the layout translations is specified in
+            // `layout.scss`.
+            }, 200);
+            break;
+
+          default:
+            break;
         }
-      } else {
-        hideInsertionHint();
       }
     }
-  });
+  );
 
-  $(window).on('mouseup', function() {
-
-    if (dragDrop.isDragging()) {
-      dragDrop.drop();
-    }
-
-    hideInsertionHint();
-  });
-
-  userStoryElement.on('mouseup', function() {
-
-    if (dragDrop.isDragging()) {
-
-      var blockIdToInsert = dragDrop.drop();
-      var insertAt;
-
-      if (lastInsertionHintIndex >= 0) {
-        insertAt = lastInsertionHintIndex;
-      } else {
-        insertAt = storyStore.getBlockIds(window.userStoryUid).length;
-      }
-
-      dispatcher.dispatch({
-        action: Constants.BLOCK_COPY_INTO_STORY,
-        blockId: blockIdToInsert,
-        storyUid: window.userStoryUid,
-        insertAt: insertAt
-      });
-    }
-  });
 });

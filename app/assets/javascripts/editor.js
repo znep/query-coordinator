@@ -11,4 +11,11 @@
 //= require jquery2
 //= require lodash
 //= require squire-rte/build/squire
+//= require eventEmitter/EventEmitter
+//= require eventie/eventie
+//= require unipointer/unipointer
+//= require unidragger/unidragger
+//= require editor/Util
+//= require editor/SimpleEventEmitter
+//= require editor/Store
 //= require_tree ./editor

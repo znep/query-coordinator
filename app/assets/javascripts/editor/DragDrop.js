@@ -92,8 +92,8 @@
 
       ghostElement.
         css({
-          left: this.dragStartPoint.x + moveVector.x - _ghostCursorOffset,
-          top: this.dragStartPoint.y + moveVector.y - _ghostCursorOffset
+          left: this.dragStartPoint.x + moveVector.x - _ghostCursorOffset - window.scrollX,
+          top: this.dragStartPoint.y + moveVector.y - _ghostCursorOffset - window.scrollY
         });
     };
 

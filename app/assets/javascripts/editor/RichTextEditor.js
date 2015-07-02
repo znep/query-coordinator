@@ -360,9 +360,11 @@
         if (_isHeaderElement(nodeName)) {
           cleanEl = document.createElement(nodeName);
         } else if (_isBlockElement(nodeName)) {
-          cleanEl = document.createElement('div');
-        } else {
+          cleanEl = document.createElement(nodeName);
+        } else if (_isDocumentElement(nodeName)) {
           cleanEl = document.createDocumentFragment();
+        } else {
+          cleanEl = document.createElement('span');
         }
 
         _copyWhitelistedAttributes(el, cleanEl, attributeWhitelist);

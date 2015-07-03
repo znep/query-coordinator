@@ -48,7 +48,7 @@ class LicenseConfig < ExternalConfig
   end
 
   def licenses
-    @licenses.reject { |license| license[:hide_selector] }
+    @licenses.reject { |license| license[:hide_selector] }.unshift no_license
   end
 
   private
@@ -57,5 +57,9 @@ class LicenseConfig < ExternalConfig
     name ||= [category[:name], license[:name]].compact.join(' ') unless license[:name].nil?
     name ||= license[:display_name]
     name
+  end
+
+  def no_license
+    { id: '', name: "-- #{I18n.t 'core.no_license'} --" }
   end
 end

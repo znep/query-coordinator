@@ -117,6 +117,9 @@
           categoricalTypes.push(license.id);
         }
         var $license = $.tag2({ _: 'option', contents: license.name, value: license.id });
+        if (license.id === '') {
+          $license.attr('value', '');
+        }
         if (license.id === initialCategory) {
           $license.attr('selected', 'selected');
         }

@@ -1,0 +1,56 @@
+@import '../base';
+
+.inspiration-story-container {
+  @include unselectable();
+
+  position: fixed;
+  width: $inspiration-story-container-width;
+  height: calc(100vh - #{$header-total-height} - #{$inspiration-story-container-padding});
+  top: $header-total-height;
+  left: 0;
+  padding: $inspiration-story-container-padding / 2;
+  background-color: $inspiration-story-container-bg-color;
+  overflow-y: scroll;
+  z-index: $inspiration-story-container-z-index;
+  transition: left 0.2s;
+
+  .inspiration-story-error {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .inspiration-story {
+    height: 145%;
+    transform-origin: 0 0;
+    transform: scale(0.5);
+
+
+    .block {
+      @include media-query-property(
+        'width',
+        $main-content-width-small / 2.75,
+        $main-content-width-medium / 2.75,
+        $main-content-width-large / 2.75,
+        $main-content-width-extra-large / 2.75
+      );
+      @include unselectable();
+
+      cursor: -webkit-grab;
+      cursor: grab;
+
+      .image {
+
+        img {
+          @include unselectable();
+
+          pointer-events: none;
+        }
+      }
+
+      .grab-target {
+        display: block;
+      }
+    }
+  }
+}

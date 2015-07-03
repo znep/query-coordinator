@@ -1,0 +1,20 @@
+@import '../base';
+
+.block-edit, .block {
+  @include clearfix();
+
+  position: absolute;
+  display: block;
+  width: 100%;
+  top: 0;
+  left: 0;
+  background-color: $block-bg-color;
+  transition: transform $transition-duration;
+
+  .component.image {
+    img {
+      width: 100%;
+      -webkit-user-drag: none;
+    }
+  }
+}

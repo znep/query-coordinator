@@ -56,7 +56,6 @@ $(document).on('ready', function() {
   });
 
   window.storyStore = new StoryStore();
-  window.blockStore = new BlockStore();
   window.dragDropStore = new DragDropStore();
 
   window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: inspirationStoryData });
@@ -158,8 +157,18 @@ $(document).on('ready', function() {
     });
   });
 
-  $(window).on('rich-text-editor::height-change', function(event) {
-    userStoryRenderer.render();
+  window.dispatcher.register(function(payload) {
+    if (payload.action === Constants.STORY_DELETE_BLOCK) {
+
+      var components = storyStore.getBlockComponents(payload.blockId);
+
+      for (var i = 0; i < components.length; i++) {
+
+        var editorId = payload.blockId + '-' + i;
+
+        richTextEditorManager.deleteEditor(editorId);
+      }
+    }
   });
 
   window.dragDropStore.addChangeListener(function() {

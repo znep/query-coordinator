@@ -42,7 +42,6 @@ function standardMocks() {
   });
 
   window.storyStore = new StoryStore();
-  window.blockStore = new BlockStore();
   window.dragDropStore = new DragDropStore();
 
   dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyData });

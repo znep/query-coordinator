@@ -183,6 +183,7 @@ describe('A Choropleth Card Visualization', function() {
       'column': 'ward',
       'unit': 'aWardDisplayUnit'
     });
+    pageModel.defineEphemeralObservableProperty('hasExpandedCard', null);
     model.page = pageModel;
 
     var childScope = scope.$new();

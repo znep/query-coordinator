@@ -122,7 +122,7 @@ describe('Page model', function() {
         return _.map(cards, function(card) {
           return card.getCurrentValue('expanded');
         });
-      };
+      }
 
       instance.toggleExpanded(cards[0]);
       expect(expandedValues()).to.deep.equal([true, false, false]);
@@ -130,6 +130,21 @@ describe('Page model', function() {
       expect(expandedValues()).to.deep.equal([false, false, true]);
       instance.toggleExpanded(cards[2]);
       expect(expandedValues()).to.deep.equal([false, false, false]);
+    });
+
+    it('should set the "hasExpandedCard" property', function() {
+      var pageOverrides = {pageId: 'test-page'};
+      var datasetOverrides = {id: 'test-data'};
+      var instance = Mockumentary.createPage(pageOverrides, datasetOverrides);
+      var card = new Model();
+
+      card.defineObservableProperty('expanded', false);
+      instance.set('cards', [ card ]);
+      expect(instance.getCurrentValue('hasExpandedCard')).to.equal(null);
+      instance.toggleExpanded(card);
+      expect(instance.getCurrentValue('hasExpandedCard')).to.equal(true);
+      instance.toggleExpanded(card);
+      expect(instance.getCurrentValue('hasExpandedCard')).to.equal(false);
     });
   });
 });

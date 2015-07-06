@@ -25,7 +25,6 @@ $flyout-max-width: 350px
     height: 10px
     width: 10px
     border: 0
-    bottom: -9px // Needed for IE9
     background-color: transparent
 
     &:after, &:before
@@ -43,10 +42,13 @@ $flyout-max-width: 350px
       margin-left: 15px
       float: right
 
-#uber-flyout.left
+// Cardinal direction classes correspond to the direction the hint points.
+
+#uber-flyout.southwest
 
   .hint
     left: 0
+    bottom: -9px // Needed for IE9
 
     &:after
       border-width: $flyout-chart-tip-size $flyout-chart-tip-size 0 0
@@ -56,9 +58,11 @@ $flyout-max-width: 350px
       top: 1px
       left: -1px
 
-#uber-flyout.right
+#uber-flyout.southeast
 
   .hint
+    bottom: -9px // Needed for IE9
+
     &:after
       border-width: 0 $flyout-chart-tip-size $flyout-chart-tip-size 0
 
@@ -66,20 +70,51 @@ $flyout-max-width: 350px
       border-width: 0 ($flyout-chart-tip-size + 1) ($flyout-chart-tip-size + 1) 0
       top: 1px
 
-#uber-flyout.right.horizontal
+#uber-flyout.northwest
 
   .hint
-    right: 0
-    top: 50%
-    left: 100%
+    left: 0
+    top: -11px // Needed for IE9
 
     &:after
-      border-width: ($flyout-chart-tip-size / 2) 0 ($flyout-chart-tip-size / 2) $flyout-chart-tip-size
-      margin-top: -($flyout-chart-tip-size / 2)
+      border-width: $flyout-chart-tip-size 0 0 $flyout-chart-tip-size
+      top: 2px
+      right: -1px
 
     &:before
-      border-width: (($flyout-chart-tip-size / 2) + 2) 0 (($flyout-chart-tip-size / 2) + 2) ($flyout-chart-tip-size + 2)
-      margin-top: -(($flyout-chart-tip-size / 2) + 3)
+      border-width: ($flyout-chart-tip-size + 1) 0 0 ($flyout-chart-tip-size + 1)
+
+#uber-flyout.northeast
+
+  .hint
+    top: -11px // Needed for IE9
+
+    &:after
+      border-width: 0 0 $flyout-chart-tip-size $flyout-chart-tip-size
+      top: 2px
+
+    &:before
+      border-width: 0 0 ($flyout-chart-tip-size + 1) ($flyout-chart-tip-size + 1)
+      right: -1px
+
+// This section is being commented out because because there's no reliable way
+// to verify expected behavior during the transition from left/right classes to
+// southwest/southeast classes, given that horizontal flyouts aren't currently
+// in use (the unused discrete choropleth legend was the only use case).
+//#uber-flyout.right.horizontal
+//
+//  .hint
+//    right: 0
+//    top: 50%
+//    left: 100%
+//
+//    &:after
+//      border-width: ($flyout-chart-tip-size / 2) 0 ($flyout-chart-tip-size / 2) $flyout-chart-tip-size
+//      margin-top: -($flyout-chart-tip-size / 2)
+//
+//    &:before
+//      border-width: (($flyout-chart-tip-size / 2) + 2) 0 (($flyout-chart-tip-size / 2) + 2) ($flyout-chart-tip-size + 2)
+//      margin-top: -(($flyout-chart-tip-size / 2) + 3)
 
 
 

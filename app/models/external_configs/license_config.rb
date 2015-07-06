@@ -32,6 +32,8 @@ class LicenseConfig < ExternalConfig
     end
   end
 
+  # This is for the no_js path; we provide a flattened list of all licenses.
+  # This is called by datasets_helper and is the default rendered state.
   def merged_licenses
     @merged_licenses ||= @licenses.reduce({}) do |merged, license|
       if license[:licenses].present?
@@ -47,8 +49,10 @@ class LicenseConfig < ExternalConfig
     end
   end
 
+  # This is for the js_enabled path; we provide a hierarchical list of all licenses.
+  # This is dumped into the Javascript and consumed by edit-license.js.
   def licenses
-    @licenses.reject { |license| license[:hide_selector] }
+    @licenses.reject { |license| license[:hide_selector] }.unshift no_license
   end
 
   private
@@ -57,5 +61,9 @@ class LicenseConfig < ExternalConfig
     name ||= [category[:name], license[:name]].compact.join(' ') unless license[:name].nil?
     name ||= license[:display_name]
     name
+  end
+
+  def no_license
+    { id: '', name: "-- #{I18n.t 'core.no_license'} --" }
   end
 end

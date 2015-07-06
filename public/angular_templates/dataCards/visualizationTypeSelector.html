@@ -1,0 +1,54 @@
+<h3>{{'customizeCardDialog.visualizationOptions.title' | I18n}}</h3>
+<ul class="cf">
+  <li ng-show="availableCardTypes.indexOf('timeline') > -1">
+    <button
+      class="visualization-type icon-line-chart"
+      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'timeline' }"
+      ng-click="setCardType('timeline')"
+      data-visualization-name="{{'common.cards.timelineChart' | I18n}}"></button>
+    <span>{{'common.cards.timelineChart' | I18n}}</span>
+  </li>
+  <li ng-show="availableCardTypes.indexOf('search') > -1">
+    <button
+    class="visualization-type icon-search"
+    ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'search' }"
+    ng-click="setCardType('search')"
+    data-visualization-name="{{'common.cards.searchCard' | I18n}}"></button>
+    <span>{{'common.cards.searchCard' | I18n}}</span>
+  </li>
+  <li ng-show="availableCardTypes.indexOf('feature') > -1">
+    <button
+      class="visualization-type icon-map"
+      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'feature' }"
+      ng-click="setCardType('feature')"
+      data-visualization-name="{{'common.cards.featureMap' | I18n}}"></button>
+    <span>{{'common.cards.featureMap' | I18n}}</span>
+  </li>
+  <li ng-show="availableCardTypes.indexOf('column') > -1">
+    <button
+      class="visualization-type icon-bar-chart"
+      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'column', warn: showCardinalityWarning }"
+      ng-click="setCardType('column')"
+      data-visualization-name="{{'common.cards.columnChart' | I18n}}">
+        <span class="warning-icon icon-warning"></span>
+      </button>
+    <span>{{'common.cards.columnChart' | I18n}}</span>
+  </li>
+  <li ng-show="availableCardTypes.indexOf('histogram') > -1">
+    <button
+      class="visualization-type icon-distribution"
+      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'histogram' }"
+      ng-click="setCardType('histogram')"
+      data-visualization-name="{{'common.cards.distributionChart' | I18n}}">
+      </button>
+      <span>{{'common.cards.distributionChart' | I18n}}</span>
+  </li>
+  <li ng-show="availableCardTypes.indexOf('choropleth') > -1">
+    <button
+      class="visualization-type icon-region"
+      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'choropleth' }"
+      ng-click="setCardType('choropleth')"
+      data-visualization-name="{{'common.cards.choropleth' | I18n}}"></button>
+    <span>{{'common.cards.choropleth' | I18n}}</span>
+  </li>
+</ul>

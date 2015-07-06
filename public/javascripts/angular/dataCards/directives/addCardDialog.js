@@ -47,7 +47,6 @@
           scope.$observe('page').observeOnLatest('dataset').filter(_.isDefined),
           scope.$observe('page').observeOnLatest('dataset.columns').filter(_.isDefined),
           function(fieldName, scopeDatasetColumns, dataset, columns) {
-            var columnCardinality;
 
             if (fieldName === null) {
               scope.addCardModel = null;
@@ -79,28 +78,8 @@
             // TODO: We're going towards passing in serialized blobs to Model constructors.
             //Revisit this line when that effort reaches Card.
             scope.addCardModel = Card.deserialize(scope.page, serializedCard);
-
-            if (column.hasOwnProperty('cardinality')) {
-              columnCardinality = parseInt(column.cardinality, 10);
-            } else {
-              columnCardinality = 0;
-            }
-
-            scope.showCardinalityWarning = (columnCardinality > parseInt(Constants['COLUMN_CHART_CARDINALITY_WARNING_THRESHOLD'], 10));
           }
         );
-
-        scope.setCardType = function(cardType) {
-
-          if (scope.addCardModel === null ||
-              scope.availableCardTypes.indexOf(cardType) === -1) {
-            $log.error('Could not set card type of "{0}".'.format(cardType));
-            return;
-          }
-
-          scope.addCardModel.set('cardType', cardType);
-
-        };
 
         scope.addCard = function() {
           if (scope.addCardModel !== null) {
@@ -114,45 +93,9 @@
         };
 
         scope.$bindObservable(
-          'isCustomizable',
-          scope.$observe('addCardModel').observeOnLatest('isCustomizable')
+          'isCustomizableMap',
+          scope.$observe('addCardModel').observeOnLatest('isCustomizableMap')
         );
-
-        FlyoutService.register({
-          selector: '.add-card-type-option, .warning-icon',
-          render: function(el) {
-            var $el = $(el);
-            var flyoutContents = null;
-            var shouldShowCardinalityWarning = scope.showCardinalityWarning &&
-              $el.is('.warn, .icon-warning');
-
-            if (shouldShowCardinalityWarning) {
-
-              flyoutContents = I18n.addCardDialog.columnChartWarning;
-
-            } else {
-              var visualizationName = el.getAttribute('data-visualization-name');
-
-              if (visualizationName === null) {
-                return;
-              }
-
-              flyoutContents = I18n.t('addCardDialog.visualizeFlyout', visualizationName);
-            }
-
-            return '<div class="flyout-title">{0}</div>'.format(flyoutContents);
-          },
-          positionOn: function(target) {
-            var $target = $(target);
-
-            if ($target.hasClass('icon-warning')) {
-              return $target.parent()[0];
-            }
-
-            return target;
-          },
-          destroySignal: scope.$destroyAsObservable(element)
-        });
       }
     };
   }

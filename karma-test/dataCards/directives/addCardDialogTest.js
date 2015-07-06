@@ -196,6 +196,7 @@ describe('addCardDialog', function() {
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
   beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
+  beforeEach(module('/angular_templates/dataCards/visualizationTypeSelector.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
   beforeEach(module('/angular_templates/dataCards/card.html'));
   beforeEach(module('dataCards/cards.sass'));
@@ -325,28 +326,28 @@ describe('addCardDialog', function() {
   it('should display multiple visualization choices when a column in the "Choose a column..." select control is selected which allows multiple visualizations', function() {
     var dialog = createDialog();
 
-    expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(0);
+    expect(dialog.element.find('.visualization-type:visible').length).to.equal(0);
 
     dialog.scope.dialogState.cardSize = 2;
 
     dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
 
-    expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
-    expect(dialog.element.find('.add-card-type-option.icon-bar-chart').length).to.equal(1);
-    expect(dialog.element.find('.add-card-type-option.icon-search').length).to.equal(1);
+    expect(dialog.element.find('.visualization-type:visible').length).to.equal(2);
+    expect(dialog.element.find('.visualization-type.icon-bar-chart').length).to.equal(1);
+    expect(dialog.element.find('.visualization-type.icon-search').length).to.equal(1);
 
   });
 
   it("should display a warning for 'column' card type option buttons when a column's cardinality is greater than 100", function() {
     var dialog = createDialog();
 
-    expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(0);
+    expect(dialog.element.find('.visualization-type:visible').length).to.equal(0);
 
     dialog.scope.dialogState.cardSize = 2;
 
     dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
 
-    expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
+    expect(dialog.element.find('.visualization-type:visible').length).to.equal(2);
 
     expect(dialog.element.find('.icon-bar-chart > .warning-icon:visible').length).to.equal(1);
 
@@ -355,13 +356,13 @@ describe('addCardDialog', function() {
   it('should change the visualization type of the preview card when a card type option button is clicked', function() {
     var dialog = createDialog();
 
-    expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(0);
+    expect(dialog.element.find('.visualization-type:visible').length).to.equal(0);
 
     dialog.scope.dialogState.cardSize = 2;
 
     dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
 
-    expect(dialog.element.find('.add-card-type-option:visible').length).to.equal(2);
+    expect(dialog.element.find('.visualization-type:visible').length).to.equal(2);
     expect(dialog.scope.addCardModel.getCurrentValue('cardType')).to.equal('search');
 
     dialog.element.find('.icon-bar-chart').click();
@@ -396,18 +397,18 @@ describe('addCardDialog', function() {
     var dialog = createDialog();
 
     var customizeButton = dialog.element.find('.card-control[title^="Customize"]');
-    expect(customizeButton.length).to.equal(0); // should only appear for choropleths
+    expect(customizeButton).to.have.length(0); // should only appear for choropleths
 
     dialog.element.find('select > option[value="bar"]').prop('selected', true).trigger('change');
 
     customizeButton = dialog.element.find('.card-control[title^="Customize"]');
-    expect(customizeButton.length).to.equal(0); // should only appear for choropleths
+    expect(customizeButton).to.be.hidden; // should only appear for choropleths
 
     // Now select the choropleth
     dialog.element.find('select > option[value="ward"]').prop('selected', true).trigger('change');
 
-    customizeButton = dialog.element.find('.card-control[title^="Customize"]:visible');
-    expect(customizeButton.length).to.equal(1);
+    customizeButton = dialog.element.find('.card-control[title^="Customize"]');
+    expect(customizeButton).to.be.visible;
 
     /* Technically, there should be a flyout here. But since we're using the same mechanism to give
      * this button a flyout, as we are for the other card-controls in a card-layout, the flyout is

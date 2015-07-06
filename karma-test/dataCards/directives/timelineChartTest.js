@@ -1012,6 +1012,78 @@ describe('timelineChart', function() {
 
       });
 
+      it('should position the datum label correctly in the middle of the highlighted region', function() {
+
+        var chart = createTimelineChart(640, false);
+        var highlightTarget = $('.timeline-chart-highlight-target');
+        var datumLabel = $('.datum-label');
+        var middleOfHighlightTarget;
+        var middleOfDatumLabel;
+        var TOLERANCE = 2;
+
+        scope.precision = 'DAY';
+        scope.chartData = hiddenLabelTestData;
+        scope.$apply();
+
+        mockWindowStateService.scrollPositionSubject.onNext(0);
+        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 360,
+          clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
+          target: highlightTarget[0]
+        });
+
+        middleOfHighlightTarget = highlightTarget.offset().left + (highlightTarget.width() / 2);
+        middleOfDatumLabel = datumLabel.offset().left + (datumLabel.width() / 2);
+        expect(middleOfHighlightTarget - middleOfDatumLabel).to.be.within(-TOLERANCE, TOLERANCE);
+      });
+
+      it('should correctly position the datum label on the right edge of the chart', function() {
+
+        var chart = createTimelineChart(640, false);
+        var highlightTarget = $('.timeline-chart-highlight-target');
+        var datumLabel = $('.datum-label');
+        var datumLabelRightEdge;
+        var TOLERANCE = 2;
+
+        scope.precision = 'DAY';
+        scope.chartData = hiddenLabelTestData;
+        scope.$apply();
+
+        mockWindowStateService.scrollPositionSubject.onNext(0);
+        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 630,
+          clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
+          target: highlightTarget[0]
+        });
+
+        datumLabelRightEdge = datumLabel.offset().left + datumLabel.width();
+        expect(datumLabelRightEdge - 640).to.be.within(-TOLERANCE, TOLERANCE);
+      });
+
+      it('should correctly position the datum label on the left edge of the chart', function() {
+
+        var chart = createTimelineChart(640, false);
+        var highlightTarget = $('.timeline-chart-highlight-target');
+        var datumLabel = $('.datum-label');
+        var TOLERANCE = 2;
+
+        scope.precision = 'DAY';
+        scope.chartData = hiddenLabelTestData;
+        scope.$apply();
+
+        mockWindowStateService.scrollPositionSubject.onNext(0);
+        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+        mockWindowStateService.mousePositionSubject.onNext({
+          clientX: 10,
+          clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
+          target: highlightTarget[0]
+        });
+
+        expect(datumLabel.offset().left).to.be.within(-TOLERANCE, TOLERANCE);
+      });
+
     });
 
     describe('and the mouse is hovering over a labeled datum', function() {

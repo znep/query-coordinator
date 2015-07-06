@@ -124,7 +124,6 @@
         // These two values are in pixels.
         var visualizedDatumWidth = 0;
         var halfVisualizedDatumWidth = 0;
-        var halfDatumLabelWidth = jqueryDatumLabel.width() / 2;
 
         var selectionIsCurrentlyRendered = false;
 
@@ -1029,6 +1028,7 @@
           var intervalEndDate = null;
           var maxDatePlusLabelPrecision;
           var shouldLabelEveryN;
+
           // This is half the width of each tick as defined in the accompanying CSS
           var halfTickWidth = 2;
           var jqueryAxisTick;
@@ -1943,6 +1943,8 @@
           var startDate;
           var endDate;
           var currentPrecision;
+          var datumLabelOffset;
+          var datumLabelWidth;
 
           indexIntoChartData = Math.floor(((offsetX - 1) / cachedChartDimensions.width) *
             cachedChartData.values.length);
@@ -1951,25 +1953,40 @@
           // user hovers over the visualization. The value of currentDatum is
           // read by the flyout code.
           currentDatum = cachedChartData.values[indexIntoChartData];
-          currentPrecision = (mousePositionWithinChartLabels) ? labelPrecision : datasetPrecision;
+
+          // If we are hovering within the labels and they are all shown, we should use
+          // the label precision.  Otherwise, because labels are hidden, we should use
+          // the smaller datasetPrecision.
+          currentPrecision = (mousePositionWithinChartLabels && allChartLabelsShown) ?
+            labelPrecision : datasetPrecision;
 
           startDate = currentDatum.date;
           endDate = new Date(moment(currentDatum.date).add(1, currentPrecision).toDate());
 
-          // 1. Dim all the existing labels
-          // 2. Set the value of the datum label to the startDate
-          // 3. Show the datum label
+          // Dim existing labels and add text and attribute information to the datum label.
           jqueryChartElement.addClass('dimmed');
           jqueryDatumLabel.
-            text(formatDateLabel(startDate, false)).
+            text(formatDateLabel(startDate, false, currentPrecision)).
             attr('data-start', startDate).
             attr('data-end', endDate).
             attr('data-aggregate-unfiltered', currentDatum.unfiltered).
             attr('data-aggregate-filtered', currentDatum.filtered).
-            attr('data-flyout-label', formatDateLabel(startDate, true)).
-            css({
-              left: Math.floor(d3XScale(startDate)) - halfDatumLabelWidth
-            }).
+            attr('data-flyout-label', formatDateLabel(startDate, true, currentPrecision));
+
+          // Now that the datum label has text (and thus a width), calculate its
+          // left offset.  Make sure it does not overflow either edge of the chart.
+          datumLabelWidth = jqueryDatumLabel.width();
+          datumLabelOffset = Math.ceil(d3XScale(startDate));
+          datumLabelOffset = (datumLabelOffset > (datumLabelWidth / 2)) ?
+             datumLabelOffset - (datumLabelWidth / 2) : 0;
+          datumLabelOffset = Math.min(
+            datumLabelOffset,
+            cachedChartDimensions.width - datumLabelWidth
+          );
+
+          // Set the left offset and show the label.
+          jqueryDatumLabel.
+            css('left', Math.floor(datumLabelOffset)).
             show();
 
           highlightChart(startDate, endDate);

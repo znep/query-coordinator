@@ -27,7 +27,7 @@
       expect(element.find('select').length).to.equal(1);
     });
 
-    if (Modernizr.pointerevents) {
+    if (Modernizr.pointerEvents) {
       it('should overlay the custom arrow over the select\'s default one', function() {
         var scope = $rootScope.$new();
         var element = testHelpers.TestDom.compileAndAppend('<soc-select></soc-select>', scope);

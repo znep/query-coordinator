@@ -21,14 +21,24 @@ angular.module('dataCards.directives').directive('socSelect', function() {
     element.attr(filteredAttrs);
   }
 
-  /**
-   * @param {jQuery} element The jquery element that contains the arrow and select.
-   */
-  function fixArrowForBrowsers(element) {
-    if (!Modernizr.pointerevents) {
-      // Clicking on our custom arrow won't pass it through in this browser. Move it behind the
-      // select.
-      element.find('select').css({
+  // Fixes two bugs in IE:
+  // 1. Correctly renders selects with dynamically changing options.
+  // 2. Move the arrow behind the select because pointer-events do not exist.
+  function ieSelectFix(selectElement) {
+    if (!Modernizr.pointerEvents) {
+
+      // Add and remove an option from the select element to force it
+      // to re-render.  The setTimeout is needed for Angular 1.3+.
+      // https://github.com/angular/angular.js/issues/2809
+      _.defer(function() {
+
+        var option = document.createElement('option');
+        selectElement[0].add(option, null);
+        selectElement[0].remove(selectElement[0].options.length - 1);
+      });
+
+      // Move arrow behind the select.
+      selectElement.css({
         position: 'relative',
         zIndex: 5
       });
@@ -44,9 +54,9 @@ angular.module('dataCards.directives').directive('socSelect', function() {
     transclude: true,
     templateUrl: '/angular_templates/dataCards/socSelect.html',
     link: function($scope, $element, $attrs) {
-      fixArrowForBrowsers($element);
       var selectElement = $element.children('select');
-      applyAttributes($attrs, selectElement)
+      ieSelectFix(selectElement);
+      applyAttributes($attrs, selectElement);
       $scope.$watch('disabled', function(disabled) {
         selectElement.attr('disabled', disabled);
       });

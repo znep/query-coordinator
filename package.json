@@ -37,5 +37,26 @@
     "sprintf": "^0.1.4",
     "underscore": "^1.6.0",
     "underscore.string": "^2.3.3"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true
+    },
+    "rules": {
+      "quotes": [1, "single"],
+      "no-underscore-dangle": 1,
+      "new-cap": 1
+    },
+    "globals": {
+      "$": true,
+      "_": true,
+      "angular": true,
+      "blist": true,
+      "d3": true,
+      "jQuery": true,
+      "L": true,
+      "moment": true,
+      "Rx": true
+    }
   }
 }

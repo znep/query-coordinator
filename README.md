@@ -168,3 +168,21 @@ dev-server/dev-proxy.js
 ```
 
 You can add `-h` for more options. By default it routes requests to `dataspace-demo.test-socrata.com`. That may change in the future.
+
+## Linting
+
+A linter is a tool that we use to find problematic patterns or code that doesn't adhere to certain style guidelines. For javascript, we use `eslint`, because it's highly configurable. Installation:
+
+```
+npm i -g eslint
+```
+
+Although eslint is run automatically by Jenkins for each build, you can manually run eslint for different parts of the javascript codebase using the following rake tasks:
+
+```
+rake lint:js:all       # Lint the whole javascript codebase
+rake lint:js:oldUx     # Lint the old ux
+rake lint:js:dataCards # Lint data lens
+```
+
+If you're too cool for rake tasks, you can also run `eslint` on the command line and supply your own arguments. You can find our specific configuration options for eslint in `package.json` under the `eslintConfig` key.

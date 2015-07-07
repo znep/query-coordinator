@@ -719,14 +719,14 @@ class CardTypeMappingTest < Test::Unit::TestCase
       fake_column('money', nil, 2500),
       dataset_size
     )
-    assert_equal(['column'], available_card_types)
+    assert_equal(['column', 'search'], available_card_types)
 
     stub_feature_flags_with(:odux_enable_histogram, true)
     available_card_types = available_card_types_for(
       fake_column('money', nil, 2500),
       dataset_size
     )
-    assert_equal(['column', 'histogram'], available_card_types)
+    assert_equal(['column', 'search', 'histogram'], available_card_types)
   end
 
   def test_card_type_mapping_returns_expected_available_card_types_for_computed_match_on_string_number_column

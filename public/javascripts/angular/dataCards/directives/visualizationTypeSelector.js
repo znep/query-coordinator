@@ -38,6 +38,7 @@
 
         };
 
+        // Handle flyouts for visualization options and bar chart overflow warnings
         var EXCESSIVE_COLUMN_WARNING = '<div class="flyout-title">{0}</div>'.
           format(I18n.addCardDialog.columnChartWarning);
 

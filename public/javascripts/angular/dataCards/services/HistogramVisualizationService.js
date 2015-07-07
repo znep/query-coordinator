@@ -156,12 +156,12 @@
       axis.x.
         scale(scale.x).
         orient('bottom').
-        tickFormat($.toHumaneNumber);
+        tickFormat(function(d) { return $.toHumaneNumber(d); });
 
       axis.y.
         scale(scale.y).
         orient('left').
-        tickFormat($.toHumaneNumber).
+        tickFormat(function(d) { return $.toHumaneNumber(d); }).
         ticks(3);
 
       return axis;

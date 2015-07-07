@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function SuggestionToolPanel(SuggestionService, ServerConfig) {
+  function SuggestionToolPanel(SuggestionService, ServerConfig, Constants) {
     if (!ServerConfig.get('enableSearchSuggestions')) {
       return {};
     }
@@ -39,8 +39,7 @@
         ).
         debounce(300, Rx.Scheduler.timeout). // Don't hammer the suggestions service.
         map(function(suggestionRequest) {
-          if (suggestionRequest.physicalDatatype === 'number') {
-            // CORE-5083: don't request suggestions for number columns
+          if (_.contains(Constants.SUGGESTION_DISABLED_DATA_TYPES, suggestionRequest.physicalDatatype)) {
             return Rx.Observable.returnValue([]);
           } else {
             return Rx.Observable.fromPromise(

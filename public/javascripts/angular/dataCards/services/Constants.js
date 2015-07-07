@@ -23,6 +23,13 @@
       'SELECTED_PROPERTY_NAME': '__SOCRATA_FEATURE_SELECTED__',
       'HUMAN_READABLE_PROPERTY_NAME': '__SOCRATA_HUMAN_READABLE_NAME__',
 
+      // Search card suggestion parameters.
+      'SUGGESTION_DISABLED_DATA_TYPES' : ['number', 'money'],
+
+      // Customization parameters.
+      'CUSTOMIZATION_DISABLED_CARD_TYPES' : ['timeline'],
+      'CUSTOMIZATION_DISABLED_DATA_TYPES' : ['boolean'],
+
       // Visualization
       'NULL_VALUE_LABEL': '(No Value)',
       'DEFAULT_MAP_BASE_LAYER_URL': 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',

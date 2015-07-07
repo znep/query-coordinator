@@ -119,9 +119,9 @@ module CardTypeMapping
         available_card_types = ['feature']
       when 'money'
         if histogram_enabled?
-          available_card_types = ['column', 'histogram']
+          available_card_types = ['column', 'search', 'histogram']
         else
-          available_card_types = ['column']
+          available_card_types = ['column', 'search']
         end
       when 'number'
         if has_georegion_computation_strategy?(column)

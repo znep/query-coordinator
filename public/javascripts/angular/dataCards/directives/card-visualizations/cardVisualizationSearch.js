@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CardVisualizationSearch(CardDataService, ServerConfig, SoqlHelpers) {
+  function CardVisualizationSearch(CardDataService, ServerConfig, SoqlHelpers, Constants) {
 
     function pluckEventArg(val) {
       return _.get(val, 'additionalArguments[0]');
@@ -15,8 +15,7 @@
         model.observeOnLatest('page.baseSoqlFilter'),
         model.observeOnLatest('page.aggregation'),
         function(fieldName, datasetId, physicalDatatype, pageBaseSoqlFilter, pageAggregation) {
-          if (physicalDatatype === 'number') {
-            // CORE-5083: no samples for number columns
+          if (_.contains(Constants.SUGGESTION_DISABLED_DATA_TYPES, physicalDatatype)) {
             return Rx.Observable.returnValue([]);
           } else {
             return Rx.Observable.fromPromise(CardDataService.getSampleData(fieldName, datasetId, pageBaseSoqlFilter, pageAggregation));
@@ -132,8 +131,8 @@
             whereClauseObservable,
             function(signal, searchValue, fieldName, physicalDatatype, externalWhereClause) {
               var whereClause;
-              if (physicalDatatype === 'number') {
-                var numericSearchValue = parseInt(searchValue, 10);
+              if (_.contains(Constants.SUGGESTION_DISABLED_DATA_TYPES, physicalDatatype)) {
+                var numericSearchValue = parseFloat(searchValue);
                 if (_.isNaN(numericSearchValue)) {
                   invalidSearchInputSubject.onNext(true);
                 } else {
@@ -247,8 +246,7 @@
             ).distinctUntilChanged(),
             // Metadata-based observable for datatypes which can trigger suggestions
             physicalDatatypeObservable.map(function(physicalDatatype) {
-              // CORE-5083: hide autocomplete for number columns
-              return physicalDatatype !== 'number';
+              return !_.contains(Constants.SUGGESTION_DISABLED_DATA_TYPES, physicalDatatype);
             }),
             function(isActionTriggerForSuggestionPanel, isDatatypeCompatibleWithSuggestionPanel) {
               return isActionTriggerForSuggestionPanel && isDatatypeCompatibleWithSuggestionPanel;

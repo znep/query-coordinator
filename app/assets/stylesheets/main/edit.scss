@@ -44,6 +44,14 @@ body {
   background-color: $header-bg-color;
   box-sizing: content-box;
   z-index: $site-header-z-index;
+
+  .undo-btn {
+    margin-left: 5rem;
+  }
+
+  .redo-btn {
+    margin-left: 1rem;
+  }
 }
 
 #rich-text-editor-toolbar {

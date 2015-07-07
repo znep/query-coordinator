@@ -58,6 +58,7 @@ $(document).on('ready', function() {
   });
 
   window.storyStore = new StoryStore();
+  window.historyStore = new HistoryStore();
   window.dragDropStore = new DragDropStore();
 
   var richTextEditorToolbar = new RichTextEditorToolbar(
@@ -160,6 +161,46 @@ $(document).on('ready', function() {
       value: blockContent
     });
   });
+
+  /**
+   * History events
+   */
+
+   $('.undo-btn').on('click', function() {
+
+      window.dispatcher.dispatch({
+        action: Constants.HISTORY_UNDO,
+        storyUid: userStoryUid
+      });
+   });
+
+   $('.redo-btn').on('click', function() {
+
+      window.dispatcher.dispatch({
+        action: Constants.HISTORY_REDO,
+        storyUid: userStoryUid
+      });
+   });
+
+  window.historyStore.addChangeListener(function() {
+
+    if (window.historyStore.canUndo()) {
+      $('.undo-btn').prop('disabled', false);
+    } else {
+      $('.undo-btn').prop('disabled', true);
+    }
+
+    if (window.historyStore.canRedo()) {
+      $('.redo-btn').prop('disabled', false);
+    } else {
+      $('.redo-btn').prop('disabled', true);
+    }
+  });
+
+  /**
+   * Drag and drop events
+   */
+
 
   window.dragDropStore.addChangeListener(function() {
     if (window.dragDropStore.isDraggingOverStory(userStoryUid)) {

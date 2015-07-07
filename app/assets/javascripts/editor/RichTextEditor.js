@@ -96,12 +96,14 @@
     };
 
     this.getContent = function() {
-      return _editor.getHTML();
+      if (_editor) {
+        return _editor.getHTML();
+      }
     };
 
     this.setContent = function(content) {
 
-      if (_editor.getHTML() !== content) {
+      if (_editor && _editor.getHTML() !== content) {
 
         _editor.setHTML(content);
         _handleContentChange();

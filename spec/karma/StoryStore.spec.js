@@ -1035,7 +1035,11 @@ describe('StoryStore', function() {
 
     describe('BLOCK_COPY_INTO_STORY', function() {
 
-      var validInsertionIndex = 0;
+      var validInsertionIndex;
+
+      beforeEach(function() {
+        validInsertionIndex = 0;
+      });
 
       describe('not given a block id', function() {
 

@@ -273,7 +273,8 @@
         );
       }
 
-      var story = _getStory(payload.storyUid);
+      var storyUid = payload.storyUid;
+      var story = _getStory(storyUid);
       var blockId = payload.blockId;
       var indexOfBlockIdToRemove = story.blockIds.indexOf(blockId);
 
@@ -312,11 +313,12 @@
         );
       }
 
+      var storyUid = payload.storyUid;
       var clonedBlock = _cloneBlock(payload.blockId);
       var blockId = clonedBlock.id;
 
       _blocks[blockId] = clonedBlock;
-      _insertStoryBlockAtIndex(payload.storyUid, blockId, payload.insertAt);
+      _insertStoryBlockAtIndex(storyUid, blockId, payload.insertAt);
 
       self._emitChange();
     }
@@ -409,6 +411,8 @@
         title: storyData.title,
         blockIds: blockIds
       };
+
+      self._emitChange();
     }
 
     function _setBlock(blockData, overwrite) {

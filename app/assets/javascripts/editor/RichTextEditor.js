@@ -96,12 +96,16 @@
     };
 
     this.getContent = function() {
-      return _editor.getHTML();
+      if (_editor) {
+        return _editor.getHTML();
+      }
     };
 
     this.setContent = function(content) {
-      _editor.setHTML(content);
-      _handleContentChange();
+      if (_editor) {
+        _editor.setHTML(content);
+        _handleContentChange();
+      }
     };
 
     this.getContentHeight = function() {

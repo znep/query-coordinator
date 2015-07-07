@@ -341,7 +341,12 @@ module Canvas2
       end
 
       check_expr.call()
-      while ma = p['prop'].match(/(^|(.*)\s+)\/(([^\s\/]*|(\\\/)*)*)\/(([^\/]*|(\\\/)*)*)\/([gim]*)$/) do
+      regex = if FeatureFlags.derive(nil, defined?(request) ? request : nil)[:use_less_crazy_regex] === true
+                /((?:^|(.*)\s+))\/((?:[^\s\/]*|(?:\\\/)*)*)\/((?:[^\/]*|(?:\\\/)*)*)\/([gim]*)/
+              else
+                /(^|(.*)\s+)\/(([^\s\/]*|(\\\/)*)*)\/(([^\/]*|(\\\/)*)*)\/([gim]*)$/
+              end
+      while ma = p['prop'].match(regex) do
         p['prop'] = ma[2] || ''
         p['transforms'].push({
           type: 'regex',

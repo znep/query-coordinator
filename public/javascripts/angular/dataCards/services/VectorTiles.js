@@ -811,7 +811,10 @@
           if (request.zoom === self.lastCommitedZoomLevel) {
             self.getTileData(request.tilePoint, request.zoom, request.callback);
           } else {
-            self.tileLoaded(VectorTileUtil.getTileId(request));
+            // CORE-6027:
+            // Clear the outstandingTileDataRequests because we shouldn't attempt to load tiles
+            // on the previous zoom level.
+            self.outstandingTileDataRequests.clear();
           }
         });
         this.delayedTileDataRequests.length = 0;

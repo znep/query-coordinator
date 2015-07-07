@@ -29,11 +29,13 @@
   <card-visualization model="model" where-clause="whereClause"></card-visualization>
 </div>
 
+ <!--Card controls are only available if card is not a table card, and is customizable-->
+ <!--They are hidden on table cards, and visible but disabled on other non-customizable cards-->
 <div class="card-controls" ng-show="!isChoosingForExport">
   <div class="card-control icon-settings"
     ng-class="{ disabled: !isCustomizable }"
     ng-click="customizeCardIfCustomizable(isCustomizable)"
-    ng-show="editMode && interactive"
+    ng-show="editMode && interactive && model.fieldName !== '*'"
     title="{{ (isCustomizable ?
       'cardControls.customizeEnabled' :
       'cardControls.customizeDisabled') | I18n}}">

@@ -110,8 +110,7 @@
 
     this.getBlockComponentAtIndex = function(blockId, index) {
 
-      var block = _getBlock(blockId);
-      var components = block.components;
+      var components = this.getBlockComponents(blockId);
 
       if (index < 0 || index >= components.length) {
         throw new Error('`index` argument is out of bounds.');
@@ -127,16 +126,7 @@
       return {
         uid: story.uid,
         title: story.title,
-        blocks: story.blockIds.map(function(blockId) {
-
-          var block = _getBlock(blockId);
-
-          return {
-            id: block.id,
-            layout: block.layout,
-            components: block.components
-          };
-        })
+        blocks: story.blockIds.map(_serializeBlock)
       };
     };
 
@@ -147,21 +137,7 @@
       return {
         uid: story.uid,
         title: story.title,
-        blocks: story.blockIds.map(function(blockId) {
-
-          var block = _getBlock(blockId);
-
-          if (block.hasOwnProperty('dirty') && block.dirty) {
-            return {
-              layout: block.layout,
-              components: block.components
-            };
-          } else {
-            return {
-              id: block.id
-            };
-          }
-        })
+        blocks: story.blockIds.map(_serializeBlockDiff)
       };
     };
 
@@ -179,29 +155,10 @@
 
     function _moveBlockUp(payload) {
 
-      if (!payload.hasOwnProperty('storyUid')) {
-        throw new Error('`storyUid` property is required.');
-      }
-
-      if (typeof payload.storyUid !== 'string') {
-        throw new Error(
-          '`storyUid` must be a string (is of type ' +
-          (typeof payload.storyUid) +
-          '.'
-        );
-      }
-
-      if (!payload.hasOwnProperty('blockId')) {
-        throw new Error('`blockId` property is required.');
-      }
-
-      if (typeof payload.blockId !== 'string') {
-        throw new Error(
-          '`blockId` must be a string (is of type ' +
-          (typeof payload.blockId) +
-          '.'
-        );
-      }
+      Util.assertHasProperty(payload, 'storyUid');
+      Util.assertTypeof(payload.storyUid, 'string');
+      Util.assertHasProperty(payload, 'blockId');
+      Util.assertTypeof(payload.blockId, 'string');
 
       var storyUid = payload.storyUid;
       var blockId = payload.blockId;
@@ -214,29 +171,10 @@
 
     function _moveBlockDown(payload) {
 
-      if (!payload.hasOwnProperty('storyUid')) {
-        throw new Error('`storyUid` property is required.');
-      }
-
-      if (typeof payload.storyUid !== 'string') {
-        throw new Error(
-          '`storyUid` must be a string (is of type ' +
-          (typeof payload.storyUid) +
-          '.'
-        );
-      }
-
-      if (!payload.hasOwnProperty('blockId')) {
-        throw new Error('`blockId` property is required.');
-      }
-
-      if (typeof payload.blockId !== 'string') {
-        throw new Error(
-          '`blockId` must be a string (is of type ' +
-          (typeof payload.blockId) +
-          '.'
-        );
-      }
+      Util.assertHasProperty(payload, 'storyUid');
+      Util.assertTypeof(payload.storyUid, 'string');
+      Util.assertHasProperty(payload, 'blockId');
+      Util.assertTypeof(payload.blockId, 'string');
 
       var storyUid = payload.storyUid;
       var blockId = payload.blockId;
@@ -249,29 +187,10 @@
 
     function _deleteBlock(payload) {
 
-      if (!payload.hasOwnProperty('storyUid')) {
-        throw new Error('`storyUid` property is required.');
-      }
-
-      if (typeof payload.storyUid !== 'string') {
-        throw new Error(
-          '`storyUid` must be a string (is of type ' +
-          (typeof payload.storyUid) +
-          '.'
-        );
-      }
-
-      if (!payload.hasOwnProperty('blockId')) {
-        throw new Error('`blockId` property is required.');
-      }
-
-      if (typeof payload.blockId !== 'string') {
-        throw new Error(
-          '`blockId` must be a string (is of type ' +
-          (typeof payload.blockId) +
-          '.'
-        );
-      }
+      Util.assertHasProperty(payload, 'storyUid');
+      Util.assertTypeof(payload.storyUid, 'string');
+      Util.assertHasProperty(payload, 'blockId');
+      Util.assertTypeof(payload.blockId, 'string');
 
       var story = _getStory(payload.storyUid);
       var blockId = payload.blockId;
@@ -288,21 +207,10 @@
 
     function _copyBlockIntoStory(payload) {
 
-      if (!payload.hasOwnProperty('storyUid')) {
-        throw new Error('`storyUid` property is required.');
-      }
-
-      if (typeof payload.storyUid !== 'string') {
-        throw new Error(
-          '`storyUid` must be a string (is of type ' +
-          (typeof payload.storyUid) +
-          '.'
-        );
-      }
-
-      if (!payload.hasOwnProperty('insertAt')) {
-        throw new Error('`insertAt` property is required.');
-      }
+      Util.assertHasProperty(payload, 'storyUid');
+      Util.assertTypeof(payload.storyUid, 'string');
+      Util.assertHasProperty(payload, 'insertAt');
+      Util.assertTypeof(payload.insertAt, 'number');
 
       if (typeof payload.insertAt !== 'number') {
         throw new Error(
@@ -325,21 +233,21 @@
 
       var block = _getBlock(payload.blockId);
       var index = parseInt(payload.index, 10);
-      var component = block.components[index];
+      var component;
 
       // Verify that it is a number *after* the parseInt but report on its
       // original type.
-      if (typeof index !== 'number') {
+      if (isNaN(index)) {
         throw new Error(
-          '`index` must be a number (is of type ' +
-          (typeof payload.index) +
-          '.'
+          'Invalid component index: "' + payload.index + '".'
         );
       }
 
       if (index < 0 || index > block.components.length) {
         throw new Error('`index` argument is out of bounds.');
       }
+
+      component = block.components[index];
 
       if (component.type !== payload.type || component.value !== payload.value) {
         block.components[payload.index] = {
@@ -363,13 +271,12 @@
 
     function _getStory(storyUid) {
 
-      if (typeof storyUid !== 'string') {
-        throw new Error('`storyUid` argument is not a string');
-      }
-
-      if (!_stories.hasOwnProperty(storyUid)) {
-        throw new Error('Story with uid "' + storyUid + '" does not exist.');
-      }
+      Util.assertTypeof(storyUid, 'string');
+      Util.assertHasProperty(
+        _stories,
+        storyUid,
+        'Story with uid "' + storyUid + '" does not exist.'
+      );
 
       return _stories[storyUid];
     }
@@ -380,9 +287,11 @@
         throw new Error('`blockId` argument is not a string');
       }
 
-      if (!_blocks.hasOwnProperty(blockId)) {
-        throw new Error('Block with id "' + blockId + '" does not exist.');
-      }
+      Util.assertHasProperty(
+        _blocks,
+        blockId,
+        'Block with id "' + blockId + '" does not exist.'
+      );
 
       return _blocks[blockId];
     }
@@ -443,42 +352,23 @@
 
     function _cloneBlockComponents(components) {
 
-      var newComponents = [];
+      return components.map(function(component) {
 
-      for (var i = 0; i < components.length; i++) {
+        Util.assertTypeof(component.value, 'string');
 
-        if (typeof components[i].value !== 'string') {
-          throw new Error(
-            'component value must be of type string (is of type ' +
-            (typeof components[i].value) +
-            ').'
-          );
-        }
-
-        newComponents.push(
-          {
-            type: components[i].type,
-            value: components[i].value
-          }
-        );
-      }
-
-      return newComponents;
+        return {
+          type: component.type,
+          value: component.value
+        };
+      });
     }
 
     function _validateStoryData(storyData) {
 
-      if (typeof storyData !== 'object') {
-        throw new Error(
-          '`storyData` argument must be an object (is of type ' +
-          (typeof storyData) +
-          ').'
-        );
-      }
-
-      if (!storyData.hasOwnProperty('uid')) {
-        throw new Error('`storyData` argument contains no `uid` property.');
-      }
+      Util.assertTypeof(storyData, 'object');
+      Util.assertHasProperty(storyData, 'uid');
+      Util.assertHasProperty(storyData, 'title');
+      Util.assertHasProperty(storyData, 'blocks');
 
       if (storyData.uid.match(FOUR_BY_FOUR_PATTERN) === null) {
         throw new Error(
@@ -487,31 +377,19 @@
           '".'
         );
       }
-
-      if (!storyData.hasOwnProperty('title')) {
-        throw new Error('`storyData` argument contains no `title` property.');
-      }
-
-      if (!storyData.hasOwnProperty('blocks')) {
-        throw new Error('`storyData` argument contains no `blocks` property.');
-      }
     }
 
     function _validateBlockData(blockData) {
 
-      if (typeof blockData !== 'object') {
-        throw new Error(
-          '`blockData` argument must be an object (is of type ' +
-          (typeof blockData) +
-          ').'
-        )
-      }
+      Util.assertTypeof(blockData, 'object');
+      Util.assertHasProperty(blockData, 'id');
+      Util.assertHasProperty(blockData, 'layout');
+      Util.assertHasProperty(blockData, 'components');
 
-      if (!blockData.hasOwnProperty('id')) {
-        throw new Error(
-          '`blockData` argument contains no `id` property.'
-        );
-      }
+      blockData.components.forEach(function(component) {
+        Util.assertHasProperty(component, 'type');
+        Util.assertHasProperty(component, 'value');
+      });
 
       if (typeof blockData.id !== 'string') {
         throw new Error(
@@ -520,32 +398,15 @@
           ').'
         );
       }
-
-      if (!blockData.hasOwnProperty('layout')) {
-        throw new Error(
-          '`blockData` argument contains no `layout` property.'
-        );
-      }
-
-      if (!blockData.hasOwnProperty('components')) {
-        throw new Error(
-          '`blockData` argument contains no `components` property.'
-        );
-      }
     }
 
     function _getStoryBlockIndexWithId(storyUid, blockId) {
 
       var story = _getStory(storyUid);
-      var storyBlockIds = story.blockIds;
-      var storyBlockIdCount = story.blockIds.length;
-      var index = null;
+      var index = story.blockIds.indexOf(blockId);
 
-      for (var i = 0; i < storyBlockIdCount; i++) {
-        if (storyBlockIds[i] === blockId) {
-          index = i;
-          break;
-        }
+      if (index === -1) {
+        index = null;
       }
 
       return index;
@@ -555,23 +416,9 @@
 
       var story = _getStory(storyUid);
       var storyBlockIdCount = story.blockIds.length;
-      var blockId = blockId;
 
-      if (typeof blockId !== 'string') {
-        throw new Error(
-          '`blockId` argument must be a string (is of type ' +
-          (typeof blockId) +
-          ').'
-        );
-      }
-
-      if (typeof index !== 'number') {
-        throw new Error(
-          '`index` argument must be a number (is of type ' +
-          (typeof index) +
-          ').'
-        );
-      }
+      Util.assertTypeof(blockId, 'string');
+      Util.assertTypeof(index, 'number');
 
       if (index < 0 || index > storyBlockIdCount) {
         throw new Error('`index` argument is out of bounds.');
@@ -586,21 +433,8 @@
 
     function _swapStoryBlocksAtIndices(storyUid, index1, index2) {
 
-      if (typeof index1 !== 'number') {
-        throw new Error(
-          '`index1` argument must be a number (is of type ' +
-          (typeof index1) +
-          ').'
-        );
-      }
-
-      if (typeof index2 !== 'number') {
-        throw new Error(
-          '`index2` argument must be a number (is of type ' +
-          (typeof index2) +
-          ').'
-        );
-      }
+      Util.assertTypeof(index1, 'number');
+      Util.assertTypeof(index2, 'number');
 
       var story = _getStory(storyUid);
       var storyBlockIdCount = story.blockIds.length;
@@ -616,6 +450,41 @@
       var tempBlock = story.blockIds[index1];
       story.blockIds[index1] = story.blockIds[index2];
       story.blockIds[index2] = tempBlock;
+    }
+
+    function _serializeBlock(blockId) {
+
+      var block = _getBlock(blockId);
+
+      return {
+        id: block.id,
+        layout: block.layout,
+        components: block.components
+      };
+    }
+
+    // TODO: Verify that this works as intended.
+    function _serializeBlockDiff(blockId) {
+
+      var block = _getBlock(blockId);
+      var serializedBlock;
+
+      if (block.hasOwnProperty('dirty') && block.dirty) {
+
+        serializedBlock = {
+          layout: block.layout,
+          components: block.components
+        };
+
+      } else {
+
+        serializedBlock = {
+          id: block.id
+        };
+
+      }
+
+      return serializedBlock;
     }
   }
 

@@ -10,7 +10,6 @@
     var editable = options.editable || false;
     var insertionHint = options.insertionHintElement || false;
     var insertionHintIndex = -1;
-    var richTextEditorManager = options.richTextEditorManager || null;
     var onRenderError = options.onRenderError || function() {};
     var componentTemplateRenderers = {
       'text': _renderTextComponentTemplate,
@@ -65,7 +64,7 @@
       );
     }
 
-    if (editable && !(richTextEditorManager instanceof RichTextEditorManager)) {
+    if (editable && !(window.richTextEditorManager instanceof RichTextEditorManager)) {
 
       onRenderError();
       throw new Error(
@@ -164,11 +163,26 @@
 
     function _renderStory() {
 
-      var blockIds = storyStore.getStoryBlockIds(storyUid);
+      var blockIds = window.storyStore.getStoryBlockIds(storyUid);
+      var blockIdsToRemove = elementCache.getUnusedBlockIds(blockIds);
       var blockCount = blockIds.length;
       var layoutHeight = 0;
 
-      elementCache.flushBlocksExcept(blockIds);
+      blockIdsToRemove.forEach(function(blockId) {
+
+        window.
+          storyStore.
+          getBlockComponents(blockId).
+          forEach(function(component, i) {
+            if (component.type === 'text') {
+              var editorId = blockId + '-' + i;
+              window.richTextEditorManager.deleteEditor(editorId);
+            }
+          });
+
+        elementCache.getBlock(blockId).remove();
+        elementCache.flushBlock(blockId);
+      });
 
       blockIds.forEach(function(blockId, i) {
 
@@ -243,7 +257,7 @@
         );
       }
 
-      var layout = storyStore.getBlockLayout(blockId);
+      var layout = window.storyStore.getBlockLayout(blockId);
       var componentWidths = layout.split('-');
       var componentOptions;
       var componentTemplates;
@@ -307,24 +321,26 @@
       var components = window.storyStore.getBlockComponents(blockId);
       var componentCount = components.length;
       var editorId;
-      var editor;
-      var editorHeights = [];
-      var maxEditorHeight;
+      var maxEditorHeight = 0;
 
       for (var i = 0; i < componentCount; i++) {
 
         if (components[i].type === 'text') {
 
           editorId = blockId + '-' + i;
-          editor = richTextEditorManager.getEditor(editorId);
-          editorHeights.push(editor.getContentHeight());
+          maxEditorHeight = Math.max(
+            maxEditorHeight,
+            window.
+              richTextEditorManager.
+              getEditor(editorId).
+              getContentHeight()
+          );
         }
       }
 
       blockElement.
-        find('.component').
-        find('iframe').
-        height(_.max(editorHeights));
+        find('.text-editor > iframe').
+        height(maxEditorHeight);
     }
 
     /**
@@ -334,8 +350,8 @@
 
     function _renderBlockComponentsTemplates(blockId, componentData) {
 
-      var componentWidths = storyStore.getBlockLayout(blockId).split('-');
-      var componentData = storyStore.getBlockComponents(blockId);
+      var componentWidths = window.storyStore.getBlockLayout(blockId).split('-');
+      var componentData = window.storyStore.getBlockComponents(blockId);
 
       return componentData.
         map(function(component, i) {
@@ -370,8 +386,17 @@
       if (editable) {
 
         editorId = options.blockId + '-' + options.componentIndex;
-        component = $('<div>', { class: options.classes + ' text-editor', 'data-editor-id': editorId });
-        editor = richTextEditorManager.createEditor(component, editorId, options.componentValue);
+
+        component = $(
+          '<div>',
+          { class: options.classes + ' text-editor', 'data-editor-id': editorId }
+        );
+
+        editor = window.richTextEditorManager.createEditor(
+          component,
+          editorId,
+          options.componentValue
+        );
 
       } else {
         component = $('<div>', { class: options.classes }).append(options.componentValue);
@@ -395,7 +420,7 @@
 
     function _renderBlockComponentsData(blockId) {
 
-      var components = storyStore.getBlockComponents(blockId);
+      var components = window.storyStore.getBlockComponents(blockId);
 
       components.forEach(function(component, i) {
 
@@ -413,9 +438,7 @@
         var editor = richTextEditorManager.getEditor(editorId);
         var content = editor.getContent();
 
-        if (content !== data) {
-          editor.setContent(data);
-        }
+        editor.setContent(data);
       } else {
         element.html(data);
       }

@@ -100,8 +100,12 @@
     };
 
     this.setContent = function(content) {
-      _editor.setHTML(content);
-      _handleContentChange();
+
+      if (_editor.getHTML() !== content) {
+
+        _editor.setHTML(content);
+        _handleContentChange();
+      }
     };
 
     this.getContentHeight = function() {

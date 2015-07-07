@@ -126,8 +126,9 @@ describe('StoryRenderer', function() {
 
         it('raises an exception', function() {
 
+          window.richTextEditorManager = {};
+
           options.editable = true;
-          options.richTextEditorManager = {};
 
           assert.throws(function() {
             var renderer = new StoryRenderer(options);
@@ -247,13 +248,15 @@ describe('StoryRenderer', function() {
         validAssetFinder = new AssetFinder();
         validToolbar = Object.create(RichTextEditorToolbar.prototype);
         validFormats = [];
-        SquireMocker.mock();
-        options.editable = true;
-        options.richTextEditorManager = new RichTextEditorManager(
+
+        window.richTextEditorManager = new RichTextEditorManager(
           validAssetFinder,
           validToolbar,
           validFormats
         );
+
+        SquireMocker.mock();
+        options.editable = true;
       });
 
       afterEach(function() {
@@ -321,14 +324,16 @@ describe('StoryRenderer', function() {
       validAssetFinder = new AssetFinder();
       validToolbar = Object.create(RichTextEditorToolbar.prototype);
       validFormats = [];
-      SquireMocker.mock();
-      options.editable = true;
-      options.insertionHintElement = $('.insertion-hint');
-      options.richTextEditorManager = new RichTextEditorManager(
+
+      window.richTextEditorManager = new RichTextEditorManager(
         validAssetFinder,
         validToolbar,
         validFormats
       );
+
+      SquireMocker.mock();
+      options.editable = true;
+      options.insertionHintElement = $('.insertion-hint');
 
       renderer = new StoryRenderer(options);
     });

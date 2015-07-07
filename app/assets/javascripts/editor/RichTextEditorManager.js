@@ -33,11 +33,9 @@
     var _toolbar = toolbar;
     var _editors = {};
 
-    this.createEditor = function(editorId, preloadText) {
+    this.createEditor = function(element, editorId, contentToPreload) {
 
-      var element = $('<div>', { class: 'text-editor', 'data-editor-id': editorId });
-
-      _editors[editorId] = new RichTextEditor(element, editorId, _assetFinder, _formats, preloadText);
+      _editors[editorId] = new RichTextEditor(element, editorId, _assetFinder, _formats, contentToPreload);
 
       return element;
     };
@@ -51,6 +49,13 @@
       }
 
       return editor;
+    };
+
+    this.deleteEditor = function(editorId) {
+
+      _editors[editorId].destroy();
+
+      delete _editors[editorId];
     };
 
     this.linkToolbar = function(editorId) {

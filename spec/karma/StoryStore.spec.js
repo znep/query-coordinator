@@ -3,10 +3,26 @@ describe('StoryStore', function() {
   'use strict';
 
   var story1Uid = 'stry-spc1';
+  var story1Title = 'Story 1';
+
   var story2Uid = 'stry-spc2';
-  var firstBlockId = '2000';
-  var secondBlockId = '2001';
-  var thirdBlockId = '2002';
+  var story2Title = 'Story 2';
+
+  var block1Id = 'block1';
+  var block1Layout = '6-6';
+  var block1Components = [
+    { type: 'image', value: 'fakeImageFile.png' },
+    { type: 'text', value: 'First Block' }
+  ];
+
+  var block2Id = 'block2';
+  var block2Layout = '12';
+  var block2Components = [ { type: 'text', value: 'Second Block' } ];
+
+  var block3Id = 'block3';
+  var block3Layout = '12';
+  var block3Components = [ { type: 'text', value: 'Third Block' } ];
+
   var store;
 
   function dispatch(action) {
@@ -17,30 +33,29 @@ describe('StoryStore', function() {
 
     var sampleStory1Data = generateStoryData({
       uid: story1Uid,
+      title: story1Title,
       blocks: [
         generateBlockData({
-          id: firstBlockId,
-          components: [
-            { type: 'image', value: 'fakeImageFile.png' }
-          ]
+          id: block1Id,
+          layout: block1Layout,
+          components: block1Components
         }),
         generateBlockData({
-          id: secondBlockId,
-          components: [
-            { type: 'text', value: 'some-text-a' }
-          ]
+          id: block2Id,
+          layout: block2Layout,
+          components: block2Components
         })
       ]
     });
 
     var sampleStory2Data = generateStoryData({
       uid: story2Uid,
+      title: story2Title,
       blocks: [
         generateBlockData({
-          id: thirdBlockId,
-          components: [
-            { type: 'text', value: 'some-text-b' }
-          ]
+          id: block3Id,
+          layout: block3Layout,
+          components: block3Components
         })
       ]
     });
@@ -59,22 +74,450 @@ describe('StoryStore', function() {
     delete window.dispatcher;
   });
 
-  describe('accessors', function() {
+  describe('story data accessors', function() {
+
+    describe('given an invalid story uid', function() {
+
+      describe('.storyExists()', function() {
+
+        it('should return false', function() {
+          assert.isFalse(store.storyExists(null));
+        });
+      });
+
+      describe('.storyHasBlock()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.storyHasBlock(null);
+          });
+        });
+      });
+
+      describe('.getStoryTitle()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.getStoryTitle(null);
+          });
+        });
+      });
+
+      describe('.getStoryBlockIds()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.getStoryBlockIds(null);
+          });
+        });
+      });
+
+      describe('.getStoryBlockAtIndex()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.getStoryBlockAtIndex(null, 0);
+          });
+        });
+      });
+
+      describe('.getStoryBlockIdAtIndex()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.getStoryBlockIdAtIndex(null, 0);
+          });
+        });
+      });
+
+      describe('.serializeStory()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.serializeStory(null);
+          });
+        });
+      });
+
+      describe('.serializeStoryDiff()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.serializeStoryDiff(null);
+          });
+        });
+      });
+    });
+
+    describe('given a non-existent story uid', function() {
+
+      describe('.storyExists()', function() {
+
+        it('should return false', function() {
+          assert.isFalse(store.storyExists('notf-ound'));
+        });
+      });
+
+      describe('.storyHasBlock()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.storyHasBlock('notf-ound');
+          });
+        });
+      });
+
+      describe('.getStoryTitle()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.getStoryTitle('notf-ound');
+          });
+        });
+      });
+
+      describe('.getStoryBlockIds()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.getStoryBlockIds('notf-ound');
+          });
+        });
+      });
+
+      describe('.getStoryBlockAtIndex()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.getStoryBlockAtIndex('notf-ound', 0);
+          });
+        });
+      });
+
+      describe('.getStoryBlockIdAtIndex()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.getStoryBlockIdAtIndex('notf-ound', 0);
+          });
+        });
+      });
+
+      describe('.serializeStory()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.serializeStory('notf-ound');
+          });
+        });
+      });
+
+      describe('.serializeStoryDiff()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.serializeStoryDiff('notf-ound');
+          });
+        });
+      });
+    });
 
     describe('given an existing story uid', function() {
 
-      it('should return the correct value', function() {
+      describe('.storyExists()', function() {
 
-        assert.equal(store.getTitle(story1Uid), 'Test Story');
-        assert.deepEqual(store.getBlockIds(story1Uid), [ firstBlockId, secondBlockId ]);
-        assert.equal(store.getBlockIdAtIndex(story1Uid, 0), firstBlockId);
+        it('should return true', function() {
+          assert.isTrue(store.storyExists(story1Uid));
+        });
+      });
 
-        assert.equal(store.getTitle(story2Uid), 'Test Story');
-        assert.deepEqual(store.getBlockIds(story2Uid), [ thirdBlockId ]);
-        assert.equal(store.getBlockIdAtIndex(story2Uid, 0), thirdBlockId);
+      describe('.storyHasBlock()', function() {
 
-        assert.isTrue(store.hasBlock(story2Uid, thirdBlockId));
-        assert.isFalse(store.hasBlock(story2Uid, 'notthere'));
+        it('should return the correct value', function() {
+          assert.isTrue(store.storyHasBlock(story2Uid, block3Id));
+          assert.isFalse(store.storyHasBlock(story2Uid, 'notthere'));
+        });
+      });
+
+      describe('.getStoryTitle()', function() {
+
+        it('should return the correct value', function() {
+          assert.equal(store.getStoryTitle(story1Uid), story1Title);
+          assert.equal(store.getStoryTitle(story2Uid), story2Title);
+        });
+      });
+
+      describe('.getStoryBlockIds()', function() {
+
+        it('should return the correct value', function() {
+          assert.deepEqual(store.getStoryBlockIds(story1Uid), [ block1Id, block2Id ]);
+          assert.deepEqual(store.getStoryBlockIds(story2Uid), [ block3Id ]);
+        });
+      });
+
+      describe('.getStoryBlockAtIndex()', function() {
+
+        describe('given an invalid index', function() {
+
+          it('should throw an error', function() {
+            assert.throw(function() {
+              store.getStoryBlockAtIndex(story1Uid, 99);
+            });
+          });
+        });
+
+        describe('given a valid index', function() {
+
+          it('should return the correct value', function() {
+
+            var block1 = store.getStoryBlockAtIndex(story1Uid, 0);
+            var block3 = store.getStoryBlockAtIndex(story2Uid, 0);
+
+            assert.propertyVal(block1, 'id', block1Id);
+            assert.propertyVal(block1, 'layout', block1Layout);
+            assert.equal(block1.components[0].type, block1Components[0].type);
+            assert.equal(block1.components[0].value, block1Components[0].value);
+            assert.equal(block1.components[1].type, block1Components[1].type);
+            assert.equal(block1.components[1].value, block1Components[1].value);
+            
+            assert.propertyVal(block3, 'id', block3Id);
+            assert.propertyVal(block3, 'layout', block3Layout);
+            assert.equal(block3.components[0].type, block3Components[0].type);
+            assert.equal(block3.components[0].value, block3Components[0].value);
+          });
+        });
+      });
+
+      describe('.getStoryBlockIdAtIndex()', function() {
+
+        describe('given an invalid index', function() {
+
+          it('should throw an error', function() {
+            assert.throw(function() {
+              store.getStoryBlockIdAtIndex(story1Uid, 99);
+            });
+          });
+        });
+
+        describe('given a valid index', function() {
+
+          it('should return the correct value', function() {
+            assert.equal(store.getStoryBlockIdAtIndex(story1Uid, 0), block1Id);
+            assert.equal(store.getStoryBlockIdAtIndex(story2Uid, 0), block3Id);
+          });
+        });
+      });
+
+      describe('.serializeStory()', function() {
+
+        it('should return an object matching the properties of the story', function() {
+
+          var serializedStory = store.serializeStory(story1Uid);
+
+          assert.equal(serializedStory.uid, story1Uid);
+          assert.equal(serializedStory.title, story1Title);
+          assert.equal(serializedStory.blocks[0].id, block1Id);
+          assert.equal(serializedStory.blocks[0].layout, block1Layout);
+          assert.deepEqual(serializedStory.blocks[0].components, block1Components);
+          assert.equal(serializedStory.blocks[1].id, block2Id);
+          assert.equal(serializedStory.blocks[1].layout, block2Layout);
+          assert.deepEqual(serializedStory.blocks[1].components, block2Components);
+        });
+      });
+
+      describe('.serializeStoryDiff()', function() {
+
+        it('should return an object matching the properties of the story except for unchanged blocks', function() {
+
+          dispatch({ action: Constants.BLOCK_COPY_INTO_STORY, storyUid: story1Uid, blockId: block1Id, insertAt: 2 });
+
+          var serializedStory = store.serializeStoryDiff(story1Uid);
+
+          assert.equal(serializedStory.uid, story1Uid);
+          assert.equal(serializedStory.title, story1Title);
+          assert.property(serializedStory.blocks[0], 'id');
+          assert.notProperty(serializedStory.blocks[0], 'layout');
+          assert.notProperty(serializedStory.blocks[0], 'components');
+          assert.property(serializedStory.blocks[1], 'id');
+          assert.notProperty(serializedStory.blocks[1], 'layout');
+          assert.notProperty(serializedStory.blocks[1], 'components');
+          assert.notProperty(serializedStory.blocks[2], 'id');
+          assert.equal(serializedStory.blocks[2].layout, block1Layout);
+          assert.deepEqual(serializedStory.blocks[2].components, block1Components);
+        });
+      });
+
+      describe('.deserializeStory()', function() {
+
+        it('should update the specified story', function() {
+
+          var updatedStoryTitle = 'Updated Story Title';
+          var updatedBlockId = 'updated block';
+          var updatedBlockLayout = '12';
+          var updatedBlockComponents = [ { type: 'text', value: 'Updated component' } ];
+
+          var updateData = {
+            uid: story1Uid,
+            title: updatedStoryTitle,
+            blocks: [
+              generateBlockData({
+                id: updatedBlockId,
+                layout: updatedBlockLayout,
+                components: updatedBlockComponents
+              })
+            ]
+          };
+
+          store.deserializeStory(updateData);
+          var serializedStory = store.serializeStory(story1Uid);
+          assert.equal(serializedStory.uid, story1Uid);
+          assert.equal(serializedStory.title, updatedStoryTitle);
+          assert.equal(serializedStory.blocks[0].id, updatedBlockId);
+          assert.equal(serializedStory.blocks[0].layout, updatedBlockLayout);
+          assert.deepEqual(serializedStory.blocks[0].components, updatedBlockComponents);
+        });
+      });
+    });
+  });
+
+  describe('block data accessors', function() {
+
+    describe('given an invalid block id', function() {
+
+      describe('.getBlockLayout()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.getBlockLayout(null);
+          });
+        });
+      });
+
+      describe('.getBlockComponents()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.getBlockLayout(null);
+          });
+        });
+      });
+
+      describe('.getBlockComponentAtIndex()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.getBlockComponentAtIndex(null, 0);
+          });
+        });
+      });
+    });
+
+    describe('given a non-existent block id', function() {
+
+      describe('.getBlockLayout()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.getBlockLayout('does not exist');
+          });
+        });
+      });
+
+      describe('.getBlockComponents()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.getBlockComponents('does not exist');
+          });
+        });
+      });
+
+      describe('.getBlockComponentAtIndex()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            store.getBlockLayout('does not exist', 0);
+          });
+        });
+      });
+    });
+
+    describe('given an existing block id', function() {
+
+      describe('.getBlockLayout()', function() {
+
+        it('should return the layout of the specified block', function() {
+
+          assert.equal(store.getBlockLayout(block1Id), block1Layout);
+          assert.equal(store.getBlockLayout(block2Id), block2Layout);
+        });
+      });
+
+      describe('.getBlockComponents()', function() {
+
+        it('should return the components of the specified block', function() {
+
+          assert.deepEqual(store.getBlockComponents(block1Id), block1Components);
+          assert.deepEqual(store.getBlockComponents(block2Id), block2Components);
+        });
+      });
+
+      describe('.getBlockComponentAtIndex()', function() {
+
+        describe('given an index < 0', function() {
+
+          it('should throw an error', function() {
+
+            assert.throw(function() {
+              store.getBlockComponentAtIndex(block1Id, -1);
+            });
+          });
+        });
+
+        describe('given an index >= the number of components', function() {
+
+          it('should throw an error', function() {
+
+            assert.throw(function() {
+              store.getBlockComponentAtIndex(block1Id, 2);
+            });
+
+            assert.throw(function() {
+              store.getBlockComponentAtIndex(block1Id, 3);
+            });
+          });
+        });
+
+        describe('given a valid index', function() {
+
+          it('should return the specified component of the specified block', function() {
+
+            var component = store.getBlockComponentAtIndex(block1Id, 1);
+
+            assert.equal(component.type, block1Components[1].type);
+            assert.equal(component.value, block1Components[1].value);
+          });
+        });
       });
     });
   });
@@ -83,12 +526,152 @@ describe('StoryStore', function() {
 
     describe('STORY_CREATE', function() {
 
-      describe('given invalid story data', function() {
+      describe('when `storyData` is incomplete', function() {
 
-        it('should throw an error', function() {
+        var storyData;
+
+        beforeEach(function() {
+          storyData = generateStoryData();
+        });
+
+        describe('and `uid` is missing', function() {
+
+          it('raises an exception', function() {
+
+            delete storyData['uid'];
+
+            assert.throw(function() {
+              dispatch({ action: Constants.STORY_CREATE, data: storyData });
+            });
+          });
+        });
+
+        describe('and `uid` is not a valid four-by-four', function() {
+
+          it('raises an exception', function() {
+
+            storyData['uid'] = 'testtest';
+
+            assert.throw(function() {
+              dispatch({ action: Constants.STORY_CREATE, data: storyData });
+            });
+          });
+        });
+
+        describe('and `title` is missing', function() {
+
+          it('raises an exception', function() {
+
+            delete storyData['title'];
+
+            assert.throw(function() {
+              dispatch({ action: Constants.STORY_CREATE, data: storyData });
+            });
+          });
+        });
+
+        describe('and `blocks` is missing', function() {
+
+          it('raises an exception', function() {
+
+            delete storyData['blocks'];
+
+            assert.throw(function() {
+              dispatch({ action: Constants.STORY_CREATE, data: storyData });
+            });
+          });
+        });
+
+        describe('and `blocks` is not an array', function() {
+
+          it('raises an exception', function() {
+
+            var invalidStoryData = generateStoryData({
+              blocks: 'not an array'
+            });
+
+            assert.throw(function() {
+              dispatch({ action: Constants.STORY_CREATE, data: invalidStoryData });
+            });
+          });
+        });
+      });
+
+      describe('given `blocks` with an invalid block', function() { 
+
+        it('raises an exception', function() {
 
           var invalidStoryData = generateStoryData({
-            uid: null
+            blocks: [
+              { invalidBlockObject: true }
+            ]
+          });
+
+          assert.throw(function() {
+            dispatch({ action: Constants.STORY_CREATE, data: invalidStoryData });
+          });
+        });
+      });
+
+      describe('given `blocks` with a block that does not have an `id`', function() { 
+
+        it('raises an exception', function() {
+
+          var invalidStoryData = generateStoryData({
+            blocks: [
+              {
+                invalidBlockObject: {
+                  layout: '12',
+                  components: [
+                    { type: 'text', value: 'test' }
+                  ]
+                }
+              }
+            ]
+          });
+
+          assert.throw(function() {
+            dispatch({ action: Constants.STORY_CREATE, data: invalidStoryData });
+          });
+        });
+      });
+
+      describe('given `blocks` with a block that does not have a `layout`', function() { 
+
+        it('raises an exception', function() {
+
+          var invalidStoryData = generateStoryData({
+            blocks: [
+              {
+                invalidBlockObject: {
+                  id: 'testBlockId',
+                  components: [
+                    { type: 'text', value: 'test' }
+                  ]
+                }
+              }
+            ]
+          });
+
+          assert.throw(function() {
+            dispatch({ action: Constants.STORY_CREATE, data: invalidStoryData });
+          });
+        });
+      });
+
+      describe('given `blocks` with a block that does not have `components`', function() { 
+
+        it('raises an exception', function() {
+
+          var invalidStoryData = generateStoryData({
+            blocks: [
+              {
+                invalidBlockObject: {
+                  id: 'testBlockId',
+                  layout: '12'
+                }
+              }
+            ]
           });
 
           assert.throw(function() {
@@ -111,6 +694,25 @@ describe('StoryStore', function() {
         });
       });
 
+      describe('given `blocks` with a block id that already exists', function() {
+
+        it('should throw an error', function() {
+
+          var invalidStoryData = generateStoryData({
+            uid: 'notf-ound',
+            blocks: [
+              generateBlockData({
+                id: block1Id
+              })
+            ]
+          });
+
+          assert.throw(function() {
+            dispatch({ action: Constants.STORY_CREATE, data: invalidStoryData });
+          });
+        });
+      });
+
       describe('given valid story data', function() {
 
         it('should create the story', function() {
@@ -125,80 +727,38 @@ describe('StoryStore', function() {
 
           dispatch({ action: Constants.STORY_CREATE, data: validStoryData });
 
-          assert.equal(store.getTitle(validStoryUid), validStoryTitle);
-        });
-      });
-    });
-
-
-    describe('STORY_INSERT_BLOCK', function() {
-
-      var validInsertedBlockId = 'clonedBlock';
-      var validInsertionIndex = 1;
-
-      xdescribe('given a block that is already present in the story', function() {
-      });
-
-      describe('given an invalid story uid', function() {
-
-        it('should throw an error', function() {
-
-          assert.throw(function() {
-            dispatch({
-              action: Constants.STORY_INSERT_BLOCK,
-              storyUid: null,
-              blockId: validInsertedBlockId,
-              insertAt: validInsertionIndex
-            });
-          });
-        });
-      });
-
-      describe('not given a blockId', function() {
-
-        it('should throw an error', function() {
-
-          assert.throw(function() {
-            dispatch({
-              action: Constants.STORY_INSERT_BLOCK,
-              storyUid: story1Uid,
-              insertAt: validInsertionIndex
-            });
-          });
-        });
-      });
-
-      describe('not given an insertion index', function() {
-
-        it('should throw an error', function() {
-
-          assert.throw(function() {
-            dispatch({
-              action: Constants.STORY_INSERT_BLOCK,
-              storyUid: story1Uid,
-              blockId: validInsertedBlockId
-            });
-          });
-        });
-      });
-
-      describe('given valid data', function() {
-
-        it('should insert the block', function() {
-
-          dispatch({
-            action: Constants.STORY_INSERT_BLOCK,
-            storyUid: story1Uid,
-            blockId: validInsertedBlockId,
-            insertAt: validInsertionIndex
-          });
-
-          assert.deepEqual(store.getBlockIds(story1Uid), [ firstBlockId, validInsertedBlockId, secondBlockId ]);
+          assert.equal(store.getStoryTitle(validStoryUid), validStoryTitle);
         });
       });
     });
 
     describe('STORY_MOVE_BLOCK_UP', function() {
+
+      describe('not given a story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_MOVE_BLOCK_UP,
+              blockId: block1Id
+            });
+          });
+        });
+      });
+
+      describe('not given a block id', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_MOVE_BLOCK_UP,
+              storyUid: 'badd-ddab'
+            });
+          });
+        });
+      });
 
       describe('given an invalid story uid', function() {
 
@@ -207,8 +767,52 @@ describe('StoryStore', function() {
           assert.throw(function() {
             dispatch({
               action: Constants.STORY_MOVE_BLOCK_UP,
+              storyUid: null,
+              blockId: block1Id
+            });
+          });
+        });
+      });
+
+
+      describe('given an invalid block id', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_MOVE_BLOCK_UP,
+              storyUid: story1Uid,
+              blockId: null
+            });
+          });
+        });
+      });
+
+      describe('given a non-existent story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_MOVE_BLOCK_UP,
               storyUid: 'badd-ddab',
-              blockId: firstBlockId
+              blockId: block1Id
+            });
+          });
+        });
+      });
+
+
+      describe('given a non-existent block id', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_MOVE_BLOCK_UP,
+              storyUid: story1Uid,
+              blockId: 'not-found'
             });
           });
         });
@@ -221,15 +825,41 @@ describe('StoryStore', function() {
           dispatch({
             action: Constants.STORY_MOVE_BLOCK_UP,
             storyUid: story1Uid,
-            blockId: secondBlockId
+            blockId: block2Id
           });
 
-          assert.deepEqual(store.getBlockIds(story1Uid), [ secondBlockId, firstBlockId ]);
+          assert.deepEqual(store.getStoryBlockIds(story1Uid), [ block2Id, block1Id ]);
         });
       });
     });
 
     describe('STORY_MOVE_BLOCK_DOWN', function() {
+
+      describe('not given a story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_MOVE_BLOCK_DOWN,
+              blockId: block1Id
+            });
+          });
+        });
+      });
+
+      describe('not given a block id', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_MOVE_BLOCK_DOWN,
+              storyUid: 'badd-ddab'
+            });
+          });
+        });
+      });
 
       describe('given an invalid story uid', function() {
 
@@ -238,8 +868,52 @@ describe('StoryStore', function() {
           assert.throw(function() {
             dispatch({
               action: Constants.STORY_MOVE_BLOCK_DOWN,
+              storyUid: null,
+              blockId: block1Id
+            });
+          });
+        });
+      });
+
+
+      describe('given an invalid block id', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_MOVE_BLOCK_DOWN,
+              storyUid: story1Uid,
+              blockId: null
+            });
+          });
+        });
+      });
+
+      describe('given a non-existent story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_MOVE_BLOCK_DOWN,
               storyUid: 'badd-ddab',
-              blockId: firstBlockId
+              blockId: block1Id
+            });
+          });
+        });
+      });
+
+
+      describe('given a non-existent block id', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_MOVE_BLOCK_DOWN,
+              storyUid: story1Uid,
+              blockId: 'not-found'
             });
           });
         });
@@ -251,15 +925,41 @@ describe('StoryStore', function() {
           dispatch({
             action: Constants.STORY_MOVE_BLOCK_DOWN,
             storyUid: story1Uid,
-            blockId: firstBlockId
+            blockId: block1Id
           });
 
-          assert.deepEqual(store.getBlockIds(story1Uid), [ secondBlockId, firstBlockId ]);
+          assert.deepEqual(store.getStoryBlockIds(story1Uid), [ block2Id, block1Id ]);
         });
       });
     });
 
     describe('STORY_DELETE_BLOCK', function() {
+
+      describe('not given a story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_DELETE_BLOCK,
+              blockId: block1Id
+            });
+          });
+        });
+      });
+
+      describe('not given a block id', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_DELETE_BLOCK,
+              storyUid: 'badd-ddab'
+            });
+          });
+        });
+      });
 
       describe('given an invalid story uid', function() {
 
@@ -268,8 +968,52 @@ describe('StoryStore', function() {
           assert.throw(function() {
             dispatch({
               action: Constants.STORY_DELETE_BLOCK,
+              storyUid: null,
+              blockId: block1Id
+            });
+          });
+        });
+      });
+
+
+      describe('given an invalid block id', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_DELETE_BLOCK,
+              storyUid: story1Uid,
+              blockId: null
+            });
+          });
+        });
+      });
+
+      describe('given a non-existent story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_DELETE_BLOCK,
               storyUid: 'badd-ddab',
-              blockId: firstBlockId
+              blockId: block1Id
+            });
+          });
+        });
+      });
+
+
+      describe('given a non-existent block id', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_DELETE_BLOCK,
+              storyUid: story1Uid,
+              blockId: 'not-found'
             });
           });
         });
@@ -281,39 +1025,244 @@ describe('StoryStore', function() {
           dispatch({
             action: Constants.STORY_DELETE_BLOCK,
             storyUid: story1Uid,
-            blockId: firstBlockId
+            blockId: block1Id
           });
 
-          assert.deepEqual(store.getBlockIds(story1Uid), [ secondBlockId ]);
+          assert.deepEqual(store.getStoryBlockIds(story1Uid), [ block2Id ]);
         });
       });
     });
 
-    // NOTE! These implementations delegate to the Story model.
-    // Proper tests for these actions live in Story.spec.js.
-    // describe('story:insertBlockAtIndex', function() {
-    //   describe('given a bad story ID', function() {
-    //     it('should throw an error', function() {
-    //       assert.throw(function() {
-    //         dispatch({
-    //           name: 'story:insertBlockAtIndex',
-    //           storyId: 'notv-lidz',
-    //           index: 1,
-    //           blockId: thirdBlockId
-    //         });
-    //       });
-    //     });
-    //   });
+    describe('BLOCK_COPY_INTO_STORY', function() {
 
-    //   it('should update the story', function() {
-    //     dispatch({
-    //       name: 'story:insertBlockAtIndex',
-    //       storyId: story1Uid,
-    //       index: 1,
-    //       blockId: thirdBlockId
-    //     });
-    //     assert.deepEqual(store.getBlockIds(story1Uid), [ firstBlockId, thirdBlockId, secondBlockId ]);
-    //   });
-    // });
+      var validInsertionIndex = 0;
+
+      describe('not given a block id', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.BLOCK_COPY_INTO_STORY,
+              storyUid: story1Uid,
+              insertAt: validInsertionIndex
+            });
+          });
+        });
+      });
+
+      describe('not given a story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.BLOCK_COPY_INTO_STORY,
+              blockId: block1Id,
+              insertAt: validInsertionIndex
+            });
+          });
+        });
+      });
+
+      describe('not given an insertion index', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.BLOCK_COPY_INTO_STORY,
+              blockId: block1Id,
+              storyUid: story1Uid
+            });
+          });
+        });
+      });
+
+      describe('given an invalid block id', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.BLOCK_COPY_INTO_STORY,
+              blockId: null,
+              storyUid: story1Uid,
+              insertAt: validInsertionIndex
+            });
+          });
+        });
+      });
+
+      describe('given an invalid story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.BLOCK_COPY_INTO_STORY,
+              blockId: block1Id,
+              storyUid: null,
+              insertAt: validInsertionIndex
+            });
+          });
+        });
+      });
+
+      describe('given an invalid insertion index', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.BLOCK_COPY_INTO_STORY,
+              blockId: block1Id,
+              storyUid: story1Uid,
+              insertAt: null
+            });
+          });
+        });
+      });
+
+      describe('given a non-existent block id', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.BLOCK_COPY_INTO_STORY,
+              blockId: 'notfound',
+              storyUid: story1Uid,
+              insertAt: validInsertionIndex
+            });
+          });
+        });
+      });
+
+      describe('given a non-existent story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.BLOCK_COPY_INTO_STORY,
+              blockId: block1Id,
+              storyUid: 'notf-ound',
+              insertAt: validInsertionIndex
+            });
+          });
+        });
+      });
+
+      describe('given an out of bounds insertion index', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.BLOCK_COPY_INTO_STORY,
+              blockId: block1Id,
+              storyUid: story1Uid,
+              insertAt: 99
+            });
+          });
+        });
+      });
+
+      describe('given valid data', function() {
+
+        it('should insert a block at the specified index', function() {
+
+          dispatch({
+            action: Constants.BLOCK_COPY_INTO_STORY,
+            blockId: block1Id,
+            storyUid: story1Uid,
+            insertAt: validInsertionIndex
+          });
+
+          var clonedBlock = store.getStoryBlockAtIndex(story1Uid, validInsertionIndex);
+
+          assert.equal(clonedBlock.layout, block1Layout);
+          assert.deepEqual(clonedBlock.components, block1Components);
+        });
+      });
+    });
+
+    describe('BLOCK_UPDATE_COMPONENT', function() {
+
+      var validComponentIndex;
+      var validComponentType;
+      var validComponentValue;
+
+      beforeEach(function() {
+        validComponentIndex = 1;
+        validComponentType = 'text';
+        validComponentValue = 'updated component text';
+      });
+
+      describe('given an invalid block id', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.BLOCK_UPDATE_COMPONENT,
+              blockId: null,
+              index: validComponentIndex,
+              type: validComponentType,
+              value: validComponentValue
+            });
+          });
+        });
+      });
+
+      describe('given an invalid component index', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.BLOCK_UPDATE_COMPONENT,
+              blockId: block1Id,
+              index: null,
+              type: validComponentType,
+              value: validComponentValue
+            });
+          });
+        });
+      });
+
+      describe('given an out of bounds component index', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.BLOCK_UPDATE_COMPONENT,
+              blockId: block1Id,
+              index: 99,
+              type: validComponentType,
+              value: validComponentValue
+            });
+          });
+        });
+      });
+
+      describe('given valid data', function() {
+
+        it('should update the specified component', function() {
+
+          dispatch({
+            action: Constants.BLOCK_UPDATE_COMPONENT,
+            blockId: block1Id,
+            index: validComponentIndex,
+            type: validComponentType,
+            value: validComponentValue
+          });
+
+          assert.equal(store.getBlockComponentAtIndex(block1Id, 1).value, validComponentValue);
+        });
+      });
+    });
   });
 });

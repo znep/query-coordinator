@@ -27,10 +27,13 @@ describe('StoryRenderer', function() {
 
     window.dispatcher = new Dispatcher();
     window.storyStore = new StoryStore();
-    window.blockStore = new BlockStore();
     window.dragDropStore = new DragDropStore();
 
     dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
+  }
+
+  function forceRender() {
+    storyStore.deserializeStory(storyStore.serializeStory(storyUid));
   }
 
   function clearFixtures() {
@@ -123,8 +126,9 @@ describe('StoryRenderer', function() {
 
         it('raises an exception', function() {
 
+          window.richTextEditorManager = {};
+
           options.editable = true;
-          options.richTextEditorManager = {};
 
           assert.throws(function() {
             var renderer = new StoryRenderer(options);
@@ -153,149 +157,148 @@ describe('StoryRenderer', function() {
     });
   });
 
-  describe('.render()', function()  {
+  describe('when rendering a story', function()  {
 
-    describe('when called on a StoryRenderer instance', function() {
+    describe('that is not editable', function() {
 
-      describe('that is not editable', function() {
+      describe('with a story that has blocks', function() {
+
+        it('renders blocks', function() {
+
+          var renderer = new StoryRenderer(options);
+
+          assert.equal($('.block').length, 2);
+        });
+
+        it('does not render deleted blocks', function() {
+
+          var renderer = new StoryRenderer(options);
+
+          assert.equal($('.block').length, 2);
+
+          dispatcher.dispatch({ action: Constants.STORY_DELETE_BLOCK, storyUid: storyUid, blockId: imageBlockId });
+
+          assert.equal($('.block').length, 1);
+        });
+      });
+
+      describe('with a story that has blocks including an image component', function() {
+
+        it('renders blocks', function() {
+
+          var storyWithImage = generateStoryData({
+            uid: 'with-imge',
+            blocks: [
+              generateBlockData({
+                components: [
+                  { type: 'image', value: 'image' }
+                ]
+              })
+            ]
+          });
+
+          dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyWithImage });
+
+          options.storyUid = 'with-imge';
+          var renderer = new StoryRenderer(options);
+
+          assert.equal($('.block').length, 1);
+        });
+      });
+
+      describe('with a story that has blocks including a visualization component', function() {
+
+        it('renders blocks', function() {
+
+          var storyWithVisualization = generateStoryData({
+            uid: 'with-visu',
+            blocks: [
+              generateBlockData({
+                components: [
+                  { type: 'visualization', value: 'visualization' }
+                ]
+              })
+            ]
+          });
+
+          dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyWithVisualization });
+
+          options.storyUid = 'with-visu';
+          var renderer = new StoryRenderer(options);
+
+          assert.equal($('.block').length, 1);
+        });
+      });
+    });
+
+    describe('that is editable', function() {
+
+      var validAssetFinder;
+      var validToolbar;
+      var validFormats;
+
+      beforeEach(function() {
+
+        $('body').append([
+          $('<div>', { class: 'insertion-hint hidden' }),
+          $('<div>', { id: 'rich-text-editor-toolbar' })
+        ]);
+
+        AssetFinderMocker.mock();
+        validAssetFinder = new AssetFinder();
+        validToolbar = Object.create(RichTextEditorToolbar.prototype);
+        validFormats = [];
+
+        window.richTextEditorManager = new RichTextEditorManager(
+          validAssetFinder,
+          validToolbar,
+          validFormats
+        );
+
+        SquireMocker.mock();
+        options.editable = true;
+      });
+
+      afterEach(function() {
+
+        $('.insertion-hint').remove();
+        $('#rich-text-editor-toolbar').remove();
+        SquireMocker.unmock();
+        AssetFinderMocker.unmock();
+      });
+
+      describe('with no insertion hint element defined', function() {
 
         describe('with a story that has blocks', function() {
 
-          it('renders blocks', function() {
+          it('renders blocks but no insertion hint', function() {
 
             var renderer = new StoryRenderer(options);
+            forceRender();
 
-            assert.equal($('.block').length, 2);
-          });
-
-          it('does not render deleted blocks', function() {
-
-            var renderer = new StoryRenderer(options);
-
-            assert.equal($('.block').length, 2);
-
-            dispatcher.dispatch({ action: Constants.STORY_DELETE_BLOCK, storyUid: storyUid, blockId: imageBlockId });
-
-            assert.equal($('.block').length, 1);
-          });
-        });
-
-        describe('with a story that has blocks including an image component', function() {
-
-          it('renders blocks', function() {
-
-            var storyWithImage = generateStoryData({
-              uid: 'with-imge',
-              blocks: [
-                generateBlockData({
-                  components: [
-                    { type: 'image', value: 'image' }
-                  ]
-                })
-              ]
-            });
-
-            dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyWithImage });
-
-            options.storyUid = 'with-imge';
-            var renderer = new StoryRenderer(options);
-
-            assert.equal($('.block').length, 1);
-          });
-        });
-
-        describe('with a story that has blocks including a visualization component', function() {
-
-          it('renders blocks', function() {
-
-            var storyWithVisualization = generateStoryData({
-              uid: 'with-visu',
-              blocks: [
-                generateBlockData({
-                  components: [
-                    { type: 'visualization', value: 'visualization' }
-                  ]
-                })
-              ]
-            });
-
-            dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyWithVisualization });
-
-            options.storyUid = 'with-visu';
-            var renderer = new StoryRenderer(options);
-
-            assert.equal($('.block').length, 1);
+            assert($('.block').length > 0, 'there is more than one block');
+            assert.isTrue($('.insertion-hint').hasClass('hidden'), 'insertion hint is hidden');
           });
         });
       });
 
-      describe('that is editable', function() {
-
-        var validAssetFinder;
-        var validToolbar;
-        var validFormats;
+      describe('with an insertion hint element defined', function() {
 
         beforeEach(function() {
-
-          $('body').append([
-            $('<div>', { class: 'insertion-hint hidden' }),
-            $('<div>', { id: 'rich-text-editor-toolbar' })
-          ]);
-
-          AssetFinderMocker.mock();
-          validAssetFinder = new AssetFinder();
-          validToolbar = Object.create(RichTextEditorToolbar.prototype);
-          validFormats = [];
-          SquireMocker.mock();
-          options.editable = true;
-          options.richTextEditorManager = new RichTextEditorManager(
-            validAssetFinder,
-            validToolbar,
-            validFormats
-          );
+          options.insertionHintElement = $('.insertion-hint');
         });
 
-        afterEach(function() {
+        describe('with a story that has blocks', function() {
 
-          $('.insertion-hint').remove();
-          $('#rich-text-editor-toolbar').remove();
-          SquireMocker.unmock();
-          AssetFinderMocker.unmock();
-        });
-
-        describe('with no insertion hint element defined', function() {
-
-          describe('with a story that has blocks', function() {
+          describe('when no insertionHintIndex has been set', function() {
 
             it('renders blocks but no insertion hint', function() {
 
               var renderer = new StoryRenderer(options);
-              renderer.render();
+              forceRender();
 
               assert($('.block').length > 0, 'there is more than one block');
               assert.isTrue($('.insertion-hint').hasClass('hidden'), 'insertion hint is hidden');
-            });
-          });
-        });
-
-        describe('with an insertion hint element defined', function() {
-
-          beforeEach(function() {
-            options.insertionHintElement = $('.insertion-hint');
-          });
-
-          describe('with a story that has blocks', function() {
-
-            describe('when no insertionHintIndex has been set', function() {
-
-              it('renders blocks but no insertion hint', function() {
-
-                var renderer = new StoryRenderer(options);
-                renderer.render();
-
-                assert($('.block').length > 0, 'there is more than one block');
-                assert.isTrue($('.insertion-hint').hasClass('hidden'), 'insertion hint is hidden');
-              });
             });
           });
         });
@@ -321,14 +324,16 @@ describe('StoryRenderer', function() {
       validAssetFinder = new AssetFinder();
       validToolbar = Object.create(RichTextEditorToolbar.prototype);
       validFormats = [];
-      SquireMocker.mock();
-      options.editable = true;
-      options.insertionHintElement = $('.insertion-hint');
-      options.richTextEditorManager = new RichTextEditorManager(
+
+      window.richTextEditorManager = new RichTextEditorManager(
         validAssetFinder,
         validToolbar,
         validFormats
       );
+
+      SquireMocker.mock();
+      options.editable = true;
+      options.insertionHintElement = $('.insertion-hint');
 
       renderer = new StoryRenderer(options);
     });

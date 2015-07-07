@@ -10,14 +10,18 @@
     var editable = options.editable || false;
     var insertionHint = options.insertionHintElement || false;
     var insertionHintIndex = -1;
-    var richTextEditorManager = options.richTextEditorManager || null;
     var onRenderError = options.onRenderError || function() {};
-    var componentRenderers = {
-      'text': _renderTextComponent,
-      'image': _renderImageComponent,
-      'visualization': _renderVisualizationComponent
+    var componentTemplateRenderers = {
+      'text': _renderTextComponentTemplate,
+      'image': _renderImageComponentTemplate,
+      'visualization': _renderVisualizationComponentTemplate
     };
-    var blockCache = {};
+    var componentDataRenderers = {
+      'text': _renderTextComponentData,
+      'image': _renderImageComponentData,
+      'visualization': _renderVisualizationComponentData
+    };
+    var elementCache = new StoryRendererElementCache();
 
     if (options.hasOwnProperty('onRenderError') &&
       ((typeof options.onRenderError) !== 'function')) {
@@ -60,7 +64,7 @@
       );
     }
 
-    if (editable && !(richTextEditorManager instanceof RichTextEditorManager)) {
+    if (editable && !(window.richTextEditorManager instanceof RichTextEditorManager)) {
 
       onRenderError();
       throw new Error(
@@ -68,52 +72,51 @@
       );
     }
 
-    container.on(
-      'click',
-      '[data-block-edit-action]',
-      function(e) {
+    container.addClass('story');
+    container.attr('data-story-uid', storyUid);
 
-        var payload = {
-          action: e.target.getAttribute('data-block-edit-action'),
-          storyUid: storyUid,
-          blockId: e.target.getAttribute('data-block-id')
-        };
-
-        dispatcher.dispatch(payload);
-      }
-    );
-
-    window.storyStore.addChangeListener(function() {
-      _renderStory();
-    });
-
-    window.dragDropStore.addChangeListener(function() {
-      var hintPosition = window.dragDropStore.getReorderHintPosition();
-
-      if (hintPosition && hintPosition.storyUid === storyUid) {
-        _showInsertionHintAtIndex(hintPosition.dropIndex);
-      } else {
-        _hideInsertionHint();
-      }
-    });
-
-    _renderStory();
-
-    /**
-     * Public methods
-     */
-
-    this.render = function() {
-      _renderStory();
-    };
-
+    _listenForChanges();
     _attachEvents();
+    _renderStory();
 
     /**
      * Private methods
      */
 
+    function _listenForChanges() {
+
+      window.storyStore.addChangeListener(function() {
+        _renderStory();
+      });
+
+      window.dragDropStore.addChangeListener(function() {
+        var hintPosition = window.dragDropStore.getReorderHintPosition();
+
+        if (hintPosition && hintPosition.storyUid === storyUid) {
+          _showInsertionHintAtIndex(hintPosition.dropIndex);
+        } else {
+          _hideInsertionHint();
+        }
+      });
+    }
+
     function _attachEvents() {
+
+      container.on(
+        'click',
+        '[data-block-edit-action]',
+        function(e) {
+
+          var payload = {
+            action: e.target.getAttribute('data-block-edit-action'),
+            storyUid: storyUid,
+            blockId: e.target.getAttribute('data-block-id')
+          };
+
+          dispatcher.dispatch(payload);
+        }
+      );
+
       container.on('mouseenter', function() {
         window.dispatcher.dispatch({
           action: Constants.STORY_MOUSE_ENTER,
@@ -154,6 +157,76 @@
       });
     }
 
+    /**
+     * Story-level rendering operations
+     */
+
+    function _renderStory() {
+
+      var blockIds = window.storyStore.getStoryBlockIds(storyUid);
+      var blockIdsToRemove = elementCache.getUnusedBlockIds(blockIds);
+      var blockCount = blockIds.length;
+      var layoutHeight = 0;
+
+      blockIdsToRemove.forEach(function(blockId) {
+
+        window.
+          storyStore.
+          getBlockComponents(blockId).
+          forEach(function(component, i) {
+            if (component.type === 'text') {
+              var editorId = blockId + '-' + i;
+              window.richTextEditorManager.deleteEditor(editorId);
+            }
+          });
+
+        elementCache.getBlock(blockId).remove();
+        elementCache.flushBlock(blockId);
+      });
+
+      blockIds.forEach(function(blockId, i) {
+
+        var blockElement = elementCache.getBlock(blockId);
+        var translation;
+
+        if (blockElement === null) {
+          blockElement = _renderBlock(blockId);
+          container.append(blockElement);
+        }
+
+        _renderBlockComponentsData(blockId);
+
+        if (editable) {
+          // Disable or enable buttons depending on the index of this block
+          // relative to the total number of blocks.
+          // E.g. disable the 'move up' button for the first block and the
+          // 'move down' button for the last block.
+          _updateBlockEditControls(blockElement, i, blockCount);
+
+          // Update the height of the containing iframes to be equal to the
+          // height of the iframe document's body.
+          _updateEditorHeights(blockId, blockElement);
+        }
+
+        // If we are supposed to display the insertion hint at this
+        // block index, first position the insertion hint and adjust
+        // the overall layout height.
+        if (insertionHint && insertionHintIndex === i) {
+          layoutHeight += _layoutInsertionHint(layoutHeight);
+        }
+
+        layoutHeight += _layoutBlock(blockElement, layoutHeight);
+      });
+
+      // If we are attempting to insert a new block at the end of the story
+      // position the insertion hint after the last rendered block.
+      if (insertionHint && insertionHintIndex === blockIds.length) {
+        layoutHeight += _layoutInsertionHint(layoutHeight);
+      }
+
+      container.height(layoutHeight * scaleFactor);
+    }
+
     function _showInsertionHintAtIndex(index) {
       if (index !== insertionHintIndex) {
         insertionHintIndex = index;
@@ -169,154 +242,9 @@
       }
     };
 
-
-    function _cacheBlockElement(blockId, blockElement) {
-
-      blockCache[blockId] = blockElement;
-    }
-
-    function _removeCachedBlockElement(blockId) {
-
-      if (!blockCache.hasOwnProperty(blockId)) {
-        throw new Error('block is not present in cache');
-      }
-
-      delete blockCache[blockId];
-    }
-
-    function _blockElementIsCached(blockId) {
-      return blockCache.hasOwnProperty(blockId);
-    }
-
-    function _getCachedBlockElement(blockId) {
-
-      if (!blockCache.hasOwnProperty(blockId)) {
-        throw new Error(
-          'block with id "' + blockId + '" is not present in cache'
-        );
-      }
-
-      return blockCache[blockId];
-    }
-
-    function _removeAbsentBlocks(currentBlockIds) {
-
-      var blockIdsToRemove = Object.
-        keys(blockCache).
-        filter(function(blockId) {
-          return currentBlockIds.indexOf(blockId) === -1;
-        });
-
-      blockIdsToRemove.forEach(function(blockId) {
-        blockCache[blockId].remove();
-        _removeCachedBlockElement(blockId);
-      });
-    }
-
-    function _renderStory() {
-
-      var blockIds = storyStore.getBlockIds(storyUid);
-      var blockCount = blockIds.length;
-      var layoutHeight = 0;
-
-      container.addClass('story');
-      container.attr('data-story-uid', storyUid);
-
-      _removeAbsentBlocks(blockIds);
-
-      blockIds.forEach(function(blockId, i) {
-
-        var blockElement;
-        var translation;
-
-        if (!_blockElementIsCached(blockId)) {
-
-          blockElement = _renderBlock(blockId);
-
-          _cacheBlockElement(blockId, blockElement);
-          container.append(blockElement);
-
-        } else {
-          blockElement = _getCachedBlockElement(blockId);
-        }
-
-        // Disable or enable buttons depending on the index of this block
-        // relative to the total number of blocks.
-        // E.g. disable the 'move up' button for the first block and the
-        // 'move down' button for the last block.
-        if (editable) {
-          _updateBlockEditControls(blockElement, i, blockCount);
-          _updateEditorHeights(blockId, blockElement);
-        }
-
-        // If we are supposed to display the insertion hint at this
-        // block index, first position the insertion hint and adjust
-        // the overall layout height.
-        if (insertionHint && insertionHintIndex === i) {
-          layoutHeight += _layoutInsertionHint(layoutHeight);
-        }
-
-        // Render the current block according to the current layout height.
-        translation = 'translate(0,' + layoutHeight + 'px)';
-
-        blockElement.attr('data-translate-y', layoutHeight);
-        blockElement.css('transform', translation);
-
-        layoutHeight += blockElement.outerHeight(true);
-        layoutHeight += parseInt(blockElement.css('margin-bottom'), 10);
-      });
-
-      if (insertionHint && insertionHintIndex === blockIds.length) {
-        layoutHeight += _layoutInsertionHint(layoutHeight);
-      }
-
-      container.height(layoutHeight * scaleFactor);
-    }
-
-    function _layoutInsertionHint(layoutHeight) {
-
-      var translation = 'translate(0,' + layoutHeight + 'px)';
-      insertionHint.css('transform', translation).removeClass('hidden');
-
-      return (
-        insertionHint.outerHeight(true) +
-        parseInt(insertionHint.css('margin-bottom'), 10)
-      );
-    }
-
-    function _updateBlockEditControls(blockElement, blockIndex, blockCount) {
-
-      var moveUpButton = blockElement.find('.block-edit-controls-move-up-btn');
-      var moveDownButton = blockElement.find('.block-edit-controls-move-down-btn');
-
-      moveUpButton.prop('disabled', blockIndex === 0);
-      moveDownButton.prop('disabled', blockIndex === (blockCount - 1));
-    }
-
-    function _updateEditorHeights(blockId, blockElement) {
-
-      var components = window.blockStore.getComponents(blockId);
-      var componentCount = components.length;
-      var editorId;
-      var editor;
-      var editorHeight;
-
-      for (var i = 0; i < componentCount; i++) {
-
-        if (components[i].type === 'text') {
-
-          editorId = blockId + '-' + i;
-          editor = richTextEditorManager.getEditor(editorId);
-          editorHeight = editor.getContentHeight();
-
-          blockElement.
-            find('.component').
-            eq(i).
-            find('iframe').
-            height(editorHeight);
-        }
-      }
-    }
+    /**
+     * Block-level rendering operations
+     */
 
     function _renderBlock(blockId) {
 
@@ -329,36 +257,19 @@
         );
       }
 
-      var layout = blockStore.getLayout(blockId);
+      var layout = window.storyStore.getBlockLayout(blockId);
       var componentWidths = layout.split('-');
       var componentOptions;
-      var componentData = blockStore.getComponents(blockId);
-      var components;
+      var componentTemplates;
       var blockElement;
 
-      if (componentWidths.length !== componentData.length) {
-        onRenderError();
-        throw new Error(
-          'number of layout components does not equal number of components'
-        );
-      }
+      componentTemplates = _renderBlockComponentsTemplates(blockId);
 
-      componentOptions = {
-        blockId: blockId
-      };
+      componentTemplates.forEach(function(componentTemplate, i) {
+        elementCache.setComponent(blockId, i, componentTemplate);
+      });
 
-      components = componentData.
-        map(function(component, i) {
-
-          componentOptions.componentIndex = i;
-          componentOptions.componentWidth = componentWidths[i];
-          componentOptions.componentType = component.type;
-          componentOptions.componentValue = component.value;
-
-          return _renderComponent(componentOptions);
-        });
-
-      blockElement = $('<div>', { class: 'block', 'data-block-id': blockId }).append(components);
+      blockElement = $('<div>', { class: 'block', 'data-block-id': blockId }).append(componentTemplates);
 
       if (editable) {
         blockElement = $('<div>', { class: 'block-edit', 'data-block-id': blockId }).append([
@@ -366,6 +277,8 @@
           blockElement
         ]);
       }
+
+      elementCache.setBlock(blockId, blockElement);
 
       return blockElement;
     }
@@ -393,53 +306,199 @@
       ]);
     }
 
-    function _renderComponent(options) {
 
-      var classes = [
+    function _updateBlockEditControls(blockElement, blockIndex, blockCount) {
+
+      var moveUpButton = blockElement.find('.block-edit-controls-move-up-btn');
+      var moveDownButton = blockElement.find('.block-edit-controls-move-down-btn');
+
+      moveUpButton.prop('disabled', blockIndex === 0);
+      moveDownButton.prop('disabled', blockIndex === (blockCount - 1));
+    }
+
+    function _updateEditorHeights(blockId, blockElement) {
+
+      var components = window.storyStore.getBlockComponents(blockId);
+      var componentCount = components.length;
+      var editorId;
+      var maxEditorHeight = 0;
+
+      for (var i = 0; i < componentCount; i++) {
+
+        if (components[i].type === 'text') {
+
+          editorId = blockId + '-' + i;
+          maxEditorHeight = Math.max(
+            maxEditorHeight,
+            window.
+              richTextEditorManager.
+              getEditor(editorId).
+              getContentHeight()
+          );
+        }
+      }
+
+      blockElement.
+        find('.text-editor > iframe').
+        height(maxEditorHeight);
+    }
+
+    /**
+     * Component template renderers render template skeletons into
+     * block elements.
+     */
+
+    function _renderBlockComponentsTemplates(blockId, componentData) {
+
+      var componentWidths = window.storyStore.getBlockLayout(blockId).split('-');
+      var componentData = window.storyStore.getBlockComponents(blockId);
+
+      return componentData.
+        map(function(component, i) {
+
+          return _renderBlockComponentTemplate({
+            blockId: blockId,
+            componentIndex: i,
+            componentWidth: componentWidths[i],
+            componentType: component.type,
+            componentValue: component.value
+          });
+        });
+    }
+
+    function _renderBlockComponentTemplate(options) {
+
+      options.classes = [
         'component',
         options.componentType,
         ('col' + options.componentWidth)
       ].join(' ');
 
-      var component = $('<div>', { class: classes }).
-        append(
-          componentRenderers[options.componentType](options)
-        );
-
-      return component;
+      return componentTemplateRenderers[options.componentType](options);
     }
 
-    function _renderTextComponent(options) {
+    function _renderTextComponentTemplate(options) {
 
       var editorId;
-      var component = options.componentValue;
+      var component;
+      var editor;
 
       if (editable) {
 
         editorId = options.blockId + '-' + options.componentIndex;
-        component = richTextEditorManager.getEditor(editorId);
 
-        if (component === null) {
-          component = richTextEditorManager.createEditor(editorId, options.componentValue);
-        }
+        component = $(
+          '<div>',
+          { class: options.classes + ' text-editor', 'data-editor-id': editorId }
+        );
+
+        editor = window.richTextEditorManager.createEditor(
+          component,
+          editorId,
+          options.componentValue
+        );
+
+      } else {
+        component = $('<div>', { class: options.classes }).append(options.componentValue);
       }
 
       return component;
     }
 
-    function _renderImageComponent(options) {
+    function _renderImageComponentTemplate(options) {
+      return $('<div>', { class: options.classes }).append('<img>');
+    }
 
-      var component = $('<img>', { src: '/stories/' + options.componentValue });
+    function _renderVisualizationComponentTemplate(options) {
+      return $('<div>', { class: options.classes }).append('<img>');
+    }
 
-      component[0].onload = function(e) {
+    /**
+     * Component data renderers bind component data to existing
+     * component templates.
+     */
+
+    function _renderBlockComponentsData(blockId) {
+
+      var components = window.storyStore.getBlockComponents(blockId);
+
+      components.forEach(function(component, i) {
+
+        var element = elementCache.getComponent(blockId, i);
+
+        componentDataRenderers[component.type](element, component.value)
+      });
+    }
+
+    function _renderTextComponentData(element, data) {
+
+      if (editable) {
+
+        var editorId = element.attr('data-editor-id');
+        var editor = richTextEditorManager.getEditor(editorId);
+        var content = editor.getContent();
+
+        editor.setContent(data);
+      } else {
+        element.html(data);
+      }
+    }
+
+    function _renderImageComponentData(element, data) {
+
+      var imageElement = element.find('img');
+      var imageSource = '/stories/' + data;
+
+      imageElement[0].onload = function(e) {
         _renderStory();
       };
 
-      return component;
+      if (imageElement.attr('src') !== imageSource) {
+        imageElement.attr('src', imageSource);
+      }
     }
 
-    function _renderVisualizationComponent(options) {
-      return $('<img>', { src: '/stories/' + options.componentValue });
+    function _renderVisualizationComponentData(element, data) {
+
+      var imageElement = element.find('img');
+      var imageSource = '/stories/' + data;
+
+      imageElement[0].onload = function(e) {
+        _renderStory();
+      };
+
+      if (imageElement.attr('src') !== imageSource) {
+        imageElement.attr('src', imageSource);
+      }
+    }
+
+    /**
+     * Layout occurs after blocks have been rendered to the DOM.
+     */
+
+    function _layoutInsertionHint(layoutHeight) {
+
+      var translation = 'translate(0,' + layoutHeight + 'px)';
+
+      insertionHint.css('transform', translation).removeClass('hidden');
+
+      return (
+        insertionHint.outerHeight(true) +
+        parseInt(insertionHint.css('margin-bottom'), 10)
+      );
+    }
+
+    function _layoutBlock(blockElement, layoutHeight) {
+
+      var translation = 'translate(0,' + layoutHeight + 'px)';
+
+      blockElement.attr('data-translate-y', layoutHeight);
+      blockElement.css('transform', translation);
+
+      return (
+        blockElement.outerHeight(true) +
+        parseInt(blockElement.css('margin-bottom'), 10)
+      );
     }
   }
 

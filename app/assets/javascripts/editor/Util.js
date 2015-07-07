@@ -3,11 +3,18 @@
 
   window.Util = {
 
-    assertHasProperty: function(object, name) {
+    assertHasProperty: function(object, name, message) {
+
       if (!object.hasOwnProperty(name)) {
+
+        if (message) {
+          throw new Error(message);
+        }
+
         throw new Error('`' + name + '`' + 'property must be present.');
       }
     },
+
     assertHasProperties: function(object) {
       // Apply all arguments (minus `object`)
       // to assertHasProperty(object, argument).
@@ -17,6 +24,16 @@
           window.Util.assertHasProperty(object, argument);
         }
       );
+    },
+
+    assertTypeof: function(value, type) {
+      if (typeof value !== type) {
+        throw new Error(
+          'Value must be a ' + type + ' (is of type ' +
+          (typeof value) +
+          ').'
+        );
+      }
     },
 
     mapDOMFragmentDescending: function(element, applyFn, shouldTerminateFn) {

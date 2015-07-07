@@ -56,7 +56,7 @@
       Util.assertHasProperties(payload, 'storyUid', 'pointer', 'storyElement', 'draggedBlockId');
 
       if (window.storyStore.storyExists(payload.storyUid) &&
-          !window.storyStore.hasBlock(payload.storyUid, payload.draggedBlockId)) {
+          !window.storyStore.storyHasBlock(payload.storyUid, payload.draggedBlockId)) {
         var dropIndex;
 
         var pointerY = Unipointer.getPointerPoint(payload.pointer).y - window.scrollY;

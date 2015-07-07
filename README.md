@@ -171,13 +171,13 @@ You can add `-h` for more options. By default it routes requests to `dataspace-d
 
 ## Linting
 
-A linter is a tool that we use to find problematic patterns or code that doesn't adhere to certain style guidelines. For javascript, we use `eslint`, because it's highly configurable. Installation:
+A linter is a tool that we use to find problematic patterns or code that doesn't
+adhere to certain style guidelines. For javascript, we use `eslint`, because it's
+highly configurable. `eslint` is automatically installed via npm as a dev dependency.
 
-```
-npm i -g eslint
-```
-
-Although eslint is run automatically by Jenkins for each build, you can manually run eslint for different parts of the javascript codebase using the following rake tasks:
+Although eslint is run automatically by Jenkins for each build, you can manually
+run eslint for different parts of the javascript codebase using the following
+rake tasks:
 
 ```
 rake lint:js:all       # Lint the whole javascript codebase
@@ -185,4 +185,6 @@ rake lint:js:oldUx     # Lint the old ux
 rake lint:js:dataCards # Lint data lens
 ```
 
-If you're too cool for rake tasks, you can also run `eslint` on the command line and supply your own arguments. You can find our specific configuration options for eslint in `package.json` under the `eslintConfig` key.
+If you're too cool for rake tasks, you can also run `npm run eslint -- [args]`
+on the command line and supply your own arguments. You can find our specific
+configuration options for `eslint` in `package.json` under the `eslintConfig` key.

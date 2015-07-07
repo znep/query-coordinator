@@ -21,9 +21,11 @@ timeline:
 hide_decimal_tick_lines:
   description: "Ref: CORE-1951. If set to true, when Decimal Places is 0, hide any tick lines between natural numbers."
   defaultValue: true
+  category: testing bug fix
 hide_interpolated_nulls:
   description: "Ref: SI-5927, if set to true, will hide interpolated nulls in DSG bar charts."
   defaultValue: false
+  category: testing bug fix
 asteroids:
   description: Unlocked on datasets by the Konami code.
   defaultValue: false
@@ -145,3 +147,7 @@ odux_enable_feature_map_hover:
   description: Enable hover functionality in point maps.
   defaultValue: false
   category: data lens
+use_less_crazy_regex:
+  description: Experimentally test if regex from CORE-5490 will work for our purposes.
+  defaultValue: false
+  category: testing bug fix

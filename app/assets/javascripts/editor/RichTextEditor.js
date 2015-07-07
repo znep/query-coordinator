@@ -108,7 +108,6 @@
       );
 
       if (_editor && contentIsDifferent) {
-
         _editor.setHTML(content);
         _handleInput();
       }

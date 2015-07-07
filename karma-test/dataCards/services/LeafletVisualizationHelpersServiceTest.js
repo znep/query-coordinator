@@ -34,27 +34,39 @@ describe('LeafletVisualizationHelpersService', function() {
   }));
 
   describe('#setObservedExtentOnModel', function() {
+    var model;
+    var cardModel;
+    var scope;
+
+    beforeEach(function() {
+      model = new Model();
+      model.defineEphemeralObservableProperty('hasExpandedCard', null);
+      model.version = 2;
+      cardModel = new CardModel(model, 'react');
+      sinon.stub(cardModel, 'setOption');
+      scope = $rootScope.$new();
+      LeafletVisualizationHelpersService.setObservedExtentOnModel(scope, cardModel);
+    });
+
+    afterEach(function() {
+      cardModel.setOption.restore();
+    });
+
     it('exists', function() {
       expect(LeafletVisualizationHelpersService).to.respondTo('setObservedExtentOnModel');
     });
 
+    describe('on card expansion', function() {
+      it('should emit an event on the rootScope', function() {
+        var eventSpy = sinon.spy();
+        $rootScope.$on('card-expanded', eventSpy);
+        expect(eventSpy).to.have.not.been.called;
+        model.set('hasExpandedCard', true);
+        expect(eventSpy).to.have.been.called;
+      });
+    });
+
     describe('calling `setOption` on the model in response to events on the scope', function() {
-      var model;
-      var cardModel;
-      var scope;
-      beforeEach(function() {
-        model = new Model();
-        model.version = 2;
-        cardModel = new CardModel(model, 'react');
-        sinon.stub(cardModel, 'setOption');
-        scope = $rootScope.$new();
-        LeafletVisualizationHelpersService.setObservedExtentOnModel(scope, cardModel);
-      });
-
-      afterEach(function() {
-        cardModel.setOption.restore();
-      });
-
       it('skips to the first event, which is the map settling', function() {
         scope.$emit('set-extent', 'ignored');
         expect(cardModel.setOption).to.not.have.been.called;
@@ -105,8 +117,17 @@ describe('LeafletVisualizationHelpersService', function() {
       expect(eventSpy).to.have.been.called;
     });
 
-    it('should emit an event on map resize', function() {
+    it('should not emit an event on map resize without a card expansion', function() {
       var eventSpy = sinon.spy();
+      scope.$on('set-extent', eventSpy);
+      $mapContainer.width(640).height(480);
+      map.invalidateSize();
+      expect(eventSpy).to.have.not.been.called;
+    });
+
+    it('should emit an event on map resize after a card expansion', function() {
+      var eventSpy = sinon.spy();
+      scope.$emit('card-expanded', true);
       scope.$on('set-extent', eventSpy);
       $mapContainer.width(640).height(480);
       map.invalidateSize();

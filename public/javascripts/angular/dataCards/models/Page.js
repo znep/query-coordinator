@@ -60,6 +60,7 @@
         });
 
         self.defineObservableProperty('dataset', dataset);
+        self.defineEphemeralObservableProperty('hasExpandedCard', null);
 
         var primaryAmountField$ = self.observe('primaryAmountField');
 
@@ -186,12 +187,14 @@
         var currentlyExpanded = _.filter(this.getCurrentValue('cards'), function(card) {
           return card.getCurrentValue('expanded');
         });
-        theCard.set('expanded', !theCard.getCurrentValue('expanded'));
+        var newExpandedState = !theCard.getCurrentValue('expanded');
+        theCard.set('expanded', newExpandedState);
         _.each(currentlyExpanded, function(card) {
           if (card !== theCard) {
             card.set('expanded', false);
           }
         });
+        this.set('hasExpandedCard', newExpandedState);
       },
 
       /**

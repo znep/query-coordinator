@@ -79,7 +79,6 @@
     var _editorBodyElement = null;
     var _formatController = null;
     var _lastContentHeight = 0;
-    var _lastActiveFormatsAsString = '';
 
     if (typeof contentToPreload !== 'undefined') {
       _contentToPreload = contentToPreload;
@@ -103,10 +102,15 @@
 
     this.setContent = function(content) {
 
-      if (_editor && _editor.getHTML() !== content) {
+      var contentIsDifferent = (
+        _editor.getHTML().replace(/<br>/g, '') !==
+        content.replace(/<br>/g, '')
+      );
+
+      if (_editor && contentIsDifferent) {
 
         _editor.setHTML(content);
-        _handleContentChange();
+        _handleInput();
       }
     };
 
@@ -142,7 +146,7 @@
           _formats
         );
 
-        _editor.addEventListener('input', _handleContentChange);
+        _editor.addEventListener('input', _handleInput);
         _editor.addEventListener('focus', _broadcastFocus);
         _editor.addEventListener('focus', _broadcastFormatChange);
         _editor.addEventListener('blur', _broadcastBlur);
@@ -157,7 +161,6 @@
           _broadcastFormatChange();
         }
 
-        _handleContentChange();
         _setupMouseMoveEventBroadcast();
       });
 
@@ -198,28 +201,33 @@
       // browser have 10ms to finalize its layout before invoking
       // _handleContentChange(), which seems to do the trick. This delay
       // is small enough that it should be imperceptible to users.
-      styleEl.onload = function(){ setTimeout(_handleContentChange, 10); }
+      styleEl.onload = function(){
+        setTimeout(function() {
+            _updateContentHeight();
+            _broadcastHeightChange();
+          },
+          10
+        );
+      }
 
       document.head.appendChild(styleEl);
     }
 
+    function _handleInput() {
+      _updateContentHeight();
+      _broadcastContentChange();
+    }
+
     /**
      * This function is called whenever the content of the editor changes.
-     * We need to respond to content changes for two reasons:
-     *
-     * 1. To adjust the height of the editor element, which is accomplished
-     *    by calculating the height of the iframe's internal body and then
-     *    alerting the containing scope of the need to re-render (which will
-     *    query each text editor for its current height in order to keep the
-     *    container elements' heights consistent with the heights of the
-     *    editors' content heights).
-     * 2. Alert the data layer that the component content associated with this
-     *    editor has changed and that it should respond accordingly.
-     *
-     * In a future refactor, these two purposes might be unified by causing
-     * changes to the model to directly trigger a re-render.
+     * We need to respond to content changes to adjust the height of the editor
+     * element, which is accomplished by calculating the height of the iframe's
+     * internal body and then alerting the containing scope of the need to re-
+     * render (which will query each text editor for its current height in
+     * order to keep the container elements' heights consistent with the heights
+     * of the editors' content heights).
      */
-    function _handleContentChange() {
+    function _updateContentHeight() {
 
       // These calculations have a tendency to be extremely inconsistent
       // if the internal elements and/or the body have both a top and bottom
@@ -252,8 +260,6 @@
       if (contentHeight !== _lastContentHeight) {
         _lastContentHeight = contentHeight;
       }
-
-      _broadcastContentChange();
     }
 
     function _emitEvent(name, payload) {
@@ -275,6 +281,12 @@
           name,
           { detail: eventDetail, bubbles: true }
         )
+      );
+    }
+
+    function _broadcastHeightChange(e) {
+      _emitEvent(
+        'rich-text-editor::height-change'
       );
     }
 

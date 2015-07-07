@@ -252,6 +252,7 @@
       component = block.components[index];
 
       if (component.type !== payload.type || component.value !== payload.value) {
+
         block.components[payload.index] = {
           type: payload.type,
           value: payload.value

@@ -40,49 +40,49 @@
          */
 
         // Observable of hovers over a aggregation-type selector
-        var aggregationHoverObservable = WindowState.mousePositionSubject.
+        var aggregationHover$ = WindowState.mousePositionSubject.
           takeUntil($scope.$destroyAsObservable(element)).
           map(function(positionData) {
             return $(positionData.target).closest('[data-aggregation-type]');
           });
 
         // Observable that goes true when hovering the 'count' aggregation-type selector
-        var countFunctionHoverObservable = aggregationHoverObservable.
+        var countFunctionHover$ = aggregationHover$.
           map(function(aggregationType) {
             return aggregationType.is('[data-aggregation-type="count"]');
           }).
           startWith(false).
           distinctUntilChanged();
 
-        $scope.$bindObservable('countFunctionHover', countFunctionHoverObservable);
+        $scope.$bindObservable('countFunctionHover', countFunctionHover$);
 
         // Observable that goes true when hovering a non-'count' aggregation-type selector
-        var aggregateFunctionHoverObservable = aggregationHoverObservable.
+        var aggregateFunctionHover$ = aggregationHover$.
           map(function(aggregationType) {
             return aggregationType.length > 0 && !aggregationType.is('[data-aggregation-type="count"]');
           }).
           startWith(false).
           distinctUntilChanged();
 
-        $scope.$bindObservable('aggregateFunctionHover', aggregateFunctionHoverObservable);
+        $scope.$bindObservable('aggregateFunctionHover', aggregateFunctionHover$);
 
         /*
          * Setup Dataset Observables
          */
 
         var dataset = $scope.page.observe('dataset');
-        var columnsObservable = dataset.observeOnLatest('columns');
+        var columns$ = dataset.observeOnLatest('columns');
         var aggregationSequence = $scope.page.observe('aggregation');
-        var rowDisplayUnitObservable = aggregationSequence.pluck('unit');
+        var rowDisplayUnit$ = aggregationSequence.pluck('unit');
 
         // Page model aggregation observables
-        var pagePrimaryAggregationObservable = aggregationSequence.pluck('function');
-        var pagePrimaryAmountFieldObservable = aggregationSequence.pluck('fieldName');
+        var pagePrimaryAggregation$ = aggregationSequence.pluck('function');
+        var pagePrimaryAmountField$ = aggregationSequence.pluck('fieldName');
 
         // Default to 'count' if no primary aggregation function is selected
-        var aggregationFunctionObservable = Rx.Observable.combineLatest(
+        var aggregationFunction$ = Rx.Observable.combineLatest(
           Rx.Observable.returnValue('count'),
-          pagePrimaryAggregationObservable,
+          pagePrimaryAggregation$,
           function(defaultValue, pageValue) {
             if (_.isPresent(pageValue)) {
               return pageValue;
@@ -92,9 +92,9 @@
           });
 
         // Default to 'rowDisplayUnit' for aggregation field display
-        var activeAggregationObservable = Rx.Observable.combineLatest(
-          rowDisplayUnitObservable,
-          pagePrimaryAmountFieldObservable,
+        var activeAggregation$ = Rx.Observable.combineLatest(
+          rowDisplayUnit$,
+          pagePrimaryAmountField$,
           function(rowDisplayUnit, pagePrimaryAmountField) {
             if (_.isPresent(pagePrimaryAmountField)) {
               return pagePrimaryAmountField;
@@ -113,7 +113,13 @@
         };
 
         // Observable that goes true if we should show the dropdown selector, false otherwise
-        var canAggregateObservable = columnsObservable.map(function(columns) {
+        var hasAggregableColumns$ = columns$.map(function(columns) {
+          var numberColumns = _(columns).filter(validColumnFilter).value();
+          return numberColumns.length > 0;
+        });
+
+        // Observable that goes true if we should show the warning flyout, false otherwise
+        var canChooseAggregation$ = columns$.map(function(columns) {
           var numberColumns = _(columns).filter(validColumnFilter).value();
           var maxNumberColumns = Constants.AGGREGATION_MAX_COLUMN_COUNT;
           return numberColumns.length > 0 && numberColumns.length <= maxNumberColumns;
@@ -121,10 +127,10 @@
 
         // Observable that maps all columns to just number columns and augments with
         // Human-readable labels and whether that column is enabled for selection
-        var aggregationColumnsObservable = Rx.Observable.
+        var aggregationColumns$ = Rx.Observable.
           combineLatest(
-          aggregationFunctionObservable,
-          columnsObservable,
+          aggregationFunction$,
+          columns$,
           function(aggregationFunction, columns) {
             return _(columns).
               pick(function(column, fieldName) {
@@ -143,22 +149,22 @@
 
         // Observable that goes true when we're hovering over a non-count aggregation option
         // And we have not already selected a column field
-        var highlightFirstColumnObservable = Rx.Observable.combineLatest(
-          aggregateFunctionHoverObservable,
-          aggregationColumnsObservable,
-          activeAggregationObservable,
+        var highlightFirstColumn$ = Rx.Observable.combineLatest(
+          aggregateFunctionHover$,
+          aggregationColumns$,
+          activeAggregation$,
           function(aggregateHover, columns, active) {
             var column = _(columns).find({ id: active });
             return aggregateHover && _.isUndefined(column);
           });
 
         // Generate human-readable labels for the row display unit
-        var unitLabelObservable = rowDisplayUnitObservable.map(pluralizeAndCapitalize);
+        var unitLabel$ = rowDisplayUnit$.map(pluralizeAndCapitalize);
 
         // Maps the active aggregation field identifier to human-readable values
-        var labeledFieldObservable = Rx.Observable.combineLatest(
-          columnsObservable,
-          activeAggregationObservable,
+        var labeledField$ = Rx.Observable.combineLatest(
+          columns$,
+          activeAggregation$,
           function(columns, activeAggregation) {
             var column = columns[activeAggregation];
             if (_.isDefined(column)) {
@@ -172,21 +178,22 @@
           });
 
         // Maps active aggregation function to human-readable values
-        var labeledFunctionObservable = aggregationFunctionObservable.
+        var labeledFunction$ = aggregationFunction$.
           map(function(value) {
             var type = { type: value };
             var fn = _.find(availableAggregationFunctions, type);
             return _.extend(type, pluralizeAndCapitalize(fn.name));
           });
 
-        var rowDisplayUnitLabelObservable = aggregationSequence.pluck('rowDisplayUnit').map(pluralizeAndCapitalize);
-        $scope.$bindObservable('highlightFirstColumn', highlightFirstColumnObservable);
-        $scope.$bindObservable('canAggregate', canAggregateObservable);
-        $scope.$bindObservable('rowDisplayUnitLabel', rowDisplayUnitLabelObservable);
-        $scope.$bindObservable('unitLabel', unitLabelObservable);
-        $scope.$bindObservable('aggregationFunction', labeledFunctionObservable);
-        $scope.$bindObservable('aggregationColumns', aggregationColumnsObservable);
-        $scope.$bindObservable('activeAggregation', labeledFieldObservable);
+        var rowDisplayUnitLabel$ = aggregationSequence.pluck('rowDisplayUnit').map(pluralizeAndCapitalize);
+        $scope.$bindObservable('highlightFirstColumn', highlightFirstColumn$);
+        $scope.$bindObservable('hasAggregableColumns', hasAggregableColumns$);
+        $scope.$bindObservable('canChooseAggregation', canChooseAggregation$);
+        $scope.$bindObservable('rowDisplayUnitLabel', rowDisplayUnitLabel$);
+        $scope.$bindObservable('unitLabel', unitLabel$);
+        $scope.$bindObservable('aggregationFunction', labeledFunction$);
+        $scope.$bindObservable('aggregationColumns', aggregationColumns$);
+        $scope.$bindObservable('activeAggregation', labeledField$);
 
         /*
          * Panel toggling
@@ -215,6 +222,30 @@
           },
           destroySignal: $scope.$destroyAsObservable(element),
           trackCursor: true
+        });
+
+        FlyoutService.register({
+          selector: '.aggregation-chooser-trigger.disabled',
+          positionOn: function(element) {
+            // Targets the span element whose ::after pseudoelement we're using
+            // to render the down-arrow "icon".
+            return element.childNodes[1];
+          },
+          render: _.constant(
+            '<span class="icon-warning"></span><span class="flyout-title">{0}</span><p>{1}</p>'.format(
+              I18n.t(
+                'aggregationChooser.tooManyColumns.title',
+                Constants.AGGREGATION_MAX_COLUMN_COUNT
+              ),
+              I18n.t(
+                'aggregationChooser.tooManyColumns.message',
+                Constants.AGGREGATION_MAX_COLUMN_COUNT
+              )
+            )
+          ),
+          belowTarget: true,
+          classes: 'aggregation-chooser',
+          destroySignal: $scope.$destroyAsObservable(element)
         });
 
         /*

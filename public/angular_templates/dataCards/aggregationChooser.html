@@ -2,12 +2,15 @@
   <span class="information">{{'aggregationChooser.information' | I18n}} </span>
   <span
     class="aggregation-chooser-static-label"
-    ng-hide="canAggregate">{{'aggregationChooser.numberOf' | I18n}} {{unitLabel.pluralCapitalized}}
+    ng-hide="hasAggregableColumns">{{'aggregationChooser.numberOf' | I18n}} {{unitLabel.pluralCapitalized}}
   </span>
   <a
     class="aggregation-chooser-trigger"
-    ng-show="canAggregate"
-    ng-click="panelActive = !panelActive">{{('aggregationChooser.' + aggregationFunction.name + 'Of') | I18n}} {{activeAggregation.pluralCapitalized}}
+    ng-show="hasAggregableColumns"
+    ng-class="{ disabled: !canChooseAggregation }"
+    ng-click="panelActive = canChooseAggregation && !panelActive">
+    {{('aggregationChooser.' + aggregationFunction.name + 'Of') | I18n}} {{activeAggregation.pluralCapitalized}}
+    <span></span>
   </a>
   <div ng-class="{ active: panelActive }" class="tool-panel-main">
     <div class="tool-panel-inner-container">

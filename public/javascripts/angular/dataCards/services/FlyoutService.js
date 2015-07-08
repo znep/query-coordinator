@@ -60,6 +60,10 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
           if (_.isDefined(flyoutContent) && (_.isDefined(flyoutTarget) || _.isDefined(flyoutOffset))) {
 
             uberFlyoutContent.html(flyoutContent);
+
+            // Calculating the width and height of the flyout may depend on
+            // custom classes that the consumer wants to apply, so reset those.
+            uberFlyout.removeClass().addClass(handler.classes);
             flyoutWidth = uberFlyout.outerWidth();
             flyoutHeight = uberFlyout.outerHeight();
 
@@ -115,10 +119,17 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
                 cssFlyout.left = targetBoundingClientRect.left +
                   (targetBoundingClientRect.width / 2);
 
-                // Set the top of the flyout.
-                cssFlyout.top = targetBoundingClientRect.top -
-                  (flyoutHeight + hintHeight) -
-                  Constants.FLYOUT_BOTTOM_PADDING;
+                // Set the top of the flyout, depending on whether the flyout
+                // should be positioned above or below the target.
+                if (handler.belowTarget) {
+                  cssFlyout.top = targetBoundingClientRect.bottom +
+                    hintHeight +
+                    Constants.FLYOUT_TOP_PADDING;
+                } else {
+                  cssFlyout.top = targetBoundingClientRect.top -
+                    (flyoutHeight + hintHeight) -
+                    Constants.FLYOUT_BOTTOM_PADDING;
+                }
               }
 
               // If the right side of the flyout is past our
@@ -149,8 +160,10 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
 
             // Show the uber flyout.
             uberFlyout.
-              toggleClass('left', !rightSideHint).
-              toggleClass('right', rightSideHint).
+              toggleClass('southwest', !rightSideHint && !handler.belowTarget).
+              toggleClass('southeast', rightSideHint && !handler.belowTarget).
+              toggleClass('northwest', !rightSideHint && handler.belowTarget).
+              toggleClass('northeast', rightSideHint && handler.belowTarget).
               toggleClass('horizontal', horizontalHint).
               css(cssFlyout).
               show();
@@ -224,6 +237,10 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
      *   should track the mouse. Optional, default false.
      * @param {boolean} [options.horizontal=false] - Whether or not the flyout
      *   should lay out horizontally. Optional, default false (vertical).
+     * @param {boolean} [options.belowTarget=false] - Whether or not the flyout
+     *   should position below its target. Optional, default false (above).
+     * @param {string} options.classes — Custom classes, space-separated, to be
+     *   applied to the flyout, in order to enable style overrides.
      */
     register: function(options) {
 
@@ -234,7 +251,9 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
         positionOn: _.identity,
         getOffset: _.noop,
         trackCursor: false,
-        horizontal: false
+        horizontal: false,
+        belowTarget: false,
+        classes: null
       });
 
       Assert(_.isPresent(options.selector),

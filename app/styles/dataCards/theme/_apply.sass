@@ -74,7 +74,7 @@
       // TODO remove (here because it is difficult to change classes of jQuery flyout elements)
       color: $flyout-cell-is-highlighted-text-color
 
-#uber-flyout.left
+#uber-flyout.southwest
   .hint
     &:after
       border-color: $flyout-chart-background-color transparent transparent transparent
@@ -82,7 +82,7 @@
     &:before
       border-color: $flyout-border-color transparent transparent transparent
 
-#uber-flyout.right
+#uber-flyout.southeast
   .hint
     &:after
       border-color: transparent $flyout-chart-background-color transparent transparent
@@ -90,13 +90,30 @@
     &:before
       border-color: transparent $flyout-border-color transparent transparent
 
-#uber-flyout.right.horizontal
+#uber-flyout.northwest
   .hint
     &:after
       border-color: transparent transparent transparent $flyout-chart-background-color
 
     &:before
       border-color: transparent transparent transparent $flyout-border-color
+
+#uber-flyout.northeast
+  .hint
+    &:after
+      border-color: transparent transparent $flyout-chart-background-color transparent
+
+    &:before
+      border-color: transparent transparent $flyout-border-color transparent
+
+// Unused — see flyout.sass
+//#uber-flyout.right.horizontal
+//  .hint
+//    &:after
+//      border-color: transparent transparent transparent $flyout-chart-background-color
+//
+//    &:before
+//      border-color: transparent transparent transparent $flyout-border-color
 
 .flyout
   border: 1px solid $flyout-border-color
@@ -751,8 +768,11 @@ aggregation-chooser
   .aggregation-chooser-trigger
     color: $aggregation-chooser-trigger-color
 
-    &::after
+    span::after
       border-color: $aggregation-chooser-trigger-color transparent transparent transparent
+
+    &.disabled span::after
+      border-color: $aggregation-chooser-trigger-disabled-color transparent transparent transparent
 
   .tool-panel-hint::before
     border-color: transparent transparent $aggregation-chooser-tool-panel-hint-border-color transparent

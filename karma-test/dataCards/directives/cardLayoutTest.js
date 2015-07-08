@@ -1254,30 +1254,32 @@ describe('card-layout', function() {
         var hint = flyout.find('.hint');
         var hintOffset = hint.offset();
         var targetOffset = target.offset();
+        var verticalDelta;
+        var horizontalDelta;
 
-        // Test vertical positioning.
-        if (targetOffset.top < flyout.height()) {
-          expect(hintOffset.top).to.be.within(-TOLERANCE, TOLERANCE);
+        // Test positioning.
+        // A north flyout aligns the top edge of the hint to the top edge of the target.
+        // A south flyout aligns the bottom edge of the hint to the bottom edge of the target.
+        // An east flyout aligns the right edge of hint to the middle of the target.
+        // A west flyout aligns the left edge of hint to the middle of the target.
+        if (flyout.hasClass('southwest')) {
+          verticalDelta = targetOffset.top - (hintOffset.top + hint.height() + Constants.FLYOUT_BOTTOM_PADDING);
+          horizontalDelta = (targetOffset.left + target.width() / 2) - hintOffset.left;
+        } else if (flyout.hasClass('northwest')) {
+          verticalDelta = hintOffset.top - Constants.FLYOUT_TOP_PADDING - (targetOffset.top + target.height());
+          horizontalDelta = (targetOffset.left + target.width() / 2) - hintOffset.left;
+        } else if (flyout.hasClass('southeast')) {
+          verticalDelta = targetOffset.top - (hintOffset.top + hint.height() + Constants.FLYOUT_BOTTOM_PADDING);
+          horizontalDelta = (targetOffset.left + target.width() / 2) - (hintOffset.left + hint.width());
+        } else if (flyout.hasClass('northeast')) {
+          verticalDelta = hintOffset.top - Constants.FLYOUT_TOP_PADDING - (targetOffset.top + target.height());
+          horizontalDelta = (targetOffset.left + target.width() / 2) - (hintOffset.left + hint.width());
         } else {
-          expect(targetOffset.top -
-          (hintOffset.top + hint.height() + Constants.FLYOUT_BOTTOM_PADDING)).
-          to.be.within(-TOLERANCE, TOLERANCE);
+          throw new Error('Flyout should have a class based on cardinal directions');
         }
 
-        // Test horizontal positioning.
-        if (flyout.hasClass('left')) {
-
-          // A left flyout aligns the left edge of hint
-          // to the middle of the target.
-          expect((targetOffset.left + target.width() / 2) -
-            hintOffset.left).to.be.within(-2, 2);
-        } else {
-
-          // A right flyout aligns the right edge of hint
-          // to the middle of the target.
-          expect((targetOffset.left + target.width() / 2) -
-            (hintOffset.left + hint.width())).to.be.within(-2, 2);
-        }
+        expect(verticalDelta).to.be.within(-TOLERANCE, TOLERANCE);
+        expect(horizontalDelta).to.be.within(-TOLERANCE, TOLERANCE);
       }
       afterEach(function() {
         $('#uber-flyout').remove();

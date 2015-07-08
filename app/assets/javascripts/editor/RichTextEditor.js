@@ -76,6 +76,7 @@
     var _editor = null;
     // _editorElement is the <iframe> associated with the Squire instance.
     var _editorElement = null;
+    var _editorBodyElement = null;
     var _formatController = null;
     var _lastContentHeight = 0;
     var _lastActiveFormatsAsString = '';
@@ -90,12 +91,25 @@
      * Public methods
      */
 
-    this.getContentHeight = function() {
-      return _lastContentHeight;
-    };
-
     this.getFormatController = function() {
       return _formatController;
+    };
+
+    this.getContent = function() {
+      return _editor.getHTML();
+    };
+
+    this.setContent = function(content) {
+
+      if (_editor.getHTML() !== content) {
+
+        _editor.setHTML(content);
+        _handleContentChange();
+      }
+    };
+
+    this.getContentHeight = function() {
+      return _lastContentHeight;
     };
 
     /**
@@ -120,6 +134,7 @@
 
         _overrideDefaultStyles(e.target.contentWindow.document);
         _editor = new Squire(e.target.contentWindow.document);
+        _editorBodyElement = $(_editor.getDocument()).find('body');
         _formatController = new RichTextEditorFormatController(
           _editor,
           _formats
@@ -140,8 +155,8 @@
           _broadcastFormatChange();
         }
 
-        _setupMouseMoveEventBroadcast();
         _handleContentChange();
+        _setupMouseMoveEventBroadcast();
       });
 
       _containerElement.append(_editorElement);
@@ -204,7 +219,6 @@
      */
     function _handleContentChange() {
 
-      var bodyElement = $(_editor.getDocument()).find('body');
       // These calculations have a tendency to be extremely inconsistent
       // if the internal elements and/or the body have both a top and bottom
       // margin or padding. By adding a margin-bottom to block-level elements
@@ -214,14 +228,14 @@
       //
       // I have no idea why having both a top and bottom modifier on the layout
       // of block elements causes things to get so fiddly.
-      var contentHeight = parseInt(bodyElement.css('padding-top'), 10);
+      var contentHeight = parseInt(_editorBodyElement.css('padding-top'), 10);
 
       // We need to recalculate the height of each individual element rather
       // than just checking the outerHeight of the body because the body
       // height has a tendency of getting out of sync with the visible height
       // of its child elements when you, e.g., add a new line and then delete
       // it. Weird, I know.
-      bodyElement.
+      _editorBodyElement.
         children().
         each(function() {
           contentHeight += $(this).outerHeight(true);
@@ -235,8 +249,8 @@
 
       if (contentHeight !== _lastContentHeight) {
         _lastContentHeight = contentHeight;
-        _broadcastHeightChange();
       }
+
       _broadcastContentChange();
     }
 
@@ -260,10 +274,6 @@
           { detail: eventDetail, bubbles: true }
         )
       );
-    }
-
-    function _broadcastHeightChange() {
-      _emitEvent('rich-text-editor::height-change');
     }
 
     function _broadcastContentChange(e) {

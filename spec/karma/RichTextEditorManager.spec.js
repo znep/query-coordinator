@@ -1,18 +1,22 @@
 describe('RichTextEditorManager', function() {
 
   var validAssetFinder;
+  var validElement;
   var validFormats = [];
   var validToolbar;
 
   beforeEach(function() {
     AssetFinderMocker.mock();
+    SquireMocker.mock();
     validAssetFinder = new AssetFinder();
-    $('body').append('<div id="rich-text-editor-toolbar"></div>');
+    validElement = $('<div id="rich-text-editor-toolbar"></div>');
     validToolbar = Object.create(RichTextEditorToolbar.prototype);
+    $('body').append(validElement);
   });
 
   afterEach(function() {
     $('#rich-text-editor-toolbar').remove();
+    SquireMocker.unmock();
     AssetFinderMocker.unmock();
   });
 
@@ -137,7 +141,7 @@ describe('RichTextEditorManager', function() {
 
     describe('when called with an editor id that exists', function() {
       it('should return an editor instance', function() {
-        manager.createEditor('1', 'Hello, world!');
+        manager.createEditor(validElement, '1', 'Hello, world!');
         assert.instanceOf(manager.getEditor('1'), RichTextEditor, 'returns an instance of RichTextEditor');
       });
     });

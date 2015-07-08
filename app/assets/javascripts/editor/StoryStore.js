@@ -2,10 +2,13 @@
 
   'use strict';
 
+  var FOUR_BY_FOUR_PATTERN = /^\w{4}-\w{4}$/;
+
   function StoryStore() {
 
     var self = this;
     var _stories = {};
+    var _blocks = {};
 
     window.dispatcher.register(function(payload) {
 
@@ -14,11 +17,7 @@
       switch (action) {
 
         case Constants.STORY_CREATE:
-          _createStory(payload);
-          break;
-
-        case Constants.STORY_INSERT_BLOCK:
-          _insertBlock(payload);
+          _setStory(payload.data);
           break;
 
         case Constants.STORY_MOVE_BLOCK_UP:
@@ -31,6 +30,14 @@
 
         case Constants.STORY_DELETE_BLOCK:
           _deleteBlock(payload);
+          break;
+
+        case Constants.BLOCK_COPY_INTO_STORY:
+          _copyBlockIntoStory(payload);
+          break;
+
+        case Constants.BLOCK_UPDATE_COMPONENT:
+          _updateBlockComponentAtIndex(payload);
           break;
       }
     });
@@ -45,163 +52,439 @@
       return _stories.hasOwnProperty(storyUid);
     };
 
-    this.getTitle = function(storyUid) {
-
-      var story = _getStoryByUid(storyUid);
-
-      return story.getTitle();
+    this.storyHasBlock = function(storyUid, blockId) {
+      return _.includes(this.getStoryBlockIds(storyUid), blockId);
     };
 
-    this.getBlockIds = function(storyUid) {
+    this.getStoryTitle = function(storyUid) {
 
-      var story = _getStoryByUid(storyUid);
+      var story = _getStory(storyUid);
 
-      return story.getBlockIds();
+      return story.title;
     };
 
-    this.getBlockIdAtIndex = function(storyUid, index) {
+    this.getStoryBlockIds = function(storyUid) {
 
-      var story = _getStoryByUid(storyUid);
+      var story = _getStory(storyUid);
 
-      return story.getBlockIdAtIndex(index);
+      return story.blockIds;
     };
 
-    this.hasBlock = function(storyUid, blockId) {
-      return _.includes(this.getBlockIds(storyUid), blockId);
+    this.getStoryBlockAtIndex = function(storyUid, index) {
+
+      var story = _getStory(storyUid);
+      var blockIds = story.blockIds;
+
+      if (index < 0 || index >= blockIds.length) {
+        throw new Error('`index` argument is out of bounds.');
+      }
+
+      return _blocks[blockIds[index]];
+    };
+
+    this.getStoryBlockIdAtIndex = function(storyUid, index) {
+
+      var story = _getStory(storyUid);
+      var blockIds = story.blockIds;
+
+      if (index < 0 || index >= blockIds.length) {
+        throw new Error('`index` argument is out of bounds.');
+      }
+
+      return blockIds[index];
+    };
+
+    this.getBlockLayout = function(blockId) {
+
+      var block = _getBlock(blockId);
+
+      return block.layout;
+    };
+
+    this.getBlockComponents = function(blockId) {
+
+      var block = _getBlock(blockId);
+
+      return block.components;
+    };
+
+    this.getBlockComponentAtIndex = function(blockId, index) {
+
+      var components = this.getBlockComponents(blockId);
+
+      if (index < 0 || index >= components.length) {
+        throw new Error('`index` argument is out of bounds.');
+      }
+
+      return components[index];
+    };
+
+    this.serializeStory = function(storyUid) {
+
+      var story = _getStory(storyUid);
+
+      return {
+        uid: story.uid,
+        title: story.title,
+        blocks: story.blockIds.map(_serializeBlock)
+      };
+    };
+
+    this.serializeStoryDiff = function(storyUid) {
+
+      var story = _getStory(storyUid);
+
+      return {
+        uid: story.uid,
+        title: story.title,
+        blocks: story.blockIds.map(_serializeBlockDiff)
+      };
+    };
+
+    this.deserializeStory = function(storyData) {
+      _setStory(storyData, true);
     };
 
     /**
      * Private methods
      */
 
-    function _getStoryByUid(storyUid) {
-
-      if (typeof storyUid !== 'string') {
-        throw new Error('`storyUid` argument is not a string');
-      }
-
-      if (!_stories.hasOwnProperty(storyUid)) {
-        throw new Error('Story with uid "' + storyUid + '" does not exist.');
-      }
-
-      return _stories[storyUid];
-    }
-
-    function _createStory(payload) {
-
-      var data = payload.data;
-      var newStory = new Story(data);
-      var newStoryUid = newStory.getUid();
-
-      data.blocks.forEach(function(blockData) {
-        window.dispatcher.dispatch({ action: Constants.BLOCK_CREATE, data: blockData });
-      });
-
-      if (_stories.hasOwnProperty(newStoryUid)) {
-        throw new Error('Story with uid `' + newStoryUid + '` already exists.');
-      }
-
-      _stories[newStoryUid] = newStory;
-
-      self._emitChange();
-    }
-
-    function _insertBlock(payload) {
-
-      if (!payload.hasOwnProperty('storyUid')) {
-        throw new Error('`storyUid` property is required.');
-      }
-
-      if (!payload.hasOwnProperty('insertAt')) {
-        throw new Error('`insertAt` property is required.');
-      }
-
-      if (!payload.hasOwnProperty('blockId')) {
-        throw new Error('`blockId` property is required.');
-      }
-
-      var story = _getStoryByUid(payload.storyUid);
-
-      story.insertBlockAtIndex(payload.insertAt, payload.blockId);
-
-      self._emitChange();
-    }
+    /**
+     * Action responses
+     */
 
     function _moveBlockUp(payload) {
 
-      if (!payload.hasOwnProperty('storyUid')) {
-        throw new Error('`storyUid` property is required.');
-      }
+      Util.assertHasProperty(payload, 'storyUid');
+      Util.assertTypeof(payload.storyUid, 'string');
+      Util.assertHasProperty(payload, 'blockId');
+      Util.assertTypeof(payload.blockId, 'string');
 
-      if (!payload.hasOwnProperty('blockId')) {
-        throw new Error('`blockId` property is required.');
-      }
+      var storyUid = payload.storyUid;
+      var blockId = payload.blockId;
+      var blockIndex = _getStoryBlockIndexWithId(storyUid, blockId);
 
-      if (typeof payload.blockId !== 'string') {
-        throw new Error(
-          '`blockId` must be a string (is of type ' +
-          (typeof payload.blockId) +
-          '.'
-        );
-      }
-
-      var story = _getStoryByUid(payload.storyUid);
-      var blockIndex = story.getBlockIndexWithId(payload.blockId);
-
-      story.swapBlocksAtIndices(blockIndex, blockIndex - 1);
+      _swapStoryBlocksAtIndices(storyUid, blockIndex, blockIndex - 1);
 
       self._emitChange();
     }
 
     function _moveBlockDown(payload) {
 
-      if (!payload.hasOwnProperty('storyUid')) {
-        throw new Error('`storyUid` property is required.');
-      }
+      Util.assertHasProperty(payload, 'storyUid');
+      Util.assertTypeof(payload.storyUid, 'string');
+      Util.assertHasProperty(payload, 'blockId');
+      Util.assertTypeof(payload.blockId, 'string');
 
-      if (!payload.hasOwnProperty('blockId')) {
-        throw new Error('`blockId` property is required.');
-      }
+      var storyUid = payload.storyUid;
+      var blockId = payload.blockId;
+      var blockIndex = _getStoryBlockIndexWithId(storyUid, blockId);
 
-      if (typeof payload.blockId !== 'string') {
-        throw new Error(
-          '`blockId` must be a string (is of type ' +
-          (typeof payload.blockId) +
-          '.'
-        );
-      }
-
-      var story = _getStoryByUid(payload.storyUid);
-      var blockIndex = story.getBlockIndexWithId(payload.blockId);
-
-      story.swapBlocksAtIndices(blockIndex, blockIndex + 1);
+      _swapStoryBlocksAtIndices(storyUid, blockIndex, blockIndex + 1);
 
       self._emitChange();
     }
 
     function _deleteBlock(payload) {
 
-      if (!payload.hasOwnProperty('storyUid')) {
-        throw new Error('`storyUid` property is required.');
+      Util.assertHasProperty(payload, 'storyUid');
+      Util.assertTypeof(payload.storyUid, 'string');
+      Util.assertHasProperty(payload, 'blockId');
+      Util.assertTypeof(payload.blockId, 'string');
+
+      var story = _getStory(payload.storyUid);
+      var blockId = payload.blockId;
+      var indexOfBlockIdToRemove = story.blockIds.indexOf(blockId);
+
+      if (indexOfBlockIdToRemove < 0) {
+        throw new Error('`blockId` does not exist in story.');
       }
 
-      if (!payload.hasOwnProperty('blockId')) {
-        throw new Error('`blockId` property is required.');
-      }
+      story.blockIds.splice(indexOfBlockIdToRemove, 1);
 
-      if (typeof payload.blockId !== 'string') {
+      self._emitChange();
+    }
+
+    function _copyBlockIntoStory(payload) {
+
+      Util.assertHasProperty(payload, 'storyUid');
+      Util.assertTypeof(payload.storyUid, 'string');
+      Util.assertHasProperty(payload, 'insertAt');
+      Util.assertTypeof(payload.insertAt, 'number');
+
+      if (typeof payload.insertAt !== 'number') {
         throw new Error(
-          '`blockId` must be a string (is of type ' +
-          (typeof payload.blockId) +
+          '`insertAt` must be a number (is of type ' +
+          (typeof payload.insertAt) +
           '.'
         );
       }
 
-      var story = _getStoryByUid(payload.storyUid);
+      var clonedBlock = _cloneBlock(payload.blockId);
+      var blockId = clonedBlock.id;
 
-      story.removeBlockWithId(payload.blockId);
+      _blocks[blockId] = clonedBlock;
+      _insertStoryBlockAtIndex(payload.storyUid, blockId, payload.insertAt);
 
       self._emitChange();
+    }
+
+    function _updateBlockComponentAtIndex(payload) {
+
+      var block = _getBlock(payload.blockId);
+      var index = parseInt(payload.index, 10);
+      var component;
+
+      // Verify that it is a number *after* the parseInt but report on its
+      // original type.
+      if (isNaN(index)) {
+        throw new Error(
+          'Invalid component index: "' + payload.index + '".'
+        );
+      }
+
+      if (index < 0 || index > block.components.length) {
+        throw new Error('`index` argument is out of bounds.');
+      }
+
+      component = block.components[index];
+
+      if (component.type !== payload.type || component.value !== payload.value) {
+        block.components[payload.index] = {
+          type: payload.type,
+          value: payload.value
+        };
+
+        block.dirty = true;
+      }
+
+      self._emitChange();
+    }
+
+    /**
+     * Helper methods
+     */
+
+    function _generateTemporaryId() {
+      return 'temp_' + String(Date.now());
+    }
+
+    function _getStory(storyUid) {
+
+      Util.assertTypeof(storyUid, 'string');
+      Util.assertHasProperty(
+        _stories,
+        storyUid,
+        'Story with uid "' + storyUid + '" does not exist.'
+      );
+
+      return _stories[storyUid];
+    }
+
+    function _getBlock(blockId) {
+
+      if (typeof blockId !== 'string') {
+        throw new Error('`blockId` argument is not a string');
+      }
+
+      Util.assertHasProperty(
+        _blocks,
+        blockId,
+        'Block with id "' + blockId + '" does not exist.'
+      );
+
+      return _blocks[blockId];
+    }
+
+    function _setStory(storyData, overwrite) {
+      _validateStoryData(storyData);
+
+      var storyUid = storyData.uid;
+      var blockIds = [];
+
+      if (!overwrite && _stories.hasOwnProperty(storyUid)) {
+        throw new Error(
+          'Story with uid "' + storyUid + '" already exists.'
+        );
+      }
+
+      storyData.blocks.forEach(function(blockData) {
+        _setBlock(blockData, overwrite);
+        blockIds.push(blockData.id);
+      });
+
+      _stories[storyUid] = {
+        uid: storyUid,
+        title: storyData.title,
+        blockIds: blockIds
+      };
+    }
+
+    function _setBlock(blockData, overwrite) {
+      _validateBlockData(blockData);
+
+      var blockId = blockData.id;
+
+      if (!overwrite && _blocks.hasOwnProperty(blockId)) {
+        throw new Error(
+          'Block with id "' + blockId + '" already exists.'
+        );
+      }
+
+      _blocks[blockId] = {
+        id: blockId,
+        layout: blockData.layout,
+        components: _cloneBlockComponents(blockData.components),
+      };
+    }
+
+    function _cloneBlock(blockId) {
+
+      var block = _getBlock(blockId);
+
+      return {
+        id: _generateTemporaryId(),
+        layout: block.layout,
+        components: _cloneBlockComponents(block.components),
+        dirty: true
+      };
+    }
+
+    function _cloneBlockComponents(components) {
+
+      return components.map(function(component) {
+
+        Util.assertTypeof(component.value, 'string');
+
+        return {
+          type: component.type,
+          value: component.value
+        };
+      });
+    }
+
+    function _validateStoryData(storyData) {
+
+      Util.assertTypeof(storyData, 'object');
+      Util.assertHasProperty(storyData, 'uid');
+      Util.assertHasProperty(storyData, 'title');
+      Util.assertHasProperty(storyData, 'blocks');
+
+      if (storyData.uid.match(FOUR_BY_FOUR_PATTERN) === null) {
+        throw new Error(
+          '`uid` property is not a valid four-by-four: "' +
+          JSON.stringify(storyData.uid) +
+          '".'
+        );
+      }
+    }
+
+    function _validateBlockData(blockData) {
+
+      Util.assertTypeof(blockData, 'object');
+      Util.assertHasProperty(blockData, 'id');
+      Util.assertHasProperty(blockData, 'layout');
+      Util.assertHasProperty(blockData, 'components');
+
+      blockData.components.forEach(function(component) {
+        Util.assertHasProperty(component, 'type');
+        Util.assertHasProperty(component, 'value');
+      });
+
+      if (typeof blockData.id !== 'string') {
+        throw new Error(
+          '`blockData` argument `id` property must be a string (is of type ' +
+          (typeof blockData.id) +
+          ').'
+        );
+      }
+    }
+
+    function _getStoryBlockIndexWithId(storyUid, blockId) {
+
+      var story = _getStory(storyUid);
+      var index = story.blockIds.indexOf(blockId);
+
+      if (index === -1) {
+        index = null;
+      }
+
+      return index;
+    }
+
+    function _insertStoryBlockAtIndex(storyUid, blockId, index) {
+
+      var story = _getStory(storyUid);
+      var storyBlockIdCount = story.blockIds.length;
+
+      Util.assertTypeof(blockId, 'string');
+      Util.assertTypeof(index, 'number');
+
+      if (index < 0 || index > storyBlockIdCount) {
+        throw new Error('`index` argument is out of bounds.');
+      }
+
+      if (index === storyBlockIdCount) {
+        story.blockIds.push(blockId);
+      } else {
+        story.blockIds.splice(index, 0, blockId);
+      }
+    }
+
+    function _swapStoryBlocksAtIndices(storyUid, index1, index2) {
+
+      Util.assertTypeof(index1, 'number');
+      Util.assertTypeof(index2, 'number');
+
+      var story = _getStory(storyUid);
+      var storyBlockIdCount = story.blockIds.length;
+
+      if (index1 < 0 || index1 >= storyBlockIdCount) {
+        throw new Error('`index1` argument is out of bounds.');
+      }
+
+      if (index2 < 0 || index2 >= storyBlockIdCount) {
+        throw new Error('`index2` argument is out of bounds.');
+      }
+
+      var tempBlock = story.blockIds[index1];
+      story.blockIds[index1] = story.blockIds[index2];
+      story.blockIds[index2] = tempBlock;
+    }
+
+    function _serializeBlock(blockId) {
+
+      var block = _getBlock(blockId);
+
+      return {
+        id: block.id,
+        layout: block.layout,
+        components: block.components
+      };
+    }
+
+    // TODO: Verify that this works as intended.
+    function _serializeBlockDiff(blockId) {
+
+      var block = _getBlock(blockId);
+      var serializedBlock;
+
+      if (block.hasOwnProperty('dirty') && block.dirty) {
+
+        serializedBlock = {
+          layout: block.layout,
+          components: block.components
+        };
+
+      } else {
+
+        serializedBlock = {
+          id: block.id
+        };
+
+      }
+
+      return serializedBlock;
     }
   }
 

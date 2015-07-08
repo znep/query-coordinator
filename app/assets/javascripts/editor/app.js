@@ -28,6 +28,8 @@ $(document).on('ready', function() {
     { id: 'clearFormatting', tag: null, name: 'Clear Formatting', dropdown: false, group: 4 }
   ];
 
+
+
   // Temporary fix until version is being added/populated
   if (userStoryData.version === null) {
     userStoryData.version = '';
@@ -56,22 +58,23 @@ $(document).on('ready', function() {
   });
 
   window.storyStore = new StoryStore();
-  window.blockStore = new BlockStore();
   window.dragDropStore = new DragDropStore();
-
-  window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: inspirationStoryData });
-  window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
 
   var richTextEditorToolbar = new RichTextEditorToolbar(
     $('#rich-text-editor-toolbar'),
     richTextFormats
   );
 
-  var richTextEditorManager = new RichTextEditorManager(
+  window.richTextEditorManager = new RichTextEditorManager(
     assetFinder,
     richTextEditorToolbar,
     richTextFormats
   );
+
+  window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: inspirationStoryData });
+  window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
+
+
 
   var inspirationStoryOptions = {
     storyUid: window.inspirationStoryUid,
@@ -156,10 +159,6 @@ $(document).on('ready', function() {
       type: 'text',
       value: blockContent
     });
-  });
-
-  $(window).on('rich-text-editor::height-change', function(event) {
-    userStoryRenderer.render();
   });
 
   window.dragDropStore.addChangeListener(function() {

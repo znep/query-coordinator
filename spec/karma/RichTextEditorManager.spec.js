@@ -5,6 +5,9 @@ describe('RichTextEditorManager', function() {
   var validFormats = [];
   var validToolbar;
 
+  beforeEach(standardMocks);
+  afterEach(standardMocks.unmock);
+
   beforeEach(function() {
     AssetFinderMocker.mock();
     SquireMocker.mock();

@@ -1,8 +1,9 @@
 describe('StoryRenderer', function() {
 
+  // TODO consolidate with StandardMocks.
   var storyUid = 'rend-erer';
-  var imageBlockId = '1000';
-  var textBlockId = '1001';
+  var imageBlockId = '4000';
+  var textBlockId = '4001';
   var options;
 
   function createSampleStories() {
@@ -25,11 +26,6 @@ describe('StoryRenderer', function() {
       ]
     });
 
-    window.dispatcher = new Dispatcher();
-    window.storyStore = new StoryStore();
-    window.historyStore = new HistoryStore();
-    window.dragDropStore = new DragDropStore();
-
     dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
   }
 
@@ -40,9 +36,8 @@ describe('StoryRenderer', function() {
     });
   }
 
-  function clearFixtures() {
-    delete window.storyStore;
-  }
+  beforeEach(standardMocks);
+  afterEach(standardMocks.unmock);
 
   beforeEach(function() {
 

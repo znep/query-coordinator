@@ -5,6 +5,9 @@ describe('RichTextEditor', function() {
   var validFormats = [];
   var validPreloadContent = 'Hello, world!';
 
+  beforeEach(standardMocks);
+  afterEach(standardMocks.unmock);
+
   // Squire does not attach itself to the window if it detects that
   // it is inside an iFrame.
   //

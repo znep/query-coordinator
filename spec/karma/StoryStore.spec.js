@@ -62,15 +62,11 @@ describe('StoryStore', function() {
     dispatch({ action: Constants.STORY_CREATE, data: sampleStory2Data });
   }
 
-  beforeEach(function() {
-    window.dispatcher = new Dispatcher();
-    window.historyStore = new HistoryStore();
-    window.storyStore = new StoryStore();
-    createSampleStories();
-  });
+  beforeEach(standardMocks);
+  afterEach(standardMocks.unmock);
 
-  afterEach(function() {
-    delete window.dispatcher;
+  beforeEach(function() {
+    createSampleStories();
   });
 
   describe('story data accessors', function() {

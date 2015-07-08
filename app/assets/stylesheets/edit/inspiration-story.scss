@@ -1,10 +1,16 @@
 @import '../base';
 
 .inspiration-story-container {
+  @include media-query-property(
+    'width',
+    $main-content-width-small / 5,
+    $main-content-width-medium / 5,
+    $main-content-width-large / 5,
+    $main-content-width-extra-large / 5
+  );
   @include unselectable();
 
   position: fixed;
-  width: $inspiration-story-container-width;
   height: calc(100vh - #{$header-total-height} - #{$inspiration-story-container-padding});
   top: $header-total-height;
   left: 0;
@@ -21,7 +27,6 @@
   }
 
   .inspiration-story {
-    height: 145%;
     transform-origin: 0 0;
     transform: scale(0.5);
 

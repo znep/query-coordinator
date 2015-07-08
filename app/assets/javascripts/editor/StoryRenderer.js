@@ -159,7 +159,7 @@
         insertionHintIndex = index;
         _renderStory();
       }
-    };
+    }
 
     function _hideInsertionHint() {
       if (insertionHintIndex !== -1 && insertionHint) {
@@ -167,7 +167,7 @@
         insertionHintIndex = -1;
         _renderStory();
       }
-    };
+    }
 
 
     function _cacheBlockElement(blockId, blockElement) {
@@ -393,43 +393,43 @@
       ]);
     }
 
-    function _renderComponent(options) {
+    function _renderComponent(componentOptions) {
 
       var classes = [
         'component',
-        options.componentType,
-        ('col' + options.componentWidth)
+        componentOptions.componentType,
+        ('col' + componentOptions.componentWidth)
       ].join(' ');
 
       var component = $('<div>', { class: classes }).
         append(
-          componentRenderers[options.componentType](options)
+          componentRenderers[componentOptions.componentType](componentOptions)
         );
 
       return component;
     }
 
-    function _renderTextComponent(options) {
+    function _renderTextComponent(componentOptions) {
 
       var editorId;
-      var component = options.componentValue;
+      var component = componentOptions.componentValue;
 
       if (editable) {
 
-        editorId = options.blockId + '-' + options.componentIndex;
+        editorId = componentOptions.blockId + '-' + componentOptions.componentIndex;
         component = richTextEditorManager.getEditor(editorId);
 
         if (component === null) {
-          component = richTextEditorManager.createEditor(editorId, options.componentValue);
+          component = richTextEditorManager.createEditor(editorId, componentOptions.componentValue);
         }
       }
 
       return component;
     }
 
-    function _renderImageComponent(options) {
+    function _renderImageComponent(componentOptions) {
 
-      var component = $('<img>', { src: '/stories/' + options.componentValue });
+      var component = $('<img>', { src: '/stories/' + componentOptions.componentValue });
 
       component[0].onload = function(e) {
         _renderStory();
@@ -438,8 +438,8 @@
       return component;
     }
 
-    function _renderVisualizationComponent(options) {
-      return $('<img>', { src: '/stories/' + options.componentValue });
+    function _renderVisualizationComponent(componentOptions) {
+      return $('<img>', { src: '/stories/' + componentOptions.componentValue });
     }
   }
 

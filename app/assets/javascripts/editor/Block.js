@@ -48,7 +48,7 @@
         '`blockData` argument must be an object (is of type ' +
         (typeof blockData) +
         ').'
-      )
+      );
     }
 
     if (!blockData.hasOwnProperty('id')) {

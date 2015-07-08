@@ -224,7 +224,7 @@
 
       var linkPanelElement = $(
         '<div>',
-        { 'class':'rich-text-editor-create-link-panel' }
+        { 'class': 'rich-text-editor-create-link-panel' }
       );
 
       var linkInputElement = $('<div>').

@@ -288,7 +288,7 @@
       _updateBlockType(headingTag);
     }
 
-    function _toggleBold(headingTag) {
+    function _toggleBold() {
 
       if (_editor.hasFormat('b')) {
         _editor.removeBold();
@@ -297,7 +297,7 @@
       }
     }
 
-    function _toggleItalic(headingTag) {
+    function _toggleItalic() {
 
       if (_editor.hasFormat('i')) {
         _editor.removeItalic();
@@ -308,15 +308,15 @@
 
     function _blockAlignLeft() {
       _editor.setTextAlignment('left');
-    };
+    }
 
     function _blockAlignCenter() {
       _editor.setTextAlignment('center');
-    };
+    }
 
     function _blockAlignRight() {
       _editor.setTextAlignment('right');
-    };
+    }
 
     function _toggleOrderedList() {
 

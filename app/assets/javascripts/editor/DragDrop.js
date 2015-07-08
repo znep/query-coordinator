@@ -17,7 +17,7 @@
       throw new Error('`handles` argument must be an array-like');
     }
 
-    if (ghostElement.length != 1) {
+    if (ghostElement.length !== 1) {
       throw new Error('`ghostElement` argument must point to exactly one element');
     }
 
@@ -26,7 +26,7 @@
     // TODO calculate from mouse down location.
     var _ghostCursorOffset = 0;
 
-    var _storyUidDraggedOver = undefined;
+    var _storyUidDraggedOver;
 
     this.handles = handles; // Needed for unidragger integration.
 
@@ -118,7 +118,7 @@
       this.bindHandles();
     };
 
-  };
+  }
 
 
   DragDrop.prototype = Unidragger.prototype;

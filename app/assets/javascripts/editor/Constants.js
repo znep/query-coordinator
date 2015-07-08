@@ -2,7 +2,7 @@
   STORY_CREATE: 'STORY_CREATE',
   STORY_DELETE_BLOCK: 'STORY_DELETE_BLOCK',
   STORY_INSERT_BLOCK: 'STORY_INSERT_BLOCK',
-  STORY_MOVE_BLOCK_DOWN:'STORY_MOVE_BLOCK_DOWN',
+  STORY_MOVE_BLOCK_DOWN: 'STORY_MOVE_BLOCK_DOWN',
   STORY_MOVE_BLOCK_UP: 'STORY_MOVE_BLOCK_UP',
 
   STORY_MOUSE_ENTER: 'STORY_MOUSE_ENTER',
@@ -24,8 +24,9 @@
 };
 
 (function() {
+  'use strict';
   var values = _.values(Constants);
-  if (values.length != _.uniq(values).length) {
+  if (values.length !== _.uniq(values).length) {
     throw new Error('Constants contains non-unique values');
   }
 })();

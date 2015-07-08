@@ -27,13 +27,17 @@ describe('StoryRenderer', function() {
 
     window.dispatcher = new Dispatcher();
     window.storyStore = new StoryStore();
+    window.historyStore = new HistoryStore();
     window.dragDropStore = new DragDropStore();
 
     dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
   }
 
   function forceRender() {
-    storyStore.deserializeStory(storyStore.serializeStory(storyUid));
+    window.dispatcher.dispatch({
+      action: Constants.STORY_OVERWRITE_STATE,
+      data: window.storyStore.serializeStory(storyUid)
+    });
   }
 
   function clearFixtures() {

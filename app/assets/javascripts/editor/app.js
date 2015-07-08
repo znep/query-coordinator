@@ -58,6 +58,7 @@ $(document).on('ready', function() {
   });
 
   window.storyStore = new StoryStore();
+  window.historyStore = new HistoryStore();
   window.dragDropStore = new DragDropStore();
 
   var richTextEditorToolbar = new RichTextEditorToolbar(
@@ -131,35 +132,44 @@ $(document).on('ready', function() {
     }
   });
 
-  $(window).on('rich-text-editor::format-change', function(event) {
+  /**
+   * History events
+   */
 
-    window.dispatcher.dispatch({
-      action: Constants.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
-      activeFormats: event.originalEvent.detail.content
-    });
+   $('.undo-btn').on('click', function() {
+
+      window.dispatcher.dispatch({
+        action: Constants.HISTORY_UNDO,
+        storyUid: userStoryUid
+      });
+   });
+
+   $('.redo-btn').on('click', function() {
+
+      window.dispatcher.dispatch({
+        action: Constants.HISTORY_REDO,
+        storyUid: userStoryUid
+      });
+   });
+
+  window.historyStore.addChangeListener(function() {
+
+    if (window.historyStore.canUndo()) {
+      $('.undo-btn').prop('disabled', false);
+    } else {
+      $('.undo-btn').prop('disabled', true);
+    }
+
+    if (window.historyStore.canRedo()) {
+      $('.redo-btn').prop('disabled', false);
+    } else {
+      $('.redo-btn').prop('disabled', true);
+    }
   });
 
-  // Handle updates to block content.
-  $(window).on('rich-text-editor::content-change', function(event) {
-
-    var editorIdComponents = event.originalEvent.detail.id.split('-');
-    var editorIdComponentCount = editorIdComponents.length - 1;
-    var componentIndex = editorIdComponents[editorIdComponentCount];
-
-    // Remove the last (component index) element
-    editorIdComponents.length = editorIdComponentCount;
-    var blockId = editorIdComponents.join('-');
-
-    var blockContent = event.originalEvent.detail.content;
-
-    window.dispatcher.dispatch({
-      action: Constants.BLOCK_UPDATE_COMPONENT,
-      blockId: blockId,
-      index: componentIndex,
-      type: 'text',
-      value: blockContent
-    });
-  });
+  /**
+   * Drag and drop events
+   */
 
   window.dragDropStore.addChangeListener(function() {
     if (window.dragDropStore.isDraggingOverStory(userStoryUid)) {
@@ -171,11 +181,13 @@ $(document).on('ready', function() {
 
   // Handlers for mouse events on inspiration story.
   window.dispatcher.register(function(payload) {
+
     if (payload.storyUid !== inspirationStoryUid) {
       return;
     }
 
     switch(payload.action) {
+
       case Constants.BLOCK_DOUBLE_CLICK:
         window.dispatcher.dispatch({
           action: Constants.BLOCK_COPY_INTO_STORY,
@@ -183,51 +195,48 @@ $(document).on('ready', function() {
           storyUid: window.userStoryUid,
           insertAt: window.storyStore.getBlockIds(window.userStoryUid).length
         });
-
         break;
     }
   });
 
   // Respond to changes in the user story's block ordering by scrolling the
   // window to always show the top of the moved block.
-  dispatcher.register(
-    function(payload) {
+  window.dispatcher.register(function(payload) {
 
-      if (payload.storyUid === userStoryUid) {
-        switch (payload.action) {
+    if (payload.storyUid === userStoryUid) {
 
-          case Constants.STORY_MOVE_BLOCK_UP:
-          case Constants.STORY_MOVE_BLOCK_DOWN:
+      switch (payload.action) {
 
-            // Ensure that the layout is performed before we try to read
-            // back the y translate value. Since the renderer is synchronous
-            // a minimal setTimeout here should cause this block to be executed
-            // after the renderer has completed.
-            setTimeout(function() {
+        case Constants.STORY_MOVE_BLOCK_UP:
+        case Constants.STORY_MOVE_BLOCK_DOWN:
 
-              var blockEditElement = document.querySelectorAll(
-                '.block-edit[data-block-id="' + payload.blockId + '"]'
-              )[0];
+          // Ensure that the layout is performed before we try to read
+          // back the y translate value. Since the renderer is synchronous
+          // a minimal setTimeout here should cause this block to be executed
+          // after the renderer has completed.
+          setTimeout(function() {
 
-              var blockEditElementTranslateY =
-                parseInt(
-                  blockEditElement.getAttribute('data-translate-y'),
-                  10
-                ) || 0;
+            var blockEditElement = document.querySelectorAll(
+              '.block-edit[data-block-id="' + payload.blockId + '"]'
+            )[0];
 
-              $('html, body').animate({
-                scrollTop: blockEditElementTranslateY
-              });
-            // The duration of the layout translations is specified in
-            // `layout.scss`.
-            }, 200);
-            break;
+            var blockEditElementTranslateY =
+              parseInt(
+                blockEditElement.getAttribute('data-translate-y'),
+                10
+              ) || 0;
 
-          default:
-            break;
-        }
+            $('html, body').animate({
+              scrollTop: blockEditElementTranslateY
+            });
+          // The duration of the layout translations is specified in
+          // `layout.scss`.
+          }, 200);
+          break;
+
+        default:
+          break;
       }
     }
-  );
-
+  });
 });

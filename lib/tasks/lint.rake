@@ -25,4 +25,17 @@ namespace :lint do
       run_eslint(old_ux_dirs, args[:format])
     end
   end
+
+  task :ruby, :format do |task, args|
+    def run_reek(dirs, format)
+      format = 'text' if format.nil?
+      system("bundle exec reek -f #{format} #{dirs}")
+    end
+
+    run_reek('app lib test', args[:format])
+  end
+
+  task :all => ['js:all', 'ruby']
 end
+
+task :lint => 'lint:all'

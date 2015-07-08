@@ -501,6 +501,12 @@
     }
 
     function _undo() {
+      // TODO: Update when `.waitFor()` is implemented by the
+      // dispatcher.
+      //
+      // We have this in a setTimeout in order to ensure that
+      // HistoryStore responds to the HISTORY_UNDO action before
+      // StoreStore does. `.waitFor()` is what we actually want.
       setTimeout(
         function() {
           _setStory(
@@ -513,6 +519,12 @@
     }
 
     function _redo() {
+      // TODO: Update when `.waitFor()` is implemented by the
+      // dispatcher.
+      //
+      // We have this in a setTimeout in order to ensure that
+      // HistoryStore responds to the HISTORY_UNDO action before
+      // StoreStore does. `.waitFor()` is what we actually want.
       setTimeout(
         function() {
           _setStory(

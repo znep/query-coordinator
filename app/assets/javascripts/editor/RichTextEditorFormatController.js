@@ -252,6 +252,15 @@
             var styleText = blockFragment.childNodes[i].style.cssText;
             var newBlock = document.createElement(blockType);
 
+            // Note that we are applying the same class name and style
+            // declarations that Squire will add when we change the text
+            // alignment. This is so that it appears 'native' to Squire
+            // and will render correctly when we call `.setHTML()` on the
+            // Squire instance.
+            //
+            // If the way Squire sets text alignment changes, or we choose
+            // an alternate rich text editor, we will need to update these
+            // accordingly.
             if (styleText.match(/text-align: left/)) {
               newBlock.className = 'align-left';
               newBlock.style.cssText = 'text-align: left;';

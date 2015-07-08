@@ -509,10 +509,12 @@
       // StoreStore does. `.waitFor()` is what we actually want.
       setTimeout(
         function() {
-          _setStory(
-            JSON.parse(window.historyStore.getStateAtCursor()),
-            true
-          );
+          if (window.historyStore.canUndo()) {
+            _setStory(
+              JSON.parse(window.historyStore.getStateAtCursor()),
+              true
+            );
+          }
         },
         0
       );
@@ -527,10 +529,12 @@
       // StoreStore does. `.waitFor()` is what we actually want.
       setTimeout(
         function() {
-          _setStory(
-            JSON.parse(window.historyStore.getStateAtCursor()),
-            true
-          );
+          if (window.historyStore.canRedo()) {
+            _setStory(
+              JSON.parse(window.historyStore.getStateAtCursor()),
+              true
+            );
+          }
         },
         0
       );

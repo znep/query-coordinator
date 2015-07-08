@@ -282,7 +282,7 @@
         insertionHintIndex = index;
         _renderStory();
       }
-    };
+    }
 
     function _hideInsertionHint() {
       if (insertionHintIndex !== -1 && insertionHint) {
@@ -290,7 +290,7 @@
         insertionHintIndex = -1;
         _renderStory();
       }
-    };
+    }
 
     /**
      * Block-level rendering operations
@@ -309,7 +309,6 @@
 
       var layout = window.storyStore.getBlockLayout(blockId);
       var componentWidths = layout.split('-');
-      var componentOptions;
       var componentTemplates;
       var blockElement;
 
@@ -355,7 +354,6 @@
         ).append('&#9587;')
       ]);
     }
-
 
     function _updateBlockEditControls(blockElement, blockIndex, blockCount) {
 
@@ -416,18 +414,18 @@
         });
     }
 
-    function _renderBlockComponentTemplate(options) {
+    function _renderBlockComponentTemplate(componentOptions) {
 
-      options.classes = [
+      componentOptions.classes = [
         'component',
-        options.componentType,
-        ('col' + options.componentWidth)
+        componentOptions.componentType,
+        ('col' + componentOptions.componentWidth)
       ].join(' ');
 
-      return componentTemplateRenderers[options.componentType](options);
+      return componentTemplateRenderers[componentOptions.componentType](componentOptions);
     }
 
-    function _renderTextComponentTemplate(options) {
+    function _renderTextComponentTemplate(componentOptions) {
 
       var editorId;
       var component;
@@ -435,32 +433,32 @@
 
       if (editable) {
 
-        editorId = options.blockId + '-' + options.componentIndex;
+        editorId = componentOptions.blockId + '-' + componentOptions.componentIndex;
 
         component = $(
           '<div>',
-          { class: options.classes + ' text-editor', 'data-editor-id': editorId }
+          { class: componentOptions.classes + ' text-editor', 'data-editor-id': editorId }
         );
 
         editor = window.richTextEditorManager.createEditor(
           component,
           editorId,
-          options.componentValue
+          componentOptions.componentValue
         );
 
       } else {
-        component = $('<div>', { class: options.classes }).append(options.componentValue);
+        component = $('<div>', { class: componentOptions.classes }).append(componentOptions.componentValue);
       }
 
       return component;
     }
 
-    function _renderImageComponentTemplate(options) {
-      return $('<div>', { class: options.classes }).append('<img>');
+    function _renderImageComponentTemplate(componentOptions) {
+      return $('<div>', { class: componentOptions.classes }).append('<img>');
     }
 
-    function _renderVisualizationComponentTemplate(options) {
-      return $('<div>', { class: options.classes }).append('<img>');
+    function _renderVisualizationComponentTemplate(componentOptions) {
+      return $('<div>', { class: componentOptions.classes }).append('<img>');
     }
 
     /**

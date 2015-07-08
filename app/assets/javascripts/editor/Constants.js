@@ -3,7 +3,7 @@
   STORY_CREATE: 'STORY_CREATE',
   STORY_OVERWRITE_STATE: 'STORY_OVERWRITE_STATE',
   STORY_DELETE_BLOCK: 'STORY_DELETE_BLOCK',
-  STORY_MOVE_BLOCK_DOWN:'STORY_MOVE_BLOCK_DOWN',
+  STORY_MOVE_BLOCK_DOWN: 'STORY_MOVE_BLOCK_DOWN',
   STORY_MOVE_BLOCK_UP: 'STORY_MOVE_BLOCK_UP',
 
   BLOCK_COPY_INTO_STORY: 'BLOCK_COPY_INTO_STORY',
@@ -27,8 +27,9 @@
 };
 
 (function() {
+  'use strict';
   var values = _.values(Constants);
-  if (values.length != _.uniq(values).length) {
+  if (values.length !== _.uniq(values).length) {
     throw new Error('Constants contains non-unique values');
   }
 })();

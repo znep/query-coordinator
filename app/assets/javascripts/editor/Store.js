@@ -20,7 +20,7 @@
     };
 
     this._emitChange = _emitter.emit;
-  };
+  }
 
 
   window.Store = Store;

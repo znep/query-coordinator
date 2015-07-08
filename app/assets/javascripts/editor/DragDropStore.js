@@ -79,7 +79,7 @@
         if (indexOfBlockUnderPointer >= 0) {
           var blockExtents = blocksSortedByVerticalPosition[indexOfBlockUnderPointer];
           var height = blockExtents.bottom - blockExtents.top;
-          var isOverBottomHalf = pointerY >= blockExtents.top + height/2;
+          var isOverBottomHalf = pointerY >= blockExtents.top + (height / 2);
 
           dropIndex = indexOfBlockUnderPointer + (isOverBottomHalf ? 1 : 0);
         } else {
@@ -122,7 +122,7 @@
       }
     }
 
-  };
+  }
 
   window.DragDropStore = DragDropStore;
 }());

@@ -207,7 +207,7 @@
           },
           10
         );
-      }
+      };
 
       document.head.appendChild(styleEl);
     }
@@ -340,7 +340,7 @@
             whitelist.hasOwnProperty(nodeName) &&
             whitelist[nodeName].indexOf(attrName) > -1
           );
-        };
+        }
         var attributes = dirtyEl.attributes;
         var attributeCount = attributes.length;
 
@@ -358,7 +358,7 @@
             cleanEl.setAttribute(attribute.name, attribute.value);
           }
         }
-      };
+      }
       var nodeName = el.nodeName.toLowerCase();
       var cleanEl = null;
       var childNodes;
@@ -455,7 +455,6 @@
     function _setupMouseMoveEventBroadcast(){
 
       var iframe = _editorElement[0];
-      var existingMosueMoveHandler = null;
 
       // Save any previous onmousemove handler
       var existingMouseMoveHandler = false;
@@ -468,7 +467,7 @@
 
       iframe.contentWindow.onmousemove = function(e) {
 
-        // Fire any existing onmousemove listener 
+        // Fire any existing onmousemove listener
         if (existingMouseMoveHandler) {
           existingMouseMoveHandler(e);
         }
@@ -481,21 +480,21 @@
 
         // Initialize the event, copying exiting event values
         // for the most part
-        evt.initMouseEvent( 
-          'mousemove', 
+        evt.initMouseEvent(
+          'mousemove',
           true, // bubbles
-          false, // not cancelable 
+          false, // not cancelable
           window,
           e.detail,
           e.screenX,
-          e.screenY, 
-          e.clientX + boundingClientRect.left, 
-          e.clientY + boundingClientRect.top, 
-          e.ctrlKey, 
+          e.screenY,
+          e.clientX + boundingClientRect.left,
+          e.clientY + boundingClientRect.top,
+          e.ctrlKey,
           e.altKey,
-          e.shiftKey, 
+          e.shiftKey,
           e.metaKey,
-          e.button, 
+          e.button,
           null // no related element
         );
 

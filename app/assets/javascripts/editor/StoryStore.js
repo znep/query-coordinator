@@ -20,6 +20,10 @@
           _setStory(payload.data);
           break;
 
+        case Constants.STORY_OVERWRITE_STATE:
+          _setStory(payload.data, true);
+          break;
+
         case Constants.STORY_MOVE_BLOCK_UP:
           _moveBlockUp(payload);
           break;
@@ -38,6 +42,14 @@
 
         case Constants.BLOCK_UPDATE_COMPONENT:
           _updateBlockComponentAtIndex(payload);
+          break;
+
+        case Constants.HISTORY_UNDO:
+          _undo();
+          break;
+
+        case Constants.HISTORY_REDO:
+          _redo();
           break;
       }
     });
@@ -139,10 +151,6 @@
         title: story.title,
         blocks: story.blockIds.map(_serializeBlockDiff)
       };
-    };
-
-    this.deserializeStory = function(storyData) {
-      _setStory(storyData, true);
     };
 
     /**
@@ -490,6 +498,30 @@
       }
 
       return serializedBlock;
+    }
+
+    function _undo() {
+      setTimeout(
+        function() {
+          _setStory(
+            JSON.parse(window.historyStore.getStateAtCursor()),
+            true
+          );
+        },
+        0
+      );
+    }
+
+    function _redo() {
+      setTimeout(
+        function() {
+          _setStory(
+            JSON.parse(window.historyStore.getStateAtCursor()),
+            true
+          );
+        },
+        0
+      );
     }
   }
 

@@ -37,8 +37,6 @@ describe('HistoryStore', function() {
     ]
   });
 
-  var historyStore;
-
   function dispatch(action) {
     window.dispatcher.dispatch(action);
   }
@@ -47,7 +45,7 @@ describe('HistoryStore', function() {
     window.dispatcher = new Dispatcher();
     window.userStoryUid = validStoryUid;
     window.storyStore = new StoryStore();
-    historyStore = new HistoryStore();
+    window.historyStore = new HistoryStore();
     dispatch({ action: Constants.STORY_CREATE, data: storyState1 });
   });
 
@@ -64,14 +62,14 @@ describe('HistoryStore', function() {
       describe('.canUndo()', function() {
 
         it('should return false', function() {
-          assert.isFalse(historyStore.canUndo());
+          assert.isFalse(window.historyStore.canUndo());
         });
       });
 
       describe('.canRedo()', function() {
 
         it('should return false', function() {
-          assert.isFalse(historyStore.canUndo());
+          assert.isFalse(window.historyStore.canUndo());
         });
       });
     });
@@ -79,20 +77,23 @@ describe('HistoryStore', function() {
     describe('given a newly-created story and one content change', function() {
 
       beforeEach(function() {
-        window.storyStore.deserializeStory(storyState2);
+        dispatch({
+          action: Constants.STORY_OVERWRITE_STATE,
+          data: storyState2
+        });
       });
 
       describe('.canUndo()', function() {
 
         it('should return true', function() {
-          assert.isTrue(historyStore.canUndo());
+          assert.isTrue(window.historyStore.canUndo());
         });
       });
 
       describe('.canRedo()', function() {
 
         it('should return false', function() {
-          assert.isFalse(historyStore.canRedo());
+          assert.isFalse(window.historyStore.canRedo());
         });
       });
     });
@@ -100,22 +101,28 @@ describe('HistoryStore', function() {
     describe('given a newly-created story, two content changes and one undo action', function() {
 
       beforeEach(function() {
-        window.storyStore.deserializeStory(storyState2);
-        window.storyStore.deserializeStory(storyState3);
+        dispatch({
+          action: Constants.STORY_OVERWRITE_STATE,
+          data: storyState2
+        });
+        dispatch({
+          action: Constants.STORY_OVERWRITE_STATE,
+          data: storyState3
+        });
         dispatch({ action: Constants.HISTORY_UNDO });
       });
 
       describe('.canUndo()', function() {
 
         it('should return true', function() {
-          assert.isTrue(historyStore.canUndo());
+          assert.isTrue(window.historyStore.canUndo());
         });
       });
 
       describe('.canRedo()', function() {
 
         it('should return true', function() {
-          assert.isTrue(historyStore.canUndo());
+          assert.isTrue(window.historyStore.canUndo());
         });
       });
     });
@@ -123,8 +130,14 @@ describe('HistoryStore', function() {
     describe('given a newly-created story, two content changes and two undo actions', function() {
 
       beforeEach(function() {
-        window.storyStore.deserializeStory(storyState2);
-        window.storyStore.deserializeStory(storyState3);
+        dispatch({
+          action: Constants.STORY_OVERWRITE_STATE,
+          data: storyState2
+        });
+        dispatch({
+          action: Constants.STORY_OVERWRITE_STATE,
+          data: storyState3
+        });
         dispatch({ action: Constants.HISTORY_UNDO });
         dispatch({ action: Constants.HISTORY_UNDO });
       });
@@ -132,14 +145,14 @@ describe('HistoryStore', function() {
       describe('.canUndo()', function() {
 
         it('should return false', function() {
-          assert.isFalse(historyStore.canUndo());
+          assert.isFalse(window.historyStore.canUndo());
         });
       });
 
       describe('.canRedo()', function() {
 
         it('should return true', function() {
-          assert.isTrue(historyStore.canRedo());
+          assert.isTrue(window.historyStore.canRedo());
         });
       });
     });
@@ -153,13 +166,13 @@ describe('HistoryStore', function() {
 
         it('should not modify the story', function() {
 
-          var storyBeforeUndo = window.storyStore.serializeStory(window.userStoryUid);
+          var storyBeforeUndo = JSON.parse(window.historyStore.getStateAtCursor());
 
           assert.equal(storyBeforeUndo.blocks.length, storyState1.blocks.length);
 
           dispatch({ action: Constants.HISTORY_UNDO });
 
-          var storyAfterUndo = window.storyStore.serializeStory(window.userStoryUid);
+          var storyAfterUndo = JSON.parse(window.historyStore.getStateAtCursor());
 
           assert.equal(storyAfterUndo.blocks.length, storyState1.blocks.length);
         });
@@ -168,18 +181,21 @@ describe('HistoryStore', function() {
       describe('given a newly-created story and one content change', function() {
 
         beforeEach(function() {
-          window.storyStore.deserializeStory(storyState2);
+          dispatch({
+            action: Constants.STORY_OVERWRITE_STATE,
+            data: storyState2
+          });
         });
 
         it('should cause the story data to revert to the previous version', function() {
 
-          var storyBeforeUndo = window.storyStore.serializeStory(window.userStoryUid);
+          var storyBeforeUndo = JSON.parse(window.historyStore.getStateAtCursor());
 
           assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
 
           dispatch({ action: Constants.HISTORY_UNDO });
 
-          var storyAfterUndo = window.storyStore.serializeStory(window.userStoryUid);
+          var storyAfterUndo = JSON.parse(window.historyStore.getStateAtCursor());
 
           assert.equal(storyAfterUndo.blocks.length, storyState1.blocks.length);
         });
@@ -188,29 +204,35 @@ describe('HistoryStore', function() {
       describe('given a newly-created story, one content change, an undo action and a different content change', function() {
 
         beforeEach(function() {
-          window.storyStore.deserializeStory(storyState2);
+          dispatch({
+            action: Constants.STORY_OVERWRITE_STATE,
+            data: storyState2
+          });
         });
 
         it('should cause reflect the latest content change and disable redo', function() {
 
-          var storyBeforeUndo = window.storyStore.serializeStory(window.userStoryUid);
+          var storyBeforeUndo = JSON.parse(window.historyStore.getStateAtCursor());
 
           assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
 
           dispatch({ action: Constants.HISTORY_UNDO });
 
-          var storyAfterUndo = window.storyStore.serializeStory(window.userStoryUid);
+          var storyAfterUndo = JSON.parse(window.historyStore.getStateAtCursor());
 
           assert.equal(storyAfterUndo.blocks.length, storyState1.blocks.length);
 
-          assert.isTrue(historyStore.canRedo());
+          assert.isTrue(window.historyStore.canRedo());
 
-          window.storyStore.deserializeStory(storyState3);
+          dispatch({
+            action: Constants.STORY_OVERWRITE_STATE,
+            data: storyState3
+          });
 
-          var storyAfterContentChange = window.storyStore.serializeStory(window.userStoryUid);
+          var storyAfterContentChange = JSON.parse(window.historyStore.getStateAtCursor());
           assert.equal(storyAfterContentChange.blocks.length, storyState3.blocks.length);
 
-          assert.isFalse(historyStore.canRedo());
+          assert.isFalse(window.historyStore.canRedo());
         });
       });
 
@@ -222,11 +244,20 @@ describe('HistoryStore', function() {
             var mod = i % 3;
 
             if (mod === 0) {
-              window.storyStore.deserializeStory(storyState3);
+              dispatch({
+                action: Constants.STORY_OVERWRITE_STATE,
+                data: storyState3
+              });
             } else if (mod === 1) {
-              window.storyStore.deserializeStory(storyState2);
+              dispatch({
+                action: Constants.STORY_OVERWRITE_STATE,
+                data: storyState2
+              });
             } else {
-              window.storyStore.deserializeStory(storyState1);
+              dispatch({
+                action: Constants.STORY_OVERWRITE_STATE,
+                data: storyState1
+              });
             }
           }
         });
@@ -235,11 +266,11 @@ describe('HistoryStore', function() {
 
           for (var i = 0; i < 98; i++) {
             dispatch({ action: Constants.HISTORY_UNDO });
-            assert.isTrue(historyStore.canUndo());
+            assert.isTrue(window.historyStore.canUndo());
           }
 
           dispatch({ action: Constants.HISTORY_UNDO });
-          assert.isFalse(historyStore.canUndo());
+          assert.isFalse(window.historyStore.canUndo());
         });
       });
     });
@@ -250,13 +281,13 @@ describe('HistoryStore', function() {
 
         it('should not modify the story', function() {
 
-          var storyBeforeUndo = window.storyStore.serializeStory(window.userStoryUid);
+          var storyBeforeUndo = JSON.parse(window.historyStore.getStateAtCursor());
 
           assert.equal(storyBeforeUndo.blocks.length, storyState1.blocks.length);
 
           dispatch({ action: Constants.HISTORY_REDO });
 
-          var storyAfterRedo = window.storyStore.serializeStory(window.userStoryUid);
+          var storyAfterRedo = JSON.parse(window.historyStore.getStateAtCursor());
 
           assert.equal(storyAfterRedo.blocks.length, storyState1.blocks.length);
         });
@@ -265,18 +296,21 @@ describe('HistoryStore', function() {
       describe('given a newly-created story and one content change', function() {
 
         beforeEach(function() {
-          window.storyStore.deserializeStory(storyState2);
+          dispatch({
+            action: Constants.STORY_OVERWRITE_STATE,
+            data: storyState2
+          });
         });
 
         it('should not modify the story', function() {
 
-          var storyBeforeUndo = window.storyStore.serializeStory(window.userStoryUid);
+          var storyBeforeUndo = JSON.parse(window.historyStore.getStateAtCursor());
 
           assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
 
           dispatch({ action: Constants.HISTORY_REDO });
 
-          var storyAfterRedo = window.storyStore.serializeStory(window.userStoryUid);
+          var storyAfterRedo = JSON.parse(window.historyStore.getStateAtCursor());
 
           assert.equal(storyAfterRedo.blocks.length, storyState2.blocks.length);
         });
@@ -285,24 +319,27 @@ describe('HistoryStore', function() {
       describe('given a newly-created story, one content change and one undo action', function() {
 
         beforeEach(function() {
-          window.storyStore.deserializeStory(storyState2);
+          dispatch({
+            action: Constants.STORY_OVERWRITE_STATE,
+            data: storyState2
+          });
         });
 
         it('should revert the story to the last updated version', function() {
 
-          var storyBeforeUndo = window.storyStore.serializeStory(window.userStoryUid);
+          var storyBeforeUndo = JSON.parse(window.historyStore.getStateAtCursor());
 
           assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
 
           dispatch({ action: Constants.HISTORY_UNDO });
 
-          var storyAfterUndo = window.storyStore.serializeStory(window.userStoryUid);
+          var storyAfterUndo = JSON.parse(window.historyStore.getStateAtCursor());
 
           assert.equal(storyAfterUndo.blocks.length, storyState1.blocks.length);
 
           dispatch({ action: Constants.HISTORY_REDO });
 
-          var storyAfterRedo = window.storyStore.serializeStory(window.userStoryUid);
+          var storyAfterRedo = JSON.parse(window.historyStore.getStateAtCursor());
 
           assert.equal(storyAfterRedo.blocks.length, storyState2.blocks.length);
         });

@@ -201,7 +201,7 @@ $(document).on('ready', function() {
 
   // Respond to changes in the user story's block ordering by scrolling the
   // window to always show the top of the moved block.
-  dispatcher.register(function(payload) {
+  window.dispatcher.register(function(payload) {
 
     if (payload.storyUid === userStoryUid) {
 
@@ -239,5 +239,4 @@ $(document).on('ready', function() {
       }
     }
   });
-
 });

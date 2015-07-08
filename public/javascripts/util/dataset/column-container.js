@@ -429,6 +429,25 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
           }
         }
 
+        // Copy over the column.format from the old column.
+        if (oldC && oldC.format) {
+          var blacklist = [
+            'id', 'tableColumnId', 'fieldName', // IDs shouldn't be copied.
+            'renderTypeName', 'dataTypeName', // types shouldn't be copied; NBE might be different.
+            'cachedContents', 'position' // NBE doesn't maintain these.
+          ];
+          var chain = _(oldC).chain().keys();
+          chain.without.apply(chain, blacklist).each(function(key) {
+            if ($.isPlainObject(oldC[key])) {
+              c[key] = $.extend(true, {}, oldC[key]);
+            } else if (_.isArray(oldC[key])) {
+              c[key] = oldC[key].slice();
+            } else {
+              c[key] = oldC[key];
+            }
+          });
+        }
+
         // If it has an access type, make sure it's set.
         if (!$.isBlank(cont.accessType)) {
           c.setAccessType(cont.accessType);

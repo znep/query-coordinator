@@ -153,7 +153,57 @@
             blockId: blockId
           });
         }
+      });
 
+      container.on('rich-text-editor::format-change', function(event) {
+
+        window.dispatcher.dispatch({
+          action: Constants.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
+          activeFormats: event.originalEvent.detail.content
+        });
+      });
+
+      // Handle updates to block content.
+      container.on('rich-text-editor::content-change', function(event) {
+
+        var editorIdComponents = event.originalEvent.detail.id.split('-');
+        var editorIdComponentCount = editorIdComponents.length - 1;
+        var componentIndex = editorIdComponents[editorIdComponentCount];
+
+        // Remove the last (component index) element
+        editorIdComponents.length = editorIdComponentCount;
+        var blockId = editorIdComponents.join('-');
+
+        var blockContent = event.originalEvent.detail.content;
+
+        var existingComponentValue = window.
+          storyStore.
+          getBlockComponentAtIndex(blockId, componentIndex).
+          value.
+          replace(/<br>/g, '');
+
+        var newComponentValue = blockContent.
+          replace(/<br>/g, '');
+
+        var contentIsDifferent = (
+          existingComponentValue !==
+          newComponentValue
+        );
+
+        if (contentIsDifferent) {
+
+          window.dispatcher.dispatch({
+            action: Constants.BLOCK_UPDATE_COMPONENT,
+            blockId: blockId,
+            index: componentIndex,
+            type: 'text',
+            value: blockContent
+          });
+        }
+      });
+
+      container.on('rich-text-editor::height-change', function() {
+        _renderStory();
       });
     }
 
@@ -436,7 +486,6 @@
 
         var editorId = element.attr('data-editor-id');
         var editor = richTextEditorManager.getEditor(editorId);
-        var content = editor.getContent();
 
         editor.setContent(data);
       } else {

@@ -245,16 +245,46 @@
       _editor.modifyBlocks(
         function(blockFragment) {
 
-          var newFragment = document.createElement(blockType);
+          var newFragment = document.createDocumentFragment();
 
           for (var i = 0; i < blockFragment.childNodes.length; i++) {
-            newFragment.appendChild(
+
+            var styleText = blockFragment.childNodes[i].style.cssText;
+            var newBlock = document.createElement(blockType);
+
+            // Note that we are applying the same class name and style
+            // declarations that Squire will add when we change the text
+            // alignment. This is so that it appears 'native' to Squire
+            // and will render correctly when we call `.setHTML()` on the
+            // Squire instance.
+            //
+            // If the way Squire sets text alignment changes, or we choose
+            // an alternate rich text editor, we will need to update these
+            // accordingly.
+            if (styleText.match(/text-align: left/)) {
+              newBlock.className = 'align-left';
+              newBlock.style.cssText = 'text-align: left;';
+            }
+
+            if (styleText.match(/text-align: center/)) {
+              newBlock.className = 'align-center';
+              newBlock.style.cssText = 'text-align: center;';
+            }
+
+            if (styleText.match(/text-align: right/)) {
+              newBlock.className = 'align-right';
+              newBlock.style.cssText = 'text-align: right;';
+            }
+
+            newBlock.appendChild(
               window.Util.mapDOMFragmentDescending(
                 blockFragment.childNodes[i],
                 stripFormatsFn,
                 function() { return false; }
               )
             );
+
+            newFragment.appendChild(newBlock);
           }
 
           return newFragment;

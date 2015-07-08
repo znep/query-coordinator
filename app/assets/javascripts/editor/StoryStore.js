@@ -20,6 +20,10 @@
           _setStory(payload.data);
           break;
 
+        case Constants.STORY_OVERWRITE_STATE:
+          _setStory(payload.data, true);
+          break;
+
         case Constants.STORY_MOVE_BLOCK_UP:
           _moveBlockUp(payload);
           break;
@@ -38,6 +42,14 @@
 
         case Constants.BLOCK_UPDATE_COMPONENT:
           _updateBlockComponentAtIndex(payload);
+          break;
+
+        case Constants.HISTORY_UNDO:
+          _undo();
+          break;
+
+        case Constants.HISTORY_REDO:
+          _redo();
           break;
       }
     });
@@ -141,10 +153,6 @@
       };
     };
 
-    this.deserializeStory = function(storyData) {
-      _setStory(storyData, true);
-    };
-
     /**
      * Private methods
      */
@@ -192,7 +200,8 @@
       Util.assertHasProperty(payload, 'blockId');
       Util.assertTypeof(payload.blockId, 'string');
 
-      var story = _getStory(payload.storyUid);
+      var storyUid = payload.storyUid;
+      var story = _getStory(storyUid);
       var blockId = payload.blockId;
       var indexOfBlockIdToRemove = story.blockIds.indexOf(blockId);
 
@@ -220,11 +229,12 @@
         );
       }
 
+      var storyUid = payload.storyUid;
       var clonedBlock = _cloneBlock(payload.blockId);
       var blockId = clonedBlock.id;
 
       _blocks[blockId] = clonedBlock;
-      _insertStoryBlockAtIndex(payload.storyUid, blockId, payload.insertAt);
+      _insertStoryBlockAtIndex(storyUid, blockId, payload.insertAt);
 
       self._emitChange();
     }
@@ -250,6 +260,7 @@
       component = block.components[index];
 
       if (component.type !== payload.type || component.value !== payload.value) {
+
         block.components[payload.index] = {
           type: payload.type,
           value: payload.value
@@ -318,6 +329,8 @@
         title: storyData.title,
         blockIds: blockIds
       };
+
+      self._emitChange();
     }
 
     function _setBlock(blockData, overwrite) {
@@ -485,6 +498,42 @@
       }
 
       return serializedBlock;
+    }
+
+    function _undo() {
+      // TODO: Update when `.waitFor()` is implemented by the
+      // dispatcher.
+      //
+      // We have this in a setTimeout in order to ensure that
+      // HistoryStore responds to the HISTORY_UNDO action before
+      // StoreStore does. `.waitFor()` is what we actually want.
+      setTimeout(
+        function() {
+          _setStory(
+            JSON.parse(window.historyStore.getStateAtCursor()),
+            true
+          );
+        },
+        0
+      );
+    }
+
+    function _redo() {
+      // TODO: Update when `.waitFor()` is implemented by the
+      // dispatcher.
+      //
+      // We have this in a setTimeout in order to ensure that
+      // HistoryStore responds to the HISTORY_UNDO action before
+      // StoreStore does. `.waitFor()` is what we actually want.
+      setTimeout(
+        function() {
+          _setStory(
+            JSON.parse(window.historyStore.getStateAtCursor()),
+            true
+          );
+        },
+        0
+      );
     }
   }
 

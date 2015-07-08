@@ -170,3 +170,18 @@ loaded in development mode.
 The profiler tool adds a widget to the top left that profiles rendering and database calls.
 
 To view the flamegraph for a page, append `?pp=flamegraph` to any url.
+
+## Linting
+
+The following command will run `eslint` on the javascript codebase:
+
+```
+npm run lint [-- eslint_options]
+```
+
+The configuration options for `eslint` can be found in `package.json`. A rake task will also
+lint the javascript codebase:
+
+```
+rake lint:js
+```

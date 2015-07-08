@@ -49,7 +49,8 @@
 
     links = Array.prototype.slice.apply(links);
     links.forEach(function (link) {
-      link.onclick = auth0Login(link.dataset.connection);
+      var connection = link.dataset ? link.dataset.connection : link.getAttribute('data-connection');
+      link.onclick = auth0Login(connection);
     });
 
     if (back) {

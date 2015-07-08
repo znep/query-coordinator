@@ -1,0 +1,40 @@
+@import '../base';
+
+.dragging,
+.dragging .block,
+.dragging button {
+  cursor: -webkit-grabbing !important;
+  cursor: grabbing !important;
+}
+
+.dragging iframe {
+  /* Temporary hack - this workaround does not work on all browsers.
+   * We can't currently detect drops over an iframe
+   * as the iframe eats all mouse events. While we figure out a better
+   * approach, this works around the issue.
+   */
+  pointer-events: none;
+}
+
+#block-ghost {
+  @include media-query-property(
+    'width',
+    $main-content-width-small,
+    $main-content-width-medium,
+    $main-content-width-large,
+    $main-content-width-extra-large
+  );
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: $block-ghost-z-index;
+  transform-origin: top left;
+  transform: scale(0.25);
+  transition: transform $transition-duration;
+  pointer-events: none;
+
+  &.full-size {
+    transform: scale(1.0);
+  }
+}

@@ -1,0 +1,98 @@
+@import '../base';
+
+.user-story-container {
+  position: relative;
+  display: block;
+  width: 100vw;
+  padding: $header-total-height + $user-story-container-vertical-padding 0;
+  z-index: $user-story-container-z-index;
+
+  .user-story {
+    @include media-query-property(
+      'width',
+      $main-content-width-small,
+      $main-content-width-medium,
+      $main-content-width-large,
+      $main-content-width-extra-large
+    );
+    @include unselectable();
+
+    position: relative;
+    display: block;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  .block-edit {
+    margin-bottom: 0.5rem;
+    background-color: transparent;
+
+    .block-edit-controls {
+      position: absolute;
+      width: $block-edit-controls-width;
+      height: $block-edit-controls-width * 3;
+      top: 0;
+      left: 0;
+      opacity: 0;
+
+      .block-edit-controls-move-up-btn,
+      .block-edit-controls-move-down-btn,
+      .block-edit-controls-delete-btn {
+        position: relative;
+        display: block;
+        width: $block-edit-controls-width;
+        height: $block-edit-controls-width;
+      }
+    }
+
+    &:hover {
+      z-index: $active-block-edit-z-index;
+
+      .block-edit-controls {
+        opacity: 1;
+      }
+    }
+
+    .block {
+      @include media-query-property(
+        'width',
+        $main-content-width-small - $block-edit-controls-width - $block-edit-controls-padding,
+        $main-content-width-medium - $block-edit-controls-width - $block-edit-controls-padding,
+        $main-content-width-large - $block-edit-controls-width - $block-edit-controls-padding,
+        $main-content-width-extra-large - $block-edit-controls-width - $block-edit-controls-padding
+      );
+
+      position: relative;
+      margin-left: $block-edit-controls-width + $block-edit-controls-padding;
+      transition: none;
+      border: 1px solid $block-edit-content-border-color;
+      box-sizing: border-box;
+
+      .text-editor {
+
+        iframe {
+          margin: 0 3%;
+          width: 94%;
+          height: 0;
+          min-height: 0;
+          border: 0;
+          overflow: hidden;
+        }
+      }
+    }
+  }
+
+  #story-insertion-hint {
+    @include unselectable();
+
+    position: absolute;
+    display: inline-block;
+    margin: 0 29% 0.5rem 29%;
+    width: 42%;
+    height: 0.5rem;
+    top: $header-total-height + $user-story-container-vertical-padding;
+    left: 0;
+    text-align: center;
+    background-color: $story-insertion-hint-bg-color;
+  }
+}

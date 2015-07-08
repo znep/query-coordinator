@@ -39,3 +39,28 @@
     clear: both;
   }
 }
+
+@mixin media-query-property(
+  $property,
+  $value-small,
+  $value-medium,
+  $value-large,
+  $value-extra-large) {
+
+  @media (max-width: 1279px) {
+    #{$property}: $value-small;
+  }
+
+  @media (min-width: 1280px) {
+    #{$property}: $value-medium;
+  }
+
+  @media (min-width: 1600px) {
+    #{$property}: $value-large;
+  }
+
+  @media (min-width: 1920px) {
+    #{$property}: $value-extra-large;
+  }
+}
+

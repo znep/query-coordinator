@@ -209,12 +209,21 @@ class CardTypeMappingTest < Test::Unit::TestCase
   def test_card_type_mapping_returns_expected_value_for_low_cardinality_money_column
     dataset_size = 2500
 
+    stub_feature_flags_with(:odux_enable_histogram, false)
     computed_card_type = card_type_for(
       fake_column('money', nil, 15),
       nil,
       dataset_size
     )
     assert_equal('column', computed_card_type)
+
+    stub_feature_flags_with(:odux_enable_histogram, true)
+    computed_card_type = card_type_for(
+      fake_column('money', nil, 15),
+      nil,
+      dataset_size
+    )
+    assert_equal('histogram', computed_card_type)
   end
 
   def test_card_type_mapping_returns_expected_value_for_low_cardinality_and_globally_unique_money_column
@@ -382,12 +391,21 @@ class CardTypeMappingTest < Test::Unit::TestCase
   def test_card_type_mapping_returns_expected_value_for_low_cardinality_number_column
     dataset_size = 2500
 
+    stub_feature_flags_with(:odux_enable_histogram, false)
     computed_card_type = card_type_for(
       fake_column('number', nil, 15),
       nil,
       dataset_size
     )
     assert_equal('column', computed_card_type)
+
+    stub_feature_flags_with(:odux_enable_histogram, true)
+    computed_card_type = card_type_for(
+      fake_column('number', nil, 15),
+      nil,
+      dataset_size
+    )
+    assert_equal('histogram', computed_card_type)
   end
 
   def test_card_type_mapping_returns_expected_value_for_low_cardinality_and_globally_unique_number_column

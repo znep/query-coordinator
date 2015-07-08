@@ -1,5 +1,6 @@
 ;var Constants = {
 
+  // TODO: Document the payload of each action
   STORY_CREATE: 'STORY_CREATE',
   STORY_OVERWRITE_STATE: 'STORY_OVERWRITE_STATE',
   STORY_DELETE_BLOCK: 'STORY_DELETE_BLOCK',

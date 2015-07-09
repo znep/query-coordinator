@@ -50,7 +50,7 @@
                     },
                     {
                       key: "Other",
-                      value: I18n.feedbackPanel.other
+                      value: I18n.feedbackPanel.otherOption
                     }
                   ],
                   required: true,

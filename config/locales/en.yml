@@ -2619,8 +2619,7 @@ en:
         flyoutFailedBody: Please contact Socrata Support
         flyoutNoChanges: No changes to be saved
       related_views:
-        button: Other views of this data
-        other: Other views of this data
+        title: Other views of this data
       api_explorer:
         title: API
         api_button: API
@@ -2737,7 +2736,7 @@ en:
         like: I like this
         missing: I'm missing a feature
         broken: Something seems broken
-        other: Other
+        other_option: Other
       last_updated:
         label: last updated
       mobile_warning_dialog:

@@ -49,6 +49,7 @@ blist.metrics.sitewideShared = {
             enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {id: 'detailCharts',    displayName: 'Charts',   summary: { plus: ['charts-created'], minus: ['charts-deleted'] } },
+        {id: 'detailLenses',    displayName: 'Data Lens Pages', summary: { plus: 'lense-new_view-published-v1' } },
         {id: 'detailFilters',   displayName: 'Filters',  summary: { plus: ['filters-created'], minus: ['filters-deleted'] } },
         {id: 'detailMaps',      displayName: 'Maps',     summary: { plus: ['maps-created'], minus: ['maps-deleted'] } },
         {id: 'detailSnapshots', displayName: 'Snapshots', summary: { plus: ['datasets-created-snapshot'], minus: ['datasets-deleted-snapshot'] } },
@@ -89,16 +90,6 @@ blist.metrics.sitewideShared = {
 		range: false,
                 verbPhrase: 'datasets created', 
 		verbPhraseSingular: 'dataset created'
-            }
-        },
-        {
-            id: 'summaryLenses',
-            displayName: 'Total Data Lenses',
-            summary: {
-                plus: 'lense-new_view-published-v1',
-                range: false,
-                verbPhrase: 'lenses created',
-                verbPhraseSingular: 'lens created'
             }
         },
         {

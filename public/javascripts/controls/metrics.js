@@ -118,11 +118,7 @@
     equiWidth = function($container)
     {
         var $children = $container.find('> div');
-        $children
-            .filter(':not(:last-child)')
-            .width((100 / $children.length) + '%')
-                .end()
-            .last().addClass('last');
+        $children.width((100 / $children.length) + '%');
     };
 
     /*

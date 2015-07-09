@@ -44,7 +44,11 @@
       </soc-select>
     </div>
     <div class="add-card-preview customize-card-preview">
-      <span ng-if="addCardModel === null">{{'addCardDialog.prompt' | I18n}}</span>
+      <div ng-if="addCardModel === null" class="add-card-preview-placeholder">
+        <div class="placeholder-inner-text">
+          <span>{{'addCardDialog.prompt' | I18n}}</span>
+        </div>
+      </div>
       <div class="card-spot" ng-if="addCardModel !== null">
         <card model="addCardModel"
           interactive="false"

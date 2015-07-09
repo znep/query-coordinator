@@ -22,14 +22,9 @@ class CurrentDomainMiddleware
   def call(env)
     request = Rack::Request.new(env)
 
-    if socrata_docker_environment? && env['REQUEST_PATH'].to_s.match(/^\/version/)
-      CurrentDomain.set_domain(
-        Domain.new(
-          'cname'=> 'unknown',
-          'name' => 'unknown',
-          'short_name' => 'unknown'
-        )
-      )
+    # Bail out early if the request is merely checking the version end point
+    # See VersionMiddleware to see how we respond to the request.
+    if '/version.json' == URI(env['REQUEST_URI']).path
       return @app.call(env)
     end
 

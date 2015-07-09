@@ -497,6 +497,8 @@
       return serializedBlock;
     }
 
+    // The history state is set in HistoryStore, and a setTimeout ensures this
+    // will always run after the cursor is in the correct position.
     function _applyHistoryState() {
       // TODO: Update when `.waitFor()` is implemented by the
       // dispatcher.

@@ -54,5 +54,6 @@ group :development, :test do
   gem 'pry-remote'
   gem 'pry-stack_explorer'
   gem 'rb-readline'
+  gem 'reek', '~> 2.2.1'
   gem 'thin'
 end

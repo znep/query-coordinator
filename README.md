@@ -174,17 +174,31 @@ You can add `-h` for more options. By default it routes requests to `dataspace-d
 A linter is a tool that we use to find problematic patterns or code that doesn't
 adhere to certain style guidelines. For javascript, we use `eslint`, because it's
 highly configurable. `eslint` is automatically installed via npm as a dev dependency.
+For ruby, we use `reek`, which is installed as a gem.
 
-Although eslint is run automatically by Jenkins for each build, you can manually
-run eslint for different parts of the javascript codebase using the following
+Although the codebase is automatically linted by Jenkins for each build, you can manually
+run linters for different parts of the codebase using the following
 rake tasks:
 
 ```
 rake lint:js:all       # Lint the whole javascript codebase
 rake lint:js:oldUx     # Lint the old ux
 rake lint:js:dataCards # Lint data lens
+rake lint:ruby         # Lint ruby code
+rake lint              # Lint all the things
+```
+
+The lint tasks take an optional argument representing the desired format of the output.
+The default for the `js` flavors is 'stylish' and the default for the `ruby` flavors is
+'text'. See the [eslint documentation](http://eslint.org/docs/user-guide/command-line-interface#f-format) and the
+[reek documentation](https://github.com/troessner/reek#output-formats) for more formats. Example:
+
+```
+rake "lint:js:all[junit]"
 ```
 
 If you're too cool for rake tasks, you can also run `npm run eslint -- [args]`
-on the command line and supply your own arguments. You can find our specific
-configuration options for `eslint` in `package.json` under the `eslintConfig` key.
+or `bundle exec reek [args]` on the command line and supply your own arguments.
+You can find our specific configuration options for `eslint` in `package.json`
+under the `eslintConfig` key. Currently we use no configuration options for
+`reek`.

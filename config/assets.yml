@@ -271,6 +271,7 @@ javascripts:
     - public/javascripts/controls/combination-list.js
     - public/javascripts/screens/admin-canvas-pages-screen.js
   admin-datasets:
+    - public/javascripts/plugins/jquery.dropdown.js
     - public/javascripts/util/serialize.js
     - public/javascripts/screens/admin-config-common.js
   admin-browse-widget:
@@ -542,6 +543,7 @@ javascripts:
   screen-reset-password:
     - public/javascripts/screens/reset-password-screen.js
   screen-profile:
+    - public/javascripts/plugins/jquery.dropdown.js
     - public/javascripts/util/serialize.js
     - public/javascripts/screens/profile-screen.js
   screen-profile-edit:

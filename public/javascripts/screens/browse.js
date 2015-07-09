@@ -489,4 +489,111 @@ $(function()
         });
     }
 
+    $.live(
+        '#create-story-button',
+        'click',
+        createCreateNewStoryHandler(
+            $('#create-resource-dropdown')
+        )
+    );
+    $.live(
+        '#create-story-footer-button',
+        'click',
+        createCreateNewStoryHandler(
+            $('#create-resource-footer-dropdown')
+        )
+    );
+
+    function createCreateNewStoryHandler($dropdownElement) {
+
+        return function() {
+
+            if (window.hasOwnProperty('blist') &&
+                window.blist.hasOwnProperty('configuration') &&
+                window.blist.configuration.hasOwnProperty('appToken')) {
+
+                function onError(xhr, textStatus, error) {
+
+                    $dropdownElement.removeClass('working');
+
+                    alert('Oh no! There’s been a problem. Please try again.');
+                }
+
+                function onSuccess(data, textStatus, xhr) {
+
+                    function validate4x4(testString) {
+
+                        var valid = false;
+                        var pattern = window.blist.util.patterns.UID;
+
+                        if (pattern) {
+                            valid = testString.match(pattern) !== null;
+                        }
+
+                        return valid;
+                    }
+
+                    if (data.hasOwnProperty('id') && validate4x4(data.id)) {
+                        // This is the second phase of the creation action,
+                        // and this endpoint is responsible for removing the
+                        // '"initialized": false' flag (or setting it to true)
+                        // when it succeeds at creating the new story objects
+                        // in Storyteller's datastore.
+                        //
+                        // This isn't perfect but it should (hopefully) be
+                        // reliable enough that users will not totally fail to
+                        // create stories when they intend to do so.
+                        window.location.href = '/stories/s/' + data.id + '/create';
+                    } else {
+                        onError(xhr, 'Invalid storyUid', 'Invalid storyUid');
+                    }
+                }
+
+                var newStoryName = (
+                    'Untitled Story - ' +
+                    (new Date().format('m-d-Y')
+                );
+                var newStoryData = {
+                    name: newStoryName,
+                    metadata: {
+                        renderTypeConfig: {
+                            visible: {
+                                href: true
+                            },
+                            availableDisplayTypes: ['story'],
+                            jsonQuery: {}
+                        },
+                        // Since Storyteller has its own datastore, we will
+                        // need to treat this asynchonously. Tagging the
+                        // metadata with '"initialized": false' should at least
+                        // allow us to understand how many of the two-phase
+                        // story creation actions fail, and should also allow
+                        // us to do some garbage collection down the road.
+                        initialized: false
+                    },
+                    displayType: 'story',
+                    displayFormat: {},
+                    query: {}
+                };
+
+                var url = '/api/views.json';
+                var settings = {
+                    contentType: false,
+                    data: JSON.stringify(newStoryData),
+                    dataType: 'json',
+                    error: onError,
+                    headers: {
+                        'Content-type': 'application/json',
+                        'X-App-Token': blist.configuration.appToken
+                    },
+                    type: 'POST',
+                    success: onSuccess
+                };
+
+                $dropdownElement.addClass('working');
+                $.ajax(url, settings);
+            }
+        }
+    }
+
 });

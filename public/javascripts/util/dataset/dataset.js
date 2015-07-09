@@ -3323,8 +3323,8 @@ var Dataset = ServerModel.extend({
         var ds = this;
         var base = '';
 
-        if (ds.isNewView()) {
-          return ds.metadata.accessPoints['new_view'];
+        if (ds.isNewView() && ds.metadata.hasOwnProperty('accessPoints')) {
+            return ds.metadata.accessPoints['new_view'];
         }
 
         // federated dataset has nonblank domain cname
@@ -3356,8 +3356,8 @@ var Dataset = ServerModel.extend({
         var ds = this;
         var base = '';
 
-        if (ds.isNewView()) {
-          return ds.metadata.accessPoints['new_view'];
+        if (ds.isNewView() && ds.metadata.hasOwnProperty('accessPoints')) {
+            return ds.metadata.accessPoints['new_view'];
         }
 
         // federated dataset has nonblank domain cname

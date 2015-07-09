@@ -831,4 +831,54 @@ describe('table directive', function() {
       expect(flyout).to.have.length(0);
     });
   });
+
+  // Note: The following scrolling tests are failing and thus xit'ed because:
+  // 1) It is difficult to simulate 'DOMMouseScroll' events on Firefox
+  // 2) It is difficult to monitor scroll position (especially on PhantomJS)
+  // Consequently, testing the complex scrolling behavior on tables lends itself
+  // to integration testing instead (Roark).
+  describe('when scrolling', function() {
+
+    var el;
+    var tableBody;
+
+    function scrollEvent(delta) {
+     return $.Event('mousewheel', {
+       originalEvent: {
+         wheelDelta: delta
+       }
+     });
+    }
+
+    beforeEach(function() {
+      el = createTableCard(true);
+      tableBody = el.find('.table-body');
+    });
+
+    afterEach(destroyAllTableCards);
+
+    xit('should add hidden class if scrolling down and the page is not at the bottom', function() {
+      el.css('top', 900);
+      tableBody.trigger(scrollEvent(-10));
+      expect(tableBody.hasClass('vertically-hidden')).to.be.true;
+    });
+
+    xit('should not add hidden class if scrolling down and the page is at the bottom', function() {
+      tableBody.trigger(scrollEvent(-10));
+      expect(tableBody.hasClass('vertically-hidden')).to.be.false;
+    });
+
+    xit('should not add hidden class if scrolling up and the page is not at the bottom', function() {
+      tableBody.scrollTop(100);
+      el.css('top', 1000);
+      tableBody.trigger(scrollEvent(10));
+      expect(tableBody.hasClass('vertically-hidden')).to.be.false;
+    });
+
+    xit('should not add hidden class if scrolling up and the page is at the bottom', function() {
+      tableBody.scrollTop(100);
+      tableBody.trigger(scrollEvent(10));
+      expect(tableBody.hasClass('vertically-hidden')).to.be.false;
+    });
+  });
 });

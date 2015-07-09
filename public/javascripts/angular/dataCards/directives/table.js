@@ -23,10 +23,20 @@
       },
 
       link: function(scope, element, attrs) {
+        var columnDetails$ = scope.$observe('columnDetails');
+        var whereClause$ = scope.$observe('whereClause');
+        var rowCount$ = scope.$observe('rowCount');
+        var filteredRowCount$ = scope.$observe('filteredRowCount');
+        var filteredColumnDetails$ = scope.$observe('filteredColumnDetails');
+        var infinite$ = scope.$observe('infinite');
+        var tableScroll$;
+        var tableMouseScroll$;
+        var tableMousemove$;
+
         // CORE-4645: Omit some columns from display.
         scope.$bindObservable(
           'filteredColumnDetails',
-          scope.$observe('columnDetails').
+          columnDetails$.
             filter(_.isPresent).
             map(function(columnDetails) {
               return _.filter(columnDetails, function(column) {
@@ -45,10 +55,10 @@
         // This directive is expected to be rewritten or at least refactored soon.
         // Dating for the eventual lulz: 2/12/2015
         Rx.Observable.combineLatest(
-          scope.$observe('whereClause').filter(_.isDefined),
-          scope.$observe('rowCount').filter(_.isNumber),
-          scope.$observe('filteredRowCount').filter(_.isNumber),
-          scope.$observe('filteredColumnDetails').filter(_.isPresent),
+          whereClause$.filter(_.isDefined),
+          rowCount$.filter(_.isNumber),
+          filteredRowCount$.filter(_.isNumber),
+          filteredColumnDetails$.filter(_.isPresent),
           _.identity
         ).take(1).
           subscribe(setupTable);
@@ -65,8 +75,8 @@
           var httpRequests = {};
           var oldBlock = -1;
           var $table = element.children('.table-inner');
-          var $head = element.find('.table-inner > .table-head');
-          var $body = element.find('.table-inner > .table-body');
+          var $tableHead = element.find('.table-inner > .table-head');
+          var $tableBody = element.find('.table-inner > .table-body');
           var $expander = element.find('.table-expander');
           var $label = element.find('.table-label');
 
@@ -101,8 +111,8 @@
             var tableHeight = dimensions.height - element.position().top;
 
             element.height(tableHeight);
-            $body.height(tableHeight - $head.height() - (scope.showCount ? rowHeight : 0));
-            $head.find('.resize').height(tableHeight);
+            $tableBody.height(tableHeight - $tableHead.height() - (scope.showCount ? rowHeight : 0));
+            $tableHead.find('.resize').height(tableHeight);
 
             checkBlocks();
             updateLabel();
@@ -275,7 +285,7 @@
             var columnId = $('.flyout').data('column-id');
 
             if (_.isPresent(columnId)) {
-              $head.find('.th:contains({0})'.format(getColumn(columnId).title)).mouseenter();
+              $tableHead.find('.th:contains({0})'.format(getColumn(columnId).title)).mouseenter();
             }
           };
 
@@ -287,7 +297,7 @@
               var cells = $expander.
                 // row_block.row.cell
                 children().children().children();
-              cells = cells.add($head.children());
+              cells = cells.add($tableHead.children());
               var columns = scope.filteredColumnDetails;
 
               // Find the widest cell in each column
@@ -598,11 +608,11 @@
           };
 
           var moveHeader = function() {
-            $head.css('left', -$body.scrollLeft());
+            $tableHead.css('left', -$tableBody.scrollLeft());
           };
 
           var checkBlocks = function() {
-            var currentBlock = Math.floor($body.scrollTop() / (rowHeight * rowsPerBlock));
+            var currentBlock = Math.floor($tableBody.scrollTop() / (rowHeight * rowsPerBlock));
             // Short circuit
             if (currentBlock === oldBlock) {
               return;
@@ -635,11 +645,11 @@
 
           var updateLabel = function() {
             var bottomRow = Math.min(
-              Math.floor(($body.scrollTop() + $body.height()) / rowHeight),
+              Math.floor(($tableBody.scrollTop() + $tableBody.height()) / rowHeight),
               scope.filteredRowCount
             );
             var topRow = Math.min(
-              Math.floor($body.scrollTop() / rowHeight) + 1,
+              Math.floor($tableBody.scrollTop() / rowHeight) + 1,
               bottomRow
             );
 
@@ -664,42 +674,84 @@
             element.toggleClass('has-rows', scope.filteredRowCount !== 0);
           };
 
-          var scrollLeft = $body.scrollLeft(), scrollTop = $body.scrollTop();
+          var disableScrollingOnMousemove$;
+          var disableScrollingOnMouseScroll$;
+          var prevClientX;
+          var prevClientY;
 
-          $body.scroll(function(e) {
-            scope.$safeApply(function() {
-              if (scrollLeft !== (scrollLeft = $body.scrollLeft())) {
-                moveHeader();
-              }
-              if (scrollTop !== (scrollTop = $body.scrollTop())) {
-                checkBlocks();
-                updateLabel();
-              }
+          tableMousemove$ = Rx.Observable.fromEvent($tableBody, 'mousemove');
+          tableMouseScroll$ = Rx.Observable.fromEvent($tableBody, 'mousewheel DOMMouseScroll');
+          tableScroll$ = Rx.Observable.fromEvent($tableBody, 'scroll');
+
+          // Returns false if we are moving the mouse and should not disable
+          // scrolling.  We are moving the mouse if our clientX, clientY have changed.
+          disableScrollingOnMousemove$ = tableMousemove$.
+            filter(function(e) {
+              return prevClientX !== (prevClientX = e.clientX) &&
+                prevClientY !== (prevClientY = e.clientY);
+            }).
+            map(function() {
+              return false;
             });
+
+          // Returns true if we are scrolling down and not on the bottom, and thus
+          // should disable scrolling.  Otherwise, false.
+          disableScrollingOnMouseScroll$ = tableMouseScroll$.
+            map(function(e) {
+              var scrollingDown = e.originalEvent.wheelDelta < 0 || e.originalEvent.detail > 0;
+              var onBottom = $(window).scrollTop() + $(window).height() === $(document).height();
+
+              return scrollingDown && !onBottom;
+            }).
+
+            // Filter out expanded cards.
+            filter(function() {
+              return $table.closest('.expanded').length === 0;
+            });
+
+          // Merge these observables and toggle a class that sets `overflow: hidden`
+          // depending on whether or not we should disable scrolling.
+          Rx.Observable.merge(
+            disableScrollingOnMousemove$,
+            disableScrollingOnMouseScroll$
+          ).
+          distinctUntilChanged().
+          subscribe(function(shouldDisableScrolling) {
+            $tableBody.toggleClass('vertically-hidden', shouldDisableScrolling);
           });
 
-          $body.flyout({
+          // When the table is scrolled, update its content.
+          tableScroll$.
+            subscribe(function() {
+              scope.$safeApply(function() {
+                moveHeader();
+                checkBlocks();
+                updateLabel();
+              });
+            });
+
+          $tableBody.flyout({
             selector: '.row-block .cell',
             interact: true,
             style: 'table',
             direction: 'horizontal',
             parent: document.body,
 
-            html: function($target, $head, options) {
+            html: function($target, $tableHead, options) {
               if ($target[0].clientWidth < $target[0].scrollWidth) {
                 return _.escape($target.text());
               }
             }
           });
 
-          $head.flyout({
+          $tableHead.flyout({
             selector: '.th',
             direction: 'top',
             style: 'table',
             parent: document.body,
             interact: true,
 
-            title: function($target, $head, options) {
+            title: function($target, $tableHead, options) {
               var title = _.escape($target.text());
               var index = $target.data('index');
               var description = _.escape(_.get(scope.filteredColumnDetails, index + '.description'));
@@ -712,7 +764,7 @@
               return title;
             },
 
-            html: function($target, $head, options, $element) {
+            html: function($target, $tableHead, options, $element) {
               var columnId = $target.data('columnId');
               var column = getColumn(columnId);
               var sortUp = sortOrdering === 'ASC';
@@ -761,10 +813,10 @@
 
           subscriptions.push(Rx.Observable.subscribeLatest(
             element.offsetParent().observeDimensions(),
-            scope.$observe('rowCount'),
-            scope.$observe('filteredRowCount'),
-            scope.$observe('filteredColumnDetails'),
-            scope.$observe('infinite'),
+            rowCount$,
+            filteredRowCount$,
+            filteredColumnDetails$,
+            infinite$,
             function(cardDimensions, rowCount, filteredRowCount, filteredColumnDetails, infinite) {
 
               scope.$emit('render:start', {
@@ -803,7 +855,7 @@
           ));
 
           subscriptions.push(Rx.Observable.subscribeLatest(
-            scope.$observe('whereClause'),
+            whereClause$,
             function(whereClause) {
               if (scope.getRows) {
                 reloadRows();

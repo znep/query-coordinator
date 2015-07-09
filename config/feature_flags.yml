@@ -147,7 +147,3 @@ odux_enable_feature_map_hover:
   description: Enable hover functionality in point maps.
   defaultValue: false
   category: data lens
-use_less_crazy_regex:
-  description: Experimentally test if regex from CORE-5490 will work for our purposes.
-  defaultValue: false
-  category: testing bug fix

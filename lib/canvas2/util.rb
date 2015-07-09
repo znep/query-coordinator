@@ -1,4 +1,5 @@
 # encoding: UTF-8
+require 'timeout'
 
 module Canvas2
   class Util
@@ -322,64 +323,29 @@ module Canvas2
 
       p = { 'prop' => str, 'transforms' => [] }
 
-      p['prop'].match(/(^|(.*)\s+)\|\|\s*(.*)$/) do |ma|
-        p['prop'] = ma[2] || ''
-        p['transforms'].push({
-          type: 'fallback',
-          fallback: ma[3]
-        })
-      end
-
-      check_expr = lambda do
-        while ma = p['prop'].match(/(^|(.*)\s+)\!(\w+)$/) do
-          p['prop'] = ma[2] || ''
-          p['transforms'].push({
-            type: 'sub_expr',
-            key: ma[3]
-          })
+      lex = lambda do |type|
+        if match_data = p['prop'].match(build_transform_parsing_regex(type))
+          p['prop'] = match_data['prop'] || ''
+          p['transforms'] << transform_template(type, match_data)
         end
       end
 
-      check_expr.call()
-      regex = if FeatureFlags.derive(nil, defined?(request) ? request : nil)[:use_less_crazy_regex] === true
-                /((?:^|(.*)\s+))\/((?:[^\s\/]*|(?:\\\/)*)*)\/((?:[^\/]*|(?:\\\/)*)*)\/([gim]*)/
-              else
-                /(^|(.*)\s+)\/(([^\s\/]*|(\\\/)*)*)\/(([^\/]*|(\\\/)*)*)\/([gim]*)$/
-              end
-      while ma = p['prop'].match(regex) do
-        p['prop'] = ma[2] || ''
-        p['transforms'].push({
-          type: 'regex',
-          regex: ma[3].gsub('\/', '/'),
-          repl: ma[6].gsub('\/', '/'),
-          modifiers: ma[9]
-        })
+      looped_lex = lambda do |type|
+        while lex.call(type) do; end # MWAHAHAHAHHAHAHAHAHAAHAHA
       end
 
-      check_expr.call()
-      while ma = p['prop'].match(/(^|(.*)\s+)([%@$])\[([^\]]*)\]$/) do
-        p['prop'] = ma[2] || ''
-        t = case ma[3]
-            when '%' then 'number_format'
-            when '@' then 'date_format'
-            when '$' then 'string_format'
-            end
-        p['transforms'].push({
-          type: t,
-          format: ma[4]
-        })
+      # This will raise a TimeoutError after 5 seconds.
+      Timeout::timeout(5) do
+        lex.call(:fallback)
+        looped_lex.call(:sub_expr)
+        looped_lex.call(:regex)
+        looped_lex.call(:sub_expr)
+        looped_lex.call(:format)
+        looped_lex.call(:sub_expr)
+        lex.call(:math_expr)
+        looped_lex.call(:sub_expr)
       end
 
-      check_expr.call()
-      p['prop'].match(/(^|(.*)\s+)=\[([^\]]*)\]$/) do |ma|
-        p['prop'] = ma[2] || ''
-        p['transforms'] << {
-          type: 'math_expr',
-          expr: ma[3]
-        }
-      end
-
-      check_expr.call()
       @@transforms_cache[str] = p
       p
     end
@@ -543,5 +509,61 @@ module Canvas2
       end
     end
 
+    until_close_bracket = '[^\]]+'
+    until_unescaped_forward_slash = '\\\/|[^\/]'
+    until_unescaped_forward_slash_or_whitespace = '\\\/|[^\s\/]'
+    @@transform_regexes = {
+      ignore_until_whitespace: '(?:^|(?<prop>.*)\s+)',
+      fallback: '\|\|\s*(?<fallback>.*)',
+      sub_expr: '\!(?<key>\w+)',
+      regex: [ '\/', # beginning slash
+               '(?<regex>(?:', until_unescaped_forward_slash_or_whitespace, ')*)', # find
+               '\/', # splitting slash
+               '(?<repl>(?:', until_unescaped_forward_slash, ')*)', # replace
+               '\/', # ending slash
+               '(?<modifiers>[gim]*)', # modifiers
+             ].join(''),
+      format: ['(?<type>[%@$])\[(?<format>', until_close_bracket, ')\]'].join(''),
+      math_expr: ['=\[(?<expr>', until_close_bracket, ')\]'].join('')
+    }
+    def self.build_transform_parsing_regex(type)
+      /#{@@transform_regexes[:ignore_until_whitespace]}#{@@transform_regexes[type]}$/
+    end
+
+    def self.transform_template(type, md)
+      case type
+      when :fallback
+        {
+          type: 'fallback',
+          fallback: md['fallback']
+        }
+      when :sub_expr
+        {
+          type: 'sub_expr',
+          key: md['key']
+        }
+      when :regex
+        {
+          type: 'regex',
+          regex: md['regex'],
+          repl: md['repl'],
+          modifiers: md['modifiers']
+        }
+      when :format
+        {
+          type: case md['type']
+                when '%' then 'number_format'
+                when '@' then 'date_format'
+                when '$' then 'string_format'
+                end,
+          format: md['format']
+        }
+      when :math_expr
+        {
+          type: 'math_expr',
+          expr: md['expr']
+        }
+      end
+    end
   end
 end

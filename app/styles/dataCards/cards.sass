@@ -545,12 +545,22 @@ visualization-type-selector
   border-radius: $rounded-corners-border-radius
   box-sizing: border-box
 
-  > span
-    line-height: 300px
-
   >.card-spot
     >card
       z-index: 1
+
+// add card placeholder layout when no column selected
+.add-card-preview-placeholder
+  height: 300px
+  width: 100%
+  display: table
+
+  .placeholder-inner-text
+    display: table-cell
+    vertical-align: middle
+    margin: 0, auto
+    padding-left: 1rem
+    padding-right: 1rem
 
 // add card styling
 .add-card-select-column

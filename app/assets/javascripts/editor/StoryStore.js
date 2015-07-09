@@ -45,11 +45,8 @@
           break;
 
         case Constants.HISTORY_UNDO:
-          _undo();
-          break;
-
         case Constants.HISTORY_REDO:
-          _redo();
+          _applyHistoryState();
           break;
       }
     });
@@ -500,7 +497,7 @@
       return serializedBlock;
     }
 
-    function _undo() {
+    function _applyHistoryState() {
       // TODO: Update when `.waitFor()` is implemented by the
       // dispatcher.
       //
@@ -509,29 +506,11 @@
       // StoreStore does. `.waitFor()` is what we actually want.
       setTimeout(
         function() {
-          if (window.historyStore.canUndo()) {
-            _setStory(
-              JSON.parse(window.historyStore.getStateAtCursor()),
-              true
-            );
-          }
-        },
-        0
-      );
-    }
+          var serializedStory = window.historyStore.getStateAtCursor();
 
-    function _redo() {
-      // TODO: Update when `.waitFor()` is implemented by the
-      // dispatcher.
-      //
-      // We have this in a setTimeout in order to ensure that
-      // HistoryStore responds to the HISTORY_UNDO action before
-      // StoreStore does. `.waitFor()` is what we actually want.
-      setTimeout(
-        function() {
-          if (window.historyStore.canRedo()) {
+          if (serializedStory) {
             _setStory(
-              JSON.parse(window.historyStore.getStateAtCursor()),
+              JSON.parse(serializedStory),
               true
             );
           }

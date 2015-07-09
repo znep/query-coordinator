@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function TimelineChartVisualizationHelpers(DateHelpers) {
+  function TimelineChartVisualizationHelpers() {
 
     /**
      * Precompute a bunch of things that are useful for rendering the timeline chart.
@@ -24,7 +24,6 @@
       var minValue = Number.POSITIVE_INFINITY;
       var maxValue = Number.NEGATIVE_INFINITY;
       var meanValue;
-      var duration;
       var allValues = chartData.map(function(datum) {
 
         if (minDate === null) {
@@ -51,7 +50,7 @@
           date: datum.date.toDate(),
           filtered: datum.filtered,
           unfiltered: datum.total
-        }
+        };
       });
 
       minValue = (minValue > 0) ? 0 : minValue;
@@ -65,7 +64,7 @@
         meanValue: meanValue,
         maxValue: maxValue,
         values: allValues
-      }
+      };
     }
 
     return {

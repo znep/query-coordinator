@@ -132,7 +132,7 @@ angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelper
     }
 
     var filterClass;
-    switch(blob['function']) {
+    switch (blob['function']) {
       case 'IsNull': filterClass = IsNullFilter; break;
       case 'BinaryOperator': filterClass = BinaryOperatorFilter; break;
       case 'TimeRange': filterClass = TimeRangeFilter; break;

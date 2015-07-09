@@ -40,7 +40,7 @@
           ).
           startWith(false).
           flatMapLatest(function(isFocused) {
-            if(isFocused) {
+            if (isFocused) {
               return WindowState.escapeKeyObservable;
             }
             else {

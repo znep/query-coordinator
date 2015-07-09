@@ -24,8 +24,8 @@
       init: function(parentPageModel, fieldName, initialValues) {
         this._super();
 
-        if(!(parentPageModel instanceof Model)) { throw new Error('Card models must have parent Page models.'); }
-        if(!_.isString(fieldName) || _.isEmpty(fieldName)) { throw new Error('Card models must have a non-empty field name.'); }
+        if (!(parentPageModel instanceof Model)) { throw new Error('Card models must have parent Page models.'); }
+        if (!_.isString(fieldName) || _.isEmpty(fieldName)) { throw new Error('Card models must have a non-empty field name.'); }
 
         if (!_.isObject(initialValues)) {
           initialValues = {};

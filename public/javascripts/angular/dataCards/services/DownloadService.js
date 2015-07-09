@@ -34,7 +34,7 @@
       var cookieName = 'renderTrackingId_' + trackingId;
       if (path.indexOf('?') < 0) {
         path += '?';
-      } else if (path.charAt(path.length-1) !== '?') {
+      } else if (path.charAt(path.length - 1) !== '?') {
         path += '&';
       }
       path += TRACKING_ID_PARAM + '=' + encodeURIComponent(trackingId);

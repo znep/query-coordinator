@@ -13,13 +13,13 @@ angular.module('dataCards.directives').directive('dropdownMenu', function(
     template: '<div ng-transclude></div>',
     transclude: true,
 
-    link: function($scope, element, attrs) {
+    link: function($scope, element) {
       var subscriptions = [];
 
       // Disable anchors that don't have urls
       element.on('click', 'a', function(e) {
         var href = $(e.target).attr('href');
-        if (!href || '#' === href) {
+        if (!href || href === '#') {
           e.preventDefault();
         }
       });
@@ -51,7 +51,7 @@ angular.module('dataCards.directives').directive('dropdownMenu', function(
               });
             }
           }
-      }));
+        }));
 
       $scope.$destroyAsObservable(element).subscribe(function() {
         // During unit tests, these subscriptions stick around and cause errors (since element isn't
@@ -59,5 +59,5 @@ angular.module('dataCards.directives').directive('dropdownMenu', function(
         _.invoke(subscriptions, 'dispose');
       });
     }
-  }
+  };
 });

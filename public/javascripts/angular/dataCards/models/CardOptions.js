@@ -11,7 +11,7 @@
       init: function(parentCardModel, initialOptions) {
         this._super();
 
-        if(!(parentCardModel instanceof Model)) {
+        if (!(parentCardModel instanceof Model)) {
           throw new Error('CardOptions models must have parent Card models.');
         }
 

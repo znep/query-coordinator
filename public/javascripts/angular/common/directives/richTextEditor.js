@@ -18,7 +18,7 @@
 
     // Add the requested buttons
     _.each(attrs.buttons.split(' '), function(value) {
-      switch(value) {
+      switch (value) {
         case 'bold':
           controls.bold = {
             element: $('<div class="rich-text-editor-button bold icon-bold" title="' + I18n.richTextEditor.bold + '"></button>').
@@ -84,6 +84,7 @@
           controls.divider = {
             element: $('<span>|</span>').appendTo(element)
           };
+          break;
         default:
       }
     });
@@ -105,10 +106,8 @@
     toggleAnchor: function() {
       var anchor = this.controls.anchor;
       if (anchor.form.is(':visible')) {
-        var form = anchor.form;
         this.hideAnchorInput();
       } else {
-        var pos = anchor.element.position();
         anchor.form.css({
           top: '2.2em',
           left: '50%',
@@ -149,12 +148,12 @@
 
       this.editor.fireEvent('input');
     },
-    hideAnchorInput: function(e) {
+    hideAnchorInput: function() {
       var anchor = this.controls.anchor;
       if (anchor) {
         var form = anchor.form;
         form.fadeOut(100, function() {
-          _.bind(form.detach, form)
+          _.bind(form.detach, form);
           form[0].reset();
         });
       }
@@ -196,7 +195,7 @@
    * @param {Node} node The node whose children we should remove.
    */
   function removeChildren(node) {
-    while(node.childNodes.length) {
+    while (node.childNodes.length) {
       node.removeChild(node.firstChild);
     }
   }
@@ -214,7 +213,7 @@
      * has a bug where if you add an anchor (or change the format of a selection), it won't fire an
      * 'input' event. So - define the event handler once, and we can re-use it for both events.
      */
-    function updateValue(element, e) {
+    function updateValue(element) {
       // Set the val() so we can get the value like a normal textarea
       // Make sure currentHTML isn't set to the placeholder - if it is, blank it
       var updatedHTML = ($(this.getHTML()).text() !== element.attr('placeholder')) ?
@@ -229,7 +228,7 @@
     var events = {
       input: updateValue,
       focus: function(element) {
-        if ($(this.getHTML()).text() == element.attr('placeholder')) {
+        if ($(this.getHTML()).text() === element.attr('placeholder')) {
           this.setHTML('');
         }
         // allows css to detect focus based on class, because child iframe's :focus doesn't
@@ -286,7 +285,7 @@
 
     // Show placeholder text if editor html is empty (and placeholder attribute exists)
     function showPlaceholderIfEmpty(element, editor) {
-      if ($(editor.getHTML()).text() == '' && element.attr('placeholder') !== typeof undefined) {
+      if ($(editor.getHTML()).text() === '' && element.attr('placeholder') !== typeof undefined) {
         editor.setHTML(
           '<div class="placeholder" style="color:{1}">{0}</div>'.
             format(element.attr('placeholder'), 'rgba(0,0,0,0.4)')
@@ -359,6 +358,6 @@
       template: ('<div class="toolbar"></div>' +
                  '<iframe allowtransparency="true" scrolling="auto" src="about:blank"/>'),
       link: init
-    }
+    };
   });
 })();

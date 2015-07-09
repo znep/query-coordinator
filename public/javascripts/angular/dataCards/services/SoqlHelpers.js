@@ -17,7 +17,7 @@ angular.module('dataCards.services').factory('SoqlHelpers', function(Constants, 
   };
 
   function encodeSoqlString(string) {
-    return "'{0}'".format(string.replace(/'/g, "''"));
+    return "'{0}'".format(string.replace(/'/g, "''")); //eslint-disable-line quotes
   }
 
   function encodeSoqlDate(date) {

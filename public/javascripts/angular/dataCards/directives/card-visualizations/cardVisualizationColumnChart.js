@@ -5,7 +5,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
     restrict: 'E',
     scope: { 'model': '=', 'whereClause': '=' },
     templateUrl: '/angular_templates/dataCards/cardVisualizationColumnChart.html',
-    link: function($scope, element, attrs) {
+    link: function($scope) {
       var model = $scope.$observe('model');
       var dataset = model.observeOnLatest('page.dataset');
       var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
@@ -21,8 +21,8 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
       // .scan() is necessary because the usual aggregation suspect reduce actually
       // will not execute over a sequence until it has been completed; scan is happy
       // to operate on active sequences.
-      var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
-      var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
+      var dataRequestCount = dataRequests.scan(0, function(acc) { return acc + 1; });
+      var dataResponseCount = dataResponses.scan(0, function(acc) { return acc + 1; });
 
       // If the number of requests is greater than the number of responses, we have
       // a request in progress and we should display the spinner.
@@ -38,60 +38,62 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
         whereClauseObservable,
           baseSoqlFilter,
           function (whereClause, baseFilter) {
-            return !_.isEmpty(whereClause) && whereClause != baseFilter;
+            return !_.isEmpty(whereClause) && whereClause !== baseFilter;
           });
 
-      var unfilteredData = Rx.Observable.subscribeLatest(
+      // Unfiltered data
+      Rx.Observable.subscribeLatest(
         model.pluck('fieldName'),
         dataset,
         baseSoqlFilter,
         aggregationObservable,
-        function(fieldName, dataset, whereClauseFragment, aggregationData) {
+        function(fieldName, currentDataset, whereClauseFragment, aggregationData) {
           dataRequests.onNext(1);
-          var columnData = _.defaults({}, dataset.getCurrentValue('columns')[fieldName]);
+          var columnData = _.defaults({}, currentDataset.getCurrentValue('columns')[fieldName]);
           var dataPromise = CardDataService.getData(
             fieldName,
-            dataset.id,
+            currentDataset.id,
             whereClauseFragment,
             aggregationData,
             { namePhysicalDatatype: columnData.physicalDatatype, nullLast: true }
           );
           dataPromise.then(
-            function(res) {
+            function() {
               // Ok
               unfilteredDataSequence.onNext(dataPromise);
               dataResponses.onNext(1);
             },
-            function(err) {
-              // Do nothing
+            function() {
+              // Error, do nothing
             });
           return Rx.Observable.fromPromise(dataPromise);
         });
 
-      var filteredData = Rx.Observable.subscribeLatest(
+      // Filtered data
+      Rx.Observable.subscribeLatest(
         model.pluck('fieldName'),
         dataset,
         whereClauseObservable,
         nonBaseFilterApplied,
         aggregationObservable,
-        function(fieldName, dataset, whereClauseFragment, nonBaseFilterApplied, aggregationData) {
+        function(fieldName, currentDataset, whereClauseFragment, curNonBaseFilterApplied, aggregationData) {
           dataRequests.onNext(1);
-          var columnData = _.defaults({}, dataset.getCurrentValue('columns')[fieldName]);
+          var columnData = _.defaults({}, currentDataset.getCurrentValue('columns')[fieldName]);
           var dataPromise = CardDataService.getData(
             fieldName,
-            dataset.id,
+            currentDataset.id,
             whereClauseFragment,
             aggregationData,
             { namePhysicalDatatype: columnData.physicalDatatype, nullLast: true }
           );
           dataPromise.then(
-            function(res) {
+            function() {
               // Ok
               filteredDataSequence.onNext(dataPromise);
               dataResponses.onNext(1);
             },
-            function(err) {
-              // Do nothing
+            function() {
+              // Error, do nothing
             });
           return Rx.Observable.fromPromise(dataPromise);
         });
@@ -144,8 +146,8 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
                 special: datumIsSpecial
               };
             });
-
-        }));
+          }
+        ));
 
       $scope.$bindObservable('filterApplied', whereClauseObservable.
         map(function(whereClause) {
@@ -155,7 +157,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
 
       $scope.$bindObservable('expanded', model.observeOnLatest('expanded'));
 
-      $scope.$on('column-chart:truncation-marker-clicked', function(event, datum) {
+      $scope.$on('column-chart:truncation-marker-clicked', function() {
         $scope.model.page.toggleExpanded($scope.model);
       });
 
@@ -166,13 +168,13 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
           (_.isNumber(datum.name) && !_.isFinite(datum.name)) ||
           (_.isString(datum.name) && datum.name.length === 0);
 
-        var isFilteringOnClickedDatum = _.any($scope.model.getCurrentValue('activeFilters'), function(filter) {
-          if (filter instanceof Filter.BinaryOperatorFilter) {
-            return filter.operand === datum.name;
-          } else if (filter instanceof Filter.IsNullFilter) {
+        var isFilteringOnClickedDatum = _.any($scope.model.getCurrentValue('activeFilters'), function(currentFilter) {
+          if (currentFilter instanceof Filter.BinaryOperatorFilter) {
+            return currentFilter.operand === datum.name;
+          } else if (currentFilter instanceof Filter.IsNullFilter) {
             return wantsFilterToNull;
           } else {
-            throw new Error('CardVisualizationColumnChart does not understand the filter on its column: ' + filter);
+            throw new Error('CardVisualizationColumnChart does not understand the filter on its column: ' + currentFilter);
           }
         });
 

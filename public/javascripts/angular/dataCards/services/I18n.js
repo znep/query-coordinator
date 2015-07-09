@@ -24,8 +24,7 @@
         // wrapped with quotation marks.
         return (arguments.length <= 1) ? template :
           template.format.apply(template, Array.prototype.slice.call(arguments, 1));
-      }
-      else {
+      } else {
         return '';
       }
     };

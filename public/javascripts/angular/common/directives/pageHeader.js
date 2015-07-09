@@ -16,11 +16,11 @@
       link: function($scope) {
         var theme = ServerConfig.getTheme();
 
-        function buildLinkValue(theme, key) {
+        function buildLinkValue(currentTheme, key) {
           var defaultValues = DEFAULT_VALUES[key];
           return _.defaults(
             {},
-            { label: _.get(theme, key, defaultValues.label) },
+            { label: _.get(currentTheme, key, defaultValues.label) },
             defaultValues
           );
         }
@@ -30,7 +30,7 @@
         var signUp = buildLinkValue(theme, 'sign_up');
         var logoUrl = _.get(theme, 'logo_url', DEFAULT_LOGO_URL);
         var pageHeaderStyle = {
-          'background-color' : _.get(theme, 'header_background_color')
+          'background-color': _.get(theme, 'header_background_color')
         };
 
         $scope.logoUrl = logoUrl;

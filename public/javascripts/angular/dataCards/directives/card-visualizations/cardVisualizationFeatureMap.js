@@ -53,10 +53,10 @@
           model.pluck('fieldName'),
           dataset,
           baseSoqlFilter,
-          function(fieldName, dataset) {
+          function(fieldName, currentDataset) {
             return {
               fieldName: fieldName,
-              dataset: dataset
+              dataset: currentDataset
             };
           }
         );
@@ -102,9 +102,9 @@
         var serverExtent$ = synchronizedFieldnameDataset.
           flatMap(function(fieldNameDataset) {
             var fieldName = fieldNameDataset.fieldName;
-            var dataset = fieldNameDataset.dataset;
+            var currentDataset = fieldNameDataset.dataset;
             return Rx.Observable.
-              fromPromise(CardDataService.getFeatureExtent(fieldName, dataset.id));
+              fromPromise(CardDataService.getFeatureExtent(fieldName, currentDataset.id));
           }).
           onErrorResumeNext(Rx.Observable.empty());  // Promise error becomes empty observable
 
@@ -117,8 +117,7 @@
           function(serverExtent, defaultExtent, savedExtent) {
             if (_.isPresent(savedExtent)) {
               return savedExtent;
-            }
-            else if (defaultExtent) {
+            } else if (defaultExtent) {
               var defaultBounds;
               var featureBounds;
               try {

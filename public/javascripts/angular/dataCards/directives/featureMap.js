@@ -36,7 +36,7 @@
         };
 
         if (Constants.DISABLE_LEAFLET_ZOOM_ANIMATION) {
-          options.zoomAnimation = false;
+          mapOptions.zoomAnimation = false;
         }
 
         // CORE-4832 - disable pan and zoom on feature map
@@ -274,7 +274,6 @@
         var mousemoveHandler = _.noop;
         if (ServerConfig.get('oduxEnableFeatureMapHover')) {
           mousemoveHandler = function(e) {
-
             // Set flyout data and force a refresh of the flyout
             flyoutData.offset = {
               x: e.originalEvent.clientX,
@@ -282,7 +281,7 @@
             };
             flyoutData.count = _.sum(e.points, 'count');
             FlyoutService.refreshFlyout(e.originalEvent);
-          }
+          };
         }
 
         function createNewFeatureLayer(map, vectorTileGetter) {
@@ -518,7 +517,7 @@
           map.invalidateSize();
         });
       }
-    }
+    };
   }
 
   angular.

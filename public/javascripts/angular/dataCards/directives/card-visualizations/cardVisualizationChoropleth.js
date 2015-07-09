@@ -43,7 +43,7 @@
 
         var shapeFileRegionQueryLimit = ServerConfig.getScalarValue(
           'shapeFileRegionQueryLimit',
-          Constants['DEFAULT_SHAPE_FILE_REGION_QUERY_LIMIT']
+          Constants.DEFAULT_SHAPE_FILE_REGION_QUERY_LIMIT
         );
 
         /*************************************
@@ -72,7 +72,7 @@
           whereClauseObservable,
           baseSoqlFilter,
           function (whereClause, baseFilter) {
-            return !_.isEmpty(whereClause) && whereClause != baseFilter;
+            return !_.isEmpty(whereClause) && whereClause !== baseFilter;
           }
         );
 
@@ -132,7 +132,7 @@
           dataset.observeOnLatest('columns'),
           model.pluck('fieldName'),
           shapeFileObservable,
-          function(dataset, columns, fieldName, shapeFile) {
+          function(currentDataset, columns, fieldName, shapeFile) {
             var sourceColumn = null;
             var dataPromise;
             var computationStrategy = _.get(columns[fieldName], 'computationStrategy.strategy_type');
@@ -149,11 +149,11 @@
             // always be correct if there is more than one location/point
             // column in the dataset.
             if (sourceColumn === null) {
-              _.each(columns, function(column, fieldName) {
+              _.each(columns, function(column, currentFieldName) {
                 if (column.physicalDatatype === 'point' &&
                   column.fred === 'location') {
 
-                  sourceColumn = fieldName;
+                  sourceColumn = currentFieldName;
                 }
               });
 
@@ -170,7 +170,7 @@
             if (sourceColumn !== null && computationStrategy === 'georegion_match_on_point') {
 
               dataPromise = CardDataService.getChoroplethRegionsUsingSourceColumn(
-                dataset.id,
+                currentDataset.id,
                 sourceColumn,
                 shapeFile
               );
@@ -204,11 +204,11 @@
           dataset,
           baseSoqlFilter,
           aggregationObservable,
-          function(fieldName, dataset, whereClauseFragment, aggregationData) {
+          function(fieldName, currentDataset, whereClauseFragment, aggregationData) {
             dataRequests.onNext(1);
             var dataPromise = CardDataService.getData(
               fieldName,
-              dataset.id,
+              currentDataset.id,
               whereClauseFragment,
               aggregationData,
               { limit: shapeFileRegionQueryLimit }
@@ -231,11 +231,11 @@
           dataset,
           whereClauseObservable,
           aggregationObservable,
-          function(fieldName, dataset, whereClauseFragment, aggregationData) {
+          function(fieldName, currentDataset, whereClauseFragment, aggregationData) {
             dataRequests.onNext(1);
             var dataPromise = CardDataService.getData(
               fieldName,
-              dataset.id,
+              currentDataset.id,
               whereClauseFragment,
               aggregationData,
               { limit: shapeFileRegionQueryLimit }
@@ -295,13 +295,13 @@
 
         // Handle filter toggle events sent from the choropleth directive.
         scope.$on('toggle-dataset-filter:choropleth', function(event, feature) {
-          var featureId = feature.properties[Constants['INTERNAL_DATASET_FEATURE_ID']];
-          var humanReadableName = feature.properties[Constants['HUMAN_READABLE_PROPERTY_NAME']];
+          var featureId = feature.properties[Constants.INTERNAL_DATASET_FEATURE_ID];
+          var humanReadableName = feature.properties[Constants.HUMAN_READABLE_PROPERTY_NAME];
 
           var hasFiltersOnCard = _.any(
             scope.model.getCurrentValue('activeFilters'),
-            function(filter) {
-              return filter.operand === featureId;
+            function(currentFilter) {
+              return currentFilter.operand === featureId;
             });
 
           if (hasFiltersOnCard) {

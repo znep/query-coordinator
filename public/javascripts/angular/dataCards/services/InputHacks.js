@@ -57,7 +57,7 @@
 
         var divs = [];
 
-        // Arrange four divs 
+        // Arrange four divs
         divs.push(makeInputCatcherDiv(
           'top',
           0,

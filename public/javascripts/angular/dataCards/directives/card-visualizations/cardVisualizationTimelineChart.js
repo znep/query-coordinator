@@ -29,8 +29,8 @@
         // .scan() is necessary because the usual aggregation suspect reduce actually
         // will not execute over a sequence until it has been completed; scan is happy
         // to operate on active sequences.
-        var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
-        var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
+        var dataRequestCount = dataRequests.scan(0, function(acc) { return acc + 1; });
+        var dataResponseCount = dataResponses.scan(0, function(acc) { return acc + 1; });
 
         /*************************************
         * FIRST set up the 'busy' indicator. *
@@ -128,12 +128,12 @@
             // undefined and display the proper error message.
             // By examining the return of getTimelineDomain, these are the
             // only checks we need.
-            if (_.isUndefined(domain) ||  _.isNull(domain.start) || _.isNull(domain.end)) {
+            if (_.isUndefined(domain) || _.isNull(domain.start) || _.isNull(domain.end)) {
               reportInvalidTimelineDomain();
-              return;
+              return undefined;
             }
 
-            // Otherwise, return a the precision as a string.
+            // Otherwise, return the precision as a string.
             // Moment objects are inherently mutable. Therefore, the .add()
             // call in the first condition will need to be accounted for in
             // the second condition. We're doing this instead of just cloning
@@ -141,7 +141,6 @@
             // like 40ms).
             if (domain.start.add('years', 1).isAfter(domain.end)) {
               precision = 'DAY';
-
             // We're actually checking for 20 years but have already added one
             // to the original domain start date in the if block above.
             } else if (domain.start.add('years', 19).isAfter(domain.end)) {
@@ -191,7 +190,7 @@
               );
 
               dataPromise.then(
-                function(res) {
+                function() {
                   // Ok
                   unfilteredDataSequence.onNext(dataPromise);
                   dataResponses.onNext(1);
@@ -199,8 +198,8 @@
                     soqlMetadata.dateTruncFunctionUsed === defaultDateTruncFunction
                   );
                 },
-                function(err) {
-                  // Do nothing
+                function() {
+                  // Error, do nothing
                 }
               );
             }
@@ -254,7 +253,7 @@
               );
 
               dataPromise.then(
-                function(res) {
+                function() {
                   // Ok
                   filteredDataSequence.onNext(dataPromise);
                   dataResponses.onNext(1);
@@ -262,8 +261,8 @@
                     soqlMetadata.dateTruncFunctionUsed === defaultDateTruncFunction
                   );
                 },
-                function(err) {
-                  // Do nothing
+                function() {
+                  // Error, do nothing
                 }
               );
             }

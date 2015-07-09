@@ -55,7 +55,7 @@
       first(_.identity).
       subscribe(function() {
         if (_.isFunction(window.callPhantom)) {
-          callPhantom('snapshotReady');
+          window.callPhantom('snapshotReady');
         } else {
           $log.error('Snapshot ready, but a PhantomJS instance is not listening.');
         }

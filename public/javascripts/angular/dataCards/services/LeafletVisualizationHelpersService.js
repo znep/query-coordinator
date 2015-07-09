@@ -1,4 +1,5 @@
 (function() {
+  'use strict';
 
   var EXPAND_CARD_EVENT_ID = 'card-expanded';
   var EXTENT_EVENT_ID = 'set-extent';

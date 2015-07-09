@@ -217,8 +217,8 @@
             return isEventFromBeyondSuggestionToolPanel && isEventFromOutsideTheSearchInputField;
           });
 
-        var clearableInputBlurTargetNotSuggestionObservable = $scope.$eventToObservable('clearableInput:blur')
-          .filter(function(event) {
+        var clearableInputBlurTargetNotSuggestionObservable = $scope.$eventToObservable('clearableInput:blur').
+          filter(function(event) {
             // Only hide the suggestion panel if the blur target is not a suggestion.
             var newFocusTarget = _.get(event, 'additionalArguments[0].relatedTarget');
             if (_.isPresent(newFocusTarget)) {

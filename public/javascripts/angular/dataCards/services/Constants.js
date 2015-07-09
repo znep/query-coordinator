@@ -111,6 +111,16 @@
 
       // Aggregation Chooser
       'AGGREGATION_MAX_COLUMN_COUNT': 15,
+      'FIELD_NAMES_THAT_CANNOT_BE_AGGREGATED': [
+        // TODO: Once a "logical" type property is available, this will need to be updated
+        'latitude',
+        'longitude',
+        'lat',
+        'lng',
+        'long',
+        'x',
+        'y'
+      ],
 
       // This is a filter we use to exclude dates outside the maximum legal date value
       // as a string in Javascript.  We set it to 01/01 so we can still use rollups

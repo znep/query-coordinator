@@ -39,11 +39,11 @@
     };
 
     var navigationStartTime = function() {
-      var navigationStartTime;
+      var startTime;
       if (hasPerformanceTiming) {
-        navigationStartTime = $window.performance.timing.navigationStart || $window.performance.timing.fetchStart || undefined;
+        startTime = $window.performance.timing.navigationStart || $window.performance.timing.fetchStart || undefined;
       }
-      return navigationStartTime;
+      return startTime;
     };
 
     // Set up some inputs to the analytics.
@@ -79,7 +79,9 @@
      * Only supported if the browser supports window.performance.timing.
      */
     this.measureDomReady = function() {
-      if (!hasPerformanceTiming) { return; }
+      if (!hasPerformanceTiming) {
+        return;
+      }
 
       var finalizeMeasurement = function() {
         var navStartTime = navigationStartTime();
@@ -166,13 +168,13 @@
      * Analytics endpoint performs checking to determine if it is a valid metric.
      */
     function sendPerformanceMetric(metricName, metricValue) {
-      sendMetric(defaultEntity, metricName, metricValue)
+      sendMetric(defaultEntity, metricName, metricValue);
     }
 
     function sendMetric(entityName, metricName, metricValue) {
       queue.push({entity: entityName, metric: metricName, increment: metricValue});
       if (queue.length >= queueCapacity) {
-          flushMetrics();
+        flushMetrics();
       }
     }
 
@@ -181,7 +183,9 @@
       var analyticsConfig;
 
       if (serverUploadEnabled) {
-        if (queue.length == 0) return;
+        if (queue.length === 0) {
+          return;
+        }
         // create the batched payload and reset the queue
         analyticsPayload = JSON.stringify({'metrics': queue});
         queue = [];
@@ -197,7 +201,6 @@
         };
 
         http.post(analyticsUrl, analyticsPayload, analyticsConfig);
-
       }
     }
 

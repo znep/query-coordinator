@@ -2,7 +2,7 @@
   'use strict';
 
   function pluralizeBasedOnValue(string, value) {
-    return (value === 1) ? string : string.pluralize()
+    return (value === 1) ? string : string.pluralize();
   }
 
   function renderHoverFlyoutTemplate(
@@ -120,7 +120,7 @@
 
       dom.hoverDispatcher = d3.dispatch('hover');
 
-      dom.blockHoverTarget = dom.chart.selectAll('.block-hover-target').data([[0,0]]);
+      dom.blockHoverTarget = dom.chart.selectAll('.block-hover-target').data([[0, 0]]);
       dom.blockHoverTarget.enter().append('line').classed('block-hover-target', true);
 
       // Brush
@@ -334,12 +334,10 @@
 
           if (Math.abs(point.x - targetX) < 1) {
             return point;
-          }
-          else if (point.x < targetX) {
+          } else if (point.x < targetX) {
             low = mid;
             mid = (low + high) / 2;
-          }
-          else {
+          } else {
             high = mid;
             mid = (low + high) / 2;
           }
@@ -428,12 +426,10 @@
           ];
           if (startedEmpty) { // clicked empty extent
             pixelValues = [scale.linearX(indices[0]), scale.linearX(indices[1])];
-          }
-          else if (startLocation < startExtent[0] || startExtent[1] < startLocation) {
+          } else if (startLocation < startExtent[0] || startExtent[1] < startLocation) {
             // click outside existing extent
             pixelValues = [scale.linearX(indices[0]), scale.linearX(indices[1])];
-          }
-          else { // clicked in existing extent
+          } else { // clicked in existing extent
             var startIndices = [
               brush.indexFromPoint(startExtent[0]),
               brush.indexFromPoint(startExtent[1])
@@ -510,8 +506,7 @@
       // Ensure y-domain includes 0
       if (extentY[0] > 0) {
         extentY[0] = 0;
-      }
-      else if (extentY[0] < 0 && extentY[1] < 0) {
+      } else if (extentY[0] < 0 && extentY[1] < 0) {
         extentY[1] = 0;
       }
 
@@ -624,7 +619,7 @@
         area.
           x(line.x()).
           y1(line.y()).
-          y0(function(d) { return scale.y(0); });
+          y0(function() { return scale.y(0); });
       });
 
       return svg;
@@ -1065,7 +1060,7 @@
       // given card width, equally spaced and including 0
       function filterXLabels(selection) {
         selection.selectAll('.tick text').
-          style('visibility',  function(d, i) {
+          style('visibility', function(d, i) {
             return axis.xLabels[i] ? null : 'hidden';
           });
       }
@@ -1094,7 +1089,7 @@
       // Custom y axis positioning/rendering.
       function positionYLabels(selection) {
         selection.selectAll('.tick text').
-          attr('transform', function(d, i) {
+          attr('transform', function(d) {
             var transformAttr = d3.select(this.parentNode).attr('transform');
             var transform = d3.transform(transformAttr);
             var translateY = transform.translate[1];
@@ -1153,10 +1148,10 @@
       } else {
         brush.updateExtent([0, 0]);
       }
+
       if (brush.control.empty()) {
         brush.brushDispatcher.end(null);
-      }
-      else {
+      } else {
         var newExtent = brush.control.extent();
 
         brush.brushDispatcher.end([

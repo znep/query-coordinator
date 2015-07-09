@@ -24,7 +24,7 @@
     });
 
     var mousePositionSubject = new Rx.BehaviorSubject({ clientX: 0, clientY: 0, target: document.body });
-    body.addEventListener('mousemove', function(e){
+    body.addEventListener('mousemove', function(e) {
       WindowState.mouseClientX = e.clientX;
       WindowState.mouseClientY = e.clientY;
       mousePositionSubject.onNext({
@@ -72,7 +72,7 @@
     WindowState.keyDownObservable = Rx.Observable.fromEvent($(document), 'keydown');
     WindowState.escapeKeyObservable = WindowState.keyDownObservable.filter(function(e) {
       // Escape key
-      return 27 === e.which;
+      return e.which === 27;
     });
 
     WindowState.scrollPositionSubject = scrollPositionSubject;

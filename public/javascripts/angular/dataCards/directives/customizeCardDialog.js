@@ -62,7 +62,7 @@
     // Map the actual baseLayerUrl to the selected option
     scope.$bindObservable('baseLayerOption', baseLayerObservable.map(
       function(url) {
-        switch(url) {
+        switch (url) {
           case null:
           case undefined:
             return 'standard';
@@ -80,7 +80,7 @@
 
     // Map the selected option to the actual baseLayerUrl
     scope.$watch('baseLayerOption', function(value) {
-      switch(value) {
+      switch (value) {
         case 'standard':
           cardModel.unset('baseLayerUrl');
           break;

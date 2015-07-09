@@ -45,20 +45,46 @@
       "browser": true
     },
     "rules": {
+      "brace-style": [2, "1tbs", {"allowSingleLine": true}],
+      "camelcase": 1,
+      "consistent-return": 1,
+      "dot-location": [1, "object"],
+      "dot-notation": 1,
+      "eol-last": 1,
+      "indent": [1, 2],
+      "new-cap": 1,
+      "no-console": 0,
+      "no-extra-semi": 1,
+      "no-shadow": [2, {"hoist": "all"}],
+      "no-spaced-func": 2,
+      "no-trailing-spaces": 2,
+      "no-underscore-dangle": 0,
+      "no-unused-vars": 1,
+      "no-use-before-define": 0,
       "quotes": [1, "single"],
-      "no-underscore-dangle": 1,
-      "new-cap": 1
+      "semi": [2, "always"],
+      "space-after-keywords": [2, "always"],
+      "space-before-blocks": [2, "always"],
+      "space-infix-ops": 2,
+      "strict": 2
     },
     "globals": {
       "$": true,
       "_": true,
       "angular": true,
       "blist": true,
+      "chroma": true,
       "d3": true,
+      "datasetMetadata": true,
       "jQuery": true,
       "L": true,
+      "Modernizr": true,
       "moment": true,
-      "Rx": true
+      "pageMetadata": true,
+      "pbf": true,
+      "Rx": true,
+      "ss": true,
+      "VBArray": true
     }
   }
 }

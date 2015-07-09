@@ -49,7 +49,9 @@
       var val;
       var colonIndex;
 
-      if (!headers) return parsed;
+      if (!headers) {
+        return parsed;
+      }
 
       forEach(headers.split('\n'), function(line) {
         colonIndex = line.indexOf(':');
@@ -69,7 +71,7 @@
     function xhrHasVBArray(xhr) {
       return _.isUndefined(xhr.response) &&
         _.isDefined(window.VBArray) &&
-        typeof xhr.responseBody === 'unknown';
+        typeof xhr.responseBody === 'unknown'; // eslint-disable-line valid-typeof
     }
 
     VectorTileDataService.typedArrayFromArrayBufferResponse =

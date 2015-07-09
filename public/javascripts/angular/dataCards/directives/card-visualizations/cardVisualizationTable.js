@@ -80,12 +80,12 @@
               if ($.isPresent(firstColumnFieldName)) {
                 // Move the column specified by firstColumnFieldName to
                 // the front of the columns array.
-                var columnIndex = _.findIndex(asArray, function(column) {
-                  return column.fieldName === firstColumnFieldName;
+                var columnIndex = _.findIndex(asArray, function(currentColumn) {
+                  return currentColumn.fieldName === firstColumnFieldName;
                 });
                 if (columnIndex >= 0) {
-                  var column = asArray.splice(columnIndex, 1)[0];
-                  asArray.splice(0, 0, column);
+                  var currentColumn = asArray.splice(columnIndex, 1)[0];
+                  asArray.splice(0, 0, currentColumn);
                 }
               }
               return asArray;
@@ -97,8 +97,8 @@
         // .scan() is necessary because the usual aggregation suspect reduce actually
         // will not execute over a sequence until it has been completed; scan is happy
         // to operate on active sequences.
-        var dataRequestCount = dataRequests.scan(0, function(acc, x) { return acc + 1; });
-        var dataResponseCount = dataResponses.scan(0, function(acc, x) { return acc + 1; });
+        var dataRequestCount = dataRequests.scan(0, function(acc) { return acc + 1; });
+        var dataResponseCount = dataResponses.scan(0, function(acc) { return acc + 1; });
 
         // If the number of requests is greater than the number of responses, we have
         // a request in progress and we should display the spinner.
@@ -118,16 +118,16 @@
         };
 
         var rowCount$ = dataset.
-          map(function(dataset) {
-            return CardDataService.getRowCount(dataset.id);
+          map(function(currentDataset) {
+            return CardDataService.getRowCount(currentDataset.id);
           }).
           doAction(reconcileRequestPromise).
           flatMapLatest(Rx.Observable.fromPromise);
 
         var filteredRowCount$ = dataset.combineLatest(
           whereClause,
-          function(dataset, whereClause) {
-            return CardDataService.getRowCount(dataset.id, whereClause);
+          function(currentDataset, curWhereClause) {
+            return CardDataService.getRowCount(currentDataset.id, curWhereClause);
           }).
           doAction(reconcileRequestPromise).
           flatMapLatest(Rx.Observable.fromPromise);
@@ -137,13 +137,13 @@
 
         var firstCardSequence = cardsSequence.combineLatest(
           columnDetails,
-          function(cards, columnDetails) {
+          function(cards, currentColumnDetails) {
             var sizedCards = _.compact(_.map(cards, function(card) {
               // Sorting on the table card doesn't make any sense; computed and
               // system columns are not included either. Also exclude columns that
               // are unsortable, such as points.
               var unsortableTypes = Constants.TABLE_UNSORTABLE_PHYSICAL_DATATYPES;
-              var columnPhysicalType = _.get(columnDetails[card.fieldName], 'physicalDatatype');
+              var columnPhysicalType = _.get(currentColumnDetails[card.fieldName], 'physicalDatatype');
               var isUnsortable = _.contains(unsortableTypes, columnPhysicalType);
               if (card.fieldName === '*' ||
                 card.fieldName.charAt(0) === ':' ||
@@ -170,11 +170,11 @@
         );
 
         var aggregatedColumnSequence = aggregationSequence.
-          filter(function(value) { return value['function'] !== 'count'; }).
+          filter(function(value) { return value.function !== 'count'; }).
           pluck('fieldName');
 
         var nonAggregatedColumnSequence = aggregationSequence.
-          filter(function(value) { return value['function'] === 'count'; }).
+          filter(function(value) { return value.function === 'count'; }).
           combineLatest(firstCardSequence, function(aggregation, firstCard) {
             return firstCard;
           });

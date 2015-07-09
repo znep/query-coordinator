@@ -43,6 +43,7 @@ function standardMocks() {
 
   window.storyStore = new StoryStore();
   window.dragDropStore = new DragDropStore();
+  window.historyStore = new HistoryStore();
 
   dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyData });
 

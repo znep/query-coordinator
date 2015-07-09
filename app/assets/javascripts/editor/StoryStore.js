@@ -45,11 +45,8 @@
           break;
 
         case Constants.HISTORY_UNDO:
-          _undo();
-          break;
-
         case Constants.HISTORY_REDO:
-          _redo();
+          _applyHistoryState();
           break;
       }
     });
@@ -500,7 +497,9 @@
       return serializedBlock;
     }
 
-    function _undo() {
+    // The history state is set in HistoryStore, and a setTimeout ensures this
+    // will always run after the cursor is in the correct position.
+    function _applyHistoryState() {
       // TODO: Update when `.waitFor()` is implemented by the
       // dispatcher.
       //
@@ -509,28 +508,14 @@
       // StoreStore does. `.waitFor()` is what we actually want.
       setTimeout(
         function() {
-          _setStory(
-            JSON.parse(window.historyStore.getStateAtCursor()),
-            true
-          );
-        },
-        0
-      );
-    }
+          var serializedStory = window.historyStore.getStateAtCursor();
 
-    function _redo() {
-      // TODO: Update when `.waitFor()` is implemented by the
-      // dispatcher.
-      //
-      // We have this in a setTimeout in order to ensure that
-      // HistoryStore responds to the HISTORY_UNDO action before
-      // StoreStore does. `.waitFor()` is what we actually want.
-      setTimeout(
-        function() {
-          _setStory(
-            JSON.parse(window.historyStore.getStateAtCursor()),
-            true
-          );
+          if (serializedStory) {
+            _setStory(
+              JSON.parse(serializedStory),
+              true
+            );
+          }
         },
         0
       );

@@ -2,7 +2,7 @@ describe('HistoryStore', function() {
 
   'use strict';
 
-  var validStoryUid = 'test-test';
+  var validStoryUid = 'undo-redo';
   var storyState1 = generateStoryData({
     uid: validStoryUid,
     blocks: [
@@ -41,18 +41,16 @@ describe('HistoryStore', function() {
     window.dispatcher.dispatch(action);
   }
 
+  beforeEach(standardMocks);
+  afterEach(standardMocks.unmock);
+
   beforeEach(function() {
-    window.dispatcher = new Dispatcher();
     window.userStoryUid = validStoryUid;
-    window.storyStore = new StoryStore();
-    window.historyStore = new HistoryStore();
     dispatch({ action: Constants.STORY_CREATE, data: storyState1 });
   });
 
   afterEach(function() {
     delete window.userStoryUid;
-    delete window.storyStore;
-    delete window.dispatcher;
   });
 
   describe('history accessors', function() {

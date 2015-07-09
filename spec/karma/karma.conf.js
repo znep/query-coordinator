@@ -35,6 +35,7 @@ module.exports = function(config) {
 
     // list of files to exclude
     exclude: [
+      'app/assets/javascripts/editor/app.js'
     ],
 
 

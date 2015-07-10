@@ -109,24 +109,32 @@
     $scope.writablePage = {
       warnings: {}
     };
+
     page.observe('name').filter(_.isString).subscribe(function(name) {
       $scope.$safeApply(function() {
-        $scope.writablePage.name = $.trim(name);
-        if (name.length > 255) {
+        $scope.writablePage.name = name;
+
+        // If the trimmed name is greater than 255, display a max length warning.
+        if ($.trim(name).length > 255) {
           $scope.writablePage.warnings.name = [VALIDATION_ERROR_STRINGS.name.maxLength];
-        } else if ($scope.writablePage.warnings.name) {
+
+        // Else, if a warning exists and our name isn't empty, remove the warning.
+        } else if ($scope.writablePage.warnings.name && !_.isEmpty(name)) {
           delete $scope.writablePage.warnings.name;
         }
       });
     });
+
     $scope.$observe('writablePage.name').filter(_.isString).subscribe(function(name) {
-      page.set('name', $.trim(name));
+      page.set('name', name);
     });
+
     page.observe('description').filter(_.isString).subscribe(function(description) {
       $scope.$safeApply(function() {
         $scope.writablePage.description = $.trim(description);
       });
     });
+
     $scope.$observe('writablePage.description').filter(_.isString).subscribe(function(description) {
       page.set('description', $.trim(description));
     });
@@ -499,9 +507,16 @@
       var savePromise;
       if ($scope.hasChanges) {
         try {
+
+          // Trim the name only on save.
+          var trimmedPageName = $.trim(page.getCurrentValue('name'));
+          page.set('name', trimmedPageName);
+
           var serializedBlob = $.extend(
             page.serialize(),
-            { pageId: page.id }
+            {
+              pageId: page.id
+            }
           );
           savePromise = PageDataService.save(serializedBlob, page.id);
         } catch (exception) {
@@ -531,7 +546,7 @@
 
       try {
         var newPageSerializedBlob = _.extend(page.serialize(), {
-          name: name,
+          name: $.trim(name),
           description: description
         });
         // PageDataService looks at whether or not pageId is set on the blob.

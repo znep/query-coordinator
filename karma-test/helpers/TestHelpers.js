@@ -102,6 +102,25 @@
       elem.dispatchEvent(evt);
     };
 
+    var fireKeyboardEvent = function(elem, evtName, eventProps) {
+      var params = $.extend({
+        key: '',
+        code: '',
+        location: 0,
+        ctrlKey: false,
+        shiftKey: false,
+        altKey: false,
+        metaKey: false,
+        repeat: false,
+        isComposing: false,
+        charCode: 0,
+        keyCode: 0,
+        which: 0
+      }, eventProps);
+      var evt = new KeyboardEvent(evtName, params);
+      elem.dispatchEvent(evt);
+    };
+
     // Hack D3 to finish all transitions immediately.
     // From mbostock himself.
     // https://github.com/mbostock/d3/issues/1789
@@ -291,6 +310,7 @@
       flushAllD3Transitions: flushAllD3Transitions,
       fireEvent: fireEvent,
       fireMouseEvent: fireMouseEvent,
+      fireKeyboardEvent: fireKeyboardEvent,
       overrideTransitions: overrideTransitions,
       mockDirective: mockDirective,
       normalizeColor: normalizeColor,

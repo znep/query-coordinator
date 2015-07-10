@@ -536,21 +536,51 @@ blist.namespace.fetch('blist.datatypes');
     /* Blobby types */
 
     // Photo
-    var renderPhoto = function(value, column, plainText, inMenu, context)
-    {
-        if ($.isBlank(value)) { return ''; }
+    var renderPhoto = function(value, column, plainText, inMenu, context) {
+      if ($.isBlank(value)) {
+        return '';
+      }
 
-        var url = column.baseUrl() + value;
-        if (plainText) { return url; }
+      // Motivation for URL checking:
+      // Setting the config, use_soda2, causes an OBE dataset
+      // to use SODA2 for rendering. In that case, photo blobs
+      // are saved as whole URLs and not IDs.
 
-        var escaped_url = escape(url);
-        if (!$.isBlank(column.format.size))
-        { escaped_url += '?size=' + column.format.size; }
-        var img = '<img src="' + $.htmlEscape(escaped_url) + '"></img>';
-        if ((context || {permissions: {}}).permissions.canEdit)
-        { return img; }
+      // Trim away extra space, as it can cause regexes to fail.
+      value = value.trim();
 
-        return uriHelper({url: value, description: img}, true, false, column.baseUrl());
+      // In other words, either starts with http or //.
+      var isUrl = /^(https?:)?\/\//i.test(value);
+      var url;
+
+      if (isUrl) {
+        var domainRegex = new RegExp('^https?://' + column.view.domainCName, 'i');
+        var isSameOriginAndSODA2Configured = domainRegex.test(value) && column.view._useSODA2;
+
+        if (isSameOriginAndSODA2Configured) {
+          url = value;
+        } else {
+          url = '';
+        }
+      } else {
+        url = escape(column.baseUrl() + value);
+      }
+
+      if (plainText) {
+        return url;
+      }
+
+      if (!$.isBlank(column.format.size)) {
+        url += '?size=' + column.format.size;
+      }
+
+      var img = '<img src="' + $.htmlEscape(url) + '"></img>';
+
+      if ((context || {permissions: {}}).permissions.canEdit) {
+        return img;
+      }
+
+      return uriHelper({url: value, description: img}, true, false, column.baseUrl());
     };
 
     var renderDocument = function(value, column, plainText)

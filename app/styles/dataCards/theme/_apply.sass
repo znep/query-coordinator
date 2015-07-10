@@ -944,7 +944,7 @@ body.state-view-cards
   &:hover, &.active, &.touched
     @include action-button($customize-bar-customizing-button-color, $customize-bar-customizing-button-background-color, $customize-bar-customizing-button-color)
 
-  &.disabled, &:disabled
+  &.disabled, &:disabled, &.disabled:hover
     @extend .action-btn.disabled !optional
 
     // We need to manually set the background and text colors despite the extend because of css
@@ -979,7 +979,7 @@ body.state-view-cards
     border-top-color: rgba($customize-bar-customizing-background-color, $customize-bar-border-opacity)
     color: $customize-bar-customizing-button-color
 
-    .action-btn
+    .customize-button, .revert-btn
       @include action-button($customize-bar-customizing-button-color, $customize-bar-customizing-button-background-color, $customize-bar-customizing-button-color)
 
       &:hover, &.active
@@ -988,7 +988,7 @@ body.state-view-cards
       &.disabled, &.disabled:hover
         @extend .action-btn.disabled !optional
 
-    button.save-button, button.save-as-button
+    .save-this-page button.save-button, button.save-as-button
       @extend .customize-bar-action-btn
 
       &:hover

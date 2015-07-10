@@ -20,6 +20,7 @@ _.forIn(supportedBrowsers, function(browserInstances, browserName) {
   });
 });
 
+var startSauceConnect = _.contains(['true', '1', 1], process.env.SAUCE_START_SAUCE_CONNECT);
 
 module.exports = function ( karma ) {
   karma.set({
@@ -74,7 +75,8 @@ module.exports = function ( karma ) {
     sauceLabs: {
       testName: 'old-ux Unit Tests',
       username: 'socrata-saucelabs',
-      accessKey: '9207e751-711a-4ed0-940a-229a42c06bcc'
+      accessKey: '9207e751-711a-4ed0-940a-229a42c06bcc',
+      startConnect: startSauceConnect
     },
 
     customLaunchers: customLaunchers,

@@ -20,6 +20,10 @@
           _setStory(payload.data);
           break;
 
+        case Constants.STORY_SET_TITLE:
+          _setStoryTitle(payload);
+          break;
+
         case Constants.STORY_OVERWRITE_STATE:
           _setStory(payload.data, true);
           break;
@@ -157,6 +161,19 @@
     /**
      * Action responses
      */
+
+    function _setStoryTitle(payload) {
+      Util.assertHasProperty(payload, 'storyUid');
+      Util.assertTypeof(payload.storyUid, 'string');
+      Util.assertHasProperty(payload, 'title');
+      Util.assertTypeof(payload.title, 'string');
+
+      var storyUid = payload.storyUid;
+
+      _getStory(storyUid).title = payload.title;
+
+      self._emitChange();
+    }
 
     function _moveBlockUp(payload) {
 

@@ -696,6 +696,64 @@ describe('StoryStore', function() {
       });
     });
 
+    describe('STORY_SET_TITLE', function() {
+
+      describe('not given a story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_SET_TITLE,
+              title: 'title'
+            });
+          });
+        });
+      });
+
+      describe('not given a title', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_SET_TITLE,
+              storyUid: 'badd-ddab'
+            });
+          });
+        });
+      });
+
+      describe('given a non-existent story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_SET_TITLE,
+              storyUid: 'badd-ddab',
+              title: 'title'
+            });
+          });
+        });
+      });
+
+
+      describe('given a valid story uid and title', function() {
+
+        it('should update the story', function() {
+
+          dispatch({
+            action: Constants.STORY_SET_TITLE,
+            storyUid: story1Uid,
+            title: 'new title'
+          });
+
+          assert.deepEqual(window.storyStore.getStoryTitle(story1Uid), 'new title');
+        });
+      });
+    });
+
     describe('STORY_MOVE_BLOCK_UP', function() {
 
       describe('not given a story uid', function() {

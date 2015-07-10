@@ -42,6 +42,7 @@ body header {
     line-height: $header-height;
     font-size: $header-title-height;
     font-weight: bold;
+    color: $header-fg-color;
   }
 }
 

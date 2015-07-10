@@ -16,6 +16,17 @@
 
     window.storyStore.addChangeListener(render);
     render();
+
+    titleNodes.on('click', function() {
+      var newTitle = prompt('Please enter a story title', window.storyStore.getStoryTitle(storyUid));
+      if (newTitle) {
+        window.dispatcher.dispatch({
+          action: Constants.STORY_SET_TITLE,
+          storyUid: storyUid,
+          title: newTitle
+        });
+      }
+    });
   };
 
 }(jQuery));

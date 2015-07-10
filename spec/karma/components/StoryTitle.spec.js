@@ -53,5 +53,43 @@ describe('StoryTitle jQuery plugin', function() {
       });
     });
 
+    describe('when the title is clicked', function() {
+      var originalPrompt;
+
+      beforeEach(function() {
+        originalPrompt = window.prompt;
+      });
+
+      afterEach(function() {
+        window.prompt = originalPrompt;
+      });
+
+      it('shows a dialog', function(done) {
+        window.prompt = function(promptString, prefill) {
+          assert.isString(promptString); // Arbitrary human-readable string.
+          assert.equal(prefill, standardMocks.validStoryTitle);
+
+          done();
+        };
+        node.click();
+      });
+
+      it('sets the value of the story to the entered text', function(done) {
+        var newTitle = 'woohoo prompts!';
+
+        window.prompt = function() {
+          return newTitle;
+        };
+
+        storyStore.addChangeListener(function() {
+          if(storyStore.getStoryTitle(standardMocks.validStoryUid) === newTitle) {
+            done();
+          }
+        });
+
+        node.click();
+      });
+    });
+
   });
 });

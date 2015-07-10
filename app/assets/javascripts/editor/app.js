@@ -239,4 +239,9 @@ $(document).on('ready', function() {
       }
     }
   });
+
+  /**
+   * Set up controls/widgets
+   */
+  $('.story-title').storyTitle(window.userStoryUid);
 });

@@ -2,12 +2,14 @@
 
 function standardMocks() {
   var storyUid = 'test-test';
+  var storyTitle = 'Standard Mock Story Title';
   var imageBlockId = '1000';
   var textBlockId = '1001';
   var imageAndTextBlockId = '1002';
 
   var storyData = generateStoryData({
     uid: storyUid,
+    title: storyTitle,
     blocks: [
       generateBlockData({
         id: imageBlockId,
@@ -46,6 +48,8 @@ function standardMocks() {
   window.historyStore = new HistoryStore();
 
   dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyData });
+
+  standardMocks.validStoryTitle = storyTitle;
 
   standardMocks.validStoryUid = storyUid;
   standardMocks.imageBlockId = imageBlockId;

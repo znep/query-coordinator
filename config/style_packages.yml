@@ -92,6 +92,7 @@ api-manage:
 - screen-metrics
 - screen-api-manage
 administration-screen:
+- jquery.dropdown.min
 - screen-admin
 administration-browse-widget:
 - control-pane
@@ -203,6 +204,7 @@ homepage-show:
 oauth-authorize:
 - screen-oauth-authorize
 profile-show:
+- jquery.dropdown.min
 - screen-profile
 - screen-profile-shared
 - control-feed

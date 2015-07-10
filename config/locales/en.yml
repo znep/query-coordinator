@@ -48,9 +48,14 @@ en:
         clear_all: Clear All Options
         clear_facet: (All)
         compact_list: View as a compact list
+        create_resource: Create a New Socrata Resource
+        create_resource_short: Create new...
         create_dataset: Create or upload your own dataset
         create_dataset_short: Create a new Dataset
+        create_dataset_shorter: Dataset
         create_dataset_verb: Create
+        create_story_short: Story
+        create_resource_verb: Create
         dataset_subscribe: Subscribe to changes on this view
         delete:
           button: Delete

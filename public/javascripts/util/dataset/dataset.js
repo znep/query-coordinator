@@ -3323,7 +3323,7 @@ var Dataset = ServerModel.extend({
         var ds = this;
         var base = '';
 
-        if (ds.isNewView()) {
+        if (ds.isNewView() && ds.metadata.hasOwnProperty('accessPoints')) {
           return ds.metadata.accessPoints['new_view'];
         }
 
@@ -3356,7 +3356,7 @@ var Dataset = ServerModel.extend({
         var ds = this;
         var base = '';
 
-        if (ds.isNewView()) {
+        if (ds.isNewView() && ds.metadata.hasOwnProperty('accessPoints')) {
           return ds.metadata.accessPoints['new_view'];
         }
 

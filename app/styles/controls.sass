@@ -16,6 +16,56 @@ a.button
   .noLinearGradient &
     @include box-gradient-buttons-active-background(3, 28, $box_gradient_alias_fix)
 
+.dropdown-button, .create-resource-buttons
+  .button.next
+    .icon
+      background-position: 0 -52px
+  .icon
+    display: inline-block
+    margin-left: 0.3em
+    position: relative
+    top: 0.2em
+    background-color: transparent
+    background-repeat: no-repeat
+    text-align: left
+    text-indent: -9999px
+    background-image: url(/stylesheets/images/icons/menu_icons.png?3)
+    height: 13px
+    width: 13px
+
+input.secondary-button, a.secondary-button
+  color: #666
+  background-color: #eee
+  display: block
+  position: relative
+  width: auto
+  >.icon
+    position: absolute !important
+    right: 0.5em !important
+    top: 50% !important
+    @include prefixer(transform, translate(0, -50%))
+
+#create-resource-dropdown, #create-resource-footer-dropdown
+  .create-resource-panel
+    height: auto
+    padding-top: 15px
+  .create-resource-buttons
+    display: block
+    text-align: left
+  .create-resource-spinner
+    display: none
+
+  &.working
+    .create-resource-panel
+      height: 48px
+    .create-resource-buttons
+      display: none
+    .create-resource-spinner
+      display: block
+
+#create-story-button, #create-story-footer-button
+  margin-top: 0.5em
+
 .fullButton
   background-color: #fff
   border: 1px solid $color_chrome_box_border

@@ -60,6 +60,8 @@ $(document).on('ready', function() {
   window.storyStore = new StoryStore();
   window.historyStore = new HistoryStore();
   window.dragDropStore = new DragDropStore();
+  window.blockRemovalConfirmationStore = new BlockRemovalConfirmationStore();
+
 
   var richTextEditorToolbar = new RichTextEditorToolbar(
     $('#rich-text-editor-toolbar'),

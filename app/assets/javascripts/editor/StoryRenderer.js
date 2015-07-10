@@ -104,16 +104,39 @@
 
       container.on(
         'click',
-        '[data-block-edit-action]',
+        '[data-block-move-action]',
         function(e) {
 
           var payload = {
-            action: e.target.getAttribute('data-block-edit-action'),
+            action: e.target.getAttribute('data-block-move-action'),
             storyUid: storyUid,
             blockId: e.target.getAttribute('data-block-id')
           };
 
           dispatcher.dispatch(payload);
+        }
+      );
+
+      container.on(
+        'click',
+        '[data-block-delete-action]',
+        function(e) {
+          var blockId = e.target.getAttribute('data-block-id');
+          var shouldDelete = true;
+
+          if (window.blockRemovalConfirmationStore.needsConfirmation(blockId)) {
+            shouldDelete = confirm('Are you sure?');
+          }
+
+          if (shouldDelete) {
+            var payload = {
+              action: e.target.getAttribute('data-block-delete-action'),
+              storyUid: storyUid,
+              blockId: e.target.getAttribute('data-block-id')
+            };
+
+            dispatcher.dispatch(payload);
+          }
         }
       );
 
@@ -337,19 +360,19 @@
         $('<button>',
           { class: 'block-edit-controls-move-up-btn',
             'data-block-id': blockId,
-            'data-block-edit-action': Constants.STORY_MOVE_BLOCK_UP
+            'data-block-move-action': Constants.STORY_MOVE_BLOCK_UP
           }
           ).append('&#9650;'),
         $('<button>',
           { class: 'block-edit-controls-move-down-btn',
             'data-block-id': blockId,
-            'data-block-edit-action': Constants.STORY_MOVE_BLOCK_DOWN
+            'data-block-move-action': Constants.STORY_MOVE_BLOCK_DOWN
           }
           ).append('&#9660;'),
         $('<button>',
           { class: 'block-edit-controls-delete-btn',
             'data-block-id': blockId,
-            'data-block-edit-action': Constants.STORY_DELETE_BLOCK
+            'data-block-delete-action': Constants.STORY_DELETE_BLOCK
           }
         ).append('&#9587;')
       ]);

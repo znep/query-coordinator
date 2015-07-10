@@ -1,5 +1,18 @@
 'use strict';
 
+/* Responsible for:
+ * Setting up window state and test data for karma tests
+ *   - Attaching all stores to the window
+ *   - Generating a story
+ *   - Exposing relevant blockIds and properties for testing
+ *
+ * Usage:
+ * In each spec at the top level
+ *   beforeEach(standardMocks);         // Set up state
+ *   afterEach(standardMocks.unmock);   // Remove state between each test
+ *
+ */
+
 function standardMocks() {
   var storyUid = 'test-test';
   var storyTitle = 'Standard Mock Story Title';
@@ -46,6 +59,7 @@ function standardMocks() {
   window.storyStore = new StoryStore();
   window.dragDropStore = new DragDropStore();
   window.historyStore = new HistoryStore();
+  window.blockRemovalConfirmationStore = new BlockRemovalConfirmationStore();
 
   dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyData });
 

@@ -21,7 +21,6 @@
       // of the tile containing this point.  The point should be specified
       // as an object containing lat and lng keys.
       getTileInfoByPointAndZoomLevel: function(point, zoom) {
-
         var lat = point.lat * Math.PI / 180;
         var lon = point.lng;
 
@@ -386,11 +385,11 @@
         featureArray = this.featuresByTile[tileId];
 
         for (i = 0; i < featureCount; i++) {
-
           feature = features[i];
 
           var vectorTileFeature = new VectorTileFeature(this, feature, this.styleFn(feature));
           var projectedPoint = vectorTileFeature.projectGeometryToTilePoint(vectorTileFeature.coordinates[0][0]);
+
           projectedPoint.count = vectorTileFeature.properties.count;
           projectedPoint.tile = tileId;
           this.quadTreesByTile[tileId].add(projectedPoint);
@@ -465,6 +464,7 @@
         }
 
         this.style = options.style;
+        var pointStyle = this.style({type: 1}); // getPointStyle in featureMap.js
 
         this.options = {
           debug: false,
@@ -508,33 +508,44 @@
         this.quadTreeFactory.y(_.property('y'));
 
         // Add a canvas layer for drawing highlighted points.
-        this.highlightLayer = L.tileLayer.canvas({zIndex: 2});
+        this.hoverHighlightLayer = L.tileLayer.canvas({zIndex: 2});
+
+        // Add a less dynamic canvas layer for drawing highlighted clicked points
+        this.clickHighlightLayer = L.tileLayer.canvas({zIndex: 2});
 
         this.currentHoverPoints = [];
+        this.currentClickedPoints = [];
 
-        this.highlightLayer.drawTile = function(canvas, tilePoint, zoom) {
-          var style = this.style({type: 1}); // getPointStyle in featureMap.js
+        function drawHighlightTile(canvas, tilePoint, zoom, pointsToHighlight) {
           var ctx = canvas.getContext('2d');
           var tileId = VectorTileUtil.getTileId({x: tilePoint.x, y: tilePoint.y, zoom: zoom});
 
           ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-          ctx.fillStyle = style.highlightColor;
-          ctx.strokeStyle = style.strokeStyle;
-          ctx.lineWidth = style.lineWidth;
+          ctx.fillStyle = pointStyle.highlightColor;
+          ctx.strokeStyle = pointStyle.strokeStyle;
+          ctx.lineWidth = pointStyle.lineWidth;
 
-          var points = _.filter(this.currentHoverPoints, function(point) {
+          var points = _.filter(pointsToHighlight, function(point) {
             return point.tile === tileId;
           });
 
           _.each(points, function(point) {
             ctx.beginPath();
-            ctx.arc(point.x, point.y, style.radius(zoom), 0, Math.PI * 2);
+            ctx.arc(point.x, point.y, pointStyle.radius(zoom), 0, Math.PI * 2);
             ctx.closePath();
             ctx.fill();
           });
 
           ctx.restore();
+        }
+
+        this.hoverHighlightLayer.drawTile = function(canvas, tilePoint, zoom) {
+          drawHighlightTile(canvas, tilePoint, zoom, this.currentHoverPoints);
+        }.bind(this);
+
+        this.clickHighlightLayer.drawTile = function(canvas, tilePoint, zoom) {
+          drawHighlightTile(canvas, tilePoint, zoom, this.currentClickedPoints);
         }.bind(this);
       },
 
@@ -544,9 +555,13 @@
         var mapMousedownCallback;
         var mapMouseupCallback;
         var mapMousemoveCallback;
+        var mapClickCallback;
+        var flannelClosedCallback;
+        var clearHighlightRequestCallback;
 
         this.map = map;
-        this.highlightLayer.addTo(map);
+        this.hoverHighlightLayer.addTo(map);
+        this.clickHighlightLayer.addTo(map);
 
         // Find all edges and corners that the mouse is near
         var edges = [['top'], ['left'], ['bottom'], ['right']];
@@ -700,15 +715,31 @@
           // Redraw highlight layer, but only if set of hover points has changed
           if (!_.isEqual(self.currentHoverPoints, points)) {
             self.currentHoverPoints = points;
-
-            _.each(self.highlightLayer._tiles, function(canvas, tileId) {
-              var coordinates = tileId.split(':');
-              var tile = {x: coordinates[0], y: coordinates[1]};
-              self.highlightLayer.drawTile(canvas, tile, map.getZoom());
-            });
+            highlightPoints(self.hoverHighlightLayer);
           }
 
           e.points = points;
+        }
+
+        function highlightClickedPoints(clickedPoints) {
+          if (!_.isEqual(self.currentClickedPoints, clickedPoints)) {
+            self.currentClickedPoints = clickedPoints;
+            highlightPoints(self.clickHighlightLayer);
+          }
+
+          if (_.isEqual(self.currentClickedPoints, self.currentHoverPoints)) {
+            // Remove hover highlighting on points now highlighted by click
+            self.currentHoverPoints = [];
+            highlightPoints(self.hoverHighlightLayer);
+          }
+        }
+
+        function highlightPoints(layerToHighlight) {
+          _.each(layerToHighlight._tiles, function(canvas, tileId) {
+            var coordinates = tileId.split(':');
+            var tile = {x: coordinates[0], y: coordinates[1]};
+            layerToHighlight.drawTile(canvas, tile, map.getZoom());
+          });
         }
 
         if (_.isFunction(this.options.mousedown)) {
@@ -744,6 +775,51 @@
           map.on('mousemove', mapMousemoveCallback);
         }
 
+        if (_.isFunction(this.options.click)) {
+
+          mapClickCallback = function(e) {
+            if (ServerConfig.get('oduxEnableFeatureMapHover')) {
+              injectTileInfo(e);
+              highlightClickedPoints(e.points);
+            }
+
+            self.options.click(e);
+          };
+
+          map.on('click', mapClickCallback);
+        }
+
+        // Ensure highlighting on points previously clicked under closed flannel
+        // is cleared, but points highlighted under a new flannel remain.
+        if (ServerConfig.get('oduxEnableFeatureMapHover')) {
+          flannelClosedCallback = function(e) {
+            var pointsToKeepHighlighted = self.currentClickedPoints.filter(function(value) {
+              return !_.contains(e.points, value);
+            });
+            highlightClickedPoints(pointsToKeepHighlighted);
+          };
+
+          map.on('flannelclosed', flannelClosedCallback);
+        }
+
+        // Upon map refresh due to adding or removing a filter,
+        // remove highlighting on all clicked and moused-over points
+        if (ServerConfig.get('oduxEnableFeatureMapHover')) {
+          clearHighlightRequestCallback = function() {
+            if (!_.isEmpty(self.currentClickedPoints)) {
+              self.currentClickedPoints = [];
+              highlightPoints(self.clickHighlightLayer);
+            }
+            if (!_.isEmpty(self.currentHoverPoints)) {
+              self.currentHoverPoints = [];
+              highlightPoints(self.hoverHighlightLayer);
+            }
+          };
+
+          map.on('clearhighlightrequest', clearHighlightRequestCallback);
+        }
+
+
         map.on('layerremove', function(e) {
 
           // Check to see if the layer removed is this one, and if it is
@@ -762,6 +838,18 @@
 
             if (_.isFunction(self.options.mousemove)) {
               map.off('mousemove', mapMousemoveCallback);
+            }
+
+            if (_.isFunction(self.options.click)) {
+              map.off('click', mapClickCallback);
+            }
+
+            if (ServerConfig.get('oduxEnableFeatureMapHover')) {
+              map.off('flannelclosed', flannelClosedCallback);
+            }
+
+            if (ServerConfig.get('oduxEnableFeatureMapHover')) {
+              map.off('clearhighlightrequest', clearHighlightRequestCallback);
             }
 
           }

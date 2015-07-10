@@ -1,0 +1,34 @@
+<div class="feature-map-flannel">
+  <div class="tool-panel" ng-class="{southwest: !useSoutheastHint, southeast: useSoutheastHint}" ng-style="panelPositionStyle">
+    <div class="tool-panel-main">
+      <div class="icon-close" ng-style="iconClosePadding"></div>
+      <div class="sticky-border" ng-style="stickyBorderTop"></div>
+      <div class="tool-panel-inner-container">
+        <div class="flannel-text">
+          <div ng-repeat="cell in selectedRow" class="row-data-item">
+            <span class="name">{{cell.columnName}}:</span>
+            <span ng-if="isArray(cell.value)" class="value">{{formatSubColumns(cell.value, cell)}}</span>
+            <span ng-if="!isArray(cell.value)" class="value">{{formatCellContent(cell.value, cell)}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="sticky-border bottom" ng-style="stickyBorderBottom"></div>
+      <div class="paging-panel-wrapper" ng-if="rows.length > 1">
+        <div class="paging-panel" ng-if="rows.length > 1">
+          <button type="button" title="{{'featureMapFlannel.previous' | I18n}}" class="l-to-r pagination-btn action-btn previous"
+            ng-click="goToPreviousRow()" ng-disabled="currentIndex === 0">
+            <span class="caret">{{'featureMapFlannel.previous' | I18n}}</span>
+          </button>
+          <button type="button" title="{{'featureMapFlannel.next' | I18n}}" class="r-to-l pagination-btn action-btn next"
+            ng-click="goToNextRow()" ng-disabled="currentIndex === rows.length - 1">
+            <span class="caret">{{'featureMapFlannel.next' | I18n}}</span>
+          </button>
+          <div class="paging-info">
+            <div class="message" ng-bind-html="showingMessage"></div>
+          </div>
+        </div>
+      </div>
+      <div class="tool-panel-hint" ng-style="hintPositionStyle"></div>
+    </div>
+  </div>
+</div>

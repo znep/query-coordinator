@@ -19,8 +19,11 @@
             title="{{ writablePage.warnings.name.join('\n') }}"></div>
           <textarea
             msd-elastic
+            disable-newline
             ng-model="writablePage.name"
-            >{{writablePage.name}}</textarea>
+            ng-trim="false">
+            {{writablePage.name}}
+          </textarea>
           <div class="icon-edit placeholder"><span>({{'metadata.pageNamePlaceholder' | I18n}})</span></div>
         </label>
         <!-- description -->

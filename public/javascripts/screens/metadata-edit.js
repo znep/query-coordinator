@@ -18,7 +18,7 @@
 
                 $addPane.slideDown('normal');
                 $addHint.slideUp('normal');
-            }); 
+            });
         });
 
     };
@@ -58,7 +58,7 @@
                 $editForm.addClass('hide');
                 $textField.val($label.text());
             });
- 
+
             $form.submit(function(event)
             {
                 event.preventDefault();
@@ -102,7 +102,7 @@
                     },
                     success: function(responseData) {
                         opts.editSuccessCallback(responseData, opts, $displayPane, $editForm);
-                    } 
+                    }
                });
             });
         });
@@ -111,7 +111,7 @@
     $.fn.attachmentsEdit = function(options)
     {
         var opts = $.extend({}, $.fn.attachmentsEdit.attachmentDefaults, options);
-      
+
         return this.each(function()
         {
             var $this = $(this);
@@ -225,7 +225,7 @@
                 });
             });
         });
-        
+
     };
 
     $.fn.customFieldEdit.defaults = {

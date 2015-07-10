@@ -33,7 +33,7 @@ body header {
   .header-right {
     display: inline-block;
     float: right;
-    padding: 1em;
+    padding: $header-right-pane-padding;
   }
 
   .story-title {

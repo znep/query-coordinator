@@ -6,7 +6,7 @@ es:
         display_name: Nombre de usuario
         email: Correo electrónico
         forgot_password: "¿Olvidó su contraseña?"
-        lockout_warning: Por motivos de seguridad, cada vez que se produzcan tres intentos fallidos de inicio sesión en 15 minutos, su cuenta se bloqueara durante 30 minutos.
+        lockout_warning: Por motivos de seguridad, cada vez que se produzcan tres intentos fallidos de sesión en 15 minutos, su cuenta se bloqueará durante 30 minutos.
         no_account: "¿No tiene una cuenta?"
         password: Contraseña
         password_requirements: 'Obligatorio. Su contraseña debe tener entre 8 y 40 caracteres y cumplir con tres de los siguientes cuatro criterios: incluir un dígito, contener una letra minúscula, tener una letra mayúscula e  incluir un símbolo que no sea alfanumérico.'
@@ -38,6 +38,228 @@ es:
       validation:
         mismatch: Las contraseñas no coinciden.
         terms: 'Debe aceptar las condiciones de servicio y la política de privacidad. '
+  angular:
+    dataCards:
+      add_card_dialog:
+        add_card: Añadir tarjeta
+        add_this_card: Añadir esta tarjeta
+        card_on_page: Esta tarjeta ya existe en la página
+        card_on_page_long: Esta tarjeta ya existe en la página
+        choose_column: Elija una columna...
+        column_chart_warning: 'Nota: esto podría crear un gráfico de barras de más de cien barras, podría tardar más que otros gráficos'
+        customize_prompt: Personalizar esta tarjeta
+        not_supported: Actualmente no está disponible
+        not_supported_long: Actualmente este tipo de tarjeta no está disponible
+        prompt: Elija una columna del menú desplegable superior para añadir una nueva tarjeta
+        settings: Configuración
+        visualize_flyout: Visualizar esta columna como {0}
+      aggregation_chooser:
+        count_label: contar {0} por elemento
+        description: 'Ver los elementos de datos según los tamaños y colores siguientes:'
+        information: al
+        number_of: Número de
+        option_disabled: No se puede usar esta columna con un<br>número total
+        sum_label: añadir para cada {0}
+        sum_of: Suma de
+        the_sum_of: La suma de
+        title: Conjunto
+        too_many_columns:
+          message: Actualmente no podemos proporcionar la suma como total en las páginas Data Lens que tengan más de {0} columnas de tipo Número o Dinero.
+          title: Parece que este conjunto de datos contiene más de {0} columnas de números
+      api_explorer:
+        additional_resources: 'Recursos adicionales para esta API:'
+        api_button: API
+        api_button_title: Acceder a este conjunto de datos por medio de la API
+        code_libraries: Bibliotecas de código
+        code_libraries_title: Descargar los clientes de API desde la Biblioteca de código
+        documentation: Documentación
+        documentation_title: Ver la documentación de la API
+        formats: 'Estos datos están disponibles en varios formatos:'
+        geojson: GeoJSON
+        json: JSON
+        title: API
+        url: 'Puede acceder a estos datos a través de la API de Socrata Open Data en la siguiente URL:'
+      card_controls:
+        collapse_card: Minimizar esta tarjeta
+        customize_disabled: Aún no hay opciones de personalización para esta tarjeta
+        customize_enabled: Personalizar esta tarjeta
+        expand_card: Expandir esta tarjeta
+        remove_card: Eliminar esta tarjeta
+      card_layout:
+        add_card_here: Añadir tarjeta aquí
+      common:
+        cancel: Cancelar
+        cards:
+          choropleth: Coroplético
+          column_chart: Gráfico de columnas
+          distribution_chart: Gráfico de distribución
+          feature_map: Mapa de características
+          search_card: Buscar tarjeta
+          timeline_chart: Gráfico cronológico
+        change: Cambiar
+        done: Hecho
+        download: Descargar
+        downloading: Descargando
+        error: Error
+        errors:
+          export_visualization_disabled: Esta visualización no está disponible<br>para la exportación de imagen
+          invalid_card: Visualización de tarjeta no válida
+          map_render_error: Ha ocurrido un error al intentar mostrar este mapa.
+        latitude: Latitud
+        longitude: Longitud
+        no_value: No existe un valor
+        ok: De acuerdo
+        permissions:
+          permissions: Permisos
+          private: Privado
+          public: Público
+      customize_bar:
+        changes_warning: Ha hecho cambios en esta página.
+        collapse_card: 'Para entrar en el modo de personalización: minimice la tarjeta grande usando las flechas de la esquina superior derecha'
+        customize: Personalizar
+        customize_flyout: Haga clic para personalizar el diseño o la disposición de esta página
+        customizing: Personalizando
+        customizing_flyout: Ahora está personalizando esta página
+        customizing_flyout_instructions: Puede hacer clic en este botón en cualquier momento para previsualizar los cambios y guardarlos en cualquier momento
+        exit_visualization_export: 'Para entrar en el modo de personalización: salga del modo "Descargar visualización como imagen" haciendo clic en el botón Cancelar en el Panel de información'
+      customize_card_dialog:
+        map_layer:
+          custom: Mapa personalizado
+          standard: Estándar
+          title: Capa base del mapa
+        visualization_options:
+          title: Tipo de tarjeta
+      distribution_chart:
+        drag_clear_help: Borrar el rango de filtros
+        drag_help: Arrastrar para cambiar el rango de filtros
+        errors:
+          error: Ha ocurrido un error al intentar mostrar esta tarjeta.
+          no_data: No hay datos que mostrar.
+      feature_map:
+        zoom_disabled: El zoom no está disponible temporalmente. Por favor, inténtelo de nuevo más tarde.
+      feedback_panel:
+        broken: Parece que algo no funciona
+        feedback: Comentarios
+        like: Me gusta
+        missing: Me falta una característica
+        other_option: Otro
+        screenshot_description: Con una captura de pantalla puede mostrarnos exactamente sobre qué está escribiendo. Usamos <a href="https://usersnap.com" title="Visit UserSnap's homepage">UserSnap</a> para las capturas de pantalla. Puede leer su <a href="https://usersnap.com/privacy-policy" title="Read UserSnap's privacy policy">política de privacidad</a>.
+        screenshot_no: No, gracias
+        screenshot_prompt: "¿Desea incluir una captura de pantalla en su comentario?"
+        screenshot_yes: Sí, incluir una captura de pantalla
+      filter:
+        and: y
+        blank: en blanco
+        date_range: "{0} a {1}"
+        is: es
+        is_not: no es
+        value_range: "{0} a {1}"
+        where: donde
+      flyout:
+        clear_filter: Quitar filtro
+        clear_filter_long: Actualmente la página tiene este valor en sus filtros, haga clic para quitarlo
+        clear_range_filter_long: Actualmente la página tiene esta selección en sus filtros, haga clic para quitarla
+        current_filter: Filtro actual
+        details: Haga clic para ver los detalles
+        expand: Haga clic para expandir
+        filtered_amount: Resultados de los filtros
+        total: Total
+      last_updated:
+        label: "última actualización el"
+      lens_type:
+        community: data lens comunitario
+        official: data lens oficial
+      manage_lens_dialog:
+        dataset_private_page_private: Ya que el conjunto de datos de origen de esta página está configurado como <b>Privado</b>, esta página no se puede hacer pública. Solo los usuarios con acceso de administrador podrán acceder a él, y no aparecerá en el catálogo público.
+        dataset_private_page_public: <span class="icon-warning"></span> El conjunto de datos de origen de esta página está configurado como <b>Privado</b>, de modo que, aunque se configure esta página como Pública, ningún usuario que no tenga acceso al conjunto de datos de origen podrá acceder a ella. No obstante, aparecerá en el catálogo público. Debería considerar configurar el conjunto de datos como Público o configurar la página como Privada.
+        dataset_public_page_private: Esta página está configurada como <b>Privada<b/>, de modo que solo los usuarios con acceso de administrador podrán acceder a ella. No aparecerá en el catálogo público.
+        dataset_public_page_public: Tanto esta página como su conjunto de datos de origen son <b>Públicos<b/>, de modo que cualquiera podrá verla, y aparecerá en el catálogo público.
+        title: Gestionar
+      metadata:
+        data_as_csv: Datos de origen completos como CSV (Excel)
+        edit_description_prompt: Añada a su página una buena descripción que ayude a la gente a comprender la historia que sus datos intentan contar. (Opcional)
+        page_name_placeholder: Sin título
+        source_dataset: conjunto de datos de origen
+        validation_error_max_length: El título es demasiado largo
+        validation_error_min_length: Por favor, introduzca un título
+        validation_error_required: Por favor, introduzca un título
+        visualization_as_image: Visualización como imagen
+        visualization_as_image_disabled_flyout: Por favor, guarde la página para descargar una visualización como imagen
+      mobile_warning_dialog:
+        acknowledgement: De acuerdo, ¡ya está¡
+        description: Estamos trabajando para mejorar la experiencia móvil de este sitio.
+      page_header:
+        logo: Logo
+        sign_in: Iniciar sesión
+        sign_out: Cerrar sesión
+        sign_up: Registrarse
+      quick_filter_bar:
+        clear_all_flyout: Haga clic para borrar todos los filtros
+        filter_title: Mostrando <span class="light">el {0}</span>
+      related_views:
+        button: Otras vistas de estos datos
+        title: Otras vistas de estos datos
+      revert_button:
+        flyoutHasChanges: Haga clic para deshacer todos los cambios realizados desde la última vez que guardó
+        flyoutNoChanges: No hay cambios que deshacer
+        text: Deshacer cambios
+      rich_text_editor:
+        bold: Negrita
+        insert_link: Insertar enlace
+        italic: Cursiva
+        link: Enlace
+        link_placeholder: Introduzca aquí una URL
+        underline: Subrayado
+      save_as:
+        flyoutFailedBody: Por favor, póngase en contacto con el servicio de asistencia de Socrata
+        flyoutFailedTitle: Ha ocurrido un error
+        flyoutIdle: Haga clic para guardar los cambios como nueva página
+        flyoutNoChanges: No hay cambios que guardar
+        text: Guardar como
+      save_as_panel:
+        description: Introduzca una descripción para su nueva página (opcional)
+        new_name: Guarde la página actual con un nombre nuevo
+        title: Guardar como
+      save_button:
+        failed: Ha habido un error
+        flyoutFailedBody: Por favor, póngase en contacto con el servicio de asistencia de Socrata
+        flyoutFailedTitle: Ha habido un error
+        flyoutIdle: Haga clic para guardar los cambios
+        flyoutNoChanges: No hay cambios que guardar
+        saved: "¡Guardado!"
+        saving: Guardando...
+      search_card:
+        invalid_search: Pruebe a buscar un número que no contenga letras.
+        loading: Cargando sugerencias...
+        no_results: Su búsqueda no ha arrojado resultados. Compruebe la ortografía o pruebe con un término diferente.
+        one_example: 'Ejemplo: ''{0}'''
+        prompt_number: Escriba un número y pulse Enter para buscar
+        prompt_text: Escriba algo de texto y pulse Enter para buscar
+        search_info: Mostrando {0} de {1} resultados que coinciden
+        two_examples: 'Ejemplos: ''{0}'' o ''{1}'''
+      table:
+        a_to_z: A-Z
+        ascending: ascendente
+        descending: descendente
+        largest_first: los más grandes primero
+        loading: Cargando...
+        newest_first: las más nuevas primero
+        no_rows: No hay filas que mostrar
+        oldest_first: las más antiguas primero
+        range_label: "{0} <strong>{1}-{2} de {3}</strong>"
+        range_label_all: Mostrando todo {0} {1}
+        range_label_subtitle: Mostrando {0} {1} <span class="subtitle">de {2}</span>
+        smallest_first: las más pequeñas primero
+        sort: Haga clic para clasificar {0}
+        sorted: Se ha clasificado {0}
+        z_to_a: Z-A
+      timeline_chart:
+        drag_clear_help: Borrar el rango de filtros
+        drag_help: Arrastrar para cambiar el rango de filtros
+        errors:
+          bad_dates: No se puede mostrar el gráfico debido a valores de datos no válidos.
+          default: No se puede mostrar el gráfico.
+          no_data: No se puede mostrar un gráfico sin valores.
   controls:
     browse:
       actions:
@@ -99,6 +321,10 @@ es:
           forms: Formularios
           href: Conjuntos de datos externos
           maps: Mapas
+          new_view: páginas de Data Lens
+          new_view_help: "¿Qué es esto?"
+          story: Historias
+          story_help: Saber más de las historias
           unpublished: Conjuntos de datos no publicados
         view_types_singular_title: tipo
         view_types_title: Ver tipos
@@ -279,7 +505,7 @@ es:
         select_operation: 'Seleccionar una operación para filtrar por:'
         select_subcolumn: 'Seleccionar la parte de %{name} para filtrar por:'
       edit_default:
-        advanced_body: Esto significa que tendrán acceso total a las opciones disponibles sobre el filtro. Para una experiencia más sencilla, usted puede tratar el modo simplificado.
+        advanced_body: Esto significa que tendrán acceso total a las opciones disponibles sobre el filtro. Para una experiencia más sencilla, usted puede probar el modo simplificado.
         advanced_header: Los usuarios comenzarán en el modo avanzado.
         advanced_toggle: Cambiar el modo predeterminado  a simplificado.
         auto_suggested: Los valores sugeridos están determinados automáticamente por este tipo de operador.
@@ -330,6 +556,10 @@ es:
       delete_warning_multi_column: "¿Desea borrar la columna seleccionada? ¡Todos los datos en esta columna se eliminarán!"
       delete_warning_single_column: "¿Desea borrar la columna seleccionada? ¡Todos los datos en esta columna se eliminarán!"
       edit_column_properties: Editar propiedades de la columna
+      errors:
+        cannot_edit_at_this_time: En este momento no se puede editar esta columna. Por favor, inténtelo de nuevo más tarde.
+        primary_key_collision: Este valor ya existe como clave primaria. No debería sobrescribirlo.
+        row_locked_for_edit: Actualmente no podemos editar una fila que se acaba de crear. Estamos trabajando para hacerlo posible. De momento, actualice la página antes de editar esta fila.
       filter_this_column: Filtrar esta columna
       geocodes_pending: Las filas en la columna de localización están geocodificando todavía. Por favor, espere a que hayan finalizado para publicar este conjunto de datos
       hide_column: Esconder columna
@@ -516,6 +746,7 @@ es:
       percent: Porcentaje
       phone: Teléfono
       photo: Foto (Imagen)
+      point: Punto
       stars: Estrella
       text: Texto simple
       url: URL del sitio web
@@ -670,8 +901,11 @@ es:
       page: página
       previous_page: Página anterior
     precision_style:
-      scientific: "Científico: 1.0204e+3"
-      standard: "Estándar: 1020.4"
+      currency: 'Moneda: 1020.40 $'
+      financial: 'Financiero: (1020.40)'
+      percentage: 'Porcentaje: 1020.40 %'
+      scientific: Científico (1.0204e+3)
+      standard: Estándar (1020.4)
     required: Requerido
     share_types:
       contributor: Colaborador
@@ -707,12 +941,14 @@ es:
       grouped: vista agrupada
       href: conjunto de datos externo
       map: mapa
+      new_view: página de Data Lens
       table: tabla
       working_copy: copia de trabajo
     view_types_plural:
       api: API
       calendar: Calendarios
       chart: Gráficos
+      data_lens: Data Lenses
       filter: Vistas filtradas
       form: Formularios
       grouped: Vistas agrupadas
@@ -753,13 +989,18 @@ es:
         this_page: Esta página
         tweet_contents: 'Eche un vistazo a %{dataset} en %{company}: %{url}'
         twitter: Compartir en Twitter
+      visualization:
+        exploreLink: Examinar los datos
+        exploreLink_prompt: Mostrar enlace
     configurator:
       actions_components: Acciones
       advanced_components: Componentes avanzados
       content_components: Contenido
       data_components: Datos
       input_components: Entrada
+      redo_title: No hay nada que rehacer
       report_components: Componentes de informe
+      undo_title: No hay nada que deshacer
     context_picker:
       select_dataset: Seleccionar conjunto de datos
       view_data: Ver datos
@@ -827,6 +1068,10 @@ es:
       description_html: Por favor, trate de nuevo en unos momentos o <a href="http://support.socrata.com">informe este error</a> especificando lo que usted deseaba hacer.
       somethings_wrong: "¡Hay un error!"
       were_sorry: Lo sentimos, pero hubo un problema al procesar su pedido.
+    error_site_unavailable:
+      description: Este sitio que funciona con Socrata no está disponible actualmente.
+      help_html: Siempre puede comprobar el estado de Socrata en <a href="http://status.socrata.com">http://status.socrata.com</a> o comprobar nuestra cuenta de Twitter en <a href="https://twitter.com/socrata">@socrata</a>.
+      title: Sitio no disponible actualmente
     not_acceptable_406:
       page_not_found: No se encontró la página.
       were_sorry: Lo sentimos mucho, pero la página no está disponible en el formato que usted pidió.
@@ -1250,6 +1495,7 @@ es:
         supported: Los tipos de archivo compatibles son CSV, TSV y Excel. Los protocolos compatibles son HTTP y HTTPS.
         url_prompt: "¿Cuál es la URL web del archivo que desea importar?"
       errors:
+        insecure_esri_url: Se ha añadido una URL no segura de ESRI map layer. Algunas características no funcionarán en este conjunto de datos.
         invalid_crossload_url: Por favor, introduzca una URL válida que comience con HTTP o HTTPS.
         invalid_url: Eso no parece ser una URL válida.
         missing_data_provider: Debe especificar el proveedor de datos (atribucion) en una licencia Creative Commons.
@@ -1279,7 +1525,7 @@ es:
         local: En mi ordenador
         local_explain: Elija esto si tiene un archivo que está en el ordnador que está utilizando.
         web: En internet
-        web_explain: Elija esto si tiene un archivo que ya está en internet y tiene la URL de él.
+        web_explain: Elija esta opcion si tiene un archivo que ya está en internet y tiene la URL de éste.
       import_columns:
         add_new_column: Añadir nueva columna
         clear_all: Borrar todo
@@ -1305,7 +1551,7 @@ es:
       import_help: <strong>¿Necesita ayuda?</strong> Mantenemos una <a href="%{common_errors}" rel="external">lista de advertencias y errores comunes</a> que quizá le ayuden.
       import_shapefile:
         crs: Coordinar el sistema de referencia
-        headline: Especifique cómo se debería importar Specify how &ldquo;<span class="fileName"></span>&rdquo;
+        headline: Especifique cómo se debería importar &ldquo;<span class="fileName"></span>&rdquo;
         layers_list: Capas para importar
         name: Nombre
         pending: Por favor, espere mientras cargamos sus capas...
@@ -1357,6 +1603,7 @@ es:
           underline: Subrayado
           undo: Deshacer
         full_screen: Alternar pantalla completa
+        out_of_date: Este conjunto de datos lleva obsoleto %{age}
         publish_button: Publicar conjunto de datos
         publish_prompt: Este conjunto de datos es una copia de trabajo y no está disponible al público. Cuando usted haya realizado los cambios deseados, debe publicarlo para que otros usuarios puedan verlo.
         publish_rights: Solo un dueño o editor puede publicar este conjunto  de datos
@@ -1378,6 +1625,7 @@ es:
         subscribe_prompt: 'Suscribirse vía correo electrónico o RSS '
         unpublished_unsavable: Los cambios en los datos abajo se guardan automáticamente. Los filtros y búsquedas no se pueden guardar en una copia de trabajo de un conjunto de datos. Por favor, cree una vista en un conjunto de datos publicado.
         unsaved_title: Vista no guardada
+        up_to_date: Este conjunto está actualizado hasta %{current}
         view_published_html: Ver el conjunto de datos <span class="publishedName">publicado</span>
         view_type: Ver como %{type}
         view_types:
@@ -1441,6 +1689,7 @@ es:
         edit_dataset_button: Editar conjunto de datos
         error_publishing_html: Hubo un error al crear una copia de trabajo de su conjunto de datos. Por favor, <a href="http://support.socrata.com" rel="external">contacte al área de apoyo de Socrata </a>.
         error_publishing_unpublished: Solo se pueden publicar conjuntos de datos no publicados.
+        immutable: Este conjunto de datos es de solo lectura y únicamente puede editar si está programado. Consulte la documentación de SODA 2 para obtener más detalles.
         needs_copy: Este conjunto de datos está publicado y no se puede editar directamente. Una copia de trabajo %{status}  le permite realizar todos los cambios que desea antes de hacerlo público.
         needs_copy_status:
           available: está disponible
@@ -1481,7 +1730,9 @@ es:
           validation:
             view_column: No puede añadir una columna a una vista
         api:
+          api_docs: Documentación de la API
           column_ids_title: Identificaciones de columna
+          developer_portal: Portal del desarrollador
           endpoint_title: 'Parámetro de acceso de la API:'
           intro_html: La <strong> API de datos de libre acceso de Socrata</strong> (SODA) permite a los programadores acceder a los datos guardados sistemáticamente en los sitios de Socrata. Los programadores pueden crear aplicaciones que usen las API SODA para visualizar  y mezclar los conjuntos de datos de Socrata en nuevas e interesantes formas. Por ejemplo, crear una aplicación para iPhone que muestre el gasto del Gobierno en su área, una aplicación web que permita a los ciudadanos saber sobre potenciales beneficios del Gobierno que ellos desconozcan, o un servicio que automáticamente le envíe correos electrónicos cuando se agregan nuevos detalles a las cuentas que usted desea observar.
           reference_html: Para acceder sistemáticamente a este conjunto de datos, usar el parámetro de la API provista abajo. Para más información y ejemplos de cómo emplear la API de datos de libre acceso de Socrata, revisar nuestra <a href="http://dev.socrata.com" rel="external"> documentación para programadores</a>.
@@ -1853,6 +2104,7 @@ es:
             non_tabular: Solo se pueden imprimir datos tabulares
         download:
           download_as: 'Descargar como:'
+          download_dataset: Por favor, descargue el conjunto de datos del que se deriva esta vista.
           geo_header: Descargar datos geoespaciales
           layers_header: Descargar capas tabulares
           subtitle: Descargar una copia de este conjunto de datos en un formato estático
@@ -2052,7 +2304,7 @@ es:
               ascending: Ascendente
               descending: Descendente
             title: Clasificar
-          subtitle: Usted puede agrupar las filas y resumir los datos; y clasificar una o más columnas
+          subtitle: Usted puede agrupar las filas, resumir los datos y clasificar una o más columnas
           title: Clasificar y resumir
           validation:
             no_eligible_columns: Esta vista no tiene columnas para resumir o clasificar
@@ -2099,6 +2351,13 @@ es:
             title: Vistas
         visualize:
           choose_type: Tipo de visualización
+      new_ux_button: Muéstrame
+      new_ux_creating_page: Se está creando y analizando la nueva página de Data Lens
+      new_ux_error: No está disponible la previsualización para este conjunto de datos.
+      new_ux_link: Pruebe este conjunto de datos en nuestra nueva herramienta de exploración de datos (beta)
+      new_ux_nbe_warning: 'Solo interno: vista UX antigua del conjunto New Backend. Se habrá redirigido a los usuarios ordinarios a %{url}'
+      new_ux_text: Ver estos datos en la nueva experiencia de Data Lens
+      new_ux_title: "¿Está listo para explorar de forma visual?"
       save_dialog:
         descriptions:
           leaving: 'Tiene datos sin guardar que se perderán si sale de esta página. Por favor, elija guardar o no está vista antes de dejar la página; o seleccione “Cancelar” para regresar a la página. '
@@ -2116,7 +2375,7 @@ es:
         remove_confirm: "¿Está seguro de que desea eliminar esta vista?"
         unpublished_alert: Este conjunto de datos no está publicado todavía para permitirle hacer cualquier cambio necesario antes de hacerlo disponible a todo el mundo. No será visible hasta que usted no publique este conjunto de datos.
       subscribe:
-        intro_html: '<strong>Para suscribirse al <span class="datasetName">%{name}</span>conjunto de datos vía un lector RSS </strong>, usar uno de los siguientes enlaces:'
+        intro_html: '<strong>Para suscribirse al <span class="datasetName">%{name}</span> conjunto de datos vía un lector RSS </strong>, usar uno de los siguientes enlaces:'
         rss: 'Descargar como RSS '
         rss_program: Abrir en un programa externo
         subscribe_button: Suscribirse vía correo electrónico
@@ -2124,6 +2383,7 @@ es:
         subscribed_html: <strong>Usted está actualmente suscrito <span class="datasetTypeName">dataset</span> vía correo electrónico </strong>,  y recibirá notificaciones cuando se publiquen nuevos datos.
         title_html: Subscribirse al "<span class="datasetName">%{name}</span>" <span class="datasetTypeNameUpcase">conjunto de datos</span>
         unsubscribe: Si no desea recibir más notificaciones, desactive la casilla de suscripción abajo.
+      unable_to_find_dataset_page: No hemos podido encontrar una página de Data Lens para este conjunto.
     edit_metadata:
       about: Acerca de
       additional_source: Fuente adicional
@@ -2180,6 +2440,7 @@ es:
       return: Regresar a Metadatos
       row_class: Fila de Clase
       row_identifier: Identificador de Fila
+      row_identifier_help_text: El identificador de fila no se puede cambiar una vez se haya publicado una vista.
       save: Guardar
       save_changes: Guardar cambios
       semantics_rdf: Semántica y Marco de Descripción de Recursos
@@ -2251,6 +2512,7 @@ es:
     import_pane:
       analyzing: Analizando su archivo...
       assure_accessible: Por favor, asegúrese de que su archivo es accesible y válido y pruebe de nuevo.
+      bytes_imported: "%{num} bytes importados hasta ahora."
       combine_multiple_cols: "(Combinar múltiples columnas...)"
       downloading: Descargando su archivo..
       filetype_error_blist: Por favor, elija un archivo CSV, TSV, XLS o XLSX.
@@ -2319,6 +2581,7 @@ es:
               nomination_moderated: Se moderó cualquier nominación
               privileged_account_created: Un usuario crea su cuenta privilegiada
               user_affected: Acciones que lo afectan directamente, como respuestas a comentarios y actualizaciones de estados
+              view_deleted: Se borra cualquier vista
               view_made_public: Se hizo pública cualquier vista
             policy: "%{site} respeta su privacidad  y nunca le enviará mensajes con publicidad a través de esta lista o dará su dirección de correo electrónico a terceras partes. Los mensajes enviados desde este sitio incluyen notificaciones de cuenta y actualizaciones de los conjuntosde datos que usted ha creado o  está suscrito. "
             send_error: Ha habido un problema al enviar su email. Por favor, pruebe de nuevo más tarde.
@@ -2340,10 +2603,13 @@ es:
           callback_prefix: Prefijo “Callback”
           callback_prefix_help_html: Por ejemplo, si su aplicación llamará de vuelta (“callback”) a <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> y <span class="code">https://my-domain.com/socrata-app/profile</span>, usted debe proveer <span class="code">https://my-domain.com/socrata-app</span> como su prefijo. Tenga en cuenta que debe incluir al menos el nombre completo del dominio.
           callback_prefix_prompt: Proveer el prefijo para el  URL  seguro del “callback” (https) cuando use OAuth
-          create_error: Hubo un error al crear su autentificador de la aplicación %{message}
+          core_error:
+            already_exists: Ya existe una aplicación con el nombre %{app_name}
+            another_user: No se puede crear una aplicación para otro usuario
+          create_error: 'Hubo un error al crear su autentificador de la aplicación: %{message}'
           create_success: Su aplicación fue creada
           delete_confirm: "¿Está seguro de que quiere eliminar esta aplicación? El correspondiente autentificador de la aplicación dejará de ser válido"
-          delete_error: Hubo un error al borrar su autentificador de la aplicación %{message}
+          delete_error: 'Hubo un error al borrar su autentificador de la aplicación: %{message}'
           delete_success: Su aplicación fue borrada
           description: Descripción
           description_prompt: Ingresar una descripción para su aplicación
@@ -2355,7 +2621,7 @@ es:
           thumbnail: Miniatura
           title: Autentificadores de la aplicación
           title_full: Sus aplicaciones
-          title_single: 'Editar autentificador de laaplicación '
+          title_single: 'Editar autentificador de la aplicación '
           website: Sitio web
           website_prompt: Proveer un enlace para esta aplicación o sitio web de la organización
         back_link: Volver a mi perfil
@@ -2409,7 +2675,7 @@ es:
         all_contacts_link: Ver todo
         edit_image_link: Editar imagen
         followers: Seguidores
-        following: Seguidos
+        following: Siguiendo
         hide_contacts_link: Ocultar
     reset_password:
       failed: 'Hubo un problema al restablecer su contraseña. Por favor inténtelo de nuevo. '
@@ -2419,12 +2685,15 @@ es:
       success: Su contraseña ha sido restablecida satisfactoriamente
       title: Cambiar contraseña
     sign_in:
+      auth0_intro: Existen varias formas de iniciar sesión. Si aún no se ha registrado, elija la opción que encuentre más conveniente. Si ya lo ha hecho, use ahora misma opción.
+      back_to_sign_in_selection: <a class="login-back">Volver a las opciones de inicio de sesión</a>
       failed: No ha podido iniciar sesión con esta dirección de correo electrónico y contraseña; inténtelo de nuevo
       form:
         sign_in_button: Iniciar sesión
       headline: Iniciar sesión a %{site}
       mismatch: Las contraseñas no coinciden; por favor inténtelo de nuevo
       prompt_html: Inicie sesión con su <strong>identificación de Socrata </strong>
+      sign_in_with: "<strong>Iniciar sesión</strong> con %{provider}"
       tips_html: Use su correo electrónico y contraseña para iniciar sesión en todos los <strong><a href="http://www.socrata.com" rel="external">sitios</a> administrados</strong> por Socrata.
     sign_up:
       form:

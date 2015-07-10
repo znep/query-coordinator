@@ -2,7 +2,7 @@ ca:
   account:
     common:
       form:
-        confirm_password: Confirmar Contrasenya
+        confirm_password: Confirmeu la Contrasenya
         display_name: Mostrar Nom
         email: Adreça de Correu Electrònic
         forgot_password: Ha oblidat la Contrasenya?
@@ -38,6 +38,228 @@ ca:
       validation:
         mismatch: Les contrasenyes no coincideixen
         terms: Ha d'acceptar els termes del servei i la política de privacitat.
+  angular:
+    dataCards:
+      add_card_dialog:
+        add_card: Afegeix una targeta
+        add_this_card: Afegeix aquesta targeta
+        card_on_page: La targeta ja és a la pàgina
+        card_on_page_long: Aquesta targeta ja és a la pàgina
+        choose_column: Tria una columna
+        column_chart_warning: 'Nota: Això es convertirà en un gràfic de barres amb més de cent barres, pot ser que vagi una mica més lent que altres gràfics'
+        customize_prompt: Personalitza aquesta targeta
+        not_supported: Actualment no és compatible
+        not_supported_long: Aquesta mena de targetes actualment no són compatibles
+        prompt: Tria una columna del menú desplegable de sobre per afegir-hi una targeta nova
+        settings: Configuració
+        visualize_flyout: Visualitza aquesta columna com a {0}
+      aggregation_chooser:
+        count_label: compta {0} per element
+        description: 'Veges els elements de les dades amb mida o color per:'
+        information: per el
+        number_of: Número de
+        option_disabled: Aquesta columna no es pot fer servir amb un<br>número total
+        sum_label: afegeix per cada {0}
+        sum_of: Quantitat de
+        the_sum_of: La quantitat de
+        title: Conjunt
+        too_many_columns:
+          message: Actualment no podem donar-vos una suma com a total per les pàgines de Visió de dades que tinguin més de {0} columnes de tipus de números o diners.
+          title: Sembla que aquesta taula de dades té més de {0} columnes de números
+      api_explorer:
+        additional_resources: 'Recursos addicionals per aquest Institut Americà de Petroli:'
+        api_button: Institut Americà de Petroli
+        api_button_title: Accediu a aquesta taula de dades a traves de l'Institut Americà de Petroli
+        code_libraries: Codi de biblioteques
+        code_libraries_title: 'Descarregueu-vos del codi de biblioteques els clients de l''Institut Americà de Petroli '
+        documentation: Documentació
+        documentation_title: Vegeu la documentació de l'Institut Americà de Petroli
+        formats: 'Aquesta dada es troba disponible en diferents formats:'
+        geojson: GeoJSON
+        json: JSON
+        title: Institut Americà de Petroli
+        url: 'Podeu accedir a aquesta informació a través de Socrata Open Data API a aquesta URL:'
+      card_controls:
+        collapse_card: Col·lapseu aquesta targeta
+        customize_disabled: No hi ha cap mena de personalització disponible per a aquesta targeta encara
+        customize_enabled: Personalitzeu aquesta targeta
+        expand_card: Expandiu aquesta targeta
+        remove_card: Elimineu aquesta targeta
+      card_layout:
+        add_card_here: Afegiu una targeta aquí
+      common:
+        cancel: Cancel·leu-ho
+        cards:
+          choropleth: Coroplètic
+          column_chart: Gràfic de columnes
+          distribution_chart: Gràfic de distribució
+          feature_map: Característica del mapa
+          search_card: Cerca de targetes
+          timeline_chart: Gràfica de línia del temps
+        change: Canvi
+        done: Fet
+        download: Descarregar
+        downloading: Descarregant
+        error: Error
+        errors:
+          export_visualization_disabled: Aquesta visualització no està disponible<br/> per exportar imatges
+          invalid_card: Visualització d'una targeta invàlida
+          map_render_error: Hem trobat un error mentre intentàvem representar el mapa.
+        latitude: Latitud
+        longitude: Longitud
+        no_value: Cap valor
+        ok: D'acord
+        permissions:
+          permissions: Permisos
+          private: Privat
+          public: Privat
+      customize_bar:
+        changes_warning: Heu fet canvis a la pàgina
+        collapse_card: 'Per entrar el mode de personalització: plegeu la targeta gran fent servir les fletxes a dalt de tot a la dreta'
+        customize: Personalitzeu
+        customize_flyout: Feu clic per personalitzar el plànol o el monitor d'aquesta pàgina
+        customizing: Personalitzant
+        customizing_flyout: Esteu personalitzant aquesta pàgina actualment
+        customizing_flyout_instructions: Podeu fer clic a aquest botó sempre que vulgueu visualitzar i guardar els canvis
+        exit_visualization_export: 'Per entrar en el mode de personalització: Sortiu  del mode "Descarregar la visualització com a imatge" fent clic al botó de cancel·lar al panell informatiu'
+      customize_card_dialog:
+        map_layer:
+          custom: Mapa custom
+          standard: Estàndard
+          title: Mapa basat en estrats
+        visualization_options:
+          title: Tipus de targeta
+      distribution_chart:
+        drag_clear_help: Esborra la gama de filtres
+        drag_help: Arrossegueu-ho per canviar la gama de filtres
+        errors:
+          error: Hem trobat un error mentre intentàvem de proveir aquesta targeta
+          no_data: No hi ha cap dada per mostrar
+      feature_map:
+        zoom_disabled: El zoom no és disponible temporalment. Si us plau, proveu-ho més tard.
+      feedback_panel:
+        broken: Sembla que alguna cosa no va bé.
+        feedback: Opinió
+        like: M'agrada
+        missing: Falta una característica
+        other_option: Altre
+        screenshot_description: Amb una foto de pantalla ens podeu ensenyar exactament sobre què heu opinat. Fem servir <a href="https://usersnap.com" title="Visit UserSnap's homepage">UserSnap</a> per fotos de pantalla. Llegiu-vos la seva política de privacitat <a href="https://usersnap.com/privacy-policy" title="Read UserSnap's privacy policy">privacy policy</a>.
+        screenshot_no: No gràcies
+        screenshot_prompt: Voleu incloure una foto de pantalla a la vostra opinió?
+        screenshot_yes: Sí, inclou una foto de pantalla
+      filter:
+        and: i
+        blank: blanc
+        date_range: "{0} a {1}"
+        is: "és"
+        is_not: no és
+        value_range: "{0} a {1}"
+        where: 'on'
+      flyout:
+        clear_filter: Esborreu el filtre
+        clear_filter_long: Actualment la pàgina és filtrada amb aquest valor, feu clic aquí per esborrar-ho
+        clear_range_filter_long: Actualment aquesta pàgina és filtrada per aquesta selecció, feu clic aquí per esborrar-ho
+        current_filter: Filtre actual
+        details: Cliqueu per veure els detalls
+        expand: Cliqueu per expandir-ho
+        filtered_amount: Quantitat filtrada
+        total: Total
+      last_updated:
+        label: "última actualització"
+      lens_type:
+        community: comunitat de visió de dades
+        official: visió de dades oficial
+      manage_lens_dialog:
+        dataset_private_page_private: Com que la font de la taula de dades d'aquesta pàgina s'ha configurat com a <b>Private</b>, aquesta pàgina no es podrà fer pública. Només aquells que tinguin un accés privilegiat podran veure-ho i no apareixerà al catàleg públic.
+        dataset_private_page_public: '<span class="icon-warning"></span>  La font de la taula de dades d''aquesta pàgina s''ha configurat com a <b>Private</b>, així que encara que aquesta pàgina sigui configurada com a pública, ningú sense accés no podrà veure la font d''aquesta taula de dades. Així i tot, apareixerà en el catàleg públic. Hauríeu de considerar de configurar la taula de dades com a pública o la pàgina com a privada. '
+        dataset_public_page_private: 'Aquesta pàgina s''ha configurat com a <b>Private</b>, així que només aquells que tinguin accés privilegiat podran veure-la. No apareixerà en el catàleg públic. '
+        dataset_public_page_public: 'Aquesta pàgina i les fonts de les taules de dades són totes <b>Public</b>, així doncs tothom ho podrà veure i apareixerà en el catàleg públic. '
+        title: Dirigir
+      metadata:
+        data_as_csv: Totes les fonts de les dades com a CSV (Exel)
+        edit_description_prompt: Descriviu bé la vostra pàgina perquè ajuda que la gent entengui tot el que les vostres dades volen dir. (Opcional)
+        page_name_placeholder: Sense títol
+        source_dataset: Font de taula de dades
+        validation_error_max_length: El vostre títol és massa llarg
+        validation_error_min_length: Si us plau, entreu un títol
+        validation_error_required: Si us plau, entreu un títol
+        visualization_as_image: Visualització com a imatge
+        visualization_as_image_disabled_flyout: Si us plau, guardeu la pàgina per tal de descarregar la visualització com a imatge
+      mobile_warning_dialog:
+        acknowledgement: D'acord, ja ho tinc!
+        description: 'Estem treballant per millorar el servei per mòbil d''aquesta pàgina. '
+      page_header:
+        logo: Logotip
+        sign_in: Registreu-vos
+        sign_out: Sortiu
+        sign_up: Inscriviu-vos
+      quick_filter_bar:
+        clear_all_flyout: Feu clic per reconfigurar tots els filtres
+        filter_title: Mostrant <span class="light">the {0}</span>
+      related_views:
+        button: Altres vistes d'aquesta dada
+        title: Aaltres vistes d'aquesta dada
+      revert_button:
+        flyoutHasChanges: Feu clic per desfer tots els canvis des de l'última vegada que vàreu guardar-ho
+        flyoutNoChanges: Cap canvi a fer
+        text: Torneu a canvis
+      rich_text_editor:
+        bold: Negreta
+        insert_link: Inseriu un enllaç
+        italic: Cursiva
+        link: Enllaç
+        link_placeholder: Entreu un URL aquí
+        underline: Subratllat
+      save_as:
+        flyoutFailedBody: Si us plau, contacteu amb Socrata Support
+        flyoutFailedTitle: Hi ha hagut un error
+        flyoutIdle: Feu clic per guardar tots els canvis coma una pàgina nova
+        flyoutNoChanges: No hi ha cap canvi per guardar
+        text: Guardar com
+      save_as_panel:
+        description: Entreu una descripció per la vostra nova pàgina (opcional)
+        new_name: Guardeu la pàgina actual amb un nom nou
+        title: Guardar com
+      save_button:
+        failed: Ha fallat
+        flyoutFailedBody: Si us plau, contacteu amb Socrata Support
+        flyoutFailedTitle: Hi ha hagut un error
+        flyoutIdle: Feu clic per guardar els canvis
+        flyoutNoChanges: No s'ha guardat cap canvi
+        saved: Guardat!
+        saving: Guardant...
+      search_card:
+        invalid_search: Intenteu buscar per números, no per lletres.
+        loading: 'Carregant suggeriments... '
+        no_results: 'La vostra cerca no té cap resultat. Reviseu que estigui tot ben escrit o canvieu de terme. '
+        one_example: 'Exemple: ''{0}'''
+        prompt_number: Escriviu un número i premeu l'enter per buscar
+        prompt_text: Escriviu paraules i premeu l'enter per buscar
+        search_info: 'Es mostra {0} de {1} resultats coincidents. '
+        two_examples: 'Exemples: ''{0}'' o ''{1}'''
+      table:
+        a_to_z: A-Z
+        ascending: ascendent
+        descending: baixant
+        largest_first: El primer més gran
+        loading: Carregant
+        newest_first: El primer més nou
+        no_rows: No hi ha files per mostrar
+        oldest_first: El primer més antic
+        range_label: "{0} <strong>{1}-{2} out of {3}</strong>"
+        range_label_all: Mostra-ho tot {0} {1}
+        range_label_subtitle: Mostra {0} {1} <span class="subtitle">out of {2}</span>
+        smallest_first: El primer més petit
+        sort: Feu clic per ordenar {0}
+        sorted: Ordenat {0}
+        z_to_a: Z-A
+      timeline_chart:
+        drag_clear_help: Esborra la gama de filtres
+        drag_help: Arrossega per canviar la gama de filtres
+        errors:
+          bad_dates: El gràfic no es pot reproduir a causa de valors de dades invàlids
+          default: El gràfic no es pot reproduir
+          no_data: El gràfic no es pot reproduir sense cap valor.
   controls:
     browse:
       actions:
@@ -99,6 +321,10 @@ ca:
           forms: Formulari
           href: Conjunts de Dades Externs
           maps: Mapes
+          new_view: Pàgines de visió de dades
+          new_view_help: Què és això?
+          story: Històries
+          story_help: Apreneu més coses sobre les històries
           unpublished: Conjunts de Dades No Publicats
         view_types_singular_title: tipus
         view_types_title: Veure Tipus
@@ -332,6 +558,10 @@ ca:
       delete_warning_multi_column: Desitja eliminar les columnes seleccionades? Totes les dades d'aquestes columnes seran eliminades!
       delete_warning_single_column: Desitja eliminar la columna seleccionada? Totes les dades d'aquesta columna seran eliminades!
       edit_column_properties: Editar Propietats de la Columna
+      errors:
+        cannot_edit_at_this_time: 'Aquesta columna no és pot editar actualment. Proveu-ho més tard. '
+        primary_key_collision: 'Aquest valor ja existeix com a clau primària. No podeu tornar-lo a escriure. '
+        row_locked_for_edit: 'Actualment no podem editar un fila recentment creada. Estem treballant per fer-ho possible. De moment, recarregueu la pàgina abans d''editar aquesta fila. '
       filter_this_column: Filtrar Aquesta Columna
       geocodes_pending: Les files situades a la columna s'estan encara geocodificant. Si us plau, esperi fins que hagin acabat de publicar aquest conjunt de dades
       hide_column: Amaga la Columna
@@ -514,6 +744,7 @@ ca:
       percent: Percentatge
       phone: Telèfon
       photo: Foto (Imatge)
+      point: Punt
       stars: 'Estrella '
       text: Text Pla
       url: URL del Lloc Web
@@ -668,8 +899,11 @@ ca:
       page: pàgina
       previous_page: Pàgina anterior
     precision_style:
-      scientific: "Científic: 1.0204e+3"
-      standard: "Estàndard: 1020.4"
+      currency: 'Moneda: $1020.40'
+      financial: 'Financer: (1020.40)'
+      percentage: 'Percentatge: 1020.40%'
+      scientific: Científic (1.0204e+3)
+      standard: Estàndard (1020.4)
     required: Requerit
     share_types:
       contributor: Col·laborador
@@ -705,12 +939,14 @@ ca:
       grouped: vista agrupada
       href: conjunt de dades extern
       map: mapa
+      new_view: Pàgina de visió de dades
       table: taules
       working_copy: còpia de treball
     view_types_plural:
       api: APIs
       calendar: Calendaris
       chart: Gràfiques
+      data_lens: Visió de dades
       filter: Vistes Filtrades
       form: Formularis
       grouped: Vistes Agrupades
@@ -751,13 +987,18 @@ ca:
         this_page: Aquesta pàgina
         tweet_contents: 'Comprova el %{dataset} en %{company}: %{url}'
         twitter: Compartir a Twitter
+      visualization:
+        exploreLink: Exploreu la informació
+        exploreLink_prompt: Mostra l'enllaç
     configurator:
       actions_components: Accions
       advanced_components: Components Avançats
       content_components: Contingut
       data_components: Dades
       input_components: Entrada
+      redo_title: No hem trobat res per refer
       report_components: Informar dels Components
+      undo_title: No hem trobat res per desfer
     context_picker:
       select_dataset: Seleccionar Conjunt de Dades
       view_data: Veure Dades
@@ -825,6 +1066,10 @@ ca:
       description_html: Si us plau, provi una altra vegada en uns moments, o <a href="htttp://support.socrata.com">reporti aquest error</a> amb els detalls del que intentava fer.
       somethings_wrong: Alguna cosa està mal!
       were_sorry: 'Ho lamentem, però ha ocorregut un problema mentre processàvem la seva petició. '
+    error_site_unavailable:
+      description: 'Aquesta pàgina que depèn de Socrata no està disponible actualment. '
+      help_html: Sempre podeu revisar l'estatus de Socrata al <a href="http://status.socrata.com">http://status.socrata.com</a> o revisar el nostre compte de Twitter a <a href="https://twitter.com/socrata">@socrata</a>.
+      title: 'Aquest lloc no està disponible actualment. '
     not_acceptable_406:
       page_not_found: Pàgina no trobada.
       were_sorry: Ho lamentem, però la pàgina sol·licitada no està disponible en el format sol·licitat.
@@ -1248,6 +1493,7 @@ ca:
         supported: Les extensions amb suport són CSV, TSV i Excel. Els protocols amb suport són HTTP i HTTPS.
         url_prompt: Quina és l'URL de la pàgina web on es troba el fitxer que desitja importar?
       errors:
+        insecure_esri_url: 'S''ha afegit una URL d''un mapa d''estrats ESRI no-segur. Algunes característiques no funcionaran en aquesta taula de dades com a resultat.  '
         invalid_crossload_url: Si us plau, introdueixi una URL vàlida que comenci amb HTTP o HTTPS.
         invalid_url: Aquesta no sembla una URL vàlida.
         missing_data_provider: Deurà especificar el proveïdor de les dades (atribució) a les llicències Creative Commons.
@@ -1355,6 +1601,7 @@ ca:
           underline: Subratllar
           undo: Desfer
         full_screen: Canvia a pantalla completa
+        out_of_date: Aquesta taula de dades és obsoleta des de%{age}
         publish_button: Publicar el Conjunt de Dades
         publish_prompt: Aquest conjunt de dades és una còpia de treball i no està disponible públicament. Una vegada hagi realitzat els canvis desitjats, aquest conjunt de dades podrà ser publicat per fer-lo disponible públicmanet.
         publish_rights: "Únicament un propietari o un editor poder publicar aquest conjunt de dades"
@@ -1376,6 +1623,7 @@ ca:
         subscribe_prompt: Subscriure's per Correu Electrònic o per RSS
         unpublished_unsavable: Els canvis a les dades a sota són desats automàticament. Els filtres i les cerques no poden ser desats a una còpia de treball del conjunt de dades. Si us plau, creï una vista en un conjunt de dades publicat.
         unsaved_title: Vista No Desada
+        up_to_date: Aquesta taula de dades és actualitzada de %{current}
         view_published_html: Veure el <span class="publishedName">conjunt de dades</span> publicat
         view_type: Veure com a %{type}
         view_types:
@@ -1439,6 +1687,7 @@ ca:
         edit_dataset_button: Editar Conjunt de Dades
         error_publishing_html: Ha ocorregut un error mentre creàvem una còpia de treball del seu conjunt de dades. Si us plau, <a href="http://support.socrata.com" rel="external">contacti el suport de Socrata</a>.
         error_publishing_unpublished: "Únicament conjunts de dades no publicats poden ésser publicats."
+        immutable: 'Aquesta taula de dades és només de lectura i només pot ser editada per programadors. Si us plau, vegeu els documents de SODA 2 per a més detalls. '
         needs_copy: Aquest conjunt de dades està publicat i no pot ser editat directament. Una còpia de treball %{status} li permetrà realitzar els canvis desitjats abans de fer-los disponibles públicament.
         needs_copy_status:
           available: actualment disponible
@@ -1479,7 +1728,9 @@ ca:
           validation:
             view_column: No pot afegir una columna a la vista
         api:
+          api_docs: Documents de l'Institut Americà de Petroli
           column_ids_title: IDs de les Columnes
+          developer_portal: Portal desenvolupador
           endpoint_title: 'Punt Final de l''Acces de l''API:'
           intro_html: L'<strong>API de Dades Obertes de Socrata</strong> (SODA) permet al enginyers de programari accedir a les dades allotjades en els llocs de dades de Socrata programàticament. Els desenvolupadors poden crear aplicacions que emprin les APIs SODA per a visualitzar i &ldquo;mesclar&rdquo; els conjunts de dades de Socrata de formes noves i excitants. Podreu crear una aplicació d'iPhone que visualitzi la despesa del govern a la vostra àrea, una aplicació web que permeti als ciutadans obtenir beneficis potencials del govern en temes ignorats fins al moment o un servei que automàticament enviï correus electrònics quan s'afegeixin noves característiques als rebuts que us interessi seguir.
           reference_html: Per a accedir a aquest conjunt de dades programàticament, utilitzi el punt final de l'API proveïda a sota. Per a més informació i exemples sobre com usar l'API de Dades Obertes de Socrata, miri la nostra <a href="http://dev.socrata.com" rel="external">Documentació del Desenvolupador</a>.
@@ -1851,6 +2102,7 @@ ca:
             non_tabular: Només les dades tabulars podran imprimir-se
         download:
           download_as: Descarregar Com a
+          download_dataset: Si us plau, descarregueu-vos la taula de dades de la qual deriva aquesta imatge.
           geo_header: Descarregar Dades Geoespacials
           layers_header: Descarregar Capes Tabulars
           subtitle: Descarregar una còpia d'aquest conjunt de dades en format estàtic
@@ -2097,6 +2349,13 @@ ca:
             title: Vistes
         visualize:
           choose_type: Tipus de Visualització
+      new_ux_button: Mostreu-me
+      new_ux_creating_page: La nova pàgina de visió de dades s'està creant i analitzant
+      new_ux_error: 'No hi ha cap previsualització disponible per aquesta taula de dades. '
+      new_ux_link: Proveu aquesta taula de dades en la nostra nova eina d'exploració de dades (beta)
+      new_ux_nbe_warning: 'Només intern: Visió antiga UX de la taula de dades New Backend. Els usuaris ordinaris hauran estat redirigits a %{url}'
+      new_ux_text: Vegeu aquesta data a la nova experiència visió de dades
+      new_ux_title: Esteu preparats per visualitzar explore?
       save_dialog:
         descriptions:
           leaving: Té dades no desades que es perdran si surt d'aquesta pàgina. Si us plau, indiqui si desitja desar aquesta vista abans de sortir; o seleccioni Cancel·lar per retornar a la pàgina.
@@ -2122,6 +2381,7 @@ ca:
         subscribed_html: <strong>Actualment es troba subscrit a aquest <span class="datasetTypeName">conjunt de dades</span> mitjançant correu electrònic</strong>, i rebrà notificacions quan noves dades siguin publicades.
         title_html: Subscriure's al &quot;<span class="datasetName">%{name}</span>&quot; <span class="datasetTypeNameUpcase">Conjunt de Dades</span>
         unsubscribe: Si no desitja rebre més notificacions, desmarqui la caixa de Subscripció a sota.
+      unable_to_find_dataset_page: 'No som capaços de trobar una visió de dades per aquesta taula de dades. '
     edit_metadata:
       about: Sobre
       additional_source: 'Font Addicional '
@@ -2178,6 +2438,7 @@ ca:
       return: Tornar al Conjunt de Dades
       row_class: Classes de Fila
       row_identifier: Identificador de Fila
+      row_identifier_help_text: 'No es pot canviar l''identificador de files un cop s''ha publicat una visió. '
       save: 'Desar '
       save_changes: Desar canvis
       semantics_rdf: Semàntica i RDF
@@ -2249,6 +2510,7 @@ ca:
     import_pane:
       analyzing: Analitzant el seu fitxer...
       assure_accessible: Si us plau, asseguri's que el seu fitxer és accessible i vàlid i torni a provar.
+      bytes_imported: "%{num} bytes que s'han important fins ara."
       combine_multiple_cols: "(Combinar Columnes Múltiples...)"
       downloading: Descarregant el seu fitxer...
       filetype_error_blist: Si us plau, seleccioni un fitxer CSV, TSV, XLS, o XLSX.
@@ -2317,6 +2579,7 @@ ca:
               nomination_moderated: S'ha moderat una nominació
               privileged_account_created: Un usuari crea el seu compte privilegiat
               user_affected: Accions que l'afecten directament, com rèpliques a comentaris i actualitzacions d'estatus
+              view_deleted: Qualsevol vista és eliminada
               view_made_public: Tota vista s'ha fet pública
             policy: "%{site} respecta la seva privacitat i mai li enviarà correus electrònics de màrqueting a través d'aquesta llista o li enviarà cap correu electrònic extern. Els correus electrònics d'aquest lloc inclouen notificacions de compte i actualitzacions dels conjunts de dades què ha creat o als que s'ha subscrit"
             send_error: Ha ocorregut un problema mentre enviàvem el seu correu electrònic. Si us plau, provi més tard.
@@ -2338,6 +2601,9 @@ ca:
           callback_prefix: Prefix de Retorn de Trucades
           callback_prefix_help_html: Per exemple, si la seva aplicació vol retornar la trucada <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> i <span class="code">https://my-domain.com/socrata-app/profile</span>, haurà de voler suministrar <span class="code">https://my-domain.com/socrata-app</span> com al seu prefix. Noti que ha d'incloure com a mínim el nom sencer del domini.
           callback_prefix_prompt: Proveeixi el prefix per al retorn de trucades segur (https) quan utilitzi OAuth
+          core_error:
+            already_exists: Ja existeix una aplicació anomenada %{app_name}
+            another_user: No podem crear una aplicació per un altre usuari
           create_error: 'Ha ocorregut un error mentre creàvem el símbol de la seva aplicació: %{message}'
           create_success: La seva aplicació ha estat creada
           delete_confirm: Segur que desitja eliminar aquesta aplicació? El corresponent app_token deixarà de ser vàlid
@@ -2417,12 +2683,15 @@ ca:
       success: Contrasenya reiniciada satisfactòriament
       title: Reiniciar Contrasenya
     sign_in:
+      auth0_intro: 'Hi ha diverses maneres de registrar-se. Si no heu creat cap compte encara, trieu l''opció que cregueu que us convé més. Si ja l''heu creada, feu servir la mateixa opció ara. '
+      back_to_sign_in_selection: <a class="login-back">Torneu a entrar a opcions</a>
       failed: Impossible iniciar sessió amb aquest correu electrònic i contrasenya; si us plau, provi una altra vegada
       form:
         sign_in_button: Iniciar Sessió
       headline: Iniciar Sessió en %{site}
       mismatch: Les contrasenyes no coincideixen; si  us plau, provi una altra vegada
       prompt_html: Iniciar Sessió amb la seva <strong>Socrata ID</strong>
+      sign_in_with: "<strong>Registreu-vos</strong> amb %{provider}"
       tips_html: Empri el seu Correu Electrònic i Contrasenya per a iniciar sessió en tots els llocs <strong><a href="http://www.socrata.com" rel="external">Socrata</a> relacionants</strong>.
     sign_up:
       form:

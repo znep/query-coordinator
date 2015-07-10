@@ -38,6 +38,228 @@ it:
       validation:
         mismatch: Le password inserite non corrispondono
         terms: "È necessario accettare i termini del servizio e l'informativa sulla privacy."
+  angular:
+    dataCards:
+      add_card_dialog:
+        add_card: Aggiungi scheda
+        add_this_card: Aggiungi questa scheda
+        card_on_page: Scheda già sulla pagina
+        card_on_page_long: Questa scheda è già sulla pagina
+        choose_column: Scegli una colonna...
+        column_chart_warning: 'Nota: ciò potrebbe avere come risultato un grafico a barre con più di cento barre e potrebbe essere più lento di altri grafici'
+        customize_prompt: Personalizza questa scheda
+        not_supported: Attualmente non supportato
+        not_supported_long: Questo tipo di scheda non è al momento supportata
+        prompt: Scegli una colonna dal menu a discesa presente sopra per aggiungere una nuova scheda
+        settings: Impostazioni
+        visualize_flyout: Visualizza questa colonna come un/una {0}
+      aggregation_chooser:
+        count_label: considera {0} per elemento
+        description: 'Visualizza gli elementi dei dati ridimensionati o colorati da:'
+        information: dal/dalla
+        number_of: Numero di
+        option_disabled: Questa colonna non può essere usata con un<br>numero di aggregazione
+        sum_label: aggiungi per ognuno {0}
+        sum_of: Somma di
+        the_sum_of: La somma di
+        title: Aggregazione
+        too_many_columns:
+          message: Al momento, non siamo in grado di fornire la somma come aggregato per le pagine Data Lens che hanno più di {0} colonne di tipo Numero o Denaro.
+          title: Sembra che questo set di dati contenga più di {0} numero di colonne
+      api_explorer:
+        additional_resources: 'Risorse aggiuntive per questa API:'
+        api_button: API
+        api_button_title: Accedi a questo set di dati tramite API
+        code_libraries: Librerie di codice
+        code_libraries_title: Scarica i client API dalla Libreria di codice
+        documentation: Documentazione
+        documentation_title: Visualizza la documentazione API
+        formats: 'Questi dati sono disponibili in diversi formati:'
+        geojson: GeoJSON
+        json: JSON
+        title: API
+        url: "È possibile accedere a questi dati tramite le API Socrata Open Data a questo URL:"
+      card_controls:
+        collapse_card: Comprimi questa scheda
+        customize_disabled: Non vi sono ancora opzioni di personalizzazione per questa scheda
+        customize_enabled: Personalizza questa scheda
+        expand_card: Espandi questa scheda
+        remove_card: Rimuovi questa scheda
+      card_layout:
+        add_card_here: Aggiungi scheda qui
+      common:
+        cancel: Annulla
+        cards:
+          choropleth: Coropletica
+          column_chart: Grafico a colonne
+          distribution_chart: Grafico di distribuzione
+          feature_map: Mappa delle funzionalità
+          search_card: Cerca scheda
+          timeline_chart: Grafico temporale
+        change: Cambia
+        done: Fatto
+        download: Scarica
+        downloading: Download in corso
+        error: Errore
+        errors:
+          export_visualization_disabled: Questa visualizzazione non è disponibile<br/>per l'esportazione in formato immagine
+          invalid_card: Visualizzazione scheda non valida
+          map_render_error: Si è verificato un errore durante il tentativo di rappresentare questa mappa.
+        latitude: Latitudine
+        longitude: Longitudine
+        no_value: Nessun valore
+        ok: OK
+        permissions:
+          permissions: Permessi
+          private: Privato
+          public: Pubblico
+      customize_bar:
+        changes_warning: Hai effettuato dei cambiamenti in questa pagina.
+        collapse_card: 'Per entrare nella modalità di personalizzazione: riduci la scheda grande utilizzando le frecce presenti all''angolo in alto a destra'
+        customize: Personalizza
+        customize_flyout: Fai clic per personalizzare la struttura o la visualizzazione di questa pagina
+        customizing: Personalizzazione
+        customizing_flyout: Adesso stai personalizzando questa pagina
+        customizing_flyout_instructions: Puoi fare clic su questo pulsante in qualunque momento per vedere i tuoi cambiamenti in anteprima e salvarli quando desideri
+        exit_visualization_export: 'Per entrare nella modalità di personalizzazione: esci dalla modalità "Scarica visualizzazione come immagine" facendo clic sul pulsante "Annulla" presente sul Pannello informativo'
+      customize_card_dialog:
+        map_layer:
+          custom: Mappa personalizzata
+          standard: Standard
+          title: Mappa strato di base
+        visualization_options:
+          title: Tipo di scheda
+      distribution_chart:
+        drag_clear_help: Cancella gamma di filtro
+        drag_help: Trascina per cambiare la gamma di filtro
+        errors:
+          error: Si è verificato un errore nel tentativo di rappresentare questa scheda.
+          no_data: Nessun dato da visualizzare.
+      feature_map:
+        zoom_disabled: Lo zoom non è attualmente disponibile. Ti preghiamo di riprovare.
+      feedback_panel:
+        broken: Qualcosa sembra essersi rotto
+        feedback: Feedback
+        like: Mi piace questo/a
+        missing: Mi manca una caratteristica
+        other_option: Altro
+        screenshot_description: Con l'acquisizione di una schermata puoi mostrarci esattamente ciò di cui vuoi fornirci un feedback. Utilizziamo <a href="https://usersnap.com" title="Visita la pagina di UserSnap">UserSnap</a> per la cattura delle schermate. Leggi la loro <a href="https://usersnap.com/privacy-policy" title="Leggi la politica sulla privacy di UserSnap">politica sulla privacy</a>.
+        screenshot_no: No, grazie
+        screenshot_prompt: Desideri includere una schermata nel tuo commento?
+        screenshot_yes: Sì, includi una schermata
+      filter:
+        and: e
+        blank: vuoto
+        date_range: "{0} a {1}"
+        is: "è"
+        is_not: non è
+        value_range: "{0} a {1}"
+        where: dove
+      flyout:
+        clear_filter: Cancella filtro
+        clear_filter_long: Questa pagina è attualmente filtrata da questo valore, ti preghiamo di cancellarlo
+        clear_range_filter_long: Questa pagina è attualmente filtrata da questa selezione, fai clic per cancellarla
+        current_filter: Filtro attuale
+        details: Fai clic per vedere i dettagli
+        expand: Fai clic per espandere
+        filtered_amount: Quantità filtrata
+        total: Totale
+      last_updated:
+        label: ultimo aggiornamento
+      lens_type:
+        community: community data lens
+        official: data lens ufficiale
+      manage_lens_dialog:
+        dataset_private_page_private: Poiché l'origine relativa a questa pagina di set di dati è impostata su <b>Privata</b>, questa pagina non può essere resa pubblica. Solamente gli utenti con accesso privilegiato possono vederla, ed essa non apparirà all'interno del catalogo pubblico.
+        dataset_private_page_public: <span class="icon-avviso"></span> L'origine relativa a questa pagina di set di dati è impostata su <b>Privata</b>. Quindi, anche se la pagina viene impostata su "Pubblica", chiunque sia privo dell'accesso all'origine del set di dati non sarà in grado di visualizzarla. Essa continuerà ad apparire all'interno del catalogo pubblico. Dovresti considerare di impostare il set di dati su "Pubblico", oppure imposta questa pagina su "Privata".
+        dataset_public_page_private: Questa pagina è impostata su <b>Privata</b>. Quindi, solamente gli utenti con accesso privilegiato possono vederla, ed essa non apparirà all'interno del catalogo pubblico.
+        dataset_public_page_public: Questa pagina e la relativa origine del set di dati sono entrambe <b>Pubbliche</b>, quindi chiunque potrà vedere questa pagina ed essa apparirà all'interno del catalogo pubblico.
+        title: Gestisci
+      metadata:
+        data_as_csv: Origine dati completi come CSV (Excel)
+        edit_description_prompt: Dai alla tua pagina una buona descrizione che aiuti le persone a capire la storia che i tuoi dati cercano di raccontare. (Facoltativo)
+        page_name_placeholder: Senza titolo
+        source_dataset: origine del set di dati
+        validation_error_max_length: Il tuo titolo è troppo lungo
+        validation_error_min_length: Inserisci un titolo
+        validation_error_required: Inserisci un titolo
+        visualization_as_image: Visualizzazione come immagine
+        visualization_as_image_disabled_flyout: Ti preghiamo di salvare la pagina per poter scaricare una visualizzazione come immagine
+      mobile_warning_dialog:
+        acknowledgement: Va bene, ho capito!
+        description: Stiamo laviorando per migliorare l'esperienza mobile su questo sito.
+      page_header:
+        logo: Logo
+        sign_in: Accedi
+        sign_out: Esci
+        sign_up: Registrati
+      quick_filter_bar:
+        clear_all_flyout: Fai clic per reimpostare tutti i filtri
+        filter_title: Mostra di <span class="light">il {0}</span>
+      related_views:
+        button: Altre viste di questo dato
+        title: Altre viste di questo dato
+      revert_button:
+        flyoutHasChanges: Fai clic per annullare tutte le modifiche fatte dall'ultimo tuo salvataggio
+        flyoutNoChanges: Nessuna modifica da ripristinare
+        text: Annulla le modifiche
+      rich_text_editor:
+        bold: Grassetto
+        insert_link: Inserisci collegamento
+        italic: Corsivo
+        link: Collegamento
+        link_placeholder: Inserisci un URL qui
+        underline: Sottolineatura
+      save_as:
+        flyoutFailedBody: Ti preghiamo di contattare il supporto Socrata
+        flyoutFailedTitle: Si è verificato un errore
+        flyoutIdle: Fai clic per salvare le tue modifiche come nuova pagina
+        flyoutNoChanges: Nessuna modifica da salvare
+        text: Salva come
+      save_as_panel:
+        description: Inserisci una descrizione per la tua nuova pagina (facoltativo)
+        new_name: Salva la pagina attuale con un nuovo nome
+        title: Salva come
+      save_button:
+        failed: Non riuscito
+        flyoutFailedBody: Ti preghiamo di contattare il supporto Socrata
+        flyoutFailedTitle: Si è verificato un errore
+        flyoutIdle: Fai clic per salvare le tue modifiche
+        flyoutNoChanges: Nessuna modifica da salvare
+        saved: Salvata!
+        saving: Salvataggio...
+      search_card:
+        invalid_search: Prova a cercare un numero che non contenga lettere.
+        loading: Caricamento dei suggerimenti...
+        no_results: La tua ricerca non ha restituito alcun risultato. Controlla l'ortografia o prova con un termine diverso.
+        one_example: 'Esempio: ''{0}'''
+        prompt_number: Digita un numero e premi invio per cercare
+        prompt_text: Digita del testo e premi invio per cercare
+        search_info: Sto mostrando {0} di {1} risultati corrispondenti
+        two_examples: 'Esempi: ''{0}'' o ''{1}'''
+      table:
+        a_to_z: A-Z
+        ascending: ordine crescente
+        descending: ordine decrescente
+        largest_first: prima il più grande
+        loading: Caricamento...
+        newest_first: prima il più nuovo
+        no_rows: Nessuna riga da visualizzare
+        oldest_first: prima il più vecchio
+        range_label: "{0} <strong>{1}-{2} di {3}</strong>"
+        range_label_all: Sto mostrando tutto {0} {1}
+        range_label_subtitle: Sto mostrando {0} {1} <span class="subtitle">di {2}</span>
+        smallest_first: prima il più piccolo
+        sort: Fai clic per ordinare {0}
+        sorted: Ordinato {0}
+        z_to_a: Z-A
+      timeline_chart:
+        drag_clear_help: Cancella intervallo di filtro
+        drag_help: Trascina per cambiare l'intervallo di filtro
+        errors:
+          bad_dates: Il grafico non può essere rappresentato a causa di valori di dati non validi.
+          default: Il grafico non può essere rappresentato.
+          no_data: Non è possibile rappresentare il grafico privo di valori.
   controls:
     browse:
       actions:
@@ -99,6 +321,10 @@ it:
           forms: Moduli
           href: Dati esterni
           maps: Mappe
+          new_view: Pagine Data Lens
+          new_view_help: Cosa è questo?
+          story: Sorie
+          story_help: Informazioni su Storie
           unpublished: Dataset non pubblicati
         view_types_singular_title: tipo
         view_types_title: Tipi di viste
@@ -330,6 +556,10 @@ it:
       delete_warning_multi_column: Vuoi eliminare le colonne selezionate? Tutti i dati in queste colonne saranno rimossi!
       delete_warning_single_column: Vuoi eliminare la colonna selezionata? Tutti i dati in questa colonna saranno rimossi!
       edit_column_properties: Modifica delle proprietà della colonna
+      errors:
+        cannot_edit_at_this_time: In questo momento, la colonna non può essere modificata. Ti preghiamo di riprovare più tardi.
+        primary_key_collision: Questo valore è già presente come chiave primaria. Non è possibile sovrascriverlo.
+        row_locked_for_edit: Attualmente, non possiamo modificare una riga appena creata. Stiamo lavorando per renderlo possibile. Per il momento, aggiorna la pagina prima di modificare questa riga.
       filter_this_column: Filtra questa colonna
       geocodes_pending: Le linee nella colonna località non sono ancora state geocodificate. Attendere fino a quando la pubblicazione di questo dataset non sarà completata.
       hide_column: Nascondi colonna
@@ -512,6 +742,7 @@ it:
       percent: Percentuale
       phone: Telefono
       photo: Foto (Immagine)
+      point: Punto
       stars: Stella
       text: Testo normale
       url: Web URL
@@ -666,8 +897,11 @@ it:
       page: pagina
       previous_page: Pagina Precedente
     precision_style:
-      scientific: "Scientifica: 1.0204e+3"
-      standard: "Standard: 1020.4"
+      currency: 'Valuta: $1020,40'
+      financial: 'Finanziaria: (1020,40)'
+      percentage: 'Percentuale: 1020,40%'
+      scientific: Scientifica (1.0204e+3)
+      standard: Standard (1020.4)
     required: Richiesto
     share_types:
       contributor: Collaboratore
@@ -703,12 +937,14 @@ it:
       grouped: visualizzazione in gruppi
       href: external dataset
       map: mappa
+      new_view: Pagina Data Lens
       table: tabella
       working_copy: copia di lavoro
     view_types_plural:
       api: API
       calendar: Calendari
       chart: Grafici
+      data_lens: Data Lenses
       filter: Visualizzazioni filtrate
       form: Moduli
       grouped: Visualizzazioni in gruppi
@@ -749,13 +985,18 @@ it:
         this_page: Questa pagina
         tweet_contents: 'Controlla %{dataset} su %{company}: %{url}'
         twitter: Condividi su Twitter
+      visualization:
+        exploreLink: Esplora i dati
+        exploreLink_prompt: mostra collegamento
     configurator:
       actions_components: Azioni
       advanced_components: Componenti Avanzati
       content_components: Contenuto
       data_components: Dati
       input_components: Input
+      redo_title: Non c'è nulla da rifare
       report_components: Rapporto sui Componenti
+      undo_title: Non c'è nulla da annullare
     context_picker:
       select_dataset: Seleziona il set di Dati
       view_data: Guarda i Dati
@@ -823,6 +1064,10 @@ it:
       description_html: Chiediamo cortesemente di riprovare tra qualche minuto, oppure di <a href="http://support.socrata.com">segnalare questo errore</a> con i dettagli dell'operazione che stavi tentando di fare.
       somethings_wrong: Qualcosa non va!
       were_sorry: Siamo spiacenti, ma c'è stato un problema di elaborazione della tua richiesta.
+    error_site_unavailable:
+      description: Questo sito con tecnologia Socrata non è attualmente disponibile.
+      help_html: È possibile controllare lo stato di Socrata all'indirizzo <a href="http://status.socrata.com">http://status.socrata.com</a> o verificare sul nostro account Twitter su <a href="https://twitter.com/socrata">@socrata</a>.
+      title: Sito attualmente non disponibile
     not_acceptable_406:
       page_not_found: Pagina non trovata.
       were_sorry: Siamo spiacenti, ma la pagina non è disponibile nel formato richiesto.
@@ -1246,6 +1491,7 @@ it:
         supported: I tipi di file supportati sono CSV, TSV e Excel. I protocolli supportati sono HTTP e HTTPS.
         url_prompt: Qual è l'URL web che vorresti importare?
       errors:
+        insecure_esri_url: "È stato aggiunto un livello di mappa URL Esri. Di conseguenza, alcune caratteristiche non funzioneranno su questo set di dati."
         invalid_crossload_url: Inserisci un valido URL digitando HTTP o HTTPS
         invalid_url: Sembra non essere un URL valido.
         missing_data_provider: Devi specificare il data provider (attribuzione) in una licenza Creative Commons.
@@ -1353,6 +1599,7 @@ it:
           underline: Sottolineato
           undo: Disfai
         full_screen: Visualizza a schermo intero
+        out_of_date: Questo set di dati non è aggiornato da %{age}
         publish_button: Pubblica Dataset
         publish_prompt: Questo dataset è una copia di lavoro e non è pubblico. Una volta terminate le modifiche, è necessario pubblicare il dataset per renderlo pubblico.
         publish_rights: Solo un proprietario o editore può pubblicare questo dataset
@@ -1374,6 +1621,7 @@ it:
         subscribe_prompt: Sottoscrivi via e-mail o RSS
         unpublished_unsavable: Modifiche ai dati sottostanti sono salvate automaticamente. Filtri e ricerche non possono essere salvati in una copia di lavoro del dataset. Si prega di creare una vista su un dataset pubblicato.
         unsaved_title: Vista non salvata
+        up_to_date: Questo set di dati è aggiornato al %{current}
         view_published_html: Visualizza il <span class="publishedName">dataset</span> pubblicato
         view_type: Visualizza come %{type}
         view_types:
@@ -1437,6 +1685,7 @@ it:
         edit_dataset_button: Modifica Dataset
         error_publishing_html: Si è verificato un errore durante la creazione della copia di lavoro del tuo dataset. Si prega di <a href="http://support.socrata.com" rel="external">contattare il supporto Socrata</a>.
         error_publishing_unpublished: Solo i dataset non pubblicati possono essere pubblicati.
+        immutable: Questo set di dati è di sola lettura e può essere modificato solo a livello di codice. Ti preghiamo di leggere la documentazione SODA 2 per ulteriori dettagli.
         needs_copy: Questo dataset è pubblicato e non può essere modificato direttamente. Una copia di lavoro %{status} che ti permette di effettuare le modifiche desiderate prima di renderle pubbliche.
         needs_copy_status:
           available: "è disponibile"
@@ -1477,7 +1726,9 @@ it:
           validation:
             view_column: Non puoi aggiungere una colonna ad una vista
         api:
+          api_docs: Documenti API
           column_ids_title: 'ID Colonna:'
+          developer_portal: Portale dello sviluppatore
           endpoint_title: 'Accesso Endpoint API:'
           intro_html: Le <strong>API Open Data Socrata</strong> (SODA) permettono agli sviluppatori software di accedere in programmazione ai dati ospitati nei siti Socrata. Gli sviluppatori software possono creare applicazioni che utilizzano le API SODA per visualizzare e rimaneggiare dataset Socrata in un modo nuovo e creativo. Creare un'applicazione iPhone che visualizza la spesa del governo nel tuo paese, un'applicazione web che permette ai cittadini di conoscere potenziali benefici di governo che avevano trascurato, o un servizio che ti invia automaticamente una email quando viene pubblicato un nuovo dato che vuoi tracciare.
           reference_html: Per accedere a questo dataset in programmazione, utilizzare l'endpoint API fornito sotto. Per maggiori informazioni ed esempi su come utilizzare API OpenData di Socrata, fare riferimento alla nostra <a href="http://dev.socrata.com" rel="external">Documentazione per Sviluppatori</a>.
@@ -1849,6 +2100,7 @@ it:
             non_tabular: Solo i dati in formato tabellare possono essere stampati
         download:
           download_as: Scarica come
+          download_dataset: Ti preghiamo di scaricare il set di dati da cui deriva questa vista.
           geo_header: Scarica dati Geospaziali
           layers_header: Scarica Layer Tabular
           subtitle: Scarica una copia di questo dataset in formato statico
@@ -2095,6 +2347,13 @@ it:
             title: Viste
         visualize:
           choose_type: Tipo di Visualizzazione
+      new_ux_button: Mostrami
+      new_ux_creating_page: La nuova pagina Data Lens viene creata e analizzata
+      new_ux_error: Non è disponibile una anteprima per questo set di dati.
+      new_ux_link: Prova questo set di dati nel nostro nuovo strumento per l'esplorazione dei dati (beta)
+      new_ux_nbe_warning: 'Solo per uso interno: vecchia vista UX del nuovo set di dati Backend. Gli utenti ordinari sarebbero stati trasferiti su %{url}'
+      new_ux_text: Vedi questo dato nella nuova esperienza Data Lens
+      new_ux_title: Pronto ad esplorare visivamente?
       save_dialog:
         descriptions:
           leaving: Non hai salvato i dati, che andranno persi se abbandoni questa pagina. Ti preghiamo sia che lo desideri o no di salvare questa vista prima di abbandonare la pagina; oppure scegli Cancella per ritornare alla pagina.
@@ -2120,6 +2379,7 @@ it:
         subscribed_html: <strong>Sei attualmente iscritto a questo <span class="datasetTypeName">dataset</span> tramite email</strong>, e riceverai una notifica quando nuovo dati saranno pubblicati.
         title_html: Abbonati a "<span class="datasetName">%{name}</span>" <span class="datasetTypeNameUpcase">Dataset</span>
         unsubscribe: Se non desideri più notifiche, deseleziona la casella Iscriviti qui sotto.
+      unable_to_find_dataset_page: Non siamo in grado di trovare una pagina Data Lens per questo set di dati.
     edit_metadata:
       about: Informazioni
       additional_source: Sorgente aggiuntiva
@@ -2176,6 +2436,7 @@ it:
       return: Ritorna al dataset
       row_class: Classe del record
       row_identifier: Identificatore del record
+      row_identifier_help_text: Una volta che una vista è stata pubblicata, l'identificatore di riga non può essere modificato.
       save: Salva
       save_changes: Salva le modifiche
       semantics_rdf: Semantica e RDF
@@ -2247,6 +2508,7 @@ it:
     import_pane:
       analyzing: Sto analizzando il tuo file
       assure_accessible: Cortesemente assicurati che il tuo file sia accessibile e riprova.
+      bytes_imported: "%{num} byte finora importati."
       combine_multiple_cols: "(Combina Colonne Multiple...)"
       downloading: Sto scaricando il tuo file...
       filetype_error_blist: Cortesemente scegli un file CSV, TSV, XLS, o XLSX.
@@ -2315,6 +2577,7 @@ it:
               nomination_moderated: Ogni nomination è moderata
               privileged_account_created: Un utente crea il proprio account privilegiato
               user_affected: Azioni che ti riguardano direttamente, come repliche a commenti e aggiornamenti di stato
+              view_deleted: Ogni vista è cancellata
               view_made_public: Ogni vista resa pubblica
             policy: "%{site} rispetta la tua privacy, e mai invierà email pubblicitarie, o darà la tua email a terze parti. Le email inviate da questo sito contengono notifiche e aggiornamenti a dataset che hai creato o sottoscritto."
             send_error: Si è verificato un problema nell'invio della tua email. Cortesemente riprova più tardi.
@@ -2336,6 +2599,9 @@ it:
           callback_prefix: Callback Prefix
           callback_prefix_help_html: For instance, if your application will call back to <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> and <span class="code">https://my-domain.com/socrata-app/profile</span>, you'll want to supply <span class="code">https://my-domain.com/socrata-app</span> as your prefix. Note that you must include at least the entire domain name.
           callback_prefix_prompt: Provide the prefix to the secure (https) callback uri when using OAuth
+          core_error:
+            already_exists: Esiste già una applicazione con il nome %{app_name}
+            another_user: Impossibile creare una applicazione per un altro utente
           create_error: "È avvenuto un errore durante la creazione del tuo application token: %{message}"
           create_success: La tua applicazione è stata creata
           delete_confirm: Sei sicuro di voler eliminare questa applicazione? Il corrispondente app_token non sarà più valido
@@ -2415,12 +2681,15 @@ it:
       success: Password reimpostata con successo
       title: Reset Password
     sign_in:
+      auth0_intro: Esistono diversi modi per effettuare l'accesso. Se non hai ancora registrato un account, scegli l'opzione a te più conveniente. Se ne hai una, usa la setssa opzione adesso.
+      back_to_sign_in_selection: <a class="login-back">Torna alle opzioni di accesso</a>
       failed: Impossibile accedere con e-mail e password inserite; si prega di riprovare
       form:
         sign_in_button: Accedi
       headline: Accedi a %{site}
       mismatch: Le password non corrispondono; si prega di riprovare
       prompt_html: Accedi con il tuo <strong>Socrata ID</strong>
+      sign_in_with: "<strong>Accedi</strong> with %{provider}"
       tips_html: Utilizza e-mail e password per accedere a tutti i siti <strong>Powered by <a href="http://www.socrata.com" rel="external">Socrata</a></strong>.
     sign_up:
       form:

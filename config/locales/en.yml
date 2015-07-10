@@ -9,8 +9,8 @@ en:
         lockout_warning: For security, three failed login attempts in 15 minutes will result in this account being locked out for 30 minutes.
         no_account: Don't have an account?
         password: Password
-        password_requirements: ! 'Required. Your password must be between 8 and 40 characters and satisfy three of the following four criteria: contain a digit; contain a lowercase letter; contain an uppercase letter; contain a non-alphanumeric symbol.'
-        password_requirements_html: <p>Your password must be <b>between 8 and 40 characters</b> and satisfy <b>three of the following four criteria</b>:</p><p></p><ul><li>&bull; contain a digit</li><li>&bull; contain a lowercase letter</li><li>&bull; contain an uppercase letter</li><li>&bull; contain a non-alphanumeric symbol</li></ul>
+        password_requirements: 'Required. Your password must be between 8 and 40 characters and satisfy three of the following four criteria: contain a digit; contain a lowercase letter; contain an uppercase letter; contain a non-alphanumeric symbol.'
+        password_requirements_html: "<p>Your password must be <b>between 8 and 40 characters</b> and satisfy <b>three of the following four criteria</b>:</p><p></p><ul><li>&bull; contain a digit</li><li>&bull; contain a lowercase letter</li><li>&bull; contain an uppercase letter</li><li>&bull; contain a non-alphanumeric symbol</li></ul>"
         password_restrictions: Restrictions apply
         remember_me: Remember me
         sign_up_prompt: Sign up now
@@ -24,20 +24,242 @@ en:
           sign_up: Or… Use one of these accounts to join.
         providers:
           facebook:
-            sign_in_html: <strong>Connect</strong> with Facebook
-            sign_up_html: <strong>Connect</strong> with Facebook
+            sign_in_html: "<strong>Connect</strong> with Facebook"
+            sign_up_html: "<strong>Connect</strong> with Facebook"
           google:
-            sign_in_html: <strong>Sign in</strong> with Google
-            sign_up_html: <strong>Join</strong> with Google
+            sign_in_html: "<strong>Sign in</strong> with Google"
+            sign_up_html: "<strong>Join</strong> with Google"
           openid:
-            sign_in_html: <strong>Sign in</strong> with OpenID
-            sign_up_html: <strong>Join</strong> with OpenID
+            sign_in_html: "<strong>Sign in</strong> with OpenID"
+            sign_up_html: "<strong>Join</strong> with OpenID"
           twitter:
-            sign_in_html: <strong>Connect</strong> with Twitter
-            sign_up_html: <strong>Connect</strong> with Twitter
+            sign_in_html: "<strong>Connect</strong> with Twitter"
+            sign_up_html: "<strong>Connect</strong> with Twitter"
       validation:
         mismatch: Passwords do not match.
         terms: You must accept the terms of service and privacy policy.
+  angular:
+    dataCards:
+      add_card_dialog:
+        add_card: Add card
+        add_this_card: Add this card
+        card_on_page: Card already on page
+        card_on_page_long: This card is already on the page
+        choose_column: Choose a column...
+        column_chart_warning: 'Note: This would result in a barchart with over a hundred bars, it might be slower than other charts'
+        customize_prompt: Customize this card
+        not_supported: Not currently supported
+        not_supported_long: This card type is currently unsupported
+        prompt: Choose a column from the dropdown above to add a new card
+        settings: Settings
+        visualize_flyout: Visualize this column as a {0}
+      aggregation_chooser:
+        count_label: count {0} per element
+        description: 'See data elements sized or colored by:'
+        information: by the
+        number_of: Number of
+        option_disabled: This column cannot be used with a<br>number of aggregate
+        sum_label: add for each {0}
+        sum_of: Sum of
+        the_sum_of: The sum of
+        title: Aggregation
+        too_many_columns:
+          message: At this time we are not able to provide summing as an aggregate for Data Lens pages that have more than {0} columns of type Number or Money.
+          title: Looks like this dataset contains more than {0} number columns
+      api_explorer:
+        additional_resources: 'Additional resources for this API:'
+        api_button: API
+        api_button_title: Access this Dataset via API
+        code_libraries: Code Libraries
+        code_libraries_title: Download API clients from the Code Library
+        documentation: Documentation
+        documentation_title: View API documentation
+        formats: 'This data is available in several formats:'
+        geojson: GeoJSON
+        json: JSON
+        title: API
+        url: 'You can access this data via the Socrata Open Data API at this URL:'
+      card_controls:
+        collapse_card: Collapse this card
+        customize_disabled: There are no customization options for this card yet
+        customize_enabled: Customize this card
+        expand_card: Expand this card
+        remove_card: Remove this card
+      card_layout:
+        add_card_here: Add card here
+      common:
+        cancel: Cancel
+        cards:
+          choropleth: Choropleth
+          column_chart: Column Chart
+          distribution_chart: Distribution Chart
+          feature_map: Feature Map
+          search_card: Search Card
+          timeline_chart: Timeline Chart
+        change: Change
+        done: Done
+        download: Download
+        downloading: Downloading
+        error: Error
+        errors:
+          export_visualization_disabled: This visualization is not available<br/>for image export
+          invalid_card: Invalid Card Visualization
+          map_render_error: An error was encountered when trying to render this map.
+        latitude: Latitude
+        longitude: Longitude
+        no_value: No value
+        ok: OK
+        permissions:
+          permissions: Permissions
+          private: Private
+          public: Public
+      customize_bar:
+        changes_warning: You have made changes to this page.
+        collapse_card: 'To enter customization mode: Collapse the big card using the arrows in its top right corner'
+        customize: Customize
+        customize_flyout: Click to customize the layout or display of this page
+        customizing: Customizing
+        customizing_flyout: You are now customizing this page
+        customizing_flyout_instructions: You can click this button at any time to preview your changes, and save them at any time
+        exit_visualization_export: 'To enter customization mode: Exit "Download Visualization as Image" mode by clicking the cancel button in the Info Pane'
+      customize_card_dialog:
+        map_layer:
+          custom: Custom Map
+          standard: Standard
+          title: Map base layer
+        visualization_options:
+          title: Card Type
+      distribution_chart:
+        drag_clear_help: Clear filter range
+        drag_help: Drag to change filter range
+        errors:
+          error: An error was encountered when trying to render this card.
+          no_data: There is no data to display.
+      feature_map:
+        zoom_disabled: Zoom is temporarily unavailable. Please try again later.
+      feedback_panel:
+        broken: Something seems broken
+        feedback: Feedback
+        like: I like this
+        missing: I'm missing a feature
+        other_option: Other
+        screenshot_description: With a screenshot you can show us exactly what you have feedback on. We are using <a href="https://usersnap.com" title="Visit UserSnap's homepage">UserSnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy" title="Read UserSnap's privacy policy">privacy policy</a>.
+        screenshot_no: No thanks
+        screenshot_prompt: Do you want to include a screenshot in your feedback?
+        screenshot_yes: Yes, include a screenshot
+      filter:
+        and: and
+        blank: blank
+        date_range: "{0} to {1}"
+        is: is
+        is_not: is not
+        value_range: "{0} to {1}"
+        where: where
+      flyout:
+        clear_filter: Clear filter
+        clear_filter_long: The page is currently filtered by this value, click to clear it
+        clear_range_filter_long: The page is currently filtered by this selection, click to clear it
+        current_filter: Current Filter
+        details: Click to see details
+        expand: Click to expand
+        filtered_amount: Filtered amount
+        total: Total
+      last_updated:
+        label: last updated
+      lens_type:
+        community: community data lens
+        official: official data lens
+      manage_lens_dialog:
+        dataset_private_page_private: Because this page’s source dataset is set to <b>Private</b>, this page cannot be made Public.  Only those with privileged access will be able to see it, and it will not appear in the public catalog.
+        dataset_private_page_public: <span class="icon-warning"></span> This page’s source dataset is set to <b>Private</b>, so even though this page is set to Public, anyone without access to the source dataset will not be able to see it. It will still appear in the public catalog. You should consider setting the dataset to Public, or setting this page to Private.
+        dataset_public_page_private: This page is set to <b>Private</b>, so only those with privileged access will be able to see it. It will not appear in the public catalog.
+        dataset_public_page_public: This page and its source dataset are both <b>Public</b>, so anyone will be able to see this page and it will appear in the public catalog.
+        title: Manage
+      metadata:
+        data_as_csv: Full source data as CSV (Excel)
+        edit_description_prompt: Give your page a good description that helps people understand the story your data is trying to tell. (Optional)
+        page_name_placeholder: Untitled
+        source_dataset: source dataset
+        validation_error_max_length: Your title is too long
+        validation_error_min_length: Please enter a title
+        validation_error_required: Please enter a title
+        visualization_as_image: Visualization as image
+        visualization_as_image_disabled_flyout: Please save the page in order to download a visualization as an image
+      mobile_warning_dialog:
+        acknowledgement: Okay, got it!
+        description: We're working on improving the mobile experience on this site.
+      page_header:
+        logo: Logo
+        sign_in: Sign In
+        sign_out: Sign Out
+        sign_up: Sign Up
+      quick_filter_bar:
+        clear_all_flyout: Click to reset all filters
+        filter_title: Showing <span class="light">the {0}</span>
+      related_views:
+        button: Other views of this data
+        title: Other views of this data
+      revert_button:
+        flyoutHasChanges: Click to undo all changes since you last saved
+        flyoutNoChanges: No changes to be reverted
+        text: Revert Changes
+      rich_text_editor:
+        bold: Bold
+        insert_link: Insert link
+        italic: Italic
+        link: Link
+        link_placeholder: Enter a URL here
+        underline: Underline
+      save_as:
+        flyoutFailedBody: Please contact Socrata Support
+        flyoutFailedTitle: An error occurred
+        flyoutIdle: Click to save your changes as a new page
+        flyoutNoChanges: No changes to be saved
+        text: Save As
+      save_as_panel:
+        description: Enter a description for your new page (optional)
+        new_name: Save the current page with a new name
+        title: Save As
+      save_button:
+        failed: Failed
+        flyoutFailedBody: Please contact Socrata Support
+        flyoutFailedTitle: An error occurred
+        flyoutIdle: Click to save your changes
+        flyoutNoChanges: No changes to be saved
+        saved: Saved!
+        saving: Saving...
+      search_card:
+        invalid_search: Try searching for a number containing no letters.
+        loading: Loading suggestions...
+        no_results: Your search returned no results. Check your spelling, or try a different term.
+        one_example: 'Example: ''{0}'''
+        prompt_number: Type a number and press enter to search
+        prompt_text: Type some text and press enter to search
+        search_info: Showing {0} of {1} matching results
+        two_examples: 'Examples: ''{0}'' or ''{1}'''
+      table:
+        a_to_z: A-Z
+        ascending: ascending
+        descending: descending
+        largest_first: largest first
+        loading: Loading...
+        newest_first: newest first
+        no_rows: No rows to display
+        oldest_first: oldest first
+        range_label: "{0} <strong>{1}-{2} out of {3}</strong>"
+        range_label_all: Showing all {0} {1}
+        range_label_subtitle: Showing {0} {1} <span class="subtitle">out of {2}</span>
+        smallest_first: smallest first
+        sort: Click to sort {0}
+        sorted: Sorted {0}
+        z_to_a: Z-A
+      timeline_chart:
+        drag_clear_help: Clear filter range
+        drag_help: Drag to change filter range
+        errors:
+          bad_dates: Chart cannot be rendered due to invalid date values.
+          default: Chart cannot be rendered.
+          no_data: Chart cannot be rendered with no values.
   controls:
     browse:
       actions:
@@ -46,7 +268,7 @@ en:
           title: About this Dataset
         all_options: View All
         clear_all: Clear All Options
-        clear_facet: (All)
+        clear_facet: "(All)"
         compact_list: View as a compact list
         create_resource: Create a New Socrata Resource
         create_resource_short: Create new...
@@ -104,11 +326,11 @@ en:
           forms: Forms
           href: External Datasets
           maps: Maps
-          unpublished: Unpublished Datasets
           new_view: Data Lens pages
           new_view_help: What's this?
           story: Stories
           story_help: Learn about Stories
+          unpublished: Unpublished Datasets
         view_types_singular_title: type
         view_types_title: View Types
       listing:
@@ -128,7 +350,7 @@ en:
         matching_rows: Searching dataset for matching rows
         more_link: More
         no_matching_rows: No matching rows found
-        title_html: ! 'Showing <span class="rowResultCountText"></span> of <span class="totalResultCountText"></span> matching rows <a href="#" class="rowSearchLink">(view results)</a>:'
+        title_html: 'Showing <span class="rowResultCountText"></span> of <span class="totalResultCountText"></span> matching rows <a href="#" class="rowSearchLink">(view results)</a>:'
       search: Search
       sort_period_title: Sort Period
       sort_periods:
@@ -148,12 +370,12 @@ en:
       title:
         default: Search & Browse Datasets and Views
         result:
-          facet: ! '%{facet_type} of %{facet_value}'
+          facet: "%{facet_type} of %{facet_value}"
           facet_main: matching %{body}
           main: Results %{body}
           term: for "%{term}"
     charts:
-      negatives_in_data: ! 'Invalid chart: negative values present'
+      negatives_in_data: 'Invalid chart: negative values present'
       no_data: No data
       other_slice_label: Other
       series_grouping:
@@ -165,11 +387,11 @@ en:
         pause_button_explanation2: to limit the amount of calculations needed.
         pause_rendering: Pause
         rendering_paused: Data preparation has been paused
-        rendering_progress: ! '%{rows_remaining} rows remain.'
-        rendering_progress_almost_done: ! '%{rows_remaining} rows remain, just a few seconds.'
-        rendering_progress_minute: ! '%{rows_remaining} rows remain, about %{time_remaining} minute.'
-        rendering_progress_minutes: ! '%{rows_remaining} rows remain, about %{time_remaining} minutes.'
-        rendering_progress_seconds: ! '%{rows_remaining} rows remain, about %{time_remaining} seconds.'
+        rendering_progress: "%{rows_remaining} rows remain."
+        rendering_progress_almost_done: "%{rows_remaining} rows remain, just a few seconds."
+        rendering_progress_minute: "%{rows_remaining} rows remain, about %{time_remaining} minute."
+        rendering_progress_minutes: "%{rows_remaining} rows remain, about %{time_remaining} minutes."
+        rendering_progress_seconds: "%{rows_remaining} rows remain, about %{time_remaining} seconds."
         resume_rendering: Resume
       zero_only_data: No values greater than zero
     common:
@@ -192,7 +414,7 @@ en:
           email: Email
           facebook: Facebook
           twitter: Twitter
-        share_text: ! 'Check out the %{name}, dataset on %{site}: '
+        share_text: 'Check out the %{name}, dataset on %{site}: '
       sidebar:
         tabs:
           about: About This Dataset
@@ -207,7 +429,7 @@ en:
           moreViews: More Views
           visualize: Visualize
       stars:
-        tooltip: ! '%{number} stars'
+        tooltip: "%{number} stars"
       visualization:
         in_bing: View in Bing Maps
         in_google: View in Google Maps
@@ -272,7 +494,7 @@ en:
         last_item: View last item
         next_item_page: View next %{count} items
         no_results: There are no items to display
-        user_create_action: ! 'created a %{thing}:'
+        user_create_action: 'created a %{thing}:'
       types:
         all items: all items
         comments: comments
@@ -284,9 +506,9 @@ en:
         first_condition: Click here to add your first filter condition
         new_condition_button: Add a New Filter Condition
         remove_filter: Remove filter
-        select_column: ! 'Select a column to filter by:'
-        select_operation: ! 'Select an operation to filter by:'
-        select_subcolumn: ! 'Select the part of %{name} to filter by:'
+        select_column: 'Select a column to filter by:'
+        select_operation: 'Select an operation to filter by:'
+        select_subcolumn: 'Select the part of %{name} to filter by:'
       edit_default:
         advanced_body: This means that they will have full access to the options available on the filter. For a more curated experience, you can try the simplified mode.
         advanced_header: Users will start in advanced mode.
@@ -294,10 +516,10 @@ en:
         auto_suggested: Suggested values are determined automatically for this operator type.
         cancel_button: Cancel
         done_button: Done
-        instructions: ! 'Use the tools above to create filters, adjust presented values, select the number of automatically suggested values the filter will attempt to present, and so on. When you are satisfied with the options being presented, click on Done below to save it:'
+        instructions: 'Use the tools above to create filters, adjust presented values, select the number of automatically suggested values the filter will attempt to present, and so on. When you are satisfied with the options being presented, click on Done below to save it:'
         manual_suggested_html: Show up to <select id="autogeneratedCount" class="autogeneratedCount"></select> suggested values
         mode_button: Edit Default Filter
-        mode_message: ! 'As a publisher of this view, you may define the default set of filters visitors will be presented with:'
+        mode_message: 'As a publisher of this view, you may define the default set of filters visitors will be presented with:'
         save_confirm: You will lose any unsaved changes if you choose to continue. Please save any changes you wish to keep before proceeding.
         simplified_body: This means that they will be unable to add new conditions, change the columns or operators of filters, or access the advanced menus on filters.
         simplified_header: Users will start in simplified mode.
@@ -340,9 +562,9 @@ en:
       delete_warning_single_column: Do you want to delete the selected column? All data in this column will be removed!
       edit_column_properties: Edit Column Properties
       errors:
+        cannot_edit_at_this_time: The column cannot be edited at this moment. Please try again later.
         primary_key_collision: This value already exists as a primary key. You may not overwrite it.
         row_locked_for_edit: Presently, we cannot edit a just-created row. We are working to make that possible. For now, refresh the page before editing this row.
-        cannot_edit_at_this_time: The column cannot be edited at this moment. Please try again later.
       filter_this_column: Filter This Column
       geocodes_pending: Rows in the location column are still geocoding. Please wait until they are finished to publish this dataset
       hide_column: Hide Column
@@ -382,7 +604,7 @@ en:
       heatmap_ie8_warning: Raster Heat Maps do not work in your current browser. Please upgrade to IE9, use Google Chrome or Mozilla Firefox. Thank you.
       loading: Loading...
       map_legend: Map Legend
-      multiple_layer_instructions: ! 'There is data for more than one layer here. Select one:'
+      multiple_layer_instructions: 'There is data for more than one layer here. Select one:'
       next: Next
       next_row: Next row
       no_columns_defined: No columns defined
@@ -392,7 +614,7 @@ en:
       request_timed_out: Request for this data timed out.
     nominate:
       all: All
-      approve: (Approve)
+      approve: "(Approve)"
       approve_tip: Approve this suggestion
       approved: Approved
       attachment: Attachment
@@ -410,7 +632,7 @@ en:
       description: Description
       description_prompt: Enter details about your suggestion
       details: Details
-      edit: (Edit)
+      edit: "(Edit)"
       edit_suggestion: Edit this suggestion
       files: Files
       filter_by_status: Filter by Status
@@ -419,7 +641,7 @@ en:
       greater_success: Your message has been sent to the suggestion author.
       message: Message
       message_prompt: Enter your message
-      moderate: (Moderate)
+      moderate: "(Moderate)"
       moderate_error: Error changing status
       moderate_tip: Accept this suggestion and open it up for voting
       needs_moderation: Needs Moderation
@@ -430,10 +652,10 @@ en:
       rate_up: I like it
       rating: Rating
       rating_error: Error rating suggestion
-      reject: (Reject)
+      reject: "(Reject)"
       reject_tip: Reject this suggestion
       rejected: Rejected
-      remove: (Remove)
+      remove: "(Remove)"
       remove_tip: Remove this suggestion
       required: Required
       status: Status
@@ -451,9 +673,9 @@ en:
       title_file: Upload a File
       title_image: Upload a Image
       title_photo: Upload a Photo
-      to_upload_file: ! 'File to Upload:'
-      to_upload_image: ! 'Image to Upload:'
-      to_upload_photo: ! 'Photo to Upload:'
+      to_upload_file: 'File to Upload:'
+      to_upload_image: 'Image to Upload:'
+      to_upload_photo: 'Photo to Upload:'
       upload: Upload
   core:
     aggregates:
@@ -476,8 +698,10 @@ en:
       need_permission: You do not have permission to view this page
       too_many_tries: Too many login attempts for that login. Account temporarily disabled.
     browser_support:
-      message_html: ! 'This site is best viewed using a newer web browser. %{link_text}'
+      chrome: Chrome
+      internet_explorer: Internet Explorer
       link_text: Learn more.
+      message_html: This site is best viewed using a newer web browser. %{link_text}
     chart_types:
       area: Area Chart
       bar: Bar Chart
@@ -528,8 +752,8 @@ en:
       text: Plain Text
       url: Website URL
     date_time:
-      centuries_future: ! '%{time} centuries from now'
-      centuries_past: ! '%{time} centuries ago'
+      centuries_future: "%{time} centuries from now"
+      centuries_past: "%{time} centuries ago"
       current_century_future: this century
       current_century_past: this century
       current_day_future: today
@@ -544,14 +768,14 @@ en:
       current_week_past: this week
       current_year_future: this year
       current_year_past: this year
-      days_future: ! '%{time} days from now'
-      days_past: ! '%{time} days ago'
-      hours_future: ! '%{time} hours from now'
-      hours_past: ! '%{time} hours ago'
-      minutes_future: ! '%{time} minutes from now'
-      minutes_past: ! '%{time} minutes ago'
-      months_future: ! '%{time} months from now'
-      months_past: ! '%{time} months ago'
+      days_future: "%{time} days from now"
+      days_past: "%{time} days ago"
+      hours_future: "%{time} hours from now"
+      hours_past: "%{time} hours ago"
+      minutes_future: "%{time} minutes from now"
+      minutes_past: "%{time} minutes ago"
+      months_future: "%{time} months from now"
+      months_past: "%{time} months ago"
       single_century_future: a century from now
       single_century_past: a century ago
       single_day_future: tomorrow
@@ -567,10 +791,10 @@ en:
       single_year_future: next year
       single_year_past: last year
       unknown: some time
-      weeks_future: ! '%{time} weeks from now'
-      weeks_past: ! '%{time} weeks ago'
-      years_future: ! '%{time} years from now'
-      years_past: ! '%{time} years ago'
+      weeks_future: "%{time} weeks from now"
+      weeks_past: "%{time} weeks ago"
+      years_future: "%{time} years from now"
+      years_past: "%{time} years ago"
     dialogs:
       apply: Apply
       cancel: Cancel
@@ -678,11 +902,11 @@ en:
       page: page
       previous_page: Previous Page
     precision_style:
-      currency: "Currency: $1020.40"
-      financial: "Financial: (1020.40)"
-      percentage: "Percent: 1020.40%"
-      scientific: "Scientific: 1.0204e+3"
-      standard: "Standard: 1020.4"
+      currency: 'Currency: $1020.40'
+      financial: 'Financial: (1020.40)'
+      percentage: 'Percent: 1020.40%'
+      scientific: 'Scientific: 1.0204e+3'
+      standard: 'Standard: 1020.4'
     required: Required
     share_types:
       contributor: Contributor
@@ -718,18 +942,18 @@ en:
       grouped: grouped view
       href: external dataset
       map: map
+      new_view: Data Lens page
       table: table
       working_copy: working copy
-      new_view: Data Lens page
     view_types_plural:
       api: APIs
       calendar: Calendars
       chart: Charts
+      data_lens: Data Lenses
       filter: Filtered Views
       form: Forms
       grouped: Grouped Views
       map: Maps
-      data_lens: Data Lenses
     visibility:
       private: private
       public: public
@@ -758,13 +982,13 @@ en:
       remove: Remove this component
       share:
         email: Share via Email
-        email_contents: ! '%{dataset} on %{company}'
+        email_contents: "%{dataset} on %{company}"
         facebook: Share on Facebook
         share: Share
         subscribe: Subscribe via Email or RSS
         subscribe_text: Subscribe to Changes
         this_page: This page
-        tweet_contents: ! 'Check out %{dataset} on %{company}: %{url}'
+        tweet_contents: 'Check out %{dataset} on %{company}: %{url}'
         twitter: Share on Twitter
       visualization:
         exploreLink: Explore the data
@@ -826,7 +1050,7 @@ en:
       title: Page Settings
   date:
     abbr_month_names:
-    -
+    - 
     - Jan
     - Feb
     - Mar
@@ -841,14 +1065,14 @@ en:
     - Dec
   error:
     back: Back
-    error_site_unavailable:
-      title: Site Currently Unavailable
-      description: This Socrata-powered site is currently unavailable.
-      help_html: You can always check the status of Socrata at <a href="http://status.socrata.com">http://status.socrata.com</a> or check our twitter account at <a href="https://twitter.com/socrata">@socrata</a>.
     error_500:
       description_html: Please try again in a few moments, or <a href="http://support.socrata.com">report this error</a> with the details of what you were trying to do.
       somethings_wrong: Something's wrong!
       were_sorry: We're sorry, but there was a problem processing your request.
+    error_site_unavailable:
+      description: This Socrata-powered site is currently unavailable.
+      help_html: You can always check the status of Socrata at <a href="http://status.socrata.com">http://status.socrata.com</a> or check our twitter account at <a href="https://twitter.com/socrata">@socrata</a>.
+      title: Site Currently Unavailable
     not_acceptable_406:
       page_not_found: Page not found.
       were_sorry: We're really sorry, but the page you requested is not available in the requested format.
@@ -858,6 +1082,7 @@ en:
       page_not_found: Page not found.
       were_sorry: We're really sorry, but the page you requested cannot be found.
     permission_denied_403:
+      description_html: If you believe this to be an error, try logging out and back in as a different user <a href="/login">here</a>.
       no_permission: Error
       were_sorry: The current user doesn't have access to this Data Lens page.
     to_whence_you_came: to where you came from.
@@ -1040,7 +1265,7 @@ en:
       licensing: Licensing and Attribution
       links: Links
       meta: Meta
-      none: (none)
+      none: "(none)"
       permalink: Permalink
       permanent_links: Permanent Links
       permissions: Permissions
@@ -1080,13 +1305,13 @@ en:
         accept: Accept
         accepted: Accepted
         accepted_by: Accepted By
-        all: (all)
+        all: "(all)"
         dataset: Dataset
         flashes:
           accepted: Federation successfully accepted
           created: Federation successfully created
           deleted: Federation successfully deleted
-          invalid_domain: ! 'Could not create data federation: target domain is invalid'
+          invalid_domain: 'Could not create data federation: target domain is invalid'
           rejected: Federation successfully rejected
         list_domains: The following is a list of domains you may begin data federation with. Once you click publish, an administrator from the target domain must accept your request.
         no_domains: No available domains match %{name}.
@@ -1125,7 +1350,7 @@ en:
         feature_image: feature image
         filetype_error: Invalid file type. Please choose an image file
         flashes:
-          create_error: ! 'An error occurred during your request: %{error_message}'
+          create_error: 'An error occurred during your request: %{error_message}'
           delete_error: The story you attempted to delete does not exist.
           edit_error: The story you attempted to edit does not exist.
           edit_success: Your story has been saved
@@ -1165,7 +1390,7 @@ en:
         'false': false
         field_name: Field Name
         flashes:
-          cannot_move_field: ! 'Cannot move field named''%{name}'': not found'
+          cannot_move_field: 'Cannot move field named''%{name}'': not found'
           field_duplicated: You cannot create a duplicate field named '%{name}'
           field_name_required: Cannot create field without a name
           field_successful_create: Field Successfully Created
@@ -1206,9 +1431,9 @@ en:
         filter_by: Filter by
         flashes:
           accounts_created:
-            one: ! '%{count} account successfully created'
-            other: ! '%{count} accounts successfully created'
-          invalid_role: ! 'Invalid role specified for user creation: %{role}'
+            one: "%{count} account successfully created"
+            other: "%{count} accounts successfully created"
+          invalid_role: 'Invalid role specified for user creation: %{role}'
           no_email_addresses: No email addresses detected
           pending_permissions_removed: Pending permissions removed
           reenable_failed: There was an error enabling that user account.
@@ -1345,7 +1570,7 @@ en:
         privacy_settings: Privacy Settings
         private_explain: My data is <strong>private</strong>
         prompt: Please describe your data.
-        public_explain: ! 'My data is <strong>public</strong>: it can only be modified by me, but everyone can view it'
+        public_explain: 'My data is <strong>public</strong>: it can only be modified by me, but everyone can view it'
       processing: Processing...
       title: New Dataset
       upload_accessible: Upload a new dataset accessibly
@@ -1379,6 +1604,7 @@ en:
           underline: Underline
           undo: Undo
         full_screen: Toggle full screen
+        out_of_date: This dataset is out of date by %{age}
         publish_button: Publish Dataset
         publish_prompt: This dataset is a working copy and is not publicly available.  Once you have made the desired changes, this dataset should be published to make it publicly available.
         publish_rights: Only an owner or publisher can publish this dataset
@@ -1393,13 +1619,14 @@ en:
         share_facebook: Share on Facebook
         share_twitter: Share on Twitter
         snapshot_notice: This is a previously published version of the dataset. It is archived and cannot be modified.
-        snapshot_title:
+        snapshot_title: 
         snapshot_title_html: Snapshotted %{date}
         snapshot_unsavable: Snapshotted datasets and views cannot be created or modified
         subscribe: Subscribe to Changes
         subscribe_prompt: Subscribe via Email or RSS
         unpublished_unsavable: Changes to the data below are saved automatically. Filters and searches cannot be saved to a working copy of a dataset. Please create a view on a published dataset.
         unsaved_title: Unsaved View
+        up_to_date: This dataset is up-to-date as of %{current}
         view_published_html: View the published <span class="publishedName">dataset</span>
         view_type: View as a %{type}
         view_types:
@@ -1410,9 +1637,7 @@ en:
           page: single row
           table: table
         working_copy_notice: This is a copy of the dataset that allows you to make changes to it. It is not visible to others until you publish it.
-        working_copy_title: ! '[Working Copy]'
-        out_of_date: This dataset is out of date by %{age}
-        up_to_date: This dataset is up-to-date as of %{current}
+        working_copy_title: "[Working Copy]"
       blob:
         data_extraction: This data extraction tool or application is available via the link to the right
         download: Download
@@ -1423,7 +1648,7 @@ en:
           prompt_html: To download this file instead, %{click_here}.
         limited_download: This dataset is not tabular data, and may have limited interactivity, but it is available for download
       column_tip:
-        aggregate: (%{aggregate} on %{data_type})
+        aggregate: "(%{aggregate} on %{data_type})"
         field_name: API field name
         original_name: Original Name
       dataset_contact:
@@ -1439,7 +1664,7 @@ en:
             offensive_content: Offensive Content
             other_purpose: Other
             personal_information: Personal Information
-            prompt: -- Select Purpose --
+            prompt: "-- Select Purpose --"
             spam: Spam or Junk
           send_button: Send
           subject: Subject
@@ -1465,8 +1690,8 @@ en:
         edit_dataset_button: Edit Dataset
         error_publishing_html: There was an error in publishing your dataset. Please <a href="http://support.socrata.com" rel="external">contact Socrata support</a>.
         error_publishing_unpublished: Only unpublished datasets can be published.
-        needs_copy: This dataset is published and cannot be edited directly. A working copy %{status} that allows you to make all your desired changes before making them publicly available.
         immutable: This dataset is read-only and can only be editing programmatically. Please see SODA 2 documentation for more details.
+        needs_copy: This dataset is published and cannot be edited directly. A working copy %{status} that allows you to make all your desired changes before making them publicly available.
         needs_copy_status:
           available: is available
           can_be_made: can be made
@@ -1474,8 +1699,8 @@ en:
         add_email: Add More
         email_button: Email
         message_prompt: Enter an optional message
-        private_notice: ! 'Notice: This %{displayName} is currently private. Emailing will grant access to all recipients.'
-        prompt_html: ! 'Share <span class="datasetName">%{name}</span> with the following email addresses:'
+        private_notice: 'Notice: This %{displayName} is currently private. Emailing will grant access to all recipients.'
+        prompt_html: 'Share <span class="datasetName">%{name}</span> with the following email addresses:'
         remove_email: Remove
         success: Your email has been successfully sent.
         title_html: Share &quot;<span class="datasetName">%{name}</span>&quot;
@@ -1506,10 +1731,10 @@ en:
           validation:
             view_column: You cannot add a column to a view
         api:
-          api_docs: 'API Docs'
-          column_ids_title: ! 'Field Names:'
-          developer_portal: 'Developer Portal'
-          endpoint_title: ! 'API Endpoint:'
+          api_docs: API Docs
+          column_ids_title: 'Field Names:'
+          developer_portal: Developer Portal
+          endpoint_title: 'API Endpoint:'
           intro_html: The <a href="http://dev.socrata.com/">Socrata Open Data API (SODA)</a> provides programmatic access to this dataset including the ability to <a href="http://dev.socrata.com/docs/filtering.html">filter</a>, <a href="http://dev.socrata.com/docs/queries.html">query</a>, and <a href="http://dev.socrata.com/docs/aggregation.html">aggregate</a> data. For more more information, view the <a href="%{view_foundry_url}">API docs for this dataset</a> or visit our <a href="http://dev.socrata.com">developer portal</a>
           reference_html: To start accessing this dataset programmatically, use the API endpoint provided below. For more information and examples on how to use the Socrata Open Data API, reference our <a href="http://dev.socrata.com" rel="external">Developer Documentation</a>.
           subtitle: Access this %{view_type} via SODA
@@ -1519,8 +1744,8 @@ en:
           create_button_prompt: Create an Application Programming Interface (API) to grant programmatic access to this data.
           manage_button: Manage
           manage_button_prompt: Manage the selected API
-          prompt_existing_html: <strong>Existing APIs</strong> can be customized. You can control permissions, set request limits, view usage metrics, and edit the documentation.
-          prompt_new_html: <strong>API Foundry</strong> allows you to create and configure one or more open, standards-based Application Programming Interfaces (API) for this dataset.
+          prompt_existing_html: "<strong>Existing APIs</strong> can be customized. You can control permissions, set request limits, view usage metrics, and edit the documentation."
+          prompt_new_html: "<strong>API Foundry</strong> allows you to create and configure one or more open, standards-based Application Programming Interfaces (API) for this dataset."
           subtitle: Create and Customize an API
           title: APIs
         append_replace:
@@ -1546,7 +1771,7 @@ en:
           column_select:
             auto: Auto
             from_grid: Select a column from the grid
-            none: (none)
+            none: "(none)"
             none_selected: No column selected
             nonselectable: Invalid Columns
             prompt: Select a column
@@ -1580,7 +1805,7 @@ en:
           validation:
             at_least: Value must be at least %{value}
             different_value: You may not use this column twice
-            file_format: ! '%{format} file is required'
+            file_format: "%{format} file is required"
             identifier_format: Valid API identifier characters are lower case letters, digits and underscore.  It must start with a letter and cannot have consecutive underscores.
             invalid_url: This URL is not valid
             invalid_value: This value is invalid
@@ -1694,8 +1919,8 @@ en:
           min_angle: Min. Angle
           min_angle_html: Smallest Angle Displayed (&ordm;)
           names: Names
-          pie_other: ! 'Warning: %{chart_type} will aggregate distinct values (rows) past the %{row_limit}th into an Other category. Try creating a Roll Up or a filter which limits the number of values and then create a %{chart_type} of that.'
-          pie_truncate: ! 'Warning: %{chart_type} will truncate datasets with more than %{row_limit} distinct values (rows). Try creating a Roll Up or a filter which limits the number of values and then create a %{chart_type} of that.'
+          pie_other: 'Warning: %{chart_type} will aggregate distinct values (rows) past the %{row_limit}th into an Other category. Try creating a Roll Up or a filter which limits the number of values and then create a %{chart_type} of that.'
+          pie_truncate: 'Warning: %{chart_type} will truncate datasets with more than %{row_limit} distinct values (rows). Try creating a Roll Up or a filter which limits the number of values and then create a %{chart_type} of that.'
           point_color: Point Color
           point_size: Point Size
           point_title: Title
@@ -1719,10 +1944,10 @@ en:
           title: Chart
           treemap_color_html: These colors are applied to the treemap randomly only for creating visual distinctions. They do not have a specific meaning by themselves.
           validation:
-            chart_requires: ! '%{chart_type} needs at least'
-            chart_requires2: ! '%{and} %{count} of the following column types:'
-            count: ! '%{count}'
-            required_columns: ! '%{chart_type} requires %{column_types} columns'
+            chart_requires: "%{chart_type} needs at least"
+            chart_requires2: "%{and} %{count} of the following column types:"
+            count: "%{count}"
+            required_columns: "%{chart_type} requires %{column_types} columns"
             viz_limit: A view may only have one visualization on it
           value: Value
           valueInBar: Value in Bar
@@ -1794,7 +2019,7 @@ en:
           money:
             abbreviated: Abbreviated
             currency: Currency
-            format_mask_warning:
+            format_mask_warning: 
             no_precision: None
             precision: Precision
             title: Money Formatting
@@ -1810,7 +2035,7 @@ en:
             title: Number Formatting
           number_advanced:
             format_mask: Format Mask
-            format_mask_prompt: ! 'Use #s to indicate numeric digits, and other characters where you want them to go; for example a social security number would be ###-##-####'
+            format_mask_prompt: 'Use #s to indicate numeric digits, and other characters where you want them to go; for example a social security number would be ###-##-####'
             format_mask_warning: This may override some of your settings above.
             title: Advanced Formatting
           photo:
@@ -1842,7 +2067,7 @@ en:
             item:
               operator: Select a comparison
               subcolumn: Select a sub-column
-              title: ! 'Condition:'
+              title: 'Condition:'
             new_condition_button: Add Condition
             new_rule_button: Add New Rule
             title: Conditions
@@ -1880,10 +2105,10 @@ en:
             non_tabular: Only tabular data may be printed
         download:
           download_as: Download As
+          download_dataset: Please download the dataset from which this view is derived.
           geo_header: Download Geospatial Data
           layers_header: Download without Geospatial Data
           subtitle: Download a copy of this dataset in a static format
-          download_dataset: Please download the dataset from which this view is derived.
           title: Download
         feed:
           subtitle: The discussion feed shows you the conversation and activity around a dataset
@@ -1978,7 +2203,7 @@ en:
             location_column: A location column is required to create a map.
             viz_limit: A view may only have one visualization on it
         odata:
-          endpoint_action: ! 'Copy this link:'
+          endpoint_action: 'Copy this link:'
           intro_html1: Create a spreadsheet in Microsoft Excel to analyze or visualize this dataset. By using an OData link, the data will be refreshable.
           intro_html2: Use Microsoft Excel 2010, Microsoft Excel 2013 or Microsoft Power Query. Follow the instructions here, using <a href="%{doc_link}">Socrata's OData documentation</a>.
           subtitle: Access this dataset via OData
@@ -2007,21 +2232,21 @@ en:
             valid_saved: This view must be valid and saved
         print:
           margins:
-            bottom: ! 'Bottom:'
-            left: ! 'Left:'
-            right: ! 'Right:'
-            top: ! 'Top:'
-          margins_title: ! 'Margins (inches):'
+            bottom: 'Bottom:'
+            left: 'Left:'
+            right: 'Right:'
+            top: 'Top:'
+          margins_title: 'Margins (inches):'
           options:
             fit: Shrink to fit dataset on one page
             header_icons: Display icons in column header
             headers_every_page: Print column titles on each page
-          options_title: ! 'Options:'
-          orientation: ! 'Orientation:'
+          options_title: 'Options:'
+          orientation: 'Orientation:'
           orientations:
             landscape: Landscape
             portrait: Portrait
-          paper_size: ! 'Paper Size:'
+          paper_size: 'Paper Size:'
           paper_sizes:
             a0: A0 (841 x 1189mm)
             a1: A1 (594 x 841mm)
@@ -2108,7 +2333,7 @@ en:
             delete: Delete this view
             expand: Click to expand
           no_results: There are no results
-          no_results_html:
+          no_results_html: 
           pagination:
             last: See last view
             next: See next %{count} views
@@ -2127,20 +2352,20 @@ en:
             title: Views
         visualize:
           choose_type: Visualization Type
+      new_ux_button: Show Me
       new_ux_creating_page: The new Data Lens page is being created and analyzed
       new_ux_error: A preview is not available for this dataset.
-      new_ux_title: Ready to visually explore?
-      new_ux_text: See this data in the new Data Lens experience
-      new_ux_button: Show Me
+      new_ux_link: Try this dataset in our new data exploration tool (beta)
       new_ux_nbe_warning: 'Internal Only: Old UX view of New Backend dataset. Ordinary users would have been redirected to %{url}'
-      unable_to_find_dataset_page: 'We were unable to find a Data Lens page for this dataset.'
+      new_ux_text: See this data in the new Data Lens experience
+      new_ux_title: Ready to visually explore?
       save_dialog:
         descriptions:
           leaving: You have unsaved data that will be lost if you leave this page. Please choose whether or not you wish to save this view before you leave; or choose Cancel to return to the page.
           reload_save: This change requires a reload. You may Save your changes to view them, or Cancel to stay on this page.
           reload_update: This change requires a reload. You may Update this view or Save a new view to see your changes, or Cancel to stay on this page.
         form:
-          new_name: ! 'Enter a name for your new view:'
+          new_name: 'Enter a name for your new view:'
         titles:
           normal: Save view
           prompt: Do you want to save your view?
@@ -2151,14 +2376,15 @@ en:
         remove_confirm: Are you sure you want to remove this view?
         unpublished_alert: This dataset is not yet published to allow you to make any necessary changes before making it available to everyone. It will not be visible until you publish this dataset.
       subscribe:
-        intro_html: ! '<strong>To subscribe to the <span class="datasetName">%{name}</span> dataset via an RSS reader</strong>, use one of the following links:'
+        intro_html: '<strong>To subscribe to the <span class="datasetName">%{name}</span> dataset via an RSS reader</strong>, use one of the following links:'
         rss: Download as RSS
         rss_program: Open in External Program
         subscribe_button: Subscribe via Email
-        subscribe_html: <strong>To receive email notifications</strong> when new data is published, check the Subscribe box below.
+        subscribe_html: "<strong>To receive email notifications</strong> when new data is published, check the Subscribe box below."
         subscribed_html: <strong>You are currently subscribed to this <span class="datasetTypeName">dataset</span> via email</strong>, and will receive notifications when new data is published.
         title_html: Subscribe to the &quot;<span class="datasetName">%{name}</span>&quot; <span class="datasetTypeNameUpcase">Dataset</span>
         unsubscribe: If you no longer wish to receive notifications, uncheck the Subscribe box below.
+      unable_to_find_dataset_page: We were unable to find a Data Lens page for this dataset.
     edit_metadata:
       about: About
       additional_source: Additional Source
@@ -2203,7 +2429,7 @@ en:
       list: List
       metadata_help: This field has been marked private by your organization and is not publicly viewable
       new_attachment: New Attachment
-      none: (none)
+      none: "(none)"
       northwest_latitude: Northwest Latitude
       northwest_longitude: Northwest Longitude
       optional: Optional
@@ -2235,7 +2461,7 @@ en:
       upload_image: Upload Image
       upload_new_attachment: Upload New Attachment
     forgot_password:
-      already_authenticated: ! 'Unable to reset password: you are already logged in.'
+      already_authenticated: 'Unable to reset password: you are already logged in.'
       failed: There was a problem submitting your password reset request. Please try again.
       form:
         reset_password_button: Reset Password
@@ -2253,7 +2479,7 @@ en:
       city: City
       column: Column
       combine_multiple_columns: Combine Multiple Columns
-      create_composite: ! 'Create one column out of many source columns:'
+      create_composite: 'Create one column out of many source columns:'
       create_js_expression: How do I create a custom Javascript expression?
       custom_javascript: Custom Javascript Expression...
       enter_custom: Enter a custom value
@@ -2270,7 +2496,7 @@ en:
       make_title_case: Make Title Case
       make_upper_case: Make UPPERCASE
       name_this_column: Name this column
-      new_layer: (New Layer)
+      new_layer: "(New Layer)"
       new_source_col: Add new source column
       new_transform: Add new transform
       options: Options
@@ -2282,27 +2508,27 @@ en:
       street: Street
       then: then
       to_state_code: Convert states to 2-letter codes
-      transforms: ! 'Perform the following transformation upon import:'
+      transforms: 'Perform the following transformation upon import:'
       zip: Zip
     import_pane:
       analyzing: Analyzing your file...
       assure_accessible: Please ensure that your file is accessible and valid and try again.
-      bytes_imported: ! '%{num} bytes imported so far.'
-      combine_multiple_cols: (Combine Multiple Columns...)
+      bytes_imported: "%{num} bytes imported so far."
+      combine_multiple_cols: "(Combine Multiple Columns...)"
       downloading: Downloading your file...
       filetype_error_blist: Please choose a CSV, TSV, XLS, or XLSX file.
       filetype_error_shapefile: Please choose a KML, KMZ, or ZIP file.
       headline_import: Please choose a file to import
       headline_upload: Please choose a file to upload
       layer: Layer
-      many_headers: ! '%{num} of your rows are headers.'
+      many_headers: "%{num} of your rows are headers."
       no_file_selected: No file selected yet.
       no_headers: None of your rows are headers.
-      no_source_column: (No Source Column)
+      no_source_column: "(No Source Column)"
       one_header: One of your rows is a header.
       problem_importing: There was a problem importing that file. Please make sure it is valid.
       problem_uploading: There was a problem uploading that file. Please make sure it is valid.
-      rows_imported: ! '%{num} rows imported so far.'
+      rows_imported: "%{num} rows imported so far."
       try_again: Please try again in a bit.
       unknown_error: An unknown error has occurred
       uploading: Uploading your file
@@ -2322,7 +2548,7 @@ en:
           website: Website
         manage_link: Manage
         no_applications: You have not created any applications yet. Click 'Manage' on the right to get started
-        title: ! '%{user}''s Applications'
+        title: "%{user}'s Applications"
       bar:
         edit_settings_link: Edit Account Settings
         follow_link: Follow
@@ -2333,7 +2559,7 @@ en:
       browse:
         owned_datasets: Owned By Me
         shared_datasets: Shared To Me
-        title: ! '%{user}''s Datasets'
+        title: "%{user}'s Datasets"
       contact:
         message: Message
         message_prompt: Enter your message
@@ -2356,9 +2582,9 @@ en:
               nomination_moderated: Any nomination is moderated
               privileged_account_created: A user creates their privileged account
               user_affected: Actions directly affecting you, such as comment replies and status updates
-              view_made_public: Any view is made public
               view_deleted: Any view is deleted
-            policy: ! '%{site} respects your privacy, and will never send you marketing emails through this list, or give your email to a third party. The emails sent from this site include account notifications and updates to datasets that you have created or subscribed to.'
+              view_made_public: Any view is made public
+            policy: "%{site} respects your privacy, and will never send you marketing emails through this list, or give your email to a third party. The emails sent from this site include account notifications and updates to datasets that you have created or subscribed to."
             send_error: There was a problem sending your email. Please try again later.
             send_success: Your message has been sent
             subtitle: Subscribe to individual events by checking the associated box.
@@ -2369,7 +2595,7 @@ en:
           no_openid: You have no OpenID identifiers associated with this account yet.
           old_password: Old Password
           password: Password
-          password_prompt: (For your security)
+          password_prompt: "(For your security)"
           password_restrictions_html: (Restrictions apply <span class="icon">&nbsp;</span>)
           title: Account Settings
         app_tokens:
@@ -2378,10 +2604,13 @@ en:
           callback_prefix: Callback Prefix
           callback_prefix_help_html: For instance, if your application will call back to <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> and <span class="code">https://my-domain.com/socrata-app/profile</span>, you'll want to supply <span class="code">https://my-domain.com/socrata-app</span> as your prefix. Note that you must include at least the entire domain name.
           callback_prefix_prompt: Provide the prefix to the secure (https) callback uri when using OAuth
-          create_error: ! 'An error occured creating your application token: %{message}'
+          core_error:
+            already_exists: There already exists an application named %{app_name}
+            another_user: Cannot create an application for another user
+          create_error: 'An error occured creating your application token: %{message}'
           create_success: Your application has been created
           delete_confirm: Are you sure you want to delete this application? The corresponding app_token will no longer be valid
-          delete_error: ! 'An error occured deleting your application token: %{message}'
+          delete_error: 'An error occured deleting your application token: %{message}'
           delete_success: Your application has been deleted
           description: Description
           description_prompt: Enter a description for your application
@@ -2398,7 +2627,7 @@ en:
           website_prompt: Provide a link to this application or organization's website
         back_link: Back to My Profile
         image:
-          error: ! 'Error uploading new image: %{message}'
+          error: 'Error uploading new image: %{message}'
           success: Your image has been updated
           title: Profile Image
           upload_image_button: Upload New Image
@@ -2425,7 +2654,7 @@ en:
           email_mismatch: New emails do not match
           image_format: Please select a valid image type (PNG, JPG, or GIF)
           invalid_links: There was a problem updating your links. %{message}
-          no_display_name: ! 'Error: ''Display Name'' is required'
+          no_display_name: 'Error: ''Display Name'' is required'
           no_password_no_openid: You cannot remove all your OpenID identifiers before you set a password
           password_mismatch: New passwords do not match
           user_missing: This user cannot be found, or has been deleted.
@@ -2457,16 +2686,16 @@ en:
       success: Password successfully reset
       title: Reset Password
     sign_in:
+      auth0_intro: There are several ways you can sign in. If you haven't signed up for an account yet, choose the option that is most convenient for you. If you have, use the same option now.
+      back_to_sign_in_selection: <a class="login-back">Back to sign in options</a>
       failed: Unable to login with that email and password; please try again
       form:
         sign_in_button: Sign In
       headline: Sign In to %{site}
       mismatch: Passwords do not match; please try again
       prompt_html: <img src="/stylesheets/images/common/large_logo.png"> Sign in with your <strong>Socrata ID</strong>.
+      sign_in_with: "<strong>Sign in</strong> with %{provider}"
       tips_html: Use your Email and Password to sign into all <strong>Socrata powered</strong> sites.
-      auth0_intro: There are several ways you can sign in. If you haven't signed up for an account yet, choose the option that is most convenient for you. If you have, use the same option now.
-      sign_in_with: <strong>Sign in</strong> with %{provider}
-      back_to_sign_in_selection: <a class="login-back">Back to sign in options</a>
     sign_up:
       form:
         create_account_button: Create My Account
@@ -2557,230 +2786,8 @@ en:
       previous: Previous
   support:
     array:
-      last_word_connector: ! ', and '
-      two_words_connector: ! ' and '
+      last_word_connector: ", and "
+      two_words_connector: " and "
     array_or:
-      last_word_connector: ! ', or '
-      two_words_connector: ! ' or '
-  angular:
-    dataCards:
-      common:
-        cancel: Cancel
-        change: Change
-        done: Done
-        download: Download
-        downloading: Downloading
-        error: Error
-        no_value: No value
-        ok: OK
-        latitude: Latitude
-        longitude: Longitude
-        errors:
-          map_render_error: An error was encountered when trying to render this map.
-          invalid_card: Invalid Card Visualization
-          export_visualization_disabled: This visualization is not available<br/>for image export
-        permissions:
-          permissions: Permissions
-          public: Public
-          private: Private
-        cards:
-          timeline_chart: Timeline Chart
-          search_card: Search Card
-          feature_map: Feature Map
-          column_chart: Column Chart
-          distribution_chart: Distribution Chart
-          choropleth: Choropleth
-      page_header:
-        sign_in: Sign In
-        sign_out: Sign Out
-        sign_up: Sign Up
-        logo: Logo
-      metadata:
-        page_name_placeholder: Untitled
-        edit_description_prompt: Give your page a good description that helps people understand the story your data is trying to tell. (Optional)
-        source_dataset: source dataset
-        data_as_csv: Full source data as CSV (Excel)
-        visualization_as_image: Visualization as image
-        visualization_as_image_disabled_flyout: Please save the page in order to download a visualization as an image
-        validation_error_min_length: Please enter a title
-        validation_error_max_length: Your title is too long
-        validation_error_required: Please enter a title
-      lens_type:
-        official: official data lens
-        community: community data lens
-      manage_lens_dialog:
-        title: Manage
-        dataset_public_page_public: This page and its source dataset are both <b>Public</b>, so anyone will be able to see this page and it will appear in the public catalog.
-        dataset_public_page_private: This page is set to <b>Private</b>, so only those with privileged access will be able to see it. It will not appear in the public catalog.
-        dataset_private_page_private: Because this page’s source dataset is set to <b>Private</b>, this page cannot be made Public.  Only those with privileged access will be able to see it, and it will not appear in the public catalog.
-        dataset_private_page_public: <span class="icon-warning"></span> This page’s source dataset is set to <b>Private</b>, so even though this page is set to Public, anyone without access to the source dataset will not be able to see it. It will still appear in the public catalog. You should consider setting the dataset to Public, or setting this page to Private.
-      save_button:
-        saving: Saving...
-        saved: Saved!
-        failed: Failed
-        flyoutIdle: Click to save your changes
-        flyoutNoChanges: No changes to be saved
-        flyoutFailedTitle: An error occurred
-        flyoutFailedBody: Please contact Socrata Support
-        flyoutNoChanges: No changes to be saved
-      related_views:
-        title: Other views of this data
-      api_explorer:
-        title: API
-        api_button: API
-        api_button_title: Access this Dataset via API
-        url: "You can access this data via the Socrata Open Data API at this URL:"
-        formats: "This data is available in several formats:"
-        json: JSON
-        geojson: GeoJSON
-        additional_resources: "Additional resources for this API:"
-        documentation: Documentation
-        documentation_title: View API documentation
-        code_libraries: Code Libraries
-        code_libraries_title: Download API clients from the Code Library
-      customize_bar:
-        customizing: Customizing
-        customize: Customize
-        changes_warning: You have made changes to this page.
-        collapse_card: "To enter customization mode: Collapse the big card using the arrows in its top right corner"
-        exit_visualization_export: 'To enter customization mode: Exit "Download Visualization as Image" mode by clicking the cancel button in the Info Pane'
-        customizing_flyout: You are now customizing this page
-        customizing_flyout_instructions: You can click this button at any time to preview your changes, and save them at any time
-        customize_flyout: Click to customize the layout or display of this page
-      revert_button:
-        text: Revert Changes
-        flyoutHasChanges: Click to undo all changes since you last saved
-        flyoutNoChanges: No changes to be reverted
-      save_as:
-        text: Save As
-        flyoutIdle: Click to save your changes as a new page
-        flyoutNoChanges: No changes to be saved
-        flyoutFailedTitle: An error occurred
-        flyoutFailedBody: Please contact Socrata Support
-      save_as_panel:
-        title: Save As
-        new_name: Save the current page with a new name
-        description: Enter a description for your new page (optional)
-      flyout:
-        current_filter: Current Filter
-        total: Total
-        filtered_amount: Filtered amount
-        clear_filter: Clear filter
-        clear_filter_long: The page is currently filtered by this value, click to clear it
-        clear_range_filter_long: The page is currently filtered by this selection, click to clear it
-        expand: Click to expand
-        details: Click to see details
-      timeline_chart:
-        drag_help: Drag to change filter range
-        drag_clear_help: Clear filter range
-        errors:
-          no_data: Chart cannot be rendered with no values.
-          bad_dates: Chart cannot be rendered due to invalid date values.
-          default: Chart cannot be rendered.
-      distribution_chart:
-        drag_help: Drag to change filter range
-        drag_clear_help: Clear filter range
-        errors:
-          no_data: There is no data to display.
-          error: An error was encountered when trying to render this card.
-      feature_map:
-        zoom_disabled: Zoom is temporarily unavailable. Please try again later.
-      add_card_dialog:
-        choose_column: Choose a column...
-        add_this_card: Add this card
-        card_on_page: Card already on page
-        card_on_page_long: This card is already on the page
-        not_supported: Not currently supported
-        not_supported_long: This card type is currently unsupported
-        prompt: Choose a column from the dropdown above to add a new card
-        customize_prompt: Customize this card
-        settings: Settings
-        add_card: Add card
-        column_chart_warning: "Note: This would result in a barchart with over a hundred bars, it might be slower than other charts"
-        visualize_flyout: Visualize this column as a {0}
-      customize_card_dialog:
-        visualization_options:
-          title: Card Type
-        map_layer:
-          title: Map base layer
-          standard: Standard
-          custom: Custom Map
-      aggregation_chooser:
-        title: Aggregation
-        description: "See data elements sized or colored by:"
-        information: by the
-        number_of: Number of
-        sum_of: Sum of
-        the_sum_of: The sum of
-        count_label: count {0} per element
-        sum_label: add for each {0}
-        option_disabled: This column cannot be used with a<br>number of aggregate
-        too_many_columns:
-          title: Looks like this dataset contains more than {0} number columns
-          message: At this time we are not able to provide summing as an aggregate for Data Lens pages that have more than {0} columns of type Number or Money.
-      card_layout:
-        add_card_here: Add card here
-      card_controls:
-        customize_enabled: Customize this card
-        customize_disabled: There are no customization options for this card yet
-        collapse_card: Collapse this card
-        expand_card: Expand this card
-        remove_card: Remove this card
-      search_card:
-        prompt_number: Type a number and press enter to search
-        prompt_text: Type some text and press enter to search
-        invalid_search: Try searching for a number containing no letters.
-        no_results: Your search returned no results. Check your spelling, or try a different term.
-        search_info: Showing {0} of {1} matching results
-        loading: Loading suggestions...
-        one_example: "Example: '{0}'"
-        two_examples: "Examples: '{0}' or '{1}'"
-      feedback_panel:
-        feedback: Feedback
-        screenshot_prompt: Do you want to include a screenshot in your feedback?
-        screenshot_description: With a screenshot you can show us exactly what you have feedback on. We are using <a href="https://usersnap.com" title="Visit UserSnap's homepage">UserSnap</a> for screenshots. Read their <a href="https://usersnap.com/privacy-policy" title="Read UserSnap's privacy policy">privacy policy</a>.
-        screenshot_yes: Yes, include a screenshot
-        screenshot_no: No thanks
-        like: I like this
-        missing: I'm missing a feature
-        broken: Something seems broken
-        other_option: Other
-      last_updated:
-        label: last updated
-      mobile_warning_dialog:
-        description: We're working on improving the mobile experience on this site.
-        acknowledgement: Okay, got it!
-      table:
-        loading: Loading...
-        no_rows: No rows to display
-        range_label: "{0} <strong>{1}-{2} out of {3}</strong>"
-        range_label_subtitle: 'Showing {0} {1} <span class="subtitle">out of {2}</span>'
-        range_label_all: Showing all {0} {1}
-        ascending: ascending
-        descending: descending
-        smallest_first: smallest first
-        largest_first: largest first
-        a_to_z: A-Z
-        z_to_a: Z-A
-        oldest_first: oldest first
-        newest_first: newest first
-        sorted: Sorted {0}
-        sort: Click to sort {0}
-      quick_filter_bar:
-        clear_all_flyout: Click to reset all filters
-        filter_title: 'Showing <span class="light">the {0}</span>'
-      filter:
-        where: where
-        and: and
-        is: is
-        is_not: is not
-        blank: blank
-        date_range: "{0} to {1}"
-        value_range: "{0} to {1}"
-      rich_text_editor:
-        bold: Bold
-        italic: Italic
-        underline: Underline
-        link: Link
-        insert_link: Insert link
-        link_placeholder: Enter a URL here
+      last_word_connector: ", or "
+      two_words_connector: " or "

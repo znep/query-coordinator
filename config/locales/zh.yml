@@ -38,6 +38,228 @@ zh:
       validation:
         mismatch: "密码不匹配"
         terms: "您必须接受服务条款及隐私政策。"
+  angular:
+    dataCards:
+      add_card_dialog:
+        add_card: "添加卡片"
+        add_this_card: "添加该卡片"
+        card_on_page: "卡片已在页面上"
+        card_on_page_long: "该卡片已在页面上"
+        choose_column: "选择一列"
+        column_chart_warning: "注意：这将产生一个超过一百条的柱状图，可能比其它图表慢"
+        customize_prompt: "自定义此卡片"
+        not_supported: "目前暂不支持"
+        not_supported_long: "目前暂不支持此卡片类型"
+        prompt: "从上面的下拉列表中选择一列添加新卡"
+        settings: "设置"
+        visualize_flyout: "显示此列为{0}"
+      aggregation_chooser:
+        count_label: "每个元素计{0}"
+        description: "查看大小或颜色如下的数据元素："
+        information: "按照"
+        number_of: "数量"
+        option_disabled: "此列不能与<BR>总数共用"
+        sum_label: "为每个{0}添加"
+        sum_of: "总数"
+        the_sum_of: "总数"
+        title: "汇总"
+        too_many_columns:
+          message: "目前我们无法为型数列或金钱列超过{0}的Data Lens页面提供数据汇总"
+          title: "貌似该数据集包含超过{0}个数列"
+      api_explorer:
+        additional_resources: "此API的其他资源："
+        api_button: API
+        api_button_title: "通过API访问数据集"
+        code_libraries: "代码库"
+        code_libraries_title: "从代码库下载API客户端"
+        documentation: "文档记录"
+        documentation_title: "查看API文档"
+        formats: "此数据有几种格式："
+        geojson: GeoJSON
+        json: JSON
+        title: API
+        url: "你可以通过此URL的Socrata开放数据API访问此数据："
+      card_controls:
+        collapse_card: "收起该开片"
+        customize_disabled: "此卡片还没有自定义选项"
+        customize_enabled: "自定义此卡片"
+        expand_card: "展开此开片"
+        remove_card: "删除此卡片"
+      card_layout:
+        add_card_here: "在此添加卡片"
+      common:
+        cancel: "取消"
+        cards:
+          choropleth: "等值线"
+          column_chart: "柱形图"
+          distribution_chart: "分布图"
+          feature_map: "特征映射"
+          search_card: "搜索卡片"
+          timeline_chart: "时间线图"
+        change: "修改"
+        done: "完成"
+        download: "下载"
+        downloading: "正在下载"
+        error: "错误"
+        errors:
+          export_visualization_disabled: "这种可视化是不可用于<br/>图像导出"
+          invalid_card: "无效的卡片可视化"
+          map_render_error: "尝试解析该地图时遇到错误。"
+        latitude: "纬度"
+        longitude: "经度"
+        no_value: "无数值"
+        ok: "好"
+        permissions:
+          permissions: "许可"
+          private: "隐私"
+          public: "公开"
+      customize_bar:
+        changes_warning: "你已更改此页面。"
+        collapse_card: "进入自定义模式：使用其右上角的箭头关闭大卡"
+        customize: "自定义"
+        customize_flyout: "自定义此页面的布局或显示"
+        customizing: "正在自定义"
+        customizing_flyout: "你正在自定义此页面"
+        customizing_flyout_instructions: "你可以随时点击此按钮预览你的修改并保存"
+        exit_visualization_export: "要进入自定义模式：点击点击信息窗格中的取消按钮退出“下载图形可视化”模式"
+      customize_card_dialog:
+        map_layer:
+          custom: "自定义地图"
+          standard: "标准"
+          title: "地图基底层"
+        visualization_options:
+          title: "卡片类型"
+      distribution_chart:
+        drag_clear_help: "清除过滤范围"
+        drag_help: "拖曳以改变过滤范围"
+        errors:
+          error: "尝试解析此卡片时遇到错误。"
+          no_data: "没有可显示的数据。"
+      feature_map:
+        zoom_disabled: "缩放功能暂不可用。请稍后再试。"
+      feedback_panel:
+        broken: "似乎出了故障"
+        feedback: "反馈"
+        like: "我喜欢这个"
+        missing: "我缺少一个功能"
+        other_option: "其他"
+        screenshot_description: 使用屏幕截图你可以向我们精确展示你在反馈什么问题。我们使用<a href="https://usersnap.com" title="Visit UserSnap's homepage">UserSnap</a>截取屏幕。请阅读他们的<a href="https://usersnap.com/privacy-policy" title="Read UserSnap's privacy policy">隐私政策</a>。
+        screenshot_no: "不了，谢谢"
+        screenshot_prompt: "你想在反馈中附加一张屏幕截图吗？"
+        screenshot_yes: "是的，附加一张屏幕截图"
+      filter:
+        and: "以及"
+        blank: "空白"
+        date_range: "{0}至{1}"
+        is: "是"
+        is_not: "不是"
+        value_range: "{0}至{1}"
+        where: "哪里"
+      flyout:
+        clear_filter: "清除过滤器"
+        clear_filter_long: "此页面当前由该值过滤，点击清除"
+        clear_range_filter_long: "此页面当前由该选项过滤，点击清除"
+        current_filter: "当前过滤器"
+        details: "点击查看详情"
+        expand: "点击展开"
+        filtered_amount: "过滤量"
+        total: "总计"
+      last_updated:
+        label: "最近更新"
+      lens_type:
+        community: "社区数据透镜"
+        official: "办公数据透镜"
+      manage_lens_dialog:
+        dataset_private_page_private: "鉴于此页面的源数据集被设为<b>隐私</b>，此页面不能公开。只有拥有访问特权的人可以看到此页面，并且不会出现在公共目录中。"
+        dataset_private_page_public: <span class="icon-warning"></span>此页面的源数据集被设为<b>隐私</b>，因此尽管此页面被设为公开，没有源数据集访问权限的任何人都无法看到该页面。它仍然会出现在公共目录中。你应该考虑将数据集设置为公开，或将本页面设置为隐私。
+        dataset_public_page_private: "此页面被设为<b>隐私</b>，因此只有拥有访问特权的人可以看到。它不会出现在公共目录中。"
+        dataset_public_page_public: "此页面及其源数据集均为<b>公开</b>，因此任何人都可以看到此页面并且它将出现在公共目录中。"
+        title: "管理"
+      metadata:
+        data_as_csv: "完整的源数据为CSV（Excel）"
+        edit_description_prompt: "给你的页面写一段好的介绍，帮助别人理解你的数据所讲述的故事。（可选）"
+        page_name_placeholder: "无标题"
+        source_dataset: "源数据集"
+        validation_error_max_length: "你的标题太长了"
+        validation_error_min_length: "请输入标题"
+        validation_error_required: "请输入标题"
+        visualization_as_image: "可视化此图片"
+        visualization_as_image_disabled_flyout: "请保存此页面以下载可视化图片"
+      mobile_warning_dialog:
+        acknowledgement: "好，明白了！"
+        description: "我们正在努力改善此网站的移动体验。"
+      page_header:
+        logo: "标志"
+        sign_in: "登录"
+        sign_out: "注销"
+        sign_up: "注册"
+      quick_filter_bar:
+        clear_all_flyout: "点击重设所有过滤器"
+        filter_title: 显示<span class="light">{0}</span>
+      related_views:
+        button: "此数据的其他视图"
+        title: "此数据的其他视图"
+      revert_button:
+        flyoutHasChanges: "点击撤销上次保存后所做的所有修改"
+        flyoutNoChanges: "没有要还原的修改"
+        text: "还原修改"
+      rich_text_editor:
+        bold: "粗体"
+        insert_link: "插入链接"
+        italic: "斜体"
+        link: "链接"
+        link_placeholder: "在此输入一个URL"
+        underline: "下划线"
+      save_as:
+        flyoutFailedBody: "请联系Socrata支持团队"
+        flyoutFailedTitle: "发生了一个错误"
+        flyoutIdle: "点击保存你的修改为新页面"
+        flyoutNoChanges: "没有要保存的修改"
+        text: "保存为"
+      save_as_panel:
+        description: "为你的页面输入一段说明（可选）"
+        new_name: "以新名称保存当前页面"
+        title: "保存为"
+      save_button:
+        failed: "失败"
+        flyoutFailedBody: "请联系Socrata支持团队"
+        flyoutFailedTitle: "发生了一个错误"
+        flyoutIdle: "点击保存你的修改"
+        flyoutNoChanges: "没有要保存的修改"
+        saved: "已保存！"
+        saving: "正在保存……"
+      search_card:
+        invalid_search: "尝试搜索不含字母的数字。"
+        loading: "加载建议……"
+        no_results: "没有搜到任何记录。请检查你的拼写，或尝试不同的词语。"
+        one_example: "例如：'{0}'"
+        prompt_number: "输入一个数字并按Enter键开始搜索"
+        prompt_text: "输入文本并按Enter键开始搜索"
+        search_info: "显示{0}搜索结果，共{1}条"
+        two_examples: "例如：'{0}'或'{1}'"
+      table:
+        a_to_z: A-Z
+        ascending: "升序"
+        descending: "降序"
+        largest_first: "最大者优先"
+        loading: "加载中……"
+        newest_first: "最新者优先"
+        no_rows: "没有可显示的行"
+        oldest_first: "最旧者优先"
+        range_label: "{0} <strong>{1}-{2}之{3}</strong>"
+        range_label_all: "显示所有{0} {1}"
+        range_label_subtitle: 显示{0} {1} <span class="subtitle">之{2}</span>
+        smallest_first: "最小者优先"
+        sort: "点击排序{0}"
+        sorted: "排序{0}"
+        z_to_a: Z-A
+      timeline_chart:
+        drag_clear_help: "清除过滤范围"
+        drag_help: "拖曳以改变过滤范围"
+        errors:
+          bad_dates: "无效的日期值，无法呈现图片。"
+          default: "无法呈现图表。"
+          no_data: "没有数值，无法呈现图表。"
   controls:
     browse:
       actions:
@@ -99,6 +321,10 @@ zh:
           forms: "表格"
           href: "外部数据集"
           maps: "地图"
+          new_view: "数据透镜页面"
+          new_view_help: "这是什么？"
+          story: "故事"
+          story_help: "了解故事"
           unpublished: "未发布的数据集"
         view_types_singular_title: "类型"
         view_types_title: "视图类型"
@@ -330,6 +556,10 @@ zh:
       delete_warning_multi_column: "您想删除选中的列吗？列中的数据将全部删除！"
       delete_warning_single_column: "您想删除选中的列吗？列中的数据将全部删除！"
       edit_column_properties: "编辑列属性"
+      errors:
+        cannot_edit_at_this_time: "目前无法编辑该列。请稍后再试。"
+        primary_key_collision: "此值是主键。你不能覆盖它。"
+        row_locked_for_edit: "现阶段，我们无法编辑刚刚创建的行。我们正努力实现该功能。目前，请在编辑该行前刷新页面。"
       filter_this_column: "对本列进行筛选"
       geocodes_pending: "在位置栏中的行仍在地理编码。请等待，直到完成以发布这一数据集"
       hide_column: "隐藏列"
@@ -463,10 +693,10 @@ zh:
       need_permission: "你没有权限查看此页"
       too_many_tries: "该登录尝试的登录次数过多。账户暂时停用。"
     browser_support:
-      chrome: 
-      internet_explorer: 
-      link_text: 
-      message_html: 
+      chrome: Chrome
+      internet_explorer: "网络浏览器"
+      link_text: "了解更多。"
+      message_html: "使用新版网页浏览器，获得最佳的网站浏览体验。%{link_text}"
     chart_types:
       area: "面积图"
       bar: "条形图"
@@ -512,6 +742,7 @@ zh:
       percent: "百分比"
       phone: "电话"
       photo: "照片（图像）"
+      point: "点"
       stars: "星号"
       text: "纯文本"
       url: "网址"
@@ -666,8 +897,11 @@ zh:
       page: "页"
       previous_page: "上一页"
     precision_style:
-      scientific: "科学: 1.0204e+3"
-      standard: "标准: 1020.4"
+      currency: "货币：$1020.40"
+      financial: "财务：(1020.40)"
+      percentage: "百分比：1020.40%"
+      scientific: "科学 (1.0204e+3)"
+      standard: "标准 (1020.4)"
     required: "必填"
     share_types:
       contributor: "参与者"
@@ -703,12 +937,14 @@ zh:
       grouped: "分组视图"
       href: "外部数据集"
       map: "地图"
+      new_view: "数据透镜页面"
       table: "表"
       working_copy: "工作副本"
     view_types_plural:
       api: API
       calendar: "日历"
       chart: "图表"
+      data_lens: "数据透镜"
       filter: "筛选视图"
       form: "表格"
       grouped: "分组视图"
@@ -749,13 +985,18 @@ zh:
         this_page: "该页"
         tweet_contents: "查看%{company}的%{dataset}： %{url}"
         twitter: "在Twitter分享"
+      visualization:
+        exploreLink: "探索数据"
+        exploreLink_prompt: "显示链接"
     configurator:
       actions_components: "操作"
       advanced_components: "高级组件"
       content_components: "内容"
       data_components: "数据"
       input_components: "输入"
+      redo_title: "没有可重做的"
       report_components: "报告组件"
+      undo_title: "没有可撤销的"
     context_picker:
       select_dataset: "选择数据集"
       view_data: "查看数据"
@@ -823,6 +1064,10 @@ zh:
       description_html: '请稍后再试，或者 <a href="http://support.socrata.com">报告这一错误</a> ，同时详细说明您进行的操作。 '
       somethings_wrong: "出错啦！"
       were_sorry: "很抱歉，处理您的请求时出错了。"
+    error_site_unavailable:
+      description: Socrata驱动的网站目前暂不可用。
+      help_html: 你可随时在<a href="http://status.socrata.com">http://status.socrata.com</a>或我们的twitter账户<a href="https://twitter.com/socrata">@socrata</a>上查看Socrata的状态。
+      title: "站点目前不可用"
     not_acceptable_406:
       page_not_found: "未找到页面。"
       were_sorry: "很抱歉，但是此页面没有您要求的格式。"
@@ -1244,6 +1489,7 @@ zh:
         supported: "支持的文件类型是CSV、TSV和Excel。支持的协议包括HTTP和HTTPS。"
         url_prompt: "你想导入的文件的站点URL是？"
       errors:
+        insecure_esri_url: "已添加一个不安全的ESRI地图图层URL。因此，某些功能对该数据集将不起作用。"
         invalid_crossload_url: "请输入一个HTTP或HTTPS开头的有效的URL。"
         invalid_url: "这似乎不是一个有效的URL。"
         missing_data_provider: "您必须指定Creative Commons许可中的数据提供者（归属）。"
@@ -1351,6 +1597,7 @@ zh:
           underline: "下划线"
           undo: "撤销"
         full_screen: "全屏显示开关"
+        out_of_date: "此数据集已过期%{age}"
         publish_button: "发布数据集"
         publish_prompt: "本数据集是工作副本，因此不对外公开。您完成所需的改动后，需要先发布数据集，其他人才能访问。"
         publish_rights: "只有所有者或发布者才能发布此数据集"
@@ -1372,6 +1619,7 @@ zh:
         subscribe_prompt: "通过电子邮件或RSS订阅"
         unpublished_unsavable: "自动保存对下面数据的改动。数据集的工作副本不能保存筛选和搜索条件。请创建已发布数据集的视图。"
         unsaved_title: "未保存的视图"
+        up_to_date: "截至%{current}，此数据为最新"
         view_published_html: 查看发布的<span class="publishedName">数据集</span>
         view_type: "查看格式：%{type}"
         view_types:
@@ -1434,7 +1682,8 @@ zh:
           queued: "正在等待处理 (queued %{time}; %{totalQueued} total in line)"
         edit_dataset_button: "编辑数据库"
         error_publishing_html: 复制数据集工作副本时出错。请<a href="http://support.socrata.com" rel="external">联系 Socrata 支持人员</a>。
-        error_publishing_unpublished: 
+        error_publishing_unpublished: "只能发布尚未发布的数据集。"
+        immutable: "此数据集为只读，只能通过编程来修改。请查阅SODA 2文档了解详情。"
         needs_copy: "此数据集已经发布，不能直接编辑。可以在工作副本上进行所需的改动，然后再对外公开，现在工作副本的状态是：%{status}"
         needs_copy_status:
           available: "已存在"
@@ -1475,7 +1724,9 @@ zh:
           validation:
             view_column: "不能在视图中添加列"
         api:
+          api_docs: API文档
           column_ids_title: "列编号："
+          developer_portal: "开发者门户"
           endpoint_title: API访问端点：
           intro_html: "借助<strong>Socrata 开放数据 API</strong> (SODA)，软件开发人员可以访问Socrata 数据网站上托管的数据，并对其进行编程操作。开发人员可创建使用SODA API的应用程序，用新鲜有趣的方式可视化、“混搭” Socrata数据集。您可以编制一个iPhone应用，可视化您所在地区的政府支出；开发一个网络应用程序，协助公民查看他们可能忽视了的政府福利；或者创建一项服务，一旦您想跟踪的支出项目又有新花销，就会收到自动的电子邮件通知。"
           reference_html: 使用下面提供的API端点，开始访问数据库，进行编程。更多有关如何使用Socrata 开放数据 API的信息及示例，请参考<a href="http://dev.socrata.com" rel="external">开发人员文档</a>。
@@ -1847,6 +2098,7 @@ zh:
             non_tabular: "只能打印列表数据"
         download:
           download_as: "下载格式"
+          download_dataset: "请从生成此视图的地方下载数据集。"
           geo_header: "下载地理空间数据"
           layers_header: "下载表格层"
           subtitle: "以静态格式下载此数据集"
@@ -1944,11 +2196,11 @@ zh:
             location_column: "必须有地点列才能创建地图。"
             viz_limit: "一个视图只能加载一种可视化操作"
         odata:
-          endpoint_action: 
-          intro_html1: 
-          intro_html2: 
-          subtitle: 
-          title: 
+          endpoint_action: "复制此链接："
+          intro_html1: "在Excel中创建一个电子表格来分析和可视化数据集。使用OData链接将刷新这些数据。"
+          intro_html2: 使用Microsoft Excel 2010、Microsoft Excel 2013或Microsoft Power Query。使用<a href="%{doc_link}">Socrata's OData文档</a>，遵循用户指南。
+          subtitle: "通过OData访问该数据集"
+          title: OData
         ownership:
           error: "变更所有权时出错。请稍后再试。"
           me: "我"
@@ -2093,6 +2345,13 @@ zh:
             title: "视图"
         visualize:
           choose_type: "可视化类型"
+      new_ux_button: "向我展示"
+      new_ux_creating_page: "正在创建和分析新的数据透镜页面"
+      new_ux_error: "此数据集无法使用预览功能。"
+      new_ux_link: "在我们新的数据探索工具（测试版）中试试这个数据集"
+      new_ux_nbe_warning: "仅限内部使用：新后端数据集的旧版UX视图。普通用户会被重定向到%{url}"
+      new_ux_text: "以新的数据透镜体验查看该数据"
+      new_ux_title: "准备好进行可视化探索了吗？"
       save_dialog:
         descriptions:
           leaving: "如果离开此页面，您未保存的数据将丢失。在离开前选择是否保存视图；或者选择“取消”返回页面。"
@@ -2118,6 +2377,7 @@ zh:
         subscribed_html: <strong>您现在通过电子邮件订阅了<span class="datasetTypeName">数据集</span></strong>，有新数据发布时您将收到通知。
         title_html: 订阅 "<span class="datasetName">%{name}</span>" <span class="datasetTypeNameUpcase">数据集</span>
         unsubscribe: "如果您不想收到通知，取消选中下面的订阅框。"
+      unable_to_find_dataset_page: "我们无法为该数据集找到一个数据透镜页面。"
     edit_metadata:
       about: "关于"
       additional_source: "其他资源"
@@ -2174,6 +2434,7 @@ zh:
       return: "返回数据集"
       row_class: "行类别"
       row_identifier: "行标识符"
+      row_identifier_help_text: "一旦视图发布，不可再修改行标识符。"
       save: "保存"
       save_changes: "保存更改"
       semantics_rdf: "语义和资源描述框架"
@@ -2245,6 +2506,7 @@ zh:
     import_pane:
       analyzing: "正在分析你的文件..."
       assure_accessible: "请确保你的文件可访问并有效，然后再试一次。"
+      bytes_imported: "目前已导入%{num}字节。"
       combine_multiple_cols: "（合并多个列...）"
       downloading: "正在下载你的文件..."
       filetype_error_blist: "请选择一个CSV、 TSV、XLS或 XLSX文件。"
@@ -2313,6 +2575,7 @@ zh:
               nomination_moderated: "审核所有提名"
               privileged_account_created: "用户创建了特权账户"
               user_affected: "直接对您产生影响的操作，如评论回复和状态更新"
+              view_deleted: "任何视图都删除"
               view_made_public: "有视图被公开"
             policy: "%{site} 尊重您的隐私权利，不会通过此处列表发送营销邮件，也不会把您的邮件地址提供给第三方。本网站所发邮件的内容涉及账户通知，以及您创建或订阅的数据集的更新。"
             send_error: "发送电子邮件时出现错误。请稍后再试。"
@@ -2334,6 +2597,9 @@ zh:
           callback_prefix: "回调前缀"
           callback_prefix_help_html: 例如，如果您的应用程序将回调到 <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> 和 <span class="code">https://my-domain.com/socrata-app/profile</span>，您需提供 <span class="code">https://my-domain.com/socrata-app</span> 作为前缀。注意，至少必须包括整个域名。
           callback_prefix_prompt: "提供在使用OAuth时前往安全(https) 回调 uri的前缀"
+          core_error:
+            already_exists: "已经存在一个名为%{app_name}的应用程序"
+            another_user: "无法为另一个用户创建应用程序"
           create_error: "创建应用程序令牌时出错：%{message}"
           create_success: "应用程序已创建"
           delete_confirm: "您确定要删除该应用程序吗？对应的app_token将不再有效"
@@ -2413,12 +2679,15 @@ zh:
       success: "密码已成功重置"
       title: "重置密码"
     sign_in:
+      auth0_intro: "你可以使用几种方式登录。如果你还没有注册账户，请选择你最方便的选项。如果你已经注册，现在请使用相同的选项。"
+      back_to_sign_in_selection: <a class="login-back">返回登录选项</a>
       failed: "无法通过该电子邮件和密码登录；请重试"
       form:
         sign_in_button: "登录"
       headline: "登录%{site}"
       mismatch: "密码不匹配；请重试"
       prompt_html: "使用 <strong>Socrata 用户名</strong>登录"
+      sign_in_with: "以%{provider}<strong>登录</strong>"
       tips_html: 使用您的电子邮件和密码登录所有使用<strong><a href="http://www.socrata.com" rel="external">Socrata</a> 技术</strong> 的网站。
     sign_up:
       form:

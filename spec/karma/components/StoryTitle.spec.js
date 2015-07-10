@@ -18,7 +18,6 @@ describe('StoryTitle jQuery plugin', function() {
     assert.throws(function() { node.storyTitle(undefined); });
     assert.throws(function() { node.storyTitle({}); });
     assert.throws(function() { node.storyTitle([]); });
-    assert.throws(function() { node.storyTitle(); });
   });
 
   describe('given a storyUid that does not correspond to a story', function() {

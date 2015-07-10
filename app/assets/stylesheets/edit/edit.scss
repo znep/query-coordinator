@@ -1,7 +1,8 @@
 @import '../base';
 
 html {  
-  font-size: 10px;
+  font-family: "Open Sans", "Helvetica", sans-serif;
+  font-size: 1em;
   overflow-y: scroll;
   min-width: 768px;
 }
@@ -26,6 +27,22 @@ body header {
   background-color: $header-bg-color;
   box-sizing: content-box;
   z-index: $site-header-z-index;
+  color: $header-fg-color;
+  border-left: 1em solid $header-fg-color;
+
+  .header-right {
+    display: inline-block;
+    float: right;
+    padding: 1em;
+  }
+
+  .story-title {
+    display: inline-block;
+    margin-left: $header-title-left-margin;
+    line-height: $header-height;
+    font-size: $header-title-height;
+    font-weight: bold;
+  }
 }
 
 .col1, .col2, .col3, .col4, .col5, .col6, .col7, .col8, .col9, .col10, .col11, .col12 {

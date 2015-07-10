@@ -492,19 +492,19 @@ $(function()
     $.live(
         '#create-story-button',
         'click',
-        createCreateNewStoryHandler(
+        generateCreateNewStoryHandler(
             $('#create-resource-dropdown')
         )
     );
     $.live(
         '#create-story-footer-button',
         'click',
-        createCreateNewStoryHandler(
+        generateCreateNewStoryHandler(
             $('#create-resource-footer-dropdown')
         )
     );
 
-    function createCreateNewStoryHandler($dropdownElement) {
+    function generateCreateNewStoryHandler($dropdownElement) {
 
         return function() {
 
@@ -551,7 +551,7 @@ $(function()
 
                 var newStoryName = (
                     'Untitled Story - ' +
-                    (new Date().format('m-d-Y')
+                    (new Date().format('m-d-Y'))
                 );
                 var newStoryData = {
                     name: newStoryName,

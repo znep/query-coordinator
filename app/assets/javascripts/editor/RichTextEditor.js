@@ -84,7 +84,7 @@
       _contentToPreload = contentToPreload;
     }
 
-    _editor = _createEditor();
+    _createEditor();
 
     /**
      * Public methods
@@ -101,6 +101,14 @@
     };
 
     this.setContent = function(content) {
+
+      if (_editor === null) {
+        // Our iframe hasn't loaded yet.
+        // Save the content so it is preloaded
+        // once the iframe loads.
+        _contentToPreload = content;
+        return;
+      }
 
       var contentIsDifferent = (
         _editor.getHTML().replace(/<br>/g, '') !==

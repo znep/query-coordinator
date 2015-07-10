@@ -3,7 +3,7 @@
 html {  
   font-family: "Open Sans", "Helvetica", sans-serif;
   font-size: 10px;
-  overflow-y: scroll;
+  overflow-y: auto;
   min-width: 768px;
 }
 
@@ -34,6 +34,17 @@ body header {
     display: inline-block;
     float: right;
     padding: $header-right-pane-padding;
+
+    .menu a {
+      $button-border-width: 5px;
+      border: $button-border-width solid transparent;
+      border-radius: 3px;
+      &.active {
+        border: $button-border-width solid $header-fg-color;
+        background: $header-fg-color;
+        color: $header-bg-color;
+      }
+    }
   }
 
   .story-title {
@@ -42,7 +53,6 @@ body header {
     line-height: $header-height;
     font-size: $header-title-height;
     font-weight: bold;
-    color: $header-fg-color;
   }
 }
 
@@ -57,6 +67,18 @@ body header {
   width: 50%;
   font-size: 2rem;
   margin: 0 auto;
+}
+
+ul.menu {
+  li, ul {
+    display: inline;
+    padding-right: 1em;
+  }
+}
+
+a[role="button"] {
+  text-decoration: none;
+  color: inherit;
 }
 
 .col1, .col2, .col3, .col4, .col5, .col6, .col7, .col8, .col9, .col10, .col11, .col12 {

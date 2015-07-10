@@ -3,22 +3,31 @@
 .inspiration-story-container {
   @include media-query-property(
     'width',
-    $main-content-width-small / 5,
-    $main-content-width-medium / 5,
-    $main-content-width-large / 5,
-    $main-content-width-extra-large / 5
+    $main-content-width-small / 4,
+    $main-content-width-medium / 4,
+    $main-content-width-large / 4,
+    $main-content-width-extra-large / 4
   );
   @include unselectable();
 
   position: fixed;
   height: calc(100vh - #{$header-total-height} - #{$inspiration-story-container-padding});
   top: $header-total-height;
-  left: 0;
+  right: 0;
   padding: $inspiration-story-container-padding / 2;
   background-color: $inspiration-story-container-bg-color;
-  overflow-y: scroll;
   z-index: $inspiration-story-container-z-index;
-  transition: left 0.2s;
+
+  .close-content-panel-btn {
+    display: inline-block;
+    width: 100%;
+    text-align: right;
+    margin-bottom: $inspiration-story-close-button-padding;
+  }
+
+  h1 {
+    text-align: center;
+  }
 
   .inspiration-story-error {
     position: absolute;
@@ -26,21 +35,24 @@
     left: 0;
   }
 
+  section {
+    .scrollable {
+      position: absolute;
+      bottom: 0;
+      top: 5rem;
+      left: 0;
+      right: 0;
+      overflow-y: auto;
+    }
+  }
+
   .inspiration-story {
-    transform-origin: 0 0;
-    transform: scale(0.5);
-
-
     .block {
-      @include media-query-property(
-        'width',
-        $main-content-width-small / 2.75,
-        $main-content-width-medium / 2.75,
-        $main-content-width-large / 2.75,
-        $main-content-width-extra-large / 2.75
-      );
       @include unselectable();
+      width: calc(100% - #{2 * $inspiration-story-block-margin});
 
+      margin: $inspiration-story-block-margin;
+      font-size: $inspiration-story-font-size;
       cursor: -webkit-grab;
       cursor: grab;
 

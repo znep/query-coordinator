@@ -82,7 +82,6 @@ $(document).on('ready', function() {
   var inspirationStoryOptions = {
     storyUid: window.inspirationStoryUid,
     storyContainerElement: $('.inspiration-story'),
-    scaleFactor: 0.5,
     editable: false,
     onRenderError: function() { $('.inspiration-story-error').removeClass('hidden'); }
   };
@@ -245,5 +244,62 @@ $(document).on('ready', function() {
   /**
    * Set up controls/widgets
    */
+
   $('.story-title').storyTitle(window.userStoryUid);
+  setupSidebar();
 });
+
+function setupSidebar() {
+  var inspirationSidebar = $('.inspiration-story-container').sidebar({
+    side: 'right'
+  });
+
+  var addContentPanelButton = $('.add-content-panel-btn');
+
+  addContentPanelButton.on('click', function() {
+    inspirationSidebar.trigger('sidebar:toggle');
+  });
+
+  $('.close-content-panel-btn a').on('click', function() {
+    inspirationSidebar.trigger('sidebar:close');
+  });
+
+  $(document).on('keydown', function(e) {
+    if (e.ctrlKey && e.keyCode === 49) { // '1'
+      inspirationSidebar.trigger('sidebar:toggle');
+    }
+  });
+
+  inspirationSidebar.
+    on('sidebar:open', function() {
+      addContentPanelButton.addClass('active');
+      inspirationSidebar.find('a').eq(0).focus();
+    }).
+    on('sidebar:close', function() {
+      addContentPanelButton.removeClass('active');
+    }).
+    on('mousewheel', '.scrollable', function(e) {
+      // Prevent mouse scrolls from bubbling
+      // up to document.
+      var target = $(this);
+      var scrollTop = target.scrollTop();
+
+      var delta = e.originalEvent.deltaY;
+      if (delta < 0) {
+        // Scrolling up.
+        if (scrollTop === 0) {
+          // Past top.
+          e.preventDefault();
+        }
+      } else if (delta > 0) {
+        // Scrolling down.
+        var innerHeight = target.innerHeight();
+        var scrollHeight = target[0].scrollHeight;
+
+        if (scrollTop >= scrollHeight - innerHeight) {
+          // Past bottom.
+          e.preventDefault();
+        }
+      }
+    });
+}

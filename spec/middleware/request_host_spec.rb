@@ -18,7 +18,7 @@ describe RequestHost do
         "HTTP_HOST"=>"domain.in.host.header.com",
         "REQUEST_PATH"=>"/stories/admin",
         "ORIGINAL_FULLPATH"=>"/stories/admin",
-        "ORIGINAL_SCRIPT_NAME"=>"/stories",
+        "ORIGINAL_SCRIPT_NAME"=>"/stories"
       }
     end
 

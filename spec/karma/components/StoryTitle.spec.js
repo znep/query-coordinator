@@ -31,8 +31,14 @@ describe('StoryTitle jQuery plugin', function() {
   });
 
   describe('given a storyUid that corresponds to a story', function() {
+    var returnValue;
+
     beforeEach(function() {
-      node.storyTitle(standardMocks.validStoryUid);
+      returnValue = node.storyTitle(standardMocks.validStoryUid);
+    });
+
+    it('should return a jQuery object for chaining', function() {
+      assert.isTrue($.fn.isPrototypeOf(returnValue), 'Returned value is not a jQuery collection');
     });
 
     it('should render the story title', function() {

@@ -17,7 +17,7 @@
     window.storyStore.addChangeListener(render);
     render();
 
-    titleNodes.on('click', function() {
+    return titleNodes.on('click', function() {
       var newTitle = prompt('Please enter a story title', window.storyStore.getStoryTitle(storyUid));
       if (newTitle) {
         window.dispatcher.dispatch({

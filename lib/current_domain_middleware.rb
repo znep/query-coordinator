@@ -22,8 +22,10 @@ class CurrentDomainMiddleware
   def call(env)
     request = Rack::Request.new(env)
 
-    # Bail out early if the request is merely checking the version end point
-    # See VersionMiddleware to see how we respond to the request.
+    # Bail out early if the request is merely checking the version end point, because both /version and
+    # /version.html are only accessed via load balancer which injects the Host: header. The json endpoint is
+    # accessed directly on each node by Decima, which doesn't set the Host: header, so we exit early here to
+    # avoid any imperial entanglements. See also VersionMiddleware to see how we build the JSON response.
     if '/version.json' == URI(env['REQUEST_URI']).path
       return @app.call(env)
     end
@@ -66,6 +68,6 @@ class CurrentDomainMiddleware
   private
 
   def logger
-    Rails.logger || Logger.new
+    Rails.logger || Logger.new(STDOUT)
   end
 end

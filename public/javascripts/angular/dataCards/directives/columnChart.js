@@ -1,4 +1,4 @@
-angular.module('socrataCommon.directives').directive('columnChart', function($parse, $timeout, FlyoutService, I18n) {
+angular.module('socrataCommon.directives').directive('columnChart', function($parse, $timeout, FlyoutService, I18n, FormatService) {
   'use strict';
 
   function computeDomain(chartData, showFiltered) {
@@ -192,7 +192,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           css: {
             top: chartHeight - verticalScale(tick)
           },
-          text: $.toHumaneNumber(tick)
+          text: FormatService.formatNumber(tick)
         });
       });
 
@@ -501,7 +501,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             formattedValue = ' ' + formattedValue;
           }
 
-          formattedValue = $.toHumaneNumber(value) + formattedValue;
+          formattedValue = FormatService.formatNumber(value) + formattedValue;
         } else {
           formattedValue = UNDEFINED_PLACEHOLDER;
         }

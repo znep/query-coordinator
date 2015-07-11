@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function cardVisualizationTableDirectiveFactory(Constants, CardDataService, SortedTileLayout, I18n) {
+  function cardVisualizationTableDirectiveFactory(Constants, CardDataService, SortedTileLayout, I18n, FormatService) {
 
     return {
       restrict: 'E',
@@ -193,7 +193,7 @@
             var pluralRowDisplayUnit = filteredRowCount === 1 ?
               rowDisplayUnit :
               rowDisplayUnit.pluralize();
-            var rowCountWithCommas = $.commaify(rowCount);
+            var rowCountWithCommas = FormatService.commaify(rowCount);
             pluralRowDisplayUnit = $.htmlEncode(pluralRowDisplayUnit);
             if (rowCount === filteredRowCount) {
               customTitle = I18n.t('table.rangeLabelAll',
@@ -202,7 +202,7 @@
               );
             } else {
               customTitle = I18n.t('table.rangeLabelSubtitle',
-                $.commaify(filteredRowCount),
+                FormatService.commaify(filteredRowCount),
                 pluralRowDisplayUnit,
                 rowCountWithCommas
               );

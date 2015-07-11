@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function ChoroplethVisualizationService(Constants, numberFormatter) {
+  function ChoroplethVisualizationService(Constants, FormatService) {
 
     function ChoroplethVisualizationUtils() {
 
@@ -244,13 +244,13 @@
       var isMultipleOf10 = coefficient % 1 == 0;
       if (isMultipleOf10) {
         var numNonzeroDigits = coefficient.toString().length;
-        var formattedNum = numberFormatter.formatNumber(val, {
-          fixedPrecision: 0,
+        var formattedNum = FormatService.formatNumber(val, {
+          precision: 0,
           maxLength: _.min([numNonzeroDigits, 3])
         });
       } else {
         var numNonzeroDigits = coefficient.toString().length - 1;
-        var formattedNum = numberFormatter.formatNumber(val, {
+        var formattedNum = FormatService.formatNumber(val, {
           maxLength: _.min([numNonzeroDigits, 3])
         });
       }

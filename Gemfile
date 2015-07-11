@@ -45,6 +45,7 @@ group :test do
   gem 'shoulda-context'
   gem 'timecop'
   gem 'webmock'
+  gem 'rspec'
 end
 
 group :development, :test do

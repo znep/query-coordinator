@@ -23,8 +23,10 @@ ENV build_proxy_env "export http_proxy=${build_proxy} https_proxy=${build_proxy}
 
 ENV APP_BASE_DIR /opt
 ENV APP_DIR ${APP_BASE_DIR}/frontend
+ENV HOME ${APP_DIR}
 ENV GEM_DIR ${APP_BASE_DIR}/gems
 RUN mkdir -p $APP_DIR && mkdir -p $APP_DIR/tmp && chown socrata:socrata $APP_DIR/tmp
+RUN mkdir -p $APP_DIR && mkdir -p $APP_DIR/public/cache && chown socrata:socrata $APP_DIR/public/cache
 WORKDIR $APP_DIR
 COPY . $APP_DIR
 COPY docker/ship.d/run /etc/ship.d/run

@@ -5,7 +5,7 @@ shared_examples 'has_story_title' do
   describe '#title' do
 
     it 'returns the title of the story' do
-      expect(subject.title).to eq('Test Story')
+      expect(subject.title).to eq('Untitled Story')
     end
   end
 end

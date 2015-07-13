@@ -32,7 +32,7 @@ class Column < Model
                                'stars', 'location' ].
     collect { |type| [ type, I18n.t("core.data_types.#{type}") ] } ]
 
-  @@legacy_types = [ 'html', 'email', 'url', 'date', 'stars' ]
+  @@legacy_types = [ 'html', 'email', 'url', 'date', 'stars', 'money', 'percent', 'location' ]
 
   def self.importable_types(request = nil)
     @@importable_types.reject do |k, _|

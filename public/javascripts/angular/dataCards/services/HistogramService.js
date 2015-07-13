@@ -32,8 +32,7 @@
 
         if (buckets.length >= 2) {
           input.bucketSize = buckets[1] - buckets[0];
-        }
-        else {
+        } else {
           input.bucketSize = 1;
         }
       }
@@ -79,8 +78,7 @@
 
         if (min > 0 && max > 0) {
           min = 0;
-        }
-        else if (min < 0 && max < 0) {
+        } else if (min < 0 && max < 0) {
           max = 0;
         }
 
@@ -161,8 +159,7 @@
 
         if (options.bucketType === 'logarithmic') {
           return getLogarithmicBucket(magnitude, value);
-        }
-        else {
+        } else {
           if (options.bucketType !== 'linear') {
             $log.warn('Unknown bucket type ' +
               '"{0}", defaulting to linear'.format(options.bucketType));

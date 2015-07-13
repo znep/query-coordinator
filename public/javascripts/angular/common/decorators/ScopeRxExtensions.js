@@ -50,8 +50,8 @@
                 }
               });
 
-              return observable
-                .takeUntil(scope.$eventToObservable('$destroy')); //TakeUntil to avoid leaks.
+              return observable.
+                takeUntil(scope.$eventToObservable('$destroy')); //TakeUntil to avoid leaks.
             },
             enumerable: false,
             configurable: true,
@@ -85,8 +85,8 @@
             value: function $safeApply(fn) {
               var scope = this;
               var phase = scope.$root.$$phase;
-              if (phase == '$apply' || phase == '$digest') {
-                if (fn && (typeof(fn) === 'function')) {
+              if (phase === '$apply' || phase === '$digest') {
+                if (fn && (typeof (fn) === 'function')) {
                   fn();
                 }
               } else {
@@ -125,7 +125,7 @@
                 });
               }
 
-              function errorHandler(error) {
+              function errorHandler() {
                 set(onError.apply(this, arguments));
               }
 

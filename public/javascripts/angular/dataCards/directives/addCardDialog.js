@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function addCardDialog(Constants, Card, Dataset, FlyoutService, $log, I18n) {
+  function addCardDialog(Constants, Card, Dataset, FlyoutService, $log) {
     return {
       restrict: 'E',
       scope: {
@@ -13,7 +13,7 @@
         onCustomizeCard: '='
       },
       templateUrl: '/angular_templates/dataCards/addCardDialog.html',
-      link: function(scope, element, attrs) {
+      link: function(scope) {
         scope.$bindObservable(
           'columnHumanNameFn',
           scope.$observe('page').observeOnLatest('dataset.columns').map(
@@ -21,7 +21,7 @@
               return function(fieldName) {
                 var column = datasetColumns[fieldName];
                 return Dataset.extractHumanReadableColumnName(column);
-              }
+              };
             }
           )
         );
@@ -74,7 +74,7 @@
               'fieldName': fieldName
             };
 
-            serializedCard['cardType'] = column.defaultCardType;
+            serializedCard.cardType = column.defaultCardType;
             // TODO: We're going towards passing in serialized blobs to Model constructors.
             //Revisit this line when that effort reaches Card.
             scope.addCardModel = Card.deserialize(scope.page, serializedCard);

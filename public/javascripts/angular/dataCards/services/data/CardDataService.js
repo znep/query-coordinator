@@ -13,7 +13,7 @@
 
     // Note this does not include the time portion ('23:59:59') on purpose since SoQL will
     // complain about a type mismatch if the column happens to be a date but not a datetime.
-    var MAX_LEGAL_JAVASCRIPT_DATE_STRING = Constants['MAX_LEGAL_JAVASCRIPT_DATE_STRING'];
+    var MAX_LEGAL_JAVASCRIPT_DATE_STRING = Constants.MAX_LEGAL_JAVASCRIPT_DATE_STRING;
 
     // It is important to use this value both for fetching the shape file regions
     // as well as the aggregated data for those regions, otherwise we can end up
@@ -21,7 +21,7 @@
     function shapeFileRegionQueryLimit() {
       return ServerConfig.getScalarValue(
         'shapeFileRegionQueryLimit',
-        Constants['DEFAULT_SHAPE_FILE_REGION_QUERY_LIMIT']
+        Constants.DEFAULT_SHAPE_FILE_REGION_QUERY_LIMIT
       );
     }
 
@@ -33,9 +33,9 @@
     }
 
     function buildAggregationClause(aggregationClauseData) {
-      Assert(_.isString(aggregationClauseData['function']), 'aggregation function string should be present');
-      var aggregationFunction = aggregationClauseData['function'];
-      var aggregationOperand = typeof aggregationClauseData.fieldName === "string" ?
+      Assert(_.isString(aggregationClauseData.function), 'aggregation function string should be present');
+      var aggregationFunction = aggregationClauseData.function;
+      var aggregationOperand = typeof aggregationClauseData.fieldName === 'string' ?
         SoqlHelpers.formatFieldName(aggregationClauseData.fieldName) : '*';
 
       return '{0}({1})'.format(aggregationFunction, aggregationOperand);
@@ -138,7 +138,7 @@
 
         return http.get(url.href, config).
           then(function(result) {
-            var data = result['data'];
+            var data = result.data;
             return _.map(data, function(item) {
               return {
                 magnitude: parseFloat(item[magnitudeAlias]),
@@ -203,9 +203,9 @@
         var startAlias = SoqlHelpers.getFieldNameAlias('start');
         var endAlias = SoqlHelpers.getFieldNameAlias('end');
         var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
-        url.searchParams.set('$query', "SELECT min({0}) AS {2}, max({0}) AS {3} WHERE {0} < '{1}'".
+        url.searchParams.set('$query', 'SELECT min({0}) AS {2}, max({0}) AS {3} WHERE {0} < \'{1}\''.
           format(fieldName, MAX_LEGAL_JAVASCRIPT_DATE_STRING, startAlias, endAlias));
-        var config =  httpConfig.call(this);
+        var config = httpConfig.call(this);
 
         return http.get(url.href, config).then(function(response) {
 
@@ -264,7 +264,7 @@
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
 
-        var whereClause = "WHERE {0} IS NOT NULL AND {0} < '{1}'".
+        var whereClause = 'WHERE {0} IS NOT NULL AND {0} < \'{1}\''.
           format(SoqlHelpers.formatFieldName(fieldName), MAX_LEGAL_JAVASCRIPT_DATE_STRING);
         if (!_.isEmpty(whereClauseFragment)) {
           whereClause += ' AND ' + whereClauseFragment;
@@ -313,7 +313,7 @@
           var timeStart = _.min(dates);
           var timeEnd = _.max(dates);
           var timeData = Array(timeEnd.diff(timeStart, precision));
-          _.each(data, function(item, i) {
+          _.each(data, function(item) {
             var date = item[dateAlias];
             var timeSlot = date.diff(timeStart, precision);
 
@@ -393,7 +393,7 @@
       },
 
       getRows: function(datasetId, offset, limit, order, timeout, whereClause) {
-        if (!order) order = '';
+        if (!order) { order = ''; }
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
         var params = {
           $offset: offset,
@@ -427,7 +427,7 @@
         var defaultFeatureExtentString = ServerConfig.get('featureMapDefaultExtent');
         if (_.isPresent(defaultFeatureExtentString)) {
           try {
-            defaultFeatureExtent = JSON.parse(_.trim(defaultFeatureExtentString, "'"));
+            defaultFeatureExtent = JSON.parse(_.trim(defaultFeatureExtentString, '\''));
           } catch (error) {
             $log.warn(
               'Unable to parse featureMapDefaultExtent to JSON: {0}\n{1}'.
@@ -547,7 +547,7 @@
             //  /resource/bwdd-ss8w.geojson?$select=*&$where=intersects(
             //  the_geom,
             //  'MULTIPOLYGON(((-71.153911%2042.398355,-71.153911%2042.354528,-71.076298%2042.354528,-71.076298%2042.398355,-71.153911%2042.398355)))')
-            var multiPolygon = "'MULTIPOLYGON((({0},{1},{2},{3},{0})))'".
+            var multiPolygon = '\'MULTIPOLYGON((({0},{1},{2},{3},{0})))\''.
               format(
                 extent.bottomLeft,
                 extent.topLeft,

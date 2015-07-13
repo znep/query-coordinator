@@ -19,6 +19,8 @@
     // individual dataset.
     var visualizationUtils = ChoroplethVisualizationService.utils;
 
+    var geojsonBaseLayer;
+
     /**
      * A choropleth legend, with discrete colors for ranges of values.
      */
@@ -31,7 +33,7 @@
         selector: '.choropleth-legend-color',
         render: function(element) {
           if ($(element).parents('.card').hasClass('dragged')) {
-            return;
+            return undefined;
           }
 
           return '<div class="flyout-title">{0}</div>'.
@@ -52,13 +54,13 @@
        */
       colorScaleFor: function(classBreaks) {
         var marginallyNegative = chroma.interpolate(
-          Constants['DISCRETE_LEGEND_ZERO_COLOR'],
-          Constants['DISCRETE_LEGEND_NEGATIVE_COLOR'],
+          Constants.DISCRETE_LEGEND_ZERO_COLOR,
+          Constants.DISCRETE_LEGEND_NEGATIVE_COLOR,
           0.1
         );
         var marginallyPositive = chroma.interpolate(
-          Constants['DISCRETE_LEGEND_ZERO_COLOR'],
-          Constants['DISCRETE_LEGEND_POSITIVE_COLOR'],
+          Constants.DISCRETE_LEGEND_ZERO_COLOR,
+          Constants.DISCRETE_LEGEND_POSITIVE_COLOR,
           0.1
         );
 
@@ -67,11 +69,11 @@
           // There's only one value. So give it only one color.
           var color;
           if (classBreaks[0] < 0) {
-            color = Constants['DISCRETE_LEGEND_NEGATIVE_COLOR'];
+            color = Constants.DISCRETE_LEGEND_NEGATIVE_COLOR;
           } else if (classBreaks[0] > 0) {
-            color = Constants['DISCRETE_LEGEND_POSITIVE_COLOR'];
+            color = Constants.DISCRETE_LEGEND_POSITIVE_COLOR;
           } else {
-            color = Constants['DISCRETE_LEGEND_ZERO_COLOR'];
+            color = Constants.DISCRETE_LEGEND_ZERO_COLOR;
           }
 
           var singleColorScale = _.constant([color]);
@@ -110,11 +112,11 @@
             }
 
             var negativeColorScale = visualizationUtils.calculateColoringScale(
-              [Constants['DISCRETE_LEGEND_NEGATIVE_COLOR'], marginallyNegative],
+              [Constants.DISCRETE_LEGEND_NEGATIVE_COLOR, marginallyNegative],
               negatives
             );
             var positiveColorScale = visualizationUtils.calculateColoringScale(
-              [marginallyPositive, Constants['DISCRETE_LEGEND_POSITIVE_COLOR']],
+              [marginallyPositive, Constants.DISCRETE_LEGEND_POSITIVE_COLOR],
               positives
             );
 
@@ -122,7 +124,7 @@
             // or negative actual-scale depending on what you're trying to scale.
             var fauxColorScale = _.bind(function(value) {
               if (value === 0) {
-                return chroma(Constants['DISCRETE_LEGEND_ZERO_COLOR']);
+                return chroma(Constants.DISCRETE_LEGEND_ZERO_COLOR);
               } else {
                 return (value < 0 ? negativeColorScale : positiveColorScale)(value);
               }
@@ -147,7 +149,7 @@
               // chroma gives us 2 colors if we give it a domain of only 2 values. This messes
               // things up later on when we assume that classBreaks.length == colors.length + 1, so
               // shave off some colors if we have to.
-              if (negatives.length === 2)  {
+              if (negatives.length === 2) {
                 negColors = negColors.slice(0, 1);
               }
               if (positives.length === 2) {
@@ -163,14 +165,14 @@
 
             // All the numbers are negative. Give them the negative color scale.
             return visualizationUtils.calculateColoringScale(
-              [Constants['DISCRETE_LEGEND_NEGATIVE_COLOR'], marginallyNegative],
+              [Constants.DISCRETE_LEGEND_NEGATIVE_COLOR, marginallyNegative],
               classBreaks
             );
           }
         } else {
           // Otherwise, it's all positive, so give them the positive color scale.
           return visualizationUtils.calculateColoringScale(
-            [marginallyPositive, Constants['DISCRETE_LEGEND_POSITIVE_COLOR']],
+            [marginallyPositive, Constants.DISCRETE_LEGEND_POSITIVE_COLOR],
             classBreaks
           );
         }
@@ -186,7 +188,7 @@
       update: function(data) {
         var classBreaks = visualizationUtils.calculateDataClassBreaks(
           data,
-          Constants['UNFILTERED_VALUE_PROPERTY_NAME']
+          Constants.UNFILTERED_VALUE_PROPERTY_NAME
         );
 
         visualizationUtils.addZeroIfNecessary(classBreaks);
@@ -195,7 +197,7 @@
         var tickValues;
         var colorScale = this.colorScaleFor(classBreaks);
 
-        switch(classBreaks.length) {
+        switch (classBreaks.length) {
 
           case 0:
             this.element.hide();
@@ -220,7 +222,7 @@
 
             // If there are two values, duplicate the max value, to allow there to be a color stop
             tickValues = classBreaks.slice(0);
-            classBreaks = [classBreaks[0], classBreaks[1], classBreaks[1]]
+            classBreaks = [classBreaks[0], classBreaks[1], classBreaks[1]];
             break;
 
           default:
@@ -357,7 +359,7 @@
           attr('y', function(c, i) {
             return Math.floor(yLabelScale(classBreaks[i + 1]));
           }).
-          style('fill', function(c, i) {
+          style('fill', function(c) {
             return c;
           });
 
@@ -416,7 +418,7 @@
        *   evenly spaced between them (and may not actually appear in the dataset).
        * @private
        */
-      _findTickStops: function(scale, numStops) {
+      findTickStops: function(scale, numStops) {
         var scaleForReversing = scale.copy().range([0, 1]);
         var stops = _.map(
           _.range(0, 1, 1 / (numStops - 1)),
@@ -440,7 +442,7 @@
        *
        * @private
        */
-      _drawGradient: function(gradientSvg, tickStops, colorScale) {
+      drawGradient: function(gradientSvg, tickStops, colorScale) {
 
         var gradientSvgSelection = d3.select(gradientSvg[0]);
 
@@ -517,12 +519,12 @@
        * @return {d3.scale} a scale mapping from a value within features, to a color.
        * @private
        */
-      _createColorScale: function(tickStops, scale) {
+      createColorScale: function(tickStops, scale) {
         var domain;
         var range = [
-          Constants['CONTINUOUS_LEGEND_NEGATIVE_COLOR'],
-          Constants['CONTINUOUS_LEGEND_ZERO_COLOR'],
-          Constants['CONTINUOUS_LEGEND_POSITIVE_COLOR']
+          Constants.CONTINUOUS_LEGEND_NEGATIVE_COLOR,
+          Constants.CONTINUOUS_LEGEND_ZERO_COLOR,
+          Constants.CONTINUOUS_LEGEND_POSITIVE_COLOR
         ];
         var min = tickStops[0];
         var max = _.last(tickStops);
@@ -560,7 +562,7 @@
        *
        * @private
        */
-      _drawAxis: function(ticksSvg, gradientSvg, tickStops, scale, indexOfZero) {
+      drawAxis: function(ticksSvg, gradientSvg, tickStops, scale, indexOfZero) {
         var ticksGroup = ticksSvg.find('g.ticks');
         var positionScale = scale.copy().range([this.element.height(), 0]);
         var axis = d3.svg.axis().
@@ -639,7 +641,7 @@
        *
        * @return {d3.scale} a d3 scale of the determined type, with the domain set.
        */
-      _scaleForValues: function(values, min, max) {
+      scaleForValues: function(values, min, max) {
         var scale;
 
         min = min || _.min(values);
@@ -675,7 +677,9 @@
        * @return {d3.scale} a scale mapping from value to color.
        */
       update: function(data, dimensions) {
-        if (!(data.features && data.features.length)) return;
+        if (!(data.features && data.features.length)) {
+          return undefined;
+        }
 
         var values = _.pluck(
           _.pluck(data.features, 'properties'),
@@ -701,11 +705,11 @@
           }
         }
 
-        var scale = this._scaleForValues(values, min, max);
-        var tickStops = this._findTickStops(scale, Math.min(values.length, this.NUM_TICKS));
+        var scale = this.scaleForValues(values, min, max);
+        var tickStops = this.findTickStops(scale, Math.min(values.length, this.NUM_TICKS));
         var indexOfZero = visualizationUtils.addZeroIfNecessary(tickStops);
 
-        var colorScale = this._createColorScale(tickStops, scale);
+        var colorScale = this.createColorScale(tickStops, scale);
         var gradientSvg = this.element.find('svg.gradient');
         var ticksSvg = this.element.find('svg.legend-ticks');
 
@@ -728,8 +732,8 @@
         this.element.height(legendHeight);
         gradientSvg.height(legendHeight);
 
-        this._drawGradient(gradientSvg, tickStops, colorScale);
-        this._drawAxis(ticksSvg, gradientSvg, tickStops, scale, indexOfZero);
+        this.drawGradient(gradientSvg, tickStops, colorScale);
+        this.drawAxis(ticksSvg, gradientSvg, tickStops, scale, indexOfZero);
 
         return colorScale;
       }
@@ -771,11 +775,19 @@
         var selectionBoxFilterIcon = selectionBox.find('.icon-filter');
         var selectionBoxValue = selectionBox.find('.choropleth-selection-value');
         var clearSelectionButton = selectionBox.find('.icon-close');
-
-        // After creating the selection box, bind a click event to it.
-        selectionBox.on('click', function() {
-          clearDatasetFilter(selectedFeature);
-        });
+        var map;
+        var minLng;
+        var maxLng;
+        var minLat;
+        var maxLat;
+        var boundsArray;
+        var coordinates;
+        var selectedFeature;
+        var currentFeature;
+        var singleClickSuppressionThreshold;
+        var doubleClickThreshold;
+        var lastClick;
+        var lastClickTimeout;
 
         /***********************
          * Mutate Leaflet state *
@@ -819,12 +831,14 @@
             }
           }
 
-          var minLng = 180;
-          var maxLng = -180;
-          var minLat = 90;
-          var maxLat = -90;
-          var boundsArray = [ [maxLat, maxLng], [minLat, minLng] ];
-          var coordinates;
+          minLng = 180;
+          maxLng = -180;
+          minLat = 90;
+          maxLat = -90;
+          boundsArray = [
+            [maxLat, maxLng],
+            [minLat, minLng]
+          ];
 
           if (_.isDefined(geojsonData)) {
 
@@ -863,7 +877,10 @@
 
             });
 
-            boundsArray = [ [maxLat,maxLng],[minLat,minLng] ];
+            boundsArray = [
+              [maxLat, maxLng],
+              [minLat, minLng]
+            ];
 
           }
 
@@ -907,7 +924,7 @@
         // is selected.
         function isLayerSelected(layer) {
           var selectedPropertyName = 'feature.properties.{0}'.
-            format(Constants['SELECTED_PROPERTY_NAME']);
+            format(Constants.SELECTED_PROPERTY_NAME);
 
           return _.get(layer, selectedPropertyName);
         }
@@ -915,26 +932,26 @@
         // Send the toggle filter event up the scope to the parent, where it can
         // be handled by the model.
         function setDatasetFilter(feature) {
-          feature.properties[Constants['SELECTED_PROPERTY_NAME']] = true;
+          feature.properties[Constants.SELECTED_PROPERTY_NAME] = true;
           scope.$emit('dataset-filter:choropleth');
           scope.$emit('toggle-dataset-filter:choropleth', feature);
         }
 
         function clearDatasetFilter(feature) {
-          feature.properties[Constants['SELECTED_PROPERTY_NAME']] = false;
+          feature.properties[Constants.SELECTED_PROPERTY_NAME] = false;
           scope.$emit('dataset-filter-clear:choropleth');
           scope.$emit('toggle-dataset-filter:choropleth', feature);
         }
 
         // Display the bottom-left clear selection box
         function showSelectionBox() {
-          var boxValue = selectedFeature.properties[Constants['HUMAN_READABLE_PROPERTY_NAME']];
+          var boxValue = selectedFeature.properties[Constants.HUMAN_READABLE_PROPERTY_NAME];
 
           // The max-width of the selection box is the width of the map minus
           // the left/right padding we want on each side.
           var maxWidth = element.width() -
-            Constants['CHOROPLETH_SELECTION_BOX_LEFT'] -
-            Constants['CHOROPLETH_SELECTION_BOX_RIGHT'];
+            Constants.CHOROPLETH_SELECTION_BOX_LEFT -
+            Constants.CHOROPLETH_SELECTION_BOX_RIGHT;
 
           selectionBoxValue.
             text(boxValue).
@@ -946,6 +963,40 @@
         // Hide the bottom-left clear selection box
         function hideSelectionBox() {
           selectionBox.hide();
+        }
+
+        /*********************************************************
+        * Highlight features (helper functions for mouse events) *
+        *********************************************************/
+
+        function addHighlight(e) {
+          var layer = e.target;
+
+          if (!isLayerSelected(layer)) {
+            layer.setStyle({
+              weight: Constants.CHOROPLETH_HIGHLIGHT_WIDTH
+            });
+
+            // IE HACK (CORE-3566): IE exhibits (not fully-characterized) pointer madness if you bring a layer
+            // containing a MultiPolygon which actually contains more than one polygon to the
+            // front in a featureMouseOver. The rough cause is that the paths corresponding to this
+            // layer get removed and re-added elsewhere in the dom while the mouseover is getting handled.
+            // The symptoms of this are IE spewing mouseout events all over the place on each mousemove.
+            if (!L.Browser.ie) {
+              layer.bringToFront();
+            }
+          }
+        }
+
+        function removeHighlight(e) {
+          var layer = e.target;
+
+          if (!isLayerSelected(layer)) {
+            layer.setStyle({
+              weight: Constants.CHOROPLETH_DEFAULT_WIDTH
+            });
+            layer.bringToBack();
+          }
         }
 
         /**********************
@@ -1000,48 +1051,13 @@
           }
         }
 
-
-        /*********************************************************
-        * Highlight features (helper functions for mouse events) *
-        *********************************************************/
-
-        function addHighlight(e) {
-          var layer = e.target;
-
-          if (!isLayerSelected(layer)) {
-            layer.setStyle({
-              weight: Constants['CHOROPLETH_HIGHLIGHT_WIDTH']
-            });
-
-            // IE HACK (CORE-3566): IE exhibits (not fully-characterized) pointer madness if you bring a layer
-            // containing a MultiPolygon which actually contains more than one polygon to the
-            // front in a featureMouseOver. The rough cause is that the paths corresponding to this
-            // layer get removed and re-added elsewhere in the dom while the mouseover is getting handled.
-            // The symptoms of this are IE spewing mouseout events all over the place on each mousemove.
-            if (!L.Browser.ie) {
-              layer.bringToFront();
-            }
-          }
-        }
-
-        function removeHighlight(e) {
-          var layer = e.target;
-
-          if (!isLayerSelected(layer)) {
-            layer.setStyle({
-              weight: Constants['CHOROPLETH_DEFAULT_WIDTH']
-            });
-            layer.bringToBack();
-          }
-        }
-
         /*************************
         * Handle flyout behavior *
         *************************/
 
         function formatValue(value) {
           if (!_.isFinite(value)) {
-            return Constants['NULL_VALUE_LABEL'];
+            return Constants.NULL_VALUE_LABEL;
           }
 
           var rowDisplayUnit = value !== 1 ?
@@ -1076,14 +1092,14 @@
           // when a feature controlled by the choropleth raises a mouseout
           // event. (See onFeatureMouseMove and onFeatureMouseOut).
           if (dragging || (_.isNull(currentFeature) && _.isNull(selectedFeature))) {
-            return;
+            return undefined;
           }
 
           feature = _.isNull(currentFeature) ? selectedFeature : currentFeature;
-          featureHumanReadableName = feature.properties[Constants['HUMAN_READABLE_PROPERTY_NAME']];
+          featureHumanReadableName = feature.properties[Constants.HUMAN_READABLE_PROPERTY_NAME];
 
-          unfilteredValue = feature.properties[Constants['UNFILTERED_VALUE_PROPERTY_NAME']];
-          filteredValue = feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']];
+          unfilteredValue = feature.properties[Constants.UNFILTERED_VALUE_PROPERTY_NAME];
+          filteredValue = feature.properties[Constants.FILTERED_VALUE_PROPERTY_NAME];
           unfilteredValueIsValid = _.isFinite(unfilteredValue);
           filteredValueIsValid = _.isFinite(filteredValue);
 
@@ -1093,7 +1109,7 @@
           }
 
           isFiltered = scope.isFiltered;
-          isSelected = feature.properties[Constants['SELECTED_PROPERTY_NAME']];
+          isSelected = feature.properties[Constants.SELECTED_PROPERTY_NAME];
 
           unfilteredValue = formatValue(unfilteredValue);
           filteredValue = formatValue(filteredValue);
@@ -1190,7 +1206,7 @@
           options.zoomAnimation = false;
         }
 
-        var map = L.map(element.find('.choropleth-map-container')[0], options);
+        map = L.map(element.find('.choropleth-map-container')[0], options);
 
         // emit a zoom event, so tests can check it
         map.on('zoomstart zoomend', function(e) {
@@ -1202,7 +1218,7 @@
         // Keep track of the geojson layers so that we can remove them cleanly.
         // Every redraw of the map forces us to remove the layer entirely because
         // there is no way to mutate already-rendered geojson objects.
-        var geojsonBaseLayer = null;
+        geojsonBaseLayer = null;
 
         // Watch for first render so we know whether or not to update the center/bounds.
         // (We don't update the center or the bounds if the choropleth has already been
@@ -1211,15 +1227,15 @@
 
         // Keep track of click details so that we can zoom on double-click but
         // still selects on single clicks.
-        var singleClickSuppressionThreshold = 200;
-        var doubleClickThreshold = 400;
-        var lastClick = 0;
-        var lastClickTimeout = null;
+        singleClickSuppressionThreshold = 200;
+        doubleClickThreshold = 400;
+        lastClick = 0;
+        lastClickTimeout = null;
 
         // Keep track of the currently-hovered-over and currently-selected features
         // so we can render flyouts outside of Leaflet.
-        var currentFeature = null;
-        var selectedFeature = null;
+        currentFeature = null;
+        selectedFeature = null;
 
         /*********************************
         * React to changes in bound data *
@@ -1229,13 +1245,13 @@
           map(function(url) {
             if (_.isUndefined(url)) {
               return {
-                url: Constants['DEFAULT_MAP_BASE_LAYER_URL'],
-                opacity: Constants['DEFAULT_MAP_BASE_LAYER_OPACITY']
+                url: Constants.DEFAULT_MAP_BASE_LAYER_URL,
+                opacity: Constants.DEFAULT_MAP_BASE_LAYER_OPACITY
               };
             } else {
               return {
                 url: url,
-                opacity: Constants['DEFINED_MAP_BASE_LAYER_OPACITY']
+                opacity: Constants.DEFINED_MAP_BASE_LAYER_OPACITY
               };
             }
           }).
@@ -1337,12 +1353,17 @@
             }
           });
 
+        // After creating the selection box, bind a click event to it.
+        selectionBox.on('click', function() {
+          clearDatasetFilter(selectedFeature);
+        });
+
         // Leaflet needs to be told to clean up after itself.
         scope.$destroyAsObservable(element).subscribe(function() {
           map.remove();
         });
       }
-    }
+    };
   }
 
   angular.

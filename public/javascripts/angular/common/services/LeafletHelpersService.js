@@ -30,7 +30,7 @@
           return {
             southwest: [bounds.getSouth(), bounds.getWest()],
             northeast: [bounds.getNorth(), bounds.getEast()]
-          }
+          };
         }
       }
     };

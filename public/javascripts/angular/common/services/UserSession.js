@@ -3,7 +3,7 @@
 
   // Errors that can happen within this service.
   var Errors = {
-    NotLoggedIn: function(){},
+    NotLoggedIn: function() {},
     UnknownError: function(code, message) { this.code = code; this.message = message; }
   };
 
@@ -64,7 +64,7 @@
       getCurrentUser: getCurrentUser,
       getCurrentUserObservable: _.once(getCurrentUserObservable),
       Errors: Errors
-    }
+    };
   }
 
   angular.

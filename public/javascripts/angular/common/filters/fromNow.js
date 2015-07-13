@@ -10,7 +10,7 @@
       } else {
         return '';
       }
-    }
+    };
   }
 
   angular.

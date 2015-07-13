@@ -149,7 +149,7 @@
           return {
             valid: _.isEmpty(validationErrors),
             errors: validationErrors
-          }
+          };
         },
 
         /**

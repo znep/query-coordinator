@@ -105,11 +105,9 @@
         );
 
         var validColumnFilter = function(column, fieldName) {
-          // TODO: Once a "logical" type property is available, this will need to be updated
-          var fieldNamesThatCannotBeAggregated = ['latitude', 'longitude', 'lat', 'lng', 'long', 'x', 'y']
           return (column.physicalDatatype === 'number' || column.physicalDatatype === 'money') &&
             !column.isSystemColumn &&
-            (!_.contains(fieldNamesThatCannotBeAggregated, fieldName));
+            (!_.contains(Constants.FIELD_NAMES_THAT_CANNOT_BE_AGGREGATED, fieldName));
         };
 
         // Observable that goes true if we should show the dropdown selector, false otherwise
@@ -214,8 +212,8 @@
 
         FlyoutService.register({
           selector: '.aggregation-option',
-          render: function(element) {
-            if ($(element).is('.disabled.no-count')) {
+          render: function(flyoutElement) {
+            if ($(flyoutElement).is('.disabled.no-count')) {
               return '<span class="flyout-cell">{0}</span>'.
                 format(I18n.aggregationChooser.optionDisabled);
             }
@@ -226,10 +224,10 @@
 
         FlyoutService.register({
           selector: '.aggregation-chooser-trigger.disabled',
-          positionOn: function(element) {
+          positionOn: function(flyoutElement) {
             // Targets the span element whose ::after pseudoelement we're using
             // to render the down-arrow "icon".
-            return element.childNodes[1];
+            return flyoutElement.childNodes[1];
           },
           render: _.constant(
             '<span class="icon-warning"></span><span class="flyout-title">{0}</span><p>{1}</p>'.format(

@@ -9,7 +9,7 @@
         datasetObservable: '=',
         editMode: '='
       },
-      link: function($scope, element, attrs) {
+      link: function($scope, element) {
         var destroyObservable = $scope.$destroyAsObservable(element);
 
         /*
@@ -37,7 +37,7 @@
             } else {
               return '#';
             }
-          }
+          };
         };
 
         /*
@@ -85,7 +85,7 @@
 
         var multipleFormatsAvailableStream = Rx.Observable.merge(jsonAvailableStream, geoJsonAvailableStream).
           filter(_.identity).
-          scan(0, function(acc, x) {
+          scan(0, function(acc) {
             return acc + 1;
           }).
           map(function(value) { return value > 1; });

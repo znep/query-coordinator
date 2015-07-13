@@ -25,7 +25,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
     mouseY = e.clientY;
   }).merge(
     WindowState.scrollPositionSubject
-  ).subscribe(function(e) {
+  ).subscribe(function() {
 
     var flyoutContent;
     var flyoutWidth;
@@ -177,7 +177,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
     }
   });
 
-  WindowState.mouseLeftButtonPressedSubject.subscribe(function(e) {
+  WindowState.mouseLeftButtonPressedSubject.subscribe(function() {
     if (!_.isEmpty(uberFlyout)) {
       hide();
     }

@@ -19,7 +19,7 @@
       generate: function() {
         return pageLoadId + randomNChars(16);
       }
-    }
+    };
   }
 
   angular.

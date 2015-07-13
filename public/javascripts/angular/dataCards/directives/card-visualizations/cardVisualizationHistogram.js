@@ -25,7 +25,7 @@
           _.pick(columnDataSummary, 'bucketSize')
         ).then(bucketData);
 
-      } else if(columnDataSummary.bucketType === 'logarithmic') {
+      } else if (columnDataSummary.bucketType === 'logarithmic') {
 
         dataPromise = CardDataService.getMagnitudeData(
           fieldName,
@@ -111,14 +111,14 @@
           fieldName$,
           datasetModel$,
           baseSoqlFilter$,
-          function(fieldName, dataset, baseSoqlFilter) {
+          function(fieldName, dataset) {
 
             // This promise will ultimately return an object in the form:
             // {min:, max:, bucketType:, bucketSize:}
             // See HistogramService.getBucketingOptions
             var dataPromise = CardDataService.getColumnDomain(fieldName, dataset.id, null).
               then(function(domain) {
-                if(_.has(domain, 'min') && _.has(domain, 'max')) {
+                if (_.has(domain, 'min') && _.has(domain, 'max')) {
                   return HistogramService.getBucketingOptions(domain);
                 } else {
                   $scope.histogramRenderError = 'noData';
@@ -171,7 +171,7 @@
               // If the filtered array doesn't contain an object with the same 'start' index as the
               // current unfiltered object, create new bucket and insert it into the filtered array.
               if ($.grep(filtered, function(e) {
-                  return e.start === unfiltered[i].start;
+                return e.start === unfiltered[i].start;
               }).length === 0) {
                 var newBucket = {
                   start: unfiltered[i].start,
@@ -191,8 +191,7 @@
         ).catchException(function(error) {
           if (_.isError(error)) {
             $scope.histogramRenderError = error.message || true;
-          }
-          else {
+          } else {
             $scope.histogramRenderError = error || true;
           }
           return Rx.Observable.returnValue({error: $scope.histogramRenderError});

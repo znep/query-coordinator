@@ -564,10 +564,10 @@
 
           // Which tile edges are we close to?
           var edgeTests = {
-            top:    mouseTileOffset.y < hoverThreshold,
-            left:   mouseTileOffset.x < hoverThreshold,
+            top: mouseTileOffset.y < hoverThreshold,
+            left: mouseTileOffset.x < hoverThreshold,
             bottom: tileSize - mouseTileOffset.y < hoverThreshold,
-            right:  tileSize - mouseTileOffset.x < hoverThreshold
+            right: tileSize - mouseTileOffset.x < hoverThreshold
           };
 
           // Get neighboring tile id for a tile's edge
@@ -884,6 +884,7 @@
           self.tileLoaded(tileId);
         }
 
+        // Does this ever get run?
         vectorTile = VectorTileUtil.unpackVectorTile(
           new VectorTile(
             new pbf(arrayBuffer)
@@ -924,7 +925,7 @@
       addChildLayers: function() {
         var self = this;
         this.layers.forEach(function(layer) {
-          if (value.hasOwnProperty('_map')) {
+          if (layer.hasOwnProperty('_map')) {
             self.map.addLayer(layer);
           }
         });
@@ -945,7 +946,7 @@
       },
 
       tileLoaded: function(tileId) {
-        this.outstandingTileDataRequests['delete'](tileId);
+        this.outstandingTileDataRequests.delete(tileId);
 
         if (this.outstandingTileDataRequests.size === 0) {
           this.options.onRenderComplete();

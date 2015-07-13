@@ -71,7 +71,7 @@
     return http;
 
     // Borrowed from main AngularJS $http
-    function createShortMethods(names) {
+    function createShortMethods() {
       forEach(arguments, function(name) {
         http[name] = function(url, config) {
           return http(extend(config || {}, {
@@ -83,7 +83,7 @@
     }
 
 
-    function createShortMethodsWithData(name) {
+    function createShortMethodsWithData() {
       forEach(arguments, function(name) {
         http[name] = function(url, data, config) {
           return http(extend(config || {}, {

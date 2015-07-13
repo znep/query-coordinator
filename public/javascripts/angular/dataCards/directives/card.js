@@ -17,8 +17,8 @@
       templateUrl: '/angular_templates/dataCards/card.html',
       link: function($scope, element) {
         var modelSubject = $scope.$observe('model').filter(_.identity);
-        var datasetObservable = modelSubject.pluck('page').observeOnLatest('dataset');
-        var columns = datasetObservable.observeOnLatest('columns');
+        var descriptionTruncatedContent;
+        var descriptionElementsWithMaxSize;
 
         $scope.descriptionCollapsed = true;
         $scope.$bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
@@ -62,7 +62,7 @@
         $scope.downloadUrl = './' + $scope.model.page.id + '/' + $scope.model.fieldName + '.png';
 
         $scope.downloadStateText = function(state) {
-          switch(state) {
+          switch (state) {
             case 'success':
               return I18n.common.downloading;
             case 'error':
@@ -119,8 +119,8 @@
 
         };
 
-        var descriptionTruncatedContent = element.find('.description-truncated-content');
-        var descriptionElementsWithMaxSize = element.
+        descriptionTruncatedContent = element.find('.description-truncated-content');
+        descriptionElementsWithMaxSize = element.
           find('.description-expanded-wrapper, .description-expanded-content');
 
         var dimensionsObservable = element.observeDimensions();
@@ -134,7 +134,7 @@
             // Only set the height if it's > 0 to avoid height issues where we use cards in other
             // places, such as customizeCardDialog. (See CORE-5814)
             filter(function(parentHeight) { return parentHeight > 0; }).
-            subscribe(function(parentHeight) {  element.css('height', parentHeight); });
+            subscribe(function(parentHeight) { element.css('height', parentHeight); });
         }
 
         // Give the visualization all the height that the description isn't using.

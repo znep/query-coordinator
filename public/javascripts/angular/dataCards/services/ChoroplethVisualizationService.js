@@ -60,7 +60,7 @@
 
       function createClassBreaks(options) {
         var classBreaks;
-        switch(options.method || 'jenks') {
+        switch (options.method || 'jenks') {
           case 'jenks':
             options.methodParam = options.numberOfClasses || 4;
             classBreaks = ss['jenks'](options.data, options.methodParam);

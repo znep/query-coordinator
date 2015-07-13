@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function TestPageController($scope, $rootScope, $log) {
+  function TestPageController() {
   }
 
   angular.

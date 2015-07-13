@@ -284,69 +284,69 @@
     var appliedFiltersForDisplayObservable = allCardsFilters.
       combineLatest(datasetColumnsObservable, function(filters, columns) {
 
-      function humanReadableOperator(filter) {
-        if (filter instanceof Filter.BinaryOperatorFilter) {
-          if (filter.operator === '=') {
+        function humanReadableOperator(filter) {
+          if (filter instanceof Filter.BinaryOperatorFilter) {
+            if (filter.operator === '=') {
+              return I18n.filter.is;
+            } else {
+              throw new Error('Only the "=" filter is currently supported.');
+            }
+          } else if (filter instanceof Filter.TimeRangeFilter) {
             return I18n.filter.is;
-          } else {
-            throw new Error('Only the "=" filter is currently supported.');
-          }
-        } else if (filter instanceof Filter.TimeRangeFilter) {
-          return I18n.filter.is;
-        } else if (filter instanceof Filter.ValueRangeFilter) {
-          return I18n.filter.is;
-        } else if (filter instanceof Filter.IsNullFilter) {
-          if (filter.isNull) {
+          } else if (filter instanceof Filter.ValueRangeFilter) {
             return I18n.filter.is;
+          } else if (filter instanceof Filter.IsNullFilter) {
+            if (filter.isNull) {
+              return I18n.filter.is;
+            } else {
+              return I18n.filter.isNot;
+            }
           } else {
-            return I18n.filter.isNot;
+            throw new Error('Cannot apply filter of unsupported type "' + filter + '".');
           }
-        } else {
-          throw new Error('Cannot apply filter of unsupported type "' + filter + '".');
         }
-      }
 
-      function humanReadableOperand(filter) {
-        if (filter instanceof Filter.BinaryOperatorFilter) {
-          if (_.isPresent(filter.operand.toString().trim())) {
-            return filter.humanReadableOperand || filter.operand;
-          } else {
+        function humanReadableOperand(filter) {
+          if (filter instanceof Filter.BinaryOperatorFilter) {
+            if (_.isPresent(filter.operand.toString().trim())) {
+              return filter.humanReadableOperand || filter.operand;
+            } else {
+              return I18n.filter.blank;
+            }
+          } else if (filter instanceof Filter.IsNullFilter) {
             return I18n.filter.blank;
+          } else if (filter instanceof Filter.TimeRangeFilter) {
+            var format = 'YYYY MMMM DD';
+            return I18n.t('filter.dateRange',
+              moment(filter.start).format(format),
+              moment(filter.end).format(format)
+            );
+          } else if (filter instanceof Filter.ValueRangeFilter) {
+            return I18n.t('filter.valueRange',
+              $.toHumaneNumber(filter.start),
+              $.toHumaneNumber(filter.end)
+            );
+          } else {
+            throw new Error('Cannot apply filter of unsupported type "' + filter + '".');
           }
-        } else if (filter instanceof Filter.IsNullFilter) {
-          return I18n.filter.blank;
-        } else if (filter instanceof Filter.TimeRangeFilter) {
-          var format = 'YYYY MMMM DD';
-          return I18n.t('filter.dateRange',
-            moment(filter.start).format(format),
-            moment(filter.end).format(format)
-          );
-        } else if (filter instanceof Filter.ValueRangeFilter) {
-          return I18n.t('filter.valueRange',
-            $.toHumaneNumber(filter.start),
-            $.toHumaneNumber(filter.end)
-          );
-        } else {
-          throw new Error('Cannot apply filter of unsupported type "' + filter + '".');
         }
-      }
 
-      return _.reduce(filters, function(accumulator, appliedFilters, fieldName) {
-        if ($.isPresent(appliedFilters)) {
-          if (appliedFilters.length > 1) {
-            $log.warn('Cannot apply multiple filters to a single card.');
+        return _.reduce(filters, function(accumulator, appliedFilters, fieldName) {
+          if ($.isPresent(appliedFilters)) {
+            if (appliedFilters.length > 1) {
+              $log.warn('Cannot apply multiple filters to a single card.');
+            }
+            var filter = _.first(appliedFilters);
+            accumulator.push({
+              column: columns[fieldName],
+              operator: humanReadableOperator(filter),
+              operand: humanReadableOperand(filter)
+            });
           }
-          var filter = _.first(appliedFilters);
-          accumulator.push({
-            column: columns[fieldName],
-            operator: humanReadableOperator(filter),
-            operand: humanReadableOperand(filter)
-          });
-        }
-        return accumulator;
-      }, []);
+          return accumulator;
+        }, []);
 
-    });
+      });
     $scope.$bindObservable('appliedFiltersForDisplay', appliedFiltersForDisplayObservable);
 
     $scope.clearAllFilters = function() {
@@ -688,7 +688,7 @@
 
     FlyoutService.register({
       selector: '.save-this-page .save-button',
-      render: function(element) {
+      render: function() {
         var buttonStatus = currentPageSaveEvents.value.status;
         var flyoutContent = {
           title: {

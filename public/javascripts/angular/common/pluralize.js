@@ -4,7 +4,7 @@
 // a port of the functionality from Ruby on Rails' Active Support Inflection classes into Javascript.
 // MIT Licensed
 
-  String.prototype._plural_rules = [
+  String.prototype.pluralRules = [
     [new RegExp('(m)an$', 'gi'), '$1en'],
     [new RegExp('(pe)rson$', 'gi'), '$1ople'],
     [new RegExp('(child)$', 'gi'), '$1ren'],
@@ -27,7 +27,7 @@
     [new RegExp('$', 'gi'), 's']
   ];
 
-  String.prototype._uncountable_words = [
+  String.prototype.uncountableWords = [
     'equipment', 'information', 'rice', 'money', 'species', 'series',
     'fish', 'sheep', 'moose', 'deer', 'news',
     'sugar', 'butter', 'water',
@@ -38,7 +38,7 @@
   ];
 
   String.prototype.pluralize = function(plural) {
-    function apply_rules(str, rules, skip, override) {
+    function applyRules(str, rules, skip, override) {
       if (override) {
         str = override;
       } else {
@@ -56,16 +56,16 @@
       return str;
     }
 
-    return apply_rules(
+    return applyRules(
       this,
-      this._plural_rules,
-      this._uncountable_words,
+      this.pluralRules,
+      this.uncountableWords,
       plural
     );
   };
 
   String.prototype.titleize = function() {
-    var str  = this.toLowerCase();
+    var str = this.toLowerCase();
     return str.replace(/(?:^|\s|-)\S/g, function(c) { return c.toUpperCase(); });
   };
 

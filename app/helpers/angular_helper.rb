@@ -9,21 +9,21 @@ module AngularHelper
   end
 
   def render_angular_config
-    javascript_tag("var socrataConfig = #{JSON(angular_config)}")
+    javascript_tag("var socrataConfig = #{JSON(angular_config)};")
   end
 
   def render_angular_translations
-    javascript_tag("var translations = #{angular_translations.to_json.html_safe};")
+    javascript_tag("var translations = #{json_escape(angular_translations.to_json)};")
   end
 
   def render_user
-    javascript_tag("var currentUser = #{@current_user.to_json}")
+    javascript_tag("var currentUser = #{json_escape(@current_user.to_json)};")
   end
 
   def render_metadata
     javascript_tag(
-      "var pageMetadata = #{@page_metadata.to_json}\n" \
-      "var datasetMetadata = #{@dataset_metadata.to_json}"
+      "var pageMetadata = #{json_escape(@page_metadata.to_json)};\n" \
+      "var datasetMetadata = #{json_escape(@dataset_metadata.to_json)};"
     )
   end
 

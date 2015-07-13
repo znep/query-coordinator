@@ -946,7 +946,7 @@
       },
 
       tileLoaded: function(tileId) {
-        this.outstandingTileDataRequests.delete(tileId);
+        this.outstandingTileDataRequests['delete'](tileId);
 
         if (this.outstandingTileDataRequests.size === 0) {
           this.options.onRenderComplete();

@@ -170,11 +170,11 @@
         );
 
         var aggregatedColumnSequence = aggregationSequence.
-          filter(function(value) { return value.function !== 'count'; }).
+          filter(function(value) { return value['function'] !== 'count'; }).
           pluck('fieldName');
 
         var nonAggregatedColumnSequence = aggregationSequence.
-          filter(function(value) { return value.function === 'count'; }).
+          filter(function(value) { return value['function'] === 'count'; }).
           combineLatest(firstCardSequence, function(aggregation, firstCard) {
             return firstCard;
           });

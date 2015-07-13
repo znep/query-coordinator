@@ -1,5 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
 
 <!--[if lte IE 7]>
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
@@ -14,7 +13,7 @@
         xmlns:v="urn:schemas-microsoft-com:vml"
         xmlns:og="http://opengraphprotocol.org/schema/" lang="en" class="ie"><![endif]-->
 <!--[if !IE]>-->
-  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
         xmlns:og="http://opengraphprotocol.org/schema/"><!--<![endif]-->
 
 <!--
@@ -76,7 +75,8 @@ http://www.socrata.com
 
 <body class="<%= "controller_#{controller.controller_name} action_#{controller.controller_name}_#{controller.action_name}#{@suppress_chrome ? ' suppressChrome' : ''} locale_#{I18n.locale} #{@body_class}" %>" data-locale="<%= I18n.locale %>" data-defaultlocale="<%= CurrentDomain.default_locale %>">
   <div id="skip-links">
-    <ul><%= render_text_template('{{urls.skiplinks}}') %></ul>
+    <% skiplink_content = render_text_template('{{urls.skiplinks}}') %>
+    <% if skiplink_content.present? %><ul><%= skiplink_content %></ul><% end %>
     <a href="#content">Skip to main content</a>
     <a href="#footerLinks">Skip to footer links</a>
     <%= yield :skip_links %>
@@ -129,7 +129,7 @@ http://www.socrata.com
 
       <%- end -%>
 
-      <a name="content"  tabindex="-1"></a>
+      <a id="content"  tabindex="-1"></a>
       <%= render_domain_template(@page_custom_chrome || 'content_chrome') if !module_enabled?(:govStat) || suppress_govstat? %>
       <%- if @suppress_content_wrapper -%>
         <%= yield :layout %>
@@ -143,7 +143,7 @@ http://www.socrata.com
 
   <%- if !@suppress_chrome -%>
   <div id="siteFooter" role="contentinfo">
-    <a name="footerLinks" tabindex="-1"></a>
+    <a id="footerLinks" tabindex="-1"></a>
     <%= render_domain_template(@page_custom_footer || 'footer_full') %>
   </div>
   <%- end -%>
@@ -187,7 +187,7 @@ http://www.socrata.com
     </script>
   <%- end -%>
 
-  <script type="text/javascript">
+  <script type="text/javascript">//<![CDATA[
     blist.feature_flags = <%= raw json_escape(FeatureFlags.derive(@view, request).to_json) %>;
     blist.namespace.fetch('blist.configuration');
     blist.configuration.strings = <%= safe_json(CurrentDomain.strings) %>;
@@ -240,7 +240,7 @@ http://www.socrata.com
         blist.configuration.onCurrentUserComplete(blist.configuration.govstat_links_cb)
       }
     <%- end -%>
-  </script>
+  //]]></script>
 
   <div id="modals">
     <%= yield :modals %>

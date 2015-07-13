@@ -6,7 +6,7 @@ module StoryTitle
     attr_accessor :title
 
     def title
-      @title ||= 'Test Story'
+      @title ||= 'Untitled Story'
     end
   end
 end

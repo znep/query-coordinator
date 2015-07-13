@@ -10,15 +10,15 @@ describe RequestHost do
 
     let(:environment_hash_without_x_socrata_host) do
       {
-        "REQUEST_METHOD"=>"GET",
-        "REQUEST_URI"=>"http://domain.in.host.header.com/some_path?query=value",
-        "SCRIPT_NAME"=>"/some_path",
-        "SERVER_NAME"=>"domain.in.host.header.com",
-        "SERVER_PORT"=>"80",
-        "HTTP_HOST"=>"domain.in.host.header.com",
-        "REQUEST_PATH"=>"/stories/admin",
-        "ORIGINAL_FULLPATH"=>"/stories/admin",
-        "ORIGINAL_SCRIPT_NAME"=>"/stories",
+        'REQUEST_METHOD' => 'GET',
+        'REQUEST_URI' => 'http://domain.in.host.header.com/some_path?query=value',
+        'SCRIPT_NAME' => '/some_path',
+        'SERVER_NAME' => 'domain.in.host.header.com',
+        'SERVER_PORT' => '80',
+        'HTTP_HOST' => 'domain.in.host.header.com',
+        'REQUEST_PATH' => '/stories/admin',
+        'ORIGINAL_FULLPATH' => '/stories/admin',
+        'ORIGINAL_SCRIPT_NAME' => '/stories'
       }
     end
 
@@ -30,7 +30,7 @@ describe RequestHost do
     context 'when the X-Socrata-Host header is set' do
       let(:env) do
         environment_hash_without_x_socrata_host.merge(
-          "HTTP_X_SOCRATA_HOST" => "domain.in.x.socrata.host.header.com"
+          'HTTP_X_SOCRATA_HOST' => 'domain.in.x.socrata.host.header.com'
         )
       end
 

@@ -38,6 +38,228 @@ ro:
       validation:
         mismatch: Parolele nu se potrivesc.
         terms: Trebuie să acceptaţi termenii serviciului şi politica de confidenţialitate.
+  angular:
+    dataCards:
+      add_card_dialog:
+        add_card: Adăugați card
+        add_this_card: Adăugați acest card
+        card_on_page: Cardul se află deja pe pagină
+        card_on_page_long: Acest card se află deja pe pagină
+        choose_column: Alegeți o coloană
+        column_chart_warning: 'Notă: Asta ar rezulta într-o diagramă tip bară, cu peste 100 de bare, ar putea fi mai mai lentă decât alte diagrame'
+        customize_prompt: Personalizați acest card
+        not_supported: Nu este acceptat momentan
+        not_supported_long: Acest tip de card nu este acceptat momentan
+        prompt: Alegeți o coloană dintre cele derulante de mai sus pentru a adăuga un card nou
+        settings: Setări
+        visualize_flyout: Vizualizați această coloană ca pe o {0}
+      aggregation_chooser:
+        count_label: numărați {0} per element
+        description: 'Vedeți elementele de date de mărimea sau culoarea:'
+        information: prin
+        number_of: Număr de
+        option_disabled: Această coloană nu poate fi utilizată cu un<br>număr total
+        sum_label: adăugați pentru fiecare {0}
+        sum_of: O sumă de
+        the_sum_of: Suma de
+        title: "Însumare"
+        too_many_columns:
+          message: "În acest moment nu vă putem furniza bilanțul ca o însumare a paginilor Data Lens care au mai mult de {0} coloane de tipul Număr sau Bani"
+          title: Se pare că setul de date conține mai mult de {0} coloane de numere
+      api_explorer:
+        additional_resources: 'Resurse suplimentare pentru acest API:'
+        api_button: API
+        api_button_title: Accesați acest set de date via API
+        code_libraries: Biblioteci codate
+        code_libraries_title: Descărcați clienții API din Biblioteca codată
+        documentation: Documentație
+        documentation_title: Vizualizare documentație API
+        formats: 'Această informație este disponibilă în mai multe formate:'
+        geojson: GeoJSON
+        json: JSON
+        title: API
+        url: 'Puteți accesa această informație via Socrata Open Data API la acest URL:'
+      card_controls:
+        collapse_card: Epuizați acest card
+        customize_disabled: "Încă nu există opțiuni de personalizare pentru acest card"
+        customize_enabled: Personalizați acest card
+        expand_card: Extindeți acest card
+        remove_card: Eliminați acest card
+      card_layout:
+        add_card_here: Adăugați cardul aici
+      common:
+        cancel: Anulare
+        cards:
+          choropleth: Choropleth
+          column_chart: Diagramă de tip coloană
+          distribution_chart: Diagramă de distribuție
+          feature_map: Hartă caracteristică
+          search_card: Căutare card
+          timeline_chart: Diagramă cronologică
+        change: Modificare
+        done: Gata
+        download: Descărcare
+        downloading: Se descarcă
+        error: Eroare
+        errors:
+          export_visualization_disabled: Această vizualizare nu este disponibilă<b>pentru exportarea imaginii
+          invalid_card: Vizualizare a cardului nevalidă
+          map_render_error: A survenit o eroare în încercarea de a reda această hartă.
+        latitude: Latitudine
+        longitude: Longitudine
+        no_value: Nici o valoare
+        ok: Ok
+        permissions:
+          permissions: Drepturi
+          private: Privat
+          public: Public
+      customize_bar:
+        changes_warning: Ați efectuat schimbări la această pagină
+        collapse_card: 'Pentru a intra în modul personalizare: Trageți în jos cardul mare, utilizând săgețile din colțul dreapta sus'
+        customize: Personalizare
+        customize_flyout: Apăsați pentru a personaliza aspectul sau afișajul acestei pagini
+        customizing: Se personalizează
+        customizing_flyout: Acum se efectuează personalizarea acestei pagini
+        customizing_flyout_instructions: Puteți apăsa pe acest buton pentru a previzualiza modificările dvs. și a le salva în orice moment
+        exit_visualization_export: 'Pentru a intra în modul personalizare: Ieșiți din modul "Descărcare vizualizare ca imagine" prin apăsarea butonului de Anulare din panoul Info'
+      customize_card_dialog:
+        map_layer:
+          custom: Hartă personalizată
+          standard: Standard
+          title: Suportul de bază al hărții
+        visualization_options:
+          title: Tip de card
+      distribution_chart:
+        drag_clear_help: Goliți intervalul filtrului
+        drag_help: Trageți pentru a schimba intervalul filtrului
+        errors:
+          error: A survenit o eroare încercând să redăm acest card.
+          no_data: Nu există date de afișat.
+      feature_map:
+        zoom_disabled: Funcția "Mărire" nu este disponibilă pentru moment. Vă rugăm să încercați mai târziu.
+      feedback_panel:
+        broken: Ceva nu pare în regulă
+        feedback: Feedback
+        like: Imi place
+        missing: Nu găsesc o caracteristică
+        other_option: Altele
+        screenshot_description: Cu ajutorul unei capturi de ecran, ne puteți arăta exact pe ce domeniu aveți feedback. Noi utilizăm <a href="https://usersnap.com" title="Visit UserSnap's homepage">UserSnap</a> pentru capturi de ecran. Citiți <a href="https://usersnap.com/privacy-policy" title="Read UserSnap's privacy policy">Politica lor de confidențialitate</a>.
+        screenshot_no: Nu, mulțumesc.
+        screenshot_prompt: Doriți să adăugați o captură de ecran în feedback-ul dvs?
+        screenshot_yes: Da, adaugă o captură de ecran
+      filter:
+        and: "și"
+        blank: gol
+        date_range: de la {0} la {1}
+        is: este
+        is_not: nu este
+        value_range: de la {0} la {1}
+        where: unde
+      flyout:
+        clear_filter: "Ștergere filtru"
+        clear_filter_long: Pagina apare cu filtrul acestei valori, apăsați pentru a-l șterge
+        clear_range_filter_long: Pagina apare cu filtrul acestei selecții, apăsați pentru a-l șterge
+        current_filter: Filtru curent
+        details: Apăsați pentru a vedea detalii
+        expand: Apăsați pentru a extinde
+        filtered_amount: Cantitate filtrată
+        total: Total
+      last_updated:
+        label: ultima actualizare
+      lens_type:
+        community: Comunitatea Data Lens
+        official: Data Lens official
+      manage_lens_dialog:
+        dataset_private_page_private: Din cauza faptului că setul de date sursă al acestei pagini este setat pe <b>Privat<b>, această pagină nu poate fi transformată pentru afișaj Public. Doar cei cu acces privilegiat o pot accesa și nu va apărea în catalogul public.
+        dataset_private_page_public: <span class="icon-warning"></span> Setul de date sursă al acestei pagini este setat pe <b>Privat<b>, așadar, deși acestă pagină este setată pentru afișaj Public, oricine nu are acces la setul de date sursă, nu va putea vedea pagina. Dar aceasta tot va apărea în catalogul public. Puteți modifica setul de date pentru afișaj Public, sau puteți seta această pagină pentru afișaj Privat.
+        dataset_public_page_private: Această pagină este setată pentru afișaj <b>Privat<b>, așadar doar cei cu acces privilegiat o pot vedea. Această pagină nu va apărea în catalogul public.
+        dataset_public_page_public: Această pagină și setul de date sursă sunt setate pentru afișaj <b>Public<b>, așadar oricine va putea vedea această pagină și va apărea în catalogul public.
+        title: Administrare
+      metadata:
+        data_as_csv: Date sursă complete ca și CSV (Excel)
+        edit_description_prompt: Prezentați o scurtă descriere a datelor, pentru a ajuta oamenii să înțeleagă despre ce este vorba de fapt. (Opțional)
+        page_name_placeholder: Fără nume
+        source_dataset: Set de date sursă
+        validation_error_max_length: Titlul dvs. este prea lung
+        validation_error_min_length: Vă rugăm să introduceți un titlu
+        validation_error_required: Vă rugăm să introduceți un titlu
+        visualization_as_image: Vizualizare ca imagine
+        visualization_as_image_disabled_flyout: Vă rugăm să salvați pagina pentru a putea descărca o vizualizare ca și imagine
+      mobile_warning_dialog:
+        acknowledgement: Ok, am înțeles!
+        description: Lucrăm la îmbunătățirea experienței dvs. pe acest site de pe dispozitivele mobile.
+      page_header:
+        logo: Siglă
+        sign_in: Conectare
+        sign_out: Deconectare
+        sign_up: "Înregistrare"
+      quick_filter_bar:
+        clear_all_flyout: Apăsați pentru a reseta toate filtrele
+        filter_title: Care arată <span class="light">{0}</span>
+      related_views:
+        button: Alte vizualizări ale acestei informații
+        title: Alte vizualizări ale acestei informații
+      revert_button:
+        flyoutHasChanges: Apăsați pentru a anula toate modificările efectuate de la ultima salvare
+        flyoutNoChanges: Nu există modificări pentru revocare
+        text: Revocați modificările
+      rich_text_editor:
+        bold: " Aldin"
+        insert_link: Introduceți link
+        italic: Cursiv
+        link: Link
+        link_placeholder: Introduceți un URL aici
+        underline: Subliniat
+      save_as:
+        flyoutFailedBody: Vă rugăm să contactați Serviciul de Asistență Socrata
+        flyoutFailedTitle: A survenit o eroare
+        flyoutIdle: Apăsați pentru a salva modificările într-o pagină nouă
+        flyoutNoChanges: Nu există modificări de salvat
+        text: Salvare ca
+      save_as_panel:
+        description: Introduceți o descriere pentru noua dvs. pagină (opțional)
+        new_name: Salvați pagina curentă sub un nume nou
+        title: Salvare ca
+      save_button:
+        failed: Eșuat
+        flyoutFailedBody: Vă rugăm să contactați Serviciul de Asistență Socrata
+        flyoutFailedTitle: A survenit o eroare
+        flyoutIdle: Apăsați pentru a salva modificările
+        flyoutNoChanges: Nu există modificări de salvat
+        saved: Salvat!
+        saving: Se salvează...
+      search_card:
+        invalid_search: "Încercați să căutați un număr care să nu conțină litere"
+        loading: Sugestii de încărcare...
+        no_results: Căutarea dvs. s-a încheiat fără a găsi rezultate. Verificați ortografia sau căutați un alt termen.
+        one_example: 'Exemplu: ''{0}'''
+        prompt_number: Introduceți un număr și apăsați Enter pentru a căuta
+        prompt_text: Scrieți un text și apăsați Enter pentru a căuta
+        search_info: Se afișează {0} din {1} rezultate potrivite
+        two_examples: 'Exemple: ''{0}'' sau ''{1}'''
+      table:
+        a_to_z: A-Z
+        ascending: crescător
+        descending: descrescător
+        largest_first: cel mai mare primul
+        loading: Se încarcă...
+        newest_first: cel mai nou primul
+        no_rows: Nu există rânduri pentru afișare
+        oldest_first: cel mai vechi primul
+        range_label: "{0} <strong>{1}-{2} din {3}</strong>"
+        range_label_all: Se afișează toate {0} {1}
+        range_label_subtitle: Se afișează {0} {1} <span class="subtitle"> din {2}</span>
+        smallest_first: cel mai mic primul
+        sort: Apăsați pentru sortare {0}
+        sorted: Sortate {0}
+        z_to_a: Z-A
+      timeline_chart:
+        drag_clear_help: "Ștergeți aria de filtrare"
+        drag_help: Trageți pentru a schimba aria de filtrare
+        errors:
+          bad_dates: Diagrama nu poate fi redată din cauza introducerii unor valori nevalide ale datelor.
+          default: Diagrama nu poate fi redată.
+          no_data: Diagrama nu poate fi redată fără introducerea unor valori.
   controls:
     browse:
       actions:
@@ -99,6 +321,10 @@ ro:
           forms: Formulare
           href: Seturi de date externe
           maps: Hărţi
+          new_view: Paginile Data Lens
+          new_view_help: Ce este asta?
+          story: Povestiri
+          story_help: Aflați mai multe despre Povestiri
           unpublished: Seturi de date nepublicate
         view_types_singular_title: tip
         view_types_title: Vizualizare tipuri
@@ -331,6 +557,10 @@ ro:
       delete_warning_multi_column: Doriţi să ştergeţi coloanele selectate? Toate datele din aceste coloane vor fi eliminate!
       delete_warning_single_column: Doriţi să ştergeţi coloana selectată? Toate datele din această coloană vor fi eliminate!
       edit_column_properties: Editare proprietăţi coloană
+      errors:
+        cannot_edit_at_this_time: "În acest moment, această coloană nu poate fi editată. Vă rugăm să încercați mai târziu."
+        primary_key_collision: Această valoare există deja ca și cheie principală. Nu o puteți rescrie.
+        row_locked_for_edit: "În prezent, nu putem edita un rând tocmai creat. Încă se lucrează pentru a face acest lucru posibil. Pentru moment, dați un Refresh la pagină, înainte de a edita acest rând."
       filter_this_column: Filtraţi această coloană
       geocodes_pending: Rândurile din coloana de localizare sunt încă în geocodare. Vă rugăm să aşteptaţi până când ele sunt finalizate, pentru a publica acest set de date.
       hide_column: Ascundere coloană
@@ -513,6 +743,7 @@ ro:
       percent: Procent
       phone: Telefon
       photo: Fotografie (imagine)
+      point: Punct
       stars: Stea
       text: Text simplu
       url: URL site web
@@ -667,8 +898,11 @@ ro:
       page: pagină
       previous_page: Pagina anterioară
     precision_style:
-      scientific: "Ştiinţific: 1.0204e+3"
-      standard: "Standard: 1020.4"
+      currency: 'Valută: 1020,40 $'
+      financial: 'Financiar: (1020,40)'
+      percentage: 'Procente: 1020,40%'
+      scientific: "Ştiinţific (1.0204e+3) "
+      standard: Standard (1020.4)
     required: Obligatoriu
     share_types:
       contributor: Colaborator
@@ -704,12 +938,14 @@ ro:
       grouped: vizualizare grupată
       href: set de date extern
       map: hartă
+      new_view: Pagina Data Lens
       table: tabel
       working_copy: copie funcţională
     view_types_plural:
       api: API-uri
       calendar: Calendare
       chart: Diagrame
+      data_lens: Data Lenses
       filter: Vizualizări filtrate
       form: Formulare
       grouped: Vizualizări grupate
@@ -750,13 +986,18 @@ ro:
         this_page: Această pagină
         tweet_contents: 'Uitaţi-vă la %{dataset} de pe %{company}: %{url}'
         twitter: Partajare pe Twitter
+      visualization:
+        exploreLink: Explorare date
+        exploreLink_prompt: Afișează link
     configurator:
       actions_components: Acțiuni
       advanced_components: Componente avansate
       content_components: Conținut
       data_components: Date
       input_components: Intrare
+      redo_title: Nu există modificări de refăcut
       report_components: Componente raport
+      undo_title: Nu există modificări de anulat
     context_picker:
       select_dataset: Selectare set de date
       view_data: Vizualizare date
@@ -824,6 +1065,10 @@ ro:
       description_html: Vă rugăm să încercaţi din nou în câteva momente, sau <a href="http://support.socrata.com">raportaţi această eroare</a> cu detalile acţiunii pe care încercaţi să o realizaţi.
       somethings_wrong: Ceva este în neregulă!
       were_sorry: Ne pare rău, dar a survenit o problemă la procesarea solicitării dvs.
+    error_site_unavailable:
+      description: Această pagină web sprijinită de Socrata este momentan indisponibilă.
+      help_html: Puteți verifica întotdeauna starea în care se află Socrata la <a href="http://status.socrata.com">http://status.socrata.com<a> sau ne puteți vedea contul de Twitter la <a href="https://twitter.com/socrata">@socrata</a>.
+      title: Pagina web este momentan indisponibilă
     not_acceptable_406:
       page_not_found: Pagina nu a fost găsită.
       were_sorry: Ne pare foarte rău, dar pagina solicitată de dvs. nu este disponibilă în formatul solicitat.
@@ -1247,6 +1492,7 @@ ro:
         supported: Tipurile de fişiere suportate sunt CSV, TSV şi Excel. Protocoalele suportate sunt HTTP şi HTTPS.
         url_prompt: Care este URL-ul web al fişierului pe care doriţi să îl importaţi?
       errors:
+        insecure_esri_url: A fost adăugat un URL nesigur al suportului de hartă de tip ESRI. Drept urmare, unele caracteristici ale acestui set de date nu vor funcționa.
         invalid_crossload_url: Vă rugăm să introduceți un URL valabil, care începe fie cu HTTP sau HTTPS.
         invalid_url: Acesta nu pare a fi un URL valabil.
         missing_data_provider: Trebuie să specificați furnizorul de date (atribuire) în cadrul unei licențe Creative Commons.
@@ -1354,6 +1600,7 @@ ro:
           underline: Subliniere
           undo: Desfă
         full_screen: Comtuare la ecran complet
+        out_of_date: Acest set de date a expirat de %{age}
         publish_button: Publicare set de date
         publish_prompt: Acest set de date este o copie funcţională şi nu este disponibilă public. Odată ce aţi realizat modificările dorite, acest set de date trebuie să fie publicat pentru a fi disponibil public.
         publish_rights: Doar un proprietar sau un edior poate oublica acest set de date
@@ -1375,6 +1622,7 @@ ro:
         subscribe_prompt: Abonare prin e-mail sau RSS
         unpublished_unsavable: Modificările datelor de mai jos sunt salvate automat. Filtrele şi căutările nu pot fi salvate într-o copie funcţională a setului de date. Vă rugăm să creaţi o vizualizare a unui set de date publicat.
         unsaved_title: Vizualizare nesalvată
+        up_to_date: Acest set de date este actual începând cu %{current}
         view_published_html: Vizualizaţi <span class="publishedName">setul de date</span> publicat
         view_type: Vizualizare ca %{type}
         view_types:
@@ -1438,6 +1686,7 @@ ro:
         edit_dataset_button: Editare set de date
         error_publishing_html: A survenit o eroare la realizarea unei copii funcţionale a setului dvs. de date. Vă rugăm <a href="http://support.socrata.com" rel="external">contactaţi echipa de suport tehnic Socrata</a>.
         error_publishing_unpublished: Doar seturile de date nepublicate pot fi publicate.
+        immutable: Acest set de date este numai pentru citire și nu poate fi editat decât prin programare. Vă rugăm să vizualizați documentația SODA 2 pentru mai multe detalii.
         needs_copy: Acest set de date este publicat şi nu poate fi editat în mod direct. O copie funcţională %{status} care vă permite să realizaţi toate modificările dorite înainte de a le face disponibile public.
         needs_copy_status:
           available: este disponibilă
@@ -1478,7 +1727,9 @@ ro:
           validation:
             view_column: Nu puteţi adăuga o coloană la o vizualizare
         api:
+          api_docs: Documente API
           column_ids_title: 'ID-uri coloane:'
+          developer_portal: Portalul dezvoltatorului
           endpoint_title: 'Punct terminal acces API:'
           intro_html: "<strong>Socrata Open Data API</strong> (SODA) permite dezvoltatorilor de software să acceseze datele găzduite pe Socrata în mod programatic. Dezvoltatorii pot crea aplicaţii ce utilizează API-urile SODA pentru vizualizare şi combinare. Socrata lucrează cu seturi de date în moduri noi şi captivante. Creaţi o aplicaţie pentru iPhone care vizualizează cheltuielile guvernamentale din zona dvs., o aplicaţie web care permite cetăţenilor să caute potenţiale beneficii guvernamentale pe care le-au scăpat din vedere, sau un serviciu care trimite automat e-mail-uri atunci când la facturile pe care doriţi să le urmăriţi au fost adăugate ştampile noi."
           reference_html: Pentru a începe să accesaţi acest set de date în mod programatic, utilizaţi punctul terminal APi furnizat mai jos. Pentru mai multe informaţii şi exemple privind modul în care puteţi utiliza Socrata Open Data API, consultaţi <a href="http://dev.socrata.com" rel="external">Documentaţia Dezvoltatorului</a>.
@@ -1850,6 +2101,7 @@ ro:
             non_tabular: Pot fi printate doar datele tabulare
         download:
           download_as: Descărcare ca
+          download_dataset: Vă rugăm să descărcați setul de date din care derivă această vizualizare.
           geo_header: Descărcare date geospaţiale
           layers_header: Descărcare straturi tabulare
           subtitle: Descărcaţi o copie a acestui set de date în format static
@@ -2096,6 +2348,13 @@ ro:
             title: Vizualizări
         visualize:
           choose_type: Tip vizualizare
+      new_ux_button: Arată-mi
+      new_ux_creating_page: Această pagină nouă Data Lens este în curs de creare și analiză
+      new_ux_error: Nu este disponibilă o previzualizare pentru acest set de date.
+      new_ux_link: "Încercați acest set de date din instrumentarul nostru de explorare a datelor (versiune beta)"
+      new_ux_nbe_warning: 'Doar intern: Vizualizare UX veche a setului de date New Backend. Utilizatorii obișnuiți ar fi trebuit să fie redirecționați la %{url}'
+      new_ux_text: Vedeți această informație într-o nouă experiență Data Lens
+      new_ux_title: Sunteți pregătit(ă) să explorați vizual?
       save_dialog:
         descriptions:
           leaving: Aveţi date nesalvate care se vor pierde dacă părăsiţi această pagină. Vă rugăm să alegeţi dacă doriţi sau nu să salvaţi această vizualizare înainte de a ieşi, sau alegeţi "Anulare" pentru reveni la pagină.
@@ -2121,6 +2380,7 @@ ro:
         subscribed_html: <strong>În acest moment sunteţi abonat la acest <span class="datasetTypeName">set de date</span> prin e-mail</strong> şi veţi primi notificări atunci când vor fi publicate date noi.
         title_html: Abonaţi-vă la &quot;<span class="datasetName">%{name}</span>&quot; <span class="datasetTypeNameUpcase">setul de date</span>
         unsubscribe: Dacă nu doriţi să mai primiţi notificări, debifaţi caseta "Abonare" de mai jos.
+      unable_to_find_dataset_page: Nu a fost găsită o pagină Data Lens pentru acest set de date.
     edit_metadata:
       about: Despre
       additional_source: Sursă suplimentară
@@ -2177,6 +2437,7 @@ ro:
       return: Reveniţi la setul de date
       row_class: Clasă rând
       row_identifier: Identificator rând
+      row_identifier_help_text: Identificatorul rândului nu poate fi schimbat din moment ce o vizualizare a fost publicată.
       save: Salvare
       save_changes: Salvare modificare
       semantics_rdf: Semantice şi RDF
@@ -2248,6 +2509,7 @@ ro:
     import_pane:
       analyzing: Se analizează fişierul dvs...
       assure_accessible: Vă rugăm să vă asiguraţi că fişierul dvs. este accesibil şi valabil şi încercaţi din nou.
+      bytes_imported: "%{num}octeți importați până acum."
       combine_multiple_cols: "(Combinaţi coloane multiple...)"
       downloading: Fişierul dvs. se descarcă...
       filetype_error_blist: Vă rugăm să alegeţi un fişier CSV, TSV, XLS sau XLSX.
@@ -2316,6 +2578,7 @@ ro:
               nomination_moderated: Este moderată orice nominalizare
               privileged_account_created: Un utilizator îşi crează contul privilegiat
               user_affected: Acţiuni care vă afectează în mod direct, precum răspunsuri la comentarii şi actualizări de status
+              view_deleted: Orice vizualizare este ștearsă
               view_made_public: Orice vizualizare este făcută publică
             policy: "%{site} vă respectă intimitatea şi nu vă va trimite niciodată e-mail-uri de marketing prin intermediul listei sale şi nici nu va da e-mail-ul dvs. unei terţe părţi. E-mail-urile trimise de pe acest site includ notificări privind contul şi actualizări la seturile de date pe care le-aţi creat sau la care v-aţi abonat."
             send_error: A survenit o problemă la trimiterea e-mail-ului dvs. Vă rugăm să încercaţi mai târziu.
@@ -2337,6 +2600,9 @@ ro:
           callback_prefix: Prefix apel returnat
           callback_prefix_help_html: De exemplu, în cazul în care aplicaţia dvs. va returna apelul la <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> şi <span class="code">https://my-domain.com/socrata-app/profile</span>, veţi dori să furnizaţi <span class="code">https://my-domain.com/socrata-app</span> ca fiind prefixul dvs. Vă rugăm să reţineţi că trebuie să includeţi cel puţin întregul nume al domeniului.
           callback_prefix_prompt: Furnizaţi prefixul url-ului securizat (https) pentru retunarea apelului atunci când utilizaţi OAuth
+          core_error:
+            already_exists: Există deja o aplicație cu numele %{app_name}
+            another_user: Nu poate fi creată o aplicație pentru un alt utilizator
           create_error: 'A survenit o eroare la crearea token-ului aplicaţiei dvs.: %{message}'
           create_success: Aplicaţia dvs. a fost creată
           delete_confirm: Sunteţi sigur că doriţi să ştergeţi aceasta? app_token corespondent nu va mai fi valabil
@@ -2416,12 +2682,15 @@ ro:
       success: Parola a fost resetată cu succes.
       title: Resetare parolă
     sign_in:
+      auth0_intro: Există mai multe metode prin care vă puteți conecta. Dacă încă nu v-ați înregistrat pentru un cont, alegeți opțiunea cea mai convenabilă pentru dvs. Dacă aveți deja un cont, utilizați și acum aceeași opțiune.
+      back_to_sign_in_selection: <a class="login-back">Înapoi la opțiunile de conectare<a>
       failed: Nu s-a putut realiza autentificarea cu acea adresă de e-mail şi parolă. Vă rugăm să încercaţi din nou
       form:
         sign_in_button: Autentificare
       headline: Autentificaţi-vă pe %{site}
       mismatch: Parolele nu se potrivesc. Vă rugăm să încercaţi din nou
       prompt_html: Autentificaţi-vă cu <strong>Socrata ID</strong>
+      sign_in_with: "<strong>Conectare</strong> la %{provider}"
       tips_html: Utilizaţi-vă e-mail-ul şi parola pentru a vă autentifica în toate site-urile <strong>dezvoltate de <a href="http://www.socrata.com" rel="external">Socrata</a></strong>.
     sign_up:
       form:

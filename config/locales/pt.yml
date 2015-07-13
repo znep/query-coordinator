@@ -5,7 +5,7 @@ pt:
         confirm_password: Confirmar Senha
         display_name: Nome de Apresentação
         email: Endereço de Email
-        forgot_password: Esqueceu sua senha?
+        forgot_password: Esqueceu sua Senha?
         lockout_warning: Por motivos de segurança, três tentativas falhadas de início de sessão num espaço de 15 minutos irão resultar no bloqueio desta conta por 30 minutos.
         no_account: Não tem uma conta?
         password: Senha
@@ -38,6 +38,228 @@ pt:
       validation:
         mismatch: As palavras-passe não correspondem.
         terms: Deve aceitar os termos do serviço e a política de privacidade.
+  angular:
+    dataCards:
+      add_card_dialog:
+        add_card: Adicionar o cartão
+        add_this_card: Adicionar este cartão
+        card_on_page: O cartão já consta da página
+        card_on_page_long: Este cartão já se encontra na página
+        choose_column: Selecione uma coluna...
+        column_chart_warning: 'Atenção: Isto resultaria num gráfico de barras com mais de cem barras, podendo ser mais lento do que os outros gráficos'
+        customize_prompt: Personalize este cartão
+        not_supported: Não é suportado atualmente
+        not_supported_long: Este tipo de cartão não é suportado atualmente
+        prompt: Selecione uma coluna a partir da janela suspensa acima para adicionar um novo cartão.
+        settings: 
+        visualize_flyout: Visualize esta coluna como um {0}
+      aggregation_chooser:
+        count_label: conte {0}  por cada elemento
+        description: 'Veja elementos de dados dimensionados ou coloridos por:'
+        information: pelo(a)
+        number_of: Número de
+        option_disabled: C
+        sum_label: Adicionar por cada {0}
+        sum_of: A quantia de
+        the_sum_of: A quantia de
+        title: Agregação
+        too_many_columns:
+          message: Neste momento não nos é possível fornecer uma síntese como um agregado para páginas Data Lens que possuam mais de {0} colunas de tipo de Número ou de Dinheiro.
+          title: Parece que este conjunto de dados contém mias de {0} colunas de número
+      api_explorer:
+        additional_resources: 'Recursos adicionais para esta API:'
+        api_button: API
+        api_button_title: Aceda a este conjunto de dados através de API
+        code_libraries: Bibliotecas de código
+        code_libraries_title: Descarregue clientes API a partir da Biblioteca de código
+        documentation: Documentação
+        documentation_title: Ver documentação API
+        formats: 'Estes dados estão disponíveis em diversos formatos:'
+        geojson: GeoJSON
+        json: JSON
+        title: API
+        url: 'Pode aceder a estes dados através da API de Dados Abertos API neste URL:'
+      card_controls:
+        collapse_card: Destruir este cartão
+        customize_disabled: Ainda não existem opções de personalização para este cartão
+        customize_enabled: Personalizar este cartão
+        expand_card: Expandir este cartão
+        remove_card: Eliminar este cartão
+      card_layout:
+        add_card_here: Adicionar o cartão aqui
+      common:
+        cancel: Cancelar
+        cards:
+          choropleth: Choropleth
+          column_chart: Gráfico de colunas
+          distribution_chart: Gráfico de distribuição
+          feature_map: Apresentar mapas
+          search_card: 'Procurar o Cartão '
+          timeline_chart: Gráfico de linha do tempo
+        change: Alterar
+        done: Concluído
+        download: Descarregar
+        downloading: A descarregar
+        error: Erro
+        errors:
+          export_visualization_disabled: Esta visualização não está disponível<br/>para a exportação de imagens
+          invalid_card: 'Visualização inválida de Cartão '
+          map_render_error: Foi encontrado um erro ao tentarmos apresentar este mapa.
+        latitude: Latitude
+        longitude: Longitude
+        no_value: Sem qualquer valor
+        ok: OK
+        permissions:
+          permissions: Autorizações
+          private: Privado
+          public: Público
+      customize_bar:
+        changes_warning: Procedeu a alterações nesta página.
+        collapse_card: 'Para entrar no modo de personalização: Colapse o cartão grande utilizando as setas existentes no seu canto superior direito'
+        customize: Personalizar
+        customize_flyout: Clique para personalizar a apresentação desta página
+        customizing: A personalizar
+        customizing_flyout: Encontra-se agora a personalizar esta página
+        customizing_flyout_instructions: Pode clicar neste botão a qualquer momento para pré-visualizar as suas alterações e guardá-las a qualquer momento.
+        exit_visualization_export: 'Para entrar no modo de personalização: Saia do modo "Desacarregar a Visualização como Imagem" clicando no botão cancelar no Painel de Informações'
+      customize_card_dialog:
+        map_layer:
+          custom: Mapa Personalizado
+          standard: Padrão
+          title: Camada de base do mapa
+        visualization_options:
+          title: Tipo de cartão
+      distribution_chart:
+        drag_clear_help: Limpar a gama de filtros
+        drag_help: Arrastar para alterar a gama de filtros
+        errors:
+          error: Foi encontrado um erro ao tentar apresentar este cartão.
+          no_data: Não existem dados para apresentar.
+      feature_map:
+        zoom_disabled: A ampliação está temporariamente indisponível. Queira tentar novamente mais tarde.
+      feedback_panel:
+        broken: Algo parece estar fracionado
+        feedback: Análise
+        like: Gosto disto
+        missing: Falta-me uma caraterística
+        other_option: Outro
+        screenshot_description: Com uma imagem do ecrã pode mostrar-nos precisamente aquilo em que possui retorno. Utilizaremos <a href="https://usersnap.com" title="Visit UserSnap's homepage">UserSnap</a> para captar imagens do ecrã. Leia a sua <a href="https://usersnap.com/privacy-policy" title="Read UserSnap's privacy policy">privacy policy</a>.
+        screenshot_no: Não, obrigado.
+        screenshot_prompt: Pretende incluir uma captação de ecrã na sua análise?
+        screenshot_yes: Sim, incluir uma captação de ecrã
+      filter:
+        and: e
+        blank: em branco
+        date_range: De {0} a {1}
+        is: "é"
+        is_not: não é
+        value_range: De {0} a {1}
+        where: onde
+      flyout:
+        clear_filter: Limpar o filtro
+        clear_filter_long: A página é atualmente filtrada por este valor, clique para a limpar
+        clear_range_filter_long: Esta página é atualmente filtrada por esta seleção, clique para a limpar
+        current_filter: Filtro atual
+        details: Clique para ver os detalhes
+        expand: Clique para expandir
+        filtered_amount: Valor filtrado
+        total: Total
+      last_updated:
+        label: "último atualizado"
+      lens_type:
+        community: lente de dados da comunidade
+        official: Lente de dados oficial
+      manage_lens_dialog:
+        dataset_private_page_private: Devido ao facto de o conjunto de dados da fonte desta página estar definido como <b>Private</b>, esta página não pode tornar-se pública.  Apenas os utilizadores com acesso privilegiado poderão visaualizá-la e a mesma não irá surgir no catálogo público.
+        dataset_private_page_public: <span class="icon-warning"></span> O conjunto de dados da fonte desta página está definido como <b>Private</b>, por isso embora esta página esteja definida para o público, qualquer pessoa sem acesso ao conjunto de dados da fonte não conseguirá visualizar a mesma. Continuará a aparecer no catálogo público. Deverá considerar a definir o conjunto de dados como Públicos, ou então definir esta página como Privada.
+        dataset_public_page_private: Esta página está definida como <b>Private</b>, pelo que apenas aqueles que possuem acesso privilegiado poderão visualizá-la. Não irá surgir no catálogo público.
+        dataset_public_page_public: Esta página e o conjunto de dados da sua fonte são ambos <b>Públicos</b>, por isso qualquer pessoa poderá visualizá-la e a mesma irá surgir no catálogo público.
+        title: Gerir
+      metadata:
+        data_as_csv: Dados de fontes completos como CSV (Exel)
+        edit_description_prompt: Dê à sua página uma boa descrição que ajude as pessoas a compreenderem a história que os seus dados estão a tentar contar. (Opcional)
+        page_name_placeholder: Sem título
+        source_dataset: conjunto de dados da fonte
+        validation_error_max_length: O seu título é demasiado extenso
+        validation_error_min_length: Queira introduzir um título
+        validation_error_required: Queira introduzir um título
+        visualization_as_image: Visualização como imagem
+        visualization_as_image_disabled_flyout: Queira guardar a página para descarregar uma visualização como uma imagem
+      mobile_warning_dialog:
+        acknowledgement: Ok, consegui!
+        description: Estamos a trabalhar para melhorar a experi
+      page_header:
+        logo: Logotipo
+        sign_in: Increver-se
+        sign_out: Finalizar a sessão
+        sign_up: Iniciar a sessão
+      quick_filter_bar:
+        clear_all_flyout: Clique para redefinir todos os filtros
+        filter_title: Showing <span class="light">the {0}</span>
+      related_views:
+        button: Outras vistas destes dados
+        title: Outras vistas destes dados
+      revert_button:
+        flyoutHasChanges: Clique para anular todas as alterações desde que guardou pela última vez
+        flyoutNoChanges: Não existem alterações para anular
+        text: Reverter as alterações
+      rich_text_editor:
+        bold: Negrito
+        insert_link: Introduza a ligação
+        italic: Itálico
+        link: Ligação
+        link_placeholder: Introduza uma URL aqui
+        underline: Sublinhar
+      save_as:
+        flyoutFailedBody: Queira contactar o Serviço de Apoio ao Cliente da Socrata
+        flyoutFailedTitle: Ocorreu um erro
+        flyoutIdle: Clique para guardar as suas alterações como uma nova página
+        flyoutNoChanges: Sem alterações para guardar
+        text: Guardar como
+      save_as_panel:
+        description: Introduza uma descrição para a sua nova página (opcional)
+        new_name: Guarde a página atual com um novo nome.
+        title: Guardar como
+      save_button:
+        failed: Falhou
+        flyoutFailedBody: Queira contactar o serviço de apoio da Socrata
+        flyoutFailedTitle: Ocorreu um erro
+        flyoutIdle: Clique para guardar as suas mudanças
+        flyoutNoChanges: Sem alterações para guardar
+        saved: Guardado!
+        saving: A guardar...
+      search_card:
+        invalid_search: Tente pesquisar um número que não contenha letras.
+        loading: A carregar sugestões...
+        no_results: A sua pesquisa não teve resultados. Verifique a sua ortografia ou tente um termo diferente.
+        one_example: 'Exemplo: ''{0}'''
+        prompt_number: Digite um número e prima enter para pesquisar
+        prompt_text: Digite algum texto e prima enter para pesquisar
+        search_info: Exibindo {0} de {1} resultados correspondentes
+        two_examples: 'Examplos: ''{0}'' ou ''{1}'''
+      table:
+        a_to_z: De A a Z
+        ascending: em ascensão
+        descending: descendente
+        largest_first: O maior em primeiro lugar
+        loading: A carregar...
+        newest_first: O mais recente em primeiro lugar
+        no_rows: Sem colunas para apresentar
+        oldest_first: Os mais velhos primeiro
+        range_label: "{0} <strong>{1}-{2} de {3}</strong>"
+        range_label_all: Exibindo todos {0} {1}
+        range_label_subtitle: Exibindo {0} {1} <span class="subtitle">out of {2}</span>
+        smallest_first: O mais pequeno primeiro
+        sort: Clique para ordenar
+        sorted: Orgnizados {0}
+        z_to_a: De Z a A
+      timeline_chart:
+        drag_clear_help: Limpar a gama de filtros
+        drag_help: Arrastar para alterar a gama de filtros
+        errors:
+          bad_dates: O gráfico não pode ser exibido devido a valores de data inválidos.
+          default: O gráfico não pode ser exibido.
+          no_data: O gráfico não pode ser apresentado sem quaisquer valores.
   controls:
     browse:
       actions:
@@ -59,8 +281,8 @@ pt:
         expand_section: Clique para expandir
         less_options: Ver menos
         manage_api:
-          button: Gerir
-          title: Gerir esta API
+          button: Gerenciar
+          title: Gerenciar esta API
         moderation:
           accept: Aceitar
           reject: Rejeitar
@@ -75,7 +297,7 @@ pt:
         suggest_dataset: Não encontrou o que estava procurando? Sugira uma tabela.
         suggest_dataset_short: Sugerir uma tabela
         suggest_dataset_verb: Sugerir
-      back_to_dataset: Voltar à tabela
+      back_to_dataset: Voltar à Tabela
       facets:
         categories_singular_title: categoria
         categories_title: Categorias
@@ -97,16 +319,20 @@ pt:
           datasets: Tabelas
           filters: Visualizações filtradas
           forms: Formulários
-          href: Tabelas externas
+          href: Tabelas Externas
           maps: Mapas
-          unpublished: Tabelas não-publicadas
+          new_view: Páginas de Data Lens
+          new_view_help: O que é isto?
+          story: Histórias
+          story_help: Conheça as histórias
+          unpublished: Tabelas Não-Publicadas
         view_types_singular_title: tipo
-        view_types_title: Ver tipos
+        view_types_title: Ver Tipos
       listing:
         comment_count: Número de comentários
         federation_source: Federado de %{source}
         federation_source_html: Fornecido por %{source_link}
-        no_results: Sem resultados
+        no_results: Sem Resultados
         result_count: Mostrando %{this} de %{total}
         table_header:
           name: Nome
@@ -121,7 +347,7 @@ pt:
         no_matching_rows: Não foram encontradas linhas correspondentes.
         title_html: 'Mostrando <span class="rowResultCountText"></span> de <span class="totalResultCountText"></span> linhas correspondentes <a href="#" class="rowSearchLink">(ver resultados)</a>:'
       search: Procurar
-      sort_period_title: Período de ordenamento
+      sort_period_title: Período de Ordenamento
       sort_periods:
         month: Este mês
         week: Esta semana
@@ -131,7 +357,7 @@ pt:
         alpha: Alfabética
         comments: Com Mais Comentários
         last_modified: Atualizado Recentemente
-        most_accessed: Mais Acessado
+        most_accessed: Mais Acessadas
         newest: Mais Recente
         oldest: Mais Antigo
         rating: Melhor Avaliado
@@ -330,6 +556,10 @@ pt:
       delete_warning_multi_column: Quer deletar as colunas selecionadas? Todos os dados nestas colunas serão removidos!
       delete_warning_single_column: Quer eliminar a coluna selecionada? Todos os dados desta coluna serão removidos!
       edit_column_properties: Editar as propriedades da coluna
+      errors:
+        cannot_edit_at_this_time: A coluna não pode ser editada neste momento. Queira tentar novamente mais tarde.
+        primary_key_collision: Este valor já existe como chave primária. Não pode sobrescrevê-lo.
+        row_locked_for_edit: Atualmente não podemos editar uma coluna acabada de criar. Estamos a trabalhar no sentido de tornar isso possível. Por agora refresque a página antes de editar esta coluna.
       filter_this_column: Filtrar esta coluna
       geocodes_pending: As linhas na coluna de localização ainda estão sendo geocodificadas. Por favor, espere até que estejam terminadas para publicar esta tabela
       hide_column: Omitir coluna
@@ -512,6 +742,7 @@ pt:
       percent: Porcentagem
       phone: Telefone
       photo: Foto (Imagem)
+      point: Ponto
       stars: Estrela
       text: Texto simples
       url: URL da página
@@ -667,8 +898,11 @@ pt:
       page: página
       previous_page: Página anterior
     precision_style:
-      scientific: "Científica: 1,0204e+3"
-      standard: "Padrão: 1020,4"
+      currency: 'Divisa: $1020.40'
+      financial: 'Financeiro: (1020.40)'
+      percentage: 'Percentagem: 1020.40%'
+      scientific: Científica (1,0204e+3)
+      standard: Padrão (1020,4)
     required: Obrigatório
     share_types:
       contributor: Contribuinte
@@ -704,12 +938,14 @@ pt:
       grouped: visualização agrupada
       href: tabela externa
       map: mapa
+      new_view: Página Data Lens
       table: tabela
       working_copy: cópia de trabalho
     view_types_plural:
       api: APIs
       calendar: Calendários
       chart: Gráficos
+      data_lens: Data Lenses
       filter: Visualizações filtradas
       form: Formulários
       grouped: Visualizações agrupadas
@@ -1235,7 +1471,7 @@ pt:
       import_columns:
         destination_column: Coluna de Destino
         destination_data_type: Tipo de Dado do Destino
-        headline: De que forma os dados em &ldquo;<span class="fileName"></span>&rdquo; estão relacionados com o seu conjunto de dados?
+        headline: De que forma os dados em &ldquo;<span class="fileName"></span>&rdquo; estão relacionados com sua tabela?
       import_warnings:
         see_docs: <strong>Perdido?</strong> Consulte a <a href="%{publisher_link}" rel="external">documentação da nossa editora</a> sobre importação de dados para uma explicação detalhada sobre a forma como o importador manipula os dados.
       replace: Substituir
@@ -1384,7 +1620,7 @@ pt:
         snapshot_unsavable: As tabelas com snapshots e visualizações não podem ser criadas ou modificadas
         subscribe: Subscrever alterações
         subscribe_prompt: Assinar por email ou RSS
-        unpublished_unsavable: As alterações aos dados abaixo são automaticamente salvas. Os filtros e as pesquisas não podem ser salvos para uma cópia de um conjunto de dados. Por favor crie uma visualização de uma tabela de dados publicada.
+        unpublished_unsavable: As alterações aos dados abaixo são automaticamente salvas. Os filtros e as pesquisas não podem ser salvos para uma cópia de uma tabela. Por favor crie uma visualização de uma tabela de dados publicada.
         unsaved_title: Visualização não salva
         up_to_date: Essa tabela foi atualizada em %{current}
         view_published_html: Visualizar a <span class="publishedName">tabela de dados</span> publicada
@@ -1406,7 +1642,7 @@ pt:
         js_required_download:
           click_here: clique aqui
           prompt_html: Para, alternativamente, baixar esse arquivo %{click_here}.
-        limited_download: Este conjunto de dados não corresponde a dados tabulares e pode ter interatividade limitada. Ainda assim está disponível para download
+        limited_download: Esta tabela não corresponde a dados tabulares e pode ter interatividade limitada. Ainda assim está disponível para download
       column_tip:
         aggregate: "(%{aggregate} em %{data_type})"
         field_name: Campo da API
@@ -1434,7 +1670,7 @@ pt:
           offensive_content: por conteúdo ofensivo
           personal_information: por conter informação pessoal
           spam: como potencial lixo electrónico
-        subject: O seu conjunto de dados "%{dataset_name}" foi marcado %{reason}
+        subject: A sua tabela "%{dataset_name}" foi marcado %{reason}
         success_message: O proprietário da tabela de dados foi notificado.
         validation:
           no_body: A mensagem deve ter um corpo.
@@ -1731,7 +1967,7 @@ pt:
             title: Informação básica
           linked_dataset:
             dataset: Tabela
-            dataset_prompt: URL do conjunto de dados ou UID de 4x4
+            dataset_prompt: URL da tabela ou UID de 4x4
             key: Coluna chave
             label: Etiquetar coluna
             title: Tabela ligada
@@ -2109,18 +2345,21 @@ pt:
           sort_title: Ordenar por
           views:
             subtitle: Ver filtros, mapas, gráficos e outras visualizações existentes nesta tabela
-            title: Vistas
+            title: Visualizações
         visualize:
           choose_type: Tipo de visualização
+      new_ux_button: Apresentar-me
       new_ux_creating_page: A nova página de exploração de dados está sendo criada e analisada
       new_ux_error: Uma visualização prévia não está disponível para essa tabela de dados
       new_ux_link: Experimente nossa nova ferramente de exploração de dados (beta)
       new_ux_nbe_warning: 'Uso interno: visualização UX antiga da nova tabela de dados'
+      new_ux_text: Ver estes dados na nova experiência Data Lens
+      new_ux_title: Está pronto(a) para explorar visualmente?
       save_dialog:
         descriptions:
           leaving: Você tem dados não-salvos que irão se perder se você sair desta página. Por favor escolha se quer ou não salvar esta visualização antes de sair; ou escolha Cancelar para voltar para a página.
           reload_save: Esta alteração requer uma atualização da página. Vocie pode querer salvar suas alterações para as ver ou pode Cancelar para ficar nesta página.
-          reload_update: Esta alteração requer uma atualização da página. Você pode atualizar esta vista, ou guardar uma nova vista para ver as suas alterações, ou pode ainda Cancelar para ficar nesta página.
+          reload_update: Esta alteração requer uma atualização da página. Você pode atualizar esta visualização, ou guardar uma nova visualização para ver as suas alterações, ou pode ainda Cancelar para ficar nesta página.
         form:
           new_name: 'Introduza um nome para a sua nova visualização:'
         titles:
@@ -2141,10 +2380,11 @@ pt:
         subscribed_html: <strong>Você está atualmente assinando esta <span class="datasetTypeName">tabela</span> por email</strong> e irá receber notificações quando novos dados forem publicados.
         title_html: Subscreva a &quot;<span class="datasetName">%{name}</span>&quot; <span class="datasetTypeNameUpcase">Tabela</span>
         unsubscribe: Se não quiser mais receber notificações, desmarque a caixa de subscrição abaixo.
+      unable_to_find_dataset_page: Não conseguimos encontrar uma página de Data Lens para este conjunto de dados.
     edit_metadata:
       about: Sobre
       additional_source: Fonte adicional
-      alternative_access_prompt: Introduza um ponto de acesso alternativo para este conjunto de dados
+      alternative_access_prompt: Introduza um ponto de acesso alternativo para esta tabela
       api_endpoint: Terminal da API
       attachments: Anexos
       attachmentsDisabledMessagePart1: Para carregar anexos, primeiro termine a publicação desta tabela de dados, e depois, clique
@@ -2194,9 +2434,10 @@ pt:
       required_field: Campo obrigatório
       resource_name: Nome do recurso
       resource_name_prompt: Introduza um nome do recurso
-      return: Voltar ao conjunto de dados
+      return: Voltar à Tabela
       row_class: Classe da linha
       row_identifier: Identificador da linha
+      row_identifier_help_text: O identificador da coluna não pode ser alterado a partir do momento em que a vista é publicada.
       save: Salvar
       save_changes: Salvar alterações
       semantics_rdf: Semântica e RDF
@@ -2268,6 +2509,7 @@ pt:
     import_pane:
       analyzing: Analisando o arquivo...
       assure_accessible: Por favor assegure-se de que o seu arquivo é acessível e válido e tente novamente.
+      bytes_imported: "%{num} bytes importados até ao momento."
       combine_multiple_cols: "(Combinar Várias Colunas...)"
       downloading: Fazendo o download de seu arquivo...
       filetype_error_blist: Por favor, escolha um arquivo CSV, TSV, XLS ou XLSX.
@@ -2440,12 +2682,15 @@ pt:
       success: Senha redefinida com sucesso
       title: Redefinir senha
     sign_in:
+      auth0_intro: Existem diversas formas de se inscrever. Se ainda não se inscreveu numa conta escolha a opção que lhe for mais conveniente. Se já o fez, utilize a mesma opção.
+      back_to_sign_in_selection: <a class="login-back">Regressar às opções de inscrição</a>
       failed: Impossível fazer o login com esse e-mail e senha. por favor tente novamente
       form:
         sign_in_button: Iniciar sessão
       headline: Fazer o login em %{site}
       mismatch: As palavras-passe não correspondem; por favor tente novamente
       prompt_html: Fazer login com a sua <strong>Socrata ID</strong>
+      sign_in_with: "<strong>Inscreva-se</strong> com %{provider}"
       tips_html: Utilize o seu e-mail e senha para iniciar sessão em todas as páginas <strong>da <a href="http://www.socrata.com" rel="external">Socrata</a></strong>.
     sign_up:
       form:
@@ -2500,7 +2745,7 @@ pt:
       select_chart_type: Selecione um tipo de gráfico para mostrar a partir do menu
       show_more: Mostrar Mais
       time_period_unavailable: Os dados de métrica não estão disponíveis para este período de tempo
-      title: Analítica do Conjunto de Dados
+      title: Analítica da Tabela
       top_embeds: Melhores Incorporações (Embeds)
       top_referrers: Melhores Referentes (Referrers)
       total: total
@@ -2518,7 +2763,7 @@ pt:
       error_private: Para a sua privacidade, apenas tabelas de dados públicas podem ter imagens em miniatura. Se desejar ter uma pré-visualização por favor torne esta tabela de dados pública usando o painel de Permissões do menu lateral Gestão
       error_processing: Ocorreu um erro no processamento do seu pedido de imagem em miniatura. Por favor, tente mais tarde
       full_image: Imagem Completa
-      please_wait: Ainda não existem imagens-miniatura disponíveis para este conjunto de dados. Por favor espere enquanto críamos uma para você.
+      please_wait: Ainda não existem imagens-miniatura disponíveis para esta tabela. Por favor espere enquanto criamos uma para você.
       preview: Visualização prévia
       refresh_thumbnail: Atualizar Imagem-Miniatura
       return_to_dataset: Voltar para a Tabela de Dados

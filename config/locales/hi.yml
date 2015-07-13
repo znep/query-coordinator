@@ -38,6 +38,228 @@ hi:
       validation:
         mismatch: "पासवर्ड मेल नहीं खा रहे हैं।"
         terms: "आपको सेवा की शर्तों और गोपनीयता नीति को स्वीकार करना होगा।"
+  angular:
+    dataCards:
+      add_card_dialog:
+        add_card: "कार्ड जोड़ें"
+        add_this_card: "इस कार्ड को जोड़ें"
+        card_on_page: "कार्ड पहले से ही पेज पर है"
+        card_on_page_long: "यह कार्ड पहले से ही पेज पर है"
+        choose_column: "एक कॉलम चुनें..."
+        column_chart_warning: "नोट: इसके परिणामस्वरूप आपको एक बार-चार्ट मिलेगा जिसमें सौ से भी ज़्यादा बार होंगी। यह चार्ट दूसरे चार्टों की तुलना में धीमा हो सकता है। "
+        customize_prompt: "यह कार्ड अनुकूलित करें"
+        not_supported: "वर्तमान में संभव नहीं"
+        not_supported_long: "इस प्रकार के कार्ड का प्रयोग वर्तमान में संभव नहीं है "
+        prompt: "नया कार्ड जोड़ने के लिए ऊपर ड्रॉपडाउन से कोई कॉलम चुनें "
+        settings: "सेटिंग्स"
+        visualize_flyout: "इस कॉलम को इस प्रकार देखें {0}"
+      aggregation_chooser:
+        count_label: "प्रति अंश गिनती {0} करें"
+        description: "आकार या रंग के अनुसार डेटा अंशों को देखें:"
+        information: "द्वारा "
+        number_of: "संख्या "
+        option_disabled: "इस कॉलम का प्रयोग<br>कुल संख्या के लिए नहीं किया जा सकता है"
+        sum_label: "प्रत्येक के लिए जोड़ें {0}"
+        sum_of: "योग"
+        the_sum_of: "का योग "
+        title: "संग्रह "
+        too_many_columns:
+          message: "इस समय हम {0} से अधिक कॉलम (प्रकार, संख्या या धन के) वाले डेटा लेंस पेजों के लिए कुल योग प्रदान करने की स्थिति में नहीं हैं। "
+          title: "ऐसा लगता है कि इस डेटासेट में {0} से अधिक कॉलम हैं"
+      api_explorer:
+        additional_resources: "इस एपीआई के लिए अतिरिक्त उपाय: "
+        api_button: "एपीआई (API)"
+        api_button_title: "एपीआई के माध्यम से डेटासेट तक पहुंचें"
+        code_libraries: "कोड लाइब्रेरी "
+        code_libraries_title: "कोड पुस्तकालय से एपीआई क्लाइंट डाउनलोड करें "
+        documentation: "प्रलेखन"
+        documentation_title: "एपीआई प्रलेखन देखें "
+        formats: "यह डाटा कई स्वरूपों में उपलब्ध है:"
+        geojson: "जिओजेसन (GeoJSON)"
+        json: "जेसन"
+        title: "एपीआई (API)"
+        url: "आप इस डेटा तक सोक्रेटा ओपन डेटा एपीआई के माध्यम से पहुँच सकते हैं, यूआरएल है:"
+      card_controls:
+        collapse_card: "इस कार्ड को संकुचित करें "
+        customize_disabled: "इस कार्ड को रूचि अनुसार बनाने का अभी कोई विकल्प उपलब्ध नहीं हैं। "
+        customize_enabled: "यह कार्ड अनुकूलित करें"
+        expand_card: "इस कार्ड का विस्तार करें "
+        remove_card: "यह कार्ड निकालें "
+      card_layout:
+        add_card_here: "कार्ड यहाँ जोड़ें"
+      common:
+        cancel: "रद्द करें"
+        cards:
+          choropleth: "कोरोप्लेथ"
+          column_chart: "कॉलम चार्ट "
+          distribution_chart: "वितरण चार्ट "
+          feature_map: "फ़ीचर का नक्शा "
+          search_card: "कार्ड खोजें"
+          timeline_chart: "टाइमलाइन (घटनाक्रम) चार्ट"
+        change: "बदलें"
+        done: "हो गया"
+        download: "डाउनलोड"
+        downloading: "डाउनलोड हो रहा है"
+        error: "एरर"
+        errors:
+          export_visualization_disabled: "यह दृश्य <br/>इमेज एक्सपोर्ट के लिए उपलब्ध नहीं है"
+          invalid_card: "यह कार्ड दृश्य अमान्य है "
+          map_render_error: "इस नक्शे को प्रस्तुत करने का प्रयास करते समय कोई त्रुटि सामने आई थी।"
+        latitude: "अक्षांश"
+        longitude: "देशांतर"
+        no_value: "कोई मूल्य नहीं"
+        ok: "ठीक है"
+        permissions:
+          permissions: "अनुमतियां"
+          private: "निजी"
+          public: "सार्वजनिक"
+      customize_bar:
+        changes_warning: "आपने इस पेज पर परिवर्तन किए हैं।"
+        collapse_card: "अनुकूलन मोड में प्रवेश के लिए: शीर्ष दाएं कोने में दिए गए तीर का उपयोग करते हुए बड़े कार्ड को संकुचित करें"
+        customize: "कस्टमाइज़ करें"
+        customize_flyout: "इस पेज के लेआउट या प्रदर्शन को रूचि अनुसार करने के लिए क्लिक करें"
+        customizing: "रूचि अनुसार करना"
+        customizing_flyout: "अब आप इस पेज को रूचि अनुसार बना रहे रहे हैं"
+        customizing_flyout_instructions: "आप अपने परिवर्तनों का पूर्वावलोकन करने के लिए इस बटन को क्लिक कर सकते हैं, और उन्हें कभी भी सेव कर (सहेज) सकते हैं"
+        exit_visualization_export: 'अनुकूलन मोड में प्रवेश के लिए: इन्फो पेन पर कैंसिल बटन पर क्लिक कर के आप "दृश्य को छवि के रूप में डाउनलोड करें" मोड से बाहर जा सकते हैं '
+      customize_card_dialog:
+        map_layer:
+          custom: "कस्टम मैप (मानचित्र)"
+          standard: "मानक "
+          title: "मानचित्र आधारित परत "
+        visualization_options:
+          title: "कार्ड प्रकार"
+      distribution_chart:
+        drag_clear_help: "फ़िल्टर रेंज साफ़ करें"
+        drag_help: "फ़िल्टर रेंज बदलने के लिए ड्रैग करें"
+        errors:
+          error: "इस कार्ड को प्रस्तुत करने का प्रयास करते समय कोई त्रुटि सामने आई थी।"
+          no_data: "प्रदर्शित करने के लिए कोई डाटा नहीं है।"
+      feature_map:
+        zoom_disabled: "ज़ूम फ़ंक्शन अस्थायी रूप से अनुपलब्ध है। कृपया बाद में फिर से प्रयास करें।"
+      feedback_panel:
+        broken: "कुछ टूट गया लगता है "
+        feedback: "प्रतिपुष्टि"
+        like: "मुझे यह पसंद है "
+        missing: "मैं एक फ़ीचर की कमी महसूस कर रहा हूँ "
+        other_option: "अन्य"
+        screenshot_description: स्क्रीनशॉट के साथ आप हमें सटीक तौर पर बता सकते हैं कि आपका फ़ीडबैक किस चीज़ पर है। स्क्रीनशॉट के लिए हम <a href="https://usersnap.com" title="Visit UserSnap's homepage"> UserSnap </a> का प्रयोग कर रहे हैं। उनकी प्राइवेसी (गोपनीयता) पॉलिसी यहाँ पढ़ें <a href="https://usersnap.com/privacy-policy" title="Read UserSnap's privacy policy">privacy policy</a>
+        screenshot_no: "नहीं, धन्यवाद"
+        screenshot_prompt: "आप अपने फीडबैक में स्क्रीनशॉट शामिल करना चाहते हैं?"
+        screenshot_yes: "हाँ, स्क्रीनशॉट शामिल करें"
+      filter:
+        and: "और"
+        blank: "रिक्त (ब्लैंक)"
+        date_range: "{0} से {1}"
+        is: "है "
+        is_not: "नहीं है "
+        value_range: "{0} से {1}"
+        where: "कहां"
+      flyout:
+        clear_filter: "फ़िल्टर हटाएं"
+        clear_filter_long: "वर्तमान में इस पेज को इस वैल्यू द्वारा फ़िल्टर किया गया है, इसे क्लियर करने के लिए यहाँ क्लिक करें "
+        clear_range_filter_long: "वर्तमान में इस पेज को इस सिलेक्शन (चुनाव) द्वारा फ़िल्टर किया गया है, इसे क्लियर करने के लिए यहाँ क्लिक करें "
+        current_filter: "मौजूदा फिल्टर "
+        details: "विवरण देखने के लिए क्लिक करें "
+        expand: "विस्तार करने के लिए क्लिक करें "
+        filtered_amount: "फिल्टर्ड राशि"
+        total: "कुल योग"
+      last_updated:
+        label: "अंतिम बार अपडेटेड"
+      lens_type:
+        community: "कम्युनिटी (समुदाय) डेटा लेंस"
+        official: "आधिकारिक आंकड़ों का लेंस"
+      manage_lens_dialog:
+        dataset_private_page_private: "इस पेज का सोर्स डेटासेट <b>Private</b> पर सेट किया गया है इसलिए इसे पब्लिक नहीं किया जा सकता। केवल विशेषाधिकार प्राप्त लोग ही इसका उपयोग कर सकेंगे, और यह पब्लिक (सार्वजनिक) सूची में दिखाई नहीं देगा।"
+        dataset_private_page_public: '<span class="icon-warning"></span> इस पेज का सोर्स डेटासेट <b>Private</b> पर सेट किया गया है इसलिए भले ही इस पेज को पब्लिक किया गया है लेकिन इसे वे लोग नहीं देख सकेंगे जिनकी पहुँच सोर्स डेटासेट तक नहीं है। यह फिर भी सार्वजनिक सूची में दिखाई देगा। आप सेटिंग में जा कर इस डेटासेट को पब्लिक या प्राइवेट कर सकते हैं। '
+        dataset_public_page_private: "इस पेज को <b>Private</b> पर सेट किया गया है इसलिए इसे वही देख पाएंगे जिनके पास पहुँच का विशेषाधिकार होगा। यह सार्वजनिक सूची में दिखाई नहीं देगा।"
+        dataset_public_page_public: "इस पेज का सोर्स डेटासेट <b>Public</b> पर सेट किया गया है इसलिए इसे कोई भी देख सकता है और यह पेज सार्वजनिक सूची में दिखाई देगा। "
+        title: "प्रबंधित करना"
+      metadata:
+        data_as_csv: "पूर्ण सोर्स डेटा सीएसवी (एक्सेल) के रूप में "
+        edit_description_prompt: "अपने पेज का अच्छा विवरण दें जिससे लोग आपके पेज द्वारा जो कहानी बताने की कोशिश की जा रही है, उसे समझ सकें। (वैकल्पिक) "
+        page_name_placeholder: "शीर्षकहीन"
+        source_dataset: "सोर्स डाटासेट "
+        validation_error_max_length: "आपका शीर्षक बहुत लंबा है "
+        validation_error_min_length: "कृपया शीर्षक दर्ज करें"
+        validation_error_required: "कृपया शीर्षक दर्ज करें"
+        visualization_as_image: "छवि के रूप में दृश्य "
+        visualization_as_image_disabled_flyout: "दृश्य को छवि के रूप में डाउनलोड करने के लिए कृपया इस पेज को सेव करें "
+      mobile_warning_dialog:
+        acknowledgement: "ठीक है, समझ आ गया!"
+        description: "हम इस साइट पर मोबाइल अनुभव में सुधार लाने पर काम कर रहे हैं। "
+      page_header:
+        logo: "लोगो"
+        sign_in: "साइन इन करें"
+        sign_out: "साइन आउट करें"
+        sign_up: "साइन-अप करें"
+      quick_filter_bar:
+        clear_all_flyout: "सभी फिल्टर को रीसेट करने के लिए क्लिक करें"
+        filter_title: दिखा रहा है <span class="light">the {0}</span>
+      related_views:
+        button: "इस डेटा के अन्य व्यूज"
+        title: "इस डेटा के अन्य व्यूज"
+      revert_button:
+        flyoutHasChanges: "पिछली बार सेव करने के बाद आपने जो भी परिवर्तन किए उन्हें कैंसिल करने के लिए क्लिक करें "
+        flyoutNoChanges: "पलटने के लिए कोई परिवर्तन नहीं हैं "
+        text: "परिवर्तनों को पलटें "
+      rich_text_editor:
+        bold: "बोल्ड"
+        insert_link: "लिंक डालें "
+        italic: "इटैलिक"
+        link: "लिंक"
+        link_placeholder: "यहां एक यूआरएल दर्ज करें"
+        underline: "रेखांकित करना"
+      save_as:
+        flyoutFailedBody: "कृपया सोक्रटा समर्थन से संपर्क करें"
+        flyoutFailedTitle: "एक त्रुटि हुई है"
+        flyoutIdle: "परिवर्तनों को नए पेज के रूप में सेव करने के लिए क्लिक करें "
+        flyoutNoChanges: "सहेजने के लिए कोई परिवर्तन नहीं है"
+        text: "इस रूप में सहेजें"
+      save_as_panel:
+        description: "अपने नए पेज के लिए विवरण दर्ज करें (वैकल्पिक)"
+        new_name: "वर्तमान पेज को नए नाम से सेव करें "
+        title: "इस रूप में सहेजें"
+      save_button:
+        failed: "विफल"
+        flyoutFailedBody: "कृपया सोक्रटा समर्थन से संपर्क करें"
+        flyoutFailedTitle: "एक त्रुटि हुई है"
+        flyoutIdle: "अपने परिवर्तनों को सेव करने के लिए क्लिक करें"
+        flyoutNoChanges: "सहेजने के लिए कोई परिवर्तन नहीं है"
+        saved: "सहेजा गया!"
+        saving: "सहेजा जा रहा है..."
+      search_card:
+        invalid_search: "ऐसे नंबर को खोजने का प्रयास करें जिसमें कोई अक्षर न हों। "
+        loading: "सुझाव लोड हो रहे हैं… "
+        no_results: "आपकी खोज का कोई परिणाम नहीं निकला। अपनी वर्तनी की जाँच करें, या कोई अलग शब्द डाल कर प्रयास करें।"
+        one_example: "उदाहरण: '{0}'"
+        prompt_number: "कोई नंबर टाइप करें और एंटर दबा कर कर सर्च करें"
+        prompt_text: "कुछ पाठ लिखें और खोजने के लिए एंटर दबाएं"
+        search_info: "{1} मेल खाते परिणामों में से {0} दिखाया जा रहा है"
+        two_examples: "उदाहरण: '{0}' या '{1}'"
+      table:
+        a_to_z: A-Z
+        ascending: "छोटे से बड़ा"
+        descending: "बड़े से छोटा"
+        largest_first: "सबसे बड़ा सबसे पहले"
+        loading: "लोड हो रहा है..."
+        newest_first: "नवीनतम सबसे पहले"
+        no_rows: "डिस्प्ले के लिए कोई पंक्ति नहीं है"
+        oldest_first: "सबसे पुराना सबसे पहले"
+        range_label: "{0} <strong>{1}-{2} इतने में से {3}</strong>"
+        range_label_all: "सभी दिखाया जा रहा है {0} {1}"
+        range_label_subtitle: '{0} {1} <span class="subtitle">इतने में से {2}</span>'
+        smallest_first: "सबसे छोटा सबसे पहले"
+        sort: "सॉर्ट करने के लिए क्लिक करें {0}"
+        sorted: "सॉर्ट किया गया {0}"
+        z_to_a: Z-A
+      timeline_chart:
+        drag_clear_help: "फ़िल्टर रेंज साफ़ करें"
+        drag_help: "फ़िल्टर रेंज बदलने के लिए ड्रैग करें"
+        errors:
+          bad_dates: 
+          default: 
+          no_data: 
   controls:
     browse:
       actions:
@@ -99,6 +321,10 @@ hi:
           forms: "प्रपत्र"
           href: "बाहरी डेटासेट"
           maps: "नक्‍शे"
+          new_view: 
+          new_view_help: 
+          story: 
+          story_help: 
           unpublished: "अप्रकाशित डेटासेट"
         view_types_singular_title: "प्रकार"
         view_types_title: "अवलोकन प्रकार"
@@ -330,6 +556,10 @@ hi:
       delete_warning_multi_column: "क्‍या आप चुने हुए कॉलम को मिटाना चाहते हैं? इस कॉलम में समस्‍त डेटा हटा दिया जाएगा!"
       delete_warning_single_column: "क्‍या आप चुने हुए कॉलम को मिटाना चाहते हैं? इस कॉलम में समस्‍त डेटा हटा दिया जाएगा!"
       edit_column_properties: "कॉलम प्रॉपर्टी संपादित करें"
+      errors:
+        cannot_edit_at_this_time: 
+        primary_key_collision: 
+        row_locked_for_edit: 
       filter_this_column: "इस कॉलम को फिल्‍टर करें"
       geocodes_pending: "स्थान कॉलम में पंक्तियों की जियोकोडिंग अभी भी हो रही है। कृपया प्रतीक्षा कीजिये जब तक वे इस डेटासेट का प्रकाशन समाप्त नहीं कर देते"
       hide_column: "कॉलम छिपाएँ"
@@ -512,6 +742,7 @@ hi:
       percent: "प्रतिशत"
       phone: "फोन"
       photo: "फ़ोटो (चित्र)"
+      point: 
       stars: "सितारे"
       text: "सादा टैक्‍स्‍ट"
       url: "वेबसाइट यूआरएल"
@@ -666,8 +897,11 @@ hi:
       page: "पृष्ठ"
       previous_page: "पिछला पृष्‍ठ"
     precision_style:
-      scientific: "वैज्ञानिक: 1.0204e+3"
-      standard: "स्‍टैंडर्ड: 1020.4"
+      currency: 
+      financial: 
+      percentage: 
+      scientific: "वैज्ञानिक (1.0204e+3)"
+      standard: "स्‍टैंडर्ड (1020.4)"
     required: "आवश्यक"
     share_types:
       contributor: "योगदानकर्ता"
@@ -703,12 +937,14 @@ hi:
       grouped: "समूहबद्ध व्‍यू"
       href: "बाहरी डेटासेट"
       map: "नक्‍शा"
+      new_view: 
       table: "तालिका"
       working_copy: "कामकाजी प्रति"
     view_types_plural:
       api: "एपीआई"
       calendar: "कैलेंडर"
       chart: "चार्ट"
+      data_lens: 
       filter: "फिल्‍टर किये गये व्‍यू"
       form: "फ़ॉर्म"
       grouped: "समूहबद्ध व्‍यू"
@@ -749,13 +985,18 @@ hi:
         this_page: "यह पृष्ठ"
         tweet_contents: "%{company} के ऊपर %{dataset} की जाँच कीजिये: %{url}"
         twitter: "ट्विटर पर साझा करें"
+      visualization:
+        exploreLink: 
+        exploreLink_prompt: 
     configurator:
       actions_components: "एक्शन (क्रिया)"
       advanced_components: "उन्नत घटक"
       content_components: "सामग्री"
       data_components: "डेटा"
       input_components: "इनपुट"
+      redo_title: 
       report_components: "रिपोर्ट के घटक"
+      undo_title: 
     context_picker:
       select_dataset: "डेटासेट का चयन करें"
       view_data: "डेटा देखिये"
@@ -810,6 +1051,10 @@ hi:
       description_html: कृपया कुछ क्षण फिर से कोशिश करें, या अपने प्रयासों के विवरणों के साथ <a href="http://support.socrata.com">इस त्रुटि </a> की सूचना दें।
       somethings_wrong: "कुछ गलत है!"
       were_sorry: "हमें खेद है लेकिन आपके अनुरोध पर कार्रवाई करने में समस्‍या थी।"
+    error_site_unavailable:
+      description: "यह सोक्रेटा-संचालित साइट वर्तमान में उपलब्ध नहीं है।"
+      help_html: 'आप कभी भी <a href="http://status.socrata.com">http://status.socrata.com</a> or check our twitter account at <a href="https://twitter.com/socrata">@socrata</a> पर जा कर सोक्रेटा का स्टेटस देख सकते हैं। '
+      title: "वर्तमान में साइट उपलब्ध नहीं है "
     not_acceptable_406:
       page_not_found: "पृष्‍ठ नहीं मिला।"
       were_sorry: "हमें वाकई खेद है लेकिन आपके द्वारा अनुरोध किये गये स्‍वरूप में पृष्‍ठ उपलब्‍ध नहीं है।"
@@ -1233,6 +1478,7 @@ hi:
         supported: "समर्थित फ़ाइल प्रकार हैं सीएसवी (CSV), टीसीवी (TSV), और एक्सेल। समर्थित प्रोटोकॉल हैं एचटीटीपी (HTTP) और एचटीटीपीएस (HTTPS)।"
         url_prompt: "आपके द्वारा आयात की जाने वाली फ़ाइल का वेब यूआरएल क्या है?"
       errors:
+        insecure_esri_url: "एक असुरक्षित ईएसआरआई मैप लेयर यूआरएल जोड़ दिया गया है। परिणामतः इस डेटासेट पर कुछ फ़ीचर काम नहीं करेंगे। "
         invalid_crossload_url: "कृपया एचटीटीपी (HTTP) या एचटीटीपीएस (HTTPS) से आरंभ होने वाले एक वैध यूआरएल को दर्ज करें।"
         invalid_url: "वह एक वैध यूआरएल दिखाई नहीं देता है।"
         missing_data_provider: "आपको क्रिएटिव कॉमंस लाइसेंस में डेटा प्रदाता (संबंध) निर्दिष्ट करना चाहिए।"
@@ -1340,6 +1586,7 @@ hi:
           underline: "अंडरलाइन"
           undo: "अनडू करें"
         full_screen: "फुल स्‍क्रीन में बदलें"
+        out_of_date: "यह डेटासेट %{age} पुराना है "
         publish_button: "डेटासेट प्रकाशित करें"
         publish_prompt: "यह डेटासेट कामकाजी प्रति है और सार्वजनिक रूप से उपलब्‍ध नहीं है। जब आप वांछित परिवर्तन कर लें तो यह डेटासेट सार्वजनिक रूप से उपलब्‍ध कराने के लिए प्रकाशित किया जाना चाहिए।"
         publish_rights: "केवल स्‍वामी या प्रकाशक इस डेटासेट को प्रकाशित कर सकता है"
@@ -1361,6 +1608,7 @@ hi:
         subscribe_prompt: "ईमेल या आरएसएस के जरिए सदस्‍यता लें"
         unpublished_unsavable: "नीचे डेटा में परिवर्तन स्‍वत: सहेजे जाते हैं। फिल्‍टर व खोज डेटासेट की कामकाजी प्रति में सहेजा नहीं जा सकता है। कृपया प्रकाशित डेटासेट का व्‍यू बनाएँ।"
         unsaved_title: "बिना सहेजा गया व्‍यू"
+        up_to_date: "यह डेटासेट %{current} अप-टू-डेट है "
         view_published_html: प्रकाशित <span class="publishedName">डेटासेट</span> देखें
         view_type: "%{type}के तौर पर देखें"
         view_types:
@@ -1424,6 +1672,7 @@ hi:
         edit_dataset_button: "डेटासेट संपादित करें"
         error_publishing_html: आपके डेटासेट की कामकाजी प्रति बनाते हुए त्रुटिी हुई। कृपया <a href="http://support.socrata.com" rel="external">सोक्राटा सहायता से संपर्क करें</a>।
         error_publishing_unpublished: "केवल अप्रकाशित डेटासेट ही प्रकाशित किए जा सकते हैं।"
+        immutable: "यह डेटासेट केवल पढ़ने के लिए है और इसका संपादन केवल प्रोग्राम के माध्यम से किया जा सकता है। अधिक जानकारी के लिए एसओडीए 2 (SODA 2) प्रलेखन देखें। "
         needs_copy: "यह डेटासेट प्रकाशित हो चुका है और इसे सीधे संपादित नहीं किया जा सकता है। एक कामकाजी प्रति %{status} जो सार्वजनिक करने से पहले आपको सभी वांछित परिवर्तन करने देता है।"
         needs_copy_status:
           available: "उपलब्‍ध है"
@@ -1464,7 +1713,9 @@ hi:
           validation:
             view_column: "आप देखने के लिए कॉलम जोड़ नहीं सकते हैं"
         api:
+          api_docs: "एपीआई डॉक्स "
           column_ids_title: "कॉलम आईडी:"
+          developer_portal: "डेवलपर पोर्टल "
           endpoint_title: "एपीआई एक्‍सेस एंडप्‍वाइंट:"
           intro_html: "<strong>सोक्राटा ओपन डेटा एपीआई</strong> (SODA) सॉफ़्टवेयर डेवलेपर को सोक्राटा डेटा साइट पर प्रोग्राम के तौर पर होस्‍ट किये गये डेटा तक पहुंच प्रदान करता है। चित्रित करने और &ldquo;mash-up&rdquo के लिए SODA APIs का उपयोग करने वाली एप्‍लीकेशन डेवलेपर बना सकते हैं; सोक्राटा डेटासेट नये व दिलचस्‍प तरीके में। एक एप्‍लीकेशन बनाएँ जो आपके क्षेत्र में सरकारी खर्च को चित्रित करे, एक वेब एप्‍लीकेशन जो नागरिकों को उन संभावित सरकारी लाभों के बारे में जानने का मौका दे जिन्‍हें वे नजरंदाज करते हैं, या ऐसी सेवा जो स्‍वत: आपको ईमेल भेजें जब उन बिल में नये ईयरमार्क जोड़े जाते हैं जिनकी आप निगरानी रखना चाहते हैं।"
           reference_html: इस डेटासेट तक प्रोग्राम के रूप में पहुंच शुरू करने के लिए, नीचे दिये गये एपीआई एंडप्‍वाइंट का उपयोग करें।  सोक्राटा ओपन डेटा एपीआई के उपयोग के तरीकों की अधिक जानकारी व उदाहरण के लिए हमारे <a href="http://dev.socrata.com" rel="external">डेवलेपर दस्‍तावेज</a>देखें।
@@ -1840,6 +2091,7 @@ hi:
             non_tabular: "केवल तालिका युक्‍त डेटा प्रिंट किया जा सकता है"
         download:
           download_as: "इस प्रकार डाउनलोड करें"
+          download_dataset: "कृपया उस डेटासेट को डाउनलोड करें जिससे यह दृश्य प्राप्त होता है। "
           geo_header: "जियोस्‍पाटियल (भूआकाशीय) डेटा डाउनलोड करें"
           layers_header: "टैब्‍यूलर लेयर डाउनलोड करें"
           subtitle: "इस डेटासेट की प्रति स्थिर स्‍वरूप में डाउनलोड करें"
@@ -2086,6 +2338,13 @@ hi:
             title: "व्‍यू"
         visualize:
           choose_type: "दृश्यावलोकन प्रकार"
+      new_ux_button: "मुझे दिखाओ "
+      new_ux_creating_page: "नया डेटा लेंस पेज बनाया जा रहा है और उसका विश्लेषण किया जा रहा है"
+      new_ux_error: "इस डेटासेट के लिए पूर्वावलोकन उपलब्ध नहीं है।"
+      new_ux_link: "इस डेटासेट को हमारे नए डेटा अन्वेषण उपकरण (बीटा) में खोल कर देखें। "
+      new_ux_nbe_warning: "केवल आंतरिक: नए बैकएण्ड डेटासेट का पुराना यूएक्स व्यू। साधारण उपयोगकर्ताओं को %{url} पर भेजा जाएगा "
+      new_ux_text: "इस डेटा को नए डेटा लेंस के देखने का अनुभव लें "
+      new_ux_title: "दृष्टिगत रूप से इसके बारे में जानने के लिए तैयार हैं ?"
       save_dialog:
         descriptions:
           leaving: "आपका असुरक्षित डेटा है जो खो जाएगा यदि आप यह पृष्‍ठ छोड़ते हैं। कृपया इसे छोड़ने से पहले चुनें कि क्‍या आप इस व्‍यू को सहेजना चाहते हैं या नहीं; या पृष्‍ठ पर वापिस आने के लिए रद्द करें चुनें। "
@@ -2111,6 +2370,7 @@ hi:
         subscribed_html: <strong>आपने फिलहाल ईमेल के जरिए इस <span class="datasetTypeName">डेटासेट</span> via email</strong> की सदस्‍यता ली है और नया डेटा प्रकाशित होने पर सूचना मिलेगी।
         title_html: '"<span class="datasetName">%{name}</span>" <span class="datasetTypeNameUpcase">डेटासेट</span>की सदस्‍यता लें'
         unsubscribe: "यदि आप अब सूचना नहीं पाना चाहते हैं तो नीचे सब्‍सक्राइब बॉक्‍स से निशान हटा दें।"
+      unable_to_find_dataset_page: "हम इस डाटासेट के लिए एक डाटा लेंस पेज को खोजने में असमर्थ थे। "
     edit_metadata:
       about: "परिचय"
       additional_source: "अतिरिक्त स्रोत"
@@ -2167,6 +2427,7 @@ hi:
       return: "डेटासेट में लौटें"
       row_class: "पंक्ति श्रेणी"
       row_identifier: "पंक्ति पहचानक"
+      row_identifier_help_text: "दृश्य के प्रकाशित होने के बाद पंक्ति अभिज्ञापक (आइडेंटिफायर) को बदला नहीं जा सकता।"
       save: "सहेजें"
       save_changes: "परिवर्तनों को सहेजें"
       semantics_rdf: "अर्थ-विज्ञान और आरडीएफ"
@@ -2238,6 +2499,7 @@ hi:
     import_pane:
       analyzing: "आपकी फ़ाइल का विश्लेषण करें..."
       assure_accessible: "कृपया सुनिश्चित कीजिये कि आपकी फ़ाइल पहुँचने योग्य और वैध हो और दोबारा प्रयास करें।"
+      bytes_imported: "अभी तक %{num} बाइट्स आयात कर ली गई हैं।"
       combine_multiple_cols: "(एकाधिक कॉलमों का संयोजन कीजिये...)"
       downloading: "आपकी फ़ाइल डाउनलोड की जा रही है..."
       filetype_error_blist: "कृपया सीएसवी (CSV), टीएसवी (TSV), एक्सएलएस (XLS), या एक्सएलएसएक्स (XLSX) फ़ाइल का चयन करें।"
@@ -2306,6 +2568,7 @@ hi:
               nomination_moderated: "किसी भी नामांकन को मॉडरेट किया गया"
               privileged_account_created: "प्रयोक्‍ता ने अपना पूर्वाधिकार खाता बनाया"
               user_affected: "कार्रवाई सीधे आपको प्रभावित कर रही है जैसे टिप्‍पणी पर उत्‍तर व स्थिति अद्यतन"
+              view_deleted: "कोई दृश्य मिटा दिया गया है"
               view_made_public: "किसी भी व्‍यू को सार्वजनिक बनाया गया"
             policy: "%{site} आपकी निजता का सम्‍मान करती है और इस सूची के जरिए आपको कभी मार्केटिंग ईमेल नहीं भेजेगी, या आपका ईमेल तीसरे पक्ष को नहीं देगी। इस साइट से भेजे गये ईमेल में खाता सूचना व उस डेटासेट के अद्यतन शामिल होते हैं जिसे आपने बनाया है या जिसकी सदस्‍यता ली है।"
             send_error: "आपकी मेल भेजने में एक समस्या थी। कृपया बाद में फिर से प्रयास करें।"
@@ -2327,6 +2590,9 @@ hi:
           callback_prefix: "कॉलबैक प्रेफिक्‍स "
           callback_prefix_help_html: उदाहरण के लिए, यदि आपकी एप्‍लीकेशन <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> और <span class="code">https://my-domain.com/socrata-app/profile</span>पर कॉल बैक होगी तो आप अपने प्रेफिक्‍स के तौर पर <span class="code">https://my-domain.com/socrata-app</span> देना चाहेंगे। ध्‍यान दें कि आपको कम से कम संपूर्ण डोमेन नाम शामिल करना चाहिए।
           callback_prefix_prompt: OAuth उपयोग करते समय सुरक्षित (https) कॉलबैक यूआरआई को प्रेफिक्‍स प्रदान करें
+          core_error:
+            already_exists: "पहले से ही %{app_name} नाम की एप्लीकेशन मौजूद है"
+            another_user: "अन्य उपयोगकर्ता के लिए एप्लीकेशन तैयार नहीं की जा सकती है "
           create_error: "आपका एप्‍लीकेशन टोकन बनाते समय त्रुटि हुई: %{message}"
           create_success: "आपकी एप्‍लीकेशन बनाई गई"
           delete_confirm: "क्या सचमुच इस अनुप्रयोग को हटा दें? उसके बाद से संबंधित app_token मान्य नहीं रहेगा"
@@ -2406,12 +2672,15 @@ hi:
       success: "पासवर्ड सफलतापूर्वक रीसेट किया गया"
       title: "पासवर्ड रिसेट करें"
     sign_in:
+      auth0_intro: "आप कई तरीकों से साइन इन (प्रवेश) कर सकते हैं। यदि आपने अभी तक खाते के लिए साइन अप नहीं किया है, तो ऐसा करने लिए दिए गए विकल्पों में से कोई भी विकल्प चुनें जो आपके लिए सबसे अधिक सुविधाजनक हो। यदि आपने ऐसा कर लिया है, तो उस विकल्प का प्रयोग करें। "
+      back_to_sign_in_selection: <a class="login-back">साइन इन विकल्पों पर वापस जाएं</a>
       failed: "इस ईमेल और पासवर्ड से लृग-इन नहीं कर सके। कृपया फिर से कोशिश करें"
       form:
         sign_in_button: "साइन इन करें"
       headline: "साइन इन करें से %{site}"
       mismatch: "पासवर्ड मेल नहीं खा रहे हैं। कृपया फिर से कोशिश करें"
       prompt_html: "अपनी <strong>सोक्राटा आईडी</strong>से साइन इन करें "
+      sign_in_with: "%{provider} के साथ <strong>साइन इन</strong> करें"
       tips_html: <strong><a href="http://www.socrata.com" rel="external">सोक्राटा</a> द्वारा संचालित</strong> सभी साइटों में साइन इन करने के लिए अपने ईमेल व पासवर्ड का उपयोग करें।
     sign_up:
       form:

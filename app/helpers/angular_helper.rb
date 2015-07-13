@@ -5,7 +5,7 @@ module AngularHelper
   end
 
   def angular_translations
-    I18n.t('angular.' + angular_app, :default => {})
+    LocaleCache.render_translations([LocalePart.angular])['angular'][angular_app]
   end
 
   def render_angular_config

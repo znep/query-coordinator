@@ -40,6 +40,228 @@ sw:
       validation:
         mismatch: Manenosiri hayalingani
         terms: Unapaswa kukubali masharti ya huduma na sera ya faragha.
+  angular:
+    dataCards:
+      add_card_dialog:
+        add_card: 
+        add_this_card: 
+        card_on_page: 
+        card_on_page_long: 
+        choose_column: 
+        column_chart_warning: 
+        customize_prompt: 
+        not_supported: 
+        not_supported_long: 
+        prompt: 
+        settings: 
+        visualize_flyout: 
+      aggregation_chooser:
+        count_label: 
+        description: 
+        information: 
+        number_of: 
+        option_disabled: 
+        sum_label: 
+        sum_of: 
+        the_sum_of: 
+        title: 
+        too_many_columns:
+          message: 
+          title: 
+      api_explorer:
+        additional_resources: 
+        api_button: 
+        api_button_title: 
+        code_libraries: 
+        code_libraries_title: 
+        documentation: 
+        documentation_title: 
+        formats: 
+        geojson: 
+        json: 
+        title: 
+        url: 
+      card_controls:
+        collapse_card: 
+        customize_disabled: 
+        customize_enabled: 
+        expand_card: 
+        remove_card: 
+      card_layout:
+        add_card_here: 
+      common:
+        cancel: 
+        cards:
+          choropleth: 
+          column_chart: 
+          distribution_chart: 
+          feature_map: 
+          search_card: 
+          timeline_chart: 
+        change: 
+        done: 
+        download: 
+        downloading: 
+        error: 
+        errors:
+          export_visualization_disabled: 
+          invalid_card: 
+          map_render_error: 
+        latitude: 
+        longitude: 
+        no_value: 
+        ok: 
+        permissions:
+          permissions: 
+          private: 
+          public: 
+      customize_bar:
+        changes_warning: 
+        collapse_card: 
+        customize: 
+        customize_flyout: 
+        customizing: 
+        customizing_flyout: 
+        customizing_flyout_instructions: 
+        exit_visualization_export: 
+      customize_card_dialog:
+        map_layer:
+          custom: 
+          standard: 
+          title: 
+        visualization_options:
+          title: 
+      distribution_chart:
+        drag_clear_help: 
+        drag_help: 
+        errors:
+          error: 
+          no_data: 
+      feature_map:
+        zoom_disabled: 
+      feedback_panel:
+        broken: 
+        feedback: 
+        like: 
+        missing: 
+        other_option: 
+        screenshot_description: 
+        screenshot_no: 
+        screenshot_prompt: 
+        screenshot_yes: 
+      filter:
+        and: 
+        blank: 
+        date_range: 
+        is: 
+        is_not: 
+        value_range: 
+        where: 
+      flyout:
+        clear_filter: 
+        clear_filter_long: 
+        clear_range_filter_long: 
+        current_filter: 
+        details: 
+        expand: 
+        filtered_amount: 
+        total: 
+      last_updated:
+        label: 
+      lens_type:
+        community: 
+        official: 
+      manage_lens_dialog:
+        dataset_private_page_private: 
+        dataset_private_page_public: 
+        dataset_public_page_private: 
+        dataset_public_page_public: 
+        title: 
+      metadata:
+        data_as_csv: 
+        edit_description_prompt: 
+        page_name_placeholder: 
+        source_dataset: 
+        validation_error_max_length: 
+        validation_error_min_length: 
+        validation_error_required: 
+        visualization_as_image: 
+        visualization_as_image_disabled_flyout: 
+      mobile_warning_dialog:
+        acknowledgement: 
+        description: 
+      page_header:
+        logo: 
+        sign_in: 
+        sign_out: 
+        sign_up: 
+      quick_filter_bar:
+        clear_all_flyout: 
+        filter_title: 
+      related_views:
+        button: 
+        title: 
+      revert_button:
+        flyoutHasChanges: 
+        flyoutNoChanges: 
+        text: 
+      rich_text_editor:
+        bold: 
+        insert_link: 
+        italic: 
+        link: 
+        link_placeholder: 
+        underline: 
+      save_as:
+        flyoutFailedBody: 
+        flyoutFailedTitle: 
+        flyoutIdle: 
+        flyoutNoChanges: 
+        text: 
+      save_as_panel:
+        description: 
+        new_name: 
+        title: 
+      save_button:
+        failed: 
+        flyoutFailedBody: 
+        flyoutFailedTitle: 
+        flyoutIdle: 
+        flyoutNoChanges: 
+        saved: 
+        saving: 
+      search_card:
+        invalid_search: 
+        loading: 
+        no_results: 
+        one_example: 
+        prompt_number: 
+        prompt_text: 
+        search_info: 
+        two_examples: 
+      table:
+        a_to_z: 
+        ascending: 
+        descending: 
+        largest_first: 
+        loading: 
+        newest_first: 
+        no_rows: 
+        oldest_first: 
+        range_label: 
+        range_label_all: 
+        range_label_subtitle: 
+        smallest_first: 
+        sort: 
+        sorted: 
+        z_to_a: 
+      timeline_chart:
+        drag_clear_help: 
+        drag_help: 
+        errors:
+          bad_dates: 
+          default: 
+          no_data: 
   controls:
     browse:
       actions:
@@ -101,6 +323,10 @@ sw:
           forms: Fomu
           href: Setidata za Nje
           maps: Ramani
+          new_view: 
+          new_view_help: 
+          story: 
+          story_help: 
           unpublished: Setidata Ambayo haijachapishwa
         view_types_singular_title: aina
         view_types_title: Tazama Aina
@@ -345,6 +571,10 @@ sw:
         Je unataka kufuta safu iliyochaguliwa?
         Data zote kwenye safu hii zitaondolewa!
       edit_column_properties: Hariri Vyombo vya Safu
+      errors:
+        cannot_edit_at_this_time: 
+        primary_key_collision: 
+        row_locked_for_edit: 
       filter_this_column: Chuja Safu Hii
       geocodes_pending: |
         Mistari katika safu ya mahali bado inapambanua.
@@ -535,6 +765,7 @@ sw:
       percent: Asilimia
       phone: Simu
       photo: Picha (Picha)
+      point: 
       stars: Nyota
       text: Maandiko ya Kawaida
       url: URL ya Tovuti
@@ -693,8 +924,11 @@ sw:
       page: ukurasa
       previous_page: Ukurasa Uliotangulia
     precision_style:
-      scientific: "Ya kisayansi: 1.0204e+3"
-      standard: "Kiwango: 1020.4"
+      currency: 
+      financial: 
+      percentage: 
+      scientific: Ya kisayansi (1.0204e+3)
+      standard: Kiwango (1020.4)
     required: Inahitajika
     share_types:
       contributor: Mchangiaji
@@ -731,12 +965,14 @@ sw:
       href: |
         Setidata ya nje
       map: ramani
+      new_view: 
       table: jedwali
       working_copy: Nakala ya kazi
     view_types_plural:
       api: APIs
       calendar: Kalenda
       chart: Chati
+      data_lens: 
       filter: Mitazamo Iliyochujwa
       form: Fomu
       grouped: Mionekano vikundi
@@ -843,6 +1079,10 @@ sw:
       description_html: Tafadhali jaribu tena ndani ya muda mfupi, au <a href="http://support.socrata.com">toa habari juu ya kosa hili</a> pamoja na maelezo ya ulichokuwa ukijaribu kukifanya.
       somethings_wrong: Kitu Fulani si sahihi
       were_sorry: Tunasikitika, lakini palikuwa tatizo wakati wa kuchakata ombi lako.
+    error_site_unavailable:
+      description: 
+      help_html: 
+      title: 
     not_acceptable_406:
       page_not_found: Ukurasa haujagunduliwa
       were_sorry: Tunasikitika sana, lakini ukurasa ulioomba haupatikani kwenye umbo lililoombwa.
@@ -991,7 +1231,8 @@ sw:
       monday_short: Jtt
       next: Ijayo
       november: Novemba
-      november_short: Nov
+      november_short: |
+        Nov
       october: Oktoba
       october_short: Okt
       prev: Iliyotangulia
@@ -1275,6 +1516,7 @@ sw:
         supported: Aina ya mafaili yanayoainiwa ni CSV, TSV, na Excel. Protokoli zinazoainiwa ni HTTP na HTTPS.
         url_prompt: Ni ipi URL ya tovuti ya faili ambalo ungependa kulileta?
       errors:
+        insecure_esri_url: 
         invalid_crossload_url: Tafadhali andika URL halali ianzayo ama na HTTP au HTTPS.
         invalid_url: Hiyo haionekani kuwa ni URL halali.
         missing_data_provider: Sharti umuelezee mtoaji wa data (mchangiaji) kwenye leseni ya Ubunifu ya Ushirika
@@ -1528,7 +1770,9 @@ sw:
           validation:
             view_column: Huwezi kuongeza safu kwenye mwonekano
         api:
+          api_docs: 
           column_ids_title: 'Namba za Safu:'
+          developer_portal: 
           endpoint_title: 'Nukta ya Mwisho ya Kufikia API:'
           intro_html: |
             <strong>Data ya Wazi API ya Socrata</strong> (SODA) itaruhusu watengenezaji wa programu kufikia data iliyohifadhiwa kwenye tovuti za data Socrata kiprogramu. Watengenezaji wanaweza kuunda program ambazo zinatumia SODA APIs ili kupata sura na &ldquo;mash-up&rdquo; Setidata za Socrata katika njia mpya na zilizopo. Kuunda programu ya iPhone ambayo itatoa picha ya matumizi ya serikali katika eneo lako, programu ya mtandao ambayo itawaruhusu wananchi kuangalia ruzuku za serikali zinazoweza kutokea ambazo waliziangalia, au huduma ambayo inakutumia barua pepe moja kwa moja wakati alama mpya zimeongezwa katika matangazo ambayo unapenda kufuatilia.
@@ -2171,6 +2415,13 @@ sw:
             title: Mionekano
         visualize:
           choose_type: Aina ya Upataji Taswira
+      new_ux_button: 
+      new_ux_creating_page: 
+      new_ux_error: 
+      new_ux_link: 
+      new_ux_nbe_warning: 
+      new_ux_text: 
+      new_ux_title: 
       save_dialog:
         descriptions:
           leaving: Una data hazijahifadhiwa ambazo zitapotea kama utaacha ukurasa huu. Tafadhali chagua kama unataka au hutaki kuhifadhi mwonekano huu kabla ya kuondoka; au chagua Batilisha ili kurudi kwenye ukurasa.
@@ -2198,6 +2449,7 @@ sw:
         subscribed_html: <strong>sasa umeshirikishwa kwenye hii <span class="datasetTypeName">Setidata</span> kupitia barua pepe</strong>, na utapokea taarifa itakapochapishwa data mpya.
         title_html: Shiriki kwenye "<span class="datasetName">%{name}</span>" <span class="datasetTypeNameUpcase">Setidata</span>
         unsubscribe: Ikiwa hutaki kupokea taarifa, ondoa alama katika kisanduku cha kushiriki hapo chini.
+      unable_to_find_dataset_page: 
     edit_metadata:
       about: Kuhusu
       additional_source: Chanzo cha Ziada
@@ -2257,6 +2509,7 @@ sw:
       return: Rudi kwenye Setidata
       row_class: Daraja la Mstari
       row_identifier: Kitambuzi cha Mstari
+      row_identifier_help_text: 
       save: Hifadhi
       save_changes: Hifadhi mabadiliko
       semantics_rdf: Semantiki na RDF
@@ -2330,6 +2583,7 @@ sw:
     import_pane:
       analyzing: Inachanganua faili lako…
       assure_accessible: Tafadhali hakikisha kuwa faili lako linaweza kufikiwa na ni halali kisha jaribu tena.
+      bytes_imported: 
       combine_multiple_cols: "(Changanya safu nyingi...)"
       downloading: Inapakua faili lako…
       filetype_error_blist: Tafadhali chagua faili CSV, TSV, XLS, au XLSX.
@@ -2510,6 +2764,8 @@ sw:
       success: Nenosiri limefanikiwa kusetiwa
       title: Seti Tena Nenosiri
     sign_in:
+      auth0_intro: 
+      back_to_sign_in_selection: 
       failed: |
         Umeshindwa kuingia na barua pepe hiyo na nenosiri; Tafadhali jaribu tena
       form:
@@ -2518,6 +2774,7 @@ sw:
       mismatch: |
         Manenosiri hayalingani; Tafadhali jaribu tena
       prompt_html: Ingia na <strong>Namba yako ya Socrata</strong>
+      sign_in_with: 
       tips_html: Tumia Barua Pepe yako na Nenosiri kuingia katika <strong><a href="http://www.socrata.com" rel="external">Socrata</a> powered</strong> tovuti zote.
     sign_up:
       form:

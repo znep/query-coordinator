@@ -2,7 +2,16 @@ Rails.application.routes.draw do
   get 'version' => 'version#show'
 
   resources :stories # HMMM do we want the standard crud?
+
   get 's(/:vanity_text)/:four_by_four' => 'stories#show', constraints: {
+    four_by_four: UNANCHORED_FOUR_BY_FOUR_PATTERN
+  }
+
+  get 's/:four_by_four/create' => 'stories#create', constraints: {
+    four_by_four: UNANCHORED_FOUR_BY_FOUR_PATTERN
+  }
+
+  post 's/:four_by_four/create' => 'stories#bootstrap', constraints: {
     four_by_four: UNANCHORED_FOUR_BY_FOUR_PATTERN
   }
 

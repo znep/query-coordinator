@@ -61,6 +61,10 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
+  config.before :each do
+    allow(ZookeeperDiscovery).to receive(:initialize!)
+  end
+
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
 =begin
@@ -107,13 +111,52 @@ RSpec.configure do |config|
 =end
 end
 
+def mock_valid_user
+  {
+    'id' => 'tugg-xxxx',
+    'createdAt' => 1425577015,
+    'displayName' => 'testuser'
+  }
+end
+
+def mock_valid_lenses_view_metadata(initialized)
+  { 'initialized' => initialized }
+end
+
+def mock_valid_uninitialized_lenses_view
+  {
+    'name' => 'Test story',
+    'metadata' => mock_valid_lenses_view_metadata(false),
+    'owner' => mock_valid_user
+  }
+end
+
+def mock_valid_initialized_lenses_view
+  {
+    'name' => 'Test story',
+    'metadata' => mock_valid_lenses_view_metadata(true),
+    'owner' => mock_valid_user
+  }
+end
+
 def stub_valid_session
-  good_user_object = {"id"=>"tugg-xxxx", "createdAt"=>1425577015, "displayName"=>"testuser"}
-  allow(@controller).to receive(:current_user).and_return(good_user_object)
+  allow(@controller).to receive(:current_user).and_return(mock_valid_user)
 end
 
 def stub_invalid_session
   allow(@controller).to receive(:current_user).and_return(nil)
+end
+
+def stub_valid_uninitialized_lenses_view
+  allow(CoreServer).to receive(:get_view).and_return(mock_valid_uninitialized_lenses_view)
+end
+
+def stub_valid_initialized_lenses_view
+  allow(CoreServer).to receive(:get_view).and_return(mock_valid_initialized_lenses_view)
+end
+
+def stub_invalid_lenses_view
+  allow(CoreServer).to receive(:get_view).and_return(nil)
 end
 
 def fixture_path

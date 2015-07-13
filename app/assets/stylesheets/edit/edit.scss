@@ -46,6 +46,19 @@ body header {
   }
 }
 
+#create-story-title-input {
+  width: 100%;
+  font-size: 2rem;
+}
+
+#create-story-submit-btn {
+  position: relative;
+  display: block;
+  width: 50%;
+  font-size: 2rem;
+  margin: 0 auto;
+}
+
 .col1, .col2, .col3, .col4, .col5, .col6, .col7, .col8, .col9, .col10, .col11, .col12 {
   float: left;
   margin: 0;

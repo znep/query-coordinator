@@ -76,4 +76,7 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # Default `ZOOKEEPER_HOSTS` to localhost unless it is already set.
+  ENV['ZOOKEEPER_HOSTS'] ||= 'localhost:2181'
 end

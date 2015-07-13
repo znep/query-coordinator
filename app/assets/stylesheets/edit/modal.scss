@@ -1,0 +1,24 @@
+@import '../base';
+
+.modal {
+  @include media-query-property(
+    'width',
+    $main-content-width-small / 1.5,
+    $main-content-width-medium / 1.5,
+    $main-content-width-large / 1.5,
+    $main-content-width-extra-large / 1.5
+  );
+
+  height: auto;
+  margin: 10rem auto;
+  padding: 2rem;
+  background-color: $modal-bg-color;
+
+  .modal-title {
+    font-size: 2.5em;
+  }
+
+  .modal-content {
+
+  }
+}

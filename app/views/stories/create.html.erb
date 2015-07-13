@@ -1,0 +1,15 @@
+<div id="create-story-modal" class="modal">
+
+  <h1 class="modal-title">Create a New Story</h1>
+
+  <div class="modal-content">
+
+    <p>To get started, choose a name for your story.</p>
+
+    <form action="/stories/s/<%= params[:four_by_four] -%>/create" method="POST">
+      <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>" />
+      <input id="create-story-title-input" type="text" name="title" autofocus="autofocus" placeholder="Choose a name for your story..." value="<%= @story_title %>" />
+      <button id="create-story-submit-btn" type="submit">Create Story</button>
+    </form>
+  </div>
+</div>

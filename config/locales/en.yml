@@ -30,5 +30,8 @@ en:
     text_block_2:
       title: 'I am a Master Storyteller'
       text: 'Abandon the idea that you are ever going to finish. Lose track of the 400 pages and write just one page for each day, it helps. Then when it gets finished, you are always surprised.'
-
+  stories_controller:
+    error_creating_story_flash: 'Error creating story.'
+    permissions_error_flash: 'Permissions error.'
+    not_found_error_flash: 'Story not found.'
 

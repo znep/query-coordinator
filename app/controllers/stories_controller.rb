@@ -19,7 +19,7 @@ class StoriesController < ApplicationController
   end
 
   def new
-    view = CoreServer::get_view(params[:four_by_four], authentication_cookie)
+    view = CoreServer::get_view(params[:four_by_four], core_request_headers)
 
     if view.present?
       @story_title = view['name']
@@ -37,7 +37,7 @@ class StoriesController < ApplicationController
   end
 
   def create
-    view = CoreServer::get_view(params[:four_by_four], env['HTTP_COOKIE'])
+    view = CoreServer::get_view(params[:four_by_four], core_request_headers)
 
     if view.present?
       view_metadata = view['metadata']
@@ -59,7 +59,7 @@ class StoriesController < ApplicationController
 
           view['name'] = clean_title
           view['metadata']['initialized'] = true
-          updated_view = CoreServer::update_view(params[:four_by_four], authentication_cookie, view)
+          updated_view = CoreServer::update_view(params[:four_by_four], core_request_headers, view)
 
           if updated_view.nil?
             Rails.logger.error(
@@ -140,6 +140,13 @@ class StoriesController < ApplicationController
     # 254 characters below to ensure that the resulting string will never
     # exceed the 255 character limit enforced by the database.
     dirty_title.gsub(/\s+/, ' ').gsub(/[^A-Za-z0-9\-\:\s]/, '')[0...255]
+  end
+
+  def core_request_headers
+    {
+      'Cookie' => authentication_cookie,
+      'X-Socrata-Host' => request.host
+    }
   end
 
   # TODO replace this with the real solution

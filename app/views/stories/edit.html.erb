@@ -1,13 +1,35 @@
 <header>
-  <a href='#' class='story-title' role='button'>Story</a>
+  <a href="#" class="story-title" role="button">Story</a>
   <div class="header-right">
-    <button class="undo-btn" disabled="disabled">Undo</button>
-    <button class="redo-btn" disabled="disabled">Redo</button>
+    <ul class="menu">
+      <li>
+        <button class="undo-btn" disabled="disabled">Undo</button>
+      </li>
+      <li>
+        <button class="redo-btn" disabled="disabled">Redo</button>
+      </li>
+      <li>
+        <a class="add-content-panel-btn" role="button" href="#">+ Add Content</a>
+      </li>
+      <li>
+        <a class="style-panel-btn" role="button" href="#">Style &amp; Presentation</a>
+      </li>
   </div>
 </header>
 
-<section class="inspiration-story-container">
-  <div class="inspiration-story"></div>
+<section class="add-content-panel">
+  <div class="close-content-panel-btn">
+    <a role="button" href="#" title="Close">
+      <span class="icon-cross2"></span>
+    </a>
+  </div>
+  <section>
+    <h1>Common Blocks</h1>
+    <hr></hr>
+    <div class="scrollable">
+      <div class="inspiration-story"></div>
+    </div>
+  </section>
   <div class="inspiration-story-error hidden">There was an error</div>
 </section>
 

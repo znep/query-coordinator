@@ -15,6 +15,7 @@
 //= require eventie/eventie
 //= require unipointer/unipointer
 //= require unidragger/unidragger
+//= require jQuery-sidebar/src/jquery.sidebar
 //= require editor/Util
 //= require editor/SimpleEventEmitter
 //= require editor/Store

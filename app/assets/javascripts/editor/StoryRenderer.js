@@ -6,7 +6,6 @@
 
     var storyUid = options.storyUid || null;
     var container = options.storyContainerElement || null;
-    var scaleFactor = options.scaleFactor || 1;
     var editable = options.editable || false;
     var insertionHint = options.insertionHintElement || false;
     var insertionHintIndex = -1;
@@ -301,7 +300,7 @@
         layoutHeight += _layoutInsertionHint(layoutHeight);
       }
 
-      container.height(layoutHeight * scaleFactor);
+      container.height(layoutHeight);
     }
 
     function _showInsertionHintAtIndex(index) {

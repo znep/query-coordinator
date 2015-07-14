@@ -77,17 +77,6 @@ $(document).on('ready', function() {
   window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: inspirationStoryData });
   window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
 
-
-
-  var inspirationStoryOptions = {
-    storyUid: window.inspirationStoryUid,
-    storyContainerElement: $('.inspiration-story'),
-    scaleFactor: 0.5,
-    editable: false,
-    onRenderError: function() { $('.inspiration-story-error').removeClass('hidden'); }
-  };
-  var inspirationStoryRenderer = new StoryRenderer(inspirationStoryOptions);
-
   var userStoryOptions = {
     storyUid: window.userStoryUid,
     storyContainerElement: $('.user-story'),
@@ -98,12 +87,6 @@ $(document).on('ready', function() {
     onRenderError: function() {}
   };
   var userStoryRenderer = new StoryRenderer(userStoryOptions);
-
-  var inspirationStoryElement = $('.inspiration-story-container');
-  var userStoryElement = $('.user-story-container');
-  var ghostElement = $('#block-ghost');
-  var dragDrop = new DragDrop(inspirationStoryElement.find('.block'), ghostElement);
-  dragDrop.setup();
 
   /**
    * RichTextEditorToolbar events
@@ -246,5 +229,17 @@ $(document).on('ready', function() {
   /**
    * Set up controls/widgets
    */
+
+  // Add Content Panel
+  var addContentPanelElement = $('.add-content-panel');
+  addContentPanelElement.addContentPanel(window.inspirationStoryUid, $('.add-content-panel-btn'));
+
+  // Drag-drop
+  var ghostElement = $('#block-ghost');
+  var dragDrop = new DragDrop(addContentPanelElement.find('.block'), ghostElement);
+  dragDrop.setup();
+
+  // Story title
   $('.story-title').storyTitle(window.userStoryUid);
 });
+

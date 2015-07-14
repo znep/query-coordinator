@@ -1,0 +1,14 @@
+{
+  "name": "jQuery-sidebar",
+  "homepage": "https://github.com/socrata-platform/jQuery-sidebar",
+  "version": "3.2.0",
+  "_release": "3.2.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "3.2.0",
+    "commit": "a46fd2bdc8b44b3dbffabcb73c00bb702a3c8bab"
+  },
+  "_source": "git://github.com/socrata-platform/jQuery-sidebar.git",
+  "_target": "~3.2.0",
+  "_originalSource": "socrata-platform/jQuery-sidebar"
+}

@@ -28,13 +28,12 @@
   position: fixed;
   top: 0;
   left: 0;
+  font-size: $inspiration-story-font-size;
   z-index: $block-ghost-z-index;
-  transform-origin: top left;
-  transform: scale(0.25);
-  transition: transform $transition-duration;
   pointer-events: none;
+  transition: none;
 
   &.full-size {
-    transform: scale(1.0);
+    font-size: inherit;
   }
 }

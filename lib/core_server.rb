@@ -2,7 +2,7 @@ require 'retries'
 
 class CoreServer
 
-  def self.get_view(uid, cookie)
+  def self.get_view(uid, headers)
     view = nil
     core_server_response = nil
 
@@ -18,12 +18,11 @@ class CoreServer
       with_retries(retry_options) do
 
         core_server_response = core_server_request(
-          verb: :get,
-          path: "/views/#{uid}.json",
-          headers: {
-            'Content-type' => 'application/json',
-            'Cookie' => cookie
-          }
+          verb: core_server_request_verb,
+          path: core_server_request_path,
+          headers: headers.merge({
+            'Content-type' => 'application/json'
+          })
         )
       end
 
@@ -61,7 +60,7 @@ class CoreServer
     view
   end
 
-  def self.update_view(uid, cookie, view_data)
+  def self.update_view(uid, headers, view_data)
     updated_view = nil
     core_server_response = nil
 
@@ -77,12 +76,11 @@ class CoreServer
       with_retries(retry_options) do
 
         core_server_response = core_server_request(
-          verb: :put,
-          path: "/views/#{uid}.json",
-          headers: {
-            'Content-type' => 'application/json',
-            'Cookie' => cookie
-          },
+          verb: core_server_request_verb,
+          path: core_server_request_path,
+          headers: headers.merge({
+            'Content-type' => 'application/json'
+          }),
           body: view_data
         )
       end

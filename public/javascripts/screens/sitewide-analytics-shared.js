@@ -1,7 +1,9 @@
 ;blist.namespace.fetch('blist.metrics');
 
 var datasetsMetricName,
-    pageViewsSummary;
+    pageViewsSummary,
+    mapsSummary,
+    dataLensesEnabled;
 
 if(blist.feature_flags.dataset_count_v2){
   datasetsMetricName = 'datasets-published-v2';
@@ -10,8 +12,12 @@ if(blist.feature_flags.dataset_count_v2){
 }
 if (blist.feature_flags.embetter_analytics_page) {
     pageViewsSummary = {plus: 'js-page-view', total: false};
+    mapsSummary = {plus: 'lense-map-published-v1', range: false}
+    dataLensesEnabled = true;
 } else {
     pageViewsSummary = {plus: 'page-views'};
+    mapsSummary = {plus: ['maps-created'], minus: ['maps-deleted']};
+    dataLensesEnabled = false;
 }
 
 blist.metrics.sitewideShared = {
@@ -55,8 +61,9 @@ blist.metrics.sitewideShared = {
             enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {id: 'detailCharts',    displayName: 'Charts',   summary: { plus: ['charts-created'], minus: ['charts-deleted'] } },
+        {id: 'detailLenses',    displayName: 'Data Lens Pages', summary: { plus: 'lense-new_view-published-v1', range: false }, enabled: dataLensesEnabled },
         {id: 'detailFilters',   displayName: 'Filters',  summary: { plus: ['filters-created'], minus: ['filters-deleted'] } },
-        {id: 'detailMaps',      displayName: 'Maps',     summary: { plus: ['maps-created'], minus: ['maps-deleted'] } },
+        {id: 'detailMaps',      displayName: 'Maps',     summary: mapsSummary },
         {id: 'detailSnapshots', displayName: 'Snapshots', summary: { plus: ['datasets-created-snapshot'], minus: ['datasets-deleted-snapshot'] } },
         {id: 'detailBlobs',     displayName: 'Downloadable Files', summary: { plus: ['datasets-created-blobby'], minus: ['datasets-deleted-blobby'] } },
         {id: 'detailHref',      displayName: 'External Datasets', summary: { plus: ['datasets-created-href'], minus: ['datasets-deleted-href'] } }
@@ -92,8 +99,8 @@ blist.metrics.sitewideShared = {
             id: 'summaryDatasets',    displayName: 'Total Datasets',
             summary: {
                 plus: datasetsMetricName,
-		range: false,
-                verbPhrase: 'datasets created', 
+                range: false,
+                verbPhrase: 'datasets created',
 		verbPhraseSingular: 'dataset created'
             }
         },

@@ -326,8 +326,12 @@ metricsNS.summarySectionCallback = function($context)
     var summaryDirective = metricsNS.summaryDataDirective;
     // Omit the delta box if summaries.range = false
     if (!$.isBlank(summaries.range) && !summaries.range) {
-	templateName = 'metricsSimpleSummaryData';
-	summaryDirective = metricsNS.simpleSummaryDataDirective;
+        templateName = 'metricsSimpleSummaryData';
+        summaryDirective = metricsNS.simpleSummaryDataDirective;
+        if (blist.feature_flags.embetter_analytics_page) {
+            templateName = 'metricsSimpleSummaryDataV1';
+            summaryDirective = metricsNS.simpleSummaryDataDirectiveV1;
+        }
     }
     // Show only the delta if summaries.total = false
     if (!$.isBlank(summaries.total) && !summaries.total) {
@@ -430,6 +434,11 @@ metricsNS.summaryDataDirective = {
 metricsNS.simpleSummaryDataDirective = {
     '.totalValue' : 'total',
     '.totalValue@title' : 'totalText'
+};
+
+metricsNS.simpleSummaryDataDirectiveV1 = {
+    '.deltaValue' : 'total',
+    '.deltaValue@title' : 'totalText'
 };
 
 metricsNS.detailDataDirective = {

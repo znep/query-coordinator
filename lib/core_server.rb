@@ -32,29 +32,29 @@ class CoreServer
       else
         report_error(
           StandardError.new,
-          "CoreServer::get_view(#{uid}) -> `#{core_server_response.inspect}`"
+          "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
         )
       end
 
     rescue NoMethodError => no_method_error
       report_error(
         no_method_error,
-        "CoreServer::get_view(#{uid}) -> `#{core_server_response.inspect}`"
+        "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
       )
     rescue TypeError => type_error
       report_error(
         type_error,
-        "CoreServer::get_view(#{uid}) -> `#{core_server_response.inspect}`"
+        "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
       )
     rescue JSON::ParserError => parser_error
       report_error(
         parser_error,
-        "CoreServer::get_view(#{uid}) -> `#{core_server_response.inspect}`"
+        "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
       )
     rescue => unknown_error
       report_error(
         unknown_error,
-        "CoreServer::get_view(#{uid}) -> `#{core_server_response.inspect}`"
+        "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
       )
     end
 
@@ -92,29 +92,29 @@ class CoreServer
       else
         report_error(
           StandardError.new,
-          "CoreServer::get_view(#{uid}) -> `#{core_server_response.inspect}`"
+          "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
         )
       end
 
     rescue NoMethodError => no_method_error
       report_error(
         no_method_error,
-        "CoreServer::get_view(#{uid}) -> `#{core_server_response.inspect}`"
+        "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
       )
     rescue TypeError => type_error
       report_error(
         type_error,
-        "CoreServer::get_view(#{uid}) -> `#{core_server_response.inspect}`"
+        "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
       )
     rescue JSON::ParserError => parser_error
       report_error(
         parser_error,
-        "CoreServer::get_view(#{uid}) -> `#{core_server_response.inspect}`"
+        "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
       )
     rescue => unknown_error
       report_error(
         unknown_error,
-        "CoreServer::get_view(#{uid}) -> `#{core_server_response.inspect}`"
+        "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
       )
     end
 
@@ -138,7 +138,7 @@ class CoreServer
       report_error(
         exception,
         "CoreServer::core_server_request(options) with options: " \
-        "`#{options.inspect}` failed with retry after #{total_delay.to_s} " \
+        "'#{options.inspect}' failed with retry after #{total_delay.to_s} " \
         "seconds; attempt: #{attempt_number.to_s}"
       )
     end
@@ -173,8 +173,8 @@ class CoreServer
   end
 
   def self.core_server_request(options)
-    raise ArgumentError.new('`:verb` is required.') unless options[:verb].present?
-    raise ArgumentError.new('`:path` is required.') unless options[:path].present?
+    raise ArgumentError.new("':verb' is required.") unless options[:verb].present?
+    raise ArgumentError.new("':path' is required.") unless options[:path].present?
 
     options[:headers] = {} unless options.has_key?(:headers)
 

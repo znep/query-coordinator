@@ -63,8 +63,8 @@ class StoriesController < ApplicationController
 
           if updated_view.nil?
             Rails.logger.error(
-              "Successfully bootstrapped story with uid `#{params[:four_by_four]}` " \
-              "but failed to update the `initialized` flag in the view metadata."
+              "Successfully bootstrapped story with uid '#{params[:four_by_four]}' " \
+              "but failed to update the 'initialized' flag in the view metadata."
             )
             # TODO: Notify Airbrake
           end

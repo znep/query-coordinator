@@ -50,7 +50,7 @@ class ZookeeperDiscovery
   end
 
   def self.connect
-    raise ArgumentError.new('Environment variable `ZOOKEEPER_HOSTS` is required') unless ENV['ZOOKEEPER_HOSTS']
+    raise ArgumentError.new('Environment variable ZOOKEEPER_HOSTS is required') unless ENV['ZOOKEEPER_HOSTS']
 
     Rails.logger.info 'Connecting to Zookeeper...'
     ZK.install_fork_hook

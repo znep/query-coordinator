@@ -135,7 +135,7 @@ RSpec.describe StoriesController, type: :controller do
         expect(assigns(:story).uid).to eq(story_uid)
       end
 
-      it 'updates the lenses view metadata to set `initialized` equal to `true`' do
+      it 'updates the lenses view metadata to set "initialized" equal to "true"' do
         allow(CoreServer).to receive(:update_view) do |story_uid, cookie, updated_view|
           expect(updated_view['name']).to eq(mock_valid_lenses_view_title)
           expect(updated_view['metadata']['initialized']).to eq(true)

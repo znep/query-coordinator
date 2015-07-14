@@ -99,8 +99,8 @@ metricsNS.renderMetricsChart = function(data, $chart, startDate, endDate,
     var yScale, ticks;
     (function() {
         var extent = d3.extent(combinedData),
-            min = extent[0],
-            max = extent[1];
+            min = extent[0] || 0,
+            max = extent[1] || 0;
         yScale = d3.scale.linear()
             .domain([ min, max ])
             .range([ chartDims.height - chartDims.marginBottom, chartDims.marginTop ]);

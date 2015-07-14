@@ -21,6 +21,7 @@ _.forIn(supportedBrowsers, function(browserInstances, browserName) {
 });
 
 var startSauceConnect = _.contains(['true', '1', 1], process.env.SAUCE_START_SAUCE_CONNECT);
+var tunnelIdentifier = process.env.SAUCE_TUNNEL_IDENTIFIER || undefined;
 
 module.exports = function ( karma ) {
   karma.set({
@@ -76,6 +77,7 @@ module.exports = function ( karma ) {
       testName: 'old-ux Unit Tests',
       username: 'socrata-saucelabs',
       accessKey: '9207e751-711a-4ed0-940a-229a42c06bcc',
+      tunnelIdentifier: tunnelIdentifier,
       startConnect: startSauceConnect
     },
 

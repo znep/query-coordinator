@@ -60,14 +60,14 @@ RSpec.describe StoriesController, type: :controller do
       it 'assigns the story title' do
         get :new, four_by_four: story_uid
 
-        expect(assigns(:story_title)).to eq('Test story')
+        expect(assigns(:story_title)).to eq(mock_valid_lenses_view_title)
         expect(response).to render_template(:new)
       end
 
       it 'ignores vanity_text' do
         get :new, four_by_four: story_uid, vanity_text: 'haha'
 
-        expect(assigns(:story_title)).to eq('Test story')
+        expect(assigns(:story_title)).to eq(mock_valid_lenses_view_title)
         expect(response).to render_template(:new)
       end
     end
@@ -112,41 +112,45 @@ RSpec.describe StoriesController, type: :controller do
       let!(:story_uid) { 'test-test' }
 
       it 'creates a new draft story' do
-        allow(CoreServer).to receive(:update_view_metadata) do |story_uid, cookie, metadata|
-          expect(metadata['initialized']).to eq(true)
+        allow(CoreServer).to receive(:update_view) do |story_uid, cookie, updated_view|
+          expect(updated_view['name']).to eq(mock_valid_lenses_view_title)
+          expect(updated_view['metadata']['initialized']).to eq(true)
         end
 
-        post :create, four_by_four: story_uid
+        post :create, four_by_four: story_uid, title: mock_valid_lenses_view_title
 
         expect(assigns(:story)).to be_a(DraftStory)
         expect(assigns(:story).uid).to eq(story_uid)
       end
 
       it 'ignores vanity_text' do
-        allow(CoreServer).to receive(:update_view_metadata) do |story_uid, cookie, metadata|
-          expect(metadata['initialized']).to eq(true)
+        allow(CoreServer).to receive(:update_view) do |story_uid, cookie, updated_view|
+          expect(updated_view['name']).to eq(mock_valid_lenses_view_title)
+          expect(updated_view['metadata']['initialized']).to eq(true)
         end
 
-        post :create, four_by_four: story_uid, vanity_text: 'haha'
+        post :create, four_by_four: story_uid, vanity_text: 'haha', title: mock_valid_lenses_view_title
 
         expect(assigns(:story)).to be_a(DraftStory)
         expect(assigns(:story).uid).to eq(story_uid)
       end
 
       it 'updates the lenses view metadata to set `initialized` equal to `true`' do
-        allow(CoreServer).to receive(:update_view_metadata) do |story_uid, cookie, metadata|
-          expect(metadata['initialized']).to eq(true)
+        allow(CoreServer).to receive(:update_view) do |story_uid, cookie, updated_view|
+          expect(updated_view['name']).to eq(mock_valid_lenses_view_title)
+          expect(updated_view['metadata']['initialized']).to eq(true)
         end
 
-        post :create, four_by_four: story_uid
+        post :create, four_by_four: story_uid, title: mock_valid_lenses_view_title
       end
 
       it 'redirects to the edit experience' do
-        allow(CoreServer).to receive(:update_view_metadata) do |story_uid, cookie, metadata|
-          expect(metadata['initialized']).to eq(true)
+        allow(CoreServer).to receive(:update_view) do |story_uid, cookie, updated_view|
+          expect(updated_view['name']).to eq(mock_valid_lenses_view_title)
+          expect(updated_view['metadata']['initialized']).to eq(true)
         end
 
-        post :create, four_by_four: story_uid
+        post :create, four_by_four: story_uid, title: mock_valid_lenses_view_title
 
         expect(response).to redirect_to "/stories/s/#{story_uid}/edit"
       end

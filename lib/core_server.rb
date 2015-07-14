@@ -61,8 +61,8 @@ class CoreServer
     view
   end
 
-  def self.update_view_metadata(uid, cookie, metadata)
-    view = nil
+  def self.update_view(uid, cookie, view_data)
+    updated_view = nil
     core_server_response = nil
 
     begin
@@ -83,12 +83,12 @@ class CoreServer
             'Content-type' => 'application/json',
             'Cookie' => cookie
           },
-          body: metadata
+          body: view_data
         )
       end
 
       if core_server_response.code.to_i == 200
-        view = JSON.parse(core_server_response.body)
+        updated_view = JSON.parse(core_server_response.body)
       else
         report_error(
           StandardError.new,
@@ -118,7 +118,7 @@ class CoreServer
       )
     end
 
-    view
+    updated_view
   end
 
   private
@@ -195,7 +195,7 @@ class CoreServer
     body = options.fetch(:body, nil)
 
     if body.present?
-      core_request.body = JSON.dump('metadata' => body)
+      core_request.body = JSON.dump(body)
     end
 
     http.request(core_request)

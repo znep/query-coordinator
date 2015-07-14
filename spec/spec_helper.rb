@@ -119,9 +119,13 @@ def mock_valid_lenses_view_metadata(initialized)
   { 'initialized' => initialized }
 end
 
+def mock_valid_lenses_view_title
+  'Test Story'
+end
+
 def mock_valid_uninitialized_lenses_view
   {
-    'name' => 'Test story',
+    'name' => mock_valid_lenses_view_title,
     'metadata' => mock_valid_lenses_view_metadata(false),
     'owner' => mock_valid_user
   }
@@ -129,7 +133,7 @@ end
 
 def mock_valid_initialized_lenses_view
   {
-    'name' => 'Test story',
+    'name' => mock_valid_lenses_view_title,
     'metadata' => mock_valid_lenses_view_metadata(true),
     'owner' => mock_valid_user
   }

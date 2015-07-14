@@ -57,10 +57,11 @@ class StoriesController < ApplicationController
 
         if @story.persisted?
 
-          view_metadata['initialized'] = true
-          updated_metadata = CoreServer::update_view_metadata(params[:four_by_four], authentication_cookie, view_metadata)
+          view['name'] = clean_title
+          view['metadata']['initialized'] = true
+          updated_view = CoreServer::update_view(params[:four_by_four], authentication_cookie, view)
 
-          if updated_metadata.nil?
+          if updated_view.nil?
             Rails.logger.error(
               "Successfully bootstrapped story with uid `#{params[:four_by_four]}` " \
               "but failed to update the `initialized` flag in the view metadata."

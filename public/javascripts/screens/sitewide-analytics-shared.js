@@ -1,11 +1,17 @@
 ;blist.namespace.fetch('blist.metrics');
 
-var datasetsMetricName;
+var datasetsMetricName,
+    pageViewsSummary;
 
 if(blist.feature_flags.dataset_count_v2){
   datasetsMetricName = 'datasets-published-v2';
 } else {
   datasetsMetricName = 'datasets';
+}
+if (blist.feature_flags.embetter_analytics_page) {
+    pageViewsSummary = {plus: 'js-page-view', total: false};
+} else {
+    pageViewsSummary = {plus: 'page-views'};
 }
 
 blist.metrics.sitewideShared = {
@@ -57,12 +63,12 @@ blist.metrics.sitewideShared = {
     ], function(section) { return section.enabled !== false; }),
     summarySections: _.filter([
         {
-            id: 'summaryVisits',      displayName: 'Page Views',
-            summary: {
-		plus: 'page-views', 
-		verbPhrase: 'pages viewed',
+            id: 'summaryVisits',
+            displayName: 'Page Views',
+            summary: $.extend(pageViewsSummary, {
+                verbPhrase: 'pages viewed',
                 verbPhraseSingular: 'page viewed'
-            }
+            })
         },
         {
             id: 'summaryDash',        displayName: 'Total Dashboards',

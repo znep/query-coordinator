@@ -329,6 +329,11 @@ metricsNS.summarySectionCallback = function($context)
 	templateName = 'metricsSimpleSummaryData';
 	summaryDirective = metricsNS.simpleSummaryDataDirective;
     }
+    // Show only the delta if summaries.total = false
+    if (!$.isBlank(summaries.total) && !summaries.total) {
+        templateName = 'metricsDeltaData';
+        summaryDirective = metricsNS.deltaDataDirective;
+    }
     metricsNS.renderSummarySection($context,
 				   mappedData,
 				   summaryDirective,
@@ -431,3 +436,8 @@ metricsNS.detailDataDirective = {
     '.totalValue' : 'total',
     '.deltaBox@class+': 'deltaClass'
 };
+
+metricsNS.deltaDataDirective = {
+    '.totalValue' : 'delta',
+    '.totalValue@title' : 'deltaText'
+}

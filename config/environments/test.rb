@@ -39,4 +39,7 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  # Default `ZOOKEEPER_HOSTS` to localhost unless it is already set.
+  ENV['ZOOKEEPER_HOSTS'] ||= 'localhost:2181'
 end

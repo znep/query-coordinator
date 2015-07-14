@@ -47,6 +47,129 @@ RSpec.describe StoriesController, type: :controller do
     end
   end
 
+  describe '#new' do
+
+    context 'when there is an uninitialized lenses view with the given four by four' do
+
+      before do
+        stub_valid_uninitialized_lenses_view
+      end
+
+      let!(:story_uid) { 'test-test' }
+
+      it 'assigns the story title' do
+        get :new, four_by_four: story_uid
+
+        expect(assigns(:story_title)).to eq(mock_valid_lenses_view_title)
+        expect(response).to render_template(:new)
+      end
+
+      it 'ignores vanity_text' do
+        get :new, four_by_four: story_uid, vanity_text: 'haha'
+
+        expect(assigns(:story_title)).to eq(mock_valid_lenses_view_title)
+        expect(response).to render_template(:new)
+      end
+    end
+
+    context 'when there is an initialized lenses view with the given four by four' do
+
+      before do
+        stub_valid_initialized_lenses_view
+      end
+
+      let!(:story_uid) { 'test-test' }
+
+      it 'redirects to the edit experience' do
+        get :new, four_by_four: story_uid
+
+        expect(response).to redirect_to "/stories/s/#{story_uid}/edit"
+      end
+    end
+
+    context 'when there is no lenses view with the given four by four' do
+
+      before do
+        stub_invalid_lenses_view
+      end
+
+      it 'renders 404' do
+        get :new, four_by_four: 'notf-ound'
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
+  describe '#create' do
+
+    context 'when there is an uninitialized lenses view with the given four by four' do
+
+      before do
+        stub_valid_uninitialized_lenses_view
+      end
+
+      let!(:story_uid) { 'test-test' }
+
+      it 'creates a new draft story' do
+        allow(CoreServer).to receive(:update_view) do |story_uid, cookie, updated_view|
+          expect(updated_view['name']).to eq(mock_valid_lenses_view_title)
+          expect(updated_view['metadata']['initialized']).to eq(true)
+        end
+
+        post :create, four_by_four: story_uid, title: mock_valid_lenses_view_title
+
+        expect(assigns(:story)).to be_a(DraftStory)
+        expect(assigns(:story).uid).to eq(story_uid)
+      end
+
+      it 'ignores vanity_text' do
+        allow(CoreServer).to receive(:update_view) do |story_uid, cookie, updated_view|
+          expect(updated_view['name']).to eq(mock_valid_lenses_view_title)
+          expect(updated_view['metadata']['initialized']).to eq(true)
+        end
+
+        post :create, four_by_four: story_uid, vanity_text: 'haha', title: mock_valid_lenses_view_title
+
+        expect(assigns(:story)).to be_a(DraftStory)
+        expect(assigns(:story).uid).to eq(story_uid)
+      end
+
+      it 'updates the lenses view metadata to set "initialized" equal to "true"' do
+        allow(CoreServer).to receive(:update_view) do |story_uid, cookie, updated_view|
+          expect(updated_view['name']).to eq(mock_valid_lenses_view_title)
+          expect(updated_view['metadata']['initialized']).to eq(true)
+        end
+
+        post :create, four_by_four: story_uid, title: mock_valid_lenses_view_title
+      end
+
+      it 'redirects to the edit experience' do
+        allow(CoreServer).to receive(:update_view) do |story_uid, cookie, updated_view|
+          expect(updated_view['name']).to eq(mock_valid_lenses_view_title)
+          expect(updated_view['metadata']['initialized']).to eq(true)
+        end
+
+        post :create, four_by_four: story_uid, title: mock_valid_lenses_view_title
+
+        expect(response).to redirect_to "/stories/s/#{story_uid}/edit"
+      end
+    end
+
+    context 'when there is no lenses view with the given four by four' do
+
+      before do
+        stub_invalid_lenses_view
+      end
+
+      it 'redirects to root' do
+        post :create, four_by_four: 'notf-ound'
+
+        expect(response).to redirect_to '/'
+      end
+    end
+  end
+
   describe '#edit' do
 
     context 'when there is a matching story' do

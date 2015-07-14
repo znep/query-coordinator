@@ -27,8 +27,8 @@ body header {
   background-color: $header-bg-color;
   box-sizing: content-box;
   z-index: $site-header-z-index;
-  color: $header-fg-color;
-  border-left: 1em solid $header-fg-color;
+  color: $header-font-color;
+  border-left: 1em solid $header-font-color;
 
   .header-right {
     display: inline-block;
@@ -40,8 +40,8 @@ body header {
       border: $button-border-width solid transparent;
       border-radius: 3px;
       &.active {
-        border: $button-border-width solid $header-fg-color;
-        background: $header-fg-color;
+        border: $button-border-width solid $header-font-color;
+        background: $header-font-color;
         color: $header-bg-color;
       }
     }

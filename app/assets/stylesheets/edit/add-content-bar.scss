@@ -1,6 +1,6 @@
 @import '../base';
 
-.inspiration-story-container {
+.add-content-panel {
   @include media-query-property(
     'width',
     $main-content-width-small / 4,
@@ -11,12 +11,12 @@
   @include unselectable();
 
   position: fixed;
-  height: calc(100vh - #{$header-total-height} - #{$inspiration-story-container-padding});
+  height: calc(100vh - #{$header-total-height} - #{$add-content-panel-padding});
   top: $header-total-height;
   right: 0;
-  padding: $inspiration-story-container-padding / 2;
-  background-color: $inspiration-story-container-bg-color;
-  z-index: $inspiration-story-container-z-index;
+  padding: $add-content-panel-padding / 2;
+  background-color: $add-content-panel-bg-color;
+  z-index: $add-content-panel-z-index;
 
   .close-content-panel-btn {
     display: inline-block;

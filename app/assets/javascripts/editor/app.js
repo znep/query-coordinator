@@ -97,7 +97,7 @@ $(document).on('ready', function() {
   };
   var userStoryRenderer = new StoryRenderer(userStoryOptions);
 
-  var inspirationStoryElement = $('.inspiration-story-container');
+  var inspirationStoryElement = $('.add-content-panel');
   var userStoryElement = $('.user-story-container');
   var ghostElement = $('#block-ghost');
   var dragDrop = new DragDrop(inspirationStoryElement.find('.block'), ghostElement);
@@ -246,34 +246,34 @@ $(document).on('ready', function() {
    */
 
   $('.story-title').storyTitle(window.userStoryUid);
-  setupSidebar();
+  setupAddContentPanel();
 });
 
-function setupSidebar() {
-  var inspirationSidebar = $('.inspiration-story-container').sidebar({
+function setupAddContentPanel() {
+  var addContentPanel = $('.add-content-panel').sidebar({
     side: 'right'
   });
 
   var addContentPanelButton = $('.add-content-panel-btn');
 
   addContentPanelButton.on('click', function() {
-    inspirationSidebar.trigger('sidebar:toggle');
+    addContentPanel.trigger('sidebar:toggle');
   });
 
   $('.close-content-panel-btn a').on('click', function() {
-    inspirationSidebar.trigger('sidebar:close');
+    addContentPanel.trigger('sidebar:close');
   });
 
   $(document).on('keydown', function(e) {
     if (e.ctrlKey && e.keyCode === 49) { // '1'
-      inspirationSidebar.trigger('sidebar:toggle');
+      addContentPanel.trigger('sidebar:toggle');
     }
   });
 
-  inspirationSidebar.
+  addContentPanel.
     on('sidebar:open', function() {
       addContentPanelButton.addClass('active');
-      inspirationSidebar.find('a').eq(0).focus();
+      addContentPanel.find('a').eq(0).focus();
     }).
     on('sidebar:close', function() {
       addContentPanelButton.removeClass('active');

@@ -46,6 +46,13 @@ function standardMocks() {
     ]
   });
 
+  // Stub translations
+  window.I18n = {
+    t: sinon.spy(function(translationKeys) {
+      return 'Translation for: ' + translationKeys;
+    })
+  };
+
   window.dispatcher = new Dispatcher();
 
   dispatcher.register(function(payload) {
@@ -88,4 +95,5 @@ standardMocks.unmock = function() {
   delete window.storyStore;
   delete window.blockStore;
   delete window.dragDropStore;
+  delete window.I18n;
 };

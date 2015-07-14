@@ -126,7 +126,7 @@
           var shouldDelete = true;
 
           if (window.blockRemovalConfirmationStore.needsConfirmation(blockId)) {
-            shouldDelete = confirm(I18n['editor']['remove_block_confirmation']);
+            shouldDelete = confirm(I18n.t('editor.remove_block_confirmation'));
           }
 
           if (shouldDelete) {
@@ -325,7 +325,7 @@
 
         if (blockCount === 0) {
           warningMessageElement.addClass('message-empty-story');
-          warningMessageElement.text(I18n['editor']['empty_story_warning']);
+          warningMessageElement.text(I18n.t('editor.empty_story_warning'));
         }
         else {
           warningMessageElement.removeClass('message-empty-story');

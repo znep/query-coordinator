@@ -44,18 +44,22 @@ describe('StoryRenderer', function() {
     createSampleStories();
 
     $('body').append(
-      $('<div>', { class: 'story-container' })
-    );
+        $('<div>', { class: 'story-container' })
+      ).append(
+        $('<p>', { class: 'message-warning' })
+      );
 
     options = {
       storyUid: storyUid,
       storyContainerElement: $('.story-container'),
+      warningMessageElement: $('.message-warning'),
       onRenderError: function() {}
     };
   });
 
   afterEach(function() {
     $('.story-container').remove();
+    $('.message-warning').remove();
   });
 
   describe('constructor', function() {
@@ -179,6 +183,14 @@ describe('StoryRenderer', function() {
 
           assert.equal($('.block').length, 1);
         });
+
+        it('does not render the empty story warning', function() {
+          var renderer = new StoryRenderer(options);
+
+          assert.equal($('.message-empty-story').length, 0);
+          assert.equal($('.message-empty-story').text().length, 0);
+        });
+
       });
 
       describe('with a story that has blocks including an image component', function() {
@@ -302,6 +314,24 @@ describe('StoryRenderer', function() {
           });
         });
       });
+    });
+  });
+
+  describe('when rendering an empty story', function() {
+    it('should display an empty story message', function() {
+      var storyWithoutBlocks = generateStoryData({
+        uid: 'empt-yyyy',
+        blocks: []
+      });
+
+      dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyWithoutBlocks });
+
+      options.storyUid = 'empt-yyyy';
+      var renderer = new StoryRenderer(options);
+
+      assert.equal($('.message-empty-story').length, 1);
+      assert.isAbove($('.message-empty-story').text().length, 1);
+      assert.isTrue(I18n.t.calledWith('editor.empty_story_warning'));
     });
   });
 

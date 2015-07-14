@@ -32,8 +32,6 @@
   inspirationStoryData = <%== @inspiration_story.to_json %>;
   userStoryData = <%== @story.to_json %>;
   sampleBlocks = <%== generate_sample_blocks.to_json %>;
-
-  // Load translations into the window
-  // Usage: I18n["alpha"]["bravo"];
-  window.I18n = <%= current_js_translations.to_json.html_safe %>
 </script>
+
+<%= render 'shared/i18n_for_js' %>

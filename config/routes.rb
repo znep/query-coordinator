@@ -7,11 +7,11 @@ Rails.application.routes.draw do
     four_by_four: UNANCHORED_FOUR_BY_FOUR_PATTERN
   }
 
-  get 's/:four_by_four/create' => 'stories#create', constraints: {
+  get 's/:four_by_four/create' => 'stories#new', constraints: {
     four_by_four: UNANCHORED_FOUR_BY_FOUR_PATTERN
   }
 
-  post 's/:four_by_four/create' => 'stories#bootstrap', constraints: {
+  post 's/:four_by_four/create' => 'stories#create', constraints: {
     four_by_four: UNANCHORED_FOUR_BY_FOUR_PATTERN
   }
 

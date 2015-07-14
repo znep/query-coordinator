@@ -47,7 +47,7 @@ RSpec.describe StoriesController, type: :controller do
     end
   end
 
-  describe '#create' do
+  describe '#new' do
 
     context 'when there is an uninitialized lenses view with the given four by four' do
 
@@ -57,18 +57,18 @@ RSpec.describe StoriesController, type: :controller do
 
       let!(:story_uid) { 'test-test' }
 
-      it 'renders show template' do
-        get :create, four_by_four: story_uid
+      it 'assigns the story title' do
+        get :new, four_by_four: story_uid
 
         expect(assigns(:story_title)).to eq('Test story')
-        expect(response).to render_template(:create)
+        expect(response).to render_template(:new)
       end
 
       it 'ignores vanity_text' do
-        get :create, four_by_four: story_uid, vanity_text: 'haha'
+        get :new, four_by_four: story_uid, vanity_text: 'haha'
 
         expect(assigns(:story_title)).to eq('Test story')
-        expect(response).to render_template(:create)
+        expect(response).to render_template(:new)
       end
     end
 
@@ -81,7 +81,7 @@ RSpec.describe StoriesController, type: :controller do
       let!(:story_uid) { 'test-test' }
 
       it 'redirects to the edit experience' do
-        get :create, four_by_four: story_uid
+        get :new, four_by_four: story_uid
 
         expect(response).to redirect_to "/stories/s/#{story_uid}/edit"
       end
@@ -94,14 +94,14 @@ RSpec.describe StoriesController, type: :controller do
       end
 
       it 'renders 404' do
-        get :show, four_by_four: 'notf-ound'
+        get :new, four_by_four: 'notf-ound'
 
         expect(response).to have_http_status(404)
       end
     end
   end
 
-  describe '#bootstrap' do
+  describe '#create' do
 
     context 'when there is an uninitialized lenses view with the given four by four' do
 
@@ -113,10 +113,10 @@ RSpec.describe StoriesController, type: :controller do
 
       it 'creates a new draft story' do
         allow(CoreServer).to receive(:update_view_metadata) do |story_uid, cookie, metadata|
-          expect(metadata.fetch('initialized', nil)).to eq(true)
+          expect(metadata['initialized']).to eq(true)
         end
 
-        post :bootstrap, four_by_four: story_uid
+        post :create, four_by_four: story_uid
 
         expect(assigns(:story)).to be_a(DraftStory)
         expect(assigns(:story).uid).to eq(story_uid)
@@ -124,10 +124,10 @@ RSpec.describe StoriesController, type: :controller do
 
       it 'ignores vanity_text' do
         allow(CoreServer).to receive(:update_view_metadata) do |story_uid, cookie, metadata|
-          expect(metadata.fetch('initialized', nil)).to eq(true)
+          expect(metadata['initialized']).to eq(true)
         end
 
-        post :bootstrap, four_by_four: story_uid, vanity_text: 'haha'
+        post :create, four_by_four: story_uid, vanity_text: 'haha'
 
         expect(assigns(:story)).to be_a(DraftStory)
         expect(assigns(:story).uid).to eq(story_uid)
@@ -135,18 +135,18 @@ RSpec.describe StoriesController, type: :controller do
 
       it 'updates the lenses view metadata to set `initialized` equal to `true`' do
         allow(CoreServer).to receive(:update_view_metadata) do |story_uid, cookie, metadata|
-          expect(metadata.fetch('initialized', nil)).to eq(true)
+          expect(metadata['initialized']).to eq(true)
         end
 
-        post :bootstrap, four_by_four: story_uid
+        post :create, four_by_four: story_uid
       end
 
       it 'redirects to the edit experience' do
         allow(CoreServer).to receive(:update_view_metadata) do |story_uid, cookie, metadata|
-          expect(metadata.fetch('initialized', nil)).to eq(true)
+          expect(metadata['initialized']).to eq(true)
         end
 
-        post :bootstrap, four_by_four: story_uid
+        post :create, four_by_four: story_uid
 
         expect(response).to redirect_to "/stories/s/#{story_uid}/edit"
       end
@@ -159,7 +159,7 @@ RSpec.describe StoriesController, type: :controller do
       end
 
       it 'redirects to root' do
-        post :bootstrap, four_by_four: 'notf-ound'
+        post :create, four_by_four: 'notf-ound'
 
         expect(response).to redirect_to '/'
       end

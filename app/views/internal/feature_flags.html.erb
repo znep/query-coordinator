@@ -19,6 +19,7 @@
             <p>Default Value: <%= flag_config.defaultValue %></p>
             <%= feature_flag_input flag, flag_config, flag_config.value %>
             <br>
+            <input type="submit" name="reset_to_default[<%= flag %>]" value="Reset to Default" />
             <input type="submit" value="Update" />
         </div>
     </div>

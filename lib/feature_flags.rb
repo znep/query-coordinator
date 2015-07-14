@@ -47,6 +47,10 @@ module FeatureFlags
     ExternalConfig.for(:feature_flag).categories
   end
 
+  def self.default_for(flag)
+    process_value((ExternalConfig.for(:feature_flag)[flag] || {})['defaultValue'])
+  end
+
   def self.derive(view = nil, request = nil, is_iframe = false)
     flag_set = [ CurrentDomain.feature_flags ]
     flag_set << view.metadata.feature_flags if view.try(:metadata).present?

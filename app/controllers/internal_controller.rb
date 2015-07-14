@@ -281,6 +281,12 @@ class InternalController < ApplicationController
           errors << "#{flag} is not a valid feature flag."
           next
         end
+        if (params['reset_to_default'] || {}).keys.include? flag
+          default_value = FeatureFlags.default_for(flag).to_s
+          config.delete_property(flag, false, batch_id)
+          infos << "#{flag} was reset to its default value of \"#{default_value}\"."
+          next
+        end
         processed_value = FeatureFlags.process_value(value).to_s
         if properties[flag] == processed_value
           infos << "#{flag} was already set to \"#{processed_value}\"."

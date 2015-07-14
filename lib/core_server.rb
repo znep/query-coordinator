@@ -4,6 +4,10 @@ class CoreServer
 
   def self.get_view(uid, cookie)
     view = nil
+    core_server_request_verb = :get
+    core_server_request_path = "/views/#{uid}.json"
+    core_server_request_error_prefix = "[#{core_server_request_verb.upcase} #{core_server_request_path}] " \
+      "CoreServer::get_view(#{uid}) ->"
     core_server_response = nil
 
     begin
@@ -18,8 +22,8 @@ class CoreServer
       with_retries(retry_options) do
 
         core_server_response = core_server_request(
-          verb: :get,
-          path: "/views/#{uid}.json",
+          verb: core_server_request_verb,
+          path: core_server_request_path,
           headers: {
             'Content-type' => 'application/json',
             'Cookie' => cookie
@@ -32,29 +36,29 @@ class CoreServer
       else
         report_error(
           StandardError.new,
-          "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
+          "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
         )
       end
 
     rescue NoMethodError => no_method_error
       report_error(
         no_method_error,
-        "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
+        "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
       )
     rescue TypeError => type_error
       report_error(
         type_error,
-        "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
+        "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
       )
     rescue JSON::ParserError => parser_error
       report_error(
         parser_error,
-        "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
+        "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
       )
     rescue => unknown_error
       report_error(
         unknown_error,
-        "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
+        "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
       )
     end
 
@@ -63,6 +67,10 @@ class CoreServer
 
   def self.update_view(uid, cookie, view_data)
     updated_view = nil
+    core_server_request_verb = :put
+    core_server_request_path = "/views/#{uid}.json"
+    core_server_request_error_prefix = "[#{core_server_request_verb.upcase} #{core_server_request_path}] " \
+      "CoreServer::update_view(#{uid}) ->"
     core_server_response = nil
 
     begin
@@ -77,8 +85,8 @@ class CoreServer
       with_retries(retry_options) do
 
         core_server_response = core_server_request(
-          verb: :put,
-          path: "/views/#{uid}.json",
+          verb: core_server_request_verb,
+          path: core_server_request_path,
           headers: {
             'Content-type' => 'application/json',
             'Cookie' => cookie
@@ -92,29 +100,29 @@ class CoreServer
       else
         report_error(
           StandardError.new,
-          "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
+          "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
         )
       end
 
     rescue NoMethodError => no_method_error
       report_error(
         no_method_error,
-        "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
+        "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
       )
     rescue TypeError => type_error
       report_error(
         type_error,
-        "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
+        "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
       )
     rescue JSON::ParserError => parser_error
       report_error(
         parser_error,
-        "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
+        "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
       )
     rescue => unknown_error
       report_error(
         unknown_error,
-        "CoreServer::get_view(#{uid}) -> '#{core_server_response.inspect}'"
+        "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
       )
     end
 
@@ -214,7 +222,10 @@ class CoreServer
     Rails.logger.error(
       "#{error.class}: #{error} (on #{message}):\n\n#{error.backtrace}"
     )
-    # TODO: Add airbrake error reporting
+    Airbrake.notify_or_ignore(
+      error,
+      error_message: message
+    )
   end
 
 end

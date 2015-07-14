@@ -42,7 +42,8 @@ RUN eval ${build_proxy_env} && bundle install
 ADD config/database.yml.production ${APP_DIR}/config/database.yml
 
 ENV RAILS_ENV production
-RUN bundle exec rake assets:precompile
+
+RUN DISABLE_ZOOKEEPER=true bundle exec rake assets:precompile
 
 # Make and chown the rails tmp dir to the socrata user
 ENV APP_TMP_DIR ${APP_DIR}/tmp

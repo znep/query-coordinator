@@ -52,6 +52,9 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.3.8)
+    airbrake (4.3.0)
+      builder
+      multi_json
     arel (6.0.0)
     aws-sdk (2.1.2)
       aws-sdk-resources (= 2.1.2)
@@ -242,6 +245,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  airbrake
   aws-sdk
   byebug
   core-auth-ruby (= 0.2.3)!

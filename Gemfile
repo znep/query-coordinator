@@ -31,6 +31,9 @@ gem 'zk'
 # Configurable retry of blocks with exponential backoff
 gem 'retries'
 
+# Exception notifier
+gem 'airbrake'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

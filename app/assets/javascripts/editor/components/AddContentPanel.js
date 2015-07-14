@@ -18,12 +18,25 @@
    * The toggleButton will be given a class of 'active' while
    * the panel is open.
    *
+   * @param {string} inspirationStoryUid - The story to render as inspiration
+   *                                       (available content blocks).
    * @param {jQuery} toggleButton - a jQuery reference to the desired toggle button node.
    */
-  $.fn.addContentPanel = function(toggleButton) {
+  $.fn.addContentPanel = function(inspirationStoryUid, toggleButton) {
     var addContentPanel = $(this).sidebar({
       side: 'right'
     });
+
+    // Set up the inspiration story renderer
+    var inspirationStoryOptions = {
+      storyUid: inspirationStoryUid,
+      storyContainerElement: addContentPanel.find('.inspiration-story'),
+      editable: false,
+      onRenderError: function() { addContentPanel.find('.inspiration-story-error').removeClass('hidden'); }
+    };
+    var inspirationStoryRenderer = new StoryRenderer(inspirationStoryOptions);
+
+    // Set up some input events.
 
     toggleButton.on('click', function() {
       addContentPanel.trigger('sidebar:toggle');

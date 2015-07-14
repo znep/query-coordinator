@@ -61,6 +61,10 @@ class Configuration < Model
     return props
   end
 
+  def has_property?(name)
+    properties.has_key? name.to_s
+  end
+
   def create_property(name, value, batch_id = nil)
     sanitize_value!(value)
 

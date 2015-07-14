@@ -276,15 +276,9 @@ class InternalController < ApplicationController
     infos = []
     errors = []
     CoreServer::Base.connection.batch_request do |batch_id|
-      params['feature_flags'].each do |flag, value|
+      (params['feature_flags'] || []).each do |flag, value|
         unless FeatureFlags.list.include? flag
           errors << "#{flag} is not a valid feature flag."
-          next
-        end
-        if (params['reset_to_default'] || {}).keys.include? flag
-          default_value = FeatureFlags.default_for(flag).to_s
-          config.delete_property(flag, false, batch_id)
-          infos << "#{flag} was reset to its default value of \"#{default_value}\"."
           next
         end
         processed_value = FeatureFlags.process_value(value).to_s
@@ -298,6 +292,17 @@ class InternalController < ApplicationController
         else
           config.create_property(flag, processed_value, batch_id)
           infos << "#{flag} was created with value \"#{processed_value}\"."
+        end
+      end
+
+      (params['reset_to_default'] || {}).keys.each do |flag|
+        if config.has_property?(flag)
+          config.delete_property(flag, false, batch_id)
+          default_value = FeatureFlags.default_for(flag).to_s
+          infos << "#{flag} was reset to its default value of \"#{default_value}\"."
+        else
+          # Failure is not an error.
+          infos << "#{flag} could not be reset; it was not set in the first place."
         end
       end
     end

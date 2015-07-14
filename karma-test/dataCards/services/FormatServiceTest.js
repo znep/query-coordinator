@@ -8,10 +8,16 @@ describe('FormatService', function() {
     FormatService = $injector.get('FormatService');
   }));
 
-  describe.only('formatNumber', function() {
+  var VALID_FORMATTED_NUMBER = /^-?(\d\,\d{3}|((\d(\.\d{1,2})?|\d{2}(\.\d)?|\d{3})[A-Z])|\d(\.\d{1,3})?|\d{2}(\.\d{1,2})?|\d{3}(\.\d)?)$/;
+
+  describe('formatNumber', function() {
     function test(input, output, options) {
-      expect(FormatService.formatNumber(input, options)).to.equal(output);
-      expect(FormatService.formatNumber(-input, options)).to.equal('-' + output);
+      var result = FormatService.formatNumber(input, options);
+      var negativeResult = FormatService.formatNumber(-input, options);
+      expect(result).to.equal(output);
+      expect(result).to.match(VALID_FORMATTED_NUMBER);
+      expect(negativeResult).to.equal('-' + output);
+      expect(negativeResult).to.match(VALID_FORMATTED_NUMBER);
     }
 
     describe('default options', function() {
@@ -28,7 +34,8 @@ describe('FormatService', function() {
         test(9, '9');
       });
 
-      it('should preserve decimals if they do not exceed the default max length of 4', function() {
+      it('should preserve decimals if they do not exceed a length of 4', function() {
+        test(.001, '0.001');
         test(0.05, '0.05');
         test(10.8, '10.8');
         test(100.2, '100.2');
@@ -40,6 +47,7 @@ describe('FormatService', function() {
         test(1000, '1,000');
         test(5000, '5,000');
         test(9999.4999, '9,999');
+        test(9999.9999, '10K');
       });
 
       it('should abbreviate other numbers in the thousands', function() {
@@ -51,6 +59,7 @@ describe('FormatService', function() {
         test(10551, '10.6K');
         test(99499, '99.5K');
         test(99500, '99.5K');
+        test(100100, '100K');
         test(999999, '1M');
       });
 
@@ -62,6 +71,8 @@ describe('FormatService', function() {
 
       it('should abbreviate numbers in the billions', function() {
         test(1000000000, '1B');
+        test(1000005678, '1B');
+        test(1012345678, '1.01B');
       });
 
       it('should abbreviate numbers that are really big', function() {
@@ -70,41 +81,20 @@ describe('FormatService', function() {
         test(1000000000000000000, '1E');
         test(1000000000000000000000, '1Z');
         test(1000000000000000000000000, '1Y');
+        test(9999999999999999999999999, '10Y');
+        test(99999999999999999999999999, '100Y');
+        test(100000000000000000000000000, '100Y');
+        expect(FormatService.formatNumber(1000000000000000000000000000)).to.equal('1e+27');
       });
     });
 
-    describe('precision option', function() {
-      it('should throw when passed a negative precision', function() {
-        expect(_.curry(FormatService.formatNumber, 0.01, { precision: -1 })).to.throw;
-      });
-
-      it('should try to include the specified number of decimal points, respecting maxLength', function() {
-        test(42.8125, '42.8', { precision: 1 });
-        test(42.8125, '42.81', { precision: 2 });
-        test(42.81258472947, '42.81', { precision: 2 });
-
-        test(1425.123, '1,425', { precision: 2 });
-        test(1425.123, '1,425.12', { precision: 3, maxLength: 6 });
-        test(1425.123, '1,425.123', { precision: 3, maxLength: 7 });
-      });
+    it('group separator option', function() {
+      expect(FormatService.formatNumber(12.34, { groupCharacter: '|' })).to.equal('12.34');
+      expect(FormatService.formatNumber(1234, { groupCharacter: '|' })).to.equal('1|234');
     });
 
-    describe('maxLength option', function() {
-      it('should throw when passed a negative maxLength', function() {
-        expect(_.curry(FormatService.formatNumber, 0, { maxLength: -1 })).to.throw;
-      });
-
-      it('should not truncate numbers if the maxLength is too short', function() {
-        test(1, '1', { maxLength: 0 });
-        test(500, '500', { maxLength: 1 });
-        test(10000000, '10M', { maxLength: 1 });
-      });
-
-      it('should abbreviate numbers more aggressively if they exceed the maxLength', function() {
-        test(17672123, '17,672,123', { maxLength: 15 });
-        test(17672123, '17.67M', { maxLength: 5 });
-        test(17672123, '18M', { maxLength: 3 });
-      });
+    it('decimal separator option', function() {
+      expect(FormatService.formatNumber(12.34, { decimalCharacter: ',' })).to.equal('12,34');
     });
   });
 

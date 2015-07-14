@@ -3,128 +3,11 @@ require 'retries'
 class CoreServer
 
   def self.get_view(uid, headers)
-    view = nil
-    core_server_request_verb = :get
-    core_server_request_path = "/views/#{uid}.json"
-    core_server_request_error_prefix = "[#{core_server_request_verb.upcase} #{core_server_request_path}] " \
-      "CoreServer::get_view(#{uid}) ->"
-    core_server_response = nil
-
-    begin
-
-      # The virtue of doing the retry at the outer level is twofold:
-      #
-      # 1. Retries will potentially be sent to separate instances of
-      #    core server since ::ZookeeperDiscovery.get() will sample
-      #    from all registered nodes.
-      # 2. We can afford to be much less concerned with rescuing
-      #    specific errors.
-      with_retries(retry_options) do
-
-        core_server_response = core_server_request(
-          verb: core_server_request_verb,
-          path: core_server_request_path,
-          headers: headers.merge({
-            'Content-type' => 'application/json'
-          })
-        )
-      end
-
-      if core_server_response.code.to_i == 200
-        view = JSON.parse(core_server_response.body)
-      else
-        report_error(
-          StandardError.new,
-          "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
-        )
-      end
-
-    rescue NoMethodError => no_method_error
-      report_error(
-        no_method_error,
-        "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
-      )
-    rescue TypeError => type_error
-      report_error(
-        type_error,
-        "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
-      )
-    rescue JSON::ParserError => parser_error
-      report_error(
-        parser_error,
-        "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
-      )
-    rescue => unknown_error
-      report_error(
-        unknown_error,
-        "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
-      )
-    end
-
-    view
+    view_request(uid: uid, verb: :get, headers: headers)
   end
 
   def self.update_view(uid, headers, view_data)
-    updated_view = nil
-    core_server_request_verb = :put
-    core_server_request_path = "/views/#{uid}.json"
-    core_server_request_error_prefix = "[#{core_server_request_verb.upcase} #{core_server_request_path}] " \
-      "CoreServer::update_view(#{uid}) ->"
-    core_server_response = nil
-
-    begin
-
-      # The virtue of doing the retry at the outer level is twofold:
-      #
-      # 1. Retries will potentially be sent to separate instances of
-      #    core server since ::ZookeeperDiscovery.get() will sample
-      #    from all registered nodes.
-      # 2. We can afford to be much less concerned with rescuing
-      #    specific errors.
-      with_retries(retry_options) do
-
-        core_server_response = core_server_request(
-          verb: core_server_request_verb,
-          path: core_server_request_path,
-          headers: headers.merge({
-            'Content-type' => 'application/json'
-          }),
-          body: view_data
-        )
-      end
-
-      if core_server_response.code.to_i == 200
-        updated_view = JSON.parse(core_server_response.body)
-      else
-        report_error(
-          StandardError.new,
-          "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
-        )
-      end
-
-    rescue NoMethodError => no_method_error
-      report_error(
-        no_method_error,
-        "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
-      )
-    rescue TypeError => type_error
-      report_error(
-        type_error,
-        "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
-      )
-    rescue JSON::ParserError => parser_error
-      report_error(
-        parser_error,
-        "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
-      )
-    rescue => unknown_error
-      report_error(
-        unknown_error,
-        "#{core_server_request_error_prefix} '#{core_server_response.inspect}'"
-      )
-    end
-
-    updated_view
+    view_request(uid: uid, verb: :put, headers: headers, data: view_data)
   end
 
   private
@@ -141,11 +24,12 @@ class CoreServer
 
   def self.retry_handler
     Proc.new do |exception, attempt_number, total_delay|
-      report_error(
-        exception,
-        "CoreServer::core_server_request() failed with retry after #{total_delay.to_s} " \
-        "seconds; attempt: #{attempt_number.to_s}"
-      )
+      if attempt_number === 3
+        report_error(
+          exception,
+          "CoreServer::core_server_request() failed with 3 retries after #{total_delay.to_s} seconds."
+        )
+      end
     end
   end
 
@@ -175,6 +59,56 @@ class CoreServer
       Net::HTTPServerException,
       Net::HTTPServiceUnavailable
     ]
+  end
+
+  def self.view_request(options)
+    raise ArgumentError("':uid' is required.") unless options.key?(:uid)
+    raise ArgumentError("':verb' is required.") unless options.key?(:verb)
+    raise ArgumentError("':headers' is required.") unless options.key?(:headers)
+
+    verb = options[:verb]
+    path = "/views/#{options[:uid]}.json"
+    view = nil
+    core_server_response = nil
+
+    core_server_request_options = {
+      verb: verb,
+      path: path,
+      headers: options[:headers].merge({
+        'Content-type' => 'application/json'
+      })
+    }
+
+    if options[:data].present?
+      core_server_request_options[:body] = options[:data]
+    end
+
+    begin
+
+      # The virtue of doing the retry at the outer level is twofold:
+      #
+      # 1. Retries will potentially be sent to separate instances of
+      #    core server since ::ZookeeperDiscovery.get() will sample
+      #    from all registered nodes.
+      # 2. We can afford to be much less concerned with rescuing
+      #    specific errors.
+      with_retries(retry_options) do
+        core_server_response = core_server_request(core_server_request_options)
+      end
+
+      status_code = core_server_response.code.to_i
+      response_body = core_server_response.body
+      error_message = "[#{verb.upcase} #{path} - HTTP #{status_code}] - '#{response_body.inspect}'"
+
+      if status_code == 200
+        view = JSON.parse(response_body)
+      end
+
+    rescue => error
+      report_error(error, error_message)
+    end
+
+    view
   end
 
   def self.core_server_request(options)
@@ -216,9 +150,7 @@ class CoreServer
   end
 
   def self.report_error(error, message)
-    Rails.logger.error(
-      "#{error.class}: #{error} (on #{message}):\n\n#{error.backtrace}"
-    )
+    Rails.logger.error("#{error.class}: #{error} (on #{message}):\n\n#{error.backtrace}")
     Airbrake.notify_or_ignore(
       error,
       error_message: message

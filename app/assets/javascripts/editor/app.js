@@ -195,7 +195,7 @@ $(document).on('ready', function() {
           action: Constants.BLOCK_COPY_INTO_STORY,
           blockId: payload.blockId,
           storyUid: window.userStoryUid,
-          insertAt: window.storyStore.getBlockIds(window.userStoryUid).length
+          insertAt: window.storyStore.getStoryBlockIds(window.userStoryUid).length
         });
         break;
     }

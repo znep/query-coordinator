@@ -50,11 +50,18 @@ class ZookeeperDiscovery
   end
 
   def self.connect
-    raise ArgumentError.new('Environment variable ZOOKEEPER_HOSTS is required') unless ENV['ZOOKEEPER_HOSTS']
+    zookeeper_host = nil
+    ensemble = Rails.application.config.zookeeper.ensemble
 
-    Rails.logger.info 'Connecting to Zookeeper...'
+    begin
+      zookeeper_host = ensemble.sample
+    rescue NoMethodError
+      raise "Rails.application.config.zookeeper.ensemble cannot be sampled: #{ensemble.inspect}"
+    end
+
+    Rails.logger.info("Connecting to Zookeeper... (#{zookeeper_host})")
     ZK.install_fork_hook
-    ZK::Client.new(ENV['ZOOKEEPER_HOSTS'])
+    ZK::Client.new(zookeeper_host)
   end
 
 end

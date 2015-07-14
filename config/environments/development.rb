@@ -42,6 +42,6 @@ Rails.application.configure do
   # TODO: Put environment configuration in discovery service
   config.core_service_uri = "http://localhost:8080"
 
-  # Default `ZOOKEEPER_HOSTS` to localhost unless it is already set.
-  ENV['ZOOKEEPER_HOSTS'] ||= 'localhost:2181'
+  # Default `ZOOKEEPER_ENSEMBLE` to localhost unless it is already set.
+  ENV['ZOOKEEPER_ENSEMBLE'] ||= "['localhost:2181']"
 end

@@ -1,0 +1,13 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. The 'javascript_translations' key
+# in this file is also added to the window for use in .js files.
+#
+# Usage:
+#
+#     I18n['editor']['empty_story_warning']
+
+en:
+  javascript_translations:
+    editor:
+      empty_story_warning: 'Oh, no! Your story is empty! To get started, drag a block to the canvas.'
+      remove_block_confirmation: 'Are you sure you want to remove this block?'

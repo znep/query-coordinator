@@ -83,6 +83,7 @@ $(document).on('ready', function() {
     editable: true,
     insertionHintElement: $('#story-insertion-hint'),
     richTextEditorManager: richTextEditorManager,
+    warningMessageElement: $('.user-story .message-warning'),
     onRenderError: function() {}
   };
   var userStoryRenderer = new StoryRenderer(userStoryOptions);

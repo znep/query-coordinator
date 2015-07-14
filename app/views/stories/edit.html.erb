@@ -37,7 +37,9 @@
 
 <main class="user-story-container">
 
-  <div class="user-story"></div>
+  <div class="user-story">
+    <p class="message-warning"></p>
+  </div>
 
   <div id="story-insertion-hint" class="hidden"></div>
 
@@ -48,7 +50,10 @@
 <div id="block-ghost" class="block hidden"></div>
 
 <script type="text/javascript">
+  // Pass setup data from ruby to javascript
   inspirationStoryData = <%== @inspiration_story.to_json %>;
   userStoryData = <%== @story.to_json %>;
   sampleBlocks = <%== generate_sample_blocks.to_json %>;
 </script>
+
+<%= render 'shared/i18n_for_js' %>

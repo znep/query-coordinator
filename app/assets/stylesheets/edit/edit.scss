@@ -1,6 +1,6 @@
 @import '../base';
 
-html {  
+html {
   font-family: "Open Sans", "Helvetica", sans-serif;
   font-size: 10px;
   overflow-y: auto;
@@ -95,4 +95,12 @@ a[role="button"] {
 
 .hidden {
   display: none !important;
+}
+
+.message-warning {
+  color: $empty-story-warning-font-color;
+  font-size: $empty-story-message-font-size;
+  font-weight: bold;
+  padding-top: 40px;
+  text-align: center;
 }

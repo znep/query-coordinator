@@ -21,6 +21,7 @@
       'visualization': _renderVisualizationComponentData
     };
     var elementCache = new StoryRendererElementCache();
+    var warningMessageElement = options.warningMessageElement || null;
 
     if (options.hasOwnProperty('onRenderError') &&
       ((typeof options.onRenderError) !== 'function')) {
@@ -124,7 +125,7 @@
           var shouldDelete = true;
 
           if (window.blockRemovalConfirmationStore.needsConfirmation(blockId)) {
-            shouldDelete = confirm('Are you sure?');
+            shouldDelete = confirm(I18n.t('editor.remove_block_confirmation'));
           }
 
           if (shouldDelete) {
@@ -256,6 +257,9 @@
         elementCache.flushBlock(blockId);
       });
 
+      // Display a message if there are no blocks in the story
+      _handleEmptyStoryMessage();
+
       blockIds.forEach(function(blockId, i) {
 
         var blockElement = elementCache.getBlock(blockId);
@@ -311,6 +315,20 @@
         insertionHint.addClass('hidden');
         insertionHintIndex = -1;
         _renderStory();
+      }
+    }
+
+    function _handleEmptyStoryMessage() {
+      if (!_.isEmpty(warningMessageElement))  {
+        var blockCount = window.storyStore.getStoryBlockIds(storyUid).length;
+
+        if (blockCount === 0) {
+          warningMessageElement.addClass('message-empty-story');
+          warningMessageElement.text(I18n.t('editor.empty_story_warning'));
+        } else {
+          warningMessageElement.removeClass('message-empty-story');
+          warningMessageElement.text('');
+        }
       }
     }
 

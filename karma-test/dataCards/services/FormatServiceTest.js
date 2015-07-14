@@ -8,7 +8,7 @@ describe('FormatService', function() {
     FormatService = $injector.get('FormatService');
   }));
 
-  describe('formatNumber', function() {
+  describe.only('formatNumber', function() {
     function test(input, output, options) {
       expect(FormatService.formatNumber(input, options)).to.equal(output);
       expect(FormatService.formatNumber(-input, options)).to.equal('-' + output);
@@ -29,7 +29,7 @@ describe('FormatService', function() {
       });
 
       it('should preserve decimals if they do not exceed the default max length of 4', function() {
-        test(0.5, '0.5');
+        test(0.05, '0.05');
         test(10.8, '10.8');
         test(100.2, '100.2');
         test(999.1, '999.1');
@@ -39,18 +39,19 @@ describe('FormatService', function() {
       it('should commaify numbers with absolute value between 1000 and 9999', function() {
         test(1000, '1,000');
         test(5000, '5,000');
-        test(9999, '9,999');
+        test(9999.4999, '9,999');
       });
 
-      it('should abbreviate numbers in the thousands', function() {
+      it('should abbreviate other numbers in the thousands', function() {
+        test(9999.5, '10K');
         test(10000, '10K');
         test(10001, '10K');
         test(10500, '10.5K');
         test(10501, '10.5K');
         test(10551, '10.6K');
         test(99499, '99.5K');
-        test(99500, '100K');
-        test(999999, '1,000K'); // Bug
+        test(99500, '99.5K');
+        test(999999, '1M');
       });
 
       it('should abbreviate numbers in the millions', function() {
@@ -74,35 +75,35 @@ describe('FormatService', function() {
 
     describe('precision option', function() {
       it('should throw when passed a negative precision', function() {
-        expect(_.curry(FormatService.formatNumber, 0.01, {precision: -17})).to.throw;
+        expect(_.curry(FormatService.formatNumber, 0.01, { precision: -1 })).to.throw;
       });
 
       it('should try to include the specified number of decimal points, respecting maxLength', function() {
-        test(42.8125, '42.8', {precision: 1});
-        test(42.8125, '42.81', {precision: 2});
-        test(42.81258472947, '42.81', {precision: 2});
+        test(42.8125, '42.8', { precision: 1 });
+        test(42.8125, '42.81', { precision: 2 });
+        test(42.81258472947, '42.81', { precision: 2 });
 
-        test(1425.123, '1,425', {precision: 2});
-        test(1425.123, '1,425.12', {precision: 3, maxLength: 6});
-        test(1425.123, '1,425.123', {precision: 3, maxLength: 7});
+        test(1425.123, '1,425', { precision: 2 });
+        test(1425.123, '1,425.12', { precision: 3, maxLength: 6 });
+        test(1425.123, '1,425.123', { precision: 3, maxLength: 7 });
       });
     });
 
     describe('maxLength option', function() {
       it('should throw when passed a negative maxLength', function() {
-        expect(_.curry(FormatService.formatNumber, 0, {maxLength: -1})).to.throw;
+        expect(_.curry(FormatService.formatNumber, 0, { maxLength: -1 })).to.throw;
       });
 
       it('should not truncate numbers if the maxLength is too short', function() {
-        test(1, '1', {maxLength: 0});
-        test(500, '500', {maxLength: 1});
-        test(10000000, '10M', {maxLength: 1});
+        test(1, '1', { maxLength: 0 });
+        test(500, '500', { maxLength: 1 });
+        test(10000000, '10M', { maxLength: 1 });
       });
 
       it('should abbreviate numbers more aggressively if they exceed the maxLength', function() {
-        test(17672123, '17,672,123', {maxLength: 15});
-        test(17672123, '17.67M', {maxLength: 5});
-        test(17672123, '18M', {maxLength: 3});
+        test(17672123, '17,672,123', { maxLength: 15 });
+        test(17672123, '17.67M', { maxLength: 5 });
+        test(17672123, '18M', { maxLength: 3 });
       });
     });
   });

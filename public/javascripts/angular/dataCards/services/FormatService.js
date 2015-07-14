@@ -25,48 +25,67 @@ angular.module('dataCards.services').factory('FormatService', function() {
       throw new Error('Negative maxLength "{0}" passed to formatNumber.'.format(options.maxLength));
     }
 
-    var step = 1000;
-    var divider = Math.pow(step, MAGNITUDE_SYMBOLS.length);
     var val = parseFloat(value);
     var absVal = Math.abs(val);
-    var parts = absVal.toString().split(options.decimalCharacter);
 
-    if (absVal < 1000 || parts[0].length <= options.maxLength) {
-      var precision = Math.max(options.maxLength - parts[0].length, 0);
+    // TODO: Should this check be reframed in terms of precision and/or maxLength options?
+    if (absVal < 9999.5) {
+      // This branch handles everything that doesn't use a magnitude suffix.
+      // Thousands less than 10K are commaified.
+      var parts = absVal.toString().split('.').concat('');
+      var precision = Math.min(parts[1].length, options.maxLength - parts[0].length);
       if (_.isNumber(options.precision)) {
         precision = Math.min(precision, options.precision);
       }
+      return commaify(val.toFixed(precision), options.groupCharacter, options.decimalCharacter);
+    } else if (/e/i.test(val)) {
+      // This branch handles huge numbers that switch to exponent notation.
+      var exponentParts = val.toString().split(/e\+?/i);
+      var symbolIndex = Math.floor(parseFloat(exponentParts[1]) / 3) - 1;
 
-      return commaify(parseFloat(val.toFixed(precision)), options.groupCharacter, options.decimalCharacter);
-    }
-
-    for (var i = MAGNITUDE_SYMBOLS.length - 1; i >= 0; i--) {
-      if (absVal >= divider) {
-        var count = (absVal / divider).toFixed(0).length;
-
-        var precision = Math.max(options.maxLength - count - 1, 0);
-        if (_.isNumber(options.precision)) {
-          precision = Math.min(precision, options.precision);
-        }
-
-        var result = (absVal / divider).toFixed(precision);
-
-        if (val < 0) {
-          result = -result;
-        }
-
-        result = parseFloat(result);
-
-        if (isFinite(result)) {
-          return commaify(result, options.groupCharacter, options.decimalCharacter) + MAGNITUDE_SYMBOLS[i];
-        } else {
-          return result.toString();
-        }
+      var newValue = exponentParts[0];
+      var shiftAmount = parseFloat(exponentParts[1]) % 3;
+      if (shiftAmount > 0) {
+        // Adjust from e.g. 1.23e+4 to 12.3K
+        newValue = newValue.replace(/^(-?\d+)(\.\d+)?$/, function(match, whole, frac) {
+          frac = frac || '.000';
+          return '{0}.{1}'.format(whole + frac.slice(1, 1 + shiftAmount), frac.slice(shiftAmount));
+        });
       }
-      divider = divider / step;
-    }
+      newValue = parseFloat(Math.abs(newValue)).toFixed(options.maxLength - shiftAmount - 1);
+      if (newValue === '1000') {
+        // The one edge case to handle is when 999.9[KMB...] rounds up, which
+        // bumps us into the next magnitude.
+        newValue = '1';
+        symbolIndex++;
+      }
 
-    return val.toString();
+      return '{neg}{value}{sym}'.format({
+        neg: val < 0 ? '-' : '',
+        value: parseFloat(newValue),
+        sym: MAGNITUDE_SYMBOLS[symbolIndex]
+      });
+    } else {
+      // This branch handles values that need a magnitude suffix.
+      // We use commaify to determine what magnitude we're operating in.
+      var magnitudeGroups = commaify(absVal.toFixed(0)).split(',');
+      var symbolIndex = magnitudeGroups.length - 2;
+
+      var newValue = parseFloat(magnitudeGroups[0] + '.' + magnitudeGroups[1]);
+      newValue = newValue.toFixed(options.maxLength - magnitudeGroups[0].length - 1);
+      if (newValue === '1000') {
+        // The one edge case to handle is when 999.9[KMB...] rounds up, which
+        // bumps us into the next magnitude.
+        newValue = '1';
+        symbolIndex++;
+      }
+
+      return '{neg}{value}{sym}'.format({
+        neg: val < 0 ? '-' : '',
+        value: parseFloat(newValue),
+        sym: MAGNITUDE_SYMBOLS[symbolIndex]
+      });
+    }
   };
 
   var commaify = function(value, groupCharacter, decimalCharacter) {

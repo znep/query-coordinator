@@ -70,6 +70,8 @@ class CoreServer
     path = "/views/#{options[:uid]}.json"
     view = nil
     core_server_response = nil
+    status_code = nil
+    response_body = nil
 
     core_server_request_options = {
       verb: verb,
@@ -98,14 +100,16 @@ class CoreServer
 
       status_code = core_server_response.code.to_i
       response_body = core_server_response.body
-      error_message = "[#{verb.upcase} #{path} - HTTP #{status_code}] - '#{response_body.inspect}'"
 
       if status_code == 200
         view = JSON.parse(response_body)
       end
 
     rescue => error
-      report_error(error, error_message)
+      report_error(
+        error,
+        "[#{verb.upcase} #{path} - HTTP #{status_code}] - '#{response_body.inspect}'"
+      )
     end
 
     view

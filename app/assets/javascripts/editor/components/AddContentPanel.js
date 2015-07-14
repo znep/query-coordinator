@@ -84,5 +84,7 @@
           }
         }
       });
+
+    return this;
   };
 }(jQuery));

@@ -16,4 +16,37 @@ class InternalControllerTest < ActionController::TestCase
     refute(@controller.send(:valid_cname?, 'felixhernandez@demo.socrata.com'))
     refute(@controller.send(:valid_cname?, 'cityofmadison,demo.socrata.com'))
   end
+
+  test '#set_feature_flags does not require feature_flags param' do
+    init_for_feature_flags
+
+    post(:set_feature_flags, domain_id: 'localhost',
+                             reset_to_default: { 'new_charts' => true },
+                             format: 'data')
+    assert(JSON.parse(@response.body)['errors'].empty?)
+  end
+
+  test '#set_feature_flags does not require reset_to_default param' do
+    init_for_feature_flags
+
+    post(:set_feature_flags, domain_id: 'localhost',
+                             feature_flags: { 'asteroids' => true },
+                             format: 'data')
+    assert(JSON.parse(@response.body)['errors'].empty?)
+  end
+
+  private
+  def init_for_feature_flags
+    init_current_domain
+    Domain.stubs(:find => @domain)
+    pretend_to_be_superadmin
+
+    stub_request(:post, "http://localhost:8080/batches").
+      to_return(:status => 200, :body => [{ no_idea: 'what goes here' }].to_json, :headers => {})
+  end
+
+  def pretend_to_be_superadmin
+    init_current_user(@controller)
+    @controller.current_user.stubs(:flag? => true)
+  end
 end

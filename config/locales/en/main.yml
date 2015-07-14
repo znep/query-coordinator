@@ -34,4 +34,7 @@ en:
     error_creating_story_flash: 'Error creating story.'
     permissions_error_flash: 'Permissions error.'
     not_found_error_flash: 'Story not found.'
+  add_content_panel:
+    common_blocks: 'Common Blocks'
+    render_error: 'There was an error'
 

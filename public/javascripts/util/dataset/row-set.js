@@ -846,10 +846,23 @@ var RowSet = ServerModel.extend({
             // Can't apply a where on top of a group by
             if (_.isEmpty(baseQuery.group))
             {
-                var soqlWhere = blist.filter.generateSOQLWhere(
-                        blist.filter.subtractQueries(Dataset.translateFilterColumnsToBase(
-                                rs._jsonQuery.where, rs._dataset),
-                            baseQuery.where), rs._dataset._queryBase);
+                var soqlWhere = '';
+                var where = blist.filter.generateSOQLWhere(rs._jsonQuery.where, rs._dataset);
+                var baseWhere = blist.filter.generateSOQLWhere(baseQuery.where, rs._dataset._queryBase);
+                var hasWhere = !_.isEmpty(where);
+                var hasBaseWhere = !_.isEmpty(baseWhere);
+
+                // If we have a multiple possible where's
+                // we simply join them with an AND, as opposed
+                // to using subtractQueries.
+                if (hasWhere && hasBaseWhere) {
+                  soqlWhere = where + ' AND ' + baseWhere;
+                } else if (hasBaseWhere) {
+                  soqlWhere = baseWhere;
+                } else if (hasWhere) {
+                  soqlWhere = where;
+                }
+
                 // This is a cheat. Maps NBE interface. Appending viewport.
                 if ($.isPresent(rs._jsonQuery.where.soql)) {
                     if (soqlWhere.length > 0) {

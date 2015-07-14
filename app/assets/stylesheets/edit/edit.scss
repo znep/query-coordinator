@@ -76,8 +76,8 @@ body header {
 }
 
 .message-warning {
-  color: #999;
-  font-size: 1.5rem;
+  color: $empty-story-warning-font-color;
+  font-size: $empty-story-message-font-size;
   font-weight: bold;
   padding-top: 40px;
   text-align: center;

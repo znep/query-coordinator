@@ -188,7 +188,6 @@ describe('StoryRenderer', function() {
           var renderer = new StoryRenderer(options);
 
           assert.equal($('.message-empty-story').length, 0);
-          assert.equal($('.message-empty-story').text().length, 0);
         });
 
       });

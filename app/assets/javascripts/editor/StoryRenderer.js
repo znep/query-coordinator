@@ -320,14 +320,13 @@
     }
 
     function _handleEmptyStoryMessage() {
-      if (warningMessageElement) {
+      if (!_.isEmpty(warningMessageElement))  {
         var blockCount = window.storyStore.getStoryBlockIds(storyUid).length;
 
         if (blockCount === 0) {
           warningMessageElement.addClass('message-empty-story');
           warningMessageElement.text(I18n.t('editor.empty_story_warning'));
-        }
-        else {
+        } else {
           warningMessageElement.removeClass('message-empty-story');
           warningMessageElement.text('');
         }

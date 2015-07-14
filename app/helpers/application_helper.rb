@@ -603,11 +603,10 @@ module ApplicationHelper
                   reject { |value| ['true', 'false'].include? value }, flag_value),
                 :disabled => options[:disabled])
     else
-      if flag_value.kind_of?(String)
+      case flag_value
+      when String, Fixnum
         html << text_field_tag(name, flag_value, :disabled => options[:disabled])
-      elsif flag_value.kind_of?(Fixnum)
-        html << text_field_tag(name, flag_value, :disabled => options[:disabled])
-      elsif flag_value.kind_of?(Array)
+      when Array
         html << text_field_tag(name, flag_value.to_json, :disabled => options[:disabled])
       else
         html << text_field_tag(name, nil, :disabled => options[:disabled])

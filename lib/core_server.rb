@@ -137,8 +137,7 @@ class CoreServer
     Proc.new do |exception, attempt_number, total_delay|
       report_error(
         exception,
-        "CoreServer::core_server_request(options) with options: " \
-        "'#{options.inspect}' failed with retry after #{total_delay.to_s} " \
+        "CoreServer::core_server_request() failed with retry after #{total_delay.to_s} " \
         "seconds; attempt: #{attempt_number.to_s}"
       )
     end
@@ -202,7 +201,7 @@ class CoreServer
   end
 
   def self.get_core_server_address
-    core_server_zookeeper_path = Rails.application.config.zookeeper[:core_server_path]
+    core_server_zookeeper_path = Rails.application.config.zookeeper.core_server_path
     instance_id = ::ZookeeperDiscovery.get(core_server_zookeeper_path)
 
     instance_data = ::ZookeeperDiscovery.get_json("/#{core_server_zookeeper_path}/#{instance_id}")

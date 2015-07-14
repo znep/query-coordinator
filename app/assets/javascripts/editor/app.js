@@ -246,6 +246,6 @@ $(document).on('ready', function() {
    */
 
   $('.story-title').storyTitle(window.userStoryUid);
-  window.AddContentPanel.init();
+  $('.add-content-panel').addContentPanel($('.add-content-panel-btn'));
 });
 

@@ -50,18 +50,17 @@ class ZookeeperDiscovery
   end
 
   def self.connect
-    zookeeper_host = nil
-    ensemble = Rails.application.config.zookeeper.ensemble
+    ensemble = nil
 
     begin
-      zookeeper_host = ensemble.sample
+      ensemble = Rails.application.config.zookeeper.ensemble.join(',')
     rescue NoMethodError
-      raise "Rails.application.config.zookeeper.ensemble cannot be sampled: #{ensemble.inspect}"
+      raise "Rails.application.config.zookeeper.ensemble cannot be joined: #{Rails.application.config.zookeeper.ensemble.inspect}"
     end
 
-    Rails.logger.info("Connecting to Zookeeper... (#{zookeeper_host})")
+    Rails.logger.info("Connecting to Zookeeper ensemble (#{ensemble})...")
     ZK.install_fork_hook
-    ZK::Client.new(zookeeper_host)
+    ZK::Client.new(ensemble)
   end
 
 end

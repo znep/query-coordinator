@@ -24,10 +24,9 @@ class CoreServer
     end
 
     status_code = core_server_response.code.to_i
-    response_body = core_server_response.body
 
     if status_code == 200
-      JSON.parse(response_body)
+      JSON.parse(core_server_response.body)
     end
   end
 

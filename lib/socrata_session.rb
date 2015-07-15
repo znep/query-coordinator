@@ -52,7 +52,12 @@ class SocrataSession
   #
   def authenticate(env)
     request = Rack::Request.new(env)
-    current_user(request) if has_session_cookie?(request)
+
+    if has_session_cookie?(request)
+      current_user(request)
+    else
+      nil
+    end
   end
 
   private

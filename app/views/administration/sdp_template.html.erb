@@ -103,7 +103,7 @@
 
 <% content_for :js_footer do %>
   <%= hidden_field_tag('codeTemplate', get_publish_embed_code_for_view(@view,
-        { :dimensions => { :width => '%width%', :height => '%height%' } }, '%variation%')) %>
+        { :dimensions => { :width => '%width%', :height => '%height%' } }, '%variation%').gsub('"', '\"')) %>
   <script type="text/javascript">
     blist.namespace.fetch('blist.publish');
     blist.publish.currentThemeMeta = { 'name': '<%= @widget_customization.name %>',

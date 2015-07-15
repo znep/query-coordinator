@@ -3,6 +3,8 @@ require 'nokogiri'
 
 class ApplicationHelperTest < ActionView::TestCase
 
+  include ERB::Util
+
   def test_render_fullstory_tacking_does_not_render
     FeatureFlags.stubs(:derive => { enable_fullstory_tracking: false })
     refute application_helper.render_fullstory_tracking
@@ -212,6 +214,17 @@ class ApplicationHelperTest < ActionView::TestCase
     assert html.css('a').children.first.name == 'img'
     assert html.css('img').attribute('src').value == '/images/logo.jpg'
     assert html.css('img').attribute('alt').value == 'license test'
+  end
+
+  def test_get_publish_embed_code_for_view
+    view = View.new({'id' => 'blah-blah', 'domainCName' => 'local', 'federated' => false, 'name' => 'Templates'})
+    options = {:dimensions => { :width => 600, :height => 400}}
+    html = Nokogiri::HTML(get_publish_embed_code_for_view(view, options))
+    assert_match(/Templates/, html.text)
+    assert_match(/Powered by Socrata/, html.text)
+    assert html.css('iframe').attribute('width').value == '600px'
+    assert html.css('iframe').attribute('height').value == '400px'
+    assert html.css('a').attribute('href').value == 'http://local/dataset/Templates/blah-blah'
   end
 
   private

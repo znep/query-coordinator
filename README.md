@@ -123,6 +123,9 @@ Example:
 
 This only works for Data Lens/Angular component tests (not old UX).
 
+#### To run a specific Ruby unit test
+    ruby -I test path/to/file.rb -n /regex_matcher_for_your_test_name/
+
 ## Javascript/other asset package management
 
 The frontend has classically used [Jammit](http://documentcloud.github.io/jammit/) for asset management instead of the standard Rails asset pipeline. All assets must be added manually to assets.yml, and the appropriate include_javascripts calls must be included in .erb. If the assets must be loaded on-demand from JS, make sure the new jammit package is added to the "dump" section of assets.yml (the JS asset loader reads this section). Please note that though Jammit allows globs in its package definitions, the JS loader doesn't support globs. This is only an issue for on-demand loading.

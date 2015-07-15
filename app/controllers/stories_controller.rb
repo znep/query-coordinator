@@ -56,11 +56,8 @@ class StoriesController < ApplicationController
 
         if @story.persisted?
 
-          if view['metadata']['accessPoints'].nil?
-            view['metadata']['accessPoints'] = {}
-          end
-
           view['name'] = clean_title
+          view['metadata']['accessPoints'] ||= {}
           view['metadata']['accessPoints']['story'] = "https://#{request.host}/stories/s/#{clean_four_by_four}/edit"
           view['metadata']['initialized'] = true
 

@@ -5,10 +5,6 @@ describe('StoryTitle jQuery plugin', function() {
     node = testDom.root().append('<div>');
   });
 
-  afterEach(function() {
-    testDom.clear();
-  });
-
   it('should throw when passed invalid arguments', function() {
     assert.throws(function() { node.storyTitle(); });
     assert.throws(function() { node.storyTitle(1); });

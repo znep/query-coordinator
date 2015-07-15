@@ -240,7 +240,6 @@ describe('StoryRenderer', function() {
 
     describe('that is editable', function() {
 
-      var validAssetFinder;
       var validToolbar;
       var validFormats;
 
@@ -251,18 +250,15 @@ describe('StoryRenderer', function() {
           $('<div>', { id: 'rich-text-editor-toolbar' })
         ]);
 
-        AssetFinderMocker.mock();
-        validAssetFinder = new AssetFinder();
         validToolbar = Object.create(RichTextEditorToolbar.prototype);
         validFormats = [];
 
         window.richTextEditorManager = new RichTextEditorManager(
-          validAssetFinder,
+          window.assetFinder,
           validToolbar,
           validFormats
         );
 
-        SquireMocker.mock();
         options.editable = true;
       });
 
@@ -270,8 +266,6 @@ describe('StoryRenderer', function() {
 
         $('.insertion-hint').remove();
         $('#rich-text-editor-toolbar').remove();
-        SquireMocker.unmock();
-        AssetFinderMocker.unmock();
       });
 
       describe('with no insertion hint element defined', function() {
@@ -334,7 +328,6 @@ describe('StoryRenderer', function() {
   describe('drag-and-drop insertion hint', function() {
 
     var renderer;
-    var validAssetFinder;
     var validToolbar;
     var validFormats;
 
@@ -345,18 +338,15 @@ describe('StoryRenderer', function() {
         $('<div>', { id: 'rich-text-editor-toolbar' })
       ]);
 
-      AssetFinderMocker.mock();
-      validAssetFinder = new AssetFinder();
       validToolbar = Object.create(RichTextEditorToolbar.prototype);
       validFormats = [];
 
       window.richTextEditorManager = new RichTextEditorManager(
-        validAssetFinder,
+        window.assetFinder,
         validToolbar,
         validFormats
       );
 
-      SquireMocker.mock();
       options.editable = true;
       options.insertionHintElement = $('.insertion-hint');
 
@@ -367,8 +357,6 @@ describe('StoryRenderer', function() {
 
       $('.insertion-hint').remove();
       $('#rich-text-editor-toolbar').remove();
-      SquireMocker.unmock();
-      AssetFinderMocker.unmock();
     });
 
     function hintAtStoryAndBlock(storyUid, blockId) {

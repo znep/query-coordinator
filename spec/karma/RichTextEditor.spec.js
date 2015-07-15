@@ -1,7 +1,6 @@
 describe('RichTextEditor', function() {
 
   var validEditorId = '1';
-  var validAssetFinder;
   var validFormats = [];
   var validPreloadContent = 'Hello, world!';
 
@@ -12,16 +11,11 @@ describe('RichTextEditor', function() {
   // object on the window in order to test the correct instantiation
   // of the wrapper object.
   beforeEach(function() {
-    AssetFinderMocker.mock();
-    validAssetFinder = new AssetFinder();
-    SquireMocker.mock();
     $('body').append($('<div class="text-editor">'));
   });
 
   afterEach(function() {
     $('.text-editor').remove();
-    SquireMocker.unmock();
-    AssetFinderMocker.unmock();
   });
 
   describe('constructor', function() {
@@ -34,7 +28,7 @@ describe('RichTextEditor', function() {
           var editor = new RichTextEditor(
             null,
             validEditorId,
-            validAssetFinder,
+            window.assetFinder,
             validFormats,
             validPreloadContent
           );
@@ -51,7 +45,7 @@ describe('RichTextEditor', function() {
           var editor = new RichTextEditor(
             jqueryObject,
             validEditorId,
-            validAssetFinder,
+            window.assetFinder,
             validFormats,
             validPreloadContent
           );
@@ -80,7 +74,7 @@ describe('RichTextEditor', function() {
           var editor = new RichTextEditor(
             jqueryObject,
             validEditorId,
-            validAssetFinder,
+            window.assetFinder,
             validFormats,
             validPreloadContent
           );
@@ -99,7 +93,7 @@ describe('RichTextEditor', function() {
             var editor = new RichTextEditor(
               jqueryObject,
               false,
-              validAssetFinder,
+              window.assetFinder,
               validFormats,
               validPreloadContent
             );
@@ -115,7 +109,7 @@ describe('RichTextEditor', function() {
           var editor = new RichTextEditor(
             jqueryObject,
             12,
-            validAssetFinder,
+            window.assetFinder,
             validFormats,
             validPreloadContent
           );
@@ -132,7 +126,7 @@ describe('RichTextEditor', function() {
           var editor = new RichTextEditor(
             jqueryObject,
             '12',
-            validAssetFinder,
+            window.assetFinder,
             validFormats,
             validPreloadContent
           );
@@ -166,7 +160,7 @@ describe('RichTextEditor', function() {
           var editor = new RichTextEditor(
             jqueryObject,
             '12',
-            validAssetFinder,
+            window.assetFinder,
             validFormats,
             validPreloadContent
           );
@@ -184,7 +178,7 @@ describe('RichTextEditor', function() {
             var editor = new RichTextEditor(
               jqueryObject,
               '12',
-              validAssetFinder,
+              window.assetFinder,
               false,
               validPreloadContent
             );
@@ -200,7 +194,7 @@ describe('RichTextEditor', function() {
           var editor = new RichTextEditor(
             jqueryObject,
             '12',
-            validAssetFinder,
+            window.assetFinder,
             validFormats,
             validPreloadContent
           );
@@ -217,7 +211,7 @@ describe('RichTextEditor', function() {
           var editor = new RichTextEditor(
             jqueryObject,
             validEditorId,
-            validAssetFinder,
+            window.assetFinder,
             validFormats
           );
 
@@ -234,7 +228,7 @@ describe('RichTextEditor', function() {
             var editor = new RichTextEditor(
               jqueryObject,
               validEditorId,
-              validAssetFinder,
+              window.assetFinder,
               validFormats,
               12
             );
@@ -250,7 +244,7 @@ describe('RichTextEditor', function() {
           var editor = new RichTextEditor(
             jqueryObject,
             validEditorId,
-            validAssetFinder,
+            window.assetFinder,
             validFormats,
             'Hello, world!'
           );
@@ -269,7 +263,7 @@ describe('RichTextEditor', function() {
       var editor = new RichTextEditor(
         jqueryObject,
         validEditorId,
-        validAssetFinder,
+        window.assetFinder,
         validFormats,
         'Hello, world!'
       );

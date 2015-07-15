@@ -1,14 +1,10 @@
 describe('RichTextEditorManager', function() {
 
-  var validAssetFinder;
   var validElement;
   var validFormats = [];
   var validToolbar;
 
   beforeEach(function() {
-    AssetFinderMocker.mock();
-    SquireMocker.mock();
-    validAssetFinder = new AssetFinder();
     validElement = $('<div id="rich-text-editor-toolbar"></div>');
     validToolbar = Object.create(RichTextEditorToolbar.prototype);
     $('body').append(validElement);
@@ -16,8 +12,6 @@ describe('RichTextEditorManager', function() {
 
   afterEach(function() {
     $('#rich-text-editor-toolbar').remove();
-    SquireMocker.unmock();
-    AssetFinderMocker.unmock();
   });
 
   describe('constructor', function() {
@@ -41,7 +35,7 @@ describe('RichTextEditorManager', function() {
       it('returns an instance of RichTextEditorManager', function() {
 
         var manager = new RichTextEditorManager(
-          validAssetFinder,
+          window.assetFinder,
           validToolbar,
           validFormats
         );
@@ -56,7 +50,7 @@ describe('RichTextEditorManager', function() {
 
         assert.throw(function() {
           var manager = new RichTextEditorManager(
-            validAssetFinder,
+            window.assetFinder,
             null,
             validFormats
           );
@@ -69,7 +63,7 @@ describe('RichTextEditorManager', function() {
       it('returns an instance of RichTextEditorManager', function() {
 
         var manager = new RichTextEditorManager(
-          validAssetFinder,
+          window.assetFinder,
           validToolbar,
           validFormats
         );
@@ -84,7 +78,7 @@ describe('RichTextEditorManager', function() {
 
         assert.throw(function() {
           var manager = new RichTextEditorManager(
-            validAssetFinder,
+            window.assetFinder,
             validToolbar,
             null
           );
@@ -97,7 +91,7 @@ describe('RichTextEditorManager', function() {
       it('returns an instance of RichTextEditorManager', function() {
 
         var manager = new RichTextEditorManager(
-          validAssetFinder,
+          window.assetFinder,
           validToolbar,
           validFormats
         );
@@ -112,7 +106,7 @@ describe('RichTextEditorManager', function() {
     it('should should not expose `_editors` directly', function() {
 
       var manager = new RichTextEditorManager(
-        validAssetFinder,
+        window.assetFinder,
         validToolbar,
         validFormats
       );
@@ -127,7 +121,7 @@ describe('RichTextEditorManager', function() {
 
     beforeEach(function() {
       manager = new RichTextEditorManager(
-        validAssetFinder,
+        window.assetFinder,
         validToolbar,
         validFormats
       );

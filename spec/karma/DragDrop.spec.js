@@ -26,7 +26,6 @@ describe('DragDrop', function() {
     testDom.root().append(story);
     testDom.root().append(ghost);
   });
-  afterEach(testDom.clear);
 
   describe('constructor', function() {
     describe('given bad arguments', function() {

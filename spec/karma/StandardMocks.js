@@ -55,6 +55,8 @@ function standardMocks() {
   AssetFinderMocker.mock();
   window.assetFinder = new AssetFinder();
 
+  SquireMocker.mock();
+
   window.dispatcher = new Dispatcher();
 
   dispatcher.register(function(payload) {
@@ -93,6 +95,9 @@ function standardMocks() {
 }
 
 standardMocks.unmock = function() {
+  SquireMocker.unmock();
+  AssetFinderMocker.unmock();
+  window.testDom.clear();
   delete window.dispatcher;
   delete window.storyStore;
   delete window.blockStore;

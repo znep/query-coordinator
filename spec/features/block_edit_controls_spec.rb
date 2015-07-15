@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'block edit controls', type: :feature do
+RSpec.describe 'block edit controls', type: :feature, js: true do
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:require_logged_in_user).and_return(true)
@@ -8,7 +8,7 @@ RSpec.describe 'block edit controls', type: :feature do
     @blocks = page.all('.user-story .block-edit')
   end
 
-  describe 'move', js: true do
+  describe 'move' do
     before do
       @last_block   = @blocks.last
       @first_block  = @blocks.first
@@ -21,7 +21,7 @@ RSpec.describe 'block edit controls', type: :feature do
       # move block up
       @last_block.hover
       @last_block.find('[data-block-move-action="STORY_MOVE_BLOCK_UP"]').click
-      sleep 0.5
+      sleep 0.3
       after_move_position = @last_block.native.location.y
 
       expect(after_move_position).to be < initial_position
@@ -52,7 +52,7 @@ RSpec.describe 'block edit controls', type: :feature do
   end
 
 
-  describe 'delete', js: true do
+  describe 'delete' do
 
     context 'when the block needs a delete confirmation' do
       before do

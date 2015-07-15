@@ -21,7 +21,7 @@ Dir["./spec/support/**/*.rb"].sort.each {|f| require f}
 WebMock.disable_net_connect!
 
 # Clean the database by truncating between spec runs
-  DatabaseCleaner.strategy = :truncation
+DatabaseCleaner.strategy = :truncation
 
 if ENV['HEADLESS'] == 'true'
   require 'headless'

@@ -107,6 +107,15 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         end
       end
 
+      context 'bootstrapping datasets with groupBys should fail and redirect' do
+        should 'redirect to homepage' do
+          @controller.stubs(:dataset_has_group_by? => true)
+
+          get :bootstrap, id: 'data-iden'
+          assert_response(302)
+        end
+      end
+
       context 'default page' do
         context 'creating a new default page if there is already a default page but the default page is not v1' do
           setup do

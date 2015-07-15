@@ -31,16 +31,19 @@ class NewUxBootstrapController < ActionController::Base
     # 2. Check to make sure the dataset in question is in the new backend.
     #    If it isn't, 400.
     #
-    # 3. Fetch the dataset metadata, which is used downstream to create cards.
+    # 3. Check to make sure the dataset does not have a group by.
+    #    If it does, redirect and provide a friendly error message.
+    #
+    # 4. Fetch the dataset metadata, which is used downstream to create cards.
     #    If we cannot fetch the dataset data then we fail early. We will let
     #    Airbrake know aout this, but not the user.
     #
-    # 4. Check to see if any 'new UX' pages already exist.
+    # 5. Check to see if any 'new UX' pages already exist.
     #
-    # 5a. If they do, then we send the user to the default or the last page in
+    # 6a. If they do, then we send the user to the default or the last page in
     #     the collection.
     #
-    # 5b. If no pages already exist, then we need to create one. This is hacky
+    # 6b. If no pages already exist, then we need to create one. This is hacky
     #     and non-deterministic.
 
     # 1. Check to make sure that the user is authorized to create a new view
@@ -59,7 +62,13 @@ class NewUxBootstrapController < ActionController::Base
       }, :status => 400
     end
 
-    # 3. Fetch the dataset metadata, which is used downstream to create cards.
+    # 3. Check to make sure the dataset does not have a group by.
+    unless !dataset_has_group_by?
+      flash[:error] = t('controls.grid.errors.data_lens_is_incompatible_with_group_bys')
+      return redirect_to request.base_url
+    end
+
+    # 4. Fetch the dataset metadata, which is used downstream to create cards.
     dataset_metadata_response = phidippides.fetch_dataset_metadata(
       params[:id],
       :request_id => request_id,
@@ -78,7 +87,7 @@ class NewUxBootstrapController < ActionController::Base
 
     dataset_metadata_response_body = dataset_metadata_response[:body]
 
-    # 4. Check to see if any 'new UX' pages already exist.
+    # 5. Check to see if any 'new UX' pages already exist.
     pages_response = phidippides.fetch_pages_for_dataset(
       params[:id],
       :request_id => request_id,
@@ -95,7 +104,7 @@ class NewUxBootstrapController < ActionController::Base
       ((!has_publisher_pages && pages_response[:status] == '200') ||
         pages_response[:status] == '404')
 
-    # 5a. There is at least one 'New UX' page already, so we can find a default.
+    # 6a. There is at least one 'New UX' page already, so we can find a default.
     if request_successful_and_has_publisher_pages
       pages = pages_response[:body][:publisher]
 
@@ -139,7 +148,7 @@ class NewUxBootstrapController < ActionController::Base
         end
       end
 
-    # 5b. If there are no pages, we will need to create a default 'New UX' page.
+    # 6b. If there are no pages, we will need to create a default 'New UX' page.
     elsif request_successful_but_no_pages
 
       generate_and_redirect_to_new_page(dataset_metadata_response_body)
@@ -377,6 +386,10 @@ class NewUxBootstrapController < ActionController::Base
 
   def dataset_is_new_backend?
     dataset.new_backend?
+  end
+
+  def dataset_has_group_by?
+    dataset.query.present? && dataset.query.groupBys.present?
   end
 
 end

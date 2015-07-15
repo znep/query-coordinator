@@ -807,8 +807,13 @@ $(function()
                 blist.currentUser.rights.indexOf('edit_others_datasets') > -1;
       },
       getNewUXLinkParams: function() {
+        var hasQuery = !_.isUndefined(blist.dataset.query);
+
         var linkParams = {
           canUpdateMetadata: datasetShowHelpers.canUpdateMetadata(),
+          // NOTE: Once Data Lens pages can accept filtering parameters,
+          // we should be able to remove this groupBys check.
+          hasGroupBys: hasQuery && !_.isUndefined(blist.dataset.query.groupBys),
           dataset: blist.dataset,
           dataLensState: blist.feature_flags.data_lens_transition_state
         };
@@ -823,7 +828,7 @@ $(function()
         var linkHref = null;
 
         if (linkParams.dataset.newBackend) {
-          if (linkParams.canUpdateMetadata) {
+          if (linkParams.canUpdateMetadata && !linkParams.hasGroupBys) {
             linkHref = '/view/bootstrap/{0}'.format(linkParams.dataset.id);
             datasetShowHelpers.createNewUXLink(linkParams, linkHref);
           }
@@ -846,12 +851,12 @@ $(function()
                 // that doesn't correspond to an existing page (i.e. page deleted but metadata
                 // not kept in sync). In this case, attempt to rebootstrap the page, which will
                 // update the metadata appropriately.
-                if (linkParams.canUpdateMetadata) {
+                if (linkParams.canUpdateMetadata && !linkParams.hasGroupBys) {
                   linkHref = '/view/bootstrap/{0}'.format(nbeMetadata.id);
                   datasetShowHelpers.createNewUXLink(linkParams, linkHref);
                 }
               });
-            } else if (linkParams.canUpdateMetadata) {
+            } else if (linkParams.canUpdateMetadata && !linkParams.hasGroupBys) {
               // No view has been bootstrapped yet, only let the user bootstrap if they
               // canUpdateMetadata.
               linkHref = '/view/bootstrap/{0}'.format(nbeMetadata.id);

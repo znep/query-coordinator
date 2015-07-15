@@ -562,6 +562,7 @@ en:
       delete_warning_single_column: Do you want to delete the selected column? All data in this column will be removed!
       edit_column_properties: Edit Column Properties
       errors:
+        data_lens_is_incompatible_with_group_bys: Datasets with groupings cannot be used with a Data Lens page. We apologize for this inconvenience.
         cannot_edit_at_this_time: The column cannot be edited at this moment. Please try again later.
         primary_key_collision: This value already exists as a primary key. You may not overwrite it.
         row_locked_for_edit: Presently, we cannot edit a just-created row. We are working to make that possible. For now, refresh the page before editing this row.

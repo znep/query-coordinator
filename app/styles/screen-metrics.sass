@@ -223,25 +223,18 @@
         border: 1px solid #dedede
         margin: 0.5em
         padding: 1em
+        position: relative
 
         .summaryTitle
           font-size: 1.2em
           padding-bottom: 0.5em
 
-        // applicability of the following two rules depends on blist.feature_flags.embetter_analytics_page
+        // only applicable if blist.feature_flags.embetter_analytics_page is false:
         .totalValue
           cursor: default
           font-size: 1.7em
           font-weight: bold
           line-height: 1.4em
-
-        .summaryValue
-          cursor: default
-          font-size: 1.2em
-          line-height: 1.4
-
-          .deltaValue
-            font-size: 1.8em
 
         .deltaBox
           @include analytic-icons
@@ -262,6 +255,42 @@
             margin-top: 2px
 
           .deltaValue
+            cursor: default
+            font-size: 1.2em
+            font-weight: bold
+            line-height: 1.2em
+            padding-left: 0.5em
+        // end blist.feature_flags.embetter_analytics_page is false
+
+        .summaryValue
+          cursor: default
+          font-size: 1.2em
+          line-height: 1.4
+
+          .deltaValue
+            font-size: 1.8em
+
+        .percentBox
+          @include analytic-icons
+          @include border-radius(0, 0.3em, 0, 0.3em)
+          color: #fff
+          height: 13px
+          padding: 0.5em
+          position: absolute
+          right: -1px
+          top: -1px
+          &.plus
+            background-color: #19b947
+            border-color: #19b947
+          &.minus
+            background-color: #fd682f
+            border-color: #fd682f
+
+          .icon
+            float: left
+            margin-top: 2px
+
+          .percentValue
             cursor: default
             font-size: 1.2em
             font-weight: bold

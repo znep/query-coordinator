@@ -321,8 +321,17 @@ metricsNS.summarySectionCallback = function($context)
     }
     }
 
+    mappedData.deltaPercent = mappedData.delta / (mappedData.total - mappedData.delta) * 100;
+    if (mappedData.deltaPercent < 0) {
+        mappedData.deltaPercent *= -1;
+        mappedData.deltaPercentClass = 'minus';
+    } else {
+        mappedData.deltaPercentClass = 'plus';
+    }
+
     mappedData.total = Highcharts.numberFormat(mappedData.total, 0);
     mappedData.delta = Highcharts.numberFormat(mappedData.delta, 0);
+    mappedData.deltaPercent = Highcharts.numberFormat(mappedData.deltaPercent, 0) + '%';
 
     var templateName = 'metricsSummaryData';
     var summaryDirective = metricsNS.summaryDataDirective;
@@ -442,6 +451,8 @@ metricsNS.summaryDataDirective = {
 
 metricsNS.summaryDataDirectiveV1 = {
     '.deltaValue' : 'delta',
+    '.percentValue' : 'deltaPercent',
+    '.percentBox@class+' : 'deltaPercentClass',
     '.totalValueV1' : 'total',
     '.totalValueV1@title' : 'totalText',
 };

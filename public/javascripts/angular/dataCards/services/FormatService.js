@@ -10,63 +10,69 @@ angular.module('dataCards.services').factory('FormatService', function() {
 
     var defaultOptions = {
       groupCharacter: ',',
-      decimalCharacter: '.',
-      maxLength: 4,
-      precision: null
+      decimalCharacter: '.'
     };
 
     options = _.assign({}, defaultOptions, options);
 
-    if (options.precision < 0) {
-      throw new Error('Negative precision "{0}" passed to formatNumber.'.format(options.precision));
-    }
-
-    if (options.maxLength < 0) {
-      throw new Error('Negative maxLength "{0}" passed to formatNumber.'.format(options.maxLength));
-    }
-
-    var step = 1000;
-    var divider = Math.pow(step, MAGNITUDE_SYMBOLS.length);
     var val = parseFloat(value);
     var absVal = Math.abs(val);
-    var parts = absVal.toString().split(options.decimalCharacter);
+    var maxLength = 4;
+    var newValue;
+    var symbolIndex;
 
-    if (absVal < 1000 || parts[0].length <= options.maxLength) {
-      var precision = Math.max(options.maxLength - parts[0].length, 0);
-      if (_.isNumber(options.precision)) {
-        precision = Math.min(precision, options.precision);
+    if (absVal < 9999.5) {
+
+      // This branch handles everything that doesn't use a magnitude suffix.
+      // Thousands less than 10K are commaified.
+      var parts = absVal.toString().split('.').concat('');
+      var precision = Math.min(parts[1].length, maxLength - parts[0].length);
+      var newValue = val.toFixed(precision).replace('.', options.decimalCharacter);
+      return commaify(newValue, options.groupCharacter, options.decimalCharacter);
+    } else if (/e/i.test(val)) {
+
+      // This branch handles huge numbers that switch to exponent notation.
+      var exponentParts = val.toString().split(/e\+?/i);
+      symbolIndex = Math.floor(parseFloat(exponentParts[1]) / 3) - 1;
+      newValue = exponentParts[0];
+
+      var shiftAmount = parseFloat(exponentParts[1]) % 3;
+      if (shiftAmount > 0) {
+
+        // Adjust from e.g. 1.23e+4 to 12.3K
+        newValue = newValue.replace(/^(-?\d+)(\.\d+)?$/, function(match, whole, frac) {
+          frac = frac || '.000';
+          return '{0}.{1}'.format(whole + frac.slice(1, 1 + shiftAmount), frac.slice(shiftAmount));
+        });
       }
 
-      return commaify(parseFloat(val.toFixed(precision)), options.groupCharacter, options.decimalCharacter);
+      newValue = parseFloat(Math.abs(newValue)).toFixed(maxLength - shiftAmount - 1);
+    } else {
+
+      // This branch handles values that need a magnitude suffix.
+      // We use commaify to determine what magnitude we're operating in.
+      var magnitudeGroups = commaify(absVal.toFixed(0)).split(',');
+      symbolIndex = magnitudeGroups.length - 2;
+      newValue = parseFloat(magnitudeGroups[0] + '.' + magnitudeGroups[1]);
+      newValue = newValue.toFixed(maxLength - magnitudeGroups[0].length - 1);
     }
 
-    for (var i = MAGNITUDE_SYMBOLS.length - 1; i >= 0; i--) {
-      if (absVal >= divider) {
-        var count = (absVal / divider).toFixed(0).length;
-
-        var precision = Math.max(options.maxLength - count - 1, 0);
-        if (_.isNumber(options.precision)) {
-          precision = Math.min(precision, options.precision);
-        }
-
-        var result = (absVal / divider).toFixed(precision);
-
-        if (val < 0) {
-          result = -result;
-        }
-
-        result = parseFloat(result);
-
-        if (isFinite(result)) {
-          return commaify(result, options.groupCharacter, options.decimalCharacter) + MAGNITUDE_SYMBOLS[i];
-        } else {
-          return result.toString();
-        }
-      }
-      divider = divider / step;
+    // The one edge case to handle is when 999.9[KMB...] rounds up, which
+    // bumps us into the next magnitude.
+    if (newValue === '1000') {
+      newValue = '1';
+      symbolIndex++;
     }
 
-    return val.toString();
+    if (_.isDefined(MAGNITUDE_SYMBOLS[symbolIndex])) {
+      return '{neg}{value}{sym}'.format({
+        neg: val < 0 ? '-' : '',
+        value: parseFloat(newValue).toString().replace('.', options.decimalCharacter),
+        sym: MAGNITUDE_SYMBOLS[symbolIndex]
+      });
+    } else {
+      return val.toString();
+    }
   };
 
   var commaify = function(value, groupCharacter, decimalCharacter) {

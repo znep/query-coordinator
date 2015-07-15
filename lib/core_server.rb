@@ -10,6 +10,29 @@ class CoreServer
     view_request(uid: uid, verb: :put, headers: headers, data: view_data)
   end
 
+  def self.current_user(headers)
+    core_server_response = nil
+    user = nil
+
+    core_server_request_options = {
+      verb: :get,
+      path: '/users/current.json',
+      headers: headers.merge('Content-type' => 'application/json')
+    }
+
+    with_retries(retry_options) do
+      core_server_response = core_server_request(core_server_request_options)
+    end
+
+    status_code = core_server_response.code.to_i
+
+    if status_code == 200
+      user = JSON.parse(core_server_response.body)
+    end
+
+    user
+  end
+
   private
 
   def self.retry_options
@@ -76,9 +99,9 @@ class CoreServer
     core_server_request_options = {
       verb: verb,
       path: path,
-      headers: options[:headers].merge({
+      headers: options[:headers].merge(
         'Content-type' => 'application/json'
-      })
+      )
     }
 
     if options[:data].present?

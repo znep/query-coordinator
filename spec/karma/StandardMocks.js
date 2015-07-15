@@ -52,6 +52,8 @@ function standardMocks() {
       return 'Translation for: ' + translationKeys;
     })
   };
+  AssetFinderMocker.mock();
+  window.assetFinder = new AssetFinder();
 
   window.dispatcher = new Dispatcher();
 

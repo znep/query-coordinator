@@ -40,6 +40,10 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
+  # Test environment does not run config.ru, where we spin up the app under
+  # relative_url_root, so all assets will not be under /stories
+  config.relative_url_root = ''
+
   # Default `ZOOKEEPER_ENSEMBLE` to localhost unless it is already set.
   ENV['ZOOKEEPER_ENSEMBLE'] ||= "['localhost:2181']"
 end

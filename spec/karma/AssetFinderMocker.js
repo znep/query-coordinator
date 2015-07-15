@@ -5,6 +5,9 @@ var AssetFinderMocker = {
     AssetFinder.prototype = {
       getStyleAssetPath: function(name) {
         return name + '.asset';
+      },
+      getRelativeUrlRoot: function() {
+        return '';
       }
     };
     window.AssetFinder = AssetFinder;

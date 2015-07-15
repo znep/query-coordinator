@@ -2,6 +2,10 @@
 
   function AssetFinder() {
 
+    this.getRelativeUrlRoot = function() {
+      return '<%= config.relative_url_root %>';
+    };
+
     this.getStyleAssetPath = function(name) {
 
       var assetPaths = {

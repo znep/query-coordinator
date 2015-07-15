@@ -6,7 +6,7 @@ $(document).on('ready', function() {
    * Setup
    */
 
-  var assetFinder = new AssetFinder();
+  window.assetFinder = new AssetFinder();
 
   var richTextFormats = [
     { id: 'heading1', tag: 'h1', name: 'Heading 1', dropdown: true },

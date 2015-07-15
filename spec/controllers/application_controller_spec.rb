@@ -26,7 +26,7 @@ RSpec.describe ApplicationController, :type => :controller do
       it 'should redirect to a login page with the correct return_to query param' do
         stub_invalid_session
         get :test_action
-        expect(response).to redirect_to("/login?return_to=/stories/test_action")
+        expect(response).to redirect_to('/login?return_to=/test_action')
       end
     end
 

@@ -534,7 +534,7 @@
     function _renderImageComponentData(element, data) {
 
       var imageElement = element.find('img');
-      var imageSource = '/stories/' + data;
+      var imageSource = assetFinder.getRelativeUrlRoot() + data;
 
       imageElement[0].onload = function(e) {
         _renderStory();
@@ -548,7 +548,7 @@
     function _renderVisualizationComponentData(element, data) {
 
       var imageElement = element.find('img');
-      var imageSource = '/stories/' + data;
+      var imageSource = assetFinder.getRelativeUrlRoot() + data;
 
       imageElement[0].onload = function(e) {
         _renderStory();

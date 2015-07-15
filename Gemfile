@@ -73,7 +73,12 @@ group :development, :test do
 end
 
 group :test do
-  gem 'webmock'
+  gem 'webmock', require: false
+  gem 'database_cleaner'
+
+  # integration tests
+  gem 'capybara'
+  gem 'selenium-webdriver'
 end
 
 group :development do

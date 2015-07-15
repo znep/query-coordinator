@@ -1,5 +1,3 @@
-require 'core/auth/client'
-
 # Populates `env[SOCRATA_SESSION_ENV_KEY]` with an object capable of
 # authenticating the current session (represented by _core_session_id
 # and _socrata_session_id cookies) against core.
@@ -54,19 +52,8 @@ class SocrataSession
   #
   def authenticate(env)
     request = Rack::Request.new(env)
-    current_user = nil
-
-    if has_session_cookie?(request)
-      auth_object = validate_core_session(request)
-      if auth_object.logged_in?
-        current_user = auth_object.current_user
-      end
-    end
-
-    current_user
+    current_user(request) if has_session_cookie?(request)
   end
-
-
 
   private
 
@@ -78,20 +65,13 @@ class SocrataSession
     request.cookies.has_key?('_core_session_id')
   end
 
-  def validate_core_session(request)
+  def current_user(request)
     socrata_session_cookie =
       "_core_session_id=#{request.cookies['_core_session_id']}"
 
-    if request.cookies.has_key?('socrata-csrf-token')
-      socrata_session_cookie <<
-        "; socrata-csrf-token=#{request.cookies['socrata-csrf-token']}"
-    end
-
-    Core::Auth::Client.new(
-      request.host, #TODO we need to make sure we're actually talking to core, not some random host.
-      port: Rails.application.config.frontend_port,
-      cookie: socrata_session_cookie,
-      verify_ssl_cert: false #TODO this needs to be configurable.
+    CoreServer.current_user(
+      'Cookie' => socrata_session_cookie,
+      'X-Socrata-Host' => request.host
     )
   end
 end

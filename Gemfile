@@ -22,9 +22,6 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0', group: :doc
 
-# Core Auth
-gem 'core-auth-ruby', '0.2.3', path: 'vendor/gems/core-auth-ruby-0.2.3'
-
 # Wrapper around protocol-level Zookeeper client
 gem 'zk'
 

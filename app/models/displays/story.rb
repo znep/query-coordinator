@@ -26,7 +26,7 @@ class Displays::Story < Displays::Base
   end
 
   def icon_class
-    'icon-stories'
+    'icon-story'
   end
 
 end

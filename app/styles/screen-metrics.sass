@@ -228,11 +228,20 @@
           font-size: 1.2em
           padding-bottom: 0.5em
 
+        // applicability of the following two rules depends on blist.feature_flags.embetter_analytics_page
         .totalValue
           cursor: default
           font-size: 1.7em
           font-weight: bold
           line-height: 1.4em
+
+        .summaryValue
+          cursor: default
+          font-size: 1.2em
+          line-height: 1.4
+
+          .deltaValue
+            font-size: 1.8em
 
         .deltaBox
           @include analytic-icons

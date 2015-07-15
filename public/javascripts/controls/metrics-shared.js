@@ -309,6 +309,7 @@ metricsNS.summarySectionCallback = function($context)
     summaryToolTip('total', $.t('screens.stats.total'));
     summaryToolTip('delta', $.t('screens.stats.during_time_period'));
 
+    if (!blist.feature_flags.embetter_analytics_page) {
     if (mappedData.delta < 0)
     {
         mappedData.delta *= -1;
@@ -318,12 +319,19 @@ metricsNS.summarySectionCallback = function($context)
     {
         mappedData.deltaClass = 'plus';
     }
+    }
 
     mappedData.total = Highcharts.numberFormat(mappedData.total, 0);
     mappedData.delta = Highcharts.numberFormat(mappedData.delta, 0);
 
     var templateName = 'metricsSummaryData';
     var summaryDirective = metricsNS.summaryDataDirective;
+
+    // Rearrange the layout for V1 improvements
+    if (blist.feature_flags.embetter_analytics_page) {
+        templateName = 'metricsSummaryDataV1';
+        summaryDirective = metricsNS.summaryDataDirectiveV1;
+    }
     // Omit the delta box if summaries.range = false
     if (!$.isBlank(summaries.range) && !summaries.range) {
         templateName = 'metricsSimpleSummaryData';
@@ -338,6 +346,7 @@ metricsNS.summarySectionCallback = function($context)
         templateName = 'metricsDeltaData';
         summaryDirective = metricsNS.deltaDataDirective;
     }
+
     metricsNS.renderSummarySection($context,
 				   mappedData,
 				   summaryDirective,
@@ -431,6 +440,12 @@ metricsNS.summaryDataDirective = {
     '.deltaBox@class+': 'deltaClass'
 };
 
+metricsNS.summaryDataDirectiveV1 = {
+    '.deltaValue' : 'delta',
+    '.totalValueV1' : 'total',
+    '.totalValueV1@title' : 'totalText',
+};
+
 metricsNS.simpleSummaryDataDirective = {
     '.totalValue' : 'total',
     '.totalValue@title' : 'totalText'
@@ -447,6 +462,6 @@ metricsNS.detailDataDirective = {
 };
 
 metricsNS.deltaDataDirective = {
-    '.totalValue' : 'delta',
-    '.totalValue@title' : 'deltaText'
+    '.deltaValue' : 'delta',
+    '.deltaValue@title' : 'deltaText'
 }

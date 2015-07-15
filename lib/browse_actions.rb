@@ -462,7 +462,7 @@ private
         :text => ::I18n.t('controls.browse.facets.view_types.story'),
         :value => 'story',
         :class => 'typeStory',
-        :icon_font_class => 'icon-stories',
+        :icon_font_class => 'icon-story',
         :help_link => {
           :href => 'http://www.socrata.com',
           :text => ::I18n.t('controls.browse.facets.view_types.story_help')

@@ -119,3 +119,6 @@
   content: "\e60c";
 }
 
+.icon-story:before {
+  content: "\e618";
+}

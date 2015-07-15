@@ -76,6 +76,7 @@ group :test do
   # integration tests
   gem 'capybara'
   gem 'selenium-webdriver'
+  gem 'headless'
 end
 
 group :development do

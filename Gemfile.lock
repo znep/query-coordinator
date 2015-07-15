@@ -92,6 +92,7 @@ GEM
       fast_stack
     globalid (0.3.5)
       activesupport (>= 4.1.0)
+    headless (2.1.0)
     httparty (0.13.5)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
@@ -264,6 +265,7 @@ DEPENDENCIES
   decima-ruby (= 0.1.0)!
   factory_girl_rails
   flamegraph
+  headless
   jbuilder (~> 2.0)
   nyan-cat-formatter
   pg

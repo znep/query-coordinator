@@ -553,16 +553,23 @@ $(function()
                     'Untitled Story - ' +
                     (new Date().format('m-d-Y'))
                 );
+
                 var newStoryData = {
                     name: newStoryName,
                     metadata: {
                         renderTypeConfig: {
                             visible: {
                                 href: true
-                            },
-                            availableDisplayTypes: ['story'],
-                            jsonQuery: {}
+                            }
                         },
+                        accessPoints: {
+                            // This will be replaced with the actual resource
+                            // url when the view metadata is updated by the Stories
+                            // application.
+                            story: 'https://www.socrata.com/'
+                        },
+                        availableDisplayTypes: ['story'],
+                        jsonQuery: {},
                         // Since Storyteller has its own datastore, we will
                         // need to treat this asynchonously. Tagging the
                         // metadata with '"initialized": false' should at least

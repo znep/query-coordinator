@@ -30,6 +30,19 @@ module ApplicationHelper
         Rails.logger.error(error_message)
         "/view/#{view.id}"
       end
+    elsif view.story?
+      begin
+        # use the direct link stored in the metadata for 'story' display types
+        view.metadata.accessPoints['story']
+      rescue NoMethodError => error
+        error_message = "Failed to find access point 'story' for view with " \
+          "id '#{view.id}; falling back to url '/stories/s/#{view.id}/edit'"
+        Airbrake.notify(
+          :error_class => 'StoriesAccessPointUrlError',
+          :error_message => error_message
+        )
+        "/stories/s/#{view.id}/edit"
+      end
     else
       super
     end

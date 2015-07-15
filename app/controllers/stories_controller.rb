@@ -40,16 +40,15 @@ class StoriesController < ApplicationController
     view = CoreServer::get_view(params[:four_by_four], core_request_headers)
 
     if view.present?
-      view_metadata = view['metadata']
       dirty_title = params[:title] ||= ''
       updated_metadata = nil
 
       if should_create_draft_story?(view, params[:four_by_four])
-
+        clean_four_by_four = params[:four_by_four]
         clean_title = sanitize_story_title(dirty_title)
 
         @story = DraftStory.create(
-          :uid => params[:four_by_four],
+          :uid => clean_four_by_four,
           :title => clean_title,
           :block_ids => [],
           :created_by => current_user['id']
@@ -58,20 +57,23 @@ class StoriesController < ApplicationController
         if @story.persisted?
 
           view['name'] = clean_title
+          view['metadata']['accessPoints'] ||= {}
+          view['metadata']['accessPoints']['story'] = "https://#{request.host}/stories/s/#{clean_four_by_four}/edit"
           view['metadata']['initialized'] = true
-          updated_view = CoreServer::update_view(params[:four_by_four], core_request_headers, view)
+
+          updated_view = CoreServer::update_view(clean_four_by_four, core_request_headers, view)
 
           if updated_view.nil?
             Rails.logger.error(
-              "Successfully bootstrapped story with uid '#{params[:four_by_four]}' " \
+              "Successfully bootstrapped story with uid '#{clean_four_by_four}' " \
               "but failed to update the 'initialized' flag in the view metadata."
             )
             # TODO: Notify Airbrake
           end
 
-          redirect_to "/stories/s/#{params[:four_by_four]}/edit"
+          redirect_to "/stories/s/#{clean_four_by_four}/edit"
         else
-          redirect_to "/stories/s/#{params[:four_by_four]}/create", :flash => {
+          redirect_to "/stories/s/#{clean_four_by_four}/create", :flash => {
             :error => I18n.t('stories_controller.story_creation_error_flash')
           }
         end

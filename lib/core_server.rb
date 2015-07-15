@@ -103,6 +103,11 @@ class CoreServer
 
       if status_code == 200
         view = JSON.parse(response_body)
+      else
+        report_error(
+          RuntimeError.new,
+          "TEMPORARY/DEBUG [#{verb.upcase} #{path} - HTTP #{status_code}] - '#{response_body.inspect}'"
+        )
       end
 
     rescue => error

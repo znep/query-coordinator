@@ -12,6 +12,7 @@ class CoreServer
 
   def self.current_user(headers)
     core_server_response = nil
+    user = nil
 
     core_server_request_options = {
       verb: :get,
@@ -26,8 +27,10 @@ class CoreServer
     status_code = core_server_response.code.to_i
 
     if status_code == 200
-      JSON.parse(core_server_response.body)
+      user = JSON.parse(core_server_response.body)
     end
+
+    user
   end
 
   private

@@ -2,5 +2,11 @@
 
 source /dev/shm/storyteller_secrets.sh
 
+# These proxies are needed for clortho, but we want to remove them before running
+# the rails app since it will prevent us from connecting to other internal services.
+# It is still undecided what the real solution will be, but we are hoping that we will
+# be able to remove these at some point.
+unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
+
 cd $APP_DIR
 exec su socrata -c 'bin/rails server -p 3010 -b 0.0.0.0'

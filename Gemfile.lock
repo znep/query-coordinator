@@ -1,12 +1,4 @@
 PATH
-  remote: vendor/gems/core-auth-ruby-0.2.3
-  specs:
-    core-auth-ruby (0.2.3)
-      addressable (~> 2.3)
-      httparty (~> 0.13)
-      nokogiri (~> 1.6)
-
-PATH
   remote: vendor/gems/decima-ruby-0.1.0
   specs:
     decima-ruby (0.1.0)
@@ -248,7 +240,6 @@ DEPENDENCIES
   airbrake
   aws-sdk
   byebug
-  core-auth-ruby (= 0.2.3)!
   decima-ruby (= 0.1.0)!
   factory_girl_rails
   flamegraph

@@ -3,7 +3,8 @@
 var datasetsMetricName,
     pageViewsSummary,
     mapsSummary,
-    dataLensesEnabled;
+    dataLensesEnabled,
+    datasetsListHeader;
 
 if(blist.feature_flags.dataset_count_v2){
   datasetsMetricName = 'datasets-published-v2';
@@ -14,6 +15,7 @@ if (blist.feature_flags.embetter_analytics_page) {
     pageViewsSummary = {plus: 'js-page-view', total: false};
     mapsSummary = {plus: 'lense-map-published-v1', range: false}
     dataLensesEnabled = true;
+    datasetsListHeader = 'Page Views';
 } else {
     pageViewsSummary = {
         plus: 'page-views',
@@ -22,6 +24,7 @@ if (blist.feature_flags.embetter_analytics_page) {
     };
     mapsSummary = {plus: ['maps-created'], minus: ['maps-deleted']};
     dataLensesEnabled = false;
+    datasetsListHeader = '';
 }
 
 blist.metrics.sitewideShared = {
@@ -127,7 +130,7 @@ blist.metrics.sitewideShared = {
     topListSections: [
         {
             id: 'topDatasets', displayName: 'Top Datasets',
-            heading: '', renderTo: 'leftColumn',
+            heading: datasetsListHeader, renderTo: 'leftColumn',
             callback: blist.metrics.topDatasetsCallback,  top: 'DATASETS'
         },
         {

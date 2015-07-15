@@ -448,7 +448,6 @@ private
       datasets_index = view_type_list.pluck(:value).index('datasets') || 0
       view_type_list.insert(datasets_index, new_view_option)
     end
-
   end
 
 
@@ -459,11 +458,11 @@ private
   def add_stories_view_type_if_enabled!(view_type_list)
     if stories_catalog_entries_enabled?
 
-      stories = {
+      stories_view_type = {
         :text => ::I18n.t('controls.browse.facets.view_types.story'),
         :value => 'story',
         :class => 'typeStory',
-        :icon_font_class => 'icon-settings',
+        :icon_font_class => 'icon-stories',
         :help_link => {
           :href => 'http://www.socrata.com',
           :text => ::I18n.t('controls.browse.facets.view_types.story_help')
@@ -472,10 +471,8 @@ private
 
       # Stories are more contextualized than datasets, so put them above dataset entry
       datasets_index = view_type_list.pluck(:value).index('datasets') || 0
-      view_type_list.insert(datasets_index, stories)
-
+      view_type_list.insert(datasets_index, stories_view_type)
     end
-
   end
 
   @@default_cutoffs = {

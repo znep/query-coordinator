@@ -1038,6 +1038,10 @@ class View < Model
     viewType == 'href' && displayType == 'new_view'
   end
 
+  def story?
+    viewType == 'href' && displayType == 'story'
+  end
+
   def is_href?
     viewType == 'href'
   end

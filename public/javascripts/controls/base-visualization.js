@@ -653,17 +653,29 @@
               _.each(viewsToRender, function(view) { vizObj.getDataForView(view); });
             };
 
-            var timesPolled = 0;
             // _boundViewEvents is set by #ready, which is called when the view is ready.
             // We poll to make sure that aggregate fetching is done before getting row data.
+            var waitPeriod = 50;
+            var totalWait = 0;
+
+            // Arbitrarily stop this interval at 10 seconds. Something is wrong at this point.
+            var timeout = 10000;
+
             var interval = setInterval(function() {
-              timesPolled++;
+              totalWait += waitPeriod;
               // Oh god I hope this is safe. Code audit says it should be okay. =/
-              if (vizObj._boundViewEvents || timesPolled > 10) {
+              if (vizObj._boundViewEvents) {
                 clearInterval(interval);
                 actualFetchRows();
+              } else if (totalWait >= timeout) {
+                clearInterval(interval);
+                $('#noticeContainer').append($.tag2({
+                  _: 'div',
+                  className: 'flash warning',
+                  contents: $.t('controls.grid.errors.something_went_wrong')
+                }));
               }
-            }, 50);
+            }, waitPeriod);
         },
 
         getDataForView: function(view)

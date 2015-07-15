@@ -562,6 +562,7 @@ en:
       delete_warning_single_column: Do you want to delete the selected column? All data in this column will be removed!
       edit_column_properties: Edit Column Properties
       errors:
+        something_went_wrong: Looks like something went wrong. Please refresh this page.
         cannot_edit_at_this_time: The column cannot be edited at this moment. Please try again later.
         primary_key_collision: This value already exists as a primary key. You may not overwrite it.
         row_locked_for_edit: Presently, we cannot edit a just-created row. We are working to make that possible. For now, refresh the page before editing this row.

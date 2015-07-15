@@ -99,3 +99,12 @@ standardMocks.unmock = function() {
   delete window.dragDropStore;
   delete window.I18n;
 };
+
+// Run StandardMocks before every test.
+// Currently, this introduces an unmeasureable
+// performance penalty (under 10ms for a full
+// test run).
+// If you don't want these standard mocks for a
+// particular test, use a beforeEach(standardMocks.unmock).
+beforeEach(standardMocks);
+afterEach(standardMocks.unmock);

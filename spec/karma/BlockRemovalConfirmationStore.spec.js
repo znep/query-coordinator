@@ -1,10 +1,6 @@
 describe('BlockRemovalConfirmationStore', function() {
   'use strict';
 
-  // Set up standard story and Store data
-  beforeEach(standardMocks);
-  afterEach(standardMocks.unmock);
-
   describe('needsConfirmation', function() {
 
     describe('for a newly loaded story', function() {

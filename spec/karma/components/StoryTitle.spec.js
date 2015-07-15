@@ -2,12 +2,10 @@ describe('StoryTitle jQuery plugin', function() {
   var node;
 
   beforeEach(function() {
-    standardMocks();
     node = testDom.root().append('<div>');
   });
 
   afterEach(function() {
-    standardMocks.unmock();
     testDom.clear();
   });
 

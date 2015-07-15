@@ -36,9 +36,6 @@ describe('StoryRenderer', function() {
     });
   }
 
-  beforeEach(standardMocks);
-  afterEach(standardMocks.unmock);
-
   beforeEach(function() {
 
     createSampleStories();

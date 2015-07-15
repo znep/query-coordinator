@@ -6,10 +6,6 @@ describe('DragDrop', function() {
   var ghost;
 
   var dispatchedEvents;
-
-  beforeEach(standardMocks);
-  afterEach(standardMocks.unmock);
-
   beforeEach(function() {
     dispatchedEvents = [];
     window.dispatcher.register(function(payload) {

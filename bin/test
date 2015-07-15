@@ -6,4 +6,4 @@ set -e
 #      these tests since we're also running in the
 #    storyteller pull request builder.
 bin/test_setup
-bundle exec rake test
+HEADLESS=true bundle exec rake test

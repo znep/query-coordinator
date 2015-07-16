@@ -104,6 +104,11 @@ Examples:
 
   See supported_browsers.json for a list of values we support. You can add new browsers to this file - see https://saucelabs.com/platforms/webdriver for a list of browsers SauceLabs supports.
 
+When running tests on SauceLabs through a Sauce Connect tunnel that is started manually (through the Sauce OSX App or the Sauce Connect Jenkins Plugin), and a tunnel identifier
+is specified, you must make sure to provide the same `SAUCE_TUNNEL_IDENTIFIER` as an environment variable so that the Karma sauce test runner will use the identified tunnel.
+
+If using a Sauce Connect tunnel without a tunnel identifier, the karma sauce test runner will default to using the unnamed tunnel.
+
 #### To exclude groups of tests
 
 NOTE: THIS IS NOT SUPPORTED IN THE RAKE TASKS

@@ -1,33 +1,16 @@
 describe('StoryRenderer', function() {
 
-  // TODO consolidate with StandardMocks.
-  var storyUid = 'rend-erer';
-  var imageBlockId = '4000';
-  var textBlockId = '4001';
+  // Pull out commonly-used mock story information from StandardMocks.
+  var storyUid;
+  var imageBlockId;
+  var textBlockId;
   var options;
 
-  function createSampleStories() {
-
-    var userStoryData = generateStoryData({
-      uid: storyUid,
-      blocks: [
-        generateBlockData({
-          id: imageBlockId,
-          components: [
-            { type: 'image', value: 'fakeImageFile.png' }
-          ]
-        }),
-        generateBlockData({
-          id: textBlockId,
-          components: [
-            { type: 'text', value: 'some-text' }
-          ]
-        })
-      ]
-    });
-
-    dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
-  }
+  beforeEach(function() {
+    storyUid = standardMocks.validStoryUid;
+    imageBlockId = standardMocks.imageBlockId;
+    textBlockId = standardMocks.textBlockId;
+  });
 
   function forceRender() {
     window.dispatcher.dispatch({
@@ -36,14 +19,8 @@ describe('StoryRenderer', function() {
     });
   }
 
-  beforeEach(standardMocks);
-  afterEach(standardMocks.unmock);
-
   beforeEach(function() {
-
-    createSampleStories();
-
-    $('body').append(
+    testDom.append(
         $('<div>', { class: 'story-container' })
       ).append(
         $('<p>', { class: 'message-warning' })
@@ -55,11 +32,6 @@ describe('StoryRenderer', function() {
       warningMessageElement: $('.message-warning'),
       onRenderError: function() {}
     };
-  });
-
-  afterEach(function() {
-    $('.story-container').remove();
-    $('.message-warning').remove();
   });
 
   describe('constructor', function() {
@@ -169,19 +141,19 @@ describe('StoryRenderer', function() {
         it('renders blocks', function() {
 
           var renderer = new StoryRenderer(options);
+          var numberOfBlocks = window.storyStore.getStoryBlockIds(storyUid).length;
 
-          assert.equal($('.block').length, 2);
+          assert.equal($('.block').length, numberOfBlocks);
         });
 
         it('does not render deleted blocks', function() {
 
           var renderer = new StoryRenderer(options);
-
-          assert.equal($('.block').length, 2);
+          var numberOfBlocks = window.storyStore.getStoryBlockIds(storyUid).length;
 
           dispatcher.dispatch({ action: Constants.STORY_DELETE_BLOCK, storyUid: storyUid, blockId: imageBlockId });
 
-          assert.equal($('.block').length, 1);
+          assert.equal($('.block').length, numberOfBlocks - 1);
         });
 
         it('does not render the empty story warning', function() {
@@ -243,7 +215,6 @@ describe('StoryRenderer', function() {
 
     describe('that is editable', function() {
 
-      var validAssetFinder;
       var validToolbar;
       var validFormats;
 
@@ -254,18 +225,15 @@ describe('StoryRenderer', function() {
           $('<div>', { id: 'rich-text-editor-toolbar' })
         ]);
 
-        AssetFinderMocker.mock();
-        validAssetFinder = new AssetFinder();
         validToolbar = Object.create(RichTextEditorToolbar.prototype);
         validFormats = [];
 
         window.richTextEditorManager = new RichTextEditorManager(
-          validAssetFinder,
+          window.assetFinder,
           validToolbar,
           validFormats
         );
 
-        SquireMocker.mock();
         options.editable = true;
       });
 
@@ -273,8 +241,6 @@ describe('StoryRenderer', function() {
 
         $('.insertion-hint').remove();
         $('#rich-text-editor-toolbar').remove();
-        SquireMocker.unmock();
-        AssetFinderMocker.unmock();
       });
 
       describe('with no insertion hint element defined', function() {
@@ -337,7 +303,6 @@ describe('StoryRenderer', function() {
   describe('drag-and-drop insertion hint', function() {
 
     var renderer;
-    var validAssetFinder;
     var validToolbar;
     var validFormats;
 
@@ -348,18 +313,15 @@ describe('StoryRenderer', function() {
         $('<div>', { id: 'rich-text-editor-toolbar' })
       ]);
 
-      AssetFinderMocker.mock();
-      validAssetFinder = new AssetFinder();
       validToolbar = Object.create(RichTextEditorToolbar.prototype);
       validFormats = [];
 
       window.richTextEditorManager = new RichTextEditorManager(
-        validAssetFinder,
+        window.assetFinder,
         validToolbar,
         validFormats
       );
 
-      SquireMocker.mock();
       options.editable = true;
       options.insertionHintElement = $('.insertion-hint');
 
@@ -370,8 +332,6 @@ describe('StoryRenderer', function() {
 
       $('.insertion-hint').remove();
       $('#rich-text-editor-toolbar').remove();
-      SquireMocker.unmock();
-      AssetFinderMocker.unmock();
     });
 
     function hintAtStoryAndBlock(storyUid, blockId) {

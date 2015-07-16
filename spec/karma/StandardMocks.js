@@ -7,13 +7,15 @@
  *   - Exposing relevant blockIds and properties for testing
  *
  * Usage:
- * In each spec at the top level
- *   beforeEach(standardMocks);         // Set up state
- *   afterEach(standardMocks.unmock);   // Remove state between each test
+ * Automatic. In your tests, just access window.standardMocks.
+ * If for some reason you don't want the mocks active during
+ * your tests, do this in the appropriate describe() block:
+ *
+ *   beforeEach(standardMocks.remove);
  *
  */
 
-function standardMocks() {
+function applyStandardMocks() {
   var storyUid = 'test-test';
   var storyTitle = 'Standard Mock Story Title';
   var imageBlockId = '1000';
@@ -55,6 +57,8 @@ function standardMocks() {
   AssetFinderMocker.mock();
   window.assetFinder = new AssetFinder();
 
+  SquireMocker.mock();
+
   window.dispatcher = new Dispatcher();
 
   dispatcher.register(function(payload) {
@@ -72,30 +76,46 @@ function standardMocks() {
 
   dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyData });
 
-  standardMocks.validStoryTitle = storyTitle;
+  window.standardMocks = {
+    remove: removeStandardMocks,
 
-  standardMocks.validStoryUid = storyUid;
-  standardMocks.imageBlockId = imageBlockId;
-  standardMocks.textBlockId = textBlockId;
-  standardMocks.imageAndTextBlockId = imageAndTextBlockId;
-  standardMocks.validBlockId = textBlockId;
+    validStoryTitle: storyTitle,
 
-  standardMocks.firstBlockId = imageBlockId;
-  standardMocks.secondBlockId = textBlockId;
-  standardMocks.thirdBlockId = imageAndTextBlockId;
-  standardMocks.lastBlockId = imageAndTextBlockId;
+    validStoryUid: storyUid,
+    imageBlockId: imageBlockId,
+    textBlockId: textBlockId,
+    imageAndTextBlockId: imageAndTextBlockId,
+    validBlockId: textBlockId,
 
-  standardMocks.invalidBlockId = 'NotValidBlockId';
-  standardMocks.invalidStoryUid = 'NotValidStoryUid';
+    firstBlockId: imageBlockId,
+    secondBlockId: textBlockId,
+    thirdBlockId: imageAndTextBlockId,
+    lastBlockId: imageAndTextBlockId,
 
-  assert.notEqual(standardMocks.invalidBlockId, standardMocks.validBlockId);
-  assert.notEqual(standardMocks.invalidStoryUid, standardMocks.validStoryUid);
+    invalidBlockId: 'NotValidBlockId',
+    invalidStoryUid: 'NotValidStoryUid'
+  };
+
+  assert.notEqual(window.standardMocks.invalidBlockId, window.standardMocks.validBlockId);
+  assert.notEqual(window.standardMocks.invalidStoryUid, window.standardMocks.validStoryUid);
 }
 
-standardMocks.unmock = function() {
+function removeStandardMocks() {
+  SquireMocker.unmock();
+  AssetFinderMocker.unmock();
   delete window.dispatcher;
   delete window.storyStore;
   delete window.blockStore;
   delete window.dragDropStore;
   delete window.I18n;
+  delete window.standardMocks;
 };
+
+// Run StandardMocks before every test.
+// Currently, this introduces an unmeasureable
+// performance penalty (under 10ms for a full
+// test run).
+// If you don't want these standard mocks for a
+// particular test, see this file's top-level comment.
+beforeEach(applyStandardMocks);
+afterEach(removeStandardMocks);

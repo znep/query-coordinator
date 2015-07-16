@@ -41,9 +41,6 @@ describe('HistoryStore', function() {
     window.dispatcher.dispatch(action);
   }
 
-  beforeEach(standardMocks);
-  afterEach(standardMocks.unmock);
-
   beforeEach(function() {
     window.userStoryUid = validStoryUid;
     dispatch({ action: Constants.STORY_CREATE, data: storyState1 });

@@ -62,9 +62,6 @@ describe('StoryStore', function() {
     dispatch({ action: Constants.STORY_CREATE, data: sampleStory2Data });
   }
 
-  beforeEach(standardMocks);
-  afterEach(standardMocks.unmock);
-
   beforeEach(function() {
     createSampleStories();
   });

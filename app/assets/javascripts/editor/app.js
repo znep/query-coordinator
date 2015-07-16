@@ -40,6 +40,9 @@ $(document).on('ready', function() {
     userStoryData.blocks = sampleBlocks;
   }
 
+  // Set up modal theme
+  vex.defaultOptions.className = 'vex-theme-default';
+
   /**
    * FLUX
    */
@@ -241,5 +244,10 @@ $(document).on('ready', function() {
 
   // Story title
   $('.story-title').storyTitle(window.userStoryUid);
+
+  // Modals
+  $('.preview-btn').on('click', function() {
+    vex.dialog.alert('Thanks for checking out Vex!');
+  });
 });
 

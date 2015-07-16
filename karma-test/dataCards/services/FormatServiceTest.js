@@ -113,17 +113,17 @@ describe('FormatService', function() {
     });
 
     it('should convert integers correctly using a custom separator', function() {
-      expect(FormatService.commaify(20000, '?')).to.equal('20?000');
-      expect(FormatService.commaify(2000000, '?')).to.equal('2?000?000');
+      expect(FormatService.commaify(20000, { groupCharacter: '?' })).to.equal('20?000');
+      expect(FormatService.commaify(2000000, { groupCharacter: '?' })).to.equal('2?000?000');
     });
 
     it('should deal with decimals correctly using the default separator', function() {
       expect(FormatService.commaify(20000.1234)).to.equal('20,000.1234');
-      expect(FormatService.commaify(20000.1234, ',')).to.equal('20,000.1234');
+      expect(FormatService.commaify(20000.1234, { groupCharacter: ',' })).to.equal('20,000.1234');
     });
 
     it('should convert decimals correctly using a custom separator', function() {
-      expect(FormatService.commaify('20000|1234', ',', '|')).to.equal('20,000|1234');
+      expect(FormatService.commaify('20000|1234', { groupCharacter: ',', decimalCharacter: '|' })).to.equal('20,000|1234');
     });
 
     it('should convert string numbers correctly', function() {

@@ -3,6 +3,10 @@ angular.module('dataCards.services').factory('FormatService', function() {
 
   var MAGNITUDE_SYMBOLS = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
 
+  // Returns a human readable version of a number, formatted to 4 characters.
+  // options can include a groupCharacter, which defaults to the comma character,
+  // and a decimalCharacter which defaults to the period.
+  // Example: formatNumber(12345) -> '12.3K'
   var formatNumber = function(value, options) {
     if (!_.isNumber(value)) {
       throw new Error('formatNumber requires numeric input');
@@ -28,7 +32,7 @@ angular.module('dataCards.services').factory('FormatService', function() {
       var parts = absVal.toString().split('.').concat('');
       var precision = Math.min(parts[1].length, maxLength - parts[0].length);
       var newValue = val.toFixed(precision).replace('.', options.decimalCharacter);
-      return commaify(newValue, options.groupCharacter, options.decimalCharacter);
+      return commaify(newValue, _.pick(options, 'groupCharacter', 'decimalCharacter'));
     } else if (/e/i.test(val)) {
 
       // This branch handles huge numbers that switch to exponent notation.
@@ -75,12 +79,21 @@ angular.module('dataCards.services').factory('FormatService', function() {
     }
   };
 
-  var commaify = function(value, groupCharacter, decimalCharacter) {
+  // Given a number or a string representing a number, returns a string delimited
+  // by the groupCharacter that separates digits into groups of 3. If the input
+  // is a string and uses a non-period character for the decimal, it may be
+  // specified by using the decimalCharacter.
+  var commaify = function(value, options) {
     value = value + '';
-    groupCharacter = groupCharacter || ',';
-    decimalCharacter = decimalCharacter || '.';
 
-    var pos = value.indexOf(decimalCharacter);
+    var defaultOptions = {
+      groupCharacter: ',',
+      decimalCharacter: '.'
+    };
+
+    options = _.assign({}, defaultOptions, options);
+
+    var pos = value.indexOf(options.decimalCharacter);
 
     if (pos === -1) {
       pos = value.length;
@@ -89,7 +102,7 @@ angular.module('dataCards.services').factory('FormatService', function() {
     pos -= 3;
 
     while (pos > 0 && value.charAt(pos - 1) >= '0' && value.charAt(pos - 1) <= '9') {
-      value = value.substring(0, pos) + groupCharacter + value.substring(pos);
+      value = value.substring(0, pos) + options.groupCharacter + value.substring(pos);
       pos -= 3;
     }
 

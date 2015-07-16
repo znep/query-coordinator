@@ -6,8 +6,15 @@
       var stateName = '404';
       var params = {};
 
-      var cardsViewUrlMatch = urlPathname.match(/^(?:\/[a-z]{2})?\/view\/(\w{4}-\w{4})$/);
-      var singleCardViewUrlMatch = urlPathname.match(/^(?:\/[a-z]{2})?\/view\/(\w{4}-\w{4})\/([\w-_:@]+)$/);
+      var regexPieces = {
+        locale: '(?:/[a-z]{2})?', // Ex. 'en' or 'de'. Note: 'locale' is optional.
+        fourByFour: '(\\w{4}-\\w{4})',
+        fieldName: '([\\w-_:@]+)'
+      };
+      var cardsViewUrlMatch = urlPathname.match(
+        new RegExp('^{locale}/view/{fourByFour}$'.format(regexPieces)));
+      var singleCardViewUrlMatch = urlPathname.match(
+        new RegExp('^{locale}/view/{fourByFour}/{fieldName}$'.format(regexPieces)));
 
       if (cardsViewUrlMatch) {
         stateName = 'view.cards';

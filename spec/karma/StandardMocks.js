@@ -97,7 +97,6 @@ function standardMocks() {
 standardMocks.unmock = function() {
   SquireMocker.unmock();
   AssetFinderMocker.unmock();
-  window.testDom.clear();
   delete window.dispatcher;
   delete window.storyStore;
   delete window.blockStore;

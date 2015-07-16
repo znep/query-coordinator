@@ -16,3 +16,6 @@
     }
   };
 })();
+
+// Clear the testDom after each test.
+afterEach(window.testDom.clear);

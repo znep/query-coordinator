@@ -5,16 +5,6 @@ class ApplicationHelperTest < ActionView::TestCase
 
   include ERB::Util
 
-  def test_render_fullstory_tacking_does_not_render
-    FeatureFlags.stubs(:derive => { enable_fullstory_tracking: false })
-    refute application_helper.render_fullstory_tracking
-  end
-
-  def test_render_fullstory_tracking_does_render
-    FeatureFlags.stubs(:derive => { enable_fullstory_tracking: true })
-    assert(application_helper.render_fullstory_tracking =~ /fullstory\.com/)
-  end
-
   def test_use_ga_tracking_code
     FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: true })
     assert(application_helper.use_ga_tracking_code? == true)

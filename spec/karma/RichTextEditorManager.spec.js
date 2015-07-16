@@ -7,11 +7,7 @@ describe('RichTextEditorManager', function() {
   beforeEach(function() {
     validElement = $('<div id="rich-text-editor-toolbar"></div>');
     validToolbar = Object.create(RichTextEditorToolbar.prototype);
-    $('body').append(validElement);
-  });
-
-  afterEach(function() {
-    $('#rich-text-editor-toolbar').remove();
+    testDom.root().append(validElement);
   });
 
   describe('constructor', function() {

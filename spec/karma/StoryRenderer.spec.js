@@ -20,7 +20,7 @@ describe('StoryRenderer', function() {
   }
 
   beforeEach(function() {
-    testDom.root().append(
+    testDom.append(
         $('<div>', { class: 'story-container' })
       ).append(
         $('<p>', { class: 'message-warning' })

@@ -1,21 +1,13 @@
 (function() {
   'use strict';
-  function getRoot() {
-    if ($('#test-dom').length === 0) {
-      $('body').append('<div id="test-dom">');
-    }
-    return $('#test-dom');
+
+  function createTestDom() {
+    $('#test-dom').remove();
+    $('body').append('<div id="test-dom">');
+    window.testDom = $('#test-dom');
   }
 
-  window.testDom = {
-    root: function(nodes) {
-      return getRoot();
-    },
-    clear: function() {
-      getRoot().remove();
-    }
-  };
-})();
+  // Create a fresh testDom before each test.
+  beforeEach(createTestDom);
 
-// Clear the testDom after each test.
-afterEach(window.testDom.clear);
+})();

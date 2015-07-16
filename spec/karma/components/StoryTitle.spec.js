@@ -2,7 +2,7 @@ describe('StoryTitle jQuery plugin', function() {
   var node;
 
   beforeEach(function() {
-    node = testDom.root().append('<div>');
+    node = testDom.append('<div>');
   });
 
   it('should throw when passed invalid arguments', function() {

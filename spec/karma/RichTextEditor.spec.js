@@ -11,7 +11,7 @@ describe('RichTextEditor', function() {
   // object on the window in order to test the correct instantiation
   // of the wrapper object.
   beforeEach(function() {
-    testDom.root().append($('<div class="text-editor">'));
+    testDom.append($('<div class="text-editor">'));
   });
 
   describe('constructor', function() {

@@ -51,16 +51,22 @@ pt:
         not_supported: Não é suportado atualmente
         not_supported_long: Este tipo de cartão não é suportado atualmente
         prompt: Selecione uma coluna a partir da janela suspensa acima para adicionar um novo cartão.
-        settings: 
-        visualize_flyout: Visualize esta coluna como um {0}
+        settings:
+        visualize_flyout:
+          choropleth: Visualize esta coluna como um choropleth
+          column_chart: Visualize esta coluna como um gráfico de colunas
+          distribution_chart: Visualize esta coluna como um gráfico de distribuição
+          feature_map: Visualize esta coluna como um apresentar mapas
+          search_card: Visualize esta coluna como um procurar o cartão
+          timeline_chart: Visualize esta coluna como um gráfico de linha do tempo
       aggregation_chooser:
-        count_label: conte {0}  por cada elemento
+        by_the_number_of: <span class="information">pelo</span> número de
+        by_the_sum_of: <span class="information">pela</span> quantia de
+        count_label: conte {0} por cada elemento
         description: 'Veja elementos de dados dimensionados ou coloridos por:'
-        information: pelo(a)
-        number_of: Número de
         option_disabled: C
         sum_label: Adicionar por cada {0}
-        sum_of: A quantia de
+        the_number_of: O número de
         the_sum_of: A quantia de
         title: Agregação
         too_many_columns:
@@ -87,6 +93,10 @@ pt:
         remove_card: Eliminar este cartão
       card_layout:
         add_card_here: Adicionar o cartão aqui
+      card_titles:
+        average: média de {0}
+        number_of: número de {0}
+        sum_of: quantia de {0}
       common:
         cancel: Cancelar
         cards:
@@ -94,7 +104,7 @@ pt:
           column_chart: Gráfico de colunas
           distribution_chart: Gráfico de distribuição
           feature_map: Apresentar mapas
-          search_card: 'Procurar o Cartão '
+          search_card: Procurar o cartão
           timeline_chart: Gráfico de linha do tempo
         change: Alterar
         done: Concluído
@@ -188,12 +198,16 @@ pt:
       mobile_warning_dialog:
         acknowledgement: Ok, consegui!
         description: Estamos a trabalhar para melhorar a experi
+      multiline_ellipsis:
+        show_less:
+        show_more:
       page_header:
         logo: Logotipo
         sign_in: Increver-se
         sign_out: Finalizar a sessão
         sign_up: Iniciar a sessão
       quick_filter_bar:
+        clear_all: Limpar Tudo
         clear_all_flyout: Clique para redefinir todos os filtros
         filter_title: Showing <span class="light">the {0}</span>
       related_views:
@@ -226,6 +240,7 @@ pt:
         flyoutFailedTitle: Ocorreu um erro
         flyoutIdle: Clique para guardar as suas mudanças
         flyoutNoChanges: Sem alterações para guardar
+        save: Guardar
         saved: Guardado!
         saving: A guardar...
       search_card:
@@ -237,6 +252,13 @@ pt:
         prompt_text: Digite algum texto e prima enter para pesquisar
         search_info: Exibindo {0} de {1} resultados correspondentes
         two_examples: 'Examplos: ''{0}'' ou ''{1}'''
+      suggestion_tool_panel:
+        all_suggestions:
+        max_suggestions:
+        no_suggestions:
+        no_suggestions_hint:
+        only_suggestion:
+        some_suggestions_hint:
       table:
         a_to_z: De A a Z
         ascending: em ascensão
@@ -245,6 +267,7 @@ pt:
         loading: A carregar...
         newest_first: O mais recente em primeiro lugar
         no_rows: Sem colunas para apresentar
+        no_sort:
         oldest_first: Os mais velhos primeiro
         range_label: "{0} <strong>{1}-{2} de {3}</strong>"
         range_label_all: Exibindo todos {0} {1}
@@ -272,7 +295,12 @@ pt:
         compact_list: Ver como lista compacta
         create_dataset: Criar ou enviar sua própria tabela
         create_dataset_short: Criar uma nova tabela
+        create_dataset_shorter:
         create_dataset_verb: Criar
+        create_resource:
+        create_resource_short:
+        create_resource_verb:
+        create_story_short:
         dataset_subscribe: Subscrever a alterações nesta visualização
         delete:
           button: Deletar
@@ -558,8 +586,10 @@ pt:
       edit_column_properties: Editar as propriedades da coluna
       errors:
         cannot_edit_at_this_time: A coluna não pode ser editada neste momento. Queira tentar novamente mais tarde.
+        data_lens_is_incompatible_with_group_bys:
         primary_key_collision: Este valor já existe como chave primária. Não pode sobrescrevê-lo.
         row_locked_for_edit: Atualmente não podemos editar uma coluna acabada de criar. Estamos a trabalhar no sentido de tornar isso possível. Por agora refresque a página antes de editar esta coluna.
+        something_went_wrong:
       filter_this_column: Filtrar esta coluna
       geocodes_pending: As linhas na coluna de localização ainda estão sendo geocodificadas. Por favor, espere até que estejam terminadas para publicar esta tabela
       hide_column: Omitir coluna
@@ -1046,7 +1076,7 @@ pt:
       title: Configurações da Página
   date:
     abbr_month_names:
-    - 
+    -
     - Jan
     - Fev
     - Mar
@@ -1615,7 +1645,7 @@ pt:
         share_facebook: Compartilhar no Facebook
         share_twitter: Compartilhar no Twitter
         snapshot_notice: Esta é uma versão anteriormente publicada da tabela de dados. Está arquivada e não pode ser modificada.
-        snapshot_title: 
+        snapshot_title:
         snapshot_title_html: Snapshot tirado a %{date}
         snapshot_unsavable: As tabelas com snapshots e visualizações não podem ser criadas ou modificadas
         subscribe: Subscrever alterações
@@ -2015,7 +2045,7 @@ pt:
           money:
             abbreviated: Abreviado
             currency: Câmbio
-            format_mask_warning: 
+            format_mask_warning:
             no_precision: Nenhum
             precision: Precisão
             title: Formatação do dinheiro
@@ -2329,7 +2359,7 @@ pt:
             delete: Deletar esta visualização
             expand: Clique para expandir
           no_results: Não há resultados
-          no_results_html: 
+          no_results_html:
           pagination:
             last: Ver última visualização
             next: Ver as próximas %{count} visualizações
@@ -2438,6 +2468,9 @@ pt:
       row_class: Classe da linha
       row_identifier: Identificador da linha
       row_identifier_help_text: O identificador da coluna não pode ser alterado a partir do momento em que a vista é publicada.
+      row_label:
+      row_label_help:
+      row_label_prompt:
       save: Salvar
       save_changes: Salvar alterações
       semantics_rdf: Semântica e RDF

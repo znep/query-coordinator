@@ -9,7 +9,11 @@ module LocaleCache
     # merge in en as the backup fallthrough for all locales
     en_translations = locales['en']
     locales.each do |locale, translations|
-      locales[locale] = en_translations.deep_merge(translations) { |en, other| other || en }
+      locales[locale] = en_translations.deep_merge(translations) do |en, other|
+        # adding to_s calls here because sometimes YAML coerces values like
+        # `true` and `false` to booleans, etc.
+        other.to_s.empty? ? en.to_s : other.to_s
+      end
     end
 
     # set en as the fallback for all other locales

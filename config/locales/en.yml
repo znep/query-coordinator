@@ -52,15 +52,21 @@ en:
         not_supported_long: This card type is currently unsupported
         prompt: Choose a column from the dropdown above to add a new card
         settings: Settings
-        visualize_flyout: Visualize this column as a {0}
+        visualize_flyout:
+          choropleth: Visualize this column as a choropleth
+          column_chart: Visualize this column as a column chart
+          distribution_chart: Visualize this column as a distribution chart
+          feature_map: Visualize this column as a feature map
+          search_card: Visualize this column as a search card
+          timeline_chart: Visualize this column as a timeline chart
       aggregation_chooser:
+        by_the_number_of: <span class="information">by the</span> number of
+        by_the_sum_of: <span class="information">by the</span> sum of
         count_label: count {0} per element
         description: 'See data elements sized or colored by:'
-        information: by the
-        number_of: Number of
         option_disabled: This column cannot be used with a<br>number of aggregate
         sum_label: add for each {0}
-        sum_of: Sum of
+        the_number_of: The number of
         the_sum_of: The sum of
         title: Aggregation
         too_many_columns:
@@ -87,6 +93,10 @@ en:
         remove_card: Remove this card
       card_layout:
         add_card_here: Add card here
+      card_titles:
+        average: average {0}
+        number_of: number of {0}
+        sum_of: sum of {0}
       common:
         cancel: Cancel
         cards:
@@ -188,12 +198,16 @@ en:
       mobile_warning_dialog:
         acknowledgement: Okay, got it!
         description: We're working on improving the mobile experience on this site.
+      multiline_ellipsis:
+        show_less: Show less
+        show_more: Show more
       page_header:
         logo: Logo
         sign_in: Sign In
         sign_out: Sign Out
         sign_up: Sign Up
       quick_filter_bar:
+        clear_all: Clear All
         clear_all_flyout: Click to reset all filters
         filter_title: Showing <span class="light">the {0}</span>
       related_views:
@@ -226,6 +240,7 @@ en:
         flyoutFailedTitle: An error occurred
         flyoutIdle: Click to save your changes
         flyoutNoChanges: No changes to be saved
+        save: Save
         saved: Saved!
         saving: Saving...
       search_card:
@@ -237,6 +252,13 @@ en:
         prompt_text: Type some text and press enter to search
         search_info: Showing {0} of {1} matching results
         two_examples: 'Examples: ''{0}'' or ''{1}'''
+      suggestion_tool_panel:
+        all_suggestions: 'Showing all {0} suggestions:'
+        max_suggestions: 'Showing the first {0} suggestions:'
+        no_suggestions: No data found matching your search term.
+        no_suggestions_hint: Try broadening your search for more results.
+        only_suggestion: 'Showing the only suggestion:'
+        some_suggestions_hint: Choose a suggestion above, or keep typing for more suggestions.
       table:
         a_to_z: A-Z
         ascending: ascending
@@ -245,6 +267,7 @@ en:
         loading: Loading...
         newest_first: newest first
         no_rows: No rows to display
+        no_sort: No sort available
         oldest_first: oldest first
         range_label: "{0} <strong>{1}-{2} out of {3}</strong>"
         range_label_all: Showing all {0} {1}
@@ -270,14 +293,14 @@ en:
         clear_all: Clear All Options
         clear_facet: "(All)"
         compact_list: View as a compact list
-        create_resource: Create a New Socrata Resource
-        create_resource_short: Create new...
         create_dataset: Create or upload your own dataset
         create_dataset_short: Create a new Dataset
         create_dataset_shorter: Dataset
         create_dataset_verb: Create
-        create_story_short: Story
+        create_resource: Create a New Socrata Resource
+        create_resource_short: Create new...
         create_resource_verb: Create
+        create_story_short: Story
         dataset_subscribe: Subscribe to changes on this view
         delete:
           button: Delete
@@ -564,11 +587,11 @@ en:
       delete_warning_single_column: Do you want to delete the selected column? All data in this column will be removed!
       edit_column_properties: Edit Column Properties
       errors:
-        data_lens_is_incompatible_with_group_bys: Datasets with groupings cannot be used with a Data Lens page. We apologize for this inconvenience.
-        something_went_wrong: Looks like something went wrong. Please refresh this page.
         cannot_edit_at_this_time: The column cannot be edited at this moment. Please try again later.
+        data_lens_is_incompatible_with_group_bys: Datasets with groupings cannot be used with a Data Lens page. We apologize for this inconvenience.
         primary_key_collision: This value already exists as a primary key. You may not overwrite it.
         row_locked_for_edit: Presently, we cannot edit a just-created row. We are working to make that possible. For now, refresh the page before editing this row.
+        something_went_wrong: Looks like something went wrong. Please refresh this page.
       filter_this_column: Filter This Column
       geocodes_pending: Rows in the location column are still geocoding. Please wait until they are finished to publish this dataset
       hide_column: Hide Column

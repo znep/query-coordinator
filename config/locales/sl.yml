@@ -52,15 +52,21 @@ sl:
         not_supported_long: Ta kartica trenutno ni podprta
         prompt: Za dodajanje nove kartice na spustnem meniju izberite stolpec
         settings: Nastavitve
-        visualize_flyout: Predstavi ta stolpec kot {0}
+        visualize_flyout:
+          choropleth: Predstavi ta stolpec kot koropleta
+          column_chart: Predstavi ta stolpec kot diagram s stolpci
+          distribution_chart: Predstavi ta stolpec kot distribucijski diagram
+          feature_map: Predstavi ta stolpec kot zemljevid s funkcijami
+          search_card: Predstavi ta stolpec kot išči kartico
+          timeline_chart: Predstavi ta stolpec kot diagram časovnega poteka
       aggregation_chooser:
+        by_the_number_of: <span class="information">s</span> številom
+        by_the_sum_of: <span class="information">z</span> vsoto
         count_label: "štej {0} za vsak element"
         description: 'Glej elemente podatkov te velikosti ali barve:'
-        information: z/s
-        number_of: "Število"
-        option_disabled: Tega stolpca ni mogoče uporabljati z/s <br>številom skupka
+        option_disabled: Tega stolpca ni mogoče uporabljati z/s<br>številom skupka
         sum_label: dodaj za vsak {0}
-        sum_of: Vsota
+        the_number_of: "Število"
         the_sum_of: Seštevek
         title: Zbiranje
         too_many_columns:
@@ -87,6 +93,10 @@ sl:
         remove_card: Odstrani to kartico
       card_layout:
         add_card_here: Kartico dodajte tukaj
+      card_titles:
+        average: povprečje {0}
+        number_of: stevilo {0}
+        sum_of: seštevek {0}
       common:
         cancel: Prekliči
         cards:
@@ -189,12 +199,16 @@ sl:
       mobile_warning_dialog:
         acknowledgement: Prav, razumem!
         description: Delamo na tem, da se bo vaša mobilna izkušnja na tej strani izboljšala
+      multiline_ellipsis:
+        show_less:
+        show_more:
       page_header:
         logo: Logotip
         sign_in: Vpišite se
         sign_out: Izpišite se
         sign_up: Prijavite se
       quick_filter_bar:
+        clear_all: Počisti vse
         clear_all_flyout: Kliknite za ponastavitev vseh filtrov
         filter_title: Prikazujem <span class="light">{0}</span>
       related_views:
@@ -227,6 +241,7 @@ sl:
         flyoutFailedTitle: Prišlo je do napake
         flyoutIdle: Kliknite, če želite shraniti spremembe
         flyoutNoChanges: Ni sprememb, ki bi jih lahko shranili
+        save: Shrani
         saved: Shranjeno!
         saving: Shranjujem...
       search_card:
@@ -238,6 +253,13 @@ sl:
         prompt_text: Vtipkajte besedilo in za iskanje pritisnite enter
         search_info: Prikazujem {0} od {1} zadetkov
         two_examples: 'Primeri: ''{0}'' ali ''{1}'''
+      suggestion_tool_panel:
+        all_suggestions:
+        max_suggestions:
+        no_suggestions:
+        no_suggestions_hint:
+        only_suggestion:
+        some_suggestions_hint:
       table:
         a_to_z: A-Z
         ascending: naraščajoče
@@ -246,6 +268,7 @@ sl:
         loading: Nalagam...
         newest_first: najprej najnovejši
         no_rows: Ni vrstic za prikaz
+        no_sort:
         oldest_first: najprej najstarejši
         range_label: "{0} <strong>{1}-{2} izmed {3}</strong>"
         range_label_all: Prikazujem vse {0} {1}
@@ -273,7 +296,12 @@ sl:
         compact_list: Poglej kot strnjen seznam
         create_dataset: Ustvari ali naloži lasten podatkovni niz
         create_dataset_short: Ustvari nov podatkovni niz
+        create_dataset_shorter:
         create_dataset_verb: Ustvari
+        create_resource:
+        create_resource_short:
+        create_resource_verb:
+        create_story_short:
         dataset_subscribe: Naroči se na spremembe tega pogleda
         delete:
           button: Izbriši
@@ -567,8 +595,10 @@ sl:
       edit_column_properties: Uredi lastnosti stolpca
       errors:
         cannot_edit_at_this_time: Tega stolpca ta trenutek ne morete urejati. Prosimo, poskusite znova kasneje.
+        data_lens_is_incompatible_with_group_bys:
         primary_key_collision: Ta vrednost že obstaja kot primarni ključ. Ne morete pisati čeznjo.
         row_locked_for_edit: Trenutno ne moremo urejati vrstic, ki so bile ravnokar ustvarjene. Za sedaj pred urejanjem te vrstice osvežite stran.
+        something_went_wrong:
       filter_this_column: Filtriraj ta stolpec
       geocodes_pending: Vrstice v ciljnem stolpcu se še vedno geokodirajo. Počakajte z objavo tega podatkovnega niza, dokler se ne zaključi
       hide_column: Skrij stolpec
@@ -953,20 +983,7 @@ sl:
       api: API-ji
       calendar: Koledarji
       chart: Grafikoni
-      data_lens: |+
-        Leče za podatke
-
-
-
-
-
-
-
-
-
-
-
-
+      data_lens: Leče za podatke
       filter: Filtrirani pogledi
       form: Oblike
       grouped: Združeni pogledi
@@ -1067,7 +1084,7 @@ sl:
       title: Nastavitve strani
   date:
     abbr_month_names:
-    - 
+    -
     - Jan
     - Feb
     - Mar
@@ -2046,7 +2063,7 @@ sl:
           money:
             abbreviated: Okrajšano
             currency: Valuta
-            format_mask_warning: 
+            format_mask_warning:
             no_precision: Brez
             precision: Natančnost
             title: Fomratiranje denarja
@@ -2360,7 +2377,7 @@ sl:
             delete: Izbriši ta pogled
             expand: Klikni za razširitev
           no_results: Ni rezultatov
-          no_results_html: 
+          no_results_html:
           pagination:
             last: Glej zadnji pogled
             next:
@@ -2473,6 +2490,9 @@ sl:
       row_class: Razred vrstice
       row_identifier: Identifikator vrstice
       row_identifier_help_text: Potem, ko je bil pogled objavljen, vrstičnega identifikatorja ni več mogoče spreminjati.
+      row_label:
+      row_label_help:
+      row_label_prompt:
       save: Shrani
       save_changes: Shrani spremembe
       semantics_rdf: Semantika in RDF

@@ -52,15 +52,21 @@ zh:
         not_supported_long: "目前暂不支持此卡片类型"
         prompt: "从上面的下拉列表中选择一列添加新卡"
         settings: "设置"
-        visualize_flyout: "显示此列为{0}"
+        visualize_flyout:
+          choropleth:
+          column_chart:
+          distribution_chart:
+          feature_map:
+          search_card:
+          timeline_chart:
       aggregation_chooser:
+        by_the_number_of:
+        by_the_sum_of:
         count_label: "每个元素计{0}"
         description: "查看大小或颜色如下的数据元素："
-        information: "按照"
-        number_of: "数量"
         option_disabled: "此列不能与<BR>总数共用"
         sum_label: "为每个{0}添加"
-        sum_of: "总数"
+        the_number_of: "数量"
         the_sum_of: "总数"
         title: "汇总"
         too_many_columns:
@@ -87,6 +93,10 @@ zh:
         remove_card: "删除此卡片"
       card_layout:
         add_card_here: "在此添加卡片"
+      card_titles:
+        average:
+        number_of:
+        sum_of:
       common:
         cancel: "取消"
         cards:
@@ -188,12 +198,16 @@ zh:
       mobile_warning_dialog:
         acknowledgement: "好，明白了！"
         description: "我们正在努力改善此网站的移动体验。"
+      multiline_ellipsis:
+        show_less:
+        show_more:
       page_header:
         logo: "标志"
         sign_in: "登录"
         sign_out: "注销"
         sign_up: "注册"
       quick_filter_bar:
+        clear_all: "清除所有"
         clear_all_flyout: "点击重设所有过滤器"
         filter_title: 显示<span class="light">{0}</span>
       related_views:
@@ -226,6 +240,7 @@ zh:
         flyoutFailedTitle: "发生了一个错误"
         flyoutIdle: "点击保存你的修改"
         flyoutNoChanges: "没有要保存的修改"
+        save: "保存"
         saved: "已保存！"
         saving: "正在保存……"
       search_card:
@@ -237,6 +252,13 @@ zh:
         prompt_text: "输入文本并按Enter键开始搜索"
         search_info: "显示{0}搜索结果，共{1}条"
         two_examples: "例如：'{0}'或'{1}'"
+      suggestion_tool_panel:
+        all_suggestions:
+        max_suggestions:
+        no_suggestions:
+        no_suggestions_hint:
+        only_suggestion:
+        some_suggestions_hint:
       table:
         a_to_z: A-Z
         ascending: "升序"
@@ -245,6 +267,7 @@ zh:
         loading: "加载中……"
         newest_first: "最新者优先"
         no_rows: "没有可显示的行"
+        no_sort:
         oldest_first: "最旧者优先"
         range_label: "{0} <strong>{1}-{2}之{3}</strong>"
         range_label_all: "显示所有{0} {1}"
@@ -272,7 +295,12 @@ zh:
         compact_list: "简洁列表"
         create_dataset: "创建或上传数据集"
         create_dataset_short: "创建新数据集"
+        create_dataset_shorter:
         create_dataset_verb: "创建"
+        create_resource:
+        create_resource_short:
+        create_resource_verb:
+        create_story_short:
         dataset_subscribe: "订阅本视图的改动"
         delete:
           button: "删除"
@@ -558,8 +586,10 @@ zh:
       edit_column_properties: "编辑列属性"
       errors:
         cannot_edit_at_this_time: "目前无法编辑该列。请稍后再试。"
+        data_lens_is_incompatible_with_group_bys:
         primary_key_collision: "此值是主键。你不能覆盖它。"
         row_locked_for_edit: "现阶段，我们无法编辑刚刚创建的行。我们正努力实现该功能。目前，请在编辑该行前刷新页面。"
+        something_went_wrong:
       filter_this_column: "对本列进行筛选"
       geocodes_pending: "在位置栏中的行仍在地理编码。请等待，直到完成以发布这一数据集"
       hide_column: "隐藏列"
@@ -1045,7 +1075,7 @@ zh:
       title: "页面设置"
   date:
     abbr_month_names:
-    - 
+    -
     - "一月"
     - "二月"
     - "三月"
@@ -2012,7 +2042,7 @@ zh:
           money:
             abbreviated: "缩写"
             currency: "币种"
-            format_mask_warning: 
+            format_mask_warning:
             no_precision: "无"
             precision: "精确度"
             title: "货币格式"
@@ -2435,6 +2465,9 @@ zh:
       row_class: "行类别"
       row_identifier: "行标识符"
       row_identifier_help_text: "一旦视图发布，不可再修改行标识符。"
+      row_label:
+      row_label_help:
+      row_label_prompt:
       save: "保存"
       save_changes: "保存更改"
       semantics_rdf: "语义和资源描述框架"

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function SuggestionToolPanel(SuggestionService, ServerConfig, Constants) {
+  function SuggestionToolPanel(SuggestionService, ServerConfig, Constants, I18n) {
     if (!ServerConfig.get('enableSearchSuggestions')) {
       return {};
     }
@@ -65,16 +65,17 @@
         var suggestionsStatusObservable = numberOfSuggestionsObservable.
           map(function(numberOfSuggestions) {
             if (numberOfSuggestions === 0) {
-              return 'No data found matching your search term.';
+              return I18n.suggestionToolPanel.noSuggestions;
             }
             if (numberOfSuggestions <= SUGGESTION_LIMIT && numberOfSuggestions > 0) {
-              return 'Showing {0} {1}:'.format(
-                numberOfSuggestions > 1 ? 'all {0}'.format(numberOfSuggestions) : 'the only',
-                numberOfSuggestions > 1 ? 'suggestions' : 'suggestion'
-              );
+              if (numberOfSuggestions === 1) {
+                return I18n.suggestionToolPanel.onlySuggestion;
+              } else {
+                return I18n.t('suggestionToolPanel.allSuggestions', numberOfSuggestions);
+              }
             }
             if (numberOfSuggestions > SUGGESTION_LIMIT) {
-              return 'Showing first {0} suggestions:'.format(SUGGESTION_LIMIT);
+              return I18n.t('suggestionToolPanel.maxSuggestions', SUGGESTION_LIMIT);
             }
           });
 
@@ -96,9 +97,9 @@
 
         var suggestionsAdviceObservable = numberOfSuggestionsObservable.map(function(numberOfSuggestions) {
           if (numberOfSuggestions === 0) {
-            return 'Try broadening your search for more results.';
+            return I18n.suggestionToolPanel.noSuggestionsHint;
           } else {
-            return 'Choose a suggestion above, or keep typing for more suggestions.';
+            return I18n.suggestionToolPanel.someSuggestionsHint;
           }
         });
 

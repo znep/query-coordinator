@@ -52,15 +52,21 @@ ca:
         not_supported_long: Aquesta mena de targetes actualment no són compatibles
         prompt: Tria una columna del menú desplegable de sobre per afegir-hi una targeta nova
         settings: Configuració
-        visualize_flyout: Visualitza aquesta columna com a {0}
+        visualize_flyout:
+          choropleth: Visualitza aquesta columna com a coroplètic
+          column_chart: Visualitza aquesta columna com a gràfic de columnes
+          distribution_chart: Visualitza aquesta columna com a gràfic de distribució
+          feature_map: Visualitza aquesta columna com a característica del mapa
+          search_card: Visualitza aquesta columna com a cerca de targetes
+          timeline_chart: Visualitza aquesta columna com a gràfica de línia del temps
       aggregation_chooser:
+        by_the_number_of: <span class="information">per el</span> número de
+        by_the_sum_of: <span class="information">per la</span> quantitat de
         count_label: compta {0} per element
         description: 'Veges els elements de les dades amb mida o color per:'
-        information: per el
-        number_of: Número de
         option_disabled: Aquesta columna no es pot fer servir amb un<br>número total
         sum_label: afegeix per cada {0}
-        sum_of: Quantitat de
+        the_number_of: El número de
         the_sum_of: La quantitat de
         title: Conjunt
         too_many_columns:
@@ -87,6 +93,10 @@ ca:
         remove_card: Elimineu aquesta targeta
       card_layout:
         add_card_here: Afegiu una targeta aquí
+      card_titles:
+        average: mitjana de {0}
+        number_of: número de {0}
+        sum_of: quantitat de {0}
       common:
         cancel: Cancel·leu-ho
         cards:
@@ -188,12 +198,16 @@ ca:
       mobile_warning_dialog:
         acknowledgement: D'acord, ja ho tinc!
         description: 'Estem treballant per millorar el servei per mòbil d''aquesta pàgina. '
+      multiline_ellipsis:
+        show_less:
+        show_more:
       page_header:
         logo: Logotip
         sign_in: Registreu-vos
         sign_out: Sortiu
         sign_up: Inscriviu-vos
       quick_filter_bar:
+        clear_all: Esborra-ho tot
         clear_all_flyout: Feu clic per reconfigurar tots els filtres
         filter_title: Mostrant <span class="light">the {0}</span>
       related_views:
@@ -226,6 +240,7 @@ ca:
         flyoutFailedTitle: Hi ha hagut un error
         flyoutIdle: Feu clic per guardar els canvis
         flyoutNoChanges: No s'ha guardat cap canvi
+        save: Guardar
         saved: Guardat!
         saving: Guardant...
       search_card:
@@ -237,6 +252,13 @@ ca:
         prompt_text: Escriviu paraules i premeu l'enter per buscar
         search_info: 'Es mostra {0} de {1} resultats coincidents. '
         two_examples: 'Exemples: ''{0}'' o ''{1}'''
+      suggestion_tool_panel:
+        all_suggestions:
+        max_suggestions:
+        no_suggestions:
+        no_suggestions_hint:
+        only_suggestion:
+        some_suggestions_hint:
       table:
         a_to_z: A-Z
         ascending: ascendent
@@ -245,6 +267,7 @@ ca:
         loading: Carregant
         newest_first: El primer més nou
         no_rows: No hi ha files per mostrar
+        no_sort:
         oldest_first: El primer més antic
         range_label: "{0} <strong>{1}-{2} out of {3}</strong>"
         range_label_all: Mostra-ho tot {0} {1}
@@ -272,7 +295,12 @@ ca:
         compact_list: Veure-ho com a llista compacta
         create_dataset: Crea o carrega el teu conjunt de dades
         create_dataset_short: Crear un nou Conjunt de Dades
+        create_dataset_shorter:
         create_dataset_verb: Crear
+        create_resource:
+        create_resource_short:
+        create_resource_verb:
+        create_story_short:
         dataset_subscribe: Subscriu-t'hi als canvis en aquesta vista
         delete:
           button: Esborra
@@ -560,8 +588,10 @@ ca:
       edit_column_properties: Editar Propietats de la Columna
       errors:
         cannot_edit_at_this_time: 'Aquesta columna no és pot editar actualment. Proveu-ho més tard. '
+        data_lens_is_incompatible_with_group_bys:
         primary_key_collision: 'Aquest valor ja existeix com a clau primària. No podeu tornar-lo a escriure. '
         row_locked_for_edit: 'Actualment no podem editar un fila recentment creada. Estem treballant per fer-ho possible. De moment, recarregueu la pàgina abans d''editar aquesta fila. '
+        something_went_wrong:
       filter_this_column: Filtrar Aquesta Columna
       geocodes_pending: Les files situades a la columna s'estan encara geocodificant. Si us plau, esperi fins que hagin acabat de publicar aquest conjunt de dades
       hide_column: Amaga la Columna
@@ -1047,7 +1077,7 @@ ca:
       title: Configuració de Pàgina
   date:
     abbr_month_names:
-    - 
+    -
     - Gen
     - Feb
     - Mar
@@ -2439,6 +2469,9 @@ ca:
       row_class: Classes de Fila
       row_identifier: Identificador de Fila
       row_identifier_help_text: 'No es pot canviar l''identificador de files un cop s''ha publicat una visió. '
+      row_label:
+      row_label_help:
+      row_label_prompt:
       save: 'Desar '
       save_changes: Desar canvis
       semantics_rdf: Semàntica i RDF

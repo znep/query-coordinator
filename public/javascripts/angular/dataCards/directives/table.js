@@ -795,7 +795,7 @@
                   format(I18n.t('table.sort', wouldSortUp ? ascendingString : descendingString)));
                 return html.join('<br>');
               } else {
-                return 'No sort available';
+                return I18n.t('table.noSort');
               }
             },
             onBeforeRender: function(target) {

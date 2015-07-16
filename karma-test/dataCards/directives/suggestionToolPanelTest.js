@@ -212,7 +212,7 @@ describe('Suggestion Tool Panel', function() {
     expect(suggestionToolPanel.element.find('.suggestions-status')).to.contain('Showing all 3 suggestions:');
   });
 
-  it('should show the "showing first" message when there are large number of search results', function() {
+  it('should show the "showing the first" message when there are large number of search results', function() {
     suggestionService.suggest = function() {
       return q.when(_.range(0, 20));
     };
@@ -225,7 +225,7 @@ describe('Suggestion Tool Panel', function() {
 
     testScheduler.advanceTo(300);
     suggestionToolPanel.scope.$apply();
-    expect(suggestionToolPanel.element.find('.suggestions-status')).to.contain('Showing first 10 suggestions:');
+    expect(suggestionToolPanel.element.find('.suggestions-status')).to.contain('Showing the first 10 suggestions:');
   });
 
   it('should suggest broadening the search criteria when there are no search results', function() {

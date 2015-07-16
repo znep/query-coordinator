@@ -1,6 +1,6 @@
 describe('multilineEllipsis directive', function(FlyoutService) {
   'use strict';
-  
+
   var $rootScope;
   var testHelpers;
   var testTimeoutScheduler;
@@ -91,7 +91,7 @@ describe('multilineEllipsis directive', function(FlyoutService) {
 
         it('should show the full amount of text and no ellipsis', function() {
           ensure();
-          expect(el.text()).to.equal(lotsOfText);
+          expect(el.find('.content').text()).to.equal(lotsOfText);
         });
 
         it('should not have title text', function() {

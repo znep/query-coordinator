@@ -70,7 +70,7 @@
               <div class="metadatum">
                 <span class="label">{{'common.permissions.permissions' | I18n}}</span>
                 <span class="value">
-                  <a href=# ng-click="manageLensState.show = true">{{ pagePermissions }} <small>({{'common.change' | I18n}})</small><span class="icon-warning" ng-if="pageIsPublic && !datasetIsPublic"></span></a>
+                  <a href=# ng-click="manageLensState.show = true">{{('common.permissions.' + pagePermissions) | I18n}} <small>({{'common.change' | I18n}})</small><span class="icon-warning" ng-if="pageIsPublic && !datasetIsPublic"></span></a>
                 </span>
               </div>
               <modal-dialog ng-if="manageLensState.show" dialog-state="manageLensState">
@@ -145,7 +145,7 @@
             </div>
           </div>
           <button class="clear-all-filters-button action-btn dark" ng-if="appliedFiltersForDisplay.length > 0" ng-click="clearAllFilters()">
-            Clear All
+            {{'quickFilterBar.clearAll' | I18n}}
             <span class="icon-close"></span>
           </button>
           <aggregation-chooser page="page"></aggregation-chooser>

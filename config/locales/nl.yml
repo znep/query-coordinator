@@ -52,16 +52,22 @@ nl:
         not_supported_long: Deze kaartsoort wordt momenteel niet ondersteund
         prompt: Kies een kolom uit de bovenstaande keuzelijst om een nieuwe kaart toe te voegen
         settings: Instellingen
-        visualize_flyout: Visualiseer deze kolom als een {0}
+        visualize_flyout:
+          choropleth: Visualiseer deze kolom als een choropletenkaart
+          column_chart: Visualiseer deze kolom als een kolomdiagram
+          distribution_chart: Visualiseer deze kolom als een spreidingsdiagram
+          feature_map: Visualiseer deze kolom als een eigenschapskaart
+          search_card: Visualiseer deze kolom als een zoekkaart
+          timeline_chart: Visualiseer deze kolom als een tijdlijn
       aggregation_chooser:
+        by_the_number_of: <span class="information">per het</span> aantal
+        by_the_sum_of: <span class="information">per het</span> totaal aantal
         count_label: aantal van {0} per element
-        description: 'Zie gegevenselementen gerangschikt of gekleurd naar:'
-        information: naar het
-        number_of: Aantal
+        description: 'Zie gegevenselementen gerangschikt of gekleurd door:'
         option_disabled: Deze kolom kan niet worden gebruikt met een<br>aantal van het totaal
         sum_label: toevoegen voor iedere {0}
-        sum_of: Som van
-        the_sum_of: De som van
+        the_number_of: Het aantal
+        the_sum_of: Het totaal aantal
         title: Samenvoeging
         too_many_columns:
           message: Op dit moment kunnen we optellen niet als aanbieden als een samenvoeging voor Data Lens pagina's met meer dan {0} kolommen van het type Getal of Geld.
@@ -87,6 +93,10 @@ nl:
         remove_card: Deze kaart verwijderen
       card_layout:
         add_card_here: Kaart hier toevoegen
+      card_titles:
+        average: gemiddelde van {0}
+        number_of: het aantal {0}
+        sum_of: som van {0}
       common:
         cancel: Annuleren
         cards:
@@ -188,12 +198,16 @@ nl:
       mobile_warning_dialog:
         acknowledgement: Oké, ik begrijp het!
         description: We werken aan het verbeteren van de mobiele ervaring op deze site.
+      multiline_ellipsis:
+        show_less:
+        show_more:
       page_header:
         logo: Logo
         sign_in: Inloggen
         sign_out: Uitloggen
         sign_up: Aanmelden
       quick_filter_bar:
+        clear_all: Alles wissen
         clear_all_flyout: Klik op alle filters terug te zetten
         filter_title: Toont <span class="light">de {0}</span>
       related_views:
@@ -226,6 +240,7 @@ nl:
         flyoutFailedTitle: Er ging iets mis
         flyoutIdle: Klik om uw wijzigingen te bewaren
         flyoutNoChanges: Er zijn geen wijzigingen om te bewaren
+        save: Bewaren
         saved: Bewaard!
         saving: Bezig met bewaren...
       search_card:
@@ -237,6 +252,13 @@ nl:
         prompt_text: Tik wat tekst in en druk op enter om te zoeken
         search_info: "{0} van {1} bijpassende resultaten"
         two_examples: 'Voorbeelden: ''{0}'' of ''{1}'''
+      suggestion_tool_panel:
+        all_suggestions:
+        max_suggestions:
+        no_suggestions:
+        no_suggestions_hint:
+        only_suggestion:
+        some_suggestions_hint:
       table:
         a_to_z: A-Z
         ascending: oplopend
@@ -245,6 +267,7 @@ nl:
         loading: Bezig met laden...
         newest_first: nieuwste eerst
         no_rows: Geen rijen om te tonen
+        no_sort:
         oldest_first: oudste eerst
         range_label: "{0} <strong>{1}-{2} van {3}</strong>"
         range_label_all: Alle {0} {1} worden getoond
@@ -272,7 +295,12 @@ nl:
         compact_list: Als een compact overzicht bekijken
         create_dataset: Creëer of upload uw eigen dataset
         create_dataset_short: Maak een nieuwe gegevensset aan
+        create_dataset_shorter:
         create_dataset_verb: Creëren
+        create_resource:
+        create_resource_short:
+        create_resource_verb:
+        create_story_short:
         dataset_subscribe: Abonneren op veranderingen op deze view
         delete:
           button: Verwijderen
@@ -572,8 +600,10 @@ nl:
       edit_column_properties: Bewerk kolomeigenschappen
       errors:
         cannot_edit_at_this_time: Deze kolom kan op niet moment niet worden aangepast. Probeer het later opnieuw.
+        data_lens_is_incompatible_with_group_bys:
         primary_key_collision: De waarde bestaat al als een primaire sleutel. U kunt hem niet overschrijven.
         row_locked_for_edit: Op dit moment kunnen we een net aangemaakte rij niet aanpassen. We werken er aan dat mogelijk te maken. Voor nu is het noodzakelijk de pagina te vernieuwen om deze rij te bewerken.
+        something_went_wrong:
       filter_this_column: Deze kolom filteren
       geocodes_pending: Rijen in de locatiekolom worden nog gegeocodeerd. Wacht tot ze klaar zijn om deze dataset te publiceren.
       hide_column: Kolom verbergen
@@ -2460,6 +2490,9 @@ nl:
       row_class: Rijklasse
       row_identifier: Rijaanduiding
       row_identifier_help_text: Het rij-ID kan niet meer worden gewijzigd zodra een weergave gepubliceerd is.
+      row_label:
+      row_label_help:
+      row_label_prompt:
       save: Opslaan
       save_changes: Wijzigingen opslaan
       semantics_rdf: Semantiek & RDF

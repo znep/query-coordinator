@@ -64,6 +64,48 @@ class UserSessionsControllerTest < ActionController::TestCase
     assert(@response.redirect_url.include?(govstat_root_path), 'should redirect to govstat root')
   end
 
+  context 'auth0 workflow' do
+    setup do
+      UserSessionsController.any_instance.stubs(:use_auth0? => true, :should_auth0_redirect? => false)
+    end
+
+    should 'initialize auth0_connections to an array.' do
+      mock_properties = OpenStruct.new(:auth0_connections => [{:connection => 'test-connection', :name => 'Test Connection'}])
+      mock_configuration = OpenStruct.new(:properties => mock_properties)
+      CurrentDomain.stubs(:configuration => mock_configuration)
+
+      @controller.send(:auth0)
+      assert(@controller.instance_variable_get(:@auth0_connections).present?)
+    end
+
+    should 'not initialize auth0_connections when encountering strings.' do
+      mock_properties = OpenStruct.new(:auth0_connections => 'bad')
+      mock_configuration = OpenStruct.new(:properties => mock_properties)
+      CurrentDomain.stubs(:configuration => mock_configuration)
+
+      @controller.send(:auth0)
+      assert_nil(@controller.instance_variable_get(:@auth0_connections))
+    end
+
+    should 'not initialize auth0_connections when encountering malformed hashes.' do
+      mock_properties = OpenStruct.new(:auth0_connections => [{}])
+      mock_configuration = OpenStruct.new(:properties => mock_properties)
+      CurrentDomain.stubs(:configuration => mock_configuration)
+
+      @controller.send(:auth0)
+      assert_nil(@controller.instance_variable_get(:@auth0_connections))
+    end
+
+    should 'not initialize auth0_connections when encountering an empty array.' do
+      mock_properties = OpenStruct.new(:auth0_connections => [])
+      mock_configuration = OpenStruct.new(:properties => mock_properties)
+      CurrentDomain.stubs(:configuration => mock_configuration)
+
+      @controller.send(:auth0)
+      assert_nil(@controller.instance_variable_get(:@auth0_connections))
+    end
+  end
+
   private
   def some_user
     { login: 'foo@bar.com',

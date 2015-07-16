@@ -5,7 +5,7 @@
     <%- @flashes_displayed = true -%>
   <%- end -%>
 
-  <%- if @auth0_connections && @auth0_connections.length > 0 %>
+  <%- if @auth0_connections.present? %>
 
     <div class="auth0login">
       <p><%= t('screens.sign_in.auth0_intro') %></p>

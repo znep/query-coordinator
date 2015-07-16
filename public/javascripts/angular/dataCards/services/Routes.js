@@ -7,7 +7,7 @@
       var params = {};
 
       var cardsViewUrlMatch = urlPathname.match(/^(?:\/[a-z]{2})?\/view\/(\w{4}-\w{4})$/);
-      var singleCardViewUrlMatch = urlPathname.match(/^(?:\/[a-z]{2})\/view\/(\w{4}-\w{4})\/([\w-_:@]+)$/);
+      var singleCardViewUrlMatch = urlPathname.match(/^(?:\/[a-z]{2})?\/view\/(\w{4}-\w{4})\/([\w-_:@]+)$/);
 
       if (cardsViewUrlMatch) {
         stateName = 'view.cards';

@@ -109,7 +109,17 @@ class UserSessionsController < ApplicationController
 
   private
 
+  ##
+  # Tests an Auth0 connection string for redirection eligibility.
+  # A client is redirect if:
+  # 1. The connection is present.
+  # 2. The connection actually exists in our Auth0 account.
+  # 3. The client is making a fresh login attempt.
+  # 4. The redirect parameter is NOT set.
+  #
+  # Redirect can be overriden by using ?redirect=false.
   def should_auth0_redirect?(connection)
+
       # Booleans to determine validity of redirect request
       connection_is_present = connection.present?
       connection_is_valid = connection_exists(connection)
@@ -117,10 +127,28 @@ class UserSessionsController < ApplicationController
       has_redirect_param = params.fetch(:redirect, false)
 
       if connection_is_present && !connection_is_valid
-        Rails.logger.error("A non-working connection string, #{connection}, has been specified in Auth0 configuration.")
+        error = "A non-working connection string, #{connection}, has been specified in Auth0 configuration."
+
+        Rails.logger.error(error)
+        Airbrake.notify(:error_class => "UnexpectedInput", :error_message => error)
       end
 
       connection_is_present && connection_is_valid && is_fresh_login && !has_redirect_param
+  end
+
+  ##
+  # Tests an unknown variable with three requirements:
+  # 1. It is an array.
+  # 2. It is an array with hash maps.
+  # 3. Each hash map has two parameters: connection and name.
+  def valid_auth0_connections?(connections)
+    valid = connections.kind_of?(Array) && connections.present?
+    valid && connections.each do |connection|
+      valid = connection[:connection].present? && connection[:name].present?
+      break if !valid
+    end
+
+    valid
   end
 
   ##
@@ -132,7 +160,8 @@ class UserSessionsController < ApplicationController
   def auth0
     properties = CurrentDomain.configuration('auth0').try(:properties)
 
-    if use_auth0? && !properties.nil?
+    if use_auth0? && properties.present?
+
       # Auth0 Redirection when auth0 configuration is set
       connection = properties.try(:auth0_always_redirect_connection)
       callback_uri = properties.try(:auth0_callback_uri)
@@ -142,10 +171,21 @@ class UserSessionsController < ApplicationController
         uri = generate_authorize_uri(connection, callback_uri)
         return redirect_to(uri)
       else
+
         # If auth0 redirection is not possible/configured
         # we send the auth0_connections to the template and render
         # out appropriate buttons.
-        @auth0_connections = properties.try(:auth0_connections) || {}
+
+        connections = properties.try(:auth0_connections)
+
+        if valid_auth0_connections?(connections)
+          @auth0_connections = connections
+        elsif connections.present?
+          error = "auth0_connections, #{connections}, has been specified incorrectly in the Auth0 configuration."
+
+          Rails.logger.error(error)
+          Airbrake.notify(:error_class => "UnexpectedInput", :error_message => error)
+        end
       end
     end
   end

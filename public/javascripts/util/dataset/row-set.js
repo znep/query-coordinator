@@ -209,6 +209,11 @@ var RowSet = ServerModel.extend({
                 rs._rowBuckets.push(bucket.start);
                 rs._rowBuckets.sort();
               } else {
+                // Special case when looking for just one row.
+                if (start === finish) {
+                  curReq = { start: start, finish: start };
+                }
+
                 // The while loop is back! These numbers are based off the screen size,
                 // so it's unlikely to be insane.
                 while (start <= finish) {

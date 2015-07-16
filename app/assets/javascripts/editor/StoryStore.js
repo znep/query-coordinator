@@ -381,7 +381,7 @@
 
       return components.map(function(component) {
 
-        Util.assertTypeof(component.value, 'string');
+        Util.assertTypeofInArray(component.value, ['string', 'object']);
 
         return {
           type: component.type,

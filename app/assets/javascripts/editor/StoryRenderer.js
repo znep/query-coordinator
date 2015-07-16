@@ -12,13 +12,11 @@
     var onRenderError = options.onRenderError || function() {};
     var componentTemplateRenderers = {
       'text': _renderTextComponentTemplate,
-      'image': _renderImageComponentTemplate,
-      'visualization': _renderVisualizationComponentTemplate
+      'media': MediaComponentRenderer.renderTemplate
     };
     var componentDataRenderers = {
       'text': _renderTextComponentData,
-      'image': _renderImageComponentData,
-      'visualization': _renderVisualizationComponentData
+      'media': MediaComponentRenderer.renderData
     };
     var elementCache = new StoryRendererElementCache();
     var warningMessageElement = options.warningMessageElement || null;
@@ -493,14 +491,6 @@
       return component;
     }
 
-    function _renderImageComponentTemplate(componentOptions) {
-      return $('<div>', { class: componentOptions.classes }).append('<img>');
-    }
-
-    function _renderVisualizationComponentTemplate(componentOptions) {
-      return $('<div>', { class: componentOptions.classes }).append('<img>');
-    }
-
     /**
      * Component data renderers bind component data to existing
      * component templates.
@@ -514,11 +504,11 @@
 
         var element = elementCache.getComponent(blockId, i);
 
-        componentDataRenderers[component.type](element, component.value)
+        componentDataRenderers[component.type](element, component.value, _renderStory);
       });
     }
 
-    function _renderTextComponentData(element, data) {
+    function _renderTextComponentData(element, data, renderFn) {
 
       if (editable) {
 
@@ -528,34 +518,6 @@
         editor.setContent(data);
       } else {
         element.html(data);
-      }
-    }
-
-    function _renderImageComponentData(element, data) {
-
-      var imageElement = element.find('img');
-      var imageSource = assetFinder.getRelativeUrlRoot() + data;
-
-      imageElement[0].onload = function(e) {
-        _renderStory();
-      };
-
-      if (imageElement.attr('src') !== imageSource) {
-        imageElement.attr('src', imageSource);
-      }
-    }
-
-    function _renderVisualizationComponentData(element, data) {
-
-      var imageElement = element.find('img');
-      var imageSource = assetFinder.getRelativeUrlRoot() + data;
-
-      imageElement[0].onload = function(e) {
-        _renderStory();
-      };
-
-      if (imageElement.attr('src') !== imageSource) {
-        imageElement.attr('src', imageSource);
       }
     }
 

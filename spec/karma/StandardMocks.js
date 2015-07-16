@@ -29,7 +29,7 @@ function applyStandardMocks() {
       generateBlockData({
         id: imageBlockId,
         components: [
-          { type: 'image', value: 'fakeImageFile.png' }
+          { type: 'media', value: { type: 'image', value: { src: 'fakeImageFile.png' } } }
         ]
       }),
       generateBlockData({
@@ -41,7 +41,7 @@ function applyStandardMocks() {
       generateBlockData({
         id: imageAndTextBlockId,
         components: [
-          { type: 'image', value: 'anotherFakeImageFile.png' },
+          { type: 'media', value: { type: 'image', value: { src: 'anotherFakeImageFile.png' } } },
           { type: 'text', value: 'some-text' }
         ]
       })

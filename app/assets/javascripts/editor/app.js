@@ -28,8 +28,6 @@ $(document).on('ready', function() {
     { id: 'clearFormatting', tag: null, name: 'Clear Formatting', dropdown: false, group: 4 }
   ];
 
-
-
   // Temporary fix until version is being added/populated
   if (userStoryData.version === null) {
     userStoryData.version = '';

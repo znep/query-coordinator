@@ -1,33 +1,16 @@
 describe('StoryRenderer', function() {
 
-  // TODO consolidate with StandardMocks.
-  var storyUid = 'rend-erer';
-  var imageBlockId = '4000';
-  var textBlockId = '4001';
+  // Pull out commonly-used mock story information from StandardMocks.
+  var storyUid;
+  var imageBlockId;
+  var textBlockId;
   var options;
 
-  function createSampleStories() {
-
-    var userStoryData = generateStoryData({
-      uid: storyUid,
-      blocks: [
-        generateBlockData({
-          id: imageBlockId,
-          components: [
-            { type: 'image', value: 'fakeImageFile.png' }
-          ]
-        }),
-        generateBlockData({
-          id: textBlockId,
-          components: [
-            { type: 'text', value: 'some-text' }
-          ]
-        })
-      ]
-    });
-
-    dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
-  }
+  beforeEach(function() {
+    storyUid = standardMocks.validStoryUid;
+    imageBlockId = standardMocks.imageBlockId;
+    textBlockId = standardMocks.textBlockId;
+  });
 
   function forceRender() {
     window.dispatcher.dispatch({
@@ -37,10 +20,7 @@ describe('StoryRenderer', function() {
   }
 
   beforeEach(function() {
-
-    createSampleStories();
-
-    $('body').append(
+    testDom.root().append(
         $('<div>', { class: 'story-container' })
       ).append(
         $('<p>', { class: 'message-warning' })
@@ -52,11 +32,6 @@ describe('StoryRenderer', function() {
       warningMessageElement: $('.message-warning'),
       onRenderError: function() {}
     };
-  });
-
-  afterEach(function() {
-    $('.story-container').remove();
-    $('.message-warning').remove();
   });
 
   describe('constructor', function() {
@@ -166,19 +141,19 @@ describe('StoryRenderer', function() {
         it('renders blocks', function() {
 
           var renderer = new StoryRenderer(options);
+          var numberOfBlocks = window.storyStore.getStoryBlockIds(storyUid).length;
 
-          assert.equal($('.block').length, 2);
+          assert.equal($('.block').length, numberOfBlocks);
         });
 
         it('does not render deleted blocks', function() {
 
           var renderer = new StoryRenderer(options);
-
-          assert.equal($('.block').length, 2);
+          var numberOfBlocks = window.storyStore.getStoryBlockIds(storyUid).length;
 
           dispatcher.dispatch({ action: Constants.STORY_DELETE_BLOCK, storyUid: storyUid, blockId: imageBlockId });
 
-          assert.equal($('.block').length, 1);
+          assert.equal($('.block').length, numberOfBlocks - 1);
         });
 
         it('does not render the empty story warning', function() {

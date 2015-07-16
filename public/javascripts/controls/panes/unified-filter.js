@@ -829,7 +829,7 @@
             if (_.isEmpty(metadata)) { return; }
 
             // TODO: need to actually merge the datasets (how?) rather than just taking the first blindly
-            if (!_.isEmpty(metadata.tableColumnId) && !_.isEmpty(dataset.publicationGroup)) {
+            if (!_.isEmpty(metadata.tableColumnId) && !_.isNull(dataset.publicationGroup)) {
               column = dataset.columnForTCID(metadata.tableColumnId[dataset.publicationGroup]);
             }
 

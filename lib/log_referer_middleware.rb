@@ -1,5 +1,5 @@
 # I'm middleware that logs HTTP_REFERER's to domains to a stomp service (that's
-# consumed by some ActiveMQ consumer). All y'all jive turkeys be careful: I 
+# consumed by some ActiveMQ consumer). All y'all jive turkeys be careful: I
 # know where you've been.
 class LogRefererMiddleware
   def initialize(app)
@@ -19,7 +19,7 @@ class LogRefererMiddleware
     domain = CurrentDomain.cname
     domain_id = CurrentDomain.domain.id.to_s
 
-    logger.info "Attempting to create metric for DOMAIN #{domain}. The requesting domain was #{request_based_domain}"
+    logger.debug "Attempting to create metric for DOMAIN #{domain}. The requesting domain was #{request_based_domain}"
     if domain.blank?
       logger.warn "Unable to determine domain for request. I'm not going to log the referrer."
     else
@@ -50,9 +50,9 @@ class LogRefererMiddleware
         elsif uri.host =~ /rpxnow.com$/
           logger.debug "Not logging RPX return logins."
         else
-          # If the referrer and the domain aren't the same thing, we should 
+          # If the referrer and the domain aren't the same thing, we should
           # really tell someone about this by squawking at them over STOMP.
-          logger.info "Attempting to log referrer #{domain} -> #{ref}."
+          logger.info "Attempting to log referrer #{ref} for domain #{domain}."
 
           host = uri.scheme + "-" + uri.host
           path = uri.path

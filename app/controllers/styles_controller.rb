@@ -180,7 +180,7 @@ class StylesController < ApplicationController
       end
 
       if File.exist?(cache_path)
-        Rails.logger.info "Reading cached stylesheet from #{cache_path}"
+        Rails.logger.debug "Reading cached stylesheet from #{cache_path}"
         render :text => File.read(cache_path)
       else
         result = yield

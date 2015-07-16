@@ -4,8 +4,6 @@ APP_CONFIG = begin
   conf[Rails.env]
 end
 
-Rails.logger.info JSON.pretty_generate(APP_CONFIG)
-
 CORESERVICE_URI = URI.parse(APP_CONFIG['coreservice_uri'])
 ODYSSEUS_URI = URI.parse(APP_CONFIG['odysseus_uri'] || "http://localhost:4747")
 

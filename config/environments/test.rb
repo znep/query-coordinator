@@ -37,4 +37,7 @@ Frontend::Application.configure do
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
+
+  # Logging options
+  config.logger.level = Logger.const_get((ENV['LOG_LEVEL'] || 'DEBUG').upcase)
 end

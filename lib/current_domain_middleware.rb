@@ -36,7 +36,6 @@ class CurrentDomainMiddleware
     host = request.host if host.blank?
 
     if !host.blank?
-      logger.info "Current domain: #{host}"
       current_domain = CurrentDomain.set(host)
 
       # Check every n minutes if the current domain needs to be refreshed

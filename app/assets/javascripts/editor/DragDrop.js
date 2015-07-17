@@ -21,7 +21,7 @@
       throw new Error('`ghostElement` argument must point to exactly one element');
     }
 
-    var _draggedBlockId = null;
+    var _draggedBlockContent = null;
 
     // TODO calculate from mouse down location.
     var _ghostCursorOffset = 0;
@@ -32,20 +32,19 @@
 
     this.dragStart = function(event, pointer) {
       var sourceBlockElement;
-      var sourceBlockHtml;
 
       _storyUidDraggedOver = undefined;
       $('body').addClass('dragging');
 
-      sourceBlockElement = $(pointer.target).closest('.block');
+      sourceBlockElement = $(pointer.target).closest('.inspiration-block');
 
-      _draggedBlockId = sourceBlockElement.attr('data-block-id');
-
-      sourceBlockHtml = sourceBlockElement.html();
+      _draggedBlockContent = JSON.parse(sourceBlockElement.attr('data-block-content'));
 
       ghostElement.
-        html(sourceBlockHtml).
-        removeClass('hidden');
+        removeClass('hidden').
+        empty().
+        append(sourceBlockElement.clone());
+
     };
 
     this.dragMove = function(event, pointer, moveVector) {
@@ -84,7 +83,7 @@
         dispatcher.dispatch({
           action: Constants.STORY_DRAG_OVER,
           storyUid: _storyUidDraggedOver,
-          draggedBlockId: _draggedBlockId,
+          draggedBlockId: _draggedBlockContent,
           pointer: pointer,
           storyElement: storyOver[0]
         });
@@ -101,15 +100,15 @@
 
       var storyUidOver = $(pointer.target).closest('.story').attr('data-story-uid');
 
-      var dragged = _draggedBlockId;
+      var draggedBlock = _draggedBlockContent;
 
       $('body').removeClass('dragging');
-      _draggedBlockId = null;
+      _draggedBlockContent = null;
       ghostElement.addClass('hidden');
 
       dispatcher.dispatch({
         action: Constants.STORY_DROP,
-        blockId: dragged,
+        blockContent: draggedBlock,
         storyUid: storyUidOver
       });
     };

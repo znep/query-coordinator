@@ -8,4 +8,8 @@ class InspirationStory
     @json
   end
 
+  def blocks
+    JSON.parse(@json)["blocks"]
+  end
+
 end

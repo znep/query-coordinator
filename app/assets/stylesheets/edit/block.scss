@@ -1,7 +1,6 @@
 @import '../base';
 
-.block-edit,
-.block {
+.block-edit {
   @include clearfix();
 
   position: absolute;

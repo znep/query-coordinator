@@ -104,8 +104,7 @@
     }
 
     function _storyDrop(payload) {
-      Util.assertHasProperties(payload, 'storyUid');
-      Util.assertHasProperties(payload, 'blockId');
+      Util.assertHasProperties(payload, 'storyUid', 'blockContent');
 
       if (self.isDraggingOverStory(payload.storyUid)) {
         var hintPosition = self.getReorderHintPosition();
@@ -113,8 +112,8 @@
         _setReorderHintPosition(null);
 
         dispatcher.dispatch({
-          action: Constants.BLOCK_COPY_INTO_STORY,
-          blockId: payload.blockId,
+          action: Constants.STORY_INSERT_BLOCK,
+          blockContent: payload.blockContent,
           storyUid: payload.storyUid,
           insertAt: hintPosition.dropIndex
         });

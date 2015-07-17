@@ -35,6 +35,18 @@ describe VersionMiddleware do
       }
     end
 
+    let(:environment_hash_with_bad_url) do
+      {
+        'REQUEST_METHOD' => 'GET',
+        'REQUEST_URI' => 'http://sub.domain.com/some/url\\//with/bad/\?characters!@#$%^&\*(\/version.json',
+        'SCRIPT_NAME' => '/version',
+        'SERVER_NAME' => 'sub.domain.com',
+        'SERVER_PORT' => '3000',
+        'REQUEST_PATH' => '/version',
+        'ORIGINAL_FULLPATH' => '/version'
+      }
+    end
+
     describe 'for non version.json requests' do
 
       it 'calls the app' do
@@ -84,6 +96,15 @@ describe VersionMiddleware do
             "{\"version\":\"1.2.3\",\"revision\":\"123123123123\",\"timestamp\":\"2015-01-02T03:04:05+00:00\",\"facility\":[\"frontend\",\"1.2.3\",\"123123123123\",\"2015-01-02T03:04:05+00:00\"]}"
             ]
           ])
+        end
+
+      end
+
+      describe 'when the URL is malformed' do
+
+        it 'forwards the request to the app' do
+          expect(app).to receive(:call).with(environment_hash_with_bad_url)
+          subject.call(environment_hash_with_bad_url)
         end
 
       end

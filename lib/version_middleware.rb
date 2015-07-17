@@ -1,5 +1,6 @@
 require 'uri'
 require 'json'
+require 'addressable/uri'
 
 class VersionMiddleware
   def initialize(app)
@@ -10,7 +11,7 @@ class VersionMiddleware
   # Host: header to be set, but the /version.json is just a plain JSON response, we return it here directly.
   # See also CurrentDomainMiddleware for further details.
   def call(env)
-    if '/version.json' == URI(env['REQUEST_URI']).path
+    if Addressable::URI.parse(env['REQUEST_URI']).path == '/version.json'
       version = {}
       begin
         version[:facility] = 'frontend',

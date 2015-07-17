@@ -5,6 +5,7 @@ if RUBY_VERSION =~ /1.9/
   Encoding.default_internal = Encoding::UTF_8
 end
 
+gem 'addressable'
 gem 'airbrake', '~>3.1.6'
 gem 'axlsx', '~> 1.3.4'
 gem 'erubis', '>= 2.6.4'

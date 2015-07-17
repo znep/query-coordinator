@@ -1,4 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <!--[if lte IE 7]>
   <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
@@ -13,7 +14,7 @@
         xmlns:v="urn:schemas-microsoft-com:vml"
         xmlns:og="http://opengraphprotocol.org/schema/" lang="en" class="ie"><![endif]-->
 <!--[if !IE]>-->
-  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
         xmlns:og="http://opengraphprotocol.org/schema/"><!--<![endif]-->
 
 <!--
@@ -129,7 +130,7 @@ http://www.socrata.com
 
       <%- end -%>
 
-      <a id="content"  tabindex="-1"></a>
+      <a name="content"  tabindex="-1"></a>
       <%= render_domain_template(@page_custom_chrome || 'content_chrome') if !module_enabled?(:govStat) || suppress_govstat? %>
       <%- if @suppress_content_wrapper -%>
         <%= yield :layout %>
@@ -143,7 +144,7 @@ http://www.socrata.com
 
   <%- if !@suppress_chrome -%>
   <div id="siteFooter" role="contentinfo">
-    <a id="footerLinks" tabindex="-1"></a>
+    <a name="footerLinks" tabindex="-1"></a>
     <%= render_domain_template(@page_custom_footer || 'footer_full') %>
   </div>
   <%- end -%>

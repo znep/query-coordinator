@@ -56,10 +56,6 @@
             });
         }
 
-        // Width, height
-        var width = self.outerWidth();
-        var height = self.outerHeight();
-
         // Defaults
         var settings = $.extend({
 
@@ -76,6 +72,16 @@
             close: true
 
         }, options);
+
+        function propertiesForClose(data) {
+            var properties = {};
+            if (settings.side === "left" || settings.side === "right") {
+                properties[settings.side] = -self.outerWidth();
+            } else {
+                properties[settings.side] = -self.outerHeight();
+            }
+            return properties;
+        }
 
         /*!
          *  Opens the sidebar
@@ -97,12 +103,7 @@
          *  $("[jQuery selector]).trigger("sidebar:close");
          * */
         self.on("sidebar:close", function(ev, data) {
-            var properties = {};
-            if (settings.side === "left" || settings.side === "right") {
-                properties[settings.side] = -self.outerWidth();
-            } else {
-                properties[settings.side] = -self.outerHeight();
-            }
+            var properties = propertiesForClose(data);
             settings.isClosed = null;
             self.stop().animate(properties, $.extend({}, settings, data).speed, function() {
                 settings.isClosed = true;
@@ -119,6 +120,16 @@
                 self.trigger("sidebar:open", [data]);
             } else {
                 self.trigger("sidebar:close", [data]);
+            }
+        });
+
+        $(window).resize(function(ev) {
+            // Window resizes may change our content's size.
+            // If we're closed or closing, we may need to reposition the sidebar.
+            // Note that isClosed === null means 'closing', which we care about here.
+            if (settings.isClosed !== false) {
+                var properties = propertiesForClose();
+                self.stop().css(properties, $.extend({}, settings));
             }
         });
 

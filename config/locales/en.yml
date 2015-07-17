@@ -1692,7 +1692,7 @@ en:
         edit_dataset_button: Edit Dataset
         error_publishing_html: There was an error in publishing your dataset. Please <a href="http://support.socrata.com" rel="external">contact Socrata support</a>.
         error_publishing_unpublished: Only unpublished datasets can be published.
-        immutable: This dataset is read-only and can only be editing programmatically. Please see SODA 2 documentation for more details.
+        immutable: This dataset is read-only and can only be edited programmatically. Please see SODA 2 documentation for more details.
         needs_copy: This dataset is published and cannot be edited directly. A working copy %{status} that allows you to make all your desired changes before making them publicly available.
         needs_copy_status:
           available: is available

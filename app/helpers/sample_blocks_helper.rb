@@ -11,23 +11,39 @@ module SampleBlocksHelper
             'value' => I18n.t('sample_story.intro_content')
           }
         ],
-        'created_by': 'system'
+        'created_by': 'test@socrata.com'
       },
       {
         "id": "sampleDefaultBlock2",
+        "layout": "6-6",
+        "components": [
+          {
+            "type": "text",
+            "value": "Test"
+          },
+          {
+            "type": "media",
+            "value": {
+              "type": "embed",
+              "value": nil
+            }
+          }
+        ],
+        'created_by': 'test@socrata.com'
+      },
+      {
+        "id": "sampleDefaultBlock3",
         "layout": "12",
         "components": [
           {
             "type": "media",
             "value": {
               "type": "embed",
-              "value": {
-                "provider": "youtube",
-                "id": "YWa-rWSsoZA"
-              }
+              "value": nil
             }
           }
-        ]
+        ],
+        'created_by': 'test@socrata.com'
       }
     ]
   end

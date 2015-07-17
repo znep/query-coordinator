@@ -1,0 +1,42 @@
+@import '../base';
+
+.component.media {
+
+  &.embed.wizard {
+    @include media-query-property(
+      'height',
+      ($main-content-width-small - $block-edit-controls-width - $block-edit-controls-padding) / 2.5,
+      ($main-content-width-medium - $block-edit-controls-width - $block-edit-controls-padding) / 2.5,
+      ($main-content-width-large - $block-edit-controls-width - $block-edit-controls-padding) / 2.5,
+      ($main-content-width-extra-large - $block-edit-controls-width - $block-edit-controls-padding) / 2.5
+    );
+
+    background-image: asset-url('media-block-icon.png');
+    background-size: 25%;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    border: 1px dashed #666;
+    box-sizing: border-box;
+
+    &:hover {
+      background-color: #ddd;
+      transition: color $transition-duration, background-color $transition-duration;
+    }
+
+    .media-component-embed-wizard-insert-btn {
+      @include media-query-property(
+        'margin-top',
+        ((($main-content-width-small - $block-edit-controls-width - $block-edit-controls-padding) / 2.5) - ($btn-height * 2.5)),
+        ((($main-content-width-medium - $block-edit-controls-width - $block-edit-controls-padding) / 2.5) - ($btn-height * 2.5)),
+        ((($main-content-width-large - $block-edit-controls-width - $block-edit-controls-padding) / 2.5) - ($btn-height * 2.5)),
+        ((($main-content-width-extra-large - $block-edit-controls-width - $block-edit-controls-padding) / 2.5) - ($btn-height * 2.5))
+      );
+
+      position: relative;
+      display: block;
+      width: auto;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+}

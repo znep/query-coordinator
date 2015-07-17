@@ -9,8 +9,11 @@ RSpec.describe SampleBlocksHelper, type: :helper do
   end
 
   it 'returns valid blocks' do
-    block_instance = Block.new(sample_blocks[0])
-    expect(block_instance.valid?).to be true
+    sample_blocks.each do |sample_block|
+      block_instance = Block.new(sample_block)
+
+      expect(block_instance.valid?).to be true
+    end
   end
 
   it 'returns translated blocks' do

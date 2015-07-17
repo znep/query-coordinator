@@ -873,7 +873,7 @@ $(function()
 
         // Send GA event for showing bootstrap link
         if (typeof _gaSocrata !== 'undefined') {
-            _gaSocrata('send', 'event', 'bootstrap-link', 'show');
+            _gaSocrata('socrata.send', 'event', 'bootstrap-link', 'show');
         }
 
         var newUxLink = $('<div class="new-ux-link icon-cards">' +
@@ -911,7 +911,7 @@ $(function()
         }).on('click', 'a', function() {
           // Send GA event for user clicking bootstrap link
           if (typeof _gaSocrata !== 'undefined') {
-            _gaSocrata('send', 'event', 'bootstrap-link', 'click');
+            _gaSocrata('socrata.send', 'event', 'bootstrap-link', 'click');
           }
 
           // Add some feedback

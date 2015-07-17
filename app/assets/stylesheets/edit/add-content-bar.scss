@@ -22,14 +22,14 @@
     display: inline-block;
     width: 100%;
     text-align: right;
-    margin-bottom: $inspiration-story-close-button-padding;
+    margin-bottom: $inspiration-block-list-close-button-padding;
   }
 
   h1 {
     text-align: center;
   }
 
-  .inspiration-story-error {
+  .inspiration-block-list-error {
     position: absolute;
     top: 0;
     left: 0;
@@ -52,8 +52,8 @@
   position: relative;
   min-height: 10px;
 
-  margin: $inspiration-story-block-margin;
-  font-size: $inspiration-story-font-size;
+  margin: $inspiration-block-list-block-margin;
+  font-size: $inspiration-block-list-font-size;
   cursor: -webkit-grab;
   cursor: grab;
 

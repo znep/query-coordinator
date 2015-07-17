@@ -157,15 +157,11 @@
         expect($saveAs.find('#save-as-name').hasClass('form-error')).to.be.false;
       });
 
-      it('should become inactive if the an area outside of the panel is clicked', function(done) {
+      it('should become inactive if the an area outside of the panel is clicked', function() {
         testHelpers.TestDom.append($saveAs);
-        testHelpers.fireMouseEvent($window.document.getElementsByTagName('body')[0],
-                                   'click', {which: 1});
-        _.defer(function() {
-          expect($toolPanel.hasClass('active')).to.be.false;
-          testHelpers.TestDom.clear();
-          done();
-        });
+        testHelpers.fireMouseEvent($saveAs.find('.tool-panel')[0], 'click');
+        expect($toolPanel.hasClass('active')).to.be.false;
+        testHelpers.TestDom.clear();
       });
 
     });

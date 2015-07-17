@@ -221,6 +221,15 @@
         expect(element.find('.tool-panel-inner-container:visible').length).to.equal(0);
       });
 
+      it('should show the panel when clicked, and hide it when clicking the tool-panel element', function() {
+        expect(element.find('.tool-panel-inner-container:visible').length).to.equal(1);
+        testHelpers.fireMouseEvent(element.find('.tool-panel-inner-container')[0], 'click');
+        // no effect
+        expect(element.find('.tool-panel-inner-container:visible').length).to.equal(1);
+        testHelpers.fireMouseEvent(element.find('.tool-panel')[0], 'click');
+        expect(element.find('.tool-panel-inner-container:visible').length).to.equal(0);
+      });
+
       it('should clean up after itself when the scope is destroyed', inject(function(WindowState) {
         var scope = element.scope();
         var cleanedUp = false;

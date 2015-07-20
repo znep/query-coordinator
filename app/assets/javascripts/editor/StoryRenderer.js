@@ -73,7 +73,7 @@
     }
 
     container.addClass('story');
-    container.attr('data-story-uid', storyUid);
+    container.add(insertionHint).attr('data-story-uid', storyUid);
 
     _listenForChanges();
     _attachEvents();

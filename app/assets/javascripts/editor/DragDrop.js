@@ -99,7 +99,7 @@
 
     this.dragEnd = function(event, pointer) {
 
-      var storyUidOver = $(pointer.target).closest('.story').attr('data-story-uid');
+      var storyUidOver = $(pointer.target).closest('[data-story-uid]').attr('data-story-uid');
 
       var dragged = _draggedBlockId;
 

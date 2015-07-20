@@ -43,6 +43,13 @@ describe('FormatService', function() {
         test(1000.5, '1,001');
       });
 
+      it('should not return zero for very small decimals', function() {
+        expect(FormatService.formatNumber(.0012)).to.equal('0.001');
+        expect(FormatService.formatNumber(.0002)).to.equal('0.0002');
+        expect(FormatService.formatNumber(.0005)).to.equal('0.0005');
+        expect(FormatService.formatNumber(.0004999)).to.equal('0.0004999');
+      });
+
       it('should commaify numbers with absolute value between 1000 and 9999', function() {
         test(1000, '1,000');
         test(5000, '5,000');

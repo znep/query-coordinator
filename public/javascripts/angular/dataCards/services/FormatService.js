@@ -25,7 +25,9 @@ angular.module('dataCards.services').factory('FormatService', function() {
     var newValue;
     var symbolIndex;
 
-    if (absVal < 9999.5) {
+    if (absVal < .001) {
+      return val.toString();
+    } else if (absVal < 9999.5) {
 
       // This branch handles everything that doesn't use a magnitude suffix.
       // Thousands less than 10K are commaified.

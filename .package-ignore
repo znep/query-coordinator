@@ -5,3 +5,4 @@ README
 dev-server
 nbproject
 .git
+vendor/bundle/ruby/1.9.1/gems/snappy-0.0.12

@@ -65,20 +65,20 @@ sl:
         title: Zbiranje
         too_many_columns:
           message: V tem trenutku ne moremo zagotoviti seštevanja za zbiranje vrednosti na straneh Data Lens (Razvid podatkov), ki imajo več kot {0} stolpcev s številkami ali denarjem.
-          title: Videti je, da združuje ta zbirka podatkov več kot {0} stolpcev s številkami
+          title: Videti je, da združuje ta podatkovni niz več kot {0} stolpcev s številkami
       api_explorer:
         additional_resources: 'Dodatni viri za ta API:'
         api_button: API
-        api_button_title: Do te zbirke podatkov dostopajte preko API-ja
+        api_button_title: Do tega podatkovnega niza dostopajte preko API-ja
         code_libraries: Knjižnice s kodo
         code_libraries_title: API odjemalca si prenesite iz Knjižnice s kodo
         documentation: Dokumentacija
         documentation_title: Glej API dokumentacijo
-        formats: Ti podatki so na voljo v večih formatih
+        formats: 'Ti podatki so na voljo v večih formatih:'
         geojson: Geo JSON
         json: JSON
         title: API
-        url: 'Do teh podatkov lahko dostopate preko API-ja za Prostodostopne podatke Socrata na tem URL-ju:'
+        url: 'Do teh podatkov lahko dostopate preko API-ja za Prostodostopne podatke Socrata na tem spletnem naslovu:'
       card_controls:
         collapse_card: Zapri to kartico
         customize_disabled: Za to kartico še ni možnosti za prilagoditev
@@ -171,16 +171,16 @@ sl:
         community: razvid podatkov data lens za skupnost
         official: uradni razvid podatkov data lens
       manage_lens_dialog:
-        dataset_private_page_private: Ker je izvorna zbirka podatkov za to stran nastavljena na <b>Zasebno</b>, te strani ni mogoče narediti javno dostopne. Videli jo bodo lahko samo tisti s prednostnim dostopom, v javnem katalogu pa se ne bo pojavila.
-        dataset_private_page_public: <span class="icon-warning"></span> Izvorna zbirka podatkov za to stran je nastavljena na <b>Zasebno</b>, tako da je tudi, če bo stran nastavljena na Javno, ne bo mogel videti kdorkoli z dostopom do izvorne zbirke podatkov. Kljub temu se bo pojavila v javnem katalogu. Razmislite o nastavitvi na Javno za to zbirko podatkov ali pa na Zasebno za to stran.
+        dataset_private_page_private: Ker je izvorni podatkovni niz za to stran nastavljen na <b>Zasebno</b>, te strani ni mogoče narediti javno dostopne. Videli jo bodo lahko samo tisti s prednostnim dostopom, v javnem katalogu pa se ne bo pojavila.
+        dataset_private_page_public: <span class="icon-warning"></span> Izvorni niz podatkov za to stran je nastavljen na <b>Zasebno</b>, tako da je tudi, če bo stran nastavljena na Javno, ne bo mogel videti kdorkoli z dostopom do izvornega podatkovnega niza. Kljub temu se bo pojavil v javnem katalogu. Razmislite o nastavitvi na Javno za ta podatkovni niz ali pa na Zasebno za to stran.
         dataset_public_page_private: Ta stran je nastavljena na <b>Zasebno</b>, zato jo bodo lahko videli samo tisti s prednostnim dostopom. V javnem katalogu se ne bo pojavila.
-        dataset_public_page_public: Ta stran in njena izvorna zbirka podatkov sta <b>Javni</b>, zato bo lahko to stran videl vsakdo, pojavila pa se bo tudi v javnem katalogu.
+        dataset_public_page_public: Ta stran in njen izvorni podatkovni niz sta <b>Javni</b>, zato bo lahko to stran videl vsakdo, pojavila pa se bo tudi v javnem katalogu.
         title: Upravljaj
       metadata:
         data_as_csv: Vsi izvorni podatki na način CSV (Excel)
         edit_description_prompt: Svojo stran dobro opišite, da bodo lahko ljudje razumeli zgodbo, ki jo skušajo povedati vaši podatki. (izbirno)
         page_name_placeholder: Brez naslova
-        source_dataset: izvorna zbirka podatkov
+        source_dataset: izvorni podatkovni niz
         validation_error_max_length: Vaš naslov je predolg
         validation_error_min_length: Prosimo, vnesite naslov
         validation_error_required: Prosimo, vnesite naslov
@@ -209,7 +209,7 @@ sl:
         insert_link: Vstavi povezavo
         italic: Poševno
         link: Povezava
-        link_placeholder: Sem vnesite URL
+        link_placeholder: Sem vnesite spletni naslov
         underline: Podčrtano
       save_as:
         flyoutFailedBody: Prosimo, obrnite se na skupino za podporo Socrate
@@ -258,9 +258,9 @@ sl:
         drag_clear_help: Odstrani razpon filtra
         drag_help: Povlecite za spremembo razpona filtrov
         errors:
-          bad_dates: Tabele zaradi neveljavnih vrednosti podatkov ni mogoče prikazati.
-          default: Tabele ni mogoče prikazati.
-          no_data: Tabele ni mogoče prikazati brez vrednosti.
+          bad_dates: Diagrama zaradi neveljavnih vrednosti podatkov ni mogoče prikazati.
+          default: Diagrama ni mogoče prikazati.
+          no_data: Diagrama ni mogoče prikazati brez vrednosti.
   controls:
     browse:
       actions:
@@ -322,10 +322,10 @@ sl:
           forms: Oblike
           href: Zunanji podatkovni nizi
           maps: Zemljevidi
-          new_view: 
-          new_view_help: 
-          story: 
-          story_help: 
+          new_view: Strani Data Lens
+          new_view_help: Kaj je to?
+          story: Zgodbe
+          story_help: Poučite se o zgodbah
           unpublished: Neobjavljeni podatkovni nizi
         view_types_singular_title: vrsta
         view_types_title: Poglej vrste
@@ -340,7 +340,7 @@ sl:
           popularity: Priljubljenost
           rss: RSS
           type: Vrsta
-        timeout: Oprostite. Rezultatov trenutni ni bilo mogoče pridobiti. Prosimo, poskusite znova kasneje.
+        timeout: Oprostite. Rezultatov trenutno ni bilo mogoče pridobiti. Prosimo, poskusite znova kasneje.
       row_results:
         less_link: Manj
         matching_rows: Iskanje ujemajočih vrstic po podatkovnih nizih
@@ -563,12 +563,12 @@ sl:
       delete_column: Izbriši stolpec
       delete_row: Izbriši vrstico
       delete_warning_multi_column: Ali želite izbrisati izbrane stolpce? Vsi podatki iz teh stolpcev bodo odstranjeni!
-      delete_warning_single_column: Ali želite izbrisati izbran stolpec? Vsi podatki v tem stolpcu bodo odstranjeni!
+      delete_warning_single_column: Ali želite izbrisati izbrani stolpec? Vsi podatki v tem stolpcu bodo odstranjeni!
       edit_column_properties: Uredi lastnosti stolpca
       errors:
-        cannot_edit_at_this_time: 
-        primary_key_collision: 
-        row_locked_for_edit: 
+        cannot_edit_at_this_time: Tega stolpca ta trenutek ne morete urejati. Prosimo, poskusite znova kasneje.
+        primary_key_collision: Ta vrednost že obstaja kot primarni ključ. Ne morete pisati čeznjo.
+        row_locked_for_edit: Trenutno ne moremo urejati vrstic, ki so bile ravnokar ustvarjene. Za sedaj pred urejanjem te vrstice osvežite stran.
       filter_this_column: Filtriraj ta stolpec
       geocodes_pending: Vrstice v ciljnem stolpcu se še vedno geokodirajo. Počakajte z objavo tega podatkovnega niza, dokler se ne zaključi
       hide_column: Skrij stolpec
@@ -751,7 +751,7 @@ sl:
       percent: Odstotek
       phone: Telefon
       photo: Fotografija (slika)
-      point: 
+      point: Točka
       stars: Zvezdica
       text: Golo besedilo
       url: URL spletne strani
@@ -906,9 +906,9 @@ sl:
       page: stran
       previous_page: Prejšnja stran
     precision_style:
-      currency: 
-      financial: 
-      percentage: 
+      currency: 'Valuta: 1020.40 $'
+      financial: 'Finančno: (1020.40)'
+      percentage: 'Odstotek: 1020.40 %'
       scientific: Znanstveni (1,0204e+3)
       standard: Standardni (1020,4)
     required: Zahtevano
@@ -946,14 +946,27 @@ sl:
       grouped: združen pogled
       href: zunanji podatkovni niz
       map: zemljevid
-      new_view: 
+      new_view: Stran Data Lens
       table: tabela
       working_copy: delovna kopija
     view_types_plural:
       api: API-ji
       calendar: Koledarji
       chart: Grafikoni
-      data_lens: 
+      data_lens: |+
+        Leče za podatke
+
+
+
+
+
+
+
+
+
+
+
+
       filter: Filtrirani pogledi
       form: Oblike
       grouped: Združeni pogledi
@@ -995,17 +1008,17 @@ sl:
         tweet_contents: 'Preveri %{dataset} za %{company}: %{url}'
         twitter: Deli na Twitterju
       visualization:
-        exploreLink: 
-        exploreLink_prompt: 
+        exploreLink: Raziščite podatke
+        exploreLink_prompt: Pokaži povezavo
     configurator:
       actions_components: Dejanja
       advanced_components: Napredne komponente
       content_components: Vsebina
       data_components: Podatki
       input_components: Vnos
-      redo_title: 
+      redo_title: Ničesar ni, kar bi lahko znova naredili
       report_components: Komponente poročila
-      undo_title: 
+      undo_title: Ničesar ni, kar bi lahko odpravili
     context_picker:
       select_dataset: Izberi podatkovni niz
       view_data: Poglej podatke
@@ -1075,8 +1088,8 @@ sl:
       were_sorry: Oprostite, vendar je prišlo do težav pri obdelavi vaše zahteve.
     error_site_unavailable:
       description: Spletna stran, ki jo upravlja Socrata, trenutno ni dosegljiva
-      help_html: 
-      title: 
+      help_html: Status Socrate lahko vedno preverite na <a href="http://status.socrata.com">http://status.socrata.com</a> ali pa preverite naš twitter račun na <a href="https://twitter.com/socrata">@socrata</a>.
+      title: Stran trenutno ni na voljo
     not_acceptable_406:
       page_not_found: Stran ni bila najdena.
       were_sorry: Resnično nam je žal, vendar zahtevana stran ni na voljo v zahtevani obliki.
@@ -1502,7 +1515,7 @@ sl:
         supported: Podprte vrste datotek so CSV, TSV in Excel. Podprta protokola sta HTTP in HTTPS.
         url_prompt: Kakšen je spletni naslov datoteke, ki jo želite uvoziti?
       errors:
-        insecure_esri_url: 
+        insecure_esri_url: Dodan je bil nezanesljiv URL za ESRI plast zemljevida. Posledično pri tej zbirki podatkov določene funkcije ne bodo delovale.
         invalid_crossload_url: Prosimo, vnesite veljaven spletni naslov z uporabo HTTP ali HTTPS.
         invalid_url: Videti je, da to ni veljaven spletni naslov.
         missing_data_provider: Določiti morate ponudnika podatkov (dodelitev) v licenci organizacije Creative Commons.
@@ -1610,7 +1623,7 @@ sl:
           underline: Podčrtano
           undo: Razveljavi
         full_screen: Preklopi celozaslonski način
-        out_of_date: 
+        out_of_date: Ta zbirka podatkov je zastarela že %{age}
         publish_button: Objavi podatkovni niz
         publish_prompt: Ta podatkovni niz je delovna kopija in ni javno dostopen. Ko izvedete želene spremembe, bo ta podatkovni niz objavljen, da bo na voljo javno.
         publish_rights: Ta podatkovni niz lahko objavi le lastnik ali izdajatelj
@@ -1632,7 +1645,7 @@ sl:
         subscribe_prompt: Naroči se prek e-pošte ali RSS
         unpublished_unsavable: Spremembe spodnjih podatkov se samodejno shranijo. Filtrov in iskanj ni mogoče shraniti v delovno kopijo podatkovnega niza. Prosimo, ustvarite pogled za objavljen podatkovni niz.
         unsaved_title: Neshranjen pogled
-        up_to_date: 
+        up_to_date: Ta zbirka podatkov je bila posodobljena %{current}
         view_published_html: Poglej objavljen <span class="publishedName">podatkovni niz</span>
         view_type: Poglej kot %{type}
         view_types:
@@ -1696,7 +1709,7 @@ sl:
         edit_dataset_button: Uredi podatkovni niz
         error_publishing_html: Med pripravo delovne kopije vašega podatkovnega niza je prišlo do napake. Prosimo <a href="http://support.socrata.com" rel="external">obvestite podporo Socrata</a>.
         error_publishing_unpublished: Objavite lahko le neobjavljene podatkovne nize.
-        immutable: 
+        immutable: Ta zbirka podatkov je samo za branje in se lahko ureja samo programatično. Za več podrobnosti glejte, prosimo, dokumentacijo SODA 2.
         needs_copy: Ta podatkovni niz je objavljen in ga ni mogoče neposredno urejati. Delovna kopija %{status}, ki omogoča izvedbo želenih sprememb, preden jih javno objavite.
         needs_copy_status:
           available: je na voljo
@@ -1737,9 +1750,9 @@ sl:
           validation:
             view_column: Pogledu ni mogoče dodati stolpca
         api:
-          api_docs: 
+          api_docs: API Dok.
           column_ids_title: 'ID-ji stolpcev:'
-          developer_portal: 
+          developer_portal: Portal za razvijalce
           endpoint_title: 'Končna točka dostopa do API-jev:'
           intro_html: "<strong>Socrata Open Data API</strong> (SODA) omogoča razvijalcem programske opreme dostop do podatkov, ki programsko gostujejo na podatkovnih straneh Socrata. Razvijalci lahko ustvarjajo aplikacije, ki uporabljajo API-je SODA za vizualizacijo in &ldquo;sestavljanje&rdquo; podatkovnih nizov Socrata na nove in razburljive načine. Ustvarite aplikacijo za iPhone, ki vizualizira vladno potrošnjo v vašem območju, spletno aplikacijo, ki omogoča državljanom, da pogledajo morebitne vladne prednosti, ki so jih spregledali, ali storitev, ki vam samodejno pošlje e-sporočilo, kadar se dodajo nove rezervacije dodanim osnutkom zakonov, ki jim želite slediti."
           reference_html: Za začetek programskega dostopa do teh podatkovnih nizov uporabite spodnjo končno točko API. Za več informacij in primerov glede uporabe Socrata Open Data API si oglejte našo <a href="http://dev.socrata.com" rel="external">dokumentacijo za razvijalce</a>.
@@ -2119,7 +2132,7 @@ sl:
             non_tabular: Natisnete lahko le tabelarne podatke
         download:
           download_as: Prenesi kot
-          download_dataset: 
+          download_dataset: Prosimo, prenesite zbirko podatkov, iz katere je izveden ta pogled.
           geo_header: Prenesi geoprostorske podatke
           layers_header: Prenesi tabelarne plasti
           subtitle: Prenesi kopijo tega podatkovnega niza v statični obliki
@@ -2370,13 +2383,13 @@ sl:
             title: Pogledi
         visualize:
           choose_type: Vrsta vizualizacije
-      new_ux_button: 
-      new_ux_creating_page: 
-      new_ux_error: 
-      new_ux_link: 
-      new_ux_nbe_warning: 
-      new_ux_text: 
-      new_ux_title: 
+      new_ux_button: Pokaži mi
+      new_ux_creating_page: Nova stran Data Lens se postavlja in analizira
+      new_ux_error: Predogled za to zbirko podatkov ni na voljo.
+      new_ux_link: Preizkusite to zbirko podatkov v našem novem orodju za raziskovanje podatkov (beta)
+      new_ux_nbe_warning: 'Samo za notranjo rabo: stari UX pogled na zbirko podatkov z novim vmesnikom Backend. Običajni uporabniki bi bili preusmerjeni na %{url}'
+      new_ux_text: Izkusite te podatke na nov, Data Lens način
+      new_ux_title: Pripravljeni na vizualno raziskovanje?
       save_dialog:
         descriptions:
           leaving: Obstajajo neshranjeni podatki, ki bodo izgubljeni, če zapustite to stran. Izberite, ali želite shraniti ta pogled preden odidete; ali pa izberite Prekliči, da se vrnete na stran.
@@ -2402,7 +2415,7 @@ sl:
         subscribed_html: <strong>Trenutno ste naročeni na ta <span class="datasetTypeName">podatkovni niz</span> prek e-pošte</strong> in boste prejemali obvestila, ko bodo objavljeni novi podatki.
         title_html: Naroči se na &quot;<span class="datasetName">%{name}</span>&quot; <span class="datasetTypeNameUpcase">Dataset</span>
         unsubscribe: "Če ne želite več prejemati obvestil, odznačite spodnje polje Naroči se."
-      unable_to_find_dataset_page: 
+      unable_to_find_dataset_page: Nismo uspeli najti Data Lens strani za to zbirko podatkov.
     edit_metadata:
       about: O
       additional_source: Dodatni vir
@@ -2459,7 +2472,7 @@ sl:
       return: Vrni se na podatkovni niz
       row_class: Razred vrstice
       row_identifier: Identifikator vrstice
-      row_identifier_help_text: 
+      row_identifier_help_text: Potem, ko je bil pogled objavljen, vrstičnega identifikatorja ni več mogoče spreminjati.
       save: Shrani
       save_changes: Shrani spremembe
       semantics_rdf: Semantika in RDF
@@ -2531,7 +2544,7 @@ sl:
     import_pane:
       analyzing: Analizizam vašo datoteko ...
       assure_accessible: Zagotovite, da je vaša datoteka dostopna in veljavna ter poskusite znova.
-      bytes_imported: 
+      bytes_imported: Do tega trenutka ste uvozili %{num} bytov.
       combine_multiple_cols: "(Nadaljuj z več stolpci ...)"
       downloading: Prenašam vašo datoteko ...
       filetype_error_blist: Prosimo, izberite datoteko vrste CSV, TSV, XLS ali XLSX.
@@ -2600,7 +2613,7 @@ sl:
               nomination_moderated: Ustvarjena je katera koli nominacija
               privileged_account_created: Uporabnik ustvarja svoj prednostni račun
               user_affected: Dejanja, ki neposredno vplivajo na vas, npr. odgovori na komentarje in posodobitve stanja
-              view_deleted: 
+              view_deleted: Vsi pogledi so bili izbrisani.
               view_made_public: Kateri koli pogled je spremenjen v javnega
             policy: "%{site} spoštuje vašo zasebnost in ne bo nikoli pošiljal marketinških e-sporočil prek tega seznama ali dajal vašo e-pošto tretjim osebam. Poslana e-sporočila iz te strani vključujejo obvestila o računu in posodobitvah podatkovnih nizov, ki ste jih ustvarili ali se na njih naročili."
             send_error: Prišlo je do težave pri pošiljanju e-pošte. Prosimo, poskusite znova kasneje.
@@ -2623,8 +2636,8 @@ sl:
           callback_prefix_help_html: Na primer, če bo vaša aplikacija izvedla povratni klic na <span class="code">https://my-domain.com/socrata-app/oauth/validated</span> in <span class="code">https://my-domain.com/socrata-app/profile</span>, boste nastavili <span class="code">https://my-domain.com/socrata-app</span> kot predpono. Upoštevajte, da morate vključiti vsaj celotno ime domene.
           callback_prefix_prompt: Dodajte predpono k varnemu (https) povratnemu klicu spletnega naslova pri uporabi OAuth
           core_error:
-            already_exists: 
-            another_user: 
+            already_exists: Aplikacija z imenom %{app_name} že obstaja.
+            another_user: Ne morem ustvariti aplikacije za drugega uporabnika.
           create_error: 'Med ustvarjanjem žetona za vašo aplikacijo je prišlo do napake: %{message}'
           create_success: Vaša aplikacija je bila ustvarjena
           delete_confirm: Ali ste prepričani, da želite izbrisati to aplikacijo? Ustrezen app_token ne bo več veljaven
@@ -2704,15 +2717,15 @@ sl:
       success: Ponastavitev gesla uspešna
       title: Ponastavi geslo
     sign_in:
-      auth0_intro: 
-      back_to_sign_in_selection: 
+      auth0_intro: Vpišete se lahko na več načinov. Če si še niste odprli računa z registracijo, izberite možnost, ki vam najbolj ustreza. Če ste se, uporabite sedaj isto možnost.
+      back_to_sign_in_selection: <a class="login-back">Nazaj k možnostim za vpis</a>
       failed: Ni se mogoče prijaviti s to e-pošto in geslom, poskusite znova
       form:
         sign_in_button: Prijavi se
       headline: Prijavi se v %{site}
       mismatch: Gesli se ne eujemata, poskusite znova
       prompt_html: Prijavite se s svojim <strong>Socrata ID-jem</strong>
-      sign_in_with: 
+      sign_in_with: "<strong>Vpišite se</strong>s/z %{provider}"
       tips_html: Uporabite svojo e-pošto in geslo, da se prijavite v vse <strong><a href="http://www.socrata.com" rel="external">Socrata</a> poganjane</strong> strani.
     sign_up:
       form:

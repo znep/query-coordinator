@@ -147,29 +147,29 @@ class Canvas2UtilTest < Test::Unit::TestCase
     parsed_result = Canvas2::Util.parse_transforms('foo.bar /\//\//g')
     assert_transform_is_a parsed_result, 'regex'
     assert parsed_result['prop'] == 'foo.bar'
-    assert parsed_result['transforms'].first[:regex] == '\/'
-    assert parsed_result['transforms'].first[:repl] == '\/'
+    assert parsed_result['transforms'].first[:regex] == '/'
+    assert parsed_result['transforms'].first[:repl] == '/'
     assert parsed_result['transforms'].first[:modifiers] == 'g'
 
     parsed_result = Canvas2::Util.parse_transforms('foo.bar /before\//before\//g')
     assert_transform_is_a parsed_result, 'regex'
     assert parsed_result['prop'] == 'foo.bar'
-    assert parsed_result['transforms'].first[:regex] == 'before\/'
-    assert parsed_result['transforms'].first[:repl] == 'before\/'
+    assert parsed_result['transforms'].first[:regex] == 'before/'
+    assert parsed_result['transforms'].first[:repl] == 'before/'
     assert parsed_result['transforms'].first[:modifiers] == 'g'
 
     parsed_result = Canvas2::Util.parse_transforms('foo.bar /\/after/\/after/g')
     assert_transform_is_a parsed_result, 'regex'
     assert parsed_result['prop'] == 'foo.bar'
-    assert parsed_result['transforms'].first[:regex] == '\/after'
-    assert parsed_result['transforms'].first[:repl] == '\/after'
+    assert parsed_result['transforms'].first[:regex] == '/after'
+    assert parsed_result['transforms'].first[:repl] == '/after'
     assert parsed_result['transforms'].first[:modifiers] == 'g'
 
     parsed_result = Canvas2::Util.parse_transforms('foo.bar /be\/tween/be\/tween/g')
     assert_transform_is_a parsed_result, 'regex'
     assert parsed_result['prop'] == 'foo.bar'
-    assert parsed_result['transforms'].first[:regex] == 'be\/tween'
-    assert parsed_result['transforms'].first[:repl] == 'be\/tween'
+    assert parsed_result['transforms'].first[:regex] == 'be/tween'
+    assert parsed_result['transforms'].first[:repl] == 'be/tween'
     assert parsed_result['transforms'].first[:modifiers] == 'g'
   end
 
@@ -297,6 +297,26 @@ class Canvas2UtilTest < Test::Unit::TestCase
       parsed_result = Canvas2::Util.parse_transforms(%q{ // Do some manual magic on our location column (this is a column I created from the original camp column) // long/lat in Socrata is formatted as a string of: (long, lat) // we want to switch it to an array of type: [long, lat] camp = d['RELOCATION PROJECT LOCATION']; camps = camp.split(', '); camps[0] = camps[0].replace('(', ''); camps[1] = camps[1].replace(')', ''); d.campLoc = camps; })
       assert parsed_result['transforms'].empty?
     end
+  end
+
+  def test_with_substitution_helpers
+    parsed_result = Canvas2::Util.parse_transforms('env.current_locale !default_locale !add_slash ||')
+    substitution_helpers = { 'expressions' => {
+        'add_slash' => '/(.+)/\\/$1/',
+        'default_locale' => '/ca//'
+      }
+    }
+    parsed_add_slash = Canvas2::Util.parse_transforms(substitution_helpers['expressions']['add_slash'])
+    assert_transform_is_a parsed_add_slash, 'regex'
+    assert parsed_add_slash['transforms'].first[:regex] == '(.+)'
+    assert parsed_add_slash['transforms'].first[:repl] == '/$1'
+    assert parsed_add_slash['transforms'].first[:modifiers] == ''
+
+    processed_result = Canvas2::Util.process_transforms('en',
+                                                        parsed_result['transforms'],
+                                                        substitution_helpers)
+    assert processed_result[:value] == '/en'
+    refute processed_result[:fallback_result]
   end
 
   private

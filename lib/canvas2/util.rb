@@ -545,8 +545,8 @@ module Canvas2
       when :regex
         {
           type: 'regex',
-          regex: md['regex'],
-          repl: md['repl'],
+          regex: md['regex'].gsub('\/', '/'),
+          repl: md['repl'].gsub('\/', '/'),
           modifiers: md['modifiers']
         }
       when :format

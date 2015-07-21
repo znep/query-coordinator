@@ -9,18 +9,6 @@ describe('jquery-extensions', function() {
       expect(dimensions.height).to.equal(30);
     });
   });
-  describe('$.commaify', function() {
-    it('should convert integers correctly', function() {
-      expect($.commaify(20000)).to.equal('20,000');
-      expect($.commaify(2000000)).to.equal('2,000,000');
-    });
-    it('should convert decimals correctly', function() {
-      expect($.commaify(20000.1234)).to.equal('20,000.1234');
-    });
-    it('should convert string numbers correctly', function() {
-      expect($.commaify('20000.1234')).to.equal('20,000.1234');
-    });
-  });
   describe('String.prototype.format', function() {
     it('should insert correctly', function() {
       expect('{0}, {1}, {2}, {3}, {4}'.format(1, 2, 3, 4, 5)).to.equal('1, 2, 3, 4, 5');

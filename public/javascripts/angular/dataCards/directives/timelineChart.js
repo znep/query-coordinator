@@ -21,7 +21,8 @@
     FlyoutService,
     Constants,
     ServerConfig,
-    I18n
+    I18n,
+    FormatService
   ) {
 
     return {
@@ -1256,7 +1257,7 @@
             tickElement = $('<div>').
               addClass('y-tick').
               css('bottom', Math.floor(chartHeight * tick)).
-              text($.toHumaneNumber(labels[index]));
+              text(FormatService.formatNumber(labels[index]));
 
             if (labels[index] === 0) {
               tickElement.addClass('zero');
@@ -1457,7 +1458,7 @@
 
             formattedValue = (_.isFinite(value)) ?
               '{0} {1}'.format(
-                $.toHumaneNumber(value),
+                FormatService.formatNumber(value),
                 unit
               ) :
               I18n.common.noValue;

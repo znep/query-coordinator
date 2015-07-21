@@ -156,7 +156,8 @@
     Schemas,
     PageHelpersService,
     DeviceService,
-    I18n
+    I18n,
+    FormatService
   ) {
 
     VALIDATION_ERROR_STRINGS = {
@@ -323,8 +324,8 @@
             );
           } else if (filter instanceof Filter.ValueRangeFilter) {
             return I18n.t('filter.valueRange',
-              $.toHumaneNumber(filter.start),
-              $.toHumaneNumber(filter.end)
+              FormatService.formatNumber(filter.start),
+              FormatService.formatNumber(filter.end)
             );
           } else {
             throw new Error('Cannot apply filter of unsupported type "' + filter + '".');

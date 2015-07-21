@@ -4,7 +4,7 @@
   var rowsPerBlock = 50;
   var rowHeight = $.relativeToPx('2rem');
 
-  function tableDirectiveFactory(Constants, Dataset, SoqlHelpers, $q, $timeout, I18n) {
+  function tableDirectiveFactory(Constants, Dataset, SoqlHelpers, $q, $timeout, I18n, FormatService) {
 
     return {
       templateUrl: '/angular_templates/dataCards/table.html',
@@ -417,7 +417,7 @@
               shouldCommaify = false;
             }
             if (shouldCommaify) {
-              cellContent = $.commaify(cellContent);
+              cellContent = FormatService.commaify(cellContent);
             }
 
             // Add percent sign after commaify because it affects length
@@ -453,7 +453,7 @@
 
             if (_.isFinite(amount)) {
               if (format.humane) {
-                // We can't use $.toHumaneNumber here because this use case is
+                // We can't use FormatService.formatNumber here because this use case is
                 // slightly different — we want to enforce a certain precision,
                 // whereas the normal humane numbers want to use the fewest
                 // digits possible at all times.
@@ -475,7 +475,7 @@
                   // For instance, "12,345,678" will become an array of three
                   // substrings, and the first two will combine into "12.345"
                   // so that our toFixed call can work its magic.
-                  var scaleGroupedVal = $.commaify(Math.floor(absVal)).split(',');
+                  var scaleGroupedVal = FormatService.commaify(Math.floor(absVal)).split(',');
                   var symbols = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
                   var symbolIndex = scaleGroupedVal.length - 2;
 
@@ -494,12 +494,17 @@
                   cellContent = value.replace('.', format.decimalSeparator) + symbols[symbolIndex];
                 }
               } else {
+
                 // Normal formatting without abbreviation.
-                cellContent = $.commaify(
+                var commaifyOptions = {
+                  groupCharacter: format.groupSeparator,
+                  decimalCharacter: format.decimalSeparator
+                };
+
+                cellContent = FormatService.commaify(
                   Math.abs(amount).toFixed(format.precision).
                     replace('.', format.decimalSeparator),
-                  format.groupSeparator,
-                  format.decimalSeparator
+                  commaifyOptions
                 );
               }
               cellContent = '{neg}{sym}{value}'.format({
@@ -656,9 +661,9 @@
             scope.$safeApply(function() {
               scope.tableLabel = I18n.t('table.rangeLabel',
                 $.htmlEncode(scope.rowDisplayUnit.capitalize()),
-                $.commaify(topRow),
-                $.commaify(bottomRow),
-                $.commaify(scope.filteredRowCount)
+                FormatService.commaify(topRow),
+                FormatService.commaify(bottomRow),
+                FormatService.commaify(scope.filteredRowCount)
               );
             });
           };

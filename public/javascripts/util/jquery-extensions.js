@@ -39,25 +39,6 @@
     return !_.isEmpty(argument);
   };
 
-  $.commaify = function(value, groupCharacter, decimalCharacter) {
-    value = value + '';
-    groupCharacter = groupCharacter || ',';
-    decimalCharacter = decimalCharacter || '.';
-
-    var pos = value.indexOf(decimalCharacter);
-
-    if (pos == -1) {
-      pos = value.length;
-    }
-    pos -= 3;
-    while (pos > 0 && value.charAt(pos - 1) >= '0' && value.charAt(pos - 1) <= '9') {
-      value = value.substring(0, pos) + groupCharacter + value.substring(pos);
-      pos -= 3;
-    }
-
-    return value;
-  };
-
   $.htmlEncode = function(value) {
     return $('<div/>').text(value).html();
   };
@@ -66,61 +47,12 @@
     return $('<div/>').html(value).text();
   };
 
-  $.toHumaneNumber = function(val, groupCharacter, decimalCharacter) {
-    if (typeof val !== 'number') {
-      throw new Error("toHumaneNumber requires numeric input");
-    }
-    groupCharacter = groupCharacter || ',';
-    decimalCharacter = decimalCharacter || '.';
-
-    var maxLetters = 4;
-    var symbol = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
-    var step = 1000;
-    var divider = Math.pow(step, symbol.length);
-    val = parseFloat(val);
-    var absVal = Math.abs(val);
-    var result;
-    var beforeLength = absVal.toFixed(0).length;
-
-    if (beforeLength <= maxLetters) {
-      var parts = absVal.toString().split(decimalCharacter);
-      var afterLength = (parts[1] || '').length;
-      var maxAfterLength = maxLetters - beforeLength;
-      if (afterLength > maxAfterLength) {
-        afterLength = maxAfterLength;
-      }
-      return $.commaify(val.toFixed(afterLength), groupCharacter, decimalCharacter);
-    }
-
-    for (var i = symbol.length - 1; i >= 0; i--) {
-      if (absVal >= divider) {
-        var count = (absVal / divider).toFixed(0).length;
-        var precision = maxLetters - count - 1;
-        if (precision < 0) {
-          precision = 0;
-        }
-        result = (absVal / divider).toFixed(precision);
-        if (val < 0) {
-          result = -result;
-        }
-        result = parseFloat(result);
-        if (isFinite(result)) {
-          return $.commaify(result, groupCharacter, decimalCharacter) + symbol[i];
-        } else {
-          return result.toString();
-        }
-      }
-      divider = divider / step;
-    }
-  };
-
   String.prototype.format = function(objectMaybe) {
     var values = _.isPlainObject(objectMaybe) ? objectMaybe : _.slice(arguments);
     return _(values).chain().keys().reduce(function(stringToFormat, key) {
       return stringToFormat.replace(new RegExp('\\{' + key + '\\}', 'gm'), values[key]);
     }, this).value();
   };
-
 
   String.prototype.capitalizeEachWord = function() {
     return this.split(' ').map(function(word) {

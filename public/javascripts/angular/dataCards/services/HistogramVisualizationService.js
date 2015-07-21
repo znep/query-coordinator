@@ -54,7 +54,7 @@
     return lines.join('');
   }
 
-  function HistogramVisualizationService(Constants, FlyoutService, I18n) {
+  function HistogramVisualizationService(Constants, FlyoutService, I18n, FormatService) {
     function setupDOM(id, container) {
       var dom = {};
 
@@ -156,12 +156,12 @@
       axis.x.
         scale(scale.x).
         orient('bottom').
-        tickFormat(function(d) { return $.toHumaneNumber(d); });
+        tickFormat(function(d) { return FormatService.formatNumber(d); });
 
       axis.y.
         scale(scale.y).
         orient('left').
-        tickFormat(function(d) { return $.toHumaneNumber(d); }).
+        tickFormat(function(d) { return FormatService.formatNumber(d); }).
         ticks(3);
 
       return axis;
@@ -240,8 +240,8 @@
         }
 
         var valueRange = I18n.filter.valueRange.format(
-          $.toHumaneNumber(bucketOfInterest.start),
-          $.toHumaneNumber(bucketOfInterest.end)
+          FormatService.formatNumber(bucketOfInterest.start),
+          FormatService.formatNumber(bucketOfInterest.end)
         );
 
         var pluralizeRowDisplayUnit = _.partial(pluralizeBasedOnValue, hover.rowDisplayUnit, _);
@@ -252,9 +252,9 @@
           currentFilter: I18n.flyout.currentFilter,
           clearRangeFilterLong: I18n.flyout.clearRangeFilterLong,
           filteredAmount: I18n.flyout.filteredAmount,
-          rangeTotal: $.toHumaneNumber(rangeTotal),
+          rangeTotal: FormatService.formatNumber(rangeTotal),
           rangeTotalRowDisplayUnit: pluralizeRowDisplayUnit(rangeTotal),
-          rangeFilteredAmount: $.toHumaneNumber(rangeFilteredAmount),
+          rangeFilteredAmount: FormatService.formatNumber(rangeFilteredAmount),
           rangeFilteredRowDisplayUnit: pluralizeRowDisplayUnit(rangeFilteredAmount)
         });
       }
@@ -821,8 +821,8 @@
       var labelString = _.isPresent(selectionValues) ?
         I18n.t(
           'filter.valueRange',
-          $.toHumaneNumber(selectionValues[0]),
-          $.toHumaneNumber(selectionValues[1])
+          FormatService.formatNumber(selectionValues[0]),
+          FormatService.formatNumber(selectionValues[1])
         ) :
         '';
 

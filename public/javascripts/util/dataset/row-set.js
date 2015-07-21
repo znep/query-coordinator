@@ -884,44 +884,63 @@ var RowSet = ServerModel.extend({
                 (args.params['$having'] + ' and ' + soqlHaving) : soqlHaving;
         }
 
+        var hasGroups = !_.isEmpty(rs._jsonQuery.group);
+        var hasBaseQueryGroups = !_.isEmpty(baseQuery.group);
+        var baseQueryIsQuery = rs.id === baseQuery.id;
+
         // If queryBase has any group bys, we can't add more
-        if (!_.isEmpty(rs._jsonQuery.group) && _.isEmpty(baseQuery.group))
-        {
-            var soqlGroup = [];
-            var groupSelect = [];
-            _.each(rs._jsonQuery.group, function(gb)
-            {
-                var qbCF = Dataset.translateColumnToQueryBase(gb.columnFieldName, rs._dataset);
-                if ($.isBlank(qbCF)) { return; }
-                if ($.isBlank(gb.groupFunction))
-                {
-                    soqlGroup.push(qbCF);
-                    groupSelect.push(qbCF);
-                }
-                else
-                {
-                    var k = qbCF + '__' + gb.groupFunction;
-                    soqlGroup.push(k);
-                    groupSelect.push(gb.groupFunction + '(' + qbCF + ') as ' + k);
-                }
-            });
-            soqlGroup = _.uniq(soqlGroup).join(',');
-            args.params['$group'] = !$.isBlank(args.params['$group']) ?
-                (args.params['$group'] + ',' + soqlGroup) : soqlGroup;
-            groupSelect = _.uniq(groupSelect.concat(
-                    _.compact(_.map(rs._jsonQuery.select, function(s)
-                        {
-                            if (!$.isBlank(s.aggregate))
-                            {
-                                var qbCF = Dataset.translateColumnToQueryBase(s.columnFieldName, rs._dataset);
-                                if ($.isBlank(qbCF)) { return null; }
-                                return s.aggregate + '(' + qbCF + ')';
-                            }
-                            return null;
-                        })))).join(',');
-            var sel = (args.params['$select'] || '').replace(/:\*,\*/, '');
-            args.params['$select'] = !$.isBlank(sel) ?
-                (sel + ',' + groupSelect) : groupSelect;
+        if ((hasGroups && !hasBaseQueryGroups) || (hasGroups && hasBaseQueryGroups && baseQueryIsQuery)) {
+          var soqlGroup = [];
+          var groupSelect = [];
+
+          _.each(rs._jsonQuery.group, function(gb) {
+            var qbCF = Dataset.translateColumnToQueryBase(gb.columnFieldName, rs._dataset);
+
+            if ($.isBlank(qbCF)) {
+              return;
+            }
+
+            if ($.isBlank(gb.groupFunction)) {
+              soqlGroup.push(qbCF);
+              groupSelect.push(qbCF);
+            } else {
+              var k = qbCF + '__' + gb.groupFunction;
+              soqlGroup.push(k);
+              groupSelect.push(gb.groupFunction + '(' + qbCF + ') as ' + k);
+            }
+          });
+
+          soqlGroup = _.uniq(soqlGroup).join(',');
+          args.params['$group'] = !$.isBlank(args.params['$group']) ?
+            (args.params['$group'] + ',' + soqlGroup) : soqlGroup;
+
+          groupSelect = _.uniq(
+            groupSelect.concat(
+              _.compact(
+                _.map(
+                  rs._jsonQuery.select,
+                  function(s) {
+                    if (!$.isBlank(s.aggregate)) {
+                      var qbCF = Dataset.translateColumnToQueryBase(s.columnFieldName, rs._dataset);
+
+                      if ($.isBlank(qbCF)) {
+                        return null;
+                      }
+
+                      return s.aggregate + '(' + qbCF + ')';
+                    }
+
+                    return null;
+                  }
+                )
+              )
+            )
+          ).join(',');
+
+          var sel = (args.params['$select'] || '').replace(/:\*,\*/, '');
+
+          args.params['$select'] = !$.isBlank(sel) ?
+            (sel + ',' + groupSelect) : groupSelect;
         }
 
         rs._dataset.makeRequest(args);
@@ -1074,12 +1093,25 @@ var RowSet = ServerModel.extend({
                     }
                     return c;
                 });
-                if (!_.any(newCols, function(c) { return c.fieldName == ':id'; }) &&
-                        $.isBlank(rs._dataset.metaColumnForName('id')))
-                {
-                    newCols.push({ id: -1, name: 'id', fieldName: ':id',
-                                dataTypeName: 'meta_data', renderTypeName: 'meta_data' });
+
+                var hasSystemIDColumn = _.any(newCols, function(c) {
+                  return c && c.fieldName == ':id';
+                });
+
+                var hasIDColumn = !$.isBlank(rs._dataset.metaColumnForName('id'));
+
+                if (!hasSystemIDColumn && !hasIDColumn) {
+                  newCols.push({
+                    id: -1,
+                    name: 'id',
+                    fieldName: ':id',
+                    dataTypeName: 'meta_data',
+                    renderTypeName: 'meta_data'
+                  });
                 }
+
+                newCols = _.compact(newCols);
+
                 rs.trigger('metadata_update', [ { columns: newCols }, false, true ]);
             }
             // If we loaded without meta but don't have meta available, bail

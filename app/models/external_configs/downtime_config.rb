@@ -18,14 +18,14 @@ class DowntimeConfig < ExternalConfig
           Downtime.new(time['message_start'], time['message_end'],
                        time['downtime_start'], time['downtime_end'])
         end
-        Rails.logger.info("#{Time.now} - Downtimes loaded! #{@downtimes.inspect}")
+        Rails.logger.info("Downtimes loaded! #{@downtimes.inspect}")
       else
 
-        Rails.logger.warn("#{Time.now} - Unable to load downtime banner file: #{filename}")
+        Rails.logger.warn("Unable to load downtime banner file: #{filename}")
       end
     rescue StandardError => e
       # Ignore all errors/typos from the downtime parsing
-      puts("#{Time.now} - Error loading downtime banner file: #{filename} - #{e}")
+      puts("Error loading downtime banner file: #{filename} - #{e}")
     end
   end
 end

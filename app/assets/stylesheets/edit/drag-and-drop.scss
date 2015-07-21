@@ -19,10 +19,10 @@
 #block-ghost {
   @include media-query-property(
     'width',
-    $main-content-width-small,
-    $main-content-width-medium,
-    $main-content-width-large,
-    $main-content-width-extra-large
+    $main-content-width-small / 2,
+    $main-content-width-medium / 2,
+    $main-content-width-large / 2,
+    $main-content-width-extra-large / 2
   );
 
   position: fixed;

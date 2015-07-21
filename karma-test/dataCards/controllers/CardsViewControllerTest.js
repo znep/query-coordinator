@@ -188,10 +188,10 @@ describe('CardsViewController', function() {
     }, context);
   }
 
-  function testCard() {
+  function testCard(id) {
     return {
       'description': '',
-      'fieldName': _.uniqueId('testFieldName'),
+      'fieldName': 'testFieldName_{0}'.format(id),
       'cardSize': 1,
       'cardType': 'column',
       'expanded': false,
@@ -394,12 +394,16 @@ describe('CardsViewController', function() {
 
     function makeMinimalController() {
       var controllerHarness = makeController();
-      var cardBlobs = _.times(3, testCard).
-        map(
-          function(cardBlob) {
-            return new Card(controllerHarness.page, cardBlob.fieldName, cardBlob);
-          }
-        );
+
+      // This array will create a mixture of unique and non-unique field names.
+      // For example: 'testFieldName_0', 'testFieldName_1', 'testFieldName_1'.
+      // This is necessary because we need to test cards with the same and
+      // different field names.
+      var fieldNameIds = [0, 1, 1];
+      var cardBlobs = _.map(fieldNameIds, function(n) {
+        var cardBlob = testCard(n);
+        return new Card(controllerHarness.page, cardBlob.fieldName, cardBlob);
+      });
       controllerHarness.page.set('cards', cardBlobs);
       return controllerHarness;
     }
@@ -434,9 +438,17 @@ describe('CardsViewController', function() {
 
     describe('with card filters applied', function() {
       var harness;
+      var cards;
+      var firstCard;
+      var secondCard;
+      var secondCardDuplicate;
 
       beforeEach(function() {
         harness = makeMinimalController();
+        cards = harness.page.getCurrentValue('cards');
+        firstCard = cards[0];
+        secondCard = cards[1];
+        secondCardDuplicate = cards[2];
       });
 
       afterEach(function() {
@@ -449,15 +461,15 @@ describe('CardsViewController', function() {
           new Filter.IsNullFilter(true),
           new Filter.BinaryOperatorFilter('=', 'test'),
         ];
-        var cards = harness.page.getCurrentValue('cards');
-        cards[0].set('activeFilters', [filters[0]]);
-        cards[2].set('activeFilters', [filters[1]]);
+
+        firstCard.set('activeFilters', [filters[0]]);
+        secondCard.set('activeFilters', [filters[1]]);
 
         harness.$scope.clearAllFilters();
 
-        expect(cards[0].getCurrentValue('activeFilters')).to.be.empty;
-        expect(cards[1].getCurrentValue('activeFilters')).to.be.empty;
-        expect(cards[2].getCurrentValue('activeFilters')).to.be.empty;
+        expect(firstCard.getCurrentValue('activeFilters')).to.be.empty;
+        expect(secondCard.getCurrentValue('activeFilters')).to.be.empty;
+        expect(secondCardDuplicate.getCurrentValue('activeFilters')).to.be.empty;
       }));
 
       it('should register a flyout for a clear-all-filters button', function() {
@@ -477,24 +489,21 @@ describe('CardsViewController', function() {
           var filterOne = new Filter.IsNullFilter(true);
           var filterTwo = new Filter.BinaryOperatorFilter('=', 'test');
 
-          var firstCard = harness.page.getCurrentValue('cards')[0];
-          var thirdCard = harness.page.getCurrentValue('cards')[2];
-
           // Just one card
           firstCard.set('activeFilters', [filterOne]);
           expect(harness.$scope.globalWhereClauseFragment).to.equal(filterOne.generateSoqlWhereFragment(firstCard.fieldName));
 
           // Two filtered cards
-          thirdCard.set('activeFilters', [filterTwo]);
+          secondCard.set('activeFilters', [filterTwo]);
           expect(harness.$scope.globalWhereClauseFragment).to.equal(
             '{0} AND {1}'.format(
               filterOne.generateSoqlWhereFragment(firstCard.fieldName),
-              filterTwo.generateSoqlWhereFragment(thirdCard.fieldName)
+              filterTwo.generateSoqlWhereFragment(secondCard.fieldName)
               ));
 
           // One filtered card, with two filters.
           firstCard.set('activeFilters', [filterOne, filterTwo]);
-          thirdCard.set('activeFilters', []);
+          secondCard.set('activeFilters', []);
           expect(harness.$scope.globalWhereClauseFragment).to.equal(
             '{0} AND {1}'.format(
               filterOne.generateSoqlWhereFragment(firstCard.fieldName),
@@ -505,36 +514,45 @@ describe('CardsViewController', function() {
           var filterOne = new Filter.IsNullFilter(false);
           var filterTwo = new Filter.BinaryOperatorFilter('=', 'test');
 
-          var firstCard = harness.page.getCurrentValue('cards')[0];
-          var thirdCard = harness.page.getCurrentValue('cards')[2];
-
           // Just one card
           firstCard.set('activeFilters', [filterOne]);
           expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' ]);
           expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank' ]);
 
           // Two filtered cards
-          thirdCard.set('activeFilters', [filterTwo]);
+          secondCard.set('activeFilters', [filterTwo]);
           expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' , 'is' ]);
           expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', filterTwo.operand ]);
 
           // One filtered card, with two filters.
           firstCard.set('activeFilters', [filterOne, filterTwo]);
-          thirdCard.set('activeFilters', []);
+          secondCard.set('activeFilters', []);
           // NOTE: for MVP, only the first filter is honored for a particular card. See todo in production code.
           expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' ]);
           expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank' ]);
+
+          // Two identical filtered cards
+          firstCard.set('activeFilters', []);
+          secondCard.set('activeFilters', [filterOne]);
+          secondCardDuplicate.set('activeFilters', [filterTwo]);
+          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is not' , 'is' ]);
+          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', filterTwo.operand ]);
         }));
 
         it('should render a whitespace-only operand filter the same way as a null filter', inject(function(Filter) {
           var filterOne = new Filter.IsNullFilter(true);
           var filterTwo = new Filter.BinaryOperatorFilter('=', ' ');
 
-          var firstCard = harness.page.getCurrentValue('cards')[0];
-          var thirdCard = harness.page.getCurrentValue('cards')[2];
-
           firstCard.set('activeFilters', [filterOne]);
-          thirdCard.set('activeFilters', [filterTwo]);
+          secondCard.set('activeFilters', [filterTwo]);
+
+          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is' , 'is' ]);
+          expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', 'blank' ]);
+
+          // Two identical filtered cards
+          firstCard.set('activeFilters', []);
+          secondCard.set('activeFilters', [filterOne]);
+          secondCardDuplicate.set('activeFilters', [filterTwo]);
 
           expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operator')).to.deep.equal([ 'is' , 'is' ]);
           expect(_.pluck(harness.$scope.appliedFiltersForDisplay, 'operand')).to.deep.equal([ 'blank', 'blank' ]);
@@ -548,8 +566,6 @@ describe('CardsViewController', function() {
 
           var filterOne = new Filter.IsNullFilter(false);
           var filterTwo = new Filter.BinaryOperatorFilter('=', 'test2');
-          var firstCard = harness.page.getCurrentValue('cards')[0];
-          var thirdCard = harness.page.getCurrentValue('cards')[2];
 
           // Just one card
           firstCard.set('activeFilters', [filterOne]);
@@ -562,22 +578,33 @@ describe('CardsViewController', function() {
             );
 
           // Two filtered cards
-          thirdCard.set('activeFilters', [filterTwo]);
+          secondCard.set('activeFilters', [filterTwo]);
           expect(harness.$scope.globalWhereClauseFragment).to.equal(
             '{0} AND {1} AND {2}'.format(
               fakeBaseFilter,
               filterOne.generateSoqlWhereFragment(firstCard.fieldName),
-              filterTwo.generateSoqlWhereFragment(thirdCard.fieldName)
+              filterTwo.generateSoqlWhereFragment(secondCard.fieldName)
               ));
 
           // One filtered card, with two filters.
           firstCard.set('activeFilters', [filterOne, filterTwo]);
-          thirdCard.set('activeFilters', []);
+          secondCard.set('activeFilters', []);
           expect(harness.$scope.globalWhereClauseFragment).to.equal(
             '{0} AND {1} AND {2}'.format(
               fakeBaseFilter,
               filterOne.generateSoqlWhereFragment(firstCard.fieldName),
               filterTwo.generateSoqlWhereFragment(firstCard.fieldName)
+              ));
+
+          // Two identical filtered cards
+          firstCard.set('activeFilters', []);
+          secondCard.set('activeFilters', [filterOne]);
+          secondCardDuplicate.set('activeFilters', [filterTwo]);
+          expect(harness.$scope.globalWhereClauseFragment).to.equal(
+            '{0} AND {1} AND {2}'.format(
+              fakeBaseFilter,
+              filterOne.generateSoqlWhereFragment(secondCard.fieldName),
+              filterTwo.generateSoqlWhereFragment(secondCardDuplicate.fieldName)
               ));
         }));
       });

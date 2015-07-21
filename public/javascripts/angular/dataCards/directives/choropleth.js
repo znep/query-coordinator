@@ -19,8 +19,6 @@
     // individual dataset.
     var visualizationUtils = ChoroplethVisualizationService.utils;
 
-    var geojsonBaseLayer;
-
     /**
      * A choropleth legend, with discrete colors for ranges of values.
      */
@@ -765,6 +763,9 @@
                     '</div>',
                   '</div>'].join(''),
       link: function choroplethLink(scope, element, attrs) {
+
+        var mouseEnter$ = Rx.Observable.fromEvent(element, 'mouseenter');
+        var mouseLeave$ = Rx.Observable.fromEvent(element, 'mouseleave');
         var LegendType = attrs.stops === 'continuous' ? LegendContinuous : LegendDiscrete;
         var legend = new LegendType(element.find('.choropleth-legend'), element, scope);
         var savedExtent$ = scope.$observe('savedExtent');
@@ -776,6 +777,7 @@
         var selectionBoxValue = selectionBox.find('.choropleth-selection-value');
         var clearSelectionButton = selectionBox.find('.icon-close');
         var map;
+        var geojsonBaseLayer;
         var minLng;
         var maxLng;
         var minLat;
@@ -1163,30 +1165,41 @@
         }
 
         FlyoutService.register({
-          selector: '{0}, {1}, {2}'.format(
-            selectionBox.selector,
-            selectionBoxFilterIcon.selector,
-            selectionBoxValue.selector
-          ),
-          render: renderFlyout,
-          positionOn: function(target) {
-            if (!$(target).parent().is(selectionBox.selector)) {
-              return selectionBox[0];
-            }
-          },
-          destroySignal: scope.$destroyAsObservable(element)
-        });
-
-        FlyoutService.register({
           selector: clearSelectionButton.selector,
           render: _.constant('<div class="flyout-title">{0}</div>'.format(I18n.flyout.clearFilter))
         });
 
-        FlyoutService.register({
-          selector: '.leaflet-clickable',
-          render: renderFlyout,
-          destroySignal: scope.$destroyAsObservable(element),
-          trackCursor: true
+        // Register these flyouts when we our mouse enters the map,
+        // deregister them when our mouse leaves the map.
+        mouseEnter$.subscribe(function() {
+
+          FlyoutService.register({
+            selector: '.leaflet-clickable',
+            render: renderFlyout,
+            destroySignal: Rx.Observable.merge(
+              scope.$destroyAsObservable(element),
+              mouseLeave$
+            ),
+            trackCursor: true
+          });
+
+          FlyoutService.register({
+            selector: '{0}, {1}, {2}'.format(
+              selectionBox.selector,
+              selectionBoxFilterIcon.selector,
+              selectionBoxValue.selector
+            ),
+            render: renderFlyout,
+            positionOn: function(target) {
+              if (!$(target).parent().is(selectionBox.selector)) {
+                return selectionBox[0];
+              }
+            },
+            destroySignal: Rx.Observable.merge(
+              scope.$destroyAsObservable(element),
+              mouseLeave$
+            )
+          });
         });
 
         /***************
@@ -1269,9 +1282,9 @@
           }).
           publish();
 
-          // Only subscribe once everything is wired up,
-          // otherwise some subscribers may miss the first
-          // value from the scope.observe().
+        // Only subscribe once everything is wired up,
+        // otherwise some subscribers may miss the first
+        // value from the scope.observe().
 
         // Remove old map layers.
         tileLayer.bufferWithCount(2, 1).subscribe(function(layers) {

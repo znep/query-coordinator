@@ -15,19 +15,6 @@
           title="{{'addCardDialog.addThisCard' | I18n}}"
           ng-repeat="fieldName in datasetColumns.available">{{columnHumanNameFn(fieldName)}}</soc-option>
 
-        <soc-option value="null" disabled="disabled" ng-if="datasetColumns.alreadyOnPage.length > 0"></soc-option>
-
-        <soc-option
-          value="null"
-          disabled="disabled"
-          ng-if="datasetColumns.alreadyOnPage.length > 0"><b>{{'addCardDialog.cardOnPage' | I18n}}</b></soc-option>
-
-        <soc-option
-          value="{{fieldName}}"
-          title="{{'addCardDialog.cardOnPageLong' | I18n}}"
-          disabled="disabled"
-          ng-repeat="fieldName in datasetColumns.alreadyOnPage">-{{columnHumanNameFn(fieldName)}}</soc-option>
-
         <soc-option value="null" disabled="disabled" ng-if="datasetColumns.visualizationUnsupported.length > 0"></soc-option>
 
         <soc-option

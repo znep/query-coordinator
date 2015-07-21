@@ -166,6 +166,7 @@
           currentRangeFilterValues$,
           brushStartIndices$.startWith(null),
           function(cardData, dimensions, currentRangeFilterValues) {
+
             var indices = null;
             var selectionPixels = [0, 0];
             // Add a selected path/area to our data that duplicates the filtered version
@@ -286,4 +287,3 @@
     directive('histogram', histogramDirective);
 
 })();
-

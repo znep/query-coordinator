@@ -57,6 +57,7 @@
         var aggregation$ = cardModel.observeOnLatest('page.aggregation');
         var activeFilters$ = cardModel.observeOnLatest('activeFilters');
         var fieldName$ = cardModel.pluck('fieldName');
+        var cardId$ = cardModel.pluck('uniqueId');
         var expanded$ = cardModel.observeOnLatest('expanded');
         var rowDisplayUnit$ = cardModel.observeOnLatest('page.aggregation.unit');
 
@@ -77,22 +78,34 @@
 
         var activeFiltersExcludingOwn$ = cardModel.observeOnLatest('page.activeFilters').
           withLatestFrom(
-            fieldName$,
+            cardId$,
             activeFilters$,
-            function(activeFilters, fieldName, ownFilters) {
-              var cardFilters = _(activeFilters).chain().get(fieldName).difference(ownFilters).value();
-              var filterHolder = _.extend({}, activeFilters);
-              filterHolder[fieldName] = cardFilters;
-              return filterHolder;
+            function(activeFilters, cardId, ownFilters) {
+              var cardFilters;
+              var cardFilterIndex = _.findIndex(activeFilters, function(cardFilterInfo) {
+                return cardFilterInfo.uniqueId === cardId;
+              });
+
+              if (_.isDefined(activeFilters[cardFilterIndex])) {
+
+                // This _.difference will always return [].  It may be
+                // useful in the future if we have multiple filters on a single
+                // card, or cards applying filters on other cards.
+                cardFilters = _.difference(activeFilters[cardFilterIndex].filters, ownFilters);
+                activeFilters[cardFilterIndex].filters = cardFilters;
+              }
+
+              return activeFilters;
             });
 
         var whereClauseExcludingOwn$ = activeFiltersExcludingOwn$.
-          map(function(filters) {
-            var wheres = _.map(filters, function(operators, field) {
-              if (_.isEmpty(operators)) {
+          map(function(pageFilters) {
+            var wheres = _.map(pageFilters, function(cardFilterInfo) {
+              if (_.isEmpty(cardFilterInfo.filters)) {
                 return null;
               } else {
-                return _.invoke(operators, 'generateSoqlWhereFragment', field).join(' AND ');
+                return _.invoke(cardFilterInfo.filters, 'generateSoqlWhereFragment', cardFilterInfo.fieldName).
+                  join(' AND ');
               }
             });
             return _.compact(wheres).join(' AND ');

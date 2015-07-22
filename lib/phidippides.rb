@@ -83,6 +83,7 @@ class Phidippides < SocrataHttp
     begin
       migrations = backend_view.migrations
       backend_view = dataset_view(migrations[:obeId])
+
     rescue CoreServer::ResourceNotFound
       # NOOP
     end
@@ -96,6 +97,12 @@ class Phidippides < SocrataHttp
   # decorate the metadata with properties for position, visibility in table, and
   # various kinds of format options
   def mirror_nbe_column_metadata!(backend_view, nbe_dataset)
+
+    # Add row label
+    unless backend_view.metadata.nil? || backend_view.metadata.rowLabel.nil?
+      nbe_dataset[:rowDisplayUnit] = backend_view.metadata.rowLabel
+    end
+
     backend_view.columns.each do |column|
       nbe_column = nbe_dataset[:columns][column.fieldName.to_sym]
 

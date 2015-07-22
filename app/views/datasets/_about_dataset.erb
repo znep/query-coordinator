@@ -181,6 +181,10 @@
       <dd><%= @view.is_public? ? t('screens.about.public') : t('controls.about.private') %></dd>
       <dt><%= t('screens.about.tags') %></dt>
       <dd><span class="wrap"><%= @view.tag_display_string %></span></dd>
+      <%- if @view.dataset? %>
+      <dt><%= t('screens.about.row_label') %></dt>
+      <dd><span class="wrap row_label"><%= @view.metadata.nil? ? '' : @view.metadata.rowLabel %></span></dd>
+      <%- end %>
       <%- if @view.is_tabular? %>
       <dt><%= t('screens.about.row_count') %></dt>
       <dd><span class="wrap row_count"><%= @row_count %></span></dd>

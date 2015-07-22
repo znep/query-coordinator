@@ -295,6 +295,17 @@ class PhidippidesTest < Test::Unit::TestCase
     assert_equal('percent', result[:columns]['voice_roughness']['renderTypeName'])
   end
 
+  def test_mirror_nbe_column_metadata_with_row_label
+    obe_dataset = View.new(old_backend_columns)
+    nbe_dataset = new_backend_columns
+
+    # Define rowLabel in a new metadata blob
+    rowLabel = OpenStruct.new('rowLabel' => 'testLabel')
+    obe_dataset.stubs(:metadata => rowLabel)
+    result = phidippides.mirror_nbe_column_metadata!(obe_dataset, nbe_dataset)
+    assert_equal('testLabel', nbe_dataset[:rowDisplayUnit])
+  end
+
   private
 
   # noinspection RubyArgCount

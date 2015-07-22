@@ -108,6 +108,23 @@
         }
     };
 
+    var preSubmitDefaultRowLabel = function() {
+      var $rowLabel = $form.find('#view_metadata_rowLabel');
+      var rowLabelInput;
+
+      // If not a dataset page, return out
+      if ($rowLabel.length === 0) { return; }
+
+      rowLabelInput = $rowLabel.val().trim();
+
+      // If row label was given an empty value or the placeholder is showing,
+      // default it to 'Row' and remove the 'prompt' class.
+      if (_.isEmpty(rowLabelInput) || $rowLabel.hasClass('prompt')) {
+        $rowLabel.attr('value', 'Row');
+        $rowLabel.removeClass('prompt');
+      }
+    }
+
     // Now we're ready to uniform everything
     $('select').uniform();
 
@@ -124,6 +141,7 @@
         if ($(this).is('.disabled'))
         { return; }
         preSubmitCustomRdf();
+        preSubmitDefaultRowLabel();
         if ($form.valid())
         {
             $form.submit();

@@ -60,7 +60,7 @@ $(function(){
     $("#progressbar").progressbar("value", progress);
   }
 
-  function makePaneConfig() 
+  function makePaneConfig()
   {
     var nextPaneMap = {};
     var panes = [];
@@ -70,7 +70,7 @@ $(function(){
     var onActivate = {};
     var currentPaneId;
 
-    $("#skip").click(function(eventObj){ 
+    $("#skip").click(function(eventObj){
       if (onTransition[currentPaneId])
       {
         onTransition[currentPaneId](
@@ -79,9 +79,9 @@ $(function(){
           function(){commandObj.next('apiPublish');}
         );
       }
-      else 
+      else
       {
-        commandObj.next('apiPublish'); 
+        commandObj.next('apiPublish');
       }
     });
 
@@ -114,7 +114,7 @@ $(function(){
     {
       getApiView(
         callback,
-        defaultErrorHandler 
+        defaultErrorHandler
       );
       return false;
     }
@@ -273,7 +273,7 @@ $(function(){
             defaultErrorHandler
           );
         }
-        if ($i.value()) 
+        if ($i.value())
         {
           if (col.hidden)
           {
@@ -281,7 +281,7 @@ $(function(){
           }
           else { doUpdate(); }
         }
-        else 
+        else
         {
           if (col.hidden)
           {
@@ -357,17 +357,17 @@ $(function(){
     function doWorkBeforeTransition($pane, state, forward){
       startTransitionUI();
       var transitionFn = onTransition[currentPaneId];
-      if (transitionFn) 
-      { 
+      if (transitionFn)
+      {
         var nextPaneOrFalse = transitionFn(
-          $pane, 
-          state, 
+          $pane,
+          state,
           function()
           {
             if (forward){ commandObj.next(nextPaneMap[currentPaneId]);}
             else {commandObj.prev();}
           }
-        ); 
+        );
         return nextPaneOrFalse;
       }
       else { return (forward ?  nextPaneMap[id] : 1); }
@@ -412,7 +412,7 @@ $(function(){
         onPrev: defaultOnPrev,
         onNext: defaultOnNext
       });
-    } 
+    }
     else {
       $('#checkpub').remove();
       panes.push({
@@ -423,7 +423,7 @@ $(function(){
         onNext: defaultOnNext
       });
     }
-    
+
     panes.push({
       uniform: true,
       key: 'datasetResourceName',
@@ -509,7 +509,7 @@ $(function(){
     stepTotal = ordinal - 1;
     return paneConfig;
   }
-  
+
   function getDataset(callback, errorCallback)
   {
     if (blist.configuration.apiFoundry.ds){callback(blist.configuration.apiFoundry.ds);}
@@ -591,7 +591,7 @@ $(function(){
     {
       col.update(changes);
       col.save(
-        callback, 
+        callback,
         function(err)
         {
           col.update(original);
@@ -614,7 +614,7 @@ $(function(){
       messages: {
         'resourceName':'this is required'
       },
-      errorPlacement: function (label, $el) 
+      errorPlacement: function (label, $el)
       {
           $el.closest('.line').append(label);
       }

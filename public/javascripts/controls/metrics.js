@@ -218,6 +218,10 @@
                 .appendTo($screen.find('.' + section.renderTo));
         });
 
+        if (blist.feature_flags.embetter_analytics_page) {
+            $exportLink.addClass('button');
+        }
+
         var updateExportLink = function()
         {
             if ($exportLink.length > 0)

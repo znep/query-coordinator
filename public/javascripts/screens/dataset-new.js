@@ -348,17 +348,14 @@ $wizard.wizard({
                     }, 2000);
                 };
 
-                var saveFormMetadata = function()
-                {
-                    if (_.isUndefined(state.submittedView))
-                    {
-                        new Dataset(viewData).saveNew(successCallback, errorCallback);
-                    }
-                    else
-                    {
-                        state.submittedView.update(viewData);
-                        state.submittedView.save(successCallback, errorCallback);
-                    }
+                var saveFormMetadata = function() {
+                  if (_.isUndefined(state.submittedView)) {
+                    var useNBE = blist.feature_flags.default_imports_to_nbe;
+                    new Dataset(viewData).saveNew(useNBE, successCallback, errorCallback);
+                  } else {
+                      state.submittedView.update(viewData);
+                      state.submittedView.save(successCallback, errorCallback);
+                  }
                 };
 
                 if ((state.type == 'blist') || (state.type  == 'blobby') || (state.type == 'external') ||

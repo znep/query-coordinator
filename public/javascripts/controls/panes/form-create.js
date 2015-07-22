@@ -95,12 +95,16 @@
                     else { finish(); }
                 });
 
-                cpObj._view.saveNew(function(nv)
-                {
-                    newView = nv;
-                    finish();
-                },
-                function(xhr) { cpObj._genericErrorHandler(xhr); });
+                // In the future, we will need to always useNBE.
+                // For now, all we can do is use OBE.
+                var useNBE = false;
+
+                cpObj._view.saveNew(useNBE, function(nv) {
+                  newView = nv;
+                  finish();
+                }, function(xhr) {
+                  cpObj._genericErrorHandler(xhr);
+                });
             }
             else
             {

@@ -21,7 +21,7 @@
       throw new Error('`ghostElement` argument must point to exactly one element');
     }
 
-    var _draggedBlockContent = null;
+    var _blockContent = null;
 
     // TODO calculate from mouse down location.
     var _ghostCursorOffset = 0;
@@ -36,9 +36,9 @@
       _storyUidDraggedOver = undefined;
       $('body').addClass('dragging');
 
-      sourceBlockElement = $(pointer.target).closest('.inspiration-block');
+      sourceBlockElement = $(pointer.target).closest('[data-block-content]');
 
-      _draggedBlockContent = JSON.parse(sourceBlockElement.attr('data-block-content'));
+      _blockContent = JSON.parse(sourceBlockElement.attr('data-block-content'));
 
       ghostElement.
         removeClass('hidden').
@@ -83,7 +83,7 @@
         dispatcher.dispatch({
           action: Constants.STORY_DRAG_OVER,
           storyUid: _storyUidDraggedOver,
-          draggedBlockId: _draggedBlockContent,
+          blockContent: _blockContent,
           pointer: pointer,
           storyElement: storyOver[0]
         });
@@ -100,21 +100,23 @@
 
       var storyUidOver = $(pointer.target).closest('.story').attr('data-story-uid');
 
-      var draggedBlock = _draggedBlockContent;
+      var blockContent = _blockContent;
 
       $('body').removeClass('dragging');
-      _draggedBlockContent = null;
+      _blockContent = null;
       ghostElement.addClass('hidden');
 
-      dispatcher.dispatch({
-        action: Constants.STORY_DROP,
-        blockContent: draggedBlock,
-        storyUid: storyUidOver
-      });
+      if (storyUidOver) {
+        dispatcher.dispatch({
+          action: Constants.STORY_DROP,
+          blockContent: blockContent,
+          storyUid: storyUidOver
+        });
+      }
     };
 
     this.setup = function() {
-      this.bindHandles();
+      this.bindHandles(); //function from unidragger
     };
 
   }

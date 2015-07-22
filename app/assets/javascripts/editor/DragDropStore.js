@@ -53,10 +53,9 @@
      */
 
     function _storyDragOver(payload) {
-      Util.assertHasProperties(payload, 'storyUid', 'pointer', 'storyElement', 'draggedBlockId');
+      Util.assertHasProperties(payload, 'storyUid', 'pointer', 'storyElement');
 
-      if (window.storyStore.storyExists(payload.storyUid) &&
-          !window.storyStore.storyHasBlock(payload.storyUid, payload.draggedBlockId)) {
+      if (window.storyStore.storyExists(payload.storyUid)) {
         var dropIndex;
 
         var pointerY = Unipointer.getPointerPoint(payload.pointer).y - window.scrollY;

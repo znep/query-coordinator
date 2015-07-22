@@ -4,6 +4,7 @@ describe('DragDrop', function() {
   var story;
   var blocks;
   var ghost;
+  var inspirationBlockList;
 
   var dispatchedEvents;
   beforeEach(function() {
@@ -17,14 +18,20 @@ describe('DragDrop', function() {
     ghost = $('<div id="block-ghost" class="hidden">');
     story = $('<div class="story" data-story-uid="' + standardMocks.validStoryUid + '">');
 
-    ghost.css('position', 'absolute');
+    inspirationBlockList = $('<div class="inspiration-block-list">');
+    inspirationBlockList.append($('<div class="inspiration-block"></div>').
+      attr('data-block-content', JSON.stringify(standardMocks.validBlockData1)).
+      append('<span>other</span>')
+    );
 
+    ghost.css('position', 'absolute');
     story.append('<div class="block" data-block-id="' + standardMocks.firstBlockId + '"><span>content1</span></div>');
     story.append('<div class="block" data-block-id="' + standardMocks.secondBlockId + '"><span>content2</span></div>');
 
     blocks = story.find('.block');
     testDom.append(story);
     testDom.append(ghost);
+    testDom.append(inspirationBlockList);
   });
 
   describe('constructor', function() {
@@ -48,7 +55,7 @@ describe('DragDrop', function() {
 
       // Manually invoke dragStart - usually UniDragger does this for us.
       fakeDragStartEvent = {
-        target: testDom.find('[data-block-id="' + standardMocks.firstBlockId + '"] span')
+        target: testDom.find('[data-block-content]').first()
       };
       fakeDragStartPointer = fakeDragStartEvent;
       dragDrop.dragStart(fakeDragStartEvent, fakeDragStartPointer);
@@ -66,15 +73,16 @@ describe('DragDrop', function() {
       assert.equal(ghost.text(), fakeDragStartEvent.target.text());
     });
 
-    describe('and the pointer has moved', function() {
+    describe('and the pointer has moved over an inspiration block', function() {
       var fakeDragMoveEvent;
       var fakeDragMovePointer;
       var fakeMoveVector;
       var fakeDragStartPoint;
 
       beforeEach(function() {
+        // Fire first drag move over the inspiration block
         fakeDragMoveEvent = {
-          target: testDom.find('[data-block-id="' + standardMocks.firstBlockId + '"] span')
+          target: testDom.find('[data-block-content]').first()
         };
         fakeDragMovePointer = fakeDragMoveEvent;
 
@@ -104,27 +112,18 @@ describe('DragDrop', function() {
         assert.equal(ghost.css('top'), fakeDragStartPoint.y + 1 + 'px');
       });
 
-      it('should dispatch STORY_DRAG_ENTER followed by STORY_DRAG_OVER', function() {
-        assert.equal(dispatchedEvents.length, 2);
-
-        assert.deepEqual(dispatchedEvents[0], {
-          action: Constants.STORY_DRAG_ENTER,
-          storyUid: standardMocks.validStoryUid
-        })
-
-        assert.deepEqual(dispatchedEvents[1], {
-          action: Constants.STORY_DRAG_OVER,
-          storyUid: standardMocks.validStoryUid,
-          storyElement: story[0],
-          draggedBlockId: standardMocks.firstBlockId,
-          pointer: fakeDragMovePointer
-        })
+      it('should not dispatch any actions on first move', function() {
+        // First dragMove is over the inspiration block itself
+        assert.equal(dispatchedEvents.length, 0);
       });
 
-      describe('to outside the story', function() {
+      describe('and the pointer has moved from the block list into a story', function() {
+        var inspirationBlockList;
+
         beforeEach(function() {
+          // drag over an actual story block
           fakeDragMoveEvent = {
-            target: testDom
+            target: testDom.find('.block').first()
           };
           fakeDragMovePointer = fakeDragMoveEvent;
 
@@ -132,53 +131,44 @@ describe('DragDrop', function() {
           dragDrop.dragMove(fakeDragMoveEvent, fakeDragMovePointer, fakeMoveVector);
         });
 
-        it('should dispatch STORY_DRAG_LEAVE', function() {
-          assert.equal(dispatchedEvents.length, 3); // 2 from earlier describe block, 1 for STORY_DRAG_LEAVE.
+        it('should dispatch STORY_DRAG_ENTER and STORY_DRAG_OVER', function() {
+          // 1 for STORY_DRAG_ENTER, one for STORY_DRAG_OVER, and one for STORY_DRAG_LEAVE
+          assert.equal(dispatchedEvents.length, 2);
 
-          assert.deepEqual(dispatchedEvents[2], {
-            action: Constants.STORY_DRAG_LEAVE,
-            storyUid: standardMocks.validStoryUid
-          });
-        });
-
-      });
-
-      describe('to another story', function() {
-        var anotherStory;
-        var anotherStoryUid = 'batt-mann';
-
-        beforeEach(function() {
-          anotherStory = $('<div class="story story2" data-story-uid="' + anotherStoryUid + '">');
-          anotherStory.append('<div class="block" data-block-id="otherBlockId"><span>other</span></div>');
-          testDom.append(anotherStory);
-
-          fakeDragMoveEvent = {
-            target: testDom.find('.story2 .block span')
-          };
-          fakeDragMovePointer = fakeDragMoveEvent;
-
-          // Manually invoke dragMove - usually UniDragger does this for us.
-          dragDrop.dragMove(fakeDragMoveEvent, fakeDragMovePointer, fakeMoveVector);
-        });
-
-        it('should dispatch STORY_DRAG_LEAVE, STORY_DRAG_ENTER, and STORY_DRAG_OVER', function() {
-          // 2 from earlier describe block, 1 for STORY_DRAG_ENTER, one for STORY_DRAG_LEAVE, and one for STORY_DRAG_OVER
-          assert.equal(dispatchedEvents.length, 5);
-
-          assert.deepEqual(dispatchedEvents[2], {
-            action: Constants.STORY_DRAG_LEAVE,
-            storyUid: standardMocks.validStoryUid
-          });
-          assert.deepEqual(dispatchedEvents[3], {
+          assert.deepEqual(_.findWhere(dispatchedEvents, {'action': 'STORY_DRAG_ENTER'}), {
             action: Constants.STORY_DRAG_ENTER,
-            storyUid: anotherStoryUid
+            storyUid: standardMocks.validStoryUid
           });
-          assert.deepEqual(dispatchedEvents[4], {
+
+          assert.deepEqual(_.findWhere(dispatchedEvents, {'action': 'STORY_DRAG_OVER'}), {
             action: Constants.STORY_DRAG_OVER,
-            storyUid: anotherStoryUid,
-            storyElement: anotherStory[0],
-            draggedBlockId: standardMocks.firstBlockId,
-            pointer: fakeDragMovePointer
+            storyUid: standardMocks.validStoryUid,
+            blockContent: standardMocks.validBlockData1,
+            pointer: fakeDragMovePointer,
+            storyElement: $('[data-story-uid="' + standardMocks.validStoryUid + '"]')[0]
+          });
+        });
+
+        describe('and the user has dropped', function() {
+          var fakeDragEndEvent;
+          var fakeDragEndPointer;
+          beforeEach(function() {
+            // Manually invoke dragEnd - usually UniDragger does this for us.
+            // Drop our inspiration block on the first block element
+            fakeDragEndEvent = {
+              target: testDom.find('.block').first()
+            };
+            fakeDragEndPointer = fakeDragEndEvent;
+            dragDrop.dragEnd(fakeDragEndEvent, fakeDragEndPointer);
+          });
+
+          it('should invoke STORY_DROP', function() {
+            assert.deepEqual(_.findWhere(dispatchedEvents, {'action': 'STORY_DROP'}), {
+              action: Constants.STORY_DROP,
+              storyUid: standardMocks.validStoryUid,
+              blockContent: standardMocks.validBlockData1
+            });
+
           });
         });
 
@@ -189,24 +179,21 @@ describe('DragDrop', function() {
         var fakeDragEndPointer;
         beforeEach(function() {
           // Manually invoke dragEnd - usually UniDragger does this for us.
+          // Drop our inspiration block on the first block element
           fakeDragEndEvent = {
-            target: testDom.find('[data-block-id="' + standardMocks.firstBlockId + '"] span')
+            target: testDom.find('.inspiration-block').first()
           };
           fakeDragEndPointer = fakeDragEndEvent;
+
           dragDrop.dragEnd(fakeDragEndEvent, fakeDragEndPointer);
         });
 
-        it('should invoke STORY_DROP', function() {
-          assert.equal(dispatchedEvents.length, 3); // 2 from earlier describe blocks, 1 for STORY_DROP.
+        it('should not invoke STORY_DROP', function() {
 
-          assert.deepEqual(dispatchedEvents[2], {
-            action: Constants.STORY_DROP,
-            storyUid: standardMocks.validStoryUid,
-            blockId: standardMocks.firstBlockId
-          });
-
+          assert.isUndefined(_.findWhere(dispatchedEvents, {'action': 'STORY_DROP'}));
         });
       });
     });
   });
+
 });

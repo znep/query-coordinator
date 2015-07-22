@@ -24,11 +24,12 @@
       'HUMAN_READABLE_PROPERTY_NAME': '__SOCRATA_HUMAN_READABLE_NAME__',
 
       // Search card suggestion parameters.
-      'SUGGESTION_DISABLED_DATA_TYPES' : ['number', 'money'],
+      'SUGGESTION_DISABLED_DATA_TYPES': ['number', 'money'],
+      'MAX_NUMBER_OF_SUGGESTIONS': 10,
 
       // Customization parameters.
-      'CUSTOMIZATION_DISABLED_CARD_TYPES' : ['timeline'],
-      'CUSTOMIZATION_DISABLED_DATA_TYPES' : ['boolean'],
+      'CUSTOMIZATION_DISABLED_CARD_TYPES': ['timeline'],
+      'CUSTOMIZATION_DISABLED_DATA_TYPES': ['boolean'],
 
       // Visualization
       'NULL_VALUE_LABEL': '(No Value)',

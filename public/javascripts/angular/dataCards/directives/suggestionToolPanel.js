@@ -18,7 +18,7 @@
       },
       templateUrl: '/angular_templates/dataCards/suggestionToolPanel.html',
       link: function($scope) {
-        var SUGGESTION_LIMIT = 10;
+        var SUGGESTION_LIMIT = Constants.MAX_NUMBER_OF_SUGGESTIONS;
 
         var searchValueObservable = $scope.$observe('searchValue');
         var datasetObservable = $scope.$observe('dataset').filter(_.isPresent);
@@ -33,7 +33,7 @@
           function(columns, searchValue, datasetId, fieldName) {
             return {
               physicalDatatype: columns[fieldName].physicalDatatype,
-              searchOptions: [datasetId, fieldName, searchValue]
+              searchOptions: [datasetId, fieldName, searchValue, SUGGESTION_LIMIT]
             };
           }
         ).
@@ -74,7 +74,7 @@
               );
             }
             if (numberOfSuggestions > SUGGESTION_LIMIT) {
-              return 'Showing top {0} of {1} suggestions:'.format(SUGGESTION_LIMIT, numberOfSuggestions);
+              return 'Showing first {0} suggestions:'.format(SUGGESTION_LIMIT);
             }
           });
 

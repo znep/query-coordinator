@@ -6,13 +6,17 @@
 
     var serviceDefinition = {
 
-      suggest: function suggest(datasetId, fieldName, query) {
+      suggest: function suggest(datasetId, fieldName, query, limit) {
         // TODO Create a 4x4 validation service
         Assert(datasetId, 'Must provide a datasetId 4x4');
         Assert(fieldName, 'Must provide a fieldName value');
         Assert(query, 'Must provide a non-empty search query value');
         var url = $.baseUrl(
-          '/views/{0}/columns/{1}/suggest/{2}'.format(datasetId, fieldName, query)
+          '/views/{0}/columns/{1}/suggest/{2}?size={3}'.format(
+            datasetId,
+            fieldName,
+            query,
+            limit + 1)
         );
         var config = {
           cache: true,

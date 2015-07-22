@@ -49,6 +49,8 @@
         </div>
       </div>
 
+      <%- openid_login = CurrentDomain.module_enabled?(:openid_login) -%>
+      <%- if openid_login -%>
       <div class="editSection clearfix">
         <div class="line clearfix">
           <label>&nbsp;</label>
@@ -81,6 +83,7 @@
                 add_rpx_token_url(:section => 'openid'), :class => 'rpxnow button add addOpenIdButton' %>
         </div>
       </div>
+      <%- end -%>
 
       <div class="editSection clearfix">
         <div class="line clearfix">

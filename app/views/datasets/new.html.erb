@@ -239,6 +239,12 @@
                 <%= text_field_tag("view[tags]", '', :title => t("#{prefix}.tags_prompt"), :class => "textPrompt") %>
                 <div class="additionalHelp"><%= t("#{prefix}.keywords_help") %></div>
               </div>
+
+              <div class="line clearfix">
+                <label for="view_row_label"><%= t("#{prefix}.row_label") %></label>
+                <%= text_field_tag("view[metadata][rowLabel]", '', :title => t("#{prefix}.row_label_prompt"), :class => "textPrompt") %>
+                <div class="additionalHelp"><%= t("#{prefix}.row_label_help") %></div>
+              </div>
             </div>
 
             <div class="mapLayerMetadata">

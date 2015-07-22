@@ -93,6 +93,7 @@
             columnAggregatedUpon
           ) {
             var unit = rowDisplayUnit;
+
             if (columnAggregatedUpon) {
               unit = Dataset.extractHumanReadableColumnName(columnAggregatedUpon);
             }

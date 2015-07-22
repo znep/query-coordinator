@@ -37,6 +37,17 @@
       <div class="additionalHelp"><%= t('screens.edit_metadata.keywords_help') %></div>
     </div>
 
+    <%- if @view.dataset? -%>
+    <div class="line clearfix">
+      <label for="view_row_label"><%= t('screens.edit_metadata.row_label') %></label>
+      <%= text_field_tag("view[metadata][rowLabel]",
+        @view.metadata.nil? ? '' : @view.metadata.rowLabel,
+        :title => t('screens.edit_metadata.row_label_prompt'),
+        :class => "textPrompt") %>
+      <div class="additionalHelp"><%= t('screens.edit_metadata.row_label_help') %></div>
+    </div>
+    <%- end -%>
+
     <%- if @view.is_href? -%>
       <h2><%= t('screens.edit_metadata.external_datasets') %></h2>
       <%- if @view.metadata && @view.metadata.accessPoints -%>

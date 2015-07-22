@@ -8,6 +8,7 @@ var submitError = null;
 var formToViewMetadata = function(metadataForm)
 {
     var viewData = metadataForm.view;
+
     _.each(viewData, function(value, key)
     {
         if ($.isBlank(value))
@@ -15,6 +16,16 @@ var formToViewMetadata = function(metadataForm)
             delete viewData[key];
         }
     });
+
+    // If no row label is specified, default to 'Row'.
+    if (_.isUndefined(viewData.metadata)) {
+      viewData.metadata = {
+        rowLabel: 'Row'
+      };
+    } else if (_.isUndefined(viewData.metadata.rowLabel) ||
+      _.isEmpty(viewData.metadata.rowLabel.trim())) {
+      viewData.metadata.rowLabel = 'Row';
+    }
 
     // manually update some things in JSON
     if (!_.isUndefined(viewData.tags))

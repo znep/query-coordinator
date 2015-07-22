@@ -1250,7 +1250,6 @@ class View < Model
     end
   end
 
-
   def get_rating_class(rating)
     ['zero', 'one', 'two', 'three', 'four', 'five'][
       ((rating * 2.0).round / 2.0).floor] +

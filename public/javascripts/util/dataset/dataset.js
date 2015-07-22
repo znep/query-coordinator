@@ -319,32 +319,37 @@ var Dataset = ServerModel.extend({
         return true;
     },
 
-    saveNew: function(successCallback, errorCallback)
-    {
-        var dsOrig = this;
-        var dsCreated = function(newDS)
-        {
-            newDS = new Dataset(newDS);
-            if (!$.isBlank(dsOrig.accessType))
-            { newDS.setAccessType(dsOrig.accessType); }
-            if (_.isFunction(successCallback)) { successCallback(newDS); }
-        };
+    saveNew: function(useNBE, successCallback, errorCallback) {
+      var url = (useNBE) ? '/views?nbe=true' : '/views';
+      var dsOrig = this;
+      var dsCreated = function(newDS) {
+        newDS = new Dataset(newDS);
 
-        var ds = cleanViewForCreate(this);
-
-        // Munge permissions for forms, since those don't get carried over
-        // or inherited
-        if (dsOrig.isPublic() && dsOrig.type == 'form')
-        {
-            ds.flags = ds.flags || [];
-            ds.flags.push('dataPublicAdd');
+        if (!$.isBlank(dsOrig.accessType)) {
+          newDS.setAccessType(dsOrig.accessType);
         }
 
-        this.makeRequest({url: '/views.json', type: 'POST',
-            data: JSON.stringify(ds),
-            error: errorCallback,
-            success: dsCreated
-        });
+        if (_.isFunction(successCallback)) {
+          successCallback(newDS);
+        }
+      };
+
+      var ds = cleanViewForCreate(this);
+
+      // Munge permissions for forms, since those don't get carried over
+      // or inherited
+      if (dsOrig.isPublic() && dsOrig.type == 'form') {
+        ds.flags = ds.flags || [];
+        ds.flags.push('dataPublicAdd');
+      }
+
+      this.makeRequest({
+        url: url,
+        type: 'POST',
+        data: JSON.stringify(ds),
+        error: errorCallback,
+        success: dsCreated
+      });
     },
 
     update: function(newDS, fullUpdate, minorUpdate)
@@ -4158,30 +4163,30 @@ function cleanViewForSave(ds, allowedKeys)
     return dsCopy;
 };
 
-function cleanViewForCreate(ds)
-{
-    var dsCopy = ds.cleanCopy();
+function cleanViewForCreate(ds) {
+  var dsCopy = ds.cleanCopy();
 
-    if (!_.isUndefined(dsCopy.metadata))
-    {
-        delete dsCopy.metadata.facets;
-        delete dsCopy.metadata.filterCondition;
-    }
-    delete dsCopy.resourceName;
-    delete dsCopy.rowIdentifierColumnId;
+  if (!_.isUndefined(dsCopy.metadata)) {
+    delete dsCopy.metadata.facets;
+    delete dsCopy.metadata.filterCondition;
+  }
 
-    if (!$.isBlank(dsCopy.query))
-    { dsCopy.query.filterCondition = ds.cleanFilters(true); }
-    if ($.subKeyDefined(dsCopy, 'metadata.jsonQuery'))
-    {
-        // Clear anything marked temporary.
-        var jsonQuery = ds.cleanJsonFilters(true);
-        $.extend(dsCopy.metadata.jsonQuery, jsonQuery);
-        dsCopy.metadata.jsonQuery.where = jsonQuery.where;
-        dsCopy.metadata.jsonQuery.having = jsonQuery.having;
-    }
+  delete dsCopy.resourceName;
+  delete dsCopy.rowIdentifierColumnId;
 
-    return dsCopy;
+  if (!$.isBlank(dsCopy.query)) {
+    dsCopy.query.filterCondition = ds.cleanFilters(true);
+  }
+
+  if ($.subKeyDefined(dsCopy, 'metadata.jsonQuery')) {
+    // Clear anything marked temporary.
+    var jsonQuery = ds.cleanJsonFilters(true);
+    $.extend(dsCopy.metadata.jsonQuery, jsonQuery);
+    dsCopy.metadata.jsonQuery.where = jsonQuery.where;
+    dsCopy.metadata.jsonQuery.having = jsonQuery.having;
+  }
+
+  return dsCopy;
 };
 
 if (blist.inBrowser)

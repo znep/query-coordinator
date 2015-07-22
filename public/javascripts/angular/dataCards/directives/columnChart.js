@@ -612,7 +612,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           datum().
           name.
           toString().
-          replace(/\\/g, '\\\\');
+          replace(/\\/g, '\\\\').
+          replace(/"/g, '\\\"');
         barGroup = $(target).closest(element).
           find('.bar-group[data-bar-name="{0}"]'.format(barName)).
           get(0);

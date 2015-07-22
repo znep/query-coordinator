@@ -137,6 +137,17 @@ describe('columnChart', function() {
     });
   }
 
+  function testDataWithQuoteAtIndex(index) {
+    return _.map(testData, function(d, i) {
+      return {
+        name: i === index ? 'Name with "quotes"' : d.name,
+        total: d.total,
+        filtered: d.total / 2,
+        special: false
+      };
+    });
+  }
+
   beforeEach(module('dataCards'));
 
   beforeEach(module('dataCards.services'));
@@ -916,11 +927,11 @@ describe('columnChart', function() {
     });
 
     beforeEach(function() {
-      chart = createColumnChart(640, false, testDataWithFiltered);
       $('#uber-flyout').hide();
     });
 
     it('should appear on mouseover of a bar', function() {
+      chart = createColumnChart(640, false, testDataWithFiltered);
       var flyout = $('#uber-flyout');
       var barGroup = chart.element.find('.bar-group').get(0);
 
@@ -930,6 +941,7 @@ describe('columnChart', function() {
     });
 
     it('should appear on mouseover of a bar\'s label', function() {
+      chart = createColumnChart(640, false, testDataWithFiltered);
       var flyout = $('#uber-flyout');
       var barLabel = $(labelContents).eq(0);
 
@@ -939,6 +951,19 @@ describe('columnChart', function() {
     });
 
     it('should have the correct title', function() {
+      chart = createColumnChart(640, false, testDataWithFiltered);
+      var barLabel = $(labelContents).eq(0);
+      var labelText = barLabel.find('.text').text();
+      var flyoutTitle;
+      var flyout = $('#uber-flyout');
+
+      th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
+      flyoutTitle = flyout.find('.flyout-title').text();
+      expect(labelText).to.equal(flyoutTitle);
+    });
+
+    it('should escape quotes in the title', function() {
+      chart = createColumnChart(640, false, testDataWithQuoteAtIndex(0));
       var barLabel = $(labelContents).eq(0);
       var labelText = barLabel.find('.text').text();
       var flyoutTitle;
@@ -950,6 +975,7 @@ describe('columnChart', function() {
     });
 
     it('should disappear on mouseout of a bar and mouseover the flyout', function() {
+      chart = createColumnChart(640, false, testDataWithFiltered);
       var flyout = $('#uber-flyout');
       var barGroup = chart.element.find('.bar-group').get(0);
 

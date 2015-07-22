@@ -53,6 +53,7 @@
         var cards = _.map(pageMetadata.cards, function(serializedCard) {
           return Card.deserialize(self, serializedCard);
         });
+
         self.defineObservableProperty('cards', cards);
 
         _.each(fields, function(field) {
@@ -131,19 +132,26 @@
           return Rx.Observable.combineLatest(_.map(cards, function(d) {
             return d.observe('activeFilters');
           }), function() {
-            return _.zipObject(_.pluck(cards, 'fieldName'), arguments);
+            return _.map(cards, function(card) {
+              return {
+                filters: card.getCurrentValue('activeFilters'),
+                fieldName: card.fieldName,
+                uniqueId: card.uniqueId
+              }
+            });
           });
         });
 
         self.defineEphemeralObservablePropertyFromSequence('activeFilters',
           allCardsFilters);
 
-        var allCardsWheres = allCardsFilters.map(function(filters) {
-          var wheres = _.map(filters, function(operators, field) {
-            if (_.isEmpty(operators)) {
+        var allCardsWheres = allCardsFilters.map(function(pageFilters) {
+          var wheres = _.map(pageFilters, function(cardFilterInfo) {
+            if (_.isEmpty(cardFilterInfo.filters)) {
               return null;
             } else {
-              return _.invoke(operators, 'generateSoqlWhereFragment', field).join(' AND ');
+              return _.invoke(cardFilterInfo.filters, 'generateSoqlWhereFragment', cardFilterInfo.fieldName).
+                join(' AND ');
             }
           });
           return _.compact(wheres).join(' AND ');

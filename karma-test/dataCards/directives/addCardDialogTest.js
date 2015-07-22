@@ -101,14 +101,17 @@ describe('addCardDialog', function() {
 
         var sortedColumns = _.pairs(columns).
           map(function(columnPair) {
-            return { fieldName: columnPair[0], column: columnPair[1] };
+            return {
+              fieldName: columnPair[0],
+              columnInfo: columnPair[1]
+            };
           }).
           filter(function(columnPair) {
             // We need to ignore 'system' fieldNames that begin with ':' but
             // retain computed column fieldNames, which (somewhat inconveniently)
             // begin with ':@'.
-            return columnPair.fieldName.substring(0, 2).match(/\:[\_A-Za-z0-9]/) === null &&
-                   columnPair.column.physicalDatatype !== '*';
+            return _.isNull(columnPair.fieldName.substring(0, 2).match(/\:[\_A-Za-z0-9]/)) &&
+                   columnPair.columnInfo.physicalDatatype !== '*';
           }).
           sort(function(a, b) {
             // TODO: Don't we want to sort by column human name?
@@ -130,28 +133,16 @@ describe('addCardDialog', function() {
         var visualizationUnsupportedColumns = [];
 
         _.forEach(sortedColumns, function(column) {
-          available = !_.any(sortedCards, function(card) {
-            return card.fieldName === column.fieldName;
-          });
-
-          if (!available) {
-            availableCardCount--;
-          }
-
-          column.available = available;
 
           if (column.defaultCardType === 'invalid') {
             visualizationUnsupportedColumns.push(column.fieldName);
-          } else if (column.available) {
-            availableColumns.push(column.fieldName);
           } else {
-            alreadyOnPageColumns.push(column.fieldName);
+            availableColumns.push(column.fieldName);
           }
         });
 
         return {
           available: availableColumns.sort(),
-          alreadyOnPage: alreadyOnPageColumns.sort(),
           visualizationUnsupported: visualizationUnsupportedColumns.sort()
         };
 
@@ -274,7 +265,7 @@ describe('addCardDialog', function() {
     expect(selectableColumnOptions.length).to.equal(6);
   });
 
-  it('should disable columns that are represented by cards in the "Choose a column..." select control', function() {
+  it('should show columns currently represented as cards in the select control', function() {
     var dialog = createDialog();
 
     var serializedCard = {
@@ -287,7 +278,7 @@ describe('addCardDialog', function() {
 
     var selectableColumnOptions = dialog.element.find('option:enabled');
 
-    expect(selectableColumnOptions.length).to.equal(5);
+    expect(selectableColumnOptions.length).to.equal(6);
   });
 
   it('should disable the "Add card" button when no column in the "Choose a column..." select control is selected', function() {

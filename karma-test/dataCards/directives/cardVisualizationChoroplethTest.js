@@ -207,6 +207,7 @@ describe('A Choropleth Card Visualization', function() {
   describe('clear selection box', function() {
 
     var choropleth;
+    var choroplethContainer;
     var feature;
     var selectionBox;
     var selectionBoxClearButton;
@@ -214,10 +215,15 @@ describe('A Choropleth Card Visualization', function() {
 
     beforeEach(function() {
       choropleth = createChoropleth({}).element;
+      choroplethContainer = choropleth.find('.choropleth-container');
       selectionBox = choropleth.find('.choropleth-selection-box');
       selectionBoxClearButton = selectionBox.find('.icon-close');
       feature = choropleth.find('.choropleth-container path')[0];
       flyout = $('#uber-flyout').hide();
+
+      // Trigger a 'mouseenter' event on the choroplethContainer in order to
+      // register all of our flyouts.
+      choroplethContainer.trigger('mouseenter');
     });
 
     it('should be displayed if a region is filtered, and hidden if not', function() {
@@ -292,8 +298,15 @@ describe('A Choropleth Card Visualization', function() {
 
       this.timeout(15000);
 
-      createChoropleth({ id: 'choropleth-1' });
-      createChoropleth({ id: 'choropleth-2' });
+      var firstChoropleth = createChoropleth({ id: 'choropleth-1' }).element;
+      var secondChoropleth = createChoropleth({ id: 'choropleth-2' }).element;
+      var firstChoroplethContainer = firstChoropleth.find('.choropleth-container');
+      var secondChoroplethContainer = secondChoropleth.find('.choropleth-container');
+
+      // Trigger a 'mouseenter' event on the choropleth containers in order to
+      // register all of our flyouts.
+      firstChoroplethContainer.trigger('mouseenter');
+      secondChoroplethContainer.trigger('mouseenter');
 
       scope.$apply();
 
@@ -674,4 +687,3 @@ describe('A Choropleth Card Visualization', function() {
   });
 
 });
-

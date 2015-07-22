@@ -66,6 +66,7 @@ angular.module('dataCards.services').factory('SoqlHelpers', function(Constants, 
    * timeline chart which uses it to prevent filtering on its own selection.
    */
   function stripWhereClauseFragmentForFieldName(fieldName, whereClause, activeFilters) {
+
     if (_.isEmpty(whereClause)) {
       return;
     }

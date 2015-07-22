@@ -283,7 +283,7 @@
     var datasetColumnsObservable = page.observe('dataset.columns');
 
     var appliedFiltersForDisplayObservable = allCardsFilters.
-      combineLatest(datasetColumnsObservable, function(filters, columns) {
+      combineLatest(datasetColumnsObservable, function(pageFilters, columns) {
 
         function humanReadableOperator(filter) {
           if (filter instanceof Filter.BinaryOperatorFilter) {
@@ -332,14 +332,14 @@
           }
         }
 
-        return _.reduce(filters, function(accumulator, appliedFilters, fieldName) {
-          if ($.isPresent(appliedFilters)) {
-            if (appliedFilters.length > 1) {
+        return _.reduce(pageFilters, function(accumulator, cardFilterInfo) {
+          if ($.isPresent(cardFilterInfo.filters)) {
+            if (cardFilterInfo.filters.length > 1) {
               $log.warn('Cannot apply multiple filters to a single card.');
             }
-            var filter = _.first(appliedFilters);
+            var filter = _.first(cardFilterInfo.filters);
             accumulator.push({
-              column: columns[fieldName],
+              column: columns[cardFilterInfo.fieldName],
               operator: humanReadableOperator(filter),
               operand: humanReadableOperand(filter)
             });
@@ -371,14 +371,18 @@
 
         var sortedColumns = _.pairs(columns).
           map(function(columnPair) {
-            return { fieldName: columnPair[0], column: columnPair[1] };
+            return {
+              fieldName: columnPair[0],
+              columnInfo: columnPair[1]
+            };
           }).
           filter(function(columnPair) {
+
             // We need to ignore 'system' fieldNames that begin with ':' but
             // retain computed column fieldNames, which (somewhat inconveniently)
             // begin with ':@'.
-            return columnPair.fieldName.substring(0, 2).match(/\:[\_A-Za-z0-9]/) === null &&
-                   columnPair.column.physicalDatatype !== '*';
+            return _.isNull(columnPair.fieldName.substring(0, 2).match(/\:[\_A-Za-z0-9]/)) &&
+                   columnPair.columnInfo.physicalDatatype !== '*';
           }).
           sort(function(a, b) {
             // TODO: Don't we want to sort by column human name?
@@ -396,35 +400,21 @@
         var available = false;
         var availableCardCount = sortedColumns.length;
         var availableColumns = [];
-        var alreadyOnPageColumns = [];
         var visualizationUnsupportedColumns = [];
 
         _.forEach(sortedColumns, function(column) {
-          available = !_.any(sortedCards, function(card) {
-            return card.fieldName === column.fieldName;
-          });
-
-          if (!available) {
-            availableCardCount--;
-          }
-
-          column.available = available;
 
           if (column.defaultCardType === 'invalid') {
             visualizationUnsupportedColumns.push(column.fieldName);
-          } else if (column.available) {
-            // CORE-4645: Do not allow subColumns to be available as cards to add
-            if (!column.column.isSubcolumn) {
-              availableColumns.push(column.fieldName);
-            }
-          } else {
-            alreadyOnPageColumns.push(column.fieldName);
+
+          // CORE-4645: Do not allow subColumns to be available as cards to add
+          } else if (!column.columnInfo.isSubcolumn) {
+            availableColumns.push(column.fieldName);
           }
         });
 
         return {
           available: availableColumns.sort(),
-          alreadyOnPage: alreadyOnPageColumns.sort(),
           visualizationUnsupported: visualizationUnsupportedColumns.sort()
         };
 

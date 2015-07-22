@@ -15,11 +15,11 @@ describe('BlockRemovalConfirmationStore', function() {
 
       beforeEach(function() {
         var validInsertionIndex = 0;
-        blockToCopyId = standardMocks.firstBlockId;
+        var blockContent = standardMocks.validBlockData1;
 
         window.dispatcher.dispatch({
-          action: Constants.BLOCK_COPY_INTO_STORY,
-          blockId: blockToCopyId,
+          action: Constants.STORY_INSERT_BLOCK,
+          blockContent: blockContent,
           insertAt: validInsertionIndex,
           storyUid: standardMocks.validStoryUid
         });

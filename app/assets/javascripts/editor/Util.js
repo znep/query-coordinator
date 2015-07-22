@@ -11,7 +11,7 @@
           throw new Error(message);
         }
 
-        throw new Error('`' + name + '`' + 'property must be present.');
+        throw new Error('`' + name + '`' + 'property must be present. Object has properties: ' + Object.keys(object));
       }
     },
 

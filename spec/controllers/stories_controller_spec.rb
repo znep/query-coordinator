@@ -195,11 +195,6 @@ RSpec.describe StoriesController, type: :controller do
 
         render_views
 
-        it 'renders a json object for inspirationStoryData' do
-          get :edit, four_by_four: draft_story.uid
-          expect(response.body).to match(/inspirationStoryData = {/)
-        end
-
         it 'renders a json object for userStoryData' do
           get :edit, four_by_four: draft_story.uid
           expect(response.body).to match(/userStoryData = {/)

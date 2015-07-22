@@ -44,7 +44,6 @@ $(document).on('ready', function() {
    * FLUX
    */
 
-  window.inspirationStoryUid = inspirationStoryData.uid;
   window.userStoryUid = userStoryData.uid;
 
   window.dispatcher = new Dispatcher();
@@ -74,7 +73,6 @@ $(document).on('ready', function() {
     richTextFormats
   );
 
-  window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: inspirationStoryData });
   window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
 
   var userStoryOptions = {
@@ -165,26 +163,6 @@ $(document).on('ready', function() {
     }
   });
 
-  // Handlers for mouse events on inspiration story.
-  window.dispatcher.register(function(payload) {
-
-    if (payload.storyUid !== inspirationStoryUid) {
-      return;
-    }
-
-    switch(payload.action) {
-
-      case Constants.BLOCK_DOUBLE_CLICK:
-        window.dispatcher.dispatch({
-          action: Constants.BLOCK_COPY_INTO_STORY,
-          blockId: payload.blockId,
-          storyUid: window.userStoryUid,
-          insertAt: window.storyStore.getStoryBlockIds(window.userStoryUid).length
-        });
-        break;
-    }
-  });
-
   // Respond to changes in the user story's block ordering by scrolling the
   // window to always show the top of the moved block.
   window.dispatcher.register(function(payload) {
@@ -232,11 +210,11 @@ $(document).on('ready', function() {
 
   // Add Content Panel
   var addContentPanelElement = $('.add-content-panel');
-  addContentPanelElement.addContentPanel(window.inspirationStoryUid, $('.add-content-panel-btn'));
+  addContentPanelElement.addContentPanel($('.add-content-panel-btn'));
 
   // Drag-drop
   var ghostElement = $('#block-ghost');
-  var dragDrop = new DragDrop(addContentPanelElement.find('.block'), ghostElement);
+  var dragDrop = new DragDrop(addContentPanelElement.find('.inspiration-block'), ghostElement);
   dragDrop.setup();
 
   // Story title

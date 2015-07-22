@@ -369,8 +369,7 @@ describe('StoryRenderer', function() {
         storyUid: storyUid,
         blockId: blockId,
         pointer: {},
-        storyElement: {},
-        draggedBlockId: 'draggedBlockId'
+        storyElement: {}
       });
     };
 

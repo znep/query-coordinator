@@ -94,7 +94,7 @@ class StoriesController < ApplicationController
   end
 
   def edit
-    @inspiration_story = InspirationStory.new
+    @inspiration_block_list = InspirationBlockList.new.blocks
     @story = DraftStory.find_by_four_by_four(params[:four_by_four])
 
     if @story

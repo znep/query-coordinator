@@ -166,18 +166,6 @@
         }
       });
 
-      container.on('dblclick', '.block', function(e) {
-        var blockId = e.currentTarget.getAttribute('data-block-id');
-
-        if (blockId) {
-          window.dispatcher.dispatch({
-            action: Constants.BLOCK_DOUBLE_CLICK,
-            storyUid: storyUid,
-            blockId: blockId
-          });
-        }
-      });
-
       container.on('rich-text-editor::format-change', function(event) {
 
         window.dispatcher.dispatch({

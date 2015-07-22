@@ -22,14 +22,14 @@
     display: inline-block;
     width: 100%;
     text-align: right;
-    margin-bottom: $inspiration-story-close-button-padding;
+    margin-bottom: $inspiration-block-list-close-button-padding;
   }
 
   h1 {
     text-align: center;
   }
 
-  .inspiration-story-error {
+  .inspiration-block-list-error {
     position: absolute;
     top: 0;
     left: 0;
@@ -45,29 +45,32 @@
       overflow-y: auto;
     }
   }
+}
 
-  .inspiration-story {
-    .block {
-      @include unselectable();
-      width: calc(100% - #{2 * $inspiration-story-block-margin});
+.inspiration-block {
+  @include unselectable();
+  position: relative;
+  min-height: 10px;
 
-      margin: $inspiration-story-block-margin;
-      font-size: $inspiration-story-font-size;
-      cursor: -webkit-grab;
-      cursor: grab;
+  margin: $inspiration-block-list-block-margin;
+  font-size: $inspiration-block-list-font-size;
+  cursor: -webkit-grab;
+  cursor: grab;
 
-      .image {
+  .grab-target {
+    display: block;
+  }
 
-        img {
-          @include unselectable();
+  img {
+    width: 100%;
+    height: auto;
+  }
 
-          pointer-events: none;
-        }
-      }
-
-      .grab-target {
-        display: block;
-      }
-    }
+  .drag-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 }

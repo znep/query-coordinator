@@ -1,0 +1,6 @@
+<% @inspiration_block_list.each do |block| %>
+  <div class="inspiration-block" data-block-content="<%= block["blockContent"].to_json %>">
+    <img src="<%= asset_path(block['imagePreview']) %>">
+    <div class="drag-overlay"></div>
+  </div>
+<% end %>

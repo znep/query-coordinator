@@ -4,7 +4,9 @@ var datasetsMetricName,
     pageViewsSummary,
     mapsSummary,
     dataLensesEnabled,
-    datasetsListHeader;
+    datasetsListHeader,
+    totalPrefix,
+    addedSuffix;
 
 if(blist.feature_flags.dataset_count_v2){
   datasetsMetricName = 'datasets-published-v2';
@@ -16,6 +18,8 @@ if (blist.feature_flags.embetter_analytics_page) {
     mapsSummary = {plus: 'lense-map-published-v1', range: false}
     dataLensesEnabled = true;
     datasetsListHeader = 'Page Views';
+    totalPrefix = '';
+    addedSuffix = ' Added';
 } else {
     pageViewsSummary = {
         plus: 'page-views',
@@ -25,6 +29,8 @@ if (blist.feature_flags.embetter_analytics_page) {
     mapsSummary = {plus: ['maps-created'], minus: ['maps-deleted']};
     dataLensesEnabled = false;
     datasetsListHeader = '';
+    totalPrefix = 'Total ';
+    addedSuffix = '';
 }
 
 blist.metrics.sitewideShared = {
@@ -67,13 +73,13 @@ blist.metrics.sitewideShared = {
             },
             enabled: blist.configuration.govStatMetricsEnabled || false
         },
-        {id: 'detailCharts',    displayName: 'Charts',   summary: { plus: ['charts-created'], minus: ['charts-deleted'] } },
+        {id: 'detailCharts',    displayName: 'Charts' + addedSuffix,   summary: { plus: ['charts-created'], minus: ['charts-deleted'] } },
         {id: 'detailLenses',    displayName: 'Data Lens Pages', summary: { plus: 'lense-new_view-published-v1', range: false }, enabled: dataLensesEnabled },
-        {id: 'detailFilters',   displayName: 'Filters',  summary: { plus: ['filters-created'], minus: ['filters-deleted'] } },
+        {id: 'detailFilters',   displayName: 'Filters' + addedSuffix,  summary: { plus: ['filters-created'], minus: ['filters-deleted'] } },
         {id: 'detailMaps',      displayName: 'Maps',     summary: mapsSummary },
-        {id: 'detailSnapshots', displayName: 'Snapshots', summary: { plus: ['datasets-created-snapshot'], minus: ['datasets-deleted-snapshot'] } },
-        {id: 'detailBlobs',     displayName: 'Downloadable Files', summary: { plus: ['datasets-created-blobby'], minus: ['datasets-deleted-blobby'] } },
-        {id: 'detailHref',      displayName: 'External Datasets', summary: { plus: ['datasets-created-href'], minus: ['datasets-deleted-href'] } }
+        {id: 'detailSnapshots', displayName: 'Snapshots' + addedSuffix, summary: { plus: ['datasets-created-snapshot'], minus: ['datasets-deleted-snapshot'] } },
+        {id: 'detailBlobs',     displayName: 'Downloadable Files' + addedSuffix, summary: { plus: ['datasets-created-blobby'], minus: ['datasets-deleted-blobby'] } },
+        {id: 'detailHref',      displayName: 'External Datasets' + addedSuffix, summary: { plus: ['datasets-created-href'], minus: ['datasets-deleted-href'] } }
     ], function(section) { return section.enabled !== false; }),
     summarySections: _.filter([
         {
@@ -82,7 +88,7 @@ blist.metrics.sitewideShared = {
             summary: pageViewsSummary
         },
         {
-            id: 'summaryDash',        displayName: 'Total Dashboards',
+            id: 'summaryDash',        displayName: totalPrefix + 'Dashboards',
             summary: {
 		plus: 'govstat-total-dash',
                 verbPhrase: 'dashboards created', 
@@ -91,7 +97,7 @@ blist.metrics.sitewideShared = {
             enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {
-            id: 'summaryGoals',        displayName: 'Total Goals',
+            id: 'summaryGoals',        displayName: totalPrefix + 'Goals',
             summary: {
 		plus: 'govstat-total-goals',
                 verbPhrase: 'goals created', 
@@ -100,7 +106,7 @@ blist.metrics.sitewideShared = {
             enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {
-            id: 'summaryDatasets',    displayName: 'Total Datasets',
+            id: 'summaryDatasets',    displayName: totalPrefix + 'Datasets',
             summary: {
                 plus: datasetsMetricName,
                 range: false,
@@ -109,7 +115,7 @@ blist.metrics.sitewideShared = {
             }
         },
         {
-            id: 'summaryRows',        displayName: 'Total Rows',
+            id: 'summaryRows',        displayName: totalPrefix + 'Rows' + addedSuffix,
             summary: {
 		plus: 'rows-created', 
 		minus: 'rows-deleted',
@@ -119,7 +125,7 @@ blist.metrics.sitewideShared = {
             }
         },
         {
-            id: 'summaryEmbeds',      displayName: 'Embeds',
+            id: 'summaryEmbeds',      displayName: 'Embeds' + addedSuffix,
             summary: {
 		plus: 'embeds', 
 		verbPhrase: 'embeds',

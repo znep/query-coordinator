@@ -2446,7 +2446,7 @@ en:
       row_identifier_help_text: The row identifier cannot be changed once a view is published.
       row_label: Row Label
       row_label_help: Describe what each row in the dataset represents (if applicable).
-      row_label_prompt: E.g. Crime, Person, Hospital, etc...
+      row_label_prompt: e.g. Crime, Person, Hospital
       save: Save
       save_changes: Save changes
       semantics_rdf: Semantics & RDF

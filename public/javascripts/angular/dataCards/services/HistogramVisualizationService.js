@@ -253,9 +253,9 @@
           clearRangeFilterLong: I18n.flyout.clearRangeFilterLong,
           filteredAmount: I18n.flyout.filteredAmount,
           rangeTotal: FormatService.formatNumber(rangeTotal),
-          rangeTotalRowDisplayUnit: pluralizeRowDisplayUnit(rangeTotal),
+          rangeTotalRowDisplayUnit: _.escape(pluralizeRowDisplayUnit(rangeTotal)),
           rangeFilteredAmount: FormatService.formatNumber(rangeFilteredAmount),
-          rangeFilteredRowDisplayUnit: pluralizeRowDisplayUnit(rangeFilteredAmount)
+          rangeFilteredRowDisplayUnit: _.escape(pluralizeRowDisplayUnit(rangeFilteredAmount))
         });
       }
 

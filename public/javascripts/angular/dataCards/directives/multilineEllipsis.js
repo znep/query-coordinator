@@ -110,7 +110,7 @@
             selector: '.' + contentFlyoutSelector,
             render: function() {
               if (content.triggerHandler('isTruncated')) {
-                return '<div class="flyout-title">{0}</div>'.format($scope.text);
+                return '<div class="flyout-title">{0}</div>'.format(_.escape($scope.text));
               } else {
                 return undefined;
               }
@@ -175,7 +175,7 @@
             // this comment, I give it a 50% chance this has actually happened :)
             if (lastText !== text) {
               lastText = text;
-              content.html(text);
+              content.html(_.escape(text));
             }
 
             // Since we react to changes in the "expanded" binding, this

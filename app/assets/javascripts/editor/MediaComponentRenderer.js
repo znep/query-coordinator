@@ -78,7 +78,9 @@
         'data-rendered-template': 'media',
         'data-rendered-media-type': 'image'
       }
-    ).append('<img>');
+    ).append(
+      $('<img>', { src: 'about:blank' })
+    );
   }
 
   function _renderEmbedComponentTemplate(componentOptions) {

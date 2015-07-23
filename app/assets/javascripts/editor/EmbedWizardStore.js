@@ -8,7 +8,7 @@
     var _currentWizardState = null;
     var _currentBlockId = null;
     var _currentComponentIndex = null;
-    var _currentProviderOptions = _getDefaultProviderOptions();
+    var _currentComponentProperties = _getDefaultComponentProperties();
 
     window.dispatcher.register(function(payload) {
 
@@ -61,7 +61,7 @@
 
       return {
         type: 'embed',
-        value: _currentProviderOptions
+        value: _currentComponentProperties
       };
     };
 
@@ -69,7 +69,7 @@
 
       var valid = false;
 
-      switch (_currentProviderOptions.provider) {
+      switch (_currentComponentProperties.provider) {
 
         default:
           break;
@@ -97,12 +97,12 @@
       _currentWizardState = null;
       _currentBlockId = null;
       _currentComponentIndex = null;
-      _currentProviderOptions = _getDefaultProviderOptions();
+      _currentComponentProperties = _getDefaultComponentProperties();
 
       self._emitChange();
     }
 
-    function _getDefaultProviderOptions() {
+    function _getDefaultComponentProperties() {
       return {
         provider: 'wizard'
       };

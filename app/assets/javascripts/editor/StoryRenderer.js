@@ -251,8 +251,8 @@
         window.
           storyStore.
           getBlockComponents(blockId).
-          forEach(function(component, i) {
-            if (component.type === 'text') {
+          forEach(function(componentDatum, i) {
+            if (componentDatum.type === 'text') {
               var editorId = blockId + '-' + i;
               window.richTextEditorManager.deleteEditor(editorId);
             }
@@ -415,25 +415,24 @@
 
     function _updateEditorHeights(blockId, blockElement) {
 
-      var components = window.storyStore.getBlockComponents(blockId);
-      var componentCount = components.length;
+      var componentData = window.storyStore.getBlockComponents(blockId);
       var editorId;
       var maxEditorHeight = 0;
 
-      for (var i = 0; i < componentCount; i++) {
+      componentData.forEach(function(componentDatum, i) {
 
-        if (components[i].type === 'text') {
+        if (componentDatum.type === 'text') {
 
           editorId = blockId + '-' + i;
           maxEditorHeight = Math.max(
             maxEditorHeight,
             window.
               richTextEditorManager.
-              getEditor(editorId).
-              getContentHeight()
+                getEditor(editorId).
+                  getContentHeight()
           );
         }
-      }
+      });
 
       blockElement.
         find('.text-editor > iframe').
@@ -456,11 +455,16 @@
       var componentOptions;
       var newTemplate;
 
-      componentData.forEach(function(component, i) {
+      componentData.forEach(function(componentDatum, i) {
 
+        // We need to find the container for the current component in order to
+        // determine whether or not we can reuse the current template.
+        //
+        // Component containers are not currently cached, so we do a `.find()`
+        // against the cached block element.
         componentContainer = element.find('.component-container[data-component-index="' + i + '"]');
 
-        if (!_canUseTemplate(component, componentContainer)) {
+        if (!_canUseTemplate(componentDatum, componentContainer)) {
 
           existingComponent = elementCache.getComponent(blockId, i);
 
@@ -469,15 +473,15 @@
           }
 
           componentWidth = componentContainer.attr('data-component-layout-width');
-          componentClasses = ['component', component.type].join(' ');
+          componentClasses = ['component', componentDatum.type].join(' ');
 
           componentOptions = {
             classes: componentClasses,
             blockId: blockId,
             componentIndex: i,
             componentWidth: componentWidth,
-            componentType: component.type,
-            componentValue: component.value,
+            componentType: componentDatum.type,
+            componentValue: componentDatum.value,
             editable: editable
           };
 
@@ -490,68 +494,27 @@
       });
     }
 
-    function _renderTextComponentTemplate(componentOptions) {
-
-      var editorId;
-      var component;
-      var editor;
-
-      if (componentOptions.editable) {
-
-        editorId = [
-          componentOptions.blockId,
-          '-',
-          componentOptions.componentIndex
-        ].join('');
-
-        component = $(
-          '<div>',
-          {
-            class: componentOptions.classes + ' text-editor',
-            'data-editor-id': editorId,
-            'data-rendered-template': 'text'
-          }
-        );
-
-        editor = window.richTextEditorManager.createEditor(
-          component,
-          editorId,
-          componentOptions.componentValue
-        );
-
-      } else {
-        component = $(
-          '<div>',
-          {
-            class: componentOptions.classes
-          }
-        ).append(componentOptions.componentValue);
-      }
-
-      return component;
-    }
-
     /**
      * Component data renderers bind component data to existing
      * component templates.
      */
 
-    function _canUseTemplate(component, componentContainer) {
+    function _canUseTemplate(componentDatum, componentContainer) {
 
       var componentElement = componentContainer.children('.component').eq(0);
       var renderedTemplate = componentElement.attr('data-rendered-template');
       var renderedEmbedProvider;
       var canUseTemplate = false;
 
-      if (component.type === renderedTemplate) {
+      if (componentDatum.type === renderedTemplate) {
 
-        if (component.type === 'media') {
+        if (componentDatum.type === 'media') {
 
-          if (component.value.type === 'embed') {
+          if (componentDatum.value.type === 'embed') {
 
             renderedEmbedProvider = componentElement.attr('data-rendered-media-embed-provider');
 
-            if (component.value.value.provider === renderedEmbedProvider) {
+            if (componentDatum.value.value.provider === renderedEmbedProvider) {
               canUseTemplate = true;
             }
 
@@ -573,28 +536,14 @@
 
     function _renderBlockComponentsData(blockId) {
 
-      var components = window.storyStore.getBlockComponents(blockId);
+      var componentData = window.storyStore.getBlockComponents(blockId);
 
-      components.forEach(function(component, i) {
+      componentData.forEach(function(componentDatum, i) {
 
         var element = elementCache.getComponent(blockId, i);
 
-        componentDataRenderers[component.type](element, component, editable, _renderStory);
+        componentDataRenderers[componentDatum.type](element, componentDatum, editable, _renderStory);
       });
-    }
-
-    function _renderTextComponentData(element, value, editable, renderFn) {
-
-      if (editable) {
-
-        var editorId = element.attr('data-editor-id');
-        var editor = richTextEditorManager.getEditor(editorId);
-
-        editor.setContent(value.value);
-
-      } else {
-        element.html(value.value);
-      }
     }
 
     /**

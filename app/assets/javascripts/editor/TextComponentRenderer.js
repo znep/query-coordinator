@@ -25,16 +25,17 @@
   function _renderData(element, data, editable, renderFn) {
 
     var type;
+    var value;
 
-    Util.assertHasProperty(data, 'type');
-    Util.assertHasProperty(data, 'value');
+    Util.assertHasProperties(data, 'type', 'value');
     Util.assertIsOneOfTypes(renderFn, 'function');
 
     type = data.type;
+    value = data.value;
 
     Util.assertHasProperty(_componentDataRenderers, type);
 
-    _componentDataRenderers[type](element, data.value, editable, renderFn);
+    _componentDataRenderers[type](element, value, editable, renderFn);
   }
 
   /**

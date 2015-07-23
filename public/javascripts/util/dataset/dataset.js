@@ -3210,13 +3210,13 @@ var Dataset = ServerModel.extend({
                     this._truthLastModified = truthLastModified;
                     this._lastModified = lastModified;
                     this.trigger('dataset_last_modified', [{
-                        age: moment(blist.dataset._lastModified).
-                        from(blist.dataset._truthLastModified, true) // True elides suffix
+                        age: moment(this._lastModified).
+                        from(this._truthLastModified, true) // True elides suffix
                     }]);
                 } else if (dataOutOfDate === 'false' && truthLastModified && lastModified) {
                     this._lastModified = lastModified;
                     this.trigger('dataset_last_modified', [{
-                        lastModified: moment(blist.dataset._lastModified).
+                        lastModified: moment(this._lastModified).
                         format(blist.configuration.shortDateFormat)
                     }]);
                 }

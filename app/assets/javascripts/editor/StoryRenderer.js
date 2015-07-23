@@ -11,11 +11,11 @@
     var insertionHintIndex = -1;
     var onRenderError = options.onRenderError || function() {};
     var componentTemplateRenderers = {
-      'text': _renderTextComponentTemplate,
+      'text': TextComponentRenderer.renderTemplate,
       'media': MediaComponentRenderer.renderTemplate
     };
     var componentDataRenderers = {
-      'text': _renderTextComponentData,
+      'text': TextComponentRenderer.renderData,
       'media': MediaComponentRenderer.renderData
     };
     var elementCache = new StoryRendererElementCache();

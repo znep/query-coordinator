@@ -1,5 +1,5 @@
 module UserHelper
-  
+
   # Create a drop down menu of US states.
   # Pass a state to select it by default.
   def us_state_select_options(selected_state = nil)
@@ -10,7 +10,7 @@ module UserHelper
     end
     out
   end
-  
+
   # Create a drop down menu of Countries.
   # Pass a country to select it by default.
   def country_select_options(selected_country = nil)
@@ -21,7 +21,7 @@ module UserHelper
     end
     out
   end
-  
+
   def links_select_options(selected_link = nil)
     out = ""
     out += "<option value=\"\">-- Select a link type --</option>"
@@ -30,7 +30,7 @@ module UserHelper
     end
     out
   end
-  
+
   def get_selected(test1, test2)
     out = test1 == test2 ? "selected=\"selected\"" : ""
   end

@@ -36,16 +36,16 @@
           <p>You can go forward and back through the steps - your changes are saved along the way.</p>
           <a id="docslink" href="http://www.socrata.com/api-foundry/"><p>Read more about the Socrata API Foundry</p></a>
         </li>
-        <li id="datasetResourceName" class="wizpane" data-wizardpanename="datasetResourceName"> 
+        <li id="datasetResourceName" class="wizpane" data-wizardpanename="datasetResourceName">
           <div class="paneControlOuter">
             <div class="paneFormControls">
               <h1>Select a location for your API</h1>
               <div class="line clearfix formControl">
                 <div class="controlDiv">
                   <label for="resourceName" class="locationSpan">http://<%= CurrentDomain.cname %>/resource/</label>
-                  <%= text_field_tag("resourceName", 
+                  <%= text_field_tag("resourceName",
                                      @rnSuggestion,
-                                     :title => "Enter API Location", 
+                                     :title => "Enter API Location",
                                      :class => "required textPrompt liveDoc locationInput") %>
                   <label for="resourceName" class="locationSpan">.json</label>
                   <div>
@@ -57,30 +57,30 @@
             </div>
             <div id="ht-datasetResourceName" class="helpfulText">
               <h3>Set a permanent resource location for your new API</h3>
-              <p>This location will appear on your API catalog, and propagate throughout the 
+              <p>This location will appear on your API catalog, and propagate throughout the
                 Internet. For best results, choose a name that's friendly to both humans and search engines.</p>
-              <p>After you deploy your new API, developers will reference this URI in their applications. 
+              <p>After you deploy your new API, developers will reference this URI in their applications.
                 If the location changes, their applications will break, and developers will be upset!
               </p>
             </div>
           </div><!-- paneControlOuter -->
         </li>
-        <li id="datasetName" class="wizpane" data-wizardpanename="datasetName"> 
+        <li id="datasetName" class="wizpane" data-wizardpanename="datasetName">
           <%= render :partial => 'edit_view_name'%>
         </li>
         <li id="displayUniqueId" class="wizpane" data-wizardpanename="displayUniqueId">
           <div class="paneControlOuter">
             <div class="paneFormControls">
 
-              <h1>API Row Identifier: 
+              <h1>API Row Identifier:
                 <span id="rowIdentifier"><%= @view.row_identifier or "Not specified" %></span>
               </h1>
             </div>
             <div id="ht-datasetUniqueId" class="helpfulText">
               <h3>The Row Identifier allows you to select individual rows.</h3>
-              <p>This setting is inherited from the dataset. 
+              <p>This setting is inherited from the dataset.
                 Your dataset may have a specific column containing a unique identifier for each row.
-                This can be a number or a string, and this unique value is referenced 
+                This can be a number or a string, and this unique value is referenced
                 when you want to add, update, or delete individual rows programmatically.
               </p>
               <p>A row identifier is not required.</p>
@@ -96,9 +96,9 @@
                 <label for="view_category">Unique Identifier</label>
                 <div class="controlDiv rowIdentifierColumnId">
                   <%= select_tag("rowIdentifierColumnId", options_from_collection_for_select(
-                    @view.columns.find_all{|column| column.dataTypeName == "text" || 
+                    @view.columns.find_all{|column| column.dataTypeName == "text" ||
                       column.dataTypeName == "number" ||
-                      column.dataTypeName == "calendar_date" || 
+                      column.dataTypeName == "calendar_date" ||
                       column.dataTypeName == "date" }, "fieldName", "name"), :prompt => "-- none selected --")  %>
                    <div class="additionalHelp">The primary field that identifies a row</div>
                 </div>
@@ -108,7 +108,7 @@
             <div id="ht-datasetUniqueId" class="helpfulText">
               <h3>Does your dataset have a unique identifier column?</h3>
               <p>Your dataset may have a column containing the Unique Identifier for each row,
-                which is typically number or a string. This is the column that is referenced 
+                which is typically number or a string. This is the column that is referenced
                 when you want to add, update, or delete individual rows programmatically.
               </p>
               <p>A Unique Identifier is not required.</p>
@@ -148,10 +148,10 @@
         <% end %>
         <li id="apiPublish" class="wizpane" data-wizardpanename="apiPublish">
           <h1>Are you ready to deploy this API?</h3>
-          <p>Once you deploy, your API is instantly operational, and discoverable on your 
+          <p>Once you deploy, your API is instantly operational, and discoverable on your
             <%= CurrentDomain.cname %>/developer site.
           </p>
-          <p>After you deploy, you should not change this API's location or any of its column Field Names, 
+          <p>After you deploy, you should not change this API's location or any of its column Field Names,
             as that may break any apps that depend on it!</p>
         </li>
         <li id="published" class="wizpane" data-wizardpanename="published">

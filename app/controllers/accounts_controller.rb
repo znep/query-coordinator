@@ -69,9 +69,9 @@ class AccountsController < ApplicationController
       end
 
       req = Net::HTTP::Post.new('/users')
-      req.set_form_data({'method' => 'resetPassword', 
-                         'uid' => params[:uid], 
-                         'reset_code' => params[:reset_code], 
+      req.set_form_data({'method' => 'resetPassword',
+                         'uid' => params[:uid],
+                         'reset_code' => params[:reset_code],
                          'password' => params[:password]})
 
       # pass/spoof in the current domain cname

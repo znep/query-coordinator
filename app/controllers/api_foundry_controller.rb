@@ -19,7 +19,7 @@ class ApiFoundryController < ApplicationController
     render "forge"
   end
 
-  def manage 
+  def manage
     @view = get_view(params[:id])
     return if !has_api_permission?
     @parent_dataset = @view.parent_dataset
@@ -112,7 +112,7 @@ private
       render_404()
       return false
     elsif @view.publicationStage != 'published' && @view.publicationStage != 'unpublished'
-      redirect_to( :controller => 'datasets', :action => 'show', :id => params[:id]) 
+      redirect_to( :controller => 'datasets', :action => 'show', :id => params[:id])
       return false
     elsif @current_user.nil? || !@view.has_rights?('update_view')
       render_forbidden("You do not have permission to view this dataset")

@@ -56,9 +56,9 @@
             <td class="actions<%= ' isDefault' if (template.uid == @default_template_id) %>">
               <span class="defaultText">Current Default</span>
               <span class="loading"></span>
-              <%= form_button({ :action => 'sdp_set_default_template', :id => template.uid}, 'Make Default', 
+              <%= form_button({ :action => 'sdp_set_default_template', :id => template.uid}, 'Make Default',
                    {:method => :put}, {:class => 'button makeDefaultButton'}) %>
-              <%= form_button({ :action => 'sdp_delete_template', :id => template.uid}, 'Delete', 
+              <%= form_button({ :action => 'sdp_delete_template', :id => template.uid}, 'Delete',
                              {:method => :delete}, {:class => 'button deleteTemplateButton' +
                                (template.uid == @default_template_id ? ' disabled' : '')}) %>
               <a href="sdp_templates/<%= template.uid %>" class="button">

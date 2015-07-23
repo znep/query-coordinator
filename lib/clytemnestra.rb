@@ -72,7 +72,7 @@ module Clytemnestra
   class ViewSearchResult < SearchResult
     @klass = Clytemnestra::ViewWithRows
   end
-  
+
   private
 
   def self.cache

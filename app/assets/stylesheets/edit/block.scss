@@ -10,11 +10,4 @@
   left: 0;
   background-color: $block-bg-color;
   transition: transform $transition-duration;
-
-  .component.image {
-    img {
-      width: 100%;
-      -webkit-user-drag: none;
-    }
-  }
 }

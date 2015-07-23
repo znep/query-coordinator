@@ -11,3 +11,10 @@ en:
     editor:
       empty_story_warning: 'Oh, no! Your story is empty! To get started, drag a block to the canvas.'
       remove_block_confirmation: 'Are you sure you want to remove this block?'
+      components:
+        media:
+          embed_wizard_insert_btn: 'Insert...'
+      embed_wizard:
+        choose_provider_heading: 'Select data or media provider'
+        providers:
+          youtube: 'YouTube'

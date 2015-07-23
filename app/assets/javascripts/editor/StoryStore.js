@@ -164,9 +164,9 @@
 
     function _setStoryTitle(payload) {
       Util.assertHasProperty(payload, 'storyUid');
-      Util.assertTypeof(payload.storyUid, 'string');
+      Util.assertIsOneOfTypes(payload.storyUid, 'string');
       Util.assertHasProperty(payload, 'title');
-      Util.assertTypeof(payload.title, 'string');
+      Util.assertIsOneOfTypes(payload.title, 'string');
 
       var storyUid = payload.storyUid;
 
@@ -178,9 +178,9 @@
     function _moveBlockUp(payload) {
 
       Util.assertHasProperty(payload, 'storyUid');
-      Util.assertTypeof(payload.storyUid, 'string');
+      Util.assertIsOneOfTypes(payload.storyUid, 'string');
       Util.assertHasProperty(payload, 'blockId');
-      Util.assertTypeof(payload.blockId, 'string');
+      Util.assertIsOneOfTypes(payload.blockId, 'string');
 
       var storyUid = payload.storyUid;
       var blockId = payload.blockId;
@@ -194,9 +194,9 @@
     function _moveBlockDown(payload) {
 
       Util.assertHasProperty(payload, 'storyUid');
-      Util.assertTypeof(payload.storyUid, 'string');
+      Util.assertIsOneOfTypes(payload.storyUid, 'string');
       Util.assertHasProperty(payload, 'blockId');
-      Util.assertTypeof(payload.blockId, 'string');
+      Util.assertIsOneOfTypes(payload.blockId, 'string');
 
       var storyUid = payload.storyUid;
       var blockId = payload.blockId;
@@ -210,9 +210,9 @@
     function _deleteBlock(payload) {
 
       Util.assertHasProperty(payload, 'storyUid');
-      Util.assertTypeof(payload.storyUid, 'string');
+      Util.assertIsOneOfTypes(payload.storyUid, 'string');
       Util.assertHasProperty(payload, 'blockId');
-      Util.assertTypeof(payload.blockId, 'string');
+      Util.assertIsOneOfTypes(payload.blockId, 'string');
 
       var storyUid = payload.storyUid;
       var story = _getStory(storyUid);
@@ -231,9 +231,9 @@
     function _insertBlockIntoStory(payload) {
 
       Util.assertHasProperty(payload, 'storyUid');
-      Util.assertTypeof(payload.storyUid, 'string');
+      Util.assertIsOneOfTypes(payload.storyUid, 'string');
       Util.assertHasProperty(payload, 'insertAt');
-      Util.assertTypeof(payload.insertAt, 'number');
+      Util.assertIsOneOfTypes(payload.insertAt, 'number');
 
       if (typeof payload.insertAt !== 'number') {
         throw new Error(
@@ -296,7 +296,7 @@
 
     function _getStory(storyUid) {
 
-      Util.assertTypeof(storyUid, 'string');
+      Util.assertIsOneOfTypes(storyUid, 'string');
       Util.assertHasProperty(
         _stories,
         storyUid,
@@ -381,7 +381,7 @@
 
       return components.map(function(component) {
 
-        Util.assertTypeof(component.value, 'string');
+        Util.assertIsOneOfTypes(component.value, 'string', 'object');
 
         return {
           type: component.type,
@@ -392,7 +392,7 @@
 
     function _validateStoryData(storyData) {
 
-      Util.assertTypeof(storyData, 'object');
+      Util.assertIsOneOfTypes(storyData, 'object');
       Util.assertHasProperty(storyData, 'uid');
       Util.assertHasProperty(storyData, 'title');
       Util.assertHasProperty(storyData, 'blocks');
@@ -408,7 +408,7 @@
 
     function _validateBlockData(blockData) {
 
-      Util.assertTypeof(blockData, 'object');
+      Util.assertIsOneOfTypes(blockData, 'object');
       Util.assertHasProperty(blockData, 'id');
       Util.assertHasProperty(blockData, 'layout');
       Util.assertHasProperty(blockData, 'components');
@@ -444,8 +444,8 @@
       var story = _getStory(storyUid);
       var storyBlockIdCount = story.blockIds.length;
 
-      Util.assertTypeof(blockId, 'string');
-      Util.assertTypeof(index, 'number');
+      Util.assertIsOneOfTypes(blockId, 'string');
+      Util.assertIsOneOfTypes(index, 'number');
 
       if (index < 0 || index > storyBlockIdCount) {
         throw new Error('`index` argument is out of bounds.');
@@ -460,8 +460,8 @@
 
     function _swapStoryBlocksAtIndices(storyUid, index1, index2) {
 
-      Util.assertTypeof(index1, 'number');
-      Util.assertTypeof(index2, 'number');
+      Util.assertIsOneOfTypes(index1, 'number');
+      Util.assertIsOneOfTypes(index2, 'number');
 
       var story = _getStory(storyUid);
       var storyBlockIdCount = story.blockIds.length;

@@ -4,7 +4,7 @@
 
 (function($) {
   $.fn.storyTitle = function(storyUid) {
-    Util.assertTypeof(storyUid, 'string');
+    Util.assertIsOneOfTypes(storyUid, 'string');
 
     var titleNodes = this;
 

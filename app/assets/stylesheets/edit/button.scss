@@ -1,0 +1,40 @@
+@import '../base';
+
+.btn {
+  @include unselectable();
+
+  padding: 0.5rem 1.5rem;
+  font-size: 1.5rem;
+  color: $btn-color;
+  background-color: $btn-bg-color;
+  border: none;
+  border-radius: $btn-border-radius;
+  outline: none;
+  transition: color $transition-duration, background-color $transition-duration;
+  cursor: pointer;
+
+  &:hover {
+    color: $btn-hover-color;
+    background-color: $btn-hover-bg-color;
+  }
+
+  &:disabled {
+    color: $btn-disabled-color;
+    background-color: $btn-disabled-bg-color;
+  }
+
+  &.accent-btn {
+    color: $accent-btn-color;
+    background-color: $accent-btn-bg-color;
+  }
+
+  &.accent-btn:hover {
+    color: $accent-btn-hover-color;
+    background-color: $accent-btn-hover-bg-color;
+  }
+
+  &.accent-btn:disabled {
+    color: $accent-btn-disabled-color;
+    background-color: $accent-btn-disabled-bg-color;
+  }
+}

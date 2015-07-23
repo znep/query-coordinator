@@ -3,6 +3,12 @@
 
   window.Util = {
 
+    assertEqual: function(value1, value2) {
+      if (value1 !== value2) {
+        throw new Error('Value `' + value1 + '` must equal value `' + value2 + '`.');
+      }
+    },
+
     assertHasProperty: function(object, name, message) {
 
       if (!object.hasOwnProperty(name)) {
@@ -11,7 +17,7 @@
           throw new Error(message);
         }
 
-        throw new Error('`' + name + '`' + 'property must be present. Object has properties: ' + Object.keys(object));
+        throw new Error('`' + name + '`' + ' property must be present. Object has properties: [' + Object.keys(object).join(', ') + '].');
       }
     },
 
@@ -26,10 +32,19 @@
       );
     },
 
-    assertTypeof: function(value, type) {
-      if (typeof value !== type) {
+    /**
+     * Ensures the given value is of any of the provided types.
+     *
+     * @param {any} value - The value to check
+     * @param {...string} <arguments> - List of acceptable types
+     */
+    assertIsOneOfTypes: function(value) {
+      var types = _.rest(arguments);
+      var valid = _.contains(types, typeof value);
+
+      if (!valid) {
         throw new Error(
-          'Value must be a ' + type + ' (is of type ' +
+          'Value must be one of [' + types.join(', ') + '] (is of type ' +
           (typeof value) +
           ').'
         );

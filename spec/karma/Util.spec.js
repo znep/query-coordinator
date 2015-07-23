@@ -1,35 +1,106 @@
 describe('Util', function() {
+
+  'use strict';
+
   var object = {
     propA: null,
     propB: 5,
     propC: 'asd'
   };
 
+  describe('assertEqual', function() {
+
+    describe('given two unequal values', function() {
+
+      it('throws an error', function() {
+
+        assert.throw(function() {
+          Util.assertEqual(1, 2);
+        });
+      });
+    });
+
+    describe('given two equal values', function() {
+
+      it('does not throw an error', function() {
+
+        Util.assertEqual('equal', 'equal');
+      });
+    });
+  });
+
   describe('assertHasProperty', function() {
+
     describe('given an object with the desired property', function() {
+
       it('does not throw', function() {
         window.Util.assertHasProperty(object, 'propA');
       });
     });
+
     describe('given an object without the desired property', function() {
+
       it('throws', function() {
-        assert.throws(function() {
+        assert.throw(function() {
           window.Util.assertHasProperty(object, 'oops');
         });
       });
     });
   });
+
   describe('assertHasProperties', function() {
+
     describe('given an object with all the desired properties', function() {
+
       it('does not throw', function() {
         window.Util.assertHasProperties(object, 'propA', 'propB');
       });
     });
+
     describe('given an object without the desired property', function() {
+
       it('throws', function() {
-        assert.throws(function() {
+        assert.throw(function() {
           window.Util.assertHasProperties(object, 'propA', 'propOops');
         });
+      });
+    });
+  });
+
+  describe('assertIsOneOfTypes', function() {
+
+    describe('given a value of type not in the specified array', function() {
+
+      assert.throw(function() {
+        Util.assertIsOneOfTypes(1, 'boolean', 'string');
+      });
+
+      assert.throw(function() {
+        Util.assertIsOneOfTypes(1, 'string', 'boolean');
+      });
+
+      assert.throw(function() {
+        Util.assertIsOneOfTypes('1', 'number', 'object');
+      });
+
+      assert.throw(function() {
+        Util.assertIsOneOfTypes(1, 'object', 'function');
+      });
+
+      assert.throw(function() {
+        Util.assertIsOneOfTypes(1, 'function', 'boolean');
+      });
+    });
+
+    describe('given a value of the specified type', function() {
+
+      it('does not throw an error', function() {
+
+        Util.assertIsOneOfTypes(true, 'boolean');
+        Util.assertIsOneOfTypes('string', 'string');
+        Util.assertIsOneOfTypes(1, 'function', 'number');
+        Util.assertIsOneOfTypes({}, 'number', 'object');
+        Util.assertIsOneOfTypes(function() {}, 'boolean', 'object', 'function');
       });
     });
   });

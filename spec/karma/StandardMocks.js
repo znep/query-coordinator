@@ -28,20 +28,23 @@ function applyStandardMocks() {
     blocks: [
       generateBlockData({
         id: imageBlockId,
+        layout: '12',
         components: [
-          { type: 'image', value: 'fakeImageFile.png' }
+          { type: 'media', value: { type: 'image', value: { src: 'fakeImageFile.png' } } }
         ]
       }),
       generateBlockData({
         id: textBlockId,
+        layout: '12',
         components: [
           { type: 'text', value: 'some-text' }
         ]
       }),
       generateBlockData({
         id: imageAndTextBlockId,
+        layout: '6-6',
         components: [
-          { type: 'image', value: 'anotherFakeImageFile.png' },
+          { type: 'media', value: { type: 'image', value: { src: 'anotherFakeImageFile.png' } } },
           { type: 'text', value: 'some-text' }
         ]
       })
@@ -71,6 +74,7 @@ function applyStandardMocks() {
   });
 
   window.storyStore = new StoryStore();
+  window.embedWizardStore = new EmbedWizardStore();
   window.dragDropStore = new DragDropStore();
   window.historyStore = new HistoryStore();
   window.blockRemovalConfirmationStore = new BlockRemovalConfirmationStore();
@@ -112,7 +116,7 @@ function removeStandardMocks() {
   delete window.dragDropStore;
   delete window.I18n;
   delete window.standardMocks;
-};
+}
 
 // Run StandardMocks before every test.
 // Currently, this introduces an unmeasureable

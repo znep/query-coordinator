@@ -191,48 +191,24 @@ describe('StoryRenderer', function() {
 
       });
 
-      describe('with a story that has blocks including an image component', function() {
+      describe('with a story that has blocks including a media component', function() {
 
         it('renders blocks', function() {
 
-          var storyWithImage = generateStoryData({
+          var storyWithMedia = generateStoryData({
             uid: 'with-imge',
             blocks: [
               generateBlockData({
                 components: [
-                  { type: 'image', value: 'image' }
+                  { type: 'media', value: { type: 'image', value: { src: '404.jpg' } } }
                 ]
               })
             ]
           });
 
-          dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyWithImage });
+          dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyWithMedia });
 
           options.storyUid = 'with-imge';
-          var renderer = new StoryRenderer(options);
-
-          assert.equal($('.block').length, 1);
-        });
-      });
-
-      describe('with a story that has blocks including a visualization component', function() {
-
-        it('renders blocks', function() {
-
-          var storyWithVisualization = generateStoryData({
-            uid: 'with-visu',
-            blocks: [
-              generateBlockData({
-                components: [
-                  { type: 'visualization', value: 'visualization' }
-                ]
-              })
-            ]
-          });
-
-          dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyWithVisualization });
-
-          options.storyUid = 'with-visu';
           var renderer = new StoryRenderer(options);
 
           assert.equal($('.block').length, 1);

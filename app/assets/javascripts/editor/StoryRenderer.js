@@ -11,14 +11,12 @@
     var insertionHintIndex = -1;
     var onRenderError = options.onRenderError || function() {};
     var componentTemplateRenderers = {
-      'text': _renderTextComponentTemplate,
-      'image': _renderImageComponentTemplate,
-      'visualization': _renderVisualizationComponentTemplate
+      'text': TextComponentRenderer.renderTemplate,
+      'media': MediaComponentRenderer.renderTemplate
     };
     var componentDataRenderers = {
-      'text': _renderTextComponentData,
-      'image': _renderImageComponentData,
-      'visualization': _renderVisualizationComponentData
+      'text': TextComponentRenderer.renderData,
+      'media': MediaComponentRenderer.renderData
     };
     var elementCache = new StoryRendererElementCache();
     var warningMessageElement = options.warningMessageElement || null;
@@ -216,6 +214,25 @@
       container.on('rich-text-editor::height-change', function() {
         _renderStory();
       });
+
+      container.on('click', '[data-embed-action]', function(event) {
+
+        var action = event.target.getAttribute('data-embed-action');
+
+        switch(action) {
+
+          case Constants.EMBED_WIZARD_CHOOSE_PROVIDER:
+            window.dispatcher.dispatch({
+              action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
+              blockId: event.target.getAttribute('data-block-id'),
+              componentIndex: event.target.getAttribute('data-component-index')
+            });
+            break;
+
+          default:
+            break;
+        }
+      });
     }
 
     /**
@@ -234,8 +251,8 @@
         window.
           storyStore.
           getBlockComponents(blockId).
-          forEach(function(component, i) {
-            if (component.type === 'text') {
+          forEach(function(componentDatum, i) {
+            if (componentDatum.type === 'text') {
               var editorId = blockId + '-' + i;
               window.richTextEditorManager.deleteEditor(editorId);
             }
@@ -258,6 +275,7 @@
           container.append(blockElement);
         }
 
+        _renderBlockComponentsTemplates(blockId);
         _renderBlockComponentsData(blockId);
 
         if (editable) {
@@ -337,16 +355,19 @@
 
       var layout = window.storyStore.getBlockLayout(blockId);
       var componentWidths = layout.split('-');
-      var componentTemplates;
       var blockElement;
-
-      componentTemplates = _renderBlockComponentsTemplates(blockId);
-
-      componentTemplates.forEach(function(componentTemplate, i) {
-        elementCache.setComponent(blockId, i, componentTemplate);
+      var componentContainers = componentWidths.map(function(componentWidth, i) {
+        return $(
+          '<div>',
+          {
+            class: ('component-container col' + componentWidth),
+            'data-component-layout-width': componentWidth,
+            'data-component-index': i
+          }
+        );
       });
 
-      blockElement = $('<div>', { class: 'block', 'data-block-id': blockId }).append(componentTemplates);
+      blockElement = $('<div>', { class: 'block', 'data-block-id': blockId }).append(componentContainers);
 
       if (editable) {
         blockElement = $('<div>', { class: 'block-edit', 'data-block-id': blockId }).append([
@@ -355,7 +376,7 @@
         ]);
       }
 
-      elementCache.setBlock(blockId, blockElement);
+      elementCache.setBlock(blockId, componentWidths.length, blockElement);
 
       return blockElement;
     }
@@ -394,25 +415,24 @@
 
     function _updateEditorHeights(blockId, blockElement) {
 
-      var components = window.storyStore.getBlockComponents(blockId);
-      var componentCount = components.length;
+      var componentData = window.storyStore.getBlockComponents(blockId);
       var editorId;
       var maxEditorHeight = 0;
 
-      for (var i = 0; i < componentCount; i++) {
+      componentData.forEach(function(componentDatum, i) {
 
-        if (components[i].type === 'text') {
+        if (componentDatum.type === 'text') {
 
           editorId = blockId + '-' + i;
           maxEditorHeight = Math.max(
             maxEditorHeight,
             window.
               richTextEditorManager.
-              getEditor(editorId).
-              getContentHeight()
+                getEditor(editorId).
+                  getContentHeight()
           );
         }
-      }
+      });
 
       blockElement.
         find('.text-editor > iframe').
@@ -424,69 +444,54 @@
      * block elements.
      */
 
-    function _renderBlockComponentsTemplates(blockId, componentData) {
+    function _renderBlockComponentsTemplates(blockId) {
 
-      var componentWidths = window.storyStore.getBlockLayout(blockId).split('-');
+      var element = elementCache.getBlock(blockId);
       var componentData = window.storyStore.getBlockComponents(blockId);
+      var componentContainer;
+      var existingComponent;
+      var componentWidth;
+      var componentClasses;
+      var componentOptions;
+      var newTemplate;
 
-      return componentData.
-        map(function(component, i) {
+      componentData.forEach(function(componentDatum, i) {
 
-          return _renderBlockComponentTemplate({
+        // We need to find the container for the current component in order to
+        // determine whether or not we can reuse the current template.
+        //
+        // Component containers are not currently cached, so we do a `.find()`
+        // against the cached block element.
+        componentContainer = element.find('.component-container[data-component-index="' + i + '"]');
+
+        if (!_canUseTemplate(componentDatum, componentContainer)) {
+
+          existingComponent = elementCache.getComponent(blockId, i);
+
+          if (existingComponent) {
+            existingComponent.remove();
+          }
+
+          componentWidth = componentContainer.attr('data-component-layout-width');
+          componentClasses = ['component', componentDatum.type].join(' ');
+
+          componentOptions = {
+            classes: componentClasses,
             blockId: blockId,
             componentIndex: i,
-            componentWidth: componentWidths[i],
-            componentType: component.type,
-            componentValue: component.value
-          });
-        });
-    }
+            componentWidth: componentWidth,
+            componentType: componentDatum.type,
+            componentValue: componentDatum.value,
+            editable: editable
+          };
 
-    function _renderBlockComponentTemplate(componentOptions) {
+          newTemplate = componentTemplateRenderers[componentOptions.componentType](componentOptions);
 
-      componentOptions.classes = [
-        'component',
-        componentOptions.componentType,
-        ('col' + componentOptions.componentWidth)
-      ].join(' ');
+          componentContainer.append(newTemplate);
 
-      return componentTemplateRenderers[componentOptions.componentType](componentOptions);
-    }
-
-    function _renderTextComponentTemplate(componentOptions) {
-
-      var editorId;
-      var component;
-      var editor;
-
-      if (editable) {
-
-        editorId = componentOptions.blockId + '-' + componentOptions.componentIndex;
-
-        component = $(
-          '<div>',
-          { class: componentOptions.classes + ' text-editor', 'data-editor-id': editorId }
-        );
-
-        editor = window.richTextEditorManager.createEditor(
-          component,
-          editorId,
-          componentOptions.componentValue
-        );
-
-      } else {
-        component = $('<div>', { class: componentOptions.classes }).append(componentOptions.componentValue);
-      }
-
-      return component;
-    }
-
-    function _renderImageComponentTemplate(componentOptions) {
-      return $('<div>', { class: componentOptions.classes }).append('<img>');
-    }
-
-    function _renderVisualizationComponentTemplate(componentOptions) {
-      return $('<div>', { class: componentOptions.classes }).append('<img>');
+          elementCache.setComponent(blockId, i, newTemplate);
+        }
+      });
     }
 
     /**
@@ -494,57 +499,51 @@
      * component templates.
      */
 
+    function _canUseTemplate(componentDatum, componentContainer) {
+
+      var componentElement = componentContainer.children('.component').eq(0);
+      var renderedTemplate = componentElement.attr('data-rendered-template');
+      var renderedEmbedProvider;
+      var canUseTemplate = false;
+
+      if (componentDatum.type === renderedTemplate) {
+
+        if (componentDatum.type === 'media') {
+
+          if (componentDatum.value.type === 'embed') {
+
+            renderedEmbedProvider = componentElement.attr('data-rendered-media-embed-provider');
+
+            if (componentDatum.value.value.provider === renderedEmbedProvider) {
+              canUseTemplate = true;
+            }
+
+          } else {
+
+            canUseTemplate = true;
+
+          }
+
+        } else {
+
+          canUseTemplate = true;
+
+        }
+      }
+
+      return canUseTemplate;
+    }
+
     function _renderBlockComponentsData(blockId) {
 
-      var components = window.storyStore.getBlockComponents(blockId);
+      var componentData = window.storyStore.getBlockComponents(blockId);
 
-      components.forEach(function(component, i) {
+      componentData.forEach(function(componentDatum, i) {
 
         var element = elementCache.getComponent(blockId, i);
 
-        componentDataRenderers[component.type](element, component.value)
+        componentDataRenderers[componentDatum.type](element, componentDatum, editable, _renderStory);
       });
-    }
-
-    function _renderTextComponentData(element, data) {
-
-      if (editable) {
-
-        var editorId = element.attr('data-editor-id');
-        var editor = richTextEditorManager.getEditor(editorId);
-
-        editor.setContent(data);
-      } else {
-        element.html(data);
-      }
-    }
-
-    function _renderImageComponentData(element, data) {
-
-      var imageElement = element.find('img');
-      var imageSource = assetFinder.getRelativeUrlRoot() + data;
-
-      imageElement[0].onload = function(e) {
-        _renderStory();
-      };
-
-      if (imageElement.attr('src') !== imageSource) {
-        imageElement.attr('src', imageSource);
-      }
-    }
-
-    function _renderVisualizationComponentData(element, data) {
-
-      var imageElement = element.find('img');
-      var imageSource = assetFinder.getRelativeUrlRoot() + data;
-
-      imageElement[0].onload = function(e) {
-        _renderStory();
-      };
-
-      if (imageElement.attr('src') !== imageSource) {
-        imageElement.attr('src', imageSource);
-      }
     }
 
     /**

@@ -43,5 +43,6 @@ Frontend::Application.configure do
   config.assets.debug = true
 
   # Logging options
+  config.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
   config.logger.level = Logger.const_get((ENV['LOG_LEVEL'] || 'DEBUG').upcase)
 end

@@ -98,8 +98,6 @@ module Frontend
     config.version = SemVer.find.format '%M.%m.%p'
 
     # Set up logging
-    config.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
-    config.logger.level = Logger::DEBUG
     config.lograge.enabled = true
     config.lograge.formatter = Lograge::Formatters::KeyValue.new
   end

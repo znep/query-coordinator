@@ -7,39 +7,120 @@
    * at your own risk!
    */
 
-  var componentTemplateRenderers = {
+  var _componentTemplateRenderers = {
     'image': _renderImageComponentTemplate,
     'embed': _renderEmbedComponentTemplate
   };
-  var componentDataRenderers = {
+  var _componentDataRenderers = {
     'image': _renderImageComponentData,
     'embed': _renderEmbedComponentData
   };
 
-  var embedComponentTemplateRenderers = {
-    'wizard': _renderWizardEmbedComponentTemplate,
-    'youtube': _renderYoutubeEmbedComponentTemplate
+  var _embedComponentTemplateRenderers = {
+    'wizard': _renderEmbedWizardComponentTemplate,
   };
-  var embedComponentDataRenderers = {
-    'wizard': _renderWizardEmbedComponentData,
-    'youtube': _renderYoutubeEmbedComponentData
+  var _embedComponentDataRenderers = {
+    'wizard': _renderEmbedWizardComponentData,
   };
 
   function _renderTemplate(componentOptions) {
-    return componentTemplateRenderers[componentOptions.componentValue.type](componentOptions);
-  };
 
-  function _renderData(element, data, renderFn) {
-    componentDataRenderers[data.type](element, data.value, renderFn);
-  };
+    var mediaType = componentOptions.componentValue.type;
 
-  function _renderImageComponentTemplate(componentOptions) {
-    var classes = componentOptions.classes + ' image';
-
-    return $('<div>', { class: classes }).append('<img>');
+    return _componentTemplateRenderers[mediaType](
+      componentOptions
+    );
   }
 
-  function _renderImageComponentData(element, data, renderFn) {
+  function _renderData(element, data, editable, renderFn) {
+
+    var mediaType = data.value.type;
+    var mediaValue = data.value.value;
+
+    _componentDataRenderers[mediaType](
+      element,
+      mediaValue,
+      editable,
+      renderFn
+    );
+  }
+
+  /**
+   * Component template renderers
+   */
+
+  function _renderImageComponentTemplate(componentOptions) {
+
+    var classes = componentOptions.classes + ' image';
+
+    return $(
+      '<div>',
+      {
+        class: classes,
+        'data-rendered-template': 'media',
+        'data-rendered-media-type': 'image'
+      }
+    ).append('<img>');
+  }
+
+  function _renderEmbedComponentTemplate(componentOptions) {
+
+    if (componentOptions.componentType === 'embed' &&
+      (!componentOptions.hasOwnProperty('componentValue') ||
+      !componentOptions.componentValue.hasOwnProperty('value') ||
+      !componentOptions.componentValue.value.hasOwnProperty('provider'))) {
+
+      throw new Error(
+        'provider property is required for embed media type ' +
+        '(componentOptions: "' +
+        JSON.stringify(componentOptions) +
+        ').'
+      );
+    }
+
+    var provider = componentOptions.componentValue.value.provider;
+
+    return _embedComponentTemplateRenderers[provider](componentOptions);
+  }
+
+  function _renderEmbedWizardComponentTemplate(componentOptions) {
+
+    var classes = componentOptions.classes + ' embed wizard';
+
+    var controlsInsertButton = $(
+      '<button>',
+      {
+        class: 'btn accent-btn media-component-embed-wizard-insert-btn',
+        'data-embed-action': Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
+        'data-block-id': componentOptions.blockId,
+        'data-component-index': componentOptions.componentIndex
+      }
+    ).text(I18n.t('editor.components.media.embed_wizard_insert_btn'));
+
+    var controlsContainer = $(
+      '<div>',
+      { class: 'media-component-embed-wizard-container'}
+    ).append(controlsInsertButton);
+
+    return $(
+      '<div>',
+      {
+        class: classes,
+        'data-rendered-template': 'media',
+        'data-rendered-media-type': 'embed',
+        'data-rendered-media-embed-provider': 'wizard',
+        'data-block-id': componentOptions.blockId,
+        'data-component-index': componentOptions.componentIndex
+      }
+    ).append(controlsContainer);
+  }
+
+  /**
+   * Component data renderers
+   */
+
+  function _renderImageComponentData(element, data, editable, renderFn) {
+
     var imageElement = element.find('img');
     var imageSource = window.assetFinder.getRelativeUrlRoot() + data.src;
 
@@ -52,71 +133,17 @@
     }
   }
 
-  function _renderEmbedComponentTemplate(componentOptions) {
-    var embedValue = componentOptions.componentValue.value;
-    var provider;
-    var template;
-
-    if (embedValue === null) {
-      provider = 'wizard';
-    } else {
-      provider = componentOptions.componentValue.value.provider;
-    }
-
-    return embedComponentTemplateRenderers[provider](componentOptions);;
-  }
-
-  function _renderEmbedComponentData(element, value, renderFn) {
-    var provider;
-
-    if (value === null) {
-      provider = 'wizard';
-    } else {
-      provider = value.provider;
-    }
-
-    embedComponentDataRenderers[provider](element, value, renderFn);
-  }
-
-  function _renderWizardEmbedComponentTemplate(componentOptions) {
-    var classes = componentOptions.classes + ' embed wizard';
-
-    var controlsInsertButton = $(
-      '<button>',
-      { class: 'btn accent-btn media-component-embed-wizard-insert-btn' }
-    ).text(
-      I18n.t('editor.components.media.embed_wizard_insert_btn')
-    );
-
-    var controlsContainer = $(
-      '<div>',
-      { class: 'media-component-embed-wizard-container' }
-    ).append(controlsInsertButton);
-
-    return $('<div>', { class: classes }).append(controlsContainer);
-  }
-
-  function _renderWizardEmbedComponentData(element, value, renderFn) {
-    // Do nothing
-  }
-
-  function _renderYoutubeEmbedComponentTemplate(componentOptions) {
-    var classes = componentOptions.classes + ' embed youtube';
-
-    return $('<div>', { class: classes }).append(
-      $('<iframe>', { frameborder: '0', allowfullscreen: true, autoplay: true }).css('width', '100%')
-    ).append(
-      $('<div>', { class: 'flypaper' })
+  function _renderEmbedComponentData(element, value, editable, renderFn) {
+    _embedComponentDataRenderers[value.provider](
+      element,
+      value,
+      editable,
+      renderFn
     );
   }
 
-  function _renderYoutubeEmbedComponentData(element, value, renderFn) {
-    var iframeElement = element.find('iframe');
-    var youtubeSource = 'https://www.youtube.com/embed/' + value.id + '?rel=0&showinfo=0&autoplay=true';
-
-    if (iframeElement.attr('src') !== youtubeSource) {
-      iframeElement.attr('src', youtubeSource);
-    }
+  function _renderEmbedWizardComponentData(element, value, editable, renderFn) {
+    // NOOP (this component is static)
   }
 
   return {

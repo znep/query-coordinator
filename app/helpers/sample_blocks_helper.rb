@@ -19,13 +19,15 @@ module SampleBlocksHelper
         "components": [
           {
             "type": "text",
-            "value": "Test"
+            "value": "<div>Test<br></div>"
           },
           {
             "type": "media",
             "value": {
               "type": "embed",
-              "value": nil
+              "value": {
+                "provider": "wizard"
+              }
             }
           }
         ],
@@ -39,7 +41,9 @@ module SampleBlocksHelper
             "type": "media",
             "value": {
               "type": "embed",
-              "value": nil
+              "value": {
+                "provider": "wizard"
+              }
             }
           }
         ],

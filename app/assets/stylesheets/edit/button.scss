@@ -1,16 +1,17 @@
 @import '../base';
 
 .btn {
+  @include unselectable();
+
   padding: 0.5rem 1.5rem;
   font-size: 1.5rem;
   color: $btn-color;
   background-color: $btn-bg-color;
   border: none;
-  border-radius: 0.25rem;
+  border-radius: $btn-border-radius;
   outline: none;
-  cursor: pointer;
   transition: color $transition-duration, background-color $transition-duration;
-
+  cursor: pointer;
 
   &:hover {
     color: $btn-hover-color;
@@ -33,7 +34,7 @@
   }
 
   &.accent-btn:disabled {
-    color: $accent-btn-hover-color;
-    background-color: $accent-btn-hover-bg-color;
+    color: $accent-btn-disabled-color;
+    background-color: $accent-btn-disabled-bg-color;
   }
 }

@@ -28,18 +28,21 @@ function applyStandardMocks() {
     blocks: [
       generateBlockData({
         id: imageBlockId,
+        layout: '12',
         components: [
           { type: 'media', value: { type: 'image', value: { src: 'fakeImageFile.png' } } }
         ]
       }),
       generateBlockData({
         id: textBlockId,
+        layout: '12',
         components: [
           { type: 'text', value: 'some-text' }
         ]
       }),
       generateBlockData({
         id: imageAndTextBlockId,
+        layout: '6-6',
         components: [
           { type: 'media', value: { type: 'image', value: { src: 'anotherFakeImageFile.png' } } },
           { type: 'text', value: 'some-text' }

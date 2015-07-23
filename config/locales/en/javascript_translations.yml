@@ -14,3 +14,7 @@ en:
       components:
         media:
           embed_wizard_insert_btn: 'Insert...'
+      embed_wizard:
+        choose_provider_heading: 'Select data or media provider'
+        providers:
+          youtube: 'YouTube'

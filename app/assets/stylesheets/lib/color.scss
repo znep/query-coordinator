@@ -23,9 +23,14 @@ $block-bg-color: rgb(255, 255, 255);
 $block-edit-content-border-color: rgb(225, 225, 225);
 
 $story-insertion-hint-bg-color: rgb(0, 0, 0);
+// Modal windows
+$modal-bg-color: #fff;
+$modal-overlay-bg-color: rgba(0, 0, 0, 0.5);
 
-$modal-bg-color: #ddd;
-
+// Wizard
+$wizard-input-group-bg-color: #eee;
+$wizard-media-embed-preview-container-bg-color: #fff;
+$wizard-input-element-border-color: #ccc;
 $empty-story-warning-font-color: rgb(153,153,153);
 
 // Buttons

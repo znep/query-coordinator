@@ -58,8 +58,8 @@ $(document).on('ready', function() {
   window.storyStore = new StoryStore();
   window.historyStore = new HistoryStore();
   window.dragDropStore = new DragDropStore();
+  window.embedWizardStore = new EmbedWizardStore();
   window.blockRemovalConfirmationStore = new BlockRemovalConfirmationStore();
-
 
   var richTextEditorToolbar = new RichTextEditorToolbar(
     $('#rich-text-editor-toolbar'),
@@ -74,6 +74,11 @@ $(document).on('ready', function() {
 
   window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: inspirationStoryData });
   window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
+
+  var embedWizardOptions = {
+    embedWizardContainerElement: $('#embed-wizard')
+  };
+  var embedWizardRenderer = new EmbedWizardRenderer(embedWizardOptions);
 
   var userStoryOptions = {
     storyUid: window.userStoryUid,

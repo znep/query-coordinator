@@ -35,16 +35,18 @@
         );
       }
 
-      return _elements[blockId].components[componentIndex];;
+      return _elements[blockId].components[componentIndex];
     };
 
-    this.setBlock = function(blockId, blockElement) {
+    this.setBlock = function(blockId, componentCount, blockElement) {
 
       if (!_elements.hasOwnProperty(blockId)) {
         _elements[blockId] = {};
       }
 
       _elements[blockId].blockElement = blockElement;
+      _elements[blockId].components = [];
+      _elements[blockId].components.length = componentCount;
     };
 
     this.setComponent = function(blockId, componentIndex, componentElement) {

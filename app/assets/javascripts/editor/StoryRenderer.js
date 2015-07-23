@@ -226,6 +226,25 @@
       container.on('rich-text-editor::height-change', function() {
         _renderStory();
       });
+
+      container.on('click', '[data-embed-action]', function(event) {
+
+        var action = event.target.getAttribute('data-embed-action');
+
+        switch(action) {
+
+          case Constants.EMBED_WIZARD_CHOOSE_PROVIDER:
+            window.dispatcher.dispatch({
+              action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
+              blockId: event.target.getAttribute('data-block-id'),
+              componentIndex: event.target.getAttribute('data-component-index')
+            });
+            break;
+
+          default:
+            break;
+        }
+      });
     }
 
     /**
@@ -268,6 +287,7 @@
           container.append(blockElement);
         }
 
+        _renderBlockComponentsTemplates(blockId);
         _renderBlockComponentsData(blockId);
 
         if (editable) {
@@ -347,16 +367,19 @@
 
       var layout = window.storyStore.getBlockLayout(blockId);
       var componentWidths = layout.split('-');
-      var componentTemplates;
       var blockElement;
-
-      componentTemplates = _renderBlockComponentsTemplates(blockId);
-
-      componentTemplates.forEach(function(componentTemplate, i) {
-        elementCache.setComponent(blockId, i, componentTemplate);
+      var componentContainers = componentWidths.map(function(componentWidth, i) {
+        return $(
+          '<div>',
+          {
+            class: ('component-container col' + componentWidth),
+            'data-component-layout-width': componentWidth,
+            'data-component-index': i
+          }
+        );
       });
 
-      blockElement = $('<div>', { class: 'block', 'data-block-id': blockId }).append(componentTemplates);
+      blockElement = $('<div>', { class: 'block', 'data-block-id': blockId }).append(componentContainers);
 
       if (editable) {
         blockElement = $('<div>', { class: 'block-edit', 'data-block-id': blockId }).append([
@@ -365,7 +388,7 @@
         ]);
       }
 
-      elementCache.setBlock(blockId, blockElement);
+      elementCache.setBlock(blockId, componentWidths.length, blockElement);
 
       return blockElement;
     }
@@ -434,33 +457,49 @@
      * block elements.
      */
 
-    function _renderBlockComponentsTemplates(blockId, componentData) {
+    function _renderBlockComponentsTemplates(blockId) {
 
-      var componentWidths = window.storyStore.getBlockLayout(blockId).split('-');
+      var element = elementCache.getBlock(blockId);
       var componentData = window.storyStore.getBlockComponents(blockId);
+      var componentContainer;
+      var existingComponent;
+      var componentWidth;
+      var componentClasses;
+      var componentOptions;
+      var newTemplate;
 
-      return componentData.
-        map(function(component, i) {
+      componentData.forEach(function(component, i) {
 
-          return _renderBlockComponentTemplate({
+        componentContainer = element.find('.component-container[data-component-index="' + i + '"]');
+
+        if (!_canUseTemplate(component, componentContainer)) {
+
+          existingComponent = elementCache.getComponent(blockId, i);
+
+          if (existingComponent) {
+            existingComponent.remove();
+          }
+
+          componentWidth = componentContainer.attr('data-component-layout-width');
+          componentClasses = ['component', component.type].join(' ');
+
+          componentOptions = {
             blockId: blockId,
+            classes: componentClasses,
             componentIndex: i,
-            componentWidth: componentWidths[i],
+            componentWidth: componentWidth,
             componentType: component.type,
-            componentValue: component.value
-          });
-        });
-    }
+            componentValue: component.value,
+            editable: editable
+          };
 
-    function _renderBlockComponentTemplate(componentOptions) {
+          newTemplate = componentTemplateRenderers[componentOptions.componentType](componentOptions);
 
-      componentOptions.classes = [
-        'component',
-        componentOptions.componentType,
-        ('col' + componentOptions.componentWidth)
-      ].join(' ');
+          componentContainer.append(newTemplate);
 
-      return componentTemplateRenderers[componentOptions.componentType](componentOptions);
+          elementCache.setComponent(blockId, i, newTemplate);
+        }
+      });
     }
 
     function _renderTextComponentTemplate(componentOptions) {
@@ -469,13 +508,21 @@
       var component;
       var editor;
 
-      if (editable) {
+      if (componentOptions.editable) {
 
-        editorId = componentOptions.blockId + '-' + componentOptions.componentIndex;
+        editorId = [
+          componentOptions.blockId,
+          '-',
+          componentOptions.componentIndex
+        ].join('');
 
         component = $(
           '<div>',
-          { class: componentOptions.classes + ' text-editor', 'data-editor-id': editorId }
+          {
+            class: componentOptions.classes + ' text-editor',
+            'data-editor-id': editorId,
+            'data-rendered-template': 'text'
+          }
         );
 
         editor = window.richTextEditorManager.createEditor(
@@ -485,7 +532,12 @@
         );
 
       } else {
-        component = $('<div>', { class: componentOptions.classes }).append(componentOptions.componentValue);
+        component = $(
+          '<div>',
+          {
+            class: componentOptions.classes
+          }
+        ).append(componentOptions.componentValue);
       }
 
       return component;
@@ -496,6 +548,41 @@
      * component templates.
      */
 
+    function _canUseTemplate(component, componentContainer) {
+
+      var componentElement = componentContainer.children('.component').eq(0);
+      var renderedTemplate = componentElement.attr('data-rendered-template');
+      var renderedEmbedProvider;
+      var canUseTemplate = false;
+
+      if (component.type === renderedTemplate) {
+
+        if (component.type === 'media') {
+
+          if (component.value.type === 'embed') {
+
+            renderedEmbedProvider = componentElement.attr('data-rendered-media-embed-provider');
+
+            if (component.value.value.provider === renderedEmbedProvider) {
+              canUseTemplate = true;
+            }
+
+          } else {
+
+            canUseTemplate = true;
+
+          }
+
+        } else {
+
+          canUseTemplate = true;
+
+        }
+      }
+
+      return canUseTemplate;
+    }
+
     function _renderBlockComponentsData(blockId) {
 
       var components = window.storyStore.getBlockComponents(blockId);
@@ -504,20 +591,21 @@
 
         var element = elementCache.getComponent(blockId, i);
 
-        componentDataRenderers[component.type](element, component.value, _renderStory);
+        componentDataRenderers[component.type](element, component, editable, _renderStory);
       });
     }
 
-    function _renderTextComponentData(element, data, renderFn) {
+    function _renderTextComponentData(element, value, editable, renderFn) {
 
       if (editable) {
 
         var editorId = element.attr('data-editor-id');
         var editor = richTextEditorManager.getEditor(editorId);
 
-        editor.setContent(data);
+        editor.setContent(value.value);
+
       } else {
-        element.html(data);
+        element.html(value.value);
       }
     }
 

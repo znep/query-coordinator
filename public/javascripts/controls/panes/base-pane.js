@@ -1760,50 +1760,72 @@
         }
     };
 
-    renderLineItem.select = function(cpObj, contents, args, curValue, defValue)
-    {
-        var options = [];
-        if (!_.isNull(args.item.prompt))
-        {
-            options.push({tagName: 'option', value: '', 'class': 'prompt',
-                contents: args.item.prompt || $.t('screens.ds.grid_sidebar.base.generic_select.prompt')});
+    renderLineItem.select = function(cpObj, contents, args, curValue, defValue) {
+      var groups = {};
+      var options = [];
+
+      if (!_.isNull(args.item.prompt)) {
+        options.push({
+          tagName: 'option',
+          value: '',
+          'class': 'prompt',
+          contents: args.item.prompt || $.t('screens.ds.grid_sidebar.base.generic_select.prompt')
+        });
+      }
+
+      if (_.isBoolean(curValue)) {
+        curValue = curValue.toString();
+      }
+
+      var tag = {
+        tagName: 'select',
+        contents: options
+      };
+
+      if (_.isArray(args.item.options)) {
+        var selected = false;
+
+        _.each(args.item.options, function(option) {
+          var value = curValue || defValue;
+          var selectOption = renderSelectOption(option, value);
+
+          if (option.group) {
+            groups[option.group] = groups[option.group] || {tagName: 'optgroup', label: option.group, contents: []};
+            groups[option.group].contents.push(selectOption);
+          }
+          else {
+            options.push(selectOption);
+          }
+
+          // Collect all selected options' indexes.
+          if (args.item.onlySelectFirst && selected && selectOption.selected) {
+            selectOption.selected = false;
+          } else if (selectOption.selected) {
+            selected = true;
+          }
+        });
+
+        if (!_.isEmpty(groups)) {
+
+          // If we have groups, add each one
+          // to the options rendering group.
+          for (var group in groups) {
+            tag.contents.push(groups[group]);
+          }
         }
-        if (_.isBoolean(curValue)) { curValue = curValue.toString(); }
+      } else if (_.isFunction(args.item.options)) {
+          var uniqueId = _.uniqueId();
+          cpObj._selectOptions[uniqueId] = args.item.options;
+          tag['data-selectOption'] = uniqueId;
+      }
 
-        var tag = {tagName: 'select', contents: options};
-        if (_.isArray(args.item.options))
-        {
-            var selected = [];
-            _.each(args.item.options, function(o)
-            {
-                options.push(renderSelectOption(o, curValue || defValue));
-                // Collect all selected options' indexes.
-                if (_.last(options).selected) {
-                    selected.push(options.length - 1);
-                }
-            });
+      if (!$.isBlank(args.item.linkedField)) {
+        tag['data-linkedField'] = $.arrayify(args.item.linkedField).join(',');
+      }
 
-            if (args.item.onlySelectFirst) {
-                // Falsify all selected options other than
-                // the first one.
-                _.rest(selected).forEach(function (option) {
-                    options[option].selected = false;
-                });
-            }
-        }
-        else if (_.isFunction(args.item.options))
-        {
-            var u = _.uniqueId();
-            cpObj._selectOptions[u] = args.item.options;
-            tag['data-selectOption'] = u;
-        }
+      var attributes = commonAttrs(cpObj, $.extend({}, args.item, {dataValue: curValue}), args.context);
 
-        if (!$.isBlank(args.item.linkedField))
-        { tag['data-linkedField'] =
-            $.arrayify(args.item.linkedField).join(','); }
-
-        _.last(contents).contents = $.extend(commonAttrs(cpObj, $.extend({}, args.item,
-                {dataValue: curValue}), args.context), tag);
+      _.last(contents).contents = $.extend(attributes, tag);
     };
 
     renderLineItem.slider = function(cpObj, contents, args, curValue, defValue)

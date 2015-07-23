@@ -88,15 +88,15 @@
         return c.origColumn.renderType.precisionStyle || 'hidden';
     };
 
+    var common = $.t('screens.ds.grid_sidebar.column_properties.money.groups.common');
+    var all = $.t('screens.ds.grid_sidebar.column_properties.money.groups.all');
     var currencyOptions = _.map([
-        // First the most import currencies that every will use...
-        {value: 'USD', text: "United States, Dollars"},
-        {value: 'EUR', text: "Euros"},
-        {value: 'GBP', text: "British, Pounds"},
-        {value: "RUB", text: "Russia, Rubles"},
-        {value: "CAD", text: "Canada, Dollars"},
-        // For decoration -- to pretty up the select.
-        {text: '––––––––––––––––––––––', disabled: true},
+        // First the most import currencies that everyone will use...
+        {value: 'USD', text: "United States, Dollars", group: common},
+        {value: 'EUR', text: "Euros", group: common},
+        {value: 'GBP', text: "British, Pounds", group: common},
+        {value: "RUB", text: "Russia, Rubles", group: common},
+        {value: "CAD", text: "Canada, Dollars", group: common},
         // Now all the currencies that no one ever uses...
         {value: "AFN", text: "Afghanistan, Afghanis"},
         {value: "ALL", text: "Albania, Leke"},
@@ -186,12 +186,11 @@
         {value: "VND", text: "Vietnam, Dong"},
         {value: "YER", text: "Yemen, Rials"}
     ], function(c) {
-      if (c.disabled) {
-          return {value: '', text: c.text, disabled: c.disabled};
-      }
-
-      return {value: c.value, text: c.text + ' (' +
-        blist.datatypes.money.currencies[c.value] + ')'};
+      return {
+        value: c.value,
+        group: c.group || all,
+        text: c.text + ' (' + blist.datatypes.money.currencies[c.value] + ')'
+      };
     });
 
     var rdfOptions = [];

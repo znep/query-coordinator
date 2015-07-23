@@ -29,125 +29,208 @@
             view: null
         },
 
-        prototype:
-        {
-            init: function ()
-            {
-                var cmObj = this;
-                var $domObj = cmObj.$dom();
-                $domObj.data("columnMenu", cmObj);
+        prototype: {
+            init: function () {
+              var cmObj = this;
+              var $domObj = cmObj.$dom();
+              $domObj.data("columnMenu", cmObj);
 
-                if ($.isBlank(cmObj.settings.$menuTrigger))
-                { cmObj.settings.$menuTrigger = $domObj; }
-                if ($.isBlank(cmObj.settings.$tipItem))
-                { cmObj.settings.$tipItem = $domObj; }
+              if ($.isBlank(cmObj.settings.$menuTrigger)) {
+                cmObj.settings.$menuTrigger = $domObj;
+              }
 
-                var col = cmObj.settings.column;
-                var isNested = !$.isBlank(col.parentColumn);
-                // Create an object containing flags describing what should be
-                // present in the menu
-                var features = {};
+              if ($.isBlank(cmObj.settings.$tipItem)) {
+                cmObj.settings.$tipItem = $domObj;
+              }
 
-                if (!isNested && col.renderType.sortable) { features.sort = true; }
+              var col = cmObj.settings.column;
+              var isNested = !$.isBlank(col.parentColumn);
 
-                if (canFilter(cmObj, col))
-                { features.filter = true; }
+              // Create an object containing flags describing what should be
+              // present in the menu
+              var features = {};
 
+              if (!isNested && col.renderType.sortable) {
+                features.sort = true;
+              }
 
-                if (cmObj.settings.columnDeleteEnabled &&
-                    col.renderType.deleteable &&
-                    (!cmObj.settings.view.isGrouped() ||
-                        !_.any(cmObj.settings.view.metadata.jsonQuery.group, function(g)
-                            { return g.columnFieldName == col.fieldName; })))
-                { features.remove = true; }
+              if (canFilter(cmObj, col)) {
+                features.filter = true;
+              }
 
+              var group = cmObj.settings.view.metadata.jsonQuery.group;
 
-                if (cmObj.settings.columnHideEnabled)
-                { features.hide = true; }
+              var columnDeletionEnabled = cmObj.settings.columnDeleteEnabled;
+              var columnCanBeDeleted = col.renderType.deleteable || (blist.dataset.newBackend && col.renderType.nbeModifiable);
+              var viewIsNotGrouped = !cmObj.settings.view.isGrouped();
+              var isNotGrouped = viewIsNotGrouped || !_.any(group, function(g) {
+                return g.columnFieldName == col.fieldName;
+              });
 
-                if (cmObj.settings.columnPropertiesEnabled)
-                { features.properties = true; }
+              if (columnDeletionEnabled && columnCanBeDeleted && isNotGrouped) {
+                features.remove = true;
+              }
 
-                // We've got a menu, so add a class
-                $domObj.addClass('hasColumnMenu');
+              if (cmObj.settings.columnHideEnabled) {
+                features.hide = true;
+              }
 
-                // Install an event handler that actually builds the menu on first
-                // mouse over
-                $domObj.one('mouseover', function()
-                {
-                    if ($domObj.find('ul.menu').length > 0) { return; }
-                    var menu = {tagName: 'ul', 'class': ['menu',
-                        'columnHeaderMenu', 'action-item'],
-                        id: 'column-menu', contents: []};
+              if (cmObj.settings.columnPropertiesEnabled) {
+                features.properties = true;
+              }
 
-                    // Render sorting
-                    if (features.sort)
-                    {
-                        menu.contents.push({tagName: 'li',
-                            'class': ['sortAsc', 'singleItem'],
-                            contents: {tagName: 'a', href: '#column-sort-asc',
-                                contents: {tagName: 'span', 'class': 'highlight',
-                                    contents: $.t('controls.grid.sort_ascending')}}});
-                        menu.contents.push({tagName: 'li',
-                            'class': ['sortDesc', 'singleItem'],
-                            contents: {tagName: 'a', href: '#column-sort-desc',
-                                contents: {tagName: 'span', 'class': 'highlight',
-                                    contents: $.t('controls.grid.sort_descending')}}});
-                        menu.contents.push({tagName: 'li',
-                            'class': ['sortClear', 'singleItem'],
-                            contents: {tagName: 'a', href: '#column-sort-clear',
-                                contents: {tagName: 'span', 'class': 'highlight',
-                                    contents: $.t('controls.grid.clear_sort')}}});
+              // We've got a menu, so add a class
+              $domObj.addClass('hasColumnMenu');
+
+              // Install an event handler that actually builds the menu on first
+              // mouse over
+              $domObj.one('mouseover', function() {
+                if ($domObj.find('ul.menu').length > 0) {
+                  return;
+                }
+
+                var menu = {
+                  tagName: 'ul',
+                  'class': ['menu', 'columnHeaderMenu', 'action-item'],
+                  id: 'column-menu',
+                  contents: []
+                };
+
+                // Render sorting
+                if (features.sort) {
+                  menu.contents.push({
+                    tagName: 'li',
+                    'class': ['sortAsc', 'singleItem'],
+                    contents: {
+                      tagName: 'a',
+                      href: '#column-sort-asc',
+                      contents: {
+                        tagName: 'span',
+                        'class': 'highlight',
+                        contents: $.t('controls.grid.sort_ascending')
+                      }
                     }
-
-                    if (features.sort || features.filter)
-                    {
-                        // There are already display items in the list, so we
-                        // need to add a separator.
-                        menu.contents.push({tagName: 'li',
-                            'class': ['filterSeparator', 'separator',
-                                'singleItem', {value: 'hide',
-                                    onlyIf: !(features.hide || features.remove || features.properties)}]});
+                  },
+                  {
+                    tagName: 'li',
+                    'class': ['sortDesc', 'singleItem'],
+                    contents: {
+                      tagName: 'a',
+                      href: '#column-sort-desc',
+                      contents: {
+                        tagName: 'span',
+                        'class': 'highlight',
+                        contents: $.t('controls.grid.sort_descending')
+                      }
                     }
-                    if (features.hide)
-                    {
-                        menu.contents.push({tagName: 'li', 'class': 'hideCol',
-                            contents: {tagName: 'a', href: '#hide-column',
-                                contents: {tagName: 'span', 'class': 'highlight',
-                                    contents: $.t('controls.grid.hide_column')}}});
+                  },
+                  {
+                    tagName: 'li',
+                    'class': ['sortClear', 'singleItem'],
+                    contents: {
+                      tagName: 'a',
+                      href: '#column-sort-clear',
+                      contents: {
+                        tagName: 'span',
+                        'class': 'highlight',
+                        contents: $.t('controls.grid.clear_sort')
+                      }
                     }
+                  });
+                }
 
-                    if (features.remove)
-                    {
-                        menu.contents.push({tagName: 'li', 'class': 'delete',
-                            contents: {tagName: 'a', href: '#delete-column',
-                                contents: {tagName: 'span', 'class': 'highlight',
-                                    contents: $.t('controls.grid.delete_column')}}});
+                if (features.sort || features.filter) {
+
+                  // There are already display items in the list, so we
+                  // need to add a separator.
+                  menu.contents.push({
+                    tagName: 'li',
+                    'class': [
+                      'filterSeparator', 'separator',
+                      'singleItem',
+                      {
+                        value: 'hide',
+                        onlyIf: !(features.hide || features.remove || features.properties)
+                      }
+                    ]
+                  });
+                }
+
+                if (features.hide) {
+                  menu.contents.push({
+                    tagName: 'li',
+                    'class': 'hideCol',
+                    contents: {
+                      tagName: 'a',
+                      href: '#hide-column',
+                      contents: {
+                        tagName: 'span',
+                        'class': 'highlight',
+                        contents: $.t('controls.grid.hide_column')
+                      }
                     }
+                  });
+                }
 
-                    if (features.properties)
-                    {
-                        // There are already display items in the list, so we
-                        // need to add a separator.
-                        menu.contents.push({tagName: 'li',
-                            'class': ['separator', 'singleItem']});
-                        menu.contents.push({tagName: 'li', 'class': ['properties',
-                            'singleItem'], contents: {tagName: 'a',
-                                href: '#edit-column',
-                                contents: {tagName: 'span', 'class': 'highlight',
-                                    contents: $.t('controls.grid.edit_column_properties')}}});
+                if (features.remove) {
+                  menu.contents.push({
+                    tagName: 'li',
+                    'class': 'delete',
+                    contents: {
+                      tagName: 'a',
+                      href: '#delete-column',
+                      contents: {
+                        tagName: 'span',
+                        'class': 'highlight',
+                        contents: $.t('controls.grid.delete_column')
+                      }
                     }
+                  });
+                }
 
-                    menu.contents.push({tagName: 'li', 'class': 'footer',
-                        contents: {tagName: 'div', 'class': 'outerWrapper',
-                            contents: {tagName: 'div', 'class': 'innerWrapper',
-                                contents: {tagName: 'span', 'class': 'colorWrapper'}
-                            }}});
+                if (features.properties) {
 
-                    $domObj.append($.tag(menu));
-                    cmObj.$menu = $domObj.find('ul.columnHeaderMenu');
-                    hookUpHeaderMenu(cmObj);
+                  // There are already display items in the list, so we
+                  // need to add a separator.
+                  menu.contents.push({
+                    tagName: 'li',
+                    'class': ['separator', 'singleItem']
+                  },
+                  {
+                    tagName: 'li',
+                    'class': ['properties', 'singleItem'],
+                    contents: {
+                      tagName: 'a',
+                      href: '#edit-column',
+                      contents: {
+                        tagName: 'span',
+                        'class': 'highlight',
+                        contents: $.t('controls.grid.edit_column_properties')
+                      }
+                    }
+                  });
+                }
+
+                menu.contents.push({
+                  tagName: 'li', 'class': 'footer',
+                  contents: {
+                    tagName: 'div',
+                    'class': 'outerWrapper',
+                    contents: {
+                      tagName: 'div',
+                      'class': 'innerWrapper',
+                      contents: {
+                        tagName: 'span',
+                        'class': 'colorWrapper'
+                      }
+                    }
+                  }
                 });
+
+                $domObj.append($.tag(menu));
+                cmObj.$menu = $domObj.find('ul.columnHeaderMenu');
+                hookUpHeaderMenu(cmObj);
+              });
             },
 
             $dom: function()

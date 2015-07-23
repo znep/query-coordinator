@@ -750,6 +750,11 @@ en:
       phone: Phone
       photo: Photo (Image)
       point: Point
+      multipoint: Multi-Point
+      line: Line-String
+      multiline: Multi-Line-String
+      polygon: Polygon
+      multipolygon: Multi-Polygon
       stars: Star
       text: Plain Text
       url: Website URL
@@ -1780,6 +1785,9 @@ en:
             selectable: Valid Columns
             unselect: Deselect column
           datatypes:
+            groups:
+              standard: Standard
+              geometry: Geometry
             checkbox: checkbox
             dataset_link: dataset link
             date_time: date & time
@@ -2019,6 +2027,9 @@ en:
             thousands: Thousands
             title: Localization
           money:
+            groups:
+              common: Common
+              all: All
             abbreviated: Abbreviated
             currency: Currency
             format_mask_warning: 

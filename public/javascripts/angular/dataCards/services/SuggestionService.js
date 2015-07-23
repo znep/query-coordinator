@@ -11,12 +11,15 @@
         Assert(datasetId, 'Must provide a datasetId 4x4');
         Assert(fieldName, 'Must provide a fieldName value');
         Assert(query, 'Must provide a non-empty search query value');
+
+        var limitString = (_.isFinite(limit)) ? '?size={0}'.format(limit + 1) : '';
+
         var url = $.baseUrl(
-          '/views/{0}/columns/{1}/suggest/{2}?size={3}'.format(
+          '/views/{0}/columns/{1}/suggest/{2}{3}'.format(
             datasetId,
             fieldName,
             query,
-            limit + 1)
+            limitString)
         );
         var config = {
           cache: true,

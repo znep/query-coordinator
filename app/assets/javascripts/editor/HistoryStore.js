@@ -91,7 +91,7 @@
 
       var historyLength = _history.length;
 
-      Util.assertTypeof(serializedStory, 'string');
+      Util.assertIsOneOfTypes(serializedStory, 'string');
 
       return (
         historyLength > 0 &&
@@ -105,7 +105,7 @@
 
       var historyLength = _history.length;
 
-      Util.assertTypeof(serializedStory, 'string');
+      Util.assertIsOneOfTypes(serializedStory, 'string');
 
       return (
         historyLength === 0 ||

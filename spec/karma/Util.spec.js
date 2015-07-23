@@ -67,66 +67,28 @@ describe('Util', function() {
     });
   });
 
-  describe('assertTypeof', function() {
-
-    describe('given a value of a different than specified type', function() {
-
-      assert.throw(function() {
-        Util.assertTypeof(1, 'boolean');
-      });
-
-      assert.throw(function() {
-        Util.assertTypeof(1, 'string');
-      });
-
-      assert.throw(function() {
-        Util.assertTypeof('1', 'number');
-      });
-
-      assert.throw(function() {
-        Util.assertTypeof(1, 'object');
-      });
-
-      assert.throw(function() {
-        Util.assertTypeof(1, 'function');
-      });
-    });
-
-    describe('given a value of the specified type', function() {
-
-      it('does not throw an error', function() {
-
-        Util.assertTypeof(true, 'boolean');
-        Util.assertTypeof('string', 'string');
-        Util.assertTypeof(1, 'number');
-        Util.assertTypeof({}, 'object');
-        Util.assertTypeof(function() {}, 'function');
-      });
-    });
-  });
-
-  describe('assertTypeofInArray', function() {
+  describe('assertIsOneOfTypes', function() {
 
     describe('given a value of type not in the specified array', function() {
 
       assert.throw(function() {
-        Util.assertTypeofInArray(1, ['boolean', 'string']);
+        Util.assertIsOneOfTypes(1, 'boolean', 'string');
       });
 
       assert.throw(function() {
-        Util.assertTypeofInArray(1, ['string', 'boolean']);
+        Util.assertIsOneOfTypes(1, 'string', 'boolean');
       });
 
       assert.throw(function() {
-        Util.assertTypeofInArray('1', ['number', 'object']);
+        Util.assertIsOneOfTypes('1', 'number', 'object');
       });
 
       assert.throw(function() {
-        Util.assertTypeofInArray(1, ['object', 'function']);
+        Util.assertIsOneOfTypes(1, 'object', 'function');
       });
 
       assert.throw(function() {
-        Util.assertTypeofInArray(1, ['function', 'boolean']);
+        Util.assertIsOneOfTypes(1, 'function', 'boolean');
       });
     });
 
@@ -134,11 +96,11 @@ describe('Util', function() {
 
       it('does not throw an error', function() {
 
-        Util.assertTypeofInArray(true, ['string', 'boolean']);
-        Util.assertTypeofInArray('string', ['string', 'number']);
-        Util.assertTypeofInArray(1, ['function', 'number']);
-        Util.assertTypeofInArray({}, ['object', 'string']);
-        Util.assertTypeofInArray(function() {}, ['boolean', 'function']);
+        Util.assertIsOneOfTypes(true, 'boolean');
+        Util.assertIsOneOfTypes('string', 'string');
+        Util.assertIsOneOfTypes(1, 'function', 'number');
+        Util.assertIsOneOfTypes({}, 'number', 'object');
+        Util.assertIsOneOfTypes(function() {}, 'boolean', 'object', 'function');
       });
     });
   });

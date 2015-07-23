@@ -2,11 +2,6 @@
  
   'use strict';
 
-  /**
-   * This is written as a collection of static methods! Instantiate
-   * at your own risk!
-   */
-
   var _componentTemplateRenderers = {
     'image': _renderImageComponentTemplate,
     'embed': _renderEmbedComponentTemplate
@@ -49,7 +44,7 @@
     Util.assertHasProperty(data, 'value');
     Util.assertHasProperty(data.value, 'type');
     Util.assertHasProperty(data.value, 'value');
-    Util.assertTypeof(renderFn, 'function');
+    Util.assertIsOneOfTypes(renderFn, 'function');
 
     type = data.value.type;
     value = data.value.value;

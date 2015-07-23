@@ -2,11 +2,6 @@
 
   'use strict';
 
-  /**
-   * This is written as a collection of static methods! Instantiate
-   * at your own risk!
-   */
-
   var _componentTemplateRenderers = {
     'text': _renderTextComponentTemplate
   };
@@ -33,7 +28,7 @@
 
     Util.assertHasProperty(data, 'type');
     Util.assertHasProperty(data, 'value');
-    Util.assertTypeof(renderFn, 'function');
+    Util.assertIsOneOfTypes(renderFn, 'function');
 
     type = data.type;
 

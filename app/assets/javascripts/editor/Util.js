@@ -32,20 +32,17 @@
       );
     },
 
-    assertTypeof: function(value, type) {
+    /**
+     * Ensures the given value is of any of the provided types.
+     *
+     * @param {any} value - The value to check
+     * @param {...string} <arguments> - List of acceptable types
+     */
+    assertIsOneOfTypes: function(value) {
+      var types = _.rest(arguments);
+      var valid = _.contains(types, typeof value);
 
-      if (typeof value !== type) {
-        throw new Error(
-          'Value must be a ' + type + ' (is of type ' +
-          (typeof value) +
-          ').'
-        );
-      }
-    },
-
-    assertTypeofInArray: function(value, types) {
-
-      if (types.indexOf(typeof value) < 0) {
+      if (!valid) {
         throw new Error(
           'Value must be one of [' + types.join(', ') + '] (is of type ' +
           (typeof value) +

@@ -472,8 +472,8 @@
           componentClasses = ['component', component.type].join(' ');
 
           componentOptions = {
-            blockId: blockId,
             classes: componentClasses,
+            blockId: blockId,
             componentIndex: i,
             componentWidth: componentWidth,
             componentType: component.type,

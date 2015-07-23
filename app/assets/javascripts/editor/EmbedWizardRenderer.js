@@ -45,7 +45,7 @@
 
         switch (event.keyCode) {
 
-          // ESC
+          // `ESC`
           case 27:
             window.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CLOSE

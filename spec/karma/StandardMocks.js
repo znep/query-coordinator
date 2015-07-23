@@ -74,6 +74,7 @@ function applyStandardMocks() {
   });
 
   window.storyStore = new StoryStore();
+  window.embedWizardStore = new EmbedWizardStore();
   window.dragDropStore = new DragDropStore();
   window.historyStore = new HistoryStore();
   window.blockRemovalConfirmationStore = new BlockRemovalConfirmationStore();
@@ -115,7 +116,7 @@ function removeStandardMocks() {
   delete window.dragDropStore;
   delete window.I18n;
   delete window.standardMocks;
-};
+}
 
 // Run StandardMocks before every test.
 // Currently, this introduces an unmeasureable

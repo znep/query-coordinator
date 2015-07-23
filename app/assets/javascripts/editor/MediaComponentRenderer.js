@@ -25,21 +25,40 @@
 
   function _renderTemplate(componentOptions) {
 
-    var mediaType = componentOptions.componentValue.type;
+    var type;
 
-    return _componentTemplateRenderers[mediaType](
+    Util.assertHasProperty(componentOptions, 'componentType');
+    Util.assertEqual(componentOptions.componentType, 'media');
+    Util.assertHasProperty(componentOptions, 'componentValue');
+    Util.assertHasProperty(componentOptions.componentValue, 'type');
+
+    type = componentOptions.componentValue.type;
+
+    Util.assertHasProperty(_componentTemplateRenderers, type);
+
+    return _componentTemplateRenderers[type](
       componentOptions
     );
   }
 
   function _renderData(element, data, editable, renderFn) {
 
-    var mediaType = data.value.type;
-    var mediaValue = data.value.value;
+    var type;
+    var value;
 
-    _componentDataRenderers[mediaType](
+    Util.assertHasProperty(data, 'value');
+    Util.assertHasProperty(data.value, 'type');
+    Util.assertHasProperty(data.value, 'value');
+    Util.assertTypeof(renderFn, 'function');
+
+    type = data.value.type;
+    value = data.value.value;
+
+    Util.assertHasProperty(_componentDataRenderers, type);
+
+    _componentDataRenderers[type](
       element,
-      mediaValue,
+      value,
       editable,
       renderFn
     );
@@ -51,7 +70,11 @@
 
   function _renderImageComponentTemplate(componentOptions) {
 
-    var classes = componentOptions.classes + ' image';
+    var classes;
+
+    Util.assertHasProperty(componentOptions, 'classes');
+
+    classes = componentOptions.classes + ' image';
 
     return $(
       '<div>',
@@ -65,29 +88,46 @@
 
   function _renderEmbedComponentTemplate(componentOptions) {
 
-    if (componentOptions.componentType === 'embed' &&
-      (!componentOptions.hasOwnProperty('componentValue') ||
-      !componentOptions.componentValue.hasOwnProperty('value') ||
-      !componentOptions.componentValue.value.hasOwnProperty('provider'))) {
+    var provider;
 
-      throw new Error(
-        'provider property is required for embed media type ' +
-        '(componentOptions: "' +
-        JSON.stringify(componentOptions) +
-        ').'
-      );
-    }
+    Util.assertHasProperties(
+      componentOptions,
+      'componentType',
+      'componentValue'
+    );
 
-    var provider = componentOptions.componentValue.value.provider;
+    Util.assertHasProperties(
+      componentOptions.componentValue,
+      'type',
+      'value'
+    );
+
+    Util.assertHasProperty(
+      componentOptions.componentValue.value,
+      'provider'
+    );
+
+    provider = componentOptions.componentValue.value.provider;
 
     return _embedComponentTemplateRenderers[provider](componentOptions);
   }
 
   function _renderEmbedWizardComponentTemplate(componentOptions) {
 
-    var classes = componentOptions.classes + ' embed wizard';
+    var classes;
+    var controlsInsertButton;
+    var controlsContainer;
 
-    var controlsInsertButton = $(
+    Util.assertHasProperties(
+      componentOptions,
+      'classes',
+      'blockId',
+      'componentIndex'
+    );
+
+    classes = componentOptions.classes + ' embed wizard';
+
+    controlsInsertButton = $(
       '<button>',
       {
         class: 'btn accent-btn media-component-embed-wizard-insert-btn',
@@ -97,7 +137,7 @@
       }
     ).text(I18n.t('editor.components.media.embed_wizard_insert_btn'));
 
-    var controlsContainer = $(
+    controlsContainer = $(
       '<div>',
       { class: 'media-component-embed-wizard-container'}
     ).append(controlsInsertButton);
@@ -121,8 +161,13 @@
 
   function _renderImageComponentData(element, data, editable, renderFn) {
 
-    var imageElement = element.find('img');
-    var imageSource = window.assetFinder.getRelativeUrlRoot() + data.src;
+    var imageElement;
+    var imageSource;
+
+    Util.assertHasProperty(data, 'src');
+
+    imageElement = element.find('img');
+    imageSource = window.assetFinder.getRelativeUrlRoot() + data.src;
 
     imageElement[0].onload = function(e) {
       renderFn();

@@ -16,14 +16,28 @@
 
   function _renderTemplate(componentOptions) {
 
-    var type = componentOptions.componentType;
+    var type;
+
+    Util.assertHasProperty(componentOptions, 'componentType');
+
+    type = componentOptions.componentType;
+
+    Util.assertHasProperty(_componentTemplateRenderers, type);
 
     return _componentTemplateRenderers[type](componentOptions);
   }
 
   function _renderData(element, data, editable, renderFn) {
 
-    var type = data.type;
+    var type;
+
+    Util.assertHasProperty(data, 'type');
+    Util.assertHasProperty(data, 'value');
+    Util.assertTypeof(renderFn, 'function');
+
+    type = data.type;
+
+    Util.assertHasProperty(_componentDataRenderers, type);
 
     _componentDataRenderers[type](element, data.value, editable, renderFn);
   }
@@ -37,6 +51,15 @@
     var editorId;
     var component;
     var editor;
+
+    Util.assertHasProperties(
+      componentOptions,
+      'classes',
+      'blockId',
+      'componentIndex',
+      'componentValue',
+      'editable'
+    );
 
     if (componentOptions.editable) {
 

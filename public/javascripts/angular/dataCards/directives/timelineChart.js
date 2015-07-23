@@ -1540,12 +1540,12 @@
             flyoutContent = flyoutContent.
               join('').
               format(
-                label,
+                _.escape(label),
                 I18n.flyout.total,
-                unfilteredValue,
+                _.escape(unfilteredValue),
                 flyoutSpanClass,
                 I18n.flyout.filteredAmount,
-                filteredValue,
+                _.escape(filteredValue),
                 I18n.flyout.clearFilterLong
               );
           }

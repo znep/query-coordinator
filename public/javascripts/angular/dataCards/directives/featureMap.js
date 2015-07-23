@@ -91,7 +91,10 @@
               scope.rowDisplayUnit :
               scope.rowDisplayUnit.pluralize();
 
-            return template.format(flyoutData.count, unit);
+            return template.format(
+              flyoutData.count,
+              _.escape(unit)
+            );
           },
           getOffset: function() {
             return flyoutData.offset;

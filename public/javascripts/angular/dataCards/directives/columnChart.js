@@ -564,12 +564,12 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           flyoutContent = flyoutContent.
             join('').
             format(
-              flyoutTitle,
+              _.escape(flyoutTitle),
               I18n.flyout.total,
-              unfilteredValue,
+              _.escape(unfilteredValue),
               flyoutSpanClass,
               I18n.flyout.filteredAmount,
-              filteredValue,
+              _.escape(filteredValue),
               I18n.flyout.clearFilterLong
             );
 
@@ -577,7 +577,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
           flyoutContent = flyoutContent.
             join('').
-            format(flyoutTitle, I18n.flyout.total, unfilteredValue);
+            format(
+              _.escape(flyoutTitle),
+              I18n.flyout.total,
+              _.escape(unfilteredValue)
+            );
 
         }
 

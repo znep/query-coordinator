@@ -71,8 +71,9 @@ Rails.application.configure do
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
 
-  # Use default logging formatter so that PID and timestamp are not suppressed.
-  config.log_formatter = ::Logger::Formatter.new
+  # Using lograge to avoid multiline logging for sumo
+  config.lograge.enabled = true
+  config.lograge.formatter = Lograge::Formatters::KeyValue.new
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false

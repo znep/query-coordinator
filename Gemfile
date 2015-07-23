@@ -31,6 +31,9 @@ gem 'retries'
 # Exception notifier
 gem 'airbrake'
 
+# Logging formatter to make sumo happier
+gem 'lograge'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

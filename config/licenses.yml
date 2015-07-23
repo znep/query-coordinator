@@ -62,6 +62,26 @@
     logo: images/licenses/cc30by.png
     terms_link: http://creativecommons.org/licenses/by/3.0/au/deed.en
     attribution_required: true
+  - id: CC_30_BY_IGO
+    name: Attribution 3.0 IGO
+    logo: images/licenses/cc30by.png
+    terms_link: https://creativecommons.org/licenses/by/3.0/igo/legalcode
+    attribution_required: true
+  - id: CC_30_BY_NZ
+    name: Attribution 3.0 New Zealand
+    logo: images/licenses/cc30by.png
+    terms_link: https://creativecommons.org/licenses/by/3.0/nz/legalcode
+    attribution_required: true
+  - id: CC_30_BY_NC_NZ
+    name: Attribution | Noncommercial 3.0 New Zealand
+    logo: images/licenses/cc30bync.png
+    terms_link: https://creativecommons.org/licenses/by-nc/3.0/nz/legalcode
+    attribution_required: true
+  - id: CC_30_BY_NC_SA_NZ
+    name: Attribution | Noncommercial | Share Alike 3.0 New Zealand
+    logo: images/licenses/cc30byncsa.png
+    terms_link: https://creativecommons.org/licenses/by-nc-sa/3.0/nz/legalcode
+    attribution_required: true
   - id: CC_40_BY
     name: Attribution 4.0 International
     logo: images/licenses/cc30by.png

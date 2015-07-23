@@ -116,36 +116,46 @@ blist.datasetControls.showSaveViewDialog = function(customClass, saveCallback,
 
         $dialog.find('.mainError').text('');
 
-        var doSave = function()
-        {
-            $dialog.loadingSpinner().showHide(true);
-            if (!$.isBlank(newViewData)) { blist.dataset.update(newViewData); }
-            if (isNew) { blist.dataset.name = name; }
-            blist.dataset['save' + (isNew ? 'New' : '')](
-                // Success
-                function(view)
-                {
-                    $dialog.loadingSpinner().showHide(false);
-                    var preventRedirect = false;
-                    if (_.isFunction(dialogObj._saveCallback))
-                    { preventRedirect = dialogObj._saveCallback(view); }
+        var doSave = function() {
+          $dialog.loadingSpinner().showHide(true);
 
-                    // If we're immediately doing a redirect, don't hide the
-                    // dialog; because it is just confusing
-                    if (!preventRedirect) { view.redirectTo(); }
-                    else
-                    {
-                        cleanDialog();
-                        $dialog.jqmHide();
-                    }
-                },
-                // Error
-                function(xhr)
-                {
-                    $dialog.loadingSpinner().showHide(false);
-                    $dialog.find('.mainError')
-                        .text(JSON.parse(xhr.responseText).message);
-                });
+          var useNBE = blist.dataset.newBackend;
+
+          var success = function(view) {
+            $dialog.loadingSpinner().showHide(false);
+
+            var preventRedirect = false;
+
+            if (_.isFunction(dialogObj._saveCallback)) {
+              preventRedirect = dialogObj._saveCallback(view);
+            }
+
+            // If we're immediately doing a redirect, don't hide the
+            // dialog; because it is just confusing
+            if (!preventRedirect) {
+              view.redirectTo();
+            } else {
+              cleanDialog();
+              $dialog.jqmHide();
+            }
+          };
+
+          var error = function(xhr) {
+            $dialog.loadingSpinner().showHide(false);
+            $dialog.find('.mainError')
+              .text(JSON.parse(xhr.responseText).message);
+          };
+
+          if (!$.isBlank(newViewData)) {
+            blist.dataset.update(newViewData);
+          }
+
+          if (isNew) {
+            blist.dataset.name = name;
+            blist.dataset.saveNew(useNBE, success, error);
+          } else {
+            blist.dataset.save(success, error);
+          }
         };
 
         if (!$.isBlank(blist.util.inlineLogin))

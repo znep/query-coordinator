@@ -1,5 +1,5 @@
 # Performs basic windowed health checks on HTTP status codes
-# returned by the app. Also exposes a /health-check url for 
+# returned by the app. Also exposes a /health-check url for
 # load balancers / nosy engineers to peek at.
 class HealthCheckMiddleware
   def initialize(app)

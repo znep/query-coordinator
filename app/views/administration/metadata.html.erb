@@ -36,7 +36,7 @@
       <%- @metadata.each_with_index do |fieldset, fs_index| -%>
         <%# TODO: Don't skip these %>
         <%- next if fieldset.hidden -%>
-        <%= form_button({ :action => 'delete_metadata_fieldset', :fieldset => fs_index }, t("#{prefix}.remove"), 
+        <%= form_button({ :action => 'delete_metadata_fieldset', :fieldset => fs_index }, t("#{prefix}.remove"),
              {:method => :delete}, {:class => 'button removeFieldsetButton remove'}) %>
         <h3 class="fieldsetTitle"><%= fieldset['name'] %></h3>
         <div class="gridListWrapper">

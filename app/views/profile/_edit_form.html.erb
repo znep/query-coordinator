@@ -65,7 +65,7 @@
     <div class="editSection clearfix">
       <%- link_count = 0 -%>
       <%- UserLink.link_types.each do |link_type| -%>
-        <%- existing_link = @user_links.detect {|u| u.linkType.upcase == link_type.first } 
+        <%- existing_link = @user_links.detect {|u| u.linkType.upcase == link_type.first }
             if existing_link.nil?
               existing_link = Hashie::Mash.new({:id => "new#{link_count}"})
               link_count += 1

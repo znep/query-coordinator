@@ -39,7 +39,7 @@ module CoreServer
       "Too many requests (#{@requests}) to the core server in a client request for #{@controller}::#{@action_name}"
     end
   end
-  
+
   class ConnectionError < StandardError
     attr_reader :response
 

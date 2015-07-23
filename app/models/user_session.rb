@@ -93,7 +93,7 @@ class UserSession
   # overwritten.
   def credentials=(values)
     return if values.blank? || !values.is_a?(Hash)
-    
+
     values.slice('login', 'password', 'remember_me').each do |field, value|
       send("#{field}=", value)
     end

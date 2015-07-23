@@ -14,7 +14,7 @@ class ResourcesController < DatasetsController
     if (@view.nil?)
       return
     end
-    
+
     row_id = params[:row_id]
     unless row_id.nil?
       row_id = CGI::escape(row_id)

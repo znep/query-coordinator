@@ -3,9 +3,9 @@ require 'forwardable'
 
 class Presenter
   extend ::Forwardable
-  
+
   def initialize(params)
-    params.each_pair do |attribute, value| 
+    params.each_pair do |attribute, value|
       self.send :"#{attribute}=", value if value.present?
     end unless params.nil?
   end

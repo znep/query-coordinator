@@ -86,7 +86,7 @@
 }
 .ui-daterangepicker-arrows .ui-daterangepicker-prev, .ui-daterangepicker-arrows .ui-daterangepicker-next {
 	position: absolute;
-	top: 2px; 
+	top: 2px;
 	padding: 1px;
 }
 .ui-daterangepicker-arrows .ui-daterangepicker-prev {
@@ -95,9 +95,9 @@
 .ui-daterangepicker-arrows .ui-daterangepicker-next {
 	right: 2px;
 }
-.ui-daterangepicker-arrows .ui-daterangepicker-prev:hover, 
+.ui-daterangepicker-arrows .ui-daterangepicker-prev:hover,
 .ui-daterangepicker-arrows .ui-daterangepicker-next:hover,
-.ui-daterangepicker-arrows .ui-daterangepicker-prev:focus, 
+.ui-daterangepicker-arrows .ui-daterangepicker-prev:focus,
 .ui-daterangepicker-arrows .ui-daterangepicker-next:focus {
 	padding: 0;
 }

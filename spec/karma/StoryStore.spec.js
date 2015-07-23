@@ -14,6 +14,11 @@ describe('StoryStore', function() {
     { type: 'image', value: 'fakeImageFile.png' },
     { type: 'text', value: 'First Block' }
   ];
+  var block1Content = {
+    'id': block1Id,
+    'layout': block1Layout,
+    'components': block1Components
+  }
 
   var block2Id = 'block2';
   var block2Layout = '12';
@@ -285,7 +290,7 @@ describe('StoryStore', function() {
             assert.equal(block1.components[0].value, block1Components[0].value);
             assert.equal(block1.components[1].type, block1Components[1].type);
             assert.equal(block1.components[1].value, block1Components[1].value);
-            
+
             assert.propertyVal(block3, 'id', block3Id);
             assert.propertyVal(block3, 'layout', block3Layout);
             assert.equal(block3.components[0].type, block3Components[0].type);
@@ -335,7 +340,7 @@ describe('StoryStore', function() {
 
         it('should return an object matching the properties of the story except for unchanged blocks', function() {
 
-          dispatch({ action: Constants.BLOCK_COPY_INTO_STORY, storyUid: story1Uid, blockId: block1Id, insertAt: 2 });
+          dispatch({ action: Constants.STORY_INSERT_BLOCK, storyUid: story1Uid, blockContent: block1Content, insertAt: 2 });
 
           var serializedStory = window.storyStore.serializeStoryDiff(story1Uid);
 
@@ -558,7 +563,7 @@ describe('StoryStore', function() {
         });
       });
 
-      describe('given `blocks` with an invalid block', function() { 
+      describe('given `blocks` with an invalid block', function() {
 
         it('raises an exception', function() {
 
@@ -574,7 +579,7 @@ describe('StoryStore', function() {
         });
       });
 
-      describe('given `blocks` with a block that does not have an `id`', function() { 
+      describe('given `blocks` with a block that does not have an `id`', function() {
 
         it('raises an exception', function() {
 
@@ -597,7 +602,7 @@ describe('StoryStore', function() {
         });
       });
 
-      describe('given `blocks` with a block that does not have a `layout`', function() { 
+      describe('given `blocks` with a block that does not have a `layout`', function() {
 
         it('raises an exception', function() {
 
@@ -620,7 +625,7 @@ describe('StoryStore', function() {
         });
       });
 
-      describe('given `blocks` with a block that does not have `components`', function() { 
+      describe('given `blocks` with a block that does not have `components`', function() {
 
         it('raises an exception', function() {
 
@@ -1052,7 +1057,7 @@ describe('StoryStore', function() {
       });
     });
 
-    describe('BLOCK_COPY_INTO_STORY', function() {
+    describe('STORY_INSERT_BLOCK', function() {
 
       var validInsertionIndex;
 
@@ -1060,13 +1065,13 @@ describe('StoryStore', function() {
         validInsertionIndex = 0;
       });
 
-      describe('not given a block id', function() {
+      describe('not given block content', function() {
 
         it('should throw an error', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.BLOCK_COPY_INTO_STORY,
+              action: Constants.STORY_INSERT_BLOCK,
               storyUid: story1Uid,
               insertAt: validInsertionIndex
             });
@@ -1080,8 +1085,8 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.BLOCK_COPY_INTO_STORY,
-              blockId: block1Id,
+              action: Constants.STORY_INSERT_BLOCK,
+              blockContent: block1Content,
               insertAt: validInsertionIndex
             });
           });
@@ -1094,22 +1099,22 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.BLOCK_COPY_INTO_STORY,
-              blockId: block1Id,
+              action: Constants.STORY_INSERT_BLOCK,
+              blockContent: block1Content,
               storyUid: story1Uid
             });
           });
         });
       });
 
-      describe('given an invalid block id', function() {
+      describe('given invalid block content', function() {
 
         it('should throw an error', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.BLOCK_COPY_INTO_STORY,
-              blockId: null,
+              action: Constants.STORY_INSERT_BLOCK,
+              blockContent: null,
               storyUid: story1Uid,
               insertAt: validInsertionIndex
             });
@@ -1123,8 +1128,8 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.BLOCK_COPY_INTO_STORY,
-              blockId: block1Id,
+              action: Constants.STORY_INSERT_BLOCK,
+              blockContent: block1Content,
               storyUid: null,
               insertAt: validInsertionIndex
             });
@@ -1138,8 +1143,8 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.BLOCK_COPY_INTO_STORY,
-              blockId: block1Id,
+              action: Constants.STORY_INSERT_BLOCK,
+              blockContent: block1Content,
               storyUid: story1Uid,
               insertAt: null
             });
@@ -1147,20 +1152,6 @@ describe('StoryStore', function() {
         });
       });
 
-      describe('given a non-existent block id', function() {
-
-        it('should throw an error', function() {
-
-          assert.throw(function() {
-            dispatch({
-              action: Constants.BLOCK_COPY_INTO_STORY,
-              blockId: 'notfound',
-              storyUid: story1Uid,
-              insertAt: validInsertionIndex
-            });
-          });
-        });
-      });
 
       describe('given a non-existent story uid', function() {
 
@@ -1168,8 +1159,8 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.BLOCK_COPY_INTO_STORY,
-              blockId: block1Id,
+              action: Constants.STORY_INSERT_BLOCK,
+              blockContent: block1Content,
               storyUid: 'notf-ound',
               insertAt: validInsertionIndex
             });
@@ -1183,8 +1174,8 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.BLOCK_COPY_INTO_STORY,
-              blockId: block1Id,
+              action: Constants.STORY_INSERT_BLOCK,
+              blockContent: block1Content,
               storyUid: story1Uid,
               insertAt: 99
             });
@@ -1197,8 +1188,8 @@ describe('StoryStore', function() {
         it('should insert a block at the specified index', function() {
 
           dispatch({
-            action: Constants.BLOCK_COPY_INTO_STORY,
-            blockId: block1Id,
+            action: Constants.STORY_INSERT_BLOCK,
+            blockContent: block1Content,
             storyUid: story1Uid,
             insertAt: validInsertionIndex
           });

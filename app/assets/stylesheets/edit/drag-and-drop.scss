@@ -19,16 +19,16 @@
 #block-ghost {
   @include media-query-property(
     'width',
-    $main-content-width-small,
-    $main-content-width-medium,
-    $main-content-width-large,
-    $main-content-width-extra-large
+    $main-content-width-small / 2,
+    $main-content-width-medium / 2,
+    $main-content-width-large / 2,
+    $main-content-width-extra-large / 2
   );
 
   position: fixed;
   top: 0;
   left: 0;
-  font-size: $inspiration-story-font-size;
+  font-size: $inspiration-block-list-font-size;
   z-index: $block-ghost-z-index;
   pointer-events: none;
   transition: none;

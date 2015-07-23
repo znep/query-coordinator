@@ -21,7 +21,7 @@
       throw new Error('`ghostElement` argument must point to exactly one element');
     }
 
-    var _draggedBlockId = null;
+    var _blockContent = null;
 
     // TODO calculate from mouse down location.
     var _ghostCursorOffset = 0;
@@ -32,20 +32,19 @@
 
     this.dragStart = function(event, pointer) {
       var sourceBlockElement;
-      var sourceBlockHtml;
 
       _storyUidDraggedOver = undefined;
       $('body').addClass('dragging');
 
-      sourceBlockElement = $(pointer.target).closest('.block');
+      sourceBlockElement = $(pointer.target).closest('[data-block-content]');
 
-      _draggedBlockId = sourceBlockElement.attr('data-block-id');
-
-      sourceBlockHtml = sourceBlockElement.html();
+      _blockContent = JSON.parse(sourceBlockElement.attr('data-block-content'));
 
       ghostElement.
-        html(sourceBlockHtml).
-        removeClass('hidden');
+        removeClass('hidden').
+        empty().
+        append(sourceBlockElement.clone());
+
     };
 
     this.dragMove = function(event, pointer, moveVector) {
@@ -84,7 +83,7 @@
         dispatcher.dispatch({
           action: Constants.STORY_DRAG_OVER,
           storyUid: _storyUidDraggedOver,
-          draggedBlockId: _draggedBlockId,
+          blockContent: _blockContent,
           pointer: pointer,
           storyElement: storyOver[0]
         });
@@ -99,23 +98,25 @@
 
     this.dragEnd = function(event, pointer) {
 
-      var storyUidOver = $(pointer.target).closest('.story').attr('data-story-uid');
+      var storyUidOver = $(pointer.target).closest('[data-story-uid]').attr('data-story-uid');
 
-      var dragged = _draggedBlockId;
+      var blockContent = _blockContent;
 
       $('body').removeClass('dragging');
-      _draggedBlockId = null;
+      _blockContent = null;
       ghostElement.addClass('hidden');
 
-      dispatcher.dispatch({
-        action: Constants.STORY_DROP,
-        blockId: dragged,
-        storyUid: storyUidOver
-      });
+      if (storyUidOver) {
+        dispatcher.dispatch({
+          action: Constants.STORY_DROP,
+          blockContent: blockContent,
+          storyUid: storyUidOver
+        });
+      }
     };
 
     this.setup = function() {
-      this.bindHandles();
+      this.bindHandles(); //function from unidragger
     };
 
   }

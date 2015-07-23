@@ -24,12 +24,15 @@ describe('StoryRenderer', function() {
         $('<div>', { class: 'story-container' })
       ).append(
         $('<p>', { class: 'message-warning' })
+      ).append(
+        $('<div>', { class: 'insertion-hint' })
       );
 
     options = {
       storyUid: storyUid,
-      storyContainerElement: $('.story-container'),
-      warningMessageElement: $('.message-warning'),
+      storyContainerElement: testDom.find('.story-container'),
+      warningMessageElement: testDom.find('.message-warning'),
+      insertionHintElement: testDom.find('.insertion-hint'),
       onRenderError: function() {}
     };
   });
@@ -85,6 +88,18 @@ describe('StoryRenderer', function() {
         });
       });
 
+      describe('with a storyContainerElement property that is a jQuery object', function() {
+
+        it('adds a data-story-uid attr to the storyContainerElement', function() {
+          var uid = options.storyContainerElement.attr('data-story-uid');
+          assert.isUndefined(uid);
+
+          var renderer = new StoryRenderer(options);
+          uid = options.storyContainerElement.attr('data-story-uid');
+          assert.equal(uid, options.storyUid);
+        });
+      });
+
       describe('with an insertionHintElement property that is not a jQuery object', function() {
 
         it('raises an exception', function() {
@@ -94,6 +109,18 @@ describe('StoryRenderer', function() {
           assert.throws(function() {
             var renderer = new StoryRenderer(options);
           });
+        });
+      });
+
+      describe('with an insertionHintElement property that is a jQuery object', function() {
+
+        it('adds a data-story-uid attr to the insertionHintElement', function() {
+          var uid = options.insertionHintElement.attr('data-story-uid');
+          assert.isUndefined(uid);
+
+          var renderer = new StoryRenderer(options);
+          uid = options.insertionHintElement.attr('data-story-uid');
+          assert.equal(uid, options.storyUid);
         });
       });
 
@@ -318,8 +345,7 @@ describe('StoryRenderer', function() {
         storyUid: storyUid,
         blockId: blockId,
         pointer: {},
-        storyElement: {},
-        draggedBlockId: 'draggedBlockId'
+        storyElement: {}
       });
     };
 

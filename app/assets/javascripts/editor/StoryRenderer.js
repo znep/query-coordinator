@@ -71,7 +71,7 @@
     }
 
     container.addClass('story');
-    container.attr('data-story-uid', storyUid);
+    container.add(insertionHint).attr('data-story-uid', storyUid);
 
     _listenForChanges();
     _attachEvents();
@@ -158,18 +158,6 @@
         if (blockId) {
           window.dispatcher.dispatch({
             action: Constants.BLOCK_MOUSE_MOVE,
-            storyUid: storyUid,
-            blockId: blockId
-          });
-        }
-      });
-
-      container.on('dblclick', '.block', function(e) {
-        var blockId = e.currentTarget.getAttribute('data-block-id');
-
-        if (blockId) {
-          window.dispatcher.dispatch({
-            action: Constants.BLOCK_DOUBLE_CLICK,
             storyUid: storyUid,
             blockId: blockId
           });

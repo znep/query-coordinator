@@ -40,8 +40,8 @@
           _deleteBlock(payload);
           break;
 
-        case Constants.BLOCK_COPY_INTO_STORY:
-          _copyBlockIntoStory(payload);
+        case Constants.STORY_INSERT_BLOCK:
+          _insertBlockIntoStory(payload);
           break;
 
         case Constants.BLOCK_UPDATE_COMPONENT:
@@ -228,7 +228,7 @@
       self._emitChange();
     }
 
-    function _copyBlockIntoStory(payload) {
+    function _insertBlockIntoStory(payload) {
 
       Util.assertHasProperty(payload, 'storyUid');
       Util.assertTypeof(payload.storyUid, 'string');
@@ -244,7 +244,7 @@
       }
 
       var storyUid = payload.storyUid;
-      var clonedBlock = _cloneBlock(payload.blockId);
+      var clonedBlock = _cloneBlock(payload.blockContent);
       var blockId = clonedBlock.id;
 
       _blocks[blockId] = clonedBlock;
@@ -365,9 +365,9 @@
       };
     }
 
-    function _cloneBlock(blockId) {
+    function _cloneBlock(blockContent) {
 
-      var block = _getBlock(blockId);
+      var block = blockContent;
 
       return {
         id: _generateTemporaryId(),

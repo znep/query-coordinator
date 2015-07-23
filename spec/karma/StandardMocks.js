@@ -68,7 +68,8 @@ function applyStandardMocks() {
     // Some general validation.
     assert.isObject(payload);
     assert.property(payload, 'action', 'action payload had no `action` property');
-    assert.isDefined(payload.action, 'action payload had an undefined `action` property, check your Constants!');
+    assert.isDefined(payload.action, 'action property of payload must be defined,' +
+      ' check your Constants and/or dispatch call. Payload keys: ' + Object.keys(payload));
     assert.isString(payload.action, 'action payload had a non-string `action` property');
   });
 
@@ -83,6 +84,8 @@ function applyStandardMocks() {
     remove: removeStandardMocks,
 
     validStoryTitle: storyTitle,
+    validBlockData1: storyData.blocks[0],
+    validBlockData2: storyData.blocks[1],
 
     validStoryUid: storyUid,
     imageBlockId: imageBlockId,

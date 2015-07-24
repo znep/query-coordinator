@@ -238,8 +238,17 @@ module Canvas2
       req['X-Socrata-Default-Locale'] = CurrentDomain.default_locale
       req['Cookie'] = Canvas2::Util.request.headers['Cookie'] if !is_anon
 
-      res = Net::HTTP.start(uri.host, uri.port){ |http| http.request(req) }
-      raise CoreServer::ResourceNotFound.new(res) if res.is_a?(Net::HTTPNotFound)
+      res = nil
+      begin
+        res = Net::HTTP.start(uri.host, uri.port){ |http| http.request(req) }
+      rescue => error
+        raise "odysseus_request failed: #{uri} with #{error.message}"
+      end
+
+      if res.is_a?(Net::HTTPNotFound)
+        raise CoreServer::ResourceNotFound.new(res)
+      end
+
       if !res.is_a?(Net::HTTPSuccess)
         raise CoreServer::CoreServerError.new(
           uri.to_s,

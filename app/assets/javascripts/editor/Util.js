@@ -115,8 +115,9 @@
       return accumulator;
     },
 
-    isUrlCharacter: function(keyCode, shiftKey) {
+    isUrlKeyCode: function(keyCode, shiftKey) {
       return (
+
         // 0-9
         ((keyCode >= 48 && keyCode <= 57) && !shiftKey) ||
         // `%`
@@ -136,16 +137,21 @@
       );
     },
 
-    isDeleteCharacter: function(keyCode) {
+    isDeleteKeyCode: function(keyCode) {
       // `BACKSPACE`, `DEL`
       return (keyCode === 8 || keyCode === 46);
     },
 
     generateYouTubeUrl: function(youTubeId) {
+
+      this.assertIsOneOfTypes(youTubeId, 'string');
+
       return 'https://www.youtube.com/embed/' + youTubeId;
     },
 
     generateYouTubeIframeSrc: function(youTubeId, autoplay) {
+
+      this.assertIsOneOfTypes(youTubeId, 'string');
 
       var src = 'https://www.youtube.com/embed/' + youTubeId + '?rel=0&showinfo=0';
 

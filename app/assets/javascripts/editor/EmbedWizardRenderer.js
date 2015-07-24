@@ -70,8 +70,8 @@
 
         // Do not update the model on characters that are not valid for urls or
         // delete actions.
-        if (Util.isUrlCharacter(event.keyCode, event.shiftKey) ||
-          Util.isDeleteCharacter(event.keyCode)) {
+        if (Util.isUrlKeyCode(event.keyCode, event.shiftKey) ||
+          Util.isDeleteKeyCode(event.keyCode)) {
 
           window.dispatcher.dispatch({
             action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,

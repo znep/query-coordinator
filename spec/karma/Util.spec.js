@@ -8,6 +8,43 @@ describe('Util', function() {
     propC: 'asd'
   };
 
+  var validUnshiftedUrlKeyCodes = [
+    // 0-9
+    48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
+    // a-z
+    65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90,
+    // `=`
+    187,
+    // `-`
+    189,
+    // `.`
+    190,
+    // `/`
+    191
+  ];
+
+  var validShiftedUrlKeyCodes = [
+    // `%`
+    53,
+    // a-z
+    65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90,
+    // `:`
+    186,
+    // `+`
+    187,
+    // `_`
+    189,
+    // `?`
+    191
+  ];
+
+  var validDeleteKeyCodes = [
+    // `BACKSPACE`
+    8,
+    // `DEL`
+    46
+  ];
+
   describe('assertEqual', function() {
 
     describe('given two unequal values', function() {
@@ -459,6 +496,144 @@ describe('Util', function() {
           );
 
           assert.deepEqual(accumulated, ['div']);
+        });
+      });
+    });
+  });
+
+  describe('.isUrlKeyCode()', function() {
+
+    it('should return false for invalid URL keyCodes', function() {
+
+      var invalidUnshiftedUrlKeyCodes = [];
+      var invalidShiftedUrlKeyCodes = [];
+
+      for (var i = 0; i < 255; i++) {
+        if (validUnshiftedUrlKeyCodes.indexOf(i) < 0) {
+          invalidUnshiftedUrlKeyCodes.push(i);
+        }
+      }
+
+      for (var i = 0; i < 255; i++) {
+        if (validShiftedUrlKeyCodes.indexOf(i) < 0) {
+          invalidShiftedUrlKeyCodes.push(i);
+        }
+      }
+
+      invalidUnshiftedUrlKeyCodes.forEach(function(keyCode) {
+        assert.isFalse(Util.isUrlKeyCode(keyCode, false));
+      });
+
+      invalidShiftedUrlKeyCodes.forEach(function(keyCode) {
+        assert.isFalse(Util.isUrlKeyCode(keyCode, true));
+      });
+    });
+
+    it('should return true for valid URL keyCodes', function() {
+
+      validUnshiftedUrlKeyCodes.forEach(function(keyCode) {
+        assert.isTrue(Util.isUrlKeyCode(keyCode, false));
+      });
+
+      validShiftedUrlKeyCodes.forEach(function(keyCode) {
+        assert.isTrue(Util.isUrlKeyCode(keyCode, true));
+      });
+    });
+  });
+
+  describe('.isDeleteKeyCode()', function() {
+
+    it('should return false for non-delete keyCodes', function() {
+
+      var invalidDeleteKeyCodes = [];
+
+      for (var i = 0; i < 255; i++) {
+        if (validDeleteKeyCodes.indexOf(i) < 0) {
+          invalidDeleteKeyCodes.push(i);
+        }
+      }
+
+      invalidDeleteKeyCodes.forEach(function(keyCode) {
+        assert.isFalse(Util.isDeleteKeyCode(keyCode));
+      });
+    });
+
+    it('should return true for delete keyCodes', function() {
+
+      validDeleteKeyCodes.forEach(function(keyCode) {
+        assert.isTrue(Util.isDeleteKeyCode(keyCode));
+      });
+    });
+  });
+
+  describe('.generateYouTubeUrl()', function() {
+
+    describe('not given an id', function() {
+
+      it('should throw an error', function() {
+
+        assert.throw(function() {
+          Util.generateYouTubeUrl();          
+        });
+      });
+    });
+
+    describe('given an id', function() {
+
+      it('should generate the expected url', function() {
+
+        var youTubeId = 'ABCDEFGHIJK';
+        var expectedUrl = 'https://www.youtube.com/embed/' + youTubeId;
+
+        assert.equal(expectedUrl, Util.generateYouTubeUrl(youTubeId));
+      });
+    });
+  });
+
+  describe('.generateYouTubeIframeSrc()', function() {
+
+    describe('not given an id', function() {
+
+      it('should throw an error', function() {
+
+        assert.throw(function() {
+          Util.generateYouTubeUrl();          
+        });
+      });
+    });
+
+    describe('given an id', function() {
+
+      describe('when the autoplay argument is undefined', function() {
+
+        it('should generate the expected url', function() {
+
+          var youTubeId = 'ABCDEFGHIJK';
+          var expectedUrl = 'https://www.youtube.com/embed/' + youTubeId + '?rel=0&showinfo=0';
+
+          assert.equal(expectedUrl, Util.generateYouTubeIframeSrc(youTubeId));
+        });
+      });
+
+      describe('when the autoplay argument is false', function() {
+
+        it('should generate the expected url', function() {
+
+          var youTubeId = 'ABCDEFGHIJK';
+          var expectedUrl = 'https://www.youtube.com/embed/' + youTubeId + '?rel=0&showinfo=0';
+
+          assert.equal(expectedUrl, Util.generateYouTubeIframeSrc(youTubeId, false));
+        });
+      });
+
+      describe('when the autoplay argument is true', function() {
+
+        it('should generate the expected url', function() {
+
+          var youTubeId = 'ABCDEFGHIJK';
+          var expectedUrl = 'https://www.youtube.com/embed/' + youTubeId + '?rel=0&showinfo=0&autoplay=true';
+
+          assert.equal(expectedUrl, Util.generateYouTubeIframeSrc(youTubeId, true));
         });
       });
     });

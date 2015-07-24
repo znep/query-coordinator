@@ -111,7 +111,9 @@
 
           case Constants.EMBED_WIZARD_CHOOSE_PROVIDER:
             window.dispatcher.dispatch({
-              action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER
+              action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
+              blockId: window.embedWizardStore.getCurrentBlockId(),
+              componentIndex: window.embedWizardStore.getCurrentComponentIndex()
             });
             break;
 

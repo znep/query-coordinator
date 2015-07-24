@@ -204,7 +204,7 @@
           window.dispatcher.dispatch({
             action: Constants.BLOCK_UPDATE_COMPONENT,
             blockId: blockId,
-            index: componentIndex,
+            componentIndex: componentIndex,
             type: 'text',
             value: blockContent
           });

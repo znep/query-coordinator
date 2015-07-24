@@ -125,7 +125,7 @@
             window.dispatcher.dispatch({
               action: Constants.BLOCK_UPDATE_COMPONENT,
               blockId: window.embedWizardStore.getCurrentBlockId(),
-              index: window.embedWizardStore.getCurrentComponentIndex(),
+              componentIndex: window.embedWizardStore.getCurrentComponentIndex(),
               type: window.embedWizardStore.getCurrentComponentType(),
               value: window.embedWizardStore.getCurrentComponentValue()
             });

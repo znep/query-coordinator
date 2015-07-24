@@ -21,11 +21,11 @@ describe('StoryRenderer', function() {
 
   beforeEach(function() {
     testDom.append(
-        $('<div>', { class: 'story-container' })
+        $('<div>', { 'class': 'story-container' })
       ).append(
-        $('<p>', { class: 'message-warning' })
+        $('<p>', { 'class': 'message-warning' })
       ).append(
-        $('<div>', { class: 'insertion-hint' })
+        $('<div>', { 'class': 'insertion-hint' })
       );
 
     options = {
@@ -224,8 +224,8 @@ describe('StoryRenderer', function() {
       beforeEach(function() {
 
         $('body').append([
-          $('<div>', { class: 'insertion-hint hidden' }),
-          $('<div>', { id: 'rich-text-editor-toolbar' })
+          $('<div>', { 'class': 'insertion-hint hidden' }),
+          $('<div>', { 'id': 'rich-text-editor-toolbar' })
         ]);
 
         validToolbar = Object.create(RichTextEditorToolbar.prototype);
@@ -312,8 +312,8 @@ describe('StoryRenderer', function() {
     beforeEach(function() {
 
       $('body').append([
-        $('<div>', { class: 'insertion-hint hidden' }),
-        $('<div>', { id: 'rich-text-editor-toolbar' })
+        $('<div>', { 'class': 'insertion-hint hidden' }),
+        $('<div>', { 'id': 'rich-text-editor-toolbar' })
       ]);
 
       validToolbar = Object.create(RichTextEditorToolbar.prototype);

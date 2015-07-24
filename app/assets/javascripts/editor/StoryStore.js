@@ -308,10 +308,7 @@
 
     function _getBlock(blockId) {
 
-      if (typeof blockId !== 'string') {
-        throw new Error('`blockId` argument is not a string');
-      }
-
+      Util.assertIsOneOfTypes(blockId, 'string');
       Util.assertHasProperty(
         _blocks,
         blockId,

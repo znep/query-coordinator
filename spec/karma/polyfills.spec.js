@@ -4,7 +4,7 @@ describe('Polyfills', function() {
 
     beforeEach(function() {
       $('body').append(
-        $('<div>', { class: 'listener' })
+        $('<div>', { 'class': 'listener' })
       );
     });
 

@@ -20,6 +20,7 @@
     };
     var elementCache = new StoryRendererElementCache();
     var warningMessageElement = options.warningMessageElement || null;
+    var resizeRerenderTimeout;
 
     if (options.hasOwnProperty('onRenderError') &&
       ((typeof options.onRenderError) !== 'function')) {
@@ -100,15 +101,27 @@
 
     function _attachEvents() {
 
+      $(window).on('resize', function() {
+
+        clearTimeout(resizeRerenderTimeout);
+
+        resizeRerenderTimeout = setTimeout(
+          function() {
+            _renderStory();
+          },
+          200
+        );
+      });
+
       container.on(
         'click',
         '[data-block-move-action]',
-        function(e) {
+        function(event) {
 
           var payload = {
-            action: e.target.getAttribute('data-block-move-action'),
+            action: event.target.getAttribute('data-block-move-action'),
             storyUid: storyUid,
-            blockId: e.target.getAttribute('data-block-id')
+            blockId: event.target.getAttribute('data-block-id')
           };
 
           dispatcher.dispatch(payload);
@@ -118,8 +131,8 @@
       container.on(
         'click',
         '[data-block-delete-action]',
-        function(e) {
-          var blockId = e.target.getAttribute('data-block-id');
+        function(event) {
+          var blockId = event.target.getAttribute('data-block-id');
           var shouldDelete = true;
 
           if (window.blockRemovalConfirmationStore.needsConfirmation(blockId)) {
@@ -128,9 +141,9 @@
 
           if (shouldDelete) {
             var payload = {
-              action: e.target.getAttribute('data-block-delete-action'),
+              action: event.target.getAttribute('data-block-delete-action'),
               storyUid: storyUid,
-              blockId: e.target.getAttribute('data-block-id')
+              blockId: event.target.getAttribute('data-block-id')
             };
 
             dispatcher.dispatch(payload);
@@ -152,12 +165,24 @@
         });
       });
 
-      container.on('mousemove', '.block', function(e) {
-        var blockId = e.currentTarget.getAttribute('data-block-id');
+      container.on('mousemove', '.block', function(event) {
+        var blockId = event.currentTarget.getAttribute('data-block-id');
 
         if (blockId) {
           window.dispatcher.dispatch({
             action: Constants.BLOCK_MOUSE_MOVE,
+            storyUid: storyUid,
+            blockId: blockId
+          });
+        }
+      });
+
+      container.on('dblclick', '.block', function(event) {
+        var blockId = event.currentTarget.getAttribute('data-block-id');
+
+        if (blockId) {
+          window.dispatcher.dispatch({
+            action: Constants.BLOCK_DOUBLE_CLICK,
             storyUid: storyUid,
             blockId: blockId
           });
@@ -360,17 +385,29 @@
         return $(
           '<div>',
           {
-            class: ('component-container col' + componentWidth),
+            'class': ('component-container col' + componentWidth),
             'data-component-layout-width': componentWidth,
             'data-component-index': i
           }
         );
       });
 
-      blockElement = $('<div>', { class: 'block', 'data-block-id': blockId }).append(componentContainers);
+      blockElement = $(
+        '<div>',
+        {
+          'class': 'block',
+          'data-block-id': blockId
+        }
+      ).append(componentContainers);
 
       if (editable) {
-        blockElement = $('<div>', { class: 'block-edit', 'data-block-id': blockId }).append([
+        blockElement = $(
+          '<div>',
+          {
+            'class': 'block-edit',
+            'data-block-id': blockId
+          }
+        ).append([
           _renderBlockEditControls(blockId),
           blockElement
         ]);
@@ -382,25 +419,41 @@
     }
 
     function _renderBlockEditControls(blockId) {
-      return $('<div>', { class: 'block-edit-controls' }).append([
-        $('<button>',
-          { class: 'block-edit-controls-move-up-btn',
+
+      return $(
+        '<div>',
+        {
+          'class': 'block-edit-controls'
+        }
+      ).append([
+
+        $(
+          '<button>',
+          {
+            'class': 'block-edit-controls-move-up-btn',
             'data-block-id': blockId,
             'data-block-move-action': Constants.STORY_MOVE_BLOCK_UP
           }
-          ).append('&#9650;'),
-        $('<button>',
-          { class: 'block-edit-controls-move-down-btn',
+        ).append('&#9650;'),
+
+        $(
+          '<button>',
+          {
+            'class': 'block-edit-controls-move-down-btn',
             'data-block-id': blockId,
             'data-block-move-action': Constants.STORY_MOVE_BLOCK_DOWN
           }
-          ).append('&#9660;'),
-        $('<button>',
-          { class: 'block-edit-controls-delete-btn',
+        ).append('&#9660;'),
+
+        $(
+          '<button>',
+          {
+            'class': 'block-edit-controls-delete-btn',
             'data-block-id': blockId,
             'data-block-delete-action': Constants.STORY_DELETE_BLOCK
           }
         ).append('&#9587;')
+
       ]);
     }
 

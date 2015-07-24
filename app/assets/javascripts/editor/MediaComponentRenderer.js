@@ -76,7 +76,7 @@
     return $(
       '<div>',
       {
-        class: classes,
+        'class': classes,
         'data-rendered-template': 'media',
         'data-rendered-media-type': 'image'
       }
@@ -129,7 +129,7 @@
     controlsInsertButton = $(
       '<button>',
       {
-        class: 'btn accent-btn media-component-embed-wizard-insert-btn',
+        'class': 'btn accent-btn media-component-embed-wizard-insert-btn',
         'data-embed-action': Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
         'data-block-id': componentOptions.blockId,
         'data-component-index': componentOptions.componentIndex
@@ -138,13 +138,15 @@
 
     controlsContainer = $(
       '<div>',
-      { class: 'media-component-embed-wizard-container'}
+      {
+        'class': 'media-component-embed-wizard-container'
+      }
     ).append(controlsInsertButton);
 
     return $(
       '<div>',
       {
-        class: classes,
+        'class': classes,
         'data-rendered-template': 'media',
         'data-rendered-media-type': 'embed',
         'data-rendered-media-embed-provider': 'wizard',
@@ -161,16 +163,16 @@
     var iframeElement = $(
       '<iframe>',
       {
-        frameborder: '0',
-        allowfullscreen: true,
-        src: 'about:blank'
+        'src': 'about:blank',
+        'frameborder': '0',
+        'allowfullscreen': true
       }
     );
 
     return $(
       '<div>',
       {
-        class: classes,
+        'class': classes,
         'data-rendered-template': 'media',
         'data-rendered-media-type': 'embed',
         'data-rendered-media-embed-provider': 'youtube',

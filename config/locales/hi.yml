@@ -16,7 +16,7 @@ hi:
         sign_up_prompt: "अभी साइन अप करें"
       inline_auth:
         sign_in_headline: "अपने सोक्राटा आईडी का उपयोग करते हुए साइन इन करें"
-        sign_up_headline: "हमें प्रसन्‍नता है कि आप %{site}! से जुड़ना चाहते हैं!"
+        sign_up_headline: "हमें प्रसन्‍नता है कि आप %{site} से जुड़ना चाहते हैं!"
       rpx:
         description: "इन खातों द्वारा प्रदान की जाने वाली अतिरिक्‍त विशेषताओं का लाभ लें और केवल एक क्लिक में साइन इन करें।"
         prompt:
@@ -27,8 +27,8 @@ hi:
             sign_in_html: "<strong>जुड़ें</strong> Facebook के साथ"
             sign_up_html: "<strong>जुड़ें</strong> Facebook के साथ"
           google:
-            sign_in_html: "<strong>साइन इन करें</strong> Google के साथ"
-            sign_up_html: "<strong>जुड़ें</strong> Google के साथ"
+            sign_in_html: Google के साथ <strong>साइन इन करें</strong>
+            sign_up_html: Google के साथ <strong>जुड़ें</strong>
           openid:
             sign_in_html: "<strong>साइन इन करें</strong> OpenID के साथ"
             sign_up_html: "<strong>जुड़ें</strong> OpenID के साथ"
@@ -46,7 +46,7 @@ hi:
         card_on_page: "कार्ड पहले से ही पेज पर है"
         card_on_page_long: "यह कार्ड पहले से ही पेज पर है"
         choose_column: "एक कॉलम चुनें..."
-        column_chart_warning: "नोट: इसके परिणामस्वरूप आपको एक बार-चार्ट मिलेगा जिसमें सौ से भी ज़्यादा बार होंगी। यह चार्ट दूसरे चार्टों की तुलना में धीमा हो सकता है। "
+        column_chart_warning: "नोट: इसके परिणामस्वरूप आपको एक बार-चार्ट मिलेगा जिसमें सौ से भी ज़्यादा बार होंगे। यह चार्ट दूसरे चार्टों की तुलना में धीमा हो सकता है।"
         customize_prompt: "यह कार्ड अनुकूलित करें"
         not_supported: "वर्तमान में संभव नहीं"
         not_supported_long: "इस प्रकार के कार्ड का प्रयोग वर्तमान में संभव नहीं है "
@@ -100,7 +100,7 @@ hi:
         done: "हो गया"
         download: "डाउनलोड"
         downloading: "डाउनलोड हो रहा है"
-        error: "एरर"
+        error: "त्रुटि"
         errors:
           export_visualization_disabled: "यह दृश्य <br/>इमेज एक्सपोर्ट के लिए उपलब्ध नहीं है"
           invalid_card: "यह कार्ड दृश्य अमान्य है "
@@ -257,9 +257,9 @@ hi:
         drag_clear_help: "फ़िल्टर रेंज साफ़ करें"
         drag_help: "फ़िल्टर रेंज बदलने के लिए ड्रैग करें"
         errors:
-          bad_dates: 
-          default: 
-          no_data: 
+          bad_dates: "अमान्य तिथियों के कारण चार्ट प्रदान नहीं किया जा सकता।"
+          default: "चार्ट प्रदान नहीं किया जा सकता।"
+          no_data: "बिना किसी मान वाला चार्ट प्रदान नहीं किया जा सकता। "
   controls:
     browse:
       actions:
@@ -321,10 +321,10 @@ hi:
           forms: "प्रपत्र"
           href: "बाहरी डेटासेट"
           maps: "नक्‍शे"
-          new_view: 
-          new_view_help: 
-          story: 
-          story_help: 
+          new_view: "डाटा लेंस पृष्ठ"
+          new_view_help: "यह क्या है?"
+          story: "कहानियां"
+          story_help: "कहानियों के बारे में जानें "
           unpublished: "अप्रकाशित डेटासेट"
         view_types_singular_title: "प्रकार"
         view_types_title: "अवलोकन प्रकार"
@@ -557,9 +557,9 @@ hi:
       delete_warning_single_column: "क्‍या आप चुने हुए कॉलम को मिटाना चाहते हैं? इस कॉलम में समस्‍त डेटा हटा दिया जाएगा!"
       edit_column_properties: "कॉलम प्रॉपर्टी संपादित करें"
       errors:
-        cannot_edit_at_this_time: 
-        primary_key_collision: 
-        row_locked_for_edit: 
+        cannot_edit_at_this_time: "इस कॉलम (स्तंभ) को इस समय संपादित नहीं किया जा सकता है। कृपया बाद में फिर से प्रयास करें।"
+        primary_key_collision: "यह मान पहले से ही एक प्राथमिक कुंजी (की) के रूप में मौजूद है। आप इसके ऊपर नहीं लिख सकते हैं।"
+        row_locked_for_edit: "वर्तमान में, हम अभी-अभी निर्मित पंक्ति (रो) को संपादित नहीं कर सकते हैं। हम ऐसा करना संभव बनाने के लिए काम कर रहे हैं। अभी के लिए, इस पंक्ति को संपादित करने से पहले पृष्ठ रिफ्रेश करें।"
       filter_this_column: "इस कॉलम को फिल्‍टर करें"
       geocodes_pending: "स्थान कॉलम में पंक्तियों की जियोकोडिंग अभी भी हो रही है। कृपया प्रतीक्षा कीजिये जब तक वे इस डेटासेट का प्रकाशन समाप्त नहीं कर देते"
       hide_column: "कॉलम छिपाएँ"
@@ -742,7 +742,7 @@ hi:
       percent: "प्रतिशत"
       phone: "फोन"
       photo: "फ़ोटो (चित्र)"
-      point: 
+      point: "पॉइंट "
       stars: "सितारे"
       text: "सादा टैक्‍स्‍ट"
       url: "वेबसाइट यूआरएल"
@@ -897,9 +897,9 @@ hi:
       page: "पृष्ठ"
       previous_page: "पिछला पृष्‍ठ"
     precision_style:
-      currency: 
-      financial: 
-      percentage: 
+      currency: "मुद्रा: $1020.40"
+      financial: "वित्तीय: (1020.40) "
+      percentage: "प्रतिशत: 1020.40% "
       scientific: "वैज्ञानिक (1.0204e+3)"
       standard: "स्‍टैंडर्ड (1020.4)"
     required: "आवश्यक"
@@ -937,14 +937,14 @@ hi:
       grouped: "समूहबद्ध व्‍यू"
       href: "बाहरी डेटासेट"
       map: "नक्‍शा"
-      new_view: 
+      new_view: "डाटा लेंस पृष्ठ"
       table: "तालिका"
       working_copy: "कामकाजी प्रति"
     view_types_plural:
       api: "एपीआई"
       calendar: "कैलेंडर"
       chart: "चार्ट"
-      data_lens: 
+      data_lens: "डाटा लेंस "
       filter: "फिल्‍टर किये गये व्‍यू"
       form: "फ़ॉर्म"
       grouped: "समूहबद्ध व्‍यू"
@@ -986,17 +986,17 @@ hi:
         tweet_contents: "%{company} के ऊपर %{dataset} की जाँच कीजिये: %{url}"
         twitter: "ट्विटर पर साझा करें"
       visualization:
-        exploreLink: 
-        exploreLink_prompt: 
+        exploreLink: "डेटा का अन्वेषण करें"
+        exploreLink_prompt: "लिंक दिखाएं"
     configurator:
       actions_components: "एक्शन (क्रिया)"
       advanced_components: "उन्नत घटक"
       content_components: "सामग्री"
       data_components: "डेटा"
       input_components: "इनपुट"
-      redo_title: 
+      redo_title: "पुनः (रीडू) करने के लिए कुछ भी नहीं है"
       report_components: "रिपोर्ट के घटक"
-      undo_title: 
+      undo_title: "पूर्ववत (अनडू) करने के लिए कुछ भी नहीं है  "
     context_picker:
       select_dataset: "डेटासेट का चयन करें"
       view_data: "डेटा देखिये"
@@ -2686,7 +2686,7 @@ hi:
       form:
         create_account_button: "मेरा खाता बनाएँ"
         have_account_link: "मेरा पहले से एक खाता है"
-      headline: "हमें प्रसन्‍नता है कि आप %{site}! से जुड़ना चाहते हैं!"
+      headline: "हमें प्रसन्‍नता है कि आप %{site} से जुड़ना चाहते हैं!"
       prompt_html: "नई <strong>सोक्राटा आईडी</strong>बनाएँ"
       terms_html: नीचे ''मेरा खाता बनाएँ'' पर क्लिक करके, आप हमारी <a href="http://www.socrata.com/terms-of-service" rel="external">सेवा शर्तों</a> और <a href="http://www.socrata.com/privacy" rel="external">निजता नीति से सहमत हो रहे हैं।</a>
       third_party: "साइन इन करने के बाद, आपके तीसरे पक्ष के परिचय इस खाते से जोड़ दिये जाएंगे।"

@@ -476,7 +476,9 @@ $(function()
     });
 
     // blist.iframeHack belongs in the parent window and listens for a modifier key.
-    if (window != window.parent && window.parent.blist.iframeHack)
+    if (window != window.parent &&
+        window.parent.blist &&
+        window.parent.blist.iframeHack)
     {
         $('.browseSection').on('click', 'a[rel=external]', function(evt)
         {

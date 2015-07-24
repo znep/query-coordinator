@@ -48,6 +48,7 @@
         'tolerance': '@',
         'text': '@',
         'animationDuration': '@',
+        'escapeHtml': '@',
         'expanded': '='
       },
       template: '<div class="content" title="{{contentTitleAttr}}"></div>' +
@@ -110,7 +111,9 @@
             selector: '.' + contentFlyoutSelector,
             render: function() {
               if (content.triggerHandler('isTruncated')) {
-                return '<div class="flyout-title">{0}</div>'.format(_.escape($scope.text));
+                return '<div class="flyout-title">{0}</div>'.format(
+                  $scope.escapeHtml ? _.escape($scope.text) : $scope.text
+                );
               } else {
                 return undefined;
               }
@@ -175,7 +178,9 @@
             // this comment, I give it a 50% chance this has actually happened :)
             if (lastText !== text) {
               lastText = text;
-              content.html(_.escape(text));
+              content.html(
+                $scope.escapeHtml ? _.escape(text) : text
+              );
             }
 
             // Since we react to changes in the "expanded" binding, this

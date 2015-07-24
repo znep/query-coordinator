@@ -1127,8 +1127,10 @@ describe('A Choropleth Directive', function() {
                 var featureCount = 10;
                 // Create a range that spans 3 orders of magnitude (eg goes to the hundreds), but
                 // not three (eg doesn't get to the thousands). Let's say.. 0 to 13880ish
+                // Also include a number close-to-but-not-equal-to zero to try to break
+                // logarithmic scales nicing small numbers to zero.
                 var values = _.map(_.range(0, featureCount * 1388, 101), function(value, i) {
-                  return { name: '' + i, value: value + 1 };
+                  return { name: '' + i, value: value + 0.1 };
                 });
                 scope.geojsonAggregateData = aggregateDataForValues(values);
                 el = createChoropleth(expanded, 'stops="continuous"');
@@ -1139,6 +1141,15 @@ describe('A Choropleth Directive', function() {
                 expect(largeTicks.length).to.equal(3);
                 expect(values[Math.ceil(values.length / 2)].value).to.be.
                   greaterThan(toNumber(largeTicks.eq(1).text()));
+
+                // Expect tick translation values to be finite numbers.
+                _.each(ticks, function(tick) {
+                  var $tick = $(tick);
+                  var translate = $tick.attr('transform').match(/\(([0-9\.]+)\,([0-9\.]+)\)$/);
+                  expect(translate).to.be.an('array');
+                  expect(isFinite(translate[1])).to.be.true;
+                  expect(isFinite(translate[2])).to.be.true;
+                });
               });
             });
 

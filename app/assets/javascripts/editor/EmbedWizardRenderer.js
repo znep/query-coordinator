@@ -115,6 +115,25 @@
             });
             break;
 
+          case Constants.EMBED_WIZARD_CHOOSE_YOUTUBE:
+            window.dispatcher.dispatch({
+              action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
+            });
+            break;
+
+          case Constants.EMBED_WIZARD_APPLY:
+            window.dispatcher.dispatch({
+              action: Constants.BLOCK_UPDATE_COMPONENT,
+              blockId: window.embedWizardStore.getCurrentBlockId(),
+              index: window.embedWizardStore.getCurrentComponentIndex(),
+              type: window.embedWizardStore.getCurrentComponentType(),
+              value: window.embedWizardStore.getCurrentComponentValue()
+            });
+            window.dispatcher.dispatch({
+              action: Constants.EMBED_WIZARD_CLOSE
+            });
+            break;
+
           case Constants.EMBED_WIZARD_CLOSE:
             window.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CLOSE
@@ -142,6 +161,10 @@
             wizardContent = _renderChooseProvider();
             break;
 
+          case Constants.EMBED_WIZARD_CHOOSE_YOUTUBE:
+            wizardContent = _renderChooseYouTubeTemplate(componentValue);
+            break;
+
           default:
             wizardContent = null;
             break;
@@ -154,6 +177,17 @@
           _dialog.html('');
           _hideWizard();
         }
+      }
+
+      // Render interactive data where possible.
+      switch (state) {
+
+        case Constants.EMBED_WIZARD_CHOOSE_YOUTUBE:
+          _renderChooseYouTubeData(componentValue);
+          break;
+
+        default:
+          break;
       }
 
       _lastRenderedState = state;
@@ -181,6 +215,140 @@
       var content = $('<div>', { class: 'modal-content' }).append(providers);
 
       return [ heading, closeButton, content ];
+    }
+
+    function _renderChooseYouTubeTemplate() {
+
+      var heading = _renderModalTitle(
+        I18n.t('editor.embed_wizard.choose_youtube_heading')
+      );
+
+      var closeButton = _renderModalCloseButton();
+
+      var inputLabel = $('<h2>', { class: 'wizard-input-label' }).
+        text(I18n.t('editor.embed_wizard.choose_youtube_input_label'));
+
+      var inputControl = $(
+        '<input>',
+        {
+          class: 'wizard-text-input',
+          'data-embed-wizard-validate-field': 'youTubeId',
+          placeholder: I18n.t(
+            'editor.embed_wizard.choose_youtube_input_placeholder'
+          )
+        }
+      );
+
+      var previewIframe = $(
+        '<iframe>',
+        {
+          class: 'wizard-media-embed-preview-iframe'
+        }
+      );
+
+      var previewContainer = $(
+        '<div>',
+        { class: 'wizard-media-embed-preview-container' }
+      ).append(previewIframe);
+
+      var backButton = $(
+        '<button>',
+        {
+          class: 'btn',
+          'data-embed-action': Constants.EMBED_WIZARD_CHOOSE_PROVIDER
+        }
+      ).append([
+        $(
+          '<span>',
+          {
+            class: 'icon-arrow-left2',
+            style: 'font-size: 0.8em',
+            'data-embed-action': Constants.EMBED_WIZARD_CHOOSE_PROVIDER
+          }
+        ),
+        I18n.t('editor.embed_wizard.back_button_label')
+      ]);
+
+      var insertButton = $(
+        '<button>',
+        {
+          class: 'btn accent-btn',
+          'data-embed-action': Constants.EMBED_WIZARD_APPLY
+        }
+      ).text(I18n.t('editor.embed_wizard.insert_button_label'));
+
+      var content = $('<div>', { class: 'wizard-input-group' }).append([
+        inputLabel,
+        inputControl,
+        previewContainer
+      ]);
+
+      var buttonGroup = $(
+        '<div>',
+        {
+          class: 'wizard-button-group r-to-l'
+        }).append([
+          backButton,
+          insertButton
+        ]);
+
+      return [ heading, closeButton, content, buttonGroup ];
+    }
+
+    function _renderChooseYouTubeData(componentValue) {
+
+      var youTubeId = null;
+      var youTubeUrl = null;
+      var iframeElement = _dialog.find('.wizard-media-embed-preview-iframe');
+      var iframeSrc = iframeElement.attr('src');
+      var inputControl = _dialog.find('[data-embed-wizard-validate-field="youTubeId"]');
+      var iframeContainer;
+      var insertButton = _dialog.find(
+        '[data-embed-action="' + Constants.EMBED_WIZARD_APPLY + '"]'
+      );
+
+      if (componentValue.hasOwnProperty('value') &&
+        componentValue.value !== null &&
+        componentValue.value.hasOwnProperty('id') &&
+        componentValue.value.hasOwnProperty('url')) {
+
+        youTubeId = componentValue.value.id;
+        youTubeUrl = componentValue.value.url;
+      }
+
+      if (youTubeId !== null && youTubeUrl !== null) {
+
+        inputControl.val(youTubeUrl);
+
+        // If there is a valid YouTube video id and it does not match the
+        // current source of the preview iframe, point the preview iframe
+        // at the new youtube video.
+        if (iframeSrc !== youTubeId) {
+          iframeElement.attr('src', Util.generateYouTubeIframeSrc(youTubeId));
+        }
+
+        insertButton.prop('disabled', false);
+
+      } else {
+
+        iframeContainer = _dialog.find('.wizard-media-embed-preview-container');
+
+        // Do not show the 'invalid url' icon if the user has not input
+        // any text, or if they have deleted what text they did input.
+        if (inputControl.val().length === 0) {
+          iframeContainer.removeClass('invalid');
+        } else {
+          iframeContainer.addClass('invalid');
+        }
+
+        // If there is no valid YouTube video id but the current source of
+        // the iframe is not `about:blank`, then reset it to `about:blank`.
+        if (iframeSrc !== 'about:blank') {
+          iframeElement.attr('src', 'about:blank');
+        }
+
+        insertButton.prop('disabled', true);
+      }
     }
 
     function _renderModalTitle(titleText) {

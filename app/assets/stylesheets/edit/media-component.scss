@@ -32,6 +32,16 @@
         margin-right: auto;
       }
     }
+
+    &.youtube {
+      background-color: $embed-youtube-bg-color;
+
+      iframe {
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+      }
+    }
   }
 }
 

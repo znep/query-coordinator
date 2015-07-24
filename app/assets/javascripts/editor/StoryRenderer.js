@@ -116,12 +116,12 @@
       container.on(
         'click',
         '[data-block-move-action]',
-        function(e) {
+        function(event) {
 
           var payload = {
-            action: e.target.getAttribute('data-block-move-action'),
+            action: event.target.getAttribute('data-block-move-action'),
             storyUid: storyUid,
-            blockId: e.target.getAttribute('data-block-id')
+            blockId: event.target.getAttribute('data-block-id')
           };
 
           dispatcher.dispatch(payload);
@@ -131,8 +131,8 @@
       container.on(
         'click',
         '[data-block-delete-action]',
-        function(e) {
-          var blockId = e.target.getAttribute('data-block-id');
+        function(event) {
+          var blockId = event.target.getAttribute('data-block-id');
           var shouldDelete = true;
 
           if (window.blockRemovalConfirmationStore.needsConfirmation(blockId)) {
@@ -141,9 +141,9 @@
 
           if (shouldDelete) {
             var payload = {
-              action: e.target.getAttribute('data-block-delete-action'),
+              action: event.target.getAttribute('data-block-delete-action'),
               storyUid: storyUid,
-              blockId: e.target.getAttribute('data-block-id')
+              blockId: event.target.getAttribute('data-block-id')
             };
 
             dispatcher.dispatch(payload);
@@ -165,8 +165,8 @@
         });
       });
 
-      container.on('mousemove', '.block', function(e) {
-        var blockId = e.currentTarget.getAttribute('data-block-id');
+      container.on('mousemove', '.block', function(event) {
+        var blockId = event.currentTarget.getAttribute('data-block-id');
 
         if (blockId) {
           window.dispatcher.dispatch({

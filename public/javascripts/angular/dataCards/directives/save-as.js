@@ -60,9 +60,18 @@
           $scope.panelActive = false;
         };
 
+        // Hide the flannel when pressing escape or clicking outside the
+        // tool-panel-main element.  Clicking on the button has its own
+        // toggling behavior so it is excluded from this logic.
         WindowState.closeDialogEventObservable.
           filter(function(e) {
-            return $scope.panelActive && $(e.target).closest(element).length === 0;
+            if (!$scope.panelActive) { return false; }
+            if (e.type === 'keydown') { return true; }
+
+            var $target = $(e.target);
+            var targetInsideFlannel = $target.closest('.tool-panel-main').length > 0;
+            var targetIsButton = $target.closest('.tool-panel-toggle-btn').length > 0;
+            return !targetInsideFlannel && !targetIsButton;
           }).
           takeUntil($scope.$destroyAsObservable(element)).
           subscribe(function() {

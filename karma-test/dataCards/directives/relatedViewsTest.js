@@ -104,20 +104,14 @@ describe('<related-views/>', function() {
     expect(listItems.filter(function() { return $(this).find('.related-view-name').text() === 'Third Element' }).get(0)).to.exist;
   });
 
-  it('should hide the flannel if clicked outside of the flannel', function(done) {
+  it('should hide the flannel if clicked outside of the flannel', function() {
     var testElement = createElement(TEST_DATA).element;
     testElement.find('a.tool-panel-toggle-btn').click();
 
-    testHelpers.fireMouseEvent(
-      $window.document.getElementsByTagName('body')[0],
-      'click',
-      { which: 1 }
-    );
-    _.defer(function() {
-      expect(testElement.find('.tool-panel-main')).to.not.have.class('active');
-      testHelpers.TestDom.clear();
-      done();
-    });
+    testHelpers.fireMouseEvent(testElement.find('.tool-panel')[0], 'click');
+
+    expect(testElement.find('.tool-panel-main')).to.not.have.class('active');
+    testHelpers.TestDom.clear();
   });
 
 });

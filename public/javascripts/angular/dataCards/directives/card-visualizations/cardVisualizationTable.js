@@ -23,6 +23,7 @@
         var rowDisplayUnit$ = model.observeOnLatest('page.rowDisplayUnit');
         var cardsSequence = model.observeOnLatest('page.cards');
         var aggregationSequence = model.observeOnLatest('page.aggregation');
+        var columns = dataset.observeOnLatest('columns');
 
         $scope.$watch('isEmbedded', function(newVal, oldVal, scope) {
           if (!angular.isDefined(newVal)) {
@@ -41,8 +42,20 @@
           return CardDataService.getRows.apply(CardDataService, args);
         };
 
+        function isUnsortableColumn(column, fieldName) {
+          var datatypeIsUnsortable = _.contains(
+            Constants.TABLE_UNSORTABLE_PHYSICAL_DATATYPES,
+            _.get(column, 'physicalDatatype', false)
+          );
+
+          return !isDisplayableColumn(column, fieldName) || datatypeIsUnsortable;
+        }
+
         function isDisplayableColumn(column, fieldName) {
-          return !column.hideInTable && !column.isSystemColumn && fieldName !== '*';
+          return !column.hideInTable &&
+            !column.isSystemColumn &&
+            !column.isSubcolumn &&
+            fieldName !== '*';
         }
 
         function keepOnlyDisplayableColumns(columns) {
@@ -54,23 +67,23 @@
 
         function addExtraAttributesToColumns(columns) {
           return _.transform(columns, function(result, column, fieldName) {
-            var newColumn = Object.create(column);
-            var unsortableTypes = Constants.TABLE_UNSORTABLE_PHYSICAL_DATATYPES;
-            newColumn.sortable = !_.contains(unsortableTypes, column.physicalDatatype);
+            column.sortable = !_.contains(
+              Constants.TABLE_UNSORTABLE_PHYSICAL_DATATYPES,
+              column.physicalDatatype
+            );
+
             // SIGH. I'd love to not do this, but we'd have to change a whole heap of table and
             // table test code to support that sort of idealism. The main issue is that table
             // expects its column information in a significant-order array.
-            newColumn.fieldName = fieldName;
+            column.fieldName = fieldName;
 
-            result[fieldName] = newColumn;
+            result[fieldName] = column;
           }, {});
         }
 
-        var columnDetails = dataset.observeOnLatest('columns').
-          map(keepOnlyDisplayableColumns).
-          map(addExtraAttributesToColumns);
-
-        var columnDetailsAsArray = columnDetails.
+        var columnDetails = columns.map(addExtraAttributesToColumns);
+        var displayableColumnDetails = columnDetails.map(keepOnlyDisplayableColumns)
+        var displayableColumnDetailsAsArray = displayableColumnDetails.
           map(function(columns) {
             return _(columns).chain().toArray().sortBy('position').value();
           }).
@@ -78,6 +91,7 @@
             firstColumnObservable,
             function(asArray, firstColumnFieldName) {
               if ($.isPresent(firstColumnFieldName)) {
+
                 // Move the column specified by firstColumnFieldName to
                 // the front of the columns array.
                 var columnIndex = _.findIndex(asArray, function(currentColumn) {
@@ -135,21 +149,22 @@
         // The default sort is on the first card in the page layout.
         var layout = new SortedTileLayout();
 
+        // 'columnDetails' and not 'displayableColumnDetails' is used here because
+        // there exist data lens pages with cards of undisplayable columns,
+        // and we need to ensure that these cards are not computed as our
+        // 'firstCardSequence'.
         var firstCardSequence = cardsSequence.combineLatest(
           columnDetails,
-          function(cards, currentColumnDetails) {
+          function(cards, columnDetails) {
             var sizedCards = _.compact(_.map(cards, function(card) {
-              // Sorting on the table card doesn't make any sense; computed and
-              // system columns are not included either. Also exclude columns that
-              // are unsortable, such as points.
-              var unsortableTypes = Constants.TABLE_UNSORTABLE_PHYSICAL_DATATYPES;
-              var columnPhysicalType = _.get(currentColumnDetails[card.fieldName], 'physicalDatatype');
-              var isUnsortable = _.contains(unsortableTypes, columnPhysicalType);
-              if (card.fieldName === '*' ||
-                card.fieldName.charAt(0) === ':' ||
-                isUnsortable
-                ) {
+              var cardDetails = columnDetails[card.fieldName];
+
+              // Disallow sorting on table cards and computed/system/
+              // unsortable/sub columns.
+              if (_.isUndefined(cardDetails) ||
+                isUnsortableColumn(cardDetails, card.fieldName)) {
                 return null;
+
               } else {
                 return {
                   cardSize: card.getCurrentValue('cardSize'),
@@ -216,7 +231,7 @@
         $scope.$bindObservable('whereClause', whereClause);
         $scope.$bindObservable('rowCount', rowCount$);
         $scope.$bindObservable('filteredRowCount', filteredRowCount$);
-        $scope.$bindObservable('columnDetails', columnDetailsAsArray);
+        $scope.$bindObservable('columnDetails', displayableColumnDetailsAsArray);
         $scope.$bindObservable('defaultSortColumnName', defaultSortColumnName);
 
       }

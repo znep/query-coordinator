@@ -155,26 +155,6 @@
       "sortable": true
     },
     {
-      "name": "Location (X Coordinate)",
-      "fieldName": "x_coordinate",
-      "physicalDatatype": "number",
-      "fred": "amount",
-      "importance": 3,
-      "isSubcolumn": true,
-      "cardinality": 1,
-      "sortable": true
-    },
-    {
-      "name": "Location (Y Coordinate)",
-      "fieldName": "y_coordinate",
-      "physicalDatatype": "number",
-      "fred": "amount",
-      "importance": 3,
-      "isSubcolumn": true,
-      "cardinality": 2,
-      "sortable": true
-    },
-    {
       "name": "Very Good Odds",
       "fieldName": "very_good_odds",
       "physicalDatatype": "number",

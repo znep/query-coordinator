@@ -17,9 +17,7 @@ describe('table directive', function() {
       column.dataset = { version: '1' };
       if (column.fieldName[0].match(/[a-zA-Z0-9]/g)) {
         outerScope.columnDetails.push(column);
-        if (!column.isSubcolumn) {
-          columnCount += 1;
-        }
+        columnCount += 1;
       }
     });
 
@@ -144,22 +142,6 @@ describe('table directive', function() {
     }
   }));
 
-  describe('subcolumns', function() {
-    var el;
-    beforeEach(function() {
-      if (!el) {
-        el = createTableCard(true, fakeDataSource);
-      }
-    });
-    after(destroyAllTableCards);
-
-    // CORE-4645: Never show subcolumns in table card
-    it('are omitted', function() {
-      expect(el.find('.table-head .th:contains("Location (X Coordinate)")').length).to.equal(0);
-      // Make sure non-empty columns are still included
-      expect(el.find('.table-head .th:contains("Location (Y Coordinate)")').length).to.equal(0);
-    });
-  });
   describe('when rendering cell data', function() {
     var el;
     // 2014 Jun 28 12:34:56 PM
@@ -348,7 +330,7 @@ describe('table directive', function() {
 
       // Find the names of all columns with a cardinality of one.
       var uniformColumnNames = _(columnDetails).filter(function(column) {
-        return column.cardinality === 1 && !column.isSubcolumn;
+        return column.cardinality === 1;
       }).pluck('name').value();
 
       // Find all column elements whose text matches one of the above column names.
@@ -407,11 +389,10 @@ describe('table directive', function() {
       var checkedYear = false;
       expect(cells.length).to.not.equal(0);
 
-      var filteredColumns = _.filter(fixtureMetadata.testColumnDetailsAsTableWantsThem, function(column) {
-        return !column.isSubcolumn;
-      });
+      var columns = fixtureMetadata.testColumnDetailsAsTableWantsThem;
+
       _.each(cells, function(cell) {
-        var column = filteredColumns[$(cell).index()];
+        var column = columns[$(cell).index()];
         var datatype = column.physicalDatatype;
         if (datatype === 'number') {
           expect($(cell).hasClass('number')).to.equal(true);

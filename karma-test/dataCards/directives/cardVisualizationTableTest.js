@@ -226,58 +226,89 @@ describe('A Table Card Visualization', function() {
 
       table.pageModel.set('cards', [
         newCard(table.pageModel, {
-          'fieldName': 'field1',
+          'fieldName': 'test_column',
           'cardSize': 2
         })
       ]);
-      expect(table.scope.defaultSortColumnName).to.equal('field1');
+      expect(table.scope.defaultSortColumnName).to.equal('test_column');
 
       table.pageModel.set('cards', [
         newCard(table.pageModel, {
-          'fieldName': 'field2',
+          'fieldName': 'test_column',
           'cardSize': 3
         }),
         newCard(table.pageModel, {
-          'fieldName': 'field3',
+          'fieldName': 'test_timestamp_column',
           'cardSize': 2
         })
       ]);
-      expect(table.scope.defaultSortColumnName).to.equal('field3');
+      expect(table.scope.defaultSortColumnName).to.equal('test_timestamp_column');
 
       table.pageModel.set('cards', [
         newCard(table.pageModel, {
-          'fieldName': 'field4',
+          'fieldName': 'test_column',
           'cardSize': 3
         }),
         newCard(table.pageModel, {
-          'fieldName': 'field5',
+          'fieldName': 'test_timestamp_column',
           'cardSize': 2
         }),
         newCard(table.pageModel, {
-          'fieldName': 'field6',
+          'fieldName': 'test_floating_timestamp_column',
           'cardSize': 2
         })
       ]);
-      expect(table.scope.defaultSortColumnName).to.equal('field5');
+      expect(table.scope.defaultSortColumnName).to.equal('test_timestamp_column');
 
       table.pageModel.set('cards', [
         newCard(table.pageModel, {
-          'fieldName': 'field7',
+          'fieldName': 'test_column',
           'cardSize': 2
         }),
         newCard(table.pageModel, {
-          'fieldName': 'field8',
+          'fieldName': 'test_timestamp_column',
           'cardSize': 3
         }),
         newCard(table.pageModel, {
-          'fieldName': 'field9',
+          'fieldName': 'test_floating_timestamp_column',
           'cardSize': 2
         })
       ]);
-      expect(table.scope.defaultSortColumnName).to.equal('field7');
+      expect(table.scope.defaultSortColumnName).to.equal('test_column');
 
-      // The table doesn't actually have a field7 column, so reset it so that async operations that
-      // use defaultSortColumnName are happy
+      // Reset the table so that async operations that use defaultSortColumnName
+      // still work properly.
+      table.scope.defaultSortColumnName = null;
+      table.scope.$digest();
+    });
+
+    it('should not default to a subcolumn or hideInTable column', function() {
+      var columns = _.cloneDeep(COLUMNS);
+      columns['test_column'].isSubcolumn = true;
+      columns['test_timestamp_column'].hideInTable = true;
+
+      var table = createTable({
+        columns: columns
+      });
+
+      table.pageModel.set('cards', [
+        newCard(table.pageModel, {
+          'fieldName': 'test_column',
+          'cardSize': 2
+        }),
+        newCard(table.pageModel, {
+          'fieldName': 'test_timestamp_column',
+          'cardSize': 2
+        }),
+        newCard(table.pageModel, {
+          'fieldName': 'test_floating_timestamp_column',
+          'cardSize': 3
+        })
+      ]);
+
+      expect(table.scope.defaultSortColumnName).to.equal('test_floating_timestamp_column');
+
+      // Reset
       table.scope.defaultSortColumnName = null;
       table.scope.$digest();
     });
@@ -393,6 +424,19 @@ describe('A Table Card Visualization', function() {
       expect(table.element.find('.th:eq(2)')).to.have.data('columnId', 'test_location_column');
     });
 
+    it('should hide columns according to "subcolumn" property', function() {
+      var newColumns = _.cloneDeep(COLUMNS);
+
+      newColumns['test_column'].isSubcolumn = true;
+
+      var table = createTable({ columns: newColumns });
+
+      expect(table.element.find('.th')).to.have.length(3);
+      expect(table.element.find('.th:eq(0)')).to.have.data('columnId', 'test_timestamp_column');
+      expect(table.element.find('.th:eq(1)')).to.have.data('columnId', 'test_floating_timestamp_column');
+      expect(table.element.find('.th:eq(2)')).to.have.data('columnId', 'test_location_column');
+    });
+
     it('should correctly show columns with the following "edge case" names', function() {
       var edgeCaseColumns = {
         'a': {
@@ -487,4 +531,3 @@ describe('A Table Card Visualization', function() {
   });
 
 });
-

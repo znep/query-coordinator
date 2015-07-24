@@ -428,6 +428,11 @@
           stops = _.map(stops, Math.round);
         }
 
+        // For log scales, if the first stop is zero, set it to the minimum value.
+        if (scale.base && _.first(stops) === 0) {
+          stops[0] = _.first(scale.domain());
+        }
+
         return stops;
       },
 
@@ -544,6 +549,11 @@
           domain = [min, 0, max];
         }
 
+        // For log scales, if the domain includes zero, set it to the minimum value instead.
+        if (scale.base && _.first(domain) === 0) {
+          domain[0] = min;
+        }
+
         return scale.copy().
           domain(domain).
           range(range);
@@ -577,6 +587,13 @@
 
         // We want to size the ticks differently than d3's default. Do that manually.
         var ticks = d3.select(ticksGroup[0]).selectAll('g.tick');
+
+        // Round ticks close to zero to fix logarithmic special cases.
+        ticks.each(function(d) {
+          if (Math.abs(d) < 1) {
+            d3.select(this).select('text').text('0');
+          }
+        });
 
         // Alternate small/big, starting with big.
         var isSmall = true;

@@ -9,9 +9,14 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
   end
 
   describe 'move' do
+
     before do
-      @last_block   = @blocks.last
-      @first_block  = @blocks.first
+      @last_block = @blocks.last
+      @first_block = @blocks.first
+
+      # Remove the transform transition so that we do not have to coordinate
+      # checking blocks' positions with the transition animation.
+      page.evaluate_script("$('.block-edit').css('transition', 'none');")
     end
 
     # TODO These tests don't account for the block scrolling into view after moving.
@@ -21,7 +26,6 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
       # move block up
       @last_block.hover
       @last_block.find('[data-block-move-action="STORY_MOVE_BLOCK_UP"]').click
-      sleep 0.3
       after_move_position = @last_block.native.location.y
 
       expect(after_move_position).to be < initial_position
@@ -38,7 +42,6 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
       # move block down
       @first_block.hover
       @first_block.find('[data-block-move-action="STORY_MOVE_BLOCK_DOWN"]').click
-      sleep 0.3
       after_move_position = @first_block.native.location.y
 
       expect(after_move_position).to be > initial_position
@@ -48,15 +51,13 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
       @last_block.hover
       expect(@last_block.find('[data-block-move-action="STORY_MOVE_BLOCK_DOWN"]')[:disabled]).to eq("true")
     end
-
   end
-
 
   describe 'delete' do
 
     context 'when the block needs a delete confirmation' do
       before do
-        @first_block  = @blocks.first
+        @first_block = @blocks.first
         @first_block.hover
       end
 
@@ -78,7 +79,5 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
         }
       end
     end
-
-
   end
 end

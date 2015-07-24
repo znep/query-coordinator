@@ -115,33 +115,6 @@
       return accumulator;
     },
 
-    isUrlKeyCode: function(keyCode, shiftKey) {
-      return (
-
-        // 0-9
-        ((keyCode >= 48 && keyCode <= 57) && !shiftKey) ||
-        // `%`
-        (keyCode === 53 && shiftKey) ||
-        // a-z, A-Z
-        (keyCode >= 65 && keyCode <= 90) ||
-        // `:`
-        (keyCode === 186 && shiftKey) ||
-        // `=`, `+`
-        (keyCode === 187) ||
-        // `-`, `_`
-        (keyCode === 189) ||
-        // `.`
-        (keyCode === 190 && !shiftKey) ||
-        // `/`, `?`
-        (keyCode === 191)
-      );
-    },
-
-    isDeleteKeyCode: function(keyCode) {
-      // `BACKSPACE`, `DEL`
-      return (keyCode === 8 || keyCode === 46);
-    },
-
     generateYouTubeUrl: function(youTubeId) {
 
       this.assertIsOneOfTypes(youTubeId, 'string');

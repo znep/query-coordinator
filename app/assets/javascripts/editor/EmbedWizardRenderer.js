@@ -68,40 +68,36 @@
         '[data-embed-wizard-validate-field="youTubeId"]',
         function(event) {
 
-        // Do not update the model on characters that are not valid for urls or
-        // delete actions.
-        if (Util.isUrlKeyCode(event.keyCode, event.shiftKey) ||
-          Util.isDeleteKeyCode(event.keyCode)) {
-
           window.dispatcher.dispatch({
             action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
             url: $(event.target).val()
           });
         }
-      });
+      );
 
       _dialog.on(
         'cut paste',
         '[data-embed-wizard-validate-field="youTubeId"]',
         function(event) {
 
-        // If no key was down then we can assume that a cut or paste event came
-        // from the mouse (keyboard-originated paste events will trigger the
-        // 'keyup' handler above).
-        //
-        // The `setTimeout` is necessary because the 'paste' event will fire
-        // before the paste action takes place, so we need to break execution
-        // to allow the DOM time to update itself before we query for the
-        // value of the input control.
-        if (!event.keyCode) {
-          setTimeout(function() {
-            window.dispatcher.dispatch({
-              action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
-              url: $(event.target).val()
-            });
-          }, 0);
+          // If no key was down then we can assume that a cut or paste event came
+          // from the mouse (keyboard-originated paste events will trigger the
+          // 'keyup' handler above).
+          //
+          // The `setTimeout` is necessary because the 'paste' event will fire
+          // before the paste action takes place, so we need to break execution
+          // to allow the DOM time to update itself before we query for the
+          // value of the input control.
+          if (!event.keyCode) {
+            setTimeout(function() {
+              window.dispatcher.dispatch({
+                action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
+                url: $(event.target).val()
+              });
+            }, 0);
+          }
         }
-      });
+      );
 
       _dialog.on('click', '[data-embed-action]', function(event) {
 
@@ -302,6 +298,7 @@
       var componentProperties = _.get(componentValue, 'value');
       var youTubeId = null;
       var youTubeUrl = null;
+      var youTubeEmbedUrl;
       var iframeElement = _dialog.find('.wizard-media-embed-preview-iframe');
       var iframeSrc = iframeElement.attr('src');
       var inputControl = _dialog.find('[data-embed-wizard-validate-field="youTubeId"]');
@@ -325,8 +322,9 @@
         // If there is a valid YouTube video id and it does not match the
         // current source of the preview iframe, point the preview iframe
         // at the new youtube video.
-        if (iframeSrc !== youTubeId) {
-          iframeElement.attr('src', Util.generateYouTubeIframeSrc(youTubeId));
+        youTubeEmbedUrl = Util.generateYouTubeIframeSrc(youTubeId);
+        if (iframeSrc !== youTubeEmbedUrl) {
+          iframeElement.attr('src', youTubeEmbedUrl);
         }
 
         insertButton.prop('disabled', false);

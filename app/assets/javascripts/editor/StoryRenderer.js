@@ -20,6 +20,7 @@
     };
     var elementCache = new StoryRendererElementCache();
     var warningMessageElement = options.warningMessageElement || null;
+    var resizeRerenderTimeout;
 
     if (options.hasOwnProperty('onRenderError') &&
       ((typeof options.onRenderError) !== 'function')) {
@@ -99,6 +100,18 @@
     }
 
     function _attachEvents() {
+
+      $(window).on('resize', function() {
+
+        clearTimeout(resizeRerenderTimeout);
+
+        resizeRerenderTimeout = setTimeout(
+          function() {
+            _renderStory();
+          },
+          200
+        );
+      });
 
       container.on(
         'click',

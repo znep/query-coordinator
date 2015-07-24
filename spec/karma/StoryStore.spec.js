@@ -1222,7 +1222,7 @@ describe('StoryStore', function() {
             dispatch({
               action: Constants.BLOCK_UPDATE_COMPONENT,
               blockId: null,
-              index: validComponentIndex,
+              componentIndex: validComponentIndex,
               type: validComponentType,
               value: validComponentValue
             });
@@ -1238,7 +1238,7 @@ describe('StoryStore', function() {
             dispatch({
               action: Constants.BLOCK_UPDATE_COMPONENT,
               blockId: block1Id,
-              index: null,
+              componentIndex: null,
               type: validComponentType,
               value: validComponentValue
             });
@@ -1254,7 +1254,7 @@ describe('StoryStore', function() {
             dispatch({
               action: Constants.BLOCK_UPDATE_COMPONENT,
               blockId: block1Id,
-              index: 99,
+              componentIndex: 99,
               type: validComponentType,
               value: validComponentValue
             });
@@ -1269,7 +1269,7 @@ describe('StoryStore', function() {
           dispatch({
             action: Constants.BLOCK_UPDATE_COMPONENT,
             blockId: block1Id,
-            index: validComponentIndex,
+            componentIndex: validComponentIndex,
             type: validComponentType,
             value: validComponentValue
           });

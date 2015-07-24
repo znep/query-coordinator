@@ -297,6 +297,7 @@
 
     function _renderChooseYouTubeData(componentValue) {
 
+      var componentProperties = _.get(componentValue, 'value');
       var youTubeId = null;
       var youTubeUrl = null;
       var iframeElement = _dialog.find('.wizard-media-embed-preview-iframe');
@@ -307,10 +308,9 @@
         '[data-embed-action="' + Constants.EMBED_WIZARD_APPLY + '"]'
       );
 
-      if (componentValue.hasOwnProperty('value') &&
-        componentValue.value !== null &&
-        componentValue.value.hasOwnProperty('id') &&
-        componentValue.value.hasOwnProperty('url')) {
+      if (componentProperties !== null &&
+        _.has(componentProperties, 'id') &&
+        _.has(componentProperties, 'url')) {
 
         youTubeId = componentValue.value.id;
         youTubeUrl = componentValue.value.url;
@@ -335,7 +335,7 @@
 
         // Do not show the 'invalid url' icon if the user has not input
         // any text, or if they have deleted what text they did input.
-        if (inputControl.val().length === 0) {
+        if (_.isEmpty(inputControl.val().replace(/\s/g, ''))) {
           iframeContainer.removeClass('invalid');
         } else {
           iframeContainer.addClass('invalid');

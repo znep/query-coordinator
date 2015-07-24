@@ -385,17 +385,29 @@
         return $(
           '<div>',
           {
-            class: ('component-container col' + componentWidth),
+            'class': ('component-container col' + componentWidth),
             'data-component-layout-width': componentWidth,
             'data-component-index': i
           }
         );
       });
 
-      blockElement = $('<div>', { class: 'block', 'data-block-id': blockId }).append(componentContainers);
+      blockElement = $(
+        '<div>',
+        {
+          'class': 'block',
+          'data-block-id': blockId
+        }
+      ).append(componentContainers);
 
       if (editable) {
-        blockElement = $('<div>', { class: 'block-edit', 'data-block-id': blockId }).append([
+        blockElement = $(
+          '<div>',
+          {
+            'class': 'block-edit',
+            'data-block-id': blockId
+          }
+        ).append([
           _renderBlockEditControls(blockId),
           blockElement
         ]);
@@ -407,25 +419,41 @@
     }
 
     function _renderBlockEditControls(blockId) {
-      return $('<div>', { class: 'block-edit-controls' }).append([
-        $('<button>',
-          { class: 'block-edit-controls-move-up-btn',
+
+      return $(
+        '<div>',
+        {
+          'class': 'block-edit-controls'
+        }
+      ).append([
+
+        $(
+          '<button>',
+          {
+            'class': 'block-edit-controls-move-up-btn',
             'data-block-id': blockId,
             'data-block-move-action': Constants.STORY_MOVE_BLOCK_UP
           }
-          ).append('&#9650;'),
-        $('<button>',
-          { class: 'block-edit-controls-move-down-btn',
+        ).append('&#9650;'),
+
+        $(
+          '<button>',
+          {
+            'class': 'block-edit-controls-move-down-btn',
             'data-block-id': blockId,
             'data-block-move-action': Constants.STORY_MOVE_BLOCK_DOWN
           }
-          ).append('&#9660;'),
-        $('<button>',
-          { class: 'block-edit-controls-delete-btn',
+        ).append('&#9660;'),
+
+        $(
+          '<button>',
+          {
+            'class': 'block-edit-controls-delete-btn',
             'data-block-id': blockId,
             'data-block-delete-action': Constants.STORY_DELETE_BLOCK
           }
         ).append('&#9587;')
+
       ]);
     }
 

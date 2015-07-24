@@ -6,7 +6,7 @@ describe('EmbedWizardRenderer', function() {
   var testComponentIndex = 1;
 
   beforeEach(function() {
-    container = $('<div>', { class: 'embed-wizard-container' });
+    container = $('<div>', { 'class': 'embed-wizard-container' });
 
     testDom.append(container);
 

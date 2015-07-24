@@ -5,8 +5,8 @@
   function EmbedWizardRenderer(options) {
 
     var _container = options.embedWizardContainerElement || null;
-    var _overlay = $('<div>', { class: 'modal-overlay' });
-    var _dialog = $('<div>', { class: 'modal-dialog' });
+    var _overlay = $('<div>', { 'class': 'modal-overlay' });
+    var _dialog = $('<div>', { 'class': 'modal-dialog' });
     var _lastRenderedState = null;
 
     if (!(_container instanceof jQuery)) {
@@ -202,15 +202,13 @@
       var youtubeButton = $(
         '<button>',
         {
-          class: 'btn accent-btn',
+          'class': 'btn accent-btn',
           'data-embed-action': Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
         }
       ).text(I18n.t('editor.embed_wizard.providers.youtube'));
 
-      var providers = $('<ul>').append([
-          $('<li>').append(youtubeButton)
-        ]);
-      var content = $('<div>', { class: 'modal-content' }).append(providers);
+      var providers = $('<ul>').append([ $('<li>').append(youtubeButton) ]);
+      var content = $('<div>', { 'class': 'modal-content' }).append(providers);
 
       return [ heading, closeButton, content ];
     }
@@ -223,15 +221,15 @@
 
       var closeButton = _renderModalCloseButton();
 
-      var inputLabel = $('<h2>', { class: 'wizard-input-label' }).
+      var inputLabel = $('<h2>', { 'class': 'wizard-input-label' }).
         text(I18n.t('editor.embed_wizard.choose_youtube_input_label'));
 
       var inputControl = $(
         '<input>',
         {
-          class: 'wizard-text-input',
+          'class': 'wizard-text-input',
           'data-embed-wizard-validate-field': 'youTubeId',
-          placeholder: I18n.t(
+          'placeholder': I18n.t(
             'editor.embed_wizard.choose_youtube_input_placeholder'
           )
         }
@@ -240,27 +238,29 @@
       var previewIframe = $(
         '<iframe>',
         {
-          class: 'wizard-media-embed-preview-iframe'
+          'class': 'wizard-media-embed-preview-iframe'
         }
       );
 
       var previewContainer = $(
         '<div>',
-        { class: 'wizard-media-embed-preview-container' }
+        {
+          'class': 'wizard-media-embed-preview-container'
+        }
       ).append(previewIframe);
 
       var backButton = $(
         '<button>',
         {
-          class: 'btn',
+          'class': 'btn',
           'data-embed-action': Constants.EMBED_WIZARD_CHOOSE_PROVIDER
         }
       ).append([
         $(
           '<span>',
           {
-            class: 'icon-arrow-left2',
-            style: 'font-size: 0.8em',
+            'class': 'icon-arrow-left2',
+            'style': 'font-size: 0.8em',
             'data-embed-action': Constants.EMBED_WIZARD_CHOOSE_PROVIDER
           }
         ),
@@ -270,12 +270,12 @@
       var insertButton = $(
         '<button>',
         {
-          class: 'btn accent-btn',
+          'class': 'btn accent-btn',
           'data-embed-action': Constants.EMBED_WIZARD_APPLY
         }
       ).text(I18n.t('editor.embed_wizard.insert_button_label'));
 
-      var content = $('<div>', { class: 'wizard-input-group' }).append([
+      var content = $('<div>', { 'class': 'wizard-input-group' }).append([
         inputLabel,
         inputControl,
         previewContainer
@@ -284,11 +284,8 @@
       var buttonGroup = $(
         '<div>',
         {
-          class: 'wizard-button-group r-to-l'
-        }).append([
-          backButton,
-          insertButton
-        ]);
+          'class': 'wizard-button-group r-to-l'
+        }).append([ backButton, insertButton ]);
 
       return [ heading, closeButton, content, buttonGroup ];
     }
@@ -367,7 +364,7 @@
     }
 
     function _renderModalTitle(titleText) {
-      return $('<h1>', { class: 'modal-title' }).text(titleText);
+      return $('<h1>', { 'class': 'modal-title' }).text(titleText);
     }
 
     function _renderModalCloseButton() {
@@ -375,14 +372,14 @@
       return $(
         '<button>',
         {
-          class: 'modal-close-btn',
+          'class': 'modal-close-btn',
           'data-embed-action': Constants.EMBED_WIZARD_CLOSE
         }
       ).append(
         $(
           '<span>',
           {
-            class: 'icon-cross2',
+            'class': 'icon-cross2',
             'data-embed-action': Constants.EMBED_WIZARD_CLOSE
           }
         )

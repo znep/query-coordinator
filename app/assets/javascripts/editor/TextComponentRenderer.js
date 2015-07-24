@@ -68,7 +68,7 @@
       component = $(
         '<div>',
         {
-          class: componentOptions.classes + ' text-editor',
+          'class': componentOptions.classes + ' text-editor',
           'data-editor-id': editorId,
           'data-rendered-template': 'text'
         }
@@ -84,7 +84,7 @@
       component = $(
         '<div>',
         {
-          class: componentOptions.classes
+          'class': componentOptions.classes
         }
       ).append(componentOptions.componentValue);
     }

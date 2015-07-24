@@ -33,7 +33,16 @@
   EMBED_WIZARD_CHOOSE_YOUTUBE: 'EMBED_WIZARD_CHOOSE_YOUTUBE',
   EMBED_WIZARD_UPDATE_YOUTUBE_URL: 'EMBED_WIZARD_UPDATE_YOUTUBE_URL',
   EMBED_WIZARD_APPLY: 'EMBED_WIZARD_APPLY',
-  EMBED_WIZARD_CLOSE: 'EMBED_WIZARD_CLOSE'
+  EMBED_WIZARD_CLOSE: 'EMBED_WIZARD_CLOSE',
+
+  // Actual constants
+  YOUTUBE_URL_PATTERNS: [
+    /youtu\.be\/([^#\&\?]{11})/,  // youtu.be/<id>
+    /\?v=([^#\&\?]{11})/,         // ?v=<id>
+    /\&v=([^#\&\?]{11})/,         // &v=<id>
+    /embed\/([^#\&\?]{11})/,      // embed/<id>
+    /\/v\/([^#\&\?]{11})/         // /v/<id>
+  ]
 };
 
 (function() {

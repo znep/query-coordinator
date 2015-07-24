@@ -57,7 +57,9 @@ function applyStandardMocks() {
       return 'Translation for: ' + translationKeys;
     })
   };
+
   AssetFinderMocker.mock();
+
   window.assetFinder = new AssetFinder();
 
   SquireMocker.mock();
@@ -74,10 +76,10 @@ function applyStandardMocks() {
   });
 
   window.storyStore = new StoryStore();
-  window.embedWizardStore = new EmbedWizardStore();
   window.dragDropStore = new DragDropStore();
   window.historyStore = new HistoryStore();
   window.blockRemovalConfirmationStore = new BlockRemovalConfirmationStore();
+  window.embedWizardStore = new EmbedWizardStore();
 
   dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyData });
 
@@ -112,8 +114,10 @@ function removeStandardMocks() {
   AssetFinderMocker.unmock();
   delete window.dispatcher;
   delete window.storyStore;
-  delete window.blockStore;
   delete window.dragDropStore;
+  delete window.historyStore;
+  delete window.blockRemovalConfirmationStore;
+  delete window.embedWizardStore;
   delete window.I18n;
   delete window.standardMocks;
 }
@@ -125,4 +129,14 @@ function removeStandardMocks() {
 // If you don't want these standard mocks for a
 // particular test, see this file's top-level comment.
 beforeEach(applyStandardMocks);
-afterEach(removeStandardMocks);
+
+// Hillariously, removing the standard mocks in an `afterEach` appears to have
+// introduced a race condition in the tests whereby a `setTimeout` would
+// occasionally fire after the call to `removeStandardMocks()` and error out
+// because the store it tried to access no longer existed.
+//
+// Since we are overwriting the same variables on every test run, it seemed
+// unnecessary to actually remove them before overwriting them on the next
+// test run.
+//
+//afterEach(removeStandardMocks);

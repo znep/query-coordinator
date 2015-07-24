@@ -463,4 +463,77 @@ describe('Util', function() {
       });
     });
   });
+
+  describe('.generateYouTubeUrl()', function() {
+
+    describe('not given an id', function() {
+
+      it('should throw an error', function() {
+
+        assert.throw(function() {
+          Util.generateYouTubeUrl();          
+        });
+      });
+    });
+
+    describe('given an id', function() {
+
+      it('should generate the expected url', function() {
+
+        var youTubeId = 'ABCDEFGHIJK';
+        var expectedUrl = 'https://www.youtube.com/embed/' + youTubeId;
+
+        assert.equal(expectedUrl, Util.generateYouTubeUrl(youTubeId));
+      });
+    });
+  });
+
+  describe('.generateYouTubeIframeSrc()', function() {
+
+    describe('not given an id', function() {
+
+      it('should throw an error', function() {
+
+        assert.throw(function() {
+          Util.generateYouTubeUrl();          
+        });
+      });
+    });
+
+    describe('given an id', function() {
+
+      describe('when the autoplay argument is undefined', function() {
+
+        it('should generate the expected url', function() {
+
+          var youTubeId = 'ABCDEFGHIJK';
+          var expectedUrl = 'https://www.youtube.com/embed/' + youTubeId + '?rel=0&showinfo=0';
+
+          assert.equal(expectedUrl, Util.generateYouTubeIframeSrc(youTubeId));
+        });
+      });
+
+      describe('when the autoplay argument is false', function() {
+
+        it('should generate the expected url', function() {
+
+          var youTubeId = 'ABCDEFGHIJK';
+          var expectedUrl = 'https://www.youtube.com/embed/' + youTubeId + '?rel=0&showinfo=0';
+
+          assert.equal(expectedUrl, Util.generateYouTubeIframeSrc(youTubeId, false));
+        });
+      });
+
+      describe('when the autoplay argument is true', function() {
+
+        it('should generate the expected url', function() {
+
+          var youTubeId = 'ABCDEFGHIJK';
+          var expectedUrl = 'https://www.youtube.com/embed/' + youTubeId + '?rel=0&showinfo=0&autoplay=true';
+
+          assert.equal(expectedUrl, Util.generateYouTubeIframeSrc(youTubeId, true));
+        });
+      });
+    });
+  });
 });

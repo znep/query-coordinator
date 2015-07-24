@@ -29,6 +29,15 @@
           _chooseProvider(payload);
           break;
 
+        case Constants.EMBED_WIZARD_CHOOSE_YOUTUBE:
+          _currentWizardState = action;
+          _chooseYoutube();
+          break;
+
+        case Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL:
+          _updateYouTubeUrl(payload);
+          break;
+
         case Constants.EMBED_WIZARD_CLOSE:
           _closeDialog();
           break;
@@ -71,6 +80,14 @@
 
       switch (_currentComponentProperties.provider) {
 
+        case 'youtube':
+          if (_currentComponentProperties.id !== null &&
+            _currentComponentProperties.url !== null) {
+
+            valid = true;
+          }
+          break;
+
         default:
           break;
       }
@@ -92,6 +109,29 @@
       self._emitChange();
     }
 
+    function _chooseYoutube() {
+
+      self._emitChange();
+    }
+
+    function _updateYouTubeUrl(payload) {
+
+      var youTubeId = _extractIdFromYouTubeUrl(payload.url);
+      var youTubeUrl = null;
+
+      if (youTubeId !== null) {
+        youTubeUrl = payload.url;
+      }
+
+      _currentComponentProperties = {
+        provider: 'youtube',
+        id: youTubeId,
+        url: youTubeUrl
+      };
+
+      self._emitChange();
+    }
+
     function _closeDialog() {
 
       _currentWizardState = null;
@@ -106,6 +146,42 @@
       return {
         provider: 'wizard'
       };
+    }
+
+    /**
+     * See: https://github.com/jmorrell/get-youtube-id/
+     */
+    function _extractIdFromYouTubeUrl(youTubeUrl) {
+
+      var youTubeId = null;
+      var patterns = Constants.YOUTUBE_URL_PATTERNS;
+      var tokens;
+
+      if (/youtu\.?be/.test(youTubeUrl)) {
+
+        // If any pattern matches, return the ID
+        for (var i = 0; i < patterns.length; ++i) {
+          if (patterns[i].test(youTubeUrl)) {
+            youTubeId = patterns[i].exec(youTubeUrl)[1];
+            break;
+          }
+        }
+
+        if (!youTubeId) {
+          // If that fails, break it apart by certain characters and look 
+          // for the 11 character key
+          tokens = youTubeUrl.split(/[\/\&\?=#\.\s]/g);
+
+          for (i = 0; i < tokens.length; ++i) {
+            if (/^[^#\&\?]{11}$/.test(tokens[i])) {
+              youTubeId = tokens[i];
+              break;
+            }
+          }
+        }
+      }
+
+      return youTubeId;
     }
   }
 

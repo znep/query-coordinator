@@ -13,9 +13,11 @@
 
   var _embedComponentTemplateRenderers = {
     'wizard': _renderEmbedWizardComponentTemplate,
+    'youtube': _renderEmbedYouTubeComponentTemplate
   };
   var _embedComponentDataRenderers = {
     'wizard': _renderEmbedWizardComponentData,
+    'youtube': _renderEmbedYouTubeComponentData
   };
 
   function _renderTemplate(componentOptions) {
@@ -152,6 +154,32 @@
     ).append(controlsContainer);
   }
 
+  function _renderEmbedYouTubeComponentTemplate(componentOptions) {
+
+    var classes = componentOptions.classes + ' embed youtube';
+
+    var iframeElement = $(
+      '<iframe>',
+      {
+        frameborder: '0',
+        allowfullscreen: true,
+        src: 'about:blank'
+      }
+    );
+
+    return $(
+      '<div>',
+      {
+        class: classes,
+        'data-rendered-template': 'media',
+        'data-rendered-media-type': 'embed',
+        'data-rendered-media-embed-provider': 'youtube',
+        'data-block-id': componentOptions.blockId,
+        'data-component-index': componentOptions.componentIndex
+      }
+    ).append(iframeElement);
+  }
+
   /**
    * Component data renderers
    */
@@ -186,6 +214,16 @@
 
   function _renderEmbedWizardComponentData(element, value, editable, renderFn) {
     // NOOP (this component is static)
+  }
+
+  function _renderEmbedYouTubeComponentData(element, value, editable, renderFn) {
+
+    var iframeElement = element.find('iframe');
+    var youTubeSource = Util.generateYouTubeIframeSrc(value.id);
+
+    if (iframeElement.attr('src') !== youTubeSource) {
+      iframeElement.attr('src', youTubeSource);
+    }
   }
 
   return {

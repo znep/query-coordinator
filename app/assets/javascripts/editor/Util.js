@@ -113,7 +113,26 @@
       }
 
       return accumulator;
-    }
+    },
 
+    generateYouTubeUrl: function(youTubeId) {
+
+      this.assertIsOneOfTypes(youTubeId, 'string');
+
+      return 'https://www.youtube.com/embed/' + youTubeId;
+    },
+
+    generateYouTubeIframeSrc: function(youTubeId, autoplay) {
+
+      this.assertIsOneOfTypes(youTubeId, 'string');
+
+      var src = 'https://www.youtube.com/embed/' + youTubeId + '?rel=0&showinfo=0';
+
+      if (autoplay) {
+        src += '&autoplay=true';
+      }
+
+      return src;
+    }
   };
 })();

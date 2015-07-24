@@ -41,7 +41,7 @@ describe('BlockRemovalConfirmationStore', function() {
           window.dispatcher.dispatch({
             action: Constants.BLOCK_UPDATE_COMPONENT,
             blockId: newlyAddedBlockId,
-            index: 0,
+            componentIndex: 0,
             value: ''
           });
 

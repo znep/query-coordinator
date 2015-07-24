@@ -1,5 +1,5 @@
 // body
-$body-bg-color: rgb(255, 255, 255);
+$body-bg-color: #fff;
 
 // header
 $header-bg-color: #4a4747;
@@ -8,21 +8,24 @@ $header-font-color: #fff;
 // Add content panel
 $add-content-panel-bg-color: #eee;
 
-// rich text editor toolbar
+// Blocks
+$block-bg-color: #fff;
+
+// Rich text editor toolbar
 $rich-text-editor-toolbar-inactive-color: rgb(215, 215, 215);
 $rich-text-editor-toolbar-inactive-bg-color: rgb(245, 245, 245);
 $rich-text-editor-toolbar-color: rgb(64, 64, 64);
 $rich-text-editor-toolbar-bg-color: rgb(225, 225, 225);
 $rich-text-editor-toolbar-active-bg-color: rgb(190, 190, 190);
 
-$dark-btn-color: rgb(250, 250, 250);
-$preview-btn-bg-color: rgb(100, 200, 125);
+// Embedded media
+$embed-youtube-bg-color: #000;
 
-$block-bg-color: rgb(255, 255, 255);
-
+// Edit user story
 $block-edit-content-border-color: rgb(225, 225, 225);
+$story-insertion-hint-bg-color: #333;
+$empty-story-warning-font-color: rgb(153,153,153);
 
-$story-insertion-hint-bg-color: rgb(0, 0, 0);
 // Modal windows
 $modal-bg-color: #fff;
 $modal-overlay-bg-color: rgba(0, 0, 0, 0.5);
@@ -31,7 +34,6 @@ $modal-overlay-bg-color: rgba(0, 0, 0, 0.5);
 $wizard-input-group-bg-color: #eee;
 $wizard-media-embed-preview-container-bg-color: #fff;
 $wizard-input-element-border-color: #ccc;
-$empty-story-warning-font-color: rgb(153,153,153);
 
 // Buttons
 $btn-color: #666;

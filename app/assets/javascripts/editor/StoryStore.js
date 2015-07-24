@@ -256,14 +256,14 @@
     function _updateBlockComponentAtIndex(payload) {
 
       var block = _getBlock(payload.blockId);
-      var index = parseInt(payload.index, 10);
+      var index = parseInt(payload.componentIndex, 10);
       var component;
 
       // Verify that it is a number *after* the parseInt but report on its
       // original type.
       if (isNaN(index)) {
         throw new Error(
-          'Invalid component index: "' + payload.index + '".'
+          'Invalid component index: "' + payload.componentIndex + '".'
         );
       }
 
@@ -275,7 +275,7 @@
 
       if (component.type !== payload.type || component.value !== payload.value) {
 
-        block.components[payload.index] = {
+        block.components[payload.componentIndex] = {
           type: payload.type,
           value: payload.value
         };

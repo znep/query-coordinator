@@ -293,6 +293,21 @@
       return [ heading, closeButton, content, buttonGroup ];
     }
 
+    /**
+     * componentValue is of the following form:
+     *
+     * {
+     *   type: 'media',
+     *   value: {
+     *     type: 'embed',
+     *     value: {
+     *       provider: 'youtube',
+     *       id: '<YouTube video id>',
+     *       url: '<YouTube video url>'
+     *     }
+     *   }
+     *  }
+     */
     function _renderChooseYouTubeData(componentValue) {
 
       var componentProperties = _.get(componentValue, 'value');

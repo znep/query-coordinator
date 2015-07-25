@@ -1,4 +1,4 @@
-;var SimpleEventEmitter = (function() {
+;namespace.SimpleEventEmitter = (function(namespace) {
 
   'use strict';
 
@@ -54,4 +54,4 @@
 
   return SimpleEventEmitter;
 
-})();
+})(window.socrata.storyteller);

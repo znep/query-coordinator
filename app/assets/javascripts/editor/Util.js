@@ -1,7 +1,7 @@
-;(function() {
+;(function(namespace) {
   'use strict';
 
-  window.Util = {
+  namespace.Util = {
 
     assertEqual: function(value1, value2) {
       if (value1 !== value2) {
@@ -27,7 +27,7 @@
       _.each(
         _.rest(arguments),
         function(argument) {
-          window.Util.assertHasProperty(object, argument);
+          namespace.Util.assertHasProperty(object, argument);
         }
       );
     },
@@ -135,4 +135,4 @@
       return src;
     }
   };
-})();
+})(window.socrata.storyteller);

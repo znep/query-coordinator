@@ -1,12 +1,12 @@
 'use strict';
 
 $(document).on('ready', function() {
-
+  var namespace = window.socrata.storyteller
   /**
    * Setup
    */
 
-  window.assetFinder = new AssetFinder();
+  var assetFinder = new namespace.AssetFinder();
 
   var richTextFormats = [
     { id: 'heading1', tag: 'h1', name: 'Heading 1', dropdown: true },
@@ -42,11 +42,11 @@ $(document).on('ready', function() {
    * FLUX
    */
 
-  window.userStoryUid = userStoryData.uid;
+  namespace.userStoryUid = userStoryData.uid;
 
-  window.dispatcher = new Dispatcher();
-  window.dispatcher.register(function(payload) {
-    window.console && console.info('Dispatcher action: ', payload);
+  namespace.dispatcher = new namespace.Dispatcher();
+  namespace.dispatcher.register(function(payload) {
+    namespace.console && console.info('Dispatcher action: ', payload);
     if (typeof payload.action !== 'string') {
       throw new Error(
         'Undefined action.'
@@ -54,32 +54,32 @@ $(document).on('ready', function() {
     }
   });
 
-  window.storyStore = new StoryStore();
-  window.historyStore = new HistoryStore();
-  window.dragDropStore = new DragDropStore();
-  window.embedWizardStore = new EmbedWizardStore();
-  window.blockRemovalConfirmationStore = new BlockRemovalConfirmationStore();
+  namespace.storyStore = new namespace.StoryStore();
+  namespace.historyStore = new namespace.HistoryStore();
+  namespace.dragDropStore = new namespace.DragDropStore();
+  namespace.embedWizardStore = new namespace.EmbedWizardStore();
+  namespace.blockRemovalConfirmationStore = new namespace.BlockRemovalConfirmationStore();
 
-  var richTextEditorToolbar = new RichTextEditorToolbar(
+  var richTextEditorToolbar = new namespace.RichTextEditorToolbar(
     $('#rich-text-editor-toolbar'),
     richTextFormats
   );
 
-  window.richTextEditorManager = new RichTextEditorManager(
+  var richTextEditorManager = new namespace.RichTextEditorManager(
     assetFinder,
     richTextEditorToolbar,
     richTextFormats
   );
 
-  window.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
+  namespace.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
 
   var embedWizardOptions = {
     embedWizardContainerElement: $('#embed-wizard')
   };
-  var embedWizardRenderer = new EmbedWizardRenderer(embedWizardOptions);
+  var embedWizardRenderer = new namespace.EmbedWizardRenderer(embedWizardOptions);
 
   var userStoryOptions = {
-    storyUid: window.userStoryUid,
+    storyUid: namespace.userStoryUid,
     storyContainerElement: $('.user-story'),
     editable: true,
     insertionHintElement: $('#story-insertion-hint'),
@@ -87,7 +87,7 @@ $(document).on('ready', function() {
     warningMessageElement: $('.user-story .message-warning'),
     onRenderError: function() {}
   };
-  var userStoryRenderer = new StoryRenderer(userStoryOptions);
+  var userStoryRenderer = new namespace.StoryRenderer(userStoryOptions);
 
   /**
    * RichTextEditorToolbar events
@@ -112,7 +112,7 @@ $(document).on('ready', function() {
 
       richTextEditorManager.unlinkToolbar();
 
-      window.dispatcher.dispatch({
+      namespace.dispatcher.dispatch({
         action: Constants.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
         activeFormats: []
       });
@@ -125,7 +125,7 @@ $(document).on('ready', function() {
 
    $('.undo-btn').on('click', function() {
 
-      window.dispatcher.dispatch({
+      namespace.dispatcher.dispatch({
         action: Constants.HISTORY_UNDO,
         storyUid: userStoryUid
       });
@@ -133,21 +133,21 @@ $(document).on('ready', function() {
 
    $('.redo-btn').on('click', function() {
 
-      window.dispatcher.dispatch({
+      namespace.dispatcher.dispatch({
         action: Constants.HISTORY_REDO,
         storyUid: userStoryUid
       });
    });
 
-  window.historyStore.addChangeListener(function() {
+  namespace.historyStore.addChangeListener(function() {
 
-    if (window.historyStore.canUndo()) {
+    if (namespace.historyStore.canUndo()) {
       $('.undo-btn').prop('disabled', false);
     } else {
       $('.undo-btn').prop('disabled', true);
     }
 
-    if (window.historyStore.canRedo()) {
+    if (namespace.historyStore.canRedo()) {
       $('.redo-btn').prop('disabled', false);
     } else {
       $('.redo-btn').prop('disabled', true);
@@ -158,8 +158,8 @@ $(document).on('ready', function() {
    * Drag and drop events
    */
 
-  window.dragDropStore.addChangeListener(function() {
-    if (window.dragDropStore.isDraggingOverStory(userStoryUid)) {
+  namespace.dragDropStore.addChangeListener(function() {
+    if (namespace.dragDropStore.isDraggingOverStory(userStoryUid)) {
       ghostElement.addClass('full-size');
     } else {
       ghostElement.removeClass('full-size');
@@ -168,7 +168,7 @@ $(document).on('ready', function() {
 
   // Respond to changes in the user story's block ordering by scrolling the
   // window to always show the top of the moved block.
-  window.dispatcher.register(function(payload) {
+  namespace.dispatcher.register(function(payload) {
 
     if (payload.storyUid === userStoryUid) {
 
@@ -217,11 +217,11 @@ $(document).on('ready', function() {
 
   // Drag-drop
   var ghostElement = $('#block-ghost');
-  var dragDrop = new DragDrop(addContentPanelElement.find('.inspiration-block'), ghostElement);
+  var dragDrop = new namespace.DragDrop(addContentPanelElement.find('.inspiration-block'), ghostElement);
   dragDrop.setup();
 
   // Story title
-  $('.story-title').storyTitle(window.userStoryUid);
+  $('.story-title').storyTitle(namespace.userStoryUid);
 
   // Modals
   $('.preview-btn').on('click', function() {

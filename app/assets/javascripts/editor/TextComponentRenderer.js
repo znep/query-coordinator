@@ -1,4 +1,4 @@
-;var TextComponentRenderer = (function() {
+;namespace.TextComponentRenderer = (function(namespace) {
 
   'use strict';
 
@@ -74,7 +74,7 @@
         }
       );
 
-      editor = window.richTextEditorManager.createEditor(
+      editor = namespace.richTextEditorManager.createEditor(
         component,
         editorId,
         componentOptions.componentValue
@@ -114,4 +114,4 @@
     renderTemplate: _renderTemplate,
     renderData: _renderData
   };
-})();
+})(window.socrata.storyteller);

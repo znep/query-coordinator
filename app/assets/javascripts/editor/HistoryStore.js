@@ -1,7 +1,8 @@
-;var HistoryStore = (function() {
+;namespace.HistoryStore = (function(namespace) {
 
   'use strict';
 
+  var Util = namespace.Util;
   var MAX_UNDO_COUNT = 99;
 
   function HistoryStore() {
@@ -10,14 +11,14 @@
     var _history = [];
     var _undoCursor = 0;
 
-    window.storyStore.addChangeListener(function() {
+    namespace.storyStore.addChangeListener(function() {
 
-      if (window.storyStore.storyExists(window.userStoryUid)) {
+      if (namespace.storyStore.storyExists(namespace.userStoryUid)) {
 
         var historyLength = _history.length;
         var newHistoryLength;
         var serializedStory = JSON.stringify(
-          window.storyStore.serializeStory(window.userStoryUid)
+          namespace.storyStore.serializeStory(namespace.userStoryUid)
         );
 
         // This is the case when one or more undo operations have
@@ -49,7 +50,7 @@
       }
     });
 
-    window.dispatcher.register(function(payload) {
+    namespace.dispatcher.register(function(payload) {
 
       var action = payload.action;
 
@@ -65,7 +66,7 @@
       }
     });
 
-    _.extend(self, new Store());
+    _.extend(self, new namespace.Store());
 
     /**
      * Public methods
@@ -128,4 +129,4 @@
   }
 
   return HistoryStore;
-})();
+})(window.socrata.storyteller);

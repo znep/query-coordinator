@@ -1,4 +1,4 @@
-;var Dispatcher = (function() {
+;namespace.Dispatcher = (function(namespace) {
 
   'use strict';
 
@@ -56,5 +56,5 @@
   }
 
   return Dispatcher;
-})();
+})(window.socrata.storyteller);
 

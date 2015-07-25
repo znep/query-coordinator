@@ -1,5 +1,5 @@
-;var MediaComponentRenderer = (function() {
- 
+;namespace.MediaComponentRenderer = (function(namespace) {
+
   'use strict';
 
   var _componentTemplateRenderers = {
@@ -194,7 +194,7 @@
     Util.assertHasProperty(data, 'src');
 
     imageElement = element.find('img');
-    imageSource = window.assetFinder.getRelativeUrlRoot() + data.src;
+    imageSource = namespace.assetFinder.getRelativeUrlRoot() + data.src;
 
     imageElement[0].onload = function(e) {
       renderFn();
@@ -232,4 +232,4 @@
     renderTemplate: _renderTemplate,
     renderData: _renderData
   };
-})();
+})(window.socrata.storyteller);

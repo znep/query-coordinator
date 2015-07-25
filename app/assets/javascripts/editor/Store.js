@@ -1,15 +1,15 @@
-;(function() {
+;(function(namespace) {
   'use strict';
 
   // Store base class. Example of usage:
   //
   // function SpecificStore() {
-  //   _.extend(this, new Store());
+  //   _.extend(this, new namespace.Store());
   //
   //   this.getSpecificValue = function() { ... };
   // }
   function Store() {
-    var _emitter = new SimpleEventEmitter();
+    var _emitter = new namespace.SimpleEventEmitter();
 
     this.addChangeListener = function(callback) {
       _emitter.addListener(callback);
@@ -23,5 +23,5 @@
   }
 
 
-  window.Store = Store;
-})();
+  namespace.Store = Store;
+})(window.socrata.storyteller);

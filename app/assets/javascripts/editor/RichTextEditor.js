@@ -1,4 +1,4 @@
-;var RichTextEditor = (function(window) {
+;namespace.RichTextEditor = (function(namespace) {
 
   'use strict';
 
@@ -513,4 +513,4 @@
   }
 
   return RichTextEditor;
-})(window);
+})(window.socrata.storyteller);

@@ -1,4 +1,4 @@
-;(function() {
+;(function(namespace) {
   'use strict';
 
   /*
@@ -124,6 +124,6 @@
 
   DragDrop.prototype = Unidragger.prototype;
 
-  window.DragDrop = DragDrop;
+  namespace.DragDrop = DragDrop;
 
-})();
+})(window.socrata.storyteller);

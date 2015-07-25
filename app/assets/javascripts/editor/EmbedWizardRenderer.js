@@ -1,4 +1,4 @@
-;var EmbedWizardRenderer = (function() {
+;namespace.EmbedWizardRenderer = (function(namespace) {
 
   'use strict';
 
@@ -34,7 +34,7 @@
 
     function _listenForChanges() {
 
-      window.embedWizardStore.addChangeListener(function() {
+      namespace.embedWizardStore.addChangeListener(function() {
         _renderWizard();
       });
     }
@@ -47,7 +47,7 @@
 
           // `ESC`
           case 27:
-            window.dispatcher.dispatch({
+            namespace.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CLOSE
             });
             break;
@@ -58,7 +58,7 @@
       });
 
       _overlay.on('click', function(event) {
-        window.dispatcher.dispatch({
+        namespace.dispatcher.dispatch({
           action: Constants.EMBED_WIZARD_CLOSE
         });
       });
@@ -68,7 +68,7 @@
         '[data-embed-wizard-validate-field="youTubeId"]',
         function(event) {
 
-          window.dispatcher.dispatch({
+          namespace.dispatcher.dispatch({
             action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
             url: $(event.target).val()
           });
@@ -90,7 +90,7 @@
           // value of the input control.
           if (!event.keyCode) {
             setTimeout(function() {
-              window.dispatcher.dispatch({
+              namespace.dispatcher.dispatch({
                 action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
                 url: $(event.target).val()
               });
@@ -106,34 +106,34 @@
         switch (action) {
 
           case Constants.EMBED_WIZARD_CHOOSE_PROVIDER:
-            window.dispatcher.dispatch({
+            namespace.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
-              blockId: window.embedWizardStore.getCurrentBlockId(),
-              componentIndex: window.embedWizardStore.getCurrentComponentIndex()
+              blockId: namespace.embedWizardStore.getCurrentBlockId(),
+              componentIndex: namespace.embedWizardStore.getCurrentComponentIndex()
             });
             break;
 
           case Constants.EMBED_WIZARD_CHOOSE_YOUTUBE:
-            window.dispatcher.dispatch({
+            namespace.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
             });
             break;
 
           case Constants.EMBED_WIZARD_APPLY:
-            window.dispatcher.dispatch({
+            namespace.dispatcher.dispatch({
               action: Constants.BLOCK_UPDATE_COMPONENT,
-              blockId: window.embedWizardStore.getCurrentBlockId(),
-              componentIndex: window.embedWizardStore.getCurrentComponentIndex(),
-              type: window.embedWizardStore.getCurrentComponentType(),
-              value: window.embedWizardStore.getCurrentComponentValue()
+              blockId: namespace.embedWizardStore.getCurrentBlockId(),
+              componentIndex: namespace.embedWizardStore.getCurrentComponentIndex(),
+              type: namespace.embedWizardStore.getCurrentComponentType(),
+              value: namespace.embedWizardStore.getCurrentComponentValue()
             });
-            window.dispatcher.dispatch({
+            namespace.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CLOSE
             });
             break;
 
           case Constants.EMBED_WIZARD_CLOSE:
-            window.dispatcher.dispatch({
+            namespace.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CLOSE
             });
             break;
@@ -146,8 +146,8 @@
 
     function _renderWizard() {
 
-      var state = window.embedWizardStore.getCurrentWizardState();
-      var componentValue = window.embedWizardStore.getCurrentComponentValue();
+      var state = namespace.embedWizardStore.getCurrentWizardState();
+      var componentValue = namespace.embedWizardStore.getCurrentComponentValue();
       var wizardContent;
 
       // Render a wizard state if necessary.
@@ -396,4 +396,4 @@
   }
 
   return EmbedWizardRenderer;
-})();
+})(window.socrata.storyteller);

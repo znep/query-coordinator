@@ -1,4 +1,4 @@
-;var RichTextEditorFormatController = (function() {
+;namespace.RichTextEditorFormatController = (function(namespace) {
 
   'use strict';
 
@@ -117,7 +117,7 @@
           }
         }
 
-        var foundAlignments = window.Util.reduceDOMFragmentAscending(
+        var foundAlignments = namespace.Util.reduceDOMFragmentAscending(
           element,
           _recordElementAlignment,
           function() { return false; },
@@ -167,7 +167,7 @@
         }
 
         foundFormats.concat(
-          window.Util.reduceDOMFragmentDescending(
+          namespace.Util.reduceDOMFragmentDescending(
             element,
             _recordElementStyleFormat,
             function() { return false; },
@@ -277,7 +277,7 @@
             }
 
             newBlock.appendChild(
-              window.Util.mapDOMFragmentDescending(
+              namespace.Util.mapDOMFragmentDescending(
                 blockFragment.childNodes[i],
                 stripFormatsFn,
                 function() { return false; }
@@ -390,4 +390,4 @@
   }
 
   return RichTextEditorFormatController;
-})();
+})(window.socrata.storyteller);

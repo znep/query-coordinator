@@ -1146,9 +1146,16 @@ describe('A Choropleth Directive', function() {
                 _.each(ticks, function(tick) {
                   var $tick = $(tick);
                   var translate = $tick.attr('transform').match(/\(([0-9\.]+)\,([0-9\.]+)\)$/);
-                  expect(translate).to.be.an('array');
-                  expect(isFinite(translate[1])).to.be.true;
-                  expect(isFinite(translate[2])).to.be.true;
+
+                  if (typeof translate === 'object') {
+                    expect(translate).to.be.instanceof(Array);
+                    expect(isFinite(translate[1])).to.be.true;
+                    expect(isFinite(translate[2])).to.be.true;
+                  } else {
+
+                    // Have to handle a special case because IE translate attribute is formatted differently than in other browsers.
+                    expect($tick.attr('transform')).to.match(/^translate\(\d+(?:\s+\d+)?\)$/i);
+                  }
                 });
               });
             });

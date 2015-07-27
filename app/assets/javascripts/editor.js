@@ -16,7 +16,7 @@
 //= require unipointer/unipointer
 //= require unidragger/unidragger
 //= require jQuery-sidebar/src/jquery.sidebar
-//= require editor/StorytellerInit
+//= require editor/init
 //= require editor/Util
 //= require editor/SimpleEventEmitter
 //= require editor/Store

@@ -1,17 +1,17 @@
-;namespace.EmbedWizardStore = (function(namespace) {
+;storyteller.EmbedWizardStore = (function(storyteller) {
 
   'use strict';
 
   function EmbedWizardStore() {
 
-    var Util = namespace.Util;
+    var Util = storyteller.Util;
     var self = this;
     var _currentWizardState = null;
     var _currentBlockId = null;
     var _currentComponentIndex = null;
     var _currentComponentProperties = _getDefaultComponentProperties();
 
-    namespace.dispatcher.register(function(payload) {
+    storyteller.dispatcher.register(function(payload) {
 
       var action;
 
@@ -45,7 +45,7 @@
       }
     });
 
-    _.extend(self, new namespace.Store());
+    _.extend(self, new storyteller.Store());
 
     /**
      * Public methods

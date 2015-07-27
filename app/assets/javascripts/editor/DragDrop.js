@@ -1,4 +1,4 @@
-;(function(namespace) {
+;(function(storyteller) {
   'use strict';
 
   /*
@@ -21,7 +21,7 @@
       throw new Error('`ghostElement` argument must point to exactly one element');
     }
 
-    var dispatcher = namespace.dispatcher;
+    var dispatcher = storyteller.dispatcher;
     var _blockContent = null;
 
     // TODO calculate from mouse down location.
@@ -125,6 +125,6 @@
 
   DragDrop.prototype = Unidragger.prototype;
 
-  namespace.DragDrop = DragDrop;
+  storyteller.DragDrop = DragDrop;
 
 })(window.socrata.storyteller);

@@ -1,4 +1,4 @@
-;namespace.StoryRendererElementCache = (function(namespace) {
+;storyteller.StoryRendererElementCache = (function(storyteller) {
 
   'use strict';
 

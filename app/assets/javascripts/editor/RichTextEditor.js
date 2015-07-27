@@ -1,4 +1,4 @@
-;namespace.RichTextEditor = (function(namespace) {
+;storyteller.RichTextEditor = (function(storyteller) {
 
   'use strict';
 
@@ -44,7 +44,7 @@
       );
     }
 
-    if (!(assetFinder instanceof namespace.AssetFinder)) {
+    if (!(assetFinder instanceof storyteller.AssetFinder)) {
       throw new Error(
         '`assetFinder` must be an AssetFinder (is of type ' +
         (typeof assetFinder) +
@@ -148,7 +148,7 @@
         _overrideDefaultStyles(e.target.contentWindow.document);
         _editor = new Squire(e.target.contentWindow.document);
         _editorBodyElement = $(_editor.getDocument()).find('body');
-        _formatController = new namespace.RichTextEditorFormatController(
+        _formatController = new storyteller.RichTextEditorFormatController(
           _editor,
           _formats
         );

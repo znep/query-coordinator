@@ -1,7 +1,7 @@
-;(function(namespace) {
+;(function(storyteller) {
   'use strict';
 
-  namespace.Util = {
+  storyteller.Util = {
 
     assertEqual: function(value1, value2) {
       if (value1 !== value2) {
@@ -27,7 +27,7 @@
       _.each(
         _.rest(arguments),
         function(argument) {
-          namespace.Util.assertHasProperty(object, argument);
+          storyteller.Util.assertHasProperty(object, argument);
         }
       );
     },

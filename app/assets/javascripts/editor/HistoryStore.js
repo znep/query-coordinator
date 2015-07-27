@@ -1,8 +1,8 @@
-;namespace.HistoryStore = (function(namespace) {
+;storyteller.HistoryStore = (function(storyteller) {
 
   'use strict';
 
-  var Util = namespace.Util;
+  var Util = storyteller.Util;
   var MAX_UNDO_COUNT = 99;
 
   function HistoryStore() {
@@ -11,14 +11,14 @@
     var _history = [];
     var _undoCursor = 0;
 
-    namespace.storyStore.addChangeListener(function() {
+    storyteller.storyStore.addChangeListener(function() {
 
-      if (namespace.storyStore.storyExists(namespace.userStoryUid)) {
+      if (storyteller.storyStore.storyExists(storyteller.userStoryUid)) {
 
         var historyLength = _history.length;
         var newHistoryLength;
         var serializedStory = JSON.stringify(
-          namespace.storyStore.serializeStory(namespace.userStoryUid)
+          storyteller.storyStore.serializeStory(storyteller.userStoryUid)
         );
 
         // This is the case when one or more undo operations have
@@ -50,7 +50,7 @@
       }
     });
 
-    namespace.dispatcher.register(function(payload) {
+    storyteller.dispatcher.register(function(payload) {
 
       var action = payload.action;
 
@@ -66,7 +66,7 @@
       }
     });
 
-    _.extend(self, new namespace.Store());
+    _.extend(self, new storyteller.Store());
 
     /**
      * Public methods

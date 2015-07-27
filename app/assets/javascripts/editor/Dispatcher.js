@@ -1,4 +1,4 @@
-;namespace.Dispatcher = (function(namespace) {
+;storyteller.Dispatcher = (function(storyteller) {
 
   'use strict';
 

@@ -1,4 +1,4 @@
-;(function(namespace) {
+;(function(storyteller) {
   'use strict';
 
   /* Responsible for:
@@ -18,9 +18,9 @@
     var self = this;
     var _blockNeedsConfirmation = {};
 
-    _.extend(this, new namespace.Store());
+    _.extend(this, new storyteller.Store());
 
-    namespace.dispatcher.register(function(payload) {
+    storyteller.dispatcher.register(function(payload) {
       var action = payload.action;
 
       switch (action) {
@@ -48,5 +48,5 @@
 
   };
 
-  namespace.BlockRemovalConfirmationStore = BlockRemovalConfirmationStore;
+  storyteller.BlockRemovalConfirmationStore = BlockRemovalConfirmationStore;
 })(window.socrata.storyteller);

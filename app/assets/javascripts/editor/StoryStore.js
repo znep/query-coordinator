@@ -1,8 +1,8 @@
-;namespace.StoryStore = (function(namespace) {
+;storyteller.StoryStore = (function(storyteller) {
 
   'use strict';
 
-  var Util = namespace.Util;
+  var Util = storyteller.Util;
   var FOUR_BY_FOUR_PATTERN = /^\w{4}-\w{4}$/;
 
   function StoryStore() {
@@ -11,7 +11,7 @@
     var _stories = {};
     var _blocks = {};
 
-    namespace.dispatcher.register(function(payload) {
+    storyteller.dispatcher.register(function(payload) {
 
       var action = payload.action;
 
@@ -56,7 +56,7 @@
       }
     });
 
-    _.extend(self, new namespace.Store());
+    _.extend(self, new storyteller.Store());
 
     /**
      * Public methods
@@ -523,7 +523,7 @@
       // StoreStore does. `.waitFor()` is what we actually want.
       setTimeout(
         function() {
-          var serializedStory = namespace.historyStore.getStateAtCursor();
+          var serializedStory = storyteller.historyStore.getStateAtCursor();
 
           if (serializedStory) {
             _setStory(

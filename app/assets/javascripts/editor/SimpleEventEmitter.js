@@ -1,4 +1,4 @@
-;namespace.SimpleEventEmitter = (function(namespace) {
+;storyteller.SimpleEventEmitter = (function(storyteller) {
 
   'use strict';
 

@@ -1,4 +1,4 @@
-;namespace.RichTextEditorFormatController = (function(namespace) {
+;storyteller.RichTextEditorFormatController = (function(storyteller) {
 
   'use strict';
 
@@ -117,7 +117,7 @@
           }
         }
 
-        var foundAlignments = namespace.Util.reduceDOMFragmentAscending(
+        var foundAlignments = storyteller.Util.reduceDOMFragmentAscending(
           element,
           _recordElementAlignment,
           function() { return false; },
@@ -167,7 +167,7 @@
         }
 
         foundFormats.concat(
-          namespace.Util.reduceDOMFragmentDescending(
+          storyteller.Util.reduceDOMFragmentDescending(
             element,
             _recordElementStyleFormat,
             function() { return false; },
@@ -277,7 +277,7 @@
             }
 
             newBlock.appendChild(
-              namespace.Util.mapDOMFragmentDescending(
+              storyteller.Util.mapDOMFragmentDescending(
                 blockFragment.childNodes[i],
                 stripFormatsFn,
                 function() { return false; }

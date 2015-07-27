@@ -1,10 +1,10 @@
-;namespace.EmbedWizardRenderer = (function(namespace) {
+;storyteller.EmbedWizardRenderer = (function(storyteller) {
 
   'use strict';
 
   function EmbedWizardRenderer(options) {
 
-    var Util = namespace.Util;
+    var Util = storyteller.Util;
     var _container = options.embedWizardContainerElement || null;
     var _overlay = $('<div>', { 'class': 'modal-overlay' });
     var _dialog = $('<div>', { 'class': 'modal-dialog' });
@@ -35,7 +35,7 @@
 
     function _listenForChanges() {
 
-      namespace.embedWizardStore.addChangeListener(function() {
+      storyteller.embedWizardStore.addChangeListener(function() {
         _renderWizard();
       });
     }
@@ -48,7 +48,7 @@
 
           // `ESC`
           case 27:
-            namespace.dispatcher.dispatch({
+            storyteller.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CLOSE
             });
             break;
@@ -59,7 +59,7 @@
       });
 
       _overlay.on('click', function(event) {
-        namespace.dispatcher.dispatch({
+        storyteller.dispatcher.dispatch({
           action: Constants.EMBED_WIZARD_CLOSE
         });
       });
@@ -69,7 +69,7 @@
         '[data-embed-wizard-validate-field="youTubeId"]',
         function(event) {
 
-          namespace.dispatcher.dispatch({
+          storyteller.dispatcher.dispatch({
             action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
             url: $(event.target).val()
           });
@@ -91,7 +91,7 @@
           // value of the input control.
           if (!event.keyCode) {
             setTimeout(function() {
-              namespace.dispatcher.dispatch({
+              storyteller.dispatcher.dispatch({
                 action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
                 url: $(event.target).val()
               });
@@ -107,34 +107,34 @@
         switch (action) {
 
           case Constants.EMBED_WIZARD_CHOOSE_PROVIDER:
-            namespace.dispatcher.dispatch({
+            storyteller.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
-              blockId: namespace.embedWizardStore.getCurrentBlockId(),
-              componentIndex: namespace.embedWizardStore.getCurrentComponentIndex()
+              blockId: storyteller.embedWizardStore.getCurrentBlockId(),
+              componentIndex: storyteller.embedWizardStore.getCurrentComponentIndex()
             });
             break;
 
           case Constants.EMBED_WIZARD_CHOOSE_YOUTUBE:
-            namespace.dispatcher.dispatch({
+            storyteller.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
             });
             break;
 
           case Constants.EMBED_WIZARD_APPLY:
-            namespace.dispatcher.dispatch({
+            storyteller.dispatcher.dispatch({
               action: Constants.BLOCK_UPDATE_COMPONENT,
-              blockId: namespace.embedWizardStore.getCurrentBlockId(),
-              componentIndex: namespace.embedWizardStore.getCurrentComponentIndex(),
-              type: namespace.embedWizardStore.getCurrentComponentType(),
-              value: namespace.embedWizardStore.getCurrentComponentValue()
+              blockId: storyteller.embedWizardStore.getCurrentBlockId(),
+              componentIndex: storyteller.embedWizardStore.getCurrentComponentIndex(),
+              type: storyteller.embedWizardStore.getCurrentComponentType(),
+              value: storyteller.embedWizardStore.getCurrentComponentValue()
             });
-            namespace.dispatcher.dispatch({
+            storyteller.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CLOSE
             });
             break;
 
           case Constants.EMBED_WIZARD_CLOSE:
-            namespace.dispatcher.dispatch({
+            storyteller.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CLOSE
             });
             break;
@@ -147,8 +147,8 @@
 
     function _renderWizard() {
 
-      var state = namespace.embedWizardStore.getCurrentWizardState();
-      var componentValue = namespace.embedWizardStore.getCurrentComponentValue();
+      var state = storyteller.embedWizardStore.getCurrentWizardState();
+      var componentValue = storyteller.embedWizardStore.getCurrentComponentValue();
       var wizardContent;
 
       // Render a wizard state if necessary.

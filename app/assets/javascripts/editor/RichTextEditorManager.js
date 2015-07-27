@@ -1,12 +1,12 @@
-;namespace.RichTextEditorManager = (function(namespace) {
+;storyteller.RichTextEditorManager = (function(storyteller) {
 
   'use strict';
 
   function RichTextEditorManager(assetFinder, toolbar, formats) {
 
-    var RichTextEditor = namespace.RichTextEditor;
+    var RichTextEditor = storyteller.RichTextEditor;
 
-    if (!(assetFinder instanceof namespace.AssetFinder)) {
+    if (!(assetFinder instanceof storyteller.AssetFinder)) {
       throw new Error(
         '`assetFinder` must be an AssetFinder (is of type ' +
         (typeof assetFinder) +
@@ -14,7 +14,7 @@
       );
     }
 
-    if (!(toolbar instanceof namespace.RichTextEditorToolbar)) {
+    if (!(toolbar instanceof storyteller.RichTextEditorToolbar)) {
       throw new Error(
         '`toolbar` must be a RichTextEditorToolbar (is of type ' +
         (typeof toolbar) +

@@ -1,8 +1,8 @@
-;namespace.TextComponentRenderer = (function(namespace) {
+;storyteller.TextComponentRenderer = (function(storyteller) {
 
   'use strict';
 
-  var Util = namespace.Util;
+  var Util = storyteller.Util;
   var _componentTemplateRenderers = {
     'text': _renderTextComponentTemplate
   };
@@ -75,7 +75,7 @@
         }
       );
 
-      editor = namespace.richTextEditorManager.createEditor(
+      editor = storyteller.richTextEditorManager.createEditor(
         component,
         editorId,
         componentOptions.componentValue
@@ -102,7 +102,7 @@
     if (editable) {
 
       var editorId = element.attr('data-editor-id');
-      var editor = namespace.richTextEditorManager.getEditor(editorId);
+      var editor = storyteller.richTextEditorManager.getEditor(editorId);
 
       editor.setContent(value);
 

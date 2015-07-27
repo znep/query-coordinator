@@ -1,4 +1,4 @@
-;(function (namespace) {
+;(function (storyteller) {
   function CustomEvent ( event, params ) {
     params = params || { bubbles: false, cancelable: false, detail: undefined };
     var evt = document.createEvent( 'CustomEvent' );
@@ -8,5 +8,5 @@
 
   CustomEvent.prototype = window.Event.prototype;
 
-  namespace.CustomEvent = CustomEvent;
+  storyteller.CustomEvent = CustomEvent;
 })(window.socrata.storyteller);

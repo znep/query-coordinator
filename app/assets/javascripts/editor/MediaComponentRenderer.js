@@ -1,8 +1,8 @@
-;namespace.MediaComponentRenderer = (function(namespace) {
+;storyteller.MediaComponentRenderer = (function(storyteller) {
 
   'use strict';
 
-  var Util = namespace.Util;
+  var Util = storyteller.Util;
   var _componentTemplateRenderers = {
     'image': _renderImageComponentTemplate,
     'embed': _renderEmbedComponentTemplate
@@ -195,7 +195,7 @@
     Util.assertHasProperty(data, 'src');
 
     imageElement = element.find('img');
-    imageSource = namespace.assetFinder.getRelativeUrlRoot() + data.src;
+    imageSource = storyteller.assetFinder.getRelativeUrlRoot() + data.src;
 
     imageElement[0].onload = function(e) {
       renderFn();

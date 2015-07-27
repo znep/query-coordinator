@@ -1,12 +1,12 @@
 'use strict';
 
 $(document).on('ready', function() {
-  var namespace = window.socrata.storyteller
+  var storyteller = window.socrata.storyteller
   /**
    * Setup
    */
 
-  namespace.assetFinder = new namespace.AssetFinder();
+  storyteller.assetFinder = new storyteller.AssetFinder();
 
   var richTextFormats = [
     { id: 'heading1', tag: 'h1', name: 'Heading 1', dropdown: true },
@@ -42,11 +42,11 @@ $(document).on('ready', function() {
    * FLUX
    */
 
-  namespace.userStoryUid = userStoryData.uid;
+  storyteller.userStoryUid = userStoryData.uid;
 
-  namespace.dispatcher = new namespace.Dispatcher();
-  namespace.dispatcher.register(function(payload) {
-    namespace.console && console.info('Dispatcher action: ', payload);
+  storyteller.dispatcher = new storyteller.Dispatcher();
+  storyteller.dispatcher.register(function(payload) {
+    storyteller.console && console.info('Dispatcher action: ', payload);
     if (typeof payload.action !== 'string') {
       throw new Error(
         'Undefined action.'
@@ -54,33 +54,33 @@ $(document).on('ready', function() {
     }
   });
 
-  namespace.storyStore = new namespace.StoryStore();
-  namespace.historyStore = new namespace.HistoryStore();
-  namespace.dragDropStore = new namespace.DragDropStore();
-  namespace.embedWizardStore = new namespace.EmbedWizardStore();
-  namespace.blockRemovalConfirmationStore = new namespace.BlockRemovalConfirmationStore();
+  storyteller.storyStore = new storyteller.StoryStore();
+  storyteller.historyStore = new storyteller.HistoryStore();
+  storyteller.dragDropStore = new storyteller.DragDropStore();
+  storyteller.embedWizardStore = new storyteller.EmbedWizardStore();
+  storyteller.blockRemovalConfirmationStore = new storyteller.BlockRemovalConfirmationStore();
 
-  var richTextEditorToolbar = new namespace.RichTextEditorToolbar(
+  var richTextEditorToolbar = new storyteller.RichTextEditorToolbar(
     $('#rich-text-editor-toolbar'),
     richTextFormats
   );
 
-  var richTextEditorManager = new namespace.RichTextEditorManager(
-    namespace.assetFinder,
+  var richTextEditorManager = new storyteller.RichTextEditorManager(
+    storyteller.assetFinder,
     richTextEditorToolbar,
     richTextFormats
   );
-  namespace.richTextEditorManager = richTextEditorManager;
+  storyteller.richTextEditorManager = richTextEditorManager;
 
-  namespace.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
+  storyteller.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
 
   var embedWizardOptions = {
     embedWizardContainerElement: $('#embed-wizard')
   };
-  var embedWizardRenderer = new namespace.EmbedWizardRenderer(embedWizardOptions);
+  var embedWizardRenderer = new storyteller.EmbedWizardRenderer(embedWizardOptions);
 
   var userStoryOptions = {
-    storyUid: namespace.userStoryUid,
+    storyUid: storyteller.userStoryUid,
     storyContainerElement: $('.user-story'),
     editable: true,
     insertionHintElement: $('#story-insertion-hint'),
@@ -88,7 +88,7 @@ $(document).on('ready', function() {
     warningMessageElement: $('.user-story .message-warning'),
     onRenderError: function() {}
   };
-  var userStoryRenderer = new namespace.StoryRenderer(userStoryOptions);
+  var userStoryRenderer = new storyteller.StoryRenderer(userStoryOptions);
 
   /**
    * RichTextEditorToolbar events
@@ -113,7 +113,7 @@ $(document).on('ready', function() {
 
       richTextEditorManager.unlinkToolbar();
 
-      namespace.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
         activeFormats: []
       });
@@ -126,29 +126,29 @@ $(document).on('ready', function() {
 
    $('.undo-btn').on('click', function() {
 
-      namespace.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.HISTORY_UNDO,
-        storyUid: namespace.userStoryUid
+        storyUid: storyteller.userStoryUid
       });
    });
 
    $('.redo-btn').on('click', function() {
 
-      namespace.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.HISTORY_REDO,
-        storyUid: namespace.userStoryUid
+        storyUid: storyteller.userStoryUid
       });
    });
 
-  namespace.historyStore.addChangeListener(function() {
+  storyteller.historyStore.addChangeListener(function() {
 
-    if (namespace.historyStore.canUndo()) {
+    if (storyteller.historyStore.canUndo()) {
       $('.undo-btn').prop('disabled', false);
     } else {
       $('.undo-btn').prop('disabled', true);
     }
 
-    if (namespace.historyStore.canRedo()) {
+    if (storyteller.historyStore.canRedo()) {
       $('.redo-btn').prop('disabled', false);
     } else {
       $('.redo-btn').prop('disabled', true);
@@ -159,8 +159,8 @@ $(document).on('ready', function() {
    * Drag and drop events
    */
 
-  namespace.dragDropStore.addChangeListener(function() {
-    if (namespace.dragDropStore.isDraggingOverStory(namespace.userStoryUid)) {
+  storyteller.dragDropStore.addChangeListener(function() {
+    if (storyteller.dragDropStore.isDraggingOverStory(storyteller.userStoryUid)) {
       ghostElement.addClass('full-size');
     } else {
       ghostElement.removeClass('full-size');
@@ -169,9 +169,9 @@ $(document).on('ready', function() {
 
   // Respond to changes in the user story's block ordering by scrolling the
   // window to always show the top of the moved block.
-  namespace.dispatcher.register(function(payload) {
+  storyteller.dispatcher.register(function(payload) {
 
-    if (payload.storyUid === namespace.userStoryUid) {
+    if (payload.storyUid === storyteller.userStoryUid) {
 
       switch (payload.action) {
 
@@ -218,11 +218,11 @@ $(document).on('ready', function() {
 
   // Drag-drop
   var ghostElement = $('#block-ghost');
-  var dragDrop = new namespace.DragDrop(addContentPanelElement.find('.inspiration-block'), ghostElement);
+  var dragDrop = new storyteller.DragDrop(addContentPanelElement.find('.inspiration-block'), ghostElement);
   dragDrop.setup();
 
   // Story title
-  $('.story-title').storyTitle(namespace.userStoryUid);
+  $('.story-title').storyTitle(storyteller.userStoryUid);
 
   // Modals
   $('.preview-btn').on('click', function() {

@@ -27,23 +27,10 @@
         var whereClause$ = scope.$observe('whereClause');
         var rowCount$ = scope.$observe('rowCount');
         var filteredRowCount$ = scope.$observe('filteredRowCount');
-        var filteredColumnDetails$ = scope.$observe('filteredColumnDetails');
         var infinite$ = scope.$observe('infinite');
         var tableScroll$;
         var tableMouseScroll$;
         var tableMousemove$;
-
-        // CORE-4645: Omit some columns from display.
-        scope.$bindObservable(
-          'filteredColumnDetails',
-          columnDetails$.
-            filter(_.isPresent).
-            map(function(columnDetails) {
-              return _.filter(columnDetails, function(column) {
-                // Filter out columns if they are subcolumns of another column
-                return !column.isSubcolumn;
-              });
-            }));
 
         // ಠ_ಠ
         // The functions comprising the Table directive have very complex interdependencies that
@@ -58,7 +45,7 @@
           whereClause$.filter(_.isDefined),
           rowCount$.filter(_.isNumber),
           filteredRowCount$.filter(_.isNumber),
-          filteredColumnDetails$.filter(_.isPresent),
+          columnDetails$.filter(_.isPresent),
           _.identity
         ).take(1).
           subscribe(setupTable);
@@ -81,7 +68,7 @@
           var $label = element.find('.table-label');
 
           var getColumn = function(fieldName) {
-            return _.find(scope.filteredColumnDetails, function(column) {
+            return _.find(scope.columnDetails, function(column) {
               return column.fieldName === fieldName;
             });
           };
@@ -266,7 +253,7 @@
           };
 
           var updateColumnHeaders = function() {
-            scope.headers = _.map(scope.filteredColumnDetails, function(column, i) {
+            scope.headers = _.map(scope.columnDetails, function(column, i) {
               // Symbols: ▼ ▲
               var ordering = getCurrentOrDefaultSortForColumn(column.fieldName);
 
@@ -298,7 +285,7 @@
                 // row_block.row.cell
                 children().children().children();
               cells = cells.add($tableHead.children());
-              var columns = scope.filteredColumnDetails;
+              var columns = scope.columnDetails;
 
               // Find the widest cell in each column
               cells.each(function(i, cell) {
@@ -554,7 +541,7 @@
                 return;
               }
 
-              var columns = scope.filteredColumnDetails;
+              var columns = scope.columnDetails;
               var blockHtml = '<div class="row-block ' + block +
                 '" data-block-id="' + block + '" style="top: ' + (block * rowsPerBlock * rowHeight) +
                 'px; display: none">';
@@ -759,7 +746,7 @@
             title: function($target, $tableHead, options) {
               var title = _.escape($target.text());
               var index = $target.data('index');
-              var description = _.escape(_.get(scope.filteredColumnDetails, index + '.description'));
+              var description = _.escape(_.get(scope.columnDetails, index + '.description'));
               if (_.isDefined(description)) {
                 return '<div class="title">{0}</div><div class="description">{1}</div>'.format(
                   title,
@@ -820,9 +807,9 @@
             element.offsetParent().observeDimensions(),
             rowCount$,
             filteredRowCount$,
-            filteredColumnDetails$,
+            columnDetails$,
             infinite$,
-            function(cardDimensions, rowCount, filteredRowCount, filteredColumnDetails, infinite) {
+            function(cardDimensions, rowCount, filteredRowCount, columnDetails, infinite) {
 
               scope.$emit('render:start', {
                 source: 'table_{0}'.format(scope.$id),

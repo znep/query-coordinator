@@ -4,6 +4,7 @@
 
   function EmbedWizardRenderer(options) {
 
+    var Util = namespace.Util;
     var _container = options.embedWizardContainerElement || null;
     var _overlay = $('<div>', { 'class': 'modal-overlay' });
     var _dialog = $('<div>', { 'class': 'modal-dialog' });

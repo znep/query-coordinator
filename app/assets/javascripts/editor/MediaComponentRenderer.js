@@ -2,6 +2,7 @@
 
   'use strict';
 
+  var Util = namespace.Util;
   var _componentTemplateRenderers = {
     'image': _renderImageComponentTemplate,
     'embed': _renderEmbedComponentTemplate

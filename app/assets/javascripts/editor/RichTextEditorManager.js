@@ -4,6 +4,8 @@
 
   function RichTextEditorManager(assetFinder, toolbar, formats) {
 
+    var RichTextEditor = namespace.RichTextEditor;
+
     if (!(assetFinder instanceof namespace.AssetFinder)) {
       throw new Error(
         '`assetFinder` must be an AssetFinder (is of type ' +

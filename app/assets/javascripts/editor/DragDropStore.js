@@ -3,6 +3,8 @@
 
   function DragDropStore() {
     var self = this;
+    var Util = namespace.Util;
+    var dispatcher = namespace.dispatcher;
 
     var _reorderHintPosition = null;
 

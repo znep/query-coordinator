@@ -6,7 +6,8 @@
 
     var TextComponentRenderer = namespace.TextComponentRenderer;
     var MediaComponentRenderer = namespace.MediaComponentRenderer;
-    var richTextEditorManager = namespace.RichTextEditorManager;
+    var dispatcher = namespace.dispatcher;
+
     var storyUid = options.storyUid || null;
     var container = options.storyContainerElement || null;
     var editable = options.editable || false;
@@ -66,7 +67,7 @@
       );
     }
 
-    if (editable && !(richTextEditorManager instanceof namespace.RichTextEditorManager)) {
+    if (editable && !(namespace.richTextEditorManager instanceof namespace.RichTextEditorManager)) {
 
       onRenderError();
       throw new Error(
@@ -162,7 +163,7 @@
       });
 
       container.on('mouseleave', function() {
-        namespace.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Constants.STORY_MOUSE_LEAVE,
           storyUid: storyUid
         });
@@ -172,7 +173,7 @@
         var blockId = event.currentTarget.getAttribute('data-block-id');
 
         if (blockId) {
-          namespace.dispatcher.dispatch({
+          dispatcher.dispatch({
             action: Constants.BLOCK_MOUSE_MOVE,
             storyUid: storyUid,
             blockId: blockId
@@ -194,7 +195,7 @@
 
       container.on('rich-text-editor::format-change', function(event) {
 
-        namespace.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Constants.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
           activeFormats: event.originalEvent.detail.content
         });
@@ -229,7 +230,7 @@
 
         if (contentIsDifferent) {
 
-          namespace.dispatcher.dispatch({
+          dispatcher.dispatch({
             action: Constants.BLOCK_UPDATE_COMPONENT,
             blockId: blockId,
             componentIndex: componentIndex,
@@ -250,7 +251,7 @@
         switch(action) {
 
           case Constants.EMBED_WIZARD_CHOOSE_PROVIDER:
-            namespace.dispatcher.dispatch({
+            dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
               blockId: event.target.getAttribute('data-block-id'),
               componentIndex: event.target.getAttribute('data-component-index')

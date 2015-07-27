@@ -6,7 +6,7 @@ $(document).on('ready', function() {
    * Setup
    */
 
-  var assetFinder = new namespace.AssetFinder();
+  namespace.assetFinder = new namespace.AssetFinder();
 
   var richTextFormats = [
     { id: 'heading1', tag: 'h1', name: 'Heading 1', dropdown: true },
@@ -66,10 +66,11 @@ $(document).on('ready', function() {
   );
 
   var richTextEditorManager = new namespace.RichTextEditorManager(
-    assetFinder,
+    namespace.assetFinder,
     richTextEditorToolbar,
     richTextFormats
   );
+  namespace.richTextEditorManager = richTextEditorManager;
 
   namespace.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
 
@@ -127,7 +128,7 @@ $(document).on('ready', function() {
 
       namespace.dispatcher.dispatch({
         action: Constants.HISTORY_UNDO,
-        storyUid: userStoryUid
+        storyUid: namespace.userStoryUid
       });
    });
 
@@ -135,7 +136,7 @@ $(document).on('ready', function() {
 
       namespace.dispatcher.dispatch({
         action: Constants.HISTORY_REDO,
-        storyUid: userStoryUid
+        storyUid: namespace.userStoryUid
       });
    });
 
@@ -159,7 +160,7 @@ $(document).on('ready', function() {
    */
 
   namespace.dragDropStore.addChangeListener(function() {
-    if (namespace.dragDropStore.isDraggingOverStory(userStoryUid)) {
+    if (namespace.dragDropStore.isDraggingOverStory(namespace.userStoryUid)) {
       ghostElement.addClass('full-size');
     } else {
       ghostElement.removeClass('full-size');
@@ -170,7 +171,7 @@ $(document).on('ready', function() {
   // window to always show the top of the moved block.
   namespace.dispatcher.register(function(payload) {
 
-    if (payload.storyUid === userStoryUid) {
+    if (payload.storyUid === namespace.userStoryUid) {
 
       switch (payload.action) {
 

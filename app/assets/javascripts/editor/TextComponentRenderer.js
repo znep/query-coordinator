@@ -2,6 +2,7 @@
 
   'use strict';
 
+  var Util = namespace.Util;
   var _componentTemplateRenderers = {
     'text': _renderTextComponentTemplate
   };
@@ -101,7 +102,7 @@
     if (editable) {
 
       var editorId = element.attr('data-editor-id');
-      var editor = richTextEditorManager.getEditor(editorId);
+      var editor = namespace.richTextEditorManager.getEditor(editorId);
 
       editor.setContent(value);
 

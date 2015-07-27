@@ -1,4 +1,4 @@
-;storyteller.RichTextEditorManager = (function(storyteller) {
+;window.socrata.storyteller.RichTextEditorManager = (function(storyteller) {
 
   'use strict';
 

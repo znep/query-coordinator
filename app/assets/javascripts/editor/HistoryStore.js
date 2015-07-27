@@ -1,4 +1,4 @@
-;storyteller.HistoryStore = (function(storyteller) {
+;window.socrata.storyteller.HistoryStore = (function(storyteller) {
 
   'use strict';
 

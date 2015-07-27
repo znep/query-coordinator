@@ -1,4 +1,4 @@
-;storyteller.StoryRenderer = (function(storyteller) {
+;window.socrata.storyteller.StoryRenderer = (function(storyteller) {
 
   'use strict';
 

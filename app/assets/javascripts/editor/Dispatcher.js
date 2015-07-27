@@ -1,4 +1,4 @@
-;storyteller.Dispatcher = (function(storyteller) {
+;window.socrata.storyteller.Dispatcher = (function(storyteller) {
 
   'use strict';
 

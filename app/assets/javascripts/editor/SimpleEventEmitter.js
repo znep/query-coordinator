@@ -1,4 +1,4 @@
-;storyteller.SimpleEventEmitter = (function(storyteller) {
+;window.socrata.storyteller.SimpleEventEmitter = (function(storyteller) {
 
   'use strict';
 

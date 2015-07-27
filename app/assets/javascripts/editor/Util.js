@@ -1,7 +1,7 @@
 ;(function(storyteller) {
   'use strict';
 
-  storyteller.Util = {
+  window.socrata.storyteller.Util = {
 
     assertEqual: function(value1, value2) {
       if (value1 !== value2) {

@@ -1,4 +1,4 @@
-;storyteller.TextComponentRenderer = (function(storyteller) {
+;window.socrata.storyteller.TextComponentRenderer = (function(storyteller) {
 
   'use strict';
 

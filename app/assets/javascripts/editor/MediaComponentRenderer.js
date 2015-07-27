@@ -1,4 +1,4 @@
-;storyteller.MediaComponentRenderer = (function(storyteller) {
+;window.socrata.storyteller.MediaComponentRenderer = (function(storyteller) {
 
   'use strict';
 

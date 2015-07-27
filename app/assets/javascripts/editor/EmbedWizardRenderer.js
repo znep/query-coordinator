@@ -1,4 +1,4 @@
-;storyteller.EmbedWizardRenderer = (function(storyteller) {
+;window.socrata.storyteller.EmbedWizardRenderer = (function(storyteller) {
 
   'use strict';
 

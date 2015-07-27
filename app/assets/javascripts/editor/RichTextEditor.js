@@ -1,4 +1,4 @@
-;storyteller.RichTextEditor = (function(storyteller) {
+;window.socrata.storyteller.RichTextEditor = (function(storyteller) {
 
   'use strict';
 
@@ -284,7 +284,7 @@
       }
 
       _editorElement[0].dispatchEvent(
-        new CustomEvent(
+        new storyteller.CustomEvent(
           name,
           { detail: eventDetail, bubbles: true }
         )

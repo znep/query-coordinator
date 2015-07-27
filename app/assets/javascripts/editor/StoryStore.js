@@ -1,4 +1,4 @@
-;storyteller.StoryStore = (function(storyteller) {
+;window.socrata.storyteller.StoryStore = (function(storyteller) {
 
   'use strict';
 

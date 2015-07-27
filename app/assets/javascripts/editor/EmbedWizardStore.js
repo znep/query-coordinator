@@ -1,4 +1,4 @@
-;storyteller.EmbedWizardStore = (function(storyteller) {
+;window.socrata.storyteller.EmbedWizardStore = (function(storyteller) {
 
   'use strict';
 

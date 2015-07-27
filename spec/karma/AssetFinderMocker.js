@@ -1,4 +1,4 @@
-var AssetFinderMocker = {
+window.socrata.storyteller.AssetFinderMocker = {
 
   mock: function() {
     var AssetFinder = function() {}
@@ -10,11 +10,11 @@ var AssetFinderMocker = {
         return '';
       }
     };
-    window.AssetFinder = AssetFinder;
+    window.socrata.storyteller.AssetFinder = AssetFinder;
   },
 
   unmock: function() {
-    delete window['AssetFinder'];
+    delete window.socrata.storyteller['AssetFinder'];
   }
 
 };

@@ -1,4 +1,4 @@
-;storyteller.StoryRendererElementCache = (function(storyteller) {
+;window.socrata.storyteller.StoryRendererElementCache = (function(storyteller) {
 
   'use strict';
 

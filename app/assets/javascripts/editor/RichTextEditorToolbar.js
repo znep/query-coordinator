@@ -1,4 +1,4 @@
-;storyteller.RichTextEditorToolbar = (function(storyteller) {
+;window.socrata.storyteller.RichTextEditorToolbar = (function(storyteller) {
 
   'use strict';
 

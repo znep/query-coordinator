@@ -1154,7 +1154,7 @@ describe('A Choropleth Directive', function() {
                   } else {
 
                     // Have to handle a special case because IE translate attribute is formatted differently than in other browsers.
-                    expect($tick.attr('transform')).to.match(/^translate\(\d+(?:\s+\d+)?\)$/i);
+                    expect($tick.attr('transform')).to.match(/^translate\(\d+(?:\.\d+)?(?:\s+\d+(?:\.\d+)?)?\)$/i);
                   }
                 });
               });

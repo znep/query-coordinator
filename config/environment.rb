@@ -66,7 +66,9 @@ module Frontend
     # Disable rack-cache, as we have ATS and it's entirely redundant. Also, failing randomly.
     config.action_dispatch.rack_cache = nil
 
-    config.logger = ActiveSupport::TaggedLogging.new(Logger.new("log/#{Rails.env}.log"))
+    config.log_file = (ENV['RAILS_LOG_FILE'] == 'STDOUT') ? STDOUT : ENV['RAILS_LOG_FILE']
+    config.log_file ||= (Rails.env == 'development') ? STDOUT : "log/#{Rails.env}.log"
+    config.logger = ActiveSupport::TaggedLogging.new(Logger.new(config.log_file))
     config.logger.level = Logger::DEBUG
   end
 end

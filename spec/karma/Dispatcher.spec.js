@@ -1,8 +1,8 @@
 describe('Dispatcher', function() {
   describe('constructor', function() {
     it('accepts zero arguments', function() {
-      var dispatcher = new Dispatcher();
-      assert.instanceOf(dispatcher, Dispatcher);
+      var dispatcher = new window.socrata.storyteller.Dispatcher();
+      assert.instanceOf(dispatcher, window.socrata.storyteller.Dispatcher);
     });
   });
 
@@ -14,7 +14,7 @@ describe('Dispatcher', function() {
     var handler2Token;
 
     beforeEach(function() {
-      dispatcher = new Dispatcher();
+      dispatcher = new window.socrata.storyteller.Dispatcher();
       handler1 = sinon.spy();
       handler2 = sinon.spy();
       handler1Token = dispatcher.register(handler1);

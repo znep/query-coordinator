@@ -21,6 +21,7 @@ function applyStandardMocks() {
   var imageBlockId = '1000';
   var textBlockId = '1001';
   var imageAndTextBlockId = '1002';
+  var storyteller = window.socrata.storyteller;
 
   var storyData = generateStoryData({
     uid: storyUid,
@@ -58,15 +59,16 @@ function applyStandardMocks() {
     })
   };
 
-  AssetFinderMocker.mock();
+  window.socrata.storyteller.AssetFinderMocker.mock();
+  window.socrata.storyteller.assetFinder = new storyteller.AssetFinder();
 
-  window.assetFinder = new AssetFinder();
 
-  SquireMocker.mock();
+  window.socrata.storyteller.SquireMocker.mock();
 
-  window.dispatcher = new Dispatcher();
+  window.socrata.storyteller.dispatcher = new storyteller.Dispatcher();
 
-  dispatcher.register(function(payload) {
+
+  window.socrata.storyteller.dispatcher.register(function(payload) {
     // Some general validation.
     assert.isObject(payload);
     assert.property(payload, 'action', 'action payload had no `action` property');
@@ -75,13 +77,13 @@ function applyStandardMocks() {
     assert.isString(payload.action, 'action payload had a non-string `action` property');
   });
 
-  window.storyStore = new StoryStore();
-  window.dragDropStore = new DragDropStore();
-  window.historyStore = new HistoryStore();
-  window.blockRemovalConfirmationStore = new BlockRemovalConfirmationStore();
-  window.embedWizardStore = new EmbedWizardStore();
+  storyteller.storyStore = new storyteller.StoryStore();
+  storyteller.embedWizardStore = new storyteller.EmbedWizardStore();
+  storyteller.dragDropStore = new storyteller.DragDropStore();
+  storyteller.historyStore = new storyteller.HistoryStore();
+  storyteller.blockRemovalConfirmationStore = new storyteller.BlockRemovalConfirmationStore();
 
-  dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyData });
+  storyteller.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyData });
 
   window.standardMocks = {
     remove: removeStandardMocks,
@@ -110,16 +112,19 @@ function applyStandardMocks() {
 }
 
 function removeStandardMocks() {
-  SquireMocker.unmock();
-  AssetFinderMocker.unmock();
-  delete window.dispatcher;
-  delete window.storyStore;
-  delete window.dragDropStore;
-  delete window.historyStore;
-  delete window.blockRemovalConfirmationStore;
-  delete window.embedWizardStore;
-  delete window.I18n;
-  delete window.standardMocks;
+  var storyteller = window.socrata.storyteller;
+
+  storyteller.SquireMocker.unmock();
+  storyteller.AssetFinderMocker.unmock();
+
+  delete storyteller.dispatcher;
+  delete storyteller.storyStore;
+  delete storyteller.dragDropStore;
+  delete storyteller.historyStore;
+  delete storyteller.blockRemovalConfirmationStore;
+  delete storyteller.embedWizardStore;
+  delete storyteller.I18n;
+  delete storyteller.standardMocks;
 }
 
 // Run StandardMocks before every test.

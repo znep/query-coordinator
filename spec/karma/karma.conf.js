@@ -14,6 +14,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'app/javascripts/editor/init.js',
       'spec/karma/StandardMocks.js',
       'spec/karma/TestDom.js',
       'spec/karma/AssetFinderMocker.js',

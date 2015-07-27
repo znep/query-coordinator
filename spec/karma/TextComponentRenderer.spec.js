@@ -4,16 +4,20 @@ describe('TextComponentRenderer', function() {
 
   var componentOptions;
   var validRenderFn = function() {};
+  var storyteller = window.socrata.storyteller;
+  var TextComponentRenderer = storyteller.TextComponentRenderer;
+
 
   beforeEach(function() {
-    RichTextEditorManagerMocker.mock();
+    storyteller.RichTextEditorManagerMocker.mock();
   });
 
   afterEach(function() {
-    RichTextEditorManagerMocker.unmock();
+    storyteller.RichTextEditorManagerMocker.unmock();
   });
 
   beforeEach(function() {
+
     componentOptions = {
       classes: 'test-class',
       blockId: 'testBlockId',
@@ -124,7 +128,7 @@ describe('TextComponentRenderer', function() {
           done();
         };
 
-        RichTextEditorManagerMocker.setContentCallback(editorSetContentCallback);
+        storyteller.RichTextEditorManagerMocker.setContentCallback(editorSetContentCallback);
 
         TextComponentRenderer.renderData(template, validComponentData, componentOptions.editable, validRenderFn);
       });

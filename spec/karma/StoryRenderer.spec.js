@@ -5,17 +5,23 @@ describe('StoryRenderer', function() {
   var imageBlockId;
   var textBlockId;
   var options;
+  var StoryRenderer;
+  var dispatcher;
+  var storyteller = window.socrata.storyteller;
 
   beforeEach(function() {
+    dispatcher = storyteller.dispatcher;
+    StoryRenderer = storyteller.StoryRenderer;
+
     storyUid = standardMocks.validStoryUid;
     imageBlockId = standardMocks.imageBlockId;
     textBlockId = standardMocks.textBlockId;
   });
 
   function forceRender() {
-    window.dispatcher.dispatch({
+    dispatcher.dispatch({
       action: Constants.STORY_OVERWRITE_STATE,
-      data: window.storyStore.serializeStory(storyUid)
+      data: storyteller.storyStore.serializeStory(storyUid)
     });
   }
 
@@ -128,7 +134,7 @@ describe('StoryRenderer', function() {
 
         it('raises an exception', function() {
 
-          window.richTextEditorManager = {};
+          storyteller.richTextEditorManager = {};
 
           options.editable = true;
 
@@ -168,7 +174,7 @@ describe('StoryRenderer', function() {
         it('renders blocks', function() {
 
           var renderer = new StoryRenderer(options);
-          var numberOfBlocks = window.storyStore.getStoryBlockIds(storyUid).length;
+          var numberOfBlocks = storyteller.storyStore.getStoryBlockIds(storyUid).length;
 
           assert.equal($('.block').length, numberOfBlocks);
         });
@@ -176,7 +182,7 @@ describe('StoryRenderer', function() {
         it('does not render deleted blocks', function() {
 
           var renderer = new StoryRenderer(options);
-          var numberOfBlocks = window.storyStore.getStoryBlockIds(storyUid).length;
+          var numberOfBlocks = storyteller.storyStore.getStoryBlockIds(storyUid).length;
 
           dispatcher.dispatch({ action: Constants.STORY_DELETE_BLOCK, storyUid: storyUid, blockId: imageBlockId });
 
@@ -228,11 +234,11 @@ describe('StoryRenderer', function() {
           $('<div>', { 'id': 'rich-text-editor-toolbar' })
         ]);
 
-        validToolbar = Object.create(RichTextEditorToolbar.prototype);
+        validToolbar = Object.create(storyteller.RichTextEditorToolbar.prototype);
         validFormats = [];
 
-        window.richTextEditorManager = new RichTextEditorManager(
-          window.assetFinder,
+        storyteller.richTextEditorManager = new storyteller.RichTextEditorManager(
+          storyteller.assetFinder,
           validToolbar,
           validFormats
         );
@@ -316,11 +322,11 @@ describe('StoryRenderer', function() {
         $('<div>', { 'id': 'rich-text-editor-toolbar' })
       ]);
 
-      validToolbar = Object.create(RichTextEditorToolbar.prototype);
+      validToolbar = Object.create(storyteller.RichTextEditorToolbar.prototype);
       validFormats = [];
 
-      window.richTextEditorManager = new RichTextEditorManager(
-        window.assetFinder,
+      storyteller.richTextEditorManager = new storyteller.RichTextEditorManager(
+        storyteller.assetFinder,
         validToolbar,
         validFormats
       );
@@ -340,7 +346,7 @@ describe('StoryRenderer', function() {
     function hintAtStoryAndBlock(storyUid, blockId) {
       // Cause DragDropStore to indicate we're dragging over
       // the given story and block.
-      window.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Constants.STORY_DRAG_OVER,
         storyUid: storyUid,
         blockId: blockId,
@@ -352,7 +358,7 @@ describe('StoryRenderer', function() {
     function noHint() {
       // Cause DragDropStore to indicate we're dragging over
       // nothing at all.
-      window.dispatcher.dispatch({
+      dispatcher.dispatch({
         action: Constants.STORY_DRAG_LEAVE,
         storyUid: storyUid
       });

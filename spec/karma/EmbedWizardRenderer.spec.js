@@ -1,11 +1,15 @@
 describe('EmbedWizardRenderer', function() {
+  var storyteller = window.socrata.storyteller;
 
   var container;
   var options;
   var testBlockId = 'testBlock1';
   var testComponentIndex = 1;
+  var EmbedWizardRenderer;
 
   beforeEach(function() {
+    EmbedWizardRenderer = storyteller.EmbedWizardRenderer;
+
     container = $('<div>', { 'class': 'embed-wizard-container' });
 
     testDom.append(container);
@@ -62,13 +66,13 @@ describe('EmbedWizardRenderer', function() {
 
       var renderer = new EmbedWizardRenderer(options);
 
-      window.dispatcher.dispatch({
+      window.socrata.storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
-      window.dispatcher.register(function(payload) {
+      window.socrata.storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Constants.EMBED_WIZARD_CLOSE);
         done();
@@ -84,13 +88,13 @@ describe('EmbedWizardRenderer', function() {
 
       var renderer = new EmbedWizardRenderer(options);
 
-      window.dispatcher.dispatch({
+      window.socrata.storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
-      window.dispatcher.register(function(payload) {
+      window.socrata.storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Constants.EMBED_WIZARD_CLOSE);
         done();
@@ -103,13 +107,13 @@ describe('EmbedWizardRenderer', function() {
 
       var renderer = new EmbedWizardRenderer(options);
 
-      window.dispatcher.dispatch({
+      window.socrata.storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
-      window.dispatcher.register(function(payload) {
+      window.socrata.storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Constants.EMBED_WIZARD_CLOSE);
         done();
@@ -122,11 +126,11 @@ describe('EmbedWizardRenderer', function() {
 
       var renderer = new EmbedWizardRenderer(options);
 
-      window.dispatcher.dispatch({
+      window.socrata.storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
       });
 
-      window.dispatcher.register(function(payload) {
+      window.socrata.storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL);
         assert.equal(payload.url, '');
@@ -143,11 +147,11 @@ describe('EmbedWizardRenderer', function() {
 
       var renderer = new EmbedWizardRenderer(options);
 
-      window.dispatcher.dispatch({
+      window.socrata.storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
       });
 
-      window.dispatcher.register(function(payload) {
+      window.socrata.storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL);
         assert.equal(payload.url, '');
@@ -164,11 +168,11 @@ describe('EmbedWizardRenderer', function() {
 
       var renderer = new EmbedWizardRenderer(options);
 
-      window.dispatcher.dispatch({
+      window.socrata.storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
       });
 
-      window.dispatcher.register(function(payload) {
+      window.socrata.storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL);
         assert.equal(payload.url, '');
@@ -182,11 +186,11 @@ describe('EmbedWizardRenderer', function() {
 
       var renderer = new EmbedWizardRenderer(options);
 
-      window.dispatcher.dispatch({
+      window.socrata.storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
       });
 
-      window.dispatcher.register(function(payload) {
+      window.socrata.storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL);
         assert.equal(payload.url, '');
@@ -203,7 +207,7 @@ describe('EmbedWizardRenderer', function() {
 
       var renderer = new EmbedWizardRenderer(options);
 
-      window.dispatcher.dispatch({
+      window.socrata.storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
@@ -218,7 +222,7 @@ describe('EmbedWizardRenderer', function() {
 
       var renderer = new EmbedWizardRenderer(options);
 
-      window.dispatcher.dispatch({
+      window.socrata.storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
@@ -233,7 +237,7 @@ describe('EmbedWizardRenderer', function() {
 
       var renderer = new EmbedWizardRenderer(options);
 
-      window.dispatcher.dispatch({
+      window.socrata.storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
@@ -247,7 +251,7 @@ describe('EmbedWizardRenderer', function() {
 
       var renderer = new EmbedWizardRenderer(options);
 
-      window.dispatcher.dispatch({
+      window.socrata.storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
@@ -255,7 +259,7 @@ describe('EmbedWizardRenderer', function() {
 
       container.find('[data-embed-wizard-validate-field="youTubeId"]').val('invalid');
 
-      window.dispatcher.dispatch({
+      window.socrata.storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
         url: 'invalid'
       });
@@ -270,7 +274,7 @@ describe('EmbedWizardRenderer', function() {
       var renderer = new EmbedWizardRenderer(options);
       var rickRoll = 'https://youtu.be/dQw4w9WgXcQ';
 
-      window.dispatcher.dispatch({
+      window.socrata.storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
@@ -278,7 +282,7 @@ describe('EmbedWizardRenderer', function() {
 
       container.find('[data-embed-wizard-validate-field="youTubeId"]').val(rickRoll);
 
-      window.dispatcher.dispatch({
+      window.socrata.storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
         url: rickRoll
       });
@@ -292,7 +296,7 @@ describe('EmbedWizardRenderer', function() {
       var renderer = new EmbedWizardRenderer(options);
       var rickRoll = '<iframe width="420" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>';
 
-      window.dispatcher.dispatch({
+      window.socrata.storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
@@ -300,7 +304,7 @@ describe('EmbedWizardRenderer', function() {
 
       container.find('[data-embed-wizard-validate-field="youTubeId"]').val(rickRoll);
 
-      window.dispatcher.dispatch({
+      window.socrata.storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
         url: rickRoll
       });
@@ -313,7 +317,7 @@ describe('EmbedWizardRenderer', function() {
 
       var renderer = new EmbedWizardRenderer(options);
 
-      window.dispatcher.dispatch({
+      window.socrata.storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
@@ -321,7 +325,7 @@ describe('EmbedWizardRenderer', function() {
 
       assert.isFalse(container.hasClass('hidden'));
 
-      window.dispatcher.dispatch({
+      window.socrata.storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CLOSE
       });
 

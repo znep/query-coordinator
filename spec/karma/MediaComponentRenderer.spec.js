@@ -7,6 +7,7 @@ describe('MediaComponentRenderer', function() {
   var testComponentIndex = 1;
   var testImageSrc = 'test.jpg';
   var validRenderFn = function() {};
+  var MediaComponentRenderer = window.socrata.storyteller.MediaComponentRenderer;
 
   describe('.renderTemplate()', function() {
 
@@ -193,7 +194,7 @@ describe('MediaComponentRenderer', function() {
           componentValue: { type: 'image', value: { src: testImageSrc } },
           editable: true
         };
-      
+
         validComponentData = {
           type: 'media',
           value: {

@@ -1,4 +1,5 @@
 describe('Polyfills', function() {
+  var storyteller = window.socrata.storyteller;
 
   describe('CustomEvent', function() {
 
@@ -23,7 +24,7 @@ describe('Polyfills', function() {
           done();
         });
 
-        var customEvent = new CustomEvent('test-event');
+        var customEvent = new storyteller.CustomEvent('test-event');
         $('.listener')[0].dispatchEvent(customEvent);
       });
     });
@@ -44,7 +45,7 @@ describe('Polyfills', function() {
           cancelable: true,
           detail: 'test'
         };
-        var customEvent = new CustomEvent('test-event', params);
+        var customEvent = new storyteller.CustomEvent('test-event', params);
         $('.listener')[0].dispatchEvent(customEvent);
       });
     });

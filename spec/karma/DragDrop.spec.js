@@ -5,11 +5,12 @@ describe('DragDrop', function() {
   var blocks;
   var ghost;
   var inspirationBlockList;
+  var storyteller = window.socrata.storyteller;
 
   var dispatchedEvents;
   beforeEach(function() {
     dispatchedEvents = [];
-    window.dispatcher.register(function(payload) {
+    window.socrata.storyteller.dispatcher.register(function(payload) {
       dispatchedEvents.push(payload);
     });
   });
@@ -50,7 +51,7 @@ describe('DragDrop', function() {
     var fakeDragStartEvent;
     var fakeDragStartPointer;
     beforeEach(function() {
-      dragDrop = new DragDrop(blocks, ghost);
+      dragDrop = new storyteller.DragDrop(blocks, ghost);
       dragDrop.setup();
 
       // Manually invoke dragStart - usually UniDragger does this for us.

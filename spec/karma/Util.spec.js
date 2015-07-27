@@ -1,4 +1,5 @@
 describe('Util', function() {
+  var Util;
 
   'use strict';
 
@@ -7,6 +8,10 @@ describe('Util', function() {
     propB: 5,
     propC: 'asd'
   };
+
+  beforeEach(function() {
+    Util = window.socrata.storyteller.Util;
+  });
 
   describe('assertEqual', function() {
 
@@ -34,7 +39,7 @@ describe('Util', function() {
     describe('given an object with the desired property', function() {
 
       it('does not throw', function() {
-        window.Util.assertHasProperty(object, 'propA');
+        Util.assertHasProperty(object, 'propA');
       });
     });
 
@@ -42,7 +47,7 @@ describe('Util', function() {
 
       it('throws', function() {
         assert.throw(function() {
-          window.Util.assertHasProperty(object, 'oops');
+          Util.assertHasProperty(object, 'oops');
         });
       });
     });
@@ -53,7 +58,7 @@ describe('Util', function() {
     describe('given an object with all the desired properties', function() {
 
       it('does not throw', function() {
-        window.Util.assertHasProperties(object, 'propA', 'propB');
+        Util.assertHasProperties(object, 'propA', 'propB');
       });
     });
 
@@ -61,7 +66,7 @@ describe('Util', function() {
 
       it('throws', function() {
         assert.throw(function() {
-          window.Util.assertHasProperties(object, 'propA', 'propOops');
+          Util.assertHasProperties(object, 'propA', 'propOops');
         });
       });
     });
@@ -150,7 +155,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            window.Util.mapDOMFragmentDescending(
+            Util.mapDOMFragmentDescending(
               null,
               validApplyFn,
               validShouldTerminateFun
@@ -164,7 +169,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            window.Util.mapDOMFragmentDescending(
+            Util.mapDOMFragmentDescending(
               validElement,
               null,
               validShouldTerminateFun
@@ -178,7 +183,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            window.Util.mapDOMFragmentDescending(
+            Util.mapDOMFragmentDescending(
               validElement,
               validApplyFn,
               null
@@ -191,7 +196,7 @@ describe('Util', function() {
 
         it('should not change the fragment', function() {
 
-          var newFragment = window.Util.mapDOMFragmentDescending(
+          var newFragment = Util.mapDOMFragmentDescending(
             validElement,
             validApplyFn,
             validShouldTerminateFn
@@ -205,7 +210,7 @@ describe('Util', function() {
 
         it('should convert non-div elements to div elements', function() {
 
-          var newFragment = window.Util.mapDOMFragmentDescending(
+          var newFragment = Util.mapDOMFragmentDescending(
             validElement,
             convertNonDivsToDivs,
             validShouldTerminateFn
@@ -240,7 +245,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            window.Util.reduceDOMFragmentAscending(
+            Util.reduceDOMFragmentAscending(
               null,
               validApplyFn,
               validShouldTerminateFun,
@@ -255,7 +260,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            window.Util.reduceDOMFragmentAscending(
+            Util.reduceDOMFragmentAscending(
               validChild5,
               null,
               validShouldTerminateFun,
@@ -270,7 +275,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            window.Util.reduceDOMFragmentAscending(
+            Util.reduceDOMFragmentAscending(
               validChild5,
               validApplyFn,
               null,
@@ -285,7 +290,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            window.Util.reduceDOMFragmentAscending(
+            Util.reduceDOMFragmentAscending(
               validChild5,
               validApplyFn,
               validShouldTerminateFn,
@@ -299,7 +304,7 @@ describe('Util', function() {
 
         it('should accumulate all node names', function() {
 
-          var accumulated = window.Util.reduceDOMFragmentAscending(
+          var accumulated = Util.reduceDOMFragmentAscending(
             validChild5,
             validApplyFn,
             validShouldTerminateFn,
@@ -314,7 +319,7 @@ describe('Util', function() {
 
         it('should accumulate only element node names', function() {
 
-          var accumulated = window.Util.reduceDOMFragmentAscending(
+          var accumulated = Util.reduceDOMFragmentAscending(
             validChild5,
             collectElementNodes,
             validShouldTerminateFn,
@@ -329,7 +334,7 @@ describe('Util', function() {
 
         it('should accumulate only div node names', function() {
 
-          var accumulated = window.Util.reduceDOMFragmentAscending(
+          var accumulated = Util.reduceDOMFragmentAscending(
             validChild5,
             collectDivs,
             validShouldTerminateFn,
@@ -362,7 +367,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            window.Util.reduceDOMFragmentDescending(
+            window.socrata.storyteller.Util.reduceDOMFragmentDescending(
               null,
               validApplyFn,
               validShouldTerminateFun,
@@ -377,7 +382,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            window.Util.reduceDOMFragmentDescending(
+            window.socrata.storyteller.Util.reduceDOMFragmentDescending(
               validElement,
               null,
               validShouldTerminateFun,
@@ -392,7 +397,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            window.Util.reduceDOMFragmentDescending(
+            window.socrata.storyteller.Util.reduceDOMFragmentDescending(
               validElement,
               validApplyFn,
               null,
@@ -407,7 +412,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            window.Util.reduceDOMFragmentDescending(
+            window.socrata.storyteller.Util.reduceDOMFragmentDescending(
               validElement,
               validApplyFn,
               validShouldTerminateFn,
@@ -421,7 +426,7 @@ describe('Util', function() {
 
         it('should accumulate all node names', function() {
 
-          var accumulated = window.Util.reduceDOMFragmentDescending(
+          var accumulated = window.socrata.storyteller.Util.reduceDOMFragmentDescending(
             validElement,
             validApplyFn,
             validShouldTerminateFn,
@@ -436,7 +441,7 @@ describe('Util', function() {
 
         it('should accumulate only element node names', function() {
 
-          var accumulated = window.Util.reduceDOMFragmentDescending(
+          var accumulated = window.socrata.storyteller.Util.reduceDOMFragmentDescending(
             validElement,
             collectElementNodes,
             validShouldTerminateFn,
@@ -451,7 +456,7 @@ describe('Util', function() {
 
         it('should accumulate only div node names', function() {
 
-          var accumulated = window.Util.reduceDOMFragmentDescending(
+          var accumulated = window.socrata.storyteller.Util.reduceDOMFragmentDescending(
             validElement,
             collectDivs,
             validShouldTerminateFn,
@@ -471,7 +476,7 @@ describe('Util', function() {
       it('should throw an error', function() {
 
         assert.throw(function() {
-          Util.generateYouTubeUrl();          
+          Util.generateYouTubeUrl();
         });
       });
     });
@@ -495,7 +500,7 @@ describe('Util', function() {
       it('should throw an error', function() {
 
         assert.throw(function() {
-          Util.generateYouTubeUrl();          
+          Util.generateYouTubeUrl();
         });
       });
     });

@@ -1,5 +1,6 @@
 describe('StoryTitle jQuery plugin', function() {
   var node;
+  var storyteller = window.socrata.storyteller;
 
   beforeEach(function() {
     node = testDom.append('<div>');
@@ -42,51 +43,13 @@ describe('StoryTitle jQuery plugin', function() {
       it('should update the story title', function() {
         var newTitle = 'New Story Title';
 
-        window.dispatcher.dispatch({
+        window.socrata.storyteller.dispatcher.dispatch({
           action: Constants.STORY_SET_TITLE,
           storyUid: standardMocks.validStoryUid,
           title: newTitle
         });
 
         assert.equal(node.text(), newTitle);
-      });
-    });
-
-    describe('when the title is clicked', function() {
-      var originalPrompt;
-
-      beforeEach(function() {
-        originalPrompt = window.prompt;
-      });
-
-      afterEach(function() {
-        window.prompt = originalPrompt;
-      });
-
-      it('shows a dialog', function(done) {
-        window.prompt = function(promptString, prefill) {
-          assert.isString(promptString); // Arbitrary human-readable string.
-          assert.equal(prefill, standardMocks.validStoryTitle);
-
-          done();
-        };
-        node.click();
-      });
-
-      it('sets the value of the story to the entered text', function(done) {
-        var newTitle = 'woohoo prompts!';
-
-        window.prompt = function() {
-          return newTitle;
-        };
-
-        storyStore.addChangeListener(function() {
-          if(storyStore.getStoryTitle(standardMocks.validStoryUid) === newTitle) {
-            done();
-          }
-        });
-
-        node.click();
       });
     });
 

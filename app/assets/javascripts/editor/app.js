@@ -46,7 +46,7 @@ $(document).on('ready', function() {
 
   storyteller.dispatcher = new storyteller.Dispatcher();
   storyteller.dispatcher.register(function(payload) {
-    storyteller.console && console.info('Dispatcher action: ', payload);
+    window.console && console.info('Dispatcher action: ', payload);
     if (typeof payload.action !== 'string') {
       throw new Error(
         'Undefined action.'

@@ -35,8 +35,6 @@
   EMBED_WIZARD_APPLY: 'EMBED_WIZARD_APPLY',
   EMBED_WIZARD_CLOSE: 'EMBED_WIZARD_CLOSE',
 
-  EMBED_WIZARD_CHOOSE_VISUALIZE: 'EMBED_WIZARD_CHOOSE_VISUALIZE',
-
 
   // Actual constants
   YOUTUBE_URL_PATTERNS: [
@@ -45,7 +43,9 @@
     /\&v=([^#\&\?]{11})/,         // &v=<id>
     /embed\/([^#\&\?]{11})/,      // embed/<id>
     /\/v\/([^#\&\?]{11})/         // /v/<id>
-  ]
+  ],
+
+  HISTORY_MAX_UNDO_COUNT: 99
 };
 
 (function() {

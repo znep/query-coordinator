@@ -3,7 +3,6 @@
   'use strict';
 
   var Util = storyteller.Util;
-  var MAX_UNDO_COUNT = 99;
 
   function HistoryStore() {
 
@@ -38,7 +37,7 @@
         // history array so we just append to it.
         } else if (_shouldAppendToHistory(serializedStory)) {
 
-          if (historyLength === MAX_UNDO_COUNT) {
+          if (historyLength === Constants.HISTORY_MAX_UNDO_COUNT) {
             _history.shift();
           }
 

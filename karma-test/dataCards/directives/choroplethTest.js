@@ -1147,7 +1147,7 @@ describe('A Choropleth Directive', function() {
                   var $tick = $(tick);
                   var translate = $tick.attr('transform').match(/\(([0-9\.]+)\,([0-9\.]+)\)$/);
 
-                  if (typeof translate === 'object') {
+                  if (translate !== null) {
                     expect(translate).to.be.instanceof(Array);
                     expect(isFinite(translate[1])).to.be.true;
                     expect(isFinite(translate[2])).to.be.true;

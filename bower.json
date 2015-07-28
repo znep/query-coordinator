@@ -1,0 +1,8 @@
+{
+  "name": "frontend-utils",
+  "version": "0.0.1",
+  "main": [
+    "dist/socrata-utils.js"
+  ],
+  "ignore": []
+}

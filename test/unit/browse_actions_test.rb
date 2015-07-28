@@ -14,6 +14,20 @@ class BrowseActionsTest < Test::Unit::TestCase
       CurrentDomain.stubs(property: nil)
     end
 
+    def test_does_not_add_pulse_if_feature_flag_false
+      stub_feature_flags_with(:enable_pulse, false)
+      view_types_list = @browse_actions_container.send(:view_types_facet)
+      refute(view_types_list[:options].any? { |link_item| link_item[:value] == 'pulse'},
+          'enable pulse feature flag is false, but we have a pulse link in the catalog')
+    end
+
+    def test_does_add_pulse_if_feature_flag_true
+      stub_feature_flags_with(:enable_pulse, true)
+      view_types_list = @browse_actions_container.send(:view_types_facet)
+      assert(view_types_list[:options].any? { |link_item| link_item[:value] == 'pulse'},
+        'enable pulse feature flag is true, but we do not have a pulse link in the catalog')
+    end
+
     def test_does_not_add_stories_if_feature_flag_false
       stub_feature_flags_with(:enable_stories, false)
       view_types_list = @browse_actions_container.send(:view_types_facet)

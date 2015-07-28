@@ -295,6 +295,10 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_equal('date_trunc_ym', manager.send(:date_trunc_function, (15 * 365.25).to_i))
   end
 
+  def test_date_trunc_function_with_between_1_and_2_years_of_days
+    assert_equal('date_trunc_ym', manager.send(:date_trunc_function, 517))
+  end
+
   def test_date_trunc_function_with_exactly_1_year_of_days
     assert_equal('date_trunc_ymd', manager.send(:date_trunc_function, (1 * 365.25).to_i))
   end

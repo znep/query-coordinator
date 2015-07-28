@@ -302,7 +302,7 @@ class PageMetadataManager
     # have no data).
     return 'date_trunc_y' if days.to_i == 0
 
-    years = (days / 365.25).to_i
+    years = (days / 365.25)
     prec = 'y'
     prec << 'm' if years <= 20
     prec << 'd' if years <= 1

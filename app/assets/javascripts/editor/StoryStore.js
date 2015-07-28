@@ -322,12 +322,12 @@
     function _setStory(storyData, overwrite) {
 
       var storyUid;
-      var blockIds;
+      var blockIds = [];
 
       _validateStoryData(storyData);
 
       storyUid = storyData.uid;
-      blockIds = [];
+      blockIds;
 
       if (!overwrite && _stories.hasOwnProperty(storyUid)) {
         throw new Error(

@@ -27,6 +27,7 @@ protected
 
     add_data_lens_view_type_if_enabled!(vts[:options])
     add_stories_view_type_if_enabled!(vts[:options])
+    add_pulse_view_type_if_enabled!(vts[:options])
 
     if module_enabled?(:api_foundry)
       vts[:options] << {:text => t('controls.browse.facets.view_types.apis'), :value => 'apis', :class => 'typeApi'}
@@ -450,6 +451,30 @@ private
     end
   end
 
+  def pulse_catalog_entries_enabled?
+    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:enable_pulse]
+  end
+
+  def add_pulse_view_type_if_enabled!(view_type_list)
+    if pulse_catalog_entries_enabled?
+
+      pulse_view_type = {
+        :text => ::I18n.t('controls.browse.facets.view_types.pulse'),
+        :value => 'pulse',
+        :class => 'typePulse',
+        :icon_font_class => 'icon-pulse',
+        :help_link => {
+          :href => 'http://www.socrata.com',
+          :text => ::I18n.t('controls.browse.facets.view_types.pulse_help')
+        }
+      }
+
+      # Position the pulse page similarily to Stories and Data Lens - Above the dataset entry
+
+      datasets_index = view_type_list.pluck(:value).index('datasets') || 0
+      view_type_list.insert(datasets_index, pulse_view_type)
+    end
+  end
 
   def stories_catalog_entries_enabled?
     FeatureFlags.derive(nil, defined?(request) ? request : nil)[:enable_stories]

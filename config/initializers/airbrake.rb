@@ -15,7 +15,10 @@ Airbrake.configure do |config|
 
   unless ENV['AIRBRAKE_HTTP_PROXY'].to_s.blank?
     proxy = ENV['AIRBRAKE_HTTP_PROXY'].gsub(/https?:\/\//, '').split(':')
-    config.proxy_host = proxy[0]
-    config.proxy_port = proxy[1]
+
+    if proxy.length == 2
+      config.proxy_host = proxy[0]
+      config.proxy_port = proxy[1]
+    end
   end
 end

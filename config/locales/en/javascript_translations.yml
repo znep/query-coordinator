@@ -16,10 +16,15 @@ en:
           embed_wizard_insert_btn: 'Insert...'
       embed_wizard:
         choose_provider_heading: 'Select data or media provider'
-        choose_youtube_heading: 'Add a YouTube video'
-        choose_youtube_input_label: 'Link to video'
-        choose_youtube_input_placeholder: 'https://www.youtube.com/'
-        back_button_label: 'Back'
-        insert_button_label: 'Insert'
+        back_button_text: 'Back'
+        insert_button_text: 'Insert'
         providers:
-          youtube: 'YouTube'
+          youtube:
+            button_text: 'YouTube'
+            heading: 'Add a YouTube video'
+            input_label: 'Link to video'
+            input_placeholder: 'https://www.youtube.com/'
+          visualization:
+            button_text: 'Vizualization'
+            choose_dataset_heading: 'Choose a dataset to visualize'
+            configure_vizualization_heading: 'Configure your visualization'

@@ -39,15 +39,26 @@
     background-color: $modal-bg-color;
     border-radius: $modal-border-radius;
 
-    .modal-title {
+    &.modal-dialog-wide {
       @include media-query-property(
         'width',
-        ($main-content-width-small / 1.5) - $modal-close-btn-width,
-        ($main-content-width-medium / 1.5) - $modal-close-btn-width,
-        ($main-content-width-large / 1.5) - $modal-close-btn-width,
-        ($main-content-width-extra-large / 1.5) - $modal-close-btn-width
+        $main-content-width-small,
+        $main-content-width-medium,
+        $main-content-width-large,
+        $main-content-width-extra-large
       );
 
+      @include media-query-property(
+        'left',
+        calc((100vw - #{$main-content-width-small}) / 2),
+        calc((100vw - #{$main-content-width-medium}) / 2),
+        calc((100vw - #{$main-content-width-large}) / 2),
+        calc((100vw - #{$main-content-width-extra-large}) / 2)
+      );
+    }
+
+    .modal-title {
+      padding-right: $modal-close-btn-width;
       margin-bottom: 1rem;
       font-size: $modal-title-font-size;
       line-height: $modal-title-line-height;
@@ -70,5 +81,16 @@
     .modal-content {
       //background-color: $modal-bg-color;
     }
+
+    .button-list li {
+      margin-bottom: 5px;
+    }
+
+    /* Visualization chooser */
+    .wizard-dataset-chooser-iframe {
+      width: 100%;
+      height: 400px;
+    }
   }
 }
+

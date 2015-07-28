@@ -100,6 +100,16 @@
         }
       );
 
+      _dialog.on(
+        'datasetSelect',
+        function(event, datasetObj) {
+          storyteller.dispatcher.dispatch({
+            action: Constants.EMBED_WIZARD_DATASET_SELECTED,
+            datasetUid: datasetObj.id
+          });
+        }
+      );
+
       _dialog.on('click', '[data-embed-action]', function(event) {
 
         var action = event.target.getAttribute('data-embed-action');
@@ -117,6 +127,12 @@
           case Constants.EMBED_WIZARD_CHOOSE_YOUTUBE:
             storyteller.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
+            });
+            break;
+
+          case Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION:
+            storyteller.dispatcher.dispatch({
+              action: Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION
             });
             break;
 
@@ -151,8 +167,12 @@
       var componentValue = storyteller.embedWizardStore.getCurrentComponentValue();
       var wizardContent;
 
-      // Render a wizard state if necessary.
+      // First see if we need to render a new template
+      // and render a wizard state if necessary.
       if (state !== _lastRenderedState) {
+
+        //remove state-specific modal container classes
+        _resetModalDialogClass();
 
         switch (state) {
 
@@ -162,6 +182,14 @@
 
           case Constants.EMBED_WIZARD_CHOOSE_YOUTUBE:
             wizardContent = _renderChooseYouTubeTemplate(componentValue);
+            break;
+
+          case Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION:
+            wizardContent = _renderChooseDatasetPickerTemplate(componentValue);
+            break;
+
+          case Constants.EMBED_WIZARD_DATASET_SELECTED:
+            wizardContent = _renderConfigureVisualizationTemplate(componentValue);
             break;
 
           default:
@@ -178,7 +206,9 @@
         }
       }
 
-      // Render interactive data where possible.
+      // Now put the data into the template rendered above
+      // This handles updating data when the template does NOT need to be re-rendered
+      // Some templates may not have renderData function because they do not update dynamically
       switch (state) {
 
         case Constants.EMBED_WIZARD_CHOOSE_YOUTUBE:
@@ -200,15 +230,20 @@
 
       var closeButton = _renderModalCloseButton();
 
-      var youtubeButton = $(
-        '<button>',
-        {
-          'class': 'btn accent-btn',
-          'data-embed-action': Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
-        }
-      ).text(I18n.t('editor.embed_wizard.providers.youtube'));
+      var youtubeButton = $('<button>', {
+        'class': 'btn accent-btn',
+        'data-embed-action': Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
+      }).text(I18n.t('editor.embed_wizard.providers.youtube.button_text'));
 
-      var providers = $('<ul>').append([ $('<li>').append(youtubeButton) ]);
+      var visualizationButton = $('<button>', {
+        'class': 'btn accent-btn',
+        'data-embed-action': Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION
+      }).text(I18n.t('editor.embed_wizard.providers.visualization.button_text'));
+
+      var providers = $('<ul>', {'class': 'button-list'}).append([
+        $('<li>').html(youtubeButton),
+        $('<li>').html(visualizationButton)
+      ]);
       var content = $('<div>', { 'class': 'modal-content' }).append(providers);
 
       return [ heading, closeButton, content ];
@@ -217,13 +252,13 @@
     function _renderChooseYouTubeTemplate() {
 
       var heading = _renderModalTitle(
-        I18n.t('editor.embed_wizard.choose_youtube_heading')
+        I18n.t('editor.embed_wizard.providers.youtube.heading')
       );
 
       var closeButton = _renderModalCloseButton();
 
       var inputLabel = $('<h2>', { 'class': 'wizard-input-label' }).
-        text(I18n.t('editor.embed_wizard.choose_youtube_input_label'));
+        text(I18n.t('editor.embed_wizard.providers.youtube.input_label'));
 
       var inputControl = $(
         '<input>',
@@ -231,7 +266,7 @@
           'class': 'wizard-text-input',
           'data-embed-wizard-validate-field': 'youTubeId',
           'placeholder': I18n.t(
-            'editor.embed_wizard.choose_youtube_input_placeholder'
+            'editor.embed_wizard.providers.youtube.input_placeholder'
           )
         }
       );
@@ -250,23 +285,7 @@
         }
       ).append(previewIframe);
 
-      var backButton = $(
-        '<button>',
-        {
-          'class': 'btn',
-          'data-embed-action': Constants.EMBED_WIZARD_CHOOSE_PROVIDER
-        }
-      ).append([
-        $(
-          '<span>',
-          {
-            'class': 'icon-arrow-left2',
-            'style': 'font-size: 0.8em',
-            'data-embed-action': Constants.EMBED_WIZARD_CHOOSE_PROVIDER
-          }
-        ),
-        I18n.t('editor.embed_wizard.back_button_label')
-      ]);
+      var backButton = _renderModalBackToProviderButton();
 
       var insertButton = $(
         '<button>',
@@ -274,7 +293,7 @@
           'class': 'btn accent-btn',
           'data-embed-action': Constants.EMBED_WIZARD_APPLY
         }
-      ).text(I18n.t('editor.embed_wizard.insert_button_label'));
+      ).text(I18n.t('editor.embed_wizard.insert_button_text'));
 
       var content = $('<div>', { 'class': 'wizard-input-group' }).append([
         inputLabel,
@@ -364,6 +383,54 @@
       }
     }
 
+    function _renderChooseDatasetPickerTemplate(componentValue) {
+      _addModalDialogClass('modal-dialog-wide');
+
+      var heading = _renderModalTitle(
+        I18n.t('editor.embed_wizard.providers.visualization.choose_dataset_heading')
+      );
+      var closeButton = _renderModalCloseButton();
+      var backButton = _renderModalBackToProviderButton();
+
+      var datasetChooserIframe = $(
+        '<iframe>',
+        {
+          'class': 'wizard-dataset-chooser-iframe bg-loading-spinner',
+          'src': _datasetChooserUrl()
+        }
+      );
+
+      datasetChooserIframe[0].onDatasetSelect = function(datasetObj) {
+        $(this).trigger('datasetSelect', datasetObj);
+      }
+
+      return [ heading, closeButton, datasetChooserIframe, backButton ];
+    }
+
+    function _renderConfigureVisualizationTemplate(componentValue) {
+      _addModalDialogClass('modal-dialog-wide');
+
+      var heading = _renderModalTitle(
+        I18n.t('editor.embed_wizard.providers.visualization.configure_vizualization_heading')
+      );
+      var closeButton = _renderModalCloseButton();
+      var backButton = _renderModalBackToProviderButton();
+
+      return [ heading, closeButton, backButton ];
+    }
+
+
+    /**
+     * Small helper functions
+     */
+
+    function _datasetChooserUrl() {
+      return encodeURI(
+        '{0}/browse/select_dataset?suppressed_facets[]=type&limitTo=datasets'.
+          format(window.location.origin)
+      );
+    }
+
     function _renderModalTitle(titleText) {
       return $('<h1>', { 'class': 'modal-title' }).text(titleText);
     }
@@ -387,6 +454,26 @@
       );
     }
 
+    function _renderModalBackToProviderButton() {
+      return $(
+        '<button>',
+        {
+          'class': 'btn',
+          'data-embed-action': Constants.EMBED_WIZARD_CHOOSE_PROVIDER
+        }
+      ).append([
+        $(
+          '<span>',
+          {
+            'class': 'icon-arrow-left2',
+            'style': 'font-size: 0.8em',
+            'data-embed-action': Constants.EMBED_WIZARD_CHOOSE_PROVIDER
+          }
+        ),
+        I18n.t('editor.embed_wizard.back_button_text')
+      ]);
+    }
+
     function _showWizard() {
       _container.removeClass('hidden');
     }
@@ -394,6 +481,26 @@
     function _hideWizard() {
       _container.addClass('hidden');
     }
+
+    function _addModalDialogClass(className) {
+      _dialog.addClass(className)
+    };
+
+    /**
+     * Responsible for:
+     *  - Removing all classes starting with `modal-dialog-` from the modal dialog
+     * Usage:
+     * - Call when state changes to clear out state-specific classes
+     */
+    function _resetModalDialogClass() {
+      _dialog[0].classList.forEach(
+        function(className, index) {
+          if (_.startsWith(className, 'modal-dialog-')) {
+            _dialog[0].classList.remove(className);
+          }
+        }
+      );
+    };
   }
 
   return EmbedWizardRenderer;

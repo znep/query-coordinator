@@ -42,6 +42,16 @@
           _updateYouTubeUrl(payload);
           break;
 
+        case Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION:
+          _currentWizardState = action;
+          _chooseVisualization();
+          break;
+
+        case Constants.EMBED_WIZARD_DATASET_SELECTED:
+          _currentWizardState = action;
+          _configureVisualization();
+          break;
+
         case Constants.EMBED_WIZARD_CLOSE:
           _closeDialog();
           break;
@@ -112,6 +122,16 @@
     }
 
     function _chooseYoutube() {
+
+      self._emitChange();
+    }
+
+    function _chooseVisualization() {
+
+      self._emitChange();
+    }
+
+    function _configureVisualization() {
 
       self._emitChange();
     }

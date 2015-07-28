@@ -1,4 +1,5 @@
 require 'core_server/errors'
+
 Airbrake.configure do |config|
   config.api_key = '2aa9cf5b8e41f462f46fe1cfd07aed69'
   config.params_filters << "AWS_ACCESS_KEY_ID"
@@ -11,4 +12,13 @@ Airbrake.configure do |config|
   config.params_filters << "password"
   config.params_filters << "passwordConfirm"
   config.ignore       << CoreServer::ResourceNotFound
+
+  unless ENV['AIRBRAKE_HTTP_PROXY'].to_s.blank?
+    proxy = ENV['AIRBRAKE_HTTP_PROXY'].gsub(/https?:\/\//, '').split(':')
+
+    if proxy.length == 2
+      config.proxy_host = proxy[0]
+      config.proxy_port = proxy[1]
+    end
+  end
 end

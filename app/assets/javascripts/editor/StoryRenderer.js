@@ -517,8 +517,8 @@
           editorId = blockId + '-' + i;
           contentHeight = storyteller.
             richTextEditorManager.
-              getEditor(editorId).
-                getContentHeight()
+            getEditor(editorId).
+            getContentHeight()
 
         } else {
 

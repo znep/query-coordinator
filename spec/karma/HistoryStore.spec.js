@@ -2,6 +2,7 @@ describe('HistoryStore', function() {
 
   'use strict';
 
+  var storyteller = window.socrata.storyteller;
   var validStoryUid = 'undo-redo';
   var storyState1 = generateStoryData({
     uid: validStoryUid,
@@ -37,18 +38,18 @@ describe('HistoryStore', function() {
     ]
   });
 
-  function dispatch(action) {
-    window.socrata.storyteller.dispatcher.dispatch(action);
-  }
-
   beforeEach(function() {
-    window.socrata.storyteller.userStoryUid = validStoryUid;
+    storyteller.userStoryUid = validStoryUid;
     dispatch({ action: Constants.STORY_CREATE, data: storyState1 });
   });
 
   afterEach(function() {
-    delete window.socrata.storyteller.userStoryUid;
+    delete storyteller.userStoryUid;
   });
+
+  function dispatch(action) {
+    storyteller.dispatcher.dispatch(action);
+  }
 
   describe('history accessors', function() {
 

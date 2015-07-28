@@ -7,11 +7,13 @@
 
   function StoryStore() {
 
+    _.extend(this, new storyteller.Store());
+
     var self = this;
     var _stories = {};
     var _blocks = {};
 
-    storyteller.dispatcher.register(function(payload) {
+    this.register(function(payload) {
 
       var action = payload.action;
 
@@ -55,8 +57,6 @@
           break;
       }
     });
-
-    _.extend(self, new storyteller.Store());
 
     /**
      * Public methods
@@ -519,28 +519,20 @@
       return serializedBlock;
     }
 
-    // The history state is set in HistoryStore, and a setTimeout ensures this
-    // will always run after the cursor is in the correct position.
+    // The history state is set in HistoryStore, and a `.waitFor()` ensures
+    // this will always run after the cursor is in the correct position.
     function _applyHistoryState() {
-      // TODO: Update when `.waitFor()` is implemented by the
-      // dispatcher.
-      //
-      // We have this in a setTimeout in order to ensure that
-      // HistoryStore responds to the HISTORY_UNDO action before
-      // StoreStore does. `.waitFor()` is what we actually want.
-      setTimeout(
-        function() {
-          var serializedStory = storyteller.historyStore.getStateAtCursor();
 
-          if (serializedStory) {
-            _setStory(
-              JSON.parse(serializedStory),
-              true
-            );
-          }
-        },
-        0
-      );
+      storyteller.dispatcher.waitFor([ storyteller.historyStore.getDispatcherToken() ]);
+
+      var serializedStory = storyteller.historyStore.getStateAtCursor();
+
+      if (serializedStory) {
+        _setStory(
+          JSON.parse(serializedStory),
+          true
+        );
+      }
     }
   }
 

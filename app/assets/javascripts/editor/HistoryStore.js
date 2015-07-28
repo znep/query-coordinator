@@ -6,9 +6,27 @@
 
   function HistoryStore() {
 
+    _.extend(this, new storyteller.Store());
+
     var self = this;
     var _history = [];
     var _undoCursor = 0;
+
+    this.register(function(payload) {
+
+      var action = payload.action;
+
+      switch (action) {
+
+        case Constants.HISTORY_UNDO:
+          _undo();
+          break;
+
+        case Constants.HISTORY_REDO:
+          _redo();
+          break;
+      }
+    });
 
     storyteller.storyStore.addChangeListener(function() {
 
@@ -48,24 +66,6 @@
         self._emitChange();
       }
     });
-
-    storyteller.dispatcher.register(function(payload) {
-
-      var action = payload.action;
-
-      switch (action) {
-
-        case Constants.HISTORY_UNDO:
-          _undo();
-          break;
-
-        case Constants.HISTORY_REDO:
-          _redo();
-          break;
-      }
-    });
-
-    _.extend(self, new storyteller.Store());
 
     /**
      * Public methods

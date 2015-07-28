@@ -1,8 +1,12 @@
 {
   "name": "frontend-utils",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": [
-    "dist/socrata-utils.js"
+    "socrata-utils.js"
   ],
-  "ignore": []
+  "ignore": [
+    ".gitignore",
+    "bower.json",
+    "README.md"
+  ]
 }

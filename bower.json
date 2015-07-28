@@ -1,0 +1,12 @@
+{
+  "name": "frontend-visualizations",
+  "version": "0.0.1",
+  "main": [
+    "socrata-visualizations.js"
+  ],
+  "ignore": [
+    ".gitignore",
+    "bower.json",
+    "README.md"
+  ]
+}

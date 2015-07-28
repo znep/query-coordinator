@@ -83,6 +83,33 @@
     _renderStory();
 
     /**
+     * CHART-86
+     *
+     * In order to respond to changes in the window size we need to watch for
+     * the 'resize' event.
+     *
+     * It doesn't seem right to have a 'resize' event cause a change in the
+     * story store, however, so the $(window).on('resize', ...) handler was
+     * originally put here.
+     *
+     * As it turns out, this caused intermittent test failures because some
+     * combination of PhantomJS + Karma will trigger resize events as tests
+     * are being wound down, which caused the resize re-render handler to be
+     * fired at a time when the StoryRenderer's corresponding StoryStore had
+     * already been destroyed, which caused an error that should be impossible
+     * in actual usage, that `window.socrata.storyteller.storyStore` is
+     * undefined when the StoryRenderer attempts to query it for data).
+     *
+     * For lack of a better solution, we now have a `.destroy()` method on
+     * renderers that can be called to remove event listeners and do any other
+     * cleanup that may become necessary in the future.
+     */
+    this.destroy = function() {
+      clearTimeout(resizeRerenderTimeout);
+      _detachEvents();
+    };
+
+    /**
      * Private methods
      */
 
@@ -105,17 +132,7 @@
 
     function _attachEvents() {
 
-      $(window).on('resize', function() {
-
-        clearTimeout(resizeRerenderTimeout);
-
-        resizeRerenderTimeout = setTimeout(
-          function() {
-            _renderStory();
-          },
-          200
-        );
-      });
+      container.on('resize', _throttledRender);
 
       container.on(
         'click',
@@ -262,6 +279,23 @@
             break;
         }
       });
+    }
+
+    function _detachEvents() {
+      $(window).off('resize', _throttledRender);
+    }
+
+    function _throttledRender() {
+
+      clearTimeout(resizeRerenderTimeout);
+
+      resizeRerenderTimeout = setTimeout(
+        function() {
+          console.log('rerender on window resize event');
+          _renderStory();
+        },
+        200
+      );
     }
 
     /**

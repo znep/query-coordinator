@@ -52,15 +52,21 @@ es:
         not_supported_long: Actualmente este tipo de tarjeta no está disponible
         prompt: Elija una columna del menú desplegable superior para añadir una nueva tarjeta
         settings: Configuración
-        visualize_flyout: Visualizar esta columna como {0}
+        visualize_flyout:
+          choropleth: Visualizar esta columna como un coroplético
+          column_chart: Visualizar esta columna como un gráfico de columnas
+          distribution_chart: Visualizar esta columna como un gráfico de distribución
+          feature_map: Visualizar esta columna como un mapa de características
+          search_card: Visualizar esta columna como una tarjeta de búsqueda
+          timeline_chart: Visualizar esta columna como un gráfico cronológico
       aggregation_chooser:
+        by_the_number_of: <span class="information">al</span> número de
+        by_the_sum_of: <span class="information">a la</span> suma de
         count_label: contar {0} por elemento
         description: 'Ver los elementos de datos según los tamaños y colores siguientes:'
-        information: al
-        number_of: Número de
         option_disabled: No se puede usar esta columna con un<br>número total
         sum_label: añadir para cada {0}
-        sum_of: Suma de
+        the_number_of: El número de
         the_sum_of: La suma de
         title: Conjunto
         too_many_columns:
@@ -87,6 +93,10 @@ es:
         remove_card: Eliminar esta tarjeta
       card_layout:
         add_card_here: Añadir tarjeta aquí
+      card_titles:
+        average: promedio de {0}
+        number_of: número de {0}
+        sum_of: suma de {0}
       common:
         cancel: Cancelar
         cards:
@@ -94,7 +104,7 @@ es:
           column_chart: Gráfico de columnas
           distribution_chart: Gráfico de distribución
           feature_map: Mapa de características
-          search_card: Buscar tarjeta
+          search_card: Tarjeta de búsqueda
           timeline_chart: Gráfico cronológico
         change: Cambiar
         done: Hecho
@@ -188,12 +198,16 @@ es:
       mobile_warning_dialog:
         acknowledgement: De acuerdo, ¡ya está¡
         description: Estamos trabajando para mejorar la experiencia móvil de este sitio.
+      multiline_ellipsis:
+        show_less:
+        show_more:
       page_header:
         logo: Logo
         sign_in: Iniciar sesión
         sign_out: Cerrar sesión
         sign_up: Registrarse
       quick_filter_bar:
+        clear_all: Borrar Todos
         clear_all_flyout: Haga clic para borrar todos los filtros
         filter_title: Mostrando <span class="light">el {0}</span>
       related_views:
@@ -226,6 +240,7 @@ es:
         flyoutFailedTitle: Ha habido un error
         flyoutIdle: Haga clic para guardar los cambios
         flyoutNoChanges: No hay cambios que guardar
+        save: Guardar
         saved: "¡Guardado!"
         saving: Guardando...
       search_card:
@@ -237,6 +252,13 @@ es:
         prompt_text: Escriba algo de texto y pulse Enter para buscar
         search_info: Mostrando {0} de {1} resultados que coinciden
         two_examples: 'Ejemplos: ''{0}'' o ''{1}'''
+      suggestion_tool_panel:
+        all_suggestions:
+        max_suggestions:
+        no_suggestions:
+        no_suggestions_hint:
+        only_suggestion:
+        some_suggestions_hint:
       table:
         a_to_z: A-Z
         ascending: ascendente
@@ -245,6 +267,7 @@ es:
         loading: Cargando...
         newest_first: las más nuevas primero
         no_rows: No hay filas que mostrar
+        no_sort:
         oldest_first: las más antiguas primero
         range_label: "{0} <strong>{1}-{2} de {3}</strong>"
         range_label_all: Mostrando todo {0} {1}
@@ -272,7 +295,12 @@ es:
         compact_list: Ver como una lista compacta
         create_dataset: Crear o subir su propio conjunto de datos
         create_dataset_short: Crear un nuevo conjunto de datos
+        create_dataset_shorter:
         create_dataset_verb: Crear
+        create_resource:
+        create_resource_short:
+        create_resource_verb:
+        create_story_short:
         dataset_subscribe: Suscribirse para ver cambios en esta vista
         delete:
           button: Borrar
@@ -558,8 +586,10 @@ es:
       edit_column_properties: Editar propiedades de la columna
       errors:
         cannot_edit_at_this_time: En este momento no se puede editar esta columna. Por favor, inténtelo de nuevo más tarde.
+        data_lens_is_incompatible_with_group_bys:
         primary_key_collision: Este valor ya existe como clave primaria. No debería sobrescribirlo.
         row_locked_for_edit: Actualmente no podemos editar una fila que se acaba de crear. Estamos trabajando para hacerlo posible. De momento, actualice la página antes de editar esta fila.
+        something_went_wrong:
       filter_this_column: Filtrar esta columna
       geocodes_pending: Las filas en la columna de localización están geocodificando todavía. Por favor, espere a que hayan finalizado para publicar este conjunto de datos
       hide_column: Esconder columna
@@ -1049,7 +1079,7 @@ es:
       title: Ajustes de página
   date:
     abbr_month_names:
-    - 
+    -
     - Ene
     - Feb
     - Mar
@@ -2441,6 +2471,9 @@ es:
       row_class: Fila de Clase
       row_identifier: Identificador de Fila
       row_identifier_help_text: El identificador de fila no se puede cambiar una vez se haya publicado una vista.
+      row_label:
+      row_label_help:
+      row_label_prompt:
       save: Guardar
       save_changes: Guardar cambios
       semantics_rdf: Semántica y Marco de Descripción de Recursos

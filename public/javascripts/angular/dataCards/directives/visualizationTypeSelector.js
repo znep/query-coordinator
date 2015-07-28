@@ -53,7 +53,7 @@
                 return;
               }
               return '<div class="flyout-title">{0}</div>'.
-                format(I18n.t('addCardDialog.visualizeFlyout', visualizationName));
+                format(I18n.t('addCardDialog.visualizeFlyout.' + visualizationName));
             }
           },
           destroySignal: scope.$destroyAsObservable(element)

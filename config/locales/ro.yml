@@ -52,15 +52,21 @@ ro:
         not_supported_long: Acest tip de card nu este acceptat momentan
         prompt: Alegeți o coloană dintre cele derulante de mai sus pentru a adăuga un card nou
         settings: Setări
-        visualize_flyout: Vizualizați această coloană ca pe o {0}
+        visualize_flyout:
+          choropleth: Vizualizați această coloană ca pe o choropleth
+          column_chart: Vizualizați această coloană ca pe o diagramă de tip coloană
+          distribution_chart: Vizualizați această coloană ca pe o diagramă de distribuție
+          feature_map: Vizualizați această coloană ca pe o cartă caracteristică
+          search_card: Vizualizați această coloană ca pe o căutare card
+          timeline_chart: Vizualizați această coloană ca pe o diagramă cronologică
       aggregation_chooser:
+        by_the_number_of: <span class="information">prin</span> număr de
+        by_the_sum_of: <span class="information">prin</span> suma de
         count_label: numărați {0} per element
         description: 'Vedeți elementele de date de mărimea sau culoarea:'
-        information: prin
-        number_of: Număr de
         option_disabled: Această coloană nu poate fi utilizată cu un<br>număr total
         sum_label: adăugați pentru fiecare {0}
-        sum_of: O sumă de
+        the_number_of: Număr de
         the_sum_of: Suma de
         title: "Însumare"
         too_many_columns:
@@ -87,6 +93,10 @@ ro:
         remove_card: Eliminați acest card
       card_layout:
         add_card_here: Adăugați cardul aici
+      card_titles:
+        average: medie de {0}
+        number_of: număr de {0}
+        sum_of: suma de {0}
       common:
         cancel: Anulare
         cards:
@@ -188,12 +198,16 @@ ro:
       mobile_warning_dialog:
         acknowledgement: Ok, am înțeles!
         description: Lucrăm la îmbunătățirea experienței dvs. pe acest site de pe dispozitivele mobile.
+      multiline_ellipsis:
+        show_less:
+        show_more:
       page_header:
         logo: Siglă
         sign_in: Conectare
         sign_out: Deconectare
         sign_up: "Înregistrare"
       quick_filter_bar:
+        clear_all: "Ştergere toate"
         clear_all_flyout: Apăsați pentru a reseta toate filtrele
         filter_title: Care arată <span class="light">{0}</span>
       related_views:
@@ -226,6 +240,7 @@ ro:
         flyoutFailedTitle: A survenit o eroare
         flyoutIdle: Apăsați pentru a salva modificările
         flyoutNoChanges: Nu există modificări de salvat
+        save: Salvare
         saved: Salvat!
         saving: Se salvează...
       search_card:
@@ -237,6 +252,13 @@ ro:
         prompt_text: Scrieți un text și apăsați Enter pentru a căuta
         search_info: Se afișează {0} din {1} rezultate potrivite
         two_examples: 'Exemple: ''{0}'' sau ''{1}'''
+      suggestion_tool_panel:
+        all_suggestions:
+        max_suggestions:
+        no_suggestions:
+        no_suggestions_hint:
+        only_suggestion:
+        some_suggestions_hint:
       table:
         a_to_z: A-Z
         ascending: crescător
@@ -245,6 +267,7 @@ ro:
         loading: Se încarcă...
         newest_first: cel mai nou primul
         no_rows: Nu există rânduri pentru afișare
+        no_sort:
         oldest_first: cel mai vechi primul
         range_label: "{0} <strong>{1}-{2} din {3}</strong>"
         range_label_all: Se afișează toate {0} {1}
@@ -272,7 +295,12 @@ ro:
         compact_list: Vizualizare ca listă compactă
         create_dataset: Creaţi sau încărcaţi propriul dvs. set de date
         create_dataset_short: Creaţi un set de date
+        create_dataset_shorter:
         create_dataset_verb: Creare
+        create_resource:
+        create_resource_short:
+        create_resource_verb:
+        create_story_short:
         dataset_subscribe: Semnaţi modificările acestei vizualizări
         delete:
           button: "Ştergere"
@@ -559,8 +587,10 @@ ro:
       edit_column_properties: Editare proprietăţi coloană
       errors:
         cannot_edit_at_this_time: "În acest moment, această coloană nu poate fi editată. Vă rugăm să încercați mai târziu."
+        data_lens_is_incompatible_with_group_bys:
         primary_key_collision: Această valoare există deja ca și cheie principală. Nu o puteți rescrie.
         row_locked_for_edit: "În prezent, nu putem edita un rând tocmai creat. Încă se lucrează pentru a face acest lucru posibil. Pentru moment, dați un Refresh la pagină, înainte de a edita acest rând."
+        something_went_wrong:
       filter_this_column: Filtraţi această coloană
       geocodes_pending: Rândurile din coloana de localizare sunt încă în geocodare. Vă rugăm să aşteptaţi până când ele sunt finalizate, pentru a publica acest set de date.
       hide_column: Ascundere coloană
@@ -1046,7 +1076,7 @@ ro:
       title: Setări pagină
   date:
     abbr_month_names:
-    - 
+    -
     - Ian
     - Feb
     - Mar
@@ -1615,7 +1645,7 @@ ro:
         share_facebook: Partajare pe Facebook
         share_twitter: Partajare pe Twitter
         snapshot_notice: Aceasta este o versiune publicată anterior a setului de date. Este arhivată şi nu poate fi modificată.
-        snapshot_title: 
+        snapshot_title:
         snapshot_title_html: Captat %{date}
         snapshot_unsavable: Seturile de date şi vizualizările captate nu pot fi create sau modificate
         subscribe: Abonare pentru modificări
@@ -2015,7 +2045,7 @@ ro:
           money:
             abbreviated: Abreviat
             currency: Monedă
-            format_mask_warning: 
+            format_mask_warning:
             no_precision: Niciuna
             precision: Precizie
             title: Formatare bani
@@ -2329,7 +2359,7 @@ ro:
             delete: "Ştregeţi această vizualizare"
             expand: Click pentru a extinde
           no_results: Nu există rezultate
-          no_results_html: 
+          no_results_html:
           pagination:
             last: Vedeţi cea mai recentă vizualizare
             next: Vedeţi următoarele %{count} vizualizări
@@ -2438,6 +2468,9 @@ ro:
       row_class: Clasă rând
       row_identifier: Identificator rând
       row_identifier_help_text: Identificatorul rândului nu poate fi schimbat din moment ce o vizualizare a fost publicată.
+      row_label:
+      row_label_help:
+      row_label_prompt:
       save: Salvare
       save_changes: Salvare modificare
       semantics_rdf: Semantice şi RDF

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function PageHelpersService(Assert, Page) {
+  function PageHelpersService(Assert, Page, I18n) {
     return {
       dynamicAggregationTitle: function(pageModel) {
         Assert(pageModel instanceof Page, 'pageModel must be a Page model, durr');
@@ -20,21 +20,21 @@
         var countTitleSequence = Rx.Observable.combineLatest(
           aggregationObservable.filter(function(value) { return value['function'] === 'count'; }),
           function(value) {
-            return 'number of {0}'.format(value.unit.pluralize());
+            return I18n.t('cardTitles.numberOf', value.unit.pluralize());
           });
 
         var sumTitleSequence = Rx.Observable.combineLatest(
           primaryAmountFieldNameSequence.filter(_.isPresent),
           aggregationObservable.filter(function(value) { return value['function'] === 'sum'; }),
           function(primaryAmountField) {
-            return 'sum of {0}'.format(primaryAmountField.pluralize());
+            return I18n.t('cardTitles.sumOf', primaryAmountField.pluralize());
           });
 
         var meanTitleSequence = Rx.Observable.combineLatest(
           primaryAmountFieldNameSequence.filter(_.isPresent),
           aggregationObservable.filter(function(value) { return value['function'] === 'mean'; }),
           function(primaryAmountField) {
-            return 'average {0}'.format(primaryAmountField);
+            return I18n.t('cardTitles.average', primaryAmountField);
           });
 
         return Rx.Observable.merge(

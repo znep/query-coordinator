@@ -41,7 +41,7 @@
    *     show-more-mode="expand-link"
    *     text="{{large_multi_line_content}}"></div>
   */
-  angular.module('dataCards.directives').directive('multilineEllipsis', function($q, FlyoutService) {
+  angular.module('dataCards.directives').directive('multilineEllipsis', function($q, FlyoutService, I18n) {
     return {
       scope: {
         'maxLines': '@',
@@ -56,6 +56,8 @@
           'class="show-more" ' +
           'ng-class="{less: expanded, clamped: textClamped}" ' +
           'ng-click="$parent.expanded = !expanded">' +
+          '<span ng-show="expanded">{0}</span>'.format(I18n.multilineEllipsis.showLess) +
+          '<span ng-hide="expanded">{0}</span>'.format(I18n.multilineEllipsis.showMore) +
           '<span class="show-more-arrow"></span>' +
         '</div>',
       restrict : 'A',

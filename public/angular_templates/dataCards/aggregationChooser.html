@@ -1,16 +1,18 @@
 <div class="tool-panel" ng-hide="unitLabel.name == ''">
-  <span class="information">{{'aggregationChooser.information' | I18n}} </span>
   <span
     class="aggregation-chooser-static-label"
-    ng-hide="hasAggregableColumns">{{'aggregationChooser.numberOf' | I18n}} {{unitLabel.pluralCapitalized}}
+    ng-hide="hasAggregableColumns">
+    <span ng-bind-html="'aggregationChooser.byTheNumberOf' | I18n"></span>
+    {{unitLabel.pluralCapitalized}}
   </span>
   <a
     class="aggregation-chooser-trigger"
     ng-show="hasAggregableColumns"
     ng-class="{ disabled: !canChooseAggregation }"
     ng-click="panelActive = canChooseAggregation && !panelActive">
-    {{('aggregationChooser.' + aggregationFunction.name + 'Of') | I18n}} {{activeAggregation.pluralCapitalized}}
-    <span></span>
+    <span ng-bind-html="('aggregationChooser.byThe' + aggregationFunction.name.capitalize() + 'Of') | I18n"></span>
+    {{activeAggregation.pluralCapitalized}}
+    <span class="tool-panel-cue"></span>
   </a>
   <div ng-class="{ active: panelActive }" class="tool-panel-main">
     <div class="tool-panel-inner-container">
@@ -26,7 +28,7 @@
             data-aggregation-type="count"
             ng-class="{ active: (aggregationFunction.type == 'count') || countFunctionHover }"
             ng-click="setAggregationFunction($event, 'count')">
-              <span class="label">{{'aggregationChooser.numberOf' | I18n}}</span>
+              <span class="label">{{'aggregationChooser.theNumberOf' | I18n}}</span>
               <span class="sublabel">{{'aggregationChooser.countLabel' | I18n:rowDisplayUnitLabel.plural}}</span>
           </a>
           <a

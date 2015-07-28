@@ -52,15 +52,21 @@ fr:
         not_supported_long: Ce type de carte n'est pas pris en charge pour le moment
         prompt: Choisir une colonne dans la liste déroulante ci-dessus pour ajouter une nouvelle carte
         settings: Paramètres
-        visualize_flyout: Visualiser cette colonne en tant que {0}
+        visualize_flyout:
+          choropleth: Visualiser cette colonne comme choroplèthe
+          column_chart: Visualiser cette colonne comme diagramme à colonnes
+          distribution_chart: Visualiser cette colonne comme graphique de distribution
+          feature_map: Visualiser cette colonne comme carte présentée
+          search_card: Visualiser cette colonne comme carte de recherche
+          timeline_chart: Visualiser cette colonne en tant que frise chronologique
       aggregation_chooser:
+        by_the_number_of: <span class="information">par le</span> nombre de
+        by_the_sum_of: <span class="information">par la</span> somme de
         count_label: compter {0} par élément
         description: 'Afficher les éléments de données calibrées ou colorées par :'
-        information: 'par le '
-        number_of: Nombre de
         option_disabled: Cette colonne ne peut pas être utilisée avec un<br>nombre d'agrégats
         sum_label: ajouter pour chacun {0}
-        sum_of: Somme de
+        the_number_of: Le nombre de
         the_sum_of: La somme de
         title: Agrégation
         too_many_columns:
@@ -87,6 +93,10 @@ fr:
         remove_card: Enlever cette carte
       card_layout:
         add_card_here: Ajouter carte ici
+      card_titles:
+        average: moyenne de {0}
+        number_of: nombre de {0}
+        sum_of: somme de {0}
       common:
         cancel: Annuler
         cards:
@@ -94,8 +104,8 @@ fr:
           column_chart: Diagramme à colonnes
           distribution_chart: Graphique de distribution
           feature_map: Carte présentée
-          search_card: Rechercher carte
-          timeline_chart: 'Frise chronologique '
+          search_card: Carte de recherche
+          timeline_chart: Frise chronologique
         change: Modifier
         done: Terminé
         download: Télécharger
@@ -188,12 +198,16 @@ fr:
       mobile_warning_dialog:
         acknowledgement: D'accord, compris !
         description: Nous travaillons sur l'amélioration de l'expérience mobile sur ce site.
+      multiline_ellipsis:
+        show_less:
+        show_more:
       page_header:
         logo: Log
         sign_in: Connexion
         sign_out: Déconnexion
         sign_up: inscription
       quick_filter_bar:
+        clear_all: Tout Effacer
         clear_all_flyout: Cliquer pour réinitialiser tous les filtres
         filter_title: Affichage <span class="light">du {0}</span>
       related_views:
@@ -226,7 +240,8 @@ fr:
         flyoutFailedTitle: Une erreur s'est produite
         flyoutIdle: Cliquer pour sauvegarder vos modifications
         flyoutNoChanges: Aucun changement à sauvegarder
-        saved: Enregistré !
+        save: Enregistrer
+        saved: Enregistré!
         saving: Sauvegarde...
       search_card:
         invalid_search: Essayer de chercher un nombre qui n'a pas de lettres.
@@ -237,6 +252,13 @@ fr:
         prompt_text: Taper du texte et appuyer sur entrer pour rechercher
         search_info: Affichage de {0} de {1} résultats correspondants
         two_examples: 'Exemples : ''{0}'' ou ''{1}'''
+      suggestion_tool_panel:
+        all_suggestions:
+        max_suggestions:
+        no_suggestions:
+        no_suggestions_hint:
+        only_suggestion:
+        some_suggestions_hint:
       table:
         a_to_z: A-Z
         ascending: croissant
@@ -245,6 +267,7 @@ fr:
         loading: Chargement...
         newest_first: le plus récent en premier
         no_rows: Aucune rangée à afficher
+        no_sort:
         oldest_first: le plus vieux en premier
         range_label: "{0} <strong>{1}-{2} sur {3}</strong>"
         range_label_all: Tout afficher {0} {1}
@@ -272,7 +295,12 @@ fr:
         compact_list: Visualiser en liste compacte
         create_dataset: Créez ou téléchargez votre propre série
         create_dataset_short: Créez une nouvelle série de données
+        create_dataset_shorter:
         create_dataset_verb: Créer
+        create_resource:
+        create_resource_short:
+        create_resource_verb:
+        create_story_short:
         dataset_subscribe: Abonnez-vous aux changements de cette vue
         delete:
           button: Enlever
@@ -558,8 +586,10 @@ fr:
       edit_column_properties: Modifier les propriétés de la colonne
       errors:
         cannot_edit_at_this_time: Cette colonne ne peut pas être éditée pour le moment. Veuillez réessayer.
+        data_lens_is_incompatible_with_group_bys:
         primary_key_collision: Cette valeur existe déjà en tant que clé principale. Vous ne pouvez pas l'écraser.
         row_locked_for_edit: Actuellement, nous ne pouvons éditer une rangée qui vient à peine d'être crée. Nous travaillons pour rendre la chambre la plus accueillante possible.
+        something_went_wrong:
       filter_this_column: Filtrer cette colonne
       geocodes_pending: Les rangées dans la colonne d'emplacement sont toujours en cours de géocodage. Veuillez attendre leur complétion pour publier ce set de données
       hide_column: Cacher la colonne
@@ -2001,7 +2031,7 @@ fr:
           money:
             abbreviated: Abréviation
             currency: Monnaie
-            format_mask_warning: 
+            format_mask_warning:
             no_precision: Néant
             precision: Précision
             title: Formatage de données monétaires
@@ -2424,6 +2454,9 @@ fr:
       row_class: Classe de ligne
       row_identifier: Identificateur de ligne
       row_identifier_help_text: L'identifiant de rangée ne peut être modifié une fois qu'une vue est publiée.
+      row_label:
+      row_label_help:
+      row_label_prompt:
       save: Sauvegarder
       save_changes: Sauvegarder les modifications
       semantics_rdf: Sémantique & système RDF

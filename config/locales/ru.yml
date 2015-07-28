@@ -52,15 +52,21 @@ ru:
         not_supported_long: "Этот тип карты в данный момент не поддерживается"
         prompt: "Выбрать столбец из раскрывающегося меню выше, чтобы добавить новую карту"
         settings: "Настройки"
-        visualize_flyout: "Визуализировать этот столбец как {0}"
+        visualize_flyout:
+          choropleth: "Визуализировать этот столбец как картограмма"
+          column_chart: "Визуализировать этот столбец как гистограмма"
+          distribution_chart: "Визуализировать этот столбец как карта распределения"
+          feature_map: "Визуализировать этот столбец как характеристическая карта"
+          search_card: "Визуализировать этот столбец как искать карту"
+          timeline_chart: "Визуализировать этот столбец как хронологическая таблица"
       aggregation_chooser:
+        by_the_number_of: <span class="information">по</span> количество
+        by_the_sum_of: <span class="information">по</span> сумма
         count_label: "счет {0} по элементам"
         description: "Просмотреть элементы данных, рассортированные или раскрашенные по:"
-        information: "по"
-        number_of: "Количество"
         option_disabled: "Это столбец невозможно использовать с количеством <br> статистических вычислений"
         sum_label: "добавить к каждому {0}"
-        sum_of: "Сумма"
+        the_number_of: "Количество"
         the_sum_of: "Сумма"
         title: "Агрегирование"
         too_many_columns:
@@ -87,13 +93,17 @@ ru:
         remove_card: "Удалить эту карту"
       card_layout:
         add_card_here: "Добавить карту здесь"
+      card_titles:
+        average: "средний {0}"
+        number_of: "количество {0}"
+        sum_of: "сумма {0}"
       common:
         cancel: "Отмена"
         cards:
           choropleth: "Картограмма"
           column_chart: "Гистограмма"
           distribution_chart: "Карта распределения"
-          feature_map: "Характеристическая карта "
+          feature_map: "Характеристическая карта"
           search_card: "Искать карту"
           timeline_chart: "Хронологическая таблица"
         change: "Изменить"
@@ -188,12 +198,16 @@ ru:
       mobile_warning_dialog:
         acknowledgement: OK, понятно!
         description: "Мы работаем над улучшением использования этого сайта для мобильных устройств."
+      multiline_ellipsis:
+        show_less:
+        show_more:
       page_header:
         logo: "Логотип"
         sign_in: "Вход"
         sign_out: "Выйти"
         sign_up: "Зарегистрироваться"
       quick_filter_bar:
+        clear_all: "Очистить все"
         clear_all_flyout: "Нажать, чтобы сбросить все фильтры"
         filter_title: Отображение <span class="light">{0}</span>
       related_views:
@@ -226,6 +240,7 @@ ru:
         flyoutFailedTitle: "Произошла ошибка"
         flyoutIdle: "Нажать, чтобы сохранить изменения"
         flyoutNoChanges: "Нет изменений для сохранения"
+        save: "Сохранить"
         saved: "Сохранено!"
         saving: "Идет сохранение..."
       search_card:
@@ -237,6 +252,13 @@ ru:
         prompt_text: "Введите текст и нажмите ВВОД для поиска"
         search_info: "Отображение {0} из {1} соответствующих результатов"
         two_examples: "Примеры: '{0}' or '{1}'"
+      suggestion_tool_panel:
+        all_suggestions:
+        max_suggestions:
+        no_suggestions:
+        no_suggestions_hint:
+        only_suggestion:
+        some_suggestions_hint:
       table:
         a_to_z: "А — Я"
         ascending: "по возрастанию"
@@ -245,6 +267,7 @@ ru:
         loading: "Загрузка..."
         newest_first: "начиная с самого нового"
         no_rows: "Нет строк для показа"
+        no_sort:
         oldest_first: "начиная с самого старого"
         range_label: "{0} <strong>{1}-{2} из {3}</strong>"
         range_label_all: "Показ всех {0} {1}"
@@ -272,7 +295,12 @@ ru:
         compact_list: "В виде краткого списка"
         create_dataset: "Создать или загрузить ваш собственный массив данных"
         create_dataset_short: "Создать новый массив данных"
+        create_dataset_shorter:
         create_dataset_verb: "Создать"
+        create_resource:
+        create_resource_short:
+        create_resource_verb:
+        create_story_short:
         dataset_subscribe: "Подписаться на изменения в этом режиме просмотра"
         delete:
           button: "Удалить"
@@ -558,8 +586,10 @@ ru:
       edit_column_properties: "Редактировать свойства столбца"
       errors:
         cannot_edit_at_this_time: "В данный момент столбец нельзя редактировать. Пожалуйста, повторите попытку позже."
+        data_lens_is_incompatible_with_group_bys:
         primary_key_collision: "Это значение уже существует как первичный ключ. Вы не можете его перезаписать."
         row_locked_for_edit: "В данный момент мы не можем редактировать только что созданную строку. Мы работаем над тем, чтобы сделать это возможным. Пока обновите страницу перед редактированием этой строки."
+        something_went_wrong:
       filter_this_column: "Применить фильтр к этому столбцу"
       geocodes_pending: "Строки в столбце расположения все еще геокодируются. Подождите до завершения для публикации этого набора данных."
       hide_column: "Скрыть столбец"
@@ -1045,7 +1075,7 @@ ru:
       title: "Настройки страницы"
   date:
     abbr_month_names:
-    - 
+    -
     - "Янв"
     - "Феб"
     - "Мар"
@@ -2450,6 +2480,9 @@ ru:
       row_class: "Класс строк"
       row_identifier: "Идентификатор столбца"
       row_identifier_help_text: "Невозможно изменить идентификатор строки после публикации вида."
+      row_label:
+      row_label_help:
+      row_label_prompt:
       save: "Сохранить"
       save_changes: "Сохранить изменения"
       semantics_rdf: "Семантика и система описания ресурсов"

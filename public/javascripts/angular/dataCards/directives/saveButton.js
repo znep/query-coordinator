@@ -21,11 +21,16 @@
     module('dataCards.directives').
     filter('saveStatusText', function(I18n) {
       return function saveStatusTextMapping(status) {
-        if (status === 'saving') { return I18n.saveButton.saving; }
-        if (status === 'saved') { return I18n.saveButton.saved; }
-        if (status === 'failed') { return I18n.saveButton.failed; }
-
-        return 'Save';
+        switch (status) {
+          case 'saving':
+            return I18n.saveButton.saving;
+          case 'saved':
+            return I18n.saveButton.saved;
+          case 'failed':
+            return I18n.saveButton.failed;
+          default:
+            return I18n.saveButton.save;
+        }
       };
     }).
     directive('saveButton', saveButton);

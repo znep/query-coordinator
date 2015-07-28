@@ -52,16 +52,22 @@ de:
         not_supported_long: Dieser Card-Typ wird momentan nicht unterstützt
         prompt: Eine Spalte aus der Dropdown-Liste wählen, um eine neue Card hinzuzufügen.
         settings: Einstellungen
-        visualize_flyout: Diese Spalte als {0} anzeigen
+        visualize_flyout:
+          choropleth: Diese Spalte als Flächenkartogramm anzeigen
+          column_chart: Diese Spalte als Spaltendiagramm anzeigen
+          distribution_chart: Diese Spalte als Verteilungsdiagramm anzeigen
+          feature_map: Diese Spalte als Merkmalskarte anzeigen
+          search_card: Diese Spalte als Such-Card anzeigen
+          timeline_chart: Diese Spalte als Zeitleisten-Card anzeigen
       aggregation_chooser:
+        by_the_number_of: <span class="information">durch die</span> Anzahl der
+        by_the_sum_of: <span class="information">durch die</span> Summe der
         count_label: Anzahl {0} pro Element
         description: 'Größe oder Farbe der Datenelemente bedingt durch:'
-        information: durch/am
-        number_of: Anzahl von
         option_disabled: Diese Spalte kann nicht mit einer<br>Aggregatnummer verwendet werden
         sum_label: für jede(-es/-en) {0} hinzufügen
-        sum_of: Summe von
-        the_sum_of: Die Summe von
+        the_number_of: Die Anzahl der
+        the_sum_of: Die Summe der
         title: Aggregierung
         too_many_columns:
           message: Wir sind momentan nicht in der Lage, die Summe als Aggregierung von Data Lens Seiten anzubieten, die mehr als {0} Spalten vom Typ Number (Zahl) oder Money (Währung) sind.
@@ -87,6 +93,10 @@ de:
         remove_card: DIese Card entfernen
       card_layout:
         add_card_here: Hier Card hinzufügen
+      card_titles:
+        average: Durchschnitt der {0}
+        number_of: Anzahl der {0}
+        sum_of: Summe der {0}
       common:
         cancel: Abbrechen
         cards:
@@ -188,12 +198,16 @@ de:
       mobile_warning_dialog:
         acknowledgement: OK, ich habe verstanden!
         description: Wir arbeiten an der Verbesserung der Mobil-Nutzererfahrung dieser Webseite.
+      multiline_ellipsis:
+        show_less:
+        show_more:
       page_header:
         logo: Logo
         sign_in: Anmelden
         sign_out: Abmelden
         sign_up: Registrieren
       quick_filter_bar:
+        clear_all: Alle löschen
         clear_all_flyout: Klicken, um alle Filter zu löschen
         filter_title: Anzeige von <span class="light">{0}</span>
       related_views:
@@ -226,6 +240,7 @@ de:
         flyoutFailedTitle: Ein Fehler ist unterlaufen
         flyoutIdle: Klicken, um Ihre Änderungen zu speichern
         flyoutNoChanges: Keine Änderungen zum Speichern vorhanden
+        save: Speichern
         saved: Gespeichert!
         saving: Am Speichern ...
       search_card:
@@ -237,6 +252,13 @@ de:
         prompt_text: Zum Suchen Text eingeben und Enter drücken
         search_info: "{0} von {1} passenden Ergebnissen angezeigt"
         two_examples: 'Beispiele: ''{0}'' oder ''{1}'''
+      suggestion_tool_panel:
+        all_suggestions:
+        max_suggestions:
+        no_suggestions:
+        no_suggestions_hint:
+        only_suggestion:
+        some_suggestions_hint:
       table:
         a_to_z: A-Z
         ascending: aufsteigend
@@ -245,6 +267,7 @@ de:
         loading: Laden ...
         newest_first: neuester Wert zuerst
         no_rows: Keine Reihen anzuzeigen
+        no_sort:
         oldest_first: "ältester Wert zuerst"
         range_label: "{0} <strong>{1}-{2} von {3}</strong>"
         range_label_all: Alle {0} {1} angezeigt
@@ -272,7 +295,12 @@ de:
         compact_list: Als kompakte Liste ansehen
         create_dataset: Ihren eigenen Datensatz erstellen oder hochladen
         create_dataset_short: Einen neuen Datensatz erstellen
+        create_dataset_shorter:
         create_dataset_verb: Erstellen
+        create_resource:
+        create_resource_short:
+        create_resource_verb:
+        create_story_short:
         dataset_subscribe: "Änderungen in dieser Ansicht abonnieren"
         delete:
           button: Löschen
@@ -558,8 +586,10 @@ de:
       edit_column_properties: Spalten-Eigenschaften beearbeiten
       errors:
         cannot_edit_at_this_time: Diese Spalte kann momentan nicht geändert werden. Bitte veruchen Sie es später erneut.
+        data_lens_is_incompatible_with_group_bys:
         primary_key_collision: Dieser Wert existiert bereits als Schlüssel. Sie können ihn nicht überschreiben.
         row_locked_for_edit: Momentan können wir keine soeben erstellte Zeile ändern. Wir arbeiten daran, es zukünftig zu ermöglichen. Bis dahin aktualisieren Sie bitte die Seite, bevor Sie die Zeile ändern.
+        something_went_wrong:
       filter_this_column: Diese Spalte filtern
       geocodes_pending: Zeilen in der Standort-Spalte werden immer noch geokodiert. Bitte warten Sie, bis dies beendet ist, um diesen Datensatz zu veröffentlichen
       hide_column: Spalte ausblenden
@@ -1045,7 +1075,7 @@ de:
       title: Seiteneinstellungen
   date:
     abbr_month_names:
-    - 
+    -
     - Jan
     - Feb
     - Mrz
@@ -2328,7 +2358,7 @@ de:
             delete: Diese Ansicht löschen
             expand: Zum Erweitern klicken
           no_results: Es gibt keine Ergebnisse
-          no_results_html: 
+          no_results_html:
           pagination:
             last: Letzte Ansicht anzeigen
             next: 'Die nächsten %{count} anzeigen '
@@ -2437,6 +2467,9 @@ de:
       row_class: Zeilenklasse
       row_identifier: Zeilen-Identifizierer
       row_identifier_help_text: Der Zeilen-Identifikator kann nicht mehr geändert werden, sobald die View veröffenlicht wird.
+      row_label:
+      row_label_help:
+      row_label_prompt:
       save: Speichern
       save_changes: "Änderungen speichern"
       semantics_rdf: Semantik & RDF

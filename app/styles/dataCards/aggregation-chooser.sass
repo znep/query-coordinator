@@ -6,9 +6,6 @@ $tool-panel-hint-size: 22px
 aggregation-chooser
   float: right
 
-  .information
-    opacity: 0.6
-
   .aggregation-chooser-trigger
     cursor: pointer
     position: relative
@@ -17,7 +14,10 @@ aggregation-chooser
     &.disabled
       cursor: default
 
-    span
+    .information
+      opacity: 0.6
+
+    .tool-panel-cue
       display: inline-block
       margin-right: 3px
       padding: 1px 6px

@@ -52,15 +52,21 @@ it:
         not_supported_long: Questo tipo di scheda non è al momento supportata
         prompt: Scegli una colonna dal menu a discesa presente sopra per aggiungere una nuova scheda
         settings: Impostazioni
-        visualize_flyout: Visualizza questa colonna come un/una {0}
+        visualize_flyout:
+          choropleth: Visualizza questa colonna come una coropletica
+          column_chart: Visualizza questa colonna come un grafico a colonne
+          distribution_chart: Visualizza questa colonna come un grafico di distribuzione
+          feature_map: Visualizza questa colonna come una mappa delle funzionalità
+          search_card: Visualizza questa colonna come una cerca scheda
+          timeline_chart: Visualizza questa colonna come un grafico temporale
       aggregation_chooser:
+        by_the_number_of: <span class="information">dal</span> numero di
+        by_the_sum_of: <span class="information">dalla</span> somma di
         count_label: considera {0} per elemento
         description: 'Visualizza gli elementi dei dati ridimensionati o colorati da:'
-        information: dal/dalla
-        number_of: Numero di
         option_disabled: Questa colonna non può essere usata con un<br>numero di aggregazione
         sum_label: aggiungi per ognuno {0}
-        sum_of: Somma di
+        the_number_of: Il numero di
         the_sum_of: La somma di
         title: Aggregazione
         too_many_columns:
@@ -87,6 +93,10 @@ it:
         remove_card: Rimuovi questa scheda
       card_layout:
         add_card_here: Aggiungi scheda qui
+      card_titles:
+        average: media di {0}
+        number_of: numero di {0}
+        sum_of: somma di {0}
       common:
         cancel: Annulla
         cards:
@@ -188,12 +198,16 @@ it:
       mobile_warning_dialog:
         acknowledgement: Va bene, ho capito!
         description: Stiamo laviorando per migliorare l'esperienza mobile su questo sito.
+      multiline_ellipsis:
+        show_less:
+        show_more:
       page_header:
         logo: Logo
         sign_in: Accedi
         sign_out: Esci
         sign_up: Registrati
       quick_filter_bar:
+        clear_all: Cancella Tutto
         clear_all_flyout: Fai clic per reimpostare tutti i filtri
         filter_title: Mostra di <span class="light">il {0}</span>
       related_views:
@@ -226,6 +240,7 @@ it:
         flyoutFailedTitle: Si è verificato un errore
         flyoutIdle: Fai clic per salvare le tue modifiche
         flyoutNoChanges: Nessuna modifica da salvare
+        save: Salva
         saved: Salvata!
         saving: Salvataggio...
       search_card:
@@ -237,6 +252,13 @@ it:
         prompt_text: Digita del testo e premi invio per cercare
         search_info: Sto mostrando {0} di {1} risultati corrispondenti
         two_examples: 'Esempi: ''{0}'' o ''{1}'''
+      suggestion_tool_panel:
+        all_suggestions:
+        max_suggestions:
+        no_suggestions:
+        no_suggestions_hint:
+        only_suggestion:
+        some_suggestions_hint:
       table:
         a_to_z: A-Z
         ascending: ordine crescente
@@ -245,6 +267,7 @@ it:
         loading: Caricamento...
         newest_first: prima il più nuovo
         no_rows: Nessuna riga da visualizzare
+        no_sort:
         oldest_first: prima il più vecchio
         range_label: "{0} <strong>{1}-{2} di {3}</strong>"
         range_label_all: Sto mostrando tutto {0} {1}
@@ -272,7 +295,12 @@ it:
         compact_list: Visualizza come lista compatta
         create_dataset: Crea o carica il tuo dataset
         create_dataset_short: Crea un nuovo Dataset
+        create_dataset_shorter:
         create_dataset_verb: Crea
+        create_resource:
+        create_resource_short:
+        create_resource_verb:
+        create_story_short:
         dataset_subscribe: Sottoscrivi le modifiche a questa visualizzazione
         delete:
           button: Cancella
@@ -558,8 +586,10 @@ it:
       edit_column_properties: Modifica delle proprietà della colonna
       errors:
         cannot_edit_at_this_time: In questo momento, la colonna non può essere modificata. Ti preghiamo di riprovare più tardi.
+        data_lens_is_incompatible_with_group_bys:
         primary_key_collision: Questo valore è già presente come chiave primaria. Non è possibile sovrascriverlo.
         row_locked_for_edit: Attualmente, non possiamo modificare una riga appena creata. Stiamo lavorando per renderlo possibile. Per il momento, aggiorna la pagina prima di modificare questa riga.
+        something_went_wrong:
       filter_this_column: Filtra questa colonna
       geocodes_pending: Le linee nella colonna località non sono ancora state geocodificate. Attendere fino a quando la pubblicazione di questo dataset non sarà completata.
       hide_column: Nascondi colonna
@@ -1045,7 +1075,7 @@ it:
       title: Settaggi della Pagina
   date:
     abbr_month_names:
-    - 
+    -
     - Gen
     - Feb
     - Mar
@@ -2437,6 +2467,9 @@ it:
       row_class: Classe del record
       row_identifier: Identificatore del record
       row_identifier_help_text: Una volta che una vista è stata pubblicata, l'identificatore di riga non può essere modificato.
+      row_label:
+      row_label_help:
+      row_label_prompt:
       save: Salva
       save_changes: Salva le modifiche
       semantics_rdf: Semantica e RDF

@@ -13,6 +13,7 @@
    *                                 All contents will be replaced.
    */
   function DragDrop(handles, ghostElement) {
+
     if (!handles.hasOwnProperty('length')) {
       throw new Error('`handles` argument must be an array-like');
     }
@@ -30,6 +31,10 @@
     var _storyUidDraggedOver;
 
     this.handles = handles; // Needed for unidragger integration.
+
+    this.setup = function() {
+      this.bindHandles(); //function from unidragger
+    };
 
     this.dragStart = function(event, pointer) {
       var sourceBlockElement;
@@ -115,11 +120,6 @@
         });
       }
     };
-
-    this.setup = function() {
-      this.bindHandles(); //function from unidragger
-    };
-
   }
 
 

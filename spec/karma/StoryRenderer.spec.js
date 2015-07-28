@@ -1,31 +1,21 @@
 describe('StoryRenderer', function() {
 
-  // Pull out commonly-used mock story information from StandardMocks.
+  var storyteller = window.socrata.storyteller;
   var storyUid;
   var imageBlockId;
   var textBlockId;
   var options;
-  var StoryRenderer;
   var dispatcher;
-  var storyteller = window.socrata.storyteller;
 
   beforeEach(function() {
-    dispatcher = storyteller.dispatcher;
-    StoryRenderer = storyteller.StoryRenderer;
+
+    storyteller.dispatcher = storyteller.dispatcher;
+    storyteller.StoryRenderer = storyteller.StoryRenderer;
 
     storyUid = standardMocks.validStoryUid;
     imageBlockId = standardMocks.imageBlockId;
     textBlockId = standardMocks.textBlockId;
-  });
 
-  function forceRender() {
-    dispatcher.dispatch({
-      action: Constants.STORY_OVERWRITE_STATE,
-      data: storyteller.storyStore.serializeStory(storyUid)
-    });
-  }
-
-  beforeEach(function() {
     testDom.append(
         $('<div>', { 'class': 'story-container' })
       ).append(
@@ -43,6 +33,19 @@ describe('StoryRenderer', function() {
     };
   });
 
+  afterEach(function() {
+    if (storyteller.storyRenderer) {
+      storyteller.storyRenderer.destroy();
+    }
+  });
+
+  function forceRender() {
+    storyteller.dispatcher.dispatch({
+      action: Constants.STORY_OVERWRITE_STATE,
+      data: storyteller.storyStore.serializeStory(storyUid)
+    });
+  }
+
   describe('constructor', function() {
 
     describe('when passed a configuration object', function() {
@@ -54,19 +57,19 @@ describe('StoryRenderer', function() {
           options.onRenderError = null;
 
           assert.throws(function() {
-            var renderer = new StoryRenderer(options);
+            storyteller.storyRenderer = new storyteller.StoryRenderer(options);
           });
         });
       });
 
       describe('with no onRenderError property', function() {
 
-        it('creates a new StoryRenderer', function() {
+        it('creates a new storyteller.StoryRenderer', function() {
 
           delete options['onRenderError'];
 
-          var renderer = new StoryRenderer(options);
-          assert.instanceOf(renderer, StoryRenderer, 'renderer is instance of StoryRenderer');
+          storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+          assert.instanceOf(storyteller.storyRenderer, storyteller.StoryRenderer, 'renderer is instance of StoryRenderer');
         });
       });
 
@@ -77,7 +80,7 @@ describe('StoryRenderer', function() {
           options.storyUid = {};
 
           assert.throws(function() {
-            var renderer = new StoryRenderer(options);
+            storyteller.storyRenderer = new storyteller.StoryRenderer(options);
           });
         });
       });
@@ -89,7 +92,7 @@ describe('StoryRenderer', function() {
           options.storyContainerElement = {};
 
           assert.throws(function() {
-            var renderer = new StoryRenderer(options);
+            storyteller.storyRenderer = new storyteller.StoryRenderer(options);
           });
         });
       });
@@ -100,7 +103,7 @@ describe('StoryRenderer', function() {
           var uid = options.storyContainerElement.attr('data-story-uid');
           assert.isUndefined(uid);
 
-          var renderer = new StoryRenderer(options);
+          storyteller.storyRenderer = new storyteller.StoryRenderer(options);
           uid = options.storyContainerElement.attr('data-story-uid');
           assert.equal(uid, options.storyUid);
         });
@@ -113,7 +116,7 @@ describe('StoryRenderer', function() {
           options.insertionHintElement = {};
 
           assert.throws(function() {
-            var renderer = new StoryRenderer(options);
+            storyteller.storyRenderer = new storyteller.StoryRenderer(options);
           });
         });
       });
@@ -124,7 +127,7 @@ describe('StoryRenderer', function() {
           var uid = options.insertionHintElement.attr('data-story-uid');
           assert.isUndefined(uid);
 
-          var renderer = new StoryRenderer(options);
+          storyteller.storyRenderer = new storyteller.StoryRenderer(options);
           uid = options.insertionHintElement.attr('data-story-uid');
           assert.equal(uid, options.storyUid);
         });
@@ -139,7 +142,7 @@ describe('StoryRenderer', function() {
           options.editable = true;
 
           assert.throws(function() {
-            var renderer = new StoryRenderer(options);
+            storyteller.storyRenderer = new storyteller.StoryRenderer(options);
           });
         });
       });
@@ -157,7 +160,7 @@ describe('StoryRenderer', function() {
             }
 
             assert.throws(function() {
-              var renderer = new StoryRenderer(options);
+              storyteller.storyRenderer = new storyteller.StoryRenderer(options);
             });
           });
         });
@@ -173,7 +176,7 @@ describe('StoryRenderer', function() {
 
         it('renders blocks', function() {
 
-          var renderer = new StoryRenderer(options);
+          storyteller.storyRenderer = new storyteller.StoryRenderer(options);
           var numberOfBlocks = storyteller.storyStore.getStoryBlockIds(storyUid).length;
 
           assert.equal($('.block').length, numberOfBlocks);
@@ -181,16 +184,21 @@ describe('StoryRenderer', function() {
 
         it('does not render deleted blocks', function() {
 
-          var renderer = new StoryRenderer(options);
+          storyteller.storyRenderer = new storyteller.StoryRenderer(options);
           var numberOfBlocks = storyteller.storyStore.getStoryBlockIds(storyUid).length;
 
-          dispatcher.dispatch({ action: Constants.STORY_DELETE_BLOCK, storyUid: storyUid, blockId: imageBlockId });
+          storyteller.dispatcher.dispatch({
+            action: Constants.STORY_DELETE_BLOCK,
+            storyUid: storyUid,
+            blockId: imageBlockId
+          });
 
           assert.equal($('.block').length, numberOfBlocks - 1);
         });
 
         it('does not render the empty story warning', function() {
-          var renderer = new StoryRenderer(options);
+
+          storyteller.storyRenderer = new storyteller.StoryRenderer(options);
 
           assert.equal($('.message-empty-story').length, 0);
         });
@@ -212,10 +220,13 @@ describe('StoryRenderer', function() {
             ]
           });
 
-          dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyWithMedia });
+          storyteller.dispatcher.dispatch({
+            action: Constants.STORY_CREATE,
+            data: storyWithMedia
+          });
 
           options.storyUid = 'with-imge';
-          var renderer = new StoryRenderer(options);
+          storyteller.storyRenderer = new storyteller.StoryRenderer(options);
 
           assert.equal($('.block').length, 1);
         });
@@ -258,7 +269,7 @@ describe('StoryRenderer', function() {
 
           it('renders blocks but no insertion hint', function() {
 
-            var renderer = new StoryRenderer(options);
+            storyteller.storyRenderer = new storyteller.StoryRenderer(options);
             forceRender();
 
             assert($('.block').length > 0, 'there is more than one block');
@@ -279,7 +290,7 @@ describe('StoryRenderer', function() {
 
             it('renders blocks but no insertion hint', function() {
 
-              var renderer = new StoryRenderer(options);
+              storyteller.storyRenderer = new storyteller.StoryRenderer(options);
               forceRender();
 
               assert($('.block').length > 0, 'there is more than one block');
@@ -298,10 +309,13 @@ describe('StoryRenderer', function() {
         blocks: []
       });
 
-      dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyWithoutBlocks });
+      storyteller.dispatcher.dispatch({
+        action: Constants.STORY_CREATE,
+        data: storyWithoutBlocks
+      });
 
       options.storyUid = 'empt-yyyy';
-      var renderer = new StoryRenderer(options);
+      storyteller.storyRenderer = new storyteller.StoryRenderer(options);
 
       assert.equal($('.message-empty-story').length, 1);
       assert.isAbove($('.message-empty-story').text().length, 1);
@@ -311,7 +325,6 @@ describe('StoryRenderer', function() {
 
   describe('drag-and-drop insertion hint', function() {
 
-    var renderer;
     var validToolbar;
     var validFormats;
 
@@ -334,7 +347,7 @@ describe('StoryRenderer', function() {
       options.editable = true;
       options.insertionHintElement = $('.insertion-hint');
 
-      renderer = new StoryRenderer(options);
+      storyteller.storyRenderer = new storyteller.StoryRenderer(options);
     });
 
     afterEach(function() {
@@ -344,9 +357,10 @@ describe('StoryRenderer', function() {
     });
 
     function hintAtStoryAndBlock(storyUid, blockId) {
+
       // Cause DragDropStore to indicate we're dragging over
       // the given story and block.
-      dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.STORY_DRAG_OVER,
         storyUid: storyUid,
         blockId: blockId,
@@ -356,9 +370,10 @@ describe('StoryRenderer', function() {
     };
 
     function noHint() {
+
       // Cause DragDropStore to indicate we're dragging over
       // nothing at all.
-      dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.STORY_DRAG_LEAVE,
         storyUid: storyUid
       });

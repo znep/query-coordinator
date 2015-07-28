@@ -2,16 +2,19 @@
 
   'use strict';
 
+  var Util = storyteller.Util;
+
   function EmbedWizardStore() {
 
-    var Util = storyteller.Util;
+    _.extend(this, new storyteller.Store());
+
     var self = this;
     var _currentWizardState = null;
     var _currentBlockId = null;
     var _currentComponentIndex = null;
     var _currentComponentProperties = _getDefaultComponentProperties();
 
-    storyteller.dispatcher.register(function(payload) {
+    this.register(function(payload) {
 
       var action;
 
@@ -44,8 +47,6 @@
           break;
       }
     });
-
-    _.extend(self, new storyteller.Store());
 
     /**
      * Public methods

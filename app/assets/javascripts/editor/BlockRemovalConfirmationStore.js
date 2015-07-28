@@ -15,12 +15,13 @@
    */
   function BlockRemovalConfirmationStore() {
 
+    _.extend(this, new storyteller.Store());
+
     var self = this;
     var _blockNeedsConfirmation = {};
 
-    _.extend(this, new storyteller.Store());
+    this.register(function(payload) {
 
-    storyteller.dispatcher.register(function(payload) {
       var action = payload.action;
 
       switch (action) {

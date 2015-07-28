@@ -112,6 +112,7 @@ function applyStandardMocks() {
 }
 
 function removeStandardMocks() {
+
   var storyteller = window.socrata.storyteller;
 
   storyteller.SquireMocker.unmock();
@@ -134,14 +135,4 @@ function removeStandardMocks() {
 // If you don't want these standard mocks for a
 // particular test, see this file's top-level comment.
 beforeEach(applyStandardMocks);
-
-// Hillariously, removing the standard mocks in an `afterEach` appears to have
-// introduced a race condition in the tests whereby a `setTimeout` would
-// occasionally fire after the call to `removeStandardMocks()` and error out
-// because the store it tried to access no longer existed.
-//
-// Since we are overwriting the same variables on every test run, it seemed
-// unnecessary to actually remove them before overwriting them on the next
-// test run.
-//
-//afterEach(removeStandardMocks);
+afterEach(removeStandardMocks);

@@ -1,4 +1,5 @@
 describe('BlockRemovalConfirmationStore', function() {
+
   'use strict';
 
   describe('needsConfirmation', function() {

@@ -1,16 +1,18 @@
 ;(function(storyteller) {
+
   'use strict';
 
-  function DragDropStore() {
-    var self = this;
-    var Util = storyteller.Util;
-    var dispatcher = storyteller.dispatcher;
+  var Util = storyteller.Util;
 
-    var _reorderHintPosition = null;
+  function DragDropStore() {
 
     _.extend(this, new storyteller.Store());
 
-    storyteller.dispatcher.register(function(payload) {
+    var self = this;
+    var _reorderHintPosition = null;
+
+    this.register(function(payload) {
+
       switch(payload.action) {
         case Constants.STORY_DRAG_OVER:
           _storyDragOver(payload);
@@ -112,7 +114,7 @@
 
         _setReorderHintPosition(null);
 
-        dispatcher.dispatch({
+        storyteller.dispatcher.dispatch({
           action: Constants.STORY_INSERT_BLOCK,
           blockContent: payload.blockContent,
           storyUid: payload.storyUid,

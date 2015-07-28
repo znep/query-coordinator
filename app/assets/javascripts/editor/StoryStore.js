@@ -320,10 +320,14 @@
     }
 
     function _setStory(storyData, overwrite) {
+
+      var storyUid;
+      var blockIds;
+
       _validateStoryData(storyData);
 
-      var storyUid = storyData.uid;
-      var blockIds = [];
+      storyUid = storyData.uid;
+      blockIds = [];
 
       if (!overwrite && _stories.hasOwnProperty(storyUid)) {
         throw new Error(
@@ -346,9 +350,12 @@
     }
 
     function _setBlock(blockData, overwrite) {
+
+      var blockId;
+
       _validateBlockData(blockData);
 
-      var blockId = blockData.id;
+      blockId = blockData.id;
 
       if (!overwrite && _blocks.hasOwnProperty(blockId)) {
         throw new Error(

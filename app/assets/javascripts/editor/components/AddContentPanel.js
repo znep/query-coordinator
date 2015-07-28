@@ -9,7 +9,7 @@
  * 'sidebar:toggle'
  *
  */
-;(function($) {
+;(function($, storyteller) {
   /**
    * Instantiates an AddContentPanel control with the given
    * toggle button. When the user clicks the toggle button,
@@ -77,15 +77,15 @@
         var blockContent = JSON.parse(e.currentTarget.getAttribute('data-block-content'));
 
         if (blockContent) {
-          window.dispatcher.dispatch({
+          storyteller.dispatcher.dispatch({
             action: Constants.STORY_INSERT_BLOCK,
-            storyUid: window.userStoryUid,
+            storyUid: storyteller.userStoryUid,
             blockContent: blockContent,
-            insertAt: window.storyStore.getStoryBlockIds(window.userStoryUid).length
+            insertAt: storyteller.storyStore.getStoryBlockIds(storyteller.userStoryUid).length
           });
         }
       });
 
     return this;
   };
-}(jQuery));
+}(jQuery, window.socrata.storyteller));

@@ -185,7 +185,7 @@
         var blockId = event.currentTarget.getAttribute('data-block-id');
 
         if (blockId) {
-          window.dispatcher.dispatch({
+          storyteller.dispatcher.dispatch({
             action: Constants.BLOCK_DOUBLE_CLICK,
             storyUid: storyUid,
             blockId: blockId

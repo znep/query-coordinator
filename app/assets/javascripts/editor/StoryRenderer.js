@@ -132,7 +132,7 @@
 
     function _attachEvents() {
 
-      container.on('resize', _throttledRender);
+      $(window).on('resize', _throttledRender);
 
       container.on(
         'click',
@@ -291,7 +291,6 @@
 
       resizeRerenderTimeout = setTimeout(
         function() {
-          console.log('rerender on window resize event');
           _renderStory();
         },
         200

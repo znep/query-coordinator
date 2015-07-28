@@ -26,14 +26,8 @@ div.column-chart
 
     div.truncation-marker
       position: absolute
-      // bottom is adjusted in JS to match the y position of the x-axis (itself positioned via JS).
-      bottom: 0
       right: 0
       z-index: 2
-        // overlaps .labels
-
-      margin-bottom: 12px
-        // moves the ">>" slightly up, closer to x-axis
       cursor: pointer
       width: auto
       font-size: 1.2rem
@@ -67,7 +61,6 @@ div.column-chart
   div.labels
     position: absolute
     height: 55px
-    bottom: 10px
     right: 0
     left: 0
 
@@ -95,12 +88,10 @@ div.column-chart
         width: 0.5rem
 
       div.contents
+        cursor: pointer
         position: absolute
         font-size: $medium-font-size
         line-height: $base-font-size
-        white-space: nowrap
-        text-overflow: ellipsis
-        cursor: pointer
 
         &.undefined
           font-style: italic
@@ -108,18 +99,21 @@ div.column-chart
         span.icon-filter, span.icon-close
           display: none
 
+        span.text
+          display: inline-block
+          white-space: nowrap
+          text-overflow: ellipsis
+          overflow: hidden
+          vertical-align: top
+
         span.icon-close
           font-size: 0.5rem
 
       &.orientation-left
         left: auto
-        text-align: right
 
         div.callout
           right: 0
-
-        div.contents
-          right: -0.2rem
 
   div.ticks
     position: absolute
@@ -153,4 +147,3 @@ div.column-chart
 
           span.text
             padding: 0
-

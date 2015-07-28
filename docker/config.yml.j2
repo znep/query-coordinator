@@ -10,7 +10,7 @@ default: &default
 
   zk_hosts: '{{ ZOOKEEPER_HOSTS }}'
   coreservice_uri: http://{{ CORESERVICE_URI }}
-  odysseus_uri: http://localhost:4747
+  odysseus_uri: http://{{ ODYSSEUS_HOST }}
 
   {% if ACTIVEMQ_HOSTS is defined -%}
   activemq_hosts: {{ ACTIVEMQ_HOSTS }}

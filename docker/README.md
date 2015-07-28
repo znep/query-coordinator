@@ -4,7 +4,7 @@ Required ENV vars:
 
 - `CORESERVICE_URI` - The host and port to use for communicating with Core server
 - `ZOOKEEPER_HOSTS` - A comma-separated list of Zookeeper hosts with ports to use
-
+- `ODYSSEUS_HOST` - The host to use for communicating with Odysseus
 
 Optional ENV vars:
 

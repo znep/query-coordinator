@@ -1,4 +1,4 @@
-;var Dispatcher = (function() {
+;window.socrata.storyteller.Dispatcher = (function(storyteller) {
 
   'use strict';
 
@@ -56,5 +56,5 @@
   }
 
   return Dispatcher;
-})();
+})(window.socrata.storyteller);
 

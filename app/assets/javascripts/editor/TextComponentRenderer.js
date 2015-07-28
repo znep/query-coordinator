@@ -1,7 +1,8 @@
-;var TextComponentRenderer = (function() {
+;window.socrata.storyteller.TextComponentRenderer = (function(storyteller) {
 
   'use strict';
 
+  var Util = storyteller.Util;
   var _componentTemplateRenderers = {
     'text': _renderTextComponentTemplate
   };
@@ -74,7 +75,7 @@
         }
       );
 
-      editor = window.richTextEditorManager.createEditor(
+      editor = storyteller.richTextEditorManager.createEditor(
         component,
         editorId,
         componentOptions.componentValue
@@ -101,7 +102,7 @@
     if (editable) {
 
       var editorId = element.attr('data-editor-id');
-      var editor = richTextEditorManager.getEditor(editorId);
+      var editor = storyteller.richTextEditorManager.getEditor(editorId);
 
       editor.setContent(value);
 
@@ -114,4 +115,4 @@
     renderTemplate: _renderTemplate,
     renderData: _renderData
   };
-})();
+})(window.socrata.storyteller);

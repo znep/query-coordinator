@@ -2,25 +2,27 @@
  * A component that renders a story title.
  */
 
-(function($) {
+(function($, storyteller) {
   $.fn.storyTitle = function(storyUid) {
+    var Util = storyteller.Util;
+
     Util.assertIsOneOfTypes(storyUid, 'string');
 
     var titleNodes = this;
 
     function render() {
       titleNodes.each(function() {
-        $(this).text(window.storyStore.getStoryTitle(storyUid));
+        $(this).text(storyteller.storyStore.getStoryTitle(storyUid));
       });
     };
 
-    window.storyStore.addChangeListener(render);
+    storyteller.storyStore.addChangeListener(render);
     render();
 
     titleNodes.on('click', function() {
-      var newTitle = prompt('Please enter a story title', window.storyStore.getStoryTitle(storyUid));
+      var newTitle = prompt('Please enter a story title', storyteller.storyStore.getStoryTitle(storyUid));
       if (newTitle) {
-        window.dispatcher.dispatch({
+        storyteller.dispatcher.dispatch({
           action: Constants.STORY_SET_TITLE,
           storyUid: storyUid,
           title: newTitle
@@ -31,4 +33,4 @@
     return this;
   };
 
-}(jQuery));
+}(jQuery, window.socrata.storyteller));

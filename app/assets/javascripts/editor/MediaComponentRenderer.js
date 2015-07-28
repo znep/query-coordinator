@@ -1,7 +1,8 @@
-;var MediaComponentRenderer = (function() {
- 
+;window.socrata.storyteller.MediaComponentRenderer = (function(storyteller) {
+
   'use strict';
 
+  var Util = storyteller.Util;
   var _componentTemplateRenderers = {
     'image': _renderImageComponentTemplate,
     'embed': _renderEmbedComponentTemplate
@@ -194,7 +195,7 @@
     Util.assertHasProperty(data, 'src');
 
     imageElement = element.find('img');
-    imageSource = window.assetFinder.getRelativeUrlRoot() + data.src;
+    imageSource = storyteller.assetFinder.getRelativeUrlRoot() + data.src;
 
     imageElement[0].onload = function(e) {
       renderFn();
@@ -232,4 +233,4 @@
     renderTemplate: _renderTemplate,
     renderData: _renderData
   };
-})();
+})(window.socrata.storyteller);

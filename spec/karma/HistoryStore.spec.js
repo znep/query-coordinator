@@ -38,16 +38,16 @@ describe('HistoryStore', function() {
   });
 
   function dispatch(action) {
-    window.dispatcher.dispatch(action);
+    window.socrata.storyteller.dispatcher.dispatch(action);
   }
 
   beforeEach(function() {
-    window.userStoryUid = validStoryUid;
+    window.socrata.storyteller.userStoryUid = validStoryUid;
     dispatch({ action: Constants.STORY_CREATE, data: storyState1 });
   });
 
   afterEach(function() {
-    delete window.userStoryUid;
+    delete window.socrata.storyteller.userStoryUid;
   });
 
   describe('history accessors', function() {
@@ -57,14 +57,14 @@ describe('HistoryStore', function() {
       describe('.canUndo()', function() {
 
         it('should return false', function() {
-          assert.isFalse(window.historyStore.canUndo());
+          assert.isFalse(window.socrata.storyteller.historyStore.canUndo());
         });
       });
 
       describe('.canRedo()', function() {
 
         it('should return false', function() {
-          assert.isFalse(window.historyStore.canUndo());
+          assert.isFalse(window.socrata.storyteller.historyStore.canUndo());
         });
       });
     });
@@ -81,14 +81,14 @@ describe('HistoryStore', function() {
       describe('.canUndo()', function() {
 
         it('should return true', function() {
-          assert.isTrue(window.historyStore.canUndo());
+          assert.isTrue(window.socrata.storyteller.historyStore.canUndo());
         });
       });
 
       describe('.canRedo()', function() {
 
         it('should return false', function() {
-          assert.isFalse(window.historyStore.canRedo());
+          assert.isFalse(window.socrata.storyteller.historyStore.canRedo());
         });
       });
     });
@@ -110,14 +110,14 @@ describe('HistoryStore', function() {
       describe('.canUndo()', function() {
 
         it('should return true', function() {
-          assert.isTrue(window.historyStore.canUndo());
+          assert.isTrue(window.socrata.storyteller.historyStore.canUndo());
         });
       });
 
       describe('.canRedo()', function() {
 
         it('should return true', function() {
-          assert.isTrue(window.historyStore.canUndo());
+          assert.isTrue(window.socrata.storyteller.historyStore.canUndo());
         });
       });
     });
@@ -140,14 +140,14 @@ describe('HistoryStore', function() {
       describe('.canUndo()', function() {
 
         it('should return false', function() {
-          assert.isFalse(window.historyStore.canUndo());
+          assert.isFalse(window.socrata.storyteller.historyStore.canUndo());
         });
       });
 
       describe('.canRedo()', function() {
 
         it('should return true', function() {
-          assert.isTrue(window.historyStore.canRedo());
+          assert.isTrue(window.socrata.storyteller.historyStore.canRedo());
         });
       });
     });
@@ -161,13 +161,13 @@ describe('HistoryStore', function() {
 
         it('should not modify the story', function() {
 
-          var storyBeforeUndo = JSON.parse(window.historyStore.getStateAtCursor());
+          var storyBeforeUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
           assert.equal(storyBeforeUndo.blocks.length, storyState1.blocks.length);
 
           dispatch({ action: Constants.HISTORY_UNDO });
 
-          var storyAfterUndo = JSON.parse(window.historyStore.getStateAtCursor());
+          var storyAfterUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
           assert.equal(storyAfterUndo.blocks.length, storyState1.blocks.length);
         });
@@ -184,13 +184,13 @@ describe('HistoryStore', function() {
 
         it('should cause the story data to revert to the previous version', function() {
 
-          var storyBeforeUndo = JSON.parse(window.historyStore.getStateAtCursor());
+          var storyBeforeUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
           assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
 
           dispatch({ action: Constants.HISTORY_UNDO });
 
-          var storyAfterUndo = JSON.parse(window.historyStore.getStateAtCursor());
+          var storyAfterUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
           assert.equal(storyAfterUndo.blocks.length, storyState1.blocks.length);
         });
@@ -207,27 +207,27 @@ describe('HistoryStore', function() {
 
         it('should cause reflect the latest content change and disable redo', function() {
 
-          var storyBeforeUndo = JSON.parse(window.historyStore.getStateAtCursor());
+          var storyBeforeUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
           assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
 
           dispatch({ action: Constants.HISTORY_UNDO });
 
-          var storyAfterUndo = JSON.parse(window.historyStore.getStateAtCursor());
+          var storyAfterUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
           assert.equal(storyAfterUndo.blocks.length, storyState1.blocks.length);
 
-          assert.isTrue(window.historyStore.canRedo());
+          assert.isTrue(window.socrata.storyteller.historyStore.canRedo());
 
           dispatch({
             action: Constants.STORY_OVERWRITE_STATE,
             data: storyState3
           });
 
-          var storyAfterContentChange = JSON.parse(window.historyStore.getStateAtCursor());
+          var storyAfterContentChange = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
           assert.equal(storyAfterContentChange.blocks.length, storyState3.blocks.length);
 
-          assert.isFalse(window.historyStore.canRedo());
+          assert.isFalse(window.socrata.storyteller.historyStore.canRedo());
         });
       });
 
@@ -261,11 +261,11 @@ describe('HistoryStore', function() {
 
           for (var i = 0; i < 98; i++) {
             dispatch({ action: Constants.HISTORY_UNDO });
-            assert.isTrue(window.historyStore.canUndo());
+            assert.isTrue(window.socrata.storyteller.historyStore.canUndo());
           }
 
           dispatch({ action: Constants.HISTORY_UNDO });
-          assert.isFalse(window.historyStore.canUndo());
+          assert.isFalse(window.socrata.storyteller.historyStore.canUndo());
         });
       });
     });
@@ -276,13 +276,13 @@ describe('HistoryStore', function() {
 
         it('should not modify the story', function() {
 
-          var storyBeforeUndo = JSON.parse(window.historyStore.getStateAtCursor());
+          var storyBeforeUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
           assert.equal(storyBeforeUndo.blocks.length, storyState1.blocks.length);
 
           dispatch({ action: Constants.HISTORY_REDO });
 
-          var storyAfterRedo = JSON.parse(window.historyStore.getStateAtCursor());
+          var storyAfterRedo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
           assert.equal(storyAfterRedo.blocks.length, storyState1.blocks.length);
         });
@@ -299,13 +299,13 @@ describe('HistoryStore', function() {
 
         it('should not modify the story', function() {
 
-          var storyBeforeUndo = JSON.parse(window.historyStore.getStateAtCursor());
+          var storyBeforeUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
           assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
 
           dispatch({ action: Constants.HISTORY_REDO });
 
-          var storyAfterRedo = JSON.parse(window.historyStore.getStateAtCursor());
+          var storyAfterRedo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
           assert.equal(storyAfterRedo.blocks.length, storyState2.blocks.length);
         });
@@ -322,19 +322,19 @@ describe('HistoryStore', function() {
 
         it('should revert the story to the last updated version', function() {
 
-          var storyBeforeUndo = JSON.parse(window.historyStore.getStateAtCursor());
+          var storyBeforeUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
           assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
 
           dispatch({ action: Constants.HISTORY_UNDO });
 
-          var storyAfterUndo = JSON.parse(window.historyStore.getStateAtCursor());
+          var storyAfterUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
           assert.equal(storyAfterUndo.blocks.length, storyState1.blocks.length);
 
           dispatch({ action: Constants.HISTORY_REDO });
 
-          var storyAfterRedo = JSON.parse(window.historyStore.getStateAtCursor());
+          var storyAfterRedo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
           assert.equal(storyAfterRedo.blocks.length, storyState2.blocks.length);
         });

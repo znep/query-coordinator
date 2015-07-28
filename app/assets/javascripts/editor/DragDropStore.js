@@ -1,14 +1,16 @@
-;(function() {
+;(function(storyteller) {
   'use strict';
 
   function DragDropStore() {
     var self = this;
+    var Util = storyteller.Util;
+    var dispatcher = storyteller.dispatcher;
 
     var _reorderHintPosition = null;
 
-    _.extend(this, new Store());
+    _.extend(this, new storyteller.Store());
 
-    window.dispatcher.register(function(payload) {
+    storyteller.dispatcher.register(function(payload) {
       switch(payload.action) {
         case Constants.STORY_DRAG_OVER:
           _storyDragOver(payload);
@@ -55,7 +57,7 @@
     function _storyDragOver(payload) {
       Util.assertHasProperties(payload, 'storyUid', 'pointer', 'storyElement');
 
-      if (window.storyStore.storyExists(payload.storyUid)) {
+      if (storyteller.storyStore.storyExists(payload.storyUid)) {
         var dropIndex;
 
         var pointerY = Unipointer.getPointerPoint(payload.pointer).y - window.scrollY;
@@ -122,5 +124,5 @@
 
   }
 
-  window.DragDropStore = DragDropStore;
-}());
+  storyteller.DragDropStore = DragDropStore;
+}(window.socrata.storyteller));

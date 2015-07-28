@@ -3,10 +3,11 @@ describe('RichTextEditorManager', function() {
   var validElement;
   var validFormats = [];
   var validToolbar;
+  var storyteller = window.socrata.storyteller;
 
   beforeEach(function() {
     validElement = $('<div id="rich-text-editor-toolbar"></div>');
-    validToolbar = Object.create(RichTextEditorToolbar.prototype);
+    validToolbar = Object.create(storyteller.RichTextEditorToolbar.prototype);
     testDom.append(validElement);
   });
 
@@ -17,7 +18,7 @@ describe('RichTextEditorManager', function() {
       it('throws an error', function() {
 
         assert.throw(function() {
-          var manager = new RichTextEditorManager(
+          var manager = new storyteller.RichTextEditorManager(
             null,
             validToolbar,
             validFormats
@@ -30,13 +31,13 @@ describe('RichTextEditorManager', function() {
 
       it('returns an instance of RichTextEditorManager', function() {
 
-        var manager = new RichTextEditorManager(
-          window.assetFinder,
+        var manager = new storyteller.RichTextEditorManager(
+          window.socrata.storyteller.assetFinder,
           validToolbar,
           validFormats
         );
 
-        assert.instanceOf(manager, RichTextEditorManager, 'returns an instance of RichTextEditorManager');
+        assert.instanceOf(manager, storyteller.RichTextEditorManager, 'returns an instance of RichTextEditorManager');
       });
     });
 
@@ -45,8 +46,8 @@ describe('RichTextEditorManager', function() {
       it('throws an error', function() {
 
         assert.throw(function() {
-          var manager = new RichTextEditorManager(
-            window.assetFinder,
+          var manager = new storyteller.RichTextEditorManager(
+            window.socrata.storyteller.assetFinder,
             null,
             validFormats
           );
@@ -58,13 +59,13 @@ describe('RichTextEditorManager', function() {
 
       it('returns an instance of RichTextEditorManager', function() {
 
-        var manager = new RichTextEditorManager(
-          window.assetFinder,
+        var manager = new storyteller.RichTextEditorManager(
+          window.socrata.storyteller.assetFinder,
           validToolbar,
           validFormats
         );
 
-        assert.instanceOf(manager, RichTextEditorManager, 'returns an instance of RichTextEditorManager');
+        assert.instanceOf(manager, storyteller.RichTextEditorManager, 'returns an instance of RichTextEditorManager');
       });
     });
 
@@ -73,8 +74,8 @@ describe('RichTextEditorManager', function() {
       it('throws an error', function() {
 
         assert.throw(function() {
-          var manager = new RichTextEditorManager(
-            window.assetFinder,
+          var manager = new storyteller.RichTextEditorManager(
+            window.socrata.storyteller.assetFinder,
             validToolbar,
             null
           );
@@ -86,13 +87,13 @@ describe('RichTextEditorManager', function() {
 
       it('returns an instance of RichTextEditorManager', function() {
 
-        var manager = new RichTextEditorManager(
-          window.assetFinder,
+        var manager = new storyteller.RichTextEditorManager(
+          window.socrata.storyteller.assetFinder,
           validToolbar,
           validFormats
         );
 
-        assert.instanceOf(manager, RichTextEditorManager, 'returns an instance of RichTextEditorManager');
+        assert.instanceOf(manager, storyteller.RichTextEditorManager, 'returns an instance of RichTextEditorManager');
       });
     });
   });
@@ -101,8 +102,8 @@ describe('RichTextEditorManager', function() {
 
     it('should should not expose `_editors` directly', function() {
 
-      var manager = new RichTextEditorManager(
-        window.assetFinder,
+      var manager = new storyteller.RichTextEditorManager(
+        window.socrata.storyteller.assetFinder,
         validToolbar,
         validFormats
       );
@@ -116,8 +117,8 @@ describe('RichTextEditorManager', function() {
     var manager;
 
     beforeEach(function() {
-      manager = new RichTextEditorManager(
-        window.assetFinder,
+      manager = new storyteller.RichTextEditorManager(
+        window.socrata.storyteller.assetFinder,
         validToolbar,
         validFormats
       );
@@ -132,7 +133,7 @@ describe('RichTextEditorManager', function() {
     describe('when called with an editor id that exists', function() {
       it('should return an editor instance', function() {
         manager.createEditor(validElement, '1', 'Hello, world!');
-        assert.instanceOf(manager.getEditor('1'), RichTextEditor, 'returns an instance of RichTextEditor');
+        assert.instanceOf(manager.getEditor('1'), storyteller.RichTextEditor, 'returns an instance of RichTextEditor');
       });
     });
   });

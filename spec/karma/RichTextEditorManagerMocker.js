@@ -1,9 +1,9 @@
-var RichTextEditorManagerMocker = {
+window.socrata.storyteller.RichTextEditorManagerMocker = {
 
   self: this,
 
   mock: function() {
-    window.richTextEditorManager = {
+    window.socrata.storyteller.richTextEditorManager = {
       createEditor: function() { return true; },
 
       getEditor: function(callback) {
@@ -17,7 +17,7 @@ var RichTextEditorManagerMocker = {
   },
 
   unmock: function() {
-    delete window.richTextEditorManager;
+    delete window.socrata.storyteller.richTextEditorManager;
   },
 
   setContentCallback: function(callback) {

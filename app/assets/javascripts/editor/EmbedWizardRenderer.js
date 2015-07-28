@@ -1,9 +1,10 @@
-;var EmbedWizardRenderer = (function() {
+;window.socrata.storyteller.EmbedWizardRenderer = (function(storyteller) {
 
   'use strict';
 
   function EmbedWizardRenderer(options) {
 
+    var Util = storyteller.Util;
     var _container = options.embedWizardContainerElement || null;
     var _overlay = $('<div>', { 'class': 'modal-overlay' });
     var _dialog = $('<div>', { 'class': 'modal-dialog' });
@@ -34,7 +35,7 @@
 
     function _listenForChanges() {
 
-      window.embedWizardStore.addChangeListener(function() {
+      storyteller.embedWizardStore.addChangeListener(function() {
         _renderWizard();
       });
     }
@@ -47,7 +48,7 @@
 
           // `ESC`
           case 27:
-            window.dispatcher.dispatch({
+            storyteller.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CLOSE
             });
             break;
@@ -58,7 +59,7 @@
       });
 
       _overlay.on('click', function(event) {
-        window.dispatcher.dispatch({
+        storyteller.dispatcher.dispatch({
           action: Constants.EMBED_WIZARD_CLOSE
         });
       });
@@ -68,7 +69,7 @@
         '[data-embed-wizard-validate-field="youTubeId"]',
         function(event) {
 
-          window.dispatcher.dispatch({
+          storyteller.dispatcher.dispatch({
             action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
             url: $(event.target).val()
           });
@@ -90,7 +91,7 @@
           // value of the input control.
           if (!event.keyCode) {
             setTimeout(function() {
-              window.dispatcher.dispatch({
+              storyteller.dispatcher.dispatch({
                 action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
                 url: $(event.target).val()
               });
@@ -106,34 +107,34 @@
         switch (action) {
 
           case Constants.EMBED_WIZARD_CHOOSE_PROVIDER:
-            window.dispatcher.dispatch({
+            storyteller.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
-              blockId: window.embedWizardStore.getCurrentBlockId(),
-              componentIndex: window.embedWizardStore.getCurrentComponentIndex()
+              blockId: storyteller.embedWizardStore.getCurrentBlockId(),
+              componentIndex: storyteller.embedWizardStore.getCurrentComponentIndex()
             });
             break;
 
           case Constants.EMBED_WIZARD_CHOOSE_YOUTUBE:
-            window.dispatcher.dispatch({
+            storyteller.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
             });
             break;
 
           case Constants.EMBED_WIZARD_APPLY:
-            window.dispatcher.dispatch({
+            storyteller.dispatcher.dispatch({
               action: Constants.BLOCK_UPDATE_COMPONENT,
-              blockId: window.embedWizardStore.getCurrentBlockId(),
-              componentIndex: window.embedWizardStore.getCurrentComponentIndex(),
-              type: window.embedWizardStore.getCurrentComponentType(),
-              value: window.embedWizardStore.getCurrentComponentValue()
+              blockId: storyteller.embedWizardStore.getCurrentBlockId(),
+              componentIndex: storyteller.embedWizardStore.getCurrentComponentIndex(),
+              type: storyteller.embedWizardStore.getCurrentComponentType(),
+              value: storyteller.embedWizardStore.getCurrentComponentValue()
             });
-            window.dispatcher.dispatch({
+            storyteller.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CLOSE
             });
             break;
 
           case Constants.EMBED_WIZARD_CLOSE:
-            window.dispatcher.dispatch({
+            storyteller.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CLOSE
             });
             break;
@@ -146,8 +147,8 @@
 
     function _renderWizard() {
 
-      var state = window.embedWizardStore.getCurrentWizardState();
-      var componentValue = window.embedWizardStore.getCurrentComponentValue();
+      var state = storyteller.embedWizardStore.getCurrentWizardState();
+      var componentValue = storyteller.embedWizardStore.getCurrentComponentValue();
       var wizardContent;
 
       // Render a wizard state if necessary.
@@ -396,4 +397,4 @@
   }
 
   return EmbedWizardRenderer;
-})();
+})(window.socrata.storyteller);

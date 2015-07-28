@@ -1,4 +1,4 @@
-;var RichTextEditor = (function(window) {
+;window.socrata.storyteller.RichTextEditor = (function(storyteller) {
 
   'use strict';
 
@@ -44,7 +44,7 @@
       );
     }
 
-    if (!(assetFinder instanceof AssetFinder)) {
+    if (!(assetFinder instanceof storyteller.AssetFinder)) {
       throw new Error(
         '`assetFinder` must be an AssetFinder (is of type ' +
         (typeof assetFinder) +
@@ -148,7 +148,7 @@
         _overrideDefaultStyles(e.target.contentWindow.document);
         _editor = new Squire(e.target.contentWindow.document);
         _editorBodyElement = $(_editor.getDocument()).find('body');
-        _formatController = new RichTextEditorFormatController(
+        _formatController = new storyteller.RichTextEditorFormatController(
           _editor,
           _formats
         );
@@ -284,7 +284,7 @@
       }
 
       _editorElement[0].dispatchEvent(
-        new CustomEvent(
+        new storyteller.CustomEvent(
           name,
           { detail: eventDetail, bubbles: true }
         )
@@ -513,4 +513,4 @@
   }
 
   return RichTextEditor;
-})(window);
+})(window.socrata.storyteller);

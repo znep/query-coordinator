@@ -1,7 +1,7 @@
-;(function() {
+;(function(storyteller) {
   'use strict';
 
-  window.Util = {
+  window.socrata.storyteller.Util = {
 
     assertEqual: function(value1, value2) {
       if (value1 !== value2) {
@@ -27,7 +27,7 @@
       _.each(
         _.rest(arguments),
         function(argument) {
-          window.Util.assertHasProperty(object, argument);
+          storyteller.Util.assertHasProperty(object, argument);
         }
       );
     },
@@ -135,4 +135,4 @@
       return src;
     }
   };
-})();
+})(window.socrata.storyteller);

@@ -1,4 +1,4 @@
-;(function() {
+;(function(storyteller) {
   'use strict';
 
   /* Responsible for:
@@ -18,9 +18,9 @@
     var self = this;
     var _blockNeedsConfirmation = {};
 
-    _.extend(this, new Store());
+    _.extend(this, new storyteller.Store());
 
-    window.dispatcher.register(function(payload) {
+    storyteller.dispatcher.register(function(payload) {
       var action = payload.action;
 
       switch (action) {
@@ -48,5 +48,5 @@
 
   };
 
-  window.BlockRemovalConfirmationStore = BlockRemovalConfirmationStore;
-})();
+  storyteller.BlockRemovalConfirmationStore = BlockRemovalConfirmationStore;
+})(window.socrata.storyteller);

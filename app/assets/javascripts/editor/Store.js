@@ -1,15 +1,15 @@
-;(function() {
+;(function(storyteller) {
   'use strict';
 
   // Store base class. Example of usage:
   //
   // function SpecificStore() {
-  //   _.extend(this, new Store());
+  //   _.extend(this, new storyteller.Store());
   //
   //   this.getSpecificValue = function() { ... };
   // }
   function Store() {
-    var _emitter = new SimpleEventEmitter();
+    var _emitter = new storyteller.SimpleEventEmitter();
 
     this.addChangeListener = function(callback) {
       _emitter.addListener(callback);
@@ -23,5 +23,5 @@
   }
 
 
-  window.Store = Store;
-})();
+  storyteller.Store = Store;
+})(window.socrata.storyteller);

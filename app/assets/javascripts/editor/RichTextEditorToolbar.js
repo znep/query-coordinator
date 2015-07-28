@@ -1,4 +1,4 @@
-;var RichTextEditorToolbar = (function() {
+;window.socrata.storyteller.RichTextEditorToolbar = (function(storyteller) {
 
   'use strict';
 
@@ -62,7 +62,7 @@
     _createToolbar();
     _createLinkPanel();
 
-    window.dispatcher.register(function(payload) {
+    storyteller.dispatcher.register(function(payload) {
 
       var action = payload.action;
 
@@ -380,4 +380,4 @@
   }
 
   return RichTextEditorToolbar;
-})();
+})(window.socrata.storyteller);

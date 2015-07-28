@@ -1,4 +1,4 @@
-;(function() {
+;(function(storyteller) {
   'use strict';
 
   /*
@@ -21,6 +21,7 @@
       throw new Error('`ghostElement` argument must point to exactly one element');
     }
 
+    var dispatcher = storyteller.dispatcher;
     var _blockContent = null;
 
     // TODO calculate from mouse down location.
@@ -124,6 +125,6 @@
 
   DragDrop.prototype = Unidragger.prototype;
 
-  window.DragDrop = DragDrop;
+  storyteller.DragDrop = DragDrop;
 
-})();
+})(window.socrata.storyteller);

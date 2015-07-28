@@ -1,4 +1,4 @@
-var SquireMocker = {
+window.socrata.storyteller.SquireMocker = {
 
   mock: function() {
     var Squire = function() {}

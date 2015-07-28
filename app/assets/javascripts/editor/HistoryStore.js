@@ -1,8 +1,8 @@
-;var HistoryStore = (function() {
+;window.socrata.storyteller.HistoryStore = (function(storyteller) {
 
   'use strict';
 
-  var MAX_UNDO_COUNT = 99;
+  var Util = storyteller.Util;
 
   function HistoryStore() {
 
@@ -10,14 +10,14 @@
     var _history = [];
     var _undoCursor = 0;
 
-    window.storyStore.addChangeListener(function() {
+    storyteller.storyStore.addChangeListener(function() {
 
-      if (window.storyStore.storyExists(window.userStoryUid)) {
+      if (storyteller.storyStore.storyExists(storyteller.userStoryUid)) {
 
         var historyLength = _history.length;
         var newHistoryLength;
         var serializedStory = JSON.stringify(
-          window.storyStore.serializeStory(window.userStoryUid)
+          storyteller.storyStore.serializeStory(storyteller.userStoryUid)
         );
 
         // This is the case when one or more undo operations have
@@ -37,7 +37,7 @@
         // history array so we just append to it.
         } else if (_shouldAppendToHistory(serializedStory)) {
 
-          if (historyLength === MAX_UNDO_COUNT) {
+          if (historyLength === Constants.HISTORY_MAX_UNDO_COUNT) {
             _history.shift();
           }
 
@@ -49,7 +49,7 @@
       }
     });
 
-    window.dispatcher.register(function(payload) {
+    storyteller.dispatcher.register(function(payload) {
 
       var action = payload.action;
 
@@ -65,7 +65,7 @@
       }
     });
 
-    _.extend(self, new Store());
+    _.extend(self, new storyteller.Store());
 
     /**
      * Public methods
@@ -128,4 +128,4 @@
   }
 
   return HistoryStore;
-})();
+})(window.socrata.storyteller);

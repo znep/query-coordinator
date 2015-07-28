@@ -1,10 +1,12 @@
-;var RichTextEditorManager = (function() {
+;window.socrata.storyteller.RichTextEditorManager = (function(storyteller) {
 
   'use strict';
 
   function RichTextEditorManager(assetFinder, toolbar, formats) {
 
-    if (!(assetFinder instanceof AssetFinder)) {
+    var RichTextEditor = storyteller.RichTextEditor;
+
+    if (!(assetFinder instanceof storyteller.AssetFinder)) {
       throw new Error(
         '`assetFinder` must be an AssetFinder (is of type ' +
         (typeof assetFinder) +
@@ -12,7 +14,7 @@
       );
     }
 
-    if (!(toolbar instanceof RichTextEditorToolbar)) {
+    if (!(toolbar instanceof storyteller.RichTextEditorToolbar)) {
       throw new Error(
         '`toolbar` must be a RichTextEditorToolbar (is of type ' +
         (typeof toolbar) +
@@ -68,4 +70,4 @@
   }
 
   return RichTextEditorManager;
-})();
+})(window.socrata.storyteller);

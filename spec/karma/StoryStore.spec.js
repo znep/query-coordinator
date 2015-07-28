@@ -27,9 +27,10 @@ describe('StoryStore', function() {
   var block3Id = 'block3';
   var block3Layout = '12';
   var block3Components = [ { type: 'text', value: 'Third Block' } ];
+  var storyteller = window.socrata.storyteller;
 
   function dispatch(action) {
-    window.dispatcher.dispatch(action);
+    storyteller.dispatcher.dispatch(action);
   }
 
   function createSampleStories() {
@@ -78,7 +79,7 @@ describe('StoryStore', function() {
       describe('.storyExists()', function() {
 
         it('should return false', function() {
-          assert.isFalse(window.storyStore.storyExists(null));
+          assert.isFalse(storyteller.storyStore.storyExists(null));
         });
       });
 
@@ -87,7 +88,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.storyHasBlock(null);
+            storyteller.storyStore.storyHasBlock(null);
           });
         });
       });
@@ -97,7 +98,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.getStoryTitle(null);
+            storyteller.storyStore.getStoryTitle(null);
           });
         });
       });
@@ -107,7 +108,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.getStoryBlockIds(null);
+            storyteller.storyStore.getStoryBlockIds(null);
           });
         });
       });
@@ -117,7 +118,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.getStoryBlockAtIndex(null, 0);
+            storyteller.storyStore.getStoryBlockAtIndex(null, 0);
           });
         });
       });
@@ -127,7 +128,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.getStoryBlockIdAtIndex(null, 0);
+            storyteller.storyStore.getStoryBlockIdAtIndex(null, 0);
           });
         });
       });
@@ -137,7 +138,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.serializeStory(null);
+            storyteller.storyStore.serializeStory(null);
           });
         });
       });
@@ -147,7 +148,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.serializeStoryDiff(null);
+            storyteller.storyStore.serializeStoryDiff(null);
           });
         });
       });
@@ -158,7 +159,7 @@ describe('StoryStore', function() {
       describe('.storyExists()', function() {
 
         it('should return false', function() {
-          assert.isFalse(window.storyStore.storyExists('notf-ound'));
+          assert.isFalse(storyteller.storyStore.storyExists('notf-ound'));
         });
       });
 
@@ -167,7 +168,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.storyHasBlock('notf-ound');
+            storyteller.storyStore.storyHasBlock('notf-ound');
           });
         });
       });
@@ -177,7 +178,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.getStoryTitle('notf-ound');
+            storyteller.storyStore.getStoryTitle('notf-ound');
           });
         });
       });
@@ -187,7 +188,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.getStoryBlockIds('notf-ound');
+            storyteller.storyStore.getStoryBlockIds('notf-ound');
           });
         });
       });
@@ -197,7 +198,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.getStoryBlockAtIndex('notf-ound', 0);
+            storyteller.storyStore.getStoryBlockAtIndex('notf-ound', 0);
           });
         });
       });
@@ -207,7 +208,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.getStoryBlockIdAtIndex('notf-ound', 0);
+            storyteller.storyStore.getStoryBlockIdAtIndex('notf-ound', 0);
           });
         });
       });
@@ -217,7 +218,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.serializeStory('notf-ound');
+            storyteller.storyStore.serializeStory('notf-ound');
           });
         });
       });
@@ -227,7 +228,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.serializeStoryDiff('notf-ound');
+            storyteller.storyStore.serializeStoryDiff('notf-ound');
           });
         });
       });
@@ -238,31 +239,31 @@ describe('StoryStore', function() {
       describe('.storyExists()', function() {
 
         it('should return true', function() {
-          assert.isTrue(window.storyStore.storyExists(story1Uid));
+          assert.isTrue(storyteller.storyStore.storyExists(story1Uid));
         });
       });
 
       describe('.storyHasBlock()', function() {
 
         it('should return the correct value', function() {
-          assert.isTrue(window.storyStore.storyHasBlock(story2Uid, block3Id));
-          assert.isFalse(window.storyStore.storyHasBlock(story2Uid, 'notthere'));
+          assert.isTrue(storyteller.storyStore.storyHasBlock(story2Uid, block3Id));
+          assert.isFalse(storyteller.storyStore.storyHasBlock(story2Uid, 'notthere'));
         });
       });
 
       describe('.getStoryTitle()', function() {
 
         it('should return the correct value', function() {
-          assert.equal(window.storyStore.getStoryTitle(story1Uid), story1Title);
-          assert.equal(window.storyStore.getStoryTitle(story2Uid), story2Title);
+          assert.equal(storyteller.storyStore.getStoryTitle(story1Uid), story1Title);
+          assert.equal(storyteller.storyStore.getStoryTitle(story2Uid), story2Title);
         });
       });
 
       describe('.getStoryBlockIds()', function() {
 
         it('should return the correct value', function() {
-          assert.deepEqual(window.storyStore.getStoryBlockIds(story1Uid), [ block1Id, block2Id ]);
-          assert.deepEqual(window.storyStore.getStoryBlockIds(story2Uid), [ block3Id ]);
+          assert.deepEqual(storyteller.storyStore.getStoryBlockIds(story1Uid), [ block1Id, block2Id ]);
+          assert.deepEqual(storyteller.storyStore.getStoryBlockIds(story2Uid), [ block3Id ]);
         });
       });
 
@@ -272,7 +273,7 @@ describe('StoryStore', function() {
 
           it('should throw an error', function() {
             assert.throw(function() {
-              window.storyStore.getStoryBlockAtIndex(story1Uid, 99);
+              storyteller.storyStore.getStoryBlockAtIndex(story1Uid, 99);
             });
           });
         });
@@ -281,8 +282,8 @@ describe('StoryStore', function() {
 
           it('should return the correct value', function() {
 
-            var block1 = window.storyStore.getStoryBlockAtIndex(story1Uid, 0);
-            var block3 = window.storyStore.getStoryBlockAtIndex(story2Uid, 0);
+            var block1 = storyteller.storyStore.getStoryBlockAtIndex(story1Uid, 0);
+            var block3 = storyteller.storyStore.getStoryBlockAtIndex(story2Uid, 0);
 
             assert.propertyVal(block1, 'id', block1Id);
             assert.propertyVal(block1, 'layout', block1Layout);
@@ -305,7 +306,7 @@ describe('StoryStore', function() {
 
           it('should throw an error', function() {
             assert.throw(function() {
-              window.storyStore.getStoryBlockIdAtIndex(story1Uid, 99);
+              storyteller.storyStore.getStoryBlockIdAtIndex(story1Uid, 99);
             });
           });
         });
@@ -313,8 +314,8 @@ describe('StoryStore', function() {
         describe('given a valid index', function() {
 
           it('should return the correct value', function() {
-            assert.equal(window.storyStore.getStoryBlockIdAtIndex(story1Uid, 0), block1Id);
-            assert.equal(window.storyStore.getStoryBlockIdAtIndex(story2Uid, 0), block3Id);
+            assert.equal(storyteller.storyStore.getStoryBlockIdAtIndex(story1Uid, 0), block1Id);
+            assert.equal(storyteller.storyStore.getStoryBlockIdAtIndex(story2Uid, 0), block3Id);
           });
         });
       });
@@ -323,7 +324,7 @@ describe('StoryStore', function() {
 
         it('should return an object matching the properties of the story', function() {
 
-          var serializedStory = window.storyStore.serializeStory(story1Uid);
+          var serializedStory = storyteller.storyStore.serializeStory(story1Uid);
 
           assert.equal(serializedStory.uid, story1Uid);
           assert.equal(serializedStory.title, story1Title);
@@ -342,7 +343,7 @@ describe('StoryStore', function() {
 
           dispatch({ action: Constants.STORY_INSERT_BLOCK, storyUid: story1Uid, blockContent: block1Content, insertAt: 2 });
 
-          var serializedStory = window.storyStore.serializeStoryDiff(story1Uid);
+          var serializedStory = storyteller.storyStore.serializeStoryDiff(story1Uid);
 
           assert.equal(serializedStory.uid, story1Uid);
           assert.equal(serializedStory.title, story1Title);
@@ -369,7 +370,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.getBlockLayout(null);
+            storyteller.storyStore.getBlockLayout(null);
           });
         });
       });
@@ -379,7 +380,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.getBlockLayout(null);
+            storyteller.storyStore.getBlockLayout(null);
           });
         });
       });
@@ -389,7 +390,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.getBlockComponentAtIndex(null, 0);
+            storyteller.storyStore.getBlockComponentAtIndex(null, 0);
           });
         });
       });
@@ -402,7 +403,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.getBlockLayout('does not exist');
+            storyteller.storyStore.getBlockLayout('does not exist');
           });
         });
       });
@@ -412,7 +413,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.getBlockComponents('does not exist');
+            storyteller.storyStore.getBlockComponents('does not exist');
           });
         });
       });
@@ -422,7 +423,7 @@ describe('StoryStore', function() {
         it('should throw an error', function() {
 
           assert.throw(function() {
-            window.storyStore.getBlockLayout('does not exist', 0);
+            storyteller.storyStore.getBlockLayout('does not exist', 0);
           });
         });
       });
@@ -434,8 +435,8 @@ describe('StoryStore', function() {
 
         it('should return the layout of the specified block', function() {
 
-          assert.equal(window.storyStore.getBlockLayout(block1Id), block1Layout);
-          assert.equal(window.storyStore.getBlockLayout(block2Id), block2Layout);
+          assert.equal(storyteller.storyStore.getBlockLayout(block1Id), block1Layout);
+          assert.equal(storyteller.storyStore.getBlockLayout(block2Id), block2Layout);
         });
       });
 
@@ -443,8 +444,8 @@ describe('StoryStore', function() {
 
         it('should return the components of the specified block', function() {
 
-          assert.deepEqual(window.storyStore.getBlockComponents(block1Id), block1Components);
-          assert.deepEqual(window.storyStore.getBlockComponents(block2Id), block2Components);
+          assert.deepEqual(storyteller.storyStore.getBlockComponents(block1Id), block1Components);
+          assert.deepEqual(storyteller.storyStore.getBlockComponents(block2Id), block2Components);
         });
       });
 
@@ -455,7 +456,7 @@ describe('StoryStore', function() {
           it('should throw an error', function() {
 
             assert.throw(function() {
-              window.storyStore.getBlockComponentAtIndex(block1Id, -1);
+              storyteller.storyStore.getBlockComponentAtIndex(block1Id, -1);
             });
           });
         });
@@ -465,11 +466,11 @@ describe('StoryStore', function() {
           it('should throw an error', function() {
 
             assert.throw(function() {
-              window.storyStore.getBlockComponentAtIndex(block1Id, 2);
+              storyteller.storyStore.getBlockComponentAtIndex(block1Id, 2);
             });
 
             assert.throw(function() {
-              window.storyStore.getBlockComponentAtIndex(block1Id, 3);
+              storyteller.storyStore.getBlockComponentAtIndex(block1Id, 3);
             });
           });
         });
@@ -478,7 +479,7 @@ describe('StoryStore', function() {
 
           it('should return the specified component of the specified block', function() {
 
-            var component = window.storyStore.getBlockComponentAtIndex(block1Id, 1);
+            var component = storyteller.storyStore.getBlockComponentAtIndex(block1Id, 1);
 
             assert.equal(component.type, block1Components[1].type);
             assert.equal(component.value, block1Components[1].value);
@@ -693,7 +694,7 @@ describe('StoryStore', function() {
 
           dispatch({ action: Constants.STORY_CREATE, data: validStoryData });
 
-          assert.equal(window.storyStore.getStoryTitle(validStoryUid), validStoryTitle);
+          assert.equal(storyteller.storyStore.getStoryTitle(validStoryUid), validStoryTitle);
         });
       });
     });
@@ -751,7 +752,7 @@ describe('StoryStore', function() {
             title: 'new title'
           });
 
-          assert.deepEqual(window.storyStore.getStoryTitle(story1Uid), 'new title');
+          assert.deepEqual(storyteller.storyStore.getStoryTitle(story1Uid), 'new title');
         });
       });
     });
@@ -852,7 +853,7 @@ describe('StoryStore', function() {
             blockId: block2Id
           });
 
-          assert.deepEqual(window.storyStore.getStoryBlockIds(story1Uid), [ block2Id, block1Id ]);
+          assert.deepEqual(storyteller.storyStore.getStoryBlockIds(story1Uid), [ block2Id, block1Id ]);
         });
       });
     });
@@ -952,7 +953,7 @@ describe('StoryStore', function() {
             blockId: block1Id
           });
 
-          assert.deepEqual(window.storyStore.getStoryBlockIds(story1Uid), [ block2Id, block1Id ]);
+          assert.deepEqual(storyteller.storyStore.getStoryBlockIds(story1Uid), [ block2Id, block1Id ]);
         });
       });
     });
@@ -1052,7 +1053,7 @@ describe('StoryStore', function() {
             blockId: block1Id
           });
 
-          assert.deepEqual(window.storyStore.getStoryBlockIds(story1Uid), [ block2Id ]);
+          assert.deepEqual(storyteller.storyStore.getStoryBlockIds(story1Uid), [ block2Id ]);
         });
       });
     });
@@ -1194,7 +1195,7 @@ describe('StoryStore', function() {
             insertAt: validInsertionIndex
           });
 
-          var clonedBlock = window.storyStore.getStoryBlockAtIndex(story1Uid, validInsertionIndex);
+          var clonedBlock = storyteller.storyStore.getStoryBlockAtIndex(story1Uid, validInsertionIndex);
 
           assert.equal(clonedBlock.layout, block1Layout);
           assert.deepEqual(clonedBlock.components, block1Components);
@@ -1274,7 +1275,7 @@ describe('StoryStore', function() {
             value: validComponentValue
           });
 
-          assert.equal(window.storyStore.getBlockComponentAtIndex(block1Id, 1).value, validComponentValue);
+          assert.equal(storyteller.storyStore.getBlockComponentAtIndex(block1Id, 1).value, validComponentValue);
         });
       });
     });

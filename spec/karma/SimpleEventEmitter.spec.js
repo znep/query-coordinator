@@ -2,9 +2,10 @@ describe('SimpleEventEmitter', function() {
   'use strict';
 
   var emitter;
+  var storyteller = window.socrata.storyteller;
 
   beforeEach(function() {
-    emitter = new SimpleEventEmitter();
+    emitter = new storyteller.SimpleEventEmitter();
   });
 
   describe('.emit', function() {
@@ -99,7 +100,7 @@ describe('SimpleEventEmitter', function() {
             assert.isTrue(listener1.calledOnce);
           });
         });
-      
+
       });
 
     });

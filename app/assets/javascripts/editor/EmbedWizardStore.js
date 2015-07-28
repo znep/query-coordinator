@@ -1,16 +1,17 @@
-;var EmbedWizardStore = (function() {
+;window.socrata.storyteller.EmbedWizardStore = (function(storyteller) {
 
   'use strict';
 
   function EmbedWizardStore() {
 
+    var Util = storyteller.Util;
     var self = this;
     var _currentWizardState = null;
     var _currentBlockId = null;
     var _currentComponentIndex = null;
     var _currentComponentProperties = _getDefaultComponentProperties();
 
-    window.dispatcher.register(function(payload) {
+    storyteller.dispatcher.register(function(payload) {
 
       var action;
 
@@ -44,7 +45,7 @@
       }
     });
 
-    _.extend(self, new Store());
+    _.extend(self, new storyteller.Store());
 
     /**
      * Public methods
@@ -168,7 +169,7 @@
         }
 
         if (!youTubeId) {
-          // If that fails, break it apart by certain characters and look 
+          // If that fails, break it apart by certain characters and look
           // for the 11 character key
           tokens = youTubeUrl.split(/[\/\&\?=#\.\s]/g);
 
@@ -186,4 +187,4 @@
   }
 
   return EmbedWizardStore;
-})();
+})(window.socrata.storyteller);

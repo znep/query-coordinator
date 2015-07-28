@@ -1,4 +1,4 @@
-;var StoryRendererElementCache = (function() {
+;window.socrata.storyteller.StoryRendererElementCache = (function(storyteller) {
 
   'use strict';
 
@@ -87,4 +87,4 @@
   }
 
   return StoryRendererElementCache;
-})();
+})(window.socrata.storyteller);

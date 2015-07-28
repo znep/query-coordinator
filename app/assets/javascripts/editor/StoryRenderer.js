@@ -1,8 +1,12 @@
-;var StoryRenderer = (function() {
+;window.socrata.storyteller.StoryRenderer = (function(storyteller) {
 
   'use strict';
 
   function StoryRenderer(options) {
+
+    var TextComponentRenderer = storyteller.TextComponentRenderer;
+    var MediaComponentRenderer = storyteller.MediaComponentRenderer;
+    var dispatcher = storyteller.dispatcher;
 
     var storyUid = options.storyUid || null;
     var container = options.storyContainerElement || null;
@@ -18,7 +22,7 @@
       'text': TextComponentRenderer.renderData,
       'media': MediaComponentRenderer.renderData
     };
-    var elementCache = new StoryRendererElementCache();
+    var elementCache = new storyteller.StoryRendererElementCache();
     var warningMessageElement = options.warningMessageElement || null;
     var resizeRerenderTimeout;
 
@@ -63,7 +67,7 @@
       );
     }
 
-    if (editable && !(window.richTextEditorManager instanceof RichTextEditorManager)) {
+    if (editable && !(storyteller.richTextEditorManager instanceof storyteller.RichTextEditorManager)) {
 
       onRenderError();
       throw new Error(
@@ -84,12 +88,12 @@
 
     function _listenForChanges() {
 
-      window.storyStore.addChangeListener(function() {
+      storyteller.storyStore.addChangeListener(function() {
         _renderStory();
       });
 
-      window.dragDropStore.addChangeListener(function() {
-        var hintPosition = window.dragDropStore.getReorderHintPosition();
+      storyteller.dragDropStore.addChangeListener(function() {
+        var hintPosition = storyteller.dragDropStore.getReorderHintPosition();
 
         if (hintPosition && hintPosition.storyUid === storyUid) {
           _showInsertionHintAtIndex(hintPosition.dropIndex);
@@ -135,7 +139,7 @@
           var blockId = event.target.getAttribute('data-block-id');
           var shouldDelete = true;
 
-          if (window.blockRemovalConfirmationStore.needsConfirmation(blockId)) {
+          if (storyteller.blockRemovalConfirmationStore.needsConfirmation(blockId)) {
             shouldDelete = confirm(I18n.t('editor.remove_block_confirmation'));
           }
 
@@ -152,14 +156,14 @@
       );
 
       container.on('mouseenter', function() {
-        window.dispatcher.dispatch({
+        storyteller.dispatcher.dispatch({
           action: Constants.STORY_MOUSE_ENTER,
           storyUid: storyUid
         });
       });
 
       container.on('mouseleave', function() {
-        window.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Constants.STORY_MOUSE_LEAVE,
           storyUid: storyUid
         });
@@ -169,7 +173,7 @@
         var blockId = event.currentTarget.getAttribute('data-block-id');
 
         if (blockId) {
-          window.dispatcher.dispatch({
+          dispatcher.dispatch({
             action: Constants.BLOCK_MOUSE_MOVE,
             storyUid: storyUid,
             blockId: blockId
@@ -191,7 +195,7 @@
 
       container.on('rich-text-editor::format-change', function(event) {
 
-        window.dispatcher.dispatch({
+        dispatcher.dispatch({
           action: Constants.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
           activeFormats: event.originalEvent.detail.content
         });
@@ -210,7 +214,7 @@
 
         var blockContent = event.originalEvent.detail.content;
 
-        var existingComponentValue = window.
+        var existingComponentValue = storyteller.
           storyStore.
           getBlockComponentAtIndex(blockId, componentIndex).
           value.
@@ -226,7 +230,7 @@
 
         if (contentIsDifferent) {
 
-          window.dispatcher.dispatch({
+          dispatcher.dispatch({
             action: Constants.BLOCK_UPDATE_COMPONENT,
             blockId: blockId,
             componentIndex: componentIndex,
@@ -247,7 +251,7 @@
         switch(action) {
 
           case Constants.EMBED_WIZARD_CHOOSE_PROVIDER:
-            window.dispatcher.dispatch({
+            dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
               blockId: event.target.getAttribute('data-block-id'),
               componentIndex: event.target.getAttribute('data-component-index')
@@ -266,20 +270,20 @@
 
     function _renderStory() {
 
-      var blockIds = window.storyStore.getStoryBlockIds(storyUid);
+      var blockIds = storyteller.storyStore.getStoryBlockIds(storyUid);
       var blockIdsToRemove = elementCache.getUnusedBlockIds(blockIds);
       var blockCount = blockIds.length;
       var layoutHeight = 0;
 
       blockIdsToRemove.forEach(function(blockId) {
 
-        window.
+        storyteller.
           storyStore.
           getBlockComponents(blockId).
           forEach(function(componentDatum, i) {
             if (componentDatum.type === 'text') {
               var editorId = blockId + '-' + i;
-              window.richTextEditorManager.deleteEditor(editorId);
+              storyteller.richTextEditorManager.deleteEditor(editorId);
             }
           });
 
@@ -351,7 +355,7 @@
 
     function _handleEmptyStoryMessage() {
       if (!_.isEmpty(warningMessageElement))  {
-        var blockCount = window.storyStore.getStoryBlockIds(storyUid).length;
+        var blockCount = storyteller.storyStore.getStoryBlockIds(storyUid).length;
 
         if (blockCount === 0) {
           warningMessageElement.addClass('message-empty-story');
@@ -378,7 +382,7 @@
         );
       }
 
-      var layout = window.storyStore.getBlockLayout(blockId);
+      var layout = storyteller.storyStore.getBlockLayout(blockId);
       var componentWidths = layout.split('-');
       var blockElement;
       var componentContainers = componentWidths.map(function(componentWidth, i) {
@@ -468,7 +472,7 @@
 
     function _updateEditorHeights(blockId, blockElement) {
 
-      var componentData = window.storyStore.getBlockComponents(blockId);
+      var componentData = storyteller.storyStore.getBlockComponents(blockId);
       var editorId;
       var maxEditorHeight = 0;
 
@@ -479,7 +483,7 @@
           editorId = blockId + '-' + i;
           maxEditorHeight = Math.max(
             maxEditorHeight,
-            window.
+            storyteller.
               richTextEditorManager.
                 getEditor(editorId).
                   getContentHeight()
@@ -500,7 +504,7 @@
     function _renderBlockComponentsTemplates(blockId) {
 
       var element = elementCache.getBlock(blockId);
-      var componentData = window.storyStore.getBlockComponents(blockId);
+      var componentData = storyteller.storyStore.getBlockComponents(blockId);
       var componentContainer;
       var existingComponent;
       var componentWidth;
@@ -589,7 +593,7 @@
 
     function _renderBlockComponentsData(blockId) {
 
-      var componentData = window.storyStore.getBlockComponents(blockId);
+      var componentData = storyteller.storyStore.getBlockComponents(blockId);
 
       componentData.forEach(function(componentDatum, i) {
 
@@ -630,4 +634,4 @@
   }
 
   return StoryRenderer;
-})();
+})(window.socrata.storyteller);

@@ -700,17 +700,13 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
     end.compact
   end
 
-  def cardinality_threshold
-    CARD_TYPE_MAPPING['cardinality']['threshold']
-  end
-
   def v0_mock_dataset_metadata_with_uninteresting_column_chart
     cardinality_equal_to_dataset_size = [
       title: 'cardinality equal to dataset size',
       name: 'too_much',
       logicalDatatype: 'category',
       physicalDatatype: 'number',
-      cardinality: cardinality_threshold - 1
+      cardinality: CARDINALITY_THRESHOLD - 1
     ]
 
     mock_metadata = v0_mock_dataset_metadata
@@ -725,7 +721,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         name: 'too much',
         fred: 'category',
         physicalDatatype: 'number',
-        cardinality: cardinality_threshold - 1
+        cardinality: CARDINALITY_THRESHOLD - 1
       }
     }
 

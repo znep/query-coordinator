@@ -23,6 +23,9 @@ en:
             button_text: 'YouTube'
             heading: 'Add a YouTube video'
             input_label: 'Link to video'
+            invalid_message_title_1: 'Oh No!'
+            invalid_message_title_2: 'Something went wrong.'
+            invalid_message_description: 'Try using a valid link to a YouTube video.'
           visualization:
             button_text: 'Vizualization'
             choose_dataset_heading: 'Choose a dataset to visualize'

@@ -356,6 +356,10 @@ describe('EmbedWizardRenderer', function() {
           assert.equal(container.find('.modal-close-btn').length, 1);
         });
 
+        it('has the wide class to display the iframe', function() {
+          assert.include(container.find('.modal-dialog').attr('class'), 'modal-dialog-wide');
+        });
+
         it('has a button that goes back to the provider list', function() {
           assert.equal(
             container.find('[data-embed-action="{0}"]'.format(Constants.EMBED_WIZARD_CHOOSE_PROVIDER)
@@ -367,7 +371,36 @@ describe('EmbedWizardRenderer', function() {
 
   });
 
-  describe('rendering choose visualization', function() {
+  describe('helper functions:', function() {
+    var renderer;
+
+    beforeEach(function() {
+      renderer = new EmbedWizardRenderer(options);
+    });
+
+    describe('when the state changes and _resetModalDialogClass is called', function() {
+      it('should not have any classes starting with `modal-dialog-`', function() {
+        // trigger any action
+        storyteller.dispatcher.dispatch({
+          action: Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION
+        });
+
+        // mess with classes
+        var dialog = container.find('.modal-dialog');
+        dialog.addClass('modal-dialog-should-disappear modal-dialog-STATE should-persistent')
+
+        // trigger any other action
+        storyteller.dispatcher.dispatch({
+          action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
+        });
+
+        // ensure state-specific classes are removed
+        var dialogClasses = dialog.attr('class');
+        assert.notInclude(dialogClasses, 'modal-dialog-');
+        assert.include(dialogClasses, 'should-persistent');
+        assert.include(dialogClasses, 'modal-dialog');
+      });
+    });
 
   })
 });

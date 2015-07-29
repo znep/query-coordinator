@@ -269,9 +269,7 @@
         {
           'class': 'wizard-text-input',
           'data-embed-wizard-validate-field': 'youTubeId',
-          'placeholder': I18n.t(
-            'editor.embed_wizard.providers.youtube.input_placeholder'
-          )
+          'placeholder': 'https://www.youtube.com/'
         }
       );
 
@@ -289,7 +287,7 @@
         }
       ).append(previewIframe);
 
-      var backButton = _renderModalBackToProviderButton(Constants.EMBED_WIZARD_CHOOSE_PROVIDER);
+      var backButton = _renderModalBackButton(Constants.EMBED_WIZARD_CHOOSE_PROVIDER);
 
       var insertButton = $(
         '<button>',
@@ -394,7 +392,7 @@
         I18n.t('editor.embed_wizard.providers.visualization.choose_dataset_heading')
       );
       var closeButton = _renderModalCloseButton();
-      var backButton = _renderModalBackToProviderButton(Constants.EMBED_WIZARD_CHOOSE_PROVIDER);
+      var backButton = _renderModalBackButton(Constants.EMBED_WIZARD_CHOOSE_PROVIDER);
 
       var datasetChooserIframe = $(
         '<iframe>',
@@ -418,7 +416,7 @@
         I18n.t('editor.embed_wizard.providers.visualization.configure_vizualization_heading')
       );
       var closeButton = _renderModalCloseButton();
-      var backButton = _renderModalBackToProviderButton(Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION);
+      var backButton = _renderModalBackButton(Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION);
 
       return [ heading, closeButton, backButton ];
     }
@@ -458,19 +456,18 @@
       );
     }
 
-    function _renderModalBackToProviderButton(backAction) {
+    function _renderModalBackButton(backAction) {
       return $(
         '<button>',
         {
-          'class': 'btn',
+          'class': 'btn back-btn',
           'data-embed-action': backAction
         }
       ).append([
         $(
           '<span>',
           {
-            'class': 'icon-arrow-left2',
-            'style': 'font-size: 0.8em'
+            'class': 'icon-arrow-left2'
           }
         ),
         I18n.t('editor.embed_wizard.back_button_text')
@@ -496,11 +493,14 @@
      * - Call when state changes to clear out state-specific classes
      */
     function _resetModalDialogClass() {
-      $.each(_dialog[0].classList, function(index, className) {
-        if (_.startsWith(className, 'modal-dialog-')) {
-            _dialog[0].classList.remove(className);
-          }
-      })
+      var newClassList = _.reject(
+        _dialog.attr('class').split(' '),
+        function(className) {
+          return _.startsWith(className, 'modal-dialog-');
+        }
+      );
+
+      _dialog.attr('class', newClassList.join(' '));
     };
   }
 

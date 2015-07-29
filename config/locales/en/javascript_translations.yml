@@ -23,7 +23,6 @@ en:
             button_text: 'YouTube'
             heading: 'Add a YouTube video'
             input_label: 'Link to video'
-            input_placeholder: 'https://www.youtube.com/'
           visualization:
             button_text: 'Vizualization'
             choose_dataset_heading: 'Choose a dataset to visualize'

@@ -1,25 +1,39 @@
 (function($)
 {
-    var getTypes = function(data)
-    {
-        var cpObj = this;
-        var types = _(blist.datatypes).chain()
-            .map(function(t, k)
-            {
-                var createable = t.createable;
-                if (cpObj._view.newBackend || blist.feature_flags.disable_legacy_types)
-                { createable = createable && !t.deprecatedInNbe; }
-                return createable && ($.isBlank((data || {}).parentId) ||
-                    !t.excludeInNestedTable) ?
-                    {text: $.t('core.data_types.' + t.name), value: k, priority: t.priority} : null;
-            })
-            .compact()
-            .sortBy(function(t) { return t.priority; })
-            .value();
+    var getTypes = function(data) {
+        var hasParent = !_.isUndefined((data || {}).parentId);
+        var isNBE = blist.dataset.newBackend || blist.feature_flags.disable_legacy_types
 
-        if ($.isBlank((data || {}).parentId) && this._view.hasDatasetLinkColumn())
-        {
-            types.push({value: 'link', text: $.t('core.data_types.link')});
+        var types = _(blist.datatypes).chain()
+          .map(function(type, k) {
+            var createable = type.createable;
+
+            if (isNBE) {
+              createable = (!createable && type.nbeModifiable) || (createable && !type.deprecatedInNbe);
+            } else {
+              createable = createable && !type.nbeOnly;
+            }
+
+            if (createable && (!hasParent || !type.excludeInNestedTable)) {
+              return {
+                text: $.t('core.data_types.' + type.name),
+                value: k,
+                priority: type.priority,
+                group: type.group
+              };
+            }
+          })
+          .compact()
+          .sortBy(function(type) {
+            return type.priority;
+          })
+          .value();
+
+        if (!hasParent && blist.dataset.hasDatasetLinkColumn()) {
+          types.push({
+            value: 'link',
+            text: $.t('core.data_types.link')
+          });
         }
 
         return types;
@@ -58,27 +72,41 @@
                     ]
                 },
                 {
-                    title: $.t('screens.ds.grid_sidebar.column_common.type.title'),
-                    fields: [
-                        {text: $.t('screens.ds.grid_sidebar.column_common.type.type'), type: 'select', required: true, prompt: $.t('screens.ds.grid_sidebar.column_common.type.type_prompt'),
-                        name: 'dataTypeName', options: getTypes},
+                  title: $.t('screens.ds.grid_sidebar.column_common.type.title'),
+                  fields: [{
+                    text: $.t('screens.ds.grid_sidebar.column_common.type.type'),
+                    type: 'select',
+                    required: true,
+                    prompt: $.t('screens.ds.grid_sidebar.column_common.type.type_prompt'),
+                    name: 'dataTypeName',
+                    options: blist.dataset.newBackend ? getTypes() : getTypes
+                  },
 
-                        {text: $.t('screens.ds.grid_sidebar.column_common.type.key'), type: 'columnSelect', name: 'format.linkedKey', required: true,
-                            onlyIf: {field: 'dataTypeName', value: 'link'},
-                            columns: {type: 'dataset_link', hidden: false}},
-                        {text: $.t('screens.ds.grid_sidebar.column_common.type.source'), type: 'select', name: 'format.linkedSource', required: true,
-                            onlyIf: {field: 'dataTypeName', value: 'link'}, linkedField: 'format.linkedKey',
-                            options:
-                                // wrap in function to set up the "this" var
-                                // so that it points to the view when
-                                // getLinkedColumnOptions is called.
-                                function(keyCol, notUsed, $field, curVal)
-                                {
-                                    var v = this._view;
-                                    return v.getLinkedColumnOptions.call(v, keyCol, notUsed, $field, curVal);
-                                }
+                  {
+                    text: $.t('screens.ds.grid_sidebar.column_common.type.key'),
+                    type: 'columnSelect',
+                    name: 'format.linkedKey',
+                    required: true,
+                    onlyIf: {field: 'dataTypeName', value: 'link'},
+                    columns: {type: 'dataset_link', hidden: false}
+                  },
+
+                  {
+                    text: $.t('screens.ds.grid_sidebar.column_common.type.source'),
+                    type: 'select',
+                    name: 'format.linkedSource',
+                    required: true,
+                    onlyIf: {field: 'dataTypeName', value: 'link'},
+                    linkedField: 'format.linkedKey',
+                    options:
+                        // wrap in function to set up the "this" var
+                        // so that it points to the view when
+                        // getLinkedColumnOptions is called.
+                        function(keyCol, notUsed, $field, curVal) {
+                            var v = this._view;
+                            return v.getLinkedColumnOptions.call(v, keyCol, notUsed, $field, curVal);
                         }
-                    ]
+                  }]
                 },
 
                 // Multiple choice value chooser

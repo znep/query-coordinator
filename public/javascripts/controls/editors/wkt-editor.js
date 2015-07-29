@@ -31,8 +31,11 @@
     };
 
     $.blistEditor.addEditor('point', wktEditor, 'text');
-    // $.blistEditor.addEditor('line', wktEditor, 'text');
-    // $.blistEditor.addEditor('polygon', wktEditor, 'text');
+    $.blistEditor.addEditor('multipoint', wktEditor, 'text');
+    $.blistEditor.addEditor('line', wktEditor, 'text');
+    $.blistEditor.addEditor('multiline', wktEditor, 'text');
+    $.blistEditor.addEditor('polygon', wktEditor, 'text');
+    $.blistEditor.addEditor('multipolygon', wktEditor, 'text');
 
 })(jQuery);
 

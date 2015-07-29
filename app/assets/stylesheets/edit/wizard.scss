@@ -47,6 +47,36 @@
 
     &.invalid {
       background-image: asset-url('video-error-icon.png');
+
+      .wizard-media-embed-invalid-message {
+        display: block;
+      }
+    }
+
+    .wizard-media-embed-invalid-message {
+      position: relative;
+      display: none;
+      height: 100%;
+
+      .wizard-media-embed-invalid-title,
+      .wizard-media-embed-invalid-description {
+        position: absolute;
+        display: block;
+        width: 100%;
+        font-size: 1.6rem;
+        font-style: oblique;
+        text-align: center;
+        color: $wizard-media-embed-invalid-message-color;
+      }
+
+      .wizard-media-embed-invalid-title {
+        top: 15%;
+        font-weight: 700;
+      }
+
+      .wizard-media-embed-invalid-description {
+        bottom: 20%;
+      }
     }
 
     .wizard-media-embed-preview-iframe {

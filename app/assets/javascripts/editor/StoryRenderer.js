@@ -507,6 +507,7 @@
 
       var componentData = storyteller.storyStore.getBlockComponents(blockId);
       var editorId;
+      var contentHeight;
       var maxEditorHeight = 0;
 
       componentData.forEach(function(componentDatum, i) {
@@ -514,14 +515,27 @@
         if (componentDatum.type === 'text') {
 
           editorId = blockId + '-' + i;
-          maxEditorHeight = Math.max(
-            maxEditorHeight,
-            storyteller.
-              richTextEditorManager.
-                getEditor(editorId).
-                  getContentHeight()
-          );
+          contentHeight = storyteller.
+            richTextEditorManager.
+            getEditor(editorId).
+            getContentHeight()
+
+        } else {
+
+          contentHeight = blockElement.
+            find('.component-container').
+            eq(i).
+            // Not sure why subtracting one causes
+            // the heights to be evened out visually,
+            // but it does.
+            outerHeight(true) - 1;
+
         }
+
+        maxEditorHeight = Math.max(
+          maxEditorHeight,
+          contentHeight
+        );
       });
 
       blockElement.

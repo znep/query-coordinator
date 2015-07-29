@@ -1,13 +1,18 @@
 @import '../base';
 
 .block-edit {
-  @include clearfix();
-
   position: absolute;
   display: block;
   width: 100%;
   top: 0;
   left: 0;
-  background-color: $block-bg-color;
   transition: transform $transition-duration;
+
+  .block {
+    @include clearfix();
+
+    .component-container {
+      background-color: $block-bg-color;
+    }
+  }
 }

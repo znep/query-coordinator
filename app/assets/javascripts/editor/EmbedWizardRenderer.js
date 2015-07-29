@@ -115,7 +115,7 @@
 
       _dialog.on('click', '[data-embed-action]', function(event) {
 
-        var action = event.target.getAttribute('data-embed-action');
+        var action = this.getAttribute('data-embed-action');
 
         switch (action) {
 
@@ -170,11 +170,11 @@
       var componentValue = storyteller.embedWizardStore.getCurrentComponentValue();
       var wizardContent;
 
-      // First see if we need to render a new template
-      // and render a wizard state if necessary.
+      // See if we need to render a new template, then render a wizard state if
+      // necessary.
       if (state !== _lastRenderedState) {
 
-        //remove state-specific modal container classes
+        // Remove state-specific modal container classes
         _resetModalDialogClass();
 
         switch (state) {
@@ -188,11 +188,11 @@
             break;
 
           case Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION:
-            wizardContent = _renderChooseDatasetPickerTemplate(componentValue);
+            wizardContent = _renderChooseDatasetPickerTemplate();
             break;
 
           case Constants.EMBED_WIZARD_DATASET_SELECTED:
-            wizardContent = _renderConfigureVisualizationTemplate(componentValue);
+            wizardContent = _renderConfigureVisualizationTemplate();
             break;
 
           default:
@@ -211,7 +211,8 @@
 
       // Now put the data into the template rendered above
       // This handles updating data when the template does NOT need to be re-rendered
-      // Some templates may not have renderData function because they do not update dynamically
+      // Note: Some templates may not have renderData function because they do
+      // not update dynamically
       switch (state) {
 
         case Constants.EMBED_WIZARD_CHOOSE_YOUTUBE:
@@ -288,7 +289,7 @@
         }
       ).append(previewIframe);
 
-      var backButton = _renderModalBackToProviderButton();
+      var backButton = _renderModalBackToProviderButton(Constants.EMBED_WIZARD_CHOOSE_PROVIDER);
 
       var insertButton = $(
         '<button>',
@@ -386,14 +387,14 @@
       }
     }
 
-    function _renderChooseDatasetPickerTemplate(componentValue) {
+    function _renderChooseDatasetPickerTemplate() {
       _addModalDialogClass('modal-dialog-wide');
 
       var heading = _renderModalTitle(
         I18n.t('editor.embed_wizard.providers.visualization.choose_dataset_heading')
       );
       var closeButton = _renderModalCloseButton();
-      var backButton = _renderModalBackToProviderButton();
+      var backButton = _renderModalBackToProviderButton(Constants.EMBED_WIZARD_CHOOSE_PROVIDER);
 
       var datasetChooserIframe = $(
         '<iframe>',
@@ -417,7 +418,7 @@
         I18n.t('editor.embed_wizard.providers.visualization.configure_vizualization_heading')
       );
       var closeButton = _renderModalCloseButton();
-      var backButton = _renderModalBackToProviderButton();
+      var backButton = _renderModalBackToProviderButton(Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION);
 
       return [ heading, closeButton, backButton ];
     }
@@ -457,20 +458,19 @@
       );
     }
 
-    function _renderModalBackToProviderButton() {
+    function _renderModalBackToProviderButton(backAction) {
       return $(
         '<button>',
         {
           'class': 'btn',
-          'data-embed-action': Constants.EMBED_WIZARD_CHOOSE_PROVIDER
+          'data-embed-action': backAction
         }
       ).append([
         $(
           '<span>',
           {
             'class': 'icon-arrow-left2',
-            'style': 'font-size: 0.8em',
-            'data-embed-action': Constants.EMBED_WIZARD_CHOOSE_PROVIDER
+            'style': 'font-size: 0.8em'
           }
         ),
         I18n.t('editor.embed_wizard.back_button_text')
@@ -496,13 +496,11 @@
      * - Call when state changes to clear out state-specific classes
      */
     function _resetModalDialogClass() {
-      _dialog[0].classList.forEach(
-        function(className, index) {
-          if (_.startsWith(className, 'modal-dialog-')) {
+      $.each(_dialog[0].classList, function(index, className) {
+        if (_.startsWith(className, 'modal-dialog-')) {
             _dialog[0].classList.remove(className);
           }
-        }
-      );
+      })
     };
   }
 

@@ -27,12 +27,23 @@ $tool-panel-z-index: 1004
 
   .tool-panel-hint
     position: absolute
-    right: -1px
+    right: 0
     top: -$tool-panel-hint-size
     width: 0
     height: 0
     border-style: solid
     border-width: 0 0 $tool-panel-hint-size $tool-panel-hint-size
+
+    &:before
+      content: ''
+      position: absolute
+      right: -1px
+      top: -2px
+      width: 0
+      height: 0
+      z-index: -1
+      border-style: solid
+      border-width: 0 0 $tool-panel-hint-size + 1 $tool-panel-hint-size + 1
 
   &.upwards // An upwards facing tool-panel
     .tool-panel-main
@@ -42,10 +53,15 @@ $tool-panel-z-index: 1004
 
     .tool-panel-hint
       top: inherit
-      bottom: -20px
-      left: -1px
+      bottom: -19px
+      left: 0
       right: inherit
       border-width: 20px
+
+      &:before
+        right: 0
+        top: -19px
+        border-width: $tool-panel-hint-size + 1 0 $tool-panel-hint-size + 1 $tool-panel-hint-size + 1
 
   &.downwards
     .tool-panel-hint
@@ -66,6 +82,8 @@ $tool-panel-z-index: 1004
         position: absolute
         width: 0
         height: 0
+        right: -($tool-panel-hint-size + 2)
+        top: 0
       &:after
         border-width: ($tool-panel-hint-size / 2)
         top: 2px

@@ -302,9 +302,15 @@ soc-select
   .tool-panel-hint
     border-color: transparent transparent $tool-panel-background-color transparent
 
+    &:before
+      border-color: transparent transparent $tool-panel-border-color transparent
+
   &.upwards
     .tool-panel-hint
       border-color: $tool-panel-background-color transparent transparent $tool-panel-background-color
+
+      &:before
+        border-color: transparent $tool-panel-border-color transparent $tool-panel-border-color
 
   &.light
     .tool-panel-hint
@@ -802,9 +808,6 @@ aggregation-chooser
 
     &.disabled span::after
       border-color: $aggregation-chooser-trigger-disabled-color transparent transparent transparent
-
-  .tool-panel-hint::before
-    border-color: transparent transparent $aggregation-chooser-tool-panel-hint-border-color transparent
 
   .aggregation-columns.count
     .aggregation-option.count:hover

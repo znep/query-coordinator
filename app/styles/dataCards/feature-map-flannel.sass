@@ -1,0 +1,133 @@
+@import dataCards/common/fonts
+@import dataCards/common/layout
+
+$flannel-hint-tip-size: 10px
+
+.feature-map-flannel
+
+  .tool-panel
+    position: absolute
+
+    .tool-panel-main
+      margin: 0
+      display: block
+      width: 350px
+      max-height: 300px
+      bottom: 10px
+      right: inherit
+      left: 50%
+      z-index: 1003
+
+    .tool-panel-inner-container
+      padding: 0
+      overflow: auto
+      max-height: 249px
+
+    .tool-panel-hint
+      position: absolute
+      height: 10px
+      width: 10px
+      border: 0
+      background-color: transparent
+      top: auto
+      right: auto
+
+      &:after, &:before
+        border: solid transparent
+        content: " "
+        height: 0
+        width: 0
+        position: absolute
+
+    &.southwest .tool-panel-hint
+      left: 0
+      bottom: -9px // Needed for IE9
+
+      &:after
+        border-width: $flannel-hint-tip-size $flannel-hint-tip-size 0 0
+
+      &:before
+        border-width: ($flannel-hint-tip-size + 1) ($flannel-hint-tip-size + 1) 0 0
+        top: 1px
+        left: -1px
+
+    &.southeast .tool-panel-hint
+      bottom: -9px // Needed for IE9
+
+      &:after
+        border-width: 0 $flannel-hint-tip-size $flannel-hint-tip-size 0
+
+      &:before
+        border-width: 0 ($flannel-hint-tip-size + 1) ($flannel-hint-tip-size + 1) 0
+        top: 1px
+
+  .icon-close
+    cursor: pointer
+    font-size: $icon-size
+    padding: 0.5rem 1rem 0 0
+    position: absolute
+    right: 0
+    z-index: 3
+
+  .sticky-border
+    position: absolute
+    height: 10px
+    width: 90%
+    z-index: 2
+
+  .sticky-border.bottom
+    height: 11px
+
+  .flannel-text
+    padding: 0.5rem 1.1rem 0.5rem 0.5rem
+
+    .name
+      font-weight: bold
+
+
+  .paging-panel
+    padding: 7px 10px 11px
+    min-height: 2rem
+    font-size: $small-font-size
+    border-radius: 0
+
+    .paging-info
+      margin: auto
+      padding: 0.1rem 0 0 0.5rem
+      width: 38%
+
+      .message
+        height: 12px
+        width: 100%
+        text-align: center
+
+        p
+          width: 100%
+          overflow: hidden
+          text-overflow: ellipsis
+          white-space: nowrap
+          float: left
+          margin: 0
+
+    .pagination-btn
+      margin-bottom: 0
+
+      &.previous
+        float: left
+        padding: 0.5rem 0.5rem
+
+        .caret:before
+          @include prefixer(transform, scaleX(0.75) rotate(180deg))
+          content: '▶'
+          display: inline-block
+          margin-right: 0.5rem
+
+      &.next
+        float: right
+        padding: 0.5rem 1rem
+
+        .caret:after
+          @include prefixer(transform, scaleX(0.75))
+          content: '▶'
+          display: inline-block
+          margin-left: 0.5rem

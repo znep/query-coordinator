@@ -93,6 +93,14 @@
       // Feature Maps
       'FEATURE_MAP_HOVER_THRESHOLD': 8,
       'FEATURE_MAP_FLYOUT_Y_OFFSET': 5,
+      'FEATURE_MAP_RESIZE_DEBOUNCE_INTERVAL': 250,
+
+      // Feature Map Flannel
+      'FLANNEL_PADDING_COMPENSATION': 3,
+      'FLANNEL_WIDTH': 350,
+      'FLANNEL_HINT_WIDTH': 10,
+      'FLANNEL_CLOSE_ICON_INITIAL_PADDING': 5,
+      'FLANNEL_BOTTOM_STICKY_BORDER_PAGINATION_POSITION': 51,
 
       // Table card visualization parameters.
       'TABLE_UNSORTABLE_PHYSICAL_DATATYPES': ['geo_entity', 'point'],

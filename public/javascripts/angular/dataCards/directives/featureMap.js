@@ -2,17 +2,21 @@
   'use strict';
 
   function FeatureMap(
+    $compile,
+    $rootScope,
     Constants,
     VectorTiles,
     LeafletHelpersService,
     LeafletVisualizationHelpersService,
     FlyoutService,
     I18n,
-    ServerConfig
+    ServerConfig,
+    WindowState
   ) {
     return {
       restrict: 'E',
       scope: {
+        'getClickedRows': '=',
         'baseLayerUrl': '=',
         'featureExtent': '=',
         'zoomDebounceMilliseconds': '=',
@@ -68,41 +72,48 @@
           offset: {x: 0, y: 0}
         };
 
-        FlyoutService.register({
-          selector: 'canvas',
-          render: function(target) {
-            var noPoints = (flyoutData.count === 0);
+        // Handles flyouts for hover
+        function renderHoverFlyout(target) {
+          var noPoints = (flyoutData.count === 0);
 
-            // Set the appropriate cursor
-            target.style.cursor = noPoints ? 'inherit' : 'pointer';
+          // Set the appropriate cursor
+          target.style.cursor = noPoints ? 'inherit' : 'pointer';
 
-            // Hide the flyout if there are no nearby points
-            if (noPoints) {
-              FlyoutService.hide();
-              return;
-            }
+          // Hide the flyout if there are no nearby points
+          if (noPoints) {
+            FlyoutService.hide();
+            return;
+          }
 
-            var template = [
-              '<div class="flyout-title">{0} {1}</div>',
-              I18n.flyout.details
-            ].join('');
+          var template = [
+            '<div class="flyout-title">{0} {1}</div>',
+            I18n.flyout.details
+          ].join('');
 
-            var unit = (flyoutData.count === 1) ?
-              scope.rowDisplayUnit :
-              scope.rowDisplayUnit.pluralize();
+          var unit = (flyoutData.count === 1) ?
+            scope.rowDisplayUnit :
+            scope.rowDisplayUnit.pluralize();
 
-            return template.format(
-              flyoutData.count,
-              _.escape(unit)
-            );
-          },
-          getOffset: function() {
-            return flyoutData.offset;
-          },
-          destroySignal: scope.$destroyAsObservable()
-        });
+          return template.format(flyoutData.count, _.escape(unit));
+        }
 
         var map = L.map(element.find('.feature-map-container')[0], mapOptions);
+        // Control the hover flyout by registering when the mouse enters the map
+        // and degistering when the mouse exits the map, so flyouts work across
+        // multiple maps.
+        map.on('mouseover', function() {
+          FlyoutService.register({
+            selector: 'canvas',
+            render: renderHoverFlyout,
+            getOffset: function() {
+              return flyoutData.offset;
+            },
+            destroySignal: scope.$destroyAsObservable()
+          });
+        });
+        map.on('mouseout', function() {
+          FlyoutService.deregister('canvas', renderHoverFlyout);
+        });
         // We buffer feature layers so that there isn't a visible flash
         // of emptiness when we transition from one to the next. This is accomplished
         // by only removing the previous layers when the current one completes rendering.
@@ -114,7 +125,6 @@
         var completeResizeFn = null;
         var baseTileLayerObservable;
         var dimensions$;
-        var RESIZE_DEBOUNCE_INTERVAL = 250;
 
         /**
          * Returns a unique string id for a feature that will be used as a key
@@ -275,7 +285,11 @@
          */
 
         var mousemoveHandler = _.noop;
+        var clickHandler = _.noop;
         if (ServerConfig.get('oduxEnableFeatureMapHover')) {
+          var windowRef = $(window);
+          var lastPoints = null;
+
           mousemoveHandler = function(e) {
             // Set flyout data and force a refresh of the flyout
             flyoutData.offset = {
@@ -283,7 +297,144 @@
               y: e.originalEvent.clientY + Constants.FEATURE_MAP_FLYOUT_Y_OFFSET
             };
             flyoutData.count = _.sum(e.points, 'count');
+
             FlyoutService.refreshFlyout(e.originalEvent);
+          };
+
+          clickHandler = function(e) {
+            // Generate observable for data of clicked rows
+            var clickedDataRows$ = scope.getClickedRows(e.latlng, e.points);
+
+            if (_.xor(e.points, lastPoints).length === 0) {
+              lastPoints = null;
+              return;
+            } else {
+              lastPoints = e.points;
+            }
+
+            // Update position and content of row-detail flannel.
+            // Control passes back to cardVisualizationFeatureMap.js here.
+            Rx.Observable.subscribeLatest(
+              clickedDataRows$.take(1).filter(_.isDefined),
+              function(rows) {
+
+                if (rows.length === 0) {
+                  return;
+                }
+
+                var flannelTargetLatLng;
+
+                // Open flannel over the point if a single point is selected, otherwise
+                // opens over the cursor location.
+                if (rows.length === 1) {
+                  var latIndex = 1;
+                  var lngIndex = 0;
+                  var featureMapLocationData = _.find(rows[0], {isCurrentColumn: true});
+                  var rowPoint = _.find(featureMapLocationData.value, {type: 'Point'});
+                  flannelTargetLatLng = L.latLng(rowPoint.coordinates[latIndex], rowPoint.coordinates[lngIndex]);
+                  //target on lat lang of point
+                } else {
+                  flannelTargetLatLng = e.latlng;
+                }
+
+                // Set up the essential properties for the row-details flannel.
+                // Any property changes that occur after binding scope to the
+                // compiled directive need to be performed inside $safeApply.
+                var flannelScope = $rootScope.$new();
+                flannelScope.rows = rows;
+                flannelScope.rowDisplayUnit = scope.rowDisplayUnit;
+                flannelScope.isExpanded = $(element).closest('card').hasClass('expanded');
+
+                // Instantiate the row-details flannel.
+                var flannelFactory = $compile(angular.element('<feature-map-flannel />'));
+                var flannel = flannelFactory(flannelScope);
+                // Recalculates the position of the panel and hint.
+                // Runs now to obtain initial values.
+                function adjustPosition() {
+                  flannelScope.$safeApply(function() {
+
+                    var containerPoint = map.latLngToContainerPoint(flannelTargetLatLng);
+                    var distanceOutOfView = $(window).scrollTop();
+                    var mapContainerBounds = map.getContainer().getBoundingClientRect();
+                    var mapLeftEdge = mapContainerBounds.left;
+                    var mapTopEdge = mapContainerBounds.top;
+                    var xPosition = mapLeftEdge + containerPoint.x;
+                    var yPosition = mapTopEdge + containerPoint.y + distanceOutOfView;
+                    var windowWidth = windowRef.width();
+
+                    flannelScope.abutsRightEdge = windowWidth <
+                      (xPosition + Constants.FLANNEL_WIDTH + Constants.FLYOUT_WINDOW_PADDING);
+
+                    flannelScope.panelPositionStyle = {};
+                    flannelScope.hintPositionStyle = {};
+
+                    flannelScope.panelPositionStyle.top = '{0}px'.format(yPosition);
+
+                    if (flannelScope.abutsRightEdge) {
+                      flannelScope.useSoutheastHint = xPosition + (Constants.FLANNEL_WIDTH / 2) >
+                        windowWidth - (Constants.FLYOUT_WINDOW_PADDING + Constants.FLANNEL_PADDING_COMPENSATION);
+
+                      flannelScope.panelPositionStyle.right = '{0}px'.format(
+                        Constants.FLANNEL_WIDTH + Constants.FLANNEL_PADDING_COMPENSATION + Constants.FLYOUT_WINDOW_PADDING
+                      );
+
+                      var hintRightOffset = xPosition + Constants.FLYOUT_WINDOW_PADDING +
+                        (flannelScope.useSoutheastHint ? 0 : Constants.FLANNEL_HINT_WIDTH);
+                      var hintPositionFromRight = Math.max(0, windowWidth - hintRightOffset);
+                      flannelScope.hintPositionStyle.right = '{0}px'.format(hintPositionFromRight);
+                      flannelScope.hintPositionStyle.left = 'auto';
+                    } else {
+                      flannelScope.panelPositionStyle.left = '{0}px'.format(xPosition);
+                      flannelScope.useSoutheastHint = false;
+                    }
+                  });
+                }
+                adjustPosition();
+
+                // Clean up after ourselves, and trigger clearing of clicked points under closing flannel
+                function handleDestroyFlannel() {
+                  closeSubscriber.dispose();
+                  scrollSubscriber.dispose();
+                  map.off('resize', adjustPosition);
+                  flannel.remove();
+                  flannelScope.$destroy();
+                  map.fire('flannelclosed', e);
+                }
+
+                // Dismiss this flannel instance when clicking outside
+                // the flannel itself, or on the close icon
+                var closeSubscriber = WindowState.closeDialogEventObservable.
+                  filter(function(e) {
+                    var target = $(e.target);
+                    return target.closest('.feature-map-flannel').length === 0 || target.is('.icon-close');
+                  }).
+                  subscribe(function(e) {
+                    scope.$safeApply(handleDestroyFlannel);
+                    // If the click is outside of the map itself, (when clicking elsewhere on the page,
+                    // or updating a filter) clear all hover and clicked point highlighting
+                    if ($(e.target).closest('.feature-map-container').length === 0) {
+                      map.fire('clearhighlightrequest');
+                    }
+                  });
+
+                // Shift flannel position if scroll occurs
+                var scrollSubscriber = WindowState.scrollPositionSubject.subscribe(function() {
+                  adjustPosition();
+                });
+
+                // Remove the flannel on pan/zoom, but just shift its position
+                // if the map resizes innocuously (e.g. due to window resize).
+                map.once('dragstart zoomstart', function() {
+                  scope.$safeApply(handleDestroyFlannel);
+                });
+
+                map.on('resize', adjustPosition);
+
+                // Insert the flannel into the DOM.
+                $(e.originalEvent.target).
+                  closest('body').
+                  append(flannel);
+              });
           };
         }
 
@@ -310,7 +461,8 @@
                 });
               return promise;
             },
-            mousemove: mousemoveHandler
+            mousemove: mousemoveHandler,
+            click: clickHandler
           };
 
           // Don't create duplicate layers.
@@ -389,7 +541,7 @@
             // viewport here so that we can reset the viewport to capture a
             // similar vertical area after the resize event completes.
           },
-          RESIZE_DEBOUNCE_INTERVAL,
+          Constants.FEATURE_MAP_RESIZE_DEBOUNCE_INTERVAL,
           { leading: true, trailing: false }
         );
 
@@ -402,16 +554,12 @@
             // pre-resize viewport, which we have conveniently recorded when
             // the event was originally fired.
           },
-          RESIZE_DEBOUNCE_INTERVAL,
+          Constants.FEATURE_MAP_RESIZE_DEBOUNCE_INTERVAL,
           { leading: false, trailing: true }
         );
 
-        // Respond to map events.
-        map.on('click', function(e) {
-          // TODO: Something?
-        });
-
-        map.on('resize', function(e) {
+        // Respond to map resize events
+        map.on('resize', function() {
           // This is debounced and will fire on the leading edge.
           startResizeFn();
           // This is debounced and will fire on the trailing edge.
@@ -427,7 +575,7 @@
           map(function(url) {
             if (!_.isDefined(url)) {
               return {
-                url: Constants['DEFAULT_MAP_BASE_LAYER_URL'],
+                url: Constants.DEFAULT_MAP_BASE_LAYER_URL,
                 opacity: 0.15
               };
             } else {

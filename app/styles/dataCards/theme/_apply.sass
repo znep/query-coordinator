@@ -666,9 +666,37 @@ div.column-chart
     font-weight: bold
     color: $timeline-chart-tick-zero-color
 
+// feature-map-flannel
+.feature-map-flannel .tool-panel
+  .tool-panel-main
+    background-color: $feature-map-flannel-chart-background-color
+    color: $feature-map-flannel-chart-title-text-color
+    border-radius: 0
+    box-shadow: 0 0px 0px
+    border: 1px solid $feature-map-flannel-border-color
+    padding: 0px
+
+    .paging-panel-wrapper
+      background-color: $feature-map-flannel-chart-alt-background-color
+      border-top: 1px solid $feature-map-flannel-border-color
+
+    .sticky-border
+      background-color: $feature-map-flannel-chart-background-color
+
+  &.southwest .tool-panel-hint
+    &:before
+      border-color: $feature-map-flannel-border-color transparent transparent transparent
+    &:after
+      border-color: $feature-map-flannel-chart-background-color transparent transparent transparent
+
+  &.southeast .tool-panel-hint
+    &:before
+      border-color: transparent $feature-map-flannel-border-color transparent transparent
+    &:after
+      border-color: transparent $feature-map-flannel-chart-background-color transparent transparent
+
 
 // Layout
-
 
 // body?
 body

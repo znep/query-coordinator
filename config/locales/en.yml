@@ -147,6 +147,10 @@ en:
           no_data: There is no data to display.
       feature_map:
         zoom_disabled: Zoom is temporarily unavailable. Please try again later.
+      feature_map_flannel:
+        previous: Previous
+        next: Next
+        showing: <p>Showing {0}</p><br><p>{1}&nbsp;of&nbsp;{2}</p>
       feedback_panel:
         broken: Something seems broken
         feedback: Feedback

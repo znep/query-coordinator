@@ -1,7 +1,7 @@
 ;(function(storyteller) {
   'use strict';
 
-  window.socrata.storyteller.Util = {
+  storyteller.Util = {
 
     assertEqual: function(value1, value2) {
       if (value1 !== value2) {
@@ -72,6 +72,33 @@
       }
 
       return clonedElement;
+    },
+
+    /**
+     * Prevents scrolling from bubbling up to the document
+     * Ex: element.on('mousewheel', '.scrollable', Util.preventScrolling)
+     */
+    preventScrolling: function(e) {
+      var target = $(this);
+      var scrollTop = target.scrollTop();
+
+      var delta = e.originalEvent.deltaY;
+      if (delta < 0) {
+        // Scrolling up.
+        if (scrollTop === 0) {
+          // Past top.
+          e.preventDefault();
+        }
+      } else if (delta > 0) {
+        // Scrolling down.
+        var innerHeight = target.innerHeight();
+        var scrollHeight = target[0].scrollHeight;
+
+        if (scrollTop >= scrollHeight - innerHeight) {
+          // Past bottom.
+          e.preventDefault();
+        }
+      }
     },
 
     reduceDOMFragmentAscending: function(element, applyFn, shouldTerminateFn, accumulator) {

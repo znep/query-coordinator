@@ -40,21 +40,14 @@
     border-radius: $modal-border-radius;
 
     &.modal-dialog-wide {
-      @include media-query-property(
-        'width',
-        $main-content-width-small,
-        $main-content-width-medium,
-        $main-content-width-large,
-        $main-content-width-extra-large
-      );
+      width: $modal-wide-static-width;
+      max-width: 100%;
+      box-sizing: border-box;
+      left: calc(50% - (#{$modal-wide-static-width} / 2));
 
-      @include media-query-property(
-        'left',
-        calc((100vw - #{$main-content-width-small}) / 2),
-        calc((100vw - #{$main-content-width-medium}) / 2),
-        calc((100vw - #{$main-content-width-large}) / 2),
-        calc((100vw - #{$main-content-width-extra-large}) / 2)
-      );
+      @media (max-width: $modal-wide-static-width) {
+        left: 0;
+      }
     }
 
     .modal-title {

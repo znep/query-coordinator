@@ -58,6 +58,9 @@
         }
       });
 
+      // Do not scroll page if the container is scrolled
+      _container.on('mousewheel', storyteller.Util.preventScrolling)
+
       _overlay.on('click', function(event) {
         storyteller.dispatcher.dispatch({
           action: Constants.EMBED_WIZARD_CLOSE

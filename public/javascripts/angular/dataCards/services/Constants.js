@@ -92,7 +92,7 @@
 
       // Feature Maps
       'FEATURE_MAP_HOVER_THRESHOLD': 8,
-      'FEATURE_MAP_FLYOUT_Y_OFFSET': 5,
+      'FEATURE_MAP_FLYOUT_Y_OFFSET': 1.25,
       'FEATURE_MAP_RESIZE_DEBOUNCE_INTERVAL': 250,
 
       // Feature Map Flannel

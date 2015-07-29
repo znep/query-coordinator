@@ -7,8 +7,35 @@
     throw new Error('lodash is a required dependency for `socrata-utils.js`.');
   }
 
+  if (String.prototype.format) {
+    throw new Error(
+      'Cannot assign format function to String prototype: ' +
+      '`String.prototype.format` already exists.'
+    );
+  }
+
   window.socrata = window.socrata || {};
   window.socrata.utils = window.socrata.utils || {};
+
+  /**
+   * `format` is assigned to the String prototype at the bottom of this file.
+   *
+   * Usage:
+   *
+   * 'Hello, {1}!'.format('World');
+   * => 'Hello, World!'
+   */
+  var format = function() {
+
+    var txt = this;
+    var i;
+
+    for (i = 0; i < arguments.length; i++) {
+      txt = txt.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
+    }
+
+    return txt;
+  };
 
   var socrataUtils = {
 
@@ -77,5 +104,6 @@
     }
   };
 
+  String.prototype.format = format;
   _.merge(window.socrata.utils, socrataUtils);
 })(window);

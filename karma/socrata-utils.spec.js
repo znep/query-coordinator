@@ -120,4 +120,11 @@ describe('socrata-utils.js', function() {
       });
     });
   });
+
+  describe('String.prototype.format', function() {
+
+    it('should correctly inteprolate values by index', function() {
+      expect('{0}, {1}, {2}, {3}, {4}'.format(1, '2', 3, 4, 'five')).to.equal('1, 2, 3, 4, five');
+    });
+  });
 });

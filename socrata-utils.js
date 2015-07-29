@@ -23,7 +23,7 @@
 
     assertHasProperty: function(object, name, message) {
 
-      if (!object.hasOwnProperty(name)) {
+      if (!_.has(object, name)) {
 
         if (message) {
           throw new Error(message);

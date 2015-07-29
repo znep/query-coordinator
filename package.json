@@ -36,5 +36,8 @@
       "$": true,
       "_": true
     }
+  },
+  "scripts": {
+    "test": "karma start karma.conf.js --singleRun true"
   }
 }

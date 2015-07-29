@@ -5,8 +5,17 @@
     "socrata-utils.js"
   ],
   "ignore": [
+    "bower_components/",
+    "karma/",
+    "node_modules/",
     ".gitignore",
     "bower.json",
-    "README.md"
-  ]
+    "karma.conf.js",
+    "packages.json",
+    "README.md",
+    "run_tests.sh"
+  ],
+  "dependencies": {
+    "lodash": "~3.10.0"
+  }
 }

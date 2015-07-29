@@ -58,14 +58,18 @@
         });
 
         //bind keyboard events: arrows up(38) / down(40), enter(13), and tab(9)
+        var UP_KEYCODE = 38;
+        var DOWN_KEYCODE = 40;
+        var ENTER_KEYCODE = 13;
+        var TAB_KEYCODE = 9;
         Rx.Observable.fromEvent($document, 'keydown').takeUntil(scope.$destroyAsObservable(element)).
           subscribe(function(evt) {
             scope.$safeApply(function() {
-              if (evt.which === 38) {
+              if (evt.which === UP_KEYCODE) {
                 gotoPreviousItem();
-              } else if (evt.which === 40) {
+              } else if (evt.which === DOWN_KEYCODE) {
                 gotoNextItem();
-              } else if (evt.which === 13 || evt.which === 9) {
+              } else if (evt.which === ENTER_KEYCODE || evt.which === TAB_KEYCODE) {
                 scope.selectMatch(scope.activeEntryIndex);
               }
             });

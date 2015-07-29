@@ -9,7 +9,12 @@
           <spinner class="spinner"></spinner>
         </div>
 
-        <span ng-hide="suggestionsLoading">{{suggestionsStatus}}</span>
+        <span ng-hide="suggestionsLoading || error">{{suggestionsStatus}}</span>
+
+        <div class="suggestions-error" ng-hide="suggestionsLoading || !error">
+          <span class="icon-warning"></span>
+          <div ng-bind-html="'searchCard.errorExplanation' | I18n"></div>
+        </div>
       </div>
 
       <intractable-list

@@ -69,10 +69,10 @@ describe('SuggestionService', function() {
         fakeRequestHandler.respond(500, '');
       });
 
-      it('should return an empty array of results', function(done) {
+      it('should return null', function(done) {
         var response = SuggestionService.suggest(fake4x4, fakeFieldName, fakeQuery);
         response.then(function(data) {
-          expect(data).to.be.an('array').and.to.be.empty;
+          expect(data).to.be.null;
           done();
         });
         $httpBackend.flush();

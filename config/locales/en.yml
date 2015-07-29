@@ -250,12 +250,13 @@ en:
         saved: Saved!
         saving: Saving...
       search_card:
+        error_explanation: <p>An error was encountered while fetching search suggestions.</p><p>You can still press Enter at any time to search exactly by the text you entered, or you can try again later to see suggested values.</p>
         invalid_search: Try searching for a number containing no letters.
         loading: Loading suggestions...
         no_results: Your search returned no results. Check your spelling, or try a different term.
         one_example: 'Example: ''{0}'''
-        prompt_number: Type a number and press enter to search
-        prompt_text: Type some text and press enter to search
+        prompt_number: Type a number and press Enter to search
+        prompt_text: Type some text and press Enter to search
         search_info: Showing {0} of {1} matching results
         two_examples: 'Examples: ''{0}'' or ''{1}'''
       suggestion_tool_panel:

@@ -35,9 +35,9 @@
               pluck('text').
               value();
           },
-          function(data) {
-            $log.error(data);
-            return [];
+          function() {
+            // return null to signal a non-success response
+            return null;
           }
         );
       },

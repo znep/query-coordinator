@@ -1,4 +1,4 @@
-source 'https://rubygems.org/'
+source 'https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-remote/'
 
 if RUBY_VERSION =~ /1.9/
   Encoding.default_external = Encoding::UTF_8

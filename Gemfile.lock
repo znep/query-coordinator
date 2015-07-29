@@ -5,7 +5,7 @@ GIT
     statsd-ruby (0.3.2)
 
 GEM
-  remote: https://rubygems.org/
+  remote: https://socrata.artifactoryonline.com/socrata/api/gems/rubygems-remote/
   specs:
     abstract_type (0.0.7)
     actionmailer (3.2.22)
@@ -393,3 +393,6 @@ DEPENDENCIES
   zip
   zk (~> 1.9.2)
   zookeeper (~> 1.4.9)
+
+BUNDLED WITH
+   1.10.6

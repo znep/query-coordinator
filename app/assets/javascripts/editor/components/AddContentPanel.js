@@ -49,30 +49,7 @@
       on('sidebar:close', function() {
         toggleButton.removeClass('active');
       }).
-      on('mousewheel', '.scrollable', function(e) {
-        // Prevent mouse scrolls from bubbling
-        // up to document.
-        var target = $(this);
-        var scrollTop = target.scrollTop();
-
-        var delta = e.originalEvent.deltaY;
-        if (delta < 0) {
-          // Scrolling up.
-          if (scrollTop === 0) {
-            // Past top.
-            e.preventDefault();
-          }
-        } else if (delta > 0) {
-          // Scrolling down.
-          var innerHeight = target.innerHeight();
-          var scrollHeight = target[0].scrollHeight;
-
-          if (scrollTop >= scrollHeight - innerHeight) {
-            // Past bottom.
-            e.preventDefault();
-          }
-        }
-      }).
+      on('mousewheel', '.scrollable', storyteller.Util.preventScrolling).
       on('dblclick', '.inspiration-block', function(e) {
         var blockContent = JSON.parse(e.currentTarget.getAttribute('data-block-content'));
 

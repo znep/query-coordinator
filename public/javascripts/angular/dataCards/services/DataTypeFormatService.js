@@ -157,11 +157,15 @@
           }
         } else {
           // Normal formatting without abbreviation.
+          var commaifyOptions = {
+            groupCharacter: format.groupSeparator,
+            decimalCharacter: format.decimalSeparator
+          };
+
           cellContent = FormatService.commaify(
             Math.abs(amount).toFixed(format.precision).
               replace('.', format.decimalSeparator),
-            format.groupSeparator,
-            format.decimalSeparator
+            commaifyOptions
           );
         }
         cellContent = '{neg}{sym}{value}'.format({

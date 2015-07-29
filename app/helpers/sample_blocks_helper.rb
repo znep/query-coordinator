@@ -8,7 +8,8 @@ module SampleBlocksHelper
         'components': [
           {
             'type' => 'text',
-            'value' => I18n.t('sample_story.intro_content')
+            # interpolate string, but reserve double-quotes for html attributes
+            'value' => %{<h1>#{I18n.t('sample_story.title')}<br></h1>}
           }
         ],
         'created_by': 'test@socrata.com'

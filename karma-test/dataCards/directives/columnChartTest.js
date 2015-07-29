@@ -845,16 +845,20 @@ describe('columnChart', function() {
     var chart;
     var scope;
     var element;
-    var ensureChart = _.once(function() {
-      chart = createColumnChart(499, false, testData);
+    var chartWidth = 499;
+
+    beforeEach(function() {
+      chart = createColumnChart(chartWidth, false, testData);
       scope = chart.scope;
       element = chart.element;
     });
 
+    afterEach(function() {
+      removeColumnCharts();
+    })
+
     it('should correctly position right-aligned labels for columns near the right ' +
       'edge of the chart when said columns have been selected', function() {
-
-      ensureChart();
 
       scope.testData = testDataWithLongLabels.map(function(datum) {
         return {
@@ -876,6 +880,49 @@ describe('columnChart', function() {
 
     });
 
+    describe('when the labels should have ellipses', function() {
+
+      beforeEach(function() {
+        scope.testData = testDataWithLongLabels.map(function(datum, i) {
+          return {
+            filtered: 0,
+            name: Array(100).join(i),
+            special: false,
+            total: datum['value']
+          };
+        });
+      });
+
+      it('should not overflow labels past the chart width', function() {
+
+        scope.$digest();
+
+        var $labelText = $('.label .text');
+
+        expect($labelText.width()).to.be.below(chartWidth);
+      });
+
+      it('should not overflow special, right-oriented long labels past the chart width', function() {
+
+        scope.testData[0].special = true;
+        scope.$digest();
+
+        var $labelText = $('.orientation-right.special .text');
+
+        expect($labelText.width()).to.be.below(chartWidth);
+      });
+
+      it('should not overflow special, left-oriented long labels past the chart width', function() {
+
+        scope.testData[42].special = true;
+        scope.$digest();
+
+        var $labelText = $('.orientation-left.special .text');
+
+        expect($labelText.width()).to.be.below(chartWidth);
+      });
+
+    });
   });
 
   describe('render timing events', function() {

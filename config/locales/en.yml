@@ -273,6 +273,7 @@ en:
         no_rows: No rows to display
         no_sort: No sort available
         oldest_first: oldest first
+        non_range_label: "{0} <strong>{1} out of {2}</strong>"
         range_label: "{0} <strong>{1}-{2} out of {3}</strong>"
         range_label_all: Showing all {0} {1}
         range_label_subtitle: Showing {0} {1} <span class="subtitle">out of {2}</span>

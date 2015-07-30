@@ -733,10 +733,20 @@ describe('table directive', function() {
       $rootScope.$digest();
 
       expect(el.find('.has-rows').length).to.equal(0);
-      expect(el.find('.table-label').text()).to.equal('Row 0-0 out of 0');
+      expect(el.find('.table-label').text()).to.equal('Row 0 out of 0');
     });
 
-    it('should update if there are rows', function() {
+    it('should update if there is one filtered row', function() {
+      var el = createTableCard(true, _.constant($q.when([])), 103);
+
+      outerScope.filteredRowCount = 1;
+      $rootScope.$digest();
+
+      expect(el.find('.has-rows').length).to.equal(1);
+      expect(el.find('.table-label').text()).to.equal('Row 1 out of 1');
+    });
+
+    it('should update if there is more than 1 row', function() {
       var el = createTableCard(true, function(offset, limit, order, timeout, whereClause) {
         return $q.when(_.take(fixtureData, 10));
       }, 101);
@@ -744,7 +754,7 @@ describe('table directive', function() {
       outerScope.filteredRowCount = 10;
       $rootScope.$digest();
       expect(el.find('.has-rows').length).to.equal(1);
-      expect(el.find('.table-label').text()).to.equal('Row 1-10 out of 10');
+      expect(el.find('.table-label').text()).to.equal('Rows 1-10 out of 10');
     });
 
     it('should not show the row count if the "show-count" attribute is false', function() {
@@ -758,7 +768,7 @@ describe('table directive', function() {
       var el = createTableCard(true, _.constant($q.when([])), 103, true, '<img src="http://placehold.it/100x100" />');
       outerScope.filteredRowCount = 0;
       $rootScope.$digest();
-      expect(el.find('.table-label').text()).to.equal('<img src="http://placehold.it/100x100" /> 0-0 out of 0');
+      expect(el.find('.table-label').text()).to.equal('<img src="http://placehold.it/100x100" /> 0 out of 0');
     });
   });
 

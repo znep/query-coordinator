@@ -519,7 +519,7 @@ describe('A Table Card Visualization', function() {
         rowDisplayUnit: '<img src="http://placehold.it/100x100" />'
       });
       expect(table.model.getCurrentValue('customTitle')).
-        to.equal('Showing all 1,337 &lt;img src="http://placehold.it/100x100" /&gt;s');
+        to.equal('Showing all 1,337 &lt;img src=&quot;http://placehold.it/100x100&quot; /&gt;s');
     });
 
     it('should not update card title if "isEmbedded" is true', function() {

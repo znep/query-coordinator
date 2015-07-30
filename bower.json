@@ -14,7 +14,7 @@
     "packages.json",
     "README.md"
   ],
-  "dependencies": {
+  "devDependencies": {
     "lodash": "~3.10.0"
   }
 }

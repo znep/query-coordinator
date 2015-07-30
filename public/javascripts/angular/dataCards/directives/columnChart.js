@@ -774,15 +774,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             return undefined;
           }
           scope.$emit('render:start', { source: 'columnChart_{0}'.format(scope.$id), timestamp: _.now() });
-          renderColumnChart(
-            scope,
-            element,
-            chartData,
-            showFiltered,
-            cardVisualizationDimensions,
-            expanded,
-            rowDisplayUnit
-          );
+          var chartOpts = {
+            expanded: expanded,
+            rowDisplayUnit: rowDisplayUnit
+          };
+          socrata.visualizations.ColumnChart(chartData, chartOpts);
           // Yield execution to the browser to render, then notify that render is complete
           $timeout(function() {
             scope.$emit('render:complete', { source: 'columnChart_{0}'.format(scope.$id), timestamp: _.now() });

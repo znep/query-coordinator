@@ -123,23 +123,20 @@ describe('socrata-utils.js', function() {
 
   describe('String.prototype.format', function() {
 
-    it('should correctly inteprolate values by index', function() {
-      expect('{0}, {1}, {2}, {3}, {4}'.format(1, '2', 3, 4, 'five')).to.equal('1, 2, 3, 4, five');
-    });
-  });
+    describe('when the first argument is not an object', function() {
 
-  describe('String.prototype.formatWithNames', function() {
-
-    it('should replace numeric tokens when string arguments are given', function() {
-
-      expect('test {0} test'.formatWithNames('TEST')).to.equal('test TEST test');
-      expect('{0} TEST {1}'.formatWithNames('one', 'two')).to.equal('one TEST two');
+      it('should correctly inteprolate values by index', function() {
+        expect('{0}, {1}, {2}, {3}, {4}'.format(1, '2', 3, 4, 'five')).to.equal('1, 2, 3, 4, five');
+      });
     });
 
-    it('should not replace non-numeric token-like entities if string arguments are given', function() {
+    describe('when the first argument is an object', function() {
 
-      expect('{x}-{y}-{z}-{0}-{1}'.formatWithNames('one', 'two')).to.equal('{x}-{y}-{z}-one-two');
-      expect('{x}'.formatWithNames('one')).to.equal('{x}');
+      it('should correctly interpolate values by name', function() {
+
+        expect('test {first} test'.format({ first: 'TEST' })).to.equal('test TEST test');
+        expect('{0} TEST {third} {second}'.format({ '0': 'one', second: 'two', third: 'three' })).to.equal('one TEST three two');
+      });
     });
   });
 });

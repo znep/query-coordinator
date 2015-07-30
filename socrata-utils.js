@@ -18,14 +18,12 @@
   window.socrata.utils = window.socrata.utils || {};
 
   /**
-   * `format` is assigned to the String prototype at the bottom of this file.
-   *
    * Usage:
    *
    * 'Hello, {1}!'.format('World');
    * => 'Hello, World!'
    */
-  var format = function() {
+  var formatWithArgs = function() {
 
     var txt = this;
     var i;
@@ -38,15 +36,12 @@
   };
 
   /**
-   * `formatWithNames` is assigned to the String prototype at the bottom of
-   * this file.
-   *
    * Usage:
    *
    * 'Hello, {what}!'.format({ what: 'World'});
    * => 'Hello, World!'
    */
-  var formatWithNames = function(objectMaybe) {
+  var formatWithObject = function(objectMaybe) {
 
     var values = _.isPlainObject(objectMaybe) ? objectMaybe : _.slice(arguments);
 
@@ -59,6 +54,18 @@
         },
         this
       ).value();
+  };
+
+  /**
+   * `format` is assigned to the String prototype at the bottom of this file.
+   */
+  var format = function() {
+
+    if (!_.isPlainObject(arguments[0])) {
+      return formatWithArgs.apply(this, arguments);
+    } else {
+      return formatWithObject.apply(this, arguments);
+    }
   };
 
   var socrataUtils = {
@@ -129,7 +136,6 @@
   };
 
   String.prototype.format = format;
-  String.prototype.formatWithNames = formatWithNames;
 
   _.merge(window.socrata.utils, socrataUtils);
 })(window);

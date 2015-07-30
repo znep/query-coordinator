@@ -1,0 +1,141 @@
+//Grids and Stuff
+@import "bourbon";
+
+/* $visual-grid: true;
+$visual-grid-color: red;
+$visual-grid-index: front;
+$visual-grid-opacity: 0.1; */
+
+$gutter: modular-scale(4, 0.938em, 1.618) !default;
+@import "neat";
+
+//Breakpoint Magic
+@import "breakpoint";
+
+// Basic media queries Used for grid and typography.
+$medium:  768px;
+$large:   1200px;
+$xlarge:  1400px;
+$xxlarge:   1600px;
+
+
+/* 
+// Media Query Tester 
+.container {
+  //border: 1px solid red;
+  &:before {
+    color: red;
+    content: "Small ( < " + $medium + ")";
+  }
+
+  @include breakpoint($medium) {
+    //border: 1px solid blue;
+    &:before {
+      color: blue;
+      content: "Medium (From " + $medium + " to " + $large + ")";
+    }
+  }
+
+  @include breakpoint($large) {
+    //border: 1px solid green;
+    &:before {
+      color: green;
+      content: "Large (From " + $large + " to " + $xlarge + ")";
+    }
+  }  
+
+  @include breakpoint($xlarge) {
+    //border: 1px solid green;
+    &:before {
+      color: orange;
+      content: "Xtra Large (From " + $xlarge + " to " + $xxlarge + ")";
+      
+    }
+  }  
+
+  @include breakpoint($xxlarge) {
+    //border: 1px solid green;
+    &:before {
+      color: tan;
+      content: "Xtra Xtra Large (> " + $xxlarge + ")";
+      
+    }
+  }
+} */
+
+img { 
+  width: 100% !important;
+  height: auto !important;
+} 
+
+
+// Measure, that is max width of the content area
+.container {
+  @include outer-container; 
+  background-color: red;
+  margin: 0 auto;
+}
+
+///
+
+.row {
+  @include row();
+
+  
+  &.full {
+    max-width: 100%;
+  }
+
+ /*  @include breakpoint($medium) {
+      max-width: 84%; 
+  }
+  
+  @include breakpoint($large) {
+    max-width: 76%;
+  }  
+  
+  @include breakpoint($xlarge) {
+    max-width: 68%;
+  }  
+
+  @include breakpoint($xxlarge) {
+    max-width: 58%;
+  } */
+
+  &.sample-grid {
+     div[class*="col-"] {
+        background: lightblue; 
+        min-height: 4em;
+        border: 1px solid #ddd;
+        //margin: 3px;
+     }
+  }
+
+  & .col-12 {
+    @include span-columns(12);
+  }
+  & .col-8 {
+    @include span-columns(8);
+  }
+  & .col-6 {
+    @include span-columns(6);
+  }
+  & .col-4 {
+    @include span-columns(4);
+  }
+  & .col-3 {
+    @include span-columns(3);
+  }  
+  & .col-2 {
+    @include span-columns(2);
+  }
+  & .last {
+    @include omega();
+  }
+
+  div[class*="col-"] {
+    @media (max-width : $medium) {
+      @include span-columns(12);
+    }
+  }
+}

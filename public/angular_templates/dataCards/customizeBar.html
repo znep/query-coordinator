@@ -18,7 +18,7 @@
   <save-button
     class="save-this-page r-to-l"
     ng-click="savePage()"
-    enabled="hasChanges"
+    enabled="hasChanges || isEphemeral"
     save-status="saveStatus">
   </save-button>
   <save-as

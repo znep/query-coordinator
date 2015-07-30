@@ -8,11 +8,12 @@
 
       var regexPieces = {
         locale: '(?:/[a-z]{2})?', // Ex. 'en' or 'de'. Note: 'locale' is optional.
+        withBootstrap: '(?:/bootstrap)?', // for ephemeral views only
         fourByFour: '(\\w{4}-\\w{4})',
         fieldName: '([\\w-_:@]+)'
       };
       var cardsViewUrlMatch = urlPathname.match(
-        new RegExp('^{locale}/view/{fourByFour}$'.format(regexPieces)));
+        new RegExp('^{locale}/view{withBootstrap}/{fourByFour}$'.format(regexPieces)));
       var singleCardViewUrlMatch = urlPathname.match(
         new RegExp('^{locale}/view/{fourByFour}/{fieldName}$'.format(regexPieces)));
 

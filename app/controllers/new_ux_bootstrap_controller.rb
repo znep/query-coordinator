@@ -13,6 +13,12 @@ class NewUxBootstrapController < ActionController::Base
   # Keep track of the types of cards we added, so we can give a spread
   attr_accessor :skipped_cards_by_type, :added_card_types, :page_metadata_manager
 
+  helper :data_lens
+
+  layout 'angular'
+
+  SYSTEM_COLUMN_ID_REGEX = /:([a-z][a-z_0-9\-]*)/i
+
   def initialize(*args)
     @added_card_types = Set.new
     @skipped_cards_by_type = Hash.new { |h, k| h[k] = [] }
@@ -27,6 +33,9 @@ class NewUxBootstrapController < ActionController::Base
     # 1. Check to make sure that the user is authorized to create a new view.
     #    Crucially, this includes SuperAdmins so that Socrata employees can
     #    test this functionality without having to impersonate customers.
+    #    This check can be skipped when using the ephemeral bootstrapping
+    #    approach, since it separates the creation of something renderable
+    #    from the actual persistence.
     #
     # 2. Check to make sure the dataset in question is in the new backend.
     #    If it isn't, 400.
@@ -36,7 +45,7 @@ class NewUxBootstrapController < ActionController::Base
     #
     # 4. Fetch the dataset metadata, which is used downstream to create cards.
     #    If we cannot fetch the dataset data then we fail early. We will let
-    #    Airbrake know aout this, but not the user.
+    #    Airbrake know about this, but not the user.
     #
     # 5. Check to see if any 'new UX' pages already exist.
     #
@@ -47,7 +56,9 @@ class NewUxBootstrapController < ActionController::Base
     #     and non-deterministic.
 
     # 1. Check to make sure that the user is authorized to create a new view
-    unless can_create_metadata?
+    use_ephemeral_bootstrap = FeatureFlags.derive(@view, request).use_ephemeral_bootstrap
+
+    unless use_ephemeral_bootstrap || can_create_metadata?
       return render :json => {
         error: true,
         reason: "User must be one of these roles: #{ROLES_ALLOWED_TO_UPDATE_METADATA.join(', ')}"
@@ -87,7 +98,15 @@ class NewUxBootstrapController < ActionController::Base
 
     dataset_metadata_response_body = dataset_metadata_response[:body]
 
+    # If we're in ephemeral mode, exit this logic early — we don't care about
+    # controlling for the presence of existing pages, and we also don't want
+    # to persist the data lens page automatically.
+    if use_ephemeral_bootstrap
+      return instantiate_ephemeral_view(dataset_metadata_response_body)
+    end
+
     # 5. Check to see if any 'new UX' pages already exist.
+
     pages_response = phidippides.fetch_pages_for_dataset(
       params[:id],
       :request_id => request_id,
@@ -373,6 +392,49 @@ class NewUxBootstrapController < ActionController::Base
     # Set the newly-created page as the default.
     set_default_page(dataset_metadata, default_page_id)
     redirect_to "/view/#{default_page_id}"
+  end
+
+  def instantiate_ephemeral_view(dataset_metadata)
+    @dataset_metadata = dataset_metadata
+    @dataset_metadata[:pages] = begin
+      fetch_pages_for_dataset(@dataset_metadata[:id])
+    rescue DatasetMetadataNotFound
+      {}
+    end
+    @page_metadata = generate_page_metadata(dataset_metadata)
+
+    # Set up card-type info for (non-system) columns
+    @dataset_metadata[:columns].each do |field_name, column|
+      unless SYSTEM_COLUMN_ID_REGEX.match(field_name)
+        column['defaultCardType'] = default_card_type_for(column, dataset_size)
+        column['availableCardTypes'] = available_card_types_for(column, dataset_size)
+      end
+    end
+
+    # Set up the table column
+    @dataset_metadata[:columns]['*'] = {
+      :availableCardTypes => ['table'],
+      :defaultCardType => 'table',
+      :name => 'Data Table',
+      :description => '',
+      :fred => '*',
+      :physicalDatatype => '*'
+    }
+
+    # Make sure that there is a table card
+    has_table_card = @page_metadata['cards'].any? do |card|
+      card['fieldName'] == '*' || card['cardType'] == 'table'
+    end
+    @page_metadata['cards'] << page_metadata_manager.table_card unless has_table_card
+
+    # Fetch migration info to get mapping from nbe to obe for skipLinks
+    begin
+      @migration_info = View.migrations(page_metadata[:datasetId])
+    rescue
+      @migration_info = {}
+    end
+
+    request[:app] = 'dataCards'
   end
 
   def dataset_size

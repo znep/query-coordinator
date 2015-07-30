@@ -246,6 +246,7 @@
 
         if (blist.feature_flags.embetter_analytics_page) {
             $exportLink.addClass('button');
+            $screen.addClass('embetterV1');
         }
 
         var updateExportLink = function()

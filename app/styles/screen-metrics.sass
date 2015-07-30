@@ -82,6 +82,16 @@
   &.datasetMetrics h1, &.publicSiteMetrics h1
     float: left
 
+  &.embetterV1
+    #analyticsTimeControl .currentTimeSlice
+      background: #5da5da
+      color: #fff
+      padding-left: 0.5em
+      border-radius: 0.3em
+    .chartsDisplay
+      margin: 1.5em 0.5em
+    .summaryDisplay, .detailDisplay
+      margin: 2em 0 1em
 
   .chartContainer
     > .selector.uniform
@@ -96,7 +106,8 @@
         float: right
       .chartMenuLabel, .uniform
         vertical-align: middle
-        font-size: 1.2em
+        font-size: 1.5em
+        font-weight: bold
       select
         width: 10em
 
@@ -274,8 +285,8 @@
             font-weight: bold
             line-height: 1.2em
             padding-left: 0.5em
-        // end blist.feature_flags.embetter_analytics_page is false
 
+        // only applicable if blist.feature_flags.embetter_analytics_page is not false:
         .summaryValue
           cursor: default
           font-size: 1.2em

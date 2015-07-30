@@ -932,7 +932,7 @@ var RowSet = ServerModel.extend({
                         return null;
                       }
 
-                      return s.aggregate + '(' + qbCF + ')';
+                      return s.aggregate + '(' + qbCF + ') as ' + s.aggregate + '_' + qbCF;
                     }
 
                     return null;

@@ -75,6 +75,9 @@
         // Handles flyouts for hover
         function renderHoverFlyout(target) {
           var noPoints = (flyoutData.count === 0);
+          var template;
+          var unit;
+          var value;
 
           // Set the appropriate cursor
           target.style.cursor = noPoints ? 'inherit' : 'pointer';
@@ -85,16 +88,33 @@
             return;
           }
 
-          var template = [
-            '<div class="flyout-title">{0} {1}</div>',
-            I18n.flyout.details
+          template = [
+            '<div class="flyout-title">{0}</div>',
+            '<div class="flyout-cell">{1}</div>'
           ].join('');
 
-          var unit = (flyoutData.count === 1) ?
-            scope.rowDisplayUnit :
-            scope.rowDisplayUnit.pluralize();
+          // If the tile we are hovering over has more points then the
+          // TileServer limit, prompt the user to zoom in for accurate data.
+          if (flyoutData.totalPoints >= Constants.FEATURE_MAP_MAX_POINT_LIMIT) {
 
-          return template.format(flyoutData.count, _.escape(unit));
+            return template.format(
+              I18n.flyout.denseData,
+              I18n.flyout.denseDataDescription
+            );
+
+          } else {
+
+            unit = (flyoutData.count === 1) ?
+              scope.rowDisplayUnit :
+              scope.rowDisplayUnit.pluralize();
+
+            value = flyoutData.count + ' ' + _.escape(unit);
+
+            return template.format(
+              value,
+              I18n.flyout.details
+            );
+          }
         }
 
         var map = L.map(element.find('.feature-map-container')[0], mapOptions);
@@ -297,7 +317,7 @@
               y: e.originalEvent.clientY + Constants.FEATURE_MAP_FLYOUT_Y_OFFSET
             };
             flyoutData.count = _.sum(e.points, 'count');
-
+            flyoutData.totalPoints = e.tile.totalPoints;
             FlyoutService.refreshFlyout(e.originalEvent);
           };
 

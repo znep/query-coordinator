@@ -159,6 +159,7 @@
       useOriginHost
     ) {
       var featuresPerTile = parseInt(ServerConfig.get('featureMapFeaturesPerTile'), 10);
+
       if (_.isNaN(featuresPerTile) || featuresPerTile < 0 || featuresPerTile > MAX_FEATURES_PER_TILE) {
         featuresPerTile = DEFAULT_FEATURES_PER_TILE;
       }

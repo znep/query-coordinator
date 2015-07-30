@@ -43,7 +43,7 @@
    */
   var formatWithObject = function(objectMaybe) {
 
-    var values = _.isPlainObject(objectMaybe) ? objectMaybe : _.slice(arguments);
+    var values = arguments[0];
 
     return _(values).
       chain().

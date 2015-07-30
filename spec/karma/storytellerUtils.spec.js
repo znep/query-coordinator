@@ -1,114 +1,8 @@
-describe('Util', function() {
-  var Util;
+describe('storytellerUtils', function() {
 
   'use strict';
 
-  var object = {
-    propA: null,
-    propB: 5,
-    propC: 'asd'
-  };
-
-  beforeEach(function() {
-    Util = window.socrata.storyteller.Util;
-  });
-
-  describe('assertEqual', function() {
-
-    describe('given two unequal values', function() {
-
-      it('throws an error', function() {
-
-        assert.throw(function() {
-          Util.assertEqual(1, 2);
-        });
-      });
-    });
-
-    describe('given two equal values', function() {
-
-      it('does not throw an error', function() {
-
-        Util.assertEqual('equal', 'equal');
-      });
-    });
-  });
-
-  describe('assertHasProperty', function() {
-
-    describe('given an object with the desired property', function() {
-
-      it('does not throw', function() {
-        Util.assertHasProperty(object, 'propA');
-      });
-    });
-
-    describe('given an object without the desired property', function() {
-
-      it('throws', function() {
-        assert.throw(function() {
-          Util.assertHasProperty(object, 'oops');
-        });
-      });
-    });
-  });
-
-  describe('assertHasProperties', function() {
-
-    describe('given an object with all the desired properties', function() {
-
-      it('does not throw', function() {
-        Util.assertHasProperties(object, 'propA', 'propB');
-      });
-    });
-
-    describe('given an object without the desired property', function() {
-
-      it('throws', function() {
-        assert.throw(function() {
-          Util.assertHasProperties(object, 'propA', 'propOops');
-        });
-      });
-    });
-  });
-
-  describe('assertIsOneOfTypes', function() {
-
-    describe('given a value of type not in the specified array', function() {
-
-      assert.throw(function() {
-        Util.assertIsOneOfTypes(1, 'boolean', 'string');
-      });
-
-      assert.throw(function() {
-        Util.assertIsOneOfTypes(1, 'string', 'boolean');
-      });
-
-      assert.throw(function() {
-        Util.assertIsOneOfTypes('1', 'number', 'object');
-      });
-
-      assert.throw(function() {
-        Util.assertIsOneOfTypes(1, 'object', 'function');
-      });
-
-      assert.throw(function() {
-        Util.assertIsOneOfTypes(1, 'function', 'boolean');
-      });
-    });
-
-    describe('given a value of the specified type', function() {
-
-      it('does not throw an error', function() {
-
-        Util.assertIsOneOfTypes(true, 'boolean');
-        Util.assertIsOneOfTypes('string', 'string');
-        Util.assertIsOneOfTypes(1, 'function', 'number');
-        Util.assertIsOneOfTypes({}, 'number', 'object');
-        Util.assertIsOneOfTypes(function() {}, 'boolean', 'object', 'function');
-      });
-    });
-  });
+  var utils = window.socrata.utils;
 
   describe('DOM traversal functions', function() {
 
@@ -155,7 +49,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            Util.mapDOMFragmentDescending(
+            utils.mapDOMFragmentDescending(
               null,
               validApplyFn,
               validShouldTerminateFun
@@ -169,7 +63,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            Util.mapDOMFragmentDescending(
+            utils.mapDOMFragmentDescending(
               validElement,
               null,
               validShouldTerminateFun
@@ -183,7 +77,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            Util.mapDOMFragmentDescending(
+            utils.mapDOMFragmentDescending(
               validElement,
               validApplyFn,
               null
@@ -196,7 +90,7 @@ describe('Util', function() {
 
         it('should not change the fragment', function() {
 
-          var newFragment = Util.mapDOMFragmentDescending(
+          var newFragment = utils.mapDOMFragmentDescending(
             validElement,
             validApplyFn,
             validShouldTerminateFn
@@ -210,7 +104,7 @@ describe('Util', function() {
 
         it('should convert non-div elements to div elements', function() {
 
-          var newFragment = Util.mapDOMFragmentDescending(
+          var newFragment = utils.mapDOMFragmentDescending(
             validElement,
             convertNonDivsToDivs,
             validShouldTerminateFn
@@ -245,7 +139,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            Util.reduceDOMFragmentAscending(
+            utils.reduceDOMFragmentAscending(
               null,
               validApplyFn,
               validShouldTerminateFun,
@@ -260,7 +154,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            Util.reduceDOMFragmentAscending(
+            utils.reduceDOMFragmentAscending(
               validChild5,
               null,
               validShouldTerminateFun,
@@ -275,7 +169,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            Util.reduceDOMFragmentAscending(
+            utils.reduceDOMFragmentAscending(
               validChild5,
               validApplyFn,
               null,
@@ -290,7 +184,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            Util.reduceDOMFragmentAscending(
+            utils.reduceDOMFragmentAscending(
               validChild5,
               validApplyFn,
               validShouldTerminateFn,
@@ -304,7 +198,7 @@ describe('Util', function() {
 
         it('should accumulate all node names', function() {
 
-          var accumulated = Util.reduceDOMFragmentAscending(
+          var accumulated = utils.reduceDOMFragmentAscending(
             validChild5,
             validApplyFn,
             validShouldTerminateFn,
@@ -319,7 +213,7 @@ describe('Util', function() {
 
         it('should accumulate only element node names', function() {
 
-          var accumulated = Util.reduceDOMFragmentAscending(
+          var accumulated = utils.reduceDOMFragmentAscending(
             validChild5,
             collectElementNodes,
             validShouldTerminateFn,
@@ -334,7 +228,7 @@ describe('Util', function() {
 
         it('should accumulate only div node names', function() {
 
-          var accumulated = Util.reduceDOMFragmentAscending(
+          var accumulated = utils.reduceDOMFragmentAscending(
             validChild5,
             collectDivs,
             validShouldTerminateFn,
@@ -367,7 +261,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            window.socrata.storyteller.Util.reduceDOMFragmentDescending(
+            utils.reduceDOMFragmentDescending(
               null,
               validApplyFn,
               validShouldTerminateFun,
@@ -382,7 +276,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            window.socrata.storyteller.Util.reduceDOMFragmentDescending(
+            utils.reduceDOMFragmentDescending(
               validElement,
               null,
               validShouldTerminateFun,
@@ -397,7 +291,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            window.socrata.storyteller.Util.reduceDOMFragmentDescending(
+            utils.reduceDOMFragmentDescending(
               validElement,
               validApplyFn,
               null,
@@ -412,7 +306,7 @@ describe('Util', function() {
         it('throws an error', function() {
 
           assert.throw(function() {
-            window.socrata.storyteller.Util.reduceDOMFragmentDescending(
+            utils.reduceDOMFragmentDescending(
               validElement,
               validApplyFn,
               validShouldTerminateFn,
@@ -426,7 +320,7 @@ describe('Util', function() {
 
         it('should accumulate all node names', function() {
 
-          var accumulated = window.socrata.storyteller.Util.reduceDOMFragmentDescending(
+          var accumulated = utils.reduceDOMFragmentDescending(
             validElement,
             validApplyFn,
             validShouldTerminateFn,
@@ -441,7 +335,7 @@ describe('Util', function() {
 
         it('should accumulate only element node names', function() {
 
-          var accumulated = window.socrata.storyteller.Util.reduceDOMFragmentDescending(
+          var accumulated = utils.reduceDOMFragmentDescending(
             validElement,
             collectElementNodes,
             validShouldTerminateFn,
@@ -456,7 +350,7 @@ describe('Util', function() {
 
         it('should accumulate only div node names', function() {
 
-          var accumulated = window.socrata.storyteller.Util.reduceDOMFragmentDescending(
+          var accumulated = utils.reduceDOMFragmentDescending(
             validElement,
             collectDivs,
             validShouldTerminateFn,
@@ -476,7 +370,7 @@ describe('Util', function() {
       it('should throw an error', function() {
 
         assert.throw(function() {
-          Util.generateYouTubeUrl();
+          utils.generateYouTubeUrl();
         });
       });
     });
@@ -488,7 +382,7 @@ describe('Util', function() {
         var youTubeId = 'ABCDEFGHIJK';
         var expectedUrl = 'https://www.youtube.com/embed/' + youTubeId;
 
-        assert.equal(expectedUrl, Util.generateYouTubeUrl(youTubeId));
+        assert.equal(expectedUrl, utils.generateYouTubeUrl(youTubeId));
       });
     });
   });
@@ -500,7 +394,7 @@ describe('Util', function() {
       it('should throw an error', function() {
 
         assert.throw(function() {
-          Util.generateYouTubeUrl();
+          utils.generateYouTubeUrl();
         });
       });
     });
@@ -514,7 +408,7 @@ describe('Util', function() {
           var youTubeId = 'ABCDEFGHIJK';
           var expectedUrl = 'https://www.youtube.com/embed/' + youTubeId + '?rel=0&showinfo=0';
 
-          assert.equal(expectedUrl, Util.generateYouTubeIframeSrc(youTubeId));
+          assert.equal(expectedUrl, utils.generateYouTubeIframeSrc(youTubeId));
         });
       });
 
@@ -525,7 +419,7 @@ describe('Util', function() {
           var youTubeId = 'ABCDEFGHIJK';
           var expectedUrl = 'https://www.youtube.com/embed/' + youTubeId + '?rel=0&showinfo=0';
 
-          assert.equal(expectedUrl, Util.generateYouTubeIframeSrc(youTubeId, false));
+          assert.equal(expectedUrl, utils.generateYouTubeIframeSrc(youTubeId, false));
         });
       });
 
@@ -536,7 +430,7 @@ describe('Util', function() {
           var youTubeId = 'ABCDEFGHIJK';
           var expectedUrl = 'https://www.youtube.com/embed/' + youTubeId + '?rel=0&showinfo=0&autoplay=true';
 
-          assert.equal(expectedUrl, Util.generateYouTubeIframeSrc(youTubeId, true));
+          assert.equal(expectedUrl, utils.generateYouTubeIframeSrc(youTubeId, true));
         });
       });
     });

@@ -9,7 +9,13 @@
  * 'sidebar:toggle'
  *
  */
-;(function($, storyteller) {
+;(function($, socrata) {
+
+  'use strict';
+
+  var storyteller = socrata.storyteller;
+  var utils = socrata.utils;
+
   /**
    * Instantiates an AddContentPanel control with the given
    * toggle button. When the user clicks the toggle button,
@@ -21,6 +27,7 @@
    * @param {jQuery} toggleButton - a jQuery reference to the desired toggle button node.
    */
   $.fn.addContentPanel = function(toggleButton) {
+
     var addContentPanel = $(this).sidebar({
       side: 'right'
     });
@@ -49,7 +56,7 @@
       on('sidebar:close', function() {
         toggleButton.removeClass('active');
       }).
-      on('mousewheel', '.scrollable', storyteller.Util.preventScrolling).
+      on('mousewheel', '.scrollable', utils.preventScrolling).
       on('dblclick', '.inspiration-block', function(e) {
         var blockContent = JSON.parse(e.currentTarget.getAttribute('data-block-content'));
 
@@ -65,4 +72,4 @@
 
     return this;
   };
-}(jQuery, window.socrata.storyteller));
+}(jQuery, window.socrata));

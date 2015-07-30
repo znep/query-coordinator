@@ -1,8 +1,9 @@
-;(function(storyteller) {
+;(function(socrata) {
 
   'use strict';
 
-  var Util = storyteller.Util;
+  var storyteller = socrata.storyteller;
+  var utils = socrata.utils;
 
   function DragDropStore() {
 
@@ -57,7 +58,8 @@
      */
 
     function _storyDragOver(payload) {
-      Util.assertHasProperties(payload, 'storyUid', 'pointer', 'storyElement');
+
+      utils.assertHasProperties(payload, 'storyUid', 'pointer', 'storyElement');
 
       if (storyteller.storyStore.storyExists(payload.storyUid)) {
         var dropIndex;
@@ -99,7 +101,8 @@
     }
 
     function _storyDragLeave(payload) {
-      Util.assertHasProperties(payload, 'storyUid');
+
+      utils.assertHasProperties(payload, 'storyUid');
 
       if (_reorderHintPosition && _reorderHintPosition.storyUid === payload.storyUid) {
         _setReorderHintPosition(null);
@@ -107,7 +110,8 @@
     }
 
     function _storyDrop(payload) {
-      Util.assertHasProperties(payload, 'storyUid', 'blockContent');
+
+      utils.assertHasProperties(payload, 'storyUid', 'blockContent');
 
       if (self.isDraggingOverStory(payload.storyUid)) {
         var hintPosition = self.getReorderHintPosition();
@@ -127,4 +131,4 @@
   }
 
   storyteller.DragDropStore = DragDropStore;
-}(window.socrata.storyteller));
+}(window.socrata));

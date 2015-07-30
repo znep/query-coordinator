@@ -16,8 +16,9 @@
 //= require unipointer/unipointer
 //= require unidragger/unidragger
 //= require jQuery-sidebar/src/jquery.sidebar
+//= require socrata-utils/socrata-utils
 //= require editor/init
-//= require editor/Util
+//= require editor/storytellerUtils
 //= require editor/SimpleEventEmitter
 //= require editor/Store
 //= require_tree ./editor

@@ -1,10 +1,12 @@
-;window.socrata.storyteller.EmbedWizardRenderer = (function(storyteller) {
+;window.socrata.storyteller.EmbedWizardRenderer = (function(socrata) {
 
   'use strict';
 
+  var storyteller = socrata.storyteller;
+  var utils = socrata.utils;
+
   function EmbedWizardRenderer(options) {
 
-    var Util = storyteller.Util;
     var _container = options.embedWizardContainerElement || null;
     var _overlay = $('<div>', { 'class': 'modal-overlay' });
     var _dialog = $('<div>', { 'class': 'modal-dialog' });
@@ -59,7 +61,7 @@
       });
 
       // Do not scroll page if the container is scrolled
-      _container.on('mousewheel', storyteller.Util.preventScrolling)
+      _container.on('mousewheel', utils.preventScrolling)
 
       _overlay.on('click', function(event) {
         storyteller.dispatcher.dispatch({
@@ -387,7 +389,7 @@
         // If there is a valid YouTube video id and it does not match the
         // current source of the preview iframe, point the preview iframe
         // at the new youtube video.
-        youTubeEmbedUrl = Util.generateYouTubeIframeSrc(youTubeId);
+        youTubeEmbedUrl = utils.generateYouTubeIframeSrc(youTubeId);
         if (iframeSrc !== youTubeEmbedUrl) {
           iframeElement.attr('src', youTubeEmbedUrl);
         }
@@ -536,4 +538,4 @@
   }
 
   return EmbedWizardRenderer;
-})(window.socrata.storyteller);
+})(window.socrata);

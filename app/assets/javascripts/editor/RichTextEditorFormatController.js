@@ -1,6 +1,9 @@
-;window.socrata.storyteller.RichTextEditorFormatController = (function(storyteller) {
+;window.socrata.storyteller.RichTextEditorFormatController = (function(socrata) {
 
   'use strict';
+
+  var storyteller = socrata.storyteller;
+  var utils = socrata.utils;
 
   /**
    * The Formats configuration block is used by the RichTextEditorToolbar and
@@ -117,7 +120,7 @@
           }
         }
 
-        var foundAlignments = storyteller.Util.reduceDOMFragmentAscending(
+        var foundAlignments = utils.reduceDOMFragmentAscending(
           element,
           _recordElementAlignment,
           function() { return false; },
@@ -167,7 +170,7 @@
         }
 
         foundFormats.concat(
-          storyteller.Util.reduceDOMFragmentDescending(
+          utils.reduceDOMFragmentDescending(
             element,
             _recordElementStyleFormat,
             function() { return false; },
@@ -277,7 +280,7 @@
             }
 
             newBlock.appendChild(
-              storyteller.Util.mapDOMFragmentDescending(
+              utils.mapDOMFragmentDescending(
                 blockFragment.childNodes[i],
                 stripFormatsFn,
                 function() { return false; }
@@ -390,4 +393,4 @@
   }
 
   return RichTextEditorFormatController;
-})(window.socrata.storyteller);
+})(window.socrata);

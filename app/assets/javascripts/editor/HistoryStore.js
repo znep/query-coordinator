@@ -1,8 +1,9 @@
-;window.socrata.storyteller.HistoryStore = (function(storyteller) {
+;window.socrata.storyteller.HistoryStore = (function(socrata) {
 
   'use strict';
 
-  var Util = storyteller.Util;
+  var storyteller = socrata.storyteller;
+  var utils = socrata.utils;
 
   function HistoryStore() {
 
@@ -91,7 +92,7 @@
 
       var historyLength = _history.length;
 
-      Util.assertIsOneOfTypes(serializedStory, 'string');
+      utils.assertIsOneOfTypes(serializedStory, 'string');
 
       return (
         historyLength > 0 &&
@@ -105,7 +106,7 @@
 
       var historyLength = _history.length;
 
-      Util.assertIsOneOfTypes(serializedStory, 'string');
+      utils.assertIsOneOfTypes(serializedStory, 'string');
 
       return (
         historyLength === 0 ||
@@ -128,4 +129,4 @@
   }
 
   return HistoryStore;
-})(window.socrata.storyteller);
+})(window.socrata);

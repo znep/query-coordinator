@@ -1,4 +1,7 @@
 ;(function (storyteller) {
+
+  'use strict';
+
   function CustomEvent ( event, params ) {
     params = params || { bubbles: false, cancelable: false, detail: undefined };
     var evt = document.createEvent( 'CustomEvent' );

@@ -2,11 +2,16 @@
  * A component that renders a story title.
  */
 
-(function($, storyteller) {
-  $.fn.storyTitle = function(storyUid) {
-    var Util = storyteller.Util;
+(function($, socrata) {
 
-    Util.assertIsOneOfTypes(storyUid, 'string');
+  'use strict';
+
+  var storyteller = socrata.storyteller;
+  var utils = socrata.utils;
+
+  $.fn.storyTitle = function(storyUid) {
+
+    utils.assertIsOneOfTypes(storyUid, 'string');
 
     var titleNodes = this;
 
@@ -33,4 +38,4 @@
     return this;
   };
 
-}(jQuery, window.socrata.storyteller));
+}(jQuery, window.socrata));

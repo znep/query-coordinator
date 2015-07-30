@@ -1,0 +1,62 @@
+//Typography
+
+// Colors
+@import 'color';
+
+//Modular Scale 
+@import "modular-scale";
+$ms-base: 15px;
+$ms-ratio: 1.25, 1.618;
+
+
+body {
+	font-family: "Open Sans", "Helvetica", Arial, sans-serif;
+	font-size: ms(0);
+	line-height: 1.618;
+	color: $default-text-color;
+
+}
+
+h1, h2, h3, h4, h5, h6, p, ul, ol, {
+	margin-bottom: ms(0);
+}
+
+h1 {
+	font-size: ms(5);
+	font-weight: 700;
+}
+
+h2 {
+	font-size: ms(4);
+	font-weight: 700;
+}
+
+h3 {
+	font-size: ms(3);
+	font-weight: 700;
+}
+
+h4 {
+	font-size: ms(2);
+	font-weight: 700;
+}
+
+h5 {
+	font-size: ms(1);
+	font-weight: 700;
+}
+
+h6 {
+	font-size: ms(0);
+	text-transform: uppercase;
+	font-weight: 700;
+}
+
+.intro {
+	font-size: ms(1);
+	color: $quiet-text-color;
+}
+
+.small {
+	font-size: ms(-1);
+}

@@ -1,0 +1,30 @@
+//Styleguide Styles
+@import "components/grid";
+@import "components/typography";
+@import "components/color";
+
+.container {
+	@include outer-container();
+}
+
+section {
+	@include row();
+}
+
+.meta {
+	@include span-columns(2);
+}
+
+.example {
+	@include span-columns(9);
+	@include shift(1);
+}
+
+
+.styleguide-title {
+	border-bottom: 1px solid lighten($quiet-text-color, 20%);
+}
+
+.styleguide-header {
+	color: $quiet-text-color;
+}

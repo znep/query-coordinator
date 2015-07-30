@@ -8,7 +8,6 @@ end
 gem 'addressable'
 gem 'airbrake', '~>3.1.6'
 gem 'axlsx', '~> 1.3.4'
-gem 'erubis', '>= 2.6.4'
 gem 'graylog2_exceptions'
 gem 'hashie', '2.0.5'
 gem 'httparty'

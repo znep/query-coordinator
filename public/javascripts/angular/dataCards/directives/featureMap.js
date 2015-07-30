@@ -36,7 +36,8 @@
           keyboard: false,
           scrollWheelZoom: false,
           zoom: 1,
-          zoomControlPosition: 'topleft'
+          zoomControlPosition: 'topleft',
+          maxZoom: Constants.FEATURE_MAP_MAX_ZOOM
         };
 
         if (Constants.DISABLE_LEAFLET_ZOOM_ANIMATION) {

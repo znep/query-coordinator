@@ -474,7 +474,9 @@
           debounceMilliseconds: 500,
           onRenderStart: _.noop,
           onRenderComplete: _.noop,
-          hoverThreshold: Constants.FEATURE_MAP_HOVER_THRESHOLD // Distance to neighboring points in px
+          // threshold options represent distance to neighboring points permitted for hover and click in px
+          minHoverThreshold: Constants.FEATURE_MAP_MIN_HOVER_THRESHOLD,
+          maxHoverThreshold: pointStyle.radius(Constants.FEATURE_MAP_MAX_ZOOM)
         };
 
         L.Util.setOptions(this, options);
@@ -500,10 +502,10 @@
          * We create a quad tree factory here to make it easier to make many quad
          * trees with the same parameters.
          */
-        var threshold = this.options.hoverThreshold;
+        var maxThreshold = this.options.maxHoverThreshold;
         var size = this.options.tileSize;
         this.quadTreeFactory = d3.geom.quadtree();
-        this.quadTreeFactory.extent([[-threshold, -threshold], [size + threshold, size + threshold]]);
+        this.quadTreeFactory.extent([[-maxThreshold, -maxThreshold], [size + maxThreshold, size + maxThreshold]]);
         this.quadTreeFactory.x(_.property('x'));
         this.quadTreeFactory.y(_.property('y'));
 
@@ -664,7 +666,8 @@
 
           var layer = self.layers.get('main'); // TODO handle selecting layers and/or multiple layers better.
           var tileCanvas = VectorTileUtil.getTileLayerCanvas(layer, e.tile.id);
-          var hoverThreshold = self.options.hoverThreshold;
+          var pointStyle = self.style({type: 1});
+          var hoverThreshold = Math.max(pointStyle.radius(map.getZoom()), self.options.minHoverThreshold);
 
           if (_.isUndefined(tileCanvas)) {
             e.points = [];

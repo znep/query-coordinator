@@ -1,19 +1,33 @@
 <div class="feature-map-flannel">
   <div class="tool-panel" ng-class="{southwest: !useSoutheastHint, southeast: useSoutheastHint}" ng-style="panelPositionStyle">
     <div class="tool-panel-main">
-      <div class="icon-close" ng-style="iconClosePadding"></div>
-      <div class="sticky-border" ng-style="stickyBorderTop"></div>
+      <div class="icon-close" ng-style="iconClosePadding" ng-if="queryStatus !== 'pending'"></div>
+      <div class="sticky-border" ng-style="stickyBorderTop" ng-if"queryStatus === 'success'"></div>
       <div class="tool-panel-inner-container">
-        <div class="flannel-text">
+        <!-- Successful query response -->
+        <div class="flannel-content" ng-if="queryStatus === 'success'">
           <div ng-repeat="cell in selectedRow" class="row-data-item">
             <span class="name">{{cell.columnName}}:</span>
             <span ng-if="isArray(cell.value)" class="value">{{formatSubColumns(cell.value, cell)}}</span>
             <span ng-if="!isArray(cell.value)" class="value">{{formatCellContent(cell.value, cell)}}</span>
           </div>
         </div>
+        <!-- Loading spinner while query pending-->
+        <div class="pending-content" ng-if="queryStatus === 'pending'">
+          <load-spinner busy="busy"></load-spinner>
+        </div>
+        <!-- Error message if row query unsuccessful -->
+        <div class="error-content" ng-if="queryStatus === 'error'">
+          <div class="row">
+            <div class="span2"><span class="icon-warning"></span></div>
+            <div class="span10">
+              <div class="error-message">{{'featureMapFlannel.errorMessage' | I18n}}</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="sticky-border bottom" ng-style="stickyBorderBottom"></div>
-      <div class="paging-panel-wrapper" ng-if="rows.length > 1">
+      <div class="sticky-border bottom" ng-style="stickyBorderBottom" ng-if="queryStatus === 'success'"></div>
+      <div class="paging-panel-wrapper" ng-if="queryStatus === 'success' && rows.length > 1">
         <div class="paging-panel" ng-if="rows.length > 1">
           <button type="button" title="{{'featureMapFlannel.previous' | I18n}}" class="l-to-r pagination-btn action-btn previous"
             ng-click="goToPreviousRow()" ng-disabled="currentIndex === 0">

@@ -102,6 +102,11 @@
       'FLANNEL_CLOSE_ICON_INITIAL_PADDING': 5,
       'FLANNEL_BOTTOM_STICKY_BORDER_PAGINATION_POSITION': 51,
 
+      // Feature Map Flannel Query Statuses
+      'QUERY_PENDING': 'pending',
+      'QUERY_ERROR': 'error',
+      'QUERY_SUCCESS': 'success',
+
       // Table card visualization parameters.
       'TABLE_UNSORTABLE_PHYSICAL_DATATYPES': ['geo_entity', 'point'],
 

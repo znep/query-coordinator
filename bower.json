@@ -29,6 +29,7 @@
     "requestAnimationFrame-polyfill": "*",
     "rxjs": "~2.5",
     "simple-statistics": "~0.8.1",
+    "socrata-visualizations": "git@github.com:socrata/frontend-visualizations.git#master",
     "vector-tile-js": "devTristan/vector-tile-js#~0.1.1"
   },
   "install": {

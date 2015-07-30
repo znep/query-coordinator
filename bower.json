@@ -1,5 +1,5 @@
 {
-  "name": "frontend-visualizations",
+  "name": "socrata-visualizations",
   "version": "0.0.3",
   "main": [
     "socrata-visualizations.js",

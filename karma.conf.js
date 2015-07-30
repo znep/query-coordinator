@@ -20,6 +20,7 @@ module.exports = function(config) {
       'socrata-visualizations.js',
       'socrata-visualizations-Visualization.js',
       'socrata-visualizations-Column.js',
+      'socrata-visualizations-Column.css',
       'karma/**/*spec.js'
     ],
 

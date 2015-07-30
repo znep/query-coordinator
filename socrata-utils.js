@@ -37,6 +37,30 @@
     return txt;
   };
 
+  /**
+   * `formatWithNames` is assigned to the String prototype at the bottom of
+   * this file.
+   *
+   * Usage:
+   *
+   * 'Hello, {what}!'.format({ what: 'World'});
+   * => 'Hello, World!'
+   */
+  var formatWithNames = function(objectMaybe) {
+
+    var values = _.isPlainObject(objectMaybe) ? objectMaybe : _.slice(arguments);
+
+    return _(values).
+      chain().
+      keys().
+      reduce(
+        function(stringToFormat, key) {
+          return stringToFormat.replace(new RegExp('\\{' + key + '\\}', 'gm'), values[key]);
+        },
+        this
+      ).value();
+  };
+
   var socrataUtils = {
 
     assertEqual: function(value1, value2) {
@@ -105,5 +129,7 @@
   };
 
   String.prototype.format = format;
+  String.prototype.formatWithNames = formatWithNames;
+
   _.merge(window.socrata.utils, socrataUtils);
 })(window);

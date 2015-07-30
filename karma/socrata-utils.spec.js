@@ -127,4 +127,19 @@ describe('socrata-utils.js', function() {
       expect('{0}, {1}, {2}, {3}, {4}'.format(1, '2', 3, 4, 'five')).to.equal('1, 2, 3, 4, five');
     });
   });
+
+  describe('String.prototype.formatWithNames', function() {
+
+    it('should replace numeric tokens when string arguments are given', function() {
+
+      expect('test {0} test'.formatWithNames('TEST')).to.equal('test TEST test');
+      expect('{0} TEST {1}'.formatWithNames('one', 'two')).to.equal('one TEST two');
+    });
+
+    it('should not replace non-numeric token-like entities if string arguments are given', function() {
+
+      expect('{x}-{y}-{z}-{0}-{1}'.formatWithNames('one', 'two')).to.equal('{x}-{y}-{z}-one-two');
+      expect('{x}'.formatWithNames('one')).to.equal('{x}');
+    });
+  });
 });

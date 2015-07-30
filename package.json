@@ -5,7 +5,8 @@
     "url": "https://github.com/socrata/frontend-utils.git"
   },
   "scripts": {
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "karma start karma.conf.js --singleRun true"
   },
   "homepage": "https://github.com/socrata/frontend-utils",
   "devDependencies": {
@@ -36,8 +37,5 @@
       "$": true,
       "_": true
     }
-  },
-  "scripts": {
-    "test": "karma start karma.conf.js --singleRun true"
   }
 }

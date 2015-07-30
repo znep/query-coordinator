@@ -18,3 +18,10 @@ Add the following line to the `"dependencies"` hash in your project's `bower.jso
 ```
 
 Then run `bower update && bower install --save`.
+
+## Testing
+
+Run the following command to execute the test suite once:
+```
+$ npm test
+```

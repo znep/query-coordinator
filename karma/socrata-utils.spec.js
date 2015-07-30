@@ -120,4 +120,23 @@ describe('socrata-utils.js', function() {
       });
     });
   });
+
+  describe('String.prototype.format', function() {
+
+    describe('when the first argument is not an object', function() {
+
+      it('should correctly inteprolate values by index', function() {
+        expect('{0}, {1}, {2}, {3}, {4}'.format(1, '2', 3, 4, 'five')).to.equal('1, 2, 3, 4, five');
+      });
+    });
+
+    describe('when the first argument is an object', function() {
+
+      it('should correctly interpolate values by name', function() {
+
+        expect('test {first} test'.format({ first: 'TEST' })).to.equal('test TEST test');
+        expect('{0} TEST {third} {second}'.format({ '0': 'one', second: 'two', third: 'three' })).to.equal('one TEST three two');
+      });
+    });
+  });
 });

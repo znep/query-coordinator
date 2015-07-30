@@ -39,14 +39,6 @@
     return !_.isEmpty(argument);
   };
 
-  $.htmlEncode = function(value) {
-    return $('<div/>').text(value).html();
-  };
-
-  $.htmlDecode = function(value) {
-    return $('<div/>').html(value).text();
-  };
-
   String.prototype.format = function(objectMaybe) {
     var values = _.isPlainObject(objectMaybe) ? objectMaybe : _.slice(arguments);
     return _(values).chain().keys().reduce(function(stringToFormat, key) {

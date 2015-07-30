@@ -209,7 +209,7 @@
               rowDisplayUnit :
               rowDisplayUnit.pluralize();
             var rowCountWithCommas = FormatService.commaify(rowCount);
-            pluralRowDisplayUnit = $.htmlEncode(pluralRowDisplayUnit);
+            pluralRowDisplayUnit = _.escape(pluralRowDisplayUnit);
             if (rowCount === filteredRowCount) {
               customTitle = I18n.t('table.rangeLabelAll',
                 rowCountWithCommas,

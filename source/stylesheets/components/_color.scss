@@ -2,6 +2,83 @@
 $gray: #4A4A4A;
 $light-gray: #8C8C8C;
 
+$base-blue: #2C97DE;
+$base-grey: #575757;
+
+$light-blue1: (tint($base-blue, 20%));
+$light-blue2: (tint($base-blue, 40%));
+$light-blue3: (tint($base-blue, 60%));
+$dark-blue1: (shade($base-blue, 20%));
+$dark-blue2: (shade($base-blue, 40%));
+$dark-blue3: (shade($base-blue, 60%));
+
+$colors-list: (
+ 	base-blue: $base-blue,
+	light-blue1: $light-blue1,
+	light-blue2: $light-blue2,
+	light-blue3: $light-blue3,
+	dark-blue1: $dark-blue1,
+	dark-blue2: $dark-blue2,
+	dark-blue3: $dark-blue3,
+);
+
+
+/*
+$colors: (
+    blue: (
+        base: $base-blue,
+        light: tint($base-blue, 20%),
+		xlight: tint($base-blue, 40%),
+		xxlight: tint($base-blue, 60%),
+		dark: shade($base-blue, 20%),
+		xdark: shade($base-blue, 40%),
+		xxdark: shade($base-blue, 60%)
+    ),
+    grey: (
+        base:  $base-grey,
+        light: tint($base-grey, 20%),
+		xlight: tint($base-grey, 40%),
+		xxlight: tint($base-grey, 60%),
+		dark: shade($base-grey, 20%),
+		xdark: shade($base-grey, 40%),
+		xxdark: shade($base-grey, 60%)
+    )
+);
+
+@function color($color, $tone: 'base') {
+    @return map-get(map-get($colors, $color), $tone);
+}
+*/
+
+// $colors: (
+// 	base-blue: $base-blue,
+// );
+
+// $range: 3;
+// $colors-list: make-list($colors);
+
+// @function make-list($colors){
+// 	@each $color-name, $color in $colors{
+// 		@return create-subcolors($color, $color-name);
+// 	}
+// }
+// @function create_subcolors($base-color, $color-name){
+// 	$colors-list: map-merge(#{$color-name}, $base-color);
+// 	@for $i from 1 through $range {
+// 		$percent: ($i*20);
+// 	    $color: tint($base-color, $percent);
+// 		$colors-list: map-merge($color-name$i, $color);
+// 	}
+// 	@for $j from 1 through $range {
+// 		$percent: ($j*20);
+// 	    $color: shade($base-color, $percent);
+// 		$colors-list: map-merge($color-name"-"$j, $color)
+// 	}
+
+// }
+
+
+
 
 // Color Vars
 $default-text-color: $gray;

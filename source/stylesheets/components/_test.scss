@@ -1,0 +1,22 @@
+
+
+// Colors
+@import 'color';
+
+
+@each $name, $color in $colors-list {
+    .#{$name} { 
+        background-color: $color;
+
+      &:after {
+          content: "#{$color}";
+          float: right;
+        }
+    }
+}
+
+.box { 
+	width: 25em;
+	padding: 1em 2em; 
+	display: block;
+}

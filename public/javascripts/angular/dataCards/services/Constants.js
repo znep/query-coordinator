@@ -91,7 +91,8 @@
       'HISTOGRAM_REQUIRED_LABEL_WIDTH': 42, // based off of "-1,000" label
 
       // Feature Maps
-      'FEATURE_MAP_HOVER_THRESHOLD': 8,
+      'FEATURE_MAP_MIN_HOVER_THRESHOLD': 5,
+      'FEATURE_MAP_MAX_ZOOM': 18, // same as Leaflet default
       'FEATURE_MAP_FLYOUT_Y_OFFSET': 1.25,
       'FEATURE_MAP_RESIZE_DEBOUNCE_INTERVAL': 250,
 

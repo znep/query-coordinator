@@ -1,4 +1,5 @@
-describe('socrata-visualizations-Column', function() {
+describe('socrata.visualizations.Column', function() {
+
   'use strict';
 
   var th;

@@ -2,14 +2,12 @@
 
   'use strict';
 
-  if (
-    (!window._) ||
-    (_.prototype.constructor.toString().match(/lodash/i) === null)
-  ) {
-    throw new Error('lodash is a required dependency for `socrata-utils.js`.');
+  if (!window.socrata || window.socrata.utils) {
+    throw new Error(
+      '`socrata-utils` is a required dependency for `socrata-visualizations`'
+    );
   }
 
-  window.socrata = window.socrata || {};
   window.socrata.visualizations = window.socrata.visualizations || {};
 
   function Visualization(element, config) {
@@ -50,7 +48,6 @@
       }
     }
   }
-
 
   window.socrata.visualizations.Visualization = Visualization;
 })(window);

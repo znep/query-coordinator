@@ -460,6 +460,54 @@
                 },
                 "format": {
                 }
+            },
+            {
+                "id": 50,
+                "name": "chechechecheckbox",
+                "dataTypeName": "checkbox",
+                "fieldName": "chechechecheckbox",
+                "position": 5,
+                "renderTypeName": "checkbox",
+                "tableColumnId": 50,
+                "width": 100,
+                "format": {
+                }
+            },
+            {
+                "id": 51,
+                "name": "YOU ARE A STAR",
+                "dataTypeName": "stars",
+                "fieldName": "you_are_a_star",
+                "position": 6,
+                "renderTypeName": "stars",
+                "tableColumnId": 51,
+                "width": 100,
+                "format": {
+                }
+            },
+            {
+                "id": 53,
+                "name": "Someday Sometime",
+                "dataTypeName": "date",
+                "fieldName": "someday_sometime",
+                "position": 8,
+                "renderTypeName": "date",
+                "tableColumnId": 53,
+                "width": 100,
+                "format": {
+                }
+            },
+            {
+                "id": 52,
+                "name": "money money money",
+                "dataTypeName": "money",
+                "fieldName": "all_the_monies",
+                "position": 7,
+                "renderTypeName": "money",
+                "tableColumnId": 52,
+                "width": 100,
+                "format": {
+                }
             }
         ],
         "grants": [

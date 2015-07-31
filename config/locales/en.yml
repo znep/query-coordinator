@@ -2767,6 +2767,8 @@ en:
       comments_created: comments created
       daily: Daily
       deleted_application: deleted application
+      delta_decrease: The number of {0} decreased by {1} during {2}
+      delta_increase: The number of {0} increased by {1} during {2}
       dependent_metrics: Dependent Metrics
       download: download
       downloads: downloads

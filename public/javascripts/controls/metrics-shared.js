@@ -266,7 +266,7 @@ metricsNS.urlMapCallback = function($context)
     );
 };
 
-metricsNS.summarySectionCallback = function($context)
+metricsNS.summarySectionCallback = function($context, slice, section)
 {
     var summaries = $context.data('data-summary'),
         data      = $context.data(metricsNS.DATA_KEY),
@@ -321,17 +321,19 @@ metricsNS.summarySectionCallback = function($context)
     }
     }
 
-    mappedData.deltaPercent = mappedData.delta / (mappedData.total - mappedData.delta) * 100;
-    if (mappedData.deltaPercent < 0) {
-        mappedData.deltaPercent *= -1;
-        mappedData.deltaPercentClass = 'minus';
-    } else {
-        mappedData.deltaPercentClass = 'plus';
-    }
+    var deltaPercent = mappedData.delta / (mappedData.total - mappedData.delta) * 100;
+    mappedData.deltaPercentClass = deltaPercent < 0 ? 'minus' : 'plus';
+    mappedData.deltaPercent = Highcharts.numberFormat(Math.abs(deltaPercent), 0) + '%';
+    mappedData.deltaPercentText =
+        $.t(deltaPercent < 0 ? 'screens.stats.delta_decrease' : 'screens.stats.delta_increase')
+        .format(
+            section.summary.deltaPhrase || section.displayName,
+            mappedData.deltaPercent,
+            $context.closest('#analyticsDataContainer').find('.currentTimeSlice').val()
+        );
 
     mappedData.total = Highcharts.numberFormat(mappedData.total, 0);
     mappedData.delta = Highcharts.numberFormat(mappedData.delta, 0);
-    mappedData.deltaPercent = Highcharts.numberFormat(mappedData.deltaPercent, 0) + '%';
 
     var templateName = 'metricsSummaryData';
     var summaryDirective = metricsNS.summaryDataDirective;
@@ -452,9 +454,9 @@ metricsNS.summaryDataDirective = {
 metricsNS.summaryDataDirectiveV1 = {
     '.deltaValue' : 'delta',
     '.percentValue' : 'deltaPercent',
+    '.percentBox@title' : 'deltaPercentText',
     '.percentBox@class+' : 'deltaPercentClass',
-    '.totalValueV1' : 'total',
-    '.totalValueV1@title' : 'totalText',
+    '.totalValueV1' : 'total'
 };
 
 metricsNS.simpleSummaryDataDirective = {

@@ -110,7 +110,8 @@ blist.metrics.sitewideShared = {
 		plus: 'rows-created', 
 		minus: 'rows-deleted',
                 verbPhrase: 'rows created', 
-		verbPhraseSingular: 'row created'
+		verbPhraseSingular: 'row created',
+                deltaPhrase: 'rows'
             }
         },
         {

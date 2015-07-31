@@ -17,36 +17,51 @@ body {
 
 }
 
+
+//Bring back the defaults
+
 h1, h2, h3, h4, h5, h6, p, ul, ol, {
 	margin-bottom: ms(0);
 }
 
-h1 {
+i {
+	font-style: italic;
+}
+
+b {
+	font-weight: bold;
+}
+
+
+// All of the headings. Additional "heaing classes" are used to style 
+// type in contexts where the heading style and semantics don't align.
+
+h1, .h1 {
 	font-size: ms(5);
 	font-weight: 700;
 }
 
-h2 {
+h2, .h2 {
 	font-size: ms(4);
 	font-weight: 700;
 }
 
-h3 {
+h3, .h3 {
 	font-size: ms(3);
 	font-weight: 700;
 }
 
-h4 {
+h4, .h4 {
 	font-size: ms(2);
 	font-weight: 700;
 }
 
-h5 {
+h5, .h5 {
 	font-size: ms(1);
 	font-weight: 700;
 }
 
-h6 {
+h6, .h6 {
 	font-size: ms(0);
 	text-transform: uppercase;
 	font-weight: 700;

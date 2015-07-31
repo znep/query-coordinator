@@ -1,0 +1,29 @@
+{
+  "name": "frontend-utils",
+  "main": [
+    "socrata-utils.js"
+  ],
+  "ignore": [
+    "bower_components/",
+    "karma/",
+    "node_modules/",
+    ".gitignore",
+    "bower.json",
+    "karma.conf.js",
+    "packages.json",
+    "README.md"
+  ],
+  "devDependencies": {
+    "lodash": "~3.10.0"
+  },
+  "homepage": "https://github.com/socrata/frontend-utils",
+  "_release": "881d023cd5",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "881d023cd5f2cc1311b44b5ef0af4cb967b0e1ac"
+  },
+  "_source": "git@github.com:socrata/frontend-utils.git",
+  "_target": "master",
+  "_originalSource": "git@github.com:socrata/frontend-utils.git"
+}

@@ -1,0 +1,25 @@
+{
+  "name": "socrata-visualizations",
+  "version": "0.0.3",
+  "main": [
+    "socrata-visualizations.js",
+    "socrata-visualizations-Visualization.js",
+    "socrata-visualizations-Column.js",
+    "socrata-visualizations-Column.css"
+  ],
+  "ignore": [
+    "bower_components/",
+    "karma/",
+    "node_modules/",
+    ".gitignore",
+    "bower.json",
+    "karma.conf.js",
+    "packages.json",
+    "README.md"
+  ],
+  "devDependencies": {
+    "lodash": "~3.10.0",
+    "jquery": "~2.1.1",
+    "d3": "~3.5.6"
+  }
+}

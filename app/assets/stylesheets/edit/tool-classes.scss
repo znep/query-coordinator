@@ -1,3 +1,13 @@
+/**
+ * Text
+ */
+.text-center {
+  text-align: center;
+}
+
+/**
+ * Behaviors
+ */
 .bg-loading-spinner {
   background-image: asset-url('shared/branded-spinner.gif');
   background-repeat: no-repeat;

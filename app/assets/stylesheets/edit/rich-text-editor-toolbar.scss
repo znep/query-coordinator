@@ -1,4 +1,5 @@
-@import '../base';
+@import 'lib/variables';
+
 
 #rich-text-editor-toolbar {
   @include media-query-property(

@@ -1,4 +1,3 @@
-@import '../base';
 
 .add-content-panel {
   @include media-query-property(
@@ -9,6 +8,7 @@
     $main-content-width-extra-large / 4
   );
   @include unselectable();
+@import 'lib/variables';
 
   position: fixed;
   height: calc(100vh - #{$header-total-height} - #{$add-content-panel-padding});

@@ -1,0 +1,97 @@
+// Header
+$header-height: 6rem;
+$header-margin: 0.7rem;
+$header-title-height: 1.7em;
+$header-title-left-margin: 0.5em;
+$header-right-pane-padding: 1em;
+
+// Settings panel
+$setting-panel-width: 25%;
+
+// Add content panel.
+$add-content-panel-padding: 2rem;
+
+// Inspiration story
+$inspiration-block-list-close-button-padding: 0.5em;
+$inspiration-block-list-font-size: 0.5rem;
+$inspiration-block-list-block-margin: 0.5rem;
+
+// Main content (the width of the user story)
+$main-content-width-small: 38.4rem;
+$main-content-width-medium: 64rem;
+$main-content-width-large: 80rem;
+$main-content-width-extra-large: 96rem;
+
+// User story container
+$user-story-container-vertical-padding: 8rem;
+
+// Block edit controls
+$block-edit-controls-width: 3rem;
+$block-edit-controls-padding: 1rem;
+$block-edit-controls-outer-width: $block-edit-controls-width + $block-edit-controls-padding;
+
+// Block component column widths (small)
+$col3-block-edit-content-width-small: ($main-content-width-small - $block-edit-controls-width - $block-edit-controls-padding) * (1/4);
+$col4-block-edit-content-width-small: ($main-content-width-small - $block-edit-controls-width - $block-edit-controls-padding) * (1/3);
+$col6-block-edit-content-width-small: ($main-content-width-small - $block-edit-controls-width - $block-edit-controls-padding) * (1/2);
+$col8-block-edit-content-width-small: ($main-content-width-small - $block-edit-controls-width - $block-edit-controls-padding) * (2/3);
+$col12-block-edit-content-width-small: $main-content-width-small - $block-edit-controls-width - $block-edit-controls-padding;
+
+// Block component column widths (medium)
+$col3-block-edit-content-width-medium: ($main-content-width-medium - $block-edit-controls-width - $block-edit-controls-padding) * (1/4);
+$col4-block-edit-content-width-medium: ($main-content-width-medium - $block-edit-controls-width - $block-edit-controls-padding) * (1/3);
+$col6-block-edit-content-width-medium: ($main-content-width-medium - $block-edit-controls-width - $block-edit-controls-padding) * (1/2);
+$col8-block-edit-content-width-medium: ($main-content-width-medium - $block-edit-controls-width - $block-edit-controls-padding) * (2/3);
+$col12-block-edit-content-width-medium: $main-content-width-medium - $block-edit-controls-width - $block-edit-controls-padding;
+
+// Block component column widths (large)
+$col3-block-edit-content-width-large: ($main-content-width-large - $block-edit-controls-width - $block-edit-controls-padding) * (1/4);
+$col4-block-edit-content-width-large: ($main-content-width-large - $block-edit-controls-width - $block-edit-controls-padding) * (1/3);
+$col6-block-edit-content-width-large: ($main-content-width-large - $block-edit-controls-width - $block-edit-controls-padding) * (1/2);
+$col8-block-edit-content-width-large: ($main-content-width-large - $block-edit-controls-width - $block-edit-controls-padding) * (2/3);
+$col12-block-edit-content-width-large: $main-content-width-large - $block-edit-controls-width - $block-edit-controls-padding;
+
+// Block component column widths (extra-large)
+$col3-block-edit-content-width-extra-large: ($main-content-width-extra-large - $block-edit-controls-width - $block-edit-controls-padding) * (1/4);
+$col4-block-edit-content-width-extra-large: ($main-content-width-extra-large - $block-edit-controls-width - $block-edit-controls-padding) * (1/3);
+$col6-block-edit-content-width-extra-large: ($main-content-width-extra-large - $block-edit-controls-width - $block-edit-controls-padding) * (1/2);
+$col8-block-edit-content-width-extra-large: ($main-content-width-extra-large - $block-edit-controls-width - $block-edit-controls-padding) * (2/3);
+$col12-block-edit-content-width-extra-large: $main-content-width-extra-large - $block-edit-controls-width - $block-edit-controls-padding;
+
+// Rich Text Editor toolbar
+$rich-text-editor-width: 52rem;
+$rich-text-editor-toolbar-left-offset-small: calc(((100vw - #{$main-content-width-small}) / 2) + #{$block-edit-controls-outer-width});
+$rich-text-editor-toolbar-left-offset-medium: calc(((100vw - #{$main-content-width-medium}) / 2) + #{$block-edit-controls-outer-width});
+$rich-text-editor-toolbar-left-offset-large: calc(((100vw - #{$main-content-width-large}) / 2) + #{$block-edit-controls-outer-width});
+$rich-text-editor-toolbar-left-offset-extra-large: calc(((100vw - #{$main-content-width-extra-large}) / 2) + #{$block-edit-controls-outer-width});
+$rich-text-editor-toolbar-top-offset: $header-height + 3rem;
+$rich-text-editor-toolbar-btn-group-margin-right: 1rem;
+$rich-text-editor-toolbar-btn-width: 3rem;
+$rich-text-editor-toolbar-btn-height: 3rem;
+$rich-text-editor-toolbar-select-width: 16rem;
+$rich-text-editor-toolbar-select-padding-left: 0.5rem;
+
+// Modal windows
+$modal-padding: 2rem;
+$modal-title-font-size: 2rem;
+$modal-title-line-height: 2.5rem;
+$modal-close-btn-width: 2.5rem;
+$modal-wide-static-width: 800px;
+
+// Buttons
+$btn-height: 2rem;
+
+// Preview button
+$preview-btn-right-margin: 3rem;
+$preview-btn-bottom-margin: 3rem;
+
+// Border radii
+$btn-border-radius: 0.2rem;
+$modal-border-radius: 0.3rem;
+
+// Durations
+$transition-duration: 0.2s;
+$embed-bg-color-transition-duration: 1s;
+$iframe-onload-transition-duration: 2s;
+
+// Forms

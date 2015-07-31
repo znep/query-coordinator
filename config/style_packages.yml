@@ -7,6 +7,7 @@
 # NOTE Our homegrown style manager doesn't support globs, so you'll need to add all bower-installer installed styles manually :(
 bower-styles-all:
 - leaflet
+- socrata-visualizations-Column
 # END BOWER-MANAGED ASSETS
 
 angular-app-dataCards:
@@ -16,7 +17,6 @@ angular-app-dataCards:
 - dataCards/flyout
 - dataCards/_leaflet
 - dataCards/choropleth
-- dataCards/column-chart
 - dataCards/timeline-chart
 - dataCards/table
 - dataCards/search

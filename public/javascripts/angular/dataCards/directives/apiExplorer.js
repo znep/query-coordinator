@@ -112,7 +112,7 @@
 
             var $target = $(e.target);
             var targetInsideFlannel = $target.closest('.tool-panel-main').length > 0;
-            var targetIsButton = $target.closest('.tool-panel-toggle-btn').length > 0;
+            var targetIsButton = $target.is($(element).find('.tool-panel-toggle-btn'));
             return !targetInsideFlannel && !targetIsButton;
           }).
           subscribe(function() {

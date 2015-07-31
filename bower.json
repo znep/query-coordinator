@@ -65,9 +65,9 @@
         "bower_components/rxjs/dist/rx.binding.js"
       ],
       "socrata-visualizations": [
-        "bower_components/socrata-visualizations/socrata-visualization.js",
-        "bower_components/socrata-visualizations/socrata-visualization-Visualization.js",
-        "bower_components/socrata-visualizations/socrata-visualization-Column.js",
+        "bower_components/socrata-visualizations/socrata-visualizations.js",
+        "bower_components/socrata-visualizations/socrata-visualizations-Visualization.js",
+        "bower_components/socrata-visualizations/socrata-visualizations-Column.js",
         {
           "bower_components/socrata-visualizations/socrata-visualizations-Column.css": "../socrata-visualizations-Column.css"
         }

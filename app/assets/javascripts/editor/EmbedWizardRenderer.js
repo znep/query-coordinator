@@ -261,7 +261,7 @@
 
       var closeButton = _renderModalCloseButton();
 
-      var inputLabel = $('<h2>', { 'class': 'wizard-input-label' }).
+      var inputLabel = $('<h2>', { 'class': 'wizard-input-label input-label' }).
         text(I18n.t('editor.embed_wizard.providers.youtube.input_label'));
 
       var inputControl = $(
@@ -269,7 +269,8 @@
         {
           'class': 'wizard-text-input',
           'data-embed-wizard-validate-field': 'youTubeId',
-          'placeholder': 'https://www.youtube.com/'
+          'placeholder': 'https://www.youtube.com/',
+          'type': 'text'
         }
       );
 

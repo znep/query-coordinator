@@ -1,5 +1,6 @@
 <header>
-  <a href="#" class="story-title" role="button">Story</a>
+  <span data-panel-toggle="settings-panel" role="button" class="icon-cog settings-panel-btn"></span>
+  <a href="#" class="story-title" role="button" data-panel-toggle="settings-panel">Story</a>
   <div class="header-right">
     <ul class="menu">
       <li>
@@ -17,8 +18,15 @@
   </div>
 </header>
 
-<section class="add-content-panel">
-  <div class="close-content-panel-btn">
+<div class="settings-panel-wrapper">
+  <section class="settings-panel side-panel">
+    <%= render 'settings_panel' %>
+  </section>
+  <div class="settings-panel-overlay" data-panel-toggle="settings-panel"></div>
+</div>
+
+<section class="add-content-panel side-panel">
+  <div class="close-side-panel-btn">
     <a role="button" href="#" title="Close">
       <span class="icon-cross2"></span>
     </a>

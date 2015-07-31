@@ -63,3 +63,10 @@
     #{$property}: $value-extra-large;
   }
 }
+
+@mixin thin-hr() {
+  border-bottom: 1px;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}

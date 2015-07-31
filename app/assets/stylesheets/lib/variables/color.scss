@@ -10,6 +10,10 @@ $header-story-title-color: #eee;
 // Add content panel
 $add-content-panel-bg-color: #eee;
 
+// Settings Panel
+$settings-panel-bg-color: #404040;
+$settings-panel-hr-color: #666;
+
 // Blocks
 $block-bg-color: #fafafa;
 
@@ -35,8 +39,10 @@ $modal-overlay-bg-color: rgba(0, 0, 0, 0.5);
 // Wizard
 $wizard-input-group-bg-color: #eee;
 $wizard-media-embed-preview-container-bg-color: #fff;
-$wizard-input-element-border-color: #ccc;
 $wizard-media-embed-invalid-message-color: #333;
+
+// Forms
+$input-element-border-color: #ccc;
 
 // Buttons
 $btn-color: #666;

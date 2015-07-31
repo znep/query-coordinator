@@ -5,8 +5,13 @@ $header-title-height: 1.7em;
 $header-title-left-margin: 0.5em;
 $header-right-pane-padding: 1em;
 
+// Panels
+$panel-width: 30rem;
+
 // Settings panel
-$setting-panel-width: 25%;
+$settings-panel-width: 30%;
+$settings-panel-close-bar-height: 2rem;
+$settings-panel-padding-width: 3rem;
 
 // Add content panel.
 $add-content-panel-padding: 2rem;
@@ -88,6 +93,7 @@ $preview-btn-bottom-margin: 3rem;
 // Border radii
 $btn-border-radius: 0.2rem;
 $modal-border-radius: 0.3rem;
+$input-element-border-radius: 0.3rem;
 
 // Durations
 $transition-duration: 0.2s;

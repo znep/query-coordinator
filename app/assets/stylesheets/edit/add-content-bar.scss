@@ -1,29 +1,32 @@
-
-.add-content-panel {
-  @include media-query-property(
-    'width',
-    $main-content-width-small / 4,
-    $main-content-width-medium / 4,
-    $main-content-width-large / 4,
-    $main-content-width-extra-large / 4
-  );
-  @include unselectable();
 @import 'lib/variables';
 
+/**
+ * Shared between all side-panels
+ */
+.side-panel {
+  width: $panel-width;
   position: fixed;
-  height: calc(100vh - #{$header-total-height} - #{$add-content-panel-padding});
-  top: $header-total-height;
-  right: 0;
-  padding: $add-content-panel-padding / 2;
-  background-color: $add-content-panel-bg-color;
-  z-index: $add-content-panel-z-index;
+  @include unselectable();
 
-  .close-content-panel-btn {
+  .close-side-panel-btn {
     display: inline-block;
     width: 100%;
     text-align: right;
     margin-bottom: $inspiration-block-list-close-button-padding;
   }
+}
+
+/**
+ * Add Content Panel
+ */
+.add-content-panel {
+
+  height: calc(100vh - #{$header-height} - #{$add-content-panel-padding});
+  top: $header-height;
+  right: 0;
+  padding: $add-content-panel-padding / 2;
+  background-color: $add-content-panel-bg-color;
+  z-index: $add-content-panel-z-index;
 
   h1 {
     text-align: center;

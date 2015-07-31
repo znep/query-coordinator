@@ -1,11 +1,10 @@
 @import 'lib/variables';
 
-
 .user-story-container {
   position: relative;
   display: block;
   width: 100vw;
-  padding: $header-total-height + $user-story-container-vertical-padding 0;
+  padding: $header-height + $user-story-container-vertical-padding 0;
   z-index: $user-story-container-z-index;
 
   .user-story {
@@ -91,7 +90,7 @@
     margin: 0 29% 0.5rem 29%;
     width: 42%;
     height: 0.5rem;
-    top: $header-total-height + $user-story-container-vertical-padding;
+    top: $header-height + $user-story-container-vertical-padding;
     left: 0;
     text-align: center;
     background-color: $story-insertion-hint-bg-color;

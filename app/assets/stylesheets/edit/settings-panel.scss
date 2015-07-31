@@ -1,0 +1,71 @@
+@import 'lib/variables';
+
+/**
+ * Settings Panel
+ */
+.settings-panel {
+  width: $settings-panel-width;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: $header-bg-color;
+  z-index: $add-content-panel-z-index;
+  color: $header-font-color;
+  padding: $settings-panel-padding-width / 2;
+
+  .close-side-panel-btn {
+    position: absolute;
+    top: 0px;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    line-height: $settings-panel-close-bar-height;
+    color: $header-font-color;
+    text-align: left;
+    padding: 0.3em 0.8em;
+    text-decoration: none;
+
+    &:focus {
+      outline: none;
+    }
+
+    .close-panel-icon {
+      float: right;
+      line-height: $settings-panel-close-bar-height;
+    }
+  }
+
+  hr {
+    @include thin-hr();
+    border-bottom: 1px solid $settings-panel-hr-color;
+  }
+
+  .settings-main-title {
+    padding-top: $settings-panel-close-bar-height;
+    line-height: 4rem;
+    font-size: 2em;
+    font-weight: lighter;
+  }
+}
+
+/**
+ * Settings Panel Overlay and z-index management
+ */
+.settings-panel-wrapper {
+  z-index: $settings-panel-z-index;
+  position: relative;
+
+  .settings-panel {
+    z-index: 2;
+  }
+
+  &.active .settings-panel-overlay {
+    z-index: 1;
+    background-color: $modal-overlay-bg-color;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+  }
+}

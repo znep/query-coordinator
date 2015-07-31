@@ -29,7 +29,8 @@
     "requestAnimationFrame-polyfill": "*",
     "rxjs": "~2.5",
     "simple-statistics": "~0.8.1",
-    "socrata-visualizations": "git@github.com:socrata/frontend-visualizations.git#master",
+    "socrata-utils": "git@github.com:socrata/frontend-utils.git#master",
+    "socrata-visualizations": "git@github.com:socrata/frontend-visualizations.git#cmlaidlaw/add-column-chart-visualization",
     "vector-tile-js": "devTristan/vector-tile-js#~0.1.1"
   },
   "install": {
@@ -62,6 +63,14 @@
         "bower_components/rxjs/dist/rx.aggregates.js",
         "bower_components/rxjs/dist/rx.time.js",
         "bower_components/rxjs/dist/rx.binding.js"
+      ],
+      "socrata-visualizations": [
+        "bower_components/socrata-visualizations/socrata-visualization.js",
+        "bower_components/socrata-visualizations/socrata-visualization-Visualization.js",
+        "bower_components/socrata-visualizations/socrata-visualization-Column.js",
+        {
+          "bower_components/socrata-visualizations/socrata-visualizations-Column.css": "../socrata-visualizations-Column.css"
+        }
       ],
       "showdown": "bower_components/showdown/src/showdown.js",
       "vector-tile-js": "bower_components/vector-tile-js/dist/vectortile.min.js"

@@ -9,21 +9,23 @@
 
 section {
 	@include row();
+	border-top: 1px solid lighten($quiet-text-color, 20%);
+	padding-top: ms(2);
+	margin-bottom: ms(2);
 }
 
 .meta {
-	@include span-columns(2);
+	@include span-columns(3);
 }
 
 .example {
-	@include span-columns(9);
+	@include span-columns(8);
 	@include shift(1);
 }
 
 
 .styleguide-title {
 	font-weight: 300;
-	border-bottom: 1px solid lighten($quiet-text-color, 20%);
 }
 
 .styleguide-header {

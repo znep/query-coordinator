@@ -7,7 +7,8 @@ class AngularControllerTest < ActionController::TestCase
     init_current_domain
     ::Configuration.stubs(:find_by_type => [])
 
-    @phidippides = Phidippides.new
+    @phidippides = Phidippides.new('localhost', 2401)
+    @controller.stubs(:phidippides => @phidippides)
     @new_view_manager = NewViewManager.new
     View.stubs(
       :migrations => {

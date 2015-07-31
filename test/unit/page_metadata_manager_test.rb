@@ -11,6 +11,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     init_current_domain
     NewViewManager.any_instance.stubs(create: 'niew-veww')
     NewViewManager.any_instance.stubs(update: nil)
+    PageMetadataManager.any_instance.stubs(:phidippides => Phidippides.new('localhost', 2401))
     Phidippides.any_instance.stubs(connection_details: {
       'address' => 'localhost',
       'port' => '2401'

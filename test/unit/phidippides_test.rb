@@ -3,21 +3,39 @@ require_relative '../test_helper'
 class PhidippidesTest < Test::Unit::TestCase
 
   def phidippides
-    @phidippides ||= Phidippides.new
+    Phidippides.any_instance.expects(:connection_details).never
+    @phidippides ||= Phidippides.new('localhost', 2401)
   end
 
   def setup
     # noinspection RubyArgCount
     init_current_domain
-    Phidippides.any_instance.stubs(:connection_details => {
-      'address' => 'localhost',
-      'port' => '2401'
-    })
   end
 
-  def test_phidippides_connection_details
-    assert(phidippides.address)
-    assert(phidippides.port)
+  def test_phidippides_has_address_and_port_specified_in_constructor
+    assert(phidippides.address.present?)
+    assert(phidippides.port.present?)
+  end
+
+  def test_phidippides_has_address_and_port_specified_in_environment
+    ENV.stubs(:[]).with('PHIDIPPIDES_ADDRESS').returns('env-host')
+    ENV.stubs(:[]).with('PHIDIPPIDES_PORT').returns('1303')
+    env_phidippides = Phidippides.new
+    assert_equal('env-host', env_phidippides.address)
+    assert_equal(1303, env_phidippides.port)
+    ENV.unstub(:[])
+  end
+
+  def test_phidippides_has_address_and_port_specified_in_zookeeper_and_only_calls_connection_details_once
+    Phidippides.any_instance.expects(:connection_details).once.returns('address' => 'localpost', 'port' => 2402)
+    zk_phidippides = Phidippides.new
+    assert_equal('localpost', zk_phidippides.address)
+    assert_equal(2402, zk_phidippides.port)
+  end
+
+  def test_phidippides_raises_on_invalid_address_or_port
+    assert_raises(Phidippides::InvalidHostAddressException) { Phidippides.new('b@d_host', 1234) }
+    assert_raises(Phidippides::InvalidHostPortException) { Phidippides.new('localhost', '123.0') }
   end
 
   def test_service_end_point

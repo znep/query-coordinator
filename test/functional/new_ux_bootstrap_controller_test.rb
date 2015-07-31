@@ -8,7 +8,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       init_current_domain
       # noinspection RubyArgCount
       CurrentDomain.stubs(domain: stub(cname: 'localhost'))
-      @phidippides = Phidippides.new
+      @phidippides = Phidippides.new('localhost', 2401)
       @page_metadata_manager = PageMetadataManager.new
       @controller.stubs(
         :phidippides => @phidippides,

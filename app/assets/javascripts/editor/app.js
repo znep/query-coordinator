@@ -216,6 +216,9 @@ $(document).on('ready', function() {
   var addContentPanelElement = $('.add-content-panel');
   addContentPanelElement.addContentPanel($('.add-content-panel-btn'));
 
+  var settingsPanelElement = $('.settings-panel');
+  settingsPanelElement.settingsPanel($('[data-panel-toggle="settings-panel"]'));
+
   // Drag-drop
   var ghostElement = $('#block-ghost');
   var dragDrop = new storyteller.DragDrop(addContentPanelElement.find('.inspiration-block'), ghostElement);

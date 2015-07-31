@@ -122,3 +122,10 @@ a[role="button"] {
   padding-top: 40px;
   text-align: center;
 }
+
+// Move mini-profiler (dev-mode only) to the bottom, so it doesn't overlap menus
+// Can't be easily configured during initialization
+.profiler-results {
+  bottom: 0px;
+  top: auto !important;
+}

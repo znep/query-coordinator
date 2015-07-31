@@ -31,7 +31,7 @@
       addContentPanel.trigger('sidebar:toggle');
     });
 
-    addContentPanel.find('.close-content-panel-btn a').on('click', function() {
+    addContentPanel.find('.close-side-panel-btn a').on('click', function() {
       addContentPanel.trigger('sidebar:close');
     });
 

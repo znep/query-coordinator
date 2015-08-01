@@ -1,8 +1,10 @@
-;window.socrata.storyteller.StoryStore = (function(storyteller) {
+;window.socrata.storyteller.StoryStore = (function(socrata) {
 
   'use strict';
 
-  var Util = storyteller.Util;
+  var storyteller = socrata.storyteller;
+  var utils = socrata.utils;
+
   var FOUR_BY_FOUR_PATTERN = /^\w{4}-\w{4}$/;
 
   function StoryStore() {
@@ -164,10 +166,11 @@
      */
 
     function _setStoryTitle(payload) {
-      Util.assertHasProperty(payload, 'storyUid');
-      Util.assertIsOneOfTypes(payload.storyUid, 'string');
-      Util.assertHasProperty(payload, 'title');
-      Util.assertIsOneOfTypes(payload.title, 'string');
+
+      utils.assertHasProperty(payload, 'storyUid');
+      utils.assertIsOneOfTypes(payload.storyUid, 'string');
+      utils.assertHasProperty(payload, 'title');
+      utils.assertIsOneOfTypes(payload.title, 'string');
 
       var storyUid = payload.storyUid;
 
@@ -178,10 +181,10 @@
 
     function _moveBlockUp(payload) {
 
-      Util.assertHasProperty(payload, 'storyUid');
-      Util.assertIsOneOfTypes(payload.storyUid, 'string');
-      Util.assertHasProperty(payload, 'blockId');
-      Util.assertIsOneOfTypes(payload.blockId, 'string');
+      utils.assertHasProperty(payload, 'storyUid');
+      utils.assertIsOneOfTypes(payload.storyUid, 'string');
+      utils.assertHasProperty(payload, 'blockId');
+      utils.assertIsOneOfTypes(payload.blockId, 'string');
 
       var storyUid = payload.storyUid;
       var blockId = payload.blockId;
@@ -194,10 +197,10 @@
 
     function _moveBlockDown(payload) {
 
-      Util.assertHasProperty(payload, 'storyUid');
-      Util.assertIsOneOfTypes(payload.storyUid, 'string');
-      Util.assertHasProperty(payload, 'blockId');
-      Util.assertIsOneOfTypes(payload.blockId, 'string');
+      utils.assertHasProperty(payload, 'storyUid');
+      utils.assertIsOneOfTypes(payload.storyUid, 'string');
+      utils.assertHasProperty(payload, 'blockId');
+      utils.assertIsOneOfTypes(payload.blockId, 'string');
 
       var storyUid = payload.storyUid;
       var blockId = payload.blockId;
@@ -210,10 +213,10 @@
 
     function _deleteBlock(payload) {
 
-      Util.assertHasProperty(payload, 'storyUid');
-      Util.assertIsOneOfTypes(payload.storyUid, 'string');
-      Util.assertHasProperty(payload, 'blockId');
-      Util.assertIsOneOfTypes(payload.blockId, 'string');
+      utils.assertHasProperty(payload, 'storyUid');
+      utils.assertIsOneOfTypes(payload.storyUid, 'string');
+      utils.assertHasProperty(payload, 'blockId');
+      utils.assertIsOneOfTypes(payload.blockId, 'string');
 
       var storyUid = payload.storyUid;
       var story = _getStory(storyUid);
@@ -231,10 +234,10 @@
 
     function _insertBlockIntoStory(payload) {
 
-      Util.assertHasProperty(payload, 'storyUid');
-      Util.assertIsOneOfTypes(payload.storyUid, 'string');
-      Util.assertHasProperty(payload, 'insertAt');
-      Util.assertIsOneOfTypes(payload.insertAt, 'number');
+      utils.assertHasProperty(payload, 'storyUid');
+      utils.assertIsOneOfTypes(payload.storyUid, 'string');
+      utils.assertHasProperty(payload, 'insertAt');
+      utils.assertIsOneOfTypes(payload.insertAt, 'number');
 
       if (typeof payload.insertAt !== 'number') {
         throw new Error(
@@ -297,8 +300,8 @@
 
     function _getStory(storyUid) {
 
-      Util.assertIsOneOfTypes(storyUid, 'string');
-      Util.assertHasProperty(
+      utils.assertIsOneOfTypes(storyUid, 'string');
+      utils.assertHasProperty(
         _stories,
         storyUid,
         'Story with uid "' + storyUid + '" does not exist.'
@@ -309,8 +312,8 @@
 
     function _getBlock(blockId) {
 
-      Util.assertIsOneOfTypes(blockId, 'string');
-      Util.assertHasProperty(
+      utils.assertIsOneOfTypes(blockId, 'string');
+      utils.assertHasProperty(
         _blocks,
         blockId,
         'Block with id "' + blockId + '" does not exist.'
@@ -386,7 +389,7 @@
 
       return components.map(function(component) {
 
-        Util.assertIsOneOfTypes(component.value, 'string', 'object');
+        utils.assertIsOneOfTypes(component.value, 'string', 'object');
 
         return {
           type: component.type,
@@ -397,10 +400,10 @@
 
     function _validateStoryData(storyData) {
 
-      Util.assertIsOneOfTypes(storyData, 'object');
-      Util.assertHasProperty(storyData, 'uid');
-      Util.assertHasProperty(storyData, 'title');
-      Util.assertHasProperty(storyData, 'blocks');
+      utils.assertIsOneOfTypes(storyData, 'object');
+      utils.assertHasProperty(storyData, 'uid');
+      utils.assertHasProperty(storyData, 'title');
+      utils.assertHasProperty(storyData, 'blocks');
 
       if (storyData.uid.match(FOUR_BY_FOUR_PATTERN) === null) {
         throw new Error(
@@ -413,14 +416,14 @@
 
     function _validateBlockData(blockData) {
 
-      Util.assertIsOneOfTypes(blockData, 'object');
-      Util.assertHasProperty(blockData, 'id');
-      Util.assertHasProperty(blockData, 'layout');
-      Util.assertHasProperty(blockData, 'components');
+      utils.assertIsOneOfTypes(blockData, 'object');
+      utils.assertHasProperty(blockData, 'id');
+      utils.assertHasProperty(blockData, 'layout');
+      utils.assertHasProperty(blockData, 'components');
 
       blockData.components.forEach(function(component) {
-        Util.assertHasProperty(component, 'type');
-        Util.assertHasProperty(component, 'value');
+        utils.assertHasProperty(component, 'type');
+        utils.assertHasProperty(component, 'value');
       });
 
       if (typeof blockData.id !== 'string') {
@@ -449,8 +452,8 @@
       var story = _getStory(storyUid);
       var storyBlockIdCount = story.blockIds.length;
 
-      Util.assertIsOneOfTypes(blockId, 'string');
-      Util.assertIsOneOfTypes(index, 'number');
+      utils.assertIsOneOfTypes(blockId, 'string');
+      utils.assertIsOneOfTypes(index, 'number');
 
       if (index < 0 || index > storyBlockIdCount) {
         throw new Error('`index` argument is out of bounds.');
@@ -465,8 +468,8 @@
 
     function _swapStoryBlocksAtIndices(storyUid, index1, index2) {
 
-      Util.assertIsOneOfTypes(index1, 'number');
-      Util.assertIsOneOfTypes(index2, 'number');
+      utils.assertIsOneOfTypes(index1, 'number');
+      utils.assertIsOneOfTypes(index2, 'number');
 
       var story = _getStory(storyUid);
       var storyBlockIdCount = story.blockIds.length;
@@ -537,4 +540,4 @@
   }
 
   return StoryStore;
-})(window.socrata.storyteller);
+})(window.socrata);

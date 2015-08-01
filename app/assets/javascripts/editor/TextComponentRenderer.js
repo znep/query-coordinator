@@ -1,8 +1,10 @@
-;window.socrata.storyteller.TextComponentRenderer = (function(storyteller) {
+;window.socrata.storyteller.TextComponentRenderer = (function(socrata) {
 
   'use strict';
 
-  var Util = storyteller.Util;
+  var storyteller = socrata.storyteller;
+  var utils = socrata.utils;
+
   var _componentTemplateRenderers = {
     'text': _renderTextComponentTemplate
   };
@@ -14,11 +16,11 @@
 
     var type;
 
-    Util.assertHasProperty(componentOptions, 'componentType');
+    utils.assertHasProperty(componentOptions, 'componentType');
 
     type = componentOptions.componentType;
 
-    Util.assertHasProperty(_componentTemplateRenderers, type);
+    utils.assertHasProperty(_componentTemplateRenderers, type);
 
     return _componentTemplateRenderers[type](componentOptions);
   }
@@ -28,13 +30,13 @@
     var type;
     var value;
 
-    Util.assertHasProperties(data, 'type', 'value');
-    Util.assertIsOneOfTypes(renderFn, 'function');
+    utils.assertHasProperties(data, 'type', 'value');
+    utils.assertIsOneOfTypes(renderFn, 'function');
 
     type = data.type;
     value = data.value;
 
-    Util.assertHasProperty(_componentDataRenderers, type);
+    utils.assertHasProperty(_componentDataRenderers, type);
 
     _componentDataRenderers[type](element, value, editable, renderFn);
   }
@@ -49,7 +51,7 @@
     var component;
     var editor;
 
-    Util.assertHasProperties(
+    utils.assertHasProperties(
       componentOptions,
       'classes',
       'blockId',
@@ -115,4 +117,4 @@
     renderTemplate: _renderTemplate,
     renderData: _renderData
   };
-})(window.socrata.storyteller);
+})(window.socrata);

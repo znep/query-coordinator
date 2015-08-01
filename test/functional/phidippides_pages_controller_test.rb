@@ -11,8 +11,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     )
     User.stubs(current_user: User.new(some_user))
 
-    @phidippides = Phidippides.new
-    @phidippides.stubs(end_point: 'http://localhost:2401')
+    @phidippides = Phidippides.new('localhost', 2401)
     @page_metadata_manager = PageMetadataManager.new
     @controller.stubs(
       phidippides: @phidippides,

@@ -48,7 +48,7 @@ your local storyteller instance with blah.dev, vertex.dev, etc.
 
 ## Run Server
 
-`bin/rails s -p 3010 -b 0.0.0.0`
+`bin/start`
 
 ## How to run the test suite
 

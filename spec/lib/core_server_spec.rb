@@ -3,7 +3,7 @@ require 'spec_helper'
 describe CoreServer do
   describe '#current_user' do
     before do
-      expect(CoreServer).to receive(:get_core_server_address).and_return('123.45.67.89:8081')
+      expect(Rails.application.config).to receive(:core_service_uri).and_return('http://123.45.67.89:8081')
     end
     let(:headers) do
       {

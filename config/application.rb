@@ -34,11 +34,5 @@ module Storyteller
     # Nginx routes urls with /stories from the Open Data platform to this app,
     # so respond to /stories as the root url.
     config.relative_url_root = '/stories'
-
-    config.frontend_port = if Rails.env.development?
-      ENV['FRONTEND_PORT'] || '9443'
-    else
-      nil
-    end
   end
 end

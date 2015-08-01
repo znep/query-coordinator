@@ -343,6 +343,11 @@ metricsNS.summarySectionCallback = function($context, slice, section)
         templateName = 'metricsSummaryDataV1';
         summaryDirective = metricsNS.summaryDataDirectiveV1;
     }
+    // Omit the percent box if it would show NaN
+    if (deltaPercent == Infinity) {
+        templateName = 'metricsNoPercentData';
+        summaryDirective = metricsNS.noPercentDirective;
+    }
     // Omit the delta box if summaries.range = false
     if (!$.isBlank(summaries.range) && !summaries.range) {
         templateName = 'metricsSimpleSummaryData';
@@ -456,6 +461,11 @@ metricsNS.summaryDataDirectiveV1 = {
     '.percentValue' : 'deltaPercent',
     '.percentBox@title' : 'deltaPercentText',
     '.percentBox@class+' : 'deltaPercentClass',
+    '.totalValueV1' : 'total'
+};
+
+metricsNS.noPercentDirective = {
+    '.deltaValue' : 'delta',
     '.totalValueV1' : 'total'
 };
 

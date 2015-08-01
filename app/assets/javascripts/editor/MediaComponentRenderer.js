@@ -1,8 +1,10 @@
-;window.socrata.storyteller.MediaComponentRenderer = (function(storyteller) {
+;window.socrata.storyteller.MediaComponentRenderer = (function(socrata) {
 
   'use strict';
 
-  var Util = storyteller.Util;
+  var storyteller = socrata.storyteller;
+  var utils = socrata.utils;
+
   var _componentTemplateRenderers = {
     'image': _renderImageComponentTemplate,
     'embed': _renderEmbedComponentTemplate
@@ -25,14 +27,14 @@
 
     var type;
 
-    Util.assertHasProperty(componentOptions, 'componentType');
-    Util.assertEqual(componentOptions.componentType, 'media');
-    Util.assertHasProperty(componentOptions, 'componentValue');
-    Util.assertHasProperty(componentOptions.componentValue, 'type');
+    utils.assertHasProperty(componentOptions, 'componentType');
+    utils.assertEqual(componentOptions.componentType, 'media');
+    utils.assertHasProperty(componentOptions, 'componentValue');
+    utils.assertHasProperty(componentOptions.componentValue, 'type');
 
     type = componentOptions.componentValue.type;
 
-    Util.assertHasProperty(_componentTemplateRenderers, type);
+    utils.assertHasProperty(_componentTemplateRenderers, type);
 
     return _componentTemplateRenderers[type](
       componentOptions
@@ -44,15 +46,15 @@
     var type;
     var value;
 
-    Util.assertHasProperty(data, 'value');
-    Util.assertHasProperty(data.value, 'type');
-    Util.assertHasProperty(data.value, 'value');
-    Util.assertIsOneOfTypes(renderFn, 'function');
+    utils.assertHasProperty(data, 'value');
+    utils.assertHasProperty(data.value, 'type');
+    utils.assertHasProperty(data.value, 'value');
+    utils.assertIsOneOfTypes(renderFn, 'function');
 
     type = data.value.type;
     value = data.value.value;
 
-    Util.assertHasProperty(_componentDataRenderers, type);
+    utils.assertHasProperty(_componentDataRenderers, type);
 
     _componentDataRenderers[type](
       element,
@@ -70,7 +72,7 @@
 
     var classes;
 
-    Util.assertHasProperty(componentOptions, 'classes');
+    utils.assertHasProperty(componentOptions, 'classes');
 
     classes = componentOptions.classes + ' image';
 
@@ -90,19 +92,19 @@
 
     var provider;
 
-    Util.assertHasProperties(
+    utils.assertHasProperties(
       componentOptions,
       'componentType',
       'componentValue'
     );
 
-    Util.assertHasProperties(
+    utils.assertHasProperties(
       componentOptions.componentValue,
       'type',
       'value'
     );
 
-    Util.assertHasProperty(
+    utils.assertHasProperty(
       componentOptions.componentValue.value,
       'provider'
     );
@@ -118,7 +120,7 @@
     var controlsInsertButton;
     var controlsContainer;
 
-    Util.assertHasProperties(
+    utils.assertHasProperties(
       componentOptions,
       'classes',
       'blockId',
@@ -192,7 +194,7 @@
     var imageElement;
     var imageSource;
 
-    Util.assertHasProperty(data, 'src');
+    utils.assertHasProperty(data, 'src');
 
     imageElement = element.find('img');
     imageSource = storyteller.assetFinder.getRelativeUrlRoot() + data.src;
@@ -222,7 +224,7 @@
   function _renderEmbedYouTubeComponentData(element, value, editable, renderFn) {
 
     var iframeElement = element.find('iframe');
-    var youTubeSource = Util.generateYouTubeIframeSrc(value.id);
+    var youTubeSource = utils.generateYouTubeIframeSrc(value.id);
 
     if (iframeElement.attr('src') !== youTubeSource) {
       iframeElement.attr('src', youTubeSource);
@@ -233,4 +235,4 @@
     renderTemplate: _renderTemplate,
     renderData: _renderData
   };
-})(window.socrata.storyteller);
+})(window.socrata);

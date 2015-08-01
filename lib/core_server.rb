@@ -1,4 +1,5 @@
 require 'retries'
+require 'addressable/uri'
 
 class CoreServer
 
@@ -110,13 +111,6 @@ class CoreServer
 
     begin
 
-      # The virtue of doing the retry at the outer level is twofold:
-      #
-      # 1. Retries will potentially be sent to separate instances of
-      #    core server since ::ZookeeperDiscovery.get() will sample
-      #    from all registered nodes.
-      # 2. We can afford to be much less concerned with rescuing
-      #    specific errors.
       with_retries(retry_options) do
         core_server_response = core_server_request(core_server_request_options)
       end
@@ -149,9 +143,9 @@ class CoreServer
 
     options[:headers] = {} unless options.has_key?(:headers)
 
-    core_server_address = get_core_server_address
+    core_server_address = Rails.application.config.core_service_uri
 
-    uri = URI.parse("http://#{core_server_address}#{options[:path]}")
+    uri = Addressable::URI.parse("#{core_server_address}#{options[:path]}")
 
     http = Net::HTTP.new(uri.host, uri.port)
     # These timeouts might turn out to be overly-aggressive. We will have
@@ -170,15 +164,6 @@ class CoreServer
     end
 
     http.request(core_request)
-  end
-
-  def self.get_core_server_address
-    core_server_zookeeper_path = Rails.application.config.zookeeper.core_server_path
-    instance_id = ::ZookeeperDiscovery.get(core_server_zookeeper_path)
-
-    instance_data = ::ZookeeperDiscovery.get_json("/#{core_server_zookeeper_path}/#{instance_id}")
-
-    "#{instance_data['address']}:#{instance_data['port']}"
   end
 
   def self.report_error(error, message)

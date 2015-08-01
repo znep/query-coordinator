@@ -1,8 +1,9 @@
-;window.socrata.storyteller.EmbedWizardStore = (function(storyteller) {
+;window.socrata.storyteller.EmbedWizardStore = (function(socrata) {
 
   'use strict';
 
-  var Util = storyteller.Util;
+  var storyteller = socrata.storyteller;
+  var utils = socrata.utils;
 
   function EmbedWizardStore() {
 
@@ -18,7 +19,7 @@
 
       var action;
 
-      Util.assertHasProperty(payload, 'action');
+      utils.assertHasProperty(payload, 'action');
 
       action = payload.action;
 
@@ -113,7 +114,7 @@
 
     function _chooseProvider(payload) {
 
-      Util.assertHasProperties(payload, 'blockId', 'componentIndex');
+      utils.assertHasProperties(payload, 'blockId', 'componentIndex');
 
       _currentBlockId = payload.blockId;
       _currentComponentIndex = payload.componentIndex;
@@ -208,4 +209,4 @@
   }
 
   return EmbedWizardStore;
-})(window.socrata.storyteller);
+})(window.socrata);

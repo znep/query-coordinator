@@ -38,10 +38,4 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
-
-  # TODO: Put environment configuration in discovery service
-  config.core_service_uri = "http://localhost:8080"
-
-  # Default `ZOOKEEPER_ENSEMBLE` to localhost unless it is already set.
-  ENV['ZOOKEEPER_ENSEMBLE'] ||= "['localhost:2181']"
 end

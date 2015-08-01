@@ -1,4 +1,5 @@
 ;(function(storyteller) {
+
   'use strict';
 
   /*

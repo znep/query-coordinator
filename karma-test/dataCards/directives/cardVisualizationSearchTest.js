@@ -14,6 +14,7 @@ describe('A Search Card Visualization', function() {
   var toggleExpandedSpy;
   var getRowsStub;
   var _$provide;
+  var Constants;
 
   beforeEach(module('/angular_templates/dataCards/cardVisualizationSearch.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualizationTable.html'));
@@ -31,6 +32,7 @@ describe('A Search Card Visualization', function() {
   });
 
   beforeEach(inject(function($injector) {
+    Constants = $injector.get('Constants');
     testHelpers = $injector.get('testHelpers');
     SoqlHelpers = $injector.get('SoqlHelpers');
     rootScope = $injector.get('$rootScope');
@@ -133,13 +135,13 @@ describe('A Search Card Visualization', function() {
       getSampleDataStub.returns(deferred.promise);
       var cardData = createCard();
       var helpText = cardData.element.find('.search-card-text');
-      expect(helpText.find('.one-line').is(':visible')).to.equal(false);
+      expect(helpText.find('div').eq(2).is(':visible')).to.equal(false);
       deferred.resolve([
         SAMPLE_1,
         SAMPLE_2
       ]);
       cardData.scope.$apply();
-      expect(helpText.find('.one-line').is(':visible')).to.equal(true);
+      expect(helpText.find('div').eq(2).is(':visible')).to.equal(true);
     });
 
     it('should not show sample data for a number column', function() {
@@ -148,7 +150,7 @@ describe('A Search Card Visualization', function() {
         SAMPLE_2
       ]));
       var cardData = createCard('test_column_number');
-      var sampleText = cardData.element.find('.search-card-text .one-line');
+      var sampleText = cardData.element.find('.search-card-text div').eq(2);
       expect(getSampleDataStub.called).to.equal(false);
       expect(sampleText.is(':visible')).to.equal(false);
     });
@@ -159,10 +161,29 @@ describe('A Search Card Visualization', function() {
         SAMPLE_2
       ]));
       var cardData = createCard('test_column_text');
-      var sampleText = cardData.element.find('.search-card-text .one-line:visible');
+      var sampleText = cardData.element.find('.search-card-text div').eq(2);
       expect(sampleText).to.have.length(1);
       expect(sampleText.text()).to.contain(SAMPLE_1);
       expect(sampleText.text()).to.contain(SAMPLE_2);
+    });
+
+    it('should truncate the lengths of the samples if they are over the defined limit', function() {
+      var LONG_SAMPLE_1 = Array(Constants.MAX_SUGGESTION_LENGTH + 2).join('a');
+      var TRUNCATED_LONG_SAMPLE_1 = '{0}...'.format(LONG_SAMPLE_1.slice(0, Constants.MAX_SUGGESTION_LENGTH));
+      var ALMOST_LONG_SAMPLE_2 = Array(Constants.MAX_SUGGESTION_LENGTH - 1).join('a');
+      var EXAMPLE_FORMAT = '(Examples: \'{0}\' or \'{1}\')';
+
+      getSampleDataStub.returns(q.when([
+        LONG_SAMPLE_1,
+        ALMOST_LONG_SAMPLE_2
+      ]));
+
+      var cardData = createCard('test_column_text');
+      var sampleText = cardData.element.find('.search-card-text div').eq(2);
+      expect(sampleText.text()).to.equal(EXAMPLE_FORMAT.format(
+        TRUNCATED_LONG_SAMPLE_1,
+        ALMOST_LONG_SAMPLE_2
+      ));
     });
   });
 

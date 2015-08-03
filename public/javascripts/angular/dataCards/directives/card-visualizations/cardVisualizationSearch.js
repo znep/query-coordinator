@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CardVisualizationSearch(CardDataService, ServerConfig, SoqlHelpers, Constants) {
+  function CardVisualizationSearch(CardDataService, ServerConfig, SoqlHelpers, Constants, ellipsifyFilter) {
 
     function pluckEventArg(val) {
       return _.get(val, 'additionalArguments[0]');
@@ -22,9 +22,15 @@
           }
         }
       ).switchLatest();
-      var samplesObservable = sampleDataObservable.flatMap(function(data) {
-        return Rx.Observable.fromArray(data);
-      }).take(2);
+
+      var samplesObservable = sampleDataObservable.
+        flatMap(function(data) {
+          return Rx.Observable.fromArray(data);
+        }).
+        take(2).
+        map(function(value) {
+          return ellipsifyFilter(value, Constants.MAX_SUGGESTION_LENGTH);
+        });
 
       $scope.$bindObservable('sampleOne', samplesObservable.take(1));
       $scope.$bindObservable('sampleTwo', samplesObservable.skip(1).take(1));

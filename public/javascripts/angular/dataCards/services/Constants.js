@@ -26,6 +26,7 @@
       // Search card suggestion parameters.
       'SUGGESTION_DISABLED_DATA_TYPES': ['number', 'money'],
       'MAX_NUMBER_OF_SUGGESTIONS': 10,
+      'MAX_SUGGESTION_LENGTH': 85,
 
       // Customization parameters.
       'CUSTOMIZATION_DISABLED_CARD_TYPES': ['timeline'],
@@ -117,6 +118,9 @@
 
       // Related Views
       'RELATED_VIEWS_LIST_HEIGHT_OFFSET': 150,
+
+      // QFB
+      'MAX_OPERAND_LENGTH': 85,
 
       // Aggregation Chooser
       'AGGREGATION_MAX_COLUMN_COUNT': 15,

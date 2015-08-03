@@ -2,7 +2,7 @@ require 'tmpdir'
 require 'digest/md5'
 
 class StylesController < ApplicationController
-  skip_before_filter :require_user, :set_user, :set_meta, :sync_logged_in_cookie
+  skip_before_filter :require_user, :set_user, :set_meta, :sync_logged_in_cookie, :poll_external_configs
 
   # Only used in development
   def individual

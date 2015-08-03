@@ -112,7 +112,8 @@
           heightOfAllCards,
           quickFilterBarHeight,
           customizeBarHeight,
-          verticalPadding) {
+          verticalPadding,
+          dataCardIsExpanded) {
 
           var cardContainerTop = cardContainer.offset().top;
           var quickFilterBarIsStuck = quickFilterBar.hasClass('stuck');
@@ -137,6 +138,12 @@
             // This value is RELATIVE to the TOP OF THE CUSTOMIZE BAR.
             tableCardOffset = (cardContainerTop + heightOfAllCards) -
               (scrollTop + windowHeight - customizeBarHeight);
+
+            // Unless the data card is expanded, subtract its height to
+            // calculate the offset of the data card.
+            if (!dataCardIsExpanded) {
+              tableCardOffset -= Constants.LAYOUT_DATA_CARD_HEIGHT;
+            }
 
             // We can then easily tell if the table card is 'visible' by
             // checking the sign of the tableCardOffset value. If it is
@@ -205,6 +212,8 @@
             }
           });
 
+          var dataCardIsExpanded = expandedCardPos === cardsBySize.dataCard[0];
+
           // Set the styles for the left-column cards
           _.map(unexpandedCards, function(card) {
             var cardLeft = unexpandedColumnLeft;
@@ -221,7 +230,8 @@
               left: cardLeft,
               top: cardTop,
               width: cardWidth,
-              height: cardHeight
+              height: cardHeight,
+              zIndex: ''
             };
           });
 
@@ -242,8 +252,23 @@
           expandedCardPos.style = {
             position: 'fixed',
             left: expandedColumnLeft,
-            width: expandedColumnWidth
+            width: expandedColumnWidth,
+            zIndex: 1
           };
+
+          // If the datacard isn't expanded, then add it to the bottom
+          if (!dataCardIsExpanded) {
+            cardsBySize.dataCard[0].style = {
+              position: '',
+              left: Constants.LAYOUT_GUTTER,
+              top: heightOfAllCards,
+              width: containerContentWidth,
+              height: Constants.LAYOUT_DATA_CARD_HEIGHT,
+              zIndex: ''
+            };
+
+            heightOfAllCards += Constants.LAYOUT_DATA_CARD_HEIGHT;
+          }
 
           updateExpandedCardTopAndHeight(
             expandedCardPos.style,
@@ -252,19 +277,9 @@
             heightOfAllCards,
             quickFilterBarHeight,
             customizeBarHeight,
-            verticalPadding
+            verticalPadding,
+            dataCardIsExpanded
           );
-
-          // If the datacard isn't expanded, then add it to the bottom
-          if (expandedCardPos !== cardsBySize.dataCard[0]) {
-            cardsBySize.dataCard[0].style = {
-              position: '',
-              left: Constants.LAYOUT_GUTTER,
-              top: heightOfAllCards,
-              width: containerContentWidth,
-              height: Constants.LAYOUT_DATA_CARD_HEIGHT
-            };
-          }
 
           return heightOfAllCards;
         }
@@ -319,7 +334,8 @@
                   top: cardTop,
                   left: cardLeft,
                   width: cardWidth,
-                  height: currentRowContentHeight
+                  height: currentRowContentHeight,
+                  zIndex: ''
                 };
               });
             });
@@ -496,8 +512,12 @@
 
               var jqueryExpandedCardSpot = cardContainer.find('.expanded').closest('.card-spot');
               var localScope = jqueryExpandedCardSpot.scope();
+              var dataCardIsExpanded;
 
               if (localScope) {
+
+                dataCardIsExpanded = localScope.expandedCard.fieldName === '*';
+
                 // TODO: hack so that if you hit this code during a transition, the
                 // transitionend handler will get the correct fixed-position style.
 
@@ -514,7 +534,8 @@
                   cardContainer.height(),
                   dimensions.quickFilterBarHeight,
                   dimensions.customizeBarHeight,
-                  Constants.LAYOUT_VERTICAL_PADDING
+                  Constants.LAYOUT_VERTICAL_PADDING,
+                  dataCardIsExpanded
                 );
 
                 jqueryExpandedCardSpot.css(styles);

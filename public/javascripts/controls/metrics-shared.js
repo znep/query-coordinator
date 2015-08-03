@@ -475,8 +475,7 @@ metricsNS.simpleSummaryDataDirective = {
 };
 
 metricsNS.simpleSummaryDataDirectiveV1 = {
-    '.deltaValue' : 'total',
-    '.deltaValue@title' : 'totalText'
+    '.deltaValue' : 'total'
 };
 
 metricsNS.detailDataDirective = {
@@ -485,6 +484,5 @@ metricsNS.detailDataDirective = {
 };
 
 metricsNS.deltaDataDirective = {
-    '.deltaValue' : 'delta',
-    '.deltaValue@title' : 'deltaText'
+    '.deltaValue' : 'delta'
 }

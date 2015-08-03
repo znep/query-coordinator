@@ -15,7 +15,11 @@ if (blist.feature_flags.embetter_analytics_page) {
     mapsSummary = {plus: 'lense-map-published-v1', range: false}
     dataLensesEnabled = true;
 } else {
-    pageViewsSummary = {plus: 'page-views'};
+    pageViewsSummary = {
+        plus: 'page-views',
+        verbPhrase: 'pages viewed',
+        verbPhraseSingular: 'page viewed'
+    };
     mapsSummary = {plus: ['maps-created'], minus: ['maps-deleted']};
     dataLensesEnabled = false;
 }
@@ -72,10 +76,7 @@ blist.metrics.sitewideShared = {
         {
             id: 'summaryVisits',
             displayName: 'Page Views',
-            summary: $.extend(pageViewsSummary, {
-                verbPhrase: 'pages viewed',
-                verbPhraseSingular: 'page viewed'
-            })
+            summary: pageViewsSummary
         },
         {
             id: 'summaryDash',        displayName: 'Total Dashboards',

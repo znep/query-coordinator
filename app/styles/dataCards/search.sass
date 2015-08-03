@@ -2,6 +2,8 @@
 @import dataCards/common/colors
 @import dataCards/common/layout
 
+$suggestion-tool-panel-z-index: 1001
+
 suggestion-tool-panel
   display: block
   height: 0
@@ -20,6 +22,8 @@ suggestion-tool-panel
   margin-bottom: 1rem
 
 .tool-panel.suggestion-tool-panel
+  z-index: $suggestion-tool-panel-z-index
+
   .tool-panel-main
     left: 15px
     width: 350px

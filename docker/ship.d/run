@@ -12,4 +12,6 @@ export RACK_ENV=production
 
 cd ${APP_DIR}
 
+# Using exec to replace the current bash script running with PID1 with Thin
+# This allows docker to send signals to thin, allowing for graceful shutdown
 exec su socrata -c "HOME=${APP_DIR} bundle exec thin start -C config/thin.yml"

@@ -10,14 +10,89 @@
 # This is truth. Anything not in this list gets ignored.
 #
 
+asteroids:
+  description: Unlocked on datasets by the Konami code.
+  defaultValue: false
+  category: easter egg
 bubble:
   description: D3 Bubble Charts
   defaultValue: old
   expectedValues: nextgen old
-timeline:
-  description: D3 Timeline Charts
-  defaultValue: old
-  expectedValues: nextgen old
+current_dataset_metadata_version:
+  description: The current version of dataset metadata that the app should read and write.
+  defaultValue: 1
+current_page_metadata_version:
+  description: The current version of page metadata that the app should read and write.
+  defaultValue: 1
+data_lens_transition_state:
+  description: The transition state tracking when and how Data Lenses should be surfaced in the old UX (e.g. on browse, profile and admin pages).
+  defaultValue: post_beta
+  expectedValues: pre_beta beta post_beta
+dataset_count_v2:
+  description: Display the new metric was created that computes dataset count based more closely on our contractual definition of dataset.
+  defaultValue: true
+debug_assets:
+  description: Switch over to using unpackaged Javascript files.
+  defaultValue: false
+default_imports_to_nbe:
+  description: When performing import operations, such as via the wizard or append/replace, the endpoint will be NBE by default rather than needing a migration. Set to `delta-importer` for using that instead.
+  defaultValue: false
+  expectedValues: delta-importer
+  category: obe deprecation
+disable_dataset_search_box:
+  description: Disable the search box in dataset pages.
+  defaultValue: false
+disable_legacy_types:
+  description: 'According to CORE-5097, the disabled types are: Formatted Text, Email, Website URL, Date & Time (with timezone), Star, Phone, Multiple Choice, Photo (Image), Document, and Dataset Link.'
+  defaultValue: false
+  category: obe deprecation
+disable_obe_redirection:
+  description: When clicking on an NBE dataset, you are no longer redirected to the OBE dataset.
+  defaultValue: false
+display_catalog_lens_delete_button:
+  description: Whether to show the Delete button for data lenses, in the old UX.
+  defaultValue: false
+domain_decommissioning:
+  description: Enable a banner indicating that the domain is being decommissionsed.
+  defaultValue: false
+enable_airbrake_js:
+  description: Enable Airbrake error tracking of Javascript errors (see CORE-3365 for more information)
+  defaultValue: false
+enable_api_foundry_pane:
+  description: Will allow the api_foundry pane to be displayed. If there is another reason for the api_foundry pane to be hidden, it will still be hidden.
+  defaultValue: false
+enable_data_lens_other_views:
+  description: Show the "other views of this data" button in the upper left of Data Lens pages (only for admins and publishers for now). Will also enable the "Save As" button on the Customize bar of the Data Lens pages.
+  defaultValue: false
+enable_export_service:
+  description: Use the new Export Service on this domain.
+  defaultValue: false
+  category: obe deprecation
+enable_feedback:
+  description: Include third-party feedback widgets.
+  defaultValue: true
+enable_opendata_ga_tracking:
+  description: Controls behavior of Socrata internal Google Analytics. If true or left blank, GA is enabled with a default Socrata-wide token. If a custom value is provided, GA is enabled with the custom GA token. If false, Socrata GA is disabled.
+enable_pulse:
+  description: Enable the Pulse application, including catalog link.
+  category: pulse
+  defaultValue: false
+enable_stories:
+  description: Enable the Storyteller appliation, including catalog link.
+  category: storyteller
+  defaultValue: false
+feature_map_default_extent:
+  description: "The site-wide default extent for feature/point maps. Should be a single-quoted JSON object. Ex: '{\"southwest\":[41.681944,-87.827778],\"northeast\":[42.081944,-87.427778]}'"
+  defaultValue: ''
+force_redirect_to_data_lens:
+  description: Automatically redirect to the default Data Lens page for a given NBE dataset.
+  defaultValue: false
+govstat_missing_locale_crash:
+  description: Crash (500) when a translation is missing.
+  defaultValue: false
+govstat_progress_settings:
+  description: Allows overriding of goal progress.
+  defaultValue: true
 hide_decimal_tick_lines:
   description: "Ref: CORE-1951. If set to true, when Decimal Places is 0, hide any tick lines between natural numbers."
   defaultValue: true
@@ -26,125 +101,50 @@ hide_interpolated_nulls:
   description: "Ref: SI-5927, if set to true, will hide interpolated nulls in DSG bar charts."
   defaultValue: false
   category: testing bug fix
-asteroids:
-  description: Unlocked on datasets by the Konami code.
-  defaultValue: false
-  category: easter egg
-stamen:
-  description: Easter egg of map backgrounds. Set false to turn it off. Choose one of the available values to select this base layer for ALL maps on the domain.
-  defaultValue: false
-  expectedValues: watercolor toner terrain
-  category: easter egg
-useSoda2:
-  description: Switch to using SODA2.
-  defaultValue: never
-  expectedValues: never read-only always
-govstat_progress_settings:
-  description: Allows overriding of goal progress.
-  defaultValue: true
-govstat_missing_locale_crash:
-  description: Crash (500) when a translation is missing.
-  defaultValue: false
-disable_dataset_search_box:
-  description: Disable the search box in dataset pages.
-  defaultValue: false
-enable_airbrake_js:
-  description: Enable Airbrake error tracking of Javascript errors (see CORE-3365 for more information)
-  defaultValue: false
 include_sr_in_esri:
   description: ESRI-only; stop using SRs in the export URL.
   defaultValue: false
 kill_esri_reprojection_and_pass_different_webm:
   description: 'Special magic for Iowa, whose ArcGIS server appears to hate EPSG:900913 and projected maps'
   defaultValue: false
-enable_api_foundry_pane:
-  description: Will allow the api_foundry pane to be displayed. If there is another reason for the api_foundry pane to be hidden, it will still be hidden.
-  defaultValue: false
-enable_data_lens_other_views:
-  description: Show the "other views of this data" button in the upper left of Data Lens pages (only for admins and publishers for now). Will also enable the "Save As" button on the Customize bar of the Data Lens pages.
-  defaultValue: false
-enable_opendata_ga_tracking:
-  description: Controls behavior of Socrata internal Google Analytics. If true or left blank, GA is enabled with a default Socrata-wide token. If a custom value is provided, GA is enabled with the custom GA token. If false, Socrata GA is disabled.
-use_auth0:
-  description: Force use of Auth0 to authenticate users. DO NOT ENABLE ON ANY ENVIRONMENT OTHER THAN STAGING OR LOCAL.
-  defaultValue: false
-enable_feedback:
-  description: Include third-party feedback widgets.
-  defaultValue: true
-domain_decommissioning:
-  description: Enable a banner indicating that the domain is being decommissionsed.
-  defaultValue: false
-debug_assets:
-  description: Switch over to using unpackaged Javascript files.
-  defaultValue: false
-odux_enable_histogram:
-  description: Enable histogram visualizations.
-  defaultValue: true
-use_soql_for_clustering:
-  description: Use the (currently unwritten) core method soql_clustering for clustering.
-  defaultValue: false
-display_catalog_lens_delete_button:
-  description: Whether to show the Delete button for data lenses, in the old UX.
-  defaultValue: false
-current_dataset_metadata_version:
-  description: The current version of dataset metadata that the app should read and write.
-  defaultValue: 1
-current_page_metadata_version:
-  description: The current version of page metadata that the app should read and write.
-  defaultValue: 1
-feature_map_default_extent:
-  description: "The site-wide default extent for feature/point maps. Should be a single-quoted JSON object. Ex: '{\"southwest\":[41.681944,-87.827778],\"northeast\":[42.081944,-87.427778]}'"
-  defaultValue: ''
-data_lens_transition_state:
-  description: The transition state tracking when and how Data Lenses should be surfaced in the old UX (e.g. on browse, profile and admin pages).
-  defaultValue: post_beta
-  expectedValues: pre_beta beta post_beta
-disable_legacy_types:
-  description: 'According to CORE-5097, the disabled types are: Formatted Text, Email, Website URL, Date & Time (with timezone), Star, Phone, Multiple Choice, Photo (Image), Document, and Dataset Link.'
-  defaultValue: false
-  category: obe deprecation
-default_imports_to_nbe:
-  description: When performing import operations, such as via the wizard or append/replace, the endpoint will be NBE by default rather than needing a migration. Set to `delta-importer` for using that instead.
-  defaultValue: false
-  expectedValues: delta-importer
-  category: obe deprecation
 nbe_bucket_size:
   description: Bucket-ize the fetching of rows when hitting NBE.
   defaultValue: false
-dataset_count_v2:
-  description: Display the new metric was created that computes dataset count based more closely on our contractual definition of dataset.
-  defaultValue: true
-force_redirect_to_data_lens:
-  description: Automatically redirect to the default Data Lens page for a given NBE dataset.
-  defaultValue: false
-disable_obe_redirection:
-  description: When clicking on an NBE dataset, you are no longer redirected to the OBE dataset.
-  defaultValue: false
-enable_export_service:
-  description: Use the new Export Service on this domain.
-  defaultValue: false
-  category: obe deprecation
-enable_stories:
-  description: Enable the Storyteller appliation, including catalog link.
-  category: storyteller
-  defaultValue: false
-enable_pulse:
-  description: Enable the Pulse application, including catalog link.
-  category: pulse
-  defaultValue: false
-show_newux_page_header:
-  description: Show the header logo and sign in/up/out links.
-  defaultValue: true
-  category: data lens
-reenable_ui_for_nbe:
-  description: Some pieces of the UI were disabled for NBE; setting this to true renables them.
-  defaultValue: false
-  category: obe deprecation
-swap_in_nbe_view:
-  description: Utility flag to make frontend views use their NBE counterparts.
-  defaultValue: false
-  category: obe deprecation
 odux_enable_feature_map_hover:
   description: Enable hover functionality in point maps.
   defaultValue: false
   category: data lens
+odux_enable_histogram:
+  description: Enable histogram visualizations.
+  defaultValue: true
+reenable_ui_for_nbe:
+  description: Some pieces of the UI were disabled for NBE; setting this to true renables them.
+  defaultValue: false
+  category: obe deprecation
+show_newux_page_header:
+  description: Show the header logo and sign in/up/out links.
+  defaultValue: true
+  category: data lens
+stamen:
+  description: Easter egg of map backgrounds. Set false to turn it off. Choose one of the available values to select this base layer for ALL maps on the domain.
+  defaultValue: false
+  expectedValues: watercolor toner terrain
+  category: easter egg
+swap_in_nbe_view:
+  description: Utility flag to make frontend views use their NBE counterparts.
+  defaultValue: false
+  category: obe deprecation
+timeline:
+  description: D3 Timeline Charts
+  defaultValue: old
+  expectedValues: nextgen old
+use_auth0:
+  description: Force use of Auth0 to authenticate users. DO NOT ENABLE ON ANY ENVIRONMENT OTHER THAN STAGING OR LOCAL.
+  defaultValue: false
+useSoda2:
+  description: Switch to using SODA2.
+  defaultValue: never
+  expectedValues: never read-only always
+use_soql_for_clustering:
+  description: Use the (currently unwritten) core method soql_clustering for clustering.
+  defaultValue: false

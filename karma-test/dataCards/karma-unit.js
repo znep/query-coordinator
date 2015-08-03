@@ -145,7 +145,6 @@ module.exports = function ( karma ) {
       // moved to karma-test/old-ux
 
       /* THE TESTS THEMSELVES */
-      'karma-test/helpers/ServerMocks.js',
       'karma-test/dataCards/*.js',
       // 'karma-test/old-ux/*.js',
       /* IMPORTANT: If you add/remove/change test groups,

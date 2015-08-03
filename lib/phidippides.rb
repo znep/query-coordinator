@@ -1,7 +1,6 @@
 # encoding: utf-8 # REQUIRED to allow unicode currency symbols
 class Phidippides < SocrataHttp
 
-  include CommonMetadataTransitionMethods
   include CardTypeMapping
 
   class NewPageException < RuntimeError; end

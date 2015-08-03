@@ -18,6 +18,7 @@
       },
       templateUrl: '/angular_templates/dataCards/suggestionToolPanel.html',
       link: function($scope) {
+
         var SUGGESTION_LIMIT = Constants.MAX_NUMBER_OF_SUGGESTIONS;
 
         var searchValueObservable = $scope.$observe('searchValue');
@@ -116,6 +117,7 @@
         $scope.$bindObservable('suggestionsStatus', suggestionsStatusObservable);
         $scope.$bindObservable('suggestionsLoading', suggestionsLoadingObservable);
         $scope.$bindObservable('suggestionsAdvice', suggestionsAdviceObservable);
+        $scope.maxSuggestionLength = Constants.MAX_SUGGESTION_LENGTH;
       }
     };
   }

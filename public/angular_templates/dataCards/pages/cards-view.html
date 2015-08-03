@@ -141,7 +141,11 @@
               <span ng-if="!$first">{{'filter.and' | I18n}}</span>
               <span class="light lowercase">{{filter.column.version === '0' ? filter.column.title : filter.column.name}}</span>
               <span>{{filter.operator}}</span>
-              <span class="light">{{filter.operand}}</span>
+              <span
+                class="light"
+                title="{{filter.operand.length > maxOperandLength ? filter.operand : ''}}">
+                {{filter.operand | ellipsify:maxOperandLength}}
+              </span>
             </div>
           </div>
           <button class="clear-all-filters-button action-btn dark" ng-if="appliedFiltersForDisplay.length > 0" ng-click="clearAllFilters()">

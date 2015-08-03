@@ -1,6 +1,7 @@
 describe('Suggestion Tool Panel', function() {
   'use strict';
 
+  var Constants;
   var testHelpers;
   var suggestionService;
   var rootScope;
@@ -35,6 +36,7 @@ describe('Suggestion Tool Panel', function() {
   });
 
   beforeEach(inject(function($injector) {
+    Constants = $injector.get('Constants');
     ServerConfig = $injector.get('ServerConfig');
     testHelpers = $injector.get('testHelpers');
     rootScope = $injector.get('$rootScope');
@@ -265,6 +267,47 @@ describe('Suggestion Tool Panel', function() {
     suggestionToolPanel.scope.$apply();
     expect(suggestionToolPanel.element.find('.suggestion-examples')).
       to.contain('Choose a suggestion above, or keep typing for more suggestions.');
+  });
+
+  it('should not ellipsify the lengths of individual search results if they are below the defined limit', function() {
+    var originalValue = Array(Constants.MAX_SUGGESTION_LENGTH - 1).join('a');
+
+    suggestionService.suggest = function() {
+      return q.when([
+        originalValue
+      ]);
+    };
+    suggestionToolPanel = createElement({
+      shouldShow: true,
+      searchValue: 'aaa',
+      dataset: fakeDataset,
+      fieldName: fakeFieldName
+    });
+
+    testScheduler.advanceTo(300);
+    suggestionToolPanel.scope.$apply();
+    expect(suggestionToolPanel.element.find('.intractable-list li').text().trim()).to.equal(originalValue);
+  });
+
+  it('should ellipsify the lengths of individual search results if they are over the defined limit', function() {
+    var originalValue = Array(Constants.MAX_SUGGESTION_LENGTH + 2).join('a');
+    var ellipsifiedValue = '{0}...'.format(originalValue.slice(0, Constants.MAX_SUGGESTION_LENGTH));
+
+    suggestionService.suggest = function() {
+      return q.when([
+        originalValue
+      ]);
+    };
+    suggestionToolPanel = createElement({
+      shouldShow: true,
+      searchValue: 'aaa',
+      dataset: fakeDataset,
+      fieldName: fakeFieldName
+    });
+
+    testScheduler.advanceTo(300);
+    suggestionToolPanel.scope.$apply();
+    expect(suggestionToolPanel.element.find('.intractable-list li').text().trim()).to.equal(ellipsifiedValue);
   });
 
   // This test can't work as written right now as enableSearchSuggestions is checked

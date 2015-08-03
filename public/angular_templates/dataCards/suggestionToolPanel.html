@@ -12,7 +12,11 @@
         <span ng-hide="suggestionsLoading">{{suggestionsStatus}}</span>
       </div>
 
-      <intractable-list ng-if="suggestions" list-data="suggestions"></intractable-list>
+      <intractable-list
+        ng-if="suggestions"
+        list-data="suggestions"
+        datum-length="maxSuggestionLength">
+      </intractable-list>
 
       <div class="suggestion-examples">
         <div>{{suggestionsAdvice}}</div>

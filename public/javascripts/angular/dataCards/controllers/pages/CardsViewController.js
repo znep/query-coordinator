@@ -157,7 +157,8 @@
     PageHelpersService,
     DeviceService,
     I18n,
-    FormatService
+    FormatService,
+    Constants
   ) {
 
     VALIDATION_ERROR_STRINGS = {
@@ -278,6 +279,7 @@
 
     var allCardsFilters = page.observe('activeFilters');
 
+    $scope.maxOperandLength = Constants.MAX_OPERAND_LENGTH;
     $scope.$bindObservable('globalWhereClauseFragment', page.observe('computedWhereClauseFragment'));
 
     var datasetColumnsObservable = page.observe('dataset.columns');

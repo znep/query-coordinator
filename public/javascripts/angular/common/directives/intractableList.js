@@ -18,7 +18,8 @@
         subTotalKey: '=?',
         listenToKeyboard: '=',
         hideEmptySelection: '=',
-        totalAmount: '='
+        totalAmount: '=',
+        datumLength: '='
       },
       link: function (scope, element, attrs) {
         var firstEntryIndex = 0;

@@ -31,10 +31,6 @@
       settingsPanel.trigger('sidebar:toggle');
     });
 
-    settingsPanel.find('.close-side-panel-btn').on('click', function() {
-      settingsPanel.trigger('sidebar:close');
-    });
-
     $(document).on('keydown', function(e) {
       if (e.ctrlKey && e.keyCode === 188) { // ',' because it's settings
         settingsPanel.trigger('sidebar:toggle');

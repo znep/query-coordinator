@@ -89,9 +89,9 @@
         function animateHeight(from, to) {
           animationRunning = true;
           var defer = $q.defer();
-          content.css('max-height', from);
+          content.css('height', from);
           content.animate( {
-            'max-height': to
+            'height': to
           }, {
             easing: 'socraticEase',
             duration: animationDuration,
@@ -105,7 +105,7 @@
         function resetHeightAnimation() {
           animationRunning = false;
           content.stop();
-          content.css('max-height', 'none');
+          content.css('height', 'none');
         }
 
         if ($scope.showMoreMode === 'flyout') {

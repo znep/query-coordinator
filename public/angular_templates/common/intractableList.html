@@ -5,8 +5,9 @@
           ng-class="{active: ($index == activeEntryIndex)}"
           ng-mouseenter="setActive($index, 'mouseHover', this)"
           ng-click="selectMatch($index)"
-          role="option">
-        {{datum}}
+          role="option"
+          title="{{datum.length > datumLength ? datum : ''}}">
+        {{datum | ellipsify:datumLength}}
       </li>
     </ul>
   </div>

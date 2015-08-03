@@ -9,7 +9,6 @@ describe('CardsViewController', function() {
   var Page;
   var Mockumentary;
   var testHelpers;
-  var serverMocks;
   var $q;
   var $rootScope;
   var $controller;
@@ -89,7 +88,6 @@ describe('CardsViewController', function() {
         '$controller',
         '$document',
         'testHelpers',
-        'serverMocks',
         '$httpBackend',
         'ServerConfig',
         'PageDataService',
@@ -103,7 +101,6 @@ describe('CardsViewController', function() {
           _$controller,
           _$document,
           _testHelpers,
-          _serverMocks,
           _$httpBackend,
           _ServerConfig,
           _PageDataService,
@@ -117,7 +114,6 @@ describe('CardsViewController', function() {
       $controller = _$controller;
       $document = _$document;
       testHelpers = _testHelpers;
-      serverMocks = _serverMocks;
       $httpBackend = _$httpBackend;
       ServerConfig = _ServerConfig;
       PageDataService = _PageDataService;

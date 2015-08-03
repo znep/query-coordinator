@@ -1,7 +1,6 @@
 # encoding: utf-8 # REQUIRED to allow unicode currency symbols
 class Phidippides < SocrataHttp
 
-  include CommonMetadataTransitionMethods
   include CardTypeMapping
 
   class NewPageException < RuntimeError; end
@@ -12,45 +11,45 @@ class Phidippides < SocrataHttp
   class NoDefaultDateTruncFunction < RuntimeError; end
   class NoDatasetMetadataException < RuntimeError; end
   class NoMinMaxInColumnException < RuntimeError; end
+  class InvalidHostAddressException < RuntimeError; end
+  class InvalidHostPortException < RuntimeError; end
 
-  # TODO: Should these actually be ignore-case?
-  # Note - these are aligned so as to exemplify the differences between the regexes
-  # COLUMN_ID_REGEX matches valid fieldNames for the front-end.
-  COLUMN_ID_REGEX =    /(:@)?([a-z][a-z_0-9\-]*)/i
+  COLUMN_ID_REGEX = /(:@)?([a-z][a-z_0-9\-]*)/i
   SYSTEM_COLUMN_ID_REGEX = /:([a-z][a-z_0-9\-]*)/i
   UID_REGEXP = /\w{4}-\w{4}/
+  ADDRESS_REGEXP = /^[a-z0-9\-\.]*$/i  # Not technically correct since addresses cannot end in '-' or '.'
 
-  def connection_details
-    zookeeper_path = ENV['ZOOKEEPER_PHIDIPPIDES_PATH'] || 'com.socrata/soda/services/phidippides'
-    instance_id = ::ZookeeperDiscovery.get(zookeeper_path)
+  attr_reader :address, :port
 
-    begin
-      ::ZookeeperDiscovery.get_json("/#{zookeeper_path}/#{instance_id}")
-    rescue ZK::Exceptions::BadArguments => error
-      error_message = "Unable to determine phidippides connection details " \
-        "due to error: #{error}"
-      Airbrake.notify(
-        :error_class => 'ZookeeperDiscoveryError',
-        :error_message => error_message
-      )
-      Rails.logger.error(error_message)
-      raise Phidippides::ConnectionError.new(error_message)
+  # Constructor accepts two parameters that specify the address and port. If not provided, it checks the
+  # ENV for those values. If not found, it asks ZooKeeper for the address/port information in a single call.
+  # Port is typically 2401 in development mode and 1303 in production.
+  def initialize(_address = nil, _port = nil)
+    if _address.present? && _port.present?
+      @address = _address
+      @port = _port
+    elsif ENV['PHIDIPPIDES_ADDRESS'].present? && ENV['PHIDIPPIDES_PORT'].present?
+      @address = ENV['PHIDIPPIDES_ADDRESS']
+      @port = ENV['PHIDIPPIDES_PORT']
+    else
+      connection_details.tap do |connection|
+        @address = connection.fetch('address')
+        @port = connection.fetch('port')
+      end
     end
-  end
-
-  def address
-    ENV['PHIDIPPIDES_ADDRESS'] || connection_details.fetch('address')
-  end
-
-  def port
-    # Port is typically 2401 in development mode and 1303 in production
-    ENV['PHIDIPPIDES_PORT'] || connection_details.fetch('port')
+    unless @address =~ ADDRESS_REGEXP
+      raise InvalidHostAddressException.new("Invalid address: #{@address.inspect}. Must match regex: #{ADDRESS_REGEXP}")
+    end
+    begin
+      @port = Integer(@port)
+    rescue TypeError, ArgumentError
+      raise InvalidHostPortException.new("Invalid port: #{@port.inspect}. Must be valid integer.")
+    end
   end
 
   def issue_request(options)
     options[:headers] = {} unless options.has_key?(:headers)
     options[:headers]['Content-Type'] = 'application/json'
-
     options[:headers]['X-Socrata-Wink'] = 'iAmASocrataEmployee'
 
     super(options)
@@ -483,5 +482,24 @@ class Phidippides < SocrataHttp
       MetricQueue.instance.push_metric("views-loaded-" + domainId, "view-" + fxf_id.to_s, 1)
   end
 
+  private
+
+  def connection_details
+    zookeeper_path = ENV['ZOOKEEPER_PHIDIPPIDES_PATH'] || 'com.socrata/soda/services/phidippides'
+    instance_id = ::ZookeeperDiscovery.get(zookeeper_path)
+
+    begin
+      ::ZookeeperDiscovery.get_json("/#{zookeeper_path}/#{instance_id}")
+    rescue ZK::Exceptions::BadArguments => error
+      error_message = "Unable to determine phidippides connection details " \
+        "due to error: #{error}"
+      Airbrake.notify(
+        :error_class => 'ZookeeperDiscoveryError',
+        :error_message => error_message
+      )
+      Rails.logger.error(error_message)
+      raise Phidippides::ConnectionError.new(error_message)
+    end
+  end
 
 end

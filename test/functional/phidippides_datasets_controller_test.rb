@@ -11,8 +11,7 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
     )
     User.stubs(current_user: User.new(some_user))
 
-    @phidippides = Phidippides.new
-    @phidippides.stubs(end_point: 'http://localhost:2401')
+    @phidippides = Phidippides.new('localhost', 2401)
     @new_view_manager = NewViewManager.new
     @new_view_manager.stubs(fetch: { grants: [{ flags: ['public'] }] })
     @controller.stubs(

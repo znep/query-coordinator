@@ -225,10 +225,18 @@ body.state-view-cards
 
         .content
           padding: $metadata-side-padding / 2
-          width: 100%
-          min-height: 4.5rem
+          min-height: 2.75rem
           line-height: 2.75rem
-          box-sizing: border-box
+
+          // Micro clearfix hack so that floating aggregation-chooser within
+          // QFB takes up space.
+          &:before,
+          &:after
+            content: ''
+            display: table
+
+          &:after
+            clear: both
 
           .clear-all-filters-button
             margin: 0

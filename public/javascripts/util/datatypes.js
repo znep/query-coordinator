@@ -525,11 +525,12 @@ blist.namespace.fetch('blist.datatypes');
     };
 
     // Well-Known Text
-    var renderWKT = function(value, column)
-    {
-      if ($.isBlank(value)) { return ''; }
+    var renderWKT = function(value) {
+      if ($.isBlank(value)) {
+        return '';
+      }
 
-      return WKT.stringify(value);
+      return WKT.stringify(value) || '';
     };
 
 

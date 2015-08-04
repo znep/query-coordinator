@@ -11,30 +11,45 @@ RSpec.describe 'settings panel', type: :feature, js: true do
   end
 
   it 'opens and closes on click' do
+    first_toggle = page.all(data_toggle_selector).first()
     # Expect initial state
+    expect_settings_panel_to_be_closed
     expect(page.find('header')).to have_selector(data_toggle_selector, count: 2)
-    expect(page).to have_selector(settings_panel_selector, visible: false)
 
     # Open the panel
-    page.all(data_toggle_selector).first().click()
+    first_toggle.click()
 
     # Expect opened state
-    expect(page).to have_selector(settings_panel_selector, visible: true)
     expect(page).to have_selector(data_toggle_selector, count: 4)
-    expect(page).to have_selector(settings_overlay_selector, visible: true)
+    expect_settings_panel_to_be_open
 
     # Close with overlay
     page.find("#{settings_overlay_selector}.active").click()
-    expect(page).to have_selector(settings_panel_selector, visible: false)
-    expect(page).to have_selector(settings_overlay_selector, visible: false)
+    expect_settings_panel_to_be_closed
 
     # Open again
-    page.all(data_toggle_selector).first().click()
+    first_toggle.click()
 
     # Close with close button
     page.find("#{settings_panel_selector} .close-side-panel-btn").click()
+    expect_settings_panel_to_be_closed
+
+    first_toggle.click()
+
+    # Close with the esc key
+    page.find('body').native.send_keys(:escape)
+    expect_settings_panel_to_be_closed
+
+  end
+
+  def expect_settings_panel_to_be_closed
     expect(page).to have_selector(settings_panel_selector, visible: false)
     expect(page).to have_selector(settings_overlay_selector, visible: false)
+  end
+
+  def expect_settings_panel_to_be_open
+    expect(page).to have_selector(settings_panel_selector, visible: true)
+    expect(page).to have_selector(settings_overlay_selector, visible: true)
   end
 
 end

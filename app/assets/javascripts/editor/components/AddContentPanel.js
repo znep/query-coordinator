@@ -39,6 +39,9 @@
       if (e.ctrlKey && e.keyCode === 49) { // '1'
         addContentPanel.trigger('sidebar:toggle');
       }
+      if (e.keyCode === 27) { // esc
+        addContentPanel.trigger('sidebar:close');
+      }
     });
 
     addContentPanel.

@@ -35,6 +35,9 @@
       if (e.ctrlKey && e.keyCode === 188) { // ',' because it's settings
         settingsPanel.trigger('sidebar:toggle');
       }
+      if (e.keyCode === 27) { // esc
+        settingsPanel.trigger('sidebar:close');
+      }
     });
 
     settingsPanel.

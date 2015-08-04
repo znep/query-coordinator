@@ -98,6 +98,7 @@ describe('A Column Chart Card Visualization', function() {
     });
   });
 
+
   describe('filtering via column-chart:datum-clicked event', function() {
 
     createMockDataService([]);
@@ -107,14 +108,22 @@ describe('A Column Chart Card Visualization', function() {
       var chart = createChart();
 
       expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
-      chart.scope.$emit('column-chart:datum-clicked', {
-        name: 'testname'
-      });
+
+      testHelpers.fireEvent(
+        chart.element.find('card-visualization-column-chart')[0],
+        'SOCRATA_VISUALIZATION_COLUMN_SELECTION',
+        { detail: { name: 'testname' } }
+      );
+
       expect(chart.model.getCurrentValue('activeFilters')).to.have.length(1);
       expect(chart.model.getCurrentValue('activeFilters')[0]).to.be.instanceof(Filter.BinaryOperatorFilter);
-      chart.scope.$emit('column-chart:datum-clicked', {
-        name: 'testname'
-      });
+
+      testHelpers.fireEvent(
+        chart.element.find('card-visualization-column-chart')[0],
+        'SOCRATA_VISUALIZATION_COLUMN_SELECTION',
+        { detail: { name: 'testname' } }
+      );
+
       expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
     });
 
@@ -122,14 +131,22 @@ describe('A Column Chart Card Visualization', function() {
       var chart = createChart();
 
       expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
-      chart.scope.$emit('column-chart:datum-clicked', {
-        name: false
-      });
+
+      testHelpers.fireEvent(
+        chart.element.find('card-visualization-column-chart')[0],
+        'SOCRATA_VISUALIZATION_COLUMN_SELECTION',
+        { detail: { name: false } }
+      );
+
       expect(chart.model.getCurrentValue('activeFilters')).to.have.length(1);
       expect(chart.model.getCurrentValue('activeFilters')[0]).to.be.instanceof(Filter.BinaryOperatorFilter);
-      chart.scope.$emit('column-chart:datum-clicked', {
-        name: false
-      });
+
+      testHelpers.fireEvent(
+        chart.element.find('card-visualization-column-chart')[0],
+        'SOCRATA_VISUALIZATION_COLUMN_SELECTION',
+        { detail: { name: false } }
+      );
+
       expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
     });
 
@@ -137,14 +154,22 @@ describe('A Column Chart Card Visualization', function() {
       var chart = createChart();
 
       expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
-      chart.scope.$emit('column-chart:datum-clicked', {
-        name: null
-      });
+
+      testHelpers.fireEvent(
+        chart.element.find('card-visualization-column-chart')[0],
+        'SOCRATA_VISUALIZATION_COLUMN_SELECTION',
+        { detail: { name: null } }
+      );
+
       expect(chart.model.getCurrentValue('activeFilters')).to.have.length(1);
       expect(chart.model.getCurrentValue('activeFilters')[0]).to.be.instanceof(Filter.IsNullFilter);
-      chart.scope.$emit('column-chart:datum-clicked', {
-        name: null
-      });
+
+      testHelpers.fireEvent(
+        chart.element.find('card-visualization-column-chart')[0],
+        'SOCRATA_VISUALIZATION_COLUMN_SELECTION',
+        { detail: { name: null } }
+      );
+
       expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
     });
 
@@ -152,19 +177,31 @@ describe('A Column Chart Card Visualization', function() {
       var chart = createChart();
 
       expect(chart.model.getCurrentValue('activeFilters')).to.be.empty;
-      chart.scope.$emit('column-chart:datum-clicked', {
-        name: null
-      });
+
+      testHelpers.fireEvent(
+        chart.element.find('card-visualization-column-chart')[0],
+        'SOCRATA_VISUALIZATION_COLUMN_SELECTION',
+        { detail: { name: null } }
+      );
+
       expect(chart.model.getCurrentValue('activeFilters')).to.have.length(1);
       expect(chart.model.getCurrentValue('activeFilters')[0]).to.be.instanceof(Filter.IsNullFilter);
-      chart.scope.$emit('column-chart:datum-clicked', {
-        name: 'testname'
-      });
+
+      testHelpers.fireEvent(
+        chart.element.find('card-visualization-column-chart')[0],
+        'SOCRATA_VISUALIZATION_COLUMN_SELECTION',
+        { detail: { name: 'testname' } }
+      );
+
       expect(chart.model.getCurrentValue('activeFilters')).to.have.length(1);
       expect(chart.model.getCurrentValue('activeFilters')[0]).to.be.instanceof(Filter.BinaryOperatorFilter);
-      chart.scope.$emit('column-chart:datum-clicked', {
-        name: null
-      });
+
+      testHelpers.fireEvent(
+        chart.element.find('card-visualization-column-chart')[0],
+        'SOCRATA_VISUALIZATION_COLUMN_SELECTION',
+        { detail: { name: null } }
+      );
+
       expect(chart.model.getCurrentValue('activeFilters')).to.have.length(1);
       expect(chart.model.getCurrentValue('activeFilters')[0]).to.be.instanceof(Filter.IsNullFilter);
     });

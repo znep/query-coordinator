@@ -39,6 +39,10 @@
         control.skip = options.skip;
       }
 
+      if (!_.isEmpty(options.syntheticPoints)) {
+        control.syntheticPoints = options.syntheticPoints;
+      }
+
       // TODO: More option handling here.
 
       var controlFile = {};

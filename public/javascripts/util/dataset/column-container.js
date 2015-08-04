@@ -59,16 +59,28 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
     // defines: clearColumn, clearChildColumn
     // Removes a column from the model without doing anything on the server;
     // use removeColumns or Column.remove for that
-    props['clear' + capName] = function(col)
-    {
-        if (!$.isBlank(this._super)) { this._super(col); }
+    props['clear' + capName] = function(col) {
+        if (!$.isBlank(this._super)) {
+          this._super(col);
+        }
 
         this[colSet] = _.without(this[colSet], col);
         delete _columnIDLookup[col.id];
         delete _columnIDLookup[col.lookup];
         delete _columnTCIDLookup[col.tableColumnId];
         delete _columnFieldNameLookup[col.fieldName];
-        if (col.isMeta) { delete _metaColumnLookup[col.name]; }
+
+        if (this.newBackend) {
+          // Look through each row and delete the column data.
+          _.each(this.loadedRows(), function (row) {
+            delete row.data[col.lookup];
+          });
+        }
+
+        if (col.isMeta) {
+          delete _metaColumnLookup[col.name];
+        }
+
         update(this);
         this.trigger('columns_changed', ['removed']);
     };

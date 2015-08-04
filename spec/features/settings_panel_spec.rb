@@ -5,7 +5,7 @@ RSpec.describe 'settings panel', type: :feature, js: true do
   settings_panel_selector   = '.settings-panel'
 
   before do
-    allow_any_instance_of(ApplicationController).to receive(:require_logged_in_user).and_return(true)
+    stub_logged_in_user
     visit '/s/magic-thing/hasb-lock/edit'
   end
 

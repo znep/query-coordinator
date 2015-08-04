@@ -208,3 +208,7 @@ end
 def fixture(file)
   File.new(File.join(fixture_path, file))
 end
+
+def stub_logged_in_user
+  allow_any_instance_of(ApplicationController).to receive(:require_logged_in_user).and_return(true)
+end

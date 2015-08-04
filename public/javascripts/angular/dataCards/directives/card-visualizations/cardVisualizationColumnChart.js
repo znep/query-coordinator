@@ -5,7 +5,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
     restrict: 'E',
     scope: { 'model': '=', 'whereClause': '=' },
     templateUrl: '/angular_templates/dataCards/cardVisualizationColumnChart.html',
-    link: function($scope) {
+    link: function($scope, element) {
       var model = $scope.$observe('model');
       var dataset = model.observeOnLatest('page.dataset');
       var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
@@ -130,7 +130,10 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
               }
             });
 
-            return _.map(_.pluck(unfilteredData, 'name'), function(name) {
+            var results = [];
+
+            _.pluck(unfilteredData, 'name').forEach(function(name) {
+
               var datumIsSpecial = false;
 
               if (_.contains(activeFilterNames, null)) {
@@ -139,13 +142,15 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
                 datumIsSpecial = _.contains(activeFilterNames, name);
               }
 
-              return {
-                name: (_.isNull(name) || _.isUndefined(name)) ? '' : name,
-                total: unfilteredAsHash[name],
-                filtered: filteredAsHash[name] || 0,
-                special: datumIsSpecial
-              };
+              results.push([
+                (_.isNull(name) || _.isUndefined(name)) ? '' : name,
+                unfilteredAsHash[name],
+                filteredAsHash[name] || 0,
+                datumIsSpecial
+              ]);
             });
+
+            return results;
           }
         ));
 
@@ -157,39 +162,64 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
 
       $scope.$bindObservable('expanded', model.observeOnLatest('expanded'));
 
-      $scope.$on('column-chart:truncation-marker-clicked', function() {
-        $scope.model.page.toggleExpanded($scope.model);
-      });
+      /**
+       * Watch events emitted by socrata.visualizations.Column.
+       */
 
-      $scope.$on('column-chart:datum-clicked', function(event, datum) {
-        var wantsFilterToNull = _.isUndefined(datum.name) ||
-          _.isNull(datum.name) ||
-          _.isNaN(datum.name) ||
-          (_.isNumber(datum.name) && !_.isFinite(datum.name)) ||
-          (_.isString(datum.name) && datum.name.length === 0);
+      element.on('SOCRATA_VISUALIZATION_COLUMN_SELECTION', handleDatumSelect);
+      element.on('SOCRATA_VISUALIZATION_COLUMN_OPTIONS', handleExpandedToggle);
 
-        var isFilteringOnClickedDatum = _.any($scope.model.getCurrentValue('activeFilters'), function(currentFilter) {
-          if (currentFilter instanceof Filter.BinaryOperatorFilter) {
-            return currentFilter.operand === datum.name;
-          } else if (currentFilter instanceof Filter.IsNullFilter) {
-            return wantsFilterToNull;
+      function handleDatumSelect(event) {
+
+        var payload = event.originalEvent.detail;
+
+        if (payload.hasOwnProperty('name')) {
+
+          var datumName = payload.name;
+
+          var wantsFilterToNull = _.isUndefined(datumName) ||
+            _.isNull(datumName) ||
+            _.isNaN(datumName) ||
+            (_.isNumber(datumName) && !_.isFinite(datumName)) ||
+            (_.isString(datumName) && datumName.length === 0);
+
+          var isFilteringOnClickedDatum = _.any($scope.model.getCurrentValue('activeFilters'), function(currentFilter) {
+            if (currentFilter instanceof Filter.BinaryOperatorFilter) {
+              return currentFilter.operand === datumName;
+            } else if (currentFilter instanceof Filter.IsNullFilter) {
+              return wantsFilterToNull;
+            } else {
+              throw new Error('CardVisualizationColumnChart does not understand the filter on its column: ' + currentFilter);
+            }
+          });
+
+          // If we're already filtering on the datum that was clicked, we should toggle the filter off.
+          // Otherwise, set up a new filter for the datum.
+          if (isFilteringOnClickedDatum) {
+            $scope.model.set('activeFilters', []);
           } else {
-            throw new Error('CardVisualizationColumnChart does not understand the filter on its column: ' + currentFilter);
-          }
-        });
 
-        // If we're already filtering on the datum that was clicked, we should toggle the filter off.
-        // Otherwise, set up a new filter for the datum.
-        if (isFilteringOnClickedDatum) {
-          $scope.model.set('activeFilters', []);
-        } else {
-          var filter = wantsFilterToNull ?
-            new Filter.IsNullFilter(true) :
-            new Filter.BinaryOperatorFilter('=', datum.name);
-          $scope.model.set('activeFilters', [filter]);
+            var filter;
+
+            if (wantsFilterToNull) {
+              filter = new Filter.IsNullFilter(true)
+            } else {
+              filter = new Filter.BinaryOperatorFilter('=', datumName);
+            }
+            $scope.model.set('activeFilters', [filter]);
+          }
         }
-      });
+      }
+
+      function handleExpandedToggle(event) {
+
+        var payload = event.originalEvent.detail;
+
+        if (payload.hasOwnProperty('expanded')) {
+          $scope.model.page.toggleExpanded($scope.model);
+        }
+      }
+
     }
   };
-
 });

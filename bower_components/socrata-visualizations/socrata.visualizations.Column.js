@@ -2,19 +2,12 @@
 
   'use strict';
 
-  if (
-    (!window._) ||
-    (_.prototype.constructor.toString().match(/lodash/i) === null)
-  ) {
-    throw new Error('lodash is a required dependency for `socrata-utils.js`.');
-  }
-
   if (!_.has(window, 'socrata.visualizations.Visualization')) {
     throw new Error(
       '`{0}` must be loaded before `{1}`'.
         format(
-          'socrata-visualizations-Visualization.js',
-          'socrata-visualizations-Column.js'
+          'socrata.visualizations.Visualization.js',
+          'socrata.visualizations.Column.js'
         )
     );
   }

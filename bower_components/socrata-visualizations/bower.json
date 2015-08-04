@@ -1,11 +1,10 @@
 {
   "name": "socrata-visualizations",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": [
-    "socrata-visualizations.js",
-    "socrata-visualizations-Visualization.js",
-    "socrata-visualizations-Column.js",
-    "socrata-visualizations-Column.css"
+    "socrata.visualizations.Visualization.js",
+    "socrata.visualizations.Column.js",
+    "socrata.visualizations.column.css"
   ],
   "ignore": [
     "bower_components/",

@@ -2,14 +2,12 @@
 
   'use strict';
 
-  if (
-    (!window._) ||
-    (_.prototype.constructor.toString().match(/lodash/i) === null)
-  ) {
-    throw new Error('lodash is a required dependency for `socrata-utils.js`.');
+  if (!window.socrata || !window.socrata.utils) {
+    throw new Error(
+      'The `socrata-utils` package is a required dependency for `socrata-visualizations`.'
+    );
   }
 
-  window.socrata = window.socrata || {};
   window.socrata.visualizations = window.socrata.visualizations || {};
 
   function Visualization(element, config) {
@@ -38,6 +36,15 @@
       return localizedString;
     };
 
+    this.emitEvent = function(name, payload) {
+      this.element[0].dispatchEvent(
+        new window.CustomEvent(
+          name,
+          { detail: payload, bubbles: true }
+        )
+      );
+    };
+
     function _logWarning(message) {
       if (window.console && window.console.warn) {
         window.console.warn(message);
@@ -50,7 +57,6 @@
       }
     }
   }
-
 
   window.socrata.visualizations.Visualization = Visualization;
 })(window);

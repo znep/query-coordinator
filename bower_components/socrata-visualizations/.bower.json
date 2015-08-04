@@ -1,10 +1,9 @@
 {
   "name": "socrata-visualizations",
   "main": [
-    "socrata-visualizations.js",
-    "socrata-visualizations-Visualization.js",
-    "socrata-visualizations-Column.js",
-    "socrata-visualizations-Column.css"
+    "socrata.visualizations.Visualization.js",
+    "socrata.visualizations.Column.js",
+    "socrata.visualizations.column.css"
   ],
   "ignore": [
     "bower_components/",
@@ -22,13 +21,14 @@
     "d3": "~3.5.6"
   },
   "homepage": "https://github.com/socrata/frontend-visualizations",
-  "_release": "79bc1abe5d",
+  "_release": "4d0b3434f1",
   "_resolution": {
     "type": "branch",
     "branch": "cmlaidlaw/add-column-chart-visualization",
-    "commit": "79bc1abe5da3885c8155108ec0a67ca9340193c3"
+    "commit": "4d0b3434f1400c5bab0f4b5e4ed6e8bb808e083f"
   },
   "_source": "git@github.com:socrata/frontend-visualizations.git",
   "_target": "cmlaidlaw/add-column-chart-visualization",
-  "_originalSource": "git@github.com:socrata/frontend-visualizations.git"
+  "_originalSource": "git@github.com:socrata/frontend-visualizations.git",
+  "_direct": true
 }

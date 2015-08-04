@@ -64,12 +64,14 @@
         "bower_components/rxjs/dist/rx.time.js",
         "bower_components/rxjs/dist/rx.binding.js"
       ],
+      "socrata-utils": [
+        "bower)components/socrata-utils/socrata.utils.js"
+      ],
       "socrata-visualizations": [
-        "bower_components/socrata-visualizations/socrata-visualizations.js",
-        "bower_components/socrata-visualizations/socrata-visualizations-Visualization.js",
-        "bower_components/socrata-visualizations/socrata-visualizations-Column.js",
+        "bower_components/socrata-visualizations/socrata.visualizations.Visualization.js",
+        "bower_components/socrata-visualizations/socrata.visualizations.Column.js",
         {
-          "bower_components/socrata-visualizations/socrata-visualizations-Column.css": "../socrata-visualizations-Column.css"
+          "bower_components/socrata-visualizations/socrata.visualizations.Column.css": "../socrata.visualizations.Column.css"
         }
       ],
       "showdown": "bower_components/showdown/src/showdown.js",

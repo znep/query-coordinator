@@ -47,21 +47,10 @@
     return $('<div/>').html(value).text();
   };
 
-  String.prototype.format = function(objectMaybe) {
-    var values = _.isPlainObject(objectMaybe) ? objectMaybe : _.slice(arguments);
-    return _(values).chain().keys().reduce(function(stringToFormat, key) {
-      return stringToFormat.replace(new RegExp('\\{' + key + '\\}', 'gm'), values[key]);
-    }, this).value();
-  };
-
   String.prototype.capitalizeEachWord = function() {
     return this.split(' ').map(function(word) {
       return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
     }).join(' ');
-  };
-
-  String.prototype.escapeSpaces = function() {
-    return this.replace(/ /g, '\u00A0');
   };
 
   var sizeMixin = {

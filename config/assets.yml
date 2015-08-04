@@ -722,9 +722,9 @@ javascripts:
     - public/javascripts/bower/markdown.js
     - public/javascripts/bower/pbf.min.js
     - public/javascripts/bower/lodash.js
-    - public/javascripts/bower/socrata-visualizations.js
-    - public/javascripts/bower/socrata-visualizations-Visualization.js
-    - public/javascripts/bower/socrata-visualizations-Column.js
+    - public/javascripts/bower/socrata.utils.js
+    - public/javascripts/bower/socrata.visualizations.Visualization.js
+    - public/javascripts/bower/socrata.visualizations.Column.js
 
     - public/javascripts/bower/**/*.js
   # END BOWER-MANAGED ASSETS

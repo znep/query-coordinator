@@ -65,7 +65,7 @@
 }
 
 /**
- * Label styles
+ * Label layout styles
  */
 
 .column-chart .labels {
@@ -84,16 +84,16 @@
   opacity: 0.1;
 }
 
-.column-chart .labels .label.special .callout {
+.column-chart .labels .label.selected .callout {
   border-bottom: none;
 }
 
-.column-chart .labels .label.special .contents .icon-filter,
-.column-chart .labels .label.special .contents .icon-close {
+.column-chart .labels .label.selected .contents .icon-filter,
+.column-chart .labels .label.selected .contents .icon-close {
   display: inline-block;
 }
 
-.column-chart .labels .label.special .contents .text {
+.column-chart .labels .label.selected .contents .text {
   padding: 0 0.25rem;
   font-weight: bold;
 }
@@ -139,7 +139,7 @@
 }
 
 /**
- * Tick styles
+ * Tick layout styles
  */
 
 .column-chart .ticks {
@@ -156,21 +156,21 @@
 }
 
 /**
- * Expanded styles
+ * Expanded layout styles
  */
 
 .column-chart.expanded .labels,
-.column-chart.expanded.special .labels {
+.column-chart.expanded.selected .labels {
   bottom: auto;
 }
 
 .column-chart.expanded .labels .label .callout,
-.column-chart.expanded.special .labels .label .callout {
+.column-chart.expanded.selected .labels .label .callout {
   display: none
 }
 
 .column-chart.expanded .labels .label .contents,
-.column-chart.expanded.special .labels .label .contents {
+.column-chart.expanded.selected .labels .label .contents {
   left: auto;
   -webkit-transform-origin: top left;
   -moz-transform-origin: top left;
@@ -185,12 +185,103 @@
 
 .column-chart.expanded .labels .label .contents .icon-filter,
 .column-chart.expanded .labels .label .contents .icon-close,
-.column-chart.expanded.special .labels .label .contents .icon-filter,
-.column-chart.expanded.special .labels .label .contents .icon-close {
+.column-chart.expanded.selected .labels .label .contents .icon-filter,
+.column-chart.expanded.selected .labels .label .contents .icon-close {
   display: none;
 }
 
 .column-chart.expanded .labels .label .contents .text,
-.column-chart.expanded.special .labels .label .contents .text {
+.column-chart.expanded.selected .labels .label .contents .text {
   padding: 0;
+}
+
+/**
+ * Default theme
+ */
+
+.column-chart .column-chart-wrapper .bar-group.active .bar.unfiltered {
+  background-color: #67aecc;
+}
+
+.column-chart .column-chart-wrapper .bar-group.active .bar.filtered {
+  background-color: #68b0cc;
+}
+
+.column-chart .column-chart-wrapper.filtered .bar-group.active .bar.unfiltered {
+  background-color: #d6d4d5;
+}
+
+.column-chart .column-chart-wrapper.filtered .bar-group.active.selected .bar.filtered {
+  background-color: #debb1e;
+}
+
+.column-chart .column-chart-wrapper.filtered .bar-group.active.selected .bar.unfiltered {
+  background-color: rgba(222, 187, 30, 0.2);
+}
+
+.column-chart .column-chart-wrapper .bar-group.active:hover .bar.unfiltered {
+  background-color: #b1d7e8;
+}
+
+.column-chart .column-chart-wrapper .bar-group.active:hover .bar.filtered,
+.column-chart .column-chart-wrapper.filtered .bar-group.active:hover .bar.unfiltered {
+  background-color: #bbb;
+}
+
+.column-chart .column-chart-wrapper.filtered .bar-group.active:hover .bar.filtered {
+  background-color: #b1d7e8;
+}
+
+.column-chart .column-chart-wrapper.filtered .bar-group.active.selected:hover .bar.filtered {
+  background-color: #e0b700;
+}
+
+.column-chart .column-chart-wrapper.filtered .bar-group.active.selected:hover .bar.unfiltered {
+  background-color: rgba(222, 187, 30, 0.4);
+}
+
+.column-chart .column-chart-wrapper .truncation-marker {
+  color: #bbb;
+}
+
+.column-chart .column-chart-wrapper .field-name {
+  color: #6e6e6e;
+}
+
+.column-chart .column-chart-wrapper .field-description {
+  color: #6e6e6e;
+}
+
+.column-chart .labels .label .callout {
+  border-bottom: 1px solid #bbb;
+}
+
+.column-chart .labels .label .contents {
+  color: #bbb;
+}
+
+.column-chart .labels .label .contents .icon-filter {
+  color: #debb1e;
+}
+
+.column-chart .labels .label.orientation-right .callout {
+  border-left: 1px solid #bbb;
+}
+
+.column-chart .labels .label.orientation-left .callout {
+  border-right: 1px solid #bbb;
+}
+
+.column-chart .labels .label.selected .contents .text {
+  color: #8f8f8f;
+}
+
+.column-chart .ticks div {
+  color: #bbb;
+  border-bottom: 1px solid #bbb;
+}
+
+.column-chart .ticks .origin {
+  color: #666;
+  border-bottom: 1px solid #666;
 }

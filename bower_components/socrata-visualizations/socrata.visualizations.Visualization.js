@@ -2,9 +2,9 @@
 
   'use strict';
 
-  if (!window.socrata || window.socrata.utils) {
+  if (!window.socrata || !window.socrata.utils) {
     throw new Error(
-      '`socrata-utils` is a required dependency for `socrata-visualizations`'
+      'The `socrata-utils` package is a required dependency for `socrata-visualizations`.'
     );
   }
 
@@ -34,6 +34,15 @@
       }
 
       return localizedString;
+    };
+
+    this.emitEvent = function(name, payload) {
+      this.element[0].dispatchEvent(
+        new window.CustomEvent(
+          name,
+          { detail: payload, bubbles: true }
+        )
+      );
     };
 
     function _logWarning(message) {

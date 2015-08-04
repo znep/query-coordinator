@@ -3,8 +3,9 @@
 /**
  * Settings Panel
  */
-.settings-panel {
+#settings-panel {
   width: $settings-panel-width;
+  position: fixed;
   height: 100%;
   top: 0;
   left: 0;
@@ -20,13 +21,15 @@
     width: 100%;
     box-sizing: border-box;
     line-height: $settings-panel-close-bar-height;
-    color: $header-font-color;
+    color: $settings-panel-close-font-color;
     text-align: left;
     padding: 0.3em 0.8em;
     text-decoration: none;
 
-    &:focus {
+    &:focus,
+    &:hover {
       outline: none;
+      background-color: rgba(255, 255, 255, 0.1);
     }
 
     .close-panel-icon {
@@ -51,7 +54,7 @@
 /**
  * Settings Panel Overlay and z-index management
  */
-.settings-panel-wrapper {
+#settings-panel-container {
   z-index: $settings-panel-z-index;
   position: relative;
 
@@ -59,7 +62,7 @@
     z-index: 2;
   }
 
-  &.active .settings-panel-overlay {
+  &.active #settings-panel-overlay {
     z-index: 1;
     background-color: $modal-overlay-bg-color;
     height: 100%;

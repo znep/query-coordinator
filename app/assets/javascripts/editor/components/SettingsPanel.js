@@ -13,17 +13,17 @@
    * the panel will toggle open or closed.
    *
    * The toggleButton will be given a class of 'active' while
-   * the panel is open, as will the panelWrapper, for control of the overlay
+   * the panel is open, as will the settingsContainer, for control of the overlay
    *
    * @param {jQuery} toggleButton - a jQuery reference to the desired toggle button node.
    */
   $.fn.settingsPanel = function(toggleButton) {
 
-    var settingsPanel = $(this).sidebar({
+    var settingsContainer = $(this);
+    var settingsPanel = $('#settings-panel').sidebar({
       side: 'left'
     });
-    var panelWrapper = settingsPanel.parents('.settings-panel-wrapper');
-    var overlay = panelWrapper.find('.settings-panel-overlay');
+    var overlay = settingsContainer.find('#settings-panel-overlay');
 
     // Set up some input events.
 
@@ -40,12 +40,13 @@
     settingsPanel.
       on('sidebar:open', function() {
         toggleButton.addClass('active');
-        panelWrapper.addClass('active');
+        settingsContainer.addClass('active');
         settingsPanel.find('a').eq(0).focus();
       }).
       on('sidebar:close', function() {
         toggleButton.removeClass('active');
-        panelWrapper.removeClass('active');
+        settingsContainer.removeClass('active');
+        $('header a').eq(0).focus(); // put focus back in the header
       }).
       on('mousewheel', '.scrollable', storyteller.Util.preventScrolling)
 

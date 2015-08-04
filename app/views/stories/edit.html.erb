@@ -19,24 +19,7 @@
 </header>
 
 <%= render 'settings_panel' %>
-
-<section class="add-content-panel side-panel">
-  <div class="close-side-panel-btn">
-    <a role="button" href="#" title="Close">
-      <span class="icon-cross2"></span>
-    </a>
-  </div>
-  <section>
-    <h1><%= I18n.t('add_content_panel.common_blocks') %></h1>
-    <hr></hr>
-    <div class="scrollable">
-      <div class="inspiration-block-list">
-        <%= render 'content_panel' %>
-      </div>
-    </div>
-  </section>
-  <div class="inspiration-block-list-error hidden"><%= I18n.t('add_content_panel.render_error') %></div>
-</section>
+<%= render 'content_panel' %>
 
 <section id="rich-text-editor-toolbar"></section>
 

@@ -213,11 +213,11 @@ $(document).on('ready', function() {
    */
 
   // Add Content Panel
-  var addContentPanelElement = $('.add-content-panel');
+  var addContentPanelElement = $('#add-content-panel');
   addContentPanelElement.addContentPanel($('.add-content-panel-btn'));
 
-  var settingsPanelElement = $('.settings-panel');
-  settingsPanelElement.settingsPanel($('[data-panel-toggle="settings-panel"]'));
+  var settingsPanelContainer = $('#settings-panel-container');
+  settingsPanelContainer.settingsPanel($('[data-panel-toggle="settings-panel"]'));
 
   // Drag-drop
   var ghostElement = $('#block-ghost');

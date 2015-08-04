@@ -69,6 +69,12 @@ body header {
     color: $header-bg-color;
     font-size: 3em;
 
+    &:hover,
+    &:focus {
+      outline: none;
+      color: lighten($header-bg-color, 10%);
+    }
+
     &:before {
       text-align: center;
     }

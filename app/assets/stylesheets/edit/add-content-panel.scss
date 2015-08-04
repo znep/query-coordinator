@@ -1,25 +1,12 @@
 @import 'lib/variables';
 
 /**
- * Shared between all side-panels
- */
-.side-panel {
-  width: $panel-width;
-  position: fixed;
-  @include unselectable();
-
-  .close-side-panel-btn {
-    display: inline-block;
-    width: 100%;
-    text-align: right;
-    margin-bottom: $inspiration-block-list-close-button-padding;
-  }
-}
-
-/**
  * Add Content Panel
  */
-.add-content-panel {
+#add-content-panel {
+  @include unselectable();
+  width: $panel-width;
+  position: fixed;
 
   height: calc(100vh - #{$header-height} - #{$add-content-panel-padding});
   top: $header-height;
@@ -47,6 +34,13 @@
       right: 0;
       overflow-y: auto;
     }
+  }
+
+  .content-panel-close-btn {
+    display: inline-block;
+    width: 100%;
+    text-align: right;
+    margin-bottom: $inspiration-block-list-close-button-padding;
   }
 }
 

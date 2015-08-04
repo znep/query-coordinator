@@ -96,6 +96,7 @@
       'FEATURE_MAP_MAX_ZOOM': 18, // same as Leaflet default
       'FEATURE_MAP_FLYOUT_Y_OFFSET': 1.25,
       'FEATURE_MAP_RESIZE_DEBOUNCE_INTERVAL': 250,
+      'FEATURE_MAP_MAX_POINT_LIMIT': 50000,
 
       // Feature Map Flannel
       'FLANNEL_PADDING_COMPENSATION': 3,

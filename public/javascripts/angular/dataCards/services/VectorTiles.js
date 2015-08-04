@@ -37,6 +37,10 @@
         };
       },
 
+      getTileTotalPoints: function(tileLayer, tileId) {
+        return _.get(tileLayer, 'totalPointsByTile[{0}]'.format(tileId), 0);
+      },
+
       // Reads raw VectorTile data and creates an array of
       // features on each VectorTileLayer instance assigned
       // to the tile.
@@ -342,6 +346,7 @@
         this.tileManager = tileManager;
         this.styleFn = options.style;
         this.featuresByTile = {};
+        this.totalPointsByTile = {};
         this.quadTreesByTile = {};
       },
 
@@ -361,6 +366,7 @@
         var tileId = VectorTileUtil.getTileId({x: tilePoint.x, y: tilePoint.y, zoom: zoom});
 
         this.featuresByTile[tileId] = [];
+        this.totalPointsByTile[tileId] = 0;
         this.quadTreesByTile[tileId] = this.tileManager.quadTreeFactory([]);
 
         return this;
@@ -373,6 +379,7 @@
         var featureCount = features.length;
         var feature;
         var featureArray;
+        var featurePointCount = 0;
 
         if (!this.featuresByTile.hasOwnProperty(tileId) && featureCount > 0) {
           this.featuresByTile[tileId] = [];
@@ -391,12 +398,15 @@
           var projectedPoint = vectorTileFeature.projectGeometryToTilePoint(vectorTileFeature.coordinates[0][0]);
 
           projectedPoint.count = vectorTileFeature.properties.count;
+          featurePointCount += parseInt(_.get(vectorTileFeature, 'properties.count', 0), 10);
+
           projectedPoint.tile = tileId;
           this.quadTreesByTile[tileId].add(projectedPoint);
 
           featureArray.push(vectorTileFeature);
         }
 
+        this.totalPointsByTile[tileId] = featurePointCount;
         this.renderTile(tileId, tileRenderedCallback);
       },
 
@@ -661,10 +671,14 @@
         //            contains a 'count' key representing the number of rows of
         //            data that the point represents.
         function injectTileInfo(e) {
+
+          // TODO handle selecting layers and/or multiple layers better.
+          var layer = self.layers.get('main');
+
           e.tile = VectorTileUtil.getTileInfoByPointAndZoomLevel(e.latlng, map.getZoom());
           e.tile.id = VectorTileUtil.getTileId(e.tile);
+          e.tile.totalPoints = VectorTileUtil.getTileTotalPoints(layer, e.tile.id);
 
-          var layer = self.layers.get('main'); // TODO handle selecting layers and/or multiple layers better.
           var tileCanvas = VectorTileUtil.getTileLayerCanvas(layer, e.tile.id);
           var pointStyle = self.style({type: 1});
           var hoverThreshold = Math.max(pointStyle.radius(map.getZoom()), self.options.minHoverThreshold);

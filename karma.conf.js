@@ -16,7 +16,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'bower_components/lodash/lodash.js',
-      'socrata-utils.js',
+      'socrata.utils.js',
       'karma/**/*spec.js'
     ],
 

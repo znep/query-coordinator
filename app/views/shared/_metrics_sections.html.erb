@@ -16,8 +16,43 @@
   <div class="totalValue"></div>
 </div>
 
+<div class="metricsSummaryDataV1">
+  <div class="percentBox">
+    <span class="icon"></span>
+    <span class="percentValue"></span>
+  </div>
+  <span class="summaryValue">
+    <span class="deltaValue"></span>
+    of
+    <span class="totalValueV1"></span>
+    total
+  </span>
+</div>
+
+<div class="metricsNoPercentData">
+  <span class="summaryValue">
+    <span class="deltaValue"></span>
+    of
+    <span class="totalValueV1"></span>
+    total
+  </span>
+</div>
+
 <div class="metricsSimpleSummaryData">
   <div class="totalValue"></div>
+</div>
+
+<div class="metricsSimpleSummaryDataV1">
+  <span class="summaryValue">
+    <span class="deltaValue"></span>
+    total
+  </span>
+</div>
+
+<div class="metricsDeltaData">
+  <span class="summaryValue">
+    <span class="deltaValue"></span>
+  </span>
 </div>
 
 
@@ -37,6 +72,31 @@
         map { |slice| [ t("screens.stats.#{slice}"), slice.capitalize ] }) %>
     </select>
     <div class="chartMenu menu"></div>
+    <div class="chartArea">
+      <div class="chartContent"></div>
+      <div class="flash notice message noDataNotice">
+        <h3><%= t("#{prefix}.time_period_unavailable") %></h3>
+      </div>
+      <div class="flash notice message emptyHint">
+        <h3><%= t("#{prefix}.select_chart_type") %></h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="metricsChartsV1">
+  <div class="chartContainer">
+    <div class="chartMenuContainer sliceDepthMenuContainer">
+      <span class="chartMenuLabel">View Granularity:</span>
+      <select class="sliceDepth" id="sliceDepth">
+        <%= options_for_select(['hourly', 'daily', 'weekly', 'monthly'].
+          map { |slice| [ t("screens.stats.#{slice}"), slice.capitalize ] }) %>
+      </select>
+    </div>
+    <div class="chartMenuContainer chartSeriesMenuContainer">
+      <span class="chartMenuLabel">View:</span>
+      <select class="chartSeries"></select>
+    </div>
     <div class="chartArea">
       <div class="chartContent"></div>
       <div class="flash notice message noDataNotice">

@@ -63,6 +63,9 @@
   .exportMetricsLink
     float: right
     font-size: 1.2em
+    &.button
+      padding-left: 2em
+      padding-right: 2em
 
   #analyticsTimeControl
     float: left
@@ -79,12 +82,34 @@
   &.datasetMetrics h1, &.publicSiteMetrics h1
     float: left
 
+  &.embetterV1
+    #analyticsTimeControl .currentTimeSlice
+      background: #5da5da
+      color: #fff
+      padding-left: 0.5em
+      border-radius: 0.3em
+    .chartsDisplay
+      margin: 1.5em 0.5em
+    .summaryDisplay, .detailDisplay
+      margin: 2em 0 1em
 
   .chartContainer
-    .sliceDepth
-      width: 8em
-    .selector.uniform
+    > .selector.uniform
       float: right
+      select
+        width: 8em
+
+    .chartMenuContainer
+      margin-bottom: 1em
+
+      &.sliceDepthMenuContainer
+        float: right
+      .chartMenuLabel, .uniform
+        vertical-align: middle
+        font-size: 1.5em
+        font-weight: bold
+      select
+        width: 10em
 
     .flash
       width: 50%
@@ -215,7 +240,7 @@
     .summaryContainer
       float: left
       display: none
-      min-width: 20em
+      min-width: 25em
 
       .summaryInnerContent
         background-color: $light_bg_color
@@ -223,11 +248,13 @@
         border: 1px solid #dedede
         margin: 0.5em
         padding: 1em
+        position: relative
 
         .summaryTitle
           font-size: 1.2em
           padding-bottom: 0.5em
 
+        // only applicable if blist.feature_flags.embetter_analytics_page is false:
         .totalValue
           cursor: default
           font-size: 1.7em
@@ -253,6 +280,42 @@
             margin-top: 2px
 
           .deltaValue
+            cursor: default
+            font-size: 1.2em
+            font-weight: bold
+            line-height: 1.2em
+            padding-left: 0.5em
+
+        // only applicable if blist.feature_flags.embetter_analytics_page is not false:
+        .summaryValue
+          cursor: default
+          font-size: 1.2em
+          line-height: 1.4
+
+          .deltaValue
+            font-size: 1.8em
+
+        .percentBox
+          @include analytic-icons
+          @include border-radius(0, 0.3em, 0, 0.3em)
+          color: #fff
+          height: 13px
+          padding: 0.5em
+          position: absolute
+          right: -1px
+          top: -1px
+          &.plus
+            background-color: #19b947
+            border-color: #19b947
+          &.minus
+            background-color: #fd682f
+            border-color: #fd682f
+
+          .icon
+            float: left
+            margin-top: 2px
+
+          .percentValue
             cursor: default
             font-size: 1.2em
             font-weight: bold

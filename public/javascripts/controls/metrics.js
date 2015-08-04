@@ -103,16 +103,28 @@
 
     generateChartMenu = function($chart, section)
     {
-          $chart
-              .data(metricsNS.SERIES_KEY, section.children[0].series)
-              .parent().siblings('.menu').empty().menu({
-                  additionalDataKeys: ['transform'],
-                  additionalJsonKeys: ['series'],
-                  menuButtonContents: '<span class="contents">' +
-                      section.children[0].text + '</span>',
-                  menuButtonTitle: section.children[0].text,
-                  contents: section.children
-          });
+        if (blist.feature_flags.embetter_analytics_page) {
+            $chart.data(metricsNS.SERIES_KEY, section.children[0].series);
+            $chart.data(metricsNS.TRANSFORM, section.children[0].transform);
+            var $menu = $chart.closest('.chartContainer').find('select.chartSeries').empty();
+            $.each(section.children, function() {
+                var $option = $('<option>').text(this.text).appendTo($menu);
+                $option.data(metricsNS.SERIES_KEY, this.series);
+                $option.data(metricsNS.TRANSFORM, this.transform);
+            });
+            $menu.uniform();
+        } else {
+            $chart
+                .data(metricsNS.SERIES_KEY, section.children[0].series)
+                .parent().siblings('.menu').empty().menu({
+                    additionalDataKeys: ['transform'],
+                    additionalJsonKeys: ['series'],
+                    menuButtonContents: '<span class="contents">' +
+                        section.children[0].text + '</span>',
+                    menuButtonTitle: section.children[0].text,
+                    contents: section.children
+            });
+        }
     },
 
     equiWidth = function($container)
@@ -161,7 +173,8 @@
         equiWidth($detailDisplay);
 
         // Load each of the charts and create their menus
-        var chartDisplay =  $.renderTemplate('metricsCharts',
+        var chartTemplate = blist.feature_flags.embetter_analytics_page ? 'metricsChartsV1' : 'metricsCharts';
+        var chartDisplay =  $.renderTemplate(chartTemplate,
             chartSections, opts.chartDirective);
 
         _.each(chartSections, function(section)
@@ -173,13 +186,26 @@
 
         $screen.find('.chartsDisplay').append(chartDisplay);
 
-        $screen.find('.chartContainer .menu ul > li > a').live('click', function(event)
-        {
-            event.preventDefault();
-            subChartTypeChanged($(event.target).closest('a')
-                .closest('.chartMenu').siblings('.chartArea')
-                    .end().end(), currentSlice);
-        });
+        if (blist.feature_flags.embetter_analytics_page) {
+            $screen.find('select.chartSeries').change(function(event) {
+                var $option = $(event.target).find(':selected');
+                var $chart = $(event.target).closest('.chartContainer').find('.chartContent');
+
+                $chart.data(metricsNS.SERIES_KEY, $option.data(metricsNS.SERIES_KEY));
+                $chart.data(metricsNS.TRANSFORM, $option.data(metricsNS.TRANSFORM));
+
+                // Re-draw chart via callback
+                redrawChart($chart, currentSlice);
+            });
+        } else {
+            $screen.find('.chartContainer .menu ul > li > a').live('click', function(event)
+            {
+                event.preventDefault();
+                subChartTypeChanged($(event.target).closest('a')
+                    .closest('.chartMenu').siblings('.chartArea')
+                        .end().end(), currentSlice);
+            });
+        }
 
         // Workaround for IE7 SVG overlay issues
         if($('html').hasClass('ie7'))
@@ -217,6 +243,11 @@
                 }).end()
                 .appendTo($screen.find('.' + section.renderTo));
         });
+
+        if (blist.feature_flags.embetter_analytics_page) {
+            $exportLink.addClass('button');
+            $screen.addClass('embetterV1');
+        }
 
         var updateExportLink = function()
         {

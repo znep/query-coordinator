@@ -266,7 +266,7 @@ metricsNS.urlMapCallback = function($context)
     );
 };
 
-metricsNS.summarySectionCallback = function($context)
+metricsNS.summarySectionCallback = function($context, slice, section)
 {
     var summaries = $context.data('data-summary'),
         data      = $context.data(metricsNS.DATA_KEY),
@@ -309,6 +309,7 @@ metricsNS.summarySectionCallback = function($context)
     summaryToolTip('total', $.t('screens.stats.total'));
     summaryToolTip('delta', $.t('screens.stats.during_time_period'));
 
+    if (!blist.feature_flags.embetter_analytics_page) {
     if (mappedData.delta < 0)
     {
         mappedData.delta *= -1;
@@ -318,17 +319,50 @@ metricsNS.summarySectionCallback = function($context)
     {
         mappedData.deltaClass = 'plus';
     }
+    }
+
+    var deltaPercent = mappedData.delta / (mappedData.total - mappedData.delta) * 100;
+    mappedData.deltaPercentClass = deltaPercent < 0 ? 'minus' : 'plus';
+    mappedData.deltaPercent = Highcharts.numberFormat(Math.abs(deltaPercent), 0) + '%';
+    mappedData.deltaPercentText =
+        $.t(deltaPercent < 0 ? 'screens.stats.delta_decrease' : 'screens.stats.delta_increase')
+        .format(
+            section.summary.deltaPhrase || section.displayName,
+            mappedData.deltaPercent,
+            $context.closest('#analyticsDataContainer').find('.currentTimeSlice').val()
+        );
 
     mappedData.total = Highcharts.numberFormat(mappedData.total, 0);
     mappedData.delta = Highcharts.numberFormat(mappedData.delta, 0);
 
     var templateName = 'metricsSummaryData';
     var summaryDirective = metricsNS.summaryDataDirective;
+
+    // Rearrange the layout for V1 improvements
+    if (blist.feature_flags.embetter_analytics_page) {
+        templateName = 'metricsSummaryDataV1';
+        summaryDirective = metricsNS.summaryDataDirectiveV1;
+    }
+    // Omit the percent box if it would show NaN
+    if (deltaPercent == Infinity) {
+        templateName = 'metricsNoPercentData';
+        summaryDirective = metricsNS.noPercentDirective;
+    }
     // Omit the delta box if summaries.range = false
     if (!$.isBlank(summaries.range) && !summaries.range) {
-	templateName = 'metricsSimpleSummaryData';
-	summaryDirective = metricsNS.simpleSummaryDataDirective;
+        templateName = 'metricsSimpleSummaryData';
+        summaryDirective = metricsNS.simpleSummaryDataDirective;
+        if (blist.feature_flags.embetter_analytics_page) {
+            templateName = 'metricsSimpleSummaryDataV1';
+            summaryDirective = metricsNS.simpleSummaryDataDirectiveV1;
+        }
     }
+    // Show only the delta if summaries.total = false
+    if (!$.isBlank(summaries.total) && !summaries.total) {
+        templateName = 'metricsDeltaData';
+        summaryDirective = metricsNS.deltaDataDirective;
+    }
+
     metricsNS.renderSummarySection($context,
 				   mappedData,
 				   summaryDirective,
@@ -422,12 +456,33 @@ metricsNS.summaryDataDirective = {
     '.deltaBox@class+': 'deltaClass'
 };
 
+metricsNS.summaryDataDirectiveV1 = {
+    '.deltaValue' : 'delta',
+    '.percentValue' : 'deltaPercent',
+    '.percentBox@title' : 'deltaPercentText',
+    '.percentBox@class+' : 'deltaPercentClass',
+    '.totalValueV1' : 'total'
+};
+
+metricsNS.noPercentDirective = {
+    '.deltaValue' : 'delta',
+    '.totalValueV1' : 'total'
+};
+
 metricsNS.simpleSummaryDataDirective = {
     '.totalValue' : 'total',
     '.totalValue@title' : 'totalText'
+};
+
+metricsNS.simpleSummaryDataDirectiveV1 = {
+    '.deltaValue' : 'total'
 };
 
 metricsNS.detailDataDirective = {
     '.totalValue' : 'total',
     '.deltaBox@class+': 'deltaClass'
 };
+
+metricsNS.deltaDataDirective = {
+    '.deltaValue' : 'delta'
+}

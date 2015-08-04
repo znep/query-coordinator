@@ -147,22 +147,17 @@
 
     ChoroplethVisualizationUtils.prototype.fillColor = function(colorScale, feature, highlighted) {
 
-      if (!feature.hasOwnProperty('properties') ||
-          !feature.properties.hasOwnProperty(Constants['FILTERED_VALUE_PROPERTY_NAME']) ||
-          feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']] === null ||
-          !_.isFinite(feature.properties[Constants['UNFILTERED_VALUE_PROPERTY_NAME']])) {
-        return this.nullColor;
-      }
+      var unfilteredValue = _.get(feature, 'properties.{0}'.format(Constants['UNFILTERED_VALUE_PROPERTY_NAME']));
+      var filteredValue = _.get(feature, 'properties.{0}'.format(Constants['FILTERED_VALUE_PROPERTY_NAME']));
 
-      if (colorScale) {
-        var value = Number(feature.properties[Constants['FILTERED_VALUE_PROPERTY_NAME']]);
-        if (!_.isFinite(value)) {
-          value = 0;
+      if (_.isFinite(filteredValue) && _.isFinite(unfilteredValue)) {
+        if (colorScale) {
+          return String(colorScale(filteredValue));
+        } else {
+          return 'transparent';
         }
-
-        return String(colorScale(value));
       } else {
-        return 'transparent';
+        return this.nullColor;
       }
     };
 

@@ -6,11 +6,11 @@ The basic bootstrap command is:
 
     JS_LOGGING=true rails s
 
-Or if you want to start a pool of workers using Unicorn:
+Or if you want to start a pool of workers using Thin (the way we run frontend in docker):
 
-    bundle exec unicorn_rails -c config/unicorn.rb
+    bundle exec thin start -c config/thin.yml
 
-_Note: The example above that uses Unicorn is required if you want to run Polaroid locally and be able to download PNG images from Data Lens._
+_Note: The example above that uses Thin is required if you want to run Polaroid locally and be able to download PNG images from Data Lens._
 
 ## Tests
 

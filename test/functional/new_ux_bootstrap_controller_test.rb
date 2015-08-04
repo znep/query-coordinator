@@ -8,7 +8,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       init_current_domain
       # noinspection RubyArgCount
       CurrentDomain.stubs(domain: stub(cname: 'localhost'))
-      @phidippides = Phidippides.new
+      @phidippides = Phidippides.new('localhost', 2401)
       @page_metadata_manager = PageMetadataManager.new
       @controller.stubs(
         :phidippides => @phidippides,
@@ -698,44 +698,6 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         end
       end
     end.compact
-  end
-
-  def cardinality_threshold
-    CARD_TYPE_MAPPING['cardinality']['threshold']
-  end
-
-  def v0_mock_dataset_metadata_with_uninteresting_column_chart
-    cardinality_equal_to_dataset_size = [
-      title: 'cardinality equal to dataset size',
-      name: 'too_much',
-      logicalDatatype: 'category',
-      physicalDatatype: 'number',
-      cardinality: cardinality_threshold - 1
-    ]
-
-    mock_metadata = v0_mock_dataset_metadata
-    mock_metadata[:columns] = cardinality_equal_to_dataset_size
-    mock_metadata
-  end
-
-  def v1_mock_dataset_metadata_with_uninteresting_column_chart
-    cardinality_equal_to_dataset_size = {
-      too_much: {
-        description: 'cardinality equal to dataset size',
-        name: 'too much',
-        fred: 'category',
-        physicalDatatype: 'number',
-        cardinality: cardinality_threshold - 1
-      }
-    }
-
-    mock_metadata = v1_mock_dataset_metadata
-    mock_metadata[:columns] = cardinality_equal_to_dataset_size
-    mock_metadata
-  end
-
-  def v0_mock_dataset_metadata
-    JSON.parse(File.read("#{Rails.root}/test/fixtures/v0-bootstrap-dataset-metadata.json")).with_indifferent_access
   end
 
   def v1_mock_dataset_metadata

@@ -15,7 +15,7 @@ var dataCards = angular.module('dataCards', [
   'dataCards.filters'
 ]);
 
-dataCards.run(function(ServerConfig, testHelpers, serverMocks) {
+dataCards.run(function(ServerConfig, testHelpers) {
   // Provide a default server configuration.
   ServerConfig.setup({
     oduxEnableFeatureMap: true,

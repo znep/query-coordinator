@@ -46,7 +46,7 @@ metricsNS.renderMetricsChart = function(data, $chart, startDate, endDate,
     {
         raphael = new Raphael($chart.get(0), $chart.width(), $chart.height());
         chartD3 = d3.raphael(raphael);
-        chartD3.setSize = function(width, height) { raphael.setSize(width, height); };
+        chartD3.setWidth = function(width) { raphael.setSize(width, false); }
         $chart.data('metrics-chart', chartD3);
 
         $chart.prepend($.tag2({ _: 'div', 'class': 'tickContainer' }));
@@ -99,8 +99,8 @@ metricsNS.renderMetricsChart = function(data, $chart, startDate, endDate,
     var yScale, ticks;
     (function() {
         var extent = d3.extent(combinedData),
-            min = extent[0],
-            max = extent[1];
+            min = extent[0] || 0,
+            max = extent[1] || 0;
         yScale = d3.scale.linear()
             .domain([ min, max ])
             .range([ chartDims.height - chartDims.marginBottom, chartDims.marginTop ]);
@@ -240,7 +240,7 @@ metricsNS.renderMetricsChart = function(data, $chart, startDate, endDate,
                 .style('top',  function()  { return yScale(yScale.domain()[0]) + 10 + 'px'; });
     };
     $(window).resize(function() {
-        chartD3.setSize($chart.width(), $chart.height());
+        chartD3.setWidth($chart.width());
         renderXDependentStuff();
     });
     renderXDependentStuff();

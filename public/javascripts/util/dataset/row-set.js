@@ -817,12 +817,18 @@ var RowSet = ServerModel.extend({
         args.params['$$version'] = '2.0';
 
         var baseQuery = rs._dataset._queryBase.metadata.jsonQuery;
+        var hasGroups = !_.isEmpty(rs._jsonQuery.group);
+        var hasBaseQueryGroups = !_.isEmpty(baseQuery.group);
+        var baseQueryIsQuery = rs._dataset.id === rs._dataset._queryBase.id;
 
         // Need to take the difference from queryBase, and adjust columns if necessary
         var adjSearchString = rs._jsonQuery.search == baseQuery.search ?
-            '' : rs._jsonQuery.search;
-        if (!$.isBlank(adjSearchString))
-        { args.params['$search'] = adjSearchString; }
+            '' :
+            rs._jsonQuery.search;
+
+        if (!$.isBlank(adjSearchString)) {
+          args.params['$search'] = adjSearchString;
+        }
 
         if (!_.isEmpty(rs._jsonQuery.order))
         {
@@ -846,52 +852,59 @@ var RowSet = ServerModel.extend({
             { delete args.params['$order']; }
         }
 
-        if (!_.isEmpty(rs._jsonQuery.where))
-        {
-            // Can't apply a where on top of a group by
-            if (_.isEmpty(baseQuery.group))
-            {
-                var soqlWhere = '';
-                var where = blist.filter.generateSOQLWhere(rs._jsonQuery.where, rs._dataset);
-                var baseWhere = blist.filter.generateSOQLWhere(baseQuery.where, rs._dataset._queryBase);
-                var hasWhere = !_.isEmpty(where);
-                var hasBaseWhere = !_.isEmpty(baseWhere);
+        if (!_.isEmpty(rs._jsonQuery.where)) {
 
-                // If we have a multiple possible where's
-                // we simply join them with an AND, as opposed
-                // to using subtractQueries.
-                if (hasWhere && hasBaseWhere) {
-                  soqlWhere = where + ' AND ' + baseWhere;
-                } else if (hasBaseWhere) {
-                  soqlWhere = baseWhere;
-                } else if (hasWhere) {
-                  soqlWhere = where;
-                }
+          // Can't apply a where on top of a true base query group by
+          if (!hasBaseQueryGroups || (baseQueryIsQuery && hasBaseQueryGroups)) {
+            var soqlWhere = '';
+            var where = blist.filter.generateSOQLWhere(rs._jsonQuery.where, rs._dataset);
+            var baseWhere = blist.filter.generateSOQLWhere(baseQuery.where, rs._dataset._queryBase);
+            var hasWhere = !_.isEmpty(where);
+            var hasBaseWhere = !_.isEmpty(baseWhere);
 
-                // This is a cheat. Maps NBE interface. Appending viewport.
-                if ($.isPresent(rs._jsonQuery.where.soql)) {
-                    if (soqlWhere.length > 0) {
-                        soqlWhere += ' AND ';
-                    }
-                    soqlWhere += rs._jsonQuery.where.soql;
-                }
-                args.params['$where'] = !$.isBlank(args.params['$where']) ?
-                    (args.params['$where'] + ' and ' + soqlWhere) : soqlWhere;
+            // If we have a multiple possible where's
+            // we simply join them with an AND, as opposed
+            // to using subtractQueries.
+            if (hasWhere && hasBaseWhere) {
+              soqlWhere = where + ' and ' + baseWhere;
+            } else if (hasBaseWhere) {
+              soqlWhere = baseWhere;
+            } else if (hasWhere) {
+              soqlWhere = where;
             }
-        }
-        if (!_.isEmpty(rs._jsonQuery.having))
-        {
-            var soqlHaving = blist.filter.generateSOQLWhere(
-                    blist.filter.subtractQueries(Dataset.translateFilterColumnsToBase(
-                            rs._jsonQuery.having, rs._dataset),
-                        baseQuery.having), rs._dataset._queryBase);
-            args.params['$having'] = !$.isBlank(args.params['$having']) ?
-                (args.params['$having'] + ' and ' + soqlHaving) : soqlHaving;
+
+            // This is a cheat. Maps NBE interface. Appending viewport.
+            if ($.isPresent(rs._jsonQuery.where.soql)) {
+                if (soqlWhere.length > 0) {
+                    soqlWhere += ' and ';
+                }
+                soqlWhere += rs._jsonQuery.where.soql;
+            }
+
+            args.params['$where'] = !$.isBlank(args.params['$where']) ?
+                (args.params['$where'] + ' and ' + soqlWhere) : soqlWhere;
+          }
         }
 
-        var hasGroups = !_.isEmpty(rs._jsonQuery.group);
-        var hasBaseQueryGroups = !_.isEmpty(baseQuery.group);
-        var baseQueryIsQuery = rs.id === baseQuery.id;
+
+        if (!_.isEmpty(rs._jsonQuery.having)) {
+          var soqlHaving = '';
+          var having = blist.filter.generateSOQLWhere(rs._jsonQuery.having, rs._dataset);
+          var baseHaving = blist.filter.generateSOQLWhere(baseQuery.having, rs._dataset._queryBase);
+          var hasHaving = !_.isEmpty(having);
+          var hasBaseHaving = !_.isEmpty(baseHaving);
+
+          if (hasHaving && hasBaseHaving) {
+            soqlHaving = having + ' and ' + baseHaving;
+          } else if (hasBaseHaving) {
+            soqlHaving = baseHaving;
+          } else if (hasHaving) {
+            soqlHaving = having;
+          }
+
+          args.params['$having'] = !$.isBlank(args.params['$having']) ?
+              (args.params['$having'] + ' and ' + soqlHaving) : soqlHaving;
+        }
 
         // If queryBase has any group bys, we can't add more
         if ((hasGroups && !hasBaseQueryGroups) || (hasGroups && hasBaseQueryGroups && baseQueryIsQuery)) {
@@ -932,7 +945,7 @@ var RowSet = ServerModel.extend({
                         return null;
                       }
 
-                      return s.aggregate + '(' + qbCF + ')';
+                      return s.aggregate + '(' + qbCF + ') as ' + s.aggregate + '_' + qbCF;
                     }
 
                     return null;

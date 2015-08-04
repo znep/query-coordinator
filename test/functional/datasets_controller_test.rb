@@ -15,7 +15,7 @@ class DatasetsControllerTest < ActionController::TestCase
     )
     @view.stubs(user_granted?: false)
     @controller.stubs(:get_view => @view)
-    @phidippides = Phidippides.new
+    @phidippides = Phidippides.new('localhost', 2401)
     @params = { :foo => 'foo', :bar => 'bar' }
     CurrentDomain.stubs(user_can?: false, default_widget_customization_id: nil)
     default_url_options[:host] = @request.host

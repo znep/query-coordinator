@@ -782,8 +782,15 @@
                   '</div>'].join(''),
       link: function choroplethLink(scope, element, attrs) {
 
-        var mouseEnter$ = Rx.Observable.fromEvent(element, 'mouseenter');
-        var mouseLeave$ = Rx.Observable.fromEvent(element, 'mouseleave');
+        // Merge 'mousemove' and 'mouseleave' events into a single flyout
+        // registration stream.
+        var registerFlyout$ = Rx.Observable.merge(
+          Rx.Observable.fromEvent(element, 'mousemove'),
+          Rx.Observable.fromEvent(element, 'mouseleave')
+        ).map(function(e) {
+          return e.type === 'mousemove';
+        }).distinctUntilChanged();
+
         var LegendType = attrs.stops === 'continuous' ? LegendContinuous : LegendDiscrete;
         var legend = new LegendType(element.find('.choropleth-legend'), element, scope);
         var savedExtent$ = scope.$observe('savedExtent');
@@ -1187,37 +1194,41 @@
           render: _.constant('<div class="flyout-title">{0}</div>'.format(I18n.flyout.clearFilter))
         });
 
-        // Register these flyouts when we our mouse enters the map,
-        // deregister them when our mouse leaves the map.
-        mouseEnter$.subscribe(function() {
+        // Register flyouts if 'shouldRegister' is true, else deregister.
+        registerFlyout$.subscribe(function(shouldRegister) {
+          var selectionBoxSelectors = '{0}, {1}, {2}'.format(
+            selectionBox.selector,
+            selectionBoxFilterIcon.selector,
+            selectionBoxValue.selector
+          );
 
-          FlyoutService.register({
-            selector: '.leaflet-clickable',
-            render: renderFlyout,
-            destroySignal: Rx.Observable.merge(
-              scope.$destroyAsObservable(element),
-              mouseLeave$
-            ),
-            trackCursor: true
-          });
 
-          FlyoutService.register({
-            selector: '{0}, {1}, {2}'.format(
-              selectionBox.selector,
-              selectionBoxFilterIcon.selector,
-              selectionBoxValue.selector
-            ),
-            render: renderFlyout,
-            positionOn: function(target) {
-              if (!$(target).parent().is(selectionBox.selector)) {
-                return selectionBox[0];
-              }
-            },
-            destroySignal: Rx.Observable.merge(
-              scope.$destroyAsObservable(element),
-              mouseLeave$
-            )
-          });
+          if (shouldRegister) {
+
+            FlyoutService.register({
+              selector: '.leaflet-clickable',
+              render: renderFlyout,
+              destroySignal: scope.$destroyAsObservable(element),
+              trackCursor: true
+            });
+
+            FlyoutService.register({
+              selector: selectionBoxSelectors,
+              render: renderFlyout,
+              positionOn: function(target) {
+                if (!$(target).parent().is(selectionBox.selector)) {
+                  return selectionBox[0];
+                }
+              },
+              destroySignal: scope.$destroyAsObservable(element)
+            });
+
+          } else {
+
+            FlyoutService.deregister('.leaflet-clickable', renderFlyout);
+            FlyoutService.deregister(selectionBoxSelectors, renderFlyout);
+
+          }
         });
 
         /***************

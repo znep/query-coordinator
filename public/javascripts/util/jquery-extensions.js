@@ -39,6 +39,7 @@
     return !_.isEmpty(argument);
   };
 
+
   $.htmlEncode = function(value) {
     return $('<div/>').text(value).html();
   };

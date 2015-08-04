@@ -27,8 +27,8 @@
         <span ng-switch-default>{{'searchCard.promptText' | I18n}}</span>
       </span>
     </div>
-    <div class="one-line" ng-show="sampleOne && !sampleTwo">({{'searchCard.oneExample' | I18n:sampleOne}})</div>
-    <div class="one-line" ng-show="sampleOne && sampleTwo">({{'searchCard.twoExamples' | I18n:sampleOne:sampleTwo}})</div>
+    <div ng-show="sampleOne && !sampleTwo">({{'searchCard.oneExample' | I18n:sampleOne}})</div>
+    <div ng-show="sampleOne && sampleTwo">({{'searchCard.twoExamples' | I18n:sampleOne:sampleTwo}})</div>
   </div>
 </div>
 <div ng-show="isInvalidSearch" class="search-card-results">

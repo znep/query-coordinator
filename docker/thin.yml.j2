@@ -1,0 +1,32 @@
+---
+{% if RAILS_ENV is defined -%}
+environment: {{ RAILS_ENV }}
+{% else %}
+environment: production
+{% endif -%}
+address: 0.0.0.0
+{% if PORT is defined -%}
+port: {{ PORT }}
+{% else %}
+port: 3000
+{% endif -%}
+{% if REQUEST_TIMEOUT is defined -%}
+timeout: {{ REQUEST_TIMEOUT }}
+{% else %}
+timeout: 60
+{% endif -%}
+{% if MAX_CONNECTIONS is defined -%}
+max_conns: {{ MAX_CONNECTIONS }}
+{% else %}
+max_conns: 1024
+{% endif -%}
+{% if MAX_PERSISTENT_CONNECTIONS is defined -%}
+max_persistent_conns: {{ MAX_PERSISTENT_CONNECTIONS }}
+{% else %}
+max_persistent_conns: 100
+{% endif -%}
+{% if THREAD_POOL_SIZE is defined -%}
+threadpool_size: {{ THREAD_POOL_SIZE }}
+{% else %}
+threadpool_size: 20
+{% endif -%}

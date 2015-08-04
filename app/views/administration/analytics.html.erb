@@ -12,7 +12,7 @@
 <%= render :partial => 'left_nav' %>
 
 <div id="analyticsDataContainer" class="overviewMetrics">
-  <div class="contentBox withLeftNavigation">
+  <div class="contentBox withLeftNavigation analyticsDataContainer">
     <div>
       <div class="adminHeader floating analytics clearfix">
         <span class="icon"></span>
@@ -22,17 +22,19 @@
       </div>
     </div>
     <div class="summaryDisplay clearfix container"></div>
+<%- unless FeatureFlags.derive(@view, request).embetter_analytics_page -%>
   </div>
-
   <div class="contentBox withLeftNavigation analyticsDataContainer">
+<%- end -%>
     <div class="chartsDisplay container">
       <div class="flash error message errorMessage">
         <h3>An error occurred loading the metrics data. Please try again later.</h3>
       </div>
     </div>
+<%- unless FeatureFlags.derive(@view, request).embetter_analytics_page -%>
   </div>
-
   <div class="contentBox withLeftNavigation analyticsDataContainer">
+<%- end -%>
     <div class="detailDisplay clearfix container"></div>
 
     <div class="topDisplay clearfix container">

@@ -26,6 +26,7 @@
       // Search card suggestion parameters.
       'SUGGESTION_DISABLED_DATA_TYPES': ['number', 'money'],
       'MAX_NUMBER_OF_SUGGESTIONS': 10,
+      'MAX_SUGGESTION_LENGTH': 85,
 
       // Customization parameters.
       'CUSTOMIZATION_DISABLED_CARD_TYPES': ['timeline'],
@@ -91,9 +92,11 @@
       'HISTOGRAM_REQUIRED_LABEL_WIDTH': 42, // based off of "-1,000" label
 
       // Feature Maps
-      'FEATURE_MAP_HOVER_THRESHOLD': 8,
+      'FEATURE_MAP_MIN_HOVER_THRESHOLD': 5,
+      'FEATURE_MAP_MAX_ZOOM': 18, // same as Leaflet default
       'FEATURE_MAP_FLYOUT_Y_OFFSET': 1.25,
       'FEATURE_MAP_RESIZE_DEBOUNCE_INTERVAL': 250,
+      'FEATURE_MAP_MAX_POINT_LIMIT': 50000,
 
       // Feature Map Flannel
       'FLANNEL_PADDING_COMPENSATION': 3,
@@ -117,6 +120,9 @@
 
       // Related Views
       'RELATED_VIEWS_LIST_HEIGHT_OFFSET': 150,
+
+      // QFB
+      'MAX_OPERAND_LENGTH': 85,
 
       // Aggregation Chooser
       'AGGREGATION_MAX_COLUMN_COUNT': 15,

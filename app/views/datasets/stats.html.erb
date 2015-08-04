@@ -17,18 +17,20 @@
     </div>
 
     <div class="summaryDisplay clearfix container"></div>
+<%- unless FeatureFlags.derive(@view, request).embetter_analytics_page -%>
   </div>
-
   <div class="contentBox">
+<%- end -%>
     <div class="chartsDisplay container">
       <div class="flash error message errorMessage">
         <h3><%= t("#{prefix}.error_loading") %></h3>
       </div>
     </div>
     <div class="detailDisplay clearfix container"></div>
+<%- unless FeatureFlags.derive(@view, request).embetter_analytics_page -%>
   </div>
-
   <div class="contentBox">
+<%- end -%>
     <div class="topDisplay clearfix container">
       <div class="leftColumn"></div>
       <div class="rightColumn"></div>

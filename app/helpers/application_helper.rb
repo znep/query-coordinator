@@ -338,17 +338,6 @@ module ApplicationHelper
     return r.html_safe if r
   end
 
-  def friendly_relative_time(time_str)
-    if time_str.blank?
-      return ''
-    end
-
-    time_obj = Time.at(time_str)
-    # Using blist & gov locales screws up this Rails function; force the en locale
-    distance_of_time_in_words(time_obj, Time.now, false, {:locale => 'en'}) +
-      (time_obj > Time.now ? ' from now' : ' ago')
-  end
-
 # HTML HELPERS
 
   def create_pagination(total_count, page_count, current_page, base_href,

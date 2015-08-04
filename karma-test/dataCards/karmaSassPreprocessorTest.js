@@ -1,4 +1,4 @@
-xdescribe('karma-sass-preprocessor', function() {
+describe('karma-sass-preprocessor', function() {
   beforeEach(module('dataCards/main.sass'));
   describe('with one dependency', function() {
     beforeEach(inject());

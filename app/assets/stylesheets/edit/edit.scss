@@ -1,4 +1,4 @@
-@import '../base';
+@import 'lib/variables';
 
 html {
   font-family: "Open Sans", "Helvetica", sans-serif;
@@ -10,7 +10,7 @@ html {
 body {
   margin: 0;
   padding-bottom: $user-story-container-vertical-padding;
-  min-height: calc(100vh - (#{$header-total-height} + (#{$user-story-container-vertical-padding} * 2)));
+  min-height: calc(100vh - (#{$header-height} + (#{$user-story-container-vertical-padding} * 2)));
   background-color: $body-bg-color;
 }
 
@@ -23,17 +23,17 @@ body header {
   left: 0;
   top: 0;
   height: $header-height;
-  padding: ($header-vertical-padding / 2) 0;
   background-color: $header-bg-color;
   box-sizing: content-box;
   z-index: $site-header-z-index;
   color: $header-font-color;
-  border-left: 1em solid $header-font-color;
 
   .header-right {
     display: inline-block;
     float: right;
-    padding: $header-right-pane-padding;
+    line-height: $header-height;
+    font-size: 1.5em;
+    font-weight: lighter;
 
     .menu a {
       $button-border-width: 5px;
@@ -53,6 +53,31 @@ body header {
     line-height: $header-height;
     font-size: $header-title-height;
     font-weight: bold;
+    color: $header-story-title-color;
+  }
+
+  .settings-panel-btn {
+    box-sizing: border-box;
+    height: 100%;
+    float: left;
+    display: block;
+    line-height: $header-height;
+    width: $header-height;
+    cursor: pointer;
+    text-align: center;
+    background-color: $header-accent-color;
+    color: $header-bg-color;
+    font-size: 3em;
+
+    &:hover,
+    &:focus {
+      outline: none;
+      color: lighten($header-bg-color, 10%);
+    }
+
+    &:before {
+      text-align: center;
+    }
   }
 }
 
@@ -102,4 +127,11 @@ a[role="button"] {
   font-weight: bold;
   padding-top: 40px;
   text-align: center;
+}
+
+// Move mini-profiler (dev-mode only) to the bottom, so it doesn't overlap menus
+// Can't be easily configured during initialization
+.profiler-results {
+  bottom: 0px;
+  top: auto !important;
 }

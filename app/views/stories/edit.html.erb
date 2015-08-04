@@ -1,5 +1,6 @@
 <header>
-  <a href="#" class="story-title" role="button">Story</a>
+  <a href="#" data-panel-toggle="settings-panel" role="button" class="icon-cog settings-panel-btn"></a>
+  <a href="#" class="story-title" role="button" data-panel-toggle="settings-panel">Story</a>
   <div class="header-right">
     <ul class="menu">
       <li>
@@ -17,23 +18,8 @@
   </div>
 </header>
 
-<section class="add-content-panel">
-  <div class="close-content-panel-btn">
-    <a role="button" href="#" title="Close">
-      <span class="icon-cross2"></span>
-    </a>
-  </div>
-  <section>
-    <h1><%= I18n.t('add_content_panel.common_blocks') %></h1>
-    <hr></hr>
-    <div class="scrollable">
-      <div class="inspiration-block-list">
-        <%= render 'content_panel' %>
-      </div>
-    </div>
-  </section>
-  <div class="inspiration-block-list-error hidden"><%= I18n.t('add_content_panel.render_error') %></div>
-</section>
+<%= render 'settings_panel' %>
+<%= render 'content_panel' %>
 
 <section id="rich-text-editor-toolbar"></section>
 

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'block edit controls', type: :feature, js: true do
 
   before do
-    allow_any_instance_of(ApplicationController).to receive(:require_logged_in_user).and_return(true)
+    stub_logged_in_user
     visit '/s/magic-thing/hasb-lock/edit'
     @blocks = page.all('.user-story .block-edit')
   end

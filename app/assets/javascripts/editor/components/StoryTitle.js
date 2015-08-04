@@ -24,17 +24,6 @@
     storyteller.storyStore.addChangeListener(render);
     render();
 
-    titleNodes.on('click', function() {
-      var newTitle = prompt('Please enter a story title', storyteller.storyStore.getStoryTitle(storyUid));
-      if (newTitle) {
-        storyteller.dispatcher.dispatch({
-          action: Constants.STORY_SET_TITLE,
-          storyUid: storyUid,
-          title: newTitle
-        });
-      }
-    });
-
     return this;
   };
 

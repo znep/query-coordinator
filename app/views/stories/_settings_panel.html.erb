@@ -1,0 +1,26 @@
+<div id="settings-panel-container">
+  <div id="settings-panel">
+    <a href="#" class="close-side-panel-btn" data-panel-toggle="settings-panel" role="button">
+      <span class="close-panel-label" title="<%= I18n.t('common.close') %>">
+        <%= I18n.t('common.close') %>
+      </span>
+      <span class="icon-cross2 close-panel-icon"></span>
+    </a>
+
+    <section>
+      <h4 class="settings-main-title text-center"><%= I18n.t('settings_panel.panel_title') %></h4>
+      <hr>
+
+      <div class="scrollable">
+        <form>
+          <label><%= I18n.t('settings_panel.title_label') %></label>
+          <input type="text" />
+          <label><%= I18n.t('settings_panel.description_label') %></label>
+          <textarea></textarea>
+        </form>
+      </div>
+    </section>
+  </div>
+  <div id="settings-panel-overlay" data-panel-toggle="settings-panel"></div>
+</div>
+

@@ -21,6 +21,8 @@
 
 en:
   hello: "Hello world"
+  common:
+    close: 'Close'
   sample_story:
     title: 'Your Great Story Title'
   inspiration_story:
@@ -37,4 +39,7 @@ en:
   add_content_panel:
     common_blocks: 'Common Blocks'
     render_error: 'There was an error'
-
+  settings_panel:
+    panel_title: 'Story Settings'
+    title_label: 'Title'
+    description_label: 'Description'

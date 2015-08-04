@@ -38,13 +38,16 @@
       addContentPanel.trigger('sidebar:toggle');
     });
 
-    addContentPanel.find('.close-content-panel-btn a').on('click', function() {
+    addContentPanel.find('.content-panel-close-btn a').on('click', function() {
       addContentPanel.trigger('sidebar:close');
     });
 
     $(document).on('keydown', function(e) {
       if (e.ctrlKey && e.keyCode === 49) { // '1'
         addContentPanel.trigger('sidebar:toggle');
+      }
+      if (e.keyCode === 27) { // esc
+        addContentPanel.trigger('sidebar:close');
       }
     });
 
@@ -55,6 +58,7 @@
       }).
       on('sidebar:close', function() {
         toggleButton.removeClass('active');
+        $('header a').eq(0).focus(); // put focus back in the header
       }).
       on('mousewheel', '.scrollable', utils.preventScrolling).
       on('dblclick', '.inspiration-block', function(e) {

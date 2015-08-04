@@ -1,4 +1,4 @@
-@import '../base';
+@import 'lib/variables';
 
 .wizard-input-group {
 
@@ -13,20 +13,6 @@
     font-size: 1.75em;
     font-weight: normal;
   }
-
-  .wizard-text-input {
-    display: block;
-    position: relative;
-    margin-bottom: 1rem;
-    width: 100%;
-    height: 3em;
-    padding: 1em;
-    font-size: 1.5em;
-    border: 1px solid $wizard-input-element-border-color;
-    border-radius: $modal-border-radius;
-    box-sizing: border-box;
-  }
-
   .wizard-media-embed-preview-container {
     @include media-query-property(
       'height',
@@ -43,7 +29,7 @@
     background-size: 20%;
     background-position: 50% 50%;
     background-repeat: no-repeat;
-    border: 1px solid $wizard-input-element-border-color;
+    border: 1px solid $input-element-border-color;
     box-sizing: border-box;
 
     &.invalid {

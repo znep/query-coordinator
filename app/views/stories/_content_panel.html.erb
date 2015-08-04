@@ -1,6 +1,22 @@
-<% @inspiration_block_list.each do |block| %>
-  <div class="inspiration-block" data-block-content="<%= block["blockContent"].to_json %>">
-    <img src="<%= asset_path(block['imagePreview']) %>">
-    <div class="drag-overlay"></div>
+<div id="add-content-panel">
+  <div class="content-panel-close-btn">
+    <a role="button" href="#" title="Close">
+      <span class="icon-cross2"></span>
+    </a>
   </div>
-<% end %>
+  <section>
+    <h1><%= I18n.t('add_content_panel.common_blocks') %></h1>
+    <hr></hr>
+    <div class="scrollable">
+      <div class="inspiration-block-list">
+        <% @inspiration_block_list.each do |block| %>
+          <div class="inspiration-block" data-block-content="<%= block["blockContent"].to_json %>">
+            <img src="<%= asset_path(block['imagePreview']) %>">
+            <div class="drag-overlay"></div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </section>
+  <div class="inspiration-block-list-error hidden"><%= I18n.t('add_content_panel.render_error') %></div>
+</div>

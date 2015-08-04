@@ -1,11 +1,17 @@
 // Header
-$header-height: 4rem;
-$header-vertical-padding: 1rem;
+$header-height: 6rem;
 $header-margin: 0.7rem;
-$header-total-height: $header-height + $header-vertical-padding;
-$header-title-height: $header-height * 0.4;
-$header-title-left-margin: 0.2em;
+$header-title-height: 1.7em;
+$header-title-left-margin: 0.5em;
 $header-right-pane-padding: 1em;
+
+// Panels
+$panel-width: 30rem;
+
+// Settings panel
+$settings-panel-width: 30%;
+$settings-panel-close-bar-height: 2rem;
+$settings-panel-padding-width: 3rem;
 
 // Add content panel.
 $add-content-panel-padding: 2rem;
@@ -63,7 +69,7 @@ $rich-text-editor-toolbar-left-offset-small: calc(((100vw - #{$main-content-widt
 $rich-text-editor-toolbar-left-offset-medium: calc(((100vw - #{$main-content-width-medium}) / 2) + #{$block-edit-controls-outer-width});
 $rich-text-editor-toolbar-left-offset-large: calc(((100vw - #{$main-content-width-large}) / 2) + #{$block-edit-controls-outer-width});
 $rich-text-editor-toolbar-left-offset-extra-large: calc(((100vw - #{$main-content-width-extra-large}) / 2) + #{$block-edit-controls-outer-width});
-$rich-text-editor-toolbar-top-offset: $header-total-height + 3rem;
+$rich-text-editor-toolbar-top-offset: $header-height + 3rem;
 $rich-text-editor-toolbar-btn-group-margin-right: 1rem;
 $rich-text-editor-toolbar-btn-width: 3rem;
 $rich-text-editor-toolbar-btn-height: 3rem;
@@ -87,8 +93,11 @@ $preview-btn-bottom-margin: 3rem;
 // Border radii
 $btn-border-radius: 0.2rem;
 $modal-border-radius: 0.3rem;
+$input-element-border-radius: 0.3rem;
 
 // Durations
 $transition-duration: 0.2s;
 $embed-bg-color-transition-duration: 1s;
 $iframe-onload-transition-duration: 2s;
+
+// Forms

@@ -213,8 +213,11 @@ $(document).on('ready', function() {
    */
 
   // Add Content Panel
-  var addContentPanelElement = $('.add-content-panel');
+  var addContentPanelElement = $('#add-content-panel');
   addContentPanelElement.addContentPanel($('.add-content-panel-btn'));
+
+  var settingsPanelContainer = $('#settings-panel-container');
+  settingsPanelContainer.settingsPanel($('[data-panel-toggle="settings-panel"]'));
 
   // Drag-drop
   var ghostElement = $('#block-ghost');

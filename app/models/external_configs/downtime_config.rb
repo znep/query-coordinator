@@ -40,7 +40,7 @@ class DowntimeConfig < ExternalConfig
 
 private
   def use_consul?
-    return !ENV['USE_CONSUL'].to_s.blank?
+    return !APP_CONFIG['consul_host'].to_s.blank?
   end
 
   def consul_key

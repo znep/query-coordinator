@@ -1,3 +1,3 @@
 Diplomat.configure do |config|
-  config.url = ENV['DIPLOMAT_HOST']
+  config.url = APP_CONFIG['consul_host']
 end

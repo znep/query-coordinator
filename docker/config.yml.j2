@@ -64,6 +64,12 @@ default: &default
   auth0_jwt: {{ AUTH0_JWT }}
   {%- endif %}
 
+  {% if CONSUL_HOST is defined -%}
+  consul_host: {{ CONSUL_HOST }}
+  {% elif ARK_HOST is defined -%}
+  consul_host: {{ ARK_HOST }}:8500
+  {%- endif %}
+
 development:
   <<: *default
   max_core_server_requests: 15

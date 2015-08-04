@@ -6,7 +6,12 @@
  * 'sidebar:close'
  * 'sidebar:toggle'
  */
-;(function($, storyteller) {
+;(function($, socrata) {
+  'use strict'
+
+  var storyteller = socrata.storyteller;
+  var utils = socrata.utils;
+
   /**
    * Instantiates an SettingsPanel control with the given
    * toggle button. When the user clicks the toggle button,
@@ -17,6 +22,7 @@
    *
    * @param {jQuery} toggleButton - a jQuery reference to the desired toggle button node.
    */
+
   $.fn.settingsPanel = function(toggleButton) {
 
     var settingsContainer = $(this);
@@ -51,8 +57,8 @@
         settingsContainer.removeClass('active');
         $('header a').eq(0).focus(); // put focus back in the header
       }).
-      on('mousewheel', '.scrollable', storyteller.Util.preventScrolling)
+      on('mousewheel', '.scrollable', utils.preventScrolling);
 
     return this;
   };
-}(jQuery, window.socrata.storyteller));
+}(jQuery, window.socrata));

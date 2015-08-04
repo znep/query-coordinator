@@ -38,6 +38,10 @@ class DowntimeConfig < ExternalConfig
     end
   end
 
+  def cache_period
+    600.seconds
+  end
+
 private
   def use_consul?
     return !APP_CONFIG['consul_host'].to_s.blank?

@@ -196,7 +196,7 @@
           // as the map is zoomed in. It can be replaced with
           // any function which computes a number that makes
           // sense as the radius of a point feature in pixels.
-          return Math.pow(zoomLevel * 0.125, 3) + 1;
+          return Math.pow(zoomLevel * 0.0695, 5) + 2;
         }
 
         /**
@@ -211,12 +211,28 @@
          */
         function getPointStyle() {
           return {
-            color: 'rgba(48,134,171,1.0)',
+            color: calculatePointColor,
             highlightColor: 'rgba(255, 255, 255, .5)',
             radius: scalePointFeatureRadiusByZoomLevel,
             lineWidth: 1,
-            strokeStyle: 'rgba(255,255,255,1.0)'
+            strokeStyle: calculateStrokeStyleColor
           };
+        }
+
+        /**
+        * Determine point fill color at given zoom level.
+        * Makes points more transparent as map zooms out.
+        */
+        function calculatePointColor(zoomLevel) {
+          return 'rgba(0,80,114,' + (0.3 * Math.pow(zoomLevel / 18, 5) + 0.4) + ')';
+        }
+
+        /**
+        * Determine stroke style (point outline) at given zoom level.
+        * Dims point outline color as map zooms out.
+        */
+        function calculateStrokeStyleColor(zoomLevel) {
+          return 'rgba(255,255,255,' + (0.8 * Math.pow(zoomLevel / 18, 8) + 0.1) + ')';
         }
 
         /**

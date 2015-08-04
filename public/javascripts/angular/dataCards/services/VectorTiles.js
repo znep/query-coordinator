@@ -146,7 +146,9 @@
 
       var ctx;
       var projectedPoint;
+      var color;
       var radius;
+      var strokeStyle;
 
       if (_.isUndefined(canvas) ||
           !_.isObject(computedStyle) ||
@@ -163,22 +165,36 @@
 
       projectedPoint = this.projectGeometryToTilePoint(geometry[0][0]);
 
+      // Determine point styling based on computed style and map zoom
+      if (_.isFunction(computedStyle.color)) {
+        color = computedStyle.color(this.map.getZoom());
+      } else {
+        color = computedStyle.color;
+      }
+
       if (_.isFunction(computedStyle.radius)) {
         radius = computedStyle.radius(this.map.getZoom());
       } else {
         radius = computedStyle.radius;
       }
 
-      ctx.fillStyle = computedStyle.color;
+      if (_.isFunction(computedStyle.strokeStyle)) {
+        strokeStyle = computedStyle.strokeStyle(this.map.getZoom());
+      } else {
+        strokeStyle = computedStyle.strokeStyle;
+      }
+
+      // Draw point
+      ctx.fillStyle = color;
       ctx.beginPath();
       ctx.arc(projectedPoint.x, projectedPoint.y, radius, 0, Math.PI * 2);
       ctx.closePath();
       ctx.fill();
 
-      if (computedStyle.lineWidth && computedStyle.strokeStyle) {
+      if (computedStyle.lineWidth && strokeStyle) {
 
         ctx.lineWidth = computedStyle.lineWidth;
-        ctx.strokeStyle = computedStyle.strokeStyle;
+        ctx.strokeStyle = strokeStyle;
         ctx.stroke();
 
       }

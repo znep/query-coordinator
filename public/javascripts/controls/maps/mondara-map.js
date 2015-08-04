@@ -1,6 +1,135 @@
-(function($)
+ (function($)
 {
     // Should inherit from tiledata.
+
+    var MapProvider = function() {}
+
+    MapProvider.prototype = {
+        handlers: {
+            click: function(evtObj) {
+                var lonlat = this._layerModel._map.baseLayer
+                    .getLonLatFromViewPortPx(this._layerModel._map.events.getMousePosition(evtObj));
+                this._layerModel.flyoutHandler().sayLoading(lonlat);
+            }
+        }
+    }
+
+    var OBEMapProvider = function(layerModel) {
+        this._layerModel = layerModel;
+        if (layerModel._config.bbox) {
+            layerModel._maxExtent = OpenLayers.Bounds.fromString(layerModel._config.bbox).transform(
+            new OpenLayers.Projection(layerModel._config.bboxCrs), layerModel._mapProjection);
+        }
+
+        // Support federation.
+        layerModel._owsUrl = (layerModel._view.domainUrl || '') + layerModel._config.owsUrl;
+    }
+
+    OBEMapProvider.prototype = _.extend({}, MapProvider.prototype, {
+        getLayer: function(layerName, layerOpts) {
+            layerOpts.url = this._layerModel._owsUrl;
+            layerOpts.maxExtent = this._layerModel._maxExtent || this._layerModel._map.maxExtent;
+            layerOpts.tileOrigin = new OpenLayers.LonLat(
+                this._layerModel._map.maxExtent.left,
+                this._layerModel._map.maxExtent.bottom
+            )
+            return new OpenLayers.Layer.WMS(layerName, this._layerModel._owsUrl, layerOpts.params, layerOpts);
+        },
+
+        _getFeatureProtocol: function() {
+            return new blist.openLayers.AuthenticatingFeatureProtocol({
+                featureNS: 'http://' + this._layerModel._config.namespace,
+                featureType: this._layerModel._config.layers.split(','),
+                maxFeatures: 10,
+                outputFormat: 'json',
+                readFormat: new OpenLayers.Format.GeoJSON(),
+                srsName: this._layerModel._map.projection,
+                url: this._layerModel._owsUrl,
+                version: '1.1.0'
+            });
+        },
+
+        featureGetter: function() {
+            return new OpenLayers.Control.GetFeature({
+                protocol: this._getFeatureProtocol(),
+                filterType: OpenLayers.Filter.Spatial.INTERSECTS,
+                single: false
+            });
+        }
+    });
+
+
+    var NBEMapProvider = function(layerModel) {
+        this._layerModel = layerModel;
+    }
+
+    NBEMapProvider.prototype = _.extend({}, MapProvider.prototype, {
+        getLayer: function(layerName, layerOpts) {
+            var style = encodeURIComponent("#main {polygon-fill: #dadbae; polygon-opacity: 0.60; line-width: 0.5; line-color: #000;}")
+            return new OpenLayers.Layer.XYZ(layerName,  '/tiles/' + layerName + '/the_geom/${z}/${x}/${y}.png?$style=' + style, layerOpts);
+        },
+
+        featureGetter: function() {
+            return new NBEFeatureGetter({
+                layer: this._layerModel
+            })
+        }
+    });
+
+    var NBEFeatureGetter = OpenLayers.Class(OpenLayers.Control.GetFeature, {
+
+        initialize: function(options) {
+            this._layer = options.layer;
+            OpenLayers.Control.GetFeature.prototype.initialize.call(this, options);
+        },
+
+        selectClick: function(evt) {
+            var proj = "EPSG:4326";
+            var toProjection = new OpenLayers.Projection(proj);
+            var esp9xxLonLat = this._layer._map.baseLayer
+                .getLonLatFromViewPortPx(this._layer._map.events.getMousePosition(evt));
+            var coord = esp9xxLonLat.transform(this._layer._map.getProjectionObject(), toProjection);
+            this.request(coord, proj);
+        },
+
+        request: function(coord, proj) {
+            var layerIds = this._layer._config.layers.split(",");
+            $.when.apply(this, layerIds.map(function(uid) {
+                var layerUrl = this._layer._config.owsUrl.replace("${uid}", uid);
+                return $.getJSON(layerUrl, {
+                    lat: coord.lat,
+                    lng: coord.lon,
+                    srs: proj
+                });
+            }.bind(this))).then(function() {
+                //$.when has a completely different callback signature when called with one argument
+                //vs > 1 argument. Which is super unpleasant...so we need to do this
+                //see https://api.jquery.com/jquery.when/ (or don't)
+                var resps;
+                if(layerIds.length === 1) {
+                    resps = [arguments[0]];
+                } else {
+                    resps = Array.prototype.slice.call(arguments).map(function(args) {
+                        return args[0]
+                    });
+                }
+
+                var features = resps.reduce(function(acc, featureArr) {
+                    return acc.concat(featureArr);
+                }, []).map(function(feature) {
+                    //wrap each one
+                    return {attributes: feature}
+                });
+
+
+                this.events.triggerEvent('featuresselected', {
+                    features: features
+                })
+            }.bind(this), function(err) {
+                //TODO: there are no mechanisms to handle errors apparently?
+            });
+        }
+    });
 
     // There's a concept called OverlayLayer in the old code, but I don't see any reason for it.
     $.Control.registerMixin('mondara', {
@@ -12,39 +141,36 @@
             layerObj._pubDate = layerObj._view.publicationDate;
             layerObj._dataLayers = [];
 
-            if (layerObj._config.bbox)
-            { layerObj._maxExtent = OpenLayers.Bounds.fromString(layerObj._config.bbox).transform(
-                new OpenLayers.Projection(layerObj._config.bboxCrs), layerObj._mapProjection); }
-
-            // Support federation.
-            layerObj._owsUrl = (layerObj._view.domainUrl || '') + layerObj._config.owsUrl;
+            if(layerObj._config.isNbe) {
+                this._provider = new NBEMapProvider(this);
+            } else {
+                this._provider = new OBEMapProvider(this);
+            }
 
             _.each(layerObj._config.layers.split(','), function(layerName)
             {
-                var params = {
-                    layers: layerObj._config.namespace + ':' + layerName,
-                    format: 'image/png',
-                    _soc_pubDate: layerObj._pubDate,
-                    tiled: true,
-                    transparent: true
-                };
                 var opacity = _.isNumber(layerObj._displayFormat.opacity)
                     && layerObj._displayFormat.opacity;
-                var layer = new OpenLayers.Layer.WMS(layerName, layerObj._owsUrl, params, {
-                    url: layerObj._owsUrl,
+
+                var layerOpts = {
                     isBaseLayer: false,
                     transitionEffect: 'resize',
                     tileSize: new OpenLayers.Size(256, 256),
-                    tileOrigin: new OpenLayers.LonLat(layerObj._map.maxExtent.left,
-                        layerObj._map.maxExtent.bottom),
-                    maxExtent: layerObj._maxExtent || layerObj._map.maxExtent,
                     opacity: opacity,
-                    params: params
-                });
+                    params: {
+                        layers: layerObj._config.namespace + ':' + layerName,
+                        format: 'image/png',
+                        _soc_pubDate: layerObj._pubDate,
+                        tiled: true,
+                        transparent: true
+                    }
+                };
+
+                var layer = this._provider.getLayer(layerName, layerOpts);
                 layer.atlasId = layerName;
                 layerObj._map.addLayer(layer);
                 layerObj._dataLayers.push(layer);
-            });
+            }, this);
 
             layerObj._view.getChildOptionsForType('table', function(views)
             {
@@ -73,36 +199,12 @@
             });
         },
 
-        featureProtocol: function()
-        {
-            var layerObj = this;
-
-            if (!layerObj._featureProtocol)
-            {
-                layerObj._featureProtocol = new blist.openLayers.AuthenticatingFeatureProtocol({
-                    featureNS: 'http://' + layerObj._config.namespace,
-                    featureType: layerObj._config.layers.split(','),
-                    maxFeatures: 10,
-                    outputFormat: 'json',
-                    readFormat: new OpenLayers.Format.GeoJSON(),
-                    srsName: layerObj._map.projection,
-                    url: layerObj._owsUrl,
-                    version: '1.1.0'
-                });
-            }
-            return layerObj._featureProtocol;
-        },
-
         buildGetFeature: function()
         {
             var layerObj = this;
             if (layerObj._displayFormat.disableFlyouts || layerObj._getFeature) { return; }
 
-            layerObj._getFeature = new OpenLayers.Control.GetFeature({
-                protocol: layerObj.featureProtocol(),
-                filterType: OpenLayers.Filter.Spatial.INTERSECTS,
-                single: false
-            });
+            layerObj._getFeature = this._provider.featureGetter();
 
             layerObj._map.addControl(layerObj._getFeature);
             layerObj._getFeature.activate();
@@ -112,12 +214,7 @@
                 });
             layerObj._map.addLayer(layerObj._selectionLayer);
 
-            layerObj._map.events.register('click', layerObj, function(evtObj)
-            {
-                var lonlat = layerObj._map.baseLayer
-                    .getLonLatFromViewPortPx(layerObj._map.events.getMousePosition(evtObj));
-                layerObj.flyoutHandler().sayLoading(lonlat);
-            });
+            layerObj._map.events.register('click', layerObj, this._provider.handlers.click.bind(this._provider));
             layerObj._getFeature.events.register('clickout', layerObj, function() {
                 this.flyoutHandler().cancel();
             });

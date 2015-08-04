@@ -72,7 +72,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
 
         if (this.newBackend) {
           // Look through each row and delete the column data.
-          _.each(this._activeRowSet._rows, function (row) {
+          _.each(this.loadedRows(), function (row) {
             delete row.data[col.lookup];
           });
         }

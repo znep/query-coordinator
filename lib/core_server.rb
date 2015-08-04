@@ -12,26 +12,13 @@ class CoreServer
   end
 
   def self.current_user(headers)
-    core_server_response = nil
-    user = nil
-
     core_server_request_options = {
       verb: :get,
       path: '/users/current.json',
       headers: headers.merge('Content-type' => 'application/json')
     }
 
-    with_retries(retry_options) do
-      core_server_response = core_server_request(core_server_request_options)
-    end
-
-    status_code = core_server_response.code.to_i
-
-    if status_code == 200
-      user = JSON.parse(core_server_response.body)
-    end
-
-    user
+    core_server_request_with_retries(core_server_request_options)
   end
 
   private
@@ -49,7 +36,7 @@ class CoreServer
   def self.retry_handler
     Proc.new do |exception, attempt_number, total_delay|
       if attempt_number === 3
-        report_error(
+        AirbrakeNotifier.report_error(
           exception,
           "CoreServer::core_server_request() failed with 3 retries after #{total_delay.to_s} seconds."
         )
@@ -92,10 +79,6 @@ class CoreServer
 
     verb = options[:verb]
     path = "/views/#{options[:uid]}.json"
-    view = nil
-    core_server_response = nil
-    status_code = nil
-    response_body = nil
 
     core_server_request_options = {
       verb: verb,
@@ -109,35 +92,38 @@ class CoreServer
       core_server_request_options[:body] = options[:data]
     end
 
+    core_server_request_with_retries(core_server_request_options)
+  end
+
+  def self.core_server_request_with_retries(request_options)
+    core_server_response = nil
+    json_response = nil
+
     begin
 
       with_retries(retry_options) do
-        core_server_response = core_server_request(core_server_request_options)
+        core_server_response = core_server_http_request(request_options)
       end
 
       status_code = core_server_response.code.to_i
       response_body = core_server_response.body
 
       if status_code == 200
-        view = JSON.parse(response_body)
-      else
-        report_error(
-          RuntimeError.new,
-          "TEMPORARY/DEBUG [#{verb.upcase} #{path} - HTTP #{status_code}] - '#{response_body.inspect}'"
-        )
+        json_response = JSON.parse(response_body)
       end
 
     rescue => error
-      report_error(
-        error,
-        "[#{verb.upcase} #{path} - HTTP #{status_code}] - '#{response_body.inspect}'"
-      )
+      error_message = "[#{request_options[:verb].upcase} #{request_options[:path]}"
+      error_message << " - HTTP #{status_code}" unless status_code.blank?
+      error_message << " - '#{response_body.inspect}'" unless response_body.blank?
+
+      AirbrakeNotifier.report_error(error, error_message)
     end
 
-    view
+    json_response
   end
 
-  def self.core_server_request(options)
+  def self.core_server_http_request(options)
     raise ArgumentError.new("':verb' is required.") unless options[:verb].present?
     raise ArgumentError.new("':path' is required.") unless options[:path].present?
 
@@ -148,10 +134,8 @@ class CoreServer
     uri = Addressable::URI.parse("#{core_server_address}#{options[:path]}")
 
     http = Net::HTTP.new(uri.host, uri.port)
-    # These timeouts might turn out to be overly-aggressive. We will have
-    # to see how it goes.
-    http.open_timeout = 5
-    http.read_timeout = 5
+    http.open_timeout = Rails.application.config.core_service_request_open_timeout
+    http.read_timeout = Rails.application.config.core_service_request_read_timeout
 
     core_request = "Net::HTTP::#{options[:verb].to_s.capitalize}".constantize.new(uri.request_uri)
 
@@ -164,14 +148,6 @@ class CoreServer
     end
 
     http.request(core_request)
-  end
-
-  def self.report_error(error, message)
-    Rails.logger.error("#{error.class}: #{error} (on #{message}):\n\n#{error.backtrace.join('\n')}")
-    Airbrake.notify_or_ignore(
-      error,
-      error_message: message
-    )
   end
 
 end

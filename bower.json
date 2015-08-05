@@ -18,7 +18,7 @@
   ],
   "dependencies": {
     "socrata-utils": "git@github.com:socrata/frontend-utils.git#master"
-  }
+  },
   "devDependencies": {
     "lodash": "~3.10.0",
     "jquery": "~2.1.1",

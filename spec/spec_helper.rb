@@ -214,6 +214,6 @@ def stub_logged_in_user
 end
 
 def stub_core_view(uid)
-  stub_request(:get, "http://localhost:8080/views/#{uid}.json").
+  stub_request(:get, /\/views\/#{uid}.json/).
     to_return(:status => 200, :body => '{"name": "test story" }')
 end

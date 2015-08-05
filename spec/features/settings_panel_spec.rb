@@ -43,6 +43,29 @@ RSpec.describe 'settings panel', type: :feature, js: true do
 
   end
 
+  describe 'title' do
+    before do
+      toggle_pane
+    end
+
+    it 'loads the current title into the input box' do
+      expect(page).to have_field('title', with: 'test story')
+    end
+
+    describe 'edit' do
+
+      it 'enables the save button when the title is changed' do
+        expect(page).to have_selector('#settings-panel .settings-save-btn:disabled')
+        fill_in('title', with: 'editing!')
+        expect(page).to have_selector('#settings-panel .settings-save-btn:enabled')
+        fill_in('title', with: 'test story')
+        expect(page).to have_selector('#settings-panel .settings-save-btn:disabled')
+      end
+
+    end
+
+  end
+
   def expect_settings_panel_to_be_closed
     expect(page).to have_selector(settings_panel_selector, visible: false)
     expect(page).to have_selector(settings_overlay_selector, visible: false)
@@ -51,6 +74,11 @@ RSpec.describe 'settings panel', type: :feature, js: true do
   def expect_settings_panel_to_be_open
     expect(page).to have_selector(settings_panel_selector, visible: true)
     expect(page).to have_selector(settings_overlay_selector, visible: true)
+  end
+
+  def toggle_pane
+    first_toggle = page.all(data_toggle_selector).first()
+    first_toggle.click()
   end
 
 end

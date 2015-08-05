@@ -35,7 +35,6 @@
     var _lastRenderOptions;
 
     // TODO: Validate columns
-
     var NAME_INDEX = config.columns.name;
     var UNFILTERED_INDEX = config.columns.unfilteredValue;
     var FILTERED_INDEX = config.columns.filteredValue;

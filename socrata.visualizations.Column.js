@@ -68,7 +68,7 @@
         {
           'class': 'truncation-marker'
         }
-      ).html('&raquo;')
+      ).html('&raquo;');
 
       var chartWrapper = $(
         '<div>',
@@ -260,7 +260,8 @@
       var numberOfDefaultLabels = expanded ? data.length : 3;
       var maximumBottomMargin = 140;
       var d3Selection = d3.select(_chartWrapper.get(0));
-      var barGroupSelection = d3Selection.selectAll('.bar-group').data(data, function(d) { return d[NAME_INDEX]; });
+      // The `_.property(NAME_INDEX)` below is equivalent to `function(d) { return d[NAME_INDEX]; }`
+      var barGroupSelection = d3Selection.selectAll('.bar-group').data(data, _.property(NAME_INDEX));
       var labelSelection = d3.select(_chartLabels[0]).selectAll('.label');
       var chartWidth = dimensions.width;
       var chartTruncated = false;
@@ -318,7 +319,7 @@
       var _renderTicks = function() {
 
         var numberOfTicks = 3;
-        var element = $('<div />', {
+        var element = $('<div>', {
           'class': 'ticks',
           css: {
             top: _chartScroll.position().top + topMargin,
@@ -327,7 +328,7 @@
           }
         });
         var tickMarks = _.map(_.uniq([0].concat(verticalScale.ticks(numberOfTicks))), function(tick) {
-          return $('<div/>', {
+          return $('<div>', {
             'class': tick === 0 ? 'origin' : '',
             css: {
               top: chartHeight - verticalScale(tick)
@@ -343,13 +344,21 @@
 
       var updateLabels = function(labelSelection) {
 
-        // Labels come in two sets of column names:
-        //  - Default labels. When the chart is unexpanded, this consists of the
-        //    first three column names in the data.
-        //    When the chart is expanded, this contains all the column names in the data.
-        //  - Selected labels. Contains the names of columns which are selected.
+        /**
+         * Labels come in two sets of column names:
+         *
+         * - Default labels. When the chart is unexpanded, this consists of the
+         *   first three column names in the data. When the chart is expanded,
+         *   this contains all the column names in the data.
+         *
+         * - Selected labels. Contains the names of columns which are selected.
+         */
         var defaultLabelData = _.take(data, numberOfDefaultLabels);
-        var selectedLabelData = data.filter(function(datum) { return datum[SELECTED_INDEX] === true; });
+        var selectedLabelData = data.filter(
+          function(datum) {
+            return datum[SELECTED_INDEX] === true;
+          }
+        );
         var labelData = _.union(defaultLabelData, selectedLabelData);
         var labelOrientationsByIndex = [];
 
@@ -362,19 +371,26 @@
         }
 
         function preComputeLabelOrientation(datum, index) {
+
           var leftHanded = false;
 
           if (!expanded) {
+
             var labelWidth = $(this).find('.contents').width();
             var proposedLeftOfText = horizontalScale(datum[NAME_INDEX]);
 
-            var rangeMagnitude = chartRightEdge - chartLeftOffset;
-            var spaceAvailableOnRight = rangeMagnitude - (proposedLeftOfText - chartLeftOffset);
-            var spaceAvailableOnLeft = proposedLeftOfText - chartLeftOffset;
+            var rangeMagnitude = (chartRightEdge - chartLeftOffset);
 
-            var spaceRemainingOnRight = spaceAvailableOnRight - labelWidth;
+            var spaceAvailableOnLeft = (proposedLeftOfText - chartLeftOffset);
 
-            leftHanded = spaceRemainingOnRight <= 10 && spaceAvailableOnLeft > spaceAvailableOnRight;
+            var spaceAvailableOnRight = rangeMagnitude -
+              proposedLeftOfText -
+              chartLeftOffset;
+
+            var spaceRemainingOnRight = (spaceAvailableOnRight - labelWidth);
+
+            leftHanded = (spaceRemainingOnRight <= 10) &&
+              (spaceAvailableOnLeft > spaceAvailableOnRight);
           }
 
           labelOrientationsByIndex[index] = leftHanded;
@@ -393,11 +409,8 @@
         var verticalPositionOfSelectedLabelRem = 2;
         var labelMargin = 0.75;
         var selectedLabelMargin = -0.4;
-
-        var labelDivSelection = labelSelection.data(
-          labelData,
-          function (datum) { return datum[NAME_INDEX]; }
-        );
+        // The `_.property(NAME_INDEX)` below is equivalent to `function(d) { return d[NAME_INDEX]; }`
+        var labelDivSelection = labelSelection.data(labelData, _.property(NAME_INDEX));
 
         var labelDivSelectionEnter = labelDivSelection.
           enter().
@@ -679,24 +692,20 @@
       var valueText;
 
       if ($.isNumeric(value)) {
-
         return value;
-
       } else if (_.isNaN(value)) {
-
         return placeholderText;
-
       }
 
       if (_.isBoolean(value)) {
-
         valueText = value.toString();
-
       }
 
       valueText = String(value) || '';
 
-      return socrata.utils.valueIsBlank(valueText.trim().escapeSpaces()) ? placeholderText : valueText;
+      return socrata.utils.valueIsBlank(valueText.trim().escapeSpaces()) ?
+        placeholderText :
+        valueText;
     }
 
     function _computeDomain(chartData, showFiltered) {
@@ -755,19 +764,18 @@
 
       _computeChartDimensionsForRangeInterval(chartWidth);
 
-      /*
-      According to the D3 API reference for Ordinal Scales#rangeBands
-      (https://github.com/mbostock/d3/wiki/Ordinal-Scales#ordinal_rangeBands):
-
-      for the method, ordinal.rangeBands(barWidth[, barPadding[, outerPadding]]) = rangeInterval
-
-      barPadding corresponds to the amount of space in the rangeInterval as a percentage of rangeInterval (width in px)
-      ==> rangeInterval = barPadding * rangeInterval + numberOfBars * barWidth
-      ==> (1 - barPadding) * rangeInterval = numberOfBars * barWidth
-      ==> rangeInterval = (numberOfBars * barWidth) / (1 - barPadding)
-
-      */
-
+      /**
+       * According to the D3 API reference for Ordinal Scales#rangeBands
+       * (https://github.com/mbostock/d3/wiki/Ordinal-Scales#ordinal_rangeBands):
+       *
+       * For the method `ordinal.rangeBands(barWidth[, barPadding[, outerPadding]]) = rangeInterval`
+       * `barPadding` corresponds to the amount of space in the `rangeInterval` as a percentage of
+       * `rangeInterval` (width in px):
+       *
+       * => rangeInterval = barPadding * rangeInterval + numberOfBars * barWidth
+       * => (1 - barPadding) * rangeInterval = numberOfBars * barWidth
+       * => rangeInterval = (numberOfBars * barWidth) / (1 - barPadding)
+       */
       if (rangeBand < minBarWidth) {
         // --> desired rangeBand (bar width) is less than accepted minBarWidth
         // use computeChartDimensionsForRangeInterval to set rangeBand = minBarWidth

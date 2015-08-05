@@ -191,7 +191,12 @@ describe('socrata.visualizations.Column', function() {
     };
   };
 
-  function removeColumnChart() {
+  function removeColumnChart(columnChart) {
+
+    if (columnChart && columnChart.chart && columnChart.chart.hasOwnProperty('destroy')) {
+      columnChart.chart.destroy();
+    }
+
     $('#chart').remove();
   };
 
@@ -222,9 +227,13 @@ describe('socrata.visualizations.Column', function() {
     return this.visualSize(fontSize).width;
   };
 
-  describe('when not expanded at 640px', function() {
+  /**
+   * Tests begin here
+   */
 
-    var columnChart;
+  var columnChart;
+
+  describe('when not expanded at 640px', function() {
 
     beforeEach(function() {
       columnChart = createColumnChart();
@@ -402,7 +411,6 @@ describe('socrata.visualizations.Column', function() {
 
   describe('when not expanded at 640px with non-default column indices', function() {
 
-    var columnChart;
     var testDataWithNonDefaultColumnIndices;
 
     beforeEach(function() {
@@ -446,7 +454,7 @@ describe('socrata.visualizations.Column', function() {
 
       columnChart.chart.render(testDataWithNonDefaultColumnIndices, columnChart.renderOptions);
 
-      expect(typeof $('.bar.unfiltered').width() == 'number').to.equal(true);
+      expect((typeof $('.bar.unfiltered').width()) === 'number').to.equal(true);
     });
 
     it('should not show the moar marker', function() {
@@ -602,11 +610,14 @@ describe('socrata.visualizations.Column', function() {
 
   describe('y scale', function() {
 
-    var columnChart;
     var smallDataPoint = ['small', 1, 1, false ];
     var hugeDataPoint = ['small', 10000000, 10000000, false];
     var testDataOnlySmall = _.map(_.range(100), _.constant(smallDataPoint));
     var testDataWithOneBigAtEnd = testDataOnlySmall.concat([hugeDataPoint]);
+
+    afterEach(function() {
+      removeColumnChart(columnChart);
+    });
 
     describe('when not expanded', function() {
 
@@ -681,7 +692,6 @@ describe('socrata.visualizations.Column', function() {
   describe('when not expanded at 100px', function() {
 
     var width = 100;
-    var columnChart;
 
     beforeEach(function() {
       columnChart = createColumnChart(width);
@@ -702,7 +712,6 @@ describe('socrata.visualizations.Column', function() {
   describe('when expanded at 640px', function() {
 
     var width = 640;
-    var columnChart;
     var bars = testData.length;
     var labels = testData.length;
 
@@ -752,7 +761,6 @@ describe('socrata.visualizations.Column', function() {
   describe('when not expanded at 50px', function() {
 
     var width = 50;
-    var columnChart;
 
     beforeEach(function() {
       columnChart = createColumnChart(width);
@@ -800,7 +808,6 @@ describe('socrata.visualizations.Column', function() {
   describe('when not expanded at 9000px', function() {
 
     var width = 9000;
-    var columnChart;
 
     beforeEach(function() {
       columnChart = createColumnChart(width);
@@ -848,7 +855,6 @@ describe('socrata.visualizations.Column', function() {
   describe('when expanded at 50px', function() {
 
     var width = 50;
-    var columnChart;
 
     beforeEach(function() {
       columnChart = createColumnChart(width);
@@ -888,7 +894,6 @@ describe('socrata.visualizations.Column', function() {
   describe('when expanded at 9000px', function() {
 
     var width = 9000;
-    var columnChart;
 
     beforeEach(function() {
       columnChart = createColumnChart(width);
@@ -948,7 +953,6 @@ describe('socrata.visualizations.Column', function() {
         false
       ];
     });
-    var columnChart;
     var bars = testDataWithFiltered.length;
 
     beforeEach(function() {
@@ -1005,8 +1009,6 @@ describe('socrata.visualizations.Column', function() {
 
     describe('with showFiltered off', function() {
 
-      var columnChart;
-
       beforeEach(function() {
         columnChart = createColumnChart();
       });
@@ -1031,7 +1033,6 @@ describe('socrata.visualizations.Column', function() {
   describe('when a datum is selected', function() {
 
     var selectedIndex = 6;
-    var columnChart;
 
     beforeEach(function() {
       columnChart = createColumnChart();
@@ -1054,8 +1055,6 @@ describe('socrata.visualizations.Column', function() {
 
   describe('when called with no data', function() {
 
-    var columnChart;
-
     beforeEach(function() {
       columnChart = createColumnChart();
     });
@@ -1065,7 +1064,7 @@ describe('socrata.visualizations.Column', function() {
     });
 
     it('should hide all existing bars when the data is cleared', function() {
-
+debugger
       columnChart.chart.render([], columnChart.renderOptions);
 
       expect($('.bar-group').length).to.equal(0);
@@ -1075,7 +1074,6 @@ describe('socrata.visualizations.Column', function() {
   describe('when there are a small number of columns', function() {
 
     var width = 1000;
-    var columnChart;
     var testDataSubset = _.select(testData, function(object, index) {
       return index < 4;
     });
@@ -1113,7 +1111,6 @@ describe('socrata.visualizations.Column', function() {
   describe('column labels', function() {
 
     var width = 100;
-    var columnChart;
 
     beforeEach(function() {
       columnChart = createColumnChart(width);
@@ -1180,7 +1177,6 @@ describe('socrata.visualizations.Column', function() {
   describe('when the truncation marker is clicked', function() {
 
     var width = 300;
-    var columnChart;
 
     beforeEach(function() {
       columnChart = createColumnChart(width);
@@ -1211,7 +1207,6 @@ describe('socrata.visualizations.Column', function() {
 
   describe('when columns or labels are clicked', function() {
 
-    var columnChart;
     var indexOfItemToClick = 2;
 
     beforeEach(function() {
@@ -1305,8 +1300,6 @@ describe('socrata.visualizations.Column', function() {
 
   describe('when the name of a datum is blank', function() {
 
-    var columnChart;
-
     beforeEach(function() {
       columnChart = createColumnChart();
     });
@@ -1343,8 +1336,6 @@ describe('socrata.visualizations.Column', function() {
   // no name property on the original datum.
   describe('when the name of a datum is NaN', function() {
 
-    var columnChart;
-
     beforeEach(function() {
       columnChart = createColumnChart();
     });
@@ -1380,7 +1371,6 @@ describe('socrata.visualizations.Column', function() {
   describe('when displaying labels', function() {
 
     var width = 499;
-    var columnChart;
 
     beforeEach(function() {
       columnChart = createColumnChart(width);
@@ -1388,7 +1378,7 @@ describe('socrata.visualizations.Column', function() {
 
     afterEach(function() {
       removeColumnChart(columnChart);
-    })
+    });
 
     it('should correctly position right-aligned labels for columns near the right ' +
       'edge of the chart when said columns have been selected', function() {

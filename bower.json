@@ -13,7 +13,7 @@
     ".gitignore",
     "bower.json",
     "karma.conf.js",
-    "packages.json",
+    "package.json",
     "README.md"
   ],
   "dependencies": {

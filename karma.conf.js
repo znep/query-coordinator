@@ -10,17 +10,19 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'chai', 'sinon'],
+    frameworks: ['mocha', 'chai'],
 
 
     // list of files / patterns to load in the browser
     files: [
       'bower_components/lodash/lodash.js',
+      'bower_components/d3/d3.js',
       'bower_components/jquery/dist/jquery.js',
-      'socrata-visualizations.js',
-      'socrata-visualizations-Visualization.js',
-      'socrata-visualizations-Column.js',
-      'socrata-visualizations-Column.css',
+      'karma/testHelpers.js',
+      'bower_components/socrata-utils/socrata.utils.js',
+      'socrata.visualizations.Visualization.js',
+      'socrata.visualizations.Column.js',
+      'socrata.visualizations.column.css',
       'karma/**/*spec.js'
     ],
 
@@ -76,7 +78,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
+    browsers: ['PhantomJS', 'Chrome'],
 
 
     // Continuous Integration mode

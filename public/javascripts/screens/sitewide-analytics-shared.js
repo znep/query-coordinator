@@ -15,7 +15,7 @@ if(blist.feature_flags.dataset_count_v2){
 }
 if (blist.feature_flags.embetter_analytics_page) {
     pageViewsSummary = {plus: 'js-page-view', total: false};
-    mapsSummary = {plus: 'lense-map-published-v1', range: false}
+    mapsSummary = {plus: 'lense-map-published-v1'}
     dataLensesEnabled = true;
     datasetsListHeader = 'Page Views';
     totalPrefix = '';
@@ -74,9 +74,9 @@ blist.metrics.sitewideShared = {
             enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {id: 'detailCharts',    displayName: 'Charts' + addedSuffix,   summary: { plus: ['charts-created'], minus: ['charts-deleted'] } },
-        {id: 'detailLenses',    displayName: 'Data Lens Pages', summary: { plus: 'lense-new_view-published-v1', range: false }, enabled: dataLensesEnabled },
+        {id: 'detailLenses',    displayName: 'Data Lens Pages' + addedSuffix, summary: { plus: 'lense-new_view-published-v1' }, enabled: dataLensesEnabled },
         {id: 'detailFilters',   displayName: 'Filters' + addedSuffix,  summary: { plus: ['filters-created'], minus: ['filters-deleted'] } },
-        {id: 'detailMaps',      displayName: 'Maps',     summary: mapsSummary },
+        {id: 'detailMaps',      displayName: 'Maps' + addedSuffix,     summary: mapsSummary },
         {id: 'detailSnapshots', displayName: 'Snapshots' + addedSuffix, summary: { plus: ['datasets-created-snapshot'], minus: ['datasets-deleted-snapshot'] } },
         {id: 'detailBlobs',     displayName: 'Downloadable Files' + addedSuffix, summary: { plus: ['datasets-created-blobby'], minus: ['datasets-deleted-blobby'] } },
         {id: 'detailHref',      displayName: 'External Datasets' + addedSuffix, summary: { plus: ['datasets-created-href'], minus: ['datasets-deleted-href'] } }
@@ -106,10 +106,9 @@ blist.metrics.sitewideShared = {
             enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {
-            id: 'summaryDatasets',    displayName: totalPrefix + 'Datasets',
+            id: 'summaryDatasets',    displayName: totalPrefix + 'Datasets' + addedSuffix,
             summary: {
                 plus: datasetsMetricName,
-                range: false,
                 verbPhrase: 'datasets created',
 		verbPhraseSingular: 'dataset created'
             }

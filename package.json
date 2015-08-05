@@ -20,8 +20,7 @@
     "karma-sinon": "^1.0.4",
     "mocha": "^2.2.5",
     "phantomjs": "^1.9.17",
-    "sinon": "^1.15.3",
-    "socrata-utils": "git@github.com:socrata/frontend-utils.git#master"
+    "sinon": "^1.15.3"
   },
   "eslintConfig": {
     "env": {

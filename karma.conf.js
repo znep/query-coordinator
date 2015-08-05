@@ -18,8 +18,8 @@ module.exports = function(config) {
       'bower_components/lodash/lodash.js',
       'bower_components/d3/d3.js',
       'bower_components/jquery/dist/jquery.js',
-      'karma/testHelpers.js',
       'bower_components/socrata-utils/socrata.utils.js',
+      'karma/testHelpers.js',
       'socrata.visualizations.Visualization.js',
       'socrata.visualizations.Column.js',
       'socrata.visualizations.column.css',
@@ -35,7 +35,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'socrata-visualizations*.js': ['coverage']
+      'socrata.visualizations*.js': ['coverage']
     },
 
 

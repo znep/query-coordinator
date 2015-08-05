@@ -302,12 +302,29 @@ metricsNS.summarySectionCallback = function($context, slice, section)
                       summaries.verbPhrase) + ' ' + region;
         }
     };
+    var percentCalculator = function(key, fraction) {
+        mappedData[key] = '{0}%'.format(Highcharts.numberFormat(Math.abs(fraction) * 100, 0));
+        mappedData[key + 'Class'] = fraction < 0 ? 'minus' : 'plus';
+        mappedData[key + 'Text'] =
+            $.t(fraction < 0 ? 'screens.stats.delta_decrease' : 'screens.stats.delta_increase').
+                format(
+                    section.summary.deltaPhrase || section.displayName,
+                    mappedData[key],
+                    $context.closest('#analyticsDataContainer').find('.currentTimeSlice').val()
+                );
+    };
 
     summaryCalculator('total', '-total');
+    summaryCalculator('previous', '-previous');
     summaryCalculator('delta');
 
     summaryToolTip('total', $.t('screens.stats.total'));
     summaryToolTip('delta', $.t('screens.stats.during_time_period'));
+
+    percentCalculator('deltaPercent',
+        mappedData.delta / (mappedData.total - mappedData.delta));
+    percentCalculator('previousPercent',
+        mappedData.delta / mappedData.previous - 1);
 
     if (!blist.feature_flags.embetter_analytics_page) {
     if (mappedData.delta < 0)
@@ -321,17 +338,6 @@ metricsNS.summarySectionCallback = function($context, slice, section)
     }
     }
 
-    var deltaPercent = mappedData.delta / (mappedData.total - mappedData.delta) * 100;
-    mappedData.deltaPercentClass = deltaPercent < 0 ? 'minus' : 'plus';
-    mappedData.deltaPercent = Highcharts.numberFormat(Math.abs(deltaPercent), 0) + '%';
-    mappedData.deltaPercentText =
-        $.t(deltaPercent < 0 ? 'screens.stats.delta_decrease' : 'screens.stats.delta_increase')
-        .format(
-            section.summary.deltaPhrase || section.displayName,
-            mappedData.deltaPercent,
-            $context.closest('#analyticsDataContainer').find('.currentTimeSlice').val()
-        );
-
     mappedData.total = Highcharts.numberFormat(mappedData.total, 0);
     mappedData.delta = Highcharts.numberFormat(mappedData.delta, 0);
 
@@ -344,7 +350,7 @@ metricsNS.summarySectionCallback = function($context, slice, section)
         summaryDirective = metricsNS.summaryDataDirectiveV1;
     }
     // Omit the percent box if it would show NaN
-    if (deltaPercent == Infinity) {
+    if (mappedData.deltaPercent === 'NaN%') {
         templateName = 'metricsNoPercentData';
         summaryDirective = metricsNS.noPercentDirective;
     }
@@ -357,7 +363,7 @@ metricsNS.summarySectionCallback = function($context, slice, section)
             summaryDirective = metricsNS.simpleSummaryDataDirectiveV1;
         }
     }
-    // Show only the delta if summaries.total = false
+    // Show only the delta, compared to a previous delta, if summaries.total = false
     if (!$.isBlank(summaries.total) && !summaries.total) {
         templateName = 'metricsDeltaData';
         summaryDirective = metricsNS.deltaDataDirective;
@@ -484,5 +490,8 @@ metricsNS.detailDataDirective = {
 };
 
 metricsNS.deltaDataDirective = {
-    '.deltaValue' : 'delta'
+    '.deltaValue' : 'delta',
+    '.percentValue' : 'previousPercent',
+    '.percentBox@title' : 'previousPercentText',
+    '.percentBox@class+' : 'previousPercentClass'
 }

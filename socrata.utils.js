@@ -108,7 +108,7 @@
 
       if (value1 !== value2) {
         throw new Error(
-          'Value `' + value1 + '` must equal value `' + value2 + '`.'
+          'Value `{0}` must equal value `{1}`.'.format(value1, value2)
         );
       }
     },
@@ -122,12 +122,8 @@
         }
 
         throw new Error(
-          '`' +
-          name +
-          '`' +
-          ' property must be present. Object has properties: [' +
-          Object.keys(object).join(', ') +
-          '].'
+          '`{0}` property must be present. Object has properties: [{1}].'.
+            format(name, Object.keys(object).join(', '))
         );
       }
     },
@@ -159,11 +155,8 @@
 
       if (!valid) {
         throw new Error(
-          'Value must be one of [' +
-          types.join(', ') +
-          '] (is of type ' +
-          (typeof value) +
-          ').'
+          'Value must be one of [{0}] (is of type {1}).'.
+            format(types.join(', '), (typeof value))
         );
       }
     },

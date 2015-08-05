@@ -16,10 +16,12 @@
     "packages.json",
     "README.md"
   ],
+  "dependencies": {
+    "socrata-utils": "git@github.com:socrata/frontend-utils.git#master"
+  }
   "devDependencies": {
     "lodash": "~3.10.0",
     "jquery": "~2.1.1",
-    "d3": "~3.5.6",
-    "socrata-utils": "git@github.com:socrata/frontend-utils.git#master"
+    "d3": "~3.5.6"
   }
 }

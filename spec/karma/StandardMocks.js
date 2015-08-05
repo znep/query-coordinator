@@ -82,6 +82,7 @@ function applyStandardMocks() {
   storyteller.dragDropStore = new storyteller.DragDropStore();
   storyteller.historyStore = new storyteller.HistoryStore();
   storyteller.blockRemovalConfirmationStore = new storyteller.BlockRemovalConfirmationStore();
+  storyteller.coreSavingStore = new storyteller.CoreSavingStore();
 
   storyteller.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyData });
 

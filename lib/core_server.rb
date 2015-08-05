@@ -21,6 +21,16 @@ class CoreServer
     core_server_request_with_retries(core_server_request_options)
   end
 
+  # Generate Cookie and X-Socrata-Host headers from the given request.
+  def self.headers_from_request(request)
+    authentication_cookie = request.env['HTTP_COOKIE']
+
+    {
+      'Cookie' => authentication_cookie,
+      'X-Socrata-Host' => request.host
+    }
+  end
+
   private
 
   def self.retry_options

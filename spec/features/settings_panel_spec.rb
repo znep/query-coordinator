@@ -7,6 +7,7 @@ RSpec.describe 'settings panel', type: :feature, js: true do
 
   before do
     stub_logged_in_user
+    stub_core_view('hasb-lock')
     visit '/s/magic-thing/hasb-lock/edit'
   end
 

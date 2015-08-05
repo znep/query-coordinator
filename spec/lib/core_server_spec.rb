@@ -1,6 +1,24 @@
 require 'spec_helper'
 
 describe CoreServer do
+  describe '#headers_from_request' do
+    let(:request) do
+      double('request',
+        :env => {
+          'HTTP_COOKIE' => 'a cookie'
+        },
+        :host => 'a host'
+      )
+    end
+    it 'returns Cookie and X-Socrata-Host headers' do
+      result = CoreServer.headers_from_request(request)
+      expect(result).to include(
+        'X-Socrata-Host' => 'a host',
+        'Cookie' => 'a cookie'
+      )
+    end
+  end
+
   describe '#current_user' do
     before do
       expect(Rails.application.config).to receive(:core_service_uri).and_return('http://123.45.67.89:8081')

@@ -78,11 +78,11 @@
 
       _setBusy(true);
 
-      _getCoreMetadataBlob(_storyUidsPendingSave.pop()).
+      _getViewMetadataFromCore(_storyUidsPendingSave.pop()).
         then(function(response) {
           // Now that we have the current view metadata,
           // update it and PUT it back.
-          return _setCoreMetadataBlob(
+          return _putViewMetadataToCore(
             _updateCoreMetadataBlob(response)
           );
         }).
@@ -101,16 +101,17 @@
      * Update a view metadata blob from core with metadata
      * information from StoryStore
      *
-     * @param payload {object} A core view metadata payload.
-     * @return {object} An updated version of the payload.
+     * @param blob {object} A core view metadata blob.
+     * @return {object} An updated version of the blob.
      */
-    function _updateCoreMetadataBlob(payload) {
-      utils.assertHasProperty(payload, 'id');
+    function _updateCoreMetadataBlob(blob) {
+      utils.assertHasProperty(blob, 'id');
 
       return _.extend(
-        payload,
+        {},
+        blob,
         {
-          name: storyteller.storyStore.getStoryTitle(payload.id)
+          name: storyteller.storyStore.getStoryTitle(blob.id)
         }
       );
     }
@@ -121,7 +122,7 @@
      * @param storyUid {string} The story's uid.
      * @return {promise<object>}
      */
-    function _getCoreMetadataBlob(storyUid) {
+    function _getViewMetadataFromCore(storyUid) {
       return $.get('/views/{0}.json'.format(storyUid));
     }
 
@@ -132,7 +133,7 @@
      * @param newData {object} The core view metadata blob to PUT.
      * @return {promise<object>} The response from the server.
      */
-    function _setCoreMetadataBlob(newData) {
+    function _putViewMetadataToCore(newData) {
       utils.assertHasProperty(newData, 'id');
 
       return $.ajax({

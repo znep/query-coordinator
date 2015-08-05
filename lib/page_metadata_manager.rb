@@ -2,6 +2,7 @@
 # metadata. Also handles managing rollup tables in soda fountain.
 class PageMetadataManager
 
+  include CommonMetadataMethods
   include CommonMetadataTransitionMethods
 
   attr_accessor :column_field_name, :logical_datatype_name
@@ -53,6 +54,36 @@ class PageMetadataManager
         )
       end
     end
+  end
+
+  # Retrieve page metadata
+  def show(id, options = {})
+    # Inherit the permissions from the catalog entry that points to this page.
+    permissions = fetch_permissions(id)
+
+    begin
+      result = new_view_manager.fetch(id)
+    rescue
+      result = nil
+    end
+
+    if is_backed_by_metadb?(result)
+      page_metadata = result[:displayFormat][:data_lens_page_metadata]
+      page_metadata = ensure_page_metadata_properties(page_metadata)
+      page_metadata['permissions'] = permissions.stringify_keys!
+      page_metadata
+    else
+      result = phidippides.fetch_page_metadata(id, options)
+
+      if result[:status] !~ /^2[0-9][0-9]$/
+        return { body: { body: 'Not found' }, status: '404' }
+      end
+
+      page_metadata = result[:body]
+      page_metadata['permissions'] = permissions.stringify_keys! if page_metadata
+      page_metadata
+    end
+
   end
 
   # Creates a new page
@@ -154,6 +185,29 @@ class PageMetadataManager
   end
 
   private
+
+  # Examine the given metadata and determine whether it has the hallmarks which
+  # indicate that the complete page metadata is stored in in metadb.
+  # If this method returns false, we assume that phiddy holds the page metadata.
+  def is_backed_by_metadb?(metadb_page_metadata)
+    return false if metadb_page_metadata.nil?
+
+    has_metadb_display_type = metadb_page_metadata[:displayType] == 'data_lens'
+    # future work may check other properties and &&-together on the line below
+    has_metadb_display_type
+  end
+
+  # When page metadata is returned from metadb, null-valued properties may be
+  # stripped out. We should ensure that properties are present by supplying nil
+  # defaults where needed. This doesn't affect the phidippides read path.
+  # See https://docs.google.com/document/d/1IE-vWpY-HzHvxwWRh6XRny10BOZXcbTpjUG4Lm8ObV8
+  # for the set of properties to check.
+  def ensure_page_metadata_properties(metadata)
+    metadata[:primaryAggregation] ||= nil
+    metadata[:primaryAmountField] ||= nil
+    metadata[:largestTimeSpanDays] ||= nil
+    metadata
+  end
 
   def initialize_metadata_key_names
     @column_field_name = 'fieldName'

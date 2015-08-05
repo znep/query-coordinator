@@ -10,6 +10,7 @@ class AngularControllerTest < ActionController::TestCase
     @phidippides = Phidippides.new('localhost', 2401)
     @controller.stubs(:phidippides => @phidippides)
     @new_view_manager = NewViewManager.new
+    @page_metadata_manager = PageMetadataManager.new
     View.stubs(
       :migrations => {
         :nbeId => "1234-1234",
@@ -26,11 +27,10 @@ class AngularControllerTest < ActionController::TestCase
         :obeId => "1234-1234"
       }
     )
+    PageMetadataManager.any_instance.stubs(
+      :show => v1_page_metadata
+    )
     Phidippides.any_instance.stubs(
-      :fetch_page_metadata => {
-        :status => '200',
-        :body => v1_page_metadata
-      },
       :fetch_dataset_metadata => {
         :status => '200',
         :body => v1_dataset_metadata
@@ -67,11 +67,10 @@ class AngularControllerTest < ActionController::TestCase
           :obeId => "1234-1234"
         }
       )
+      PageMetadataManager.any_instance.stubs(
+        :show => v1_page_metadata
+      )
       Phidippides.any_instance.stubs(
-        :fetch_page_metadata => {
-          :status => '200',
-          :body => v1_page_metadata
-        },
         :fetch_dataset_metadata => {
           :status => '200',
           :body => v1_dataset_metadata
@@ -99,10 +98,6 @@ class AngularControllerTest < ActionController::TestCase
   context 'when unauthenticated' do
     setup do
       Phidippides.any_instance.stubs(
-        :fetch_page_metadata => {
-          :status => '200',
-          :body => v1_page_metadata
-        },
         :fetch_dataset_metadata => {
           :status => '200',
           :body => v1_dataset_metadata
@@ -116,7 +111,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'should redirect to the login page if the page is private' do
-      NewViewManager.any_instance.stubs(:fetch).raises(NewViewManager::ViewAuthenticationRequired)
+      PageMetadataManager.any_instance.stubs(:show).raises(NewViewManager::ViewAuthenticationRequired)
 
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
 
@@ -125,7 +120,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'should redirect to the 404 page if the page is not found' do
-      NewViewManager.any_instance.stubs(:fetch).raises(NewViewManager::ViewNotFound)
+      PageMetadataManager.any_instance.stubs(:show).raises(NewViewManager::ViewNotFound)
 
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
 
@@ -161,10 +156,6 @@ class AngularControllerTest < ActionController::TestCase
   context 'when authenticated' do
     setup do
       Phidippides.any_instance.stubs(
-        :fetch_page_metadata => {
-          :status => '200',
-          :body => v1_page_metadata
-        },
         :fetch_dataset_metadata => {
           :status => '200',
           :body => v1_dataset_metadata
@@ -178,7 +169,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'should redirect to the 403 page if the page is private' do
-      NewViewManager.any_instance.stubs(:fetch).raises(NewViewManager::ViewAccessDenied)
+      PageMetadataManager.any_instance.stubs(:show).raises(NewViewManager::ViewAccessDenied)
 
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
 
@@ -186,7 +177,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'should redirect to the 404 page if the page is not found' do
-      NewViewManager.any_instance.stubs(:fetch).raises(NewViewManager::ViewNotFound)
+      PageMetadataManager.any_instance.stubs(:show).raises(NewViewManager::ViewNotFound)
 
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
 
@@ -194,6 +185,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'should redirect to the 403 page if the dataset is private' do
+      PageMetadataManager.any_instance.stubs(:show).returns(v1_page_metadata)
       AngularController.any_instance.stubs(:fetch_dataset_metadata).raises(CommonMetadataMethods::UnauthorizedDatasetMetadataRequest)
       NewViewManager.any_instance.stubs(:fetch).returns({})
 
@@ -205,6 +197,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'should redirect to the 404 page if the dataset is not found' do
+      PageMetadataManager.any_instance.stubs(:show).returns(v1_page_metadata)
       AngularController.any_instance.stubs(:fetch_dataset_metadata).raises(CommonMetadataMethods::DatasetMetadataNotFound)
       NewViewManager.any_instance.stubs(:fetch).returns({})
 
@@ -250,11 +243,10 @@ class AngularControllerTest < ActionController::TestCase
 
   context 'google analytics' do
     setup do
+      PageMetadataManager.any_instance.stubs(
+        :show => v1_page_metadata
+      )
       Phidippides.any_instance.stubs(
-        :fetch_page_metadata => {
-          :status => '200',
-          :body => v1_page_metadata
-        },
         :fetch_dataset_metadata => {
           :status => '200',
           :body => v1_dataset_metadata

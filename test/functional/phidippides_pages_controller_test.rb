@@ -11,14 +11,13 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
     )
     User.stubs(current_user: User.new(some_user))
 
-    @phidippides = Phidippides.new('localhost', 2401)
     @page_metadata_manager = PageMetadataManager.new
     @controller.stubs(
-      phidippides: @phidippides,
       page_metadata_manager: @page_metadata_manager,
       save_as_enabled?: true
     )
     @page_metadata_manager.stubs(
+      show: { body: '', status: '200' },
       create: { body: '', status: '200' },
       update: { body: '', status: '200' }
     )
@@ -43,69 +42,20 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
 
   test 'show returns data for a given page' do
     @controller.stubs(can_create_metadata?: true)
-    @phidippides.stubs(
-      fetch_page_metadata: {
-        body: v0_page_metadata,
-        status: '200'
-      }
+    @page_metadata_manager.stubs(
+      show: v1_page_metadata.merge(core_permissions_public)
     )
-    connection_stub = mock
-    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
-    connection_stub.expects(:get_request).returns('{}')
-    CoreServer::Base.stubs(connection: connection_stub)
-
     get :show, id: 'four-four', format: 'json'
     assert_response(:success)
     result = JSON.parse(@response.body)
-    assert_equal(%w(pageId datasetId name description primaryAmountField primaryAggregation filterSoql isDefaultPage pageSource cards permissions), result.keys)
-  end
-
-  test 'show displays permission:private for views private in core' do
-    @controller.stubs(can_create_metadata?: true)
-    @phidippides.stubs(
-      fetch_page_metadata: {
-        body: v1_page_metadata,
-        status: '200'
-      }
-    )
-    connection_stub = mock
-    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
-    connection_stub.expects(:get_request).returns('{"grants": []}')
-    CoreServer::Base.stubs(connection: connection_stub)
-
-    get :show, id: 'four-four', format: 'json'
-    assert_response(:success)
-    result = JSON.parse(@response.body).with_indifferent_access
-    assert_equal({isPublic: false, rights: []}.with_indifferent_access, result['permissions'])
-  end
-
-  test 'show displays permission:public for views public in core' do
-    @controller.stubs(can_create_metadata?: true)
-    @phidippides.stubs(
-      fetch_page_metadata: {
-        body: v1_page_metadata,
-        status: '200'
-      }
-    )
-    connection_stub = mock
-    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
-    connection_stub.expects(:get_request).returns('{"grants": [{"flags": ["public"]}]}')
-    CoreServer::Base.stubs(connection: connection_stub)
-
-    get :show, id: 'four-four', format: 'json'
-    assert_response(:success)
-    result = JSON.parse(@response.body).with_indifferent_access
-    assert_equal({isPublic: true, rights: []}.with_indifferent_access, result['permissions'])
+    assert_equal(%w(
+      cards datasetId description name pageId primaryAggregation primaryAmountField version largestTimeSpanDays defaultDateTruncFunction permissions
+    ).sort, result.keys.sort)
   end
 
   test 'show returns 401 if the Core view requires authn' do
     @controller.stubs(can_create_metadata?: true)
-    connection_stub = mock
-    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
-    connection_stub.expects(:get_request).with do |url|
-      assert_equal('/views/four-four.json', url)
-    end.then.raises(CoreServer::CoreServerError.new(nil, 'authentication_required', nil))
-    CoreServer::Base.stubs(connection: connection_stub)
+    @page_metadata_manager.stubs(:show).raises(NewViewManager::ViewAuthenticationRequired)
 
     get :show, id: 'four-four', format: 'json'
     assert_response(401)
@@ -113,12 +63,7 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
 
   test 'show returns 403 if the Core view requires authz' do
     @controller.stubs(can_create_metadata?: true)
-    connection_stub = mock
-    connection_stub.stubs(reset_counters: {requests: {}, runtime: 0})
-    connection_stub.expects(:get_request).with do |url|
-      assert_equal('/views/four-four.json', url)
-    end.then.raises(CoreServer::CoreServerError.new(nil, 'permission_denied', nil))
-    CoreServer::Base.stubs(connection: connection_stub)
+    @page_metadata_manager.stubs(:show).raises(NewViewManager::ViewAccessDenied)
 
     get :show, id: 'four-four', format: 'json'
     assert_response(403)
@@ -183,12 +128,12 @@ class PhidippidesPagesControllerTest < ActionController::TestCase
 
   private
 
-  def v0_page_metadata
-    JSON.parse(File.read("#{Rails.root}/test/fixtures/v0-page-metadata.json"))
-  end
-
   def v1_page_metadata
     JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-page-metadata.json"))
+  end
+
+  def core_permissions_public
+    JSON.parse(File.read("#{Rails.root}/test/fixtures/core-permissions-public.json"))
   end
 
   def some_user

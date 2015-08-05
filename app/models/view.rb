@@ -1034,6 +1034,13 @@ class View < Model
     viewType == 'blobby'
   end
 
+  def data_lens?
+    viewType == 'tabular' && displayType == 'data_lens'
+  end
+
+  # DEPRECATED
+  # remove this function (and pull the thread to remove whatever uses it) once
+  # we finish migrating page metadata to metadb
   def new_view?
     viewType == 'href' && displayType == 'new_view'
   end

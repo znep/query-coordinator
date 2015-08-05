@@ -56,9 +56,13 @@ class NewUxBootstrapController < ActionController::Base
     #     and non-deterministic.
 
     # 1. Check to make sure that the user is authorized to create a new view
-    use_ephemeral_bootstrap = FeatureFlags.derive(@view, request).use_ephemeral_bootstrap
+    use_ephemeral_bootstrap = FeatureFlags.derive(@view, request)[:use_ephemeral_bootstrap]
 
-    unless use_ephemeral_bootstrap || can_create_metadata?
+    # IMPORTANT: can_create_metadata? *must* come first in this conditional
+    # because it has the side effect of obtaining the user session.
+    # If the order is swapped, the logic is short-circuited and the call to
+    # dataset_is_new_backend? will fail unexpectedly.
+    unless can_create_metadata? || use_ephemeral_bootstrap
       return render :json => {
         error: true,
         reason: "User must be one of these roles: #{ROLES_ALLOWED_TO_UPDATE_METADATA.join(', ')}"
@@ -197,8 +201,8 @@ class NewUxBootstrapController < ActionController::Base
   def page_accessible?(page_id)
     return false unless page_id.present?
 
-    page_metadata = phidippides.fetch_page_metadata(page_id)
-    page_metadata[:status] == '200'
+    default_page_metadata = page_metadata_manager.show(page_id)
+    default_page_metadata[:status] == '200'
   end
 
   def set_default_page(dataset_metadata, page_id)

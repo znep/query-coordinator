@@ -130,6 +130,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         context 'creating a new default page if there is already a default page but the default page is not v1' do
           setup do
             @page_metadata_manager.stubs(
+              show: {
+                status: '200'
+              },
               create: {
                 status: '200',
                 body: { pageId: 'abcd-efgh' }
@@ -185,15 +188,17 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
         context 'redirect to the default page if there is already a default page and the default page is v1' do
           setup do
+            @page_metadata_manager.stubs(
+              show: {
+                status: '200'
+              }
+            )
             @phidippides.stubs(
               fetch_dataset_metadata: {
                 status: '200', body: { defaultPage: 'defa-ultp' }
               },
               fetch_pages_for_dataset: {
                 status: '200', body: { publisher: [{ pageId: 'page-xist', version: '1' }, { pageId: 'defa-ultp', version: '1' }, { pageId: 'last-page', version: '1' }], user: [] }
-              },
-              fetch_page_metadata: {
-                status: '200'
               },
               update_dataset_metadata: {
                 status: '200'

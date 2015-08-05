@@ -10,7 +10,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['mocha', 'chai'],
+    frameworks: ['mocha', 'chai', 'sinon'],
 
 
     // list of files / patterns to load in the browser
@@ -20,6 +20,8 @@ module.exports = function(config) {
       'bower_components/jquery/dist/jquery.js',
       'bower_components/socrata-utils/socrata.utils.js',
       'karma/testHelpers.js',
+      'socrata.visualizations.DataProvider.js',
+      'socrata.visualizations.SoqlDataProvider.js',
       'socrata.visualizations.Visualization.js',
       'socrata.visualizations.Column.js',
       'socrata.visualizations.column.css',

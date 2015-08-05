@@ -64,13 +64,13 @@
 
     function _saveStoryMetadata(storyUid) {
       _storyUidsPendingSave.push(storyUid);
-      _makeRequest();
+      _makeRequests();
     }
 
     /**
      * Makes a read/modify/write on all queued story save requests (sequentially).
      */
-    function _makeRequest() {
+    function _makeRequests() {
       if (_.isEmpty(_storyUidsPendingSave)) {
         _setBusy(false);
         return;
@@ -94,7 +94,7 @@
           // Ouch, save the error for later use.
           _setLastSaveError(_.get(failure, 'responseJSON.message', failure.statusText));
         }).
-        always(_makeRequest); // Process the next request if needed.
+        always(_makeRequests); // Process the next request if needed.
     }
 
     /**

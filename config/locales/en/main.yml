@@ -43,3 +43,5 @@ en:
     panel_title: 'Story Settings'
     title_label: 'Title'
     description_label: 'Description'
+    save_button_label: 'Save'
+    generic_save_failure_message: 'Oh no! There was a problem saving. Please try again.'

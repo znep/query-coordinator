@@ -30,6 +30,34 @@
       side: 'left'
     });
     var overlay = settingsContainer.find('#settings-panel-overlay');
+    var saveButton = settingsContainer.find('.settings-save-btn');
+    var saveErrorMessage = settingsContainer.find('.settings-save-failure-message');
+    var saveErrorMessageDetails = settingsContainer.find('.settings-save-failure-message-details');
+
+    var storyTitleInputBox = settingsContainer.find('form input[type="text"]');
+
+    storyteller.coreSavingStore.addChangeListener(function() {
+      var saveInProgress = storyteller.coreSavingStore.isSaveInProgress();
+      var lastSaveError = storyteller.coreSavingStore.lastSaveError();
+
+      saveButton.toggleClass('busy', saveInProgress);
+
+      saveErrorMessage.toggleClass('active', lastSaveError !== null);
+      saveErrorMessageDetails.text(lastSaveError);
+    });
+
+    function loadCurrentMetadata() {
+      storyTitleInputBox.val(
+        storyteller.storyStore.getStoryTitle(storyteller.userStoryUid)
+      );
+      updateSaveButtonEnabledState();
+    }
+
+    function updateSaveButtonEnabledState() {
+      var currentValue = storyteller.storyStore.getStoryTitle(storyteller.userStoryUid);
+      var valueInBox = storyTitleInputBox.val();
+      saveButton.attr('disabled', currentValue === valueInBox);
+    }
 
     // Set up some input events.
 
@@ -46,18 +74,34 @@
       }
     });
 
+    storyTitleInputBox.on('input', updateSaveButtonEnabledState);
+    storyteller.storyStore.addChangeListener(updateSaveButtonEnabledState);
+
     settingsPanel.
       on('sidebar:open', function() {
         toggleButton.addClass('active');
         settingsContainer.addClass('active');
         settingsPanel.find('a').eq(0).focus();
+        loadCurrentMetadata();
       }).
       on('sidebar:close', function() {
         toggleButton.removeClass('active');
         settingsContainer.removeClass('active');
         $('header a').eq(0).focus(); // put focus back in the header
       }).
-      on('mousewheel', '.scrollable', utils.preventScrolling);
+      on('mousewheel', '.scrollable', utils.preventScrolling).
+      on('click', '.settings-save-btn', function() {
+        storyteller.dispatcher.dispatch({
+          action: Constants.STORY_SET_TITLE,
+          storyUid: storyteller.userStoryUid,
+          title: storyTitleInputBox.val()
+        });
+
+        storyteller.dispatcher.dispatch({
+          action: Constants.STORY_SAVE_METADATA,
+          storyUid: storyteller.userStoryUid
+        });
+      });
 
     return this;
   };

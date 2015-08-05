@@ -37,4 +37,14 @@
     color: $accent-btn-disabled-color;
     background-color: $accent-btn-disabled-bg-color;
   }
+
+  &.busy {
+    background-image: asset-url('shared/branded-spinner.gif');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    color: transparent;
+    &:hover {
+      color: transparent;
+    }
+  }
 }

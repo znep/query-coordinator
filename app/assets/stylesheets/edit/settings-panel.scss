@@ -49,6 +49,19 @@
     font-size: 2em;
     font-weight: lighter;
   }
+
+  .settings-save-failure-message {
+    font-size: 1.5rem;
+    padding-bottom: 0.8rem;
+    visibility: collapse;
+    &.active {
+      visibility: visible;
+    }
+
+    .settings-save-failure-message-details {
+      font-size: 1rem;
+    }
+  }
 }
 
 /**

@@ -40,6 +40,7 @@
     var storyDescriptionTextarea = settingsContainer.find('textarea');
 
     var metadataStateAtPanelOpenTime = null;
+    var saveWasInProgress = false;
 
     storyteller.coreSavingStore.addChangeListener(function() {
       var saveInProgress = storyteller.coreSavingStore.isSaveInProgress();
@@ -122,11 +123,11 @@
 
       var doneAndNoErrorOutstanding = !saveInProgress && !hasError;
 
-      var lastRenderedAsBusy = saveButton.prop('disabled');
-
-      if (lastRenderedAsBusy && doneAndNoErrorOutstanding) {
+      if (saveWasInProgress && doneAndNoErrorOutstanding) {
         settingsPanel.trigger('sidebar:close');
       }
+
+      saveWasInProgress = saveInProgress;
     });
 
     settingsPanel.
@@ -144,7 +145,6 @@
         toggleButton.removeClass('active');
         settingsContainer.removeClass('active');
         $('header a').eq(0).focus(); // put focus back in the header
-
 
         // If save failed, revert title and description to values present at panel open time.
         if (hasError) {

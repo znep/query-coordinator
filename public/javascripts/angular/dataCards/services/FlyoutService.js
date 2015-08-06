@@ -9,6 +9,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
   var target;
   var mouseX;
   var mouseY;
+  var persistOnMousedown;
 
   // To support refreshFlyout, we have an additional stream of mouse positions
   // that replays events from WindowState.mousePositionSubject when needed.
@@ -55,6 +56,9 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
           flyoutTarget = handler.positionOn(target);
           flyoutContent = handler.render(target, flyoutTarget);
           flyoutOffset = handler.getOffset(target);
+
+          // Correctly update behavior on mousedown based on current flyout options.
+          persistOnMousedown = handler.persistOnMousedown;
 
           // Check that the content is defined
           if (_.isDefined(flyoutContent) && (_.isDefined(flyoutTarget) || _.isDefined(flyoutOffset))) {
@@ -177,8 +181,9 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
     }
   });
 
+  // Hide upon click if flyout is set to do so
   WindowState.mouseLeftButtonPressedSubject.subscribe(function() {
-    if (!_.isEmpty(uberFlyout)) {
+    if (!_.isEmpty(uberFlyout) && !persistOnMousedown) {
       hide();
     }
   });
@@ -241,6 +246,9 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
      *   should position below its target. Optional, default false (above).
      * @param {string} options.classes — Custom classes, space-separated, to be
      *   applied to the flyout, in order to enable style overrides.
+     * @param {string} options.persistOnMousedown — Whether or not the flyout
+     *   should be hidden upon mousedown. Set to true if default to hide
+     *   should be overridden and flyout should persist through mousedown.
      */
     register: function(options) {
 
@@ -253,7 +261,8 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
         trackCursor: false,
         horizontal: false,
         belowTarget: false,
-        classes: null
+        classes: null,
+        persistOnMousedown: false
       });
 
       Assert(_.isPresent(options.selector),
@@ -283,6 +292,9 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
         });
       }
     },
+    /**
+     * Deregister an existing, previously registered flyout.
+     */
     deregister: function(selector, renderCallback) {
       if (handlers.hasOwnProperty(selector)) {
         handlers[selector] = handlers[selector].filter(function(handler) {

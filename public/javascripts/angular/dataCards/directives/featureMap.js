@@ -76,9 +76,8 @@
         // Handles flyouts for hover
         function renderHoverFlyout(target) {
           var noPoints = (flyoutData.count === 0);
+          var zoom = map.getZoom();
           var template;
-          var unit;
-          var value;
 
           // Set the appropriate cursor
           target.style.cursor = noPoints ? 'inherit' : 'pointer';
@@ -95,29 +94,44 @@
           ].join('');
 
           // If the tile we are hovering over has more points then the
-          // TileServer limit, prompt the user to zoom in for accurate data.
-          if (flyoutData.totalPoints >= Constants.FEATURE_MAP_MAX_POINT_LIMIT) {
-
+          // TileServer limit or the selected points contain more than the
+          // max number of rows to be displayed on a flannel,
+          // prompt the user to filter and/or zoom in for accurate data.
+          if (flyoutData.totalPoints >= Constants.FEATURE_MAP_POINTS_PER_TILE_LIMIT) {
             return template.format(
               I18n.flyout.denseData,
-              I18n.flyout.denseDataDescription
+              chooseUserActionPrompt(zoom)
+            );
+
+          } else if (flyoutData.count > Constants.FLANNEL_ROW_CONTENT_LIMIT) {
+
+            return template.format(
+              assembleFlyoutRowInfo(),
+              chooseUserActionPrompt(zoom)
             );
 
           } else {
-
-            unit = (flyoutData.count === 1) ?
-              scope.rowDisplayUnit :
-              scope.rowDisplayUnit.pluralize();
-
-            value = flyoutData.count + ' ' + _.escape(unit);
-
+            // Otherwise prompt the user to click for details
             return template.format(
-              value,
+              assembleFlyoutRowInfo(),
               I18n.flyout.details
             );
           }
         }
 
+        function assembleFlyoutRowInfo() {
+          var unit = (flyoutData.count === 1) ?
+            scope.rowDisplayUnit :
+            scope.rowDisplayUnit.pluralize();
+
+          return '{0} {1}'.format(flyoutData.count, _.escape(unit));
+        }
+
+        function chooseUserActionPrompt(zoom) {
+          return zoom === Constants.FEATURE_MAP_MAX_ZOOM ?
+            I18n.flyout.denseDataFilterPrompt :
+            I18n.flyout.denseDataZoomFilterPrompt;
+        }
 
         // Construct leaflet map
         var map = L.map(element.find('.feature-map-container')[0], mapOptions);
@@ -125,6 +139,9 @@
         // Control the hover flyout by registering when the mouse enters the map
         // and degistering when the mouse exits the map, so flyouts work across
         // multiple maps.
+        // (Register then deregister also ensures proper page-wide behavior of
+        // flyout hiding upon click. Feature map flyouts will not hide on click,
+        // but others by default still will unless otherwise specified).
         map.on('mouseover', function() {
           FlyoutService.register({
             selector: 'canvas',
@@ -132,7 +149,8 @@
             getOffset: function() {
               return flyoutData.offset;
             },
-            destroySignal: scope.$destroyAsObservable()
+            destroySignal: scope.$destroyAsObservable(),
+            persistOnMousedown: true
           });
         });
         map.on('mouseout', function() {
@@ -350,8 +368,9 @@
 
             var flannelScope;
 
-            // If points were clicked, open a flannel
+            // If points were clicked, open a flannel and hide existing hover flyout
             if (!_.isEmpty(e.points)) {
+              FlyoutService.hide();
               // Set up flannel properties. Any subsequent changes after binding
               // of directive need to be performed inside $safeApply.
               flannelScope = $rootScope.$new();
@@ -392,12 +411,12 @@
             // If a flannel is currently open, be prepared to close flannel or adjust its position.
             if (_.isDefined(flannelScope)) {
               // Destroy flannel if it is closed.
-              var closeSubscriber = WindowState.closeDialogEventObservable.skip(1).filter(function(e) {
-                  var target = $(e.target);
+              var closeSubscriber = WindowState.closeDialogEventObservable.skip(1).filter(function(evt) {
+                  var target = $(evt.target);
                   return target.closest('.feature-map-flannel').length === 0 || target.is('.icon-close');
-                }).subscribe(function(e) {
+                }).subscribe(function(evt) {
                   scope.$safeApply(handleDestroyFlannel);
-                  if ($(e.target).closest('.feature-map-container').length === 0) {
+                  if ($(evt.target).closest('.feature-map-container').length === 0) {
                     // If click outside map itself, clear all hover and clicked point highlighting
                     map.fire('clearhighlightrequest');
                   }
@@ -483,7 +502,7 @@
          * @param {Object} map - The Leaflet map object.
          * @param {Function} vectorTileGetter - Function that gets a vector tile
          */
-        function createNewFeatureLayer(map, vectorTileGetter) {
+        function createNewFeatureLayer(vectorTileGetter) {
           var featureLayerOptions = {
             debug: false,
             getFeatureId: getFeatureId,
@@ -494,7 +513,7 @@
             onRenderStart: emitRenderStarted,
             onRenderComplete: function() {
               emitRenderCompleted();
-              removeOldFeatureLayers(map);
+              removeOldFeatureLayers();
             },
             vectorTileGetter: function() {
               var promise = vectorTileGetter.apply(this, Array.prototype.slice.call(arguments));
@@ -524,7 +543,7 @@
          *
          * @param map - The Leaflet map object.
          */
-        function removeOldFeatureLayers(map) {
+        function removeOldFeatureLayers() {
           featureLayers.forEach(function(value, key) {
             if (key !== currentVectorTileGetter) {
               map.removeLayer(value);
@@ -705,7 +724,7 @@
           dimensions$,
           function(vectorTileGetter) {
             currentVectorTileGetter = vectorTileGetter;
-            createNewFeatureLayer(map, vectorTileGetter);
+            createNewFeatureLayer(vectorTileGetter);
           }
         );
 

@@ -17,6 +17,7 @@ describe('Flyout service', function() {
   beforeEach(module('test'));
   beforeEach(module('dataCards/flyout.sass'));
   beforeEach(module('dataCards/theme/default.sass'));
+
   beforeEach(inject(function($injector) {
     FlyoutService = $injector.get('FlyoutService');
     Constants = $injector.get('Constants');
@@ -257,7 +258,7 @@ describe('Flyout service', function() {
     expect(flyout).to.have.class('testing');
   });
 
-  it('should hide flyouts on mousedown', function() {
+  it('should hide flyouts on mousedown by default', function() {
     var flyoutText = Array(20).join('a');
 
     FlyoutService.register({
@@ -273,5 +274,69 @@ describe('Flyout service', function() {
     TestHelpers.fireMouseEvent(boxElement[0], 'mousedown');
 
     expect(flyout.is(':hidden')).to.be.true;
+  });
+
+  it('should not hide on mousedown if set to persist when registered', function(){
+    var flyoutText = Array(20).join('a');
+
+    FlyoutService.register({
+      selector: '.target-box',
+      render: _.constant(flyoutText),
+      destroySignal: testCompletedObservable,
+      persistOnMousedown: true
+    });
+
+    TestHelpers.fireMouseEvent(boxElement[0], 'mousemove');
+
+    expect(flyout.is(':visible')).to.be.true;
+
+    TestHelpers.fireMouseEvent(boxElement[0], 'mousedown');
+
+    expect(flyout.is(':hidden')).to.be.false;
+  });
+
+  it('should update mousedown behavior between multiple registered flyouts', function() {
+    var firstFlyoutText = Array(20).join('a');
+    var secondFlyoutText = Array(20).join('b');
+    var secondBoxElement;
+    var cssSecondBox = {
+      border: '1px solid #000',
+      position: 'absolute',
+      width: 20,
+      height: 20,
+      top: 200,
+      left: 200
+    };
+
+    secondBoxElement = $('<div class="second-target-box" />').
+      appendTo('body').
+      css(cssSecondBox);
+
+    // Register first flyout to hide on mousedown (default).
+    FlyoutService.register({
+      selector: '.target-box',
+      render: _.constant(firstFlyoutText),
+      destroySignal: testCompletedObservable
+    });
+
+    // Register a second flyout to remain visible upon mousedown.
+    FlyoutService.register({
+      selector: '.second-target-box',
+      render: _.constant(secondFlyoutText),
+      destroySignal: testCompletedObservable,
+      persistOnMousedown: true
+    });
+
+    // Test hiding behavior for first flyout (should hide on mousedown).
+    TestHelpers.fireMouseEvent(boxElement[0], 'mousemove');
+    expect(flyout.is(':visible')).to.be.true;
+    TestHelpers.fireMouseEvent(boxElement[0], 'mousedown');
+    expect(flyout.is(':hidden')).to.be.true;
+
+    // Test hiding behavior on second flyout (should remain visible).
+    TestHelpers.fireMouseEvent(secondBoxElement[0], 'mousemove');
+    expect(flyout.is(':visible')).to.be.true;
+    TestHelpers.fireMouseEvent(secondBoxElement[0], 'mousedown');
+    expect(flyout.is(':hidden')).to.be.false;
   });
 });

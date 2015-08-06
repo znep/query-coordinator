@@ -166,6 +166,22 @@ describe('Suggestion Tool Panel', function() {
     });
   });
 
+  it('should show a helpful message when SuggestionService signals an error', function() {
+    suggestionService.suggest = function() {
+      return q.when(null);
+    };
+    suggestionToolPanel = createElement({
+      shouldShow: true,
+      searchValue: 'NAR',
+      dataset: fakeDataset,
+      fieldName: fakeFieldName
+    });
+
+    testScheduler.advanceTo(300);
+    suggestionToolPanel.scope.$apply();
+    expect(suggestionToolPanel.element.find('.suggestions-status')).to.contain('An error was encountered');
+  });
+
   it('should show "no search results" heading when there are no search results', function() {
     suggestionService.suggest = function() {
       return q.when([]);
@@ -229,6 +245,24 @@ describe('Suggestion Tool Panel', function() {
     suggestionToolPanel.scope.$apply();
     expect(suggestionToolPanel.element.find('.suggestions-status')).to.contain('Showing the first 10 suggestions:');
   });
+
+  it('should instruct the user to perform an exact text search when SuggestionService signals an error', function() {
+    suggestionService.suggest = function() {
+      return q.when(null);
+    };
+    suggestionToolPanel = createElement({
+      shouldShow: true,
+      searchValue: 'NAR',
+      dataset: fakeDataset,
+      fieldName: fakeFieldName
+    });
+
+    testScheduler.advanceTo(300);
+    suggestionToolPanel.scope.$apply();
+
+    expect(suggestionToolPanel.element.find('.suggestion-examples')).
+      to.contain("Type some text and press Enter to search");
+  })
 
   it('should suggest broadening the search criteria when there are no search results', function() {
     suggestionService.suggest = function() {

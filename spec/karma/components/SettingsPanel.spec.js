@@ -53,7 +53,7 @@ describe('SettingsPanel jQuery plugin', function() {
     };
   });
 
-  function setSaveAndErrorStates(isSaveInProgress, lastSaveError) {
+  function setIsSavingAndLastError(isSaveInProgress, lastSaveError) {
     storyteller.coreSavingStore.isSaveInProgress = _.constant(isSaveInProgress);
     storyteller.coreSavingStore.lastRequestSaveErrorForStory = _.constant(lastSaveError);
     storyteller.coreSavingStore.triggerChange();
@@ -212,21 +212,37 @@ describe('SettingsPanel jQuery plugin', function() {
         });
 
         describe('when there is no save in progress', function() {
-          it('should not have a `busy` class.', function() {
-            setSaveAndErrorStates(false, null);
-            assert.isFalse(saveButton.hasClass('busy'));
+          describe('and there is no error', function() {
+            it('should not have a `busy` class.', function() {
+              setIsSavingAndLastError(false, null);
+              assert.isFalse(saveButton.hasClass('busy'));
+            });
 
-            setSaveAndErrorStates(false, 'some error');
-            assert.isFalse(saveButton.hasClass('busy'));
+            it('should not be enabled', function() {
+              setIsSavingAndLastError(false, null);
+              assert.isTrue(saveButton.prop('disabled'));
+            });
+          });
+
+          describe('and there is an error', function() {
+            it('should not have a `busy` class.', function() {
+              setIsSavingAndLastError(false, 'some error');
+              assert.isFalse(saveButton.hasClass('busy'));
+            });
+
+            it('should be enabled', function() {
+              setIsSavingAndLastError(false, 'some error');
+              assert.isFalse(saveButton.prop('disabled'));
+            });
           });
         });
 
         describe('when a save is in progress', function() {
           it('should have a `busy` class.', function() {
-            setSaveAndErrorStates(true, null);
+            setIsSavingAndLastError(true, null);
             assert.isTrue(saveButton.hasClass('busy'));
 
-            setSaveAndErrorStates(true, 'some error');
+            setIsSavingAndLastError(true, 'some error');
             assert.isTrue(saveButton.hasClass('busy'));
           });
         });
@@ -243,7 +259,7 @@ describe('SettingsPanel jQuery plugin', function() {
 
         describe('when there is no error', function() {
           it('should not have the `active` class.', function() {
-            setSaveAndErrorStates(false, null);
+            setIsSavingAndLastError(false, null);
             assert.isFalse(errorDiv.hasClass('active'));
           });
         });
@@ -252,7 +268,7 @@ describe('SettingsPanel jQuery plugin', function() {
           var error = 'lp0 on fire!';
 
           beforeEach(function() {
-            setSaveAndErrorStates(false, error);
+            setIsSavingAndLastError(false, error);
           });
 
           it('should have the `active` class.', function() {

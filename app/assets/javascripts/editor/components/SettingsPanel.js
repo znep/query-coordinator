@@ -76,9 +76,14 @@
     }
 
     function updateSaveButtonEnabledState() {
+      var hasChanges = isTitleChanged() || isDescriptionChanged();
+      var hasError = storyteller.
+        coreSavingStore.
+        lastRequestSaveErrorForStory(storyteller.userStoryUid) !== null;
+
       saveButton.attr(
         'disabled',
-        !isTitleChanged() && !isDescriptionChanged()
+        !hasChanges && !hasError
       );
     }
 
@@ -99,6 +104,7 @@
 
     storyTitleInputBox.add(storyDescriptionTextarea).on('input', updateSaveButtonEnabledState);
     storyteller.storyStore.addChangeListener(updateSaveButtonEnabledState);
+    storyteller.coreSavingStore.addChangeListener(updateSaveButtonEnabledState);
 
     settingsPanel.
       on('sidebar:open', function() {

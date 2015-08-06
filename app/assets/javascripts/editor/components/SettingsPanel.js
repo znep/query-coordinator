@@ -24,12 +24,14 @@
    */
 
   $.fn.settingsPanel = function(toggleButton) {
+    if (!$.fn.isPrototypeOf(toggleButton)) {
+      throw new Error('toggleButton must be a jQuery instance');
+    }
 
     var settingsContainer = $(this);
-    var settingsPanel = $('#settings-panel').sidebar({
+    var settingsPanel = settingsContainer.find('.settings-panel').sidebar({
       side: 'left'
     });
-    var overlay = settingsContainer.find('#settings-panel-overlay');
     var saveButton = settingsContainer.find('.settings-save-btn');
     var saveErrorMessage = settingsContainer.find('.settings-save-failure-message');
     var saveErrorMessageDetails = settingsContainer.find('.settings-save-failure-message-details');

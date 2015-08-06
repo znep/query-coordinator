@@ -124,6 +124,7 @@ function removeStandardMocks() {
   delete storyteller.dragDropStore;
   delete storyteller.historyStore;
   delete storyteller.blockRemovalConfirmationStore;
+  delete storyteller.coreSavingStore;
   delete storyteller.embedWizardStore;
   delete storyteller.I18n;
   delete storyteller.standardMocks;

@@ -217,3 +217,9 @@ def stub_core_view(uid)
   stub_request(:get, /\/views\/#{uid}.json/).
     to_return(:status => 200, :body => '{"name": "test story" }')
 end
+
+class Capybara::Session
+  def evaluate_multiline_script javascript
+    evaluate_script "(function(){ #{javascript} })()"
+  end
+end

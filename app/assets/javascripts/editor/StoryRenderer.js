@@ -6,6 +6,7 @@
 
     var TextComponentRenderer = storyteller.TextComponentRenderer;
     var MediaComponentRenderer = storyteller.MediaComponentRenderer;
+    var LayoutComponentRenderer = storyteller.LayoutComponentRenderer;
     var dispatcher = storyteller.dispatcher;
 
     var storyUid = options.storyUid || null;
@@ -16,11 +17,13 @@
     var onRenderError = options.onRenderError || function() {};
     var componentTemplateRenderers = {
       'text': TextComponentRenderer.renderTemplate,
-      'media': MediaComponentRenderer.renderTemplate
+      'media': MediaComponentRenderer.renderTemplate,
+      'layout': LayoutComponentRenderer.renderTemplate
     };
     var componentDataRenderers = {
       'text': TextComponentRenderer.renderData,
-      'media': MediaComponentRenderer.renderData
+      'media': MediaComponentRenderer.renderData,
+      'layout': LayoutComponentRenderer.renderData
     };
     var elementCache = new storyteller.StoryRendererElementCache();
     var warningMessageElement = options.warningMessageElement || null;
@@ -422,7 +425,7 @@
         return $(
           '<div>',
           {
-            'class': ('component-container col' + componentWidth),
+            'class': 'component-container col{0}'.format(componentWidth),
             'data-component-layout-width': componentWidth,
             'data-component-index': i
           }

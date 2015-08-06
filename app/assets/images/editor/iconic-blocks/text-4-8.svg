@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="166px" height="118px" viewBox="0 0 166 118" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs></defs>
+    <g id="Blocks" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-203.000000, -306.000000)" id="text-4-8">
+            <g transform="translate(203.000000, 306.000000)">
+                <g id="Block-Frame" fill="#FFFFFF">
+                    <rect id="Block-Border-Add-in-CSS" x="0" y="0" width="165.236842" height="117.108098"></rect>
+                </g>
+                <path id="Path-35" stroke="#979797" d=""></path>
+                <path d="M159.706431,21 L159.706431,26 L67.9958331,26 L67.9958331,21 L159.706431,21 Z" id="Rectangle-10-Copy-70" fill="#C2C2C2"></path>
+                <path d="M159.431301,10 L159.431301,15 L67.7207031,15 L67.7207031,10 L159.431301,10 Z" id="Rectangle-10-Copy-60" fill="#787878"></path>
+                <path d="M67.7207031,39 L159.706431,39 L159.706431,44 L123.259142,44 L67.7207031,44 L67.7207031,39 Z" id="Rectangle-10-Copy-62" fill="#C2C2C2"></path>
+                <path d="M67.7207031,30 L158.483623,30 L158.483623,35 L122.520844,35 L67.7207031,35 L67.7207031,30 Z" id="Rectangle-10-Copy-63" fill="#C2C2C2"></path>
+                <path d="M67.7207031,48 L160.316165,48 L160.316165,53 L123.627282,53 L67.7207031,53 L67.7207031,48 Z" id="Rectangle-10-Copy-64" fill="#C2C2C2"></path>
+                <path d="M67.7207031,57 L158.483623,57 L158.483623,62 L122.520844,62 L67.7207031,62 L67.7207031,57 Z" id="Rectangle-10-Copy-65" fill="#C2C2C2"></path>
+                <path d="M67.7207031,66 L159.706431,66 L159.706431,71 L123.259142,71 L67.7207031,71 L67.7207031,66 Z" id="Rectangle-10-Copy-66" fill="#C2C2C2"></path>
+                <path d="M67.7207031,75 L160.316165,75 L160.316165,80 L123.627282,80 L67.7207031,80 L67.7207031,75 Z" id="Rectangle-10-Copy-67" fill="#C2C2C2"></path>
+                <path d="M67.7207031,84 L160.316165,84 L160.316165,89 L123.627282,89 L67.7207031,89 L67.7207031,84 Z" id="Rectangle-10-Copy-84" fill="#C2C2C2"></path>
+                <path d="M67.7207031,94 L158.483623,94 L158.483623,99 L122.520844,99 L67.7207031,99 L67.7207031,94 Z" id="Rectangle-10-Copy-68" fill="#C2C2C2"></path>
+                <path d="M67.7207031,103 L141.307765,103 L141.307765,108 L112.150536,108 L67.7207031,108 L67.7207031,103 Z" id="Rectangle-10-Copy-69" fill="#C2C2C2"></path>
+                <path d="M39.9960938,15 L5,15 L5,10 L53.9509255,10 L53.9509255,15 L39.9960938,15 Z" id="Rectangle-10-Copy-81" fill="#787878"></path>
+                <path d="M5.45461527,26 L5.45461527,21 L51.3044837,21 L51.3044837,26 L5.45461527,26 Z" id="Rectangle-10-Copy-72" fill="#C2C2C2"></path>
+                <path d="M34.6829345,35 L5.32233811,35 L5.32233811,30 L53.9509255,30 L53.9509255,35 L34.6829345,35 Z" id="Rectangle-10-Copy-73" fill="#C2C2C2"></path>
+                <path d="M34.8775534,44 L5.32233811,44 L5.32233811,39 L54.2732636,39 L54.2732636,44 L34.8775534,44 Z" id="Rectangle-10-Copy-75" fill="#C2C2C2"></path>
+                <path d="M34.2926308,53 L5.32233811,53 L5.32233811,48 L53.3044837,48 L53.3044837,53 L34.2926308,53 Z" id="Rectangle-10-Copy-76" fill="#C2C2C2"></path>
+                <path d="M34.6829345,62 L5.32233811,62 L5.32233811,57 L53.9509255,57 L53.9509255,62 L34.6829345,62 Z" id="Rectangle-10-Copy-77" fill="#C2C2C2"></path>
+                <path d="M34.8775534,71 L5.32233811,71 L5.32233811,66 L54.2732636,66 L54.2732636,71 L34.8775534,71 Z" id="Rectangle-10-Copy-78" fill="#C2C2C2"></path>
+                <path d="M34.2926308,80 L5.32233811,80 L5.32233811,75 L53.3044837,75 L53.3044837,80 L34.2926308,80 Z" id="Rectangle-10-Copy-79" fill="#C2C2C2"></path>
+                <path d="M34.2926308,98 L5.32233811,98 L5.32233811,93 L53.3044837,93 L53.3044837,98 L34.2926308,98 Z" id="Rectangle-10-Copy-82" fill="#C2C2C2"></path>
+                <path d="M33.0052208,89 L5.32233811,89 L5.32233811,84 L51.1722065,84 L51.1722065,89 L33.0052208,89 Z" id="Rectangle-10-Copy-80" fill="#C2C2C2"></path>
+                <path d="M33.0052208,107 L5.32233811,107 L5.32233811,102 L51.1722065,102 L51.1722065,107 L33.0052208,107 Z" id="Rectangle-10-Copy-83" fill="#C2C2C2"></path>
+            </g>
+        </g>
+    </g>
+</svg>

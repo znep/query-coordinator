@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="166px" height="118px" viewBox="0 0 166 118" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs></defs>
+    <g id="Blocks" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-11.000000, -166.000000)" id="text-12-mixed-content">
+            <g transform="translate(11.000000, 166.000000)">
+                <g id="Block-Frame" fill="#FFFFFF">
+                    <rect id="Block-Border-Add-in-CSS" x="0" y="0" width="165.236842" height="117.108098"></rect>
+                </g>
+                <path id="Path-35" stroke="#979797" d=""></path>
+                <rect id="Rectangle-10-Copy-70" fill="#C2C2C2" x="16.1229909" y="25" width="141.009187" height="5"></rect>
+                <rect id="Rectangle-10-Copy-60" fill="#787878" x="5" y="12" width="110" height="5"></rect>
+                <path d="M5,34 L158.140597,34 L158.140597,39 L97.4620576,39 L5,39 L5,34 Z" id="Rectangle-10-Copy-61" fill="#C2C2C2"></path>
+                <path d="M5,52 L157.132177,52 L157.132177,57 L96.853202,57 L5,57 L5,52 Z" id="Rectangle-10-Copy-62" fill="#C2C2C2"></path>
+                <path d="M5,43 L155.109815,43 L155.109815,48 L95.6321558,48 L5,48 L5,43 Z" id="Rectangle-10-Copy-63" fill="#C2C2C2"></path>
+                <g id="List" transform="translate(5.000000, 75.000000)" fill="#C2C2C2">
+                    <path d="M135.777513,0 L135.777513,5 L85.6193297,5 L9.18820758,5 L9.18820758,0 L135.777513,0 Z" id="Rectangle-10-Copy-65"></path>
+                    <path d="M4.05713842,0 L4.05713842,5 L2.45550297,5 L0.0149282388,5 L0.0149282388,0 L4.05713842,0 Z" id="Rectangle-10-Copy-140"></path>
+                    <path d="M4.05713842,9 L4.05713842,14 L2.45550297,14 L0.0149282388,14 L0.0149282388,9 L4.05713842,9 Z" id="Rectangle-10-Copy-141"></path>
+                    <path d="M4.05713842,18 L4.05713842,23 L2.45550297,23 L0.0149282388,23 L0.0149282388,18 L4.05713842,18 Z" id="Rectangle-10-Copy-142"></path>
+                    <path d="M4.05713842,27 L4.05713842,32 L2.45550297,32 L0.0149282388,32 L0.0149282388,27 L4.05713842,27 Z" id="Rectangle-10-Copy-143"></path>
+                    <path d="M137.482994,9 L137.482994,14 L86.6490518,14 L9.18820758,14 L9.18820758,9 L137.482994,9 Z" id="Rectangle-10-Copy-66"></path>
+                    <path d="M138.333405,18 L138.333405,23 L87.1625066,23 L9.18820758,23 L9.18820758,18 L138.333405,18 Z" id="Rectangle-10-Copy-67"></path>
+                    <path d="M135.777513,27 L135.777513,32 L85.6193297,32 L9.18820758,32 L9.18820758,27 L135.777513,27 Z" id="Rectangle-10-Copy-68"></path>
+                </g>
+                <path d="M45,66 L45,71 L29.1508939,71 L5,71 L5,66 L45,66 Z" id="Rectangle-10-Copy-69" fill="#949494"></path>
+            </g>
+        </g>
+    </g>
+</svg>

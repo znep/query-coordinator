@@ -9,20 +9,6 @@ describe('jquery-extensions', function() {
       expect(dimensions.height).to.equal(30);
     });
   });
-  describe('String.prototype.format', function() {
-    it('should insert correctly', function() {
-      expect('{0}, {1}, {2}, {3}, {4}'.format(1, 2, 3, 4, 5)).to.equal('1, 2, 3, 4, 5');
-    });
-    it('should support taking an object as an argument and mapping its keys', function() {
-      var object = {
-        foo: 'one',
-        bar: 'two',
-        baz: 'three'
-      };
-
-      expect('{foo}, {bar}, {baz}'.format(object)).to.equal('one, two, three');
-    });
-  });
   describe('String.prototype.capitalizeEachWord', function() {
     it('should capitalize a string correctly', function() {
       expect('asdf dfkj skja sdjfa jasldkfjalsd'.capitalizeEachWord()).to.

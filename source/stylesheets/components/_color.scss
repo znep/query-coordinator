@@ -1,85 +1,79 @@
 //Colors
 $gray: #4A4A4A;
 $light-gray: #8C8C8C;
-
-$base-blue: #2C97DE;
-$base-grey: #575757;
-
-$light-blue1: (tint($base-blue, 20%));
-$light-blue2: (tint($base-blue, 40%));
-$light-blue3: (tint($base-blue, 60%));
-$dark-blue1: (shade($base-blue, 20%));
-$dark-blue2: (shade($base-blue, 40%));
-$dark-blue3: (shade($base-blue, 60%));
-
-$colors-list: (
- 	base-blue: $base-blue,
-	light-blue1: $light-blue1,
-	light-blue2: $light-blue2,
-	light-blue3: $light-blue3,
-	dark-blue1: $dark-blue1,
-	dark-blue2: $dark-blue2,
-	dark-blue3: $dark-blue3,
-);
-
-
-/*
-$colors: (
-    blue: (
-        base: $base-blue,
-        light: tint($base-blue, 20%),
-		xlight: tint($base-blue, 40%),
-		xxlight: tint($base-blue, 60%),
-		dark: shade($base-blue, 20%),
-		xdark: shade($base-blue, 40%),
-		xxdark: shade($base-blue, 60%)
-    ),
-    grey: (
-        base:  $base-grey,
-        light: tint($base-grey, 20%),
-		xlight: tint($base-grey, 40%),
-		xxlight: tint($base-grey, 60%),
-		dark: shade($base-grey, 20%),
-		xdark: shade($base-grey, 40%),
-		xxdark: shade($base-grey, 60%)
-    )
-);
-
-@function color($color, $tone: 'base') {
-    @return map-get(map-get($colors, $color), $tone);
-}
-*/
-
-// $colors: (
-// 	base-blue: $base-blue,
-// );
-
-// $range: 3;
-// $colors-list: make-list($colors);
-
-// @function make-list($colors){
-// 	@each $color-name, $color in $colors{
-// 		@return create-subcolors($color, $color-name);
-// 	}
-// }
-// @function create_subcolors($base-color, $color-name){
-// 	$colors-list: map-merge(#{$color-name}, $base-color);
-// 	@for $i from 1 through $range {
-// 		$percent: ($i*20);
-// 	    $color: tint($base-color, $percent);
-// 		$colors-list: map-merge($color-name$i, $color);
-// 	}
-// 	@for $j from 1 through $range {
-// 		$percent: ($j*20);
-// 	    $color: shade($base-color, $percent);
-// 		$colors-list: map-merge($color-name"-"$j, $color)
-// 	}
-
-// }
-
-
-
+$white: #fff;
 
 // Color Vars
 $default-text-color: $gray;
 $quiet-text-color: $light-gray;
+$light-text-color: $white;
+
+
+//List of base colors
+//Probably want to turn these into variables..
+$colors: (
+	'blue': #2C97DE,
+	'grey': #797979,
+	'yellow': #debb1e,
+	'green': #23D6B0
+
+);
+
+
+//Swatches styling for the color palette
+.box { 
+	width: 20em;
+	padding: 1em 2em; 
+	display: block;
+	margin: 0em 1em;
+}
+.large {
+	padding: 2em 2em;
+	margin-bottom: 1em; 
+}
+.color-group {
+	float: left;
+	display: block;
+	margin-bottom: 2em;
+}
+
+
+//Number of light and dark shades
+$range: 4;
+
+//Loop that generates classes for each base color
+//apply .[basecolor] and .[basecolor] .light(1-4) to change the color
+@each $color-name, $base-color in $colors{
+	.#{$color-name} { 
+        background-color: $base-color;
+        color: $light-text-color;
+        &:after {
+          content: "#{$base-color}";
+          float: right;
+        }
+    
+	    @for $i from 1 through $range {
+			$percent: ($i*20);
+		    $color: tint($base-color, $percent);
+			&.light-#{$i} {
+				background-color: $color;
+		        color: $default-text-color;
+				&:after {
+		        	content: "#{$color}";
+		        	float: right;
+        		}
+			}
+		    $color: shade($base-color, $percent);
+			&.dark-#{$i} {
+				background-color: $color;
+		        color: $light-text-color;
+				&:after {
+		        	content: "#{$color}";
+		         	float: right;
+        		}
+			}
+		}
+	}	
+}
+
+

@@ -74,6 +74,38 @@ layout: styleguide
 
 	</section>
 
+	
+	<section class="styleguide-section">
+		<div class="meta">
+			<h2 class="styleguide-header">Colors</h2>
+			<p class="small">
+				colors colors colors 
+			</p>
+		</div>
+
+		<div class="example">
+
+			<div class="container">			
+				<div class="row sample-grid">
+					<div class="col-4 color-group">
+						<%= partial "components/swatch" , :locals => { :color => 'blue' } %>
+					</div>
+					<div class="col-4 color-group">
+						<%= partial "components/swatch" , :locals => { :color => 'yellow' } %>
+					</div>
+					<div class="col-4 color-group">
+						<%= partial "components/swatch" , :locals => { :color => 'green' } %>
+					</div>
+					<div class="col-4 color-group">
+						<%= partial "components/swatch" , :locals => { :color => 'grey' } %>
+					</div>
+				</div>
+			</div>				
+
+		</div><!-- /.example -->
+	</section>	
+
+
 
 
 </div>

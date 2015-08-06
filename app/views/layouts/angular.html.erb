@@ -32,13 +32,16 @@
   <%# See also: app/views/angular/serve_app.html.erb %>
 
   <body ng-app="<%= angular_app %>">
-    <div id="skip-links">
-      <%= link_to 'Go to an accessible version of this page', get_alt_dataset_link(@migration_info[:obeId]) %>
-    </div>
-    <%= render_noscript(@migration_info[:obeId]) %>
+    <% if @migration_info %>
+      <div id="skip-links">
+        <%= link_to 'Go to an accessible version of this page', get_alt_dataset_link(@migration_info[:obeId]) %>
+      </div>
+      <%= render_noscript(@migration_info[:obeId]) %>
+    <% end %>
     <%= render angular_app %>
     <%= yield :layout %>
   </body>
+
 
   <%= render_ga_tracking %>
 

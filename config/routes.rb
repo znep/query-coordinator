@@ -288,6 +288,7 @@ Frontend::Application.routes do
       # So if you change these routes, make sure public/javascripts/angular/dataCards/app.js is also updated to
       # reflect the changes.
       match '/view/:id', :action => 'serve_app', :app => 'dataCards', :as => :opendata_cards_view
+      match '/view/:id/configure-visualization', :action => 'configure_visualization', :app => 'dataCards'
       match '/view/:id/:field_id', :action => 'serve_app', :app => 'dataCards'
       match '/view/*angularRoute', :action => 'serve_app', :app => 'dataCards' # See angular-app-{:app} in assets.yml.
     end

@@ -95,6 +95,10 @@ class AngularController < ActionController::Base
 
   end
 
+  def configure_visualization
+
+  end
+
   private
 
   def fetch_page_metadata(page_id)

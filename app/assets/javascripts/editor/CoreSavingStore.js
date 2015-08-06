@@ -13,10 +13,25 @@
     var _isBusy = false;
     var _lastSaveError = null;
 
-    // Queue of stories to save. Why bother with this, since there is only one story?
-    // Because it is simple and gives us predictable behavior in the case of adversity
-    // (slow networks causing user to retry in the middle of a request, etc). Canceling
-    // inflight requests is flaky.
+    // Queue of stories to save. Why bother with this?
+    // Say we have an inflight save request, and we receive another STORY_SAVE_METADATA
+    // action. What do we do?
+    //
+    // Option A: Do nothing.
+    // Option B: Cancel the existing request and issue a new request.
+    // Option C: Process the new save once the original save completes.
+    //
+    // `A` can result in data silently not being saved at all, which is not ideal.
+    // `B` can result in data getting overwritten with old versions. Consider what happens
+    // in this scenario:
+    //  - Request 1 successfully sends data to core, but core stalls. The connection remains open.
+    //  - While core is stalling, request 2 comes in with new data. Request 1 is canceled. Request
+    //    2 then completes quickly.
+    //  - A few seconds later, core un-stalls and finishes processing request 1, overwriting the
+    //    data from request 2.
+    //
+    //  Thus, to have a better chance of success, we should wait for request 1 to complete before
+    //  dealing with request 2. This is option `C`, which is implemented.
     var _storyUidsPendingSave = [];
 
     this.register(function(payload) {

@@ -41,7 +41,9 @@
 
     storyteller.coreSavingStore.addChangeListener(function() {
       var saveInProgress = storyteller.coreSavingStore.isSaveInProgress();
-      var lastSaveError = storyteller.coreSavingStore.lastSaveError();
+      var lastSaveError = storyteller.coreSavingStore.lastRequestSaveErrorForStory(
+        storyteller.userStoryUid
+      );
 
       saveButton.toggleClass('busy', saveInProgress);
 

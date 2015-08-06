@@ -11,7 +11,7 @@
     var self = this;
 
     var _isBusy = false;
-    var _lastSaveError = null;
+    var _lastSaveErrorsByUid = {};
 
     // Queue of story metadata to save. Why bother with this?
     // Say we have an inflight save request, and we receive another STORY_SAVE_METADATA
@@ -62,12 +62,26 @@
      * Public methods
      */
 
+    /**
+     * Returns true if any core saving request is outstanding, false otherwise.
+     *
+     * Note: Tracking this by-story is not trivial and is not needed today. Unless
+     * you're reading this, in which case it likely is needed today. Sorry.
+     *
+     * @return {boolean}
+     */
     this.isSaveInProgress = function() {
       return _isBusy;
     };
 
-    this.lastSaveError = function() {
-      return _lastSaveError;
+    /**
+     * Obtain the error encountered while saving the
+     * given story, or null if the last save succeeded.
+     *
+     * @return {string | null}
+     */
+    this.lastRequestSaveErrorForStory = function(storyUid) {
+      return _lastSaveErrorsByUid[storyUid] || null;
     };
 
     /**
@@ -81,9 +95,15 @@
       }
     }
 
-    function _setLastSaveError(error) {
-      if (_lastSaveError !== error) {
-        _lastSaveError = error;
+    function _setLastSaveError(storyUid, error) {
+      var lastError = _lastSaveErrorsByUid[storyUid];
+
+      if (lastError !== error) {
+        if (error) {
+          _lastSaveErrorsByUid[storyUid] = error;
+        } else {
+          delete _lastSaveErrorsByUid[storyUid];
+        }
         self._emitChange();
       }
     }
@@ -124,11 +144,14 @@
         }).
         done(function() {
           // Done? Yay, clear errors.
-          _setLastSaveError(null);
+          _setLastSaveError(metadataToSave.storyUid, null);
         }).
         fail(function(failure) {
           // Ouch, save the error for later use.
-          _setLastSaveError(_.get(failure, 'responseJSON.message', failure.statusText));
+          _setLastSaveError(
+            metadataToSave.storyUid,
+            _.get(failure, 'responseJSON.message', failure.statusText)
+          );
         }).
         always(_makeRequests); // Process the next request if needed.
     }

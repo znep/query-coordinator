@@ -48,14 +48,14 @@ describe('SettingsPanel jQuery plugin', function() {
       },
       listeners: [],
       isSaveInProgress: _.constant(false),
-      lastSaveError: _.constant(null)
+      lastRequestSaveErrorForStory: _.constant(null)
 
     };
   });
 
   function setSaveAndErrorStates(isSaveInProgress, lastSaveError) {
     storyteller.coreSavingStore.isSaveInProgress = _.constant(isSaveInProgress);
-    storyteller.coreSavingStore.lastSaveError = _.constant(lastSaveError);
+    storyteller.coreSavingStore.lastRequestSaveErrorForStory = _.constant(lastSaveError);
     storyteller.coreSavingStore.triggerChange();
   }
 

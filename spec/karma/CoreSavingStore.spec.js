@@ -20,14 +20,16 @@ describe('CoreSavingStore', function() {
     }
   }
 
-  function expectError(done) {
+  function expectError(done, optionalStoryUid) {
+    optionalStoryUid = optionalStoryUid || standardMocks.validStoryUid;
     waitFor(function() {
-      return storyteller.coreSavingStore.lastSaveError() !== null;
+      return storyteller.coreSavingStore.lastRequestSaveErrorForStory(optionalStoryUid) !== null;
     }, done);
   }
-  function expectNoError(done) {
+  function expectNoError(done, optionalStoryUid) {
+    optionalStoryUid = optionalStoryUid || standardMocks.validStoryUid;
     waitFor(function() {
-      return storyteller.coreSavingStore.lastSaveError() === null;
+      return storyteller.coreSavingStore.lastRequestSaveErrorForStory(optionalStoryUid) === null;
     }, done);
   }
 
@@ -129,6 +131,9 @@ describe('CoreSavingStore', function() {
         });
         it('should indicate no save in progress', expectNoSaveInProgress);
         it('should indicate an error', expectError);
+        it('should indicate no error for other stories', function(done) {
+          expectNoError(done, 'some-othr');
+        });
       });
 
     });
@@ -143,6 +148,9 @@ describe('CoreSavingStore', function() {
       });
       it('should indicate no save in progress', expectNoSaveInProgress);
       it('should indicate an error', expectError);
+      it('should indicate no error for other stories', function(done) {
+        expectNoError(done, 'some-othr');
+      });
     });
   });
 });

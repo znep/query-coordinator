@@ -66,8 +66,8 @@ default: &default
 
   {% if CONSUL_HOST is defined -%}
   consul_host: {{ CONSUL_HOST }}
-  {% elif ARK_HOST is defined -%}
-  consul_host: {{ ARK_HOST }}:8500
+  {% else %}
+  consul_host: http://consul.aws-us-west-2-staging.socrata.net:8500
   {%- endif %}
 
 development:

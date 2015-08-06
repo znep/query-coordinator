@@ -151,6 +151,7 @@ en:
         previous: Previous
         next: Next
         showing: <p>Showing {0}</p><br><p>{1}&nbsp;of&nbsp;{2}</p>
+        error_message: An error occurred while fetching location data.
       feedback_panel:
         broken: Something seems broken
         feedback: Feedback

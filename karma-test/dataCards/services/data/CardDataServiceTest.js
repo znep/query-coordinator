@@ -2,6 +2,7 @@ describe('CardDataService', function() {
   'use strict';
 
   var $httpBackend;
+  var $q;
   var http;
   var CardDataService;
   var ConstantsService;
@@ -49,6 +50,7 @@ describe('CardDataService', function() {
     ConstantsService = $injector.get('Constants');
     ServerConfig = $injector.get('ServerConfig');
     $httpBackend = $injector.get('$httpBackend');
+    $q = $injector.get('$q');
     testHelpers = $injector.get('testHelpers');
     SoqlHelpers = $injector.get('SoqlHelpers');
     http = $injector.get('http');
@@ -849,6 +851,160 @@ describe('CardDataService', function() {
         done();
       });
 
+      $httpBackend.flush();
+    });
+  });
+
+  describe('getRows', function() {
+    it('should request the correct url, with all query elements arranged in the correct order', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      var offset = 0;
+      var limit = 5;
+      var order = 'ASCENDING';
+      var timeout = $q.defer();
+      var whereClause = 'score=5.0';
+      CardDataService.getRows(fake4x4, offset, limit, order, timeout, whereClause);
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /\/api\/id\/fake-data\.json\?\$offset=0&\$limit=5&\$order=ASCENDING&\$where=score=5.0/i
+      );
+      http.get.restore();
+    });
+
+    it('should return data from a given dataset', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getRows(fake4x4);
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /\/api\/id\/fake-data\.json\?\$/i
+      );
+      http.get.restore();
+    });
+
+    it('should return rows offset by the given amount', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      var offset = 3;
+      CardDataService.getRows(fake4x4, offset);
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /\$offset=3/i
+      );
+      http.get.restore();
+    });
+
+    it('should return the limit number of rows queried for', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      var offset = 0;
+      var limit = 5;
+      CardDataService.getRows(fake4x4, offset, limit);
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /\$limit=5/i
+      );
+      http.get.restore();
+    });
+
+    it('should order the returned row queries based on the given ordering convention', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      var offset = 0;
+      var limit = 5;
+      var order = 'ASCENDING';
+      CardDataService.getRows(fake4x4, offset, limit, order);
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /\$order=ASCENDING/i
+      );
+      http.get.restore();
+    });
+
+    // Specifically test row query ordering using the distance_in_meters function to
+    // ensure functionality of row query for points clicked on a featureMap.
+    // (see cardVisualizationFeatureMap.js)
+    it('should order based on distance from a given point (ascending) when using the distance_in_meters soql function', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      var offset = 0;
+      var limit = 5;
+      var order = 'distance_in_meters({field}, "POINT({lng} {lat})")'.format({
+        field: 'fake_location_column',
+        lng: '-122.25860595',
+        lat: '47.49493650'
+      });
+      CardDataService.getRows(fake4x4, offset, limit, order);
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /\$order=distance_in_meters\(fake_location_column,\+\"POINT\(-122\.25860595\+47\.49493650\)\"\)/i
+      );
+      http.get.restore();
+    });
+
+    // In the case that the request times out, the http request will reject the promise in getRows().
+    // getRows() will return null upon reject, as tested in the case of a
+    // 404, 500, or 503 (see below)
+
+    it('should correctly select rows based on the supplied whereClause', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      var offset = 0;
+      var limit = 5;
+      var order = 'ASCENDING';
+      var timeout = $q.defer();
+      var whereClause = 'score=5.0';
+      CardDataService.getRows(fake4x4, offset, limit, order, timeout, whereClause);
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /\$where=score=5.0/i
+      );
+      http.get.restore();
+    });
+
+    it('should return null on 404', function(done) {
+      fakeDataRequestHandler.respond(404, []);
+      var offset = 0;
+      var limit = 5;
+      var order = 'ASCENDING';
+      var timeout = $q.defer();
+      var whereClause = 'score=5.0';
+      var response = CardDataService.getRows(fake4x4, offset, limit, order, timeout, whereClause);
+      response.then(function(data) {
+        expect(data).to.be.null;
+        done();
+      });
+      $httpBackend.flush();
+    });
+
+    it('should return null on 500', function(done) {
+      fakeDataRequestHandler.respond(500, []);
+      var offset = 0;
+      var limit = 5;
+      var order = 'ASCENDING';
+      var timeout = $q.defer();
+      var whereClause = 'score=5.0';
+      var response = CardDataService.getRows(fake4x4, offset, limit, order, timeout, whereClause);
+      response.then(function(data) {
+        expect(data).to.be.null;
+        done();
+      });
+      $httpBackend.flush();
+    });
+
+    it('should return null on 503', function(done) {
+      fakeDataRequestHandler.respond(503, []);
+      var offset = 0;
+      var limit = 5;
+      var order = 'ASCENDING';
+      var timeout = $q.defer();
+      var whereClause = 'score=5.0';
+      var response = CardDataService.getRows(fake4x4, offset, limit, order, timeout, whereClause);
+      response.then(function(data) {
+        expect(data).to.be.null;
+        done();
+      });
       $httpBackend.flush();
     });
   });

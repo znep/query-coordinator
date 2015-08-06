@@ -153,6 +153,9 @@
           var formattedRowQueryResponse$ = Rx.Observable.combineLatest(
             rowQueryResponse$, columns$.filter(_.isDefined), dataFieldName$,
             function(rows, columns, fieldName) {
+              if (_.isNull(rows)) {
+                return null;
+              }
 
               // For every row returned
               var objectContainingCells = [];

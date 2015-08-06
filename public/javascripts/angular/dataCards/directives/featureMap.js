@@ -118,7 +118,10 @@
           }
         }
 
+
+        // Construct leaflet map
         var map = L.map(element.find('.feature-map-container')[0], mapOptions);
+
         // Control the hover flyout by registering when the mouse enters the map
         // and degistering when the mouse exits the map, so flyouts work across
         // multiple maps.
@@ -307,20 +310,18 @@
         }
 
         /**
-         * Creates a new feature layer with a specific tileServer endpoint
-         * and adds it to the map. Because of the way vector tiles are
-         * implemented (in mapbox-vector-tiles.js) it is necessary to
-         * create an entirely new feature layer every time the page's
-         * global where clause changes.
-         *
-         * This function should be used in conjunction with removeOldFeatureLayer
-         * so that there is only ever one active feature layer attached to the
-         * map at a time.
-         *
-         * @param {Object} map - The Leaflet map object.
-         * @param {Function} vectorTileGetter - Function that gets a vector tile
-         */
-
+        * If enabled:
+        * Handles feature map interaction in the form of cursor hover and click.
+        *
+        *   - When point(s) are hovered over, displays a flyout reporting the number of rows represented by
+        *     points under the cursor. Updates as mouse moves.
+        *
+        *   - When point(s) are clicked, displays a flannel reporting information from table
+        *     corresponding to the rows they represent. Flannel can be cleared by reclicking
+        *     the point(s), clicking elsewhere in the map, clicking elsewhere on the page,
+        *     or clicking on the flannel's close icon. Flannel has a spinner while query
+        *     is pending, and reports an error if the query fails.
+        */
         var mousemoveHandler = _.noop;
         var clickHandler = _.noop;
         if (ServerConfig.get('oduxEnableFeatureMapHover')) {
@@ -339,142 +340,149 @@
           };
 
           clickHandler = function(e) {
-            // Generate observable for data of clicked rows
-            var clickedDataRows$ = scope.getClickedRows(e.latlng, e.points);
-
-            if (_.xor(e.points, lastPoints).length === 0) {
+            // Update record of points clicked. Clear flannel upon reclick.
+            if (_.isEmpty(_.xor(e.points, lastPoints))) {
               lastPoints = null;
               return;
             } else {
               lastPoints = e.points;
             }
 
-            // Update position and content of row-detail flannel.
-            // Control passes back to cardVisualizationFeatureMap.js here.
-            Rx.Observable.subscribeLatest(
-              clickedDataRows$.take(1).filter(_.isDefined),
-              function(rows) {
+            var flannelScope;
 
-                if (rows.length === 0) {
-                  return;
-                }
+            // If points were clicked, open a flannel
+            if (!_.isEmpty(e.points)) {
+              // Set up flannel properties. Any subsequent changes after binding
+              // of directive need to be performed inside $safeApply.
+              flannelScope = $rootScope.$new();
+              flannelScope.queryStatus = Constants.QUERY_PENDING;
+              flannelScope.rowDisplayUnit = scope.rowDisplayUnit;
 
-                var flannelTargetLatLng;
+              // Instantiate the flannel
+              var flannelFactory = $compile(angular.element('<feature-map-flannel />'));
+              var flannel = flannelFactory(flannelScope);
 
-                // Open flannel over the point if a single point is selected, otherwise
-                // opens over the cursor location.
-                if (rows.length === 1) {
-                  var latIndex = 1;
-                  var lngIndex = 0;
-                  var featureMapLocationData = _.find(rows[0], {isCurrentColumn: true});
-                  var rowPoint = _.find(featureMapLocationData.value, {type: 'Point'});
-                  flannelTargetLatLng = L.latLng(rowPoint.coordinates[latIndex], rowPoint.coordinates[lngIndex]);
-                  //target on lat lang of point
-                } else {
-                  flannelTargetLatLng = e.latlng;
-                }
+              // Obtain initial values for flannel and hint position
+              adjustPosition();
 
-                // Set up the essential properties for the row-details flannel.
-                // Any property changes that occur after binding scope to the
-                // compiled directive need to be performed inside $safeApply.
-                var flannelScope = $rootScope.$new();
-                flannelScope.rows = rows;
-                flannelScope.rowDisplayUnit = scope.rowDisplayUnit;
-                flannelScope.isExpanded = $(element).closest('card').hasClass('expanded');
+              // Insert flannel into the DOM
+              $(e.originalEvent.target).
+                closest('body').
+                append(flannel);
 
-                // Instantiate the row-details flannel.
-                var flannelFactory = $compile(angular.element('<feature-map-flannel />'));
-                var flannel = flannelFactory(flannelScope);
-                // Recalculates the position of the panel and hint.
-                // Runs now to obtain initial values.
-                function adjustPosition() {
+              // Kick off and manage query for clicked row data
+              var rowQueryResponse$ = scope.getClickedRows(e.latlng, e.points);
+
+              // Provoke an update of flannel content based on status of query result.
+              // Will show an error message of the query failed, otherwise the formatted
+              // results of the query.
+              var queryHandler = rowQueryResponse$.take(1).filter(_.isDefined).subscribe(
+                function(rows) {
                   flannelScope.$safeApply(function() {
-
-                    var containerPoint = map.latLngToContainerPoint(flannelTargetLatLng);
-                    var distanceOutOfView = $(window).scrollTop();
-                    var mapContainerBounds = map.getContainer().getBoundingClientRect();
-                    var mapLeftEdge = mapContainerBounds.left;
-                    var mapTopEdge = mapContainerBounds.top;
-                    var xPosition = mapLeftEdge + containerPoint.x;
-                    var yPosition = mapTopEdge + containerPoint.y + distanceOutOfView;
-                    var windowWidth = windowRef.width();
-
-                    flannelScope.abutsRightEdge = windowWidth <
-                      (xPosition + Constants.FLANNEL_WIDTH + Constants.FLYOUT_WINDOW_PADDING);
-
-                    flannelScope.panelPositionStyle = {};
-                    flannelScope.hintPositionStyle = {};
-
-                    flannelScope.panelPositionStyle.top = '{0}px'.format(yPosition);
-
-                    if (flannelScope.abutsRightEdge) {
-                      flannelScope.useSoutheastHint = xPosition + (Constants.FLANNEL_WIDTH / 2) >
-                        windowWidth - (Constants.FLYOUT_WINDOW_PADDING + Constants.FLANNEL_PADDING_COMPENSATION);
-
-                      flannelScope.panelPositionStyle.right = '{0}px'.format(
-                        Constants.FLANNEL_WIDTH + Constants.FLANNEL_PADDING_COMPENSATION + Constants.FLYOUT_WINDOW_PADDING
-                      );
-
-                      var hintRightOffset = xPosition + Constants.FLYOUT_WINDOW_PADDING +
-                        (flannelScope.useSoutheastHint ? 0 : Constants.FLANNEL_HINT_WIDTH);
-                      var hintPositionFromRight = Math.max(0, windowWidth - hintRightOffset);
-                      flannelScope.hintPositionStyle.right = '{0}px'.format(hintPositionFromRight);
-                      flannelScope.hintPositionStyle.left = 'auto';
+                    if (_.isNull(rows)) {
+                      flannelScope.queryStatus = Constants.QUERY_ERROR;
                     } else {
-                      flannelScope.panelPositionStyle.left = '{0}px'.format(xPosition);
-                      flannelScope.useSoutheastHint = false;
+                      flannelScope.rows = rows;
+                      flannelScope.queryStatus = Constants.QUERY_SUCCESS;
                     }
                   });
-                }
-                adjustPosition();
-
-                // Clean up after ourselves, and trigger clearing of clicked points under closing flannel
-                function handleDestroyFlannel() {
-                  closeSubscriber.dispose();
-                  scrollSubscriber.dispose();
-                  map.off('resize', adjustPosition);
-                  flannel.remove();
-                  flannelScope.$destroy();
-                  map.fire('flannelclosed', e);
-                }
-
-                // Dismiss this flannel instance when clicking outside
-                // the flannel itself, or on the close icon
-                var closeSubscriber = WindowState.closeDialogEventObservable.
-                  filter(function(e) {
-                    var target = $(e.target);
-                    return target.closest('.feature-map-flannel').length === 0 || target.is('.icon-close');
-                  }).
-                  subscribe(function(e) {
-                    scope.$safeApply(handleDestroyFlannel);
-                    // If the click is outside of the map itself, (when clicking elsewhere on the page,
-                    // or updating a filter) clear all hover and clicked point highlighting
-                    if ($(e.target).closest('.feature-map-container').length === 0) {
-                      map.fire('clearhighlightrequest');
-                    }
-                  });
-
-                // Shift flannel position if scroll occurs
-                var scrollSubscriber = WindowState.scrollPositionSubject.subscribe(function() {
-                  adjustPosition();
                 });
+            }
 
-                // Remove the flannel on pan/zoom, but just shift its position
-                // if the map resizes innocuously (e.g. due to window resize).
-                map.once('dragstart zoomstart', function() {
+            // If a flannel is currently open, be prepared to close flannel or adjust its position.
+            if (_.isDefined(flannelScope)) {
+              // Destroy flannel if it is closed.
+              var closeSubscriber = WindowState.closeDialogEventObservable.skip(1).filter(function(e) {
+                  var target = $(e.target);
+                  return target.closest('.feature-map-flannel').length === 0 || target.is('.icon-close');
+                }).subscribe(function(e) {
                   scope.$safeApply(handleDestroyFlannel);
+                  if ($(e.target).closest('.feature-map-container').length === 0) {
+                    // If click outside map itself, clear all hover and clicked point highlighting
+                    map.fire('clearhighlightrequest');
+                  }
                 });
 
-                map.on('resize', adjustPosition);
+              // Shift flannel position if scroll occurs
+              var scrollSubscriber = WindowState.scrollPositionSubject.subscribe(adjustPosition);
 
-                // Insert the flannel into the DOM.
-                $(e.originalEvent.target).
-                  closest('body').
-                  append(flannel);
+              // Remove the flannel on pan/zoom, but just shift its position
+              // if the map resizes innocuously (e.g. due to window resize).
+              map.once('dragstart zoomstart', function() {
+                scope.$safeApply(handleDestroyFlannel);
               });
+              map.on('resize', adjustPosition);
+            }
+
+            // Recalculates the position of the flannel and hint so that
+            // flannel opens over the cursor location.
+            function adjustPosition() {
+              flannelScope.$safeApply(function() {
+
+                var containerPoint = map.latLngToContainerPoint(e.latlng);
+                var distanceOutOfView = $(window).scrollTop();
+                var mapContainerBounds = map.getContainer().getBoundingClientRect();
+                var mapLeftEdge = mapContainerBounds.left;
+                var mapTopEdge = mapContainerBounds.top;
+                var xPosition = mapLeftEdge + containerPoint.x;
+                var yPosition = mapTopEdge + containerPoint.y + distanceOutOfView;
+                var windowWidth = windowRef.width();
+
+                flannelScope.abutsRightEdge = windowWidth <
+                  (xPosition + Constants.FLANNEL_WIDTH + Constants.FLYOUT_WINDOW_PADDING);
+
+                flannelScope.panelPositionStyle = {};
+                flannelScope.hintPositionStyle = {};
+
+                flannelScope.panelPositionStyle.top = '{0}px'.format(yPosition);
+
+                if (flannelScope.abutsRightEdge) {
+                  flannelScope.useSoutheastHint = xPosition + (Constants.FLANNEL_WIDTH / 2) >
+                    windowWidth - (Constants.FLYOUT_WINDOW_PADDING + Constants.FLANNEL_PADDING_COMPENSATION);
+
+                  flannelScope.panelPositionStyle.right = '{0}px'.format(
+                    Constants.FLANNEL_WIDTH + Constants.FLANNEL_PADDING_COMPENSATION + Constants.FLYOUT_WINDOW_PADDING
+                  );
+
+                  var hintRightOffset = xPosition + Constants.FLYOUT_WINDOW_PADDING +
+                    (flannelScope.useSoutheastHint ? 0 : Constants.FLANNEL_HINT_WIDTH);
+                  var hintPositionFromRight = Math.max(0, windowWidth - hintRightOffset);
+                  flannelScope.hintPositionStyle.right = '{0}px'.format(hintPositionFromRight);
+                  flannelScope.hintPositionStyle.left = 'auto';
+                } else {
+                  flannelScope.panelPositionStyle.left = '{0}px'.format(xPosition);
+                  flannelScope.useSoutheastHint = false;
+                }
+              });
+            }
+
+            // Clean up after ourselves, and trigger clearing of clicked points under closing flannel
+            function handleDestroyFlannel() {
+              queryHandler.dispose();
+              closeSubscriber.dispose();
+              scrollSubscriber.dispose();
+              map.off('resize', adjustPosition);
+              flannel.remove();
+              flannelScope.$destroy();
+              map.fire('flannelclosed', e);
+            }
           };
         }
 
+        /**
+         * Creates a new feature layer with a specific tileServer endpoint
+         * and adds it to the map. Because of the way vector tiles are
+         * implemented (in mapbox-vector-tiles.js) it is necessary to
+         * create an entirely new feature layer every time the page's
+         * global where clause changes.
+         *
+         * This function should be used in conjunction with removeOldFeatureLayer
+         * so that there is only ever one active feature layer attached to the
+         * map at a time.
+         *
+         * @param {Object} map - The Leaflet map object.
+         * @param {Function} vectorTileGetter - Function that gets a vector tile
+         */
         function createNewFeatureLayer(map, vectorTileGetter) {
           var featureLayerOptions = {
             debug: false,

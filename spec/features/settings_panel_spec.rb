@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'settings panel', type: :feature, js: true do
   let(:data_toggle_selector) { '[data-panel-toggle="settings-panel"]' }
-  let(:settings_panel_selector) { '#settings-panel' }
+  let(:settings_panel_selector) { '.settings-panel' }
   let(:settings_overlay_selector) { '#settings-panel-overlay' }
 
   before do
@@ -55,11 +55,11 @@ RSpec.describe 'settings panel', type: :feature, js: true do
     describe 'edit' do
 
       it 'enables the save button when the title is changed' do
-        expect(page).to have_selector('#settings-panel .settings-save-btn:disabled')
+        expect(page).to have_selector('.settings-panel .settings-save-btn:disabled')
         fill_in('title', with: 'editing!')
-        expect(page).to have_selector('#settings-panel .settings-save-btn:enabled')
+        expect(page).to have_selector('.settings-panel .settings-save-btn:enabled')
         fill_in('title', with: 'test story')
-        expect(page).to have_selector('#settings-panel .settings-save-btn:disabled')
+        expect(page).to have_selector('.settings-panel .settings-save-btn:disabled')
       end
 
     end

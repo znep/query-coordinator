@@ -26,7 +26,7 @@ module StoriesHelper
   private
 
   def core_attributes
-    CoreServer::get_view(@story.uid, CoreServer::headers_from_request(request))
+    CoreServer::get_view(@story.uid, CoreServer::headers_from_request(request)) || {}
   end
 
   def render_component(component)

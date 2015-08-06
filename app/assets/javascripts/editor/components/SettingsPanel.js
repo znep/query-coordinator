@@ -85,8 +85,19 @@
     }
 
     function updateSaveButtonEnabledState() {
-      var hasChanges = isTitleChanged() || isDescriptionChanged();
-      var hasError = storyteller.
+      var hasChanges;
+      var hasError;
+
+      if (!metadataStateAtPanelOpenTime) {
+        // Panel is closed, we don't care.
+        // This function gets called whenever
+        // one of several Stores change (StoryStore,
+        // in particular).
+        return;
+      }
+
+      hasChanges = isTitleChanged() || isDescriptionChanged();
+      hasError = storyteller.
         coreSavingStore.
         lastRequestSaveErrorForStory(storyteller.userStoryUid) !== null;
 

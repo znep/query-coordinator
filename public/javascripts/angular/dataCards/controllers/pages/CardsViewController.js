@@ -190,6 +190,8 @@
     $scope.$bindObservable('sourceDatasetName', page.observe('dataset.name'));
     $scope.$bindObservable('cardModels', page.observe('cards'));
 
+    $scope.$bindObservable('isEphemeral', page.observe('id').map(_.isUndefined));
+
     pageNameSequence.subscribe(function(pageName) {
       WindowOperations.setTitle('{0} | Socrata'.format(pageName));
     });
@@ -497,6 +499,13 @@
     }
 
     $scope.savePage = function() {
+      if ($scope.isEphemeral) {
+        return $scope.savePageAs(
+          $.trim(page.getCurrentValue('name')),
+          $.trim(page.getCurrentValue('description'))
+        );
+      }
+
       var savePromise;
       if ($scope.hasChanges) {
         try {
@@ -683,10 +692,20 @@
       selector: '.save-this-page .save-button',
       render: function() {
         var buttonStatus = currentPageSaveEvents.value.status;
+
+        var idleTitle;
+        if ($scope.isEphemeral) {
+          idleTitle = I18n.saveAs.flyoutIdle;
+        } else if ($scope.hasChanges) {
+          idleTitle = I18n.saveButton.flyoutIdle;
+        } else {
+          idleTitle = I18n.saveButton.flyoutNoChanges;
+        }
+
         var flyoutContent = {
           title: {
             failed: I18n.saveButton.flyoutFailedTitle,
-            idle: $scope.hasChanges ? I18n.saveButton.flyoutIdle : I18n.saveButton.flyoutNoChanges,
+            idle: idleTitle,
             saving: I18n.saveButton.saving,
             saved: I18n.saveButton.saved
           },

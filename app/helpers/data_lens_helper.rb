@@ -1,4 +1,4 @@
-module AngularHelper
+module DataLensHelper
 
   def angular_app
     params[:app]

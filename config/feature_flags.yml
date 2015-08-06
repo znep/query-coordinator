@@ -144,6 +144,10 @@ timeline:
 use_auth0:
   description: Force use of Auth0 to authenticate users. DO NOT ENABLE ON ANY ENVIRONMENT OTHER THAN STAGING OR LOCAL.
   defaultValue: false
+use_ephemeral_bootstrap:
+  description: When true, bootstrapping a Data Lens page is ephemeral — that is, the page is not immediately persisted in the catalog.
+  defaultValue: false
+  category: data lens
 useSoda2:
   description: Switch to using SODA2.
   defaultValue: never

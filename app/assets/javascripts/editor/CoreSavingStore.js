@@ -115,8 +115,34 @@
         storyDescription: storyteller.storyStore.getStoryDescription(storyUid)
       };
 
-      _storyMetadataPendingSave.push(metadata);
-      _makeRequests();
+      var error = _findMetadataError(metadata);
+      if (error) {
+        _setLastSaveError(storyUid, error);
+      } else {
+        _storyMetadataPendingSave.push(metadata);
+        _makeRequests();
+      }
+    }
+
+    /**
+     * Verifies that the given saved metadata snapshot (from _saveStoryMetadata)
+     * is OK to save. If problems are found, an error string is returned.
+     * Otherwise, null is returned.
+     *
+     * @return {string | null}
+     */
+    function _findMetadataError(metadata) {
+      if (metadata.storyTitle.length >= 254) {
+        // The `name` column of the `lenses` table is defined as:
+        //
+        //   name character varying(255)
+        //
+        // Here 255 is the maxiumum allowed length, not the maxiumum character
+        // count.
+        return I18n.t('editor.settings.errors.title_too_long');
+      } else {
+        return null;
+      }
     }
 
     /**

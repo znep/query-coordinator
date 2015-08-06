@@ -51,7 +51,15 @@
     /\/v\/([^#\&\?]{11})/         // /v/<id>
   ],
 
-  HISTORY_MAX_UNDO_COUNT: 99
+  HISTORY_MAX_UNDO_COUNT: 99,
+
+  // The `name` column of the `lenses` table is defined as:
+  //
+  //   name character varying(255)
+  //
+  // Here 255 is the maxiumum allowed length, not the maxiumum character
+  // count.
+  CORE_VIEW_NAME_MAX_LENGTH: 254
 };
 
 (function() {

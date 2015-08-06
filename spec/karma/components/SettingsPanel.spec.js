@@ -17,7 +17,7 @@ describe('SettingsPanel jQuery plugin', function() {
           '<button class="settings-save-btn"></button>',
         '</div>',
       '</div>'
-    ].join('')
+    ].join('');
 
     testDom.append(dom);
     testDom.append('<div class="handle">');

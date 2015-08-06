@@ -10,7 +10,7 @@
 
     var self = this;
 
-    var _isBusy = false;
+    var _isSaveInProgress = false;
     var _lastSaveErrorsByUid = {};
 
     // Queue of story metadata to save. Why bother with this?
@@ -71,7 +71,7 @@
      * @return {boolean}
      */
     this.isSaveInProgress = function() {
-      return _isBusy;
+      return _isSaveInProgress;
     };
 
     /**
@@ -88,9 +88,9 @@
      * Private methods
      */
 
-    function _setBusy(busy) {
-      if (_isBusy !== busy) {
-        _isBusy = busy;
+    function _setSaveInProgress(isInProgress) {
+      if (_isSaveInProgress !== isInProgress) {
+        _isSaveInProgress = isInProgress;
         self._emitChange();
       }
     }
@@ -132,13 +132,7 @@
      * @return {string | null}
      */
     function _findMetadataError(metadata) {
-      if (metadata.storyTitle.length >= 254) {
-        // The `name` column of the `lenses` table is defined as:
-        //
-        //   name character varying(255)
-        //
-        // Here 255 is the maxiumum allowed length, not the maxiumum character
-        // count.
+      if (metadata.storyTitle.length >= Constants.CORE_VIEW_NAME_MAX_LENGTH) {
         return I18n.t('editor.settings.errors.title_too_long');
       } else {
         return null;
@@ -152,13 +146,13 @@
       var metadataToSave;
 
       if (_.isEmpty(_storyMetadataPendingSave)) {
-        _setBusy(false);
+        _setSaveInProgress(false);
         return;
       }
 
-      metadataToSave = _storyMetadataPendingSave.pop();
+      metadataToSave = _storyMetadataPendingSave.shift();
 
-      _setBusy(true);
+      _setSaveInProgress(true);
 
       _getViewMetadataFromCore(metadataToSave.storyUid).
         then(function(response) {

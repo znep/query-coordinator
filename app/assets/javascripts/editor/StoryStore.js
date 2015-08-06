@@ -357,7 +357,6 @@
       _validateStoryData(storyData);
 
       storyUid = storyData.uid;
-      blockIds;
 
       if (!overwrite && _stories.hasOwnProperty(storyUid)) {
         throw new Error(

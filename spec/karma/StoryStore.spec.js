@@ -832,7 +832,7 @@ describe('StoryStore', function() {
             description: 'new description'
           });
 
-          assert.deepEqual(storyteller.storyStore.getStoryDescription(story1Uid), 'new description');
+          assert.equal(storyteller.storyStore.getStoryDescription(story1Uid), 'new description');
         });
       });
     });

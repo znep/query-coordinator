@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg width="166px" height="118px" viewBox="0 0 166 118" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs></defs>
-    <g id="Welcome" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Blocks" transform="translate(-11.000000, -448.000000)">
-            <g id="Media-Block-4-8-Col" transform="translate(11.000000, 448.000000)">
+    <g id="Blocks" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-11.000000, -732.000000)" id="media-text-8-4">
+            <g transform="translate(11.000000, 732.000000)">
                 <g id="Block-Frame" fill="#FFFFFF">
-                    <rect id="Rectangle-6-Copy-20" x="0" y="0" width="165.236842" height="117.108098"></rect>
+                    <rect id="Block-Border-Add-in-CSS" x="0" y="0" width="165.236842" height="117.108098"></rect>
                 </g>
-                <g id="Rectangle-6-Copy-21-+-Imported-Layers-Copy-2" transform="translate(58.000000, 6.000000)">
+                <g id="Rectangle-6-Copy-21-+-Imported-Layers-Copy-2" transform="translate(5.000000, 6.000000)">
                     <rect id="Rectangle-6-Copy-21" stroke="#CCCCCC" stroke-dasharray="6,3" x="0.469148616" y="0.0857505622" width="100.530851" height="106.272328"></rect>
                     <g id="Imported-Layers-Copy-2" transform="translate(29.257260, 32.018978)" fill="#4A4A4A">
                         <path d="M0,35.7604529 L18.5499992,35.7604529 L18.5499992,20.8546577 L0,20.8546577 L0,35.7604529 Z M1.23666662,22.2099385 L17.3133326,22.2099385 L17.3133326,34.6138533 L1.23666662,34.6138533 L1.23666662,22.2099385 Z" id="Fill-1"></path>
@@ -29,17 +29,17 @@
                         <path d="M31.3100766,11.6818606 L36.5284227,8.2420617 L31.3100766,4.80226279 L31.3100766,11.6818606" id="Fill-17"></path>
                     </g>
                 </g>
-                <rect id="Rectangle-10-Copy-14" fill="#9B9B9B" x="7" y="25.8274632" width="45" height="5"></rect>
-                <rect id="Rectangle-10-Copy-15" fill="#4A4A4A" x="7" y="6.21931567" width="45" height="10"></rect>
-                <path d="M7,35 L52,35 L52,40 L34.1697557,40 L7,40 L7,35 Z" id="Rectangle-10-Copy-16" fill="#9B9B9B"></path>
-                <path d="M7,53 L52,53 L52,58 L34.1697557,58 L7,58 L7,53 Z" id="Rectangle-10-Copy-17" fill="#9B9B9B"></path>
-                <path d="M7,44 L52,44 L52,49 L34.1697557,49 L7,49 L7,44 Z" id="Rectangle-10-Copy-23" fill="#9B9B9B"></path>
-                <path d="M7,62 L52,62 L52,67 L34.1697557,67 L7,67 L7,62 Z" id="Rectangle-10-Copy-18" fill="#9B9B9B"></path>
-                <path d="M7,71 L52,71 L52,76 L34.1697557,76 L7,76 L7,71 Z" id="Rectangle-10-Copy-19" fill="#9B9B9B"></path>
-                <path d="M7,80 L52,80 L52,85 L34.1697557,85 L7,85 L7,80 Z" id="Rectangle-10-Copy-20" fill="#9B9B9B"></path>
-                <path d="M7,89 L52,89 L52,94 L34.1697557,94 L7,94 L7,89 Z" id="Rectangle-10-Copy-21" fill="#9B9B9B"></path>
-                <path d="M7,98 L52,98 L52,103 L34.1697557,103 L7,103 L7,98 Z" id="Rectangle-10-Copy-22" fill="#9B9B9B"></path>
-                <path d="M7,107 L52,107 L52,112 L34.1697557,112 L7,112 L7,107 Z" id="Rectangle-10-Copy-24" fill="#9B9B9B"></path>
+                <path d="M113,11.5 L113,6.5 L157.810006,6.5 L157.810006,11.5 L145.035659,11.5 L113,11.5 Z" id="Rectangle-10-Copy-117" fill="#787878"></path>
+                <path d="M113.416158,17.5 L155.387435,17.5 L155.387435,22.5 L113.416158,22.5 L113.416158,17.5 Z" id="Rectangle-10-Copy-107" fill="#C2C2C2"></path>
+                <path d="M113.29507,31.5 L113.29507,26.5 L157.810006,26.5 L157.810006,31.5 L140.171957,31.5 L113.29507,31.5 Z" id="Rectangle-10-Copy-108" fill="#C2C2C2"></path>
+                <path d="M113.29507,40.5 L113.29507,35.5 L158.105076,35.5 L158.105076,40.5 L140.350113,40.5 L113.29507,40.5 Z" id="Rectangle-10-Copy-109" fill="#C2C2C2"></path>
+                <path d="M113.29507,49.5 L113.29507,44.5 L157.218248,44.5 L157.218248,49.5 L139.814671,49.5 L113.29507,49.5 Z" id="Rectangle-10-Copy-110" fill="#C2C2C2"></path>
+                <path d="M113.29507,58.5 L113.29507,53.5 L157.810006,53.5 L157.810006,58.5 L140.171957,58.5 L113.29507,58.5 Z" id="Rectangle-10-Copy-111" fill="#C2C2C2"></path>
+                <path d="M113.29507,67.5 L113.29507,62.5 L158.105076,62.5 L158.105076,67.5 L140.350113,67.5 L113.29507,67.5 Z" id="Rectangle-10-Copy-112" fill="#C2C2C2"></path>
+                <path d="M113.29507,76.5 L113.29507,71.5 L157.218248,71.5 L157.218248,76.5 L139.814671,76.5 L113.29507,76.5 Z" id="Rectangle-10-Copy-113" fill="#C2C2C2"></path>
+                <path d="M113.29507,94.5 L113.29507,89.5 L157.218248,89.5 L157.218248,94.5 L139.814671,94.5 L113.29507,94.5 Z" id="Rectangle-10-Copy-114" fill="#C2C2C2"></path>
+                <path d="M113.29507,85.5 L113.29507,80.5 L155.266348,80.5 L155.266348,85.5 L138.636167,85.5 L113.29507,85.5 Z" id="Rectangle-10-Copy-115" fill="#C2C2C2"></path>
+                <path d="M113.29507,103.5 L113.29507,98.5 L155.266348,98.5 L155.266348,103.5 L138.636167,103.5 L113.29507,103.5 Z" id="Rectangle-10-Copy-116" fill="#C2C2C2"></path>
             </g>
         </g>
     </g>

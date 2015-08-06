@@ -1,0 +1,20 @@
+{
+  "name": "socrata-utils",
+  "version": "0.0.5",
+  "main": [
+    "socrata.utils.js"
+  ],
+  "ignore": [
+    "bower_components/",
+    "karma/",
+    "node_modules/",
+    ".gitignore",
+    "bower.json",
+    "karma.conf.js",
+    "packages.json",
+    "README.md"
+  ],
+  "devDependencies": {
+    "lodash": "~3.10.0"
+  }
+}

@@ -15,12 +15,14 @@
     utils.assertHasProperty(componentOptions, 'componentValue');
     utils.assertEqual(componentOptions.componentType, 'layout');
 
+    layoutComponent = $('<div>', { 'class': componentOptions.classes });
+
     switch(componentOptions.componentValue) {
       case 'spacer':
-        layoutComponent = $('<div>', { 'class': 'spacer' });
+        layoutComponent.append($('<div>', { 'class': 'spacer'}));
         break;
       case 'horizontalRule':
-        layoutComponent = $('<hr>');
+        layoutComponent.append($('<hr>'));
         break;
       default:
         throw new Error(

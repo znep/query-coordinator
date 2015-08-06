@@ -1,4 +1,8 @@
-.component-container {
+.component {
+  &.layout {
+    background: none;
+  }
+
   .spacer {
     height: 60px;
   }

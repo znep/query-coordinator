@@ -13,7 +13,7 @@
     var _isBusy = false;
     var _lastSaveError = null;
 
-    // Queue of stories to save. Why bother with this?
+    // Queue of story metadata to save. Why bother with this?
     // Say we have an inflight save request, and we receive another STORY_SAVE_METADATA
     // action. What do we do?
     //
@@ -32,7 +32,18 @@
     //
     //  Thus, to have a better chance of success, we should wait for request 1 to complete before
     //  dealing with request 2. This is option `C`, which is implemented.
-    var _storyUidsPendingSave = [];
+    //
+    //  As soon as STORY_SAVE_METADATA comes in, we immediately take a snapshot of the metadata
+    //  to save, and put that snapshot on the queue. To prevent saving the wrong data in case of
+    //  future changes to StoryStore, the snapshot must be taken at the time STORY_SAVE_METADATA
+    //  is dispatched, not upon dequeue.
+    //  Queue items look like this:
+    //  {
+    //    storyUid: <4x4>,
+    //    storyTitle: <string>,
+    //    storyDescription: <string>
+    //  }
+    var _storyMetadataPendingSave = [];
 
     this.register(function(payload) {
 
@@ -78,7 +89,13 @@
     }
 
     function _saveStoryMetadata(storyUid) {
-      _storyUidsPendingSave.push(storyUid);
+      var metadata = {
+        storyUid: storyUid,
+        storyTitle: storyteller.storyStore.getStoryTitle(storyUid),
+        storyDescription: storyteller.storyStore.getStoryDescription(storyUid)
+      };
+
+      _storyMetadataPendingSave.push(metadata);
       _makeRequests();
     }
 
@@ -86,19 +103,23 @@
      * Makes a read/modify/write on all queued story save requests (sequentially).
      */
     function _makeRequests() {
-      if (_.isEmpty(_storyUidsPendingSave)) {
+      var metadataToSave;
+
+      if (_.isEmpty(_storyMetadataPendingSave)) {
         _setBusy(false);
         return;
       }
 
+      metadataToSave = _storyMetadataPendingSave.pop();
+
       _setBusy(true);
 
-      _getViewMetadataFromCore(_storyUidsPendingSave.pop()).
+      _getViewMetadataFromCore(metadataToSave.storyUid).
         then(function(response) {
           // Now that we have the current view metadata,
           // update it and PUT it back.
           return _putViewMetadataToCore(
-            _updateCoreMetadataBlob(response)
+            _updateCoreMetadataBlobWithSavedMetadata(metadataToSave, response)
           );
         }).
         done(function() {
@@ -114,20 +135,25 @@
 
     /**
      * Update a view metadata blob from core with metadata
-     * information from StoryStore
+     * information from a saved metadata snapsshot from _saveStoryMetadata.
      *
+     * @param metadata {object} A snapshot of view metadata.
      * @param blob {object} A core view metadata blob.
      * @return {object} An updated version of the blob.
      */
-    function _updateCoreMetadataBlob(blob) {
+    function _updateCoreMetadataBlobWithSavedMetadata(metadata, blob) {
       utils.assertHasProperty(blob, 'id');
+      utils.assertHasProperties(metadata, 'storyUid', 'storyTitle', 'storyDescription');
+      if (blob.id !== metadata.storyUid) {
+        throw new Error('Core view uid does not match story uid.');
+      }
 
       return _.extend(
         {},
         blob,
         {
-          name: storyteller.storyStore.getStoryTitle(blob.id),
-          description: storyteller.storyStore.getStoryDescription(blob.id)
+          name: metadata.storyTitle,
+          description: metadata.storyDescription
         }
       );
     }

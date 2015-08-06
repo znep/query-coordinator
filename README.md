@@ -17,4 +17,4 @@ Add the following line to the `"dependencies"` hash in your project's `bower.jso
   ...
 ```
 
-Then run `bower update && bower install --save`.
+Then run `bower install git@github.com:socrata/frontend-visualizations.git#master --save`.

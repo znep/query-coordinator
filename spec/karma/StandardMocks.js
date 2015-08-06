@@ -18,6 +18,7 @@
 function applyStandardMocks() {
   var storyUid = 'test-test';
   var storyTitle = 'Standard Mock Story Title';
+  var storyDescription = 'Standard Mock Story Description';
   var imageBlockId = '1000';
   var textBlockId = '1001';
   var imageAndTextBlockId = '1002';
@@ -26,6 +27,7 @@ function applyStandardMocks() {
   var storyData = generateStoryData({
     uid: storyUid,
     title: storyTitle,
+    description: storyDescription,
     blocks: [
       generateBlockData({
         id: imageBlockId,
@@ -90,6 +92,7 @@ function applyStandardMocks() {
     remove: removeStandardMocks,
 
     validStoryTitle: storyTitle,
+    validStoryDescription: storyDescription,
     validBlockData1: storyData.blocks[0],
     validBlockData2: storyData.blocks[1],
 

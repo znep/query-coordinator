@@ -25,6 +25,7 @@ function generateStoryData(options) {
   var storyData = {
     uid: 'test-test',
     title: 'Test Story',
+    description: 'Test Story Description',
     blocks: [ generateBlockData() ]
   };
 

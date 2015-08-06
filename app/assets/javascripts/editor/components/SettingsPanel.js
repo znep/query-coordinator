@@ -39,6 +39,8 @@
     var storyTitleInputBox = settingsContainer.find('form input[type="text"]');
     var storyDescriptionTextarea = settingsContainer.find('textarea');
 
+    var metadataStateAtPanelOpenTime = null;
+
     storyteller.coreSavingStore.addChangeListener(function() {
       var saveInProgress = storyteller.coreSavingStore.isSaveInProgress();
       var lastSaveError = storyteller.coreSavingStore.lastRequestSaveErrorForStory(
@@ -52,27 +54,33 @@
     });
 
     function loadCurrentMetadata() {
+      metadataStateAtPanelOpenTime = {
+        title: storyteller.storyStore.getStoryTitle(storyteller.userStoryUid),
+        description: storyteller.storyStore.getStoryDescription(storyteller.userStoryUid)
+      };
+
       storyTitleInputBox.val(
-        storyteller.storyStore.getStoryTitle(storyteller.userStoryUid)
+        metadataStateAtPanelOpenTime.title
       );
       storyDescriptionTextarea.val(
-        storyteller.storyStore.getStoryDescription(storyteller.userStoryUid)
+        metadataStateAtPanelOpenTime.description
       );
+
       updateSaveButtonEnabledState();
     }
 
     function isTitleChanged() {
-      var titleInStore = storyteller.storyStore.getStoryTitle(storyteller.userStoryUid);
+      var titleAtOpenTime = metadataStateAtPanelOpenTime.title;
       var titleInBox = storyTitleInputBox.val();
 
-      return titleInStore !== titleInBox;
+      return titleAtOpenTime !== titleInBox;
     }
 
     function isDescriptionChanged() {
-      var descriptionInStore = storyteller.storyStore.getStoryDescription(storyteller.userStoryUid);
+      var descriptionAtOpenTime = metadataStateAtPanelOpenTime.description;
       var descriptionInBox = storyDescriptionTextarea.val();
 
-      return descriptionInStore !== descriptionInBox;
+      return descriptionAtOpenTime !== descriptionInBox;
     }
 
     function updateSaveButtonEnabledState() {
@@ -107,9 +115,12 @@
     storyteller.coreSavingStore.addChangeListener(updateSaveButtonEnabledState);
 
     storyteller.coreSavingStore.addChangeListener(function() {
-      var doneAndNoErrorOutstanding =
-        !storyteller.coreSavingStore.isSaveInProgress() &&
-        storyteller.coreSavingStore.lastRequestSaveErrorForStory(storyteller.userStoryUid) === null;
+      var saveInProgress = storyteller.coreSavingStore.isSaveInProgress();
+      var hasError = storyteller.
+        coreSavingStore.
+        lastRequestSaveErrorForStory(storyteller.userStoryUid) !== null;
+
+      var doneAndNoErrorOutstanding = !saveInProgress && !hasError;
 
       var lastRenderedAsBusy = saveButton.prop('disabled');
 
@@ -126,9 +137,33 @@
         loadCurrentMetadata();
       }).
       on('sidebar:close', function() {
+        var hasError = storyteller.
+          coreSavingStore.
+          lastRequestSaveErrorForStory(storyteller.userStoryUid) !== null;
+
         toggleButton.removeClass('active');
         settingsContainer.removeClass('active');
         $('header a').eq(0).focus(); // put focus back in the header
+
+
+        // If save failed, revert title and description to values present at panel open time.
+        if (hasError) {
+          if (isTitleChanged()) {
+            storyteller.dispatcher.dispatch({
+              action: Constants.STORY_SET_TITLE,
+              storyUid: storyteller.userStoryUid,
+              title: metadataStateAtPanelOpenTime.title
+            });
+          };
+
+          if (isDescriptionChanged()) {
+            storyteller.dispatcher.dispatch({
+              action: Constants.STORY_SET_DESCRIPTION,
+              storyUid: storyteller.userStoryUid,
+              description: metadataStateAtPanelOpenTime.description
+            });
+          }
+        }
       }).
       on('mousewheel', '.scrollable', utils.preventScrolling).
       on('click', '.settings-save-btn', function() {

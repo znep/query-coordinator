@@ -267,6 +267,38 @@ describe('SettingsPanel jQuery plugin', function() {
               setIsSavingAndLastError(false, 'some error');
               setTimeout(done, 10);
             });
+
+            describe('then the sidebar is closed by the user', function() {
+              it('should revert the title and description', function() {
+                var titleField = node.find('input');
+                var descriptionTextarea = node.find('textarea');
+
+                var actions = [];
+
+                titleField.val('fooooo');
+                titleField.trigger('foo');
+                descriptionTextarea.val('bar');
+                descriptionTextarea.trigger('input');
+
+                storyteller.dispatcher.register(function(payload) {
+                  actions.push(payload);
+                });
+
+                setIsSavingAndLastError(false, 'some error');
+                node.find('.settings-panel').trigger('sidebar:close');
+
+                assert.deepEqual(
+                  _.pluck(actions, 'action'),
+                  [ Constants.STORY_SET_TITLE, Constants.STORY_SET_DESCRIPTION ]
+                );
+
+                assert.equal(actions[0].storyUid, standardMocks.validStoryUid);
+                assert.equal(actions[0].title, standardMocks.validStoryTitle);
+
+                assert.equal(actions[1].storyUid, standardMocks.validStoryUid);
+                assert.equal(actions[1].description, standardMocks.validStoryDescription);
+              });
+            });
           });
         });
       });

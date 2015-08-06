@@ -11,8 +11,11 @@
   .block {
     @include clearfix();
 
-    .component-container {
-      background-color: $block-bg-color;
+    .component {
+      &.text,
+      &.media {
+        background-color: $block-bg-color;
+      }
     }
   }
 }

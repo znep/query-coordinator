@@ -212,3 +212,9 @@ end
 def stub_logged_in_user
   allow_any_instance_of(ApplicationController).to receive(:require_logged_in_user).and_return(true)
 end
+
+class Capybara::Session
+  def evaluate_multiline_script javascript
+    evaluate_script "(function(){ #{javascript} })()"
+  end
+end

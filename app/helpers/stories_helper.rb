@@ -17,7 +17,8 @@ module StoriesHelper
   def user_story_json
     @story.as_json.merge(
       {
-        :title => core_attributes['name']
+        :title => core_attributes['name'],
+        :description => core_attributes['description']
       }
     ).to_json
   end

@@ -37,6 +37,7 @@
     var saveErrorMessageDetails = settingsContainer.find('.settings-save-failure-message-details');
 
     var storyTitleInputBox = settingsContainer.find('form input[type="text"]');
+    var storyDescriptionTextarea = settingsContainer.find('textarea');
 
     storyteller.coreSavingStore.addChangeListener(function() {
       var saveInProgress = storyteller.coreSavingStore.isSaveInProgress();
@@ -52,13 +53,31 @@
       storyTitleInputBox.val(
         storyteller.storyStore.getStoryTitle(storyteller.userStoryUid)
       );
+      storyDescriptionTextarea.val(
+        storyteller.storyStore.getStoryDescription(storyteller.userStoryUid)
+      );
       updateSaveButtonEnabledState();
     }
 
+    function isTitleChanged() {
+      var titleInStore = storyteller.storyStore.getStoryTitle(storyteller.userStoryUid);
+      var titleInBox = storyTitleInputBox.val();
+
+      return titleInStore !== titleInBox;
+    }
+
+    function isDescriptionChanged() {
+      var descriptionInStore = storyteller.storyStore.getStoryDescription(storyteller.userStoryUid);
+      var descriptionInBox = storyDescriptionTextarea.val();
+
+      return descriptionInStore !== descriptionInBox;
+    }
+
     function updateSaveButtonEnabledState() {
-      var currentValue = storyteller.storyStore.getStoryTitle(storyteller.userStoryUid);
-      var valueInBox = storyTitleInputBox.val();
-      saveButton.attr('disabled', currentValue === valueInBox);
+      saveButton.attr(
+        'disabled',
+        !isTitleChanged() && !isDescriptionChanged()
+      );
     }
 
     // Set up some input events.
@@ -76,7 +95,7 @@
       }
     });
 
-    storyTitleInputBox.on('input', updateSaveButtonEnabledState);
+    storyTitleInputBox.add(storyDescriptionTextarea).on('input', updateSaveButtonEnabledState);
     storyteller.storyStore.addChangeListener(updateSaveButtonEnabledState);
 
     settingsPanel.
@@ -93,11 +112,21 @@
       }).
       on('mousewheel', '.scrollable', utils.preventScrolling).
       on('click', '.settings-save-btn', function() {
-        storyteller.dispatcher.dispatch({
-          action: Constants.STORY_SET_TITLE,
-          storyUid: storyteller.userStoryUid,
-          title: storyTitleInputBox.val()
-        });
+        if (isTitleChanged()) {
+          storyteller.dispatcher.dispatch({
+            action: Constants.STORY_SET_TITLE,
+            storyUid: storyteller.userStoryUid,
+            title: storyTitleInputBox.val()
+          });
+        };
+
+        if (isDescriptionChanged()) {
+          storyteller.dispatcher.dispatch({
+            action: Constants.STORY_SET_DESCRIPTION,
+            storyUid: storyteller.userStoryUid,
+            description: storyDescriptionTextarea.val()
+          });
+        }
 
         storyteller.dispatcher.dispatch({
           action: Constants.STORY_SAVE_METADATA,

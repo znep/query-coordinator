@@ -35,7 +35,8 @@ describe('SettingsPanel jQuery plugin', function() {
 
     storyteller.storyStore = {
       addChangeListener: _.noop,
-      getStoryTitle: _.constant(standardMocks.validStoryTitle)
+      getStoryTitle: _.constant(standardMocks.validStoryTitle),
+      getStoryDescription: _.constant(standardMocks.validStoryDescription)
     };
 
     storyteller.coreSavingStore = {
@@ -88,13 +89,13 @@ describe('SettingsPanel jQuery plugin', function() {
       });
 
       describe('story title field', function() {
-        var label;
+        var field;
         beforeEach(function() {
-          label = node.find('input');
+          field = node.find('input');
         });
 
         it('should be prepopulated with the current story title', function() {
-          assert.equal(label.val(), standardMocks.validStoryTitle);
+          assert.equal(field.val(), standardMocks.validStoryTitle);
         });
 
         describe('when edited', function() {
@@ -102,16 +103,16 @@ describe('SettingsPanel jQuery plugin', function() {
 
           beforeEach(function() {
             newTitle = standardMocks.validStoryTitle + 'foobar';
-            label.val(newTitle);
-            label.trigger('input');
+            field.val(newTitle);
+            field.trigger('input');
           });
         
           it('should cause the save button to enable', function() {
             assert.lengthOf(node.find('.settings-save-btn:enabled'), 1);
 
             // Also test that it disables again if I edit back.
-            label.val(standardMocks.validStoryTitle);
-            label.trigger('input');
+            field.val(standardMocks.validStoryTitle);
+            field.trigger('input');
             assert.lengthOf(node.find('.settings-save-btn:disabled'), 1);
           });
 
@@ -143,6 +144,63 @@ describe('SettingsPanel jQuery plugin', function() {
           });
         });
 
+      });
+
+      describe('story description field', function() {
+        var field;
+        beforeEach(function() {
+          field = node.find('textarea');
+        });
+
+        it('should be prepopulated with the current story description', function() {
+          assert.equal(field.val(), standardMocks.validStoryDescription);
+        });
+
+        describe('when edited', function() {
+          var newDescription;
+
+          beforeEach(function() {
+            newDescription = standardMocks.validStoryDescription + 'foobar';
+            field.val(newDescription);
+            field.trigger('input');
+          });
+
+          it('should cause the save button to enable', function() {
+            assert.lengthOf(node.find('.settings-save-btn:enabled'), 1);
+
+            // Also test that it disables again if I edit back.
+            field.val(standardMocks.validStoryDescription);
+            field.trigger('input');
+            assert.lengthOf(node.find('.settings-save-btn:disabled'), 1);
+          });
+
+          describe('then saved', function() {
+            var saveButton;
+
+            beforeEach(function() {
+              saveButton = node.find('.settings-save-btn');
+            });
+
+            it('should cause a STORY_SET_DESCRIPTION action, then a STORY_SAVE_METADATA action', function() {
+              var actions = [];
+
+              storyteller.dispatcher.register(function(payload) {
+                actions.push(payload);
+              });
+              saveButton.click();
+
+              assert.deepEqual(
+                _.pluck(actions, 'action'),
+                [ Constants.STORY_SET_DESCRIPTION, Constants.STORY_SAVE_METADATA ]
+              );
+
+              assert.equal(actions[0].storyUid, standardMocks.validStoryUid);
+              assert.equal(actions[0].description, newDescription);
+
+              assert.equal(actions[1].storyUid, standardMocks.validStoryUid);
+            });
+          });
+        });
 
       });
 

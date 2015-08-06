@@ -73,7 +73,7 @@
       );
     }
 
-    function _mapDataToTable(data, nameAlias, valueField) {
+    function _mapDataToTable(data, nameAlias, valueAlias) {
 
       return {
         columns: [nameAlias, valueAlias],

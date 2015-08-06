@@ -100,6 +100,7 @@ describe('CoreSavingStore', function() {
         var body = JSON.parse(request.requestBody);
         assert.propertyVal(body, 'id', standardMocks.validStoryUid);
         assert.propertyVal(body, 'name', standardMocks.validStoryTitle);
+        assert.propertyVal(body, 'description', standardMocks.validStoryDescription);
       });
 
       describe('and the PUT succeeds', function() {

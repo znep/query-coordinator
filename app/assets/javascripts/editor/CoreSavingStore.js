@@ -111,7 +111,8 @@
         {},
         blob,
         {
-          name: storyteller.storyStore.getStoryTitle(blob.id)
+          name: storyteller.storyStore.getStoryTitle(blob.id),
+          description: storyteller.storyStore.getStoryDescription(blob.id)
         }
       );
     }

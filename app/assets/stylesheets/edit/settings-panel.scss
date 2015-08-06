@@ -62,12 +62,13 @@
       font-size: 1.5rem;
       padding-bottom: 0.8rem;
       visibility: collapse;
+      text-align: center;
       &.active {
         visibility: visible;
       }
 
       .settings-save-failure-message-details {
-        font-size: 1.25rem;
+        font-size: 1.5rem;
       }
     }
 

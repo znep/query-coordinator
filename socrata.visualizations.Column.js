@@ -711,7 +711,7 @@
     function _computeDomain(chartData, showFiltered) {
 
       var allData = chartData.map(function(d) { return d[UNFILTERED_INDEX]; }).concat(
-        showFiltered ? chartData.map(function(d) { return d[UNFILTERED_INDEX]; }) : []
+        showFiltered ? chartData.map(function(d) { return d[FILTERED_INDEX]; }) : []
       );
 
       function _makeDomainIncludeZero(domain) {

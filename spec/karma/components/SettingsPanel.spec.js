@@ -238,12 +238,35 @@ describe('SettingsPanel jQuery plugin', function() {
         });
 
         describe('when a save is in progress', function() {
-          it('should have a `busy` class.', function() {
+          beforeEach(function() {
             setIsSavingAndLastError(true, null);
+          });
+
+          it('should have a `busy` class.', function() {
             assert.isTrue(saveButton.hasClass('busy'));
 
-            setIsSavingAndLastError(true, 'some error');
+            setIsSavingAndLastError(true, 'some error'); // Also check in error state.
             assert.isTrue(saveButton.hasClass('busy'));
+          });
+
+          describe('that then completes successfully', function() {
+            it('should close the sidebar', function(done) {
+              node.on('sidebar:close', function() {
+                done();
+              });
+              setIsSavingAndLastError(false, null);
+            });
+          });
+
+          describe('that then fails', function() {
+            it('should not close the sidebar', function(done) {
+              node.on('sidebar:close', function() {
+                throw new Error('should not close sidebar');
+              });
+
+              setIsSavingAndLastError(false, 'some error');
+              setTimeout(done, 10);
+            });
           });
         });
       });

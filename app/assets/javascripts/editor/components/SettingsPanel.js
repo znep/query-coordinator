@@ -106,6 +106,18 @@
     storyteller.storyStore.addChangeListener(updateSaveButtonEnabledState);
     storyteller.coreSavingStore.addChangeListener(updateSaveButtonEnabledState);
 
+    storyteller.coreSavingStore.addChangeListener(function() {
+      var doneAndNoErrorOutstanding =
+        !storyteller.coreSavingStore.isSaveInProgress() &&
+        storyteller.coreSavingStore.lastRequestSaveErrorForStory(storyteller.userStoryUid) === null;
+
+      var lastRenderedAsBusy = saveButton.prop('disabled');
+
+      if (lastRenderedAsBusy && doneAndNoErrorOutstanding) {
+        settingsPanel.trigger('sidebar:close');
+      }
+    });
+
     settingsPanel.
       on('sidebar:open', function() {
         toggleButton.addClass('active');

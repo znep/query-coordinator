@@ -50,16 +50,29 @@
     font-weight: lighter;
   }
 
-  .settings-save-failure-message {
-    font-size: 1.5rem;
-    padding-bottom: 0.8rem;
-    visibility: collapse;
-    &.active {
-      visibility: visible;
+  .settings-save {
+    position: absolute;
+    bottom: $settings-panel-padding-width;
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: $settings-panel-padding-width;
+    padding-bottom: 25px; // For Chrome's status tooltip.
+
+    .settings-save-failure-message {
+      font-size: 1.5rem;
+      padding-bottom: 0.8rem;
+      visibility: collapse;
+      &.active {
+        visibility: visible;
+      }
+
+      .settings-save-failure-message-details {
+        font-size: 1.25rem;
+      }
     }
 
-    .settings-save-failure-message-details {
-      font-size: 1rem;
+    .settings-save-btn {
+      width: 100%;
     }
   }
 }

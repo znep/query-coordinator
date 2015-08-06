@@ -20,11 +20,13 @@
         </form>
       </div>
     </section>
-    <div class="settings-save-failure-message">
-      <div><%= I18n.t('settings_panel.generic_save_failure_message') %></div>
-      <div class="settings-save-failure-message-details"></div>
+    <div class="settings-save">
+      <div class="settings-save-failure-message">
+        <div><%= I18n.t('settings_panel.generic_save_failure_message') %></div>
+        <div class="settings-save-failure-message-details"></div>
+      </div>
+      <button class="settings-save-btn btn accent-btn"><%= I18n.t('settings_panel.save_button_label') %></button>
     </div>
-    <button class="settings-save-btn btn accent-btn"><%= I18n.t('settings_panel.save_button_label') %></button>
   </div>
   <div id="settings-panel-overlay" data-panel-toggle="settings-panel"></div>
 </div>

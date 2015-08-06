@@ -134,4 +134,8 @@ a[role="button"] {
 .profiler-results {
   bottom: 0px;
   top: auto !important;
+  opacity: 0.2;
+  &:hover {
+    opacity: 1;
+  }
 }

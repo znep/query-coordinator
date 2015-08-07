@@ -46,7 +46,7 @@ group :test do
   gem 'shoulda-context'
   gem 'timecop'
   gem 'webmock'
-  gem 'rspec'
+  gem 'rspec-rails', '~> 3.1.0'
   gem 'simplecov'
   gem 'simplecov-cobertura'
 end

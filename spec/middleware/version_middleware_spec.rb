@@ -11,6 +11,13 @@ end
 
 describe VersionMiddleware do
   let(:app) { double(:app) }
+  let(:revision_number) { 'abcdefg' }
+  let(:revision_date) { 'the timestamp' }
+
+  before do
+    stub_const('REVISION_NUMBER', revision_number)
+    stub_const('REVISION_DATE', revision_date)
+  end
 
   subject { VersionMiddleware.new(app) }
 
@@ -51,7 +58,7 @@ describe VersionMiddleware do
       }
     end
 
-    describe 'for non version.json requests' do
+    describe 'for non /version.json requests' do
 
       it 'calls the app' do
         expect(app).to receive(:call).with(environment_hash_without_version_json)
@@ -60,16 +67,24 @@ describe VersionMiddleware do
 
     end
 
+    describe 'for /version.json request' do
 
-    describe 'for version.json request' do
+      it 'does not call app' do
+        expect(app).to receive(:call).never
+        subject.call(environment_hash_with_version_json)
+      end
 
-      describe 'when there is an error' do
+      describe 'when there is an error getting version' do
 
-        it 'returns an empty JSON payload when there is an error' do
-          expect(app).to receive(:call).never
+        before do
           expect(Frontend).to receive(:version).and_raise(StandardError)
+        end
+
+        it 'returns a JSON payload without the version' do
           expect(subject.call(environment_hash_with_version_json)).to eql([
-            '200', {'Content-Type' => 'application/json'}, ['{}']
+            '200',
+            {'Content-Type' => 'application/json'},
+            ["{\"facility\":\"frontend\",\"revision\":\"abcdefg\",\"timestamp\":\"the timestamp\"}"]
           ])
         end
 
@@ -81,25 +96,25 @@ describe VersionMiddleware do
           expect(Frontend).to receive(:version).and_return('1.2.3')
         end
 
-        it 'returns a minimal JSON payload when there is some data' do
-          expect(app).to receive(:call).never
-
+        it 'returns a full JSON payload when all data is available' do
           expect(subject.call(environment_hash_with_version_json)).to eql([
-            '200', {'Content-Type' => 'application/json'}, [{version: '1.2.3'}.to_json]
+            '200',
+            {'Content-Type' => 'application/json'},
+            ["{\"facility\":\"frontend\",\"revision\":\"#{revision_number}\",\"timestamp\":\"#{revision_date}\",\"version\":\"1.2.3\"}"]
           ])
         end
 
-        it 'returns a full JSON payload when all data is available' do
-          REVISION_NUMBER = '123123123123'
-          REVISION_DATE = DateTime.parse('2015-01-02 03:04:05')
+        context 'when revision does not exist' do
+          let(:revision_number) { nil }
+          let(:revision_date) { nil }
 
-          expect(app).to receive(:call).never
-
-          expect(subject.call(environment_hash_with_version_json)).to eql([
-            '200', {'Content-Type' => 'application/json'}, [
-            "{\"version\":\"1.2.3\",\"revision\":\"123123123123\",\"timestamp\":\"2015-01-02T03:04:05+00:00\",\"facility\":[\"frontend\",\"1.2.3\",\"123123123123\",\"2015-01-02T03:04:05+00:00\"]}"
-            ]
-          ])
+          it 'returns a JSON payload without revision information' do
+            expect(subject.call(environment_hash_with_version_json)).to eql([
+              '200',
+              {'Content-Type' => 'application/json'},
+              ["{\"facility\":\"frontend\",\"revision\":null,\"timestamp\":null,\"version\":\"1.2.3\"}"]
+            ])
+          end
         end
 
       end

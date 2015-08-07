@@ -27,8 +27,6 @@
      * Public methods
      */
 
-    };
-
     this.getLocalization = function(key) {
 
       var localizedString = '';

@@ -59,9 +59,9 @@ describe('socrata.visualizations.SoqlDataProvider', function() {
         }
 
         var options = {
-          fourbyFour: 'test-test',
-          successCallback: function() {},
-          errorCallback: testErrorCallback
+          fourByFour: 'test-test',
+          success: function() {},
+          error: testErrorCallback
         };
 
         var soqlDataProvider = new SoqlDataProvider(options);
@@ -76,9 +76,9 @@ describe('socrata.visualizations.SoqlDataProvider', function() {
         }
 
         var options = {
-          fourbyFour: 'test-test',
-          successCallback: function() {},
-          errorCallback: testErrorCallback
+          fourByFour: 'test-test',
+          success: function() {},
+          error: testErrorCallback
         };
 
         var soqlDataProvider = new SoqlDataProvider(options);
@@ -93,9 +93,9 @@ describe('socrata.visualizations.SoqlDataProvider', function() {
         }
 
         var options = {
-          fourbyFour: 'test-test',
-          successCallback: function() {},
-          errorCallback: testErrorCallback
+          fourByFour: 'test-test',
+          success: function() {},
+          error: testErrorCallback
         };
 
         var soqlDataProvider = new SoqlDataProvider(options);
@@ -110,9 +110,9 @@ describe('socrata.visualizations.SoqlDataProvider', function() {
         }
 
         var options = {
-          fourbyFour: 'test-test',
-          successCallback: function() {},
-          errorCallback: testErrorCallback
+          fourByFour: 'test-test',
+          success: function() {},
+          error: testErrorCallback
         };
 
         var soqlDataProvider = new SoqlDataProvider(options);
@@ -150,9 +150,9 @@ describe('socrata.visualizations.SoqlDataProvider', function() {
         }
 
         var options = {
-          fourbyFour: 'test-test',
-          successCallback: testSuccessCallback,
-          errorCallback: function() {}
+          fourByFour: 'test-test',
+          success: testSuccessCallback,
+          error: function() {}
         };
 
         var soqlDataProvider = new SoqlDataProvider(options);
@@ -167,9 +167,9 @@ describe('socrata.visualizations.SoqlDataProvider', function() {
         }
 
         var options = {
-          fourbyFour: 'test-test',
-          successCallback: testSuccessCallback,
-          errorCallback: function() {}
+          fourByFour: 'test-test',
+          success: testSuccessCallback,
+          error: function() {}
         };
 
         var soqlDataProvider = new SoqlDataProvider(options);
@@ -184,9 +184,9 @@ describe('socrata.visualizations.SoqlDataProvider', function() {
         }
 
         var options = {
-          fourbyFour: 'test-test',
-          successCallback: testSuccessCallback,
-          errorCallback: function() {}
+          fourByFour: 'test-test',
+          success: testSuccessCallback,
+          error: function() {}
         };
 
         var soqlDataProvider = new SoqlDataProvider(options);

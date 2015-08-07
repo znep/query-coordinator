@@ -1,25 +1,30 @@
-(function(window) {
+(function(root) {
 
   'use strict';
 
-  if (!window.socrata || !window.socrata.utils) {
+  if (!root.socrata || !root.socrata.utils) {
     throw new Error(
       'The `socrata-utils` package is a required dependency for `socrata-visualizations`.'
     );
   }
 
-  window.socrata.visualizations = window.socrata.visualizations || {};
+  root.socrata.visualizations = root.socrata.visualizations || {};
 
   function DataProvider(config) {
 
     var _defaultConfig = {
       timeout: 5000
     };
-    var _config;
+    var _config = _.merge(_defaultConfig, config);
 
-    _config = _.merge(_defaultConfig, config);
 
-    this.getConfig = function(property) {
+    /**
+     * @param {String} property - The desired configuration property key.
+     *
+     * @return {*} - The configuration property value that was passed in
+     *   at instantiation.
+     */
+    this.getConfigurationProperty = function(property) {
 
       if (!_.has(_config, property)) {
 
@@ -33,7 +38,7 @@
 
     this.emitEvent = function(name, payload) {
       this.element[0].dispatchEvent(
-        new window.CustomEvent(
+        new root.CustomEvent(
           name,
           { detail: payload, bubbles: true }
         )
@@ -41,17 +46,17 @@
     };
 
     function _logWarning(message) {
-      if (window.console && window.console.warn) {
-        window.console.warn(message);
+      if (root.console && root.console.warn) {
+        root.console.warn(message);
       }
     }
 
     function _logError(message) {
-      if (window.console && window.console.error) {
-        window.console.error(message);
+      if (root.console && root.console.error) {
+        root.console.error(message);
       }
     }
   }
 
-  window.socrata.visualizations.DataProvider = DataProvider;
+  root.socrata.visualizations.DataProvider = DataProvider;
 })(window);

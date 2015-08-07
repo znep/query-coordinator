@@ -791,14 +791,6 @@
         valueText;
     }
 
-    function _ellipsify(text) {
-      if (text.length > 10) {
-        return text.substring(0, 10) + '...';
-      } else {
-        return text;
-      }
-    }
-
     function _computeDomain(chartData, showFiltered) {
 
       var allData = chartData.map(function(d) { return d[UNFILTERED_INDEX]; }).concat(

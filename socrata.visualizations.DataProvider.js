@@ -8,36 +8,32 @@
     );
   }
 
-  if (!_.has(root, 'jQuery')) {
-    throw new Error('jQuery is a required dependency for `socrata.visualizations.Visualization.js`.');
-  }
-
   root.socrata.visualizations = root.socrata.visualizations || {};
 
-  function Visualization(element, config) {
+  function DataProvider(config) {
 
     var _defaultConfig = {
-      localization: {}
-    }
-    var _config =_.merge(_defaultConfig, config);
+      timeout: 5000
+    };
+    var _config = _.merge(_defaultConfig, config);
 
-    this.element = element;
 
     /**
-     * Public methods
+     * @param {String} property - The desired configuration property key.
+     *
+     * @return {*} - The configuration property value that was passed in
+     *   at instantiation.
      */
+    this.getConfigurationProperty = function(property) {
 
-    this.getLocalization = function(key) {
+      if (!_.has(_config, property)) {
 
-      var localizedString = '';
-
-      if (_.has(_config.localization, key)) {
-        localizedString = _config.localization[key];
-      } else {
-        _logWarning('No localized string found for key `{0}`.'.format(key));
+        throw new Error(
+          'Configuration property `{0}` does not exist.'.format(property)
+        );
       }
 
-      return localizedString;
+      return _config[property];
     };
 
     this.emitEvent = function(name, payload) {
@@ -48,10 +44,6 @@
         )
       );
     };
-
-    /**
-     * Private methods
-     */
 
     function _logWarning(message) {
       if (root.console && root.console.warn) {
@@ -66,5 +58,5 @@
     }
   }
 
-  root.socrata.visualizations.Visualization = Visualization;
+  root.socrata.visualizations.DataProvider = DataProvider;
 })(window);

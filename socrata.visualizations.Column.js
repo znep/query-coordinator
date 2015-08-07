@@ -1,8 +1,8 @@
-(function(window) {
+(function(root) {
 
   'use strict';
 
-  if (!_.has(window, 'socrata.visualizations.Visualization')) {
+  if (!_.has(root, 'socrata.visualizations.Visualization')) {
     throw new Error(
       '`{0}` must be loaded before `{1}`'.
         format(
@@ -10,6 +10,10 @@
           'socrata.visualizations.Column.js'
         )
     );
+  }
+
+  if (!_.has(root, 'd3')) {
+    throw new Error('d3 is a required dependency for `socrata.visualizations.Column.js`.');
   }
 
   // TODO: Figure out how to do this better (and probably not through jQuery).
@@ -24,7 +28,7 @@
 
   function Column(element, config) {
 
-    _.extend(this, new window.socrata.visualizations.Visualization(element, config));
+    _.extend(this, new root.socrata.visualizations.Visualization(element, config));
 
     var self = this;
     var _chartElement;
@@ -797,5 +801,5 @@
     }
   }
 
-  window.socrata.visualizations.Column = Column;
+  root.socrata.visualizations.Column = Column;
 })(window);

@@ -10,7 +10,7 @@
 
 //= require jquery2
 //= require lodash
-//= require d3
+//= require d3/d3
 //= require squire-rte/build/squire
 //= require eventEmitter/EventEmitter
 //= require eventie/eventie

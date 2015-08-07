@@ -1,0 +1,160 @@
+@import 'lib/variables';
+
+.component.socrataVisualization {
+
+  /**
+   * Temporarily override hover styles in order to not imply interactivity.
+   */
+
+  .bar-group {
+    cursor: default !important;
+
+
+    &:hover {
+      .bar.unfiltered,
+      .bar.filtered {
+        background-color: #67aecc !important;
+        cursor: default !important;
+      }
+    }
+  }
+
+  .labels .label .contents {
+    cursor: default !important;
+  }
+}
+
+.col3 {
+  .socrataVisualization {
+    $small-height: $col3-block-edit-content-width-small * (3/4);
+    $medium-height: $col3-block-edit-content-width-medium * (3/4);
+    $large-height: $col3-block-edit-content-width-large * (3/4);
+    $extra-large-height: $col3-block-edit-content-width-extra-large * (3/4);
+
+    @include media-query-property(
+      'height',
+      $small-height,
+      $medium-height,
+      $large-height,
+      $extra-large-height
+    );
+
+    .media-component-embed-wizard-insert-btn {
+      @include media-query-property(
+        'margin-top',
+        $small-height - ($btn-height * 2.5),
+        $medium-height - ($btn-height * 2.5),
+        $large-height - ($btn-height * 2.5),
+        $extra-large-height  - ($btn-height * 2.5)
+      );
+    }
+  }
+}
+
+.col4 {
+  .socrataVisualization {
+    $small-height: $col4-block-edit-content-width-small * (3/4);
+    $medium-height: $col4-block-edit-content-width-medium * (3/4);
+    $large-height: $col4-block-edit-content-width-large * (3/4);
+    $extra-large-height: $col4-block-edit-content-width-extra-large * (3/4);
+
+    @include media-query-property(
+      'height',
+      $small-height,
+      $medium-height,
+      $large-height,
+      $extra-large-height
+    );
+
+    .media-component-embed-wizard-insert-btn {
+      @include media-query-property(
+        'margin-top',
+        $small-height - ($btn-height * 2.5),
+        $medium-height - ($btn-height * 2.5),
+        $large-height - ($btn-height * 2.5),
+        $extra-large-height  - ($btn-height * 2.5)
+      );
+    }
+  }
+}
+
+.col6 {
+  .socrataVisualization {
+    $small-height: $col6-block-edit-content-width-small * (3/4);
+    $medium-height: $col6-block-edit-content-width-medium * (3/4);
+    $large-height: $col6-block-edit-content-width-large * (3/4);
+    $extra-large-height: $col6-block-edit-content-width-extra-large * (3/4);
+
+    @include media-query-property(
+      'height',
+      $small-height,
+      $medium-height,
+      $large-height,
+      $extra-large-height
+    );
+
+    .media-component-embed-wizard-insert-btn {
+      @include media-query-property(
+        'margin-top',
+        $small-height - ($btn-height * 2.5),
+        $medium-height - ($btn-height * 2.5),
+        $large-height - ($btn-height * 2.5),
+        $extra-large-height  - ($btn-height * 2.5)
+      );
+    }
+  }
+}
+
+.col8 {
+  .socrataVisualization {
+    $small-height: $col8-block-edit-content-width-small * (3/4);
+    $medium-height: $col8-block-edit-content-width-medium * (3/4);
+    $large-height: $col8-block-edit-content-width-large * (3/4);
+    $extra-large-height: $col8-block-edit-content-width-extra-large * (3/4);
+
+    @include media-query-property(
+      'height',
+      $small-height,
+      $medium-height,
+      $large-height,
+      $extra-large-height
+    );
+
+    .media-component-embed-wizard-insert-btn {
+      @include media-query-property(
+        'margin-top',
+        $small-height - ($btn-height * 2.5),
+        $medium-height - ($btn-height * 2.5),
+        $large-height - ($btn-height * 2.5),
+        $extra-large-height  - ($btn-height * 2.5)
+      );
+    }
+  }
+}
+
+.col12 {
+  .socrataVisualization {
+    $small-height: $col12-block-edit-content-width-small * (3/4);
+    $medium-height: $col12-block-edit-content-width-medium * (3/4);
+    $large-height: $col12-block-edit-content-width-large * (3/4);
+    $extra-large-height: $col12-block-edit-content-width-extra-large * (3/4);
+
+    @include media-query-property(
+      'height',
+      $small-height,
+      $medium-height,
+      $large-height,
+      $extra-large-height
+    );
+
+    .media-component-embed-wizard-insert-btn {
+      @include media-query-property(
+        'margin-top',
+        $small-height - ($btn-height * 2.5),
+        $medium-height - ($btn-height * 2.5),
+        $large-height - ($btn-height * 2.5),
+        $extra-large-height  - ($btn-height * 2.5)
+      );
+    }
+  }
+}

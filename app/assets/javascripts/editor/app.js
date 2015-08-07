@@ -1,6 +1,7 @@
-'use strict';
-
 $(document).on('ready', function() {
+
+  'use strict';
+
   var storyteller = window.socrata.storyteller
   /**
    * Setup
@@ -216,6 +217,7 @@ $(document).on('ready', function() {
   var addContentPanelElement = $('#add-content-panel');
   addContentPanelElement.addContentPanel($('.add-content-panel-btn'));
 
+  // Settings Panel
   var settingsPanelContainer = $('#settings-panel-container');
   settingsPanelContainer.settingsPanel($('[data-panel-toggle="settings-panel"]'));
 

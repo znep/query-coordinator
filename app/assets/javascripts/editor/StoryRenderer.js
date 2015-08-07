@@ -4,9 +4,10 @@
 
   function StoryRenderer(options) {
 
+    var dispatcher = storyteller.dispatcher;
     var TextComponentRenderer = storyteller.TextComponentRenderer;
     var MediaComponentRenderer = storyteller.MediaComponentRenderer;
-    var dispatcher = storyteller.dispatcher;
+    var SocrataVisualizationComponentRenderer = storyteller.SocrataVisualizationComponentRenderer;
 
     var storyUid = options.storyUid || null;
     var container = options.storyContainerElement || null;
@@ -16,11 +17,13 @@
     var onRenderError = options.onRenderError || function() {};
     var componentTemplateRenderers = {
       'text': TextComponentRenderer.renderTemplate,
-      'media': MediaComponentRenderer.renderTemplate
+      'media': MediaComponentRenderer.renderTemplate,
+      'socrataVisualization': SocrataVisualizationComponentRenderer.renderTemplate
     };
     var componentDataRenderers = {
       'text': TextComponentRenderer.renderData,
-      'media': MediaComponentRenderer.renderData
+      'media': MediaComponentRenderer.renderData,
+      'socrataVisualization': SocrataVisualizationComponentRenderer.renderData
     };
     var elementCache = new storyteller.StoryRendererElementCache();
     var warningMessageElement = options.warningMessageElement || null;
@@ -314,9 +317,26 @@
           storyStore.
           getBlockComponents(blockId).
           forEach(function(componentDatum, i) {
+
             if (componentDatum.type === 'text') {
+
               var editorId = blockId + '-' + i;
+
               storyteller.richTextEditorManager.deleteEditor(editorId);
+            }
+
+            if (componentDatum.type === 'socrataVisualization') {
+
+              var componentElement = elementCache.getComponent(blockId, i);
+              var destroyVisualizationEvent = new window.CustomEvent(
+                Constants.SOCRATA_VISUALIZATION_DESTROY,
+                {
+                  detail: {},
+                  bubbles: false
+                }
+              );
+
+              componentElement[0].dispatchEvent(destroyVisualizationEvent);
             }
           });
 
@@ -607,7 +627,7 @@
 
       var componentElement = componentContainer.children('.component').eq(0);
       var renderedTemplate = componentElement.attr('data-rendered-template');
-      var renderedEmbedProvider;
+      var renderedComponent;
       var canUseTemplate = false;
 
       if (componentDatum.type === renderedTemplate) {
@@ -616,22 +636,26 @@
 
           if (componentDatum.value.type === 'embed') {
 
-            renderedEmbedProvider = componentElement.attr('data-rendered-media-embed-provider');
+            renderedComponent = componentElement.attr('data-rendered-media-embed-provider');
 
-            if (componentDatum.value.value.provider === renderedEmbedProvider) {
+            if (componentDatum.value.value.provider === renderedComponent) {
               canUseTemplate = true;
             }
 
           } else {
-
             canUseTemplate = true;
+          }
 
+        } else if (componentDatum.type === 'socrataVisualization') {
+
+          renderedComponent = componentElement.attr('data-rendered-visualization');
+
+          if (componentDatum.value.type === renderedComponent) {
+            canUseTemplate = true;
           }
 
         } else {
-
           canUseTemplate = true;
-
         }
       }
 

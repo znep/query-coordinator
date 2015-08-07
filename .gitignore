@@ -23,4 +23,4 @@ karma-test/dataCards/mockTranslations.js
 .sass-cache
 dev-server/logs
 dev-server/*.pid
-
+coverage

@@ -2,7 +2,11 @@ require 'version_middleware'
 require 'time'
 
 unless defined?(Frontend)
-  class Frontend; end
+  class Frontend
+    def self.version
+      'version'
+    end
+  end
 end
 
 describe VersionMiddleware do

@@ -661,7 +661,7 @@ module ApplicationHelper
     include_javascripts(
       'airbrake-shim',
       'data-airbrake-project-id' => 'Dataspace',
-      'data-airbrake-project-key' => Airbrake::configuration.js_api_key,
+      'data-airbrake-project-key' => Airbrake::configuration.api_key,
       'data-airbrake-environment-name' => Rails.env
     )
   end

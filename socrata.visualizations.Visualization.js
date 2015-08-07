@@ -12,12 +12,14 @@
     throw new Error('jQuery is a required dependency for `socrata.visualizations.Visualization.js`.');
   }
 
+  var utils = root.socrata.utils;
+
   root.socrata.visualizations = root.socrata.visualizations || {};
 
   function Visualization(element, config) {
 
     var _defaultConfig = {
-      localization: {}
+      localization: {},
       axisLabels: {
         top: false,
         right: false,

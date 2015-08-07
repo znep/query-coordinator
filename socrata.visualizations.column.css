@@ -49,9 +49,9 @@
 }
 
 .column-chart-container .right-axis-label {
-  right: -1.5rem;
+  right: -3.5rem;
   top: 50%;
-  transform: rotate(-90deg) translate(50%, -0.75rem);
+  transform: rotate(-90deg) translate(50%, 1.75rem);
 }
 
 .column-chart-container .bottom-axis-label {
@@ -61,9 +61,9 @@
 }
 
 .column-chart-container .left-axis-label {
-  left: -1.5rem;
+  left: -3.5rem;
   top: 50%;
-  transform: rotate(-90deg) translate(50%, -0.25rem);
+  transform: rotate(-90deg) translate(50%, -1.25rem);
 }
 
 .column-chart-container .chart-scroll {

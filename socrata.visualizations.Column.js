@@ -2,7 +2,7 @@
 
   'use strict';
 
-  if (!_.has(root), 'socrata.visualizations.Visualization')) {
+  if (!_.has(root, 'socrata.visualizations.Visualization')) {
     throw new Error(
       '`{0}` must be loaded before `{1}`'.
         format(

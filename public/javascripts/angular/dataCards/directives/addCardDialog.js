@@ -9,6 +9,7 @@
         cardModels: '=',
         datasetColumns: '=',
         dialogState: '=',
+
         // A function to call to start the customize-card flow
         onCustomizeCard: '='
       },
@@ -32,13 +33,8 @@
           scope.dialogState = { show: true };
         }
 
-        /************************
-        * Add new card behavior *
-        ************************/
-
         scope.addCardSelectedColumnFieldName = null;
         scope.addCardModel = null;
-        scope.showCardinalityWarning = false;
         scope.availableCardTypes = [];
 
         Rx.Observable.subscribeLatest(
@@ -48,7 +44,7 @@
           scope.$observe('page').observeOnLatest('dataset.columns').filter(_.isDefined),
           function(fieldName, scopeDatasetColumns, dataset, columns) {
 
-            if (fieldName === null) {
+            if (_.isNull(fieldName)) {
               scope.addCardModel = null;
               return;
             }
@@ -75,14 +71,15 @@
             };
 
             serializedCard.cardType = column.defaultCardType;
+
             // TODO: We're going towards passing in serialized blobs to Model constructors.
-            //Revisit this line when that effort reaches Card.
+            // Revisit this line when that effort reaches Card.
             scope.addCardModel = Card.deserialize(scope.page, serializedCard);
           }
         );
 
         scope.addCard = function() {
-          if (scope.addCardModel !== null) {
+          if (!_.isNull(scope.addCardModel)) {
             scope.page.addCard(scope.addCardModel);
             scope.dialogState.show = false;
           }

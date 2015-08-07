@@ -1,0 +1,60 @@
+@import dataCards/common/colors
+@import dataCards/common/layout
+
+visualization-type-selector
+  ul
+    margin: 0
+    padding: 0
+    list-style-type: none
+
+    li
+      display: inline-block
+      margin: 1rem 0
+      padding: 0
+      text-align: center
+      width: 6rem
+      vertical-align: top
+
+      .visualization-type
+        display: block
+        margin: 0 auto 0.5rem auto
+        width: 3rem
+        height: 3rem
+        font-size: 1.5rem
+        color: $dark-btn-font-color
+        background-color: $dark-btn-bg-color
+        border: 1px solid $dark-btn-border-color
+        border-radius: $rounded-corners-border-radius
+        cursor: pointer
+        outline: none
+        overflow: visible
+        position: relative
+
+        &:hover
+          color: $dark-btn-hover-font-color
+          background-color: $dark-btn-hover-bg-color
+          border: 1px solid $dark-btn-hover-border-color
+
+        &.selected
+          color: $dark-btn-touched-font-color
+          background-color: $dark-btn-touched-bg-color
+          border: 1px solid $dark-btn-touched-border-color
+
+        &.disabled
+          color: $dark-btn-disabled-font-color
+          background-color: $dark-btn-disabled-bg-color
+          border: 1px solid $dark-btn-disabled-border-color
+
+        &.warn
+          .warning-icon
+            display: block
+
+        .warning-icon
+          position: absolute
+          display: none
+          padding: 0
+          width: 50%
+          height: 50%
+          top: -15%
+          left: 73%
+          color: white

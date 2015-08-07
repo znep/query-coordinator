@@ -92,7 +92,6 @@ describe('addCardDialog', function() {
     var pageModel = Mockumentary.createPage(pageOverrides, datasetOverrides);
 
     // NOTE: This is straight up copied from CardsViewController.
-
     var datasetColumns = Rx.Observable.combineLatest(
       pageModel.observe('dataset'),
       pageModel.observe('dataset.columns'),
@@ -107,6 +106,7 @@ describe('addCardDialog', function() {
             };
           }).
           filter(function(columnPair) {
+
             // We need to ignore 'system' fieldNames that begin with ':' but
             // retain computed column fieldNames, which (somewhat inconveniently)
             // begin with ':@'.
@@ -114,6 +114,7 @@ describe('addCardDialog', function() {
                    columnPair.columnInfo.physicalDatatype !== '*';
           }).
           sort(function(a, b) {
+
             // TODO: Don't we want to sort by column human name?
             return a.fieldName > b.fieldName;
           });
@@ -179,6 +180,7 @@ describe('addCardDialog', function() {
     return {
       outerScope: outerScope,
       element: element,
+
       // The ng-if introduces another scope
       scope: outerScope.$$childHead.$$childHead
     };
@@ -245,13 +247,11 @@ describe('addCardDialog', function() {
 
   it('should close the modal dialog and not add a card when the "Cancel" button is clicked', function() {
     var dialog = createDialog();
+    var button = dialog.element.find('button:contains("Cancel")');
 
     expect(dialog.element.is(':visible')).to.be.true;
 
-    var button = dialog.element.find('button:contains("Cancel")');
-
     button.click();
-
     dialog.outerScope.$digest();
 
     expect(dialog.element.is(':visible')).to.be.false;
@@ -259,7 +259,6 @@ describe('addCardDialog', function() {
 
   it('should show all columns as options in the "Choose a column..." select control', function() {
     var dialog = createDialog();
-
     var selectableColumnOptions = dialog.element.find('option:enabled');
 
     expect(selectableColumnOptions.length).to.equal(6);
@@ -267,7 +266,6 @@ describe('addCardDialog', function() {
 
   it('should show columns currently represented as cards in the select control', function() {
     var dialog = createDialog();
-
     var serializedCard = {
       fieldName: 'spot',
       cardSize: 1,
@@ -283,18 +281,15 @@ describe('addCardDialog', function() {
 
   it('should disable the "Add card" button when no column in the "Choose a column..." select control is selected', function() {
     var dialog = createDialog();
-
     var button = dialog.element.find('button:contains("Add card")')[0];
 
     expect($(button).hasClass('disabled')).to.be.true;
   });
 
   it('should enable the "Add card" button when an enabled column in the "Choose a column..." select control is selected', function() {
-
     var dialog = createDialog();
 
     dialog.scope.dialogState.cardSize = 1;
-
     dialog.element.find('option[value=spot]').prop('selected', true).trigger('change');
 
     var button = dialog.element.find('button:contains("Add card")')[0];
@@ -308,7 +303,6 @@ describe('addCardDialog', function() {
     expect(dialog.element.find('card').length).to.equal(0);
 
     dialog.scope.dialogState.cardSize = 2;
-
     dialog.element.find('option[value=ward]').prop('selected', true).trigger('change');
 
     expect(dialog.element.find('card').length).to.equal(1);
@@ -320,7 +314,6 @@ describe('addCardDialog', function() {
     expect(dialog.element.find('.visualization-type:visible').length).to.equal(0);
 
     dialog.scope.dialogState.cardSize = 2;
-
     dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
 
     expect(dialog.element.find('.visualization-type:visible').length).to.equal(2);
@@ -329,18 +322,19 @@ describe('addCardDialog', function() {
 
   });
 
-  it("should display a warning for 'column' card type option buttons when a column's cardinality is greater than 100", function() {
+  it('should display a warning for "column" card type option buttons when a column\'s cardinality is greater than 100', function() {
     var dialog = createDialog();
 
     expect(dialog.element.find('.visualization-type:visible').length).to.equal(0);
 
     dialog.scope.dialogState.cardSize = 2;
-
     dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
 
     expect(dialog.element.find('.visualization-type:visible').length).to.equal(2);
 
-    expect(dialog.element.find('.icon-bar-chart > .warning-icon:visible').length).to.equal(1);
+    // We show / hide the icon itself with CSS, which is not included in
+    // this test file.  Thus, instead we test for the 'warn' class.
+    expect(dialog.element.find('.icon-bar-chart').hasClass('warn')).to.be.true;
 
   });
 
@@ -350,7 +344,6 @@ describe('addCardDialog', function() {
     expect(dialog.element.find('.visualization-type:visible').length).to.equal(0);
 
     dialog.scope.dialogState.cardSize = 2;
-
     dialog.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
 
     expect(dialog.element.find('.visualization-type:visible').length).to.equal(2);
@@ -365,7 +358,6 @@ describe('addCardDialog', function() {
 
   it('should add a card in the correct CardSize group when an enabled column in the "Choose a column..." select control is selected and the "Add card" button is clicked', function() {
     var dialog = createDialog();
-
     var serializedCard = {
       fieldName: 'spot',
       cardSize: 1,
@@ -374,10 +366,8 @@ describe('addCardDialog', function() {
     };
 
     dialog.scope.page.set('cards', [Card.deserialize(dialog.scope.page, serializedCard)]);
-
     dialog.scope.dialogState.cardSize = 2;
     dialog.element.find('option[value=ward]').prop('selected', true).trigger('change');
-
     dialog.scope.addCard();
 
     expect(dialog.scope.cardModels[0].fieldName).to.equal('spot');
@@ -386,14 +376,16 @@ describe('addCardDialog', function() {
 
   it('should display a "customize" button for choropleths that calls the customize function', function(done) {
     var dialog = createDialog();
-
     var customizeButton = dialog.element.find('.card-control[title^="Customize"]');
-    expect(customizeButton).to.have.length(0); // should only appear for choropleths
+
+    // This button should only appear for choropleths
+    expect(customizeButton.length).to.equal(0);
 
     dialog.element.find('select > option[value="bar"]').prop('selected', true).trigger('change');
-
     customizeButton = dialog.element.find('.card-control[title^="Customize"]');
-    expect(customizeButton).to.be.hidden; // should only appear for choropleths
+
+    // Button should still be hidden.
+    expect(customizeButton).to.be.hidden;
 
     // Now select the choropleth
     dialog.element.find('select > option[value="ward"]').prop('selected', true).trigger('change');

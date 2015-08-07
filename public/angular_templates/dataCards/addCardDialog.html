@@ -1,4 +1,4 @@
-<h2>Add a card</h2>
+<h2><span>+</span> Add a card</h2>
 <div class="row">
   <div class="span7">
     <div class="add-card-select-column">
@@ -59,12 +59,12 @@
   </div>
 </div>
 
-<div class="add-card-buttons">
-  <button type="button"
-    class="action-btn dark r-to-l"
-    ng-click="dialogState.show = false">{{'common.cancel' | I18n}}</button>
+<div class="controls">
   <button type="button"
     class="action-btn dark r-to-l"
     ng-class="{disabled: addCardModel === null}"
     ng-click="addCard()">{{'addCardDialog.addCard' | I18n}}</button>
+  <button type="button"
+    class="action-btn dark r-to-l"
+    ng-click="dialogState.show = false">{{'common.cancel' | I18n}}</button>
 </div>

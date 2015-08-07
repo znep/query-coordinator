@@ -212,3 +212,14 @@ end
 def stub_logged_in_user
   allow_any_instance_of(ApplicationController).to receive(:require_logged_in_user).and_return(true)
 end
+
+def stub_core_view(uid)
+  stub_request(:get, /\/views\/#{uid}.json/).
+    to_return(:status => 200, :body => '{"name": "test story" }')
+end
+
+class Capybara::Session
+  def evaluate_multiline_script javascript
+    evaluate_script "(function(){ #{javascript} })()"
+  end
+end

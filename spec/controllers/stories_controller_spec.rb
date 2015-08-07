@@ -4,6 +4,7 @@ RSpec.describe StoriesController, type: :controller do
 
   before do
     stub_valid_session
+    stub_core_view('test-test')
   end
 
   describe '#show' do

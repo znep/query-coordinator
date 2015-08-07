@@ -8,6 +8,7 @@
     var TextComponentRenderer = storyteller.TextComponentRenderer;
     var MediaComponentRenderer = storyteller.MediaComponentRenderer;
     var SocrataVisualizationComponentRenderer = storyteller.SocrataVisualizationComponentRenderer;
+    var LayoutComponentRenderer = storyteller.LayoutComponentRenderer;
 
     var storyUid = options.storyUid || null;
     var container = options.storyContainerElement || null;
@@ -19,11 +20,13 @@
       'text': TextComponentRenderer.renderTemplate,
       'media': MediaComponentRenderer.renderTemplate,
       'socrataVisualization': SocrataVisualizationComponentRenderer.renderTemplate
+      'layout': LayoutComponentRenderer.renderTemplate
     };
     var componentDataRenderers = {
       'text': TextComponentRenderer.renderData,
       'media': MediaComponentRenderer.renderData,
       'socrataVisualization': SocrataVisualizationComponentRenderer.renderData
+      'layout': LayoutComponentRenderer.renderData
     };
     var elementCache = new storyteller.StoryRendererElementCache();
     var warningMessageElement = options.warningMessageElement || null;
@@ -442,7 +445,7 @@
         return $(
           '<div>',
           {
-            'class': ('component-container col' + componentWidth),
+            'class': 'component-container col{0}'.format(componentWidth),
             'data-component-layout-width': componentWidth,
             'data-component-index': i
           }

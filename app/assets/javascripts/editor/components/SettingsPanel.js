@@ -24,12 +24,88 @@
    */
 
   $.fn.settingsPanel = function(toggleButton) {
+    if (!$.fn.isPrototypeOf(toggleButton)) {
+      throw new Error('toggleButton must be a jQuery instance');
+    }
 
     var settingsContainer = $(this);
-    var settingsPanel = $('#settings-panel').sidebar({
+    var settingsPanel = settingsContainer.find('.settings-panel').sidebar({
       side: 'left'
     });
-    var overlay = settingsContainer.find('#settings-panel-overlay');
+    var saveButton = settingsContainer.find('.settings-save-btn');
+    var saveErrorMessage = settingsContainer.find('.settings-save-failure-message');
+    var saveErrorMessageDetails = settingsContainer.find('.settings-save-failure-message-details');
+
+    var storyTitleInputBox = settingsContainer.find('form input[type="text"]');
+    var storyDescriptionTextarea = settingsContainer.find('textarea');
+
+    var metadataStateAtPanelOpenTime = null;
+    var saveWasInProgress = false;
+
+    storyteller.coreSavingStore.addChangeListener(function() {
+      var saveInProgress = storyteller.coreSavingStore.isSaveInProgress();
+      var lastSaveError = storyteller.coreSavingStore.lastRequestSaveErrorForStory(
+        storyteller.userStoryUid
+      );
+
+      saveButton.toggleClass('busy', saveInProgress);
+
+      saveErrorMessage.toggleClass('active', lastSaveError !== null);
+      saveErrorMessageDetails.text(lastSaveError);
+    });
+
+    function loadCurrentMetadata() {
+      metadataStateAtPanelOpenTime = {
+        title: storyteller.storyStore.getStoryTitle(storyteller.userStoryUid),
+        description: storyteller.storyStore.getStoryDescription(storyteller.userStoryUid)
+      };
+
+      storyTitleInputBox.val(
+        metadataStateAtPanelOpenTime.title
+      );
+      storyDescriptionTextarea.val(
+        metadataStateAtPanelOpenTime.description
+      );
+
+      updateSaveButtonEnabledState();
+    }
+
+    function isTitleChanged() {
+      var titleAtOpenTime = metadataStateAtPanelOpenTime.title;
+      var titleInBox = storyTitleInputBox.val();
+
+      return titleAtOpenTime !== titleInBox;
+    }
+
+    function isDescriptionChanged() {
+      var descriptionAtOpenTime = metadataStateAtPanelOpenTime.description;
+      var descriptionInBox = storyDescriptionTextarea.val();
+
+      return descriptionAtOpenTime !== descriptionInBox;
+    }
+
+    function updateSaveButtonEnabledState() {
+      var hasChanges;
+      var hasError;
+
+      if (!metadataStateAtPanelOpenTime) {
+        // Panel is closed, we don't care.
+        // This function gets called whenever
+        // one of several Stores change (StoryStore,
+        // in particular).
+        return;
+      }
+
+      hasChanges = isTitleChanged() || isDescriptionChanged();
+      hasError = storyteller.
+        coreSavingStore.
+        lastRequestSaveErrorForStory(storyteller.userStoryUid) !== null;
+
+      saveButton.attr(
+        'disabled',
+        !hasChanges && !hasError
+      );
+    }
 
     // Set up some input events.
 
@@ -46,18 +122,83 @@
       }
     });
 
+    storyTitleInputBox.add(storyDescriptionTextarea).on('input', updateSaveButtonEnabledState);
+    storyteller.storyStore.addChangeListener(updateSaveButtonEnabledState);
+    storyteller.coreSavingStore.addChangeListener(updateSaveButtonEnabledState);
+
+    storyteller.coreSavingStore.addChangeListener(function() {
+      var saveInProgress = storyteller.coreSavingStore.isSaveInProgress();
+      var hasError = storyteller.
+        coreSavingStore.
+        lastRequestSaveErrorForStory(storyteller.userStoryUid) !== null;
+
+      var doneAndNoErrorOutstanding = !saveInProgress && !hasError;
+
+      if (saveWasInProgress && doneAndNoErrorOutstanding) {
+        settingsPanel.trigger('sidebar:close');
+      }
+
+      saveWasInProgress = saveInProgress;
+    });
+
     settingsPanel.
       on('sidebar:open', function() {
         toggleButton.addClass('active');
         settingsContainer.addClass('active');
         settingsPanel.find('a').eq(0).focus();
+        loadCurrentMetadata();
       }).
       on('sidebar:close', function() {
+        var hasError = storyteller.
+          coreSavingStore.
+          lastRequestSaveErrorForStory(storyteller.userStoryUid) !== null;
+
         toggleButton.removeClass('active');
         settingsContainer.removeClass('active');
         $('header a').eq(0).focus(); // put focus back in the header
+
+        // If save failed, revert title and description to values present at panel open time.
+        if (hasError) {
+          if (isTitleChanged()) {
+            storyteller.dispatcher.dispatch({
+              action: Constants.STORY_SET_TITLE,
+              storyUid: storyteller.userStoryUid,
+              title: metadataStateAtPanelOpenTime.title
+            });
+          };
+
+          if (isDescriptionChanged()) {
+            storyteller.dispatcher.dispatch({
+              action: Constants.STORY_SET_DESCRIPTION,
+              storyUid: storyteller.userStoryUid,
+              description: metadataStateAtPanelOpenTime.description
+            });
+          }
+        }
       }).
-      on('mousewheel', '.scrollable', utils.preventScrolling);
+      on('mousewheel', '.scrollable', utils.preventScrolling).
+      on('click', '.settings-save-btn', function() {
+        if (isTitleChanged()) {
+          storyteller.dispatcher.dispatch({
+            action: Constants.STORY_SET_TITLE,
+            storyUid: storyteller.userStoryUid,
+            title: storyTitleInputBox.val()
+          });
+        };
+
+        if (isDescriptionChanged()) {
+          storyteller.dispatcher.dispatch({
+            action: Constants.STORY_SET_DESCRIPTION,
+            storyUid: storyteller.userStoryUid,
+            description: storyDescriptionTextarea.val()
+          });
+        }
+
+        storyteller.dispatcher.dispatch({
+          action: Constants.STORY_SAVE_METADATA,
+          storyUid: storyteller.userStoryUid
+        });
+      });
 
     return this;
   };

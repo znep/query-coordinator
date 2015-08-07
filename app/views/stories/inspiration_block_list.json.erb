@@ -31,153 +31,239 @@
       }
     },
     {
-      "imagePreview": "<%= asset_path("editor/blockpreviews/text-block.svg") %>",
+      "imagePreview": "<%= asset_path("editor/iconic-blocks/title-12.svg") %>",
       "blockContent": {
         "id": "sample1",
         "layout": "12",
         "components": [
           {
             "type": "text",
-            "value": "<h1><%= I18n.t('inspiration_story.text_block_1.title') %><br></h1><div><%= I18n.t('inspiration_story.text_block_1.text') %><br></div>"
+            "value": "<h1 class='text-center title'><%= I18n.t('inspiration_blocks.title_block.heading') %><br></h1>"
           }
         ]
       }
     },
     {
-      "imagePreview": "<%= asset_path("editor/blockpreviews/media-block.svg") %>",
+      "imagePreview": "<%= asset_path("editor/iconic-blocks/text-12.svg") %>",
       "blockContent": {
         "id": "sample6",
         "layout": "12",
         "components": [
           {
-            "type": "media",
-            "value": {
-              "type": "embed",
-              "value": {
-                "provider": "wizard"
-              }
-            }
+            "type": "text",
+            "value": "<%=
+            [
+              "<h1>#{I18n.t('inspiration_blocks.text_block.heading')}</h1>",
+              "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+              "#{I18n.t('inspiration_blocks.text_block.content')}",
+              "</div>"
+            ].join('').html_safe %>"
           }
         ]
       }
     },
     {
-      "imagePreview": "<%= asset_path("editor/blockpreviews/text33-media66-block.svg") %>",
+      "imagePreview": "<%= asset_path("editor/iconic-blocks/text-12-mixed-content.svg") %>",
       "blockContent": {
         "id": "sample7",
-        "layout": "6-6",
+        "layout": "12",
         "components": [
           {
             "type": "text",
-            "value": "<h3>Description<br></h3><div>Describing your chart is really important so that readers can understand what you mean!<br></div>"
-          },
-          {
-            "type": "media",
-            "value": {
-              "type": "embed",
-              "value": {
-                "provider": "wizard"
-              }
-            }
+            "value": "<%= # Join array for sane HTML scanning
+            [
+              "<h1>#{I18n.t('inspiration_blocks.text_mixed_content_block.heading')}<br></h1>",
+              "<div>",
+                "<i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+                "#{I18n.t('inspiration_blocks.text_mixed_content_block.main_content')}",
+              "</div>",
+              "<h4>#{I18n.t('inspiration_blocks.text_mixed_content_block.subheading')}</h4>",
+              "<ul>",
+                "<li>#{I18n.t('inspiration_blocks.text_mixed_content_block.list.item1')}</li>",
+                "<li>#{I18n.t('inspiration_blocks.text_mixed_content_block.list.item2')}</li>",
+                "<li>#{I18n.t('inspiration_blocks.text_mixed_content_block.list.item3')}</li>",
+                "<li>#{I18n.t('inspiration_blocks.text_mixed_content_block.list.item4')}</li>",
+              "</ul>"
+            ].join('').html_safe %>"
           }
         ]
       }
     },
     {
-      "imagePreview": "<%= asset_path("editor/blockpreviews/magic-block.svg") %>",
+      "imagePreview": "<%= asset_path("editor/iconic-blocks/text-12-blockquote.svg") %>",
       "blockContent": {
         "id": "sample9",
         "layout": "12",
         "components": [
           {
-            "type": "media",
-            "value": {
-              "type": "image",
-              "value": {
-                "src": "<%= asset_path("chart-placeholder.png") %>"
-              }
-            }
+            "type": "text",
+            "value": "<blockquote><%= I18n.t('inspiration_blocks.blockquote_block.quote') %><br>-<%= I18n.t('inspiration_blocks.blockquote_block.author') %></blockquote>"
           }
         ]
       }
     },
     {
-      "imagePreview": "<%= asset_path("editor/blockpreviews/text-block.svg") %>",
+      "imagePreview": "<%= asset_path("editor/iconic-blocks/text-6-6.svg") %>",
       "blockContent": {
         "id": "sample2",
-        "layout": "12",
+        "layout": "6-6",
         "components": [
           {
             "type": "text",
-            "value": "<h2><%= I18n.t('inspiration_story.text_block_2.title') %><br></h2><div><%= I18n.t('inspiration_story.text_block_2.text') %><br></div>"
+            "value": "<%=
+            [
+              "<h3>#{I18n.t('inspiration_blocks.text_6_6.heading1')}</h3>",
+              "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+              "#{I18n.t('inspiration_blocks.text_6_6.content1')}",
+              "</div>"
+            ].join('').html_safe %>"
+          },
+          {
+            "type": "text",
+            "value": "<%=
+            [
+              "<h3>#{I18n.t('inspiration_blocks.text_6_6.heading2')}</h3>",
+              "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+              "#{I18n.t('inspiration_blocks.text_6_6.content2')}",
+              "</div>"
+            ].join('').html_safe %>"
           }
         ]
       }
     },
     {
-      "imagePreview": "<%= asset_path("editor/blockpreviews/text-block.svg") %>",
+      "imagePreview": "<%= asset_path("editor/iconic-blocks/text-8-4.svg") %>",
       "blockContent": {
         "id": "sample3",
-        "layout": "12",
+        "layout": "8-4",
         "components": [
           {
             "type": "text",
-            "value": "<div>Forget your generalized audience. In the first place, the nameless, faceless audience will scare you to death and in the second place, unlike the theater, it doesn’t exist. In writing, your audience is one single reader. I have found that sometimes it helps to pick out one person—a real person you know, or an imagined person and write to that one.<br></div>"
+            "value": "<%=
+            [
+              "<h3>#{I18n.t('inspiration_blocks.text_8_4.heading1')}</h3>",
+              "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+              "#{I18n.t('inspiration_blocks.text_8_4.content1')}",
+              "</div>"
+            ].join('').html_safe %>"
+          },
+          {
+            "type": "text",
+            "value": "<%=
+            [
+              "<h3>#{I18n.t('inspiration_blocks.text_8_4.heading2')}</h3>",
+              "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+              "#{I18n.t('inspiration_blocks.text_8_4.content2')}",
+              "</div>"
+            ].join('').html_safe %>"
           }
         ]
       }
     },
     {
-      "imagePreview": "<%= asset_path("editor/blockpreviews/magic-block.svg") %>",
+      "imagePreview": "<%= asset_path("editor/iconic-blocks/text-4-4-4.svg") %>",
       "blockContent": {
         "id": "sample5",
-        "layout": "6-6",
+        "layout": "4-4-4",
         "components": [
           {
             "type": "text",
-            "value": "<div>If there is a magic in story writing, and I am convinced there is, no one has ever been able to reduce it to a recipe that can be passed from one person to another. The formula seems to lie solely in the aching urge of the writer to convey something he feels important to the reader.<br></div>"
+            "value": "<%=
+            [
+              "<h3>#{I18n.t('inspiration_blocks.text_4_4_4.heading1')}</h3>",
+              "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+              "#{I18n.t('inspiration_blocks.text_4_4_4.content1')}",
+              "</div>"
+            ].join('').html_safe %>"
           },
           {
             "type": "text",
-            "value": "<div>If the writer has that urge, he may sometimes, but by no means always, find the way to do it. You must perceive the excellence that makes a good story good or the errors that make a bad story. For a bad story is only an ineffective story.<br></div>"
+            "value": "<%=
+            [
+              "<h3>#{I18n.t('inspiration_blocks.text_4_4_4.heading2')}</h3>",
+              "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+              "#{I18n.t('inspiration_blocks.text_4_4_4.content2')}",
+              "</div>"
+            ].join('').html_safe %>"
+          },
+          {
+            "type": "text",
+            "value": "<%=
+            [
+              "<h3>#{I18n.t('inspiration_blocks.text_4_4_4.heading3')}</h3>",
+              "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+              "#{I18n.t('inspiration_blocks.text_4_4_4.content3')}",
+              "</div>"
+            ].join('').html_safe %>"
           }
         ]
       }
     },
     {
-      "imagePreview": "<%= asset_path("editor/blockpreviews/magic-block.svg") %>",
+      "imagePreview": "<%= asset_path("editor/iconic-blocks/element-rule.svg") %>",
       "blockContent": {
-        "id": "sample3",
+        "id": "element-rule",
         "layout": "12",
         "components": [
           {
-            "type": "text",
-            "value": "<div>Forget your generalized audience. In the first place, the nameless, faceless audience will scare you to death and in the second place, unlike the theater, it doesn’t exist. In writing, your audience is one single reader. I have found that sometimes it helps to pick out one person—a real person you know, or an imagined person and write to that one.<br></div>"
+            "type": "layout",
+            "value": "horizontalRule"
           }
         ]
       }
     },
     {
-      "imagePreview": "<%= asset_path("editor/blockpreviews/magic-block.svg") %>",
+      "imagePreview": "<%= asset_path("editor/iconic-blocks/element-spacer.svg") %>",
       "blockContent": {
-        "id": "sample8",
+        "id": "element-spacer",
+        "layout": "12",
+        "components": [
+          {
+            "type": "layout",
+            "value": "spacer"
+          }
+        ]
+      }
+    },
+    {
+      "imagePreview": "<%= asset_path("editor/iconic-blocks/media-12.svg") %>",
+      "blockContent": {
+        "id": "media-12",
+        "layout": "12",
+        "components": [
+          {
+            "type": "media",
+            "value": {
+              "type": "embed",
+              "value": {
+                "provider": "wizard"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "imagePreview": "<%= asset_path("editor/iconic-blocks/media-6-6.svg") %>",
+      "blockContent": {
+        "id": "media-6-6",
         "layout": "6-6",
         "components": [
           {
             "type": "media",
             "value": {
-              "type": "image",
+              "type": "embed",
               "value": {
-                "src": "<%= asset_path("editor/blockpreviews/magic-block.svg") %>"
+                "provider": "wizard"
               }
             }
           },
           {
             "type": "media",
             "value": {
-              "type": "image",
+              "type": "embed",
               "value": {
-                "src": "<%= asset_path("table-placeholder.png") %>"
+                "provider": "wizard"
               }
             }
           }
@@ -185,21 +271,107 @@
       }
     },
     {
-      "imagePreview": "<%= asset_path("editor/blockpreviews/magic-block.svg") %>",
+      "imagePreview": "<%= asset_path("editor/iconic-blocks/media-text-6-6.svg") %>",
       "blockContent": {
-        "id": "sample13",
+        "id": "media-text-6-6",
+        "layout": "6-6",
+        "components": [
+          {
+            "type": "media",
+            "value": {
+              "type": "embed",
+              "value": {
+                "provider": "wizard"
+              }
+            }
+          },
+          {
+            "type": "text",
+            "value": "<%=
+            [
+              "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+              "#{I18n.t('inspiration_blocks.media_text_6_6.content')}",
+              "</div>"
+            ].join('').html_safe %>"
+          }
+        ]
+      }
+    },
+    {
+      "imagePreview": "<%= asset_path("editor/iconic-blocks/text-media-6-6.svg") %>",
+      "blockContent": {
+        "id": "text-media-6-6",
         "layout": "6-6",
         "components": [
           {
             "type": "text",
-            "value": "<h2>Description<br></h2><div>Describing your chart is really important so that readers can understand what you mean!<br></div>"
+            "value": "<%=
+            [
+              "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+              "#{I18n.t('inspiration_blocks.media_text_6_6.content')}",
+              "</div>"
+            ].join('').html_safe %>"
           },
           {
             "type": "media",
             "value": {
-              "type": "image",
+              "type": "embed",
               "value": {
-                "src": "<%= asset_path("image-placeholder.png") %>"
+                "provider": "wizard"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "imagePreview": "<%= asset_path("editor/iconic-blocks/media-text-8-4.svg") %>",
+      "blockContent": {
+        "id": "media-text-8-4",
+        "layout": "8-4",
+        "components": [
+          {
+            "type": "media",
+            "value": {
+              "type": "embed",
+              "value": {
+                "provider": "wizard"
+              }
+            }
+          },
+          {
+            "type": "text",
+            "value": "<%=
+            [
+              "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+              "#{I18n.t('inspiration_blocks.media_text_8_4.content')}",
+              "</div>"
+            ].join('').html_safe %>"
+          }
+        ]
+      }
+    },
+    {
+      "imagePreview": "<%= asset_path("editor/iconic-blocks/text-media-4-8.svg") %>",
+      "blockContent": {
+        "id": "text-media-4-8",
+        "layout": "4-8",
+        "components": [
+          {
+            "type": "text",
+            "value": "<%=
+            [
+              "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+              "#{I18n.t('inspiration_blocks.text_media_4_8.content')}",
+              "</div>"
+            ].join('').html_safe %>"
+          },
+          {
+            "type": "media",
+            "value": {
+              "type": "embed",
+              "value": {
+                "provider": "wizard"
               }
             }
           }

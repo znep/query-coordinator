@@ -29,6 +29,10 @@
           _setStoryTitle(payload);
           break;
 
+        case Constants.STORY_SET_DESCRIPTION:
+          _setStoryDescription(payload);
+          break;
+
         case Constants.STORY_OVERWRITE_STATE:
           _setStory(payload.data, true);
           break;
@@ -77,6 +81,13 @@
       var story = _getStory(storyUid);
 
       return story.title;
+    };
+
+    this.getStoryDescription = function(storyUid) {
+
+      var story = _getStory(storyUid);
+
+      return story.description;
     };
 
     this.getStoryBlockIds = function(storyUid) {
@@ -142,6 +153,7 @@
       return {
         uid: story.uid,
         title: story.title,
+        description: story.description,
         blocks: story.blockIds.map(_serializeBlock)
       };
     };
@@ -153,6 +165,7 @@
       return {
         uid: story.uid,
         title: story.title,
+        description: story.description,
         blocks: story.blockIds.map(_serializeBlockDiff)
       };
     };
@@ -175,6 +188,20 @@
       var storyUid = payload.storyUid;
 
       _getStory(storyUid).title = payload.title;
+
+      self._emitChange();
+    }
+
+    function _setStoryDescription(payload) {
+
+      utils.assertHasProperty(payload, 'storyUid');
+      utils.assertIsOneOfTypes(payload.storyUid, 'string');
+      utils.assertHasProperty(payload, 'description');
+      utils.assertIsOneOfTypes(payload.description, 'string');
+
+      var storyUid = payload.storyUid;
+
+      _getStory(storyUid).description = payload.description;
 
       self._emitChange();
     }
@@ -330,7 +357,6 @@
       _validateStoryData(storyData);
 
       storyUid = storyData.uid;
-      blockIds;
 
       if (!overwrite && _stories.hasOwnProperty(storyUid)) {
         throw new Error(
@@ -346,6 +372,7 @@
       _stories[storyUid] = {
         uid: storyUid,
         title: storyData.title,
+        description: storyData.description,
         blockIds: blockIds
       };
 

@@ -4,9 +4,11 @@ describe('StoryStore', function() {
 
   var story1Uid = 'stry-spc1';
   var story1Title = 'Story 1';
+  var story1Description = 'Story 1 Description';
 
   var story2Uid = 'stry-spc2';
   var story2Title = 'Story 2';
+  var story2Description = 'Story 2 Description';
 
   var block1Id = 'block1';
   var block1Layout = '6-6';
@@ -38,6 +40,7 @@ describe('StoryStore', function() {
     var sampleStory1Data = generateStoryData({
       uid: story1Uid,
       title: story1Title,
+      description: story1Description,
       blocks: [
         generateBlockData({
           id: block1Id,
@@ -55,6 +58,7 @@ describe('StoryStore', function() {
     var sampleStory2Data = generateStoryData({
       uid: story2Uid,
       title: story2Title,
+      description: story2Description,
       blocks: [
         generateBlockData({
           id: block3Id,
@@ -99,6 +103,16 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             storyteller.storyStore.getStoryTitle(null);
+          });
+        });
+      });
+
+      describe('.getStoryDescription()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            storyteller.storyStore.getStoryDescription(null);
           });
         });
       });
@@ -256,6 +270,14 @@ describe('StoryStore', function() {
         it('should return the correct value', function() {
           assert.equal(storyteller.storyStore.getStoryTitle(story1Uid), story1Title);
           assert.equal(storyteller.storyStore.getStoryTitle(story2Uid), story2Title);
+        });
+      });
+
+      describe('.getStoryDescription()', function() {
+
+        it('should return the correct value', function() {
+          assert.equal(storyteller.storyStore.getStoryDescription(story1Uid), story1Description);
+          assert.equal(storyteller.storyStore.getStoryDescription(story2Uid), story2Description);
         });
       });
 
@@ -753,6 +775,64 @@ describe('StoryStore', function() {
           });
 
           assert.deepEqual(storyteller.storyStore.getStoryTitle(story1Uid), 'new title');
+        });
+      });
+    });
+
+    describe('STORY_SET_DESCRIPTION', function() {
+
+      describe('not given a story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_SET_DESCRIPTION,
+              description: 'foobar'
+            });
+          });
+        });
+      });
+
+      describe('not given a description', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_SET_DESCRIPTION,
+              storyUid: 'badd-ddab'
+            });
+          });
+        });
+      });
+
+      describe('given a non-existent story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_SET_DESCRIPTION,
+              storyUid: 'badd-ddab',
+              description: 'foobar'
+            });
+          });
+        });
+      });
+
+
+      describe('given a valid story uid and description', function() {
+
+        it('should update the story', function() {
+
+          dispatch({
+            action: Constants.STORY_SET_DESCRIPTION,
+            storyUid: story1Uid,
+            description: 'new description'
+          });
+
+          assert.equal(storyteller.storyStore.getStoryDescription(story1Uid), 'new description');
         });
       });
     });

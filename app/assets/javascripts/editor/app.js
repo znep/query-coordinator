@@ -60,6 +60,7 @@ $(document).on('ready', function() {
   storyteller.dragDropStore = new storyteller.DragDropStore();
   storyteller.embedWizardStore = new storyteller.EmbedWizardStore();
   storyteller.blockRemovalConfirmationStore = new storyteller.BlockRemovalConfirmationStore();
+  storyteller.coreSavingStore = new storyteller.CoreSavingStore();
 
   var richTextEditorToolbar = new storyteller.RichTextEditorToolbar(
     $('#rich-text-editor-toolbar'),

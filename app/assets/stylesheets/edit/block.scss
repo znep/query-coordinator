@@ -10,9 +10,9 @@
 
   .block {
     @include clearfix();
+  }
 
-    .component-container {
-      background-color: $block-bg-color;
-    }
+  .component {
+    background-color: $block-bg-color;
   }
 }

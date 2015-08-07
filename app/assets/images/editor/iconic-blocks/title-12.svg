@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="166px" height="118px" viewBox="0 0 166 118" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs></defs>
+    <g id="Blocks" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-202.000000, -734.000000)" id="title-12">
+            <g transform="translate(202.000000, 734.000000)">
+                <g id="Block-Frame" fill="#FFFFFF">
+                    <rect id="Block-Border-Add-in-CSS" x="0" y="0" width="165.236842" height="117.108098"></rect>
+                </g>
+                <path d="M20,21 L147,21 L147,32 L36.7578125,32 L20,32 L20,21 Z" id="Rectangle-10-Copy-16" fill="#787878"></path>
+                <path d="M32,38 L133.816067,38 L133.816067,49 L45.4347603,49 L32,49 L32,38 Z" id="Rectangle-10-Copy-17" fill="#787878"></path>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -14,7 +14,20 @@ module StoriesHelper
     block_html.html_safe
   end
 
+  def user_story_json
+    @story.as_json.merge(
+      {
+        :title => core_attributes['name'] || '',
+        :description => core_attributes['description'] || ''
+      }
+    ).to_json
+  end
+
   private
+
+  def core_attributes
+    CoreServer::get_view(@story.uid, CoreServer::headers_from_request(request)) || {}
+  end
 
   def render_component(component)
     case component['type']

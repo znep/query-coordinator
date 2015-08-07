@@ -2,6 +2,7 @@
 
   // TODO: Document the payload of each action
   STORY_CREATE: 'STORY_CREATE',
+  STORY_SET_DESCRIPTION: 'STORY_SET_DESCRIPTION',
   STORY_SET_TITLE: 'STORY_SET_TITLE',
   STORY_OVERWRITE_STATE: 'STORY_OVERWRITE_STATE',
   STORY_DELETE_BLOCK: 'STORY_DELETE_BLOCK',
@@ -20,6 +21,9 @@
   // Expects: storyUid, blockContent, pointer, storyElement
   STORY_DRAG_OVER: 'STORY_DRAG_OVER',
   STORY_DROP: 'STORY_DROP',
+
+  // Expects: storyUid.
+  STORY_SAVE_METADATA: 'STORY_SAVE_METADATA',
 
   BLOCK_DOUBLE_CLICK: 'BLOCK_DOUBLE_CLICK',
   BLOCK_MOUSE_MOVE: 'BLOCK_MOUSE_MOVE',
@@ -52,7 +56,15 @@
   SOQL_DATA_PROVIDER_NAME_ALIAS: 'COLUMN_ALIAS_GUARD_NAME',
   SOQL_DATA_PROVIDER_VALUE_ALIAS: 'COLUMN_ALIAS_GUARD_VALUE',
 
-  SOCRATA_VISUALIZATION_DESTROY: 'SOCRATA_VISUALIZATION_DESTROY'
+  SOCRATA_VISUALIZATION_DESTROY: 'SOCRATA_VISUALIZATION_DESTROY',
+
+  // The `name` column of the `lenses` table is defined as:
+  //
+  //   name character varying(255)
+  //
+  // Here 255 is the maxiumum allowed length, not the maxiumum character
+  // count.
+  CORE_VIEW_NAME_MAX_LENGTH: 254
 };
 
 (function() {

@@ -53,7 +53,6 @@ class StoriesController < ApplicationController
 
         @story = DraftStory.create(
           :uid => clean_four_by_four,
-          :title => clean_title,
           :block_ids => [],
           :created_by => current_user['id']
         )
@@ -108,10 +107,6 @@ class StoriesController < ApplicationController
 
   private
 
-  def authentication_cookie
-    env['HTTP_COOKIE']
-  end
-
   def should_create_draft_story?(view, four_by_four)
     story_belongs_to_current_user?(view, four_by_four) && story_is_uninitialized?(view['metadata'])
   end
@@ -149,10 +144,7 @@ class StoriesController < ApplicationController
   end
 
   def core_request_headers
-    {
-      'Cookie' => authentication_cookie,
-      'X-Socrata-Host' => request.host
-    }
+    CoreServer::headers_from_request(request)
   end
 
   # TODO replace this with the real solution

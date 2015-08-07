@@ -27,7 +27,19 @@ RSpec.describe 'inspiration block list json', type: :feature, js: true do
       var inspirationBlockContent = [];
 
       $.each(inspirationBlocks, function(index, block) {
-        inspirationBlockContent.push( JSON.parse(block.getAttribute('data-block-content')) );
+        var blockContent = JSON.parse(block.getAttribute('data-block-content'));
+
+        var shouldTestComponent = true;
+
+        blockContent.components.forEach(function(component) {
+          if (component.type === 'socrataVisualization') {
+            shouldTestComponent = false;
+          }
+        });
+
+        if (shouldTestComponent) {
+          inspirationBlockContent.push(blockContent);
+        }
       });
 
       // Override existing user story with all inspiration blocks

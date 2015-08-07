@@ -19,13 +19,13 @@
     var componentTemplateRenderers = {
       'text': TextComponentRenderer.renderTemplate,
       'media': MediaComponentRenderer.renderTemplate,
-      'socrataVisualization': SocrataVisualizationComponentRenderer.renderTemplate
+      'socrataVisualization': SocrataVisualizationComponentRenderer.renderTemplate,
       'layout': LayoutComponentRenderer.renderTemplate
     };
     var componentDataRenderers = {
       'text': TextComponentRenderer.renderData,
       'media': MediaComponentRenderer.renderData,
-      'socrataVisualization': SocrataVisualizationComponentRenderer.renderData
+      'socrataVisualization': SocrataVisualizationComponentRenderer.renderData,
       'layout': LayoutComponentRenderer.renderData
     };
     var elementCache = new storyteller.StoryRendererElementCache();

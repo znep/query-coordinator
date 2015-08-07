@@ -161,6 +161,9 @@ String.prototype.linkify = function(extra)
 
 (function($) {
 
+// In jQuery 1.8, andSelf is deprecated, and now aliases to addBack.
+// When the Old UX is upgraded to ≥ 1.8, we can remove this line.
+$.fn.addBack = $.fn.andSelf;
 
 $.mixpanelMeta = function()
 {

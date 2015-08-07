@@ -10,6 +10,11 @@ describe('socrata.visualizations.Column', function() {
   var MIN_EXPANDED_CARD_BAR_WIDTH = 15;
   var MAX_EXPANDED_CARD_BAR_WIDTH = 40;
 
+  var TOP_AXIS_LABEL = 'TOP AXIS LABEL';
+  var RIGHT_AXIS_LABEL = 'RIGHT AXIS LABEL';
+  var BOTTOM_AXIS_LABEL = 'BOTTOM AXIS LABEL';
+  var LEFT_AXIS_LABEL = 'LEFT AXIS LABEL';
+
   var NAME_INDEX = 0;
   var UNFILTERED_INDEX = 1;
   var FILTERED_INDEX = 2;
@@ -232,6 +237,137 @@ describe('socrata.visualizations.Column', function() {
    */
 
   var columnChart;
+
+  describe('axis labels', function() {
+
+    describe('with a top label', function() {
+
+      beforeEach(function() {
+
+        var overrideConfig = {
+          axisLabels: {
+            top: TOP_AXIS_LABEL
+          }
+        };
+        columnChart = createColumnChart(640, overrideConfig);
+      });
+
+      afterEach(function() {
+        removeColumnChart(columnChart);
+      });
+
+      it('renders the top axis label', function() {
+
+        expect($('.column-chart-container .top-axis-label').css('visibility')).to.equal('visible');
+        expect($('.column-chart-container .right-axis-label').css('visibility')).to.equal('hidden');
+        expect($('.column-chart-container .bottom-axis-label').css('visibility')).to.equal('hidden');
+        expect($('.column-chart-container .left-axis-label').css('visibility')).to.equal('hidden');
+
+        expect($('.column-chart-container .top-axis-label').text()).to.equal(TOP_AXIS_LABEL);
+      });
+
+      it('renders the chart at a reduced height to accommodate the top axis label', function() {
+
+        expect($('.column-chart').height()).to.be.lt(480);
+      });
+    });
+
+    describe('with a right label', function() {
+
+      beforeEach(function() {
+
+        var overrideConfig = {
+          axisLabels: {
+            right: RIGHT_AXIS_LABEL
+          }
+        };
+        columnChart = createColumnChart(640, overrideConfig);
+      });
+
+      afterEach(function() {
+        removeColumnChart(columnChart);
+      });
+
+      it('renders the right axis label', function() {
+
+        expect($('.column-chart-container .top-axis-label').css('visibility')).to.equal('hidden');
+        expect($('.column-chart-container .right-axis-label').css('visibility')).to.equal('visible');
+        expect($('.column-chart-container .bottom-axis-label').css('visibility')).to.equal('hidden');
+        expect($('.column-chart-container .left-axis-label').css('visibility')).to.equal('hidden');
+
+        expect($('.column-chart-container .right-axis-label').text()).to.equal(RIGHT_AXIS_LABEL);
+      });
+
+      it('renders the chart at a reduced width to accommodate the right axis label', function() {
+
+        expect($('.column-chart').width()).to.be.lt(640);
+      });
+    });
+
+    describe('with a bottom label', function() {
+
+      beforeEach(function() {
+
+        var overrideConfig = {
+          axisLabels: {
+            bottom: BOTTOM_AXIS_LABEL
+          }
+        };
+        columnChart = createColumnChart(640, overrideConfig);
+      });
+
+      afterEach(function() {
+        removeColumnChart(columnChart);
+      });
+
+      it('renders the bottom axis label', function() {
+
+        expect($('.column-chart-container .top-axis-label').css('visibility')).to.equal('hidden');
+        expect($('.column-chart-container .right-axis-label').css('visibility')).to.equal('hidden');
+        expect($('.column-chart-container .bottom-axis-label').css('visibility')).to.equal('visible');
+        expect($('.column-chart-container .left-axis-label').css('visibility')).to.equal('hidden');
+
+        expect($('.column-chart-container .bottom-axis-label').text()).to.equal(BOTTOM_AXIS_LABEL);
+      });
+
+      it('renders the chart at a reduced height to accommodate the bottom axis label', function() {
+
+        expect($('.column-chart').height()).to.be.lt(480);
+      });
+    });
+
+    describe('with a left label', function() {
+
+      beforeEach(function() {
+
+        var overrideConfig = {
+          axisLabels: {
+            left: LEFT_AXIS_LABEL
+          }
+        };
+        columnChart = createColumnChart(640, overrideConfig);
+      });
+
+      afterEach(function() {
+        removeColumnChart(columnChart);
+      });
+
+      it('renders the left axis label', function() {
+
+        expect($('.column-chart-container .top-axis-label').css('visibility')).to.equal('hidden');
+        expect($('.column-chart-container .right-axis-label').css('visibility')).to.equal('hidden');
+        expect($('.column-chart-container .bottom-axis-label').css('visibility')).to.equal('hidden');
+        expect($('.column-chart-container .left-axis-label').css('visibility')).to.equal('visible');
+
+        expect($('.column-chart-container .left-axis-label').text()).to.equal(LEFT_AXIS_LABEL);
+      });
+
+      it('renders the chart at a reduced width to accommodate the left axis label', function() {
+
+        expect($('.column-chart').width()).to.be.lt(640);
+      });
+    });
+  });
 
   describe('when not expanded at 640px', function() {
 

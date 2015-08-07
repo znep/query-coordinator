@@ -12,20 +12,37 @@
     throw new Error('jQuery is a required dependency for `socrata.visualizations.Visualization.js`.');
   }
 
+  var utils = root.socrata.utils;
+
   root.socrata.visualizations = root.socrata.visualizations || {};
 
   function Visualization(element, config) {
 
     var _defaultConfig = {
-      localization: {}
+      localization: {},
+      axisLabels: {
+        top: false,
+        right: false,
+        bottom: false,
+        left: false
+      }
     }
     var _config =_.merge(_defaultConfig, config);
+
+    utils.assertIsOneOfTypes(_config.axisLabels.top, 'boolean', 'string');
+    utils.assertIsOneOfTypes(_config.axisLabels.right, 'boolean', 'string');
+    utils.assertIsOneOfTypes(_config.axisLabels.bottom, 'boolean', 'string');
+    utils.assertIsOneOfTypes(_config.axisLabels.left, 'boolean', 'string');
 
     this.element = element;
 
     /**
      * Public methods
      */
+
+    this.getAxisLabels = function() {
+      return _config.axisLabels;
+    };
 
     this.getLocalization = function(key) {
 

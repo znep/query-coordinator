@@ -31,10 +31,17 @@
     _.extend(this, new root.socrata.visualizations.Visualization(element, config));
 
     var self = this;
+
+    var _chartContainer;
     var _chartElement;
     var _chartWrapper;
     var _chartScroll;
     var _chartLabels;
+    var _chartTopAxisLabel;
+    var _chartRightAxisLabel;
+    var _chartBottomAxisLabel;
+    var _chartLeftAxisLabel;
+
     var _truncationMarker;
     var _lastRenderOptions;
 
@@ -44,7 +51,7 @@
     var FILTERED_INDEX = config.columns.filteredValue;
     var SELECTED_INDEX = config.columns.selected;
 
-    _renderTemplate(this.element);
+    _renderTemplate(this.element, this.getAxisLabels());
 
     _attachEvents(this.element);
 
@@ -54,7 +61,7 @@
 
     this.render = function(data, options) {
       _lastRenderOptions = options;
-      _renderData(this.element, data, options);
+      _renderData(_chartElement, data, options);
     };
 
     this.destroy = function() {
@@ -65,7 +72,7 @@
      * Private methods
      */
 
-    function _renderTemplate(element) {
+    function _renderTemplate(element, axisLabels) {
 
       var truncationMarker = $(
         '<div>',
@@ -105,14 +112,89 @@
         }
       ).append(chartScroll);
 
+      var topAxisLabel = $(
+        '<div>',
+        {
+          'class': 'top-axis-label'
+        }
+      );
+
+      var rightAxisLabel = $(
+        '<div>',
+        {
+          'class': 'right-axis-label'
+        }
+      );
+
+      var bottomAxisLabel = $(
+        '<div>',
+        {
+          'class': 'bottom-axis-label'
+        }
+      );
+
+      var leftAxisLabel = $(
+        '<div>',
+        {
+          'class': 'left-axis-label'
+        }
+      );
+
+      var chartContainer = $(
+        '<div>',
+        {
+          'class': 'column-chart-container'
+        }
+      ).append([
+        chartElement,
+        topAxisLabel,
+        rightAxisLabel,
+        bottomAxisLabel,
+        leftAxisLabel
+      ]);
+
+      if (axisLabels.top) {
+
+        chartContainer.addClass('top-axis-label');
+        topAxisLabel.
+          text(axisLabels.top);
+      }
+
+      if (axisLabels.right) {
+
+        chartContainer.addClass('right-axis-label');
+        rightAxisLabel.
+          text(axisLabels.right);
+      }
+
+      if (axisLabels.bottom) {
+
+        chartContainer.addClass('bottom-axis-label');
+        bottomAxisLabel.
+          text(axisLabels.bottom);
+      }
+
+      if (axisLabels.left) {
+
+        chartContainer.addClass('left-axis-label');
+        leftAxisLabel.
+          text(axisLabels.left);
+      }
+
       // Cache element selections
+      _chartContainer = chartContainer;
       _chartElement = chartElement;
       _chartWrapper = chartWrapper;
       _chartScroll = chartScroll;
       _chartLabels = chartLabels;
       _truncationMarker = truncationMarker;
 
-      element.append(chartElement);
+      _chartTopAxisLabel = topAxisLabel;
+      _chartRightAxisLabel = rightAxisLabel;
+      _chartBottomAxisLabel = bottomAxisLabel;
+      _chartLeftAxisLabel = leftAxisLabel;
+
+      element.append(chartContainer);
     }
 
     function _attachEvents(element) {
@@ -233,12 +315,13 @@
     function _renderData(element, data, options) {
 
       // Cache dimensions and options
-      var dimensions = element[0].getBoundingClientRect();
+      var chartWidth = element.width();
+      var chartHeight = element.height();
       var expanded = options.expanded;
       var labelUnit = options.labelUnit;
       var showFiltered = options.showFiltered;
 
-      if (dimensions.width <= 0 || dimensions.height <= 0) {
+      if (chartWidth <= 0 || chartHeight <= 0) {
         return;
       }
 
@@ -260,14 +343,14 @@
 
       var topMargin = 0; // Set to zero so .card-text could control padding b/t text & visualization
       var bottomMargin; // Calculated based on label text length
-      var horizontalScrollbarHeight = 0;//15; // used to keep horizontal scrollbar within .card-visualization upon expand
+      var horizontalScrollbarHeight = 15; // used to keep horizontal scrollbar within .card-visualization upon expand
       var numberOfDefaultLabels = expanded ? data.length : 3;
       var maximumBottomMargin = 140;
       var d3Selection = d3.select(_chartWrapper.get(0));
       // The `_.property(NAME_INDEX)` below is equivalent to `function(d) { return d[NAME_INDEX]; }`
       var barGroupSelection = d3Selection.selectAll('.bar-group').data(data, _.property(NAME_INDEX));
       var labelSelection = d3.select(_chartLabels[0]).selectAll('.label');
-      var chartWidth = dimensions.width;
+      var chartWidth = chartWidth;
       var chartTruncated = false;
       var truncationMarkerWidth = _truncationMarker.width();
       var fixedLabelWidth = 10.5;
@@ -295,7 +378,7 @@
       // Clamp the bottom margin to a reasonable maximum since long labels are ellipsified.
       bottomMargin = bottomMargin > maximumBottomMargin ? maximumBottomMargin : bottomMargin;
 
-      var chartHeight = Math.max(0, dimensions.height - topMargin - bottomMargin - horizontalScrollbarHeight);
+      var chartHeight = Math.max(0, chartHeight - topMargin - bottomMargin - horizontalScrollbarHeight);
 
       var horizontalScaleDetails = _computeHorizontalScale(chartWidth, data, expanded);
       var horizontalScale = horizontalScaleDetails.scale;
@@ -309,7 +392,7 @@
       var verticalScale = _computeVerticalScale(chartHeight, chartDataRelevantForVerticalScale, showFiltered);
 
       var chartLeftOffset = horizontalScale.range()[0];
-      var chartRightEdge = dimensions.width - chartLeftOffset;
+      var chartRightEdge = chartWidth - chartLeftOffset;
 
       _chartWrapper.css('height', chartHeight + topMargin + 1);
       _chartScroll.css({
@@ -317,7 +400,7 @@
         'padding-bottom': bottomMargin,
         'top': 'initial',
         'width': chartWidth,
-        'height': chartHeight + topMargin
+        'height': chartHeight + topMargin + horizontalScrollbarHeight
       });
 
       var _renderTicks = function() {

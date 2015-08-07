@@ -182,7 +182,14 @@
               var end = _.findIndex(cardData.unfiltered, function(item) {
                 return item.end === currentRangeFilterValues[1];
               });
-              indices = [start, end];
+
+              // If either of the indices are invalid, do not attempt to
+              // apply the filter.
+              if (start < 0 || end < 0) {
+                indices = null;
+              } else {
+                indices = [start, end];
+              }
             }
 
             return {
@@ -250,7 +257,6 @@
               options.selectionInProgress,
               options.selectionValues
             );
-
             service.render(
               options.axis,
               options.data,

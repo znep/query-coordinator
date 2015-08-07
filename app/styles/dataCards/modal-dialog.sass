@@ -1,4 +1,5 @@
 @import dataCards/common/colors
+@import dataCards/common/layout
 
 $modal-padding: 2rem
 $modal-z-start: 9999
@@ -19,7 +20,7 @@ $modal-z-start: 9999
     position: fixed
     box-sizing: border-box
     width: 70rem
-    max-width: 60%
+    max-width: 80%
     min-height: 150px
     top: 50%
     left: 50%
@@ -37,8 +38,13 @@ $modal-z-start: 9999
         font-size: 1.25em
         font-weight: bold
 
-        &::before
+        span
+          font-size: 1.5rem
+          font-weight: bold
           margin-right: 0.5rem
+
+        .icon-settings
+          font-size: 1rem
 
     .modal-close-button
       position: absolute
@@ -69,8 +75,7 @@ modal-dialog.second
   .modal-dialog
     z-index: $modal-z-start + 3
 
-/* Mobile styles */
-
+// Mobile styles
 @media (max-device-width: 600px)
   .modal-container
     .modal-dialog
@@ -82,3 +87,138 @@ modal-dialog.second
 
       .modal-close-button
         display: none
+
+// Instances of the modal dialog
+add-card-dialog,
+customize-card-dialog,
+manage-lens-dialog
+  .controls
+    clear: both
+    margin-top: 1.5rem
+
+    .action-btn
+      float: right
+      margin-bottom: 0
+
+add-card-dialog,
+customize-card-dialog
+  .customize-card-preview
+    border-radius: $rounded-corners-border-radius
+    margin: 1em 0
+    text-align: center
+    padding: 1px
+    position: relative
+
+    .card-spot
+      card
+        z-index: 1
+
+  .customize-card-options
+    margin: 1rem 0
+    padding-left: 2rem
+
+    h3
+      margin: 0 0 1rem 0
+
+// Add card dialog
+add-card-dialog
+  .add-card-select-column
+    .column-selector
+      margin: 0 1em 0.4em 0
+
+  .customize-card-preview
+    .add-card-preview-placeholder
+      height: 300px
+      width: 100%
+      display: table
+
+      .placeholder-inner-text
+        display: table-cell
+        vertical-align: middle
+        margin: 0 auto
+        padding-left: 1rem
+        padding-right: 1rem
+
+    .card-spot
+      .add-card-controls
+        position: absolute
+        right: 0.5rem
+        top: 0.5rem
+        z-index: 2
+
+        .card-control,
+        .icon-settings
+          font-size: $icon-size
+          cursor: pointer
+          white-space: nowrap
+          padding: 0.5rem
+          border-radius: $rounded-corners-border-radius
+          display: block
+
+  .customize-card-options
+    padding-top: 2.75rem
+
+// Customize card dialog
+customize-card-dialog
+  .customize-card-options
+    .configure-map-base-layer,
+    .configure-histogram-bucket-type
+      margin-bottom: 1rem
+
+      .dropdown-container
+
+        soc-select
+          display: block
+
+        .icon-warning
+          display: none
+
+      .dropdown-container.warning-dropdown
+
+        soc-select,
+        .icon-warning
+          display: inline-block
+          vertical-align: top
+
+        soc-select
+          width: 85%
+
+        .icon-warning
+          width: 13%
+          line-height: 35px
+          font-size: 1.2rem
+          text-align: center
+
+      .option-help-text
+        font-size: 0.8rem
+        line-height: 1.1rem
+        margin-top: 1rem
+
+      input
+        display: block
+        margin-top: 1rem
+        width: 100%
+
+// Manage lens dialog
+manage-lens-dialog
+  label
+    float: left
+
+    soc-select
+      visibility: hidden
+      width: 0
+
+  .right
+    margin-left: 7em
+
+    .flavor-text
+      margin-top: 1rem
+      line-height: 1.5em
+      position: relative
+
+      .icon-warning
+        position: absolute
+        right: 100%
+        top: 0
+        line-height: inherit
+        margin-right: 1.5rem

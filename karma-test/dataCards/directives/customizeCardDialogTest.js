@@ -16,6 +16,7 @@ describe('Customize card dialog', function() {
 
   var Card;
   var Constants;
+  var I18n;
   var Model;
   var Page;
   var Mockumentary;
@@ -35,6 +36,7 @@ describe('Customize card dialog', function() {
   beforeEach(inject(function($injector) {
     Card = $injector.get('Card');
     Constants = $injector.get('Constants');
+    I18n = $injector.get('I18n');
     Model = $injector.get('Model');
     Page = $injector.get('Page');
     Mockumentary = $injector.get('Mockumentary');
@@ -62,8 +64,13 @@ describe('Customize card dialog', function() {
     testHelpers.mockDirective(_$provide, 'suggestionToolPanel');
   }));
 
+  beforeEach(function() {
+    sinon.stub(_, 'debounce', function(f) { return f; });
+  })
+
   afterEach(function() {
     testHelpers.TestDom.clear();
+    _.debounce.restore();
   });
 
   /**
@@ -156,12 +163,10 @@ describe('Customize card dialog', function() {
           'dialog-state="dialogState" ',
           'page="page" ',
         '></customize-card-dialog>',
-      '</div>'].join('');
+      '</div>'
+    ].join('');
 
-    // Stub out debounce so we can test synchronously
-    sinon.stub(_, 'debounce', function(f) { return f; });
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
-    _.debounce.restore();
 
     // Because we have an ng-if, the element returned by $compile isn't the one we want (it's a
     // comment). So grab all the children of the element's parent.
@@ -170,132 +175,337 @@ describe('Customize card dialog', function() {
     return {
       outerScope: outerScope,
       element: element,
+
       // The ng-if introduces another scope
       scope: outerScope.$$childHead.$$childHead
     };
   }
 
-  it('should display a card preview', function() {
-    var dialog = createDialog();
+  describe('basic dialog behavior', function() {
+    var dialog;
+    var page;
+    var $card;
+    var originalModel;
+    var customizedModel;
 
-    expect(dialog.element.find('card').length).to.equal(1);
-    expect(dialog.element.find('card div').scope().model).to.not.equal(undefined);
-    expect(dialog.element.find('card div').scope().model.fieldName).to.equal(dialog.outerScope.cardModel.fieldName);
-    expect(dialog.element.find('option:contains("Standard")').length).to.equal(1);
-  });
-
-  // CORE-5814: Verify that the card height is not manually set for customizeCardDialog
-  it('should not set the height of the card element', function() {
-    var dialog = createDialog();
-    var card = dialog.element.find('card');
-    var styles = $(card).attr('style') || '';
-    expect(styles.indexOf('height')).to.equal(-1);
-  });
-
-  it('should display visualization choices when more than one type is available', function() {
-    var dialog = createDialog({
-      card: {
-        fieldName: 'bar',
-        cardSize: 2,
-        cardType: 'column',
-        expanded: false
-      }
+    beforeEach(function() {
+      dialog = createDialog();
+      page = dialog.outerScope.page;
+      originalModel = dialog.outerScope.cardModel;
+      customizedModel = dialog.scope.customizedCard;
+      $card = dialog.element.find('card');
     });
-    var visualizationOptions = dialog.element.find('visualization-type-selector');
-    expect(visualizationOptions.find('button.icon-search').is(':visible')).to.be.true;
-    expect(visualizationOptions.find('button.icon-bar-chart').is(':visible')).to.be.true;
-  });
 
-  it('should not display visualization choices when only one type is available', function() {
-    var dialog = createDialog({
-      card: {
-        fieldName: 'feature',
-        cardSize: 2,
-        cardType: 'feature',
-        expanded: false
-      }
+    it('should display a card preview', function() {
+      expect($card.length).to.equal(1);
+      expect(customizedModel).to.not.be.undefined;
+      expect(customizedModel.fieldName).to.equal(originalModel.fieldName);
+      expect(dialog.element.find('option:contains("Standard")').length).to.equal(1);
     });
-    var visualizationOptions = dialog.element.find('visualization-type-selector');
-    expect(visualizationOptions).to.be.hidden;
-  });
 
-  // Wrapping of visualization icons and their labels should be tested in an end to end
-  // test, rather than a unit test. Icons should be 3 per row, and icon labels should not overlap.
+    // CORE-5814: Verify that the card height is not manually set for customizeCardDialog
+    it('should not set the height of the card element', function() {
+      var styles = $card.attr('style') || '';
 
-  it('should show a warning on suboptimal visualization icons (will include icon and flyout)', function() {
-    var dialog = createDialog({
-      card: {
-        fieldName: 'high_cardinality',
-        cardSize: 2,
-        cardType: 'column',
-        expanded: false
-      }
+      expect(styles.indexOf('height')).to.equal(-1);
     });
-    var visualizationOptions = dialog.element.find('visualization-type-selector');
-    expect(visualizationOptions.isolateScope().showCardinalityWarning).to.equal(true);
-  });
 
-  it('should select the currently selected visualization type when the dialog is displayed', function() {
-    var dialog = createDialog({
-      card: {
-        fieldName: 'bar',
-        cardSize: 2,
-        cardType: 'search',
-        expanded: false
-      }
+    it('should update the given model when clicking "Done"', function() {
+      var esri = dialog.element.find('option:contains("Esri")');
+      var doneButton = dialog.element.find('button:contains("Done")');
+
+      esri.prop('selected', true).change();
+      dialog.scope.$digest();
+      doneButton.click();
+
+      expect(customizedModel.getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_URL);
     });
-    var card = dialog.scope.customizedCard;
 
-    expect(card.getCurrentValue('cardType')).to.equal('search');
+    it('should discard card changes when clicking "Cancel"', function() {
+      var esri = dialog.element.find('option:contains("Esri")');
+      var cancelButton = dialog.element.find('button:contains("Cancel")');
+
+      esri.prop('selected', true).change();
+      dialog.scope.$digest();
+      cancelButton.click();
+
+      expect(originalModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+    });
   });
 
-  it('should update the given model when clicking "Done"', function() {
-    var dialog = createDialog();
-    var page = dialog.outerScope.page;
-    var card = dialog.scope.customizedCard;
+  describe('visualization type selection', function() {
+    it('should display visualization choices when more than one type is available', function() {
+      var dialog = createDialog({
+        card: {
+          fieldName: 'bar',
+          cardSize: 2,
+          cardType: 'column',
+          expanded: false
+        }
+      });
+      var visualizationOptions = dialog.element.find('visualization-type-selector');
 
-    var esri = dialog.element.find('option:contains("Esri")');
-    esri.prop('selected', true).change();
-    dialog.scope.$digest();
+      expect(visualizationOptions.find('button.icon-search').is(':visible')).to.be.true;
+      expect(visualizationOptions.find('button.icon-bar-chart').is(':visible')).to.be.true;
+    });
 
-    dialog.element.find('button:contains("Done")').click();
+    it('should not display visualization choices when only one type is available', function() {
+      var dialog = createDialog({
+        card: {
+          fieldName: 'feature',
+          cardSize: 2,
+          cardType: 'feature',
+          expanded: false
+        }
+      });
+      var visualizationOptions = dialog.element.find('visualization-type-selector');
 
-    expect(card.getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_URL);
+      expect(visualizationOptions).to.be.hidden;
+    });
+
+    // Wrapping of visualization icons and their labels should be tested in an end to end
+    // test, rather than a unit test. Icons should be 3 per row, and icon labels should not overlap.
+
+    it('should show a warning for a high cardinality bar chart', function() {
+      var dialog = createDialog({
+        card: {
+          fieldName: 'high_cardinality',
+          cardSize: 2,
+          cardType: 'column',
+          expanded: false
+        }
+      });
+
+      var visualizationOptions = dialog.element.find('visualization-type-selector');
+      var iconBarChart = dialog.element.find('.icon-bar-chart');
+
+      expect(visualizationOptions.isolateScope().showCardinalityWarning).to.be.true;
+      expect(iconBarChart.hasClass('warn')).to.be.true;
+    });
+
+    it('should not show a warning for a histogram with no filter when bucket type is changed', function() {
+      var dialog = createDialog({
+        card: {
+          fieldName: 'histogram',
+          cardSize: 2,
+          cardType: 'histogram',
+          expanded: false
+        }
+      });
+      var scope = dialog.scope;
+      var bucketTypeDropdown = dialog.element.find('configure-histogram-bucket-type .dropdown-container');
+
+      expect(scope.showBucketTypeWarning).to.be.false;
+      expect(bucketTypeDropdown.hasClass('warning-dropdown')).to.be.false
+    });
+
+    it('should show a warning for a histogram with a filter when bucket type is changed', inject(function(Filter) {
+      var dialog = createDialog({
+        card: {
+          activeFilters: [new Filter.ValueRangeFilter(0, 1).serialize()],
+          bucketType: 'logarithmic',
+          fieldName: 'histogram',
+          cardSize: 2,
+          cardType: 'histogram',
+          expanded: false
+        }
+      });
+      var scope = dialog.scope;
+      var bucketTypeDropdown = dialog.element.find('configure-histogram-bucket-type .dropdown-container');
+      var linear = dialog.element.find('option:contains("Linear")');
+
+      expect(scope.customizedCard.getCurrentValue('activeFilters')).to.not.be.empty;
+      expect(scope.showBucketTypeWarning).to.be.false;
+
+      // Select linear
+      linear.prop('selected', true).change();
+      scope.$digest();
+
+      // A histogram filter has been cleared, and thus the warning should appear.
+      expect(scope.customizedCard.getCurrentValue('activeFilters')).to.be.empty;
+      expect(scope.showBucketTypeWarning).to.be.true;
+    }));
+
+    it('should select the currently selected visualization type when the dialog is displayed', function() {
+      var dialog = createDialog({
+        card: {
+          fieldName: 'bar',
+          cardSize: 2,
+          cardType: 'search',
+          expanded: false
+        }
+      });
+      var card = dialog.scope.customizedCard;
+
+      expect(card.getCurrentValue('cardType')).to.equal('search');
+    });
   });
 
-  it('should discard card changes when clicking "Cancel"', function() {
-    var dialog = createDialog();
-    var page = dialog.outerScope.page;
-    var card = dialog.scope.dialogState.cardModel;
-
-    var esri = dialog.element.find('option:contains("Esri")');
-    esri.prop('selected', true).change();
-    dialog.scope.$digest();
-
-    dialog.element.find('button:contains("Cancel")').click();
-
-    expect(card.getCurrentValue('baseLayerUrl')).to.equal(undefined);
-  });
-
-  it('should load the customized url on open, if it\'s set', function() {
-    var url = 'http://www.socrata.com/{x}/{y}/{z}';
-
+  describe('histogram bucketing settings', function() {
     var options = {
       'card': {
-        fieldName: 'choropleth',
+        fieldName: 'histogram',
         cardSize: 2,
-        cardType: 'choropleth',
-        baseLayerUrl: url,
+        cardType: 'histogram',
         expanded: false
       }
     };
 
-    var dialog = createDialog(options);
-    expect(dialog.element.find('option:contains("Custom")').is(':selected')).to.equal(true);
-    expect(dialog.element.find('input[name=customLayerUrl]').val()).to.equal(url);
+    it('should not appear when the card type is not a histogram', function() {
+      var dialog = createDialog();
+      var histogramConfigurationElement = dialog.element.find('.configure-histogram-bucket-type:visible');
+      var cardType = dialog.scope.customizedCard.getCurrentValue('cardType');
+
+      expect(cardType).to.not.equal('histogram');
+      expect(histogramConfigurationElement.length).to.equal(0);
+    });
+
+    it('should appear when the card type is a histogram', function() {
+      var dialog = createDialog(options);
+      var histogramConfigurationElement = dialog.element.find('.configure-histogram-bucket-type:visible');
+      var cardType = dialog.scope.customizedCard.getCurrentValue('cardType');
+
+      expect(cardType).to.equal('histogram');
+      expect(histogramConfigurationElement.length).to.equal(1);
+    });
+
+    it('should have a default option of logarithmic if none is defined', function() {
+      var dialog = createDialog(options);
+      var scope = dialog.scope;
+
+      expect(scope.histogramBucketOption).to.equal('logarithmic');
+    });
+
+    it('should have a default option of linear if linear is defined', function() {
+      options.card.bucketType = 'linear';
+
+      var dialog = createDialog(options);
+      var scope = dialog.scope;
+
+      expect(scope.histogramBucketOption).to.equal('linear');
+    });
+
+    it('should toggle on change of the dropdown', function() {
+      options.card.bucketType = 'logarithmic';
+
+      var dialog = createDialog(options);
+      var scope = dialog.scope;
+
+      var logarithmic = dialog.element.find('option:contains("Logarithmic")');
+      var linear = dialog.element.find('option:contains("Linear")');
+      var histogramBucketHelpText = dialog.element.find('.option-help-text');
+
+      // Expect elements to exist
+      expect(logarithmic.length).to.equal(1);
+      expect(linear.length).to.equal(1);
+      expect(histogramBucketHelpText.length).to.equal(1);
+
+      // Expect default values
+      expect(scope.histogramBucketOption).to.equal('logarithmic');
+      expect(logarithmic.is(':selected')).to.be.true;
+      expect(linear.is(':selected')).to.be.false;
+      expect(histogramBucketHelpText.text()).to.equal(
+        I18n.customizeCardDialog.histogramBucketType.logarithmicDesc
+      );
+
+      // Select linear
+      linear.prop('selected', true).change();
+      scope.$digest();
+
+      expect(scope.histogramBucketOption).to.equal('linear');
+      expect(histogramBucketHelpText.text()).to.equal(
+        I18n.customizeCardDialog.histogramBucketType.linearDesc
+      );
+
+      // Select logarithmic
+      logarithmic.prop('selected', true).change();
+      scope.$digest();
+
+      expect(scope.histogramBucketOption).to.equal('logarithmic');
+      expect(histogramBucketHelpText.text()).to.equal(
+        I18n.customizeCardDialog.histogramBucketType.logarithmicDesc
+      );
+    });
+
+    it('should throw an error if one tries to manually force a non-existent bucket type', function() {
+      options.card.bucketType = 'logarithmic';
+
+      var dialog = createDialog(options);
+      var scope = dialog.scope;
+
+      var logarithmic = dialog.element.find('option:contains("Logarithmic")');
+      var linear = dialog.element.find('option:contains("Linear")');
+      var badBucketType = 'badBucketType';
+
+      linear.val(badBucketType);
+      expect(function() {
+        linear.prop('selected', true).change();
+        scope.$digest();
+      }).to.throw('Unknown bucket type: {0}'.format(badBucketType));
+    });
+
+    it('should clear the filter on a histogram when changing bucket type', inject(function(Filter) {
+      options.card.bucketType = 'logarithmic';
+      options.card.activeFilters = [new Filter.ValueRangeFilter(0, 1).serialize()];
+
+      var dialog = createDialog(options);
+      var scope = dialog.scope;
+
+      var linear = dialog.element.find('option:contains("Linear")');
+
+      // Active filters is not empty
+      expect(scope.customizedCard.getCurrentValue('activeFilters')).to.not.be.empty;
+
+      // Change bucket type
+      linear.prop('selected', true).change();
+      scope.$digest();
+
+      // Now active filters are empty
+      expect(scope.customizedCard.getCurrentValue('activeFilters')).to.be.empty;
+    }));
+
+    it('should reapply the filter if the bucket type is toggled', inject(function(Filter) {
+      options.card.bucketType = 'logarithmic';
+      options.card.activeFilters = [new Filter.ValueRangeFilter(0, 1).serialize()];
+
+      var dialog = createDialog(options);
+      var scope = dialog.scope;
+
+      var logarithmic = dialog.element.find('option:contains("Logarithmic")');
+      var linear = dialog.element.find('option:contains("Linear")');
+
+      // Active filters is not empty
+      expect(scope.customizedCard.getCurrentValue('activeFilters')).to.not.be.empty;
+
+      // Toggle bucket type
+      linear.prop('selected', true).change();
+      scope.$digest();
+      logarithmic.prop('selected', true).change();
+      scope.$digest();
+
+      // Active filters is not empty
+      expect(scope.customizedCard.getCurrentValue('activeFilters')).to.not.be.empty;
+    }));
   });
 
-  describe('map-specific settings', function() {
+  describe('feature map and choropleth settings', function() {
+    it('should load the customized url on open, if it\'s set', function() {
+      var url = 'http://www.socrata.com/{x}/{y}/{z}';
+      var options = {
+        'card': {
+          fieldName: 'choropleth',
+          cardSize: 2,
+          cardType: 'choropleth',
+          baseLayerUrl: url,
+          expanded: false
+        }
+      };
+      var dialog = createDialog(options);
+
+      expect(dialog.element.find('option:contains("Custom")').is(':selected')).to.equal(true);
+      expect(dialog.element.find('input[name=customLayerUrl]').val()).to.equal(url);
+    });
+
     it('should provide baselayer options that change the choropleth baseLayerUrl', function() {
       var dialog = createDialog();
       var cardModel = dialog.scope.customizedCard;
@@ -397,6 +607,7 @@ describe('Customize card dialog', function() {
       dialog.scope.$digest();
 
       expect(input.is(':visible')).to.equal(true);
+
       // Shouldn't change the baseLayerUrl yet
       expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
 
@@ -437,6 +648,7 @@ describe('Customize card dialog', function() {
 
       // Now back to custom
       custom.prop('selected', true).change();
+
       // It should set the base layer back to the custom url from before
       expect(card.getCurrentValue('baseLayerUrl')).to.equal(url);
     });

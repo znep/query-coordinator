@@ -12,7 +12,7 @@
      *
      * returns {min:, max:, bucketType:[, bucketSize:]}, mutates input
      */
-    function getBucketingOptions(input) {
+    function getBucketingOptions(input, bucketType) {
       if (!_.isObject(input) ||
           !_.isFinite(input.min) ||
           !_.isFinite(input.max)) {
@@ -21,7 +21,14 @@
 
       var absMax = Math.max(Math.abs(input.min), Math.abs(input.max));
       var threshold = Constants.HISTOGRAM_LOGARITHMIC_BUCKETING_THRESHOLD;
-      input.bucketType = (absMax >= threshold) ? 'logarithmic' : 'linear';
+
+      // If we have a defined bucket type, use that.  Otherwise, determine the
+      // bucket type based upon the data.
+      if (_.isDefined(bucketType)) {
+        input.bucketType = bucketType;
+      } else {
+        input.bucketType = (absMax >= threshold) ? 'logarithmic' : 'linear';
+      }
 
       if (input.bucketType === 'linear') {
 

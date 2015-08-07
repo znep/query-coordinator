@@ -589,6 +589,15 @@
 
 		return n;
 	}
+
+	// SOCRATA - dylan.bussone@socrata.com - 5/8/2015
+	// Strip newLines from the textNode so that the ellipses is not on the next line.
+	function trimAndRemoveLineBreaks( $el )
+	{
+		$el.children('br').remove();
+ 		$el.html($el.html().trim());
+	}
+
 	function findLastTextNode( $el, $top, excludeCurrent )
 	{
 		var e = $el && $el[ 0 ], p;
@@ -602,6 +611,7 @@
 				}
 				if ( $.trim( $el.text() ) )
 				{
+					trimAndRemoveLineBreaks($el);
 					return findLastTextNode( $el.contents().last(), $top );
 				}
 			}

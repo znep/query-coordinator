@@ -1,5 +1,5 @@
 /*
- *	jQuery dotdotdot 1.6.16
+ *	jQuery dotdotdot 1.7.4
  *
  *	Copyright (c) Fred Heusschen
  *	www.frebsite.nl
@@ -7,9 +7,8 @@
  *	Plugin website:
  *	dotdotdot.frebsite.nl
  *
- *	Dual licensed under the MIT and GPL licenses.
+ *	Licensed under the MIT license.
  *	http://en.wikipedia.org/wiki/MIT_License
- *	http://en.wikipedia.org/wiki/GNU_General_Public_License
  */
 
 (function( $, undef )
@@ -57,18 +56,30 @@
 				'update.dot',
 				function( e, c )
 				{
+					$dot.removeClass("is-truncated");
 					e.preventDefault();
 					e.stopPropagation();
 
-					opts.maxHeight = ( typeof opts.height == 'number' )
-						? opts.height
-						: getTrueInnerHeight( $dot );
+					switch( typeof opts.height )
+					{
+						case 'number':
+							opts.maxHeight = opts.height;
+							break;
+
+						case 'function':
+							opts.maxHeight = opts.height.call( $dot[ 0 ] );
+							break;
+
+						default:
+							opts.maxHeight = getTrueInnerHeight( $dot );
+							break;
+					}
 
 					opts.maxHeight += opts.tolerance;
 
 					if ( typeof c != 'undefined' )
 					{
-						if ( typeof c == 'string' || c instanceof HTMLElement )
+						if ( typeof c == 'string' || ('nodeType' in c && c.nodeType === 1) )
 						{
 					 		c = $('<div />').append( c ).contents();
 						}
@@ -341,7 +352,7 @@
 		var isTruncated	= false;
 
 		//	Don't put the ellipsis directly inside these elements
-		var notx = 'table, thead, tbody, tfoot, tr, col, colgroup, object, embed, param, ol, ul, dl, blockquote, select, optgroup, option, textarea, script, style';
+		var notx = 'a, table, thead, tbody, tfoot, tr, col, colgroup, object, embed, param, ol, ul, dl, blockquote, select, optgroup, option, textarea, script, style';
 
 		//	Don't remove these elements even if they are after the ellipsis
 		var noty = 'script, .dotdotdot-keep';
@@ -356,7 +367,7 @@
 					var e	= this,
 						$e	= $(e);
 
-					if ( typeof e == 'undefined' || ( e.nodeType == 3 && $.trim( e.data ).length == 0 ) )
+					if ( typeof e == 'undefined' )
 					{
 						return true;
 					}
@@ -371,7 +382,7 @@
 					else
 					{
 						$elem.append( $e );
-						if ( after )
+						if ( after && !$e.is( o.after ) && !$e.find( o.after ).length  )
 						{
 							$elem[ $elem.is( notx ) ? 'after' : 'append' ]( after );
 						}
@@ -403,7 +414,7 @@
 					}
 				}
 			);
-
+		$d.addClass("is-truncated");
 		return isTruncated;
 	}
 	function ellipsisElement( $e, $d, $i, o, after )
@@ -443,6 +454,13 @@
 			midPos = m;
 
 			setTextContent( e, textArr.slice( 0, midPos + 1 ).join( separator ) + o.ellipsis );
+			$i.children()
+				.each(
+					function()
+					{
+						$(this).toggle().toggle();
+					}
+				);
 
 			if ( !test( $i, o ) )
 			{
@@ -571,13 +589,6 @@
 
 		return n;
 	}
-	// SOCRATA - dylan.bussone@socrata.com - 5/8/2015
-	// Strip newLines from the textNode so that the ellipses is not on the next line.
-	function trimAndRemoveLineBreaks( $el )
-	{
-		$el.children('br').remove();
-		$el.html($el.html().trim());
-	}
 	function findLastTextNode( $el, $top, excludeCurrent )
 	{
 		var e = $el && $el[ 0 ], p;
@@ -591,7 +602,6 @@
 				}
 				if ( $.trim( $el.text() ) )
 				{
-					trimAndRemoveLineBreaks($el);
 					return findLastTextNode( $el.contents().last(), $top );
 				}
 			}

@@ -12,6 +12,10 @@
     );
   }
 
+  if (!_.has(root, 'd3')) {
+    throw new Error('d3 is a required dependency for `socrata.visualizations.Column.js`.');
+  }
+
   // TODO: Figure out how to do this better (and probably not through jQuery).
   $.relativeToPx = function(rems) {
     var $div = $(document.createElement('div')).css('width', rems).appendTo(document.body);

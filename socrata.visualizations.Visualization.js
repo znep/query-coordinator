@@ -36,6 +36,10 @@
 
     this.element = element;
 
+    /**
+     * Public methods
+     */
+
     this.getAxisLabels = function() {
       return _config.axisLabels;
     };
@@ -61,6 +65,10 @@
         )
       );
     };
+
+    /**
+     * Private methods
+     */
 
     function _logWarning(message) {
       if (root.console && root.console.warn) {

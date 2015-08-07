@@ -11,19 +11,19 @@
 }
 
 .column-chart-container.top-axis-label {
-  padding-top: 3rem;
+  padding-top: 3em;
 }
 
 .column-chart-container.right-axis-label {
-  padding-right: 3rem;
+  padding-right: 3em;
 }
 
 .column-chart-container.bottom-axis-label {
-  padding-bottom: 3rem;
+  padding-bottom: 3em;
 }
 
 .column-chart-container.left-axis-label {
-  padding-left: 3rem;
+  padding-left: 3em;
 }
 
 .column-chart-container .top-axis-label,
@@ -31,7 +31,7 @@
 .column-chart-container .bottom-axis-label,
 .column-chart-container .left-axis-label {
   position: absolute;
-  font-size: 1.5rem;
+  font-size: 1em;
   visibility: hidden;
 }
 
@@ -44,26 +44,26 @@
 
 .column-chart-container .top-axis-label {
   left: 50%;
-  top: 1.5rem;
-  transform: translate(-50%, -0.75rem);
+  top: 1.5em;
+  transform: translate(-50%, -0.75em);
 }
 
 .column-chart-container .right-axis-label {
-  right: -3.5rem;
+  right: -1.75em;
   top: 50%;
-  transform: rotate(-90deg) translate(50%, 1.75rem);
+  transform: rotate(-90deg) translate(50%, 0);
 }
 
 .column-chart-container .bottom-axis-label {
   left: 50%;
-  bottom: 1.5rem;
-  transform: translate(-50%, 0.75rem);
+  bottom: 1.5em;
+  transform: translate(-50%, 0.75em);
 }
 
 .column-chart-container .left-axis-label {
-  left: -3.5rem;
+  left: -1.5em;
   top: 50%;
-  transform: rotate(-90deg) translate(50%, -1.25rem);
+  transform: rotate(-90deg) translate(50%, 0);
 }
 
 .column-chart-container .chart-scroll {

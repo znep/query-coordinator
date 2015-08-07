@@ -6,7 +6,7 @@
   },
   "scripts": {
     "lint": "eslint",
-    "test": "karma start karma.conf.js --singleRun true"
+    "test": "karma start karma.conf.js --singleRun true --reporters=dots,coverage"
   },
   "homepage": "https://github.com/socrata/frontend-utils",
   "devDependencies": {

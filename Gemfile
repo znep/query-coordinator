@@ -47,6 +47,8 @@ group :test do
   gem 'timecop'
   gem 'webmock'
   gem 'rspec'
+  gem 'simplecov'
+  gem 'simplecov-cobertura'
 end
 
 group :development, :test do

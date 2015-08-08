@@ -2,9 +2,11 @@ describe('SocrataVisualizationColumn jQuery plugin', function() {
 
   'use strict';
 
+  var VALID_DOMAIN = 'localhost:9443';
   var VALID_FOUR_BY_FOUR = 'test-test';
   var VALID_BASE_QUERY = 'SELECT *';
 
+  var INVALID_DOMAIN = null;
   var INVALID_FOUR_BY_FOUR = null;
   var INVALID_BASE_QUERY = null;
 
@@ -51,8 +53,9 @@ describe('SocrataVisualizationColumn jQuery plugin', function() {
       it('should throw an error.', function() {
 
         assert.throws(function() { container.socrataVisualizationColumn(); });
-        assert.throws(function() { container.socrataVisualizationColumn(INVALID_FOUR_BY_FOUR, VALID_BASE_QUERY); });
-        assert.throws(function() { container.socrataVisualizationColumn(VALID_FOUR_BY_FOUR, INVALID_BASE_QUERY); });
+        assert.throws(function() { container.socrataVisualizationColumn(INVALID_DOMAIN, VALID_FOUR_BY_FOUR, VALID_BASE_QUERY); });
+        assert.throws(function() { container.socrataVisualizationColumn(VALID_DOMAIN, INVALID_FOUR_BY_FOUR, VALID_BASE_QUERY); });
+        assert.throws(function() { container.socrataVisualizationColumn(VALID_DOMAIN, VALID_FOUR_BY_FOUR, INVALID_BASE_QUERY); });
       });
     });
 

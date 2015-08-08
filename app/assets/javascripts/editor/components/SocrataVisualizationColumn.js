@@ -54,6 +54,7 @@
 
   $.fn.socrataVisualizationColumn = function(domain, fourByFour, baseQuery) {
 
+    utils.assertIsOneOfTypes(domain, 'string');
     utils.assertIsOneOfTypes(fourByFour, 'string');
     utils.assertIsOneOfTypes(baseQuery, 'string');
 

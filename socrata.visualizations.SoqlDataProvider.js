@@ -21,6 +21,7 @@
    * @constructor
    *
    * @param {Object} config
+   *  @property {String} domain - The domain against which to make the query.
    *  @property {String} fourByFour - The uid of the dataset against which
    *    the user intends to query.
    *  @property {Function} success - The function to be called with successful
@@ -35,6 +36,9 @@
 
     _.extend(this, new root.socrata.visualizations.DataProvider(config));
 
+    utils.assertHasProperty(config, 'domain');
+    utils.assertIsOneOfTypes(config.domain, 'string');
+
     utils.assertHasProperty(config, 'fourByFour');
     utils.assertIsOneOfTypes(config.fourByFour, 'string');
 
@@ -44,6 +48,7 @@
     utils.assertHasProperty(config, 'error');
     utils.assertIsOneOfTypes(config.error, 'function');
 
+    var _domain = config.domain;
     var _uid = config.fourByFour;
     var _headers = {
       'Accept': 'application/json',
@@ -111,8 +116,9 @@
 
     function _buildUrl(queryString) {
 
-      return '/api/id/{0}.json?$query={1}'.format(
-        encodeURIComponent(_uid),
+      return 'https://{0}/api/id/{1}.json?$query={2}'.format(
+        _domain,
+        _uid,
         encodeURIComponent(queryString)
       );
     }

@@ -87,7 +87,7 @@ describe('SocrataVisualizationColumn jQuery plugin', function() {
 
       it('should render a column visualization.', function() {
 
-        container.socrataVisualizationColumn(VALID_FOUR_BY_FOUR, VALID_BASE_QUERY);
+        container.socrataVisualizationColumn(VALID_DOMAIN, VALID_FOUR_BY_FOUR, VALID_BASE_QUERY);
 
         assert.isAbove($('.bar-group').length, 0);
       });

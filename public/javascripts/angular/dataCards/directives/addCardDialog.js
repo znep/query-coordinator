@@ -65,7 +65,7 @@
 
             // TODO: Enforce some kind of schema validation at this step.
             serializedCard = {
-              'cardSize': parseInt(scope.dialogState.cardSize, 10),
+              'cardSize': parseInt(scope.dialogState.cardSize, 10) || 1,
               'expanded': false,
               'fieldName': fieldName
             };

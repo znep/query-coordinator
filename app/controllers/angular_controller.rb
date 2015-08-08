@@ -25,31 +25,33 @@ class AngularController < ActionController::Base
     @current_user = current_user
 
     # Then fetch the page metadata.
-    begin
-      @page_metadata = fetch_page_metadata(params[:id])
-    rescue AuthenticationRequired
-      return redirect_to_login
-    rescue UnauthorizedPageMetadataRequest
-      return render_403
-    rescue PageMetadataNotFound
-      return render_404
-    rescue UnknownRequestError => error
-      error_class = 'PageMetadataRequestFailure'
-      error_message = "Could not serve app: encountered unknown error " \
-        "fetching page metadata for page id #{params[:id]}: #{error.to_s}"
-      report_error(error_class, error_message)
-      return render_500
-    end
+    # begin
+    #   @page_metadata = fetch_page_metadata(params[:id])
+    # rescue AuthenticationRequired
+    #   return redirect_to_login
+    # rescue UnauthorizedPageMetadataRequest
+    #   return render_403
+    # rescue PageMetadataNotFound
+    #   return render_404
+    # rescue UnknownRequestError => error
+    #   error_class = 'PageMetadataRequestFailure'
+    #   error_message = "Could not serve app: encountered unknown error " \
+    #     "fetching page metadata for page id #{params[:id]}: #{error.to_s}"
+    #   report_error(error_class, error_message)
+    #   return render_500
+    # end
 
-    # Then ensure that there is a dataset id.
-    unless @page_metadata[:datasetId].present?
-      error_class = 'NoDatasetId'
-      error_message = "Could not serve app: page metadata does not include " \
-        "a dataset id: #{@page_metadata.inspect}"
-      report_error(error_class, error_message)
-      return render_500
-    end
+    # # Then ensure that there is a dataset id.
+    # unless @page_metadata[:datasetId].present?
+    #   error_class = 'NoDatasetId'
+    #   error_message = "Could not serve app: page metadata does not include " \
+    #     "a dataset id: #{@page_metadata.inspect}"
+    #   report_error(error_class, error_message)
+    #   return render_500
+    # end
 
+    @page_metadata = {}
+    @page_metadata[:datasetId] = 'qe2w-8xju'
     # Then fetch the dataset metadata.
     begin
       @dataset_metadata = fetch_dataset_metadata(@page_metadata[:datasetId])

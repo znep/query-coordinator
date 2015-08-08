@@ -126,6 +126,21 @@
             controller: 'SingleCardViewController'
           }
         }
+      }).
+      state('view.configureVisualization', {
+        params: ['datasetId'],
+        resolve: {
+          dataset: function(Dataset) {
+            return new Dataset(datasetMetadata);
+          }
+        },
+        views: {
+          'mainContent': {
+            //TODO figure out a way of getting the template dir out of rails.
+            templateUrl: '/angular_templates/dataCards/pages/configure-visualization.html',
+            controller: 'ConfigureVisualizationController'
+          }
+        }
       });
   });
 

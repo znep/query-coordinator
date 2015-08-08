@@ -52,7 +52,7 @@
    * @param {String} baseQuery - A valid SoQL query string.
    */
 
-  $.fn.socrataVisualizationColumn = function(fourByFour, baseQuery) {
+  $.fn.socrataVisualizationColumn = function(domain, fourByFour, baseQuery) {
 
     utils.assertIsOneOfTypes(fourByFour, 'string');
     utils.assertIsOneOfTypes(baseQuery, 'string');
@@ -73,11 +73,13 @@
       }
     };
     var _unfilteredConfig = {
+      domain: domain,
       fourByFour: fourByFour,
       success: _onUnfilteredSuccess,
       error: _onUnfilteredError
     };
     var _filteredConfig = {
+      domain: domain,
       fourByFour: fourByFour,
       success: _onFilteredSuccess,
       error: _onFilteredError

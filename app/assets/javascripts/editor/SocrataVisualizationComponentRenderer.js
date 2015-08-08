@@ -126,6 +126,7 @@
 
   function _renderSocrataVisualizationColumnComponentData(element, value, editable, renderFn) {
 
+    var domain = value.domain;
     var fourByFour = value.fourByFour;
     var baseQuery = value.
       baseQuery.
@@ -157,7 +158,7 @@
       element.attr('data-rendered-visualization-four-by-four', fourByFour);
       element.attr('data-rendered-visualization-base-query', baseQuery);
 
-      visualization = element.socrataVisualizationColumn(fourByFour, baseQuery);
+      visualization = element.socrataVisualizationColumn(domain, fourByFour, baseQuery);
     }
   }
 

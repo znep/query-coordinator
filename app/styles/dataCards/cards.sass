@@ -66,10 +66,9 @@ body.state-view-cards
 
         &::before
           font-family: socrata-apps
-          // Make the icon a little bit smaller
-          font-size: 0.7em
-          line-height: 2em
-          padding-left: 0.4em
+          font-size: 0.55em
+          line-height: 45px  // Height is identical to parent textarea
+          padding: 0 0.7em
 
         span
           display: none
@@ -80,8 +79,10 @@ body.state-view-cards
 
       >textarea
         height: 1.2em
-        padding-left: 1.2em // make room for edit icon
+
+        padding-left: 1.3em // Make room for edit icon
         margin-bottom: 0.3em
+
       >textarea, >rich-text-editor
         color: inherit
         font: inherit
@@ -98,7 +99,8 @@ body.state-view-cards
 
         &:focus, &.focus
           outline: 0
-          // webkit doesn't give us box shadows unless we nuke its appearance
+
+          // Webkit doesn't give us box shadows unless we nuke its appearance
           -webkit-appearance: none
 
           + .placeholder

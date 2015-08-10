@@ -64,6 +64,9 @@ function applyStandardMocks() {
   window.socrata.storyteller.AssetFinderMocker.mock();
   window.socrata.storyteller.assetFinder = new storyteller.AssetFinder();
 
+  window.socrata.storyteller.config = {
+    coreServiceAppToken: 'storyteller_app_token'
+  }
 
   window.socrata.storyteller.SquireMocker.mock();
 
@@ -130,6 +133,7 @@ function removeStandardMocks() {
   delete storyteller.coreSavingStore;
   delete storyteller.embedWizardStore;
   delete storyteller.I18n;
+  delete storyteller.config;
   delete storyteller.standardMocks;
 }
 

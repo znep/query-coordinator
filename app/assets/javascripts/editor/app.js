@@ -8,14 +8,14 @@ $(document).on('ready', function() {
    */
 
   var airbrakeOptions = {
-    'projectKey': window.storytellerConfig.getAirbrakeConfig('projectKey'),
-    'projectId': window.storytellerConfig.getAirbrakeConfig('projectId')
+    'projectKey': storyteller.config.getAirbrakeConfig('projectKey'),
+    'projectId': storyteller.config.getAirbrakeConfig('projectId')
   };
 
   if (airbrakeOptions.projectKey !== null) {
     storyteller.airbrake = new airbrakeJs.Client(airbrakeOptions);
     storyteller.airbrake.addFilter(function(notice) {
-      notice.context.environment = window.storytellerConfig.getAirbrakeConfig('environment');
+      notice.context.environment = storyteller.config.getAirbrakeConfig('environment');
       return notice;
     });
   }

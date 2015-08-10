@@ -4,6 +4,8 @@ Rails.application.config.core_service_uri = begin
   uri
 end
 
+Rails.application.config.core_service_app_token = ENV['CORESERVICE_APP_TOKEN']
+
 # These timeouts might turn out to be overly-aggressive. We will have
 # to see how it goes.
 Rails.application.config.core_service_request_open_timeout = ENV['CORESERVICE_OPEN_TIMEOUT'] || 5

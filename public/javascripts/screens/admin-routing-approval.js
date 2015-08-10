@@ -267,10 +267,11 @@ $(function()
                     'class': ah.approvalTypeName == 'R' ? 'rejected' :
                         ah.approvalTypeName == 'A' ? 'on' : 'off'}));
             });
+
         // Subtract an extra one because we add a dummy stage 0 into approval
-        _(blist.routingApproval.approvalTemplate.stages.length - ds.approvalStream().length - 1)
-            .times(function()
-            { $stageIcon.append($.tag({tagName: 'span', 'class': 'off'})); });
+        _.times(blist.routingApproval.approvalTemplate.stages.length - ds.approvalStream().length - 1, function() {
+          $stageIcon.append($.tag({tagName: 'span', 'class': 'off'}));
+        });
     };
 
     $browse.delegate('.userLoad', 'click', function(e) { e.preventDefault(); });

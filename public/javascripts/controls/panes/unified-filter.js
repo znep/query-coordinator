@@ -1549,8 +1549,7 @@
                 var editorInt = renderType.filterConditions.details[metadata.operator].interfaceType;
 
                 // dump in the appropriate number of editors
-                _(renderType.filterConditions.details[metadata.operator].editorCount).times(function(i)
-                {
+                _.times(renderType.filterConditions.details[metadata.operator].editorCount, function (i) {
                     if (i > 0)
                     {
                         $line.append($.tag({
@@ -1985,7 +1984,7 @@
                     var topCount = Math.min(metadata.includeAuto || 5, cachedContents.top.length);
 
                     // iter through originals with count
-                    _(topCount).times(function(i)
+                    _.times(topCount, function(i)
                     {
                         var topValue = getFilterValue(cachedContents.top[i].item, column, metadata);
 

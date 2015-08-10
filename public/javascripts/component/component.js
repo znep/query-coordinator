@@ -74,10 +74,10 @@
             // Allow configuring static properties via dynamic code
             if (cObj._properties.setup)
             {
-                _(cObj._properties.setup).each(function(definitions, key)
+                _.each(cObj._properties.setup, function(definitions, key)
                 {
                     var props = {};
-                    _(definitions).each(function(template, propName)
+                    _.each(definitions, function(template, propName)
                     {
                         template.type || (template.type = 'StringResolver');
                         var resolver = $.component.create(template, cObj._componentSet);

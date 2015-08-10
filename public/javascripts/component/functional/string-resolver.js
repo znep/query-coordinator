@@ -15,7 +15,7 @@ $.component.FunctionalComponent.extend('StringResolver', 'functional', {
         cObj._stringCache = {};
 
         // listen to each child for updates
-        _(cObj._properties.template || []).each(function(child) {
+        _.each(cObj._properties.template || [], function(child) {
             if (!child.id)
                 return;
 
@@ -58,7 +58,7 @@ $.component.FunctionalComponent.extend('StringResolver', 'functional', {
     asString: function(force) {
         var cObj = this;
         if (!cObj._resolved || force) {
-            cObj._resolved = _($.makeArray(cObj._properties.template)).map(function(c) {
+            cObj._resolved = _.map($.makeArray(cObj._properties.template), function(c) {
                 return cObj._resolve(c);
             }).join("") || '';
         }

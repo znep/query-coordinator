@@ -342,7 +342,7 @@
       if (!$(e.target).parents().hasClass('dragged') &&
           !$(e.target).is(flyout)) {
         var canRenderFlyout = true;
-        if (options.hasOwnProperty('onBeforeRender') && _(options.onBeforeRender).isFunction()) {
+        if (options.hasOwnProperty('onBeforeRender') && _.isFunction(options.onBeforeRender)) {
           canRenderFlyout = options.onBeforeRender.call(self, e.target);
         }
         if (canRenderFlyout) {

@@ -189,6 +189,7 @@ describe('addCardDialog', function() {
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
   beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
+  beforeEach(module('/angular_templates/dataCards/columnAndVisualizationSelector.html'));
   beforeEach(module('/angular_templates/dataCards/visualizationTypeSelector.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
   beforeEach(module('/angular_templates/dataCards/card.html'));

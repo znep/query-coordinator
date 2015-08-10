@@ -30,13 +30,13 @@
       </soc-select>
     </div>
     <div class="add-card-preview customize-card-preview">
-      <div ng-if="addCardModel === null" class="add-card-preview-placeholder">
+      <div ng-if="selectedCardModel === null" class="add-card-preview-placeholder">
         <div class="placeholder-inner-text">
           <span>{{'addCardDialog.prompt' | I18n}}</span>
         </div>
       </div>
-      <div class="card-spot" ng-if="addCardModel !== null">
-        <card model="addCardModel"
+      <div class="card-spot" ng-if="selectedCardModel !== null">
+        <card model="selectedCardModel"
           interactive="false"
           card-draggable="false"
           class="card preview">
@@ -45,7 +45,7 @@
           <div class="card-control add-card-settings icon-settings"
             title="{{'addCardDialog.customizePrompt' | I18n}}"
             ng-if="isCustomizableMap"
-            ng-click="onCustomizeCard(addCardModel)">
+            ng-click="onCustomizeCard(selectedCardModel)">
             {{'addCardDialog.settings' | I18n}}
           </div>
         </div>
@@ -53,6 +53,6 @@
     </div>
   </div>
   <div class="span5 customize-card-options">
-    <visualization-type-selector card-model="addCardModel" ng-show="availableCardTypes.length > 1"></visualization-type-selector>
+    <visualization-type-selector card-model="selectedCardModel" ng-show="availableCardTypes.length > 1"></visualization-type-selector>
   </div>
 </div>

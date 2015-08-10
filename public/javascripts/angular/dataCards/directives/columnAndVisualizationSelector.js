@@ -8,9 +8,7 @@
         page: '=',
         cardModels: '=',
         datasetColumns: '=',
-        dialogState: '=',
-        // A function to call to start the customize-card flow
-        onCustomizeCard: '='
+        cardSize: '='
       },
       templateUrl: '/angular_templates/dataCards/columnAndVisualizationSelector.html',
       link: function(scope) {
@@ -26,19 +24,12 @@
           )
         );
 
-        var serializedCard;
-
-        if (!scope.dialogState) {
-          scope.dialogState = { show: true };
-        }
-
         /************************
         * Add new card behavior *
         ************************/
 
         scope.addCardSelectedColumnFieldName = null;
-        scope.addCardModel = null;
-        scope.showCardinalityWarning = false;
+        scope.selectedCardModel = null;
         scope.availableCardTypes = [];
 
         Rx.Observable.subscribeLatest(
@@ -48,8 +39,10 @@
           scope.$observe('page').observeOnLatest('dataset.columns').filter(_.isDefined),
           function(fieldName, scopeDatasetColumns, dataset, columns) {
 
-            if (fieldName === null) {
-              scope.addCardModel = null;
+            var serializedCard;
+
+            if (_.isNull(fieldName)) {
+              scope.selectedCardModel = null;
               return;
             }
 
@@ -61,7 +54,7 @@
 
             if (_.isUndefined(column)) {
               $log.error('Could not get available column by fieldName.');
-              scope.addCardModel = null;
+              scope.selectedCardModel = null;
               return;
             }
 
@@ -69,26 +62,29 @@
 
             // TODO: Enforce some kind of schema validation at this step.
             serializedCard = {
-              'cardSize': parseInt(scope.dialogState.cardSize, 10) || 1,
+              'cardSize': parseInt(scope.cardSize, 10),
               'expanded': false,
               'fieldName': fieldName
             };
 
             serializedCard.cardType = column.defaultCardType;
             // TODO: We're going towards passing in serialized blobs to Model constructors.
-            //Revisit this line when that effort reaches Card.
-            scope.addCardModel = Card.deserialize(scope.page, serializedCard);
+            // Revisit this line when that effort reaches Card.
+            scope.selectedCardModel = Card.deserialize(scope.page, serializedCard);
           }
         );
 
+        scope.$watch('selectedCardModel', function(selectedCardModel) {
+          scope.$emit('card-model-chosen', selectedCardModel);
+        });
 
-        scope.onCustomizeCard = function(addCardModel) {
-          scope.$emit('customize-card-with-model', addCardModel);
+        scope.onCustomizeCard = function(selectedCardModel) {
+          scope.$emit('customize-card-with-model', selectedCardModel);
         };
 
         scope.$bindObservable(
           'isCustomizableMap',
-          scope.$observe('addCardModel').observeOnLatest('isCustomizableMap')
+          scope.$observe('selectedCardModel').observeOnLatest('isCustomizableMap')
         );
       }
     };

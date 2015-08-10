@@ -8,75 +8,24 @@
         page: '=',
         cardModels: '=',
         datasetColumns: '=',
-        dialogState: '=',
-
-        // A function to call to start the customize-card flow
-        onCustomizeCard: '='
+        dialogState: '='
       },
       templateUrl: '/angular_templates/dataCards/addCardDialog.html',
       link: function(scope) {
-        scope.$bindObservable(
-          'columnHumanNameFn',
-          scope.$observe('page').observeOnLatest('dataset.columns').map(
-            function(datasetColumns) {
-              return function(fieldName) {
-                var column = datasetColumns[fieldName];
-                return Dataset.extractHumanReadableColumnName(column);
-              };
-            }
-          )
-        );
-
-        var serializedCard;
 
         if (!scope.dialogState) {
           scope.dialogState = { show: true };
         }
 
-        scope.addCardSelectedColumnFieldName = null;
+        /************************
+        * Add new card behavior *
+        ************************/
+
         scope.addCardModel = null;
-        scope.availableCardTypes = [];
 
-        Rx.Observable.subscribeLatest(
-          scope.$observe('addCardSelectedColumnFieldName'),
-          scope.$observe('datasetColumns').filter(_.isDefined),
-          scope.$observe('page').observeOnLatest('dataset').filter(_.isDefined),
-          scope.$observe('page').observeOnLatest('dataset.columns').filter(_.isDefined),
-          function(fieldName, scopeDatasetColumns, dataset, columns) {
-
-            if (_.isNull(fieldName)) {
-              scope.addCardModel = null;
-              return;
-            }
-
-            var column;
-
-            if (_.include(scope.datasetColumns.available, fieldName)) {
-              column = columns[fieldName];
-            }
-
-            if (_.isUndefined(column)) {
-              $log.error('Could not get available column by fieldName.');
-              scope.addCardModel = null;
-              return;
-            }
-
-            scope.availableCardTypes = column.availableCardTypes;
-
-            // TODO: Enforce some kind of schema validation at this step.
-            serializedCard = {
-              'cardSize': parseInt(scope.dialogState.cardSize, 10) || 1,
-              'expanded': false,
-              'fieldName': fieldName
-            };
-
-            serializedCard.cardType = column.defaultCardType;
-
-            // TODO: We're going towards passing in serialized blobs to Model constructors.
-            // Revisit this line when that effort reaches Card.
-            scope.addCardModel = Card.deserialize(scope.page, serializedCard);
-          }
-        );
+        scope.$on('card-model-chosen', function(event, addCardModel) {
+          scope.addCardModel = addCardModel;
+        });
 
         scope.addCard = function() {
           if (!_.isNull(scope.addCardModel)) {
@@ -84,11 +33,6 @@
             scope.dialogState.show = false;
           }
         };
-
-        scope.$bindObservable(
-          'isCustomizableMap',
-          scope.$observe('addCardModel').observeOnLatest('isCustomizableMap')
-        );
       }
     };
   }

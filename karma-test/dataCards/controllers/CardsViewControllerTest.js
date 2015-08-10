@@ -44,6 +44,7 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/selectionLabel.html'));
   beforeEach(module('/angular_templates/dataCards/spinner.html'));
   beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
+  beforeEach(module('/angular_templates/dataCards/columnAndVisualizationSelector.html'));
   beforeEach(module('/angular_templates/dataCards/manageLensDialog.html'));
   beforeEach(module('/angular_templates/dataCards/modalDialog.html'));
   beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));

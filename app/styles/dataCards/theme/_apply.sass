@@ -336,7 +336,7 @@ soc-select
 
   .form-control
     color: $tool-panel-form-text-color
-    background: $tool-panel-form-background-color none
+    background: $tool-panel-form-background-color
     &.form-error
       border-color: $tool-panel-form-error-border-color
 
@@ -982,10 +982,18 @@ body.state-view-cards
 .card-form-group
   .form-control
     color: $card-form-group-form-control-text-color
-    background: $card-form-group-form-control-background-color none
-    border: 3px solid transparent
-    border-bottom: 1px solid $card-form-group-form-control-border-color
+    background: $card-form-group-form-control-background-color
+    border: 1px solid transparent
+    border-bottom-color: $card-form-group-form-control-border-color
 
+    &:focus
+      color: $card-form-group-form-control-focused-text-color
+
+  .clearable-input-trigger
+    color: $card-form-group-form-control-clear-trigger-color
+
+    &:hover
+      color: $card-form-group-form-control-clear-trigger-hover-color
 
 // customize-bar
 .customize-bar-action-btn

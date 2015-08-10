@@ -1,20 +1,14 @@
 (function() {
   'use strict';
 
-  function ConfigureVisualizationController($scope, $rootScope, $log, dataset, WindowState, Page) {
+  function VisualizationAddController($scope, $rootScope, $log, dataset, WindowState, Page) {
 
     /*************************
     * General metadata stuff *
     *************************/
     var pageBlob = {
-      "name": "Test",
-      "description": "Description",
-      "primaryAmountField": null,
       "cards": [],
-      "datasetId": dataset.id,
-      "pageId": "87z6-ffvg",
-      "version": 1,
-      "primaryAggregation": null
+      "datasetId": dataset.id
     };
 
     $scope.page = new Page(pageBlob, dataset);
@@ -81,6 +75,6 @@
 
   angular.
     module('dataCards.controllers').
-      controller('ConfigureVisualizationController', ConfigureVisualizationController);
+      controller('VisualizationAddController', VisualizationAddController);
 
 })();

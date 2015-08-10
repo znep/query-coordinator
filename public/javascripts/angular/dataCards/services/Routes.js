@@ -16,19 +16,17 @@
         new RegExp('^{locale}/view{withBootstrap}/{fourByFour}$'.format(regexPieces)));
       var singleCardViewUrlMatch = urlPathname.match(
         new RegExp('^{locale}/view/{fourByFour}/{fieldName}$'.format(regexPieces)));
-      var configureVisualizationUrlMatch = urlPathname.match(
-        new RegExp('^{locale}/component/card/add'.format(regexPieces)));
+      var visualizationAddUrlMatch = urlPathname.match(
+        new RegExp('^{locale}/component/visualization/add'.format(regexPieces)));
 
       if (cardsViewUrlMatch) {
         stateName = 'view.cards';
         params.id = cardsViewUrlMatch[1];
-      } else if (configureVisualizationUrlMatch) {
-        stateName = 'view.configureVisualization';
-        // TODO: FIX THIS
-        params.datasetId = '';
+      } else if (visualizationAddUrlMatch) {
+        // Needs no params, as rails passes in @dataset_metadata
+        stateName = 'view.visualizationAdd';
       } else if (singleCardViewUrlMatch) {
         stateName = 'view.card';
-        params.pageId = singleCardViewUrlMatch[1];
         params.fieldName = singleCardViewUrlMatch[2];
       }
 

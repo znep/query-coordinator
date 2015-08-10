@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function addCardDialog(Constants, Card, Dataset, FlyoutService, $log) {
+  function columnAndVisualizationSelector(Constants, Card, Dataset, FlyoutService, $log) {
     return {
       restrict: 'E',
       scope: {
@@ -9,11 +9,10 @@
         cardModels: '=',
         datasetColumns: '=',
         dialogState: '=',
-
         // A function to call to start the customize-card flow
         onCustomizeCard: '='
       },
-      templateUrl: '/angular_templates/dataCards/addCardDialog.html',
+      templateUrl: '/angular_templates/dataCards/columnAndVisualizationSelector.html',
       link: function(scope) {
         scope.$bindObservable(
           'columnHumanNameFn',
@@ -33,8 +32,13 @@
           scope.dialogState = { show: true };
         }
 
+        /************************
+        * Add new card behavior *
+        ************************/
+
         scope.addCardSelectedColumnFieldName = null;
         scope.addCardModel = null;
+        scope.showCardinalityWarning = false;
         scope.availableCardTypes = [];
 
         Rx.Observable.subscribeLatest(
@@ -44,7 +48,7 @@
           scope.$observe('page').observeOnLatest('dataset.columns').filter(_.isDefined),
           function(fieldName, scopeDatasetColumns, dataset, columns) {
 
-            if (_.isNull(fieldName)) {
+            if (fieldName === null) {
               scope.addCardModel = null;
               return;
             }
@@ -71,18 +75,15 @@
             };
 
             serializedCard.cardType = column.defaultCardType;
-
             // TODO: We're going towards passing in serialized blobs to Model constructors.
-            // Revisit this line when that effort reaches Card.
+            //Revisit this line when that effort reaches Card.
             scope.addCardModel = Card.deserialize(scope.page, serializedCard);
           }
         );
 
-        scope.addCard = function() {
-          if (!_.isNull(scope.addCardModel)) {
-            scope.page.addCard(scope.addCardModel);
-            scope.dialogState.show = false;
-          }
+
+        scope.onCustomizeCard = function(addCardModel) {
+          scope.$emit('customize-card-with-model', addCardModel);
         };
 
         scope.$bindObservable(
@@ -95,6 +96,6 @@
 
   angular.
     module('dataCards.directives').
-      directive('addCardDialog', addCardDialog);
+      directive('columnAndVisualizationSelector', columnAndVisualizationSelector);
 
 })();

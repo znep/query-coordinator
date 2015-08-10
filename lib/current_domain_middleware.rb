@@ -60,7 +60,7 @@ class CurrentDomainMiddleware
 <h1>Moved Permanently</h1>
 <p>The document has moved <a href="http://www.socrata.com/">here</a>.</p>
 </body></html>}
-      [301, {'Location' => 'http://www.socrata.com'}, [html]]
+      [301, {'Content-Type' => 'text/html', 'Location' => 'http://www.socrata.com'}, [html]]
     end
   end
 

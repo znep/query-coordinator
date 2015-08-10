@@ -150,9 +150,14 @@
               <label for="featureContentThumbnail"><%= t("#{prefix}.thumbnail") %></label>
             </div>
             <div class="featureContentThumbnailSection featureContentType">
-              <img src="" alt="<%= t("#{prefix}.feature_image") %>"/>
-              <div>
-                <a class="editThumbnailButton editImageButton button" href="#editThumbnail"><%= t("#{prefix}.edit") %></a>
+              <div class="showIfThumbnail">
+                <img src="" alt="<%= t("#{prefix}.feature_image") %>"/>
+                <div>
+                  <a class="editThumbnailButton editImageButton button disabled"><%= t("#{prefix}.edit") %></a>
+                </div>
+              </div>
+              <div class="thumbnailDisabledMessage">
+                This feature is no longer available. We recommend that you <a target="_blank" href="http://www.take-a-screenshot.org/">take a screenshot</a> and use the Custom Image option below.
               </div>
             </div>
 

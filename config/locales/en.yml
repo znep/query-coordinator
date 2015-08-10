@@ -1551,6 +1551,9 @@ en:
         missing_esri_url: A valid ESRI map layer URL is required.
         missing_name: Dataset name is required.
         need_description: Please describe &ldquo;%{name}&rdquo;
+        point:
+          suboptimal_column: set to import its <strong>%{field}</strong> from the source column <strong>%{originalColumnName}</strong>, but our analysis shows that the source column is a %{suggestion} column, while %{field} expects a column of type %{type}. Should you choose to proceed with these import settings, import or geocoding errors are likely to occur.
+          missing_latlong: set to import a <strong>%{coordinateType} but not a <strong>%{missingCoordinateType} column. Please specify the full lat/long pair.
       finish:
         headline: Your Dataset has been created.
         subheadline: Click on Finish to see it!
@@ -2546,8 +2549,10 @@ en:
       find_and_replace: Find and Replace value...
       import_from_multiple: Import from <strong>multiple columns</strong>
       import_from_single: Import from <strong>single column</strong>
+      import_from_latlong: Import from <strong>latitude</strong> and <strong>longitude</strong> columns
       latitude: Latitude
       location_source_col: Location Source Columns
+      point_source_col: Point Source Columns
       longitude: Longitude
       make_lower_case: Make lowercase
       make_title_case: Make Title Case

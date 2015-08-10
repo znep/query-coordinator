@@ -32,11 +32,20 @@ class Column < Model
                                'stars', 'location' ].
     collect { |type| [ type, I18n.t("core.data_types.#{type}") ] } ]
 
+  @@nbe_importable_types = Hash[ [ 'point' ].
+    collect { |type| [ type, I18n.t("core.data_types.#{type}") ] } ]
+
   @@legacy_types = [ 'html', 'email', 'url', 'date', 'stars', 'money', 'percent', 'location' ]
 
   def self.importable_types(request = nil)
-    @@importable_types.reject do |k, _|
-      @@legacy_types.include?(k) if FeatureFlags.derive(nil, request).disable_legacy_types
+    feature_flags = FeatureFlags.derive(nil, request)
+    types = @@importable_types.clone
+    if feature_flags.enable_ingress_geometry_types && feature_flags.default_imports_to_nbe
+      types.merge!(@@nbe_importable_types)
+    end
+
+    types.reject do |k, _|
+      @@legacy_types.include?(k) if feature_flags.disable_legacy_types
     end
   end
 

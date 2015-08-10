@@ -1,8 +1,8 @@
 {
-  "name": "frontend-utils",
-  "version": "0.0.3",
+  "name": "socrata-utils",
+  "version": "0.0.6",
   "main": [
-    "socrata-utils.js"
+    "socrata.utils.js"
   ],
   "ignore": [
     "bower_components/",
@@ -12,10 +12,9 @@
     "bower.json",
     "karma.conf.js",
     "packages.json",
-    "README.md",
-    "run_tests.sh"
+    "README.md"
   ],
-  "dependencies": {
+  "devDependencies": {
     "lodash": "~3.10.0"
   }
 }

@@ -2,9 +2,23 @@
 
 $(document).on('ready', function() {
   var storyteller = window.socrata.storyteller
+
   /**
    * Setup
    */
+
+  var airbrakeOptions = {
+    'projectKey': window.storytellerConfig.getAirbrakeConfig('projectKey'),
+    'projectId': window.storytellerConfig.getAirbrakeConfig('projectId')
+  };
+
+  if (airbrakeOptions.projectKey !== null) {
+    storyteller.airbrake = new airbrakeJs.Client(airbrakeOptions);
+    storyteller.airbrake.addFilter(function(notice) {
+      notice.context.environment = window.storytellerConfig.getAirbrakeConfig('environment');
+      return notice;
+    });
+  }
 
   storyteller.assetFinder = new storyteller.AssetFinder();
 

@@ -1573,16 +1573,14 @@ var prepareColumnsAndUI = function($paneLocal, paneConfig, state, command)
     buildDetailsTemplate('point', $columnDropDown);
 
     // render out the sample data for the header section
-    _(Math.min(5, scan.summary.sample.length)).times(function(i)
-    {
-        $headersTable.append($.tag({
-            tagName: 'tr',
-            'class': { value: 'header', onlyIf: i < scan.summary.headers },
-            contents: _.map(scan.summary.sample[i], function(cell)
-                {
-                    return { tagName: 'td', contents: $.htmlEscape(cell) };
-                })
-        }));
+    _.times(Math.min(5, scan.summary.sample.length), function(i) {
+      $headersTable.append($.tag({
+        tagName: 'tr',
+        'class': { value: 'header', onlyIf: i < scan.summary.headers },
+        contents: _.map(scan.summary.sample[i], function(cell) {
+          return { tagName: 'td', contents: $.htmlEscape(cell) };
+        })
+      }));
     });
 
     // populate the header rows number

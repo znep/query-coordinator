@@ -58,7 +58,7 @@ $.component.Component.extend('PartialText', 'design', {
 
         // TODO: Switch back and forth for edit mode
 
-        var editableSections = _(cObj._properties.template).filter(function(s) {
+        var editableSections = _.filter(cObj._properties.template, function(s) {
             return s.editable;
         });
 

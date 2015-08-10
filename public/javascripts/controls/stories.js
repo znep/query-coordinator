@@ -75,7 +75,7 @@
         var $storyLink = $storiesContainer.children('.storyLink');
         var storyCount = $storyTexts.length;
 
-        _(storyCount).times(function(i)
+        _.times(storyCount, function(i)
         {
             $('.storyPager').append('<a href="#page' + (i + 1) + '" class="storyPageLink">' + (i + 1) + '</a>');
         });
@@ -84,7 +84,7 @@
         $storyPagers.filter(':first-child').addClass('selected');
 
         // generate slices for the animation
-        _(30).times(function() { $storiesContainer.append('<div class="slice"></div>'); });
+        _.times(30, function() { $storiesContainer.append('<div class="slice"></div>'); });
         var $slices = $storiesContainer.children('.slice');
         $slices.css('z-index', 1)
                .css('position', 'absolute')

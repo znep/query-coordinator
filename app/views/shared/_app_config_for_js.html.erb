@@ -1,0 +1,13 @@
+<script>
+window.storytellerConfig = (function () {
+
+  var airbrakeConfigHash = <%= airbrake_config_for_js.to_json.html_safe %>;
+
+  return {
+    getAirbrakeConfig: function (key) {
+      return airbrakeConfigHash[_.camelCase(key)];
+    }
+  }
+})();
+
+</script>

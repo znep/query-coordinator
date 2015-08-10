@@ -28,7 +28,6 @@ Frontend::Application.configure do
   #config.action_controller.asset_host = StaticAssetBalancer.new("dev1.socratas.com",
   #    "dev2.socratas.com", "dev3.socratas.com", "dev4.socratas.com")
 
-  # config.middleware.use "Graylog2Exceptions", :hostname => 'graylog2.sea1.socrata.com', :facility => 'frontend'
   # Raise exception on mass assignment protection for Active Record models
   # config.active_record.mass_assignment_sanitizer = :strict
 

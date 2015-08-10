@@ -22,6 +22,5 @@ Frontend::Application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Logging options
-  config.middleware.use "Graylog2Exceptions", :hostname => 'graylog2.sea1.socrata.com', :facility => 'frontend', :environment => 'staging'
   config.logger.level = Logger.const_get((ENV['LOG_LEVEL'] || 'INFO').upcase)
 end

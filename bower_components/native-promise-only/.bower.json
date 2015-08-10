@@ -1,15 +1,14 @@
 {
   "name": "native-promise-only",
-  "homepage": "https://github.com/getify/native-promise-only",
-  "version": "0.7.5-e",
-  "_release": "0.7.5-e",
-  "_resolution": {
-    "type": "version",
-    "tag": "0.7.5-e",
-    "commit": "585829601a91738d575a9a138be98a5b99231bb5"
+  "_cacheHeaders": {
+    "ETag": "85dedde246c8b8a41924c847e636bbc6d8ad41a2",
+    "Last-Modified": "Mon, 10 Aug 2015 21:15:43 GMT",
+    "Content-Length": "6744",
+    "Content-Type": "application/x-gzip",
+    "Content-Disposition": "attachment; filename=\"native-promise-only-0.7.5-e.tar.gz\""
   },
-  "_source": "git://github.com/getify/native-promise-only.git",
-  "_target": "~0.7.5-e",
-  "_originalSource": "native-promise-only",
-  "_direct": true
+  "_release": "e-tag:85dedde246",
+  "_source": "art://getify/native-promise-only",
+  "_target": "0.7.5-e",
+  "_originalSource": "native-promise-only"
 }

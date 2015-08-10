@@ -17,15 +17,15 @@
     "package.js",
     "package.json"
   ],
-  "homepage": "https://github.com/moment/moment",
-  "_release": "2.7.0",
-  "_resolution": {
-    "type": "version",
-    "tag": "2.7.0",
-    "commit": "2fa5ad722f94bab4fd77987db3b2f05707edbd81"
+  "_cacheHeaders": {
+    "ETag": "f483ddb957cf016f7fecfccce6c1c0c457a55b94",
+    "Last-Modified": "Mon, 10 Aug 2015 21:15:43 GMT",
+    "Content-Length": "398221",
+    "Content-Type": "application/x-gzip",
+    "Content-Disposition": "attachment; filename=\"moment-2.7.0.tar.gz\""
   },
-  "_source": "git://github.com/moment/moment.git",
-  "_target": "~2.7.0",
-  "_originalSource": "moment",
-  "_direct": true
+  "_release": "e-tag:f483ddb957",
+  "_source": "art://moment/moment",
+  "_target": "2.7.0",
+  "_originalSource": "moment"
 }

@@ -19,15 +19,15 @@
     "src",
     "tests"
   ],
-  "homepage": "https://github.com/Reactive-Extensions/rx.angular.js",
-  "_release": "0.0.14",
-  "_resolution": {
-    "type": "version",
-    "tag": "v0.0.14",
-    "commit": "f46b6c2136b27d95671c961df58be4fb3e634c1c"
+  "_cacheHeaders": {
+    "ETag": "00c0a59200d627c4fe60872e71f73d686a8abcf9",
+    "Last-Modified": "Mon, 10 Aug 2015 21:15:43 GMT",
+    "Content-Length": "547184",
+    "Content-Type": "application/x-gzip",
+    "Content-Disposition": "attachment; filename=\"rx.angular.js-v0.0.14.tar.gz\""
   },
-  "_source": "git://github.com/Reactive-Extensions/rx.angular.js.git",
-  "_target": "~0.0.14",
-  "_originalSource": "angular-rx",
-  "_direct": true
+  "_release": "e-tag:00c0a59200",
+  "_source": "art://Reactive-Extensions/rx.angular.js",
+  "_target": "0.0.14",
+  "_originalSource": "angular-rx"
 }

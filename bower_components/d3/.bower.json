@@ -21,15 +21,15 @@
     "src",
     "test"
   ],
-  "homepage": "https://github.com/mbostock/d3",
-  "_release": "3.4.6",
-  "_resolution": {
-    "type": "version",
-    "tag": "v3.4.6",
-    "commit": "5d58ae83001016f6ad3c30191433bd6941498332"
+  "_cacheHeaders": {
+    "ETag": "52f44adc51c0f6885839f80f96a0881a411d49fd",
+    "Last-Modified": "Mon, 10 Aug 2015 23:26:30 GMT",
+    "Content-Length": "3008840",
+    "Content-Type": "application/x-gzip",
+    "Content-Disposition": "attachment; filename=\"d3-v3.4.6.tar.gz\""
   },
-  "_source": "git://github.com/mbostock/d3.git",
-  "_target": "~3.4.6",
-  "_originalSource": "d3",
-  "_direct": true
+  "_release": "e-tag:52f44adc51",
+  "_source": "art://mbostock/d3",
+  "_target": "3.4.6",
+  "_originalSource": "d3"
 }

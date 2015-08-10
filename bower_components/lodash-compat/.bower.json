@@ -10,14 +10,15 @@
     "package.json",
     "node_modules"
   ],
-  "homepage": "https://github.com/lodash/lodash-compat",
-  "_release": "3.7.0",
-  "_resolution": {
-    "type": "version",
-    "tag": "3.7.0",
-    "commit": "0784ea81489d816021f9e6c801fba35a8deecd5f"
+  "_cacheHeaders": {
+    "ETag": "3e242e6f5f1d612cba022ecba7c5a8eaeaba8309",
+    "Last-Modified": "Mon, 10 Aug 2015 21:15:43 GMT",
+    "Content-Length": "97463",
+    "Content-Type": "application/x-gzip",
+    "Content-Disposition": "attachment; filename=\"lodash-compat-3.7.0.tar.gz\""
   },
-  "_source": "git://github.com/lodash/lodash-compat.git",
-  "_target": "~3.7",
+  "_release": "e-tag:3e242e6f5f",
+  "_source": "art://lodash/lodash-compat",
+  "_target": "3.7",
   "_originalSource": "lodash-compat"
 }

@@ -67,14 +67,15 @@
     "src",
     "tests"
   ],
-  "homepage": "https://github.com/Reactive-Extensions/RxJS",
-  "_release": "2.5.2",
-  "_resolution": {
-    "type": "version",
-    "tag": "v2.5.2",
-    "commit": "e24bc7795dee7d56e0902efee68f4bd18be3e1b3"
+  "_cacheHeaders": {
+    "ETag": "52ec3a92ca5ebb19b6f25ad4be1612de50ee2b12",
+    "Last-Modified": "Mon, 10 Aug 2015 21:15:43 GMT",
+    "Content-Length": "4526369",
+    "Content-Type": "application/x-gzip",
+    "Content-Disposition": "attachment; filename=\"RxJS-v2.5.2.tar.gz\""
   },
-  "_source": "git://github.com/Reactive-Extensions/RxJS.git",
-  "_target": "~2.5",
+  "_release": "e-tag:52ec3a92ca",
+  "_source": "art://Reactive-Extensions/RxJS",
+  "_target": "2.5",
   "_originalSource": "rxjs"
 }

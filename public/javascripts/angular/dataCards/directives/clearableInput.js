@@ -13,7 +13,13 @@
         var placeholderObservable = Rx.Observable.merge(
           Rx.Observable.returnValue($scope.placeholderValue),
           blurEventObservable.map(function() { return $scope.placeholderValue; }),
-          focusEventObservable.map(function() { return ''; })
+          focusEventObservable.map(function() {
+
+            // Avoid returning an empty string to fix a positioning bug when
+            // there is no placeholder (see CORE-6439).
+            return ' ';
+
+          })
         );
         var searchInputObservable = $scope.$observe('search');
         var hasInputObservable = searchInputObservable.

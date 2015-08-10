@@ -304,7 +304,15 @@ metricsNS.summarySectionCallback = function($context, slice, section)
     };
     var percentCalculator = function(key, fraction) {
         mappedData[key] = '{0}%'.format(Highcharts.numberFormat(Math.abs(fraction) * 100, 0));
-        mappedData[key + 'Class'] = fraction < 0 ? 'minus' : 'plus';
+
+        if (!_.isFinite(fraction)) {
+            mappedData[key + 'Class'] = 'hidden';
+        } else if (fraction < 0) {
+            mappedData[key + 'Class'] = 'minus';
+        } else {
+            mappedData[key + 'Class'] = 'plus';
+        }
+
         mappedData[key + 'Text'] =
             $.t(fraction < 0 ? 'screens.stats.delta_decrease' : 'screens.stats.delta_increase').
                 format(
@@ -344,29 +352,27 @@ metricsNS.summarySectionCallback = function($context, slice, section)
     var templateName = 'metricsSummaryData';
     var summaryDirective = metricsNS.summaryDataDirective;
 
-    // Rearrange the layout for V1 improvements
-    if (blist.feature_flags.embetter_analytics_page) {
-        templateName = 'metricsSummaryDataV1';
-        summaryDirective = metricsNS.summaryDataDirectiveV1;
-    }
-    // Omit the percent box if it would show NaN
-    if (mappedData.deltaPercent === 'NaN%') {
-        templateName = 'metricsNoPercentData';
-        summaryDirective = metricsNS.noPercentDirective;
-    }
     // Omit the delta box if summaries.range = false
     if (!$.isBlank(summaries.range) && !summaries.range) {
         templateName = 'metricsSimpleSummaryData';
         summaryDirective = metricsNS.simpleSummaryDataDirective;
-        if (blist.feature_flags.embetter_analytics_page) {
-            templateName = 'metricsSimpleSummaryDataV1';
+    }
+
+    // Rearrange the layout for V1 improvements
+    if (blist.feature_flags.embetter_analytics_page) {
+        templateName = 'metricsSummaryDataV1';
+        summaryDirective = metricsNS.summaryDataDirectiveV1;
+        mappedData.hiddenClass = 'hidden';
+
+        // Omit the delta if summaries.range = false
+        if (summaries.range === false) {
             summaryDirective = metricsNS.simpleSummaryDataDirectiveV1;
         }
-    }
-    // Show only the delta, compared to a previous delta, if summaries.total = false
-    if (!$.isBlank(summaries.total) && !summaries.total) {
-        templateName = 'metricsDeltaData';
-        summaryDirective = metricsNS.deltaDataDirective;
+
+        // Show only the delta, compared to a previous delta, if summaries.total = false
+        else if (summaries.total === false) {
+            summaryDirective = metricsNS.deltaDataDirective;
+        }
     }
 
     metricsNS.renderSummarySection($context,
@@ -470,28 +476,21 @@ metricsNS.summaryDataDirectiveV1 = {
     '.totalValueV1' : 'total'
 };
 
-metricsNS.noPercentDirective = {
-    '.deltaValue' : 'delta',
-    '.totalValueV1' : 'total'
-};
-
 metricsNS.simpleSummaryDataDirective = {
     '.totalValue' : 'total',
     '.totalValue@title' : 'totalText'
 };
 
 metricsNS.simpleSummaryDataDirectiveV1 = {
-    '.deltaValue' : 'total'
-};
-
-metricsNS.detailDataDirective = {
-    '.totalValue' : 'total',
-    '.deltaBox@class+': 'deltaClass'
+    '.deltaValue' : 'total',
+    '.percentBox@class+' : 'hiddenClass',
+    '.totalValueWrapper@class+' : 'hiddenClass'
 };
 
 metricsNS.deltaDataDirective = {
     '.deltaValue' : 'delta',
     '.percentValue' : 'previousPercent',
     '.percentBox@title' : 'previousPercentText',
-    '.percentBox@class+' : 'previousPercentClass'
+    '.percentBox@class+' : 'previousPercentClass',
+    '.totalWrapper@class+' : 'hiddenClass'
 }

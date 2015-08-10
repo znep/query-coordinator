@@ -12,11 +12,13 @@ $(document).on('ready', function() {
     'projectId': window.storytellerConfig.getAirbrakeConfig('projectId')
   };
 
-  storyteller.airbrake = new airbrakeJs.Client(airbrakeOptions);
-  storyteller.airbrake.addFilter(function(notice) {
-    notice.context.environment = window.storytellerConfig.getAirbrakeConfig('environment');
-    return notice;
-  });
+  if (airbrakeOptions.projectKey !== null) {
+    storyteller.airbrake = new airbrakeJs.Client(airbrakeOptions);
+    storyteller.airbrake.addFilter(function(notice) {
+      notice.context.environment = window.storytellerConfig.getAirbrakeConfig('environment');
+      return notice;
+    });
+  }
 
   storyteller.assetFinder = new storyteller.AssetFinder();
 

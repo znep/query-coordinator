@@ -234,10 +234,20 @@ $(function()
 
     var replaceBrokenThumbnails = function() {
         $browse.find('.results td.largeImage .datasetImage').each(function() {
+            // Whenever a custom dataset image URL is found, we render that
+            // image node but also add a hidden dataset icon node for backup.
+            // If the custom image isn't present at this point in execution,
+            // display the icon instead... but also listen for the load event
+            // and show the image if it later becomes available, which can occur
+            // under situations with even moderate latency.
+            var $img = $(this);
             if (this.naturalWidth === 0) {
-                // Whenever a custom dataset image URL is found, we render that
-                // image node but also add a hidden dataset icon for backup.
-                $(this).hide().next().show();
+                $img.hide().next().show();
+                $img.one('load', function() {
+                    if (this.naturalWidth > 0) {
+                        $img.show().next().hide();
+                    }
+                });
             }
         });
     }

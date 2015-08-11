@@ -6,7 +6,6 @@
       restrict: 'E',
       scope: {
         page: '=',
-        cardModels: '=',
         datasetColumns: '=',
         cardSize: '='
       },

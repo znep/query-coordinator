@@ -661,7 +661,7 @@
     });
 
     $scope.$on('delete-card-with-model', function(e, cardModel) {
-      $scope.page.set('cards', _.without($scope.cardModels, cardModel));
+      $scope.page.set('cards', _.without($scope.page.getCurrentValue('cards'), cardModel));
     });
 
     var mobileWarningClosed = (/(^|;)\s*mobileWarningClosed=/).test(document.cookie);

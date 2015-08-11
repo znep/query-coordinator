@@ -152,7 +152,6 @@ describe('addCardDialog', function() {
     var outerScope = $rootScope.$new();
 
     outerScope.page = pageModel;
-    outerScope.$bindObservable('cardModels', pageModel.observe('cards'));
     outerScope.$bindObservable('datasetColumns', datasetColumns);
     outerScope.dialogState = {
       'cardSize': 1,
@@ -163,7 +162,6 @@ describe('addCardDialog', function() {
       '<div ng-if="dialogState.show"> ' +
         '<add-card-dialog ' +
           'style="display:block" ' +
-          'card-models="cardModels" ' +
           'on-customize-card="customizeCard" ' +
           'dataset-columns="datasetColumns" ' +
           'dialog-state="dialogState" ' +

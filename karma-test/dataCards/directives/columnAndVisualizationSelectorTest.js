@@ -153,13 +153,11 @@ describe('columnAndVIsualizationSelectorTest', function() {
 
     outerScope.page = pageModel;
     outerScope.cardSize = 1;
-    outerScope.$bindObservable('cardModels', pageModel.observe('cards'));
     outerScope.$bindObservable('datasetColumns', datasetColumns);
 
     var html =
       '<column-and-visualization-selector ' +
         'style="display:block" ' +
-        'card-models="cardModels" ' +
         'dataset-columns="datasetColumns" ' +
         'page="page" ' +
         'card-size="cardSize" ' +

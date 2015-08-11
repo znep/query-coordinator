@@ -901,8 +901,6 @@
         * Bind observable *
         ******************/
 
-        scope.$bindObservable('cardModels', scope.page.observe('cards'));
-
         scope.$destroyAsObservable(cardContainer).subscribe(function() {
           _.invoke(subscriptions, 'dispose');
         });

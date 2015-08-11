@@ -1,4 +1,4 @@
-describe('socrata.visualizations.Column', function() {
+describe('socrata.visualizations.ColumnChart', function() {
 
   'use strict';
 
@@ -181,7 +181,7 @@ describe('socrata.visualizations.Column', function() {
       _.merge(config, overrideConfig);
     }
 
-    var chart = new window.socrata.visualizations.Column(element, config);
+    var chart = new window.socrata.visualizations.ColumnChart(element, config);
 
     var renderOptions = {
       expanded: false,

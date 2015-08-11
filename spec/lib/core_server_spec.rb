@@ -20,9 +20,8 @@ describe CoreServer do
   end
 
   describe '#current_user' do
-    before do
-      expect(Rails.application.config).to receive(:core_service_uri).and_return('http://123.45.67.89:8081')
-    end
+
+    let(:app_token) { 'the_app_token' }
     let(:headers) do
       {
         'Cookie' => '_core_session_id=bobloblaw',
@@ -30,10 +29,15 @@ describe CoreServer do
       }
     end
 
+    before do
+      expect(Rails.application.config).to receive(:core_service_uri).and_return('http://123.45.67.89:8081')
+      allow(Rails.application.config).to receive(:core_service_app_token).and_return(app_token)
+    end
+
     context 'when user is logged in' do
       before do
         stub_request(:get, "http://123.45.67.89:8081/users/current.json").
-          with(headers: headers.merge('Content-type' => 'application/json')).
+          with(headers: headers.merge(injected_headers)).
           to_return(status: 200, body: fixture('current_user.json'))
       end
 
@@ -46,7 +50,7 @@ describe CoreServer do
     context 'when user is not logged in' do
       before do
         stub_request(:get, "http://123.45.67.89:8081/users/current.json").
-          with(headers: headers.merge('Content-type' => 'application/json')).
+          with(headers: headers.merge(injected_headers)).
           to_return(status: 404)
       end
 
@@ -59,7 +63,7 @@ describe CoreServer do
     context 'when core server error' do
       before do
         stub_request(:get, "http://123.45.67.89:8081/users/current.json").
-          with(headers: headers.merge('Content-type' => 'application/json')).
+          with(headers: headers.merge(injected_headers)).
           to_return(status: 500, body: fixture('error.html'), headers: { 'Content-Type' => 'text/html; charset=utf-8' })
       end
 
@@ -69,5 +73,12 @@ describe CoreServer do
       end
     end
 
+  end
+
+  def injected_headers
+    {
+      'X-App-Token' => app_token,
+      'Content-type' => 'application/json'
+    }
   end
 end

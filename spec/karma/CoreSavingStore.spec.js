@@ -93,6 +93,7 @@ describe('CoreSavingStore', function() {
         var request = server.requests[0];
         assert.equal(request.method, 'GET');
         assert.equal(request.url, viewUrl);
+        assert.equal(request.requestHeaders['X-App-Token'], 'storyteller_app_token')
       });
 
       it('should indicate a save in progress', expectSaveInProgress);
@@ -121,6 +122,7 @@ describe('CoreSavingStore', function() {
           var request = server.requests[1];
           assert.equal(request.method, 'PUT');
           assert.equal(request.url, viewUrl);
+          assert.equal(request.requestHeaders['X-App-Token'], 'storyteller_app_token')
 
           var body = JSON.parse(request.requestBody);
           assert.propertyVal(body, 'id', standardMocks.validStoryUid);

@@ -1,9 +1,17 @@
 <script>
-window.storytellerConfig = (function () {
+window.socrata = window.socrata || {};
+window.socrata.storyteller = window.socrata.storyteller || {};
+
+window.socrata.storyteller.config = (function () {
 
   var airbrakeConfigHash = <%= airbrake_config_for_js.to_json.html_safe %>;
 
   return {
+
+  <% unless Rails.application.config.core_service_app_token.blank? -%>
+    coreServiceAppToken: '<%= Rails.application.config.core_service_app_token %>',
+  <% end -%>
+
     getAirbrakeConfig: function (key) {
       return airbrakeConfigHash[_.camelCase(key)];
     }

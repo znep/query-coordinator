@@ -15,7 +15,6 @@
 
     $scope.page = new Page(pageBlob, dataset);
     $scope.dataset = dataset;
-    $scope.$bindObservable('windowSize', WindowState.windowSizeSubject);
 
 
     /*************************

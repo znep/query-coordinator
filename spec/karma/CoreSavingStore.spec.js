@@ -73,15 +73,40 @@ describe('CoreSavingStore', function() {
 
     });
 
-    describe('with no validation issues', function() {
-      var viewUrl;
+    describe('with app token undefined', function() {
 
       beforeEach(function() {
+        storyteller.config.coreServiceAppToken = undefined;
+      });
+
+      it('immediately reports an error', function() {
+        assert.throw(function() {
+          storyteller.dispatcher.dispatch({
+            action: Constants.STORY_SAVE_METADATA,
+            storyUid: standardMocks.validStoryUid
+          });
+        });
+      });
+
+    });
+
+    describe('with no validation issues', function() {
+      var viewUrl;
+      var cookie = 'socrata-csrf-token=the_csrf_token;';
+
+      beforeEach(function() {
+        document.cookie = cookie;
+
         storyteller.dispatcher.dispatch({
           action: Constants.STORY_SAVE_METADATA,
           storyUid: standardMocks.validStoryUid
         });
         viewUrl = '/views/{0}.json'.format(standardMocks.validStoryUid);
+      });
+
+      afterEach(function() {
+        // delete cookie
+        document.cookie = cookie + 'expires=Thu, 01 Jan 1970 00:00:01 GMT'
       });
 
       it('should make one request', function() {
@@ -94,6 +119,7 @@ describe('CoreSavingStore', function() {
         assert.equal(request.method, 'GET');
         assert.equal(request.url, viewUrl);
         assert.equal(request.requestHeaders['X-App-Token'], 'storyteller_app_token')
+        assert.equal(request.requestHeaders['X-CSRF-Token'], 'the_csrf_token');
       });
 
       it('should indicate a save in progress', expectSaveInProgress);
@@ -122,7 +148,8 @@ describe('CoreSavingStore', function() {
           var request = server.requests[1];
           assert.equal(request.method, 'PUT');
           assert.equal(request.url, viewUrl);
-          assert.equal(request.requestHeaders['X-App-Token'], 'storyteller_app_token')
+          assert.equal(request.requestHeaders['X-App-Token'], 'storyteller_app_token');
+          assert.equal(request.requestHeaders['X-CSRF-Token'], 'the_csrf_token');
 
           var body = JSON.parse(request.requestBody);
           assert.propertyVal(body, 'id', standardMocks.validStoryUid);

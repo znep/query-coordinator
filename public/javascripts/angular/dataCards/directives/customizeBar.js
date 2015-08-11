@@ -6,6 +6,7 @@
       scope: {
         'editMode': '=',
         'hasChanges': '=',
+        'isEphemeral': '=',
         'expandedCard': '=',
         'exportingVisualization': '=',
         'revertPage': '=',

@@ -2,9 +2,33 @@
 @import dataCards/common/layout
 
 $flannel-hint-tip-size: 10px
+$flannel-max-height: 300px
 
 .feature-map-flannel
 
+  // Query Status Content
+  .pending-content
+    height: $flannel-max-height / 2
+
+  .error-content
+    height: $flannel-max-height / 2
+
+    .icon-warning
+      display: block
+      float: left
+      padding: 0 1rem 0 0
+      font-size: 1.5rem
+      line-height: 2rem
+
+    .row
+      position: relative
+      padding-top: 3.75rem
+      padding-left: 4.5rem
+
+    .error-message
+      width: 70%
+
+  // General Layout
   .tool-panel
     position: absolute
 
@@ -12,7 +36,7 @@ $flannel-hint-tip-size: 10px
       margin: 0
       display: block
       width: 350px
-      max-height: 300px
+      max-height: $flannel-max-height
       bottom: 10px
       right: inherit
       left: 50%
@@ -78,13 +102,14 @@ $flannel-hint-tip-size: 10px
   .sticky-border.bottom
     height: 11px
 
-  .flannel-text
+  // Content from Successful Query
+  .flannel-content
     padding: 0.5rem 1.1rem 0.5rem 0.5rem
 
     .name
       font-weight: bold
 
-
+  // Pagination Controls
   .paging-panel
     padding: 7px 10px 11px
     min-height: 2rem
@@ -131,3 +156,4 @@ $flannel-hint-tip-size: 10px
           content: '▶'
           display: inline-block
           margin-left: 0.5rem
+

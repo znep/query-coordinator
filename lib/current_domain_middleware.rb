@@ -26,7 +26,7 @@ class CurrentDomainMiddleware
     # /version.html are only accessed via load balancer which injects the Host: header. The json endpoint is
     # accessed directly on each node by Decima, which doesn't set the Host: header, so we exit early here to
     # avoid any imperial entanglements. See also VersionMiddleware to see how we build the JSON response.
-    if '/version.json' == URI(env['REQUEST_URI']).path
+    if VersionRequestHelper.is_version_json_request?(env['REQUEST_URI'])
       return @app.call(env)
     end
 
@@ -60,7 +60,7 @@ class CurrentDomainMiddleware
 <h1>Moved Permanently</h1>
 <p>The document has moved <a href="http://www.socrata.com/">here</a>.</p>
 </body></html>}
-      [301, {'Location' => 'http://www.socrata.com'}, [html]]
+      [301, {'Content-Type' => 'text/html', 'Location' => 'http://www.socrata.com'}, [html]]
     end
   end
 

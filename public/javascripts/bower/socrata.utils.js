@@ -71,7 +71,7 @@
    * `escapeSpaces` is assigned to the String prototype at the bottom of this file.
    */
   var escapeSpaces = function() {
-    return this.replace(/ /g, '\u00A0');
+    return this.replace(/\s/g, '\u00A0');
   };
 
   /**
@@ -108,7 +108,7 @@
 
       if (value1 !== value2) {
         throw new Error(
-          'Value `' + value1 + '` must equal value `' + value2 + '`.'
+          'Value `{0}` must equal value `{1}`.'.format(value1, value2)
         );
       }
     },
@@ -122,12 +122,8 @@
         }
 
         throw new Error(
-          '`' +
-          name +
-          '`' +
-          ' property must be present. Object has properties: [' +
-          Object.keys(object).join(', ') +
-          '].'
+          '`{0}` property must be present. Object has properties: [{1}].'.
+            format(name, Object.keys(object).join(', '))
         );
       }
     },
@@ -159,11 +155,8 @@
 
       if (!valid) {
         throw new Error(
-          'Value must be one of [' +
-          types.join(', ') +
-          '] (is of type ' +
-          (typeof value) +
-          ').'
+          'Value must be one of [{0}] (is of type {1}).'.
+            format(types.join(', '), (typeof value))
         );
       }
     },
@@ -256,7 +249,7 @@
 
       }
 
-      if (_.isDefined(NUMBER_FORMATTER_MAGNITUDE_SYMBOLS[symbolIndex])) {
+      if (!_.isUndefined(NUMBER_FORMATTER_MAGNITUDE_SYMBOLS[symbolIndex])) {
 
         // {negative?}{value}{magnitude}
         return '{0}{1}{2}'.format(

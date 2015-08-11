@@ -29,7 +29,7 @@
     @include action-button($action-btn-hover-font-color, $action-btn-hover-bg-color, $action-btn-hover-border-color)
 
     &:hover
-      @include action-button($action-btn-font-color, $action-btn-border-color, $action-btn-bg-color)
+      @include action-button($action-btn-font-color, $action-btn-bg-color, $action-btn-border-color)
 
   &:hover, &.active
     @include action-button($action-btn-hover-font-color, $action-btn-hover-bg-color, $action-btn-hover-border-color)
@@ -236,19 +236,30 @@ rich-text-editor
     border-bottom: 1px solid $rich-text-editor-toolbar-border-color
 
     .rich-text-editor-button
-      border: 1px solid $rich-text-editor-toolbar-button-border-color
+      border-left: 1px solid $rich-text-editor-toolbar-button-border-color
       background-color: $rich-text-editor-toolbar-button-background-color
       color: $rich-text-editor-toolbar-button-text-color
 
       &:hover
+        background-color: $rich-text-editor-toolbar-button-hover-background-color
         border-color: $rich-text-editor-toolbar-button-hover-border-color
+        color: $rich-text-editor-toolbar-button-hover-text-color
+
+        + .rich-text-editor-button
+          border-color: $rich-text-editor-toolbar-button-hover-border-color
 
       &.active
         background-color: $rich-text-editor-toolbar-button-active-background-color
+        border-color: $rich-text-editor-toolbar-button-active-border-color
+        color: $rich-text-editor-toolbar-button-active-text-color
+
+        + .rich-text-editor-button
+          border-color: $rich-text-editor-toolbar-button-active-border-color
 
     .icon-link-edit
       background-color: $rich-text-editor-toolbar-icon-edit-background-color
       border: 1px solid $rich-text-editor-toolbar-icon-edit-border-color
+
       .icon-link-edit-hint
         color: $rich-text-editor-toolbar-icon-edit-hint-color
         border-right-color: $rich-text-editor-toolbar-icon-edit-hint-border-right-color
@@ -325,7 +336,7 @@ soc-select
 
   .form-control
     color: $tool-panel-form-text-color
-    background: $tool-panel-form-background-color none
+    background: $tool-panel-form-background-color
     &.form-error
       border-color: $tool-panel-form-error-border-color
 
@@ -602,6 +613,10 @@ soc-select
     border: 1px solid $feature-map-flannel-border-color
     padding: 0px
 
+    .error-content
+      .icon-warning
+        color: $yellow-color
+
     .paging-panel-wrapper
       background-color: $feature-map-flannel-chart-alt-background-color
       border-top: 1px solid $feature-map-flannel-border-color
@@ -755,6 +770,9 @@ body.state-view-cards
 
     #quick-filter-bar-container
       .quick-filter-bar
+        &.stuck
+          border-bottom-color: $cards-content-quick-filter-bar-border-color
+
         .content
           background-color: $cards-content-quick-filter-bar-background-color
 
@@ -884,10 +902,18 @@ body.state-view-cards
 .card-form-group
   .form-control
     color: $card-form-group-form-control-text-color
-    background: $card-form-group-form-control-background-color none
-    border: 3px solid transparent
-    border-bottom: 1px solid $card-form-group-form-control-border-color
+    background: $card-form-group-form-control-background-color
+    border: 1px solid transparent
+    border-bottom-color: $card-form-group-form-control-border-color
 
+    &:focus
+      color: $card-form-group-form-control-focused-text-color
+
+  .clearable-input-trigger
+    color: $card-form-group-form-control-clear-trigger-color
+
+    &:hover
+      color: $card-form-group-form-control-clear-trigger-hover-color
 
 // customize-bar
 .customize-bar-action-btn

@@ -89,6 +89,7 @@ module.exports = function ( karma ) {
       'bower_components/rxjs/dist/rx.binding.js',
       'bower_components/rxjs/dist/rx.virtualtime.js',
       'bower_components/rxjs/dist/rx.testing.js',
+      'bower_components/socrata-utils/socrata.utils.js',
 
       'bower_components/leaflet/dist/leaflet-src.js',
       'app/styles/leaflet.css',

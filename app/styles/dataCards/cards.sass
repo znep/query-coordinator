@@ -66,10 +66,9 @@ body.state-view-cards
 
         &::before
           font-family: socrata-apps
-          // Make the icon a little bit smaller
-          font-size: 0.7em
-          line-height: 2em
-          padding-left: 0.4em
+          font-size: 0.55em
+          line-height: 45px  // Height is identical to parent textarea
+          padding: 0 0.7em
 
         span
           display: none
@@ -80,8 +79,10 @@ body.state-view-cards
 
       >textarea
         height: 1.2em
-        padding-left: 1.2em // make room for edit icon
+
+        padding-left: 1.3em // Make room for edit icon
         margin-bottom: 0.3em
+
       >textarea, >rich-text-editor
         color: inherit
         font: inherit
@@ -98,7 +99,8 @@ body.state-view-cards
 
         &:focus, &.focus
           outline: 0
-          // webkit doesn't give us box shadows unless we nuke its appearance
+
+          // Webkit doesn't give us box shadows unless we nuke its appearance
           -webkit-appearance: none
 
           + .placeholder
@@ -117,8 +119,10 @@ body.state-view-cards
       [class^="icon-"], [class*=" icon-"]
         cursor: default
 
-    header,.edit-page-name
+    header,
+    .edit-page-name
       font-size: 2rem
+
     .edit-page-description
       font-size: 1rem
 
@@ -131,6 +135,13 @@ body.state-view-cards
         padding-bottom: 10px
 
         .manage-lens-link
+
+          .icon-warning
+            margin-left: 0.3rem
+
+          a > small
+            font-weight: normal
+
           .modal-dialog
             max-width: 45rem
 
@@ -220,6 +231,8 @@ body.state-view-cards
         z-index: 1002
 
         &.stuck
+          border-bottom-width: 1px
+          border-bottom-style: solid
           position: fixed
           top: 0
 
@@ -342,96 +355,6 @@ body.state-view-cards
       .add-card-button
         position: absolute
 
-  customize-card-dialog
-    >h2
-      &::before
-        font-size: 0.9rem
-
-    card
-      width: 100%
-
-    .customize-card-options
-      .base-layer-selector
-        display: block
-
-    .controls
-      overflow: hidden
-      clear: both
-
-      button
-        float: right
-
-
-  add-card-dialog
-    display: block
-
-    >h2
-      &::before
-        content: '+'
-        line-height: 1.5rem
-        font-size: 1.5rem
-        font-weight: bold
-
-    .customize-card-options
-      padding-top: 3rem
-
-    .card-spot
-      position: relative
-
-      .icon-settings
-        white-space: nowrap
-        padding: 0.2rem 0.3rem 0.3rem
-        border-radius: $rounded-corners-border-radius
-        display: block
-
-      card.preview
-        position: relative
-        display: block
-        height: 300px
-        text-align: left
-
-  .manage-lens-link
-    .icon-warning
-      margin-left: 0.3rem
-
-    a>small
-      font-weight: normal
-
-  manage-lens-dialog
-    display: block
-
-    label
-      float: left
-
-      soc-select
-        // The existence of this soc-select causes the text next to it to
-        // align correctly vertically.
-        visibility: hidden
-        width: 0
-
-    .right
-      margin-left: 7em
-
-      .flavor-text
-        margin-top: 1rem
-        line-height: 1.5em
-        position: relative
-
-        .icon-warning
-          position: absolute
-          right: 100%
-          top: 0
-          line-height: inherit
-          margin-right: 1.5rem
-
-    .controls
-      margin-top: 1.5rem
-      overflow: hidden
-
-      button
-        float: right
-        margin-bottom: 0
-
 /* DESKTOP-SPECIFIC STYLES */
 
 @media screen
@@ -444,157 +367,9 @@ body.state-view-cards
               // left-hand activities on full-width
               margin-right: 35px
 
-/* VISUALIZATION OPTION CONFIGURATION */
-// used when customizing or adding a card
-.customize-card-options
-  padding-left: 1.875rem
-  margin: 1em 0
-
-  h3
-    white-space: nowrap
-    display: inline-block
-    margin: 0 0 1rem
-    min-width: 10rem
-
-.configure-map-base-layer
-  input
-    display: block
-    margin-top: 1rem
-    width: 100%
-
-visualization-type-selector
-  position: top
-  margin-bottom: 1rem
-
-  ul
-    margin: 0
-    padding: 0
-    list-style: none
-    text-align: right
-
-  ul li
-    float: left
-    margin: 0 0 1rem
-    padding: 0 0.25rem
-    width: 33.33%
-    min-width: 6rem
-    text-align: center
-    box-sizing: border-box
-
-    .visualization-type
-      position: relative
-      display: block
-      margin: 0 auto 0.5rem auto
-      width: 3rem
-      height: 3rem
-      font-size: 1.5rem
-      color: $dark-btn-font-color
-      background-color: $dark-btn-bg-color
-      border: 1px solid $dark-btn-border-color
-      border-radius: $rounded-corners-border-radius
-      cursor: pointer
-      outline: none
-      overflow: visible
-
-      &:hover
-        color: $dark-btn-hover-font-color
-        background-color: $dark-btn-hover-bg-color
-        border: 1px solid $dark-btn-hover-border-color
-
-      &.selected
-        color: $dark-btn-touched-font-color
-        background-color: $dark-btn-touched-bg-color
-        border: 1px solid $dark-btn-touched-border-color
-
-      &.disabled
-        color: $dark-btn-disabled-font-color
-        background-color: $dark-btn-disabled-bg-color
-        border: 1px solid $dark-btn-disabled-border-color
-
-      &.warn
-        .warning-icon
-          display: block
-
-      .warning-icon
-        position: absolute
-        display: none
-        padding: 0
-        width: 50%
-        height: 50%
-        top: -15%
-        left: 73%
-        color: white
-
-
-/* ICONS AND COMPONENTS */
-// card preview used for adding or customizing a card
-.customize-card-preview
-  position: relative
-  display: block
-  float: left
-  width: 100%
-  margin: 1em 0
-  text-align: center
-  border-radius: $rounded-corners-border-radius
-  box-sizing: border-box
-
-  >.card-spot
-    >card
-      z-index: 1
-
-// add card placeholder layout when no column selected
-.add-card-preview-placeholder
-  height: 300px
-  width: 100%
-  display: table
-
-  .placeholder-inner-text
-    display: table-cell
-    vertical-align: middle
-    margin: 0, auto
-    padding-left: 1rem
-    padding-right: 1rem
-
-// add card styling
-.add-card-select-column
-  float: left
-  width: 19rem
-
-  .column-selector
-    margin: 0 1em 0.4em 0
-
-.add-card-controls
-  position: absolute
-  right: 0.5rem
-  top: 0.5rem
-  z-index: 2
-
-  >.card-control
-    width: $icon-size
-    height: $icon-size
-    line-height: $icon-size
-    font-size: $icon-size
-    position: relative
-    text-align: center
-    cursor: pointer
-    display: inline-block
-
-    span
-      display: block
-      position: relative
-
-  >.add-card-settings
-    width: auto
-    padding: 0.2rem 0.3rem 0.3rem
-    white-space: nowrap
-    border-radius: $card-border-width
-
-.add-card-buttons, .mobile-warning-buttons
+.mobile-warning-buttons
   text-align: right
   clear: both
-
-  .action-btn
-    margin-bottom: 0
 
 [msd-elastic]
   resize: vertical

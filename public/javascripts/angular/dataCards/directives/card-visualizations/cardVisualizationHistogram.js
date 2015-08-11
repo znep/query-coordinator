@@ -38,7 +38,12 @@
         $log.error('Invalid bucket type "{0}"'.format(columnDataSummary.bucketType));
       }
 
-      return Rx.Observable.fromPromise(dataPromise);
+      return Rx.Observable.fromPromise(dataPromise).map(function(data) {
+        return {
+          data: data,
+          bucketType: columnDataSummary.bucketType
+        };
+      });
     }
 
     return {
@@ -58,9 +63,9 @@
         var activeFilters$ = cardModel.observeOnLatest('activeFilters');
         var fieldName$ = cardModel.pluck('fieldName');
         var cardId$ = cardModel.pluck('uniqueId');
+        var bucketType$ = cardModel.observeOnLatest('bucketType');
         var expanded$ = cardModel.observeOnLatest('expanded');
         var rowDisplayUnit$ = cardModel.observeOnLatest('page.aggregation.unit');
-
         var filterSelected$ = $scope.$eventToObservable('toggle-dataset-filter:histogram').
           map(_.property('additionalArguments[0]'));
 
@@ -87,12 +92,7 @@
               });
 
               if (_.isDefined(activeFilters[cardFilterIndex])) {
-
-                // This _.difference will always return [].  It may be
-                // useful in the future if we have multiple filters on a single
-                // card, or cards applying filters on other cards.
-                cardFilters = _.difference(activeFilters[cardFilterIndex].filters, ownFilters);
-                activeFilters[cardFilterIndex].filters = cardFilters;
+                activeFilters[cardFilterIndex].filters = [];
               }
 
               return activeFilters;
@@ -123,8 +123,9 @@
         var columnDataSummary$ = Rx.Observable.combineLatest(
           fieldName$,
           datasetModel$,
+          bucketType$,
           baseSoqlFilter$,
-          function(fieldName, dataset) {
+          function(fieldName, dataset, bucketType) {
 
             // This promise will ultimately return an object in the form:
             // {min:, max:, bucketType:, bucketSize:}
@@ -132,7 +133,14 @@
             var dataPromise = CardDataService.getColumnDomain(fieldName, dataset.id, null).
               then(function(domain) {
                 if (_.has(domain, 'min') && _.has(domain, 'max')) {
-                  return HistogramService.getBucketingOptions(domain);
+                  var cachedBucketOptions = HistogramService.getBucketingOptions(domain, bucketType);
+
+                  // TODO: This should be reworked eventually when histogram rendering is revisited.
+                  if (_.isUndefined(bucketType)) {
+                    $scope.model.set('bucketType', cachedBucketOptions.bucketType);
+                  }
+
+                  return cachedBucketOptions;
                 } else {
                   $scope.histogramRenderError = 'noData';
                 }
@@ -142,6 +150,7 @@
             return Rx.Observable.fromPromise(dataPromise);
           }).
           switchLatest().
+          distinctUntilChanged().
           filter(_.isDefined);
 
         var unfilteredData$ = Rx.Observable.combineLatest(
@@ -162,53 +171,74 @@
           fetchHistogramData
         ).switchLatest();
 
-        // Combine the filtered and unfiltered data into an object.
         var cardData$ = Rx.Observable.combineLatest(
           unfilteredData$,
           filteredData$,
           function(unfiltered, filtered) {
-            if (!_.isArray(unfiltered) || !_.isArray(filtered)) {
-              throw new Error('badData');
-            }
-
-            if (_.isEmpty(unfiltered)) {
-              throw new Error('noData');
-            }
 
             $scope.histogramRenderError = false;
 
-            // While the filtered data doesn't have the same number of buckets as the unfiltered,
-            // we need to create the missing buckets and give them values of zero.
-            var i = 0;
-            while (unfiltered.length !== filtered.length && i < unfiltered.length) {
-              // If the filtered array doesn't contain an object with the same 'start' index as the
-              // current unfiltered object, create new bucket and insert it into the filtered array.
-              if ($.grep(filtered, function(e) {
-                return e.start === unfiltered[i].start;
-              }).length === 0) {
-                var newBucket = {
-                  start: unfiltered[i].start,
-                  end: unfiltered[i].end,
-                  value: 0
-                };
-                filtered.splice(i, 0, newBucket);
-              }
-              i++;
+            if (!_.isArray(unfiltered.data) || !_.isArray(filtered.data)) {
+              throw new Error('badData');
+            }
+
+            if (_.isEmpty(unfiltered.data)) {
+              throw new Error('noData');
             }
 
             return {
               unfiltered: unfiltered,
               filtered: filtered
             };
-          }
-        ).catchException(function(error) {
-          if (_.isError(error)) {
-            $scope.histogramRenderError = error.message || true;
-          } else {
-            $scope.histogramRenderError = error || true;
-          }
-          return Rx.Observable.returnValue({error: $scope.histogramRenderError});
-        });
+          }).
+          catchException(function(error) {
+            if (_.isError(error)) {
+              $scope.histogramRenderError = error.message || true;
+            } else {
+              $scope.histogramRenderError = error || true;
+            }
+            return Rx.Observable.returnValue({ error: $scope.histogramRenderError });
+          }).
+          filter(function(data) {
+            if (_.isDefined(data.unfiltered) && _.isDefined(data.filtered)) {
+              return data.unfiltered.bucketType === data.filtered.bucketType;
+            }
+          }).
+          map(function(data) {
+            var unfilteredData = data.unfiltered.data;
+            var filteredData = data.filtered.data;
+
+            // While the filtered data doesn't have the same number of buckets as the unfiltered,
+            // we need to create the missing buckets and give them values of zero.
+            var i = 0;
+
+            while (unfilteredData.length !== filteredData.length && i < unfilteredData.length) {
+              var unfilteredDatum = unfilteredData[i];
+
+              // If the filtered array doesn't contain an object with the same 'start' index as the
+              // current unfiltered object, create new bucket and insert it into the filtered array.
+              var noDatum = $.grep(filteredData, function(e) {
+                return e.start === unfilteredDatum.start;
+              }).length === 0;
+
+              if (noDatum) {
+                var newBucket = {
+                  start: unfilteredDatum.start,
+                  end: unfilteredDatum.end,
+                  value: 0
+                };
+
+                filteredData.splice(i, 0, newBucket);
+              }
+
+              i++;
+            }
+
+            return {
+              unfiltered: unfilteredData,
+              filtered: filteredData
+            };
+          });
 
         $scope.$bindObservable('rowDisplayUnit', rowDisplayUnit$);
         $scope.$bindObservable('cardData', cardData$);

@@ -9,20 +9,6 @@ describe('jquery-extensions', function() {
       expect(dimensions.height).to.equal(30);
     });
   });
-  describe('String.prototype.format', function() {
-    it('should insert correctly', function() {
-      expect('{0}, {1}, {2}, {3}, {4}'.format(1, 2, 3, 4, 5)).to.equal('1, 2, 3, 4, 5');
-    });
-    it('should support taking an object as an argument and mapping its keys', function() {
-      var object = {
-        foo: 'one',
-        bar: 'two',
-        baz: 'three'
-      };
-
-      expect('{foo}, {bar}, {baz}'.format(object)).to.equal('one, two, three');
-    });
-  });
   describe('String.prototype.capitalizeEachWord', function() {
     it('should capitalize a string correctly', function() {
       expect('asdf dfkj skja sdjfa jasldkfjalsd'.capitalizeEachWord()).to.
@@ -30,17 +16,6 @@ describe('jquery-extensions', function() {
     });
     it('should downcase an all caps string', function() {
       expect('SDFS SKDF'.capitalizeEachWord()).to.equal('Sdfs Skdf');
-    });
-  });
-  describe('String.prototype.escapeSpaces', function() {
-    it('should not modify a string without spaces', function() {
-      expect('abcd'.escapeSpaces()).to.equal('abcd');
-    });
-    it('should espace a single space correctly', function() {
-      expect('a b'.escapeSpaces()).to.equal('a\u00A0b');
-    });
-    it('should escape multiple spaces correctly', function() {
-      expect('a bc   d '.escapeSpaces()).to.equal('a\u00A0bc\u00A0\u00A0\u00A0d\u00A0');
     });
   });
   describe('String.prototype.visualSize', function() {

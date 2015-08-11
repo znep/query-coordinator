@@ -68,8 +68,9 @@ metricsNS.renderMetricsChart = function(data, $chart, startDate, endDate,
         intervalType = metricsNS.intervalTypes[sliceType],
         expectedDataAmt = moment(endDate).utc().diff(dataRange[0], intervalType);
     // expectedDataAmt should be data.length - 1
-    _(expectedDataAmt).times(function()
-    { dataRange.push(_.last(dataRange).clone().add(1, intervalType)); });
+    _.times(expectedDataAmt, function() {
+      dataRange.push(_.last(dataRange).clone().add(1, intervalType));
+    });
 
     var processedData = _.map(dataRange, function(timestamp)
     {

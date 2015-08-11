@@ -413,9 +413,14 @@
 
         var config = httpConfig.call(this, { timeout: timeout });
 
-        return http.get(url.href, config).then(function(response) {
-          return response.data;
-        });
+        return http.get(url.href, config).then(
+          function(response) {
+            return response.data;
+          },
+          function() {
+            return null;
+          }
+        );
       },
 
       requesterLabel: function() {

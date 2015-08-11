@@ -8,34 +8,17 @@
       templateUrl: '/angular_templates/dataCards/featureMapFlannel.html',
       link: function(scope, element) {
 
-        var SCROLLBAR_WIDTH = ScrollbarService.getScrollbarWidth(); // unique to current browser and OS
+        // Flannel is busy and should show a spinner until the row query is successful
+        var busy$ = scope.$observe('queryStatus').
+          map(function(queryStatus) { return queryStatus !== Constants.QUERY_SUCCESS; }).
+          startWith(true).
+          distinctUntilChanged();
 
-        scope.currentIndex = 0;
-        scope.$watch('currentIndex', function(index) {
-          scope.selectedRow = scope.rows[index];
-          scope.showingMessage = I18n.t('featureMapFlannel.showing', scope.rowDisplayUnit, index + 1, scope.rows.length);
-
-          // Calculate necessary right padding for close button based on scrollbar (if present)
-          $timeout(function() {
-            scope.iconClosePadding = {
-              paddingRight: Constants.FLANNEL_CLOSE_ICON_INITIAL_PADDING + getFlannelScrollbarWidth()
-            };
-          });
-        });
+        scope.$bindObservable('busy', busy$);
 
         function getFlannelScrollbarWidth () {
           return ScrollbarService.getElementScrollbarWidth($(element).find('.tool-panel-inner-container')[0]);
         }
-
-        // Determine dynamic styling for flannel text border that persists through scroll
-        //   - Calculate width of flannel-text-wrapper (without the scroll bar width when present)
-        //   - Set positioning on bottom border based on whether the paging panel is present
-        scope.stickyBorderTop = {
-          width: $(element).find('.tool-panel-inner-container').width() - SCROLLBAR_WIDTH
-        };
-
-        scope.stickyBorderBottom = _.extend({}, scope.stickyBorderTop,
-          {bottom: scope.rows.length > 1 ? Constants.FLANNEL_BOTTOM_STICKY_BORDER_PAGINATION_POSITION : 0});
 
         // Format an array of subcolumns under a given parent column
         function formatSubColumns(subColumns, parentColumn) {
@@ -119,6 +102,59 @@
             scope.currentIndex++;
           }
         };
+
+        // Calculate and set necessary right padding for close button based on scrollbar (if present)
+        function setCloseButtonPosition() {
+          // Ensure current flannel scroll bar width is retrieved after the flannel is rendered
+          $timeout(function() {
+            scope.iconClosePadding = {
+              paddingRight: Constants.FLANNEL_CLOSE_ICON_INITIAL_PADDING + getFlannelScrollbarWidth()
+            };
+          });
+        }
+
+        // No rows to show initially (when query pending)
+        scope.currentIndex = -1;
+        scope.$watch('currentIndex', function(index) {
+          // Only track row index when rows exist after a successful row query
+          if (index >= 0) {
+            scope.selectedRow = scope.rows[index];
+            scope.showingMessage = I18n.t('featureMapFlannel.showing', scope.rowDisplayUnit, index + 1, scope.rows.length);
+            setCloseButtonPosition();
+          }
+        });
+
+        scope.$watch('queryStatus', function(queryStatus) {
+          // Handle Rendering
+          switch (queryStatus) {
+            case Constants.QUERY_PENDING:
+              break;
+
+            case Constants.QUERY_ERROR:
+              setCloseButtonPosition();
+              break;
+
+            case Constants.QUERY_SUCCESS:
+              // Get scrollbar width within current browser and OS
+              var SCROLLBAR_WIDTH = ScrollbarService.getScrollbarWidth();
+              // Display first page by default
+              scope.currentIndex = 0;
+
+              // Determine dynamic styling for flannel text border that persists through scroll
+              //   - Calculate width of flannel-text-wrapper (without the scroll bar width when present)
+              //   - Set positioning on bottom border based on whether the paging panel is present
+              scope.stickyBorderTop = {
+                width: $(element).find('.tool-panel-inner-container').width() - SCROLLBAR_WIDTH
+              };
+
+              scope.stickyBorderBottom = _.extend({}, scope.stickyBorderTop,
+                {bottom: scope.rows.length > 1 ? Constants.FLANNEL_BOTTOM_STICKY_BORDER_PAGINATION_POSITION : 0});
+              break;
+
+            default:
+              break;
+          }
+        });
       }
     };
   }

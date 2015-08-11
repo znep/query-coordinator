@@ -137,7 +137,7 @@
 
             var data = popups[$popup.attr('data-popupid')];
 
-            var selectedItems = _.intersect(data.selectedItems, choices);
+            var selectedItems = _.intersection(data.selectedItems, choices);
 
             // now completely recreate the tip because BT is dumb
             $this.popupSelect($.extend({}, data.opts, {

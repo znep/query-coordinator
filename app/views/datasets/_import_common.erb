@@ -126,6 +126,76 @@
     <p><%= raw t("#{prefix}.properly_formatted", { :formatting_link => 'http://dev.socrata.com/docs/datatypes/' }) %></p>
   </div>
 </div>
+<div class="pointDetailsOriginal">
+  <h3><%= t("#{prefix}.point_source_col") %></h3>
+  <h4><%= t("#{prefix}.addresses_to_geocode") %></h4>
+  <div class="toggleSection">
+    <input type="radio" name="pointTypeToggle" class="pointTypeToggle multipleColumns"/>
+    <label class="pointTypeToggleLabel"><%= raw t("#{prefix}.import_from_multiple") %></label>
+  </div>
+  <div class="clearfix">
+    <fieldset class="left">
+      <legend><%= t("#{prefix}.existing_cols") %></legend>
+      <div class="line pointAddressLine clearfix">
+        <label class="pointAddressLabel" for="pointAddressColumn"><%= t("#{prefix}.street") %></label>
+        <div class="columnSourcePlaceholder" data-class="pointAddressColumn"></div>
+      </div>
+      <div class="line pointCityLine clearfix">
+        <label class="pointCityLabel" for="pointCityColumn"><%= t("#{prefix}.city") %></label>
+        <div class="optionGroup">
+          <input type="radio" name="pointCityToggle" class="pointSourceToggle" checked="checked"/>
+          <div class="columnSourcePlaceholder" data-class="pointCityColumn"></div>
+          <input type="radio" name="pointCityToggle" class="pointSourceToggle"/>
+          <input type="text" class="pointCityStatic textPrompt" title="<%= t("#{prefix}.enter_custom") %>"/>
+        </div>
+      </div>
+      <div class="line pointStateLine clearfix">
+        <label class="pointStateLabel" for="pointStateColumn"><%= t("#{prefix}.state") %></label>
+        <div class="optionGroup">
+          <input type="radio" name="pointStateToggle" class="pointSourceToggle" checked="checked"/>
+          <div class="columnSourcePlaceholder" data-class="pointStateColumn"></div>
+          <input type="radio" name="pointStateToggle" class="pointSourceToggle"/>
+          <input type="text" class="pointStateStatic textPrompt" title="<%= t("#{prefix}.enter_custom") %>"/>
+        </div>
+      </div>
+      <div class="line pointZipLine clearfix">
+        <label class="pointZipLabel" for="pointZipColumn"><%= t("#{prefix}.zip") %></label>
+        <div class="optionGroup">
+          <input type="radio" name="pointZipToggle" class="pointSourceToggle" checked="checked"/>
+          <div class="columnSourcePlaceholder" data-class="pointZipColumn"></div>
+          <input type="radio" name="pointZipToggle" class="pointSourceToggle"/>
+          <input type="text" class="pointZipStatic textPrompt" title="<%= t("#{prefix}.enter_custom") %>"/>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+  <div class="toggleSection">
+    <input type="radio" name="pointTypeToggle" class="pointTypeToggle latlongColumns">
+    <label class="pointTypeToggleLabel"><%= raw t("#{prefix}.import_from_latlong") %></label>
+  </div>
+  <div class="importLatLongColumnSection clearfix">
+    <fieldset class="left">
+      <legend><%= t("#{prefix}.existing_latlng_cols") %></legend>
+      <div class="line pointLatitudeLine clearfix">
+        <label class="pointLatitudeLabel"><%= t("#{prefix}.latitude") %></label>
+        <div class="columnSourcePlaceholder" data-class="pointLatitudeColumn"></div>
+      </div>
+      <div class="line pointLongitudeLine clearfix">
+        <label class="pointLongitudeLabel"><%= t("#{prefix}.longitude") %></label>
+        <div class="columnSourcePlaceholder" data-class="pointLongitudeColumn"></div>
+      </div>
+    </fieldset>
+  </div>
+  <div class="toggleSection">
+    <input type="radio" name="pointTypeToggle" class="pointTypeToggle singleColumn"/>
+    <label class="pointTypeToggleLabel"><%= raw t("#{prefix}.import_from_single") %></label>
+  </div>
+  <div class="importSingleColumnSection">
+    <label class="pointSingleColumnLabel"><%= t("#{prefix}.column") %></label>
+    <div class="columnSourcePlaceholder" data-class="pointSingleColumn"></div>
+    <p><%= raw t("#{prefix}.properly_formatted", { :formatting_link => 'http://dev.socrata.com/docs/datatypes/' }) %></p>
+  </div>
+</div>
 <div class="generalDetails">
   <h3><%= t("#{prefix}.options") %></h3>
   <h4><%= t("#{prefix}.transforms") %></h4>

@@ -10,6 +10,8 @@ class AngularController < ActionController::Base
   helper_method :current_user
   helper_method :current_user_session_or_basic_auth
 
+  helper :data_lens
+
   layout 'angular'
 
   rescue_from ActionView::MissingTemplate do

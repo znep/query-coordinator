@@ -1817,7 +1817,7 @@
                     }
 
                     // If the user is clicking on the same selection again,
-                    // then we deselct it.
+                    // then we deselect it.
                     if (selectionIsExactlyTheSameAsHasBeenRendered(selectionStartDate, selectionEndDate)) {
                       enterDefaultState();
                       requestChartFilterReset();

@@ -21,16 +21,16 @@
 
         var SUGGESTION_LIMIT = Constants.MAX_NUMBER_OF_SUGGESTIONS;
 
-        var searchValueObservable = $scope.$observe('searchValue');
-        var datasetObservable = $scope.$observe('dataset').filter(_.isPresent);
-        var fieldNameObservable = $scope.$observe('fieldName').filter(_.isPresent);
-        var sampleOneObservable = $scope.$observe('sampleOne');
+        var searchValue$ = $scope.$observe('searchValue');
+        var dataset$ = $scope.$observe('dataset').filter(_.isPresent);
+        var fieldName$ = $scope.$observe('fieldName').filter(_.isPresent);
+        var sampleOne$ = $scope.$observe('sampleOne');
 
-        var suggestionsRequestsObservable = Rx.Observable.combineLatest(
-          datasetObservable.observeOnLatest('columns'),
-          searchValueObservable.filter(_.isPresent),
-          datasetObservable.pluck('id'),
-          fieldNameObservable,
+        var suggestionsRequests$ = Rx.Observable.combineLatest(
+          dataset$.observeOnLatest('columns'),
+          searchValue$.filter(_.isPresent),
+          dataset$.pluck('id'),
+          fieldName$,
           function(columns, searchValue, datasetId, fieldName) {
             return {
               physicalDatatype: columns[fieldName].physicalDatatype,
@@ -52,18 +52,22 @@
           // Clear out any suggestions if the user clears the input box.
           // This prevents old suggestions from coming up when the user then
           // types things back into the box.
-          searchValueObservable.
+          searchValue$.
             filter(function(value) { return !_.isPresent(value); }).
             map(_.constant(Rx.Observable.returnValue([])))
         ).share();
 
-        var numberOfSuggestionsObservable = suggestionsRequestsObservable.
+        var suggestionsError$ = suggestionsRequests$.
+          switchLatest().
+          map(_.isNull);
+
+        var numberOfSuggestions$ = suggestionsRequests$.
           switchLatest().
           map(function(suggestions) {
             return suggestions ? suggestions.length : 0;
           });
 
-        var suggestionsStatusObservable = numberOfSuggestionsObservable.
+        var suggestionsStatus$ = numberOfSuggestions$.
           map(function(numberOfSuggestions) {
             if (numberOfSuggestions === 0) {
               return I18n.suggestionToolPanel.noSuggestions;
@@ -80,43 +84,49 @@
             }
           });
 
-        var showSamplesObservable = Rx.Observable.combineLatest(
-          numberOfSuggestionsObservable.
+        var showSamples$ = Rx.Observable.combineLatest(
+          numberOfSuggestions$.
             map(function(numberOfSuggestions) { return numberOfSuggestions > 0; }),
-          sampleOneObservable.map(_.isPresent),
+          sampleOne$.map(_.isPresent),
           function(hasSuggestions, hasSample) {
             return hasSample && !hasSuggestions;
           });
 
-        $scope.$bindObservable('showSamples', showSamplesObservable);
+        $scope.$bindObservable('showSamples', showSamples$);
 
         $scope.$on('intractableList:selectedItem', function(event, selectedItem) {
-          if ($scope.shouldShow) {
+          if ($scope.shouldShow && selectedItem) {
             $scope.$emit('suggestionToolPanel:selectedItem', selectedItem);
           }
         });
 
-        var suggestionsAdviceObservable = numberOfSuggestionsObservable.map(function(numberOfSuggestions) {
-          if (numberOfSuggestions === 0) {
-            return I18n.suggestionToolPanel.noSuggestionsHint;
-          } else {
-            return I18n.suggestionToolPanel.someSuggestionsHint;
-          }
-        });
+        var suggestionsAdvice$ = Rx.Observable.combineLatest(
+          numberOfSuggestions$,
+          suggestionsError$,
+          function(numberOfSuggestions, error) {
+            if (error) {
+              return I18n.searchCard.promptText;
+            } else if (numberOfSuggestions === 0) {
+              return I18n.suggestionToolPanel.noSuggestionsHint;
+            } else {
+              return I18n.suggestionToolPanel.someSuggestionsHint;
+            }
+          });
 
-        var suggestionsObservable = suggestionsRequestsObservable.switchLatest().
+        var suggestions$ = suggestionsRequests$.switchLatest().
           map(function(suggestions) {
             return (suggestions || []).slice(0, SUGGESTION_LIMIT)
           });
-        var suggestionsLoadingObservable = searchValueObservable.
+        var suggestionsLoading$ = searchValue$.
           filter(_.isPresent).
           map(_.constant(true)).
-          merge(suggestionsRequestsObservable.switchLatest().map(_.constant(false)));
+          merge(suggestionsRequests$.switchLatest().map(_.constant(false)));
 
-        $scope.$bindObservable('suggestions', suggestionsObservable);
-        $scope.$bindObservable('suggestionsStatus', suggestionsStatusObservable);
-        $scope.$bindObservable('suggestionsLoading', suggestionsLoadingObservable);
-        $scope.$bindObservable('suggestionsAdvice', suggestionsAdviceObservable);
+        $scope.$bindObservable('suggestions', suggestions$);
+        $scope.$bindObservable('suggestionsStatus', suggestionsStatus$);
+        $scope.$bindObservable('suggestionsLoading', suggestionsLoading$);
+        $scope.$bindObservable('suggestionsAdvice', suggestionsAdvice$);
+        $scope.$bindObservable('error', suggestionsError$);
         $scope.maxSuggestionLength = Constants.MAX_SUGGESTION_LENGTH;
       }
     };

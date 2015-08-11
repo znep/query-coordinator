@@ -20,6 +20,7 @@ class HealthCheckMiddleware
   end
 
   private
+
   def health_check(request)
     health = nil
     begin
@@ -27,11 +28,11 @@ class HealthCheckMiddleware
     rescue Exception => e
       # Yes, I mean 200. If the CS is failing its health check,
       # we should already know about it
-      return [200, {}, ["ERROR\n", "Error fetching core server health status\n", e.message]]
+      return [200, {"Content-Type" => "text/plain"}, ["ERROR\n", "Error fetching core server health status\n", e.message]]
     end
 
     if health.nil? || !health.is_a?(Hash)
-      return [500, {}, ["ERROR\n", "Core server returned malformed health check:\n", health.inspect]]
+      return [500, {"Content-Type" => "text/plain"}, ["ERROR\n", "Core server returned malformed health check:\n", health.inspect]]
     end
 
     # Only check to see if requests are past expiration on /health-check requests
@@ -40,7 +41,7 @@ class HealthCheckMiddleware
     @request_log.delete_if { |l| (now - l.last) > @@WINDOW_SECONDS }
 
     if @request_log.empty?
-      return [200, {}, ["WARNING\nNo requests in window."]]
+      return [200, {"Content-Type" => "text/plain"}, ["WARNING\nNo requests in window."]]
     end
 
     errors = @request_log.select { |r| (r.first / 100) == 5 }
@@ -50,9 +51,9 @@ class HealthCheckMiddleware
     status = "Core server says: '#{health['status']}'"
 
     if failometer < @@ERROR_THRESHOLD
-      [200, {}, ["OK\n", "#{percentage}% failure.\n", status]]
+      [200, {"Content-Type" => "text/plain"}, ["OK\n", "#{percentage}% failure.\n", status]]
     else
-      [500, {}, ["ERROR\n", "#{percentage}% failure.\n", status]]
+      [500, {"Content-Type" => "text/plain"}, ["ERROR\n", "#{percentage}% failure.\n", status]]
     end
   end
 

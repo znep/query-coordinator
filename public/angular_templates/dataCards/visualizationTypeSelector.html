@@ -1,5 +1,5 @@
 <h3>{{'customizeCardDialog.visualizationOptions.title' | I18n}}</h3>
-<ul class="cf">
+<ul>
   <li ng-show="availableCardTypes.indexOf('timeline') > -1">
     <button
       class="visualization-type icon-line-chart"
@@ -31,17 +31,16 @@
       ng-click="setCardType('column')"
       data-visualization-name="columnChart">
         <span class="warning-icon icon-warning"></span>
-      </button>
+    </button>
     <span>{{'common.cards.columnChart' | I18n}}</span>
   </li>
   <li ng-show="availableCardTypes.indexOf('histogram') > -1">
     <button
       class="visualization-type icon-distribution"
-      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'histogram' }"
+      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'histogram'}"
       ng-click="setCardType('histogram')"
-      data-visualization-name="distributionChart">
-      </button>
-      <span>{{'common.cards.distributionChart' | I18n}}</span>
+      data-visualization-name="distributionChart"></button>
+    <span>{{'common.cards.distributionChart' | I18n}}</span>
   </li>
   <li ng-show="availableCardTypes.indexOf('choropleth') > -1">
     <button

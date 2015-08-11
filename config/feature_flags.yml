@@ -42,6 +42,10 @@ default_imports_to_nbe:
 disable_dataset_search_box:
   description: Disable the search box in dataset pages.
   defaultValue: false
+enable_ingress_geometry_types:
+  description: 'Add the types: point, multipoint, line, multiline, polygon, multipolygon. This flag only functions when "default_imports_to_nbe" is not false.'
+  defaultValue: false
+  category: obe deprecation
 disable_legacy_types:
   description: 'According to CORE-5097, the disabled types are: Formatted Text, Email, Website URL, Date & Time (with timezone), Star, Phone, Multiple Choice, Photo (Image), Document, and Dataset Link.'
   defaultValue: false
@@ -144,6 +148,10 @@ timeline:
 use_auth0:
   description: Force use of Auth0 to authenticate users. DO NOT ENABLE ON ANY ENVIRONMENT OTHER THAN STAGING OR LOCAL.
   defaultValue: false
+use_ephemeral_bootstrap:
+  description: When true, bootstrapping a Data Lens page is ephemeral — that is, the page is not immediately persisted in the catalog.
+  defaultValue: false
+  category: data lens
 useSoda2:
   description: Switch to using SODA2.
   defaultValue: never

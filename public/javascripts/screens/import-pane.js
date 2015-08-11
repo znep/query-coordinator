@@ -73,6 +73,15 @@ var forbiddenTypes = [
     'nested_table'
 ];
 
+var pointTypes = {
+  address: 'text',
+  city: 'text',
+  state: 'text',
+  zip: 'number',
+  latitude: 'number',
+  longitude: 'number'
+};
+
 // helpers
 
 // get a title for a type
@@ -148,13 +157,18 @@ var getUsedColumns = function()
         if ($.isBlank(column))
             return; // this importColumn has no source column
 
-        if ((importColumn.dataType == 'location') && (column.type == 'location'))
-            usedColumns = usedColumns.concat(_.values(column));
-        else if (column.type == 'composite')
-            usedColumns = usedColumns.concat(_.filter(column.sources, function(source)
-                { return source.type == 'column'; }));
-        else
-            usedColumns.push(column);
+        var isLocation = (importColumn.dataType == 'location') && (column.type == 'location');
+        var isPoint = (importColumn.dataType == 'point') && (column.type == 'point');
+
+        if (isLocation || isPoint) {
+          usedColumns = usedColumns.concat(_.values(column));
+        } else if (column.type == 'composite') {
+          usedColumns = usedColumns.concat(_.filter(column.sources, function(source) {
+            return source.type == 'column';
+          }));
+        } else {
+          usedColumns.push(column);
+        }
     });
 
     return _.uniq(usedColumns);
@@ -169,6 +183,40 @@ var toggleSubsection = function($line, section)
     else
         showSubsection($line, section);
 };
+
+var populateTypeSelection = function (type, $line, $section) {
+  var typeOptionSelector = '.' + type + 'TypeToggle.multipleColumns';
+  var column = $line.data('column');
+  var dsColumn = $line.data('dsColumn');
+
+  // go into location/point if we are suggesting it
+  var isSuggested = !$.isBlank(column) && column.suggestion === type;
+
+  // or if we absolutely know we need it
+  var isNeeded = !$.isBlank(dsColumn) && dsColumn.dataTypeName === type;
+
+  if (isSuggested || isNeeded) {
+    if ($.isBlank(column) || (column.type === type)) {
+      _.each(column, function(originalColumn, field) {
+        $section.find('.' + type + $.capitalize(field) + 'Column')
+          .val(originalColumn.id).trigger('change'); // and again here
+      });
+    } else {
+      $section.find('.' + type + 'SingleColumn').val(column.id).trigger('change');
+      typeOptionSelector = '.' + type + 'TypeToggle.singleColumn';
+    }
+  }
+
+  // if we have an option to select, go select it manually; otherwise events
+  // get too tangled
+  $section.find(typeOptionSelector)
+    .click()
+    .closest('.toggleSection')
+    .siblings('.toggleSection')
+    .next()
+    .hide();
+};
+
 var showSubsection = function($line, section)
 {
     var $section = $line.find('> .detailsLine > .' + section);
@@ -189,34 +237,9 @@ var showSubsection = function($line, section)
             $this.attr('name', $this.attr('name') + id);
         });
 
-        // only the first time, populate location stuff from model
-        var locationOptionSelector = '.locationTypeToggle.multipleColumns';;
-        var column = $line.data('column');
-        var dsColumn = $line.data('dsColumn');
-        if ((!$.isBlank(column) && (column.suggestion == 'location')) ||     // go into location if we are suggesting it
-            (!$.isBlank(dsColumn) && (dsColumn.dataTypeName == 'location'))) // or if we absolutely know we need it
-        {
-            if ($.isBlank(column) || (column.type == 'location'))
-            {
-                _.each(column, function(originalColumn, field)
-                {
-                    $section.find('.location' + $.capitalize(field) + 'Column')
-                        .val(originalColumn.id).trigger('change'); // and again here
-                });
-            }
-            else
-            {
-                $section.find('.locationSingleColumn').val(column.id).trigger('change');
-                locationOptionSelector = '.locationTypeToggle.singleColumn';
-            }
-        }
-
-        // if we have an option to select, go select it manually; otherwise events
-        // get too tangled
-        $section.find(locationOptionSelector)
-            .click()
-            .closest('.toggleSection').siblings('.toggleSection')
-                .next().hide();
+        // only the first time, populate location/point stuff from model
+        populateTypeSelection('location', $line, $section);
+        populateTypeSelection('point', $line, $section);
 
         // uniform it
         $radios.add($section.find('select')).uniform();
@@ -224,6 +247,7 @@ var showSubsection = function($line, section)
 
     $section[isShown ? 'slideDown' : 'show']();
 };
+
 var hideSubsection = function($line, section)
 {
     var $section = $line.find('> .detailsLine > .' + section);
@@ -263,9 +287,9 @@ var updateLines = function($elems)
         }
 
         // some of these can toggle between text and select.
-        var findOptionValue = function(option)
+        var findOptionValue = function(prefix, option)
         {
-            var $selected = $line.find('.location' + $.capitalize(option) +
+            var $selected = $line.find('.' + prefix + $.capitalize(option) +
                 'Line .uniform.radio:has(:checked) + *');
             if (!$selected.is(':input'))
                 $selected = $selected.find(':input');
@@ -287,9 +311,41 @@ var updateLines = function($elems)
         };
 
         var columnSourceValue = $line.find('.columnSourceCell .columnSourceSelect').val();
-        if (importColumn.dataType == 'location')
+
+        if (importColumn.dataType == 'point') {
+          showSubsection($line, 'pointDetails');
+          hideSubsection($line, 'locationDetails');
+          hideSubsection($line, 'compositeDetails');
+          hideSubsection($line, 'generalDetails');
+
+          if ($line.find('.pointDetails .pointTypeToggle.multipleColumns').is(':checked')) {
+            column = {
+              type: 'point',
+              address: getColumn($line.find('.pointAddressColumn').val()),
+              city: getColumn(findOptionValue('point', 'city')),
+              state: getColumn(findOptionValue('point', 'state')),
+              zip: getColumn(findOptionValue('point', 'zip'))
+            };
+          } else if ($line.find('.pointDetails .pointTypeToggle.latlongColumns').is(':checked')) {
+            column = {
+              type: 'point',
+              latitude: getColumn($line.find('.pointLatitudeColumn').val()),
+              longitude: getColumn($line.find('.pointLongitudeColumn').val())
+            };
+          } else {
+            column = getColumn($line.find('.pointSingleColumn').val());
+          }
+
+          _.each(column, function(v, k) {
+            if ($.isBlank(v)) {
+              delete column[k];
+            }
+          });
+        }
+        else if (importColumn.dataType == 'location')
         {
             showSubsection($line, 'locationDetails');
+            hideSubsection($line, 'pointDetails');
             hideSubsection($line, 'compositeDetails');
             hideSubsection($line, 'generalDetails');
             $line.find('.mainLine .columnSourceSelect').closest('.uniform').hide();
@@ -300,9 +356,9 @@ var updateLines = function($elems)
                 column = {
                     type:       'location',
                     address:    getColumn($line.find('.locationAddressColumn').val()),
-                    city:       getColumn(findOptionValue('city')),
-                    state:      getColumn(findOptionValue('state')),
-                    zip:        getColumn(findOptionValue('zip')),
+                    city:       getColumn(findOptionValue('location', 'city')),
+                    state:      getColumn(findOptionValue('location', 'state')),
+                    zip:        getColumn(findOptionValue('location', 'zip')),
                     latitude:   getColumn($line.find('.locationLatitudeColumn').val()),
                     longitude:  getColumn($line.find('.locationLongitudeColumn').val())
                 };
@@ -320,6 +376,7 @@ var updateLines = function($elems)
         else if (columnSourceValue == 'composite')
         {
             hideSubsection($line, 'locationDetails');
+            hideSubsection($line, 'pointDetails');
             showSubsection($line, 'compositeDetails');
             $line.find('.mainLine .columnSourceSelect').closest('.uniform').show();
             $line.find('.mainLine a.options').show();
@@ -339,6 +396,7 @@ var updateLines = function($elems)
         else
         {
             hideSubsection($line, 'locationDetails');
+            hideSubsection($line, 'pointDetails');
             hideSubsection($line, 'compositeDetails');
             $line.find('.mainLine .columnSourceSelect').closest('.uniform').show();
             $line.find('.mainLine a.options').show();
@@ -349,7 +407,7 @@ var updateLines = function($elems)
         importColumn.column = column;
 
         // transforms!
-        if (importColumn.dataType != 'location') // locations don't support transforms
+        if (importColumn.dataType != 'location' && importColumn.dataType != 'point') // locations don't support transforms
         {
             importColumn.transforms = $.makeArray($line.find('.columnTransformsList').children().map(function()
             {
@@ -409,6 +467,61 @@ var updateLayerLines = function($elems)
 
         $line.data('importLayer', importLayer);
     });
+};
+
+
+var validatePoint = function (importColumn, column) {
+  var usedColumns = [];
+
+  // composite point requires special validation
+  _.each(column, function(originalColumn, field) {
+
+    // keep track that we've seen this column in a point field
+    usedColumns.push(originalColumn);
+
+    var isNotBlank = !$.isBlank(originalColumn);
+    var isNotStatic = isNotBlank && originalColumn.type !== 'static';
+    var isNotSuggestion = isNotBlank && originalColumn.suggestion !== pointTypes[field];
+
+    // warn if the column is nonoptimally used
+    if (isNotBlank && isNotStatic && isNotSuggestion) {
+      addValidationError(
+        importColumn,
+        'warning',
+        $.t('screens.dataset_new.errors.point.suboptimal_column', {
+          field: field,
+          originalColumn: $.htmlEscape(originalColumn.name),
+          suggestion: originalColumn.suggestion,
+          type: pointTypes[field]
+        })
+      );
+    }
+  });
+
+  // error if the column has lat but not long or vice versa
+  if (!_.isUndefined(column.latitude) && _.isUndefined(column.longitude)) {
+    addValidationError(
+      importColumn,
+      'error',
+      $.t('screens.dataset_new.errors.point.missing_latlong', {
+        coordinateType: 'latitude',
+        missingCoordinateType: 'longitude'
+      })
+    );
+  }
+
+  if (!_.isUndefined(column.longitude) && _.isUndefined(column.latitude)) {
+    addValidationError(
+      importColumn,
+      'error',
+      $.t('screens.dataset_new.errors.point.missing_latlong', {
+        coordinateType: 'longitude',
+        missingCoordinateType: 'latitude'
+      })
+    );
+  }
+
+  return usedColumns;
 };
 
 // validate all columns
@@ -473,6 +586,8 @@ var validateAll = function()
                 addValidationError(importColumn, 'error', 'set to import a <strong>latitude</strong> ' +
                     'but not a <strong>longitude</strong> column. Please specify the full lat/long pair.');
             }
+        } else if ((importColumn.dataType === 'point') && (column.type === 'point')) {
+          validatePoint(importColumn, column);
         }
         else if (column.type == 'composite')
         {
@@ -996,7 +1111,8 @@ var wireEvents = function()
                    '.columnsList li select.columnTypeSelect,' +
                    '.columnsList li select.columnSourceSelect,' +
                    '.columnsList li input[type=text],' +
-                   '.columnsList li .locationDetails .columnSelect', 'change', function()
+                   '.columnsList li .locationDetails .columnSelect,' +
+                   '.columnsList li .pointDetails .columnSelect', 'change', function()
     {
         updateLines($(this).closest('li.importColumn'));
         validateAll();
@@ -1137,8 +1253,8 @@ var wireEvents = function()
     });
 
     // choose appropriate location import section
-    $pane.delegate('.columnsList li .locationDetails .locationTypeToggle', 'change', function(event)
-    {
+    $pane.delegate('.columnsList li .locationDetails .locationTypeToggle,' +
+                   '.columnsList li .pointDetails .pointTypeToggle', 'change', function(event) {
         var $section = $(this).closest('.toggleSection');
 
         $section.siblings('.toggleSection')
@@ -1375,6 +1491,19 @@ importNS.crossloadFilePaneConfig = {
     }
 };
 
+var buildDetailsTemplate = function (type, $columnDropdown) {
+  // clone locations template and replace dropdowns
+  $('#templates > .' + type + 'Details').remove();
+  var $typeTemplate = $('#templates > .' + type + 'DetailsOriginal').clone();
+  $typeTemplate.find('.columnSourcePlaceholder').each(function() {
+    var $this = $(this);
+    var $dropdown = $columnDropdown.clone();
+    $this.replaceWith($dropdown);
+    $dropdown.addClass($this.attr('data-class'));
+  });
+  $typeTemplate.removeClass().addClass(type + 'Details').appendTo('#templates');
+};
+
 ////////////////////////////////////////////////////
 // shared helpers between import + append/replace
 
@@ -1439,29 +1568,19 @@ var prepareColumnsAndUI = function($paneLocal, paneConfig, state, command)
     // add dropdowns to main template
     $('#templates > .columnsListLine .columnSourceCell').empty().append($sourceDropDown);
 
-    // clone locations template and replace dropdowns
-    $('#templates > .locationDetails').remove();
-    var $locationTemplate = $('#templates > .locationDetailsOriginal').clone();
-    $locationTemplate.find('.columnSourcePlaceholder').each(function()
-    {
-        var $this = $(this);
-        var $dropDown = $columnDropDown.clone();
-        $this.replaceWith($dropDown);
-        $dropDown.addClass($this.attr('data-class'));
-    });
-    $locationTemplate.removeClass().addClass('locationDetails').appendTo('#templates');
+    // build location and point templates
+    buildDetailsTemplate('location', $columnDropDown);
+    buildDetailsTemplate('point', $columnDropDown);
 
     // render out the sample data for the header section
-    _(Math.min(5, scan.summary.sample.length)).times(function(i)
-    {
-        $headersTable.append($.tag({
-            tagName: 'tr',
-            'class': { value: 'header', onlyIf: i < scan.summary.headers },
-            contents: _.map(scan.summary.sample[i], function(cell)
-                {
-                    return { tagName: 'td', contents: $.htmlEscape(cell) };
-                })
-        }));
+    _.times(Math.min(5, scan.summary.sample.length), function(i) {
+      $headersTable.append($.tag({
+        tagName: 'tr',
+        'class': { value: 'header', onlyIf: i < scan.summary.headers },
+        contents: _.map(scan.summary.sample[i], function(cell) {
+          return { tagName: 'td', contents: $.htmlEscape(cell) };
+        })
+      }));
     });
 
     // populate the header rows number
@@ -1898,6 +2017,46 @@ importNS.importingPaneConfig = {
             // Sigh.
             blueprint.skip -= 1;
 
+            // Grab out geocoded columns
+            var syntheticPoints = {};
+
+            // Acceptable reference columns.
+            var latlong = ['latitude', 'longitude'];
+            var address = ['address', 'city', 'state', 'zip'];
+
+            var setPoint = function (point, column, dsColumns) {
+              return function (attribute) {
+                point[attribute] = _.findWhere(dsColumns, {
+                  name: column[attribute].name
+                }).fieldName;
+              };
+            };
+
+            _.forEach(importer.importColumns, function (importColumn) {
+              if (importColumn.dataType === 'point' && _.isObject(importColumn.column)) {
+                var column = importColumn.column;
+                var point = {};
+
+                // Use the dataset to find the column identifier
+                var name = _.findWhere(dataset.columns, {name: importColumn.name}).fieldName;
+
+                // Synthetic points can be composed of a latlong,
+                // or an US-specific address.
+                if (column.longitude && column.latitude) {
+                  point.type = 'point';
+                  latlong.forEach(setPoint(point, column, dataset.columns));
+                } else if (column.address && column.city && column.state && column.zip) {
+                  point.type = 'geocoded';
+                  address.forEach(setPoint(point, column, dataset.columns));
+                }
+
+                // If composition occurred, add a synthetic point.
+                if (point.type) {
+                  syntheticPoints[name] = point;
+                }
+              }
+            });
+
             var ext = state.fileName.match(/\.(\w+)$/)[1];
             var operation;
             if (state.operation == 'import') {
@@ -1911,6 +2070,7 @@ importNS.importingPaneConfig = {
               blueprint: blueprint,
               action: operation,
               fileType: ext,
+              syntheticPoints: syntheticPoints,
               onComplete: function(p) {
                 state.submittedView = new Dataset(dataset);
                 var nextState;

@@ -60,7 +60,9 @@ class PhidippidesPagesController < ApplicationController
   end
 
   def create
-    return render :nothing => true, :status => '401' unless can_create_metadata? && save_as_enabled?
+    unless can_create_metadata? && (save_as_enabled? || ephemeral_bootstrap_enabled?)
+      return render :nothing => true, :status => '401'
+    end
 
     begin
       page_metadata = json_parameter(:pageMetadata)
@@ -163,5 +165,9 @@ class PhidippidesPagesController < ApplicationController
 
   def save_as_enabled?
     FeatureFlags.derive(nil, request)[:enable_data_lens_other_views]
+  end
+
+  def ephemeral_bootstrap_enabled?
+    FeatureFlags.derive(nil, request)[:use_ephemeral_bootstrap]
   end
 end

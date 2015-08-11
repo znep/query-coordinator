@@ -8,7 +8,7 @@
     }
 
     function handleSampleData($scope, model, dataset) {
-      var sampleDataObservable = Rx.Observable.combineLatest(
+      var sampleData$ = Rx.Observable.combineLatest(
         model.pluck('fieldName'),
         dataset.pluck('id'),
         model.observeOnLatest('column.physicalDatatype'),
@@ -23,7 +23,7 @@
         }
       ).switchLatest();
 
-      var samplesObservable = sampleDataObservable.
+      var samples$ = sampleData$.
         flatMap(function(data) {
           return Rx.Observable.fromArray(data);
         }).
@@ -32,8 +32,8 @@
           return ellipsifyFilter(value, Constants.MAX_SUGGESTION_LENGTH);
         });
 
-      $scope.$bindObservable('sampleOne', samplesObservable.take(1));
-      $scope.$bindObservable('sampleTwo', samplesObservable.skip(1).take(1));
+      $scope.$bindObservable('sampleOne', samples$.take(1));
+      $scope.$bindObservable('sampleTwo', samples$.skip(1).take(1));
     }
 
     return {
@@ -43,48 +43,48 @@
       link: function($scope, element) {
         var model = $scope.$observe('model');
         var dataset = model.observeOnLatest('page.dataset');
-        var fieldNameObservable = model.pluck('fieldName');
-        var physicalDatatypeObservable = model.observeOnLatest('column.physicalDatatype');
+        var fieldName$ = model.pluck('fieldName');
+        var physicalDatatype$ = model.observeOnLatest('column.physicalDatatype');
 
         var invalidSearchInputSubject = new Rx.BehaviorSubject(false);
-        var invalidSearchInputObservable = invalidSearchInputSubject.distinctUntilChanged();
-        var searchValueObservable = $scope.$observe('search');
-        var expandedObservable = model.observeOnLatest('expanded');
-        var rowInfoObservable = $scope.$eventToObservable('rows:info').map(pluckEventArg);
-        var hasRowsObservable = rowInfoObservable.pluck('hasRows').distinctUntilChanged();
-        var rowCountObservable = rowInfoObservable.pluck('filteredRowCount');
-        var rowsLoadedObservable = $scope.$eventToObservable('rows:loaded').map(pluckEventArg);
-        var whereClauseObservable = $scope.$observe('whereClause');
+        var invalidSearchInput$ = invalidSearchInputSubject.distinctUntilChanged();
+        var searchValue$ = $scope.$observe('search');
+        var expanded$ = model.observeOnLatest('expanded');
+        var rowInfo$ = $scope.$eventToObservable('rows:info').map(pluckEventArg);
+        var hasRows$ = rowInfo$.pluck('hasRows').distinctUntilChanged();
+        var rowCount$ = rowInfo$.pluck('filteredRowCount');
+        var rowsLoaded$ = $scope.$eventToObservable('rows:loaded').map(pluckEventArg);
+        var whereClause$ = $scope.$observe('whereClause');
 
-        var selectedItemObservable = $scope.$eventToObservable('suggestionToolPanel:selectedItem').
+        var selectedItem$ = $scope.$eventToObservable('suggestionToolPanel:selectedItem').
           map(pluckEventArg);
 
         // Observable that emits the current search term on submit
-        var submitValueObservable = Rx.Observable.fromEvent(element.find('form'), 'submit').
-          withLatestFrom(searchValueObservable, function(event, searchValue) {
+        var submitValue$ = Rx.Observable.fromEvent(element.find('form'), 'submit').
+          withLatestFrom(searchValue$, function(event, searchValue) {
             return searchValue;
           }).
           filter($.isPresent).
-          merge(selectedItemObservable);
+          merge(selectedItem$);
 
         // Whenever a new value is submitted, clear the invalidSearch flag
-        submitValueObservable.
+        submitValue$.
           subscribe(function() {
             invalidSearchInputSubject.onNext(false);
           });
 
         // Observable that emits the loaded rows, clamped to total rows
-        var clampedRowsLoadedObservable = submitValueObservable.
+        var clampedRowsLoaded$ = submitValue$.
           flatMap(function() {
-            var scannedRowsLoadedObservable = rowsLoadedObservable.
+            var scannedRowsLoaded$ = rowsLoaded$.
               scan(function(acc, val) {
                 return (val > acc) ? val : acc;
               });
 
             return Rx.Observable.
               combineLatest(
-                scannedRowsLoadedObservable,
-                rowCountObservable,
+                scannedRowsLoaded$,
+                rowCount$,
                 function(rowsLoaded, rowCount) {
                   return (rowsLoaded > rowCount) ? rowCount : rowsLoaded;
                 });
@@ -92,16 +92,16 @@
           startWith(0);
 
         // Observable that tracks if there is input
-        var hasInputObservable = searchValueObservable.
+        var hasInput$ = searchValue$.
           map($.isPresent).
           startWith(false);
 
         // Observable that tracks if there is NO input
-        var hasNoInputObservable = hasInputObservable.
+        var hasNoInput$ = hasInput$.
           map(function(val) { return !val; });
 
         // Whenever there is no input, clear the invalidSearch flag
-        hasNoInputObservable.
+        hasNoInput$.
           filter(_.identity).
           subscribe(function() {
             invalidSearchInputSubject.onNext(false);
@@ -109,14 +109,14 @@
 
         // Observable that tracks if a search is active
         // Defined by if we have not cleared the input since the last submit
-        var searchActiveObservable = Rx.Observable.merge(
-          hasNoInputObservable.filter(_.identity).map(function() { return false; }),  // map "empty input" to false
-          submitValueObservable.map(function() { return true; }) // map submits with values (i.e. search start) to true
+        var searchActive$ = Rx.Observable.merge(
+          hasNoInput$.filter(_.identity).map(function() { return false; }),  // map "empty input" to false
+          submitValue$.map(function() { return true; }) // map submits with values (i.e. search start) to true
         ).distinctUntilChanged();
 
         // On submit, if not expanded, then expand
-        submitValueObservable.
-          withLatestFrom(expandedObservable, function(submitValue, expanded) {
+        submitValue$.
+          withLatestFrom(expanded$, function(submitValue, expanded) {
             return expanded;
           }).
           filter(function(value) { return !value; }).
@@ -128,13 +128,13 @@
         // Given a submit event when there is a search term input, map the search value to an observable
         // that combines it with the field name, checking if the datatype is a number or not, and creating
         // the appropriate 'WHERE' clause
-        var searchWhereObservable = submitValueObservable.
-          merge(whereClauseObservable).
+        var searchWhere$ = submitValue$.
+          merge(whereClause$).
           withLatestFrom(
-            submitValueObservable,
-            fieldNameObservable,
-            physicalDatatypeObservable,
-            whereClauseObservable,
+            submitValue$,
+            fieldName$,
+            physicalDatatype$,
+            whereClause$,
             function(signal, searchValue, fieldName, physicalDatatype, externalWhereClause) {
               var whereClause;
               if (_.contains(Constants.SUGGESTION_DISABLED_DATA_TYPES, physicalDatatype)) {
@@ -154,27 +154,27 @@
             filter(_.isDefined);
 
         // When the card contracts, clear the invalid search flag
-        expandedObservable.subscribe(function(val) {
+        expanded$.subscribe(function(val) {
           if (!val) {
             invalidSearchInputSubject.onNext(false);
           }
         });
 
         // Observable that emits whether to show the search results area
-        var showResultsObservable = Rx.Observable.
+        var showResults$ = Rx.Observable.
           combineLatest(
-            expandedObservable,
-            searchActiveObservable,
-            invalidSearchInputObservable,
+            expanded$,
+            searchActive$,
+            invalidSearchInput$,
             function(expanded, searchActive, isInvalidSearch) {
               return expanded && searchActive && !isInvalidSearch;
             });
 
         // Observable that emits when the table has been rendered during a search
-        var tableRenderedObservable = Rx.Observable.
+        var tableRendered$ = Rx.Observable.
           combineLatest(
-            searchActiveObservable,
-            hasRowsObservable,
+            searchActive$,
+            hasRows$,
             function(searchActive, hasRows) {
               return searchActive && hasRows;
             }).
@@ -189,33 +189,35 @@
         // preventDefault on up/down arrow keys to prevent cursor from moving
         // to start/end of input (must use keydown event for weird browser
         // reasons).
+        var UP_KEYCODE = 38;
+        var DOWN_KEYCODE = 40;
         $scope.$eventToObservable('clearableInput:keydown').
           filter(function(event) {
             var keyCode = event.additionalArguments[0].keyCode;
-            return keyCode === 38 || keyCode === 40;
+            return keyCode === UP_KEYCODE || keyCode === DOWN_KEYCODE;
           }).
           forEach(function(event) {
             event.additionalArguments[0].preventDefault();
           });
 
         var SPACE_BAR_KEYCODE = 32;
-        var userActionKeypressObservable = $scope.$eventToObservable('clearableInput:keypress').
+        var userActionKeypress$ = $scope.$eventToObservable('clearableInput:keypress').
           filter(function(event) {
             var which = _.get(event, 'additionalArguments[0].which');
             return which > SPACE_BAR_KEYCODE;
           });
 
-        var userClickedInClearableInputObservable = $scope.$eventToObservable('clearableInput:click');
+        var userClickedInClearableInput$ = $scope.$eventToObservable('clearableInput:click');
 
-        var userActionsWhichShouldShowSuggestionPanelObservable = Rx.Observable.merge(
-          hasInputObservable.risingEdge(),
-          userActionKeypressObservable,
-          userClickedInClearableInputObservable.filter(function() {
+        var userActionsWhichShouldShowSuggestionPanel$ = Rx.Observable.merge(
+          hasInput$.risingEdge(),
+          userActionKeypress$,
+          userClickedInClearableInput$.filter(function() {
             return _.isPresent($scope.searchValue);
           })
         );
 
-        var clicksOutsideOfSuggestionUIObservable = Rx.Observable.fromEvent($(document), 'click').
+        var clicksOutsideOfSuggestionUI$ = Rx.Observable.fromEvent($(document), 'click').
           takeUntil($scope.$destroyAsObservable(element)).
           filter(function(event) {
             var isEventFromBeyondSuggestionToolPanel = element.find('suggestion-tool-panel').find(event.target).length === 0;
@@ -223,7 +225,7 @@
             return isEventFromBeyondSuggestionToolPanel && isEventFromOutsideTheSearchInputField;
           });
 
-        var clearableInputBlurTargetNotSuggestionObservable = $scope.$eventToObservable('clearableInput:blur').
+        var clearableInputBlurTargetNotSuggestion$ = $scope.$eventToObservable('clearableInput:blur').
           filter(function(event) {
             // Only hide the suggestion panel if the blur target is not a suggestion.
             var newFocusTarget = _.get(event, 'additionalArguments[0].relatedTarget');
@@ -234,24 +236,24 @@
             }
           });
 
-        var userActionsWhichShouldHideSuggestionPanelObservable = Rx.Observable.merge(
-          submitValueObservable,
-          hasInputObservable.fallingEdge(),
-          clearableInputBlurTargetNotSuggestionObservable,
-          clicksOutsideOfSuggestionUIObservable
+        var userActionsWhichShouldHideSuggestionPanel$ = Rx.Observable.merge(
+          submitValue$,
+          hasInput$.fallingEdge(),
+          clearableInputBlurTargetNotSuggestion$,
+          clicksOutsideOfSuggestionUI$
         );
 
-        var shouldShowSuggestionPanelObservable;
+        var shouldShowSuggestionPanel$;
 
         if (ServerConfig.get('enableSearchSuggestions')) {
-          shouldShowSuggestionPanelObservable = Rx.Observable.combineLatest(
+          shouldShowSuggestionPanel$ = Rx.Observable.combineLatest(
             // Time-based observable for user actions which can trigger suggestions
             Rx.Observable.merge(
-              userActionsWhichShouldShowSuggestionPanelObservable.map(_.constant(true)),
-              userActionsWhichShouldHideSuggestionPanelObservable.map(_.constant(false))
+              userActionsWhichShouldShowSuggestionPanel$.map(_.constant(true)),
+              userActionsWhichShouldHideSuggestionPanel$.map(_.constant(false))
             ).distinctUntilChanged(),
             // Metadata-based observable for datatypes which can trigger suggestions
-            physicalDatatypeObservable.map(function(physicalDatatype) {
+            physicalDatatype$.map(function(physicalDatatype) {
               return !_.contains(Constants.SUGGESTION_DISABLED_DATA_TYPES, physicalDatatype);
             }),
             function(isActionTriggerForSuggestionPanel, isDatatypeCompatibleWithSuggestionPanel) {
@@ -259,21 +261,21 @@
             }
           );
         } else {
-          shouldShowSuggestionPanelObservable = Rx.Observable.returnValue(false);
+          shouldShowSuggestionPanel$ = Rx.Observable.returnValue(false);
         }
 
-        $scope.$bindObservable('rowCount', clampedRowsLoadedObservable);
-        $scope.$bindObservable('totalRowCount', rowCountObservable);
-        $scope.$bindObservable('isInvalidSearch', invalidSearchInputObservable);
-        $scope.$bindObservable('showResults', showResultsObservable);
-        $scope.$bindObservable('tableRendered', tableRenderedObservable);
-        $scope.$bindObservable('noResults', hasRowsObservable.startWith(true));
-        $scope.$bindObservable('searchWhere', searchWhereObservable);
-        $scope.$bindObservable('fieldName', fieldNameObservable);
-        $scope.$bindObservable('searchValue', searchValueObservable);
-        $scope.$bindObservable('physicalDatatype', physicalDatatypeObservable);
+        $scope.$bindObservable('rowCount', clampedRowsLoaded$);
+        $scope.$bindObservable('totalRowCount', rowCount$);
+        $scope.$bindObservable('isInvalidSearch', invalidSearchInput$);
+        $scope.$bindObservable('showResults', showResults$);
+        $scope.$bindObservable('tableRendered', tableRendered$);
+        $scope.$bindObservable('noResults', hasRows$.startWith(true));
+        $scope.$bindObservable('searchWhere', searchWhere$);
+        $scope.$bindObservable('fieldName', fieldName$);
+        $scope.$bindObservable('searchValue', searchValue$);
+        $scope.$bindObservable('physicalDatatype', physicalDatatype$);
         $scope.$bindObservable('dataset', dataset);
-        $scope.$bindObservable('shouldShowSuggestionPanel', shouldShowSuggestionPanelObservable);
+        $scope.$bindObservable('shouldShowSuggestionPanel', shouldShowSuggestionPanel$);
 
         handleSampleData($scope, model, dataset);
       }

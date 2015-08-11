@@ -39,15 +39,6 @@
     return !_.isEmpty(argument);
   };
 
-
-  $.htmlEncode = function(value) {
-    return $('<div/>').text(value).html();
-  };
-
-  $.htmlDecode = function(value) {
-    return $('<div/>').html(value).text();
-  };
-
   String.prototype.capitalizeEachWord = function() {
     return this.split(' ').map(function(word) {
       return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
@@ -351,7 +342,7 @@
       if (!$(e.target).parents().hasClass('dragged') &&
           !$(e.target).is(flyout)) {
         var canRenderFlyout = true;
-        if (options.hasOwnProperty('onBeforeRender') && _(options.onBeforeRender).isFunction()) {
+        if (options.hasOwnProperty('onBeforeRender') && _.isFunction(options.onBeforeRender)) {
           canRenderFlyout = options.onBeforeRender.call(self, e.target);
         }
         if (canRenderFlyout) {

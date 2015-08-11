@@ -20,7 +20,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       load_sample_data('test/fixtures/sample-data.json')
       test_view = View.find('test-data')
       View.any_instance.stubs(:find => test_view)
-      stub_multiple_feature_flags_with(odux_enable_histogram: true)
+      stub_feature_flags_with(:odux_enable_histogram, true)
     end
 
     should 'have no route if no id' do
@@ -84,6 +84,16 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
       should 'not return 403 if role is publisher' do
         stub_user = stub(roleName: 'publisher')
         @controller.stubs(current_user: stub_user)
+
+        get :bootstrap, id: 'four-four'
+        assert_not_equal(@response.response_code, 403)
+      end
+
+      should 'not return 403 if using ephemeral bootstrap' do
+        stub_user = stub(roleName: 'viewer', is_admin?: false, is_owner?: false)
+        @controller.stubs(current_user: stub_user)
+
+        stub_feature_flags_with(:use_ephemeral_bootstrap, true)
 
         get :bootstrap, id: 'four-four'
         assert_not_equal(@response.response_code, 403)
@@ -504,9 +514,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                 status: '200', body: mock_dataset_metadata
               }
             )
-            stub_multiple_feature_flags_with(
-              odux_enable_histogram: false
-            )
+            stub_feature_flags_with(:odux_enable_histogram, false)
 
             # Make sure the page we're creating doesn't create cards out of money or number columns
             @page_metadata_manager.expects(:create).with do |page, _|

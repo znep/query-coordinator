@@ -10,7 +10,7 @@ Frontend::Application.configure do
 
   # Full error reports are disabled and caching is turned on
   config.consider_all_requests_local = false
-  config.action_controller.perform_caching             = true
+  config.action_controller.perform_caching = true
 
   # Use a different cache store in production
   config.cache_store = :mem_cache_store, ENV['MEMCACHED_HOST'] || 'memcache', { :namespace => 'webapp', :value_max_bytes => 2000000 }
@@ -22,6 +22,8 @@ Frontend::Application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Logging options
-  config.middleware.use "Graylog2Exceptions", :hostname => 'graylog2.sea1.socrata.com', :facility => 'frontend', :environment => 'staging'
   config.logger.level = Logger.const_get((ENV['LOG_LEVEL'] || 'INFO').upcase)
+
+  # Rails deprecation notice delivery (can be :log, :notify, :stderr)
+  config.active_support.deprecation = :log
 end

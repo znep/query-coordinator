@@ -277,7 +277,7 @@
 
         generateFlyoutLayout: function(columns, valueColumn)
         {
-            var fCols = _.isUndefined(this._displayFormat.titleFlyout) ? 
+            var fCols = _.isUndefined(this._displayFormat.titleFlyout) ?
                 this._displayFormat.fixedColumns : [this._displayFormat.titleFlyout];
 
             var titleId = fCols ? fCols[0] : null;
@@ -325,7 +325,7 @@
         chartObj._segments = {};
         _.each(aggs, function(a, cId)
         {
-            if (_.intersect(['maximum', 'minimum'], a).length != 2)
+            if (_.intersection(['maximum', 'minimum'], a).length != 2)
             { return; }
 
             var column = chartObj._primaryView.columnForID(cId);

@@ -96,7 +96,7 @@
       'FEATURE_MAP_MAX_ZOOM': 18, // same as Leaflet default
       'FEATURE_MAP_FLYOUT_Y_OFFSET': 1.25,
       'FEATURE_MAP_RESIZE_DEBOUNCE_INTERVAL': 250,
-      'FEATURE_MAP_MAX_POINT_LIMIT': 50000,
+      'FEATURE_MAP_POINTS_PER_TILE_LIMIT': 50000,
 
       // Feature Map Flannel
       'FLANNEL_PADDING_COMPENSATION': 3,
@@ -104,6 +104,12 @@
       'FLANNEL_HINT_WIDTH': 10,
       'FLANNEL_CLOSE_ICON_INITIAL_PADDING': 5,
       'FLANNEL_BOTTOM_STICKY_BORDER_PAGINATION_POSITION': 51,
+      'FLANNEL_ROW_CONTENT_LIMIT': 100,
+
+      // Feature Map Flannel Query Statuses
+      'QUERY_PENDING': 'pending',
+      'QUERY_ERROR': 'error',
+      'QUERY_SUCCESS': 'success',
 
       // Table card visualization parameters.
       'TABLE_UNSORTABLE_PHYSICAL_DATATYPES': ['geo_entity', 'point'],

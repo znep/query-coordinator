@@ -38,9 +38,13 @@ $(function()
             return url;
         };
 
-        var generateThumbnailUrl = function(viewId, timestamp)
+        var generateThumbnailUrl = function(feature)
         {
-            return timeStampify('/api/views/' + viewId + '/snapshots/page?size=thumb', timestamp);
+            if (!!feature.item.noThumbnail) {
+                return '';
+            } else {
+                return '/api/views/' + feature.item.viewId + '/snapshots/page?size=thumb';
+            }
         };
 
         var generateFileDataUrl = function(fileSha, viewId, timestamp)
@@ -96,10 +100,18 @@ $(function()
             $features.each(function()
             {
                 var $this = $(this);
+                var $showIfThumbnail = $this.find('.showIfThumbnail');
+                var $thumbnailImg = $showIfThumbnail.find('img');
 
                 // update radio buttons; use array to check items
                 $this.find('.featureContentRadio').val([
-                    $this.find('.featureBox').attr('data-displayType')]);
+                  $this.find('.featureBox').attr('data-displayType')
+                ]);
+
+                // If the img src is undefined, hide the img and button.
+                if (_.isUndefined($thumbnailImg.attr('src'))) {
+                  $showIfThumbnail.hide();
+                }
             });
             $('.newFeatureButton').toggleClass('disabled', ($features.length == 4));
             $('.newFeatureMessage').toggle($features.length == 4);
@@ -118,9 +130,9 @@ $(function()
                     '.featureDescription': 'feature.description',
                     '.featureContentImageSha@value': 'feature.assetId',
                     '.featureContentCustomSection img@src': pureFileDataUrl,
-                    '.featureContentCustomSection img@alt': function() {return '';},
-                    '.featureContentThumbnailSection img@src': generateThumbnailUrl('#{feature.viewId}'),
-                    '.featureContentThumbnailSection img@alt': function() { return ''; }, // remove alt in case there is no image (so just an edit button)
+                    '.featureContentCustomSection img@alt': function() { return ''; },
+                    '.featureContentThumbnailSection img@src': generateThumbnailUrl,
+                    '.featureContentThumbnailSection img@alt': function() { return ''; },
                     '.featureBox@class+': getFeatureType,
                     '.featureContentTextHeadline@value': 'feature.display.title',
                     '.featureContentTextSubtitle@value': 'feature.display.description',
@@ -187,25 +199,6 @@ $(function()
             updateFeatureState();
         });
 
-        $.live('.editThumbnailButton', 'click', function(event)
-        {
-            event.preventDefault();
-            var $featureBox = $(this).closest('.featureBox');
-            var viewId = $featureBox.attr('data-viewid');
-            var $modal = $('#setThumbnail');
-
-            blist.common.setThumbnail = function()
-            {
-                $modal.jqmHide();
-                $featureBox.find('.featureContentThumbnailSection img').attr('src', generateThumbnailUrl(viewId, true));
-
-                $modal.find('iframe').attr('src', '');
-            };
-
-            $modal.find('iframe').attr('src', $.path('/datasets/' + viewId + '/thumbnail?strip_chrome=true'));
-            $modal.jqmShow();
-        });
-
         commonNS.selectedDataset = function(ds)
         {
             $('#selectDataset').jqmHide();
@@ -218,16 +211,20 @@ $(function()
                 return;
             }
 
-            var newFeatureObj = { title: ds.name,
-                    description: ds.description || '',
-                    display: !$.isBlank(ds.iconUrl) ? 'custom' : 'thumbnail',
-                    assetId: ds.iconUrl,
-                    viewId: ds.id };
+            var newFeatureObj = {
+              title: ds.name,
+              description: ds.description || '',
+              display: 'custom',
+              assetId: ds.iconUrl,
+              viewId: ds.id,
+
+              // Create all new features with noThumbnail set to true
+              noThumbnail: true
+            };
 
             homeNS.features.push(newFeatureObj);
 
-            var newFeature = $.renderTemplate('feature',
-                [ newFeatureObj ], featureDirective);
+            var newFeature = $.renderTemplate('feature', [ newFeatureObj ], featureDirective);
 
             customUploadGen(newFeature);
 
@@ -242,8 +239,9 @@ $(function()
         {
             event.preventDefault();
 
-            if ($(this).hasClass('disabled'))
-            { return; }
+            if ($(this).hasClass('disabled')) {
+              return;
+            }
 
             $('#selectDataset').jqmShow();
         });
@@ -261,8 +259,9 @@ $(function()
 
                 feature.viewId      = $this.attr('data-viewid');
                 feature.title       = $this.find('.featureHeadline').val().clean();
-                feature.description = $this.find('.featureDescription')
-                                          .val().clean();
+                feature.description = $this.find('.featureDescription').val().clean();
+                feature.noThumbnail = _.isUndefined($this.find('.showIfThumbnail img').attr('src'));
+
                 if ($this.hasClass('thumbnail'))
                 {
                     feature.display = 'thumbnail';

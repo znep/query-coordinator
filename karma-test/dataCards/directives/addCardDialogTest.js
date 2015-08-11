@@ -257,8 +257,8 @@ describe('addCardDialog', function() {
   });
 
   it('should show all columns as options in the "Choose a column..." select control', function() {
-    //TODO refactor to merely check the data in the scope. columnAndVIsualizationSelectorTest
-    //should handle testing the actual UI.
+    // TODO refactor to merely check the data in the scope. columnAndVIsualizationSelectorTest
+    // should handle testing the actual UI.
     var dialog = createDialog();
     var selectableColumnOptions = dialog.element.find('option:enabled');
 
@@ -266,8 +266,8 @@ describe('addCardDialog', function() {
   });
 
   it('should show columns currently represented as cards in the select control', function() {
-    //TODO refactor to merely check the data in the scope. columnAndVIsualizationSelectorTest
-    //should handle testing the actual UI.
+    // TODO refactor to merely check the data in the scope. columnAndVIsualizationSelectorTest
+    // should handle testing the actual UI.
     var dialog = createDialog();
     var serializedCard = {
       fieldName: 'spot',

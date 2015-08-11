@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function addCardDialog(Constants, Card, Dataset, FlyoutService, $log) {
+  function addCardDialog(Constants, Card, Dataset, FlyoutService) {
     return {
       restrict: 'E',
       scope: {

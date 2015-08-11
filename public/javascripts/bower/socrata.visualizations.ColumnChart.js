@@ -280,7 +280,9 @@
         title: _labelValueOrPlaceholder(datum[NAME_INDEX]),
         unfilteredValueLabel: self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL'),
         unfilteredValue: datum[UNFILTERED_INDEX],
-        labelUnit: _lastRenderOptions.labelUnit
+        labelUnit: _lastRenderOptions.labelUnit,
+        selectedNotice: self.getLocalization('FLYOUT_SELECTED_NOTICE'),
+        selected: datum[SELECTED_INDEX]
       };
 
       if (_lastRenderOptions.showFiltered) {

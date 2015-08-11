@@ -219,7 +219,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           'NO_VALUE': '({0})'.format(I18n.common.noValue),
           'FLYOUT_UNFILTERED_AMOUNT_LABEL': I18n.flyout.total,
           'FLYOUT_FILTERED_AMOUNT_LABEL': I18n.flyout.filteredAmount,
-          'FLYOUT_SELECTED_NOTICE': I18n.flyout.clearFilterLong,
+          'FLYOUT_SELECTED_NOTICE': I18n.flyout.clearFilterLong
         }
       };
       var columnChart = new socrata.visualizations.ColumnChart(element, columnChartConfig);

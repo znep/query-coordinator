@@ -71,7 +71,7 @@ module.exports = function ( karma ) {
       'bower_components/d3/d3.min.js',
       'public/javascripts/bower/socrata.utils.js',
       'public/javascripts/bower/socrata.visualizations.Visualization.js',
-      'public/javascripts/bower/socrata.visualizations.Column.js',
+      'public/javascripts/bower/socrata.visualizations.ColumnChart.js',
       'public/javascripts/util/jquery-extensions.js',
       'public/javascripts/bower/jquery.dotdotdot.js',
       'bower_components/showdown/src/showdown.js',
@@ -89,8 +89,6 @@ module.exports = function ( karma ) {
       'bower_components/rxjs/dist/rx.binding.js',
       'bower_components/rxjs/dist/rx.virtualtime.js',
       'bower_components/rxjs/dist/rx.testing.js',
-      'bower_components/socrata-utils/socrata.utils.js',
-
       'bower_components/leaflet/dist/leaflet-src.js',
       'app/styles/leaflet.css',
       'bower_components/chroma-js/chroma.js',
@@ -130,7 +128,7 @@ module.exports = function ( karma ) {
       'public/javascripts/angular/dataCards/models.js',
       'public/javascripts/angular/dataCards/**/*.js',
 
-      'app/styles/socrata.visualizations.Column.css',
+      'app/styles/socrata.visualizations.columnChart.css',
 
       'public/angular_templates/**/*.html',
       'app/styles/dataCards/*.sass',

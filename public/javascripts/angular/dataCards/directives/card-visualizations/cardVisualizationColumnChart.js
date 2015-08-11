@@ -202,7 +202,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
             var filter;
 
             if (wantsFilterToNull) {
-              filter = new Filter.IsNullFilter(true)
+              filter = new Filter.IsNullFilter(true);
             } else {
               filter = new Filter.BinaryOperatorFilter('=', datumName);
             }

@@ -1,4 +1,4 @@
-angular.module('socrataCommon.directives').directive('columnChart', function($parse, $timeout, FlyoutService, I18n, FormatService) {
+angular.module('socrataCommon.directives').directive('columnChart', function($parse, $timeout, FlyoutService, I18n) {
 
   'use strict';
 
@@ -10,11 +10,12 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       expanded: '=',
       rowDisplayUnit: '='
     },
-    link: function(scope, element, attrs) {
+    link: function(scope, element) {
       var chartDataObservable = scope.$observe('chartData');
       var showFilteredObservable = scope.$observe('showFiltered');
       var expandedObservable = scope.$observe('expanded');
       var rowDisplayUnitObservable = scope.$observe('rowDisplayUnit');
+      var columnChartConfig;
       var columnChart;
       var lastFlyoutData;
       var flyoutSelectors = [
@@ -127,8 +128,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         }
 
         var data = lastFlyoutData;
-        var unfilteredValue;
-        var filteredValue;
         var flyoutContent;
         var flyoutSpanClass;
         var $target = $(target);
@@ -208,7 +207,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         }
       }
 
-      var columnChartConfig = {
+      columnChartConfig = {
         columns: {
           name: 0,
           unfilteredValue: 1,
@@ -222,7 +221,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           'FLYOUT_SELECTED_NOTICE': I18n.flyout.clearFilterLong
         }
       };
-      var columnChart = new socrata.visualizations.ColumnChart(element, columnChartConfig);
+      columnChart = new socrata.visualizations.ColumnChart(element, columnChartConfig);
 
       Rx.Observable.subscribeLatest(
         element.closest('.card-visualization').observeDimensions().map(function(dimensions) {

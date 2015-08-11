@@ -84,6 +84,7 @@
       "pbf": true,
       "Rx": true,
       "ss": true,
+      "socrata": true,
       "VBArray": true
     }
   }

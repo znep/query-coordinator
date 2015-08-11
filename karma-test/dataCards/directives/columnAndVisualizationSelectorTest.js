@@ -1,4 +1,4 @@
-describe('addCardDialog', function() {
+describe('columnAndVIsualizationSelectorTest', function() {
   'use strict';
 
   var testHelpers;
@@ -10,7 +10,7 @@ describe('addCardDialog', function() {
   var $httpBackend;
   var $templateCache;
 
-  function createDialog() {
+  function createDirective() {
 
     var columns = {
       'spot': {
@@ -152,24 +152,18 @@ describe('addCardDialog', function() {
     var outerScope = $rootScope.$new();
 
     outerScope.page = pageModel;
+    outerScope.cardSize = 1;
     outerScope.$bindObservable('cardModels', pageModel.observe('cards'));
     outerScope.$bindObservable('datasetColumns', datasetColumns);
-    outerScope.dialogState = {
-      'cardSize': 1,
-      'show': true
-    };
 
     var html =
-      '<div ng-if="dialogState.show"> ' +
-        '<add-card-dialog ' +
-          'style="display:block" ' +
-          'card-models="cardModels" ' +
-          'on-customize-card="customizeCard" ' +
-          'dataset-columns="datasetColumns" ' +
-          'dialog-state="dialogState" ' +
-          'page="page" ' +
-        '></add-card-dialog>' +
-      '</div>';
+      '<column-and-visualization-selector ' +
+        'style="display:block" ' +
+        'card-models="cardModels" ' +
+        'dataset-columns="datasetColumns" ' +
+        'page="page" ' +
+        'card-size="cardSize" ' +
+      '></column-and-visualization-selector>';
 
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
 
@@ -182,13 +176,12 @@ describe('addCardDialog', function() {
       element: element,
 
       // The ng-if introduces another scope
-      scope: outerScope.$$childHead.$$childHead
+      scope: outerScope.$$childHead
     };
   }
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
-  beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/columnAndVisualizationSelector.html'));
   beforeEach(module('/angular_templates/dataCards/visualizationTypeSelector.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
@@ -246,83 +239,162 @@ describe('addCardDialog', function() {
     testHelpers.TestDom.clear();
   });
 
-  it('should close the modal dialog and not add a card when the "Cancel" button is clicked', function() {
-    var dialog = createDialog();
-    var button = dialog.element.find('button:contains("Cancel")');
-
-    expect(dialog.element.is(':visible')).to.be.true;
-
-    button.click();
-    dialog.outerScope.$digest();
-
-    expect(dialog.element.is(':visible')).to.be.false;
-  });
-
   it('should show all columns as options in the "Choose a column..." select control', function() {
-    //TODO refactor to merely check the data in the scope. columnAndVIsualizationSelectorTest
-    //should handle testing the actual UI.
-    var dialog = createDialog();
-    var selectableColumnOptions = dialog.element.find('option:enabled');
+    var directive = createDirective();
+    var selectableColumnOptions = directive.element.find('option:enabled');
 
     expect(selectableColumnOptions.length).to.equal(6);
   });
 
   it('should show columns currently represented as cards in the select control', function() {
-    //TODO refactor to merely check the data in the scope. columnAndVIsualizationSelectorTest
-    //should handle testing the actual UI.
-    var dialog = createDialog();
+    var directive = createDirective();
     var serializedCard = {
       fieldName: 'spot',
       cardSize: 1,
       cardType: 'column',
       expanded: false
     };
-    dialog.scope.page.set('cards', [Card.deserialize(dialog.scope.page, serializedCard)]);
+    directive.scope.page.set('cards', [Card.deserialize(directive.scope.page, serializedCard)]);
 
-    var selectableColumnOptions = dialog.element.find('option:enabled');
+    var selectableColumnOptions = directive.element.find('option:enabled');
 
     expect(selectableColumnOptions.length).to.equal(6);
   });
 
-  describe('"Add card" button', function() {
-    var dialog;
-    var button;
+  it('should display a sample card visualization when an enabled column in the "Choose a column..." select control is selected', function() {
+    var directive = createDirective();
+
+    expect(directive.element.find('card').length).to.equal(0);
+
+    directive.scope.cardSize = 2;
+    directive.element.find('option[value=ward]').prop('selected', true).trigger('change');
+
+    expect(directive.element.find('card').length).to.equal(1);
+  });
+
+  it('should display multiple visualization choices when a column in the "Choose a column..." select control is selected which allows multiple visualizations', function() {
+    var directive = createDirective();
+
+    expect(directive.element.find('.visualization-type:visible').length).to.equal(0);
+
+    directive.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
+
+    expect(directive.element.find('.visualization-type:visible').length).to.equal(2);
+    expect(directive.element.find('.visualization-type.icon-bar-chart').length).to.equal(1);
+    expect(directive.element.find('.visualization-type.icon-search').length).to.equal(1);
+
+  });
+
+  it('should display a warning for "column" card type option buttons when a column\'s cardinality is greater than 100', function() {
+    var directive = createDirective();
+
+    expect(directive.element.find('.visualization-type:visible').length).to.equal(0);
+
+    directive.element.find('option[value=multipleVisualizations]').prop('selected', true).trigger('change');
+
+    expect(directive.element.find('.visualization-type:visible').length).to.equal(2);
+
+    // We show / hide the icon itself with CSS, which is not included in
+    // this test file.  Thus, instead we test for the 'warn' class.
+    expect(directive.element.find('.icon-bar-chart').hasClass('warn')).to.be.true;
+
+  });
+
+  describe('when an enabled column is selected', function() {
+    var selectedColumnFieldName = 'ward';
+
+    var directive;
+    var selectCard; // function, call me.
 
     beforeEach(function() {
-      dialog = createDialog();
-      button = dialog.element.find('button:contains("Add card")');
+      var serializedCard = {
+        fieldName: 'spot',
+        cardSize: 1,
+        cardType: 'column',
+        expanded: false
+      };
+      directive = createDirective();
+      directive.scope.page.set('cards', [Card.deserialize(directive.scope.page, serializedCard)]);
+
+      selectCard = function() {
+        directive.element.find('option[value={0}]'.format(selectedColumnFieldName)).
+          prop('selected', true).trigger('change');
+      };
     });
 
-    describe('with no column selected', function() {
-      it('should be disabled', function() {
-        expect(button.hasClass('disabled')).to.be.true;
-      });
-    });
-
-    describe('with an enabled column selected', function() {
+    describe('card-model-selected scope event', function() {
+      var seenEventPayloads;
       beforeEach(function() {
-        dialog.scope.dialogState.cardSize = 1;
-        dialog.element.find('option[value=spot]').prop('selected', true).trigger('change');
+        seenEventPayloads = [];
+        directive.outerScope.$on('card-model-selected', function(event, payload) {
+          seenEventPayloads.push(payload); // is a card model
+        });
       });
 
-      it('should be enabled', function() {
-        expect(button.hasClass('disabled')).to.be.false;
-      });
+      describe('card object', function() {
+        it('should have the correct cardSize', function() {
+          var expectedCardSize = 3;
 
-      describe('when clicked', function() {
-        var addCardSpy;
+          directive.scope.cardSize = expectedCardSize;
 
-        beforeEach(function() {
-          addCardSpy = sinon.spy(dialog.scope.page, 'addCard');
-          button.click();
+          selectCard();
+
+          expect(seenEventPayloads[0].getCurrentValue('cardSize')).to.equal(expectedCardSize);
         });
 
-        it('should cause addCard() to be called on the page', function() {
-          sinon.assert.calledOnce(addCardSpy);
-          sinon.assert.calledWith(addCardSpy, dialog.scope.addCardModel);
+        it('should have the correct fieldName', function() {
+          selectCard();
+
+          expect(seenEventPayloads[0].fieldName).to.equal(selectedColumnFieldName);
+
+        });
+      });
+
+      afterEach(function() {
+        // For now all these tests emit only one card-model-selected.
+        expect(seenEventPayloads).to.have.length(1);
+      });
+    });
+
+    describe('that supports customization', function() {
+      // Ward is already customizable
+      describe('customize button', function() {
+        it('should emit customize-card-with-model scope event', function(done) {
+          var directive = createDirective();
+          var customizeButton = directive.element.find('.card-control[title^="Customize"]');
+
+          // This button should only appear for cards that support it
+          expect(customizeButton.length).to.equal(0);
+
+          directive.element.find('select > option[value="bar"]').prop('selected', true).trigger('change');
+          customizeButton = directive.element.find('.card-control[title^="Customize"]');
+
+          // Button should still be hidden.
+          expect(customizeButton).to.be.hidden;
+
+          // Now select the choropleth
+          directive.element.find('select > option[value="ward"]').prop('selected', true).trigger('change');
+
+          customizeButton = directive.element.find('.card-control[title^="Customize"]');
+          expect(customizeButton).to.be.visible;
+
+          /* Technically, there should be a flyout here. But since we're using the same mechanism to give
+           * this button a flyout, as we are for the other card-controls in a card-layout, the flyout is
+           * only registered in the card-layout code. So just test to make sure the conditions are met for
+           * the card-layout-registered flyout to work.
+           */
+          expect(customizeButton.hasClass('card-control')).to.be.true;
+          expect(customizeButton.prop('title')).to.match(/customize this card/i);
+
+          directive.outerScope.$on('customize-card-with-model', function(e, cardModel) {
+            expect(cardModel).to.be.ok;
+            done();
+          });
+
+          // Trigger the customize button click event.
+          customizeButton.click();
         });
       });
     });
   });
-
 });

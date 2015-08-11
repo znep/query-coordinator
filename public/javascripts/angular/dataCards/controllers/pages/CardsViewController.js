@@ -49,7 +49,18 @@
       });
     });
 
-    $scope.chooserMode = {show: false};
+    // Close png export with escape
+    WindowState.escapeKeyObservable.filter(function(e) {
+      return $scope.chooserMode.show === true;
+    }).
+      takeUntil($scope.$destroyAsObservable()).
+      subscribe(function() {
+        $scope.$apply(function() {
+          $scope.chooserMode.show = false;
+        });
+      });
+
+    $scope.chooserMode = { show: false };
 
     $scope.$on('exit-export-card-visualization-mode', function() {
       $scope.chooserMode.show = false;

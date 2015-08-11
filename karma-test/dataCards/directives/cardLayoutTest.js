@@ -12,6 +12,7 @@ describe('card-layout', function() {
   var Page;
   var _$provide;
   var $q;
+  var $timeout;
   var rootScope;
   var testHelpers;
   var Constants;
@@ -50,7 +51,7 @@ describe('card-layout', function() {
       mockDownloadService = {
         download: function() {
           mockDownloadService.calledWith = arguments;
-          return {then: _.noop};
+          return $q.when(undefined);
         }
       };
 
@@ -65,6 +66,7 @@ describe('card-layout', function() {
     Card = $injector.get('Card');
     Page = $injector.get('Page');
     $q = $injector.get('$q');
+    $timeout = $injector.get('$timeout');
     Constants = $injector.get('Constants');
 
     testHelpers.overrideTransitions(true);
@@ -1436,14 +1438,20 @@ describe('card-layout', function() {
       expect(choroplethButton.hasClass('disabled')).to.equal(false);
     });
 
-    it('downloads the png url when clicking the download button', function() {
+    it('downloads the png url when clicking the download button and exits export mode', function() {
+      var eventSpy = sinon.spy();
+      cl.outerScope.$on('exit-export-card-visualization-mode', eventSpy);
+
       cl.scope.chooserMode.show = true;
       cl.scope.$digest();
 
-      var button = cl.element.find('.card-chooser .action-png-export:not(.disabled)');
+      var button = cl.element.find('.card-chooser .action-png-export:not(.disabled)').eq(1);
       button.click();
 
+      $timeout.flush();
+
       expect(mockDownloadService.calledWith[0]).to.equal('./asdf-fdsa/choropleth_column.png');
+      expect(eventSpy.callCount).to.equal(1);
     });
   });
 

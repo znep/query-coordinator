@@ -78,6 +78,7 @@
             $timeout(
               function() {
                 delete $scope.downloadState;
+                $scope.$emit('exit-export-card-visualization-mode');
               },
               2000
             );

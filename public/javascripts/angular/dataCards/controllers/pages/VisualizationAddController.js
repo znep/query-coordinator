@@ -25,9 +25,9 @@
       var eventPayload = selectedCard ? selectedCard.serialize() : null;
 
       // Trigger function attached to the iframe element in the parent
-      if (_.isUndefined(window.parent)) {
+      if (_.isNull(window.frameElement)) {
 
-        throw 'Page is not in an iframe, not sure what you expect to happen'
+        throw 'Page expects to be in an iframe, passing information to the parent window.'
       } else if (_.isFunction(window.frameElement.onVisualizationSelected)) {
 
         window.frameElement.onVisualizationSelected(eventPayload);

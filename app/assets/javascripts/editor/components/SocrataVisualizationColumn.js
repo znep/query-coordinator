@@ -35,10 +35,6 @@
     return dimensions;
   };
 
-  String.prototype.visualHeight = function(fontSize) {
-    return this.visualSize(fontSize).height;
-  };
-
   String.prototype.visualLength = function(fontSize) {
     return this.visualSize(fontSize).width;
   };
@@ -46,9 +42,10 @@
   /**
    * Instantiates a Socrata Column Visualization from the
    * `socrata-visualizations` package.
-   * 
-   * @param {String} fourByFour - The uid of the dataaset backing this
-   *   visualization.
+   *
+   * @param {String} domain - The domain against which to make the query.
+   * @param {String} fourByFour - The uid of the dataset backing this
+   *   visualization. The referenced dataset must be of the 'NBE' type.
    * @param {String} baseQuery - A valid SoQL query string.
    */
 
@@ -201,39 +198,29 @@
       var filteredAsHash;
       var results;
 
-      nameIndex = unfiltered.columns.indexOf(Constants.SOQL_DATA_PROVIDER_NAME_ALIAS);
-      valueIndex = unfiltered.columns.indexOf(Constants.SOQL_DATA_PROVIDER_VALUE_ALIAS);
+      unfilteredAsHash = _.indexBy(
+        unfiltered.rows,
+        unfiltered.columns.indexOf(Constants.SOQL_DATA_PROVIDER_NAME_ALIAS)
+      );
 
-      unfilteredAsHash = _.reduce(unfiltered.rows, function(acc, datum) {
-        acc[datum[nameIndex]] = datum[valueIndex];
-        return acc;
-      }, {});
+      filteredAsHash = _.indexBy(
+        filtered.rows,
+        filtered.columns.indexOf(Constants.SOQL_DATA_PROVIDER_NAME_ALIAS)
+      );
 
-      nameIndex = filtered.columns.indexOf(Constants.SOQL_DATA_PROVIDER_NAME_ALIAS);
-      valueIndex = filtered.columns.indexOf(Constants.SOQL_DATA_PROVIDER_VALUE_ALIAS);
-
-      filteredAsHash = _.reduce(filtered.rows, function(acc, datum) {
-        acc[datum[nameIndex]] = datum[valueIndex];
-        return acc;
-      }, {});
-
-      results = [];
-
-      Object.keys(unfilteredAsHash).forEach(function(name) {
+      return Object.keys(unfilteredAsHash).map(function(name) {
 
         var datumIsSelected = false;
 
         var result = [undefined, undefined, undefined, undefined];
 
         result[NAME_INDEX] = (_.isNull(name) || _.isUndefined(name)) ? '' : name;
-        result[UNFILTERED_INDEX] = unfilteredAsHash[name];
-        result[FILTERED_INDEX] = filteredAsHash[name] || 0;
+        result[UNFILTERED_INDEX] = unfilteredAsHash[name][1];
+        result[FILTERED_INDEX] = filteredAsHash[name][1] || 0;
         result[SELECTED_INDEX] = datumIsSelected;
 
-        results.push(result);
+        return result;
       });
-
-      return results;
     }
 
     /**

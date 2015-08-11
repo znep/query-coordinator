@@ -41,6 +41,26 @@
     );
   }
 
+  function _canReuseTemplate(element, data) {
+
+    var canReuseTemplate = false;
+    var renderedComponent;
+
+    if (data.type === 'embed') {
+
+      renderedComponent = element.attr('data-rendered-media-embed-provider');
+
+      if (data.value.provider === renderedComponent) {
+        canReuseTemplate = true;
+      }
+
+    } else {
+      canReuseTemplate = true;
+    }
+
+    return canReuseTemplate;
+  }
+
   function _renderData(element, data, editable, renderFn) {
 
     var type;
@@ -152,9 +172,7 @@
         'class': classes,
         'data-rendered-template': 'media',
         'data-rendered-media-type': 'embed',
-        'data-rendered-media-embed-provider': 'wizard',
-        'data-block-id': componentOptions.blockId,
-        'data-component-index': componentOptions.componentIndex
+        'data-rendered-media-embed-provider': 'wizard'
       }
     ).append(controlsContainer);
   }
@@ -178,9 +196,7 @@
         'class': classes,
         'data-rendered-template': 'media',
         'data-rendered-media-type': 'embed',
-        'data-rendered-media-embed-provider': 'youtube',
-        'data-block-id': componentOptions.blockId,
-        'data-component-index': componentOptions.componentIndex
+        'data-rendered-media-embed-provider': 'youtube'
       }
     ).append(iframeElement);
   }
@@ -233,6 +249,7 @@
 
   return {
     renderTemplate: _renderTemplate,
+    canReuseTemplate: _canReuseTemplate,
     renderData: _renderData
   };
 })(window.socrata);

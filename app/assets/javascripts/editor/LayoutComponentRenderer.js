@@ -34,6 +34,13 @@
     return layoutComponent;
   }
 
+  function _canReuseTemplate(element, data) {
+
+    var canReuseTemplate = true;
+
+    return canReuseTemplate;
+  }
+
   /**
    * Component data renderers
    */
@@ -45,6 +52,7 @@
 
   return {
     renderTemplate: _renderLayoutComponentTemplate,
+    canReuseTemplate: _canReuseTemplate,
     renderData: _renderLayoutComponentData
   };
 })(window.socrata);

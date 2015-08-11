@@ -25,6 +25,13 @@
     return _componentTemplateRenderers[type](componentOptions);
   }
 
+  function _canReuseTemplate(element, data) {
+
+    var canReuseTemplate = true;
+
+    return canReuseTemplate;
+  }
+
   function _renderData(element, data, editable, renderFn) {
 
     var type;
@@ -115,6 +122,7 @@
 
   return {
     renderTemplate: _renderTemplate,
+    canReuseTemplate: _canReuseTemplate,
     renderData: _renderData
   };
 })(window.socrata);

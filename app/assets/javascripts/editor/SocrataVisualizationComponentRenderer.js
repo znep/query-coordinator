@@ -30,6 +30,18 @@
     );
   }
 
+  function _canReuseTemplate(element, data) {
+
+    var canReuseTemplate = false;
+    var renderedComponent = element.attr('data-rendered-visualization');
+
+    if (data.type === renderedComponent) {
+      canReuseTemplate = true;
+    }
+
+    return canReuseTemplate;
+  }
+
   function _renderData(element, data, editable, renderFn) {
 
     var type;
@@ -104,9 +116,7 @@
       {
         'class': classes,
         'data-rendered-template': 'socrataVisualization',
-        'data-rendered-visualization': 'column',
-        'data-block-id': componentOptions.blockId,
-        'data-component-index': componentOptions.componentIndex
+        'data-rendered-visualization': 'column'
       }
     );
   }
@@ -126,25 +136,38 @@
 
   function _renderSocrataVisualizationColumnComponentData(element, value, editable, renderFn) {
 
-    var domain = value.domain;
-    var fourByFour = value.fourByFour;
-    var baseQuery = value.
+    var domain;
+    var fourByFour;
+    var baseQuery;
+    var renderedVisualization = element.attr('data-rendered-visualization');
+    var renderedFourByFour = element.attr('data-rendered-visualization-four-by-four');
+    var renderedBaseQuery = element.attr('data-rendered-visualization-base-query');
+    var destroyVisualizationEvent;
+    var visualization;
+
+    utils.assertHasProperty(value, 'dataSource');
+    utils.assertHasProperty(value.dataSource, 'type');
+    utils.assertHasProperty(value.dataSource, 'domain');
+    utils.assertHasProperty(value.dataSource, 'fourByFour');
+    utils.assertHasProperty(value.dataSource, 'baseQuery');
+    utils.assertEqual(value.dataSource.type, 'soql');
+
+    domain = value.dataSource.domain;
+    fourByFour = value.dataSource.fourByFour;
+    baseQuery = value.
+      dataSource.
       baseQuery.
       format(
         Constants.SOQL_DATA_PROVIDER_NAME_ALIAS,
         Constants.SOQL_DATA_PROVIDER_VALUE_ALIAS
       );
 
-    var renderedFourByFour = element.attr('data-rendered-visualization-four-by-four');
-    var renderedBaseQuery = element.attr('data-rendered-visualization-base-query');
-    var visualization;
-
     if ((fourByFour !== renderedFourByFour) || (baseQuery !== renderedBaseQuery)) {
 
       if (renderedFourByFour !== undefined) {
 
         // Destroy existing visualization.
-        var destroyVisualizationEvent = new window.CustomEvent(
+        destroyVisualizationEvent = new window.CustomEvent(
           Constants.SOCRATA_VISUALIZATION_DESTROY,
           {
             detail: {},
@@ -164,6 +187,7 @@
 
   return {
     renderTemplate: _renderTemplate,
+    canReuseTemplate: _canReuseTemplate,
     renderData: _renderData
   };
 })(window.socrata);

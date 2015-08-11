@@ -22,6 +22,12 @@
       'socrataVisualization': SocrataVisualizationComponentRenderer.renderTemplate,
       'layout': LayoutComponentRenderer.renderTemplate
     };
+    var componentTemplateCheckers = {
+      'text': TextComponentRenderer.canReuseTemplate,
+      'media': MediaComponentRenderer.canReuseTemplate,
+      'socrataVisualization': SocrataVisualizationComponentRenderer.canReuseTemplate,
+      'layout': LayoutComponentRenderer.canReuseTemplate
+    };
     var componentDataRenderers = {
       'text': TextComponentRenderer.renderData,
       'media': MediaComponentRenderer.renderData,
@@ -575,8 +581,9 @@
 
       var element = elementCache.getBlock(blockId);
       var componentData = storyteller.storyStore.getBlockComponents(blockId);
-      var componentContainer;
       var existingComponent;
+      var componentContainer;
+      var canReuseTemplate = false;
       var componentWidth;
       var componentClasses;
       var componentOptions;
@@ -589,16 +596,24 @@
         //
         // Component containers are not currently cached, so we do a `.find()`
         // against the cached block element.
-        componentContainer = element.find('.component-container[data-component-index="' + i + '"]');
 
-        if (!_canUseTemplate(componentDatum, componentContainer)) {
+        existingComponent = elementCache.getComponent(blockId, i);
 
-          existingComponent = elementCache.getComponent(blockId, i);
+        if (existingComponent) {
+
+          canReuseTemplate = componentTemplateCheckers[componentDatum.type](
+            existingComponent,
+            componentDatum.value
+          );
+        }
+
+        if (!canReuseTemplate) {
 
           if (existingComponent) {
             existingComponent.remove();
           }
 
+          componentContainer = element.find('.component-container[data-component-index="' + i + '"]');
           componentWidth = componentContainer.attr('data-component-layout-width');
           componentClasses = ['component', componentDatum.type].join(' ');
 
@@ -614,55 +629,14 @@
 
           newTemplate = componentTemplateRenderers[componentOptions.componentType](componentOptions);
 
+          newTemplate.attr('data-block-id', blockId);
+          newTemplate.attr('data-component-index', i);
+
           componentContainer.append(newTemplate);
 
           elementCache.setComponent(blockId, i, newTemplate);
         }
       });
-    }
-
-    /**
-     * Component data renderers bind component data to existing
-     * component templates.
-     */
-
-    function _canUseTemplate(componentDatum, componentContainer) {
-
-      var componentElement = componentContainer.children('.component').eq(0);
-      var renderedTemplate = componentElement.attr('data-rendered-template');
-      var renderedComponent;
-      var canUseTemplate = false;
-
-      if (componentDatum.type === renderedTemplate) {
-
-        if (componentDatum.type === 'media') {
-
-          if (componentDatum.value.type === 'embed') {
-
-            renderedComponent = componentElement.attr('data-rendered-media-embed-provider');
-
-            if (componentDatum.value.value.provider === renderedComponent) {
-              canUseTemplate = true;
-            }
-
-          } else {
-            canUseTemplate = true;
-          }
-
-        } else if (componentDatum.type === 'socrataVisualization') {
-
-          renderedComponent = componentElement.attr('data-rendered-visualization');
-
-          if (componentDatum.value.type === renderedComponent) {
-            canUseTemplate = true;
-          }
-
-        } else {
-          canUseTemplate = true;
-        }
-      }
-
-      return canUseTemplate;
     }
 
     function _renderBlockComponentsData(blockId) {

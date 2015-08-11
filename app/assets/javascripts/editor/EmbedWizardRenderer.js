@@ -109,7 +109,7 @@
         'datasetSelected',
         function(event, datasetObj) {
           storyteller.dispatcher.dispatch({
-            action: Constants.EMBED_WIZARD_CONFIGURE_VISUALIZATION,
+            action: Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET,
             datasetUid: datasetObj.id,
             isNewBackend: datasetObj.newBackend
           });
@@ -119,8 +119,10 @@
       _dialog.on(
         'visualizationSelected',
         function(event, selectedCard) {
-          console.log("You've selected a card: ");
-          console.log(selectedCard);
+          storyteller.dispatcher.dispatch({
+            action: Constants.EMBED_WIZARD_UPDATE_VISUALIZATION_CONFIGURATION,
+            cardData: selectedCard
+          });
         }
       )
 
@@ -202,7 +204,7 @@
             wizardContent = _renderChooseDatasetTemplate();
             break;
 
-          case Constants.EMBED_WIZARD_CONFIGURE_VISUALIZATION:
+          case Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET:
             wizardContent = _renderConfigureVisualizationTemplate();
             break;
 
@@ -230,7 +232,7 @@
           _renderChooseYouTubeData(componentValue);
           break;
 
-        case Constants.EMBED_WIZARD_CONFIGURE_VISUALIZATION:
+        case Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET:
           _renderConfigureVisualizationData(componentValue);
           break;
 
@@ -478,7 +480,8 @@
         '<button>',
         {
           'class': 'btn accent-btn',
-          'data-embed-action': Constants.EMBED_WIZARD_APPLY
+          'data-embed-action': Constants.EMBED_WIZARD_APPLY,
+          'disabled': 'disabled'
         }
       ).text(I18n.t('editor.embed_wizard.insert_button_text'));
 
@@ -507,10 +510,20 @@
       var iframeElement = _dialog.find('.wizard-configure-visualization-iframe');
       var currentIframeSrc = iframeElement.attr('src');
       var newIframeSrc = _visualizationChooserUrl(componentProperties.settings.datasetUid);
+      var insertButton = _dialog.find(
+        '[data-embed-action="' + Constants.EMBED_WIZARD_APPLY + '"]'
+      );
 
       if (currentIframeSrc !== newIframeSrc) {
         iframeElement.attr('src', newIframeSrc);
       }
+
+      if (componentProperties.settings.visualization) {
+        insertButton.prop('disabled', false);
+      } else {
+        insertButton.prop('disabled', true);
+      }
+
     };
 
 

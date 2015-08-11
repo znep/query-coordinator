@@ -48,9 +48,13 @@
           _chooseVisualization();
           break;
 
-        case Constants.EMBED_WIZARD_CONFIGURE_VISUALIZATION:
+        case Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET:
           _currentWizardState = action;
-          _configureVisualizationWithDataset(payload);
+          _chooseVisualizationDataset(payload);
+          break;
+
+        case Constants.EMBED_WIZARD_UPDATE_VISUALIZATION_CONFIGURATION:
+          _updateVisualizationConfiguration(payload);
           break;
 
         case Constants.EMBED_WIZARD_CLOSE:
@@ -132,7 +136,7 @@
       self._emitChange();
     }
 
-    function _configureVisualizationWithDataset(payload) {
+    function _chooseVisualizationDataset(payload) {
       if (payload.isNewBackend) {
         setUid(payload.datasetUid);
       } else {
@@ -157,6 +161,15 @@
         self._emitChange();
       }
 
+    }
+
+    function _updateVisualizationConfiguration(payload) {
+
+      if (payload.cardData) {
+        _currentComponentProperties.settings.visualization = payload.cardData;
+      }
+
+      self._emitChange();
     }
 
     function _updateYouTubeUrl(payload) {

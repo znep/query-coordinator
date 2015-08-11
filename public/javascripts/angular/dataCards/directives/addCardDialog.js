@@ -23,7 +23,7 @@
 
         scope.addCardModel = null;
 
-        scope.$on('card-model-chosen', function(event, addCardModel) {
+        scope.$on('card-model-selected', function(event, addCardModel) {
           scope.addCardModel = addCardModel;
         });
 

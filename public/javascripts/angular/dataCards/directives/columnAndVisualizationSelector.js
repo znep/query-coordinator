@@ -40,13 +40,12 @@
           function(fieldName, scopeDatasetColumns, dataset, columns) {
 
             var serializedCard;
+            var column;
 
             if (_.isNull(fieldName)) {
               scope.selectedCardModel = null;
               return;
             }
-
-            var column;
 
             if (_.include(scope.datasetColumns.available, fieldName)) {
               column = columns[fieldName];
@@ -75,7 +74,7 @@
         );
 
         scope.$watch('selectedCardModel', function(selectedCardModel) {
-          scope.$emit('card-model-chosen', selectedCardModel);
+          scope.$emit('card-model-selected', selectedCardModel);
         });
 
         scope.onCustomizeCard = function(selectedCardModel) {

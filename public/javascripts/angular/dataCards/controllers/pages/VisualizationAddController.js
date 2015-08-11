@@ -6,6 +6,8 @@
     /*************************
     * General metadata stuff *
     *************************/
+
+    // Cards always expect to have a page, too painful to remove for now
     var pageBlob = {
       "cards": [],
       "datasetId": dataset.id
@@ -15,9 +17,37 @@
     $scope.dataset = dataset;
     $scope.$bindObservable('windowSize', WindowState.windowSizeSubject);
 
-    /************************
-    * Add new card behavior *
-    ************************/
+
+    /*************************
+    * Trigger events for parent page *
+    *************************/
+    $scope.$on('card-model-selected', function(event, selectedCard) {
+      var eventPayload = selectedCard ? selectedCard.serialize() : null;
+
+      // Trigger function attached to the iframe element in the parent
+      if (_.isUndefined(window.parent)) {
+
+        throw 'Page is not in an iframe, not sure what you expect to happen'
+      } else if (_.isFunction(window.frameElement.onVisualizationSelected)) {
+
+        window.frameElement.onVisualizationSelected(eventPayload);
+      } else {
+
+        throw "Can't find onVisualizationSelected on the iframe."
+      }
+
+    });
+
+    /******************************
+    * Build Column Information
+    *
+    * Responsible for:
+    * - Adding field names to columns
+    * - Split columns into visualizable and non-visualizable groups
+    * - Filtering out system columns
+    * - Sort by field name
+    * DUPLICATE FUNCTIONALITY FROM: CARDSVIEWCONTROLLER.JS
+    *******************************/
 
     var datasetColumnsObservable = dataset.observe('columns');
 

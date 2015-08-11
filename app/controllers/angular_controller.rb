@@ -50,8 +50,6 @@ class AngularController < ActionController::Base
       return render_500
     end
 
-    # @page_metadata = {}
-    # @page_metadata[:datasetId] = 'qe2w-8xju'
     # Then fetch the dataset metadata.
     begin
       @dataset_metadata = fetch_dataset_metadata(@page_metadata[:datasetId])

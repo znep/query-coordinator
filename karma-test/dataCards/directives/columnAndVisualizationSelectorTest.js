@@ -1,4 +1,4 @@
-describe('columnAndVIsualizationSelectorTest', function() {
+describe('columnAndVisualizationSelectorTest', function() {
   'use strict';
 
   var testHelpers;
@@ -300,9 +300,12 @@ describe('columnAndVIsualizationSelectorTest', function() {
 
   describe('when an enabled column is selected', function() {
     var selectedColumnFieldName = 'ward';
-
     var directive;
-    var selectCard; // function, call me.
+
+    function doSelectCard() {
+      directive.element.find('option[value={0}]'.format(selectedColumnFieldName)).
+        prop('selected', true).trigger('change');
+    };
 
     beforeEach(function() {
       var serializedCard = {
@@ -313,11 +316,6 @@ describe('columnAndVIsualizationSelectorTest', function() {
       };
       directive = createDirective();
       directive.scope.page.set('cards', [Card.deserialize(directive.scope.page, serializedCard)]);
-
-      selectCard = function() {
-        directive.element.find('option[value={0}]'.format(selectedColumnFieldName)).
-          prop('selected', true).trigger('change');
-      };
     });
 
     describe('card-model-selected scope event', function() {
@@ -335,13 +333,13 @@ describe('columnAndVIsualizationSelectorTest', function() {
 
           directive.scope.cardSize = expectedCardSize;
 
-          selectCard();
+          doSelectCard();
 
           expect(seenEventPayloads[0].getCurrentValue('cardSize')).to.equal(expectedCardSize);
         });
 
         it('should have the correct fieldName', function() {
-          selectCard();
+          doSelectCard();
 
           expect(seenEventPayloads[0].fieldName).to.equal(selectedColumnFieldName);
 

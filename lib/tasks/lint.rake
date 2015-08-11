@@ -24,6 +24,11 @@ namespace :lint do
 
       run_eslint(old_ux_dirs, args[:format])
     end
+
+    task :diff do |task, args|
+      files = `git diff --name-only \`git merge-base HEAD origin/master\` public/javascripts | xargs`
+      run_eslint(files, args[:format])
+    end
   end
 
   task :ruby, :format do |task, args|

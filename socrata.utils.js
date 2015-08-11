@@ -323,6 +323,24 @@
           e.preventDefault();
         }
       }
+    },
+
+    /**
+     * Gets the value of a cookie by name.
+     *
+     * @param {String} cookieName
+     */
+    getCookie: function(cookieName) {
+      var name = cookieName + '=';
+      var cookies = document.cookie.split(/;\s*/);
+
+      for(var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i];
+
+        if (cookie.indexOf(name) === 0) {
+          return cookie.replace(name, '');
+        }
+      }
     }
   };
 

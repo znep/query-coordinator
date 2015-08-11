@@ -95,6 +95,38 @@ class AngularController < ActionController::Base
 
   end
 
+  def visualization_add
+    datasetId = params['datasetId']
+
+    # Can't render add card without a dataset
+    if datasetId.empty?
+      error_class = 'DatasetMetadataRequestFailure'
+      error_message = "Could not serve app: datasetId is required."
+      report_error(error_class, error_message)
+      return render_500
+    end
+
+    # Fetch dataset metadata
+    begin
+      @dataset_metadata = fetch_dataset_metadata(datasetId)
+    rescue AuthenticationRequired
+      return redirect_to_login
+    rescue UnauthorizedDatasetMetadataRequest
+      return render_403
+    rescue DatasetMetadataNotFound
+      return render_404
+    rescue UnknownRequestError => error
+      error_class = 'DatasetMetadataRequestFailure'
+      error_message = "Could not serve app: encountered unknown error " \
+        "fetching dataset metadata for dataset id " \
+        "#{datasetId}: #{error}"
+      report_error(error_class, error_message)
+      return render_500
+    end
+
+    render 'serve_app'
+  end
+
   private
 
   def fetch_page_metadata(page_id)

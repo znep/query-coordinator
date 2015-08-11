@@ -370,8 +370,7 @@
     var datasetColumns = Rx.Observable.combineLatest(
       page.observe('dataset'),
       datasetColumnsObservable,
-      page.observe('cards'),
-      function(dataset, columns, cards) {
+      function(dataset, columns) {
 
         var sortedColumns = _.pairs(columns).
           map(function(columnPair) {
@@ -393,16 +392,6 @@
             return a.fieldName > b.fieldName;
           });
 
-        var sortedCards = cards.
-          filter(function(card) {
-            return card.fieldName !== '*';
-          }).
-          sort(function(a, b) {
-            return a.fieldName > b.fieldName;
-          });
-
-        var available = false;
-        var availableCardCount = sortedColumns.length;
         var availableColumns = [];
         var visualizationUnsupportedColumns = [];
 
@@ -661,7 +650,7 @@
     });
 
     $scope.$on('delete-card-with-model', function(e, cardModel) {
-      $scope.page.set('cards', _.without($scope.cardModels, cardModel));
+      $scope.page.set('cards', _.without($scope.page.getCurrentValue('cards'), cardModel));
     });
 
     var mobileWarningClosed = (/(^|;)\s*mobileWarningClosed=/).test(document.cookie);

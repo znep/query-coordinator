@@ -194,18 +194,24 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'should redirect to the 403 page if the dataset is private' do
-      NewViewManager.any_instance.stubs(:fetch).raises(NewViewManager::ViewAccessDenied)
+      AngularController.any_instance.stubs(:fetch_dataset_metadata).raises(CommonMetadataMethods::UnauthorizedDatasetMetadataRequest)
+      NewViewManager.any_instance.stubs(:fetch).returns({})
 
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      assert_response(403)
 
+      get :visualization_add, :datasetId => 'data-sett', :app => 'dataCards'
       assert_response(403)
     end
 
     should 'should redirect to the 404 page if the dataset is not found' do
-      NewViewManager.any_instance.stubs(:fetch).raises(NewViewManager::ViewNotFound)
+      AngularController.any_instance.stubs(:fetch_dataset_metadata).raises(CommonMetadataMethods::DatasetMetadataNotFound)
+      NewViewManager.any_instance.stubs(:fetch).returns({})
 
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      assert_response(404)
 
+      get :visualization_add, :datasetId => 'data-sett', :app => 'dataCards'
       assert_response(404)
     end
 
@@ -213,9 +219,33 @@ class AngularControllerTest < ActionController::TestCase
       NewViewManager.any_instance.stubs(:fetch).raises(RuntimeError)
 
       get :serve_app, :id => '1234-1234', :app => 'dataCards'
+      assert_response(500)
 
+      get :visualization_add, :datasetId => 'data-sett', :app => 'dataCards'
       assert_response(500)
     end
+  end
+
+  test 'should successfully get visualization_add' do
+    NewViewManager.any_instance.stubs(:fetch).returns({})
+    View.stubs(
+      :migrations => {
+        :nbeId => "1234-1234",
+        :obeId => "1234-1234"
+      }
+    )
+    Phidippides.any_instance.stubs(
+      :fetch_dataset_metadata => {
+        :status => '200',
+        :body => v1_dataset_metadata
+      },
+      :set_default_and_available_card_types_to_columns! => {}
+    )
+
+    get :visualization_add, :datasetId => '1234-1234', :app => 'dataCards'
+    assert_response :success
+    # Should flag subcolumns
+    assert_match(/var datasetMetadata *= *[^\n]*isSubcolumn[^:]+:true/, @response.body)
   end
 
   context 'google analytics' do

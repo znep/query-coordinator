@@ -126,6 +126,19 @@
             controller: 'SingleCardViewController'
           }
         }
+      }).
+      state('view.visualizationAdd', {
+        resolve: {
+          dataset: function(Dataset) {
+            return new Dataset(datasetMetadata);
+          }
+        },
+        views: {
+          'mainContent': {
+            templateUrl: '/angular_templates/dataCards/pages/visualization-add.html',
+            controller: 'VisualizationAddController'
+          }
+        }
       });
   });
 

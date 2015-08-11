@@ -207,7 +207,6 @@ describe('card-layout', function() {
     outerScope.page = pageModel;
     outerScope.where = '';
     outerScope.editMode = false;
-    outerScope.$bindObservable('cardModels', pageModel.observe('cards'));
     outerScope.chooserMode = {};
 
     var html = [
@@ -221,7 +220,6 @@ describe('card-layout', function() {
           'class="cards"',
           'ng-class="{\'edit-mode\': editMode}" ',
           'page="page"',
-          'card-models="cardModels"',
           'global-where-clause-fragment="where"',
           'edit-mode="editMode"',
           'chooser-mode="chooserMode"',

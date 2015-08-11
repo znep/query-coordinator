@@ -1,63 +1,12 @@
 <h2><span>+</span> Add a card</h2>
-<div class="row">
-  <div class="span7">
-    <div class="add-card-select-column">
-      <soc-select class="column-selector" ng-model="addCardSelectedColumnFieldName">
-        <soc-option
-          value="null"
-          disabled="disabled"
-          ng-selected="addCardSelectedColumnFieldName === null">{{'addCardDialog.chooseColumn' | I18n}}</soc-option>
 
-        <soc-option value="null" disabled="disabled" ng-if="datasetColumns.available.length > 0"></soc-option>
-
-        <soc-option
-          value="{{fieldName}}"
-          title="{{'addCardDialog.addThisCard' | I18n}}"
-          ng-repeat="fieldName in datasetColumns.available">{{columnHumanNameFn(fieldName)}}</soc-option>
-
-        <soc-option value="null" disabled="disabled" ng-if="datasetColumns.visualizationUnsupported.length > 0"></soc-option>
-
-        <soc-option
-          value="null"
-          disabled="disabled"
-          ng-if="datasetColumns.visualizationUnsupported.length > 0">{{'addCardDialog.notSupported' | I18n}}</soc-option>
-
-        <soc-option
-          value="{{fieldName}}"
-          title="{{'addCardDialog.notSupportedLong' | I18n}}"
-          disabled="disabled"
-          ng-repeat="fieldName in datasetColumns.visualizationUnsupported">-{{columnHumanNameFn(fieldName)}}</soc-option>
-
-      </soc-select>
-    </div>
-    <div class="add-card-preview customize-card-preview">
-      <div ng-if="addCardModel === null" class="add-card-preview-placeholder">
-        <div class="placeholder-inner-text">
-          <span>{{'addCardDialog.prompt' | I18n}}</span>
-        </div>
-      </div>
-      <div class="card-spot" ng-if="addCardModel !== null">
-        <card model="addCardModel"
-          interactive="false"
-          card-draggable="false"
-          class="card preview">
-        </card>
-        <div class="add-card-controls">
-          <div class="card-control add-card-settings icon-settings"
-            title="{{'addCardDialog.customizePrompt' | I18n}}"
-            ng-if="isCustomizableMap"
-            ng-click="onCustomizeCard(addCardModel)">
-            {{'addCardDialog.settings' | I18n}}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="span5 customize-card-options">
-    <visualization-type-selector card-model="addCardModel" ng-show="availableCardTypes.length > 1"></visualization-type-selector>
-  </div>
-</div>
+  <!-- Inner column selection and preview split into its own template for use elsewhere -->
+  <column-and-visualization-selector
+    on-customize-card="customizeCard"
+    dataset-columns="datasetColumns"
+    card-size="dialogState.cardSize"
+    page="page">
+  </column-and-visualization-selector>
 
 <div class="controls">
   <button type="button"

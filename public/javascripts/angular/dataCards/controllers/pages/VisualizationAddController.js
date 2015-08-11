@@ -9,8 +9,8 @@
 
     // Cards always expect to have a page, too painful to remove for now
     var pageBlob = {
-      "cards": [],
-      "datasetId": dataset.id
+      'cards': [],
+      'datasetId': dataset.id
     };
 
     $scope.page = new Page(pageBlob, dataset);

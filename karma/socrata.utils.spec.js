@@ -448,4 +448,30 @@ describe('socrata-utils.js', function() {
       expect(utils.commaify('20000.1234')).to.equal('20,000.1234');
     });
   });
+
+  describe('getCookie', function() {
+
+    beforeEach(function() {
+      document.cookie = 'cookie-type=chocolate-chip;';
+      document.cookie = 'another-cookie=oatmeal raisin;';
+    });
+
+    describe('when passed a cookie name that does not exist', function() {
+
+      it('returns undefined', function() {
+        assert.isUndefined(utils.getCookie('pie'));
+      });
+
+    });
+
+    describe('when passed a cookie name that has one value', function() {
+
+      it('returns one value', function() {
+        assert.equal('chocolate-chip', utils.getCookie('cookie-type'));
+        assert.equal('oatmeal raisin', utils.getCookie('another-cookie'));
+      });
+
+    });
+
+  });
 });

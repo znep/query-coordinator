@@ -417,7 +417,7 @@
           function(response) {
             return response.data;
           },
-          function(errorResponse) {
+          function() {
             return null;
           }
         );

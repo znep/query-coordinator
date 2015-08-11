@@ -1,26 +1,47 @@
-(function(window) {
+(function(root) {
 
   'use strict';
 
-  if (!window.socrata || !window.socrata.utils) {
+  if (!root.socrata || !root.socrata.utils) {
     throw new Error(
       'The `socrata-utils` package is a required dependency for `socrata-visualizations`.'
     );
   }
 
-  window.socrata.visualizations = window.socrata.visualizations || {};
+  if (!_.has(root, 'jQuery')) {
+    throw new Error('jQuery is a required dependency for `socrata.visualizations.Visualization.js`.');
+  }
+
+  var utils = root.socrata.utils;
+
+  root.socrata.visualizations = root.socrata.visualizations || {};
 
   function Visualization(element, config) {
 
-    var _config;
+    var _defaultConfig = {
+      localization: {},
+      axisLabels: {
+        top: false,
+        right: false,
+        bottom: false,
+        left: false
+      }
+    }
+    var _config =_.merge(_defaultConfig, config);
 
-    _config = config;
-    _config.localization = _config.localization || {};
+    utils.assertIsOneOfTypes(_config.axisLabels.top, 'boolean', 'string');
+    utils.assertIsOneOfTypes(_config.axisLabels.right, 'boolean', 'string');
+    utils.assertIsOneOfTypes(_config.axisLabels.bottom, 'boolean', 'string');
+    utils.assertIsOneOfTypes(_config.axisLabels.left, 'boolean', 'string');
 
     this.element = element;
 
-    this.getConfig = function() {
-      return _config;
+    /**
+     * Public methods
+     */
+
+    this.getAxisLabels = function() {
+      return _config.axisLabels;
     };
 
     this.getLocalization = function(key) {
@@ -38,25 +59,29 @@
 
     this.emitEvent = function(name, payload) {
       this.element[0].dispatchEvent(
-        new window.CustomEvent(
+        new root.CustomEvent(
           name,
           { detail: payload, bubbles: true }
         )
       );
     };
 
+    /**
+     * Private methods
+     */
+
     function _logWarning(message) {
-      if (window.console && window.console.warn) {
-        window.console.warn(message);
+      if (root.console && root.console.warn) {
+        root.console.warn(message);
       }
     }
 
     function _logError(message) {
-      if (window.console && window.console.error) {
-        window.console.error(message);
+      if (root.console && root.console.error) {
+        root.console.error(message);
       }
     }
   }
 
-  window.socrata.visualizations.Visualization = Visualization;
+  root.socrata.visualizations.Visualization = Visualization;
 })(window);

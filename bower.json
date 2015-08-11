@@ -18,7 +18,6 @@
     "angular-ui-router": "~0.2.10",
     "chroma-js": "~0.5.6",
     "flexgrid": "ptb/flexgrid",
-    "socrata-utils": "git@github.com:socrata/frontend-utils.git#master",
     "javascript-detect-element-resize": "sdecima/javascript-detect-element-resize#~0.5.3",
     "jquery": "~2.1.1",
     "jQuery.dotdotdot": "~1.7.4",
@@ -31,7 +30,7 @@
     "rxjs": "~2.5",
     "simple-statistics": "~0.8.1",
     "socrata-utils": "git@github.com:socrata/frontend-utils.git#master",
-    "socrata-visualizations": "git@github.com:socrata/frontend-visualizations.git#cmlaidlaw/add-column-chart-visualization",
+    "socrata-visualizations": "git@github.com:socrata/frontend-visualizations.git#master",
     "vector-tile-js": "devTristan/vector-tile-js#~0.1.1"
   },
   "install": {
@@ -70,9 +69,9 @@
       ],
       "socrata-visualizations": [
         "bower_components/socrata-visualizations/socrata.visualizations.Visualization.js",
-        "bower_components/socrata-visualizations/socrata.visualizations.Column.js",
+        "bower_components/socrata-visualizations/socrata.visualizations.ColumnChart.js",
         {
-          "bower_components/socrata-visualizations/socrata.visualizations.Column.css": "../socrata.visualizations.Column.css"
+          "bower_components/socrata-visualizations/socrata.visualizations.columnChart.css": "../socrata.visualizations.columnChart.css"
         }
       ],
       "showdown": "bower_components/showdown/src/showdown.js",

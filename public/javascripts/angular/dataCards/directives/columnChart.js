@@ -222,7 +222,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           'FLYOUT_SELECTED_NOTICE': I18n.flyout.clearFilterLong,
         }
       };
-      var columnChart = new socrata.visualizations.Column(element, columnChartConfig);
+      var columnChart = new socrata.visualizations.ColumnChart(element, columnChartConfig);
 
       Rx.Observable.subscribeLatest(
         element.closest('.card-visualization').observeDimensions().map(function(dimensions) {

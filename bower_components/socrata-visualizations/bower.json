@@ -1,10 +1,12 @@
 {
   "name": "socrata-visualizations",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "main": [
+    "socrata.visualizations.DataProvider.js",
+    "socrata.visualizations.SoqlDataProvider.js",
     "socrata.visualizations.Visualization.js",
-    "socrata.visualizations.Column.js",
-    "socrata.visualizations.column.css"
+    "socrata.visualizations.ColumnChart.js",
+    "socrata.visualizations.columnChart.css"
   ],
   "ignore": [
     "bower_components/",
@@ -13,9 +15,12 @@
     ".gitignore",
     "bower.json",
     "karma.conf.js",
-    "packages.json",
+    "package.json",
     "README.md"
   ],
+  "dependencies": {
+    "socrata-utils": "git@github.com:socrata/frontend-utils.git#master"
+  },
   "devDependencies": {
     "lodash": "~3.10.0",
     "jquery": "~2.1.1",

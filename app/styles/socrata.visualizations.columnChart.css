@@ -2,12 +2,71 @@
  * Layout styles
  */
 
-.column-chart {
+.column-chart-container {
+  position: relative;
   width: 100%;
   height: 100%;
+  font-size: 14px;
+  box-sizing: border-box;
 }
 
-.column-chart .chart-scroll {
+.column-chart-container.top-axis-label {
+  padding-top: 3em;
+}
+
+.column-chart-container.right-axis-label {
+  padding-right: 3em;
+}
+
+.column-chart-container.bottom-axis-label {
+  padding-bottom: 3em;
+}
+
+.column-chart-container.left-axis-label {
+  padding-left: 3em;
+}
+
+.column-chart-container .top-axis-label,
+.column-chart-container .right-axis-label,
+.column-chart-container .bottom-axis-label,
+.column-chart-container .left-axis-label {
+  position: absolute;
+  font-size: 1em;
+  visibility: hidden;
+}
+
+.column-chart-container.top-axis-label .top-axis-label,
+.column-chart-container.right-axis-label .right-axis-label,
+.column-chart-container.bottom-axis-label .bottom-axis-label,
+.column-chart-container.left-axis-label .left-axis-label {
+  visibility: visible;
+}
+
+.column-chart-container .top-axis-label {
+  left: 50%;
+  top: 1.5em;
+  transform: translate(-50%, -0.75em);
+}
+
+.column-chart-container .right-axis-label {
+  right: -1.75em;
+  top: 50%;
+  transform: rotate(-90deg) translate(50%, 0);
+}
+
+.column-chart-container .bottom-axis-label {
+  left: 50%;
+  bottom: 1.5em;
+  transform: translate(-50%, 0.75em);
+}
+
+.column-chart-container .left-axis-label {
+  left: -1.5em;
+  top: 50%;
+  transform: rotate(-90deg) translate(50%, 0);
+}
+
+.column-chart-container .chart-scroll {
   position: absolute;
   left: 0;
   top: 0;
@@ -15,12 +74,18 @@
   overflow-y: hidden;
 }
 
+.column-chart {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
 .column-chart .column-chart-wrapper .truncation-marker {
   position: absolute;
   width: auto;
   right: 0;
   font-family: sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.2em;
   cursor: pointer;
   z-index: 2;
 }
@@ -106,8 +171,8 @@
 .column-chart .labels .label .contents {
   cursor: pointer;
   position: absolute;
-  font-size: 0.85rem;
-  line-height: 1rem;
+  font-size: 0.85em;
+  line-height: 1em;
 }
 
 .column-chart .labels .label .contents.undefined {
@@ -120,11 +185,12 @@
 }
 
 .column-chart .labels .label .icon-close {
-  font-size: 0.5rem;
+  font-size: 0.5em;
 }
 
 .column-chart .labels .label .text {
   display: inline-block;
+  max-width: 10rem;
   vertical-align: top;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -152,7 +218,7 @@
   height: 1rem;
   text-align: right;
   margin-top: -1rem;
-  font-size: 0.75rem;
+  font-size: 0.75em;
 }
 
 /**

@@ -1,18 +1,22 @@
-(function(window) {
+(function(root) {
 
   'use strict';
 
-  if (!_.has(window, 'socrata.visualizations.Visualization')) {
+  if (!_.has(root, 'socrata.visualizations.Visualization')) {
     throw new Error(
       '`{0}` must be loaded before `{1}`'.
         format(
           'socrata.visualizations.Visualization.js',
-          'socrata.visualizations.Column.js'
+          'socrata.visualizations.ColumnChart.js'
         )
     );
   }
 
+  if (!_.has(root, 'd3')) {
+    throw new Error('d3 is a required dependency for `socrata.visualizations.ColumnChart.js`.');
+  }
 
+  // TODO: Figure out how to do this better (and probably not through jQuery).
   $.relativeToPx = function(rems) {
     var $div = $(document.createElement('div')).css('width', rems).appendTo(document.body);
     var width = $div.width();
@@ -22,26 +26,32 @@
     return width;
   };
 
-  function Column(element, config) {
+  function ColumnChart(element, config) {
 
-    _.extend(this, new window.socrata.visualizations.Visualization(element, config));
+    _.extend(this, new root.socrata.visualizations.Visualization(element, config));
 
     var self = this;
+
+    var _chartContainer;
     var _chartElement;
     var _chartWrapper;
     var _chartScroll;
     var _chartLabels;
+    var _chartTopAxisLabel;
+    var _chartRightAxisLabel;
+    var _chartBottomAxisLabel;
+    var _chartLeftAxisLabel;
+
     var _truncationMarker;
     var _lastRenderOptions;
 
     // TODO: Validate columns
-
     var NAME_INDEX = config.columns.name;
     var UNFILTERED_INDEX = config.columns.unfilteredValue;
     var FILTERED_INDEX = config.columns.filteredValue;
     var SELECTED_INDEX = config.columns.selected;
 
-    _renderTemplate(this.element);
+    _renderTemplate(this.element, this.getAxisLabels());
 
     _attachEvents(this.element);
 
@@ -51,7 +61,7 @@
 
     this.render = function(data, options) {
       _lastRenderOptions = options;
-      _renderData(this.element, data, options);
+      _renderData(_chartElement, data, options);
     };
 
     this.destroy = function() {
@@ -62,14 +72,14 @@
      * Private methods
      */
 
-    function _renderTemplate(element) {
+    function _renderTemplate(element, axisLabels) {
 
       var truncationMarker = $(
         '<div>',
         {
           'class': 'truncation-marker'
         }
-      ).html('&raquo;')
+      ).html('&raquo;');
 
       var chartWrapper = $(
         '<div>',
@@ -102,14 +112,89 @@
         }
       ).append(chartScroll);
 
+      var topAxisLabel = $(
+        '<div>',
+        {
+          'class': 'top-axis-label'
+        }
+      );
+
+      var rightAxisLabel = $(
+        '<div>',
+        {
+          'class': 'right-axis-label'
+        }
+      );
+
+      var bottomAxisLabel = $(
+        '<div>',
+        {
+          'class': 'bottom-axis-label'
+        }
+      );
+
+      var leftAxisLabel = $(
+        '<div>',
+        {
+          'class': 'left-axis-label'
+        }
+      );
+
+      var chartContainer = $(
+        '<div>',
+        {
+          'class': 'column-chart-container'
+        }
+      ).append([
+        chartElement,
+        topAxisLabel,
+        rightAxisLabel,
+        bottomAxisLabel,
+        leftAxisLabel
+      ]);
+
+      if (axisLabels.top) {
+
+        chartContainer.addClass('top-axis-label');
+        topAxisLabel.
+          text(axisLabels.top);
+      }
+
+      if (axisLabels.right) {
+
+        chartContainer.addClass('right-axis-label');
+        rightAxisLabel.
+          text(axisLabels.right);
+      }
+
+      if (axisLabels.bottom) {
+
+        chartContainer.addClass('bottom-axis-label');
+        bottomAxisLabel.
+          text(axisLabels.bottom);
+      }
+
+      if (axisLabels.left) {
+
+        chartContainer.addClass('left-axis-label');
+        leftAxisLabel.
+          text(axisLabels.left);
+      }
+
       // Cache element selections
+      _chartContainer = chartContainer;
       _chartElement = chartElement;
       _chartWrapper = chartWrapper;
       _chartScroll = chartScroll;
       _chartLabels = chartLabels;
       _truncationMarker = truncationMarker;
 
-      element.append(chartElement);
+      _chartTopAxisLabel = topAxisLabel;
+      _chartRightAxisLabel = rightAxisLabel;
+      _chartBottomAxisLabel = bottomAxisLabel;
+      _chartLeftAxisLabel = leftAxisLabel;
+
+      element.append(chartContainer);
     }
 
     function _attachEvents(element) {
@@ -195,9 +280,7 @@
         title: _labelValueOrPlaceholder(datum[NAME_INDEX]),
         unfilteredValueLabel: self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL'),
         unfilteredValue: datum[UNFILTERED_INDEX],
-        labelUnit: _lastRenderOptions.labelUnit,
-        selected: datum[SELECTED_INDEX],
-        selectedNotice: self.getLocalization('FLYOUT_SELECTED_NOTICE')
+        labelUnit: _lastRenderOptions.labelUnit
       };
 
       if (_lastRenderOptions.showFiltered) {
@@ -232,12 +315,13 @@
     function _renderData(element, data, options) {
 
       // Cache dimensions and options
-      var dimensions = element[0].getBoundingClientRect();
+      var chartWidth = element.width();
+      var chartHeight = element.height();
       var expanded = options.expanded;
       var labelUnit = options.labelUnit;
       var showFiltered = options.showFiltered;
 
-      if (dimensions.width <= 0 || dimensions.height <= 0) {
+      if (chartWidth <= 0 || chartHeight <= 0) {
         return;
       }
 
@@ -259,13 +343,14 @@
 
       var topMargin = 0; // Set to zero so .card-text could control padding b/t text & visualization
       var bottomMargin; // Calculated based on label text length
-      var horizontalScrollbarHeight = 0;//15; // used to keep horizontal scrollbar within .card-visualization upon expand
+      var horizontalScrollbarHeight = 15; // used to keep horizontal scrollbar within .card-visualization upon expand
       var numberOfDefaultLabels = expanded ? data.length : 3;
       var maximumBottomMargin = 140;
       var d3Selection = d3.select(_chartWrapper.get(0));
-      var barGroupSelection = d3Selection.selectAll('.bar-group').data(data, function(d) { return d[NAME_INDEX]; });
+      // The `_.property(NAME_INDEX)` below is equivalent to `function(d) { return d[NAME_INDEX]; }`
+      var barGroupSelection = d3Selection.selectAll('.bar-group').data(data, _.property(NAME_INDEX));
       var labelSelection = d3.select(_chartLabels[0]).selectAll('.label');
-      var chartWidth = dimensions.width;
+      var chartWidth = chartWidth;
       var chartTruncated = false;
       var truncationMarkerWidth = _truncationMarker.width();
       var fixedLabelWidth = 10.5;
@@ -293,7 +378,7 @@
       // Clamp the bottom margin to a reasonable maximum since long labels are ellipsified.
       bottomMargin = bottomMargin > maximumBottomMargin ? maximumBottomMargin : bottomMargin;
 
-      var chartHeight = Math.max(0, dimensions.height - topMargin - bottomMargin - horizontalScrollbarHeight);
+      var chartHeight = Math.max(0, chartHeight - topMargin - bottomMargin - horizontalScrollbarHeight);
 
       var horizontalScaleDetails = _computeHorizontalScale(chartWidth, data, expanded);
       var horizontalScale = horizontalScaleDetails.scale;
@@ -307,7 +392,7 @@
       var verticalScale = _computeVerticalScale(chartHeight, chartDataRelevantForVerticalScale, showFiltered);
 
       var chartLeftOffset = horizontalScale.range()[0];
-      var chartRightEdge = dimensions.width - chartLeftOffset;
+      var chartRightEdge = chartWidth - chartLeftOffset;
 
       _chartWrapper.css('height', chartHeight + topMargin + 1);
       _chartScroll.css({
@@ -315,13 +400,13 @@
         'padding-bottom': bottomMargin,
         'top': 'initial',
         'width': chartWidth,
-        'height': chartHeight + topMargin
+        'height': chartHeight + topMargin + horizontalScrollbarHeight
       });
 
       var _renderTicks = function() {
 
         var numberOfTicks = 3;
-        var element = $('<div />', {
+        var element = $('<div>', {
           'class': 'ticks',
           css: {
             top: _chartScroll.position().top + topMargin,
@@ -330,7 +415,7 @@
           }
         });
         var tickMarks = _.map(_.uniq([0].concat(verticalScale.ticks(numberOfTicks))), function(tick) {
-          return $('<div/>', {
+          return $('<div>', {
             'class': tick === 0 ? 'origin' : '',
             css: {
               top: chartHeight - verticalScale(tick)
@@ -346,13 +431,21 @@
 
       var updateLabels = function(labelSelection) {
 
-        // Labels come in two sets of column names:
-        //  - Default labels. When the chart is unexpanded, this consists of the
-        //    first three column names in the data.
-        //    When the chart is expanded, this contains all the column names in the data.
-        //  - Selected labels. Contains the names of columns which are selected.
+        /**
+         * Labels come in two sets of column names:
+         *
+         * - Default labels. When the chart is unexpanded, this consists of the
+         *   first three column names in the data. When the chart is expanded,
+         *   this contains all the column names in the data.
+         *
+         * - Selected labels. Contains the names of columns which are selected.
+         */
         var defaultLabelData = _.take(data, numberOfDefaultLabels);
-        var selectedLabelData = data.filter(function(datum) { return datum[SELECTED_INDEX] === true; });
+        var selectedLabelData = data.filter(
+          function(datum) {
+            return datum[SELECTED_INDEX] === true;
+          }
+        );
         var labelData = _.union(defaultLabelData, selectedLabelData);
         var labelOrientationsByIndex = [];
 
@@ -365,19 +458,26 @@
         }
 
         function preComputeLabelOrientation(datum, index) {
+
           var leftHanded = false;
 
           if (!expanded) {
+
             var labelWidth = $(this).find('.contents').width();
             var proposedLeftOfText = horizontalScale(datum[NAME_INDEX]);
 
-            var rangeMagnitude = chartRightEdge - chartLeftOffset;
-            var spaceAvailableOnRight = rangeMagnitude - (proposedLeftOfText - chartLeftOffset);
-            var spaceAvailableOnLeft = proposedLeftOfText - chartLeftOffset;
+            var rangeMagnitude = (chartRightEdge - chartLeftOffset);
 
-            var spaceRemainingOnRight = spaceAvailableOnRight - labelWidth;
+            var spaceAvailableOnLeft = (proposedLeftOfText - chartLeftOffset);
 
-            leftHanded = spaceRemainingOnRight <= 10 && spaceAvailableOnLeft > spaceAvailableOnRight;
+            var spaceAvailableOnRight = rangeMagnitude -
+              proposedLeftOfText -
+              chartLeftOffset;
+
+            var spaceRemainingOnRight = (spaceAvailableOnRight - labelWidth);
+
+            leftHanded = (spaceRemainingOnRight <= 10) &&
+              (spaceAvailableOnLeft > spaceAvailableOnRight);
           }
 
           labelOrientationsByIndex[index] = leftHanded;
@@ -396,11 +496,8 @@
         var verticalPositionOfSelectedLabelRem = 2;
         var labelMargin = 0.75;
         var selectedLabelMargin = -0.4;
-
-        var labelDivSelection = labelSelection.data(
-          labelData,
-          function (datum) { return datum[NAME_INDEX]; }
-        );
+        // The `_.property(NAME_INDEX)` below is equivalent to `function(d) { return d[NAME_INDEX]; }`
+        var labelDivSelection = labelSelection.data(labelData, _.property(NAME_INDEX));
 
         var labelDivSelectionEnter = labelDivSelection.
           enter().
@@ -682,30 +779,26 @@
       var valueText;
 
       if ($.isNumeric(value)) {
-
         return value;
-
       } else if (_.isNaN(value)) {
-
         return placeholderText;
-
       }
 
       if (_.isBoolean(value)) {
-
         valueText = value.toString();
-
       }
 
       valueText = String(value) || '';
 
-      return socrata.utils.valueIsBlank(valueText.trim().escapeSpaces()) ? placeholderText : valueText;
+      return socrata.utils.valueIsBlank(valueText.trim().escapeSpaces()) ?
+        placeholderText :
+        valueText;
     }
 
     function _computeDomain(chartData, showFiltered) {
 
       var allData = chartData.map(function(d) { return d[UNFILTERED_INDEX]; }).concat(
-        showFiltered ? chartData.map(function(d) { return d[UNFILTERED_INDEX]; }) : []
+        showFiltered ? chartData.map(function(d) { return d[FILTERED_INDEX]; }) : []
       );
 
       function _makeDomainIncludeZero(domain) {
@@ -758,19 +851,18 @@
 
       _computeChartDimensionsForRangeInterval(chartWidth);
 
-      /*
-      According to the D3 API reference for Ordinal Scales#rangeBands
-      (https://github.com/mbostock/d3/wiki/Ordinal-Scales#ordinal_rangeBands):
-
-      for the method, ordinal.rangeBands(barWidth[, barPadding[, outerPadding]]) = rangeInterval
-
-      barPadding corresponds to the amount of space in the rangeInterval as a percentage of rangeInterval (width in px)
-      ==> rangeInterval = barPadding * rangeInterval + numberOfBars * barWidth
-      ==> (1 - barPadding) * rangeInterval = numberOfBars * barWidth
-      ==> rangeInterval = (numberOfBars * barWidth) / (1 - barPadding)
-
-      */
-
+      /**
+       * According to the D3 API reference for Ordinal Scales#rangeBands
+       * (https://github.com/mbostock/d3/wiki/Ordinal-Scales#ordinal_rangeBands):
+       *
+       * For the method `ordinal.rangeBands(barWidth[, barPadding[, outerPadding]]) = rangeInterval`
+       * `barPadding` corresponds to the amount of space in the `rangeInterval` as a percentage of
+       * `rangeInterval` (width in px):
+       *
+       * => rangeInterval = barPadding * rangeInterval + numberOfBars * barWidth
+       * => (1 - barPadding) * rangeInterval = numberOfBars * barWidth
+       * => rangeInterval = (numberOfBars * barWidth) / (1 - barPadding)
+       */
       if (rangeBand < minBarWidth) {
         // --> desired rangeBand (bar width) is less than accepted minBarWidth
         // use computeChartDimensionsForRangeInterval to set rangeBand = minBarWidth
@@ -792,5 +884,5 @@
     }
   }
 
-  window.socrata.visualizations.Column = Column;
+  root.socrata.visualizations.ColumnChart = ColumnChart;
 })(window);

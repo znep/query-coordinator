@@ -1,0 +1,37 @@
+{
+  "name": "airbrake-js-client",
+  "version": "0.5.2",
+  "homepage": "https://github.com/airbrake/airbrake-js",
+  "authors": [
+    "Exceptional"
+  ],
+  "description": "Notify Airbrake on JavaScript exceptions",
+  "main": "dist/client.js",
+  "ignore": [
+    "test/**",
+    "*.coffee",
+    "package.json",
+    ".gitignore"
+  ],
+  "moduleType": [
+    "amd",
+    "globals"
+  ],
+  "keywords": [
+    "exception",
+    "error",
+    "airbrake",
+    "exceptional"
+  ],
+  "license": "MIT",
+  "_release": "0.5.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.5.2",
+    "commit": "c56f3e11b638f908bb058b4e802712c0e812d9c3"
+  },
+  "_source": "git://github.com/airbrake/airbrake-js.git",
+  "_target": "~0.5.2",
+  "_originalSource": "airbrake-js-client",
+  "_direct": true
+}

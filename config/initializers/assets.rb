@@ -15,3 +15,4 @@ Rails.application.config.assets.paths << Rails.root.join('vendor', 'assets', 'co
 Rails.application.config.assets.precompile += %w( editor.js )
 Rails.application.config.assets.precompile += %w( AssetFinder.js )
 Rails.application.config.assets.precompile += %w( rich-text-editor-iframe/rich-text-editor-iframe.css )
+Rails.application.config.assets.precompile += %w( airbrake-js-client/dist/client.js )

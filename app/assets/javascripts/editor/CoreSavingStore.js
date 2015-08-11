@@ -208,7 +208,11 @@
      * @return {promise<object>}
      */
     function _getViewMetadataFromCore(storyUid) {
-      return $.get('/views/{0}.json'.format(storyUid));
+      return $.ajax({
+        type: 'GET',
+        url: '/views/{0}.json'.format(storyUid),
+        headers: _coreRequestHeaders()
+      });
     }
 
     /**
@@ -224,10 +228,21 @@
       return $.ajax({
         type: 'PUT',
         contentType: 'json',
+        headers: _coreRequestHeaders(),
         dataType: 'json',
         url: '/views/{0}.json'.format(newData.id),
         data: JSON.stringify(newData)
       });
+    }
+
+    function _coreRequestHeaders() {
+      var headers = {};
+
+      if (!_.isUndefined(storyteller.config.coreServiceAppToken)) {
+        headers['X-App-Token'] = storyteller.config.coreServiceAppToken;
+      }
+
+      return headers;
     }
   }
 

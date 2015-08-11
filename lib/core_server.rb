@@ -139,6 +139,10 @@ class CoreServer
 
     options[:headers] = {} unless options.has_key?(:headers)
 
+    unless Rails.application.config.core_service_app_token.blank?
+      options[:headers]['X-App-Token'] = Rails.application.config.core_service_app_token
+    end
+
     core_server_address = Rails.application.config.core_service_uri
 
     uri = Addressable::URI.parse("#{core_server_address}#{options[:path]}")

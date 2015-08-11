@@ -1,6 +1,6 @@
 (function(window) {
 
-  if (!window._ || _.prototype.constructor.toString().match(/lodash/i) === null) {
+  if (typeof window._ !== 'function') {
     throw new Error('lodash is a required dependency for `socrata-utils.js`.');
   }
 

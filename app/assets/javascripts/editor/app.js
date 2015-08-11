@@ -3,9 +3,23 @@ $(document).on('ready', function() {
   'use strict';
 
   var storyteller = window.socrata.storyteller
+
   /**
    * Setup
    */
+
+  var airbrakeOptions = {
+    'projectKey': storyteller.config.getAirbrakeConfig('projectKey'),
+    'projectId': storyteller.config.getAirbrakeConfig('projectId')
+  };
+
+  if (airbrakeOptions.projectKey !== null) {
+    storyteller.airbrake = new airbrakeJs.Client(airbrakeOptions);
+    storyteller.airbrake.addFilter(function(notice) {
+      notice.context.environment = storyteller.config.getAirbrakeConfig('environment');
+      return notice;
+    });
+  }
 
   storyteller.assetFinder = new storyteller.AssetFinder();
 

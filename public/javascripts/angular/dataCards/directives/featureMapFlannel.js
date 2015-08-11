@@ -113,6 +113,13 @@
           });
         }
 
+        function setScrollableStatus() {
+          // Ensure current flannel scroll bar width is retrieved after the flannel is rendered
+          $timeout(function() {
+            scope.isScrollable = getFlannelScrollbarWidth() > 0;
+          });
+        }
+
         // No rows to show initially (when query pending)
         scope.currentIndex = -1;
         scope.$watch('currentIndex', function(index) {
@@ -121,6 +128,7 @@
             scope.selectedRow = scope.rows[index];
             scope.showingMessage = I18n.t('featureMapFlannel.showing', scope.rowDisplayUnit, index + 1, scope.rows.length);
             setCloseButtonPosition();
+            setScrollableStatus();
           }
         });
 

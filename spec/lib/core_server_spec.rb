@@ -17,7 +17,7 @@ describe CoreServer do
 
     it 'returns Cookie, X-CSRF-Token, and X-Socrata-Host headers' do
       result = CoreServer.headers_from_request(request)
-      expect(result).to include(
+      expect(result).to match(
         'X-Socrata-Host' => request_host,
         'X-CSRF-Token' => csrf_token,
         'Cookie' => http_cookie
@@ -29,7 +29,7 @@ describe CoreServer do
 
       it 'returns Cookie and X-Socrata-Host headers' do
         result = CoreServer.headers_from_request(request)
-        expect(result).to include(
+        expect(result).to match(
           'X-Socrata-Host' => request_host,
           'Cookie' => http_cookie
         )

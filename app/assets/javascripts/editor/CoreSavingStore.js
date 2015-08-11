@@ -238,9 +238,10 @@
     function _coreRequestHeaders() {
       var headers = {};
 
-      if (!_.isUndefined(storyteller.config.coreServiceAppToken)) {
-        headers['X-App-Token'] = storyteller.config.coreServiceAppToken;
-      }
+      utils.assertIsOneOfTypes(storyteller.config.coreServiceAppToken, 'string');
+
+      headers['X-App-Token'] = storyteller.config.coreServiceAppToken;
+      headers['X-CSRF-Token'] = utils.getCookie('socrata-csrf-token');
 
       return headers;
     }

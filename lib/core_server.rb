@@ -21,14 +21,23 @@ class CoreServer
     core_server_request_with_retries(core_server_request_options)
   end
 
-  # Generate Cookie and X-Socrata-Host headers from the given request.
+  # Generate Cookie, X-CSRF-Token, and X-Socrata-Host headers from the given request.
   def self.headers_from_request(request)
-    authentication_cookie = request.env['HTTP_COOKIE']
+    headers = {}
 
-    {
-      'Cookie' => authentication_cookie,
-      'X-Socrata-Host' => request.host
-    }
+    authentication_cookie = request.env['HTTP_COOKIE']
+    parsed_cookie = CGI::Cookie.parse(authentication_cookie)
+
+    csrf_token = nil
+    unless parsed_cookie['socrata-csrf-token'].empty?
+      csrf_token = parsed_cookie['socrata-csrf-token'].first
+    end
+
+    headers['Cookie'] = authentication_cookie
+    headers['X-Socrata-Host'] = request.host
+    headers['X-CSRF-Token'] = csrf_token unless csrf_token.blank?
+
+    headers
   end
 
   private

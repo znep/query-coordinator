@@ -1,21 +1,39 @@
 require 'spec_helper'
 
 describe CoreServer do
+  let(:csrf_token) { 'the_csrf_token' }
+  let(:http_cookie) { "_core_session_id=bobloblaw; socrata-csrf-token=#{csrf_token}" }
+  let(:request_host) { 'data.monkeybusiness.gov' }
+
   describe '#headers_from_request' do
     let(:request) do
       double('request',
         :env => {
-          'HTTP_COOKIE' => 'a cookie'
+          'HTTP_COOKIE' => http_cookie
         },
-        :host => 'a host'
+        :host => request_host
       )
     end
-    it 'returns Cookie and X-Socrata-Host headers' do
+
+    it 'returns Cookie, X-CSRF-Token, and X-Socrata-Host headers' do
       result = CoreServer.headers_from_request(request)
-      expect(result).to include(
-        'X-Socrata-Host' => 'a host',
-        'Cookie' => 'a cookie'
+      expect(result).to match(
+        'X-Socrata-Host' => request_host,
+        'X-CSRF-Token' => csrf_token,
+        'Cookie' => http_cookie
       )
+    end
+
+    context 'when cookie does not contain csrf token' do
+      let(:http_cookie) { "_core_session_id=bobloblaw" }
+
+      it 'returns Cookie and X-Socrata-Host headers' do
+        result = CoreServer.headers_from_request(request)
+        expect(result).to match(
+          'X-Socrata-Host' => request_host,
+          'Cookie' => http_cookie
+        )
+      end
     end
   end
 
@@ -24,8 +42,9 @@ describe CoreServer do
     let(:app_token) { 'the_app_token' }
     let(:headers) do
       {
-        'Cookie' => '_core_session_id=bobloblaw',
-        'X-Socrata-Host' => 'data.monkeybusiness.gov'
+        'Cookie' => http_cookie,
+        'X-CSRF-Token' => csrf_token,
+        'X-Socrata-Host' => request_host
       }
     end
 
@@ -78,6 +97,7 @@ describe CoreServer do
   def injected_headers
     {
       'X-App-Token' => app_token,
+      'X-CSRF-Token' => csrf_token,
       'Content-type' => 'application/json'
     }
   end

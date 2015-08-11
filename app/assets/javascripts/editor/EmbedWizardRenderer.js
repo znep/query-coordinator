@@ -490,7 +490,13 @@
 
 
       configureVisualizationIframe[0].onVisualizationSelected = function(datasetObj) {
-        $(this).trigger('visualizationSelected', datasetObj);
+        // This function is called by the visualization chooser when:
+        //   - The user makes or clears a selection (argument is either null or a visualization).
+        //   - The page finishes loading (argument is null).
+        // In either case, we should consider the iframe loaded.
+        $(this).
+          removeClass('bg-loading-spinner').
+          trigger('visualizationSelected', datasetObj);
       }
 
       return [ heading, closeButton, configureVisualizationIframe, buttonGroup ];

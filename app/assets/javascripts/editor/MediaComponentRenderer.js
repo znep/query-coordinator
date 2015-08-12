@@ -16,13 +16,11 @@
 
   var _embedComponentTemplateRenderers = {
     'wizard': _renderEmbedWizardComponentTemplate,
-    'youtube': _renderEmbedYouTubeComponentTemplate,
-    'socrata': _.noop
+    'youtube': _renderEmbedYouTubeComponentTemplate
   };
   var _embedComponentDataRenderers = {
     'wizard': _renderEmbedWizardComponentData,
-    'youtube': _renderEmbedYouTubeComponentData,
-    'socrata': _.noop
+    'youtube': _renderEmbedYouTubeComponentData
   };
 
   function _renderTemplate(componentOptions) {

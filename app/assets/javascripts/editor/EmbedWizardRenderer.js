@@ -476,11 +476,13 @@
       var closeButton = _renderModalCloseButton();
       var backButton = _renderModalBackButton(Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION);
 
+      // TODO: Map insert button to APPLY instead of CLOSE, and share insert button
+      // into shared function
       var insertButton = $(
         '<button>',
         {
           'class': 'btn accent-btn',
-          'data-embed-action': Constants.EMBED_WIZARD_APPLY,
+          'data-embed-action': Constants.EMBED_WIZARD_CLOSE,
           'disabled': 'disabled'
         }
       ).text(I18n.t('editor.embed_wizard.insert_button_text'));
@@ -511,7 +513,7 @@
       var currentIframeSrc = iframeElement.attr('src');
       var newIframeSrc = _visualizationChooserUrl(componentProperties.settings.datasetUid);
       var insertButton = _dialog.find(
-        '[data-embed-action="' + Constants.EMBED_WIZARD_APPLY + '"]'
+        '[data-embed-action="' + Constants.EMBED_WIZARD_CLOSE + '"]'
       );
 
       if (currentIframeSrc !== newIframeSrc) {

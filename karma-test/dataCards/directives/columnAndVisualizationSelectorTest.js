@@ -335,39 +335,37 @@ describe('columnAndVisualizationSelectorTest', function() {
       });
     });
 
-    describe('that supports customization', function() {
-      describe('customize button', function() {
-        function findButton() {
-          return directive.element.find('.add-card-controls .add-card-settings');
-        }
+    describe('customize button', function() {
+      function findButton() {
+        return directive.element.find('.add-card-controls .add-card-settings');
+      }
 
-        it('should be visible', function() {
-          var directive = createDirective();
-          var customizeButton = findButton();
+      it('should be visible if the selected card is customizable', function() {
+        var directive = createDirective();
+        var customizeButton = findButton();
 
-          // This button should only appear for cards that support it
-          expect(customizeButton).to.have.length(0);
+        // With no card selected, the button should be hidden.
+        expect(customizeButton).to.have.length(0);
 
-          directive.element.find('select > option[value="bar"]').prop('selected', true).trigger('change');
+        // With a non-customizable card selected, the button should be hidden.
+        directive.element.find('select > option[value="bar"]').prop('selected', true).trigger('change');
 
-          // Button should still be hidden.
-          customizeButton = findButton();
-          expect(customizeButton).to.have.length(0);
+        customizeButton = findButton();
+        expect(customizeButton).to.have.length(0);
 
-          // Now select the choropleth
-          directive.element.find('select > option[value="ward"]').prop('selected', true).trigger('change');
+        // With a customizable card selected, the button should show.
+        directive.element.find('select > option[value="ward"]').prop('selected', true).trigger('change');
 
-          customizeButton = findButton();
-          expect(customizeButton).to.have.length(1);
-          expect(customizeButton).to.be.visible;
+        customizeButton = findButton();
+        expect(customizeButton).to.have.length(1);
+        expect(customizeButton).to.be.visible;
 
-          /* Technically, there should be a flyout here. But since we're using the same mechanism to give
-           * this button a flyout, as we are for the other card-controls in a card-layout, the flyout is
-           * only registered in the card-layout code. So just test to make sure the conditions are met for
-           * the card-layout-registered flyout to work.
-           */
-          expect(customizeButton.prop('title')).to.match(/customize this card/i);
-        });
+        /* Technically, there should be a flyout here. But since we're using the same mechanism to give
+         * this button a flyout, as we are for the other card-controls in a card-layout, the flyout is
+         * only registered in the card-layout code. So just test to make sure the conditions are met for
+         * the card-layout-registered flyout to work.
+         */
+        expect(customizeButton.prop('title')).to.match(/customize this card/i);
       });
     });
   });

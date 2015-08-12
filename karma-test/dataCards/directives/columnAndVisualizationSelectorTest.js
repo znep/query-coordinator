@@ -393,4 +393,38 @@ describe('columnAndVisualizationSelectorTest', function() {
       });
     });
   });
+
+  describe('datasetColumns scope variable', function() {
+
+    it('should add non-subcolumns to the available columns', function() {
+      var directive = createDirective();
+
+      var currentColumns = directive.scope.page.
+        getCurrentValue('dataset').
+        getCurrentValue('columns');
+
+      expect(directive.scope.datasetColumns.available.sort()).to.
+        deep.equal(_.keys(currentColumns).sort());
+    });
+
+    it('should not add subcolumns to the available columns', function() {
+      var directive = createDirective();
+
+      var currentColumns = directive.scope.page.
+        getCurrentValue('dataset').
+        getCurrentValue('columns');
+
+      var newColumns = _.map(currentColumns, function(column) {
+        column.isSubcolumn = true;
+        return column;
+      });
+
+      directive.scope.page.
+        getCurrentValue('dataset').
+        set('columns', newColumns);
+
+      expect(directive.scope.datasetColumns.available.length).to.equal(0);
+    });
+
+  });
 });

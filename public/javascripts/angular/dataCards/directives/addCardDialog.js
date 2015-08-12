@@ -6,7 +6,6 @@
       restrict: 'E',
       scope: {
         page: '=',
-        datasetColumns: '=',
         dialogState: '='
       },
       templateUrl: '/angular_templates/dataCards/addCardDialog.html',

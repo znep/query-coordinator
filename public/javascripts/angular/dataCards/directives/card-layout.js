@@ -53,7 +53,6 @@
         editMode: '=',
         chooserMode: '=',
         globalWhereClauseFragment: '=',
-        datasetColumns: '=',
         allowAddCard: '='
       },
       templateUrl: '/angular_templates/dataCards/card-layout.html',

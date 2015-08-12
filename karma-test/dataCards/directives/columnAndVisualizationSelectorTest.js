@@ -343,15 +343,16 @@ describe('columnAndVisualizationSelectorTest', function() {
 
         it('should be visible', function() {
           var directive = createDirective();
-          var customizeButton;
+          var customizeButton = findButton();
 
           // This button should only appear for cards that support it
-          expect(findButton()).to.have.length(0);
+          expect(customizeButton).to.have.length(0);
 
           directive.element.find('select > option[value="bar"]').prop('selected', true).trigger('change');
 
           // Button should still be hidden.
-          expect(findButton()).to.have.length(0);
+          customizeButton = findButton();
+          expect(customizeButton).to.have.length(0);
 
           // Now select the choropleth
           directive.element.find('select > option[value="ward"]').prop('selected', true).trigger('change');

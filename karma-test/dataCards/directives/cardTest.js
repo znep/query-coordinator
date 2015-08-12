@@ -345,7 +345,7 @@ describe('card directive', function() {
         });
       });
 
-      describe('and the directive is not in edit mode', function() {
+      describe('and the directive is in edit mode', function() {
         beforeEach(function() {
           directive.scope.editMode = true;
           directive.scope.$digest();

@@ -12,6 +12,29 @@
 {
   "blocks": [
     {
+      "imagePreview": "<%= asset_path("editor/iconic-blocks/magic-12.svg") %>",
+      "blockContent": {
+        "id": "sample0",
+        "layout": "12",
+        "components": [
+          {
+            "type": "socrataVisualization",
+            "value": {
+              "type": "column",
+              "value": {
+                "dataSource": {
+                  "type": "soql",
+                  "domain": "dataspace.demo.socrata.com",
+                  "fourByFour": "r6t9-rak2",
+                  "baseQuery": "SELECT `category` AS {0}, COUNT(*) AS {1} GROUP BY `category` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
       "imagePreview": "<%= asset_path("editor/iconic-blocks/title-12.svg") %>",
       "blockContent": {
         "id": "sample1",

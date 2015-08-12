@@ -33,3 +33,9 @@ en:
             button_text: 'Vizualization'
             choose_dataset_heading: 'Choose a dataset to visualize'
             configure_vizualization_heading: 'Configure your visualization'
+    visualizations:
+      no_value_placeholder: '(No value)'
+      flyout:
+        unfiltered_amount_label: 'Total: '
+        filtered_amount_label: 'Filtered: '
+        datum_selected_label: 'This column is currently selected.'

@@ -1,0 +1,39 @@
+{
+  "name": "socrata-visualizations",
+  "main": [
+    "socrata.visualizations.DataProvider.js",
+    "socrata.visualizations.SoqlDataProvider.js",
+    "socrata.visualizations.Visualization.js",
+    "socrata.visualizations.Column.js",
+    "socrata.visualizations.column.css"
+  ],
+  "ignore": [
+    "bower_components/",
+    "karma/",
+    "node_modules/",
+    ".gitignore",
+    "bower.json",
+    "karma.conf.js",
+    "package.json",
+    "README.md"
+  ],
+  "dependencies": {
+    "socrata-utils": "git@github.com:socrata/frontend-utils.git#master"
+  },
+  "devDependencies": {
+    "lodash": "~3.10.0",
+    "jquery": "~2.1.1",
+    "d3": "~3.5.6"
+  },
+  "homepage": "https://github.com/socrata/frontend-visualizations",
+  "_release": "4a9dd8f022",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "4a9dd8f022f2a8c365bb3f3ed50f5de20e38d6e3"
+  },
+  "_source": "git@github.com:socrata/frontend-visualizations.git",
+  "_target": "master",
+  "_originalSource": "git@github.com:socrata/frontend-visualizations.git",
+  "_direct": true
+}

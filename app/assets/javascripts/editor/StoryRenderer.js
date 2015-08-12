@@ -4,10 +4,11 @@
 
   function StoryRenderer(options) {
 
+    var dispatcher = storyteller.dispatcher;
     var TextComponentRenderer = storyteller.TextComponentRenderer;
     var MediaComponentRenderer = storyteller.MediaComponentRenderer;
+    var SocrataVisualizationComponentRenderer = storyteller.SocrataVisualizationComponentRenderer;
     var LayoutComponentRenderer = storyteller.LayoutComponentRenderer;
-    var dispatcher = storyteller.dispatcher;
 
     var storyUid = options.storyUid || null;
     var container = options.storyContainerElement || null;
@@ -18,11 +19,19 @@
     var componentTemplateRenderers = {
       'text': TextComponentRenderer.renderTemplate,
       'media': MediaComponentRenderer.renderTemplate,
+      'socrataVisualization': SocrataVisualizationComponentRenderer.renderTemplate,
       'layout': LayoutComponentRenderer.renderTemplate
+    };
+    var componentTemplateCheckers = {
+      'text': TextComponentRenderer.canReuseTemplate,
+      'media': MediaComponentRenderer.canReuseTemplate,
+      'socrataVisualization': SocrataVisualizationComponentRenderer.canReuseTemplate,
+      'layout': LayoutComponentRenderer.canReuseTemplate
     };
     var componentDataRenderers = {
       'text': TextComponentRenderer.renderData,
       'media': MediaComponentRenderer.renderData,
+      'socrataVisualization': SocrataVisualizationComponentRenderer.renderData,
       'layout': LayoutComponentRenderer.renderData
     };
     var elementCache = new storyteller.StoryRendererElementCache();
@@ -317,9 +326,26 @@
           storyStore.
           getBlockComponents(blockId).
           forEach(function(componentDatum, i) {
+
             if (componentDatum.type === 'text') {
+
               var editorId = blockId + '-' + i;
+
               storyteller.richTextEditorManager.deleteEditor(editorId);
+            }
+
+            if (componentDatum.type === 'socrataVisualization') {
+
+              var componentElement = elementCache.getComponent(blockId, i);
+              var destroyVisualizationEvent = new window.CustomEvent(
+                Constants.SOCRATA_VISUALIZATION_DESTROY,
+                {
+                  detail: {},
+                  bubbles: false
+                }
+              );
+
+              componentElement[0].dispatchEvent(destroyVisualizationEvent);
             }
           });
 
@@ -555,8 +581,9 @@
 
       var element = elementCache.getBlock(blockId);
       var componentData = storyteller.storyStore.getBlockComponents(blockId);
-      var componentContainer;
       var existingComponent;
+      var componentContainer;
+      var canReuseTemplate = false;
       var componentWidth;
       var componentClasses;
       var componentOptions;
@@ -569,16 +596,24 @@
         //
         // Component containers are not currently cached, so we do a `.find()`
         // against the cached block element.
-        componentContainer = element.find('.component-container[data-component-index="' + i + '"]');
 
-        if (!_canUseTemplate(componentDatum, componentContainer)) {
+        existingComponent = elementCache.getComponent(blockId, i);
 
-          existingComponent = elementCache.getComponent(blockId, i);
+        if (existingComponent) {
+
+          canReuseTemplate = componentTemplateCheckers[componentDatum.type](
+            existingComponent,
+            componentDatum.value
+          );
+        }
+
+        if (!canReuseTemplate) {
 
           if (existingComponent) {
             existingComponent.remove();
           }
 
+          componentContainer = element.find('.component-container[data-component-index="' + i + '"]');
           componentWidth = componentContainer.attr('data-component-layout-width');
           componentClasses = ['component', componentDatum.type].join(' ');
 
@@ -594,51 +629,14 @@
 
           newTemplate = componentTemplateRenderers[componentOptions.componentType](componentOptions);
 
+          newTemplate.attr('data-block-id', blockId);
+          newTemplate.attr('data-component-index', i);
+
           componentContainer.append(newTemplate);
 
           elementCache.setComponent(blockId, i, newTemplate);
         }
       });
-    }
-
-    /**
-     * Component data renderers bind component data to existing
-     * component templates.
-     */
-
-    function _canUseTemplate(componentDatum, componentContainer) {
-
-      var componentElement = componentContainer.children('.component').eq(0);
-      var renderedTemplate = componentElement.attr('data-rendered-template');
-      var renderedEmbedProvider;
-      var canUseTemplate = false;
-
-      if (componentDatum.type === renderedTemplate) {
-
-        if (componentDatum.type === 'media') {
-
-          if (componentDatum.value.type === 'embed') {
-
-            renderedEmbedProvider = componentElement.attr('data-rendered-media-embed-provider');
-
-            if (componentDatum.value.value.provider === renderedEmbedProvider) {
-              canUseTemplate = true;
-            }
-
-          } else {
-
-            canUseTemplate = true;
-
-          }
-
-        } else {
-
-          canUseTemplate = true;
-
-        }
-      }
-
-      return canUseTemplate;
     }
 
     function _renderBlockComponentsData(blockId) {

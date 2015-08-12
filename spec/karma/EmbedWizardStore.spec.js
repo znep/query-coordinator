@@ -208,7 +208,7 @@ describe('EmbedWizardStore', function() {
         });
       });
 
-      it('does not change currentComponendValue if payload has no cardData', function() {
+      it('does not change currentComponentValue if payload has no cardData', function() {
         assert.doesNotChange(function() {
             storyteller.dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_UPDATE_VISUALIZATION_CONFIGURATION,

@@ -62,17 +62,19 @@ describe('EmbedWizardRenderer', function() {
 
   describe('event handlers', function() {
 
+    beforeEach(function() {
+      var renderer = new EmbedWizardRenderer(options);
+    });
+
     it('dispatches an `EMBED_WIZARD_CLOSE` action when the escape key is pressed', function(done) {
 
-      var renderer = new EmbedWizardRenderer(options);
-
-      window.socrata.storyteller.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
-      window.socrata.storyteller.dispatcher.register(function(payload) {
+      storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Constants.EMBED_WIZARD_CLOSE);
         done();
@@ -86,15 +88,13 @@ describe('EmbedWizardRenderer', function() {
 
     it('dispatches an `EMBED_WIZARD_CLOSE` action when the overlay is clicked', function(done) {
 
-      var renderer = new EmbedWizardRenderer(options);
-
-      window.socrata.storyteller.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
-      window.socrata.storyteller.dispatcher.register(function(payload) {
+      storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Constants.EMBED_WIZARD_CLOSE);
         done();
@@ -105,15 +105,13 @@ describe('EmbedWizardRenderer', function() {
 
     it('dispatches an `EMBED_WIZARD_CLOSE` action when the modal dialog close button is clicked', function(done) {
 
-      var renderer = new EmbedWizardRenderer(options);
-
-      window.socrata.storyteller.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
-      window.socrata.storyteller.dispatcher.register(function(payload) {
+      storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Constants.EMBED_WIZARD_CLOSE);
         done();
@@ -124,13 +122,11 @@ describe('EmbedWizardRenderer', function() {
 
     it('dispatches an `EMBED_WIZARD_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a url character', function(done) {
 
-      var renderer = new EmbedWizardRenderer(options);
-
-      window.socrata.storyteller.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
       });
 
-      window.socrata.storyteller.dispatcher.register(function(payload) {
+      storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL);
         assert.equal(payload.url, '');
@@ -145,13 +141,11 @@ describe('EmbedWizardRenderer', function() {
 
     it('dispatches an `EMBED_WIZARD_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a delete key', function(done) {
 
-      var renderer = new EmbedWizardRenderer(options);
-
-      window.socrata.storyteller.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
       });
 
-      window.socrata.storyteller.dispatcher.register(function(payload) {
+      storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL);
         assert.equal(payload.url, '');
@@ -166,13 +160,11 @@ describe('EmbedWizardRenderer', function() {
 
     it('dispatches an `EMBED_WIZARD_UPDATE_YOUTUBE_URL` action on a cut event from the youtube url input control', function(done) {
 
-      var renderer = new EmbedWizardRenderer(options);
-
-      window.socrata.storyteller.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
       });
 
-      window.socrata.storyteller.dispatcher.register(function(payload) {
+      storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL);
         assert.equal(payload.url, '');
@@ -184,13 +176,11 @@ describe('EmbedWizardRenderer', function() {
 
     it('dispatches an `EMBED_WIZARD_UPDATE_YOUTUBE_URL` action on a paste event from the youtube url input control', function(done) {
 
-      var renderer = new EmbedWizardRenderer(options);
-
-      window.socrata.storyteller.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
       });
 
-      window.socrata.storyteller.dispatcher.register(function(payload) {
+      storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
         assert.equal(action, Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL);
         assert.equal(payload.url, '');
@@ -198,6 +188,38 @@ describe('EmbedWizardRenderer', function() {
       });
 
       container.find('[data-embed-wizard-validate-field="youTubeId"]').trigger('paste');
+    });
+
+    it('dispatches `EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET` on a datasetSelected event', function(done) {
+
+      storyteller.dispatcher.register(function(payload) {
+        var action = payload.action;
+        assert.equal(action, Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET);
+        // the values will be empty, but assert that the event adds the keys
+        assert.property(payload, 'datasetUid');
+        assert.property(payload, 'isNewBackend');
+        done();
+      });
+
+      container.find('.modal-dialog').trigger('datasetSelected', {});
+    });
+
+    it('dispatches `EMBED_WIZARD_UPDATE_VISUALIZATION_CONFIGURATION` on a visualizationSelected event', function(done) {
+      // add dataset so the proper component values are there for updating
+      storyteller.dispatcher.dispatch({
+        action: Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET,
+        datasetUid: standardMocks.validStoryUid,
+        isNewBackend: true
+      });
+
+      storyteller.dispatcher.register(function(payload) {
+        assert.equal(payload.action, Constants.EMBED_WIZARD_UPDATE_VISUALIZATION_CONFIGURATION);
+        // the values will be empty, but assert that the event adds the correct keys
+        assert.property(payload, 'cardData');
+        done();
+      });
+
+      container.find('.modal-dialog').trigger('visualizationSelected', {});
     });
   });
 
@@ -210,7 +232,7 @@ describe('EmbedWizardRenderer', function() {
 
     it('renders the "choose provider" content on an `EMBED_WIZARD_CHOOSE_PROVIDER` event', function() {
 
-      window.socrata.storyteller.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
@@ -224,7 +246,7 @@ describe('EmbedWizardRenderer', function() {
 
     it('renders the "choose YouTube" content on an `EMBED_WIZARD_CHOOSE_YOUTUBE` event', function() {
 
-      window.socrata.storyteller.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
@@ -237,7 +259,7 @@ describe('EmbedWizardRenderer', function() {
 
     it('renders the YouTube preview in the default state when no url has been supplied', function() {
 
-      window.socrata.storyteller.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
@@ -249,7 +271,7 @@ describe('EmbedWizardRenderer', function() {
 
     it('renders the YouTube preview in the invalid state when an invalid YouTube url has been supplied', function() {
 
-      window.socrata.storyteller.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
@@ -257,7 +279,7 @@ describe('EmbedWizardRenderer', function() {
 
       container.find('[data-embed-wizard-validate-field="youTubeId"]').val('invalid');
 
-      window.socrata.storyteller.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
         url: 'invalid'
       });
@@ -271,7 +293,7 @@ describe('EmbedWizardRenderer', function() {
 
       var rickRoll = 'https://youtu.be/dQw4w9WgXcQ';
 
-      window.socrata.storyteller.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
@@ -279,7 +301,7 @@ describe('EmbedWizardRenderer', function() {
 
       container.find('[data-embed-wizard-validate-field="youTubeId"]').val(rickRoll);
 
-      window.socrata.storyteller.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
         url: rickRoll
       });
@@ -292,7 +314,7 @@ describe('EmbedWizardRenderer', function() {
 
       var rickRoll = '<iframe width="420" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>';
 
-      window.socrata.storyteller.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
@@ -300,7 +322,7 @@ describe('EmbedWizardRenderer', function() {
 
       container.find('[data-embed-wizard-validate-field="youTubeId"]').val(rickRoll);
 
-      window.socrata.storyteller.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
         url: rickRoll
       });
@@ -311,7 +333,7 @@ describe('EmbedWizardRenderer', function() {
 
     it('closes the modal on an `EMBED_WIZARD_CLOSE` event', function() {
 
-      window.socrata.storyteller.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
@@ -319,7 +341,7 @@ describe('EmbedWizardRenderer', function() {
 
       assert.isFalse(container.hasClass('hidden'));
 
-      window.socrata.storyteller.dispatcher.dispatch({
+      storyteller.dispatcher.dispatch({
         action: Constants.EMBED_WIZARD_CLOSE
       });
 
@@ -329,7 +351,7 @@ describe('EmbedWizardRenderer', function() {
     describe('when a `EMBED_WIZARD_CHOOSE_VISUALIZATION` action is fired', function() {
 
       beforeEach(function() {
-        window.socrata.storyteller.dispatcher.dispatch({
+        storyteller.dispatcher.dispatch({
           action: Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION
         });
       });
@@ -363,6 +385,55 @@ describe('EmbedWizardRenderer', function() {
         it('has a button that goes back to the provider list', function() {
           assert.equal(
             container.find('[data-embed-action="{0}"]'.format(Constants.EMBED_WIZARD_CHOOSE_PROVIDER)
+          ).length, 1);
+        });
+
+      });
+    });
+
+    describe('when a `EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET` action is fired', function() {
+      beforeEach(function() {
+        storyteller.dispatcher.dispatch({
+          action: Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET,
+          datasetUid: standardMocks.validStoryUid,
+          isNewBackend: true
+        });
+      });
+
+      it('renders an iframe', function() {
+        assert.equal(container.find('.wizard-configure-visualization-iframe').length, 1);
+      });
+
+      it('disables the insert button on render', function() {
+        assert.equal(
+          container.find('.btn.accent-btn').attr('disabled'),
+          'disabled'
+        );
+      });
+
+      describe('the iframe', function() {
+        it('has the correct src', function() {
+          var iframeSrc = container.find('iframe').attr('src');
+          assert.include(iframeSrc, 'component/visualization/add?datasetId');
+        });
+
+        it('has the background spinner class', function() {
+          assert.include(container.find('iframe').attr('class'), 'bg-loading-spinner');
+        });
+      });
+
+      describe('the modal', function() {
+        it('has a close button', function() {
+          assert.equal(container.find('.modal-close-btn').length, 1);
+        });
+
+        it('has the wide class to display the iframe', function() {
+          assert.include(container.find('.modal-dialog').attr('class'), 'modal-dialog-wide');
+        });
+
+        it('has a button that goes back to the choose dataset list', function() {
+          assert.equal(
+            container.find('[data-embed-action="{0}"]'.format(Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION)
           ).length, 1);
         });
 

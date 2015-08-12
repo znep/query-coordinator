@@ -7,11 +7,11 @@ describe('karma-sass-preprocessor', function() {
     });
   });
   describe('with two dependencies', function() {
-    beforeEach(module('dataCards/column-chart.sass'));
+    beforeEach(module('dataCards/cards.sass'));
     beforeEach(inject());
     it('should insert two sass files', function() {
       expect($("style.sass#dataCards-main-sass").length).to.equal(1);
-      expect($("style.sass#dataCards-column-chart-sass").length).to.equal(1);
+      expect($("style.sass#dataCards-cards-sass").length).to.equal(1);
     });
   });
   describe('with a duplicate dependency', function() {

@@ -67,7 +67,7 @@
             // Split into available and unsupported columns.
             var availableColumns = [];
             var unsupportedColumns = [];
-            var defaultCardTypeHash = {};
+            var adjustedDefaultCardTypeHash = {};
 
             _.forEach(sortedColumns, function(column) {
               var defaultCardType = column.columnInfo.defaultCardType;
@@ -89,14 +89,14 @@
               } else if (!column.columnInfo.isSubcolumn) {
               // CORE-4645: Do not allow subColumns to be available as cards to add
                 availableColumns.push(column.fieldName);
-                defaultCardTypeHash[column.fieldName] = defaultCardType;
+                adjustedDefaultCardTypeHash[column.fieldName] = defaultCardType;
               }
             });
 
             return {
               available: availableColumns, // List of fieldNames
               unsupported: unsupportedColumns, // List of fieldNames
-              defaultCardTypeHash: defaultCardTypeHash // Hash of fieldName -> cardType
+              adjustedDefaultCardTypeHash: adjustedDefaultCardTypeHash // Hash of fieldName -> cardType
             };
 
           });
@@ -111,9 +111,9 @@
         Rx.Observable.subscribeLatest(
           scope.$observe('addCardSelectedColumnFieldName'),
           datasetColumnsInfo$.filter(_.isDefined).pluck('available'),
-          datasetColumnsInfo$.filter(_.isDefined).pluck('defaultCardTypeHash'),
+          datasetColumnsInfo$.filter(_.isDefined).pluck('adjustedDefaultCardTypeHash'),
           scope.$observe('page').observeOnLatest('dataset.columns').filter(_.isDefined),
-          function(fieldName, availableColumns, defaultCardTypeHash, columns) {
+          function(fieldName, availableColumns, adjustedDefaultCardTypeHash, columns) {
 
             var serializedCard;
             var column;
@@ -142,7 +142,7 @@
               'fieldName': fieldName
             };
 
-            serializedCard.cardType = defaultCardTypeHash[fieldName];
+            serializedCard.cardType = adjustedDefaultCardTypeHash[fieldName];
             // TODO: We're going towards passing in serialized blobs to Model constructors.
             // Revisit this line when that effort reaches Card.
             scope.selectedCardModel = Card.deserialize(scope.page, serializedCard);

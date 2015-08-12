@@ -583,6 +583,7 @@
         var mapMousedownCallback;
         var mapMouseupCallback;
         var mapMousemoveCallback;
+        var mapMouseoutCallback;
         var mapClickCallback;
         var flannelClosedCallback;
         var clearHighlightRequestCallback;
@@ -775,6 +776,21 @@
           });
         }
 
+        function clearClickedPointHighlights() {
+          if (!_.isEmpty(self.currentClickedPoints)) {
+            self.currentClickedPoints = [];
+            highlightPoints(self.clickHighlightLayer);
+          }
+        }
+
+        function clearHoverPointHighlights() {
+          if (!_.isEmpty(self.currentHoverPoints)) {
+            self.currentHoverPoints = [];
+            highlightPoints(self.hoverHighlightLayer);
+          }
+        }
+
+        // Handle callbacks for executable functions of events
         if (_.isFunction(this.options.mousedown)) {
 
           mapMousedownCallback = function(e) {
@@ -829,9 +845,17 @@
           map.on('click', mapClickCallback);
         }
 
-        // Ensure highlighting on points previously clicked under closed flannel
-        // is cleared, but points highlighted under a new flannel remain.
         if (ServerConfig.get('oduxEnableFeatureMapHover')) {
+
+          // Handle callbacks for other events
+
+          // Clear hover highlighting upon mouseout of map container.
+          mapMouseoutCallback = clearHoverPointHighlights;
+
+          map.on('mouseout', mapMouseoutCallback);
+
+          // Ensure highlighting on points previously clicked under closed flannel
+          // is cleared, but points highlighted under a new flannel remain.
           flannelClosedCallback = function(e) {
             var pointsToKeepHighlighted = self.currentClickedPoints.filter(function(value) {
               return !_.contains(e.points, value);
@@ -840,25 +864,16 @@
           };
 
           map.on('flannelclosed', flannelClosedCallback);
-        }
 
-        // Upon map refresh due to adding or removing a filter,
-        // remove highlighting on all clicked and moused-over points
-        if (ServerConfig.get('oduxEnableFeatureMapHover')) {
+          // Upon map refresh due to adding or removing a filter,
+          // remove highlighting on all clicked and moused-over points
           clearHighlightRequestCallback = function() {
-            if (!_.isEmpty(self.currentClickedPoints)) {
-              self.currentClickedPoints = [];
-              highlightPoints(self.clickHighlightLayer);
-            }
-            if (!_.isEmpty(self.currentHoverPoints)) {
-              self.currentHoverPoints = [];
-              highlightPoints(self.hoverHighlightLayer);
-            }
+            clearClickedPointHighlights();
+            clearHoverPointHighlights();
           };
 
           map.on('clearhighlightrequest', clearHighlightRequestCallback);
         }
-
 
         map.on('layerremove', function(e) {
 
@@ -885,10 +900,8 @@
             }
 
             if (ServerConfig.get('oduxEnableFeatureMapHover')) {
+              map.off('mouseout', mapMouseoutCallback);
               map.off('flannelclosed', flannelClosedCallback);
-            }
-
-            if (ServerConfig.get('oduxEnableFeatureMapHover')) {
               map.off('clearhighlightrequest', clearHighlightRequestCallback);
             }
 

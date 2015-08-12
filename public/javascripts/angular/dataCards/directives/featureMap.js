@@ -422,6 +422,9 @@
                   }
                 });
 
+              // Disable page scrolling if over a scrollable flannel
+              element.closest('body').on('mousewheel', '.tool-panel-inner-container.scrollable', window.socrata.utils.preventScrolling);
+
               // Shift flannel position if scroll occurs
               var scrollSubscriber = WindowState.scrollPositionSubject.subscribe(adjustPosition);
 

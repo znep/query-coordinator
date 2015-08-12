@@ -3,7 +3,7 @@
     <div class="tool-panel-main">
       <div class="icon-close" ng-style="iconClosePadding" ng-if="queryStatus !== 'pending'"></div>
       <div class="sticky-border" ng-style="stickyBorderTop" ng-if"queryStatus === 'success'"></div>
-      <div class="tool-panel-inner-container">
+      <div class="tool-panel-inner-container" ng-class="{scrollable: isScrollable}">
         <!-- Successful query response -->
         <div class="flannel-content" ng-if="queryStatus === 'success'">
           <div ng-repeat="cell in selectedRow" class="row-data-item">

@@ -1,6 +1,6 @@
 (function(window) {
 
-  if (!window._ || _.prototype.constructor.toString().match(/lodash/i) === null) {
+  if (typeof window._ !== 'function') {
     throw new Error('lodash is a required dependency for `socrata-utils.js`.');
   }
 
@@ -296,6 +296,51 @@
       }
 
       return value;
+    },
+
+    /**
+     * Prevents scrolling from bubbling up to the document
+     * Ex: element.on('mousewheel', '.scrollable', Util.preventScrolling)
+     */
+    preventScrolling: function(e) {
+      var target = $(this);
+      var scrollTop = target.scrollTop();
+
+      var delta = e.originalEvent.deltaY;
+      if (delta < 0) {
+        // Scrolling up.
+        if (scrollTop === 0) {
+          // Past top.
+          e.preventDefault();
+        }
+      } else if (delta > 0) {
+        // Scrolling down.
+        var innerHeight = target.innerHeight();
+        var scrollHeight = target[0].scrollHeight;
+
+        if (scrollTop >= scrollHeight - innerHeight) {
+          // Past bottom.
+          e.preventDefault();
+        }
+      }
+    },
+
+    /**
+     * Gets the value of a cookie by name.
+     *
+     * @param {String} cookieName
+     */
+    getCookie: function(cookieName) {
+      var name = cookieName + '=';
+      var cookies = document.cookie.split(/;\s*/);
+
+      for(var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i];
+
+        if (cookie.indexOf(name) === 0) {
+          return cookie.replace(name, '');
+        }
+      }
     }
   };
 

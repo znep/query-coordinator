@@ -48,9 +48,13 @@
           _chooseVisualization();
           break;
 
-        case Constants.EMBED_WIZARD_DATASET_SELECTED:
+        case Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET:
           _currentWizardState = action;
-          _configureVisualization();
+          _chooseVisualizationDataset(payload);
+          break;
+
+        case Constants.EMBED_WIZARD_UPDATE_VISUALIZATION_CONFIGURATION:
+          _updateVisualizationConfiguration(payload);
           break;
 
         case Constants.EMBED_WIZARD_CLOSE:
@@ -127,12 +131,43 @@
       self._emitChange();
     }
 
-    function _chooseVisualization() {
+    function _chooseVisualization(payload) {
 
       self._emitChange();
     }
 
-    function _configureVisualization() {
+    function _chooseVisualizationDataset(payload) {
+      if (payload.isNewBackend) {
+        setUid(payload.datasetUid);
+      } else {
+        // We have an OBE datasetId, go fetch the NBE datasetId
+        $.get('/api/migrations/{0}.json'.format(payload.datasetUid)).
+          done(function(data) {
+            setUid(data.nbeId);
+          }).
+          fail(function(error) {
+            alert('This dataset cannot be chosen at this time.');
+          });
+      }
+
+      function setUid(uid) {
+        _currentComponentProperties = {
+          provider: 'socrata',
+          embed: 'visualization',
+          settings: {
+            datasetUid: uid
+          }
+        };
+        self._emitChange();
+      }
+
+    }
+
+    function _updateVisualizationConfiguration(payload) {
+
+      if (payload.cardData) {
+        _currentComponentProperties.settings.visualization = payload.cardData;
+      }
 
       self._emitChange();
     }

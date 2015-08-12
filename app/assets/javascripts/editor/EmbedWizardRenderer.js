@@ -106,14 +106,25 @@
       );
 
       _dialog.on(
-        'datasetSelect',
+        'datasetSelected',
         function(event, datasetObj) {
           storyteller.dispatcher.dispatch({
-            action: Constants.EMBED_WIZARD_DATASET_SELECTED,
-            datasetUid: datasetObj.id
+            action: Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET,
+            datasetUid: datasetObj.id,
+            isNewBackend: datasetObj.newBackend
           });
         }
       );
+
+      _dialog.on(
+        'visualizationSelected',
+        function(event, selectedCard) {
+          storyteller.dispatcher.dispatch({
+            action: Constants.EMBED_WIZARD_UPDATE_VISUALIZATION_CONFIGURATION,
+            cardData: selectedCard
+          });
+        }
+      )
 
       _dialog.on('click', '[data-embed-action]', function(event) {
 
@@ -190,10 +201,10 @@
             break;
 
           case Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION:
-            wizardContent = _renderChooseDatasetPickerTemplate();
+            wizardContent = _renderChooseDatasetTemplate();
             break;
 
-          case Constants.EMBED_WIZARD_DATASET_SELECTED:
+          case Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET:
             wizardContent = _renderConfigureVisualizationTemplate();
             break;
 
@@ -219,6 +230,10 @@
 
         case Constants.EMBED_WIZARD_CHOOSE_YOUTUBE:
           _renderChooseYouTubeData(componentValue);
+          break;
+
+        case Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET:
+          _renderConfigureVisualizationData(componentValue);
           break;
 
         default:
@@ -419,7 +434,7 @@
       }
     }
 
-    function _renderChooseDatasetPickerTemplate() {
+    function _renderChooseDatasetTemplate() {
       _addModalDialogClass('modal-dialog-wide');
 
       var heading = _renderModalTitle(
@@ -431,20 +446,29 @@
       var datasetChooserIframe = $(
         '<iframe>',
         {
-          'class': 'wizard-dataset-chooser-iframe bg-loading-spinner',
+          'class': 'wizard-dataset-chooser-iframe wizard-full-width-iframe bg-loading-spinner',
           'src': _datasetChooserUrl()
         }
       );
 
-      datasetChooserIframe[0].onDatasetSelect = function(datasetObj) {
-        $(this).trigger('datasetSelect', datasetObj);
+      datasetChooserIframe[0].onDatasetSelected = function(datasetObj) {
+        $(this).trigger('datasetSelected', datasetObj);
       }
 
       return [ heading, closeButton, datasetChooserIframe, backButton ];
     }
 
-    function _renderConfigureVisualizationTemplate(componentValue) {
+    function _renderConfigureVisualizationTemplate() {
+
       _addModalDialogClass('modal-dialog-wide');
+
+      var configureVisualizationIframe = $(
+        '<iframe>',
+        {
+          'class': 'wizard-configure-visualization-iframe wizard-full-width-iframe bg-loading-spinner',
+          'src': ''
+        }
+      );
 
       var heading = _renderModalTitle(
         I18n.t('editor.embed_wizard.providers.visualization.configure_vizualization_heading')
@@ -452,8 +476,57 @@
       var closeButton = _renderModalCloseButton();
       var backButton = _renderModalBackButton(Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION);
 
-      return [ heading, closeButton, backButton ];
+      // TODO: Map insert button to APPLY instead of CLOSE, and share insert button
+      // into shared function
+      var insertButton = $(
+        '<button>',
+        {
+          'class': 'btn accent-btn',
+          'data-embed-action': Constants.EMBED_WIZARD_CLOSE,
+          'disabled': 'disabled'
+        }
+      ).text(I18n.t('editor.embed_wizard.insert_button_text'));
+
+      var buttonGroup = $(
+        '<div>',
+        {
+          'class': 'wizard-button-group r-to-l'
+        }).append([ backButton, insertButton ]);
+
+
+      configureVisualizationIframe[0].onVisualizationSelected = function(datasetObj) {
+        // This function is called by the visualization chooser when:
+        //   - The user makes or clears a selection (argument is either null or a visualization).
+        //   - The page finishes loading (argument is null).
+        // In either case, we should consider the iframe loaded.
+        $(this).
+          removeClass('bg-loading-spinner').
+          trigger('visualizationSelected', datasetObj);
+      }
+
+      return [ heading, closeButton, configureVisualizationIframe, buttonGroup ];
     }
+
+    function _renderConfigureVisualizationData(componentValue) {
+      var componentProperties = _.get(componentValue, 'value');
+      var iframeElement = _dialog.find('.wizard-configure-visualization-iframe');
+      var currentIframeSrc = iframeElement.attr('src');
+      var newIframeSrc = _visualizationChooserUrl(componentProperties.settings.datasetUid);
+      var insertButton = _dialog.find(
+        '[data-embed-action="' + Constants.EMBED_WIZARD_CLOSE + '"]'
+      );
+
+      if (currentIframeSrc !== newIframeSrc) {
+        iframeElement.attr('src', newIframeSrc);
+      }
+
+      if (componentProperties.settings.visualization) {
+        insertButton.prop('disabled', false);
+      } else {
+        insertButton.prop('disabled', true);
+      }
+
+    };
 
 
     /**
@@ -464,6 +537,13 @@
       return encodeURI(
         '{0}/browse/select_dataset?suppressed_facets[]=type&limitTo=datasets'.
           format(window.location.origin)
+      );
+    }
+
+    function _visualizationChooserUrl(datasetId) {
+      return encodeURI(
+        '{0}/component/visualization/add?datasetId={1}'.
+          format(window.location.origin, datasetId)
       );
     }
 

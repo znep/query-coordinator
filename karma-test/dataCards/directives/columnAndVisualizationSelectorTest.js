@@ -394,27 +394,25 @@ describe('columnAndVisualizationSelectorTest', function() {
     });
   });
 
-  describe('datasetColumns scope variable', function() {
+  describe('availableColumns scope variable', function() {
+    var directive;
+    var currentColumns;
 
-    it('should add non-subcolumns to the available columns', function() {
-      var directive = createDirective();
-
-      var currentColumns = directive.scope.page.
+    beforeEach(function() {
+      directive = createDirective();
+      currentColumns = directive.scope.page.
         getCurrentValue('dataset').
         getCurrentValue('columns');
+    });
 
-      expect(directive.scope.datasetColumns.available.sort()).to.
+    it('should include non-subcolumns', function() {
+      expect(directive.scope.availableColumns.sort()).to.
         deep.equal(_.keys(currentColumns).sort());
     });
 
-    it('should not add subcolumns to the available columns', function() {
-      var directive = createDirective();
-
-      var currentColumns = directive.scope.page.
-        getCurrentValue('dataset').
-        getCurrentValue('columns');
-
-      var newColumns = _.map(currentColumns, function(column) {
+    it('not include subcolumns', function() {
+      var newColumns = _.mapValues(currentColumns, function(column) {
+        column = _.cloneDeep(column);
         column.isSubcolumn = true;
         return column;
       });
@@ -423,8 +421,119 @@ describe('columnAndVisualizationSelectorTest', function() {
         getCurrentValue('dataset').
         set('columns', newColumns);
 
-      expect(directive.scope.datasetColumns.available.length).to.equal(0);
+      expect(directive.scope.availableColumns).to.be.empty;
     });
 
+    it('should be sorted in alphabetical order', function() {
+      var currentColumnFieldNames = _.keys(currentColumns);
+      var expectedFieldNameOrder = [].concat(currentColumnFieldNames).sort();
+      expect(directive.scope.availableColumns).to.deep.equal(expectedFieldNameOrder);
+    });
+
+    it('should not include system columns', function() {
+      var newColumns = {
+        ':id': {},
+        'normal_column': {}
+      };
+
+      directive.scope.page.
+        getCurrentValue('dataset').
+        set('columns', newColumns);
+
+      expect(directive.scope.availableColumns).to.have.length(1);
+      expect(directive.scope.availableColumns).to.include('normal_column');
+    });
+
+    it('should include computed columns', function() {
+      var newColumns = {
+        ':@computed_column': {},
+        'normal_column': {}
+      };
+
+      directive.scope.page.
+        getCurrentValue('dataset').
+        set('columns', newColumns);
+
+      expect(directive.scope.availableColumns).to.have.length(2);
+      expect(directive.scope.availableColumns).to.include('normal_column');
+      expect(directive.scope.availableColumns).to.include(':@computed_column');
+    });
+
+  });
+
+  describe('unsupportedColumns scope variable', function() {
+    var directive;
+    var currentColumns;
+
+    function makeAllColumnsUnsupported() {
+      var newColumns = _.mapValues(currentColumns, function(column) {
+        column = _.cloneDeep(column);
+        column.defaultCardType = 'invalid';
+        return column;
+      });
+
+      directive.scope.page.
+        getCurrentValue('dataset').
+        set('columns', newColumns);
+    }
+
+    beforeEach(function() {
+      directive = createDirective();
+      currentColumns = directive.scope.page.
+        getCurrentValue('dataset').
+        getCurrentValue('columns');
+    });
+
+    it('should not include columns with a defaultCardType that is not `invalid`', function() {
+      // All default columns are supported.
+      expect(directive.scope.unsupportedColumns).to.be.empty;
+    });
+
+    it('should include columns with a defaultCardType of `invalid`', function() {
+      makeAllColumnsUnsupported();
+
+      expect(directive.scope.unsupportedColumns.sort()).to.
+        deep.equal(_.keys(currentColumns).sort());
+    });
+
+    it('should be sorted in alphabetical order', function() {
+      var currentColumnFieldNames = _.keys(currentColumns);
+      var expectedFieldNameOrder = [].concat(currentColumnFieldNames).sort();
+
+      makeAllColumnsUnsupported();
+
+      expect(directive.scope.unsupportedColumns).to.deep.equal(expectedFieldNameOrder);
+    });
+
+
+    it('not include subcolumns unless their defaultCardType is `invalid`', function() {
+      var newColumns = _.mapValues(currentColumns, function(column) {
+        column = _.cloneDeep(column);
+        column.isSubcolumn = true;
+        return column;
+      });
+
+      newColumns['bar'].defaultCardType = 'invalid';
+
+      directive.scope.page.
+        getCurrentValue('dataset').
+        set('columns', newColumns);
+
+      expect(directive.scope.unsupportedColumns).to.have.length(1);
+      expect(directive.scope.unsupportedColumns).to.include('bar');
+    });
+
+    it('should not include system columns', function() {
+      var newColumns = {
+        ':id': {},
+        'normal_column': {}
+      };
+
+      directive.scope.page.
+        getCurrentValue('dataset').
+        set('columns', newColumns);
+
+      expect(directive.scope.unsupportedColumns).to.be.empty;
+    });
   });
 });

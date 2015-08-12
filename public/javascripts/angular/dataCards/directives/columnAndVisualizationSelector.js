@@ -31,17 +31,16 @@
         * Build Column Information
         *
         * Responsible for:
-        * - Adding field names to columns
         * - Split columns into visualizable and non-visualizable groups
         * - Filtering out system columns
         * - Sort by field name
         *******************************/
-        var datasetColumns$ = Rx.Observable.combineLatest(
-          scope.$observe('page').observeOnLatest('dataset'),
-          scope.$observe('page').observeOnLatest('dataset.columns'),
-          function(dataset, columns) {
-
-            var sortedColumns = _.pairs(columns).
+        var datasetColumnsInfo$ = scope.
+          $observe('page').
+          observeOnLatest('dataset.columns').
+          map(function(columns) {
+            // Filter out system columns.
+            return _.pairs(columns).
               map(function(columnPair) {
                 return {
                   fieldName: columnPair[0],
@@ -55,34 +54,35 @@
                 // begin with ':@'.
                 return _.isNull(columnPair.fieldName.substring(0, 2).match(/\:[\_A-Za-z0-9]/)) &&
                        columnPair.columnInfo.physicalDatatype !== '*';
-              }).
-              sort(function(a, b) {
-                // TODO: Don't we want to sort by column human name?
-                return a.fieldName > b.fieldName;
               });
-
+          }).
+          map(function(columns) {
+            return _.sortBy(columns, 'fieldName');
+          }).
+          map(function(sortedColumns) {
+            // Split into available and unsupported columns.
             var availableColumns = [];
-            var visualizationUnsupportedColumns = [];
+            var unsupportedColumns = [];
 
             _.forEach(sortedColumns, function(column) {
 
-              if (column.defaultCardType === 'invalid') {
-                visualizationUnsupportedColumns.push(column.fieldName);
-
-              // CORE-4645: Do not allow subColumns to be available as cards to add
+              if (column.columnInfo.defaultCardType === 'invalid') {
+                unsupportedColumns.push(column.fieldName);
               } else if (!column.columnInfo.isSubcolumn) {
+              // CORE-4645: Do not allow subColumns to be available as cards to add
                 availableColumns.push(column.fieldName);
               }
             });
 
             return {
-              available: availableColumns.sort(),
-              visualizationUnsupported: visualizationUnsupportedColumns.sort()
+              available: availableColumns,
+              unsupported: unsupportedColumns
             };
 
           });
 
-        scope.$bindObservable('datasetColumns', datasetColumns$);
+        scope.$bindObservable('availableColumns', datasetColumnsInfo$.pluck('available'));
+        scope.$bindObservable('unsupportedColumns', datasetColumnsInfo$.pluck('unsupported'));
 
         scope.addCardSelectedColumnFieldName = null;
         scope.selectedCardModel = null;
@@ -90,10 +90,10 @@
 
         Rx.Observable.subscribeLatest(
           scope.$observe('addCardSelectedColumnFieldName'),
-          datasetColumns$.filter(_.isDefined),
+          datasetColumnsInfo$.filter(_.isDefined).pluck('available'),
           scope.$observe('page').observeOnLatest('dataset').filter(_.isDefined),
           scope.$observe('page').observeOnLatest('dataset.columns').filter(_.isDefined),
-          function(fieldName, scopeDatasetColumns, dataset, columns) {
+          function(fieldName, availableColumns, dataset, columns) {
 
             var serializedCard;
             var column;
@@ -103,7 +103,7 @@
               return;
             }
 
-            if (_.include(scope.datasetColumns.available, fieldName)) {
+            if (_.include(availableColumns, fieldName)) {
               column = columns[fieldName];
             }
 

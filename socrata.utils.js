@@ -15,6 +15,7 @@
   window.socrata.utils = window.socrata.utils || {};
 
   var NUMBER_FORMATTER_MAGNITUDE_SYMBOLS = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
+  var MOUSE_WHEEL_EVENTS = 'mousewheel DOMMouseScroll MozMousePixelScroll';
 
   /**
    * Usage:
@@ -298,32 +299,53 @@
       return value;
     },
 
-     // Prevents scrolling from bubbling up to the document
-     // Ex: element.on([mousewheel events], [selector], Util.preventScrolling)
-    preventScrolling: function(e) {
+    /**
+     * Controls page scrolling behavior when inside the given element.
+     * If enable is true, isolates scrolling to given element when inside by preventing
+     * scrolling from bubbling up to the document. (If outside element, page scrolling
+     * behaves as usual).
+     * If set to false, disables scrolling isolation, and re-enables page scrolling.
+     *
+     * @param {jQuery wrapped DOM element} the element on which to isolate scrolling behavior
+     * @param {boolean} whether to isolate scrolling to element and prevent page scrolling
+     */
+    isolateScrolling: function(element, enable) {
 
-      // Base prevention of page scrolling on scroll status of the element
-      // specified by the given selector (passed as a second argument to
-      // element.on() invocation above and represented here as $(this)).
-      var scrollingElement = $(this);
-      var scrollTop = scrollingElement.scrollTop();
+      if (enable) {
 
-      // IE/Chrome/Safari use 'wheelDelta', Firefox uses 'detail'
-      var scrollingUp = e.originalEvent.wheelDelta > 0 || e.originalEvent.detail < 0;
+        // Helper to prevent page scrolling when inside the given element
+        element[0].preventPageScrolling = function(e) {
 
-      if (scrollingUp) {
+          // Base prevention of page scrolling on scroll status of the given element
+          var scrollingElement = $(this);
+          var scrollTop = scrollingElement.scrollTop();
 
-        // At top
-        if (scrollTop === 0) {
-          e.preventDefault();
-        }
+          // IE/Chrome/Safari use 'wheelDelta', Firefox uses 'detail'
+          var scrollingUp = e.originalEvent.wheelDeltaY > 0 || e.originalEvent.detail < 0;
+
+          if (scrollingUp) {
+
+            // At top
+            if (scrollTop === 0) {
+              e.preventDefault();
+            }
+          } else {
+            var innerHeight = scrollingElement.innerHeight();
+            var scrollHeight = scrollingElement[0].scrollHeight;
+
+
+            // At bottom
+            if (scrollTop >= scrollHeight - innerHeight) {
+              e.preventDefault();
+            }
+          }
+        };
+
+        element.on(MOUSE_WHEEL_EVENTS, element[0].preventPageScrolling);
+
       } else {
-        var innerHeight = scrollingElement.innerHeight();
-        var scrollHeight = scrollingElement[0].scrollHeight;
-
-        // At bottom
-        if (scrollTop >= scrollHeight - innerHeight) {
-          e.preventDefault();
+        if (element[0].hasOwnProperty('preventPageScrolling')) {
+          element.off(MOUSE_WHEEL_EVENTS, element[0].preventPageScrolling);
         }
       }
     },

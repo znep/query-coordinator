@@ -517,6 +517,7 @@
             onRenderComplete: function() {
               emitRenderCompleted();
               removeOldFeatureLayers();
+              map.fire('clearhighlightrequest');
             },
             vectorTileGetter: function() {
               var promise = vectorTileGetter.apply(this, Array.prototype.slice.call(arguments));

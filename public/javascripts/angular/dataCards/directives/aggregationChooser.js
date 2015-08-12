@@ -8,19 +8,6 @@
     { type: 'sum', name: 'sum' }
   ];
 
-  // Helper function for taking a name and returning a map of the different
-  // pluralized and capitalized versions (saves having to use filters in the HTML)
-  var pluralizeAndCapitalize = function(value) {
-    var name = (value || '').toLowerCase();
-    var plural = name === '' ? '' : name.pluralize();
-    return {
-      name: name,
-      plural: plural,
-      capitalized: name.capitalizeEachWord(),
-      pluralCapitalized: plural.capitalizeEachWord()
-    };
-  };
-
   function AggregationChooser(Constants, Dataset, FlyoutService, WindowState, ServerConfig, I18n) {
 
     return {
@@ -72,12 +59,11 @@
 
         var dataset = $scope.page.observe('dataset');
         var columns$ = dataset.observeOnLatest('columns');
-        var aggregationSequence = $scope.page.observe('aggregation');
-        var rowDisplayUnit$ = aggregationSequence.pluck('unit');
-
-        // Page model aggregation observables
-        var pagePrimaryAggregation$ = aggregationSequence.pluck('function');
-        var pagePrimaryAmountField$ = aggregationSequence.pluck('fieldName');
+        var aggregation$ = $scope.page.observe('aggregation');
+        var aggregationUnit$ = aggregation$.pluck('unit');
+        var rowDisplayUnit$ = aggregation$.pluck('rowDisplayUnit');
+        var pagePrimaryAggregation$ = aggregation$.pluck('function');
+        var pagePrimaryAmountField$ = aggregation$.pluck('fieldName');
 
         // Default to 'count' if no primary aggregation function is selected
         var aggregationFunction$ = Rx.Observable.combineLatest(
@@ -91,15 +77,15 @@
             }
           });
 
-        // Default to 'rowDisplayUnit' for aggregation field display
+        // Default to the aggregationUnit for aggregation field display
         var activeAggregation$ = Rx.Observable.combineLatest(
-          rowDisplayUnit$,
+          aggregationUnit$,
           pagePrimaryAmountField$,
-          function(rowDisplayUnit, pagePrimaryAmountField) {
+          function(aggregationUnit, pagePrimaryAmountField) {
             if (_.isPresent(pagePrimaryAmountField)) {
               return pagePrimaryAmountField;
             } else {
-              return rowDisplayUnit;
+              return aggregationUnit;
             }
           }
         );
@@ -137,10 +123,11 @@
               pick(validColumnFilter).
               map(function(column, fieldName) {
                 var enabled = aggregationFunction !== 'count';
-                return _.extend(
-                  pluralizeAndCapitalize(Dataset.extractHumanReadableColumnName(column)),
-                  { id: fieldName, enabled: enabled }
-                );
+                return {
+                  id: fieldName,
+                  enabled: enabled,
+                  label: Dataset.extractHumanReadableColumnName(column)
+                };
               }).
               value();
           });
@@ -151,13 +138,10 @@
           aggregateFunctionHover$,
           aggregationColumns$,
           activeAggregation$,
-          function(aggregateHover, columns, active) {
-            var column = _(columns).find({ id: active });
+          function(aggregateHover, columns, activeAggregation) {
+            var column = _(columns).find({ id: activeAggregation });
             return aggregateHover && _.isUndefined(column);
           });
-
-        // Generate human-readable labels for the row display unit
-        var unitLabel$ = rowDisplayUnit$.map(pluralizeAndCapitalize);
 
         // Maps the active aggregation field identifier to human-readable values
         var labeledField$ = Rx.Observable.combineLatest(
@@ -166,12 +150,12 @@
           function(columns, activeAggregation) {
             var column = columns[activeAggregation];
             if (_.isDefined(column)) {
-              return _.extend(
-                { id: activeAggregation },
-                pluralizeAndCapitalize(Dataset.extractHumanReadableColumnName(column))
-              );
+              return {
+                id: activeAggregation,
+                label: Dataset.extractHumanReadableColumnName(column)
+              };
             } else {
-              return _.extend(pluralizeAndCapitalize(activeAggregation));
+              return { label: activeAggregation };
             }
           });
 
@@ -180,15 +164,14 @@
           map(function(value) {
             var type = { type: value };
             var fn = _.find(availableAggregationFunctions, type);
-            return _.extend(type, pluralizeAndCapitalize(fn.name));
+            return _.extend(type, { label: fn.name });
           });
 
-        var rowDisplayUnitLabel$ = aggregationSequence.pluck('rowDisplayUnit').map(pluralizeAndCapitalize);
         $scope.$bindObservable('highlightFirstColumn', highlightFirstColumn$);
         $scope.$bindObservable('hasAggregableColumns', hasAggregableColumns$);
         $scope.$bindObservable('canChooseAggregation', canChooseAggregation$);
-        $scope.$bindObservable('rowDisplayUnitLabel', rowDisplayUnitLabel$);
-        $scope.$bindObservable('unitLabel', unitLabel$);
+        $scope.$bindObservable('rowDisplayUnit', rowDisplayUnit$);
+        $scope.$bindObservable('aggregationUnit', aggregationUnit$);
         $scope.$bindObservable('aggregationFunction', labeledFunction$);
         $scope.$bindObservable('aggregationColumns', aggregationColumns$);
         $scope.$bindObservable('activeAggregation', labeledField$);

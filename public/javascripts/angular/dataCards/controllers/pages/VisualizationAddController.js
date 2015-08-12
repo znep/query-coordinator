@@ -16,6 +16,9 @@
     $scope.page = new Page(pageBlob, dataset);
     $scope.dataset = dataset;
 
+    // Right now we only support embedding column charts.
+    $scope.supportedCardTypes = ['column'];
+
 
     /*************************
     * Trigger events for parent page *

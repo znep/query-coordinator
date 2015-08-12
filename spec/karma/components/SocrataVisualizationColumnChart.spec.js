@@ -1,4 +1,4 @@
-describe('SocrataVisualizationColumn jQuery plugin', function() {
+describe('SocrataVisualizationColumnChart jQuery plugin', function() {
 
   'use strict';
 
@@ -52,10 +52,10 @@ describe('SocrataVisualizationColumn jQuery plugin', function() {
 
       it('should throw an error.', function() {
 
-        assert.throws(function() { container.socrataVisualizationColumn(); });
-        assert.throws(function() { container.socrataVisualizationColumn(INVALID_DOMAIN, VALID_FOUR_BY_FOUR, VALID_BASE_QUERY); });
-        assert.throws(function() { container.socrataVisualizationColumn(VALID_DOMAIN, INVALID_FOUR_BY_FOUR, VALID_BASE_QUERY); });
-        assert.throws(function() { container.socrataVisualizationColumn(VALID_DOMAIN, VALID_FOUR_BY_FOUR, INVALID_BASE_QUERY); });
+        assert.throws(function() { container.socrataVisualizationColumnChart(); });
+        assert.throws(function() { container.socrataVisualizationColumnChart(INVALID_DOMAIN, VALID_FOUR_BY_FOUR, VALID_BASE_QUERY); });
+        assert.throws(function() { container.socrataVisualizationColumnChart(VALID_DOMAIN, INVALID_FOUR_BY_FOUR, VALID_BASE_QUERY); });
+        assert.throws(function() { container.socrataVisualizationColumnChart(VALID_DOMAIN, VALID_FOUR_BY_FOUR, INVALID_BASE_QUERY); });
       });
     });
 
@@ -87,7 +87,7 @@ describe('SocrataVisualizationColumn jQuery plugin', function() {
 
       it('should render a column visualization.', function() {
 
-        container.socrataVisualizationColumn(VALID_DOMAIN, VALID_FOUR_BY_FOUR, VALID_BASE_QUERY);
+        container.socrataVisualizationColumnChart(VALID_DOMAIN, VALID_FOUR_BY_FOUR, VALID_BASE_QUERY);
 
         assert.isAbove($('.bar-group').length, 0);
       });

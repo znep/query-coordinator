@@ -21,7 +21,7 @@
 //= require socrata-visualizations/socrata.visualizations.DataProvider
 //= require socrata-visualizations/socrata.visualizations.SoqlDataProvider
 //= require socrata-visualizations/socrata.visualizations.Visualization
-//= require socrata-visualizations/socrata.visualizations.Column
+//= require socrata-visualizations/socrata.visualizations.ColumnChart
 //= require editor/init
 //= require editor/storytellerUtils
 //= require editor/SimpleEventEmitter

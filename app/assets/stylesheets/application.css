@@ -10,7 +10,7 @@
  * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
  * file per style scope.
  *
- *= require socrata-visualizations/socrata.visualizations.column
+ *= require socrata-visualizations/socrata.visualizations.columnChart
  *= require lib/reset
  *= require_tree ./lib
  *= require_tree ./edit

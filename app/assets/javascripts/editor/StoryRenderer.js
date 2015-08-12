@@ -305,7 +305,7 @@
         function() {
           _renderStory();
         },
-        200
+        Constants.WINDOW_RESIZE_RERENDER_DELAY
       );
     }
 

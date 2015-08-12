@@ -40,7 +40,7 @@
   };
 
   /**
-   * Instantiates a Socrata Column Visualization from the
+   * Instantiates a Socrata ColumnChart Visualization from the
    * `socrata-visualizations` package.
    *
    * @param {String} domain - The domain against which to make the query.
@@ -49,7 +49,7 @@
    * @param {String} baseQuery - A valid SoQL query string.
    */
 
-  $.fn.socrataVisualizationColumn = function(domain, fourByFour, baseQuery) {
+  $.fn.socrataVisualizationColumnChart = function(domain, fourByFour, baseQuery) {
 
     utils.assertIsOneOfTypes(domain, 'string');
     utils.assertIsOneOfTypes(fourByFour, 'string');
@@ -82,13 +82,15 @@
       success: _onFilteredSuccess,
       error: _onFilteredError
     };
-    var _visualization = new visualizations.Column(_element, _visualizationConfig);
+    var _visualization = new visualizations.ColumnChart(_element, _visualizationConfig);
     var _unfilteredDataProvider = new visualizations.SoqlDataProvider(_unfilteredConfig);
     var _filteredDataProvider = new visualizations.SoqlDataProvider(_filteredConfig);
     var _unfilteredRequestInFlight;
     var _filteredRequestInFlight;
     var _unfilteredData;
     var _filteredData;
+    var _visualizationData = [];
+    var _rerenderOnResizeTimeout;
 
     _attachEvents();
     _updateData();
@@ -98,6 +100,7 @@
      */
 
     function _attachEvents() {
+      $(window).on('resize', _handleWindowResize);
       _element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
       _element.on('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleDatumSelect);
       _element.on('SOCRATA_VISUALIZATION_COLUMN_OPTIONS', _handleExpandedToggle);
@@ -105,6 +108,7 @@
     }
 
     function _detachEvents() {
+      $(window).off('resize', _handleWindowResize);
       _element.off('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
       _element.off('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleDatumSelect);
       _element.off('SOCRATA_VISUALIZATION_COLUMN_OPTIONS', _handleExpandedToggle);
@@ -179,8 +183,13 @@
 
         if (_unfilteredData !== null && _filteredData !== null) {
 
+          _visualizationData = _mergeUnfilteredAndFilteredData(
+            _unfilteredData,
+            _filteredData
+          );
+
           _visualization.render(
-            _mergeUnfilteredAndFilteredData(_unfilteredData, _filteredData),
+            _visualizationData,
             _getRenderOptions()
           );
         } else {
@@ -227,6 +236,24 @@
      * Event handling
      */
 
+    function _handleWindowResize() {
+
+      clearTimeout(_rerenderOnResizeTimeout);
+
+      _rerenderOnResizeTimeout = setTimeout(
+        function() {
+          _visualization.render(
+            _visualizationData,
+            _getRenderOptions()
+          );
+        },
+        // Add some jitter in order to make sure multiple visualizations are
+        // unlikely to all attempt to rerender themselves at the exact same
+        // moment.
+        Constants.WINDOW_RESIZE_RERENDER_DELAY + Math.floor(Math.random() * 50)
+      );
+    }
+
     function _handleVisualizationFlyout(event) {
 
       var payload = event.originalEvent.detail;
@@ -250,6 +277,9 @@
 
     function _handleDestroy() {
 
+      // TODO: Cancel in-flight requests or convert their callbacks into noops.
+
+      clearTimeout(_rerenderOnResizeTimeout);
       _visualization.destroy();
       _detachEvents();
     }

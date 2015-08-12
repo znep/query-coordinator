@@ -181,7 +181,7 @@
       element.attr('data-rendered-visualization-four-by-four', fourByFour);
       element.attr('data-rendered-visualization-base-query', baseQuery);
 
-      visualization = element.socrataVisualizationColumn(domain, fourByFour, baseQuery);
+      visualization = element.socrataVisualizationColumnChart(domain, fourByFour, baseQuery);
     }
   }
 

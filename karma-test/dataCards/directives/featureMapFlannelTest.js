@@ -69,7 +69,7 @@ describe('feature map flannel', function() {
     ERROR_MESSAGE = I18n.t('featureMapFlannel.errorMessage');
   });
 
-  describe('content dependant on query status', function() {
+  describe('content dependent on query status', function() {
     it('should have pending status by default', function() {
       expect(element.find('.pending-content')).to.have.length(1);
       expect(element.find('.spinner')).to.have.class('busy');
@@ -78,7 +78,7 @@ describe('feature map flannel', function() {
     it('should show error message when invalid query response received', function() {
       scope.queryStatus = Constants.QUERY_ERROR;
       scope.$digest();
-      expect(element.find('.error-content')).to.have.length(1);
+      expect(element.find('.error-content:visible')).to.have.length(1);
       expect(element.find('.error-message')).to.contain(ERROR_MESSAGE);
     });
 
@@ -86,7 +86,7 @@ describe('feature map flannel', function() {
       scope.rows = MOCK_QUERY_RESPONSES;
       scope.queryStatus = Constants.QUERY_SUCCESS;
       scope.$digest();
-      expect(element.find('.flannel-content')).to.have.length(1);
+      expect(element.find('.flannel-content:visible')).to.have.length(1);
     });
   });
 
@@ -98,7 +98,7 @@ describe('feature map flannel', function() {
     });
 
     it('should not have paging controls if only one row is returned from query', function() {
-      expect(element.find('.paging-panel-wrapper')).to.have.length(0);
+      expect(element.find('.paging-panel:visible')).to.have.length(0);
     });
 
     it('should have three cells of data displayed on the flannel', function() {
@@ -114,7 +114,7 @@ describe('feature map flannel', function() {
     });
 
     it('should have paging controls if more than one row is included in query results', function() {
-      expect(element.find('.paging-panel-wrapper')).to.have.length(1);
+      expect(element.find('.paging-panel:visible')).to.have.length(1);
     });
 
     it('should should contain all three cells of data on the displayed page for the given row', function() {
@@ -162,7 +162,7 @@ describe('feature map flannel', function() {
 
       describe('page backward', function() {
         beforeEach(function() {
-          // page to last page (3 of 3)
+          // Page to last page (3 of 3)
           executeClick(nextButton, 2);
         });
 

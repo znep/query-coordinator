@@ -1,41 +1,72 @@
 (function() {
   'use strict';
 
-  function FeatureMapFlannel(I18n, DataTypeFormatService, ScrollbarService, Constants, $timeout) {
+  function FeatureMapFlannel(I18n, DataTypeFormatService, Constants, $timeout) {
+
     return {
       restrict: 'E',
       scope: false,
       templateUrl: '/angular_templates/dataCards/featureMapFlannel.html',
       link: function(scope, element) {
+        var iconClose = element.find('.icon-close');
+        var stickyBorders = element.find('.sticky-border');
+        var flannelContent = element.find('.flannel-content');
+        var currentIndex$ = scope.$observe('currentIndex').
+          filter(function(index) { return index >= 0; });
+        var queryStatus$ = scope.$observe('queryStatus');
+        var successfulQuery$ = queryStatus$.
+          filter(function(status) { return status === Constants.QUERY_SUCCESS; });
 
         // Flannel is busy and should show a spinner until the row query is successful
-        var busy$ = scope.$observe('queryStatus').
-          map(function(queryStatus) { return queryStatus !== Constants.QUERY_SUCCESS; }).
+        var busy$ = queryStatus$.
+          map(function(status) { return status !== Constants.QUERY_SUCCESS; }).
           startWith(true).
           distinctUntilChanged();
 
         scope.$bindObservable('busy', busy$);
 
-        function getFlannelScrollbarWidth () {
-          return ScrollbarService.getElementScrollbarWidth($(element).find('.tool-panel-inner-container')[0]);
-        }
+        // Format content based on data type
+        scope.formatCellContent = function(cellContent, column) {
+          var datatypeToFormat = {
+            'boolean': DataTypeFormatService.renderBooleanCell(cellContent, column),
+            'number': DataTypeFormatService.renderNumberCell(cellContent, column),
+            'geo_entity': DataTypeFormatService.renderGeoCell(cellContent, column),
+            'point': DataTypeFormatService.renderGeoCell(cellContent, column),
+            'timestamp': DataTypeFormatService.renderTimestampCell(cellContent, column),
+            'floating_timestamp': DataTypeFormatService.renderTimestampCell(cellContent, column),
+            'money': DataTypeFormatService.renderMoneyCell(cellContent, column)
+          };
+
+          return _.get(datatypeToFormat, column.physicalDatatype, cellContent);
+        };
 
         // Format an array of subcolumns under a given parent column
-        function formatSubColumns(subColumns, parentColumn) {
-          if (subColumns.length === 1 && _.isDefined(subColumns[0]) && _.isDefined(subColumns[0].coordinates)) {
-            // Format coordinates
-            return formatCellContent(subColumns[0], parentColumn);
+        scope.formatSubColumns = function(subColumns, parentColumn) {
+          var formattedColumnData;
+
+          if (!_.isArray(subColumns)) {
+            return scope.formatCellContent(subColumns, parentColumn);
+          }
+
+          if (subColumns.length === 1 && _.has(subColumns[0], 'coordinates')) {
+            formattedColumnData = scope.formatCellContent(subColumns[0], parentColumn);
           } else {
-            var address = _.result(_.find(subColumns, {'columnName': 'address'}), 'value').trim();
-            var city = _.result(_.find(subColumns, {'columnName': 'city'}), 'value').trim();
-            var state = _.result(_.find(subColumns, {'columnName': 'state'}), 'value').trim();
-            var zip = _.result(_.find(subColumns, {'columnName': 'zip'}), 'value').trim();
-            if (_.any([address, city, state, zip], _.isPresent)) {
-              // Format address following US postal format if any of its components are present
+            var addressColumns = _.map(['address', 'city', 'state', 'zip'], function(column) {
+              return _.result(_.find(subColumns, { 'columnName': column }), 'value').trim();
+            });
+
+            // Format address following US postal format if any of its components are present
+            if (_.any(addressColumns, _.isPresent)) {
+              var address = addressColumns[0];
+              var city = addressColumns[1];
+              var state = addressColumns[2];
+              var zip = addressColumns[3];
               var addressLines = [];
+
               if (address) {
                 addressLines.push(address);
               }
+
               if (city && state && zip) {
                 addressLines.push('{0}, {1} {2}'.format(city, state, zip));
               } else if (state && zip) {
@@ -44,51 +75,23 @@
                 addressLines.push('{0}, {1}'.format(city, state));
               }
 
-              var formattedAddress = addressLines.join('\n');
-              return formattedAddress;
+              formattedColumnData = addressLines.join('\n');
             } else {
+
               // If neither expected set of subcolumns exists, list 'name: value' for each subcolumn
-              var formattedColumnData = subColumns.map(function(subColumn) {
-                return subColumn.columnName + ': ' + formatCellContent(subColumn.value, parentColumn);
-              }).join(', ');
-              return formattedColumnData;
+              formattedColumnData = subColumns.
+                map(function(subColumn) {
+                  return '{0}: {1}'.format(
+                    subColumn.columnName,
+                    scope.formatCellContent(subColumn.value, parentColumn)
+                  );
+                }).
+                join(', ');
             }
           }
-        }
-        scope.formatSubColumns = formatSubColumns;
 
-        // Format content based on data type
-        function formatCellContent(cellContent, column) {
-          var cellText = '';
-          var cellType = column.physicalDatatype;
-
-          switch (cellType) {
-            case 'boolean':
-              cellText = DataTypeFormatService.renderBooleanCell(cellContent, column);
-              break;
-            case 'number':
-              cellText = DataTypeFormatService.renderNumberCell(cellContent, column);
-              break;
-            case 'geo_entity':
-            case 'point':
-              cellText = DataTypeFormatService.renderGeoCell(cellContent, column);
-              break;
-            case 'timestamp':
-            case 'floating_timestamp':
-              cellText = DataTypeFormatService.renderTimestampCell(cellContent, column);
-              break;
-            case 'money':
-              cellText = DataTypeFormatService.renderMoneyCell(cellContent, column);
-              break;
-            default:
-              cellText = cellContent;
-              break;
-          }
-          return cellText;
-        }
-        scope.formatCellContent = formatCellContent;
-
-        scope.isArray = _.isArray;
+          return formattedColumnData;
+        };
 
         // Handle pagination between multiple rows
         scope.goToPreviousRow = function() {
@@ -103,65 +106,33 @@
           }
         };
 
-        // Calculate and set necessary right padding for close button based on scrollbar (if present)
-        function setCloseButtonPosition() {
-          // Ensure current flannel scroll bar width is retrieved after the flannel is rendered
-          $timeout(function() {
-            scope.iconClosePadding = {
-              paddingRight: Constants.FLANNEL_CLOSE_ICON_INITIAL_PADDING + getFlannelScrollbarWidth()
-            };
-          });
-        }
+        // On every page change, update the flyout content and positioning.
+        currentIndex$.subscribe(function(index) {
+          scope.selectedRow = scope.rows[index];
+          scope.showingMessage = I18n.t('featureMapFlannel.showing',
+            scope.rowDisplayUnit, ++index, scope.rows.length);
 
-        function setScrollableStatus() {
-          // Ensure current flannel scroll bar width is retrieved after the flannel is rendered
           $timeout(function() {
-            scope.isScrollable = getFlannelScrollbarWidth() > 0;
-          });
-        }
+            var scrollbarNotVisible = flannelContent.outerWidth() === Constants.FLANNEL_WIDTH;
+            scope.isScrollable = flannelContent.height() > Constants.FLANNEL_MAX_CONTENT_HEIGHT;
 
-        // No rows to show initially (when query pending)
-        scope.currentIndex = -1;
-        scope.$watch('currentIndex', function(index) {
-          // Only track row index when rows exist after a successful row query
-          if (index >= 0) {
-            scope.selectedRow = scope.rows[index];
-            scope.showingMessage = I18n.t('featureMapFlannel.showing', scope.rowDisplayUnit, index + 1, scope.rows.length);
-            setCloseButtonPosition();
-            setScrollableStatus();
-          }
+            // If a scrollbar should exist, but it's not visible (Firefox),
+            // dedicate room for it.
+            if (scope.isScrollable && scrollbarNotVisible) {
+              flannelContent.width(flannelContent.width() -
+                Constants.FLANNEL_FIREFOX_SCROLLBAR_PADDING);
+            }
+
+            iconClose.css('right', 'auto');
+            iconClose.css('left', flannelContent.innerWidth() - iconClose.width() -
+              Constants.FLANNEL_CLOSE_ICON_INITIAL_PADDING);
+            stickyBorders.width(flannelContent.innerWidth() - iconClose.width());
+            stickyBorders.toggle(scope.isScrollable);
+          });
         });
 
-        scope.$watch('queryStatus', function(queryStatus) {
-          // Handle Rendering
-          switch (queryStatus) {
-            case Constants.QUERY_PENDING:
-              break;
-
-            case Constants.QUERY_ERROR:
-              setCloseButtonPosition();
-              break;
-
-            case Constants.QUERY_SUCCESS:
-              // Get scrollbar width within current browser and OS
-              var SCROLLBAR_WIDTH = ScrollbarService.getScrollbarWidth();
-              // Display first page by default
-              scope.currentIndex = 0;
-
-              // Determine dynamic styling for flannel text border that persists through scroll
-              //   - Calculate width of flannel-text-wrapper (without the scroll bar width when present)
-              //   - Set positioning on bottom border based on whether the paging panel is present
-              scope.stickyBorderTop = {
-                width: $(element).find('.tool-panel-inner-container').width() - SCROLLBAR_WIDTH
-              };
-
-              scope.stickyBorderBottom = _.extend({}, scope.stickyBorderTop,
-                {bottom: scope.rows.length > 1 ? Constants.FLANNEL_BOTTOM_STICKY_BORDER_PAGINATION_POSITION : 0});
-              break;
-
-            default:
-              break;
-          }
+        successfulQuery$.subscribe(function() {
+          scope.currentIndex = 0;
         });
       }
     };

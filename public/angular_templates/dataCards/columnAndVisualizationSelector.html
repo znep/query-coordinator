@@ -53,6 +53,10 @@
     </div>
   </div>
   <div class="span5 customize-card-options">
-    <visualization-type-selector card-model="selectedCardModel" ng-show="availableCardTypes.length > 1"></visualization-type-selector>
+    <visualization-type-selector
+      card-model="selectedCardModel"
+      supported-card-types="supportedCardTypes"
+      ng-show="availableCardTypes.length > 1">
+      </visualization-type-selector>
   </div>
 </div>

@@ -6,7 +6,11 @@
       restrict: 'E',
       scope: {
         page: '=',
-        cardSize: '='
+        cardSize: '=',
+
+        // Array of card types.
+        // Optional, if set will limit available card types to the given list.
+        supportedCardTypes: '=?'
       },
       templateUrl: '/angular_templates/dataCards/columnAndVisualizationSelector.html',
       link: function(scope) {
@@ -59,14 +63,27 @@
           map(function(columns) {
             return _.sortBy(columns, 'fieldName');
           }).
-          map(function(sortedColumns) {
+          combineLatest(scope.$observe('supportedCardTypes'), function(sortedColumns, supportedCardTypes) {
             // Split into available and unsupported columns.
             var availableColumns = [];
             var unsupportedColumns = [];
 
             _.forEach(sortedColumns, function(column) {
+              var defaultCardType = column.columnInfo.defaultCardType;
+              var supportedAndAvailableCardTypes;
 
-              if (column.columnInfo.defaultCardType === 'invalid') {
+              if (_.isDefined(supportedCardTypes)) {
+                supportedAndAvailableCardTypes = _.intersection(
+                  column.columnInfo.availableCardTypes,
+                  supportedCardTypes
+                );
+
+                if (!_.includes(supportedAndAvailableCardTypes, defaultCardType)) {
+                  defaultCardType = supportedAndAvailableCardTypes[0] || 'invalid';
+                }
+              }
+
+              if (defaultCardType === 'invalid') {
                 unsupportedColumns.push(column.fieldName);
               } else if (!column.columnInfo.isSubcolumn) {
               // CORE-4645: Do not allow subColumns to be available as cards to add

@@ -161,6 +161,7 @@ describe('columnAndVisualizationSelectorTest', function() {
         'dataset-columns="datasetColumns" ' +
         'page="page" ' +
         'card-size="cardSize" ' +
+        'supported-card-types="supportedCardTypes" ' +
       '></column-and-visualization-selector>';
 
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
@@ -459,6 +460,35 @@ describe('columnAndVisualizationSelectorTest', function() {
       expect(directive.scope.availableColumns).to.include(':@computed_column');
     });
 
+    describe('if supportedCardTypes is set', function() {
+      function setSupportedCardTypes(value) {
+        directive.outerScope.supportedCardTypes = value;
+        directive.outerScope.$apply();
+      }
+
+      describe('to an empty array', function() {
+        it('should include no columns', function() {
+          var currentColumnFieldNames = _.keys(currentColumns);
+          setSupportedCardTypes([]);
+          expect(directive.scope.availableColumns.sort()).to.be.empty;
+        });
+      });
+
+      describe('to an array including `column` and `timeline`', function() {
+        it('should include columns that can be visualized as column or timeline', function() {
+          setSupportedCardTypes(['column', 'timeline']);
+          var expectedAvailable = [
+            'bar',
+            'distribution',
+            'multipleVisualizations'
+          ];
+
+          expect(directive.scope.availableColumns.sort()).to.
+            deep.equal(expectedAvailable.sort());
+        });
+      });
+    });
+
   });
 
   describe('unsupportedColumns scope variable', function() {
@@ -534,6 +564,36 @@ describe('columnAndVisualizationSelectorTest', function() {
         set('columns', newColumns);
 
       expect(directive.scope.unsupportedColumns).to.be.empty;
+    });
+
+    describe('if supportedCardTypes is set', function() {
+      function setSupportedCardTypes(value) {
+        directive.outerScope.supportedCardTypes = value;
+        directive.outerScope.$apply();
+      }
+
+      describe('to an empty array', function() {
+        it('should include all columns', function() {
+          var currentColumnFieldNames = _.keys(currentColumns);
+          setSupportedCardTypes([]);
+          expect(directive.scope.unsupportedColumns.sort()).to.
+            deep.equal(currentColumnFieldNames.sort());
+        });
+      });
+
+      describe('to an array including `column` and `timeline`', function() {
+        it('should include columns that cannot be visualized as column or timeline', function() {
+          setSupportedCardTypes(['column', 'timeline']);
+          var expectedUnsupported = [
+            'spot',
+            'point',
+            'ward'
+          ];
+
+          expect(directive.scope.unsupportedColumns.sort()).to.
+            deep.equal(expectedUnsupported.sort());
+        });
+      });
     });
   });
 });

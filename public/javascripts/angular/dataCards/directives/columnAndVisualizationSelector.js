@@ -67,6 +67,7 @@
             // Split into available and unsupported columns.
             var availableColumns = [];
             var unsupportedColumns = [];
+            var defaultCardTypeHash = {};
 
             _.forEach(sortedColumns, function(column) {
               var defaultCardType = column.columnInfo.defaultCardType;
@@ -88,12 +89,14 @@
               } else if (!column.columnInfo.isSubcolumn) {
               // CORE-4645: Do not allow subColumns to be available as cards to add
                 availableColumns.push(column.fieldName);
+                defaultCardTypeHash[column.fieldName] = defaultCardType;
               }
             });
 
             return {
-              available: availableColumns,
-              unsupported: unsupportedColumns
+              available: availableColumns, // List of fieldNames
+              unsupported: unsupportedColumns, // List of fieldNames
+              defaultCardTypeHash: defaultCardTypeHash // Hash of fieldName -> cardType
             };
 
           });
@@ -108,9 +111,9 @@
         Rx.Observable.subscribeLatest(
           scope.$observe('addCardSelectedColumnFieldName'),
           datasetColumnsInfo$.filter(_.isDefined).pluck('available'),
-          scope.$observe('page').observeOnLatest('dataset').filter(_.isDefined),
+          datasetColumnsInfo$.filter(_.isDefined).pluck('defaultCardTypeHash'),
           scope.$observe('page').observeOnLatest('dataset.columns').filter(_.isDefined),
-          function(fieldName, availableColumns, dataset, columns) {
+          function(fieldName, availableColumns, defaultCardTypeHash, columns) {
 
             var serializedCard;
             var column;
@@ -139,7 +142,7 @@
               'fieldName': fieldName
             };
 
-            serializedCard.cardType = column.defaultCardType;
+            serializedCard.cardType = defaultCardTypeHash[fieldName];
             // TODO: We're going towards passing in serialized blobs to Model constructors.
             // Revisit this line when that effort reaches Card.
             scope.selectedCardModel = Card.deserialize(scope.page, serializedCard);

@@ -7,8 +7,7 @@ describe('columnAndVisualizationSelectorTest', function() {
   var Model;
   var $rootScope;
   var $controller;
-  var $httpBackend;
-  var $templateCache;
+  var $provide;
 
   function createDirective() {
 
@@ -179,12 +178,15 @@ describe('columnAndVisualizationSelectorTest', function() {
   }
 
   beforeEach(module('dataCards'));
-  beforeEach(module('dataCards.directives'));
   beforeEach(module('/angular_templates/dataCards/columnAndVisualizationSelector.html'));
   beforeEach(module('/angular_templates/dataCards/visualizationTypeSelector.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
-  beforeEach(module('/angular_templates/dataCards/card.html'));
-  beforeEach(module('dataCards/cards.sass'));
+
+  beforeEach(function() {
+    module(['$provide', function(_$provide) {
+      $provide = _$provide;
+    }]);
+  });
 
   beforeEach(
     inject([
@@ -194,17 +196,13 @@ describe('columnAndVisualizationSelectorTest', function() {
       'Model',
       '$rootScope',
       '$controller',
-      '$httpBackend',
-      '$templateCache',
       function(
         _testHelpers,
         _Card,
         _Mockumentary,
         _Model,
         _$rootScope,
-        _$controller,
-        _$httpBackend,
-        _$templateCache) {
+        _$controller) {
 
           testHelpers = _testHelpers;
           Card = _Card;
@@ -212,23 +210,8 @@ describe('columnAndVisualizationSelectorTest', function() {
           Model = _Model;
           $rootScope = _$rootScope;
           $controller = _$controller;
-          $httpBackend = _$httpBackend;
-          $templateCache = _$templateCache;
 
-          // Override the templates of the other directives. We don't need to test them.
-          $templateCache.put('/angular_templates/dataCards/spinner.html', '');
-          $templateCache.put('/angular_templates/dataCards/cardVisualizationColumnChart.html', '');
-          $templateCache.put('/angular_templates/dataCards/cardVisualizationChoropleth.html', '');
-          $templateCache.put('/angular_templates/dataCards/cardVisualizationTable.html', '');
-          $templateCache.put('/angular_templates/dataCards/cardVisualizationTimelineChart.html', '');
-          $templateCache.put('/angular_templates/dataCards/cardVisualizationSearch.html', '');
-          $templateCache.put('/angular_templates/dataCards/cardVisualization.html', '');
-          $templateCache.put('/angular_templates/dataCards/cardVisualizationInvalid.html', '');
-          $templateCache.put('/angular_templates/dataCards/clearableInput.html', '');
-
-          $httpBackend.whenGET(/\/api\/id\/rook-king.json.*/).respond([]);
-          $httpBackend.whenGET(/\/resource\/rook-king.json.*/).respond([]);
-          $httpBackend.whenGET(/\/resource\/mash-apes.geojson.*/).respond([]);
+          testHelpers.mockDirective($provide, 'card');
       }
     ])
   );
@@ -353,25 +336,28 @@ describe('columnAndVisualizationSelectorTest', function() {
     });
 
     describe('that supports customization', function() {
-      // Ward is already customizable
       describe('customize button', function() {
-        it('should emit customize-card-with-model scope event', function(done) {
+        function findButton() {
+          return directive.element.find('.add-card-controls .add-card-settings');
+        }
+
+        it('should be visible', function() {
           var directive = createDirective();
-          var customizeButton = directive.element.find('.card-control[title^="Customize"]');
+          var customizeButton;
 
           // This button should only appear for cards that support it
-          expect(customizeButton.length).to.equal(0);
+          expect(findButton()).to.have.length(0);
 
           directive.element.find('select > option[value="bar"]').prop('selected', true).trigger('change');
-          customizeButton = directive.element.find('.card-control[title^="Customize"]');
 
           // Button should still be hidden.
-          expect(customizeButton).to.be.hidden;
+          expect(findButton()).to.have.length(0);
 
           // Now select the choropleth
           directive.element.find('select > option[value="ward"]').prop('selected', true).trigger('change');
 
-          customizeButton = directive.element.find('.card-control[title^="Customize"]');
+          customizeButton = findButton();
+          expect(customizeButton).to.have.length(1);
           expect(customizeButton).to.be.visible;
 
           /* Technically, there should be a flyout here. But since we're using the same mechanism to give
@@ -379,16 +365,7 @@ describe('columnAndVisualizationSelectorTest', function() {
            * only registered in the card-layout code. So just test to make sure the conditions are met for
            * the card-layout-registered flyout to work.
            */
-          expect(customizeButton.hasClass('card-control')).to.be.true;
           expect(customizeButton.prop('title')).to.match(/customize this card/i);
-
-          directive.outerScope.$on('customize-card-with-model', function(e, cardModel) {
-            expect(cardModel).to.be.ok;
-            done();
-          });
-
-          // Trigger the customize button click event.
-          customizeButton.click();
         });
       });
     });

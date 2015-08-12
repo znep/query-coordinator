@@ -595,21 +595,21 @@ describe('timelineChart', function() {
     mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
     mockWindowStateService.mousePositionSubject.onNext({
       clientX: 10,
-      clientY: $('#test-timeline-chart').offset().top + $('.y-tick:last-child').offset().top + 5,
+      clientY: $('#test-timeline-chart').offset().top + $('.y-tick:last-child').offset().top - 5,
       target: $('.y-tick:last-child')[0]
     });
 
     mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
     mockWindowStateService.mousePositionSubject.onNext({
       clientX: 10,
-      clientY: $('#test-timeline-chart').offset().top + $('.y-tick:last-child').offset().top + 5,
+      clientY: $('#test-timeline-chart').offset().top + $('.y-tick:last-child').offset().top - 5,
       target: $('.y-tick:last-child')[0]
     });
 
     var wasThenSelected = $('.timeline-chart-wrapper').hasClass('selected');
 
     expect(wasNotSelected).to.equal(true);
-    expect(wasThenSelected).to.equal(true);
+    expect(wasThenSelected).to.equal(false);
   });
 
   describe('when selecting', function() {

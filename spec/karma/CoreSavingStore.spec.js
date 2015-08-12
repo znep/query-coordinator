@@ -92,7 +92,7 @@ describe('CoreSavingStore', function() {
 
     describe('with no validation issues', function() {
       var viewUrl;
-      var cookie = 'socrata-csrf-token=the_csrf_token;';
+      var cookie = 'socrata-csrf-token=the_csrf_token%3D;'; // '=' encoded
 
       beforeEach(function() {
         document.cookie = cookie;
@@ -101,7 +101,7 @@ describe('CoreSavingStore', function() {
           action: Constants.STORY_SAVE_METADATA,
           storyUid: standardMocks.validStoryUid
         });
-        viewUrl = '/views/{0}.json'.format(standardMocks.validStoryUid);
+        viewUrl = '/api/views/{0}.json'.format(standardMocks.validStoryUid);
       });
 
       afterEach(function() {
@@ -109,85 +109,63 @@ describe('CoreSavingStore', function() {
         document.cookie = cookie + 'expires=Thu, 01 Jan 1970 00:00:01 GMT'
       });
 
+
+      it('should indicate a save in progress', expectSaveInProgress);
+
+      it('should indicate no error', expectNoError);
+
       it('should make one request', function() {
-        // ... so far. The PUT will come after the first request completes.
         assert.lengthOf(server.requests, 1);
       });
 
-      it('should GET /views/<4x4>.json', function() {
+      it('should PUT correct json to /api/views/<4x4>.json', function() {
         var request = server.requests[0];
-        assert.equal(request.method, 'GET');
+        assert.equal(request.method, 'PUT');
         assert.equal(request.url, viewUrl);
-        assert.equal(request.requestHeaders['X-App-Token'], 'storyteller_app_token')
-        assert.equal(request.requestHeaders['X-CSRF-Token'], 'the_csrf_token');
+        assert.equal(request.requestHeaders['X-App-Token'], 'storyteller_app_token');
+        assert.equal(request.requestHeaders['X-CSRF-Token'], 'the_csrf_token=');
+
+        var body = JSON.parse(request.requestBody);
+        assert.propertyVal(body, 'name', standardMocks.validStoryTitle);
+        assert.propertyVal(body, 'description', standardMocks.validStoryDescription);
       });
 
-      it('should indicate a save in progress', expectSaveInProgress);
-      it('should indicate no error', expectNoError);
+      describe('and the PUT succeeds', function() {
 
-      describe('and the request succeeds', function() {
         beforeEach(function() {
           server.respondWith(
             viewUrl,
             [
               200,
               { 'Content-Type': 'application/json' },
-              JSON.stringify({ id : standardMocks.validStoryUid, name: 'OLD_NAME' })
+              '{}'
             ]
           );
           server.respond();
         });
-        it('should indicate a save in progress', expectSaveInProgress);
+
+        it('should indicate no save in progress', expectNoSaveInProgress);
+
         it('should indicate no error', expectNoError);
+      });
 
-        it('should make one more request', function() {
-          assert.lengthOf(server.requests, 2);
+      describe('and the PUT fails', function() {
+
+        beforeEach(function() {
+          server.respondWith(
+            viewUrl,
+            [500, {}, 'Failure']
+          );
+          server.respond();
         });
 
-        it('should PUT correct json to /views/<4x4>.json', function() {
-          var request = server.requests[1];
-          assert.equal(request.method, 'PUT');
-          assert.equal(request.url, viewUrl);
-          assert.equal(request.requestHeaders['X-App-Token'], 'storyteller_app_token');
-          assert.equal(request.requestHeaders['X-CSRF-Token'], 'the_csrf_token');
+        it('should indicate no save in progress', expectNoSaveInProgress);
 
-          var body = JSON.parse(request.requestBody);
-          assert.propertyVal(body, 'id', standardMocks.validStoryUid);
-          assert.propertyVal(body, 'name', standardMocks.validStoryTitle);
-          assert.propertyVal(body, 'description', standardMocks.validStoryDescription);
+        it('should indicate an error', expectError);
+
+        it('should indicate no error for other stories', function(done) {
+          expectNoError(done, 'some-othr');
         });
-
-        describe('and the PUT succeeds', function() {
-          beforeEach(function() {
-            server.respondWith(
-              viewUrl,
-              [
-                200,
-                { 'Content-Type': 'application/json' },
-                '{}'
-              ]
-            );
-            server.respond();
-          });
-          it('should indicate no save in progress', expectNoSaveInProgress);
-          it('should indicate no error', expectNoError);
-        });
-
-        describe('and the PUT fails', function() {
-          beforeEach(function() {
-            server.respondWith(
-              viewUrl,
-              [500, {}, 'Failure']
-            );
-            server.respond();
-          });
-          it('should indicate no save in progress', expectNoSaveInProgress);
-          it('should indicate an error', expectError);
-          it('should indicate no error for other stories', function(done) {
-            expectNoError(done, 'some-othr');
-          });
-        });
-
       });
 
       describe('and the request fails', function() {
@@ -198,8 +176,11 @@ describe('CoreSavingStore', function() {
           );
           server.respond();
         });
+
         it('should indicate no save in progress', expectNoSaveInProgress);
+
         it('should indicate an error', expectError);
+
         it('should indicate no error for other stories', function(done) {
           expectNoError(done, 'some-othr');
         });

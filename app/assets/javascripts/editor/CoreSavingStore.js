@@ -154,14 +154,7 @@
 
       _setSaveInProgress(true);
 
-      _getViewMetadataFromCore(metadataToSave.storyUid).
-        then(function(response) {
-          // Now that we have the current view metadata,
-          // update it and PUT it back.
-          return _putViewMetadataToCore(
-            _updateCoreMetadataBlobWithSavedMetadata(metadataToSave, response)
-          );
-        }).
+      _putViewMetadataToCore(metadataToSave).
         done(function() {
           // Done? Yay, clear errors.
           _setLastSaveError(metadataToSave.storyUid, null);
@@ -177,61 +170,25 @@
     }
 
     /**
-     * Update a view metadata blob from core with metadata
-     * information from a saved metadata snapsshot from _saveStoryMetadata.
-     *
-     * @param metadata {object} A snapshot of view metadata.
-     * @param blob {object} A core view metadata blob.
-     * @return {object} An updated version of the blob.
-     */
-    function _updateCoreMetadataBlobWithSavedMetadata(metadata, blob) {
-      utils.assertHasProperty(blob, 'id');
-      utils.assertHasProperties(metadata, 'storyUid', 'storyTitle', 'storyDescription');
-      if (blob.id !== metadata.storyUid) {
-        throw new Error('Core view uid does not match story uid.');
-      }
-
-      return _.extend(
-        {},
-        blob,
-        {
-          name: metadata.storyTitle,
-          description: metadata.storyDescription
-        }
-      );
-    }
-
-    /**
-     * Returns a promise for a story's view metadata from core
-     *
-     * @param storyUid {string} The story's uid.
-     * @return {promise<object>}
-     */
-    function _getViewMetadataFromCore(storyUid) {
-      return $.ajax({
-        type: 'GET',
-        url: '/views/{0}.json'.format(storyUid),
-        headers: _coreRequestHeaders()
-      });
-    }
-
-    /**
      * Returns a promise for PUTing the provided core view
      * metadata blob back to the servers.
      *
-     * @param newData {object} The core view metadata blob to PUT.
+     * @param metadata {object} The core view metadata fields to PUT.
      * @return {promise<object>} The response from the server.
      */
-    function _putViewMetadataToCore(newData) {
-      utils.assertHasProperty(newData, 'id');
+    function _putViewMetadataToCore(metadata) {
+      utils.assertHasProperties(metadata, 'storyUid', 'storyTitle', 'storyDescription');
 
       return $.ajax({
         type: 'PUT',
-        contentType: 'json',
+        contentType: 'application/json',
         headers: _coreRequestHeaders(),
         dataType: 'json',
-        url: '/views/{0}.json'.format(newData.id),
-        data: JSON.stringify(newData)
+        url: '/api/views/{0}.json'.format(metadata.storyUid),
+        data: JSON.stringify({
+          name: metadata.storyTitle,
+          description: metadata.storyDescription
+        })
       });
     }
 
@@ -241,7 +198,7 @@
       utils.assertIsOneOfTypes(storyteller.config.coreServiceAppToken, 'string');
 
       headers['X-App-Token'] = storyteller.config.coreServiceAppToken;
-      headers['X-CSRF-Token'] = utils.getCookie('socrata-csrf-token');
+      headers['X-CSRF-Token'] = decodeURIComponent(utils.getCookie('socrata-csrf-token'));
 
       return headers;
     }

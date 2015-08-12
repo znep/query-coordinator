@@ -303,8 +303,11 @@
      * Ex: element.on('mousewheel', '.scrollable', Util.preventScrolling)
      */
     preventScrolling: function(e) {
-      var target = $(this);
-      var scrollTop = target.scrollTop();
+      // Base prevention of page scrolling on scroll status of the element
+      // specified by the given selector (passed as a second argument to
+      // element.on() invocation above and represented here as $(this)).
+      var scrollEnabledElement = $(this);
+      var scrollTop = scrollEnabledElement.scrollTop();
 
       var delta = e.originalEvent.deltaY;
       if (delta < 0) {
@@ -315,8 +318,8 @@
         }
       } else if (delta > 0) {
         // Scrolling down.
-        var innerHeight = target.innerHeight();
-        var scrollHeight = target[0].scrollHeight;
+        var innerHeight = scrollEnabledElement.innerHeight();
+        var scrollHeight = scrollEnabledElement[0].scrollHeight;
 
         if (scrollTop >= scrollHeight - innerHeight) {
           // Past bottom.

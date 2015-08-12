@@ -7,13 +7,13 @@
       '`{0}` must be loaded before `{1}`'.
         format(
           'socrata.visualizations.Visualization.js',
-          'socrata.visualizations.Column.js'
+          'socrata.visualizations.ColumnChart.js'
         )
     );
   }
 
   if (!_.has(root, 'd3')) {
-    throw new Error('d3 is a required dependency for `socrata.visualizations.Column.js`.');
+    throw new Error('d3 is a required dependency for `socrata.visualizations.ColumnChart.js`.');
   }
 
   // TODO: Figure out how to do this better (and probably not through jQuery).
@@ -26,7 +26,7 @@
     return width;
   };
 
-  function Column(element, config) {
+  function ColumnChart(element, config) {
 
     _.extend(this, new root.socrata.visualizations.Visualization(element, config));
 
@@ -280,7 +280,9 @@
         title: _labelValueOrPlaceholder(datum[NAME_INDEX]),
         unfilteredValueLabel: self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL'),
         unfilteredValue: datum[UNFILTERED_INDEX],
-        labelUnit: _lastRenderOptions.labelUnit
+        labelUnit: _lastRenderOptions.labelUnit,
+        selectedNotice: self.getLocalization('FLYOUT_SELECTED_NOTICE'),
+        selected: datum[SELECTED_INDEX]
       };
 
       if (_lastRenderOptions.showFiltered) {
@@ -884,5 +886,5 @@
     }
   }
 
-  root.socrata.visualizations.Column = Column;
+  root.socrata.visualizations.ColumnChart = ColumnChart;
 })(window);

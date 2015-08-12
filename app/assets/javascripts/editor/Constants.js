@@ -64,7 +64,9 @@
   //
   // Here 255 is the maxiumum allowed length, not the maxiumum character
   // count.
-  CORE_VIEW_NAME_MAX_LENGTH: 254
+  CORE_VIEW_NAME_MAX_LENGTH: 254,
+
+  WINDOW_RESIZE_RERENDER_DELAY: 200
 };
 
 (function() {

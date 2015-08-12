@@ -1,7 +1,7 @@
 describe('card directive', function() {
   'use strict';
 
-  var CARD_HTML = '<card model="cardModel" interactive="true"></card>';
+  var CARD_HTML = '<card model="cardModel" interactive="true" edit-mode="editMode"></card>';
 
   var $rootScope;
   var testHelpers;
@@ -92,6 +92,7 @@ describe('card directive', function() {
     var pageModel = Mockumentary.createPage(pageOverrides, datasetOverrides);
 
     var scope = $rootScope.$new();
+    scope.editMode = false;
     scope.cardModel = createCardModel(pageModel, options);
 
     return {
@@ -302,6 +303,66 @@ describe('card directive', function() {
         });
       });
 
+    });
+  });
+
+  describe('customize button', function() {
+    var directive;
+
+    beforeEach(function() {
+      directive = createDirective({
+        columns: {
+          myFieldName: {
+            name: 'name',
+            description: 'descr',
+            physicalDatatype: 'text',
+            availableCardTypes: ['choropleth'],
+            defaultCardType: 'choropleth'
+          }
+        },
+        version: 1
+      });
+    });
+    function findButton() {
+      return directive.element.find('.card-controls .icon-settings');
+    }
+
+    describe('when the card is not customizable', function() {
+      it('should not be visible', function() {
+        directive.scope.cardModel.set('cardType', 'timeline');
+        expect(findButton().hasClass('disabled')).to.equal(true);
+      });
+    });
+    describe('when the card is customizable', function() {
+      describe('and the directive is not in edit mode', function() {
+        beforeEach(function() {
+          directive.scope.editMode = false;
+          directive.scope.$digest();
+        });
+
+        it('should not be visible', function() {
+          expect(findButton().hasClass('ng-hide')).to.equal(true);
+        });
+      });
+
+      describe('and the directive is in edit mode', function() {
+        beforeEach(function() {
+          directive.scope.editMode = true;
+          directive.scope.$digest();
+        });
+        it('should be visible', function() {
+          expect(findButton().hasClass('disabled')).to.equal(false);
+          expect(findButton().hasClass('ng-hide')).to.equal(false);
+        });
+
+        it('should trigger customize-card-with-model when clicked', function(done) {
+          directive.scope.$on('customize-card-with-model', function(event, payload) {
+            expect(payload).to.have.property('fieldName', 'myFieldName');
+            done();
+          });
+          findButton().click();
+        });
+      });
     });
   });
 

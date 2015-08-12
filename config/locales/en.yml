@@ -157,7 +157,7 @@ en:
       feature_map_flannel:
         previous: Previous
         next: Next
-        showing: <p>Showing {0}</p><br><p>{1}&nbsp;of&nbsp;{2}</p>
+        showing: <div>Showing {0}</div><div>{1}&nbsp;of&nbsp;{2}</div>
         error_message: An error occurred while fetching location data.
       feedback_panel:
         broken: Something seems broken

@@ -1,23 +1,23 @@
 <div class="feature-map-flannel">
   <div class="tool-panel" ng-class="{southwest: !useSoutheastHint, southeast: useSoutheastHint}" ng-style="panelPositionStyle">
     <div class="tool-panel-main">
-      <div class="icon-close" ng-style="iconClosePadding" ng-if="queryStatus !== 'pending'"></div>
-      <div class="sticky-border" ng-style="stickyBorderTop" ng-if"queryStatus === 'success'"></div>
-      <div class="tool-panel-inner-container" ng-class="{scrollable: isScrollable}">
+
+      <div class="icon-close" ng-show="queryStatus !== 'pending'"></div>
+      <div class="sticky-border" ng-show"=queryStatus === 'success'"></div>
+      <div class="tool-panel-inner-container">
         <!-- Successful query response -->
-        <div class="flannel-content" ng-if="queryStatus === 'success'">
+        <div class="flannel-content" ng-show="queryStatus === 'success'">
           <div ng-repeat="cell in selectedRow" class="row-data-item">
-            <span class="name">{{cell.columnName}}:</span>
-            <span ng-if="isArray(cell.value)" class="value">{{formatSubColumns(cell.value, cell)}}</span>
-            <span ng-if="!isArray(cell.value)" class="value">{{formatCellContent(cell.value, cell)}}</span>
+            <span class="name">{{cell.columnName}}</span>
+            <span class="value">{{formatSubColumns(cell.value, cell)}}</span>
           </div>
         </div>
         <!-- Loading spinner while query pending-->
-        <div class="pending-content" ng-if="queryStatus === 'pending'">
+        <div class="pending-content" ng-show="queryStatus === 'pending'">
           <load-spinner busy="busy"></load-spinner>
         </div>
         <!-- Error message if row query unsuccessful -->
-        <div class="error-content" ng-if="queryStatus === 'error'">
+        <div class="error-content" ng-show="queryStatus === 'error'">
           <div class="row">
             <div class="span2"><span class="icon-warning"></span></div>
             <div class="span10">
@@ -26,20 +26,18 @@
           </div>
         </div>
       </div>
-      <div class="sticky-border bottom" ng-style="stickyBorderBottom" ng-if="queryStatus === 'success'"></div>
-      <div class="paging-panel-wrapper" ng-if="queryStatus === 'success' && rows.length > 1">
-        <div class="paging-panel" ng-if="rows.length > 1">
-          <button type="button" title="{{'featureMapFlannel.previous' | I18n}}" class="l-to-r pagination-btn action-btn previous"
-            ng-click="goToPreviousRow()" ng-disabled="currentIndex === 0">
-            <span class="caret">{{'featureMapFlannel.previous' | I18n}}</span>
-          </button>
-          <button type="button" title="{{'featureMapFlannel.next' | I18n}}" class="r-to-l pagination-btn action-btn next"
-            ng-click="goToNextRow()" ng-disabled="currentIndex === rows.length - 1">
-            <span class="caret">{{'featureMapFlannel.next' | I18n}}</span>
-          </button>
-          <div class="paging-info">
-            <div class="message" ng-bind-html="showingMessage"></div>
-          </div>
+      <div class="sticky-border bottom" ng-show="queryStatus === 'success'"></div>
+      <div class="paging-panel" ng-show="queryStatus === 'success' && rows.length > 1">
+        <button type="button" title="{{'featureMapFlannel.previous' | I18n}}" class="l-to-r pagination-btn action-btn previous"
+          ng-click="goToPreviousRow()" ng-disabled="currentIndex === 0">
+          <span class="caret">{{'featureMapFlannel.previous' | I18n}}</span>
+        </button>
+        <button type="button" title="{{'featureMapFlannel.next' | I18n}}" class="r-to-l pagination-btn action-btn next"
+          ng-click="goToNextRow()" ng-disabled="currentIndex === rows.length - 1">
+          <span class="caret">{{'featureMapFlannel.next' | I18n}}</span>
+        </button>
+        <div class="paging-info">
+          <div class="message" ng-bind-html="showingMessage"></div>
         </div>
       </div>
       <div class="tool-panel-hint" ng-style="hintPositionStyle"></div>

@@ -422,8 +422,18 @@
                   }
                 });
 
-              // Disable page scrolling if over a scrollable flannel
-              element.closest('body').on('mousewheel', '.tool-panel-inner-container.scrollable', window.socrata.utils.preventScrolling);
+              // If scrollable flannel, disable scrolling on body.  Otherwise,
+              // enable scrolling.
+              var isScrollable$ = flannelScope.$observe('isScrollable');
+              var flannelSelector = element.find('.tool-panel-inner-container').selector;
+
+              isScrollable$.subscribe(function(isScrollable) {
+                if (isScrollable) {
+                  $(document.body).on('mousewheel DOMMouseScroll', flannelSelector, window.socrata.utils.preventScrolling);
+                } else {
+                  $(document.body).off('mousewheel DOMMouseScroll', flannelSelector, window.socrata.utils.preventScrolling);
+                }
+              });
 
               // Shift flannel position if scroll occurs
               var scrollSubscriber = WindowState.scrollPositionSubject.subscribe(adjustPosition);

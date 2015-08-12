@@ -1,12 +1,22 @@
 @import dataCards/common/fonts
 @import dataCards/common/layout
 
-$flannel-hint-tip-size: 10px
+// $flannel-max-height - $flannel-content-max-height = $pagination-height
 $flannel-max-height: 300px
+$flannel-content-max-height: 250px
+$pagination-height: 50px
+
+$flannel-width: 350px
+$pagination-vertical-padding: 7px
+$pagination-horizontal-padding: 10px
+$pagination-btn-width: 100px
+$pagination-top-border-width: 1px
+$flannel-hint-tip-size: 10px
+$sticky-border-height: 10px
 
 .feature-map-flannel
 
-  // Query Status Content
+  // Query status content
   .pending-content
     height: $flannel-max-height / 2
 
@@ -28,7 +38,7 @@ $flannel-max-height: 300px
     .error-message
       width: 70%
 
-  // General Layout
+  // General layout
   .tool-panel
     position: absolute
 
@@ -45,7 +55,7 @@ $flannel-max-height: 300px
     .tool-panel-inner-container
       padding: 0
       overflow: auto
-      max-height: 249px
+      max-height: $flannel-content-max-height
 
     .tool-panel-hint
       position: absolute
@@ -88,58 +98,67 @@ $flannel-max-height: 300px
   .icon-close
     cursor: pointer
     font-size: $icon-size
-    padding: 0.5rem 1rem 0 0
+    top: 5px
+    right: 5px
     position: absolute
-    right: 0
     z-index: 3
 
   .sticky-border
     position: absolute
-    height: 10px
-    width: 90%
+    height: $sticky-border-height
     z-index: 2
 
   .sticky-border.bottom
-    height: 11px
+    top: $flannel-content-max-height - $sticky-border-height
 
-  // Content from Successful Query
+  // Content from successful query
   .flannel-content
-    padding: 0.5rem 1.1rem 0.7rem 0.5rem
+
+    // Right padding needed for close icon, extra bottom padding
+    // needed to avoid text cutoff.
+    padding: 0.5rem 1.2rem 0.7rem 0.5rem
+
+    .name,
+    .value
+      display: inline-block
+      word-break: break-all
+      word-wrap: break-word
 
     .name
       font-weight: bold
 
-  // Pagination Controls
+  // Pagination controls
   .paging-panel
-    padding: 7px 10px 11px
-    min-height: 2rem
+    padding: $pagination-vertical-padding $pagination-horizontal-padding
+    height: $pagination-height - (2 * $pagination-vertical-padding) - $pagination-top-border-width
     font-size: $small-font-size
-    border-radius: 0
 
     .paging-info
       margin: auto
-      padding: 0.1rem 0 0 0.5rem
-      width: 38%
+      width: $flannel-width - (2 * $pagination-btn-width) - (2 * $pagination-horizontal-padding)
 
       .message
-        height: 12px
-        width: 100%
         text-align: center
+        padding: 0 $pagination-horizontal-padding
 
-        p
-          width: 100%
+        div
           overflow: hidden
           text-overflow: ellipsis
           white-space: nowrap
-          float: left
-          margin: 0
+
+        div + div
+          margin-top: 0.2rem
 
     .pagination-btn
-      margin-bottom: 0
+      margin: 0
+      padding: 0
+      position: absolute
+      text-align: center
+      width: $pagination-btn-width
+      height: $pagination-height - (2 * $pagination-vertical-padding) - $pagination-top-border-width
 
       &.previous
-        float: left
-        padding: 0.5rem 0.5rem
+        left: $pagination-horizontal-padding
 
         .caret:before
           @include prefixer(transform, scaleX(0.75) rotate(180deg))
@@ -148,12 +167,10 @@ $flannel-max-height: 300px
           margin-right: 0.5rem
 
       &.next
-        float: right
-        padding: 0.5rem 1rem
+        right: $pagination-horizontal-padding
 
         .caret:after
           @include prefixer(transform, scaleX(0.75))
           content: '▶'
           display: inline-block
           margin-left: 0.5rem
-

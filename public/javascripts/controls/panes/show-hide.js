@@ -70,6 +70,14 @@
                     directive: {
                         'li.columnItem': {
                             'column<-': {
+                                'input@disabled': function (a) {
+                                  // Recursively pluck out all columnFieldNames from the query
+                                  // Theses are things being grouped by, filtered on, or rolled up.
+                                  var fields = a.item.view.getFilteredFieldNames();
+                                  // If this column is in the list of fields, we will stop the user
+                                  // from trying to hide it.
+                                  return _.includes(fields, a.item.fieldName) ? 'disabled' : undefined;
+                                },
                                 'input@checked': function(a)
                                 { return a.item.hidden ? '' : 'checked'; },
                                 'input@data-columnId': 'column.id',
@@ -84,17 +92,35 @@
                             }
                         }
                     },
-                    callback: function($sect)
-                    {
-                        $sect.find('li.columnItem[data-parentId]').each(function()
-                        {
-                            var $t = $(this);
-                            var $i = $sect.find('input[data-columnId=' + $t.attr('data-parentId') + ']');
-                            var updateViz = function()
-                            { _.defer(function() { $t.toggle($i.is(':checked')); }); };
-                            $i.change(updateViz).click(updateViz);
-                            updateViz();
-                        });
+                    callback: function($sect) {
+                      // Turns out that purejs doesn't ignore attributes
+                      // that return undefined. Instead, it turns undefined into a string
+                      // and assigns it to the attribute.
+                      //
+                      // Well, that's not going to work for disabled.
+                      $sect.find('input[type="checkbox"]').each(function () {
+                        // If we run into a disabled that has a string value
+                        // of undefined, then we remove it.
+                        if (this.getAttribute('disabled') === 'undefined') {
+                          this.removeAttribute('disabled');
+                        } else {
+                          $(this).parent('li').socrataTip({
+                            trigger: 'hover',
+                            message: $.t('screens.ds.grid_sidebar.showhide_columns.warnings.active_filter'),
+                            parent: 'body',
+                            isSolo: true
+                          });
+                        }
+                      });
+
+                      $sect.find('li.columnItem[data-parentId]').each(function() {
+                        var $t = $(this);
+                        var $i = $sect.find('input[data-columnId=' + $t.attr('data-parentId') + ']');
+                        var updateViz = function()
+                        { _.defer(function() { $t.toggle($i.is(':checked')); }); };
+                        $i.change(updateViz).click(updateViz);
+                        updateViz();
+                      });
                     }
                 }
             }];

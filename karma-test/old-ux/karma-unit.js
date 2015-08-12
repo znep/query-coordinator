@@ -42,6 +42,7 @@ module.exports = function ( karma ) {
 
       // Libraries
       'public/javascripts/jquery-1.7.1.js',
+      'public/javascripts/plugins/lodash.js',
       'bower_components/sinon-browser-only/sinon.js',
 
       /* END OF EXTERNAL DEPENDENCIES
@@ -51,6 +52,7 @@ module.exports = function ( karma ) {
       // Began implementing this for dataset-show-test, but its dependencies were breaking
       // many other tests, so leaving it out for now.
       'public/javascripts/util/namespace.js',
+      'public/javascripts/util/util.js',
       // 'public/javascripts/plugins/inheritance.js',
       // 'public/javascripts/util/base-model.js',
       // 'public/javascripts/util/socrata-server.js',

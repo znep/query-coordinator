@@ -90,76 +90,17 @@ describe('columnAndVisualizationSelectorTest', function() {
     };
     var pageModel = Mockumentary.createPage(pageOverrides, datasetOverrides);
 
-    // NOTE: This is straight up copied from CardsViewController.
-    var datasetColumns = Rx.Observable.combineLatest(
-      pageModel.observe('dataset'),
-      pageModel.observe('dataset.columns'),
-      pageModel.observe('cards'),
-      function(dataset, columns, cards) {
-
-        var sortedColumns = _.pairs(columns).
-          map(function(columnPair) {
-            return {
-              fieldName: columnPair[0],
-              columnInfo: columnPair[1]
-            };
-          }).
-          filter(function(columnPair) {
-
-            // We need to ignore 'system' fieldNames that begin with ':' but
-            // retain computed column fieldNames, which (somewhat inconveniently)
-            // begin with ':@'.
-            return _.isNull(columnPair.fieldName.substring(0, 2).match(/\:[\_A-Za-z0-9]/)) &&
-                   columnPair.columnInfo.physicalDatatype !== '*';
-          }).
-          sort(function(a, b) {
-
-            // TODO: Don't we want to sort by column human name?
-            return a.fieldName > b.fieldName;
-          });
-
-        var sortedCards = cards.
-          filter(function(card) {
-            return card.fieldName !== '*';
-          }).
-          sort(function(a, b) {
-            return a.fieldName > b.fieldName;
-          });
-
-        var available = false;
-        var availableCardCount = sortedColumns.length;
-        var availableColumns = [];
-        var alreadyOnPageColumns = [];
-        var visualizationUnsupportedColumns = [];
-
-        _.forEach(sortedColumns, function(column) {
-
-          if (column.defaultCardType === 'invalid') {
-            visualizationUnsupportedColumns.push(column.fieldName);
-          } else {
-            availableColumns.push(column.fieldName);
-          }
-        });
-
-        return {
-          available: availableColumns.sort(),
-          visualizationUnsupported: visualizationUnsupportedColumns.sort()
-        };
-
-      });
-
     var outerScope = $rootScope.$new();
 
     outerScope.page = pageModel;
     outerScope.cardSize = 1;
-    outerScope.$bindObservable('datasetColumns', datasetColumns);
 
     var html =
       '<column-and-visualization-selector ' +
         'style="display:block" ' +
-        'dataset-columns="datasetColumns" ' +
         'page="page" ' +
         'card-size="cardSize" ' +
+        'supported-card-types="supportedCardTypes" ' +
       '></column-and-visualization-selector>';
 
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
@@ -366,6 +307,208 @@ describe('columnAndVisualizationSelectorTest', function() {
          * the card-layout-registered flyout to work.
          */
         expect(customizeButton.prop('title')).to.match(/customize this card/i);
+      });
+    });
+  });
+
+  describe('availableColumns scope variable', function() {
+    var directive;
+    var currentColumns;
+
+    beforeEach(function() {
+      directive = createDirective();
+      currentColumns = directive.scope.page.
+        getCurrentValue('dataset').
+        getCurrentValue('columns');
+    });
+
+    it('should include non-subcolumns', function() {
+      expect(directive.scope.availableColumns.sort()).to.
+        deep.equal(_.keys(currentColumns).sort());
+    });
+
+    it('not include subcolumns', function() {
+      var newColumns = _.mapValues(currentColumns, function(column) {
+        column = _.cloneDeep(column);
+        column.isSubcolumn = true;
+        return column;
+      });
+
+      directive.scope.page.
+        getCurrentValue('dataset').
+        set('columns', newColumns);
+
+      expect(directive.scope.availableColumns).to.be.empty;
+    });
+
+    it('should be sorted in alphabetical order', function() {
+      var currentColumnFieldNames = _.keys(currentColumns);
+      var expectedFieldNameOrder = [].concat(currentColumnFieldNames).sort();
+      expect(directive.scope.availableColumns).to.deep.equal(expectedFieldNameOrder);
+    });
+
+    it('should not include system columns', function() {
+      var newColumns = {
+        ':id': {},
+        'normal_column': {}
+      };
+
+      directive.scope.page.
+        getCurrentValue('dataset').
+        set('columns', newColumns);
+
+      expect(directive.scope.availableColumns).to.have.length(1);
+      expect(directive.scope.availableColumns).to.include('normal_column');
+    });
+
+    it('should include computed columns', function() {
+      var newColumns = {
+        ':@computed_column': {},
+        'normal_column': {}
+      };
+
+      directive.scope.page.
+        getCurrentValue('dataset').
+        set('columns', newColumns);
+
+      expect(directive.scope.availableColumns).to.have.length(2);
+      expect(directive.scope.availableColumns).to.include('normal_column');
+      expect(directive.scope.availableColumns).to.include(':@computed_column');
+    });
+
+    describe('if supportedCardTypes is set', function() {
+      function setSupportedCardTypes(value) {
+        directive.outerScope.supportedCardTypes = value;
+        directive.outerScope.$apply();
+      }
+
+      describe('to an empty array', function() {
+        it('should include no columns', function() {
+          var currentColumnFieldNames = _.keys(currentColumns);
+          setSupportedCardTypes([]);
+          expect(directive.scope.availableColumns.sort()).to.be.empty;
+        });
+      });
+
+      describe('to an array including `column` and `timeline`', function() {
+        it('should include columns that can be visualized as column or timeline', function() {
+          setSupportedCardTypes(['column', 'timeline']);
+          var expectedAvailable = [
+            'bar',
+            'distribution',
+            'multipleVisualizations'
+          ];
+
+          expect(directive.scope.availableColumns.sort()).to.
+            deep.equal(expectedAvailable.sort());
+        });
+      });
+    });
+
+  });
+
+  describe('unsupportedColumns scope variable', function() {
+    var directive;
+    var currentColumns;
+
+    function makeAllColumnsUnsupported() {
+      var newColumns = _.mapValues(currentColumns, function(column) {
+        column = _.cloneDeep(column);
+        column.defaultCardType = 'invalid';
+        return column;
+      });
+
+      directive.scope.page.
+        getCurrentValue('dataset').
+        set('columns', newColumns);
+    }
+
+    beforeEach(function() {
+      directive = createDirective();
+      currentColumns = directive.scope.page.
+        getCurrentValue('dataset').
+        getCurrentValue('columns');
+    });
+
+    it('should not include columns with a defaultCardType that is not `invalid`', function() {
+      // All default columns are supported.
+      expect(directive.scope.unsupportedColumns).to.be.empty;
+    });
+
+    it('should include columns with a defaultCardType of `invalid`', function() {
+      makeAllColumnsUnsupported();
+
+      expect(directive.scope.unsupportedColumns.sort()).to.
+        deep.equal(_.keys(currentColumns).sort());
+    });
+
+    it('should be sorted in alphabetical order', function() {
+      var currentColumnFieldNames = _.keys(currentColumns);
+      var expectedFieldNameOrder = [].concat(currentColumnFieldNames).sort();
+
+      makeAllColumnsUnsupported();
+
+      expect(directive.scope.unsupportedColumns).to.deep.equal(expectedFieldNameOrder);
+    });
+
+
+    it('not include subcolumns unless their defaultCardType is `invalid`', function() {
+      var newColumns = _.mapValues(currentColumns, function(column) {
+        column = _.cloneDeep(column);
+        column.isSubcolumn = true;
+        return column;
+      });
+
+      newColumns['bar'].defaultCardType = 'invalid';
+
+      directive.scope.page.
+        getCurrentValue('dataset').
+        set('columns', newColumns);
+
+      expect(directive.scope.unsupportedColumns).to.have.length(1);
+      expect(directive.scope.unsupportedColumns).to.include('bar');
+    });
+
+    it('should not include system columns', function() {
+      var newColumns = {
+        ':id': {},
+        'normal_column': {}
+      };
+
+      directive.scope.page.
+        getCurrentValue('dataset').
+        set('columns', newColumns);
+
+      expect(directive.scope.unsupportedColumns).to.be.empty;
+    });
+
+    describe('if supportedCardTypes is set', function() {
+      function setSupportedCardTypes(value) {
+        directive.outerScope.supportedCardTypes = value;
+        directive.outerScope.$apply();
+      }
+
+      describe('to an empty array', function() {
+        it('should include all columns', function() {
+          var currentColumnFieldNames = _.keys(currentColumns);
+          setSupportedCardTypes([]);
+          expect(directive.scope.unsupportedColumns.sort()).to.
+            deep.equal(currentColumnFieldNames.sort());
+        });
+      });
+
+      describe('to an array including `column` and `timeline`', function() {
+        it('should include columns that cannot be visualized as column or timeline', function() {
+          setSupportedCardTypes(['column', 'timeline']);
+          var expectedUnsupported = [
+            'spot',
+            'point',
+            'ward'
+          ];
+
+          expect(directive.scope.unsupportedColumns.sort()).to.
+            deep.equal(expectedUnsupported.sort());
+        });
       });
     });
   });

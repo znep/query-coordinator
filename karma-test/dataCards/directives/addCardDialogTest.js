@@ -91,68 +91,9 @@ describe('addCardDialog', function() {
     };
     var pageModel = Mockumentary.createPage(pageOverrides, datasetOverrides);
 
-    // NOTE: This is straight up copied from CardsViewController.
-    var datasetColumns = Rx.Observable.combineLatest(
-      pageModel.observe('dataset'),
-      pageModel.observe('dataset.columns'),
-      pageModel.observe('cards'),
-      function(dataset, columns, cards) {
-
-        var sortedColumns = _.pairs(columns).
-          map(function(columnPair) {
-            return {
-              fieldName: columnPair[0],
-              columnInfo: columnPair[1]
-            };
-          }).
-          filter(function(columnPair) {
-
-            // We need to ignore 'system' fieldNames that begin with ':' but
-            // retain computed column fieldNames, which (somewhat inconveniently)
-            // begin with ':@'.
-            return _.isNull(columnPair.fieldName.substring(0, 2).match(/\:[\_A-Za-z0-9]/)) &&
-                   columnPair.columnInfo.physicalDatatype !== '*';
-          }).
-          sort(function(a, b) {
-
-            // TODO: Don't we want to sort by column human name?
-            return a.fieldName > b.fieldName;
-          });
-
-        var sortedCards = cards.
-          filter(function(card) {
-            return card.fieldName !== '*';
-          }).
-          sort(function(a, b) {
-            return a.fieldName > b.fieldName;
-          });
-
-        var available = false;
-        var availableCardCount = sortedColumns.length;
-        var availableColumns = [];
-        var alreadyOnPageColumns = [];
-        var visualizationUnsupportedColumns = [];
-
-        _.forEach(sortedColumns, function(column) {
-
-          if (column.defaultCardType === 'invalid') {
-            visualizationUnsupportedColumns.push(column.fieldName);
-          } else {
-            availableColumns.push(column.fieldName);
-          }
-        });
-
-        return {
-          available: availableColumns.sort(),
-          visualizationUnsupported: visualizationUnsupportedColumns.sort()
-        };
-
-      });
-
     var outerScope = $rootScope.$new();
 
     outerScope.page = pageModel;
-    outerScope.$bindObservable('datasetColumns', datasetColumns);
     outerScope.dialogState = {
       'cardSize': 1,
       'show': true
@@ -163,7 +104,6 @@ describe('addCardDialog', function() {
         '<add-card-dialog ' +
           'style="display:block" ' +
           'on-customize-card="customizeCard" ' +
-          'dataset-columns="datasetColumns" ' +
           'dialog-state="dialogState" ' +
           'page="page" ' +
         '></add-card-dialog>' +

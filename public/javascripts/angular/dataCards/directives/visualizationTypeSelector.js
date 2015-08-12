@@ -5,7 +5,11 @@
     return {
       restrict: 'E',
       scope: {
-        cardModel: '='
+        cardModel: '=',
+
+        // Array of card types.
+        // Optional, if set will limit available card types to the given list.
+        supportedCardTypes: '=?'
       },
       templateUrl: '/angular_templates/dataCards/visualizationTypeSelector.html',
       link: function(scope, element) {
@@ -13,15 +17,22 @@
         var cardModelColumn$ = cardModel$.observeOnLatest('column').filter(_.isDefined);
         var FLYOUT_TEMPLATE = '<div class="flyout-title">{0}</div>';
 
-        cardModelColumn$.subscribe(function(column) {
-          scope.$safeApply(function() {
-            scope.availableCardTypes = column.availableCardTypes;
+        Rx.Observable.subscribeLatest(
+          cardModelColumn$,
+          scope.$observe('supportedCardTypes'),
+          function(column, supportedCardTypes) {
+            // If scope.supportedCardTypes is undefined, we support all card types.
+            supportedCardTypes = supportedCardTypes || column.availableCardTypes;
 
-            // Determine whether or not to show cardinality warning.
-            scope.cardinality = parseInt(_.get(column, 'cardinality', 0), 10);
-            scope.showCardinalityWarning = scope.cardinality > Constants.COLUMN_CHART_CARDINALITY_WARNING_THRESHOLD;
-          });
-        });
+            scope.$safeApply(function() {
+              scope.availableCardTypes = _.intersection(column.availableCardTypes, supportedCardTypes);
+
+              // Determine whether or not to show cardinality warning.
+              scope.cardinality = parseInt(_.get(column, 'cardinality', 0), 10);
+              scope.showCardinalityWarning = scope.cardinality > Constants.COLUMN_CHART_CARDINALITY_WARNING_THRESHOLD;
+            });
+          }
+        );
 
         scope.setCardType = function(cardType) {
           if (_.isNull(scope.cardModel) || !_.contains(scope.availableCardTypes, cardType)) {

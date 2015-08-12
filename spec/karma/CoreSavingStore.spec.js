@@ -92,7 +92,7 @@ describe('CoreSavingStore', function() {
 
     describe('with no validation issues', function() {
       var viewUrl;
-      var cookie = 'socrata-csrf-token=the_csrf_token%3D;'; // with some encoding
+      var cookie = 'socrata-csrf-token=the_csrf_token%3D;'; // '=' encoded
 
       beforeEach(function() {
         document.cookie = cookie;

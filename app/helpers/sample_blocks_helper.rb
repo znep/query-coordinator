@@ -13,42 +13,6 @@ module SampleBlocksHelper
           }
         ],
         'created_by': 'test@socrata.com'
-      },
-      {
-        "id": "sampleDefaultBlock2",
-        "layout": "6-6",
-        "components": [
-          {
-            "type": "text",
-            "value": "<div>Test<br></div>"
-          },
-          {
-            "type": "media",
-            "value": {
-              "type": "embed",
-              "value": {
-                "provider": "wizard"
-              }
-            }
-          }
-        ],
-        'created_by': 'test@socrata.com'
-      },
-      {
-        "id": "sampleDefaultBlock3",
-        "layout": "12",
-        "components": [
-          {
-            "type": "media",
-            "value": {
-              "type": "embed",
-              "value": {
-                "provider": "wizard"
-              }
-            }
-          }
-        ],
-        'created_by': 'test@socrata.com'
       }
     ]
   end

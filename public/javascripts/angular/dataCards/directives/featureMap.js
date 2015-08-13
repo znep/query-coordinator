@@ -97,13 +97,13 @@
           // TileServer limit or the selected points contain more than the
           // max number of rows to be displayed on a flannel,
           // prompt the user to filter and/or zoom in for accurate data.
-          if (flyoutData.totalPoints >= Constants.FEATURE_MAP_POINTS_PER_TILE_LIMIT) {
+          if (flyoutData.totalPoints >= Constants.FEATURE_MAP_MAX_TILE_DENSITY) {
             return template.format(
               I18n.flyout.denseData,
               chooseUserActionPrompt(zoom)
             );
 
-          } else if (flyoutData.count > Constants.FLANNEL_ROW_CONTENT_LIMIT) {
+          } else if (flyoutData.count > Constants.FEATURE_MAP_FLANNEL_MAX_ROW_DENSITY) {
 
             return template.format(
               assembleFlyoutRowInfo(),
@@ -461,7 +461,7 @@
                 var windowWidth = windowRef.width();
 
                 flannelScope.abutsRightEdge = windowWidth <
-                  (xPosition + Constants.FLANNEL_WIDTH + Constants.FLYOUT_WINDOW_PADDING);
+                  (xPosition + Constants.FEATURE_MAP_FLANNEL_WIDTH + Constants.FLYOUT_WINDOW_PADDING);
 
                 flannelScope.panelPositionStyle = {};
                 flannelScope.hintPositionStyle = {};
@@ -469,15 +469,15 @@
                 flannelScope.panelPositionStyle.top = '{0}px'.format(yPosition);
 
                 if (flannelScope.abutsRightEdge) {
-                  flannelScope.useSoutheastHint = xPosition + (Constants.FLANNEL_WIDTH / 2) >
-                    windowWidth - (Constants.FLYOUT_WINDOW_PADDING + Constants.FLANNEL_PADDING_COMPENSATION);
+                  flannelScope.useSoutheastHint = xPosition + (Constants.FEATURE_MAP_FLANNEL_WIDTH / 2) >
+                    windowWidth - (Constants.FLYOUT_WINDOW_PADDING + Constants.FEATURE_MAP_FLANNEL_PADDING_COMPENSATION);
 
                   flannelScope.panelPositionStyle.right = '{0}px'.format(
-                    Constants.FLANNEL_WIDTH + Constants.FLANNEL_PADDING_COMPENSATION + Constants.FLYOUT_WINDOW_PADDING
+                    Constants.FEATURE_MAP_FLANNEL_WIDTH + Constants.FEATURE_MAP_FLANNEL_PADDING_COMPENSATION + Constants.FLYOUT_WINDOW_PADDING
                   );
 
                   var hintRightOffset = xPosition + Constants.FLYOUT_WINDOW_PADDING +
-                    (flannelScope.useSoutheastHint ? 0 : Constants.FLANNEL_HINT_WIDTH);
+                    (flannelScope.useSoutheastHint ? 0 : Constants.FEATURE_MAP_FLANNEL_HINT_WIDTH);
                   var hintPositionFromRight = Math.max(0, windowWidth - hintRightOffset);
                   flannelScope.hintPositionStyle.right = '{0}px'.format(hintPositionFromRight);
                   flannelScope.hintPositionStyle.left = 'auto';

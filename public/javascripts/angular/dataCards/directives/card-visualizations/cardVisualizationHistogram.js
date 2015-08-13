@@ -133,14 +133,7 @@
             var dataPromise = CardDataService.getColumnDomain(fieldName, dataset.id, null).
               then(function(domain) {
                 if (_.has(domain, 'min') && _.has(domain, 'max')) {
-                  var cachedBucketOptions = HistogramService.getBucketingOptions(domain, bucketType);
-
-                  // TODO: This should be reworked eventually when histogram rendering is revisited.
-                  if (_.isUndefined(bucketType)) {
-                    $scope.model.set('bucketType', cachedBucketOptions.bucketType);
-                  }
-
-                  return cachedBucketOptions;
+                  return HistogramService.getBucketingOptions(domain, bucketType);
                 } else {
                   $scope.histogramRenderError = 'noData';
                 }

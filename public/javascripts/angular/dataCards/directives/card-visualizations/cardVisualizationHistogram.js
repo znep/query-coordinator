@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationHistogram(CardDataService, HistogramService, Filter, $log) {
+  function cardVisualizationHistogram(CardDataService, HistogramService, Filter, $log, Constants) {
 
     /**
      * Fetches both unfiltered and filtered data.  Requests the data bucketed
@@ -53,7 +53,7 @@
         'whereClause': '='
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationHistogram.html',
-      link: function($scope) {
+      link: function($scope, element) {
         var whereClause$ = $scope.$observe('whereClause');
         var isFiltered$ = whereClause$.map(_.isPresent);
         var cardModel = $scope.$observe('model');
@@ -238,6 +238,24 @@
 
         var visualizationType$ = cardData$.map(function(data) {
           return HistogramService.shouldRenderDataAsColumnChart(data) ? 'columnChart' : 'histogram';
+        });
+
+        // This sucks, but we have to conditionally set a negative horizontal
+        // margin on the outer container because when the chart renders as a
+        // histogram we need the visualization to take up the full width, but
+        // when it renders as a column chart it needs to have padding.
+        visualizationType$.subscribe(function(visualizationType) {
+          var conditionalStyles = {};
+
+          if (visualizationType === 'columnChart') {
+            conditionalStyles.marginLeft = 0;
+            conditionalStyles.marginRight = 0;
+          } else {
+            conditionalStyles.marginLeft = -Constants.HISTOGRAM_MARGINS.left;
+            conditionalStyles.marginRight = -Constants.HISTOGRAM_MARGINS.right;
+          }
+
+          element.closest('card-visualization').css(conditionalStyles);
         });
 
         $scope.$bindObservable('rowDisplayUnit', rowDisplayUnit$);

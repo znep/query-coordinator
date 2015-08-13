@@ -182,20 +182,14 @@
     }
 
     function transformDataForColumnChart(data) {
-      var result = [];
-
-      _.each(data.unfiltered, function(bucket, i) {
-        result[i] = {
-          name: bucket.start,
-          total: bucket.value
-        };
+      return data.unfiltered.map(function(bucket, i) {
+        return [
+          bucket.start,
+          bucket.value,
+          data.filtered[i].value,
+          false
+        ];
       });
-
-      _.each(data.filtered, function(bucket, i) {
-        result[i].filtered = bucket.value;
-      });
-
-      return result;
     }
 
     return {

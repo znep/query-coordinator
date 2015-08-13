@@ -1,4 +1,4 @@
-<div ng-switch="visualizationType">
+<div ng-switch="visualizationType" style="height: 100%;">
   <div ng-switch-when="histogram">
     <histogram
       card-data="cardData"
@@ -8,13 +8,13 @@
       expanded="expanded">
     </histogram>
   </div>
-  <div ng-switch-when="columnChart">
-    <div column-chart
+  <div ng-switch-when="columnChart" style="height: 100%;">
+    <column-chart
       chart-data="cardData"
       row-display-unit="rowDisplayUnit"
       show-filtered="isFiltered"
       expanded="expanded">
-    </div>
+    </column-chart>
   </div>
 </div>
 <load-spinner></load-spinner>

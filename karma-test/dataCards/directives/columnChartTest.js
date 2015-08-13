@@ -16,60 +16,60 @@ describe('columnChart', function() {
 
   var CHART_HEIGHT = 480;
 
+  // columnChart data structure: [name, unfilteredRowCount, filteredRowCount, rowIsSelected]
   var testData = [
-    {"name": "THEFT", "total": 21571},
-    {"name": "BATTERY", "total": 18355},
-    {"name": "NARCOTICS", "total": 11552},
-    {"name": "CRIMINAL DAMAGE", "total": 9905},
-    {"name": "OTHER OFFENSE", "total": 6574},
-    {"name": "ASSAULT", "total": 6098},
-    {"name": "BURGLARY", "total": 5166},
-    {"name": "DECEPTIVE PRACTICE", "total": 5120},
-    {"name": "MOTOR VEHICLE THEFT", "total": 3828},
-    {"name": "ROBBERY", "total": 3457},
-    {"name": "CRIMINAL TRESPASS", "total": 2981},
-    {"name": "WEAPONS VIOLATION", "total": 1091},
-    {"name": "PUBLIC PEACE VIOLATION", "total": 1021},
-    {"name": "OFFENSE INVOLVING CHILDREN", "total": 919},
-    {"name": "PROSTITUTION", "total": 508},
-    {"name": "INTERFERENCE WITH PUBLIC OFFICER", "total": 479},
-    {"name": "CRIM SEXUAL ASSAULT", "total": 412},
-    {"name": "SEX OFFENSE", "total": 289},
-    {"name": "LIQUOR LAW VIOLATION", "total": 142},
-    {"name": "HOMICIDE", "total": 127},
-    {"name": "ARSON", "total": 126},
-    {"name": "KIDNAPPING", "total": 89},
-    {"name": "GAMBLING", "total": 70},
-    {"name": "INTIMIDATION", "total": 42},
-    {"name": "STALKING", "total": 41},
-    {"name": "OBSCENITY", "total": 12},
-    {"name": "PUBLIC INDECENCY", "total": 6},
-    {"name": "NON-CRIMINAL", "total": 5},
-    {"name": "CONCEALED CARRY LICENSE VIOLATION", "total": 5},
-    {"name": "OTHER NARCOTIC VIOLATION", "total": 5},
-    {"name": "NON - CRIMINAL", "total": 2},
-    {"name": "NON-CRIMINAL (SUBJECT SPECIFIED)", "total": 2}
+    ["THEFT", 21571, 0, false],
+    ["BATTERY", 18355, 0, false],
+    ["NARCOTICS", 11552, 0, false],
+    ["CRIMINAL DAMAGE", 9905, 0, false],
+    ["OTHER OFFENSE", 6574, 0, false],
+    ["ASSAULT", 6098, 0, false],
+    ["BURGLARY", 5166, 0, false],
+    ["DECEPTIVE PRACTICE", 5120, 0, false],
+    ["MOTOR VEHICLE THEFT", 3828, 0, false],
+    ["ROBBERY", 3457, 0, false],
+    ["CRIMINAL TRESPASS", 2981, 0, false],
+    ["WEAPONS VIOLATION", 1091, 0, false],
+    ["PUBLIC PEACE VIOLATION", 1021, 0, false],
+    ["OFFENSE INVOLVING CHILDREN", 919, 0, false],
+    ["PROSTITUTION", 508, 0, false],
+    ["INTERFERENCE WITH PUBLIC OFFICER", 479, 0, false],
+    ["CRIM SEXUAL ASSAULT", 412, 0, false],
+    ["SEX OFFENSE", 289, 0, false],
+    ["LIQUOR LAW VIOLATION", 142, 0, false],
+    ["HOMICIDE", 127, 0, false],
+    ["ARSON", 126, 0, false],
+    ["KIDNAPPING", 89, 0, false],
+    ["GAMBLING", 70, 0, false],
+    ["INTIMIDATION", 42, 0, false],
+    ["STALKING", 41, 0, false],
+    ["OBSCENITY", 12, 0, false],
+    ["PUBLIC INDECENCY", 6, 0, false],
+    ["NON-CRIMINAL", 5, 0, false],
+    ["CONCEALED CARRY LICENSE VIOLATION", 5, 0, false],
+    ["OTHER NARCOTIC VIOLATION", 5, 0, false],
+    ["NON - CRIMINAL", 2, 0, false],
+    ["NON-CRIMINAL (SUBJECT SPECIFIED)", 2, 0, false]
   ];
 
   function testDataWithQuoteAtIndex(index) {
-    return _.map(testData, function(d, i) {
-      return {
-        name: i === index ? 'Name with "quotes"' : d.name,
-        total: d.total,
-        filtered: d.total / 2,
-        special: false
-      };
-    });
+    var modifiedData = _.clone(testData);
+    modifiedData[index][0] = 'Name with "quotes"';
+    return modifiedData;
+  }
+
+  function testDataWithBackslashAtIndex(index) {
+    var modifiedData = _.clone(testData);
+    modifiedData[index][0] = 'Name with ba\ck\\\\slashes\\';
+    return modifiedData;
   }
 
   function testDataWithFiltered() {
-    return _.map(testData, function(d) {
-      return {
-        name: d.name,
-        total: d.total,
-        filtered: d.total / 2
-      };
+    var modifiedData = _.clone(testData);
+    _(modifiedData).forEach(function(n) {
+      n[2] = n[1] / 2; // set filtered row count to equal half the unfiltered row count
     });
+    return modifiedData;
   }
 
   beforeEach(module('dataCards'));
@@ -195,6 +195,7 @@ describe('columnChart', function() {
 
       th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
       flyoutTitle = flyout.find('.flyout-title').text();
+      expect(labelText).to.not.equal('undefined');
       expect(labelText).to.equal(flyoutTitle);
     });
 
@@ -207,6 +208,20 @@ describe('columnChart', function() {
 
       th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
       flyoutTitle = flyout.find('.flyout-title').text();
+      expect(labelText).to.not.equal('undefined');
+      expect(labelText).to.equal(flyoutTitle);
+    });
+
+    it('should escape backslashes in the title', function() {
+      chart = createColumnChart(640, false, testDataWithBackslashAtIndex(0));
+      var barLabel = $(labelContents).eq(0);
+      var labelText = barLabel.find('.text').text();
+      var flyoutTitle;
+      var flyout = $('#uber-flyout');
+
+      th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
+      flyoutTitle = flyout.find('.flyout-title').text();
+      expect(labelText).to.not.equal('undefined');
       expect(labelText).to.equal(flyoutTitle);
     });
 

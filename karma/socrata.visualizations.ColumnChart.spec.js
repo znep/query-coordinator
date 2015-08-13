@@ -1200,7 +1200,7 @@ describe('socrata.visualizations.ColumnChart', function() {
     });
 
     it('should hide all existing bars when the data is cleared', function() {
-debugger
+
       columnChart.chart.render([], columnChart.renderOptions);
 
       expect($('.bar-group').length).to.equal(0);
@@ -1577,6 +1577,40 @@ debugger
 
         expect($labelText.width()).to.be.below(width);
       });
+    });
+  });
+
+  describe('when destroyed', function() {
+
+    var columnChart;
+
+    beforeEach(function() {
+      columnChart = createColumnChart();
+    });
+
+    it('should no longer respond to events for which the visualization registered handlers', function(done) {
+
+      var eventHandlerHasBeenFired = false;
+
+      columnChart.chart.render(testData, columnChart.renderOptions);
+
+      columnChart.element.on('SOCRATA_VISUALIZATION_COLUMN_SELECTION', function(event) {
+
+        eventHandlerHasBeenFired = true;
+      });
+
+      columnChart.chart.destroy();
+
+      $('.bar-group').eq(0).trigger('click');
+
+      setTimeout(
+        function() {
+
+          assert.isFalse(eventHandlerHasBeenFired);
+          done();
+        },
+        0
+      );
     });
   });
 });

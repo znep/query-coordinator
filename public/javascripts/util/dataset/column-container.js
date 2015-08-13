@@ -448,8 +448,14 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
             'renderTypeName', 'dataTypeName', // types shouldn't be copied; NBE might be different.
             'cachedContents', 'position' // NBE doesn't maintain these.
           ];
-          var chain = _.chain(oldC).keys();
-          chain.without.apply(chain, blacklist).each(function(key) {
+
+          var chain = _.chain(oldC);
+
+          blacklist = chain.keys()
+            .without.apply(chain, blacklist)
+            .value();
+
+          blacklist.each(function(key) {
             if ($.isPlainObject(oldC[key])) {
               c[key] = $.extend(true, {}, oldC[key]);
             } else if (_.isArray(oldC[key])) {
@@ -457,7 +463,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
             } else {
               c[key] = oldC[key];
             }
-          }).value();
+          });
         }
 
         // If it has an access type, make sure it's set.

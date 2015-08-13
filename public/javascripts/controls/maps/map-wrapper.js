@@ -330,12 +330,20 @@
                                 function(rs) { rs.formattingChanged(condFmt); });
                         }
                     };
-                    _.chain(mapObj._children)
-                        .pluck('_view').uniq().without(mapObj._primaryView).each(function(subview)
-                    {
-                        delete subview.metadata.conditionalFormatting;
-                        subview.reload(false, function() { reInitCondFmt(subview); });
-                    }).value();
+
+                    var views = _.chain(mapObj._children)
+                      .pluck('_view')
+                      .uniq()
+                      .without(mapObj._primaryView)
+                      .value();
+
+                    views.each(function(subview) {
+                      delete subview.metadata.conditionalFormatting;
+                      subview.reload(false, function() {
+                        reInitCondFmt(subview);
+                      });
+                    });
+
                     _.invoke(mapObj._children, 'getData');
                 });
             }
@@ -643,8 +651,12 @@
             var mapObj = this;
 
             var searchString = mapObj._primaryView.searchString;
-            _.chain(mapObj._children).pluck('_view').without(mapObj._primaryView)
-                .each(function(view) { view.update({ searchString: searchString }); }).value();
+            var views = _.chain(mapObj._children)
+              .pluck('_view')
+              .without(mapObj._primaryView)
+              .value();
+
+            _.invoke(views, 'update', {searchString: searchString});
         },
 
         initializeEvents: function()
@@ -836,9 +848,13 @@
                         }
                     };
 
-                    _.chain(mapObj.map.layers)
-                        .select(function(layer) { return layer instanceof OpenLayers.Layer.Vector; })
-                        .each(function(layer) { fixOffsetLeft(layer); }).value();
+                    var vectors = _.select(mapObj.map.layers, function(layer) {
+                      return layer instanceof OpenLayers.Layer.Vector;
+                    });
+
+                    vectors.each(function(layer) {
+                      fixOffsetLeft(layer);
+                    });
                 }
             });
         },

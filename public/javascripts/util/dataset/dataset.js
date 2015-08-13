@@ -2865,17 +2865,21 @@ var Dataset = ServerModel.extend({
         });
 
         var newGroupAggs = {};
-        _.chain(ds.realColumns)
-            .select(function(c)
-                { return !$.isBlank(c.format.grouping_aggregate); })
-            .each(function(c)
-            {
-                if (c.hidden && !$.isBlank(oldGroupAggs) && !oldGroupAggs[c.id])
-                { c.update({flags: _.without(c.flags, 'hidden')}); }
-                newGroupAggs[c.id] = c.format.grouping_aggregate;
+        var columnsWithGroupAggregate = _.select(ds.realColumns, function(c) {
+          return !$.isBlank(c.format.grouping_aggregate);
+        });
 
-                newColOrder.push(c.id);
-            }).value();
+        columnsWithGroupAggregate.each(function(c) {
+          if (c.hidden && !$.isBlank(oldGroupAggs) && !oldGroupAggs[c.id]) {
+            c.update({
+              flags: _.without(c.flags, 'hidden')
+            });
+          }
+
+          newGroupAggs[c.id] = c.format.grouping_aggregate;
+          newColOrder.push(c.id);
+        });
+
         if ($.isBlank(oldGroupAggs))
         { oldGroupAggs = newGroupAggs; }
 

@@ -135,9 +135,9 @@ en:
       customize_card_dialog:
         histogram_bucket_type:
           linear: Linear
-          linear_desc: This option portrays the distribution without distortion, and is most useful with smaller numeric distributions.
+          linear_desc: This option defines the bins on the axis at a linear scale (10, 20, ...) and is most useful for smaller numeric ranges.
           logarithmic: Logarithmic
-          logarithmic_desc: This option gives better detail for wider numeric distributions, particularly at the low end.
+          logarithmic_desc: This option defines the bins on the axis at a logarithmic scale (10, 100, ...) and is useful for wider numeric ranges.
           title: X-Axis bucket sizing
           warning: Changing the bucket sizing will clear your current filter on this card
         map_layer:

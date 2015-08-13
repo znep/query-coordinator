@@ -20,9 +20,9 @@
         author: Kurt Vonnegut
       text_6_6:
         heading1: First Heading
-        content1: But if you are the curious type—and I’m pretty sure you are—you might be surprised that stories are more memorable than of charts and data alone. That’s because new stories stick to memories we already have and that means we can more easily relate (and remember!). So don’t forget to tell a story.
+        content1: But if you are the curious type—and I’m pretty sure you are—you might be surprised that stories are more memorable than charts and data alone. That’s because new stories stick to memories we already have and that means we can more easily relate (and remember!). So don’t forget to tell a story.
         heading2: Second Heading
-        content2: But if you are the curious type—and I’m pretty sure you are—you might be surprised that stories are more memorable than of charts and data alone. That’s because new stories stick to memories we already have and that means we can more easily relate (and remember!). So don’t forget to tell a story.
+        content2: But if you are the curious type—and I’m pretty sure you are—you might be surprised that stories are more memorable than charts and data alone. That’s because new stories stick to memories we already have and that means we can more easily relate (and remember!). So don’t forget to tell a story.
       text_8_4:
         heading1: Heading
         content1: Or you could just leave this bit of text right here to experiment with the design and layout of your story. Go ahead, add another! Using a variety of layouts and visual arrangements will make your story stand out. Or that's what we like to think. This explains why we have all of these content blocks for you to play with. So get after it, author! Tell your story. It's going to be magnificent!
@@ -32,12 +32,18 @@
         heading1: First Heading
         content1: Or you could just leave this bit of text right here to experiment with the design and layout of your story. Go ahead, add another! Using a variety of layouts and visual arrangements will make your story stand out. Or that's what we like to think. This explains why we have all of these content blocks for you to play with. So get after it, author! Tell your story. It's going to be magnificent!
         heading2: Second Heading
-        content2: But if you are the curious type—and I’m pretty sure you are—you might be surprised that stories are more memorable than of charts and data alone. That’s because new stories stick to memories we already have and that means we can more easily relate (and remember!). So don’t forget to tell a story.
+        content2: But if you are the curious type—and I’m pretty sure you are—you might be surprised that stories are more memorable than charts and data alone. That’s because new stories stick to memories we already have and that means we can more easily relate (and remember!). So don’t forget to tell a story.
         heading3: Third Heading
         content3: Or you could just leave this bit of text right here to experiment with the design and layout of your story. Go ahead, add another! Using a variety of layouts and visual arrangements will make your story stand out. Or that's what we like to think. This explains why we have all of these content blocks for you to play with. So get after it, author! Tell your story. It's going to be magnificent!
       media_text_6_6:
-        content: But if you are the curious type—and I’m pretty sure you are—you might be surprised that stories are more memorable than of charts and data alone. That’s because new stories stick to memories we already have and that means we can more easily relate (and remember!). So don’t forget to tell a story.
+        heading: Headline
+        content: Or you could just leave this bit of text right here to experiment with the design and layout of your story. Go ahead, add another! Using a variety of layouts and visual arrangements will make your story stand out. Or that's what we like to think. This explains why we have all of these content blocks for you to play with. So get after it, author! Tell your story. It's going to be magnificent!
+      text_media_6_6:
+        heading: Headline
+        content: But if you are the curious type—and I’m pretty sure you are—you might be surprised that stories are more memorable than charts and data alone. That’s because new stories stick to memories we already have and that means we can more easily relate (and remember!). So don’t forget to tell a story.
       media_text_8_4:
+        heading: Headline
         content: You could leave it here, but it's probably best to use your own. There's little doubt that your text will be better than this text.
       text_media_4_8:
+        heading: Headline
         content: You could leave it here, but it's probably best to use your own. There's little doubt that your text will be better than this text.

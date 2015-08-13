@@ -455,7 +455,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
             .without.apply(chain, blacklist)
             .value();
 
-          blacklist.each(function(key) {
+          _.each(blacklist, function(key) {
             if ($.isPlainObject(oldC[key])) {
               c[key] = $.extend(true, {}, oldC[key]);
             } else if (_.isArray(oldC[key])) {

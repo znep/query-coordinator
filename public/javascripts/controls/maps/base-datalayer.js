@@ -755,7 +755,7 @@
               .compact()
               .value();
 
-            preparedRows.each(function(datum) {
+            _.each(preparedRows, function(datum) {
               layerObj.renderDatum(datum);
             });
 
@@ -772,7 +772,7 @@
               .compact()
               .value();
 
-            mappedRows.each(function(datum) {
+            _.each(mappedRows, function(datum) {
               layerObj.removeDatum(datum);
             });
 

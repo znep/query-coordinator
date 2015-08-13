@@ -337,7 +337,7 @@
                       .without(mapObj._primaryView)
                       .value();
 
-                    views.each(function(subview) {
+                    _.each(views, function(subview) {
                       delete subview.metadata.conditionalFormatting;
                       subview.reload(false, function() {
                         reInitCondFmt(subview);
@@ -852,7 +852,7 @@
                       return layer instanceof OpenLayers.Layer.Vector;
                     });
 
-                    vectors.each(function(layer) {
+                    _.each(vectors, function(layer) {
                       fixOffsetLeft(layer);
                     });
                 }

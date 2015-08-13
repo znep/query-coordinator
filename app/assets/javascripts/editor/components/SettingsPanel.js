@@ -107,6 +107,29 @@
       );
     }
 
+    function saveMetadata() {
+      if (isTitleChanged()) {
+        storyteller.dispatcher.dispatch({
+          action: Constants.STORY_SET_TITLE,
+          storyUid: storyteller.userStoryUid,
+          title: storyTitleInputBox.val()
+        });
+      };
+
+      if (isDescriptionChanged()) {
+        storyteller.dispatcher.dispatch({
+          action: Constants.STORY_SET_DESCRIPTION,
+          storyUid: storyteller.userStoryUid,
+          description: storyDescriptionTextarea.val()
+        });
+      }
+
+      storyteller.dispatcher.dispatch({
+        action: Constants.STORY_SAVE_METADATA,
+        storyUid: storyteller.userStoryUid
+      });
+    }
+
     // Set up some input events.
 
     toggleButton.on('click', function() {
@@ -177,28 +200,18 @@
         }
       }).
       on('mousewheel', '.scrollable', utils.preventScrolling).
-      on('click', '.settings-save-btn', function() {
-        if (isTitleChanged()) {
-          storyteller.dispatcher.dispatch({
-            action: Constants.STORY_SET_TITLE,
-            storyUid: storyteller.userStoryUid,
-            title: storyTitleInputBox.val()
-          });
-        };
-
-        if (isDescriptionChanged()) {
-          storyteller.dispatcher.dispatch({
-            action: Constants.STORY_SET_DESCRIPTION,
-            storyUid: storyteller.userStoryUid,
-            description: storyDescriptionTextarea.val()
-          });
+      on('submit', 'form', function() {
+        try {
+          saveMetadata();
+        } catch (error) {
+          // We can't rethrow the error otherwise the form will submit and
+          // refresh the page. That could be confusing for our users.
+          console.error(error);
+        } finally {
+          return false;
         }
-
-        storyteller.dispatcher.dispatch({
-          action: Constants.STORY_SAVE_METADATA,
-          storyUid: storyteller.userStoryUid
-        });
-      });
+      }).
+      on('click', '.settings-save-btn', saveMetadata);
 
     return this;
   };

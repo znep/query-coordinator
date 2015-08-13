@@ -65,7 +65,7 @@
     };
 
     this.destroy = function() {
-      _unattachEvents();
+      _unattachEvents(this.element);
     };
 
     /**
@@ -224,7 +224,7 @@
       );
     }
 
-    function _unattachEvents() {
+    function _unattachEvents(element) {
 
       element.off(
         'click',

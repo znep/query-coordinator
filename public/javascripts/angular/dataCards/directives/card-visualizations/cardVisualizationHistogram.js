@@ -85,8 +85,7 @@
           withLatestFrom(
             cardId$,
             activeFilters$,
-            function(activeFilters, cardId, ownFilters) {
-              var cardFilters;
+            function(activeFilters, cardId) {
               var cardFilterIndex = _.findIndex(activeFilters, function(cardFilterInfo) {
                 return cardFilterInfo.uniqueId === cardId;
               });
@@ -204,17 +203,19 @@
             // While the filtered data doesn't have the same number of buckets as the unfiltered,
             // we need to create the missing buckets and give them values of zero.
             var i = 0;
+            var noDatum = function(index) {
+              return $.grep(filteredData, function(e) {
+                return e.start === unfilteredData[index].start;
+              }).length === 0;
+            };
 
             while (unfilteredData.length !== filteredData.length && i < unfilteredData.length) {
               var unfilteredDatum = unfilteredData[i];
 
               // If the filtered array doesn't contain an object with the same 'start' index as the
               // current unfiltered object, create new bucket and insert it into the filtered array.
-              var noDatum = $.grep(filteredData, function(e) {
-                return e.start === unfilteredDatum.start;
-              }).length === 0;
 
-              if (noDatum) {
+              if (noDatum(i)) {
                 var newBucket = {
                   start: unfilteredDatum.start,
                   end: unfilteredDatum.end,

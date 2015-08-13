@@ -67,7 +67,7 @@
     }
 
     // If bucket type is undefined, determine the bucket type by examining the data.
-    function determineBucketType(cardModel, CardDataService, HistogramService) {
+    function determineBucketType(cardModel) {
       var fieldName = cardModel.fieldName;
       var datasetId = cardModel.page.getCurrentValue('dataset').id;
       var dataPromise = CardDataService.getColumnDomain(fieldName, datasetId, null).
@@ -122,7 +122,7 @@
 
         // If the bucket type hasn't changed or it has never been defined,
         // set it to the cached filters. Otherwise, clear the filters.
-        cardModel.set('activeFilters', (bucketType === cachedBucketType) ? cachedFilters : [])
+        cardModel.set('activeFilters', (bucketType === cachedBucketType) ? cachedFilters : []);
 
         // Show the bucket type warning if we had filters and we've cleared them.
         scope.showBucketTypeWarning = (_.isPresent(cachedFilters) &&
@@ -141,8 +141,6 @@
 
         // Clone the card, so we can cancel without having made any changes
         scope.customizedCard = scope.dialogState.cardModel.clone();
-        scope.cardinality;
-        scope.availableCardTypes;
         scope.showBucketTypeWarning = false;
 
         scope.$bindObservable('availableCardTypes',

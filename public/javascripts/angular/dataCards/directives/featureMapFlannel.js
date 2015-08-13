@@ -113,19 +113,19 @@
             scope.rowDisplayUnit, ++index, scope.rows.length);
 
           $timeout(function() {
-            var scrollbarNotVisible = flannelContent.outerWidth() === Constants.FLANNEL_WIDTH;
-            scope.isScrollable = flannelContent.height() > Constants.FLANNEL_MAX_CONTENT_HEIGHT;
+            var scrollbarNotVisible = flannelContent.outerWidth() === Constants.FEATURE_MAP_FLANNEL_WIDTH;
+            scope.isScrollable = flannelContent.height() > Constants.FEATURE_MAP_FLANNEL_MAX_CONTENT_HEIGHT;
 
             // If a scrollbar should exist, but it's not visible (Firefox),
             // dedicate room for it.
             if (scope.isScrollable && scrollbarNotVisible) {
               flannelContent.width(flannelContent.width() -
-                Constants.FLANNEL_FIREFOX_SCROLLBAR_PADDING);
+                Constants.FEATURE_MAP_FLANNEL_FIREFOX_SCROLLBAR_PADDING);
             }
 
             iconClose.css('right', 'auto');
             iconClose.css('left', flannelContent.innerWidth() - iconClose.width() -
-              Constants.FLANNEL_CLOSE_ICON_INITIAL_PADDING);
+              Constants.FEATURE_MAP_FLANNEL_CLOSE_ICON_INITIAL_PADDING);
             stickyBorders.width(flannelContent.innerWidth() - iconClose.width());
             stickyBorders.toggle(scope.isScrollable);
           });

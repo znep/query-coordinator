@@ -44,7 +44,8 @@ var Column = ServerModel.extend({
                 {
                     if ((s.topFrequencies || []).length > 0)
                     { col._summary[s.subColumnType] = s; }
-                });
+                })
+                .value();
 
             if (_.isFunction(successCallback)) { successCallback(col._summary); }
         };

@@ -41,7 +41,7 @@
                 return 'z' + c.name;
             };
 
-            var cols = _(cpObj._view.realColumns).chain()
+            var cols = _.chain(cpObj._view.realColumns)
                 .sortBy(sortFunc)
                 .map(function(c)
                 {

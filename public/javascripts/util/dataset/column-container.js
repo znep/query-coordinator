@@ -234,7 +234,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
 
         if (!_.isUndefined(item[colSet]))
         {
-            item[colSet] = _(item[colSet]).chain()
+            item[colSet] = _.chain(item[colSet])
                 .reject(function(c) { return c.id == -1; })
                 .sortBy(function(c) { return c.position; })
                 .value();
@@ -363,7 +363,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
             });
         this['real' + capSet] = _.reject(this[colSet], function(c)
             { return c.isMeta; });
-        this['visible' + capSet] = _(realSet(this)).chain()
+        this['visible' + capSet] = _.chain(realSet(this))
             .reject(function(c) { return c.hidden; })
             .sortBy(function(c) { return c.position; })
             .value();
@@ -448,8 +448,14 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
             'renderTypeName', 'dataTypeName', // types shouldn't be copied; NBE might be different.
             'cachedContents', 'position' // NBE doesn't maintain these.
           ];
-          var chain = _(oldC).chain().keys();
-          chain.without.apply(chain, blacklist).each(function(key) {
+
+          var chain = _.chain(oldC);
+
+          blacklist = chain.keys()
+            .without.apply(chain, blacklist)
+            .value();
+
+          _.each(blacklist, function(key) {
             if ($.isPlainObject(oldC[key])) {
               c[key] = $.extend(true, {}, oldC[key]);
             } else if (_.isArray(oldC[key])) {

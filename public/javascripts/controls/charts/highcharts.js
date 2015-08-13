@@ -897,7 +897,7 @@
             if (!chartObj._errorBars)
             { chartObj._errorBars = []; }
 
-            var errorBars = _(chartObj.chart.series).chain()
+            var errorBars = _.chain(chartObj.chart.series)
                 .pluck('data')
                 .map(function(series, index)
                 { return _.map(series, function(datum) {

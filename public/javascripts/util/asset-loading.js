@@ -173,7 +173,7 @@ var checkLoadedLibraries = function(item)
 
 assetNS.loadStylesheets = function(sheetQueue, callback)
 {
-    var sheets = _($.makeArray(sheetQueue)).chain()
+    var sheets = _.chain($.makeArray(sheetQueue))
         .map(function(item) { return !$.subKeyDefined(item, 'sheet') ? {sheet: item} : item; })
         .map(function(item)
         {

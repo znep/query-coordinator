@@ -86,7 +86,7 @@
             {
                 if (this._autoJump)
                 {
-                    var dates = _.compact(_(this._events).chain()
+                    var dates = _.compact(_.chain(this._events)
                         .map(function(ev)
                                 {
                                     if (_.isDate(ev)) { return ev; }

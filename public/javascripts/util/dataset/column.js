@@ -29,34 +29,41 @@ var Column = ServerModel.extend({
         }
     },
 
-    getSummary: function(successCallback, limit)
-    {
+    getSummary: function(successCallback, limit) {
         var col = this;
-
+        var canCallback = _.isFunction(successCallback);
         limit = limit || 100;
-        var colSumLoaded = function(resp)
-        {
+
+        var colSumLoaded = function(resp) {
             col._summary = {};
             col._summaryLimit = limit;
-            _(resp.columnSummaries || []).chain()
-                .select(function(s) { return s.columnId == col.id; })
-                .each(function(s)
-                {
-                    if ((s.topFrequencies || []).length > 0)
-                    { col._summary[s.subColumnType] = s; }
-                });
 
-            if (_.isFunction(successCallback)) { successCallback(col._summary); }
+            _.each(resp.columnSummaries || [], function(s) {
+                if ((s.topFrequencies || []).length > 0) {
+                    col._summary[s.subColumnType] = s;
+                }
+            });
+
+            if (canCallback) {
+                successCallback(col._summary);
+            }
         };
 
-        if ($.isBlank(col._summary) || limit > col._summaryLimit)
-        {
-            col.view.makeRequest({inline: true,
-                params: {method: 'getSummary', columnId: col.id, limit: limit},
-                success: colSumLoaded});
+        if ($.isBlank(col._summary) || limit > col._summaryLimit) {
+            col.view.makeRequest({
+                inline: true,
+                params: {
+                    method: 'getSummary',
+                    columnId: col.id,
+                    limit: limit
+                },
+                success: colSumLoaded
+            });
+        } else {
+            if (canCallback) {
+                successCallback(col._summary);
+            }
         }
-        else
-        { if (_.isFunction(successCallback)) { successCallback(col._summary); } }
     },
 
     invalidateData: function()

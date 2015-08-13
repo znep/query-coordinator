@@ -748,9 +748,16 @@
         handleDataLoaded: function(rows)
         {
             var layerObj = this;
-            _(rows).chain()
-                .map(function(row) { return layerObj.prepareRowRender(row); }).compact()
-                .each(function(datum) { layerObj.renderDatum(datum); });
+            var preparedRows = _.chain(rows)
+              .map(function(row) {
+                return layerObj.prepareRowRender(row);
+              })
+              .compact()
+              .value();
+
+            _.each(preparedRows, function(datum) {
+              layerObj.renderDatum(datum);
+            });
 
             layerObj.zoomToPreferred();
         },
@@ -758,9 +765,16 @@
         handleDataRemoved: function(rows)
         {
             var layerObj = this;
-            _(rows).chain()
-                .map(function(row) { return layerObj.mapRowToDatum(row); }).compact()
-                .each(function(datum) { layerObj.removeDatum(datum); });
+            var mappedRows = _.chain(rows)
+              .map(function(row) {
+                return layerObj.mapRowToDatum(row);
+              })
+              .compact()
+              .value();
+
+            _.each(mappedRows, function(datum) {
+              layerObj.removeDatum(datum);
+            });
 
             layerObj.zoomToPreferred();
         },

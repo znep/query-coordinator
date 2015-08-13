@@ -93,7 +93,7 @@
                 data: {limit: pickerObj.settings.limit, q: value},
                 success: function(results)
                 {
-                    callback(_(results.results || []).chain()
+                    callback(_.chain(results.results || [])
                         .map(function(u) { return new User(u); })
                         .select(pickerObj.settings.filterCallback)
                         .value());

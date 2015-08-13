@@ -38,7 +38,7 @@
                         if ($.subKeyDefined(layer, 'featureLayer.renderer.infos'))
                         {
                             layer._suggestedTolerance = Math.round(Math.max.apply(null,
-                                _(layer.featureLayer.renderer.infos).chain()
+                                _.chain(layer.featureLayer.renderer.infos)
                                 .map(function(info) { return [info.symbol.height, info.symbol.width]; })
                                 .flatten().compact().value()));
 

@@ -305,7 +305,7 @@
 
             // For split views.
             if (mapObj._primaryView)
-            { mapObj._primaryView.childViews = _(mapObj._children).chain().map(function(c)
+            { mapObj._primaryView.childViews = _.chain(mapObj._children).map(function(c)
             {
                 if (c._view.childViews) { return c._view.childViews; }
                 else { return c._view.id; }
@@ -330,12 +330,20 @@
                                 function(rs) { rs.formattingChanged(condFmt); });
                         }
                     };
-                    _(mapObj._children).chain()
-                        .pluck('_view').uniq().without(mapObj._primaryView).each(function(subview)
-                    {
-                        delete subview.metadata.conditionalFormatting;
-                        subview.reload(false, function() { reInitCondFmt(subview); });
+
+                    var views = _.chain(mapObj._children)
+                      .pluck('_view')
+                      .uniq()
+                      .without(mapObj._primaryView)
+                      .value();
+
+                    _.each(views, function(subview) {
+                      delete subview.metadata.conditionalFormatting;
+                      subview.reload(false, function() {
+                        reInitCondFmt(subview);
+                      });
                     });
+
                     _.invoke(mapObj._children, 'getData');
                 });
             }
@@ -398,8 +406,8 @@
 
             if (!mapObj._doneLoading
                 && (mapObj.map.hasNoBackground
-                    || _(mapObj.map.backgroundLayers()).chain().pluck('_loaded').all().value())
-                && _(mapObj._children).chain().invoke('ready').all().value())
+                    || _.chain(mapObj.map.backgroundLayers()).pluck('_loaded').all().value())
+                && _.chain(mapObj._children).invoke('ready').all().value())
             {
                 mapObj._controls.Overview.redraw();
                 mapObj.viewportHandler().stopExpecting();
@@ -643,8 +651,12 @@
             var mapObj = this;
 
             var searchString = mapObj._primaryView.searchString;
-            _(mapObj._children).chain().pluck('_view').without(mapObj._primaryView)
-                .each(function(view) { view.update({ searchString: searchString }); });
+            var views = _.chain(mapObj._children)
+              .pluck('_view')
+              .without(mapObj._primaryView)
+              .value();
+
+            _.invoke(views, 'update', {searchString: searchString});
         },
 
         initializeEvents: function()
@@ -682,7 +694,7 @@
             if (mapObj._controls.SelectFeature)
             { return; }
 
-            var featureLayers = _(mapObj._children).chain()
+            var featureLayers = _.chain(mapObj._children)
                 .map(function(childView) { return childView.selectableFeatureLayers(); })
                 .compact()
                 .flatten()
@@ -836,9 +848,13 @@
                         }
                     };
 
-                    _(mapObj.map.layers).chain()
-                        .select(function(layer) { return layer instanceof OpenLayers.Layer.Vector; })
-                        .each(function(layer) { fixOffsetLeft(layer); });
+                    var vectors = _.select(mapObj.map.layers, function(layer) {
+                      return layer instanceof OpenLayers.Layer.Vector;
+                    });
+
+                    _.each(vectors, function(layer) {
+                      fixOffsetLeft(layer);
+                    });
                 }
             });
         },

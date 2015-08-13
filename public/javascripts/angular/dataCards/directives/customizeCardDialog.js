@@ -98,11 +98,8 @@
       // Set the default value of the histogram bucket option.
       scope.$bindObservable('histogramBucketOption', bucketType$.
         map(function(bucketType) {
-          if (_.isDefined(bucketType)) {
-            return Rx.Observable.returnValue(bucketType);
-          } else {
-            return determineBucketType(cardModel);
-          }
+          return _.isDefined(bucketType) ? Rx.Observable.returnValue(bucketType) :
+            determineBucketType(cardModel);
         }).
         switchLatest()
       );

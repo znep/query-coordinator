@@ -831,7 +831,7 @@
               injectTileInfo(e);
 
               // Determine if click should be disabled (when data is dense or flannel would be full)
-              var denseData = e.tile.totalPoints >= Constants.FEATURE_MAP_MAX_POINT_LIMIT;
+              var denseData = e.tile.totalPoints >= Constants.FEATURE_MAP_POINTS_PER_TILE_LIMIT;
               var manyRows = _.sum(e.points, 'count') > Constants.FLANNEL_ROW_CONTENT_LIMIT;
               if (!denseData && !manyRows) {
                 highlightClickedPoints(e.points);

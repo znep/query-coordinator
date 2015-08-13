@@ -335,7 +335,7 @@
                     {
                         delete subview.metadata.conditionalFormatting;
                         subview.reload(false, function() { reInitCondFmt(subview); });
-                    });
+                    }).value();
                     _.invoke(mapObj._children, 'getData');
                 });
             }
@@ -643,8 +643,8 @@
             var mapObj = this;
 
             var searchString = mapObj._primaryView.searchString;
-            _(mapObj._children).chain().pluck('_view').without(mapObj._primaryView)
-                .each(function(view) { view.update({ searchString: searchString }); });
+            _.chain(mapObj._children).pluck('_view').without(mapObj._primaryView)
+                .each(function(view) { view.update({ searchString: searchString }); }).value();
         },
 
         initializeEvents: function()
@@ -838,7 +838,7 @@
 
                     _(mapObj.map.layers).chain()
                         .select(function(layer) { return layer instanceof OpenLayers.Layer.Vector; })
-                        .each(function(layer) { fixOffsetLeft(layer); });
+                        .each(function(layer) { fixOffsetLeft(layer); }).value();
                 }
             });
         },

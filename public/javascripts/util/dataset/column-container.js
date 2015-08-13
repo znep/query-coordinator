@@ -457,7 +457,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
             } else {
               c[key] = oldC[key];
             }
-          });
+          }).value();
         }
 
         // If it has an access type, make sure it's set.

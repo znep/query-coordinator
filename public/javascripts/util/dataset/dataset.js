@@ -2875,7 +2875,7 @@ var Dataset = ServerModel.extend({
                 newGroupAggs[c.id] = c.format.grouping_aggregate;
 
                 newColOrder.push(c.id);
-            });
+            }).value();
         if ($.isBlank(oldGroupAggs))
         { oldGroupAggs = newGroupAggs; }
 

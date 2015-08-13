@@ -750,7 +750,7 @@
             var layerObj = this;
             _(rows).chain()
                 .map(function(row) { return layerObj.prepareRowRender(row); }).compact()
-                .each(function(datum) { layerObj.renderDatum(datum); });
+                .each(function(datum) { layerObj.renderDatum(datum); }).value();
 
             layerObj.zoomToPreferred();
         },
@@ -760,7 +760,7 @@
             var layerObj = this;
             _(rows).chain()
                 .map(function(row) { return layerObj.mapRowToDatum(row); }).compact()
-                .each(function(datum) { layerObj.removeDatum(datum); });
+                .each(function(datum) { layerObj.removeDatum(datum); }).value();
 
             layerObj.zoomToPreferred();
         },

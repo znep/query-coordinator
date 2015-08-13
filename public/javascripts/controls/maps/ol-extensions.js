@@ -507,7 +507,7 @@
         currentMaxZoomLevel: function()
         {
             if (this.hasNoBackground) { return this.baseLayer.availableZoomLevels; }
-            return _(this.backgroundLayers()).chain()
+            return _.chain(this.backgroundLayers())
                 .select(function(layer) { return layer.visibility; })
                 .pluck('availableZoomLevels')
                 .max().value();
@@ -763,7 +763,7 @@
         renderDataLayer: function(layerObj)
         {
             var control = this, $dom = this.$dom;
-            var dataLayers = _($.makeArray(layerObj.dataLayers())).chain()
+            var dataLayers = _.chain($.makeArray(layerObj.dataLayers()))
                 .flatten().compact().value();
 
             var typeMap = {

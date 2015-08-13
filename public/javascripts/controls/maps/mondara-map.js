@@ -58,7 +58,7 @@
                 if (_.isUndefined(layerObj._getFeature)) { return; }
                 if (!_.include(['visibility', 'opacity'], evtObj.property)) { return; }
                 if (!_.include(layerObj._dataLayers, evtObj.layer)) { return; }
-                var featureType = _(layerObj._dataLayers).chain()
+                var featureType = _.chain(layerObj._dataLayers)
                     .map(function(layer, index)
                         {
                             if (layer.visibility

@@ -389,7 +389,7 @@ $.deepCompact = function(obj)
 {
     if (_.isArray(obj))
     {
-        return _(obj).chain().map(function(o) { return $.deepCompact(o); })
+        return _.chain(obj).map(function(o) { return $.deepCompact(o); })
             .reject(function(o) { return $.isBlank(o); }).value();
     }
 

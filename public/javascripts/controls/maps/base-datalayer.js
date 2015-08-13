@@ -748,7 +748,7 @@
         handleDataLoaded: function(rows)
         {
             var layerObj = this;
-            _(rows).chain()
+            _.chain(rows)
                 .map(function(row) { return layerObj.prepareRowRender(row); }).compact()
                 .each(function(datum) { layerObj.renderDatum(datum); });
 
@@ -758,7 +758,7 @@
         handleDataRemoved: function(rows)
         {
             var layerObj = this;
-            _(rows).chain()
+            _.chain(rows)
                 .map(function(row) { return layerObj.mapRowToDatum(row); }).compact()
                 .each(function(datum) { layerObj.removeDatum(datum); });
 

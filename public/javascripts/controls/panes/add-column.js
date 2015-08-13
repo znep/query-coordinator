@@ -4,7 +4,7 @@
         var hasParent = !_.isUndefined((data || {}).parentId);
         var isNBE = blist.dataset.newBackend || blist.feature_flags.disable_legacy_types
 
-        var types = _(blist.datatypes).chain()
+        var types = _.chain(blist.datatypes)
           .map(function(type, k) {
             var createable = type.createable;
 

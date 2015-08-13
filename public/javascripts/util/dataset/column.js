@@ -38,7 +38,7 @@ var Column = ServerModel.extend({
         {
             col._summary = {};
             col._summaryLimit = limit;
-            _(resp.columnSummaries || []).chain()
+            _.chain(resp.columnSummaries || [])
                 .select(function(s) { return s.columnId == col.id; })
                 .each(function(s)
                 {

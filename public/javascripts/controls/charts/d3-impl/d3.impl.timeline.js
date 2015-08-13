@@ -28,7 +28,7 @@ $.Control.registerMixin('d3_impl_timeline', {
 
         var sortFunc = function(a, b) { return a.isBefore(b); };
         var moments = _.map(allDates, function(date) { return moment(date); }).sort(sortFunc),
-            durations = _(_.range(0, allDates.length-1, 1)).chain()
+            durations = _.chain(_.range(0, allDates.length-1, 1))
                         .map(function(i) { return moments[i+1].diff(moments[i]); })
                         .groupBy(_.identity).value(),
             inaccuracyIndex = _.size(durations) / _.size(data),

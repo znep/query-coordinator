@@ -2865,7 +2865,7 @@ var Dataset = ServerModel.extend({
         });
 
         var newGroupAggs = {};
-        _(ds.realColumns).chain()
+        _.chain(ds.realColumns)
             .select(function(c)
                 { return !$.isBlank(c.format.grouping_aggregate); })
             .each(function(c)

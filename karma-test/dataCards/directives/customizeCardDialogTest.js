@@ -369,11 +369,11 @@ describe('Customize card dialog', function() {
       expect(histogramConfigurationElement.length).to.equal(1);
     });
 
-    it('should have a default option of logarithmic if none is defined', function() {
+    it('should have a default option of undefined if none is defined', function() {
       var dialog = createDialog(options);
       var scope = dialog.scope;
 
-      expect(scope.histogramBucketOption).to.equal('logarithmic');
+      expect(scope.histogramBucketOption).to.equal(undefined);
     });
 
     it('should have a default option of linear if linear is defined', function() {

@@ -85,8 +85,7 @@
           withLatestFrom(
             cardId$,
             activeFilters$,
-            function(activeFilters, cardId, ownFilters) {
-              var cardFilters;
+            function(activeFilters, cardId) {
               var cardFilterIndex = _.findIndex(activeFilters, function(cardFilterInfo) {
                 return cardFilterInfo.uniqueId === cardId;
               });
@@ -133,14 +132,7 @@
             var dataPromise = CardDataService.getColumnDomain(fieldName, dataset.id, null).
               then(function(domain) {
                 if (_.has(domain, 'min') && _.has(domain, 'max')) {
-                  var cachedBucketOptions = HistogramService.getBucketingOptions(domain, bucketType);
-
-                  // TODO: This should be reworked eventually when histogram rendering is revisited.
-                  if (_.isUndefined(bucketType)) {
-                    $scope.model.set('bucketType', cachedBucketOptions.bucketType);
-                  }
-
-                  return cachedBucketOptions;
+                  return HistogramService.getBucketingOptions(domain, bucketType);
                 } else {
                   $scope.histogramRenderError = 'noData';
                 }
@@ -211,17 +203,19 @@
             // While the filtered data doesn't have the same number of buckets as the unfiltered,
             // we need to create the missing buckets and give them values of zero.
             var i = 0;
+            var noDatum = function(index) {
+              return $.grep(filteredData, function(e) {
+                return e.start === unfilteredData[index].start;
+              }).length === 0;
+            };
 
             while (unfilteredData.length !== filteredData.length && i < unfilteredData.length) {
               var unfilteredDatum = unfilteredData[i];
 
               // If the filtered array doesn't contain an object with the same 'start' index as the
               // current unfiltered object, create new bucket and insert it into the filtered array.
-              var noDatum = $.grep(filteredData, function(e) {
-                return e.start === unfilteredDatum.start;
-              }).length === 0;
 
-              if (noDatum) {
+              if (noDatum(i)) {
                 var newBucket = {
                   start: unfilteredDatum.start,
                   end: unfilteredDatum.end,

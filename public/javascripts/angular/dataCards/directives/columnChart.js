@@ -57,8 +57,12 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
           // Escape problematic characters from data-bar-name strings
           var escapeBarName = function(name) {
-            return name.replace(/\\/g, '\\\\').
-                        replace(/"/g, '\\\"');
+            if (_.isString(name)) {
+              return name.replace(/\\/g, '\\\\').
+                          replace(/"/g, '\\\"');
+            } else {
+              return name;
+            }
           };
 
           barName = escapeBarName(lastFlyoutData.title);

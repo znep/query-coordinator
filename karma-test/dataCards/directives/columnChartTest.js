@@ -64,6 +64,12 @@ describe('columnChart', function() {
     return modifiedData;
   }
 
+  function testDataWithNumberAtIndex(index) {
+    var modifiedData = _.clone(testData);
+    modifiedData[index][0] = 5;
+    return modifiedData;
+  }
+
   function testDataWithFiltered() {
     var modifiedData = _.clone(testData);
     _(modifiedData).forEach(function(n) {
@@ -196,6 +202,18 @@ describe('columnChart', function() {
       th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
       flyoutTitle = flyout.find('.flyout-title').text();
       expect(labelText).to.not.equal('undefined');
+      expect(labelText).to.equal(flyoutTitle);
+    });
+
+    it('should not fail on numeric titles', function() {
+      chart = createColumnChart(640, false, testDataWithNumberAtIndex(0));
+      var barLabel = $(labelContents).eq(0);
+      var labelText = barLabel.find('.text').text();
+      var flyoutTitle;
+      var flyout = $('#uber-flyout');
+
+      th.fireMouseEvent(barLabel.find(labelSubContents).get(0), 'mousemove');
+      flyoutTitle = flyout.find('.flyout-title').text();
       expect(labelText).to.equal(flyoutTitle);
     });
 

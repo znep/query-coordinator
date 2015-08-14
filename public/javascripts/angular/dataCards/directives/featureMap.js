@@ -99,7 +99,7 @@
           // prompt the user to filter and/or zoom in for accurate data.
           if (flyoutData.totalPoints >= Constants.FEATURE_MAP_MAX_TILE_DENSITY) {
             return template.format(
-              I18n.flyout.denseData,
+              I18n.t('flyout.denseData', scope.rowDisplayUnit.pluralize()),
               chooseUserActionPrompt(zoom)
             );
 
@@ -129,8 +129,8 @@
 
         function chooseUserActionPrompt(zoom) {
           return zoom === Constants.FEATURE_MAP_MAX_ZOOM ?
-            I18n.flyout.denseDataFilterPrompt :
-            I18n.flyout.denseDataZoomFilterPrompt;
+            I18n.flyout.filterPrompt :
+            I18n.flyout.zoomOrFilterPrompt;
         }
 
         // Construct leaflet map

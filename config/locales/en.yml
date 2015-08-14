@@ -186,9 +186,9 @@ en:
         expand: Click to expand
         filtered_amount: Filtered amount
         total: Total
-        dense_data: Dense Data
-        dense_data_zoom_filter_prompt: Zoom in or apply a filter to see details
-        dense_data_filter_prompt: Apply a filter to see details
+        dense_data: Numerous {0}
+        zoom_or_filter_prompt: Zoom in or apply a filter to see details
+        filter_prompt: Apply a filter to see details
       last_updated:
         label: last updated
       lens_type:

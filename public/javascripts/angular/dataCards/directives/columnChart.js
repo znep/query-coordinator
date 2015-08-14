@@ -12,11 +12,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       rowDisplayUnit: '='
     },
     link: function(scope, element) {
-      var chartDataObservable = scope.$observe('chartData');
-      var showFilteredObservable = scope.$observe('showFiltered');
-      var expandedObservable = scope.$observe('expanded');
-      var showAllLabelsObservable = scope.$observe('showAllLabels');
-      var rowDisplayUnitObservable = scope.$observe('rowDisplayUnit');
+      var chartData$ = scope.$observe('chartData');
+      var showFiltered$ = scope.$observe('showFiltered');
+      var expanded$ = scope.$observe('expanded');
+      var showAllLabels$ = scope.$observe('showAllLabels');
+      var rowDisplayUnit$ = scope.$observe('rowDisplayUnit');
       var columnChartConfig;
       var columnChart;
       var lastFlyoutData;
@@ -236,11 +236,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             height: Math.max(dimensions.height, 0)
           };
         }),
-        chartDataObservable,
-        showFilteredObservable,
-        expandedObservable,
-        showAllLabelsObservable,
-        rowDisplayUnitObservable,
+        chartData$,
+        showFiltered$,
+        expanded$,
+        showAllLabels$,
+        rowDisplayUnit$,
         function(cardVisualizationDimensions, chartData, showFiltered, expanded, showAllLabels, rowDisplayUnit) {
 
           if (!columnChart) {

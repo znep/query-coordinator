@@ -168,33 +168,22 @@
           function(fieldName, datasetId) {
 
             // To decide if we should render as a column chart, make a request
-            // for (threshold + 1) unique elements, then ensure that there are
-            // threshold or less elements and that they are all integers. The
-            // where clause excludes blank values because we don't render them
-            // and don't want them to skew our decision making process. We don't
-            // actually use the aggregation for anything but it's required for
-            // CardDataService.getData, so we just use the current page aggregation
-            // (making it part of the combineLatest would result in unnecessary
-            // server requests when the aggregation changed).
-            var threshold = Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD;
+            // for (n + 1) unique elements, then ensure that there are n or less
+            // elements and that they are all integers, where n is
+            // HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD. The where clause
+            // excludes blank values because we don't render them and don't want
+            // them to skew our decision making process. We don't actually use
+            // the aggregation for anything but it's required for
+            // CardDataService.getData, so we just use the current page
+            // aggregation (making it part of the combineLatest would result in
+            // unnecessary server requests when the aggregation changed).
             var whereClause = '`{0}` IS NOT NULL'.format(fieldName);
             var aggregation = $scope.model.page.getCurrentValue('aggregation');
-            var options = { limit: threshold + 1 };
-            var shouldRenderAsColumnChartPromise = CardDataService.getData(fieldName, datasetId, whereClause, aggregation, options).
-              then(function(data) {
+            var options = { limit: Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD + 1 };
+            var visualizationTypePromise = CardDataService.getData(fieldName, datasetId, whereClause, aggregation, options).
+              then(HistogramService.getVisualizationTypeForData);
 
-                if (data.length > threshold) {
-                  return 'histogram';
-                }
-
-                function isInteger(x) {
-                  return parseInt(x, 10) === parseFloat(x);
-                }
-
-                return _.chain(data).pluck('name').every(_, isInteger) ? 'columnChart' : 'histogram';
-              });
-
-            return Rx.Observable.fromPromise(shouldRenderAsColumnChartPromise);
+            return Rx.Observable.fromPromise(visualizationTypePromise);
           }).
           switchLatest().
           share();

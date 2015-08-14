@@ -177,8 +177,18 @@
       });
     }
 
-    function shouldRenderDataAsColumnChart(data) {
-      return true;
+    // Given an array of data, return the type of visualization that is best
+    // suited to display the distribution.
+    function getVisualizationTypeForData(data) {
+      if (data.length > Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD) {
+        return 'histogram';
+      }
+
+      function isInteger(x) {
+        return parseInt(x, 10) === parseFloat(x);
+      }
+
+      return _.chain(data).pluck('name').every(_, isInteger) ? 'columnChart' : 'histogram';
     }
 
     function transformDataForColumnChart(data) {
@@ -195,7 +205,7 @@
     return {
       getBucketingOptions: getBucketingOptions,
       bucketData: bucketData,
-      shouldRenderDataAsColumnChart: shouldRenderDataAsColumnChart,
+      getVisualizationTypeForData: getVisualizationTypeForData,
       transformDataForColumnChart: transformDataForColumnChart
     };
   }

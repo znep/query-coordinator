@@ -1824,9 +1824,12 @@ var Dataset = ServerModel.extend({
                 else
                 { selfForBase(); }
             });
+        } else {
+
+          // This is duct tape for some other race condition
+          // when trying to render out a map. See: ONCALL-2845.
+          _.defer(selfForBase);
         }
-        else
-        { selfForBase(); }
     },
 
     getChildOptionsForType: function(type, callback)

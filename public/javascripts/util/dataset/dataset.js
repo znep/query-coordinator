@@ -1853,6 +1853,17 @@ var Dataset = ServerModel.extend({
         }
     },
 
+    /**
+     * @function getFilteredFieldNames
+     * @description
+     * Attempts to grab the field names by recursively plucking
+     * the attribute, columnFieldName, from dataset.query.
+     * @returns {Array} - The unique field names currently being used as a filter.
+     */
+    getFilteredFieldNames: function() {
+      return _.uniq(blist.util.recursivePluck(this.query, 'columnFieldName'));
+    },
+
     redirectTo: function(urlparams)
     {
         var qs = '';

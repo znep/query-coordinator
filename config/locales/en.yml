@@ -2344,6 +2344,8 @@ en:
             title: Columns
           subtitle: Adjust which columns are visible in this view
           title: Show &amp; Hide Columns
+          warnings:
+            active_filter: You cannot hide this column because it has an active filter.
         sort_rollup:
           rollup:
             add_group_button: Add Grouping Column

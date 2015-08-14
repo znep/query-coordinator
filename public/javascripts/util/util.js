@@ -1090,4 +1090,40 @@ blist.util.loadCaptcha = function(id)
     }
 };
 
+/**
+ * @function recursivePluck
+ * @description
+ * A recursive version of _.pluck.
+ *
+ * For example:
+ * blist.util.recursivePluck({hello: 'world', key: {hello: 'world'}}, 'hello')
+ * => ['world', 'world']
+ *
+ * IMPORTANT: This is not a function for dot-delimited string searches.
+ *
+ * @param {Array|Object} pluckee - The object to pull searchKey from.
+ * @param {Number|String} searchKey - The key within pluckee to pull out.
+ * @returns {Array} - All pluckable searchKeys from the pluckee.
+ */
+blist.util.recursivePluck = function(pluckee, searchKey) {
+  var pluckedArray = [];
+
+  for(var key in pluckee) {
+    if (_.isPlainObject(pluckee[key]) || _.isArray(pluckee[key])) {
+      var plucked = blist.util.recursivePluck(pluckee[key], searchKey);
+      if (_.isArray(plucked)) {
+        pluckedArray = pluckedArray.concat(plucked);
+      } else {
+        pluckedArray.push(plucked);
+      }
+    }
+  }
+
+  if (!_.isUndefined(pluckee[searchKey])) {
+    pluckedArray.push(pluckee[searchKey]);
+  }
+
+  return pluckedArray;
+};
+
 })(jQuery);

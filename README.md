@@ -50,7 +50,7 @@ your local storyteller instance with blah.dev, vertex.dev, etc.
 Storyteller needs certain environment variables to be set. These should be set in something
 like your `.bashrc`, or `.bash_profile`, or `.zshrc`.
 
-- `CORESERVER_APP_TOKEN`
+- `CORESERVICE_APP_TOKEN`
   - This can be obtained from your local Open Data profile. (/profile/app_tokens)
 
 ## Run Server

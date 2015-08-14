@@ -1308,35 +1308,6 @@ describe('socrata.visualizations.ColumnChart', function() {
         expect($(label).hasClass(expectedClasses[i])).to.be.true;
       });
     });
-
-    it('should show all the labels if showAllLabels is true', function() {
-      columnChart.chart.render(testData, _.extend(columnChart.renderOptions, { showAllLabels: true }));
-
-      var labels = columnChart.element.find('.labels .label .text');
-
-      expect(labels).to.be.length(testData.length);
-
-      labels.each(function(i, label) {
-        expect($(label).text()).to.equal(testData[i][NAME_INDEX]);
-      });
-    });
-
-    it('should not freak out if showAllLabels is true and there is a special datum', function() {
-
-      var testDataWithSpecial = testDataWithSelectedAtIndex(2);
-
-      columnChart.chart.render(testData, _.extend(columnChart.renderOptions, { showAllLabels: true }));
-
-      var labels = columnChart.element.find('.labels .label .text');
-      var specialLabels = columnChart.element.find('.labels .label.selected .text');
-
-      expect(labels).to.be.length(testData.length);
-      expect(specialLabels).to.be.length(1);
-
-      labels.each(function(i, label) {
-        expect($(label).text()).to.equal(testData[i][NAME_INDEX]);
-      });
-    });
   });
 
   describe('when the truncation marker is clicked', function() {

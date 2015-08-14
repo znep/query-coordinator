@@ -123,13 +123,12 @@
           fieldName$,
           datasetModel$,
           bucketType$,
-          baseSoqlFilter$,
           function(fieldName, dataset, bucketType) {
 
             // This promise will ultimately return an object in the form:
             // {min:, max:, bucketType:, bucketSize:}
             // See HistogramService.getBucketingOptions
-            var dataPromise = CardDataService.getColumnDomain(fieldName, dataset.id, null).
+            var columnDomainPromise = CardDataService.getColumnDomain(fieldName, dataset.id, null).
               then(function(domain) {
                 if (_.has(domain, 'min') && _.has(domain, 'max')) {
                   return HistogramService.getBucketingOptions(domain, bucketType);
@@ -139,11 +138,10 @@
               }
             );
 
-            return Rx.Observable.fromPromise(dataPromise);
+            return Rx.Observable.fromPromise(columnDomainPromise);
           }).
           switchLatest().
-          distinctUntilChanged().
-          filter(_.isDefined);
+          share();
 
         var unfilteredData$ = Rx.Observable.combineLatest(
           fieldName$,
@@ -163,10 +161,49 @@
           fetchHistogramData
         ).switchLatest();
 
+        // Fires either 'columnChart' or 'histogram'
+        var visualizationType$ = Rx.Observable.combineLatest(
+          fieldName$,
+          datasetModel$.pluck('id'),
+          function(fieldName, datasetId) {
+
+            // To decide if we should render as a column chart, make a request
+            // for (threshold + 1) unique elements, then ensure that there are
+            // threshold or less elements and that they are all integers. The
+            // where clause excludes blank values because we don't render them
+            // and don't want them to skew our decision making process. We don't
+            // actually use the aggregation for anything but it's required for
+            // CardDataService.getData, so we just use the current page aggregation
+            // (making it part of the combineLatest would result in unnecessary
+            // server requests when the aggregation changed).
+            var threshold = Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD;
+            var whereClause = '`{0}` IS NOT NULL'.format(fieldName);
+            var aggregation = $scope.model.page.getCurrentValue('aggregation');
+            var options = { limit: threshold + 1 };
+            var shouldRenderAsColumnChartPromise = CardDataService.getData(fieldName, datasetId, whereClause, aggregation, options).
+              then(function(data) {
+
+                if (data.length > threshold) {
+                  return 'histogram';
+                }
+
+                function isInteger(x) {
+                  return parseInt(x, 10) === parseFloat(x);
+                }
+
+                return _.chain(data).pluck('name').every(_, isInteger) ? 'columnChart' : 'histogram';
+              });
+
+            return Rx.Observable.fromPromise(shouldRenderAsColumnChartPromise);
+          }).
+          switchLatest().
+          share();
+
         var cardData$ = Rx.Observable.combineLatest(
           unfilteredData$,
           filteredData$,
-          function(unfiltered, filtered) {
+          visualizationType$,
+          function(unfiltered, filtered, visualizationType) {
 
             $scope.histogramRenderError = false;
 
@@ -178,27 +215,8 @@
               throw new Error('noData');
             }
 
-            return {
-              unfiltered: unfiltered,
-              filtered: filtered
-            };
-          }).
-          catchException(function(error) {
-            if (_.isError(error)) {
-              $scope.histogramRenderError = error.message || true;
-            } else {
-              $scope.histogramRenderError = error || true;
-            }
-            return Rx.Observable.returnValue({ error: $scope.histogramRenderError });
-          }).
-          filter(function(data) {
-            if (_.isDefined(data.unfiltered) && _.isDefined(data.filtered)) {
-              return data.unfiltered.bucketType === data.filtered.bucketType;
-            }
-          }).
-          map(function(data) {
-            var unfilteredData = data.unfiltered.data;
-            var filteredData = data.filtered.data;
+            var unfilteredData = unfiltered.data;
+            var filteredData = filtered.data;
 
             // While the filtered data doesn't have the same number of buckets as the unfiltered,
             // we need to create the missing buckets and give them values of zero.
@@ -228,17 +246,25 @@
               i++;
             }
 
-            return {
+            var result = {
               unfiltered: unfilteredData,
               filtered: filteredData
             };
-          }).map(function(data) {
-            return HistogramService.shouldRenderDataAsColumnChart(data) ? HistogramService.transformDataForColumnChart(data) : data;
-          });
 
-        var visualizationType$ = cardData$.map(function(data) {
-          return HistogramService.shouldRenderDataAsColumnChart(data) ? 'columnChart' : 'histogram';
-        });
+            if (visualizationType === 'columnChart') {
+              return HistogramService.transformDataForColumnChart(result);
+            } else {
+              return result;
+            }
+          }).
+          catchException(function(error) {
+            if (_.isError(error)) {
+              $scope.histogramRenderError = error.message || true;
+            } else {
+              $scope.histogramRenderError = error || true;
+            }
+            return Rx.Observable.returnValue({ error: $scope.histogramRenderError });
+          });
 
         // This sucks, but we have to conditionally set a negative horizontal
         // margin on the outer container because when the chart renders as a

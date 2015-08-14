@@ -91,6 +91,19 @@ describe('card-layout', function() {
     testHelpers.overrideTransitions(false);
   });
 
+  var timeoutScheduler;
+  var testScheduler;
+
+  beforeEach(function() {
+    testScheduler = new Rx.TestScheduler();
+    timeoutScheduler = Rx.Scheduler.timeout;
+    Rx.Scheduler.timeout = testScheduler;
+  });
+
+  afterEach(function() {
+    Rx.Scheduler.timeout = timeoutScheduler;
+  });
+
   /**
    * Generates and compiles the html with a card-layout directive.
    *
@@ -246,8 +259,10 @@ describe('card-layout', function() {
 
     // Trigger some rx events once, so that subscribeLatest will run
     var jqWindow = $(window);
-    mockWindowStateService.windowSizeSubject.onNext({
-      width: jqWindow.width(), height: jqWindow.height()});
+    var jqWindowDimensions = { width: jqWindow.width(), height: jqWindow.height() };
+    mockWindowStateService.windowSizeSubject.onNext(jqWindowDimensions);
+    Rx.Scheduler.timeout.advanceBy(Constants.LAYOUT_WINDOW_SIZE_DEBOUNCE);
+
     mockWindowStateService.scrollPositionSubject.onNext($(window).scrollTop());
     var scope = element.find('card-layout').scope().$$childHead;
     scope.$digest();

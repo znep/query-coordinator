@@ -732,9 +732,10 @@
 
         // React to changes to the vectorTileGetter observable
         // (which changes indicate that a re-render is needed).
+        // Only render once the feature extent has been defined.
         Rx.Observable.subscribeLatest(
           vectorTileGetterObservable.filter(_.isFunction),
-          featureExtentObservable, // Used for signaling to create feature layer
+          featureExtentObservable.filter(_.isDefined), // Used for signaling to create feature layer
           dimensions$,
           function(vectorTileGetter) {
             currentVectorTileGetter = vectorTileGetter;

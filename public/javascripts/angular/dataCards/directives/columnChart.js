@@ -8,12 +8,14 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       chartData: '=',
       showFiltered: '=',
       expanded: '=',
+      showAllLabels: '=',
       rowDisplayUnit: '='
     },
     link: function(scope, element) {
       var chartDataObservable = scope.$observe('chartData');
       var showFilteredObservable = scope.$observe('showFiltered');
       var expandedObservable = scope.$observe('expanded');
+      var showAllLabelsObservable = scope.$observe('showAllLabels');
       var rowDisplayUnitObservable = scope.$observe('rowDisplayUnit');
       var columnChartConfig;
       var columnChart;
@@ -237,8 +239,9 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
         chartDataObservable,
         showFilteredObservable,
         expandedObservable,
+        showAllLabelsObservable,
         rowDisplayUnitObservable,
-        function(cardVisualizationDimensions, chartData, showFiltered, expanded, rowDisplayUnit) {
+        function(cardVisualizationDimensions, chartData, showFiltered, expanded, showAllLabels, rowDisplayUnit) {
 
           if (!columnChart) {
             return undefined;
@@ -253,7 +256,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           var chartRenderOptions = {
             expanded: expanded,
             labelUnit: rowDisplayUnit,
-            showFiltered: showFiltered
+            showFiltered: showFiltered,
+            showAllLabels: showAllLabels
           };
           columnChart.render(chartData, chartRenderOptions);
 

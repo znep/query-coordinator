@@ -225,18 +225,18 @@
  * Expanded layout styles
  */
 
-.column-chart.expanded .labels,
-.column-chart.expanded.selected .labels {
+.column-chart.show-all-labels .labels,
+.column-chart.show-all-labels.selected .labels {
   bottom: auto;
 }
 
-.column-chart.expanded .labels .label .callout,
-.column-chart.expanded.selected .labels .label .callout {
+.column-chart.show-all-labels .labels .label .callout,
+.column-chart.show-all-labels.selected .labels .label .callout {
   display: none
 }
 
-.column-chart.expanded .labels .label .contents,
-.column-chart.expanded.selected .labels .label .contents {
+.column-chart.show-all-labels .labels .label .contents,
+.column-chart.show-all-labels.selected .labels .label .contents {
   left: auto;
   -webkit-transform-origin: top left;
   -moz-transform-origin: top left;
@@ -249,15 +249,15 @@
   overflow: hidden;
 }
 
-.column-chart.expanded .labels .label .contents .icon-filter,
-.column-chart.expanded .labels .label .contents .icon-close,
-.column-chart.expanded.selected .labels .label .contents .icon-filter,
-.column-chart.expanded.selected .labels .label .contents .icon-close {
+.column-chart.show-all-labels .labels .label .contents .icon-filter,
+.column-chart.show-all-labels .labels .label .contents .icon-close,
+.column-chart.show-all-labels.selected .labels .label .contents .icon-filter,
+.column-chart.show-all-labels.selected .labels .label .contents .icon-close {
   display: none;
 }
 
-.column-chart.expanded .labels .label .contents .text,
-.column-chart.expanded.selected .labels .label .contents .text {
+.column-chart.show-all-labels .labels .label .contents .text,
+.column-chart.show-all-labels.selected .labels .label .contents .text {
   padding: 0;
 }
 

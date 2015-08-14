@@ -320,6 +320,7 @@
       var chartWidth = element.width();
       var chartHeight = element.height();
       var expanded = options.expanded;
+      var showAllLabels = expanded || options.showAllLabels;
       var labelUnit = options.labelUnit;
       var showFiltered = options.showFiltered;
 
@@ -331,6 +332,12 @@
         _chartElement.addClass('expanded');
       } else {
         _chartElement.removeClass('expanded');
+      }
+
+      if (showAllLabels) {
+        _chartElement.addClass('show-all-labels');
+      } else {
+        _chartElement.removeClass('show-all-labels');
       }
 
       if (showFiltered) {
@@ -346,7 +353,7 @@
       var topMargin = 0; // Set to zero so .card-text could control padding b/t text & visualization
       var bottomMargin; // Calculated based on label text length
       var horizontalScrollbarHeight = 15; // used to keep horizontal scrollbar within .card-visualization upon expand
-      var numberOfDefaultLabels = expanded ? data.length : 3;
+      var numberOfDefaultLabels = (expanded || showAllLabels) ? data.length : 3;
       var maximumBottomMargin = 140;
       var d3Selection = d3.select(_chartWrapper.get(0));
       // The `_.property(NAME_INDEX)` below is equivalent to `function(d) { return d[NAME_INDEX]; }`
@@ -358,7 +365,7 @@
       var fixedLabelWidth = 10.5;
 
       // Compute chart margins
-      if (expanded) {
+      if (showAllLabels) {
 
         var maxLength = _.max(data.map(function(item) {
           // The size passed to visualLength() below relates to the width of the div.text in the updateLabels().
@@ -463,7 +470,7 @@
 
           var leftHanded = false;
 
-          if (!expanded) {
+          if (!showAllLabels) {
 
             var labelWidth = $(this).find('.contents').width();
             var proposedLeftOfText = horizontalScale(datum[NAME_INDEX]);
@@ -496,7 +503,7 @@
 
         var centering = chartLeftOffset - rangeBand / 2;
         var verticalPositionOfSelectedLabelRem = 2;
-        var labelMargin = 0.75;
+        var labelMargin = showAllLabels ? 0 : 0.75;
         var selectedLabelMargin = -0.4;
         // The `_.property(NAME_INDEX)` below is equivalent to `function(d) { return d[NAME_INDEX]; }`
         var labelDivSelection = labelSelection.data(labelData, _.property(NAME_INDEX));
@@ -526,7 +533,7 @@
             style('top', function(d, i) {
               var topOffset;
 
-              if (expanded) {
+              if (showAllLabels) {
                 topOffset = 0;
               } else if (isOnlyInSelected(d, i)) {
                 topOffset = verticalPositionOfSelectedLabelRem;
@@ -548,8 +555,8 @@
           select('.callout').
             style('height', function(d, i) {
 
-              // Expanded charts have auto-height labels.
-              if (expanded) {
+              // Slanted labels have auto height.
+              if (showAllLabels) {
                 return '';
               } else {
                 if (isOnlyInSelected(d, i)) {
@@ -594,14 +601,14 @@
             var labelContentRightOffset;
             var isSelected = d[SELECTED_INDEX];
             var scaleOffset = horizontalScale(d[NAME_INDEX]) - centering - 1;
-            var noRoomForCallout = scaleOffset >= chartWidth && isSelected && !expanded;
+            var noRoomForCallout = scaleOffset >= chartWidth && isSelected && !showAllLabels;
             var leftOriented = $(this).hasClass('orientation-left');
             var labelIconPadding = 30;
             var halfWidthOfCloseIcon = ($(this).find('.icon-close').width() / 2) - 1;
             var textMaxWidth;
 
             // Logic for setting label and content offsets and text max widths.
-            if (expanded || !isSelected) {
+            if (showAllLabels || !isSelected) {
               labelLeftOffset = scaleOffset;
               labelContentLeftOffset = labelMargin;
             } else if (leftOriented) {
@@ -614,7 +621,7 @@
               textMaxWidth = chartWidth - scaleOffset - labelIconPadding;
             }
 
-            if (!isSelected && !expanded) {
+            if (!isSelected && !showAllLabels) {
               textMaxWidth = chartWidth - scaleOffset - labelIconPadding;
             }
 

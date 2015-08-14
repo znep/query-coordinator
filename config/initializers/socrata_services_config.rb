@@ -5,7 +5,7 @@ Rails.application.config.core_service_uri = begin
 end
 
 if ENV['CORESERVICE_APP_TOKEN'].nil?
-  raise 'CORESERIVCE_APP_TOKEN not set on the environment. Please do so.'
+  raise 'CORESERVICE_APP_TOKEN not set on the environment. Please do so.'
 end
 
 Rails.application.config.core_service_app_token = ENV['CORESERVICE_APP_TOKEN']

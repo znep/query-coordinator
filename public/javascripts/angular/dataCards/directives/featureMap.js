@@ -22,13 +22,15 @@
         'zoomDebounceMilliseconds': '=',
         'vectorTileGetter': '=',
         'rowDisplayUnit': '=?',
-        'disablePanAndZoom': '='
+        'disablePanAndZoom': '=',
+        'busy': '='
       },
       templateUrl: '/angular_templates/dataCards/featureMap.html',
       link: function(scope, element) {
-        var baseLayerUrlObservable = scope.$observe('baseLayerUrl');
-        var featureExtentObservable = scope.$observe('featureExtent');
-        var vectorTileGetterObservable = scope.$observe('vectorTileGetter');
+        var baseLayerUrl$ = scope.$observe('baseLayerUrl');
+        var featureExtent$ = scope.$observe('featureExtent');
+        var vectorTileGetter$ = scope.$observe('vectorTileGetter');
+        var busy$ = scope.$observe('busy');
 
         var mapOptions = {
           attributionControl: false,
@@ -167,7 +169,7 @@
         var currentVectorTileGetter;
         var startResizeFn = null;
         var completeResizeFn = null;
-        var baseTileLayerObservable;
+        var baseTileLayer$;
         var dimensions$;
 
         /**
@@ -503,8 +505,11 @@
          * @param {Function} vectorTileGetter - Function that gets a vector tile
          */
         function createNewFeatureLayer(vectorTileGetter) {
+          var layer;
           var featureLayerOptions = {
             debug: false,
+            // disable interactivity during load
+            disableMapInteractions: true,
             getFeatureId: getFeatureId,
             filter: filterLayerFeature,
             layerOrdering: getFeatureZIndex,
@@ -514,7 +519,11 @@
             onRenderComplete: function() {
               emitRenderCompleted();
               removeOldFeatureLayers();
-              map.fire('clearhighlightrequest');
+              if (ServerConfig.get('oduxEnableFeatureMapHover')) {
+                map.fire('clearhighlightrequest');
+              }
+              // enable interactivity once load is complete
+              updateMapInteractivity(layer);
             },
             vectorTileGetter: function() {
               var promise = vectorTileGetter.apply(this, Array.prototype.slice.call(arguments));
@@ -532,7 +541,7 @@
 
           // Don't create duplicate layers.
           if (!featureLayers.has(vectorTileGetter)) {
-            var layer = VectorTiles.create(featureLayerOptions);
+            layer = VectorTiles.create(featureLayerOptions);
             featureLayers.set(vectorTileGetter, layer);
             map.addLayer(layer);
           }
@@ -551,6 +560,16 @@
               featureLayers['delete'](key);
             }
           });
+        }
+
+        // Update map interactivity based on map load status.
+        // Enables map interactivity once map load is complete.
+        function updateMapInteractivity(layer) {
+          if (_.isDefined(layer)) {
+            busy$.subscribe(function(busy) {
+              layer.options.disableMapInteractions = busy;
+            });
+          }
         }
 
         /**
@@ -636,7 +655,7 @@
         LeafletVisualizationHelpersService.emitExtentEventsFromMap(scope, map);
 
         // Keep the baseTileLayer in sync with the baseLayerUrl observable.
-        baseTileLayerObservable = baseLayerUrlObservable.
+        baseTileLayer$ = baseLayerUrl$.
           map(function(url) {
             if (!_.isDefined(url)) {
               return {
@@ -677,27 +696,27 @@
           });
 
         // Remove old map layers.
-        baseTileLayerObservable.
+        baseTileLayer$.
           bufferWithCount(2, 1).
           subscribe(function(layers) {
             map.removeLayer(layers[0]);
           }
         );
         // Add new map layers.
-        baseTileLayerObservable.
+        baseTileLayer$.
           subscribe(function(layer) {
             layer.addTo(map);
             layer.bringToBack(map);
           }
         );
         // Now that everything's hooked up, connect the subscription.
-        baseTileLayerObservable.connect();
+        baseTileLayer$.connect();
 
         // We want to set the bounds before we start requesting tiles so that
         // we don't make a bunch of requests for zoom level 1 while we are
         // waiting for the extent query to come back.
         Rx.Observable.subscribeLatest(
-          featureExtentObservable.filter(_.isDefined),
+          featureExtent$.filter(_.isDefined),
           dimensions$.take(1),
           function(featureExtent) {
             var bounds = LeafletHelpersService.buildBounds(featureExtent);
@@ -711,7 +730,7 @@
 
         // If the server-provided extent is undefined, defer to zoom level 1
         Rx.Observable.subscribeLatest(
-          featureExtentObservable.filter(_.isUndefined),
+          featureExtent$.filter(_.isUndefined),
           dimensions$,
           function() {
             map.invalidateSize();
@@ -721,8 +740,8 @@
         // (which changes indicate that a re-render is needed).
         // Only render once the feature extent has been defined.
         Rx.Observable.subscribeLatest(
-          vectorTileGetterObservable.filter(_.isFunction),
-          featureExtentObservable.filter(_.isDefined), // Used for signaling to create feature layer
+          vectorTileGetter$.filter(_.isFunction),
+          featureExtent$.filter(_.isDefined), // Used for signaling to create feature layer
           dimensions$,
           function(vectorTileGetter) {
             currentVectorTileGetter = vectorTileGetter;

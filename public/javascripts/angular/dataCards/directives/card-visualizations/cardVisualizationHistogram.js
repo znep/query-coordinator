@@ -244,10 +244,10 @@
             activeFilters$,
             function(result, visualizationType, activeFilters) {
               if (visualizationType === 'columnChart') {
-                var specialIndex = undefined;
+                var specialIndex;
 
                 if (activeFilters.length > 0) {
-                  var specialIndex = _.findIndex(result.unfiltered, function(bucket) {
+                  specialIndex = _.findIndex(result.unfiltered, function(bucket) {
                     return bucket.start === activeFilters[0].operand;
                   });
                 }

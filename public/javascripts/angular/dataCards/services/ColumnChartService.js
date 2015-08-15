@@ -60,7 +60,7 @@
     }
 
     return {
-      registerColumnChartEvents: registerColumnChartEvents,
+      registerColumnChartEvents: registerColumnChartEvents
     };
   }
 

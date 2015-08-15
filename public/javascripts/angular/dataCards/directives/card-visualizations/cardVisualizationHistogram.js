@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationHistogram(CardDataService, HistogramService, Filter, $log, Constants) {
+  function cardVisualizationHistogram(CardDataService, HistogramService, ColumnChartService, Filter, $log, Constants) {
 
     /**
      * Fetches both unfiltered and filtered data.  Requests the data bucketed
@@ -191,8 +191,7 @@
         var cardData$ = Rx.Observable.combineLatest(
           unfilteredData$,
           filteredData$,
-          visualizationType$,
-          function(unfiltered, filtered, visualizationType) {
+          function(unfiltered, filtered) {
 
             $scope.histogramRenderError = false;
 
@@ -235,17 +234,30 @@
               i++;
             }
 
-            var result = {
+            return {
               unfiltered: unfilteredData,
               filtered: filteredData
             };
-
-            if (visualizationType === 'columnChart') {
-              return HistogramService.transformDataForColumnChart(result);
-            } else {
-              return result;
-            }
           }).
+          withLatestFrom(
+            visualizationType$,
+            activeFilters$,
+            function(result, visualizationType, activeFilters) {
+              if (visualizationType === 'columnChart') {
+                var specialIndex = undefined;
+
+                if (activeFilters.length > 0) {
+                  var specialIndex = _.findIndex(result.unfiltered, function(bucket) {
+                    return bucket.start === activeFilters[0].operand;
+                  });
+                }
+
+                return HistogramService.transformDataForColumnChart(result, specialIndex);
+              } else {
+                return result;
+              }
+            }
+          ).
           catchException(function(error) {
             if (_.isError(error)) {
               $scope.histogramRenderError = error.message || true;
@@ -265,6 +277,7 @@
           if (visualizationType === 'columnChart') {
             conditionalStyles.marginLeft = 0;
             conditionalStyles.marginRight = 0;
+            ColumnChartService.registerColumnChartEvents($scope, element);
           } else {
             conditionalStyles.marginLeft = -Constants.HISTOGRAM_MARGINS.left;
             conditionalStyles.marginRight = -Constants.HISTOGRAM_MARGINS.right;

@@ -191,13 +191,14 @@
       return _.chain(data).pluck('name').every(_, isInteger) ? 'columnChart' : 'histogram';
     }
 
-    function transformDataForColumnChart(data) {
+    function transformDataForColumnChart(data, specialIndex) {
       return data.unfiltered.map(function(bucket, i) {
+        var filteredValue = (i === specialIndex) ? bucket.value : 0;
         return [
           bucket.start,
           bucket.value,
-          data.filtered[i].value,
-          false
+          _.isDefined(specialIndex) ? filteredValue : bucket.value,
+          i === specialIndex
         ];
       });
     }

@@ -331,13 +331,8 @@
             $timeslice = $this.find('.currentTimeSlice'),
             $slicer    = $('.sliceDepth');
 
-        var updateDateParams = function(value, $slicer)
+        var updateDateParams = function(startDate, endDate, $slicer)
         {
-            var parts       = value.split(opts.separator),
-                startDate   = moment(parts[0], opts.parseDateFormat, blist.locale).toDate().setTimezoneOffset(0),
-                endDate     = (parts.length > 1) ?
-                    moment(parts[1], opts.parseDateFormat, blist.locale).toDate().setTimezoneOffset(0) : startDate.clone();
-
             var sliceDepth;
             _.each(opts.rolloverDays, function(roll)
             {
@@ -395,7 +390,11 @@
             latestDate: today,
             onClose: function() {
                 _.defer(function() {
-                    updateDateParams($timeslice.val(), $slicer);
+                    updateDateParams(
+                        $timeslice.data('range-start'),
+                        $timeslice.data('range-end'),
+                        $slicer
+                    );
                 });
             },
             posY: $timeslice.offset().top + $timeslice.outerHeight() + opts.yOffset,
@@ -405,7 +404,7 @@
         $slicer.uniform().change(function(event)
         { opts.metricsScreen.trigger('metricsSliceChanged', [$(this).val().toUpperCase()]); });
 
-        updateDateParams($timeslice.val(), $slicer);
+        updateDateParams(paramValues.start, paramValues.end, $slicer);
 
         return this;
     };

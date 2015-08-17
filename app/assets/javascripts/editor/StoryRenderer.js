@@ -20,19 +20,19 @@
       'text': TextComponentRenderer.renderTemplate,
       'media': MediaComponentRenderer.renderTemplate,
       'socrataVisualization': SocrataVisualizationComponentRenderer.renderTemplate,
-      'layout': LayoutComponentRenderer.renderTemplate
+      'layout': 'storytellerComponentLayout'
     };
     var componentTemplateCheckers = {
       'text': TextComponentRenderer.canReuseTemplate,
       'media': MediaComponentRenderer.canReuseTemplate,
       'socrataVisualization': SocrataVisualizationComponentRenderer.canReuseTemplate,
-      'layout': LayoutComponentRenderer.canReuseTemplate
+      'layout': _.constant(true)
     };
     var componentDataRenderers = {
       'text': TextComponentRenderer.renderData,
       'media': MediaComponentRenderer.renderData,
       'socrataVisualization': SocrataVisualizationComponentRenderer.renderData,
-      'layout': LayoutComponentRenderer.renderData
+      'layout': 'storytellerComponentLayout'
     };
     var elementCache = new storyteller.StoryRendererElementCache();
     var warningMessageElement = options.warningMessageElement || null;
@@ -627,7 +627,14 @@
             editable: editable
           };
 
-          newTemplate = componentTemplateRenderers[componentOptions.componentType](componentOptions);
+          var componentTemplateRenderer = componentTemplateRenderers[componentOptions.componentType];
+
+          if (typeof componentTemplateRenderer === 'string') {
+            newTemplate = $('<div>')[componentTemplateRenderer](componentDatum);
+            newTemplate.addClass('component').addClass(componentDatum.type);
+          } else {
+            newTemplate = componentTemplateRenderers[componentOptions.componentType](componentOptions);
+          }
 
           newTemplate.attr('data-block-id', blockId);
           newTemplate.attr('data-component-index', i);
@@ -644,10 +651,14 @@
       var componentData = storyteller.storyStore.getBlockComponents(blockId);
 
       componentData.forEach(function(componentDatum, i) {
-
         var element = elementCache.getComponent(blockId, i);
+        var componentDataRenderer = componentDataRenderers[componentDatum.type];
 
-        componentDataRenderers[componentDatum.type](element, componentDatum, editable, _renderStory);
+        if (typeof componentDataRenderer === 'string') {
+          $(element)[componentDataRenderer](componentDatum);
+        } else {
+          componentDataRenderers[componentDatum.type](element, componentDatum, editable, _renderStory);
+        }
       });
     }
 

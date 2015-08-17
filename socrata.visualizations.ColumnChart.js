@@ -572,7 +572,7 @@
           classed('label', true).
           classed('non-default', isOnlyInSelected).
           attr('data-bar-name', function(d) {
-            return _labelValueOrPlaceholder(d[NAME_INDEX]);
+            return _escapeQuotesAndBackslashes(_labelValueOrPlaceholder(d[NAME_INDEX]));
           });
 
         // For new labels, add a contents div containing a span for the filter icon,
@@ -792,7 +792,9 @@
         // UPDATE PROCESSING
         // Update the position of the groups.
         selection.
-          attr('data-bar-name', function(d) { return _labelValueOrPlaceholder(d[NAME_INDEX]); }).
+          attr('data-bar-name', function(d) {
+            return _escapeQuotesAndBackslashes(_labelValueOrPlaceholder(d[NAME_INDEX]));
+          }).
           style('left', function(d) { return horizontalBarPosition(d) + 'px'; }).
           style('width', rangeBand + 'px').
           style('height', function() { return chartHeight + 'px'; }).
@@ -842,6 +844,13 @@
         top: chartHeight,
         display: chartTruncated ? 'block' : 'none'
       });
+    }
+
+    function _escapeQuotesAndBackslashes(value) {
+
+      return value.
+        replace(/\\/, '\\\\').
+        replace(/"/, '\\\"');
     }
 
     function _labelValueOrPlaceholder(value, placeholder) {

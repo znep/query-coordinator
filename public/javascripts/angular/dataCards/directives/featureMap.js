@@ -156,10 +156,12 @@
         map.on('mouseout', function() {
           FlyoutService.deregister('canvas', renderHoverFlyout);
         });
+
         // We buffer feature layers so that there isn't a visible flash
         // of emptiness when we transition from one to the next. This is accomplished
         // by only removing the previous layers when the current one completes rendering.
         var featureLayers = new Map();
+
         // We also keep a handle on the current feature layer Url so we know which of
         // the existing layers we can safely remove (i.e. not the current one).
         var currentVectorTileGetter;
@@ -185,22 +187,17 @@
         /**
          * Returns true for features that should be drawn and false for features
          * that should not be drawn.
-         *
-         * @param feature - The feature that we will style.
-         * @param context - The canvas 2d context to which we are drawing.
-         * @returns {Boolean}
+         * TODO: Determine if this can be substituted for _.constant(true).
          */
-        function filterLayerFeature(feature, context) {
+        function filterLayerFeature() {
           return true;
         }
 
         /**
          * Returns the 'z-index' at which the feature should be drawn.
-         *
-         * @param feature - The feature that we will style.
-         * @returns {Number}
+         * TODO: Determine if this can be substituted for _.constant(1).
          */
-        function getFeatureZIndex(feature) {
+        function getFeatureZIndex() {
           return 1;
         }
 
@@ -212,6 +209,7 @@
          * @returns {Number}
          */
         function scalePointFeatureRadiusByZoomLevel(zoomLevel) {
+
           // This was created somewhat arbitrarily by Chris to
           // result in point features which get slightly larger
           // as the map is zoomed in. It can be replaced with
@@ -303,25 +301,13 @@
          *   object.
          */
         function getFeatureStyle(feature) {
-
-          var style = {
-            selected: {}
-          };
-
           switch (feature.type) {
-
-            // Point
             case 1:
               return getPointStyle();
-
-            // LineString
             case 2:
               return getLineStringStyle();
-
-            // Polygon
             case 3:
               return getPolygonStyle();
-
             default:
               throw new Error('Cannot apply style to unknown feature type "' + feature.type + '".');
           }
@@ -426,12 +412,13 @@
               // enable scrolling.
               var isScrollable$ = flannelScope.$observe('isScrollable');
               var flannelSelector = element.find('.tool-panel-inner-container').selector;
+              var $body = $(document.body);
 
               isScrollable$.subscribe(function(isScrollable) {
                 if (isScrollable) {
-                  $(document.body).on('mousewheel DOMMouseScroll', flannelSelector, window.socrata.utils.preventScrolling);
+                  $body.on(Constants.MOUSE_WHEEL_EVENTS, flannelSelector, window.socrata.utils.preventScrolling);
                 } else {
-                  $(document.body).off('mousewheel DOMMouseScroll', flannelSelector, window.socrata.utils.preventScrolling);
+                  $body.off(Constants.MOUSE_WHEEL_EVENTS, flannelSelector, window.socrata.utils.preventScrolling);
                 }
               });
 

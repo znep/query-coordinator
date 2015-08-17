@@ -4,6 +4,10 @@
   function Constants() {
 
     return {
+
+      // Event constants
+      'MOUSE_WHEEL_EVENTS': 'mousewheel DOMMouseScroll MozMousePixelScroll',
+
       // Layout parameters
       'LAYOUT_HORIZONTAL_PADDING': 5,
       'LAYOUT_VERTICAL_PADDING': 5,

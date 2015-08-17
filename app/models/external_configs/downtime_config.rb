@@ -34,7 +34,8 @@ class DowntimeConfig < ExternalConfig
       end
     rescue StandardError => e
       # Ignore all errors/typos from the downtime parsing
-      Rails.logger.warn("Error loading downtime banner: #{source} - #{e}")
+      semantic_source = (use_consul?) ? 'consul' : 'config/downtime.yml'
+      Rails.logger.warn("Error loading downtime information from #{semantic_source} - #{e}")
     end
   end
 

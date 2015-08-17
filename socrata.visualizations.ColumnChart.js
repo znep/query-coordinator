@@ -213,13 +213,13 @@
 
       element.on(
         'mouseenter, mousemove',
-        '.bar-group.active, .bar-group.active .bar, .labels .label .contents span:not(.icon-close)',
+        '.bar-group, .labels .label .contents span:not(.icon-close)',
         showFlyout
       );
 
       element.on(
         'mouseleave',
-        '.bar-group.active, .bar-group.active .bar, .labels .label .contents span:not(.icon-close)',
+        '.bar-group, .labels .label .contents span:not(.icon-close)',
         hideFlyout
       );
 
@@ -268,13 +268,13 @@
 
       element.off(
         'mouseenter, mousemove',
-        '.bar-group.active, .bar-group.active .bar, .labels .label .contents span:not(.icon-close)',
+        '.bar-group, .labels .label .contents span:not(.icon-close)',
         showFlyout
       );
 
       element.off(
         'mouseleave',
-        '.bar-group.active, .bar-group.active .bar, .labels .label .contents span:not(.icon-close)',
+        '.bar-group, .labels .label .contents span:not(.icon-close)',
         hideFlyout
       );
 
@@ -326,8 +326,16 @@
 
       var datum = d3.select(event.currentTarget).datum();
 
+      var barGroupName = datum[NAME_INDEX].
+        replace(/\\/g, '\\\\').
+        replace(/"/g, '\\\"');
+
+      var barGroupElement = _chartWrapper.
+        find('.bar-group[data-bar-name="{0}"] > .unfiltered'.format(barGroupName)).
+        eq(0)[0];
+
       var payload = {
-        element: event.currentTarget,
+        element: barGroupElement,
         title: _labelValueOrPlaceholder(datum[NAME_INDEX]),
         unfilteredValueLabel: self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL'),
         unfilteredValue: datum[UNFILTERED_INDEX],
@@ -417,7 +425,6 @@
       // The `_.property(NAME_INDEX)` below is equivalent to `function(d) { return d[NAME_INDEX]; }`
       var barGroupSelection = d3Selection.selectAll('.bar-group').data(data, _.property(NAME_INDEX));
       var labelSelection = d3.select(_chartLabels[0]).selectAll('.label');
-      var chartWidth = chartWidth;
       var chartTruncated = false;
       var truncationMarkerWidth = _truncationMarker.width();
       var fixedLabelWidth = 10.5;
@@ -810,18 +817,22 @@
         bars.
           style('width', rangeBand + 'px').
           style('height', function (d) {
+
             if (_.isNaN(d.value)) {
               return 0;
             }
+
             return Math.max(
               d.value === 0 ? 0 : 1,  // Always show at least one pixel for non-zero-valued bars.
               Math.abs(verticalScale(d.value) - verticalScale(0))
             ) + 'px';
           }).
           style('bottom', function(d) {
+
             if (_.isNaN(d.value)) {
               return 0;
             }
+
             return verticalScale(Math.min(0, d.value)) + 'px';
           }).
           classed('bar', true).
@@ -846,8 +857,7 @@
       });
     }
 
-    function _escapeQuotesAndBackslashes(value) {
-
+   function _escapeQuotesAndBackslashes(value) {
       return value.
         replace(/\\/, '\\\\').
         replace(/"/, '\\\"');
@@ -878,7 +888,9 @@
     function _computeDomain(chartData, showFiltered) {
 
       var allData = chartData.map(function(d) { return d[UNFILTERED_INDEX]; }).concat(
-        showFiltered ? chartData.map(function(d) { return d[FILTERED_INDEX]; }) : []
+        (showFiltered) ?
+          chartData.map(function(d) { return d[FILTERED_INDEX]; }) :
+          []
       );
 
       function _makeDomainIncludeZero(domain) {

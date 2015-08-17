@@ -67,7 +67,7 @@
 
             if (scope.showCardinalityWarning && $(el).hasClass('icon-bar-chart')) {
               flyoutMessage = I18n.addCardDialog.columnChartWarning;
-            } else if(scope.showHistogramColumnChartWarning && $(el).hasClass('icon-distribution')) {
+            } else if (scope.showHistogramColumnChartWarning && $(el).hasClass('icon-distribution')) {
               flyoutMessage = I18n.addCardDialog.histogramColumnChartWarning;
             }
 

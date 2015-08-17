@@ -103,6 +103,14 @@
             }
           )
         );
+
+        // Sometimes cards render as other visualizations, e.g. histogram.
+        // Defaults to the defined cardType, but may be overidden by the card
+        // visualization directive.
+        self.defineEphemeralObservableProperty(
+          'visualizationType',
+          self.getCurrentValue('cardType')
+        );
       },
 
       /**

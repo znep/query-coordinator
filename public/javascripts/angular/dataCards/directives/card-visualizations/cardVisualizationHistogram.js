@@ -286,6 +286,8 @@
           element.closest('card-visualization').css(conditionalStyles);
         });
 
+        visualizationType$.subscribe(_.bind($scope.model.set, $scope.model, 'visualizationType'));
+
         $scope.$bindObservable('rowDisplayUnit', rowDisplayUnit$);
         $scope.$bindObservable('cardData', cardData$);
         $scope.$bindObservable('isFiltered', isFiltered$);

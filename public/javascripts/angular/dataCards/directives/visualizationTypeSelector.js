@@ -15,7 +15,21 @@
       link: function(scope, element) {
         var cardModel$ = scope.$observe('cardModel').filter(_.isPresent);
         var cardModelColumn$ = cardModel$.observeOnLatest('column').filter(_.isDefined);
+        var cardType$ = cardModel$.observeOnLatest('cardType');
         var FLYOUT_TEMPLATE = '<div class="flyout-title">{0}</div>';
+
+        // Sometimes the histogram renders as a column chart. See 8.20.
+        function histogramIsRenderingAsColumnChart(visualizationType, cardType) {
+          return visualizationType === 'columnChart' && cardType === 'histogram';
+        }
+
+        cardModel$.observeOnLatest('visualizationType').
+          withLatestFrom(cardType$, histogramIsRenderingAsColumnChart).
+          subscribe(function(showHistogramColumnChartWarning) {
+            scope.$safeApply(function() {
+              scope.showHistogramColumnChartWarning = showHistogramColumnChartWarning;
+            });
+          });
 
         Rx.Observable.subscribeLatest(
           cardModelColumn$,
@@ -53,6 +67,8 @@
 
             if (scope.showCardinalityWarning && $(el).hasClass('icon-bar-chart')) {
               flyoutMessage = I18n.addCardDialog.columnChartWarning;
+            } else if(scope.showHistogramColumnChartWarning && $(el).hasClass('icon-distribution')) {
+              flyoutMessage = I18n.addCardDialog.histogramColumnChartWarning;
             }
 
             return FLYOUT_TEMPLATE.format(flyoutMessage);
@@ -63,6 +79,15 @@
         FlyoutService.register({
           selector: '.icon-bar-chart .warning-icon',
           render: _.constant(FLYOUT_TEMPLATE.format(I18n.addCardDialog.columnChartWarning)),
+          positionOn: function(el) {
+            return el.closest('.visualization-type');
+          },
+          destroySignal: scope.$destroyAsObservable(element)
+        });
+
+        FlyoutService.register({
+          selector: '.icon-distribution .warning-icon',
+          render: _.constant(FLYOUT_TEMPLATE.format(I18n.addCardDialog.histogramColumnChartWarning)),
           positionOn: function(el) {
             return el.closest('.visualization-type');
           },

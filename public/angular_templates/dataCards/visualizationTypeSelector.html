@@ -30,16 +30,18 @@
       ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'column', warn: showCardinalityWarning }"
       ng-click="setCardType('column')"
       data-visualization-name="columnChart">
-        <span class="warning-icon icon-warning"></span>
+        <span class="warning-icon icon-warning" ng-show="showCardinalityWarning"></span>
     </button>
     <span>{{'common.cards.columnChart' | I18n}}</span>
   </li>
   <li ng-show="availableCardTypes.indexOf('histogram') > -1">
     <button
       class="visualization-type icon-distribution"
-      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'histogram'}"
+      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'histogram', warn: showHistogramColumnChartWarning }"
       ng-click="setCardType('histogram')"
-      data-visualization-name="distributionChart"></button>
+      data-visualization-name="distributionChart">
+        <span class="warning-icon icon-warning" ng-show="showHistogramColumnChartWarning"></span>
+    </button>
     <span>{{'common.cards.distributionChart' | I18n}}</span>
   </li>
   <li ng-show="availableCardTypes.indexOf('choropleth') > -1">

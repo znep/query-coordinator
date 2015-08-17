@@ -46,13 +46,6 @@ On your local development instance, you'll likely want to have a nice multi-site
 setup. run `bin/setup_multisite` to setup pow and have it so that you can reach
 your local storyteller instance with blah.dev, vertex.dev, etc.
 
-## Configure Development Environment
-Storyteller needs certain environment variables to be set. These should be set in something
-like your `.bashrc`, or `.bash_profile`, or `.zshrc`.
-
-- `CORESERVICE_APP_TOKEN`
-  - This can be obtained from your local Open Data profile. (/profile/app_tokens)
-
 ## Run Server
 
 `bin/start`

@@ -173,7 +173,7 @@ describe('socrata.visualizations.ColumnChart', function() {
         'NO_VALUE': '(No value)',
         'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'UNFILTERED VALUE',
         'FLYOUT_FILTERED_AMOUNT_LABEL': 'FILTERED VALUE',
-        'FLYOUT_CLEAR_FILTER_LONG': 'CLEAR FILTER'
+        'FLYOUT_SELECTED_NOTICE': 'THIS COLUMN IS CURRENTLY SELECTED'
       }
     };
 

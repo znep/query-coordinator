@@ -222,6 +222,34 @@
         '.bar-group.active, .bar-group.active .bar, .labels .label .contents span:not(.icon-close)',
         hideFlyout
       );
+
+      element.on(
+        'mouseenter',
+        '.labels .label',
+        addHoverClassToBarGroup
+      );
+
+      element.on(
+        'mouseleave',
+        '.labels .label',
+        removeHoverClassFromBarGroup
+      );
+
+      _chartElement.on(
+        'mouseleave',
+        removeHoverClassFromBarGroup
+      );
+
+      // We respond to mouseup in this case because if the user clicks to
+      // clear a selection with a non-default label (i.e. not one of the first
+      // three when not expanded), then we should dismiss the highlight.
+      // (The 'non-default' class is applied to labels that wouldn't normally
+      // be drawn unless a datum is selected)
+      element.on(
+        'mouseup',
+        '.labels .label.selected.non-default',
+        removeHoverClassFromBarGroup
+      );
     }
 
     function _unattachEvents() {
@@ -248,6 +276,29 @@
         'mouseleave',
         '.bar-group.active, .bar-group.active .bar, .labels .label .contents span:not(.icon-close)',
         hideFlyout
+      );
+
+      element.off(
+        'mouseenter',
+        '.labels .label',
+        addHoverClassToBarGroup
+      );
+
+      element.off(
+        'mouseleave',
+        '.labels .label',
+        removeHoverClassFromBarGroup
+      );
+
+      _chartElement.off(
+        'mouseleave',
+        removeHoverClassFromBarGroup
+      );
+
+      element.off(
+        'mouseup',
+        '.labels .label.selected.non-default',
+        removeHoverClassFromBarGroup
       );
     }
 
@@ -308,6 +359,20 @@
           data: null
         }
       );
+    }
+
+    function addHoverClassToBarGroup(event) {
+
+      var barName = event.currentTarget.getAttribute('data-bar-name');
+
+      _chartWrapper.
+        find('.bar-group[data-bar-name="{0}"]'.format(barName)).
+        addClass('highlight');
+    }
+
+    function removeHoverClassFromBarGroup(event) {
+
+      _chartWrapper.find('.bar-group').removeClass('highlight');
     }
 
     /**
@@ -504,7 +569,11 @@
         var labelDivSelectionEnter = labelDivSelection.
           enter().
           append('div').
-          classed('label', true);
+          classed('label', true).
+          classed('non-default', isOnlyInSelected).
+          attr('data-bar-name', function(d) {
+            return _labelValueOrPlaceholder(d[NAME_INDEX]);
+          });
 
         // For new labels, add a contents div containing a span for the filter icon,
         // a span for the label text, and a span for the clear filter icon.

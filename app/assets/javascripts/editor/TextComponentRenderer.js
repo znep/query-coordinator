@@ -1,3 +1,28 @@
+(function (root, $) {
+
+  'use strict';
+
+  var socrata = root.socrata;
+  var utils = root.utils;
+
+  /**
+   * @function storytellerComponentText
+   * @desc
+   * @param {object} componentData - An object with a type and value attribute
+   * @returns {jQuery} - The rendered layout jQuery element
+   */
+  function storytellerComponentText(componentData) {
+    var self = $(this);
+
+    utils.assertHasProperty(componentData, 'type');
+    utils.assertHasProperty(componentData, 'value');
+
+    return this;
+  }
+
+  $.fn.storytellerComponentText = storytellerComponentText;
+})(window, jQuery);
+
 ;window.socrata.storyteller.TextComponentRenderer = (function(socrata) {
 
   'use strict';

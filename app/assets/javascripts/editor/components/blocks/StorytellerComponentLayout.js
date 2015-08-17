@@ -1,33 +1,51 @@
-(function ($, utils) {
+(function (root, $) {
 
-  function _renderLayoutContent(componentOptions) {
+  var socrata = root.socrata;
+  var utils = socrata.utils;
+
+  function _renderLayoutContent(componentData) {
     var element;
 
-    if(componentOptions.value === 'spacer') {
+    if(componentData.value === 'spacer') {
       element = $('<div>', { 'class': 'spacer'});
-    } else if (componentOptions.value === 'horizontalRule') {
+    } else if (componentData.value === 'horizontalRule') {
       element = $('<hr>');
     } else {
       throw new Error(
         'Attempted to render a layoutComponet with value: `' +
-        componentOptions.value + '` which has no template definition.'
+        componentData.value + '` which has no template definition.'
       );
     }
 
     return element;
   }
 
-  $.fn.storytellerComponentLayout = function (componentOptions) {
+  /**
+   * @function storytellerComponentLayout
+   * @description
+   * Renders out a Layout.
+   *
+   * Current types:
+   * - spacer
+   * - horizontalRule
+   *
+   * @param {object} componentData - An object with a type and value attribute
+   * @returns {jQuery} - The rendered layout jQuery element
+   */
+  function storytellerComponentLayout(componentData) {
     var self = $(this);
 
-    utils.assertIsOneOfTypes(componentOptions, 'object');
+    utils.assertHasProperty(componentData, 'type');
+    utils.assertHasProperty(componentData, 'value');
 
     if (self.length !== 1) {
       throw new Error('Selection must have exactly one element.');
     }
 
-    self.empty().append(_renderLayoutContent(componentOptions));
+    self.empty().append(_renderLayoutContent(componentData));
 
     return this;
-  };
-})(jQuery, window.socrata.utils);
+  }
+
+  $.fn.storytellerComponentLayout = storytellerComponentLayout;
+})(window, jQuery);

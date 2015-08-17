@@ -10,7 +10,8 @@
         var $section = $screen.find('#' + section.id),
             series = $section.data(metricsNS.SERIES_KEY),
             url = urlBase + '?start=' + startDate.getTime() +
-                            '&end='   + endDate.getTime();
+                            '&end='   + endDate.getTime() +
+                            '&embetter=' + (blist.feature_flags.embetter_analytics_page || 0);
 
         if (_.isFunction(section.loading))
         { section.loading($section); }

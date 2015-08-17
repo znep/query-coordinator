@@ -857,10 +857,18 @@
       });
     }
 
-   function _escapeQuotesAndBackslashes(value) {
-      return value.
-        replace(/\\/, '\\\\').
-        replace(/"/, '\\\"');
+    function _escapeQuotesAndBackslashes(value) {
+
+      if (_.isString(value)) {
+
+        return value.
+          replace(/\\/g, '\\\\').
+          replace(/"/g, '\\\"');
+
+      } else {
+
+        return value;
+      }
     }
 
     function _labelValueOrPlaceholder(value, placeholder) {

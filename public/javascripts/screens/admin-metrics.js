@@ -1,11 +1,17 @@
 ;blist.namespace.fetch('blist.metrics');
 
-var pageViewsSeries;
+var pageViewsSection;
 if (blist.feature_flags.embetter_analytics_page) {
-    pageViewsSeries = [{method: 'js-page-view', label: 'Browser Page Views', options: { stacking: null }}];
+    pageViewsSection = {
+        text: 'Browser Page Views',
+        series: [{method: 'js-page-view', label: 'Browser Page Views', options: { stacking: null }}]
+    };
 } else {
-    pageViewsSeries = [{method: 'page-views', label: 'Page Requests', options: { stacking: null, type: 'line' }},
-                       {method: 'js-page-view', label: 'Browser Page Views', options: { stacking: null, type: 'line' }}];
+    pageViewsSection = {
+        text: 'Page Views',
+        series: [{method: 'page-views', label: 'Page Requests', options: { stacking: null, type: 'line' }},
+                 {method: 'js-page-view', label: 'Browser Page Views', options: { stacking: null, type: 'line' }}]
+    };
 }
 
 $(function()
@@ -18,8 +24,7 @@ $(function()
             {id: 'performanceChart',
                 loading: blist.metrics.chartLoading,
                 children: _.filter([
-                    {text: 'Page Views',
-                     series: pageViewsSeries },
+                    pageViewsSection,
                     {text: 'Browsers',
                      series: [{method: 'browser-chrome', label: 'Chrome', options: { stacking: null, type: 'line' }},
                               {method: 'browser-firefox', label: 'Firefox', options: { stacking: null, type: 'line' }},

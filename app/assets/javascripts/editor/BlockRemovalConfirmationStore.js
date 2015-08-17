@@ -1,4 +1,4 @@
-;(function(storyteller) {
+(function(storyteller) {
   'use strict';
 
   /* Responsible for:
@@ -47,7 +47,7 @@
       return (_blockNeedsConfirmation[blockId] === true);
     };
 
-  };
+  }
 
   storyteller.BlockRemovalConfirmationStore = BlockRemovalConfirmationStore;
 })(window.socrata.storyteller);

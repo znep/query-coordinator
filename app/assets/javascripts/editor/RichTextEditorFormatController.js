@@ -1,8 +1,8 @@
-;window.socrata.storyteller.RichTextEditorFormatController = (function(socrata) {
+(function(root) {
 
   'use strict';
 
-  var storyteller = socrata.storyteller;
+  var socrata = root.socrata;
   var utils = socrata.utils;
 
   /**
@@ -88,37 +88,37 @@
      */
     this.getActiveFormats = function() {
 
-      function _recordAlignmentFormats(element) {
+      function _recordElementAlignment(element, foundAlignments) {
 
-        function _recordElementAlignment(element, foundAlignments) {
+        if (typeof element.className === 'string') {
 
-          if (typeof element.className === 'string') {
+          if (element.className.match(/center/)) {
+            foundAlignments.push(
+              _formats.filter(function(format) {
+                return format.id === 'center';
+              })[0]
+            );
+          }
 
-            if (element.className.match(/center/)) {
-              foundAlignments.push(
-                _formats.filter(function(format) {
-                  return format.id === 'center';
-                })[0]
-              );
-            }
+          if (element.className.match(/right/)) {
+            foundAlignments.push(
+              _formats.filter(function(format) {
+                return format.id === 'right';
+              })[0]
+            );
+          }
 
-            if (element.className.match(/right/)) {
-              foundAlignments.push(
-                _formats.filter(function(format) {
-                  return format.id === 'right';
-                })[0]
-              );
-            }
-
-            if (element.className.match(/left/)) {
-              foundAlignments.push(
-                _formats.filter(function(format) {
-                  return format.id === 'left';
-                })[0]
-              );
-            }
+          if (element.className.match(/left/)) {
+            foundAlignments.push(
+              _formats.filter(function(format) {
+                return format.id === 'left';
+              })[0]
+            );
           }
         }
+      }
+
+      function _recordAlignmentFormats(element) {
 
         var foundAlignments = utils.reduceDOMFragmentAscending(
           element,
@@ -138,23 +138,23 @@
         return foundAlignments;
       }
 
-      function _recordStyleFormats(element) {
+      function _recordElementStyleFormat(element, foundStyles) {
 
-        function _recordElementStyleFormat(element, foundStyles) {
+        var tagName = element.nodeName.toLowerCase();
 
-          var tagName = element.nodeName.toLowerCase();
+        var tagFormat = _formats.filter(function(format) {
+          return format.tag === tagName;
+        });
 
-          var format = _formats.filter(function(format) {
-            return format.tag === tagName;
-          });
-
-          // Check that this format doesn't exist in accumulatedFormats here so
-          // that we don't have to de-dupe later, although it probably could go
-          // either way.
-          if (format.length === 1 && foundStyles.indexOf(tagName) === -1) {
-            foundStyles.push(format[0]);
-          }
+        // Check that this format doesn't exist in accumulatedFormats here so
+        // that we don't have to de-dupe later, although it probably could go
+        // either way.
+        if (tagFormat.length === 1 && foundStyles.indexOf(tagName) === -1) {
+          foundStyles.push(tagFormat[0]);
         }
+      }
+
+      function _recordStyleFormats(element) {
 
         var foundFormats = [];
         var thisFormat;
@@ -283,7 +283,7 @@
               utils.mapDOMFragmentDescending(
                 blockFragment.childNodes[i],
                 stripFormatsFn,
-                function() { return false; }
+                _.constant(false)
               )
             );
 
@@ -293,10 +293,6 @@
           return newFragment;
         }
       );
-    }
-
-    function _clearSelection() {
-      _editor.setSelection(document.createRange());
     }
 
     function _clearFormat(selection) {
@@ -371,12 +367,11 @@
 
     function _toggleBlockquote() {
 
-       if (_editor.hasFormat('blockquote')) {
+      if (_editor.hasFormat('blockquote')) {
         _updateBlockType('div');
-       } else {
+      } else {
         _updateBlockType('blockquote');
-
-       }
+      }
     }
 
     function _addLink(url) {
@@ -386,11 +381,7 @@
     function _removeLink() {
       _editor.removeLink();
     }
-
-    function _hasLink() {
-      return _editor.hasFormat('a');
-    }
   }
 
-  return RichTextEditorFormatController;
-})(window.socrata);
+  root.socrata.storyteller.RichTextEditorFormatController = RichTextEditorFormatController;
+})(window);

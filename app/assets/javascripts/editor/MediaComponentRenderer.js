@@ -1,7 +1,8 @@
-;window.socrata.storyteller.MediaComponentRenderer = (function(socrata) {
+(function(root) {
 
   'use strict';
 
+  var socrata = root.socrata;
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
@@ -215,7 +216,7 @@
     imageElement = element.find('img');
     imageSource = storyteller.assetFinder.getRelativeUrlRoot() + data.src;
 
-    imageElement[0].onload = function(e) {
+    imageElement[0].onload = function() {
       renderFn();
     };
 
@@ -233,11 +234,11 @@
     );
   }
 
-  function _renderEmbedWizardComponentData(element, value, editable, renderFn) {
+  function _renderEmbedWizardComponentData() {
     // NOOP (this component is static)
   }
 
-  function _renderEmbedYouTubeComponentData(element, value, editable, renderFn) {
+  function _renderEmbedYouTubeComponentData(element, value) {
 
     var iframeElement = element.find('iframe');
     var youTubeSource = utils.generateYouTubeIframeSrc(value.id);
@@ -247,9 +248,9 @@
     }
   }
 
-  return {
+  root.socrata.storyteller.MediaComponentRenderer = {
     renderTemplate: _renderTemplate,
     canReuseTemplate: _canReuseTemplate,
     renderData: _renderData
   };
-})(window.socrata);
+})(window);

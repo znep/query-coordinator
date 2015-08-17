@@ -1,7 +1,8 @@
-;window.socrata.storyteller.TextComponentRenderer = (function(socrata) {
+(function(root) {
 
   'use strict';
 
+  var socrata = root.socrata;
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
@@ -25,7 +26,7 @@
     return _componentTemplateRenderers[type](componentOptions);
   }
 
-  function _canReuseTemplate(element, data) {
+  function _canReuseTemplate() {
 
     var canReuseTemplate = true;
 
@@ -56,7 +57,6 @@
 
     var editorId;
     var component;
-    var editor;
 
     utils.assertHasProperties(
       componentOptions,
@@ -84,7 +84,7 @@
         }
       );
 
-      editor = storyteller.richTextEditorManager.createEditor(
+      storyteller.richTextEditorManager.createEditor(
         component,
         editorId,
         componentOptions.componentValue
@@ -106,7 +106,7 @@
    * Component data renderers
    */
 
-  function _renderTextComponentData(element, value, editable, renderFn) {
+  function _renderTextComponentData(element, value, editable) {
 
     if (editable) {
 
@@ -120,9 +120,9 @@
     }
   }
 
-  return {
+  root.socrata.storyteller.TextComponentRenderer = {
     renderTemplate: _renderTemplate,
     canReuseTemplate: _canReuseTemplate,
     renderData: _renderData
   };
-})(window.socrata);
+})(window);

@@ -9,10 +9,11 @@
  * 'sidebar:toggle'
  *
  */
-;(function($, socrata) {
+(function($, root) {
 
   'use strict';
 
+  var socrata = root.socrata;
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
@@ -76,4 +77,4 @@
 
     return this;
   };
-}(jQuery, window.socrata));
+}(jQuery, window));

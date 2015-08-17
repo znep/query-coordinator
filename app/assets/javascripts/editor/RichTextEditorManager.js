@@ -1,6 +1,9 @@
-;window.socrata.storyteller.RichTextEditorManager = (function(storyteller) {
+(function(root) {
 
   'use strict';
+
+  var socrata = root.socrata;
+  var storyteller = socrata.storyteller;
 
   function RichTextEditorManager(assetFinder, toolbar, formats) {
 
@@ -69,5 +72,5 @@
     };
   }
 
-  return RichTextEditorManager;
-})(window.socrata.storyteller);
+  root.socrata.storyteller.RichTextEditorManager = RichTextEditorManager;
+})(window);

@@ -1,6 +1,9 @@
-;window.socrata.storyteller.StoryRenderer = (function(storyteller) {
+(function(root) {
 
   'use strict';
+
+  var socrata = root.socrata;
+  var storyteller = socrata.storyteller;
 
   function StoryRenderer(options) {
 
@@ -277,7 +280,7 @@
 
         var action = event.target.getAttribute('data-embed-action');
 
-        switch(action) {
+        switch (action) {
 
           case Constants.EMBED_WIZARD_CHOOSE_PROVIDER:
             dispatcher.dispatch({
@@ -359,7 +362,6 @@
       blockIds.forEach(function(blockId, i) {
 
         var blockElement = elementCache.getBlock(blockId);
-        var translation;
 
         if (blockElement === null) {
           blockElement = _renderBlock(blockId);
@@ -416,7 +418,7 @@
     }
 
     function _handleEmptyStoryMessage() {
-      if (!_.isEmpty(warningMessageElement))  {
+      if (!_.isEmpty(warningMessageElement)) {
         var blockCount = storyteller.storyStore.getStoryBlockIds(storyUid).length;
 
         if (blockCount === 0) {
@@ -547,7 +549,7 @@
           contentHeight = storyteller.
             richTextEditorManager.
             getEditor(editorId).
-            getContentHeight()
+            getContentHeight();
 
         } else {
 
@@ -681,5 +683,5 @@
     }
   }
 
-  return StoryRenderer;
-})(window.socrata.storyteller);
+  root.socrata.storyteller.StoryRenderer = StoryRenderer;
+})(window);

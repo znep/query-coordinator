@@ -1,8 +1,8 @@
-;window.socrata.storyteller.LayoutComponentRenderer = (function(socrata) {
+(function(root) {
 
   'use strict';
 
-  var storyteller = socrata.storyteller;
+  var socrata = root.socrata;
   var utils = socrata.utils;
 
   /**
@@ -17,7 +17,7 @@
 
     layoutComponent = $('<div>', { 'class': componentOptions.classes });
 
-    switch(componentOptions.componentValue) {
+    switch (componentOptions.componentValue) {
       case 'spacer':
         layoutComponent.append($('<div>', { 'class': 'spacer'}));
         break;
@@ -34,7 +34,7 @@
     return layoutComponent;
   }
 
-  function _canReuseTemplate(element, data) {
+  function _canReuseTemplate() {
 
     var canReuseTemplate = true;
 
@@ -45,14 +45,14 @@
    * Component data renderers
    */
 
-  function _renderLayoutComponentData(element, value, editable, renderFn) {
+  function _renderLayoutComponentData() {
     // For now, no layout components have changable data, so nothing happens here
     // Leaving the function for consistency and/or future components with data
   }
 
-  return {
+  root.socrata.storyteller.LayoutComponentRenderer = {
     renderTemplate: _renderLayoutComponentTemplate,
     canReuseTemplate: _canReuseTemplate,
     renderData: _renderLayoutComponentData
   };
-})(window.socrata);
+})(window);

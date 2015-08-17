@@ -1,6 +1,9 @@
-;window.socrata.storyteller.RichTextEditor = (function(storyteller) {
+(function(root) {
 
   'use strict';
+
+  var socrata = root.socrata;
+  var storyteller = socrata.storyteller;
 
   var _ATTRIBUTE_WHITELIST = {
     'a': ['href']
@@ -208,7 +211,7 @@
       // browser have 10ms to finalize its layout before invoking
       // _handleContentChange(), which seems to do the trick. This delay
       // is small enough that it should be imperceptible to users.
-      styleEl.onload = function(){
+      styleEl.onload = function() {
         setTimeout(function() {
             _updateContentHeight();
             _broadcastHeightChange();
@@ -291,31 +294,31 @@
       );
     }
 
-    function _broadcastHeightChange(e) {
+    function _broadcastHeightChange() {
       _emitEvent(
         'rich-text-editor::height-change'
       );
     }
 
-    function _broadcastContentChange(e) {
+    function _broadcastContentChange() {
       _emitEvent(
         'rich-text-editor::content-change',
         { content: _editor.getHTML() }
       );
     }
 
-    function _broadcastFormatChange(e) {
+    function _broadcastFormatChange() {
       _emitEvent(
         'rich-text-editor::format-change',
         { content: _formatController.getActiveFormats() }
       );
     }
 
-    function _broadcastFocus(e) {
+    function _broadcastFocus() {
       _emitEvent('rich-text-editor::focus-change', { content: true });
     }
 
-    function _broadcastBlur(e) {
+    function _broadcastBlur() {
       _emitEvent('rich-text-editor::focus-change', { content: false });
     }
 
@@ -328,42 +331,42 @@
      */
     function _sanitizeElement(el, attributeWhitelist) {
 
-      function _isNodeTypeSafeToUse(nodeName) {
+      function _isNodeTypeSafeToUse(tagName) {
         return [
           'h1', 'h2', 'h3', 'h4', 'h5', 'h6', // Headers
           'b', 'i', 'em', 'a',                // Inline
           'div', 'ul', 'ol', 'li'             // Block
-        ].indexOf(nodeName) > -1;
+        ].indexOf(tagName) > -1;
       }
 
-      function _copyWhitelistedAttributes(dirtyEl, cleanEl) {
+      function _copyWhitelistedAttributes(dirtyElement, cleanElement) {
 
         // This function checks the attribute whitelist on a tag-by-tag
         // basis to determine whether or not the specified element
         // attribute should be copied from the 'dirty' element received
         // from the clipboard into the 'clean' element that will be
         // inserted into the editor iframe's internal document.
-        function _attributeIsAllowed(nodeName, attrName, whitelist) {
+        function _attributeIsAllowed(tagName, attrName, whitelist) {
           return (
-            whitelist.hasOwnProperty(nodeName) &&
+            whitelist.hasOwnProperty(tagName) &&
             whitelist[nodeName].indexOf(attrName) > -1
           );
         }
-        var attributes = dirtyEl.attributes;
+        var attributes = dirtyElement.attributes;
         var attributeCount = attributes.length;
 
-        for (var i = 0; i < attributeCount; i++) {
+        for (var index = 0; index < attributeCount; index++) {
 
-          var attribute = attributes[i];
+          var attribute = attributes[index];
 
           var attributeIsAllowed = _attributeIsAllowed(
-            dirtyEl.nodeName.toLowerCase(),
+            dirtyElement.nodeName.toLowerCase(),
             attribute.name.toLowerCase(),
             _ATTRIBUTE_WHITELIST
           );
 
           if (attributeIsAllowed) {
-            cleanEl.setAttribute(attribute.name, attribute.value);
+            cleanElement.setAttribute(attribute.name, attribute.value);
           }
         }
       }
@@ -453,14 +456,17 @@
         sanitizedFragment = _sanitizeElement(e.fragment, _ATTRIBUTE_WHITELIST);
       } catch (error) {
         sanitizedFragment = document.createDocumentFragment();
-        window.console && console.warn('Error sanitizing clipboard input: ', error);
+
+        if (window.console) {
+          console.warn('Error sanitizing clipboard input: ', error);
+        }
       } finally {
         e.fragment = sanitizedFragment;
       }
     }
 
     // See: http://stackoverflow.com/a/15318321
-    function _setupMouseMoveEventBroadcast(){
+    function _setupMouseMoveEventBroadcast() {
 
       var iframe = _editorElement[0];
 
@@ -512,5 +518,5 @@
     }
   }
 
-  return RichTextEditor;
-})(window.socrata.storyteller);
+  root.socrata.storyteller.RichTextEditor = RichTextEditor;
+})(window);

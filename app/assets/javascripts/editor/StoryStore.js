@@ -1,7 +1,8 @@
-;window.socrata.storyteller.StoryStore = (function(socrata) {
+(function(root) {
 
   'use strict';
 
+  var socrata = root.socrata;
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
@@ -396,7 +397,7 @@
       _blocks[blockId] = {
         id: blockId,
         layout: blockData.layout,
-        components: _cloneBlockComponents(blockData.components),
+        components: _cloneBlockComponents(blockData.components)
       };
     }
 
@@ -566,5 +567,5 @@
     }
   }
 
-  return StoryStore;
-})(window.socrata);
+  root.socrata.storyteller.StoryStore = StoryStore;
+})(window);

@@ -1,4 +1,4 @@
-;var Constants = {
+var Constants = {
 
   // TODO: Document the payload of each action
   STORY_CREATE: 'STORY_CREATE',

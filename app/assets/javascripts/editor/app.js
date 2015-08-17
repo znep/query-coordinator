@@ -2,7 +2,7 @@ $(document).on('ready', function() {
 
   'use strict';
 
-  var storyteller = window.socrata.storyteller
+  var storyteller = window.socrata.storyteller;
 
   /**
    * Setup
@@ -61,7 +61,11 @@ $(document).on('ready', function() {
 
   storyteller.dispatcher = new storyteller.Dispatcher();
   storyteller.dispatcher.register(function(payload) {
-    window.console && console.info('Dispatcher action: ', payload);
+
+    if (window.console) {
+      console.info('Dispatcher action: ', payload);
+    }
+
     if (typeof payload.action !== 'string') {
       throw new Error(
         'Undefined action.'
@@ -140,21 +144,21 @@ $(document).on('ready', function() {
    * History events
    */
 
-   $('.undo-btn').on('click', function() {
+  $('.undo-btn').on('click', function() {
 
-      storyteller.dispatcher.dispatch({
-        action: Constants.HISTORY_UNDO,
-        storyUid: storyteller.userStoryUid
-      });
-   });
+    storyteller.dispatcher.dispatch({
+      action: Constants.HISTORY_UNDO,
+      storyUid: storyteller.userStoryUid
+    });
+  });
 
-   $('.redo-btn').on('click', function() {
+  $('.redo-btn').on('click', function() {
 
-      storyteller.dispatcher.dispatch({
-        action: Constants.HISTORY_REDO,
-        storyUid: storyteller.userStoryUid
-      });
-   });
+    storyteller.dispatcher.dispatch({
+      action: Constants.HISTORY_REDO,
+      storyUid: storyteller.userStoryUid
+    });
+  });
 
   storyteller.historyStore.addChangeListener(function() {
 

@@ -1,8 +1,8 @@
-;(function($, socrata) {
+(function($, root) {
 
-  'use strict'
+  'use strict';
 
-  var storyteller = socrata.storyteller;
+  var socrata = root.socrata;
   var visualizations = socrata.visualizations;
   var utils = socrata.utils;
 
@@ -10,34 +10,6 @@
   var UNFILTERED_INDEX = 1;
   var FILTERED_INDEX = 2;
   var SELECTED_INDEX = 3;
-
-  /**
-   * Temporary polyfills until we can come up with a better implementation.
-   */
-
-  String.prototype.visualSize = function(fontSize) {
-
-    var $ruler = $('#ruler');
-    var dimensions;
-
-    if ($ruler.length < 1) {
-      $('body').append('<span class="ruler" id="ruler"></span>');
-      $ruler = $('#ruler');
-    }
-    if (!fontSize) {
-      fontSize = '';
-    }
-    $ruler.css('font-size', fontSize);
-    $ruler.text(this + '');
-    dimensions = {width: $ruler.width(), height: $ruler.height()};
-    $ruler.remove();
-
-    return dimensions;
-  };
-
-  String.prototype.visualLength = function(fontSize) {
-    return this.visualSize(fontSize).width;
-  };
 
   /**
    * Instantiates a Socrata ColumnChart Visualization from the
@@ -153,7 +125,7 @@
       _onRequestComplete();
     }
 
-    function _onUnfilteredError(error) {
+    function _onUnfilteredError() {
 
       _unfilteredRequestInFlight = false;
       _unfilteredData = null;
@@ -169,7 +141,7 @@
       _onRequestComplete();
     }
 
-    function _onFilteredError(error) {
+    function _onFilteredError() {
 
       _filteredRequestInFlight = false;
       _filteredData = null;
@@ -201,11 +173,8 @@
 
     function _mergeUnfilteredAndFilteredData(unfiltered, filtered) {
 
-      var nameIndex;
-      var valueIndex;
       var unfilteredAsHash;
       var filteredAsHash;
-      var results;
 
       unfilteredAsHash = _.indexBy(
         unfiltered.rows,
@@ -254,24 +223,21 @@
       );
     }
 
-    function _handleVisualizationFlyout(event) {
+    function _handleVisualizationFlyout() {
 
-      var payload = event.originalEvent.detail;
-
+      // var payload = event.originalEvent.detail;
       // TODO: Implement.
     }
 
-    function _handleDatumSelect(event) {
+    function _handleDatumSelect() {
 
-      var payload = event.originalEvent.detail;
-
-      // TODO: Implement.      
+      // var payload = event.originalEvent.detail;
+      // TODO: Implement.
     }
 
-    function _handleExpandedToggle(event) {
+    function _handleExpandedToggle() {
 
-      var payload = event.originalEvent.detail;
-
+      // var payload = event.originalEvent.detail;
       // TODO: Implement.
     }
 
@@ -286,4 +252,4 @@
 
     return this;
   };
-}(jQuery, window.socrata));
+}(jQuery, window));

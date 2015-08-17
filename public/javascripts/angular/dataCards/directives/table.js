@@ -30,7 +30,7 @@
         defaultSortColumnName: '='    // When the table is first created, it will be sorted on this column.
       },
 
-      link: function(scope, element, attrs) {
+      link: function(scope, element) {
         var columnDetails$ = scope.$observe('columnDetails');
         var whereClause$ = scope.$observe('whereClause');
         var rowCount$ = scope.$observe('rowCount');
@@ -73,7 +73,6 @@
           var $tableHead = element.find('.table-inner > .table-head');
           var $tableBody = element.find('.table-inner > .table-body');
           var $expander = element.find('.table-expander');
-          var $label = element.find('.table-label');
 
           var getColumn = function(fieldName) {
             return _.find(scope.columnDetails, function(column) {
@@ -81,7 +80,7 @@
             });
           };
 
-          scope.$watch('showCount', function(newVal, oldVal, scope) {
+          scope.$watch('showCount', function(newVal) {
             if (!angular.isDefined(newVal)) {
               scope.showCount = true;
             }
@@ -102,7 +101,7 @@
             $('body').off('.{0}'.format(instanceUniqueNamespace));
           });
 
-          var renderTable = function(element, dimensions, rowCount) {
+          var renderTable = function(dimensions) {
             var tableHeight = dimensions.height - element.position().top;
 
             element.height(tableHeight);
@@ -194,8 +193,9 @@
           };
 
           scope.sortOnColumn = function($event, columnId) {
-            if ($($event.target).hasClass('resize')) return;
-            sortOnColumn(columnId);
+            if (!$($event.target).hasClass('resize')) {
+              sortOnColumn(columnId);
+            }
           };
 
           // Returns true if we're currently sorting
@@ -223,10 +223,10 @@
               return;
             }
 
-            _.each(columnWidths, function(width, columnId) {
+            _.each(columnWidths, function(width, columnName) {
               var $cell = $('<div class="cell"><span class="resize"></span></div>').width(width);
 
-              $cell.data('columnId', columnId);
+              $cell.data('columnId', columnName);
               $resizeContainer.append($cell);
             });
 
@@ -249,7 +249,7 @@
                 currentX = e.pageX;
                 e.preventDefault();
               }
-            }).on('mouseup.{0}'.format(instanceUniqueNamespace), function(e) {
+            }).on('mouseup.{0}'.format(instanceUniqueNamespace), function() {
               columnDrag = false;
             });
           };
@@ -347,7 +347,7 @@
 
           var updateExpanderHeight = function() {
             if (scope.infinite) {
-              $expander.height(rowHeight * filteredRowCount);
+              $expander.height(rowHeight * scope.filteredRowCount);
             } else {
               var lastLoadedBlock = _.max(element.find('.row-block'), function(block) {
                 return $(block).data().blockId;
@@ -384,59 +384,70 @@
                 return;
               }
 
-              var columns = scope.columnDetails;
-              var blockHtml = '<div class="row-block ' + block +
-                '" data-block-id="' + block + '" style="top: ' + (block * rowsPerBlock * rowHeight) +
-                'px; display: none">';
+              function formatCellText(cellType, cellContent, column) {
+                var cellText;
 
-              _.each(data, function(data_row) {
-                blockHtml += '<div class="table-row">';
+                switch (cellType) {
+                  case 'boolean':
+                    cellText = _.escape(DataTypeFormatService.renderBooleanCell(cellContent, column));
+                    break;
+                  case 'number':
+                    cellText = _.escape(DataTypeFormatService.renderNumberCell(cellContent, column));
+                    break;
+
+                  // Avoid escaping because cell content is HTML.
+                  case 'geo_entity':
+                  case 'point':
+                    cellText = DataTypeFormatService.renderGeoCellHTML(cellContent, column);
+                    break;
+                  case 'timestamp':
+                  case 'floating_timestamp':
+                    cellText = _.escape(DataTypeFormatService.renderTimestampCell(cellContent, column));
+                    break;
+                  case 'money':
+                    cellText = _.escape(DataTypeFormatService.renderMoneyCell(cellContent, column));
+                    break;
+                  default:
+                    cellText = _.escape(cellContent);
+                    break;
+                }
+                return cellText;
+              }
+
+              var columns = scope.columnDetails;
+              var blockDiv = $('<div>').
+                addClass('row-block {0}'.format(block)).
+                css({
+                  top: '{0}px'.format(block * rowsPerBlock * rowHeight),
+                  display: 'none'
+                }).
+                attr('data-block-id', block);
+
+              _.each(data, function(dataRow) {
+                var tableRowDiv = $('<div>').addClass('table-row');
 
                 _.each(columns, function(column, index) {
-                  var cellContent = _.isUndefined(data_row[column.fieldName]) ? '' : data_row[column.fieldName];
-                  var cellText = '';
-                  var cellType = column.physicalDatatype;
-                  var cellClasses = 'cell ' + cellType;
+                  var cellContent = _.hasValue(dataRow[column.fieldName]) ?
+                    dataRow[column.fieldName] : '';
 
-                  switch (cellType) {
-                    case 'boolean':
-                      cellText = DataTypeFormatService.renderBooleanCell(cellContent, column);
-                      cellText = _.escape(cellText);
-                      break;
-                    case 'number':
-                      cellText = DataTypeFormatService.renderNumberCell(cellContent, column);
-                      cellText = _.escape(cellText);
-                      break;
-                    case 'geo_entity':
-                    case 'point':
-                      cellText = DataTypeFormatService.renderGeoCellHTML(cellContent, column);
-                      // no escape call — content is HTML
-                      break;
-                    case 'timestamp':
-                    case 'floating_timestamp':
-                      cellText = DataTypeFormatService.renderTimestampCell(cellContent, column);
-                      cellText = _.escape(cellText);
-                      break;
-                    case 'money':
-                      cellText = DataTypeFormatService.renderMoneyCell(cellContent, column);
-                      cellText = _.escape(cellText);
-                      break;
-                    default:
-                      cellText = _.escape(cellContent);
-                      break;
-                  }
+                  var tableCellDiv = $('<div>').
+                    addClass('cell {0}'.format(column.physicalDatatype)).
+                    attr('data-index', index).
+                    css('width', '{0}px'.format(columnWidths[column.fieldName])).
+                    html(formatCellText(
+                      column.physicalDatatype,
+                      cellContent,
+                      column
+                    ));
 
-                  blockHtml += '<div class="' + cellClasses +
-                  '" data-index="' + index +
-                  '" style="width: ' + columnWidths[column.fieldName] +
-                  'px">' + cellText + '</div>';
+                  tableRowDiv.append(tableCellDiv);
                 });
-                blockHtml += '</div>';
-              });
-              blockHtml += '</div>';
 
-              $(blockHtml).appendTo($expander).
-                fadeIn();
+                blockDiv.append(tableRowDiv);
+              });
+
+              $(blockDiv).appendTo($expander).fadeIn();
+
               calculateColumnWidths();
               _.defer(updateExpanderHeight);
             });
@@ -524,7 +535,7 @@
           var prevClientY;
 
           tableMousemove$ = Rx.Observable.fromEvent($tableBody, 'mousemove');
-          tableMouseScroll$ = Rx.Observable.fromEvent($tableBody, 'mousewheel DOMMouseScroll');
+          tableMouseScroll$ = Rx.Observable.fromEvent($tableBody, Constants.MOUSE_WHEEL_EVENTS);
           tableScroll$ = Rx.Observable.fromEvent($tableBody, 'scroll');
 
           // Returns false if we are moving the mouse and should not disable
@@ -581,7 +592,7 @@
             direction: 'horizontal',
             parent: document.body,
 
-            html: function($target, $tableHead, options) {
+            html: function($target) {
               if ($target[0].clientWidth < $target[0].scrollWidth) {
                 return _.escape($target.text());
               }
@@ -595,7 +606,7 @@
             parent: document.body,
             interact: true,
 
-            title: function($target, $tableHead, options) {
+            title: function($target) {
               var title = _.escape($target.text());
               var index = $target.data('index');
               var description = _.escape(_.get(scope.columnDetails, index + '.description'));
@@ -608,7 +619,7 @@
               return title;
             },
 
-            html: function($target, $tableHead, options, $element) {
+            html: function($target, $tableHeadElement, options, $element) {
               var columnId = $target.data('columnId');
               var column = getColumn(columnId);
               var sortUp = sortOrdering === 'ASC';
@@ -661,7 +672,7 @@
             filteredRowCount$,
             columnDetails$,
             infinite$,
-            function(cardDimensions, rowCount, filteredRowCount, columnDetails, infinite) {
+            function(cardDimensions, rowCount, filteredRowCount) {
 
               scope.$emit('render:start', {
                 source: 'table_{0}'.format(scope.$id),
@@ -677,15 +688,13 @@
 
               // Make sure rowCount is a number (ie not undefined)
               if (rowCount >= 0) {
+
                 // Apply a default sort if needed.
                 if (shouldApplyDefaultSort()) {
                   sortOnColumn(scope.defaultSortColumnName);
                 }
-                renderTable(
-                  element,
-                  cardDimensions,
-                  rowCount
-                );
+
+                renderTable(cardDimensions);
               }
 
               // Yield execution to the browser to render, then notify that render is complete
@@ -698,14 +707,11 @@
             }
           ));
 
-          subscriptions.push(Rx.Observable.subscribeLatest(
-            whereClause$,
-            function(whereClause) {
-              if (scope.getRows) {
-                reloadRows();
-              }
+          subscriptions.push(whereClause$.subscribe(function() {
+            if (scope.getRows) {
+              reloadRows();
             }
-          ));
+          }));
 
 
           scope.$destroyAsObservable(element).subscribe(function() {

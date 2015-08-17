@@ -21,6 +21,12 @@ $(document).on('ready', function() {
     });
   }
 
+  storyteller.notifyAirbrake = function() {
+    if (!_.isUndefined(storyteller.airbrake)) {
+      storyteller.airbrake.notify(arguments);
+    }
+  };
+
   storyteller.assetFinder = new storyteller.AssetFinder();
 
   var richTextFormats = [

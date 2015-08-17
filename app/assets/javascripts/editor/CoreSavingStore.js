@@ -195,7 +195,13 @@
     function _coreRequestHeaders() {
       var headers = {};
 
-      utils.assertIsOneOfTypes(storyteller.config.coreServiceAppToken, 'string');
+      if (_.isEmpty(storyteller.config.coreServiceAppToken)) {
+        storyteller.notifyAirbrake({
+          error: {
+            message: '`storyteller.config.coreServiceAppToken` not configured.'
+          }
+        });
+      }
 
       headers['X-App-Token'] = storyteller.config.coreServiceAppToken;
       headers['X-CSRF-Token'] = decodeURIComponent(utils.getCookie('socrata-csrf-token'));

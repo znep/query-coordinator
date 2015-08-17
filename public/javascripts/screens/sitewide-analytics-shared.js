@@ -6,7 +6,8 @@ var datasetsMetricName,
     dataLensesEnabled,
     datasetsListHeader,
     totalPrefix,
-    addedSuffix;
+    addedSuffix,
+    pageViewsName;
 
 if(blist.feature_flags.dataset_count_v2){
   datasetsMetricName = 'datasets-published-v2';
@@ -17,9 +18,10 @@ if (blist.feature_flags.embetter_analytics_page) {
     pageViewsSummary = {plus: 'js-page-view', total: false};
     mapsSummary = {plus: 'lense-map-published-v1', range: false}
     dataLensesEnabled = true;
-    datasetsListHeader = 'Page Views';
+    datasetsListHeader = 'Browser Page Views';
     totalPrefix = '';
     addedSuffix = ' Added';
+    pageViewsName = 'Browser Page Views';
 } else {
     pageViewsSummary = {
         plus: 'page-views',
@@ -31,6 +33,7 @@ if (blist.feature_flags.embetter_analytics_page) {
     datasetsListHeader = '';
     totalPrefix = 'Total ';
     addedSuffix = '';
+    pageViewsName = 'Page Views';
 }
 
 blist.metrics.sitewideShared = {
@@ -39,7 +42,7 @@ blist.metrics.sitewideShared = {
         {id: 'performanceChart',
             loading: blist.metrics.chartLoading,
             children: [
-                {text: 'Page Views',
+                {text: pageViewsName,
                     series: [{method: 'js-page-view', label: 'Browser Page Views', options: { stacking: null}}]},
                 {text: 'Rows Loaded',
                  series: [{method: 'rows-loaded-api',     label: 'API'},
@@ -84,7 +87,7 @@ blist.metrics.sitewideShared = {
     summarySections: _.filter([
         {
             id: 'summaryVisits',
-            displayName: 'Page Views',
+            displayName: pageViewsName,
             summary: pageViewsSummary
         },
         {

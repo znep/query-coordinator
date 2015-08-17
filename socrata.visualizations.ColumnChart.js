@@ -252,7 +252,6 @@
     }
 
     function selectDatum(event) {
-
       self.emitEvent(
         'SOCRATA_VISUALIZATION_COLUMN_SELECTION',
         {
@@ -262,9 +261,8 @@
     }
 
     function expandVisualization(event) {
-
       self.emitEvent(
-        'SOCRATA_VISUALIZATION_COLUMN_OPTIONS',
+        'SOCRATA_VISUALIZATION_COLUMN_EXPANSION',
         {
           expanded: true
         }
@@ -319,19 +317,12 @@
       // Cache dimensions and options
       var chartWidth = element.width();
       var chartHeight = element.height();
-      var expanded = options.expanded;
-      var showAllLabels = expanded || options.showAllLabels;
+      var showAllLabels = options.showAllLabels;
       var labelUnit = options.labelUnit;
       var showFiltered = options.showFiltered;
 
       if (chartWidth <= 0 || chartHeight <= 0) {
         return;
-      }
-
-      if (expanded) {
-        _chartElement.addClass('expanded');
-      } else {
-        _chartElement.removeClass('expanded');
       }
 
       if (showAllLabels) {
@@ -352,7 +343,7 @@
 
       var topMargin = 0; // Set to zero so .card-text could control padding b/t text & visualization
       var bottomMargin; // Calculated based on label text length
-      var horizontalScrollbarHeight = 15; // used to keep horizontal scrollbar within .card-visualization upon expand
+      var horizontalScrollbarHeight = 15; // used to keep horizontal scrollbar within .card-visualization
       var numberOfDefaultLabels = showAllLabels ? data.length : 3;
       var maximumBottomMargin = 140;
       var d3Selection = d3.select(_chartWrapper.get(0));
@@ -505,7 +496,7 @@
 
         var centering = chartLeftOffset - rangeBand / 2;
         var verticalPositionOfSelectedLabelRem = 2;
-        var labelMargin = showAllLabels ? 0 : 0.75;
+        var labelMargin = 0.75;
         var selectedLabelMargin = -0.4;
         // The `_.property(NAME_INDEX)` below is equivalent to `function(d) { return d[NAME_INDEX]; }`
         var labelDivSelection = labelSelection.data(labelData, _.property(NAME_INDEX));

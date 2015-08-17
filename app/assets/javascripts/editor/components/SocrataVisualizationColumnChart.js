@@ -99,7 +99,20 @@
      * Configuration
      */
 
+    function _getRenderOptions() {
+      return {
+        expanded: true,
+        labelUnit: 'rows',
+        showFiltered: false
+      };
+    }
+
+    /**
+     * Event handling
+     */
+
     function _attachEvents() {
+
       $(window).on('resize', _handleWindowResize);
       _element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
       _element.on('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleDatumSelect);
@@ -108,6 +121,7 @@
     }
 
     function _detachEvents() {
+
       $(window).off('resize', _handleWindowResize);
       _element.off('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', _handleVisualizationFlyout);
       _element.off('SOCRATA_VISUALIZATION_COLUMN_SELECTION', _handleDatumSelect);
@@ -115,12 +129,207 @@
       _element.off('SOCRATA_VISUALIZATION_DESTROY', _handleDestroy);
     }
 
-    function _getRenderOptions() {
-      return {
-        expanded: true,
-        labelUnit: 'rows',
-        showFiltered: false
-      };
+    function _handleWindowResize() {
+
+      clearTimeout(_rerenderOnResizeTimeout);
+
+      _rerenderOnResizeTimeout = setTimeout(
+        function() {
+          _visualization.render(
+            _visualizationData,
+            _getRenderOptions()
+          );
+        },
+        // Add some jitter in order to make sure multiple visualizations are
+        // unlikely to all attempt to rerender themselves at the exact same
+        // moment.
+        Constants.WINDOW_RESIZE_RERENDER_DELAY + Math.floor(Math.random() * 10)
+      );
+    }
+
+    function _handleVisualizationFlyout(event) {
+
+      var payload = event.originalEvent.detail.data;
+      var flyoutContent = null;
+      var flyoutTable = null;
+      var flyoutElements = null;
+      var flyoutTitle;
+      var flyoutUnfilteredValueLabelCell;
+      var flyoutUnfilteredValueCell;
+      var flyoutUnfilteredValueRow;
+      var filteredRowClass;
+      var flyoutFilteredValueLabelCell;
+      var flyoutFilteredValueCell;
+      var flyoutFilteredValueRow;
+      var flyoutSpacerRow;
+      var flyoutSelectedNoticeLabel;
+      var flyoutSelectedNoticeRow;
+
+      if (payload === null) {
+
+        storyteller.flyoutRenderer.clearFlyout();
+
+      } else {
+
+        flyoutContent = $(document.createDocumentFragment());
+        flyoutTable = $('<table>', { 'class': 'socrata-flyout-table' });
+        flyoutElements = [];
+
+        // 'Datum Title'
+        flyoutTitle = $(
+          '<div>',
+          {
+            'class': 'socrata-flyout-title'
+          }
+        ).text(payload.title);
+
+        // 'Total: XXX rows'
+        flyoutUnfilteredValueLabelCell = $(
+          '<td>',
+          {
+            'class': 'socrata-flyout-cell'
+          }
+        ).text(payload.unfilteredValueLabel);
+
+        flyoutUnfilteredValueCell = $(
+          '<td>',
+          {
+            'class': 'socrata-flyout-cell'
+          }
+        ).text(
+          '{0} {1}'.format(
+            utils.formatNumber(payload.unfilteredValue),
+            payload.labelUnit
+          )
+        );
+
+        flyoutUnfilteredValueRow = $(
+          '<tr>',
+          {
+            'class': 'socrata-flyout-row'
+          }
+        ).append([
+          flyoutUnfilteredValueLabelCell,
+          flyoutUnfilteredValueCell
+        ]);
+
+        flyoutElements.push(flyoutUnfilteredValueRow);
+
+        // If we are showing filtered data, then
+        // show the filtered data on the flyout.
+        if (payload.hasOwnProperty('filteredValue')) {
+
+          filteredRowClass = (payload.selected) ?
+            'socrata-flyout-cell is-selected' :
+            'socrata-flyout-cell emphasis';
+
+          // 'Filtered: XXX rows'
+          flyoutFilteredValueLabelCell = $(
+            '<td>',
+            {
+              'class': filteredRowClass
+            }
+          ).text(payload.filteredValueLabel);
+
+          flyoutFilteredValueCell = $(
+            '<td>',
+            {
+              'class': filteredRowClass
+            }
+          ).text(
+            '{0} {1}'.format(
+              utils.formatNumber(payload.filteredValue),
+              payload.labelUnit
+            )
+          );
+
+          flyoutFilteredValueRow = $(
+            '<tr>',
+            {
+              'class': 'socrata-flyout-row'
+            }
+          ).append([
+            flyoutFilteredValueLabelCell,
+            flyoutFilteredValueCell
+          ]);
+
+          flyoutElements.push(flyoutFilteredValueRow);
+        }
+
+        // If we are hovering over a bar we are
+        // currently filtering by, then display a special
+        // flyout message.
+        if (payload.selected) {
+
+          // 'This visualization is currently filtered...'
+          flyoutSpacerRow = $(
+            '<tr>',
+            {
+              'class': 'socrata-flyout-row',
+              'colspan': '2'
+            }
+          ).append([
+            $('<td>', { 'class': 'socrata-flyout-cell' }).html('&#8203;'),
+          ]);
+
+          flyoutSelectedNoticeLabel = $(
+            '<td>',
+            {
+              'class': 'socrata-flyout-cell'
+            }
+          ).text(payload.selectedNotice);
+
+          flyoutSelectedNoticeRow = $(
+            '<tr>',
+            {
+              'class': 'socrata-flyout-row',
+              'colspan': '2'
+            }
+          ).append([
+            flyoutSelectedNoticeLabel
+          ]);
+
+          flyoutElements.push(flyoutSpacerRow);
+          flyoutElements.push(flyoutSelectedNoticeRow)
+        }
+
+        flyoutTable.append(flyoutElements);
+
+        flyoutContent.append([
+          flyoutTitle,
+          flyoutTable
+        ]);
+
+        storyteller.flyoutRenderer.renderFlyout({
+          element: payload.element,
+          content: flyoutContent,
+          rightSideHint: false,
+          belowTarget: false
+        });
+      }
+    }
+
+    function _handleDatumSelect(event) {
+
+      var payload = event.originalEvent.detail;
+
+      // TODO: Implement.
+    }
+
+    function _handleExpandedToggle(event) {
+
+      var payload = event.originalEvent.detail;
+
+      // TODO: Implement.
+    }
+
+    function _handleDestroy() {
+
+      // TODO: Cancel in-flight requests or convert their callbacks into noops.
+
+      clearTimeout(_rerenderOnResizeTimeout);
+      _visualization.destroy();
+      _detachEvents();
     }
 
     /**
@@ -230,58 +439,6 @@
 
         return result;
       });
-    }
-
-    /**
-     * Event handling
-     */
-
-    function _handleWindowResize() {
-
-      clearTimeout(_rerenderOnResizeTimeout);
-
-      _rerenderOnResizeTimeout = setTimeout(
-        function() {
-          _visualization.render(
-            _visualizationData,
-            _getRenderOptions()
-          );
-        },
-        // Add some jitter in order to make sure multiple visualizations are
-        // unlikely to all attempt to rerender themselves at the exact same
-        // moment.
-        Constants.WINDOW_RESIZE_RERENDER_DELAY + Math.floor(Math.random() * 50)
-      );
-    }
-
-    function _handleVisualizationFlyout(event) {
-
-      var payload = event.originalEvent.detail;
-
-      // TODO: Implement.
-    }
-
-    function _handleDatumSelect(event) {
-
-      var payload = event.originalEvent.detail;
-
-      // TODO: Implement.      
-    }
-
-    function _handleExpandedToggle(event) {
-
-      var payload = event.originalEvent.detail;
-
-      // TODO: Implement.
-    }
-
-    function _handleDestroy() {
-
-      // TODO: Cancel in-flight requests or convert their callbacks into noops.
-
-      clearTimeout(_rerenderOnResizeTimeout);
-      _visualization.destroy();
-      _detachEvents();
     }
 
     return this;

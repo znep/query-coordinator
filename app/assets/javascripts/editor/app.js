@@ -75,6 +75,7 @@ $(document).on('ready', function() {
   storyteller.embedWizardStore = new storyteller.EmbedWizardStore();
   storyteller.blockRemovalConfirmationStore = new storyteller.BlockRemovalConfirmationStore();
   storyteller.coreSavingStore = new storyteller.CoreSavingStore();
+  storyteller.flyoutRenderer = new storyteller.FlyoutRenderer();
 
   var richTextEditorToolbar = new storyteller.RichTextEditorToolbar(
     $('#rich-text-editor-toolbar'),

@@ -78,12 +78,6 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
               return target;
             }
 
-            // Add hover effects to the barGroup.
-            $(barGroup).addClass('hover');
-            $(target).one('mouseout', function() {
-              $(barGroup).removeClass('hover');
-            });
-
             // Save the unfiltered and filtered values.
             unfilteredValue = d3.select(barGroup).datum().total;
             filteredValue = d3.select(barGroup).datum().filtered;

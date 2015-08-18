@@ -431,7 +431,7 @@
       var labelSelection = d3.select(_chartLabels[0]).selectAll('.label');
       var chartTruncated = false;
       var truncationMarkerWidth = _truncationMarker.width();
-      var fixedLabelWidth = 10.5;
+      var fixedLabelWidth = 15.5;
 
       var horizontalScaleDetails = _computeHorizontalScale(chartWidth, data, showAllLabels);
       var horizontalScale = horizontalScaleDetails.scale;

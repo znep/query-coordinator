@@ -225,4 +225,22 @@ describe('Histogram Visualization', function() {
     expect(logarithmicSpy.callCount).to.equal(2);
     expect(bucketDataSpy.calledWithMatch(testData, {bucketType: 'logarithmic'})).to.equal(true);
   });
+
+  it('should render as a column chart if HistogramService tells it to', function() {
+    sinon.stub(HistogramService, 'getVisualizationTypeForData', function() { return 'columnChart'; });
+
+    var histogram = createHistogram();
+    expect(histogram.element.find('column-chart').length).to.equal(1);
+    expect(histogram.element.find('histogram').length).to.equal(0);
+
+    HistogramService.getVisualizationTypeForData.restore();
+
+    sinon.stub(HistogramService, 'getVisualizationTypeForData', function() { return 'histogram'; });
+
+    var histogram = createHistogram();
+    expect(histogram.element.find('column-chart').length).to.equal(0);
+    expect(histogram.element.find('histogram').length).to.equal(1);
+
+    HistogramService.getVisualizationTypeForData.restore();
+  });
 });

@@ -70,15 +70,15 @@
           map(_.property('additionalArguments[0]'));
 
         var currentRangeFilterValues$ = activeFilters$.map(function(filters) {
-          if (_.isPresent(filters)) {
-            var valueRangeFilter = _(filters).chain().
-              select(function(filter) { return filter instanceof Filter.ValueRangeFilter; }).
-              first().value();
-            if (_.isDefined(valueRangeFilter)) {
-              return [valueRangeFilter.start, valueRangeFilter.end];
-            }
+          if (!_.isPresent(filters)) { return null; }
+
+          var valueRangeFilter = _.find(filters, function(filter) {
+            return filter instanceof Filter.ValueRangeFilter;
+          });
+
+          if (_.isDefined(valueRangeFilter)) {
+            return [valueRangeFilter.start, valueRangeFilter.end];
           }
-          return null;
         });
 
         var activeFiltersExcludingOwn$ = cardModel$.observeOnLatest('page.activeFilters').

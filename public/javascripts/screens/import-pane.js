@@ -426,12 +426,6 @@ var updateLines = function($elems)
                         regex: $transformLine.find('.regex').is(':checked')
                     };
                 }
-                else if (result.type == 'customExpression')
-                {
-                    result.options = {
-                        expression: $transformLine.find('.customExpression').val()
-                    };
-                }
 
                 return result;
             }));
@@ -1913,10 +1907,6 @@ importNS.importingPaneConfig = {
 
                         result = '(' + result + ').replace(/' + regexExpr + '/g' +
                             (!!transform.options.ignoreCase ? 'i' : '') + ', "' + transform.options.replace + '")';
-                    }
-                    else if (transform.type == 'customExpression')
-                    {
-                        result = '(function(value){return ' + transform.options.expression + ';})(' + result + ')';
                     }
                     else
                     {

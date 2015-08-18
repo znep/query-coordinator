@@ -2,7 +2,7 @@ describe('StoryRenderer', function() {
 
   var storyteller = window.socrata.storyteller;
   var storyUid;
-  var imageBlockId;
+  var wizardBlockId;
   var textBlockId;
   var options;
   var dispatcher;
@@ -15,7 +15,7 @@ describe('StoryRenderer', function() {
     storyteller.RichTextEditorManagerMocker.mock();
 
     storyUid = standardMocks.validStoryUid;
-    imageBlockId = standardMocks.imageBlockId;
+    wizardBlockId = standardMocks.wizardBlockId;
     textBlockId = standardMocks.textBlockId;
 
     testDom.append(
@@ -194,7 +194,7 @@ describe('StoryRenderer', function() {
           storyteller.dispatcher.dispatch({
             action: Constants.STORY_DELETE_BLOCK,
             storyUid: storyUid,
-            blockId: imageBlockId
+            blockId: wizardBlockId
           });
 
           assert.equal($('.block').length, numberOfBlocks - 1);
@@ -218,7 +218,7 @@ describe('StoryRenderer', function() {
             blocks: [
               generateBlockData({
                 components: [
-                  { type: 'media', value: { type: 'image', value: { src: '404.jpg' } } }
+                  { type: 'media', value: { type: 'embed', value: { provider: 'wizard' } } }
                 ]
               })
             ]

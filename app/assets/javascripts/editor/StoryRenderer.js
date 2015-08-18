@@ -1,4 +1,4 @@
-;window.socrata.storyteller.StoryRenderer = (function(storyteller) {
+;window.socrata.storyteller.StoryRenderer = (function(storyteller, utils) {
 
   'use strict';
 
@@ -18,19 +18,19 @@
     var onRenderError = options.onRenderError || function() {};
     var componentTemplateRenderers = {
       'text': 'storytellerComponentText',
-      'media': MediaComponentRenderer.renderTemplate,
+      'media': 'storytellerComponentMedia',
       'socrataVisualization': SocrataVisualizationComponentRenderer.renderTemplate,
       'layout': 'storytellerComponentLayout'
     };
     var componentTemplateCheckers = {
       'text': _.constant(true),
-      'media': MediaComponentRenderer.canReuseTemplate,
+      'media': _.constant(false),
       'socrataVisualization': SocrataVisualizationComponentRenderer.canReuseTemplate,
       'layout': _.constant(true)
     };
     var componentDataRenderers = {
       'text': 'storytellerComponentText',
-      'media': MediaComponentRenderer.renderData,
+      'media': 'storytellerComponentMedia',
       'socrataVisualization': SocrataVisualizationComponentRenderer.renderData,
       'layout': 'storytellerComponentLayout'
     };
@@ -269,7 +269,6 @@
       });
 
       container.on('click', '[data-embed-action]', function(event) {
-
         var action = event.target.getAttribute('data-embed-action');
 
         switch(action) {
@@ -277,8 +276,8 @@
           case Constants.EMBED_WIZARD_CHOOSE_PROVIDER:
             dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
-              blockId: event.target.getAttribute('data-block-id'),
-              componentIndex: event.target.getAttribute('data-component-index')
+              blockId: utils.findClosestAttribute(event.target, 'data-block-id'),
+              componentIndex: utils.findClosestAttribute(event.target, 'data-component-index')
             });
             break;
 
@@ -687,4 +686,4 @@
   }
 
   return StoryRenderer;
-})(window.socrata.storyteller);
+})(window.socrata.storyteller, window.socrata.utils);

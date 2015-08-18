@@ -116,6 +116,14 @@
       }
 
       return src;
+    },
+
+    /**
+     * Walks up the DOM looking for elements with the given attribute.
+     * When it finds one, returns the value of the given attribute.
+     */
+    findClosestAttribute: function(element, attribute) {
+      return $(element).closest('[{0}]'.format(attribute)).attr(attribute);
     }
   };
 

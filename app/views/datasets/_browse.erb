@@ -157,14 +157,16 @@
       </div>
     <%- end -%>
 
-    <%- sort_shown = !opts[:view_request_timed_out] && opts[:view_count] > 0 && !opts[:sort_opts].empty? && !opts[:disable][:sort] -%>
-    <div class="browseList <%= sort_shown ? 'hasSort' : '' %>">
+    <%- show_catalog_sort_dropdown = opts[:show_catalog_sort_dropdown] -%>
+    <div class="browseList <%= show_catalog_sort_dropdown ? 'hasSort' : '' %>">
       <%- if !opts[:browse_in_container] -%>
         <div class="titleContainer">
           <h2 title="<%= opts[:title] %>"><%= opts[:title] %>
-            <a href="/catalog.rss" class="subscribe" title="<%= t('controls.browse.actions.subscribe') %>">
-              <span class="icon"></span>
-            </a>
+            <%- unless opts[:hide_catalog_rss] -%>
+              <a href="/catalog.rss" class="subscribe" title="<%= t('controls.browse.actions.subscribe') %>">
+                <span class="icon"></span>
+              </a>
+            <%- end -%>
           </h2>
         </div>
       <%- end -%>
@@ -185,7 +187,7 @@
           </ul>
         <%- end -%>
 
-        <%- if sort_shown -%>
+        <%- if show_catalog_sort_dropdown -%>
           <div class="sortOptions">
             <label for="browseSortType" class="sortLabel"><%= t('controls.browse.sort_title') %></label>
             <select id="browseSortType" class="sortType" name="sortType">
@@ -373,176 +375,16 @@
               </tr>
             </thead>
             <%- end -%>
-            <tbody>
-              <%- start_index = (opts[:page].to_i - 1) * opts[:limit].to_i + 1 -%>
-              <%- opts[:view_results].each_with_index do |v, i| -%>
-                <%-
-                  view_url = view_url(v)
-                  begin
-                    if !v.merged_metadata['custom_fields'][opts[:url_override].first][opts[:url_override].last].blank?
-                      view_url = v.merged_metadata['custom_fields'][opts[:url_override].first][opts[:url_override].last]
-                    end
-                  rescue
-                    # Chomp Chomp
-                  end
-                -%>
-                <tr itemscope="itemscope" itemtype="http://schema.org/Dataset" class="item collapsed <%= v.federated? ? v.domainCName.gsub(/\./, "_") : "" %><%= v.federated? ? " federated" : " local" %><%=
-                  v.rowResults.present? ? ' withRows' : '' %>" data-viewId="<%= v.id %>">
-                  <%- if opts[:grid_items][:index] -%>
-                    <td class="index" scope="row">
-                      <a class="expander" title="<%= t('controls.browse.actions.expand_section') %>" href="#Expand">
-                        <span class="icon"></span>
-                      </a>
-                      <span class="value"><%= start_index + i %>.</span>
-                    </td>
-                  <%- end -%>
-
-                  <%- rel_type = v.federated? ? CurrentDomain.feature?(:federated_interstitial) ?
-                          'externalDomain' : 'external' : (opts[:rel_type] || '') -%>
-
-                  <%- if opts[:grid_items][:domainIcon] -%>
-                    <td class="domainIcon">
-                      <%- if v.federated? -%>
-                        <a itemprop="url" href="<%= view_url %>" rel="<%= rel_type %>">
-                          <img src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
-                            t('controls.browse.listing.federation_source', :source => v.domainCName) : CurrentDomain.cname %>" />
-                        </a>
-                      <%- end -%>
-                    </td>
-                  <%- end -%>
-
-                  <%- if opts[:grid_items][:nameDesc] -%>
-                    <td class="nameDesc">
-                      <div class="titleLine">
-                        <span class="hide" itemprop="name"><%= v.name %></span>
-                        <a itemprop="url" href="<%= view_url %>" class="name"
-                          rel="<%= rel_type %>"><%= v.name %></a>
-                        <%- if !v.category.blank? -%>
-                        <span class="category infoItem"><%= v.category_display %></span>
-                        <%- end -%>
-                        <%- if !v.tags.nil? && v.tags.length > 0 -%>
-                        <%- tag_limit = 50 -%>
-                        <%- t = v.tags.join(', ') -%>
-                        <%- if t.length > tag_limit
-                              i = t.rindex(',', tag_limit)
-                              if i.nil?
-                                t = v.tags[0].to_s.slice(0, tag_limit)
-                              else
-                                t = t.slice(0, i + 2)
-                              end
-                              t += '...'
-                            end -%>
-                        <span class="tags infoItem" itemprop="keywords"><%= t %></span>
-                        <%- end -%>
-                        <% if v.federated? %>
-                          <div class="federation-source infoItem">
-                            <%= t('controls.browse.listing.federation_source_html',
-                                  :source_link => link_to(v.domainCName, "//#{v.domainCName}")) %>
-                          </div>
-                        <% end %>
-                      </div>
-
-                      <div class="expandBlock clearfix collapsed">
-                        <div class="description"><%= sanitize raw(auto_link(h(raw(v.description)), :html => { :rel => 'nofollow external' })) %></div>
-                        <div class="rowSearchResults"><% if in_search %><span><%= t('controls.browse.row_results.matching_rows') %></span><% end %></div>
-                        <div class="extraInfo <%= opts[:use_federations] ? 'federated' : '' %>">
-                          <div class="infoContent"></div>
-                          <a class="close" href="#Close"><span class="icon"></span></a>
-                        </div>
-                      </div>
-                    </td>
-                  <%- end -%>
-
-                  <%- if opts[:grid_items][:largeImage] -%>
-                    <td class="largeImage">
-                      <%- img_url = v.preferred_image(opts[:port]) -%>
-                      <%- if !img_url.nil? -%>
-                        <img itemprop="image" class="datasetImage datasetIcon <%= v.preferred_image_type %>" src="<%= img_url %>" alt="<%= v.name %>" />
-                        <div class="datasetIcon type type<%= v.display.type.capitalize %>" title="<%= v.display.name.capitalize %>" style="display: none;">
-                          <span class="<%= v.display.icon_class %>"></span>
-                        </div>
-                      <%- else -%>
-                        <div class="datasetIcon type type<%= v.display.type.capitalize %>" title="<%= v.display.name.capitalize %>">
-                          <span class="<%= v.display.icon_class %>"></span>
-                        </div>
-                      <%- end -%>
-                  </td>
-                  <%- end -%>
-
-                  <%- if opts[:grid_items][:richSection] -%>
-                    <td class="richSection">
-                      <a itemprop="url" href="<%= view_url %>" class="nameLink" rel="<%= rel_type %>">
-                        <%- if opts[:use_federations] && v.federated? -%>
-                          <img class="domainIcon" src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
-                            t('controls.browse.listing.federation_source', :source => v.domainCName) : CurrentDomain.cname %>" />
-                        <%- end -%>
-                        <span itemprop="name" class="name"><%= v.name %></span>
-                      </a>
-                      <% if v.federated? %>
-                        <div class="federation-source">
-                          <%= t('controls.browse.listing.federation_source_html',
-                                :source_link => link_to(v.domainCName, "//#{v.domainCName}")) %>
-                        </div>
-                      <% end %>
-                      <div class="expandBlock">
-                        <div class="description collapsed"><%= sanitize raw(auto_link(h(raw(v.description)), :html => { :rel => 'nofollow external' })) %></div>
-                        <a class="expander" title="<%= t('controls.browse.actions.expand_section') %>" href="#Expand">
-                          <span class="icon"></span>
-                        </a>
-                      </div>
-                      <div class="rowSearchResults"><% if in_search %><span><%= t('controls.browse.row_results.matching_rows') %></span><% end %></div>
-                    </td>
-                  <%- end -%>
-
-                  <%- if opts[:grid_items][:datasetActions] -%>
-                    <td class="datasetActions">
-                      <div class="moderateActions">
-                        <span class="textStatus"><%= v.moderation_status %></span>
-                        <%- if v.moderationStatus.nil? || !v.moderationStatus -%>
-                          <%= form_button({ :action => 'set_view_moderation_status',
-                                           :id => v.id, :approved => 'yes' }, t('controls.browse.actions.moderation.accept')) %>
-                        <%- end -%>
-                        <%- if v.moderationStatus.nil? || v.moderationStatus -%>
-                          <%= form_button({ :action => 'set_view_moderation_status',
-                                           :id => v.id, :approved => 'no' }, t('controls.browse.actions.moderation.reject')) %>
-                        <%- end -%>
-                      </div>
-                    </td>
-                  <%- end -%>
-
-                  <%- if opts[:grid_items][:popularity] -%>
-                    <td class="popularity">
-                      <span class="visits"><%= pluralize(number_with_delimiter(v.viewCount), t('core.analytics.visit'), t('core.analytics.visits')) %></span>
-                    </td>
-                  <%- end -%>
-
-                  <%- if opts[:grid_items][:type] -%>
-                    <td class="type type<%= v.display.type.capitalize %>"
-                      title="<%= v.display.title %>">
-                      <a href="<%= view_url %>" rel="<%= rel_type %>"><div class="<%= v.display.icon_class %>"></div></a>
-                    </td>
-                  <%- end -%>
-
-                  <%- if opts[:grid_items][:rss] -%>
-                    <td class="rss">
-                      <%- if v.is_tabular? && !v.is_form? -%>
-                      <a href="<%= v.rss %>" class="subscribe"
-                        title="<%= t('controls.browse.actions.dataset_subscribe') %>"><span class="icon"></span></a>
-                      <%- end -%>
-                    </td>
-                  <%- end -%>
-              </tr>
-            <%- end -%>
-          </tbody>
+            <%= render opts[:browse_table_partial], :opts => opts, :in_search => in_search %>
         </table>
         <%- end -%>
       </div>
 
-      <%- if !opts[:view_request_timed_out] && opts[:view_count] > 0 -%>
+      <%- if !opts[:view_request_timed_out] && opts[:view_count] && opts[:view_count] > 0 -%>
         <%= create_pagination(opts[:view_count], opts[:limit],
         opts[:page], opts[:base_url] + '?' + opts[:user_params].to_param, 'button') unless opts[:disable][:pagination] %>
         <%- if (opts[:footer_config].nil? || opts[:footer_config].counter) && !opts[:disable][:counter] -%>
-          <%= render :partial => 'datasets/browse_counter', :locals => { :opts => opts } %>
+          <%= render opts[:browse_counter_partial], :opts => opts %>
         <%- end -%>
       <%- end -%>
     </div>

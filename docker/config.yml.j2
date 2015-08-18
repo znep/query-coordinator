@@ -12,6 +12,7 @@ default: &default
   coreservice_uri: http://{{ CORESERVICE_URI }}
   odysseus_uri: http://{{ ODYSSEUS_HOST }}
   odysseus_app_name: {{ ODYSSEUS_APP_NAME }}
+  cetera_host: {{ CETERA_HOST }}
 
   {% if ACTIVEMQ_HOSTS is defined -%}
   activemq_hosts: {{ ACTIVEMQ_HOSTS }}

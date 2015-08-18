@@ -496,7 +496,7 @@
 
         var centering = chartLeftOffset - rangeBand / 2;
         var verticalPositionOfSelectedLabelRem = 2;
-        var labelMargin = 0.75;
+        var labelMargin = showAllLabels ? 0 : 0.75;
         var selectedLabelMargin = -0.4;
         // The `_.property(NAME_INDEX)` below is equivalent to `function(d) { return d[NAME_INDEX]; }`
         var labelDivSelection = labelSelection.data(labelData, _.property(NAME_INDEX));

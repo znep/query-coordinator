@@ -65,7 +65,7 @@
     };
 
     this.destroy = function() {
-      _unattachEvents();
+      _unattachEvents(this.element);
     };
 
     /**
@@ -222,9 +222,37 @@
         '.bar-group.active, .bar-group.active .bar, .labels .label .contents span:not(.icon-close)',
         hideFlyout
       );
+
+      element.on(
+        'mouseenter',
+        '.labels .label',
+        addHoverClassToBarGroup
+      );
+
+      element.on(
+        'mouseleave',
+        '.labels .label',
+        removeHoverClassFromBarGroup
+      );
+
+      _chartElement.on(
+        'mouseleave',
+        removeHoverClassFromBarGroup
+      );
+
+      // We respond to mouseup in this case because if the user clicks to
+      // clear a selection with a non-default label (i.e. not one of the first
+      // three when not expanded), then we should dismiss the highlight.
+      // (The 'non-default' class is applied to labels that wouldn't normally
+      // be drawn unless a datum is selected)
+      element.on(
+        'mouseup',
+        '.labels .label.selected.non-default',
+        removeHoverClassFromBarGroup
+      );
     }
 
-    function _unattachEvents() {
+    function _unattachEvents(element) {
 
       element.off(
         'click',
@@ -249,10 +277,32 @@
         '.bar-group.active, .bar-group.active .bar, .labels .label .contents span:not(.icon-close)',
         hideFlyout
       );
+
+      element.off(
+        'mouseenter',
+        '.labels .label',
+        addHoverClassToBarGroup
+      );
+
+      element.off(
+        'mouseleave',
+        '.labels .label',
+        removeHoverClassFromBarGroup
+      );
+
+      _chartElement.off(
+        'mouseleave',
+        removeHoverClassFromBarGroup
+      );
+
+      element.off(
+        'mouseup',
+        '.labels .label.selected.non-default',
+        removeHoverClassFromBarGroup
+      );
     }
 
     function selectDatum(event) {
-
       self.emitEvent(
         'SOCRATA_VISUALIZATION_COLUMN_SELECTION',
         {
@@ -262,9 +312,8 @@
     }
 
     function expandVisualization(event) {
-
       self.emitEvent(
-        'SOCRATA_VISUALIZATION_COLUMN_OPTIONS',
+        'SOCRATA_VISUALIZATION_COLUMN_EXPANSION',
         {
           expanded: true
         }
@@ -310,6 +359,20 @@
       );
     }
 
+    function addHoverClassToBarGroup(event) {
+
+      var barName = event.currentTarget.getAttribute('data-bar-name');
+
+      _chartWrapper.
+        find('.bar-group[data-bar-name="{0}"]'.format(barName)).
+        addClass('highlight');
+    }
+
+    function removeHoverClassFromBarGroup(event) {
+
+      _chartWrapper.find('.bar-group').removeClass('highlight');
+    }
+
     /**
      * Visualization renderer and helper functions
      */
@@ -319,7 +382,7 @@
       // Cache dimensions and options
       var chartWidth = element.width();
       var chartHeight = element.height();
-      var expanded = options.expanded;
+      var showAllLabels = options.showAllLabels;
       var labelUnit = options.labelUnit;
       var showFiltered = options.showFiltered;
 
@@ -327,10 +390,10 @@
         return;
       }
 
-      if (expanded) {
-        _chartElement.addClass('expanded');
+      if (showAllLabels) {
+        _chartElement.addClass('show-all-labels');
       } else {
-        _chartElement.removeClass('expanded');
+        _chartElement.removeClass('show-all-labels');
       }
 
       if (showFiltered) {
@@ -345,8 +408,8 @@
 
       var topMargin = 0; // Set to zero so .card-text could control padding b/t text & visualization
       var bottomMargin; // Calculated based on label text length
-      var horizontalScrollbarHeight = 15; // used to keep horizontal scrollbar within .card-visualization upon expand
-      var numberOfDefaultLabels = expanded ? data.length : 3;
+      var horizontalScrollbarHeight = 15; // used to keep horizontal scrollbar within .card-visualization
+      var numberOfDefaultLabels = showAllLabels ? data.length : 3;
       var maximumBottomMargin = 140;
       var d3Selection = d3.select(_chartWrapper.get(0));
       // The `_.property(NAME_INDEX)` below is equivalent to `function(d) { return d[NAME_INDEX]; }`
@@ -357,8 +420,13 @@
       var truncationMarkerWidth = _truncationMarker.width();
       var fixedLabelWidth = 10.5;
 
+      var horizontalScaleDetails = _computeHorizontalScale(chartWidth, data, showAllLabels);
+      var horizontalScale = horizontalScaleDetails.scale;
+      chartTruncated = horizontalScaleDetails.truncated;
+      var rangeBand = Math.ceil(horizontalScale.rangeBand());
+
       // Compute chart margins
-      if (expanded) {
+      if (showAllLabels) {
 
         var maxLength = _.max(data.map(function(item) {
           // The size passed to visualLength() below relates to the width of the div.text in the updateLabels().
@@ -369,11 +437,14 @@
           $.relativeToPx(fixedLabelWidth + 1 + 'rem')
         ) / Math.sqrt(2));
 
+        horizontalScrollbarHeight = chartTruncated ? horizontalScrollbarHeight : 0;
+        chartTruncated = false;
+
       } else {
 
         bottomMargin = $.relativeToPx(numberOfDefaultLabels + 1 + 'rem');
 
-        // Do not compensate for chart scrollbar if not expanded (scrollbar would not exist)
+        // Do not compensate for chart scrollbar if only showing 3 labels (scrollbar would not exist)
         horizontalScrollbarHeight = 0;
       }
 
@@ -382,14 +453,9 @@
 
       var chartHeight = Math.max(0, chartHeight - topMargin - bottomMargin - horizontalScrollbarHeight);
 
-      var horizontalScaleDetails = _computeHorizontalScale(chartWidth, data, expanded);
-      var horizontalScale = horizontalScaleDetails.scale;
-      chartTruncated = horizontalScaleDetails.truncated;
-      var rangeBand = Math.ceil(horizontalScale.rangeBand());
-
-      // If the chart is not expanded, limit our vert scale computation to what's actually
+      // If not all labels are visible, limit our vert scale computation to what's actually
       // visible. We still render the bars outside the viewport to speed up horizontal resizes.
-      var chartDataRelevantForVerticalScale = expanded ?
+      var chartDataRelevantForVerticalScale = showAllLabels ?
         data : _.take(data, Math.ceil(chartWidth / rangeBand) + 1);
       var verticalScale = _computeVerticalScale(chartHeight, chartDataRelevantForVerticalScale, showFiltered);
 
@@ -436,9 +502,8 @@
         /**
          * Labels come in two sets of column names:
          *
-         * - Default labels. When the chart is unexpanded, this consists of the
-         *   first three column names in the data. When the chart is expanded,
-         *   this contains all the column names in the data.
+         * - Default labels. If showAllLabels is true, this consists of one
+         *   label per bar. Otherwise, only 3 labels are shown.
          *
          * - Selected labels. Contains the names of columns which are selected.
          */
@@ -463,7 +528,7 @@
 
           var leftHanded = false;
 
-          if (!expanded) {
+          if (!showAllLabels) {
 
             var labelWidth = $(this).find('.contents').width();
             var proposedLeftOfText = horizontalScale(datum[NAME_INDEX]);
@@ -496,7 +561,7 @@
 
         var centering = chartLeftOffset - rangeBand / 2;
         var verticalPositionOfSelectedLabelRem = 2;
-        var labelMargin = 0.75;
+        var labelMargin = showAllLabels ? 0 : 0.75;
         var selectedLabelMargin = -0.4;
         // The `_.property(NAME_INDEX)` below is equivalent to `function(d) { return d[NAME_INDEX]; }`
         var labelDivSelection = labelSelection.data(labelData, _.property(NAME_INDEX));
@@ -504,7 +569,11 @@
         var labelDivSelectionEnter = labelDivSelection.
           enter().
           append('div').
-          classed('label', true);
+          classed('label', true).
+          classed('non-default', isOnlyInSelected).
+          attr('data-bar-name', function(d) {
+            return _escapeQuotesAndBackslashes(_labelValueOrPlaceholder(d[NAME_INDEX]));
+          });
 
         // For new labels, add a contents div containing a span for the filter icon,
         // a span for the label text, and a span for the clear filter icon.
@@ -526,7 +595,7 @@
             style('top', function(d, i) {
               var topOffset;
 
-              if (expanded) {
+              if (showAllLabels) {
                 topOffset = 0;
               } else if (isOnlyInSelected(d, i)) {
                 topOffset = verticalPositionOfSelectedLabelRem;
@@ -548,8 +617,8 @@
           select('.callout').
             style('height', function(d, i) {
 
-              // Expanded charts have auto-height labels.
-              if (expanded) {
+              // Slanted labels have auto height.
+              if (showAllLabels) {
                 return '';
               } else {
                 if (isOnlyInSelected(d, i)) {
@@ -594,14 +663,14 @@
             var labelContentRightOffset;
             var isSelected = d[SELECTED_INDEX];
             var scaleOffset = horizontalScale(d[NAME_INDEX]) - centering - 1;
-            var noRoomForCallout = scaleOffset >= chartWidth && isSelected && !expanded;
+            var noRoomForCallout = scaleOffset >= chartWidth && isSelected && !showAllLabels;
             var leftOriented = $(this).hasClass('orientation-left');
             var labelIconPadding = 30;
             var halfWidthOfCloseIcon = ($(this).find('.icon-close').width() / 2) - 1;
             var textMaxWidth;
 
             // Logic for setting label and content offsets and text max widths.
-            if (expanded || !isSelected) {
+            if (showAllLabels || !isSelected) {
               labelLeftOffset = scaleOffset;
               labelContentLeftOffset = labelMargin;
             } else if (leftOriented) {
@@ -614,7 +683,7 @@
               textMaxWidth = chartWidth - scaleOffset - labelIconPadding;
             }
 
-            if (!isSelected && !expanded) {
+            if (!isSelected && !showAllLabels) {
               textMaxWidth = chartWidth - scaleOffset - labelIconPadding;
             }
 
@@ -723,7 +792,9 @@
         // UPDATE PROCESSING
         // Update the position of the groups.
         selection.
-          attr('data-bar-name', function(d) { return _labelValueOrPlaceholder(d[NAME_INDEX]); }).
+          attr('data-bar-name', function(d) {
+            return _escapeQuotesAndBackslashes(_labelValueOrPlaceholder(d[NAME_INDEX]));
+          }).
           style('left', function(d) { return horizontalBarPosition(d) + 'px'; }).
           style('width', rangeBand + 'px').
           style('height', function() { return chartHeight + 'px'; }).
@@ -733,7 +804,7 @@
             return makeBarData(d)[1].isTotal;
           }).
           classed('selected', function(d) { return d[SELECTED_INDEX]; }).
-          classed('active', function(d) { return expanded || horizontalBarPosition(d) < chartWidth - truncationMarkerWidth; });
+          classed('active', function(d) { return showAllLabels || horizontalBarPosition(d) < chartWidth - truncationMarkerWidth; });
 
         // Update the position of the individual bars.
         bars.
@@ -773,6 +844,17 @@
         top: chartHeight,
         display: chartTruncated ? 'block' : 'none'
       });
+    }
+
+    function _escapeQuotesAndBackslashes(value) {
+
+      if (_.isString(value)) {
+        return value.
+          replace(/\\/g, '\\\\').
+          replace(/"/g, '\\\"');
+      } else {
+        return value;
+      }
     }
 
     function _labelValueOrPlaceholder(value, placeholder) {
@@ -818,7 +900,7 @@
       return d3.scale.linear().domain(_computeDomain(chartData, showFiltered)).range([0, chartHeight]);
     }
 
-    function _computeHorizontalScale(chartWidth, chartData, expanded) {
+    function _computeHorizontalScale(chartWidth, chartData, showAllLabels) {
 
       // Horizontal scale configuration
       var barPadding = 0.25;
@@ -835,7 +917,7 @@
       var isChartTruncated = false;
       var rangeBand;
 
-      if (expanded) {
+      if (showAllLabels) {
         minBarWidth = minExpandedCardBarWidth;
         maxBarWidth = maxExpandedCardBarWidth;
       } else {
@@ -870,9 +952,7 @@
         // use computeChartDimensionsForRangeInterval to set rangeBand = minBarWidth
         // and update horizontalScale accordingly
         _computeChartDimensionsForRangeInterval(minBarWidth * numberOfBars / (1 - barPadding));
-        if (!expanded) {
-          isChartTruncated = true;
-        }
+        isChartTruncated = true;
       } else if (rangeBand > maxBarWidth) {
         // --> desired rangeBand (bar width) is greater than accepted maxBarWidth
         // use computeChartDimensionsForRangeInterval to set rangeBand = maxBarWidth

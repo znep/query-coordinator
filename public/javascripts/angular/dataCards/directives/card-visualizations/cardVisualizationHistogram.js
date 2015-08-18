@@ -296,6 +296,10 @@
         $scope.$bindObservable('expanded', expanded$);
         $scope.$bindObservable('currentRangeFilterValues', currentRangeFilterValues$);
         $scope.$bindObservable('visualizationType', visualizationType$);
+
+        $scope.$destroyAsObservable(element).subscribe(function() {
+          element.closest('card-visualization').css({ marginLeft: 0, marginRight: 0 });
+        });
       }
     };
   }

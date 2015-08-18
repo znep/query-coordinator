@@ -66,9 +66,9 @@ describe('SocrataVisualizationColumnChart jQuery plugin', function() {
 
       beforeEach(function() {
 
-        var _SoqlDataProvider = window.socrata.visualizations.SoqlDataProvider;
+        _SoqlDataProvider = window.socrata.visualizations.SoqlDataProvider;
 
-        var mockSoqlDataProvider = function(config) {
+        mockSoqlDataProvider = function(config) {
           this.config = config;
         }
 

@@ -24,7 +24,10 @@
         }
       }
     } else if (type === 'socrataVisualization') {
-
+      var visualizationType = componentData.value.type;
+      if (visualizationType === 'column') {
+        return 'storytellerComponentSocrataVisualizationColumn';
+      }
     }
 
     throw new Error('No component renderer found for component: {0}'.format(JSON.stringify(componentData)));
@@ -45,24 +48,6 @@
     var insertionHint = options.insertionHintElement || false;
     var insertionHintIndex = -1;
     var onRenderError = options.onRenderError || function() {};
-    var componentTemplateRenderers = {
-      'text': 'storytellerComponentText',
-      'media': 'storytellerComponentMedia',
-      'socrataVisualization': SocrataVisualizationComponentRenderer.renderTemplate,
-      'layout': 'storytellerComponentLayout'
-    };
-    var componentTemplateCheckers = {
-      'text': _.constant(true),
-      'media': _.constant(false),
-      'socrataVisualization': SocrataVisualizationComponentRenderer.canReuseTemplate,
-      'layout': _.constant(true)
-    };
-    var componentDataRenderers = {
-      'text': 'storytellerComponentText',
-      'media': 'storytellerComponentMedia',
-      'socrataVisualization': SocrataVisualizationComponentRenderer.renderData,
-      'layout': 'storytellerComponentLayout'
-    };
     var elementCache = new storyteller.StoryRendererElementCache();
     var warningMessageElement = options.warningMessageElement || null;
     var resizeRerenderTimeout;
@@ -352,20 +337,6 @@
             var componentElement = elementCache.getComponent(blockId, i);
 
             componentElement.trigger('destroy');
-
-            if (componentDatum.type === 'socrataVisualization') {
-              //TODO
-
-              var destroyVisualizationEvent = new window.CustomEvent(
-                Constants.SOCRATA_VISUALIZATION_DESTROY,
-                {
-                  detail: {},
-                  bubbles: false
-                }
-              );
-
-              componentElement[0].dispatchEvent(destroyVisualizationEvent);
-            }
           });
 
         elementCache.getBlock(blockId).remove();

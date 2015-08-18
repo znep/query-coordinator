@@ -5,18 +5,18 @@
   var socrata = root.socrata;
   var utils = socrata.utils;
 
-  function _renderEmbedWizard(element) {
+  function _renderEmbedWizard($element) {
 
-    var controlsInsertButton;
-    var controlsContainer;
+    var $controlsInsertButton;
+    var $controlsContainer;
 
-    element.
+    $element.
       addClass('embed').
       addClass('wizard').
       attr('data-rendered-media-type', 'embed').
       attr('data-rendered-media-embed-provider', 'wizard');
 
-    controlsInsertButton = $(
+    $controlsInsertButton = $(
       '<button>',
       {
         'class': 'btn accent-btn media-component-embed-wizard-insert-btn',
@@ -24,35 +24,34 @@
       }
     ).text(I18n.t('editor.components.media.embed_wizard_insert_btn'));
 
-    controlsContainer = $(
+    $controlsContainer = $(
       '<div>',
       {
         'class': 'media-component-embed-wizard-container'
       }
-    ).append(controlsInsertButton);
+    ).append($controlsInsertButton);
 
-    element.append(controlsContainer);
+    $element.append($controlsContainer);
   }
 
   function storytellerComponentMediaEmbedWizard(componentData) {
-    var self = $(this);
+    var $self = $(this);
 
     utils.assertHasProperty(componentData, 'type');
     utils.assertHasProperty(componentData, 'value');
     utils.assertHasProperty(componentData.value, 'type');
 
     if (componentData.value.value.provider !== 'wizard') {
-      throw new Error('Wizard: Tried to render provider type: {0}'.format(
-        componentData.value.value.provider
+      throw new Error('storytellerComponentMediaEmbedWizard: Unsupported componentData {0}'.format(
+            componentData
       ));
     }
 
-
-
-    if (!self.is('.embed.wizard')) {
-      _renderEmbedWizard(self);
+    if ($self.children().length === 0) {
+      _renderEmbedWizard($self);
     }
-    return self;
+
+    return $self;
   }
 
   $.fn.storytellerComponentMediaEmbedWizard = storytellerComponentMediaEmbedWizard;

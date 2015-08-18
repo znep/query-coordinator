@@ -1,4 +1,4 @@
-describe('storytellerComponentMediaEmbedYoutube jQuery plugin', function() {
+describe('storytellerComponentMediaEmbedYouTube jQuery plugin', function() {
   var node;
   var storyteller = window.socrata.storyteller;
 
@@ -20,12 +20,12 @@ describe('storytellerComponentMediaEmbedYoutube jQuery plugin', function() {
   });
 
   it('should throw when passed invalid arguments', function() {
-    assert.throws(function() { node.storytellerComponentMediaEmbedYoutube(); });
-    assert.throws(function() { node.storytellerComponentMediaEmbedYoutube(1); });
-    assert.throws(function() { node.storytellerComponentMediaEmbedYoutube(null); });
-    assert.throws(function() { node.storytellerComponentMediaEmbedYoutube(undefined); });
-    assert.throws(function() { node.storytellerComponentMediaEmbedYoutube({}); });
-    assert.throws(function() { node.storytellerComponentMediaEmbedYoutube([]); });
+    assert.throws(function() { node.storytellerComponentMediaEmbedYouTube(); });
+    assert.throws(function() { node.storytellerComponentMediaEmbedYouTube(1); });
+    assert.throws(function() { node.storytellerComponentMediaEmbedYouTube(null); });
+    assert.throws(function() { node.storytellerComponentMediaEmbedYouTube(undefined); });
+    assert.throws(function() { node.storytellerComponentMediaEmbedYouTube({}); });
+    assert.throws(function() { node.storytellerComponentMediaEmbedYouTube([]); });
   });
 
   describe('given a value that is not supported', function () {
@@ -34,7 +34,7 @@ describe('storytellerComponentMediaEmbedYoutube jQuery plugin', function() {
       badData.value.value.provider = 'vimeo, lol';
 
       assert.throws(function() {
-        node.storytellerComponentMediaEmbedYoutube(badData);
+        node.storytellerComponentMediaEmbedYouTube(badData);
       });
     });
   });
@@ -43,7 +43,7 @@ describe('storytellerComponentMediaEmbedYoutube jQuery plugin', function() {
     var component;
 
     beforeEach(function() {
-      component = node.storytellerComponentMediaEmbedYoutube(validComponentData);
+      component = node.storytellerComponentMediaEmbedYouTube(validComponentData);
     });
 
     it('should return a jQuery object for chaining', function() {
@@ -62,7 +62,7 @@ describe('storytellerComponentMediaEmbedYoutube jQuery plugin', function() {
         var updatedData = _.cloneDeep(validComponentData);
         updatedData.value.value.id = '1234';
 
-        node.storytellerComponentMediaEmbedYoutube(updatedData);
+        node.storytellerComponentMediaEmbedYouTube(updatedData);
 
         assert.equal(
           component.find('iframe').attr('src'),

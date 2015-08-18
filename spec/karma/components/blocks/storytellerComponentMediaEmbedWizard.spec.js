@@ -45,7 +45,7 @@ describe('storytellerComponentMediaEmbedWizard jQuery plugin', function() {
     });
 
     it('should return a jQuery object for chaining', function() {
-      assert.isTrue($.fn.isPrototypeOf(component), 'Returned value is not a jQuery collection');
+      assert.instanceOf(component, $);
     });
 
     it('should render a wizard', function() {

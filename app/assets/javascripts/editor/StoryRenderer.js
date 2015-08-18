@@ -20,7 +20,7 @@
         if (providerName === 'wizard') {
           return 'storytellerComponentMediaEmbedWizard';
         } else if (providerName === 'youtube') {
-          return 'storytellerComponentMediaEmbedYoutube';
+          return 'storytellerComponentMediaEmbedYouTube';
         }
       }
     } else if (type === 'socrataVisualization') {
@@ -246,8 +246,8 @@
       // Handle updates to block content.
       container.on('rich-text-editor::content-change', function(event) {
 
-        var blockId = $(event.target).closest('[data-block-id]').attr('data-block-id');
-        var componentIndex = $(event.target).closest('[data-component-index]').attr('data-component-index');
+        var blockId = utils.findClosestAttribute(event.target, 'data-block-id');
+        var componentIndex = utils.findClosestAttribute(event.target, 'data-component-index');
 
         var blockContent = event.originalEvent.detail.content;
 

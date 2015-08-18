@@ -36,7 +36,7 @@
 
         case Constants.EMBED_WIZARD_CHOOSE_YOUTUBE:
           _currentWizardState = action;
-          _chooseYoutube();
+          _chooseYouTube();
           break;
 
         case Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL:
@@ -126,7 +126,7 @@
       self._emitChange();
     }
 
-    function _chooseYoutube() {
+    function _chooseYouTube() {
 
       self._emitChange();
     }

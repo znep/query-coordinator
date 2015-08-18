@@ -9,6 +9,8 @@
   function _setupRichTextEditor($element, componentData) {
     var editorId = _.uniqueId();
 
+    utils.assertHasProperty(componentData, 'value');
+
     $element.addClass('text-editor').attr('data-editor-id', editorId);
 
     storyteller.richTextEditorManager.createEditor(
@@ -25,6 +27,8 @@
   function _updateRichTextEditor($element, componentData) {
     var editorId = $element.attr('data-editor-id');
     var editor = storyteller.richTextEditorManager.getEditor(editorId);
+
+    utils.assertHasProperty(componentData, 'value');
 
     utils.assert(
       editor,
@@ -53,7 +57,6 @@
     var $self = $(this);
 
     utils.assertHasProperty(componentData, 'type');
-    utils.assertHasProperty(componentData, 'value');
     utils.assert(
       componentData.type === 'text',
       'Cannot render components of type {0} with jQuery.storytellerComponentText.'.format(componentData.type)

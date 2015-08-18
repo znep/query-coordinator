@@ -162,10 +162,10 @@
         ).switchLatest();
 
         // Fires either 'columnChart' or 'histogram'
-        var visualizationType$ = Rx.Observable.combineLatest(
-          fieldName$,
+        var visualizationType$ = fieldName$.withLatestFrom(
           datasetModel$.pluck('id'),
-          function(fieldName, datasetId) {
+          aggregation$,
+          function(fieldName, datasetId, aggregation) {
 
             // To decide if we should render as a column chart, make a request
             // for (n + 1) unique elements, then ensure that there are n or less
@@ -174,13 +174,10 @@
             // excludes blank values because we don't render them and don't want
             // them to skew our decision making process. We don't actually use
             // the aggregation for anything but it's required for
-            // CardDataService.getData, so we just use the current page
-            // aggregation (making it part of the combineLatest would result in
-            // unnecessary server requests when the aggregation changed).
+            // CardDataService.getData, so it's included in the withLatestFrom.
             // processResponse just plucks the names of the buckets and passes
             // it to HistogramService.
             var whereClause = '`{0}` IS NOT NULL'.format(fieldName);
-            var aggregation = $scope.model.page.getCurrentValue('aggregation');
             var options = { limit: Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD + 1 };
             var processResponse = _.flow(_.partial(_.pluck, 'name'), HistogramService.getVisualizationTypeForData);
             var visualizationTypePromise = CardDataService.getData(fieldName, datasetId, whereClause, aggregation, options).

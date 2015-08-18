@@ -59,13 +59,15 @@
 
         var suggestionsError$ = suggestionsRequests$.
           switchLatest().
-          map(_.isNull);
+          map(_.isNull).
+          startWith(false);
 
         var numberOfSuggestions$ = suggestionsRequests$.
           switchLatest().
           map(function(suggestions) {
             return suggestions ? suggestions.length : 0;
-          });
+          }).
+          startWith(0);
 
         var suggestionsStatus$ = numberOfSuggestions$.
           map(function(numberOfSuggestions) {
@@ -100,20 +102,21 @@
           map(_.constant(true)).
           merge(suggestionsRequests$.switchLatest().map(_.constant(false)));
 
-        var suggestionsAdvice$ = numberOfSuggestions$.
-          map(function(numberOfSuggestions) {
-            return (numberOfSuggestions === 0) ?
-              I18n.suggestionToolPanel.noSuggestionsHint :
-              I18n.suggestionToolPanel.someSuggestionsHint;
-          }).
-          merge(
-            suggestionsLoading$.
-              filter(_.identity).
-              map(_.constant(I18n.suggestionToolPanel.loadingSuggestionsHint)),
-            suggestionsError$.
-              filter(_.identity).
-              map(_.constant(I18n.searchCard.promptText))
-          );
+        var suggestionsAdvice$ = Rx.Observable.combineLatest(
+          numberOfSuggestions$,
+          suggestionsLoading$,
+          suggestionsError$,
+          function(numberOfSuggestions, suggestionsLoading, error) {
+            if (suggestionsLoading) {
+              return I18n.suggestionToolPanel.loadingSuggestionsHint;
+            } else if (error) {
+              return I18n.searchCard.promptText;
+            } else if (numberOfSuggestions === 0) {
+              return I18n.suggestionToolPanel.noSuggestionsHint;
+            } else {
+              return I18n.suggestionToolPanel.someSuggestionsHint;
+            }
+          });
 
         $scope.$bindObservable('showSamples', showSamples$);
         $scope.$bindObservable('suggestions', suggestions$);

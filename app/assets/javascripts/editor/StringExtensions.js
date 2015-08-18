@@ -14,4 +14,32 @@
 
     return txt;
   };
+
+  /**
+   * Temporary polyfills until we can come up with a better implementation.
+   */
+
+  String.prototype.visualSize = function(fontSize) {
+
+    var $ruler = $('#ruler');
+    var dimensions;
+
+    if ($ruler.length < 1) {
+      $('body').append('<span class="ruler" id="ruler"></span>');
+      $ruler = $('#ruler');
+    }
+    if (!fontSize) {
+      fontSize = '';
+    }
+    $ruler.css('font-size', fontSize);
+    $ruler.text(this + '');
+    dimensions = {width: $ruler.width(), height: $ruler.height()};
+    $ruler.remove();
+
+    return dimensions;
+  };
+
+  String.prototype.visualLength = function(fontSize) {
+    return this.visualSize(fontSize).width;
+  };
 })();

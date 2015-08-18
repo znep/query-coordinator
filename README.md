@@ -52,6 +52,10 @@ your local storyteller instance with blah.dev, vertex.dev, etc.
 
 ## How to run the test suite
 
+### Setting up the test environment
+
+`bin/test_setup`
+
 ### tl;dr: All tests
 
 `bin/rake test`

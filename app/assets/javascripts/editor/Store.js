@@ -1,5 +1,8 @@
-;(function(storyteller) {
+(function(root) {
   'use strict';
+
+  var socrata = root.socrata;
+  var storyteller = socrata.storyteller;
 
   // Store base class. Example of usage:
   //
@@ -33,4 +36,4 @@
   }
 
   storyteller.Store = Store;
-})(window.socrata.storyteller);
+})(window);

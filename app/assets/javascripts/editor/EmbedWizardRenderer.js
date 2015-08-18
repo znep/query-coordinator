@@ -1,7 +1,8 @@
-;window.socrata.storyteller.EmbedWizardRenderer = (function(socrata) {
+(function(root) {
 
   'use strict';
 
+  var socrata = root.socrata;
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
@@ -61,9 +62,9 @@
       });
 
       // Do not scroll page if the container is scrolled
-      _container.on('mousewheel', utils.preventScrolling)
+      _container.on('mousewheel', utils.preventScrolling);
 
-      _overlay.on('click', function(event) {
+      _overlay.on('click', function() {
         storyteller.dispatcher.dispatch({
           action: Constants.EMBED_WIZARD_CLOSE
         });
@@ -124,9 +125,9 @@
             cardData: selectedCard
           });
         }
-      )
+      );
 
-      _dialog.on('click', '[data-embed-action]', function(event) {
+      _dialog.on('click', '[data-embed-action]', function() {
 
         var action = this.getAttribute('data-embed-action');
 
@@ -453,7 +454,7 @@
 
       datasetChooserIframe[0].onDatasetSelected = function(datasetObj) {
         $(this).trigger('datasetSelected', datasetObj);
-      }
+      };
 
       return [ heading, closeButton, datasetChooserIframe, backButton ];
     }
@@ -502,7 +503,7 @@
         $(this).
           removeClass('bg-loading-spinner').
           trigger('visualizationSelected', datasetObj);
-      }
+      };
 
       return [ heading, closeButton, configureVisualizationIframe, buttonGroup ];
     }
@@ -526,7 +527,7 @@
         insertButton.prop('disabled', true);
       }
 
-    };
+    }
 
 
     /**
@@ -597,8 +598,8 @@
     }
 
     function _addModalDialogClass(className) {
-      _dialog.addClass(className)
-    };
+      _dialog.addClass(className);
+    }
 
     /**
      * Responsible for:
@@ -615,8 +616,8 @@
       );
 
       _dialog.attr('class', newClassList.join(' '));
-    };
+    }
   }
 
-  return EmbedWizardRenderer;
-})(window.socrata);
+  root.socrata.storyteller.EmbedWizardRenderer = EmbedWizardRenderer;
+})(window);

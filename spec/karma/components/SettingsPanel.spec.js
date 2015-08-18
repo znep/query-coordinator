@@ -106,7 +106,7 @@ describe('SettingsPanel jQuery plugin', function() {
             field.val(newTitle);
             field.trigger('input');
           });
-        
+
           it('should cause the save button to enable', function() {
             assert.lengthOf(node.find('.settings-save-btn:enabled'), 1);
 
@@ -117,29 +117,53 @@ describe('SettingsPanel jQuery plugin', function() {
           });
 
           describe('then saved', function() {
-            var saveButton;
+            describe('by hitting enter', function() {
+              it('should case a STORY_SET_TITLE action, then a STORY_SAVE_METADATA action', function () {
+                var actions = [];
 
-            beforeEach(function() {
-              saveButton = node.find('.settings-save-btn');
+                storyteller.dispatcher.register(function(payload) {
+                  actions.push(payload);
+                });
+
+                field.parent('form').submit();
+
+                assert.deepEqual(
+                  _.pluck(actions, 'action'),
+                  [ Constants.STORY_SET_TITLE, Constants.STORY_SAVE_METADATA ]
+                );
+
+                assert.equal(actions[0].storyUid, standardMocks.validStoryUid);
+                assert.equal(actions[0].title, newTitle);
+
+                assert.equal(actions[1].storyUid, standardMocks.validStoryUid);
+              });
             });
 
-            it('should cause a STORY_SET_TITLE action, then a STORY_SAVE_METADATA action', function() {
-              var actions = [];
+            describe('by click the save button', function() {
+              var saveButton;
 
-              storyteller.dispatcher.register(function(payload) {
-                actions.push(payload);
+              beforeEach(function() {
+                saveButton = node.find('.settings-save-btn');
               });
-              saveButton.click();
 
-              assert.deepEqual(
-                _.pluck(actions, 'action'),
-                [ Constants.STORY_SET_TITLE, Constants.STORY_SAVE_METADATA ]
-              );
+              it('should cause a STORY_SET_TITLE action, then a STORY_SAVE_METADATA action', function() {
+                var actions = [];
 
-              assert.equal(actions[0].storyUid, standardMocks.validStoryUid);
-              assert.equal(actions[0].title, newTitle);
+                storyteller.dispatcher.register(function(payload) {
+                  actions.push(payload);
+                });
+                saveButton.click();
 
-              assert.equal(actions[1].storyUid, standardMocks.validStoryUid);
+                assert.deepEqual(
+                  _.pluck(actions, 'action'),
+                  [ Constants.STORY_SET_TITLE, Constants.STORY_SAVE_METADATA ]
+                );
+
+                assert.equal(actions[0].storyUid, standardMocks.validStoryUid);
+                assert.equal(actions[0].title, newTitle);
+
+                assert.equal(actions[1].storyUid, standardMocks.validStoryUid);
+              });
             });
           });
         });

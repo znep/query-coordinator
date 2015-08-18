@@ -1,4 +1,4 @@
-;window.socrata.storyteller.StoryRendererElementCache = (function(storyteller) {
+(function(root) {
 
   'use strict';
 
@@ -72,7 +72,6 @@
 
     this.getUnusedBlockIds = function(currentBlockIds) {
 
-      var self = this;
       var blockIdsToRemove = _.difference(
         Object.keys(_elements),
         currentBlockIds
@@ -86,5 +85,5 @@
     };
   }
 
-  return StoryRendererElementCache;
-})(window.socrata.storyteller);
+  root.socrata.storyteller.StoryRendererElementCache = StoryRendererElementCache;
+})(window);

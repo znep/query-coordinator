@@ -5,7 +5,7 @@
     $compile,
     $rootScope,
     Constants,
-    VectorTiles,
+    VectorTileService,
     LeafletHelpersService,
     LeafletVisualizationHelpersService,
     FlyoutService,
@@ -541,7 +541,7 @@
 
           // Don't create duplicate layers.
           if (!featureLayers.has(vectorTileGetter)) {
-            layer = VectorTiles.create(featureLayerOptions);
+            layer = VectorTileService.create(featureLayerOptions);
             featureLayers.set(vectorTileGetter, layer);
             map.addLayer(layer);
           }

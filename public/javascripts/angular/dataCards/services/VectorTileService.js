@@ -3,7 +3,7 @@
 
   // This is the Angular wrapper around VectorTileUtil, VectorTileFeature,
   // VectorTileLayer and VectorTileManager.
-  function VectorTiles(Constants, ServerConfig) {
+  function VectorTileService(Constants, ServerConfig) {
 
     /****************************************************************************
      *
@@ -1112,6 +1112,6 @@
 
   angular.
     module('dataCards.services').
-      factory('VectorTiles', VectorTiles);
+      factory('VectorTileService', VectorTileService);
 
 })();

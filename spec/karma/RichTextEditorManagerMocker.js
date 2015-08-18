@@ -1,27 +1,25 @@
 window.socrata.storyteller.RichTextEditorManagerMocker = {
 
-  self: this,
-
   mock: function() {
-    window.socrata.storyteller.richTextEditorManager = {
-      createEditor: function() { return true; },
-
-      getEditor: function(callback) {
+    window.socrata.storyteller.RichTextEditorManagerMocker.spies = {
+      createEditorSpy: sinon.spy(_.constant(true)),
+      deleteEditorSpy: sinon.spy(),
+      setContentSpy: sinon.spy(),
+      getEditorSpy: sinon.spy(function(callback) {
         return {
-          setContent: function(content) {
-            self.setContentCallback(content);
-          }
-        }
-      }
+          setContent: window.socrata.storyteller.RichTextEditorManagerMocker.spies.setContentSpy
+        };
+      })
+    };
+
+    window.socrata.storyteller.richTextEditorManager = {
+      createEditor: window.socrata.storyteller.RichTextEditorManagerMocker.spies.createEditorSpy,
+      deleteEditor: window.socrata.storyteller.RichTextEditorManagerMocker.spies.deleteEditorSpy,
+      getEditor: window.socrata.storyteller.RichTextEditorManagerMocker.spies.getEditorSpy
     };
   },
 
   unmock: function() {
     delete window.socrata.storyteller.richTextEditorManager;
-  },
-
-  setContentCallback: function(callback) {
-    self.setContentCallback = callback;
   }
-
 };

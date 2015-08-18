@@ -12,6 +12,8 @@ describe('StoryRenderer', function() {
     storyteller.dispatcher = storyteller.dispatcher;
     storyteller.StoryRenderer = storyteller.StoryRenderer;
 
+    storyteller.RichTextEditorManagerMocker.mock();
+
     storyUid = standardMocks.validStoryUid;
     imageBlockId = standardMocks.imageBlockId;
     textBlockId = standardMocks.textBlockId;
@@ -37,6 +39,8 @@ describe('StoryRenderer', function() {
     if (storyteller.storyRenderer) {
       storyteller.storyRenderer.destroy();
     }
+
+    storyteller.RichTextEditorManagerMocker.unmock();
   });
 
   function forceRender() {

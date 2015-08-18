@@ -17,19 +17,19 @@
     var insertionHintIndex = -1;
     var onRenderError = options.onRenderError || function() {};
     var componentTemplateRenderers = {
-      'text': TextComponentRenderer.renderTemplate,
+      'text': 'storytellerComponentText',
       'media': MediaComponentRenderer.renderTemplate,
       'socrataVisualization': SocrataVisualizationComponentRenderer.renderTemplate,
       'layout': 'storytellerComponentLayout'
     };
     var componentTemplateCheckers = {
-      'text': TextComponentRenderer.canReuseTemplate,
+      'text': _.constant(true),
       'media': MediaComponentRenderer.canReuseTemplate,
       'socrataVisualization': SocrataVisualizationComponentRenderer.canReuseTemplate,
       'layout': _.constant(true)
     };
     var componentDataRenderers = {
-      'text': TextComponentRenderer.renderData,
+      'text': 'storytellerComponentText',
       'media': MediaComponentRenderer.renderData,
       'socrataVisualization': SocrataVisualizationComponentRenderer.renderData,
       'layout': 'storytellerComponentLayout'
@@ -233,13 +233,8 @@
       // Handle updates to block content.
       container.on('rich-text-editor::content-change', function(event) {
 
-        var editorIdComponents = event.originalEvent.detail.id.split('-');
-        var editorIdComponentCount = editorIdComponents.length - 1;
-        var componentIndex = editorIdComponents[editorIdComponentCount];
-
-        // Remove the last (component index) element
-        editorIdComponents.length = editorIdComponentCount;
-        var blockId = editorIdComponents.join('-');
+        var blockId = $(event.target).closest('[data-block-id]').attr('data-block-id');
+        var componentIndex = $(event.target).closest('[data-component-index]').attr('data-component-index');
 
         var blockContent = event.originalEvent.detail.content;
 
@@ -326,17 +321,12 @@
           storyStore.
           getBlockComponents(blockId).
           forEach(function(componentDatum, i) {
+            var componentElement = elementCache.getComponent(blockId, i);
 
-            if (componentDatum.type === 'text') {
-
-              var editorId = blockId + '-' + i;
-
-              storyteller.richTextEditorManager.deleteEditor(editorId);
-            }
+            componentElement.trigger('destroy');
 
             if (componentDatum.type === 'socrataVisualization') {
 
-              var componentElement = elementCache.getComponent(blockId, i);
               var destroyVisualizationEvent = new window.CustomEvent(
                 Constants.SOCRATA_VISUALIZATION_DESTROY,
                 {
@@ -543,9 +533,13 @@
 
         if (componentDatum.type === 'text') {
 
-          editorId = blockId + '-' + i;
-          contentHeight = storyteller.
-            richTextEditorManager.
+          editorId = blockElement
+            .find('.component-container')
+            .eq(i)
+            .children(':first')
+            .attr('data-editor-id');
+
+          contentHeight = storyteller.richTextEditorManager.
             getEditor(editorId).
             getContentHeight()
 

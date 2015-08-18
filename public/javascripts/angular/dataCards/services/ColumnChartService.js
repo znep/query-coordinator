@@ -59,8 +59,14 @@
       }
     }
 
+    function unregisterColumnChartEvents(element) {
+      element.off('SOCRATA_VISUALIZATION_COLUMN_SELECTION');
+      element.off('SOCRATA_VISUALIZATION_COLUMN_EXPANSION');
+    }
+
     return {
-      registerColumnChartEvents: registerColumnChartEvents
+      registerColumnChartEvents: registerColumnChartEvents,
+      unregisterColumnChartEvents: unregisterColumnChartEvents
     };
   }
 

@@ -307,6 +307,7 @@
 
         $scope.$destroyAsObservable(element).subscribe(function() {
           element.closest('card-visualization').css({ marginLeft: 0, marginRight: 0 });
+          ColumnChartService.unregisterColumnChartEvents(element);
         });
       }
     };

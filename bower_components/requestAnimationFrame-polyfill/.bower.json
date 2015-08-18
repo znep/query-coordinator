@@ -1,5 +1,6 @@
 {
   "name": "requestAnimationFrame-polyfill",
+  "version": "0.0.1",
   "homepage": "https://github.com/arcade/requestAnimationFrame-polyfill",
   "authors": [
     "Alex Bularca <alexandru.bularca@gmail.com>"
@@ -18,14 +19,15 @@
     "test",
     "tests"
   ],
-  "_release": "3b404f7a6a",
-  "_resolution": {
-    "type": "branch",
-    "branch": "master",
-    "commit": "3b404f7a6a90734a50763f3a0cfae286d1242fcf"
+  "_cacheHeaders": {
+    "ETag": "771b63d778e875dbd8314d047713ce3068ebbde9",
+    "Last-Modified": "Mon, 10 Aug 2015 21:15:43 GMT",
+    "Content-Length": "882",
+    "Content-Type": "application/x-gzip",
+    "Content-Disposition": "attachment; filename=\"requestAnimationFrame-polyfill-master-3b404f7a6a90734a50763f3a0cfae286d1242fcf.tar.gz\""
   },
-  "_source": "git://github.com/arcade/requestAnimationFrame-polyfill.git",
+  "_release": "e-tag:771b63d778",
+  "_source": "art://arcade/requestAnimationFrame-polyfill",
   "_target": "*",
-  "_originalSource": "requestAnimationFrame-polyfill",
-  "_direct": true
+  "_originalSource": "requestAnimationFrame-polyfill"
 }

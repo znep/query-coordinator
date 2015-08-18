@@ -24,15 +24,15 @@
     "javascript",
     "library"
   ],
-  "homepage": "https://github.com/jquery/jquery",
-  "_release": "2.1.1",
-  "_resolution": {
-    "type": "version",
-    "tag": "2.1.1",
-    "commit": "4dec426aa2a6cbabb1b064319ba7c272d594a688"
+  "_cacheHeaders": {
+    "ETag": "712b56437e4c11de0f29cd974f1f3ad7fda56f47",
+    "Last-Modified": "Mon, 10 Aug 2015 21:15:43 GMT",
+    "Content-Length": "661216",
+    "Content-Type": "application/x-gzip",
+    "Content-Disposition": "attachment; filename=\"jquery-2.1.1.tar.gz\""
   },
-  "_source": "git://github.com/jquery/jquery.git",
-  "_target": "~2.1.1",
-  "_originalSource": "jquery",
-  "_direct": true
+  "_release": "e-tag:712b56437e",
+  "_source": "art://jquery/jquery",
+  "_target": "2.1.1",
+  "_originalSource": "jquery"
 }

@@ -1,14 +1,39 @@
 {
   "name": "showdown",
-  "homepage": "https://github.com/coreyti/showdown",
-  "version": "0.3.1",
-  "_release": "0.3.1",
-  "_resolution": {
-    "type": "version",
-    "tag": "v0.3.1",
-    "commit": "6b21d1497d6720e2f6279105b07764ce349b32ce"
+  "description": "JavaScript port of Markdown",
+  "homepage": "https://github.com/showdownjs/showdown",
+  "authors": [
+    "John Fraser",
+    "Corey Innis (https://github.com/coreyti)",
+    "Pascal Deschênes (https://github.com/pdeschen)",
+    "Estevão Santos (https://github.com/tivie)"
+  ],
+  "main": [
+    "src/showdown.js"
+  ],
+  "ignore": [
+    ".jshintrc",
+    "perlMarkdown/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/showdownjs/showdown.git"
   },
-  "_source": "git://github.com/coreyti/showdown.git",
+  "keywords": [
+    "markdown",
+    "md",
+    "mdown"
+  ],
+  "license": "https://github.com/showdownjs/showdown/blob/master/license.txt",
+  "_cacheHeaders": {
+    "ETag": "a1f60761ca5375c6200dfd1903212e89fcfe9e90",
+    "Last-Modified": "Mon, 10 Aug 2015 21:15:50 GMT",
+    "Content-Length": "65998",
+    "Content-Type": "application/x-gzip",
+    "Content-Disposition": "attachment; filename=\"showdown-0.3.4.tar.gz\""
+  },
+  "_release": "e-tag:a1f60761ca",
+  "_source": "art://showdownjs/showdown",
   "_target": "~0.3.1",
   "_originalSource": "showdown"
 }

@@ -143,17 +143,22 @@ A few complications are introduced:
 - Bower and bower-installer (and by extension node and npm) must be installed for development __only__.
 - Bower packages don't always specify their main files (= what bower-installer installs). This can fortunately be overridden or specified in our bower.json.
 
+Bower + Artifactory (8/11/15 update)
+- See "Bower packages" in https://docs.google.com/document/d/1KihQV3-UBfZEOKIInsQlloESR6NLck8RuP4BUKzX_Y8/edit
+- We have seeded our bower components into Artifactory, which involves using `bower-art` rather than simply `bower`. In order to use Bower with Artifactory you need to run `npm install -g bower-art-resolver`
+
 #### Setting up bower locally
 1. Install node.js (platform dependent).
 2. Install bower: `# npm install -g bower`
 3. Install bower-installer: `# npm install -g bower-installer@0.7.1`
+4. Install bower-art: `# npm install -g bower-art-resolver`
 
 #### Installing new bower packages (and save to bower.json):
-1. `frontend# bower install --save awesome-package`
+1. `frontend# bower-art install --save awesome-package`
 2. `frontend# bower-installer`
 
 #### Updating bower packages
-1. `frontend# bower update [awesome-package]`
+1. `frontend# bower-art update [awesome-package]`
 2. `frontend# bower-installer`
 
 ## Dev Proxy

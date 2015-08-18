@@ -31,14 +31,15 @@
     "lab"
   ],
   "license": "MIT",
-  "_release": "0.5.6",
-  "_resolution": {
-    "type": "version",
-    "tag": "v0.5.6",
-    "commit": "f32c4b552f28664fe48514fcb49f59459ec50d4d"
+  "_cacheHeaders": {
+    "ETag": "79d5c4efa3095a8180e1866fabcaa39538cb3ea7",
+    "Last-Modified": "Mon, 10 Aug 2015 21:15:43 GMT",
+    "Content-Length": "49165",
+    "Content-Type": "application/x-gzip",
+    "Content-Disposition": "attachment; filename=\"chroma.js-v0.5.6.tar.gz\""
   },
-  "_source": "git://github.com/gka/chroma.js.git",
-  "_target": "~0.5.6",
-  "_originalSource": "chroma-js",
-  "_direct": true
+  "_release": "e-tag:79d5c4efa3",
+  "_source": "art://gka/chroma.js",
+  "_target": "0.5.6",
+  "_originalSource": "chroma-js"
 }

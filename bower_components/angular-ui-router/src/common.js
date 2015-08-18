@@ -15,16 +15,15 @@ function inherit(parent, extra) {
   return extend(new (extend(function() {}, { prototype: parent }))(), extra);
 }
 
-function merge(dest) {
+function merge(dst) {
   forEach(arguments, function(obj) {
-    if (obj !== dest) {
+    if (obj !== dst) {
       forEach(obj, function(value, key) {
-        if (!dest.hasOwnProperty(key)) dest[key] = value;
+        if (!dst.hasOwnProperty(key)) dst[key] = value;
       });
     }
   });
-
-  return dest;
+  return dst;
 }
 
 /**
@@ -41,7 +40,6 @@ function ancestors(first, second) {
     if (first.path[n] !== second.path[n]) break;
     path.push(first.path[n]);
   }
-
   return path;
 }
 
@@ -60,7 +58,6 @@ function keys(object) {
   angular.forEach(object, function(val, key) {
     result.push(key);
   });
-
   return result;
 }
 
@@ -83,7 +80,6 @@ function arraySearch(array, value) {
   for (; from < len; from++) {
     if (from in array && array[from] === value) return from;
   }
-
   return -1;
 }
 
@@ -109,7 +105,6 @@ function inheritParams(currentParams, newParams, $current, $to) {
       inherited[parentParams[j]] = currentParams[parentParams[j]];
     }
   }
-
   return extend({}, inherited, newParams);
 }
 
@@ -127,7 +122,6 @@ function normalize(keys, values) {
     var value = values[name];
     normalized[name] = (value != null) ? String(value) : null;
   });
-
   return normalized;
 }
 
@@ -143,18 +137,13 @@ function normalize(keys, values) {
 function equalForKeys(a, b, keys) {
   if (!keys) {
     keys = [];
-    for (var n in a) {
-      keys.push(n); // Used instead of Object.keys() for IE8 compatibility
-    }
+    for (var n in a) keys.push(n); // Used instead of Object.keys() for IE8 compatibility
   }
 
   for (var i=0; i<keys.length; i++) {
     var k = keys[i];
-    if (a[k] != b[k]) {
-      return false; // Not '===', values aren't necessarily normalized
-    }
+    if (a[k] != b[k]) return false; // Not '===', values aren't necessarily normalized
   }
-
   return true;
 }
 
@@ -163,7 +152,7 @@ function equalForKeys(a, b, keys) {
  *
  * @param {Array} keys
  * @param {Object} values
- * @return {Object} Returns a subset of `values`.
+ * @return {Boolean} Returns a subset of `values`.
  */
 function filterByKeys(keys, values) {
   var filtered = {};
@@ -171,7 +160,6 @@ function filterByKeys(keys, values) {
   forEach(keys, function (name) {
     filtered[name] = values[name];
   });
-
   return filtered;
 }
 /**
@@ -190,7 +178,7 @@ angular.module('ui.router.util', ['ng']);
 /**
  * @ngdoc overview
  * @name ui.router.router
- *
+ * 
  * @requires ui.router.util
  *
  * @description
@@ -204,7 +192,7 @@ angular.module('ui.router.router', ['ui.router.util']);
 /**
  * @ngdoc overview
  * @name ui.router.state
- *
+ * 
  * @requires ui.router.router
  * @requires ui.router.util
  *
@@ -213,7 +201,7 @@ angular.module('ui.router.router', ['ui.router.util']);
  *
  * This module is a dependency of the main ui.router module. Do not include this module as a dependency
  * in your angular app (use {@link ui.router} module instead).
- *
+ * 
  */
 angular.module('ui.router.state', ['ui.router.router', 'ui.router.util']);
 
@@ -225,17 +213,17 @@ angular.module('ui.router.state', ['ui.router.router', 'ui.router.util']);
  *
  * @description
  * # ui.router
- *
- * ## The main module for ui.router
+ * 
+ * ## The main module for ui.router 
  * There are several sub-modules included with the ui.router module, however only this module is needed
- * as a dependency within your angular app. The other modules are for organization purposes.
+ * as a dependency within your angular app. The other modules are for organization purposes. 
  *
  * The modules are:
  * * ui.router - the main "umbrella" module
- * * ui.router.router -
- *
+ * * ui.router.router - 
+ * 
  * *You'll need to include **only** this module as the dependency within your angular app.*
- *
+ * 
  * <pre>
  * <!doctype html>
  * <html ng-app="myApp">

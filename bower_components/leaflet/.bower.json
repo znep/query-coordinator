@@ -21,15 +21,15 @@
     "src",
     "build"
   ],
-  "homepage": "https://github.com/Leaflet/Leaflet",
-  "_release": "0.7.3",
-  "_resolution": {
-    "type": "version",
-    "tag": "v0.7.3",
-    "commit": "8a5fdfc6e3db2807b8f0dd617474e4ab2949142b"
+  "_cacheHeaders": {
+    "ETag": "c235ffb3a9bc298529adb5a6704458a609d48f0f",
+    "Last-Modified": "Mon, 10 Aug 2015 21:15:43 GMT",
+    "Content-Length": "666886",
+    "Content-Type": "application/x-gzip",
+    "Content-Disposition": "attachment; filename=\"Leaflet-v0.7.3.tar.gz\""
   },
-  "_source": "git://github.com/Leaflet/Leaflet.git",
-  "_target": "~0.7.3",
-  "_originalSource": "leaflet",
-  "_direct": true
+  "_release": "e-tag:c235ffb3a9",
+  "_source": "art://Leaflet/Leaflet",
+  "_target": "0.7.3",
+  "_originalSource": "leaflet"
 }

@@ -25,7 +25,6 @@
     "commit": "0a39e7b09dd86b3fd8328956527a34df9fbfe547"
   },
   "_source": "git://github.com/devTristan/vector-tile-js.git",
-  "_target": "~0.1.1",
-  "_originalSource": "devTristan/vector-tile-js",
-  "_direct": true
+  "_target": "0.1.1",
+  "_originalSource": "devTristan/vector-tile-js"
 }

@@ -23,14 +23,15 @@
     "test",
     "examples"
   ],
-  "_release": "0.0.3",
-  "_resolution": {
-    "type": "version",
-    "tag": "v0.0.3",
-    "commit": "fb8360da1597c9bcbd6ce36366757b13e9b0558a"
+  "_cacheHeaders": {
+    "ETag": "2d9f1a97bfe42adf9ad640bbbde93ad954f322a1",
+    "Last-Modified": "Mon, 10 Aug 2015 21:15:43 GMT",
+    "Content-Length": "49317",
+    "Content-Type": "application/x-gzip",
+    "Content-Disposition": "attachment; filename=\"pbf-v0.0.3.tar.gz\""
   },
-  "_source": "git://github.com/devTristan/pbf.git",
-  "_target": "~0.0.3",
-  "_originalSource": "pbf",
-  "_direct": true
+  "_release": "e-tag:2d9f1a97bf",
+  "_source": "art://devTristan/pbf",
+  "_target": "0.0.3",
+  "_originalSource": "pbf"
 }

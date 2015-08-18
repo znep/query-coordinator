@@ -26,13 +26,15 @@
   "dependencies": {
     "jquery": ">= 1.4.3"
   },
-  "_release": "1.7.4",
-  "_resolution": {
-    "type": "version",
-    "tag": "v1.7.4",
-    "commit": "a4e7172e57994c2c2c5e456c943d2281eb6f7332"
+  "_cacheHeaders": {
+    "ETag": "d84fe8fca7bf44ae6604f0ce72b705620e3847e6",
+    "Last-Modified": "Mon, 10 Aug 2015 23:53:18 GMT",
+    "Content-Length": "9773",
+    "Content-Type": "application/x-gzip",
+    "Content-Disposition": "attachment; filename=\"jQuery.dotdotdot-v1.7.4.tar.gz\""
   },
-  "_source": "git://github.com/BeSite/jQuery.dotdotdot.git",
-  "_target": "~1.7.4",
+  "_release": "e-tag:d84fe8fca7",
+  "_source": "art://BeSite/jQuery.dotdotdot",
+  "_target": "1.7.4",
   "_originalSource": "jQuery.dotdotdot"
 }

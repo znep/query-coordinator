@@ -22,14 +22,15 @@
     "test",
     "tests"
   ],
-  "_release": "1.9.0",
-  "_resolution": {
-    "type": "version",
-    "tag": "1.9.0",
-    "commit": "5d6f1b2d9c8900e59ccad6a466254ed9816c9cb4"
+  "_cacheHeaders": {
+    "ETag": "cc8e5b342509d0262c925e4b2227c0fbe281ebe4",
+    "Last-Modified": "Mon, 10 Aug 2015 21:15:43 GMT",
+    "Content-Length": "30810",
+    "Content-Type": "application/x-gzip",
+    "Content-Disposition": "attachment; filename=\"sinon-browser-only-1.9.0.tar.gz\""
   },
-  "_source": "git://github.com/wilmoore/sinon-browser-only.git",
-  "_target": "~1.9.0",
-  "_originalSource": "sinon-browser-only",
-  "_direct": true
+  "_release": "e-tag:cc8e5b3425",
+  "_source": "art://wilmoore/sinon-browser-only",
+  "_target": "1.9.0",
+  "_originalSource": "sinon-browser-only"
 }

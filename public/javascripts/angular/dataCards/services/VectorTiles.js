@@ -17,6 +17,10 @@
         return _.at(tile, ['zoom', 'x', 'y']).join(':');
       },
 
+      getLeafletTileId: function(tileId) {
+        return tileId.split(':').slice(1, 3).join(':');
+      },
+
       // Given a point and zoom level, return the x, y, and z values
       // of the tile containing this point.  The point should be specified
       // as an object containing lat and lng keys.
@@ -71,8 +75,7 @@
       },
 
       getTileLayerCanvas: function(tileLayer, tileId) {
-        var leafletTileId = tileId.split(':').slice(1, 3).join(':');
-        return _.get(tileLayer, '_tiles.' + leafletTileId);
+        return _.get(tileLayer, '_tiles.' + VectorTileUtil.getLeafletTileId(tileId));
       }
     };
 
@@ -143,7 +146,6 @@
     };
 
     VectorTileFeature.prototype.drawPoint = function(canvas, geometry, computedStyle) {
-
       var ctx;
       var projectedPoint;
       var color;
@@ -378,7 +380,6 @@
       // is handled by our own `renderTile` method instead (as
       // a result of needing to fetch and parse protocol buffers.
       drawTile: function(canvas, tilePoint, zoom) {
-
         var tileId = VectorTileUtil.getTileId({x: tilePoint.x, y: tilePoint.y, zoom: zoom});
 
         this.featuresByTile[tileId] = [];
@@ -433,7 +434,7 @@
         var i;
 
         // First, clear the canvas
-        if (this._tiles.hasOwnProperty(tileId)) {
+        if (_.has(this._tiles, VectorTileUtil.getLeafletTileId(tileId))) {
           this.clearTile(tileId);
         }
 
@@ -448,8 +449,7 @@
       },
 
       clearTile: function(tileId) {
-
-        var canvas = VectorTileUtil.getTileLayerCanvas(this.tileLayer, tileId);
+        var canvas = VectorTileUtil.getTileLayerCanvas(this, tileId);
         var ctx = canvas.getContext('2d');
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);

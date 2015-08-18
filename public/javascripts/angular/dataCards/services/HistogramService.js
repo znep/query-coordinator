@@ -200,11 +200,14 @@
       return _.every(buckets, isInteger) ? 'columnChart' : 'histogram';
     }
 
-    function transformDataForColumnChart(data, specialIndex) {
+    // Given an array of bucketed data and a bucket index that is being
+    // filtered on, transform the bucketed data into the tabular format
+    // expected by the column chart.
+    function transformDataForColumnChart(data, selectedIndex) {
       return data.unfiltered.map(function(bucket, i) {
         var filteredValue = data.filtered[i].value;
 
-        if (_.isDefined(specialIndex) && i !== specialIndex) {
+        if (_.isDefined(selectedIndex) && i !== selectedIndex) {
           filteredValue = 0;
         }
 
@@ -212,7 +215,7 @@
           bucket.start,
           bucket.value,
           filteredValue,
-          i === specialIndex
+          i === selectedIndex
         ];
       });
     }

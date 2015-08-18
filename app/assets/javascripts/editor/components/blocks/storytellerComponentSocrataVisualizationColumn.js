@@ -33,7 +33,6 @@
     var baseQuery;
     var renderedFourByFour = $element.attr('data-rendered-visualization-four-by-four');
     var renderedBaseQuery = $element.attr('data-rendered-visualization-base-query');
-    var destroyVisualizationEvent;
 
     utils.assertHasProperty(value, 'dataSource');
     utils.assertHasProperty(value.dataSource, 'type');

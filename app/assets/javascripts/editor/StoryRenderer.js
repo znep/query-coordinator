@@ -40,10 +40,6 @@
   function StoryRenderer(options) {
 
     var dispatcher = storyteller.dispatcher;
-    var TextComponentRenderer = storyteller.TextComponentRenderer;
-    var MediaComponentRenderer = storyteller.MediaComponentRenderer;
-    var SocrataVisualizationComponentRenderer = storyteller.SocrataVisualizationComponentRenderer;
-    var LayoutComponentRenderer = storyteller.LayoutComponentRenderer;
 
     var storyUid = options.storyUid || null;
     var container = options.storyContainerElement || null;
@@ -185,7 +181,9 @@
           var shouldDelete = true;
 
           if (storyteller.blockRemovalConfirmationStore.needsConfirmation(blockId)) {
+            /*eslint-disable no-alert*/
             shouldDelete = confirm(I18n.t('editor.remove_block_confirmation'));
+            /*eslint-enable*/
           }
 
           if (shouldDelete) {
@@ -517,7 +515,7 @@
       moveDownButton.prop('disabled', blockIndex === (blockCount - 1));
     }
 
-    function _updateEditorHeights(blockId, blockElement) {
+    function _updateEditorHeights(blockId, $blockElement) {
 
       var componentData = storyteller.storyStore.getBlockComponents(blockId);
       var editorId;
@@ -528,11 +526,11 @@
 
         if (componentDatum.type === 'text') {
 
-          editorId = blockElement
-            .find('.component-container')
-            .eq(i)
-            .children(':first')
-            .attr('data-editor-id');
+          editorId = $blockElement.
+            find('.component-container').
+            eq(i).
+            children(':first').
+            attr('data-editor-id');
 
           contentHeight = storyteller.richTextEditorManager.
             getEditor(editorId).
@@ -540,7 +538,7 @@
 
         } else {
 
-          contentHeight = blockElement.
+          contentHeight = $blockElement.
             find('.component-container').
             eq(i).
             // Not sure why subtracting one causes
@@ -556,7 +554,7 @@
         );
       });
 
-      blockElement.
+      $blockElement.
         find('.text-editor > iframe').
         height(maxEditorHeight);
     }

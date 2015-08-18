@@ -156,7 +156,7 @@
       if (!valid) {
         throw new Error(
           'Value must be one of [{0}] (value: {1}).'.
-            format(types.join(', '), value)
+            format(instantiators.join(', '), value)
         );
       }
     }

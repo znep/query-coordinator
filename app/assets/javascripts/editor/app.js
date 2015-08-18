@@ -103,7 +103,10 @@ $(document).on('ready', function() {
   var embedWizardOptions = {
     embedWizardContainerElement: $('#embed-wizard')
   };
+
+  /*eslint-disable no-unused-vars*/
   var embedWizardRenderer = new storyteller.EmbedWizardRenderer(embedWizardOptions);
+  /*eslint-enable*/
 
   var userStoryOptions = {
     storyUid: storyteller.userStoryUid,
@@ -114,7 +117,10 @@ $(document).on('ready', function() {
     warningMessageElement: $('.user-story .message-warning'),
     onRenderError: function() {}
   };
+
+  /*eslint-disable no-unused-vars*/
   var userStoryRenderer = new storyteller.StoryRenderer(userStoryOptions);
+  /*eslint-enable*/
 
   /**
    * RichTextEditorToolbar events

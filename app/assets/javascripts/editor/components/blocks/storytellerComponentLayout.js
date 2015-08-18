@@ -1,12 +1,14 @@
 (function (root, $) {
 
+  'use strict';
+
   var socrata = root.socrata;
   var utils = socrata.utils;
 
   function _renderLayoutContent(componentData) {
     var $element;
 
-    if(componentData.value === 'spacer') {
+    if (componentData.value === 'spacer') {
       $element = $('<div>', { 'class': 'spacer'});
     } else if (componentData.value === 'horizontalRule') {
       $element = $('<hr>');

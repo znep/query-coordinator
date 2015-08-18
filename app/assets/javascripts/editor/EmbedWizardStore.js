@@ -147,7 +147,7 @@
             setUid(data.nbeId);
           }).
           fail(function() {
-            alert('This dataset cannot be chosen at this time.');
+            alert('This dataset cannot be chosen at this time.'); //eslint-disable-line no-alert
           });
       }
 

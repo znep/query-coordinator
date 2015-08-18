@@ -307,7 +307,9 @@
       if (_editor.hasOwnProperty('removeAllFormatting')) {
         _editor.removeAllFormatting(selection);
       } else {
+        /*eslint-disable no-alert*/
         alert('Support for the `removeAllFormatting()` method exists in Squire but not yet in the bower package that we are using.');
+        /*eslint-enable*/
       }
 
       _updateBlockType('div');

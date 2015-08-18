@@ -177,8 +177,8 @@
       });
     }
 
-    // Given an array of data, return the type of visualization that is best
-    // suited to display the distribution.
+    // Given an array of unique column values, return the type of visualization
+    // that is best suited to display the distribution.
     function getVisualizationTypeForData(data) {
       if (data.length > Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD) {
         return 'histogram';
@@ -193,11 +193,16 @@
 
     function transformDataForColumnChart(data, specialIndex) {
       return data.unfiltered.map(function(bucket, i) {
-        var filteredValue = (i === specialIndex) ? bucket.value : 0;
+        var filteredValue = data.filtered[i].value;
+
+        if (specialIndex && i !== specialIndex) {
+          filteredValue = 0;
+        }
+
         return [
           bucket.start,
           bucket.value,
-          _.isDefined(specialIndex) ? filteredValue : bucket.value,
+          filteredValue,
           i === specialIndex
         ];
       });

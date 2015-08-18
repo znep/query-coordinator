@@ -257,7 +257,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             expanded: expanded,
             labelUnit: rowDisplayUnit,
             showFiltered: showFiltered,
-            showAllLabels: showAllLabels
+            showAllLabels: expanded || showAllLabels
           };
           columnChart.render(chartData, chartRenderOptions);
 

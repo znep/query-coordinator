@@ -5,7 +5,7 @@
 
     function registerColumnChartEvents($scope, element) {
       element.on('SOCRATA_VISUALIZATION_COLUMN_SELECTION', handleDatumSelect);
-      element.on('SOCRATA_VISUALIZATION_COLUMN_OPTIONS', handleExpandedToggle);
+      element.on('SOCRATA_VISUALIZATION_COLUMN_EXPANSION', handleExpandedToggle);
 
       function handleDatumSelect(event) {
 

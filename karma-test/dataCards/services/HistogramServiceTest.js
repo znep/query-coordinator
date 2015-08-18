@@ -350,4 +350,62 @@ describe('HistogramService', function() {
       });
     });
   });
+
+  describe('getVisualizationTypeForData', function() {
+
+    var cardinalityThreshold, rangeThreshold;
+
+    beforeEach(function() {
+      cardinalityThreshold = Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD;
+      rangeThreshold = Constants.HISTOGRAM_COLUMN_CHART_RANGE_THRESHOLD;
+    });
+
+    function generateInput(buckets) {
+      if (_.isNumber(buckets)) {
+        buckets = _.range(0, buckets);
+      }
+
+      return _.map(buckets, function(bucket) {
+        return { name: bucket, value: 1 };
+      });
+    }
+
+    function run(input, output) {
+      var result = HistogramService.getVisualizationTypeForData(input);
+      expect(result).to.equal(output);
+    }
+
+    it('should return "histogram" if the data is empty', function() {
+      run([], 'histogram');
+    });
+
+    it('should return "histogram" if the data is not an array', function() {
+      run(undefined, 'histogram');
+      run(null, 'histogram');
+      run(NaN, 'histogram');
+      run('purple', 'histogram');
+      run(-19, 'histogram');
+    });
+
+    it('should return "histogram" if the length is above a threshold', function() {
+      var input = generateInput(cardinalityThreshold + 1);
+      run(input, 'histogram');
+    });
+
+    it('should return "histogram" if the length is below a threshold and any of them are floats', function() {
+      var input = generateInput(Math.floor(cardinalityThreshold / 2));
+      input[0] = { name: .1, value: 1 };
+      run(input, 'histogram');
+    });
+
+    it('should return "histogram" if the values span a range greater than a threshold', function() {
+      var input = generateInput([rangeThreshold, (rangeThreshold * 2) + 1]);
+      run(input, 'histogram');
+    });
+
+    it('should return "columnChart" if the length is below a threshold and everything is an integer and the values span a range below a threshold', function() {
+      var input = generateInput([-4, -1, 0, 1.0, 7, 8, 9, 15]);
+      run(input, 'columnChart');
+    });
+  });
 });

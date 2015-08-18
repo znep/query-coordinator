@@ -180,7 +180,16 @@
     // Given an array of unique column values, return the type of visualization
     // that is best suited to display the distribution.
     function getVisualizationTypeForData(data) {
+      if (!_.isArray(data) || _.isEmpty(data)) {
+        return 'histogram';
+      }
+
       if (data.length > Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD) {
+        return 'histogram';
+      }
+
+      var extent = d3.extent(data, _.property('name'));
+      if (extent[1] - extent[0] > Constants.HISTOGRAM_COLUMN_CHART_RANGE_THRESHOLD) {
         return 'histogram';
       }
 
@@ -188,7 +197,7 @@
         return parseInt(x, 10) === parseFloat(x);
       }
 
-      return _.chain(data).pluck('name').every(_, isInteger) ? 'columnChart' : 'histogram';
+      return _.chain(data).pluck('name').every(isInteger).value() ? 'columnChart' : 'histogram';
     }
 
     function transformDataForColumnChart(data, specialIndex) {

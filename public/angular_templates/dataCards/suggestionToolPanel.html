@@ -20,7 +20,8 @@
       <intractable-list
         ng-if="suggestions"
         list-data="suggestions"
-        datum-length="maxSuggestionLength">
+        datum-length="maxSuggestionLength"
+        ng-hide="suggestionsLoading">
       </intractable-list>
 
       <div class="suggestion-examples">

@@ -24,7 +24,7 @@
         var searchValue$ = $scope.$observe('searchValue');
         var dataset$ = $scope.$observe('dataset').filter(_.isPresent);
         var fieldName$ = $scope.$observe('fieldName').filter(_.isPresent);
-        var sampleOne$ = $scope.$observe('sampleOne');
+        var showSamples$ = $scope.$observe('sampleOne').map(_.isPresent);
 
         var suggestionsRequests$ = Rx.Observable.combineLatest(
           dataset$.observeOnLatest('columns'),
@@ -84,44 +84,38 @@
             }
           });
 
-        var showSamples$ = Rx.Observable.combineLatest(
-          numberOfSuggestions$.
-            map(function(numberOfSuggestions) { return numberOfSuggestions > 0; }),
-          sampleOne$.map(_.isPresent),
-          function(hasSuggestions, hasSample) {
-            return hasSample && !hasSuggestions;
-          });
-
-        $scope.$bindObservable('showSamples', showSamples$);
-
         $scope.$on('intractableList:selectedItem', function(event, selectedItem) {
           if ($scope.shouldShow && selectedItem) {
             $scope.$emit('suggestionToolPanel:selectedItem', selectedItem);
           }
         });
 
-        var suggestionsAdvice$ = Rx.Observable.combineLatest(
-          numberOfSuggestions$,
-          suggestionsError$,
-          function(numberOfSuggestions, error) {
-            if (error) {
-              return I18n.searchCard.promptText;
-            } else if (numberOfSuggestions === 0) {
-              return I18n.suggestionToolPanel.noSuggestionsHint;
-            } else {
-              return I18n.suggestionToolPanel.someSuggestionsHint;
-            }
-          });
-
         var suggestions$ = suggestionsRequests$.switchLatest().
           map(function(suggestions) {
             return (suggestions || []).slice(0, SUGGESTION_LIMIT)
           });
+
         var suggestionsLoading$ = searchValue$.
           filter(_.isPresent).
           map(_.constant(true)).
           merge(suggestionsRequests$.switchLatest().map(_.constant(false)));
 
+        var suggestionsAdvice$ = numberOfSuggestions$.
+          map(function(numberOfSuggestions) {
+            return (numberOfSuggestions === 0) ?
+              I18n.suggestionToolPanel.noSuggestionsHint :
+              I18n.suggestionToolPanel.someSuggestionsHint;
+          }).
+          merge(
+            suggestionsLoading$.
+              filter(_.identity).
+              map(_.constant(I18n.suggestionToolPanel.loadingSuggestionsHint)),
+            suggestionsError$.
+              filter(_.identity).
+              map(_.constant(I18n.searchCard.promptText))
+          );
+
+        $scope.$bindObservable('showSamples', showSamples$);
         $scope.$bindObservable('suggestions', suggestions$);
         $scope.$bindObservable('suggestionsStatus', suggestionsStatus$);
         $scope.$bindObservable('suggestionsLoading', suggestionsLoading$);

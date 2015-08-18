@@ -1,6 +1,7 @@
 describe('Suggestion Tool Panel', function() {
   'use strict';
 
+  var I18n;
   var Constants;
   var testHelpers;
   var suggestionService;
@@ -36,6 +37,7 @@ describe('Suggestion Tool Panel', function() {
   });
 
   beforeEach(inject(function($injector) {
+    I18n = $injector.get('I18n');
     Constants = $injector.get('Constants');
     ServerConfig = $injector.get('ServerConfig');
     testHelpers = $injector.get('testHelpers');
@@ -300,7 +302,22 @@ describe('Suggestion Tool Panel', function() {
     testScheduler.advanceTo(300);
     suggestionToolPanel.scope.$apply();
     expect(suggestionToolPanel.element.find('.suggestion-examples')).
-      to.contain('Choose a suggestion above, or keep typing for more suggestions.');
+      to.contain(I18n.suggestionToolPanel.someSuggestionsHint);
+  });
+
+  it('should instruct the user to type more text or wait when suggestions are loading', function() {
+    suggestionService.suggest = function() {
+      return q.when(['FOO', 'BAR', 'BAZ']);
+    };
+    suggestionToolPanel = createElement({
+      shouldShow: true,
+      searchValue: 'NAR',
+      dataset: fakeDataset,
+      fieldName: fakeFieldName
+    });
+
+    expect(suggestionToolPanel.element.find('.suggestion-examples')).
+      to.contain(I18n.suggestionToolPanel.loadingSuggestionsHint);
   });
 
   it('should not ellipsify the lengths of individual search results if they are below the defined limit', function() {

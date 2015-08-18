@@ -119,11 +119,39 @@
           }
         });
 
+        // Fires either 'columnChart' or 'histogram'
+        var visualizationType$ = fieldName$.withLatestFrom(
+          dataset$.pluck('id'),
+          aggregation$,
+          function(fieldName, datasetId, aggregation) {
+
+            // To decide if we should render as a column chart, make a request
+            // for (n + 1) unique elements, then ensure that there are n or less
+            // elements and that they are all integers, where n is
+            // HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD. The where clause
+            // excludes blank values because we don't render them and don't want
+            // them to skew our decision making process. We don't actually use
+            // the aggregation for anything but it's required for
+            // CardDataService.getData, so it's included in the withLatestFrom.
+            // processResponse just plucks the names of the buckets and passes
+            // it to HistogramService.
+            var whereClause = '`{0}` IS NOT NULL'.format(fieldName);
+            var options = { limit: Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD + 1 };
+            var processResponse = _.flow(_.partial(_.pluck, 'name'), HistogramService.getVisualizationTypeForData);
+            var visualizationTypePromise = CardDataService.getData(fieldName, datasetId, whereClause, aggregation, options).
+              then(processResponse);
+
+            return Rx.Observable.fromPromise(visualizationTypePromise);
+          }).
+          switchLatest().
+          share();
+
         var columnDataSummary$ = Rx.Observable.combineLatest(
           fieldName$,
           dataset$,
           bucketType$,
-          function(fieldName, dataset, bucketType) {
+          visualizationType$,
+          function(fieldName, dataset, bucketType, visualizationType) {
 
             // This promise will ultimately return an object in the form:
             // {min:, max:, bucketType:, bucketSize:}
@@ -131,7 +159,14 @@
             var columnDomainPromise = CardDataService.getColumnDomain(fieldName, dataset.id, null).
               then(function(domain) {
                 if (_.has(domain, 'min') && _.has(domain, 'max')) {
-                  return HistogramService.getBucketingOptions(domain, bucketType);
+                  var bucketOptions = HistogramService.getBucketingOptions(domain, bucketType);
+
+                  // Force the bucket size to 1 if we're rendering in low-int mode.
+                  if (visualizationType === 'columnChart') {
+                    bucketOptions.bucketSize = 1;
+                  }
+
+                  return bucketOptions;
                 } else {
                   $scope.histogramRenderError = 'noData';
                   return undefined;
@@ -162,33 +197,6 @@
           columnDataSummary$,
           fetchHistogramData
         ).switchLatest();
-
-        // Fires either 'columnChart' or 'histogram'
-        var visualizationType$ = fieldName$.withLatestFrom(
-          dataset$.pluck('id'),
-          aggregation$,
-          function(fieldName, datasetId, aggregation) {
-
-            // To decide if we should render as a column chart, make a request
-            // for (n + 1) unique elements, then ensure that there are n or less
-            // elements and that they are all integers, where n is
-            // HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD. The where clause
-            // excludes blank values because we don't render them and don't want
-            // them to skew our decision making process. We don't actually use
-            // the aggregation for anything but it's required for
-            // CardDataService.getData, so it's included in the withLatestFrom.
-            // processResponse just plucks the names of the buckets and passes
-            // it to HistogramService.
-            var whereClause = '`{0}` IS NOT NULL'.format(fieldName);
-            var options = { limit: Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD + 1 };
-            var processResponse = _.flow(_.partial(_.pluck, 'name'), HistogramService.getVisualizationTypeForData);
-            var visualizationTypePromise = CardDataService.getData(fieldName, datasetId, whereClause, aggregation, options).
-              then(processResponse);
-
-            return Rx.Observable.fromPromise(visualizationTypePromise);
-          }).
-          switchLatest().
-          share();
 
         var cardData$ = Rx.Observable.combineLatest(
           unfilteredData$,

@@ -554,7 +554,9 @@
           disableScrollingOnMouseScroll$ = tableMouseScroll$.
             map(function(e) {
               var scrollingDown = e.originalEvent.wheelDelta < 0 || e.originalEvent.detail > 0;
-              var onBottom = $(window).scrollTop() + $(window).height() === $(document).height();
+              var $window = $(window);
+              var scrollBottom = $window.scrollTop() + $window.height();
+              var onBottom = Math.abs(scrollBottom - $(document).height()) <= 1;
 
               return scrollingDown && !onBottom;
             }).

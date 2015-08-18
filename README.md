@@ -2,15 +2,9 @@
 
 ## Starting up
 
-The basic bootstrap command is:
-
-    JS_LOGGING=true rails s
-
-Or if you want to start a pool of workers using Unicorn:
+The command to run the server is:
 
     bundle exec unicorn_rails -c config/unicorn.rb
-
-_Note: The example above that uses Unicorn is required if you want to run Polaroid locally and be able to download PNG images from Data Lens._
 
 ## Tests
 

@@ -1,6 +1,9 @@
-(function ($, utils) {
+(function (root, $) {
 
   'use strict';
+
+  var socrata = root.socrata;
+  var utils = socrata.utils;
 
   function _renderEmbedWizard(element) {
 
@@ -53,4 +56,4 @@
   }
 
   $.fn.storytellerComponentMediaEmbedWizard = storytellerComponentMediaEmbedWizard;
-})(jQuery, window.socrata.utils);
+})(window, jQuery);

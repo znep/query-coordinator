@@ -1,6 +1,9 @@
-(function ($, utils) {
+(function (root, $) {
 
   'use strict';
+
+  var socrata = root.socrata;
+  var utils = socrata.utils;
 
   function _renderYoutubeEmbed(element) {
     var iframeElement = $(
@@ -50,4 +53,4 @@
   }
 
   $.fn.storytellerComponentMediaEmbedYoutube = storytellerComponentMediaEmbedYoutube;
-})(jQuery, window.socrata.utils);
+})(window, jQuery);

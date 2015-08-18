@@ -2883,7 +2883,7 @@ var Dataset = ServerModel.extend({
           return !$.isBlank(c.format.grouping_aggregate);
         });
 
-        columnsWithGroupAggregate.each(function(c) {
+        _.each(columnsWithGroupAggregate, function(c) {
           if (c.hidden && !$.isBlank(oldGroupAggs) && !oldGroupAggs[c.id]) {
             c.update({
               flags: _.without(c.flags, 'hidden')

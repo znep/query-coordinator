@@ -177,11 +177,14 @@
             // CardDataService.getData, so we just use the current page
             // aggregation (making it part of the combineLatest would result in
             // unnecessary server requests when the aggregation changed).
+            // processResponse just plucks the names of the buckets and passes
+            // it to HistogramService.
             var whereClause = '`{0}` IS NOT NULL'.format(fieldName);
             var aggregation = $scope.model.page.getCurrentValue('aggregation');
             var options = { limit: Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD + 1 };
+            var processResponse = _.flow(_.partial(_.pluck, 'name'), HistogramService.getVisualizationTypeForData);
             var visualizationTypePromise = CardDataService.getData(fieldName, datasetId, whereClause, aggregation, options).
-              then(HistogramService.getVisualizationTypeForData);
+              then(processResponse);
 
             return Rx.Observable.fromPromise(visualizationTypePromise);
           }).

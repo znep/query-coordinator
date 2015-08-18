@@ -361,13 +361,7 @@ describe('HistogramService', function() {
     });
 
     function generateInput(buckets) {
-      if (_.isNumber(buckets)) {
-        buckets = _.range(0, buckets);
-      }
-
-      return _.map(buckets, function(bucket) {
-        return { name: bucket, value: 1 };
-      });
+      return _.isNumber(buckets) ? _.range(0, buckets) : buckets;
     }
 
     function run(input, output) {
@@ -394,7 +388,7 @@ describe('HistogramService', function() {
 
     it('should return "histogram" if the length is below a threshold and any of them are floats', function() {
       var input = generateInput(Math.floor(cardinalityThreshold / 2));
-      input[0] = { name: .1, value: 1 };
+      input[0] = .1;
       run(input, 'histogram');
     });
 

@@ -1,4 +1,4 @@
-;(function(socrata) {
+(function(socrata) {
 
   'use strict';
 
@@ -14,7 +14,7 @@
 
     this.register(function(payload) {
 
-      switch(payload.action) {
+      switch (payload.action) {
         case Constants.STORY_DRAG_OVER:
           _storyDragOver(payload);
           break;

@@ -1,6 +1,10 @@
-;window.socrata.storyteller.StoryRenderer = (function(storyteller, utils) {
+(function(root) {
 
   'use strict';
+
+  var socrata = root.socrata;
+  var utils = socrata.utils;
+  var storyteller = socrata.storyteller;
 
   // Component renderers are implemented as jQuery plugins.
   // This function maps component data (type, value) to
@@ -32,7 +36,6 @@
 
     throw new Error('No component renderer found for component: {0}'.format(JSON.stringify(componentData)));
   }
-
 
   function StoryRenderer(options) {
 
@@ -284,7 +287,7 @@
       container.on('click', '[data-embed-action]', function(event) {
         var action = event.target.getAttribute('data-embed-action');
 
-        switch(action) {
+        switch (action) {
 
           case Constants.EMBED_WIZARD_CHOOSE_PROVIDER:
             dispatcher.dispatch({
@@ -348,7 +351,6 @@
       blockIds.forEach(function(blockId, i) {
 
         var $blockElement = elementCache.getBlock(blockId);
-        var translation;
 
         if ($blockElement === null) {
           $blockElement = _renderBlock(blockId);
@@ -402,7 +404,7 @@
     }
 
     function _handleEmptyStoryMessage() {
-      if (!_.isEmpty(warningMessageElement))  {
+      if (!_.isEmpty(warningMessageElement)) {
         var blockCount = storyteller.storyStore.getStoryBlockIds(storyUid).length;
 
         if (blockCount === 0) {
@@ -534,7 +536,7 @@
 
           contentHeight = storyteller.richTextEditorManager.
             getEditor(editorId).
-            getContentHeight()
+            getContentHeight();
 
         } else {
 
@@ -660,5 +662,5 @@
     }
   }
 
-  return StoryRenderer;
-})(window.socrata.storyteller, window.socrata.utils);
+  root.socrata.storyteller.StoryRenderer = StoryRenderer;
+})(window);

@@ -6,9 +6,10 @@
  * 'sidebar:close'
  * 'sidebar:toggle'
  */
-;(function($, socrata) {
-  'use strict'
+(function($, root) {
+  'use strict';
 
+  var socrata = root.socrata;
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
@@ -114,7 +115,7 @@
           storyUid: storyteller.userStoryUid,
           title: storyTitleInputBox.val()
         });
-      };
+      }
 
       if (isDescriptionChanged()) {
         storyteller.dispatcher.dispatch({
@@ -188,7 +189,7 @@
               storyUid: storyteller.userStoryUid,
               title: metadataStateAtPanelOpenTime.title
             });
-          };
+          }
 
           if (isDescriptionChanged()) {
             storyteller.dispatcher.dispatch({
@@ -215,4 +216,4 @@
 
     return this;
   };
-}(jQuery, window.socrata));
+}(jQuery, window));

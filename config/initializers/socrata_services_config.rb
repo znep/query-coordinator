@@ -4,10 +4,6 @@ Rails.application.config.core_service_uri = begin
   uri
 end
 
-if ENV['CORESERVICE_APP_TOKEN'].nil?
-  raise 'CORESERIVCE_APP_TOKEN not set on the environment. Please do so.'
-end
-
 Rails.application.config.core_service_app_token = ENV['CORESERVICE_APP_TOKEN']
 
 # These timeouts might turn out to be overly-aggressive. We will have

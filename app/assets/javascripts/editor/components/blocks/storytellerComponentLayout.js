@@ -4,12 +4,12 @@
   var utils = socrata.utils;
 
   function _renderLayoutContent(componentData) {
-    var element;
+    var $element;
 
     if(componentData.value === 'spacer') {
-      element = $('<div>', { 'class': 'spacer'});
+      $element = $('<div>', { 'class': 'spacer'});
     } else if (componentData.value === 'horizontalRule') {
-      element = $('<hr>');
+      $element = $('<hr>');
     } else {
       throw new Error(
         'Attempted to render a layoutComponet with value: `' +
@@ -17,7 +17,7 @@
       );
     }
 
-    return element;
+    return $element;
   }
 
   /**
@@ -33,18 +33,18 @@
    * @returns {jQuery} - The rendered layout jQuery element
    */
   function storytellerComponentLayout(componentData) {
-    var self = $(this);
+    var $self = $(this);
 
     utils.assertHasProperty(componentData, 'type');
     utils.assertHasProperty(componentData, 'value');
 
-    if (self.length !== 1) {
+    if ($self.length !== 1) {
       throw new Error('Selection must have exactly one element.');
     }
 
-    self.empty().append(_renderLayoutContent(componentData));
+    $self.empty().append(_renderLayoutContent(componentData));
 
-    return this;
+    return $self;
   }
 
   $.fn.storytellerComponentLayout = storytellerComponentLayout;

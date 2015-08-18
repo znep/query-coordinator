@@ -44,7 +44,6 @@
 
     var storyUid = options.storyUid || null;
     var container = options.storyContainerElement || null;
-    var editable = options.editable || false;
     var insertionHint = options.insertionHintElement || false;
     var insertionHintIndex = -1;
     var onRenderError = options.onRenderError || function() {};
@@ -93,11 +92,11 @@
       );
     }
 
-    if (editable && !(storyteller.richTextEditorManager instanceof storyteller.RichTextEditorManager)) {
+    if (!(storyteller.richTextEditorManager instanceof storyteller.RichTextEditorManager)) {
 
       onRenderError();
       throw new Error(
-        'editable stories must have a reference to a valid RichTextEditorManager'
+        'stories must have a reference to a valid RichTextEditorManager'
       );
     }
 
@@ -348,27 +347,25 @@
 
       blockIds.forEach(function(blockId, i) {
 
-        var blockElement = elementCache.getBlock(blockId);
+        var $blockElement = elementCache.getBlock(blockId);
         var translation;
 
-        if (blockElement === null) {
-          blockElement = _renderBlock(blockId);
-          container.append(blockElement);
+        if ($blockElement === null) {
+          $blockElement = _renderBlock(blockId);
+          container.append($blockElement);
         }
 
         _renderBlockComponents(blockId);
 
-        if (editable) {
-          // Disable or enable buttons depending on the index of this block
-          // relative to the total number of blocks.
-          // E.g. disable the 'move up' button for the first block and the
-          // 'move down' button for the last block.
-          _updateBlockEditControls(blockElement, i, blockCount);
+        // Disable or enable buttons depending on the index of this block
+        // relative to the total number of blocks.
+        // E.g. disable the 'move up' button for the first block and the
+        // 'move down' button for the last block.
+        _updateBlockEditControls($blockElement, i, blockCount);
 
-          // Update the height of the containing iframes to be equal to the
-          // height of the iframe document's body.
-          _updateEditorHeights(blockId, blockElement);
-        }
+        // Update the height of the containing iframes to be equal to the
+        // height of the iframe document's body.
+        _updateEditorHeights(blockId, $blockElement);
 
         // If we are supposed to display the insertion hint at this
         // block index, first position the insertion hint and adjust
@@ -377,7 +374,7 @@
           layoutHeight += _layoutInsertionHint(layoutHeight);
         }
 
-        layoutHeight += _layoutBlock(blockElement, layoutHeight);
+        layoutHeight += _layoutBlock($blockElement, layoutHeight);
       });
 
       // If we are attempting to insert a new block at the end of the story
@@ -435,7 +432,6 @@
 
       var layout = storyteller.storyStore.getBlockLayout(blockId);
       var componentWidths = layout.split('-');
-      var blockElement;
       var componentContainers = componentWidths.map(function(componentWidth, i) {
         return $(
           '<div>',
@@ -447,30 +443,28 @@
         );
       });
 
-      blockElement = $(
+      var $blockElement = $(
         '<div>',
         {
-          'class': 'block',
+          'class': 'block-edit',
           'data-block-id': blockId
         }
-      ).append(componentContainers);
-
-      if (editable) {
-        blockElement = $(
-          '<div>',
-          {
-            'class': 'block-edit',
-            'data-block-id': blockId
-          }
-        ).append([
+      ).append(
+        [
           _renderBlockEditControls(blockId),
-          blockElement
-        ]);
-      }
+          $(
+            '<div>',
+            {
+              'class': 'block',
+              'data-block-id': blockId
+            }
+          ).append(componentContainers)
+        ]
+      );
 
-      elementCache.setBlock(blockId, componentWidths.length, blockElement);
+      elementCache.setBlock(blockId, componentWidths.length, $blockElement);
 
-      return blockElement;
+      return $blockElement;
     }
 
     function _renderBlockEditControls(blockId) {

@@ -6,13 +6,28 @@ describe('StoryRenderer', function() {
   var textBlockId;
   var options;
   var dispatcher;
+  var validToolbar;
+  var validFormats;
 
   beforeEach(function() {
 
     storyteller.dispatcher = storyteller.dispatcher;
     storyteller.StoryRenderer = storyteller.StoryRenderer;
 
-    storyteller.RichTextEditorManagerMocker.mock();
+    testDom.append([
+      $('<div>', { 'class': 'insertion-hint hidden' }),
+      $('<div>', { 'id': 'rich-text-editor-toolbar' })
+    ]);
+
+    validToolbar = Object.create(storyteller.RichTextEditorToolbar.prototype);
+    validFormats = [];
+
+    storyteller.richTextEditorManager = new storyteller.RichTextEditorManager(
+      storyteller.assetFinder,
+      validToolbar,
+      validFormats
+    );
+
 
     storyUid = standardMocks.validStoryUid;
     wizardBlockId = standardMocks.wizardBlockId;
@@ -174,102 +189,117 @@ describe('StoryRenderer', function() {
 
   describe('when rendering a story', function()  {
 
-    describe('that is not editable', function() {
+    afterEach(function() {
+
+      $('.insertion-hint').remove();
+      $('#rich-text-editor-toolbar').remove();
+    });
+
+    describe('that is empty', function() {
+      it('should display an empty story message', function() {
+        var storyWithoutBlocks = generateStoryData({
+          uid: 'empt-yyyy',
+          blocks: []
+        });
+
+        storyteller.dispatcher.dispatch({
+          action: Constants.STORY_CREATE,
+          data: storyWithoutBlocks
+        });
+
+        options.storyUid = 'empt-yyyy';
+        storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+
+        assert.equal($('.message-empty-story').length, 1);
+        assert.isAbove($('.message-empty-story').text().length, 1);
+        assert.isTrue(I18n.t.calledWith('editor.empty_story_warning'));
+      });
+    });
+
+    describe('with a story that has blocks', function() {
+
+      it('renders blocks', function() {
+
+        storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+        var numberOfBlocks = storyteller.storyStore.getStoryBlockIds(storyUid).length;
+
+        assert.equal($('.block').length, numberOfBlocks);
+      });
+
+      it('does not render deleted blocks', function() {
+
+        storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+        var numberOfBlocks = storyteller.storyStore.getStoryBlockIds(storyUid).length;
+
+        storyteller.dispatcher.dispatch({
+          action: Constants.STORY_DELETE_BLOCK,
+          storyUid: storyUid,
+          blockId: wizardBlockId
+        });
+
+        assert.equal($('.block').length, numberOfBlocks - 1);
+      });
+
+      it('does not render the empty story warning', function() {
+
+        storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+
+        assert.equal($('.message-empty-story').length, 0);
+      });
+
+    });
+
+    describe('with a story that has blocks including a media component', function() {
+
+      it('renders blocks', function() {
+
+        var storyWithMedia = generateStoryData({
+          uid: 'with-imge',
+          blocks: [
+            generateBlockData({
+              components: [
+                { type: 'media', value: { type: 'embed', value: { provider: 'wizard' } } }
+              ]
+            })
+          ]
+        });
+
+        storyteller.dispatcher.dispatch({
+          action: Constants.STORY_CREATE,
+          data: storyWithMedia
+        });
+
+        options.storyUid = 'with-imge';
+        storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+
+        assert.equal($('.block').length, 1);
+      });
+    });
+
+    describe('with no insertion hint element defined', function() {
 
       describe('with a story that has blocks', function() {
 
-        it('renders blocks', function() {
+        it('renders blocks but no insertion hint', function() {
 
           storyteller.storyRenderer = new storyteller.StoryRenderer(options);
-          var numberOfBlocks = storyteller.storyStore.getStoryBlockIds(storyUid).length;
+          forceRender();
 
-          assert.equal($('.block').length, numberOfBlocks);
-        });
-
-        it('does not render deleted blocks', function() {
-
-          storyteller.storyRenderer = new storyteller.StoryRenderer(options);
-          var numberOfBlocks = storyteller.storyStore.getStoryBlockIds(storyUid).length;
-
-          storyteller.dispatcher.dispatch({
-            action: Constants.STORY_DELETE_BLOCK,
-            storyUid: storyUid,
-            blockId: wizardBlockId
-          });
-
-          assert.equal($('.block').length, numberOfBlocks - 1);
-        });
-
-        it('does not render the empty story warning', function() {
-
-          storyteller.storyRenderer = new storyteller.StoryRenderer(options);
-
-          assert.equal($('.message-empty-story').length, 0);
-        });
-
-      });
-
-      describe('with a story that has blocks including a media component', function() {
-
-        it('renders blocks', function() {
-
-          var storyWithMedia = generateStoryData({
-            uid: 'with-imge',
-            blocks: [
-              generateBlockData({
-                components: [
-                  { type: 'media', value: { type: 'embed', value: { provider: 'wizard' } } }
-                ]
-              })
-            ]
-          });
-
-          storyteller.dispatcher.dispatch({
-            action: Constants.STORY_CREATE,
-            data: storyWithMedia
-          });
-
-          options.storyUid = 'with-imge';
-          storyteller.storyRenderer = new storyteller.StoryRenderer(options);
-
-          assert.equal($('.block').length, 1);
+          assert($('.block').length > 0, 'there is more than one block');
+          assert.isTrue($('.insertion-hint').hasClass('hidden'), 'insertion hint is hidden');
         });
       });
     });
 
-    describe('that is editable', function() {
-
-      var validToolbar;
-      var validFormats;
+    describe('with an insertion hint element defined', function() {
 
       beforeEach(function() {
-
-        $('body').append([
-          $('<div>', { 'class': 'insertion-hint hidden' }),
-          $('<div>', { 'id': 'rich-text-editor-toolbar' })
-        ]);
-
-        validToolbar = Object.create(storyteller.RichTextEditorToolbar.prototype);
-        validFormats = [];
-
-        storyteller.richTextEditorManager = new storyteller.RichTextEditorManager(
-          storyteller.assetFinder,
-          validToolbar,
-          validFormats
-        );
-
-        options.editable = true;
+        options.insertionHintElement = $('.insertion-hint');
       });
 
-      afterEach(function() {
+      describe('with a story that has blocks', function() {
 
-        $('.insertion-hint').remove();
-        $('#rich-text-editor-toolbar').remove();
-      });
-
-      describe('with no insertion hint element defined', function() {
-
-        describe('with a story that has blocks', function() {
+        describe('when no insertionHintIndex has been set', function() {
 
           it('renders blocks but no insertion hint', function() {
 
@@ -281,49 +311,6 @@ describe('StoryRenderer', function() {
           });
         });
       });
-
-      describe('with an insertion hint element defined', function() {
-
-        beforeEach(function() {
-          options.insertionHintElement = $('.insertion-hint');
-        });
-
-        describe('with a story that has blocks', function() {
-
-          describe('when no insertionHintIndex has been set', function() {
-
-            it('renders blocks but no insertion hint', function() {
-
-              storyteller.storyRenderer = new storyteller.StoryRenderer(options);
-              forceRender();
-
-              assert($('.block').length > 0, 'there is more than one block');
-              assert.isTrue($('.insertion-hint').hasClass('hidden'), 'insertion hint is hidden');
-            });
-          });
-        });
-      });
-    });
-  });
-
-  describe('when rendering an empty story', function() {
-    it('should display an empty story message', function() {
-      var storyWithoutBlocks = generateStoryData({
-        uid: 'empt-yyyy',
-        blocks: []
-      });
-
-      storyteller.dispatcher.dispatch({
-        action: Constants.STORY_CREATE,
-        data: storyWithoutBlocks
-      });
-
-      options.storyUid = 'empt-yyyy';
-      storyteller.storyRenderer = new storyteller.StoryRenderer(options);
-
-      assert.equal($('.message-empty-story').length, 1);
-      assert.isAbove($('.message-empty-story').text().length, 1);
-      assert.isTrue(I18n.t.calledWith('editor.empty_story_warning'));
     });
   });
 

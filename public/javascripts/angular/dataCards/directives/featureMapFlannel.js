@@ -52,8 +52,10 @@
             formattedColumnData = scope.formatCellContent(subColumns[0], parentColumn);
           } else {
             var addressColumns = _.map(['address', 'city', 'state', 'zip'], function(column) {
-              return _.result(_.find(subColumns, { 'columnName': column }), 'value').trim();
+              var columnValue = _.result(_.find(subColumns, { 'columnName': column }), 'value');
+              return _.isDefined(columnValue) ? columnValue.trim() : columnValue;
             });
+            console.log(addressColumns);
 
             // Format address following US postal format if any of its components are present
             if (_.any(addressColumns, _.isPresent)) {

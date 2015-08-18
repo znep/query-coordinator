@@ -372,7 +372,6 @@
           $.relativeToPx(fixedLabelWidth + 1 + 'rem')
         ) / Math.sqrt(2));
 
-        horizontalScrollbarHeight = chartTruncated ? horizontalScrollbarHeight : 0;
         chartTruncated = false;
 
       } else {

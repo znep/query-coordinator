@@ -73,7 +73,7 @@
 
     function _getRenderOptions() {
       return {
-        expanded: true,
+        showAllLabels: true,
         labelUnit: 'rows',
         showFiltered: false
       };

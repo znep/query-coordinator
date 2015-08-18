@@ -14,7 +14,8 @@ describe('storytellerComponentMediaEmbedWizard jQuery plugin', function() {
   };
 
   beforeEach(function() {
-    node = testDom.append('<div>');
+    testDom.append('<div>');
+    node = testDom.children('div');
   });
 
   it('should throw when passed invalid arguments', function() {

@@ -5,7 +5,8 @@ describe('StorytellerComponentText jQuery plugin', function() {
   var storyteller = window.socrata.storyteller;
 
   beforeEach(function() {
-    node = testDom.append('<div>');
+    testDom.append('<div>');
+    node = testDom.children('div');
     storyteller.RichTextEditorManagerMocker.mock();
   });
 

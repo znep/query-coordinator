@@ -15,7 +15,8 @@ describe('storytellerComponentMediaEmbedYoutube jQuery plugin', function() {
   };
 
   beforeEach(function() {
-    node = testDom.append('<div>');
+    testDom.append('<div>');
+    node = testDom.children('div');
   });
 
   it('should throw when passed invalid arguments', function() {
@@ -46,7 +47,7 @@ describe('storytellerComponentMediaEmbedYoutube jQuery plugin', function() {
     });
 
     it('should return a jQuery object for chaining', function() {
-      assert.isTrue($.fn.isPrototypeOf(component), 'Returned value is not a jQuery collection');
+      assert.instanceOf(component, $, 'Returned value is not a jQuery collection');
     });
 
     describe('iframe src attribute', function() {

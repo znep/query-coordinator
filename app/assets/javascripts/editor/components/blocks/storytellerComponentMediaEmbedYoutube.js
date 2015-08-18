@@ -43,7 +43,7 @@
       ));
     }
 
-    if (!self.is('.embed.youtube')) {
+    if (self.children().length === 0) {
       _renderYoutubeEmbed(self);
     }
 

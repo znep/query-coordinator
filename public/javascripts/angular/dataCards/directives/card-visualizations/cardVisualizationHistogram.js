@@ -134,6 +134,7 @@
                   return HistogramService.getBucketingOptions(domain, bucketType);
                 } else {
                   $scope.histogramRenderError = 'noData';
+                  return undefined;
                 }
               }
             );
@@ -141,7 +142,8 @@
             return Rx.Observable.fromPromise(columnDomainPromise);
           }).
           switchLatest().
-          share();
+          share().
+          filter(_.isDefined);
 
         var unfilteredData$ = Rx.Observable.combineLatest(
           fieldName$,

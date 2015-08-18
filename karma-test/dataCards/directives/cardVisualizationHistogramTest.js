@@ -27,6 +27,13 @@ describe('Histogram Visualization', function() {
     HistogramService = $injector.get('HistogramService');
 
     mockCardDataService = {
+      getData: function() {
+        var response = _.range(0, Constants.HISTOGRAM_CARDINALITY_THRESHOLD + 5).map(function(x) {
+          return { name: x, value: 1 };
+        });
+
+        return $q.when(response);
+      },
       getColumnDomain: function() {
         return $q.when({min: -1, max: 1});
       },
@@ -64,6 +71,7 @@ describe('Histogram Visualization', function() {
     card.defineObservableProperty('expanded', false);
     card.defineObservableProperty('activeFilters', []);
     card.defineObservableProperty('bucketType', undefined);
+    card.defineObservableProperty('visualizationType', 'histogram');
 
     return card;
   }

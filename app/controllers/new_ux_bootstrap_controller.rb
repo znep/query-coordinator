@@ -58,7 +58,7 @@ class NewUxBootstrapController < ActionController::Base
     # 1. Check to make sure that the user is authorized to create a new view
     use_ephemeral_bootstrap = FeatureFlags.derive(@view, request).use_ephemeral_bootstrap
 
-    unless use_ephemeral_bootstrap || can_create_metadata?
+    unless can_create_metadata? || use_ephemeral_bootstrap
       return render :json => {
         error: true,
         reason: "User must be one of these roles: #{ROLES_ALLOWED_TO_UPDATE_METADATA.join(', ')}"

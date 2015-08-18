@@ -1,8 +1,8 @@
-;window.socrata.storyteller.SocrataVisualizationComponentRenderer = (function(socrata) {
+(function(root) {
 
   'use strict';
 
-  var storyteller = socrata.storyteller;
+  var socrata = root.socrata;
   var utils = socrata.utils;
 
   var _componentTemplateRenderers = {
@@ -98,9 +98,6 @@
   function _renderSocrataVisualizationColumnComponentTemplate(componentOptions) {
 
     var classes;
-    var container;
-    var fourByFour;
-    var baseQuery;
 
     utils.assertHasProperties(
       componentOptions,
@@ -134,16 +131,14 @@
     );
   }
 
-  function _renderSocrataVisualizationColumnComponentData(element, value, editable, renderFn) {
+  function _renderSocrataVisualizationColumnComponentData(element, value) {
 
     var domain;
     var fourByFour;
     var baseQuery;
-    var renderedVisualization = element.attr('data-rendered-visualization');
     var renderedFourByFour = element.attr('data-rendered-visualization-four-by-four');
     var renderedBaseQuery = element.attr('data-rendered-visualization-base-query');
     var destroyVisualizationEvent;
-    var visualization;
 
     utils.assertHasProperty(value, 'dataSource');
     utils.assertHasProperty(value.dataSource, 'type');
@@ -175,19 +170,19 @@
           }
         );
 
-        element[0].dispatchEvent(destroyVisualizationEvent);        
+        element[0].dispatchEvent(destroyVisualizationEvent);
       }
 
       element.attr('data-rendered-visualization-four-by-four', fourByFour);
       element.attr('data-rendered-visualization-base-query', baseQuery);
 
-      visualization = element.socrataVisualizationColumnChart(domain, fourByFour, baseQuery);
+      element.socrataVisualizationColumnChart(domain, fourByFour, baseQuery);
     }
   }
 
-  return {
+  root.socrata.storyteller.SocrataVisualizationComponentRenderer = {
     renderTemplate: _renderTemplate,
     canReuseTemplate: _canReuseTemplate,
     renderData: _renderData
   };
-})(window.socrata);
+})(window);

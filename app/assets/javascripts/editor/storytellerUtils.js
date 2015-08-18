@@ -1,9 +1,9 @@
-;(function(window) {
+(function(root) {
 
   'use strict';
 
-  window.socrata = window.socrata || {};
-  window.socrata.utils = window.socrata.utils || {};
+  var socrata = root.socrata = root.socrata || {};
+  root.socrata.utils = root.socrata.utils || {};
 
   var storytellerUtils = {
 
@@ -119,5 +119,5 @@
     }
   };
 
-  _.merge(window.socrata.utils, storytellerUtils);
+  _.merge(root.socrata.utils, storytellerUtils);
 })(window);

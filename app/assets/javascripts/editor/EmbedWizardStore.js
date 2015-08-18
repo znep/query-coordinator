@@ -1,7 +1,8 @@
-;window.socrata.storyteller.EmbedWizardStore = (function(socrata) {
+(function(root) {
 
   'use strict';
 
+  var socrata = root.socrata;
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
@@ -131,7 +132,7 @@
       self._emitChange();
     }
 
-    function _chooseVisualization(payload) {
+    function _chooseVisualization() {
 
       self._emitChange();
     }
@@ -145,7 +146,7 @@
           done(function(data) {
             setUid(data.nbeId);
           }).
-          fail(function(error) {
+          fail(function() {
             alert('This dataset cannot be chosen at this time.');
           });
       }
@@ -243,5 +244,5 @@
     }
   }
 
-  return EmbedWizardStore;
-})(window.socrata);
+  root.socrata.storyteller.EmbedWizardStore = EmbedWizardStore;
+})(window);

@@ -1,5 +1,5 @@
 def run_eslint(dir)
-  system("npm run lint -- #{dir}") || fail($?.exitstatus)
+  system("npm run lint --silent -- #{dir}")
 end
 
 namespace :lint do

@@ -1,7 +1,8 @@
-;window.socrata.storyteller.CoreSavingStore = (function(socrata) {
+(function(root) {
 
   'use strict';
 
+  var socrata = root.socrata;
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
@@ -210,6 +211,6 @@
     }
   }
 
-  return CoreSavingStore;
-})(window.socrata);
+  root.socrata.storyteller.CoreSavingStore = CoreSavingStore;
+})(window);
 

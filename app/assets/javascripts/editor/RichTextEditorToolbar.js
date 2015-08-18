@@ -1,6 +1,9 @@
-;window.socrata.storyteller.RichTextEditorToolbar = (function(storyteller) {
+(function(root) {
 
   'use strict';
+
+  var socrata = root.socrata;
+  var storyteller = socrata.storyteller;
 
   /**
    * The Formats configuration block is used by the RichTextEditorToolbar and
@@ -100,73 +103,72 @@
     /**
      * Private methods
      */
+    function _renderSelect(selectFormats) {
+
+      var selectFormatElements = [];
+      var option;
+
+      for (var i = 0; i < selectFormats.length; i++) {
+        option = $('<option>', { 'value': selectFormats[i].id });
+        option.text(selectFormats[i].name);
+
+        if (selectFormats[i].tag === null) {
+          option.prop('selected', true);
+        }
+
+        selectFormatElements.push(option);
+      }
+
+      return $(
+        '<div>',
+        { 'class': 'rich-text-editor-toolbar-select-group' }
+      ).
+        append(
+          $(
+            '<div>',
+            { 'class': 'rich-text-editor-toolbar-select-container' }
+          ).
+          append([
+            $(
+              '<select>',
+              {
+                'class': 'rich-text-editor-toolbar-select',
+                'data-editor-action': 'change-format'
+              }
+            ).append(selectFormatElements),
+            $('<div>', { 'class': 'rich-text-editor-toolbar-select-hint' })
+          ])
+        );
+    }
+
+    function _renderButtonGroup(group) {
+
+      var toolbarButtons = [];
+
+      for (var i = 0; i < group.length; i++) {
+
+        var buttonClass = 'rich-text-editor-toolbar-btn ' +
+          'rich-text-editor-toolbar-btn-' +
+          group[i].id;
+
+        toolbarButtons.push(
+          $(
+            '<button>',
+            {
+              'class': buttonClass,
+              'data-editor-action': 'toggle-format',
+              'data-editor-command': group[i].id,
+              'data-label': group[i].name
+            }
+          )
+        );
+      }
+
+      return $('<div>', { 'class': 'rich-text-editor-toolbar-btn-group' }).
+        append(toolbarButtons);
+    }
 
     function _createToolbar() {
-
-      function _renderSelect(selectFormats) {
-
-        var selectFormatElements = [];
-        var option;
-
-        for (var i = 0; i < selectFormats.length; i++) {
-          option = $('<option>', { 'value': selectFormats[i].id });
-          option.text(selectFormats[i].name);
-
-          if (selectFormats[i].tag === null) {
-            option.prop('selected', true);
-          }
-
-          selectFormatElements.push(option);
-        }
-
-        return $(
-          '<div>',
-          { 'class': 'rich-text-editor-toolbar-select-group' }
-        ).
-          append(
-            $(
-              '<div>',
-              { 'class': 'rich-text-editor-toolbar-select-container' }
-            ).
-            append([
-              $(
-                '<select>',
-                {
-                  'class': 'rich-text-editor-toolbar-select',
-                  'data-editor-action': 'change-format'
-                }
-              ).append(selectFormatElements),
-              $('<div>', { 'class': 'rich-text-editor-toolbar-select-hint' })
-            ])
-          );
-      }
-
-      function _renderButtonGroup(group) {
-
-        var toolbarButtons = [];
-
-        for (var i = 0; i < group.length; i++) {
-
-          var buttonClass = 'rich-text-editor-toolbar-btn ' +
-            'rich-text-editor-toolbar-btn-' +
-            group[i].id;
-
-          toolbarButtons.push(
-            $(
-              '<button>',
-              {
-                'class': buttonClass,
-                'data-editor-action': 'toggle-format',
-                'data-editor-command': group[i].id,
-                'data-label': group[i].name
-              }
-            )
-          );
-        }
-
-        return $('<div>', { 'class': 'rich-text-editor-toolbar-btn-group' }).
-          append(toolbarButtons);
-      }
 
       var dropdownFormats = _formats.
         filter(function(format) {
@@ -342,7 +344,7 @@
       }
     }
 
-    function _handleLinkPanelAddClick(e) {
+    function _handleLinkPanelAddClick() {
 
       if (_formatController !== null) {
 
@@ -352,7 +354,7 @@
       }
     }
 
-    function _handleLinkPanelCancelClick(e) {
+    function _handleLinkPanelCancelClick() {
 
       if (_formatController !== null) {
 
@@ -379,5 +381,5 @@
     }
   }
 
-  return RichTextEditorToolbar;
-})(window.socrata.storyteller);
+  root.socrata.storyteller.RichTextEditorToolbar = RichTextEditorToolbar;
+})(window);

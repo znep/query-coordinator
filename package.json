@@ -27,15 +27,45 @@
       "browser": true
     },
     "rules": {
-      "quotes": [
-        1,
-        "single"
-      ],
-      "no-underscore-dangle": 0
+      "brace-style": [2, "1tbs", {"allowSingleLine": true}],
+      "camelcase": 1,
+      "consistent-return": 1,
+      "dot-location": [1, "object"],
+      "dot-notation": [1, {"allowKeywords": false}],
+      "eol-last": 1,
+      "indent": [1, 2],
+      "new-cap": 1,
+      "no-console": 0,
+      "no-extend-native": 0,
+      "no-extra-semi": 1,
+      "no-shadow": [2, {"hoist": "all"}],
+      "no-spaced-func": 2,
+      "no-trailing-spaces": 2,
+      "no-underscore-dangle": 0,
+      "no-unused-vars": 1,
+      "no-use-before-define": 0,
+      "quotes": [1, "single"],
+      "semi": [2, "always"],
+      "space-after-keywords": [2, "always"],
+      "space-before-blocks": [2, "always"],
+      "space-infix-ops": 2,
+      "strict": 2
     },
     "globals": {
       "$": true,
-      "_": true
+      "_": true,
+      "_socrataVisualizationComponentTemplateRenderers": true,
+      "_socrataVisualizationComponentDataRenderers": true,
+      "airbrakeJs": true,
+      "Constants": true,
+      "jQuery": true,
+      "I18n": true,
+      "sampleBlocks": true,
+      "socrata": true,
+      "Squire": true,
+      "Unidragger": true,
+      "Unipointer": true,
+      "userStoryData": true
     }
   }
 }

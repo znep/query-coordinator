@@ -45,6 +45,12 @@
     var _truncationMarker;
     var _lastRenderOptions;
 
+    var _barGroupAndLabelContentsSpanSelector = '.bar-group, .labels .label .contents span';
+    var _truncationMarkerSelector = '.truncation-marker';
+    var _barGroupAndLabelContentsSpanNotCloseIconSelector = '.bar-group, .labels .label .contents span:not(.icon-close)';
+    var _labelsSelector = '.labels .label';
+    var _nonDefaultSelectedLabelSelector = '.labels .label.selected.non-default';
+
     // TODO: Validate columns
     var NAME_INDEX = config.columns.name;
     var UNFILTERED_INDEX = config.columns.unfilteredValue;
@@ -201,37 +207,37 @@
 
       element.on(
         'click',
-        '.bar-group, .labels .label .contents span',
+        _barGroupAndLabelContentsSpanSelector,
         selectDatum
       );
 
       element.on(
         'click',
-        '.truncation-marker',
+        _truncationMarkerSelector,
         expandVisualization
       );
 
       element.on(
         'mouseenter, mousemove',
-        '.bar-group, .labels .label .contents span:not(.icon-close)',
+        _barGroupAndLabelContentsSpanNotCloseIconSelector,
         showFlyout
       );
 
       element.on(
         'mouseleave',
-        '.bar-group, .labels .label .contents span:not(.icon-close)',
+        _barGroupAndLabelContentsSpanNotCloseIconSelector,
         hideFlyout
       );
 
       element.on(
         'mouseenter',
-        '.labels .label',
+        _labelsSelector,
         addHoverClassToBarGroup
       );
 
       element.on(
         'mouseleave',
-        '.labels .label',
+        _labelsSelector,
         removeHoverClassFromBarGroup
       );
 
@@ -247,7 +253,7 @@
       // be drawn unless a datum is selected)
       element.on(
         'mouseup',
-        '.labels .label.selected.non-default',
+        _nonDefaultSelectedLabelSelector,
         removeHoverClassFromBarGroup
       );
     }
@@ -256,37 +262,37 @@
 
       element.off(
         'click',
-        '.bar-group, .labels .label .contents span',
+        _barGroupAndLabelContentsSpanSelector,
         selectDatum
       );
 
       element.off(
         'click',
-        '.truncation-marker',
+        _truncationMarkerSelector,
         expandVisualization
       );
 
       element.off(
         'mouseenter, mousemove',
-        '.bar-group, .labels .label .contents span:not(.icon-close)',
+        _barGroupAndLabelContentsSpanNotCloseIconSelector,
         showFlyout
       );
 
       element.off(
         'mouseleave',
-        '.bar-group, .labels .label .contents span:not(.icon-close)',
+        _barGroupAndLabelContentsSpanNotCloseIconSelector,
         hideFlyout
       );
 
       element.off(
         'mouseenter',
-        '.labels .label',
+        _labelsSelector,
         addHoverClassToBarGroup
       );
 
       element.off(
         'mouseleave',
-        '.labels .label',
+        _labelsSelector,
         removeHoverClassFromBarGroup
       );
 
@@ -297,7 +303,7 @@
 
       element.off(
         'mouseup',
-        '.labels .label.selected.non-default',
+        _nonDefaultSelectedLabelSelector,
         removeHoverClassFromBarGroup
       );
     }
@@ -332,7 +338,7 @@
 
       var barGroupElement = _chartWrapper.
         find('.bar-group[data-bar-name="{0}"] > .unfiltered'.format(barGroupName)).
-        eq(0)[0];
+        get(0);
 
       var payload = {
         element: barGroupElement,

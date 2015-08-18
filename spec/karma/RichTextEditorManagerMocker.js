@@ -1,25 +1,46 @@
-window.socrata.storyteller.RichTextEditorManagerMocker = {
+(function (root) {
 
-  mock: function() {
-    window.socrata.storyteller.RichTextEditorManagerMocker.spies = {
-      createEditorSpy: sinon.spy(_.constant(true)),
-      deleteEditorSpy: sinon.spy(),
-      setContentSpy: sinon.spy(),
-      getEditorSpy: sinon.spy(function(callback) {
-        return {
-          setContent: window.socrata.storyteller.RichTextEditorManagerMocker.spies.setContentSpy
-        };
-      })
-    };
+  'use strict';
 
-    window.socrata.storyteller.richTextEditorManager = {
-      createEditor: window.socrata.storyteller.RichTextEditorManagerMocker.spies.createEditorSpy,
-      deleteEditor: window.socrata.storyteller.RichTextEditorManagerMocker.spies.deleteEditorSpy,
-      getEditor: window.socrata.storyteller.RichTextEditorManagerMocker.spies.getEditorSpy
-    };
-  },
+  var socrata = root.socrata;
+  var storyteller = socrata.storyteller;
 
-  unmock: function() {
-    delete window.socrata.storyteller.richTextEditorManager;
-  }
-};
+  storyteller.RichTextEditorManagerMocker = {
+
+    // Spies
+
+    setContentSpy: sinon.spy(),
+    createEditorSpy: sinon.spy(_.constant(true)),
+    deleteEditorSpy: sinon.spy(),
+    getEditorSpy: sinon.spy(function(callback) {
+      return {
+        setContent: storyteller.RichTextEditorManagerMocker.setContentSpy
+      };
+    }),
+
+    // Auxillary
+
+    reset: function() {
+      for(var key in storyteller.RichTextEditorManagerMocker) {
+        if (/Spy/.test(key)) {
+          storyteller.RichTextEditorManagerMocker[key].reset();
+        }
+      }
+    },
+
+    mock: function() {
+      storyteller.RichTextEditorManagerMocker.reset();
+
+      storyteller.richTextEditorManager = {
+        createEditor: storyteller.RichTextEditorManagerMocker.createEditorSpy,
+        deleteEditor: storyteller.RichTextEditorManagerMocker.deleteEditorSpy,
+        getEditor: storyteller.RichTextEditorManagerMocker.getEditorSpy
+      };
+    },
+
+    unmock: function() {
+      delete storyteller.richTextEditorManager;
+    }
+  };
+
+})(window);

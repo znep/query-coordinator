@@ -37,6 +37,7 @@ describe('StorytellerComponentText jQuery plugin', function() {
     var component = {type: 'text', value: initialValue};
 
     beforeEach(function() {
+      storyteller.RichTextEditorManagerMocker.reset();
       element = node.storytellerComponentText(component);
       editorId = element.attr('data-editor-id');
     });
@@ -50,18 +51,18 @@ describe('StorytellerComponentText jQuery plugin', function() {
     });
 
     it('calls createEditor on richTextEditorManager', function () {
-      sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.spies.createEditorSpy, element, editorId, initialValue);
+      sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.createEditorSpy, element, editorId, initialValue);
     });
 
     describe('that is then destroyed', function () {
       it('should call deleteEditor on richTextEditorManager', function () {
-        sinon.assert.notCalled(storyteller.RichTextEditorManagerMocker.spies.deleteEditorSpy);
+        sinon.assert.notCalled(storyteller.RichTextEditorManagerMocker.deleteEditorSpy);
 
         // It should be safe to destroy multiple times.
         element.trigger('destroy').trigger('destroy');
 
-        sinon.assert.calledOnce(storyteller.RichTextEditorManagerMocker.spies.deleteEditorSpy);
-        sinon.assert.calledWithExactly(storyteller.RichTextEditorManagerMocker.spies.deleteEditorSpy, editorId);
+        sinon.assert.calledOnce(storyteller.RichTextEditorManagerMocker.deleteEditorSpy);
+        sinon.assert.calledWithExactly(storyteller.RichTextEditorManagerMocker.deleteEditorSpy, editorId);
       });
     });
 
@@ -70,8 +71,8 @@ describe('StorytellerComponentText jQuery plugin', function() {
         var newValue = 'something';
 
         element.storytellerComponentText({type: 'text', value: newValue});
-        sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.spies.getEditorSpy, editorId);
-        sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.spies.setContentSpy, newValue);
+        sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.getEditorSpy, editorId);
+        sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.setContentSpy, newValue);
       });
     });
   });

@@ -27,8 +27,8 @@
     var editor = storyteller.richTextEditorManager.getEditor(editorId);
 
     utils.assert(
-      editor !== null,
-      'Cannot find the rich text editor associated with {0}'.format(editorId)
+      editor,
+      'Cannot find the rich text editor associated with {0}.'.format(editorId)
     );
 
     editor.setContent(componentData.value);

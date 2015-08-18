@@ -20,7 +20,7 @@
       var schemaConversionFunction = SchemaConverter.datasetMetadata['toV{0}'.format(schemaVersion)];
       Assert(
         _.isFunction(schemaConversionFunction),
-        "Don't know how to synthesize dataset metadata for v{0} schema".format(schemaVersion)
+        'Don\'t know how to synthesize dataset metadata for v{0} schema'.format(schemaVersion)
       );
 
       return http.get(url.href, config).

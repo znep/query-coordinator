@@ -105,6 +105,40 @@ jQuery.metrics = {
     },
     collect_page_timings: function() {
 
+        if (blist.feature_flags.eventing_metrics) {
+            var avroEvent = {
+                domain: window.location.hostname,
+                path: window.location.pathname,
+                search: window.location.search,
+                user_agent: window.navigator.userAgent,
+                time_zone: new Date().getTimezoneOffset(),
+                embedded: $.metrics.in_iframe(),
+                govstat: $.subKeyDefined(blist, 'govstat'),
+                configuration_page: $.subKeyDefined(blist, 'configuration.page'),
+                dataset_query: JSON.stringify($.deepGet(blist, 'dataset', 'metadata', 'jsonQuery')) || '',
+                timing: JSON.stringify($.deepGet(window, 'performance', 'timing')) || ''
+            };
+
+            $.socrataServer.makeRequest({
+                url: '/analytics/pageview',
+                type: 'POST',
+                data: JSON.stringify(avroEvent),
+                anonymous: true,
+                isSODA: true,
+                headers: {'Content-Type': 'application/text'},
+                success: function (/* data */) {
+                    // noop
+                },
+                error: function (/* request */) {
+                    // noop
+                }
+            });
+
+            if (blist.feature_flags.eventing_metrics !== 'both') {
+                return;
+            }
+        }
+
         $.metrics.mark("domain", "js-page-view");
         $.metrics.mark("domain", "browser-" + $.metrics.browser_name());
         $.metrics.mark("domain-intern", "browser-" + $.metrics.browser_name());

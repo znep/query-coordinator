@@ -35,6 +35,13 @@ class AnalyticsController < ApplicationController
     render :json => "OK".to_json
   end
 
+  def pageview
+    @@pageview_schema ||= File.read('config/pageview.avsc')
+    valid = Kafka.produce('events.pageview', @@pageview_schema, ActiveSupport::JSON.decode(request.body))
+    return render_metric_error('Kafka error') unless valid
+    render :json => 'OK'.to_json
+  end
+
 
   private
 

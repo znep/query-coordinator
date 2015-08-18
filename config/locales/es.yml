@@ -2512,8 +2512,6 @@ es:
       column: Columna
       combine_multiple_columns: Combinar múltiples columnas
       create_composite: 'Crear una columna de muchas columnas fuente:'
-      create_js_expression: "¿Cómo creo una expresión Javascript personalizada?"
-      custom_javascript: Expresión Javascript personalizada...
       enter_custom: Introducir un valor personalizado
       existing_cols: Columnas de dirección existentes
       existing_latlng_cols: Columnas de latidud y longitud existentes

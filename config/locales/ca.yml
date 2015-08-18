@@ -2510,8 +2510,6 @@ ca:
       column: Columna
       combine_multiple_columns: Combinar Columnes Múltiples
       create_composite: 'Crear una columna des de diferents columnes font:'
-      create_js_expression: Com puc crear una expressió Javascript personalitzada?
-      custom_javascript: " Expressió Javascript Personalitzada..."
       enter_custom: Introdueixi un valor personalitzat
       existing_cols: Columnes d'Adreces Existents
       existing_latlng_cols: Columnes de Latitud i Longitud Existents

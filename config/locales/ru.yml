@@ -2521,8 +2521,6 @@ ru:
       column: "Столбец"
       combine_multiple_columns: "Объединить несколько столбцов"
       create_composite: "Создать один столбец из нескольких исходных столбцов:"
-      create_js_expression: " Как создать пользовательское выражение Javascript?"
-      custom_javascript: "Пользовательское выражение Javascript"
       enter_custom: "Введите пользовательское значение"
       existing_cols: "Столбцы существующих адресов"
       existing_latlng_cols: "Существующие столбцы широты и долготы"

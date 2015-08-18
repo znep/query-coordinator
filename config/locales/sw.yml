@@ -2583,8 +2583,6 @@ sw:
       column: Safu
       combine_multiple_columns: Changanya Safu Nyingi
       create_composite: 'Unda safu moja mbali na safu nyingi za chanzo:'
-      create_js_expression: Namna gani naweza kuunda maelezo ya mteja ya JavaScript?
-      custom_javascript: Maelezo ya Mteja ya Javascript…
       enter_custom: Andika thamani ya mteja
       existing_cols: Safu za Anwani Zilizopo
       existing_latlng_cols: Safu za Longitudo na Latitudo Zilizopo

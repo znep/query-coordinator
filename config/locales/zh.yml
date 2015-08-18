@@ -2506,8 +2506,6 @@ zh:
       column: "列"
       combine_multiple_columns: "结合多列"
       create_composite: "从多个源列创建一列："
-      create_js_expression: "如何创建一个自定义的JavaScript表达式？"
-      custom_javascript: "自定义的JavaScript表达式..."
       enter_custom: "输入自定义值"
       existing_cols: "现有的地址栏"
       existing_latlng_cols: "现有的纬度和经度列"

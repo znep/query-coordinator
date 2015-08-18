@@ -543,12 +543,14 @@
           )
         );
 
+        var debouncedWindowSize$ = WindowState.windowSizeSubject.
+          debounce(Constants.LAYOUT_WINDOW_SIZE_DEBOUNCE, Rx.Scheduler.timeout);
 
         subscriptions.push(Rx.Observable.subscribeLatest(
           cardsBySizeSequence,
           expandedCardsSequence,
           scope.$observe('editMode'),
-          WindowState.windowSizeSubject,
+          debouncedWindowSize$,
           scope.$observe('allowAddCard'),
           function layoutFn(cardsBySize, expandedCards, editMode, windowSize) {
             if (_.isEmpty(cardsBySize.normal) && _.isEmpty(cardsBySize.dataCard)) {
@@ -610,7 +612,9 @@
                 placeholderDropTargets, addCardButtons);
             }
 
-            scope.cardStates = cardsBySize.normal.concat(cardsBySize.dataCard);
+            scope.$safeApply(function() {
+              scope.cardStates = cardsBySize.normal.concat(cardsBySize.dataCard);
+            });
 
             // The order in which things will animate
             if (editMode) {

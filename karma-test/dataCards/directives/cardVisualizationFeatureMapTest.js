@@ -2,17 +2,117 @@ describe('A FeatureMap Card Visualization', function() {
   'use strict';
 
   var ZOOMED_OUT_EXTENT = {
-    "southwest":[39.9434364619742, -94.10888671875],
-    "northeast":[43.75522505306928, -81.14501953125]
+    "southwest": [39.9434364619742, -94.10888671875],
+    "northeast": [43.75522505306928, -81.14501953125]
   };
   var ZOOMED_IN_EXTENT = {
     "southwest": [41.87537684702812, -87.6587963104248],
     "northeast": [41.89026600256849, -87.5951099395752]
   };
   var MIDDLE_ZOOM_EXTENT = {
-    "southwest":[41.681944, -87.827778],
-    "northeast":[42.081944, -87.427778]
+    "southwest": [41.681944, -87.827778],
+    "northeast": [42.081944, -87.427778]
   };
+  var COLUMNS = {
+    'test_number': {
+      'name': 'number title',
+      'fred': 'amount',
+      'physicalDatatype': 'number',
+      'defaultCardType': 'column',
+      'availableCardTypes': ['column', 'search'],
+      'position': 1
+    },
+    'test_timestamp': {
+      'name': 'timestamp title',
+      'fred': 'time',
+      'physicalDatatype': 'timestamp',
+      'defaultCardType': 'timeline',
+      'availableCardTypes': ['timeline'],
+      'position': 2
+    },
+    'test_location': {
+      'name': 'location title',
+      'fred': 'point',
+      'physicalDatatype': 'point',
+      'defaultCardType': 'feature',
+      'availableCardTypes': ['feature'],
+      'position': 3
+    },
+    'test_location_address': {
+      'name': 'location title (address)',
+      'fred': 'text',
+      'physicalDatatype': 'text',
+      'defaultCardType': 'search',
+      'availableCardTypes': ['search'],
+      'isSubcolumn': true
+    },
+    'test_location_city': {
+      'name': 'location title (city)',
+      'fred': 'text',
+      'physicalDatatype': 'text',
+      'defaultCardType': 'search',
+      'availableCardTypes': ['search'],
+      'isSubcolumn': true
+    },
+    'mail_state': {
+      'name': 'mail state',
+      'fred': 'text',
+      'physicalDatatype': 'text',
+      'defaultCardType': 'search',
+      'availableCardTypes': ['search'],
+      'position': 4
+    },
+    'mail_zip': {
+      'name': 'mail zip',
+      'fred': 'text',
+      'physicalDatatype': 'text',
+      'defaultCardType': 'search',
+      'availableCardTypes': ['search'],
+      'position': 5
+    },
+    'mailing_address': {
+      'name': 'mail address',
+      'fred': 'point',
+      'physicalDatatype': 'point',
+      'defaultCardType': 'feature',
+      'availableCardTypes': ['feature'],
+      'position': 6
+    },
+    'mailing_address_address': {
+      'name': 'mail address (address)',
+      'fred': 'text',
+      'physicalDatatype': 'text',
+      'defaultCardType': 'search',
+      'availableCardTypes': ['search'],
+      'isSubcolumn': true
+    },
+    'mailing_address_city': {
+      'name': 'mail address (city)',
+      'fred': 'text',
+      'physicalDatatype': 'text',
+      'defaultCardType': 'search',
+      'availableCardTypes': ['search'],
+      'isSubcolumn': true
+    }
+  };
+  var CARD_DATA_ROWS = [{
+    'test_number': 10,
+    'test_timestamp': '1957-06-30T15:16:00.000',
+    'test_location': {
+      'coordinates': [42, -87],
+      'type': 'Point',
+    },
+    'test_location_address': '9 PALMER ST',
+    'test_location_city': 'ASHAWAY',
+    'mail_state': 'RI',
+    'mail_zip': '19104',
+    'mailing_address': {
+      'coordinates': [40, -85],
+      'type': 'Point'
+    },
+    'mailing_address_address': '3810 HARRISON',
+    'mailing_address_city': 'PHILADELPHIA'
+  }];
 
   var testHelpers;
   var $rootScope;
@@ -38,7 +138,8 @@ describe('A FeatureMap Card Visualization', function() {
     $q = $injector.get('$q');
     var mockCardDataService = {
       getDefaultFeatureExtent: sinon.stub(),
-      getFeatureExtent: sinon.stub().returns($q.when(MIDDLE_ZOOM_EXTENT))
+      getFeatureExtent: sinon.stub().returns($q.when(MIDDLE_ZOOM_EXTENT)),
+      getRows: sinon.stub().returns($q.when(CARD_DATA_ROWS))
     };
     _$provide.value('CardDataService', mockCardDataService);
     testHelpers.mockDirective(_$provide, 'featureMap');
@@ -102,6 +203,80 @@ describe('A FeatureMap Card Visualization', function() {
       element: testHelpers.TestDom.compileAndAppend(html, outerScope)
     }
   }
+
+  describe('getClickedRows', function() {
+    it('should correctly format normal columns and sub columns', function() {
+      dataset.defineObservableProperty('columns', COLUMNS);
+      dataset.defineObservableProperty('permissions', '');
+
+      var deferred = $q.defer();
+      CardDataService.getFeatureExtent.returns(deferred.promise);
+
+      var elementInfo = buildElement({ 'dataset': dataset });
+      var elementScope = elementInfo.scope;
+      var getClickedRows = elementScope.$$childHead.getClickedRows({}, []);
+
+      getClickedRows.subscribe(function(formattedRows) {
+        var firstRow = formattedRows[0][0];
+        var secondRow = formattedRows[0][1];
+        var thirdRow = formattedRows[0][2];
+        var fourthRow = formattedRows[0][3];
+        var fifthRow = formattedRows[0][4];
+        var sixthRow = formattedRows[0][5];
+
+        expect(firstRow.columnName).to.equal('number title');
+        expect(firstRow.value).to.equal(10);
+        expect(secondRow.columnName).to.equal('timestamp title');
+        expect(secondRow.value).to.equal('1957-06-30T15:16:00.000');
+        expect(thirdRow.columnName).to.equal('location title');
+        expect(thirdRow.value).to.deep.equal([
+          {
+            coordinates: [42, -87],
+            type: 'Point'
+          },
+          {
+            columnName: 'address',
+            format: undefined,
+            physicalDatatype: 'text',
+            value: '9 PALMER ST'
+          },
+          {
+            columnName: 'city',
+            format: undefined,
+            physicalDatatype: 'text',
+            value: 'ASHAWAY'
+          }
+        ]);
+        expect(fourthRow.columnName).to.equal('mail state');
+        expect(fourthRow.value).to.equal('RI');
+        expect(fifthRow.columnName).to.equal('mail zip');
+        expect(fifthRow.value).to.equal('19104');
+        expect(sixthRow.columnName).to.equal('mail address');
+        expect(sixthRow.value).to.deep.equal([
+          {
+            coordinates: [40, -85],
+            type: 'Point'
+          },
+          {
+            columnName: 'address',
+            format: undefined,
+            physicalDatatype: 'text',
+            value: '3810 HARRISON'
+          },
+          {
+            columnName: 'city',
+            format: undefined,
+            physicalDatatype: 'text',
+            value: 'PHILADELPHIA'
+          }
+        ]);
+      });
+
+      elementScope.$safeApply(function() {
+        deferred.resolve();
+      });
+    });
+  });
 
   it('should not crash given an undefined dataset binding', function() {
     var elementInfo = buildElement();

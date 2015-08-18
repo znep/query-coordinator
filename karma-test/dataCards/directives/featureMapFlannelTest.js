@@ -18,13 +18,11 @@ describe('feature map flannel', function() {
     return [
       { columnName: 'Division Number',
         format: {},
-        isCurrentColumn: false,
         physicalDataType: 'number',
         value: rowNumber
       },
       { columnName: 'Headquarters',
         format: {},
-        isCurrentColumn: true,
         physicalDataType: 'point',
         value: [{
           coordinates: [-89.115646, 32.911919],
@@ -33,7 +31,6 @@ describe('feature map flannel', function() {
       },
       { columnName: 'Commanding Officer',
         format: {},
-        isCurrentColumn: false,
         physicalDataType: 'text',
         value: 'Brad Hentley'
       }

@@ -48,7 +48,6 @@
          *      simpleCell = {
          *        columnName: <column name>,
          *        format: <Object from column containing formatting info>,
-         *        isCurrentColumn: <boolean whether is from the column represented in feature map>,
          *        physicalDatatype: <physicalDataType>
          *        value : <simple data type>,
          *      },
@@ -75,15 +74,6 @@
          *      }, ...
          */
 
-        // Determines if a cell from row query represents a subcolumn, that is
-        // a computed column related to another parent dataset column (i.e. address for location).
-        function findParentColumnName(cell, objectContainingCells) {
-          var result = objectContainingCells.filter(function(objectContainingCellName) {
-            return _.startsWith(cell.toLowerCase(), objectContainingCellName.toLowerCase());
-          });
-          return result[0];
-        }
-
         // Reformats columnKeys (in snake case) capitalizing each word,
         // separated by spaces.
         function reformatCellName(cellName) {
@@ -94,34 +84,30 @@
             join(' ');
         }
 
-        // Construct a formatted subcolumn name from an unformatted name,
-        // and the parent column name. Formatted subcolumn name may be either:
-        //   - an address component ('address', 'city', 'state', or 'zip')
-        //   - the existing name without the parent column name included)
-        // based on the given existing title (all lowercase) and parent column.
+        // This method takes in the column name of the subColumn
+        // (e.g. Crime Location (address)) and the parentColumnName of that
+        // subColumn (e.g. Crime Location) and returns the subColumn string
+        // within the parentheses (address).
         function constructSubColumnName(existingName, parentColumnName) {
-          var subColumnName;
-          if (existingName.indexOf('address') > 0) {
-            subColumnName = 'address';
-          } else if (existingName.indexOf('city') > 0) {
-            subColumnName = 'city';
-          } else if (existingName.indexOf('state') > 0) {
-            subColumnName = 'state';
-          } else if (existingName.indexOf('zip') > 0) {
-            subColumnName = 'zip';
-          } else { // not an anticipated subcolumn. Simply strip parent column name
-            subColumnName = existingName.replace(parentColumnName + ' ', '');
+          var subColumnMatch = existingName.match(/\(([^()]+)\)$/);
+          if (subColumnMatch) {
+            var existingNameSuffix = subColumnMatch[1];
+            if (_.contains(['address', 'city', 'state', 'zip'], existingNameSuffix)) {
+              return existingNameSuffix;
+            }
           }
-          return subColumnName;
+          return existingName.replace('{0} '.format(parentColumnName), '');
         }
 
         // Handles query for rows under clicked points, and reformats query response.
-        function getClickedRows(mousePosition, points) {
+        scope.getClickedRows = function(mousePosition, points) {
 
           // Get necessary data for query and perform query for clicked rows
           var numberOfRowsClicked = _.sum(points, 'count');
           var rowQueryComponents$ = Rx.Observable.combineLatest(
-            id$, dataFieldName$, whereClause$,
+            id$,
+            dataFieldName$,
+            whereClause$,
             function(id, fieldName, whereClause) {
               return {
                 id: id,
@@ -149,87 +135,71 @@
             return Rx.Observable.fromPromise(rowQueryResponsePromise);
           });
 
-          // Once query response is received, format returned rows into a more manageable state
           var formattedRowQueryResponse$ = Rx.Observable.combineLatest(
-            rowQueryResponse$, columns$.filter(_.isDefined), dataFieldName$,
-            function(rows, columns, fieldName) {
+            rowQueryResponse$,
+            columns$.filter(_.isDefined),
+            dataFieldName$,
+            function(rows, columns) {
+
               if (_.isNull(rows)) {
                 return null;
               }
 
-              // For every row returned
-              var objectContainingCells = [];
-              var formattedQueryData = rows.map(function(row) {
-                var currentFormattedRowData = [];
+              // Each of our rows will be mapped to 'formattedRowData',
+              // an array of objects.  Each row corresponds to a single
+              // page in the flannel.
+              return _.map(rows, function(row) {
+                var formattedRowData = [];
 
-                // Format and organize the data present from each column cell
-                _.keys(row).forEach(function(cell) {
-                  // Gather required information from column
-                  var format = columns[cell].format;
-                  var physicalDatatype = columns[cell].physicalDatatype;
-                  var position = columns[cell].position;
-                  var isCurrentColumn = _.startsWith(cell, fieldName);
-                  var columnName = columns[cell].name;
+                // We will be representing our formatted line-by-line data
+                // on each page with an array of objects, where each object
+                // corresponds to a single line on the flannel page.
+                _.each(row, function(cellValue, cellName) {
+                  var column = columns[cellName];
 
-                  // For computed columns without a name, reformat column name based on cell name,
-                  // each word capitalized and separated by spaces
-                  if (!_.isDefined(columnName)) {
-                    columnName = reformatCellName(cell);
+                  if (_.isUndefined(column.name)) {
+                    column.name = reformatCellName(cellName);
                   }
 
-                  // Reformat current cell data and organize
-                  var value = _.get(row, cell);
-                  var cellData;
-                  var parentColumn = findParentColumnName(columnName, objectContainingCells);
+                  // If we're formatting a subcolumn, first find the parent
+                  // column name and position, and then format accordingly.
+                  // Otherwise, just format the normal column.
+                  // Note: We can rely upon subcolumns being added after their
+                  // corresponding parent columns.
+                  if (column.isSubcolumn) {
 
-                  if (_.isObject(value)) {
-                    objectContainingCells.push(columnName);
-                    // No formatting added, but object is nested under the parent column, in an
-                    // array to hold any other related subcolumns
-                    cellData = {
-                      columnName: columnName,
-                      value: [value],
-                      isCurrentColumn: isCurrentColumn,
-                      physicalDatatype: physicalDatatype
-                    };
-                    currentFormattedRowData[position] = cellData;
+                    // For example, if cellName was 'crime_location_address' or
+                    // 'crime_location_zip', the parentColumnName would be
+                    // 'crime_location'.
+                    var parentColumnName = cellName.slice(0, cellName.lastIndexOf('_'));
+                    var parentPosition = columns[parentColumnName].position;
+                    var subColumnName = constructSubColumnName(column.name, parentColumnName);
 
-                  } else if (_.isPresent(parentColumn)) {
-                    // Cell represents a subcolumn to be nested under its parent
-                    position = _.findIndex(currentFormattedRowData, function(existingCellData) {
-                      return _.isDefined(existingCellData) &&
-                        existingCellData.columnName === parentColumn;
-                    });
-                    var subColumns = currentFormattedRowData[position].value;
-                    var subColumnName = constructSubColumnName(columnName.toLowerCase(), parentColumn);
-                    var subColumnCellData = {
+                    // Add the subcolumn data.
+                    formattedRowData[parentPosition].value.push({
                       columnName: subColumnName,
-                      value: value,
-                      format: format,
-                      physicalDatatype: physicalDatatype
-                    };
-                    subColumns.push(subColumnCellData);
-
+                      value: cellValue,
+                      format: column.format,
+                      physicalDatatype: column.physicalDatatype
+                    });
                   } else {
-                    // Not an object containing cell; no additional formatting required
-                    cellData = {
-                      columnName: columnName,
-                      value: value,
-                      isCurrentColumn: isCurrentColumn,
-                      format: format,
-                      physicalDatatype: physicalDatatype
+
+                    // If the cellValue is an object (e.g. a coordinate point),
+                    // we should format it slightly differently.
+                    formattedRowData[column.position] = {
+                      columnName: column.name,
+                      value: _.isObject(cellValue) ? [cellValue] : cellValue,
+                      format: _.isObject(cellValue) ? undefined : column.format,
+                      physicalDatatype: column.physicalDatatype
                     };
-                    currentFormattedRowData[position] = cellData;
                   }
                 });
-                return currentFormattedRowData.filter(_.isDefined);
+                return formattedRowData.filter(_.isDefined);
               });
-              return formattedQueryData;
-            });
+            }
+          );
           return formattedRowQueryResponse$;
-        }
-
-        scope.getClickedRows = getClickedRows;
+        };
 
         /*
         * Set up remaining observables
@@ -237,8 +207,7 @@
         var datasetPermissions$ = dataset$.observeOnLatest('permissions').filter(_.isPresent);
         var baseSoqlFilter$ = model.observeOnLatest('page.baseSoqlFilter');
         var savedExtent$ = model.observeOnLatest('cardOptions.mapExtent').take(1);
-        var defaultExtent$ = Rx.Observable.
-          returnValue(CardDataService.getDefaultFeatureExtent());
+        var defaultExtent$ = Rx.Observable.returnValue(CardDataService.getDefaultFeatureExtent());
 
         // The 'render:start' and 'render:complete' events are emitted by the
         // underlying feature map and are used for a) toggling the state of the

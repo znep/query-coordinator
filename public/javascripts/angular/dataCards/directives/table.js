@@ -556,6 +556,8 @@
               var scrollingDown = e.originalEvent.wheelDelta < 0 || e.originalEvent.detail > 0;
               var $window = $(window);
               var scrollBottom = $window.scrollTop() + $window.height();
+
+              // CORE-6419: Use a fuzzy test because window scrollTop can be a float.
               var onBottom = Math.abs(scrollBottom - $(document).height()) <= 1;
 
               return scrollingDown && !onBottom;

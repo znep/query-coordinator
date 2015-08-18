@@ -275,6 +275,7 @@ en:
         no_suggestions_hint: Try broadening your search for more results.
         only_suggestion: 'Showing the only suggestion:'
         some_suggestions_hint: Choose a suggestion above, or keep typing for more suggestions.
+        loading_suggestions_hint: Type some text and press Enter to search, or wait for suggestions.
       table:
         a_to_z: A-Z
         ascending: ascending

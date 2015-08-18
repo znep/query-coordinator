@@ -1,6 +1,7 @@
 describe('Suggestion Tool Panel', function() {
   'use strict';
 
+  var I18n;
   var Constants;
   var testHelpers;
   var suggestionService;
@@ -36,6 +37,7 @@ describe('Suggestion Tool Panel', function() {
   });
 
   beforeEach(inject(function($injector) {
+    I18n = $injector.get('I18n');
     Constants = $injector.get('Constants');
     ServerConfig = $injector.get('ServerConfig');
     testHelpers = $injector.get('testHelpers');
@@ -179,7 +181,8 @@ describe('Suggestion Tool Panel', function() {
 
     testScheduler.advanceTo(300);
     suggestionToolPanel.scope.$apply();
-    expect(suggestionToolPanel.element.find('.suggestions-status')).to.contain('An error was encountered');
+    expect(suggestionToolPanel.element.find('.suggestions-status')).
+      to.contain('An error was encountered');
   });
 
   it('should show "no search results" heading when there are no search results', function() {
@@ -195,7 +198,8 @@ describe('Suggestion Tool Panel', function() {
 
     testScheduler.advanceTo(300);
     suggestionToolPanel.scope.$apply();
-    expect(suggestionToolPanel.element.find('.suggestions-status')).to.contain('No data found matching your search term.');
+    expect(suggestionToolPanel.element.find('.suggestions-status')).
+      to.contain(I18n.suggestionToolPanel.noSuggestions);
   });
 
   it('should show the "only search result" heading when there is just one search result', function() {
@@ -211,7 +215,8 @@ describe('Suggestion Tool Panel', function() {
 
     testScheduler.advanceTo(300);
     suggestionToolPanel.scope.$apply();
-    expect(suggestionToolPanel.element.find('.suggestions-status')).to.contain('Showing the only suggestion:');
+    expect(suggestionToolPanel.element.find('.suggestions-status')).
+      to.contain(I18n.suggestionToolPanel.onlySuggestion);
   });
 
   it('should show the "all search results" heading when there are a limited number of search results', function() {
@@ -227,7 +232,10 @@ describe('Suggestion Tool Panel', function() {
 
     testScheduler.advanceTo(300);
     suggestionToolPanel.scope.$apply();
-    expect(suggestionToolPanel.element.find('.suggestions-status')).to.contain('Showing all 3 suggestions:');
+
+    // Format with 3 because there are 3 results in the above array.
+    expect(suggestionToolPanel.element.find('.suggestions-status')).
+      to.contain(I18n.suggestionToolPanel.allSuggestions.format(3));
   });
 
   it('should show the "showing the first" message when there are large number of search results', function() {
@@ -243,7 +251,8 @@ describe('Suggestion Tool Panel', function() {
 
     testScheduler.advanceTo(300);
     suggestionToolPanel.scope.$apply();
-    expect(suggestionToolPanel.element.find('.suggestions-status')).to.contain('Showing the first 10 suggestions:');
+    expect(suggestionToolPanel.element.find('.suggestions-status')).
+      to.contain(I18n.suggestionToolPanel.maxSuggestions.format(Constants.MAX_NUMBER_OF_SUGGESTIONS));
   });
 
   it('should instruct the user to perform an exact text search when SuggestionService signals an error', function() {
@@ -259,9 +268,8 @@ describe('Suggestion Tool Panel', function() {
 
     testScheduler.advanceTo(300);
     suggestionToolPanel.scope.$apply();
-
     expect(suggestionToolPanel.element.find('.suggestion-examples')).
-      to.contain("Type some text and press Enter to search");
+      to.contain(I18n.searchCard.promptText);
   })
 
   it('should suggest broadening the search criteria when there are no search results', function() {
@@ -280,9 +288,9 @@ describe('Suggestion Tool Panel', function() {
 
     var examples = suggestionToolPanel.element.find('.suggestion-examples');
     expect(examples).
-      to.contain('Try broadening your search for more results.');
+      to.contain(I18n.suggestionToolPanel.noSuggestionsHint);
     expect(examples.text()).
-      to.contain("Examples: 'Sample 1' or 'Sample 2'");
+      to.contain(I18n.searchCard.twoExamples.format('Sample 1', 'Sample 2'));
 
   });
 
@@ -300,7 +308,22 @@ describe('Suggestion Tool Panel', function() {
     testScheduler.advanceTo(300);
     suggestionToolPanel.scope.$apply();
     expect(suggestionToolPanel.element.find('.suggestion-examples')).
-      to.contain('Choose a suggestion above, or keep typing for more suggestions.');
+      to.contain(I18n.suggestionToolPanel.someSuggestionsHint);
+  });
+
+  it('should instruct the user to type more text or wait when suggestions are loading', function() {
+    suggestionService.suggest = function() {
+      return q.when(['FOO', 'BAR', 'BAZ']);
+    };
+    suggestionToolPanel = createElement({
+      shouldShow: true,
+      searchValue: 'NAR',
+      dataset: fakeDataset,
+      fieldName: fakeFieldName
+    });
+
+    expect(suggestionToolPanel.element.find('.suggestion-examples')).
+      to.contain(I18n.suggestionToolPanel.loadingSuggestionsHint);
   });
 
   it('should not ellipsify the lengths of individual search results if they are below the defined limit', function() {
@@ -320,7 +343,8 @@ describe('Suggestion Tool Panel', function() {
 
     testScheduler.advanceTo(300);
     suggestionToolPanel.scope.$apply();
-    expect(suggestionToolPanel.element.find('.intractable-list li').text().trim()).to.equal(originalValue);
+    expect(suggestionToolPanel.element.find('.intractable-list li').text().trim()).
+      to.equal(originalValue);
   });
 
   it('should ellipsify the lengths of individual search results if they are over the defined limit', function() {
@@ -341,7 +365,8 @@ describe('Suggestion Tool Panel', function() {
 
     testScheduler.advanceTo(300);
     suggestionToolPanel.scope.$apply();
-    expect(suggestionToolPanel.element.find('.intractable-list li').text().trim()).to.equal(ellipsifiedValue);
+    expect(suggestionToolPanel.element.find('.intractable-list li').text().trim()).
+      to.equal(ellipsifiedValue);
   });
 
   // This test can't work as written right now as enableSearchSuggestions is checked
@@ -374,13 +399,11 @@ describe('Suggestion Tool Panel', function() {
     }
 
     expect(timesSuggestCalled).to.equal(0);
-
     expect(isSpinnerVisible()).to.equal(true);
 
     testScheduler.advanceTo(300);
 
     expect(isSpinnerVisible()).to.equal(true);
-
     expect(timesSuggestCalled).to.equal(1);
 
     suggestionsDefer.resolve([]);

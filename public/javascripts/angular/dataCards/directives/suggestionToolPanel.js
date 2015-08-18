@@ -24,7 +24,7 @@
         var searchValue$ = $scope.$observe('searchValue');
         var dataset$ = $scope.$observe('dataset').filter(_.isPresent);
         var fieldName$ = $scope.$observe('fieldName').filter(_.isPresent);
-        var sampleOne$ = $scope.$observe('sampleOne');
+        var showSamples$ = $scope.$observe('sampleOne').map(_.isPresent);
 
         var suggestionsRequests$ = Rx.Observable.combineLatest(
           dataset$.observeOnLatest('columns'),
@@ -59,13 +59,15 @@
 
         var suggestionsError$ = suggestionsRequests$.
           switchLatest().
-          map(_.isNull);
+          map(_.isNull).
+          startWith(false);
 
         var numberOfSuggestions$ = suggestionsRequests$.
           switchLatest().
           map(function(suggestions) {
             return suggestions ? suggestions.length : 0;
-          });
+          }).
+          startWith(0);
 
         var suggestionsStatus$ = numberOfSuggestions$.
           map(function(numberOfSuggestions) {
@@ -84,27 +86,30 @@
             }
           });
 
-        var showSamples$ = Rx.Observable.combineLatest(
-          numberOfSuggestions$.
-            map(function(numberOfSuggestions) { return numberOfSuggestions > 0; }),
-          sampleOne$.map(_.isPresent),
-          function(hasSuggestions, hasSample) {
-            return hasSample && !hasSuggestions;
-          });
-
-        $scope.$bindObservable('showSamples', showSamples$);
-
         $scope.$on('intractableList:selectedItem', function(event, selectedItem) {
           if ($scope.shouldShow && selectedItem) {
             $scope.$emit('suggestionToolPanel:selectedItem', selectedItem);
           }
         });
 
+        var suggestions$ = suggestionsRequests$.switchLatest().
+          map(function(suggestions) {
+            return (suggestions || []).slice(0, SUGGESTION_LIMIT)
+          });
+
+        var suggestionsLoading$ = searchValue$.
+          filter(_.isPresent).
+          map(_.constant(true)).
+          merge(suggestionsRequests$.switchLatest().map(_.constant(false)));
+
         var suggestionsAdvice$ = Rx.Observable.combineLatest(
           numberOfSuggestions$,
+          suggestionsLoading$,
           suggestionsError$,
-          function(numberOfSuggestions, error) {
-            if (error) {
+          function(numberOfSuggestions, suggestionsLoading, error) {
+            if (suggestionsLoading) {
+              return I18n.suggestionToolPanel.loadingSuggestionsHint;
+            } else if (error) {
               return I18n.searchCard.promptText;
             } else if (numberOfSuggestions === 0) {
               return I18n.suggestionToolPanel.noSuggestionsHint;
@@ -113,15 +118,7 @@
             }
           });
 
-        var suggestions$ = suggestionsRequests$.switchLatest().
-          map(function(suggestions) {
-            return (suggestions || []).slice(0, SUGGESTION_LIMIT)
-          });
-        var suggestionsLoading$ = searchValue$.
-          filter(_.isPresent).
-          map(_.constant(true)).
-          merge(suggestionsRequests$.switchLatest().map(_.constant(false)));
-
+        $scope.$bindObservable('showSamples', showSamples$);
         $scope.$bindObservable('suggestions', suggestions$);
         $scope.$bindObservable('suggestionsStatus', suggestionsStatus$);
         $scope.$bindObservable('suggestionsLoading', suggestionsLoading$);

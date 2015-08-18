@@ -2,6 +2,35 @@
 
   'use strict';
 
+  // Component renderers are implemented as jQuery plugins.
+  // This function maps component data (type, value) to
+  // a jQuery plugin name ('storytellerComponentText').
+  function _findAppropriateComponentRenderer(componentData) {
+    var type = componentData.type;
+
+    if (type === 'text') {
+      return 'storytellerComponentText';
+    } else if (type === 'layout') {
+      return 'storytellerComponentLayout';
+    } else if (type === 'media') {
+      var mediaType = componentData.value.type;
+
+      if (mediaType === 'embed') {
+        var providerName = componentData.value.value.provider;
+        if (providerName === 'wizard') {
+          return 'storytellerComponentMediaEmbedWizard';
+        } else if (providerName === 'youtube') {
+          return 'storytellerComponentMediaEmbedYoutube';
+        }
+      }
+    } else if (type === 'socrataVisualization') {
+
+    }
+
+    throw new Error('No component renderer found for component: {0}'.format(JSON.stringify(componentData)));
+  }
+
+
   function StoryRenderer(options) {
 
     var dispatcher = storyteller.dispatcher;
@@ -325,6 +354,7 @@
             componentElement.trigger('destroy');
 
             if (componentDatum.type === 'socrataVisualization') {
+              //TODO
 
               var destroyVisualizationEvent = new window.CustomEvent(
                 Constants.SOCRATA_VISUALIZATION_DESTROY,
@@ -355,8 +385,7 @@
           container.append(blockElement);
         }
 
-        _renderBlockComponentsTemplates(blockId);
-        _renderBlockComponentsData(blockId);
+        _renderBlockComponents(blockId);
 
         if (editable) {
           // Disable or enable buttons depending on the index of this block
@@ -566,92 +595,73 @@
     }
 
     /**
-     * Component template renderers render template skeletons into
-     * block elements.
+     * Invokes the given component renderer with the given data.
+     * If another component renderer is already present, the other renderer
+     * will be torn down via the 'destroy' event.
+     *
+     * @param {string} componentRenderer - The name of the renderer to use.
+     * @param {jQuery} $componentContainer - The DOM subtree to render into.
+     * @param {object} componentData - The component's data from the database.
      */
+    function _runComponentRenderer(componentRenderer, $componentContainer, componentData) {
+      var $componentContent = $componentContainer.children().eq(0);
 
-    function _renderBlockComponentsTemplates(blockId) {
+      var needToChangeRenderer =
+        componentRenderer !== $componentContainer.attr('data-component-renderer-name');
 
-      var element = elementCache.getBlock(blockId);
-      var componentData = storyteller.storyStore.getBlockComponents(blockId);
-      var existingComponent;
-      var componentContainer;
-      var canReuseTemplate = false;
-      var componentWidth;
-      var componentClasses;
-      var componentOptions;
-      var newTemplate;
+      if (needToChangeRenderer) {
+        $componentContainer.attr('data-component-renderer-name', componentRenderer);
 
-      componentData.forEach(function(componentDatum, i) {
+        $componentContent = $('<div>', { 'class': 'component' });
 
-        // We need to find the container for the current component in order to
-        // determine whether or not we can reuse the current template.
-        //
-        // Component containers are not currently cached, so we do a `.find()`
-        // against the cached block element.
+        $componentContainer.
+          trigger('destroy').
+          empty().
+          append($componentContent);
+      }
 
-        existingComponent = elementCache.getComponent(blockId, i);
-
-        if (existingComponent) {
-
-          canReuseTemplate = componentTemplateCheckers[componentDatum.type](
-            existingComponent,
-            componentDatum.value
-          );
-        }
-
-        if (!canReuseTemplate) {
-
-          if (existingComponent) {
-            existingComponent.remove();
-          }
-
-          componentContainer = element.find('.component-container[data-component-index="' + i + '"]');
-          componentWidth = componentContainer.attr('data-component-layout-width');
-          componentClasses = ['component', componentDatum.type].join(' ');
-
-          componentOptions = {
-            classes: componentClasses,
-            blockId: blockId,
-            componentIndex: i,
-            componentWidth: componentWidth,
-            componentType: componentDatum.type,
-            componentValue: componentDatum.value,
-            editable: editable
-          };
-
-          var componentTemplateRenderer = componentTemplateRenderers[componentOptions.componentType];
-
-          if (typeof componentTemplateRenderer === 'string') {
-            newTemplate = $('<div>')[componentTemplateRenderer](componentDatum);
-            newTemplate.addClass('component').addClass(componentDatum.type);
-          } else {
-            newTemplate = componentTemplateRenderers[componentOptions.componentType](componentOptions);
-          }
-
-          newTemplate.attr('data-block-id', blockId);
-          newTemplate.attr('data-component-index', i);
-
-          componentContainer.append(newTemplate);
-
-          elementCache.setComponent(blockId, i, newTemplate);
-        }
-      });
+      // Provide the initial or updated data to the renderer.
+      $componentContent[componentRenderer](componentData);
+      $componentContent.
+        addClass(componentData.type);
     }
 
-    function _renderBlockComponentsData(blockId) {
+    /**
+     * Finds or creates an appropriate container for a
+     * given block's component.
+     *
+     * @param {string} blockId
+     * @param {number} componentIndex
+     * @return {jQuery}
+     */
+    function _getComponentContainer(blockId, componentIndex) {
+      var $block = elementCache.getBlock(blockId);
+      var $componentContainer = elementCache.getComponent(blockId, componentIndex);
 
-      var componentData = storyteller.storyStore.getBlockComponents(blockId);
+      if (!$componentContainer) {
+        $componentContainer = $block.find('.component-container[data-component-index="' + componentIndex + '"]');
+        utils.assert(
+          $componentContainer.length > 0,
+          'Could not find component container for blockId: {0}, componentIndex: {1}'.
+            format(blockId, componentIndex)
+        );
+        elementCache.setComponent(blockId, componentIndex, $componentContainer);
+      }
 
-      componentData.forEach(function(componentDatum, i) {
-        var element = elementCache.getComponent(blockId, i);
-        var componentDataRenderer = componentDataRenderers[componentDatum.type];
+      utils.assertInstanceOf($componentContainer, $);
 
-        if (typeof componentDataRenderer === 'string') {
-          $(element)[componentDataRenderer](componentDatum);
-        } else {
-          componentDataRenderers[componentDatum.type](element, componentDatum, editable, _renderStory);
-        }
+      return $componentContainer;
+    }
+
+    function _renderBlockComponents(blockId) {
+      var components = storyteller.storyStore.getBlockComponents(blockId);
+
+      components.forEach(function(componentData, componentIndex) {
+
+        var componentRenderer = _findAppropriateComponentRenderer(componentData);
+        var $componentContainer = _getComponentContainer(blockId, componentIndex);
+
+        _runComponentRenderer(componentRenderer, $componentContainer, componentData);
       });
     }
 

@@ -56,16 +56,16 @@
       link: function($scope, element) {
         var whereClause$ = $scope.$observe('whereClause');
         var isFiltered$ = whereClause$.map(_.isPresent);
-        var cardModel = $scope.$observe('model');
-        var datasetModel$ = cardModel.observeOnLatest('page.dataset');
-        var baseSoqlFilter$ = cardModel.observeOnLatest('page.baseSoqlFilter');
-        var aggregation$ = cardModel.observeOnLatest('page.aggregation');
-        var activeFilters$ = cardModel.observeOnLatest('activeFilters');
-        var fieldName$ = cardModel.pluck('fieldName');
-        var cardId$ = cardModel.pluck('uniqueId');
-        var bucketType$ = cardModel.observeOnLatest('bucketType');
-        var expanded$ = cardModel.observeOnLatest('expanded');
-        var rowDisplayUnit$ = cardModel.observeOnLatest('page.aggregation.unit');
+        var cardModel$ = $scope.$observe('model');
+        var dataset$ = cardModel$.observeOnLatest('page.dataset');
+        var baseSoqlFilter$ = cardModel$.observeOnLatest('page.baseSoqlFilter');
+        var aggregation$ = cardModel$.observeOnLatest('page.aggregation');
+        var activeFilters$ = cardModel$.observeOnLatest('activeFilters');
+        var fieldName$ = cardModel$.pluck('fieldName');
+        var cardId$ = cardModel$.pluck('uniqueId');
+        var bucketType$ = cardModel$.observeOnLatest('bucketType');
+        var expanded$ = cardModel$.observeOnLatest('expanded');
+        var rowDisplayUnit$ = cardModel$.observeOnLatest('page.aggregation.unit');
         var filterSelected$ = $scope.$eventToObservable('toggle-dataset-filter:histogram').
           map(_.property('additionalArguments[0]'));
 
@@ -81,7 +81,7 @@
           return null;
         });
 
-        var activeFiltersExcludingOwn$ = cardModel.observeOnLatest('page.activeFilters').
+        var activeFiltersExcludingOwn$ = cardModel$.observeOnLatest('page.activeFilters').
           withLatestFrom(
             cardId$,
             activeFilters$,
@@ -121,7 +121,7 @@
 
         var columnDataSummary$ = Rx.Observable.combineLatest(
           fieldName$,
-          datasetModel$,
+          dataset$,
           bucketType$,
           function(fieldName, dataset, bucketType) {
 
@@ -147,7 +147,7 @@
 
         var unfilteredData$ = Rx.Observable.combineLatest(
           fieldName$,
-          datasetModel$,
+          dataset$,
           baseSoqlFilter$,
           aggregation$,
           columnDataSummary$,
@@ -156,7 +156,7 @@
 
         var filteredData$ = Rx.Observable.combineLatest(
           fieldName$,
-          datasetModel$,
+          dataset$,
           whereClauseExcludingOwn$,
           aggregation$,
           columnDataSummary$,
@@ -165,7 +165,7 @@
 
         // Fires either 'columnChart' or 'histogram'
         var visualizationType$ = fieldName$.withLatestFrom(
-          datasetModel$.pluck('id'),
+          dataset$.pluck('id'),
           aggregation$,
           function(fieldName, datasetId, aggregation) {
 

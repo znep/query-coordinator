@@ -184,7 +184,7 @@ describe('socrata.visualizations.ColumnChart', function() {
     var chart = new window.socrata.visualizations.ColumnChart(element, config);
 
     var renderOptions = {
-      expanded: false,
+      showAllLabels: false,
       labelUnit: ROW_DISPLAY_UNIT,
       showFiltered: false
     };
@@ -369,7 +369,7 @@ describe('socrata.visualizations.ColumnChart', function() {
     });
   });
 
-  describe('when not expanded at 640px', function() {
+  describe('when not showing all labels at 640px', function() {
 
     beforeEach(function() {
       columnChart = createColumnChart();
@@ -545,7 +545,7 @@ describe('socrata.visualizations.ColumnChart', function() {
     });
   });
 
-  describe('when not expanded at 640px with non-default column indices', function() {
+  describe('when not showing all labels at 640px with non-default column indices', function() {
 
     var testDataWithNonDefaultColumnIndices;
 
@@ -755,7 +755,7 @@ describe('socrata.visualizations.ColumnChart', function() {
       removeColumnChart(columnChart);
     });
 
-    describe('when not expanded', function() {
+    describe('when not showing all labels', function() {
 
       it('should only base the y scale on the visible bars', function() {
 
@@ -786,7 +786,7 @@ describe('socrata.visualizations.ColumnChart', function() {
       });
     });
 
-    describe('when expanded', function() {
+    describe('when showing all labels', function() {
 
       it('should base the y scale on all data', function() {
 
@@ -811,7 +811,7 @@ describe('socrata.visualizations.ColumnChart', function() {
         // Now, make almost the same chart, but tack on one huge value at the end.
         // It should not affect the scale.
         var renderOptions = _.clone(columnChart.renderOptions);
-        renderOptions.expanded = true;
+        renderOptions.showAllLabels = true;
 
         columnChart.chart.render(testDataWithOneBigAtEnd, renderOptions);
 
@@ -825,7 +825,7 @@ describe('socrata.visualizations.ColumnChart', function() {
     });
   });
 
-  describe('when not expanded at 100px', function() {
+  describe('when not showing all labels at 100px', function() {
 
     var width = 100;
 
@@ -845,7 +845,7 @@ describe('socrata.visualizations.ColumnChart', function() {
     });
   });
 
-  describe('when expanded at 640px', function() {
+  describe('when showing all labels at 640px', function() {
 
     var width = 640;
     var bars = testData.length;
@@ -862,7 +862,7 @@ describe('socrata.visualizations.ColumnChart', function() {
     it('should create ' + bars + ' bars and ' + labels + ' labels', function() {
 
       var renderOptions = _.clone(columnChart.renderOptions);
-      renderOptions.expanded = true;
+      renderOptions.showAllLabels = true;
 
       columnChart.chart.render(testData, renderOptions);
 
@@ -874,7 +874,7 @@ describe('socrata.visualizations.ColumnChart', function() {
     it('should not show the moar marker', function() {
 
       var renderOptions = _.clone(columnChart.renderOptions);
-      renderOptions.expanded = true;
+      renderOptions.showAllLabels = true;
 
       columnChart.chart.render(testData, renderOptions);
 
@@ -884,7 +884,7 @@ describe('socrata.visualizations.ColumnChart', function() {
     it('should not hide any bars', function() {
 
       var renderOptions = _.clone(columnChart.renderOptions);
-      renderOptions.expanded = true;
+      renderOptions.showAllLabels = true;
 
       columnChart.chart.render(testData, renderOptions);
 
@@ -894,7 +894,7 @@ describe('socrata.visualizations.ColumnChart', function() {
 
   /*   min and max bar widths spec */
 
-  describe('when not expanded at 50px', function() {
+  describe('when not showing all labels at 50px', function() {
 
     var width = 50;
 
@@ -941,9 +941,9 @@ describe('socrata.visualizations.ColumnChart', function() {
     });
   });
 
-  describe('when not expanded at 9000px', function() {
+  describe('when not showing all labels at 9001px', function() {
 
-    var width = 9000;
+    var width = 9001;
 
     beforeEach(function() {
       columnChart = createColumnChart(width);
@@ -988,7 +988,7 @@ describe('socrata.visualizations.ColumnChart', function() {
     });
   });
 
-  describe('when expanded at 50px', function() {
+  describe('when showing all labels at 50px', function() {
 
     var width = 50;
 
@@ -1003,7 +1003,7 @@ describe('socrata.visualizations.ColumnChart', function() {
     it('should maintain a bar width >= MIN_EXPANDED_CARD_BAR_WIDTH (' + MIN_EXPANDED_CARD_BAR_WIDTH + 'px)', function() {
 
       var renderOptions = _.clone(columnChart.renderOptions);
-      renderOptions.expanded = true;
+      renderOptions.showAllLabels = true;
 
       columnChart.chart.render(testData, renderOptions);
 
@@ -1013,7 +1013,7 @@ describe('socrata.visualizations.ColumnChart', function() {
     it('should maintain spacing between bars', function() {
 
       var renderOptions = _.clone(columnChart.renderOptions);
-      renderOptions.expanded = true;
+      renderOptions.showAllLabels = true;
 
       columnChart.chart.render(testData, renderOptions);
 
@@ -1027,9 +1027,9 @@ describe('socrata.visualizations.ColumnChart', function() {
     });
   });
 
-  describe('when expanded at 9000px', function() {
+  describe('when showing all labels at 9001px', function() {
 
-    var width = 9000;
+    var width = 9001;
 
     beforeEach(function() {
       columnChart = createColumnChart(width);
@@ -1042,7 +1042,7 @@ describe('socrata.visualizations.ColumnChart', function() {
     it('should maintain a bar width <= MAX_EXPANDED_CARD_BAR_WIDTH (' + MAX_EXPANDED_CARD_BAR_WIDTH + 'px)', function() {
 
       var renderOptions = _.clone(columnChart.renderOptions);
-      renderOptions.expanded = true;
+      renderOptions.showAllLabels = true;
 
       columnChart.chart.render(testData, renderOptions);
 
@@ -1052,7 +1052,7 @@ describe('socrata.visualizations.ColumnChart', function() {
     it('should maintain spacing between bars', function() {
 
       var renderOptions = _.clone(columnChart.renderOptions);
-      renderOptions.expanded = true;
+      renderOptions.showAllLabels = true;
 
       columnChart.chart.render(testData, renderOptions);
 
@@ -1068,7 +1068,7 @@ describe('socrata.visualizations.ColumnChart', function() {
     it('should not show the moar marker', function() {
 
       var renderOptions = _.clone(columnChart.renderOptions);
-      renderOptions.expanded = true;
+      renderOptions.showAllLabels = true;
 
       columnChart.chart.render(testData, renderOptions);
 
@@ -1222,7 +1222,7 @@ describe('socrata.visualizations.ColumnChart', function() {
       removeColumnChart(columnChart);
     });
 
-    it('should display the columns at their maximum width when not expanded', function() {
+    it('should display the columns at their maximum width when not showing all labels', function() {
 
       expect(testDataSubset.length).to.equal(4);
 
@@ -1231,12 +1231,12 @@ describe('socrata.visualizations.ColumnChart', function() {
       expect(columnChart.element.find('.bar-group .bar').first().width()).to.equal(30);
     });
 
-    it('should display the columns at their maximum width when they are expanded', function(){
+    it('should display the columns at their maximum width when show all labels is set to true', function(){
 
       expect(testDataSubset.length).to.equal(4);
 
       var renderOptions = _.clone(columnChart.renderOptions);
-      renderOptions.expanded = true;
+      renderOptions.showAllLabels = true;
 
       columnChart.chart.render(testDataSubset, renderOptions);
 
@@ -1322,14 +1322,14 @@ describe('socrata.visualizations.ColumnChart', function() {
       removeColumnChart(columnChart);
     });
 
-    it('should emit the "SOCRATA_VISUALIZATION_COLUMN_OPTIONS" event', function(done) {
+    it('should emit the "SOCRATA_VISUALIZATION_COLUMN_EXPANSION" event', function(done) {
 
       var moarMarker = $('.truncation-marker');
       var receivedEvent = false;
 
       expect(moarMarker.css('display')).to.equal('block', 'truncation marker should be visible');
 
-      columnChart.element.on('SOCRATA_VISUALIZATION_COLUMN_OPTIONS', function(event) {
+      columnChart.element.on('SOCRATA_VISUALIZATION_COLUMN_EXPANSION', function(event) {
 
         var payload = event.originalEvent.detail;
 
@@ -1353,7 +1353,7 @@ describe('socrata.visualizations.ColumnChart', function() {
       removeColumnChart(columnChart);
     });
 
-    describe('when not expanded', function() {
+    describe('when not showing all labels', function() {
 
       it('should emit a "SOCRATA_VISUALIZATION_COLUMN_SELECTION" event appropriate to the clicked element', function(done) {
 
@@ -1377,10 +1377,10 @@ describe('socrata.visualizations.ColumnChart', function() {
         columnChart.chart.render(testData, columnChart.renderOptions);
 
         columnChart.element.on('SOCRATA_VISUALIZATION_COLUMN_SELECTION', function(event) {
-  
+
           var payload = event.originalEvent.detail;
           var expectedName = testData[indexOfItemToClick][NAME_INDEX];
-  
+
           expect(payload.name).to.equal(expectedName);
 
           done();
@@ -1390,12 +1390,12 @@ describe('socrata.visualizations.ColumnChart', function() {
       });
     });
 
-    describe('when expanded', function() {
+    describe('when showing all labels', function() {
 
       it('should emit a "SOCRATA_VISUALIZATION_COLUMN_SELECTION" event appropriate to the clicked element', function(done) {
 
         var renderOptions = _.clone(columnChart.renderOptions);
-        renderOptions.expanded = true;
+        renderOptions.showAllLabels = true;
 
         columnChart.chart.render(testData, renderOptions);
 
@@ -1415,15 +1415,15 @@ describe('socrata.visualizations.ColumnChart', function() {
       it('should emit a "SOCRATA_VISUALIZATION_COLUMN_SELECTION" event appropriate to the clicked element', function(done) {
 
         var renderOptions = _.clone(columnChart.renderOptions);
-        renderOptions.expanded = true;
+        renderOptions.showAllLabels = true;
 
         columnChart.chart.render(testData, renderOptions);
 
         columnChart.element.on('SOCRATA_VISUALIZATION_COLUMN_SELECTION', function(event) {
-  
+
           var payload = event.originalEvent.detail;
           var expectedName = testData[indexOfItemToClick][NAME_INDEX];
-  
+
           expect(payload.name).to.equal(expectedName);
 
           done();

@@ -3,7 +3,7 @@
 
   // This is the Angular wrapper around VectorTileUtil, VectorTileFeature,
   // VectorTileLayer and VectorTileManager.
-  function VectorTiles(Constants, ServerConfig) {
+  function VectorTileService(Constants, ServerConfig) {
 
     /****************************************************************************
      *
@@ -494,6 +494,7 @@
 
         this.options = {
           debug: false,
+          disableMapInteractions: false,
           url: '',
           headers: {},
           tileSize: 256,
@@ -815,10 +816,14 @@
 
           mapMousemoveCallback = function(e) {
             if (ServerConfig.get('oduxEnableFeatureMapHover')) {
-              injectTileInfo(e);
+              // Only execute mousemove if not disabled during map load
+              if (!self.options.disableMapInteractions) {
+                injectTileInfo(e);
+                self.options.mousemove(e);
+              }
+            } else {
+              self.options.mousemove(e);
             }
-
-            self.options.mousemove(e);
           };
 
           map.on('mousemove', mapMousemoveCallback);
@@ -828,14 +833,17 @@
 
           mapClickCallback = function(e) {
             if (ServerConfig.get('oduxEnableFeatureMapHover')) {
-              injectTileInfo(e);
+              // Only prepare for click if not disabled during map load
+              if (!self.options.disableMapInteractions) {
+                injectTileInfo(e);
 
-              // Determine if click should be disabled (when data is dense or flannel would be full)
-              var denseData = e.tile.totalPoints >= Constants.FEATURE_MAP_MAX_TILE_DENSITY;
-              var manyRows = _.sum(e.points, 'count') > Constants.FEATURE_MAP_FLANNEL_MAX_ROW_DENSITY;
-              if (!denseData && !manyRows) {
-                highlightClickedPoints(e.points);
-                self.options.click(e);
+                // Only execute click if data under cursor does not exceed max tile or flannel row density.
+                var denseData = e.tile.totalPoints >= Constants.FEATURE_MAP_MAX_TILE_DENSITY;
+                var manyRows = _.sum(e.points, 'count') > Constants.FEATURE_MAP_FLANNEL_MAX_ROW_DENSITY;
+                if (!denseData && !manyRows) {
+                  highlightClickedPoints(e.points);
+                  self.options.click(e);
+                }
               }
             } else {
               self.options.click(e);
@@ -1104,6 +1112,6 @@
 
   angular.
     module('dataCards.services').
-      factory('VectorTiles', VectorTiles);
+      factory('VectorTileService', VectorTileService);
 
 })();

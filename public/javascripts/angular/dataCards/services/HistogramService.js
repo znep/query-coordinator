@@ -204,7 +204,7 @@
       return data.unfiltered.map(function(bucket, i) {
         var filteredValue = data.filtered[i].value;
 
-        if (specialIndex && i !== specialIndex) {
+        if (_.isDefined(specialIndex) && i !== specialIndex) {
           filteredValue = 0;
         }
 

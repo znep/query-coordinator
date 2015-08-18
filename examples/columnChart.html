@@ -5,6 +5,12 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <link rel="stylesheet" media="all" href="../socrata.visualizations.columnChart.css">
     <style type="text/css">
+
+      body {
+        font-size: 10px;
+        font-family: sans-serif;
+      }
+
       #column-chart {
         display: block;
         position: relative;
@@ -13,6 +19,7 @@
         margin: 100px auto 0 auto;
         border: 1px solid #aaa;
       }
+
     </style>
   </head>
   <body>
@@ -90,8 +97,8 @@
     };
 
     var visualizationRenderOptions = {
-      expanded: true,
       labelUnit: 'rows',
+      showAllLabels: true,
       showFiltered: false
     };
 

@@ -6,7 +6,7 @@
     /**
     * Renders a boolean value in checkbox format
     */
-    var renderBooleanCell = function(cellContent, column) {
+    var renderBooleanCell = function(cellContent) {
       return _.isBoolean(cellContent) && cellContent ? '✓' : '';
     };
 
@@ -71,7 +71,7 @@
     /**
     * Renders a Point in plain text as a lat/lng pair.
     */
-    var renderGeoCell = function(cellContent, column) {
+    var renderGeoCell = function(cellContent) {
       var latitudeIndex = 1;
       var longitudeIndex = 0;
       if (_.isArray(cellContent.coordinates)) {
@@ -87,7 +87,7 @@
     /**
     * Renders a Point wrapped in an HTML span element
     */
-    var renderGeoCellHTML = function(cellContent, column) {
+    var renderGeoCellHTML = function(cellContent) {
       var latitudeIndex = 1;
       var longitudeIndex = 0;
       if (_.isArray(cellContent.coordinates)) {

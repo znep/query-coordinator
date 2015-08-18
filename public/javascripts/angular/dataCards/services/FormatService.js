@@ -33,7 +33,8 @@ angular.module('dataCards.services').factory('FormatService', function() {
       // Thousands less than 10K are commaified.
       var parts = absVal.toString().split('.').concat('');
       var precision = Math.min(parts[1].length, maxLength - parts[0].length);
-      var newValue = val.toFixed(precision).replace('.', options.decimalCharacter);
+
+      newValue = val.toFixed(precision).replace('.', options.decimalCharacter);
       return commaify(newValue, _.pick(options, 'groupCharacter', 'decimalCharacter'));
     } else if (/e/i.test(val)) {
 

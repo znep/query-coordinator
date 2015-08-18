@@ -447,8 +447,7 @@
 
         if (brush.control.empty()) {
           brush.brushDispatcher.end(null);
-        }
-        else {
+        } else {
           var newExtent = brush.control.extent();
 
           brush.brushDispatcher.end([
@@ -1089,7 +1088,7 @@
       // Custom y axis positioning/rendering.
       function positionYLabels(selection) {
         selection.selectAll('.tick text').
-          attr('transform', function(d) {
+          attr('transform', function() {
             var transformAttr = d3.select(this.parentNode).attr('transform');
             var transform = d3.transform(transformAttr);
             var translateY = transform.translate[1];

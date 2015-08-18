@@ -2,11 +2,12 @@
 
   'use strict';
 
-  function SuggestionService(http, Assert, $log) {
+  function SuggestionService(http, Assert) {
 
     var serviceDefinition = {
 
       suggest: function suggest(datasetId, fieldName, query, limit) {
+
         // TODO Create a 4x4 validation service
         Assert(datasetId, 'Must provide a datasetId 4x4');
         Assert(fieldName, 'Must provide a fieldName value');
@@ -36,7 +37,8 @@
               value();
           },
           function() {
-            // return null to signal a non-success response
+
+            // Return null to signal a non-success response
             return null;
           }
         );

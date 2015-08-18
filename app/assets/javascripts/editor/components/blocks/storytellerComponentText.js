@@ -6,25 +6,30 @@
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
-  function _setupRichTextEditor(element, componentData) {
+  function _setupRichTextEditor($element, componentData) {
     var editorId = _.uniqueId();
 
-    element.addClass('text-editor').attr('data-editor-id', editorId);
+    $element.addClass('text-editor').attr('data-editor-id', editorId);
 
     storyteller.richTextEditorManager.createEditor(
-      element,
+      $element,
       editorId,
       componentData.value
     );
 
-    element.one('destroy', function() {
+    $element.one('destroy', function() {
       storyteller.richTextEditorManager.deleteEditor(editorId);
     });
   }
 
-  function _updateRichTextEditor(element, componentData) {
-    var editorId = element.attr('data-editor-id');
+  function _updateRichTextEditor($element, componentData) {
+    var editorId = $element.attr('data-editor-id');
     var editor = storyteller.richTextEditorManager.getEditor(editorId);
+
+    utils.assert(
+      editor !== null,
+      'Cannot find the rich text editor associated with {0}'.format(editorId)
+    );
 
     editor.setContent(componentData.value);
   }
@@ -45,24 +50,24 @@
    * @returns {jQuery} - The rendered layout jQuery element
    */
   function storytellerComponentText(componentData) {
-    var self = $(this);
+    var $self = $(this);
 
     utils.assertHasProperty(componentData, 'type');
     utils.assertHasProperty(componentData, 'value');
+    utils.assert(
+      componentData.type === 'text',
+      'Cannot render components of type {0} with jQuery.storytellerComponentText.'.format(componentData.type)
+    );
 
-    if (componentData.type !== 'text') {
-      throw new Error('Cannot render components of type {0} with $.storytellerComponentText.'.format(componentData.type));
-    }
-
-    var needsEditorSetup = !self.is('[data-editor-id]');
+    var needsEditorSetup = !$self.is('[data-editor-id]');
 
     if (needsEditorSetup) {
-      _setupRichTextEditor(self, componentData);
+      _setupRichTextEditor($self, componentData);
     } else {
-      _updateRichTextEditor(self, componentData);
+      _updateRichTextEditor($self, componentData);
     }
 
-    return this;
+    return $self;
   }
 
   $.fn.storytellerComponentText = storytellerComponentText;

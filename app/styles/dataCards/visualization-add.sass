@@ -12,21 +12,32 @@ body.state-view-visualizationAdd
       display: none
 
     .add-card-select-column soc-select
-      background-color: #888
+      margin-bottom: 1rem
+      background-color: #ddd
+
+      select
+        color: #666
+
+      .arrow
+        border-color: #666 transparent transparent transparent
 
     .add-card-preview
       position: relative
-      height: 33vw
-      color: #555
+      height: 44vw
+      color: #666
       background-color: transparent
-      border: 1px dashed #999
 
-      .placeholder-inner-text
-        position: absolute
+      .add-card-preview-placeholder
         width: 100%
-        top: 50%
-        transform: translate(0, -50%)
-        text-align: center
+        height: 100%
+        border: 1px dashed #999
+
+        .placeholder-inner-text
+          position: absolute
+          width: 100%
+          top: 50%
+          transform: translate(0, -50%)
+          text-align: center
 
       .card-spot
         height: 100%

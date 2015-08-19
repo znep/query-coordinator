@@ -402,4 +402,90 @@ describe('HistogramService', function() {
       run(input, 'columnChart');
     });
   });
+
+  describe('transformDataForColumnChart', function() {
+
+    function run(input, output, selectedIndex) {
+      expect(HistogramService.transformDataForColumnChart(input, selectedIndex)).to.deep.equal(output);
+    }
+
+    it('should not modify the input if it is not an object with unfiltered and filtered keys', function() {
+      run(undefined, undefined);
+      run(null, null);
+      run('purple', 'purple');
+      run(-19, -19);
+      run([], []);
+      run({ color: 'purple' }, { color: 'purple' });
+      expect(_.isNaN(HistogramService.transformDataForColumnChart(NaN))).to.equal(true);
+    });
+
+    it('should retrieve filtered values from the filtered array if selectedIndex is absent', function() {
+      var input = {
+        unfiltered: [
+          { start: 0, end: 1, value: 17 },
+          { start: 1, end: 2, value: 8 },
+          { start: 2, end: 3, value: -8 }
+        ],
+        filtered: [
+          { start: 0, end: 1, value: -9 },
+          { start: 1, end: 2, value: 6 },
+          { start: 2, end: 3, value: -3 }
+        ]
+      };
+
+      var output = [
+        [ 0, 17, -9, false ],
+        [ 1, 8, 6, false ],
+        [ 2, -8, -3, false ]
+      ];
+
+      run(input, output);
+    });
+
+    it('should set filtered values to 0 for indices other than the selectedIndex if the selectedIndex is present', function() {
+      var input = {
+        unfiltered: [
+          { start: 0, end: 1, value: 17 },
+          { start: 1, end: 2, value: 8 },
+          { start: 2, end: 3, value: -8 }
+        ],
+        filtered: [
+          { start: 0, end: 1, value: -9 },
+          { start: 1, end: 2, value: 6 },
+          { start: 2, end: 3, value: -3 }
+        ]
+      };
+
+      var output = [
+        [ 0, 17, -9, true ],
+        [ 1, 8, 0, false ],
+        [ 2, -8, 0, false ]
+      ];
+
+      run(input, output, 0);
+    });
+
+    it('should not freak out if the selectedIndex does not correspond to an input bucket', function() {
+      var input = {
+        unfiltered: [
+          { start: 0, end: 1, value: 17 },
+          { start: 1, end: 2, value: 8 },
+          { start: 2, end: 3, value: -8 }
+        ],
+        filtered: [
+          { start: 0, end: 1, value: -9 },
+          { start: 1, end: 2, value: 6 },
+          { start: 2, end: 3, value: -3 }
+        ]
+      };
+
+      var output = [
+        [ 0, 17, 0, false ],
+        [ 1, 8, 0, false ],
+        [ 2, -8, 0, false ]
+      ];
+
+      run(input, output, -723);
+    });
+  });
 });

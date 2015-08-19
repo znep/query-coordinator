@@ -204,6 +204,10 @@
     // filtered on, transform the bucketed data into the tabular format
     // expected by the column chart.
     function transformDataForColumnChart(data, selectedIndex) {
+      if (!_.isObject(data) || !_.isDefined(data.unfiltered) || !_.isDefined(data.filtered)) {
+        return data;
+      }
+
       return data.unfiltered.map(function(bucket, i) {
         var filteredValue = data.filtered[i].value;
 

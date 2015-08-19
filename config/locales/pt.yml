@@ -2509,8 +2509,6 @@ pt:
       column: Coluna
       combine_multiple_columns: Combinar Múltiplas Colunas
       create_composite: 'Criar uma coluna a partir de outras colunas fonte:'
-      create_js_expression: Como posso criar uma expressão Javascript personalizada?
-      custom_javascript: Expressão Javascript Personalizada...
       enter_custom: Introduza um valor personalizado
       existing_cols: Colunas de Endereço Existentes
       existing_latlng_cols: Colunas de Latitude e Longitude existentes

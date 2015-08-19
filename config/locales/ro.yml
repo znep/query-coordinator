@@ -2509,8 +2509,6 @@ ro:
       column: Coloană
       combine_multiple_columns: Combinare mai multe coloane
       create_composite: 'Creaţi o coloană din mai multe coloane sursă:'
-      create_js_expression: Cum creez o expresie Javascript personalizată?
-      custom_javascript: Expăresie Javascript personalizată...
       enter_custom: Introduceţi o valoare personalizată
       existing_cols: Coloane de adresă existente
       existing_latlng_cols: Coloane de latitudine şi longitudine existente

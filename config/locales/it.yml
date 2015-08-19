@@ -2508,8 +2508,6 @@ it:
       column: Colonna
       combine_multiple_columns: Combina Colonne Multiple
       create_composite: 'Crea una colonna a partire da diverse colonne sorgenti:'
-      create_js_expression: Come creo una espressione Javascript personalizzata?
-      custom_javascript: Espressione Javascript Personalizzata
       enter_custom: Inserisci un valore personalizzato
       existing_cols: Colonne Indirizzi Esistenti
       existing_latlng_cols: Colonne di Latitudine e Longitudine Esistenti

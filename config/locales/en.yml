@@ -2545,8 +2545,6 @@ en:
       column: Column
       combine_multiple_columns: Combine Multiple Columns
       create_composite: 'Create one column out of many source columns:'
-      create_js_expression: How do I create a custom Javascript expression?
-      custom_javascript: Custom Javascript Expression...
       enter_custom: Enter a custom value
       existing_cols: Existing Address Columns
       existing_latlng_cols: Existing Latitude and Longitude Columns

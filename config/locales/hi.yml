@@ -2499,8 +2499,6 @@ hi:
       column: "कॉलम"
       combine_multiple_columns: "एकाधिक कॉलमों का संयोजन कीजिये"
       create_composite: "कई स्रोत कॉलमों में से एक कॉलम बनाएँ:"
-      create_js_expression: "कैसे मैं एक कस्टम जावास्क्रिप्ट अभिव्यक्ति का निर्माण करूं?"
-      custom_javascript: "कस्टम जावास्क्रिप्ट अभिव्यक्ति..."
       enter_custom: "एक कस्टम मान दर्ज करें"
       existing_cols: "मौजूदा पता कॉलम"
       existing_latlng_cols: "मौजूदा अक्षांश और देशांतर कॉलम"

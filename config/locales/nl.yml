@@ -2531,8 +2531,6 @@ nl:
       column: Kolom
       combine_multiple_columns: Meerdere kolommen samenvoegen
       create_composite: 'Maak één kolom vanuit meerdere bronlolommen:'
-      create_js_expression: Hoe maak ik een aangepaste omschrijving in Javascript aan?
-      custom_javascript: Aangepaste omschrijving in Javascript...
       enter_custom: Voer een aangepaste waarde in
       existing_cols: Bestaande adreskolommen
       existing_latlng_cols: Bestaande kolommen voor breedte- en lengtegraden

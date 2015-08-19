@@ -2531,8 +2531,6 @@ sl:
       column: Stolpec
       combine_multiple_columns: Kombiniraj več stolpcev
       create_composite: 'Ustvari en stolopec iz več izvornih:'
-      create_js_expression: Kako ustvarim izraz Javascript po meri?
-      custom_javascript: Izraz Javascript po meri ...
       enter_custom: Vnesi vrednost po meri
       existing_cols: Stolpci z obstoječimi naslovi
       existing_latlng_cols: Stolpci z obstoječimi zemljepisnimi širinami in dolžinami

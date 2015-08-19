@@ -33,7 +33,6 @@
       <option value="lower"><%= t("#{prefix}.make_lower_case") %></option>
       <option value="toStateCode"><%= t("#{prefix}.to_state_code") %></option>
       <option value="findReplace"><%= t("#{prefix}.find_and_replace") %></option>
-      <option value="customExpression"><%= t("#{prefix}.custom_javascript") %></option>
     </select>
     <div class="additionalTransformOptions">
       <div class="findReplaceSection">
@@ -45,11 +44,6 @@
         <label class="caseSensitiveLabel"><%= t("#{prefix}.case_sensitive") %></label>
         <input type="checkbox" class="regex"/>
         <label class="regexLabel"><%= t("#{prefix}.regular_expression") %></label>
-      </div>
-      <div class="customExpressionSection">
-        <label class="customExpressionLabel"></label>
-        <input type="text" class="customExpression"/>
-        <a rel="external" href="http://dev.socrata.com/publishers/import-translations"><%= t("#{prefix}.create_js_expression") %></a>
       </div>
     </div>
   </li>

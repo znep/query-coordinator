@@ -2508,8 +2508,6 @@ de:
       column: Spalte
       combine_multiple_columns: Mehrere Spalten kombinieren
       create_composite: Eine Spalte aus vielen Quell-Spalten erstellen
-      create_js_expression: Wie erstelle ich eine benutzerdefinierte Javascript-Expression?
-      custom_javascript: Benutzerdefiniertte Javascript-Expression ...
       enter_custom: Einen benutzerdefinierten Wert eingeben
       existing_cols: Existierende Adress-Spalte
       existing_latlng_cols: Existierende Breiten- und Längengrad-Spalte

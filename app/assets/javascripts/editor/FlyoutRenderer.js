@@ -52,7 +52,7 @@
       var flyout = $(
         '<div>',
         {
-          'id': 'socrata-flyout',
+          'id': 'socrata-flyout'
         }
       ).append([
         flyoutContent,
@@ -128,7 +128,7 @@
         // should be positioned above or below the target.
         if (belowTarget) {
 
-          flyoutStyles.top = targetBoundingClientRect.bottom +
+          flyoutStyles.top = flyoutTargetBoundingClientRect.bottom +
             flyoutHintHeight +
             FLYOUT_TOP_PADDING;
 
@@ -142,7 +142,7 @@
 
       flyoutRightEdge = flyoutStyles.left + flyoutWidth;
       windowRightEdgeMinusPadding = windowWidth - FLYOUT_WINDOW_PADDING;
-      
+
       // If the right edge of the flyout will be drawn off the right edge of
       // the screen, move the flyout to the left until its right edge is flush
       // with the right edge of the screen less the FLYOUT_WINDOW_PADDING.

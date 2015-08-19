@@ -139,7 +139,7 @@
 
       if (payload === null) {
 
-        storyteller.flyoutRenderer.clearFlyout();
+        socrata.storyteller.flyoutRenderer.clearFlyout();
 
       } else {
 
@@ -240,9 +240,9 @@
               'class': 'socrata-flyout-row',
               'colspan': '2'
             }
-          ).append([
-            $('<td>', { 'class': 'socrata-flyout-cell' }).html('&#8203;'),
-          ]);
+          ).append(
+            $('<td>', { 'class': 'socrata-flyout-cell' }).html('&#8203;')
+          );
 
           flyoutSelectedNoticeLabel = $(
             '<td>',
@@ -262,7 +262,7 @@
           ]);
 
           flyoutElements.push(flyoutSpacerRow);
-          flyoutElements.push(flyoutSelectedNoticeRow)
+          flyoutElements.push(flyoutSelectedNoticeRow);
         }
 
         flyoutTable.append(flyoutElements);
@@ -272,7 +272,7 @@
           flyoutTable
         ]);
 
-        storyteller.flyoutRenderer.renderFlyout({
+        socrata.storyteller.flyoutRenderer.renderFlyout({
           element: payload.element,
           content: flyoutContent,
           rightSideHint: false,

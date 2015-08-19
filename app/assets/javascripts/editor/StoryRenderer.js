@@ -10,17 +10,26 @@
   // This function maps component data (type, value) to
   // a jQuery plugin name ('storytellerComponentText').
   function _findAppropriateComponentRenderer(componentData) {
-    var type = componentData.type;
+    var type;
+    var mediaType;
+    var providerName;
+    var visualizationType;
+
+    utils.assertHasProperties(componentData, 'type', 'value');
+    type = componentData.type;
 
     if (type === 'text') {
       return 'storytellerComponentText';
     } else if (type === 'layout') {
       return 'storytellerComponentLayout';
     } else if (type === 'media') {
-      var mediaType = componentData.value.type;
+      utils.assertHasProperties(componentData.value, 'type', 'value');
+      mediaType = componentData.value.type;
 
       if (mediaType === 'embed') {
-        var providerName = componentData.value.value.provider;
+        utils.assertHasProperty(componentData.value.value, 'provider');
+        providerName = componentData.value.value.provider;
+
         if (providerName === 'wizard') {
           return 'storytellerComponentMediaEmbedWizard';
         } else if (providerName === 'youtube') {
@@ -28,7 +37,9 @@
         }
       }
     } else if (type === 'socrataVisualization') {
-      var visualizationType = componentData.value.type;
+      utils.assertHasProperty(componentData.value, 'type');
+      visualizationType = componentData.value.type;
+
       if (visualizationType === 'column') {
         return 'storytellerComponentSocrataVisualizationColumn';
       }

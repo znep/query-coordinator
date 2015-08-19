@@ -13,7 +13,8 @@
   <revert-button
     ng-click="revertPage()"
     page-has-changes="hasChanges"
-    revert-initiated="revertInitiated">
+    revert-initiated="revertInitiated"
+    ng-show="!isEphemeral">
   </revert-button>
   <save-button
     class="save-this-page r-to-l"

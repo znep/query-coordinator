@@ -530,6 +530,11 @@
               promise.then(_.noop,
                 function() {
                   scope.$safeApply(function() {
+
+                    // CORE-5208: PhantomJS always produces an error here even
+                    // though it successfully renders the points. For now we
+                    // are making an exception to improve the polaroid
+                    // experience until we can investigate the cause further.
                     if (!window._phantom) {
                       scope.$emit('render:error');
                     }

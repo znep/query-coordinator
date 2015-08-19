@@ -3,17 +3,47 @@
 body.state-view-visualizationAdd
   overflow-y: auto
 
-  .customize-card-options,
-  .card-text
-    display: none
+  column-and-visualization-selector
+    position: relative
+    display: block
 
-  .add-card-preview
-    background-color: transparent
-    border: none
-    color: #555
+    .customize-card-options,
+    .card-text
+      display: none
 
-    .placeholder-inner-text
-      margin-top: 20px
+    .add-card-select-column soc-select
+      margin-bottom: 1rem
+      background-color: #ddd
 
-  .add-card-select-column soc-select
-    background-color: #888
+      select
+        color: #666
+
+      .arrow
+        border-color: #666 transparent transparent transparent
+
+    .add-card-preview
+      position: relative
+      height: 44vw
+      color: #666
+      background-color: transparent
+
+      .add-card-preview-placeholder
+        width: 100%
+        height: 100%
+        border: 1px dashed #999
+
+        .placeholder-inner-text
+          position: absolute
+          width: 100%
+          top: 50%
+          transform: translate(0, -50%)
+          text-align: center
+
+      .card-spot
+        height: 100%
+
+        .card.preview
+          height: 100%
+
+          .card-visualization-wrapper
+            height: 100% !important

@@ -10,10 +10,13 @@
 
         // Array of card types.
         // Optional, if set will limit available card types to the given list.
-        supportedCardTypes: '=?'
+        supportedCardTypes: '=?',
+        // Override the DataLens-specific message about adding a new card
+        addVisualizationPrompt: '=?'
       },
       templateUrl: '/angular_templates/dataCards/columnAndVisualizationSelector.html',
       link: function(scope) {
+
         scope.$bindObservable(
           'columnHumanNameFn',
           scope.$observe('page').observeOnLatest('dataset.columns').map(
@@ -107,6 +110,7 @@
         scope.addCardSelectedColumnFieldName = null;
         scope.selectedCardModel = null;
         scope.availableCardTypes = [];
+        scope.addVisualizationPrompt = scope.addVisualizationPrompt || 'addCardDialog.prompt';
 
         Rx.Observable.subscribeLatest(
           scope.$observe('addCardSelectedColumnFieldName'),

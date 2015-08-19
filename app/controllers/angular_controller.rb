@@ -96,19 +96,26 @@ class AngularController < ActionController::Base
   end
 
   def visualization_add
-    datasetId = params['datasetId']
+
+    dataset_id = params['datasetId']
+
+    # First fetch the current user's profile.
+    # NOTE: The call to `current_user` is side-effecty and if we do
+    # not 'initialize' the frontend by calling this then future calls
+    # made by CoreServer will fail.
+    @current_user = current_user
 
     # Can't render add card without a dataset
-    if datasetId.empty?
+    if dataset_id.empty?
       error_class = 'DatasetMetadataRequestFailure'
-      error_message = "Could not serve app: datasetId is required."
+      error_message = "Could not serve app: dataset_id is required."
       report_error(error_class, error_message)
       return render_500
     end
 
     # Fetch dataset metadata
     begin
-      @dataset_metadata = fetch_dataset_metadata(datasetId)
+      @dataset_metadata = fetch_dataset_metadata(dataset_id)
     rescue AuthenticationRequired
       return redirect_to_login
     rescue UnauthorizedDatasetMetadataRequest
@@ -119,7 +126,7 @@ class AngularController < ActionController::Base
       error_class = 'DatasetMetadataRequestFailure'
       error_message = "Could not serve app: encountered unknown error " \
         "fetching dataset metadata for dataset id " \
-        "#{datasetId}: #{error}"
+        "#{dataset_id}: #{error}"
       report_error(error_class, error_message)
       return render_500
     end

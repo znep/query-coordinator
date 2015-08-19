@@ -82,6 +82,10 @@ var pointTypes = {
   longitude: 'number'
 };
 
+// Delta Importer implementation requires Web Workers.
+var useDI2 = _.isFunction(window.Worker) && !_.isNull($.dataSync.ssync())
+    && blist.feature_flags.default_imports_to_nbe == 'delta-importer';
+
 // helpers
 
 // get a title for a type
@@ -1408,7 +1412,10 @@ importNS.uploadFilePaneConfig = {
                     return false;
                 }
 
-                state.fileObj = uploader._handler._files[id];
+                // ONCALL-2867: IE9 does not like this line; it's only needed for datasync.
+                if (useDI2) {
+                  state.fileObj = uploader._handler._files[id];
+                }
 
                 // if it happens too fast it's bewildering
                 setTimeout(function()
@@ -1955,10 +1962,6 @@ importNS.importingPaneConfig = {
         if (state.operation != 'import') {
           urlParams.method = state.operation;
         }
-
-        // Delta Importer implementation requires Web Workers.
-        var useDI2 = _.isFunction(Worker) && !_.isNull($.dataSync.ssync())
-            && blist.feature_flags.default_imports_to_nbe == 'delta-importer';
 
         if (useDI2) {
           var promiseQueue = [];

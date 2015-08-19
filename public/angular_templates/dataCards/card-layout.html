@@ -1,4 +1,18 @@
 <div
+  ng-repeat="cardGroup in cardGroups"
+  card-group-index="$index"
+  ng-style="cardGroup.hint"
+  class="card-group-customize-hint">
+  Up to {{ $index + 2 }} columns per row. ?
+</div>
+
+<div
+  ng-repeat="cardGroup in cardGroups"
+  ng-style="cardGroup.style"
+  class="card-group">
+</div>
+
+<div
   class="card-spot"
   animate-to="cardState.style"
   animate-to-index="{{ cardState.index }}"
@@ -23,15 +37,20 @@
 </div>
 
 <div
-  ng-repeat="placeholder in placeholderDropTargets"
-  ng-style="placeholder.style"
+  ng-repeat="dropTarget in dropTargets"
+  ng-style="dropTarget.style"
   class="card-group-drop-placeholder"
-  data-group-id="{{ placeholder.cardSize}}"></div>
-<button
-  ng-repeat="button in addCardButtons"
-  ng-style="button.style"
-  type="button"
-  class="add-card-button action-btn dark l-to-r"
-  ng-class="{ disabled: !allowAddCard }"
-  ng-show="editMode"
-  ng-click="addCardWithSize(button.cardSize)">{{'cardLayout.addCardHere' | I18n}}</button>
+  data-group-id="{{ dropTarget.cardSize}}">
+    <img class="drag-card-icon" src="/images/dataCards/drag-card-icon.png">
+    Drag and drop cards here
+
+  <button
+    ng-style="addCardButtons[$index].style"
+    type="button"
+    class="add-card-button action-btn dark r-to-l"
+    ng-class="{ disabled: !allowAddCard }"
+    ng-show="editMode"
+    ng-click="addCardWithSize(addCardButtons[$index].cardSize)">
+      <span class="icon-edit"></span> {{'cardLayout.addCardHere' | I18n}}
+  </button>
+</div>

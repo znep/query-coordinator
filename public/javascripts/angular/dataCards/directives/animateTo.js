@@ -8,7 +8,7 @@
    *   There is one child element, and it is the one setting the background color.
    */
   angular.module('dataCards.directives').directive('animateTo', function() {
-    var ANIMATION_DURATION = .25;
+    var ANIMATION_DURATION = 0.25;
     var ANIMATION_STAGGER = .04;
     return {
       restrict: 'A',

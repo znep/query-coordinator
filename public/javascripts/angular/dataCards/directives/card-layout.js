@@ -89,9 +89,36 @@
           );
         }
 
-        //TODO This should never change at runtime. If it does, we need to react to that change.
+        // TODO This should never change at runtime. If it does, we need to react to that change.
         var cardsMetadataOffsetTop = cardsMetadata.offset().top;
 
+        function adjustCardGroupCustomizeHints() {
+          var HINT_HEIGHT = 80;
+          var quickFilterBarHeight = quickFilterBar.height();
+          var containerTop = cardContainer.get(0).getBoundingClientRect().top;
+
+          scope.$safeApply(function() {
+            _.each(scope.cardGroups, function(cardGroup) {
+              var hintTop, hintPosition;
+
+              if (containerTop + cardGroup.style.top < quickFilterBarHeight) {
+                hintPosition = 'fixed';
+                hintTop = quickFilterBarHeight;
+
+                if (hintTop + HINT_HEIGHT >= containerTop + cardGroup.style.top + cardGroup.style.height) {
+                  hintTop = cardGroup.style.top + cardGroup.style.height - HINT_HEIGHT;
+                  hintPosition = 'absolute';
+                }
+              } else {
+                hintPosition = 'absolute';
+                hintTop = cardGroup.style.top;
+              }
+
+              cardGroup.hint.top = hintTop + 'px';
+              cardGroup.hint.position = hintPosition;
+            });
+          });
+        }
 
         /**
          * In an expanded view, the expanded card needs to update its vertical
@@ -194,11 +221,11 @@
             (1 - EXPANDED_COL_RATIO) * containerContentWidth);
           var expandedColumnWidth = Math.floor(
             EXPANDED_COL_RATIO * containerContentWidth) -
-            Constants.LAYOUT_HORIZONTAL_PADDING;
+            Constants.LAYOUT_CARD_MARGIN;
 
           var expandedColumnLeft = unexpandedColumnWidth +
-            Constants.LAYOUT_GUTTER + Constants.LAYOUT_HORIZONTAL_PADDING;
-          var unexpandedColumnLeft = Constants.LAYOUT_GUTTER;
+            Constants.LAYOUT_HORIZONTAL_PADDING + Constants.LAYOUT_CARD_MARGIN;
+          var unexpandedColumnLeft = Constants.LAYOUT_HORIZONTAL_PADDING;
 
           var unexpandedCards = cardsBySize.normal.filter(function(card) {
             // Note that the 'card' supplied by the iterator is a wrapper around
@@ -222,7 +249,7 @@
 
             // Keep track of the accumulated height of all cards so that we
             // know the top offset of the next card up for layout.
-            heightOfAllCards += cardHeight + Constants.LAYOUT_VERTICAL_PADDING;
+            heightOfAllCards += cardHeight + Constants.LAYOUT_CARD_MARGIN;
 
             card.style = {
               position: '',
@@ -236,7 +263,7 @@
 
           var quickFilterBarHeight = quickFilterBar.height();
           var customizeBarHeight = (customizeBar.length > 0) ? customizeBar[0].offsetHeight : 0;
-          var verticalPadding = Constants.LAYOUT_VERTICAL_PADDING;
+          var verticalPadding = Constants.LAYOUT_CARD_MARGIN;
           var maximumPossibleExpandedCardHeight = windowSize.height -
             quickFilterBarHeight -
             customizeBarHeight -
@@ -259,7 +286,7 @@
           if (!dataCardIsExpanded) {
             cardsBySize.dataCard[0].style = {
               position: '',
-              left: Constants.LAYOUT_GUTTER,
+              left: Constants.LAYOUT_HORIZONTAL_PADDING,
               top: heightOfAllCards,
               width: containerContentWidth,
               height: Constants.LAYOUT_DATA_CARD_HEIGHT,
@@ -287,7 +314,14 @@
          * Generates the styles for a collapsed-card layout.
          */
         function layoutCollapsed(cardsBySize, editMode, containerContentWidth,
-                                 placeholderDropTargets, addCardButtons) {
+                                 cardGroups, dropTargets, addCardButtons) {
+
+          var sidebarWidth = editMode ? Constants.LAYOUT_SIDEBAR_WIDTH : 0;
+          var cardMargin = Constants.LAYOUT_CARD_MARGIN;
+          var horizontalPadding = Constants.LAYOUT_HORIZONTAL_PADDING;
+
+          containerContentWidth -= sidebarWidth;
+
           var heightOfAllCards = 0;
 
           // Lay out the cards into rows
@@ -310,28 +344,32 @@
           // Position the rows of cards
           _.map(editableCards, function(rows, cardSize) {
             var currentRowHeight = COLLAPSED_SIZE_TO_HEIGHT[parseInt(cardSize, 10)];
-            var currentRowContentHeight = currentRowHeight -
-              Constants.LAYOUT_VERTICAL_PADDING;
+            var currentRowContentHeight = currentRowHeight - cardMargin;
+
+            var minY, maxY;
 
             _.map(rows, function(row, rowIndex) {
 
-              var paddingForEntireRow = Constants.LAYOUT_HORIZONTAL_PADDING *
-                (row.length - 1);
-              var usableContentSpaceForRow = containerContentWidth -
-                paddingForEntireRow;
+              var paddingForEntireRow = cardMargin * (row.length - 1);
+              var usableContentSpaceForRow = containerContentWidth - paddingForEntireRow;
               var cardWidth = Math.floor(usableContentSpaceForRow / row.length);
 
+              if (rowIndex === 0) {
+                minY = heightOfAllCards + rowIndex * currentRowHeight;
+              }
+
               _.map(row, function(card, cardIndexInRow) {
-                var spaceTakenByOtherCardsPadding = Math.max(
-                  0, cardIndexInRow * Constants.LAYOUT_HORIZONTAL_PADDING);
-                var cardLeft = Constants.LAYOUT_GUTTER + (
+                var spaceTakenByOtherCardsPadding = Math.max(0, cardIndexInRow * cardMargin);
+                var cardLeft = horizontalPadding + (
                   cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
                 var cardTop = heightOfAllCards + rowIndex * currentRowHeight;
+
+                maxY = cardTop + currentRowContentHeight;
 
                 card.style = {
                   position: '',
                   top: cardTop,
-                  left: cardLeft,
+                  left: cardLeft + sidebarWidth,
                   width: cardWidth,
                   height: currentRowContentHeight,
                   zIndex: ''
@@ -342,37 +380,47 @@
             // Add gap between card groups in edit mode only
             if (editMode) {
 
-              // Also accommodate for empty groups and display a placeholder drop target.
               var groupEmpty = rows.length === 0;
+              var dropTargetHeight = groupEmpty ? Constants.LAYOUT_EMPTY_GROUP_HEIGHT :
+                Constants.LAYOUT_DROP_TARGET_HEIGHT;
 
-              placeholderDropTargets.push({
-                cardSize: cardSize,
-                style: {
-                  display: groupEmpty ? 'block' : 'none',
-                  width: containerContentWidth,
-                  left: Constants.LAYOUT_GUTTER,
-                  top: heightOfAllCards
-                }
-              });
-
-              if (groupEmpty) {
-                heightOfAllCards += Constants.LAYOUT_PLACEHOLDER_DROP_TARGET_HEIGHT;
-              } else {
-                heightOfAllCards += rows.length * currentRowHeight;
-              }
-
-              heightOfAllCards += 10;
-
-              addCardButtons.push({
-                cardSize: cardSize,
+              var cardGroup = {
+                hint: {},
                 style: {
                   top: heightOfAllCards,
-                  left: Constants.LAYOUT_GUTTER
+                  left: sidebarWidth + horizontalPadding,
+                  width: containerContentWidth,
+                  height: groupEmpty ? dropTargetHeight : (maxY - minY) + dropTargetHeight,
+                  background: '#666d7b',
+                  position: 'absolute'
                 }
-              });
+              };
 
-              heightOfAllCards += Constants.LAYOUT_EDIT_MODE_GROUP_PADDING;
+              var dropTarget = {
+                cardSize: cardSize,
+                style: {
+                  display: 'block',
+                  width: cardGroup.style.width,
+                  left: cardGroup.style.left,
+                  top: groupEmpty ? cardGroup.style.top : cardGroup.style.top + cardGroup.style.height - dropTargetHeight,
+                  height: dropTargetHeight,
+                  lineHeight: dropTargetHeight + 'px'
+                }
+              };
 
+              var addCardButton = {
+                cardSize: cardSize,
+                style: {
+                  bottom: horizontalPadding,
+                  right: horizontalPadding
+                }
+              };
+
+              cardGroups.push(cardGroup);
+              dropTargets.push(dropTarget);
+              addCardButtons.push(addCardButton);
+
+              heightOfAllCards += cardGroup.style.height + Constants.LAYOUT_CARD_GROUP_SPACING;
             } else {
               heightOfAllCards += rows.length * currentRowHeight;
             }
@@ -380,14 +428,13 @@
 
           cardsBySize.dataCard[0].style = {
             position: '',
-            left: Constants.LAYOUT_GUTTER,
+            left: sidebarWidth + Constants.LAYOUT_HORIZONTAL_PADDING,
             top: heightOfAllCards,
             width: containerContentWidth,
             height: Constants.LAYOUT_DATA_CARD_HEIGHT
           };
 
-          heightOfAllCards += Constants.LAYOUT_DATA_CARD_HEIGHT +
-            Constants.LAYOUT_VERTICAL_PADDING;
+          heightOfAllCards += Constants.LAYOUT_DATA_CARD_HEIGHT + cardMargin;
 
           return heightOfAllCards;
         }
@@ -499,6 +546,12 @@
           )
         );
 
+        subscriptions.push(Rx.Observable.
+          subscribeLatest(
+            observableForStaticElements,
+            scope.$observe('editMode').filter(_.identity),
+            adjustCardGroupCustomizeHints));
+
         // We also change the height of the expanded card onscroll, and if the QFB height
         // changes
         subscriptions.push(
@@ -533,7 +586,7 @@
                   cardContainer.height(),
                   dimensions.quickFilterBarHeight,
                   dimensions.customizeBarHeight,
-                  Constants.LAYOUT_VERTICAL_PADDING,
+                  Constants.LAYOUT_CARD_MARGIN,
                   dataCardIsExpanded
                 );
 
@@ -573,7 +626,7 @@
             var oldExpandedId;
             var newExpandedId;
             // '!=' to deal with null vs undef
-            if (scope.expandedCard != expandedCard) {
+            if (scope.expandedCard != expandedCard) { // eslint-disable-line eqeqeq
               oldExpandedId = scope.expandedCard && scope.expandedCard.uniqueId;
               newExpandedId = expandedCard && expandedCard.uniqueId;
               // Keep track of whether the layout is an expanded-card layout, so upstream
@@ -585,14 +638,16 @@
 
             // Terminology:
             //
-            // Content size (width, height) refers to a size with padding/LAYOUT_GUTTER
-            // removed. Otherwise, sizes include padding/LAYOUT_GUTTER.
+            // Content size (width, height) refers to a size with padding/LAYOUT_HORIZONTAL_PADDING
+            // removed. Otherwise, sizes include padding/LAYOUT_HORIZONTAL_PADDING.
             var containerContentWidth = cardContainer.width() -
-              Constants.LAYOUT_GUTTER * 2;
+              Constants.LAYOUT_HORIZONTAL_PADDING * 2;
 
-            // Track whether or not to draw placeholder drop targets
-            // for each card grouping.
-            var placeholderDropTargets = [];
+            // Groups of cards.
+            var cardGroups = [];
+
+            // Track whether or not to draw drop targets for each card grouping.
+            var dropTargets = [];
 
             // Track each 'add card' button's position in the layout
             var addCardButtons = [];
@@ -609,7 +664,7 @@
             } else {
               heightOfAllCards = layoutCollapsed(
                 cardsBySize, editMode, containerContentWidth,
-                placeholderDropTargets, addCardButtons);
+                cardGroups, dropTargets, addCardButtons);
             }
 
             scope.$safeApply(function() {
@@ -639,15 +694,16 @@
               height: heightOfAllCards
             });
 
-            scope.placeholderDropTargets = placeholderDropTargets;
+            scope.cardGroups = cardGroups;
+            scope.dropTargets = dropTargets;
             scope.addCardButtons = addCardButtons;
+
+            if (editMode === true) {
+              adjustCardGroupCustomizeHints();
+            }
           }));
 
-
-        /******************************
-        * Drag and drop functionality *
-        ******************************/
-
+        // Drag and drop functionality
         function checkForScroll() {
 
           var now = Date.now();

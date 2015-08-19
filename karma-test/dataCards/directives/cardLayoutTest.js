@@ -563,74 +563,6 @@ describe('card-layout', function() {
 
     });
 
-    it('should show the correct drop placeholders', function() {
-      var cl = createCardLayout();
-      var card1 = new Card(cl.pageModel, 'testField1');
-      var card2 = new Card(cl.pageModel, 'testField2');
-      var card3 = new Card(cl.pageModel, 'testField3');
-      var card4 = new Card(cl.pageModel, '*');
-
-      var cards = [ card1, card2, card3, card4 ];
-
-      card1.set('cardSize', 1);
-      card2.set('cardSize', 2);
-      card3.set('cardSize', 2);
-      card4.set('cardSize', 3);
-
-      cl.pageModel.set('cards', cards);
-      cl.outerScope.editMode = true;
-      cl.outerScope.$apply();
-      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
-      mockWindowStateService.scrollPositionSubject.onNext(0);
-
-      var placeholder1 = cl.element.find('.card-group-drop-placeholder[data-group-id=1]');
-      var placeholder2 = cl.element.find('.card-group-drop-placeholder[data-group-id=2]');
-      var placeholder3 = cl.element.find('.card-group-drop-placeholder[data-group-id=3]');
-
-      function visibilities() {
-        return [
-          cl.element.find('.card-group-drop-placeholder[data-group-id=1]').css('display') !== 'none',
-          cl.element.find('.card-group-drop-placeholder[data-group-id=2]').css('display') !== 'none',
-          cl.element.find('.card-group-drop-placeholder[data-group-id=3]').css('display') !== 'none'
-        ];
-      }
-
-      card1.set('cardSize', 1);
-      card2.set('cardSize', 2);
-      card3.set('cardSize', 3);
-      expect(visibilities()).to.deep.equal([false, false, false]);
-
-      card1.set('cardSize', 2);
-      card2.set('cardSize', 2);
-      card3.set('cardSize', 3);
-      expect(visibilities()).to.deep.equal([true, false, false]);
-
-      card1.set('cardSize', 1);
-      card2.set('cardSize', 2);
-      card3.set('cardSize', 2);
-      expect(visibilities()).to.deep.equal([false, false, true]);
-
-      card1.set('cardSize', 1);
-      card2.set('cardSize', 1);
-      card3.set('cardSize', 1);
-      expect(visibilities()).to.deep.equal([false, true, true]);
-
-      card1.set('cardSize', 2);
-      card2.set('cardSize', 2);
-      card3.set('cardSize', 2);
-      expect(visibilities()).to.deep.equal([true, false, true]);
-
-      card1.set('cardSize', 3);
-      card2.set('cardSize', 3);
-      card3.set('cardSize', 3);
-      expect(visibilities()).to.deep.equal([true, true, false]);
-
-      card1.set('cardSize', 1);
-      card2.set('cardSize', 3);
-      card3.set('cardSize', 3);
-      expect(visibilities()).to.deep.equal([false, true, false]);
-    });
-
     describe('add card behavior', function() {
 
       it('should display "Add card here" buttons in edit mode', function() {
@@ -890,6 +822,8 @@ describe('card-layout', function() {
         expect(card1.getCurrentValue('cardSize')).to.equal(1);
 
         // Drag to group 2
+        placeholder1 = cl.element.find('[data-group-id=1]');
+        placeholder2 = cl.element.find('[data-group-id=2]');
         mockWindowStateService.mousePositionSubject.onNext({
           clientX: placeholder2.offset().left + placeholder2.width() / 2,
           clientY: placeholder2.offset().top + placeholder2.height() / 2,
@@ -1029,7 +963,7 @@ describe('card-layout', function() {
         // since it includes a border. Therefore, we need to also get the offsetHeight here in order
         // for the test to behave as expected.
         return windowHeight -
-          (QUICK_FILTER_BAR_HEIGHT + $('.customize-bar')[0].offsetHeight + Constants.LAYOUT_VERTICAL_PADDING);
+          (QUICK_FILTER_BAR_HEIGHT + $('.customize-bar')[0].offsetHeight + Constants.LAYOUT_CARD_MARGIN);
       }
 
       var cl;

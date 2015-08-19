@@ -144,6 +144,7 @@ module.exports = function ( karma ) {
       /* Images */
       { pattern: 'public/stubs/images/*.png', watched: false, included: false, served: true },
       { pattern: 'public/images/dataCards/**/*.png', watched: false, included: false, served: true },
+      { pattern: 'public/images/dataCards/*.png', watched: false, included: false, served: true },
 
       /* Old UX */
       // moved to karma-test/old-ux

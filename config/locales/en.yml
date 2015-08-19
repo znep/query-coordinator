@@ -94,7 +94,7 @@ en:
         expand_card: Expand this card
         remove_card: Remove this card
       card_layout:
-        add_card_here: Add card here
+        add_card_here: Create a new card
       card_titles:
         average: average {0}
         number_of: number of {0}

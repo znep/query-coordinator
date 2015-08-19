@@ -229,6 +229,7 @@ body.state-view-cards
         padding: 0
         box-sizing: border-box
         z-index: 1002
+        box-shadow: 0 2px 4px rgba(0, 0, 0, .35)
 
         &.stuck
           border-bottom-width: 1px
@@ -333,15 +334,33 @@ body.state-view-cards
             width: inherit
             height: inherit
 
+      .card-group
+        border-left: 4px solid #f7f7f7
+        border-radius: $rounded-corners-border-radius
+        position: absolute
+
+      .card-group-customize-hint
+        position: absolute
+        width: 120px
+        height: 80px
+        padding-left: 10px
+        padding-top: 10px
+        font-weight: 400
+
       .card-group-drop-placeholder
         position: absolute
         display: none
         height: 128px
-        font-size: 1.5em
-        line-height: 128px
+        font-size: 1.0em
         text-align: center
         border-radius: $rounded-corners-border-radius
         box-sizing: border-box
+        color: #9ca2ad
+
+        img.drag-card-icon
+          padding-top: 4px
+          vertical-align: middle
+          opacity: .4
 
       .card-drop-placeholder
         position: absolute
@@ -354,6 +373,7 @@ body.state-view-cards
 
       .add-card-button
         position: absolute
+        margin: 0
 
 /* DESKTOP-SPECIFIC STYLES */
 

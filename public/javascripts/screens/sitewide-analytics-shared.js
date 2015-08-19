@@ -7,7 +7,8 @@ var datasetsMetricName,
     datasetsListHeader,
     totalPrefix,
     addedSuffix,
-    pageViewsName;
+    pageViewsName,
+    absoluteMetricRange;
 
 if(blist.feature_flags.dataset_count_v2){
   datasetsMetricName = 'datasets-published-v2';
@@ -22,6 +23,7 @@ if (blist.feature_flags.embetter_analytics_page) {
     totalPrefix = '';
     addedSuffix = ' Added';
     pageViewsName = 'Browser Page Views';
+    absoluteMetricRange = true;
 } else {
     pageViewsSummary = {
         plus: 'page-views',
@@ -34,6 +36,7 @@ if (blist.feature_flags.embetter_analytics_page) {
     totalPrefix = 'Total ';
     addedSuffix = '';
     pageViewsName = 'Page Views';
+    absoluteMetricRange = false;
 }
 
 blist.metrics.sitewideShared = {
@@ -112,6 +115,7 @@ blist.metrics.sitewideShared = {
             id: 'summaryDatasets',    displayName: totalPrefix + 'Datasets' + addedSuffix,
             summary: {
                 plus: datasetsMetricName,
+                range: absoluteMetricRange,
                 verbPhrase: 'datasets created',
 		verbPhraseSingular: 'dataset created'
             }

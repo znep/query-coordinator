@@ -101,6 +101,7 @@ describe('columnAndVisualizationSelectorTest', function() {
         'page="page" ' +
         'card-size="cardSize" ' +
         'supported-card-types="supportedCardTypes" ' +
+        'add-card-prompt="false" ' +
       '></column-and-visualization-selector>';
 
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
@@ -510,6 +511,33 @@ describe('columnAndVisualizationSelectorTest', function() {
             deep.equal(expectedUnsupported.sort());
         });
       });
+    });
+  });
+
+  describe('addVisualizationPrompt scope variable', function() {
+
+    var directive;
+
+    beforeEach(function() {
+      directive = createDirective();
+    });
+
+    it('should show the default message if no `addVisualiztionPrompt` value is provided', function() {
+
+      var prompt = directive.element.find('.placeholder-inner-text').find('span').text();
+
+      expect(prompt).to.equal('Choose a column from the dropdown above to add a new card');
+    });
+
+    it('should override the default message if a `addVisualizationPrompt` value is provided', function() {
+
+      directive.scope.addVisualizationPrompt = 'addCardDialog.genericPrompt';
+
+      directive.scope.$digest();
+
+      var prompt = directive.element.find('.placeholder-inner-text').find('span').text();
+
+      expect(prompt).to.equal('Choose a column from the dropdown above to add a new visualization');
     });
   });
 });

@@ -51,6 +51,7 @@ en:
         not_supported: Not currently supported
         not_supported_long: This card type is currently unsupported
         prompt: Choose a column from the dropdown above to add a new card
+        generic_prompt: Choose a column from the dropdown above to add a new visualization
         settings: Settings
         visualize_flyout:
           choropleth: Visualize this column as a choropleth

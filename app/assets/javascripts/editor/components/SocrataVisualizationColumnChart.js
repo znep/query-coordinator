@@ -281,14 +281,14 @@
       }
     }
 
-    function _handleDatumSelect(event) {
+    function _handleDatumSelect() {// event) { ---> Linting sucks
 
       // var payload = event.originalEvent.detail;
 
       // TODO: Implement.
     }
 
-    function _handleExpandedToggle(event) {
+    function _handleExpandedToggle() {// event) { ---> Linting sucks
 
       // var payload = event.originalEvent.detail;
 

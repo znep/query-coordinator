@@ -1,5 +1,7 @@
 describe('storytellerComponentMediaEmbedYouTube jQuery plugin', function() {
-  var node;
+  'use strict';
+
+  var $component;
   var storyteller = window.socrata.storyteller;
 
    // (╯°□°）╯︵ ┻━┻
@@ -16,16 +18,16 @@ describe('storytellerComponentMediaEmbedYouTube jQuery plugin', function() {
 
   beforeEach(function() {
     testDom.append('<div>');
-    node = testDom.children('div');
+    $component = testDom.children('div');
   });
 
   it('should throw when passed invalid arguments', function() {
-    assert.throws(function() { node.storytellerComponentMediaEmbedYouTube(); });
-    assert.throws(function() { node.storytellerComponentMediaEmbedYouTube(1); });
-    assert.throws(function() { node.storytellerComponentMediaEmbedYouTube(null); });
-    assert.throws(function() { node.storytellerComponentMediaEmbedYouTube(undefined); });
-    assert.throws(function() { node.storytellerComponentMediaEmbedYouTube({}); });
-    assert.throws(function() { node.storytellerComponentMediaEmbedYouTube([]); });
+    assert.throws(function() { $component.storytellerComponentMediaEmbedYouTube(); });
+    assert.throws(function() { $component.storytellerComponentMediaEmbedYouTube(1); });
+    assert.throws(function() { $component.storytellerComponentMediaEmbedYouTube(null); });
+    assert.throws(function() { $component.storytellerComponentMediaEmbedYouTube(undefined); });
+    assert.throws(function() { $component.storytellerComponentMediaEmbedYouTube({}); });
+    assert.throws(function() { $component.storytellerComponentMediaEmbedYouTube([]); });
   });
 
   describe('given a value that is not supported', function () {
@@ -34,26 +36,25 @@ describe('storytellerComponentMediaEmbedYouTube jQuery plugin', function() {
       badData.value.value.provider = 'vimeo, lol';
 
       assert.throws(function() {
-        node.storytellerComponentMediaEmbedYouTube(badData);
+        $component.storytellerComponentMediaEmbedYouTube(badData);
       });
     });
   });
 
   describe('given a valid component type and value', function() {
-    var component;
 
     beforeEach(function() {
-      component = node.storytellerComponentMediaEmbedYouTube(validComponentData);
+      $component = $component.storytellerComponentMediaEmbedYouTube(validComponentData);
     });
 
     it('should return a jQuery object for chaining', function() {
-      assert.instanceOf(component, $, 'Returned value is not a jQuery collection');
+      assert.instanceOf($component, $, 'Returned value is not a jQuery collection');
     });
 
     describe('iframe src attribute', function() {
       it('should start off correct', function() {
         assert.equal(
-          component.find('iframe').attr('src'),
+          $component.find('iframe').attr('src'),
           'https://www.youtube.com/embed/{0}?rel=0&showinfo=0'.format(validComponentData.value.value.id)
         );
       });
@@ -62,10 +63,10 @@ describe('storytellerComponentMediaEmbedYouTube jQuery plugin', function() {
         var updatedData = _.cloneDeep(validComponentData);
         updatedData.value.value.id = '1234';
 
-        node.storytellerComponentMediaEmbedYouTube(updatedData);
+        $component.storytellerComponentMediaEmbedYouTube(updatedData);
 
         assert.equal(
-          component.find('iframe').attr('src'),
+          $component.find('iframe').attr('src'),
           'https://www.youtube.com/embed/{0}?rel=0&showinfo=0'.format('1234')
         );
       });

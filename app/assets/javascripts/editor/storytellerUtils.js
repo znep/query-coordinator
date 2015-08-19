@@ -146,17 +146,23 @@
       socrata.utils.assertInstanceOfAny(instance, instantiator);
     },
 
-    assertInstanceOfAny: function(value) {
+    /**
+     * Asserts that an object is instanceof at least one of the provided instantiators.
+     *
+     * @param {object} instance - The instance to check.
+     * @param {...function} <arguments> - List of acceptable instantiators
+     */
+    assertInstanceOfAny: function(instance) {
 
       var instantiators = _.rest(arguments);
       var valid = _.any(instantiators, function(instantiator) {
-        return value instanceof instantiator;
+        return instance instanceof instantiator;
       });
 
       if (!valid) {
         throw new Error(
-          'Value must be one of [{0}] (value: {1}).'.
-            format(instantiators.join(', '), value)
+          'Value must be one of [{0}] (instance: {1}).'.
+            format(instantiators.join(', '), instance)
         );
       }
     }

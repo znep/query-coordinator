@@ -1,5 +1,7 @@
 describe('storytellerComponentSocrataVisualizationColumn jQuery plugin', function() {
-  var node;
+  'use strict';
+
+  var $component;
   var storyteller = window.socrata.storyteller;
   var originalSocrataVisualizationColumnChart;
 
@@ -21,18 +23,18 @@ describe('storytellerComponentSocrataVisualizationColumn jQuery plugin', functio
 
   beforeEach(function() {
     testDom.append('<div>');
-    node = testDom.children('div');
+    $component = testDom.children('div');
     originalSocrataVisualizationColumnChart = $.fn.socrataVisualizationColumnChart;
     $.fn.socrataVisualizationColumnChart = function() {};
   });
 
   it('should throw when passed invalid arguments', function() {
-    assert.throws(function() { node.storytellerComponentSocrataVisualizationColumn(); });
-    assert.throws(function() { node.storytellerComponentSocrataVisualizationColumn(1); });
-    assert.throws(function() { node.storytellerComponentSocrataVisualizationColumn(null); });
-    assert.throws(function() { node.storytellerComponentSocrataVisualizationColumn(undefined); });
-    assert.throws(function() { node.storytellerComponentSocrataVisualizationColumn({}); });
-    assert.throws(function() { node.storytellerComponentSocrataVisualizationColumn([]); });
+    assert.throws(function() { $component.storytellerComponentSocrataVisualizationColumn(); });
+    assert.throws(function() { $component.storytellerComponentSocrataVisualizationColumn(1); });
+    assert.throws(function() { $component.storytellerComponentSocrataVisualizationColumn(null); });
+    assert.throws(function() { $component.storytellerComponentSocrataVisualizationColumn(undefined); });
+    assert.throws(function() { $component.storytellerComponentSocrataVisualizationColumn({}); });
+    assert.throws(function() { $component.storytellerComponentSocrataVisualizationColumn([]); });
   });
 
   describe('given a value that is not supported', function () {
@@ -40,18 +42,17 @@ describe('storytellerComponentSocrataVisualizationColumn jQuery plugin', functio
       var badData = _.cloneDeep(validComponentData);
       badData.value.type = 'not a visualization type';
       assert.throws(function() {
-        node.storytellerComponentSocrataVisualizationColumn(badData);
+        $component.storytellerComponentSocrataVisualizationColumn(badData);
       });
     });
   });
 
   describe('given a valid component type and value', function() {
-    var component;
     var socrataVisualizationColumnChartSpy;
 
     beforeEach(function() {
       socrataVisualizationColumnChartSpy = sinon.spy($.fn, 'socrataVisualizationColumnChart');
-      component = node.storytellerComponentSocrataVisualizationColumn(validComponentData);
+      $component = $component.storytellerComponentSocrataVisualizationColumn(validComponentData);
     });
 
     afterEach(function() {
@@ -59,7 +60,7 @@ describe('storytellerComponentSocrataVisualizationColumn jQuery plugin', functio
     });
 
     it('should return a jQuery object for chaining', function() {
-      assert.instanceOf(component, $);
+      assert.instanceOf($component, $);
     });
 
     it('should call into socrataVisualizationColumnChart with the correct arguments', function() {
@@ -73,13 +74,13 @@ describe('storytellerComponentSocrataVisualizationColumn jQuery plugin', functio
 
     describe('that then changes base query', function() {
       it('should emit the destroy event on the old visualization', function(done) {
-        component.on(Constants.SOCRATA_VISUALIZATION_DESTROY, function() {
+        $component.on(Constants.SOCRATA_VISUALIZATION_DESTROY, function() {
           done();
         });
 
         var newData = _.cloneDeep(validComponentData);
         newData.value.value.dataSource.baseQuery = 'a new base query';
-        node.storytellerComponentSocrataVisualizationColumn(newData);
+        $component.storytellerComponentSocrataVisualizationColumn(newData);
       });
     });
   });

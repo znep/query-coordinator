@@ -1,4 +1,5 @@
 describe('StoryRenderer', function() {
+  'use strict';
 
   var storyteller = window.socrata.storyteller;
   var storyUid;
@@ -277,25 +278,15 @@ describe('StoryRenderer', function() {
     });
 
     describe('with no insertion hint element defined', function() {
-
-      describe('with a story that has blocks', function() {
-
-        it('renders blocks but no insertion hint', function() {
-
-          storyteller.storyRenderer = new storyteller.StoryRenderer(options);
-          forceRender();
-
-          assert($('.block').length > 0, 'there is more than one block');
-          assert.isTrue($('.insertion-hint').hasClass('hidden'), 'insertion hint is hidden');
+      it('should throw', function() {
+        var optionsWithoutInsertionHintElement = _.omit(options, 'insertionHintElement');
+        assert.throws(function() {
+          new storyteller.StoryRenderer(optionsWithoutInsertionHintElement);
         });
       });
     });
 
-    describe('with an insertion hint element defined', function() {
-
-      beforeEach(function() {
-        options.insertionHintElement = $('.insertion-hint');
-      });
+    describe('insertion hint', function() {
 
       describe('with a story that has blocks', function() {
 
@@ -336,14 +327,12 @@ describe('StoryRenderer', function() {
       );
 
       options.editable = true;
-      options.insertionHintElement = $('.insertion-hint');
 
       storyteller.storyRenderer = new storyteller.StoryRenderer(options);
     });
 
     afterEach(function() {
 
-      $('.insertion-hint').remove();
       $('#rich-text-editor-toolbar').remove();
     });
 
@@ -376,7 +365,10 @@ describe('StoryRenderer', function() {
       });
 
       it('should be hidden', function() {
-        assert.isTrue($('.insertion-hint').hasClass('hidden'), 'insertion hint is not shown');
+        assert.isTrue(
+          options.insertionHintElement.hasClass('hidden'),
+          'insertion hint is not shown'
+        );
       });
     });
 
@@ -386,7 +378,10 @@ describe('StoryRenderer', function() {
       });
 
       it('is shown', function() {
-        assert.isFalse($('.insertion-hint').hasClass('hidden'), 'insertion hint is shown');
+        assert.isFalse(
+          options.insertionHintElement.hasClass('hidden'),
+          'insertion hint is shown'
+        );
       });
 
       describe('that was removed by clearing all hints', function() {
@@ -395,7 +390,10 @@ describe('StoryRenderer', function() {
         });
 
         it('is not shown', function() {
-          assert.isTrue($('.insertion-hint').hasClass('hidden'), 'insertion hint is not shown');
+          assert.isTrue(
+            options.insertionHintElement.hasClass('hidden'),
+            'insertion hint is not shown'
+          );
         });
 
       });
@@ -406,7 +404,10 @@ describe('StoryRenderer', function() {
         });
 
         it('is not shown', function() {
-          assert.isTrue($('.insertion-hint').hasClass('hidden'), 'insertion hint is not shown');
+          assert.isTrue(
+            options.insertionHintElement.hasClass('hidden'),
+            'insertion hint is not shown'
+          );
         });
 
       });

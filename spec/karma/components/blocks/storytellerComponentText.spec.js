@@ -1,12 +1,12 @@
-describe('StorytellerComponentText jQuery plugin', function() {
+describe('storytellerComponentText jQuery plugin', function() {
   'use strict';
 
-  var node;
+  var $component;
   var storyteller = window.socrata.storyteller;
 
   beforeEach(function() {
     testDom.append('<div>');
-    node = testDom.children('div');
+    $component = testDom.children('div');
     storyteller.RichTextEditorManagerMocker.mock();
   });
 
@@ -15,44 +15,43 @@ describe('StorytellerComponentText jQuery plugin', function() {
   });
 
   it('should throw when passed invalid arguments', function() {
-    assert.throws(function() { node.storytellerComponentText(); });
-    assert.throws(function() { node.storytellerComponentText(1); });
-    assert.throws(function() { node.storytellerComponentText(null); });
-    assert.throws(function() { node.storytellerComponentText(undefined); });
-    assert.throws(function() { node.storytellerComponentText({}); });
-    assert.throws(function() { node.storytellerComponentText([]); });
+    assert.throws(function() { $component.storytellerComponentText(); });
+    assert.throws(function() { $component.storytellerComponentText(1); });
+    assert.throws(function() { $component.storytellerComponentText(null); });
+    assert.throws(function() { $component.storytellerComponentText(undefined); });
+    assert.throws(function() { $component.storytellerComponentText({}); });
+    assert.throws(function() { $component.storytellerComponentText([]); });
   });
 
   it('should throw when not passed a component type', function() {
-    assert.throws(function() { node.storytellerComponentText({value: 'any'}); });
+    assert.throws(function() { $component.storytellerComponentText({value: 'any'}); });
   });
 
-  it('should throw when not passed a component type that is not text', function() {
-    assert.throws(function() { node.storytellerComponentText({type: 'invalid', value: 'any'}); });
+  it('should throw when passed a component type that is not text', function() {
+    assert.throws(function() { $component.storytellerComponentText({type: 'invalid', value: 'any'}); });
   });
 
   describe('given a valid component type and value', function() {
-    var element;
     var editorId;
     var initialValue = 'testing';
-    var component = {type: 'text', value: initialValue};
+    var componentData = {type: 'text', value: initialValue};
 
     beforeEach(function() {
       storyteller.RichTextEditorManagerMocker.reset();
-      element = node.storytellerComponentText(component);
-      editorId = element.attr('data-editor-id');
+      $component = $component.storytellerComponentText(componentData);
+      editorId = $component.attr('data-editor-id');
     });
 
     it('should return a jQuery object for chaining', function() {
-      assert.instanceOf(element, jQuery);
+      assert.instanceOf($component, jQuery);
     });
 
-    it('sets the data-editor-id attribute on the element', function() {
-      assert.isTrue(element.is('[data-editor-id]'));
+    it('sets the data-editor-id attribute on the $component', function() {
+      assert.isTrue($component.is('[data-editor-id]'));
     });
 
     it('calls createEditor on richTextEditorManager', function () {
-      sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.createEditorSpy, element, editorId, initialValue);
+      sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.createEditorSpy, $component, editorId, initialValue);
     });
 
     describe('that is then destroyed', function () {
@@ -60,7 +59,7 @@ describe('StorytellerComponentText jQuery plugin', function() {
         sinon.assert.notCalled(storyteller.RichTextEditorManagerMocker.deleteEditorSpy);
 
         // It should be safe to destroy multiple times.
-        element.trigger('destroy').trigger('destroy');
+        $component.trigger('destroy').trigger('destroy');
 
         sinon.assert.calledOnce(storyteller.RichTextEditorManagerMocker.deleteEditorSpy);
         sinon.assert.calledWithExactly(storyteller.RichTextEditorManagerMocker.deleteEditorSpy, editorId);
@@ -71,7 +70,7 @@ describe('StorytellerComponentText jQuery plugin', function() {
       it('calls setContent on the correct editor instance', function () {
         var newValue = 'something';
 
-        element.storytellerComponentText({type: 'text', value: newValue});
+        $component.storytellerComponentText({type: 'text', value: newValue});
         sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.getEditorSpy, editorId);
         sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.setContentSpy, newValue);
       });

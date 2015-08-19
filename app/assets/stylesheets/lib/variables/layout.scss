@@ -101,3 +101,12 @@ $embed-bg-color-transition-duration: 1s;
 $iframe-onload-transition-duration: 2s;
 
 // Forms
+
+// Flyout
+$flyout-max-width: 35rem;
+$flyout-vertical-padding: 0.5rem;
+$flyout-horizontal-padding: 1rem;
+// $flyout-hint-size must be in pixels because it is interpolated into expressions
+// that make that assumption, such as: `($flyout-hint-size + 1)`
+$flyout-hint-size: 10px;
+$flyout-last-cell-margin-left: 1.5rem;

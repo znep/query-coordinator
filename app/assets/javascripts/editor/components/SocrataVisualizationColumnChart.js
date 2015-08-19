@@ -283,14 +283,14 @@
 
     function _handleDatumSelect(event) {
 
-      var payload = event.originalEvent.detail;
+      // var payload = event.originalEvent.detail;
 
       // TODO: Implement.
     }
 
     function _handleExpandedToggle(event) {
 
-      var payload = event.originalEvent.detail;
+      // var payload = event.originalEvent.detail;
 
       // TODO: Implement.
     }

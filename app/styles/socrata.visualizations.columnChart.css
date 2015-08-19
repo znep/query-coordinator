@@ -285,24 +285,30 @@
   background-color: rgba(222, 187, 30, 0.2);
 }
 
-.column-chart .column-chart-wrapper .bar-group.active:hover .bar.unfiltered {
+.column-chart .column-chart-wrapper .bar-group.active:hover .bar.unfiltered,
+.column-chart .column-chart-wrapper .bar-group.active.highlight .bar.unfiltered {
   background-color: #b1d7e8;
 }
 
 .column-chart .column-chart-wrapper .bar-group.active:hover .bar.filtered,
-.column-chart .column-chart-wrapper.filtered .bar-group.active:hover .bar.unfiltered {
+.column-chart .column-chart-wrapper .bar-group.active.highlight .bar.filtered,
+.column-chart .column-chart-wrapper.filtered .bar-group.active:hover .bar.unfiltered,
+.column-chart .column-chart-wrapper.filtered .bar-group.active.highlight .bar.unfiltered {
   background-color: #bbb;
 }
 
-.column-chart .column-chart-wrapper.filtered .bar-group.active:hover .bar.filtered {
+.column-chart .column-chart-wrapper.filtered .bar-group.active:hover .bar.filtered,
+.column-chart .column-chart-wrapper.filtered .bar-group.active.highlight .bar.filtered {
   background-color: #b1d7e8;
 }
 
-.column-chart .column-chart-wrapper.filtered .bar-group.active.selected:hover .bar.filtered {
+.column-chart .column-chart-wrapper.filtered .bar-group.active.selected:hover .bar.filtered,
+.column-chart .column-chart-wrapper.filtered .bar-group.active.selected.highlight .bar.filtered {
   background-color: #e0b700;
 }
 
-.column-chart .column-chart-wrapper.filtered .bar-group.active.selected:hover .bar.unfiltered {
+.column-chart .column-chart-wrapper.filtered .bar-group.active.selected:hover .bar.unfiltered,
+.column-chart .column-chart-wrapper.filtered .bar-group.active.selected.highlight .bar.unfiltered {
   background-color: rgba(222, 187, 30, 0.4);
 }
 

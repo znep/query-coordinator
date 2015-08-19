@@ -66,10 +66,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           };
 
           barName = escapeBarName(lastFlyoutData.title);
-
           barGroup = $(target).closest(element).
-            find('.bar-group[data-bar-name="{0}"]'.format(barName)).
+            find('.bar-group').
+            filter(function() { return $(this).data('bar-name') === barName; }).
             get(0);
+
 
           if (_.isDefined(barGroup)) {
 

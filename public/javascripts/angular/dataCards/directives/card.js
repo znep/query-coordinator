@@ -64,7 +64,7 @@
         $scope.downloadStateText = function(state) {
           switch (state) {
             case 'success':
-              return I18n.common.downloading;
+              return I18n.common.done;
             case 'error':
               return I18n.common.error;
             default:

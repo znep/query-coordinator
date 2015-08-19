@@ -287,13 +287,17 @@
             padding-left: 0.5em
 
         // only applicable if blist.feature_flags.embetter_analytics_page is not false:
-        .summaryValue
-          cursor: default
+
+        .hidden
+          display: none
+
+        .totalWrapper
           font-size: 1.2em
           line-height: 1.4
 
-          .deltaValue
-            font-size: 1.8em
+        .deltaValue
+          font-size: 2.2em
+          line-height: 1.4
 
         .percentBox
           @include analytic-icons

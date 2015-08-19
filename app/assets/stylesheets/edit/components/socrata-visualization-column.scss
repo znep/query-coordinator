@@ -9,11 +9,9 @@
   .bar-group {
     cursor: default !important;
 
-
     &:hover {
       .bar.unfiltered,
       .bar.filtered {
-        background-color: #67aecc !important;
         cursor: default !important;
       }
     }

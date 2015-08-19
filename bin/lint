@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# eslint must be installed.
+npm install eslint
+
+NEW_PROBLEMS=`./node_modules/.bin/eslint --ignore-path .eslintignore -c package.json -f compact app | tail -n 1 | cut -d ' ' -f 1`
+
+git checkout `git merge-base HEAD origin/master`
+OLD_PROBLEMS=`./node_modules/.bin/eslint --ignore-path .eslintignore -c package.json -f compact app | tail -n 1 | cut -d ' ' -f 1`
+
+DELTA=`expr $NEW_PROBLEMS - $OLD_PROBLEMS`
+
+if [ "$DELTA" -gt 0 ]; then
+  false
+else
+  true
+fi

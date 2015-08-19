@@ -530,7 +530,9 @@
               promise.then(_.noop,
                 function() {
                   scope.$safeApply(function() {
-                    scope.$emit('render:error');
+                    if (!window._phantom) {
+                      scope.$emit('render:error');
+                    }
                   });
                 });
               return promise;

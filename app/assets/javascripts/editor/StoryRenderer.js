@@ -192,9 +192,7 @@
           var shouldDelete = true;
 
           if (storyteller.blockRemovalConfirmationStore.needsConfirmation(blockId)) {
-            /*eslint-disable no-alert*/
-            shouldDelete = confirm(I18n.t('editor.remove_block_confirmation'));
-            /*eslint-enable*/
+            shouldDelete = confirm(I18n.t('editor.remove_block_confirmation')); //eslint-disable-line no-alert
           }
 
           if (shouldDelete) {

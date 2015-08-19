@@ -31,4 +31,9 @@
     ng-show="hasChanges">
     <span class="icon-warning"></span> {{'customizeBar.changesWarning' | I18n}}
   </span>
+  <span
+    class="changes-warning"
+    ng-show="!hasChanges && isEphemeral">
+    <span class="icon-warning"></span> {{'customizeBar.unsavedWarning' | I18n}}
+  </span>
 </div>

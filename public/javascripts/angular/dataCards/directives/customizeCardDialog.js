@@ -152,7 +152,14 @@
           }));
 
         setupBaseLayerSelect(scope.customizedCard, scope, element);
-        setupHistogramBucketTypeSelect(scope.customizedCard, scope);
+
+        // Check to make sure we are customizing histogram before setting up
+        // the bucket type option.
+        scope.$observe('showHistogramBucketTypeDropdown').
+          filter(_.identity).
+          subscribe(function() {
+            setupHistogramBucketTypeSelect(scope.customizedCard, scope);
+          });
 
          // Save the model by updating with our cloned copy.
         scope.updateCard = function() {

@@ -6,7 +6,35 @@ default: &default
   rpx_openid_url: https://socrata-test.rpxnow.com/openid/start
 
   app_token: U29jcmF0YS0td2VraWNrYXNz0
+
+  {% if DATA_CARDS_APP_TOKEN is defined -%}
+  data_cards_app_token: {{ DATA_CARDS_APP_TOKEN }}
+  {% else %}
   data_cards_app_token: zvQamMSTi4GNuZWWDwjLdLPhW
+  {%- endif %}
+
+  {% if FEATURE_MAP_ZOOM_DEBOUNCE is defined -%}
+  feature_map_zoom_debounce: {{ FEATURE_MAP_ZOOM_DEBOUNCE }}
+  {% else %}
+  feature_map_zoom_debounce: 500
+  {%- endif %}
+
+  enable_search_suggestions: {{ ENABLE_SEARCH_SUGGESTIONS }}
+  odux_enable_feature_map: {{ ODUX_ENABLE_FEATURE_MAP }}
+  feature_map_disable_pan_zoom: {{ FEATURE_MAP_DISABLE_PAN_ZOOM }}
+  enable_png_download_ui: {{ ENABLE_PNG_DOWNLOAD_UI }}
+
+  {% if FEATURE_MAP_FEATURES_PER_TILE is defined -%}
+  feature_map_features_per_tile: {{ FEATURE_MAP_FEATURES_PER_TILE }}
+  {% else %}
+  feature_map_features_per_tile: 50000
+  {%- endif %}
+
+  {% if SHAPE_FILE_REGION_QUERY_LIMIT is defined -%}
+  shape_file_region_query_limit: {{ SHAPE_FILE_REGION_QUERY_LIMIT }}
+  {% else %}
+  shape_file_region_query_limit: 5000
+  {%- endif %}
 
   zk_hosts: '{{ ZOOKEEPER_HOSTS }}'
   coreservice_uri: http://{{ CORESERVICE_URI }}

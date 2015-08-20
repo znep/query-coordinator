@@ -55,6 +55,7 @@ var Dataset = ServerModel.extend({
 
         if (ds.nbe_view_id && blist.feature_flags.swap_in_nbe_view) {
           ds.nbeView = blist.viewCache[ds.nbe_view_id];
+          ds._parent = new Dataset(blist.viewCache[ds.default_ds_id]);
           ds.newBackend = true;
           ds.replaceColumnsWithNBECols(ds.nbeView.columns);
         }

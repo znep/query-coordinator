@@ -1580,6 +1580,50 @@ describe('socrata.visualizations.ColumnChart', function() {
     });
   });
 
+  describe('when highlighting bars', function() {
+
+    var $label;
+    var dataBarName;
+
+    beforeEach(function() {
+      columnChart = createColumnChart();
+      columnChart.chart.render(testData, columnChart.renderOptions);
+
+      $label = $('.labels .label').eq(0);
+      dataBarName = $label.attr('data-bar-name');
+
+      $label.trigger('mouseenter');
+    });
+
+    afterEach(function() {
+      removeColumnChart(columnChart);
+    });
+
+    it('should highlight the corresponding bar on mouseenter of a label', function() {
+
+      var $highlightedBarGroup = $('.bar-group.highlight');
+
+      expect($highlightedBarGroup).to.have.length(1);
+      expect($highlightedBarGroup.attr('data-bar-name')).to.equal(dataBarName);
+    });
+
+    it('should un-highlight the corresponding bar on mouseleave of a label', function() {
+
+      $label.trigger('mouseleave');
+
+      expect($('.bar-group.highlight')).to.have.length(0);
+    });
+
+    it('should un-highlight the corresponding bar on mouseleave of the chart element', function() {
+
+      var $chartElement = $('.column-chart');
+
+      $chartElement.trigger('mouseleave');
+
+      expect($('.bar-group.highlight')).to.have.length(0);
+    });
+  });
+
   describe('when destroyed', function() {
 
     var columnChart;

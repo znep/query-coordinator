@@ -402,4 +402,102 @@ describe('HistogramService', function() {
       run(input, 'columnChart');
     });
   });
+
+  describe('transformDataForColumnChart', function() {
+
+    function run(unfiltered, filtered, selected, output) {
+      expect(HistogramService.transformDataForColumnChart(unfiltered, filtered, selected)).to.deep.equal(output);
+    }
+
+    it('should set the filtered values to zero if the filtered data is absent', function() {
+      var unfiltered = [
+        { name: 0, value: 17 },
+        { name: 3, value: -17 },
+        { name: 4, value: 183483 }
+      ];
+
+      var output = [
+        [ 0, 17, 0, false ],
+        [ 3, -17, 0, false ],
+        [ 4, 183483, 0, false ]
+      ];
+
+      run(unfiltered, undefined, undefined, output);
+      run(unfiltered, undefined, 100, output);
+    });
+
+    it('should use the filtered values if they are present if selectedValue is absent', function() {
+      var unfiltered = [
+        { name: 0, value: 17 },
+        { name: 3, value: -17 },
+        { name: 4, value: 183483 }
+      ];
+
+      var filtered = [
+        { name: 0, value: 5 },
+        { name: 3, value: 5 },
+        { name: 4, value: 5 }
+      ];
+
+      var output = [
+        [ 0, 17, 5, false ],
+        [ 3, -17, 5, false ],
+        [ 4, 183483, 5, false ]
+      ];
+
+      run(unfiltered, filtered, undefined, output);
+    });
+
+    it('should set the filtered values to zero if the bucket name does not equal the selectedValue and the selectedValue is specified', function() {
+      var unfiltered = [
+        { name: 0, value: 17 },
+        { name: 3, value: -17 },
+        { name: 4, value: 183483 }
+      ];
+
+      var filtered = [
+        { name: 0, value: 5 },
+        { name: 3, value: 5 },
+        { name: 4, value: 5 }
+      ];
+
+      var output = [
+        [ 0, 17, 0, false ],
+        [ 3, -17, 5, true ],
+        [ 4, 183483, 0, false ]
+      ];
+
+      run(unfiltered, filtered, 3, output);
+    });
+
+    it('should behave well if the selectedValue is weird', function() {
+      var unfiltered = [
+        { name: 0, value: 17 },
+        { name: 3, value: -17 },
+        { name: 4, value: 183483 }
+      ];
+
+      var filtered = [
+        { name: 0, value: 5 },
+        { name: 3, value: 5 },
+        { name: 4, value: 5 }
+      ];
+
+      var output = [
+        [ 0, 17, 5, true ],
+        [ 3, -17, 0, false ],
+        [ 4, 183483, 0, false ]
+      ];
+
+      run(unfiltered, filtered, 0, output);
+
+      output = [
+        [ 0, 17, 0, false],
+        [ 3, -17, 0, false],
+        [ 4, 183483, 0, false ]
+      ];
+
+      run(unfiltered, filtered, NaN, output);
+    });
+  });
 });

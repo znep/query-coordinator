@@ -231,21 +231,13 @@
 
       element.on(
         'mouseenter',
-<<<<<<< HEAD
-        _labelsSelector,
-=======
         '.labels .label',
->>>>>>> zelliott/CORE-6553/update-socrata-utils-and-socrata-visualizations
         addHoverClassToBarGroup
       );
 
       element.on(
         'mouseleave',
-<<<<<<< HEAD
-        _labelsSelector,
-=======
         '.labels .label',
->>>>>>> zelliott/CORE-6553/update-socrata-utils-and-socrata-visualizations
         removeHoverClassFromBarGroup
       );
 
@@ -261,11 +253,7 @@
       // be drawn unless a datum is selected)
       element.on(
         'mouseup',
-<<<<<<< HEAD
-        _nonDefaultSelectedLabelSelector,
-=======
         '.labels .label.selected.non-default',
->>>>>>> zelliott/CORE-6553/update-socrata-utils-and-socrata-visualizations
         removeHoverClassFromBarGroup
       );
     }
@@ -298,21 +286,13 @@
 
       element.off(
         'mouseenter',
-<<<<<<< HEAD
-        _labelsSelector,
-=======
         '.labels .label',
->>>>>>> zelliott/CORE-6553/update-socrata-utils-and-socrata-visualizations
         addHoverClassToBarGroup
       );
 
       element.off(
         'mouseleave',
-<<<<<<< HEAD
-        _labelsSelector,
-=======
         '.labels .label',
->>>>>>> zelliott/CORE-6553/update-socrata-utils-and-socrata-visualizations
         removeHoverClassFromBarGroup
       );
 
@@ -323,11 +303,7 @@
 
       element.off(
         'mouseup',
-<<<<<<< HEAD
-        _nonDefaultSelectedLabelSelector,
-=======
         '.labels .label.selected.non-default',
->>>>>>> zelliott/CORE-6553/update-socrata-utils-and-socrata-visualizations
         removeHoverClassFromBarGroup
       );
     }
@@ -354,9 +330,12 @@
 
       var datum = d3.select(event.currentTarget).datum();
 
-      var barGroupName = datum[NAME_INDEX].
-        replace(/\\/g, '\\\\').
-        replace(/"/g, '\\\"');
+      var barGroupName = datum[NAME_INDEX];
+      if (_.isString(barGroupName)) {
+        barGroupName = barGroupName.
+          replace(/\\/g, '\\\\').
+          replace(/"/g, '\\\"');
+      }
 
       var barGroupElement = _chartWrapper.
         find('.bar-group[data-bar-name="{0}"] > .unfiltered'.format(barGroupName)).
@@ -890,20 +869,10 @@
     function _escapeQuotesAndBackslashes(value) {
 
       if (_.isString(value)) {
-<<<<<<< HEAD
-
-        return value.
-          replace(/\\/g, '\\\\').
-          replace(/"/g, '\\\"');
-
-      } else {
-
-=======
         return value.
           replace(/\\/g, '\\\\').
           replace(/"/g, '\\\"');
       } else {
->>>>>>> zelliott/CORE-6553/update-socrata-utils-and-socrata-visualizations
         return value;
       }
     }

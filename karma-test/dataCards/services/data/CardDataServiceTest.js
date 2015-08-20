@@ -161,6 +161,28 @@ describe('CardDataService', function() {
       http.get.restore();
     });
 
+    it('should order by the aggregated value descending if the orderBy option is absent', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getData('fakeNumberColumn', fake4x4, null, { 'function': 'sum', 'column': {}, 'fieldName': 'fakeNumberColumn' });
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /order\+by\+sum\(`fakeNumberColumn`\)\+desc/i
+      );
+      http.get.restore();
+    });
+
+    it('should order by the specified column when the orderBy option is present', function() {
+      $httpBackend.whenGET(/.*/);
+      var httpSpy = sinon.spy(http, 'get');
+      CardDataService.getData('fakeNumberColumn', fake4x4, null, { 'function': 'sum', 'column': {}, 'fieldName': 'fakeNumberColumn' }, { orderBy: 'height desc' });
+      $httpBackend.flush();
+      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
+        /order\+by\+height\+desc/i
+      );
+      http.get.restore();
+    });
+
     it('should not create a circular alias when fieldName is name', function() {
       $httpBackend.whenGET(/.*/);
       var httpSpy = sinon.spy(http, 'get');

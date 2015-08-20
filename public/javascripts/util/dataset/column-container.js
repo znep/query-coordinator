@@ -405,7 +405,12 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
         }
 
         var oldC = _.detect(cont[oldCapSet],
-          function(oc) { return oc.fieldName == c.fieldName; });
+          function(oc) { return oc.fieldName === c.fieldName; });
+
+        if (!oldC && cont._parent) {
+          oldC = _.detect(cont._parent[capSet],
+            function(oc) { return oc.fieldName === c.fieldName; });
+        }
 
         // Make it so that you can look up the column by its id.
         _columnIDLookup[c.id] = c;
@@ -449,13 +454,11 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
             'cachedContents', 'position' // NBE doesn't maintain these.
           ];
 
-          var chain = _.chain(oldC);
+          var keysToCopy = _.keys(oldC);
 
-          blacklist = chain.keys()
-            .without.apply(chain, blacklist)
-            .value();
+          keysToCopy = _.without(keysToCopy, blacklist);
 
-          _.each(blacklist, function(key) {
+          _.each(keysToCopy, function(key) {
             if ($.isPlainObject(oldC[key])) {
               c[key] = $.extend(true, {}, oldC[key]);
             } else if (_.isArray(oldC[key])) {

@@ -1,27 +1,46 @@
-window.socrata.storyteller.RichTextEditorManagerMocker = {
+(function (root) {
 
-  self: this,
+  'use strict';
 
-  mock: function() {
-    window.socrata.storyteller.richTextEditorManager = {
-      createEditor: function() { return true; },
+  var socrata = root.socrata;
+  var storyteller = socrata.storyteller;
 
-      getEditor: function(callback) {
-        return {
-          setContent: function(content) {
-            self.setContentCallback(content);
-          }
+  storyteller.RichTextEditorManagerMocker = {
+
+    // Spies
+
+    setContentSpy: sinon.spy(),
+    createEditorSpy: sinon.spy(_.constant(true)),
+    deleteEditorSpy: sinon.spy(),
+    getEditorSpy: sinon.spy(function(callback) {
+      return {
+        setContent: storyteller.RichTextEditorManagerMocker.setContentSpy
+      };
+    }),
+
+    // Auxillary
+
+    reset: function() {
+      for(var key in storyteller.RichTextEditorManagerMocker) {
+        if (/Spy/.test(key)) {
+          storyteller.RichTextEditorManagerMocker[key].reset();
         }
       }
-    };
-  },
+    },
 
-  unmock: function() {
-    delete window.socrata.storyteller.richTextEditorManager;
-  },
+    mock: function() {
+      storyteller.RichTextEditorManagerMocker.reset();
 
-  setContentCallback: function(callback) {
-    self.setContentCallback = callback;
-  }
+      storyteller.richTextEditorManager = {
+        createEditor: storyteller.RichTextEditorManagerMocker.createEditorSpy,
+        deleteEditor: storyteller.RichTextEditorManagerMocker.deleteEditorSpy,
+        getEditor: storyteller.RichTextEditorManagerMocker.getEditorSpy
+      };
+    },
 
-};
+    unmock: function() {
+      delete storyteller.richTextEditorManager;
+    }
+  };
+
+})(window);

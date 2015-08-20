@@ -116,6 +116,55 @@
       }
 
       return src;
+    },
+
+    /**
+     * Walks up the DOM looking for elements with the given attribute.
+     * When it finds one, returns the value of the given attribute.
+     *
+     * @param {HTMLElement | jQuery} element - The starting point of the search.
+     * @param {string} attribute - The name of the attribute to search for.
+     *
+     * @return {string | undefined} - The value of the found attribute, or undefined if not found.
+     */
+    findClosestAttribute: function(element, attribute) {
+
+      socrata.utils.assertInstanceOfAny(element, $, HTMLElement);
+      socrata.utils.assertIsOneOfTypes(attribute, 'string');
+
+      return $(element).closest('[{0}]'.format(attribute)).attr(attribute);
+    },
+
+    /**
+     * Asserts that an object is instanceof an instantiator.
+     *
+     * @param {object} instance - The instance to check.
+     * @param {function} instantiator - The instantiator to check against.
+     */
+    assertInstanceOf: function(instance, instantiator) {
+
+      socrata.utils.assertInstanceOfAny(instance, instantiator);
+    },
+
+    /**
+     * Asserts that an object is instanceof at least one of the provided instantiators.
+     *
+     * @param {object} instance - The instance to check.
+     * @param {...function} <arguments> - List of acceptable instantiators
+     */
+    assertInstanceOfAny: function(instance) {
+
+      var instantiators = _.rest(arguments);
+      var valid = _.any(instantiators, function(instantiator) {
+        return instance instanceof instantiator;
+      });
+
+      if (!valid) {
+        throw new Error(
+          'Value must be one of [{0}] (instance: {1}).'.
+            format(instantiators.join(', '), instance)
+        );
+      }
     }
   };
 

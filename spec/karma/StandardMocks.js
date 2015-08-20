@@ -19,9 +19,9 @@ function applyStandardMocks() {
   var storyUid = 'test-test';
   var storyTitle = 'Standard Mock Story Title';
   var storyDescription = 'Standard Mock Story Description';
-  var imageBlockId = '1000';
+  var wizardBlockId = '1000';
   var textBlockId = '1001';
-  var imageAndTextBlockId = '1002';
+  var wizardAndTextBlockId = '1002';
   var storyteller = window.socrata.storyteller;
 
   var storyData = generateStoryData({
@@ -30,10 +30,10 @@ function applyStandardMocks() {
     description: storyDescription,
     blocks: [
       generateBlockData({
-        id: imageBlockId,
+        id: wizardBlockId,
         layout: '12',
         components: [
-          { type: 'media', value: { type: 'image', value: { src: 'fakeImageFile.png' } } }
+          { type: 'media', value: { type: 'embed', value: { provider: 'wizard' } } }
         ]
       }),
       generateBlockData({
@@ -44,10 +44,10 @@ function applyStandardMocks() {
         ]
       }),
       generateBlockData({
-        id: imageAndTextBlockId,
+        id: wizardAndTextBlockId,
         layout: '6-6',
         components: [
-          { type: 'media', value: { type: 'image', value: { src: 'anotherFakeImageFile.png' } } },
+          { type: 'media', value: { type: 'embed', value: { provider: 'wizard' } } },
           { type: 'text', value: 'some-text' }
         ]
       })
@@ -100,15 +100,15 @@ function applyStandardMocks() {
     validBlockData2: storyData.blocks[1],
 
     validStoryUid: storyUid,
-    imageBlockId: imageBlockId,
+    wizardBlockId: wizardBlockId,
     textBlockId: textBlockId,
-    imageAndTextBlockId: imageAndTextBlockId,
+    wizardAndTextBlockId: wizardAndTextBlockId,
     validBlockId: textBlockId,
 
-    firstBlockId: imageBlockId,
+    firstBlockId: wizardBlockId,
     secondBlockId: textBlockId,
-    thirdBlockId: imageAndTextBlockId,
-    lastBlockId: imageAndTextBlockId,
+    thirdBlockId: wizardAndTextBlockId,
+    lastBlockId: wizardAndTextBlockId,
 
     invalidBlockId: 'NotValidBlockId',
     invalidStoryUid: 'NotValidStoryUid'

@@ -37,7 +37,7 @@
 
         case Constants.EMBED_WIZARD_CHOOSE_YOUTUBE:
           _currentWizardState = action;
-          _chooseYoutube();
+          _chooseYouTube();
           break;
 
         case Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL:
@@ -127,7 +127,7 @@
       self._emitChange();
     }
 
-    function _chooseYoutube() {
+    function _chooseYouTube() {
 
       self._emitChange();
     }
@@ -147,7 +147,7 @@
             setUid(data.nbeId);
           }).
           fail(function() {
-            alert('This dataset cannot be chosen at this time.');
+            alert('This dataset cannot be chosen at this time.'); //eslint-disable-line no-alert
           });
       }
 

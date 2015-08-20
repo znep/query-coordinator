@@ -104,7 +104,8 @@ $(document).on('ready', function() {
   var embedWizardOptions = {
     embedWizardContainerElement: $('#embed-wizard')
   };
-  var embedWizardRenderer = new storyteller.EmbedWizardRenderer(embedWizardOptions);
+
+  var embedWizardRenderer = new storyteller.EmbedWizardRenderer(embedWizardOptions); //eslint-disable-line no-unused-vars
 
   var userStoryOptions = {
     storyUid: storyteller.userStoryUid,
@@ -115,7 +116,8 @@ $(document).on('ready', function() {
     warningMessageElement: $('.user-story .message-warning'),
     onRenderError: function() {}
   };
-  var userStoryRenderer = new storyteller.StoryRenderer(userStoryOptions);
+
+  var userStoryRenderer = new storyteller.StoryRenderer(userStoryOptions); //eslint-disable-line no-unused-vars
 
   /**
    * RichTextEditorToolbar events

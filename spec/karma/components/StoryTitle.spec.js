@@ -32,7 +32,7 @@ describe('StoryTitle jQuery plugin', function() {
     });
 
     it('should return a jQuery object for chaining', function() {
-      assert.isTrue($.fn.isPrototypeOf(returnValue), 'Returned value is not a jQuery collection');
+      assert.instanceOf(returnValue, $);
     });
 
     it('should render the story title', function() {

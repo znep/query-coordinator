@@ -435,4 +435,115 @@ describe('storytellerUtils', function() {
       });
     });
   });
+
+  describe('.findClosestAttribute', function() {
+    describe('when given invalid arguments', function() {
+      it('should throw', function() {
+        assert.throws(function() { utils.findClosestAttribute(); });
+        assert.throws(function() { utils.findClosestAttribute(4, 4); });
+        assert.throws(function() { utils.findClosestAttribute($('<div>'), 3); });
+        assert.throws(function() { utils.findClosestAttribute(4, 'a string'); });
+        assert.throws(function() { utils.findClosestAttribute($('<div>')); });
+        assert.throws(function() { utils.findClosestAttribute({}, 'a string'); });
+      });
+    });
+
+    describe('when given an attribute', function() {
+      var element;
+      var storyteller = window.socrata.storyteller;
+
+      beforeEach(function() {
+        var html = [
+          '<div data-on-one-ancestor="1" data-on-multiple-ancestors="2">',
+            '<div data-on-multiple-ancestors="3">',
+              '<div id="element" data-on-self="4"></div>',
+            '</div>',
+          '</div>'
+        ].join('');
+
+        testDom.append(html);
+        element = testDom.find('#element');
+      });
+
+
+      describe('that does not exist in the DOM', function() {
+        it('should return undefined', function() {
+           assert.equal(utils.findClosestAttribute(element, 'not-there'), undefined);
+        });
+      });
+      describe('that exists on the given element itself', function() {
+        it('should return the value of the attribute', function() {
+           assert.equal(utils.findClosestAttribute(element, 'data-on-self'), '4');
+        });
+      });
+      describe('that exists on one ancestor of the given element', function() {
+        it('should return the value of the attribute on that ancestor', function() {
+           assert.equal(utils.findClosestAttribute(element, 'data-on-one-ancestor'), '1');
+        });
+      });
+      describe('that exists on multiple ancestors of the given element', function() {
+        it('should return the value of the attribute on the closest ancestor', function() {
+           assert.equal(utils.findClosestAttribute(element, 'data-on-multiple-ancestors'), '3');
+        });
+      });
+    });
+  });
+
+  describe('assertInstanceOf', function() {
+    var SomeClass = function() {};
+    var SomeOtherClass = function() {};
+
+    describe('given zero or one arguments', function() {
+      it('should throw', function() {
+        assert.throws(function() { utils.assertInstanceOf(); });
+        assert.throws(function() { utils.assertInstanceOf({}); });
+      });
+    });
+
+    describe('given an object that is not an instance of the given instantiator', function() {
+      it('should throw', function() {
+        assert.throws(function() { utils.assertInstanceOf(4, SomeClass); });
+        assert.throws(function() { utils.assertInstanceOf('', SomeClass); });
+        assert.throws(function() { utils.assertInstanceOf([], SomeClass); });
+        assert.throws(function() { utils.assertInstanceOf({}, SomeClass); });
+        assert.throws(function() { utils.assertInstanceOf(new SomeClass(), SomeOtherClass); });
+      });
+    });
+
+    describe('given an object that is an instance of the instantiator', function() {
+      it('should not throw', function() {
+        utils.assertInstanceOf(new SomeClass(), SomeClass);
+      });
+    });
+  });
+
+  describe('assertInstanceOfAny', function() {
+    var SomeClass = function() {};
+    var SomeOtherClass = function() {};
+
+    describe('given zero or one arguments', function() {
+      it('should throw', function() {
+        assert.throws(function() { utils.assertInstanceOfAny(); });
+        assert.throws(function() { utils.assertInstanceOfAny({}); });
+      });
+    });
+
+    describe('given an object that is not an instance of the given instantiators', function() {
+      it('should throw', function() {
+        assert.throws(function() { utils.assertInstanceOfAny(4, SomeClass); });
+        assert.throws(function() { utils.assertInstanceOfAny('', SomeClass); });
+        assert.throws(function() { utils.assertInstanceOfAny([], SomeClass); });
+        assert.throws(function() { utils.assertInstanceOfAny({}, SomeClass); });
+        assert.throws(function() { utils.assertInstanceOfAny(new SomeClass(), SomeOtherClass); });
+      });
+    });
+
+    describe('given an object that is an instance of at least one of the given instantiators', function() {
+      it('should not throw', function() {
+        utils.assertInstanceOfAny(new SomeClass(), SomeClass);
+        utils.assertInstanceOfAny(new SomeClass(), SomeClass, SomeOtherClass);
+        utils.assertInstanceOfAny(new SomeClass(), SomeOtherClass, SomeClass);
+      });
+    });
+  });
 });

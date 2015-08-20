@@ -3,40 +3,60 @@
   'use strict';
 
   var socrata = root.socrata;
+  var utils = socrata.utils;
   var storyteller = socrata.storyteller;
+
+  // Component renderers are implemented as jQuery plugins.
+  // This function maps component data (type, value) to
+  // a jQuery plugin name ('storytellerComponentText').
+  function _findAppropriateComponentRenderer(componentData) {
+    var type;
+    var mediaType;
+    var providerName;
+    var visualizationType;
+
+    utils.assertHasProperties(componentData, 'type', 'value');
+    type = componentData.type;
+
+    if (type === 'text') {
+      return 'storytellerComponentText';
+    } else if (type === 'layout') {
+      return 'storytellerComponentLayout';
+    } else if (type === 'media') {
+      utils.assertHasProperties(componentData.value, 'type', 'value');
+      mediaType = componentData.value.type;
+
+      if (mediaType === 'embed') {
+        utils.assertHasProperty(componentData.value.value, 'provider');
+        providerName = componentData.value.value.provider;
+
+        if (providerName === 'wizard') {
+          return 'storytellerComponentMediaEmbedWizard';
+        } else if (providerName === 'youtube') {
+          return 'storytellerComponentMediaEmbedYouTube';
+        }
+      }
+    } else if (type === 'socrataVisualization') {
+      utils.assertHasProperty(componentData.value, 'type');
+      visualizationType = componentData.value.type;
+
+      if (visualizationType === 'column') {
+        return 'storytellerComponentSocrataVisualizationColumn';
+      }
+    }
+
+    throw new Error('No component renderer found for component: {0}'.format(JSON.stringify(componentData)));
+  }
 
   function StoryRenderer(options) {
 
     var dispatcher = storyteller.dispatcher;
-    var TextComponentRenderer = storyteller.TextComponentRenderer;
-    var MediaComponentRenderer = storyteller.MediaComponentRenderer;
-    var SocrataVisualizationComponentRenderer = storyteller.SocrataVisualizationComponentRenderer;
-    var LayoutComponentRenderer = storyteller.LayoutComponentRenderer;
 
     var storyUid = options.storyUid || null;
     var container = options.storyContainerElement || null;
-    var editable = options.editable || false;
-    var insertionHint = options.insertionHintElement || false;
+    var insertionHint = options.insertionHintElement;
     var insertionHintIndex = -1;
     var onRenderError = options.onRenderError || function() {};
-    var componentTemplateRenderers = {
-      'text': TextComponentRenderer.renderTemplate,
-      'media': MediaComponentRenderer.renderTemplate,
-      'socrataVisualization': SocrataVisualizationComponentRenderer.renderTemplate,
-      'layout': LayoutComponentRenderer.renderTemplate
-    };
-    var componentTemplateCheckers = {
-      'text': TextComponentRenderer.canReuseTemplate,
-      'media': MediaComponentRenderer.canReuseTemplate,
-      'socrataVisualization': SocrataVisualizationComponentRenderer.canReuseTemplate,
-      'layout': LayoutComponentRenderer.canReuseTemplate
-    };
-    var componentDataRenderers = {
-      'text': TextComponentRenderer.renderData,
-      'media': MediaComponentRenderer.renderData,
-      'socrataVisualization': SocrataVisualizationComponentRenderer.renderData,
-      'layout': LayoutComponentRenderer.renderData
-    };
     var elementCache = new storyteller.StoryRendererElementCache();
     var warningMessageElement = options.warningMessageElement || null;
     var resizeRerenderTimeout;
@@ -71,22 +91,29 @@
       );
     }
 
-    if (options.hasOwnProperty('insertionHintElement') &&
-      !(options.insertionHintElement instanceof jQuery)) {
+    if (!(insertionHint instanceof jQuery)) {
 
       onRenderError();
       throw new Error(
-        '`options.insertionHintElement` must be a jQuery object (is of type ' +
-        (typeof options.insertionHintElement) +
+        '`options.insertionHintElement` must be a jQuery element (is of type ' +
+        (typeof insertionHint) +
         ').'
       );
     }
 
-    if (editable && !(storyteller.richTextEditorManager instanceof storyteller.RichTextEditorManager)) {
+    if (!options.hasOwnProperty('insertionHintElement')) {
 
       onRenderError();
       throw new Error(
-        'editable stories must have a reference to a valid RichTextEditorManager'
+        '`options.insertionHintElement` must be provided'
+      );
+    }
+
+    if (!(storyteller.richTextEditorManager instanceof storyteller.RichTextEditorManager)) {
+
+      onRenderError();
+      throw new Error(
+        'stories must have a reference to a valid RichTextEditorManager'
       );
     }
 
@@ -172,7 +199,7 @@
           var shouldDelete = true;
 
           if (storyteller.blockRemovalConfirmationStore.needsConfirmation(blockId)) {
-            shouldDelete = confirm(I18n.t('editor.remove_block_confirmation'));
+            shouldDelete = confirm(I18n.t('editor.remove_block_confirmation')); //eslint-disable-line no-alert
           }
 
           if (shouldDelete) {
@@ -236,13 +263,8 @@
       // Handle updates to block content.
       container.on('rich-text-editor::content-change', function(event) {
 
-        var editorIdComponents = event.originalEvent.detail.id.split('-');
-        var editorIdComponentCount = editorIdComponents.length - 1;
-        var componentIndex = editorIdComponents[editorIdComponentCount];
-
-        // Remove the last (component index) element
-        editorIdComponents.length = editorIdComponentCount;
-        var blockId = editorIdComponents.join('-');
+        var blockId = utils.findClosestAttribute(event.target, 'data-block-id');
+        var componentIndex = utils.findClosestAttribute(event.target, 'data-component-index');
 
         var blockContent = event.originalEvent.detail.content;
 
@@ -277,7 +299,6 @@
       });
 
       container.on('click', '[data-embed-action]', function(event) {
-
         var action = event.target.getAttribute('data-embed-action');
 
         switch (action) {
@@ -285,8 +306,8 @@
           case Constants.EMBED_WIZARD_CHOOSE_PROVIDER:
             dispatcher.dispatch({
               action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
-              blockId: event.target.getAttribute('data-block-id'),
-              componentIndex: event.target.getAttribute('data-component-index')
+              blockId: utils.findClosestAttribute(event.target, 'data-block-id'),
+              componentIndex: utils.findClosestAttribute(event.target, 'data-component-index')
             });
             break;
 
@@ -329,27 +350,9 @@
           storyStore.
           getBlockComponents(blockId).
           forEach(function(componentDatum, i) {
+            var componentElement = elementCache.getComponent(blockId, i);
 
-            if (componentDatum.type === 'text') {
-
-              var editorId = blockId + '-' + i;
-
-              storyteller.richTextEditorManager.deleteEditor(editorId);
-            }
-
-            if (componentDatum.type === 'socrataVisualization') {
-
-              var componentElement = elementCache.getComponent(blockId, i);
-              var destroyVisualizationEvent = new window.CustomEvent(
-                Constants.SOCRATA_VISUALIZATION_DESTROY,
-                {
-                  detail: {},
-                  bubbles: false
-                }
-              );
-
-              componentElement[0].dispatchEvent(destroyVisualizationEvent);
-            }
+            componentElement.trigger('destroy');
           });
 
         elementCache.getBlock(blockId).remove();
@@ -361,27 +364,24 @@
 
       blockIds.forEach(function(blockId, i) {
 
-        var blockElement = elementCache.getBlock(blockId);
+        var $blockElement = elementCache.getBlock(blockId);
 
-        if (blockElement === null) {
-          blockElement = _renderBlock(blockId);
-          container.append(blockElement);
+        if ($blockElement === null) {
+          $blockElement = _renderBlock(blockId);
+          container.append($blockElement);
         }
 
-        _renderBlockComponentsTemplates(blockId);
-        _renderBlockComponentsData(blockId);
+        _renderBlockComponents(blockId);
 
-        if (editable) {
-          // Disable or enable buttons depending on the index of this block
-          // relative to the total number of blocks.
-          // E.g. disable the 'move up' button for the first block and the
-          // 'move down' button for the last block.
-          _updateBlockEditControls(blockElement, i, blockCount);
+        // Disable or enable buttons depending on the index of this block
+        // relative to the total number of blocks.
+        // E.g. disable the 'move up' button for the first block and the
+        // 'move down' button for the last block.
+        _updateBlockEditControls($blockElement, i, blockCount);
 
-          // Update the height of the containing iframes to be equal to the
-          // height of the iframe document's body.
-          _updateEditorHeights(blockId, blockElement);
-        }
+        // Update the height of the containing iframes to be equal to the
+        // height of the iframe document's body.
+        _updateEditorHeights(blockId, $blockElement);
 
         // If we are supposed to display the insertion hint at this
         // block index, first position the insertion hint and adjust
@@ -390,7 +390,7 @@
           layoutHeight += _layoutInsertionHint(layoutHeight);
         }
 
-        layoutHeight += _layoutBlock(blockElement, layoutHeight);
+        layoutHeight += _layoutBlock($blockElement, layoutHeight);
       });
 
       // If we are attempting to insert a new block at the end of the story
@@ -448,7 +448,6 @@
 
       var layout = storyteller.storyStore.getBlockLayout(blockId);
       var componentWidths = layout.split('-');
-      var blockElement;
       var componentContainers = componentWidths.map(function(componentWidth, i) {
         return $(
           '<div>',
@@ -460,30 +459,28 @@
         );
       });
 
-      blockElement = $(
+      var $blockElement = $(
         '<div>',
         {
-          'class': 'block',
+          'class': 'block-edit',
           'data-block-id': blockId
         }
-      ).append(componentContainers);
-
-      if (editable) {
-        blockElement = $(
-          '<div>',
-          {
-            'class': 'block-edit',
-            'data-block-id': blockId
-          }
-        ).append([
+      ).append(
+        [
           _renderBlockEditControls(blockId),
-          blockElement
-        ]);
-      }
+          $(
+            '<div>',
+            {
+              'class': 'block',
+              'data-block-id': blockId
+            }
+          ).append(componentContainers)
+        ]
+      );
 
-      elementCache.setBlock(blockId, componentWidths.length, blockElement);
+      elementCache.setBlock(blockId, componentWidths.length, $blockElement);
 
-      return blockElement;
+      return $blockElement;
     }
 
     function _renderBlockEditControls(blockId) {
@@ -534,7 +531,7 @@
       moveDownButton.prop('disabled', blockIndex === (blockCount - 1));
     }
 
-    function _updateEditorHeights(blockId, blockElement) {
+    function _updateEditorHeights(blockId, $blockElement) {
 
       var componentData = storyteller.storyStore.getBlockComponents(blockId);
       var editorId;
@@ -543,17 +540,26 @@
 
       componentData.forEach(function(componentDatum, i) {
 
+        // Ideally, we'd have some sort of API to ask each renderer what its
+        // size is. For now, we deal with it here.
         if (componentDatum.type === 'text') {
 
-          editorId = blockId + '-' + i;
-          contentHeight = storyteller.
-            richTextEditorManager.
+          // In order to size text renderers, we must call into RichTextEditorManager.
+          // Doing so requires the editorId, which can be found in a data attribute
+          // generated by the text renderer.
+          editorId = $blockElement.
+            find('.component-container').
+            eq(i).
+            children(':first').
+            attr('data-editor-id');
+
+          contentHeight = storyteller.richTextEditorManager.
             getEditor(editorId).
             getContentHeight();
 
         } else {
 
-          contentHeight = blockElement.
+          contentHeight = $blockElement.
             find('.component-container').
             eq(i).
             // Not sure why subtracting one causes
@@ -569,87 +575,82 @@
         );
       });
 
-      blockElement.
+      $blockElement.
         find('.text-editor > iframe').
         height(maxEditorHeight);
     }
 
     /**
-     * Component template renderers render template skeletons into
-     * block elements.
+     * Invokes the given component renderer with the given data.
+     * If another component renderer is already present, the other renderer
+     * will be torn down via the 'destroy' event.
+     *
+     * @param {string} componentRenderer - The name of the renderer to use.
+     * @param {jQuery} $componentContainer - The DOM subtree to render into.
+     * @param {object} componentData - The component's data from the database.
      */
+    function _runComponentRenderer(componentRenderer, $componentContainer, componentData) {
+      var $componentContent = $componentContainer.children().eq(0);
 
-    function _renderBlockComponentsTemplates(blockId) {
+      var needToChangeRenderer =
+        componentRenderer !== $componentContainer.attr('data-component-renderer-name');
 
-      var element = elementCache.getBlock(blockId);
-      var componentData = storyteller.storyStore.getBlockComponents(blockId);
-      var existingComponent;
-      var componentContainer;
-      var canReuseTemplate = false;
-      var componentWidth;
-      var componentClasses;
-      var componentOptions;
-      var newTemplate;
+      if (needToChangeRenderer) {
+        $componentContainer.attr('data-component-renderer-name', componentRenderer);
 
-      componentData.forEach(function(componentDatum, i) {
+        $componentContent = $('<div>', { 'class': 'component' });
 
-        // We need to find the container for the current component in order to
-        // determine whether or not we can reuse the current template.
-        //
-        // Component containers are not currently cached, so we do a `.find()`
-        // against the cached block element.
+        $componentContainer.
+          trigger('destroy').
+          empty().
+          append($componentContent);
+      }
 
-        existingComponent = elementCache.getComponent(blockId, i);
-
-        if (existingComponent) {
-
-          canReuseTemplate = componentTemplateCheckers[componentDatum.type](
-            existingComponent,
-            componentDatum.value
-          );
-        }
-
-        if (!canReuseTemplate) {
-
-          if (existingComponent) {
-            existingComponent.remove();
-          }
-
-          componentContainer = element.find('.component-container[data-component-index="' + i + '"]');
-          componentWidth = componentContainer.attr('data-component-layout-width');
-          componentClasses = ['component', componentDatum.type].join(' ');
-
-          componentOptions = {
-            classes: componentClasses,
-            blockId: blockId,
-            componentIndex: i,
-            componentWidth: componentWidth,
-            componentType: componentDatum.type,
-            componentValue: componentDatum.value,
-            editable: editable
-          };
-
-          newTemplate = componentTemplateRenderers[componentOptions.componentType](componentOptions);
-
-          newTemplate.attr('data-block-id', blockId);
-          newTemplate.attr('data-component-index', i);
-
-          componentContainer.append(newTemplate);
-
-          elementCache.setComponent(blockId, i, newTemplate);
-        }
-      });
+      // Provide the initial or updated data to the renderer.
+      $componentContent[componentRenderer](componentData);
+      $componentContent.
+        addClass(componentData.type);
     }
 
-    function _renderBlockComponentsData(blockId) {
+    /**
+     * Finds an appropriate container for a
+     * given block's component.
+     *
+     * @param {string} blockId
+     * @param {number} componentIndex
+     * @return {jQuery}
+     */
+    function _getComponentContainer(blockId, componentIndex) {
+      var $block = elementCache.getBlock(blockId);
+      var $componentContainer = elementCache.getComponent(blockId, componentIndex);
 
-      var componentData = storyteller.storyStore.getBlockComponents(blockId);
+      if (!$componentContainer) {
 
-      componentData.forEach(function(componentDatum, i) {
+        // If the container is not in the cache, we must grab it from the DOM. All component containers
+        // have already been created in one step in _renderBlock.
+        $componentContainer = $block.find('.component-container[data-component-index="' + componentIndex + '"]');
+        utils.assert(
+          $componentContainer.length > 0,
+          'Could not find component container for blockId: {0}, componentIndex: {1}'.
+            format(blockId, componentIndex)
+        );
+        elementCache.setComponent(blockId, componentIndex, $componentContainer);
+      }
 
-        var element = elementCache.getComponent(blockId, i);
+      utils.assertInstanceOf($componentContainer, $);
 
-        componentDataRenderers[componentDatum.type](element, componentDatum, editable, _renderStory);
+      return $componentContainer;
+    }
+
+    function _renderBlockComponents(blockId) {
+      var components = storyteller.storyStore.getBlockComponents(blockId);
+
+      components.forEach(function(componentData, componentIndex) {
+
+        var componentRenderer = _findAppropriateComponentRenderer(componentData);
+        var $componentContainer = _getComponentContainer(blockId, componentIndex);
+
+        _runComponentRenderer(componentRenderer, $componentContainer, componentData);
       });
     }
 

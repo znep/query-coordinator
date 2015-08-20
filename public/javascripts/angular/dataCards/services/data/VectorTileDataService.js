@@ -16,7 +16,7 @@
   }
 
   function VectorTileDataService(RequestId, ServerConfig, $q) {
-    var VectorTileDataService = {};
+    var VectorTileDataServiceDefinition = {};
     var tileserverHosts = ServerConfig.get('tileserverHosts');
     var originHost = $.baseUrl().host;
     /**
@@ -28,7 +28,7 @@
      * @param {Boolean} [useOriginHost]
      * @returns {String}
      */
-    VectorTileDataService.getHost = function getHost(x, y, useOriginHost) {
+    VectorTileDataServiceDefinition.getHost = function getHost(x, y, useOriginHost) {
       if (useOriginHost || _.isEmpty(tileserverHosts)) {
         return originHost;
       } else {
@@ -74,7 +74,7 @@
         typeof xhr.responseBody === 'unknown'; // eslint-disable-line valid-typeof
     }
 
-    VectorTileDataService.typedArrayFromArrayBufferResponse =
+    VectorTileDataServiceDefinition.typedArrayFromArrayBufferResponse =
       function typedArrayFromArrayBufferResponse(xhr) {
       if (xhrHasVBArray(xhr)) {
         return new VBArray(xhr.responseBody).toArray();
@@ -93,7 +93,7 @@
      * @param {{headers: Object}} config
      * @returns {{promise: Promise, xhr: XMLHttpRequest}}
      */
-    VectorTileDataService.getArrayBuffer = function getArrayBuffer(url, config) {
+    VectorTileDataServiceDefinition.getArrayBuffer = function getArrayBuffer(url, config) {
       var xhrDeferred = $q.defer();
       config = _.defaults({}, config, { header: [] });
       var xhr = new XMLHttpRequest();
@@ -111,7 +111,7 @@
         var status = parseInt(xhr.status, 10);
 
         if (status === 200) {
-          arrayBuffer = VectorTileDataService.typedArrayFromArrayBufferResponse(xhr);
+          arrayBuffer = VectorTileDataServiceDefinition.typedArrayFromArrayBufferResponse(xhr);
           if (_.isDefined(arrayBuffer)) {
             xhrDeferred.resolve({
               data: arrayBuffer,
@@ -152,7 +152,7 @@
      * @param {Boolean} [useOriginHost] True if should only request tiles from origin host
      * @returns {tileGetter} Curried function for fetching vector tile
      */
-    VectorTileDataService.buildTileGetter = function buildTileGetter(
+    VectorTileDataServiceDefinition.buildTileGetter = function buildTileGetter(
       fieldName,
       datasetId,
       whereClause,
@@ -194,10 +194,10 @@
         );
       }
 
-      return _.bind(tileGetter, VectorTileDataService);
+      return _.bind(tileGetter, VectorTileDataServiceDefinition);
     };
 
-    return VectorTileDataService;
+    return VectorTileDataServiceDefinition;
   }
 
   angular.

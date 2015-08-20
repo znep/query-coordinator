@@ -100,7 +100,7 @@
         }
 
         // Handles query for rows under clicked points, and reformats query response.
-        scope.getClickedRows = function(mousePosition, points) {
+        scope.getClickedRows = function(mousePosition, points, bounds) {
 
           // Get necessary data for query and perform query for clicked rows
           var numberOfRowsClicked = _.sum(points, 'count');
@@ -124,13 +124,30 @@
               lng: mousePosition.lng,
               lat: mousePosition.lat
             });
+
+            var withinBox = 'within_box({field}, {northeast}, {southwest})'.format({
+              field: rowQueryComponents.fieldName,
+              northeast: '{0}, {1}'.format(bounds.northeast.lat, bounds.northeast.lng),
+              southwest: '{0}, {1}'.format(bounds.southwest.lat, bounds.southwest.lng)
+            });
+
+            var whereClause;
+            if (_.isPresent(rowQueryComponents.whereClause)) {
+              whereClause = '{originalWhereClause} AND {withinBox}'.format({
+                originalWhereClause: rowQueryComponents.whereClause,
+                withinBox: withinBox
+              });
+            } else {
+              whereClause = withinBox;
+            }
+
             var rowQueryResponsePromise = CardDataService.getRows(
               rowQueryComponents.id,
               offset,
               numberOfRowsClicked,
               order,
               $q.defer(),
-              rowQueryComponents.whereClause
+              whereClause
             );
             return Rx.Observable.fromPromise(rowQueryResponsePromise);
           });

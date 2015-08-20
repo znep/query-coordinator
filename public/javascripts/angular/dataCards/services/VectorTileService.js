@@ -502,7 +502,7 @@
           onRenderStart: _.noop,
           onRenderComplete: _.noop,
           // threshold options represent distance to neighboring points permitted for hover and click in px
-          minHoverThreshold: Constants.FEATURE_MAP_MIN_HOVER_THRESHOLD,
+          getHoverThreshold: _.noop,
           maxHoverThreshold: pointStyle.radius(Constants.FEATURE_MAP_MAX_ZOOM)
         };
 
@@ -698,8 +698,7 @@
           e.tile.totalPoints = VectorTileUtil.getTileTotalPoints(layer, e.tile.id);
 
           var tileCanvas = VectorTileUtil.getTileLayerCanvas(layer, e.tile.id);
-          var pointStyle = self.style({type: 1});
-          var hoverThreshold = Math.max(pointStyle.radius(map.getZoom()), self.options.minHoverThreshold);
+          var hoverThreshold = self.options.getHoverThreshold(map.getZoom());
 
           if (_.isUndefined(tileCanvas)) {
             e.points = [];

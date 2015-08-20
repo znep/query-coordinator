@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # eslint must be installed.
 npm install eslint
@@ -8,6 +8,7 @@ NEW_PROBLEMS=`./node_modules/.bin/eslint --ignore-path .eslintignore -c package.
 git checkout `git merge-base HEAD origin/master`
 OLD_PROBLEMS=`./node_modules/.bin/eslint --ignore-path .eslintignore -c package.json -f compact app | sort | tail -n +3`
 
+git checkout -
 DELTA=`diff  <(echo "$OLD_PROBLEMS" ) <(echo "$NEW_PROBLEMS") | grep '^> '`
 
 if [ -n "$DELTA" ]; then

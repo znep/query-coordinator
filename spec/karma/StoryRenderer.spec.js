@@ -196,6 +196,22 @@ describe('StoryRenderer', function() {
       $('#rich-text-editor-toolbar').remove();
     });
 
+    describe('window class breaks', function() {
+      it('should apply the current class break to the story container', function() {
+        var currentClassName;
+
+        storyteller.storyRenderer = new storyteller.StoryRenderer(options);
+
+        _.forOwn(storyteller.windowSizeBreakpointStore.getClassBreaks(), function (isEnabled, className) {
+          if (isEnabled) {
+            currentClassName = className;
+          }
+        });
+
+        assert.isTrue(options.storyContainerElement.hasClass(currentClassName));
+      });
+    });
+
     describe('that is empty', function() {
       it('should display an empty story message', function() {
         var storyWithoutBlocks = generateStoryData({

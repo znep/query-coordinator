@@ -140,6 +140,7 @@
      * children.
      */
     this.destroy = function() {
+      storyteller.windowSizeBreakpointStore.removeChangeListener(_applyClassBreaks);
       _editorElement.remove();
     };
 
@@ -178,10 +179,26 @@
         }
 
         _setupMouseMoveEventBroadcast();
+
+        storyteller.windowSizeBreakpointStore.addChangeListener(_applyClassBreaks);
+        _applyClassBreaks();
       });
 
       _containerElement.append(_editorElement);
     }
+
+    function _applyClassBreaks() {
+      var editorDocument = _editorElement[0].contentDocument;
+
+      if (!editorDocument) {
+        return;
+      }
+
+      _.forOwn(storyteller.windowSizeBreakpointStore.getClassBreaks(), function(isEnabled, className) {
+        $(editorDocument.body).toggleClass(className, isEnabled);
+      });
+    };
+
 
     /**
      * Since we will want to override the default browser styles but we are

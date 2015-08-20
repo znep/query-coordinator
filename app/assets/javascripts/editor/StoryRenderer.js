@@ -170,6 +170,9 @@
           _hideInsertionHint();
         }
       });
+
+      storyteller.windowSizeBreakpointStore.addChangeListener(_applyClassBreaks);
+      _applyClassBreaks();
     }
 
     function _attachEvents() {
@@ -319,6 +322,12 @@
 
     function _detachEvents() {
       $(window).off('resize', _throttledRender);
+    }
+
+    function _applyClassBreaks() {
+      _.forOwn(storyteller.windowSizeBreakpointStore.getClassBreaks(), function(isEnabled, className) {
+        container.toggleClass(className, isEnabled);
+      });
     }
 
     function _throttledRender() {

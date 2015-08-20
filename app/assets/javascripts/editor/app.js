@@ -86,6 +86,7 @@ $(document).on('ready', function() {
   storyteller.blockRemovalConfirmationStore = new storyteller.BlockRemovalConfirmationStore();
   storyteller.coreSavingStore = new storyteller.CoreSavingStore();
   storyteller.flyoutRenderer = new storyteller.FlyoutRenderer();
+  storyteller.windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
 
   var richTextEditorToolbar = new storyteller.RichTextEditorToolbar(
     $('#rich-text-editor-toolbar'),

@@ -78,6 +78,8 @@
 
         var whereClause = buildWhereClause(whereClauseFragment);
         var aggregationClause = buildAggregationClause(aggregationClauseData);
+        var nullLast = (options.nullLast === true) ? 'null last' : '';
+        var orderBy = options.orderBy || '{0} desc'.format(aggregationClause);
 
         var nameAlias = SoqlHelpers.getFieldNameAlias('name');
         var valueAlias = SoqlHelpers.getFieldNameAlias('value');
@@ -95,8 +97,8 @@
           options.limit,
           nameAlias,
           valueAlias,
-          (options.nullLast === true) ? 'null last' : '',
-          options.orderBy || aggregationClause + ' desc'
+          nullLast,
+          orderBy
         );
 
         url.searchParams.set('$query', query);

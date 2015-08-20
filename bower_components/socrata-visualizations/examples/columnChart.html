@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example Usage: socrata.visualizations.ColumnChart.js</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <link rel="stylesheet" media="all" href="../socrata.visualizations.columnChart.css">
+    <style type="text/css">
+
+      body {
+        font-size: 10px;
+        font-family: sans-serif;
+      }
+
+      #column-chart {
+        display: block;
+        position: relative;
+        width: 640px;
+        height: 480px;
+        margin: 100px auto 0 auto;
+        border: 1px solid #aaa;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="column-chart"></div>
+  </body>
+  <!-- lodash must be loaded before `socrata.utils.js` -->
+  <script type="text/javascript" src="../bower_components/lodash/lodash.js"></script>
+  <script type="text/javascript" src="../bower_components/socrata-utils/socrata.utils.js"></script>
+  <!-- jquery must be loaded before `socrata.visualizations.Visualization.js` -->
+  <script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
+  <!-- `socrata.visualizations.Visualization.js` must be loaded before `socrata.visualizations.ColumnChart.js` -->
+  <script type="text/javascript" src="../socrata.visualizations.Visualization.js"></script>
+  <!-- d3 must be loaded before `socrata.visualizations.ColumnChart.js` -->
+  <script type="text/javascript" src="../bower_components/d3/d3.js"></script>
+  <script type="text/javascript" src="../socrata.visualizations.ColumnChart.js"></script>
+  <!-- `socrata.visualizations.DataProvider.js` must be loaded before `socrata.visualizations.SoqlDataProvider.js` -->
+  <script type="text/javascript" src="../socrata.visualizations.DataProvider.js"></script>
+  <script type="text/javascript" src="../socrata.visualizations.SoqlDataProvider.js"></script>
+  <script type="text/javascript">
+
+    /**
+     * Temporary polyfills until we can come up with a better implementation and include it somewhere else.
+     */
+
+    String.prototype.visualSize = function(fontSize) {
+
+      var $ruler = $('#ruler');
+      var dimensions;
+
+      if ($ruler.length < 1) {
+        $('body').append('<span class="ruler" id="ruler"></span>');
+        $ruler = $('#ruler');
+      }
+      if (!fontSize) {
+        fontSize = '';
+      }
+      $ruler.css('font-size', fontSize);
+      $ruler.text(this + '');
+      dimensions = {width: $ruler.width(), height: $ruler.height()};
+      $ruler.remove();
+
+      return dimensions;
+    };
+
+    String.prototype.visualLength = function(fontSize) {
+      return this.visualSize(fontSize).width;
+    };
+
+    /**
+     * Configure visualization
+     */
+
+    // We need to tell the visualization which element in a row array corresponds to which
+    // 'concept' that the visualization cares about.
+    var NAME_INDEX = 0;
+    var UNFILTERED_INDEX = 1;
+    var FILTERED_INDEX = 2;
+    var SELECTED_INDEX = 3;
+
+    var visualizationConfig = {
+      columns: {
+        name: NAME_INDEX,
+        unfilteredValue: UNFILTERED_INDEX,
+        filteredValue: FILTERED_INDEX,
+        selected: SELECTED_INDEX
+      },
+      // The localization values should be set by the application but are set to string literals
+      // for the purposes of this example.
+      localization: {
+        'NO_VALUE': '(No value)',
+        'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total:',
+        'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered:',
+        'FLYOUT_SELECTED_NOTICE': 'This column is currently selected.'
+      }
+    };
+
+    var visualizationRenderOptions = {
+      labelUnit: 'rows',
+      showAllLabels: true,
+      showFiltered: false
+    };
+
+    var visualization = new window.socrata.visualizations.ColumnChart(
+      $('#column-chart'),
+      visualizationConfig
+    );
+
+    /**
+     * Configure Data Providers
+     */
+
+    // We need to use aliases for the keys in the JSON returned by the SoQL server because
+    // we sometimes encounter customer datasets with column names that are reserved keywords
+    // (like `false`). These can be arbitrary but must be consistent throughout the life of
+    // the SoqlDataProvider instance.
+    var SOQL_DATA_PROVIDER_NAME_ALIAS = 'SOQL_DATA_PROVIDER_NAME_ALIAS';
+    var SOQL_DATA_PROVIDER_VALUE_ALIAS = 'SOQL_DATA_PROVIDER_VALUE_ALIAS';
+
+    var dataProviderData = {
+      "domain": "dataspace.demo.socrata.com",
+      "fourByFour": "r6t9-rak2",
+      "baseQuery": "SELECT `category` AS {0}, COUNT(*) AS {1} GROUP BY `category` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200"
+    };
+
+    var domain = dataProviderData.domain;
+    var fourByFour = dataProviderData.fourByFour;
+    var baseQuery = dataProviderData.
+      baseQuery.
+      format(
+        SOQL_DATA_PROVIDER_NAME_ALIAS,
+        SOQL_DATA_PROVIDER_VALUE_ALIAS
+      );
+
+    // Set up unfiltered data provider
+    var unfilteredDataProviderConfig = {
+      domain: domain,
+      fourByFour: fourByFour,
+      success: onUnfilteredSuccess,
+      error: onUnfilteredError
+    };
+    var unfilteredDataProvider = new window.socrata.visualizations.SoqlDataProvider(unfilteredDataProviderConfig);
+
+    // Set up filtered data provider
+    var filteredDataProviderConfig = {
+      domain: domain,
+      fourByFour: fourByFour,
+      success: onFilteredSuccess,
+      error: onFilteredError
+    };
+    var filteredDataProvider = new window.socrata.visualizations.SoqlDataProvider(filteredDataProviderConfig);
+
+    var unfilteredRequestInFlight;
+    var filteredRequestInFlight;
+    var unfilteredData;
+    var filteredData;
+    var visualizationData = [];
+
+    // Data-handling functions. These will eventually be incorporated into a smarter class that
+    // will handle these things for us. They will also currently fail if the server responds with
+    // '304 Not modified'. This will result in the following error:
+    //
+    // `Uncaught TypeError: Cannot read property 'map' of undefined -> socrata.visualizations.SoqlDataProvider.js:192`
+    //
+    // If you encounter this error just reload the page until you get a fresh 200 response.
+    //
+    // Note that currently both unfilteredDataProvider and filteredDataProvider use the same
+    // query and so will return the same values. When filtering is added they will make different
+    // queries (still similar but with the filteredDataProvider including a WHERE clause in the query).
+    function updateData() {
+
+      unfilteredRequestInFlight = true;
+      filteredRequestInFlight = true;
+
+      unfilteredDataProvider.query(
+        baseQuery,
+        SOQL_DATA_PROVIDER_NAME_ALIAS,
+        SOQL_DATA_PROVIDER_VALUE_ALIAS
+      );
+
+      filteredDataProvider.query(
+        baseQuery,
+        SOQL_DATA_PROVIDER_NAME_ALIAS,
+        SOQL_DATA_PROVIDER_VALUE_ALIAS
+      );
+    }
+
+    function onUnfilteredSuccess(data) {
+
+      unfilteredRequestInFlight = false;
+      unfilteredData = data;
+
+      onRequestComplete();
+    }
+
+    function onUnfilteredError() {
+
+      unfilteredRequestInFlight = false;
+      unfilteredData = null;
+
+      onRequestComplete();
+    }
+
+    function onFilteredSuccess(data) {
+
+      filteredRequestInFlight = false;
+      filteredData = data;
+
+      onRequestComplete();
+    }
+
+    function onFilteredError() {
+
+      filteredRequestInFlight = false;
+      filteredData = null;
+
+      onRequestComplete();
+    }
+
+    function onRequestComplete() {
+
+      if (!unfilteredRequestInFlight && !filteredRequestInFlight) {
+
+        if (unfilteredData !== null && filteredData !== null) {
+
+          visualizationData = mergeUnfilteredAndFilteredData(
+            unfilteredData,
+            filteredData
+          );
+
+          // Here we call `.render()` on the visualization, since the
+          // requested data has returned and we have merged it into
+          // the 'table' format that the visualization expects.
+          visualization.render(
+            visualizationData,
+            visualizationRenderOptions
+          );
+        } else {
+
+          console.error('Could not render visualization.');
+        }
+      }
+    }
+
+    function mergeUnfilteredAndFilteredData(unfiltered, filtered) {
+
+      var unfilteredAsHash;
+      var filteredAsHash;
+
+      unfilteredAsHash = _.indexBy(
+        unfiltered.rows,
+        unfiltered.columns.indexOf(SOQL_DATA_PROVIDER_NAME_ALIAS)
+      );
+
+      filteredAsHash = _.indexBy(
+        filtered.rows,
+        filtered.columns.indexOf(SOQL_DATA_PROVIDER_NAME_ALIAS)
+      );
+
+      return Object.keys(unfilteredAsHash).map(function(name) {
+
+        var datumIsSelected = false;
+
+        var result = [undefined, undefined, undefined, undefined];
+
+        result[NAME_INDEX] = (_.isNull(name) || _.isUndefined(name)) ? '' : name;
+        result[UNFILTERED_INDEX] = unfilteredAsHash[name][1];
+        result[FILTERED_INDEX] = filteredAsHash[name][1] || 0;
+        result[SELECTED_INDEX] = datumIsSelected;
+
+        return result;
+      });
+    }
+
+    /**
+     * Render visualization
+     */
+
+    updateData();
+
+  </script>
+</html>

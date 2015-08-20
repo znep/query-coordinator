@@ -193,7 +193,7 @@
 
           return [
             datum[nameAlias],
-            datum[valueAlias]
+            Number(datum[valueAlias])
           ];
         })
       };

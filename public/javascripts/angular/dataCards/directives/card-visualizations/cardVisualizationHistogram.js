@@ -119,11 +119,148 @@
           }
         });
 
-        // Fires either 'columnChart' or 'histogram'
-        var visualizationType$ = fieldName$.withLatestFrom(
-          dataset$.pluck('id'),
+        function cardDataHistogram$() {
+          var columnDataSummary$ = Rx.Observable.combineLatest(
+            fieldName$,
+            dataset$,
+            bucketType$,
+            function(fieldName, dataset, bucketType) {
+
+              // This promise will ultimately return an object in the form:
+              // {min:, max:, bucketType:, bucketSize:}
+              // See HistogramService.getBucketingOptions
+              var columnDomainPromise = CardDataService.getColumnDomain(fieldName, dataset.id, null).
+                then(function(domain) {
+                  if (_.has(domain, 'min') && _.has(domain, 'max')) {
+                    return HistogramService.getBucketingOptions(domain, bucketType);
+                  } else {
+                    $scope.histogramRenderError = 'noData';
+                    return undefined;
+                  }
+                }
+              );
+
+              return Rx.Observable.fromPromise(columnDomainPromise);
+            }).
+            switchLatest().
+            share().
+            filter(_.isDefined);
+
+          var unfilteredData$ = Rx.Observable.combineLatest(
+            fieldName$,
+            dataset$,
+            baseSoqlFilter$,
+            aggregation$,
+            columnDataSummary$,
+            fetchHistogramData
+          ).switchLatest();
+
+          var filteredData$ = Rx.Observable.combineLatest(
+            fieldName$,
+            dataset$,
+            whereClauseExcludingOwn$,
+            aggregation$,
+            columnDataSummary$,
+            fetchHistogramData
+          ).switchLatest();
+
+          return Rx.Observable.combineLatest(
+            unfilteredData$,
+            filteredData$,
+            function(unfiltered, filtered) {
+
+              $scope.histogramRenderError = false;
+
+              if (!_.isArray(unfiltered.data) || !_.isArray(filtered.data)) {
+                throw new Error('badData');
+              }
+
+              if (_.isEmpty(unfiltered.data)) {
+                throw new Error('noData');
+              }
+
+              var unfilteredData = unfiltered.data;
+              var filteredData = filtered.data;
+
+              // While the filtered data doesn't have the same number of buckets as the unfiltered,
+              // we need to create the missing buckets and give them values of zero.
+              var i = 0;
+              var noDatum = function(index) {
+                return $.grep(filteredData, function(e) {
+                  return e.start === unfilteredData[index].start;
+                }).length === 0;
+              };
+
+              while (unfilteredData.length !== filteredData.length && i < unfilteredData.length) {
+                var unfilteredDatum = unfilteredData[i];
+
+                // If the filtered array doesn't contain an object with the same 'start' index as the
+                // current unfiltered object, create new bucket and insert it into the filtered array.
+
+                if (noDatum(i)) {
+                  var newBucket = {
+                    start: unfilteredDatum.start,
+                    end: unfilteredDatum.end,
+                    value: 0
+                  };
+
+                  filteredData.splice(i, 0, newBucket);
+                }
+
+                i++;
+              }
+
+              return {
+                unfiltered: unfilteredData,
+                filtered: filteredData
+              };
+            }).
+            catchException(function(error) {
+              if (_.isError(error)) {
+                $scope.histogramRenderError = error.message || true;
+              } else {
+                $scope.histogramRenderError = error || true;
+              }
+              return Rx.Observable.returnValue({ error: $scope.histogramRenderError });
+            });
+        }
+
+        function cardDataColumnChart$() {
+          var keys = ['groupBySample', 'activeFilter', 'whereClause', 'fieldName', 'dataset', 'aggregation'];
+          var aggregateSequenceValues = _.flow(Array.prototype.concat, _.partial(_.zipObject, keys)).bind([]);
+
+          return groupBySample$.combineLatest(
+            activeFilters$.pluck(0),
+            whereClause$,
+            Array.prototype.constructor
+          ).withLatestFrom(
+            fieldName$,
+            dataset$.pluck('id'),
+            aggregation$,
+            _.flow(aggregateSequenceValues, function(values) {
+              var unfilteredData = values.groupBySample;
+
+              if (_.isEmpty(values.whereClause)) {
+                var result = HistogramService.transformDataForColumnChart(unfilteredData);
+                return Rx.Observable.returnValue(result);
+              } else {
+                var requestArguments = _.at(values, 'fieldName', 'dataset', 'whereClause', 'aggregation').concat({ orderBy: '`{0}`'.format(values.fieldName) });
+                var filteredDataPromise = CardDataService.getData.apply(CardDataService, requestArguments).
+                  then(function(filteredData) {
+                    var selectedValue = _.get(values.activeFilter, 'operand');
+                    return HistogramService.transformDataForColumnChart(unfilteredData, filteredData || [], selectedValue);
+                  });
+
+                return Rx.Observable.fromPromise(filteredDataPromise);
+              }
+            })
+          ).switchLatest();
+        }
+
+        var groupBySample$ = fieldName$.withLatestFrom(
+          dataset$,
           aggregation$,
-          function(fieldName, datasetId, aggregation) {
+          function(fieldName, dataset, aggregation) {
 
             // To decide if we should render as a column chart, make a request
             // for (n + 1) unique elements, then ensure that there are n or less
@@ -136,146 +273,20 @@
             // processResponse just plucks the names of the buckets and passes
             // it to HistogramService.
             var whereClause = '`{0}` IS NOT NULL'.format(fieldName);
-            var options = { limit: Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD + 1 };
-            var processResponse = _.flow(_.partial(_.pluck, 'name'), HistogramService.getVisualizationTypeForData);
-            var visualizationTypePromise = CardDataService.getData(fieldName, datasetId, whereClause, aggregation, options).
-              then(processResponse);
-
-            return Rx.Observable.fromPromise(visualizationTypePromise);
+            var options = { limit: Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD + 1, orderBy: fieldName};
+            return Rx.Observable.fromPromise(CardDataService.getData(fieldName, dataset.id, whereClause, aggregation, options));
           }).
           switchLatest().
-          share();
+          shareReplay(1);
 
-        var columnDataSummary$ = Rx.Observable.combineLatest(
-          fieldName$,
-          dataset$,
-          bucketType$,
-          visualizationType$,
-          function(fieldName, dataset, bucketType, visualizationType) {
+        // Fires either 'columnChart' or 'histogram'
+        var visualizationType$ = groupBySample$.map(function(groupBySample) {
+          return HistogramService.getVisualizationTypeForData(_.pluck(groupBySample, 'name'));
+        }).share();
 
-            // This promise will ultimately return an object in the form:
-            // {min:, max:, bucketType:, bucketSize:}
-            // See HistogramService.getBucketingOptions
-            var columnDomainPromise = CardDataService.getColumnDomain(fieldName, dataset.id, null).
-              then(function(domain) {
-                if (_.has(domain, 'min') && _.has(domain, 'max')) {
-                  var bucketOptions = HistogramService.getBucketingOptions(domain, bucketType);
-
-                  // Force the bucket size to 1 if we're rendering in low-int mode.
-                  if (visualizationType === 'columnChart') {
-                    bucketOptions.bucketSize = 1;
-                  }
-
-                  return bucketOptions;
-                } else {
-                  $scope.histogramRenderError = 'noData';
-                  return undefined;
-                }
-              }
-            );
-
-            return Rx.Observable.fromPromise(columnDomainPromise);
-          }).
-          switchLatest().
-          share().
-          filter(_.isDefined);
-
-        var unfilteredData$ = Rx.Observable.combineLatest(
-          fieldName$,
-          dataset$,
-          baseSoqlFilter$,
-          aggregation$,
-          columnDataSummary$,
-          fetchHistogramData
-        ).switchLatest();
-
-        var filteredData$ = Rx.Observable.combineLatest(
-          fieldName$,
-          dataset$,
-          whereClauseExcludingOwn$,
-          aggregation$,
-          columnDataSummary$,
-          fetchHistogramData
-        ).switchLatest();
-
-        var cardData$ = Rx.Observable.combineLatest(
-          unfilteredData$,
-          filteredData$,
-          function(unfiltered, filtered) {
-
-            $scope.histogramRenderError = false;
-
-            if (!_.isArray(unfiltered.data) || !_.isArray(filtered.data)) {
-              throw new Error('badData');
-            }
-
-            if (_.isEmpty(unfiltered.data)) {
-              throw new Error('noData');
-            }
-
-            var unfilteredData = unfiltered.data;
-            var filteredData = filtered.data;
-
-            // While the filtered data doesn't have the same number of buckets as the unfiltered,
-            // we need to create the missing buckets and give them values of zero.
-            var i = 0;
-            var noDatum = function(index) {
-              return $.grep(filteredData, function(e) {
-                return e.start === unfilteredData[index].start;
-              }).length === 0;
-            };
-
-            while (unfilteredData.length !== filteredData.length && i < unfilteredData.length) {
-              var unfilteredDatum = unfilteredData[i];
-
-              // If the filtered array doesn't contain an object with the same 'start' index as the
-              // current unfiltered object, create new bucket and insert it into the filtered array.
-
-              if (noDatum(i)) {
-                var newBucket = {
-                  start: unfilteredDatum.start,
-                  end: unfilteredDatum.end,
-                  value: 0
-                };
-
-                filteredData.splice(i, 0, newBucket);
-              }
-
-              i++;
-            }
-
-            return {
-              unfiltered: unfilteredData,
-              filtered: filteredData
-            };
-          }).
-          withLatestFrom(
-            visualizationType$,
-            activeFilters$,
-            function(result, visualizationType, activeFilters) {
-              if (visualizationType === 'columnChart') {
-                var specialIndex;
-
-                if (activeFilters.length > 0) {
-                  specialIndex = _.findIndex(result.unfiltered, function(bucket) {
-                    return bucket.start === activeFilters[0].operand;
-                  });
-                }
-
-                return HistogramService.transformDataForColumnChart(result, specialIndex);
-              } else {
-                return result;
-              }
-            }
-          ).
-          catchException(function(error) {
-            if (_.isError(error)) {
-              $scope.histogramRenderError = error.message || true;
-            } else {
-              $scope.histogramRenderError = error || true;
-            }
-            return Rx.Observable.returnValue({ error: $scope.histogramRenderError });
-          });
+        var cardData$ = visualizationType$.flatMapLatest(function(visualizationType) {
+          return visualizationType === 'histogram' ? cardDataHistogram$() : cardDataColumnChart$();
+        }).share();
 
         // This sucks, but we have to conditionally set a negative horizontal
         // margin on the outer container because when the chart renders as a

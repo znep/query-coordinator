@@ -202,11 +202,15 @@ describe('StoryRenderer', function() {
 
         storyteller.storyRenderer = new storyteller.StoryRenderer(options);
 
-        _.forOwn(storyteller.windowSizeBreakpointStore.getClassBreaks(), function (isEnabled, className) {
-          if (isEnabled) {
-            currentClassName = className;
+
+        _.forOwn(
+          storyteller.windowSizeBreakpointStore.getClassBreaks(),
+          function (isEnabled, className) {
+            if (isEnabled) {
+              currentClassName = className;
+            }
           }
-        });
+        );
 
         assert.isTrue(options.storyContainerElement.hasClass(currentClassName));
       });

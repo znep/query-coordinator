@@ -325,9 +325,12 @@
     }
 
     function _applyClassBreaks() {
-      _.forOwn(storyteller.windowSizeBreakpointStore.getClassBreaks(), function(isEnabled, className) {
-        container.toggleClass(className, isEnabled);
-      });
+      _.forOwn(
+        storyteller.windowSizeBreakpointStore.getClassBreaks(),
+        function(isEnabled, className) {
+          container.toggleClass(className, isEnabled);
+        }
+      );
     }
 
     function _throttledRender() {

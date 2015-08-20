@@ -253,7 +253,7 @@ describe('RichTextEditor', function() {
   });
 
   describe('window class breaks', function() {
-    it('should apply the current class break to the iframe body', function() {
+    it('should apply the current class break to the iframe documentElement (html node)', function() {
       var currentClassName;
       var $textEditor = $('.text-editor');
       var editor = new storyteller.RichTextEditor(
@@ -263,14 +263,18 @@ describe('RichTextEditor', function() {
         validFormats,
         'Hello, world!'
       );
+      var $documentElement = $($textEditor.find('iframe')[0].contentDocument.documentElement);
 
-      _.forOwn(storyteller.windowSizeBreakpointStore.getClassBreaks(), function (isEnabled, className) {
-        if (isEnabled) {
-          currentClassName = className;
+      _.forOwn(
+        storyteller.windowSizeBreakpointStore.getClassBreaks(),
+        function (isEnabled, className) {
+          if (isEnabled) {
+            currentClassName = className;
+          }
         }
-      });
+      );
 
-      assert.isTrue($($textEditor.find('iframe')[0].contentDocument.body).hasClass(currentClassName));
+      assert.isTrue($documentElement.hasClass(currentClassName));
     });
   });
 

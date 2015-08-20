@@ -32,7 +32,7 @@ ADD frontend.tgz $APP_DIR
 COPY docker/ship.d/run /etc/ship.d/run
 
 RUN eval ${build_proxy_env} \
-  && bundle config socrata.artifactoryonline.com ${ARTIFACTORYONLINE_USER}:${ARTIFACTORYONLINE_PASSWORD} \
+  && bundle config socrata.artifactoryonline.com "${ARTIFACTORYONLINE_USER}":"${ARTIFACTORYONLINE_PASSWORD}" \
   && bundle install --path ${GEM_DIR} --without=development --deployment \
   && bundle exec rake assets:unminified
 

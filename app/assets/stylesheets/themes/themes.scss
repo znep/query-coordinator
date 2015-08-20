@@ -1,12 +1,6 @@
 // Set Basic Theme vars
 @import '../lib/variables';
-
-// Basic media queries for typeset regions.
-$medium:  768px;
-$large:   1200px;
-$xlarge:  1400px;
-$xxlarge:   1600px;
-
+@import 'normalize';
 
 // Modular Scale Ratios --
 // Used for grid and typography. Setting type dimensions using these scales improves balance of the typographic design.
@@ -54,15 +48,14 @@ $link-hover: darken($link-color, 12%);
 
 // END Theme Settings //
 
+// Javascript sets body opacity to 0 while styles load, then removes that style,
+// so this provides a nice fade-in
 body {
   transition: opacity $iframe-onload-transition-duration;
 }
 
-@import 'normalize';
-
 
 // Import each theme, scoped by a theme class, applied to the body via javascript //
-
 .classic {
   @import 'theme-classic';
 }
@@ -71,8 +64,12 @@ body {
   @import 'theme-sans';
 }
 
-.slab {
+.serif {
   @import 'theme-serif';
+}
+
+.slab {
+  @import 'theme-slab';
 }
 
 

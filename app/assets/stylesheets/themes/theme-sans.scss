@@ -1,12 +1,5 @@
 //Theme Vars
 
-// Basic media queries for typeset regions.
-$medium: 	768px;
-$large: 	1200px;
-$xlarge: 	1400px;
-$xxlarge: 	1600px;
-
-
 // Modular Scale Ratios --
 // Used for grid and typography. Setting type dimensions using these scales improves balance of the typographic design.
 $ms-ratio-1: 1.333;
@@ -75,8 +68,6 @@ $subtitle-font-family: $body-font-stack;
 
 
 // END Theme Settings //
-
-$breakpoint-to-ems: true;
 
 
 // Font Stacks

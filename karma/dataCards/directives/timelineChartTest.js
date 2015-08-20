@@ -52,11 +52,11 @@ describe('timelineChart', function() {
     module(function($provide) {
 
       mockWindowStateService = {};
-      mockWindowStateService.scrollPositionSubject = new Rx.Subject();
-      mockWindowStateService.windowSizeSubject = new Rx.Subject();
-      mockWindowStateService.mouseLeftButtonPressedSubject = new Rx.Subject();
-      mockWindowStateService.mousePositionSubject = new Rx.Subject();
-      mockWindowStateService.closeDialogEventObservable = new Rx.Subject();
+      mockWindowStateService.scrollPosition$ = new Rx.Subject();
+      mockWindowStateService.windowSize$ = new Rx.Subject();
+      mockWindowStateService.mouseLeftButtonPressed$ = new Rx.Subject();
+      mockWindowStateService.mousePosition$ = new Rx.Subject();
+      mockWindowStateService.closeDialogEvent$ = new Rx.Subject();
 
       $provide.value('WindowState', mockWindowStateService);
     });
@@ -498,9 +498,9 @@ describe('timelineChart', function() {
 
     var wasUnhighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 0;
 
-    mockWindowStateService.scrollPositionSubject.onNext(0);
-    mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-    mockWindowStateService.mousePositionSubject.onNext({
+    mockWindowStateService.scrollPosition$.onNext(0);
+    mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+    mockWindowStateService.mousePosition$.onNext({
       clientX: 320,
       clientY: 100,
       target: $('.timeline-chart-highlight-target')[0]
@@ -517,9 +517,9 @@ describe('timelineChart', function() {
 
     var wasUnhighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 0;
 
-    mockWindowStateService.scrollPositionSubject.onNext(0);
-    mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
-    mockWindowStateService.mousePositionSubject.onNext({
+    mockWindowStateService.scrollPosition$.onNext(0);
+    mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
+    mockWindowStateService.mousePosition$.onNext({
       clientX: 320,
       clientY: 100,
       target: $('.timeline-chart-highlight-target')[0]
@@ -527,8 +527,8 @@ describe('timelineChart', function() {
 
     var wasThenHighlighted = $('.timeline-chart-highlight-container').children('g').children().length !== 0;
 
-    mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-    mockWindowStateService.mousePositionSubject.onNext({
+    mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+    mockWindowStateService.mousePosition$.onNext({
       clientX: 320,
       clientY: 100,
       target: $('.timeline-chart-highlight-target')[0]
@@ -546,9 +546,9 @@ describe('timelineChart', function() {
 
     var wasUnhighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 0;
 
-    mockWindowStateService.scrollPositionSubject.onNext(0);
-    mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-    mockWindowStateService.mousePositionSubject.onNext({
+    mockWindowStateService.scrollPosition$.onNext(0);
+    mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+    mockWindowStateService.mousePosition$.onNext({
       clientX: 10,
       clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
       target: $('.x-tick-label')[0]
@@ -565,16 +565,16 @@ describe('timelineChart', function() {
 
     var wasNotSelected = !$('.timeline-chart-wrapper').hasClass('selected');
 
-    mockWindowStateService.scrollPositionSubject.onNext(0);
-    mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
-    mockWindowStateService.mousePositionSubject.onNext({
+    mockWindowStateService.scrollPosition$.onNext(0);
+    mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
+    mockWindowStateService.mousePosition$.onNext({
       clientX: 10,
       clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
       target: $('.x-tick-label')[0]
     });
 
-    mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-    mockWindowStateService.mousePositionSubject.onNext({
+    mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+    mockWindowStateService.mousePosition$.onNext({
       clientX: 10,
       clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
       target: $('.x-tick-label')[0]
@@ -591,16 +591,16 @@ describe('timelineChart', function() {
 
     var wasNotSelected = !$('.timeline-chart-wrapper').hasClass('selected');
 
-    mockWindowStateService.scrollPositionSubject.onNext(0);
-    mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
-    mockWindowStateService.mousePositionSubject.onNext({
+    mockWindowStateService.scrollPosition$.onNext(0);
+    mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
+    mockWindowStateService.mousePosition$.onNext({
       clientX: 10,
       clientY: $('#test-timeline-chart').offset().top + $('.y-tick:last-child').offset().top - 5,
       target: $('.y-tick:last-child')[0]
     });
 
-    mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-    mockWindowStateService.mousePositionSubject.onNext({
+    mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+    mockWindowStateService.mousePosition$.onNext({
       clientX: 10,
       clientY: $('#test-timeline-chart').offset().top + $('.y-tick:last-child').offset().top - 5,
       target: $('.y-tick:last-child')[0]
@@ -617,9 +617,9 @@ describe('timelineChart', function() {
     it('should start selecting on mousedown within the chart display and stop selecting on mouse up within the chart display', function() {
       var chart = createTimelineChart(640, false);
 
-      mockWindowStateService.scrollPositionSubject.onNext(0);
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.scrollPosition$.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 320,
         clientY: 100,
         target: $('.timeline-chart-highlight-target')[0]
@@ -627,8 +627,8 @@ describe('timelineChart', function() {
 
       var wasSelecting = $('.timeline-chart-wrapper').hasClass('selecting');
 
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 370,
         clientY: 100,
         target: $('.timeline-chart-highlight-target')[0]
@@ -645,9 +645,9 @@ describe('timelineChart', function() {
     it('should start selecting on mousedown within the chart display and stop selecting on mouse up within the chart labels', function() {
       var chart = createTimelineChart(640, false);
 
-      mockWindowStateService.scrollPositionSubject.onNext(0);
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.scrollPosition$.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 320,
         clientY: 100,
         target: $('.timeline-chart-highlight-target')[0]
@@ -655,8 +655,8 @@ describe('timelineChart', function() {
 
       var wasSelecting = $('.timeline-chart-wrapper').hasClass('selecting');
 
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 370,
         clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
         target: $('.x-tick-label')[0]
@@ -673,9 +673,9 @@ describe('timelineChart', function() {
     it('should start selecting on mousedown within the chart display and stop selecting on mouse up outside the chart display and labels', function() {
       var chart = createTimelineChart(640, false);
 
-      mockWindowStateService.scrollPositionSubject.onNext(0);
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.scrollPosition$.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 320,
         clientY: 100,
         target: $('.timeline-chart-highlight-target')[0]
@@ -683,8 +683,8 @@ describe('timelineChart', function() {
 
       var wasSelecting = $('.timeline-chart-wrapper').hasClass('selecting');
 
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 1000,
         clientY: 1000,
         target: $('body')[0]
@@ -703,15 +703,15 @@ describe('timelineChart', function() {
 
       var selectionRangeLabelWasNotVisible = $('.timeline-chart-clear-selection-label').css('display') === 'none';
 
-      mockWindowStateService.scrollPositionSubject.onNext(0);
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.scrollPosition$.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 320,
         clientY: 100,
         target: $('.timeline-chart-highlight-target')[0]
       });
 
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 370,
         clientY: 100,
         target: $('.timeline-chart-highlight-target')[0]
@@ -736,16 +736,16 @@ describe('timelineChart', function() {
 
       var selectionRangeLabelWasNotVisible = $('.timeline-chart-clear-selection-label').css('display') === 'none';
 
-      mockWindowStateService.scrollPositionSubject.onNext(0);
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.scrollPosition$.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 320,
         clientY: 100,
         target: $('.timeline-chart-highlight-target')[0]
       });
 
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 370,
         clientY: 100,
         target: $('.timeline-chart-highlight-target')[0]
@@ -771,16 +771,16 @@ describe('timelineChart', function() {
 
       });
 
-      mockWindowStateService.scrollPositionSubject.onNext(0);
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.scrollPosition$.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 320,
         clientY: 100,
         target: $('.timeline-chart-highlight-target')[0]
       });
 
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 370,
         clientY: 100,
         target: $('.timeline-chart-highlight-target')[0]
@@ -802,16 +802,16 @@ describe('timelineChart', function() {
 
       var selectionRangeLabelWasNotVisible = $('.timeline-chart-clear-selection-label').css('display') === 'none';
 
-      mockWindowStateService.scrollPositionSubject.onNext(0);
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.scrollPosition$.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 320,
         clientY: 100,
         target: $('.timeline-chart-highlight-target')[0]
       });
 
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 370,
         clientY: 100,
         target: $('.timeline-chart-highlight-target')[0]
@@ -823,15 +823,15 @@ describe('timelineChart', function() {
 
       var selectionRangeOriginalWidth = $('.selection')[0].getBoundingClientRect().width;
 
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 320,
         clientY: 100,
         target: $('.selection-marker')[0]
       });
 
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 100,
         clientY: 100,
         target: $('.selection-marker')[0]
@@ -854,16 +854,16 @@ describe('timelineChart', function() {
 
       var selectionRangeLabelWasNotVisible = $('.timeline-chart-clear-selection-label').css('display') === 'none';
 
-      mockWindowStateService.scrollPositionSubject.onNext(0);
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.scrollPosition$.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 320,
         clientY: 100,
         target: $('.timeline-chart-highlight-target')[0]
       });
 
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 370,
         clientY: 100,
         target: $('.timeline-chart-highlight-target')[0]
@@ -875,15 +875,15 @@ describe('timelineChart', function() {
 
       var selectionRangeOriginalWidth = $('.selection')[0].getBoundingClientRect().width;
 
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 370,
         clientY: 100,
         target: $('.selection-marker')[1]
       });
 
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 500,
         clientY: 100,
         target: $('.selection-marker')[1]
@@ -902,16 +902,16 @@ describe('timelineChart', function() {
 
       var chart = createTimelineChart(640, false);
 
-      mockWindowStateService.scrollPositionSubject.onNext(0);
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.scrollPosition$.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 320,
         clientY: 100,
         target: $('.timeline-chart-highlight-target')[0]
       });
 
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 370,
         clientY: 100,
         target: $('.timeline-chart-highlight-target')[0]
@@ -940,16 +940,16 @@ describe('timelineChart', function() {
 
       var chart = createTimelineChart(640, false);
 
-      mockWindowStateService.scrollPositionSubject.onNext(0);
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.scrollPosition$.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 320,
         clientY: 100,
         target: $('.timeline-chart-highlight-target')[0]
       });
 
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 370,
         clientY: 100,
         target: $('.timeline-chart-highlight-target')[0]
@@ -999,9 +999,9 @@ describe('timelineChart', function() {
         var datumLabelNotVisible = $('.datum-label').css('display') === 'none';
         expect(datumLabelNotVisible).to.equal(true);
 
-        mockWindowStateService.scrollPositionSubject.onNext(0);
-        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.scrollPosition$.onNext(0);
+        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+        mockWindowStateService.mousePosition$.onNext({
           clientX: 360,
           clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
           target: $('.timeline-chart-highlight-target')[0]
@@ -1025,9 +1025,9 @@ describe('timelineChart', function() {
         scope.chartData = hiddenLabelTestData;
         scope.$apply();
 
-        mockWindowStateService.scrollPositionSubject.onNext(0);
-        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.scrollPosition$.onNext(0);
+        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+        mockWindowStateService.mousePosition$.onNext({
           clientX: 360,
           clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
           target: highlightTarget[0]
@@ -1050,9 +1050,9 @@ describe('timelineChart', function() {
         scope.chartData = hiddenLabelTestData;
         scope.$apply();
 
-        mockWindowStateService.scrollPositionSubject.onNext(0);
-        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.scrollPosition$.onNext(0);
+        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+        mockWindowStateService.mousePosition$.onNext({
           clientX: 630,
           clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
           target: highlightTarget[0]
@@ -1073,9 +1073,9 @@ describe('timelineChart', function() {
         scope.chartData = hiddenLabelTestData;
         scope.$apply();
 
-        mockWindowStateService.scrollPositionSubject.onNext(0);
-        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.scrollPosition$.onNext(0);
+        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+        mockWindowStateService.mousePosition$.onNext({
           clientX: 10,
           clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
           target: highlightTarget[0]
@@ -1099,9 +1099,9 @@ describe('timelineChart', function() {
         var datumLabelNotVisible = $('.datum-label').css('display') === 'none';
         expect(datumLabelNotVisible).to.equal(true);
 
-        mockWindowStateService.scrollPositionSubject.onNext(0);
-        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.scrollPosition$.onNext(0);
+        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+        mockWindowStateService.mousePosition$.onNext({
           clientX: 360,
           clientY: 100,
           target: $('.timeline-chart-highlight-target')[0]
@@ -1126,9 +1126,9 @@ describe('timelineChart', function() {
 
         var wasUnhighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 0;
 
-        mockWindowStateService.scrollPositionSubject.onNext(0);
-        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.scrollPosition$.onNext(0);
+        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+        mockWindowStateService.mousePosition$.onNext({
           clientX: 360,
           clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
           target: $('.timeline-chart-highlight-target')[0]
@@ -1152,9 +1152,9 @@ describe('timelineChart', function() {
         var datumLabelNotVisible = $('.datum-label').css('display') === 'none';
         expect(datumLabelNotVisible).to.equal(true);
 
-        mockWindowStateService.scrollPositionSubject.onNext(0);
-        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.scrollPosition$.onNext(0);
+        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+        mockWindowStateService.mousePosition$.onNext({
           clientX: 320,
           clientY: $('#test-timeline-chart').offset().top + $('#test-timeline-chart').height() - 15,
           target: $('.timeline-chart-highlight-target')[0]
@@ -1179,9 +1179,9 @@ describe('timelineChart', function() {
 
         var wasUnhighlighted = $('.timeline-chart-highlight-container').children('g').children().length === 0;
 
-        mockWindowStateService.scrollPositionSubject.onNext(0);
-        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.scrollPosition$.onNext(0);
+        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+        mockWindowStateService.mousePosition$.onNext({
           clientX: 360,
           clientY: 100,
           target: $('.timeline-chart-highlight-target')[0]
@@ -1205,9 +1205,9 @@ describe('timelineChart', function() {
         var datumLabelNotVisible = $('.datum-label').css('display') === 'none';
         expect(datumLabelNotVisible).to.equal(true);
 
-        mockWindowStateService.scrollPositionSubject.onNext(0);
-        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.scrollPosition$.onNext(0);
+        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+        mockWindowStateService.mousePosition$.onNext({
           clientX: 320,
           clientY: 100,
           target: $('.timeline-chart-highlight-target')[0]
@@ -1229,16 +1229,16 @@ describe('timelineChart', function() {
       var chart1 = createTimelineChart(640, false);
       var chart2 = createTimelineChart(640, false);
 
-      mockWindowStateService.scrollPositionSubject.onNext(0);
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.scrollPosition$.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(true);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 320,
         clientY: 100,
         target: $('#test-timeline-chart .timeline-chart-highlight-target')[0]
       });
 
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: 370,
         clientY: 100,
         target: $('#test-timeline-chart .timeline-chart-highlight-target')[0]
@@ -1316,14 +1316,14 @@ describe('timelineChart', function() {
     });
 
     function simulateMouseover(x, y, target) {
-      mockWindowStateService.scrollPositionSubject.onNext(0);
-      mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.scrollPosition$.onNext(0);
+      mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
+      mockWindowStateService.mousePosition$.onNext({
         clientX: x,
         clientY: y,
         target: target
       });
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.mousePosition$.onNext({
         clientX: x,
         clientY: y,
         target: target

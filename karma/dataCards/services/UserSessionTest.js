@@ -73,21 +73,21 @@ describe('UserSessionService', function() {
     });
   });
 
-  describe('getCurrentUserObservable', function() {
+  describe('getCurrentUser$', function() {
 
     beforeEach(function() {
       $httpBackend.expectGET(CURRENT_USER_URL_MATCHER).respond(200, { id: 'awsm-swse' });
     });
 
     it('should return an observable', function() {
-      var observable = UserSession.getCurrentUserObservable();
+      var observable = UserSession.getCurrentUser$();
       $httpBackend.flush();
       expect(observable).to.respondTo('subscribe');
     });
 
     it('should return the same observable for multiple calls', function() {
-      var observable = UserSession.getCurrentUserObservable();
-      var observable2 = UserSession.getCurrentUserObservable();
+      var observable = UserSession.getCurrentUser$();
+      var observable2 = UserSession.getCurrentUser$();
       $httpBackend.flush();
       expect(observable).to.equal(observable2);
     });

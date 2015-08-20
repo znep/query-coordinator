@@ -37,10 +37,10 @@
         filteredSoqlRollupTablesUsed: '='
       },
       link: function(scope, element, attrs) {
-        var chartDataObservable = scope.$observe('chartData');
-        var precisionObservable = scope.$observe('precision');
-        var rowDisplayUnitObservable = scope.$observe('rowDisplayUnit');
-        var activeFiltersObservable = scope.$observe('activeFilters');
+        var chartData$ = scope.$observe('chartData');
+        var precision$ = scope.$observe('precision');
+        var rowDisplayUnit$ = scope.$observe('rowDisplayUnit');
+        var activeFilters$ = scope.$observe('activeFilters');
 
         scope.developmentMode = ServerConfig.get('railsEnv') === 'development';
 
@@ -2068,15 +2068,15 @@
         // move the mouse, and that click causes a different element to fall
         // under the pointer for the second click (clicking to dismiss, for
         // example)
-        mouseLeftButtonChangesSubscription = WindowState.mouseLeftButtonPressedSubject.flatMapLatest(
+        mouseLeftButtonChangesSubscription = WindowState.mouseLeftButtonPressed$.flatMapLatest(
           function(mouseLeftButtonNowPressed) {
             return Rx.Observable.combineLatest(
               Rx.Observable.returnValue(mouseLeftButtonNowPressed),
-              WindowState.mousePositionSubject.take(1),
-              function(mouseLeftButtonNowPressedObservable, mousePositionObservable) {
+              WindowState.mousePosition$.take(1),
+              function(mouseLeftButtonNowPressed$, mousePosition$) {
                 return {
-                  leftButtonPressed: mouseLeftButtonNowPressedObservable,
-                  position: mousePositionObservable
+                  leftButtonPressed: mouseLeftButtonNowPressed$,
+                  position: mousePosition$
                 };
               }
             );
@@ -2087,9 +2087,9 @@
         // This sequence represents ordinary mouse movement and is used
         // to update flyouts, labels and highlights.
         mouseMoveOrLeftButtonChangesSubscription = Rx.Observable.subscribeLatest(
-          WindowState.mousePositionSubject,
-          WindowState.scrollPositionSubject,
-          WindowState.mouseLeftButtonPressedSubject,
+          WindowState.mousePosition$,
+          WindowState.scrollPosition$,
+          WindowState.mouseLeftButtonPressed$,
           function(mousePosition, scrollPosition, mouseLeftButtonNowPressed) {
 
             var offsetX;
@@ -2282,9 +2282,9 @@
         Rx.Observable.subscribeLatest(
           element.closest('.card-visualization').observeDimensions(),
           element.closest('.cards-content').find('.quick-filter-bar').observeDimensions(),
-          chartDataObservable,
-          precisionObservable,
-          rowDisplayUnitObservable,
+          chartData$,
+          precision$,
+          rowDisplayUnit$,
           function(chartDimensions, qfbDimensions, chartData, precision, rowDisplayUnit) {
             // qfbDimensions is not actually used, it is observed to update the cached chart offsets
 
@@ -2349,8 +2349,8 @@
 
         // React to the activeFilters being cleared when a selection is active
         Rx.Observable.subscribeLatest(
-          activeFiltersObservable,
-          chartDataObservable.filter(_.isDefined),
+          activeFilters$,
+          chartData$.filter(_.isDefined),
           function(activeFilters, chartData) {
 
             // Don't try to enter a chart render state if there is no data.

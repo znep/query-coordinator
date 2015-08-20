@@ -27,7 +27,7 @@
          */
 
         // Observable of hovers over a aggregation-type selector
-        var aggregationHover$ = WindowState.mousePositionSubject.
+        var aggregationHover$ = WindowState.mousePosition$.
           takeUntil($scope.$destroyAsObservable(element)).
           map(function(positionData) {
             return $(positionData.target).closest('[data-aggregation-type]');
@@ -179,7 +179,7 @@
         /*
          * Panel toggling
          */
-        WindowState.closeDialogEventObservable.takeUntil($scope.$destroyAsObservable(element)).
+        WindowState.closeDialogEvent$.takeUntil($scope.$destroyAsObservable(element)).
           filter(function(e) {
             return e.type === 'keydown' || ($scope.panelActive && $(e.target).closest(element).length === 0);
           }).

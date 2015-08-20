@@ -43,8 +43,7 @@
         * - Sort by field name
         *******************************/
         var datasetColumnsInfo$ = scope.
-          $observe('page').
-          observeOnLatest('dataset.columns').
+          $observe('page').observeOnLatest('dataset.columns').
           map(function(columns) {
             // Filter out system columns.
             return _.pairs(columns).

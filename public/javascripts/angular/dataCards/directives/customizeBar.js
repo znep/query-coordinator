@@ -18,9 +18,9 @@
       restrict: 'E',
       templateUrl: '/angular_templates/dataCards/customizeBar.html',
       link: function($scope, element) {
-        var expandedCardObservable = $scope.$observe('expandedCard');
-        var exportingVisualizationObservable = $scope.$observe('exportingVisualization');
-        var editModeObservable = $scope.$observe('editMode');
+        var expandedCard$ = $scope.$observe('expandedCard');
+        var exportingVisualization$ = $scope.$observe('exportingVisualization');
+        var editMode$ = $scope.$observe('editMode');
 
         function renderCustomizeButtonFlyout() {
           var flyoutContent = '';
@@ -69,17 +69,17 @@
 
         $scope.showSaveAsButton = ServerConfig.get('enableDataLensOtherViews');
 
-        var canCustomizeObservable = Rx.Observable.combineLatest(
-          expandedCardObservable,
-          exportingVisualizationObservable,
+        var canCustomize$ = Rx.Observable.combineLatest(
+          expandedCard$,
+          exportingVisualization$,
           function(expandedCard, exportingVisualization) {
             return !expandedCard && !exportingVisualization;
           }
         );
-        $scope.$bindObservable('canCustomize', canCustomizeObservable);
+        $scope.$bindObservable('canCustomize', canCustomize$);
 
         // Flyout
-        editModeObservable.subscribe(function() {
+        editMode$.subscribe(function() {
           FlyoutService.refreshFlyout();
         });
 

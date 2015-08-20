@@ -15,15 +15,15 @@
       templateUrl: '/angular_templates/dataCards/cardVisualizationTable.html',
       link: function($scope) {
         var model = $scope.$observe('model');
-        var dataset = model.observeOnLatest('page.dataset');
-        var whereClause = $scope.$observe('whereClause');
-        var dataRequests = new Rx.Subject();
-        var dataResponses = new Rx.Subject();
-        var firstColumnObservable = $scope.$observe('firstColumn');
+        var dataset$ = model.observeOnLatest('page.dataset');
+        var whereClause$ = $scope.$observe('whereClause');
+        var dataRequests$ = new Rx.Subject();
+        var dataResponses$ = new Rx.Subject();
+        var firstColumn$ = $scope.$observe('firstColumn');
         var rowDisplayUnit$ = model.observeOnLatest('page.rowDisplayUnit');
-        var cardsSequence = model.observeOnLatest('page.cards');
-        var aggregationSequence = model.observeOnLatest('page.aggregation');
-        var columns = dataset.observeOnLatest('columns');
+        var cards$ = model.observeOnLatest('page.cards');
+        var aggregation$ = model.observeOnLatest('page.aggregation');
+        var columns$ = dataset$.observeOnLatest('columns');
 
         $scope.$watch('isEmbedded', function(newVal, oldVal, scope) {
           if (!angular.isDefined(newVal)) {
@@ -81,22 +81,23 @@
           }, {});
         }
 
-        var columnDetails = columns.map(addExtraAttributesToColumns);
-        var displayableColumnDetails = columnDetails.map(keepOnlyDisplayableColumns)
-        var displayableColumnDetailsAsArray = displayableColumnDetails.
+        var columnDetails$ = columns$.map(addExtraAttributesToColumns);
+        var displayableColumnDetails$ = columnDetails$.map(keepOnlyDisplayableColumns);
+        var displayableColumnDetailsAsArray$ = displayableColumnDetails$.
           map(function(columns) {
             return _(columns).chain().toArray().sortBy('position').value();
           }).
           combineLatest(
-            firstColumnObservable,
+            firstColumn$,
             function(asArray, firstColumnFieldName) {
               if ($.isPresent(firstColumnFieldName)) {
 
                 // Move the column specified by firstColumnFieldName to
                 // the front of the columns array.
-                var columnIndex = _.findIndex(asArray, function(currentColumn) {
-                  return currentColumn.fieldName === firstColumnFieldName;
+                var columnIndex = _.findIndex(asArray, function(column) {
+                  return column.fieldName === firstColumnFieldName;
                 });
+
                 if (columnIndex >= 0) {
                   var currentColumn = asArray.splice(columnIndex, 1)[0];
                   asArray.splice(0, 0, currentColumn);
@@ -111,35 +112,35 @@
         // .scan() is necessary because the usual aggregation suspect reduce actually
         // will not execute over a sequence until it has been completed; scan is happy
         // to operate on active sequences.
-        var dataRequestCount = dataRequests.scan(0, function(acc) { return acc + 1; });
-        var dataResponseCount = dataResponses.scan(0, function(acc) { return acc + 1; });
+        var dataRequestCount$ = dataRequests$.scan(0, function(acc) { return acc + 1; });
+        var dataResponseCount$ = dataResponses$.scan(0, function(acc) { return acc + 1; });
 
         // If the number of requests is greater than the number of responses, we have
         // a request in progress and we should display the spinner.
         $scope.$bindObservable('busy',
           Rx.Observable.combineLatest(
-            dataRequestCount,
-            dataResponseCount,
+            dataRequestCount$,
+            dataResponseCount$,
             function(requests, responses) {
               return requests === 0 || (requests > responses);
             }));
 
         var reconcileRequestPromise = function(promise) {
-          dataRequests.onNext(1);
+          dataRequests$.onNext(1);
           promise.then(function() {
-            dataResponses.onNext(1);
+            dataResponses$.onNext(1);
           });
         };
 
-        var rowCount$ = dataset.
+        var rowCount$ = dataset$.
           map(function(currentDataset) {
             return CardDataService.getRowCount(currentDataset.id);
           }).
           doAction(reconcileRequestPromise).
           flatMapLatest(Rx.Observable.fromPromise);
 
-        var filteredRowCount$ = dataset.combineLatest(
-          whereClause,
+        var filteredRowCount$ = dataset$.combineLatest(
+          whereClause$,
           function(currentDataset, curWhereClause) {
             return CardDataService.getRowCount(currentDataset.id, curWhereClause);
           }).
@@ -149,12 +150,12 @@
         // The default sort is on the first card in the page layout.
         var layout = new SortedTileLayout();
 
-        // 'columnDetails' and not 'displayableColumnDetails' is used here because
+        // 'columnDetails$' and not 'displayableColumnDetails$' is used here because
         // there exist data lens pages with cards of undisplayable columns,
         // and we need to ensure that these cards are not computed as our
-        // 'firstCardSequence'.
-        var firstCardSequence = cardsSequence.combineLatest(
-          columnDetails,
+        // 'firstCard$'.
+        var firstCard$ = cards$.combineLatest(
+          columnDetails$,
           function(cards, columnDetails) {
             var sizedCards = _.compact(_.map(cards, function(card) {
               var cardDetails = columnDetails[card.fieldName];
@@ -184,19 +185,19 @@
           }
         );
 
-        var aggregatedColumnSequence = aggregationSequence.
+        var aggregatedColumn$ = aggregation$.
           filter(function(value) { return value['function'] !== 'count'; }).
           pluck('fieldName');
 
-        var nonAggregatedColumnSequence = aggregationSequence.
+        var nonAggregatedColumn$ = aggregation$.
           filter(function(value) { return value['function'] === 'count'; }).
-          combineLatest(firstCardSequence, function(aggregation, firstCard) {
+          combineLatest(firstCard$, function(aggregation, firstCard) {
             return firstCard;
           });
 
-        var defaultSortColumnName = Rx.Observable.merge(
-          aggregatedColumnSequence,
-          nonAggregatedColumnSequence
+        var defaultSortColumnName$ = Rx.Observable.merge(
+          aggregatedColumn$,
+          nonAggregatedColumn$
         ).distinctUntilChanged();
 
         Rx.Observable.subscribeLatest(
@@ -228,11 +229,11 @@
           });
 
         $scope.$bindObservable('rowDisplayUnit', rowDisplayUnit$);
-        $scope.$bindObservable('whereClause', whereClause);
+        $scope.$bindObservable('whereClause', whereClause$);
         $scope.$bindObservable('rowCount', rowCount$);
         $scope.$bindObservable('filteredRowCount', filteredRowCount$);
-        $scope.$bindObservable('columnDetails', displayableColumnDetailsAsArray);
-        $scope.$bindObservable('defaultSortColumnName', defaultSortColumnName);
+        $scope.$bindObservable('columnDetails', displayableColumnDetailsAsArray$);
+        $scope.$bindObservable('defaultSortColumnName', defaultSortColumnName$);
 
       }
     };

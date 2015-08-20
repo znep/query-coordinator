@@ -499,7 +499,7 @@
           return card.model.fieldName === '*';
         }
 
-        var cardsBySizeSequence = Rx.Observable.combineLatest(
+        var cardsBySize$ = Rx.Observable.combineLatest(
           zipLatestArray(scope.page.observe('cards'), 'cardSize'),
           scope.page.observe('dataset.rowCount').filter(_.isNumber),
           function(cards, rowCount) {
@@ -518,7 +518,7 @@
             });
           });
 
-        var expandedCardsSequence = zipLatestArray(scope.page.observe('cards'), 'expanded').
+        var expandedCards$ = zipLatestArray(scope.page.observe('cards'), 'expanded').
             map(function(cards) {
               return _.filter(cards, _.property('expanded'));
             });
@@ -528,8 +528,8 @@
          */
 
         var observableForStaticElements = Rx.Observable.combineLatest(
-          WindowState.windowSizeSubject,
-          WindowState.scrollPositionSubject,
+          WindowState.windowSize$,
+          WindowState.scrollPosition$,
           cardsMetadata.observeDimensions(),
           quickFilterBar.observeDimensions(),
           function(
@@ -611,12 +611,12 @@
           )
         );
 
-        var debouncedWindowSize$ = WindowState.windowSizeSubject.
+        var debouncedWindowSize$ = WindowState.windowSize$.
           debounce(Constants.LAYOUT_WINDOW_SIZE_DEBOUNCE, Rx.Scheduler.timeout);
 
         subscriptions.push(Rx.Observable.subscribeLatest(
-          cardsBySizeSequence,
-          expandedCardsSequence,
+          cardsBySize$,
+          expandedCards$,
           scope.$observe('editMode'),
           debouncedWindowSize$,
           function layoutFn(cardsBySize, expandedCards, editMode, windowSize) {
@@ -826,7 +826,7 @@
         // This is on the body rather than the individual cards so that dragging
         // the cursor off of a card and then letting go will correctly transition
         // the dragging state to false.
-        subscriptions.push(WindowState.mouseLeftButtonPressedSubject.subscribe(function(leftPressed) {
+        subscriptions.push(WindowState.mouseLeftButtonPressed$.subscribe(function(leftPressed) {
           if (!leftPressed) {
             mouseIsDown = false;
             mouseDownClientX = null;
@@ -841,7 +841,7 @@
           }
         }));
 
-        subscriptions.push(WindowState.mousePositionSubject.subscribe(function(position) {
+        subscriptions.push(WindowState.mousePosition$.subscribe(function(position) {
           if (mouseIsDown && scope.grabbedCard === null) {
 
             var distanceSinceDragStart =

@@ -321,7 +321,7 @@
 
     function init($scope, element, attr) {
       var iframe = element.find('iframe');
-      var editorObservable = $scope.$observe('editor');
+      var editor$ = $scope.$observe('editor');
 
       // Grab a reference to squire after it loads.
       iframe.on('squire-loaded', function() {
@@ -343,7 +343,7 @@
         $scope.$destroyAsObservable(element),
         // Mostly for unit tests - Guard against a race condition where the iframe doesn't load
         // before we're done with the test.
-        editorObservable.filter(_.isPresent),
+        editor$.filter(_.isPresent),
         _.identity
       ).subscribe(function() {
         cleanupEvents($scope.editor);

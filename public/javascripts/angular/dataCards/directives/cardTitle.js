@@ -25,20 +25,20 @@
         var pageModel = $scope.model.page;
         var customTitle$ = model$.observeOnLatest('customTitle').filter(_.isPresent);
 
-        var dynamicTitleSequence = PageHelpersService.dynamicAggregationTitle(pageModel).
+        var dynamicTitle$ = PageHelpersService.dynamicAggregationTitle(pageModel).
           map(function(title) {
             return '{0} by'.format(title.capitalize());
           });
 
-        var displayDynamicTitleSequence = model$.
+        var displayDynamicTitle$ = model$.
           observeOnLatest('cardType').
           map(function(cardType) {
             return !_(DYNAMIC_TITLE_CARDTYPE_BLACKLIST).contains(cardType);
           });
 
         $scope.$bindObservable('customTitle', customTitle$);
-        $scope.$bindObservable('displayDynamicTitle', displayDynamicTitleSequence);
-        $scope.$bindObservable('dynamicTitle', dynamicTitleSequence);
+        $scope.$bindObservable('displayDynamicTitle', displayDynamicTitle$);
+        $scope.$bindObservable('dynamicTitle', dynamicTitle$);
         $scope.$bindObservable(
           'title',
           model$.observeOnLatest('column').

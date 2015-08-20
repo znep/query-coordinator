@@ -10,27 +10,27 @@
         'whereClause': '='
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationTimelineChart.html',
-      link: function(scope, element, attrs) {
-        var cardModelSequence = scope.$observe('model');
-        var dataset = cardModelSequence.observeOnLatest('page.dataset').filter(_.isPresent);
-        var baseSoqlFilter = cardModelSequence.observeOnLatest('page.baseSoqlFilter');
-        var aggregationObservable = cardModelSequence.observeOnLatest('page.aggregation');
-        var defaultDateTruncFunction = cardModelSequence.observeOnLatest('page.defaultDateTruncFunction');
-        var dataRequests = new Rx.Subject();
-        var dataResponses = new Rx.Subject();
-        var unfilteredDataSequence = new Rx.Subject();
-        var filteredDataSequence = new Rx.Subject();
-        var filteredSoqlRollupTablesUsedSequence = new Rx.Subject();
-        var unfilteredSoqlRollupTablesUsedSequence = new Rx.Subject();
-        var whereClauseObservable = scope.$observe('whereClause');
+      link: function(scope, element) {
+        var cardModel$ = scope.$observe('model');
+        var dataset$ = cardModel$.observeOnLatest('page.dataset').filter(_.isPresent);
+        var baseSoqlFilter$ = cardModel$.observeOnLatest('page.baseSoqlFilter');
+        var aggregation$ = cardModel$.observeOnLatest('page.aggregation');
+        var defaultDateTruncFunction$ = cardModel$.observeOnLatest('page.defaultDateTruncFunction');
+        var dataRequests$ = new Rx.Subject();
+        var dataResponses$ = new Rx.Subject();
+        var unfilteredData$ = new Rx.Subject();
+        var filteredData$ = new Rx.Subject();
+        var filteredSoqlRollupTablesUsed$ = new Rx.Subject();
+        var unfilteredSoqlRollupTablesUsed$ = new Rx.Subject();
+        var whereClause$ = scope.$observe('whereClause');
 
         // Keep track of the number of requests that have been made and the number of
         // responses that have come back.
         // .scan() is necessary because the usual aggregation suspect reduce actually
         // will not execute over a sequence until it has been completed; scan is happy
         // to operate on active sequences.
-        var dataRequestCount = dataRequests.scan(0, function(acc) { return acc + 1; });
-        var dataResponseCount = dataResponses.scan(0, function(acc) { return acc + 1; });
+        var dataRequestCount$ = dataRequests$.scan(0, function(acc) { return acc + 1; });
+        var dataResponseCount$ = dataResponses$.scan(0, function(acc) { return acc + 1; });
 
         /*************************************
         * FIRST set up the 'busy' indicator. *
@@ -43,8 +43,8 @@
         // this code is location-dependent within the file.
         scope.$bindObservable('busy',
           Rx.Observable.combineLatest(
-            dataRequestCount,
-            dataResponseCount,
+            dataRequestCount$,
+            dataResponseCount$,
             function(requests, responses) {
               return requests === 0 || (requests > responses);
             }
@@ -112,8 +112,8 @@
         });
 
         var datasetPrecision = Rx.Observable.combineLatest(
-          cardModelSequence.pluck('fieldName'),
-          dataset,
+          cardModel$.pluck('fieldName'),
+          dataset$,
           function(fieldName, dataset) {
             return Rx.Observable.fromPromise(
               CardDataService.getTimelineDomain(fieldName, dataset.id)
@@ -155,12 +155,12 @@
 
         // TODO we should look to see if we can remove this wrapper
         var unfilteredData = Rx.Observable.subscribeLatest(
-          cardModelSequence.pluck('fieldName'),
-          dataset,
-          baseSoqlFilter,
+          cardModel$.pluck('fieldName'),
+          dataset$,
+          baseSoqlFilter$,
           datasetPrecision,
-          aggregationObservable,
-          defaultDateTruncFunction,
+          aggregation$,
+          defaultDateTruncFunction$,
           function(
             fieldName,
             dataset,
@@ -172,7 +172,7 @@
 
             if (_.isDefined(datasetPrecision)) {
 
-              dataRequests.onNext(1);
+              dataRequests$.onNext(1);
 
               // We expect the values in here to be set in the call to getTimelineData
               // based on what date_trunc function to be used by the card
@@ -192,9 +192,9 @@
               dataPromise.then(
                 function() {
                   // Ok
-                  unfilteredDataSequence.onNext(dataPromise);
-                  dataResponses.onNext(1);
-                  unfilteredSoqlRollupTablesUsedSequence.onNext(
+                  unfilteredData$.onNext(dataPromise);
+                  dataResponses$.onNext(1);
+                  unfilteredSoqlRollupTablesUsed$.onNext(
                     soqlMetadata.dateTruncFunctionUsed === defaultDateTruncFunction
                   );
                 },
@@ -207,13 +207,13 @@
         );
 
         var filteredData = Rx.Observable.subscribeLatest(
-          cardModelSequence.pluck('fieldName'),
-          dataset,
-          whereClauseObservable,
+          cardModel$.pluck('fieldName'),
+          dataset$,
+          whereClause$,
           datasetPrecision,
-          aggregationObservable,
-          cardModelSequence,
-          defaultDateTruncFunction,
+          aggregation$,
+          cardModel$,
+          defaultDateTruncFunction$,
           function(
             fieldName,
             dataset,
@@ -226,7 +226,7 @@
 
             if (_.isDefined(datasetPrecision)) {
 
-              dataRequests.onNext(1);
+              dataRequests$.onNext(1);
 
               // We expect the values in here to be set in the call to getTimelineData
               // based on what date_trunc function to be used by the card
@@ -255,9 +255,9 @@
               dataPromise.then(
                 function() {
                   // Ok
-                  filteredDataSequence.onNext(dataPromise);
-                  dataResponses.onNext(1);
-                  filteredSoqlRollupTablesUsedSequence.onNext(
+                  filteredData$.onNext(dataPromise);
+                  dataResponses$.onNext(1);
+                  filteredSoqlRollupTablesUsed$.onNext(
                     soqlMetadata.dateTruncFunctionUsed === defaultDateTruncFunction
                   );
                 },
@@ -269,9 +269,9 @@
           }
         );
 
-        var chartDataSequence = Rx.Observable.combineLatest(
-          unfilteredDataSequence.switchLatest(),
-          filteredDataSequence.switchLatest(),
+        var chartData$ = Rx.Observable.combineLatest(
+          unfilteredData$.switchLatest(),
+          filteredData$.switchLatest(),
           function(unfilteredData, filteredData) {
             if (_.isEmpty(unfilteredData) || _.isEmpty(filteredData)) {
               return null;
@@ -291,7 +291,7 @@
         //   sense when they're zero in duration).
         var cannotRenderTimelineChart = Rx.Observable.combineLatest(
           datasetPrecision.map(_.isUndefined),
-          chartDataSequence.startWith(undefined),
+          chartData$.startWith(undefined),
           function(badDates, chartData) {
             var cannotRender = false;
 
@@ -309,14 +309,14 @@
           }
         );
 
-        scope.$bindObservable('chartData', chartDataSequence);
-        scope.$bindObservable('expanded', cardModelSequence.observeOnLatest('expanded'));
+        scope.$bindObservable('chartData', chartData$);
+        scope.$bindObservable('expanded', cardModel$.observeOnLatest('expanded'));
         scope.$bindObservable('precision', datasetPrecision);
-        scope.$bindObservable('activeFilters', cardModelSequence.observeOnLatest('activeFilters'));
-        scope.$bindObservable('rowDisplayUnit', cardModelSequence.observeOnLatest('page.aggregation.unit'));
+        scope.$bindObservable('activeFilters', cardModel$.observeOnLatest('activeFilters'));
+        scope.$bindObservable('rowDisplayUnit', cardModel$.observeOnLatest('page.aggregation.unit'));
         scope.$bindObservable('cannotRenderTimelineChart', cannotRenderTimelineChart);
-        scope.$bindObservable('unfilteredSoqlRollupTablesUsed', unfilteredSoqlRollupTablesUsedSequence);
-        scope.$bindObservable('filteredSoqlRollupTablesUsed', filteredSoqlRollupTablesUsedSequence);
+        scope.$bindObservable('unfilteredSoqlRollupTablesUsed', unfilteredSoqlRollupTablesUsed$);
+        scope.$bindObservable('filteredSoqlRollupTablesUsed', filteredSoqlRollupTablesUsed$);
 
         // Handle filtering
         scope.$on('filter-timeline-chart',

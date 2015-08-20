@@ -8,12 +8,12 @@
       templateUrl: '/angular_templates/dataCards/clearableInput.html',
       link: function($scope, element) {
         var searchInput = element.find('input');
-        var blurEventObservable = Rx.Observable.fromEvent(searchInput, 'blur');
-        var focusEventObservable = Rx.Observable.fromEvent(searchInput, 'focus');
-        var placeholderObservable = Rx.Observable.merge(
+        var blurEvent$ = Rx.Observable.fromEvent(searchInput, 'blur');
+        var focusEvent$ = Rx.Observable.fromEvent(searchInput, 'focus');
+        var placeholder$ = Rx.Observable.merge(
           Rx.Observable.returnValue($scope.placeholderValue),
-          blurEventObservable.map(function() { return $scope.placeholderValue; }),
-          focusEventObservable.map(function() {
+          blurEvent$.map(function() { return $scope.placeholderValue; }),
+          focusEvent$.map(function() {
 
             // Avoid returning an empty string to fix a positioning bug when
             // there is no placeholder (see CORE-6439).
@@ -21,8 +21,8 @@
 
           })
         );
-        var searchInputObservable = $scope.$observe('search');
-        var hasInputObservable = searchInputObservable.
+        var searchInput$ = $scope.$observe('search');
+        var hasInput$ = searchInput$.
           map($.isPresent).
           distinctUntilChanged();
 
@@ -41,13 +41,13 @@
         $scope.clearInput = clearInput;
         Rx.Observable.
           merge(
-            blurEventObservable.map(function() { return false; }),
-            focusEventObservable.map(function() { return true; })
+            blurEvent$.map(function() { return false; }),
+            focusEvent$.map(function() { return true; })
           ).
           startWith(false).
           flatMapLatest(function(isFocused) {
             if (isFocused) {
-              return WindowState.escapeKeyObservable;
+              return WindowState.escapeKey$;
             } else {
               return Rx.Observable.empty();
             }
@@ -69,8 +69,8 @@
           'clearableInput:blur',
           Rx.Observable.fromEvent(searchInput, 'blur')
         );
-        $scope.$bindObservable('placeholder', placeholderObservable);
-        $scope.$bindObservable('hasInput', hasInputObservable);
+        $scope.$bindObservable('placeholder', placeholder$);
+        $scope.$bindObservable('hasInput', hasInput$);
       }
     };
   }

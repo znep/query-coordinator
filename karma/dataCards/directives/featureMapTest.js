@@ -28,10 +28,10 @@ describe('featureMap', function() {
     module(function($provide) {
 
       mockWindowStateService = {};
-      mockWindowStateService.scrollPositionSubject = new Rx.Subject();
-      mockWindowStateService.windowSizeSubject = new Rx.Subject();
-      mockWindowStateService.mouseLeftButtonPressedSubject = new Rx.Subject();
-      mockWindowStateService.mousePositionSubject = new Rx.Subject();
+      mockWindowStateService.scrollPosition$ = new Rx.Subject();
+      mockWindowStateService.windowSize$ = new Rx.Subject();
+      mockWindowStateService.mouseLeftButtonPressed$ = new Rx.Subject();
+      mockWindowStateService.mousePosition$ = new Rx.Subject();
 
       $provide.value('WindowState', mockWindowStateService);
     });

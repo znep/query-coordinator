@@ -43,22 +43,22 @@
       var iframe = (_iframe || $('<iframe/>')).
         css('display', 'none').appendTo('body');
 
-      var timeoutObservable = Rx.Observable.timer(TIMEOUT, Rx.Scheduler.timeout);
-      var timeoutErrorObservable = timeoutObservable.
+      var timeout$ = Rx.Observable.timer(TIMEOUT, Rx.Scheduler.timeout);
+      var timeoutError$ = timeout$.
         flatMap(function() {
           return Rx.Observable['throw'](new Error('timeout'));
         });
 
       // downloads that have the Content-Disposition: attachment set do not fire the 'load' event
       // (except in FireFox < 3) So if the load event fires, assume it's a 500 or some such
-      var errorObservable = Rx.Observable.fromEvent(iframe, 'load').
+      var error$ = Rx.Observable.fromEvent(iframe, 'load').
         flatMap(function(e) {
           return Rx.Observable['throw'](new Error(_.get(e, 'target.contentDocument.body.innerHTML', true)));
         });
 
       // Poll for the existence of the cookie that confirms that this request has connected.
-      var successObservable = Rx.Observable.timer(POLL_INTERVAL, POLL_INTERVAL, Rx.Scheduler.timeout).
-        takeUntil(timeoutObservable).
+      var success$ = Rx.Observable.timer(POLL_INTERVAL, POLL_INTERVAL, Rx.Scheduler.timeout).
+        takeUntil(timeout$).
         map(function() {
           return document.cookie;
         }).
@@ -67,20 +67,20 @@
         }).
         share();
 
-      successObservable.
+      success$.
         subscribe(function() {
           document.cookie = cookieName + '=;path=/;expires=' + (new Date(0).toUTCString());
         });
 
       // Create an observable to terminate our event streams, that is triggered when the success,
       // error, or timeout observables emit
-      var completeObservable = Rx.Observable.merge(
-        successObservable,
-        timeoutErrorObservable,
-        errorObservable
+      var complete$ = Rx.Observable.merge(
+        success$,
+        timeoutError$,
+        error$
       );
 
-      completeObservable.
+      complete$.
         // Chrome doesn't like it when you remove the iframe while it's downloading. So only do the
         // cleanup if it's not successful
         finallyAction(_.bind(cleanupIframe, this, iframe)).

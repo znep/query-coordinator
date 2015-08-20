@@ -10,7 +10,7 @@
       },
       transclude: true,
       templateUrl: '/angular_templates/dataCards/modalDialog.html',
-      link: function(scope, element, attrs) {
+      link: function(scope, element) {
         if (!scope.state) {
           scope.state = { show: false };
         }
@@ -23,8 +23,9 @@
               scope.state.show = false;
             });
           }
-        }
-        WindowState.escapeKeyObservable.filter(function(e) {
+        };
+
+        WindowState.escapeKey$.filter(function() {
           // Only close this dialog if we're the one on top
           var dialog = element.find('.modal-dialog');
           var testPoint = dialog.position();

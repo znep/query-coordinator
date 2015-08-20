@@ -50,7 +50,7 @@
     });
 
     // Close png export with escape
-    WindowState.escapeKeyObservable.filter(function(e) {
+    WindowState.escapeKeyObservable.filter(function() {
       return $scope.chooserMode.show === true;
     }).
       takeUntil($scope.$destroyAsObservable()).
@@ -675,12 +675,19 @@
       destroySignal: destroy$
     });
 
-    FlyoutService.register({
-      selector: '.clear-all-filters-button',
-      render: function() {
+    var clearAllFiltersSelectors = [
+      '.clear-all-filters-button',
+      '.clear-all-filters-button .icon-close'
+    ];
 
+    FlyoutService.register({
+      selector: clearAllFiltersSelectors.join(', '),
+      render: function() {
         return '<div class="flyout-title">{0}</div>'.
           format(I18n.quickFilterBar.clearAllFlyout);
+      },
+      positionOn: function() {
+        return $(clearAllFiltersSelectors[0])[0];
       },
       destroySignal: destroy$
     });

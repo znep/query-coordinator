@@ -272,18 +272,18 @@ describe('CardsViewController', function() {
       var $scope = controllerHarness.$scope;
 
       // Create a mock element that the flyout will trigger against.
-      var jqEl = testHelpers.TestDom.append(
-        '<div class="edit-page-warning">');
+      var editPageWarningElement = testHelpers.TestDom.append(
+        '<div class="edit-page-warning">')[0];
 
-      testHelpers.fireMouseEvent(jqEl[0], 'mousemove');
+      testHelpers.fireMouseEvent(editPageWarningElement, 'mousemove');
       expect($('#uber-flyout').text()).to.equal('');
 
       $scope.page.set('name', _.map(_.range(255 / 5), _.constant('badger')).join(' '));
-      testHelpers.fireMouseEvent(jqEl[0], 'mousemove');
+      testHelpers.fireMouseEvent(editPageWarningElement, 'mousemove');
       expect($('#uber-flyout').text()).to.equal('Your title is too long');
 
       $scope.page.set('name', 'fireflower fireflower');
-      testHelpers.fireMouseEvent(jqEl[0], 'mousemove');
+      testHelpers.fireMouseEvent(editPageWarningElement, 'mousemove');
       expect($('#uber-flyout').text()).to.equal('');
     });
   });
@@ -470,11 +470,27 @@ describe('CardsViewController', function() {
       }));
 
       it('should register a flyout for a clear-all-filters button', function() {
-        var jqEl = testHelpers.TestDom.append(
+        var buttonElement = testHelpers.TestDom.append(
           '<button class="clear-all-filters-button" />');
         expect($('.flyout-title').length).to.equal(0);
 
-        testHelpers.fireMouseEvent(jqEl[0], 'mousemove');
+        testHelpers.fireMouseEvent(buttonElement[0], 'mousemove');
+
+        var flyout = $('.flyout-title');
+        expect(flyout.length).to.equal(1);
+        expect(flyout.text().indexOf('Click to reset all filters')).to.be.greaterThan(-1);
+      });
+
+      it('should register a flyout for the clear-all-filters button close icon', function() {
+        var buttonHTML = [
+          '<button class="clear-all-filters-button">',
+            '<span class="icon-close"></span>',
+          '</button>'
+        ].join('');
+        var buttonElement = testHelpers.TestDom.append(buttonHTML);
+        expect($('.flyout-title').length).to.equal(0);
+
+        testHelpers.fireMouseEvent(buttonElement.find('.icon-close')[0], 'mousemove');
 
         var flyout = $('.flyout-title');
         expect(flyout.length).to.equal(1);

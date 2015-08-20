@@ -120,7 +120,7 @@ describe('test DataTypeFormatService output', function() {
     date_column_no_hr_min_sec: {
       format: {},
       dataTypeName: 'calendar_date',
-      values: ['2001-08-11T00:00:00', '1981-04-19T00:00:00']
+      values: ['2001-08-11T07:00:00', '1981-04-19T07:00:00']
     }
   };
 

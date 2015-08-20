@@ -298,28 +298,31 @@
       return value;
     },
 
-    /**
-     * Prevents scrolling from bubbling up to the document
-     * Ex: element.on('mousewheel', '.scrollable', Util.preventScrolling)
-     */
+     // Prevents scrolling from bubbling up to the document
+     // Ex: element.on([mousewheel events], [selector], Util.preventScrolling)
     preventScrolling: function(e) {
-      var target = $(this);
-      var scrollTop = target.scrollTop();
 
-      var delta = e.originalEvent.deltaY;
-      if (delta < 0) {
-        // Scrolling up.
+      // Base prevention of page scrolling on scroll status of the element
+      // specified by the given selector (passed as a second argument to
+      // element.on() invocation above and represented here as $(this)).
+      var scrollingElement = $(this);
+      var scrollTop = scrollingElement.scrollTop();
+
+      // IE/Chrome/Safari use 'wheelDelta', Firefox uses 'detail'
+      var scrollingUp = e.originalEvent.wheelDelta > 0 || e.originalEvent.detail < 0;
+
+      if (scrollingUp) {
+
+        // At top
         if (scrollTop === 0) {
-          // Past top.
           e.preventDefault();
         }
-      } else if (delta > 0) {
-        // Scrolling down.
-        var innerHeight = target.innerHeight();
-        var scrollHeight = target[0].scrollHeight;
+      } else {
+        var innerHeight = scrollingElement.innerHeight();
+        var scrollHeight = scrollingElement[0].scrollHeight;
 
+        // At bottom
         if (scrollTop >= scrollHeight - innerHeight) {
-          // Past bottom.
           e.preventDefault();
         }
       }

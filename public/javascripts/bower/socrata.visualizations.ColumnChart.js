@@ -231,13 +231,21 @@
 
       element.on(
         'mouseenter',
+<<<<<<< HEAD
         _labelsSelector,
+=======
+        '.labels .label',
+>>>>>>> zelliott/CORE-6553/update-socrata-utils-and-socrata-visualizations
         addHoverClassToBarGroup
       );
 
       element.on(
         'mouseleave',
+<<<<<<< HEAD
         _labelsSelector,
+=======
+        '.labels .label',
+>>>>>>> zelliott/CORE-6553/update-socrata-utils-and-socrata-visualizations
         removeHoverClassFromBarGroup
       );
 
@@ -253,7 +261,11 @@
       // be drawn unless a datum is selected)
       element.on(
         'mouseup',
+<<<<<<< HEAD
         _nonDefaultSelectedLabelSelector,
+=======
+        '.labels .label.selected.non-default',
+>>>>>>> zelliott/CORE-6553/update-socrata-utils-and-socrata-visualizations
         removeHoverClassFromBarGroup
       );
     }
@@ -286,13 +298,21 @@
 
       element.off(
         'mouseenter',
+<<<<<<< HEAD
         _labelsSelector,
+=======
+        '.labels .label',
+>>>>>>> zelliott/CORE-6553/update-socrata-utils-and-socrata-visualizations
         addHoverClassToBarGroup
       );
 
       element.off(
         'mouseleave',
+<<<<<<< HEAD
         _labelsSelector,
+=======
+        '.labels .label',
+>>>>>>> zelliott/CORE-6553/update-socrata-utils-and-socrata-visualizations
         removeHoverClassFromBarGroup
       );
 
@@ -303,7 +323,11 @@
 
       element.off(
         'mouseup',
+<<<<<<< HEAD
         _nonDefaultSelectedLabelSelector,
+=======
+        '.labels .label.selected.non-default',
+>>>>>>> zelliott/CORE-6553/update-socrata-utils-and-socrata-visualizations
         removeHoverClassFromBarGroup
       );
     }
@@ -866,6 +890,7 @@
     function _escapeQuotesAndBackslashes(value) {
 
       if (_.isString(value)) {
+<<<<<<< HEAD
 
         return value.
           replace(/\\/g, '\\\\').
@@ -873,6 +898,12 @@
 
       } else {
 
+=======
+        return value.
+          replace(/\\/g, '\\\\').
+          replace(/"/g, '\\\"');
+      } else {
+>>>>>>> zelliott/CORE-6553/update-socrata-utils-and-socrata-visualizations
         return value;
       }
     }

@@ -24,7 +24,6 @@
   }
 
   .block-edit {
-    margin-bottom: 0.5rem;
     background-color: transparent;
 
     .block-edit-controls {
@@ -65,13 +64,11 @@
       position: relative;
       margin-left: $block-edit-controls-width + $block-edit-controls-padding;
       transition: none;
-      border: 1px solid $block-edit-content-border-color;
       box-sizing: border-box;
 
       .text-editor {
 
         iframe {
-          margin: 0 3%;
           width: 94%;
           height: 0;
           min-height: 0;

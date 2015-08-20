@@ -1,0 +1,82 @@
+//Theme Vars
+
+// Basic media queries for typeset regions.
+$medium: 	768px;
+$large: 	1200px;
+$xlarge: 	1400px;
+$xxlarge: 	1600px;
+
+
+// Modular Scale Ratios --
+// Used for grid and typography. Setting type dimensions using these scales improves balance of the typographic design.
+$ms-ratio-1: 1.333;
+$ms-ratio-2: 1.44;
+$ms-ratio-3: 1.54;
+$ms-ratio-4: 1.618;
+
+// Base Typesize. Used as base calculation for modular scale.
+$base-type-size: 1em;
+$base-line-height: $ms-ratio-3;
+
+
+// Standard (mobile, tablet, and small device) type sie.
+$std-type-size: 1.1em;
+$std-line-height: $ms-ratio-2;
+
+
+// Large Screeen Typesize.
+$lg-type-size: 1.2em;
+$lg-line-height: $ms-ratio-4;
+
+
+//Colors // Need to scrub and rework
+$default-type-color: #252525;
+$heading-type-color: #E24816;
+$quiet-type-color: #ccc;
+
+
+// Font Stacks
+$body-font-stack: 'Open Sans', sans-serif;
+$heading-font-stack: 'Roboto Slab', serif;
+
+
+// Hyperlinks
+$link-color: #E24816;
+$link-text-decoration: underline;
+$link-hover: darken($link-color, 12%);
+$link-hover: darken($link-color, 12%);
+
+
+// Blockquote
+$blockquote-font-style: italic;
+$blockquote-border-left: 2px solid $quiet-type-color;
+$blockquote-padding-left: 1rem;
+$blockquote-margin-left: 1.3rem;
+
+
+// Lists
+$list-padding-left: 1.3rem;
+$ul-list-style-type: disc;
+$ol-list-styke-type: decimal;
+
+
+// Rule
+$hr-border-top: 1px solid $quiet-type-color;
+
+
+// Styled Elements (implemented in the future)
+
+// - Title (Nice big heading for your story)
+$title-font-family: $heading-font-stack;
+
+// - Subtititle
+$subtitle-font-color: lighten($default-type-color, 30%);
+$subtitle-font-family: $body-font-stack;
+
+
+// END Theme Settings //
+
+$breakpoint-to-ems: true;
+
+// Import typography
+@import "includes/typography";

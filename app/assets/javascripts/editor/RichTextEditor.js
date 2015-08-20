@@ -71,6 +71,7 @@
       );
     }
 
+    var _self = this;
     var _containerElement = element;
     var _assetFinder = assetFinder;
     var _formats = formats;
@@ -128,6 +129,11 @@
       return _lastContentHeight;
     };
 
+    // Add a `themeName` class to the html root of the iframe
+    this.setStyle = function(themeName) {
+      _editorBodyElement.parent().addClass(themeName);
+    }
+
     /**
      * This method assumes that jQuery's .remove() function will correctly
      * remove any event listeners attached to _editorElement or any of its
@@ -148,7 +154,7 @@
 
       $(_editorElement).load(function (e) {
 
-        _overrideDefaultStyles(e.target.contentWindow.document);
+        _addThemeStyles(e.target.contentWindow.document);
         _editor = new Squire(e.target.contentWindow.document);
         _editorBodyElement = $(_editor.getDocument()).find('body');
         _formatController = new storyteller.RichTextEditorFormatController(
@@ -187,18 +193,26 @@
      * order to append a node to the internal document's head, however, we must
      * wait until the iframe's internal document has actually loaded.
      */
-    function _overrideDefaultStyles(document) {
+    function _addThemeStyles(document) {
+      // Add top-level theme classes to html, to mirror high-level story classes
+      // in view mode
+      $(document).find('html').
+        addClass('classic large'); //TODO: add actual size and theme class here
 
       // Prevent flash of unstyled text by setting opacity to zero
       // and then overriding it in the stylesheet.
-      $(document.body).css('opacity', 0);
+      $(document.body).
+        css('opacity', 0).
+        addClass('typeset');
+
+
 
       var styleEl = document.createElement('link');
       styleEl.setAttribute('rel', 'stylesheet');
       styleEl.setAttribute('type', 'text/css');
       styleEl.setAttribute(
         'href',
-        _assetFinder.getStyleAssetPath('rich-text-editor-iframe')
+        _assetFinder.getStyleAssetPath('themes')
       );
 
       // There seems to be a race condition in Firefox whereby the onload
@@ -215,6 +229,7 @@
         setTimeout(function() {
             _updateContentHeight();
             _broadcastHeightChange();
+            $(document.body).css('opacity', '');
           },
           10
         );

@@ -243,6 +243,10 @@ $(document).on('ready', function() {
   var addContentPanelElement = $('#add-content-panel');
   addContentPanelElement.addContentPanel($('.add-content-panel-btn'));
 
+  // Style and Presentation Panel
+  var styleAndPresentationPanelElement = $('#style-and-presentation-panel');
+  styleAndPresentationPanelElement.styleAndPresentationPanel($('.style-and-presentation-panel-btn'));
+
   // Settings Panel
   var settingsPanelContainer = $('#settings-panel-container');
   settingsPanelContainer.settingsPanel($('[data-panel-toggle="settings-panel"]'));

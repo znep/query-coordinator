@@ -1,0 +1,24 @@
+@import 'lib/variables';
+
+/**
+ * Content Panels
+ */
+
+.content-panel {
+  @include unselectable();
+
+  width: $panel-width;
+  position: fixed;
+  height: calc(100vh - #{$header-height} - #{$content-panel-padding});
+  top: $header-height;
+  right: 0;
+  padding: $content-panel-padding / 2;
+  background-color: $content-panel-bg-color;
+
+  .content-panel-close-btn {
+    display: inline-block;
+    width: 100%;
+    text-align: right;
+    margin-bottom: $content-panel-close-button-margin-bottom;
+  }
+}

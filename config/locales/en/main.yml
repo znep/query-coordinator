@@ -30,7 +30,11 @@ en:
     permissions_error_flash: 'Permissions error.'
     not_found_error_flash: 'Story not found.'
   add_content_panel:
-    common_blocks: 'Common Blocks'
+    title: 'Common Blocks'
+    render_error: 'There was an error'
+  style_and_presentation_panel:
+    title: 'Styled Themes'
+    description: 'Themes to make your story look Grrrrrrreat!'
     render_error: 'There was an error'
   settings_panel:
     panel_title: 'Story Settings'

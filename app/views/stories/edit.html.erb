@@ -10,16 +10,17 @@
         <button class="btn redo-btn" disabled="disabled">Redo</button>
       </li>
       <li>
-        <a class="add-content-panel-btn" role="button" href="#">+ Add Content</a>
+        <button class="btn add-content-panel-btn">+ Add Content</button>
       </li>
       <li>
-        <a class="style-panel-btn" role="button" href="#">Style &amp; Presentation</a>
+        <button class="btn style-and-presentation-panel-btn">Style &amp; Presentation</button>
       </li>
   </div>
 </header>
 
 <%= render 'settings_panel' %>
-<%= render 'content_panel' %>
+<%= render 'add_content_panel' %>
+<%= render 'style_and_presentation_panel' %>
 
 <section id="rich-text-editor-toolbar"></section>
 

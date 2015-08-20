@@ -37,9 +37,10 @@
 
     toggleButton.on('click', function() {
       addContentPanel.trigger('sidebar:toggle');
+      $('#style-and-presentation-panel').trigger('sidebar:close');
     });
 
-    addContentPanel.find('.content-panel-close-btn a').on('click', function() {
+    addContentPanel.find('.content-panel-close-btn').on('click', function() {
       addContentPanel.trigger('sidebar:close');
     });
 

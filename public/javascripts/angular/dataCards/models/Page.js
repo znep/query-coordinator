@@ -50,11 +50,11 @@
           'defaultDateTruncFunction'
         ];
 
-        var cards = _.map(pageMetadata.cards, function(serializedCard) {
+        var deserializedCards = _.map(pageMetadata.cards, function(serializedCard) {
           return Card.deserialize(self, serializedCard);
         });
 
-        self.defineObservableProperty('cards', cards);
+        self.defineObservableProperty('cards', deserializedCards);
 
         _.each(fields, function(field) {
           self.defineObservableProperty(field, pageMetadata[field]);
@@ -65,13 +65,15 @@
 
         var primaryAmountField$ = self.observe('primaryAmountField');
 
-        var columnAggregatedUpon = primaryAmountField$.
+        var columnAggregatedUpon$ = primaryAmountField$.
           distinctUntilChanged().
-          map(function(field) {
-            return _.isPresent(field) ?
-              self.observe('dataset.columns.{0}'.format(field)) :
-              Rx.Observable.returnValue(null);
-          }).
+          combineLatest(
+            self.observe('dataset.columns'),
+            function(field, columns) {
+              return _.has(columns, field) ?
+                self.observe('dataset.columns.{0}'.format(field)) :
+                Rx.Observable.returnValue(null);
+            }).
           switchLatest();
 
         var validPrimaryAggregation$ = self.observe('primaryAggregation').
@@ -86,7 +88,7 @@
           validPrimaryAggregation$,
           rowDisplayUnit$,
           primaryAmountField$,
-          columnAggregatedUpon,
+          columnAggregatedUpon$,
           function(
             primaryAggregation,
             rowDisplayUnit,
@@ -97,6 +99,17 @@
 
             if (columnAggregatedUpon) {
               unit = Dataset.extractHumanReadableColumnName(columnAggregatedUpon);
+            } else if (primaryAggregation !== 'count') {
+
+              // aggregations other than count require a valid column
+              // otherwise default to 'count'
+              return {
+                'function': 'count',
+                'column': null,
+                'fieldName': null,
+                'unit': unit || DEFAULT_ROW_DISPLAY_UNIT,
+                'rowDisplayUnit': rowDisplayUnit || DEFAULT_ROW_DISPLAY_UNIT
+              };
             }
 
             return {
@@ -106,8 +119,8 @@
               'unit': unit || DEFAULT_ROW_DISPLAY_UNIT,
               'rowDisplayUnit': rowDisplayUnit || DEFAULT_ROW_DISPLAY_UNIT
             };
-          }
-        ).filter(function(aggregation) {
+          }).
+          filter(function(aggregation) {
             // While things settle, we may not have all the information needed
             // to build the aggregation properly. Don't emit while this is true.
             if (aggregation['function'] === 'count') {
@@ -118,7 +131,8 @@
               // against a column.
               return _.isPresent(aggregation.column);
             }
-          });
+          }).
+          shareReplay(1);
 
         self.defineEphemeralObservablePropertyFromSequence('aggregation',
           aggregationObservable);
@@ -138,7 +152,7 @@
                 filters: card.getCurrentValue('activeFilters'),
                 fieldName: card.fieldName,
                 uniqueId: card.uniqueId
-              }
+              };
             });
           });
         });

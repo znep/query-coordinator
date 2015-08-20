@@ -39,10 +39,6 @@ describe('Page model', function() {
       expect(dataset.id).to.equal('test-data');
       done();
     });
-
-    instance.set('description', desc2);
-    instance.set('description', desc3);
-    expect(expectedSequence).to.be.empty;
   });
 
   it('should default to the current version if the version property is not present or is not a number', function() {
@@ -111,7 +107,7 @@ describe('Page model', function() {
       var pageOverrides = {pageId: 'test-page'};
       var datasetOverrides = {id: 'test-data'};
       var instance = Mockumentary.createPage(pageOverrides, datasetOverrides);
-      var cards = [ new Model(), new Model(), new Model() ]
+      var cards = [ new Model(), new Model(), new Model() ];
 
       _.each(cards, function(card) {
         card.defineObservableProperty('expanded', false);
@@ -146,5 +142,71 @@ describe('Page model', function() {
       instance.toggleExpanded(card);
       expect(instance.getCurrentValue('hasExpandedCard')).to.equal(false);
     });
+  });
+
+  describe('aggregation ephemeral property', function() {
+
+    var existingColumn = {
+      name: 'title',
+      description: 'blank!',
+      physicalDatatype: 'number',
+      defaultCardType: 'column',
+      availableCardTypes: ['column', 'search']
+    };
+
+    function makePage(primaryAggregation, primaryAmountField) {
+      var pageOverrides = {
+        pageId: 'test-page',
+        primaryAggregation: primaryAggregation,
+        primaryAmountField: primaryAmountField
+      };
+      var datasetOverrides = {
+        id: 'test-data',
+        columns: {
+          'existing_column': existingColumn
+        }
+      };
+      return Mockumentary.createPage(pageOverrides, datasetOverrides);
+    }
+
+    function aggregationExpectation(
+      instance,
+      aggregationFunction,
+      aggregationColumnIsNull,
+      aggregationFieldName,
+      done
+    ) {
+      instance.observe('aggregation').subscribe(function(aggregation) {
+        expect(aggregation['function']).to.equal(aggregationFunction);
+        expect(aggregation.column === null).to.equal(aggregationColumnIsNull);
+        expect(aggregation.fieldName).to.equal(aggregationFieldName);
+        done();
+      });
+    }
+
+    it('handles a count aggregation with no primaryAmountField', function(done) {
+      var instance = makePage('count', null);
+      aggregationExpectation(instance, 'count', true, null, done);
+    });
+
+    it('handles a count aggregation with a primaryAmountField that does not exist', function(done) {
+      var instance = makePage('count', 'unused');
+      aggregationExpectation(instance, 'count', true, 'unused', done);
+    });
+
+    it('handles a non-count aggregation with a null primaryAmountField', function(done) {
+      var instance = makePage('sum', null);
+      aggregationExpectation(instance, 'count', true, null, done);
+    });
+
+    it('handles a non-count aggregation with a primaryAmountField that does not exist', function(done) {
+      var instance = makePage('sum', 'unused');
+      aggregationExpectation(instance, 'count', true, null, done);
+    });
+
+    it('handles a non-count aggregation with a valid primaryAmountField', function(done) {
+      var instance = makePage('sum', 'existing_column');
+      aggregationExpectation(instance, 'sum', false, 'existing_column', done);
+    })
   });
 });

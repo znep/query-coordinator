@@ -77,7 +77,7 @@
         });
 
         FlyoutService.register({
-          selector: '.icon-bar-chart .warning-icon',
+          selector: '.icon-bar-chart .icon-warning',
           render: _.constant(FLYOUT_TEMPLATE.format(I18n.addCardDialog.columnChartWarning)),
           positionOn: function(el) {
             return el.closest('.visualization-type');
@@ -86,7 +86,7 @@
         });
 
         FlyoutService.register({
-          selector: '.icon-distribution .warning-icon',
+          selector: '.icon-distribution .icon-warning',
           render: _.constant(FLYOUT_TEMPLATE.format(I18n.addCardDialog.histogramColumnChartWarning)),
           positionOn: function(el) {
             return el.closest('.visualization-type');

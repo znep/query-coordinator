@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationHistogram(CardDataService, HistogramService, ColumnChartService, Filter, $log, Constants) {
+  function cardVisualizationHistogram(CardDataService, HistogramService, ColumnChartService, Filter, $log, Constants, SoqlHelpers) {
 
     /**
      * Fetches both unfiltered and filtered data.  Requests the data bucketed
@@ -119,6 +119,14 @@
           }
         });
 
+        /**
+         * This function returns an observable that produces the data required
+         * to render the histogram as a curvy histogram thing. First, a request
+         * is made to get the min and max of the column. This is used to decide
+         * how the data should be bucketed and what size the buckets should be.
+         * From there we make a request for the unfiltered data and a request
+         * for the filtered data, which are combined and returned.
+         */
         function cardDataHistogram$() {
           var columnDataSummary$ = Rx.Observable.combineLatest(
             fieldName$,
@@ -225,7 +233,29 @@
             });
         }
 
+        /**
+         * This function returns an observable that produces the data required
+         * to render the histogram as a column chart. If the decision is made
+         * to render as a column chart, then we can reuse the value produced by
+         * groupBySample$ as the unfiltered data for the chart. If the page has
+         * no filter then we have everything we need and can render the chart.
+         * Otherwise we have to make another request for the filtered data.
+         */
         function cardDataColumnChart$() {
+
+          /**
+           * Don't be afraid. This is just used to clean up the annoyances of
+           * combining the arguments of combineLatest and withLatestFrom. We
+           * first use Array.prototype.constructor as the selector for
+           * combineLatest which gives us an array of 3 elements. We then
+           * withLatestFrom that observable with 3 more observables. The
+           * resulting selector gets passed the original array from the
+           * combineLatest and three more arguments. We call Array.concat to
+           * concatenate them all into a single array, and then use zipObject
+           * to assign them keys so we can access them with semantic names.
+           * Please note that if you add an Observable that produces an array
+           * of values, you will get unexpected results due to concat.
+           */
           var keys = ['groupBySample', 'activeFilter', 'whereClause', 'fieldName', 'dataset', 'aggregation'];
           var aggregateSequenceValues = _.flow(Array.prototype.concat, _.partial(_.zipObject, keys)).bind([]);
 
@@ -240,15 +270,18 @@
             _.flow(aggregateSequenceValues, function(values) {
               var unfilteredData = values.groupBySample;
 
+              // If we aren't filtering the page, no need to request filtered
+              // data, just render the unfiltered data.
               if (_.isEmpty(values.whereClause)) {
                 var result = HistogramService.transformDataForColumnChart(unfilteredData);
                 return Rx.Observable.returnValue(result);
               } else {
-                var requestArguments = _.at(values, 'fieldName', 'dataset', 'whereClause', 'aggregation').concat({ orderBy: '`{0}`'.format(values.fieldName) });
+                var requestOptions = { orderBy: SoqlHelpers.formatFieldName(values.fieldName) };
+                var requestArguments = _.at(values, 'fieldName', 'dataset', 'whereClause', 'aggregation').concat(requestOptions);
                 var filteredDataPromise = CardDataService.getData.apply(CardDataService, requestArguments).
                   then(function(filteredData) {
                     var selectedValue = _.get(values.activeFilter, 'operand');
-                    return HistogramService.transformDataForColumnChart(unfilteredData, filteredData || [], selectedValue);
+                    return HistogramService.transformDataForColumnChart(unfilteredData, filteredData, selectedValue);
                   });
 
                 return Rx.Observable.fromPromise(filteredDataPromise);
@@ -262,16 +295,19 @@
           aggregation$,
           function(fieldName, dataset, aggregation) {
 
-            // To decide if we should render as a column chart, make a request
-            // for (n + 1) unique elements, then ensure that there are n or less
-            // elements and that they are all integers, where n is
-            // HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD. The where clause
-            // excludes blank values because we don't render them and don't want
-            // them to skew our decision making process. We don't actually use
-            // the aggregation for anything but it's required for
-            // CardDataService.getData, so it's included in the withLatestFrom.
-            // processResponse just plucks the names of the buckets and passes
-            // it to HistogramService.
+            /**
+             * To decide if we should render as a column chart, make a request
+             * for (n + 1) unique elements, then ensure that there are n or less
+             * elements and that they are all integers, where n is
+             * HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD. The where clause
+             * excludes blank values because we don't render them and don't want
+             * them to skew our decision making process. We don't actually use
+             * the aggregation for anything but it's required for
+             * CardDataService.getData, so it's included in the withLatestFrom.
+             * If we do end up deciding to render as a columnChart (see
+             * visualizationType), we use this groupBySample as the unfiltered
+             * data.
+             */
             var whereClause = '`{0}` IS NOT NULL'.format(fieldName);
             var options = { limit: Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD + 1, orderBy: fieldName};
             return Rx.Observable.fromPromise(CardDataService.getData(fieldName, dataset.id, whereClause, aggregation, options));
@@ -279,19 +315,22 @@
           switchLatest().
           shareReplay(1);
 
-        // Fires either 'columnChart' or 'histogram'
+        // Fires either 'columnChart' or 'histogram'.
         var visualizationType$ = groupBySample$.map(function(groupBySample) {
           return HistogramService.getVisualizationTypeForData(_.pluck(groupBySample, 'name'));
         }).share();
 
+        // Use a different observable to fetch data depending on the chart type.
         var cardData$ = visualizationType$.flatMapLatest(function(visualizationType) {
           return visualizationType === 'histogram' ? cardDataHistogram$() : cardDataColumnChart$();
         }).share();
 
-        // This sucks, but we have to conditionally set a negative horizontal
-        // margin on the outer container because when the chart renders as a
-        // histogram we need the visualization to take up the full width, but
-        // when it renders as a column chart it needs to have padding.
+        /**
+         * This sucks, but we have to conditionally set a negative horizontal
+         * margin on the outer container because when the chart renders as a
+         * histogram we need the visualization to take up the full width, but
+         * when it renders as a column chart it needs to have padding.
+         */
         visualizationType$.subscribe(function(visualizationType) {
           var conditionalStyles = {};
 
@@ -302,11 +341,20 @@
           } else {
             conditionalStyles.marginLeft = -Constants.HISTOGRAM_MARGINS.left;
             conditionalStyles.marginRight = -Constants.HISTOGRAM_MARGINS.right;
+            ColumnChartService.unregisterColumnChartEvents(element);
           }
 
           element.closest('card-visualization').css(conditionalStyles);
         });
 
+        // Undo all the weird stuff we did above when we're destroyed.
+        $scope.$destroyAsObservable(element).subscribe(function() {
+          element.closest('card-visualization').css({ marginLeft: 0, marginRight: 0 });
+          ColumnChartService.unregisterColumnChartEvents(element);
+        });
+
+        // Override the visualizationType on the model so other components can
+        // see which chart we decided to render as.
         visualizationType$.subscribe(_.bind($scope.model.set, $scope.model, 'visualizationType'));
 
         $scope.$bindObservable('rowDisplayUnit', rowDisplayUnit$);
@@ -315,11 +363,6 @@
         $scope.$bindObservable('expanded', expanded$);
         $scope.$bindObservable('currentRangeFilterValues', currentRangeFilterValues$);
         $scope.$bindObservable('visualizationType', visualizationType$);
-
-        $scope.$destroyAsObservable(element).subscribe(function() {
-          element.closest('card-visualization').css({ marginLeft: 0, marginRight: 0 });
-          ColumnChartService.unregisterColumnChartEvents(element);
-        });
       }
     };
   }

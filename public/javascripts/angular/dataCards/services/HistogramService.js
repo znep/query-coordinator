@@ -208,15 +208,13 @@
         filtered = _.indexBy(filtered, 'name');
       }
 
-      var filteredValue;
-
-      return unfiltered.map(function(bucket, i) {
+      return unfiltered.map(function(bucket) {
         var bucketName = parseInt(bucket.name, 10);
 
-        if (_.isDefined(selectedValue)) {
-          filteredValue = (bucketName === selectedValue) ? filtered[bucketName].value : 0;
-        } else {
-          filteredValue = _.get(filtered, bucket.name + '.value', 0);
+        var filteredValue = _.get(filtered, bucketName + '.value', 0);
+
+        if (_.isDefined(selectedValue) && bucketName !== selectedValue) {
+          filteredValue = 0;
         }
 
         return [

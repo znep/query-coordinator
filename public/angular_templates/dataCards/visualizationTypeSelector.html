@@ -30,7 +30,7 @@
       ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'column', warn: showCardinalityWarning }"
       ng-click="setCardType('column')"
       data-visualization-name="columnChart">
-        <span class="warning-icon icon-warning" ng-show="showCardinalityWarning"></span>
+        <span class="icon-warning" ng-show="showCardinalityWarning"></span>
     </button>
     <span>{{'common.cards.columnChart' | I18n}}</span>
   </li>
@@ -40,7 +40,7 @@
       ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'histogram', warn: showHistogramColumnChartWarning }"
       ng-click="setCardType('histogram')"
       data-visualization-name="distributionChart">
-        <span class="warning-icon icon-warning" ng-show="showHistogramColumnChartWarning"></span>
+        <span class="icon-warning" ng-show="showHistogramColumnChartWarning"></span>
     </button>
     <span>{{'common.cards.distributionChart' | I18n}}</span>
   </li>

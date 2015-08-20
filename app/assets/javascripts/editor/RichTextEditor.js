@@ -71,7 +71,6 @@
       );
     }
 
-    var _self = this;
     var _containerElement = element;
     var _assetFinder = assetFinder;
     var _formats = formats;
@@ -132,7 +131,7 @@
     // Add a `themeName` class to the html root of the iframe
     this.setStyle = function(themeName) {
       _editorBodyElement.parent().addClass(themeName);
-    }
+    };
 
     /**
      * This method assumes that jQuery's .remove() function will correctly
@@ -197,7 +196,7 @@
       _.forOwn(storyteller.windowSizeBreakpointStore.getClassBreaks(), function(isEnabled, className) {
         $(editorDocument.body).toggleClass(className, isEnabled);
       });
-    };
+    }
 
 
     /**

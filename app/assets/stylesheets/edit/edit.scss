@@ -20,13 +20,14 @@ body header {
 
   position: fixed;
   width: 100%;
+  height: $header-height;
   left: 0;
   top: 0;
-  height: $header-height;
+  color: $header-color;
   background-color: $header-bg-color;
+  box-shadow: 0 $header-box-shadow-size $header-box-shadow-size $header-box-shadow-color;
   box-sizing: content-box;
   z-index: $site-header-z-index;
-  color: $header-font-color;
 
   .header-right {
     display: inline-block;
@@ -40,8 +41,8 @@ body header {
       border: $button-border-width solid transparent;
       border-radius: 3px;
       &.active {
-        border: $button-border-width solid $header-font-color;
-        background: $header-font-color;
+        border: $button-border-width solid $header-color;
+        background: $header-color;
         color: $header-bg-color;
       }
     }
@@ -57,17 +58,18 @@ body header {
   }
 
   .settings-panel-btn {
-    box-sizing: border-box;
-    height: 100%;
-    float: left;
     display: block;
-    line-height: $header-height;
+    float: left;
     width: $header-height;
-    cursor: pointer;
-    text-align: center;
-    background-color: $header-accent-color;
+    height: 100%;
     color: $header-bg-color;
     font-size: 3em;
+    line-height: $header-height;
+    text-align: center;
+    background-color: $header-accent-color;
+    border: none;
+    box-sizing: border-box;
+    cursor: pointer;
 
     &:hover,
     &:focus {
@@ -77,6 +79,16 @@ body header {
 
     &:before {
       text-align: center;
+    }
+  }
+
+  .content-panel-btn {
+    color: $header-color;
+    background-color: transparent;
+
+    &:hover, &.active {
+      color: lighten($header-color, 10%);
+      background-color: lighten($header-bg-color, 10%);
     }
   }
 }
@@ -99,11 +111,6 @@ ul.menu {
     display: inline;
     padding-right: 1em;
   }
-}
-
-a[role="button"] {
-  text-decoration: none;
-  color: inherit;
 }
 
 .col1, .col2, .col3, .col4, .col5, .col6, .col7, .col8, .col9, .col10, .col11, .col12 {

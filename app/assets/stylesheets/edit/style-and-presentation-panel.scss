@@ -1,0 +1,53 @@
+@import 'lib/variables';
+
+/**
+ * Style and Presentation Panel
+ */
+#style-and-presentation-panel {
+  z-index: $style-and-presentation-panel-z-index;
+
+  .theme-list {
+
+    .theme {
+      @include unselectable();
+
+      position: relative;
+      margin: $theme-list-theme-margin;
+      margin-bottom: $theme-list-theme-interior-margin-bottom;
+      padding: $theme-list-theme-padding;
+      background-color: $theme-list-theme-bg-color;
+      border: 1px solid $theme-list-theme-border-color;
+      cursor: pointer;
+
+      &:last-child {
+        margin-bottom: $theme-list-theme-margin;
+      }
+
+      &:hover {
+        border: 1px solid $theme-list-theme-hover-border-color;
+      }
+
+      &.active {
+        border: 1px solid $theme-list-theme-active-border-color;
+      }
+
+      .theme-title {
+        margin: 0 0 0.5rem 0;
+        padding: 0.5rem 0 0.5rem 0;
+        font-size: 1.5rem;
+        font-weight: 400;
+        color: $theme-list-theme-font-color;
+        border: none;
+        border-bottom: 1px solid $theme-list-theme-border-color;
+      }
+
+      .theme-sample {
+
+        img {
+          width: 100%;
+          height: auto;
+        }
+      }
+    }
+  }
+}

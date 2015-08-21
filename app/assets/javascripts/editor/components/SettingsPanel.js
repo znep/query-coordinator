@@ -167,9 +167,9 @@
 
     settingsPanel.
       on('sidebar:open', function() {
+        settingsPanel.find('button[data-panel-toggle="settings-panel"]').eq(0).focus();
         toggleButton.addClass('active');
         settingsContainer.addClass('active');
-        settingsPanel.find('a').eq(0).focus();
         loadCurrentMetadata();
       }).
       on('sidebar:close', function() {
@@ -177,9 +177,11 @@
           coreSavingStore.
           lastRequestSaveErrorForStory(storyteller.userStoryUid) !== null;
 
-        toggleButton.removeClass('active');
         settingsContainer.removeClass('active');
-        $('header a').eq(0).focus(); // put focus back in the header
+
+        toggleButton.
+          removeClass('active').
+          blur();
 
         // If save failed, revert title and description to values present at panel open time.
         if (hasError) {

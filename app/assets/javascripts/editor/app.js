@@ -243,7 +243,11 @@ $(document).on('ready', function() {
 
   // Add Content Panel
   var addContentPanelElement = $('#add-content-panel');
-  addContentPanelElement.addContentPanel($('.add-content-panel-btn'));
+  addContentPanelElement.addContentPanel($('.menu button[data-panel-toggle="add-content-panel"]'));
+
+  // Style and Presentation Panel
+  var styleAndPresentationPanelElement = $('#style-and-presentation-panel');
+  styleAndPresentationPanelElement.styleAndPresentationPanel($('.menu button[data-panel-toggle="style-and-presentation-panel"]'));
 
   // Settings Panel
   var settingsPanelContainer = $('#settings-panel-container');

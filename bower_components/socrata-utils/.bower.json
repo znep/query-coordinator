@@ -14,16 +14,18 @@
     "README.md"
   ],
   "devDependencies": {
-    "lodash": "~3.10.0"
+    "lodash": "~3.10.0",
+    "jquery": "~2.1.1"
   },
   "homepage": "https://github.com/socrata/frontend-utils",
-  "_release": "fb6e75ead1",
+  "_release": "da57c8168c",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "fb6e75ead10d7a8f23111fbf1fc3c934c68d93b3"
+    "commit": "da57c8168ce240c44a18192811586294dfc5bf2a"
   },
   "_source": "git@github.com:socrata/frontend-utils.git",
   "_target": "master",
-  "_originalSource": "git@github.com:socrata/frontend-utils.git"
+  "_originalSource": "git@github.com:socrata/frontend-utils.git",
+  "_direct": true
 }

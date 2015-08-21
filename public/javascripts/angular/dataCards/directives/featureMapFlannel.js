@@ -115,7 +115,7 @@
 
           $timeout(function() {
             var scrollbarNotVisible = flannelContent.outerWidth() === Constants.FEATURE_MAP_FLANNEL_WIDTH;
-            scope.isScrollable = flannelContent.height() > Constants.FEATURE_MAP_FLANNEL_MAX_CONTENT_HEIGHT;
+            scope.isScrollable = flannelContent.innerHeight() > Constants.FEATURE_MAP_FLANNEL_MAX_CONTENT_HEIGHT;
 
             // If a scrollbar should exist, but it's not visible (Firefox),
             // dedicate room for it.

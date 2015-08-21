@@ -357,6 +357,9 @@
           };
 
           clickHandler = function(e) {
+            var isolateScrollSubscriber;
+            var isScrollable$;
+
             // Update record of points clicked. Clear flannel upon reclick.
             if (_.isEmpty(_.xor(e.points, lastPoints))) {
               lastPoints = null;
@@ -406,6 +409,15 @@
                     } else {
                       flannelScope.rows = rows;
                       flannelScope.queryStatus = Constants.QUERY_SUCCESS;
+
+                      // If scrollable flannel, disable scrolling on body. Otherwise,
+                      // enable scrolling.
+                      isScrollable$ = flannelScope.$observe('isScrollable');
+                      isolateScrollSubscriber = isScrollable$.filter(_.isDefined).subscribe(
+                        function(isScrollable) {
+                          var flannelScrollingElement = flannel.find('.tool-panel-inner-container');
+                          window.socrata.utils.isolateScrolling(flannelScrollingElement, isScrollable);
+                        });
                     }
                   });
                 });
@@ -424,20 +436,6 @@
                     map.fire('clearhighlightrequest');
                   }
                 });
-
-              // If scrollable flannel, disable scrolling on body.  Otherwise,
-              // enable scrolling.
-              var isScrollable$ = flannelScope.$observe('isScrollable');
-              var flannelSelector = element.find('.tool-panel-inner-container').selector;
-              var $body = $(document.body);
-
-              isScrollable$.subscribe(function(isScrollable) {
-                if (isScrollable) {
-                  $body.on(Constants.MOUSE_WHEEL_EVENTS, flannelSelector, window.socrata.utils.preventScrolling);
-                } else {
-                  $body.off(Constants.MOUSE_WHEEL_EVENTS, flannelSelector, window.socrata.utils.preventScrolling);
-                }
-              });
 
               // Shift flannel position if scroll occurs
               var scrollSubscriber = WindowState.scrollPositionSubject.subscribe(adjustPosition);
@@ -509,6 +507,7 @@
               queryHandler.dispose();
               closeSubscriber.dispose();
               scrollSubscriber.dispose();
+              isolateScrollSubscriber.dispose();
               map.off('resize', adjustPosition);
               flannel.remove();
               flannelScope.$destroy();

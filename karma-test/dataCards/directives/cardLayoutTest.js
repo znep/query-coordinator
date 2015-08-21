@@ -16,6 +16,7 @@ describe('card-layout', function() {
   var rootScope;
   var testHelpers;
   var Constants;
+  var I18n;
 
   beforeEach(module('/angular_templates/dataCards/card-layout.html'));
   beforeEach(module('/angular_templates/dataCards/card.html'));
@@ -68,6 +69,7 @@ describe('card-layout', function() {
     $q = $injector.get('$q');
     $timeout = $injector.get('$timeout');
     Constants = $injector.get('Constants');
+    I18n = $injector.get('I18n');
 
     testHelpers.overrideTransitions(true);
     testHelpers.mockDirective(_$provide, 'aggregationChooser');
@@ -107,7 +109,7 @@ describe('card-layout', function() {
   /**
    * Generates and compiles the html with a card-layout directive.
    *
-   * @param {Object=} options An object with any of the keys:
+   * @param {Object} options An object with any of the keys:
    *   cards: A function that takes the Page Model as an argument, and returns an array of
    *     Card Models to attach to the Page Model.
    * @returns {Object} with the generated models scopes and other useful stuff.
@@ -523,7 +525,7 @@ describe('card-layout', function() {
 
       expect(hintOffset.left + hint.width()).to.be.closeTo(clientX, 5);
       expect(hintOffset.top + hint.height() + Constants.FLYOUT_BOTTOM_PADDING).to.be.closeTo(clientY, 5);
-      expect($('#uber-flyout').text()).to.match(/Remove this card/);
+      expect($('#uber-flyout').text()).to.equal(I18n.cardControls.removeCard);
     });
 
     it('should remove a card when the delete button is clicked', function(done) {
@@ -655,46 +657,6 @@ describe('card-layout', function() {
         cl.outerScope.$apply();
 
         expect($('.add-card-button').first().hasClass('disabled')).to.be.true;
-      });
-
-      it('should show a flyout with the text "All cards are present" when a disabled "Add card here" button is mousemoved', function() {
-        var cl = createLayoutWithCards();
-
-        cl.outerScope.allVisualizableColumnsVisualized = true;
-        cl.outerScope.editMode = true;
-        cl.outerScope.$apply();
-
-        mockWindowStateService.mousePositionSubject.onNext({
-          clientX: 0,
-          clientY: 0,
-          target: $('.add-card-button')[0]
-        });
-
-        expect($('#uber-flyout .content').text()).to.equal('All available cards are already on the page');
-
-        // Reset flyout
-        $('#uber-flyout .content').text('');
-        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
-      });
-
-      it('should not show a flyout with the text "All cards are present" when an enabled "Add card here" button is mousemoved', function() {
-        var cl = createLayoutWithCards();
-
-        cl.outerScope.allVisualizableColumnsVisualized = false;
-        cl.outerScope.editMode = true;
-        cl.outerScope.$apply();
-
-        mockWindowStateService.mousePositionSubject.onNext({
-          clientX: 0,
-          clientY: 0,
-          target: $('.add-card-button')[0]
-        });
-
-        expect($('#uber-flyout').css('display')).to.equal('none');
-
-        // Reset flyout
-        $('#uber-flyout .content').text('');
-        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(true);
       });
 
       it('should emit an "add-card-with-size" event when an enabled "Add card here" button is clicked', function(done) {
@@ -1314,7 +1276,7 @@ describe('card-layout', function() {
 
         expectFlyoutPosition(expand, flyout);
         expect(flyout.is(':visible')).to.be.true;
-        expect(flyout.text()).to.match(/Expand this card/);
+        expect(flyout.text()).to.equal(I18n.cardControls.expandCard);
       });
 
       it('should display "Collapse" over the collapse button', function() {
@@ -1335,11 +1297,12 @@ describe('card-layout', function() {
 
         expectFlyoutPosition(card.find('.card-control.icon-collapse'), flyout);
         expect(flyout.is(':visible')).to.be.true;
-        expect(flyout.text()).to.match(/Collapse this card/);
+        expect(flyout.text()).to.equal(I18n.cardControls.collapseCard);
       });
 
-      it('should display "Customize" only over the customize button on the choropleth', function() {
+      it('should display "Customize this card" over the customize button on customizable cards', function() {
         var cl = createLayoutWithCards([{fieldName: '*'}, {fieldName: 'choropleth_column'}]);
+
         cl.outerScope.interactive = true;
         cl.outerScope.$apply();
 
@@ -1349,6 +1312,7 @@ describe('card-layout', function() {
         var choropleth = cl.element.find('card-visualization-choropleth').closest('.card-spot');
         expect(choropleth.length).to.equal(1);
         var customize = choropleth.find('.card-control.icon-settings:visible');
+
         // Shouldn't show up unless you're in edit mode
         expect(customize.length).to.equal(0);
 
@@ -1366,10 +1330,10 @@ describe('card-layout', function() {
 
         expectFlyoutPosition(customize.eq(0), flyout);
         expect(flyout.is(':visible')).to.be.true;
-        expect(flyout.text()).to.match(/customize this card/i);
+        expect(flyout.text()).to.equal(I18n.cardControls.customizeEnabled);
       });
 
-      it('should display a different message over the customize button of non-choropleths', function() {
+      it('should display a different message over the customize button of non-customizable cards', function() {
         var cl = createLayoutWithCards([
           {fieldName: '*'},
           {fieldName: 'timeline_column'}
@@ -1388,6 +1352,7 @@ describe('card-layout', function() {
         expect(visualizations.find('.card-control.icon-settings:visible').length).to.equal(0);
 
         var disabled = visualizations.find('.card-control.disabled:visible');
+
         // Shouldn't show up unless you're in edit mode
         expect(disabled.length).to.equal(0);
 
@@ -1405,7 +1370,7 @@ describe('card-layout', function() {
 
         expectFlyoutPosition(disabled.eq(0), flyout);
         expect(flyout.is(':visible')).to.be.true;
-        expect(flyout.text()).to.match(/no customization options/i);
+        expect(flyout.text()).to.equal(I18n.cardControls.customizeDisabled);
       });
     });
   });

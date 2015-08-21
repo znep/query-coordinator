@@ -879,13 +879,19 @@
         );
 
 
-        /**
-         * Flyouts.
-         */
+        // Flyouts
+        var cardControlSelectors = [
+          '.card-control',
+          '.card-control span'
+        ];
+
         FlyoutService.register({
-          selector: '.card-control',
-          render: function(el) {
-            return '<div class="flyout-title">{0}</div>'.format($(el).attr('title'));
+          selector: cardControlSelectors.join(', '),
+          render: function(ignored, target) {
+            return '<div class="flyout-title">{0}</div>'.format($(target).attr('title'));
+          },
+          positionOn: function(target) {
+            return $(target).closest(cardControlSelectors[0])[0];
           },
           destroySignal: scope.$destroyAsObservable(cardContainer)
         });

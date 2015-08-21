@@ -1,6 +1,6 @@
 {
   "name": "socrata-visualizations",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "main": [
     "socrata.visualizations.DataProvider.js",
     "socrata.visualizations.SoqlDataProvider.js",

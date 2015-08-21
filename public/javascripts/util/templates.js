@@ -24,10 +24,14 @@
         };
         return directive;
     };
-
+    var normalDownloadTypes = _.get(
+      window,
+      'blist.configuration.normalDownloadTypes',
+      ['CSV', 'CSV for Excel', 'JSON', 'PDF', 'RDF', 'RSS', 'XLS', 'XLSX', 'XML']
+    );
     $.templates.downloadsTable = {
         downloadTypes: {
-            'normal': [ 'CSV', 'CSV for Excel', 'JSON', 'PDF', 'RDF', 'RSS', 'XLS', 'XLSX', 'XML'  ],
+            'normal': normalDownloadTypes,
             'geo_attributes': [ 'CSV', 'JSON' ],
             'nbe': [ 'CSV', 'JSON' ],
             'geo': [ 'KML', 'KMZ', 'Shapefile', 'Original' ]

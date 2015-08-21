@@ -173,6 +173,13 @@ http://www.socrata.com
   <%= include_javascripts 'oldie' %>
   <![endif]-->
 
+  <%# Inject the download types, filtered via feature flag, before the templates.js file is loaded %>
+  <script type="text/javascript">
+    var blist = blist || {};
+    blist.configuration = blist.configuration || {};
+    blist.configuration.normalDownloadTypes = <%= raw json_escape(normal_download_types.to_json) %>;
+  </script>
+
   <%= include_javascripts 'base' %>
   <%- if module_enabled?(:govStat) -%>
   <%= include_javascripts 'new-base' %>

@@ -18,8 +18,47 @@
      * Public methods
      */
 
-    this.getClassBreaks = function () {
+    /**
+     * @function getAllClassBreaks
+     * @description
+     * Returns all of the class breaks that are available to window.
+     * This includes:
+     * - small
+     * - medium
+     * - large
+     * - xlarge
+     * - xxlarge
+     * @returns {Array} - All class breaks defined in _computeClassBreaks.
+     */
+    this.getAllClassBreaks = function () {
       return lastBreakClasses || _computeClassBreaks(root.innerWidth);
+    };
+
+    /**
+     * @function getClassBreak
+     * @description
+     * When the window is resized, we have specific breaks that
+     * choose a class that is relevant for that size of screen, such as
+     * small for devices smaller than 768px.
+     *
+     * This function returns the current, relevant class break name.
+     *
+     * @returns {String} - The current window size class break.
+     */
+    this.getClassBreak = function () {
+      return _.findKey(this.getAllClassBreaks(), _.identity, true);
+    };
+
+    /**
+     * @function getUnusedClassBreaks
+     * @description
+     * This is the complement of getClassBreak. In other words, it returns
+     * all classes that are NOT currently relevant to the window size.
+     *
+     * @returns {Array} - An array of class break names.
+     */
+    this.getUnusedClassBreaks = function () {
+      return _.omit(this.getAllClassBreaks(), this.getClassBreak());
     };
 
     /**

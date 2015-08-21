@@ -198,15 +198,10 @@ describe('StoryRenderer', function() {
 
     describe('window class breaks', function() {
       it('should apply the current class break to the story container', function() {
-        var currentClassName;
 
         storyteller.storyRenderer = new storyteller.StoryRenderer(options);
 
-        _.forOwn(storyteller.windowSizeBreakpointStore.getClassBreaks(), function (isEnabled, className) {
-          if (isEnabled) {
-            currentClassName = className;
-          }
-        });
+        var currentClassName = storyteller.windowSizeBreakpointStore.getClassBreak();
 
         assert.isTrue(options.storyContainerElement.hasClass(currentClassName));
       });

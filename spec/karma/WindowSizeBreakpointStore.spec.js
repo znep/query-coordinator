@@ -31,7 +31,7 @@
       expectedBreakpoints[expectedClass] = true;
 
       windowSizeBreakpointStore.addChangeListener(function () {
-        assert.deepEqual(windowSizeBreakpointStore.getClassBreaks(), expectedBreakpoints);
+        assert.deepEqual(windowSizeBreakpointStore.getAllClassBreaks(), expectedBreakpoints);
         callbackCalled = true;
       });
 

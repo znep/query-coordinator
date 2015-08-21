@@ -193,9 +193,12 @@
         return;
       }
 
-      _.forOwn(storyteller.windowSizeBreakpointStore.getClassBreaks(), function(isEnabled, className) {
-        $(editorDocument.body).toggleClass(className, isEnabled);
-      });
+      var classBreak = storyteller.windowSizeBreakpointStore.getClassBreak();
+      var unusedClassBreaks = storyteller.windowSizeBreakpointStore.getUnusedClassBreaks();
+
+      $(editorDocument.body).
+        removeClass(unusedClassBreaks).
+        addClass(classBreak);
     }
 
 

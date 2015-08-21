@@ -1,5 +1,5 @@
 <header>
-  <a href="#" data-panel-toggle="settings-panel" role="button" class="icon-cog settings-panel-btn"></a>
+  <button data-panel-toggle="settings-panel" class="icon-cog settings-panel-btn"></button>
   <a href="#" class="story-title" role="button" data-panel-toggle="settings-panel">Story</a>
   <div class="header-right">
     <ul class="menu">
@@ -10,16 +10,17 @@
         <button class="btn redo-btn" disabled="disabled">Redo</button>
       </li>
       <li>
-        <a class="add-content-panel-btn" role="button" href="#">+ Add Content</a>
+        <button class="btn content-panel-btn" data-panel-toggle="add-content-panel">+ Add Content</button>
       </li>
       <li>
-        <a class="style-panel-btn" role="button" href="#">Style &amp; Presentation</a>
+        <button class="btn content-panel-btn" data-panel-toggle="style-and-presentation-panel">Style &amp; Presentation</button>
       </li>
   </div>
 </header>
 
 <%= render 'settings_panel' %>
-<%= render 'content_panel' %>
+<%= render 'add_content_panel' %>
+<%= render 'style_and_presentation_panel' %>
 
 <section id="rich-text-editor-toolbar"></section>
 

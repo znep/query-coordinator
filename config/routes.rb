@@ -1,23 +1,16 @@
 Rails.application.routes.draw do
+
   get 'version' => 'version#show'
 
-  resources :stories # HMMM do we want the standard crud?
+  scope '/s', constraints: { four_by_four: UNANCHORED_FOUR_BY_FOUR_PATTERN } do
+    get '(:vanity_text)/:four_by_four' => 'stories#show'
+    get ':four_by_four/create' => 'stories#new'
+    post ':four_by_four/create' => 'stories#create'
+    get '(:vanity_text)/:four_by_four/edit' => 'stories#edit'
 
-  get 's(/:vanity_text)/:four_by_four' => 'stories#show', constraints: {
-    four_by_four: UNANCHORED_FOUR_BY_FOUR_PATTERN
-  }
+    post ':four_by_four/drafts' => 'drafts#create', defaults: { format: 'json' }
+  end
 
-  get 's/:four_by_four/create' => 'stories#new', constraints: {
-    four_by_four: UNANCHORED_FOUR_BY_FOUR_PATTERN
-  }
-
-  post 's/:four_by_four/create' => 'stories#create', constraints: {
-    four_by_four: UNANCHORED_FOUR_BY_FOUR_PATTERN
-  }
-
-  get 's(/:vanity_text)/:four_by_four/edit' => 'stories#edit', constraints: {
-    four_by_four: UNANCHORED_FOUR_BY_FOUR_PATTERN
-  }
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

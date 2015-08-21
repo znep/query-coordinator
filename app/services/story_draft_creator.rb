@@ -4,14 +4,30 @@ class StoryDraftCreator
   class InvalidBlockIdsError < StandardError ; end
   class InvalidNewBlocksError < StandardError ; end
   class CreateTransactionError < StandardError ; end
+  class DigestMismatchError < StandardError ; end
 
   #TODO: Make user another attribute rather than its own thing.
-  def initialize(user, attributes)
-    @user = user
+
+  # Initialized with attributes hash
+  #
+  # attributes[:user] - user creating this draft
+  # attributes[:four_by_four] - UID of existing story draft
+  # attributes[:digest] - previous draft digest to ensure safe saving
+  # attributes[:blocks] - array of json blocks for new draft
+  def initialize(attributes)
+    @user = attributes[:user]
+    if @user.blank?
+      raise ArgumentError.new('attributes[:user] is empty')
+    end
 
     @four_by_four = attributes[:four_by_four]
-    if @four_by_four.present? && @four_by_four !~ FOUR_BY_FOUR_PATTERN
+    unless @four_by_four.present? && @four_by_four =~ FOUR_BY_FOUR_PATTERN
       raise ArgumentError.new("attributes[:four_by_four] is not valid: '#{@four_by_four}'")
+    end
+
+    @digest = attributes[:digest]
+    if @digest.blank?
+      raise ArgumentError.new('attributes[:digest] is empty')
     end
 
     # This will raise an exception if :blocks is not present.
@@ -23,15 +39,19 @@ class StoryDraftCreator
       raise ArgumentError.new("attributes[:blocks] contains non-hashes: '#{@json_blocks}'")
     end
 
+    @story = nil
+
+    # We want to maintain a mapping of old block id to new block id
+    # We send this information back to the caller of the save endpoint.
+    @block_id_mapping = @json_blocks.map do |block|
+      { old_id: block[:id] }
+    end
+
     @new_blocks = build_nonexisting_blocks
   end
 
   def create
-    @story = nil
-
-    unless four_by_four.present?
-      @four_by_four = provision_new_four_by_four
-    end
+    validate_digest_matches_against_last_draft
 
     unless existing_block_ids_in_previous_story_version?
       raise InvalidBlockIdsError.new('invalid block ids')
@@ -58,17 +78,32 @@ class StoryDraftCreator
     @story
   end
 
+  def block_id_mappings
+    @block_id_mapping.map do |mapping|
+      new_id = mapping[:new_block].try(:id) || mapping[:old_id]
+
+      { oldId: mapping[:old_id], newId: new_id }
+    end
+  end
+
   private
-  attr_reader :user, :four_by_four, :json_blocks
+  attr_reader :user, :four_by_four, :json_blocks, :digest
 
   # Instance variable memoization
 
   def block_ids_or_nils
     @block_ids_or_nils ||= begin
       json_blocks.map do |block|
-        block[:id]
+        temp_block?(block) ? nil : block[:id]
       end
     end
+  end
+
+  def temp_block?(block)
+    # temp block ids should be non-numeric in nature. We currently use 'sampleBlock...'
+    # for new stories. The storyStore uses 'tempNNN...'. If we get a numeric ID, we're
+    # going to assume it's a valid persisted block ID.
+    block[:id].nil? || block[:id] =~ /[A-Za-z]/
   end
 
   def block_ids_from_previous_story_version
@@ -83,13 +118,6 @@ class StoryDraftCreator
     end
   end
 
-  # Interactions with Core Server
-
-  def provision_new_four_by_four
-    # TODO: Risky business
-    'abcd-efgh'
-  end
-
   # Interactions with the Data Model
 
   def all_json_blocks_are_hashes?
@@ -100,12 +128,25 @@ class StoryDraftCreator
 
   def build_nonexisting_blocks
     json_blocks.map do |json_block|
-      if json_block[:id].nil?
-        Block.from_json(json_block.merge(created_by: user))
-      else
-        nil
+
+      new_block = nil
+
+      if temp_block?(json_block)
+        new_block = Block.from_json(json_block.merge(created_by: user).except(:id))
       end
+
+      update_block_id_mapping_with_new_block(json_block[:id], new_block)
+
+      new_block
     end.compact
+  end
+
+  def update_block_id_mapping_with_new_block(old_block_id, new_block)
+    block_mapping = @block_id_mapping.detect {|mapping| mapping[:old_id] == old_block_id }
+
+    unless block_mapping.nil?
+      block_mapping[:new_block] = new_block
+    end
   end
 
   def existing_block_ids_in_previous_story_version?
@@ -133,5 +174,17 @@ class StoryDraftCreator
 
   def all_new_blocks_valid?
     new_blocks.all?(&:valid?)
+  end
+
+  def existing_story
+    unless four_by_four.blank?
+      @existing_story ||= DraftStory.find_by_four_by_four(four_by_four)
+    end
+  end
+
+  def validate_digest_matches_against_last_draft
+    if existing_story.present? && digest != existing_story.digest
+      raise DigestMismatchError.new('Provided digest does not match last known draft story digest.')
+    end
   end
 end

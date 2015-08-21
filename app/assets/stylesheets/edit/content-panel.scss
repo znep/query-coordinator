@@ -1,0 +1,65 @@
+@import 'lib/variables';
+
+/**
+ * Content Panels
+ */
+
+.content-panel {
+  @include unselectable();
+
+  width: $panel-width;
+  position: fixed;
+  height: calc(100vh - #{$header-height} - #{$content-panel-padding});
+  top: $header-height;
+  right: 0;
+  padding: $content-panel-padding / 2;
+  background-color: $content-panel-bg-color;
+  box-shadow: -$content-panel-box-shadow-size 0 $content-panel-box-shadow-size $content-panel-box-shadow-color;
+
+  .content-panel-close-btn-container {
+    display: inline-block;
+    width: 100%;
+    text-align: right;
+    margin-bottom: $content-panel-close-btn-margin-bottom;
+
+    .content-panel-close-btn {
+      width: $content-panel-close-btn-width;
+      height: $content-panel-close-btn-width;
+      padding: 0;
+      line-height: $content-panel-close-btn-width;
+      text-align: center;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+    }
+  }
+
+  .content-panel-title,
+  .content-panel-description {
+    text-align: center;
+  }
+
+  .content-panel-title {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: $content-panel-title-color;
+  }
+
+  .content-panel-description {
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    font-weight: 200;
+    font-style: oblique;
+    color: $content-panel-description-color;
+  }
+
+  .scrollable {
+    position: absolute;
+    left: 0;
+    top: 10rem;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+  }
+}

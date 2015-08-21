@@ -1,0 +1,35 @@
+<%
+# Responsible for:
+# - Storing data for sidebar theme samples
+#
+# This is .json.erb so that we can translate the default content
+# and use asset path helpers.
+%>
+{
+  "themes": [
+    {
+      "description": "Classic Theme. This one is a true classic; a throw back to the past.",
+      "id": "classic",
+      "imagePreview": "<%= asset_path("editor/theme-samples/theme-sample-classic.svg") %>",
+      "title": "Classic"
+    },
+    {
+      "description": "Classic Theme. This one is a true classic; a throw back to the past.",
+      "id": "sans",
+      "imagePreview": "<%= asset_path("editor/theme-samples/theme-sample-sans.svg") %>",
+      "title": "Sans"
+    },
+    {
+      "description": "Classic Theme. This one is a true classic; a throw back to the past.",
+      "id": "serif",
+      "imagePreview": "<%= asset_path("editor/theme-samples/theme-sample-serif.svg") %>",
+      "title": "Serif"
+    },
+    {
+      "description": "Classic Theme. This one is a true classic; a throw back to the past.",
+      "id": "slab",
+      "imagePreview": "<%= asset_path("editor/theme-samples/theme-sample-slab.svg") %>",
+      "title": "Slab"
+    }
+  ]
+}

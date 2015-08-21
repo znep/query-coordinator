@@ -50,12 +50,12 @@ $(document).on('ready', function() {
   ];
 
   // Temporary fix until version is being added/populated
-  if (userStoryData.version === null) {
-    userStoryData.version = '';
+  if (userStoryData.digest === null) {
+    userStoryData.digest = '';
   }
 
   // If we're loading an empty story for the first time, add example content
-  if ((userStoryData.version === '') && (userStoryData.blocks.length === 0)) {
+  if ((userStoryData.digest === '') && (userStoryData.blocks.length === 0)) {
     userStoryData.blocks = sampleBlocks;
   }
 
@@ -244,7 +244,11 @@ $(document).on('ready', function() {
 
   // Add Content Panel
   var addContentPanelElement = $('#add-content-panel');
-  addContentPanelElement.addContentPanel($('.add-content-panel-btn'));
+  addContentPanelElement.addContentPanel($('.menu button[data-panel-toggle="add-content-panel"]'));
+
+  // Style and Presentation Panel
+  var styleAndPresentationPanelElement = $('#style-and-presentation-panel');
+  styleAndPresentationPanelElement.styleAndPresentationPanel($('.menu button[data-panel-toggle="style-and-presentation-panel"]'));
 
   // Settings Panel
   var settingsPanelContainer = $('#settings-panel-container');

@@ -1,3 +1,5 @@
+require File.expand_path('../../aws/database_maintainer', __FILE__)
+
 namespace :aws do
   desc 'Migrate database in AWS'
   task :migrate, [:region, :environment] do |t, args|

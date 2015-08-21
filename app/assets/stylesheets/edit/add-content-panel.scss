@@ -4,15 +4,6 @@
  * Add Content Panel
  */
 #add-content-panel {
-  @include unselectable();
-  width: $panel-width;
-  position: fixed;
-
-  height: calc(100vh - #{$header-height} - #{$add-content-panel-padding});
-  top: $header-height;
-  right: 0;
-  padding: $add-content-panel-padding / 2;
-  background-color: $add-content-panel-bg-color;
   z-index: $add-content-panel-z-index;
 
   h1 {
@@ -24,33 +15,16 @@
     top: 0;
     left: 0;
   }
-
-  section {
-    .scrollable {
-      position: absolute;
-      bottom: 0;
-      top: 5rem;
-      left: 0;
-      right: 0;
-      overflow-y: auto;
-    }
-  }
-
-  .content-panel-close-btn {
-    display: inline-block;
-    width: 100%;
-    text-align: right;
-    margin-bottom: $inspiration-block-list-close-button-padding;
-  }
 }
 
 .inspiration-block {
   @include unselectable();
+
   position: relative;
   min-height: 10px;
-
   margin: $inspiration-block-list-block-margin;
   font-size: $inspiration-block-list-font-size;
+  border: 1px solid $inspiration-block-border-color;
   cursor: -webkit-grab;
   cursor: grab;
 

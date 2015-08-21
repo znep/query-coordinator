@@ -1,93 +1,130 @@
 @import 'lib/variables';
 
 /**
- * Settings Panel
+ * Settings panel
  */
-.settings-panel {
-  width: $settings-panel-width;
-  position: fixed;
-  height: 100%;
-  top: 0;
-  left: 0;
-  background-color: $header-bg-color;
+#settings-panel-container {
+  position: relative;
   z-index: $settings-panel-z-index;
-  color: $header-font-color;
-  padding: $settings-panel-padding-width / 2;
 
-  .close-side-panel-btn {
-    position: absolute;
-    top: 0px;
+  .settings-panel {
+    position: fixed;
+    width: $settings-panel-width;
+    height: 100%;
     left: 0;
-    width: 100%;
-    box-sizing: border-box;
-    line-height: $settings-panel-close-bar-height;
-    color: $settings-panel-close-font-color;
-    text-align: left;
-    padding: 0.3em 0.8em;
-    text-decoration: none;
+    top: 0;
+    padding: $settings-panel-padding-width / 2;
+    color: $header-color;
+    background-color: $header-bg-color;
+    z-index: 2;
 
-    &:focus,
-    &:hover {
-      outline: none;
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .close-panel-icon {
-      float: right;
+    .close-side-panel-btn {
+      position: absolute;
+      width: 100%;
+      left: 0;
+      top: 0px;
+      padding: 0.3em 0.8em;
+      color: $settings-panel-close-font-color;
       line-height: $settings-panel-close-bar-height;
+      text-align: left;
+      text-decoration: none;
+      background-color: $header-bg-color;
+      box-sizing: border-box;
+      border: none;
+      cursor: pointer;
+
+      &:focus,
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        outline: none;
+      }
+
+      .close-panel-icon {
+        float: right;
+        line-height: $settings-panel-close-bar-height;
+      }
     }
+
+    hr {
+      @include thin-hr();
+
+      border-bottom: 1px solid $settings-panel-hr-color;
+    }
+
+    .settings-main-title {
+      padding-top: $settings-panel-close-bar-height;
+      line-height: 4rem;
+      font-size: 2em;
+      font-weight: lighter;
+    }
+
+    .settings-save-failure-message {
+      font-size: 1.5rem;
+      padding-bottom: 0.8rem;
+      visibility: collapse;
+      text-align: center;
+
+      &.active {
+        visibility: visible;
+      }
+
+      .settings-save-failure-message-details {
+        font-size: 1.5rem;
+      }
+    }
+
+    .settings-save-btn {
+      width: 100%;
+    }
+
   }
 
-  hr {
-    @include thin-hr();
-    border-bottom: 1px solid $settings-panel-hr-color;
+  &.active .settings-panel {
+    box-shadow: $content-panel-box-shadow-size 0 $content-panel-box-shadow-size $content-panel-box-shadow-color;
   }
 
-  .settings-main-title {
-    padding-top: $settings-panel-close-bar-height;
-    line-height: 4rem;
-    font-size: 2em;
-    font-weight: lighter;
-  }
-
-  .settings-save-failure-message {
-    font-size: 1.5rem;
-    padding-bottom: 0.8rem;
-    visibility: collapse;
-    text-align: center;
+  #settings-panel-overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: $modal-overlay-bg-color;
+    opacity: 0;
+    transition: opacity $transition-duration;
+    pointer-events: none;
+    z-index: $settings-panel-overlay-z-index;
 
     &.active {
-      visibility: visible;
+      pointer-events: auto;
+      opacity: 1;
     }
-
-    .settings-save-failure-message-details {
-      font-size: 1.5rem;
-    }
-  }
-
-  .settings-save-btn {
-    width: 100%;
   }
 }
 
 /**
- * Settings Panel Overlay and z-index management
+ * IE 10 is the first version to stop responding to conditional
+ * comment includes in HTML, so we need to resort to doubly-vile
+ * hackery in order to accommodate IE 10's lack of support for
+ * `pointer-events: none;`.
+ *
+ * Note that these rules will be applied to ALL versions of IE
+ * up to but excluding 'Edge', which has deprecated these vendor
+ * properties.
+ *
+ * See: https://philipnewcomer.net/2014/04/target-internet-explorer-10-11-css/
  */
-#settings-panel-container {
-  z-index: $settings-panel-z-index;
-  position: relative;
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  /* IE10+ CSS styles go here */
 
-  .settings-panel {
-    z-index: 2;
-  }
+  #settings-panel-container {
 
-  &.active #settings-panel-overlay {
-    z-index: 1;
-    background-color: $modal-overlay-bg-color;
-    height: 100%;
-    left: 0;
-    position: fixed;
-    top: 0;
-    width: 100%;
+    #settings-panel-overlay {
+      visibility: hidden;
+
+      &.active {
+        visibility: visible;
+      }
+    }
   }
 }

@@ -58,4 +58,14 @@ RSpec.describe DraftStory, type: :model do
       expect(invalid_draft_story.errors[:created_by].length).to eq(1)
     end
   end
+
+  describe 'versioning' do
+
+    it 'creates sets a new digest on create' do
+      draft_story = FactoryGirl.build(:draft_story)
+      expect(draft_story.digest).to be_blank
+      expect(draft_story.save).to eq(true)
+      expect(draft_story.digest).to_not be_blank
+    end
+  end
 end

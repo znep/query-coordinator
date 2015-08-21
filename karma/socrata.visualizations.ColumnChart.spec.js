@@ -1153,15 +1153,22 @@ describe('socrata.visualizations.ColumnChart', function() {
         removeColumnChart(columnChart);
       });
 
-      it('should not show the filtered count in the flyout', function() {
+      it('should not show the filtered count in the flyout', function(done) {
 
         columnChart.chart.render(testDataWithFiltered, columnChart.renderOptions);
 
         var barGroup = columnChart.element.find('.bar-group').get(0);
-        var flyout = $('#uber-flyout');
+
+        columnChart.element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', function(event) {
+
+          var payload = event.originalEvent.detail.data;
+
+          expect(_.has(payload, 'filteredValueLabel')).to.equal(false);
+          expect(_.has(payload, 'filteredValue')).to.equal(false);
+          done();
+        });
 
         testHelpers.fireMouseEvent(barGroup, 'mousemove');
-        expect(flyout.find('.flyout-cell:contains(Filtered amount)').length).to.equal(0);
       });
     });
   });
@@ -1621,6 +1628,62 @@ describe('socrata.visualizations.ColumnChart', function() {
       $chartElement.trigger('mouseleave');
 
       expect($('.bar-group.highlight')).to.have.length(0);
+    });
+  });
+
+  describe('on mousemove events', function() {
+
+    var columnChart;
+
+    beforeEach(function() {
+      columnChart = createColumnChart();
+    });
+
+    describe('on a column `barGroup`', function() {
+
+      it('should emit an event in which the `element` property is the `.unfiltered` child bar of the `barGroup`', function(done) {
+
+        columnChart.chart.render(testData, columnChart.renderOptions);
+
+        var barGroup = columnChart.element.find('.bar-group').get(0);
+        var unfilteredBarGroupBar = $(barGroup).find('.unfiltered').get(0);
+
+        columnChart.element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', function(event) {
+
+          var payload = event.originalEvent.detail.data;
+
+          expect(payload.element).to.equal(unfilteredBarGroupBar);
+          done();
+        });
+
+        testHelpers.fireMouseEvent(barGroup, 'mousemove');
+      });
+    });
+
+    describe('on a label', function() {
+
+      it('should emit an event in which the `element` property is a matching `barGroup` element', function(done) {
+
+        columnChart.chart.render(testData, columnChart.renderOptions);
+
+        var barGroup = columnChart.element.find('.bar-group').get(0);
+        var unfilteredBarGroupBar = $(barGroup).find('.unfiltered').get(0);
+        var label = columnChart.element.find(
+          '.label[data-bar-name="{0}"] .contents span'.format(
+            barGroup.getAttribute('data-bar-name')
+          )
+        ).get(0);
+
+        columnChart.element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', function(event) {
+
+          var payload = event.originalEvent.detail.data;
+
+          expect(payload.element).to.equal(unfilteredBarGroupBar);
+          done();
+        });
+
+        testHelpers.fireMouseEvent(label, 'mousemove');
+      });
     });
   });
 

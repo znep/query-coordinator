@@ -8,7 +8,7 @@ window.socrata.storyteller.config = (function () {
 
   return {
     coreServiceAppToken: '<%= Rails.application.config.core_service_app_token %>',
-    debug: <%= Rails.env.development? ? "true" : "false" %>,
+    environment: '<%= Rails.env %>',
     getAirbrakeConfig: function (key) {
       return airbrakeConfigHash[_.camelCase(key)];
     }

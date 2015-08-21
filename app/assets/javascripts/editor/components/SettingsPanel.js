@@ -180,8 +180,8 @@
         settingsContainer.removeClass('active');
 
         toggleButton.
-          removeClass('active')
-          .blur();
+          removeClass('active').
+          blur();
 
         // If save failed, revert title and description to values present at panel open time.
         if (hasError) {

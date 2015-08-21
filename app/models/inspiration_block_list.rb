@@ -9,7 +9,6 @@ class InspirationBlockList
   end
 
   def blocks
-    JSON.parse(@json)["blocks"]
+    JSON.parse(@json)['blocks']
   end
-
 end

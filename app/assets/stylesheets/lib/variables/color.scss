@@ -3,17 +3,32 @@ $body-bg-color: #fff;
 
 // header
 $header-bg-color: #4a4747;
-$header-font-color: #fff;
+$header-color: #fff;
 $header-accent-color: #ddd;
 $header-story-title-color: #eee;
-
-// Content panels
-$content-panel-bg-color: #eee;
+$header-box-shadow-color: rgba(0, 0, 0, 0.2);
 
 // Settings Panel
 $settings-panel-bg-color: #404040;
 $settings-panel-hr-color: #666;
 $settings-panel-close-font-color: #aaa;
+
+// Content panels
+$content-panel-bg-color: #eee;
+$content-panel-title-color: #333;
+$content-panel-description-color: #9b9b9b;
+$content-panel-box-shadow-color: rgba(0, 0, 0, 0.2);
+
+// Inspiration blocks
+$inspiration-block-border-color: #bbb;
+
+// Style and presentation themes
+$theme-list-theme-font-color: #999;
+$theme-list-theme-border-color: #ddd;
+$theme-list-theme-bg-color: #fff;
+$theme-list-theme-border-color: #ddd;
+$theme-list-theme-hover-border-color: #bbb;
+$theme-list-theme-active-border-color: #3498db;
 
 // Blocks
 $block-bg-color: #fafafa;

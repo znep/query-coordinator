@@ -40,7 +40,6 @@ RSpec.describe 'settings panel', type: :feature, js: true do
     # Close with the esc key
     page.find('body').native.send_keys(:escape)
     expect_settings_panel_to_be_closed
-
   end
 
   describe 'title' do
@@ -61,9 +60,7 @@ RSpec.describe 'settings panel', type: :feature, js: true do
         fill_in('title', with: 'test story')
         expect(page).to have_selector('.settings-panel .settings-save-btn:disabled')
       end
-
     end
-
   end
 
   def expect_settings_panel_to_be_closed
@@ -80,5 +77,4 @@ RSpec.describe 'settings panel', type: :feature, js: true do
     first_toggle = page.all(data_toggle_selector).first()
     first_toggle.click()
   end
-
 end

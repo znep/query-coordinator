@@ -56,11 +56,12 @@
     addContentPanel.
       on('sidebar:open', function() {
         toggleButton.addClass('active');
-        addContentPanel.find('a').eq(0).focus();
+        addContentPanel.find('button[data-panel-toggle="add-content-panel"]').eq(0).focus();
       }).
       on('sidebar:close', function() {
-        toggleButton.removeClass('active');
-        $('header a').eq(0).focus(); // put focus back in the header
+        toggleButton.
+          removeClass('active').
+          blur();
       }).
       on('mousewheel', '.scrollable', utils.preventScrolling).
       on('dblclick', '.inspiration-block', function(e) {

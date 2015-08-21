@@ -1,16 +1,17 @@
 <div id="add-content-panel" class="content-panel">
-  <div class="content-panel-close-btn">
-    <button>
+  <div class="content-panel-close-btn-container">
+    <button class="content-panel-close-btn" data-panel-toggle="add-content-panel">
       <span class="icon-cross2"></span>
     </button>
   </div>
   <section>
-    <h1><%= I18n.t('add_content_panel.title') %></h1>
+    <h1 class="content-panel-title"><%= I18n.t('add_content_panel.title') %></h1>
+    <h2 class="content-panel-description"><%= I18n.t('add_content_panel.description') %></h2>
     <hr></hr>
     <div class="scrollable">
       <div class="inspiration-block-list">
         <% @inspiration_block_list.each do |block| %>
-          <div class="inspiration-block" data-block-content="<%= block["blockContent"].to_json %>">
+          <div class="inspiration-block" data-block-content="<%= block['blockContent'].to_json %>">
             <img src="<%= asset_path(block['imagePreview']) %>">
             <div class="drag-overlay"></div>
           </div>

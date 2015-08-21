@@ -30,7 +30,8 @@ en:
     permissions_error_flash: 'Permissions error.'
     not_found_error_flash: 'Story not found.'
   add_content_panel:
-    title: 'Common Blocks'
+    title: 'Inspiration Blocks'
+    description: 'Choose a layout with text or media!'
     render_error: 'There was an error'
   style_and_presentation_panel:
     title: 'Styled Themes'

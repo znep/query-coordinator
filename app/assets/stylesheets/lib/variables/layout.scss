@@ -4,6 +4,7 @@ $header-margin: 0.7rem;
 $header-title-height: 1.7em;
 $header-title-left-margin: 0.5em;
 $header-right-pane-padding: 1em;
+$header-box-shadow-size: 0.15rem;
 
 // Panels
 $panel-width: 30rem;
@@ -15,12 +16,20 @@ $settings-panel-padding-width: 3rem;
 
 // Content panels
 $content-panel-padding: 2rem;
-$content-panel-close-button-margin-bottom: 0.5rem;
+$content-panel-close-btn-margin-bottom: 0.5rem;
+$content-panel-close-btn-width: 1.8rem;
+$content-panel-box-shadow-size: 0.15rem;
 
 // Inspiration story
 $inspiration-block-list-close-button-padding: 0.5em;
 $inspiration-block-list-font-size: 0.5rem;
 $inspiration-block-list-block-margin: 0.5rem;
+
+// Style and presentation themes
+$theme-list-theme-margin: 0.5rem;
+$theme-list-theme-interior-margin-bottom: 1rem;
+$theme-list-theme-padding: 1rem;
+$theme-list-theme-title-font-size: 1.5rem;
 
 // Main content (the width of the user story)
 $main-content-width-small: 38.4rem;

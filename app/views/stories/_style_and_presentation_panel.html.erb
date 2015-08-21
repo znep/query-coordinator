@@ -1,22 +1,24 @@
 <div id="style-and-presentation-panel" class="content-panel">
-  <div class="content-panel-close-btn">
-    <button>
+  <div class="content-panel-close-btn-container">
+    <button class="content-panel-close-btn" data-panel-toggle="style-and-presentation-panel">
       <span class="icon-cross2"></span>
     </button>
   </div>
 
   <section>
-    <h1><%= I18n.t('style_and_presentation_panel.title') %></h1>
-    <h2><%= I18n.t('style_and_presentation_panel.description') %></h2>
+    <h1 class="content-panel-title"><%= I18n.t('style_and_presentation_panel.title') %></h1>
+    <h2 class="content-panel-description"><%= I18n.t('style_and_presentation_panel.description') %></h2>
     <hr></hr>
     <div class="scrollable">
-      <div class="styled-theme-list">
-<!--        <% @inspiration_block_list.each do |block| %>
-          <div class="inspiration-block" data-block-content="<%= block["blockContent"].to_json %>">
-            <img src="<%= asset_path(block['imagePreview']) %>">
-            <div class="drag-overlay"></div>
+      <div class="theme-list">
+        <% @theme_list.each do |theme| %>
+          <div class="theme" data-theme-id="<%= theme['id'] %>">
+            <h4 class="theme-title"><%= theme['title'] %></h4>
+            <div class="theme-sample">
+              <img src="<%= asset_path(theme['imagePreview']) %>" alt="<%= theme['description'] %>">
+            </div>
           </div>
-        <% end %>-->
+        <% end %>
       </div>
     </div>
   </section>

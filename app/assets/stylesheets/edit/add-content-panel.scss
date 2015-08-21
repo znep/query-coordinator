@@ -15,26 +15,16 @@
     top: 0;
     left: 0;
   }
-
-  section {
-    .scrollable {
-      position: absolute;
-      bottom: 0;
-      top: 5rem;
-      left: 0;
-      right: 0;
-      overflow-y: auto;
-    }
-  }
 }
 
 .inspiration-block {
   @include unselectable();
+
   position: relative;
   min-height: 10px;
-
   margin: $inspiration-block-list-block-margin;
   font-size: $inspiration-block-list-font-size;
+  border: 1px solid $inspiration-block-border-color;
   cursor: -webkit-grab;
   cursor: grab;
 

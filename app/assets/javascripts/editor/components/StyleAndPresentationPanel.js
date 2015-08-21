@@ -56,17 +56,22 @@
     styleAndPresentationPanel.
       on('sidebar:open', function() {
         toggleButton.addClass('active');
-        styleAndPresentationPanel.find('.content-panel-close-btn').eq(0).focus();
+        styleAndPresentationPanel.find('button[data-panel-toggle="style-and-presentation-panel"]').eq(0).focus();
       }).
       on('sidebar:close', function() {
-        toggleButton.removeClass('active');
-        toggleButton.focus(); // put focus back in the header
+        toggleButton.
+          removeClass('active').
+          blur();
       }).
       on('mousewheel', '.scrollable', utils.preventScrolling).
-      on('click', '.style-swatch', function(event) {
+      on('mousedown', '.theme', function(event) {
         var themeId = event.currentTarget.getAttribute('data-theme-id');
 
         if (themeId) {
+
+          styleAndPresentationPanel.find('.theme').removeClass('active');
+          $(event.currentTarget).addClass('active');
+
           storyteller.dispatcher.dispatch({
             action: Constants.STORY_UPDATE_THEME,
             themeId: themeId

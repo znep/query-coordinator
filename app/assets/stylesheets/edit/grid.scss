@@ -1,11 +1,12 @@
 @import 'bourbon';
 @import 'neat';
+@import 'lib/variables';
 
 .block {
   @include row();
 
   div[class*="col"] {
-    @media (max-width : 600px) {
+    @media (max-width : $stack-to-single-column-width) {
       @include span-columns(12);
     }
   }

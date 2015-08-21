@@ -264,10 +264,10 @@
 
     VectorTileFeature.prototype.drawPolygon = function(canvas, coordinateArray, computedStyle) {
 
-      function validateOutline(outline) {
+      function validateOutline(computedOutline) {
         var validatedOutline = null;
-        if (outline.hasOwnProperty('color') && outline.hasOwnProperty('size')) {
-          validatedOutline = outline;
+        if (_.has(computedOutline, 'color') && _.has(computedOutline, 'size')) {
+          validatedOutline = computedOutline;
         }
         return validatedOutline;
       }
@@ -299,9 +299,9 @@
 
       // computedStyle.color may be a function or a value.
       if (_.isFunction(computedStyle.color)) {
-        ctx.fillStyle = style.color();
+        ctx.fillStyle = computedStyle.color();
       } else {
-        ctx.fillStyle = style.color;
+        ctx.fillStyle = computedStyle.color;
       }
 
       if (outline !== null) {
@@ -617,17 +617,17 @@
 
           // Get neighboring tile id for a tile's edge
           var tileIdModifiers = {
-            top: function(tile) {
-              tile.y--;
+            top: function(neighborTile) {
+              neighborTile.y--;
             },
-            left: function(tile) {
-              tile.x--;
+            left: function(neighborTile) {
+              neighborTile.x--;
             },
-            bottom: function(tile) {
-              tile.y++;
+            bottom: function(neighborTile) {
+              neighborTile.y++;
             },
-            right: function(tile) {
-              tile.x++;
+            right: function(neighborTile) {
+              neighborTile.x++;
             }
           };
 
@@ -1033,7 +1033,7 @@
           self.tileLoaded(tileId);
         }
 
-        // Does this ever get run?
+        // VectorTile is a Leaflet global variable
         vectorTile = VectorTileUtil.unpackVectorTile(
           new VectorTile(
             new pbf(arrayBuffer)

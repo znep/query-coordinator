@@ -1,6 +1,7 @@
 describe('columnAndVisualizationSelectorTest', function() {
   'use strict';
 
+  var I18n;
   var testHelpers;
   var Card;
   var Mockumentary;
@@ -132,6 +133,7 @@ describe('columnAndVisualizationSelectorTest', function() {
 
   beforeEach(
     inject([
+      'I18n',
       'testHelpers',
       'Card',
       'Mockumentary',
@@ -139,6 +141,7 @@ describe('columnAndVisualizationSelectorTest', function() {
       '$rootScope',
       '$controller',
       function(
+        _I18n,
         _testHelpers,
         _Card,
         _Mockumentary,
@@ -146,6 +149,7 @@ describe('columnAndVisualizationSelectorTest', function() {
         _$rootScope,
         _$controller) {
 
+          I18n = _I18n;
           testHelpers = _testHelpers;
           Card = _Card;
           Mockumentary = _Mockumentary;
@@ -526,18 +530,18 @@ describe('columnAndVisualizationSelectorTest', function() {
 
       var prompt = directive.element.find('.placeholder-inner-text').find('span').text();
 
-      expect(prompt).to.equal('Choose a column from the dropdown above to add a new card');
+      expect(prompt).to.equal(I18n.addCardDialog.prompt);
     });
 
     it('should override the default message if a `addVisualizationPrompt` value is provided', function() {
 
-      directive.scope.addVisualizationPrompt = 'addCardDialog.genericPrompt';
-
-      directive.scope.$digest();
+      directive.scope.$safeApply(function() {
+        directive.scope.addVisualizationPrompt = 'addCardDialog.genericPrompt';    
+      });
 
       var prompt = directive.element.find('.placeholder-inner-text').find('span').text();
 
-      expect(prompt).to.equal('Choose a column from the dropdown above to add a new visualization');
+      expect(prompt).to.equal(I18n.addCardDialog.genericPrompt); 
     });
   });
 });

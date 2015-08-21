@@ -52,7 +52,7 @@
       "dot-notation": [1, {"allowKeywords": false}],
       "eol-last": 1,
       "indent": [1, 2],
-      "new-cap": 1,
+      "new-cap": [1, {"newIsCapExceptions": ["pbf"]}],
       "no-console": 0,
       "no-extra-semi": 1,
       "no-shadow": [2, {"hoist": "all"}],
@@ -85,7 +85,8 @@
       "Rx": true,
       "ss": true,
       "socrata": true,
-      "VBArray": true
+      "VBArray": true,
+      "VectorTile": true
     }
   }
 }

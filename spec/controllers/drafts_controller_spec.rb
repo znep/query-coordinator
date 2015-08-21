@@ -11,7 +11,7 @@ RSpec.describe DraftsController, type: :controller do
     let(:mock_story_draft_creator) { double('story_draft_creator') }
     let(:uid) { 'newd-raft' }
     let(:etag) { 'someetag' }
-    let(:blocks) { [{id: 1}] }
+    let(:blocks) { [{id: 1}, {id: 2}] }
 
     let(:params) do
       {
@@ -23,13 +23,13 @@ RSpec.describe DraftsController, type: :controller do
 
     let(:headers) do
       {
-        'IF_MATCH' => etag
+        'HTTP_IF_MATCH' => etag
       }
     end
 
     let(:new_draft_story) { double('new_draft_story').as_null_object }
     let(:new_story_digest) { 'new_digest' }
-    let(:block_id_mappings) { [{:oldId => 1234, :newId => 5678}] }
+    let(:block_id_mappings) { [{:oldId => 1, :newId => 5678}, {:oldId => 2, :newId => 9876}] }
 
     before do
       allow(StoryDraftCreator).to receive(:new).and_return(mock_story_draft_creator)

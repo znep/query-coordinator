@@ -4,7 +4,7 @@ class DraftsController < ApplicationController
     story_draft_creator = StoryDraftCreator.new(
       user: current_user,
       uid: params[:uid],
-      digest: request.env['IF_MATCH'],
+      digest: request.env['HTTP_IF_MATCH'],
       blocks: params[:blocks]
     )
 
@@ -14,7 +14,7 @@ class DraftsController < ApplicationController
       return render nothing: true, status: 412
     end
 
-    headers['ETag'] = @new_draft_story.digest
+    response['ETag'] = @new_draft_story.digest
 
     response_obj = {
       blockIdMappings: story_draft_creator.block_id_mappings,

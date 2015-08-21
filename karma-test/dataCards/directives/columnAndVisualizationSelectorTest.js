@@ -311,7 +311,7 @@ describe('columnAndVisualizationSelectorTest', function() {
          * only registered in the card-layout code. So just test to make sure the conditions are met for
          * the card-layout-registered flyout to work.
          */
-        expect(customizeButton.prop('title')).to.match(/customize this card/i);
+        expect(customizeButton.prop('title')).to.equal(I18n.cardControls.customizeEnabled);
       });
     });
   });
@@ -536,12 +536,12 @@ describe('columnAndVisualizationSelectorTest', function() {
     it('should override the default message if a `addVisualizationPrompt` value is provided', function() {
 
       directive.scope.$safeApply(function() {
-        directive.scope.addVisualizationPrompt = 'addCardDialog.genericPrompt';    
+        directive.scope.addVisualizationPrompt = 'addCardDialog.genericPrompt';
       });
 
       var prompt = directive.element.find('.placeholder-inner-text').find('span').text();
 
-      expect(prompt).to.equal(I18n.addCardDialog.genericPrompt); 
+      expect(prompt).to.equal(I18n.addCardDialog.genericPrompt);
     });
   });
 });

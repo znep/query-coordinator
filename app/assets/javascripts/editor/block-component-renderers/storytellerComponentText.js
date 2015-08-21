@@ -6,25 +6,27 @@
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
-  function _setupRichTextEditor($element, componentData) {
+  function _setupRichTextEditor($element, componentData, themeId) {
     var editorId = _.uniqueId();
+    var editor;
 
     utils.assertHasProperty(componentData, 'value');
 
     $element.addClass('text-editor').attr('data-editor-id', editorId);
 
-    storyteller.richTextEditorManager.createEditor(
+    editor = storyteller.richTextEditorManager.createEditor(
       $element,
       editorId,
       componentData.value
     );
+    editor.setTheme(themeId);
 
     $element.one('destroy', function() {
       storyteller.richTextEditorManager.deleteEditor(editorId);
     });
   }
 
-  function _updateRichTextEditor($element, componentData) {
+  function _updateRichTextEditor($element, componentData, themeId) {
     var editorId = $element.attr('data-editor-id');
     var editor = storyteller.richTextEditorManager.getEditor(editorId);
 
@@ -36,6 +38,7 @@
     );
 
     editor.setContent(componentData.value);
+    editor.setTheme(themeId);
   }
 
   /**
@@ -53,7 +56,7 @@
    * @param {object} componentData - An object with a type and value attribute
    * @returns {jQuery} - The rendered layout jQuery element
    */
-  function storytellerComponentText(componentData) {
+  function storytellerComponentText(componentData, themeId) {
     var $self = $(this);
 
     utils.assertHasProperty(componentData, 'type');
@@ -65,9 +68,9 @@
     var needsEditorSetup = !$self.is('[data-editor-id]');
 
     if (needsEditorSetup) {
-      _setupRichTextEditor($self, componentData);
+      _setupRichTextEditor($self, componentData, themeId);
     } else {
-      _updateRichTextEditor($self, componentData);
+      _updateRichTextEditor($self, componentData, themeId);
     }
 
     return $self;

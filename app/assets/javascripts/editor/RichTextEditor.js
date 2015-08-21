@@ -129,8 +129,19 @@
     };
 
     // Add a `themeName` class to the html root of the iframe
-    this.setStyle = function(themeName) {
-      _editorBodyElement.parent().addClass(themeName);
+    this.setTheme = function(themeId) {
+      var htmlElement = _editorElement[0].contentDocument.documentElement;
+      var newClassList = _.reject(
+        htmlElement.getAttribute('class').split(' '),
+        function(className) {
+          return _.startsWith(className, 'theme-');
+        }
+      );
+
+      newClassList.push(' theme-{0}'.format(themeId));
+
+      htmlElement.setAttribute('class', newClassList.join(' '));
+      _updateContentHeight();
     };
 
     /**
@@ -216,15 +227,13 @@
       // Add top-level theme classes to html, to mirror high-level story classes
       // in view mode
       $(document).find('html').
-        addClass('classic large'); //TODO: add actual size and theme class here
+        addClass('theme-classic large'); //TODO: add actual size and theme class here
 
       // Prevent flash of unstyled text by setting opacity to zero
       // and then overriding it in the stylesheet.
       $(document.body).
         css('opacity', 0).
         addClass('typeset');
-
-
 
       var styleEl = document.createElement('link');
       styleEl.setAttribute('rel', 'stylesheet');

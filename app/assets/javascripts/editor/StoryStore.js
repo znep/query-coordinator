@@ -62,6 +62,10 @@
         case Constants.HISTORY_REDO:
           _applyHistoryState();
           break;
+
+        case Constants.STORY_UPDATE_THEME:
+          _setStoryThemeId(payload);
+          break;
       }
     });
 
@@ -89,6 +93,13 @@
       var story = _getStory(storyUid);
 
       return story.description;
+    };
+
+    this.getStoryThemeId = function(storyUid) {
+
+      var story = _getStory(storyUid);
+
+      return story.themeId || 'classic';
     };
 
     this.getStoryBlockIds = function(storyUid) {
@@ -203,6 +214,19 @@
       var storyUid = payload.storyUid;
 
       _getStory(storyUid).description = payload.description;
+
+      self._emitChange();
+    }
+
+    function _setStoryThemeId(payload) {
+      utils.assertHasProperty(payload, 'storyUid');
+      utils.assertIsOneOfTypes(payload.storyUid, 'string');
+      utils.assertHasProperty(payload, 'themeId');
+      utils.assertIsOneOfTypes(payload.themeId, 'string');
+
+      var storyUid = payload.storyUid;
+
+      _getStory(storyUid).themeId = payload.themeId;
 
       self._emitChange();
     }

@@ -76,6 +76,7 @@ $th-headings: (
   font-size: $base-type-size;
   color: $default-type-color;
   font-size-adjust: 0.5;
+  -webkit-font-smoothing: antialiased;
 
 
   // View Styles

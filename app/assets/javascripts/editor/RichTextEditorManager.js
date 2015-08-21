@@ -42,7 +42,7 @@
 
       _editors[editorId] = new RichTextEditor(element, editorId, _assetFinder, _formats, contentToPreload);
 
-      return element;
+      return _editors[editorId];
     };
 
     this.getEditor = function(editorId) {

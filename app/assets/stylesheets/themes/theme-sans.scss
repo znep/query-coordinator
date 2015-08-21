@@ -69,26 +69,7 @@ $subtitle-font-family: $body-font-stack;
 
 // END Theme Settings //
 
-
-// Font Stacks
-$body-font-stack: 'Noto Sans', sans-serif;
-$heading-font-stack: 'Radley', serif;
-
-
-// Base Typesize. Used for grid and typography.
-$base-type-size: 1em;
-
-
-//Colors
-$default-type-color: #252525;
-$heading-type-color: #990000;
-$quiet-type-color: #ccc;
-
-
-$link-color: green;
-$link-hover: darken($link-color, 12%);
-$link-hover: darken($link-color, 12%);
-
+$breakpoint-to-ems: true;
 
 // Import typography
 @import "includes/typography";

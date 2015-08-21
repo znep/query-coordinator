@@ -19,10 +19,29 @@ default: &default
   feature_map_zoom_debounce: 500
   {%- endif %}
 
+  {% if ENABLE_SEARCH_SUGGESTIONS is defined -%}
   enable_search_suggestions: {{ ENABLE_SEARCH_SUGGESTIONS }}
+  {% else -%}
+  enable_search_suggestions: true
+  {% endif -%}
+
+  {% if ODUX_ENABLE_FEATURE_MAP is defined -%}
   odux_enable_feature_map: {{ ODUX_ENABLE_FEATURE_MAP }}
+  {% else -%}
+  odux_enable_feature_map: true
+  {% endif -%}
+
+  {% if FEATURE_MAP_DISABLE_PAN_ZOOM is defined -%}
   feature_map_disable_pan_zoom: {{ FEATURE_MAP_DISABLE_PAN_ZOOM }}
+  {% else -%}
+  feature_map_disable_pan_zoom: false
+  {% endif -%}
+
+  {% if ENABLE_PNG_DOWNLOAD_UI -%}
   enable_png_download_ui: {{ ENABLE_PNG_DOWNLOAD_UI }}
+  {% else -%}
+  enable_png_download_ui: true
+  {% endif -%}
 
   {% if FEATURE_MAP_FEATURES_PER_TILE is defined -%}
   feature_map_features_per_tile: {{ FEATURE_MAP_FEATURES_PER_TILE }}

@@ -84,7 +84,6 @@ test:
 
 # test.socrata.com
 staging:
-  coreservice_uri: http://vm01.ord1.socrata.com:8081
   max_core_server_requests: 15
   <<: *default
   mixpanel_token: ce548d5c95f7671fadd0174cc067dc69

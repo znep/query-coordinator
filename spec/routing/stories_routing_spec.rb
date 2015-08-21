@@ -1,15 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe 'stories routing', type: :routing do
-  let(:four_by_four) { '52my-2pac' }
+  let(:uid) { '52my-2pac' }
   let(:vanity_text) { 'let_me_tell-you-a-story' }
 
-  # NOTE: Should be /stories/s/#{vanity_text}/#{four_by_four},
+  # NOTE: Should be /stories/s/#{vanity_text}/#{uid},
   # but RSpec routing tests seem to ignore relative_url_root.
-  let(:stories_vanity_show_route_url) { "/s/#{vanity_text}/#{four_by_four}" }
-  let(:stories_vanity_edit_route_url) { "/s/#{vanity_text}/#{four_by_four}/edit" }
-  let(:stories_show_route_url) { "/s/#{four_by_four}" }
-  let(:stories_edit_route_url) { "/s/#{four_by_four}/edit" }
+  let(:stories_vanity_show_route_url) { "/s/#{vanity_text}/#{uid}" }
+  let(:stories_vanity_edit_route_url) { "/s/#{vanity_text}/#{uid}/edit" }
+  let(:stories_show_route_url) { "/s/#{uid}" }
+  let(:stories_edit_route_url) { "/s/#{uid}/edit" }
 
   describe 'stories show and edit routes' do
 
@@ -19,7 +19,7 @@ RSpec.describe 'stories routing', type: :routing do
         expect(get: stories_vanity_show_route_url).to route_to(
           controller: 'stories',
           action: 'show',
-          four_by_four: four_by_four,
+          uid: uid,
           vanity_text: vanity_text
         )
       end
@@ -28,20 +28,20 @@ RSpec.describe 'stories routing', type: :routing do
         expect(get: stories_vanity_edit_route_url).to route_to(
           controller: 'stories',
           action: 'edit',
-          four_by_four: four_by_four,
+          uid: uid,
           vanity_text: vanity_text
         )
       end
 
       context 'when vanity text contains strange characters' do
         let(:vanity_text) { 'A+a!B_79~()+abd' }
-        let(:four_by_four) { '1234-0987' }
+        let(:uid) { '1234-0987' }
 
         it 'routes to show' do
           expect(get: stories_vanity_show_route_url).to route_to(
             controller: 'stories',
             action: 'show',
-            four_by_four: four_by_four,
+            uid: uid,
             vanity_text: vanity_text
           )
         end
@@ -50,14 +50,14 @@ RSpec.describe 'stories routing', type: :routing do
           expect(get: stories_vanity_edit_route_url).to route_to(
             controller: 'stories',
             action: 'edit',
-            four_by_four: four_by_four,
+            uid: uid,
             vanity_text: vanity_text
           )
         end
       end
 
       context 'when the 4x4 is too long' do
-        let(:four_by_four) { 'not-afourbyfour' }
+        let(:uid) { 'not-afourbyfour' }
 
         it 'does not route to show' do
           expect(get: stories_vanity_show_route_url).to_not be_routable
@@ -69,7 +69,7 @@ RSpec.describe 'stories routing', type: :routing do
       end
 
       context 'when the 4x4 has no dash' do
-        let(:four_by_four) { 'nota_4x4x' }
+        let(:uid) { 'nota_4x4x' }
 
         it 'does not route to show' do
           expect(get: stories_vanity_show_route_url).to_not be_routable
@@ -88,7 +88,7 @@ RSpec.describe 'stories routing', type: :routing do
         expect(get: stories_show_route_url).to route_to(
           controller: 'stories',
           action: 'show',
-          four_by_four: four_by_four
+          uid: uid
         )
       end
 
@@ -96,12 +96,12 @@ RSpec.describe 'stories routing', type: :routing do
         expect(get: stories_edit_route_url).to route_to(
           controller: 'stories',
           action: 'edit',
-          four_by_four: four_by_four
+          uid: uid
         )
       end
 
       context 'with an invalid 4x4' do
-        let(:four_by_four) { 'really_im_not_a_fourbyfour' }
+        let(:uid) { 'really_im_not_a_fourbyfour' }
 
         it 'does not route to show' do
           expect(get: stories_show_route_url).to_not be_routable

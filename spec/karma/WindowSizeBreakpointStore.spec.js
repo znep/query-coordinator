@@ -55,7 +55,6 @@
     });
 
     it('makes the right blob when given a window size', function () {
-      chai.config.truncateThreshold = 0;
       verifyOutput(0, 'small');
       verifyOutput(1, 'small');
 
@@ -89,6 +88,33 @@
       callResizeCallback(Constants.WINDOW_SIZE_BREAK_XXLARGE + 0.0001);
 
       assert.equal(count, 1);
+    });
+
+    describe('getAllClassBreaks', function() {
+      it('should return all available class breaks', function() {
+        chai.config.truncateThreshold = 0;
+        var windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
+        assert.deepEqual(windowSizeBreakpointStore.getAllClassBreaks(), {
+          xxlarge: false,
+          xlarge: false,
+          large: false,
+          medium: false,
+          small: true
+        });
+      });
+    });
+
+    describe('getUnusedClassBreaks', function() {
+      it('should return all unused class breaks', function() {
+        var windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
+        assert.deepEqual(windowSizeBreakpointStore.getUnusedClassBreaks(), {
+          xxlarge: false,
+          xlarge: false,
+          large: false,
+          medium: false
+        });
+        assert.equal(windowSizeBreakpointStore.getClassBreak(), 'small');
+      });
     });
   });
 })(window);

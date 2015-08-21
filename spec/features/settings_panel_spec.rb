@@ -53,6 +53,12 @@ RSpec.describe 'settings panel', type: :feature, js: true do
 
     describe 'edit' do
 
+      it 'limits the field to 254 characters' do
+        fill_in('title', with: string_with_1024_chars)
+
+        expect(page.find('input[name="title"]').value).to eq(string_with_254_chars)
+      end
+
       it 'enables the save button when the title is changed' do
         expect(page).to have_selector('.settings-panel .settings-save-btn:disabled')
         fill_in('title', with: 'editing!')
@@ -76,5 +82,13 @@ RSpec.describe 'settings panel', type: :feature, js: true do
   def toggle_pane
     first_toggle = page.all(data_toggle_selector).first()
     first_toggle.click()
+  end
+
+  def string_with_1024_chars
+    'a' * 1024
+  end
+
+  def string_with_254_chars
+    string_with_1024_chars[0...254]
   end
 end

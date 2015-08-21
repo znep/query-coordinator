@@ -266,7 +266,8 @@
         {
           'type': 'object',
           'properties': {
-            'mapExtent': {'type': 'object'}
+            'mapExtent': {'type': 'object'},
+            'bucketSize': {'type': 'integer'}
           },
           'required': []
         }

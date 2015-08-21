@@ -209,7 +209,7 @@
       }
 
       // Fill in gaps of the unfiltered data with zero-value buckets.
-      for(var i = 1; i < unfiltered.length; i++) {
+      for (var i = 1; i < unfiltered.length; i++) {
         if (unfiltered[i].name - unfiltered[i - 1].name > 1) {
           unfiltered.splice(i, 0, { name: Number(unfiltered[i - 1].name) + 1, value: 0});
         }

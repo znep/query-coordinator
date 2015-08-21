@@ -196,7 +196,7 @@
       var classBreak = storyteller.windowSizeBreakpointStore.getClassBreak();
       var unusedClassBreaks = storyteller.windowSizeBreakpointStore.getUnusedClassBreaks();
 
-      $(editorDocument.body).
+      $(editorDocument.documentElement).
         removeClass(unusedClassBreaks).
         addClass(classBreak);
     }

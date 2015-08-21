@@ -158,6 +158,20 @@ class DatasetsHelperTest < Test::Unit::TestCase
     refute @object.hide_map_create?, 'hide_map_create expected to be false'
   end
 
+  def test_enable_xls_download_type
+    FeatureFlags.stubs(:derive => Hashie::Mash.new(:enable_xls_download_type => true))
+    assert @object.enable_xls_download_type, 'enable_xls_download_type to be true'
+    FeatureFlags.stubs(:derive => Hashie::Mash.new(:enable_xls_download_type => false))
+    refute @object.enable_xls_download_type, 'enable_xls_download_type to be false'
+  end
+
+  def test_normal_download_types
+    @object.stubs(:enable_xls_download_type => true)
+    assert_equal @object.normal_download_types, ['CSV', 'CSV for Excel', 'JSON', 'PDF', 'RDF', 'RSS', 'XLS', 'XLSX', 'XML']
+    @object.stubs(:enable_xls_download_type => false)
+    assert_equal @object.normal_download_types, ['CSV', 'CSV for Excel', 'JSON', 'PDF', 'RDF', 'RSS', 'XML']
+  end
+
   private
 
   def default_view_state

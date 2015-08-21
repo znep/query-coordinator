@@ -1636,7 +1636,7 @@ en:
         uploading: Uploading your file...
       why_choose_now:
         close: Close
-        line_1: Your data is heavily processed when it is imported, and optimized for consumption for each particular data type. In addition, most data types have special features that will only be activated should the column be set to that type &mdash; location columns, for example, are necessary to create maps.
+        line_1: Your data is heavily processed when it is imported, and optimized for consumption for each particular data type. In addition, most data types have special features that will only be activated should the column be set to that type — location columns, for example, are necessary to create maps.
         line_2: It is possible to change column types later, but it is a process that takes some time, so it's best to set it all properly up front.
     ds:
       bar:

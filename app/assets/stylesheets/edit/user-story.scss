@@ -17,6 +17,7 @@
     );
     @include unselectable();
 
+    max-width: 94%;
     position: relative;
     display: block;
     margin: 0 auto;
@@ -25,6 +26,11 @@
 
   .block-edit {
     background-color: transparent;
+    border: 1px solid transparent;
+
+    &:hover {
+      border: 1px solid $block-edit-hover-border-color;
+    }
 
     .block-edit-controls {
       position: absolute;
@@ -53,14 +59,6 @@
     }
 
     .block {
-      @include media-query-property(
-        'width',
-        $main-content-width-small - $block-edit-controls-width - $block-edit-controls-padding,
-        $main-content-width-medium - $block-edit-controls-width - $block-edit-controls-padding,
-        $main-content-width-large - $block-edit-controls-width - $block-edit-controls-padding,
-        $main-content-width-extra-large - $block-edit-controls-width - $block-edit-controls-padding
-      );
-
       position: relative;
       margin-left: $block-edit-controls-width + $block-edit-controls-padding;
       transition: none;

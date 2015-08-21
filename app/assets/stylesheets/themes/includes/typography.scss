@@ -181,12 +181,11 @@ $th-headings: (
   & > blockquote,
   & > hr,
   li + ul,
-  h1 + p, h2 + p, h3 + p, h4 + p, img,
-  // also add space above a media-block placeholder as if it were an image because it will be and/or it should layout similarly.
-  .media-block {
+  h1 + p, h2 + p, h3 + p, h4 + p, img {
     margin-top: 1rem;
   }
 }
+
 
 // Editor Styles
 // ==========================================================================================
@@ -239,8 +238,8 @@ $th-headings: (
   & > hr,
   li + ul,
   h1 + p, h2 + p, h3 + p, h4 + p, img,
-  // also add space above a media-block placeholder as if it were an image because it will be and/or it should layout similarly.
-  .media-block {
+  // also add space above a component.media placeholder as if it were an image because it will be and/or it should layout similarly.
+  .component.media {
     margin-top: 1.5rem;
   }
 
@@ -288,9 +287,26 @@ $th-headings: (
   & > hr,
   li + ul,
   h1 + p, h2 + p, h3 + p, h4 + p, img,
-  // also add space above a media-block placeholder as if it were an image because it will be and/or it should layout similarly.
-  .media-block {
+  // also add space above a component.media placeholder as if it were an image because it will be and/or it should layout similarly.
+  .component.media {
     margin-top: 2rem;
   }
 
 } // End Large Size
+
+// Non-typeset styles
+
+.component.media {
+  margin-top: 1rem;
+
+  .medium & {
+    margin-top: 1.5rem;
+  }
+
+  .large & {
+    margin-top: 2rem;
+  }
+}
+
+
+

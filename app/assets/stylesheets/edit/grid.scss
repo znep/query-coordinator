@@ -1,0 +1,33 @@
+@import 'bourbon';
+@import 'neat';
+
+.block {
+  @include row();
+
+  div[class*="col"] {
+    @media (max-width : 600px) {
+      @include span-columns(12);
+    }
+  }
+}
+.col12 {
+  @include span-columns(12);
+}
+.col8 {
+  @include span-columns(8);
+}
+.col6 {
+  @include span-columns(6);
+}
+.col4 {
+  @include span-columns(4);
+}
+.col3 {
+  @include span-columns(3);
+}
+.col2 {
+  @include span-columns(2);
+}
+.last {
+  @include omega();
+}

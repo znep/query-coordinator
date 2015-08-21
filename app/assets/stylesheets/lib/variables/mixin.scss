@@ -47,19 +47,19 @@
   $value-large,
   $value-extra-large) {
 
-  @media (max-width: 1279px) {
+  @media (max-width: 768px) {
     #{$property}: $value-small;
   }
 
-  @media (min-width: 1280px) {
+  @media (min-width: 769px) {
     #{$property}: $value-medium;
   }
 
-  @media (min-width: 1600px) {
+  @media (min-width: 1200px) {
     #{$property}: $value-large;
   }
 
-  @media (min-width: 1920px) {
+  @media (min-width: 1400px) {
     #{$property}: $value-extra-large;
   }
 }

@@ -59,8 +59,10 @@
   <%- end -%>
     <%- if is_grid -%>
       <li><a href="/views/<%= @view.id %>/rows.csv?accessType=DOWNLOAD">Export To CSV</a></li>
+      <%- if enable_xls_download_type -%>
       <li><a href="/views/<%= @view.id %>/rows.xls?accessType=DOWNLOAD">Export To XLS</a></li>
       <li><a href="/views/<%= @view.id %>/rows.xlsx?accessType=DOWNLOAD">Export To XLSX</a></li>
+      <%- end -%>
     <%- end -%>
   </ul>
 

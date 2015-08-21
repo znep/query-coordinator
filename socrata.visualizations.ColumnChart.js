@@ -336,7 +336,7 @@
 
       var barGroupElement = _chartWrapper.
         find('.bar-group').
-        filter(function(index, element) { element.getAttribute('data-bar-name') === barGroupName; }).
+        filter(function(index, element) { return element.getAttribute('data-bar-name') === barGroupName; }).
         find('.unfiltered').
         get(0);
 

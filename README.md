@@ -210,3 +210,28 @@ or `bundle exec reek [args]` on the command line and supply your own arguments.
 You can find our specific configuration options for `eslint` in `package.json`
 under the `eslintConfig` key. Currently we use no configuration options for
 `reek`.
+
+## Dependency docs
+
+### JavaScript
+
+* [AngularJS](https://docs.angularjs.org)
+* [Chai](http://chaijs.com/api/bdd/)
+* [D3](https://github.com/mbostock/d3/wiki/API-Reference)
+* [jQuery](http://api.jquery.com/)
+* [Leaflet](http://leafletjs.com/reference.html)
+* [Lodash](http://lodash.com/docs)
+* [Mocha](http://mochajs.org/)
+* [Moment.js](momentjs.com/docs)
+* [RxJS](https://github.com/Reactive-Extensions/RxJS/tree/master/doc)
+* [Sinon](http://sinonjs.org/docs/)
+* [Squire](https://github.com/neilj/Squire/blob/master/README.md)
+
+### Ruby
+
+* [Minitest](http://docs.seattlerb.org/minitest/)
+* [Mocha](http://gofreerange.com/mocha/docs/)
+* [Rails (APIdock)](http://apidock.com/rails/)
+* [Rails (official)](http://api.rubyonrails.org/)
+* [RSpec](http://rspec.info/documentation/)
+* [Webmock](https://github.com/bblimke/webmock)

@@ -8,7 +8,7 @@ RSpec.describe 'drafts routing', type: :routing do
       expect(post: '/s/four-four/drafts', format: 'json').to route_to(
         controller: 'drafts',
         action: 'create',
-        four_by_four: 'four-four',
+        uid: 'four-four',
         format: 'json'
       )
     end
@@ -17,7 +17,7 @@ RSpec.describe 'drafts routing', type: :routing do
       expect(post: '/s/four-four/drafts').to route_to(
         controller: 'drafts',
         action: 'create',
-        four_by_four: 'four-four',
+        uid: 'four-four',
         format: 'json'
       )
     end

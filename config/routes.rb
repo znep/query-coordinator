@@ -2,13 +2,13 @@ Rails.application.routes.draw do
 
   get 'version' => 'version#show'
 
-  scope '/s', constraints: { four_by_four: UNANCHORED_FOUR_BY_FOUR_PATTERN } do
-    get '(:vanity_text)/:four_by_four' => 'stories#show'
-    get ':four_by_four/create' => 'stories#new'
-    post ':four_by_four/create' => 'stories#create'
-    get '(:vanity_text)/:four_by_four/edit' => 'stories#edit'
+  scope '/s', constraints: { uid: UNANCHORED_FOUR_BY_FOUR_PATTERN } do
+    get '(:vanity_text)/:uid' => 'stories#show'
+    get ':uid/create' => 'stories#new'
+    post ':uid/create' => 'stories#create'
+    get '(:vanity_text)/:uid/edit' => 'stories#edit'
 
-    post ':four_by_four/drafts' => 'drafts#create', defaults: { format: 'json' }
+    post ':uid/drafts' => 'drafts#create', defaults: { format: 'json' }
   end
 
 

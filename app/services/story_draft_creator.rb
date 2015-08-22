@@ -11,7 +11,7 @@ class StoryDraftCreator
   # Initialized with attributes hash
   #
   # attributes[:user] - user creating this draft
-  # attributes[:four_by_four] - UID of existing story draft
+  # attributes[:uid] - UID of existing story draft
   # attributes[:digest] - previous draft digest to ensure safe saving
   # attributes[:blocks] - array of json blocks for new draft
   def initialize(attributes)
@@ -20,9 +20,9 @@ class StoryDraftCreator
       raise ArgumentError.new('attributes[:user] is empty')
     end
 
-    @four_by_four = attributes[:four_by_four]
-    unless @four_by_four.present? && @four_by_four =~ FOUR_BY_FOUR_PATTERN
-      raise ArgumentError.new("attributes[:four_by_four] is not valid: '#{@four_by_four}'")
+    @uid = attributes[:uid]
+    unless @uid.present? && @uid =~ FOUR_BY_FOUR_PATTERN
+      raise ArgumentError.new("attributes[:uid] is not valid: '#{@uid}'")
     end
 
     @digest = attributes[:digest]
@@ -68,7 +68,7 @@ class StoryDraftCreator
       end
 
       @story = DraftStory.new(
-        uid: four_by_four,
+        uid: uid,
         block_ids: merge_existing_and_new_block_ids,
         created_by: user
       )
@@ -87,7 +87,7 @@ class StoryDraftCreator
   end
 
   private
-  attr_reader :user, :four_by_four, :json_blocks, :digest
+  attr_reader :user, :uid, :json_blocks, :digest
 
   # Instance variable memoization
 
@@ -108,7 +108,7 @@ class StoryDraftCreator
 
   def block_ids_from_previous_story_version
     @block_ids_from_previous_story_version ||= begin
-      story = DraftStory.find_by_four_by_four(four_by_four)
+      story = DraftStory.find_by_uid(uid)
 
       if story.present?
         story.block_ids
@@ -177,8 +177,8 @@ class StoryDraftCreator
   end
 
   def existing_story
-    unless four_by_four.blank?
-      @existing_story ||= DraftStory.find_by_four_by_four(four_by_four)
+    unless uid.blank?
+      @existing_story ||= DraftStory.find_by_uid(uid)
     end
   end
 

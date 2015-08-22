@@ -9,13 +9,13 @@ RSpec.describe DraftsController, type: :controller do
 
   describe '#create' do
     let(:mock_story_draft_creator) { double('story_draft_creator') }
-    let(:four_by_four) { 'newd-raft' }
+    let(:uid) { 'newd-raft' }
     let(:etag) { 'someetag' }
     let(:blocks) { [{id: 1}] }
 
     let(:params) do
       {
-        four_by_four: four_by_four,
+        uid: uid,
         blocks: blocks,
         format: 'json'
       }
@@ -44,7 +44,7 @@ RSpec.describe DraftsController, type: :controller do
     it 'creates draft with StoryDraftCreator' do
       expect(StoryDraftCreator).to receive(:new).with(
         user: mock_valid_user,
-        four_by_four: four_by_four,
+        uid: uid,
         digest: etag,
         blocks: blocks
       ).and_return(mock_story_draft_creator)

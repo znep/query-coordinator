@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe StoryDraftCreator do
 
   let(:user) { 'test_user@socrata.com' }
-  let(:four_by_four) { 'test-data' }
+  let(:uid) { 'test-data' }
   let(:digest) { 'digest-for-draft' }
 
   let(:blocks) { [ valid_new_block.dup ] }
@@ -11,7 +11,7 @@ RSpec.describe StoryDraftCreator do
   let(:story_creator) {
     StoryDraftCreator.new(
       user: user,
-      four_by_four: four_by_four,
+      uid: uid,
       digest: digest,
       blocks: blocks
     )
@@ -81,7 +81,7 @@ RSpec.describe StoryDraftCreator do
       expect {
         StoryDraftCreator.new(
           user: user,
-          four_by_four: four_by_four,
+          uid: uid,
           digest: digest,
           blocks: blocks
         )
@@ -97,7 +97,7 @@ RSpec.describe StoryDraftCreator do
       expect {
         StoryDraftCreator.new(
           user: user,
-          four_by_four: four_by_four,
+          uid: uid,
           digest: digest,
           blocks: blocks
         )
@@ -114,7 +114,7 @@ RSpec.describe StoryDraftCreator do
       expect {
         StoryDraftCreator.new(
           user: user,
-          four_by_four: four_by_four,
+          uid: uid,
           digest: digest,
           blocks: blocks
         )
@@ -130,7 +130,7 @@ RSpec.describe StoryDraftCreator do
       expect {
         StoryDraftCreator.new(
           user: user,
-          four_by_four: four_by_four,
+          uid: uid,
           digest: digest,
           blocks: blocks
         )
@@ -140,13 +140,13 @@ RSpec.describe StoryDraftCreator do
 
   context 'when initialized with no uid' do
 
-    let(:four_by_four) { nil }
+    let(:uid) { nil }
 
     it 'raises an exception' do
       expect {
         StoryDraftCreator.new(
           user: user,
-          four_by_four: four_by_four,
+          uid: uid,
           digest: digest,
           blocks: blocks
         )
@@ -158,12 +158,12 @@ RSpec.describe StoryDraftCreator do
 
     context 'when called with a digest that does not match last known digest' do
 
-      let!(:previous_digest) { FactoryGirl.create(:draft_story, uid: four_by_four).digest }
+      let!(:previous_digest) { FactoryGirl.create(:draft_story, uid: uid).digest }
 
       let(:story_creator) {
         StoryDraftCreator.new(
           user: user,
-          four_by_four: four_by_four,
+          uid: uid,
           digest: previous_digest + 'NOPE',
           blocks: blocks
         )
@@ -188,7 +188,7 @@ RSpec.describe StoryDraftCreator do
       let(:story_creator) {
         StoryDraftCreator.new(
           user: user,
-          four_by_four: four_by_four,
+          uid: uid,
           digest: digest,
           blocks: blocks
         )
@@ -225,7 +225,7 @@ RSpec.describe StoryDraftCreator do
         let(:previous_draft) {
           FactoryGirl.create(
             :draft_story,
-            uid: four_by_four,
+            uid: uid,
             block_ids: [ existing_block_id ],
             created_by: user
           )
@@ -258,7 +258,7 @@ RSpec.describe StoryDraftCreator do
 
     context 'when called on an instance created with an invalid four by four' do
 
-      let(:four_by_four) { 'invalid' }
+      let(:uid) { 'invalid' }
 
       context 'with no existing blocks' do
 
@@ -268,7 +268,7 @@ RSpec.describe StoryDraftCreator do
           expect {
             StoryDraftCreator.new(
               user: user,
-              four_by_four: four_by_four,
+              uid: uid,
               digest: digest,
               blocks: blocks
             )
@@ -280,7 +280,7 @@ RSpec.describe StoryDraftCreator do
             begin
               StoryDraftCreator.new(
                 user: user,
-                four_by_four: four_by_four,
+                uid: uid,
                 digest: digest,
                 blocks: blocks
               )
@@ -298,7 +298,7 @@ RSpec.describe StoryDraftCreator do
           expect {
             StoryDraftCreator.new(
               user: user,
-              four_by_four: four_by_four,
+              uid: uid,
               digest: digest,
               blocks: blocks
             )
@@ -310,7 +310,7 @@ RSpec.describe StoryDraftCreator do
             begin
               StoryDraftCreator.new(
                 user: user,
-                four_by_four: four_by_four,
+                uid: uid,
                 digest: digest,
                 blocks: blocks
               )
@@ -351,7 +351,7 @@ RSpec.describe StoryDraftCreator do
           expect {
             StoryDraftCreator.new(
               user: user,
-              four_by_four: four_by_four,
+              uid: uid,
               digest: digest,
               blocks: blocks
             )
@@ -363,7 +363,7 @@ RSpec.describe StoryDraftCreator do
             begin
               StoryDraftCreator.new(
                 user: user,
-                four_by_four: four_by_four,
+                uid: uid,
                 digest: digest,
                 blocks: blocks
               )
@@ -423,7 +423,7 @@ RSpec.describe StoryDraftCreator do
           let(:previous_draft) {
             FactoryGirl.create(
               :draft_story,
-              uid: four_by_four,
+              uid: uid,
               block_ids: [ new_block.id ],
               created_by: user
             )

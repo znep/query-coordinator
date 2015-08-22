@@ -147,9 +147,13 @@
           scope.customizedCard.observe('isCustomizableMap'));
 
         scope.$bindObservable('showHistogramBucketTypeDropdown',
-          scope.customizedCard.observe('cardType').map(function(type) {
-            return type === 'histogram';
-          }));
+          scope.customizedCard.observe('cardType').combineLatest(
+            scope.customizedCard.observe('visualizationType'),
+            function(cardType, visualizationType) {
+              return cardType === 'histogram' && visualizationType === 'histogram';
+            }
+          )
+        );
 
         setupBaseLayerSelect(scope.customizedCard, scope, element);
 

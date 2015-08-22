@@ -78,6 +78,8 @@
 
         var whereClause = buildWhereClause(whereClauseFragment);
         var aggregationClause = buildAggregationClause(aggregationClauseData);
+        var nullLast = (options.nullLast === true) ? 'null last' : '';
+        var orderBy = options.orderBy || '{0} desc'.format(aggregationClause);
 
         var nameAlias = SoqlHelpers.getFieldNameAlias('name');
         var valueAlias = SoqlHelpers.getFieldNameAlias('value');
@@ -85,7 +87,7 @@
         // Wrap field name in ticks and replace dashes with underscores
         fieldName = SoqlHelpers.formatFieldName(fieldName);
 
-        var queryTemplate = 'select {0} as {4}, {2} as {5} {1} group by {0} order by {2} desc {6} limit {3}';
+        var queryTemplate = 'select {0} as {4}, {2} as {5} {1} group by {0} order by {7} {6} limit {3}';
         var url = $.baseUrl('/api/id/{0}.json'.format(datasetId));
         // TODO: Implement some method for paging/showing data that has been truncated.
         var query = queryTemplate.format(
@@ -95,7 +97,8 @@
           options.limit,
           nameAlias,
           valueAlias,
-          (options.nullLast === true) ? 'null last' : ''
+          nullLast,
+          orderBy
         );
 
         url.searchParams.set('$query', query);

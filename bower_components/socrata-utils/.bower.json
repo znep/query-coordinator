@@ -17,14 +17,13 @@
     "lodash": "~3.10.0"
   },
   "homepage": "https://github.com/socrata/frontend-utils",
-  "_release": "508d5ed8ed",
+  "_release": "fb6e75ead1",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "508d5ed8ed634ec5ffb81e3fc85e50b2bab046b0"
+    "commit": "fb6e75ead10d7a8f23111fbf1fc3c934c68d93b3"
   },
   "_source": "git@github.com:socrata/frontend-utils.git",
   "_target": "master",
-  "_originalSource": "git@github.com:socrata/frontend-utils.git",
-  "_direct": true
+  "_originalSource": "git@github.com:socrata/frontend-utils.git"
 }

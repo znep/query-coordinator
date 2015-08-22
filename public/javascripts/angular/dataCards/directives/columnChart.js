@@ -8,13 +8,15 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
       chartData: '=',
       showFiltered: '=',
       expanded: '=',
+      showAllLabels: '=',
       rowDisplayUnit: '='
     },
     link: function(scope, element) {
-      var chartDataObservable = scope.$observe('chartData');
-      var showFilteredObservable = scope.$observe('showFiltered');
-      var expandedObservable = scope.$observe('expanded');
-      var rowDisplayUnitObservable = scope.$observe('rowDisplayUnit');
+      var chartData$ = scope.$observe('chartData');
+      var showFiltered$ = scope.$observe('showFiltered');
+      var expanded$ = scope.$observe('expanded');
+      var showAllLabels$ = scope.$observe('showAllLabels');
+      var rowDisplayUnit$ = scope.$observe('rowDisplayUnit');
       var columnChartConfig;
       var columnChart;
       var lastFlyoutData;
@@ -66,10 +68,11 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           };
 
           barName = escapeBarName(lastFlyoutData.title);
-
           barGroup = $(target).closest(element).
-            find('.bar-group[data-bar-name="{0}"]'.format(barName)).
+            find('.bar-group').
+            filter(function() { return $(this).data('bar-name') === barName; }).
             get(0);
+
 
           if (_.isDefined(barGroup)) {
 
@@ -234,11 +237,12 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             height: Math.max(dimensions.height, 0)
           };
         }),
-        chartDataObservable,
-        showFilteredObservable,
-        expandedObservable,
-        rowDisplayUnitObservable,
-        function(cardVisualizationDimensions, chartData, showFiltered, expanded, rowDisplayUnit) {
+        chartData$,
+        showFiltered$,
+        expanded$,
+        showAllLabels$,
+        rowDisplayUnit$,
+        function(cardVisualizationDimensions, chartData, showFiltered, expanded, showAllLabels, rowDisplayUnit) {
 
           if (!columnChart) {
             return undefined;
@@ -253,7 +257,8 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           var chartRenderOptions = {
             expanded: expanded,
             labelUnit: rowDisplayUnit,
-            showFiltered: showFiltered
+            showFiltered: showFiltered,
+            showAllLabels: expanded || showAllLabels
           };
           columnChart.render(chartData, chartRenderOptions);
 

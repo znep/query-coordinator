@@ -350,4 +350,188 @@ describe('HistogramService', function() {
       });
     });
   });
+
+  describe('getVisualizationTypeForData', function() {
+
+    var cardinalityThreshold, rangeThreshold;
+
+    beforeEach(function() {
+      cardinalityThreshold = Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD;
+      rangeThreshold = Constants.HISTOGRAM_COLUMN_CHART_RANGE_THRESHOLD;
+    });
+
+    function generateInput(buckets) {
+      return _.isNumber(buckets) ? _.range(0, buckets) : buckets;
+    }
+
+    function run(input, output) {
+      var result = HistogramService.getVisualizationTypeForData(input);
+      expect(result).to.equal(output);
+    }
+
+    it('should return "histogram" if the data is empty', function() {
+      run([], 'histogram');
+    });
+
+    it('should return "histogram" if the data is not an array', function() {
+      run(undefined, 'histogram');
+      run(null, 'histogram');
+      run(NaN, 'histogram');
+      run('purple', 'histogram');
+      run(-19, 'histogram');
+    });
+
+    it('should return "histogram" if the length is above a threshold', function() {
+      var input = generateInput(cardinalityThreshold + 1);
+      run(input, 'histogram');
+    });
+
+    it('should return "histogram" if the length is below a threshold and any of them are floats', function() {
+      var input = generateInput(Math.floor(cardinalityThreshold / 2));
+      input[0] = .1;
+      run(input, 'histogram');
+    });
+
+    it('should return "histogram" if the values span a range greater than a threshold', function() {
+      var input = generateInput([rangeThreshold, (rangeThreshold * 2) + 1]);
+      run(input, 'histogram');
+    });
+
+    it('should return "columnChart" if the length is below a threshold and everything is an integer and the values span a range below a threshold', function() {
+      var input = generateInput([-4, -1, 0, 1.0, 7, 8, 9, 15]);
+      run(input, 'columnChart');
+    });
+  });
+
+  describe('transformDataForColumnChart', function() {
+
+    function run(unfiltered, filtered, selected, output) {
+      expect(HistogramService.transformDataForColumnChart(unfiltered, filtered, selected)).to.deep.equal(output);
+    }
+
+    it('should set the filtered values to zero if the filtered data is absent', function() {
+      var unfiltered = [
+        { name: 0, value: 17 },
+        { name: 1, value: -17 },
+        { name: 2, value: 183483 }
+      ];
+
+      var output = [
+        [ 0, 17, 0, false ],
+        [ 1, -17, 0, false ],
+        [ 2, 183483, 0, false ]
+      ];
+
+      run(unfiltered, undefined, undefined, output);
+      run(unfiltered, undefined, 100, output);
+    });
+
+    it('should use the filtered values if they are present if selectedValue is absent', function() {
+      var unfiltered = [
+        { name: 0, value: 17 },
+        { name: 1, value: -17 },
+        { name: 2, value: 183483 }
+      ];
+
+      var filtered = [
+        { name: 0, value: 5 },
+        { name: 1, value: 5 },
+        { name: 2, value: 5 }
+      ];
+
+      var output = [
+        [ 0, 17, 5, false ],
+        [ 1, -17, 5, false ],
+        [ 2, 183483, 5, false ]
+      ];
+
+      run(unfiltered, filtered, undefined, output);
+    });
+
+    it('should set the filtered values to zero if the bucket name does not equal the selectedValue and the selectedValue is specified', function() {
+      var unfiltered = [
+        { name: 0, value: 17 },
+        { name: 1, value: -17 },
+        { name: 2, value: 183483 }
+      ];
+
+      var filtered = [
+        { name: 0, value: 5 },
+        { name: 1, value: 5 },
+        { name: 2, value: 5 }
+      ];
+
+      var output = [
+        [ 0, 17, 0, false ],
+        [ 1, -17, 5, true ],
+        [ 2, 183483, 0, false ]
+      ];
+
+      run(unfiltered, filtered, 1, output);
+    });
+
+    it('should behave well if the selectedValue is weird', function() {
+      var unfiltered = [
+        { name: 0, value: 17 },
+        { name: 1, value: -17 },
+        { name: 2, value: 183483 }
+      ];
+
+      var filtered = [
+        { name: 0, value: 5 },
+        { name: 1, value: 5 },
+        { name: 2, value: 5 }
+      ];
+
+      var output = [
+        [ 0, 17, 5, true ],
+        [ 1, -17, 0, false ],
+        [ 2, 183483, 0, false ]
+      ];
+
+      run(unfiltered, filtered, 0, output);
+
+      output = [
+        [ 0, 17, 0, false],
+        [ 1, -17, 0, false],
+        [ 2, 183483, 0, false ]
+      ];
+
+      run(unfiltered, filtered, NaN, output);
+    });
+
+    it('should fill in empty values with zeroes', function() {
+      var unfiltered = [
+        { name: 0, value: 17 },
+        { name: 3, value: -17 },
+        { name: 4, value: 183483 }
+      ];
+
+      var filtered = [
+        { name: 0, value: 5 },
+        { name: 3, value: 5 },
+        { name: 4, value: 5 }
+      ];
+
+      var output = [
+        [ 0, 17, 5, true ],
+        [ 1, 0, 0, false ],
+        [ 2, 0, 0, false ],
+        [ 3, -17, 0, false ],
+        [ 4, 183483, 0, false ]
+      ];
+
+      run(unfiltered, filtered, 0, output);
+
+      output = [
+        [ 0, 17, 0, false ],
+        [ 1, 0, 0, false ],
+        [ 2, 0, 0, false ],
+        [ 3, -17, 0, false ],
+        [ 4, 183483, 0, false ]
+      ];
+
+      run(unfiltered, filtered, NaN, output);
+    });
+  });
 });

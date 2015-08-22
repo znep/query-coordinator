@@ -177,9 +177,67 @@
       });
     }
 
+    // Given an array of unique column values, return the type of visualization
+    // that is best suited to display the distribution.
+    function getVisualizationTypeForData(buckets) {
+      if (!_.isArray(buckets) || _.isEmpty(buckets)) {
+        return 'histogram';
+      }
+
+      if (buckets.length > Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD) {
+        return 'histogram';
+      }
+
+      var extent = d3.extent(buckets);
+      if (extent[1] - extent[0] > Constants.HISTOGRAM_COLUMN_CHART_RANGE_THRESHOLD) {
+        return 'histogram';
+      }
+
+      function isInteger(x) {
+        return parseInt(x, 10) === parseFloat(x);
+      }
+
+      return _.every(buckets, isInteger) ? 'columnChart' : 'histogram';
+    }
+
+    // Given an array of bucketed data and a bucket index that is being
+    // filtered on, transform the bucketed data into the tabular format
+    // expected by the column chart.
+    function transformDataForColumnChart(unfiltered, filtered, selectedValue) {
+      if (filtered) {
+        filtered = _.indexBy(filtered, 'name');
+      }
+
+      // Fill in gaps of the unfiltered data with zero-value buckets.
+      for (var i = 1; i < unfiltered.length; i++) {
+        if (unfiltered[i].name - unfiltered[i - 1].name > 1) {
+          unfiltered.splice(i, 0, { name: Number(unfiltered[i - 1].name) + 1, value: 0});
+        }
+      }
+
+      return unfiltered.map(function(bucket) {
+        var bucketName = parseInt(bucket.name, 10);
+
+        var filteredValue = _.get(filtered, bucketName + '.value', 0);
+
+        if (_.isDefined(selectedValue) && bucketName !== selectedValue) {
+          filteredValue = 0;
+        }
+
+        return [
+          bucketName,
+          bucket.value,
+          filteredValue,
+          bucketName === selectedValue
+        ];
+      });
+    }
+
     return {
       getBucketingOptions: getBucketingOptions,
-      bucketData: bucketData
+      bucketData: bucketData,
+      getVisualizationTypeForData: getVisualizationTypeForData,
+      transformDataForColumnChart: transformDataForColumnChart
     };
   }
 

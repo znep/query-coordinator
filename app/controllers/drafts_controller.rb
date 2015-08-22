@@ -14,7 +14,7 @@ class DraftsController < ApplicationController
       return render nothing: true, status: 412
     end
 
-    response['ETag'] = @new_draft_story.digest
+    headers['ETag'] = @new_draft_story.digest
 
     response_obj = {
       blockIdMappings: story_draft_creator.block_id_mappings,
@@ -23,5 +23,4 @@ class DraftsController < ApplicationController
 
     render json: response_obj
   end
-
 end

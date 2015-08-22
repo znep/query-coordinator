@@ -305,16 +305,33 @@ describe('<aggregation-chooser/>', function() {
     testHelpers.TestDom.append(subjectUnderTest);
 
     var trigger = subjectUnderTest.find('.aggregation-chooser-trigger');
+    var triggerChildSpan = trigger.find('span');
+
     expect(trigger).to.have.class('disabled');
 
     testHelpers.fireMouseEvent(trigger[0], 'click');
     expect(subjectUnderTest.isolateScope().panelActive).to.be.false;
 
-    var body = document.getElementsByTagName('body')[0];
+    // Test if a warning flyout appears when hovering over the
+    // aggregation chooser.
     testHelpers.fireMouseEvent(trigger[0], 'mousemove');
 
     var flyout = $('#uber-flyout');
     expect(flyout).to.exist;
+    expect(flyout).to.be.visible;
+    expect(flyout).to.have.class('aggregation-chooser');
+    expect(flyout.text()).to.match(/looks like this dataset contains more than/i);
+
+    // Hide the flyout by moving the mouse elsewhere.
+    testHelpers.fireMouseEvent($('body')[0], 'mousemove');
+
+    expect(flyout).to.not.be.visible;
+
+    // Now test if a warning flyout appears when hovering over a span child
+    // of the aggregation chooser.
+    testHelpers.fireMouseEvent(triggerChildSpan[0], 'mousemove');
+
+    expect(flyout).to.be.visible;
     expect(flyout).to.have.class('aggregation-chooser');
     expect(flyout.text()).to.match(/looks like this dataset contains more than/i);
   });

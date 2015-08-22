@@ -90,6 +90,27 @@ RSpec.describe DraftsController, type: :controller do
       end
     end
 
+    context 'when IF_MATCH is missing' do
+
+      let(:headers) { {} }
+
+      it 'does not call story_draft_creator' do
+        expect(mock_story_draft_creator).to_not receive(:create)
+        post :create, params
+      end
+
+      it 'responds with 428 status' do
+        post :create, params
+        expect(response.code).to eq('428')
+      end
+
+      it 'does not render json' do
+        post :create, params
+        expect(response.body).to be_blank
+      end
+
+    end
+
     context 'when format is not json' do
 
       it 'still renders json' do

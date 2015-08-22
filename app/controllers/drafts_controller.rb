@@ -1,10 +1,16 @@
 class DraftsController < ApplicationController
 
   def create
+    digest = request.env['HTTP_IF_MATCH']
+
+    if digest.blank?
+      return render nothing: true, status: 428
+    end
+
     story_draft_creator = StoryDraftCreator.new(
       user: current_user,
       uid: params[:uid],
-      digest: request.env['HTTP_IF_MATCH'],
+      digest: digest,
       blocks: params[:blocks]
     )
 

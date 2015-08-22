@@ -94,6 +94,7 @@
 
         function adjustCardGroupCustomizeHints() {
           var HINT_HEIGHT = 80;
+          var PADDING = 10;
           var quickFilterBarHeight = quickFilterBar.height();
           var containerTop = cardContainer.get(0).getBoundingClientRect().top;
 
@@ -103,7 +104,7 @@
 
               if (containerTop + cardGroup.style.top < quickFilterBarHeight) {
                 hintPosition = 'fixed';
-                hintTop = quickFilterBarHeight;
+                hintTop = quickFilterBarHeight + PADDING;
 
                 if (hintTop + HINT_HEIGHT >= containerTop + cardGroup.style.top + cardGroup.style.height) {
                   hintTop = cardGroup.style.top + cardGroup.style.height - HINT_HEIGHT;
@@ -111,7 +112,7 @@
                 }
               } else {
                 hintPosition = 'absolute';
-                hintTop = cardGroup.style.top;
+                hintTop = cardGroup.style.top + PADDING;
               }
 
               cardGroup.hint.top = hintTop + 'px';

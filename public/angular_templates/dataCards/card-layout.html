@@ -3,7 +3,25 @@
   card-group-index="$index"
   ng-style="cardGroup.hint"
   class="card-group-customize-hint">
-  Up to {{ $index + 2 }} columns per row. ?
+  <div>Up to {{ $index + 2 }} columns per row. ?</div>
+
+  <div ng-show="{{$index === 0}}" class="card-group-customize-hint-cards row">
+    <span class="card-group-customize-hint-card span6"></span>
+    <span class="card-group-customize-hint-card span6"></span>
+  </div>
+
+  <div ng-show="{{$index === 1}}" class="card-group-customize-hint-cards row">
+    <span class="card-group-customize-hint-card span4"></span>
+    <span class="card-group-customize-hint-card span4"></span>
+    <span class="card-group-customize-hint-card span4"></span>
+  </div>
+
+  <div ng-show="{{$index === 2}}" class="card-group-customize-hint-cards row">
+    <span class="card-group-customize-hint-card span3"></span>
+    <span class="card-group-customize-hint-card span3"></span>
+    <span class="card-group-customize-hint-card span3"></span>
+    <span class="card-group-customize-hint-card span3"></span>
+  </div>
 </div>
 
 <div

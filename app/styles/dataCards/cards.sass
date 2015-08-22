@@ -341,11 +341,24 @@ body.state-view-cards
 
       .card-group-customize-hint
         position: absolute
-        width: 120px
+        width: 140px
         height: 80px
-        padding-left: 10px
         padding-top: 10px
+        padding-left: 10px
         font-weight: 400
+        box-sizing: border-box
+
+        .card-group-customize-hint-cards
+          margin-top: 10px
+
+          .card-group-customize-hint-card
+            height: 24px
+            margin-right: 4px
+            background: rgba(255, 255, 255, .2)
+            border-radius: 3px
+
+            &:last-child
+              margin-right: 0
 
       .card-group-drop-placeholder
         position: absolute

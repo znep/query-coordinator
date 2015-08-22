@@ -123,6 +123,7 @@ describe('A FeatureMap Card Visualization', function() {
   var ServerConfig;
   var dataset;
   var $q;
+  var mockCardDataService;
 
   beforeEach(module('/angular_templates/dataCards/cardVisualizationFeatureMap.html'));
 
@@ -136,15 +137,15 @@ describe('A FeatureMap Card Visualization', function() {
     $rootScope = $injector.get('$rootScope');
     Model = $injector.get('Model');
     $q = $injector.get('$q');
-    var mockCardDataService = {
+    mockCardDataService = {
       getDefaultFeatureExtent: sinon.stub(),
       getFeatureExtent: sinon.stub().returns($q.when(MIDDLE_ZOOM_EXTENT)),
       getRows: sinon.stub().returns($q.when(CARD_DATA_ROWS))
     };
     _$provide.value('CardDataService', mockCardDataService);
+    CardDataService = $injector.get('CardDataService');
     testHelpers.mockDirective(_$provide, 'featureMap');
     VectorTileDataService = $injector.get('VectorTileDataService');
-    CardDataService = $injector.get('CardDataService');
     ServerConfig = $injector.get('ServerConfig');
   }));
 
@@ -165,7 +166,8 @@ describe('A FeatureMap Card Visualization', function() {
 
   function buildElement(options) {
     options = _.defaults({}, options, {
-      dataset: undefined
+      dataset: undefined,
+      whereClause: ''
     });
 
     var outerScope = $rootScope.$new();
@@ -195,6 +197,7 @@ describe('A FeatureMap Card Visualization', function() {
     card.fieldName = 'foo';
 
     outerScope.model = card;
+    outerScope.whereClause = options.whereClause;
 
     return {
       pageModel: page,
@@ -205,18 +208,126 @@ describe('A FeatureMap Card Visualization', function() {
   }
 
   describe('getClickedRows', function() {
-    it('should correctly format normal columns and sub columns', function() {
+    var deferred;
+    var fakeWithinBoxBounds = {
+      northeast: { lat: 0, lng: 0 },
+      southwest: { lat: 100, lng: 100 }
+    };
+
+    beforeEach(function() {
       dataset.defineObservableProperty('columns', COLUMNS);
       dataset.defineObservableProperty('permissions', '');
 
-      var deferred = $q.defer();
+      deferred = $q.defer();
       CardDataService.getFeatureExtent.returns(deferred.promise);
+    });
 
+    describe('query request parameters', function() {
+
+      // Common getClickedRows parameters
+      var fakePointsClicked = [{ count: 1 }, { count: 2 }];
+      var fakeMousePosition = {
+        lat: 45.7,
+        lng: -122.3
+      };
+
+      // getRows() expected arguments (timeout does not affect query accuracy
+      // and therefore is not tested here).
+      var expectedID = 'cras-hing';
+      var expectedOffset = 0;
+      var expectedLimit = 3;
+      var expectedOrder = 'distance_in_meters(foo, \"POINT\(-122\.3 45\.7\)\"\)';
+      var expectedWhereClause;
+
+      it('should properly construct row query parameters on an unfiltered dataset', function(done) {
+
+        // where clause should only include query optimization withinBox
+        expectedWhereClause = 'within_box(foo, 0, 0, 100, 100)';
+
+        var elementInfo = buildElement({ 'dataset': dataset });
+        var elementScope = elementInfo.scope;
+        var element = elementInfo.element;
+
+        // Get reference to getClickedRows function
+        var getClickedRows = $(element).find('card-visualization-feature-map').
+          isolateScope().getClickedRows;
+
+        var queryResponse$ = getClickedRows(
+          fakeMousePosition,
+          fakePointsClicked,
+          fakeWithinBoxBounds
+        );
+
+        queryResponse$.subscribe(function() {
+          expect(mockCardDataService.getRows).to.have.been.calledWith(
+            expectedID,
+            expectedOffset,
+            expectedLimit,
+            expectedOrder,
+            sinon.match.any,
+            expectedWhereClause
+          );
+          done();
+        });
+
+        elementScope.$safeApply(function() {
+          deferred.resolve();
+        });
+      });
+
+      it('should properly construct row query parameters on a filtered dataset', function(done) {
+        var filterWhereClause = 'test_number > 10';
+
+        // whereClause should include both query optimization and original filter
+        expectedWhereClause = '{0} AND within_box(foo, 0, 0, 100, 100)'.format(filterWhereClause);
+
+        var elementInfo = buildElement({
+          'dataset': dataset,
+          'whereClause': filterWhereClause
+        });
+        var elementScope = elementInfo.scope;
+        var element = elementInfo.element;
+
+        // Get reference to getClickedRows function
+        var getClickedRows = $(element).find('card-visualization-feature-map').
+          isolateScope().getClickedRows;
+
+        var queryResponse$ = getClickedRows(
+          fakeMousePosition,
+          fakePointsClicked,
+          fakeWithinBoxBounds
+        );
+
+        queryResponse$.subscribe(function() {
+          expect(mockCardDataService.getRows).to.have.been.calledWith(
+            expectedID,
+            expectedOffset,
+            expectedLimit,
+            expectedOrder,
+            sinon.match.any,
+            expectedWhereClause
+          );
+          done();
+        });
+
+        elementScope.$safeApply(function() {
+          deferred.resolve();
+        });
+      });
+    });
+
+    it('should correctly format normal columns and sub columns in query response data', function(done) {
       var elementInfo = buildElement({ 'dataset': dataset });
       var elementScope = elementInfo.scope;
-      var getClickedRows = elementScope.$$childHead.getClickedRows({}, []);
+      var element = elementInfo.element;
 
-      getClickedRows.subscribe(function(formattedRows) {
+      // Get reference to getClickedRows function
+      var getClickedRows = $(element).find('card-visualization-feature-map').
+        isolateScope().getClickedRows;
+
+      var queryResponse$ = getClickedRows({}, [], fakeWithinBoxBounds);
+
+      queryResponse$.subscribe(function(formattedRows) {
         var firstRow = formattedRows[0][0];
         var secondRow = formattedRows[0][1];
         var thirdRow = formattedRows[0][2];
@@ -270,6 +381,7 @@ describe('A FeatureMap Card Visualization', function() {
             value: 'PHILADELPHIA'
           }
         ]);
+        done();
       });
 
       elementScope.$safeApply(function() {
@@ -485,5 +597,6 @@ describe('A FeatureMap Card Visualization', function() {
       expect(elementInfo.element.find('.visualization-render-error')).to.have.class('ng-hide');
     });
   });
+
 
 });

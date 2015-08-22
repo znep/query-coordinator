@@ -922,27 +922,6 @@ describe('CardDataService', function() {
       http.get.restore();
     });
 
-    // Specifically test row query ordering using the distance_in_meters function to
-    // ensure functionality of row query for points clicked on a featureMap.
-    // (see cardVisualizationFeatureMap.js)
-    it('should order based on distance from a given point (ascending) when using the distance_in_meters soql function', function() {
-      $httpBackend.whenGET(/.*/);
-      var httpSpy = sinon.spy(http, 'get');
-      var offset = 0;
-      var limit = 5;
-      var order = 'distance_in_meters({field}, "POINT({lng} {lat})")'.format({
-        field: 'fake_location_column',
-        lng: '-122.25860595',
-        lat: '47.49493650'
-      });
-      CardDataService.getRows(fake4x4, offset, limit, order);
-      $httpBackend.flush();
-      expect(decodeURIComponent(httpSpy.firstCall.args[0])).to.match(
-        /\$order=distance_in_meters\(fake_location_column,\+\"POINT\(-122\.25860595\+47\.49493650\)\"\)/i
-      );
-      http.get.restore();
-    });
-
     // In the case that the request times out, the http request will reject the promise in getRows().
     // getRows() will return null upon reject, as tested in the case of a
     // 404, 500, or 503 (see below)

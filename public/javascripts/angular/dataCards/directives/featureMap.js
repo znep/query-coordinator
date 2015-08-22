@@ -204,6 +204,17 @@
         }
 
         /**
+        * Returns the current hover threshold at the given zoom level, calculated
+        * based on point radius.
+        *
+        * @param zoomLevel - The current zoom level of the map.
+        * @returns {Number}
+        */
+        function getHoverThreshold(zoomLevel) {
+          return Math.max(scalePointFeatureRadiusByZoomLevel(zoomLevel), Constants.FEATURE_MAP_MIN_HOVER_THRESHOLD);
+        }
+
+        /**
          * Scales points according to zoom level. The maximum zoom level
          * in Leaflet is 18; the minimum is 1.
          *
@@ -377,8 +388,12 @@
                 closest('body').
                 append(flannel);
 
+              // Determine smaller box bounds within which to query for clicked points
+              // (optimization in order to narrow down query)
+              var withinBoxBounds = preprocessQueryRequest(e.containerPoint);
+
               // Kick off and manage query for clicked row data
-              var rowQueryResponse$ = scope.getClickedRows(e.latlng, e.points);
+              var rowQueryResponse$ = scope.getClickedRows(e.latlng, e.points, withinBoxBounds);
 
               // Provoke an update of flannel content based on status of query result.
               // Will show an error message of the query failed, otherwise the formatted
@@ -433,6 +448,18 @@
                 scope.$safeApply(handleDestroyFlannel);
               });
               map.on('resize', adjustPosition);
+            }
+
+            // Determines within box query bounds to be passed into row query
+            function preprocessQueryRequest(cursor) {
+              var hoverThreshold = getHoverThreshold(map.getZoom());
+              var delta = Constants.FEATURE_MAP_FLANNEL_QUERY_BOX_PADDING + hoverThreshold;
+              var northeastContainerPoint = L.point(cursor.x - delta, cursor.y + delta);
+              var southwestContainerPoint = L.point(cursor.x + delta, cursor.y - delta);
+              return {
+                northeast: map.containerPointToLatLng(northeastContainerPoint),
+                southwest: map.containerPointToLatLng(southwestContainerPoint)
+              };
             }
 
             // Recalculates the position of the flannel and hint so that
@@ -514,6 +541,7 @@
             filter: filterLayerFeature,
             layerOrdering: getFeatureZIndex,
             style: getFeatureStyle,
+            getHoverThreshold: getHoverThreshold,
             debounceMilliseconds: scope.zoomDebounceMilliseconds,
             onRenderStart: emitRenderStarted,
             onRenderComplete: function() {

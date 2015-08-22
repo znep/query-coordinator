@@ -18,16 +18,13 @@
         "layout": "12",
         "components": [
           {
-            "type": "socrataVisualization",
+            "type": "socrata.visualization.columnChart",
             "value": {
-              "type": "column",
-              "value": {
-                "dataSource": {
-                  "type": "soql",
-                  "domain": "dataspace.demo.socrata.com",
-                  "fourByFour": "r6t9-rak2",
-                  "baseQuery": "SELECT `category` AS {0}, COUNT(*) AS {1} GROUP BY `category` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200"
-                }
+              "dataSource": {
+                "type": "soql",
+                "domain": "dataspace.demo.socrata.com",
+                "fourByFour": "r6t9-rak2",
+                "baseQuery": "SELECT `category` AS {0}, COUNT(*) AS {1} GROUP BY `category` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200"
               }
             }
           }
@@ -41,7 +38,7 @@
         "layout": "12",
         "components": [
           {
-            "type": "text",
+            "type": "html",
             "value": "<h1 class='align-center' style='text-align:center'><%= I18n.t('inspiration_blocks.title_block.heading') %><br></h1>"
           }
         ]
@@ -54,7 +51,7 @@
         "layout": "12",
         "components": [
           {
-            "type": "text",
+            "type": "html",
             "value": "<%=
             [
               "<h1>#{I18n.t('inspiration_blocks.text_block.heading')}</h1>",
@@ -73,7 +70,7 @@
         "layout": "12",
         "components": [
           {
-            "type": "text",
+            "type": "html",
             "value": "<%= # Join array for sane HTML scanning
             [
               "<h1>#{I18n.t('inspiration_blocks.text_mixed_content_block.heading')}<br></h1>",
@@ -100,7 +97,7 @@
         "layout": "12",
         "components": [
           {
-            "type": "text",
+            "type": "html",
             "value": "<blockquote><%= I18n.t('inspiration_blocks.blockquote_block.quote') %><br>-<%= I18n.t('inspiration_blocks.blockquote_block.author') %></blockquote>"
           }
         ]
@@ -113,7 +110,7 @@
         "layout": "6-6",
         "components": [
           {
-            "type": "text",
+            "type": "html",
             "value": "<%=
             [
               "<h3>#{I18n.t('inspiration_blocks.text_6_6.heading1')}</h3>",
@@ -123,7 +120,7 @@
             ].join('').html_safe %>"
           },
           {
-            "type": "text",
+            "type": "html",
             "value": "<%=
             [
               "<h3>#{I18n.t('inspiration_blocks.text_6_6.heading2')}</h3>",
@@ -142,7 +139,7 @@
         "layout": "8-4",
         "components": [
           {
-            "type": "text",
+            "type": "html",
             "value": "<%=
             [
               "<h3>#{I18n.t('inspiration_blocks.text_8_4.heading1')}</h3>",
@@ -152,7 +149,7 @@
             ].join('').html_safe %>"
           },
           {
-            "type": "text",
+            "type": "html",
             "value": "<%=
             [
               "<h3>#{I18n.t('inspiration_blocks.text_8_4.heading2')}</h3>",
@@ -171,7 +168,7 @@
         "layout": "4-4-4",
         "components": [
           {
-            "type": "text",
+            "type": "html",
             "value": "<%=
             [
               "<h3>#{I18n.t('inspiration_blocks.text_4_4_4.heading1')}</h3>",
@@ -181,7 +178,7 @@
             ].join('').html_safe %>"
           },
           {
-            "type": "text",
+            "type": "html",
             "value": "<%=
             [
               "<h3>#{I18n.t('inspiration_blocks.text_4_4_4.heading2')}</h3>",
@@ -191,7 +188,7 @@
             ].join('').html_safe %>"
           },
           {
-            "type": "text",
+            "type": "html",
             "value": "<%=
             [
               "<h3>#{I18n.t('inspiration_blocks.text_4_4_4.heading3')}</h3>",
@@ -210,8 +207,7 @@
         "layout": "12",
         "components": [
           {
-            "type": "layout",
-            "value": "horizontalRule"
+            "type": "horizontalRule"
           }
         ]
       }
@@ -223,8 +219,7 @@
         "layout": "12",
         "components": [
           {
-            "type": "layout",
-            "value": "spacer"
+            "type": "spacer"
           }
         ]
       }
@@ -236,13 +231,7 @@
         "layout": "12",
         "components": [
           {
-            "type": "media",
-            "value": {
-              "type": "embed",
-              "value": {
-                "provider": "wizard"
-              }
-            }
+            "type": "assetSelector"
           }
         ]
       }
@@ -254,22 +243,10 @@
         "layout": "6-6",
         "components": [
           {
-            "type": "media",
-            "value": {
-              "type": "embed",
-              "value": {
-                "provider": "wizard"
-              }
-            }
+            "type": "assetSelector"
           },
           {
-            "type": "media",
-            "value": {
-              "type": "embed",
-              "value": {
-                "provider": "wizard"
-              }
-            }
+            "type": "assetSelector"
           }
         ]
       }
@@ -281,16 +258,10 @@
         "layout": "6-6",
         "components": [
           {
-            "type": "media",
-            "value": {
-              "type": "embed",
-              "value": {
-                "provider": "wizard"
-              }
-            }
+            "type": "assetSelector"
           },
           {
-            "type": "text",
+            "type": "html",
             "value": "<%=
             [
               "<h3>#{I18n.t('inspiration_blocks.text_media_6_6.heading')}</h3>",
@@ -309,7 +280,7 @@
         "layout": "6-6",
         "components": [
           {
-            "type": "text",
+            "type": "html",
             "value": "<%=
             [
               "<h3>#{I18n.t('inspiration_blocks.text_media_6_6.heading')}</h3>",
@@ -319,13 +290,7 @@
             ].join('').html_safe %>"
           },
           {
-            "type": "media",
-            "value": {
-              "type": "embed",
-              "value": {
-                "provider": "wizard"
-              }
-            }
+            "type": "assetSelector"
           }
         ]
       }
@@ -337,16 +302,10 @@
         "layout": "8-4",
         "components": [
           {
-            "type": "media",
-            "value": {
-              "type": "embed",
-              "value": {
-                "provider": "wizard"
-              }
-            }
+            "type": "assetSelector"
           },
           {
-            "type": "text",
+            "type": "html",
             "value": "<%=
             [
               "<h3>#{I18n.t('inspiration_blocks.media_text_8_4.heading')}</h3>",
@@ -365,7 +324,7 @@
         "layout": "4-8",
         "components": [
           {
-            "type": "text",
+            "type": "html",
             "value": "<%=
             [
               "<h3>#{I18n.t('inspiration_blocks.text_media_4_8.heading')}</h3>",
@@ -375,13 +334,7 @@
             ].join('').html_safe %>"
           },
           {
-            "type": "media",
-            "value": {
-              "type": "embed",
-              "value": {
-                "provider": "wizard"
-              }
-            }
+            "type": "assetSelector"
           }
         ]
       }

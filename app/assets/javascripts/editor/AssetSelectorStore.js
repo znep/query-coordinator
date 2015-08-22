@@ -6,14 +6,15 @@
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
-  function EmbedWizardStore() {
+  function AssetSelectorStore() {
 
     _.extend(this, new storyteller.Store());
 
     var self = this;
-    var _currentWizardState = null;
+    var _currentSelectorState = null;
     var _currentBlockId = null;
     var _currentComponentIndex = null;
+    var _currentComponentType = 'assetSelector';
     var _currentComponentProperties = _getDefaultComponentProperties();
 
     this.register(function(payload) {
@@ -24,41 +25,41 @@
 
       action = payload.action;
 
-      // Note that we do not assign `_currentWizardState` the value of action
+      // Note that we do not assign `_currentSelectorState` the value of action
       // outside of the case statements because ALL events will pass through
-      // this function and we only want to alter `_currentWizardState` in
+      // this function and we only want to alter `_currentSelectorState` in
       // response to actions that are actually relevant.
       switch (action) {
 
-        case Constants.EMBED_WIZARD_CHOOSE_PROVIDER:
-          _currentWizardState = action;
+        case Constants.ASSET_SELECTOR_CHOOSE_PROVIDER:
+          _currentSelectorState = action;
           _chooseProvider(payload);
           break;
 
-        case Constants.EMBED_WIZARD_CHOOSE_YOUTUBE:
-          _currentWizardState = action;
-          _chooseYouTube();
+        case Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE:
+          _currentSelectorState = action;
+          _chooseYoutube();
           break;
 
-        case Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL:
-          _updateYouTubeUrl(payload);
+        case Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL:
+          _updateYoutubeUrl(payload);
           break;
 
-        case Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION:
-          _currentWizardState = action;
+        case Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION:
+          _currentSelectorState = action;
           _chooseVisualization();
           break;
 
-        case Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET:
-          _currentWizardState = action;
+        case Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
+          _currentSelectorState = action;
           _chooseVisualizationDataset(payload);
           break;
 
-        case Constants.EMBED_WIZARD_UPDATE_VISUALIZATION_CONFIGURATION:
+        case Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION:
           _updateVisualizationConfiguration(payload);
           break;
 
-        case Constants.EMBED_WIZARD_CLOSE:
+        case Constants.ASSET_SELECTOR_CLOSE:
           _closeDialog();
           break;
       }
@@ -68,8 +69,8 @@
      * Public methods
      */
 
-    this.getCurrentWizardState = function() {
-      return _currentWizardState;
+    this.getCurrentSelectorState = function() {
+      return _currentSelectorState;
     };
 
     this.getCurrentBlockId = function() {
@@ -81,15 +82,11 @@
     };
 
     this.getCurrentComponentType = function() {
-      return 'media';
+      return _currentComponentType;
     };
 
     this.getCurrentComponentValue = function() {
-
-      return {
-        type: 'embed',
-        value: _currentComponentProperties
-      };
+      return _currentComponentProperties;
     };
 
     this.isValid = function() {
@@ -127,7 +124,7 @@
       self._emitChange();
     }
 
-    function _chooseYouTube() {
+    function _chooseYoutube() {
 
       self._emitChange();
     }
@@ -153,8 +150,6 @@
 
       function setUid(uid) {
         _currentComponentProperties = {
-          provider: 'socrata',
-          embed: 'visualization',
           settings: {
             datasetUid: uid
           }
@@ -167,25 +162,27 @@
     function _updateVisualizationConfiguration(payload) {
 
       if (payload.cardData) {
+        _currentComponentType = 'socrata.visualization.columnChart';
         _currentComponentProperties.settings.visualization = payload.cardData;
       }
 
       self._emitChange();
     }
 
-    function _updateYouTubeUrl(payload) {
+    function _updateYoutubeUrl(payload) {
 
-      var youTubeId = _extractIdFromYouTubeUrl(payload.url);
-      var youTubeUrl = null;
+      var youtubeId = _extractIdFromYoutubeUrl(payload.url);
+      var youtubeUrl = null;
 
-      if (youTubeId !== null) {
-        youTubeUrl = payload.url;
+      if (youtubeId !== null) {
+        youtubeUrl = payload.url;
       }
 
+      _currentComponentType = 'youtube.video';
+
       _currentComponentProperties = {
-        provider: 'youtube',
-        id: youTubeId,
-        url: youTubeUrl
+        id: youtubeId,
+        url: youtubeUrl
       };
 
       self._emitChange();
@@ -193,7 +190,7 @@
 
     function _closeDialog() {
 
-      _currentWizardState = null;
+      _currentSelectorState = null;
       _currentBlockId = null;
       _currentComponentIndex = null;
       _currentComponentProperties = _getDefaultComponentProperties();
@@ -202,47 +199,45 @@
     }
 
     function _getDefaultComponentProperties() {
-      return {
-        provider: 'wizard'
-      };
+      return {};
     }
 
     /**
      * See: https://github.com/jmorrell/get-youtube-id/
      */
-    function _extractIdFromYouTubeUrl(youTubeUrl) {
+    function _extractIdFromYoutubeUrl(youtubeUrl) {
 
-      var youTubeId = null;
+      var youtubeId = null;
       var patterns = Constants.YOUTUBE_URL_PATTERNS;
       var tokens;
 
-      if (/youtu\.?be/.test(youTubeUrl)) {
+      if (/youtu\.?be/.test(youtubeUrl)) {
 
         // If any pattern matches, return the ID
         for (var i = 0; i < patterns.length; ++i) {
-          if (patterns[i].test(youTubeUrl)) {
-            youTubeId = patterns[i].exec(youTubeUrl)[1];
+          if (patterns[i].test(youtubeUrl)) {
+            youtubeId = patterns[i].exec(youtubeUrl)[1];
             break;
           }
         }
 
-        if (!youTubeId) {
+        if (!youtubeId) {
           // If that fails, break it apart by certain characters and look
           // for the 11 character key
-          tokens = youTubeUrl.split(/[\/\&\?=#\.\s]/g);
+          tokens = youtubeUrl.split(/[\/\&\?=#\.\s]/g);
 
           for (i = 0; i < tokens.length; ++i) {
             if (/^[^#\&\?]{11}$/.test(tokens[i])) {
-              youTubeId = tokens[i];
+              youtubeId = tokens[i];
               break;
             }
           }
         }
       }
 
-      return youTubeId;
+      return youtubeId;
     }
   }
 
-  root.socrata.storyteller.EmbedWizardStore = EmbedWizardStore;
+  root.socrata.storyteller.AssetSelectorStore = AssetSelectorStore;
 })(window);

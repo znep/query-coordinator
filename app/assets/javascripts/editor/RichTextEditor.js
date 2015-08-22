@@ -146,7 +146,7 @@
       _containerElement.attr('data-editor-id', editorId);
       _editorElement = $('<iframe>');
 
-      $(_editorElement).load(function (e) {
+      $(_editorElement).load(function(e) {
 
         _overrideDefaultStyles(e.target.contentWindow.document);
         _editor = new Squire(e.target.contentWindow.document);

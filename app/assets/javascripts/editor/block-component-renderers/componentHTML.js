@@ -1,4 +1,4 @@
-(function (root, $) {
+(function(root, $) {
 
   'use strict';
 
@@ -11,7 +11,8 @@
 
     utils.assertHasProperty(componentData, 'value');
 
-    $element.addClass('text-editor').attr('data-editor-id', editorId);
+    $element.addClass(utils.typeToClassNameForComponentType(componentData.type)).
+      attr('data-editor-id', editorId);
 
     storyteller.richTextEditorManager.createEditor(
       $element,
@@ -39,7 +40,7 @@
   }
 
   /**
-   * @function storytellerComponentText
+   * @function componentHTML
    * @description
    * Creates a RichTextEditor, and handles setups and updates.
    *
@@ -53,25 +54,25 @@
    * @param {object} componentData - An object with a type and value attribute
    * @returns {jQuery} - The rendered layout jQuery element
    */
-  function storytellerComponentText(componentData) {
-    var $self = $(this);
+  function componentHTML(componentData) {
+    var $this = $(this);
 
     utils.assertHasProperty(componentData, 'type');
     utils.assert(
-      componentData.type === 'text',
-      'Cannot render components of type {0} with jQuery.storytellerComponentText.'.format(componentData.type)
+      componentData.type === 'html',
+      'Cannot render components of type {0} with jQuery.componentHTML.'.format(componentData.type)
     );
 
-    var needsEditorSetup = !$self.is('[data-editor-id]');
+    var needsEditorSetup = !$this.is('[data-editor-id]');
 
     if (needsEditorSetup) {
-      _setupRichTextEditor($self, componentData);
+      _setupRichTextEditor($this, componentData);
     } else {
-      _updateRichTextEditor($self, componentData);
+      _updateRichTextEditor($this, componentData);
     }
 
-    return $self;
+    return $this;
   }
 
-  $.fn.storytellerComponentText = storytellerComponentText;
+  $.fn.componentHTML = componentHTML;
 })(window, jQuery);

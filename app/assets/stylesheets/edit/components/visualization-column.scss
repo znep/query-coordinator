@@ -1,6 +1,6 @@
 @import 'lib/variables';
 
-.component.socrataVisualization {
+.component-socrata-visualization-column-chart {
 
   /**
    * Temporarily override hover styles in order to not imply interactivity.
@@ -23,7 +23,7 @@
 }
 
 .col3 {
-  .socrataVisualization {
+  .component-socrata-visualization-column-chart {
     $small-height: $col3-block-edit-content-width-small * (3/4);
     $medium-height: $col3-block-edit-content-width-medium * (3/4);
     $large-height: $col3-block-edit-content-width-large * (3/4);
@@ -37,7 +37,7 @@
       $extra-large-height
     );
 
-    .media-component-embed-wizard-insert-btn {
+    .asset-selector-insert-btn {
       @include media-query-property(
         'margin-top',
         $small-height - ($btn-height * 2.5),
@@ -50,7 +50,7 @@
 }
 
 .col4 {
-  .socrataVisualization {
+  .component-socrata-visualization-column-chart {
     $small-height: $col4-block-edit-content-width-small * (3/4);
     $medium-height: $col4-block-edit-content-width-medium * (3/4);
     $large-height: $col4-block-edit-content-width-large * (3/4);
@@ -64,7 +64,7 @@
       $extra-large-height
     );
 
-    .media-component-embed-wizard-insert-btn {
+    .asset-selector-insert-btn {
       @include media-query-property(
         'margin-top',
         $small-height - ($btn-height * 2.5),
@@ -77,7 +77,7 @@
 }
 
 .col6 {
-  .socrataVisualization {
+  .component-socrata-visualization-column-chart {
     $small-height: $col6-block-edit-content-width-small * (3/4);
     $medium-height: $col6-block-edit-content-width-medium * (3/4);
     $large-height: $col6-block-edit-content-width-large * (3/4);
@@ -91,7 +91,7 @@
       $extra-large-height
     );
 
-    .media-component-embed-wizard-insert-btn {
+    .asset-selector-insert-btn {
       @include media-query-property(
         'margin-top',
         $small-height - ($btn-height * 2.5),
@@ -104,7 +104,7 @@
 }
 
 .col8 {
-  .socrataVisualization {
+  .component-socrata-visualization-column-chart {
     $small-height: $col8-block-edit-content-width-small * (3/4);
     $medium-height: $col8-block-edit-content-width-medium * (3/4);
     $large-height: $col8-block-edit-content-width-large * (3/4);
@@ -118,7 +118,7 @@
       $extra-large-height
     );
 
-    .media-component-embed-wizard-insert-btn {
+    .asset-selector-insert-btn {
       @include media-query-property(
         'margin-top',
         $small-height - ($btn-height * 2.5),
@@ -131,7 +131,7 @@
 }
 
 .col12 {
-  .socrataVisualization {
+  .component-socrata-visualization-column-chart {
     $small-height: $col12-block-edit-content-width-small * (3/4);
     $medium-height: $col12-block-edit-content-width-medium * (3/4);
     $large-height: $col12-block-edit-content-width-large * (3/4);
@@ -145,7 +145,7 @@
       $extra-large-height
     );
 
-    .media-component-embed-wizard-insert-btn {
+    .asset-selector-insert-btn {
       @include media-query-property(
         'margin-top',
         $small-height - ($btn-height * 2.5),

@@ -82,7 +82,7 @@ $(document).on('ready', function() {
   storyteller.storyStore = new storyteller.StoryStore();
   storyteller.historyStore = new storyteller.HistoryStore();
   storyteller.dragDropStore = new storyteller.DragDropStore();
-  storyteller.embedWizardStore = new storyteller.EmbedWizardStore();
+  storyteller.assetSelectorStore = new storyteller.AssetSelectorStore();
   storyteller.blockRemovalConfirmationStore = new storyteller.BlockRemovalConfirmationStore();
   storyteller.coreSavingStore = new storyteller.CoreSavingStore();
   storyteller.flyoutRenderer = new storyteller.FlyoutRenderer();
@@ -101,11 +101,11 @@ $(document).on('ready', function() {
 
   storyteller.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
 
-  var embedWizardOptions = {
-    embedWizardContainerElement: $('#embed-wizard')
+  var assetSelectorOptions = {
+    assetSelectorContainerElement: $('#asset-selector-container')
   };
 
-  var embedWizardRenderer = new storyteller.EmbedWizardRenderer(embedWizardOptions); //eslint-disable-line no-unused-vars
+  var assetSelectorRenderer = new storyteller.AssetSelectorRenderer(assetSelectorOptions); //eslint-disable-line no-unused-vars
 
   var userStoryOptions = {
     storyUid: storyteller.userStoryUid,

@@ -164,6 +164,10 @@
         // Try to get the value for the original bucket, defaulting to zero.
         var value = _.get(dataByMagnitude, magnitude + '.value', 0);
 
+        if (!_.isFinite(value)) {
+          value = 0;
+        }
+
         if (options.bucketType === 'logarithmic') {
           return getLogarithmicBucket(magnitude, value);
         } else {

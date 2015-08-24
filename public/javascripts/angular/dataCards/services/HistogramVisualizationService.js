@@ -231,11 +231,15 @@
           selectedBuckets.unfilteredValue :
           unfilteredBucket.value;
 
+        if (!_.isFinite(rangeTotal)) {
+          rangeTotal = 0;
+        }
+
         var rangeFilteredAmount = renderFilteredRange ?
           selectedBuckets.value :
           filteredBucket.value;
 
-        if (hoverOutsideSelection) {
+        if (!_.isFinite(rangeFilteredAmount) || hoverOutsideSelection) {
           rangeFilteredAmount = 0;
         }
 
@@ -604,7 +608,7 @@
             }
 
             if (!_.isFinite(scaledValue)) {
-              return 0;
+              return axisLine;
             }
 
             // Values close to but not equal zero be at least 2 pixels away
@@ -699,6 +703,7 @@
             Math.max(0, filteredValue, unfilteredValue) :
             Math.max(0, unfilteredValue);
           var hoverTargetY = scale.y(maxValueOrZero);
+          hoverTargetY = _.isFinite(hoverTargetY) ? hoverTargetY : 0;
           dom.hoverTarget.
             attr('x1', totalWidth).
             attr('x2', totalWidth + bucketWidth).

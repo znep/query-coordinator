@@ -229,11 +229,11 @@ body.state-view-cards
         padding: 0
         box-sizing: border-box
         z-index: 1002
-        box-shadow: 0 2px 4px rgba(0, 0, 0, .35)
+        @include prefixer(box-shadow, 0 0 8px rgba(0, 0, 0, .2))
+        border-bottom-width: 1px
+        border-bottom-style: solid
 
         &.stuck
-          border-bottom-width: 1px
-          border-bottom-style: solid
           position: fixed
           top: 0
 

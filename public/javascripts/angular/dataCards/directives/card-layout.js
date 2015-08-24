@@ -94,7 +94,6 @@
 
         function adjustCardGroupCustomizeHints() {
           var HINT_HEIGHT = 80;
-          var PADDING = 10;
           var quickFilterBarHeight = quickFilterBar.height();
           var containerTop = cardContainer.get(0).getBoundingClientRect().top;
 
@@ -104,7 +103,7 @@
 
               if (containerTop + cardGroup.style.top < quickFilterBarHeight) {
                 hintPosition = 'fixed';
-                hintTop = quickFilterBarHeight + PADDING;
+                hintTop = quickFilterBarHeight;
 
                 if (hintTop + HINT_HEIGHT >= containerTop + cardGroup.style.top + cardGroup.style.height) {
                   hintTop = cardGroup.style.top + cardGroup.style.height - HINT_HEIGHT;
@@ -112,7 +111,7 @@
                 }
               } else {
                 hintPosition = 'absolute';
-                hintTop = cardGroup.style.top + PADDING;
+                hintTop = cardGroup.style.top;
               }
 
               cardGroup.hint.top = hintTop + 'px';
@@ -320,6 +319,8 @@
           var sidebarWidth = editMode ? Constants.LAYOUT_SIDEBAR_WIDTH : 0;
           var cardMargin = Constants.LAYOUT_CARD_MARGIN;
           var horizontalPadding = Constants.LAYOUT_HORIZONTAL_PADDING;
+          var cardGroupPadding = Constants.LAYOUT_CARD_GROUP_PADDING;
+          var cardGroupBorderWidth = Constants.LAYOUT_CARD_GROUP_BORDER_WIDTH;
 
           containerContentWidth -= sidebarWidth;
 
@@ -351,7 +352,12 @@
 
             _.map(rows, function(row, rowIndex) {
 
-              var paddingForEntireRow = cardMargin * (row.length - 1);
+              var paddingForEntireRow = (cardMargin * (row.length - 1));
+
+              if (editMode) {
+                paddingForEntireRow += (2 * cardGroupPadding) + cardGroupBorderWidth;
+              }
+
               var usableContentSpaceForRow = containerContentWidth - paddingForEntireRow;
               var cardWidth = Math.floor(usableContentSpaceForRow / row.length);
 
@@ -364,6 +370,11 @@
                 var cardLeft = horizontalPadding + (
                   cardIndexInRow * cardWidth) + spaceTakenByOtherCardsPadding;
                 var cardTop = heightOfAllCards + rowIndex * currentRowHeight;
+
+                if (editMode) {
+                  cardLeft += cardGroupPadding + cardGroupBorderWidth;
+                  cardTop += cardGroupPadding;
+                }
 
                 maxY = cardTop + currentRowContentHeight;
 
@@ -421,7 +432,7 @@
               dropTargets.push(dropTarget);
               addCardButtons.push(addCardButton);
 
-              heightOfAllCards += cardGroup.style.height + Constants.LAYOUT_CARD_GROUP_SPACING;
+              heightOfAllCards += cardGroup.style.height + Constants.LAYOUT_CARD_GROUP_BOTTOM_SPACING;
             } else {
               heightOfAllCards += rows.length * currentRowHeight;
             }

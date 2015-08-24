@@ -166,6 +166,7 @@
         uid: story.uid,
         title: story.title,
         description: story.description,
+        themeId: story.themeId,
         blocks: story.blockIds.map(_serializeBlock)
       };
     };
@@ -178,6 +179,7 @@
         uid: story.uid,
         title: story.title,
         description: story.description,
+        themeId: story.themeId,
         blocks: story.blockIds.map(_serializeBlockDiff)
       };
     };
@@ -398,6 +400,7 @@
         uid: storyUid,
         title: storyData.title,
         description: storyData.description,
+        themeId: storyData.themeId,
         blockIds: blockIds
       };
 
@@ -455,6 +458,7 @@
       utils.assertIsOneOfTypes(storyData, 'object');
       utils.assertHasProperty(storyData, 'uid');
       utils.assertHasProperty(storyData, 'title');
+      utils.assertHasProperty(storyData, 'description');
       utils.assertHasProperty(storyData, 'blocks');
 
       if (storyData.uid.match(FOUR_BY_FOUR_PATTERN) === null) {

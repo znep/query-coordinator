@@ -11,10 +11,13 @@
   position: fixed;
   height: calc(100vh - #{$header-height} - #{$content-panel-padding});
   top: $header-height;
-  right: 0;
+  right: -$panel-width * 3/2;
   padding: $content-panel-padding / 2;
   background-color: $content-panel-bg-color;
-  box-shadow: -$content-panel-box-shadow-size 0 $content-panel-box-shadow-size $content-panel-box-shadow-color;
+
+  &.active {
+    box-shadow: -$content-panel-box-shadow-size 0 $content-panel-box-shadow-size $content-panel-box-shadow-color;
+  }
 
   .content-panel-close-btn-container {
     display: inline-block;

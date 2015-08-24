@@ -56,12 +56,14 @@
     addContentPanel.
       on('sidebar:open', function() {
         toggleButton.addClass('active');
+        addContentPanel.addClass('active');
         addContentPanel.find('button[data-panel-toggle="add-content-panel"]').eq(0).focus();
       }).
       on('sidebar:close', function() {
         toggleButton.
           removeClass('active').
           blur();
+        addContentPanel.removeClass('active');
       }).
       on('mousewheel', '.scrollable', utils.preventScrolling).
       on('dblclick', '.inspiration-block', function(e) {

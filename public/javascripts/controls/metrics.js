@@ -377,13 +377,13 @@
             }
         });
 
-        var initialSpan = moment(paramValues.start).lang(blist.locale).format(opts.parseDateFormat);
-        if (paramValues.start != paramValues.end)
-        {
-            initialSpan += ' ' + opts.separator + ' ' + moment(paramValues.end).lang(blist.locale).format(opts.parseDateFormat);
+        var monthToDateRange = 
+          {text: $.t('plugins.daterangepicker.month_to_date'), dateStart: function(){ return Date.parse('today').moveToFirstDayOfMonth();  }, dateEnd: 'today' };
+        var initialRange = {dateStart: paramValues.start, dateEnd: paramValues.end};
+        if (paramValues.start == monthStart && paramValues.end == monthEnd) {
+            initialRange = monthToDateRange;
         }
-        $timeslice.val(initialSpan)
-        .daterangepicker({
+        $timeslice.daterangepicker({
             dateFormat: opts.displayDateFormat,
             doneButtonText: $.t('screens.stats.apply'),
             earliestDate: opts.minimumDate,
@@ -399,19 +399,17 @@
             },
             posY: $timeslice.offset().top + $timeslice.outerHeight() + opts.yOffset,
             rangeSplitter: opts.separator,
+            initialRange: initialRange,
             presetRanges: [
               {text: $.t('plugins.daterangepicker.today'), dateStart: 'today', dateEnd: 'today' },
               {text: $.t('plugins.daterangepicker.week_to_date'), dateStart: function() { return Date.parse('today').moveToDayOfWeek(0, -1); }, dateEnd: 'today' },
-              {text: $.t('plugins.daterangepicker.month_to_date'), dateStart: function(){ return Date.parse('today').moveToFirstDayOfMonth();  }, dateEnd: 'today' };
+              monthToDateRange,
               {text: $.t('plugins.daterangepicker.year_to_date'), dateStart: function(){ var x= Date.parse('today'); x.setMonth(0); x.setDate(1); return x; }, dateEnd: 'today' },
-              //extras:
               {text: $.t('plugins.daterangepicker.last_month'), dateStart: function(){ return Date.parse('1 month ago').moveToFirstDayOfMonth();  }, dateEnd: function(){ return Date.parse('1 month ago').moveToLastDayOfMonth();  } }
             ], 
-            //presetRanges: array of objects for each menu preset. 
-            //Each obj must have text, dateStart, dateEnd. dateStart, dateEnd accept date.js string or a function which returns a date object
             presets: {
               specificDate: $.t('plugins.daterangepicker.specific_date'),
-                    dateRange: $.t('plugins.daterangepicker.date_range'),
+              dateRange: $.t('plugins.daterangepicker.date_range'),
               theWeekOf: $.t('plugins.daterangepicker.the_week_of'),
               theMonthOf: $.t('plugins.daterangepicker.the_month_of'),
               theYearOf: $.t('plugins.daterangepicker.the_year_of')

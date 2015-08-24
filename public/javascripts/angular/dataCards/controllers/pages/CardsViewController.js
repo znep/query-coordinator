@@ -377,7 +377,7 @@
     * View/edit cards behavior *
     ***************************/
 
-    $scope.editMode = $scope.isEphemeral;
+    $scope.editMode = false;
 
     // Global save events. Elements in this stream are objects
     // with a status key set to one of only:

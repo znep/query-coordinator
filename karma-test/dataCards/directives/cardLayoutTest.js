@@ -427,6 +427,98 @@ describe('card-layout', function() {
 
   describe('in edit mode', function() {
 
+    it('should move cards over to the right', function() {
+
+      var cl = createCardLayout();
+      var card1 = new Card(cl.pageModel, 'testField1');
+      var card2 = new Card(cl.pageModel, '*');
+
+      var cards = [ card1, card2 ];
+
+      card1.set('cardSize', 1);
+      card2.set('cardSize', 1);
+
+      cl.pageModel.set('cards', cards);
+
+      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+
+      // Before customizing
+      cl.element.find('.card-spot').each(function() {
+        expect(parseInt($(this).css('left'), 10)).to.be.below(20);
+      });
+
+      // Enter customize mode
+      cl.outerScope.$safeApply(function() {
+        cl.outerScope.editMode = true;
+      });
+
+      // After customizing
+      cl.element.find('.card-spot').each(function() {
+        expect(parseInt($(this).css('left'), 10)).to.be.above(100);
+      });
+    });
+
+    it('should show three card group customize hints', function() {
+
+      var cl = createCardLayout();
+      var card1 = new Card(cl.pageModel, 'testField1');
+      var card2 = new Card(cl.pageModel, '*');
+
+      var cards = [ card1, card2 ];
+
+      card1.set('cardSize', 1);
+      card2.set('cardSize', 1);
+
+      cl.pageModel.set('cards', cards);
+
+      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+
+      // Before customizing
+      expect(cl.element.find('.card-group-customize-hint')).to.have.length(0);
+
+      // Enter customize mode
+      cl.outerScope.$safeApply(function() {
+        cl.outerScope.editMode = true;
+      });
+
+      // After customizing
+      expect(cl.element.find('.card-group-customize-hint')).to.have.length(3);
+    });
+
+    it('should show card group customize hint cards', function() {
+
+      var cl = createCardLayout();
+      var card1 = new Card(cl.pageModel, 'testField1');
+      var card2 = new Card(cl.pageModel, '*');
+
+      var cards = [ card1, card2 ];
+
+      card1.set('cardSize', 1);
+      card2.set('cardSize', 1);
+
+      cl.pageModel.set('cards', cards);
+
+      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
+      mockWindowStateService.scrollPositionSubject.onNext(0);
+
+      // Before customizing
+      expect(cl.element.find('.card-group-customize-hint-cards')).to.have.length(0);
+
+      // Enter customize mode
+      cl.outerScope.$safeApply(function() {
+        cl.outerScope.editMode = true;
+      });
+
+      // After customizing
+      var rows = cl.element.find('.card-group-customize-hint-cards[ng-show="true"]');
+      expect(rows).to.have.length(3);
+      expect(rows.eq(0).find('.card-group-customize-hint-card.span6')).to.have.length(2);
+      expect(rows.eq(1).find('.card-group-customize-hint-card.span4')).to.have.length(3);
+      expect(rows.eq(2).find('.card-group-customize-hint-card.span3')).to.have.length(4);
+    });
+
     // This is hard to test as we can't do a hittest from the browser to simulate a real
     // mouse click.
     // Best we can do is see if the interaction catcher comes up in edit mode.

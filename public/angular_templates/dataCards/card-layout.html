@@ -1,4 +1,5 @@
 <div
+  ng-if="editMode"
   ng-repeat="cardGroup in cardGroups"
   card-group-index="$index"
   ng-style="cardGroup.hint"
@@ -55,6 +56,7 @@
 </div>
 
 <div
+  ng-if="editMode"
   ng-repeat="dropTarget in dropTargets"
   ng-style="dropTarget.style"
   class="card-group-drop-placeholder"

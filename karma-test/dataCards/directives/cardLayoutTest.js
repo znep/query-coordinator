@@ -668,21 +668,6 @@ describe('card-layout', function() {
         expect($('.add-card-button:visible').length).not.to.equal(1);
       });
 
-      it('should enable or disable "Add card here" buttons as the controller indicates', function() {
-        var cl = createLayoutWithCards();
-
-        cl.outerScope.allVisualizableColumnsVisualized = false;
-        cl.outerScope.editMode = true;
-        cl.outerScope.$apply();
-
-        expect($('.add-card-button').first().hasClass('disabled')).to.be.false;
-
-        cl.outerScope.allVisualizableColumnsVisualized = true;
-        cl.outerScope.$apply();
-
-        expect($('.add-card-button').first().hasClass('disabled')).to.be.true;
-      });
-
       it('should emit an "add-card-with-size" event when an enabled "Add card here" button is clicked', function(done) {
         var cl = createLayoutWithCards();
         var hasBeenCalled = false;

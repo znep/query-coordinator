@@ -335,7 +335,8 @@ body.state-view-cards
             height: inherit
 
       .card-group
-        border-left: 4px solid #f7f7f7
+        border-left-width: 4px
+        border-left-style: solid
         border-radius: $rounded-corners-border-radius
         position: absolute
 
@@ -345,8 +346,14 @@ body.state-view-cards
         height: 80px
         padding-top: 10px
         padding-left: 10px
-        font-weight: 400
         box-sizing: border-box
+
+        .icon-help
+          cursor: default
+
+        .card-group-customize-hint-text
+          font-weight: 400
+          line-height: 1.2rem
 
         .card-group-customize-hint-cards
           margin-top: 10px
@@ -354,7 +361,6 @@ body.state-view-cards
           .card-group-customize-hint-card
             height: 24px
             margin-right: 4px
-            background: rgba(255, 255, 255, .2)
             border-radius: 3px
 
             &:last-child

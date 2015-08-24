@@ -4,7 +4,7 @@
   card-group-index="$index"
   ng-style="cardGroup.hint"
   class="card-group-customize-hint">
-  <div>Up to {{ $index + 2 }} columns per row. ?</div>
+  <div class="card-group-customize-hint-text">{{'cardLayout.cardGroupCustomizeHintText' | I18n:$index + 2}} <span class="icon-help">(?)</span></div>
 
   <div ng-show="{{$index === 0}}" class="card-group-customize-hint-cards row">
     <span class="card-group-customize-hint-card span6"></span>
@@ -62,13 +62,12 @@
   class="card-group-drop-placeholder"
   data-group-id="{{ dropTarget.cardSize}}">
     <img class="drag-card-icon" src="/images/dataCards/drag-card-icon.png">
-    Drag and drop cards here
+    {{'cardLayout.cardGroupPlaceholderText' | I18n}}
 
   <button
     ng-style="addCardButtons[$index].style"
     type="button"
     class="add-card-button action-btn dark r-to-l"
-    ng-class="{ disabled: !allowAddCard }"
     ng-show="editMode"
     ng-click="addCardWithSize(addCardButtons[$index].cardSize)">
       <span class="icon-edit"></span> {{'cardLayout.addCardHere' | I18n}}

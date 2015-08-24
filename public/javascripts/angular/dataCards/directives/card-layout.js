@@ -52,8 +52,7 @@
         expandedCard: '=',
         editMode: '=',
         chooserMode: '=',
-        globalWhereClauseFragment: '=',
-        allowAddCard: '='
+        globalWhereClauseFragment: '='
       },
       templateUrl: '/angular_templates/dataCards/card-layout.html',
       link: function(scope, cardContainer) {
@@ -616,7 +615,6 @@
           expandedCardsSequence,
           scope.$observe('editMode'),
           debouncedWindowSize$,
-          scope.$observe('allowAddCard'),
           function layoutFn(cardsBySize, expandedCards, editMode, windowSize) {
             if (_.isEmpty(cardsBySize.normal) && _.isEmpty(cardsBySize.dataCard)) {
               return;
@@ -965,23 +963,17 @@
         });
 
         FlyoutService.register({
-          selector: '.add-card-button',
-          render: function(el) {
-            if ($(el).hasClass('disabled')) {
-              return '<div class="flyout-title">All available cards are already on the page</div>';
-            }
+          selector: '.card-group-customize-hint-text .icon-help',
+          render: function() {
+            return I18n.t('cardLayout.cardGroupCustomizeHintFlyoutText');
           },
           destroySignal: scope.$destroyAsObservable(cardContainer)
         });
 
-        /******************
-        * Bind observable *
-        ******************/
-
+        // Destroy observable
         scope.$destroyAsObservable(cardContainer).subscribe(function() {
           _.invoke(subscriptions, 'dispose');
         });
-
       }
     };
   }

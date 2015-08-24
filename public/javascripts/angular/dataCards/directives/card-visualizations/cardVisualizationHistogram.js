@@ -290,7 +290,11 @@
           ).switchLatest();
         }
 
-        var groupBySample$ = fieldName$.withLatestFrom(
+        var groupBySample$ = fieldName$.combineLatest(
+          dataset$,
+          aggregation$,
+          _.identity
+        ).withLatestFrom(
           dataset$,
           aggregation$,
           function(fieldName, dataset, aggregation) {

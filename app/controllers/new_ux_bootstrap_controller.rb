@@ -88,8 +88,8 @@ class NewUxBootstrapController < ActionController::Base
 
     unless dataset_metadata_response[:status] == '200' && dataset_metadata_response.try(:[], :body).present?
       Airbrake.notify(
-        :error_class => "BootstrapUXFailure",
-        :error_message => "Could not retrieve dataset metadata.",
+        :error_class => 'BootstrapUXFailure',
+        :error_message => 'Could not retrieve dataset metadata.',
         :request => { :params => params },
         :context => { :response => dataset_metadata_response }
       )
@@ -133,7 +133,7 @@ class NewUxBootstrapController < ActionController::Base
         end
       end
 
-      if default_page_accessible?(default_page)
+      if default_page.present? && page_accessible?(default_page[:pageId])
         # If we found a default page as specified in the dataset_metadata,
         # check its metadata version.
         # Note that the .to_i will coerce potential nil results into 0.
@@ -154,8 +154,7 @@ class NewUxBootstrapController < ActionController::Base
           # Note that this may be nil and, if so, will be coerced by .to_i into 0
           page[:version].to_i > 0
         end
-
-        if some_page.present?
+        if some_page.present? && page_accessible?(some_page[:pageId])
           # If we have found a qualifying default page, set it as the default
           # and then redirect to it.
           set_default_page(dataset_metadata_response_body, some_page[:pageId])
@@ -195,11 +194,11 @@ class NewUxBootstrapController < ActionController::Base
   # An arbitrary number of cards to create, if there are that many columns available
   MAX_NUMBER_OF_CARDS = 10
 
-  def default_page_accessible?(default_page)
-    return false unless default_page.present?
+  def page_accessible?(page_id)
+    return false unless page_id.present?
 
-    default_page_metadata = phidippides.fetch_page_metadata(default_page)
-    default_page_metadata[:status] == '200'
+    page_metadata = phidippides.fetch_page_metadata(page_id)
+    page_metadata[:status] == '200'
   end
 
   def set_default_page(dataset_metadata, page_id)

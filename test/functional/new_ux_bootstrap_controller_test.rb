@@ -218,7 +218,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             )
           end
 
-          should 'createa  new default page' do
+          should 'create a new default page' do
             @phidippides.expects(:update_dataset_metadata).
               returns({ status: '200' }).
               with do |dataset_metadata|
@@ -289,7 +289,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             @phidippides.stubs(
               fetch_dataset_metadata: {
                 status: '200',
-                body: v1_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata[:defaultPage] = 'lost-page'  }
+                body: v1_mock_dataset_metadata.deep_dup.tap { |dataset_metadata| dataset_metadata[:defaultPage] = 'lost-page' }
               },
               fetch_pages_for_dataset: {
                 status: '404', body: ''
@@ -297,6 +297,57 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
             )
 
             get :bootstrap, id: 'data-iden'
+            assert_redirected_to('/view/abcd-efgh')
+          end
+        end
+
+        context 'default page is set and is present in publisher pages but does not actually exist' do
+          setup do
+            # default page is set
+            stub_request(:get, 'http://localhost:2401/v1/id/data-iden/dataset').
+              to_return(
+                :status => 200,
+                :body => v1_mock_dataset_metadata.deep_dup.
+                  tap { |dataset_metadata| dataset_metadata[:defaultPage] = 'lost-page' }.to_json.to_s)
+
+            # default page is present in pages
+            stub_request(:get, 'http://localhost:2401/v1/id/data-iden/pages').
+              to_return(
+                :status => 200,
+                :body => {
+                  'lost-page' => {
+                    'pageId' => 'lost-page',
+                    'version' => 1
+                  }
+                }.to_json.to_s)
+
+            # default page does not exist
+            stub_request(:get, 'http://localhost:2401/v1/pages/lost-page').
+              to_return(:status => 404)
+
+            @phidippides.stubs(
+              log_datalens_access: nil
+            )
+          end
+
+          should 'create a new default page, update page metadata, and redirect' do
+            # Create new default page
+            @page_metadata_manager.
+              expects(:create).
+              with { |page_metadata| page_metadata['datasetId'] == 'data-iden' }.
+              returns({
+                  status: '200',
+                  body: { pageId: 'abcd-efgh' }
+                })
+
+            # Update dataset with new default page
+            @phidippides.
+              expects(:update_dataset_metadata).
+              with { |dataset_metadata| dataset_metadata[:defaultPage] == 'abcd-efgh' }.
+              returns({ status: '200' })
+
+            get :bootstrap, id: 'data-iden'
+            # Redirect to new default page
             assert_redirected_to('/view/abcd-efgh')
           end
         end
@@ -353,13 +404,14 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                 }
               )
             end
-
+            @controller.stubs(
+              page_accessible?: true
+            )
             @phidippides.expects(:update_dataset_metadata).
               returns({ status: '200' }).
               with do |dataset_metadata|
                 dataset_metadata[:defaultPage] == 'neww-page'
               end
-
             stub_fetch_dataset_metadata_without_default_page_and_fetch_pages_for_dataset
             get :bootstrap, id: 'four-four'
             assert_redirected_to('/view/neww-page')

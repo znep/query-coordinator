@@ -408,7 +408,7 @@ var ColumnContainer = function(colName, selfUrl, urlBase)
           function(oc) { return oc.fieldName === c.fieldName; });
 
         if (!oldC && cont._parent) {
-          oldC = _.detect(cont._parent[capSet],
+          oldC = _.detect(cont._parent[colSet],
             function(oc) { return oc.fieldName === c.fieldName; });
         }
 

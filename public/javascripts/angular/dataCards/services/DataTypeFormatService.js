@@ -182,7 +182,7 @@
     */
     var renderTimestampCell = function(cellContent, column) {
       if (_.isPresent(cellContent)) {
-        var time = moment(cellContent);
+        var time = moment(new Date(cellContent));
         if (time.isValid()) {
           if (column.format && column.format.formatString) {
             // Option A: format using user-specified format string

@@ -449,6 +449,280 @@ describe('socrata-utils.js', function() {
     });
   });
 
+  describe('isolateScrolling', function() {
+    // CSS specifications
+    var heightOfScrollableContent = 50;
+    var scrollingBox = {
+      border: '1px solid #000',
+      position: 'absolute',
+      width: 20,
+      height: 20,
+      top: 0,
+      left: 0,
+      overflow: 'auto'
+    };
+    var contentBox =  {
+      height: heightOfScrollableContent
+    };
+    var staticBox = {
+      position: 'absolute',
+      width: 20,
+      height: 20,
+      top: 100,
+      left: 100
+    };
+
+    // Div elements
+    var scrollingDiv;
+    var staticDiv;
+    var divContent;
+
+    // Spy to determine whether default page scrolling was prevented
+    var preventDefaultSpy;
+
+    beforeEach(function() {
+      // Build test HTML
+      scrollingDiv = $('<div />', {
+        className: 'scrolling-div',
+        css: scrollingBox
+      }).appendTo('body');
+
+      divContent = $('<div />', {
+        className: 'content',
+        css: contentBox
+      }).appendTo(scrollingDiv);
+
+      staticDiv = $('<div />', {
+        className: 'static-div',
+        css: staticBox
+      }).appendTo('body');
+    });
+
+    afterEach(function() {
+      preventDefaultSpy.restore();
+      divContent.remove();
+      scrollingDiv.remove();
+      staticDiv.remove();
+    });
+
+    // Construct a scroll event of the given name and direction (up or down)
+    function buildTestEvent(eventName, scrollDirection) {
+      var testDeltaY;
+      switch(eventName) {
+        case 'mousewheel':
+          // scrolling up is positive, down is negative
+          testDeltaY = (scrollDirection === 'up') ? 200 : -400;
+          break;
+        case 'DOMMouseScroll':
+        case 'MozMousePixelScroll':
+          // scrolling up is negative, down is positive
+          testDeltaY = (scrollDirection === 'up') ? -200 : 400;
+          break;
+        default:
+          throw new Error('Unexpected eventName passed to buildTestEvent: {0}'.format(eventName));
+      }
+
+      var propertyName = (eventName === 'mousewheel') ? 'wheelDeltaY' : 'detail';
+
+      var originalEventData = {};
+      originalEventData[propertyName] = testDeltaY;
+
+      return jQuery.Event(eventName, {originalEvent: originalEventData});
+    }
+
+    describe('mousewheel (IE, Safari, Chrome)', function() {
+      it('should prevent page scrolling if at top of current scrollable div', function() {
+        var testEvent = buildTestEvent('mousewheel', 'up');
+        preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
+
+        utils.isolateScrolling(scrollingDiv, true);
+
+        scrollingDiv.trigger(testEvent);
+        expect(preventDefaultSpy.called).to.be.true;
+      });
+
+      it('should prevent page scrolling if at bottom of current scrollable div', function() {
+        // set scrollbar to bottom of div
+        scrollingDiv.scrollTop(heightOfScrollableContent);
+        var testEvent = buildTestEvent('mousewheel', 'down');
+        preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
+
+        utils.isolateScrolling(scrollingDiv, true);
+
+        scrollingDiv.trigger(testEvent);
+        expect(preventDefaultSpy.called).to.be.true;
+      });
+
+      it('should not prevent page scrolling up if initiated outside of scrolling div', function() {
+        var testEvent = buildTestEvent('mousewheel', 'up');
+        preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
+
+        utils.isolateScrolling(scrollingDiv, true);
+
+        staticDiv.trigger(testEvent);
+        expect(preventDefaultSpy.called).to.be.false;
+      });
+
+      it('should not prevent page scrolling down if initiated outside of scrolling div', function() {
+        var testEvent = buildTestEvent('mousewheel', 'down');
+        preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
+
+        utils.isolateScrolling(scrollingDiv, true);
+
+        staticDiv.trigger(testEvent);
+        expect(preventDefaultSpy.called).to.be.false;
+      });
+
+      it('when isolateScrolling is called with enabled=true, and then again with enabled=false, page scrolling is no longer disabled', function() {
+        // Enable isolateScrolling to scrollingDiv and disable page scrolling
+        var testEvent = buildTestEvent('mousewheel', 'up');
+        preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
+
+        utils.isolateScrolling(scrollingDiv, true);
+
+        scrollingDiv.trigger(testEvent);
+        expect(preventDefaultSpy.called).to.be.true;
+
+        // Disable isolateScrolling to the scrollingDiv and renable page scrolling
+        utils.isolateScrolling(scrollingDiv, false);
+
+        var testEvent = buildTestEvent('mousewheel', 'up');
+        preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
+
+        scrollingDiv.trigger(testEvent);
+        expect(preventDefaultSpy.called).to.be.false;
+      });
+    });
+
+    describe('DOMMouseScroll (some versions of Firefox)', function() {
+      it('should prevent page scrolling if at top of current scrollable div', function() {
+        var testEvent = buildTestEvent('DOMMouseScroll', 'up');
+        preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
+
+        utils.isolateScrolling(scrollingDiv, true);
+
+        scrollingDiv.trigger(testEvent);
+        expect(preventDefaultSpy.called).to.be.true;
+      });
+
+      it('should prevent page scrolling if at bottom of current scrollable div', function() {
+        // set scrollbar to bottom of div
+        scrollingDiv.scrollTop(heightOfScrollableContent);
+        var testEvent = buildTestEvent('DOMMouseScroll', 'down');
+        preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
+
+        utils.isolateScrolling(scrollingDiv, true);
+
+        scrollingDiv.trigger(testEvent);
+        expect(preventDefaultSpy.called).to.be.true;
+      });
+
+      it('should not prevent page scrolling up if initiated outside of scrolling div', function() {
+        var testEvent = buildTestEvent('DOMMouseScroll', 'up');
+        preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
+
+        utils.isolateScrolling(scrollingDiv, true);
+
+        staticDiv.trigger(testEvent);
+        expect(preventDefaultSpy.called).to.be.false;
+      });
+
+      it('should allow page scrolling if not over scrollable div', function() {
+        var testEvent = buildTestEvent('DOMMouseScroll', 'down');
+        preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
+
+        utils.isolateScrolling(scrollingDiv, true);
+
+        staticDiv.trigger(testEvent);
+        expect(preventDefaultSpy.called).to.be.false;
+      });
+
+      it('when isolateScrolling is called with enabled=true, and then again with enabled=false, page scrolling is no longer disabled', function() {
+        // Enable isolateScrolling to scrollingDiv and disable page scrolling
+        var testEvent = buildTestEvent('DOMMouseScroll', 'up');
+        preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
+
+        utils.isolateScrolling(scrollingDiv, true);
+
+        scrollingDiv.trigger(testEvent);
+        expect(preventDefaultSpy.called).to.be.true;
+
+        // Disable isolateScrolling to the scrollingDiv and renable page scrolling
+        utils.isolateScrolling(scrollingDiv, false);
+
+        var testEvent = buildTestEvent('DOMMouseScroll', 'up');
+        preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
+
+        scrollingDiv.trigger(testEvent);
+        expect(preventDefaultSpy.called).to.be.false;
+      });
+    });
+
+    describe('MozMousePixelScroll (some versions of Firefox)', function() {
+      it('should prevent page scrolling if at top of current scrollable div', function() {
+        var testEvent = buildTestEvent('MozMousePixelScroll', 'up');
+        preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
+
+        utils.isolateScrolling(scrollingDiv, true);
+
+        scrollingDiv.trigger(testEvent);
+        expect(preventDefaultSpy.called).to.be.true;
+      });
+
+      it('should prevent page scrolling if at bottom of current scrollable div', function() {
+        // set scrollbar to bottom of div
+        scrollingDiv.scrollTop(heightOfScrollableContent);
+        var testEvent = buildTestEvent('MozMousePixelScroll', 'down');
+        preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
+
+        utils.isolateScrolling(scrollingDiv, true);
+
+        scrollingDiv.trigger(testEvent);
+        expect(preventDefaultSpy.called).to.be.true;
+      });
+
+      it('should not prevent page scrolling up if initiated outside of scrolling div', function() {
+        var testEvent = buildTestEvent('MozMousePixelScroll', 'up');
+        preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
+
+        utils.isolateScrolling(scrollingDiv, true);
+
+        staticDiv.trigger(testEvent);
+        expect(preventDefaultSpy.called).to.be.false;
+      });
+
+      it('should allow page scrolling if not over scrollable div', function() {
+        var testEvent = buildTestEvent('MozMousePixelScroll', 'down');
+        preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
+
+        utils.isolateScrolling(scrollingDiv, true);
+
+        staticDiv.trigger(testEvent);
+        expect(preventDefaultSpy.called).to.be.false;
+      });
+
+      it('when isolateScrolling is called with enabled=true, and then again with enabled=false, page scrolling is no longer disabled', function() {
+        // Enable isolateScrolling to scrollingDiv and disable page scrolling
+        var testEvent = buildTestEvent('MozMousePixelScroll', 'up');
+        preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
+
+        utils.isolateScrolling(scrollingDiv, true);
+
+        scrollingDiv.trigger(testEvent);
+        expect(preventDefaultSpy.called).to.be.true;
+
+        // Disable isolateScrolling to the scrollingDiv and renable page scrolling
+        utils.isolateScrolling(scrollingDiv, false);
+
+        var testEvent = buildTestEvent('MozMousePixelScroll', 'up');
+        preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
+
+        scrollingDiv.trigger(testEvent);
+        expect(preventDefaultSpy.called).to.be.false;
+      });
+    });
+  });
+
   describe('getCookie', function() {
 
     beforeEach(function() {
@@ -472,6 +746,5 @@ describe('socrata-utils.js', function() {
       });
 
     });
-
   });
 });

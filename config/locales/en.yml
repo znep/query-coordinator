@@ -234,6 +234,13 @@ en:
       related_views:
         button: Other views of this data
         title: Other views of this data
+      remove_all_cards:
+        button: Remove All Cards
+        flyout: Click to remove all cards on this page
+        flyout_no_cards: There are no cards on the page to remove
+        flyout_not_edit_mode: Enter customize mode to remove all cards on this Lens page
+        prompt: Are you sure you wish to remove all cards from this page?
+        prompt_confirm: Yes, Remove All
       revert_button:
         flyoutHasChanges: Click to undo all changes since you last saved
         flyoutNoChanges: No changes to be reverted

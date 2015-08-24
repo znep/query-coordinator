@@ -13,7 +13,7 @@
   // }
   angular.module('dataCards.services').factory('WindowState', function() {
     var jqueryWindow = $(window);
-    var body = document.getElementsByTagName('body')[0];
+    var root = document.documentElement;
 
     var WindowState = {};
 
@@ -24,7 +24,7 @@
     });
 
     var mousePosition$ = new Rx.BehaviorSubject({ clientX: 0, clientY: 0, target: document.body });
-    body.addEventListener('mousemove', function(e) {
+    root.addEventListener('mousemove', function(e) {
       WindowState.mouseClientX = e.clientX;
       WindowState.mouseClientY = e.clientY;
       mousePosition$.onNext({
@@ -34,7 +34,7 @@
       });
     });
 
-    body.addEventListener('surrogate-mousemove', function(e) {
+    root.addEventListener('surrogate-mousemove', function(e) {
       WindowState.mouseClientX = e.clientX;
       WindowState.mouseClientY = e.clientY;
       mousePosition$.onNext({
@@ -45,22 +45,22 @@
     });
 
     var mouseLeftButtonPressed$ = new Rx.BehaviorSubject(false);
-    var mouseLeftButtonClick$ = Rx.Observable.fromEvent(body, 'click').
+    var mouseLeftButtonClick$ = Rx.Observable.fromEvent(root, 'click').
         filter(function(e) { return e.which === 1; });
 
-    var mouseLeftButtonPressedWithTargetSubject = new Rx.Subject();
+    var mouseLeftButtonPressedWithTarget$ = new Rx.Subject();
 
 
-    body.addEventListener('mouseup', function(e) {
+    root.addEventListener('mouseup', function(e) {
       if (e.which === 1) {
         mouseLeftButtonPressed$.onNext(false);
-        mouseLeftButtonPressedWithTargetSubject.onNext({value: false, target: e.target});
+        mouseLeftButtonPressedWithTarget$.onNext({value: false, target: e.target});
       }
     });
-    body.addEventListener('mousedown', function(e) {
+    root.addEventListener('mousedown', function(e) {
       if (e.which === 1) {
         mouseLeftButtonPressed$.onNext(true);
-        mouseLeftButtonPressedWithTargetSubject.onNext({value: true, target: e.target});
+        mouseLeftButtonPressedWithTarget$.onNext({value: true, target: e.target});
       }
     });
 

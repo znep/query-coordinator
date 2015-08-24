@@ -192,15 +192,22 @@
     var pageName$ = page.observe('name').filter(_.isPresent);
     $scope.$bindObservable('pageName', pageName$);
     $scope.$bindObservable('pageDescription', page.observe('description'));
+    $scope.$bindObservable('isEphemeral', page.observe('id').map(_.isUndefined));
 
     $scope.$bindObservable('dataset', page.observe('dataset'));
     $scope.$bindObservable('datasetPages', page.observe('dataset.pages'));
     $scope.$bindObservable('aggregation', page.observe('aggregation'));
     $scope.$bindObservable('dynamicTitle', PageHelpersService.dynamicAggregationTitle(page));
     $scope.$bindObservable('sourceDatasetName', page.observe('dataset.name'));
-    $scope.$bindObservable('cardModels', page.observe('cards'));
 
-    $scope.$bindObservable('isEphemeral', page.observe('id').map(_.isUndefined));
+    var cardModelsObservable = page.observe('cards');
+    var cardCountObservable = cardModelsObservable.map(function(models) {
+      return _.reject(models, function(model) {
+        return model.fieldName === '*';
+      }).length;
+    });
+    $scope.$bindObservable('cardModels', cardModelsObservable);
+    $scope.$bindObservable('cardCount', cardCountObservable);
 
     pageName$.subscribe(function(pageName) {
       WindowOperations.setTitle('{0} | Socrata'.format(pageName));
@@ -600,6 +607,12 @@
     $scope.$on('customize-card-with-model', function(e, cardModel) {
       $scope.customizeState.cardModel = cardModel;
       $scope.customizeState.show = true;
+    });
+
+    // Handle the event emitted by the Remove All Cards button and delegate
+    // to each card so that we exercise the existing card deletion path.
+    $scope.$on('delete-all-cards', function() {
+      $scope.$broadcast('delete-card-with-model-delegate');
     });
 
     $scope.$on('delete-card-with-model', function(e, cardModel) {

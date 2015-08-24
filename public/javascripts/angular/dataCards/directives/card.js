@@ -58,6 +58,12 @@
         $scope.deleteCard = function() {
           $scope.$emit('delete-card-with-model', $scope.model);
         };
+        $scope.$on('delete-card-with-model-delegate', function() {
+          // Preserve the table card even during bulk delete.
+          if ($scope.model.fieldName !== '*') {
+            $scope.deleteCard();
+          }
+        });
 
         $scope.downloadUrl = './' + $scope.model.page.id + '/' + $scope.model.fieldName + '.png';
 

@@ -63,6 +63,22 @@ $tool-panel-z-index: 1004
         top: -19px
         border-width: $tool-panel-hint-size + 1 0 $tool-panel-hint-size + 1 $tool-panel-hint-size + 1
 
+  &.up-left // Panel is above and left of triggering element
+    .tool-panel-main
+      bottom: 60px
+      right: 50%
+
+    .tool-panel-hint
+      top: inherit
+      bottom: -$tool-panel-hint-size + 1
+      right: 0
+      border-width: $tool-panel-hint-size
+
+      &:before
+        right: -($tool-panel-hint-size + 1)
+        top: 1px
+        border-width: $tool-panel-hint-size + 1 0 $tool-panel-hint-size + 1 $tool-panel-hint-size + 1
+
   &.downwards
     .tool-panel-hint
       left: -1px

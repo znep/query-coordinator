@@ -9,6 +9,7 @@
     var ServerConfig;
 
     beforeEach(module('/angular_templates/dataCards/customizeBar.html'));
+    beforeEach(module('/angular_templates/dataCards/removeAllCards.html'));
     beforeEach(module('dataCards'));
     beforeEach(module('socrataCommon.filters'));
     beforeEach(module('socrataCommon.directives'));
@@ -83,6 +84,11 @@
     it('should have a save-as button', function() {
       var customizeBar = createElement().element;
       expect(customizeBar.find('save-as')).to.exist;
+    });
+
+    it('should have a remove-all-cards button', function() {
+      var customizeBar = createElement().element;
+      expect(customizeBar.find('remove-all-cards')).to.exist;
     });
 
     it('should not show save-as button when the enable_data_lens_other_views feature flag is false', function(){

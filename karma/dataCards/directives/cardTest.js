@@ -306,6 +306,54 @@ describe('card directive', function() {
     });
   });
 
+  describe('when responding to mass deletion', function() {
+    it('should mark itself for deletion if not a table card', function() {
+      var directive = createDirective({
+        fieldName: 'myFieldName',
+        columns: {
+          myFieldName: {
+            name: 'name',
+            description: 'descr',
+            physicalDatatype: 'text',
+            availableCardTypes: ['choropleth'],
+            defaultCardType: 'choropleth'
+          }
+        }
+      });
+
+      var didSignal = false;
+      directive.scope.$on('delete-card-with-model', function() {
+        didSignal = true;
+      });
+
+      directive.scope.$broadcast('delete-card-with-model-delegate');
+      expect(didSignal).to.be.true;
+    });
+
+    it('should not mark itself for deletion if a table card', function() {
+      var directive = createDirective({
+        fieldName: '*',
+        columns: {
+          '*': {
+            name: 'Table Card',
+            description: 'Table Card',
+            physicalDatatype: '*',
+            availableCardTypes: ['table'],
+            defaultCardType: 'table'
+          }
+        }
+      });
+
+      var didSignal = false;
+      directive.scope.$on('delete-card-with-model', function() {
+        didSignal = true;
+      });
+
+      directive.scope.$broadcast('delete-card-with-model-delegate');
+      expect(didSignal).to.be.false;
+    });
+  });
+
   describe('customize button', function() {
     var directive;
 

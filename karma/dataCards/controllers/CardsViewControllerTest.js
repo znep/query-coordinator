@@ -67,6 +67,7 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
   beforeEach(module('/angular_templates/dataCards/feedbackPanel.html'));
   beforeEach(module('/angular_templates/dataCards/customizeBar.html'));
+  beforeEach(module('/angular_templates/dataCards/removeAllCards.html'));
   beforeEach(module('/angular_templates/dataCards/relatedViews.html'));
   beforeEach(module('/angular_templates/dataCards/lensType.html'));
 

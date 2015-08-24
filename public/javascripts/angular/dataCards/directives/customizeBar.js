@@ -4,6 +4,7 @@
   function customizeBar(FlyoutService, ServerConfig, I18n) {
     return {
       scope: {
+        'cardCount': '=',
         'editMode': '=',
         'hasChanges': '=',
         'isEphemeral': '=',
@@ -21,6 +22,11 @@
         var expandedCard$ = $scope.$observe('expandedCard');
         var exportingVisualization$ = $scope.$observe('exportingVisualization');
         var editMode$ = $scope.$observe('editMode');
+
+        var hasCardsObservable = $scope.$observe('cardCount').map(function(count) {
+          return count > 0;
+        });
+        $scope.$bindObservable('hasCards', hasCardsObservable);
 
         function renderCustomizeButtonFlyout() {
           var flyoutContent = '';
@@ -86,6 +92,17 @@
         FlyoutService.register({
           selector: '.customize-button',
           render: renderCustomizeButtonFlyout,
+          destroySignal: $scope.$destroyAsObservable(element)
+        });
+
+        FlyoutService.register({
+          selector: '.is-customizing .remove-all-cards-button',
+          render: function() {
+            var flyoutTitle = $scope.hasCards ?
+              I18n.removeAllCards.flyout :
+              I18n.removeAllCards.flyoutNoCards;
+            return '<div class="flyout-title">{0}</div>'.format(flyoutTitle);
+          },
           destroySignal: $scope.$destroyAsObservable(element)
         });
       }

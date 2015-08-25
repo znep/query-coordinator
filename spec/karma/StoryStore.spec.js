@@ -288,8 +288,18 @@ describe('StoryStore', function() {
           assert.equal(storyteller.storyStore.getStoryThemeId(story2Uid), 'classic');
         });
 
-        it('should return the correct value when set', function() {
+        it('returns the correct value when set on STORY_CREATE', function() {
           assert.equal(storyteller.storyStore.getStoryThemeId(story1Uid), story1ThemeId);
+        });
+
+        it('changes the value when `STORY_UPDATE_THEME` is fired', function() {
+          dispatch({
+            action: Constants.STORY_UPDATE_THEME,
+            storyUid: story1Uid,
+            themeId: 'serif'
+          });
+
+          assert.equal(storyteller.storyStore.getStoryThemeId(story1Uid), 'serif');
         });
       });
 

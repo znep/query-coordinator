@@ -196,7 +196,7 @@ describe('StoryRenderer', function() {
       $('#rich-text-editor-toolbar').remove();
     });
 
-    describe('window class breaks', function() {
+    describe('window size class', function() {
       it('should apply the current class break to the story container', function() {
 
         storyteller.storyRenderer = new storyteller.StoryRenderer(options);

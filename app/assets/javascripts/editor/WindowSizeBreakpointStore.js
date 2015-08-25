@@ -58,7 +58,7 @@
      * @returns {Array} - An array of class break names.
      */
     this.getUnusedWindowSizeClasses = function () {
-      return _.omit(this.getAllWindowSizeClasses(), this.getWindowSizeClass());
+      return _.keys(_.omit(this.getAllWindowSizeClasses(), this.getWindowSizeClass()));
     };
 
     /**

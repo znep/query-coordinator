@@ -81,8 +81,7 @@
     });
 
     describe('getAllWindowSizeClasses', function() {
-      it('should return all available class breaks', function() {
-        chai.config.truncateThreshold = 0;
+      it('should return all available window size classes', function() {
         var windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
         assert.deepEqual(windowSizeBreakpointStore.getAllWindowSizeClasses(), {
           large: false,
@@ -95,10 +94,9 @@
     describe('getUnusedWindowSizeClasses', function() {
       it('should return all unused class breaks', function() {
         var windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
-        assert.deepEqual(windowSizeBreakpointStore.getUnusedWindowSizeClasses(), {
-          large: false,
-          medium: false
-        });
+        assert.deepEqual(windowSizeBreakpointStore.getUnusedWindowSizeClasses(),
+          ['large', 'medium']
+        );
         assert.equal(windowSizeBreakpointStore.getWindowSizeClass(), 'small');
       });
     });

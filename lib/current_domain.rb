@@ -4,15 +4,6 @@ require 'core_server/errors'
 class CurrentDomain
   REFRESH_CHECK_TIME = 10
 
-  def self.load_all
-    @@property_store = {}
-
-    domains = Domain.find
-    domains.each do |domain|
-      @@property_store[domain.cname] = { :data => domain }
-    end
-  end
-
   def self.set(cname)
     @@property_store = {} unless defined? @@property_store
 

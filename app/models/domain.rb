@@ -2,7 +2,7 @@ class Domain < Model
 
   @@domains = Hash.new
 
-  # CurrentDomain.load_all does not work.  Do our own caching here
+  # Do our own caching here
   def self.find(cname, cached = false)
     # We don't know our cname yet, so we need to pass it in to connection.rb
     # manually

@@ -21,7 +21,7 @@ describe('CardOptions', function() {
   it('has default values', function() {
     var cardOptions = new CardOptions(model, {});
     expect(cardOptions.getCurrentValue('mapExtent')).to.eql({});
-    expect(cardOptions.getCurrentValue('bucketSize')).to.eql(1);
+    expect(cardOptions.getCurrentValue('bucketSize')).to.eql(null);
   });
 
   it('initialized its values', function() {

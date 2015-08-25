@@ -72,6 +72,7 @@ describe('Histogram Visualization', function() {
     card.defineObservableProperty('activeFilters', []);
     card.defineObservableProperty('bucketType', undefined);
     card.defineObservableProperty('visualizationType', 'histogram');
+    card.setOption = _.noop;
 
     return card;
   }

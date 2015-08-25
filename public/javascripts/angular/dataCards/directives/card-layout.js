@@ -347,7 +347,10 @@
             var currentRowHeight = COLLAPSED_SIZE_TO_HEIGHT[parseInt(cardSize, 10)];
             var currentRowContentHeight = currentRowHeight - cardMargin;
 
-            var minY, maxY;
+            // Keep track of the minimum and maximum Y value of cards, which is
+            // ultimately used to calculate the height of the card group.
+            var minY;
+            var maxY;
 
             _.map(rows, function(row, rowIndex) {
 
@@ -900,8 +903,8 @@
 
               $('.card-group-drop-placeholder').each(function(index, item) {
                 var boundingRect = item.getBoundingClientRect();
-                if (newCardOriginX >= boundingRect.left &&
-                    newCardOriginX <= boundingRect.left + boundingRect.width &&
+                if (position.clientX >= boundingRect.left &&
+                    position.clientY <= boundingRect.left + boundingRect.width &&
                     position.clientY >= boundingRect.top &&
                     position.clientY <= boundingRect.top + boundingRect.height) {
                   cardSize = parseInt(item.getAttribute('data-group-id'), 10);

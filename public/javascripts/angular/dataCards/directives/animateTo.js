@@ -9,7 +9,7 @@
    */
   angular.module('dataCards.directives').directive('animateTo', function() {
     var ANIMATION_DURATION = 0.25;
-    var ANIMATION_STAGGER = .04;
+    var ANIMATION_STAGGER = 0.04;
     return {
       restrict: 'A',
 

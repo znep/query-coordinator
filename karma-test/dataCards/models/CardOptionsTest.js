@@ -1,4 +1,4 @@
-describe.only('CardOptions', function() {
+describe('CardOptions', function() {
   'use strict';
 
   var CardOptions;

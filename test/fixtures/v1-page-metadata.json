@@ -30,7 +30,20 @@
       "cardSize": 3,
       "cardType": "histogram",
       "appliedFilters": [],
-      "expanded": false
+      "expanded": false,
+      "bucketType": "logarithmic"
+    },
+    {
+      "description": "Another Number Card",
+      "fieldName": "some_other_number_column",
+      "cardSize": 3,
+      "cardType": "histogram",
+      "appliedFilters": [],
+      "expanded": false,
+      "bucketType": "linear",
+      "cardOptions": {
+        "bucketSize": 500
+      }
     },
     {
       "description": "Table",

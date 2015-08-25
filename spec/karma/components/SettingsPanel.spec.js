@@ -107,6 +107,15 @@ describe('SettingsPanel jQuery plugin', function() {
             field.trigger('input');
           });
 
+          describe('with an empty string', function() {
+            it('should leave the save button disabled', function() {
+              field.val('');
+              field.trigger('input');
+
+              assert.lengthOf(node.find('.settings-save-btn:enabled'), 0);
+            });
+          });
+
           it('should cause the save button to enable', function() {
             assert.lengthOf(node.find('.settings-save-btn:enabled'), 1);
 

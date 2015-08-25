@@ -86,7 +86,7 @@
       _formatController = editorFormatController;
 
       _element.addClass('active');
-      _element.find('.rich-text-editor-toolbar-select').attr('disabled', false);
+      _element.find('.rich-text-editor-toolbar-select').prop('disabled', false);
     };
 
     this.unlink = function() {
@@ -94,7 +94,7 @@
       _formatController = null;
 
       _element.removeClass('active');
-      _element.find('.rich-text-editor-toolbar-select').attr('disabled', true);
+      _element.find('.rich-text-editor-toolbar-select').prop('disabled', true);
     };
 
     this.destroy = function() {

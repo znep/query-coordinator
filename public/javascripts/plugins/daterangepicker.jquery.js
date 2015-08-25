@@ -18,6 +18,7 @@
  * --------------------------------------------------------------------
  * Socrata changelog:
  *  03.21.2011 made it so that month of.. and year uf.. queries will autoaccept selection on accept
+ *  08.25.2014 take initial dates from settings, handle text/previous/previousText on ranges, format with range name
  */
 jQuery.fn.daterangepicker = function(settings){
 	var rangeInput = jQuery(this);

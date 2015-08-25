@@ -116,7 +116,10 @@ var updateProperties = function(lcObj)
             view: ds,
             width: lcObj._properties.width,
             height: lcObj._properties.height,
-            map: { interactToScroll: true }
+            map: {
+              showRowLink: false,
+              interactToScroll: true
+            }
         });
 
     };

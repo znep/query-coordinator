@@ -2,7 +2,7 @@
 
 var options = {
   target: 'dataspace-demo.test-socrata.com',
-  local: 'localhost:9443',
+  local: 'localhost:443',
   port: 9000,
   launchBrowser: false,
   paths: [

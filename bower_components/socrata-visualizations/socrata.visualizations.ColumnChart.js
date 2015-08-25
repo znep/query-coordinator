@@ -231,13 +231,13 @@
 
       element.on(
         'mouseenter',
-        '.labels .label',
+        _labelsSelector,
         addHoverClassToBarGroup
       );
 
       element.on(
         'mouseleave',
-        '.labels .label',
+        _labelsSelector,
         removeHoverClassFromBarGroup
       );
 
@@ -253,7 +253,7 @@
       // be drawn unless a datum is selected)
       element.on(
         'mouseup',
-        '.labels .label.selected.non-default',
+        _nonDefaultSelectedLabelSelector,
         removeHoverClassFromBarGroup
       );
     }
@@ -286,13 +286,13 @@
 
       element.off(
         'mouseenter',
-        '.labels .label',
+        _labelsSelector,
         addHoverClassToBarGroup
       );
 
       element.off(
         'mouseleave',
-        '.labels .label',
+        _labelsSelector,
         removeHoverClassFromBarGroup
       );
 
@@ -303,7 +303,7 @@
 
       element.off(
         'mouseup',
-        '.labels .label.selected.non-default',
+        _nonDefaultSelectedLabelSelector,
         removeHoverClassFromBarGroup
       );
     }
@@ -330,15 +330,12 @@
 
       var datum = d3.select(event.currentTarget).datum();
 
-      var barGroupName = datum[NAME_INDEX];
-      if (_.isString(barGroupName)) {
-        barGroupName = barGroupName.
-          replace(/\\/g, '\\\\').
-          replace(/"/g, '\\\"');
-      }
+      var barGroupName = _escapeQuotesAndBackslashes(datum[NAME_INDEX]);
 
       var barGroupElement = _chartWrapper.
-        find('.bar-group[data-bar-name="{0}"] > .unfiltered'.format(barGroupName)).
+        find('.bar-group').
+        filter(function(index, element) { return element.getAttribute('data-bar-name') === barGroupName; }).
+        find('.unfiltered').
         get(0);
 
       var payload = {
@@ -381,7 +378,8 @@
       var barName = event.currentTarget.getAttribute('data-bar-name');
 
       _chartWrapper.
-        find('.bar-group[data-bar-name="{0}"]'.format(barName)).
+        find('.bar-group').
+        filter(function(index, element) { return element.getAttribute('data-bar-name') === barName; }).
         addClass('highlight');
     }
 
@@ -453,7 +451,6 @@
           $.relativeToPx(fixedLabelWidth + 1 + 'rem')
         ) / Math.sqrt(2));
 
-        horizontalScrollbarHeight = chartTruncated ? horizontalScrollbarHeight : 0;
         chartTruncated = false;
 
       } else {
@@ -869,11 +866,15 @@
     function _escapeQuotesAndBackslashes(value) {
 
       if (_.isString(value)) {
+
         return value.
           replace(/\\/g, '\\\\').
           replace(/"/g, '\\\"');
+
       } else {
-        return value;
+
+        return String(value);
+
       }
     }
 

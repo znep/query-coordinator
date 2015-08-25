@@ -217,6 +217,27 @@ describe('HistogramService', function() {
       });
     });
 
+    describe('bad data', function() {
+      it('should replace infinite values with zeroes because otherwise the histogram gets really angry', function() {
+        var input, output;
+
+        input = [
+          { magnitude: -1, value: NaN },
+          { magnitude: 0, value: 0 },
+          { magnitude: 1, value: Infinity },
+          { magnitude: 2, value: NaN }
+        ];
+
+        output = [
+          { start: -10, end: 0, value: 0 },
+          { start: 0, end: 10, value: 0 },
+          { start: 10, end: 100, value: 0 }
+        ];
+
+        expect(run(input, logarithmicOptions)).to.deep.equal(output);
+      });
+    });
+
     describe('zero bucket behavior', function() {
 
       it('should return a single bucket if all values are zero', function() {

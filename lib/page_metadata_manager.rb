@@ -310,14 +310,13 @@ class PageMetadataManager
   def bucketed_column_queries(dataset_id, cards)
     logarithmic_threshold = 2000
 
-    cards.map do |card|
+    cards.select { |card| card['cardType'] == 'histogram' }.map do |card|
 
       # We only care about histograms
       next unless card['cardType'] == 'histogram'
 
-      field_name = card['fieldName']
-      bucket_type = card['bucketType']
-      bucket_size = card['cardOptions'] && card['cardOptions']['bucketSize']
+      field_name, bucket_type, card_options = card.values_at('fieldName', 'bucketType', 'cardOptions')
+      bucket_size = card_options['bucketSize'] if card_options
 
       # If the bucket type has not been explicitly set on the card then a query
       # must be made to determine the type of bucketing. This is performed in a

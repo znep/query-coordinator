@@ -37,7 +37,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
       var nonBaseFilterApplied = Rx.Observable.combineLatest(
         whereClauseObservable,
           baseSoqlFilter,
-          function (whereClause, baseFilter) {
+          function(whereClause, baseFilter) {
             return !_.isEmpty(whereClause) && whereClause !== baseFilter;
           });
 

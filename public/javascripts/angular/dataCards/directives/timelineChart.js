@@ -794,7 +794,7 @@
               area().
               defined(line.defined()).
               x(line.x()).
-              y0(function (d) { return d3YScale(0); }).
+              y0(function(d) { return d3YScale(0); }).
               y1(line.y());
 
             svgChart = d3ChartElement.
@@ -1316,7 +1316,7 @@
               area().
               defined(line.defined()).
               x(line.x()).
-              y0(function (d) { return d3YScale(0); }).
+              y0(function(d) { return d3YScale(0); }).
               y1(line.y());
 
             svgChart = d3ChartElement.

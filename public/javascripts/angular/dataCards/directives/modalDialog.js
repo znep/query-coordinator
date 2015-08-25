@@ -10,7 +10,7 @@
       },
       transclude: true,
       templateUrl: '/angular_templates/dataCards/modalDialog.html',
-      link: function (scope, element, attrs) {
+      link: function(scope, element, attrs) {
         if (!scope.state) {
           scope.state = { show: false };
         }

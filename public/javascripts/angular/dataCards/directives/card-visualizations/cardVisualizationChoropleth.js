@@ -71,7 +71,7 @@
         Rx.Observable.combineLatest(
           whereClauseObservable,
           baseSoqlFilter,
-          function (whereClause, baseFilter) {
+          function(whereClause, baseFilter) {
             return !_.isEmpty(whereClause) && whereClause !== baseFilter;
           }
         );

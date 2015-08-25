@@ -1074,7 +1074,7 @@
 
       function applyXTickZeroClass(selection) {
         selection.selectAll('.tick').
-          filter(function (d) { return d === 0; }).
+          filter(function(d) { return d === 0; }).
           classed('is-zero', true);
       }
 

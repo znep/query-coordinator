@@ -12,8 +12,8 @@
     LeafletHelpersService,
     LeafletVisualizationHelpersService,
     FlyoutService,
-    I18n,
-    FormatService) {
+    I18n
+  ) {
 
     // The methods by which we determine choropleth styles are wrapped up in the
     // ChoroplethVisualization class, which does a lot of dynamic styles based on the
@@ -1091,7 +1091,7 @@
             scope.rowDisplayUnit.pluralize() :
             scope.rowDisplayUnit;
 
-          return '{0} {1}'.format(FormatService.formatNumber(value), rowDisplayUnit);
+          return '{0} {1}'.format(window.socrata.utils.formatNumber(value), rowDisplayUnit);
         }
 
         function renderFlyout(ignored, element) {

@@ -461,7 +461,7 @@ describe('table directive', function() {
         // last row, otherwise we can't check the sort order.
         expect(_.last(fixtureData)[columnMeta.fieldName]).to.not.equal(_.first(fixtureData)[columnMeta.fieldName]);
 
-        var computeDisplayedValue = columnMeta.physicalDatatype === 'number' ? $.commaify : _.identity;
+        var computeDisplayedValue = columnMeta.physicalDatatype === 'number' ? window.socrata.utils.commaify : _.identity;
         var el = getSortableTable();
 
         // Value in corresponding cell matches with first data item?

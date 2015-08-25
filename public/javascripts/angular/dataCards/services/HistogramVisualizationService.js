@@ -54,7 +54,7 @@
     return lines.join('');
   }
 
-  function HistogramVisualizationService(Constants, FlyoutService, I18n, FormatService) {
+  function HistogramVisualizationService(Constants, FlyoutService, I18n) {
     function setupDOM(id, container) {
       var dom = {};
 
@@ -156,12 +156,12 @@
       axis.x.
         scale(scale.x).
         orient('bottom').
-        tickFormat(function(d) { return FormatService.formatNumber(d); });
+        tickFormat(function(d) { return window.socrata.utils.formatNumber(d); });
 
       axis.y.
         scale(scale.y).
         orient('left').
-        tickFormat(function(d) { return FormatService.formatNumber(d); }).
+        tickFormat(function(d) { return window.socrata.utils.formatNumber(d); }).
         ticks(3);
 
       return axis;
@@ -244,8 +244,8 @@
         }
 
         var valueRange = I18n.filter.valueRange.format(
-          FormatService.formatNumber(bucketOfInterest.start),
-          FormatService.formatNumber(bucketOfInterest.end)
+          window.socrata.utils.formatNumber(bucketOfInterest.start),
+          window.socrata.utils.formatNumber(bucketOfInterest.end)
         );
 
         var pluralizeRowDisplayUnit = _.partial(pluralizeBasedOnValue, hover.rowDisplayUnit, _);
@@ -256,9 +256,9 @@
           currentFilter: I18n.flyout.currentFilter,
           clearRangeFilterLong: I18n.flyout.clearRangeFilterLong,
           filteredAmount: I18n.flyout.filteredAmount,
-          rangeTotal: FormatService.formatNumber(rangeTotal),
+          rangeTotal: window.socrata.utils.formatNumber(rangeTotal),
           rangeTotalRowDisplayUnit: _.escape(pluralizeRowDisplayUnit(rangeTotal)),
-          rangeFilteredAmount: FormatService.formatNumber(rangeFilteredAmount),
+          rangeFilteredAmount: window.socrata.utils.formatNumber(rangeFilteredAmount),
           rangeFilteredRowDisplayUnit: _.escape(pluralizeRowDisplayUnit(rangeFilteredAmount))
         });
       }
@@ -831,8 +831,8 @@
       var labelString = _.isPresent(selectionValues) ?
         I18n.t(
           'filter.valueRange',
-          FormatService.formatNumber(selectionValues[0]),
-          FormatService.formatNumber(selectionValues[1])
+          window.socrata.utils.formatNumber(selectionValues[0]),
+          window.socrata.utils.formatNumber(selectionValues[1])
         ) :
         '';
 

@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function cardVisualizationTableDirectiveFactory(Constants, CardDataService, SortedTileLayout, I18n, FormatService) {
+  function cardVisualizationTableDirectiveFactory(Constants, CardDataService, SortedTileLayout, I18n) {
 
     return {
       restrict: 'E',
@@ -208,7 +208,7 @@
             var pluralRowDisplayUnit = filteredRowCount === 1 ?
               rowDisplayUnit :
               rowDisplayUnit.pluralize();
-            var rowCountWithCommas = FormatService.commaify(rowCount);
+            var rowCountWithCommas = window.socrata.utils.commaify(rowCount);
             pluralRowDisplayUnit = _.escape(pluralRowDisplayUnit);
             if (rowCount === filteredRowCount) {
               customTitle = I18n.t('table.rangeLabelAll',
@@ -217,7 +217,7 @@
               );
             } else {
               customTitle = I18n.t('table.rangeLabelSubtitle',
-                FormatService.commaify(filteredRowCount),
+                window.socrata.utils.commaify(filteredRowCount),
                 pluralRowDisplayUnit,
                 rowCountWithCommas
               );

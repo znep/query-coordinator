@@ -1,4 +1,4 @@
-angular.module('dataCards.models').factory('Filter', function(Assert, SoqlHelpers, DateHelpers) {
+angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateHelpers) {
   'use strict';
 
   function BinaryOperatorFilter(operator, operand, humanReadableOperand) {

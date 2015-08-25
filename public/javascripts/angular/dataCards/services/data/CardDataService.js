@@ -9,7 +9,7 @@
   // Instead, since hyphens are supposed to be rewritten to underscores internally anyway,
   // we can avoid the quoting/truncation issue by rewriting hyphens to underscores before
   // making the request from the front-end.
-  function CardDataService($q, http, JJV, Assert, DeveloperOverrides, SoqlHelpers, ServerConfig, $log, Constants) {
+  function CardDataService($q, http, JJV, DeveloperOverrides, SoqlHelpers, ServerConfig, $log, Constants) {
 
     // Note this does not include the time portion ('23:59:59') on purpose since SoQL will
     // complain about a type mismatch if the column happens to be a date but not a datetime.
@@ -33,7 +33,8 @@
     }
 
     function buildAggregationClause(aggregationClauseData) {
-      Assert(_.isString(aggregationClauseData['function']), 'aggregation function string should be present');
+      window.socrata.utils.assert(_.isString(aggregationClauseData['function']),
+        'aggregation function string should be present');
       var aggregationFunction = aggregationClauseData['function'];
       var aggregationOperand = typeof aggregationClauseData.fieldName === 'string' ?
         SoqlHelpers.formatFieldName(aggregationClauseData.fieldName) : '*';
@@ -59,7 +60,8 @@
     });
 
     function buildWhereClause(whereClauseFragment) {
-      Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
+      window.socrata.utils.assert(!whereClauseFragment || _.isString(whereClauseFragment),
+        'whereClauseFragment should be a string if present.');
       if (_.isEmpty(whereClauseFragment)) {
         return '';
       } else {
@@ -69,9 +71,10 @@
 
     var serviceDefinition = {
       getData: function(fieldName, datasetId, whereClauseFragment, aggregationClauseData, options) {
-        Assert(_.isString(fieldName), 'fieldName should be a string');
-        Assert(_.isString(datasetId), 'datasetId should be a string');
-        Assert(_.isObject(aggregationClauseData), 'aggregationClauseData object must be provided');
+        window.socrata.utils.assert(_.isString(fieldName), 'fieldName should be a string');
+        window.socrata.utils.assert(_.isString(datasetId), 'datasetId should be a string');
+        window.socrata.utils.assert(_.isObject(aggregationClauseData),
+          'aggregationClauseData object must be provided');
         options = _.defaults(options || {}, { limit: 200 });
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
@@ -116,9 +119,10 @@
       },
 
       getMagnitudeData: function(fieldName, datasetId, whereClauseFragment, aggregationClauseData) {
-        Assert(_.isString(fieldName), 'fieldName should be a string');
-        Assert(_.isString(datasetId), 'datasetId should be a string');
-        Assert(_.isObject(aggregationClauseData), 'aggregationClauseData object must be provided');
+        window.socrata.utils.assert(_.isString(fieldName), 'fieldName should be a string');
+        window.socrata.utils.assert(_.isString(datasetId), 'datasetId should be a string');
+        window.socrata.utils.assert(_.isObject(aggregationClauseData),
+          'aggregationClauseData object must be provided');
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
 
@@ -153,9 +157,9 @@
 
       // Group data from fieldName into buckets of size options.bucketSize
       getBucketedData: function(fieldName, datasetId, whereClauseFragment, aggregationClauseData, options) {
-        Assert(_.isString(fieldName), 'fieldName should be a string');
-        Assert(_.isString(datasetId), 'datasetId should be a string');
-        Assert(_.isObject(options) && _.isFinite(options.bucketSize),
+        window.socrata.utils.assert(_.isString(fieldName), 'fieldName should be a string');
+        window.socrata.utils.assert(_.isString(datasetId), 'datasetId should be a string');
+        window.socrata.utils.assert(_.isObject(options) && _.isFinite(options.bucketSize),
           'options.bucketSize is a required argument');
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
@@ -198,8 +202,8 @@
       // dataset is undefined. The cardVisualizationTimelineChart checks for
       // undefined values and responds accordingly.
       getTimelineDomain: function(fieldName, datasetId) {
-        Assert(_.isString(fieldName), 'fieldName should be a string');
-        Assert(_.isString(datasetId), 'datasetId should be a string');
+        window.socrata.utils.assert(_.isString(fieldName), 'fieldName should be a string');
+        window.socrata.utils.assert(_.isString(datasetId), 'datasetId should be a string');
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
         fieldName = SoqlHelpers.formatFieldName(fieldName);
@@ -256,14 +260,16 @@
         aggregationClauseData,
         soqlMetadata
       ) {
-        Assert(_.isString(fieldName), 'fieldName should be a string');
-        Assert(_.isString(datasetId), 'datasetId should be a string');
-        Assert(!whereClauseFragment || _.isString(whereClauseFragment), 'whereClauseFragment should be a string if present.');
-        Assert(_.isString(precision), 'precision should be a string');
-        Assert(_.isObject(aggregationClauseData), 'aggregationClauseData object must be provided');
+        window.socrata.utils.assert(_.isString(fieldName), 'fieldName should be a string');
+        window.socrata.utils.assert(_.isString(datasetId), 'datasetId should be a string');
+        window.socrata.utils.assert(!whereClauseFragment || _.isString(whereClauseFragment),
+          'whereClauseFragment should be a string if present.');
+        window.socrata.utils.assert(_.isString(precision), 'precision should be a string');
+        window.socrata.utils.assert(_.isObject(aggregationClauseData),
+          'aggregationClauseData object must be provided');
 
         var dateTrunc = SoqlHelpers.timeIntervalToDateTrunc[precision];
-        Assert(dateTrunc !== undefined, 'invalid precision name given');
+        window.socrata.utils.assert(dateTrunc !== undefined, 'invalid precision name given');
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
 
@@ -615,8 +621,8 @@
 
       // Get the minimum and maximum value of a column
       getColumnDomain: function(fieldName, datasetId, whereClauseFragment) {
-        Assert(_.isString(fieldName), 'fieldName should be a string');
-        Assert(_.isString(datasetId), 'datasetId should be a string');
+        window.socrata.utils.assert(_.isString(fieldName), 'fieldName should be a string');
+        window.socrata.utils.assert(_.isString(datasetId), 'datasetId should be a string');
 
         datasetId = DeveloperOverrides.dataOverrideForDataset(datasetId) || datasetId;
 

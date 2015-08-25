@@ -1,4 +1,4 @@
-angular.module('dataCards.services').factory('SoqlHelpers', function(Constants, Assert, DateHelpers) {
+angular.module('dataCards.services').factory('SoqlHelpers', function(Constants, DateHelpers) {
   'use strict';
 
   var timeIntervalToDateTrunc = {
@@ -70,8 +70,9 @@ angular.module('dataCards.services').factory('SoqlHelpers', function(Constants, 
     if (_.isEmpty(whereClause)) {
       return;
     }
-    Assert(_.isPresent(fieldName), 'fieldName cannot be blank');
-    Assert(_.isArray(activeFilters), 'activeFilters must be an array');
+
+    window.socrata.utils.assert(_.isPresent(fieldName), 'fieldName cannot be blank');
+    window.socrata.utils.assert(_.isArray(activeFilters), 'activeFilters must be an array');
     var myWhereClauseFragments = _.invoke(activeFilters, 'generateSoqlWhereFragment', fieldName);
 
     _.each(myWhereClauseFragments, function(fragment) {

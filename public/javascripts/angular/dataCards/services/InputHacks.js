@@ -3,7 +3,7 @@
 
   'use strict';
 
-  angular.module('dataCards.services').factory('InputHacks', function(WindowState, Assert) {
+  angular.module('dataCards.services').factory('InputHacks', function(WindowState) {
     var InputHacks = {};
 
     var jqueryWindow = $(window);
@@ -26,10 +26,10 @@
     // subscription. Remember to dispose your subscription when
     // you're done.
     InputHacks.captureAllMouseEventsOutsideOf = function(element) {
-      Assert(element, 'Must give an element');
-      Assert(_.isFunction(element.offset), 'Expected element.offset to be a function');
-      Assert(_.isFunction(element.width), 'Expected element.width to be a function');
-      Assert(_.isFunction(element.height), 'Expected element.height to be a function');
+      window.socrata.utils.assert(element, 'Must give an element');
+      window.socrata.utils.assert(_.isFunction(element.offset), 'Expected element.offset to be a function');
+      window.socrata.utils.assert(_.isFunction(element.width), 'Expected element.width to be a function');
+      window.socrata.utils.assert(_.isFunction(element.height), 'Expected element.height to be a function');
       // Manual transparent color is for IE9 - we've encountered issues
       // with input catching with transparent backgrounds.
       function makeInputCatcherDiv(tag, top, left, width, height) {

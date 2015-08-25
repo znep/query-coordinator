@@ -1,4 +1,4 @@
-angular.module('dataCards.services').factory('FlyoutService', function(Constants, WindowState, Assert) {
+angular.module('dataCards.services').factory('FlyoutService', function(Constants, WindowState) {
   'use strict';
 
   var handlers = {};
@@ -265,14 +265,15 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
         persistOnMousedown: false
       });
 
-      Assert(_.isPresent(options.selector),
+      window.socrata.utils.assert(_.isPresent(options.selector),
         'selector must be present.');
-      Assert(_.isPresent(options.render),
+      window.socrata.utils.assert(_.isPresent(options.render),
         'render function must be present.');
-      Assert(!_.isPresent(options.destroySignal) ||
+      window.socrata.utils.assert(!_.isPresent(options.destroySignal) ||
         _.isFunction(options.destroySignal.asObservable),
         'destroySignal must be an observable.');
-      Assert(options.trackCursor !== true || options.horizontal !== true,
+      window.socrata.utils.assert(options.trackCursor !== true ||
+        options.horizontal !== true,
         'cannot set both trackCursor and horizontal modes on the same flyout.');
 
       // TODO: Figure out what to do here. Should we be using ids instead of classes?

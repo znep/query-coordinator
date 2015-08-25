@@ -20,7 +20,7 @@
       var windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
 
       var callbackCalled = false;
-      var expectedBreakpoints = {
+      var expectedBreakpointClasses = {
         xxlarge: false,
         xlarge: false,
         large: false,
@@ -28,10 +28,10 @@
         small: false
       };
 
-      expectedBreakpoints[expectedClass] = true;
+      expectedBreakpointClasses[expectedClass] = true;
 
       windowSizeBreakpointStore.addChangeListener(function () {
-        assert.deepEqual(windowSizeBreakpointStore.getAllClassBreaks(), expectedBreakpoints);
+        assert.deepEqual(windowSizeBreakpointStore.getAllWindowSizeClasses(), expectedBreakpointClasses);
         callbackCalled = true;
       });
 
@@ -90,11 +90,11 @@
       assert.equal(count, 1);
     });
 
-    describe('getAllClassBreaks', function() {
+    describe('getAllWindowSizeClasses', function() {
       it('should return all available class breaks', function() {
         chai.config.truncateThreshold = 0;
         var windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
-        assert.deepEqual(windowSizeBreakpointStore.getAllClassBreaks(), {
+        assert.deepEqual(windowSizeBreakpointStore.getAllWindowSizeClasses(), {
           xxlarge: false,
           xlarge: false,
           large: false,
@@ -104,16 +104,16 @@
       });
     });
 
-    describe('getUnusedClassBreaks', function() {
+    describe('getUnusedWindowSizeClasses', function() {
       it('should return all unused class breaks', function() {
         var windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
-        assert.deepEqual(windowSizeBreakpointStore.getUnusedClassBreaks(), {
+        assert.deepEqual(windowSizeBreakpointStore.getUnusedWindowSizeClasses(), {
           xxlarge: false,
           xlarge: false,
           large: false,
           medium: false
         });
-        assert.equal(windowSizeBreakpointStore.getClassBreak(), 'small');
+        assert.equal(windowSizeBreakpointStore.getWindowSizeClass(), 'small');
       });
     });
   });

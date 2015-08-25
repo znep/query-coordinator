@@ -12,14 +12,14 @@
     _.extend(this, new storyteller.Store());
 
     var self = this;
-    var lastBreakClasses;
+    var lastWindowSizeClasses;
 
     /**
      * Public methods
      */
 
     /**
-     * @function getAllClassBreaks
+     * @function getAllWindowSizeClasses
      * @description
      * Returns all of the class breaks that are available to window.
      * This includes:
@@ -28,14 +28,14 @@
      * - large
      * - xlarge
      * - xxlarge
-     * @returns {Array} - All class breaks defined in _computeClassBreaks.
+     * @returns {Array} - All class breaks defined in _computeWindowSizeClasses.
      */
-    this.getAllClassBreaks = function () {
-      return lastBreakClasses || _computeClassBreaks(root.innerWidth);
+    this.getAllWindowSizeClasses = function () {
+      return lastWindowSizeClasses || _computeWindowSizeClasses(root.innerWidth);
     };
 
     /**
-     * @function getClassBreak
+     * @function getWindowSizeClass
      * @description
      * When the window is resized, we have specific breaks that
      * choose a class that is relevant for that size of screen, such as
@@ -45,27 +45,27 @@
      *
      * @returns {String} - The current window size class break.
      */
-    this.getClassBreak = function () {
-      return _.findKey(this.getAllClassBreaks(), _.identity, true);
+    this.getWindowSizeClass = function () {
+      return _.findKey(this.getAllWindowSizeClasses(), _.identity, true);
     };
 
     /**
-     * @function getUnusedClassBreaks
+     * @function getUnusedWindowSizeClasses
      * @description
-     * This is the complement of getClassBreak. In other words, it returns
+     * This is the complement of getWindowSizeClass. In other words, it returns
      * all classes that are NOT currently relevant to the window size.
      *
      * @returns {Array} - An array of class break names.
      */
-    this.getUnusedClassBreaks = function () {
-      return _.omit(this.getAllClassBreaks(), this.getClassBreak());
+    this.getUnusedWindowSizeClasses = function () {
+      return _.omit(this.getAllWindowSizeClasses(), this.getWindowSizeClass());
     };
 
     /**
      * Private methods
      */
 
-    function _computeClassBreaks(windowSize) {
+    function _computeWindowSizeClasses(windowSize) {
       utils.assertIsOneOfTypes(windowSize, 'number');
 
       return {
@@ -77,7 +77,7 @@
       };
     }
 
-    function _haveClassBreaksChanged(newClasses, oldClasses) {
+    function _haveWindowSizeClassesChanged(newClasses, oldClasses) {
       if (!oldClasses) {
         return true;
       }
@@ -89,10 +89,10 @@
 
     $(root).resize(function (event) {
       var width = event.target.innerWidth;
-      var breakClasses = _computeClassBreaks(width);
+      var sizeClasses = _computeWindowSizeClasses(width);
 
-      if (_haveClassBreaksChanged(breakClasses, lastBreakClasses)) {
-        lastBreakClasses = breakClasses;
+      if (_haveWindowSizeClassesChanged(sizeClasses, lastWindowSizeClasses)) {
+        lastWindowSizeClasses = sizeClasses;
         self._emitChange();
       }
     });

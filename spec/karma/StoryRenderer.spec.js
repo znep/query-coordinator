@@ -201,7 +201,7 @@ describe('StoryRenderer', function() {
 
         storyteller.storyRenderer = new storyteller.StoryRenderer(options);
 
-        var currentClassName = storyteller.windowSizeBreakpointStore.getClassBreak();
+        var currentClassName = storyteller.windowSizeBreakpointStore.getWindowSizeClass();
 
         assert.isTrue(options.storyContainerElement.hasClass(currentClassName));
       });

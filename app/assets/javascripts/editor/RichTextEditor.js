@@ -208,12 +208,12 @@
         return;
       }
 
-      var classBreak = storyteller.windowSizeBreakpointStore.getClassBreak();
-      var unusedClassBreaks = storyteller.windowSizeBreakpointStore.getUnusedClassBreaks();
+      var windowSizeClass = storyteller.windowSizeBreakpointStore.getWindowSizeClass();
+      var unusedWindowSizeClasses = storyteller.windowSizeBreakpointStore.getUnusedWindowSizeClasses();
 
       $(editorDocument.documentElement).
-        removeClass(unusedClassBreaks).
-        addClass(classBreak);
+        removeClass(unusedWindowSizeClasses).
+        addClass(windowSizeClass);
     }
 
 

@@ -274,7 +274,7 @@ describe('RichTextEditor', function() {
 
     describe('window class breaks', function() {
       it('should apply the current class break to the iframe documentElement (html node)', function() {
-        var currentClassName = storyteller.windowSizeBreakpointStore.getClassBreak();
+        var currentClassName = storyteller.windowSizeBreakpointStore.getWindowSizeClass();
 
         assert.isTrue($documentElement.hasClass(currentClassName));
       });

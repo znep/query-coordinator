@@ -325,12 +325,12 @@
     }
 
     function _applyWindowSizeClass() {
-      var classBreak = storyteller.windowSizeBreakpointStore.getClassBreak();
-      var unusedClassBreaks = storyteller.windowSizeBreakpointStore.getUnusedClassBreaks();
+      var windowSizeClass = storyteller.windowSizeBreakpointStore.getWindowSizeClass();
+      var unusedWindowSizeClasses = storyteller.windowSizeBreakpointStore.getUnusedWindowSizeClasses();
 
       container.
-        removeClass(unusedClassBreaks).
-        addClass(classBreak);
+        removeClass(unusedWindowSizeClasses).
+        addClass(windowSizeClass);
     }
 
     function _throttledRender() {

@@ -72,6 +72,7 @@
   top: 0;
   overflow-x: auto;
   overflow-y: hidden;
+  box-sizing: content-box; /* javascript adds height and padding that should stack */
 }
 
 .column-chart {
@@ -161,6 +162,7 @@
 .column-chart .labels .label.selected .contents .text {
   padding: 0 0.25rem;
   font-weight: bold;
+  line-height: 1rem;
 }
 
 .column-chart .labels .label .callout {

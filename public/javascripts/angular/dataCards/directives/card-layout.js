@@ -92,7 +92,7 @@
         var cardsMetadataOffsetTop = cardsMetadata.offset().top;
 
         function adjustCardGroupCustomizeHints() {
-          var HINT_HEIGHT = 80;
+          var HINT_HEIGHT = Constants.LAYOUT_HINT_COMPUTED_HEIGHT;
           var quickFilterBarHeight = quickFilterBar.height();
           var containerTop = cardContainer.get(0).getBoundingClientRect().top;
 

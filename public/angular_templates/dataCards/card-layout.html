@@ -4,7 +4,7 @@
   card-group-index="$index"
   ng-style="cardGroup.hint"
   class="card-group-customize-hint">
-  <div class="card-group-customize-hint-text">{{'cardLayout.cardGroupCustomizeHintText' | I18n:$index + 2}} <span class="icon-help">(?)</span></div>
+  <div class="card-group-customize-hint-text">{{'cardLayout.cardGroupCustomizeHintText' | I18n:$index + 2}} <span class="icon-help">?</span></div>
 
   <div ng-show="{{$index === 0}}" class="card-group-customize-hint-cards row">
     <span class="card-group-customize-hint-card span6"></span>
@@ -70,6 +70,6 @@
     class="add-card-button action-btn dark r-to-l"
     ng-show="editMode"
     ng-click="addCardWithSize(addCardButtons[$index].cardSize)">
-      <span class="icon-edit"></span> {{'cardLayout.addCardHere' | I18n}}
+      <span class="icon-add"></span> {{'cardLayout.addCardHere' | I18n}}
   </button>
 </div>

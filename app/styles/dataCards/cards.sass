@@ -344,22 +344,34 @@ body.state-view-cards
         position: absolute
         width: 140px
         height: 80px
-        padding-top: 10px
-        padding-left: 10px
+        padding-top: 8px
+        padding-left: 12px
         box-sizing: border-box
 
         .icon-help
           cursor: default
+          border-radius: 50%
+          border: 2px rgba(255, 255, 255, .5) solid
+          background: rgba(255, 255, 255, .2)
+          color: #ddd
+          font-weight: bold
+          font-size: 0.9em
+          font-family: inherit
+          width: 1em
+          height: 1em
+          display: inline-block
+          text-align: center
 
         .card-group-customize-hint-text
           font-weight: 400
-          line-height: 1.2rem
+          line-height: 1.3rem
+          padding-left: 2px
 
         .card-group-customize-hint-cards
           margin-top: 10px
 
           .card-group-customize-hint-card
-            height: 24px
+            height: 25px
             margin-right: 4px
             border-radius: 3px
 
@@ -393,6 +405,12 @@ body.state-view-cards
       .add-card-button
         position: absolute
         margin: 0
+
+        .icon-add
+          font-size: .9em
+          font-weight: bold
+          margin-right: .5em
+          margin-left: -.4em
 
 /* DESKTOP-SPECIFIC STYLES */
 

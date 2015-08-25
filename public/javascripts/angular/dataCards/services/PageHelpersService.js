@@ -1,10 +1,10 @@
 (function() {
   'use strict';
 
-  function PageHelpersService(Assert, Page, I18n) {
+  function PageHelpersService(Page, I18n) {
     return {
       dynamicAggregationTitle: function(pageModel) {
-        Assert(pageModel instanceof Page, 'pageModel must be a Page model, durr');
+        window.socrata.utils.assert(pageModel instanceof Page, 'pageModel must be a Page model, durr');
         var aggregationObservable = pageModel.observe('aggregation');
         var primaryAmountFieldNameSequence = pageModel.observe('primaryAmountField').
           combineLatest(

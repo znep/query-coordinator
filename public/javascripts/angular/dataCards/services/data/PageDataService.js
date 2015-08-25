@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function PageDataService(http, ServerConfig, Assert, Schemas) {
+  function PageDataService(http, ServerConfig, Schemas) {
     var schemas = Schemas.regarding('page_metadata');
 
     function fetch(id) {
@@ -20,7 +20,7 @@
     }
 
     this.getPageMetadata = function(id) {
-      Assert(_.isString(id), 'id should be a string');
+      window.socrata.utils.assert(_.isString(id), 'id should be a string');
       return fetch.call(this, id);
     };
 
@@ -30,9 +30,9 @@
      */
     this.save = function(pageData, id) {
       var idIsDefined = _.isDefined(id);
-      Assert(_.isObject(pageData), 'pageData should be an object');
+      window.socrata.utils.assert(_.isObject(pageData), 'pageData should be an object');
       if (idIsDefined) {
-        Assert(_.isString(id), 'id should be a string');
+        window.socrata.utils.assert(_.isString(id), 'id should be a string');
       }
 
       // Validate

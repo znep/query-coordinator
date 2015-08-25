@@ -170,7 +170,7 @@ jQuery.fn.daterangepicker = function(settings){
 	    }
 	    else{
 		    var rangeValue = (rangeA != rangeB) ? rangeA+' '+ options.rangeSplitter +' '+rangeB : rangeA;
-		    if (rangeText) {
+		    if (rangeText && blist.feature_flags.embetter_analytics_page) {
 			rangeInput.val(rangeText + ' (' + rangeValue + ')');
 		    }
 		    else {

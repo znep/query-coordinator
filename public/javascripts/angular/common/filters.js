@@ -50,7 +50,7 @@
         return undefined;
       }
       // SOCRATA: Removed / from here too.
-      return input.replace(/[&<>"']/g, function (s) {
+      return input.replace(/[&<>"']/g, function(s) {
         return entityMap[s];
       });
     };

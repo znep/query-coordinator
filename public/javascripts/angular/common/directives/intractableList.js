@@ -1,10 +1,12 @@
 (function() {
   'use strict';
 
-  angular.module('socrataCommon.directives').directive('intractableList', function ($document) {
-    var DEFAULT_MAX_RESULTS = 10,
-        VIEWPORT_BOTTOM_PADDING = 10,
-        COUNT_MESSAGES_CONTAINER_HEIGHT = 20;
+  angular.module('socrataCommon.directives').directive('intractableList', function($document) {
+
+    var DEFAULT_MAX_RESULTS = 10;
+    var VIEWPORT_BOTTOM_PADDING = 10;
+    var COUNT_MESSAGES_CONTAINER_HEIGHT = 20;
+
     return {
       restrict: 'E',
       templateUrl: '/angular_templates/common/intractableList.html',
@@ -25,7 +27,7 @@
         var firstEntryIndex = 0;
         scope.pageNumber = 0;
         scope.maxResults = (attrs.maxResults || DEFAULT_MAX_RESULTS);
-        scope.setActive = function (index) {
+        scope.setActive = function(index) {
           if (!_.isUndefined(index)) {
             scope.activeEntryIndex = index;
           }
@@ -34,11 +36,11 @@
         var listElem = element.find('.animated-list');
 
         // Select match say it to fancy Search.
-        scope.selectMatch = function (index) {
+        scope.selectMatch = function(index) {
           scope.$emit('intractableList:selectedItem', scope.listData[index + scope.pageNumber * scope.maxResults]);
         };
 
-        scope.$watchCollection('[emptySelection, hideEmptySelection]', function (newVals) {
+        scope.$watchCollection('[emptySelection, hideEmptySelection]', function(newVals) {
           var emptySelection = newVals[0], hideEmptySelection = newVals[1];
           if (_.isUndefined(emptySelection) || hideEmptySelection) {
             firstEntryIndex = 0;
@@ -127,7 +129,7 @@
           }
         };
 
-        scope.changePage = function (transition) {
+        scope.changePage = function(transition) {
           if (!scope.canPage(transition)) {
             return;
           }
@@ -141,7 +143,7 @@
           }
         };
 
-        scope.canPage = function (direction) {
+        scope.canPage = function(direction) {
           var totalPages = Math.ceil(scope.listData.length / scope.maxResults) - 1;
           if (direction === 'next' && scope.pageNumber < totalPages) {
             return true;

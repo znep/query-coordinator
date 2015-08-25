@@ -321,10 +321,10 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       }
 
       _.forOwn(self._propertyObservables, function(seq, propertyName) {
-        if (self._isObservablePropertyEphemeral(propertyName)) {
-          // Ephemeral properties are not serialized.
+        if (!self._isPropertySerializable(propertyName)) {
           return;
         }
+
         var currentValue = self.getCurrentValue(propertyName);
         if (self.isSet(propertyName)) {
           artifact[propertyName] = serializeArbitrary(currentValue);
@@ -457,7 +457,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
 
     /**
      * Controls whether or not the named property is ephemeral.
-     * Ephemeral properties are not serialized.
+     * By default, ephemeral properties are not serialized.
      * By default, properties are not ephemeral.
      * They are set to be ephemeral by the various public
      * APIs that define properties.
@@ -502,6 +502,16 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
       return _.isFunction(propertyDefinition.set);
     },
 
+    /**
+     * Returns whether or not a property should be serialized. By default,
+     * ephemeral properties are not serialized.
+     *
+     * @param {String} propertyName The name of the property.
+     * @returns {Boolean} Whether or not the property should be serialized.
+     */
+    _isPropertySerializable: function(propertyName) {
+      return !this._isObservablePropertyEphemeral(propertyName);
+    },
 
     /**
      * Throws if the named property is not defined on this Model.

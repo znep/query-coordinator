@@ -21,7 +21,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
       'port' => '6010'
     })
     manager.stubs(:largest_time_span_in_days_being_used_in_columns).returns(1000)
-    manager.stubs(:magnitude_function_for_column).returns('signed_magnitude_10')
     View.stubs(
       :find => stub(
         :category => OBE_CATEGORY_NAME,
@@ -216,13 +215,15 @@ class PageMetadataManagerTest < Test::Unit::TestCase
         fetch_page_metadata: { status: '200', body: v1_page_metadata }
       ),
       column_field_name: 'fieldName',
-      logical_datatype_name: 'fred'
+      logical_datatype_name: 'fred',
+      fetch_min_max_in_column: { min: 0, max: 0 }
     )
     columns = v1_dataset_metadata.fetch('columns')
     cards = v1_page_metadata.fetch('cards')
     expected_soql = 'select some_column, some_other_column, date_trunc_y(time_column_fine_granularity), ' <<
-      'signed_magnitude_10(some_number_column), count(*) as value group by some_column, some_other_column, ' <<
-      'date_trunc_y(time_column_fine_granularity), signed_magnitude_10(some_number_column)'
+      'signed_magnitude_10(some_number_column), signed_magnitude_linear(some_other_number_column, 500), ' <<
+      'count(*) as value group by some_column, some_other_column, date_trunc_y(time_column_fine_granularity), ' <<
+      'signed_magnitude_10(some_number_column), signed_magnitude_linear(some_other_number_column, 500)'
 
     soql = manager.send(:build_rollup_soql, v1_page_metadata, columns, cards)
     assert_equal(expected_soql, soql)
@@ -232,7 +233,8 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     manager.stubs(
       dataset_metadata: { body: v1_dataset_metadata },
       column_field_name: 'fieldName',
-      logical_datatype_name: 'fred'
+      logical_datatype_name: 'fred',
+      fetch_min_max_in_column: { min: 0, max: 0 }
     )
     columns = v1_dataset_metadata.fetch('columns')
     cards = v1_page_metadata.fetch('cards')
@@ -240,28 +242,12 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     assert_match(/date_trunc/, soql)
   end
 
-  def test_build_rollup_soql_has_magnitudes
-    manager.stubs(
-      dataset_metadata: { body: v1_dataset_metadata },
-      column_field_name: 'some_number_column',
-      logical_datatype_name: 'fred'
-    )
-    manager.unstub(:magnitude_function_for_column)
-    manager.expects(:magnitude_function_for_column).
-      with(v1_dataset_metadata['id'], 'some_number_column').
-      returns('signed_magnitude_10')
-
-    columns = v1_dataset_metadata.fetch('columns')
-    cards = v1_page_metadata.fetch('cards')
-    soql = manager.send(:build_rollup_soql, v1_page_metadata, columns, cards)
-    assert_match(/signed_magnitude_10\(some_number_column\)/, soql)
-  end
-
   def test_build_rollup_soql_has_aggregation
     manager.stubs(
       dataset_metadata: { body: v1_dataset_metadata },
       column_field_name: 'some_number_column',
-      logical_datatype_name: 'fred'
+      logical_datatype_name: 'fred',
+      fetch_min_max_in_column: { min: 0, max: 0 }
     )
     columns = v1_dataset_metadata.fetch('columns')
     cards = v1_page_metadata.fetch('cards')
@@ -405,61 +391,6 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     end
   end
 
-  def test_magnitude_function_for_column_returns_smaglin_if_column_range_is_small
-    manager.expects(:fetch_min_max_in_column).with('four-four', 'some_number_column').returns(
-      'min' => -1000,
-      'max' => 1000
-    )
-    manager.unstub(:magnitude_function_for_column)
-    result = manager.send(:magnitude_function_for_column, 'four-four', 'some_number_column')
-    assert_equal(result, 'signed_magnitude_lin')
-  end
-
-  def test_magnitude_function_for_column_returns_smag_if_column_max_is_large
-    manager.expects(:fetch_min_max_in_column).with('four-four', 'some_number_column').returns(
-      'min' => -1000,
-      'max' => 3000
-    )
-    manager.unstub(:magnitude_function_for_column)
-    result = manager.send(:magnitude_function_for_column, 'four-four', 'some_number_column')
-    assert_equal(result, 'signed_magnitude_10')
-  end
-
-  def test_magnitude_function_for_column_returns_smag_if_column_min_is_large
-    manager.expects(:fetch_min_max_in_column).with('four-four', 'some_number_column').returns(
-      'min' => -3000,
-      'max' => 1000
-    )
-    manager.unstub(:magnitude_function_for_column)
-    result = manager.send(:magnitude_function_for_column, 'four-four', 'some_number_column')
-    assert_equal(result, 'signed_magnitude_10')
-  end
-
-  def test_magnitude_function_for_column_returns_nil_without_min_max
-    manager.expects(:fetch_min_max_in_column).with('four-four', 'some_number_column').returns({})
-    manager.unstub(:magnitude_function_for_column)
-    result = manager.send(:magnitude_function_for_column, 'four-four', 'some_number_column')
-    assert_nil(result)
-  end
-
-  def test_magnitude_function_for_column_returns_nil_without_min
-    manager.expects(:fetch_min_max_in_column).with('four-four', 'some_number_column').returns(
-      'max' => 0
-    )
-    manager.unstub(:magnitude_function_for_column)
-    result = manager.send(:magnitude_function_for_column, 'four-four', 'some_number_column')
-    assert_nil(result)
-  end
-
-  def test_magnitude_function_for_column_returns_nil_without_max
-    manager.expects(:fetch_min_max_in_column).with('four-four', 'some_number_column').returns(
-      'min' => 0
-    )
-    manager.unstub(:magnitude_function_for_column)
-    result = manager.send(:magnitude_function_for_column, 'four-four', 'some_number_column')
-    assert_nil(result)
-  end
-
   def test_fetch_min_max_in_column_calls_api
     fake_field_name = 'live-beef'
     fake_dataset_id = 'five-five'
@@ -497,8 +428,11 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_no_dataset_copy_when_feature_flag_not_set
-
     APP_CONFIG['secondary_group_identifier'] = false
+
+    manager.stubs(
+      fetch_min_max_in_column: { min: 0, max: 0 }
+    )
 
     PageMetadataManager.any_instance.expects(:update_rollup_table)
 
@@ -513,6 +447,10 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def test_no_dataset_copy_when_feature_flag_is_blank
     APP_CONFIG['secondary_group_identifier'] = ''
+
+    manager.stubs(
+      fetch_min_max_in_column: { min: 0, max: 0 }
+    )
 
     PageMetadataManager.any_instance.expects(:update_rollup_table)
 

@@ -218,8 +218,8 @@ class PageMetadataManager
 
     # Nothing to roll up
     return if columns_to_roll_up.blank? &&
-      columns_to_roll_up_by_date_trunc(normalized_columns, cards).blank?
-      columns_to_roll_up_by_magnitude(normalized_columns, cards).blank?
+      columns_to_roll_up_by_date_trunc(normalized_columns, cards).blank? &&
+      cards.select { |card| card['cardType'] == 'histogram' }.empty?
 
     if columns_to_roll_up_by_date_trunc(normalized_columns, cards).any? &&
       page_metadata['defaultDateTruncFunction'].blank?
@@ -228,13 +228,13 @@ class PageMetadataManager
         )
     end
 
-    rolled_up_columns_soql = (columns_to_roll_up +
+    rolled_up_columns_soql = (
+      columns_to_roll_up +
       columns_to_roll_up_by_date_trunc(normalized_columns, cards).map do |field_name|
         "#{page_metadata['defaultDateTruncFunction']}(#{field_name})"
       end +
-      columns_to_roll_up_by_magnitude(normalized_columns, cards).map do |field_name|
-        "#{magnitude_function_for_column(page_metadata['datasetId'], field_name)}(#{field_name})"
-      end).compact.join(', ')
+      bucketed_column_queries(page_metadata['datasetId'], cards)
+    ).compact.join(', ')
 
     aggregation_function = page_metadata['primaryAggregation'] || 'count'
     aggregation_field = page_metadata['primaryAmountField'] || '*'
@@ -280,12 +280,6 @@ class PageMetadataManager
     end.pluck(column_field_name)
   end
 
-  def columns_to_roll_up_by_magnitude(columns, cards)
-    columns.select do |column|
-      column_used_by_any_card?(column[column_field_name], cards, 'histogram')
-    end.pluck(column_field_name)
-  end
-
   def column_used_by_any_card?(field_name, cards, card_type = nil)
     cards.any? do |card|
       card['fieldName'] == field_name && (card_type.nil? || card['cardType'] == card_type)
@@ -309,12 +303,34 @@ class PageMetadataManager
     "date_trunc_#{prec}"
   end
 
-  def magnitude_function_for_column(dataset_id, field_name)
+  # Returns an array of strings containing fragments of SoQL queries for
+  # retrieving bucketed data. Used by build_rollup_soql to construct rollup
+  # tables for distribution charts. We call uniq at the end because there
+  # could be multiple cards for the same column using identical bucketing
+  # functions.
+  def bucketed_column_queries(dataset_id, cards)
     logarithmic_threshold = 2000
-    result = fetch_min_max_in_column(dataset_id, field_name)
-    return nil unless result && result['min'] && result['max']
-    result.values_at('min', 'max').map { |val| val.to_i.abs }.max >= logarithmic_threshold ?
-      'signed_magnitude_10' : 'signed_magnitude_lin'
+
+    cards.select { |card| card['cardType'] == 'histogram' }.map do |card|
+
+      field_name, bucket_type, card_options = card.values_at('fieldName', 'bucketType', 'cardOptions')
+      bucket_size = card_options['bucketSize'] if card_options
+
+      # If the bucket type has explicitly been set to logarithmic or the
+      # frontend code has specified a logarithmic bucket type, use
+      # signed_magnitude_10. Otherwise, if the bucket_size exists, then
+      # assume signed_magnitude_linear (the bucket_type may not be "linear"
+      # because the bucket type may not be explicitly set). Otherwise, there
+      # is a high probability that it is a histogram rendering as a column
+      # chart, so use the default group by.
+      if bucket_size == 'logarithmic' || bucket_type == 'logarithmic'
+        next "signed_magnitude_10(#{field_name})"
+      elsif bucket_size.is_a? Numeric
+        next "signed_magnitude_linear(#{field_name}, #{bucket_size})"
+      elsif bucket_type.nil? && bucket_size.nil?
+        next field_name
+      end
+    end.compact.uniq
   end
 
   def update_rollup_table(args)

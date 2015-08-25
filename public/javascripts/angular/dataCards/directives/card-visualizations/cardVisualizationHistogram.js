@@ -154,6 +154,26 @@
             share().
             filter(_.isDefined);
 
+          columnDataSummary$.
+            ignoreErrors().
+            combineLatest(
+              cardModel$,
+              function(columnDataSummary, cardModel) {
+                return {
+                  columnDataSummary: columnDataSummary,
+                  cardModel: cardModel
+                };
+              }).
+              subscribe(function(values) {
+                var bucketSize = _.get(values, 'columnDataSummary.bucketSize', null);
+
+                if (values.columnDataSummary.bucketType === 'logarithmic') {
+                  bucketSize = 'logarithmic';
+                }
+
+                values.cardModel.setOption('bucketSize', bucketSize);
+              });
+
           var unfilteredData$ = Rx.Observable.combineLatest(
             fieldName$,
             dataset$,
@@ -342,6 +362,7 @@
             conditionalStyles.marginLeft = 0;
             conditionalStyles.marginRight = 0;
             ColumnChartService.registerColumnChartEvents($scope, element);
+            $scope.model.setOption('bucketSize', null);
           } else {
             conditionalStyles.marginLeft = -Constants.HISTOGRAM_MARGINS.left;
             conditionalStyles.marginRight = -Constants.HISTOGRAM_MARGINS.right;

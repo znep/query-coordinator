@@ -9,7 +9,7 @@
 
   width: $panel-width;
   position: fixed;
-  height: calc(100vh - #{$header-height} - #{$content-panel-padding});
+  height: calc(100% - #{$header-height});
   top: $header-height;
   right: -$panel-width * 3/2;
   padding: $content-panel-padding / 2;

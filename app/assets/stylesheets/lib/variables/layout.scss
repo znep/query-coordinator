@@ -32,13 +32,14 @@ $theme-list-theme-padding: 1rem;
 $theme-list-theme-title-font-size: 1.5rem;
 
 // Main content (the width of the user story)
-$main-content-width-small: 38.4rem;
-$main-content-width-medium: 64rem;
-$main-content-width-large: 80rem;
-$main-content-width-extra-large: 96rem;
+$main-content-width-small: 40rem;
+$main-content-width-medium: 70rem;
+$main-content-width-large: 96rem;
+$main-content-width-extra-large: 114rem;
 
 // User story container
 $user-story-container-vertical-padding: 8rem;
+$stack-to-single-column-width: 50rem;
 
 // Block edit controls
 $block-edit-controls-width: 3rem;
@@ -107,7 +108,7 @@ $input-element-border-radius: 0.3rem;
 
 // Durations
 $transition-duration: 0.2s;
-$iframe-onload-transition-duration: 2s;
+$iframe-onload-transition-duration: 1.5s;
 
 // Forms
 

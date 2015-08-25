@@ -1,0 +1,313 @@
+// This file is imported into each theme file after setting theme variables.
+// Be careful changing or overriding things here. Also, feel free to make additional
+// files for themes to include
+//
+// This file assumes markup structured like .<themename>.<size> .typeset
+// Ex: <div class="classic medium"><div class="block typeset">...</div></div>
+
+// Import type tools --
+// Modular Scale: http://www.modularscale.com/  & https://github.com/modularscale/modularscale-sass
+// Type-Heading: https://github.com/ellioseven/type-heading
+@import '../../vendor/type-heading';
+@import '../../vendor/modular-scale.scss';
+
+// Widths for ratio calculations
+$medium:  768px;
+$large:   1200px;
+$xlarge:  1400px;
+$xxlarge:   1600px;
+
+// Modular Scale settings
+$ms-base: $base-type-size;
+$ms-ratio: $ms-ratio-1, $ms-ratio-2, $ms-ratio-3;
+
+
+// Heading size map.
+// Configured as: font-size line-height (margin-top margin-bottom) breakpoint
+// See http://ellioseven.github.io/type-heading/user-guide/#configure-type-heading
+
+$th-headings: (
+  title: (
+    ms(8) $ms-ratio-1 (ms(6)/$ms-ratio-1 0px),
+    ms(10) $ms-ratio-2 (ms(8)/$ms-ratio-1 0px) $medium,
+    ms(14) $ms-ratio-2 (ms(11)/$ms-ratio-2 0px) $large
+    ),
+
+  h1: (
+    ms(7) $ms-ratio-1 (ms(6)/$ms-ratio-1 0px),
+    ms(8) $ms-ratio-2 (ms(8)/$ms-ratio-1 0px) $medium,
+    ms(11) $ms-ratio-2 (ms(11)/$ms-ratio-2 0px) $large
+    ),
+
+  h2: (
+    ms(5) $ms-ratio-1 (ms(5)/$ms-ratio-1 0px),
+    ms(7) $ms-ratio-2 (ms(7)/$ms-ratio-1 0px) $medium,
+    ms(9) $ms-ratio-2 (ms(9)/$ms-ratio-2 0px) $large
+    ),
+
+  h3: (
+    ms(3) $ms-ratio-1 (ms(3)/$ms-ratio-1 0px),
+    ms(5) $ms-ratio-2 (ms(5)/$ms-ratio-1 0px) $medium,
+    ms(7) $ms-ratio-2 (ms(7)/$ms-ratio-1 0px) $large
+
+    ),
+
+  h4: (
+    ms(2) $ms-ratio-1 (ms(2)/$ms-ratio-1 0px),
+    ms(3) $ms-ratio-2 (ms(3)/$ms-ratio-1 0px) $medium,
+    ms(5) $ms-ratio-2 (ms(5)/$ms-ratio-1 0px) $large
+    ),
+
+  h5: (
+    ms(1) $ms-ratio-1 (ms(1)/$ms-ratio-1 0px),
+    ms(1) $ms-ratio-2 (ms(1)/$ms-ratio-1 0px) $medium,
+    ms(3) $ms-ratio-2 (ms(3)/$ms-ratio-1 0px) $large
+  ),
+
+  h6: (
+    ms(0) $ms-ratio-1 (ms(0)/$ms-ratio-1 0px),
+    ms(0) $ms-ratio-2 (ms(0)/$ms-ratio-1 0px) $medium,
+    ms(1) $ms-ratio-2 (ms(1)/$ms-ratio-1 0px) $large
+  )
+);
+
+
+.typeset {
+  font-size: $base-type-size;
+  color: $default-type-color;
+  font-size-adjust: 0.5;
+  -webkit-font-smoothing: antialiased;
+
+
+  // View Styles
+  // ==========================================================================================
+
+  // This iterates through headings and applies their th-heading values for each
+  // Essentailly h(n) { @include th-headings(h(n)) }
+  @for $index from 1 through 6 {
+    h#{$index} {
+      @include th-headings(h#{$index});
+    }
+  }
+
+  // Set the heading type face
+  h1, h2, h3, h4, h5, h6 {
+    font-family: $heading-font-stack;
+    color: $heading-type-color;
+  }
+
+  // Set the primary type face and vertical rhythm
+  p, & > div, ul, ol, blockquote, figcaption {
+    font-size: $std-type-size;
+    line-height: $std-line-height;
+    margin-bottom: $ms-ratio-1 + em;
+    margin-top: $ms-ratio-1 + em;
+    font-family: $body-font-stack;
+  }
+
+  // Style the blockquotes
+  blockquote {
+    font-style: $blockquote-font-style;
+    border-left: $blockquote-border-left;
+    padding-left: $blockquote-padding-left;
+    margin-left: $blockquote-margin-left;
+  }
+
+  // Left align lists
+  ul, ol {
+    padding-left: $list-padding-left;
+  }
+
+  ul {
+    list-style-type: $ul-list-style-type;
+  }
+
+  ol {
+    list-style-type: $ol-list-styke-type;
+  }
+
+  // List items are often long, so set set them apart by 1/2 the line height
+  li {
+    margin-bottom: $ms-ratio-1*.5 + em;
+  }
+
+  // In text hyperlinks
+  a {
+    color: $link-color;
+    text-decoration: $link-text-decoration;
+    &:hover {
+      color: $link-hover;
+    }
+  }
+
+
+  // Special Formatting for Specific Things
+
+  // Titles should be nice and big. Huge headlines, everbody!
+  .title {
+    @include th-headings(title);
+    font-family: $title-font-family;
+  }
+
+  // Subtitles will come in handy
+  .subtitle {
+    display: block;
+    @include th-headings(h5);
+    color: $subtitle-font-color;
+    font-family: $subtitle-font-family;
+    margin-top: 0px !important;
+  }
+
+  // Spacers just give you extra space
+  .spacer {
+    height: ms(12);
+  }
+
+  // Default horizontal rule
+  hr {
+    border-top: 1px solid $quiet-type-color;
+    border-bottom: 0;
+    height: 1px;
+  }
+
+  // Clean up margins for editor
+  & > h1:first-child,
+  & > h2:first-child,
+  & > h3:first-child,
+  & > h4:first-child,
+  & > p,
+  & > div,
+  & > ul,
+  & > ol,
+  & > blockquote,
+  & > hr,
+  li + ul,
+  h1 + p, h2 + p, h3 + p, h4 + p, img {
+    margin-top: 1rem;
+  }
+}
+
+
+// Editor Styles
+// ==========================================================================================
+// Styles displayed in editor view  where required to adjust for media queries playing with iframes
+// Ideally, these are used in the editor only?
+//
+
+// Medium breakpoint class translation
+&.medium .typeset {
+
+  // Generate all heading styles for the medium breakpoint
+  @for $index from 1 through 6 {
+    h#{$index} {
+      @include th-heading(
+        $heading: h#{$index},
+        $breakpoint: $medium
+      );
+    }
+  }
+
+  p,
+  & > div,
+  ul,
+  ol, blockquote, figcaption {
+    font-size: $lg-type-size;
+    line-height: $lg-line-height;
+    margin-bottom: $ms-ratio-2 + em;
+    margin-top: $ms-ratio-2 + em;
+  }
+
+  li {
+     margin-bottom: $ms-ratio-2*.5 + em;
+  }
+
+  .title {
+    @include th-heading($heading: title, $breakpoint: $medium);
+    font-family: $title-font-family;
+  }
+
+  // Clean up margins for editor
+  & > h1:first-child,
+  & > h2:first-child,
+  & > h3:first-child,
+  & > h4:first-child,
+  & > p,
+  & > div,
+  & > ul,
+  & > ol,
+  & > blockquote,
+  & > hr,
+  li + ul,
+  h1 + p, h2 + p, h3 + p, h4 + p, img,
+  // also add space above a component.media placeholder as if it were an image because it will be and/or it should layout similarly.
+  .component.media {
+    margin-top: 1.5rem;
+  }
+
+} // End Medium Size
+
+
+&.large .typeset {
+
+  // Generate all heading styles for the large breakpoint
+  @for $index from 1 through 6 {
+    h#{$index} {
+      @include th-heading(
+        $heading: h#{$index},
+        $breakpoint: $large
+      );
+    }
+  }
+
+
+  p, & > div, ul, ol, blockquote, figcaption {
+      font-size: $lg-type-size;;
+      line-height: $lg-line-height;
+      margin-bottom: $ms-ratio-2 + em;
+      margin-top: $ms-ratio-2 + em;
+  }
+
+  li {
+     margin-bottom: $ms-ratio-2*.5 + em;
+  }
+
+  .title {
+    @include th-heading($heading: title, $breakpoint: $large);
+    font-family: $title-font-family;
+  }
+
+  // Clean up margins for editor
+  & > h1:first-child,
+  & > h2:first-child,
+  & > h3:first-child,
+  & > h4:first-child,
+  & > p,
+  & > ul,
+  & > ol,
+  & > blockquote,
+  & > hr,
+  li + ul,
+  h1 + p, h2 + p, h3 + p, h4 + p, img,
+  // also add space above a component.media placeholder as if it were an image because it will be and/or it should layout similarly.
+  .component.media {
+    margin-top: 2rem;
+  }
+
+} // End Large Size
+
+// Non-typeset styles
+
+.component.media {
+  margin-top: 1rem;
+
+  .medium & {
+    margin-top: 1.5rem;
+  }
+
+  .large & {
+    margin-top: 2rem;
+  }
+}
+
+
+

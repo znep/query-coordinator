@@ -77,7 +77,11 @@ var Constants = {
   // count.
   CORE_VIEW_NAME_MAX_LENGTH: 254,
 
-  WINDOW_RESIZE_RERENDER_DELAY: 200
+  WINDOW_RESIZE_RERENDER_DELAY: 200,
+
+  // Breakpoints for Window Width
+  WINDOW_SIZE_BREAK_LARGE: 1200,
+  WINDOW_SIZE_BREAK_MEDIUM: 768
 };
 
 (function() {

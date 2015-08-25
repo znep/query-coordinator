@@ -252,6 +252,56 @@ describe('RichTextEditor', function() {
     });
   });
 
+
+
+  describe('with an existing editor', function() {
+    var $textEditor;
+    var editor;
+    var $documentElement;
+
+    beforeEach(function() {
+      $textEditor = $('.text-editor');
+      editor = new storyteller.RichTextEditor(
+        $textEditor,
+        validEditorId,
+        window.socrata.storyteller.assetFinder,
+        validFormats,
+        'Hello, world!'
+      );
+
+      $documentElement = $($textEditor.find('iframe')[0].contentDocument.documentElement);
+    });
+
+    describe('window size classes', function() {
+      it('should apply the current class break to the iframe documentElement (html node)', function() {
+        var currentClassName = storyteller.windowSizeBreakpointStore.getWindowSizeClass();
+
+        assert.isTrue($documentElement.hasClass(currentClassName));
+      });
+    });
+
+    describe('applyThemeClass', function() {
+      it('has the theme-classic class initially', function() {
+        assert.isTrue($documentElement.hasClass('theme-classic'));
+      });
+
+      it('adds a new theme class when called', function() {
+        editor.applyThemeClass('sans');
+        assert.isTrue($documentElement.hasClass('theme-sans'));
+      });
+
+      it('removes old `theme-*` classes when a new theme is set', function() {
+        editor.applyThemeClass('sans');
+        editor.applyThemeClass('serif');
+        var currentClasses = $documentElement.attr('class');
+
+        assert.lengthOf(currentClasses.match(/theme-/ig), 1);
+      });
+    });
+
+  });
+
+
   describe('.destroy()', function() {
 
     it('removes the editor element from the container', function() {

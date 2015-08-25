@@ -11,8 +11,4 @@
   .block {
     @include clearfix();
   }
-
-  .component {
-    background-color: $block-bg-color;
-  }
 }

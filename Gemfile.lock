@@ -56,6 +56,9 @@ GEM
       aws-sdk-core (= 2.1.2)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
+    bourbon (4.2.3)
+      sass (~> 3.4)
+      thor
     builder (3.2.2)
     byebug (2.7.0)
       columnize (~> 0.3)
@@ -118,6 +121,9 @@ GEM
     minitest (5.7.0)
     multi_json (1.11.1)
     multi_xml (0.5.5)
+    neat (1.7.2)
+      bourbon (>= 4.0)
+      sass (>= 3.3)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     nyan-cat-formatter (0.11)
@@ -255,6 +261,7 @@ PLATFORMS
 DEPENDENCIES
   airbrake
   aws-sdk
+  bourbon
   byebug
   capybara
   database_cleaner
@@ -264,6 +271,7 @@ DEPENDENCIES
   headless
   jbuilder (~> 2.0)
   lograge
+  neat
   nyan-cat-formatter
   pg
   powder

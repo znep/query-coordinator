@@ -12,7 +12,7 @@ function generateBlockData(options) {
   };
 
   for (var prop in options) {
-    if (options.hasOwnProperty(prop) && blockData.hasOwnProperty(prop)){ 
+    if (options.hasOwnProperty(prop) && blockData.hasOwnProperty(prop)){
       blockData[prop] = options[prop];
     }
   }
@@ -20,20 +20,16 @@ function generateBlockData(options) {
   return blockData;
 }
 
-function generateStoryData(options) {
+function generateStoryData(storyData) {
 
-  var storyData = {
+  var defaults = {
     uid: 'test-test',
     title: 'Test Story',
     description: 'Test Story Description',
     blocks: [ generateBlockData() ]
   };
 
-  for (var prop in options) {
-    if (options.hasOwnProperty(prop) && storyData.hasOwnProperty(prop)){ 
-      storyData[prop] = options[prop];
-    }
-  }
+  storyData = $.extend(defaults, storyData);
 
   return storyData;
 }

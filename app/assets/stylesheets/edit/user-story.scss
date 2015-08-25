@@ -6,6 +6,7 @@
   width: 100vw;
   padding: $header-height + $user-story-container-vertical-padding 0;
   z-index: $user-story-container-z-index;
+  -webkit-font-smoothing: antialiased;
 
   .user-story {
     @include media-query-property(
@@ -17,6 +18,7 @@
     );
     @include unselectable();
 
+    max-width: 94%;
     position: relative;
     display: block;
     margin: 0 auto;
@@ -24,15 +26,19 @@
   }
 
   .block-edit {
-    margin-bottom: 0.5rem;
     background-color: transparent;
+    border: 1px solid transparent;
+
+    &:hover {
+      border: 1px solid $block-edit-hover-border-color;
+    }
 
     .block-edit-controls {
       position: absolute;
       width: $block-edit-controls-width;
       height: $block-edit-controls-width * 3;
       top: 0;
-      left: 0;
+      left: -$block-edit-controls-width;
       opacity: 0;
 
       .block-edit-controls-move-up-btn,
@@ -54,25 +60,15 @@
     }
 
     .block {
-      @include media-query-property(
-        'width',
-        $main-content-width-small - $block-edit-controls-width - $block-edit-controls-padding,
-        $main-content-width-medium - $block-edit-controls-width - $block-edit-controls-padding,
-        $main-content-width-large - $block-edit-controls-width - $block-edit-controls-padding,
-        $main-content-width-extra-large - $block-edit-controls-width - $block-edit-controls-padding
-      );
-
       position: relative;
-      margin-left: $block-edit-controls-width + $block-edit-controls-padding;
+      margin: 0 $block-edit-controls-width + $block-edit-controls-padding;
       transition: none;
-      border: 1px solid $block-edit-content-border-color;
       box-sizing: border-box;
 
       .component-html {
 
         iframe {
-          margin: 0 3%;
-          width: 94%;
+          width: 100%;
           height: 0;
           min-height: 0;
           border: 0;

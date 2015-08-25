@@ -4,19 +4,22 @@
 
   var socrata = root.socrata;
   var storyteller = socrata.storyteller;
+  var createMockEditor = function(callback) {
+    return {
+      setContent: storyteller.RichTextEditorManagerMocker.setContentSpy,
+      applyThemeClass: storyteller.RichTextEditorManagerMocker.applyThemeClassSpy
+    };
+  }
 
   storyteller.RichTextEditorManagerMocker = {
 
     // Spies
 
     setContentSpy: sinon.spy(),
-    createEditorSpy: sinon.spy(_.constant(true)),
+    applyThemeClassSpy: sinon.spy(),
+    createEditorSpy: sinon.spy(createMockEditor),
     deleteEditorSpy: sinon.spy(),
-    getEditorSpy: sinon.spy(function(callback) {
-      return {
-        setContent: storyteller.RichTextEditorManagerMocker.setContentSpy
-      };
-    }),
+    getEditorSpy: sinon.spy(createMockEditor),
 
     // Auxillary
 

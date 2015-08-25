@@ -62,6 +62,10 @@
         case Constants.HISTORY_REDO:
           _applyHistoryState();
           break;
+
+        case Constants.STORY_UPDATE_THEME:
+          _setStoryThemeId(payload);
+          break;
       }
     });
 
@@ -89,6 +93,13 @@
       var story = _getStory(storyUid);
 
       return story.description;
+    };
+
+    this.getStoryThemeId = function(storyUid) {
+
+      var story = _getStory(storyUid);
+
+      return story.themeId || 'classic';
     };
 
     this.getStoryBlockIds = function(storyUid) {
@@ -155,6 +166,7 @@
         uid: story.uid,
         title: story.title,
         description: story.description,
+        themeId: story.themeId,
         blocks: story.blockIds.map(_serializeBlock)
       };
     };
@@ -167,6 +179,7 @@
         uid: story.uid,
         title: story.title,
         description: story.description,
+        themeId: story.themeId,
         blocks: story.blockIds.map(_serializeBlockDiff)
       };
     };
@@ -203,6 +216,19 @@
       var storyUid = payload.storyUid;
 
       _getStory(storyUid).description = payload.description;
+
+      self._emitChange();
+    }
+
+    function _setStoryThemeId(payload) {
+      utils.assertHasProperty(payload, 'storyUid');
+      utils.assertIsOneOfTypes(payload.storyUid, 'string');
+      utils.assertHasProperty(payload, 'themeId');
+      utils.assertIsOneOfTypes(payload.themeId, 'string');
+
+      var storyUid = payload.storyUid;
+
+      _getStory(storyUid).themeId = payload.themeId;
 
       self._emitChange();
     }
@@ -374,6 +400,7 @@
         uid: storyUid,
         title: storyData.title,
         description: storyData.description,
+        themeId: storyData.themeId,
         blockIds: blockIds
       };
 
@@ -425,6 +452,7 @@
       utils.assertIsOneOfTypes(storyData, 'object');
       utils.assertHasProperty(storyData, 'uid');
       utils.assertHasProperty(storyData, 'title');
+      utils.assertHasProperty(storyData, 'description');
       utils.assertHasProperty(storyData, 'blocks');
 
       if (storyData.uid.match(FOUR_BY_FOUR_PATTERN) === null) {

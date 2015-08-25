@@ -88,6 +88,7 @@ function applyStandardMocks() {
   storyteller.historyStore = new storyteller.HistoryStore();
   storyteller.blockRemovalConfirmationStore = new storyteller.BlockRemovalConfirmationStore();
   storyteller.coreSavingStore = new storyteller.CoreSavingStore();
+  storyteller.windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
 
   storyteller.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyData });
 

@@ -335,7 +335,9 @@
         replace(/"/g, '\\\"');
 
       var barGroupElement = _chartWrapper.
-        find('.bar-group[data-bar-name="{0}"] > .unfiltered'.format(barGroupName)).
+        find('.bar-group').
+        filter(function(index, element) { return element.getAttribute('data-bar-name') === barGroupName; }).
+        find('.unfiltered').
         get(0);
 
       var payload = {
@@ -378,7 +380,8 @@
       var barName = event.currentTarget.getAttribute('data-bar-name');
 
       _chartWrapper.
-        find('.bar-group[data-bar-name="{0}"]'.format(barName)).
+        find('.bar-group').
+        filter(function(index, element) { return element.getAttribute('data-bar-name') === barName; }).
         addClass('highlight');
     }
 
@@ -431,7 +434,7 @@
       var labelSelection = d3.select(_chartLabels[0]).selectAll('.label');
       var chartTruncated = false;
       var truncationMarkerWidth = _truncationMarker.width();
-      var fixedLabelWidth = 10.5;
+      var fixedLabelWidth = 15.5;
 
       var horizontalScaleDetails = _computeHorizontalScale(chartWidth, data, showAllLabels);
       var horizontalScale = horizontalScaleDetails.scale;
@@ -450,7 +453,6 @@
           $.relativeToPx(fixedLabelWidth + 1 + 'rem')
         ) / Math.sqrt(2));
 
-        horizontalScrollbarHeight = chartTruncated ? horizontalScrollbarHeight : 0;
         chartTruncated = false;
 
       } else {

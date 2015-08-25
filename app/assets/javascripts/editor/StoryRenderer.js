@@ -156,6 +156,9 @@
           _hideInsertionHint();
         }
       });
+
+      storyteller.windowSizeBreakpointStore.addChangeListener(_applyWindowSizeClass);
+      _applyWindowSizeClass();
     }
 
     function _attachEvents() {
@@ -305,6 +308,15 @@
 
     function _detachEvents() {
       $(window).off('resize', _throttledRender);
+    }
+
+    function _applyWindowSizeClass() {
+      var windowSizeClass = storyteller.windowSizeBreakpointStore.getWindowSizeClass();
+      var unusedWindowSizeClasses = storyteller.windowSizeBreakpointStore.getUnusedWindowSizeClasses();
+
+      container.
+        removeClass(unusedWindowSizeClasses.join(' ')).
+        addClass(windowSizeClass);
     }
 
     function _throttledRender() {
@@ -575,7 +587,7 @@
      * @param {jQuery} $componentContainer - The DOM subtree to render into.
      * @param {object} componentData - The component's data from the database.
      */
-    function _runComponentRenderer(componentRenderer, $componentContainer, componentData) {
+    function _runComponentRenderer(componentRenderer, $componentContainer, componentData, themeId) {
       var $componentContent = $componentContainer.children().eq(0);
 
       var needToChangeRenderer =
@@ -593,7 +605,7 @@
       }
 
       // Provide the initial or updated data to the renderer.
-      $componentContent[componentRenderer](componentData);
+      $componentContent[componentRenderer](componentData, themeId);
     }
 
     /**
@@ -628,13 +640,14 @@
 
     function _renderBlockComponents(blockId) {
       var components = storyteller.storyStore.getBlockComponents(blockId);
+      var themeId = storyteller.storyStore.getStoryThemeId(storyUid);
 
       components.forEach(function(componentData, componentIndex) {
 
         var componentRenderer = _findAppropriateComponentRenderer(componentData);
         var $componentContainer = _getComponentContainer(blockId, componentIndex);
 
-        _runComponentRenderer(componentRenderer, $componentContainer, componentData);
+        _runComponentRenderer(componentRenderer, $componentContainer, componentData, themeId);
       });
     }
 

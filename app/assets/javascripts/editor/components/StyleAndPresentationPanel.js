@@ -74,6 +74,7 @@
 
           storyteller.dispatcher.dispatch({
             action: Constants.STORY_UPDATE_THEME,
+            storyUid: storyteller.userStoryUid,
             themeId: themeId
           });
         }

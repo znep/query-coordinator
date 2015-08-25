@@ -128,12 +128,33 @@
       return _lastContentHeight;
     };
 
+    // Add a `themeName` class to the html root of the iframe
+    this.applyThemeClass = function(themeId) {
+      var htmlElement = _editorElement[0].contentDocument.documentElement;
+      var currentClasses = htmlElement.getAttribute('class');
+
+      if (currentClasses) {
+        var newClassList = _.reject(
+          htmlElement.getAttribute('class').split(' '),
+          function(className) {
+            return _.startsWith(className, 'theme-');
+          }
+        );
+
+        newClassList.push('theme-{0}'.format(themeId));
+
+        htmlElement.setAttribute('class', newClassList.join(' '));
+        _updateContentHeight();
+      }
+    };
+
     /**
      * This method assumes that jQuery's .remove() function will correctly
      * remove any event listeners attached to _editorElement or any of its
      * children.
      */
     this.destroy = function() {
+      storyteller.windowSizeBreakpointStore.removeChangeListener(_applyWindowSizeClass);
       _editorElement.remove();
     };
 
@@ -148,7 +169,7 @@
 
       $(_editorElement).load(function(e) {
 
-        _overrideDefaultStyles(e.target.contentWindow.document);
+        _addThemeStyles(e.target.contentWindow.document);
         _editor = new Squire(e.target.contentWindow.document);
         _editorBodyElement = $(_editor.getDocument()).find('body');
         _formatController = new storyteller.RichTextEditorFormatController(
@@ -172,10 +193,29 @@
         }
 
         _setupMouseMoveEventBroadcast();
+
+        storyteller.windowSizeBreakpointStore.addChangeListener(_applyWindowSizeClass);
+        _applyWindowSizeClass();
       });
 
       _containerElement.append(_editorElement);
     }
+
+    function _applyWindowSizeClass() {
+      var editorDocument = _editorElement[0].contentDocument;
+
+      if (!editorDocument) {
+        return;
+      }
+
+      var windowSizeClass = storyteller.windowSizeBreakpointStore.getWindowSizeClass();
+      var unusedWindowSizeClasses = storyteller.windowSizeBreakpointStore.getUnusedWindowSizeClasses();
+
+      $(editorDocument.documentElement).
+        removeClass(unusedWindowSizeClasses.join(' ')).
+        addClass(windowSizeClass);
+    }
+
 
     /**
      * Since we will want to override the default browser styles but we are
@@ -187,18 +227,24 @@
      * order to append a node to the internal document's head, however, we must
      * wait until the iframe's internal document has actually loaded.
      */
-    function _overrideDefaultStyles(document) {
+    function _addThemeStyles(document) {
+      // Add top-level theme classes to html, to mirror high-level story classes
+      // in view mode
+      $(document).find('html').
+        addClass('theme-classic large'); //TODO: add actual size and theme class here
 
       // Prevent flash of unstyled text by setting opacity to zero
       // and then overriding it in the stylesheet.
-      $(document.body).css('opacity', 0);
+      $(document.body).
+        css('opacity', 0).
+        addClass('typeset');
 
       var styleEl = document.createElement('link');
       styleEl.setAttribute('rel', 'stylesheet');
       styleEl.setAttribute('type', 'text/css');
       styleEl.setAttribute(
         'href',
-        _assetFinder.getStyleAssetPath('rich-text-editor-iframe')
+        _assetFinder.getStyleAssetPath('themes')
       );
 
       // There seems to be a race condition in Firefox whereby the onload
@@ -215,6 +261,7 @@
         setTimeout(function() {
             _updateContentHeight();
             _broadcastHeightChange();
+            $(document.body).css('opacity', '');
           },
           10
         );

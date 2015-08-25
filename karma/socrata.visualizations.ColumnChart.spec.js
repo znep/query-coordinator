@@ -1685,6 +1685,31 @@ describe('socrata.visualizations.ColumnChart', function() {
         testHelpers.fireMouseEvent(label, 'mousemove');
       });
     });
+
+    describe('on a bar whose name is not a string', function() {
+
+      it('should emit an event in which the `element` property is the `.unfiltered` child bar of the `barGroup`', function(done) {
+
+        var testData = [
+          [42, 21571, 21571, false]
+        ];
+
+        columnChart.chart.render(testData, columnChart.renderOptions);
+
+        var barGroup = columnChart.element.find('.bar-group').get(0);
+        var unfilteredBarGroupBar = $(barGroup).find('.unfiltered').get(0);
+
+        columnChart.element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', function(event) {
+
+          var payload = event.originalEvent.detail.data;
+
+          expect(payload.element).to.equal(unfilteredBarGroupBar);
+          done();
+        });
+
+        testHelpers.fireMouseEvent(barGroup, 'mousemove');
+      });
+    });
   });
 
   describe('when destroyed', function() {

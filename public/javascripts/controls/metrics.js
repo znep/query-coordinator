@@ -5,12 +5,13 @@
     /*
      * Helper Functions
      */
-    var fireSectionUpdate = function(section, $screen, urlBase, startDate, endDate, slice)
+    var fireSectionUpdate = function(section, $screen, urlBase, startDate, endDate, previousDate, slice)
     {
         var $section = $screen.find('#' + section.id),
             series = $section.data(metricsNS.SERIES_KEY),
             url = urlBase + '?start=' + startDate.getTime() +
                             '&end='   + endDate.getTime() +
+                            (previousDate ? '&previous=' + previousDate.getTime() : '') +
                             '&embetter=' + (blist.feature_flags.embetter_analytics_page || 0);
 
         if (_.isFunction(section.loading))
@@ -81,11 +82,11 @@
     },
 
     refreshData = function($screen, sections, opts,
-            currentStartDate, currentEndDate, currentSlice)
+            currentStartDate, currentEndDate, currentPreviousDate, currentSlice)
     {
         _.each(sections, function(section)
         { fireSectionUpdate(section, $screen, opts.urlBase,
-              currentStartDate, currentEndDate, currentSlice); });
+              currentStartDate, currentEndDate, currentPreviousDate, currentSlice); });
     },
 
     expandTopSubSection = function(event)
@@ -154,6 +155,7 @@
             currentSlice    = opts.initialSliceDepth,
             startDate       = null,
             endDate         = null,
+            previousDate    = null,
             chartSections   = mergeItems(opts.chartSections, opts.chartDefaults),
             detailSections  = mergeItems(opts.detailSections, opts.detailDefaults),
             summarySections = mergeItems(opts.summarySections, opts.summaryDefaults),
@@ -261,10 +263,10 @@
         };
 
         // Listen for a custom event to trigger data refresh
-        $screen.bind('metricsTimeChanged', function(event, newStartDate, newEndDate, newSlice)
+        $screen.bind('metricsTimeChanged', function(event, newStartDate, newEndDate, newPreviousDate, newSlice)
         {
             var sectionsToUpdate = null;
-            if (newStartDate != startDate || newEndDate != endDate)
+            if (newStartDate != startDate || newEndDate != endDate || newPreviousDate != previousDate)
             { sectionsToUpdate = sections; }
             else if (newSlice != currentSlice)
             { sectionsToUpdate = chartSections; }
@@ -272,11 +274,12 @@
             if (sectionsToUpdate)
             {
                 refreshData($screen, sectionsToUpdate, opts,
-                    newStartDate, newEndDate, newSlice);
+                    newStartDate, newEndDate, newPreviousDate, newSlice);
             }
 
             startDate       = newStartDate;
             endDate         = newEndDate;
+            previousDate    = newPreviousDate;
             currentSlice    = newSlice;
 
             updateExportLink();
@@ -288,7 +291,7 @@
             if (newSlice != currentSlice)
             {
                 refreshData($screen, chartSections, opts,
-                    startDate, endDate, newSlice);
+                    startDate, endDate, previousDate, newSlice);
             }
             currentSlice = newSlice;
             updateExportLink();
@@ -297,7 +300,7 @@
         $screen.bind('metricsChartRedraw', function(event)
         {
             refreshData($screen, chartSections, options,
-                  startDate, endDate, currentSlice);
+                  startDate, endDate, previousDate, currentSlice);
         });
 
         // Store a copy of the necessary information
@@ -331,7 +334,7 @@
             $timeslice = $this.find('.currentTimeSlice'),
             $slicer    = $('.sliceDepth');
 
-        var updateDateParams = function(startDate, endDate, $slicer)
+        var updateDateParams = function(startDate, endDate, previousDate, $slicer)
         {
             var sliceDepth;
             _.each(opts.rolloverDays, function(roll)
@@ -357,7 +360,7 @@
             $.uniform.update($slicer);
 
             opts.metricsScreen.trigger('metricsTimeChanged',
-                [startDate, endDate.addDays(1).addMilliseconds(-1),
+                [startDate, endDate.addDays(1).addMilliseconds(-1), previousDate,
                  sliceDepth.toUpperCase()]);
         };
         var url = window.location.href;
@@ -377,35 +380,69 @@
             }
         });
 
-        var monthToDateRange = 
-          {text: $.t('plugins.daterangepicker.month_to_date'), dateStart: function(){ return Date.parse('today').moveToFirstDayOfMonth();  }, dateEnd: 'today' };
-        var initialRange = {dateStart: paramValues.start, dateEnd: paramValues.end};
+        var monthToDateRange = {
+            text: $.t('plugins.daterangepicker.month_to_date'),
+            previousText: $.t('plugins.daterangepicker.last_month'),
+            dateStart: function(){ return Date.parse('today').moveToFirstDayOfMonth(); },
+            dateEnd: 'today',
+            datePrevious: function() { return Date.parse('1 month ago').moveToFirstDayOfMonth(); }
+        };
+        var initialRange = {
+            dateStart: function() { return paramValues.start; },
+            dateEnd: function() { return paramValues.end; }
+        };
         if (paramValues.start == monthStart && paramValues.end == monthEnd) {
             initialRange = monthToDateRange;
         }
+        var dateRangeChanged = function() {
+            updateDateParams(
+                $timeslice.data('range-start'),
+                $timeslice.data('range-end'),
+                $timeslice.data('range-previous'),
+                $slicer
+            );
+        };
         $timeslice.daterangepicker({
             dateFormat: opts.displayDateFormat,
             doneButtonText: $.t('screens.stats.apply'),
             earliestDate: opts.minimumDate,
             latestDate: today,
             onClose: function() {
-                _.defer(function() {
-                    updateDateParams(
-                        $timeslice.data('range-start'),
-                        $timeslice.data('range-end'),
-                        $slicer
-                    );
-                });
+                _.defer(dateRangeChanged);
             },
             posY: $timeslice.offset().top + $timeslice.outerHeight() + opts.yOffset,
             rangeSplitter: opts.separator,
             initialRange: initialRange,
             presetRanges: [
-              {text: $.t('plugins.daterangepicker.today'), dateStart: 'today', dateEnd: 'today' },
-              {text: $.t('plugins.daterangepicker.week_to_date'), dateStart: function() { return Date.parse('today').moveToDayOfWeek(0, -1); }, dateEnd: 'today' },
-              monthToDateRange,
-              {text: $.t('plugins.daterangepicker.year_to_date'), dateStart: function(){ var x= Date.parse('today'); x.setMonth(0); x.setDate(1); return x; }, dateEnd: 'today' },
-              {text: $.t('plugins.daterangepicker.last_month'), dateStart: function(){ return Date.parse('1 month ago').moveToFirstDayOfMonth();  }, dateEnd: function(){ return Date.parse('1 month ago').moveToLastDayOfMonth();  } }
+                {
+                    text: $.t('plugins.daterangepicker.today'),
+                    previousText: $.t('plugins.daterangepicker.yesterday'),
+                    dateStart: 'today',
+                    dateEnd: 'today',
+                    datePrevious: 'yesterday'
+                },
+                {
+                    text: $.t('plugins.daterangepicker.week_to_date'),
+                    previousText: $.t('plugins.daterangepicker.last_week'),
+                    dateStart: function() { return Date.parse('today').moveToDayOfWeek(0, -1); },
+                    dateEnd: 'today',
+                    datePrevious: function() { return Date.parse('1 week ago').moveToDayOfWeek(0, -1); }
+                },
+                monthToDateRange,
+                {
+                    text: $.t('plugins.daterangepicker.year_to_date'),
+                    previousText: $.t('plugins.daterangepicker.last_year'),
+                    dateStart: function(){ var x= Date.parse('today'); x.setMonth(0); x.setDate(1); return x; },
+                    dateEnd: 'today',
+                    datePrevious: function() { return Date.parse('1 year ago').moveToMonth(0, -1).moveToFirstDayOfMonth(); }
+                },
+                {
+                    text: $.t('plugins.daterangepicker.last_month'),
+                    previousText: $.t('plugins.daterangepicker.preceding_month'),
+                    dateStart: function(){ return Date.parse('1 month ago').moveToFirstDayOfMonth();  },
+                    dateEnd: function(){ return Date.parse('1 month ago').moveToLastDayOfMonth();  },
+                    datePrevious: function() { return Date.parse('2 months ago').moveToFirstDayOfMonth(); }
+                }
             ], 
             presets: {
               specificDate: $.t('plugins.daterangepicker.specific_date'),
@@ -424,7 +461,7 @@
         $slicer.uniform().change(function(event)
         { opts.metricsScreen.trigger('metricsSliceChanged', [$(this).val().toUpperCase()]); });
 
-        updateDateParams(paramValues.start, paramValues.end, $slicer);
+        dateRangeChanged();
 
         return this;
     };

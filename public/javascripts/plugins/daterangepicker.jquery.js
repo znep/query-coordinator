@@ -118,9 +118,7 @@ jQuery.fn.daterangepicker = function(settings){
 		var ul = jQuery('<ul class="ui-widget-content"></ul>').appendTo(rp);
 		jQuery.each(options.presetRanges,function(){
 			jQuery('<li class="ui-daterangepicker-'+ this.text.replace(/ /g, '') +' ui-corner-all"><a href="#">'+ this.text +'</a></li>')
-			.data('dateStart', this.dateStart)
-			.data('dateEnd', this.dateEnd)
-			.data('text', this.text)
+			.data(this)
 			.appendTo(ul);
 		});
 		var x=0;
@@ -145,6 +143,8 @@ jQuery.fn.daterangepicker = function(settings){
 		return ul;
 	})();
 	var rangeText = options.initialRange.text;
+	var rangePreviousText = options.initialRange.previousText;
+	var rangePrevious = (!options.initialRange.datePrevious || typeof options.initialRange.datePrevious == 'string') ? Date.parse(options.initialRange.datePrevious) : options.initialRange.datePrevious();
 				
 	//function to format a date string        
 	function fDate(date){
@@ -179,6 +179,8 @@ jQuery.fn.daterangepicker = function(settings){
 		    rangeInput.data('range-start', rangeStart);
 		    rangeInput.data('range-end', rangeEnd);
 		    rangeInput.data('range-text', rangeText);
+		    rangeInput.data('range-previousText', rangePreviousText);
+		    rangeInput.data('range-previous', rangePrevious);
 	    }
 	};
 
@@ -223,6 +225,8 @@ jQuery.fn.daterangepicker = function(settings){
 		doneBtn.data('daterangepicker-autoacceptrange', false);
 		
 		rangeText = "";
+		rangePreviousText = "";
+		rangePrevious = null;
 		if(jQuery(this).is('.ui-daterangepicker-specificDate')){
 			doneBtn.hide();
 			rpPickers.show();
@@ -287,6 +291,8 @@ jQuery.fn.daterangepicker = function(settings){
 				var dateStart = (typeof jQuery(this).data('dateStart') == 'string') ? Date.parse(jQuery(this).data('dateStart')) : jQuery(this).data('dateStart')();
 				var dateEnd = (typeof jQuery(this).data('dateEnd') == 'string') ? Date.parse(jQuery(this).data('dateEnd')) : jQuery(this).data('dateEnd')();
 				rangeText = jQuery(this).data('text');
+				rangePreviousText = jQuery(this).data('previousText');
+				rangePrevious = (typeof jQuery(this).data('datePrevious') == 'string') ? Date.parse(jQuery(this).data('datePrevious')) : jQuery(this).data('datePrevious')();
 				rp.find('.range-start').datepicker('setDate', dateStart).find('.ui-datepicker-current-day').trigger('click');
 				rp.find('.range-end').datepicker('setDate', dateEnd).find('.ui-datepicker-current-day').trigger('click');
 		}

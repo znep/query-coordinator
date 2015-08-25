@@ -3,7 +3,7 @@ describe('StoryRenderer', function() {
 
   var storyteller = window.socrata.storyteller;
   var storyUid;
-  var wizardBlockId;
+  var assetSelectorBlockId;
   var textBlockId;
   var options;
   var dispatcher;
@@ -31,7 +31,7 @@ describe('StoryRenderer', function() {
 
 
     storyUid = standardMocks.validStoryUid;
-    wizardBlockId = standardMocks.wizardBlockId;
+    assetSelectorBlockId = standardMocks.assetSelectorBlockId;
     textBlockId = standardMocks.textBlockId;
 
     testDom.append(
@@ -235,7 +235,7 @@ describe('StoryRenderer', function() {
         storyteller.dispatcher.dispatch({
           action: Constants.STORY_DELETE_BLOCK,
           storyUid: storyUid,
-          blockId: wizardBlockId
+          blockId: assetSelectorBlockId
         });
 
         assert.equal($('.block').length, numberOfBlocks - 1);
@@ -259,7 +259,7 @@ describe('StoryRenderer', function() {
           blocks: [
             generateBlockData({
               components: [
-                { type: 'media', value: { type: 'embed', value: { provider: 'wizard' } } }
+                { type: 'assetSelector' }
               ]
             })
           ]

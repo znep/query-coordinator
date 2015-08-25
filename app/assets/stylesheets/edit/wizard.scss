@@ -1,19 +1,19 @@
 @import 'lib/variables';
 
-.wizard-input-group {
+.asset-selector-input-group {
 
   display: block;
   position: relative;
   margin-bottom: 1rem;
   padding: 1rem;
-  background-color: $wizard-input-group-bg-color;
+  background-color: $asset-selector-input-group-bg-color;
 
-  .wizard-input-label {
+  .asset-selector-input-label {
     margin: 1rem 0;
     font-size: 1.75em;
     font-weight: normal;
   }
-  .wizard-media-embed-preview-container {
+  .asset-selector-preview-container {
     @include media-query-property(
       'height',
       $main-content-width-small / 3,
@@ -24,7 +24,7 @@
 
     position: relative;
     width: 100%;
-    background-color: $wizard-media-embed-preview-container-bg-color;
+    background-color: $asset-selector-preview-container-bg-color;
     background-image: asset-url('video-preview-icon.png');
     background-size: 20%;
     background-position: 50% 50%;
@@ -35,38 +35,38 @@
     &.invalid {
       background-image: asset-url('video-error-icon.png');
 
-      .wizard-media-embed-invalid-message {
+      .asset-selector-invalid-message {
         display: block;
       }
     }
 
-    .wizard-media-embed-invalid-message {
+    .asset-selector-invalid-message {
       position: relative;
       display: none;
       height: 100%;
 
-      .wizard-media-embed-invalid-title,
-      .wizard-media-embed-invalid-description {
+      .asset-selector-invalid-title,
+      .asset-selector-invalid-description {
         position: absolute;
         display: block;
         width: 100%;
         font-size: 1.6rem;
         font-style: oblique;
         text-align: center;
-        color: $wizard-media-embed-invalid-message-color;
+        color: $asset-selector-invalid-message-color;
       }
 
-      .wizard-media-embed-invalid-title {
+      .asset-selector-invalid-title {
         top: 15%;
         font-weight: 700;
       }
 
-      .wizard-media-embed-invalid-description {
+      .asset-selector-invalid-description {
         bottom: 20%;
       }
     }
 
-    .wizard-media-embed-preview-iframe {
+    .asset-selector-preview-iframe {
       position: absolute;
       top: 0;
       left: 0;
@@ -76,7 +76,7 @@
   }
 }
 
-.wizard-button-group {
+.asset-selector-button-group {
 
   &.r-to-l {
     text-align: right;

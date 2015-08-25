@@ -12,27 +12,26 @@ en:
       empty_story_warning: 'Oh, no! Your story is empty! To get started, drag a block to the canvas.'
       remove_block_confirmation: 'Are you sure you want to remove this block?'
       components:
-        media:
-          embed_wizard_insert_btn: 'Insert...'
+        asset_selector:
+          insert_btn: 'Insert...'
       settings:
         errors:
           title_too_long: 'Sorry, the story title is too long. Please shorten it.'
-      embed_wizard:
+      asset_selector:
         choose_provider_heading: 'Select data or media provider'
         back_button_text: 'Back'
         insert_button_text: 'Insert'
-        providers:
-          youtube:
-            button_text: 'YouTube'
-            heading: 'Add a YouTube video'
-            input_label: 'Link to video'
-            invalid_message_title_1: 'Oh No!'
-            invalid_message_title_2: 'Something went wrong.'
-            invalid_message_description: 'Try using a valid link to a YouTube video.'
-          visualization:
-            button_text: 'Vizualization'
-            choose_dataset_heading: 'Choose a dataset to visualize'
-            configure_vizualization_heading: 'Choose data to visualize'
+        youtube:
+          button_text: 'YouTube'
+          heading: 'Add a YouTube video'
+          input_label: 'Link to video'
+          invalid_message_title_1: 'Oh No!'
+          invalid_message_title_2: 'Something went wrong.'
+          invalid_message_description: 'Try using a valid link to a YouTube video.'
+        visualization:
+          button_text: 'Vizualization'
+          choose_dataset_heading: 'Choose a dataset to visualize'
+          configure_vizualization_heading: 'Choose data to visualize'
     visualizations:
       no_value_placeholder: '(No value)'
       flyout:

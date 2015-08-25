@@ -7,6 +7,20 @@
 
   var storytellerUtils = {
 
+    /**
+     * @function typeToClassNameForComponentType
+     * @description
+     * Transforms something.something to something-something
+     * @param {String} type - A dot-delimited Storyteller component type.
+     * @returns {String} - a hyphenated, lowercase Storyteller type.
+     */
+    typeToClassNameForComponentType: function(type) {
+
+      this.assertIsOneOfTypes(type, 'string');
+
+      return 'component-' + type.replace(/\./g, '-').replace(/[A-Z]/g, '-$&').toLowerCase();
+    },
+
     mapDOMFragmentDescending: function(element, applyFn, shouldTerminateFn) {
 
       var clonedElement = applyFn(element.cloneNode());
@@ -98,18 +112,18 @@
       return accumulator;
     },
 
-    generateYouTubeUrl: function(youTubeId) {
+    generateYoutubeUrl: function(youtubeId) {
 
-      socrata.utils.assertIsOneOfTypes(youTubeId, 'string');
+      socrata.utils.assertIsOneOfTypes(youtubeId, 'string');
 
-      return 'https://www.youtube.com/embed/' + youTubeId;
+      return 'https://www.youtube.com/embed/' + youtubeId;
     },
 
-    generateYouTubeIframeSrc: function(youTubeId, autoplay) {
+    generateYoutubeIframeSrc: function(youtubeId, autoplay) {
 
-      socrata.utils.assertIsOneOfTypes(youTubeId, 'string');
+      socrata.utils.assertIsOneOfTypes(youtubeId, 'string');
 
-      var src = 'https://www.youtube.com/embed/' + youTubeId + '?rel=0&showinfo=0';
+      var src = 'https://www.youtube.com/embed/' + youtubeId + '?rel=0&showinfo=0';
 
       if (autoplay) {
         src += '&autoplay=true';

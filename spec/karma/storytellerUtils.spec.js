@@ -4,6 +4,22 @@ describe('storytellerUtils', function() {
 
   var utils = window.socrata.utils;
 
+  describe('.typeToClassNameForComponentType()', function() {
+
+    it('should throw when provided a value that is not a string', function() {
+      assert.throws(function () {
+        utils.typeToClassNameForComponentType({});
+      });
+    });
+
+    it('should return a "component-", hyphenated word string when provided a valid string', function() {
+      assert.equal(
+        utils.typeToClassNameForComponentType('helloWorld'),
+        'component-hello-world'
+      );
+    });
+  });
+
   describe('DOM traversal functions', function() {
 
     var validElement;
@@ -363,14 +379,14 @@ describe('storytellerUtils', function() {
     });
   });
 
-  describe('.generateYouTubeUrl()', function() {
+  describe('.generateYoutubeUrl()', function() {
 
     describe('not given an id', function() {
 
       it('should throw an error', function() {
 
         assert.throw(function() {
-          utils.generateYouTubeUrl();
+          utils.generateYoutubeUrl();
         });
       });
     });
@@ -379,22 +395,22 @@ describe('storytellerUtils', function() {
 
       it('should generate the expected url', function() {
 
-        var youTubeId = 'ABCDEFGHIJK';
-        var expectedUrl = 'https://www.youtube.com/embed/' + youTubeId;
+        var youtubeId = 'ABCDEFGHIJK';
+        var expectedUrl = 'https://www.youtube.com/embed/' + youtubeId;
 
-        assert.equal(expectedUrl, utils.generateYouTubeUrl(youTubeId));
+        assert.equal(expectedUrl, utils.generateYoutubeUrl(youtubeId));
       });
     });
   });
 
-  describe('.generateYouTubeIframeSrc()', function() {
+  describe('.generateYoutubeIframeSrc()', function() {
 
     describe('not given an id', function() {
 
       it('should throw an error', function() {
 
         assert.throw(function() {
-          utils.generateYouTubeUrl();
+          utils.generateYoutubeUrl();
         });
       });
     });
@@ -405,10 +421,10 @@ describe('storytellerUtils', function() {
 
         it('should generate the expected url', function() {
 
-          var youTubeId = 'ABCDEFGHIJK';
-          var expectedUrl = 'https://www.youtube.com/embed/' + youTubeId + '?rel=0&showinfo=0';
+          var youtubeId = 'ABCDEFGHIJK';
+          var expectedUrl = 'https://www.youtube.com/embed/' + youtubeId + '?rel=0&showinfo=0';
 
-          assert.equal(expectedUrl, utils.generateYouTubeIframeSrc(youTubeId));
+          assert.equal(expectedUrl, utils.generateYoutubeIframeSrc(youtubeId));
         });
       });
 
@@ -416,10 +432,10 @@ describe('storytellerUtils', function() {
 
         it('should generate the expected url', function() {
 
-          var youTubeId = 'ABCDEFGHIJK';
-          var expectedUrl = 'https://www.youtube.com/embed/' + youTubeId + '?rel=0&showinfo=0';
+          var youtubeId = 'ABCDEFGHIJK';
+          var expectedUrl = 'https://www.youtube.com/embed/' + youtubeId + '?rel=0&showinfo=0';
 
-          assert.equal(expectedUrl, utils.generateYouTubeIframeSrc(youTubeId, false));
+          assert.equal(expectedUrl, utils.generateYoutubeIframeSrc(youtubeId, false));
         });
       });
 
@@ -427,10 +443,10 @@ describe('storytellerUtils', function() {
 
         it('should generate the expected url', function() {
 
-          var youTubeId = 'ABCDEFGHIJK';
-          var expectedUrl = 'https://www.youtube.com/embed/' + youTubeId + '?rel=0&showinfo=0&autoplay=true';
+          var youtubeId = 'ABCDEFGHIJK';
+          var expectedUrl = 'https://www.youtube.com/embed/' + youtubeId + '?rel=0&showinfo=0&autoplay=true';
 
-          assert.equal(expectedUrl, utils.generateYouTubeIframeSrc(youTubeId, true));
+          assert.equal(expectedUrl, utils.generateYoutubeIframeSrc(youtubeId, true));
         });
       });
     });

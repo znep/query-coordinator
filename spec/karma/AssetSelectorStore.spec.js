@@ -1,4 +1,4 @@
-describe('EmbedWizardStore', function() {
+describe('AssetSelectorStore', function() {
 
   'use strict';
   var storyteller = window.socrata.storyteller;
@@ -7,146 +7,145 @@ describe('EmbedWizardStore', function() {
     storyteller.dispatcher.dispatch(action);
   }
 
-  describe('embed wizard data accessors', function() {
+  describe('asset selector data accessors', function() {
 
     describe('when in an uninitialized state', function() {
 
-      describe('.getCurrentWizardState()', function() {
+      describe('.getCurrentSelectorState()', function() {
 
         it('should return null', function() {
-          assert.equal(storyteller.embedWizardStore.getCurrentWizardState(), null);
+          assert.equal(storyteller.assetSelectorStore.getCurrentSelectorState(), null);
         });
       });
 
       describe('.getCurrentBlockId()', function() {
 
         it('should return null', function() {
-          assert.equal(storyteller.embedWizardStore.getCurrentBlockId(), null);
+          assert.equal(storyteller.assetSelectorStore.getCurrentBlockId(), null);
         });
       });
 
       describe('.getCurrentComponentIndex()', function() {
 
         it('should return null', function() {
-          assert.equal(storyteller.embedWizardStore.getCurrentComponentIndex(), null);
+          assert.equal(storyteller.assetSelectorStore.getCurrentComponentIndex(), null);
         });
       });
 
       describe('.getCurrentComponentType()', function() {
 
-        it('should return "media"', function() {
-          assert.equal(storyteller.embedWizardStore.getCurrentComponentType(), 'media');
+        it('should return "assetSelector"', function() {
+          assert.equal(storyteller.assetSelectorStore.getCurrentComponentType(), 'assetSelector');
         });
       });
 
       describe('.getCurrentComponentValue()', function() {
 
-        it('should return an object with `type` set to "embed" and `value` set to an object with a `provider` property of "wizard"', function() {
+        it('should return an empty object', function() {
 
-          var value = storyteller.embedWizardStore.getCurrentComponentValue();
+          var value = storyteller.assetSelectorStore.getCurrentComponentValue();
 
-          assert.equal(value.type, 'embed');
-          assert.equal(value.value.provider, 'wizard');
+          assert.isObject(value, 'object');
         });
       });
 
       describe('.isValid()', function() {
 
         it('should return false', function() {
-          assert.isFalse(storyteller.embedWizardStore.isValid());
+          assert.isFalse(storyteller.assetSelectorStore.isValid());
         });
       });
     });
 
-    describe('after an `EMBED_WIZARD_CHOOSE_PROVIDER` action', function() {
+    describe('after an `ASSET_SELECTOR_CHOOSE_PROVIDER` action', function() {
 
       var testBlockId = 'testBlock1';
       var testComponentIndex = '1';
 
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
+          action: Constants.ASSET_SELECTOR_CHOOSE_PROVIDER,
           blockId: testBlockId,
           componentIndex: testComponentIndex
         });
       });
 
-      describe('.getCurrentWizardState()', function() {
+      describe('.getCurrentSelectorState()', function() {
 
         it('should return the action specified in the action payload', function() {
-          assert.equal(storyteller.embedWizardStore.getCurrentWizardState(), Constants.EMBED_WIZARD_CHOOSE_PROVIDER);
+          assert.equal(storyteller.assetSelectorStore.getCurrentSelectorState(), Constants.ASSET_SELECTOR_CHOOSE_PROVIDER);
         });
       });
 
       describe('.getCurrentBlockId()', function() {
 
         it('should return the blockId specified in the action payload', function() {
-          assert.equal(storyteller.embedWizardStore.getCurrentBlockId(), testBlockId);
+          assert.equal(storyteller.assetSelectorStore.getCurrentBlockId(), testBlockId);
         });
       });
 
       describe('.getCurrentComponentIndex()', function() {
 
         it('should return the componentIndex specified in the action payload', function() {
-          assert.equal(storyteller.embedWizardStore.getCurrentComponentIndex(), testComponentIndex);
+          assert.equal(storyteller.assetSelectorStore.getCurrentComponentIndex(), testComponentIndex);
         });
       });
 
       describe('.isValid()', function() {
 
         it('should return false', function() {
-          assert.isFalse(storyteller.embedWizardStore.isValid());
+          assert.isFalse(storyteller.assetSelectorStore.isValid());
         });
       });
     });
 
-    describe('after an `EMBED_WIZARD_CLOSE` action', function() {
+    describe('after an `ASSET_SELECTOR_CLOSE` action', function() {
 
       var testBlockId = 'testBlock1';
       var testComponentIndex = '1';
 
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
+          action: Constants.ASSET_SELECTOR_CHOOSE_PROVIDER,
           blockId: testBlockId,
           componentIndex: testComponentIndex
         });
 
         storyteller.dispatcher.dispatch({
-          action: Constants.EMBED_WIZARD_CLOSE
+          action: Constants.ASSET_SELECTOR_CLOSE
         });
       });
 
-      describe('.getCurrentWizardState()', function() {
+      describe('.getCurrentSelectorState()', function() {
 
         it('should return null', function() {
-          assert.equal(storyteller.embedWizardStore.getCurrentWizardState(), null);
+          assert.equal(storyteller.assetSelectorStore.getCurrentSelectorState(), null);
         });
       });
 
       describe('.getCurrentBlockId()', function() {
 
         it('should return null', function() {
-          assert.equal(storyteller.embedWizardStore.getCurrentBlockId(), null);
+          assert.equal(storyteller.assetSelectorStore.getCurrentBlockId(), null);
         });
       });
 
       describe('.getCurrentComponentIndex()', function() {
 
         it('should return null', function() {
-          assert.equal(storyteller.embedWizardStore.getCurrentComponentIndex(), null);
+          assert.equal(storyteller.assetSelectorStore.getCurrentComponentIndex(), null);
         });
       });
 
       describe('.isValid()', function() {
 
         it('should return false', function() {
-          assert.isFalse(storyteller.embedWizardStore.isValid());
+          assert.isFalse(storyteller.assetSelectorStore.isValid());
         });
       });
     });
 
-    describe('after an `EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET` action', function() {
+    describe('after an `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action', function() {
       var server;
       var migrationUrl;
 
@@ -161,7 +160,7 @@ describe('EmbedWizardStore', function() {
 
       it('should attempt to fetch the NBE datasetUid if dataset is OBE', function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET,
+          action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
           datasetUid: standardMocks.validStoryUid,
           isNewBackend: false
         });
@@ -173,7 +172,7 @@ describe('EmbedWizardStore', function() {
 
       it('should not request API migrations if dataset is already NBE', function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET,
+          action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
           datasetUid: standardMocks.validStoryUid,
           isNewBackend: true
         });
@@ -184,25 +183,25 @@ describe('EmbedWizardStore', function() {
 
       it('should add datasetUid to _currentComponentProperities', function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET,
+          action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
           datasetUid: standardMocks.validStoryUid,
           isNewBackend: true
         });
 
         assert.equal(
-          storyteller.embedWizardStore.getCurrentComponentValue().value.settings.datasetUid,
+          storyteller.assetSelectorStore.getCurrentComponentValue().settings.datasetUid,
           standardMocks.validStoryUid
         );
       });
 
     });
 
-    describe('after an `EMBED_WIZARD_UPDATE_VISUALIZATION_CONFIGURATION` action', function() {
+    describe('after an `ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION` action', function() {
 
       beforeEach(function() {
         // Send in dataset uid so ComponentValues.value.settings exists
         storyteller.dispatcher.dispatch({
-          action: Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET,
+          action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
           datasetUid: standardMocks.validStoryUid,
           isNewBackend: true
         });
@@ -211,12 +210,12 @@ describe('EmbedWizardStore', function() {
       it('does not change currentComponentValue if payload has no cardData', function() {
         assert.doesNotChange(function() {
             storyteller.dispatcher.dispatch({
-              action: Constants.EMBED_WIZARD_UPDATE_VISUALIZATION_CONFIGURATION,
+              action: Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
               cardData: null
             });
           },
-          storyteller.embedWizardStore.getCurrentComponentValue(), //thing that might change
-          'value' //property on it that might change
+          storyteller.assetSelectorStore.getCurrentComponentValue(), //thing that might change
+          'settings' //property on it that might change
         );
       });
 
@@ -224,12 +223,12 @@ describe('EmbedWizardStore', function() {
         var fakeCardData = {'fakeformat': 'true'};
 
         storyteller.dispatcher.dispatch({
-          action: Constants.EMBED_WIZARD_UPDATE_VISUALIZATION_CONFIGURATION,
+          action: Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
           cardData: fakeCardData
         });
 
         assert.equal(
-          storyteller.embedWizardStore.getCurrentComponentValue().value.settings.visualization,
+          storyteller.assetSelectorStore.getCurrentComponentValue().settings.visualization,
           fakeCardData
         );
 

@@ -131,17 +131,21 @@
     // Add a `themeName` class to the html root of the iframe
     this.setTheme = function(themeId) {
       var htmlElement = _editorElement[0].contentDocument.documentElement;
-      var newClassList = _.reject(
-        htmlElement.getAttribute('class').split(' '),
-        function(className) {
-          return _.startsWith(className, 'theme-');
-        }
-      );
+      var currentClasses = htmlElement.getAttribute('class');
 
-      newClassList.push(' theme-{0}'.format(themeId));
+      if (currentClasses) {
+        var newClassList = _.reject(
+          htmlElement.getAttribute('class').split(' '),
+          function(className) {
+            return _.startsWith(className, 'theme-');
+          }
+        );
 
-      htmlElement.setAttribute('class', newClassList.join(' '));
-      _updateContentHeight();
+        newClassList.push('theme-{0}'.format(themeId));
+
+        htmlElement.setAttribute('class', newClassList.join(' '));
+        _updateContentHeight();
+      }
     };
 
     /**

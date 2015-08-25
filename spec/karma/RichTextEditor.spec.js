@@ -252,10 +252,16 @@ describe('RichTextEditor', function() {
     });
   });
 
-  describe('window class breaks', function() {
-    it('should apply the current class break to the iframe documentElement (html node)', function() {
-      var $textEditor = $('.text-editor');
-      var editor = new storyteller.RichTextEditor(
+
+
+  describe('with an existing editor', function() {
+    var $textEditor;
+    var editor;
+    var $documentElement;
+
+    beforeEach(function() {
+      $textEditor = $('.text-editor');
+      editor = new storyteller.RichTextEditor(
         $textEditor,
         validEditorId,
         window.socrata.storyteller.assetFinder,
@@ -263,12 +269,38 @@ describe('RichTextEditor', function() {
         'Hello, world!'
       );
 
-      var currentClassName = storyteller.windowSizeBreakpointStore.getClassBreak();
-      var $documentElement = $($textEditor.find('iframe')[0].contentDocument.documentElement);
-
-      assert.isTrue($documentElement.hasClass(currentClassName));
+      $documentElement = $($textEditor.find('iframe')[0].contentDocument.documentElement);
     });
+
+    describe('window class breaks', function() {
+      it('should apply the current class break to the iframe documentElement (html node)', function() {
+        var currentClassName = storyteller.windowSizeBreakpointStore.getClassBreak();
+
+        assert.isTrue($documentElement.hasClass(currentClassName));
+      });
+    });
+
+    describe('setTheme', function() {
+      it('has the theme-classic class initially', function() {
+        assert.isTrue($documentElement.hasClass('theme-classic'));
+      });
+
+      it('adds a new theme class when called', function() {
+        editor.setTheme('sans');
+        assert.isTrue($documentElement.hasClass('theme-sans'));
+      });
+
+      it('removes old `theme-*` classes when a new theme is set', function() {
+        editor.setTheme('sans');
+        editor.setTheme('serif');
+        var currentClasses = $documentElement.attr('class');
+
+        assert.lengthOf(currentClasses.match(/theme-/ig), 1);
+      });
+    });
+
   });
+
 
   describe('.destroy()', function() {
 

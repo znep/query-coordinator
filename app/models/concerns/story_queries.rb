@@ -3,8 +3,8 @@ module StoryQueries
 
   included do
 
-    def self.find_by_four_by_four(four_by_four)
-      self.where(uid: four_by_four, deleted_at: nil).order(created_at: :desc).first
+    def self.find_by_uid(uid)
+      self.where(uid: uid, deleted_at: nil).order(created_at: :desc).first
     end
 
     # This method will eventually be useful for restoring drafts to previous
@@ -13,8 +13,8 @@ module StoryQueries
     # time argument to the where clause does not seem to work... is it a
     # timezone mismatch between Rails (which appears to run in UTC) and the
     # database?
-    # def self.from_four_by_four_and_time(four_by_four, time)
-    #   self.where(four_by_four: four_by_four, created_at: time).first
+    # def self.from_uid_and_time(uid, time)
+    #   self.where(uid: uid, created_at: time).first
     # end
   end
 end

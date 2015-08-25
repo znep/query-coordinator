@@ -7,7 +7,7 @@ class StoriesController < ApplicationController
   # rescue_from ActiveRecord::RecordNotFound, with: :tmp_render_404
 
   def show
-    @story = PublishedStory.find_by_four_by_four(params[:four_by_four])
+    @story = PublishedStory.find_by_uid(params[:uid])
     if @story
       respond_to do |format|
         format.html { render 'stories/show' }
@@ -19,7 +19,7 @@ class StoriesController < ApplicationController
   end
 
   def new
-    view = CoreServer::get_view(params[:four_by_four], core_request_headers)
+    view = CoreServer::get_view(params[:uid], core_request_headers)
 
     if view.present?
       @story_title = view['name']
@@ -27,7 +27,7 @@ class StoriesController < ApplicationController
       if story_is_uninitialized?(view['metadata']) && @story_title.present?
         render 'stories/new'
       elsif !@story_title.nil?
-        redirect_to "/stories/s/#{params[:four_by_four]}/edit"
+        redirect_to "/stories/s/#{params[:uid]}/edit"
       else
         Airbrake.notify_or_ignore(
           RuntimeError.new,
@@ -41,18 +41,18 @@ class StoriesController < ApplicationController
   end
 
   def create
-    view = CoreServer::get_view(params[:four_by_four], core_request_headers)
+    view = CoreServer::get_view(params[:uid], core_request_headers)
 
     if view.present?
       dirty_title = params[:title] ||= ''
       updated_metadata = nil
 
-      if should_create_draft_story?(view, params[:four_by_four])
-        clean_four_by_four = params[:four_by_four]
+      if should_create_draft_story?(view)
+        clean_uid = params[:uid]
         clean_title = sanitize_story_title(dirty_title)
 
         @story = DraftStory.create(
-          :uid => clean_four_by_four,
+          :uid => clean_uid,
           :block_ids => [],
           :created_by => current_user['id']
         )
@@ -61,22 +61,22 @@ class StoriesController < ApplicationController
 
           view['name'] = clean_title
           view['metadata']['accessPoints'] ||= {}
-          view['metadata']['accessPoints']['story'] = "https://#{request.host}/stories/s/#{clean_four_by_four}/edit"
+          view['metadata']['accessPoints']['story'] = "https://#{request.host}/stories/s/#{clean_uid}/edit"
           view['metadata']['initialized'] = true
 
-          updated_view = CoreServer::update_view(clean_four_by_four, core_request_headers, view)
+          updated_view = CoreServer::update_view(clean_uid, core_request_headers, view)
 
           if updated_view.nil?
             Rails.logger.error(
-              "Successfully bootstrapped story with uid '#{clean_four_by_four}' " \
+              "Successfully bootstrapped story with uid '#{clean_uid}' " \
               "but failed to update the 'initialized' flag in the view metadata."
             )
             # TODO: Notify Airbrake
           end
 
-          redirect_to "/stories/s/#{clean_four_by_four}/edit"
+          redirect_to "/stories/s/#{clean_uid}/edit"
         else
-          redirect_to "/stories/s/#{clean_four_by_four}/create", :flash => {
+          redirect_to "/stories/s/#{clean_uid}/create", :flash => {
             :error => I18n.t('stories_controller.story_creation_error_flash')
           }
         end
@@ -95,7 +95,7 @@ class StoriesController < ApplicationController
   def edit
     @inspiration_block_list = InspirationBlockList.new.blocks
     @theme_list = ThemeList.new.themes
-    @story = DraftStory.find_by_four_by_four(params[:four_by_four])
+    @story = DraftStory.find_by_uid(params[:uid])
 
     if @story
       respond_to do |format|
@@ -108,11 +108,11 @@ class StoriesController < ApplicationController
 
   private
 
-  def should_create_draft_story?(view, four_by_four)
-    story_belongs_to_current_user?(view, four_by_four) && story_is_uninitialized?(view['metadata'])
+  def should_create_draft_story?(view)
+    story_belongs_to_current_user?(view) && story_is_uninitialized?(view['metadata'])
   end
 
-  def story_belongs_to_current_user?(view, four_by_four)
+  def story_belongs_to_current_user?(view)
     current_user_created_story = false
     owner_id = nil
 

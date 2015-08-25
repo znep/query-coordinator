@@ -11,7 +11,7 @@
     position: fixed;
     width: $settings-panel-width;
     height: 100%;
-    left: 0;
+    left: -$settings-panel-width * 3/2;
     top: 0;
     padding: $settings-panel-padding-width / 2;
     color: $header-color;

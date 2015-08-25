@@ -68,7 +68,7 @@ $(document).on('ready', function() {
   storyteller.dispatcher = new storyteller.Dispatcher();
   storyteller.dispatcher.register(function(payload) {
 
-    if (window.console) {
+    if (storyteller.config.environment === 'development' && window.console) {
       console.info('Dispatcher action: ', payload);
     }
 

@@ -3,7 +3,7 @@ class DraftsController < ApplicationController
   def create
     story_draft_creator = StoryDraftCreator.new(
       user: current_user,
-      four_by_four: params[:four_by_four],
+      uid: params[:uid],
       digest: request.env['IF_MATCH'],
       blocks: params[:blocks]
     )

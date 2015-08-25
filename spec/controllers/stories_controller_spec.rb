@@ -14,27 +14,27 @@ RSpec.describe StoriesController, type: :controller do
       let!(:story_revision) { FactoryGirl.create(:published_story) }
 
       it 'renders show template' do
-        get :show, four_by_four: story_revision.uid
+        get :show, uid: story_revision.uid
         expect(response).to render_template(:show)
       end
 
       it 'ignores vanity_text' do
-        get :show, four_by_four: story_revision.uid, vanity_text: 'haha'
+        get :show, uid: story_revision.uid, vanity_text: 'haha'
         expect(assigns(:story)).to eq(story_revision)
       end
 
       it 'renders 404' do
-        get :show, four_by_four: 'notf-ound'
+        get :show, uid: 'notf-ound'
         expect(response).to be_not_found
       end
 
       it 'assigns the :story' do
-        get :show, four_by_four: story_revision.uid
+        get :show, uid: story_revision.uid
         expect(assigns(:story)).to eq(story_revision)
       end
 
       it 'renders json when requested' do
-        get :show, four_by_four: story_revision.uid, format: :json
+        get :show, uid: story_revision.uid, format: :json
         expect(response.body).to eq(story_revision.to_json)
       end
     end
@@ -42,7 +42,7 @@ RSpec.describe StoriesController, type: :controller do
     context 'when there is no story with the given four by four' do
 
       it 'renders 404' do
-        get :show, four_by_four: 'notf-ound'
+        get :show, uid: 'notf-ound'
         expect(response).to have_http_status(404)
       end
     end
@@ -59,14 +59,14 @@ RSpec.describe StoriesController, type: :controller do
       let!(:story_uid) { 'test-test' }
 
       it 'assigns the story title' do
-        get :new, four_by_four: story_uid
+        get :new, uid: story_uid
 
         expect(assigns(:story_title)).to eq(mock_valid_lenses_view_title)
         expect(response).to render_template(:new)
       end
 
       it 'ignores vanity_text' do
-        get :new, four_by_four: story_uid, vanity_text: 'haha'
+        get :new, uid: story_uid, vanity_text: 'haha'
 
         expect(assigns(:story_title)).to eq(mock_valid_lenses_view_title)
         expect(response).to render_template(:new)
@@ -82,7 +82,7 @@ RSpec.describe StoriesController, type: :controller do
       let!(:story_uid) { 'test-test' }
 
       it 'redirects to the edit experience' do
-        get :new, four_by_four: story_uid
+        get :new, uid: story_uid
 
         expect(response).to redirect_to "/stories/s/#{story_uid}/edit"
       end
@@ -95,7 +95,7 @@ RSpec.describe StoriesController, type: :controller do
       end
 
       it 'renders 404' do
-        get :new, four_by_four: 'notf-ound'
+        get :new, uid: 'notf-ound'
 
         expect(response).to have_http_status(404)
       end
@@ -118,7 +118,7 @@ RSpec.describe StoriesController, type: :controller do
           expect(updated_view['metadata']['initialized']).to eq(true)
         end
 
-        post :create, four_by_four: story_uid, title: mock_valid_lenses_view_title
+        post :create, uid: story_uid, title: mock_valid_lenses_view_title
 
         expect(assigns(:story)).to be_a(DraftStory)
         expect(assigns(:story).uid).to eq(story_uid)
@@ -130,7 +130,7 @@ RSpec.describe StoriesController, type: :controller do
           expect(updated_view['metadata']['initialized']).to eq(true)
         end
 
-        post :create, four_by_four: story_uid, vanity_text: 'haha', title: mock_valid_lenses_view_title
+        post :create, uid: story_uid, vanity_text: 'haha', title: mock_valid_lenses_view_title
 
         expect(assigns(:story)).to be_a(DraftStory)
         expect(assigns(:story).uid).to eq(story_uid)
@@ -142,7 +142,7 @@ RSpec.describe StoriesController, type: :controller do
           expect(updated_view['metadata']['initialized']).to eq(true)
         end
 
-        post :create, four_by_four: story_uid, title: mock_valid_lenses_view_title
+        post :create, uid: story_uid, title: mock_valid_lenses_view_title
       end
 
       it 'redirects to the edit experience' do
@@ -151,7 +151,7 @@ RSpec.describe StoriesController, type: :controller do
           expect(updated_view['metadata']['initialized']).to eq(true)
         end
 
-        post :create, four_by_four: story_uid, title: mock_valid_lenses_view_title
+        post :create, uid: story_uid, title: mock_valid_lenses_view_title
 
         expect(response).to redirect_to "/stories/s/#{story_uid}/edit"
       end
@@ -164,7 +164,7 @@ RSpec.describe StoriesController, type: :controller do
       end
 
       it 'redirects to root' do
-        post :create, four_by_four: 'notf-ound'
+        post :create, uid: 'notf-ound'
 
         expect(response).to redirect_to '/'
       end
@@ -177,18 +177,18 @@ RSpec.describe StoriesController, type: :controller do
 
       let!(:draft_story) { FactoryGirl.create(:draft_story) }
 
-      it 'calls find_by_four_by_four' do
-        expect(DraftStory).to receive(:find_by_four_by_four)
-        get :edit, four_by_four: draft_story.uid
+      it 'calls find_by_uid' do
+        expect(DraftStory).to receive(:find_by_uid)
+        get :edit, uid: draft_story.uid
       end
 
       it 'assigns :story' do
-        get :edit, four_by_four: draft_story.uid
+        get :edit, uid: draft_story.uid
         expect(assigns(:story)).to eq draft_story
       end
 
       it 'renders the edit layout' do
-        get :edit, four_by_four: draft_story.uid
+        get :edit, uid: draft_story.uid
         expect(response).to render_template('editor')
       end
 
@@ -197,12 +197,12 @@ RSpec.describe StoriesController, type: :controller do
         render_views
 
         it 'renders a json object for userStoryData' do
-          get :edit, four_by_four: draft_story.uid
+          get :edit, uid: draft_story.uid
           expect(response.body).to match(/userStoryData = {/)
         end
 
         it 'renders an array of json objects for sampleBlocks' do
-          get :edit, four_by_four: draft_story.uid
+          get :edit, uid: draft_story.uid
           expect(response.body).to match(/sampleBlocks = \[/)
         end
       end
@@ -211,7 +211,7 @@ RSpec.describe StoriesController, type: :controller do
     context 'when there is no matching story' do
 
       it 'returns a 404' do
-        get :edit, four_by_four: 'notf-ound'
+        get :edit, uid: 'notf-ound'
         expect(response).to have_http_status(404)
       end
     end

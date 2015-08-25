@@ -124,6 +124,7 @@ describe('A FeatureMap Card Visualization', function() {
   var dataset;
   var $q;
   var mockCardDataService;
+  var Constants;
 
   beforeEach(module('/angular_templates/dataCards/cardVisualizationFeatureMap.html'));
 
@@ -147,6 +148,7 @@ describe('A FeatureMap Card Visualization', function() {
     testHelpers.mockDirective(_$provide, 'featureMap');
     VectorTileDataService = $injector.get('VectorTileDataService');
     ServerConfig = $injector.get('ServerConfig');
+    Constants = $injector.get('Constants');
   }));
 
   afterEach(function(){
@@ -576,20 +578,20 @@ describe('A FeatureMap Card Visualization', function() {
       expect(elementInfo.element.find('.spinner')).to.not.have.class('busy');
     });
 
-    it('should hide the busy indicator after 5 seconds if no extent is fetched', function() {
+    it('should hide the busy indicator after 10 seconds if no extent is fetched', function() {
       expect(elementInfo.element.find('.spinner')).to.have.class('busy');
-      testScheduler.advanceTo(5000);
+      testScheduler.advanceTo(Constants.FEATURE_MAP_RENDER_TIMEOUT);
       expect(elementInfo.element.find('.spinner')).to.not.have.class('busy');
     });
 
-    it('should display the error message after 5 seconds if no extent fetched', function() {
+    it('should display the error message after 10 seconds if no extent fetched', function() {
       expect(elementInfo.element.find('.visualization-render-error')).to.have.class('ng-hide');
-      testScheduler.advanceTo(5000);
+      testScheduler.advanceTo(Constants.FEATURE_MAP_RENDER_TIMEOUT);
       expect(elementInfo.element.find('.visualization-render-error')).to.not.have.class('ng-hide');
     });
 
     it('should hide the error message if rendering eventually occurs', function() {
-      testScheduler.advanceTo(5000);
+      testScheduler.advanceTo(Constants.FEATURE_MAP_RENDER_TIMEOUT);
       expect(elementInfo.element.find('.visualization-render-error')).to.not.have.class('ng-hide');
       deferred.resolve(MIDDLE_ZOOM_EXTENT);
       // Synthetically signal render complete since we aren't actually rendering

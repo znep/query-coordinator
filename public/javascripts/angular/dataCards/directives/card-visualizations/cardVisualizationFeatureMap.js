@@ -1,15 +1,10 @@
 (function() {
   'use strict';
 
-  var TIMER_TIMEOUT_MILLISECONDS = 5000;
-
-  function createTimerObservable() {
-    return Rx.Observable.timer(TIMER_TIMEOUT_MILLISECONDS, Rx.Scheduler.timeout);
-  }
-
   function cardVisualizationFeatureMap(
     $q,
     $log,
+    Constants,
     WindowState,
     ServerConfig,
     CardDataService,
@@ -17,6 +12,10 @@
     LeafletHelpersService,
     LeafletVisualizationHelpersService
   ) {
+
+    function createTimerObservable() {
+      return Rx.Observable.timer(Constants.FEATURE_MAP_RENDER_TIMEOUT, Rx.Scheduler.timeout);
+    }
 
     return {
       restrict: 'E',

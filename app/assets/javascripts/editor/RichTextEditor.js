@@ -212,7 +212,7 @@
       var unusedWindowSizeClasses = storyteller.windowSizeBreakpointStore.getUnusedWindowSizeClasses();
 
       $(editorDocument.documentElement).
-        removeClass(unusedWindowSizeClasses).
+        removeClass(_.keys(unusedWindowSizeClasses).join(' ')).
         addClass(windowSizeClass);
     }
 

@@ -21,8 +21,6 @@
 
       var callbackCalled = false;
       var expectedBreakpointClasses = {
-        xxlarge: false,
-        xlarge: false,
         large: false,
         medium: false,
         small: false
@@ -58,14 +56,6 @@
       verifyOutput(0, 'small');
       verifyOutput(1, 'small');
 
-      verifyOutput(Constants.WINDOW_SIZE_BREAK_XXLARGE + 1, 'xxlarge');
-      verifyOutput(Constants.WINDOW_SIZE_BREAK_XXLARGE, 'xxlarge');
-      verifyOutput(Constants.WINDOW_SIZE_BREAK_XXLARGE - 1, 'xlarge');
-
-      verifyOutput(Constants.WINDOW_SIZE_BREAK_XLARGE + 1, 'xlarge');
-      verifyOutput(Constants.WINDOW_SIZE_BREAK_XLARGE, 'xlarge');
-      verifyOutput(Constants.WINDOW_SIZE_BREAK_XLARGE - 1, 'large');
-
       verifyOutput(Constants.WINDOW_SIZE_BREAK_LARGE + 1, 'large');
       verifyOutput(Constants.WINDOW_SIZE_BREAK_LARGE, 'large');
       verifyOutput(Constants.WINDOW_SIZE_BREAK_LARGE - 1, 'medium');
@@ -82,10 +72,10 @@
         count++;
       });
 
-      callResizeCallback(Constants.WINDOW_SIZE_BREAK_XXLARGE);
-      callResizeCallback(Constants.WINDOW_SIZE_BREAK_XXLARGE + 100);
-      callResizeCallback(Constants.WINDOW_SIZE_BREAK_XXLARGE + 1000);
-      callResizeCallback(Constants.WINDOW_SIZE_BREAK_XXLARGE + 0.0001);
+      callResizeCallback(Constants.WINDOW_SIZE_BREAK_LARGE);
+      callResizeCallback(Constants.WINDOW_SIZE_BREAK_LARGE + 100);
+      callResizeCallback(Constants.WINDOW_SIZE_BREAK_LARGE + 1000);
+      callResizeCallback(Constants.WINDOW_SIZE_BREAK_LARGE + 0.0001);
 
       assert.equal(count, 1);
     });
@@ -95,8 +85,6 @@
         chai.config.truncateThreshold = 0;
         var windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
         assert.deepEqual(windowSizeBreakpointStore.getAllWindowSizeClasses(), {
-          xxlarge: false,
-          xlarge: false,
           large: false,
           medium: false,
           small: true
@@ -108,8 +96,6 @@
       it('should return all unused class breaks', function() {
         var windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
         assert.deepEqual(windowSizeBreakpointStore.getUnusedWindowSizeClasses(), {
-          xxlarge: false,
-          xlarge: false,
           large: false,
           medium: false
         });

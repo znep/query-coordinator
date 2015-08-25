@@ -69,9 +69,7 @@
       utils.assertIsOneOfTypes(windowSize, 'number');
 
       return {
-        xxlarge: windowSize >= Constants.WINDOW_SIZE_BREAK_XXLARGE,
-        xlarge: windowSize < Constants.WINDOW_SIZE_BREAK_XXLARGE && windowSize >= Constants.WINDOW_SIZE_BREAK_XLARGE,
-        large: windowSize < Constants.WINDOW_SIZE_BREAK_XLARGE && windowSize >= Constants.WINDOW_SIZE_BREAK_LARGE,
+        large: windowSize >= Constants.WINDOW_SIZE_BREAK_LARGE,
         medium: windowSize < Constants.WINDOW_SIZE_BREAK_LARGE && windowSize >= Constants.WINDOW_SIZE_BREAK_MEDIUM,
         small: windowSize < Constants.WINDOW_SIZE_BREAK_MEDIUM
       };

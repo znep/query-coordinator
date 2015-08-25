@@ -39,7 +39,7 @@
     background-color: transparent;
     border: none;
     outline: none;
-    cursor: pointer;
+    cursor: default;
     font-family: 'icomoon';
   }
 
@@ -134,6 +134,7 @@
     .rich-text-editor-toolbar-select,
     .rich-text-editor-toolbar-select-hint {
       color: $rich-text-editor-toolbar-color;
+      cursor: pointer;
     }
 
     .rich-text-editor-toolbar-btn {

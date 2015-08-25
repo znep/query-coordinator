@@ -18,37 +18,34 @@
  * --------------------------------------------------------------------
  * Socrata changelog:
  *  03.21.2011 made it so that month of.. and year uf.. queries will autoaccept selection on accept
- *  11.04.2013 using Socrata's localization system to do translations.
  */
 jQuery.fn.daterangepicker = function(settings){
 	var rangeInput = jQuery(this);
-
-    var t = function(str, props) { return $.t('plugins.daterangepicker.' + str, props); };
 	
 	//defaults
 	var options = jQuery.extend({
 		presetRanges: [
-			{text: t('today'), dateStart: 'today', dateEnd: 'today' },
-			{text: t('week_to_date'), dateStart: function() { return Date.parse('today').moveToDayOfWeek(0, -1); }, dateEnd: 'today' },
-			{text: t('month_to_date'), dateStart: function(){ return Date.parse('today').moveToFirstDayOfMonth();  }, dateEnd: 'today' },
-			{text: t('year_to_date'), dateStart: function(){ var x= Date.parse('today'); x.setMonth(0); x.setDate(1); return x; }, dateEnd: 'today' },
+			{text: 'Today', dateStart: 'today', dateEnd: 'today' },
+			{text: 'Week to Date', dateStart: function() { return Date.parse('today').moveToDayOfWeek(0, -1); }, dateEnd: 'today' },
+			{text: 'Month to Date', dateStart: function(){ return Date.parse('today').moveToFirstDayOfMonth();  }, dateEnd: 'today' },
+			{text: 'Year to Date', dateStart: function(){ var x= Date.parse('today'); x.setMonth(0); x.setDate(1); return x; }, dateEnd: 'today' },
 			//extras:
-			{text: t('last_month'), dateStart: function(){ return Date.parse('1 month ago').moveToFirstDayOfMonth();  }, dateEnd: function(){ return Date.parse('1 month ago').moveToLastDayOfMonth();  } }
+			{text: 'Last Month', dateStart: function(){ return Date.parse('1 month ago').moveToFirstDayOfMonth();  }, dateEnd: function(){ return Date.parse('1 month ago').moveToLastDayOfMonth();  } }
 		], 
 		//presetRanges: array of objects for each menu preset. 
 		//Each obj must have text, dateStart, dateEnd. dateStart, dateEnd accept date.js string or a function which returns a date object
 		presets: {
-			specificDate: t('specific_date'),
-            dateRange: t('date_range'),
-			theWeekOf: t('the_week_of'),
-			theMonthOf: t('the_month_of'),
-			theYearOf: t('the_year_of')
+			specificDate: 'Specific Date', 
+                        dateRange: 'Date Range',
+			theWeekOf: 'The Week Of...', 
+			theMonthOf: 'The Month Of...', 
+			theYearOf: 'The Year Of...'
 		},
-		rangeStartTitle: t('start_date'),
-		rangeEndTitle: t('end_date'),
-		nextLinkText: t('next'),
-		prevLinkText: t('prev'),
-		doneButtonText: t('done'),
+		rangeStartTitle: 'Start date',
+		rangeEndTitle: 'End date',
+		nextLinkText: 'Next',
+		prevLinkText: 'Prev',
+		doneButtonText: 'Done',
 		earliestDate: Date.parse('-15years'), //earliest date allowed 
 		latestDate: Date.parse('+15years'), //latest date allowed 
 		rangeSplitter: '-', //string to use between dates in single input

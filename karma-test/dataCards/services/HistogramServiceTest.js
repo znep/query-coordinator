@@ -218,7 +218,12 @@ describe('HistogramService', function() {
     });
 
     describe('bad data', function() {
-      it('should replace infinite values with zeroes because otherwise the histogram gets really angry', function() {
+
+      // Replace infinite values with zero to fix problems in
+      // HistogramVisualizationService related to rendering of values
+      // surrounded by NaNs and/or an infinite loop in the binary search
+      // comprising the brush.bisectPath function.
+      it('should replace infinite values with zeroes', function() {
         var input, output;
 
         input = [

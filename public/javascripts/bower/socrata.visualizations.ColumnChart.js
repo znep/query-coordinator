@@ -330,9 +330,7 @@
 
       var datum = d3.select(event.currentTarget).datum();
 
-      var barGroupName = datum[NAME_INDEX].
-        replace(/\\/g, '\\\\').
-        replace(/"/g, '\\\"');
+      var barGroupName = _escapeQuotesAndBackslashes(datum[NAME_INDEX]);
 
       var barGroupElement = _chartWrapper.
         find('.bar-group').
@@ -875,7 +873,8 @@
 
       } else {
 
-        return value;
+        return String(value);
+
       }
     }
 

@@ -166,6 +166,11 @@
               }).
               subscribe(function(values) {
                 var bucketSize = _.get(values, 'columnDataSummary.bucketSize', null);
+
+                if (values.columnDataSummary.bucketType === 'logarithmic') {
+                  bucketSize = 'logarithmic';
+                }
+
                 values.cardModel.setOption('bucketSize', bucketSize);
               });
 
@@ -357,6 +362,7 @@
             conditionalStyles.marginLeft = 0;
             conditionalStyles.marginRight = 0;
             ColumnChartService.registerColumnChartEvents($scope, element);
+            $scope.model.setOption('bucketSize', null);
           } else {
             conditionalStyles.marginLeft = -Constants.HISTOGRAM_MARGINS.left;
             conditionalStyles.marginRight = -Constants.HISTOGRAM_MARGINS.right;

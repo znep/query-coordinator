@@ -316,28 +316,19 @@ class PageMetadataManager
       field_name, bucket_type, card_options = card.values_at('fieldName', 'bucketType', 'cardOptions')
       bucket_size = card_options['bucketSize'] if card_options
 
-      # If the bucket type has not been explicitly set on the card then a query
-      # must be made to determine the type of bucketing. This is performed in a
-      # manner identical to the frontend -- ask for the minimum and maximum of
-      # the column, then see if either one has an absolute value greater than
-      # some threshold.
-      if bucket_type.nil?
-        bounds = fetch_min_max_in_column(dataset_id, field_name)
-        next unless bounds && bounds.min && bounds.max
-        max_value = bounds.values_at('min', 'max').map { |val| val.to_i.abs }.max
-        bucket_type = max_value >= logarithmic_threshold ? 'logarithmic' : 'linear'
-      end
-
-      # If the bucket type is linear and no bucket size is specified, then we
-      # do not have enough information to optimize queries for this card.
-      next if bucket_type == 'linear' && bucket_size.nil?
-
-      # Use the appropriate SoQL function and arguments depending on the bucket
-      # type used by the card.
-      if bucket_type == 'logarithmic'
+      # If the bucket type has explicitly been set to logarithmic or the
+      # frontend code has specified a logarithmic bucket type, use
+      # signed_magnitude_10. Otherwise, if the bucket_size exists, then
+      # assume signed_magnitude_linear (the bucket_type may not be "linear"
+      # because the bucket type may not be explicitly set). Otherwise, there
+      # is a high probability that it is a histogram rendering as a column
+      # chart, so use the default group by.
+      if bucket_size == 'logarithmic' || bucket_type == 'logarithmic'
         next "signed_magnitude_10(#{field_name})"
-      elsif bucket_type == 'linear'
+      elsif bucket_size.is_a? Numeric
         next "signed_magnitude_linear(#{field_name}, #{bucket_size})"
+      elsif bucket_type.nil? && bucket_size.nil?
+        next field_name
       end
     end.compact.uniq
   end

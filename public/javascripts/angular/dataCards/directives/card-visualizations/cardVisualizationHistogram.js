@@ -159,7 +159,14 @@
             combineLatest(
               cardModel$,
               function(columnDataSummary, cardModel) {
-                cardModel.setOption('bucketSize', _.get(columnDataSummary, 'bucketSize', null));
+                return {
+                  columnDataSummary: columnDataSummary,
+                  cardModel: cardModel
+                };
+              }).
+              subscribe(function(values) {
+                var bucketSize = _.get(values, 'columnDataSummary.bucketSize', null);
+                values.cardModel.setOption('bucketSize', bucketSize);
               });
 
           var unfilteredData$ = Rx.Observable.combineLatest(

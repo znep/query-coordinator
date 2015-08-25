@@ -218,7 +218,8 @@ class PageMetadataManager
 
     # Nothing to roll up
     return if columns_to_roll_up.blank? &&
-      columns_to_roll_up_by_date_trunc(normalized_columns, cards).blank?
+      columns_to_roll_up_by_date_trunc(normalized_columns, cards).blank? &&
+      cards.select { |card| card['cardType'] == 'histogram' }.empty?
 
     if columns_to_roll_up_by_date_trunc(normalized_columns, cards).any? &&
       page_metadata['defaultDateTruncFunction'].blank?
@@ -311,9 +312,6 @@ class PageMetadataManager
     logarithmic_threshold = 2000
 
     cards.select { |card| card['cardType'] == 'histogram' }.map do |card|
-
-      # We only care about histograms
-      next unless card['cardType'] == 'histogram'
 
       field_name, bucket_type, card_options = card.values_at('fieldName', 'bucketType', 'cardOptions')
       bucket_size = card_options['bucketSize'] if card_options

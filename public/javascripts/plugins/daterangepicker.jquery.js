@@ -293,7 +293,7 @@ jQuery.fn.daterangepicker = function(settings){
 				var dateEnd = (typeof jQuery(this).data('dateEnd') == 'string') ? Date.parse(jQuery(this).data('dateEnd')) : jQuery(this).data('dateEnd')();
 				rangeText = jQuery(this).data('text');
 				rangePreviousText = jQuery(this).data('previousText');
-				rangePrevious = (typeof jQuery(this).data('datePrevious') == 'string') ? Date.parse(jQuery(this).data('datePrevious')) : jQuery(this).data('datePrevious')();
+				rangePrevious = (!options.initialRange.datePrevious || typeof jQuery(this).data('datePrevious') == 'string') ? Date.parse(jQuery(this).data('datePrevious')) : jQuery(this).data('datePrevious')();
 				rp.find('.range-start').datepicker('setDate', dateStart).find('.ui-datepicker-current-day').trigger('click');
 				rp.find('.range-end').datepicker('setDate', dateEnd).find('.ui-datepicker-current-day').trigger('click');
 		}

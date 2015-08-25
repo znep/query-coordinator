@@ -1219,12 +1219,15 @@ en:
       date_range: Date Range
       done: Done
       end_date: End date
+      last_30_days: Last 30 Days
       last_month: Last Month
       last_week: Last Week
       last_year: Last Year
       month_to_date: Month to Date
       next: Next
+      preceding_30_days: the preceding 30 days
       preceding_month: the preceding month
+      preceding_week: the preceding week
       prev: Prev
       specific_date: Specific Date
       start_date: Start date

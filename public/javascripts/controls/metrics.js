@@ -364,19 +364,14 @@
                  sliceDepth.toUpperCase()]);
         };
         var url = window.location.href;
-        var params = [{name:'start', def: monthStart},
-                      {name: 'end', def: monthEnd}];
+        var params = ['start', 'end'];
         var paramValues = {};
 
         _.each(params, function(param) {
-            var fromUrl = $.urlParam(url, param.name);
+            var fromUrl = $.urlParam(url, param);
             if (fromUrl)
             {
-                paramValues[param.name] = Date.parse(unescape(fromUrl)) || param.def;
-            }
-            else
-            {
-                paramValues[param.name] = param.def;
+                paramValues[param] = Date.parse(unescape(fromUrl));
             }
         });
 
@@ -384,15 +379,24 @@
             text: $.t('plugins.daterangepicker.month_to_date'),
             previousText: $.t('plugins.daterangepicker.last_month'),
             dateStart: function(){ return Date.parse('today').moveToFirstDayOfMonth(); },
-            dateEnd: 'today',
-            datePrevious: function() { return Date.parse('1 month ago').moveToFirstDayOfMonth(); }
+            dateEnd: function() { return Date.parse('today'); },
+            datePrevious: function() { return Date.parse('1 month ago').moveToFirstDayOfMonth(); },
+            enabled: !blist.feature_flags.embetter_analytics_page
         };
-        var initialRange = {
-            dateStart: function() { return paramValues.start; },
-            dateEnd: function() { return paramValues.end; }
+        var last30DaysRange = {
+            text: $.t('plugins.daterangepicker.last_30_days'),
+            previousText: $.t('plugins.daterangepicker.preceding_30_days'),
+            dateStart: function() { return Date.today().addDays(-30); },
+            dateEnd: function() { return Date.parse('yesterday'); },
+            enabled: blist.feature_flags.embetter_analytics_page
         };
-        if (paramValues.start == monthStart && paramValues.end == monthEnd) {
-            initialRange = monthToDateRange;
+        var defaultRange = blist.feature_flags.embetter_analytics_page ? last30DaysRange : monthToDateRange;
+        var initialRange = defaultRange;
+        if (paramValues.start || paramValues.end) {
+            initialRange = {
+                dateStart: function() { return paramValues.start || defaultRange.dateStart(); },
+                dateEnd: function() { return paramValues.end || defaultRange.dateEnd(); }
+            }
         }
         var dateRangeChanged = function() {
             updateDateParams(
@@ -413,44 +417,58 @@
             posY: $timeslice.offset().top + $timeslice.outerHeight() + opts.yOffset,
             rangeSplitter: opts.separator,
             initialRange: initialRange,
-            presetRanges: [
+            presetRanges: _.filter([
                 {
                     text: $.t('plugins.daterangepicker.today'),
                     previousText: $.t('plugins.daterangepicker.yesterday'),
                     dateStart: 'today',
                     dateEnd: 'today',
-                    datePrevious: 'yesterday'
+                    datePrevious: 'yesterday',
+                    enabled: !blist.feature_flags.embetter_analytics_page
                 },
                 {
                     text: $.t('plugins.daterangepicker.week_to_date'),
                     previousText: $.t('plugins.daterangepicker.last_week'),
                     dateStart: function() { return Date.parse('today').moveToDayOfWeek(0, -1); },
                     dateEnd: 'today',
-                    datePrevious: function() { return Date.parse('1 week ago').moveToDayOfWeek(0, -1); }
+                    datePrevious: function() { return Date.parse('1 week ago').moveToDayOfWeek(0, -1); },
+                    enabled: !blist.feature_flags.embetter_analytics_page
                 },
-                monthToDateRange,
+                defaultRange,
                 {
                     text: $.t('plugins.daterangepicker.year_to_date'),
                     previousText: $.t('plugins.daterangepicker.last_year'),
                     dateStart: function(){ var x= Date.parse('today'); x.setMonth(0); x.setDate(1); return x; },
                     dateEnd: 'today',
-                    datePrevious: function() { return Date.parse('1 year ago').moveToMonth(0, -1).moveToFirstDayOfMonth(); }
+                    datePrevious: function() { return Date.parse('1 year ago').moveToMonth(0, -1).moveToFirstDayOfMonth(); },
+                    enabled: true
+                },
+                {
+                    text: $.t('plugins.daterangepicker.last_week'),
+                    previousText: $.t('plugins.daterangepicker.preceding_week'),
+                    dateStart: function() { return Date.parse('1 week ago').moveToDayOfWeek(0, -1); },
+                    dateEnd: function() { return Date.parse('1 week ago').moveToDayOfWeek(6, 1); },
+                    datePrevious: function() { return Date.parse('2 weeks ago').moveToDayOfWeek(0, -1); },
+                    enabled: blist.feature_flags.embetter_analytics_page
                 },
                 {
                     text: $.t('plugins.daterangepicker.last_month'),
                     previousText: $.t('plugins.daterangepicker.preceding_month'),
                     dateStart: function(){ return Date.parse('1 month ago').moveToFirstDayOfMonth();  },
                     dateEnd: function(){ return Date.parse('1 month ago').moveToLastDayOfMonth();  },
-                    datePrevious: function() { return Date.parse('2 months ago').moveToFirstDayOfMonth(); }
+                    datePrevious: function() { return Date.parse('2 months ago').moveToFirstDayOfMonth(); },
+                    enabled: true
                 }
-            ], 
-            presets: {
+            ], function(preset) { return !!preset.enabled; }), 
+            presets: _.pick({
               specificDate: $.t('plugins.daterangepicker.specific_date'),
               dateRange: $.t('plugins.daterangepicker.date_range'),
               theWeekOf: $.t('plugins.daterangepicker.the_week_of'),
               theMonthOf: $.t('plugins.daterangepicker.the_month_of'),
               theYearOf: $.t('plugins.daterangepicker.the_year_of')
-            },
+            }, function (value, key) {
+                return key === 'dateRange' || !blist.feature_flags.embetter_analytics_page;
+            }),
             rangeStartTitle: $.t('plugins.daterangepicker.start_date'),
             rangeEndTitle: $.t('plugins.daterangepicker.end_date'),
             nextLinkText: $.t('plugins.daterangepicker.next'),

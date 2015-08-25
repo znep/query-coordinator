@@ -443,13 +443,7 @@
     function _cloneBlockComponents(components) {
 
       return components.map(function(component) {
-
-        utils.assertIsOneOfTypes(component.value, 'string', 'object');
-
-        return {
-          type: component.type,
-          value: component.value
-        };
+        return _.pick(component, ['type', 'value']);
       });
     }
 
@@ -479,7 +473,6 @@
 
       blockData.components.forEach(function(component) {
         utils.assertHasProperty(component, 'type');
-        utils.assertHasProperty(component, 'value');
       });
 
       if (typeof blockData.id !== 'string') {

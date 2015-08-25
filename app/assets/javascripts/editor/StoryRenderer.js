@@ -10,42 +10,28 @@
   // This function maps component data (type, value) to
   // a jQuery plugin name ('storytellerComponentText').
   function _findAppropriateComponentRenderer(componentData) {
-    var type;
-    var mediaType;
-    var providerName;
-    var visualizationType;
 
-    utils.assertHasProperties(componentData, 'type', 'value');
-    type = componentData.type;
+    utils.assertHasProperties(componentData, 'type');
 
-    if (type === 'text') {
-      return 'storytellerComponentText';
-    } else if (type === 'layout') {
-      return 'storytellerComponentLayout';
-    } else if (type === 'media') {
-      utils.assertHasProperties(componentData.value, 'type', 'value');
-      mediaType = componentData.value.type;
-
-      if (mediaType === 'embed') {
-        utils.assertHasProperty(componentData.value.value, 'provider');
-        providerName = componentData.value.value.provider;
-
-        if (providerName === 'wizard') {
-          return 'storytellerComponentMediaEmbedWizard';
-        } else if (providerName === 'youtube') {
-          return 'storytellerComponentMediaEmbedYouTube';
-        }
-      }
-    } else if (type === 'socrataVisualization') {
-      utils.assertHasProperty(componentData.value, 'type');
-      visualizationType = componentData.value.type;
-
-      if (visualizationType === 'column') {
-        return 'storytellerComponentSocrataVisualizationColumn';
-      }
+    switch (componentData.type) {
+      case 'html':
+        return 'componentHTML';
+      case 'spacer':
+        return 'componentSpacer';
+      case 'horizontalRule':
+        return 'componentHorizontalRule';
+      case 'assetSelector':
+        return 'componentAssetSelector';
+      case 'youtube.video':
+        return 'componentYoutubeVideo';
+      case 'socrata.visualization.columnChart':
+        return 'componentSocrataVisualizationColumnChart';
+      default:
+        throw new Error(
+          'No component renderer found for component: {0}'.
+            format(JSON.stringify(componentData))
+        );
     }
-
-    throw new Error('No component renderer found for component: {0}'.format(JSON.stringify(componentData)));
   }
 
   function StoryRenderer(options) {
@@ -65,7 +51,7 @@
       ((typeof options.onRenderError) !== 'function')) {
 
       throw new Error(
-        '`options.onRenderError` must be a function (is of type ' +
+        '`options.onRenderError` must be a function(is of type ' +
         (typeof onRenderError) +
         ').'
       );
@@ -291,7 +277,7 @@
             action: Constants.BLOCK_UPDATE_COMPONENT,
             blockId: blockId,
             componentIndex: componentIndex,
-            type: 'text',
+            type: 'html',
             value: blockContent
           });
         }
@@ -301,14 +287,14 @@
         _renderStory();
       });
 
-      container.on('click', '[data-embed-action]', function(event) {
-        var action = event.target.getAttribute('data-embed-action');
+      container.on('click', '[data-action]', function(event) {
+        var action = event.target.getAttribute('data-action');
 
         switch (action) {
 
-          case Constants.EMBED_WIZARD_CHOOSE_PROVIDER:
+          case Constants.ASSET_SELECTOR_CHOOSE_PROVIDER:
             dispatcher.dispatch({
-              action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
+              action: Constants.ASSET_SELECTOR_CHOOSE_PROVIDER,
               blockId: utils.findClosestAttribute(event.target, 'data-block-id'),
               componentIndex: utils.findClosestAttribute(event.target, 'data-component-index')
             });
@@ -554,7 +540,7 @@
 
         // Ideally, we'd have some sort of API to ask each renderer what its
         // size is. For now, we deal with it here.
-        if (componentDatum.type === 'text') {
+        if (componentDatum.type === 'html') {
 
           // In order to size text renderers, we must call into RichTextEditorManager.
           // Doing so requires the editorId, which can be found in a data attribute
@@ -588,7 +574,7 @@
       });
 
       $blockElement.
-        find('.text-editor > iframe').
+        find('.component-html > iframe').
         height(maxEditorHeight);
     }
 
@@ -620,8 +606,6 @@
 
       // Provide the initial or updated data to the renderer.
       $componentContent[componentRenderer](componentData, themeId);
-      $componentContent.
-        addClass(componentData.type);
     }
 
     /**

@@ -19,9 +19,9 @@ function applyStandardMocks() {
   var storyUid = 'test-test';
   var storyTitle = 'Standard Mock Story Title';
   var storyDescription = 'Standard Mock Story Description';
-  var wizardBlockId = '1000';
+  var assetSelectorBlockId = '1000';
   var textBlockId = '1001';
-  var wizardAndTextBlockId = '1002';
+  var assetSelectorAndTextBlockId = '1002';
   var storyteller = window.socrata.storyteller;
 
   var storyData = generateStoryData({
@@ -30,25 +30,25 @@ function applyStandardMocks() {
     description: storyDescription,
     blocks: [
       generateBlockData({
-        id: wizardBlockId,
+        id: assetSelectorBlockId,
         layout: '12',
         components: [
-          { type: 'media', value: { type: 'embed', value: { provider: 'wizard' } } }
+          { type: 'assetSelector' }
         ]
       }),
       generateBlockData({
         id: textBlockId,
         layout: '12',
         components: [
-          { type: 'text', value: 'some-text' }
+          { type: 'html', value: 'some-text' }
         ]
       }),
       generateBlockData({
-        id: wizardAndTextBlockId,
+        id: assetSelectorAndTextBlockId,
         layout: '6-6',
         components: [
-          { type: 'media', value: { type: 'embed', value: { provider: 'wizard' } } },
-          { type: 'text', value: 'some-text' }
+          { type: 'assetSelector' },
+          { type: 'html', value: 'some-text' }
         ]
       })
     ]
@@ -83,7 +83,7 @@ function applyStandardMocks() {
   });
 
   storyteller.storyStore = new storyteller.StoryStore();
-  storyteller.embedWizardStore = new storyteller.EmbedWizardStore();
+  storyteller.assetSelectorStore = new storyteller.AssetSelectorStore();
   storyteller.dragDropStore = new storyteller.DragDropStore();
   storyteller.historyStore = new storyteller.HistoryStore();
   storyteller.blockRemovalConfirmationStore = new storyteller.BlockRemovalConfirmationStore();
@@ -101,15 +101,15 @@ function applyStandardMocks() {
     validBlockData2: storyData.blocks[1],
 
     validStoryUid: storyUid,
-    wizardBlockId: wizardBlockId,
+    assetSelectorBlockId: assetSelectorBlockId,
     textBlockId: textBlockId,
-    wizardAndTextBlockId: wizardAndTextBlockId,
+    assetSelectorAndTextBlockId: assetSelectorAndTextBlockId,
     validBlockId: textBlockId,
 
-    firstBlockId: wizardBlockId,
+    firstBlockId: assetSelectorBlockId,
     secondBlockId: textBlockId,
-    thirdBlockId: wizardAndTextBlockId,
-    lastBlockId: wizardAndTextBlockId,
+    thirdBlockId: assetSelectorAndTextBlockId,
+    lastBlockId: assetSelectorAndTextBlockId,
 
     invalidBlockId: 'NotValidBlockId',
     invalidStoryUid: 'NotValidStoryUid'
@@ -132,7 +132,7 @@ function removeStandardMocks() {
   delete storyteller.historyStore;
   delete storyteller.blockRemovalConfirmationStore;
   delete storyteller.coreSavingStore;
-  delete storyteller.embedWizardStore;
+  delete storyteller.assetSelectorStore;
   delete storyteller.I18n;
   delete storyteller.config;
   delete storyteller.standardMocks;

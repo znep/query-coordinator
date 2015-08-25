@@ -1,4 +1,4 @@
-describe('storytellerComponentText jQuery plugin', function() {
+describe('componentHTML jQuery plugin', function() {
   'use strict';
 
   var $component;
@@ -15,31 +15,31 @@ describe('storytellerComponentText jQuery plugin', function() {
   });
 
   it('should throw when passed invalid arguments', function() {
-    assert.throws(function() { $component.storytellerComponentText(); });
-    assert.throws(function() { $component.storytellerComponentText(1); });
-    assert.throws(function() { $component.storytellerComponentText(null); });
-    assert.throws(function() { $component.storytellerComponentText(undefined); });
-    assert.throws(function() { $component.storytellerComponentText({}); });
-    assert.throws(function() { $component.storytellerComponentText([]); });
+    assert.throws(function() { $component.componentHTML(); });
+    assert.throws(function() { $component.componentHTML(1); });
+    assert.throws(function() { $component.componentHTML(null); });
+    assert.throws(function() { $component.componentHTML(undefined); });
+    assert.throws(function() { $component.componentHTML({}); });
+    assert.throws(function() { $component.componentHTML([]); });
   });
 
   it('should throw when not passed a component type', function() {
-    assert.throws(function() { $component.storytellerComponentText({value: 'any'}); });
+    assert.throws(function() { $component.componentHTML({value: 'any'}); });
   });
 
-  it('should throw when passed a component type that is not text', function() {
-    assert.throws(function() { $component.storytellerComponentText({type: 'invalid', value: 'any'}); });
+  it('should throw when passed a component type that is not Storyteller.Text', function() {
+    assert.throws(function() { $component.componentHTML({type: 'invalid', value: 'any'}); });
   });
 
   describe('given a valid component type and value', function() {
     var editorId;
     var initialValue = 'testing';
-    var componentData = {type: 'text', value: initialValue};
+    var componentData = {type: 'html', value: initialValue};
     var themeId = 'classic';
 
     beforeEach(function() {
       storyteller.RichTextEditorManagerMocker.reset();
-      $component = $component.storytellerComponentText(componentData, themeId);
+      $component = $component.componentHTML(componentData, themeId);
       editorId = $component.attr('data-editor-id');
     });
 
@@ -75,7 +75,7 @@ describe('storytellerComponentText jQuery plugin', function() {
       it('calls setContent on the correct editor instance', function () {
         var newValue = 'something';
 
-        $component.storytellerComponentText({type: 'text', value: newValue});
+        $component.componentHTML({type: 'html', value: newValue});
         sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.getEditorSpy, editorId);
         sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.setContentSpy, newValue);
       });

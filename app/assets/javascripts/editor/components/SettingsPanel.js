@@ -74,8 +74,10 @@
     function isTitleChanged() {
       var titleAtOpenTime = metadataStateAtPanelOpenTime.title;
       var titleInBox = storyTitleInputBox.val();
+      var areDifferentTitles = titleAtOpenTime !== titleInBox;
+      var isNotEmpty = titleInBox.length > 0;
 
-      return titleAtOpenTime !== titleInBox;
+      return areDifferentTitles && isNotEmpty;
     }
 
     function isDescriptionChanged() {

@@ -1,52 +1,39 @@
 @import 'lib/variables';
 
-.component.media {
+.component-asset-selector {
+  background-image: asset-url('media-block-icon.png');
+  background-size: 25%;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  border: 1px dashed #666;
+  box-sizing: border-box;
 
-  &.image {
-    img {
-      width: 100%;
-      -webkit-user-drag: none;
-    }
+  &:hover {
+    background-color: #ddd;
+    transition: color $transition-duration, background-color $transition-duration;
   }
 
-  &.embed {
+  .asset-selector-insert-btn {
+    position: relative;
+    display: block;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
 
-    &.wizard {
-      background-image: asset-url('media-block-icon.png');
-      background-size: 25%;
-      background-position: 50% 50%;
-      background-repeat: no-repeat;
-      border: 1px dashed #666;
-      box-sizing: border-box;
+.component-youtube-video {
+  background-color: $youtube-bg-color;
 
-      &:hover {
-        background-color: #ddd;
-        transition: color $transition-duration, background-color $transition-duration;
-      }
-
-      .media-component-embed-wizard-insert-btn {
-        position: relative;
-        display: block;
-        width: auto;
-        margin-left: auto;
-        margin-right: auto;
-      }
-    }
-
-    &.youtube {
-      background-color: $embed-youtube-bg-color;
-
-      iframe {
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-      }
-    }
+  iframe {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
   }
 }
 
 .col3 {
-  .embed {
+  .component-asset-selector, .component-youtube-video {
     $small-height: $col3-block-edit-content-width-small * (3/4);
     $medium-height: $col3-block-edit-content-width-medium * (3/4);
     $large-height: $col3-block-edit-content-width-large * (3/4);
@@ -60,7 +47,7 @@
       $extra-large-height
     );
 
-    .media-component-embed-wizard-insert-btn {
+    .asset-selector-insert-btn {
       @include media-query-property(
         'margin-top',
         $small-height - ($btn-height * 2.5),
@@ -73,7 +60,7 @@
 }
 
 .col4 {
-  .embed {
+  .component-asset-selector, .component-youtube-video {
     $small-height: $col4-block-edit-content-width-small * (3/4);
     $medium-height: $col4-block-edit-content-width-medium * (3/4);
     $large-height: $col4-block-edit-content-width-large * (3/4);
@@ -87,7 +74,7 @@
       $extra-large-height
     );
 
-    .media-component-embed-wizard-insert-btn {
+    .asset-selector-insert-btn {
       @include media-query-property(
         'margin-top',
         $small-height - ($btn-height * 2.5),
@@ -100,7 +87,7 @@
 }
 
 .col6 {
-  .embed {
+  .component-asset-selector, .component-youtube-video {
     $small-height: $col6-block-edit-content-width-small * (3/4);
     $medium-height: $col6-block-edit-content-width-medium * (3/4);
     $large-height: $col6-block-edit-content-width-large * (3/4);
@@ -114,7 +101,7 @@
       $extra-large-height
     );
 
-    .media-component-embed-wizard-insert-btn {
+    .asset-selector-insert-btn {
       @include media-query-property(
         'margin-top',
         $small-height - ($btn-height * 2.5),
@@ -127,7 +114,7 @@
 }
 
 .col8 {
-  .embed {
+  .component-asset-selector, .component-youtube-video {
     $small-height: $col8-block-edit-content-width-small * (3/4);
     $medium-height: $col8-block-edit-content-width-medium * (3/4);
     $large-height: $col8-block-edit-content-width-large * (3/4);
@@ -141,7 +128,7 @@
       $extra-large-height
     );
 
-    .media-component-embed-wizard-insert-btn {
+    .asset-selector-insert-btn {
       @include media-query-property(
         'margin-top',
         $small-height - ($btn-height * 2.5),
@@ -154,7 +141,7 @@
 }
 
 .col12 {
-  .embed {
+  .component-asset-selector, .component-youtube-video {
     $small-height: $col12-block-edit-content-width-small * (3/4);
     $medium-height: $col12-block-edit-content-width-medium * (3/4);
     $large-height: $col12-block-edit-content-width-large * (3/4);
@@ -168,7 +155,7 @@
       $extra-large-height
     );
 
-    .media-component-embed-wizard-insert-btn {
+    .asset-selector-insert-btn {
       @include media-query-property(
         'margin-top',
         $small-height - ($btn-height * 2.5),

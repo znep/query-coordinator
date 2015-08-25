@@ -1,21 +1,21 @@
-describe('EmbedWizardRenderer', function() {
+describe('AssetSelectorRenderer', function() {
   var storyteller = window.socrata.storyteller;
 
   var container;
   var options;
   var testBlockId = 'testBlock1';
   var testComponentIndex = 1;
-  var EmbedWizardRenderer;
+  var AssetSelectorRenderer;
 
   beforeEach(function() {
-    EmbedWizardRenderer = storyteller.EmbedWizardRenderer;
+    AssetSelectorRenderer = storyteller.AssetSelectorRenderer;
 
-    container = $('<div>', { 'class': 'embed-wizard-container' });
+    container = $('<div>', { 'class': 'asset-selector-container' });
 
     testDom.append(container);
 
     options = {
-      embedWizardContainerElement: testDom.find('.embed-wizard-container'),
+      assetSelectorContainerElement: testDom.find('.asset-selector-container'),
     };
   });
 
@@ -23,35 +23,35 @@ describe('EmbedWizardRenderer', function() {
 
     describe('when passed a configuration object', function() {
 
-      describe('with no `embedWizardContainerElement` property', function() {
+      describe('with no `assetSelectorContainerElement` property', function() {
 
         it('raises an exception', function() {
 
-          delete options.embedWizardContainerElement;
+          delete options.assetSelectorContainerElement;
 
           assert.throws(function() {
-            var renderer = new EmbedWizardRenderer(options);
+            var renderer = new AssetSelectorRenderer(options);
           });
         });
       });
 
-      describe('with an `embedWizardContainerElement` property that is not a jQuery object', function() {
+      describe('with an `assetSelectorContainerElement` property that is not a jQuery object', function() {
 
         it('raises an exception', function() {
 
-          options.embedWizardContainerElement = {};
+          options.assetSelectorContainerElement = {};
 
           assert.throws(function() {
-            var renderer = new EmbedWizardRenderer(options);
+            var renderer = new AssetSelectorRenderer(options);
           });
         });
       });
 
-      describe('with an `embedWizardContainerElement` property that is a jQuery object', function() {
+      describe('with an `assetSelectorContainerElement` property that is a jQuery object', function() {
 
-        it('appends a `.modal-overlay` and a `.modal-dialog` to the `embedWizardContainerElement`', function() {
+        it('appends a `.modal-overlay` and a `.modal-dialog` to the `assetSelectorContainerElement`', function() {
 
-          var renderer = new EmbedWizardRenderer(options);
+          var renderer = new AssetSelectorRenderer(options);
 
           assert.equal(container.find('.modal-overlay').length, 1);
           assert.equal(container.find('.modal-dialog').length, 1);
@@ -63,20 +63,20 @@ describe('EmbedWizardRenderer', function() {
   describe('event handlers', function() {
 
     beforeEach(function() {
-      var renderer = new EmbedWizardRenderer(options);
+      var renderer = new AssetSelectorRenderer(options);
     });
 
-    it('dispatches an `EMBED_WIZARD_CLOSE` action when the escape key is pressed', function(done) {
+    it('dispatches an `ASSET_SELECTOR_CLOSE` action when the escape key is pressed', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
+        action: Constants.ASSET_SELECTOR_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
       storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
-        assert.equal(action, Constants.EMBED_WIZARD_CLOSE);
+        assert.equal(action, Constants.ASSET_SELECTOR_CLOSE);
         done();
       });
 
@@ -86,49 +86,49 @@ describe('EmbedWizardRenderer', function() {
       $(document).trigger(event);
     });
 
-    it('dispatches an `EMBED_WIZARD_CLOSE` action when the overlay is clicked', function(done) {
+    it('dispatches an `ASSET_SELECTOR_CLOSE` action when the overlay is clicked', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
+        action: Constants.ASSET_SELECTOR_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
       storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
-        assert.equal(action, Constants.EMBED_WIZARD_CLOSE);
+        assert.equal(action, Constants.ASSET_SELECTOR_CLOSE);
         done();
       });
 
       container.find('.modal-overlay').trigger('click');
     });
 
-    it('dispatches an `EMBED_WIZARD_CLOSE` action when the modal dialog close button is clicked', function(done) {
+    it('dispatches an `ASSET_SELECTOR_CLOSE` action when the modal dialog close button is clicked', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
+        action: Constants.ASSET_SELECTOR_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
       storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
-        assert.equal(action, Constants.EMBED_WIZARD_CLOSE);
+        assert.equal(action, Constants.ASSET_SELECTOR_CLOSE);
         done();
       });
 
       container.find('.modal-close-btn').trigger('click');
     });
 
-    it('dispatches an `EMBED_WIZARD_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a url character', function(done) {
+    it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a url character', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
+        action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE
       });
 
       storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
-        assert.equal(action, Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL);
+        assert.equal(action, Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
         assert.equal(payload.url, '');
         done();
       });
@@ -136,18 +136,18 @@ describe('EmbedWizardRenderer', function() {
       var event = $.Event('keyup');
       // `a`
       event.keyCode = 65;
-      container.find('[data-embed-wizard-validate-field="youTubeId"]').trigger(event);
+      container.find('[data-asset-selector-validate-field="youtubeId"]').trigger(event);
     });
 
-    it('dispatches an `EMBED_WIZARD_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a delete key', function(done) {
+    it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a delete key', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
+        action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE
       });
 
       storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
-        assert.equal(action, Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL);
+        assert.equal(action, Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
         assert.equal(payload.url, '');
         done();
       });
@@ -155,46 +155,46 @@ describe('EmbedWizardRenderer', function() {
       var event = $.Event('keyup');
       // `BACKSPACE`
       event.keyCode = 8;
-      container.find('[data-embed-wizard-validate-field="youTubeId"]').trigger(event);
+      container.find('[data-asset-selector-validate-field="youtubeId"]').trigger(event);
     });
 
-    it('dispatches an `EMBED_WIZARD_UPDATE_YOUTUBE_URL` action on a cut event from the youtube url input control', function(done) {
+    it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a cut event from the youtube url input control', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
+        action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE
       });
 
       storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
-        assert.equal(action, Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL);
+        assert.equal(action, Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
         assert.equal(payload.url, '');
         done();
       });
 
-      container.find('[data-embed-wizard-validate-field="youTubeId"]').trigger('cut');
+      container.find('[data-asset-selector-validate-field="youtubeId"]').trigger('cut');
     });
 
-    it('dispatches an `EMBED_WIZARD_UPDATE_YOUTUBE_URL` action on a paste event from the youtube url input control', function(done) {
+    it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a paste event from the youtube url input control', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
+        action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE
       });
 
       storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
-        assert.equal(action, Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL);
+        assert.equal(action, Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
         assert.equal(payload.url, '');
         done();
       });
 
-      container.find('[data-embed-wizard-validate-field="youTubeId"]').trigger('paste');
+      container.find('[data-asset-selector-validate-field="youtubeId"]').trigger('paste');
     });
 
-    it('dispatches `EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET` on a datasetSelected event', function(done) {
+    it('dispatches `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` on a datasetSelected event', function(done) {
 
       storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
-        assert.equal(action, Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET);
+        assert.equal(action, Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET);
         // the values will be empty, but assert that the event adds the keys
         assert.property(payload, 'datasetUid');
         assert.property(payload, 'isNewBackend');
@@ -204,16 +204,16 @@ describe('EmbedWizardRenderer', function() {
       container.find('.modal-dialog').trigger('datasetSelected', {});
     });
 
-    it('dispatches `EMBED_WIZARD_UPDATE_VISUALIZATION_CONFIGURATION` on a visualizationSelected event', function(done) {
+    it('dispatches `ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION` on a visualizationSelected event', function(done) {
       // add dataset so the proper component values are there for updating
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET,
+        action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
         datasetUid: standardMocks.validStoryUid,
         isNewBackend: true
       });
 
       storyteller.dispatcher.register(function(payload) {
-        assert.equal(payload.action, Constants.EMBED_WIZARD_UPDATE_VISUALIZATION_CONFIGURATION);
+        assert.equal(payload.action, Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION);
         // the values will be empty, but assert that the event adds the correct keys
         assert.property(payload, 'cardData');
         done();
@@ -227,64 +227,64 @@ describe('EmbedWizardRenderer', function() {
     var renderer;
 
     beforeEach(function() {
-      renderer = new EmbedWizardRenderer(options);
+      renderer = new AssetSelectorRenderer(options);
     });
 
-    it('renders the "choose provider" content on an `EMBED_WIZARD_CHOOSE_PROVIDER` event', function() {
+    it('renders the "choose provider" content on an `ASSET_SELECTOR_CHOOSE_PROVIDER` event', function() {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
+        action: Constants.ASSET_SELECTOR_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
       assert.equal(container.find('.modal-title').length, 1);
       assert.equal(container.find('.modal-close-btn').length, 1);
-      assert.isTrue(container.find('[data-embed-action="EMBED_WIZARD_CHOOSE_YOUTUBE"]').length > 0);
-      assert.isTrue(container.find('[data-embed-action="EMBED_WIZARD_CHOOSE_VISUALIZATION"]').length > 0);
+      assert.isTrue(container.find('[data-action="ASSET_SELECTOR_CHOOSE_YOUTUBE"]').length > 0);
+      assert.isTrue(container.find('[data-action="ASSET_SELECTOR_CHOOSE_VISUALIZATION"]').length > 0);
     });
 
-    it('renders the "choose YouTube" content on an `EMBED_WIZARD_CHOOSE_YOUTUBE` event', function() {
+    it('renders the "choose YouTube" content on an `ASSET_SELECTOR_CHOOSE_YOUTUBE` event', function() {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE,
+        action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
       assert.equal(container.find('.modal-title').length, 1);
       assert.equal(container.find('.modal-close-btn').length, 1);
-      assert.isTrue(container.find('[data-embed-wizard-validate-field="youTubeId"]').length > 0);
+      assert.isTrue(container.find('[data-asset-selector-validate-field="youtubeId"]').length > 0);
     });
 
     it('renders the YouTube preview in the default state when no url has been supplied', function() {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE,
+        action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
-      assert.isFalse(container.find('.wizard-media-embed-preview-container').hasClass('invalid'));
+      assert.isFalse(container.find('.asset-selector-preview-container').hasClass('invalid'));
       assert.equal(container.find('iframe').attr('src'), 'about:blank');
     });
 
     it('renders the YouTube preview in the invalid state when an invalid YouTube url has been supplied', function() {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE,
+        action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
-      container.find('[data-embed-wizard-validate-field="youTubeId"]').val('invalid');
+      container.find('[data-asset-selector-validate-field="youtubeId"]').val('invalid');
 
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
+        action: Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
         url: 'invalid'
       });
 
-      assert.isTrue(container.find('.wizard-media-embed-preview-container').hasClass('invalid'));
+      assert.isTrue(container.find('.asset-selector-preview-container').hasClass('invalid'));
       assert.equal(container.find('iframe').attr('src'), 'about:blank');
 
     });
@@ -294,19 +294,19 @@ describe('EmbedWizardRenderer', function() {
       var rickRoll = 'https://youtu.be/dQw4w9WgXcQ';
 
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE,
+        action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
-      container.find('[data-embed-wizard-validate-field="youTubeId"]').val(rickRoll);
+      container.find('[data-asset-selector-validate-field="youtubeId"]').val(rickRoll);
 
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
+        action: Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
         url: rickRoll
       });
 
-      assert.isFalse(container.find('.wizard-media-embed-preview-container').hasClass('invalid'));
+      assert.isFalse(container.find('.asset-selector-preview-container').hasClass('invalid'));
       assert.equal(container.find('iframe').attr('src').match(/dQw4w9WgXcQ/).length, 1);
     });
 
@@ -315,26 +315,26 @@ describe('EmbedWizardRenderer', function() {
       var rickRoll = '<iframe width="420" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>';
 
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE,
+        action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
-      container.find('[data-embed-wizard-validate-field="youTubeId"]').val(rickRoll);
+      container.find('[data-asset-selector-validate-field="youtubeId"]').val(rickRoll);
 
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
+        action: Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
         url: rickRoll
       });
 
-      assert.isFalse(container.find('.wizard-media-embed-preview-container').hasClass('invalid'));
+      assert.isFalse(container.find('.asset-selector-preview-container').hasClass('invalid'));
       assert.equal(container.find('iframe').attr('src').match(/dQw4w9WgXcQ/).length, 1);
     });
 
-    it('closes the modal on an `EMBED_WIZARD_CLOSE` event', function() {
+    it('closes the modal on an `ASSET_SELECTOR_CLOSE` event', function() {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
+        action: Constants.ASSET_SELECTOR_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
@@ -342,22 +342,22 @@ describe('EmbedWizardRenderer', function() {
       assert.isFalse(container.hasClass('hidden'));
 
       storyteller.dispatcher.dispatch({
-        action: Constants.EMBED_WIZARD_CLOSE
+        action: Constants.ASSET_SELECTOR_CLOSE
       });
 
       assert.isTrue(container.hasClass('hidden'));
     });
 
-    describe('when a `EMBED_WIZARD_CHOOSE_VISUALIZATION` action is fired', function() {
+    describe('when a `ASSET_SELECTOR_CHOOSE_VISUALIZATION` action is fired', function() {
 
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION
+          action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION
         });
       });
 
       it('renders an iframe', function() {
-        assert.equal(container.find('.wizard-dataset-chooser-iframe').length, 1);
+        assert.equal(container.find('.asset-selector-dataset-chooser-iframe').length, 1);
       });
 
       describe('the iframe', function() {
@@ -384,24 +384,24 @@ describe('EmbedWizardRenderer', function() {
 
         it('has a button that goes back to the provider list', function() {
           assert.equal(
-            container.find('[data-embed-action="{0}"]'.format(Constants.EMBED_WIZARD_CHOOSE_PROVIDER)
+            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_CHOOSE_PROVIDER)
           ).length, 1);
         });
 
       });
     });
 
-    describe('when a `EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET` action is fired', function() {
+    describe('when a `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action is fired', function() {
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET,
+          action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
           datasetUid: standardMocks.validStoryUid,
           isNewBackend: true
         });
       });
 
       it('renders an iframe', function() {
-        assert.equal(container.find('.wizard-configure-visualization-iframe').length, 1);
+        assert.equal(container.find('.asset-selector-configure-visualization-iframe').length, 1);
       });
 
       it('disables the insert button on render', function() {
@@ -433,7 +433,7 @@ describe('EmbedWizardRenderer', function() {
 
         it('has a button that goes back to the choose dataset list', function() {
           assert.equal(
-            container.find('[data-embed-action="{0}"]'.format(Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION)
+            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION)
           ).length, 1);
         });
 
@@ -446,14 +446,14 @@ describe('EmbedWizardRenderer', function() {
     var renderer;
 
     beforeEach(function() {
-      renderer = new EmbedWizardRenderer(options);
+      renderer = new AssetSelectorRenderer(options);
     });
 
     describe('when the state changes and _resetModalDialogClass is called', function() {
       it('should not have any classes starting with `modal-dialog-`', function() {
         // trigger any action
         storyteller.dispatcher.dispatch({
-          action: Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION
+          action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION
         });
 
         // mess with classes
@@ -462,7 +462,7 @@ describe('EmbedWizardRenderer', function() {
 
         // trigger any other action
         storyteller.dispatcher.dispatch({
-          action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
+          action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE
         });
 
         // ensure state-specific classes are removed

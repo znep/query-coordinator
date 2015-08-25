@@ -6,9 +6,9 @@
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
-  function EmbedWizardRenderer(options) {
+  function AssetSelectorRenderer(options) {
 
-    var _container = options.embedWizardContainerElement || null;
+    var _container = options.assetSelectorContainerElement || null;
     var _overlay = $('<div>', { 'class': 'modal-overlay' });
     var _dialog = $('<div>', { 'class': 'modal-dialog' });
     var _lastRenderedState = null;
@@ -16,7 +16,7 @@
     if (!(_container instanceof jQuery)) {
 
       throw new Error(
-        '`options.embedWizardContainerElement` ' +
+        '`options.assetSelectorContainerElement` ' +
         'must be a jQuery element (is of type ' +
         (typeof _container) +
         ').'
@@ -38,8 +38,8 @@
 
     function _listenForChanges() {
 
-      storyteller.embedWizardStore.addChangeListener(function() {
-        _renderWizard();
+      storyteller.assetSelectorStore.addChangeListener(function() {
+        _renderSelector();
       });
     }
 
@@ -52,7 +52,7 @@
           // `ESC`
           case 27:
             storyteller.dispatcher.dispatch({
-              action: Constants.EMBED_WIZARD_CLOSE
+              action: Constants.ASSET_SELECTOR_CLOSE
             });
             break;
 
@@ -66,17 +66,17 @@
 
       _overlay.on('click', function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.EMBED_WIZARD_CLOSE
+          action: Constants.ASSET_SELECTOR_CLOSE
         });
       });
 
       _dialog.on(
         'keyup',
-        '[data-embed-wizard-validate-field="youTubeId"]',
+        '[data-asset-selector-validate-field="youtubeId"]',
         function(event) {
 
           storyteller.dispatcher.dispatch({
-            action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
+            action: Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
             url: $(event.target).val()
           });
         }
@@ -84,7 +84,7 @@
 
       _dialog.on(
         'cut paste',
-        '[data-embed-wizard-validate-field="youTubeId"]',
+        '[data-asset-selector-validate-field="youtubeId"]',
         function(event) {
 
           // If no key was down then we can assume that a cut or paste event came
@@ -98,7 +98,7 @@
           if (!event.keyCode) {
             setTimeout(function() {
               storyteller.dispatcher.dispatch({
-                action: Constants.EMBED_WIZARD_UPDATE_YOUTUBE_URL,
+                action: Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
                 url: $(event.target).val()
               });
             }, 0);
@@ -110,7 +110,7 @@
         'datasetSelected',
         function(event, datasetObj) {
           storyteller.dispatcher.dispatch({
-            action: Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET,
+            action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
             datasetUid: datasetObj.id,
             isNewBackend: datasetObj.newBackend
           });
@@ -121,54 +121,54 @@
         'visualizationSelected',
         function(event, selectedCard) {
           storyteller.dispatcher.dispatch({
-            action: Constants.EMBED_WIZARD_UPDATE_VISUALIZATION_CONFIGURATION,
+            action: Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
             cardData: selectedCard
           });
         }
       );
 
-      _dialog.on('click', '[data-embed-action]', function() {
+      _dialog.on('click', '[data-action]', function() {
 
-        var action = this.getAttribute('data-embed-action');
+        var action = this.getAttribute('data-action');
 
         switch (action) {
 
-          case Constants.EMBED_WIZARD_CHOOSE_PROVIDER:
+          case Constants.ASSET_SELECTOR_CHOOSE_PROVIDER:
             storyteller.dispatcher.dispatch({
-              action: Constants.EMBED_WIZARD_CHOOSE_PROVIDER,
-              blockId: storyteller.embedWizardStore.getCurrentBlockId(),
-              componentIndex: storyteller.embedWizardStore.getCurrentComponentIndex()
+              action: Constants.ASSET_SELECTOR_CHOOSE_PROVIDER,
+              blockId: storyteller.assetSelectorStore.getCurrentBlockId(),
+              componentIndex: storyteller.assetSelectorStore.getCurrentComponentIndex()
             });
             break;
 
-          case Constants.EMBED_WIZARD_CHOOSE_YOUTUBE:
+          case Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE:
             storyteller.dispatcher.dispatch({
-              action: Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
+              action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE
             });
             break;
 
-          case Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION:
+          case Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION:
             storyteller.dispatcher.dispatch({
-              action: Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION
+              action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION
             });
             break;
 
-          case Constants.EMBED_WIZARD_APPLY:
+          case Constants.ASSET_SELECTOR_APPLY:
             storyteller.dispatcher.dispatch({
               action: Constants.BLOCK_UPDATE_COMPONENT,
-              blockId: storyteller.embedWizardStore.getCurrentBlockId(),
-              componentIndex: storyteller.embedWizardStore.getCurrentComponentIndex(),
-              type: storyteller.embedWizardStore.getCurrentComponentType(),
-              value: storyteller.embedWizardStore.getCurrentComponentValue()
+              blockId: storyteller.assetSelectorStore.getCurrentBlockId(),
+              componentIndex: storyteller.assetSelectorStore.getCurrentComponentIndex(),
+              type: storyteller.assetSelectorStore.getCurrentComponentType(),
+              value: storyteller.assetSelectorStore.getCurrentComponentValue()
             });
             storyteller.dispatcher.dispatch({
-              action: Constants.EMBED_WIZARD_CLOSE
+              action: Constants.ASSET_SELECTOR_CLOSE
             });
             break;
 
-          case Constants.EMBED_WIZARD_CLOSE:
+          case Constants.ASSET_SELECTOR_CLOSE:
             storyteller.dispatcher.dispatch({
-              action: Constants.EMBED_WIZARD_CLOSE
+              action: Constants.ASSET_SELECTOR_CLOSE
             });
             break;
 
@@ -178,13 +178,13 @@
       });
     }
 
-    function _renderWizard() {
+    function _renderSelector() {
 
-      var state = storyteller.embedWizardStore.getCurrentWizardState();
-      var componentValue = storyteller.embedWizardStore.getCurrentComponentValue();
-      var wizardContent;
+      var state = storyteller.assetSelectorStore.getCurrentSelectorState();
+      var componentValue = storyteller.assetSelectorStore.getCurrentComponentValue();
+      var selectorContent;
 
-      // See if we need to render a new template, then render a wizard state if
+      // See if we need to render a new template, then render a media selector state if
       // necessary.
       if (state !== _lastRenderedState) {
 
@@ -193,33 +193,33 @@
 
         switch (state) {
 
-          case Constants.EMBED_WIZARD_CHOOSE_PROVIDER:
-            wizardContent = _renderChooseProvider();
+          case Constants.ASSET_SELECTOR_CHOOSE_PROVIDER:
+            selectorContent = _renderChooseProvider();
             break;
 
-          case Constants.EMBED_WIZARD_CHOOSE_YOUTUBE:
-            wizardContent = _renderChooseYouTubeTemplate(componentValue);
+          case Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE:
+            selectorContent = _renderChooseYoutubeTemplate(componentValue);
             break;
 
-          case Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION:
-            wizardContent = _renderChooseDatasetTemplate();
+          case Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION:
+            selectorContent = _renderChooseDatasetTemplate();
             break;
 
-          case Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET:
-            wizardContent = _renderConfigureVisualizationTemplate();
+          case Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
+            selectorContent = _renderConfigureVisualizationTemplate();
             break;
 
           default:
-            wizardContent = null;
+            selectorContent = null;
             break;
         }
 
-        if (wizardContent) {
-          _dialog.html(wizardContent);
-          _showWizard();
+        if (selectorContent) {
+          _dialog.html(selectorContent);
+          _showSelector();
         } else {
           _dialog.html('');
-          _hideWizard();
+          _hideSelector();
         }
       }
 
@@ -229,11 +229,11 @@
       // not update dynamically
       switch (state) {
 
-        case Constants.EMBED_WIZARD_CHOOSE_YOUTUBE:
-          _renderChooseYouTubeData(componentValue);
+        case Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE:
+          _renderChooseYoutubeData(componentValue);
           break;
 
-        case Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION_DATASET:
+        case Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
           _renderConfigureVisualizationData(componentValue);
           break;
 
@@ -247,20 +247,20 @@
     function _renderChooseProvider() {
 
       var heading = _renderModalTitle(
-        I18n.t('editor.embed_wizard.choose_provider_heading')
+        I18n.t('editor.asset_selector.choose_provider_heading')
       );
 
       var closeButton = _renderModalCloseButton();
 
       var youtubeButton = $('<button>', {
         'class': 'btn accent-btn',
-        'data-embed-action': Constants.EMBED_WIZARD_CHOOSE_YOUTUBE
-      }).text(I18n.t('editor.embed_wizard.providers.youtube.button_text'));
+        'data-action': Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE
+      }).text(I18n.t('editor.asset_selector.youtube.button_text'));
 
       var visualizationButton = $('<button>', {
         'class': 'btn accent-btn',
-        'data-embed-action': Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION
-      }).text(I18n.t('editor.embed_wizard.providers.visualization.button_text'));
+        'data-action': Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION
+      }).text(I18n.t('editor.asset_selector.visualization.button_text'));
 
       var providers = $('<ul>', {'class': 'button-list'}).append([
         $('<li>').html(youtubeButton),
@@ -271,22 +271,22 @@
       return [ heading, closeButton, content ];
     }
 
-    function _renderChooseYouTubeTemplate() {
+    function _renderChooseYoutubeTemplate() {
 
       var heading = _renderModalTitle(
-        I18n.t('editor.embed_wizard.providers.youtube.heading')
+        I18n.t('editor.asset_selector.youtube.heading')
       );
 
       var closeButton = _renderModalCloseButton();
 
-      var inputLabel = $('<h2>', { 'class': 'wizard-input-label input-label' }).
-        text(I18n.t('editor.embed_wizard.providers.youtube.input_label'));
+      var inputLabel = $('<h2>', { 'class': 'asset-selector-input-label input-label' }).
+        text(I18n.t('editor.asset_selector.youtube.input_label'));
 
       var inputControl = $(
         '<input>',
         {
-          'class': 'wizard-text-input',
-          'data-embed-wizard-validate-field': 'youTubeId',
+          'class': 'asset-selector-text-input',
+          'data-asset-selector-validate-field': 'youtubeId',
           'placeholder': 'https://www.youtube.com/',
           'type': 'text'
         }
@@ -294,26 +294,26 @@
 
       var previewInvalidMessageTitle = $(
         '<div>',
-        { 'class': ' wizard-media-embed-invalid-title' }
+        { 'class': 'asset-selector-invalid-title' }
       ).html(
         [
-          I18n.t('editor.embed_wizard.providers.youtube.invalid_message_title_1'),
+          I18n.t('editor.asset_selector.youtube.invalid_message_title_1'),
           '<br />',
-          I18n.t('editor.embed_wizard.providers.youtube.invalid_message_title_2')
+          I18n.t('editor.asset_selector.youtube.invalid_message_title_2')
         ].join('')
       );
 
       var previewInvalidMessageDescription = $(
         '<div>',
-        { 'class': 'wizard-media-embed-invalid-description' }
+        { 'class': 'asset-selector-invalid-description' }
       ).text(
-        I18n.t('editor.embed_wizard.providers.youtube.invalid_message_description')
+        I18n.t('editor.asset_selector.youtube.invalid_message_description')
       );
 
       var previewInvalidMessage = $(
         '<div>',
         {
-          'class': 'wizard-media-embed-invalid-message'
+          'class': 'asset-selector-invalid-message'
         }
       ).append([
         previewInvalidMessageTitle,
@@ -323,31 +323,31 @@
       var previewIframe = $(
         '<iframe>',
         {
-          'class': 'wizard-media-embed-preview-iframe'
+          'class': 'asset-selector-preview-iframe'
         }
       );
 
       var previewContainer = $(
         '<div>',
         {
-          'class': 'wizard-media-embed-preview-container'
+          'class': 'asset-selector-preview-container'
         }
       ).append([
         previewInvalidMessage,
         previewIframe
       ]);
 
-      var backButton = _renderModalBackButton(Constants.EMBED_WIZARD_CHOOSE_PROVIDER);
+      var backButton = _renderModalBackButton(Constants.ASSET_SELECTOR_CHOOSE_PROVIDER);
 
       var insertButton = $(
         '<button>',
         {
           'class': 'btn accent-btn',
-          'data-embed-action': Constants.EMBED_WIZARD_APPLY
+          'data-action': Constants.ASSET_SELECTOR_APPLY
         }
-      ).text(I18n.t('editor.embed_wizard.insert_button_text'));
+      ).text(I18n.t('editor.asset_selector.insert_button_text'));
 
-      var content = $('<div>', { 'class': 'wizard-input-group' }).append([
+      var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
         inputLabel,
         inputControl,
         previewContainer
@@ -356,7 +356,7 @@
       var buttonGroup = $(
         '<div>',
         {
-          'class': 'wizard-button-group r-to-l'
+          'class': 'asset-selector-button-group r-to-l'
         }).append([ backButton, insertButton ]);
 
       return [ heading, closeButton, content, buttonGroup ];
@@ -367,55 +367,51 @@
      *
      * {
      *   type: 'media',
+     *   subtype: 'youtube',
      *   value: {
-     *     type: 'embed',
-     *     value: {
-     *       provider: 'youtube',
-     *       id: '<YouTube video id>',
-     *       url: '<YouTube video url>'
-     *     }
+     *     id: '<Youtube video id>',
+     *     url: '<Youtube video url>'
      *   }
-     *  }
+     * }
      */
-    function _renderChooseYouTubeData(componentValue) {
+    function _renderChooseYoutubeData(componentProperties) {
 
-      var componentProperties = _.get(componentValue, 'value');
-      var youTubeId = null;
-      var youTubeUrl = null;
-      var youTubeEmbedUrl;
-      var iframeElement = _dialog.find('.wizard-media-embed-preview-iframe');
+      var youtubeId = null;
+      var youtubeUrl = null;
+      var youtubeEmbedUrl;
+      var iframeElement = _dialog.find('.asset-selector-preview-iframe');
       var iframeSrc = iframeElement.attr('src');
-      var inputControl = _dialog.find('[data-embed-wizard-validate-field="youTubeId"]');
+      var inputControl = _dialog.find('[data-asset-selector-validate-field="youtubeId"]');
       var iframeContainer;
       var insertButton = _dialog.find(
-        '[data-embed-action="' + Constants.EMBED_WIZARD_APPLY + '"]'
+        '[data-action="' + Constants.ASSET_SELECTOR_APPLY + '"]'
       );
 
       if (componentProperties !== null &&
         _.has(componentProperties, 'id') &&
         _.has(componentProperties, 'url')) {
 
-        youTubeId = componentValue.value.id;
-        youTubeUrl = componentValue.value.url;
+        youtubeId = componentProperties.id;
+        youtubeUrl = componentProperties.url;
       }
 
-      if (youTubeId !== null && youTubeUrl !== null) {
+      if (youtubeId !== null && youtubeUrl !== null) {
 
-        inputControl.val(youTubeUrl);
+        inputControl.val(youtubeUrl);
 
-        // If there is a valid YouTube video id and it does not match the
+        // If there is a valid Youtube video id and it does not match the
         // current source of the preview iframe, point the preview iframe
         // at the new youtube video.
-        youTubeEmbedUrl = utils.generateYouTubeIframeSrc(youTubeId);
-        if (iframeSrc !== youTubeEmbedUrl) {
-          iframeElement.attr('src', youTubeEmbedUrl);
+        youtubeEmbedUrl = utils.generateYoutubeIframeSrc(youtubeId);
+        if (iframeSrc !== youtubeEmbedUrl) {
+          iframeElement.attr('src', youtubeEmbedUrl);
         }
 
         insertButton.prop('disabled', false);
 
       } else {
 
-        iframeContainer = _dialog.find('.wizard-media-embed-preview-container');
+        iframeContainer = _dialog.find('.asset-selector-preview-container');
 
         // Do not show the 'invalid url' icon if the user has not input
         // any text, or if they have deleted what text they did input.
@@ -425,7 +421,7 @@
           iframeContainer.addClass('invalid');
         }
 
-        // If there is no valid YouTube video id but the current source of
+        // If there is no valid Youtube video id but the current source of
         // the iframe is not `about:blank`, then reset it to `about:blank`.
         if (iframeSrc !== 'about:blank') {
           iframeElement.attr('src', 'about:blank');
@@ -439,15 +435,15 @@
       _addModalDialogClass('modal-dialog-wide');
 
       var heading = _renderModalTitle(
-        I18n.t('editor.embed_wizard.providers.visualization.choose_dataset_heading')
+        I18n.t('editor.asset_selector.visualization.choose_dataset_heading')
       );
       var closeButton = _renderModalCloseButton();
-      var backButton = _renderModalBackButton(Constants.EMBED_WIZARD_CHOOSE_PROVIDER);
+      var backButton = _renderModalBackButton(Constants.ASSET_SELECTOR_CHOOSE_PROVIDER);
 
       var datasetChooserIframe = $(
         '<iframe>',
         {
-          'class': 'wizard-dataset-chooser-iframe wizard-full-width-iframe bg-loading-spinner',
+          'class': 'asset-selector-dataset-chooser-iframe asset-selector-full-width-iframe bg-loading-spinner',
           'src': _datasetChooserUrl()
         }
       );
@@ -466,16 +462,16 @@
       var configureVisualizationIframe = $(
         '<iframe>',
         {
-          'class': 'wizard-configure-visualization-iframe wizard-full-width-iframe bg-loading-spinner',
+          'class': 'asset-selector-configure-visualization-iframe asset-selector-full-width-iframe bg-loading-spinner',
           'src': ''
         }
       );
 
       var heading = _renderModalTitle(
-        I18n.t('editor.embed_wizard.providers.visualization.configure_vizualization_heading')
+        I18n.t('editor.asset_selector.visualization.configure_vizualization_heading')
       );
       var closeButton = _renderModalCloseButton();
-      var backButton = _renderModalBackButton(Constants.EMBED_WIZARD_CHOOSE_VISUALIZATION);
+      var backButton = _renderModalBackButton(Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION);
 
       // TODO: Map insert button to APPLY instead of CLOSE, and share insert button
       // into shared function
@@ -483,15 +479,15 @@
         '<button>',
         {
           'class': 'btn accent-btn',
-          'data-embed-action': Constants.EMBED_WIZARD_CLOSE,
+          'data-action': Constants.ASSET_SELECTOR_CLOSE,
           'disabled': 'disabled'
         }
-      ).text(I18n.t('editor.embed_wizard.insert_button_text'));
+      ).text(I18n.t('editor.asset_selector.insert_button_text'));
 
       var buttonGroup = $(
         '<div>',
         {
-          'class': 'wizard-button-group r-to-l'
+          'class': 'asset-selector-button-group r-to-l'
         }).append([ backButton, insertButton ]);
 
 
@@ -508,13 +504,12 @@
       return [ heading, closeButton, configureVisualizationIframe, buttonGroup ];
     }
 
-    function _renderConfigureVisualizationData(componentValue) {
-      var componentProperties = _.get(componentValue, 'value');
-      var iframeElement = _dialog.find('.wizard-configure-visualization-iframe');
+    function _renderConfigureVisualizationData(componentProperties) {
+      var iframeElement = _dialog.find('.asset-selector-configure-visualization-iframe');
       var currentIframeSrc = iframeElement.attr('src');
       var newIframeSrc = _visualizationChooserUrl(componentProperties.settings.datasetUid);
       var insertButton = _dialog.find(
-        '[data-embed-action="' + Constants.EMBED_WIZARD_CLOSE + '"]'
+        '[data-action="' + Constants.ASSET_SELECTOR_CLOSE + '"]'
       );
 
       if (currentIframeSrc !== newIframeSrc) {
@@ -558,14 +553,14 @@
         '<button>',
         {
           'class': 'modal-close-btn',
-          'data-embed-action': Constants.EMBED_WIZARD_CLOSE
+          'data-action': Constants.ASSET_SELECTOR_CLOSE
         }
       ).append(
         $(
           '<span>',
           {
             'class': 'icon-cross2',
-            'data-embed-action': Constants.EMBED_WIZARD_CLOSE
+            'data-action': Constants.ASSET_SELECTOR_CLOSE
           }
         )
       );
@@ -576,7 +571,7 @@
         '<button>',
         {
           'class': 'btn back-btn',
-          'data-embed-action': backAction
+          'data-action': backAction
         }
       ).append([
         $(
@@ -585,15 +580,15 @@
             'class': 'icon-arrow-left2'
           }
         ),
-        I18n.t('editor.embed_wizard.back_button_text')
+        I18n.t('editor.asset_selector.back_button_text')
       ]);
     }
 
-    function _showWizard() {
+    function _showSelector() {
       _container.removeClass('hidden');
     }
 
-    function _hideWizard() {
+    function _hideSelector() {
       _container.addClass('hidden');
     }
 
@@ -619,5 +614,5 @@
     }
   }
 
-  root.socrata.storyteller.EmbedWizardRenderer = EmbedWizardRenderer;
+  root.socrata.storyteller.AssetSelectorRenderer = AssetSelectorRenderer;
 })(window);

@@ -3,4 +3,8 @@ if Rails.env.development?
 
   # initialization is skipped so trigger it
   Rack::MiniProfilerRails.initialize!(Rails.application)
+
+  # Do not let rack-mini-profiler disable caching. Setting this to true would let
+  # MiniProfiler delete ETags which are necessary for the save endpoint to work.
+  Rack::MiniProfiler.config.disable_caching = false
 end

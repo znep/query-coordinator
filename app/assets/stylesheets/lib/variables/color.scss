@@ -41,7 +41,7 @@ $rich-text-editor-toolbar-bg-color: rgb(225, 225, 225);
 $rich-text-editor-toolbar-active-bg-color: rgb(190, 190, 190);
 
 // Embedded media
-$embed-youtube-bg-color: #000;
+$youtube-bg-color: #000;
 
 // Edit user story
 $block-edit-hover-border-color: #ddd;
@@ -52,10 +52,10 @@ $empty-story-warning-font-color: rgb(153,153,153);
 $modal-bg-color: #fff;
 $modal-overlay-bg-color: rgba(0, 0, 0, 0.5);
 
-// Wizard
-$wizard-input-group-bg-color: #eee;
-$wizard-media-embed-preview-container-bg-color: #fff;
-$wizard-media-embed-invalid-message-color: #333;
+// Media Selector
+$asset-selector-input-group-bg-color: #eee;
+$asset-selector-preview-container-bg-color: #fff;
+$asset-selector-invalid-message-color: #333;
 
 // Forms
 $input-element-border-color: #ccc;

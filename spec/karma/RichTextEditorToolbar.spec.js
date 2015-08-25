@@ -1,0 +1,82 @@
+(function(root, $) {
+
+  'use strict';
+
+  var socrata = root.socrata;
+  var storyteller = root.socrata.storyteller;
+
+  describe('instantiation', function() {
+
+    describe('should throw when', function() {
+      it('should throw when providing an element that is not a jQuery object', function() {
+        assert.throws(function() {
+          var toolbar = new storyteller.RichTextEditorToolbar({});
+        });
+      });
+
+      it('should throw when providing an empty jQuery object', function() {
+        assert.throws(function() {
+          var toolbar = new storyteller.RichTextEditorToolbar($('.nothing'));
+        });
+      });
+
+      it('should throw when providing a jQuery object with multiple DOM elements', function() {
+        var $container = $('<div>');
+
+        $container.append($('<div>'));
+        $container.append($('<div>'));
+
+        assert.throws(function() {
+          var toolbar = new storyteller.RichTextEditorToolbar($container.find('div'));
+        });
+      });
+
+      it('should throw when providing a non-Array format', function() {
+        assert.throws(function() {
+          var toolbar = new storyteller.RichTextEditorToolbar($('<div>'), null);
+        });
+      });
+    });
+
+    it('should instantiate when passed a jQuery object and format array', function() {
+      var toolbar = new storyteller.RichTextEditorToolbar($('<div>'), []);
+      assert.instanceOf(toolbar, storyteller.RichTextEditorToolbar);
+    });
+  });
+
+  describe('actions', function() {
+    var toolbar;
+    var $container;
+
+    beforeEach(function() {
+      $container = $('<div>');
+      toolbar = new storyteller.RichTextEditorToolbar($container, []);
+    });
+
+    describe('.link()', function() {
+      it('should add .active to the container element and remove <select>\'s disabled', function() {
+        toolbar.link();
+        assert.isTrue($container.hasClass('active'));
+        assert.lengthOf($container.find('select[disabled]'), 0);
+      });
+    });
+
+    describe('.unlink()', function() {
+      it('should remove .active to the container element and add <select>\'s disabled', function() {
+        toolbar.unlink();
+        assert.isFalse($container.hasClass('active'));
+        assert.lengthOf($container.find('select[disabled]'), 1);
+      });
+
+    });
+
+    describe('.destroy()', function() {
+      it('should remove the container element', function() {
+        var $parent = $('<div>');
+        $parent.append($container);
+        toolbar.destroy();
+        assert.lengthOf($parent.children(), 0);
+      });
+    });
+  });
+})(window, jQuery);

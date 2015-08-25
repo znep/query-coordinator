@@ -19,7 +19,7 @@
       editorId,
       componentData.value
     );
-    editor.setTheme(themeId);
+    editor.applyThemeClass(themeId);
 
     $element.one('destroy', function() {
       storyteller.richTextEditorManager.deleteEditor(editorId);
@@ -38,7 +38,7 @@
     );
 
     editor.setContent(componentData.value);
-    editor.setTheme(themeId);
+    editor.applyThemeClass(themeId);
   }
 
   /**

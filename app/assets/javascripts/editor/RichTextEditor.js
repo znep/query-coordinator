@@ -129,7 +129,7 @@
     };
 
     // Add a `themeName` class to the html root of the iframe
-    this.setTheme = function(themeId) {
+    this.applyThemeClass = function(themeId) {
       var htmlElement = _editorElement[0].contentDocument.documentElement;
       var currentClasses = htmlElement.getAttribute('class');
 
@@ -154,7 +154,7 @@
      * children.
      */
     this.destroy = function() {
-      storyteller.windowSizeBreakpointStore.removeChangeListener(_applyClassBreaks);
+      storyteller.windowSizeBreakpointStore.removeChangeListener(_applyWindowSizeClass);
       _editorElement.remove();
     };
 
@@ -194,14 +194,14 @@
 
         _setupMouseMoveEventBroadcast();
 
-        storyteller.windowSizeBreakpointStore.addChangeListener(_applyClassBreaks);
-        _applyClassBreaks();
+        storyteller.windowSizeBreakpointStore.addChangeListener(_applyWindowSizeClass);
+        _applyWindowSizeClass();
       });
 
       _containerElement.append(_editorElement);
     }
 
-    function _applyClassBreaks() {
+    function _applyWindowSizeClass() {
       var editorDocument = _editorElement[0].contentDocument;
 
       if (!editorDocument) {

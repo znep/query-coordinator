@@ -171,8 +171,8 @@
         }
       });
 
-      storyteller.windowSizeBreakpointStore.addChangeListener(_applyClassBreaks);
-      _applyClassBreaks();
+      storyteller.windowSizeBreakpointStore.addChangeListener(_applyWindowSizeClass);
+      _applyWindowSizeClass();
     }
 
     function _attachEvents() {
@@ -324,7 +324,7 @@
       $(window).off('resize', _throttledRender);
     }
 
-    function _applyClassBreaks() {
+    function _applyWindowSizeClass() {
       var classBreak = storyteller.windowSizeBreakpointStore.getClassBreak();
       var unusedClassBreaks = storyteller.windowSizeBreakpointStore.getUnusedClassBreaks();
 

@@ -55,8 +55,8 @@ describe('storytellerComponentText jQuery plugin', function() {
       sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.createEditorSpy, $component, editorId, initialValue);
     });
 
-    it('calls setTheme during editor creation', function () {
-      sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.setThemeSpy, themeId);
+    it('calls applyThemeClass during editor creation', function () {
+      sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.applyThemeClassSpy, themeId);
     });
 
     describe('that is then destroyed', function () {

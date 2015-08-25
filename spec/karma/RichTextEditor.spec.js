@@ -280,19 +280,19 @@ describe('RichTextEditor', function() {
       });
     });
 
-    describe('setTheme', function() {
+    describe('applyThemeClass', function() {
       it('has the theme-classic class initially', function() {
         assert.isTrue($documentElement.hasClass('theme-classic'));
       });
 
       it('adds a new theme class when called', function() {
-        editor.setTheme('sans');
+        editor.applyThemeClass('sans');
         assert.isTrue($documentElement.hasClass('theme-sans'));
       });
 
       it('removes old `theme-*` classes when a new theme is set', function() {
-        editor.setTheme('sans');
-        editor.setTheme('serif');
+        editor.applyThemeClass('sans');
+        editor.applyThemeClass('serif');
         var currentClasses = $documentElement.attr('class');
 
         assert.lengthOf(currentClasses.match(/theme-/ig), 1);

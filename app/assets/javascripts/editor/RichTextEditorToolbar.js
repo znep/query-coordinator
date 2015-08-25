@@ -86,6 +86,7 @@
       _formatController = editorFormatController;
 
       _element.addClass('active');
+      _element.find('.rich-text-editor-toolbar-select').attr('disabled', false);
     };
 
     this.unlink = function() {
@@ -93,6 +94,7 @@
       _formatController = null;
 
       _element.removeClass('active');
+      _element.find('.rich-text-editor-toolbar-select').attr('disabled', true);
     };
 
     this.destroy = function() {
@@ -133,6 +135,7 @@
               '<select>',
               {
                 'class': 'rich-text-editor-toolbar-select',
+                'disabled': true,
                 'data-editor-action': 'change-format'
               }
             ).append(selectFormatElements),

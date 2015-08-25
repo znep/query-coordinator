@@ -164,6 +164,15 @@
         // Try to get the value for the original bucket, defaulting to zero.
         var value = _.get(dataByMagnitude, magnitude + '.value', 0);
 
+        // This is (hopefully temporarily) in place to remedy an issue where
+        // sum aggregation on a histogram causes many issues if there are
+        // no values to sum by for a particular bucket. Rather than deal with
+        // the ensuing NaNs in HistogramVisualizationService, we set them to
+        // zero here.
+        if (!_.isFinite(value)) {
+          value = 0;
+        }
+
         if (options.bucketType === 'logarithmic') {
           return getLogarithmicBucket(magnitude, value);
         } else {

@@ -231,11 +231,15 @@
           selectedBuckets.unfilteredValue :
           unfilteredBucket.value;
 
+        if (!_.isFinite(rangeTotal)) {
+          rangeTotal = 0;
+        }
+
         var rangeFilteredAmount = renderFilteredRange ?
           selectedBuckets.value :
           filteredBucket.value;
 
-        if (hoverOutsideSelection) {
+        if (!_.isFinite(rangeFilteredAmount) || hoverOutsideSelection) {
           rangeFilteredAmount = 0;
         }
 
@@ -593,26 +597,32 @@
             }
           }).
           y(function(d) {
-            if (d === 'start') {
-              return scale.y(first);
-            } else if (d === 'end') {
-              return scale.y(last);
-            } else {
-              var scaledValue = scale.y(d.value);
+            var scaledValue;
 
-              // Values close to but not equal zero be at least 2 pixels away
-              // from the axis line for readability. Note the flipped plus and
-              // minus signs due to the fact that the y axis is reversed.
-              if (d.value !== 0 && Math.round(scaledValue) === Math.round(axisLine)) {
-                if (d.value > 0) {
-                  return axisLine - Constants.HISTOGRAM_NONZERO_PIXEL_THRESHOLD;
-                } else {
-                  return axisLine + Constants.HISTOGRAM_NONZERO_PIXEL_THRESHOLD;
-                }
+            if (d === 'start') {
+              scaledValue = scale.y(first);
+            } else if (d === 'end') {
+              scaledValue = scale.y(last);
+            } else {
+              scaledValue = scale.y(d.value);
+            }
+
+            if (!_.isFinite(scaledValue)) {
+              return axisLine;
+            }
+
+            // Values close to but not equal zero be at least 2 pixels away
+            // from the axis line for readability. Note the flipped plus and
+            // minus signs due to the fact that the y axis is reversed.
+            if (d.value !== 0 && Math.round(scaledValue) === Math.round(axisLine)) {
+              if (d.value > 0) {
+                return axisLine - Constants.HISTOGRAM_NONZERO_PIXEL_THRESHOLD;
               } else {
-                return scaledValue;
+                return axisLine + Constants.HISTOGRAM_NONZERO_PIXEL_THRESHOLD;
               }
             }
+
+            return scaledValue;
           });
 
         area.
@@ -693,6 +703,7 @@
             Math.max(0, filteredValue, unfilteredValue) :
             Math.max(0, unfilteredValue);
           var hoverTargetY = scale.y(maxValueOrZero);
+          hoverTargetY = _.isFinite(hoverTargetY) ? hoverTargetY : 0;
           dom.hoverTarget.
             attr('x1', totalWidth).
             attr('x2', totalWidth + bucketWidth).
@@ -1005,8 +1016,8 @@
       brushClearTarget.
         attr('transform', function(d) {
           var width = this.getBoundingClientRect().width;
-          var brushClearTextWidth = d.brushClearTextWidth;
-          var brushClearTextOffset = d.brushClearTextOffset;
+          brushClearTextWidth = d.brushClearTextWidth;
+          brushClearTextOffset = d.brushClearTextOffset;
           return 'translate({0}, 0)'.
             format(brushClearTextOffset + brushClearTextWidth - width);
         });

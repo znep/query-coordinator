@@ -488,6 +488,7 @@
       }
     };
 
+    // TODO this is similar to $scope.savePage
     $scope.savePageAs = function(name, description) {
       var saveStatusSubject = new Rx.BehaviorSubject();
       var savePromise;
@@ -502,6 +503,16 @@
         delete newPageSerializedBlob.pageId;
         savePromise = PageDataService.save(newPageSerializedBlob);
       } catch (exception) {
+        if (exception.validation) {
+          $log.error('Validation errors', exception.validation);
+          // There were validation errors. Display them, and don't do any progress things.
+          $scope.writablePage.warnings = Schemas.getStringsForErrors(
+            exception.validation,
+            VALIDATION_ERROR_STRINGS
+          );
+          return false;
+        }
+
         // If the serialization failed, reject the promise.
         // Don't just error out immediately, because we still
         // want to notify the user below.
@@ -509,6 +520,8 @@
         savePromise = $q.reject(exception);
       }
 
+      // TODO Cleanup this was rushed
+      currentPageSaveEvents.onNext({status: 'saving'});
       notifyUserOfSaveProgress(savePromise, saveStatusSubject);
 
       // Redirect to a new page once Save As completed (plus a small delay).

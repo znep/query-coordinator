@@ -395,8 +395,9 @@
             if (editMode) {
 
               var groupEmpty = rows.length === 0;
-              var dropTargetHeight = groupEmpty ? Constants.LAYOUT_EMPTY_GROUP_HEIGHT :
-                Constants.LAYOUT_DROP_TARGET_HEIGHT;
+              var emptyHeight = Constants.LAYOUT_DROP_TARGET_HEIGHT +
+                COLLAPSED_SIZE_TO_HEIGHT[parseInt(cardSize, 10)] + cardMargin;
+              var dropTargetHeight = groupEmpty ? emptyHeight : Constants.LAYOUT_DROP_TARGET_HEIGHT;
 
               var cardGroup = {
                 hint: {},

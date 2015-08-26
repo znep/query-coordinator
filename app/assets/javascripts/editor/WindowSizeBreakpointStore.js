@@ -30,7 +30,7 @@
      * - xxlarge
      * @returns {Array} - All class breaks defined in _computeWindowSizeClasses.
      */
-    this.getAllWindowSizeClasses = function () {
+    this.getAllWindowSizeClasses = function() {
       return lastWindowSizeClasses || _computeWindowSizeClasses(root.innerWidth);
     };
 
@@ -45,7 +45,7 @@
      *
      * @returns {String} - The current window size class break.
      */
-    this.getWindowSizeClass = function () {
+    this.getWindowSizeClass = function() {
       return _.findKey(this.getAllWindowSizeClasses(), _.identity, true);
     };
 
@@ -57,7 +57,7 @@
      *
      * @returns {Array} - An array of class break names.
      */
-    this.getUnusedWindowSizeClasses = function () {
+    this.getUnusedWindowSizeClasses = function() {
       return _.keys(_.omit(this.getAllWindowSizeClasses(), this.getWindowSizeClass()));
     };
 
@@ -80,12 +80,12 @@
         return true;
       }
 
-      return _.any(newClasses, function (isEnabled, className) {
+      return _.any(newClasses, function(isEnabled, className) {
         return oldClasses[className] !== isEnabled;
       });
     }
 
-    $(root).resize(function (event) {
+    $(root).resize(function(event) {
       var width = event.target.innerWidth;
       var sizeClasses = _computeWindowSizeClasses(width);
 

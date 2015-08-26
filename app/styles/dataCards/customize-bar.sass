@@ -39,18 +39,12 @@ $customize-bar-button-border-width: 2px
     display: inline-block
     width: 9rem
 
-  .action-btn
-    @extend .customize-bar-action-btn
-
   &.is-customizing
     border-top-width: $customize-bar-border-top-width
     border-top-style: solid
 
     button.action-btn
       padding: 0 10px
-
-    button.save-button, button.save-as-button
-      @extend .customize-bar-action-btn
 
   &.has-changes
     background-image: url('/images/dataCards/customize/hatch-regular.png')

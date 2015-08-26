@@ -4,7 +4,7 @@
   <div class="customize-button-wrapper">
     <button
       type="button"
-      class="action-btn r-to-l customize-button"
+      class="action-btn customize-bar-action-btn r-to-l customize-button"
       ng-click="toggleCustomizeMode()"
       ng-class="{ 'disabled': !canCustomize, 'cards-edit-disabled': !!expandedCard }">
       {{editMode | ifElse:'customizeBar.customizing':'customizeBar.customize' | I18n}}

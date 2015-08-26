@@ -5,7 +5,7 @@
   <div class="cards-metadata" ng-class="{'page-header-enabled': pageHeaderEnabled}">
     <div class="row">
       <div class="span6 padded-wrapper">
-        <header ng-show="!editMode || isEphemeral"
+        <header ng-hide="nonEphemeralEditMode"
                 multiline-ellipsis
                 max-lines="2"
                 tolerance="8"
@@ -14,7 +14,7 @@
                 show-more-mode="title-attr">
         </header>
         <!-- Text field & decorations for editing page name -->
-        <label class="edit-page-name" ng-if="editMode && !isEphemeral">
+        <label class="edit-page-name" ng-if="nonEphemeralEditMode">
           <div class="icon-warning edit-page-warning"
             ng-if="writablePage.warnings.name"
             title="{{ writablePage.warnings.name.join('\n') }}"></div>
@@ -28,7 +28,7 @@
           <div class="icon-edit placeholder"><span>({{'metadata.pageNamePlaceholder' | I18n}})</span></div>
         </label>
         <!-- description -->
-        <div ng-show="!editMode || isEphemeral"
+        <div ng-hide="nonEphemeralEditMode"
              class="page-description"
              expanded="expanded"
              multiline-ellipsis
@@ -37,7 +37,7 @@
              text="{{pageDescription}}"
              show-more-mode="expand-link">
         </div>
-        <label class="edit-page-description" ng-if="editMode && !isEphemeral">
+        <label class="edit-page-description" ng-if="nonEphemeralEditMode">
           <rich-text-editor
             buttons="bold italic link"
             content="writablePage.description"

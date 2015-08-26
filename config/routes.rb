@@ -265,6 +265,7 @@ Frontend::Application.routes do
 
     scope :controller => 'new_ux_bootstrap', :constraints => { :id => Frontend::UID_REGEXP } do
       get '/view/bootstrap/:id', :action => 'bootstrap'
+      get '/dataset/:id/lens/new', :action => 'bootstrap'
     end
 
     scope :controller => 'polaroid', :constraints => { :page_id => Frontend::UID_REGEXP, :field_id => Phidippides::COLUMN_ID_REGEX } do

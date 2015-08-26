@@ -347,7 +347,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                   }
                 }.to_json.to_s)
 
-            @phidippides.stubs(
+            Phidippides.any_instance.stubs(
               log_datalens_access: nil
             )
           end

@@ -103,11 +103,11 @@
       var scope = elementAndScope.scope;
 
       expect(customizeBar.find('.customize-bar')).to.not.have.class('has-changes');
-      expect(customizeBar.find('.changes-warning').first()).to.have.class('ng-hide');
+      expect(customizeBar.find('.unsaved-warning.unsaved-dirty')).to.have.class('ng-hide');
       scope.hasChanges = true;
       scope.$digest();
       expect(customizeBar.find('.customize-bar')).to.have.class('has-changes');
-      expect(customizeBar.find('.changes-warning').first()).to.not.have.class('ng-hide');
+      expect(customizeBar.find('.unsaved-warning.unsaved-dirty')).to.not.have.class('ng-hide');
     });
 
     describe('customize button', function() {
@@ -195,7 +195,7 @@
       it('should show a save warning even when no changes have been made', function() {
         var elementAndScope = createElement({isEphemeral: true});
         var customizeBar = elementAndScope.element;
-        expect(customizeBar.find('.changes-warning').last()).to.not.have.class('ng-hide');
+        expect(customizeBar.find('.unsaved-warning.unsaved-clean')).to.not.have.class('ng-hide');
       });
     });
   });

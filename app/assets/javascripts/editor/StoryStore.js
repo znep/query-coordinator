@@ -313,6 +313,12 @@
 
     function _updateBlockComponentAtIndex(payload) {
 
+      utils.assertHasProperty(payload, 'componentIndex');
+      utils.assertIsOneOfTypes(payload.componentIndex, 'number', 'string');
+      utils.assertHasProperty(payload, 'type');
+      utils.assertIsOneOfTypes(payload.type, 'string');
+      utils.assertHasProperty(payload, 'value');
+
       var block = _getBlock(payload.blockId);
       var index = parseInt(payload.componentIndex, 10);
       var component;

@@ -43,6 +43,7 @@ describe('BlockRemovalConfirmationStore', function() {
             action: Constants.BLOCK_UPDATE_COMPONENT,
             blockId: newlyAddedBlockId,
             componentIndex: 0,
+            type: '',
             value: ''
           });
 

@@ -203,32 +203,6 @@
         }
       );
 
-      $container.on('mouseenter', function() {
-        storyteller.dispatcher.dispatch({
-          action: Constants.STORY_MOUSE_ENTER,
-          storyUid: storyUid
-        });
-      });
-
-      $container.on('mouseleave', function() {
-        dispatcher.dispatch({
-          action: Constants.STORY_MOUSE_LEAVE,
-          storyUid: storyUid
-        });
-      });
-
-      $container.on('mousemove', '.block', function(event) {
-        var blockId = event.currentTarget.getAttribute('data-block-id');
-
-        if (blockId) {
-          dispatcher.dispatch({
-            action: Constants.BLOCK_MOUSE_MOVE,
-            storyUid: storyUid,
-            blockId: blockId
-          });
-        }
-      });
-
       $container.on('dblclick', '.block', function(event) {
         var blockId = event.currentTarget.getAttribute('data-block-id');
 

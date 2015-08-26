@@ -14,8 +14,6 @@
       };
       var cardsViewUrlMatch = urlPathname.match(
         new RegExp('^{locale}/view{withBootstrap}/{fourByFour}$'.format(regexPieces)));
-      var bootstrapUrlMatch = urlPathname.match(
-        new RegExp('^{locale}/dataset/{fourByFour}/lens/new$'.format(regexPieces)));
       var singleCardViewUrlMatch = urlPathname.match(
         new RegExp('^{locale}/view/{fourByFour}/{fieldName}$'.format(regexPieces)));
       var visualizationAddUrlMatch = urlPathname.match(
@@ -24,9 +22,6 @@
       if (cardsViewUrlMatch) {
         stateName = 'view.cards';
         params.id = cardsViewUrlMatch[1];
-      } else if(bootstrapUrlMatch) {
-        stateName = 'view.cards';
-        params.id = bootstrapUrlMatch[1];
       } else if (visualizationAddUrlMatch) {
         // Needs no params, as rails passes in @dataset_metadata
         stateName = 'view.visualizationAdd';

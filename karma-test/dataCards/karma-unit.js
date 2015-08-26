@@ -144,7 +144,6 @@ module.exports = function ( karma ) {
       /* Images */
       { pattern: 'public/stubs/images/*.png', watched: false, included: false, served: true },
       { pattern: 'public/images/dataCards/**/*.png', watched: false, included: false, served: true },
-      { pattern: 'public/images/dataCards/*.png', watched: false, included: false, served: true },
 
       /* Old UX */
       // moved to karma-test/old-ux
@@ -179,7 +178,7 @@ module.exports = function ( karma ) {
       '/stubs/images/': 'http://localhost:7019/base/public/stubs/images/',
       '/javascripts/plugins/': 'http://localhost:7019/base/public/javascripts/plugins/',
       '/stylesheets/images/': 'http://localhost:7019/base/public/stylesheets/images/',
-      '/images/dataCards/customize/': 'http://localhost:7019/base/public/images/dataCards/customize/'
+      '/images/dataCards': 'http://localhost:7019/base/public/images/dataCards'
     },
 
     sauceLabs: {

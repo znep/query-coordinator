@@ -16,7 +16,12 @@ if(blist.feature_flags.dataset_count_v2){
   datasetsMetricName = 'datasets';
 }
 if (blist.feature_flags.embetter_analytics_page) {
-    pageViewsSummary = {plus: 'js-page-view', total: false};
+    pageViewsSummary = {
+        plus: 'js-page-view',
+        total: false,
+        verbPhrase: 'pages viewed',
+        verbPhraseSingular: 'page viewed'
+    };
     mapsSummary = {plus: 'lense-map-published-v1'}
     dataLensesEnabled = true;
     datasetsListHeader = 'Browser Page Views';

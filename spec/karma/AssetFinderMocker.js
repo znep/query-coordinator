@@ -4,7 +4,7 @@ window.socrata.storyteller.AssetFinderMocker = {
     var AssetFinder = function() {}
     AssetFinder.prototype = {
       getStyleAssetPath: function(name) {
-        return name + '.asset';
+        return '';
       },
       getRelativeUrlRoot: function() {
         return '';

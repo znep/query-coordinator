@@ -29,12 +29,12 @@
     is-ephemeral="isEphemeral"
     ng-show="showSaveAsButton || isEphemeral"></save-as>
   <span
-    class="changes-warning"
+    class="unsaved-warning unsaved-dirty"
     ng-show="hasChanges">
     <span class="icon-warning"></span> {{'customizeBar.changesWarning' | I18n}}
   </span>
   <span
-    class="changes-warning"
+    class="unsaved-warning unsaved-clean"
     ng-show="!hasChanges && isEphemeral">
     <span class="icon-warning"></span> {{'customizeBar.unsavedWarning' | I18n}}
   </span>

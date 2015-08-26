@@ -8,8 +8,8 @@
    *   There is one child element, and it is the one setting the background color.
    */
   angular.module('dataCards.directives').directive('animateTo', function() {
-    var ANIMATION_DURATION = .25;
-    var ANIMATION_STAGGER = .04;
+    var ANIMATION_DURATION = 0.25;
+    var ANIMATION_STAGGER = 0.04;
     return {
       restrict: 'A',
 
@@ -81,7 +81,18 @@
               // fix the child in place to prevent unnecessary redraws during animation
               child = element.children();
               if (child.length === 1) {
-                child.css(child.css(['width', 'height']));
+
+                // NOTE: This is commented out because A) it causes a lot of
+                // layout thrashing which degrades performance, B) it doesn't
+                // seem to do anything, C) commenting it out fixes a lot of
+                // issues with card dragging related to setting absolute
+                // pixel dimensions on <card> elements. Hopefully in the future
+                // we will be able to relax constraints related to how this
+                // directive works (i.e. not require a single child element,
+                // not require that it has a background, etc.), and potentially
+                // use more efficient animation techniques such as RAF.
+
+                //child.css(child.css(['width', 'height']));
                 restoreFunctions.push(function() {
                   // Let the child readjust itself
                   child.css({width: '', height: ''});

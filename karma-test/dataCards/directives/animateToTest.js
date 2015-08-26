@@ -211,7 +211,10 @@ describe('animate-to directive', function() {
       });
 
       describe('child element', function() {
-        it('gets its dimensions set before the animation, and reverts afterwards', function(done) {
+
+        // This is xit'd because we stopped setting explicit dimensions on the child element
+        // to fix issues with card dragging.
+        xit('gets its dimensions set before the animation, and reverts afterwards', function(done) {
           var child = el.children();
           expect(child[0].style.width).not.to.be.ok;
 

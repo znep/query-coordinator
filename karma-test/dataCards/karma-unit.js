@@ -178,7 +178,7 @@ module.exports = function ( karma ) {
       '/stubs/images/': 'http://localhost:7019/base/public/stubs/images/',
       '/javascripts/plugins/': 'http://localhost:7019/base/public/javascripts/plugins/',
       '/stylesheets/images/': 'http://localhost:7019/base/public/stylesheets/images/',
-      '/images/dataCards/customize/': 'http://localhost:7019/base/public/images/dataCards/customize/'
+      '/images/dataCards': 'http://localhost:7019/base/public/images/dataCards'
     },
 
     sauceLabs: {

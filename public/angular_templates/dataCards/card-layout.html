@@ -1,4 +1,37 @@
 <div
+  ng-if="editMode"
+  ng-repeat="cardGroup in cardGroups"
+  card-group-index="$index"
+  ng-style="cardGroup.hint"
+  class="card-group-customize-hint">
+  <div class="card-group-customize-hint-text">{{'cardLayout.cardGroupCustomizeHintText' | I18n:$index + 2}} <span class="icon-help">?</span></div>
+
+  <div ng-show="{{$index === 0}}" class="card-group-customize-hint-cards row">
+    <span class="card-group-customize-hint-card span6"></span>
+    <span class="card-group-customize-hint-card span6"></span>
+  </div>
+
+  <div ng-show="{{$index === 1}}" class="card-group-customize-hint-cards row">
+    <span class="card-group-customize-hint-card span4"></span>
+    <span class="card-group-customize-hint-card span4"></span>
+    <span class="card-group-customize-hint-card span4"></span>
+  </div>
+
+  <div ng-show="{{$index === 2}}" class="card-group-customize-hint-cards row">
+    <span class="card-group-customize-hint-card span3"></span>
+    <span class="card-group-customize-hint-card span3"></span>
+    <span class="card-group-customize-hint-card span3"></span>
+    <span class="card-group-customize-hint-card span3"></span>
+  </div>
+</div>
+
+<div
+  ng-repeat="cardGroup in cardGroups"
+  ng-style="cardGroup.style"
+  class="card-group">
+</div>
+
+<div
   class="card-spot"
   animate-to="cardState.style"
   animate-to-index="{{ cardState.index }}"
@@ -23,15 +56,20 @@
 </div>
 
 <div
-  ng-repeat="placeholder in placeholderDropTargets"
-  ng-style="placeholder.style"
+  ng-if="editMode"
+  ng-repeat="dropTarget in dropTargets"
+  ng-style="dropTarget.style"
   class="card-group-drop-placeholder"
-  data-group-id="{{ placeholder.cardSize}}"></div>
-<button
-  ng-repeat="button in addCardButtons"
-  ng-style="button.style"
-  type="button"
-  class="add-card-button action-btn dark l-to-r"
-  ng-class="{ disabled: !allowAddCard }"
-  ng-show="editMode"
-  ng-click="addCardWithSize(button.cardSize)">{{'cardLayout.addCardHere' | I18n}}</button>
+  data-group-id="{{ dropTarget.cardSize}}">
+    <img class="drag-card-icon" src="/images/dataCards/drag-card-icon.png">
+    {{'cardLayout.cardGroupPlaceholderText' | I18n}}
+
+  <button
+    ng-style="addCardButtons[$index].style"
+    type="button"
+    class="add-card-button action-btn dark r-to-l"
+    ng-show="editMode"
+    ng-click="addCardWithSize(addCardButtons[$index].cardSize)">
+      <span class="icon-add"></span> {{'cardLayout.addCardHere' | I18n}}
+  </button>
+</div>

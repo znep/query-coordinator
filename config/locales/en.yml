@@ -94,7 +94,10 @@ en:
         expand_card: Expand this card
         remove_card: Remove this card
       card_layout:
-        add_card_here: Add card here
+        add_card_here: Create a new card
+        card_group_customize_hint_text: Up to {0} cards per row
+        card_group_customize_hint_flyout_text: Drag cards between sections to adjust the maximum number of columns per row. The cards will automatically resize to fill any gaps
+        card_group_placeholder_text: Drag and drop cards here
       card_titles:
         average: average {0}
         number_of: number of {0}

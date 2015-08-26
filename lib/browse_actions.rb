@@ -7,23 +7,45 @@ module BrowseActions
 protected
   attr_reader :request_params
 
-  def view_types_facet
-    vts = {
-      :title => t('controls.browse.facets.view_types_title'),
-      :singular_description => t('controls.browse.facets.view_types_singular_title'),
-      :param => :limitTo,
-      :use_icon => true,
-      :options => [
-        {:text => t('controls.browse.facets.view_types.datasets'), :value => 'datasets', :class => 'typeBlist'},
-        {:text => t('controls.browse.facets.view_types.charts'), :value => 'charts', :class => 'typeChart'},
-        {:text => t('controls.browse.facets.view_types.maps'), :value => 'maps', :class => 'typeMap'},
-        {:text => t('controls.browse.facets.view_types.calendars'), :value => 'calendars', :class => 'typeCalendar'},
-        {:text => t('controls.browse.facets.view_types.filters'), :value => 'filters', :class => 'typeFilter'},
-        {:text => t('controls.browse.facets.view_types.href'), :value => 'href', :class => 'typeHref'},
-        {:text => t('controls.browse.facets.view_types.blob'), :value => 'blob', :class => 'typeBlob'},
-        {:text => t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'}
-      ]
-    }
+  def cetera_search_enabled?
+    FeatureFlags.derive(nil, defined?(request) ? request : nil)[:cetera_search]
+  end
+
+  # In order to use Cetera search: the cetera_search_enabled feature flag must be true,
+  # the user must be anonymous, and the admin parameter cannot be true
+  def using_cetera?(user_params)
+    cetera_search_enabled? && User.current_user.nil? && !user_params[:admin]
+  end
+
+  def view_types_facet(user_params = {})
+    if using_cetera?(user_params)
+      vts = {
+        :title => t('controls.browse.facets.view_types_title'),
+        :singular_description => t('controls.browse.facets.view_types_singular_title'),
+        :param => :limitTo,
+        :use_icon => true,
+        :options => [
+          {:text => t('controls.browse.facets.view_types.datasets'), :value => 'datasets', :class => 'typeBlist'}
+        ]
+      }
+    else
+      vts = {
+        :title => t('controls.browse.facets.view_types_title'),
+        :singular_description => t('controls.browse.facets.view_types_singular_title'),
+        :param => :limitTo,
+        :use_icon => true,
+        :options => [
+          {:text => t('controls.browse.facets.view_types.datasets'), :value => 'datasets', :class => 'typeBlist'},
+          {:text => t('controls.browse.facets.view_types.charts'), :value => 'charts', :class => 'typeChart'},
+          {:text => t('controls.browse.facets.view_types.maps'), :value => 'maps', :class => 'typeMap'},
+          {:text => t('controls.browse.facets.view_types.calendars'), :value => 'calendars', :class => 'typeCalendar'},
+          {:text => t('controls.browse.facets.view_types.filters'), :value => 'filters', :class => 'typeFilter'},
+          {:text => t('controls.browse.facets.view_types.href'), :value => 'href', :class => 'typeHref'},
+          {:text => t('controls.browse.facets.view_types.blob'), :value => 'blob', :class => 'typeBlob'},
+          {:text => t('controls.browse.facets.view_types.forms'), :value => 'forms', :class => 'typeForm'}
+        ]
+      }
+    end
 
     add_data_lens_view_type_if_enabled!(vts[:options])
     add_stories_view_type_if_enabled!(vts[:options])
@@ -280,13 +302,19 @@ protected
         end
     end
 
-    browse_options[:facets] ||= [
-      view_types_facet,
-      cfs,
-      categories_facet,
-      topics_facet,
-      federated_facet
-    ]
+    browse_options[:facets] ||=
+      if using_cetera?(user_params)
+        [ view_types_facet(user_params) ]
+      else
+        [
+          view_types_facet(user_params),
+          cfs,
+          categories_facet,
+          topics_facet,
+          federated_facet
+        ]
+      end
+
     browse_options[:facets] = browse_options[:facets].compact.flatten.reject{ |f| f[:hidden] }
 
     if browse_options[:suppressed_facets].is_a? Array
@@ -303,10 +331,10 @@ protected
     browse_options[:disable] = {} unless browse_options[:disable].present?
 
     # get the subset relevant to various things
-    browse_options[:search_options] = browse_options.select{ |k| @@search_options.include? k }
+    browse_options[:search_options] = browse_options.select{ |k| @@search_options.include?(k) }
                                                     .merge(search_options)
     ignore_params = (browse_options[:ignore_params] || []) + [ :controller, :action, :page ]
-    browse_options[:user_params] = user_params.reject{ |k| ignore_params.include? k }
+    browse_options[:user_params] = user_params.reject{ |k| ignore_params.include?(k) }
 
     # insert utf8 snowman thing
     browse_options[:user_params][:utf8] = '✓'
@@ -317,7 +345,12 @@ protected
     if browse_options[:view_results].nil? || browse_options[:view_results].empty?
       Rails.logger.info("IT WAS AN EMPTY ARRAY") unless browse_options[:view_results].nil?
       begin
-        view_results = Clytemnestra.search_views(browse_options[:search_options])
+        browse_options[:cetera_search] = using_cetera?(user_params)
+        if browse_options[:cetera_search]
+          view_results = Cetera.search_views(browse_options[:search_options])
+        else
+          view_results = Clytemnestra.search_views(browse_options[:search_options])
+        end
         browse_options[:view_count] = view_results.count
         browse_options[:view_results] = view_results.results
       rescue CoreServer::TimeoutError
@@ -341,7 +374,31 @@ protected
           datasetActions: browse_options[:dataset_actions], popularity: true, type: true }
       end
 
+    # In Cetera search, hide the RSS feed links as well as the popularity count
+    if using_cetera?(user_params)
+      browse_options[:hide_catalog_rss] = true
+      browse_options[:grid_items][:rss] = false
+      browse_options[:grid_items][:popularity] = false
+    end
+
+    # Set browse partial paths based on using_cetera
+    if using_cetera?(user_params)
+      browse_options[:browse_table_partial] = 'datasets/browse_table_cetera'
+      browse_options[:browse_counter_partial] = 'datasets/browse_counter_cetera'
+    else
+      browse_options[:browse_table_partial] = 'datasets/browse_table_clytemnestra'
+      browse_options[:browse_counter_partial] = 'datasets/browse_counter'
+    end
+
     browse_options[:title] ||= get_title(browse_options, browse_options[:facets])
+
+    browse_options[:show_catalog_sort_dropdown] =
+      browse_options[:view_count] &&
+      browse_options[:view_count] > 0 &&
+      !browse_options[:view_request_timed_out] &&
+      !browse_options[:sort_opts].empty? &&
+      !browse_options[:disable][:sort] &&
+      !browse_options[:cetera_search]
 
     return browse_options
   end
@@ -513,6 +570,6 @@ private
 
   @@moderatable_types = [ 'filters', 'charts', 'maps', 'calendars', 'forms' ]
 
-  @@search_options = [ :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo, :for_user, :datasetView, :sortPeriod, :admin, :nofederate, :moderation, :xmin, :ymin, :xmax, :ymax, :for_approver, :approval_stage_id, :publication_stage, :federation_filter, :metadata_tag, :row_count, :q_fields ]
+  @@search_options = [ :id, :name, :tags, :desc, :q, :category, :limit, :page, :sortBy, :limitTo, :for_user, :datasetView, :sortPeriod, :admin, :nofederate, :moderation, :xmin, :ymin, :xmax, :ymax, :for_approver, :approval_stage_id, :publication_stage, :federation_filter, :metadata_tag, :row_count, :q_fields, :local_data_hack ]
   @@querystring_options = [  ]
 end

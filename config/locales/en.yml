@@ -388,6 +388,7 @@ en:
         federation_source_html: Provided by %{source_link}
         no_results: No Results
         result_count: Showing %{this} of %{total}
+        result_count_cetera: Showing %{start}-%{end} of %{total}
         table_header:
           name: Name
           popularity: Popularity

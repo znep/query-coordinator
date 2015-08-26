@@ -134,6 +134,7 @@ en:
         customizing_flyout: You are now customizing this page
         customizing_flyout_instructions: You can click this button at any time to preview your changes, and save them at any time
         exit_visualization_export: 'To enter customization mode: Exit "Download Visualization as Image" mode by clicking the cancel button in the Info Pane'
+        unsaved_warning: This view has not yet been saved.
       customize_card_dialog:
         histogram_bucket_type:
           linear: Linear

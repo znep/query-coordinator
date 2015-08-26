@@ -9,7 +9,6 @@ html {
 
 body {
   margin: 0;
-  padding-bottom: $user-story-container-vertical-padding;
   min-height: calc(100vh - (#{$header-height} + (#{$user-story-container-vertical-padding} * 2)));
   background-color: $body-bg-color;
 }

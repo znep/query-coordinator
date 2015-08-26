@@ -39,7 +39,7 @@
     var dispatcher = storyteller.dispatcher;
 
     var storyUid = options.storyUid || null;
-    var container = options.storyContainerElement || null;
+    var $container = options.storyContainerElement || null;
     var insertionHint = options.insertionHintElement;
     var insertionHintIndex = -1;
     var onRenderError = options.onRenderError || function() {};
@@ -67,12 +67,12 @@
       );
     }
 
-    if (!(container instanceof jQuery)) {
+    if (!($container instanceof jQuery)) {
 
       onRenderError();
       throw new Error(
         '`options.storyContainerElement` must be a jQuery element (is of type ' +
-        (typeof container) +
+        (typeof $container) +
         ').'
       );
     }
@@ -103,8 +103,8 @@
       );
     }
 
-    container.addClass('story');
-    container.add(insertionHint).attr('data-story-uid', storyUid);
+    $container.addClass('story');
+    $container.add(insertionHint).attr('data-story-uid', storyUid);
 
     _listenForChanges();
     _attachEvents();
@@ -165,7 +165,7 @@
 
       $(window).on('resize', _throttledRender);
 
-      container.on(
+      $container.on(
         'click',
         '[data-block-move-action]',
         function(event) {
@@ -180,7 +180,7 @@
         }
       );
 
-      container.on(
+      $container.on(
         'click',
         '[data-block-delete-action]',
         function(event) {
@@ -203,21 +203,21 @@
         }
       );
 
-      container.on('mouseenter', function() {
+      $container.on('mouseenter', function() {
         storyteller.dispatcher.dispatch({
           action: Constants.STORY_MOUSE_ENTER,
           storyUid: storyUid
         });
       });
 
-      container.on('mouseleave', function() {
+      $container.on('mouseleave', function() {
         dispatcher.dispatch({
           action: Constants.STORY_MOUSE_LEAVE,
           storyUid: storyUid
         });
       });
 
-      container.on('mousemove', '.block', function(event) {
+      $container.on('mousemove', '.block', function(event) {
         var blockId = event.currentTarget.getAttribute('data-block-id');
 
         if (blockId) {
@@ -229,7 +229,7 @@
         }
       });
 
-      container.on('dblclick', '.block', function(event) {
+      $container.on('dblclick', '.block', function(event) {
         var blockId = event.currentTarget.getAttribute('data-block-id');
 
         if (blockId) {
@@ -241,7 +241,7 @@
         }
       });
 
-      container.on('rich-text-editor::format-change', function(event) {
+      $container.on('rich-text-editor::format-change', function(event) {
 
         dispatcher.dispatch({
           action: Constants.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
@@ -250,7 +250,7 @@
       });
 
       // Handle updates to block content.
-      container.on('rich-text-editor::content-change', function(event) {
+      $container.on('rich-text-editor::content-change', function(event) {
 
         var blockId = utils.findClosestAttribute(event.target, 'data-block-id');
         var componentIndex = utils.findClosestAttribute(event.target, 'data-component-index');
@@ -283,11 +283,11 @@
         }
       });
 
-      container.on('rich-text-editor::height-change', function() {
+      $container.on('rich-text-editor::height-change', function() {
         _renderStory();
       });
 
-      container.on('click', '[data-action]', function(event) {
+      $container.on('click', '[data-action]', function(event) {
         var action = event.target.getAttribute('data-action');
 
         switch (action) {
@@ -314,7 +314,7 @@
       var windowSizeClass = storyteller.windowSizeBreakpointStore.getWindowSizeClass();
       var unusedWindowSizeClasses = storyteller.windowSizeBreakpointStore.getUnusedWindowSizeClasses();
 
-      container.
+      $container.
         removeClass(unusedWindowSizeClasses.join(' ')).
         addClass(windowSizeClass);
     }
@@ -366,7 +366,7 @@
 
         if ($blockElement === null) {
           $blockElement = _renderBlock(blockId);
-          container.append($blockElement);
+          $container.append($blockElement);
         }
 
         _renderBlockComponents(blockId);
@@ -397,7 +397,16 @@
         layoutHeight += _layoutInsertionHint(layoutHeight);
       }
 
-      container.height(layoutHeight);
+      var windowHeight = $(window).height();
+      var $parent = $container.parent();
+      var padding = ($parent.outerHeight() - $parent.height()) / 2;
+      var fixedHeight = windowHeight - $container.offset().top - padding;
+
+      if (fixedHeight > layoutHeight) {
+        $container.height(fixedHeight);
+      } else {
+        $container.height(layoutHeight + padding);
+      }
     }
 
     function _showInsertionHintAtIndex(index) {
@@ -520,10 +529,10 @@
       ]);
     }
 
-    function _updateBlockEditControls(blockElement, blockIndex, blockCount) {
+    function _updateBlockEditControls($blockElement, blockIndex, blockCount) {
 
-      var moveUpButton = blockElement.find('.block-edit-controls-move-up-btn');
-      var moveDownButton = blockElement.find('.block-edit-controls-move-down-btn');
+      var moveUpButton = $blockElement.find('.block-edit-controls-move-up-btn');
+      var moveDownButton = $blockElement.find('.block-edit-controls-move-down-btn');
 
       moveUpButton.prop('disabled', blockIndex === 0);
       moveDownButton.prop('disabled', blockIndex === (blockCount - 1));
@@ -667,17 +676,14 @@
       );
     }
 
-    function _layoutBlock(blockElement, layoutHeight) {
+    function _layoutBlock($blockElement, layoutHeight) {
 
       var translation = 'translate(0,' + layoutHeight + 'px)';
 
-      blockElement.attr('data-translate-y', layoutHeight);
-      blockElement.css('transform', translation);
+      $blockElement.attr('data-translate-y', layoutHeight);
+      $blockElement.css('transform', translation);
 
-      return (
-        blockElement.outerHeight(true) +
-        parseInt(blockElement.css('margin-bottom'), 10)
-      );
+      return $blockElement.outerHeight(true);
     }
   }
 

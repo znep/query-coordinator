@@ -470,10 +470,12 @@ metricsNS.summaryDataDirective = {
 
 metricsNS.summaryDataDirectiveV1 = {
     '.deltaValue' : 'delta',
+    '.deltaValue@title' : 'deltaText',
     '.percentValue' : 'deltaPercent',
     '.percentBox@title' : 'deltaPercentText',
     '.percentBox@class+' : 'deltaPercentClass',
-    '.totalValueV1' : 'total'
+    '.totalValueV1' : 'total',
+    '.totalWrapper@title' : 'totalText'
 };
 
 metricsNS.simpleSummaryDataDirective = {
@@ -489,6 +491,7 @@ metricsNS.simpleSummaryDataDirectiveV1 = {
 
 metricsNS.deltaDataDirective = {
     '.deltaValue' : 'delta',
+    '.deltaValue@title' : 'deltaText',
     '.percentValue' : 'previousPercent',
     '.percentBox@title' : 'previousPercentText',
     '.percentBox@class+' : 'previousPercentClass',

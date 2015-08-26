@@ -30,6 +30,113 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     @dataset_copy_stub = stub_dataset_copy_request('vtvh-wqgq')
   end
 
+  def test_show_returns_data_with_public_permissions_from_phidippides
+    Phidippides.any_instance.stubs(
+      fetch_page_metadata: {
+        status: '200',
+        body: v1_page_metadata_without_rollup_columns.merge(core_permissions_public)
+      }
+    )
+
+    core_stub = mock
+    core_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    core_stub.expects(:get_request).times(2).returns(
+      '{"grants": [{"flags": ["public"]}]}', # fetch permissions
+      '{"displayType": "new_view"}' # fetch page metadata (which is really backed by phiddy)
+    )
+    CoreServer::Base.stubs(connection: core_stub)
+
+    result = manager.show('four-four')
+    assert_equal(%w(
+      cards datasetId description name pageId primaryAggregation primaryAmountField
+      version largestTimeSpanDays defaultDateTruncFunction permissions
+    ).sort, result.keys.sort)
+    assert_equal({'isPublic' => true, 'rights' => []}.with_indifferent_access, result['permissions'])
+  end
+
+  def test_show_returns_data_with_private_permissions_from_phidippides
+    Phidippides.any_instance.stubs(
+      fetch_page_metadata: {
+        status: '200',
+        body: v1_page_metadata_without_rollup_columns.merge(core_permissions_private)
+      }
+    )
+
+    core_stub = mock
+    core_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    core_stub.expects(:get_request).times(2).returns(
+      '{"grants": []}', # fetch permissions
+      '{"displayType": "new_view"}' # fetch page metadata (which is really backed by phiddy)
+    )
+    CoreServer::Base.stubs(connection: core_stub)
+
+    result = manager.show('four-four')
+    assert_equal(%w(
+      cards datasetId description name pageId primaryAggregation primaryAmountField
+      version largestTimeSpanDays defaultDateTruncFunction permissions
+    ).sort, result.keys.sort)
+    assert_equal({'isPublic' => false, 'rights' => []}.with_indifferent_access, result['permissions'])
+  end
+
+  def test_show_returns_data_with_public_permissions_from_metadb
+    core_stub = mock
+    core_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    core_stub.expects(:get_request).times(2).returns(
+      '{"grants": [{"flags": ["public"]}]}', # fetch permissions
+      %({"displayType": "data_lens", "displayFormat": {"data_lens_page_metadata": #{JSON.generate(v1_page_metadata_without_rollup_columns)}}}) # fetch page metadata
+    )
+    CoreServer::Base.stubs(connection: core_stub)
+
+    result = manager.show('four-four')
+    assert_equal(%w(
+      cards datasetId description name pageId primaryAggregation primaryAmountField
+      version largestTimeSpanDays defaultDateTruncFunction permissions
+    ).sort, result.keys.sort)
+    assert_equal({'isPublic' => true, 'rights' => []}.with_indifferent_access, result['permissions'])
+  end
+
+  def test_show_returns_data_with_private_permissions_from_metadb
+    core_stub = mock
+    core_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    core_stub.expects(:get_request).times(2).returns(
+      '{"grants": []}', # fetch permissions
+      %({"displayType": "data_lens", "displayFormat": {"data_lens_page_metadata": #{JSON.generate(v1_page_metadata_without_rollup_columns)}}}) # fetch page metadata
+    )
+    CoreServer::Base.stubs(connection: core_stub)
+
+    result = manager.show('four-four')
+    assert_equal(%w(
+      cards datasetId description name pageId primaryAggregation primaryAmountField
+      version largestTimeSpanDays defaultDateTruncFunction permissions
+    ).sort, result.keys.sort)
+    assert_equal({'isPublic' => false, 'rights' => []}.with_indifferent_access, result['permissions'])
+  end
+
+  def test_show_raises_error_if_core_needs_authn
+    core_stub = mock
+    core_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    core_stub.expects(:get_request).with do |url|
+      assert_equal('/views/four-four.json', url)
+    end.then.raises(CoreServer::CoreServerError.new(nil, 'authentication_required', nil))
+    CoreServer::Base.stubs(connection: core_stub)
+
+    assert_raises(NewViewManager::ViewAuthenticationRequired) do
+      manager.show('four-four')
+    end
+  end
+
+  def test_show_raises_error_if_core_needs_authz
+    core_stub = mock
+    core_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    core_stub.expects(:get_request).with do |url|
+      assert_equal('/views/four-four.json', url)
+    end.then.raises(CoreServer::CoreServerError.new(nil, 'permission_denied', nil))
+    CoreServer::Base.stubs(connection: core_stub)
+
+    assert_raises(NewViewManager::ViewAccessDenied) do
+      manager.show('four-four')
+    end
+  end
 
   def test_create_creates_data_lens_with_category_from_obe_dataset
     Phidippides.any_instance.stubs(
@@ -564,6 +671,14 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def v1_dataset_metadata_without_rollup_columns
     JSON.parse(File.read("#{Rails.root}/test/fixtures/v1-dataset-metadata-without-rollup-columns.json"))
+  end
+
+  def core_permissions_public
+    JSON.parse(File.read("#{Rails.root}/test/fixtures/core-permissions-public.json"))
+  end
+
+  def core_permissions_private
+    JSON.parse(File.read("#{Rails.root}/test/fixtures/core-permissions-private.json"))
   end
 
   def remove_table_card(page_metadata)

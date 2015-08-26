@@ -341,6 +341,7 @@ class Phidippides < SocrataHttp
   # Page Metadata requests
 
   def fetch_page_metadata(page_id, options = {})
+
     # Log Access to Page Object
     log_datalens_access(page_id)
 

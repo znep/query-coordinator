@@ -22,15 +22,21 @@ class PhidippidesPagesController < ApplicationController
   def show
     return render :nothing => true, :status => '400' unless params[:id].present?
 
-    # Inherit the permissions from the catalog entry that points to this page.
     begin
-      permissions = fetch_permissions(params[:id])
+      page_metadata = page_metadata_manager.show(
+        params[:id],
+        :request_id => request_id,
+        :cookies => forwardable_session_cookies
+      )
+      render :json => page_metadata, :status => '200'
     rescue NewViewManager::ViewNotFound
       return render :nothing => true, :status => '404'
     rescue NewViewManager::ViewAuthenticationRequired => error
       return render :json => { error: error.message }, :status => '401'
     rescue NewViewManager::ViewAccessDenied => error
       return render :json => { error: error.message }, :status => '403'
+    rescue Phidippides::ConnectionError
+      render :json => { :body => 'Phidippides connection error' }, :status => '500'
     rescue => error
       message = "Unknown error while fetching permissions for pageId #{params[:id]}: #{error}"
       Rails.logger.error(message)
@@ -40,22 +46,6 @@ class PhidippidesPagesController < ApplicationController
         :error_message => message
       )
       return render :nothing => true, :status => '500'
-    end
-
-    begin
-      result = phidippides.fetch_page_metadata(
-        params[:id],
-        :request_id => request_id,
-        :cookies => forwardable_session_cookies
-      )
-      page_metadata = result[:body]
-
-      # Also add the permissions
-      page_metadata[:permissions] = permissions if page_metadata && result[:status] =~ /^20[0-9]$/
-
-      render :json => page_metadata, :status => result[:status]
-    rescue Phidippides::ConnectionError
-      render :json => { :body => 'Phidippides connection error' }, :status => '500'
     end
   end
 

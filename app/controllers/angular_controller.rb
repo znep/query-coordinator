@@ -137,51 +137,21 @@ class AngularController < ActionController::Base
   private
 
   def fetch_page_metadata(page_id)
-
-    # Grab permissions from core.
-    permissions = fetch_permissions_and_normalize_exceptions(page_id)
-
-    result = phidippides.fetch_page_metadata(
-      params[:id],
-      :request_id => request_id,
-      :cookies => forwardable_session_cookies
-    )
-
-    if result[:status] != '200'
-      case result[:status]
-        when '401'
-          raise AuthenticationRequired.new
-        when '403'
-          # Core returns a status code of 403 even if the actual intent of the
-          # response is to indicate that authentication is required. For this
-          # reason we need to check the 'code' property of the error response
-          # body. The two relevant codes are:
-          #
-          # 'authentication_required' and
-          # 'permission_denied'
-          #
-          # In the case of 'authentication_required' we want to redirect the
-          # user to the login page. Otherwise we want to render a 403.
-          #
-          # Note that we only need to do this check when a page is public but
-          # its underlying dataset is private.
-          if /authentication_required/ =~ result[:body]
-            raise AuthenticationRequired.new
-          elsif /permission_denied/ =~ result[:body]
-            raise UnauthorizedPageMetadataRequest.new
-          else
-            raise UnknownRequestError.new result[:body].to_s
-          end
-        when '404'
-          raise PageMetadataNotFound.new
-        else
-          raise UnknownRequestError.new result[:body].to_s
-      end
+    begin
+      page_metadata_manager.show(
+        page_id,
+        :request_id => request_id,
+        :cookies => forwardable_session_cookies
+      )
+    rescue NewViewManager::ViewAuthenticationRequired
+      raise AuthenticationRequired.new
+    rescue NewViewManager::ViewAccessDenied
+      raise UnauthorizedPageMetadataRequest.new
+    rescue NewViewManager::ViewNotFound
+      raise PageMetadataNotFound.new
+    rescue => error
+      raise UnknownRequestError.new error.to_s
     end
-
-    page_metadata = result[:body]
-    page_metadata[:permissions] = permissions if page_metadata
-    page_metadata
   end
 
   def fetch_dataset_metadata(dataset_id)

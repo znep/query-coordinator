@@ -16,6 +16,8 @@ module ApplicationHelper
     if view.is_api?
       # use the view's federation resolution but throw away the rest for the resource name instead.
       developer_docs_url(view.route_params.only( :host ).merge( resource: view.resourceName || '' ))
+    elsif view.data_lens?
+      "/view/#{view.id}"
     elsif view.new_view?
       begin
         # use the direct link stored in the metadata for 'new_view' display types

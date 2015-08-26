@@ -46,6 +46,7 @@
       _.extend(
         scope,
         {
+          isEphemeral: false,
           hasChanges: false,
           editMode: false,
           expandedCard: false,
@@ -55,8 +56,8 @@
       );
 
       var html = [
-        '<customize-bar has-changes="hasChanges" edit-mode="editMode" expanded-card="expandedCard"',
-        'exporting-visualization="exportingVisualization"></customize-bar>'
+        '<customize-bar is-ephemeral="isEphemeral" has-changes="hasChanges" edit-mode="editMode"',
+        'expanded-card="expandedCard" exporting-visualization="exportingVisualization"></customize-bar>'
       ].join('');
 
       var element = testHelpers.TestDom.compileAndAppend(html, scope);
@@ -102,11 +103,11 @@
       var scope = elementAndScope.scope;
 
       expect(customizeBar.find('.customize-bar')).to.not.have.class('has-changes');
-      expect(customizeBar.find('.changes-warning')).to.have.class('ng-hide');
+      expect(customizeBar.find('.changes-warning').first()).to.have.class('ng-hide');
       scope.hasChanges = true;
       scope.$digest();
       expect(customizeBar.find('.customize-bar')).to.have.class('has-changes');
-      expect(customizeBar.find('.changes-warning')).to.not.have.class('ng-hide');
+      expect(customizeBar.find('.changes-warning').first()).to.not.have.class('ng-hide');
     });
 
     describe('customize button', function() {
@@ -186,6 +187,15 @@
         expect(flyout).to.exist;
         expect(flyout.text()).to.match(/.*Download Visualization as Image.*/);
         testHelpers.fireMouseEvent(customizeButton[0], 'mouseout');
+      });
+    });
+
+    describe('in ephemeral mode', function() {
+
+      it('should show a save warning even when no changes have been made', function() {
+        var elementAndScope = createElement({isEphemeral: true});
+        var customizeBar = elementAndScope.element;
+        expect(customizeBar.find('.changes-warning').last()).to.not.have.class('ng-hide');
       });
     });
   });

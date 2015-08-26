@@ -130,6 +130,9 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         context 'creating a new default page if there is already a default page but the default page is not v1' do
           setup do
             @page_metadata_manager.stubs(
+              show: {
+                status: '200'
+              },
               create: {
                 status: '200',
                 body: { pageId: 'abcd-efgh' }
@@ -185,15 +188,17 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
 
         context 'redirect to the default page if there is already a default page and the default page is v1' do
           setup do
+            @page_metadata_manager.stubs(
+              show: {
+                status: '200'
+              }
+            )
             @phidippides.stubs(
               fetch_dataset_metadata: {
                 status: '200', body: { defaultPage: 'defa-ultp' }
               },
               fetch_pages_for_dataset: {
                 status: '200', body: { publisher: [{ pageId: 'page-xist', version: '1' }, { pageId: 'defa-ultp', version: '1' }, { pageId: 'last-page', version: '1' }], user: [] }
-              },
-              fetch_page_metadata: {
-                status: '200'
               },
               update_dataset_metadata: {
                 status: '200'
@@ -302,16 +307,17 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
         end
 
         context 'default page is set and is present in publisher pages but does not actually exist' do
+
           setup do
             # default page is set
-            stub_request(:get, 'http://localhost:2401/v1/id/data-iden/dataset').
+            stub_request(:get, 'http://127.0.0.1:2401/v1/id/data-iden/dataset').
               to_return(
                 :status => 200,
                 :body => v1_mock_dataset_metadata.deep_dup.
                   tap { |dataset_metadata| dataset_metadata[:defaultPage] = 'lost-page' }.to_json.to_s)
 
             # default page is present in pages
-            stub_request(:get, 'http://localhost:2401/v1/id/data-iden/pages').
+            stub_request(:get, 'http://127.0.0.1:2401/v1/id/data-iden/pages').
               to_return(
                 :status => 200,
                 :body => {
@@ -322,8 +328,24 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
                 }.to_json.to_s)
 
             # default page does not exist
-            stub_request(:get, 'http://localhost:2401/v1/pages/lost-page').
+            stub_request(:get, 'http://127.0.0.1:2401/v1/pages/lost-page').
               to_return(:status => 404)
+
+            stub_request(:get, 'http://localhost:2401/v1/id/data-iden/dataset').
+              to_return(
+                :status => 200,
+                :body => v1_mock_dataset_metadata.deep_dup.
+                  tap { |dataset_metadata| dataset_metadata[:defaultPage] = 'lost-page' }.to_json.to_s)
+
+            stub_request(:get, 'http://localhost:2401/v1/id/data-iden/pages').
+              to_return(
+                :status => 200,
+                :body => {
+                  'lost-page' => {
+                    'pageId' => 'lost-page',
+                    'version' => 1
+                  }
+                }.to_json.to_s)
 
             @phidippides.stubs(
               log_datalens_access: nil
@@ -331,6 +353,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
           end
 
           should 'create a new default page, update page metadata, and redirect' do
+
             # Create new default page
             @page_metadata_manager.
               expects(:create).
@@ -347,6 +370,7 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               returns({ status: '200' })
 
             get :bootstrap, id: 'data-iden'
+
             # Redirect to new default page
             assert_redirected_to('/view/abcd-efgh')
           end

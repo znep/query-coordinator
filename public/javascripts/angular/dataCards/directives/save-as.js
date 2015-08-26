@@ -6,8 +6,7 @@
       restrict: 'E',
       scope: {
         hasChanges: '=',
-        savePageAs: '=',
-        isEphemeral: '='
+        savePageAs: '='
       },
       templateUrl: '/angular_templates/dataCards/saveAs.html',
       link: function($scope, element, attrs) {

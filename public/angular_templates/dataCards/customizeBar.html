@@ -19,15 +19,13 @@
   <save-button
     class="save-this-page r-to-l"
     ng-click="savePage()"
-    enabled="hasChanges"
-    ng-hide="isEphemeral"
+    enabled="hasChanges || isEphemeral"
     save-status="saveStatus">
   </save-button>
   <save-as
     has-changes="hasChanges"
     save-page-as="savePageAs"
-    is-ephemeral="isEphemeral"
-    ng-show="showSaveAsButton || isEphemeral"></save-as>
+    ng-show="showSaveAsButton && !isEphemeral"></save-as>
   <span
     class="changes-warning"
     ng-show="hasChanges">

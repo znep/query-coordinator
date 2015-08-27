@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example Usage: socrata.visualizations.FeatureMap.js</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <!-- `leaflet.css` must be included or the map will render incorrectly -->
+    <link rel="stylesheet" media="all" href="../bower_components/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" media="all" href="../socrata.visualizations.featureMap.css">
+    <style type="text/css">
+
+      body {
+        font-size: 10px;
+        font-family: sans-serif;
+      }
+
+      #feature-map {
+        display: block;
+        position: relative;
+        width: 640px;
+        height: 480px;
+        margin: 100px auto 0 auto;
+        border: 1px solid #aaa;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="feature-map"></div>
+  </body>
+  <!-- lodash must be loaded before `socrata.utils.js` -->
+  <script type="text/javascript" src="../bower_components/lodash/lodash.js"></script>
+  <script type="text/javascript" src="../bower_components/socrata-utils/socrata.utils.js"></script>
+  <!-- jquery must be loaded before `socrata.visualizations.Visualization.js` -->
+  <script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
+  <!-- `socrata.visualizations.Visualization.js` must be loaded before `socrata.visualizations.FeatureMap.js` -->
+  <script type="text/javascript" src="../socrata.visualizations.Visualization.js"></script>
+  <!-- leaflet must be loaded before `socrata.visualizations.FeatureMap.js` -->
+  <script type="text/javascript" src="../bower_components/leaflet/dist/leaflet.js"></script>
+  <!-- `socrata.visualizations.pbf.js` must be loaded before `socrata.visualizations.FeatureMap.js` -->
+  <script type="text/javascript" src="../socrata.visualizations.pbf.js"></script>
+  <!-- vector-tile-js must be loaded before `socrata.visualizations.FeatureMap.js` -->
+  <script type="text/javascript" src="../bower_components/vector-tile-js/dist/vectortile.js"></script>
+  <!-- d3 must be loaded before `socrata.visualizations.FeatureMap.js` -->
+  <script type="text/javascript" src="../bower_components/d3/d3.js"></script>
+  <!-- `socrata.visualizations.VectorTileManager.js` must be loaded before `socrata.visualizations.FeatureMap.js` -->
+  <script type="text/javascript" src="../socrata.visualizations.VectorTileManager.js"></script>
+  <script type="text/javascript" src="../socrata.visualizations.FeatureMap.js"></script>
+  <!-- `socrata.visualizations.DataProvider.js` must be loaded before `socrata.visualizations.SocrataTileserverDataProvider.js` -->
+  <script type="text/javascript" src="../socrata.visualizations.DataProvider.js"></script>
+  <script type="text/javascript" src="../socrata.visualizations.GeospaceDataProvider.js"></script>
+  <script type="text/javascript" src="../socrata.visualizations.TileserverDataProvider.js"></script>
+  <script type="text/javascript">
+
+    var DOMAIN = 'https://dataspace.demo.socrata.com';
+    var FOUR_BY_FOUR = 'r6t9-rak2';
+    var FIELDNAME = 'point';
+
+    /**
+     * Configure visualization
+     */
+
+    var visualizationConfig = {
+      // The localization values should be set by the application but are set to string literals
+      // for the purposes of this example.
+      localization: {
+        'FLYOUT_FILTER_NOTICE': 'There are too many points at this location',
+        'FLYOUT_FILTER_OR_ZOOM_NOTICE': 'Zoom in to see details',
+        'FLYOUT_DENSE_DATA_TITLE': 'Numerous',
+        'FLYOUT_CLICK_TO_INSPECT_NOTICE': 'Click to see details'
+      },
+      hover: true,
+      disablePanAndZoom: false
+    };
+
+    var visualizationRenderOptions = {
+      labelUnit: 'rows'
+    };
+
+    var visualization = new window.socrata.visualizations.FeatureMap(
+      $('#feature-map'),
+      visualizationConfig
+    );
+
+    /**
+     * Configure Data Providers
+     */
+
+    visualizationRenderOptions.baseLayer = {
+      url: 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
+      opacity: 0.15
+    };
+
+    var geospaceDataProvider = new socrata.visualizations.GeospaceDataProvider();
+
+    var featureExtentConfig = {
+      headers: {
+        'Accept': 'application/json'
+      },
+      domain: DOMAIN,
+      fourByFour: FOUR_BY_FOUR,
+      fieldName: FIELDNAME
+    };
+
+    var featureExtent = geospaceDataProvider.
+      getFeatureExtent(featureExtentConfig).
+      then(
+        function(response) {
+
+          var featureExtent = response.data;
+          var southWest = L.latLng(featureExtent.southwest[0], featureExtent.southwest[1]);
+          var northEast = L.latLng(featureExtent.northeast[0], featureExtent.northeast[1]);
+
+          visualizationRenderOptions.bounds = L.latLngBounds(southWest, northEast);
+
+          renderIfOptionsComplete();
+
+        },
+        function(error) {
+
+          return null;          
+
+        }
+      ).catch(function(e) {
+        console.error(e);
+      });
+
+    var tileserverDataProviderConfig = {
+      tileserverHosts: ['https://tileserver1.api.us.socrata.com'],
+      featuresPerTile: 1024 * 1024,
+      cname: 'dataspace.demo.socrata.com',
+      appToken: 'zvQamMSTi4GNuZWWDwjLdLPhW'
+    };
+
+    var tileserverDataProvider = new socrata.visualizations.TileserverDataProvider(tileserverDataProviderConfig);
+
+    visualizationRenderOptions.vectorTileGetter = tileserverDataProvider.buildTileGetter(
+      FOUR_BY_FOUR,
+      FIELDNAME,
+      '',
+      false
+    );
+
+    renderIfOptionsComplete();
+
+
+    function renderIfOptionsComplete() {
+      if (
+        visualizationRenderOptions.hasOwnProperty('baseLayer') &&
+        visualizationRenderOptions.hasOwnProperty('bounds') &&
+        visualizationRenderOptions.hasOwnProperty('vectorTileGetter')) {
+
+        visualization.render(visualizationRenderOptions);
+      }
+    }
+
+
+    
+
+    // Get necessary data for query and perform query for clicked rows
+    // function queryByPositionPointsAndBounds(position, points, bounds) {
+
+    //   var numberOfRowsClicked = _.sum(points, 'count');
+
+
+
+    //   // Submit query for clicked rows
+      
+    //     var offset = 0;
+    //     var orderQueryComponent = 'distance_in_meters({0}, "POINT({1} {2})")'.format(
+    //       proximityQueryConfig.fieldName
+    //       proximityQueryConfig.lng,
+    //       proximityQueryConfig.lat
+    //     );
+    //     var withinBoxQueryComponent = 'within_box({0}, {1}, {2})'.format({
+    //       proximityQueryConfig.fieldName,
+    //       '{0}, {1}'.format(
+    //         proximityQueryConfig.bounds.northeast.lat,
+    //         proximityQueryConfig.bounds.northeast.lng
+    //       ),
+    //       '{0}, {1}'.format(
+    //         proximityQueryConfig.bounds.southwest.lat,
+    //         proximityQueryConfig.bounds.southwest.lng
+    //       )
+    //     });
+    //     var whereClause;
+
+    //     if (!_.isEmpty(proximityQueryConfig.whereClause)) {
+    //       whereClause = '{originalWhereClause} AND {withinBox}'.format(
+    //         proximityQueryConfig.whereClause,
+    //         withinBoxQueryComponent
+    //       );
+    //     } else {
+    //       whereClause = withinBoxQueryComponent;
+    //     }
+
+
+
+    //     var rowQueryResponsePromise = CardDataService.getRows(
+    //       rowQueryComponents.id,
+    //       offset,
+    //       numberOfRowsClicked,
+    //       order,
+    //       $q.defer(),
+    //       whereClause
+    //     );
+    //     return Rx.Observable.fromPromise(rowQueryResponsePromise);
+    //   });
+
+
+
+    //   var formattedRowQueryResponse$ = Rx.Observable.combineLatest(
+    //     rowQueryResponse$,
+    //     columns$.filter(_.isDefined),
+    //     dataFieldName$,
+    //     function(rows, columns) {
+
+    //       if (_.isNull(rows)) {
+    //         return null;
+    //       }
+
+    //       // Each of our rows will be mapped to 'formattedRowData',
+    //       // an array of objects.  Each row corresponds to a single
+    //       // page in the flannel.
+    //       return _.map(rows, function(row) {
+    //         var formattedRowData = [];
+
+    //         // We will be representing our formatted line-by-line data
+    //         // on each page with an array of objects, where each object
+    //         // corresponds to a single line on the flannel page.
+    //         _.each(row, function(cellValue, cellName) {
+    //           var column = columns[cellName];
+
+    //           if (_.isUndefined(column.name)) {
+    //             column.name = reformatCellName(cellName);
+    //           }
+
+    //           // If we're formatting a subcolumn, first find the parent
+    //           // column name and position, and then format accordingly.
+    //           // Otherwise, just format the normal column.
+    //           // Note: We can rely upon subcolumns being added after their
+    //           // corresponding parent columns.
+    //           if (column.isSubcolumn) {
+
+    //             // For example, if cellName was 'crime_location_address' or
+    //             // 'crime_location_zip', the parentColumnName would be
+    //             // 'crime_location'.
+    //             var parentColumnName = cellName.slice(0, cellName.lastIndexOf('_'));
+    //             var parentPosition = columns[parentColumnName].position;
+    //             var subColumnName = constructSubColumnName(column.name, parentColumnName);
+
+    //             // Add the subcolumn data.
+    //             formattedRowData[parentPosition].value.push({
+    //               columnName: subColumnName,
+    //               value: cellValue,
+    //               format: column.format,
+    //               physicalDatatype: column.physicalDatatype
+    //             });
+    //           } else {
+
+    //             // If the cellValue is an object (e.g. a coordinate point),
+    //             // we should format it slightly differently.
+    //             formattedRowData[column.position] = {
+    //               columnName: column.name,
+    //               value: _.isObject(cellValue) ? [cellValue] : cellValue,
+    //               format: _.isObject(cellValue) ? undefined : column.format,
+    //               physicalDatatype: column.physicalDatatype
+    //             };
+    //           }
+    //         });
+    //         return formattedRowData.filter(_.isDefined);
+    //       });
+    //     }
+    //   );
+    //   return formattedRowQueryResponse$;
+    // }
+
+
+
+
+    /**
+     * Render visualization
+     */
+
+
+
+
+
+  </script>
+</html>

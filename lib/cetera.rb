@@ -29,12 +29,15 @@ module Cetera
     end
 
     params = ''
+    # Calculate the Cetera offset by 0-indexing page and multiplying
+    # by the limit (number of results per page).
+    offset = opts[:page] ? (opts[:page] - 1) * opts[:limit] : 0
     {
       :domains => domain,
       :search_context => domain,
       :only => only,
       :q => opts[:q],
-      :offset => opts[:page],
+      :offset => offset,
       :limit => opts[:limit],
       :highlight => true
     }.reject { |k, v| v.nil? }.each_with_index { |(key, value), index|

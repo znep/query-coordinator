@@ -39,8 +39,12 @@ assetNS.loadAssets = function(assets, mainCallback, cssCallback)
     var loadModals = _.isArray(assets.modals) && assets.modals.length > 0;
     var loadNewModals = _.isArray(assets.newModals) && assets.newModals.length > 0;
     var loadTranslations = _.isArray(assets.translations) && assets.translations.length > 0;
-    var finished = _.after(_.compact([loadJS, loadTemplates, loadTranslations, loadModals, loadNewModals]).length,
+    var numThingsToLoad = _.compact([loadJS, loadTemplates, loadTranslations, loadModals, loadNewModals]).length;
+    var finished = _.after(numThingsToLoad,
             function() { if (_.isFunction(mainCallback)) { mainCallback(); } });
+    if (numThingsToLoad === 0) {
+      finished();
+    }
 
     if (loadTemplates)
     { assetNS.loadPartials(translateUrls('/templates/', assets.templates, 'templates'), 'templates', finished); }

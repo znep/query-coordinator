@@ -307,6 +307,9 @@
                 {
                     callback(dc.datasetList.slice(start, start + count));
                 });
+                if (batches.length === 0) {
+                  gotResults();
+                }
 
                 _.each(batches, function(batch)
                 {
@@ -388,6 +391,9 @@
                                 var c = results.count - (results.views.length - vl.length);
                                 setResult(vl, c);
                             });
+                            if (results.views.length === 0) {
+                              trCallback();
+                            }
                             _.each(results.views, function(ds) { ds.getTotalRows(trCallback); });
                         }
                         else

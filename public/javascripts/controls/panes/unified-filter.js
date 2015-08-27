@@ -1909,6 +1909,9 @@
                 }
                 if (_.isFunction(callback)) { callback(aggCC); }
             });
+            if (datasets.length === 0) {
+              finalProcess();
+            }
 
             var processColumn = function(cc)
             {

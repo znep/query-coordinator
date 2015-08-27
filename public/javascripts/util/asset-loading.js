@@ -275,6 +275,9 @@ assetNS.loadPartials = function(partialQueue, type, callback)
         $partials.append($pieces);
         if (_.isFunction(callback)) { callback($pieces); }
     });
+    if (partials.length === 0) {
+      insertPartials();
+    }
 
     _.each(partials, function(partial)
     {

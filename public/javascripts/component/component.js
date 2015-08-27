@@ -1027,6 +1027,9 @@
                     { $.cf.side.enableProperties(true); }
                     if (_.isFunction(callback)) { callback.apply(cObj); }
                 });
+                if (count === 0) {
+                  finishCallback();
+                }
                 cObj._clearDataContext();
                 return {
                     success: function(dc)

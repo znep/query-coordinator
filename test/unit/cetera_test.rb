@@ -13,6 +13,7 @@ class CeteraTest < Test::Unit::TestCase
         :local_data_hack => true,
         :limitTo => 'new_view',
         :q => 'giraffes are whack',
+        :limit => 10,
         :page => 4
       }
       params = Cetera.cetera_soql_params(opts)
@@ -20,7 +21,8 @@ class CeteraTest < Test::Unit::TestCase
       assert params.match(/search_context=data.cityofchicago.org/)
       assert params.match(/only=pages/)
       assert params.match(/q=giraffes are whack/)
-      assert params.match(/offset=4/)
+      assert params.match(/limit=10/)
+      assert params.match(/offset=30/)
     end
 
     describe 'Displays' do

@@ -1,8 +1,8 @@
 <div class="resultCount">
   <%-
     total = opts[:view_count]
-    startIndex = opts[:view_results].length * (opts[:page] - 1) + 1
-    endIndex = [startIndex + opts[:view_results].length - 1, total].min
+    startIndex = opts[:limit] * (opts[:page] - 1) + 1
+    endIndex = [startIndex + opts[:limit] - 1, total].min
   -%>
   <%= t('controls.browse.listing.result_count_cetera',
         :start => startIndex,

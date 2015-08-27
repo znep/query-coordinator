@@ -369,6 +369,8 @@ class NewUxBootstrapControllerTest < ActionController::TestCase
               with { |dataset_metadata| dataset_metadata[:defaultPage] == 'abcd-efgh' }.
               returns({ status: '200' })
 
+            @controller.stubs(page_accessible?: false)
+
             get :bootstrap, id: 'data-iden'
 
             # Redirect to new default page

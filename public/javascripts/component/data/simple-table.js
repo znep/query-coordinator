@@ -129,7 +129,7 @@ var updateProperties = function(cObj, properties)
         cObj.$caption.removeClass('hide');
         var doneWithRowsCallback = function(count)
         {
-            var after _.after(count, function()
+            var after = _.after(count, function()
             {
                 if (count < 1)
                 {

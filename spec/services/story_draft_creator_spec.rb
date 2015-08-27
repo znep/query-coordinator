@@ -21,7 +21,7 @@ RSpec.describe StoryDraftCreator do
 
   # block id
   def existing_block_id
-    @existing_block_id ||= FactoryGirl.create(:block).id
+    @existing_block_id ||= FactoryGirl.create(:block).id.to_s
   end
 
   # individual blocks
@@ -30,7 +30,7 @@ RSpec.describe StoryDraftCreator do
   end
 
   def valid_existing_block
-    { id: existing_block_id }.freeze
+    { id: existing_block_id.to_s }.freeze
   end
 
   def invalid_new_block

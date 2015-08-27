@@ -94,7 +94,7 @@ class StoryDraftCreator
   def block_ids_or_nils
     @block_ids_or_nils ||= begin
       json_blocks.map do |block|
-        temp_block?(block) ? nil : block[:id]
+        temp_block?(block) ? nil : block[:id].to_i # block_id to int for future comparisions
       end
     end
   end
@@ -150,7 +150,7 @@ class StoryDraftCreator
   end
 
   def existing_block_ids_in_previous_story_version?
-    # This asserts that each block id in block_ids_or_nils also exists in
+    # This asserts that each non-temp block id in block_ids_or_nils also exists in
     # block_ids_from_previous_story_version. Since a block may have been
     # deleted that previously existed, we only care about the existence of
     # current block ids in the previous verison, not the reverse.

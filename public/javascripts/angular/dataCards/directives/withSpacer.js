@@ -3,10 +3,11 @@
  * that would otherwise be outside the flow of the document (eg position:fixed/absolute).
  */
 angular.module('dataCards.directives').directive('withSpacer', function() {
-  return {
-    restrict : 'A',
+  'use strict';
 
-    link: function($scope, element, attrs) {
+  return {
+    restrict: 'A',
+    link: function($scope, element) {
       var spacer = $('<div class="spacer">&nbsp;</div>').css($.extend({
         position: 'relative'
       }, element.css(['width', 'height', 'box-sizing', 'padding', 'margin', 'border-width', 'line-height'])));
@@ -20,5 +21,5 @@ angular.module('dataCards.directives').directive('withSpacer', function() {
         spacer.remove();
       });
     }
-  }
+  };
 });

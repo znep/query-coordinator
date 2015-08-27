@@ -6,7 +6,7 @@
       restrict: 'E',
       scope: { 'search': '=', 'placeholderValue': '@placeholder', 'inputId': '@' },
       templateUrl: '/angular_templates/dataCards/clearableInput.html',
-      link: function($scope, element, attrs) {
+      link: function($scope, element) {
         var searchInput = element.find('input');
         var blurEventObservable = Rx.Observable.fromEvent(searchInput, 'blur');
         var focusEventObservable = Rx.Observable.fromEvent(searchInput, 'focus');
@@ -48,8 +48,7 @@
           flatMapLatest(function(isFocused) {
             if (isFocused) {
               return WindowState.escapeKeyObservable;
-            }
-            else {
+            } else {
               return Rx.Observable.empty();
             }
           }).takeUntil($scope.$destroyAsObservable(element)).subscribe(clearInput);

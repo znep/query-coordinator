@@ -6,6 +6,8 @@ angular.module('dataCards.models').factory('Dataset', function(
   DatasetDataService,
   Schemas) {
 
+  'use strict';
+
   var datasetMetadataSchemas = Schemas.regarding('dataset_metadata');
 
   function isSystemColumn(columnFieldName) {

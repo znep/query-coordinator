@@ -6,6 +6,8 @@
 // If the div is resized, myDivResized will be broadcast with the new size as the arguments to the event
 // contained within an object of the form: { height: N, width: N } -- not including outer margins.
 angular.module('dataCards.directives').directive('notifyResize', function() {
+  'use strict';
+
   return {
     restrict: 'A',
     link: function($scope, element, attrs) {
@@ -24,5 +26,5 @@ angular.module('dataCards.directives').directive('notifyResize', function() {
         element.removeResize(onElementResize);
       });
     }
-  }
+  };
 });

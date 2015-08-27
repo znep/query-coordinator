@@ -13,7 +13,7 @@
         page: '='
       },
       templateUrl: '/angular_templates/dataCards/manageLensDialog.html',
-      link: function($scope, element, attrs) {
+      link: function($scope) {
         var currentVisibility;
 
         var pageIsPublicObservable = $scope.page.observe('permissions').

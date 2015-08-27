@@ -23,7 +23,7 @@
         totalAmount: '=',
         datumLength: '='
       },
-      link: function (scope, element, attrs) {
+      link: function(scope, element, attrs) {
         var firstEntryIndex = 0;
         scope.pageNumber = 0;
         scope.maxResults = (attrs.maxResults || DEFAULT_MAX_RESULTS);

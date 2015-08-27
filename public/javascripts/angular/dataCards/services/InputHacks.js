@@ -3,7 +3,7 @@
 
   'use strict';
 
-  angular.module('dataCards.services').factory('InputHacks', function(WindowState) {
+  angular.module('dataCards.services').factory('InputHacks', function() {
     var InputHacks = {};
 
     var jqueryWindow = $(window);

@@ -10,7 +10,7 @@
         // Currently no lenses can be non-official so we can hard-code this.
         $scope.lensType = 'official';
       }
-    }
+    };
   }
 
   angular.

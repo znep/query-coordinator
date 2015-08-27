@@ -8,7 +8,7 @@
         content: '='
       },
       templateUrl: '/angular_templates/dataCards/selectionLabel.html',
-      link: function($scope, element, attrs) {
+      link: function($scope, element) {
         var $selectionLabelContent = element.find('.selection-label-inner');
         var mouseHasNotMovedSinceMouseDown = false;
 

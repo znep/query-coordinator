@@ -40,7 +40,8 @@ var renderUpdate = function()
     if (datasets.length < 1) { return; }
 
     var comments = [];
-    var gotComments = _.after(cObj._properties.hideComments ? 0 : datasets.length, function()
+    var numDatasetsToFetch = cObj._properties.hideComments ? 0 : datasets.length;
+    var gotComments = _.after(numDatasetsToFetch, function()
     {
         cObj.finishLoading();
         if (!$.isBlank(cObj._feed))
@@ -69,6 +70,9 @@ var renderUpdate = function()
         }
         cObj._updateValidity();
     });
+    if (numDatasetsToFetch === 0) {
+      gotComments();
+    }
 
     if (cObj._properties.hideComments) { return; }
 

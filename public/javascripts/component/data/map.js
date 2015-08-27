@@ -321,6 +321,9 @@ var updateProperties = function(lcObj)
     var after = _.after((lcObj._viewDefinitions || []).length, function() {
         if (!lcObj._updateDataSource(null, setUpMap)) { setUpMap(); }
     });
+    if (_.isEmpty(lcObj._viewDefinitions)) {
+      after();
+    }
     _.each(lcObj._viewDefinitions || [], function(l) {
         if (!l._updateDataSource(null, after)) { after(); }
     });

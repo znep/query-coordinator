@@ -13,7 +13,7 @@
 angular.module('dataCards.models').factory('Model', function(Class, ModelHelper) {
   'use strict';
   var Model = Class.extend({
-    init:function Model() {
+    init: function Model() {
       var self = this;
       this._writes = new Rx.Subject();
       this._sets = new Rx.Subject();
@@ -119,7 +119,9 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
 
     // Define a new ephemeral observable property. The arguments and behavior are the same as
     // defineObservableProperty, except that this property will not be serialized.
-    defineEphemeralObservableProperty: function(propertyName, initialValue, defaultGenerator) {
+    // NOTE: See defineObservableProperty for the full method signature, because
+    // the linter complains about unused variables if this signature is expanded).
+    defineEphemeralObservableProperty: function(propertyName) {
       this.defineObservableProperty.apply(this, arguments);
       this._setObservablePropertyIsEphemeral(propertyName, true);
     },
@@ -202,7 +204,7 @@ angular.module('dataCards.models').factory('Model', function(Class, ModelHelper)
           }).switchLatest();
         }
 
-      };
+      }
 
       return deepGet(this, propertyName.split('.'));
     },

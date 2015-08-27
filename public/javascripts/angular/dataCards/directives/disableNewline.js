@@ -7,6 +7,8 @@
  * on the textarea for this directive to work.
  */
 angular.module('dataCards.directives').directive('disableNewline', function() {
+  'use strict';
+
   return {
     require: 'ngModel',
     restrict: 'A',
@@ -50,5 +52,5 @@ angular.module('dataCards.directives').directive('disableNewline', function() {
         $scope.$broadcast('elastic:adjust');
       });
     }
-  }
+  };
 });

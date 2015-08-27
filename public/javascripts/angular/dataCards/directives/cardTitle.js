@@ -20,7 +20,7 @@
         '</div>'
       ].join(''),
 
-      link: function($scope, element, attrs) {
+      link: function($scope) {
         var model$ = $scope.$observe('model');
         var pageModel = $scope.model.page;
         var customTitle$ = model$.observeOnLatest('customTitle').filter(_.isPresent);

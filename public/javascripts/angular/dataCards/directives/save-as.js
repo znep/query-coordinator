@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function saveAs($window, WindowState, FlyoutService, I18n) {
+  function saveAs($window, WindowState, FlyoutService) {
     return {
       restrict: 'E',
       scope: {
@@ -10,7 +10,7 @@
         isEphemeral: '='
       },
       templateUrl: '/angular_templates/dataCards/saveAs.html',
-      link: function($scope, element, attrs) {
+      link: function($scope, element) {
         var saveEvents = new Rx.BehaviorSubject({ status: 'idle' });
 
         $scope.$bindObservable('saveStatus', saveEvents.pluck('status'));
@@ -24,7 +24,6 @@
         var $saveAsButton = element.find('.save-as-button');
         var $nameInput = element.find('#save-as-name');
         var $descriptionInput = element.find('#save-as-description');
-        var $document = $($window.document);
 
         $scope.defaultNamePlaceholder = 'Enter a name';
         $scope.namePlaceholder = $scope.defaultNamePlaceholder;

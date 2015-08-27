@@ -29,7 +29,7 @@
           var currentPageMetadataVersion = parseInt(ServerConfig.get('currentPageMetadataVersion'), 10);
           if (_.isNaN(currentPageMetadataVersion)) {
             currentPageMetadataVersion = 1;
-            $log.warn("currentPageMetadataVersion could not be parsed as an integer; falling back to '1'");
+            $log.warn('currentPageMetadataVersion could not be parsed as an integer; falling back to "1"');
           }
           return currentPageMetadataVersion;
         }

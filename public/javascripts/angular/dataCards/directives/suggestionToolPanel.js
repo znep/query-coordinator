@@ -94,7 +94,7 @@
 
         var suggestions$ = suggestionsRequests$.switchLatest().
           map(function(suggestions) {
-            return (suggestions || []).slice(0, SUGGESTION_LIMIT)
+            return (suggestions || []).slice(0, SUGGESTION_LIMIT);
           });
 
         var suggestionsLoading$ = searchValue$.

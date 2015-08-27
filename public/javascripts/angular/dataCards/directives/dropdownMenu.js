@@ -31,7 +31,6 @@ angular.module('dataCards.directives').directive('dropdownMenu', function(
 
       // Make sure the menu doesn't go off the screen
       element.css('visibility', 'hidden');
-      var windowDimensions = {};
       subscriptions.push(Rx.Observable.subscribeLatest(
         WindowState.windowSizeSubject,
         element.observeDimensions(),

@@ -68,7 +68,6 @@
             'Cannot decrement date by dataset precision: invalid interval "{0}"'.
             format(interval)
           );
-          break;
       }
 
       return newDate;
@@ -97,7 +96,6 @@
             'Cannot increment date by dataset precision: invalid interval "{0}"'.
             format(interval)
           );
-          break;
       }
 
       return newDate;

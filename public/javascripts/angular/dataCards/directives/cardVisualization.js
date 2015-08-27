@@ -10,7 +10,7 @@
         'whereClause': '='
       },
       templateUrl: '/angular_templates/dataCards/cardVisualization.html',
-      link: function($scope, element, attrs) {
+      link: function($scope) {
 
         var modelSubject = $scope.$observe('model').filter(_.identity);
 

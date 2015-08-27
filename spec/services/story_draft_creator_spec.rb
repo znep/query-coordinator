@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe StoryDraftCreator do
 
-  let(:user) { 'test_user@socrata.com' }
+  let(:user) { mock_valid_user }
   let(:uid) { 'test-data' }
   let(:digest) { 'digest-for-draft' }
 
@@ -90,7 +90,6 @@ RSpec.describe StoryDraftCreator do
   end
 
   context 'when initialized without a user' do
-
     let(:user) { nil }
 
     it 'raises an exception' do
@@ -105,9 +104,20 @@ RSpec.describe StoryDraftCreator do
     end
   end
 
+  context 'when initialized with an invalid user' do
+    it 'raises an exception' do
+      expect {
+        StoryDraftCreator.new(
+          user: mock_valid_user.tap{|user| user['id'] = 'not' },
+          uid: uid,
+          digest: digest,
+          blocks: blocks
+        )
+      }.to raise_error(ArgumentError)
+    end
+  end
 
   context 'when initialized without a digest' do
-
     let(:digest) { nil }
 
     it 'raises an exception' do
@@ -123,7 +133,6 @@ RSpec.describe StoryDraftCreator do
   end
 
   context 'when initialized with a blank digest' do
-
     let(:digest) { '' }
 
     it 'raises an exception' do
@@ -139,7 +148,6 @@ RSpec.describe StoryDraftCreator do
   end
 
   context 'when initialized with no uid' do
-
     let(:uid) { nil }
 
     it 'raises an exception' do
@@ -157,17 +165,16 @@ RSpec.describe StoryDraftCreator do
   describe '#create' do
 
     context 'when called with a digest that does not match last known digest' do
-
       let!(:previous_digest) { FactoryGirl.create(:draft_story, uid: uid).digest }
 
-      let(:story_creator) {
+      let(:story_creator) do
         StoryDraftCreator.new(
           user: user,
           uid: uid,
           digest: previous_digest + 'NOPE',
           blocks: blocks
         )
-      }
+      end
 
       it 'raises exception' do
         expect{ story_creator.create }.to raise_error(StoryDraftCreator::DigestMismatchError)
@@ -184,15 +191,14 @@ RSpec.describe StoryDraftCreator do
     end
 
     context 'when called on an instance created with valid attributes' do
-
-      let(:story_creator) {
+      let(:story_creator) do
         StoryDraftCreator.new(
           user: user,
           uid: uid,
           digest: digest,
           blocks: blocks
         )
-      }
+      end
 
       context 'with no existing blocks' do
 
@@ -219,17 +225,17 @@ RSpec.describe StoryDraftCreator do
       end
 
       context 'with existing blocks' do
-
         let(:blocks) { valid_some_existing_blocks }
 
-        let(:previous_draft) {
+        let(:previous_draft) do
           FactoryGirl.create(
             :draft_story,
             uid: uid,
             block_ids: [ existing_block_id ],
-            created_by: user
+            created_by: user['id']
           )
-        }
+        end
+
         let(:digest) { previous_draft.digest }
 
         it 'returns a DraftStory object' do
@@ -420,14 +426,14 @@ RSpec.describe StoryDraftCreator do
         context 'with an existing block with an id > the largest block id' do
           let(:new_block) { FactoryGirl.create(:block) }
 
-          let(:previous_draft) {
+          let(:previous_draft) do
             FactoryGirl.create(
               :draft_story,
               uid: uid,
               block_ids: [ new_block.id ],
-              created_by: user
+              created_by: user['id']
             )
-          }
+          end
 
           let(:digest) { previous_draft.digest }
 

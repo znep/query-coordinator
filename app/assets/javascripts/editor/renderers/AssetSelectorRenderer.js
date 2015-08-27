@@ -153,6 +153,12 @@
             });
             break;
 
+          case Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD:
+            storyteller.dispatcher.dispatch({
+              action: Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
+            });
+            break;
+
           case Constants.ASSET_SELECTOR_APPLY:
             storyteller.dispatcher.dispatch({
               action: Constants.BLOCK_UPDATE_COMPONENT,
@@ -209,6 +215,10 @@
             selectorContent = _renderConfigureVisualizationTemplate();
             break;
 
+          case Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD:
+            selectorContent = _renderChooseImageUploadTemplate();
+            break;
+
           default:
             selectorContent = null;
             break;
@@ -261,6 +271,11 @@
         'class': 'btn accent-btn',
         'data-action': Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION
       }).text(I18n.t('editor.asset_selector.visualization.button_text'));
+
+      var imageUploadButton = $('<button>', {
+        'class': 'btn accent-btn',
+        'data-action': Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
+      }).text(I18n.t('editor.asset_selector.image_upload.button_text'));
 
       var providers = $('<ul>', {'class': 'button-list'}).append([
         $('<li>').html(youtubeButton),

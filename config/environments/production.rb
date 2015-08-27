@@ -77,4 +77,14 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # Our uploaded file storage config
+  config.paperclip_defaults = {
+    :storage => :s3,
+    :s3_credentials => {
+      :bucket =>            Rails.application.secrets.aws['s3_bucket_name'],
+      :access_key_id =>     Rails.application.secrets.aws['access_key_id'],
+      :secret_access_key => Rails.application.secrets.aws['secret_access_key']
+    }
+  }
 end

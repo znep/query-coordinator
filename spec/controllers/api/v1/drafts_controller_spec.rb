@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe DraftsController, type: :controller do
+RSpec.describe Api::V1::DraftsController, type: :controller do
 
   before do
     stub_valid_session

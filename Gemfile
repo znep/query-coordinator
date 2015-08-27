@@ -33,14 +33,18 @@ gem 'airbrake'
 # Logging formatter to make sumo happier
 gem 'lograge'
 
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
+# We use aws-sdk-v1 for paperclip for S3
+gem 'aws-sdk-v1'
+
+# File uploading
+gem 'paperclip', '~> 4.3'
+
+# Run async jobs in the background
+gem 'delayed_job_active_record'
+gem 'daemons'
 
 # Use Unicorn as the app server
 # gem 'unicorn'
-
-# Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
 
 group :development, :test do
   # Testing framework
@@ -82,11 +86,14 @@ group :test do
 end
 
 group :development do
+  # Run application with $RAILS_ROOT/Procfile
+  gem 'foreman'
+
   gem 'rack-mini-profiler', require: false
   gem 'stackprof', require: false
   gem 'flamegraph'
 
-  # We use aws-sdk in the migration script for AWS
+  # We use aws-sdk v2 for RDS database migrations
   gem 'aws-sdk'
 
   gem 'decima-ruby', '0.1.0', path: 'vendor/gems/decima-ruby-0.1.0'

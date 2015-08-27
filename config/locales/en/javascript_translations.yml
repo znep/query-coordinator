@@ -32,6 +32,8 @@ en:
           button_text: 'Vizualization'
           choose_dataset_heading: 'Choose a dataset to visualize'
           configure_vizualization_heading: 'Choose data to visualize'
+        image_upload:
+          button_text: 'Image Upload'
     visualizations:
       no_value_placeholder: '(No value)'
       flyout:

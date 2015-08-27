@@ -29,7 +29,7 @@ RUN DEBIAN_FRONTEND=noninteractive && \
   eval ${build_proxy_env} && \
   apt-get update -q && \
   apt-get install -y ruby2.2-dev build-essential libxml2-dev \
-    zlib1g-dev libxslt1-dev libpq-dev nodejs git && \
+    zlib1g-dev libxslt1-dev libpq-dev nodejs git imagemagick && \
   apt-get purge -y --auto-remove software-properties-common && \
   rm -rf /var/lib/apt/lists/*
 

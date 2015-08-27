@@ -15,28 +15,28 @@ class StoryDraftCreator
   # attributes[:digest] - previous draft digest to ensure safe saving
   # attributes[:blocks] - array of json blocks for new draft
   def initialize(attributes)
-    @user = attributes[:user]
-    if @user.blank?
-      raise ArgumentError.new('attributes[:user] is empty')
+    @user = attributes[:user] || {}
+    unless @user['id'] =~ FOUR_BY_FOUR_PATTERN
+      raise ArgumentError.new('User attribute is not valid')
     end
 
     @uid = attributes[:uid]
     unless @uid.present? && @uid =~ FOUR_BY_FOUR_PATTERN
-      raise ArgumentError.new("attributes[:uid] is not valid: '#{@uid}'")
+      raise ArgumentError.new("Uid attribute is not valid: '#{@uid}'")
     end
 
     @digest = attributes[:digest]
     if @digest.blank?
-      raise ArgumentError.new('attributes[:digest] is empty')
+      raise ArgumentError.new('Digest attribute is empty')
     end
 
     # This will raise an exception if :blocks is not present.
     @json_blocks = attributes.fetch(:blocks)
     unless @json_blocks.is_a?(Array)
-      raise ArgumentError.new('attributes[:blocks] is not array')
+      raise ArgumentError.new('Blocks attribute is not array')
     end
     unless all_json_blocks_are_hashes?
-      raise ArgumentError.new("attributes[:blocks] contains non-hashes: '#{@json_blocks}'")
+      raise ArgumentError.new("Blocks contains non-hashes: '#{@json_blocks}'")
     end
 
     @story = nil
@@ -70,7 +70,7 @@ class StoryDraftCreator
       @story = DraftStory.new(
         uid: uid,
         block_ids: merge_existing_and_new_block_ids,
-        created_by: user
+        created_by: user['id']
       )
       @story.save!
     end

@@ -5,12 +5,12 @@ default: &default
   rpx_twitter_url: https://socrata-test.rpxnow.com/twitter/start
   rpx_openid_url: https://socrata-test.rpxnow.com/openid/start
 
-  app_token: U29jcmF0YS0td2VraWNrYXNz0
+  {% if APP_TOKEN is defined -%}
+  app_token: {{ APP_TOKEN }}
+  {%- endif %}
 
   {% if DATA_CARDS_APP_TOKEN is defined -%}
   data_cards_app_token: {{ DATA_CARDS_APP_TOKEN }}
-  {% else %}
-  data_cards_app_token: zvQamMSTi4GNuZWWDwjLdLPhW
   {%- endif %}
 
   {% if FEATURE_MAP_ZOOM_DEBOUNCE is defined -%}
@@ -86,10 +86,11 @@ default: &default
 
   {% if MIXPANEL_TOKEN is defined -%}
   mixpanel_token: {{ MIXPANEL_TOKEN }}
-  {% else %}
-  mixpanel_token: 59b0b54697603105463834afdf20accf
   {%- endif %}
-  opendata_ga_tracking_code: UA-52982454-21
+
+  {% if GOOGLE_ANALYTICS_TRACKING_CODE is defined -%}
+  opendata_ga_tracking_code: {{ GOOGLE_ANALYTICS_TRACKING_CODE }}
+  {%- endif %}
 
   {% if POLAROID_HOSTNAME is defined and POLAROID_PORT is defined -%}
   polaroid_hostname: {{ POLAROID_HOSTNAME }}

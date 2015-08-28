@@ -60,7 +60,7 @@ default: &default
 
 # Local development
 development:
-  ssl_port: 9443
+  ssl_port: 443
   http_port: 9292
   max_core_server_requests: 15
   metrics_dir: tmp/metriclogs

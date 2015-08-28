@@ -189,7 +189,7 @@ describe('AssetSelectorStore', function() {
         });
 
         assert.equal(
-          storyteller.assetSelectorStore.getCurrentComponentValue().dataSource.fourByFour,
+          storyteller.assetSelectorStore.getCurrentComponentValue().dataSource.uid,
           standardMocks.validStoryUid
         );
       });

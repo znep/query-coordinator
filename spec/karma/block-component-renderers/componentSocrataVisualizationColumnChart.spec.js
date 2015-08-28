@@ -11,7 +11,7 @@ describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
       dataSource: {
         baseQuery: 'the base query',
         domain: 'example.com',
-        fourByFour: 'four-four',
+        uid: 'four-four',
         type: 'soql'
       }
     }

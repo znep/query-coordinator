@@ -151,9 +151,9 @@
       function setUid(uid) {
         _currentComponentProperties = {
           dataSource: {
-            type: "soql",
+            type: 'soql',
             domain: window.location.host,
-            fourByFour: uid,
+            uid: uid,
             baseQuery: ''
           }
         };
@@ -174,7 +174,7 @@
             // them and only replace column name.
             // TODO: Finalize a better way to store this query.
             _currentComponentProperties.dataSource.baseQuery =
-              "SELECT `{2}` AS {0}, COUNT(*) AS {1} GROUP BY `{2}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200".format(
+              'SELECT `{2}` AS {0}, COUNT(*) AS {1} GROUP BY `{2}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200'.format(
                 '{0}',
                 '{1}',
                 cardData.fieldName

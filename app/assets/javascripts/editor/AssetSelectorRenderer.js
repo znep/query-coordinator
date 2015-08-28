@@ -507,7 +507,7 @@
     function _renderConfigureVisualizationData(componentProperties) {
       var iframeElement = _dialog.find('.asset-selector-configure-visualization-iframe');
       var currentIframeSrc = iframeElement.attr('src');
-      var newIframeSrc = _visualizationChooserUrl(componentProperties.dataSource.fourByFour);
+      var newIframeSrc = _visualizationChooserUrl(componentProperties.dataSource.uid);
       var insertButton = _dialog.find(
         '[data-action="' + Constants.ASSET_SELECTOR_APPLY + '"]'
       );

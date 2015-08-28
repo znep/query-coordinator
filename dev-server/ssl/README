@@ -21,4 +21,4 @@ Safari (Mac):
 6. Double-click on the "Socrata Engineering Test Root CA" item.
 7. Expand the Trust section, and choose "Always Trust" for the Secure Sockets Layer (SSL) option.
 
-After this, you should be able to launch the dev-server and browse to https://localhost:443
+After this, you should be able to launch the dev-server and browse to https://localhost

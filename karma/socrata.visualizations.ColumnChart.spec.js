@@ -238,6 +238,12 @@ describe('socrata.visualizations.ColumnChart', function() {
 
   var columnChart;
 
+  afterEach(function() {
+    if ($('#chart').length) {
+      throw new Error('A test in this spec file did not clean up its column chart. This may cause downstream test failures.');
+    }
+  });
+
   describe('axis labels', function() {
 
     describe('with a top label', function() {
@@ -1639,6 +1645,10 @@ describe('socrata.visualizations.ColumnChart', function() {
       columnChart = createColumnChart();
     });
 
+    afterEach(function() {
+      removeColumnChart(columnChart);
+    });
+
     describe('on a column `barGroup`', function() {
 
       it('should emit an event in which the `element` property is the `.unfiltered` child bar of the `barGroup`', function(done) {
@@ -1718,6 +1728,10 @@ describe('socrata.visualizations.ColumnChart', function() {
 
     beforeEach(function() {
       columnChart = createColumnChart();
+    });
+
+    afterEach(function() {
+      removeColumnChart(columnChart);
     });
 
     it('should no longer respond to events for which the visualization registered handlers', function(done) {

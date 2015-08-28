@@ -43,7 +43,7 @@
   var VectorTileUtil = {
 
     getTileId: function(tile) {
-      return _.at(tile, ['zoom', 'x', 'y']).join(':');
+      return '' + tile.zoom + ':' + tile.x + ':' + tile.y;
     },
 
     getLeafletTileId: function(tileId) {

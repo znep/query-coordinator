@@ -7,24 +7,20 @@
       '`{0}` must be loaded before `{1}`'.
         format(
           'socrata.visualizations.DataProvider.js',
-          'socrata.visualizations.GeospaceDataProvider.js'
+          'socrata.visualizations.MetadataProvider.js'
         )
     );
   }
 
   var utils = root.socrata.utils;
 
-  function GeospaceDataProvider(config) {
+  function MetadataProvider(config) {
 
     _.extend(this, new root.socrata.visualizations.DataProvider(config));
 
     utils.assertHasProperty(config, 'domain');
-    utils.assertHasProperty(config, 'fourByFour');
-    utils.assertHasProperty(config, 'fieldName');
 
     utils.assertIsOneOfTypes(config.domain, 'string');
-    utils.assertIsOneOfTypes(config.fourByFour, 'string');
-    utils.assertIsOneOfTypes(config.fieldName, 'string');
 
     var _self = this;
 
@@ -32,12 +28,13 @@
      * Public methods
      */
 
-    this.getFeatureExtent = function() {
+    this.getDatasetMetadata = function(fourByFour) {
 
-      var url= 'https://{0}/resource/{1}.json?$select=extent({2})'.format(
+      utils.assertIsOneOfTypes(fourByFour, 'string');
+
+      var url= 'https://{0}/metadata/v1/dataset/{1}.json'.format(
         this.getConfigurationProperty('domain'),
-        this.getConfigurationProperty('fourByFour'),
-        this.getConfigurationProperty('fieldName')
+        fourByFour
       );
       var headers = {
         'Accept': 'application/json'
@@ -63,34 +60,13 @@
 
           if (status === 200) {
 
-            try {
-
-              var coordinates = _.get(
-                JSON.parse(xhr.responseText),
-                '[0].extent_{0}.coordinates[0][0]'.format(config.fieldName)
-              );
-
-              if (!_.isUndefined(coordinates)) {
-
-                var extent = {
-                  southwest: [coordinates[0][1], coordinates[0][0]],
-                  northeast: [coordinates[2][1], coordinates[2][0]]
-                };
-
-                resolve({
-                  data: extent,
-                  status: status,
-                  headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
-                  config: config,
-                  statusText: xhr.statusText
-                });
-
-              }
-
-            } catch (e) {
-              // Let this fall through to the `onFail()` below.
-            }
-
+            resolve({
+              data: JSON.parse(xhr.responseText),
+              status: status,
+              headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
+              config: config,
+              statusText: xhr.statusText
+            });
           }
 
           onFail();
@@ -111,5 +87,5 @@
     }
   }
 
-  root.socrata.visualizations.GeospaceDataProvider = GeospaceDataProvider;
+  root.socrata.visualizations.MetadataProvider = MetadataProvider;
 })(window);

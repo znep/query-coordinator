@@ -40,8 +40,65 @@
      * Public methods
      */
 
-    this.getAxisLabels = function() {
-      return _config.axisLabels;
+    this.renderAxisLabels = function(container) {
+
+      var axisLabels = _config.axisLabels;
+
+      var topAxisLabel = $(
+        '<div>',
+        {
+          'class': 'top-axis-label'
+        }
+      );
+
+      var rightAxisLabel = $(
+        '<div>',
+        {
+          'class': 'right-axis-label'
+        }
+      );
+
+      var bottomAxisLabel = $(
+        '<div>',
+        {
+          'class': 'bottom-axis-label'
+        }
+      );
+
+      var leftAxisLabel = $(
+        '<div>',
+        {
+          'class': 'left-axis-label'
+        }
+      );
+
+      if (axisLabels.top) {
+
+        mapContainer.addClass('top-axis-label');
+        topAxisLabel.
+          text(axisLabels.top);
+      }
+
+      if (axisLabels.right) {
+
+        mapContainer.addClass('right-axis-label');
+        rightAxisLabel.
+          text(axisLabels.right);
+      }
+
+      if (axisLabels.bottom) {
+
+        mapContainer.addClass('bottom-axis-label');
+        bottomAxisLabel.
+          text(axisLabels.bottom);
+      }
+
+      if (axisLabels.left) {
+
+        mapContainer.addClass('left-axis-label');
+        leftAxisLabel.
+          text(axisLabels.left);
+      }
     };
 
     this.getLocalization = function(key) {

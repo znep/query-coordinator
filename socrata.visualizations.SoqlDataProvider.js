@@ -37,25 +37,15 @@
     _.extend(this, new root.socrata.visualizations.DataProvider(config));
 
     utils.assertHasProperty(config, 'domain');
-    utils.assertIsOneOfTypes(config.domain, 'string');
-
     utils.assertHasProperty(config, 'fourByFour');
+
+    utils.assertIsOneOfTypes(config.domain, 'string');
     utils.assertIsOneOfTypes(config.fourByFour, 'string');
 
-    utils.assertHasProperty(config, 'success');
-    utils.assertIsOneOfTypes(config.success, 'function');
+    var _self = this;
 
-    utils.assertHasProperty(config, 'error');
-    utils.assertIsOneOfTypes(config.error, 'function');
 
-    var _domain = config.domain;
-    var _uid = config.fourByFour;
-    var _headers = {
-      'Accept': 'application/json',
-      'Content-type': 'application/json',
-    };
-    var _successCallback = config.success;
-    var _errorCallback = config.error;
+
 
     /**
      * Public methods
@@ -81,82 +71,151 @@
      * @param {String} nameAlias - The alias used for the 'name' column.
      * @param {String} valueAlias - The alias used for the 'value' column.
      *
-     * @return - None; the user-supplied `config.success` or `config.error`
-     *   functions provided at instantiation will be called with the 'table'
-     *   object containing the query results (in the case of success) or with
-     *   an object contiaining details about the encountered error (in the
-     *   case of failure).
+     * @return {Promise}
      */
     this.query = function(queryString, nameAlias, valueAlias) {
 
-      // Call _soqlQuery with `this` context in order to be able to call
-      // `.getconfigurationProperty()` on the parent class.
-      _soqlQuery.apply(this, arguments);
+      var url = 'https://{0}/api/id/{1}.json?$query={2}'.format(
+        _self.getConfigurationProperty('domain'),
+        _self.getConfigurationProperty('fourByFour'),
+        queryString
+      );
+      var headers = {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+      };
+
+      function handleRequestSuccess(response) {
+        return _mapDataToTable(response.data, nameAlias, valueAlias)
+      }
+
+      function handleRequestError(error) {
+        return error;
+      }
+
+      return new Promise(function(resolve, reject) {
+
+        var xhr = new XMLHttpRequest();
+
+        function onFail() {
+
+          reject({
+            status: parseInt(xhr.status, 10),
+            headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
+            config: config,
+            statusText: xhr.statusText
+          });
+        }
+
+        xhr.onload = function() {
+
+          var status = parseInt(xhr.status, 10);
+
+          if (status === 200) {
+
+            resolve({
+              data: JSON.parse(xhr.responseText),
+              status: status,
+              headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
+              config: config,
+              statusText: xhr.statusText
+            });
+
+          }
+
+          onFail();
+        };
+
+        xhr.onabort = onFail;
+        xhr.onerror = onFail;
+
+        xhr.open('GET', url, true);
+
+        // Set user-defined headers.
+        _.each(headers, function(value, key) {
+          xhr.setRequestHeader(key, value);
+        });
+
+        xhr.send();
+      }).then(
+        handleRequestSuccess,
+        handleRequestError
+      );
+    };
+
+    this.getRows = function(queryString) {
+
+      var url = 'https://{0}/api/id/{1}.json?{2}'.format(
+        _self.getConfigurationProperty('domain'),
+        _self.getConfigurationProperty('fourByFour'),
+        queryString
+      );
+      var headers = {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+      };
+
+      function handleRequestSuccess(response) {
+        return response.data;
+      }
+
+      function handleRequestError(error) {
+        return error;
+      }
+
+      return new Promise(function(resolve, reject) {
+
+        var xhr = new XMLHttpRequest();
+
+        function onFail() {
+
+          reject({
+            status: parseInt(xhr.status, 10),
+            headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
+            config: config,
+            statusText: xhr.statusText
+          });
+        }
+
+        xhr.onload = function() {
+
+          var status = parseInt(xhr.status, 10);
+
+          if (status === 200) {
+
+            resolve({
+              data: JSON.parse(xhr.responseText),
+              status: status,
+              headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
+              config: config,
+              statusText: xhr.statusText
+            });
+
+          }
+
+          onFail();
+        };
+
+        xhr.onabort = onFail;
+        xhr.onerror = onFail;
+
+        xhr.open('GET', url, true);
+
+        // Set user-defined headers.
+        _.each(headers, function(value, key) {
+          xhr.setRequestHeader(key, value);
+        });
+
+        xhr.send();
+      }).then(
+        handleRequestSuccess,
+        handleRequestError
+      );
     };
 
     /**
      * Private methods
      */
-
-    function _soqlQuery(queryString, nameAlias, valueAlias) {
-
-      $.ajax(
-        _buildUrl(queryString),
-        {
-          headers: _headers,
-          error: _onRequestError,
-          success: function(data) {
-            _onRequestSuccess(data, nameAlias, valueAlias)
-          },
-          timeout: this.getConfigurationProperty('timeout'),
-          type: 'GET'
-        }
-      );
-    }
-
-    function _buildUrl(queryString) {
-
-      return 'https://{0}/api/id/{1}.json?$query={2}'.format(
-        _domain,
-        _uid,
-        encodeURIComponent(queryString)
-      );
-    }
-
-    /**
-     * In the event of a request failure, this function will invoke the
-     * user-supplied `error` callback with an object of the following
-     * construction:
-     *
-     * @param {Object}
-     *   @property {Number} status - The HTTP error status code.
-     *   @property {String} message - The HTTP error message.
-     *   @property {Object} soqlError - An object containing more detailed
-     *     failure information from the SoQL backend.
-     */
-    function _onRequestError(response) {
-      _errorCallback({
-        code: response.status,
-        message: response.statusText,
-        soqlError: JSON.parse(response.responseText)
-      });
-    }
-
-    /**
-     * When a request succeeds this function will invoke the user-supplied
-     * `success` callback with the following arguments:
-     *
-     * @param {Object} data - The 'table' object representing the query
-     *   results. See the documentation for `_mapDataToTable()` below for
-     *   details on structure.
-     * @param {String} nameAlias - The alias used for the 'name' column in
-     *   the successful query.
-     * @param {String} valueAlias - The alias used for the 'value' column in
-     *   the successful query.
-     */
-    function _onRequestSuccess(data, nameAlias, valueAlias) {
-      _successCallback(_mapDataToTable(data, nameAlias, valueAlias));
-    }
 
     /**
      * Transforms raw SoQL query result into a 'table' object.

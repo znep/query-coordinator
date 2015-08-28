@@ -7,7 +7,7 @@
       '`{0}` must be loaded before `{1}`'.
         format(
           'socrata.visualizations.DataProvider.js',
-          'socrata.visualizations.SocrataTileserverDataProvider.js'
+          'socrata.visualizations.TileserverDataProvider.js'
         )
     );
   }
@@ -31,19 +31,26 @@
    */
   function TileserverDataProvider(config) {
 
-    var _self = this;
-    var _tileserverHosts;
-    var _originHost = '{0}//{1}'.format(window.location.protocol, window.location.host);
-    var _instanceRequestIdComponent = _randomNChars(16);
-
-    utils.assertHasProperty(config, 'tileserverHosts');
-    utils.assertHasProperty(config, 'featuresPerTile');
-    utils.assertHasProperty(config, 'cname');
-    utils.assertHasProperty(config, 'appToken');
-
     _.extend(this, new root.socrata.visualizations.DataProvider(config));
 
-    _tileserverHosts = this.getConfigurationProperty('tileserverHosts');
+    utils.assertHasProperty(config, 'appToken');
+    utils.assertHasProperty(config, 'domain');
+    utils.assertHasProperty(config, 'fourByFour');
+    utils.assertHasProperty(config, 'fieldName');
+    utils.assertHasProperty(config, 'featuresPerTile');
+    utils.assertHasProperty(config, 'tileserverHosts');
+
+    utils.assertIsOneOfTypes(config.appToken, 'string');
+    utils.assertIsOneOfTypes(config.domain, 'string');
+    utils.assertIsOneOfTypes(config.fourByFour, 'string');
+    utils.assertIsOneOfTypes(config.fieldName, 'string');
+    utils.assertIsOneOfTypes(config.featuresPerTile, 'number');
+    utils.assertIsOneOfTypes(config.tileserverHosts, 'object');
+
+    var _self = this;
+
+    var _originHost = '{0}//{1}'.format(window.location.protocol, window.location.host);
+    var _instanceRequestIdComponent = _randomNChars(16);
 
     /**
      * Public methods
@@ -62,14 +69,14 @@
      *
      * @return {Function}
      */
-    this.buildTileGetter = function(fourByFour, columnName, whereClause, useOriginHost) {
+    this.buildTileGetter = function(whereClause, useOriginHost) {
 
-      var featuresPerTile = parseInt(this.getConfigurationProperty('featuresPerTile'), 10);
-      var cname = this.getConfigurationProperty('cname');
       var appToken = this.getConfigurationProperty('appToken');
+      var domain = this.getConfigurationProperty('domain');
+      var fourByFour = this.getConfigurationProperty('fourByFour');
+      var fieldName = this.getConfigurationProperty('fieldName');
+      var featuresPerTile = parseInt(this.getConfigurationProperty('featuresPerTile'), 10);
 
-      utils.assertIsOneOfTypes(fourByFour, 'string');
-      utils.assertIsOneOfTypes(columnName, 'string');
       utils.assertIsOneOfTypes(whereClause, 'string', 'undefined');
       utils.assertIsOneOfTypes(useOriginHost, 'boolean', 'undefined');
 
@@ -101,23 +108,23 @@
         var url = '{0}/tiles/{1}/{2}/{3}/{4}/{5}.pbf?'.format(
           _getHost(x, y, useOriginHost),
           fourByFour,
-          columnName,
+          fieldName,
           zoom,
           x,
           y
         );
 
-        url += encodeURIComponent('$limit={0}'.format(featuresPerTile));
+        url += '$limit={0}'.format(featuresPerTile);
 
         if (!_.isEmpty(whereClause)) {
-          url += encodeURIComponent('&$WHERE={0}'.format(whereClause));
+          url += '&$WHERE={0}'.format(whereClause);
         }
 
         return _getArrayBuffer(
           url,
           {
             headers: {
-              'X-Socrata-Host': cname,
+              'X-Socrata-Host': domain,
               'X-Socrata-RequestId': _instanceRequestIdComponent + _randomNChars(16),
               'X-App-Token': appToken
             }
@@ -152,21 +159,22 @@
      * @param {Number} y
      * @param {Boolean} useOriginHost
      *
-     * @returns {String}
+     * @return {String}
      */
     function _getHost(x, y, useOriginHost) {
 
+      var tileserverHosts = _self.getConfigurationProperty('tileserverHosts');
       var index;
       var host;
 
-      if (useOriginHost || _.isEmpty(_tileserverHosts)) {
+      if (useOriginHost || _.isEmpty(tileserverHosts)) {
 
         host = _originHost;
 
       } else {
 
-        index = (Math.abs(x) + Math.abs(y)) % _tileserverHosts.length;
-        host = _tileserverHosts[index];
+        index = (Math.abs(x) + Math.abs(y)) % tileserverHosts.length;
+        host = tileserverHosts[index];
       }
 
       return host;

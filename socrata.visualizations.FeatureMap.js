@@ -73,7 +73,7 @@
 
     // Render template here so that we can modify the map container's styles
     // below.
-    _renderTemplate(this.element, this.getAxisLabels());
+    _renderTemplate(this.element);
 
     // CORE-4832: Disable pan and zoom on feature map
     if (_disablePanAndZoom) {
@@ -97,43 +97,6 @@
      * Public methods
      */
 
-    this.updateBaseLayer = function(url, opacity) {
-
-      if (_baseTileLayer) {
-        _map.removeLayer(_baseTileLayer);
-      }
-
-      var _baseTileLayer = L.tileLayer(
-        url,
-        {
-          attribution: '',
-          detectRetina: false,
-          opacity: opacity,
-          unloadInvisibleTiles: true
-        }
-      );
-
-      _map.addLayer(_baseTileLayer);
-    };
-
-    /**
-     * Transforms the viewport to match or contain the provided map bounds.
-     *
-     * @param bounds - The Leaflet LatLngBounds object that represents the
-     *   extents of the column's features.
-     */
-    this.fitBounds = function(bounds) {
-
-      _map.fitBounds(
-        bounds,
-        {
-          animate: false,
-          pan: { animate: false },
-          zoom: { animate: false }
-        }
-      );
-    };
-
     this.render = function(renderOptions) {
 
       if (!_map) {
@@ -147,10 +110,14 @@
 
       _lastRenderOptions = renderOptions;
 
-      visualization.fitBounds(renderOptions.bounds);
-      visualization.updateBaseLayer(renderOptions.baseLayer.url, renderOptions.baseLayer.opacity);
+      _fitBounds(renderOptions.bounds);
+      _updateBaseLayer(renderOptions.baseLayer.url, renderOptions.baseLayer.opacity);
 
       _createNewFeatureLayer(renderOptions.vectorTileGetter);
+    };
+
+    this.renderError = function() {
+      console.error('There was an error rendering this feature map');
     };
 
     this.invalidateSize = function() {
@@ -195,34 +162,6 @@
         }
       ).append(mapPanZoomDisabledWarningIcon);
 
-      var topAxisLabel = $(
-        '<div>',
-        {
-          'class': 'top-axis-label'
-        }
-      );
-
-      var rightAxisLabel = $(
-        '<div>',
-        {
-          'class': 'right-axis-label'
-        }
-      );
-
-      var bottomAxisLabel = $(
-        '<div>',
-        {
-          'class': 'bottom-axis-label'
-        }
-      );
-
-      var leftAxisLabel = $(
-        '<div>',
-        {
-          'class': 'left-axis-label'
-        }
-      );
-
       var mapContainer = $(
         '<div>',
         {
@@ -231,48 +170,14 @@
       ).append([
         mapElement,
         mapLegend,
-        mapPanZoomDisabledWarning,
-        topAxisLabel,
-        rightAxisLabel,
-        bottomAxisLabel,
-        leftAxisLabel
+        mapPanZoomDisabledWarning
       ]);
 
-      if (axisLabels.top) {
-
-        mapContainer.addClass('top-axis-label');
-        topAxisLabel.
-          text(axisLabels.top);
-      }
-
-      if (axisLabels.right) {
-
-        mapContainer.addClass('right-axis-label');
-        rightAxisLabel.
-          text(axisLabels.right);
-      }
-
-      if (axisLabels.bottom) {
-
-        mapContainer.addClass('bottom-axis-label');
-        bottomAxisLabel.
-          text(axisLabels.bottom);
-      }
-
-      if (axisLabels.left) {
-
-        mapContainer.addClass('left-axis-label');
-        leftAxisLabel.
-          text(axisLabels.left);
-      }
+      self.renderAxisLabels(mapContainer);
 
       // Cache element selections
       _mapContainer = mapContainer;
       _mapElement = mapElement;
-      _chartTopAxisLabel = topAxisLabel;
-      _chartRightAxisLabel = rightAxisLabel;
-      _chartBottomAxisLabel = bottomAxisLabel;
-      _chartLeftAxisLabel = leftAxisLabel;
 
       element.append(mapContainer);
     }
@@ -461,13 +366,25 @@
     function _showInspector(inspectorDataQueryConfig) {
 
       var payload = {
-        inspectorDataQueryConfig: inspectorDataQueryConfig
-      };
+        data: null,
+        error: false,
+        message: null
+      }
 
+      // Emit one event to cause the row inspector to be rendered.
       self.emitEvent(
-        'SOCRATA_VISUALIZATION_FEATURE_MAP_INSPECTOR',
+        'SOCRATA_VISUALIZATION_FEATURE_MAP_ROW_INSPECTOR_RENDER',
         {
           data: payload
+        }
+      );
+
+      // Emit a second event to initiate a query for the row
+      // data which we intend to inspect.
+      self.emitEvent(
+        'SOCRATA_VISUALIZATION_FEATURE_MAP_ROW_INSPECTOR_QUERY',
+        {
+          data: inspectorDataQueryConfig
         }
       );
     }
@@ -475,9 +392,50 @@
     function _hideInspector() {
 
       self.emitEvent(
-        'SOCRATA_VISUALIZATION_FEATURE_MAP_INSPECTOR',
+        'SOCRATA_VISUALIZATION_FEATURE_MAP_ROW_INSPECTOR_RENDER',
         {
           data: null
+        }
+      );
+    }
+
+    /**
+     * Map behavior
+     */
+
+    function _updateBaseLayer(url, opacity) {
+
+      if (_baseTileLayer) {
+        _map.removeLayer(_baseTileLayer);
+      }
+
+      var _baseTileLayer = L.tileLayer(
+        url,
+        {
+          attribution: '',
+          detectRetina: false,
+          opacity: opacity,
+          unloadInvisibleTiles: true
+        }
+      );
+
+      _map.addLayer(_baseTileLayer);
+    }
+
+    /**
+     * Transforms the viewport to match or contain the provided map bounds.
+     *
+     * @param bounds - The Leaflet LatLngBounds object that represents the
+     *   extents of the column's features.
+     */
+    function _fitBounds(bounds) {
+
+      _map.fitBounds(
+        bounds,
+        {
+          animate: false,
+          pan: { animate: false },
+          zoom: { animate: false }
         }
       );
     }

@@ -118,15 +118,13 @@
     var SOQL_DATA_PROVIDER_NAME_ALIAS = 'SOQL_DATA_PROVIDER_NAME_ALIAS';
     var SOQL_DATA_PROVIDER_VALUE_ALIAS = 'SOQL_DATA_PROVIDER_VALUE_ALIAS';
 
-    var dataProviderData = {
-      "domain": "dataspace.demo.socrata.com",
-      "fourByFour": "r6t9-rak2",
-      "baseQuery": "SELECT `category` AS {0}, COUNT(*) AS {1} GROUP BY `category` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200"
+    var soqlDataProviderConfig = {
+      domain: 'dataspace.demo.socrata.com',
+      fourByFour: 'r6t9-rak2',
+      baseQuery: 'SELECT `category` AS {0}, COUNT(*) AS {1} GROUP BY `category` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200'
     };
 
-    var domain = dataProviderData.domain;
-    var fourByFour = dataProviderData.fourByFour;
-    var baseQuery = dataProviderData.
+    var baseQuery = soqlDataProviderConfig.
       baseQuery.
       format(
         SOQL_DATA_PROVIDER_NAME_ALIAS,
@@ -134,22 +132,22 @@
       );
 
     // Set up unfiltered data provider
-    var unfilteredDataProviderConfig = {
-      domain: domain,
-      fourByFour: fourByFour,
-      success: onUnfilteredSuccess,
-      error: onUnfilteredError
+    var unfilteredSoqlDataProviderConfig = {
+      domain: soqlDataProviderConfig.domain,
+      fourByFour: soqlDataProviderConfig.fourByFour
     };
-    var unfilteredDataProvider = new window.socrata.visualizations.SoqlDataProvider(unfilteredDataProviderConfig);
+    var unfilteredSoqlDataProvider = new window.socrata.visualizations.SoqlDataProvider(
+      unfilteredSoqlDataProviderConfig
+    );
 
     // Set up filtered data provider
-    var filteredDataProviderConfig = {
-      domain: domain,
-      fourByFour: fourByFour,
-      success: onFilteredSuccess,
-      error: onFilteredError
+    var filteredSoqlDataProviderConfig = {
+      domain: soqlDataProviderConfig.domain,
+      fourByFour: soqlDataProviderConfig.fourByFour
     };
-    var filteredDataProvider = new window.socrata.visualizations.SoqlDataProvider(filteredDataProviderConfig);
+    var filteredSoqlDataProvider = new window.socrata.visualizations.SoqlDataProvider(
+      filteredSoqlDataProviderConfig
+    );
 
     var unfilteredRequestInFlight;
     var filteredRequestInFlight;
@@ -173,16 +171,22 @@
       unfilteredRequestInFlight = true;
       filteredRequestInFlight = true;
 
-      unfilteredDataProvider.query(
+      unfilteredSoqlDataProvider.query(
         baseQuery,
         SOQL_DATA_PROVIDER_NAME_ALIAS,
         SOQL_DATA_PROVIDER_VALUE_ALIAS
+      ).then(
+        onUnfilteredSuccess,
+        onUnfilteredError
       );
 
-      filteredDataProvider.query(
+      filteredSoqlDataProvider.query(
         baseQuery,
         SOQL_DATA_PROVIDER_NAME_ALIAS,
         SOQL_DATA_PROVIDER_VALUE_ALIAS
+      ).then(
+        onFilteredSuccess,
+        onFilteredError
       );
     }
 

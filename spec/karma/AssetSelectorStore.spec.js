@@ -189,7 +189,7 @@ describe('AssetSelectorStore', function() {
         });
 
         assert.equal(
-          storyteller.assetSelectorStore.getCurrentComponentValue().settings.datasetUid,
+          storyteller.assetSelectorStore.getCurrentComponentValue().dataSource.uid,
           standardMocks.validStoryUid
         );
       });
@@ -207,20 +207,25 @@ describe('AssetSelectorStore', function() {
         });
       });
 
-      it('does not change currentComponentValue if payload has no cardData', function() {
-        assert.doesNotChange(function() {
-            storyteller.dispatcher.dispatch({
-              action: Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
-              cardData: null
-            });
-          },
-          storyteller.assetSelectorStore.getCurrentComponentValue(), //thing that might change
-          'settings' //property on it that might change
-        );
+      it('does not change baseQuery if payload has no cardData', function() {
+        var startingComponentValue = _.cloneDeep(storyteller.assetSelectorStore.getCurrentComponentValue());
+
+        storyteller.dispatcher.dispatch({
+          action: Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
+          cardData: null
+        });
+
+        assert.deepEqual(
+          startingComponentValue,
+          storyteller.assetSelectorStore.getCurrentComponentValue()
+        )
       });
 
-      it('adds `settings.visualization` to componentValue when there is cardData', function() {
-        var fakeCardData = {'fakeformat': 'true'};
+      it('adds visualization configuration to componentValue when there is cardData', function() {
+        var fakeCardData = {
+          'cardType': 'column',
+          'fieldName': 'test_field'
+        };
 
         storyteller.dispatcher.dispatch({
           action: Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
@@ -228,8 +233,13 @@ describe('AssetSelectorStore', function() {
         });
 
         assert.equal(
-          storyteller.assetSelectorStore.getCurrentComponentValue().settings.visualization,
-          fakeCardData
+          storyteller.assetSelectorStore.getCurrentComponentType(),
+          'socrata.visualization.columnChart'
+        );
+
+        assert.include(
+          storyteller.assetSelectorStore.getCurrentComponentValue().dataSource.baseQuery,
+          fakeCardData.fieldName
         );
 
       })

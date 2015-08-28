@@ -150,8 +150,11 @@
 
       function setUid(uid) {
         _currentComponentProperties = {
-          settings: {
-            datasetUid: uid
+          dataSource: {
+            type: 'soql',
+            domain: window.location.host,
+            uid: uid,
+            baseQuery: ''
           }
         };
         self._emitChange();
@@ -160,13 +163,26 @@
     }
 
     function _updateVisualizationConfiguration(payload) {
+      var cardData = payload.cardData;
 
-      if (payload.cardData) {
+      if (cardData) {
         _currentComponentType = 'socrata.visualization.columnChart';
-        _currentComponentProperties.settings.visualization = payload.cardData;
-      }
+        switch (cardData.cardType) {
+          case 'column':
+            _currentComponentType = 'socrata.visualization.columnChart';
+            // Final query must contain {0} and {1} for guard value replacing down the road, so for now leave
+            // them and only replace column name.
+            // TODO: Finalize a better way to store this query.
+            _currentComponentProperties.dataSource.baseQuery =
+              'SELECT `{2}` AS {0}, COUNT(*) AS {1} GROUP BY `{2}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200'.format(
+                '{0}',
+                '{1}',
+                cardData.fieldName
+              );
+        }
 
-      self._emitChange();
+        self._emitChange();
+      }
     }
 
     function _updateYoutubeUrl(payload) {

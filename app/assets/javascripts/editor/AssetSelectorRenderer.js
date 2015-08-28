@@ -479,7 +479,7 @@
         '<button>',
         {
           'class': 'btn accent-btn',
-          'data-action': Constants.ASSET_SELECTOR_CLOSE,
+          'data-action': Constants.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
       ).text(I18n.t('editor.asset_selector.insert_button_text'));
@@ -507,16 +507,16 @@
     function _renderConfigureVisualizationData(componentProperties) {
       var iframeElement = _dialog.find('.asset-selector-configure-visualization-iframe');
       var currentIframeSrc = iframeElement.attr('src');
-      var newIframeSrc = _visualizationChooserUrl(componentProperties.settings.datasetUid);
+      var newIframeSrc = _visualizationChooserUrl(componentProperties.dataSource.uid);
       var insertButton = _dialog.find(
-        '[data-action="' + Constants.ASSET_SELECTOR_CLOSE + '"]'
+        '[data-action="' + Constants.ASSET_SELECTOR_APPLY + '"]'
       );
 
       if (currentIframeSrc !== newIframeSrc) {
         iframeElement.attr('src', newIframeSrc);
       }
 
-      if (componentProperties.settings.visualization) {
+      if (_isVisualizationValid(componentProperties)) {
         insertButton.prop('disabled', false);
       } else {
         insertButton.prop('disabled', true);
@@ -528,6 +528,12 @@
     /**
      * Small helper functions
      */
+
+    function _isVisualizationValid(componentProperties) {
+      // For now, if we have a baseQuery we have a valid configuration
+      // TODO: better check here
+      return !_.isEmpty(componentProperties.dataSource.baseQuery);
+    }
 
     function _datasetChooserUrl() {
       return encodeURI(

@@ -30,10 +30,10 @@
   function _updateVisualization($element, componentData) {
 
     var domain;
-    var fourByFour;
+    var uid;
     var baseQuery;
     var dataSource;
-    var renderedFourByFour = $element.attr('data-rendered-visualization-four-by-four');
+    var renderedUid = $element.attr('data-rendered-visualization-uid');
     var renderedBaseQuery = $element.attr('data-rendered-visualization-base-query');
 
     utils.assertHasProperty(componentData, 'value');
@@ -43,12 +43,15 @@
 
     utils.assertHasProperty(dataSource, 'type');
     utils.assertHasProperty(dataSource, 'domain');
-    utils.assertHasProperty(dataSource, 'fourByFour');
+    utils.assertHasProperty(dataSource, 'uid');
     utils.assertHasProperty(dataSource, 'baseQuery');
     utils.assertEqual(dataSource.type, 'soql');
 
     domain = dataSource.domain;
-    fourByFour = dataSource.fourByFour;
+    // Respect uid or uid for backwards compatability.
+    uid = dataSource.uid;
+    utils.assert(uid.length, 'Dataset uid is required to render a visualization');
+
     baseQuery = dataSource.
       baseQuery.
       format(
@@ -56,18 +59,18 @@
         Constants.SOQL_DATA_PROVIDER_VALUE_ALIAS
       );
 
-    if ((fourByFour !== renderedFourByFour) || (baseQuery !== renderedBaseQuery)) {
+    if ((uid !== renderedUid) || (baseQuery !== renderedBaseQuery)) {
 
-      if (renderedFourByFour !== undefined) {
+      if (renderedUid !== undefined) {
 
         // Destroy existing visualization.
         $element.trigger('destroy');
       }
 
-      $element.attr('data-rendered-visualization-four-by-four', fourByFour);
+      $element.attr('data-rendered-visualization-uid', uid);
       $element.attr('data-rendered-visualization-base-query', baseQuery);
 
-      $element.socrataVisualizationColumnChart(domain, fourByFour, baseQuery);
+      $element.socrataVisualizationColumnChart(domain, uid, baseQuery);
     }
   }
 

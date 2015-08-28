@@ -334,7 +334,16 @@
              */
             var whereClause = '`{0}` IS NOT NULL'.format(fieldName);
             var options = { limit: Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD + 1, orderBy: fieldName};
-            return Rx.Observable.fromPromise(CardDataService.getData(fieldName, dataset.id, whereClause, aggregation, options));
+            var cardDataPromise = CardDataService.getData(fieldName, dataset.id, whereClause, aggregation, options).
+              then(function(data) {
+                return _.map(data, function(bucket) {
+                  return {
+                    name: parseFloat(bucket.name),
+                    value: bucket.value
+                  }
+                });
+              });
+            return Rx.Observable.fromPromise(cardDataPromise);
           }).
           switchLatest().
           shareReplay(1);

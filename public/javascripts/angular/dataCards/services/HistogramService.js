@@ -198,6 +198,18 @@
       }
 
       var extent = d3.extent(buckets);
+
+      // This is... not super great, but honestly we shouldn't even be hitting
+      // this case in the first place. If by some unfortunate turn of events we
+      // reach this section and all bucket values were not valid numbers (i.e.
+      // NaN), then bail out and try for a histogram anyway, in the hope that we
+      // can either render something sane (which is a bit of a long shot) or get
+      // the "no data" error.
+      // See CORE-6648 for the browser-crashing fun times that surfaced the issue.
+      if (_.all(extent, _.isUndefined)) {
+        return 'histogram';
+      }
+
       if (extent[1] - extent[0] > Constants.HISTOGRAM_COLUMN_CHART_RANGE_THRESHOLD) {
         return 'histogram';
       }

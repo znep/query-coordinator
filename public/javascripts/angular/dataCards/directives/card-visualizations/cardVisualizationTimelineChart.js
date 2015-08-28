@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationTimelineChart(CardDataService, Filter, TimelineChartVisualizationHelpers, $log, DateHelpers, SoqlHelpers) {
+  function cardVisualizationTimelineChart(CardDataService, ServerConfig, Filter, TimelineChartVisualizationHelpers, $log, DateHelpers, SoqlHelpers) {
 
     return {
       restrict: 'E',
@@ -154,7 +154,7 @@
         );
 
         // TODO we should look to see if we can remove this wrapper
-        var unfilteredData = Rx.Observable.subscribeLatest(
+        Rx.Observable.subscribeLatest(
           cardModel$.pluck('fieldName'),
           dataset$,
           baseSoqlFilter$,
@@ -190,7 +190,7 @@
               );
 
               dataPromise.then(
-                function() {
+                function(result) {
                   // Ok
                   unfilteredData$.onNext(dataPromise);
                   dataResponses$.onNext(1);
@@ -206,7 +206,7 @@
           }
         );
 
-        var filteredData = Rx.Observable.subscribeLatest(
+        Rx.Observable.subscribeLatest(
           cardModel$.pluck('fieldName'),
           dataset$,
           whereClause$,
@@ -253,7 +253,7 @@
               );
 
               dataPromise.then(
-                function() {
+                function(result) {
                   // Ok
                   filteredData$.onNext(dataPromise);
                   dataResponses$.onNext(1);
@@ -269,9 +269,9 @@
           }
         );
 
-        var chartData$ = Rx.Observable.combineLatest(
-          unfilteredData$.switchLatest(),
-          filteredData$.switchLatest(),
+        Rx.Observable.combineLatest(
+          unfilteredDataSequence.switchLatest().pluck('data'),
+          filteredDataSequence.switchLatest().pluck('data'),
           function(unfilteredData, filteredData) {
             if (_.isEmpty(unfilteredData) || _.isEmpty(filteredData)) {
               return null;

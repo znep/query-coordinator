@@ -342,12 +342,15 @@
 
           // The purpose of the below is to make sure every date interval
           // between the start and end dates is present.
-          return _.map(timeData, function(item, i) {
-            if (_.isUndefined(item)) {
-              item = { date: moment(timeStart, moment.ISO_8601).add(i, precision), value: null };
-            }
-            return item;
-          });
+          return {
+            headers: response.headers,
+            data: _.map(timeData, function(item, i) {
+              if (_.isUndefined(item)) {
+                item = { date: moment(timeStart, moment.ISO_8601).add(i, precision), value: null };
+              }
+              return item;
+            })
+          };
         });
       },
 

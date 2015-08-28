@@ -702,11 +702,11 @@ describe('CardDataService', function() {
         {"truncated_date":"2014-05-13T00:00:00.000","value":"718"}
       ]);
       fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
-      response.then(function(data) {
+      var promise = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
+      promise.then(function(response) {
         // 21 is the number of date buckets we expect the call to generate`based on the dates in fakeData.
-        expect(data.length).to.equal(21);
-        _.each(data, function(datum) {
+        expect(response.data.length).to.equal(21);
+        _.each(response.data, function(datum) {
           expect(datum.date.isValid()).to.be.true;
         });
         done();
@@ -722,13 +722,13 @@ describe('CardDataService', function() {
         {"truncated_date":"2014-05-13T00:00:00.000","value":"718"}
       ]);
       fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
-      response.then(function(data) {
-        var sum = _.reduce(data, function(acc, datum) {
+      var promise = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
+      promise.then(function(response) {
+        var sum = _.reduce(response.data, function(acc, datum) {
           return acc + datum.value;
         }, 0);
         expect(sum).to.equal(1508 + 238 + 624 + 718);
-        var values = _.compact(_.pluck(data, 'value'));
+        var values = _.compact(_.pluck(response.data, 'value'));
         expect(values).to.deep.equal([624, 238, 718, 1508]); // Note their order from old-new.
         done();
       });
@@ -743,9 +743,9 @@ describe('CardDataService', function() {
         {"truncated_date":"2014-05-04T00:00:00.000","value":"718"}
       ]);
       fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
-      response.then(function(data) {
-        var values = _.pluck(data, 'value');
+      var promise = CardDataService.getTimelineData('fakeNumberColumn', fake4x4, '', 'DAY', countAggregation);
+      promise.then(function(response) {
+        var values = _.pluck(response.data, 'value');
         expect(values).to.deep.equal([1508, null, 624, 718]);
         done();
       });

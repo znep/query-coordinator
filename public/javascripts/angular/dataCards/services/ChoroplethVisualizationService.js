@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function ChoroplethVisualizationService(Constants, FormatService) {
+  function ChoroplethVisualizationService(Constants) {
 
     function ChoroplethVisualizationUtils() {
 
@@ -253,13 +253,13 @@
 
       if (isMultipleOf10) {
         numNonzeroDigits = coefficient.toString().length;
-        formattedNum = FormatService.formatNumber(val, {
+        formattedNum = window.socrata.utils.formatNumber(val, {
           precision: 0,
           maxLength: _.min([numNonzeroDigits, 3])
         });
       } else {
         numNonzeroDigits = coefficient.toString().length - 1;
-        formattedNum = FormatService.formatNumber(val, {
+        formattedNum = window.socrata.utils.formatNumber(val, {
           maxLength: _.min([numNonzeroDigits, 3])
         });
       }

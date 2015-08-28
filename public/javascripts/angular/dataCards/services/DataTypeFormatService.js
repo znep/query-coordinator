@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function DataTypeFormatService(I18n, FormatService) {
+  function DataTypeFormatService(I18n) {
 
     /**
     * Renders a boolean value in checkbox format
@@ -57,7 +57,7 @@
         shouldCommaify = false;
       }
       if (shouldCommaify) {
-        cellContent = FormatService.commaify(cellContent);
+        cellContent = window.socrata.utils.commaify(cellContent);
       }
 
       // Add percent sign after commaify because it affects length
@@ -115,7 +115,7 @@
 
       if (_.isFinite(amount)) {
         if (format.humane) {
-          // We can't use FormatService.toHumaneNumber here because this use case is
+          // We can't use formatNumber here because this use case is
           // slightly different — we want to enforce a certain precision,
           // whereas the normal humane numbers want to use the fewest
           // digits possible at all times.
@@ -137,7 +137,7 @@
             // For instance, "12,345,678" will become an array of three
             // substrings, and the first two will combine into "12.345"
             // so that our toFixed call can work its magic.
-            var scaleGroupedVal = FormatService.commaify(Math.floor(absVal)).split(',');
+            var scaleGroupedVal = window.socrata.utils.commaify(Math.floor(absVal)).split(',');
             var symbols = ['K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y'];
             var symbolIndex = scaleGroupedVal.length - 2;
 
@@ -162,7 +162,7 @@
             decimalCharacter: format.decimalSeparator
           };
 
-          cellContent = FormatService.commaify(
+          cellContent = window.socrata.utils.commaify(
             Math.abs(amount).toFixed(format.precision).
               replace('.', format.decimalSeparator),
             commaifyOptions

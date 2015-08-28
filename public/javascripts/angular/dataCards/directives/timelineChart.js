@@ -21,8 +21,7 @@
     FlyoutService,
     Constants,
     ServerConfig,
-    I18n,
-    FormatService
+    I18n
   ) {
 
     return {
@@ -1257,7 +1256,7 @@
             tickElement = $('<div>').
               addClass('y-tick').
               css('bottom', Math.floor(chartHeight * tick)).
-              text(FormatService.formatNumber(labels[index]));
+              text(window.socrata.utils.formatNumber(labels[index]));
 
             if (labels[index] === 0) {
               tickElement.addClass('zero');
@@ -1458,7 +1457,7 @@
 
             formattedValue = (_.isFinite(value)) ?
               '{0} {1}'.format(
-                FormatService.formatNumber(value),
+                window.socrata.utils.formatNumber(value),
                 unit
               ) :
               I18n.common.noValue;

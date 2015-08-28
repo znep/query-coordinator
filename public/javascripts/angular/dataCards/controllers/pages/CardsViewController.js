@@ -168,7 +168,6 @@
     PageHelpersService,
     DeviceService,
     I18n,
-    FormatService,
     Constants
   ) {
 
@@ -339,8 +338,8 @@
             );
           } else if (filter instanceof Filter.ValueRangeFilter) {
             return I18n.t('filter.valueRange',
-              FormatService.formatNumber(filter.start),
-              FormatService.formatNumber(filter.end)
+              window.socrata.utils.formatNumber(filter.start),
+              window.socrata.utils.formatNumber(filter.end)
             );
           } else {
             throw new Error('Cannot apply filter of unsupported type "' + filter + '".');

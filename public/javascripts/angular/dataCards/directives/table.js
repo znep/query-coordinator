@@ -11,7 +11,6 @@
     $q,
     $timeout,
     DataTypeFormatService,
-    FormatService,
     I18n
   ) {
     return {
@@ -504,15 +503,15 @@
               if (scope.filteredRowCount <= 1) {
                 scope.tableLabel = I18n.t('table.nonRangeLabel',
                   _.escape(scope.rowDisplayUnit.capitalize()),
-                  FormatService.commaify(topRow),
-                  FormatService.commaify(scope.filteredRowCount)
+                  window.socrata.utils.commaify(topRow),
+                  window.socrata.utils.commaify(scope.filteredRowCount)
                 );
               } else {
                 scope.tableLabel = I18n.t('table.rangeLabel',
                   _.escape(scope.rowDisplayUnit.capitalize().pluralize()),
-                  FormatService.commaify(topRow),
-                  FormatService.commaify(bottomRow),
-                  FormatService.commaify(scope.filteredRowCount)
+                  window.socrata.utils.commaify(topRow),
+                  window.socrata.utils.commaify(bottomRow),
+                  window.socrata.utils.commaify(scope.filteredRowCount)
                 );
               }
             });

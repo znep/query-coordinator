@@ -7,19 +7,24 @@
     handlers: {
       click: function(evtObj) {
         var lonlat = this._layerModel._map.baseLayer.
-            getLonLatFromViewPortPx(this._layerModel._map.events.getMousePosition(evtObj));
+          getLonLatFromViewPortPx(this._layerModel._map.events.getMousePosition(evtObj));
         this._layerModel.flyoutHandler().sayLoading(lonlat);
+      }
+    },
+
+    _setBoundingBox: function() {
+      // console.log(this, this.layerModel)
+      if (this._layerModel._config.bbox) {
+        this._layerModel._maxExtent = OpenLayers.Bounds.fromString(this._layerModel._config.bbox).transform(
+          new OpenLayers.Projection(this._layerModel._config.bboxCrs), this._layerModel._mapProjection
+        );
       }
     }
   };
 
   var OBEMapProvider = function(layerModel) {
     this._layerModel = layerModel;
-    if (layerModel._config.bbox) {
-      layerModel._maxExtent = OpenLayers.Bounds.fromString(layerModel._config.bbox).transform(
-      new OpenLayers.Projection(layerModel._config.bboxCrs), layerModel._mapProjection);
-    }
-
+    this._setBoundingBox();
     // Support federation.
     layerModel._owsUrl = (layerModel._view.domainUrl || '') + layerModel._config.owsUrl;
   };
@@ -60,6 +65,7 @@
 
   var NBEMapProvider = function(layerModel) {
     this._layerModel = layerModel;
+    this._setBoundingBox();
   };
 
   NBEMapProvider.prototype = _.extend({}, MapProvider.prototype, {

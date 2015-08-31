@@ -259,9 +259,9 @@ describe('socrata.visualizations.ColumnChart', function() {
       it('renders the top axis label', function() {
 
         expect($('.column-chart-container .top-axis-label').css('visibility')).to.equal('visible');
-        expect($('.column-chart-container .right-axis-label').css('visibility')).to.equal('hidden');
-        expect($('.column-chart-container .bottom-axis-label').css('visibility')).to.equal('hidden');
-        expect($('.column-chart-container .left-axis-label').css('visibility')).to.equal('hidden');
+        expect($('.column-chart-container .right-axis-label').length).to.equal(0);
+        expect($('.column-chart-container .bottom-axis-label').length).to.equal(0);
+        expect($('.column-chart-container .left-axis-label').length).to.equal(0);
 
         expect($('.column-chart-container .top-axis-label').text()).to.equal(TOP_AXIS_LABEL);
       });
@@ -290,10 +290,10 @@ describe('socrata.visualizations.ColumnChart', function() {
 
       it('renders the right axis label', function() {
 
-        expect($('.column-chart-container .top-axis-label').css('visibility')).to.equal('hidden');
+        expect($('.column-chart-container .top-axis-label').length).to.equal(0);
         expect($('.column-chart-container .right-axis-label').css('visibility')).to.equal('visible');
-        expect($('.column-chart-container .bottom-axis-label').css('visibility')).to.equal('hidden');
-        expect($('.column-chart-container .left-axis-label').css('visibility')).to.equal('hidden');
+        expect($('.column-chart-container .bottom-axis-label').length).to.equal(0);
+        expect($('.column-chart-container .left-axis-label').length).to.equal(0);
 
         expect($('.column-chart-container .right-axis-label').text()).to.equal(RIGHT_AXIS_LABEL);
       });
@@ -322,10 +322,10 @@ describe('socrata.visualizations.ColumnChart', function() {
 
       it('renders the bottom axis label', function() {
 
-        expect($('.column-chart-container .top-axis-label').css('visibility')).to.equal('hidden');
-        expect($('.column-chart-container .right-axis-label').css('visibility')).to.equal('hidden');
+        expect($('.column-chart-container .top-axis-label').length).to.equal(0);
+        expect($('.column-chart-container .right-axis-label').length).to.equal(0);
         expect($('.column-chart-container .bottom-axis-label').css('visibility')).to.equal('visible');
-        expect($('.column-chart-container .left-axis-label').css('visibility')).to.equal('hidden');
+        expect($('.column-chart-container .left-axis-label').length).to.equal(0);
 
         expect($('.column-chart-container .bottom-axis-label').text()).to.equal(BOTTOM_AXIS_LABEL);
       });
@@ -354,9 +354,9 @@ describe('socrata.visualizations.ColumnChart', function() {
 
       it('renders the left axis label', function() {
 
-        expect($('.column-chart-container .top-axis-label').css('visibility')).to.equal('hidden');
-        expect($('.column-chart-container .right-axis-label').css('visibility')).to.equal('hidden');
-        expect($('.column-chart-container .bottom-axis-label').css('visibility')).to.equal('hidden');
+        expect($('.column-chart-container .top-axis-label').length).to.equal(0);
+        expect($('.column-chart-container .right-axis-label').length).to.equal(0);
+        expect($('.column-chart-container .bottom-axis-label').length).to.equal(0);
         expect($('.column-chart-container .left-axis-label').css('visibility')).to.equal('visible');
 
         expect($('.column-chart-container .left-axis-label').text()).to.equal(LEFT_AXIS_LABEL);

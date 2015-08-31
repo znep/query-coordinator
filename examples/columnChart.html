@@ -269,8 +269,8 @@
         var result = [undefined, undefined, undefined, undefined];
 
         result[NAME_INDEX] = (_.isNull(name) || _.isUndefined(name)) ? '' : name;
-        result[UNFILTERED_INDEX] = unfilteredAsHash[name][1];
-        result[FILTERED_INDEX] = filteredAsHash[name][1] || 0;
+        result[UNFILTERED_INDEX] = Number(unfilteredAsHash[name][1]);
+        result[FILTERED_INDEX] = Number(filteredAsHash[name][1]) || 0;
         result[SELECTED_INDEX] = datumIsSelected;
 
         return result;

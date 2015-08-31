@@ -20,11 +20,9 @@
 
     utils.assertHasProperty(config, 'domain');
     utils.assertHasProperty(config, 'fourByFour');
-    utils.assertHasProperty(config, 'fieldName');
 
     utils.assertIsOneOfTypes(config.domain, 'string');
     utils.assertIsOneOfTypes(config.fourByFour, 'string');
-    utils.assertIsOneOfTypes(config.fieldName, 'string');
 
     var _self = this;
 
@@ -32,82 +30,81 @@
      * Public methods
      */
 
-    this.getFeatureExtent = function() {
+    this.getFeatureExtent = function(fieldName) {
 
-      var url= 'https://{0}/resource/{1}.json?$select=extent({2})'.format(
+      var url= 'https://{0}/resource/{1}.geojson?$select=extent({2})'.format(
         this.getConfigurationProperty('domain'),
         this.getConfigurationProperty('fourByFour'),
-        this.getConfigurationProperty('fieldName')
+        fieldName
       );
       var headers = {
         'Accept': 'application/json'
       };
 
-      return new Promise(function(resolve, reject) {
+      return (
+        new Promise(function(resolve, reject) {
 
-        var xhr = new XMLHttpRequest();
+          var xhr = new XMLHttpRequest();
 
-        function onFail() {
+          function onFail() {
 
-          reject({
-            status: parseInt(xhr.status, 10),
-            headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
-            config: config,
-            statusText: xhr.statusText
-          });
-        }
-
-        xhr.onload = function() {
-
-          var status = parseInt(xhr.status, 10);
-
-          if (status === 200) {
+            var error;
 
             try {
-
-              var coordinates = _.get(
-                JSON.parse(xhr.responseText),
-                '[0].extent_{0}.coordinates[0][0]'.format(config.fieldName)
-              );
-
-              if (!_.isUndefined(coordinates)) {
-
-                var extent = {
-                  southwest: [coordinates[0][1], coordinates[0][0]],
-                  northeast: [coordinates[2][1], coordinates[2][0]]
-                };
-
-                resolve({
-                  data: extent,
-                  status: status,
-                  headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
-                  config: config,
-                  statusText: xhr.statusText
-                });
-
-              }
-
+              error = JSON.parse(xhr.responseText);
             } catch (e) {
-              // Let this fall through to the `onFail()` below.
+              console.log(e);
+              error = xhr.statusText;
             }
 
+            reject({
+              status: parseInt(xhr.status, 10),
+              message: xhr.statusText,
+              soqlError: error
+            });
           }
 
-          onFail();
-        };
+          xhr.onload = function() {
 
-        xhr.onabort = onFail;
-        xhr.onerror = onFail;
+            var status = parseInt(xhr.status, 10);
 
-        xhr.open('GET', url, true);
+            if (status === 200) {
 
-        // Set user-defined headers.
-        _.each(headers, function(value, key) {
-          xhr.setRequestHeader(key, value);
-        });
+              try {
 
-        xhr.send();
-      });
+                var coordinates = _.get(
+                  JSON.parse(xhr.responseText),
+                  '[0].extent_{0}.coordinates[0][0]'.format(fieldName)
+                );
+
+                if (!_.isUndefined(coordinates)) {
+
+                  resolve({
+                    southwest: [coordinates[0][1], coordinates[0][0]],
+                    northeast: [coordinates[2][1], coordinates[2][0]]
+                  });
+                }
+              } catch (e) {
+                // Let this fall through to the `onFail()` below.
+              }
+            }
+
+            onFail();
+          };
+
+          xhr.onabort = onFail;
+          xhr.onerror = onFail;
+
+          xhr.open('GET', url, true);
+
+          // Set user-defined headers.
+          _.each(headers, function(value, key) {
+            xhr.setRequestHeader(key, value);
+          });
+
+          xhr.send();
+        })
+      );
     }
   }
 

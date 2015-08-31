@@ -15,16 +15,26 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'bower_components/lodash/lodash.js',
+      'karma/testHelpers.js',
       'bower_components/d3/d3.js',
       'bower_components/jquery/dist/jquery.js',
+      'bower_components/leaflet/dist/leaflet.js',
+      'bower_components/lodash/lodash.js',
       'bower_components/socrata-utils/socrata.utils.js',
-      'karma/testHelpers.js',
+      'bower_components/vector-tile-js/dist/vectortile.js',
       'socrata.visualizations.DataProvider.js',
+      'socrata.visualizations.MetadataProvider.js',
       'socrata.visualizations.SoqlDataProvider.js',
+      'socrata.visualizations.GeospaceDataProvider.js',
+      'socrata.visualizations.TileserverDataProvider.js',
+      'socrata.visualizations.pbf.js',
+      'socrata.visualizations.VectorTileManager.js',
       'socrata.visualizations.Visualization.js',
       'socrata.visualizations.ColumnChart.js',
+      'socrata.visualizations.FeatureMap.js',
       'socrata.visualizations.columnChart.css',
+      'socrata.visualizations.featureMap.css',
+      'components/SocrataFeatureMap.js',
       'karma/**/*spec.js'
     ],
 

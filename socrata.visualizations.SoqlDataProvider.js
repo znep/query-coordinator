@@ -44,17 +44,14 @@
 
     var _self = this;
 
-
-
-
     /**
      * Public methods
      */
 
     /**
-     * `.query()` executes a SoQL query against the current domain. The query
-     * string is passed in by the caller, meaning that at this level of
-     * abstraction we have no notion of SoQL grammar.
+     * `.query()` executes a SoQL query against the current domain that returns
+     * key => value pairs. The query string is passed in by the caller, meaning
+     * that at this level of abstraction we have no notion of SoQL grammar.
      *
      * A note on `nameAlias` and `valueAlias`:
      *
@@ -85,64 +82,79 @@
         'Content-type': 'application/json',
       };
 
-      function handleRequestSuccess(response) {
-        return _mapDataToTable(response.data, nameAlias, valueAlias)
-      }
+      return (
+        new Promise(function(resolve, reject) {
 
-      function handleRequestError(error) {
-        return error;
-      }
+          var xhr = new XMLHttpRequest();
 
-      return new Promise(function(resolve, reject) {
+          function onFail() {
 
-        var xhr = new XMLHttpRequest();
+            var error;
 
-        function onFail() {
+            try {
+              error = JSON.parse(xhr.responseText);
+            } catch (e) {
+              error = xhr.statusText;
+            }
 
-          reject({
-            status: parseInt(xhr.status, 10),
-            headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
-            config: config,
-            statusText: xhr.statusText
-          });
-        }
-
-        xhr.onload = function() {
-
-          var status = parseInt(xhr.status, 10);
-
-          if (status === 200) {
-
-            resolve({
-              data: JSON.parse(xhr.responseText),
-              status: status,
-              headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
-              config: config,
-              statusText: xhr.statusText
+            reject({
+              status: parseInt(xhr.status, 10),
+              message: xhr.statusText,
+              soqlError: error
             });
-
           }
 
-          onFail();
-        };
+          xhr.onload = function() {
 
-        xhr.onabort = onFail;
-        xhr.onerror = onFail;
+            var status = parseInt(xhr.status, 10);
+            var data;
 
-        xhr.open('GET', url, true);
+            if (status === 200) {
 
-        // Set user-defined headers.
-        _.each(headers, function(value, key) {
-          xhr.setRequestHeader(key, value);
-        });
+              try {
 
-        xhr.send();
-      }).then(
-        handleRequestSuccess,
-        handleRequestError
+                data = JSON.parse(xhr.responseText);
+
+                resolve(
+                  _mapQueryResponseToTable(data, nameAlias, valueAlias)
+                );
+              } catch (e) {
+
+                // If we cannot parse the response body as JSON,
+                // then we should assume the request has failed
+                // in an unexpected way and resolve the promise
+                // accordingly. This will simply fall through to
+                // the call to `onFail()` below.
+              }
+            }
+
+            onFail();
+          };
+
+          xhr.onabort = onFail;
+          xhr.onerror = onFail;
+
+          xhr.open('GET', url, true);
+
+          // Set user-defined headers.
+          _.each(headers, function(value, key) {
+            xhr.setRequestHeader(key, value);
+          });
+
+          xhr.send();
+        })
       );
     };
 
+    /**
+     * `.getRows()` executes a SoQL query against the current domain that
+     * returns all rows. The query string is passed in by the caller, meaning
+     * that at this level of abstraction we have no notion of SoQL grammar.
+     *
+     * @param {String} queryString - A valid SoQL query.
+     *
+     * @return {Promise}
+     */
     this.getRows = function(queryString) {
 
       var url = 'https://{0}/api/id/{1}.json?{2}'.format(
@@ -155,61 +167,68 @@
         'Content-type': 'application/json',
       };
 
-      function handleRequestSuccess(response) {
-        return response.data;
-      }
+      return (
+        new Promise(function(resolve, reject) {
 
-      function handleRequestError(error) {
-        return error;
-      }
+          var xhr = new XMLHttpRequest();
 
-      return new Promise(function(resolve, reject) {
+          function onFail() {
 
-        var xhr = new XMLHttpRequest();
+            var error;
 
-        function onFail() {
+            try {
+              error = JSON.parse(xhr.responseText);
+            } catch (e) {
+              error = xhr.statusText;
+            }
 
-          reject({
-            status: parseInt(xhr.status, 10),
-            headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
-            config: config,
-            statusText: xhr.statusText
-          });
-        }
-
-        xhr.onload = function() {
-
-          var status = parseInt(xhr.status, 10);
-
-          if (status === 200) {
-
-            resolve({
-              data: JSON.parse(xhr.responseText),
-              status: status,
-              headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
-              config: config,
-              statusText: xhr.statusText
+            reject({
+              status: parseInt(xhr.status, 10),
+              message: xhr.statusText,
+              soqlError: error
             });
-
           }
 
-          onFail();
-        };
+          xhr.onload = function() {
 
-        xhr.onabort = onFail;
-        xhr.onerror = onFail;
+            var status = parseInt(xhr.status, 10);
+            var data;
 
-        xhr.open('GET', url, true);
+            if (status === 200) {
 
-        // Set user-defined headers.
-        _.each(headers, function(value, key) {
-          xhr.setRequestHeader(key, value);
-        });
+              try {
 
-        xhr.send();
-      }).then(
-        handleRequestSuccess,
-        handleRequestError
+                data = JSON.parse(xhr.responseText);
+
+                resolve(
+                  _mapRowsResponseToTable(data)
+                );
+
+              } catch (e) {
+
+                // If we cannot parse the response body as JSON,
+                // then we should assume the request has failed
+                // in an unexpected way and resolve the promise
+                // accordingly. This will simply fall through to
+                // the call to `onFail()` below.
+              }
+            }
+
+            onFail();
+          };
+
+          xhr.onabort = onFail;
+          xhr.onerror = onFail;
+
+          xhr.open('GET', url, true);
+
+          // Set user-defined headers.
+          _.each(headers, function(value, key) {
+            xhr.setRequestHeader(key, value);
+          });
+
+          xhr.send();
+        })
       );
     };
 
@@ -218,7 +237,7 @@
      */
 
     /**
-     * Transforms raw SoQL query result into a 'table' object.
+     * Transforms a raw SoQL query result into a 'table' object.
      *
      * @param {Object[]} data - The query result, which is an array of objects
      *   with keys equal to the `nameAlias` and `valueAlias` used in the query
@@ -244,7 +263,7 @@
      *     <row value of the `valueAlias` column>
      *   ]
      */
-    function _mapDataToTable(data, nameAlias, valueAlias) {
+    function _mapQueryResponseToTable(data, nameAlias, valueAlias) {
 
       return {
         columns: [nameAlias, valueAlias],
@@ -252,10 +271,66 @@
 
           return [
             datum[nameAlias],
-            Number(datum[valueAlias])
+            datum[valueAlias]
           ];
         })
       };
+    }
+
+    /**
+     * Transforms a raw row request result into a 'table' object.
+     *
+     * @param {Object[]} data - The row request result, which is an array of
+     *    objects with keys equal to the column name and values equal to the
+     *    row value for each respective column.
+     *
+     * @return {Object}
+     *   @property {String[]} columns - An ordered list of the column aliases
+     *     present in the query.
+     *   @property {[][]} rows - An array of rows returned by the query.
+     *
+     * The columns array is of the format:
+     *
+     *   [<first column name>, <second column name>, ...]
+     *
+     * Accordingly, each row in the rows array is of the format:
+     *
+     *   [
+     *     <first column value>,
+     *     <second column value>,
+     *     ...
+     *   ]
+     */
+    function _mapRowsResponseToTable(data) {
+
+      var table = {
+        columns: [],
+        rows: []
+      };
+
+      if (data.length > 0) {
+
+        var columns = Object.keys(data[0]);
+        var rows = data.map(function(datum) {
+
+          var row = [];
+
+          for (var i = 0; i < columns.length; i++) {
+
+            var column = columns[i];
+            var value = datum.hasOwnProperty(column) ? datum[column] : undefined;
+
+            row.push(value);
+          }
+
+          return row;
+        });
+
+        table.columns = columns;
+        table.rows = rows;
+      }
+
+      return table;
     }
   }
 

@@ -32,8 +32,7 @@
     // we use to modify point data queries with a WITHIN_BOX clause.
     var geospaceDataProviderConfig = {
       domain: config.domain,
-      fourByFour: config.fourByFour,
-      fieldName: config.fieldName
+      fourByFour: config.fourByFour
     };
     var geospaceDataProvider = new socrata.visualizations.GeospaceDataProvider(
       geospaceDataProviderConfig
@@ -63,17 +62,18 @@
       soqlDataProviderConfig
     );
 
-    // We also need to fetch the dataset metadata for the specified
-    // dataset so that we can use its column definitions when formatting
-    // data for the row inspector.
+    // We also need to fetch the dataset metadata for the specified dataset so
+    // that we can use its column definitions when formatting data for the row
+    // inspector.
     var metadataProviderConfig = {
-      domain: config.domain
+      domain: config.domain,
+      fourByFour: config.fourByFour
     }
     var metadataProvider = new socrata.visualizations.MetadataProvider(
       metadataProviderConfig
     );
 
-    // The visualization itself handles rendering and interaction events
+    // The visualization itself handles rendering and interaction events.
     var visualizationConfig = {
       localization: config.localization,
       hover: config.hover,
@@ -84,8 +84,8 @@
       visualizationConfig
     );
 
-    // The visualizationRenderOptions may change in response to user
-    // actions and are passed as an argument to every render call.
+    // The visualizationRenderOptions may change in response to user actions
+    // and are passed as an argument to every render call.
     var visualizationRenderOptions = {
       labelUnit: 'rows',
       baseLayer: {
@@ -100,12 +100,11 @@
      * Initial data requests to set up visualization state
      */
 
-    // Make the dataset metadata request before initializing
-    // the visualization in order to ensure that the column
-    // metadata is present before any of the row inspector
-    // events (which expect it to be present) can be fired.
+    // Make the dataset metadata request before initializing the visualization
+    // in order to ensure that the column metadata is present before any of the
+    // row inspector events (which expect it to be present) can be fired.
     metadataProvider.
-      getDatasetMetadata(config.fourByFour).
+      getDatasetMetadata().
       then(
         handleDatasetMetadataRequestSuccess,
         handleDatasetMetadataRequestError
@@ -113,11 +112,11 @@
         console.error(e);
       });
 
-    // We query the extent of the features we are rendering in order
-    // to make individual tile requests more performant (through the
-    // use of a WITHIN_BOX query clause).
+    // We query the extent of the features we are rendering in order to make
+    // individual tile requests more performant (through the use of a
+    // WITHIN_BOX query clause).
     geospaceDataProvider.
-      getFeatureExtent().
+      getFeatureExtent(config.fieldName).
       then(
         handleFeatureExtentQuerySuccess,
         handleFeatureExtentQueryError
@@ -144,11 +143,10 @@
 
     function handleDatasetMetadataRequestError() {
 
-      // We can gracefully degrade here since the
-      // dataset metadata is only used to provide
-      // formatting information for the row inspector.
-      // In its absence, we simply won't format the
-      // row inspector data as nicely.
+      // We can gracefully degrade here since the dataset metadata is only used
+      // to provide formatting information for the row inspector.
+      // In its absence, we simply won't format the row inspector data as
+      // nicely.
     }
 
     function handleFeatureExtentQuerySuccess(response) {
@@ -226,7 +224,8 @@
     function initializeVisualization() {
 
       // For now, we don't need to use any where clause but the default
-      // one, so we just inline the call to updateRenderOptionsVectorTileGetter.
+      // one, so we just inline the call to
+      // updateRenderOptionsVectorTileGetter.
       updateRenderOptionsVectorTileGetter(config.baseWhereClause, config.useOriginHost);
       renderIfReady();
     }
@@ -266,16 +265,15 @@
 
     function formatRowInspectorData(datasetMetadata, rows) {
 
-      // Each of our rows will be mapped to 'formattedRowData',
-      // an array of objects.  Each row corresponds to a single
-      // page in the flannel.
+      // Each of our rows will be mapped to 'formattedRowData', an array of
+      // objects.  Each row corresponds to a single page in the flannel.
       return rows.map(
         function(row) {
 
-          // If the dataset metadata request fails, then datasetMetadata
-          // will be undefined. In this case, we should fall back to
-          // sorting alphabetically instead of sorting by the order in
-          // which the columns have been arranged in the dataset view.
+          // If the dataset metadata request fails, then datasetMetadata will
+          // be undefined. In this case, we should fall back to sorting
+          // alphabetically instead of sorting by the order in which the
+          // columns have been arranged in the dataset view.
           if (datasetMetadata) {
 
             return orderRowDataByColumnIndex(

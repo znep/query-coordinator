@@ -74,31 +74,44 @@
 
       if (axisLabels.top) {
 
-        mapContainer.addClass('top-axis-label');
         topAxisLabel.
           text(axisLabels.top);
+
+        container.
+          addClass('top-axis-label').
+          append(topAxisLabel);
       }
 
       if (axisLabels.right) {
 
-        mapContainer.addClass('right-axis-label');
         rightAxisLabel.
           text(axisLabels.right);
+
+        container.
+          addClass('right-axis-label').
+          append(rightAxisLabel);
       }
 
       if (axisLabels.bottom) {
 
-        mapContainer.addClass('bottom-axis-label');
         bottomAxisLabel.
           text(axisLabels.bottom);
+
+        container.
+          addClass('bottom-axis-label').
+          append(bottomAxisLabel);
       }
 
       if (axisLabels.left) {
 
-        mapContainer.addClass('left-axis-label');
         leftAxisLabel.
           text(axisLabels.left);
+
+        container.
+          addClass('left-axis-label').
+          append(leftAxisLabel);
       }
+
     };
 
     this.getLocalization = function(key) {

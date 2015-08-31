@@ -19,8 +19,10 @@
     _.extend(this, new root.socrata.visualizations.DataProvider(config));
 
     utils.assertHasProperty(config, 'domain');
+    utils.assertHasProperty(config, 'fourByFour');
 
     utils.assertIsOneOfTypes(config.domain, 'string');
+    utils.assertIsOneOfTypes(config.fourByFour, 'string');
 
     var _self = this;
 
@@ -28,13 +30,11 @@
      * Public methods
      */
 
-    this.getDatasetMetadata = function(fourByFour) {
-
-      utils.assertIsOneOfTypes(fourByFour, 'string');
+    this.getDatasetMetadata = function() {
 
       var url= 'https://{0}/metadata/v1/dataset/{1}.json'.format(
         this.getConfigurationProperty('domain'),
-        fourByFour
+        this.getConfigurationProperty('fourByFour')
       );
       var headers = {
         'Accept': 'application/json'
@@ -48,9 +48,7 @@
 
           reject({
             status: parseInt(xhr.status, 10),
-            headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
-            config: config,
-            statusText: xhr.statusText
+            message: xhr.statusText
           });
         }
 
@@ -60,13 +58,14 @@
 
           if (status === 200) {
 
-            resolve({
-              data: JSON.parse(xhr.responseText),
-              status: status,
-              headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
-              config: config,
-              statusText: xhr.statusText
-            });
+            try {
+
+              resolve(
+                JSON.parse(xhr.responseText)
+              );
+            } catch (e) {
+              // Let this fall through to the `onFail()` below.
+            }
           }
 
           onFail();

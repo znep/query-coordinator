@@ -120,9 +120,9 @@ module.exports = function ( karma ) {
       'public/javascripts/angular/common/*.js',
       'public/javascripts/angular/common/**/*.js',
 
-      'karma-test/helpers/TestHelpers.js', // Requirement for mockModuleDefinitions.
-      'karma-test/dataCards/mockModuleDefinitions.js', // Mock out module('dataCards').
-      'karma-test/dataCards/mockTranslations.js',
+      'karma/helpers/TestHelpers.js', // Requirement for mockModuleDefinitions.
+      'karma/dataCards/mockModuleDefinitions.js', // Mock out module('dataCards').
+      'karma/dataCards/mockTranslations.js',
 
       'public/javascripts/angular/dataCards/controllers.js',
       'public/javascripts/angular/dataCards/models.js',
@@ -138,7 +138,7 @@ module.exports = function ( karma ) {
       /* TEST MOCKS */
 
       /* Test datasets */
-      'karma-test/dataCards/test-data/**/*.json',
+      'karma/dataCards/test-data/**/*.json',
       /* Mock app assets */
       'app/styles/dataCards/testing.css',
       /* Images */
@@ -146,27 +146,27 @@ module.exports = function ( karma ) {
       { pattern: 'public/images/dataCards/**/*.png', watched: false, included: false, served: true },
 
       /* Old UX */
-      // moved to karma-test/old-ux
+      // moved to karma/old-ux
 
       /* THE TESTS THEMSELVES */
-      'karma-test/dataCards/*.js',
-      // 'karma-test/old-ux/*.js',
+      'karma/dataCards/*.js',
+      // 'karma/old-ux/*.js',
       /* IMPORTANT: If you add/remove/change test groups,
        * please update at the constant TEST_GROUPS in karma_tests.rake.
        * If you don't, your tests may be run multiple times per run.
        */
-      { pattern: 'karma-test/dataCards/controllers/*.js', included: isTestGroupIncluded('controllers') },
-      { pattern: 'karma-test/dataCards/directives/*[cC]horoplethTest.js', included: isTestGroupIncluded('directives-maps') },
-      { pattern: 'karma-test/dataCards/directives/*[fF]eatureMapTest.js', included: isTestGroupIncluded('directives-maps') },
-      { pattern: 'karma-test/dataCards/directives/cardLayoutTest.js', included: isTestGroupIncluded('directives-card-layout') },
-      { pattern: 'karma-test/dataCards/directives/*.js', included: isTestGroupIncluded('directives-other') },
-      { pattern: 'karma-test/dataCards/filters/*.js', included: isTestGroupIncluded('filters') },
+      { pattern: 'karma/dataCards/controllers/*.js', included: isTestGroupIncluded('controllers') },
+      { pattern: 'karma/dataCards/directives/*[cC]horoplethTest.js', included: isTestGroupIncluded('directives-maps') },
+      { pattern: 'karma/dataCards/directives/*[fF]eatureMapTest.js', included: isTestGroupIncluded('directives-maps') },
+      { pattern: 'karma/dataCards/directives/cardLayoutTest.js', included: isTestGroupIncluded('directives-card-layout') },
+      { pattern: 'karma/dataCards/directives/*.js', included: isTestGroupIncluded('directives-other') },
+      { pattern: 'karma/dataCards/filters/*.js', included: isTestGroupIncluded('filters') },
       // TODO: Re-add this if we write more integration tests.
-      // { pattern: 'karma-test/dataCards/integration/*.js', included: isTestGroupIncluded('integration') },
-      { pattern: 'karma-test/dataCards/services/*.js', included: isTestGroupIncluded('services') },
-      { pattern: 'karma-test/dataCards/models/*.js', included: isTestGroupIncluded('models') },
-      { pattern: 'karma-test/dataCards/util/*.js', included: isTestGroupIncluded('util') },
-      { pattern: 'karma-test/dataCards/**/*.js', included: true } // Safety net - runs any tests not explicitly listed in a batch.
+      // { pattern: 'karma/dataCards/integration/*.js', included: isTestGroupIncluded('integration') },
+      { pattern: 'karma/dataCards/services/*.js', included: isTestGroupIncluded('services') },
+      { pattern: 'karma/dataCards/models/*.js', included: isTestGroupIncluded('models') },
+      { pattern: 'karma/dataCards/util/*.js', included: isTestGroupIncluded('util') },
+      { pattern: 'karma/dataCards/**/*.js', included: true } // Safety net - runs any tests not explicitly listed in a batch.
     ],
 
     exclude: [
@@ -229,18 +229,18 @@ module.exports = function ( karma ) {
       reporters: [
         {
           type : 'html',
-          dir : 'karma-test/coverage-reports/dataCards/',
+          dir : 'karma/coverage-reports/dataCards/',
           subdir: '.'
         },
         {
           type: 'text',
-          dir : 'karma-test/coverage-reports/dataCards/',
+          dir : 'karma/coverage-reports/dataCards/',
           subdir: '.',
           file: 'coverage.txt'
         },
         {
           type: 'cobertura',
-          dir : 'karma-test/coverage-reports/dataCards/',
+          dir : 'karma/coverage-reports/dataCards/',
           subdir: '.'
         },
         {

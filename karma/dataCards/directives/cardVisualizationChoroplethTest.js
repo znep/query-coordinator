@@ -19,9 +19,9 @@ describe('A Choropleth Card Visualization', function() {
   var normalTimeoutScheduler;
   var mockCardDataService;
 
-  var testWards = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/ward_geojson.json';
-  var testAggregates = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/geo_values.json';
-  var testAggregatesWhere = 'karma-test/dataCards/test-data/cardVisualizationChoroplethTest/geo_values_where.json';
+  var testWards = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/ward_geojson.json';
+  var testAggregates = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/geo_values.json';
+  var testAggregatesWhere = 'karma/dataCards/test-data/cardVisualizationChoroplethTest/geo_values_where.json';
   beforeEach(module('/angular_templates/dataCards/cardVisualizationChoropleth.html'));
   beforeEach(module(testWards));
   beforeEach(module(testAggregates));

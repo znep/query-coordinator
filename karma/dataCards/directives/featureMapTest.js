@@ -9,8 +9,8 @@ describe('featureMap', function() {
   var timeout;
   var featureExtent;
   var protocolBuffers;
-  var testJson = 'karma-test/dataCards/test-data/featureMapTest/featureMapTestData.json';
-  var protocolBufferEndpointResponses = 'karma-test/dataCards/test-data/featureMapTest/protocolBufferEndpointResponses.json';
+  var testJson = 'karma/dataCards/test-data/featureMapTest/featureMapTestData.json';
+  var protocolBufferEndpointResponses = 'karma/dataCards/test-data/featureMapTest/protocolBufferEndpointResponses.json';
   var VectorTileDataService;
 
   beforeEach(module(testJson));

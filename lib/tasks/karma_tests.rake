@@ -1,26 +1,58 @@
 namespace :test do
+
+  # Helper task that creates a js file that injects translation into browser.
+  task :update_datacards_translations do
+    translations_filename = 'config/locales/en.yml'
+    output_filename = 'karma/dataCards/mockTranslations.js'
+    translations = YAML.load_file(translations_filename)['en']['angular']['dataCards']
+    File.write(output_filename, 'window.translations = ' + translations.to_json.html_safe + ';')
+  end
+
+  namespace :js do
+    def run_karma(dir, args = {})
+      watch = args.watch == 'true'
+      browser = args.browser || 'PhantomJS'
+      reporter = args.reporter || 'dots,coverage'
+
+      if browser =~ /^phantom/i then
+        browser = 'PhantomJS'
+      elsif browser =~ /^chrome/i then
+        browser = 'Chrome'
+      elsif browser =~ /^firefox/i then
+        browser = 'Firefox'
+      end
+
+      cmd = "./node_modules/karma/bin/karma start karma/#{dir}/karma.conf.js --singleRun #{!watch} --browsers #{browser} --reporters #{reporter}"
+      puts cmd
+      fail($?.exitstatus) unless system(cmd)
+    end
+
+    task :dataCards, [:watch, :browser, :reporter] => 'update_datacards_translations' do |task, args|
+      run_karma('dataCards', args)
+    end
+
+    task :oldUx, [:watch, :browser, :reporter] do |task, args|
+      run_karma('oldUx', args)
+    end
+  end
+
+  task :js, [:watch, :browser, :reporter] => ['js:dataCards', 'js:oldUx']
+
   # Keep this <= the maximum concurrency listed on the SauceLabs account dashboard. Otherwise timeouts will occur.
   MAX_SAUCELABS_CONCURRENT_RUNS = 6
   SUPPORTED_BROWSERS = JSON.parse(open('supported_browsers.json').read())
 
   # IMPORTANT: If you add/remove/change test groups,
-  # please update karma-unit.js (look for the calls to isTestGroupIncluded).
+  # please update karma.conf.js (look for the calls to isTestGroupIncluded).
   # If you don't, your tests may be executed multiple times per run.
   TEST_GROUPS = %w(services controllers directives-card-layout directives-maps directives-other filters integration models util)
-
-  task :update_datacards_translations do
-    translations_filename = 'config/locales/en.yml'
-    output_filename = 'karma-test/dataCards/mockTranslations.js'
-    translations = YAML.load_file(translations_filename)['en']['angular']['dataCards']
-    File.write(output_filename, 'window.translations = ' + translations.to_json.html_safe + ';')
-  end
 
   desc "Run all karma tests and update test-coverage result"
   task :karma => 'update_datacards_translations' do
     # Manually enable the coverage reporter. It isn't enabled by default as the instrumentation step makes
     # the product code unintelligible.
-    cmd = './node_modules/karma/bin/karma start karma-test/dataCards/karma-unit.js --browsers PhantomJS --singleRun true --reporters dots,coverage'
-    cmd += ' && ./node_modules/karma/bin/karma start karma-test/old-ux/karma-unit.js --browsers PhantomJS --singleRun true --reporters dots,coverage'
+    cmd = './node_modules/karma/bin/karma start karma/dataCards/karma.conf.js --browsers PhantomJS --singleRun true --reporters dots,coverage'
+    cmd += ' && ./node_modules/karma/bin/karma start karma/old-ux/karma.conf.js --browsers PhantomJS --singleRun true --reporters dots,coverage'
     fail($?.exitstatus) unless system(cmd)
   end
 
@@ -90,14 +122,14 @@ namespace :test do
     [ group_a_excludes, group_b_excludes, group_remainder_excludes ].each do |excluded_groups|
       browser_names.each_slice(MAX_SAUCELABS_CONCURRENT_RUNS) do |this_slice_browser_names|
         puts "Launching batch: #{this_slice_browser_names} minus groups: #{excluded_groups}"
-        command = "karma start karma-test/dataCards/karma-unit.js --browsers \"#{this_slice_browser_names.join(',')}\" --exclude-groups \"#{excluded_groups.join(',')}\" --singleRun true"
+        command = "karma start karma/dataCards/karma.conf.js --browsers \"#{this_slice_browser_names.join(',')}\" --exclude-groups \"#{excluded_groups.join(',')}\" --singleRun true"
         success = system(command)
         raise 'Data Lens Karma test failure' unless success
       end
     end
 
     puts "Launching Old UX Tests for: #{browser_names}"
-    command = "karma start karma-test/old-ux/karma-unit.js --browsers \"#{browser_names.join(',')}\" --singleRun true"
+    command = "karma start karma/old-ux/karma.conf.js --browsers \"#{browser_names.join(',')}\" --singleRun true"
     success = system(command)
     raise 'Old UX Karma test failure' unless success
 
@@ -116,7 +148,7 @@ namespace :test do
     geckoboard_api_key = 'b84ed380a729972213e3452b5c8de8b7'
     widget_url = URI.parse('https://push.geckoboard.com/v1/send/106298-84d0c65a-5787-4109-87c6-3fc24e8b1958')
 
-    coverage_report_file_path = 'karma-test/coverage-reports/dataCards/cobertura-coverage.xml'
+    coverage_report_file_path = 'karma/coverage-reports/dataCards/cobertura-coverage.xml'
     coverage_rate_warn_level = 0.70
 
     raise "Coverage file doesn't exist, you may want to run rake test:karma first" unless File.exist?(coverage_report_file_path)
@@ -174,4 +206,5 @@ namespace :test do
     end
   end
 end
-Rake::Task[:test].enhance { Rake::Task["test:karma"].invoke }
+
+Rake::Task[:test].enhance { Rake::Task["test:js"].invoke }

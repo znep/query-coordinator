@@ -38,8 +38,8 @@ describe('CardDataService', function() {
 
   beforeEach(function () {
     module('dataCards');
-    module('karma-test/dataCards/test-data/cardDataServiceTest/sampleData.json');
-    module('karma-test/dataCards/test-data/cardDataServiceTest/extentData.json');
+    module('karma/dataCards/test-data/cardDataServiceTest/sampleData.json');
+    module('karma/dataCards/test-data/cardDataServiceTest/extentData.json');
   });
   function normalizeUrl(url) {
     return url.replace(/\s/g, '+').toLowerCase();
@@ -1060,7 +1060,7 @@ describe('CardDataService', function() {
     });
 
     it('should resolve for a correctly formatted extent', function(done) {
-      var TEST_RESPONSE = testHelpers.getTestJson('karma-test/dataCards/test-data/cardDataServiceTest/extentData.json');
+      var TEST_RESPONSE = testHelpers.getTestJson('karma/dataCards/test-data/cardDataServiceTest/extentData.json');
       getExpectation.respond(TEST_RESPONSE);
       featureExtentPromise.
         then(function(value) {
@@ -1101,7 +1101,7 @@ describe('CardDataService', function() {
     });
 
     it('should get the sample data', function(done) {
-      var TEST_RESPONSE = testHelpers.getTestJson('karma-test/dataCards/test-data/cardDataServiceTest/sampleData.json');
+      var TEST_RESPONSE = testHelpers.getTestJson('karma/dataCards/test-data/cardDataServiceTest/sampleData.json');
 
       $httpBackend.whenGET(/.*/).respond(TEST_RESPONSE);
 

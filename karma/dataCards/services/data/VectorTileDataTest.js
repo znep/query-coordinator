@@ -7,7 +7,7 @@ describe('VectorTileDataService', function() {
   var TEST_URL = new URL('http://example.com');
   var TILESERVER_HOSTS = ['tile1.example.com', 'tile2.example.com'];
   var tileserverHosts;
-  var protocolBufferEndpointResponses = 'karma-test/dataCards/test-data/featureMapTest/protocolBufferEndpointResponses.json';
+  var protocolBufferEndpointResponses = 'karma/dataCards/test-data/featureMapTest/protocolBufferEndpointResponses.json';
 
   beforeEach(function() {
     sinon.stub($, 'baseUrl', function(pathname) {

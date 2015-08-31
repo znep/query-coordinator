@@ -142,7 +142,7 @@ describe('A Choropleth Directive', function() {
   var testData;
   var el;
   var cardVisualizationChoroplethHelpers;
-  var testJson = 'karma-test/dataCards/test-data/choroplethTest/data.json';
+  var testJson = 'karma/dataCards/test-data/choroplethTest/data.json';
   var legendSelector = '.choropleth-legend';
   var legendColorSelector = legendSelector + ' .choropleth-legend-color';
   var featureGeometrySelector = '.leaflet-map-pane .leaflet-objects-pane .leaflet-overlay-pane svg path';

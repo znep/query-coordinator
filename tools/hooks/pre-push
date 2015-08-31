@@ -11,7 +11,7 @@ if [ -n "$CATCH_METHOD_INSTANCES" ]; then
   ((errors++))
 fi
 
-DOT_ONLY_INSTANCES=`grep --include='*.js' -RE '\b(it|describe)\.only' karma-test/dataCards/* | \
+DOT_ONLY_INSTANCES=`grep --include='*.js' -RE '\b(it|describe)\.only' karma/dataCards/* | \
                     grep -vE '\s*//\s*' | \
                     cut -d \: -f 1`
 if [ -n "$DOT_ONLY_INSTANCES" ]; then

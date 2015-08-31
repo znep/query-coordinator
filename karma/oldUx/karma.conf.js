@@ -71,12 +71,12 @@ module.exports = function ( karma ) {
       'public/javascripts/component/util/html-sanitizer-utils.js',
 
       // Test Files
-      'karma-test/old-ux/**/*.js'
+      'karma/oldUx/**/*.js'
 
     ],
 
     sauceLabs: {
-      testName: 'old-ux Unit Tests',
+      testName: 'oldUx Unit Tests',
       username: 'socrata-saucelabs',
       accessKey: '9207e751-711a-4ed0-940a-229a42c06bcc',
       tunnelIdentifier: tunnelIdentifier,
@@ -121,18 +121,18 @@ module.exports = function ( karma ) {
       reporters: [
         {
           type : 'html',
-          dir : 'karma-test/coverage-reports/old-ux/',
+          dir : 'karma/coverage-reports/oldUx/',
           subdir: '.'
         },
         {
           type: 'text',
-          dir : 'karma-test/coverage-reports/old-ux/',
+          dir : 'karma/coverage-reports/oldUx/',
           subdir: '.',
           file: 'coverage.txt'
         },
         {
           type: 'cobertura',
-          dir : 'karma-test/coverage-reports/old-ux/',
+          dir : 'karma/coverage-reports/oldUx/',
           subdir: '.'
         },
         {

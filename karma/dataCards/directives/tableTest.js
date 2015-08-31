@@ -94,9 +94,9 @@ describe('table directive', function() {
   var reversedFixtureData;
   var reversedFixtureNullData;
   var fixtureMetadata;
-  var testJson = 'karma-test/dataCards/test-data/tableTest/test-rows.json';
-  var testNullJson = 'karma-test/dataCards/test-data/tableTest/test-null-rows.json';
-  var testMetaJson = 'karma-test/dataCards/test-data/tableTest/test-meta.json';
+  var testJson = 'karma/dataCards/test-data/tableTest/test-rows.json';
+  var testNullJson = 'karma/dataCards/test-data/tableTest/test-null-rows.json';
+  var testMetaJson = 'karma/dataCards/test-data/tableTest/test-meta.json';
   var blockSize = 50; // The table loads chunks of this size. The tests shouldn't really know, but they do for now.
   var columnCount;
   var rowCount = 5;

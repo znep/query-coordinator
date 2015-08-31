@@ -13,13 +13,13 @@ describe('timelineChart', function() {
   var timeout;
   var Constants;
   var testData;
-  var testJson = 'karma-test/dataCards/test-data/timelineChartTest/timelineChartTestData.json';
-  var allLabelsTestJson = 'karma-test/dataCards/test-data/timelineChartTest/allLabelsTimelineChartTestData.json';
-  var hiddenLabelTestJson = 'karma-test/dataCards/test-data/timelineChartTest/hiddenLabelTimelineChartTestData.json';
-  var negativeTestJson = 'karma-test/dataCards/test-data/timelineChartTest/negativeTestData.json';
-  var nonContinuousTestJson = 'karma-test/dataCards/test-data/timelineChartTest/nonContinuousTestData.json';
-  var noDataTestJson = 'karma-test/dataCards/test-data/timelineChartTest/noData.json';
-  var allDataAtSameTimestampTestJson = 'karma-test/dataCards/test-data/timelineChartTest/allDataAtSameTimestamp.json';
+  var testJson = 'karma/dataCards/test-data/timelineChartTest/timelineChartTestData.json';
+  var allLabelsTestJson = 'karma/dataCards/test-data/timelineChartTest/allLabelsTimelineChartTestData.json';
+  var hiddenLabelTestJson = 'karma/dataCards/test-data/timelineChartTest/hiddenLabelTimelineChartTestData.json';
+  var negativeTestJson = 'karma/dataCards/test-data/timelineChartTest/negativeTestData.json';
+  var nonContinuousTestJson = 'karma/dataCards/test-data/timelineChartTest/nonContinuousTestData.json';
+  var noDataTestJson = 'karma/dataCards/test-data/timelineChartTest/noData.json';
+  var allDataAtSameTimestampTestJson = 'karma/dataCards/test-data/timelineChartTest/allDataAtSameTimestamp.json';
 
   var unfilteredTestData;
   var allLabelsTestData;

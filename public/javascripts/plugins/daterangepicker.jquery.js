@@ -105,6 +105,20 @@ jQuery.fn.daterangepicker = function(settings){
                   },
                   defaultDate: +0
 	};
+
+        // Interpret a date given as either a Date.js parseable string,
+        // a function returning a Date, or null/undefined.
+        var interpretDate = function(date) {
+            switch (typeof date) {
+                case 'string':
+                    return Date.parse(date);
+                case 'function':
+                    return date();
+                default:
+                    return null;
+            }
+        };
+
 	
 	//change event fires both when a calendar is updated or a change event on the input is triggered
 	rangeInput.change(options.onChange);
@@ -145,7 +159,7 @@ jQuery.fn.daterangepicker = function(settings){
 	})();
 	var rangeText = options.initialRange.text;
 	var rangePreviousText = options.initialRange.previousText;
-	var rangePrevious = (!options.initialRange.datePrevious || typeof options.initialRange.datePrevious == 'string') ? Date.parse(options.initialRange.datePrevious) : options.initialRange.datePrevious();
+	var rangePrevious = interpretDate(options.initialRange.datePrevious);
 				
 	//function to format a date string        
 	function fDate(date){
@@ -157,35 +171,35 @@ jQuery.fn.daterangepicker = function(settings){
 	   var dateFormat = options.dateFormat;
 	   return jQuery.datepicker.formatDate( dateFormat, date ); 
 	}
-	
-	var updateInput = function() {
-	    var rangeStart = rp.find('.range-start').datepicker('getDate');
-	    var rangeA = fDate(rangeStart);
-	    var rangeEnd = rp.find('.range-end').datepicker('getDate');
-	    var rangeB = fDate(rangeEnd);
 
-	    //send back to input or inputs
-	    if(rangeInput.length == 2){
-		    rangeInput.eq(0).val(rangeA);
-		    rangeInput.eq(1).val(rangeB);
-	    }
-	    else{
-		    var rangeValue = (rangeA != rangeB) ? rangeA+' '+ options.rangeSplitter +' '+rangeB : rangeA;
-		    if (rangeText && blist.feature_flags.embetter_analytics_page) {
-			rangeInput.val(rangeText + ' (' + rangeValue + ')');
-		    }
-		    else {
-			rangeInput.val(rangeValue);
-		    }
-		    rangeInput.data('range-start', rangeStart);
-		    rangeInput.data('range-end', rangeEnd);
-		    rangeInput.data('range-text', rangeText);
-		    rangeInput.data('range-previousText', rangePreviousText);
-		    rangeInput.data('range-previous', rangePrevious);
-	    }
-	};
+        // Set the textual value and jQuery data of the input element.
+        var updateInput = function() {
+            var rangeStart = rp.find('.range-start').datepicker('getDate');
+            var rangeA = fDate(rangeStart);
+            var rangeEnd = rp.find('.range-end').datepicker('getDate');
+            var rangeB = fDate(rangeEnd);
 
-	
+            //send back to input or inputs
+            if (rangeInput.length == 2) {
+                rangeInput.eq(0).val(rangeA);
+                rangeInput.eq(1).val(rangeB);
+            }
+            else {
+                var rangeValue = (rangeA != rangeB) ? rangeA+' '+ options.rangeSplitter +' '+rangeB : rangeA;
+                if (rangeText && blist.feature_flags.embetter_analytics_page) {
+                    rangeInput.val(rangeText + ' (' + rangeValue + ')');
+                }
+                else {
+                    rangeInput.val(rangeValue);
+                }
+                rangeInput.data('range-start', rangeStart);
+                rangeInput.data('range-end', rangeEnd);
+                rangeInput.data('range-text', rangeText);
+                rangeInput.data('range-previousText', rangePreviousText);
+                rangeInput.data('range-previous', rangePrevious);
+            }
+        };
+
 	jQuery.fn.restoreDateFromData = function(){
 		if(jQuery(this).data('saveDate')){
 			jQuery(this).datepicker('setDate', jQuery(this).data('saveDate')).removeData('saveDate'); 
@@ -289,11 +303,11 @@ jQuery.fn.daterangepicker = function(settings){
 				rp.find('.range-start, .range-end').hide(400, function(){
 					rpPickers.hide();
 				});
-				var dateStart = (typeof jQuery(this).data('dateStart') == 'string') ? Date.parse(jQuery(this).data('dateStart')) : jQuery(this).data('dateStart')();
-				var dateEnd = (typeof jQuery(this).data('dateEnd') == 'string') ? Date.parse(jQuery(this).data('dateEnd')) : jQuery(this).data('dateEnd')();
+				var dateStart = interpretDate(jQuery(this).data('dateStart'));
+				var dateEnd = interpretDate(jQuery(this).data('dateEnd'));
 				rangeText = jQuery(this).data('text');
 				rangePreviousText = jQuery(this).data('previousText');
-				rangePrevious = (!options.initialRange.datePrevious || typeof jQuery(this).data('datePrevious') == 'string') ? Date.parse(jQuery(this).data('datePrevious')) : jQuery(this).data('datePrevious')();
+				rangePrevious = interpretDate(jQuery(this).data('datePrevious'));
 				rp.find('.range-start').datepicker('setDate', dateStart).find('.ui-datepicker-current-day').trigger('click');
 				rp.find('.range-end').datepicker('setDate', dateEnd).find('.ui-datepicker-current-day').trigger('click');
 		}
@@ -305,8 +319,8 @@ jQuery.fn.daterangepicker = function(settings){
 	//picker divs
 	var rpPickers = jQuery('<div class="ranges ui-widget-header ui-corner-all ui-helper-clearfix"><div class="range-start"><span class="title-start">Start Date</span></div><div class="range-end"><span class="title-end">End Date</span></div></div>').appendTo(rp);
 	rpPickers.find('.range-start, .range-end').datepicker(options.datepickerOptions);
-	rpPickers.find('.range-start').datepicker('setDate', (typeof options.initialRange.dateStart == 'string') ? Date.parse(options.initialRange.dateStart) : options.initialRange.dateStart());
-	rpPickers.find('.range-end').datepicker('setDate', (typeof options.initialRange.dateEnd == 'string') ? Date.parse(options.initialRange.dateEnd) : options.initialRange.dateEnd());
+	rpPickers.find('.range-start').datepicker('setDate', interpretDate(options.initialRange.dateStart));
+	rpPickers.find('.range-end').datepicker('setDate', interpretDate(options.initialRange.dateEnd));
 	var doneBtn = jQuery('<button class="btnDone ui-state-default ui-corner-all">'+ options.doneButtonText +'</button>')
 	.click(function(){
 	  if ($(this).data('daterangepicker-autoacceptrange') === true)

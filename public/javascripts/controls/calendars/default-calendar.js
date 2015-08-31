@@ -5,7 +5,6 @@
         {
             setUpCalendar(this);
             this._queryInterval = 1;
-            this._autoJump = true;
         },
 
         cleanVisualization: function()
@@ -18,8 +17,6 @@
             delete calObj._startCol;
             delete calObj._endCol;
             delete calObj._titleCol;
-
-            calObj._autoJump = true;
 
             cleanEvents(calObj);
         },
@@ -40,7 +37,6 @@
         reset: function()
         {
             this._super.apply(this, arguments);
-            this._autoJump = true;
         },
 
         renderRow: function(row)
@@ -78,72 +74,12 @@
             return true;
         },
 
-        jumpToClosestDateDebounced: _.debounce(function()
-        {
-            var mapValueToDateOrNull = function(dateValue) {
-                if (_.isDate(dateValue)) {
-                    return dateValue;
-                }
-                if (_.isString(dateValue) && dateValue !== '') {
-                    return Date.parse(dateValue);
-                } else {
-                    return null;
-                }
-            };
-
-            var dates = _.chain(this._allEvents)
-              .map(function(ev) {
-                  if (_.isDate(ev)) {
-                      return ev;
-                  }
-                  return _.map([ev.start, ev.end], mapValueToDateOrNull);
-              })
-              .flatten().concat(this._closestDate).compact().value();
-
-            // If we've got something in the current view, then just stay where we are
-            // Only jump if nothing is visible
-            var calView = this.$dom().fullCalendar('getView');
-            var startDate = calView.start.clone();
-            var endDate = calView.end.clone();
-            if (!_.any(dates, function(d) {
-                  return d >= startDate && d < endDate;
-              })) {
-                var today = new Date();
-                var monthStart = today.clone();
-                monthStart.setHours(0);
-                monthStart.setMinutes(0);
-                monthStart.setSeconds(0);
-                monthStart.setMilliseconds(0);
-                monthStart.setDate(1);
-
-                var monthEnd = monthStart.clone();
-                monthEnd.setMonth(monthEnd.getMonth() + 1);
-
-                this._closestDate = _.chain(dates).sortBy(function(d) {
-                    if (d >= monthStart && d < monthEnd) {
-                        return 0;
-                    }
-                    return Math.abs(d - today);
-                }).first().value();
-                this.$dom().fullCalendar('gotoDate', this._closestDate);
-            }
-            // Once we've rendered once, don't auto-jump again
-            this._autoJump = false;
-        }, 100),
         rowsRendered: function()
         {
             this._super();
 
             if (!_.isEmpty(this._events))
             {
-                if (this._autoJump)
-                {
-                    // This debounced function allows more in-flight request data to be added
-                    // But a better refactor would be to coordinate with the in-flight requests
-                    // directly
-                    this.jumpToClosestDateDebounced();
-                }
-
                 this._allEvents = (this._allEvents || []).concat(this._events);
 
                 this.$dom().fullCalendar('addEventSource', this._events);
@@ -185,7 +121,7 @@
 
         handleRowsLoaded: function(rows, view)
         {
-            if (rows.length < 1 && this._autoJump)
+            if (rows.length < 1)
             {
                 // If no rows, re-request with larger timespan
                 this._queryInterval++;

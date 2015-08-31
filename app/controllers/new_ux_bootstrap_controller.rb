@@ -144,7 +144,11 @@ class NewUxBootstrapController < ActionController::Base
         if default_page[:version].to_i > 0
           # If the default page version is greater than or equal to 1,
           # immediately redirect to the default page.
-          return redirect_to "/view/#{default_page[:pageId]}"
+          redirect_args = { controller: 'angular', action: 'serve_app', app: 'dataCards', id: default_page[:pageId] }
+          unless I18n.locale.to_s == CurrentDomain.default_locale
+            redirect_args[:locale] = I18n.locale
+          end
+          return redirect_to redirect_args
         else
           # Otherwise, generate a new default page and redirect to it.
           generate_and_redirect_to_new_page(dataset_metadata_response_body)
@@ -162,7 +166,11 @@ class NewUxBootstrapController < ActionController::Base
           # If we have found a qualifying default page, set it as the default
           # and then redirect to it.
           set_default_page(dataset_metadata_response_body, some_page[:pageId])
-          return redirect_to "/view/#{some_page[:pageId]}"
+          redirect_args = { controller: 'angular', action: 'serve_app', app: 'dataCards', id: some_page[:pageId] }
+          unless I18n.locale.to_s == CurrentDomain.default_locale
+            redirect_args[:locale] = I18n.locale
+          end
+          return redirect_to redirect_args
         else
           # If no qualifying pages exist, then generate a new page and redirect
           # to it instead.
@@ -394,7 +402,11 @@ class NewUxBootstrapController < ActionController::Base
 
     # Set the newly-created page as the default.
     set_default_page(dataset_metadata, default_page_id)
-    redirect_to "/view/#{default_page_id}"
+    redirect_args = {controller: 'angular', action: 'serve_app', app: 'dataCards', id: default_page_id}
+    unless I18n.locale.to_s == CurrentDomain.default_locale
+      redirect_args[:locale] = I18n.locale
+    end
+    redirect_to redirect_args
   end
 
   def instantiate_ephemeral_view(dataset_metadata)

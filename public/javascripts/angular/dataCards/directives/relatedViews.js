@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function relatedViews(WindowState, Constants) {
+  function relatedViews(WindowState, Constants, ServerConfig) {
     return {
       restrict: 'E',
       scope: {
@@ -73,6 +73,9 @@
             });
           });
 
+        // Bind locale part so that localized data lenses don't link to non-localized counterparts
+        var localeInfo = ServerConfig.get('locales');
+        $scope.localePart = localeInfo.currentLocale === localeInfo.defaultLocale ? '' : '/' + localeInfo.currentLocale;
       }
     };
   }

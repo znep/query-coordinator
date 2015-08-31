@@ -826,10 +826,11 @@ $(function()
       },
       getNewUXLinkHref: function(linkParams) {
         var linkHref = null;
+        var localePart = blist.locale === blist.defaultLocale ? '' : localePart = '/' + blist.locale;
 
         if (linkParams.dataset.newBackend) {
           if (linkParams.canUpdateMetadata && !linkParams.hasGroupBys) {
-            linkHref = '/view/bootstrap/{0}'.format(linkParams.dataset.id);
+            linkHref = localePart + '/view/bootstrap/{0}'.format(linkParams.dataset.id);
             datasetShowHelpers.createNewUXLink(linkParams, linkHref);
           }
         } else {
@@ -843,7 +844,7 @@ $(function()
                 // and the corresponding lens page is set to public.
                 if (linkParams.canUpdateMetadata ||
                    (linkParams.dataLensState === 'post_beta' && lensMetadata.permissions.isPublic)) {
-                  linkHref = '/view/{0}'.format(lensViewId);
+                  linkHref = localePart + '/view/{0}'.format(lensViewId);
                   datasetShowHelpers.createNewUXLink(linkParams, linkHref);
                 }
               }).fail(function() {
@@ -852,14 +853,14 @@ $(function()
                 // not kept in sync). In this case, attempt to rebootstrap the page, which will
                 // update the metadata appropriately.
                 if (linkParams.canUpdateMetadata && !linkParams.hasGroupBys) {
-                  linkHref = '/view/bootstrap/{0}'.format(nbeMetadata.id);
+                  linkHref = localePart + '/view/bootstrap/{0}'.format(nbeMetadata.id);
                   datasetShowHelpers.createNewUXLink(linkParams, linkHref);
                 }
               });
             } else if (linkParams.canUpdateMetadata && !linkParams.hasGroupBys) {
               // No view has been bootstrapped yet, only let the user bootstrap if they
               // canUpdateMetadata.
-              linkHref = '/view/bootstrap/{0}'.format(nbeMetadata.id);
+              linkHref = localePart + '/view/bootstrap/{0}'.format(nbeMetadata.id);
               datasetShowHelpers.createNewUXLink(linkParams, linkHref);
             }
           });

@@ -222,7 +222,9 @@
 
     $scope.$bindObservable('sourceDatasetURL', obeIdObservable.map(function(obeId) {
       // Now construct the source dataset url from the obe id
-      return OBE_DATASET_PAGE.format(obeId);
+      var localeInfo = ServerConfig.get('locales');
+      var localePart = localeInfo.currentLocale === localeInfo.defaultLocale ? '' : '/' + localeInfo.currentLocale;
+      return localePart + OBE_DATASET_PAGE.format(obeId);
     }));
 
     /***************

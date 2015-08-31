@@ -6,10 +6,10 @@
   // API:
   // {
   //   mouseClient{X,Y}: Position of mouse.
-  //   mousePositionSubject: RX observable of mouse position.
-  //   mouseLeftButtonPressedSubject: RX observable of mouse left button state.
-  //   windowSizeSubject: RX observable of window size.
-  //   scrollPositionSubject: RX observable of Y scroll position.
+  //   mousePosition$: RX observable of mouse position.
+  //   mouseLeftButtonPressed$: RX observable of mouse left button state.
+  //   windowSize$: RX observable of window size.
+  //   scrollPosition$: RX observable of Y scroll position.
   // }
   angular.module('dataCards.services').factory('WindowState', function() {
     var jqueryWindow = $(window);
@@ -18,16 +18,16 @@
     var WindowState = {};
 
     // TODO: convert these BehaviorSubjects to use Rx.Observable.fromEvent
-    var scrollPositionSubject = new Rx.BehaviorSubject(window.pageYOffset);
+    var scrollPosition$ = new Rx.BehaviorSubject(window.pageYOffset);
     window.addEventListener('scroll', function() {
-      scrollPositionSubject.onNext(window.pageYOffset);
+      scrollPosition$.onNext(window.pageYOffset);
     });
 
-    var mousePositionSubject = new Rx.BehaviorSubject({ clientX: 0, clientY: 0, target: document.body });
+    var mousePosition$ = new Rx.BehaviorSubject({ clientX: 0, clientY: 0, target: document.body });
     body.addEventListener('mousemove', function(e) {
       WindowState.mouseClientX = e.clientX;
       WindowState.mouseClientY = e.clientY;
-      mousePositionSubject.onNext({
+      mousePosition$.onNext({
         clientX: e.clientX,
         clientY: e.clientY,
         target: e.target
@@ -37,15 +37,15 @@
     body.addEventListener('surrogate-mousemove', function(e) {
       WindowState.mouseClientX = e.clientX;
       WindowState.mouseClientY = e.clientY;
-      mousePositionSubject.onNext({
+      mousePosition$.onNext({
         clientX: e.clientX,
         clientY: e.clientY,
         target: e.target
       });
     });
 
-    var mouseLeftButtonPressedSubject = new Rx.BehaviorSubject(false);
-    var mouseLeftButtonClickSubject = Rx.Observable.fromEvent(body, 'click').
+    var mouseLeftButtonPressed$ = new Rx.BehaviorSubject(false);
+    var mouseLeftButtonClick$ = Rx.Observable.fromEvent(body, 'click').
         filter(function(e) { return e.which === 1; });
 
     var mouseLeftButtonPressedWithTargetSubject = new Rx.Subject();
@@ -53,36 +53,36 @@
 
     body.addEventListener('mouseup', function(e) {
       if (e.which === 1) {
-        mouseLeftButtonPressedSubject.onNext(false);
+        mouseLeftButtonPressed$.onNext(false);
         mouseLeftButtonPressedWithTargetSubject.onNext({value: false, target: e.target});
       }
     });
     body.addEventListener('mousedown', function(e) {
       if (e.which === 1) {
-        mouseLeftButtonPressedSubject.onNext(true);
+        mouseLeftButtonPressed$.onNext(true);
         mouseLeftButtonPressedWithTargetSubject.onNext({value: true, target: e.target});
       }
     });
 
-    var windowSizeSubject = new Rx.BehaviorSubject(jqueryWindow.dimensions());
+    var windowSize$ = new Rx.BehaviorSubject(jqueryWindow.dimensions());
     window.addEventListener('resize', function() {
-      windowSizeSubject.onNext(jqueryWindow.dimensions());
+      windowSize$.onNext(jqueryWindow.dimensions());
     });
 
-    WindowState.keyDownObservable = Rx.Observable.fromEvent($(document), 'keydown');
-    WindowState.escapeKeyObservable = WindowState.keyDownObservable.filter(function(e) {
+    WindowState.keyDown$ = Rx.Observable.fromEvent($(document), 'keydown');
+    WindowState.escapeKey$ = WindowState.keyDown$.filter(function(e) {
       // Escape key
       return e.which === 27;
     });
 
-    WindowState.scrollPositionSubject = scrollPositionSubject;
-    WindowState.mousePositionSubject = mousePositionSubject;
-    WindowState.mouseLeftButtonPressedSubject = mouseLeftButtonPressedSubject;
-    WindowState.mouseLeftButtonClickSubject = mouseLeftButtonClickSubject;
-    WindowState.windowSizeSubject = windowSizeSubject;
-    WindowState.closeDialogEventObservable = Rx.Observable.merge(
-      WindowState.mouseLeftButtonClickSubject,
-      WindowState.escapeKeyObservable
+    WindowState.scrollPosition$ = scrollPosition$;
+    WindowState.mousePosition$ = mousePosition$;
+    WindowState.mouseLeftButtonPressed$ = mouseLeftButtonPressed$;
+    WindowState.mouseLeftButtonClick$ = mouseLeftButtonClick$;
+    WindowState.windowSize$ = windowSize$;
+    WindowState.closeDialogEvent$ = Rx.Observable.merge(
+      WindowState.mouseLeftButtonClick$,
+      WindowState.escapeKey$
     );
 
     return WindowState;

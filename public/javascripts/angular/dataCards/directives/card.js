@@ -16,19 +16,19 @@
       },
       templateUrl: '/angular_templates/dataCards/card.html',
       link: function($scope, element) {
-        var modelSubject = $scope.$observe('model').filter(_.identity);
+        var model$ = $scope.$observe('model').filter(_.identity);
         var descriptionTruncatedContent;
         var descriptionElementsWithMaxSize;
 
         $scope.descriptionCollapsed = true;
-        $scope.$bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
+        $scope.$bindObservable('expanded', model$.observeOnLatest('expanded'));
 
-        $scope.$bindObservable('isCustomizable', modelSubject.observeOnLatest('isCustomizable'));
-        $scope.$bindObservable('isCustomizableMap', modelSubject.observeOnLatest('isCustomizableMap'));
-        $scope.$bindObservable('isExportable', modelSubject.observeOnLatest('isExportable'));
-        $scope.$bindObservable('showDescription', modelSubject.observeOnLatest('showDescription'));
+        $scope.$bindObservable('isCustomizable', model$.observeOnLatest('isCustomizable'));
+        $scope.$bindObservable('isCustomizableMap', model$.observeOnLatest('isCustomizableMap'));
+        $scope.$bindObservable('isExportable', model$.observeOnLatest('isExportable'));
+        $scope.$bindObservable('showDescription', model$.observeOnLatest('showDescription'));
 
-        $scope.$bindObservable('description', modelSubject.observeOnLatest('column.description'));
+        $scope.$bindObservable('description', model$.observeOnLatest('column.description'));
 
         var updateCardLayout = _.throttle(function(textHeight) {
           descriptionTruncatedContent.dotdotdot({
@@ -124,13 +124,13 @@
         descriptionElementsWithMaxSize = element.
           find('.description-expanded-wrapper, .description-expanded-content');
 
-        var dimensionsObservable = element.observeDimensions();
+        var dimensions$ = element.observeDimensions();
 
         if ($scope.cardDraggable) {
 
           // CORE-5475: set <card> height to the height of its parent <card-spot> to prevent
           // the height from filling the whole screen on drag.
-          dimensionsObservable.
+          dimensions$.
             map(function() { return element.parent().height(); }).
             // Only set the height if it's > 0 to avoid height issues where we use cards in other
             // places, such as customizeCardDialog. (See CORE-5814)
@@ -147,7 +147,7 @@
         var description = element.find('.card-text');
         Rx.Observable.subscribeLatest(
           description.observeDimensions(),
-          dimensionsObservable,
+          dimensions$,
           function(descriptionDimensions, elementDimensions) {
             element.find('.card-visualization-wrapper').height(
               elementDimensions.height - description.outerHeight(true)
@@ -155,8 +155,8 @@
           });
 
         Rx.Observable.subscribeLatest(
-          dimensionsObservable,
-          modelSubject.observeOnLatest('column.description'),
+          dimensions$,
+          model$.observeOnLatest('column.description'),
           function(dimensions, descriptionText) {
             // Manually update the binding now, because Angular doesn't know that dotdotdot messes with
             // the text.

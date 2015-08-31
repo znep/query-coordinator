@@ -11,7 +11,7 @@
     }
     // The line height isn't conveniently set for us. Derive it by adding an inline element and
     // measuring its size.
-    var sample = $('<span />').text("\ufeff"). // feff is the zero-width space.
+    var sample = $('<span />').text('\ufeff'). // feff is the zero-width space.
         // chrome sizes it differently if it's inline vs inline-block
         css('display', 'inline-block').
         appendTo(element);
@@ -19,7 +19,7 @@
     sample.remove();
     element.data('cached-line-height', lineHeight);
     return lineHeight;
-  };
+  }
 
   /**
    * A directive to encapsulate the dotdotdot multiline ellipsis functionality
@@ -60,18 +60,18 @@
           '<span ng-hide="expanded">{0}</span>'.format(I18n.multilineEllipsis.showMore) +
           '<span class="show-more-arrow"></span>' +
         '</div>',
-      restrict : 'A',
+      restrict: 'A',
 
       link: function($scope, element, attrs) {
         var content = element.find('.content');
         var contentFlyoutSelector;
 
-        var textObservable = $scope.$observe('text');
-        var maxLinesObservable = $scope.$observe('maxLines');
-        var toleranceObservable = $scope.$observe('tolerance');
-        var expandedObservable = $scope.$observe('expanded');
+        var text$ = $scope.$observe('text');
+        var maxLines$ = $scope.$observe('maxLines');
+        var tolerance$ = $scope.$observe('tolerance');
+        var expanded$ = $scope.$observe('expanded');
 
-        $scope.showMoreMode = attrs['showMoreMode'] || 'expand-link';
+        $scope.showMoreMode = attrs.showMoreMode || 'expand-link';
 
         if ($scope.showMoreMode === 'flyout') {
           contentFlyoutSelector = _.uniqueId('multiline-ellipsis-flyout-');
@@ -129,10 +129,10 @@
         // Note that this does _not_ care about element dimensions, as otherwise
         // we'd cancel the animation by virtue of animating the height :)
         Rx.Observable.merge(
-          textObservable,
-          maxLinesObservable,
-          toleranceObservable,
-          expandedObservable
+          text$,
+          maxLines$,
+          tolerance$,
+          expanded$
         ).subscribe(resetHeightAnimation);
 
         // Track whether or not we ever rendered. This is used to prevent expansion animations
@@ -146,13 +146,13 @@
                                                      //    which can cause infinite loops (IE will notify us of
                                                      //    old sizes occasionally and then immediately correct
                                                      //    itself. This causes us to bounce between two sizes).
-          textObservable,
-          maxLinesObservable,
-          toleranceObservable,
-          expandedObservable,
+          text$,
+          maxLines$,
+          tolerance$,
+          expanded$,
           function(dimensions, text, maxLines, tolerance, expanded) {
             // If something important changed, the previous merge will cancel the animation.
-            if (animationRunning) return;
+            if (animationRunning) { return; }
 
             // While animating from expanded to collapsed, we lie to dotdotdot so it doesn't
             // try to ellipsify during the animation. However, the UI should still act as if
@@ -219,7 +219,7 @@
                     remove: [ ' ', '\u00A0', '\u3000', ',', ';', '.', '!', '?', '&nbsp;' ]
                   }
                 });
-              }
+              };
 
               if (needsAnimation) {
                 // If needed, force the UI to still show the expand button while animating.
@@ -248,6 +248,6 @@
         );
 
       }
-    }
+    };
   });
 })();

@@ -7,10 +7,10 @@
       return _.get(val, 'additionalArguments[0]');
     }
 
-    function handleSampleData($scope, model, dataset) {
+    function handleSampleData($scope, model, dataset$) {
       var sampleData$ = Rx.Observable.combineLatest(
         model.pluck('fieldName'),
-        dataset.pluck('id'),
+        dataset$.pluck('id'),
         model.observeOnLatest('column.physicalDatatype'),
         model.observeOnLatest('page.baseSoqlFilter'),
         model.observeOnLatest('page.aggregation'),
@@ -42,7 +42,7 @@
       templateUrl: '/angular_templates/dataCards/cardVisualizationSearch.html',
       link: function($scope, element) {
         var model = $scope.$observe('model');
-        var dataset = model.observeOnLatest('page.dataset');
+        var dataset$ = model.observeOnLatest('page.dataset');
         var fieldName$ = model.pluck('fieldName');
         var physicalDatatype$ = model.observeOnLatest('column.physicalDatatype');
 
@@ -274,10 +274,10 @@
         $scope.$bindObservable('fieldName', fieldName$);
         $scope.$bindObservable('searchValue', searchValue$);
         $scope.$bindObservable('physicalDatatype', physicalDatatype$);
-        $scope.$bindObservable('dataset', dataset);
+        $scope.$bindObservable('dataset', dataset$);
         $scope.$bindObservable('shouldShowSuggestionPanel', shouldShowSuggestionPanel$);
 
-        handleSampleData($scope, model, dataset);
+        handleSampleData($scope, model, dataset$);
       }
     };
   }

@@ -40,12 +40,12 @@ describe('card-layout', function() {
       $provide.value('CardDataService', mockCardDataService);
 
       mockWindowStateService = {};
-      mockWindowStateService.scrollPositionSubject = new Rx.Subject();
-      mockWindowStateService.windowSizeSubject = new Rx.Subject();
-      mockWindowStateService.mouseLeftButtonPressedSubject = new Rx.Subject();
-      mockWindowStateService.mousePositionSubject = new Rx.Subject();
-      mockWindowStateService.closeDialogEventObservable = new Rx.Subject();
-      mockWindowStateService.escapeKeyObservable = new Rx.Subject();
+      mockWindowStateService.scrollPosition$ = new Rx.Subject();
+      mockWindowStateService.windowSize$ = new Rx.Subject();
+      mockWindowStateService.mouseLeftButtonPressed$ = new Rx.Subject();
+      mockWindowStateService.mousePosition$ = new Rx.Subject();
+      mockWindowStateService.closeDialogEvent$ = new Rx.Subject();
+      mockWindowStateService.escapeKey$ = new Rx.Subject();
 
       $provide.value('WindowState', mockWindowStateService);
 
@@ -262,10 +262,10 @@ describe('card-layout', function() {
     // Trigger some rx events once, so that subscribeLatest will run
     var jqWindow = $(window);
     var jqWindowDimensions = { width: jqWindow.width(), height: jqWindow.height() };
-    mockWindowStateService.windowSizeSubject.onNext(jqWindowDimensions);
+    mockWindowStateService.windowSize$.onNext(jqWindowDimensions);
     Rx.Scheduler.timeout.advanceBy(Constants.LAYOUT_WINDOW_SIZE_DEBOUNCE);
 
-    mockWindowStateService.scrollPositionSubject.onNext($(window).scrollTop());
+    mockWindowStateService.scrollPosition$.onNext($(window).scrollTop());
     var scope = element.find('card-layout').scope().$$childHead;
     scope.$digest();
 
@@ -361,24 +361,24 @@ describe('card-layout', function() {
 
       var elHeight = cl.cardsMetadataElement.outerHeight();
 
-      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
+      mockWindowStateService.windowSize$.onNext({width: 1000, height: 1000});
       expect(cl.quickFilterBarElement).to.not.satisfy(hasStuckClass);
 
       var cardsMetadataOffsetTop = cl.cardsMetadataElement.offset().top;
 
-      mockWindowStateService.scrollPositionSubject.onNext(
+      mockWindowStateService.scrollPosition$.onNext(
         (elHeight - 1) + cardsMetadataOffsetTop);
       expect(cl.quickFilterBarElement).to.not.satisfy(hasStuckClass);
 
-      mockWindowStateService.scrollPositionSubject.onNext(
+      mockWindowStateService.scrollPosition$.onNext(
         100000 + cardsMetadataOffsetTop);
       expect(cl.quickFilterBarElement).to.satisfy(hasStuckClass);
 
-      mockWindowStateService.scrollPositionSubject.onNext(
+      mockWindowStateService.scrollPosition$.onNext(
         elHeight + cardsMetadataOffsetTop);
       expect(cl.quickFilterBarElement).to.satisfy(hasStuckClass);
 
-      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.scrollPosition$.onNext(0);
       expect(cl.quickFilterBarElement).to.not.satisfy(hasStuckClass);
 
     });
@@ -405,12 +405,12 @@ describe('card-layout', function() {
 
       cl.cardsMetadataElement.height(100);
 
-      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
+      mockWindowStateService.windowSize$.onNext({width: 1000, height: 1000});
       expect(cl.quickFilterBarElement).to.not.satisfy(hasStuckClass);
 
       var cardsMetadataOffsetTop = cl.cardsMetadataElement.offset().top;
 
-      mockWindowStateService.scrollPositionSubject.onNext(99 + cardsMetadataOffsetTop);
+      mockWindowStateService.scrollPosition$.onNext(99 + cardsMetadataOffsetTop);
       expect(cl.quickFilterBarElement).to.not.satisfy(hasStuckClass);
 
       cl.cardsMetadataElement.height(50);
@@ -440,8 +440,8 @@ describe('card-layout', function() {
 
       cl.pageModel.set('cards', cards);
 
-      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
-      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.windowSize$.onNext({width: 1000, height: 1000});
+      mockWindowStateService.scrollPosition$.onNext(0);
 
       // Before customizing
       cl.element.find('.card-spot').each(function() {
@@ -472,8 +472,8 @@ describe('card-layout', function() {
 
       cl.pageModel.set('cards', cards);
 
-      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
-      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.windowSize$.onNext({width: 1000, height: 1000});
+      mockWindowStateService.scrollPosition$.onNext(0);
 
       // Before customizing
       expect(cl.element.find('.card-group-customize-hint')).to.have.length(0);
@@ -500,8 +500,8 @@ describe('card-layout', function() {
 
       cl.pageModel.set('cards', cards);
 
-      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
-      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.windowSize$.onNext({width: 1000, height: 1000});
+      mockWindowStateService.scrollPosition$.onNext(0);
 
       // Before customizing
       expect(cl.element.find('.card-group-customize-hint-cards')).to.have.length(0);
@@ -539,8 +539,8 @@ describe('card-layout', function() {
 
       cl.pageModel.set('cards', cards);
 
-      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
-      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.windowSize$.onNext({width: 1000, height: 1000});
+      mockWindowStateService.scrollPosition$.onNext(0);
       expect(cl.element.find('.card-drag-overlay').length).to.equal(0);
 
       cl.outerScope.editMode = true;
@@ -566,8 +566,8 @@ describe('card-layout', function() {
 
       cl.pageModel.set('cards', cards);
 
-      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
-      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.windowSize$.onNext({width: 1000, height: 1000});
+      mockWindowStateService.scrollPosition$.onNext(0);
 
       cl.pageModel.set('cards', cards);
       cl.outerScope.editMode = true;
@@ -593,8 +593,8 @@ describe('card-layout', function() {
 
       cl.pageModel.set('cards', cards);
 
-      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
-      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.windowSize$.onNext({width: 1000, height: 1000});
+      mockWindowStateService.scrollPosition$.onNext(0);
 
       cl.outerScope.editMode = true;
       cl.outerScope.$apply();
@@ -606,7 +606,7 @@ describe('card-layout', function() {
          Math.floor(thirdDeleteButton.width() / 2);
       var clientY = thirdDeleteButton.offset().top;
 
-      mockWindowStateService.mousePositionSubject.onNext({
+      mockWindowStateService.mousePosition$.onNext({
         clientX: clientX,
         clientY: clientY,
         target: thirdDeleteButton.get(0)
@@ -637,8 +637,8 @@ describe('card-layout', function() {
 
       cl.pageModel.set('cards', cards);
 
-      mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
-      mockWindowStateService.scrollPositionSubject.onNext(0);
+      mockWindowStateService.windowSize$.onNext({width: 1000, height: 1000});
+      mockWindowStateService.scrollPosition$.onNext(0);
 
       cl.outerScope.editMode = true;
       cl.outerScope.$apply();
@@ -706,8 +706,8 @@ describe('card-layout', function() {
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
         cl.scope.$digest();
-        mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
-        mockWindowStateService.scrollPositionSubject.onNext(0);
+        mockWindowStateService.windowSize$.onNext({width: 1000, height: 1000});
+        mockWindowStateService.scrollPosition$.onNext(0);
 
         // Find the second card's drag overlay.
         var card2Overlay = cl.findDragOverlayForModel(card2);
@@ -720,9 +720,9 @@ describe('card-layout', function() {
         }));
 
         // Drag it 2 pixels (not enough).
-        // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+        // NOTE: the target component of mousePosition$ must be a raw DOM node,
         // not a jQuery object (hence the [0]).
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.mousePosition$.onNext({
           clientX: 102,
           clientY: 100,
           target: card2Overlay[0]
@@ -731,9 +731,9 @@ describe('card-layout', function() {
         expect(cl.element.find('.card-drop-placeholder').length).to.equal(0);
 
         // Drag it a total of 2.8 pixels (still not enough).
-        // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+        // NOTE: the target component of mousePosition$ must be a raw DOM node,
         // not a jQuery object (hence the [0]).
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.mousePosition$.onNext({
           clientX: 102,
           clientY: 102,
           target: card2Overlay[0]
@@ -742,9 +742,9 @@ describe('card-layout', function() {
         expect(cl.element.find('.card-drop-placeholder').length).to.equal(0);
 
         // Drag it a total of 4 pixels (enough).
-        // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+        // NOTE: the target component of mousePosition$ must be a raw DOM node,
         // not a jQuery object (hence the [0]).
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.mousePosition$.onNext({
           clientX: 96,
           clientY: 100,
           target: card2Overlay[0]
@@ -763,7 +763,7 @@ describe('card-layout', function() {
         expect(cl.element.find('.card-drop-placeholder').scope().cardState.model).to.equal(card2);
 
         // Release it.
-        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
         expect(cl.element.find('.card-drag-overlay').length).to.equal(cards.length - 1);
         expect(cl.element.find('.card-drop-placeholder').length).to.equal(0);
       });
@@ -787,8 +787,8 @@ describe('card-layout', function() {
         cl.outerScope.$apply();
         cl.element.find('card-layout').css('display', 'block').width(900).height(300);
 
-        mockWindowStateService.windowSizeSubject.onNext({width: 1000, height: 1000});
-        mockWindowStateService.scrollPositionSubject.onNext(0);
+        mockWindowStateService.windowSize$.onNext({width: 1000, height: 1000});
+        mockWindowStateService.scrollPosition$.onNext(0);
 
         // Find DOM nodes for various bits we need.
         var card1Dom = cl.findCardForModel(card1);
@@ -808,18 +808,18 @@ describe('card-layout', function() {
           clientY: card2Dom.parent().offset().top + cardContainerOffset
         }));
 
-        // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+        // NOTE: the target component of mousePosition$ must be a raw DOM node,
         // not a jQuery object (hence the [0]).
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.mousePosition$.onNext({
           clientX: card2Dom.parent().offset().left - 5,
           clientY: card2Dom.parent().offset().top + cardContainerOffset,
           target: card2Overlay[0]
         });
 
         // Drag it above card 1.
-        // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+        // NOTE: the target component of mousePosition$ must be a raw DOM node,
         // not a jQuery object (hence the [0]).
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.mousePosition$.onNext({
           clientX: card1Dom.parent().offset().left,
           clientY: card1Dom.parent().offset().top + cardContainerOffset,
           target: card2Overlay[0]
@@ -827,9 +827,9 @@ describe('card-layout', function() {
         expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([ card2, card1, card3, card4 ]);
 
         // Drag it back above card 1 - this should restore the original order.
-        // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+        // NOTE: the target component of mousePosition$ must be a raw DOM node,
         // not a jQuery object (hence the [0]).
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.mousePosition$.onNext({
           clientX: card1Dom.parent().offset().left,
           clientY: card1Dom.parent().offset().top + cardContainerOffset,
           target: card2Overlay[0]
@@ -837,9 +837,9 @@ describe('card-layout', function() {
         expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([ card1, card2, card3, card4 ]);
 
         // Drag it down to the next card size (card3).
-        // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+        // NOTE: the target component of mousePosition$ must be a raw DOM node,
         // not a jQuery object (hence the [0]).
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.mousePosition$.onNext({
           clientX: card3Dom.parent().offset().left,
           clientY: card3Dom.parent().offset().top + cardContainerOffset,
           target: card2Overlay[0]
@@ -850,7 +850,7 @@ describe('card-layout', function() {
         // Finally, release the card.
         // This should have no effect on the card order.
         expect(cl.pageModel.getCurrentValue('cards')).to.deep.equal([ card1, card3, card2, card4 ]);
-        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
         expect(cl.element.find('.card-drag-overlay').length).to.equal(cards.length - 1);
         expect(cl.element.find('.card-drop-placeholder').length).to.equal(0);
       });
@@ -881,17 +881,17 @@ describe('card-layout', function() {
 
         // We only start tracking the movement of the card after it's grabbed. We only
         // grab the card after we move the mouse a bit on the overlay. So do a move.
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.mousePosition$.onNext({
           // Move enough so we start tracking it
           clientX: startPos.left + 100,
           clientY: startPos.top + 100,
-          // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+          // NOTE: the target component of mousePosition$ must be a raw DOM node,
           // not a jQuery object (hence the [0]).
           target: card1Overlay[0]
         });
 
         // Drag to group 1
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.mousePosition$.onNext({
           clientX: placeholder1.offset().left + placeholder1.width() / 2,
           clientY: placeholder1.offset().top + placeholder1.height() / 2,
           target: placeholder1[0]
@@ -901,7 +901,7 @@ describe('card-layout', function() {
         // Drag to group 2
         placeholder1 = cl.element.find('[data-group-id=1]');
         placeholder2 = cl.element.find('[data-group-id=2]');
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.mousePosition$.onNext({
           clientX: placeholder2.offset().left + placeholder2.width() / 2,
           clientY: placeholder2.offset().top + placeholder2.height() / 2,
           target: card1Overlay[0]
@@ -909,7 +909,7 @@ describe('card-layout', function() {
         expect(card1.getCurrentValue('cardSize')).to.equal(2);
 
         // Finally, release the card.
-        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
         expect(cl.element.find('.card-drag-overlay').length).to.
           // No overlay for the datacard
           equal(cards.length - 1);
@@ -941,17 +941,17 @@ describe('card-layout', function() {
 
         // We only start tracking the movement of the card after it's grabbed. We only
         // grab the card after we move the mouse a bit on the overlay. So do a move.
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.mousePosition$.onNext({
           // Move enough so we start tracking it
           clientX: startPos.left + 100,
           clientY: startPos.top + 100,
-          // NOTE: the target component of mousePositionSubject must be a raw DOM node,
+          // NOTE: the target component of mousePosition$ must be a raw DOM node,
           // not a jQuery object (hence the [0]).
           target: card1Overlay[0]
         });
 
         // Release the card.
-        mockWindowStateService.mouseLeftButtonPressedSubject.onNext(false);
+        mockWindowStateService.mouseLeftButtonPressed$.onNext(false);
 
         // Check that the card now has a height
         expect(card1Dom.height(), 'card1Dom height should be greater than zero').to.be.above(0);
@@ -1067,8 +1067,8 @@ describe('card-layout', function() {
         ]);
 
         // Start at the top of the page
-        mockWindowStateService.scrollPositionSubject.onNext(0);
-        mockWindowStateService.windowSizeSubject.onNext(winDimensions);
+        mockWindowStateService.scrollPosition$.onNext(0);
+        mockWindowStateService.windowSize$.onNext(winDimensions);
         cl.scope.$digest();
 
         expandedCard = cl.element.find('.expanded').parent();
@@ -1083,7 +1083,7 @@ describe('card-layout', function() {
 
       it('should adjust the top of the card when the QFB sticks', function() {
         var qfb = cl.quickFilterBarElement;
-        mockWindowStateService.scrollPositionSubject.onNext(
+        mockWindowStateService.scrollPosition$.onNext(
           cl.cardsMetadataElement.offset().top + cl.cardsMetadataElement.outerHeight() + 10);
         expect(qfb.css('position')).to.equal('fixed');
         expect(expandedCard.offset().top).to.be.closeTo(qfb.offset().top + qfb.height(), 1);
@@ -1100,7 +1100,7 @@ describe('card-layout', function() {
         // Scroll to close enough to the dataTable that it interferes with the expanded card
         var scrollTop = dataTableElement.offset().top - (winDimensions.height - 100);
 
-        mockWindowStateService.scrollPositionSubject.onNext(scrollTop);
+        mockWindowStateService.scrollPosition$.onNext(scrollTop);
         // The bottom should still align with the datacard
         expect(expandedCard.offset().top + expandedCard.height()).
           to.be.closeTo(dataTableElement.offset().top - scrollTop, 10);
@@ -1109,13 +1109,13 @@ describe('card-layout', function() {
       describe('with small window sizes', function() {
 
         it('should not protrude into the info pane if the window is short', function() {
-          mockWindowStateService.windowSizeSubject.onNext({width: 768, height: 300});
+          mockWindowStateService.windowSize$.onNext({width: 768, height: 300});
           expect(expandedCard.offset().top).to.be.closeTo($('#card-container').offset().top, 1);
         });
 
         it('sticks to the top of #card-container if the window is not scrolled and the window height is small',
           inject(function(Constants) {
-            mockWindowStateService.windowSizeSubject.onNext({width: 768, height: 300});
+            mockWindowStateService.windowSize$.onNext({width: 768, height: 300});
             var container = cl.element.find('#card-container');
 
             expect(expandedCard.offset().top).to.be.closeTo(container.offset().top, 1);
@@ -1128,10 +1128,10 @@ describe('card-layout', function() {
             var dataTable = cl.pageModel.getCurrentValue('cards')[9];
             expect(dataTable.fieldName).to.equal('*');
             var dataTableElement = cl.findCardForModel(dataTable);
-            mockWindowStateService.windowSizeSubject.onNext({width: 768, height: 300});
+            mockWindowStateService.windowSize$.onNext({width: 768, height: 300});
             // Scroll to too-close to the dataTable
             var scrollTop = dataTableElement.offset().top - 50;
-            mockWindowStateService.scrollPositionSubject.onNext(scrollTop);
+            mockWindowStateService.scrollPosition$.onNext(scrollTop);
 
             expect(expandedCard.offset().top + expandedCard.height()).
               to.be.closeTo(dataTableElement.offset().top - scrollTop, 10);
@@ -1279,7 +1279,7 @@ describe('card-layout', function() {
         expect(flyout.is(':visible')).to.be.false;
 
         var expand = cl.element.find('.card-control.icon-expand').eq(0);
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.mousePosition$.onNext({
           clientX: 0,
           clientY: 0,
           target: expand[0]
@@ -1299,7 +1299,7 @@ describe('card-layout', function() {
         var expandButton = card.find('.card-control.icon-expand');
 
         expandButton.click();
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.mousePosition$.onNext({
           clientX: 0,
           clientY: 0,
           // Re-find the expand button, because expanding re-draws it
@@ -1333,7 +1333,7 @@ describe('card-layout', function() {
         customize = choropleth.find('.card-control.icon-settings:visible');
         expect(customize.length).to.equal(choropleth.length);
 
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.mousePosition$.onNext({
           clientX: 0,
           clientY: 0,
           target: customize[0]
@@ -1373,7 +1373,7 @@ describe('card-layout', function() {
         disabled = visualizations.find('.card-control.disabled:visible');
         expect(disabled.length).to.equal(visualizations.length);
 
-        mockWindowStateService.mousePositionSubject.onNext({
+        mockWindowStateService.mousePosition$.onNext({
           clientX: 0,
           clientY: 0,
           target: disabled[0]

@@ -84,7 +84,7 @@
 
         // Synchronize changes between primaryAmountField and primaryAggregation
         // Normalize aggregation-related fields.
-        var aggregationObservable = Rx.Observable.combineLatest(
+        var aggregation$ = Rx.Observable.combineLatest(
           validPrimaryAggregation$,
           rowDisplayUnit$,
           primaryAmountField$,
@@ -134,8 +134,7 @@
           }).
           shareReplay(1);
 
-        self.defineEphemeralObservablePropertyFromSequence('aggregation',
-          aggregationObservable);
+        self.defineEphemeralObservablePropertyFromSequence('aggregation', aggregation$);
 
         self.defineEphemeralObservablePropertyFromSequence('rowDisplayUnit',
           rowDisplayUnit$.filter(_.isDefined).startWith(DEFAULT_ROW_DISPLAY_UNIT));

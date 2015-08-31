@@ -24,11 +24,11 @@
       model.id = FAKE4x4;
       model.defineObservableProperty('domain', TEST_DOMAIN);
       var scope = $rootScope.$new();
-      scope.myTestObservable = Rx.Observable.returnValue(model);
+      scope.myTest$ = Rx.Observable.returnValue(model);
       var apiExplorerHtml = [
         '<api-explorer',
           'class="cards-metadata"',
-          'dataset-observable="myTestObservable"',
+          'dataset-observable="myTest$"',
           'edit-mode="editMode">',
         '</api-explorer>'
       ].join(' ');
@@ -67,12 +67,12 @@
     });
 
     describe('the tag itself', function() {
-      it('accepts a datasetObservable attribute', function() {
+      it('accepts a dataset-observable attribute', function() {
         var scope = $rootScope.$new();
         var TEST_OBSERVABLE = new Rx.Subject();
-        scope.myTestObservable = TEST_OBSERVABLE;
+        scope.myTest$ = TEST_OBSERVABLE;
         var element = testHelpers.TestDom.compileAndAppend(
-          '<api-explorer class="cards-metadata" dataset-observable="myTestObservable"></api-explorer>', scope);
+          '<api-explorer class="cards-metadata" dataset-observable="myTest$"></api-explorer>', scope);
         expect(element.isolateScope().datasetObservable).to.equal(TEST_OBSERVABLE);
       });
     });
@@ -163,9 +163,9 @@
           model.id = '';
           model.defineObservableProperty('domain', null);
           var scope = $rootScope.$new();
-          scope.myTestObservable = Rx.Observable.returnValue(model);
+          scope.myTest$ = Rx.Observable.returnValue(model);
           element = testHelpers.TestDom.compileAndAppend(
-            '<api-explorer class="cards-metadata" dataset-observable="myTestObservable"></api-explorer>', scope);
+            '<api-explorer class="cards-metadata" dataset-observable="myTest$"></api-explorer>', scope);
         });
 
         it('should populate the documentation URL link', function() {

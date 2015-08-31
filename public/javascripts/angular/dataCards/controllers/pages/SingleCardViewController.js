@@ -2,7 +2,7 @@
   'use strict';
 
   function SingleCardViewController($scope, $rootScope, $log, page, fieldName, WindowState) {
-    var cardObservable = page.
+    var card$ = page.
       observe('cards').
       map(function(allCards) {
         var foundCards = _.where(allCards, { fieldName: fieldName });
@@ -13,21 +13,21 @@
       doAction(function(cardModel) {
         cardModel.set('expanded', true);
       });
-    var globalWhereClauseFragmentSequence = page.observe('computedWhereClauseFragment');
+    var globalWhereClauseFragment$ = page.observe('computedWhereClauseFragment');
 
     /*************************
     * General metadata stuff *
     *************************/
 
     $scope.page = page;
-    $scope.$bindObservable('card', cardObservable);
-    $scope.$bindObservable('windowSize', WindowState.windowSizeSubject);
+    $scope.$bindObservable('card', card$);
+    $scope.$bindObservable('windowSize', WindowState.windowSize$);
 
     /*******************************
     * Filters and the where clause *
     *******************************/
 
-    $scope.$bindObservable('globalWhereClauseFragment', globalWhereClauseFragmentSequence);
+    $scope.$bindObservable('globalWhereClauseFragment', globalWhereClauseFragment$);
 
     // Choropleth doesn't consider map tiles while deciding whether to emit
     // render:complete (by design, as the event is intended for internal timing

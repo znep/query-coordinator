@@ -5,8 +5,8 @@
     return {
       dynamicAggregationTitle: function(pageModel) {
         window.socrata.utils.assert(pageModel instanceof Page, 'pageModel must be a Page model, durr');
-        var aggregationObservable = pageModel.observe('aggregation');
-        var primaryAmountFieldNameSequence = pageModel.observe('primaryAmountField').
+        var aggregation$ = pageModel.observe('aggregation');
+        var primaryAmountFieldName$ = pageModel.observe('primaryAmountField').
           combineLatest(
             pageModel.observe('dataset.columns'),
             function(fieldName, columns) {
@@ -17,30 +17,30 @@
           pluck('name').
           filter(_.isPresent);
 
-        var countTitleSequence = Rx.Observable.combineLatest(
-          aggregationObservable.filter(function(value) { return value['function'] === 'count'; }),
+        var countTitle$ = Rx.Observable.combineLatest(
+          aggregation$.filter(function(value) { return value['function'] === 'count'; }),
           function(value) {
             return I18n.t('cardTitles.numberOf', value.unit.pluralize());
           });
 
-        var sumTitleSequence = Rx.Observable.combineLatest(
-          primaryAmountFieldNameSequence.filter(_.isPresent),
-          aggregationObservable.filter(function(value) { return value['function'] === 'sum'; }),
+        var sumTitle$ = Rx.Observable.combineLatest(
+          primaryAmountFieldName$.filter(_.isPresent),
+          aggregation$.filter(function(value) { return value['function'] === 'sum'; }),
           function(primaryAmountField) {
             return I18n.t('cardTitles.sumOf', primaryAmountField.pluralize());
           });
 
-        var meanTitleSequence = Rx.Observable.combineLatest(
-          primaryAmountFieldNameSequence.filter(_.isPresent),
-          aggregationObservable.filter(function(value) { return value['function'] === 'mean'; }),
+        var meanTitle$ = Rx.Observable.combineLatest(
+          primaryAmountFieldName$.filter(_.isPresent),
+          aggregation$.filter(function(value) { return value['function'] === 'mean'; }),
           function(primaryAmountField) {
             return I18n.t('cardTitles.average', primaryAmountField);
           });
 
         return Rx.Observable.merge(
-          countTitleSequence,
-          sumTitleSequence,
-          meanTitleSequence
+          countTitle$,
+          sumTitle$,
+          meanTitle$
         );
       }
     };

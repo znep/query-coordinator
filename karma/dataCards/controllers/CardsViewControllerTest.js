@@ -134,7 +134,9 @@ describe('CardsViewController', function() {
     var promise = currentUserDefer.promise;
 
     mockUserSessionService.getCurrentUser = _.constant(promise);
-    mockUserSessionService.getCurrentUserObservable = _.constant(Rx.Observable.fromPromise(promise).catch(Rx.Observable.returnValue(null)));
+    mockUserSessionService.getCurrentUser$ = _.constant(
+      Rx.Observable.fromPromise(promise).catch(Rx.Observable.returnValue(null))
+    );
 
     var $scope = $rootScope.$new();
 
@@ -1157,7 +1159,7 @@ describe('CardsViewController', function() {
 
       // Simulate another dialog waiting to be closed
       var closed = false;
-      var subscription = WindowState.closeDialogEventObservable.subscribe(function() {
+      var subscription = WindowState.closeDialogEvent$.subscribe(function() {
         closed = true;
       });
 

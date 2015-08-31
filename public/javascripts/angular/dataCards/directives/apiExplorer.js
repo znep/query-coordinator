@@ -10,7 +10,7 @@
         editMode: '='
       },
       link: function($scope, element) {
-        var destroyObservable = $scope.$destroyAsObservable(element);
+        var destroy$ = $scope.$destroyAsObservable(element);
 
         /*
          * Scope variables
@@ -40,39 +40,38 @@
           };
         };
 
-        /*
-         * Streams
-         */
-        var selectedFormatStream = $scope.$observe('selectedFormat');
+        // Observables
 
-        var datasetIdStream = $scope.datasetObservable.map(function(dataset) {
+        var selectedFormat$ = $scope.$observe('selectedFormat');
+
+        var datasetId$ = $scope.datasetObservable.map(function(dataset) {
           if (dataset) {
             return dataset.id;
           } else {
             return null;
           }
         });
-        var domainStream = $scope.datasetObservable.observeOnLatest('domain').map(function(domain) {
+        var domain$ = $scope.datasetObservable.observeOnLatest('domain').map(function(domain) {
           if (domain) {
             return domain;
           } else {
             return null;
           }
         });
-        var datasetJsonApiUrlStream = Rx.Observable.combineLatest(
-          datasetIdStream,
-          domainStream,
+        var datasetJsonApiUrl$ = Rx.Observable.combineLatest(
+          datasetId$,
+          domain$,
           safeUrlFormatFn('https://{0}/resource/{1}.json'));
-        var geoJsonApiUrlStream = Rx.Observable.combineLatest(
-          datasetIdStream,
-          domainStream,
+        var geoJsonApiUrl$ = Rx.Observable.combineLatest(
+          datasetId$,
+          domain$,
           safeUrlFormatFn('https://{0}/resource/{1}.geojson'));
-        var datasetDocumentationUrlStream = Rx.Observable.combineLatest(
-          datasetIdStream,
-          domainStream,
+        var datasetDocumentationUrl$ = Rx.Observable.combineLatest(
+          datasetId$,
+          domain$,
           safeUrlFormatFn('http://dev.socrata.com/foundry/#/{0}/{1}'));
-        var jsonAvailableStream = Rx.Observable.returnValue(true);
-        var geoJsonAvailableStream = datasetIdStream.
+        var jsonAvailable$ = Rx.Observable.returnValue(true);
+        var geoJsonAvailable$ = datasetId$.
           filter(function(value) { return !_.isNull(value); }).
           flatMapLatest(function(id) {
             return Rx.Observable.fromPromise(DatasetDataService.getGeoJsonInfo(id, {params: {'$limit': 1}}));
@@ -83,19 +82,19 @@
             return response.status === 200 && _.keys(response.data).length > 0;
           });
 
-        var multipleFormatsAvailableStream = Rx.Observable.merge(jsonAvailableStream, geoJsonAvailableStream).
+        var multipleFormatsAvailable$ = Rx.Observable.merge(jsonAvailable$, geoJsonAvailable$).
           filter(_.identity).
           scan(0, function(acc) {
             return acc + 1;
           }).
           map(function(value) { return value > 1; });
 
-        var selectedUrlStream = selectedFormatStream.flatMapLatest(function(format) {
+        var selectedUrl$ = selectedFormat$.flatMapLatest(function(format) {
           switch (format) {
             case 'JSON':
-              return datasetJsonApiUrlStream;
+              return datasetJsonApiUrl$;
             case 'GeoJSON':
-              return geoJsonApiUrlStream;
+              return geoJsonApiUrl$;
             default:
               return Rx.Observable.returnValue('#');
           }
@@ -104,8 +103,8 @@
         // Hide the flannel when pressing escape or clicking outside the
         // tool-panel-main element.  Clicking on the button has its own
         // toggling behavior so it is excluded from this logic.
-        WindowState.closeDialogEventObservable.
-          takeUntil(destroyObservable).
+        WindowState.closeDialogEvent$.
+          takeUntil(destroy$).
           filter(function(e) {
             if (!$scope.panelActive) { return false; }
             if (e.type === 'keydown') { return true; }
@@ -124,13 +123,13 @@
         /*
          * Bind streams to scope
          */
-        $scope.$bindObservable('selectedUrl', selectedUrlStream);
-        $scope.$bindObservable('datasetDocumentationUrl', datasetDocumentationUrlStream);
-        $scope.$bindObservable('multipleFormatsAvailable', multipleFormatsAvailableStream);
+        $scope.$bindObservable('selectedUrl', selectedUrl$);
+        $scope.$bindObservable('datasetDocumentationUrl', datasetDocumentationUrl$);
+        $scope.$bindObservable('multipleFormatsAvailable', multipleFormatsAvailable$);
 
 
         // Clean up
-        destroyObservable.subscribe(function() {
+        destroy$.subscribe(function() {
           $scope.$emit('cleaned-up');
         });
       }

@@ -31,40 +31,40 @@ describe('WindowState service', function() {
     }
 
     it('should react to left mousedown', function() {
-      expect(WindowState.mouseLeftButtonPressedSubject.value).to.be.false;
+      expect(WindowState.mouseLeftButtonPressed$.value).to.be.false;
 
       var body = document.getElementsByTagName('body')[0];
 
       body.dispatchEvent(generateFakeMouseDown(1));
 
-      expect(WindowState.mouseLeftButtonPressedSubject.value).to.be.true;
+      expect(WindowState.mouseLeftButtonPressed$.value).to.be.true;
     });
 
     it('should not react to right mousedown', function() {
-      expect(WindowState.mouseLeftButtonPressedSubject.value).to.be.false;
+      expect(WindowState.mouseLeftButtonPressed$.value).to.be.false;
 
       var body = document.getElementsByTagName('body')[0];
 
       body.dispatchEvent(generateFakeMouseDown(3));
 
-      expect(WindowState.mouseLeftButtonPressedSubject.value).to.be.false;
+      expect(WindowState.mouseLeftButtonPressed$.value).to.be.false;
     });
 
     it('should react to left mouseup after left mousedown', function() {
-      expect(WindowState.mouseLeftButtonPressedSubject.value).to.be.false;
+      expect(WindowState.mouseLeftButtonPressed$.value).to.be.false;
 
       var body = document.getElementsByTagName('body')[0];
 
       body.dispatchEvent(generateFakeMouseDown(1));
-      expect(WindowState.mouseLeftButtonPressedSubject.value).to.be.true;
+      expect(WindowState.mouseLeftButtonPressed$.value).to.be.true;
 
       body.dispatchEvent(generateFakeMouseUp(1));
-      expect(WindowState.mouseLeftButtonPressedSubject.value).to.be.false;
+      expect(WindowState.mouseLeftButtonPressed$.value).to.be.false;
     });
 
   });
 
-  describe('mousePositionSubject', function() {
+  describe('mousePosition$', function() {
 
     function generateFakeMouseMove(clientX, clientY) {
       var ev = document.createEvent('HTMLEvents');
@@ -77,7 +77,7 @@ describe('WindowState service', function() {
     it('should report the correct mouse position on mousemove', function() {
       var body = document.getElementsByTagName('body')[0];
 
-      expect(WindowState.mousePositionSubject.value).to.deep.equal({
+      expect(WindowState.mousePosition$.value).to.deep.equal({
         clientX: 0,
         clientY: 0,
         target: document.body
@@ -85,7 +85,7 @@ describe('WindowState service', function() {
 
       body.dispatchEvent(generateFakeMouseMove(10, 20));
 
-      expect(WindowState.mousePositionSubject.value).to.deep.equal({
+      expect(WindowState.mousePosition$.value).to.deep.equal({
         clientX: 10,
         clientY: 20,
         target: body
@@ -95,7 +95,7 @@ describe('WindowState service', function() {
 
       body.dispatchEvent(generateFakeMouseMove(100, 200));
 
-      expect(WindowState.mousePositionSubject.value).to.deep.equal({
+      expect(WindowState.mousePosition$.value).to.deep.equal({
         clientX: 100,
         clientY: 200,
         target: body
@@ -106,11 +106,11 @@ describe('WindowState service', function() {
     });
   });
 
-  describe('windowSizeSubject', function() {
+  describe('windowSize$', function() {
 
     it('should react to resize events on window', function() {
       var handler = sinon.spy();
-      WindowState.windowSizeSubject.subscribe(handler);
+      WindowState.windowSize$.subscribe(handler);
       expect(handler.calledOnce).to.be.true;
 
       var ev = document.createEvent('HTMLEvents');
@@ -125,7 +125,7 @@ describe('WindowState service', function() {
 
   });
 
-  describe('scrollPositionSubject', function() {
+  describe('scrollPosition$', function() {
     var fakeContentYPosition = 100000;
     $('body').append('<div id="scrollPositionSubjectFakeContent" style="position: absolute; height: ' + fakeContentYPosition + 'px">LOL JQUERY</div>');
 
@@ -140,7 +140,7 @@ describe('WindowState service', function() {
     // (i.e. if the test is being run by Phantom).
     (skipTest ? it.skip : it)('should report the correct scrollY position on page scroll event', function(done) {
       $(window).scrollTop(0);
-      expect(WindowState.scrollPositionSubject.value).to.equal(0);
+      expect(WindowState.scrollPosition$.value).to.equal(0);
 
       var handler = sinon.spy(function(scrollTop) {
         if (handler.calledOnce) {
@@ -150,7 +150,7 @@ describe('WindowState service', function() {
           done();
         }
       });
-      WindowState.scrollPositionSubject.subscribe(handler);
+      WindowState.scrollPosition$.subscribe(handler);
       $(window).scrollTop(1337);
     });
   });

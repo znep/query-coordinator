@@ -12,13 +12,13 @@
       templateUrl: '/angular_templates/dataCards/cardVisualization.html',
       link: function($scope) {
 
-        var modelSubject = $scope.$observe('model').filter(_.identity);
+        var model$ = $scope.$observe('model').filter(_.identity);
 
         $scope.$bindObservable(
           'cardType',
           Rx.Observable.combineLatest(
-            modelSubject.observeOnLatest('cardType'),
-            modelSubject.observeOnLatest('column'),
+            model$.observeOnLatest('cardType'),
+            model$.observeOnLatest('column'),
             function(cardType, column) {
 
               if (!column.hasOwnProperty('defaultCardType')) {
@@ -52,8 +52,8 @@
           )
         );
 
-        $scope.$bindObservable('expanded', modelSubject.observeOnLatest('expanded'));
-        $scope.$bindObservable('cardSize', modelSubject.observeOnLatest('cardSize'));
+        $scope.$bindObservable('expanded', model$.observeOnLatest('expanded'));
+        $scope.$bindObservable('cardSize', model$.observeOnLatest('cardSize'));
 
       }
     };

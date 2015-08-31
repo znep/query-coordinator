@@ -370,7 +370,7 @@ describe('A Search Card Visualization', function() {
               });
 
               // Currently broken, filter condition of
-              // clearableInputBlurTargetNotSuggestionObservable is too strict.
+              // clearableInputBlurTargetNotSuggestion$ is too strict.
               xdescribe('to something outside the card', function() {
                 it('should become false', function() {
                   setSearchText(VALID_SEARCH_TERM);

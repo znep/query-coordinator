@@ -16,27 +16,27 @@
       link: function($scope) {
         var currentVisibility;
 
-        var pageIsPublicObservable = $scope.page.observe('permissions').
+        var pageIsPublic$ = $scope.page.observe('permissions').
             filter(_.isObject).
             map(_.property('isPublic'));
 
-        var datasetIsPublicObservable = $scope.page.observe('dataset.permissions').
+        var datasetIsPublic$ = $scope.page.observe('dataset.permissions').
             filter(_.isObject).
             map(_.property('isPublic'));
 
         $scope.$bindObservable(
           'pageVisibility',
-          pageIsPublicObservable.map(function(isPublic) { return isPublic ? 'public' : 'private'; })
+          pageIsPublic$.map(function(isPublic) { return isPublic ? 'public' : 'private'; })
         );
 
         $scope.$bindObservable(
           'datasetIsPublic',
-          datasetIsPublicObservable
+          datasetIsPublic$
         );
 
         $scope.$bindObservable('selectDisabled', Rx.Observable.combineLatest(
-          pageIsPublicObservable,
-          datasetIsPublicObservable,
+          pageIsPublic$,
+          datasetIsPublic$,
           function(pageIsPublic, datasetIsPublic) {
             return !pageIsPublic && !datasetIsPublic;
           }

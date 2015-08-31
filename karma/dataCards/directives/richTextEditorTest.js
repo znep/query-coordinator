@@ -6,7 +6,7 @@
   var $httpBackend;
 
   // Pre-load the squire.js, so the iframe can just grab it from the cache.
-  var squireObservable = Rx.Observable.fromPromise($.get('/javascripts/plugins/squire.js'));
+  var squire$ = Rx.Observable.fromPromise($.get('/javascripts/plugins/squire.js'));
   var squireSubscription;
 
   describe('Rich text editor', function() {
@@ -56,7 +56,7 @@
      */
     function createElement(buttons, content, placeholder, onload) {
       // Can only actually run the tests after we load squire
-      squireSubscription = squireObservable.subscribe(function(data) {
+      squireSubscription = squire$.subscribe(function(data) {
         $httpBackend.when('GET', /.*\/squire\.js$/).
           respond(data);
         var outerScope = $rootScope.$new();

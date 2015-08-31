@@ -10,7 +10,7 @@ describe('Flyout service', function() {
 
   // Error tolerance given we test on multiple mediums.
   var TOLERANCE = 10;
-  var testCompletedObservable = new Rx.Subject();
+  var testCompleted$ = new Rx.Subject();
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.services'));
@@ -44,7 +44,7 @@ describe('Flyout service', function() {
 
   afterEach(function() {
     boxElement.remove();
-    testCompletedObservable.onNext();
+    testCompleted$.onNext();
   });
 
   // Function to test that the flyout hint is positioned correctly
@@ -85,7 +85,7 @@ describe('Flyout service', function() {
     FlyoutService.register({
       selector: '.target-box',
       render: _.constant(flyoutText),
-      destroySignal: testCompletedObservable
+      destroySignal: testCompleted$
     });
 
     TestHelpers.fireMouseEvent(boxElement[0], 'mousemove');
@@ -109,7 +109,7 @@ describe('Flyout service', function() {
     FlyoutService.register({
       selector: '.target-box',
       render: _.constant(flyoutText),
-      destroySignal: testCompletedObservable
+      destroySignal: testCompleted$
     });
 
     TestHelpers.fireMouseEvent(boxElement[0], 'mousemove');
@@ -129,7 +129,7 @@ describe('Flyout service', function() {
    FlyoutService.register({
       selector: '.target-box',
       render: _.constant(flyoutText),
-      destroySignal: testCompletedObservable
+      destroySignal: testCompleted$
     });
 
     TestHelpers.fireMouseEvent(boxElement[0], 'mousemove');
@@ -145,7 +145,7 @@ describe('Flyout service', function() {
       render: function() {
         return someMagicalState ? 'initial' : 'final';
       },
-      destroySignal: testCompletedObservable
+      destroySignal: testCompleted$
     });
 
     TestHelpers.fireMouseEvent(boxElement[0], 'mousemove');
@@ -182,13 +182,13 @@ describe('Flyout service', function() {
     FlyoutService.register({
       selector: '.target-box',
       render: _.constant(firstFlyoutText),
-      destroySignal: testCompletedObservable
+      destroySignal: testCompleted$
     });
 
     FlyoutService.register({
       selector: '.second-target-box',
       render: _.constant(secondFlyoutText),
-      destroySignal: testCompletedObservable
+      destroySignal: testCompleted$
     });
 
     TestHelpers.fireMouseEvent(boxElement[0], 'mousemove');
@@ -211,7 +211,7 @@ describe('Flyout service', function() {
       selector: '.target-box',
       render: _.constant(flyoutText),
       belowTarget: true,
-      destroySignal: testCompletedObservable
+      destroySignal: testCompleted$
     });
 
     TestHelpers.fireMouseEvent(boxElement[0], 'mousemove');
@@ -240,14 +240,14 @@ describe('Flyout service', function() {
     FlyoutService.register({
       selector: '.target-box',
       render: _.constant(firstFlyoutText),
-      destroySignal: testCompletedObservable,
+      destroySignal: testCompleted$,
       classes: 'testing'
     });
 
     FlyoutService.register({
       selector: '.second-target-box',
       render: _.constant(secondFlyoutText),
-      destroySignal: testCompletedObservable
+      destroySignal: testCompleted$
     });
 
     TestHelpers.fireMouseEvent(boxElement[0], 'mousemove');
@@ -264,7 +264,7 @@ describe('Flyout service', function() {
     FlyoutService.register({
       selector: '.target-box',
       render: _.constant(flyoutText),
-      destroySignal: testCompletedObservable
+      destroySignal: testCompleted$
     });
 
     TestHelpers.fireMouseEvent(boxElement[0], 'mousemove');
@@ -282,7 +282,7 @@ describe('Flyout service', function() {
     FlyoutService.register({
       selector: '.target-box',
       render: _.constant(flyoutText),
-      destroySignal: testCompletedObservable,
+      destroySignal: testCompleted$,
       persistOnMousedown: true
     });
 
@@ -316,14 +316,14 @@ describe('Flyout service', function() {
     FlyoutService.register({
       selector: '.target-box',
       render: _.constant(firstFlyoutText),
-      destroySignal: testCompletedObservable
+      destroySignal: testCompleted$
     });
 
     // Register a second flyout to remain visible upon mousedown.
     FlyoutService.register({
       selector: '.second-target-box',
       render: _.constant(secondFlyoutText),
-      destroySignal: testCompletedObservable,
+      destroySignal: testCompleted$,
       persistOnMousedown: true
     });
 

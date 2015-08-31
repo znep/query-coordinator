@@ -55,14 +55,14 @@
       });
     }
 
-    function getCurrentUserObservable() {
+    function getCurrentUser$() {
       return Rx.Observable.fromPromise(getCurrentUser()).
         catchException(Rx.Observable.returnValue(null));
     }
 
     return {
       getCurrentUser: getCurrentUser,
-      getCurrentUserObservable: _.once(getCurrentUserObservable),
+      getCurrentUser$: _.once(getCurrentUser$),
       Errors: Errors
     };
   }

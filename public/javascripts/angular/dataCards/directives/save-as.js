@@ -11,13 +11,13 @@
       },
       templateUrl: '/angular_templates/dataCards/saveAs.html',
       link: function($scope, element) {
-        var saveEvents = new Rx.BehaviorSubject({ status: 'idle' });
+        var saveEvents$ = new Rx.BehaviorSubject({ status: 'idle' });
 
-        $scope.$bindObservable('saveStatus', saveEvents.pluck('status'));
+        $scope.$bindObservable('saveStatus', saveEvents$.pluck('status'));
 
         // Since we have a flyout handler whose output depends on currentPageSaveEvents and $scope.hasChanges,
         // we need to poke the FlyoutService. We want the flyout to update immediately.
-        saveEvents.subscribe(function() {
+        saveEvents$.subscribe(function() {
           FlyoutService.refreshFlyout();
         });
 
@@ -51,7 +51,7 @@
             $nameInput.addClass('form-error').focus();
           } else if ($scope.saveStatus !== 'saving' && $scope.saveStatus !== 'saved') {
             $scope.savePageAs($scope.name.trim(), $scope.description.trim()).
-              subscribe(saveEvents);
+              subscribe(saveEvents$);
             $scope.$bindObservable('saveStatus', Rx.Observable.returnValue('saving'));
           }
         };
@@ -63,7 +63,7 @@
         // Hide the flannel when pressing escape or clicking outside the
         // tool-panel-main element.  Clicking on the button has its own
         // toggling behavior so it is excluded from this logic.
-        WindowState.closeDialogEventObservable.
+        WindowState.closeDialogEvent$.
           filter(function(e) {
             if (!$scope.panelActive) { return false; }
             if (e.type === 'keydown') { return true; }

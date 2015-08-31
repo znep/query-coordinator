@@ -426,7 +426,7 @@
             // If a flannel is currently open, be prepared to close flannel or adjust its position.
             if (_.isDefined(flannelScope)) {
               // Destroy flannel if it is closed.
-              var closeSubscriber = WindowState.closeDialogEventObservable.skip(1).filter(function(evt) {
+              var closeSubscriber = WindowState.closeDialogEvent$.skip(1).filter(function(evt) {
                   var target = $(evt.target);
                   return target.closest('.feature-map-flannel').length === 0 || target.is('.icon-close');
                 }).subscribe(function(evt) {
@@ -438,7 +438,7 @@
                 });
 
               // Shift flannel position if scroll occurs
-              var scrollSubscriber = WindowState.scrollPositionSubject.subscribe(adjustPosition);
+              var scrollSubscriber = WindowState.scrollPosition$.subscribe(adjustPosition);
 
               // Remove the flannel on pan/zoom, but just shift its position
               // if the map resizes innocuously (e.g. due to window resize).

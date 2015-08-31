@@ -96,14 +96,14 @@
 
     // Add a read-only property whose value comes from the given sequence.
     // Returns a sequence of values written while observers were listening.
-    function addReadOnlyProperty(propertyName, model, valueSequence) {
+    function addReadOnlyProperty(propertyName, model, value$) {
       var lastSeenValue = new Rx.BehaviorSubject(undefined);
-      var sideEffectedSequence = valueSequence.doAction(function(value) {
+      var sideEffected$ = value$.doAction(function(value) {
         lastSeenValue.onNext(value);
       });
 
       Object.defineProperty(model, propertyName, {
-        get: _.constant(sideEffectedSequence),
+        get: _.constant(sideEffected$),
         enumerable: true
       });
 

@@ -5,12 +5,12 @@
   var MIGRATION_ENDPOINT = '/api/migrations/{0}';
   var OBE_DATASET_PAGE = '/d/{0}';
 
-  function initDownload($scope, page, obeIdObservable, WindowState, ServerConfig) {
+  function initDownload($scope, page, obeId$, WindowState, ServerConfig) {
     // The CSV download url
     $scope.$bindObservable(
       'datasetCSVDownloadURL',
       Rx.Observable.combineLatest(
-        obeIdObservable.startWith(null),
+        obeId$.startWith(null),
         page.observe('dataset').filter(_.isObject),
         function(obeId, dataset) {
           var downloadOverride = dataset.getCurrentValue('downloadOverride');
@@ -37,7 +37,7 @@
 
     // Download menu
     $scope.showDownloadButton = ServerConfig.get('enablePngDownloadUi');
-    WindowState.closeDialogEventObservable.filter(function(e) {
+    WindowState.closeDialogEvent$.filter(function(e) {
       return $scope.downloadOpened &&
         // Don't double-handle toggling downloadOpened
         !$(e.target).closest('.download-menu').length;
@@ -50,7 +50,7 @@
     });
 
     // Close png export with escape
-    WindowState.escapeKeyObservable.filter(function() {
+    WindowState.escapeKey$.filter(function() {
       return $scope.chooserMode.show === true;
     }).
       takeUntil($scope.$destroyAsObservable()).
@@ -81,26 +81,26 @@
 
   function initManageLens($scope, page) {
 
-    var pageIsPublicObservable = page.observe('permissions').
+    var pageIsPublic$ = page.observe('permissions').
       filter(_.isObject).
       map(_.property('isPublic'));
 
-    var datasetIsPublicObservable = page.observe('dataset.permissions').
+    var datasetIsPublic$ = page.observe('dataset.permissions').
       filter(_.isObject).
       map(_.property('isPublic')).
       // Default to true, so the warning icon doesn't appear before the actual metadata is fetched
       startWith(true);
 
-    var pagePermissionsObservable = pageIsPublicObservable.
+    var pagePermissions$ = pageIsPublic$.
       map(
         function(isPublic) {
           return isPublic ? 'public' : 'private';
         }
       );
 
-    $scope.$bindObservable('pageIsPublic', pageIsPublicObservable);
-    $scope.$bindObservable('datasetIsPublic', datasetIsPublicObservable);
-    $scope.$bindObservable('pagePermissions', pagePermissionsObservable);
+    $scope.$bindObservable('pageIsPublic', pageIsPublic$);
+    $scope.$bindObservable('datasetIsPublic', datasetIsPublic$);
+    $scope.$bindObservable('pagePermissions', pagePermissions$);
 
     $scope.manageLensState = {
       show: false
@@ -189,8 +189,8 @@
     $scope.showOtherViewsButton = ServerConfig.get('enableDataLensOtherViews');
     $scope.pageHeaderEnabled = ServerConfig.get('showNewuxPageHeader');
 
-    var pageNameSequence = page.observe('name').filter(_.isPresent);
-    $scope.$bindObservable('pageName', pageNameSequence);
+    var pageName$ = page.observe('name').filter(_.isPresent);
+    $scope.$bindObservable('pageName', pageName$);
     $scope.$bindObservable('pageDescription', page.observe('description'));
 
     $scope.$bindObservable('dataset', page.observe('dataset'));
@@ -202,12 +202,12 @@
 
     $scope.$bindObservable('isEphemeral', page.observe('id').map(_.isUndefined));
 
-    pageNameSequence.subscribe(function(pageName) {
+    pageName$.subscribe(function(pageName) {
       WindowOperations.setTitle('{0} | Socrata'.format(pageName));
     });
 
     // Map the nbe id to the obe id
-    var obeIdObservable = page.observe('datasetId').
+    var obeId$ = page.observe('datasetId').
       filter(_.isPresent).
       // send the nbe datasetId to the migrations endpoint, to translate it into an obe id
       map(encodeURIComponent).
@@ -220,7 +220,7 @@
       // Error means this isn't a migrated dataset. Just don't surface any obeId.
       catchException(Rx.Observable.never());
 
-    $scope.$bindObservable('sourceDatasetURL', obeIdObservable.map(function(obeId) {
+    $scope.$bindObservable('sourceDatasetURL', obeId$.map(function(obeId) {
       // Now construct the source dataset url from the obe id
       return OBE_DATASET_PAGE.format(obeId);
     }));
@@ -231,22 +231,22 @@
 
     // Bind the current user to the scope, or null if no user is logged in or there was an error
     // fetching the current user.
-    var currentUserSequence = UserSessionService.getCurrentUserObservable();
-    $scope.$bindObservable('currentUser', currentUserSequence);
+    var currentUser$ = UserSessionService.getCurrentUser$();
+    $scope.$bindObservable('currentUser', currentUser$);
 
     var isCurrentUserAdminOrPublisher =
-      currentUserSequence.
+      currentUser$.
       map(function(user) {
         var roleName = user.roleName;
         return _.contains(user.flags, 'admin') || roleName === 'administrator' || roleName === 'publisher';
       });
 
-    var isCurrentUserOwnerOfDataset =
+    var isCurrentUserOwnerOfDataset$ =
       page.
       observe('dataset').
       observeOnLatest('ownerId').
       combineLatest(
-        currentUserSequence.pluck('id'),
+        currentUser$.pluck('id'),
         function(ownerId, userId) {
           return ownerId === userId;
         });
@@ -254,16 +254,16 @@
     $scope.$bindObservable(
       'currentUserHasSaveRight',
       isCurrentUserAdminOrPublisher.
-      combineLatest(isCurrentUserOwnerOfDataset, function(a, b) { return a || b; }).
+      combineLatest(isCurrentUserOwnerOfDataset$, function(a, b) { return a || b; }).
       catchException(Rx.Observable.returnValue(false))
     );
 
 
-    initDownload($scope, page, obeIdObservable, WindowState, ServerConfig);
+    initDownload($scope, page, obeId$, WindowState, ServerConfig);
 
     $scope.shouldShowManageLens = false;
 
-    currentUserSequence.subscribe(
+    currentUser$.subscribe(
       function(currentUser) {
 
         var currentUserCanEditOthersDatasets =
@@ -294,10 +294,10 @@
     $scope.maxOperandLength = Constants.MAX_OPERAND_LENGTH;
     $scope.$bindObservable('globalWhereClauseFragment', page.observe('computedWhereClauseFragment'));
 
-    var datasetColumnsObservable = page.observe('dataset.columns');
+    var datasetColumns$ = page.observe('dataset.columns');
 
-    var appliedFiltersForDisplayObservable = allCardsFilters.
-      combineLatest(datasetColumnsObservable, function(pageFilters, columns) {
+    var appliedFiltersForDisplay$ = allCardsFilters.
+      combineLatest(datasetColumns$, function(pageFilters, columns) {
 
         function humanReadableOperator(filter) {
           if (filter instanceof Filter.BinaryOperatorFilter) {
@@ -362,7 +362,7 @@
         }, []);
 
       });
-    $scope.$bindObservable('appliedFiltersForDisplay', appliedFiltersForDisplayObservable);
+    $scope.$bindObservable('appliedFiltersForDisplay', appliedFiltersForDisplay$);
 
     $scope.clearAllFilters = function() {
       _.each($scope.page.getCurrentValue('cards'), function(card) {
@@ -392,14 +392,14 @@
     //
     // If the status is 'saved', there must be an additional
     // key of 'id' set to the saved page's ID.
-    var currentPageSaveEvents = new Rx.BehaviorSubject({ status: 'idle' });
+    var currentPageSaveEvents$ = new Rx.BehaviorSubject({ status: 'idle' });
 
     // Bind save status related things so the UI reflects them.
-    $scope.$bindObservable('saveStatus', currentPageSaveEvents.pluck('status'));
+    $scope.$bindObservable('saveStatus', currentPageSaveEvents$.pluck('status'));
 
     // Track whether there've been changes to the page.
     // If we save the page, reset the dirtiness of the model.
-    currentPageSaveEvents.filter(function(event) { return event.status === 'saved'; }).
+    currentPageSaveEvents$.filter(function(event) { return event.status === 'saved'; }).
       subscribe(_.bind(page.resetDirtied, page));
     $scope.$bindObservable('hasChanges', page.observeDirtied());
 
@@ -488,12 +488,12 @@
           $log.error('Serialization failed on save', exception);
           savePromise = $q.reject(exception);
         }
-        notifyUserOfSaveProgress(savePromise, currentPageSaveEvents);
+        notifyUserOfSaveProgress(savePromise, currentPageSaveEvents$);
       }
     };
 
     $scope.savePageAs = function(name, description) {
-      var saveStatusSubject = new Rx.BehaviorSubject();
+      var saveStatus$ = new Rx.BehaviorSubject();
       var savePromise;
 
       try {
@@ -513,10 +513,10 @@
         savePromise = $q.reject(exception);
       }
 
-      notifyUserOfSaveProgress(savePromise, saveStatusSubject);
+      notifyUserOfSaveProgress(savePromise, saveStatus$);
 
       // Redirect to a new page once Save As completed (plus a small delay).
-      saveStatusSubject.filter(
+      saveStatus$.filter(
           function(event) {
             return event.status === 'saved';
           }
@@ -528,7 +528,7 @@
           WindowOperations.navigateTo(url.href);
         });
 
-      return saveStatusSubject.
+      return saveStatus$.
         bufferWithCount(2, 1). // Buffers of 2 in length, but overlapping by 1.
         filter(
           function(lastTwoEvents) {
@@ -633,7 +633,7 @@
     FlyoutService.register({
       selector: '.save-this-page .save-button',
       render: function() {
-        var buttonStatus = currentPageSaveEvents.value.status;
+        var buttonStatus = currentPageSaveEvents$.value.status;
 
         var idleTitle;
         if ($scope.isEphemeral) {
@@ -696,9 +696,9 @@
       destroySignal: destroy$
     });
 
-    // Since we have a flyout handler whose output depends on currentPageSaveEvents and $scope.hasChanges,
+    // Since we have a flyout handler whose output depends on currentPageSaveEvents$ and $scope.hasChanges,
     // we need to poke the FlyoutService. We want the flyout to update immediately.
-    currentPageSaveEvents.merge($scope.$observe('hasChanges')).subscribe(function() {
+    currentPageSaveEvents$.merge($scope.$observe('hasChanges')).subscribe(function() {
       FlyoutService.refreshFlyout();
     });
 

@@ -12,20 +12,20 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
   var persistOnMousedown;
 
   // To support refreshFlyout, we have an additional stream of mouse positions
-  // that replays events from WindowState.mousePositionSubject when needed.
-  var replayedMousePositionSubject = new Rx.Subject();
+  // that replays events from WindowState.mousePosition$ when needed.
+  var replayedMousePosition$ = new Rx.Subject();
 
   // Only update the saved target and mouse position on
   // these observables.
   Rx.Observable.merge(
-    WindowState.mousePositionSubject,
-    replayedMousePositionSubject
+    WindowState.mousePosition$,
+    replayedMousePosition$
   ).doAction(function(e) {
     target = e.target;
     mouseX = e.clientX;
     mouseY = e.clientY;
   }).merge(
-    WindowState.scrollPositionSubject
+    WindowState.scrollPosition$
   ).subscribe(function() {
 
     var flyoutContent;
@@ -182,7 +182,7 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
   });
 
   // Hide upon click if flyout is set to do so
-  WindowState.mouseLeftButtonPressedSubject.subscribe(function() {
+  WindowState.mouseLeftButtonPressed$.subscribe(function() {
     if (!_.isEmpty(uberFlyout) && !persistOnMousedown) {
       hide();
     }
@@ -308,8 +308,8 @@ angular.module('dataCards.services').factory('FlyoutService', function(Constants
     // and want to see the changes immediately, this function
     // will force a refresh.
     refreshFlyout: function(value) {
-      value = value || WindowState.mousePositionSubject.value;
-      replayedMousePositionSubject.onNext(value);
+      value = value || WindowState.mousePosition$.value;
+      replayedMousePosition$.onNext(value);
     },
     targetUnder: targetUnder,
     hide: hide

@@ -13,7 +13,7 @@
     LeafletVisualizationHelpersService
   ) {
 
-    function createTimerObservable() {
+    function createTimer$() {
       return Rx.Observable.timer(Constants.FEATURE_MAP_RENDER_TIMEOUT, Rx.Scheduler.timeout);
     }
 
@@ -228,18 +228,18 @@
         // The 'render:start' and 'render:complete' events are emitted by the
         // underlying feature map and are used for a) toggling the state of the
         // 'busy' spinner and b) performance analytics.
-        var renderStartObservable = scope.$eventToObservable('render:start');
-        var renderErrorObservable = scope.$eventToObservable('render:error');
-        var renderCompleteObservable = scope.$eventToObservable('render:complete').
-          takeUntil(renderErrorObservable);
+        var renderStart$ = scope.$eventToObservable('render:start');
+        var renderError$ = scope.$eventToObservable('render:error');
+        var renderComplete$ = scope.$eventToObservable('render:complete').
+          takeUntil(renderError$);
 
         LeafletVisualizationHelpersService.setObservedExtentOnModel(scope, scope.model);
 
         // For every renderStart event, start a timer that will either expire on
         // its own, or get cancelled by the renderComplete event firing
-        var renderTimeoutObservable = renderStartObservable.
-          flatMap(createTimerObservable).
-          takeUntil(renderCompleteObservable);
+        var renderTimeout$ = renderStart$.
+          flatMap(createTimer$).
+          takeUntil(renderComplete$);
 
         var synchronizedFieldnameDataset = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
@@ -255,41 +255,41 @@
 
         // Start a timer when the card is ready to render, that will either
         // expire on its own, or get cancelled by a renderComplete event
-        var directiveTimeoutObservable = synchronizedFieldnameDataset.
-          flatMap(createTimerObservable).
-          takeUntil(renderCompleteObservable);
+        var directiveTimeout$ = synchronizedFieldnameDataset.
+          flatMap(createTimer$).
+          takeUntil(renderComplete$);
 
         // Display the error whenever something has timed out, clear it whenever
         // we successfully render
-        var displayRenderErrorObservable = Rx.Observable.
+        var displayRenderError$ = Rx.Observable.
           merge(
-            renderTimeoutObservable.map(_.constant(true)),
-            directiveTimeoutObservable.map(_.constant(true)),
-            renderErrorObservable.map(_.constant(true)),
-            renderCompleteObservable.map(_.constant(false))
+            renderTimeout$.map(_.constant(true)),
+            directiveTimeout$.map(_.constant(true)),
+            renderError$.map(_.constant(true)),
+            renderComplete$.map(_.constant(false))
           ).
           startWith(false).
           distinctUntilChanged();
 
-        scope.$bindObservable('displayRenderError', displayRenderErrorObservable);
+        scope.$bindObservable('displayRenderError', displayRenderError$);
 
         // Show the busy indicator when we are ready to render, and when we have
         // started rendering.  Clear the indicator when things have timed out
         // (i.e. we are showing the render error), or when rendering has
         // completed successfully
-        var busyObservable = Rx.Observable.
+        var busy$ = Rx.Observable.
           merge(
             synchronizedFieldnameDataset.map(_.constant(true)),
-            renderStartObservable.map(_.constant(true)),
-            renderTimeoutObservable.map(_.constant(false)),
-            directiveTimeoutObservable.map(_.constant(false)),
-            renderCompleteObservable.map(_.constant(false)),
-            renderErrorObservable.map(_.constant(false))
+            renderStart$.map(_.constant(true)),
+            renderTimeout$.map(_.constant(false)),
+            directiveTimeout$.map(_.constant(false)),
+            renderComplete$.map(_.constant(false)),
+            renderError$.map(_.constant(false))
         ).
           startWith(true).
           distinctUntilChanged();
 
-        scope.$bindObservable('busy', busyObservable);
+        scope.$bindObservable('busy', busy$);
 
         var serverExtent$ = synchronizedFieldnameDataset.
           flatMap(function(fieldNameDataset) {
@@ -301,7 +301,7 @@
           onErrorResumeNext(Rx.Observable.empty());  // Promise error becomes empty observable
 
         // TODO - Fix synchronization here - not getting saved value
-        var synchronizedFeatureExtentDataSequence = serverExtent$.
+        var synchronizedFeatureExtentData$ = serverExtent$.
           startWith(undefined).
           combineLatest(
           defaultExtent$,
@@ -349,38 +349,38 @@
           model.observeOnLatest('baseLayerUrl')
         );
 
-        scope.$bindObservable('featureExtent', synchronizedFeatureExtentDataSequence);
+        scope.$bindObservable('featureExtent', synchronizedFeatureExtentData$);
 
         var featureSet = ServerConfig.getFeatureSet();
 
-        var datasetIsPrivateObservable = datasetPermissions$.
+        var datasetIsPrivate$ = datasetPermissions$.
           map(function(permissions) {
             return !permissions.isPublic;
           }).
           startWith(true);
 
-        var stagingApiLockdownObservable = Rx.Observable.
+        var stagingApiLockdown$ = Rx.Observable.
           returnValue(_.get(featureSet, 'staging_api_lockdown', false));
 
-        var stagingLockdownObservable = Rx.Observable.
+        var stagingLockdown$ = Rx.Observable.
           returnValue(_.get(featureSet, 'staging_lockdown', false));
 
-        var useOriginHostObservable = Rx.Observable.combineLatest(
-          datasetIsPrivateObservable,
-          stagingApiLockdownObservable,
-          stagingLockdownObservable,
+        var useOriginHost$ = Rx.Observable.combineLatest(
+          datasetIsPrivate$,
+          stagingApiLockdown$,
+          stagingLockdown$,
           function(datasetIsPrivate, stagingApiLockdown, stagingLockdown) {
             return datasetIsPrivate || stagingApiLockdown || stagingLockdown;
           });
 
-        var vectorTileGetterSequence = Rx.Observable.combineLatest(
+        var vectorTileGetter$ = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
           dataset$.pluck('id'),
           whereClause$,
-          useOriginHostObservable,
+          useOriginHost$,
           VectorTileDataService.buildTileGetter);
 
-        scope.$bindObservable('vectorTileGetter', vectorTileGetterSequence);
+        scope.$bindObservable('vectorTileGetter', vectorTileGetter$);
 
         scope.$bindObservable(
           'rowDisplayUnit',

@@ -22,24 +22,24 @@
         var model = scope.$observe('model').filter(_.isPresent);
         var dataset = model.observeOnLatest('page.dataset');
         var baseSoqlFilter = model.observeOnLatest('page.baseSoqlFilter');
-        var aggregationObservable = model.observeOnLatest('page.aggregation');
-        var dataRequests = new Rx.Subject();
-        var dataResponses = new Rx.Subject();
-        var unfilteredDataSequence = new Rx.Subject();
-        var filteredDataSequence = new Rx.Subject();
-        var whereClauseObservable = scope.$observe('whereClause');
+        var aggregation$ = model.observeOnLatest('page.aggregation');
+        var dataRequests$ = new Rx.Subject();
+        var dataResponses$ = new Rx.Subject();
+        var unfilteredData$ = new Rx.Subject();
+        var filteredData$ = new Rx.Subject();
+        var whereClause$ = scope.$observe('whereClause');
 
         // Keep track of the number of requests that have been made and the number of
         // responses that have come back.
         // .scan() is necessary because the usual aggregation suspect reduce actually
         // will not execute over a sequence until it has been completed; scan is happy
         // to operate on active sequences.
-        var dataRequestCount = dataRequests.scan(0, function(acc) { return acc + 1; });
-        var dataResponseCount = dataResponses.scan(0, function(acc) { return acc + 1; });
+        var dataRequestCount$ = dataRequests$.scan(0, function(acc) { return acc + 1; });
+        var dataResponseCount$ = dataResponses$.scan(0, function(acc) { return acc + 1; });
 
-        var shapeFileObservable;
-        var geometryLabelObservable;
-        var geojsonRegionsObservable;
+        var shapeFile$;
+        var geometryLabel$;
+        var geojsonRegions$;
 
         var shapeFileRegionQueryLimit = ServerConfig.getScalarValue(
           'shapeFileRegionQueryLimit',
@@ -57,8 +57,8 @@
         // this code is location-dependent within the file.
         scope.$bindObservable('busy',
           Rx.Observable.combineLatest(
-            dataRequestCount,
-            dataResponseCount,
+            dataRequestCount$,
+            dataResponseCount$,
             function(requests, responses) {
               return requests === 0 || (requests > responses);
             }));
@@ -69,14 +69,14 @@
         ******************************************/
 
         Rx.Observable.combineLatest(
-          whereClauseObservable,
+          whereClause$,
           baseSoqlFilter,
           function(whereClause, baseFilter) {
             return !_.isEmpty(whereClause) && whereClause !== baseFilter;
           }
         );
 
-        shapeFileObservable = Rx.Observable.combineLatest(
+        shapeFile$ = Rx.Observable.combineLatest(
           model.pluck('fieldName'),
           dataset.observeOnLatest('columns'),
           function(fieldName, columns) {
@@ -100,22 +100,22 @@
           }
         );
 
-        geometryLabelObservable = shapeFileObservable.map(
+        geometryLabel$ = shapeFile$.map(
           function(shapeFile) {
             var dataPromise;
 
-            dataRequests.onNext(1);
+            dataRequests$.onNext(1);
 
             dataPromise = CardDataService.getChoroplethGeometryLabel(shapeFile);
 
             dataPromise.then(
               function() {
                 // Ok
-                dataResponses.onNext(1);
+                dataResponses$.onNext(1);
               },
               function() {
                 // Still increment the counter to stop the spinner
-                dataResponses.onNext(1);
+                dataResponses$.onNext(1);
 
                 scope.$safeApply(function() {
                   scope.choroplethRenderError = true;
@@ -127,17 +127,17 @@
           }
         );
 
-        geojsonRegionsObservable = Rx.Observable.combineLatest(
+        geojsonRegions$ = Rx.Observable.combineLatest(
           dataset,
           dataset.observeOnLatest('columns'),
           model.pluck('fieldName'),
-          shapeFileObservable,
+          shapeFile$,
           function(currentDataset, columns, fieldName, shapeFile) {
             var sourceColumn = null;
             var dataPromise;
             var computationStrategy = _.get(columns[fieldName], 'computationStrategy.strategy_type');
 
-            dataRequests.onNext(1);
+            dataRequests$.onNext(1);
 
             sourceColumn = CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn(
               columns[fieldName]
@@ -183,11 +183,11 @@
             dataPromise.then(
               function() {
                 // Ok
-                dataResponses.onNext(1);
+                dataResponses$.onNext(1);
               },
               function() {
                 // Show geojson regions request error message.
-                dataResponses.onNext(1);
+                dataResponses$.onNext(1);
 
                 scope.$safeApply(function() {
                   scope.choroplethRenderError = true;
@@ -203,9 +203,9 @@
           model.pluck('fieldName'),
           dataset,
           baseSoqlFilter,
-          aggregationObservable,
+          aggregation$,
           function(fieldName, currentDataset, whereClauseFragment, aggregationData) {
-            dataRequests.onNext(1);
+            dataRequests$.onNext(1);
             var dataPromise = CardDataService.getData(
               fieldName,
               currentDataset.id,
@@ -216,12 +216,12 @@
             dataPromise.then(
               function() {
                 // Ok
-                unfilteredDataSequence.onNext(dataPromise);
-                dataResponses.onNext(1);
+                unfilteredData$.onNext(dataPromise);
+                dataResponses$.onNext(1);
               },
               function() {
                 // Still increment the counter to stop the spinner
-                dataResponses.onNext(1);
+                dataResponses$.onNext(1);
               });
             return Rx.Observable.fromPromise(dataPromise);
           });
@@ -229,10 +229,10 @@
         Rx.Observable.subscribeLatest(
           model.pluck('fieldName'),
           dataset,
-          whereClauseObservable,
-          aggregationObservable,
+          whereClause$,
+          aggregation$,
           function(fieldName, currentDataset, whereClauseFragment, aggregationData) {
-            dataRequests.onNext(1);
+            dataRequests$.onNext(1);
             var dataPromise = CardDataService.getData(
               fieldName,
               currentDataset.id,
@@ -243,12 +243,12 @@
             dataPromise.then(
               function() {
                 // Ok
-                filteredDataSequence.onNext(dataPromise);
-                dataResponses.onNext(1);
+                filteredData$.onNext(dataPromise);
+                dataResponses$.onNext(1);
               },
               function() {
                 // Still increment the counter to stop the spinner
-                dataResponses.onNext(1);
+                dataResponses$.onNext(1);
               });
             return Rx.Observable.fromPromise(dataPromise);
           });
@@ -266,15 +266,15 @@
         scope.$bindObservable('fieldName', model.pluck('fieldName'));
         scope.$bindObservable('baseLayerUrl', model.observeOnLatest('baseLayerUrl'));
         scope.$bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
-        scope.$bindObservable('isFiltered', whereClauseObservable.map(_.isPresent));
+        scope.$bindObservable('isFiltered', whereClause$.map(_.isPresent));
 
         scope.$bindObservable(
           'geojsonAggregateData',
           Rx.Observable.combineLatest(
-            geometryLabelObservable.switchLatest(),
-            geojsonRegionsObservable.switchLatest(),
-            unfilteredDataSequence.switchLatest(),
-            filteredDataSequence.switchLatest(),
+            geometryLabel$.switchLatest(),
+            geojsonRegions$.switchLatest(),
+            unfilteredData$.switchLatest(),
+            filteredData$.switchLatest(),
             model.observeOnLatest('activeFilters'),
             model.pluck('fieldName'),
             dataset.observeOnLatest('columns'),

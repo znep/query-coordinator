@@ -336,15 +336,26 @@
      * behaves as usual).
      * If set to false, disables scrolling isolation, and re-enables page scrolling.
      *
-     * @param {jQuery wrapped DOM element} the element on which to isolate scrolling behavior
-     * @param {boolean} whether to isolate scrolling to element and prevent page scrolling
+     * @param {jQuery wrapped DOM} $element - the element on which to isolate scrolling behavior
+     * @param {boolean} enable - whether to isolate scrolling to element and prevent page scrolling
      */
-    isolateScrolling: function(element, enable) {
+    isolateScrolling: function($element, enable) {
+      var hasPreventPageScrolling;
+      var needToRegister;
+      var needToUnregister;
 
-      if (enable) {
+      this.assertInstanceOf($element, window.jQuery);
+      this.assert($element.length === 1, '`element` selection must have length 1');
+      this.assertIsOneOfTypes(enable, 'boolean');
 
+      hasPreventPageScrolling = $element[0].hasOwnProperty('preventPageScrolling');
+
+      needToRegister = enable && !hasPreventPageScrolling;
+      needToUnregister = !enable && hasPreventPageScrolling;
+
+      if (needToRegister) {
         // Helper to prevent page scrolling when inside the given element
-        element[0].preventPageScrolling = function(e) {
+        $element[0].preventPageScrolling = function(e) {
 
           // Base prevention of page scrolling on scroll status of the given element
           var scrollingElement = $(this);
@@ -371,12 +382,10 @@
           }
         };
 
-        element.on(MOUSE_WHEEL_EVENTS, element[0].preventPageScrolling);
-
-      } else {
-        if (element[0].hasOwnProperty('preventPageScrolling')) {
-          element.off(MOUSE_WHEEL_EVENTS, element[0].preventPageScrolling);
-        }
+        $element.on(MOUSE_WHEEL_EVENTS, $element[0].preventPageScrolling);
+      } else if (needToUnregister) {
+        $element.off(MOUSE_WHEEL_EVENTS, $element[0].preventPageScrolling);
+        delete $element[0].preventPageScrolling;
       }
     },
 

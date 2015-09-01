@@ -185,6 +185,7 @@
      * use a righteous hack (See: http://stackoverflow.com/a/4330882).
      */
     function _xhrHasVBArray(xhr) {
+
       return (
         _.isUndefined(xhr.response) &&
         _.isDefined(window.VBArray) &&
@@ -221,7 +222,7 @@
 
         function onFail() {
 
-          reject({
+          return reject({
             status: parseInt(xhr.status, 10),
             headers: _self.parseHeaders(xhr.getAllResponseHeaders()),
             config: config,
@@ -240,7 +241,7 @@
 
             if (!_.isUndefined(arrayBuffer)) {
 
-              resolve({
+              return resolve({
                 data: arrayBuffer,
                 status: status,
                 headers: _self.parseHeaders(xhr.getAllResponseHeaders()),

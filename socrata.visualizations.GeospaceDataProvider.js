@@ -32,7 +32,7 @@
 
     this.getFeatureExtent = function(fieldName) {
 
-      var url= 'https://{0}/resource/{1}.geojson?$select=extent({2})'.format(
+      var url= 'https://{0}/resource/{1}.json?$select=extent({2})'.format(
         this.getConfigurationProperty('domain'),
         this.getConfigurationProperty('fourByFour'),
         fieldName
@@ -57,7 +57,7 @@
               error = xhr.statusText;
             }
 
-            reject({
+            return reject({
               status: parseInt(xhr.status, 10),
               message: xhr.statusText,
               soqlError: error
@@ -72,14 +72,18 @@
 
               try {
 
+                var responseTextWithoutNewlines = xhr.
+                  responseText.
+                  replace(/\n/g, '');
+
                 var coordinates = _.get(
-                  JSON.parse(xhr.responseText),
+                  JSON.parse(responseTextWithoutNewlines),
                   '[0].extent_{0}.coordinates[0][0]'.format(fieldName)
                 );
 
                 if (!_.isUndefined(coordinates)) {
 
-                  resolve({
+                  return resolve({
                     southwest: [coordinates[0][1], coordinates[0][0]],
                     northeast: [coordinates[2][1], coordinates[2][0]]
                   });

@@ -224,6 +224,7 @@
 
       _map.on('resize', _handleMapResize);
       _map.on('resize zoomend dragend', _handleExtentChange);
+      _map.on('dragstart zoomstart', _handlePanAndZoom);
 
       if (_hover) {
         _map.on('mousemove', _handleMousemove);
@@ -236,7 +237,8 @@
       if (_map) {
 
         _map.off('resize', _handleMapResize);
-        _map.off('resize zoomend dragend', _handleExtentChange);
+        _map.off('resize dragend zoomend', _handleExtentChange);
+        _map.off('dragstart zoomstart', _handlePanAndZoom);
 
         if (_hover) {
           _map.off('mousemove', _handleMousemove);
@@ -256,14 +258,20 @@
 
     function _handleExtentChange() {
 
-      var bounds = _map.getBounds();
+      // var bounds = _map.getBounds();
 
-      if (bounds.isValid()) {
-        return {
-          southwest: [bounds.getSouth(), bounds.getWest()],
-          northeast: [bounds.getNorth(), bounds.getEast()]
-        };
-      }
+      // if (bounds.isValid()) {
+      //   return {
+      //     southwest: [bounds.getSouth(), bounds.getWest()],
+      //     northeast: [bounds.getNorth(), bounds.getEast()]
+      //   };
+      // }
+    }
+
+    function _handlePanAndZoom() {
+
+      _hideFlyout();
+      _hideInspector();
     }
 
     function _handleMousemove(event) {
@@ -305,6 +313,10 @@
 
         inspectorDataQueryConfig = {
           latLng: event.latlng,
+          position: {
+            pageX: event.originalEvent.pageX,
+            pageY: event.originalEvent.pageY
+          },
           rowCount: _.sum(event.points, 'count'),
           queryBounds: _getQueryBounds(event.containerPoint)
         };
@@ -315,16 +327,14 @@
 
     function _handleVectorTileRenderStart() {
 
+      _hideFlyout();
+      _hideInspector();
     }
 
     function _handleVectorTileRenderComplete(layer) {
 
       _removeOldFeatureLayers();
-
       _map.fire('clearallhighlights');
-
-      // enable interactivity once load is complete
-      _updateMapInteractivity(layer);
     }
 
     function _showFlyout() {
@@ -374,13 +384,14 @@
 
       var payload = {
         data: null,
+        position: inspectorDataQueryConfig.position,
         error: false,
         message: null
       }
 
       // Emit one event to cause the row inspector to be rendered.
       self.emitEvent(
-        'SOCRATA_VISUALIZATION_FEATURE_MAP_ROW_INSPECTOR_RENDER',
+        'SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW',
         {
           data: payload
         }
@@ -389,7 +400,7 @@
       // Emit a second event to initiate a query for the row
       // data which we intend to inspect.
       self.emitEvent(
-        'SOCRATA_VISUALIZATION_FEATURE_MAP_ROW_INSPECTOR_QUERY',
+        'SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY',
         {
           data: inspectorDataQueryConfig
         }
@@ -399,10 +410,7 @@
     function _hideInspector() {
 
       self.emitEvent(
-        'SOCRATA_VISUALIZATION_FEATURE_MAP_ROW_INSPECTOR_RENDER',
-        {
-          data: null
-        }
+        'SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDE'
       );
     }
 
@@ -510,19 +518,6 @@
           delete _featureLayers[layerId];
         }
       });
-    }
-
-    // Update map interactivity based on map load status.
-    // Enables map interactivity once map load is complete.
-    function _updateMapInteractivity(layer) {
-
-      if (!_.isUndefined(layer)) {
-
-// WHAT DO WE DO HERE
-        // busy$.subscribe(function(busy) {
-        //   layer.options.disableMapInteractions = busy;
-        // });
-      }
     }
 
     /**

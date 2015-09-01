@@ -94,20 +94,33 @@
       // Render/hide a flyout
     });
 
-    $featureMapElement.on('SOCRATA_VISUALIZATION_FEATURE_MAP_ROW_INSPECTOR_RENDER', function(event) {
+    $featureMapElement.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', function(event) {
 
       var payload = event.originalEvent.detail.data;
 
-      // Render/hide the row inspector
+      // Show the row inspector
       if (payload !== null) {
 
-        console.log('data:', payload.data, 'error:', payload.error, 'message:', payload.message);
-
-      } else {
-
-        console.log('hiding inspector');
+        console.log('showing flannel', payload.position);
 
       }
+    });
+
+    $featureMapElement.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', function(event) {
+
+      var payload = event.originalEvent.detail.data;
+
+      // Update the row inspector
+      if (payload !== null) {
+
+        console.log('updating flannel', payload.data);
+
+      }
+    });
+
+    $featureMapElement.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDE', function(event) {
+
+      console.log('hiding flannel');
     });
 
   </script>

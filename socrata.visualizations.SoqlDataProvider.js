@@ -97,7 +97,7 @@
               error = xhr.statusText;
             }
 
-            reject({
+            return reject({
               status: parseInt(xhr.status, 10),
               message: xhr.statusText,
               soqlError: error
@@ -115,7 +115,7 @@
 
                 data = JSON.parse(xhr.responseText);
 
-                resolve(
+                return resolve(
                   _mapQueryResponseToTable(data, nameAlias, valueAlias)
                 );
               } catch (e) {
@@ -182,7 +182,7 @@
               error = xhr.statusText;
             }
 
-            reject({
+            return reject({
               status: parseInt(xhr.status, 10),
               message: xhr.statusText,
               soqlError: error
@@ -200,10 +200,9 @@
 
                 data = JSON.parse(xhr.responseText);
 
-                resolve(
+                return resolve(
                   _mapRowsResponseToTable(data)
                 );
-
               } catch (e) {
 
                 // If we cannot parse the response body as JSON,

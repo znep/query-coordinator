@@ -46,7 +46,7 @@
 
         function onFail() {
 
-          reject({
+          return reject({
             status: parseInt(xhr.status, 10),
             message: xhr.statusText
           });
@@ -60,7 +60,7 @@
 
             try {
 
-              resolve(
+              return resolve(
                 JSON.parse(xhr.responseText)
               );
             } catch (e) {

@@ -130,7 +130,7 @@
      * Events
      */
 
-    $element.on('SOCRATA_VISUALIZATION_FEATURE_MAP_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
+    $element.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
 
     /**
      * Event handlers
@@ -203,7 +203,7 @@
         message: null
       }
 
-      emitRowInspectorRenderEvent(rowInspectorPayload);
+      emitRowInspectorUpdateEvent(rowInspectorPayload);
     }
 
     function handleRowInspectorQueryError() {
@@ -214,7 +214,7 @@
         message: config.localization.ROW_INSPECTOR_ROW_DATA_QUERY_FAILED
       }
 
-      emitRowInspectorRenderEvent(rowInspectorPayload);
+      emitRowInspectorUpdateEvent(rowInspectorPayload);
     }
 
     /**
@@ -230,11 +230,10 @@
       renderIfReady();
     }
 
-    function updateRenderOptionsBounds(response) {
+    function updateRenderOptionsBounds(extent) {
 
-      var featureExtent = response.data;
-      var southWest = L.latLng(featureExtent.southwest[0], featureExtent.southwest[1]);
-      var northEast = L.latLng(featureExtent.northeast[0], featureExtent.northeast[1]);
+      var southWest = L.latLng(extent.southwest[0], extent.southwest[1]);
+      var northEast = L.latLng(extent.northeast[0], extent.northeast[1]);
 
       visualizationRenderOptions.bounds = L.latLngBounds(southWest, northEast);
     }
@@ -263,11 +262,11 @@
       visualization.renderError();
     }
 
-    function formatRowInspectorData(datasetMetadata, rows) {
+    function formatRowInspectorData(datasetMetadata, data) {
 
       // Each of our rows will be mapped to 'formattedRowData', an array of
       // objects.  Each row corresponds to a single page in the flannel.
-      return rows.map(
+      return data.rows.map(
         function(row) {
 
           // If the dataset metadata request fails, then datasetMetadata will
@@ -371,11 +370,11 @@
       return formattedRowData;
     }
 
-    function emitRowInspectorRenderEvent(payload) {
+    function emitRowInspectorUpdateEvent(payload) {
 
       $element[0].dispatchEvent(
         new root.CustomEvent(
-          'SOCRATA_VISUALIZATION_FEATURE_MAP_ROW_INSPECTOR_RENDER',
+          'SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE',
           {
             detail: {
               data: payload

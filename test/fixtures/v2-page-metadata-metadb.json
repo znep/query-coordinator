@@ -1,0 +1,121 @@
+{
+  "id" : "mjcb-9cxc",
+  "name" : "My new page",
+  "averageRating" : 0,
+  "createdAt" : 1441143996,
+  "description" : "<div>description</div>",
+  "displayType" : "data_lens",
+  "downloadCount" : 0,
+  "newBackend" : true,
+  "numberOfComments" : 0,
+  "oid" : 131,
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1431995969,
+  "publicationGroup" : 23,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1431995963,
+  "rowsUpdatedBy" : "tugg-ikce",
+  "tableId" : 36,
+  "totalTimesRated" : 0,
+  "viewCount" : 0,
+  "viewLastModified" : 1441147079,
+  "viewType" : "href",
+  "columns" : [ ],
+  "displayFormat" : {
+    "data_lens_page_metadata" : {
+      "defaultDateTruncFunction" : "date_trunc_ymd",
+      "description" : "<div>description</div>",
+      "pageId" : "mjcb-9cxc",
+      "datasetId" : "thw2-8btq",
+      "name" : "My new page",
+      "cards" : [ {
+        "cardSize" : 1,
+        "expanded" : false,
+        "fieldName" : "datetime",
+        "cardType" : "timeline",
+        "activeFilters" : [ {
+          "arguments" : {
+            "start" : "2015-03-30T00:00:00",
+            "end" : "2015-04-26T00:00:00"
+          },
+          "function" : "TimeRange"
+        } ]
+      }, {
+        "cardSize" : 2,
+        "expanded" : false,
+        "fieldName" : "type",
+        "cardType" : "column"
+      }, {
+        "cardSize" : 2,
+        "expanded" : false,
+        "fieldName" : "latitude",
+        "cardType" : "column"
+      }, {
+        "cardSize" : 3,
+        "expanded" : false,
+        "fieldName" : "incident_number",
+        "cardType" : "search"
+      }, {
+        "cardSize" : 2,
+        "expanded" : false,
+        "fieldName" : "*",
+        "cardType" : "table"
+      }, {
+        "cardSize" : 3,
+        "expanded" : false,
+        "fieldName" : "report_location",
+        "cardType" : "column"
+      }, {
+        "cardSize" : 3,
+        "expanded" : false,
+        "fieldName" : "address",
+        "cardType" : "column"
+      }, {
+        "cardSize" : 3,
+        "expanded" : false,
+        "fieldName" : "longitude",
+        "cardType" : "search"
+      } ],
+      "version" : 1
+    }
+  },
+  "grants" : [ {
+    "inherited" : true,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "metadata" : {
+    "renderTypeConfig" : {
+      "visible" : {
+        "href" : true
+      }
+    },
+    "availableDisplayTypes" : [ "data_lens" ],
+    "accessPoints" : {
+      "new_view" : "https://local.dev:443/view/mjcb-9cxc"
+    },
+    "v1_data_lens_blist_id" : "137"
+  },
+  "owner" : {
+    "id" : "tugg-ikce",
+    "displayName" : "me",
+    "emailUnsubscribed" : false,
+    "profileLastModified" : 1432081759,
+    "roleName" : "administrator",
+    "screenName" : "me",
+    "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards" ],
+    "flags" : [ "admin" ]
+  },
+  "query" : { },
+  "rights" : [ "read", "write", "add", "delete", "grant", "add_column", "remove_column", "update_column", "update_view", "delete_view" ],
+  "tableAuthor" : {
+    "id" : "tugg-ikce",
+    "displayName" : "me",
+    "emailUnsubscribed" : false,
+    "profileLastModified" : 1432081759,
+    "roleName" : "administrator",
+    "screenName" : "me",
+    "rights" : [ "create_datasets", "edit_others_datasets", "edit_sdp", "edit_site_theme", "moderate_comments", "manage_users", "chown_datasets", "edit_nominations", "approve_nominations", "feature_items", "federations", "manage_stories", "manage_approval", "change_configurations", "view_domain", "view_others_datasets", "edit_pages", "create_pages", "view_goals", "view_dashboards", "edit_goals", "edit_dashboards", "create_dashboards" ],
+    "flags" : [ "admin" ]
+  }
+}

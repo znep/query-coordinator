@@ -1,5 +1,4 @@
-# Wrapper around the phidippides service, for functions related to page
-# metadata. Also handles managing rollup tables in soda fountain.
+# Wrapper around page metadata - metadata stored in both Phidippides and Metadb.
 class PageMetadataManager
 
   include CommonMetadataMethods
@@ -115,7 +114,7 @@ class PageMetadataManager
 
     page_metadata['cards'] << table_card unless has_table_card
 
-    result = update_page_metadata(page_metadata, options)
+    result = update_phidippides_page_metadata(page_metadata, options)
 
     if result[:status] == '200'
       request_soda_fountain_secondary_index(page_metadata['datasetId'], options)
@@ -124,19 +123,30 @@ class PageMetadataManager
     result
   end
 
-  # Updates an existing page.
-  # Note that phidippides will simply overwrite the existing value with the
+  # Updates an existing page - if the page is using metadb for its metadata, update metadb.
+  # Else update the Phiddy metadata.
+  # Note that the update will simply overwrite the existing value with the
   # given value, so any missing keys will become missing in the datastore.
   def update(page_metadata, options = {})
-    raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id') unless page_metadata.key?('datasetId')
-    raise Phidippides::NoPageIdException.new('cannot create page with no page id') unless page_metadata.key?('pageId')
+    raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id') unless page_metadata['datasetId'].present?
+    raise Phidippides::NoPageIdException.new('cannot create page with no page id') unless page_metadata['pageId'].present?
 
     initialize_metadata_key_names
 
-    new_view_manager.update(page_metadata['pageId'], page_metadata['name'], page_metadata['description'])
+    begin
+      metadb_metadata = new_view_manager.fetch(page_metadata['pageId'])
+    rescue
+      metadb_metadata = nil
+    end
 
-    # TODO: verify that phidippides does auth checks for this
-    update_page_metadata(page_metadata, options)
+    if is_backed_by_metadb?(metadb_metadata)
+      new_view_manager.update(page_metadata['pageId'], page_metadata['name'], page_metadata['description'])
+      update_metadb_page_metadata(page_metadata, metadb_metadata)
+    else
+      new_view_manager.update(page_metadata['pageId'], page_metadata['name'], page_metadata['description'])
+      # TODO: verify that phidippides does auth checks for this
+      update_phidippides_page_metadata(page_metadata, options)
+    end
   end
 
   def delete(id, options = {})
@@ -214,9 +224,32 @@ class PageMetadataManager
     @logical_datatype_name = 'fred'
   end
 
-  # Creates or updates a page. This takes care of updating phidippides, as well
+  # Creates or updates a metadb backed page.
+  # NOTE - currently this is "last write wins", meaning that if multiple users are editing the
+  # metadata at the same time, the last one to save will obliterate any changes other users
+  # may have made. This should be fixed with versioning within the metadata.
+  def update_metadb_page_metadata(page_metadata, metadb_metadata)
+    url = "/views/#{CGI::escape(metadb_metadata['id'])}.json"
+    payload = {
+      :displayFormat => {
+        :data_lens_page_metadata => page_metadata
+      }
+    }
+
+    # We have to fake the status code 200 because the consumer of page_metadata_manager expects
+    # a response with a body and a status (because we previously forwarded the status code from
+    # Phidippides).
+    # Since we didn't raise an exception by this point, we can assume a status of 200.
+    {
+      :body => CoreServer::Base.connection.update_request(url, JSON.dump(payload)),
+      :status => 200
+    }
+
+  end
+
+  # Creates or updates a Phidippides backed page. This takes care of updating phidippides, as well
   # as rollup tables in soda fountain and the core datalens link.
-  def update_page_metadata(page_metadata, options = {})
+  def update_phidippides_page_metadata(page_metadata, options = {})
     unless page_metadata['pageId'].present?
       raise Phidippides::NoPageIdException.new('page id must be provisioned first.')
     end

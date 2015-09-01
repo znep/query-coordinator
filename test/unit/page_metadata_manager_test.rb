@@ -223,6 +223,35 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     end
   end
 
+  def test_update_v2_page_metadata_success
+    NewViewManager.any_instance.stubs(
+      fetch: v2_page_metadata
+    )
+    core_stub = mock
+    core_stub.expects(:update_request).with do |url, payload|
+      assert_equal('/views/mjcb-9cxc.json', url)
+      assert_match(/"name":"San Francisco 311"/, payload)
+      assert_match(/"description":"Cases created since 7\/1\/2008 with location information"/, payload)
+      assert_match(/"pageId":"iuya-fxdq"/, payload)
+    end
+    CoreServer::Base.stubs(connection: core_stub)
+
+    manager.update(v1_page_metadata)
+  end
+
+  def test_update_metadata_bypass_to_phiddy_if_v1_metadata
+    PageMetadataManager.any_instance.expects(:update_rollup_table)
+    Phidippides.any_instance.stubs(
+      fetch_dataset_metadata: { body: v1_dataset_metadata, status: '200' },
+      update_page_metadata: { body: nil, status: '200' }
+    )
+    NewViewManager.any_instance.stubs(
+      fetch: v1_page_metadata
+    )
+
+    manager.update(v1_page_metadata)
+  end
+
   def test_delete_deletes_core_and_phidippides_and_rollup_representation
     Phidippides.any_instance.expects(:fetch_page_metadata).returns(
       status: '200',
@@ -651,6 +680,10 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     v1_page_metadata_as_v0.delete('version')
 
     v1_page_metadata_as_v0
+  end
+
+  def v2_page_metadata
+    JSON.parse(File.read("#{Rails.root}/test/fixtures/v2-page-metadata-metadb.json")).with_indifferent_access
   end
 
   def v0_dataset_metadata

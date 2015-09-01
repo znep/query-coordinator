@@ -127,6 +127,8 @@ class PhidippidesPagesController < ApplicationController
       render :json => { :body => "Error: #{error}" }, :status => '400'
     rescue Phidippides::NoPageIdException => error
       render :json => { :body => "Error: #{error}" }, :status => '400'
+    rescue CoreServer::Error, CoreServer::ResourceNotFound => error
+      render :json => { :body => "Error: #{error}" }, :status => '500'
     end
   end
 

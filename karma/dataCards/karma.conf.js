@@ -145,12 +145,8 @@ module.exports = function ( karma ) {
       { pattern: 'public/stubs/images/*.png', watched: false, included: false, served: true },
       { pattern: 'public/images/dataCards/**/*.png', watched: false, included: false, served: true },
 
-      /* Old UX */
-      // moved to karma/old-ux
-
       /* THE TESTS THEMSELVES */
       'karma/dataCards/*.js',
-      // 'karma/old-ux/*.js',
       /* IMPORTANT: If you add/remove/change test groups,
        * please update at the constant TEST_GROUPS in karma_tests.rake.
        * If you don't, your tests may be run multiple times per run.

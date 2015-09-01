@@ -52,7 +52,7 @@ namespace :test do
     # Manually enable the coverage reporter. It isn't enabled by default as the instrumentation step makes
     # the product code unintelligible.
     cmd = './node_modules/karma/bin/karma start karma/dataCards/karma.conf.js --browsers PhantomJS --singleRun true --reporters dots,coverage'
-    cmd += ' && ./node_modules/karma/bin/karma start karma/old-ux/karma.conf.js --browsers PhantomJS --singleRun true --reporters dots,coverage'
+    cmd += ' && ./node_modules/karma/bin/karma start karma/oldUx/karma.conf.js --browsers PhantomJS --singleRun true --reporters dots,coverage'
     fail($?.exitstatus) unless system(cmd)
   end
 
@@ -129,7 +129,7 @@ namespace :test do
     end
 
     puts "Launching Old UX Tests for: #{browser_names}"
-    command = "karma start karma/old-ux/karma.conf.js --browsers \"#{browser_names.join(',')}\" --singleRun true"
+    command = "karma start karma/oldUx/karma.conf.js --browsers \"#{browser_names.join(',')}\" --singleRun true"
     success = system(command)
     raise 'Old UX Karma test failure' unless success
 

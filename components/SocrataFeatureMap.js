@@ -77,7 +77,7 @@
     var visualizationConfig = {
       localization: config.localization,
       hover: config.hover,
-      disablePanAndZoom: config.disablePanAndZoom
+      panAndZoom: config.panAndZoom
     };
     var visualization = new window.socrata.visualizations.FeatureMap(
       $element,

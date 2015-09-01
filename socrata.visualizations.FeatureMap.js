@@ -54,8 +54,8 @@
       maxZoom: FEATURE_MAP_MAX_ZOOM
     };
     var _mapOptions;
-    var _disablePanAndZoom;
     var _hover;
+    var _panAndZoom;
     var _startResizeFn;
     var _completeResizeFn;
     var _baseTileLayer;
@@ -66,7 +66,7 @@
     var _lastPoints = null;
     var _currentLayerId;
 
-    _disablePanAndZoom = config.disablePanAndZoom || false;
+    _panAndZoom = config.panAndZoom || false;
     _hover = config.hover || false;
 
     _mapOptions = _.merge(_defaultMapOptions, config.mapOptions);
@@ -76,7 +76,7 @@
     _renderTemplate(this.element);
 
     // CORE-4832: Disable pan and zoom on feature map
-    if (_disablePanAndZoom) {
+    if (_panAndZoom) {
 
       _mapOptions = _.merge(
         _mapOptions,
@@ -331,10 +331,9 @@
       _hideInspector();
     }
 
-    function _handleVectorTileRenderComplete(layer) {
+    function _handleVectorTileRenderComplete() {
 
       _removeOldFeatureLayers();
-      _map.fire('clearallhighlights');
     }
 
     function _showFlyout() {
@@ -474,21 +473,21 @@
       var layer;
       var layerId = _.uniqueId();
       var featureLayerOptions = {
-        debug: false,
-        // disable interactivity during load
-        disableMapInteractions: false,
-        hover: _hover,
-        getFeatureId: _getFeatureId,
-        filter: _filterLayerFeature,
-        layerOrdering: _getFeatureZIndex,
-        style: _getFeatureStyle,
-        getHoverThreshold: _getHoverThreshold,
-        debounceMilliseconds: FEATURE_MAP_ZOOM_DEBOUNCE_INTERVAL,
-        onRenderStart: _handleVectorTileRenderStart,
-        onRenderComplete: function() { _handleVectorTileRenderComplete(layer); },
+        // Data requests
         vectorTileGetter: vectorTileGetter,
-        mousemove: _handleVectorTileMousemove,
-        click: _handleVectorTileClick
+        // Behavior
+        debug: false,
+        hover: _hover,
+        debounceMilliseconds: FEATURE_MAP_ZOOM_DEBOUNCE_INTERVAL,
+        // Helper functions
+        getFeatureId: _getFeatureId,
+        getFeatureStyle: _getFeatureStyle,
+        getHoverThreshold: _getHoverThreshold,
+        // Event handlers
+        onRenderStart: _handleVectorTileRenderStart,
+        onRenderComplete: _handleVectorTileRenderComplete,
+        onMousemove: _handleVectorTileMousemove,
+        onClick: _handleVectorTileClick
       };
 
       // Don't create duplicate layers.
@@ -572,24 +571,6 @@
      */
     function _getFeatureId(feature, index) {
       return String(index);
-    }
-
-    /**
-     * Returns true for features that should be drawn and false for features
-     * that should not be drawn.
-     *
-     * TODO: Determine if this can be substituted for _.constant(true).
-     */
-    function _filterLayerFeature() {
-      return true;
-    }
-
-    /**
-     * Returns the 'z-index' at which the feature should be drawn.
-     * TODO: Determine if this can be substituted for _.constant(1).
-     */
-    function _getFeatureZIndex() {
-      return 1;
     }
 
     /**

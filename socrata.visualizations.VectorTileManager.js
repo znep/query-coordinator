@@ -114,7 +114,7 @@
    * Depends on `VectorTileUtil`
    */
 
-  function VectorTileFeature(layer, feature, styleFn) {
+  function VectorTileFeature(layer, feature, getFeatureStyle) {
 
     var keys;
     var i;
@@ -140,7 +140,7 @@
     // order to project them into the vector tile's coordinate space.
     this.divisor = feature.extent / this.tileSize;
     this.feature = feature;
-    this.styleFn = styleFn;
+    this.getFeatureStyle = getFeatureStyle;
   }
 
   // Takes a coordinate from a vector tile and turns it into a Leaflet Point.
@@ -155,15 +155,15 @@
 
     switch (feature.type) {
       case 1: //Point
-        this.drawPoint(canvas, feature.coordinates, this.styleFn);
+        this.drawPoint(canvas, feature.coordinates, this.getFeatureStyle);
         break;
 
       case 2: //LineString
-        this.drawLineString(canvas, feature.coordinates, this.styleFn);
+        this.drawLineString(canvas, feature.coordinates, this.getFeatureStyle);
         break;
 
       case 3: //Polygon
-        this.drawPolygon(canvas, feature.coordinates, this.styleFn);
+        this.drawPolygon(canvas, feature.coordinates, this.getFeatureStyle);
         break;
 
       default:
@@ -387,7 +387,7 @@
       L.Util.setOptions(this, options);
 
       this.tileManager = tileManager;
-      this.styleFn = options.style;
+      this.getFeatureStyle = options.getFeatureStyle;
       this.featuresByTile = {};
       this.totalPointsByTile = {};
       this.quadTreesByTile = {};
@@ -437,7 +437,7 @@
       for (i = 0; i < featureCount; i++) {
         feature = features[i];
 
-        var vectorTileFeature = new VectorTileFeature(this, feature, this.styleFn(feature));
+        var vectorTileFeature = new VectorTileFeature(this, feature, this.getFeatureStyle(feature));
         var projectedPoint = vectorTileFeature.projectGeometryToTilePoint(vectorTileFeature.coordinates[0][0]);
 
         projectedPoint.count = vectorTileFeature.properties.count;
@@ -497,15 +497,11 @@
       utils.assertHasProperties(
         options,
         'vectorTileGetter',
-        'filter',
-        'layerOrdering',
-        'style'
+        'getFeatureStyle'
       );
 
       utils.assertIsOneOfTypes(options.vectorTileGetter, 'function');
-      utils.assertIsOneOfTypes(options.filter, 'function')
-      utils.assertIsOneOfTypes(options.layerOrdering, 'function');
-      utils.assertIsOneOfTypes(options.style, 'function');
+      utils.assertIsOneOfTypes(options.getFeatureStyle, 'function');
 
       var self = this;
 
@@ -538,23 +534,23 @@
         ctx.restore();
       }
 
-      this.style = options.style;
+      this.getFeatureStyle = options.getFeatureStyle;
 
-      pointStyle = this.style({ type: 1 }); // getPointStyle in featureMap.js
+      pointStyle = this.getFeatureStyle({ type: 1 }); // getPointStyle in featureMap.js
 
       this.options = {
         debug: false,
-        disableMapInteractions: false,
-        url: '',
-        headers: {},
+        // Initialize the layer to be non-interactive so that we do not attempt
+        // to handle events while the layer is loading. This value is then set
+        // to true once the layer has completed loading.
+        interactive: false,
         tileSize: 256,
         debounceMilliseconds: 500,
         onRenderStart: _.noop,
         onRenderComplete: _.noop,
         // threshold options represent distance to neighboring points permitted for hover and click in px
         getHoverThreshold: _.noop,
-        maxHoverThreshold: pointStyle.radius(FEATURE_MAP_MAX_ZOOM),
-        hover: false
+        maxHoverThreshold: pointStyle.radius(FEATURE_MAP_MAX_ZOOM)
       };
 
       L.Util.setOptions(this, options);
@@ -613,8 +609,8 @@
       var mapMousedownCallback;
       var mapMouseupCallback;
       var mapMousemoveCallback;
-      var mapMouseoutCallback;
       var mapClickCallback;
+      var mapMouseoutCallback;
       var inspectorClosedCallback;
       var clearAllHighlightsCallback;
       // Find all edges and corners that the mouse is near
@@ -833,112 +829,76 @@
       }
 
       // Handle callbacks for executable functions of events
-      if (_.isFunction(this.options.mousedown)) {
+      if (_.isFunction(this.options.onMousedown)) {
 
         mapMousedownCallback = function(e) {
           injectTileInfo(e);
-          self.options.mousedown(e);
+          self.options.onMousedown(e);
         };
 
         map.on('mousedown', mapMousedownCallback);
       }
 
-      if (_.isFunction(this.options.mouseup)) {
+      if (_.isFunction(this.options.onMouseup)) {
 
         mapMouseupCallback = function(e) {
 
           injectTileInfo(e);
-          self.options.mouseup(e);
+          self.options.onMouseup(e);
         };
 
         map.on('mouseup', mapMouseupCallback);
       }
 
-      if (_.isFunction(this.options.mousemove)) {
+      if (_.isFunction(this.options.onMousemove)) {
 
         mapMousemoveCallback = function(e) {
 
           if (self.options.hover) {
             // Only execute mousemove if not disabled during map load
-            if (!self.options.disableMapInteractions) {
+            if (self.options.interactive) {
               injectTileInfo(e);
-              self.options.mousemove(e);
+              self.options.onMousemove(e);
             }
           } else {
-            self.options.mousemove(e);
+            self.options.onMousemove(e);
           }
         };
 
         map.on('mousemove', mapMousemoveCallback);
       }
 
-      if (_.isFunction(this.options.click)) {
+      if (_.isFunction(this.options.onClick)) {
 
         mapClickCallback = function(e) {
 
-          if (self.options.hover) {
+          if (self.options.hover && self.options.interactive) {
 
-            // Only prepare for click if not disabled during map load
-            if (!self.options.disableMapInteractions) {
+            injectTileInfo(e);
 
-              injectTileInfo(e);
+            // Only execute click if data under cursor does not exceed max tile or inspector row density.
+            var denseData = e.tile.totalPoints >= FEATURE_MAP_MAX_TILE_DENSITY;
+            var manyRows = _.sum(e.points, 'count') > FEATURE_MAP_INSPECTOR_MAX_ROW_DENSITY;
 
-              // Only execute click if data under cursor does not exceed max tile or inspector row density.
-              var denseData = e.tile.totalPoints >= FEATURE_MAP_MAX_TILE_DENSITY;
-              var manyRows = _.sum(e.points, 'count') > FEATURE_MAP_INSPECTOR_MAX_ROW_DENSITY;
+            if (!denseData && !manyRows) {
 
-              if (!denseData && !manyRows) {
-
-                highlightClickedPoints(e.points);
-                self.options.click(e);
-              }
-
+              highlightClickedPoints(e.points);
+              self.options.onClick(e);
             }
 
           } else {
-            self.options.click(e);
+            self.options.onClick(e);
           }
         };
 
         map.on('click', mapClickCallback);
       }
 
-      if (this.options.hover) {
+      mapMouseoutCallback = function(e) {
+        clearHoverPointHighlights();
+      };
 
-        // Handle callbacks for other events
-
-        // Clear hover highlighting upon mouseout of map container.
-        mapMouseoutCallback = clearHoverPointHighlights;
-
-        map.on('mouseout', mapMouseoutCallback);
-
-        // Ensure highlighting on points previously inspected is cleared but
-        // points that are currently being inspected remain.
-
-        inspectorClosedCallback = function(e) {
-
-          var pointsToKeepHighlighted = self.
-            currentClickedPoints.
-            filter(
-              function(value) {
-                return !_.contains(e.points, value);
-              }
-            );
-
-          highlightClickedPoints(pointsToKeepHighlighted);
-        };
-
-        map.on('inspectorclosed', inspectorClosedCallback);
-
-        // Upon map refresh due to adding or removing a filter,
-        // remove highlighting on all clicked and moused-over points
-        clearAllHighlightsCallback = function() {
-          clearClickedPointHighlights();
-          clearHoverPointHighlights();
-        };
-
-        map.on('clearallhighlights', clearAllHighlightsCallback);
-      }
+      map.on('mouseout', mapMouseoutCallback);
 
       map.on('layerremove', function(e) {
 
@@ -948,28 +908,23 @@
 
           e.layer.removeChildLayers(map);
 
-          if (_.isFunction(self.options.mousedown)) {
+          if (_.isFunction(self.options.onMousedown)) {
             map.off('mousedown', mapMousedownCallback);
           }
 
-          if (_.isFunction(self.options.mouseup)) {
+          if (_.isFunction(self.options.onMouseup)) {
             map.off('mouseup', mapMouseupCallback);
           }
 
-          if (_.isFunction(self.options.mousemove)) {
+          if (_.isFunction(self.options.onMousemove)) {
             map.off('mousemove', mapMousemoveCallback);
           }
 
-          if (_.isFunction(self.options.click)) {
+          if (_.isFunction(self.options.onClick)) {
             map.off('click', mapClickCallback);
           }
 
-          if (self.options.hover) {
-            map.off('mouseout', mapMouseoutCallback);
-            map.off('inspectorclosed', inspectorClosedCallback);
-            map.off('clearallhighlights', clearAllHighlightsCallback);
-          }
-
+          map.off('mouseout', mapMouseoutCallback);
         }
       });
 
@@ -1134,10 +1089,8 @@
           var newLayer = new VectorTileLayer(
             this,
             {
-              filter: this.options.filter,
-              layerOrdering: this.options.layerOrdering,
-              style: this.style,
-              name: layerId
+              name: layerId,
+              getFeatureStyle: this.getFeatureStyle
             }
           );
 
@@ -1191,6 +1144,16 @@
       delete this.outstandingTileDataRequests[tileId];
 
       if (Object.keys(this.outstandingTileDataRequests).length === 0) {
+
+        // Set the layer's interactivity to true so that we will begin to
+        // handle events.
+        this.options.interactive = true;
+
+        // Clear all related highlights.
+        clearClickedPointHighlights();
+        clearHoverPointHighlights();
+
+        // Inform the caller that the layer has completed rendering.
         this.options.onRenderComplete();
       }
     }

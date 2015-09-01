@@ -13,15 +13,16 @@ module ApplicationHelper
   alias :t :translate
 
   def view_url(view)
+    locale_part = I18n.locale.to_s == CurrentDomain.default_locale ? '' : "/#{I18n.locale.to_s}"
     if view.is_api?
       # use the view's federation resolution but throw away the rest for the resource name instead.
       developer_docs_url(view.route_params.only( :host ).merge( resource: view.resourceName || '' ))
     elsif view.data_lens?
-      "/view/#{view.id}"
+      "#{locale_part}/view/#{view.id}"
     elsif view.new_view?
       begin
         # use the direct link stored in the metadata for 'new_view' display types
-        view.metadata.accessPoints['new_view']
+        locale_part + view.metadata.accessPoints['new_view']
       rescue NoMethodError => error
         error_message = "Failed to find access point 'new_view' for view with " \
           "id '#{view.id}; falling back to url '/view/#{view.id}'"
@@ -30,7 +31,7 @@ module ApplicationHelper
           :error_message => error_message
         )
         Rails.logger.error(error_message)
-        "/view/#{view.id}"
+        "#{locale_part}/view/#{view.id}"
       end
     elsif view.story?
       begin

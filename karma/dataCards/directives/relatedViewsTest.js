@@ -6,6 +6,7 @@ describe('<related-views/>', function() {
   var $rootScope;
   var Model;
   var Mockumentary;
+  var ServerConfig;
 
   var TEST_DATA = {
     publisher: [
@@ -39,18 +40,23 @@ describe('<related-views/>', function() {
       'testHelpers',
       'Model',
       'Mockumentary',
+      'ServerConfig',
       function(
         _$window,
         _$rootScope,
         _testHelpers,
         _Model,
-        _Mockumentary) {
+        _Mockumentary,
+        _ServerConfig) {
 
       $rootScope = _$rootScope;
       $window = _$window;
       testHelpers = _testHelpers;
       Model = _Model;
       Mockumentary = _Mockumentary;
+      ServerConfig = _ServerConfig;
+
+      ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
     }]);
   });
 

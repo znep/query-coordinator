@@ -293,6 +293,7 @@ describe('CardsViewController', function() {
   describe('page header', function() {
     it('should not display if a feature flag is set', function() {
       ServerConfig.override('showNewuxPageHeader', false);
+      ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
       var context = renderCardsView();
       var pageHeader = context.element.find('page-header');
       var metadata = context.element.find('.cards-metadata');
@@ -309,6 +310,7 @@ describe('CardsViewController', function() {
     });
 
     it('grabs the obe 4x4 from the migrations endpoint', function() {
+      ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
       $httpBackend.expectGET('/api/migrations/asdf-fdsa');
 
       var controllerHarness = makeController();
@@ -335,6 +337,7 @@ describe('CardsViewController', function() {
     });
 
     it("doesn't set the sourceDatasetURL if the migration endpoint returns non-200", function() {
+      ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
       $httpBackend.when('GET', '/api/migrations/nach-oids').respond(404);
 
       var controllerHarness = makeController({ id: 'nach-oids' });
@@ -350,6 +353,7 @@ describe('CardsViewController', function() {
   describe('related views', function() {
     it('shows the related views area if feature flag enable_data_lens_other_views is true and currentUserHasSaveRight is true', function() {
       ServerConfig.override('enableDataLensOtherViews', true);
+      ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
       var context = renderCardsView();
       var relatedViews = context.element.find('related-views');
       $scope = context.$scope;
@@ -360,6 +364,7 @@ describe('CardsViewController', function() {
 
     it('does not show related views area if feature flag enable_data_lens_other_views is false', function() {
       ServerConfig.override('enableDataLensOtherViews', false);
+      ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
       var context = renderCardsView();
       var relatedViews = context.element.find('related-views');
       expect(relatedViews).to.have.class('ng-hide');
@@ -367,6 +372,7 @@ describe('CardsViewController', function() {
 
     it('does not show related views area if currentUserHasSaveRight is false', function() {
       ServerConfig.override('enableDataLensOtherViews', true);
+      ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
       var context = renderCardsView();
       var relatedViews = context.element.find('related-views');
       $scope = context.$scope;
@@ -1023,6 +1029,8 @@ describe('CardsViewController', function() {
       // Helper function to render the modal and click an element.
       // Ensures the modal closes and the appropriate cookie is set.
       var runCaseWithSelector = function(selector) {
+        ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
+
         var context = renderCardsView();
         var $scope = context.cardLayout.$scope.$parent;
 
@@ -1091,6 +1099,10 @@ describe('CardsViewController', function() {
   });
 
   describe('download button', function() {
+    beforeEach(function() {
+      ServerConfig.override('locales', {defaultLocale: 'en', currentLocale: 'en'});
+    });
+
     afterEach(function() {
       testHelpers.TestDom.clear();
     });

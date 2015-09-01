@@ -400,9 +400,10 @@
         }
         var dateRangeChanged = function() {
             updateDateParams(
-                $timeslice.data('range-start'),
-                $timeslice.data('range-end'),
-                $timeslice.data('range-previous'),
+                $timeslice.data('range-start').clone().setTimezoneOffset(0),
+                $timeslice.data('range-end').clone().setTimezoneOffset(0),
+                $timeslice.data('range-previous') &&
+                    $timeslice.data('range-previous').clone().setTimezoneOffset(0),
                 $slicer
             );
         };

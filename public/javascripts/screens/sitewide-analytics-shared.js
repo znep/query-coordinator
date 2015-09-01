@@ -21,10 +21,11 @@ if (blist.feature_flags.embetter_analytics_page) {
         plus: 'js-page-view',
         total: false,
         verbPhrase: 'pages viewed',
-        verbPhraseSingular: 'page viewed'
+        verbPhraseSingular: 'page viewed',
+        deltaPhrase: 'page views'
     };
-    mapsSummary = {plus: 'lense-map-published-v1'}
-    chartsSummary = {plus: 'lense-chart-published-v1'};
+    mapsSummary = {plus: 'lense-map-published-v1', deltaPhrase: 'maps'};
+    chartsSummary = {plus: 'lense-chart-published-v1', deltaPhrase: 'charts'};
     dataLensesEnabled = true;
     datasetsListHeader = 'Browser Page Views';
     totalPrefix = '';
@@ -88,12 +89,12 @@ blist.metrics.sitewideShared = {
             enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {id: 'detailCharts',    displayName: 'Charts' + addedSuffix,   summary: chartsSummary },
-        {id: 'detailLenses',    displayName: 'Data Lens Pages' + addedSuffix, summary: { plus: 'lense-new_view-published-v1' }, enabled: dataLensesEnabled },
-        {id: 'detailFilters',   displayName: 'Filters' + addedSuffix,  summary: { plus: ['filters-created'], minus: ['filters-deleted'] } },
+        {id: 'detailLenses',    displayName: 'Data Lens Pages' + addedSuffix, summary: { plus: 'lense-new_view-published-v1', deltaPhrase: 'Data Lens pages' }, enabled: dataLensesEnabled },
+        {id: 'detailFilters',   displayName: 'Filters' + addedSuffix,  summary: { plus: ['filters-created'], minus: ['filters-deleted'], deltaPhrase: 'filters' } },
         {id: 'detailMaps',      displayName: 'Maps' + addedSuffix,     summary: mapsSummary },
-        {id: 'detailSnapshots', displayName: 'Snapshots' + addedSuffix, summary: { plus: ['datasets-created-snapshot'], minus: ['datasets-deleted-snapshot'] } },
-        {id: 'detailBlobs',     displayName: 'Downloadable Files' + addedSuffix, summary: { plus: ['datasets-created-blobby'], minus: ['datasets-deleted-blobby'] } },
-        {id: 'detailHref',      displayName: 'External Datasets' + addedSuffix, summary: { plus: ['datasets-created-href'], minus: ['datasets-deleted-href'] } }
+        {id: 'detailSnapshots', displayName: 'Snapshots' + addedSuffix, summary: { plus: ['datasets-created-snapshot'], minus: ['datasets-deleted-snapshot'], deltaPhrase: 'snapshots' } },
+        {id: 'detailBlobs',     displayName: 'Downloadable Files' + addedSuffix, summary: { plus: ['datasets-created-blobby'], minus: ['datasets-deleted-blobby'], deltaPhrase: 'downloadable files' } },
+        {id: 'detailHref',      displayName: 'External Datasets' + addedSuffix, summary: { plus: ['datasets-created-href'], minus: ['datasets-deleted-href'], deltaPhrase: 'external datasets' } }
     ], function(section) { return section.enabled !== false; }),
     summarySections: _.filter([
         {
@@ -125,7 +126,8 @@ blist.metrics.sitewideShared = {
                 plus: datasetsMetricName,
                 range: absoluteMetricRange,
                 verbPhrase: 'datasets created',
-		verbPhraseSingular: 'dataset created'
+                verbPhraseSingular: 'dataset created',
+                deltaPhrase: 'datasets'
             }
         },
         {
@@ -143,7 +145,8 @@ blist.metrics.sitewideShared = {
             summary: {
 		plus: 'embeds', 
 		verbPhrase: 'embeds',
-                verbPhraseSingular: 'embed'
+                verbPhraseSingular: 'embed',
+                deltaPhrase: 'embeds'
             }
         }
     ], function(section) { return section.enabled !== false; }),

@@ -573,12 +573,13 @@ describe('socrata-utils.js', function() {
         expect(preventDefaultSpy.called).to.be.false;
       });
 
-      it('when isolateScrolling is called with enabled=true, and then again with enabled=false, page scrolling is no longer disabled', function() {
+      it('when isolateScrolling is called twice with enabled=true, and then again with enabled=false, page scrolling is no longer disabled', function() {
         // Enable isolateScrolling to scrollingDiv and disable page scrolling
         var testEvent = buildTestEvent('mousewheel', 'up');
         preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
 
         utils.isolateScrolling(scrollingDiv, true);
+        utils.isolateScrolling(scrollingDiv, true); // intentional
 
         scrollingDiv.trigger(testEvent);
         expect(preventDefaultSpy.called).to.be.true;

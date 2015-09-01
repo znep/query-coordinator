@@ -12,7 +12,13 @@
     function fetchHistogramData(fieldName, dataset, whereClauseFragment, aggregationData, columnDataSummary) {
       var dataPromise;
       var bucketingOptions = _.pick(columnDataSummary, 'bucketType', 'bucketSize');
-      var bucketData = _.curry(HistogramService.bucketData)(_, bucketingOptions);
+
+      function bucketData(dataPromiseResult) {
+        return {
+          headers: dataPromiseResult.headers,
+          data: HistogramService.bucketData(dataPromiseResult.data, bucketingOptions)
+        };
+      }
 
       // Fetch data differently depending on how it should be bucketed.
       if (columnDataSummary.bucketType === 'linear') {
@@ -38,9 +44,10 @@
         $log.error('Invalid bucket type "{0}"'.format(columnDataSummary.bucketType));
       }
 
-      return Rx.Observable.fromPromise(dataPromise).map(function(data) {
+      return Rx.Observable.fromPromise(dataPromise).map(function(result) {
         return {
-          data: data,
+          headers: result.headers,
+          data: result.data,
           bucketType: columnDataSummary.bucketType
         };
       });
@@ -196,6 +203,10 @@
             unfilteredData$,
             filteredData$,
             function(unfiltered, filtered) {
+
+              $scope.$emit('response_headers:unfiltered', unfiltered.headers);
+
+              $scope.$emit('response_headers:filtered', filtered.headers);
 
               $scope.histogramRenderError = false;
 

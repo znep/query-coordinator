@@ -103,8 +103,8 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
       $scope.$bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
 
       $scope.$bindObservable('chartData', Rx.Observable.combineLatest(
-          unfilteredData$.switchLatest(),
-          filteredData$.switchLatest(),
+          unfilteredData$.switchLatest().pluck('data'),
+          filteredData$.switchLatest().pluck('data'),
           model.observeOnLatest('activeFilters'),
           function(unfilteredData, filteredData, filters) {
 

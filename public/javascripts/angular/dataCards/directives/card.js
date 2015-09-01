@@ -61,39 +61,50 @@
           debugInfo.unfilteredResponseHeaders = headers;
         });
 
-        var selector = "card[data-card_directive_id=" + uniqueId + "] * .icon-table";
+        var selector = "card[data-card_directive_id='" + uniqueId + "'] * .icon-table";
         FlyoutService.register({
           // use data
           selector: selector,
           render: function() {
-            console.log('RENDER', debugInfo);
+            var title = [
+                '<div class="flyout-title">Card Debug Info</div>'
+            ];
 
-            var filteredUsedRollups =
-                _.isPresent(debugInfo.filteredResponseHeaders)
-                    ? _.isPresent(debugInfo.filteredResponseHeaders['x-soda2-rollup'])
-                    : '?';
-
-            var unfilteredUsedRollups =
-                _.isPresent(debugInfo.unfilteredResponseHeaders)
-                    ? _.isPresent(debugInfo.unfilteredResponseHeaders['x-soda2-rollup'])
-                    : '?';
-
-            return [
-                '<div class="flyout-title">Card Debug Info</div>',
+            var renderTime = [
                 '<div class="flyout-row">',
                   '<span class="flyout-cell">Render time</span>',
                   '<span class="flyout-cell">{0} ms</span>'
                       .format(debugInfo.renderCompleteTime - debugInfo.renderStartTime),
-                '</div>',
-                '<div class="flyout-row">',
-                  '<span class="flyout-cell">Unfiltered used rollups</span>',
-                  '<span class="flyout-cell">{0}</span>'.format(unfilteredUsedRollups),
-                '</div>',
-                '<div class="flyout-row">',
-                  '<span class="flyout-cell">Filtered used rollups</span>',
-                  '<span class="flyout-cell">{0}</span>'.format(filteredUsedRollups),
                 '</div>'
             ];
+
+            var filteredUsedRollups;
+            if(_.isPresent(debugInfo.filteredResponseHeaders)) {
+              filteredUsedRollups = [
+                '<div class="flyout-row">',
+                  '<span class="flyout-cell">Filtered query used rollups</span>',
+                  '<span class="flyout-cell">{0}</span>'
+                      .format(_.isPresent(debugInfo.filteredResponseHeaders['x-soda2-rollup'])),
+                '</div>'
+              ];
+            } else {
+              filteredUsedRollups = [];
+            }
+
+            var unfilteredUsedRollups;
+            if(_.isPresent(debugInfo.unfilteredResponseHeaders)) {
+              unfilteredUsedRollups = [
+                '<div class="flyout-row">',
+                  '<span class="flyout-cell">Unfiltered query used rollups</span>',
+                  '<span class="flyout-cell">{0}</span>'
+                      .format(_.isPresent(debugInfo.unfilteredResponseHeaders['x-soda2-rollup'])),
+                '</div>'
+              ];
+            } else {
+              unfilteredUsedRollups = [];
+            }
+
+            return _.flatten([title, renderTime, filteredUsedRollups, unfilteredUsedRollups]).join('');
           }
         });
 

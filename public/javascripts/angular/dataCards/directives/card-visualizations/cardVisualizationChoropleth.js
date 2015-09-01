@@ -275,8 +275,8 @@
           Rx.Observable.combineLatest(
             geometryLabel$.switchLatest(),
             geojsonRegions$.switchLatest(),
-            unfilteredData$.switchLatest(),
-            filteredData$.switchLatest(),
+            unfilteredData$.switchLatest().pluck('data'),
+            filteredData$.switchLatest().pluck('data'),
             model.observeOnLatest('activeFilters'),
             model.pluck('fieldName'),
             dataset.observeOnLatest('columns'),

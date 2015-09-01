@@ -146,16 +146,18 @@
           queryTemplate.format(fieldName, whereClause, aggregationClause, magnitudeAlias, valueAlias)
         );
 
-        return http.get(url.href, config).
-          then(function(result) {
-            var data = result.data;
-            return _.map(data, function(item) {
+        return http.get(url.href, config).then(function(result) {
+          var data = result.data;
+          return {
+            headers: result.headers(),
+            data: _.map(data, function (item) {
               return {
                 magnitude: parseFloat(item[magnitudeAlias]),
                 value: parseFloat(item[valueAlias])
               };
-            });
-          });
+            })
+          };
+        });
       },
 
       // Group data from fieldName into buckets of size options.bucketSize

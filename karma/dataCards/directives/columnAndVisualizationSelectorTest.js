@@ -15,9 +15,11 @@ describe('columnAndVisualizationSelectorTest', function() {
     var columns = {
       'spot': {
         'name': 'Spot where cool froods hang out.',
+        'fieldName': 'spot',
         'description': '???',
         'fred': 'location',
         'physicalDatatype': 'number',
+        'position': 0,
         'computationStrategy': {
           'parameters': {
             'region': '_mash-apes'
@@ -29,18 +31,22 @@ describe('columnAndVisualizationSelectorTest', function() {
       },
       'bar': {
         'name': 'A bar where cool froods hang out.',
+        'fieldName': 'bar',
         'description': '???',
         'fred': 'text',
         'physicalDatatype': 'text',
+        'position': 1,
         'cardType': 'column',
         'defaultCardType': 'column',
         'availableCardTypes': ['column', 'search']
       },
       'distribution': {
         'name': 'Place where things are distributed',
+        'fieldName': 'distribution',
         'description': '???',
         'fred': 'amount',
         'physicalDatatype': 'number',
+        'position': 2,
         'cardinality': 20,
         'cardType': 'histogram',
         'defaultCardType': 'histogram',
@@ -48,18 +54,22 @@ describe('columnAndVisualizationSelectorTest', function() {
       },
       'point': {
         'name': 'Points where crimes have been committed.',
+        'fieldName': 'point',
         'description': 'Points.',
         'fred': 'location',
         'physicalDatatype': 'point',
+        'position': 3,
         'cardType': 'feature',
         'defaultCardType': 'feature',
         'availableCardTypes': ['feature']
       },
       'ward': {
         'name': 'Ward where crime was committed.',
+        'fieldName': 'ward',
         'description': 'Batman has bigger fish to fry sometimes, you know.',
         'fred': 'location',
         'physicalDatatype': 'number',
+        'position': 4,
         'computationStrategy': {
           'parameters': {
             'region': '_mash-apes'
@@ -71,9 +81,11 @@ describe('columnAndVisualizationSelectorTest', function() {
       },
       'multipleVisualizations': {
         'name': 'A card for which multiple visualizations are possible.',
+        'fieldName': 'multipleVisualizations',
         'description': '???',
         'fred': 'text',
         'physicalDatatype': 'text',
+        'position': 5,
         'cardinality': 2000,
         'cardType': 'search',
         'defaultCardType': 'search',
@@ -332,7 +344,7 @@ describe('columnAndVisualizationSelectorTest', function() {
         deep.equal(_.keys(currentColumns).sort());
     });
 
-    it('not include subcolumns', function() {
+    it('should not include subcolumns', function() {
       var newColumns = _.mapValues(currentColumns, function(column) {
         column = _.cloneDeep(column);
         column.isSubcolumn = true;
@@ -346,9 +358,8 @@ describe('columnAndVisualizationSelectorTest', function() {
       expect(directive.scope.availableColumns).to.be.empty;
     });
 
-    it('should be sorted in alphabetical order', function() {
-      var currentColumnFieldNames = _.keys(currentColumns);
-      var expectedFieldNameOrder = [].concat(currentColumnFieldNames).sort();
+    it('should be sorted in order of the position keys of the scope variable', function() {
+      var expectedFieldNameOrder = _.pluck(_.sortBy(currentColumns, 'position'), 'fieldName');
       expect(directive.scope.availableColumns).to.deep.equal(expectedFieldNameOrder);
     });
 
@@ -447,13 +458,12 @@ describe('columnAndVisualizationSelectorTest', function() {
         deep.equal(_.keys(currentColumns).sort());
     });
 
-    it('should be sorted in alphabetical order', function() {
-      var currentColumnFieldNames = _.keys(currentColumns);
-      var expectedFieldNameOrder = [].concat(currentColumnFieldNames).sort();
+    it('should be sorted in order of the position keys of the column', function() {
+      var currentColumnFieldNames = _.pluck(_.sortBy(currentColumns, 'position'), 'fieldName');
 
       makeAllColumnsUnsupported();
 
-      expect(directive.scope.unsupportedColumns).to.deep.equal(expectedFieldNameOrder);
+      expect(directive.scope.unsupportedColumns).to.deep.equal(currentColumnFieldNames);
     });
 
 

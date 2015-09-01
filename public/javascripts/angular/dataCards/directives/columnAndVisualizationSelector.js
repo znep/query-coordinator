@@ -63,9 +63,10 @@
               });
           }).
           map(function(columns) {
-            return _.sortBy(columns, 'fieldName');
+            return _.sortBy(columns, 'columnInfo.position');
           }).
           combineLatest(scope.$observe('supportedCardTypes'), function(sortedColumns, supportedCardTypes) {
+
             // Split into available and unsupported columns.
             var availableColumns = [];
             var unsupportedColumns = [];
@@ -100,7 +101,6 @@
               unsupported: unsupportedColumns, // List of fieldNames
               adjustedDefaultCardTypeHash: adjustedDefaultCardTypeHash // Hash of fieldName -> cardType
             };
-
           });
 
         scope.$bindObservable('availableColumns', datasetColumnsInfo$.pluck('available'));

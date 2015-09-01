@@ -108,13 +108,16 @@
         var config = httpConfig.call(this);
 
         return http.get(url.href, config).then(function(response) {
-          return _.map(response.data, function(item) {
-            var name = options.namePhysicalDatatype === 'number' ? parseFloat(item[nameAlias]) : item[nameAlias];
-            return {
-              name: name,
-              value: parseFloat(item[valueAlias])
-            };
-          });
+          return {
+            headers: response.headers(),
+            data: _.map(response.data, function(item) {
+              var name = options.namePhysicalDatatype === 'number' ? parseFloat(item[nameAlias]) : item[nameAlias];
+              return {
+                name: name,
+                value: parseFloat(item[valueAlias])
+              };
+            })
+          };
         });
       },
 
@@ -188,13 +191,15 @@
         var config = httpConfig.call(this);
 
         return http.get(url.href, config).then(function(response) {
-          var data = response.data;
-          return _.map(data, function(item) {
-            return {
-              magnitude: parseFloat(item[magnitudeAlias]),
-              value: parseFloat(item[valueAlias])
-            };
-          });
+          return {
+            headers: response.headers(),
+            data: _.map(response.data, function(item) {
+              return {
+                magnitude: parseFloat(item[magnitudeAlias]),
+                value: parseFloat(item[valueAlias])
+              };
+            })
+          };
         });
       },
 
@@ -343,7 +348,7 @@
           // The purpose of the below is to make sure every date interval
           // between the start and end dates is present.
           return {
-            headers: response.headers,
+            headers: response.headers(),
             data: _.map(timeData, function(item, i) {
               if (_.isUndefined(item)) {
                 item = { date: moment(timeStart, moment.ISO_8601).add(i, precision), value: null };

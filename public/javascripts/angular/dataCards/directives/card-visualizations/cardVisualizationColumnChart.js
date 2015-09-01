@@ -58,10 +58,11 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
             { namePhysicalDatatype: columnData.physicalDatatype, nullLast: true }
           );
           dataPromise.then(
-            function() {
+            function(result) {
               // Ok
               unfilteredData$.onNext(dataPromise);
               dataResponses$.onNext(1);
+              $scope.$emit('response_headers:unfiltered', result.headers);
             },
             function() {
               // Error, do nothing
@@ -87,10 +88,11 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
             { namePhysicalDatatype: columnData.physicalDatatype, nullLast: true }
           );
           dataPromise.then(
-            function() {
+            function(result) {
               // Ok
               filteredData$.onNext(dataPromise);
               dataResponses$.onNext(1);
+              $scope.$emit('response_headers:filtered', result.headers);
             },
             function() {
               // Error, do nothing

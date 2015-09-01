@@ -20,8 +20,6 @@
         var dataResponses$ = new Rx.Subject();
         var unfilteredData$ = new Rx.Subject();
         var filteredData$ = new Rx.Subject();
-        var filteredSoqlRollupTablesUsed$ = new Rx.Subject();
-        var unfilteredSoqlRollupTablesUsed$ = new Rx.Subject();
         var whereClause$ = scope.$observe('whereClause');
 
         // Keep track of the number of requests that have been made and the number of
@@ -194,9 +192,7 @@
                   // Ok
                   unfilteredData$.onNext(dataPromise);
                   dataResponses$.onNext(1);
-                  unfilteredSoqlRollupTablesUsed$.onNext(
-                    soqlMetadata.dateTruncFunctionUsed === defaultDateTruncFunction
-                  );
+                  scope.$emit('response_headers:unfiltered', result.headers);
                 },
                 function() {
                   // Error, do nothing
@@ -257,9 +253,7 @@
                   // Ok
                   filteredData$.onNext(dataPromise);
                   dataResponses$.onNext(1);
-                  filteredSoqlRollupTablesUsed$.onNext(
-                    soqlMetadata.dateTruncFunctionUsed === defaultDateTruncFunction
-                  );
+                  scope.$emit('response_headers:filtered', result.headers);
                 },
                 function() {
                   // Error, do nothing
@@ -315,8 +309,6 @@
         scope.$bindObservable('activeFilters', cardModel$.observeOnLatest('activeFilters'));
         scope.$bindObservable('rowDisplayUnit', cardModel$.observeOnLatest('page.aggregation.unit'));
         scope.$bindObservable('cannotRenderTimelineChart', cannotRenderTimelineChart);
-        scope.$bindObservable('unfilteredSoqlRollupTablesUsed', unfilteredSoqlRollupTablesUsed$);
-        scope.$bindObservable('filteredSoqlRollupTablesUsed', filteredSoqlRollupTablesUsed$);
 
         // Handle filtering
         scope.$on('filter-timeline-chart',

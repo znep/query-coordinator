@@ -214,10 +214,11 @@
               { limit: shapeFileRegionQueryLimit }
             );
             dataPromise.then(
-              function() {
+              function(result) {
                 // Ok
                 unfilteredData$.onNext(dataPromise);
                 dataResponses$.onNext(1);
+                scope.$emit('response_headers:unfiltered', result.headers);
               },
               function() {
                 // Still increment the counter to stop the spinner
@@ -241,10 +242,11 @@
               { limit: shapeFileRegionQueryLimit }
             );
             dataPromise.then(
-              function() {
+              function(result) {
                 // Ok
                 filteredData$.onNext(dataPromise);
                 dataResponses$.onNext(1);
+                $scope.$emit('response_headers:filtered', result.headers);
               },
               function() {
                 // Still increment the counter to stop the spinner

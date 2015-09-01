@@ -955,16 +955,16 @@
           '.card-control span'
         ];
 
-        FlyoutService.register({
-          selector: cardControlSelectors.join(', '),
-          render: function(ignored, target) {
-            return '<div class="flyout-title">{0}</div>'.format($(target).attr('title'));
-          },
-          positionOn: function(target) {
-            return $(target).closest(cardControlSelectors[0])[0];
-          },
-          destroySignal: scope.$destroyAsObservable(cardContainer)
-        });
+        //FlyoutService.register({
+        //  selector: cardControlSelectors.join(', '),
+        //  render: function(ignored, target) {
+        //    return '<div class="flyout-title">{0}</div>'.format($(target).attr('title'));
+        //  },
+        //  positionOn: function(target) {
+        //    return $(target).closest(cardControlSelectors[0])[0];
+        //  },
+        //  destroySignal: scope.$destroyAsObservable(cardContainer)
+        //});
 
         FlyoutService.register({
           selector: '.card-group-customize-hint-text .icon-help',

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CardDirective(DownloadService, $timeout, I18n) {
+  function CardDirective(DownloadService, ServerConfig, FlyoutService, $timeout, I18n) {
 
     return {
       restrict: 'E',
@@ -20,6 +20,8 @@
         var descriptionTruncatedContent;
         var descriptionElementsWithMaxSize;
 
+        $scope.debugDataLens = ServerConfig.get("debugDataLens");
+
         $scope.descriptionCollapsed = true;
         $scope.$bindObservable('expanded', model$.observeOnLatest('expanded'));
 
@@ -29,6 +31,73 @@
         $scope.$bindObservable('showDescription', model$.observeOnLatest('showDescription'));
 
         $scope.$bindObservable('description', model$.observeOnLatest('column.description'));
+
+        // N.B.: Card models already have unique ids, but they can be shared across card directives.
+        var uniqueId = _.uniqueId();
+        element[0].dataset['card_directive_id'] = uniqueId;
+
+        // DEBUG INFO STUFF
+
+        var debugInfo = {
+          unfilteredResponseHeaders: undefined,
+          filteredResponseHeaders: undefined,
+          renderStartTime: undefined,
+          renderCompleteTime: undefined
+        };
+
+        $scope.$on('render:start', function(_, event) {
+          debugInfo.renderStartTime = event.timestamp;
+        });
+
+        $scope.$on('render:complete', function(_, event) {
+          debugInfo.renderCompleteTime = event.timestamp;
+        });
+
+        $scope.$on('response_headers:filtered', function(_, headers) {
+          debugInfo.filteredResponseHeaders = headers;
+        });
+
+        $scope.$on('response_headers:unfiltered', function(_, headers) {
+          debugInfo.unfilteredResponseHeaders = headers;
+        });
+
+        var selector = "card[data-card_directive_id=" + uniqueId + "] * .icon-table";
+        FlyoutService.register({
+          // use data
+          selector: selector,
+          render: function() {
+            console.log('RENDER', debugInfo);
+
+            var filteredUsedRollups =
+                _.isPresent(debugInfo.filteredResponseHeaders)
+                    ? _.isPresent(debugInfo.filteredResponseHeaders['x-soda2-rollup'])
+                    : '?';
+
+            var unfilteredUsedRollups =
+                _.isPresent(debugInfo.unfilteredResponseHeaders)
+                    ? _.isPresent(debugInfo.unfilteredResponseHeaders['x-soda2-rollup'])
+                    : '?';
+
+            return [
+                '<div class="flyout-title">Card Debug Info</div>',
+                '<div class="flyout-row">',
+                  '<span class="flyout-cell">Render time</span>',
+                  '<span class="flyout-cell">{0} ms</span>'
+                      .format(debugInfo.renderCompleteTime - debugInfo.renderStartTime),
+                '</div>',
+                '<div class="flyout-row">',
+                  '<span class="flyout-cell">Unfiltered used rollups</span>',
+                  '<span class="flyout-cell">{0}</span>'.format(unfilteredUsedRollups),
+                '</div>',
+                '<div class="flyout-row">',
+                  '<span class="flyout-cell">Filtered used rollups</span>',
+                  '<span class="flyout-cell">{0}</span>'.format(filteredUsedRollups),
+                '</div>'
+            ];
+          }
+        });
+
+        // END DEBUG INFO STUFF
 
         var updateCardLayout = _.throttle(function(textHeight) {
           descriptionTruncatedContent.dotdotdot({

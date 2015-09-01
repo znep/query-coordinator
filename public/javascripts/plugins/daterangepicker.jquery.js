@@ -18,37 +18,36 @@
  * --------------------------------------------------------------------
  * Socrata changelog:
  *  03.21.2011 made it so that month of.. and year uf.. queries will autoaccept selection on accept
- *  11.04.2013 using Socrata's localization system to do translations.
+ *  08.25.2014 take initial dates from settings, handle text/previous/previousText on ranges, format with range name
  */
 jQuery.fn.daterangepicker = function(settings){
 	var rangeInput = jQuery(this);
-
-    var t = function(str, props) { return $.t('plugins.daterangepicker.' + str, props); };
 	
 	//defaults
 	var options = jQuery.extend({
 		presetRanges: [
-			{text: t('today'), dateStart: 'today', dateEnd: 'today' },
-			{text: t('week_to_date'), dateStart: function() { return Date.parse('today').moveToDayOfWeek(0, -1); }, dateEnd: 'today' },
-			{text: t('month_to_date'), dateStart: function(){ return Date.parse('today').moveToFirstDayOfMonth();  }, dateEnd: 'today' },
-			{text: t('year_to_date'), dateStart: function(){ var x= Date.parse('today'); x.setMonth(0); x.setDate(1); return x; }, dateEnd: 'today' },
+			{text: 'Today', dateStart: 'today', dateEnd: 'today' },
+			{text: 'Week to Date', dateStart: function() { return Date.parse('today').moveToDayOfWeek(0, -1); }, dateEnd: 'today' },
+			{text: 'Month to Date', dateStart: function(){ return Date.parse('today').moveToFirstDayOfMonth();  }, dateEnd: 'today' },
+			{text: 'Year to Date', dateStart: function(){ var x= Date.parse('today'); x.setMonth(0); x.setDate(1); return x; }, dateEnd: 'today' },
 			//extras:
-			{text: t('last_month'), dateStart: function(){ return Date.parse('1 month ago').moveToFirstDayOfMonth();  }, dateEnd: function(){ return Date.parse('1 month ago').moveToLastDayOfMonth();  } }
+			{text: 'Last Month', dateStart: function(){ return Date.parse('1 month ago').moveToFirstDayOfMonth();  }, dateEnd: function(){ return Date.parse('1 month ago').moveToLastDayOfMonth();  } }
 		], 
 		//presetRanges: array of objects for each menu preset. 
 		//Each obj must have text, dateStart, dateEnd. dateStart, dateEnd accept date.js string or a function which returns a date object
 		presets: {
-			specificDate: t('specific_date'),
-            dateRange: t('date_range'),
-			theWeekOf: t('the_week_of'),
-			theMonthOf: t('the_month_of'),
-			theYearOf: t('the_year_of')
+			specificDate: 'Specific Date', 
+                        dateRange: 'Date Range',
+			theWeekOf: 'The Week Of...', 
+			theMonthOf: 'The Month Of...', 
+			theYearOf: 'The Year Of...'
 		},
-		rangeStartTitle: t('start_date'),
-		rangeEndTitle: t('end_date'),
-		nextLinkText: t('next'),
-		prevLinkText: t('prev'),
-		doneButtonText: t('done'),
+		rangeStartTitle: 'Start date',
+		rangeEndTitle: 'End date',
+		nextLinkText: 'Next',
+		prevLinkText: 'Prev',
+		doneButtonText: 'Done',
+		initialRange: {text: 'today', dateStart: 'today', dateEnd: 'today'},
 		earliestDate: Date.parse('-15years'), //earliest date allowed 
 		latestDate: Date.parse('+15years'), //latest date allowed 
 		rangeSplitter: '-', //string to use between dates in single input
@@ -93,18 +92,9 @@ jQuery.fn.daterangepicker = function(settings){
                             rp.find('.range-end').restoreDateFromData().show(400);
                             setTimeout(function(){doneBtn.fadeIn();}, 400);
 		        }
-        				
-                        var rangeA = fDate( rp.find('.range-start').datepicker('getDate') );
-                        var rangeB = fDate( rp.find('.range-end').datepicker('getDate') );
+			
+			updateInput();
 
-                        //send back to input or inputs
-                        if(rangeInput.length == 2){
-                                rangeInput.eq(0).val(rangeA);
-                                rangeInput.eq(1).val(rangeB);
-                        }
-                        else{
-                                rangeInput.val((rangeA != rangeB) ? rangeA+' '+ options.rangeSplitter +' '+rangeB : rangeA);
-                        }
                         //if closeOnSelect is true
                         if(options.closeOnSelect){
                                 if(!rp.find('li.ui-state-active').is('.ui-daterangepicker-dateRange') && !rp.is(':animated') ){
@@ -115,6 +105,20 @@ jQuery.fn.daterangepicker = function(settings){
                   },
                   defaultDate: +0
 	};
+
+        // Interpret a date given as either a Date.js parseable string,
+        // a function returning a Date, or null/undefined.
+        var interpretDate = function(date) {
+            switch (typeof date) {
+                case 'string':
+                    return Date.parse(date);
+                case 'function':
+                    return date();
+                default:
+                    return null;
+            }
+        };
+
 	
 	//change event fires both when a calendar is updated or a change event on the input is triggered
 	rangeInput.change(options.onChange);
@@ -123,32 +127,13 @@ jQuery.fn.daterangepicker = function(settings){
 	//datepicker options from options
 	options.datepickerOptions = (settings) ? jQuery.extend(datepickerOptions, settings.datepickerOptions) : datepickerOptions;
 	
-	//Capture Dates from input(s)
-	var inputDateA, inputDateB = Date.parse('today');
-	var inputDateAtemp, inputDateBtemp;
-	if(rangeInput.size() == 2){
-		inputDateAtemp = Date.parse( rangeInput.eq(0).val() );
-		inputDateBtemp = Date.parse( rangeInput.eq(1).val() );
-		if(inputDateAtemp == null){inputDateAtemp = inputDateBtemp;} 
-		if(inputDateBtemp == null){inputDateBtemp = inputDateAtemp;} 
-	}
-	else {
-		inputDateAtemp = Date.parse( rangeInput.val().split(options.rangeSplitter)[0] );
-		inputDateBtemp = Date.parse( rangeInput.val().split(options.rangeSplitter)[1] );
-		if(inputDateBtemp == null){inputDateBtemp = inputDateAtemp;} //if one date, set both
-	}
-	if(inputDateAtemp != null){inputDateA = inputDateAtemp;}
-	if(inputDateBtemp != null){inputDateB = inputDateBtemp;}
-
-		
 	//build picker and 
 	var rp = jQuery('<div class="ui-daterangepicker ui-widget ui-helper-clearfix ui-widget-content ui-corner-all"></div>');
 	var rpPresets = (function(){
 		var ul = jQuery('<ul class="ui-widget-content"></ul>').appendTo(rp);
 		jQuery.each(options.presetRanges,function(){
 			jQuery('<li class="ui-daterangepicker-'+ this.text.replace(/ /g, '') +' ui-corner-all"><a href="#">'+ this.text +'</a></li>')
-			.data('dateStart', this.dateStart)
-			.data('dateEnd', this.dateEnd)
+			.data(this)
 			.appendTo(ul);
 		});
 		var x=0;
@@ -172,6 +157,9 @@ jQuery.fn.daterangepicker = function(settings){
 			});
 		return ul;
 	})();
+	var rangeText = options.initialRange.text;
+	var rangePreviousText = options.initialRange.previousText;
+	var rangePrevious = interpretDate(options.initialRange.datePrevious);
 				
 	//function to format a date string        
 	function fDate(date){
@@ -183,8 +171,35 @@ jQuery.fn.daterangepicker = function(settings){
 	   var dateFormat = options.dateFormat;
 	   return jQuery.datepicker.formatDate( dateFormat, date ); 
 	}
-	
-	
+
+        // Set the textual value and jQuery data of the input element.
+        var updateInput = function() {
+            var rangeStart = rp.find('.range-start').datepicker('getDate');
+            var rangeA = fDate(rangeStart);
+            var rangeEnd = rp.find('.range-end').datepicker('getDate');
+            var rangeB = fDate(rangeEnd);
+
+            //send back to input or inputs
+            if (rangeInput.length == 2) {
+                rangeInput.eq(0).val(rangeA);
+                rangeInput.eq(1).val(rangeB);
+            }
+            else {
+                var rangeValue = (rangeA != rangeB) ? rangeA+' '+ options.rangeSplitter +' '+rangeB : rangeA;
+                if (rangeText && blist.feature_flags.embetter_analytics_page) {
+                    rangeInput.val(rangeText + ' (' + rangeValue + ')');
+                }
+                else {
+                    rangeInput.val(rangeValue);
+                }
+                rangeInput.data('range-start', rangeStart);
+                rangeInput.data('range-end', rangeEnd);
+                rangeInput.data('range-text', rangeText);
+                rangeInput.data('range-previousText', rangePreviousText);
+                rangeInput.data('range-previous', rangePrevious);
+            }
+        };
+
 	jQuery.fn.restoreDateFromData = function(){
 		if(jQuery(this).data('saveDate')){
 			jQuery(this).datepicker('setDate', jQuery(this).data('saveDate')).removeData('saveDate'); 
@@ -224,6 +239,9 @@ jQuery.fn.daterangepicker = function(settings){
 		
 		doneBtn.data('daterangepicker-autoacceptrange', false);
 		
+		rangeText = "";
+		rangePreviousText = "";
+		rangePrevious = null;
 		if(jQuery(this).is('.ui-daterangepicker-specificDate')){
 			doneBtn.hide();
 			rpPickers.show();
@@ -285,8 +303,11 @@ jQuery.fn.daterangepicker = function(settings){
 				rp.find('.range-start, .range-end').hide(400, function(){
 					rpPickers.hide();
 				});
-				var dateStart = (typeof jQuery(this).data('dateStart') == 'string') ? Date.parse(jQuery(this).data('dateStart')) : jQuery(this).data('dateStart')();
-				var dateEnd = (typeof jQuery(this).data('dateEnd') == 'string') ? Date.parse(jQuery(this).data('dateEnd')) : jQuery(this).data('dateEnd')();
+				var dateStart = interpretDate(jQuery(this).data('dateStart'));
+				var dateEnd = interpretDate(jQuery(this).data('dateEnd'));
+				rangeText = jQuery(this).data('text');
+				rangePreviousText = jQuery(this).data('previousText');
+				rangePrevious = interpretDate(jQuery(this).data('datePrevious'));
 				rp.find('.range-start').datepicker('setDate', dateStart).find('.ui-datepicker-current-day').trigger('click');
 				rp.find('.range-end').datepicker('setDate', dateEnd).find('.ui-datepicker-current-day').trigger('click');
 		}
@@ -298,8 +319,8 @@ jQuery.fn.daterangepicker = function(settings){
 	//picker divs
 	var rpPickers = jQuery('<div class="ranges ui-widget-header ui-corner-all ui-helper-clearfix"><div class="range-start"><span class="title-start">Start Date</span></div><div class="range-end"><span class="title-end">End Date</span></div></div>').appendTo(rp);
 	rpPickers.find('.range-start, .range-end').datepicker(options.datepickerOptions);
-	rpPickers.find('.range-start').datepicker('setDate', inputDateA);
-	rpPickers.find('.range-end').datepicker('setDate', inputDateB);
+	rpPickers.find('.range-start').datepicker('setDate', interpretDate(options.initialRange.dateStart));
+	rpPickers.find('.range-end').datepicker('setDate', interpretDate(options.initialRange.dateEnd));
 	var doneBtn = jQuery('<button class="btnDone ui-state-default ui-corner-all">'+ options.doneButtonText +'</button>')
 	.click(function(){
 	  if ($(this).data('daterangepicker-autoacceptrange') === true)
@@ -324,6 +345,7 @@ jQuery.fn.daterangepicker = function(settings){
 	
 	
 	
+	updateInput();
 	
 	//inputs toggle rangepicker visibility
 	jQuery(this).click(function(){

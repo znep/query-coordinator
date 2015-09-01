@@ -302,6 +302,7 @@ metricsNS.summarySectionCallback = function($context, slice, section)
                       summaries.verbPhrase) + ' ' + region;
         }
     };
+    var $timeslice = $context.closest('#analyticsDataContainer').find('.currentTimeSlice');
     var percentCalculator = function(key, fraction) {
         mappedData[key] = '{0}%'.format(Highcharts.numberFormat(Math.abs(fraction) * 100, 0));
 
@@ -314,11 +315,14 @@ metricsNS.summarySectionCallback = function($context, slice, section)
         }
 
         mappedData[key + 'Text'] =
-            $.t(fraction < 0 ? 'screens.stats.delta_decrease' : 'screens.stats.delta_increase').
+            $.t('screens.stats.delta' +
+                (fraction < 0 ? '_decrease' : '_increase') +
+                (summaries.total === false ? '_compared' : '')).
                 format(
-                    section.summary.deltaPhrase || section.displayName,
+                    summaries.deltaPhrase || section.displayName,
                     mappedData[key],
-                    $context.closest('#analyticsDataContainer').find('.currentTimeSlice').val()
+                    $timeslice.data('range-text') || $timeslice.val(),
+                    $timeslice.data('range-previousText') || $.t('screens.stats.preceding_period')
                 );
     };
 

@@ -1224,9 +1224,15 @@ en:
       date_range: Date Range
       done: Done
       end_date: End date
+      last_30_days: Last 30 Days
       last_month: Last Month
+      last_week: Last Week
+      last_year: Last Year
       month_to_date: Month to Date
       next: Next
+      preceding_30_days: the preceding 30 days
+      preceding_month: the preceding month
+      preceding_week: the preceding week
       prev: Prev
       specific_date: Specific Date
       start_date: Start date
@@ -1236,6 +1242,7 @@ en:
       today: Today
       week_to_date: Week to Date
       year_to_date: Year to Date
+      yesterday: Yesterday
     fileuploader:
       drop_files: Drop files here to upload
       failed: Failed
@@ -2791,7 +2798,9 @@ en:
       daily: Daily
       deleted_application: deleted application
       delta_decrease: The number of {0} decreased by {1} during {2}
+      delta_decrease_compared: The number of {0} decreased by {1} during {2} compared to {3}
       delta_increase: The number of {0} increased by {1} during {2}
+      delta_increase_compared: The number of {0} increased by {1} during {2} compared to {3}
       dependent_metrics: Dependent Metrics
       download: download
       downloads: downloads
@@ -2816,6 +2825,7 @@ en:
       no_data_time_period: No data for this time period
       page_viewed: page viewed
       pages_viewed: pages viewed
+      preceding_period: the preceding period
       referrals: Referrals
       rows_loaded: Rows Loaded
       sdp: SDP

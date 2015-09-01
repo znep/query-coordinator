@@ -507,6 +507,8 @@
       utils.assertIsOneOfTypes(options.layerOrdering, 'function');
       utils.assertIsOneOfTypes(options.style, 'function');
 
+      var self = this;
+
       var pointStyle;
       var maxThreshold;
       var tileSize;
@@ -568,7 +570,6 @@
         this.options.debounceMilliseconds
       );
 
-      
       // Each tile has its own quad tree containing points in that tile.
       // On hover, for tiles within the threshold but not containing the hover
       // point, we map the mouse coordinates to the coordinate space of the
@@ -598,12 +599,12 @@
       this.currentClickedPoints = [];
 
       this.hoverHighlightLayer.drawTile = function(canvas, tilePoint, zoom) {
-        drawHighlightTile(canvas, tilePoint, zoom, this.currentHoverPoints);
-      }.bind(this);
+        drawHighlightTile(canvas, tilePoint, zoom, self.currentHoverPoints);
+      };
 
       this.clickHighlightLayer.drawTile = function(canvas, tilePoint, zoom) {
-        drawHighlightTile(canvas, tilePoint, zoom, this.currentClickedPoints);
-      }.bind(this);
+        drawHighlightTile(canvas, tilePoint, zoom, self.currentClickedPoints);
+      };
     },
 
     onAdd: function(map) {

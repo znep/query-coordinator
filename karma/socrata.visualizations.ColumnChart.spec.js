@@ -194,7 +194,7 @@ describe('socrata.visualizations.ColumnChart', function() {
       chart: chart,
       renderOptions: renderOptions
     };
-  };
+  }
 
   function removeColumnChart(columnChart) {
 
@@ -203,7 +203,7 @@ describe('socrata.visualizations.ColumnChart', function() {
     }
 
     $('#chart').remove();
-  };
+  }
 
   String.prototype.visualSize = function(fontSize) {
     var $ruler = $('#ruler');
@@ -1510,7 +1510,6 @@ describe('socrata.visualizations.ColumnChart', function() {
     });
   });
 
-
   describe('when displaying labels', function() {
 
     var width = 499;
@@ -1639,6 +1638,10 @@ describe('socrata.visualizations.ColumnChart', function() {
       columnChart = createColumnChart();
     });
 
+    afterEach(function() {
+      removeColumnChart(columnChart);
+    });
+
     describe('on a column `barGroup`', function() {
 
       it('should emit an event in which the `element` property is the `.unfiltered` child bar of the `barGroup`', function(done) {
@@ -1720,6 +1723,10 @@ describe('socrata.visualizations.ColumnChart', function() {
       columnChart = createColumnChart();
     });
 
+    afterEach(function() {
+      removeColumnChart(columnChart);
+    });
+
     it('should no longer respond to events for which the visualization registered handlers', function(done) {
 
       var eventHandlerHasBeenFired = false;
@@ -1735,13 +1742,12 @@ describe('socrata.visualizations.ColumnChart', function() {
 
       $('.bar-group').eq(0).trigger('click');
 
-      setTimeout(
+      _.defer(
         function() {
 
           assert.isFalse(eventHandlerHasBeenFired);
           done();
-        },
-        0
+        }
       );
     });
   });

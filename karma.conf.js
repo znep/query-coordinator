@@ -19,6 +19,7 @@ module.exports = function(config) {
       'bower_components/d3/d3.js',
       'bower_components/jquery/dist/jquery.js',
       'bower_components/leaflet/dist/leaflet.js',
+      'bower_components/leaflet/dist/leaflet.css',
       'bower_components/lodash/lodash.js',
       'bower_components/socrata-utils/socrata.utils.js',
       'bower_components/vector-tile-js/dist/vectortile.js',

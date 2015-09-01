@@ -1,4 +1,4 @@
-describe('VectorTileDataService', function() {
+describe('socrata.visualizations.TileserverDataProvider', function() {
 
   'use strict';
 

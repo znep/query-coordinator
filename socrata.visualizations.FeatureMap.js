@@ -99,21 +99,24 @@
 
     this.render = function(renderOptions) {
 
-      if (!_map) {
+      if (_mapElement.width() > 0 && _mapElement.height() > 0) {
 
-        // Construct leaflet map
-        _map = L.map(_mapElement[0], _mapOptions);
+        if (!_map) {
 
-        _attachEvents(this.element);
+          // Construct leaflet map
+          _map = L.map(_mapElement[0], _mapOptions);
 
+          _attachEvents(this.element);
+
+        }
+
+        _lastRenderOptions = renderOptions;
+
+        _fitBounds(renderOptions.bounds);
+        _updateBaseLayer(renderOptions.baseLayer.url, renderOptions.baseLayer.opacity);
+
+        _createNewFeatureLayer(renderOptions.vectorTileGetter);
       }
-
-      _lastRenderOptions = renderOptions;
-
-      _fitBounds(renderOptions.bounds);
-      _updateBaseLayer(renderOptions.baseLayer.url, renderOptions.baseLayer.opacity);
-
-      _createNewFeatureLayer(renderOptions.vectorTileGetter);
     };
 
     this.renderError = function() {
@@ -229,22 +232,26 @@
 
     function _detachEvents(element) {
 
-      _map.off('resize', _handleMapResize);
-      _map.off('resize zoomend dragend', _handleExtentChange);
+      // Only detach events if the map has actually been instantiated.
+      if (_map) {
 
-      if (_hover) {
-        _map.off('mousemove', _handleMousemove);
+        _map.off('resize', _handleMapResize);
+        _map.off('resize zoomend dragend', _handleExtentChange);
+
+        if (_hover) {
+          _map.off('mousemove', _handleMousemove);
+        }
       }
     }
 
     function _handleMapResize() {
 
       // This is debounced and will fire on the leading edge.
-      startResizeFn();
+      _startResizeFn();
       // This is debounced and will fire on the trailing edge.
       // In the best case, this will be called RESIZE_DEBOUNCE_INTERVAL
       // milliseconds after the resize event is captured by this handler.
-      completeResizeFn();
+      _completeResizeFn();
     }
 
     function _handleExtentChange() {

@@ -22,7 +22,7 @@ module.exports = function(config) {
       'bower_components/leaflet/dist/leaflet.css',
       'bower_components/lodash/lodash.js',
       'bower_components/socrata-utils/socrata.utils.js',
-      'bower_components/vector-tile-js/dist/vectortile.js',
+      'bower_components/vector-tile/dist/vectortile.js',
       'socrata.visualizations.DataProvider.js',
       'socrata.visualizations.MetadataProvider.js',
       'socrata.visualizations.SoqlDataProvider.js',

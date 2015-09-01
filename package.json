@@ -37,7 +37,10 @@
       "$": true,
       "_": true,
       "d3": true,
-      "socrata": true
+      "L": true,
+      "pbf": true,
+      "socrata": true,
+      "VectorTile": true
     }
   }
 }

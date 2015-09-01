@@ -109,7 +109,7 @@
         handleDatasetMetadataRequestSuccess,
         handleDatasetMetadataRequestError
       ).catch(function(e) {
-        console.error(e);
+        logError(e);
       });
 
     // We query the extent of the features we are rendering in order to make
@@ -121,7 +121,7 @@
         handleFeatureExtentQuerySuccess,
         handleFeatureExtentQueryError
       ).catch(function(e) {
-        console.error(e);
+        logError(e);
       });
 
     initializeVisualization();
@@ -164,7 +164,7 @@
 
       var payload = event.originalEvent.detail.data;
 
-      var query = '$offset=0&$limit={0}&$order=distance_in_meters({1}, "POINT({2} {3})")'.//$where={4}'.
+      var query = '$offset=0&$limit={0}&$order=distance_in_meters({1}, "POINT({2} {3})"){4}'.
         format(
           payload.rowCount,
           config.fieldName,
@@ -175,12 +175,11 @@
 
       function generateWithinBoxClause(fieldName, bounds) {
 
-        return '';
-        // return 'within_box({0}, {1}, {2})'.format(
-        //   fieldName,
-        //   '{0}, {1}'.format(bounds.northeast.lat, bounds.northeast.lng),
-        //   '{0}, {1}'.format(bounds.southwest.lat, bounds.southwest.lng)
-        // );
+        return '&$where=within_box({0}, {1}, {2})'.format(
+          fieldName,
+          '{0}, {1}'.format(bounds.northeast.lat, bounds.northeast.lng),
+          '{0}, {1}'.format(bounds.southwest.lat, bounds.southwest.lng)
+        );
       }
 
       soqlDataProvider.
@@ -189,7 +188,7 @@
           handleRowInspectorQuerySuccess,
           handleRowInspectorQueryError
         ).catch(function(e) {
-          console.error(e);
+          logError(e);
         });
 
       event.stopPropagation();
@@ -383,6 +382,13 @@
           }
         )
       );
+    }
+
+    function logError(e) {
+
+      if (console && console.error) {
+        console.error(e);
+      }
     }
 
     return this;

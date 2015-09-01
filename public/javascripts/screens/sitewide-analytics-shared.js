@@ -3,6 +3,7 @@
 var datasetsMetricName,
     pageViewsSummary,
     mapsSummary,
+    chartsSummary,
     dataLensesEnabled,
     datasetsListHeader,
     totalPrefix,
@@ -23,6 +24,7 @@ if (blist.feature_flags.embetter_analytics_page) {
         verbPhraseSingular: 'page viewed'
     };
     mapsSummary = {plus: 'lense-map-published-v1'}
+    chartsSummary = {plus: 'lense-chart-published-v1'};
     dataLensesEnabled = true;
     datasetsListHeader = 'Browser Page Views';
     totalPrefix = '';
@@ -36,6 +38,7 @@ if (blist.feature_flags.embetter_analytics_page) {
         verbPhraseSingular: 'page viewed'
     };
     mapsSummary = {plus: ['maps-created'], minus: ['maps-deleted']};
+    chartsSummary = {plus: ['charts-created'], minus: ['charts-deleted']};
     dataLensesEnabled = false;
     datasetsListHeader = '';
     totalPrefix = 'Total ';
@@ -84,7 +87,7 @@ blist.metrics.sitewideShared = {
             },
             enabled: blist.configuration.govStatMetricsEnabled || false
         },
-        {id: 'detailCharts',    displayName: 'Charts' + addedSuffix,   summary: { plus: ['charts-created'], minus: ['charts-deleted'] } },
+        {id: 'detailCharts',    displayName: 'Charts' + addedSuffix,   summary: chartsSummary },
         {id: 'detailLenses',    displayName: 'Data Lens Pages' + addedSuffix, summary: { plus: 'lense-new_view-published-v1' }, enabled: dataLensesEnabled },
         {id: 'detailFilters',   displayName: 'Filters' + addedSuffix,  summary: { plus: ['filters-created'], minus: ['filters-deleted'] } },
         {id: 'detailMaps',      displayName: 'Maps' + addedSuffix,     summary: mapsSummary },

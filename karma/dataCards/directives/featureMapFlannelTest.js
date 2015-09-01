@@ -11,26 +11,62 @@ describe('feature map flannel', function() {
 
   var ERROR_MESSAGE;
 
+  var MOCK_QUERY_DEFAULT_TITLES = [createDefaultTitle(11.11111), createDefaultTitle(22.22222), createDefaultTitle(33.33333)];
+  var MOCK_QUERY_TITLES = [createTitle('Air Force'), createTitle('Navy'), createTitle('National Guard')];
+  var FORMATTED_TITLES = ['AIR FORCE', 'NAVY', 'NATIONAL GUARD'];
   var MOCK_QUERY_RESPONSES = [createRow(1), createRow(2), createRow(3)];
+
+  // Returns a mock default title column
+  function createDefaultTitle(fakeLatitude) {
+    return {
+      columnName: 'Headquarters',
+      format: {},
+      isTitleColumn: true,
+      isFeatureMapColumn: false,
+      physicalDatatype: 'point',
+      value: [{
+        coordinates: [-89.115646, fakeLatitude],
+        type: 'Point'
+      }]
+    };
+  }
+
+  // Returns a mock specific title column
+  function createTitle(name) {
+    return {
+      columnName: 'Division Name',
+      format: {},
+      isTitleColumn: true,
+      isFeatureMapColumn: false,
+      physicalDatatype: 'text',
+      value: name
+    };
+  }
 
   // Returns a mock row with its 'Division Number' matching the row number
   function createRow(rowNumber) {
     return [
       { columnName: 'Division Number',
         format: {},
+        isTitleColumn: false,
+        isFeatureMapColumn: false,
         physicalDataType: 'number',
         value: rowNumber
       },
-      { columnName: 'Headquarters',
+      { columnName: 'Training Center',
         format: {},
-        physicalDataType: 'point',
+        isTitleColumn: false,
+        isFeatureMapColumn: true,
+        physicalDatatype: 'point',
         value: [{
           coordinates: [-89.115646, 32.911919],
-          type: 'point'
+          type: 'Point'
         }]
       },
       { columnName: 'Commanding Officer',
         format: {},
+        isTitleColumn: false,
+        isFeatureMapColumn: false,
         physicalDataType: 'text',
         value: 'Brad Hentley'
       }
@@ -80,6 +116,7 @@ describe('feature map flannel', function() {
     });
 
     it('should show query data when a query succeeds and returns a valid response', function() {
+      scope.titles = MOCK_QUERY_DEFAULT_TITLES;
       scope.rows = MOCK_QUERY_RESPONSES;
       scope.queryStatus = Constants.QUERY_SUCCESS;
       scope.$digest();
@@ -89,6 +126,7 @@ describe('feature map flannel', function() {
 
   describe('one row of data returned from successful query', function() {
     beforeEach(function() {
+      scope.titles = MOCK_QUERY_DEFAULT_TITLES.slice(0, 1);
       scope.rows = MOCK_QUERY_RESPONSES.slice(0, 1);
       scope.queryStatus = Constants.QUERY_SUCCESS;
       scope.$digest();
@@ -98,6 +136,10 @@ describe('feature map flannel', function() {
       expect(element.find('.paging-panel:visible')).to.have.length(0);
     });
 
+    it('should contain a title', function() {
+      expect(element.find('.flannel-title')).to.have.length(1);
+    });
+
     it('should have three cells of data displayed on the flannel', function() {
       expect(element.find('.row-data-item')).to.have.length(3);
     });
@@ -105,6 +147,7 @@ describe('feature map flannel', function() {
 
   describe('multiple rows of data returned from query', function() {
     beforeEach(function() {
+      scope.titles = MOCK_QUERY_DEFAULT_TITLES;
       scope.rows = MOCK_QUERY_RESPONSES;
       scope.queryStatus = Constants.QUERY_SUCCESS;
       scope.$digest();
@@ -112,6 +155,10 @@ describe('feature map flannel', function() {
 
     it('should have paging controls if more than one row is included in query results', function() {
       expect(element.find('.paging-panel:visible')).to.have.length(1);
+    });
+
+    it('should contain a title', function() {
+      expect(element.find('.flannel-title')).to.have.length(1);
     });
 
     it('should should contain all three cells of data on the displayed page for the given row', function() {
@@ -183,6 +230,29 @@ describe('feature map flannel', function() {
           expect(nextButton.is(':disabled')).to.be.false;
         });
       });
+    });
+  });
+
+  describe('title formatting after successful query', function() {
+    beforeEach(function() {
+      scope.rows = MOCK_QUERY_RESPONSES;
+      scope.queryStatus = Constants.QUERY_SUCCESS;
+    });
+
+    it('should include a title of coordinates without parentheses by default', function() {
+      scope.titles = MOCK_QUERY_DEFAULT_TITLES;
+      scope.$digest();
+
+      var flannelTitle = element.find('.flannel-title').text();
+      expect(flannelTitle).to.match(/^-?\d+(?:\.\d+)?°,\s-?\d+(?:\.\d+)?°$/);
+    });
+
+    it('should include a formatted title from the specified map flannel title column if present', function() {
+      scope.titles = MOCK_QUERY_TITLES;
+      scope.$digest();
+
+      var flannelTitle = element.find('.flannel-title').text();
+      expect(flannelTitle).to.equal(FORMATTED_TITLES[0]);
     });
   });
 });

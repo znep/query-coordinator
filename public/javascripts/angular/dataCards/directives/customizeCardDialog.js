@@ -3,7 +3,18 @@
 
   var REFRESH_BASE_LAYER_DELAY = 1000;
 
-  function customizeCardDialog(Constants, Card, Dataset, FlyoutService, $log, I18n, CardDataService, HistogramService) {
+  function customizeCardDialog(
+    Constants,
+    Card,
+    Dataset,
+    FlyoutService,
+    $log,
+    I18n,
+    CardDataService,
+    HistogramService,
+    DatasetColumnsService,
+    ServerConfig
+  ) {
 
     // Set up watchers for changing the base layer url.
     function setupBaseLayerSelect(cardModel, scope, element) {
@@ -64,6 +75,30 @@
             throw new Error('Unknown base layer option: {0}'.format(value));
         }
       });
+    }
+
+    function setupFlannelTitleSelect(cardModel, scope) {
+      scope.$bindObservable('columnHumanNameFn', DatasetColumnsService.getReadableColumnNameFn$(scope));
+
+      scope.$bindObservable('titleColumnOptions', DatasetColumnsService.getSortedColumns$(scope).map(function(sortedColumns) {
+        return _.reduce(sortedColumns, function(result, column) {
+          // Exclude subcolumns so as to only reflect the columns in the dataset table.
+          if (!column.columnInfo.isSubcolumn) {
+            result.push(column.fieldName);
+          }
+          return result;
+        }, []);
+      }));
+
+      // Initialize selection to the existing flannel title column.
+      scope.$bindObservable('selectedFlannelTitleColumnName', cardModel.observe('cardOptions.mapFlannelTitleColumn'));
+
+      // Process updates to selected flannel title column
+      var updatedFlannelTitle$ = scope.$observe('selectedFlannelTitleColumnName');
+      updatedFlannelTitle$.skip(1).subscribe(
+        function(updatedFlannelTitle) {
+          cardModel.setOption('mapFlannelTitleColumn', updatedFlannelTitle);
+        });
     }
 
     // If bucket type is undefined, determine the bucket type by examining the data.
@@ -155,7 +190,14 @@
           )
         );
 
+        // Set up map customization dropdowns.
         setupBaseLayerSelect(scope.customizedCard, scope, element);
+
+        scope.showFlannelTitleMenu = false;
+        if (ServerConfig.get('oduxEnableFeatureMapHover')) {
+          scope.showFlannelTitleMenu = scope.customizedCard.getCurrentValue('cardType') === 'feature';
+          setupFlannelTitleSelect(scope.customizedCard, scope);
+        }
 
         // Check to make sure we are customizing histogram before setting up
         // the bucket type option.

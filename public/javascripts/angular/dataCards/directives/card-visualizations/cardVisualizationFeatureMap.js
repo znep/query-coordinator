@@ -31,6 +31,7 @@
         var columns$ = dataset$.observeOnLatest('columns').filter(_.isPresent);
         var dataFieldName$ = model.observeOnLatest('fieldName');
         var id$ = dataset$.observeOnLatest('id').filter(_.isPresent);
+        var flannelTitleColumn$ = model.observeOnLatest('cardOptions.mapFlannelTitleColumn');
 
         /**
          * Handle queries for the row data for points clicked on current feature map.
@@ -155,8 +156,8 @@
             rowQueryResponse$,
             columns$.filter(_.isDefined),
             dataFieldName$,
-            function(rows, columns) {
-
+            flannelTitleColumn$,
+            function(rows, columns, fieldName, flannelTitleColumn) {
               if (_.isNull(rows)) {
                 return null;
               }
@@ -199,11 +200,13 @@
                       physicalDatatype: column.physicalDatatype
                     });
                   } else {
-
                     // If the cellValue is an object (e.g. a coordinate point),
                     // we should format it slightly differently.
+                    // We mark whether the cell is from the flannel title column.
                     formattedRowData[column.position] = {
                       columnName: column.name,
+                      isTitleColumn: (cellName === flannelTitleColumn),
+                      isFeatureMapColumn: (cellName === fieldName),
                       value: _.isObject(cellValue) ? [cellValue] : cellValue,
                       format: _.isObject(cellValue) ? undefined : column.format,
                       physicalDatatype: column.physicalDatatype

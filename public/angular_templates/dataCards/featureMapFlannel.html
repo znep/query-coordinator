@@ -7,6 +7,7 @@
       <div class="tool-panel-inner-container">
         <!-- Successful query response -->
         <div class="flannel-content" ng-show="queryStatus === 'success'">
+          <h3 class="flannel-title" ng-if="selectedRowTitle">{{selectedRowTitle}}</h3>
           <div ng-repeat="cell in selectedRow" class="row-data-item">
             <span class="name">{{cell.columnName}}</span>
             <span class="value">{{formatSubColumns(cell.value, cell)}}</span>

@@ -181,7 +181,8 @@ add-card-dialog {
 customize-card-dialog {
   .customize-card-options {
     .configure-map-base-layer,
-    .configure-histogram-bucket-type {
+    .configure-histogram-bucket-type,
+    .configure-flannel-title {
       margin-bottom: 1rem;
       .dropdown-container {
         soc-select {

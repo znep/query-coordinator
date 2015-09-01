@@ -78,7 +78,6 @@
         var latitude = cellContent.coordinates[latitudeIndex];
         var longitude = cellContent.coordinates[longitudeIndex];
         return '({0}°, {1}°)'.format(latitude, longitude);
-
       } else {
         return '';
       }

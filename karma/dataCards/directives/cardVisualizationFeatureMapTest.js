@@ -193,10 +193,11 @@ describe('A FeatureMap Card Visualization', function() {
     card.defineObservableProperty('activeFilters', []);
     card.defineObservableProperty('baseLayerUrl', '');
     card.defineObservableProperty('cardOptions', {
-      mapExtent:options.mapExtent || {}
+      mapExtent:options.mapExtent || {},
+      mapFlannelTitleColumn: options.mapFlannelTitleColumn || null
     });
     card.setOption = _.noop;
-    card.fieldName = 'foo';
+    card.fieldName = 'test_location';
 
     outerScope.model = card;
     outerScope.whereClause = options.whereClause;
@@ -238,13 +239,13 @@ describe('A FeatureMap Card Visualization', function() {
       var expectedID = 'cras-hing';
       var expectedOffset = 0;
       var expectedLimit = 3;
-      var expectedOrder = 'distance_in_meters(foo, \"POINT\(-122\.3 45\.7\)\"\)';
+      var expectedOrder = 'distance_in_meters(test_location, \"POINT\(-122\.3 45\.7\)\"\)';
       var expectedWhereClause;
 
       it('should properly construct row query parameters on an unfiltered dataset', function(done) {
 
         // where clause should only include query optimization withinBox
-        expectedWhereClause = 'within_box(foo, 0, 0, 100, 100)';
+        expectedWhereClause = 'within_box(test_location, 0, 0, 100, 100)';
 
         var elementInfo = buildElement({ 'dataset': dataset });
         var elementScope = elementInfo.scope;
@@ -281,7 +282,7 @@ describe('A FeatureMap Card Visualization', function() {
         var filterWhereClause = 'test_number > 10';
 
         // whereClause should include both query optimization and original filter
-        expectedWhereClause = '{0} AND within_box(foo, 0, 0, 100, 100)'.format(filterWhereClause);
+        expectedWhereClause = '{0} AND within_box(test_location, 0, 0, 100, 100)'.format(filterWhereClause);
 
         var elementInfo = buildElement({
           'dataset': dataset,
@@ -318,76 +319,147 @@ describe('A FeatureMap Card Visualization', function() {
       });
     });
 
-    it('should correctly format normal columns and sub columns in query response data', function(done) {
-      var elementInfo = buildElement({ 'dataset': dataset });
-      var elementScope = elementInfo.scope;
-      var element = elementInfo.element;
+    describe('query response formatting', function() {
+      it('should correctly format normal columns and sub columns in query response data', function(done) {
+        var elementInfo = buildElement({ 'dataset': dataset });
+        var elementScope = elementInfo.scope;
+        var element = elementInfo.element;
 
-      // Get reference to getClickedRows function
-      var getClickedRows = $(element).find('card-visualization-feature-map').
-        isolateScope().getClickedRows;
+        // Get reference to getClickedRows function
+        var getClickedRows = $(element).find('card-visualization-feature-map').
+          isolateScope().getClickedRows;
 
-      var queryResponse$ = getClickedRows({}, [], fakeWithinBoxBounds);
+        var queryResponse$ = getClickedRows({}, [], fakeWithinBoxBounds);
 
-      queryResponse$.subscribe(function(formattedRows) {
-        var firstRow = formattedRows[0][0];
-        var secondRow = formattedRows[0][1];
-        var thirdRow = formattedRows[0][2];
-        var fourthRow = formattedRows[0][3];
-        var fifthRow = formattedRows[0][4];
-        var sixthRow = formattedRows[0][5];
+        queryResponse$.subscribe(function(formattedRows) {
+          var firstRow = formattedRows[0][0];
+          var secondRow = formattedRows[0][1];
+          var thirdRow = formattedRows[0][2];
+          var fourthRow = formattedRows[0][3];
+          var fifthRow = formattedRows[0][4];
+          var sixthRow = formattedRows[0][5];
 
-        expect(firstRow.columnName).to.equal('number title');
-        expect(firstRow.value).to.equal(10);
-        expect(secondRow.columnName).to.equal('timestamp title');
-        expect(secondRow.value).to.equal('1957-06-30T15:16:00.000');
-        expect(thirdRow.columnName).to.equal('location title');
-        expect(thirdRow.value).to.deep.equal([
-          {
-            coordinates: [42, -87],
-            type: 'Point'
-          },
-          {
-            columnName: 'address',
-            format: undefined,
-            physicalDatatype: 'text',
-            value: '9 PALMER ST'
-          },
-          {
-            columnName: 'city',
-            format: undefined,
-            physicalDatatype: 'text',
-            value: 'ASHAWAY'
-          }
-        ]);
-        expect(fourthRow.columnName).to.equal('mail state');
-        expect(fourthRow.value).to.equal('RI');
-        expect(fifthRow.columnName).to.equal('mail zip');
-        expect(fifthRow.value).to.equal('19104');
-        expect(sixthRow.columnName).to.equal('mail address');
-        expect(sixthRow.value).to.deep.equal([
-          {
-            coordinates: [40, -85],
-            type: 'Point'
-          },
-          {
-            columnName: 'address',
-            format: undefined,
-            physicalDatatype: 'text',
-            value: '3810 HARRISON'
-          },
-          {
-            columnName: 'city',
-            format: undefined,
-            physicalDatatype: 'text',
-            value: 'PHILADELPHIA'
-          }
-        ]);
-        done();
+          expect(firstRow.columnName).to.equal('number title');
+          expect(firstRow.value).to.equal(10);
+          expect(secondRow.columnName).to.equal('timestamp title');
+          expect(secondRow.value).to.equal('1957-06-30T15:16:00.000');
+          expect(thirdRow.columnName).to.equal('location title');
+          expect(thirdRow.value).to.deep.equal([
+            {
+              coordinates: [42, -87],
+              type: 'Point'
+            },
+            {
+              columnName: 'address',
+              format: undefined,
+              physicalDatatype: 'text',
+              value: '9 PALMER ST'
+            },
+            {
+              columnName: 'city',
+              format: undefined,
+              physicalDatatype: 'text',
+              value: 'ASHAWAY'
+            }
+          ]);
+          expect(fourthRow.columnName).to.equal('mail state');
+          expect(fourthRow.value).to.equal('RI');
+          expect(fifthRow.columnName).to.equal('mail zip');
+          expect(fifthRow.value).to.equal('19104');
+          expect(sixthRow.columnName).to.equal('mail address');
+          expect(sixthRow.value).to.deep.equal([
+            {
+              coordinates: [40, -85],
+              type: 'Point'
+            },
+            {
+              columnName: 'address',
+              format: undefined,
+              physicalDatatype: 'text',
+              value: '3810 HARRISON'
+            },
+            {
+              columnName: 'city',
+              format: undefined,
+              physicalDatatype: 'text',
+              value: 'PHILADELPHIA'
+            }
+          ]);
+          done();
+        });
+
+        elementScope.$safeApply(function() {
+          deferred.resolve();
+        });
       });
 
-      elementScope.$safeApply(function() {
-        deferred.resolve();
+      it('should mark cells from the specified map flannel title column when present', function(done) {
+        var elementInfo = buildElement({
+          'dataset': dataset ,
+          'mapFlannelTitleColumn': 'test_number'
+        });
+        var elementScope = elementInfo.scope;
+        var element = elementInfo.element;
+
+        // Get reference to getClickedRows function
+        var getClickedRows = $(element).find('card-visualization-feature-map').
+          isolateScope().getClickedRows;
+
+        var queryResponse$ = getClickedRows({}, [], fakeWithinBoxBounds);
+
+        queryResponse$.subscribe(function(formattedRows) {
+          var firstRow = formattedRows[0][0];
+          var secondRow = formattedRows[0][1];
+          var thirdRow = formattedRows[0][2];
+          var fourthRow = formattedRows[0][3];
+          var fifthRow = formattedRows[0][4];
+          var sixthRow = formattedRows[0][5];
+
+          expect(firstRow.isTitleColumn).to.be.true;
+          expect(secondRow.isTitleColumn).to.be.false;
+          expect(thirdRow.isTitleColumn).to.be.false;
+          expect(fourthRow.isTitleColumn).to.be.false;
+          expect(fifthRow.isTitleColumn).to.be.false;
+          expect(sixthRow.isTitleColumn).to.be.false;
+          done();
+        });
+
+        elementScope.$safeApply(function() {
+          deferred.resolve();
+        });
+      });
+
+      it('should mark cells from the feature map generating location column', function(done) {
+        var elementInfo = buildElement({ 'dataset': dataset });
+        var elementScope = elementInfo.scope;
+        var element = elementInfo.element;
+
+        // Get reference to getClickedRows function
+        var getClickedRows = $(element).find('card-visualization-feature-map').
+          isolateScope().getClickedRows;
+
+        var queryResponse$ = getClickedRows({}, [], fakeWithinBoxBounds);
+
+        queryResponse$.subscribe(function(formattedRows) {
+          var firstRow = formattedRows[0][0];
+          var secondRow = formattedRows[0][1];
+          var thirdRow = formattedRows[0][2];
+          var fourthRow = formattedRows[0][3];
+          var fifthRow = formattedRows[0][4];
+          var sixthRow = formattedRows[0][5];
+
+          expect(firstRow.isFeatureMapColumn).to.be.false;
+          expect(secondRow.isFeatureMapColumn).to.be.false;
+          expect(thirdRow.isFeatureMapColumn).to.be.true;
+          expect(fourthRow.isFeatureMapColumn).to.be.false;
+          expect(fifthRow.isFeatureMapColumn).to.be.false;
+          expect(sixthRow.isFeatureMapColumn).to.be.false;
+          done();
+        });
+
+        elementScope.$safeApply(function() {
+          deferred.resolve();
+        });
       });
     });
   });
@@ -545,7 +617,6 @@ describe('A FeatureMap Card Visualization', function() {
         sinon.match.truthy
       );
     });
-
   });
 
   describe('timeouts', function() {
@@ -599,6 +670,4 @@ describe('A FeatureMap Card Visualization', function() {
       expect(elementInfo.element.find('.visualization-render-error')).to.have.class('ng-hide');
     });
   });
-
-
 });

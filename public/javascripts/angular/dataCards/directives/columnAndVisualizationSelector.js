@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function columnAndVisualizationSelector(Constants, Card, Dataset, FlyoutService, $log) {
+  function columnAndVisualizationSelector(Constants, Card, Dataset, FlyoutService, DatasetColumnsService, $log) {
     return {
       restrict: 'E',
       scope: {
@@ -17,17 +17,7 @@
       templateUrl: '/angular_templates/dataCards/columnAndVisualizationSelector.html',
       link: function(scope) {
 
-        scope.$bindObservable(
-          'columnHumanNameFn',
-          scope.$observe('page').observeOnLatest('dataset.columns').map(
-            function(datasetColumns) {
-              return function(fieldName) {
-                var column = datasetColumns[fieldName];
-                return Dataset.extractHumanReadableColumnName(column);
-              };
-            }
-          )
-        );
+        scope.$bindObservable('columnHumanNameFn', DatasetColumnsService.getReadableColumnNameFn$(scope));
 
         /************************
         * Add new card behavior *
@@ -39,33 +29,19 @@
         *
         * Responsible for:
         * - Split columns into visualizable and non-visualizable groups
-        * - Filtering out system columns
-        * - Sort by field name
+        * - Filtering out system columns and subcolumns
+        * - Sort as sorted in table
         *******************************/
-        var datasetColumnsInfo$ = scope.
-          $observe('page').observeOnLatest('dataset.columns').
-          map(function(columns) {
-            // Filter out system columns.
-            return _.pairs(columns).
-              map(function(columnPair) {
-                return {
-                  fieldName: columnPair[0],
-                  columnInfo: columnPair[1]
-                };
-              }).
-              filter(function(columnPair) {
 
-                // We need to ignore 'system' fieldNames that begin with ':' but
-                // retain computed column fieldNames, which (somewhat inconveniently)
-                // begin with ':@'.
-                return _.isNull(columnPair.fieldName.substring(0, 2).match(/\:[\_A-Za-z0-9]/)) &&
-                       columnPair.columnInfo.physicalDatatype !== '*';
-              });
-          }).
-          map(function(columns) {
-            return _.sortBy(columns, 'columnInfo.position');
-          }).
-          combineLatest(scope.$observe('supportedCardTypes'), function(sortedColumns, supportedCardTypes) {
+        // Get a sorted list of all dataset columns excluding system columns but
+        // including computed columns
+        var sortedDatasetColumns$ = DatasetColumnsService.getSortedColumns$(scope);
+
+        // Determine which columns can be visualized and added as cards
+        var datasetColumnsInfo$ = Rx.Observable.combineLatest(
+          sortedDatasetColumns$,
+          scope.$observe('supportedCardTypes'),
+          function(sortedColumns, supportedCardTypes) {
 
             // Split into available and unsupported columns.
             var availableColumns = [];
@@ -90,7 +66,7 @@
               if (defaultCardType === 'invalid') {
                 unsupportedColumns.push(column.fieldName);
               } else if (!column.columnInfo.isSubcolumn) {
-              // CORE-4645: Do not allow subColumns to be available as cards to add
+                // CORE-4645: Do not allow subColumns to be available as cards to add
                 availableColumns.push(column.fieldName);
                 adjustedDefaultCardTypeHash[column.fieldName] = defaultCardType;
               }

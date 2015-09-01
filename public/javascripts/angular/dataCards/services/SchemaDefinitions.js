@@ -267,7 +267,8 @@
           'type': 'object',
           'properties': {
             'mapExtent': {'type': 'object'},
-            'bucketSize': {'type': 'integer'}
+            'bucketSize': {'type': 'integer'},
+            'mapFlannelTitleColumn': {'type': 'string'}
           },
           'required': []
         }

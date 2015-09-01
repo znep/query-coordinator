@@ -6,27 +6,21 @@
           value="null"
           disabled="disabled"
           ng-selected="addCardSelectedColumnFieldName === null">{{'addCardDialog.chooseColumn' | I18n}}</soc-option>
-
         <soc-option value="null" disabled="disabled" ng-if="availableColumns.length > 0"></soc-option>
-
         <soc-option
           value="{{fieldName}}"
           title="{{'addCardDialog.addThisCard' | I18n}}"
           ng-repeat="fieldName in availableColumns">{{columnHumanNameFn(fieldName)}}</soc-option>
-
         <soc-option value="null" disabled="disabled" ng-if="unsupportedColumns.length > 0"></soc-option>
-
         <soc-option
           value="null"
           disabled="disabled"
           ng-if="unsupportedColumns.length > 0">{{'addCardDialog.notSupported' | I18n}}</soc-option>
-
         <soc-option
           value="{{fieldName}}"
           title="{{'addCardDialog.notSupportedLong' | I18n}}"
           disabled="disabled"
           ng-repeat="fieldName in unsupportedColumns">-{{columnHumanNameFn(fieldName)}}</soc-option>
-
       </soc-select>
     </div>
     <div class="add-card-preview customize-card-preview">

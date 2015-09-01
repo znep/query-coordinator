@@ -25,6 +25,7 @@ describe('Customize card dialog', function() {
   var $templateCache;
   var testHelpers;
   var _$provide;
+  var $timeout;
 
   beforeEach(function() {
     module(function($provide) {
@@ -44,6 +45,7 @@ describe('Customize card dialog', function() {
     $rootScope = $injector.get('$rootScope');
     $templateCache = $injector.get('$templateCache');
     testHelpers = $injector.get('testHelpers');
+    $timeout = $injector.get('$timeout');
 
     // We don't actually care about the contents of this
     $templateCache.put('/angular_templates/dataCards/cardVisualizationColumnChart.html', '');
@@ -72,6 +74,76 @@ describe('Customize card dialog', function() {
     _.debounce.restore();
   });
 
+  var COLUMNS = {
+    choropleth: {
+      name: 'Spot where cool froods hang out.',
+      description: '???',
+      fred: 'location',
+      physicalDatatype: 'number',
+      computationStrategy: {
+        parameters: {
+          region: '_mash-apes'
+        }
+      },
+      availableCardTypes: ['choropleth'],
+      defaultCardType: 'choropleth'
+    },
+    feature: {
+      name: 'Froods who really know where their towels are.',
+      description: '???',
+      fred: 'location',
+      physicalDatatype: 'point',
+      availableCardTypes: ['feature'],
+      defaultCardType: 'feature'
+    },
+    many_kinds: {
+      name: 'A column suffering an identity crisis.',
+      description: '???',
+      fred: 'amount',
+      physicalDatatype: 'number',
+      availableCardTypes: ['feature', 'choropleth', 'column', 'histogram', 'search'],
+      defaultCardType: 'search'
+    },
+    bar: {
+      name: 'A bar where cool froods hang out.',
+      description: '???',
+      fred: 'amount',
+      physicalDatatype: 'number',
+      availableCardTypes: ['column', 'search'],
+      defaultCardType: 'column'
+    },
+    high_cardinality: {
+      name: 'A bar where cool froods hang out.',
+      description: '???',
+      fred: 'amount',
+      physicalDatatype: 'number',
+      availableCardTypes: ['column', 'search'],
+      defaultCardType: 'column',
+      cardinality: 1000
+    },
+    ':system_column': {
+      name: 'System Column to Exclude',
+      fred: 'amount',
+      physicalDatatype: 'number',
+      availableCardTypes: ['column', 'histogram'],
+      defaultCardType: 'column',
+      computationStrategy: {
+        parameters: {
+          region: 'zip',
+          geometryLabel: 'Zip Code',
+        }
+      }
+    },
+    sub_column: {
+      name: 'Subcolumn to Exclude',
+      fred: 'amount',
+      physicalDatatype: 'number',
+      availableCardTypes: ['column', 'histogram'],
+      defaultCardType: 'column',
+      isSubcolumn: true,
+    }
+  };
+
   /**
    * Create a customize-card-dialog element.
    *
@@ -81,54 +153,7 @@ describe('Customize card dialog', function() {
   function createDialog(options) {
     options = options || {};
 
-    var columns = {
-      choropleth: {
-        name: 'Spot where cool froods hang out.',
-        description: '???',
-        fred: 'location',
-        physicalDatatype: 'number',
-        computationStrategy: {
-          parameters: {
-            region: '_mash-apes'
-          }
-        },
-        availableCardTypes: ['choropleth'],
-        defaultCardType: 'choropleth'
-      },
-      feature: {
-        name: 'Froods who really know where their towels are.',
-        description: '???',
-        fred: 'location',
-        physicalDatatype: 'point',
-        availableCardTypes: ['feature'],
-        defaultCardType: 'feature'
-      },
-      many_kinds: {
-        name: 'A column suffering an identity crisis.',
-        description: '???',
-        fred: 'amount',
-        physicalDatatype: 'number',
-        availableCardTypes: ['feature', 'choropleth', 'column', 'histogram', 'search'],
-        defaultCardType: 'search'
-      },
-      bar: {
-        name: 'A bar where cool froods hang out.',
-        description: '???',
-        fred: 'amount',
-        physicalDatatype: 'number',
-        availableCardTypes: ['column', 'search'],
-        defaultCardType: 'column'
-      },
-      high_cardinality: {
-        name: 'A bar where cool froods hang out.',
-        description: '???',
-        fred: 'amount',
-        physicalDatatype: 'number',
-        availableCardTypes: ['column', 'search'],
-        defaultCardType: 'column',
-        cardinality: 1000
-      }
-    };
+
 
     var card = options.card || {
       fieldName: 'choropleth',
@@ -140,17 +165,26 @@ describe('Customize card dialog', function() {
     var cards = options.cards || [];
 
     var pageOverrides = {cards: cards};
-    var datasetOverrides = {id: 'rook-king', rowDisplayUnit: 'row', columns: columns};
+    var datasetOverrides = {id: 'rook-king', rowDisplayUnit: 'row', columns: COLUMNS};
     var pageModel = Mockumentary.createPage(pageOverrides, datasetOverrides);
     var outerScope = $rootScope.$new();
 
     outerScope.page = pageModel;
 
+    var deserializedCard = Card.deserialize(pageModel, card);
+
+    if (options.cardOptions) {
+      var keys = _.keys(options.cardOptions);
+      keys.forEach(function(key) {
+        deserializedCard.setOption(key, options.cardOptions[key]);
+      });
+    }
+
     outerScope.dialogState = {
-      'cardModel': Card.deserialize(pageModel, card),
+      'cardModel': deserializedCard,
       'show': true
     };
-    outerScope.cardModel = Card.deserialize(pageModel, card);
+    outerScope.cardModel = deserializedCard;
 
     if (options.preexisting) {
       cards.push(outerScope.cardModel);
@@ -488,168 +522,325 @@ describe('Customize card dialog', function() {
   });
 
   describe('feature map and choropleth settings', function() {
-    it('should load the customized url on open, if it\'s set', function() {
-      var url = 'http://www.socrata.com/{x}/{y}/{z}';
-      var options = {
-        'card': {
-          fieldName: 'choropleth',
-          cardSize: 2,
-          cardType: 'choropleth',
-          baseLayerUrl: url,
-          expanded: false
-        }
+    describe('map base layer settings', function() {
+      it('should load the customized url on open, if it\'s set', function() {
+        var url = 'http://www.socrata.com/{x}/{y}/{z}';
+        var options = {
+          'card': {
+            fieldName: 'choropleth',
+            cardSize: 2,
+            cardType: 'choropleth',
+            baseLayerUrl: url,
+            expanded: false
+          }
+        };
+        var dialog = createDialog(options);
+
+        expect(dialog.element.find('option:contains("Custom")').is(':selected')).to.equal(true);
+        expect(dialog.element.find('input[name=customLayerUrl]').val()).to.equal(url);
+      });
+
+      it('should provide baselayer options that change the choropleth baseLayerUrl', function() {
+        var dialog = createDialog();
+        var cardModel = dialog.scope.customizedCard;
+
+        var standard = dialog.element.find('option:contains("Standard")');
+        var esri = dialog.element.find('option:contains("Esri")');
+        var custom = dialog.element.find('option:contains("Custom")');
+
+        expect(standard.length).to.equal(1);
+        expect(esri.length).to.equal(1);
+        expect(custom.length).to.equal(1);
+
+        // Assert the default is right
+        expect(standard.is(':selected')).to.be.true;
+        expect(esri.is(':selected')).to.be.false;
+
+        // Select the Esri
+        esri.prop('selected', true).change();
+        dialog.scope.$digest();
+
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_URL);
+
+        // Select Standard
+        standard.prop('selected', true).change();
+        dialog.scope.$digest();
+
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+        // Select Custom
+        var input = dialog.element.find('input[name=customLayerUrl]')
+        expect(input.is(':visible')).to.equal(false);
+
+        custom.prop('selected', true).change();
+        dialog.scope.$digest();
+
+        expect(input.is(':visible')).to.equal(true);
+        // Shouldn't change the baseLayerUrl yet
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+        // Shouldn't change the baseLayerUrl when given a non-url
+        input.val('foobar').trigger('input').trigger('change');
+        dialog.scope.$digest();
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+        // Shouldn't change the baseLayerUrl when given a url without {x}, {y}, {z}
+        input.val('http://www.google.com/').trigger('input').trigger('change');
+        dialog.scope.$digest();
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+        // Should change the baseLayerUrl when given a url with {x}, {y}, {z}
+        input.val('http://www.socrata.com/{x}/{y}/{z}').trigger('input').trigger('change');
+        dialog.scope.$digest();
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal('http://www.socrata.com/{x}/{y}/{z}');
+      });
+
+      it('should provide baselayer options that change the feature map baseLayerUrl', function() {
+        var options = {
+          'card': {
+            fieldName: 'feature',
+            cardSize: 1,
+            cardType: 'feature',
+            expanded: false
+          }
+        };
+
+        var dialog = createDialog(options);
+
+        var cardModel = dialog.scope.customizedCard;
+
+        var standard = dialog.element.find('option:contains("Standard")');
+        var esri = dialog.element.find('option:contains("Esri")');
+        var custom = dialog.element.find('option:contains("Custom")');
+
+        expect(standard.length).to.equal(1);
+        expect(esri.length).to.equal(1);
+        expect(custom.length).to.equal(1);
+
+        // Assert the default is right
+        expect(standard.is(':selected')).to.be.true;
+        expect(esri.is(':selected')).to.be.false;
+
+        // Select the Esri
+        esri.prop('selected', true).change();
+        dialog.scope.$digest();
+
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_URL);
+
+        // Select Standard
+        standard.prop('selected', true).change();
+        dialog.scope.$digest();
+
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+        // Select Custom
+        var input = dialog.element.find('input[name=customLayerUrl]')
+        expect(input.is(':visible')).to.equal(false);
+
+        custom.prop('selected', true).change();
+        dialog.scope.$digest();
+
+        expect(input.is(':visible')).to.equal(true);
+
+        // Shouldn't change the baseLayerUrl yet
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+        // Shouldn't change the baseLayerUrl when given a non-url
+        input.val('foobar').trigger('input').trigger('change');
+        dialog.scope.$digest();
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+        // Shouldn't change the baseLayerUrl when given a url without {x}, {y}, {z}
+        input.val('http://www.google.com/').trigger('input').trigger('change');
+        dialog.scope.$digest();
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+
+        // Should change the baseLayerUrl when given a url with {x}, {y}, {z}
+        input.val('http://www.socrata.com/{x}/{y}/{z}').trigger('input').trigger('change');
+        dialog.scope.$digest();
+        expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal('http://www.socrata.com/{x}/{y}/{z}');
+      });
+
+      it('should set back to custom baselayer when coming back to customize', function() {
+        var dialog = createDialog();
+        var card = dialog.scope.customizedCard;
+        var custom = dialog.element.find('option:contains("Custom")');
+        var customInput = dialog.element.find('input[name=customLayerUrl]');
+        var standard = dialog.element.find('option:contains("Standard")');
+
+        // Set a custom url
+        var url = 'http://www.socrata.com/{x}/{y}/{z}';
+        custom.prop('selected', true).change();
+        expect(customInput.is(':visible')).to.equal(true);
+        customInput.val(url).trigger('input').trigger('change');
+        dialog.scope.$digest();
+        expect(card.getCurrentValue('baseLayerUrl')).to.equal(url);
+
+        // Now go back to the standard
+        standard.prop('selected', true).change();
+        expect(card.getCurrentValue('baseLayerUrl')).to.equal(undefined);
+
+        // Now back to custom
+        custom.prop('selected', true).change();
+
+        // It should set the base layer back to the custom url from before
+        expect(card.getCurrentValue('baseLayerUrl')).to.equal(url);
+      });
+    });
+
+    describe('map flannel title column settings', function() {
+      var featureMapCard = {
+        fieldName: 'feature',
+        cardSize: 2,
+        cardType: 'feature',
+        expanded: false
       };
-      var dialog = createDialog(options);
 
-      expect(dialog.element.find('option:contains("Custom")').is(':selected')).to.equal(true);
-      expect(dialog.element.find('input[name=customLayerUrl]').val()).to.equal(url);
-    });
+      beforeEach(function() {
+        ServerConfig.override('oduxEnableFeatureMapHover', true);
+      });
 
-    it('should provide baselayer options that change the choropleth baseLayerUrl', function() {
-      var dialog = createDialog();
-      var cardModel = dialog.scope.customizedCard;
+      it('should appear when card is a feature map', function() {
+        var dialog = createDialog({ card: featureMapCard });
+        var cardType = dialog.scope.customizedCard.getCurrentValue('cardType');
+        var flannelTitleConfigurationElement = dialog.element.find('.configure-flannel-title:visible');
 
-      var standard = dialog.element.find('option:contains("Standard")');
-      var esri = dialog.element.find('option:contains("Esri")');
-      var custom = dialog.element.find('option:contains("Custom")');
+        expect(cardType).to.equal('feature');
+        expect(flannelTitleConfigurationElement.length).to.equal(1);
+      });
 
-      expect(standard.length).to.equal(1);
-      expect(esri.length).to.equal(1);
-      expect(custom.length).to.equal(1);
+      it('should not appear when the card is not a feature map', function() {
+        var dialog = createDialog({
+          card: {
+            fieldName: 'bar',
+            cardSize: 2,
+            cardType: 'column',
+            expanded: false
+          }
+        });
+        var cardType = dialog.scope.customizedCard.getCurrentValue('cardType');
+        var flannelTitleConfigurationElement = dialog.element.find('.configure-flannel-title:visible');
 
-      // Assert the default is right
-      expect(standard.is(':selected')).to.be.true;
-      expect(esri.is(':selected')).to.be.false;
+        expect(cardType).to.not.equal('feature');
+        expect(flannelTitleConfigurationElement.length).to.equal(0);
+      });
 
-      // Select the Esri
-      esri.prop('selected', true).change();
-      dialog.scope.$digest();
+      it('should display column options excluding subcolumns and system columns, plus a null option', function() {
+        var dialog = createDialog({ card: featureMapCard });
+        var scope = dialog.scope;
+        var flannelTitleConfigurationElement = dialog.element.find('.configure-flannel-title:visible');
+        var options = flannelTitleConfigurationElement.find('option');
+        var optionNames = _.reduce(options, function(result, option) {
+          result.push($(option).attr('value'));
+          return result;
+        }, []);
 
-      expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_URL);
+        // We expect to have an option for each column unless it is a system column
+        // or subcolumn, plus one option for null.
+        var expectedLength = (_.keys(COLUMNS).length - 2) + 1;
 
-      // Select Standard
-      standard.prop('selected', true).change();
-      dialog.scope.$digest();
+        expect(options).to.have.length(expectedLength);
+        expect(optionNames).to.not.include(':system_column');
+        expect(optionNames).to.not.include('sub_column');
+        expect(optionNames).to.include('null');
+      });
 
-      expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+      it('should default to null and show a hint entry if no title column is defined', function() {
+        var dialog = createDialog({ card: featureMapCard });
+        var scope = dialog.scope;
+        var flannelTitleConfigurationElement = dialog.element.find('.configure-flannel-title:visible');
+        var selectedOption = flannelTitleConfigurationElement.find('option:selected');
 
-      // Select Custom
-      var input = dialog.element.find('input[name=customLayerUrl]')
-      expect(input.is(':visible')).to.equal(false);
+        expect(scope.selectedFlannelTitleColumnName).to.be.null;
+        expect(selectedOption.attr('value')).to.equal('null');
+        expect(selectedOption.text()).to.equal(I18n.addCardDialog.chooseColumn);
+      });
 
-      custom.prop('selected', true).change();
-      dialog.scope.$digest();
+      it('should default to the existing map flannel title column in dropdown if defined', function() {
+        var dialog = createDialog({
+          card: featureMapCard,
+          cardOptions: {
+            mapFlannelTitleColumn: 'bar'
+          }
+        });
 
-      expect(input.is(':visible')).to.equal(true);
-      // Shouldn't change the baseLayerUrl yet
-      expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+        var scope = dialog.scope;
+        var originalModel = dialog.outerScope.cardModel;
 
-      // Shouldn't change the baseLayerUrl when given a non-url
-      input.val('foobar').trigger('input').trigger('change');
-      dialog.scope.$digest();
-      expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+        var flannelTitleConfigurationElement = dialog.element.find('.configure-flannel-title:visible');
+        var selectedOption = flannelTitleConfigurationElement.find('option:selected');
 
-      // Shouldn't change the baseLayerUrl when given a url without {x}, {y}, {z}
-      input.val('http://www.google.com/').trigger('input').trigger('change');
-      dialog.scope.$digest();
-      expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+        expect(scope.selectedFlannelTitleColumnName).to.equal('bar');
+        expect(selectedOption.attr('value')).to.equal('bar');
+        expect(selectedOption.text()).to.equal(COLUMNS['bar'].name);
+      });
 
-      // Should change the baseLayerUrl when given a url with {x}, {y}, {z}
-      input.val('http://www.socrata.com/{x}/{y}/{z}').trigger('input').trigger('change');
-      dialog.scope.$digest();
-      expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal('http://www.socrata.com/{x}/{y}/{z}');
-    });
+      it('should toggle flannel title option in the dropdown menu', function() {
+        var dialog = createDialog({ card: featureMapCard });
 
-    it('should provide baselayer options that change the feature map baseLayerUrl', function() {
-      var options = {
-        'card': {
-          fieldName: 'feature',
-          cardSize: 1,
-          cardType: 'feature',
-          expanded: false
-        }
-      };
+        var scope = dialog.scope;
+        var originalModel = dialog.outerScope.cardModel;
 
-      var dialog = createDialog(options);
+        var flannelTitleConfigurationElement = dialog.element.find('.configure-flannel-title:visible');
+        var selectedOption = flannelTitleConfigurationElement.find('option:selected');
 
-      var cardModel = dialog.scope.customizedCard;
+        var manyKinds = dialog.element.find('option[value = "many_kinds"]');
+        var bar = dialog.element.find('option[value = "bar"]');
 
-      var standard = dialog.element.find('option:contains("Standard")');
-      var esri = dialog.element.find('option:contains("Esri")');
-      var custom = dialog.element.find('option:contains("Custom")');
+        // Check defaults
+        expect(scope.selectedFlannelTitleColumnName).to.be.null;
+        expect(selectedOption.attr('value')).to.equal('null');
+        expect(selectedOption.text()).to.equal(I18n.addCardDialog.chooseColumn);
 
-      expect(standard.length).to.equal(1);
-      expect(esri.length).to.equal(1);
-      expect(custom.length).to.equal(1);
+        // Select a different title and see changes reflected
+        manyKinds.prop('selected', true).change();
+        selectedOption = flannelTitleConfigurationElement.find('option:selected');
 
-      // Assert the default is right
-      expect(standard.is(':selected')).to.be.true;
-      expect(esri.is(':selected')).to.be.false;
+        expect(scope.selectedFlannelTitleColumnName).to.equal('many_kinds');
+        expect(selectedOption.attr('value')).to.equal('many_kinds');
+        expect(selectedOption.text()).to.equal(COLUMNS['many_kinds'].name);
 
-      // Select the Esri
-      esri.prop('selected', true).change();
-      dialog.scope.$digest();
+        // Select another title and see changes reflected
+        bar.prop('selected', true).change();
+        selectedOption = flannelTitleConfigurationElement.find('option:selected');
 
-      expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal(Constants.ESRI_BASE_URL);
+        expect(scope.selectedFlannelTitleColumnName).to.equal('bar');
+        expect(selectedOption.attr('value')).to.equal('bar');
+        expect(selectedOption.text()).to.equal(COLUMNS['bar'].name);
+      });
 
-      // Select Standard
-      standard.prop('selected', true).change();
-      dialog.scope.$digest();
+      it('should allow you to reselect no title (the "Choose a column..." hint entry) once another has been chosen', function() {
+        var dialog = createDialog({ card: featureMapCard });
 
-      expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+        var scope = dialog.scope;
+        var flannelTitleConfigurationElement = dialog.element.find('.configure-flannel-title:visible');
+        var selectedOption = flannelTitleConfigurationElement.find('option:selected');
 
-      // Select Custom
-      var input = dialog.element.find('input[name=customLayerUrl]')
-      expect(input.is(':visible')).to.equal(false);
+        var manyKinds = dialog.element.find('option[value = "many_kinds"]');
+        var defaults = dialog.element.find('option[value = null]');
 
-      custom.prop('selected', true).change();
-      dialog.scope.$digest();
+        // Check defaults
+        expect(scope.selectedFlannelTitleColumnName).to.be.null;
+        expect(selectedOption.attr('value')).to.equal('null');
+        expect(selectedOption.text()).to.equal(I18n.addCardDialog.chooseColumn);
 
-      expect(input.is(':visible')).to.equal(true);
+        // Select a column as the flannel title column
+        manyKinds.prop('selected', true).change();
+        selectedOption = flannelTitleConfigurationElement.find('option:selected');
 
-      // Shouldn't change the baseLayerUrl yet
-      expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+        expect(scope.selectedFlannelTitleColumnName).to.equal('many_kinds');
+        expect(selectedOption.attr('value')).to.equal('many_kinds');
+        expect(selectedOption.text()).to.equal(COLUMNS['many_kinds'].name);
 
-      // Shouldn't change the baseLayerUrl when given a non-url
-      input.val('foobar').trigger('input').trigger('change');
-      dialog.scope.$digest();
-      expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
+        // Select 'Choose a column...' to reset title back to defaults
+        defaults.prop('selected', true).change();
+        selectedOption = flannelTitleConfigurationElement.find('option:selected');
 
-      // Shouldn't change the baseLayerUrl when given a url without {x}, {y}, {z}
-      input.val('http://www.google.com/').trigger('input').trigger('change');
-      dialog.scope.$digest();
-      expect(cardModel.getCurrentValue('baseLayerUrl')).to.be.undefined;
-
-      // Should change the baseLayerUrl when given a url with {x}, {y}, {z}
-      input.val('http://www.socrata.com/{x}/{y}/{z}').trigger('input').trigger('change');
-      dialog.scope.$digest();
-      expect(cardModel.getCurrentValue('baseLayerUrl')).to.equal('http://www.socrata.com/{x}/{y}/{z}');
-    });
-
-    it('should set back to custom baselayer when coming back to customize', function() {
-      var dialog = createDialog();
-      var card = dialog.scope.customizedCard;
-      var custom = dialog.element.find('option:contains("Custom")');
-      var customInput = dialog.element.find('input[name=customLayerUrl]');
-      var standard = dialog.element.find('option:contains("Standard")');
-
-      // Set a custom url
-      var url = 'http://www.socrata.com/{x}/{y}/{z}';
-      custom.prop('selected', true).change();
-      expect(customInput.is(':visible')).to.equal(true);
-      customInput.val(url).trigger('input').trigger('change');
-      dialog.scope.$digest();
-      expect(card.getCurrentValue('baseLayerUrl')).to.equal(url);
-
-      // Now go back to the standard
-      standard.prop('selected', true).change();
-      expect(card.getCurrentValue('baseLayerUrl')).to.equal(undefined);
-
-      // Now back to custom
-      custom.prop('selected', true).change();
-
-      // It should set the base layer back to the custom url from before
-      expect(card.getCurrentValue('baseLayerUrl')).to.equal(url);
+        // Value will now be null as a String rather than just null
+        expect(scope.selectedFlannelTitleColumnName).to.equal('null');
+        expect(selectedOption.attr('value')).to.equal('null');
+        expect(selectedOption.text()).to.equal(I18n.addCardDialog.chooseColumn);
+      });
     });
   });
 });

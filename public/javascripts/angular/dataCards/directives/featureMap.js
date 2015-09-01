@@ -378,6 +378,7 @@
               flannelScope = $rootScope.$new();
               flannelScope.queryStatus = Constants.QUERY_PENDING;
               flannelScope.rowDisplayUnit = scope.rowDisplayUnit;
+              flannelScope.useDefaults = false;
 
               // Instantiate the flannel
               var flannelFactory = $compile(angular.element('<feature-map-flannel />'));
@@ -407,6 +408,30 @@
                     if (_.isNull(rows)) {
                       flannelScope.queryStatus = Constants.QUERY_ERROR;
                     } else {
+                      // Extract row titles from each row if present
+                      // before giving the rows to the flannel's scope for rendering.
+                      var customTitles = [];
+                      rows.map(function(row) {
+                        var title = _.remove(row, _.property('isTitleColumn'));
+                        customTitles.push(title[0]);
+                      });
+
+                      flannelScope.titles = [];
+                      if (_.find(customTitles, _.isDefined)) {
+                        flannelScope.titles = customTitles;
+                      } else {
+                        // If no row titles are specified, extract default row titles
+                        // (those from the column used to produce the current feature map),
+                        // and set flannel to use default titles.
+                        rows.map(function(row) {
+                          var title = _.remove(row, function(row) {
+                            return row.isFeatureMapColumn;
+                          });
+                          flannelScope.titles.push(title[0]);
+                        });
+                        flannelScope.useDefaults = true;
+                      }
+
                       flannelScope.rows = rows;
                       flannelScope.queryStatus = Constants.QUERY_SUCCESS;
 

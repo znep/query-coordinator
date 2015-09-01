@@ -5,7 +5,8 @@
 
     var defaultCardOptions = {
       mapExtent: {},
-      bucketSize: null
+      bucketSize: null,
+      mapFlannelTitleColumn: null
     };
 
     var ephemeralCardOptions = ['bucketSize'];

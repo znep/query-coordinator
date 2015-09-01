@@ -16,10 +16,7 @@ ui-tests/node_modules
 karma/coverage-reports
 karma/dataCards/mockTranslations.js
 /.idea/
-/node_modules/karma-sauce-launcher/
-/node_modules/karma-phantomjs-launcher/
-/node_modules/.bin/phantomjs
-/node_modules/phantomjs/
+node_modules
 .sass-cache
 dev-server/logs
 dev-server/*.pid

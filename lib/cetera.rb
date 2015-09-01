@@ -1,5 +1,6 @@
 require 'ostruct'
 require 'forwardable'
+require 'cgi'
 
 module Cetera
   @@cetera_host = APP_CONFIG['cetera_host']
@@ -29,6 +30,8 @@ module Cetera
     end
 
     params = ''
+
+    query = opts[:q] ? CGI::escape(opts[:q]) : nil
     # Calculate the Cetera offset by 0-indexing page and multiplying
     # by the limit (number of results per page).
     offset = opts[:page] ? (opts[:page] - 1) * opts[:limit] : 0
@@ -36,7 +39,7 @@ module Cetera
       :domains => domain,
       :search_context => domain,
       :only => only,
-      :q => opts[:q],
+      :q => query,
       :offset => offset,
       :limit => opts[:limit],
       :highlight => true

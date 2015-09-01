@@ -2,6 +2,8 @@
 
 set -e
 
+rbenv install -s `cat .ruby-version`
+
 export REVISION=`git rev-parse HEAD`
 
 echo "Saving REVISION file - ${REVISION}"

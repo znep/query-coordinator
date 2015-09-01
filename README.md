@@ -20,7 +20,7 @@ We use karma to test our Javascript code. These tests live under `karma`.
 There are multiple test suites defined by files named karma.conf.js.
 
 Test suites:
-1. Old UX tests: karma/old-ux/karma.conf.js
+1. Old UX tests: karma/oldUx/karma.conf.js
 2. Data Lens and Angular common components: karma/dataCards/karma.conf.js
 
 #### Setup

@@ -25,5 +25,5 @@
 //= require editor/init
 //= require editor/storytellerUtils
 //= require editor/SimpleEventEmitter
-//= require editor/Store
+//= require editor/stores/Store
 //= require_tree ./editor

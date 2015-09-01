@@ -287,7 +287,9 @@ private
       object
     end
     force_encoding = lambda do |o|
-      o.force_encoding(Encoding::UTF_8) if o.respond_to?(:force_encoding)
+      if o.respond_to?(:encode)
+        o.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+      end
     end
     traverse.call(params, force_encoding)
   end

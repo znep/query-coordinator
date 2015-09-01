@@ -1,12 +1,20 @@
 {
   "name": "socrata-visualizations",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "main": [
+    "components/SocrataFeatureMap.js",
     "socrata.visualizations.DataProvider.js",
+    "socrata.visualizations.MetadataProvider.js",
     "socrata.visualizations.SoqlDataProvider.js",
+    "socrata.visualizations.GeospaceDataProvider.js",
+    "socrata.visualizations.TileserverDataProvider.js",
+    "socrata.visualizations.pbf.js",
+    "socrata.visualizations.VectorTileManager.js",
     "socrata.visualizations.Visualization.js",
     "socrata.visualizations.ColumnChart.js",
-    "socrata.visualizations.columnChart.css"
+    "socrata.visualizations.columnChart.css",
+    "socrata.visualizations.FeatureMap.js",
+    "socrata.visualizations.featureMap.css"
   ],
   "ignore": [
     "bower_components/",

@@ -1,6 +1,5 @@
-# I'm middleware that logs HTTP_REFERER's to domains to a stomp service (that's
-# consumed by some ActiveMQ consumer). All y'all jive turkeys be careful: I
-# know where you've been.
+# I'm middleware that logs HTTP_REFERER's to domains to a file based metrics store on the localhost.
+# All y'all jive turkeys be careful: I know where you've been.
 class LogRefererMiddleware
   def initialize(app)
     @app = app

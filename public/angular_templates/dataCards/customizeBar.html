@@ -38,4 +38,10 @@
     ng-show="!hasChanges && isEphemeral">
     <span class="icon-warning"></span> {{'customizeBar.unsavedWarning' | I18n}}
   </span>
+  <div class="controls-right">
+    <remove-all-cards
+      ng-show="editMode"
+      enabled="editMode && hasCards">
+    </remove-all-cards>
+  </div>
 </div>

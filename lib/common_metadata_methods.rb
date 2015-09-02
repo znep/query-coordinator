@@ -84,15 +84,16 @@ module CommonMetadataMethods
       if parent_column != column[:name]
         # Look for the parent column
         parent_field_names = field_name_by_name[parent_column]
-        if (parent_field_names &&
+        is_subcolumn = (parent_field_names &&
             # There are columns that have the same name as this one, sans parenthetical.
             # Its field_name naming convention should also match, for us to infer it's a subcolumn.
             parent_field_names.any? do |parent_field_name|
               parent_field_name + '_' == field_name[0..parent_field_name.length]
             end
            )
-          column[:isSubcolumn] = true
-        end
+        column[:isSubcolumn] = is_subcolumn
+      else
+        column[:isSubcolumn] = false
       end
     end
   end

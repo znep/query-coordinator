@@ -249,9 +249,10 @@
 
     function renderIfReady() {
 
-      if (
-        visualizationRenderOptions.hasOwnProperty('bounds') &&
-        visualizationRenderOptions.hasOwnProperty('vectorTileGetter')) {
+      var hasBounds = visualizationRenderOptions.hasOwnProperty('bounds');
+      var hasTileGetter = visualizationRenderOptions.hasOwnProperty('vectorTileGetter');
+
+      if (hasBounds && hasTileGetter) {
 
         visualization.render(visualizationRenderOptions);
       }

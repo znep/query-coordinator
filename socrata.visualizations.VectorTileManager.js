@@ -28,10 +28,6 @@
     );
   }
 
-  var FEATURE_MAP_MAX_ZOOM = 18;
-  var FEATURE_MAP_MAX_TILE_DENSITY = 256 * 256;
-  var FEATURE_MAP_INSPECTOR_MAX_ROW_DENSITY = 100;
-
   var utils = root.socrata.utils;
 
   /**
@@ -550,7 +546,8 @@
         onRenderComplete: _.noop,
         // threshold options represent distance to neighboring points permitted for hover and click in px
         getHoverThreshold: _.noop,
-        maxHoverThreshold: pointStyle.radius(FEATURE_MAP_MAX_ZOOM)
+        maxHoverThreshold: pointStyle.radius(options.maxZoom),
+        maxTileDensity: options.maxTileDensity
       };
 
       L.Util.setOptions(this, options);
@@ -611,8 +608,6 @@
       var mapMousemoveCallback;
       var mapClickCallback;
       var mapMouseoutCallback;
-      var inspectorClosedCallback;
-      var clearAllHighlightsCallback;
       // Find all edges and corners that the mouse is near
       var edges = [['top'], ['left'], ['bottom'], ['right']];
       var corners = _.zip(['top', 'top', 'bottom', 'bottom'], ['left', 'right', 'left', 'right']);
@@ -876,9 +871,14 @@
 
             injectTileInfo(e);
 
-            // Only execute click if data under cursor does not exceed max tile or inspector row density.
-            var denseData = e.tile.totalPoints >= FEATURE_MAP_MAX_TILE_DENSITY;
-            var manyRows = _.sum(e.points, 'count') > FEATURE_MAP_INSPECTOR_MAX_ROW_DENSITY;
+            // Only execute click if data under cursor does not exceed max tile
+            // or inspector row density.
+            //
+            // NOTE: `self.options` (whith refers to the VectorTileManager
+            // instance options) is not the same as `this.options` (which refers
+            // to the map instance options)
+            var denseData = e.tile.totalPoints >= self.options.maxTileDensity;
+            var manyRows = _.sum(e.points, 'count') > self.options.rowInspectorMaxRowDensity;
 
             if (!denseData && !manyRows) {
 

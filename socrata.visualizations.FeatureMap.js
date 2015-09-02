@@ -28,8 +28,8 @@
   var FEATURE_MAP_ZOOM_DEBOUNCE_INTERVAL = 200;
   var FEATURE_MAP_RESIZE_DEBOUNCE_INTERVAL = 250;
   var FEATURE_MAP_FLYOUT_Y_OFFSET = 1.25;
-  var FEATURE_MAP_INSPECTOR_QUERY_BOX_PADDING = 1;
-  var FEATURE_MAP_INSPECTOR_MAX_ROW_DENSITY = 100;
+  var FEATURE_MAP_ROW_INSPECTOR_QUERY_BOX_PADDING = 1;
+  var FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY = 100;
 
   function FeatureMap(element, config) {
 
@@ -309,7 +309,7 @@
 
       var inspectorDataQueryConfig;
 
-      if (_flyoutData.count <= FEATURE_MAP_INSPECTOR_MAX_ROW_DENSITY) {
+      if (_flyoutData.count <= FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY) {
 
         inspectorDataQueryConfig = {
           latLng: event.latlng,
@@ -344,7 +344,7 @@
         notice: self.getLocalization('FLYOUT_CLICK_TO_INSPECT_NOTICE')
       };
 
-      if (_flyoutData.count > FEATURE_MAP_INSPECTOR_MAX_ROW_DENSITY) {
+      if (_flyoutData.count > FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY) {
 
         if (_map.getZoom() === FEATURE_MAP_MAX_ZOOM) {
           payload.notice = self.getLocalization('FLYOUT_FILTER_NOTICE');
@@ -479,6 +479,9 @@
         debug: false,
         hover: _hover,
         debounceMilliseconds: FEATURE_MAP_ZOOM_DEBOUNCE_INTERVAL,
+        rowInspectorMaxRowDensity: FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY,
+        maxZoom: FEATURE_MAP_MAX_ZOOM,
+        maxTileDensity: FEATURE_MAP_MAX_TILE_DENSITY,
         // Helper functions
         getFeatureId: _getFeatureId,
         getFeatureStyle: _getFeatureStyle,
@@ -542,7 +545,7 @@
     function _getQueryBounds(leafletContainerPoint) {
 
       var hoverThreshold = _getHoverThreshold(_map.getZoom());
-      var delta = FEATURE_MAP_INSPECTOR_QUERY_BOX_PADDING + hoverThreshold;
+      var delta = FEATURE_MAP_ROW_INSPECTOR_QUERY_BOX_PADDING + hoverThreshold;
       var northeastContainerPoint = L.point(
         leafletContainerPoint.x - delta,
         leafletContainerPoint.y + delta

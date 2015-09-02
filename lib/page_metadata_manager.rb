@@ -139,11 +139,11 @@ class PageMetadataManager
       metadb_metadata = nil
     end
 
+    new_view_manager.update(page_metadata['pageId'], page_metadata['name'], page_metadata['description'])
+
     if is_backed_by_metadb?(metadb_metadata)
-      new_view_manager.update(page_metadata['pageId'], page_metadata['name'], page_metadata['description'])
       update_metadb_page_metadata(page_metadata, metadb_metadata)
     else
-      new_view_manager.update(page_metadata['pageId'], page_metadata['name'], page_metadata['description'])
       # TODO: verify that phidippides does auth checks for this
       update_phidippides_page_metadata(page_metadata, options)
     end
@@ -166,32 +166,52 @@ class PageMetadataManager
       }, status: '500' }
     end
 
-    # Delete the actual page
-    # Need to get the page_metadata in order to get the dataset_id
-    page_metadata = phidippides.fetch_page_metadata(id, options)
-    if page_metadata[:status] !~ /^2[0-9][0-9]$/
-      return { body: { body: 'Not found' }, status: '404' }
-    end
     begin
-      phidippides_response = phidippides.delete_page_metadata(id, options)
-    rescue Phidippides::ConnectionError
-      return { body: { body: 'Phidippides connection error' }, status: '500' }
+      metadb_metadata = new_view_manager.fetch(id)
+    rescue
+      metadb_metadata = nil
     end
-    if phidippides_response.fetch(:status) !~ /^2[0-9][0-9]$/
-      report_error("Error deleting page #{id} in phidippides: #{phidippides_response.inspect}")
-      return phidippides_response
+
+    # Check if metadata is stored in metadb or phiddy. If phiddy, we need to actually delete
+    # the phidippides metadata.
+    # In either case, we need to pluck the dataset id so that we can remove the rollup tables
+    # from soda fountain.
+    if is_backed_by_metadb?(metadb_metadata)
+      dataset_id = metadb_metadata['displayFormat']['data_lens_page_metadata']['datasetId']
+      # Don't delete metadb-backed metadata from metadb. Since the entry in the lenses table
+      # is already marked as soft-deleted (deleted_at), we can ignore the metadb entry rather
+      # than deleting it.
+      response = { body: '', status: '200' }
+    else
+      # Delete the actual page
+      # Need to get the page_metadata in order to get the dataset_id
+      page_metadata = phidippides.fetch_page_metadata(id, options)
+      dataset_id = page_metadata.fetch(:body, {}).fetch(:datasetId)
+      if page_metadata[:status] !~ /^2[0-9][0-9]$/
+        return { body: { body: 'Not found' }, status: '404' }
+      end
+      begin
+        phidippides_response = phidippides.delete_page_metadata(id, options)
+      rescue Phidippides::ConnectionError
+        return { body: { body: 'Phidippides connection error' }, status: '500' }
+      end
+      if phidippides_response.fetch(:status) !~ /^2[0-9][0-9]$/
+        report_error("Error deleting page #{id} in phidippides: #{phidippides_response.inspect}")
+        return phidippides_response
+      end
+      response = phidippides_response
     end
 
     # Delete any rollups created for the page
     response = soda_fountain.delete_rollup_table(
-      dataset_id: page_metadata.fetch(:body, {}).fetch(:datasetId),
+      dataset_id: dataset_id,
       identifier: id
     )
     if response.fetch(:status) !~ /^2[0-9][0-9]$/
       report_error("Error deleting rollup table for page #{id}: #{response.inspect}")
     end
 
-    phidippides_response
+    response
   end
 
   private

@@ -253,6 +253,9 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_delete_deletes_core_and_phidippides_and_rollup_representation
+    NewViewManager.any_instance.stubs(
+      fetch: v1_page_metadata
+    )
     Phidippides.any_instance.expects(:fetch_page_metadata).returns(
       status: '200',
       body: { datasetId: 'data-eyed' }
@@ -277,6 +280,9 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_delete_doesnt_delete_phidippides_if_core_fails_for_some_reason
+    NewViewManager.any_instance.stubs(
+      fetch: v1_page_metadata
+    )
     Phidippides.any_instance.expects(:delete_page_metadata).never
 
     core_stub = mock
@@ -294,6 +300,9 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   # more important during a delete that the catalog entry is deleted (so users don't see something
   # to click on), than the actual metadata is deleted.
   def test_delete_leaves_things_in_an_inconsistent_state_if_phidippides_fails_for_some_reason
+    NewViewManager.any_instance.stubs(
+      fetch: v1_page_metadata
+    )
     Phidippides.any_instance.expects(:fetch_page_metadata).returns(
       status: '200',
       body: { datasetId: 'data-eyed' }
@@ -314,6 +323,9 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_delete_deletes_phidippides_if_core_doesnt_exist
+    NewViewManager.any_instance.stubs(
+      fetch: v1_page_metadata
+    )
     Phidippides.any_instance.expects(:delete_page_metadata).with do |id, options|
       assert_equal(id, 'four-four')
     end.then.returns({ body: nil, status: '200' })
@@ -334,6 +346,24 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     end.then.returns({ status: '200' })
 
     result = manager.delete('four-four')
+    assert_equal(result[:status], '200')
+  end
+
+  def test_delete_does_not_impact_phidippides_when_metadata_backed_by_metadb
+    NewViewManager.any_instance.stubs(
+      fetch: v2_page_metadata
+    )
+    SodaFountain.any_instance.expects(:delete_rollup_table).with do |args|
+      assert_equal({dataset_id: 'thw2-8btq', identifier: 'mjcb-9cxc'}, args)
+    end.then.returns({ status: '200' })
+    core_stub = mock
+    core_stub.stubs(reset_counters: {requests: {}, runtime: 0})
+    core_stub.expects(:delete_request).with do |url|
+      assert_equal('/views.json?id=mjcb-9cxc&method=delete', url)
+    end.then.returns('{ "body": null, "status": "200" }')
+    CoreServer::Base.stubs(connection: core_stub)
+
+    result = manager.delete('mjcb-9cxc')
     assert_equal(result[:status], '200')
   end
 

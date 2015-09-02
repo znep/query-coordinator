@@ -26,7 +26,12 @@
 
   $.fn.socrataFeatureMap = function(config) {
 
+    this.destroySocrataFeatureMap = function() {
+      visualization.destroy();
+    }
+
     var $element = $(this);
+    var datasetMetadata;
 
     // Geospace has knowledge of the extents of a column, which
     // we use to modify point data queries with a WITHIN_BOX clause.
@@ -62,16 +67,41 @@
       soqlDataProviderConfig
     );
 
-    // We also need to fetch the dataset metadata for the specified dataset so
-    // that we can use its column definitions when formatting data for the row
-    // inspector.
-    var metadataProviderConfig = {
-      domain: config.domain,
-      fourByFour: config.fourByFour
+    if (config.datasetMetadata) {
+
+      // If the caller already has datasetMetadata, it can be passed through as
+      // a configuration property.
+      datasetMetadata = config.datasetMetadata;
+
+    } else {
+
+      // Otherwise, we also need to fetch the dataset metadata for the
+      // specified dataset so that we can use its column definitions when
+      // formatting data for the row inspector.
+      var metadataProviderConfig = {
+        domain: config.domain,
+        fourByFour: config.fourByFour
+      }
+      var metadataProvider = new socrata.visualizations.MetadataProvider(
+        metadataProviderConfig
+      );
+
+      // Make the dataset metadata request before initializing the visualization
+      // in order to ensure that the column metadata is present before any of the
+      // row inspector events (which expect it to be present) can be fired.
+      //
+      // If this request fails, we will fall back to listing columns
+      // alphabetically instead of in the order in which they appear in the
+      // dataset grid view.
+      metadataProvider.
+        getDatasetMetadata().
+        then(
+          handleDatasetMetadataRequestSuccess,
+          handleDatasetMetadataRequestError
+        ).catch(function(e) {
+          logError(e);
+        });
     }
-    var metadataProvider = new socrata.visualizations.MetadataProvider(
-      metadataProviderConfig
-    );
 
     // The visualization itself handles rendering and interaction events.
     var visualizationConfig = {
@@ -94,23 +124,9 @@
       }
     };
 
-    var datasetMetadata;
-
     /**
      * Initial data requests to set up visualization state
      */
-
-    // Make the dataset metadata request before initializing the visualization
-    // in order to ensure that the column metadata is present before any of the
-    // row inspector events (which expect it to be present) can be fired.
-    metadataProvider.
-      getDatasetMetadata().
-      then(
-        handleDatasetMetadataRequestSuccess,
-        handleDatasetMetadataRequestError
-      ).catch(function(e) {
-        logError(e);
-      });
 
     // We query the extent of the features we are rendering in order to make
     // individual tile requests more performant (through the use of a
@@ -267,7 +283,7 @@
       // Each of our rows will be mapped to 'formattedRowData', an array of
       // objects.  Each row corresponds to a single page in the flannel.
       return data.rows.map(
-        function(row) {
+        function(row, index) {
 
           // If the dataset metadata request fails, then datasetMetadata will
           // be undefined. In this case, we should fall back to sorting
@@ -277,62 +293,92 @@
 
             return orderRowDataByColumnIndex(
               datasetMetadata.columns,
+              data.columns,
               row
             );
 
           } else {
 
-            return orderRowDataAlphabetically(row);
+            return orderRowDataAlphabetically(
+              data.columns,
+              row
+            );
           }
         }
       );
     }
 
-    function orderRowDataByColumnIndex(columns, row) {
+    function orderRowDataByColumnIndex(datasetMetadataColumns, columnNames, row) {
 
       var formattedRowData = [];
-      var columnNames = Object.keys(row);
+
+      // This method takes in the column name of the subColumn
+      // (e.g. Crime Location (address)) and the parentColumnName of that
+      // subColumn (e.g. Crime Location) and returns the subColumn string
+      // within the parentheses (address).
+      function extractSubColumnName(existingName, parentColumnName) {
+
+        var subColumnMatch = existingName.match(/\(([^()]+)\)$/);
+
+        if (subColumnMatch.length >= 2) {
+
+          var existingNameSuffix = subColumnMatch[1];
+
+          if (_.contains(['address', 'city', 'state', 'zip'], existingNameSuffix)) {
+            return existingNameSuffix;
+          }
+        }
+
+        return existingName.replace('{0} '.format(parentColumnName), '');
+      }
 
       columnNames.forEach(
         function(columnName) {
 
-          var columnMetadata = columns[columnName];
-          var columnValue = row[columnName];
+          if (datasetMetadataColumns.hasOwnProperty(columnName)) {
 
-          // If we're formatting a sub-column, first find the parent
-          // column name and position, and then format accordingly.
-          // Otherwise, just format the normal column.
-          //
-          // NOTE: We can rely upon sub-columns being added after their
-          // corresponding parent columns.
-          if (columnMetadata.isSubcolumn) {
+            var columnMetadata = datasetMetadataColumns[columnName];
+            var columnValue = row[columnNames.indexOf(columnName)];
 
-            // For example, if column name is 'crime_location_address'
-            // or 'crime_location_zip', the parentColumnName would be
-            // 'crime_location'.
-            var parentColumnName = columnName.slice(0, columnName.lastIndexOf('_'));
-            var parentPosition = columns[parentColumnName].position;
-            var subColumnName = constructSubColumnName(columnMetadataName, parentColumnName);
-            var subColumnDatum = {
-              columnName: subColumnName,
-              value: _.isObject(columnValue) ? [columnValue] : columnValue,
-              format: columnMetadata.format,
-              physicalDatatype: columnMetadata.physicalDatatype
-            };
+            // If we're formatting a sub-column, first find the parent
+            // column name and position, and then format accordingly.
+            // Otherwise, just format the normal column.
+            //
+            // NOTE: We can rely upon sub-columns being added after their
+            // corresponding parent columns.
+            if (columnMetadata.isSubcolumn) {
 
-            formattedRowData[parentPosition].value.push(subColumnDatum);
+              // For example, if column name is 'crime_location_address'
+              // or 'crime_location_zip', the parentColumnName would be
+              // 'crime_location'.
+              var parentColumnName = columnName.slice(0, columnName.lastIndexOf('_'));
 
-          } else {
+              if (datasetMetadataColumns.hasOwnProperty(parentColumnName)) {
 
-            // If the column value is an object (e.g. a coordinate point),
-            // we should format it slightly differently.
-            formattedRowData[column.position] = {
-              columnName: columnName,
-              value: _.isObject(columnValue) ? [columnValue] : columnValue,
-              format: _.isObject(columnValue) ? undefined : columnMetadata.format,
-              physicalDatatype: columnMetadata.physicalDatatype
-            };
+                var parentPosition = datasetMetadataColumns[parentColumnName].position;
+                var subColumnName = extractSubColumnName(columnName, parentColumnName);
+                var subColumnDatum = {
+                  column: subColumnName,
+                  value: _.isObject(columnValue) ? [columnValue] : columnValue,
+                  format: columnMetadata.format,
+                  physicalDatatype: columnMetadata.physicalDatatype
+                };
 
+                formattedRowData[parentPosition].value.push(subColumnDatum);
+              }
+
+            } else {
+
+              // If the column value is an object (e.g. a coordinate point),
+              // we should format it slightly differently.
+              formattedRowData[columnMetadata.position] = {
+                column: columnName,
+                value: _.isObject(columnValue) ? [columnValue] : columnValue,
+                format: _.isObject(columnValue) ? undefined : columnMetadata.format,
+                physicalDatatype: columnMetadata.physicalDatatype
+              };
+
+            }
           }
         }
       );
@@ -341,20 +387,25 @@
       // out of order, it is possible that we may not update all of them.
       // Un-updated indices will default to undefined, and the following
       // filter will collapse the array down to only defined values.
-      return formattedRowData.filter(!_.isUndefined);
+      return formattedRowData.
+        filter(
+          function (datum) {
+            return !_.isUndefined(datum)
+          }
+        );
     }
 
-    function orderRowDataAlphabetically(row) {
+    function orderRowDataAlphabetically(columnNames, row) {
 
       var formattedRowData = [];
-      var columnNames = Object.keys(row);
+      var sortedColumnNames = columnNames.sort();
 
-      columnNames.
-        sort().
+      sortedColumnNames.
         forEach(
-        function(columnName) {
-          
-          var columnValue = row[columnName];
+        function(columnName, index) {
+
+          var originalColumnIndex = columnNames.indexOf(columnName);
+          var columnValue = row[originalColumnIndex];
 
           var rowDatum = {
             column: columnName,

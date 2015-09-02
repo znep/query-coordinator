@@ -128,7 +128,18 @@
     };
 
     this.destroy = function() {
-      _detachEvents(this.element);
+
+      if (_map) {
+
+        _detachEvents(this.element);
+
+        // Remove the map after detaching events since `_detachEvents()` expects
+        // the `_map` instance to exist.
+        _map.remove();
+      }
+
+      // Finally, clear out the container.
+      this.element.empty();
     };
 
     /**

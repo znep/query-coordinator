@@ -283,7 +283,7 @@
       // Each of our rows will be mapped to 'formattedRowData', an array of
       // objects.  Each row corresponds to a single page in the flannel.
       return data.rows.map(
-        function(row, index) {
+        function(row) {
 
           // If the dataset metadata request fails, then datasetMetadata will
           // be undefined. In this case, we should fall back to sorting

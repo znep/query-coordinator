@@ -21,6 +21,8 @@ en:
         choose_provider_heading: 'Select data or media provider'
         back_button_text: 'Back'
         insert_button_text: 'Insert'
+        cancel_button_text: 'Cancel'
+        try_again_button_text: 'Try again'
         youtube:
           button_text: 'YouTube'
           heading: 'Add a YouTube video'
@@ -29,11 +31,18 @@ en:
           invalid_message_title_2: 'Something went wrong.'
           invalid_message_description: 'Try using a valid link to a YouTube video.'
         visualization:
-          button_text: 'Vizualization'
+          button_text: 'Visualization'
           choose_dataset_heading: 'Choose a dataset to visualize'
           configure_vizualization_heading: 'Choose data to visualize'
         image_upload:
           button_text: 'Image Upload'
+          heading: 'Upload an image'
+          input_label: 'Select an image (supported image types .jpg, .gif, or a .png)'
+          uploading_message: 'Uploading...'
+          errors:
+            validation_file_size: 'Whoa! That image was bit too big. Try resizing it or using a smaller one.'
+            validation_file_type: 'Shoot! We don’t support that kind of file. Try using a .jpg, .gif, or a .png'
+            exception: "We're really sorry! There was an unexpected problem with your upload.<br>Our engineers have been notified."
     visualizations:
       no_value_placeholder: '(No value)'
       flyout:

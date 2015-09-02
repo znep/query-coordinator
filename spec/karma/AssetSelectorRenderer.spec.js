@@ -221,6 +221,50 @@ describe('AssetSelectorRenderer', function() {
 
       container.find('.modal-dialog').trigger('visualizationSelected', {});
     });
+
+    describe('select file in image upload', function() {
+      var mockFile = {
+        name: 'fake-file.png',
+        type: 'image/png',
+        size: 1024 * 2
+      };
+
+      beforeEach(function() {
+        storyteller.dispatcher.dispatch({
+          action: Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
+        });
+      });
+
+      it('verifies a file is selected before starting an upload', function() {
+        container.find('[data-asset-selector-validate-field="imageUpload"]').trigger('change', { target: { files: [] }});
+        assert.isTrue(storyteller.fileUploader === undefined);
+      });
+
+      it('starts uploading the selected file', function() {
+        container.find('[data-asset-selector-validate-field="imageUpload"]').trigger('change', { target: { files: [mockFile] }});
+        assert.isTrue(storyteller.fileUploader !== null);
+      });
+
+      // TODO No easy way to test this with the current implementation.
+      // Need to move it into a singleton.
+      xdescribe('when an upload is already in progress', function() {
+        beforeEach(function() {
+          storyteller.FileUploaderMocker.mock();
+          storyteller.fileUploader = new storyteller.FileUploader();
+          sinon.spy(storyteller.fileUploader, 'destroy');
+        });
+
+        afterEach(function() {
+          storyteller.FileUploaderMocker.unmock();
+          delete storyteller.fileUploader;
+        });
+
+        it('cancels previous uploads in progress', function(done) {
+          container.find('[data-asset-selector-validate-field="imageUpload"]').trigger('change', { target: { files: [mockFile] }});
+          assert.isTrue(storyteller.fileUploader.destroy.calledOnce);
+        });
+      });
+    });
   });
 
   describe('when rendering', function() {
@@ -242,6 +286,7 @@ describe('AssetSelectorRenderer', function() {
       assert.equal(container.find('.modal-close-btn').length, 1);
       assert.isTrue(container.find('[data-action="ASSET_SELECTOR_CHOOSE_YOUTUBE"]').length > 0);
       assert.isTrue(container.find('[data-action="ASSET_SELECTOR_CHOOSE_VISUALIZATION"]').length > 0);
+      assert.isTrue(container.find('[data-action="ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD"]').length > 0);
     });
 
     it('renders the "choose YouTube" content on an `ASSET_SELECTOR_CHOOSE_YOUTUBE` event', function() {
@@ -437,6 +482,159 @@ describe('AssetSelectorRenderer', function() {
           ).length, 1);
         });
 
+      });
+    });
+
+    describe('when a `ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD` action is fired', function() {
+      beforeEach(function() {
+        storyteller.dispatcher.dispatch({
+          action: Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
+        });
+      });
+
+      it('renders a file input', function() {
+        assert.equal(
+          container.find('[data-asset-selector-validate-field="imageUpload"]').attr('type'),
+          'file'
+        );
+      });
+
+      describe('the modal', function() {
+        it('has a close button', function() {
+          assert.equal(container.find('.modal-close-btn').length, 1);
+        });
+
+        it('has a button that goes back to the provider list', function() {
+          assert.equal(
+            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_CHOOSE_PROVIDER)
+          ).length, 1);
+        });
+
+        it('has a disabled insert button', function() {
+          assert.isTrue(
+            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_APPLY)).prop('disabled')
+          );
+        });
+      });
+    });
+
+    describe('when a `FILE_UPLOAD_PROGRESS` action is fired', function() {
+      beforeEach(function() {
+        storyteller.dispatcher.dispatch({
+          action: Constants.FILE_UPLOAD_PROGRESS,
+          percentLoaded: 0
+        });
+      });
+
+      it('has a spinner', function() {
+        assert.include(container.find('.asset-selector-image-upload-progress').attr('class'), 'bg-loading-spinner');
+      });
+
+      it('has a cancel button in the progress pane', function() {
+        assert.equal(
+          container.find('.asset-selector-cancel-upload[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD)).length,
+          1
+        );
+      });
+
+      describe('the modal', function() {
+        it('has a close button', function() {
+          assert.equal(container.find('.modal-close-btn').length, 1);
+        });
+
+        it('has a button that goes back to the choose image upload step', function() {
+          assert.isAbove(
+            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD)
+          ).length, 0);
+        });
+
+        it('has a disabled insert button', function() {
+          assert.isTrue(
+            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_APPLY)).prop('disabled')
+          );
+        });
+      });
+    });
+
+    describe('when a `FILE_UPLOAD_ERROR` action is fired', function() {
+      beforeEach(function() {
+        storyteller.dispatcher.dispatch({
+          action: Constants.FILE_UPLOAD_ERROR,
+          error: {
+            step: 'get_resource',
+            reason: { status: 400, message: 'Bad Request' }
+          }
+        });
+      });
+
+      it('removes spinner', function() {
+        assert.notInclude(container.find('.asset-selector-image-upload-progress').attr('class'), 'bg-loading-spinner');
+      });
+
+      it('removes cancel button, replaces with try again', function() {
+        var buttonSelector = container.find('.asset-selector-image-upload-progress [data-action="{0}"]'.format(Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD));
+        assert.equal(buttonSelector.length, 1);
+        assert.include(buttonSelector.attr('class'), 'asset-selector-try-again');
+        assert.equal(container.find('.asset-selector-cancel-upload').length, 0);
+      });
+
+      describe('the modal', function() {
+        it('has a close button', function() {
+          assert.equal(container.find('.modal-close-btn').length, 1);
+        });
+
+        it('has a button that goes back to the choose image upload step', function() {
+          assert.isAbove(
+            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD)
+          ).length, 0);
+        });
+
+        it('has a disabled insert button', function() {
+          assert.isTrue(
+            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_APPLY)).prop('disabled')
+          );
+        });
+      });
+    });
+
+    describe('when a `FILE_UPLOAD_DONE` action is fired', function() {
+      var imageUrl = 'https://media.giphy.com/media/I8BOASC4LS0rS/giphy.gif';
+      var documentId = 9876;
+      var ImgEl;
+
+      beforeEach(function() {
+        storyteller.dispatcher.dispatch({
+          action: Constants.FILE_UPLOAD_DONE,
+          url: imageUrl,
+          documentId: documentId
+        });
+        imgEl = container.find('.asset-selector-preview-image');
+      });
+
+      it('renders a preview image from the payload URL', function() {
+        assert.equal(imgEl.attr('src'), imageUrl);
+      });
+
+      it('removes background spinner', function() {
+        assert.notInclude(container.find('.asset-selector-preview-image-container').attr('class'), 'bg-loading-spinner');
+      });
+
+      describe('the modal', function() {
+        it('has a close button', function() {
+          assert.equal(container.find('.modal-close-btn').length, 1);
+        });
+
+        it('has a button that goes back to the choose image upload step', function() {
+          assert.equal(
+            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD)
+          ).length, 1);
+        });
+
+        it('has an enabled insert button', function() {
+          assert.isFalse(
+            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_APPLY)).prop('disabled')
+          );
+        });
       });
     });
 

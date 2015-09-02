@@ -71,6 +71,22 @@
       });
 
       _dialog.on(
+        'change',
+        '[data-asset-selector-validate-field="imageUpload"]',
+        function(event) {
+          if (event.target.files && event.target.files.length > 0) {
+
+            if (storyteller.fileUploader && storyteller.fileUploader !== null) {
+              storyteller.fileUploader.destroy();
+            }
+
+            storyteller.fileUploader = new storyteller.FileUploader();
+            storyteller.fileUploader.upload(event.target.files[0]);
+          }
+        }
+      );
+
+      _dialog.on(
         'keyup',
         '[data-asset-selector-validate-field="youtubeId"]',
         function(event) {
@@ -219,6 +235,15 @@
             selectorContent = _renderChooseImageUploadTemplate();
             break;
 
+          case Constants.FILE_UPLOAD_PROGRESS:
+          case Constants.FILE_UPLOAD_ERROR:
+            selectorContent = _renderFileUploadProgressTemplate();
+            break;
+
+          case Constants.FILE_UPLOAD_DONE:
+            selectorContent = _renderImagePreviewTemplate();
+            break;
+
           default:
             selectorContent = null;
             break;
@@ -245,6 +270,14 @@
 
         case Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
           _renderConfigureVisualizationData(componentValue);
+          break;
+
+        case Constants.FILE_UPLOAD_DONE:
+          _renderImagePreviewData(componentValue);
+          break;
+
+        case Constants.FILE_UPLOAD_ERROR:
+          _renderImageUploadErrorData(componentValue);
           break;
 
         default:
@@ -279,11 +312,236 @@
 
       var providers = $('<ul>', {'class': 'button-list'}).append([
         $('<li>').html(youtubeButton),
-        $('<li>').html(visualizationButton)
+        $('<li>').html(visualizationButton),
+        $('<li>').html(imageUploadButton)
       ]);
       var content = $('<div>', { 'class': 'modal-content' }).append(providers);
 
       return [ heading, closeButton, content ];
+    }
+
+    function _renderChooseImageUploadTemplate() {
+
+      var heading = _renderModalTitle(
+        I18n.t('editor.asset_selector.image_upload.heading')
+      );
+
+      var closeButton = _renderModalCloseButton();
+
+      var inputLabel = $(
+        '<h2>',
+        { 'class': 'asset-selector-input-label input-label' }
+      ).text(I18n.t('editor.asset_selector.image_upload.input_label'));
+
+      var inputControl = $(
+        '<input>',
+        {
+          'class': 'asset-selector-text-input',
+          'data-asset-selector-validate-field': 'imageUpload',
+          'type': 'file'
+        }
+      );
+
+      var backButton = _renderModalBackButton(Constants.ASSET_SELECTOR_CHOOSE_PROVIDER);
+
+      var insertButton = $(
+        '<button>',
+        {
+          'class': 'btn accent-btn',
+          'data-action': Constants.ASSET_SELECTOR_APPLY,
+          'disabled': 'disabled'
+        }
+      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+
+      var content = $(
+        '<div>',
+        { 'class': 'asset-selector-input-group' }
+      ).append([
+        inputLabel,
+        inputControl
+      ]);
+
+      var buttonGroup = $(
+        '<div>',
+        { 'class': 'asset-selector-button-group r-to-l' }
+      ).append([
+        backButton,
+        insertButton
+      ]);
+
+      return [ heading, closeButton, content, buttonGroup ];
+    }
+
+    function _renderFileUploadProgressTemplate() {
+      var heading = _renderModalTitle(
+        I18n.t('editor.asset_selector.image_upload.heading')
+      );
+
+      var closeButton = _renderModalCloseButton();
+
+      var progress = $(
+        '<div>',
+        { 'class': 'asset-selector-image-upload-progress bg-loading-spinner' }
+      );
+
+      var uploadProgressMessage = $(
+        '<div>',
+        { 'class': 'asset-selector-uploading-message' }
+      ).text(I18n.t('editor.asset_selector.image_upload.uploading_message'));
+
+      var uploadCancelButton = $(
+        '<button>',
+        {
+          'class': 'btn asset-selector-cancel-upload',
+          'data-action': Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
+        }
+      ).text(I18n.t('editor.asset_selector.cancel_button_text'));
+
+      var tryAgainButton = $(
+        '<button>',
+        {
+          'class': 'hidden btn asset-selector-try-again',
+          'data-action': Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
+        }
+      ).text(I18n.t('editor.asset_selector.try_again_button_text'));
+
+      progress.append([
+        uploadProgressMessage,
+        uploadCancelButton,
+        tryAgainButton
+      ]);
+
+      var backButton = _renderModalBackButton(Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD);
+
+      var insertButton = $(
+        '<button>',
+        {
+          'class': 'btn accent-btn',
+          'data-action': Constants.ASSET_SELECTOR_APPLY,
+          'disabled': 'disabled'
+        }
+      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+
+      var content = $(
+        '<div>',
+        { 'class': 'asset-selector-input-group' }
+      ).append([
+        progress
+      ]);
+
+      var buttonGroup = $(
+        '<div>',
+        { 'class': 'asset-selector-button-group r-to-l' }
+      ).append([
+        backButton,
+        insertButton
+      ]);
+
+      return [ heading, closeButton, content, buttonGroup ];
+    }
+
+
+    function _renderImageUploadErrorData(componentProperties) {
+      var progressContainer = _dialog.find('.asset-selector-image-upload-progress');
+      var progressMessage = progressContainer.find('.asset-selector-uploading-message');
+      var cancelButton = progressContainer.find('.asset-selector-cancel-upload');
+      var tryAgainButton = progressContainer.find('.asset-selector-try-again');
+      var errorStep = componentProperties.step;
+      var messageTranslationKey;
+
+      if (componentProperties.step) {
+        progressContainer.removeClass('bg-loading-spinner');
+        cancelButton.remove();
+        tryAgainButton.removeClass('hidden');
+
+        if (/^validation.*/.test(errorStep)) {
+          messageTranslationKey = 'editor.asset_selector.image_upload.errors.{0}'.format(errorStep);
+        } else {
+          messageTranslationKey = 'editor.asset_selector.image_upload.errors.exception';
+        }
+
+        progressMessage.html(I18n.t(messageTranslationKey));
+      }
+    }
+
+    function _renderImagePreviewTemplate() {
+
+      var heading = _renderModalTitle(
+        I18n.t('editor.asset_selector.image_upload.heading')
+      );
+
+      var closeButton = _renderModalCloseButton();
+
+      var previewImage = $(
+        '<img>',
+        { 'class': 'asset-selector-preview-image' }
+      );
+
+      var previewContainer = $(
+        '<div>',
+        { 'class': 'asset-selector-preview-image-container bg-loading-spinner' }
+      ).append([
+        previewImage
+      ]);
+
+      var backButton = _renderModalBackButton(Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD);
+
+      var insertButton = $(
+        '<button>',
+        {
+          'class': 'btn accent-btn',
+          'data-action': Constants.ASSET_SELECTOR_APPLY
+        }
+      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+
+      var buttonGroup = $(
+        '<div>',
+        { 'class': 'asset-selector-button-group r-to-l' }
+      ).append([
+        backButton,
+        insertButton
+      ]);
+
+      var content = $(
+        '<div>',
+        { 'class': 'asset-selector-input-group' }
+      ).append([
+        previewContainer
+      ]);
+
+      return [ heading, closeButton, content, buttonGroup ];
+    }
+
+    function _renderImagePreviewData(componentProperties) {
+
+      var documentId = null;
+      var imageUrl = null;
+      var imageContainer = _dialog.find('.asset-selector-preview-image-container');
+      var imageElement = imageContainer.find('.asset-selector-preview-image');
+      var imageSrc = imageElement.attr('src');
+      var insertButton = _dialog.find(
+        '[data-action="' + Constants.ASSET_SELECTOR_APPLY + '"]'
+      );
+
+      if (componentProperties !== null &&
+        _.has(componentProperties, 'documentId') &&
+        _.has(componentProperties, 'url')) {
+
+        documentId = componentProperties.documentId;
+        imageUrl = componentProperties.url;
+      }
+
+      if (!_.isNull(documentId) && !_.isNull(imageUrl)) {
+
+        if (imageSrc !== imageUrl) {
+          imageElement.attr('src', imageUrl);
+        }
+
+        imageContainer.removeClass('bg-loading-spinner');
+        insertButton.prop('disabled', false);
+      } else {
+        insertButton.prop('disabled', true);
+      }
     }
 
     function _renderChooseYoutubeTemplate() {

@@ -3,6 +3,11 @@
 # endpoint.
 class Api::V1::DocumentsController < ApplicationController
 
+  def show
+    document = Document.find(params[:id])
+    render json: document
+  end
+
   def create
     create_document_service = CreateDocument.new(current_user, document_params)
     document = create_document_service.document
@@ -17,6 +22,6 @@ class Api::V1::DocumentsController < ApplicationController
   private
 
   def document_params
-    params.require(:document).permit(:direct_upload_url, :upload_content_type, :upload_file_name, :upload_file_size)
+    params.require(:document).permit(:story_uid, :direct_upload_url, :upload_content_type, :upload_file_name, :upload_file_size)
   end
 end

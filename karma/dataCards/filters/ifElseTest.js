@@ -1,4 +1,6 @@
 describe('ifElse filter', function() {
+  'use strict';
+
   var AFFIRMATIVE_VALUE = 'truthy';
   var NEGATIVE_VALUE = 'falsy';
 

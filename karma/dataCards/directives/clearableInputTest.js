@@ -1,4 +1,6 @@
 describe('<clearable-input/>', function() {
+  'use strict';
+
   var $document;
   var $window;
   var testHelpers;

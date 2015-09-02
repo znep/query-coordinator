@@ -1,4 +1,6 @@
 describe('<customize-bar/>', function() {
+  'use strict';
+
   var $provide;
   var $window;
   var testHelpers;

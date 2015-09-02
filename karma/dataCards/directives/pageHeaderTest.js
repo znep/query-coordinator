@@ -1,4 +1,5 @@
 describe('<page-header />', function() {
+  'use strict';
 
   var ServerConfig;
   var testHelpers;

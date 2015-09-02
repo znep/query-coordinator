@@ -1,4 +1,6 @@
 describe('Rich text editor', function() {
+  'use strict';
+
   var $rootScope;
   var testHelpers;
   var $httpBackend;

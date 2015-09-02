@@ -1,4 +1,6 @@
 describe('Request ID service', function() {
+  'use strict';
+
   var RequestId;
 
   beforeEach(function() {

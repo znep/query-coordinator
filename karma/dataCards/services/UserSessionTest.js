@@ -1,4 +1,6 @@
 describe('UserSessionService', function() {
+  'use strict';
+
   var $httpBackend;
   var UserSession;
   var CURRENT_USER_URL_MATCHER = new RegExp('/api/users/current\\.json$');

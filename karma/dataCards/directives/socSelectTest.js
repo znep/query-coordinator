@@ -1,4 +1,6 @@
 describe('<soc-select/>', function() {
+  'use strict';
+
   var testHelpers;
   var $rootScope;
 

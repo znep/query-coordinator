@@ -1,4 +1,6 @@
 describe('kitten directive', function() {
+  'use strict';
+
   var $rootScope;
   var testHelpers;
   var DEFAULT_WIDTH = 300;

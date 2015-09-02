@@ -1,4 +1,6 @@
 describe('RX Extensions', function() {
+  'use strict';
+
   describe('risingEdge', function() {
     it('should return true for a single-element sequence containing only a true value', function(done) {
       var onlyTrue = Rx.Observable.fromArray([true]);

@@ -1,4 +1,6 @@
 describe('API Explorer', function() {
+  'use strict';
+
   var FAKE4x4 = 'fake-data';
   var TEST_DOMAIN = 'config.ru';
   var DOCUMENTATION_URL = 'http://dev.socrata.com/foundry/#/{0}/{1}'.format(

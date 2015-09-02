@@ -1,4 +1,6 @@
 describe('SortedTileLayout', function() {
+  'use strict';
+
   var SortedTileLayout;
   var instance;
   var actual;

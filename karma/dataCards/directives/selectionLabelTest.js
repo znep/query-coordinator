@@ -1,4 +1,6 @@
 describe('<selection-label/>', function() {
+  'use strict';
+
   var $window;
   var testHelpers;
   var $rootScope;

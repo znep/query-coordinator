@@ -1,4 +1,6 @@
 describe('<save-as/>', function() {
+  'use strict';
+
   var scope;
   var $window;
   var testHelpers;
@@ -99,7 +101,7 @@ describe('<save-as/>', function() {
 
     it('should call the savePageAs callback when a name is provided and the "Save" button is clicked', function() {
       var TEST_INPUT = 'test input';
-      $saveAsName = $saveAs.find('#save-as-name');
+      var $saveAsName = $saveAs.find('#save-as-name');
       $saveAsName.val(TEST_INPUT).trigger('keyup');
       $saveAs.find('button[data-action="save"]').click();
 
@@ -113,7 +115,7 @@ describe('<save-as/>', function() {
 
     it('should call the savePageAs callback only once if the user clicks the "Save" button multiple times', function() {
       var TEST_INPUT = 'test input';
-      $saveAsName = $saveAs.find('#save-as-name');
+      var $saveAsName = $saveAs.find('#save-as-name');
       $saveAsName.val(TEST_INPUT).trigger('keyup');
       $saveAs.find('button[data-action="save"]').click();
 
@@ -134,16 +136,16 @@ describe('<save-as/>', function() {
 
     it('should show a loading spinner when a name is provided and the "Save" button is clicked', function() {
       var TEST_INPUT = 'test input';
-      $saveAsName = $saveAs.find('#save-as-name');
+      var $saveAsName = $saveAs.find('#save-as-name');
       $saveAsName.val(TEST_INPUT).trigger('keyup');
-      $saveButton = $saveAs.find('button[data-action="save"]');
+      var $saveButton = $saveAs.find('button[data-action="save"]');
       $saveButton.click();
 
       scope.$apply();
 
       expect($saveAsName.hasClass('form-error')).to.be.false;
       expect(scope.savePageAs.calledOnce).to.be.true;
-      $spinner = $saveButton.find('spinner.save-button-flyout-target');
+      var $spinner = $saveButton.find('spinner.save-button-flyout-target');
       expect($spinner.length).to.equal(1);
     });
 

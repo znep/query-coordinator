@@ -1,4 +1,6 @@
 describe('Routes service', function() {
+  'use strict';
+
   beforeEach(module('dataCards.services'));
 
   describe('Page view routes', function() {

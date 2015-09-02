@@ -1,4 +1,5 @@
 describe('Revert button', function() {
+  'use strict';
 
   var testHelpers;
   var rootScope;

@@ -1,4 +1,5 @@
 describe('modalDialog', function() {
+  'use strict';
 
   var testHelpers;
   var rootScope;

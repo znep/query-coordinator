@@ -1,4 +1,5 @@
 describe('lo-dash mixins', function() {
+  'use strict';
 
   describe('isDefined', function() {
     it('should return true for everything but "undefined"', function() {

@@ -351,7 +351,7 @@
                   return {
                     name: parseFloat(bucket.name),
                     value: bucket.value
-                  }
+                  };
                 });
               });
             return Rx.Observable.fromPromise(cardDataPromise);

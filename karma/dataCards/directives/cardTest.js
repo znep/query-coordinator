@@ -152,7 +152,7 @@ describe('card directive', function() {
     testHelpers.TestDom.clear();
   });
 
-  describe.only('debug flyout', function() {
+  describe('debug flyout', function() {
     var el;
     var cardModel;
 

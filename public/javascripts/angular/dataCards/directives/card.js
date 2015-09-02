@@ -20,7 +20,7 @@
         var descriptionTruncatedContent;
         var descriptionElementsWithMaxSize;
 
-        $scope.debugDataLens = ServerConfig.get("debugDataLens");
+        $scope.debugDataLens = ServerConfig.get('debugDataLens');
 
         $scope.descriptionCollapsed = true;
         $scope.$bindObservable('expanded', model$.observeOnLatest('expanded'));
@@ -34,7 +34,7 @@
 
         // N.B.: Card models already have unique ids, but they can be shared across card directives.
         var uniqueId = _.uniqueId();
-        element[0].dataset['card_directive_id'] = uniqueId;
+        element[0].dataset.card_directive_id = uniqueId;
 
         // DEBUG INFO STUFF
 
@@ -61,7 +61,7 @@
           debugInfo.unfilteredResponseHeaders = headers;
         });
 
-        var selector = "card[data-card_directive_id='" + uniqueId + "'] * .icon-table";
+        var selector = 'card[data-card_directive_id="' + uniqueId + '"] * .icon-table';
         FlyoutService.register({
           // use data
           selector: selector,
@@ -73,18 +73,18 @@
             var renderTime = [
                 '<div class="flyout-row">',
                   '<span class="flyout-cell">Render time</span>',
-                  '<span class="flyout-cell">{0} ms</span>'
-                      .format(debugInfo.renderCompleteTime - debugInfo.renderStartTime),
+                  '<span class="flyout-cell">{0} ms</span>'.
+                      format(debugInfo.renderCompleteTime - debugInfo.renderStartTime),
                 '</div>'
             ];
 
             var filteredUsedRollups;
-            if(_.isPresent(debugInfo.filteredResponseHeaders)) {
+            if (_.isPresent(debugInfo.filteredResponseHeaders)) {
               filteredUsedRollups = [
                 '<div class="flyout-row">',
                   '<span class="flyout-cell">Filtered query used rollups</span>',
-                  '<span class="flyout-cell">{0}</span>'
-                      .format(_.isPresent(debugInfo.filteredResponseHeaders['x-soda2-rollup'])),
+                  '<span class="flyout-cell">{0}</span>'.
+                      format(_.isPresent(debugInfo.filteredResponseHeaders['x-soda2-rollup'])),
                 '</div>'
               ];
             } else {
@@ -92,12 +92,12 @@
             }
 
             var unfilteredUsedRollups;
-            if(_.isPresent(debugInfo.unfilteredResponseHeaders)) {
+            if (_.isPresent(debugInfo.unfilteredResponseHeaders)) {
               unfilteredUsedRollups = [
                 '<div class="flyout-row">',
                   '<span class="flyout-cell">Unfiltered query used rollups</span>',
-                  '<span class="flyout-cell">{0}</span>'
-                      .format(_.isPresent(debugInfo.unfilteredResponseHeaders['x-soda2-rollup'])),
+                  '<span class="flyout-cell">{0}</span>'.
+                      format(_.isPresent(debugInfo.unfilteredResponseHeaders['x-soda2-rollup'])),
                 '</div>'
               ];
             } else {

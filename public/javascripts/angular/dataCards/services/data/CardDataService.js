@@ -150,7 +150,7 @@
           var data = result.data;
           return {
             headers: result.headers(),
-            data: _.map(data, function (item) {
+            data: _.map(data, function(item) {
               return {
                 magnitude: parseFloat(item[magnitudeAlias]),
                 value: parseFloat(item[valueAlias])
@@ -579,19 +579,19 @@
                 extent.bottomRight
               );
 
-            var url = $.baseUrl('/resource/{0}.geojson'.format(shapeFileId));
-            url.searchParams.set('$select', '*');
-            url.searchParams.set('$where', 'intersects(the_geom,{0})'.format(multiPolygon));
-            url.searchParams.set('$limit', shapeFileRegionQueryLimit());
+            var geoJsonUrl = $.baseUrl('/resource/{0}.geojson'.format(shapeFileId));
+            geoJsonUrl.searchParams.set('$select', '*');
+            geoJsonUrl.searchParams.set('$where', 'intersects(the_geom,{0})'.format(multiPolygon));
+            geoJsonUrl.searchParams.set('$limit', shapeFileRegionQueryLimit());
 
-            var config = httpConfig.call(self, {
+            var geoJsonConfig = httpConfig.call(self, {
               headers: {
                 'Accept': 'application/vnd.geo+json'
               }
             });
-            return http.get(url.href, config).
-              then(function(response) {
-                return response.data;
+            return http.get(geoJsonUrl.href, geoJsonConfig).
+              then(function(geoJsonResponse) {
+                return geoJsonResponse.data;
               });
 
           } else if (response.status >= 400 && response.status < 500) {

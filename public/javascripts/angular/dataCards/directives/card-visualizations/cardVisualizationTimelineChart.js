@@ -15,7 +15,6 @@
         var dataset$ = cardModel$.observeOnLatest('page.dataset').filter(_.isPresent);
         var baseSoqlFilter$ = cardModel$.observeOnLatest('page.baseSoqlFilter');
         var aggregation$ = cardModel$.observeOnLatest('page.aggregation');
-        var defaultDateTruncFunction$ = cardModel$.observeOnLatest('page.defaultDateTruncFunction');
         var dataRequests$ = new Rx.Subject();
         var dataResponses$ = new Rx.Subject();
         var unfilteredData$ = new Rx.Subject();
@@ -109,7 +108,7 @@
           );
         });
 
-        var datasetPrecision = Rx.Observable.combineLatest(
+        var datasetPrecision$ = Rx.Observable.combineLatest(
           cardModel$.pluck('fieldName'),
           dataset$,
           function(fieldName, dataset) {
@@ -156,16 +155,14 @@
           cardModel$.pluck('fieldName'),
           dataset$,
           baseSoqlFilter$,
-          datasetPrecision,
+          datasetPrecision$,
           aggregation$,
-          defaultDateTruncFunction$,
           function(
             fieldName,
             dataset,
             whereClauseFragment,
             datasetPrecision,
-            aggregationData,
-            defaultDateTruncFunction
+            aggregationData
           ) {
 
             if (_.isDefined(datasetPrecision)) {
@@ -206,18 +203,16 @@
           cardModel$.pluck('fieldName'),
           dataset$,
           whereClause$,
-          datasetPrecision,
+          datasetPrecision$,
           aggregation$,
           cardModel$,
-          defaultDateTruncFunction$,
           function(
             fieldName,
             dataset,
             whereClause,
             datasetPrecision,
             aggregationData,
-            cardModel,
-            defaultDateTruncFunction
+            cardModel
           ) {
 
             if (_.isDefined(datasetPrecision)) {
@@ -284,7 +279,7 @@
         // * whether the timespan of the data is more than zero (buckets don't make
         //   sense when they're zero in duration).
         var cannotRenderTimelineChart = Rx.Observable.combineLatest(
-          datasetPrecision.map(_.isUndefined),
+          datasetPrecision$.map(_.isUndefined),
           chartData$.startWith(undefined),
           function(badDates, chartData) {
             var cannotRender = false;
@@ -305,7 +300,7 @@
 
         scope.$bindObservable('chartData', chartData$);
         scope.$bindObservable('expanded', cardModel$.observeOnLatest('expanded'));
-        scope.$bindObservable('precision', datasetPrecision);
+        scope.$bindObservable('precision', datasetPrecision$);
         scope.$bindObservable('activeFilters', cardModel$.observeOnLatest('activeFilters'));
         scope.$bindObservable('rowDisplayUnit', cardModel$.observeOnLatest('page.aggregation.unit'));
         scope.$bindObservable('cannotRenderTimelineChart', cannotRenderTimelineChart);

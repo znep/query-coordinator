@@ -608,6 +608,8 @@
       var mapMousemoveCallback;
       var mapClickCallback;
       var mapMouseoutCallback;
+      var mapDragstartCallback;
+      var mapZoomstartCallback;
       // Find all edges and corners that the mouse is near
       var edges = [['top'], ['left'], ['bottom'], ['right']];
       var corners = _.zip(['top', 'top', 'bottom', 'bottom'], ['left', 'right', 'left', 'right']);
@@ -827,6 +829,7 @@
       if (_.isFunction(this.options.onMousedown)) {
 
         mapMousedownCallback = function(e) {
+
           injectTileInfo(e);
           self.options.onMousedown(e);
         };
@@ -874,9 +877,9 @@
             // Only execute click if data under cursor does not exceed max tile
             // or inspector row density.
             //
-            // NOTE: `self.options` (whith refers to the VectorTileManager
+            // NOTE: `self.options` (which refers to the VectorTileManager
             // instance options) is not the same as `this.options` (which refers
-            // to the map instance options)
+            // to the map instance options).
             var denseData = e.tile.totalPoints >= self.options.maxTileDensity;
             var manyRows = _.sum(e.points, 'count') > self.options.rowInspectorMaxRowDensity;
 
@@ -899,6 +902,20 @@
       };
 
       map.on('mouseout', mapMouseoutCallback);
+
+      mapDragstartCallback = function(e) {
+        clearHoverPointHighlights();
+        clearClickedPointHighlights();
+      };
+
+      map.on('dragstart', mapDragstartCallback);
+
+      mapZoomstartCallback = function(e) {
+        clearHoverPointHighlights();
+        clearClickedPointHighlights();
+      };
+
+      map.on('zoomstart', mapZoomstartCallback);
 
       map.on('layerremove', function(e) {
 
@@ -925,6 +942,8 @@
           }
 
           map.off('mouseout', mapMouseoutCallback);
+          map.off('dragstart', mapDragstartCallback);
+          map.off('zoomstart', mapZoomstartCallback);
         }
       });
 

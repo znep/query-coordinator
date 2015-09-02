@@ -12,21 +12,8 @@
 
 <%= yield %>
 
-<%# Adding javascript translations so they're accessable from anywhere %>
-<script>
-window.I18n = (function () {
-  var translationHash = <%= current_js_translations.to_json.html_safe %>;
 
-  return {
-    // Intakes translationKeys in the form of:        'a.b.c'
-    // Maps to the translationHash in the form of:    ['a']['b']['c']
-    t: function t(translationKeys) {
-      return _.get(translationHash, translationKeys);
-    }
-  }
-})();
-
-</script>
-
+<%= render 'shared/i18n_for_js' %>
+<%= render 'shared/app_config_for_js' %>
 </body>
 </html>

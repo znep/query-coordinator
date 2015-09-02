@@ -5,11 +5,11 @@ $(document).on('ready', function() {
   storyteller.flyoutRenderer = new storyteller.FlyoutRenderer();
 
   // Init visualizations
-  $('[data-component-data]').each(function(index) {
+  $('[data-component-data]').each(function() {
     var $this = $(this);
 
     $this.componentSocrataVisualizationColumnChart(
       JSON.parse($this.attr('data-component-data'))
-    )
+    );
   });
 });

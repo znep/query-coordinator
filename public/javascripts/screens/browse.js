@@ -208,10 +208,12 @@ $(function()
         expanderExpandedClass: 'expanded'
     });
 
-    // Sad hack: we don't have the stemmed version,
-    // so just highlight the words they typed
+    // Sad hack: we don't have the stemmed version, so just highlight the words they typed.
+    // Also remove special characters because they can break the regex.
     var searchRegex = $.subKeyDefined(blist, 'browse.searchOptions.q') ?
-        new RegExp(blist.browse.searchOptions.q.trim().replace(' ', '|'), 'gi') : '';
+        new RegExp(blist.browse.searchOptions.q.trim().
+            replace(/[^\w\s]/gi, '').
+            replace(' ', '|'), 'gi') : '';
 
     if (!$.isBlank(searchRegex))
     {

@@ -573,12 +573,13 @@ describe('socrata-utils.js', function() {
         expect(preventDefaultSpy.called).to.be.false;
       });
 
-      it('when isolateScrolling is called with enabled=true, and then again with enabled=false, page scrolling is no longer disabled', function() {
+      it('when isolateScrolling is called twice with enabled=true, and then again with enabled=false, page scrolling is no longer disabled', function() {
         // Enable isolateScrolling to scrollingDiv and disable page scrolling
         var testEvent = buildTestEvent('mousewheel', 'up');
         preventDefaultSpy = sinon.spy(testEvent, 'preventDefault');
 
         utils.isolateScrolling(scrollingDiv, true);
+        utils.isolateScrolling(scrollingDiv, true); // intentional
 
         scrollingDiv.trigger(testEvent);
         expect(preventDefaultSpy.called).to.be.true;
@@ -747,4 +748,63 @@ describe('socrata-utils.js', function() {
 
     });
   });
+
+  describe('assertInstanceOf', function() {
+    var SomeClass = function() {};
+    var SomeOtherClass = function() {};
+
+    describe('given zero or one arguments', function() {
+      it('should throw', function() {
+        assert.throws(function() { utils.assertInstanceOf(); });
+        assert.throws(function() { utils.assertInstanceOf({}); });
+      });
+    });
+
+    describe('given an object that is not an instance of the given instantiator', function() {
+      it('should throw', function() {
+        assert.throws(function() { utils.assertInstanceOf(4, SomeClass); });
+        assert.throws(function() { utils.assertInstanceOf('', SomeClass); });
+        assert.throws(function() { utils.assertInstanceOf([], SomeClass); });
+        assert.throws(function() { utils.assertInstanceOf({}, SomeClass); });
+        assert.throws(function() { utils.assertInstanceOf(new SomeClass(), SomeOtherClass); });
+      });
+    });
+
+    describe('given an object that is an instance of the instantiator', function() {
+      it('should not throw', function() {
+        utils.assertInstanceOf(new SomeClass(), SomeClass);
+      });
+    });
+  });
+
+  describe('assertInstanceOfAny', function() {
+    var SomeClass = function() {};
+    var SomeOtherClass = function() {};
+
+    describe('given zero or one arguments', function() {
+      it('should throw', function() {
+        assert.throws(function() { utils.assertInstanceOfAny(); });
+        assert.throws(function() { utils.assertInstanceOfAny({}); });
+      });
+    });
+
+    describe('given an object that is not an instance of the given instantiators', function() {
+      it('should throw', function() {
+        assert.throws(function() { utils.assertInstanceOfAny(4, SomeClass); });
+        assert.throws(function() { utils.assertInstanceOfAny('', SomeClass); });
+        assert.throws(function() { utils.assertInstanceOfAny([], SomeClass); });
+        assert.throws(function() { utils.assertInstanceOfAny({}, SomeClass); });
+        assert.throws(function() { utils.assertInstanceOfAny(new SomeClass(), SomeOtherClass); });
+      });
+    });
+
+    describe('given an object that is an instance of at least one of the given instantiators', function() {
+      it('should not throw', function() {
+        utils.assertInstanceOfAny(new SomeClass(), SomeClass);
+        utils.assertInstanceOfAny(new SomeClass(), SomeClass, SomeOtherClass);
+        utils.assertInstanceOfAny(new SomeClass(), SomeOtherClass, SomeClass);
+      });
+    });
+  });
+
 });

@@ -18,6 +18,9 @@
 // Added syntax to data selector: "object.property!" or "something #{variable!}"
 // The ! indicates that the contents should be html escaped.
 
+// corey.ford@socrata.com 02/09/2015
+// Allow title text to wrap
+
 var $p, pure = $p = function(){
 	var sel = arguments[0], 
 		ctxt = false;
@@ -306,11 +309,17 @@ $p.core = function(sel, ctxt, plugins){
 				}else{
 					getstr = function(n){ return n.className;	};
 				}
-				quotefn = function(s){ return s.replace(/\"/g, '&quot;'); };
 			}else {
 				getstr = function(n){ return n.getAttribute(attr); };
-				quotefn = function(s){ return s.replace(/\"/g, '&quot;').replace(/\s/g, '&nbsp;'); };
 			}
+
+			// corey.ford@socrata.com 02/09/2015
+			// Allow title text to wrap
+			// Backported from upstream:
+			// https://github.com/pure/pure/commit/e126045ff629f18b973e4675654dae62097119d6
+			// https://github.com/pure/pure/commit/3715281a6657d86bc0f8eb6482a6e4e64c7ee69f
+			quotefn = function(s){ return s.replace(/\"/g, '&quot;'); };
+
 			// clint.tseng@socrata.com 18/05/2010
 			// Add a space in between existing content and new content
 			// if the attr to be set is a class.

@@ -263,9 +263,9 @@
           }
         );
 
-        Rx.Observable.combineLatest(
-          unfilteredDataSequence.switchLatest().pluck('data'),
-          filteredDataSequence.switchLatest().pluck('data'),
+        var chartData$ = Rx.Observable.combineLatest(
+          unfilteredData$.switchLatest().pluck('data'),
+          filteredData$.switchLatest().pluck('data'),
           function(unfilteredData, filteredData) {
             if (_.isEmpty(unfilteredData) || _.isEmpty(filteredData)) {
               return null;

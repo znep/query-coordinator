@@ -243,9 +243,9 @@ describe('CardDataService', function() {
       ]);
 
       fakeDataRequestHandler.respond(fakeData);
-      var response = CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation);
-      response.then(function(data) {
-        expect(data).to.deep.equal([
+      var promise = CardDataService.getData('fakeNumberColumn', fake4x4, null, countAggregation);
+      promise.then(function(response) {
+        expect(response.data).to.deep.equal([
           {name: 'alreadyInt', value: 3},
           {name: 'alreadyFloat', value: 3.14},
           {name: 'goodNumberString', value: 123},

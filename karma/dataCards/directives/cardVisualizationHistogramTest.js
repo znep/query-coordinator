@@ -18,6 +18,20 @@ describe('Histogram Visualization', function() {
     _$provide = $provide;
   }));
 
+  /**
+   * @param {Object} HTTP headers (e.g. put 'X-SODA2-Rollup': <4x4>)
+   * @param {Promise} to be returned as the `data` key
+   * @return {Promise} with keys data and headers
+   */
+  function withHeaders(headers, dataPromise) {
+    return dataPromise.then(function(dataResult) {
+      return {
+        data: dataResult,
+        headers: headers
+      }
+    });
+  }
+
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');
     $q = $injector.get('$q');
@@ -32,16 +46,24 @@ describe('Histogram Visualization', function() {
           return { name: x, value: 1 };
         });
 
-        return $q.when(response);
+        return withHeaders({}, $q.when(response));
       },
       getColumnDomain: function() {
         return $q.when({min: -1, max: 1});
       },
       getMagnitudeData: function() {
-        return $q.when([{magnitude: -1, value: 17}, {magnitude: 0, value: 0}, {magnitude: 1, value: 12}]);
+        return withHeaders({}, $q.when([
+          {magnitude: -1, value: 17},
+          {magnitude: 0, value: 0},
+          {magnitude: 1, value: 12}
+        ]));
       },
       getBucketedData: function() {
-        return $q.when([{magnitude: -1, value: 17}, {magnitude: 0, value: 0}, {magnitude: 1, value: 12}]);
+        return withHeaders({}, $q.when([
+          {magnitude: -1, value: 17},
+          {magnitude: 0, value: 0},
+          {magnitude: 1, value: 12}
+        ]));
       }
     };
 
@@ -155,7 +177,7 @@ describe('Histogram Visualization', function() {
     };
 
     mockCardDataService.getBucketedData = function() {
-      return $q.when([{magnitude: 0, value: 193}]);
+      return withHeaders({}, $q.when([{magnitude: 0, value: 193}]));
     };
 
     var histogram = createHistogram();
@@ -173,7 +195,11 @@ describe('Histogram Visualization', function() {
     };
 
     mockCardDataService.getBucketedData = function() {
-      return $q.when([{magnitude: -1, value: NaN}, {magnitude: 0, value: Infinity}, {magnitude: 1, value: -Infinity}]);
+      return withHeaders({}, $q.when([
+        {magnitude: -1, value: NaN},
+        {magnitude: 0, value: Infinity},
+        {magnitude: 1, value: -Infinity}
+      ]));
     };
 
     var histogram = createHistogram();
@@ -189,7 +215,7 @@ describe('Histogram Visualization', function() {
 
     var testData = [{magnitude: 1, value: 113}];
     mockCardDataService.getBucketedData = function() {
-      return $q.when(testData);
+      return withHeaders({}, $q.when(testData));
     };
 
     var linearSpy = sinon.spy(mockCardDataService, 'getBucketedData');
@@ -212,7 +238,7 @@ describe('Histogram Visualization', function() {
 
     var testData = [{magnitude: 1, value: 113}];
     mockCardDataService.getMagnitudeData = function() {
-      return $q.when(testData);
+      return withHeaders({}, $q.when(testData));
     };
 
     var linearSpy = sinon.spy(mockCardDataService, 'getBucketedData');

@@ -246,7 +246,7 @@
                 // Ok
                 filteredData$.onNext(dataPromise);
                 dataResponses$.onNext(1);
-                $scope.$emit('response_headers:filtered', result.headers);
+                scope.$emit('response_headers:filtered', result.headers);
               },
               function() {
                 // Still increment the counter to stop the spinner

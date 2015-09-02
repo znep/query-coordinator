@@ -11,14 +11,6 @@
      */
     function fetchHistogramData(fieldName, dataset, whereClauseFragment, aggregationData, columnDataSummary) {
       var dataPromise;
-      var bucketingOptions = _.pick(columnDataSummary, 'bucketType', 'bucketSize');
-
-      function bucketData(dataPromiseResult) {
-        return {
-          headers: dataPromiseResult.headers,
-          data: HistogramService.bucketData(dataPromiseResult.data, bucketingOptions)
-        };
-      }
 
       // Fetch data differently depending on how it should be bucketed.
       if (columnDataSummary.bucketType === 'linear') {
@@ -29,7 +21,7 @@
           whereClauseFragment,
           aggregationData,
           _.pick(columnDataSummary, 'bucketSize')
-        ).then(bucketData);
+        );
 
       } else if (columnDataSummary.bucketType === 'logarithmic') {
 
@@ -38,7 +30,7 @@
           dataset.id,
           whereClauseFragment,
           aggregationData
-        ).then(bucketData);
+        );
 
       } else {
         $log.error('Invalid bucket type "{0}"'.format(columnDataSummary.bucketType));
@@ -200,9 +192,17 @@
           ).switchLatest();
 
           return Rx.Observable.combineLatest(
+            columnDataSummary$,
             unfilteredData$,
             filteredData$,
-            function(unfiltered, filtered) {
+            function(columnDataSummary, unfiltered, filtered) {
+
+              var bucketingOptions = _.pick(columnDataSummary, 'bucketType', 'bucketSize');
+
+              var unfilteredBucketed =
+                  HistogramService.bucketData(unfiltered.data, bucketingOptions);
+              var filteredBucketed =
+                  HistogramService.bucketData(filtered.data, bucketingOptions);
 
               $scope.$emit('response_headers:unfiltered', unfiltered.headers);
 
@@ -210,16 +210,16 @@
 
               $scope.histogramRenderError = false;
 
-              if (!_.isArray(unfiltered.data) || !_.isArray(filtered.data)) {
+              if (!_.isArray(unfilteredBucketed) || !_.isArray(filteredBucketed)) {
                 throw new Error('badData');
               }
 
-              if (_.isEmpty(unfiltered.data)) {
+              if (_.isEmpty(unfilteredBucketed)) {
                 throw new Error('noData');
               }
 
-              var unfilteredData = unfiltered.data;
-              var filteredData = filtered.data;
+              var unfilteredData = unfilteredBucketed;
+              var filteredData = filteredBucketed;
 
               // While the filtered data doesn't have the same number of buckets as the unfiltered,
               // we need to create the missing buckets and give them values of zero.

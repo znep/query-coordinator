@@ -12,7 +12,7 @@ class CeteraTest < Test::Unit::TestCase
       opts = {
         :local_data_hack => true,
         :limitTo => 'new_view',
-        :q => 'giraffes are whack',
+        :q => 'giraffes are whack!&@*!',
         :limit => 10,
         :page => 4
       }
@@ -20,7 +20,7 @@ class CeteraTest < Test::Unit::TestCase
       assert params.match(/domains=data.cityofchicago.org/)
       assert params.match(/search_context=data.cityofchicago.org/)
       assert params.match(/only=pages/)
-      assert params.match(/q=giraffes are whack/)
+      assert params.match(/q=giraffes\+are\+whack%21%26%40%2A%21/)
       assert params.match(/limit=10/)
       assert params.match(/offset=30/)
     end

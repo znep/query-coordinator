@@ -1,4 +1,5 @@
 describe('Filter', function() {
+  'use strict';
 
   beforeEach(function() {
     module('socrataCommon.filters');

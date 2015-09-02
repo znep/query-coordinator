@@ -1,4 +1,6 @@
 describe('Developer overrides', function() {
+  'use strict';
+
   beforeEach(module('dataCards.services'));
 
   describe('setup from string', function() {

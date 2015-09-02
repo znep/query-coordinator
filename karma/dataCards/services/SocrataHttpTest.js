@@ -1,4 +1,6 @@
 describe('Socrata-flavored $http service', function() {
+  'use strict';
+
   var HEADER_KEY = 'X-Socrata-RequestId';
   var MOCK_GUID = 'MOCKGUID';
   var TEST_HEADER_KEY = 'X-Test-Header';

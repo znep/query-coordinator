@@ -1,5 +1,6 @@
 describe('Download Service', function() {
   'use strict';
+
   var DownloadService;
   var testHelpers;
   var $rootScope;

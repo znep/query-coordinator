@@ -1,5 +1,4 @@
 describe('Customize card dialog', function() {
-
   'use strict';
 
   beforeEach(module('dataCards'));

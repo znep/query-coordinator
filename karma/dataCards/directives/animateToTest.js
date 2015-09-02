@@ -1,4 +1,6 @@
 describe('animate-to directive', function() {
+  'use strict';
+
   var testHelpers;
   var $rootScope;
 

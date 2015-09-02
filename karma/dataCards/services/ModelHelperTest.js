@@ -1,4 +1,6 @@
 describe('ModelHelper', function() {
+  'use strict';
+
   var _mh, _$q, _$rootScope;
 
   beforeEach(module('dataCards.services'));
@@ -41,7 +43,7 @@ describe('ModelHelper', function() {
     var instance = {};
     _mh.addPropertyWithLazyDefault('title', instance, undefined, promiser);
     _mh.addPropertyWithLazyDefault('description', instance, undefined, promiser);
-    
+
     instance.title = title1;
     instance.title.subscribe(function(val) {
       expect(val).to.equal(expectedSequenceTitle.shift());

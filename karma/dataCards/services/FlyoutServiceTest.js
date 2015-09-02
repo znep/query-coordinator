@@ -1,4 +1,6 @@
 describe('Flyout service', function() {
+  'use strict';
+
   var FlyoutService;
   var Constants;
   var TestHelpers;

@@ -1,5 +1,6 @@
 describe('PageDataService', function() {
   'use strict';
+
   var testHelpers;
   var $httpBackend;
   var PageDataService;

@@ -1,4 +1,6 @@
 describe('InputHacks', function() {
+  'use strict';
+
   var testHelpers;
   var InputHacks;
 
@@ -45,11 +47,11 @@ describe('InputHacks', function() {
 
       // Grab the element just outside the test div.
       var elementOutsideDiv = hitTest();
-      
+
       var seq = InputHacks.captureAllMouseEventsOutsideOf(div);
 
       expect(hitTest()).to.equal(elementOutsideDiv); // expect no change just from creating the sequence.
-      
+
       var subscription = seq.subscribe(function(){}); // This should set up the overlays.
 
       expect(hitTest()).to.not.equal(elementOutsideDiv); // Now expect to hit the overlays.
@@ -68,7 +70,7 @@ describe('InputHacks', function() {
 
       // Grab the element just outside the test div.
       var elementOutsideDiv = hitTest();
-      
+
       var seq = InputHacks.captureAllMouseEventsOutsideOf(div);
       var subscription1 = seq.subscribe(function(){}); // This should set up the overlays.
 

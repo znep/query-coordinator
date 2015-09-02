@@ -1,4 +1,6 @@
 describe('LeafletHelpersService', function() {
+  'use strict';
+
   var LeafletHelpersService;
 
   beforeEach(function () {

@@ -1,4 +1,6 @@
-describe("Model", function() {
+describe('Model', function() {
+  'use strict';
+
   var Model;
 
   beforeEach(function() {

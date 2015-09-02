@@ -1,4 +1,6 @@
 describe("notifyResize directive", function() {
+  'use strict';
+
   var scope, testHelpers;
 
   beforeEach(module('test'));

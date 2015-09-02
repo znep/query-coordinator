@@ -205,12 +205,18 @@
           trackCursor: true
         });
 
+        var aggregationChooserSelectors = [
+          '.aggregation-chooser-trigger.disabled',
+          '.aggregation-chooser-trigger.disabled span'
+        ];
+
         FlyoutService.register({
-          selector: '.aggregation-chooser-trigger.disabled',
-          positionOn: function(flyoutElement) {
+          selector: aggregationChooserSelectors.join(', '),
+          positionOn: function() {
+
             // Targets the span element whose ::after pseudoelement we're using
             // to render the down-arrow "icon".
-            return flyoutElement.childNodes[1];
+            return $('{0} .tool-panel-cue'.format(aggregationChooserSelectors[0]))[0];
           },
           render: _.constant(
             '<span class="icon-warning"></span><span class="flyout-title">{0}</span><p>{1}</p>'.format(

@@ -236,7 +236,8 @@
             'cardSize': {'type': 'integer', 'minimum': 1, 'maximum': 3},
             'cardType': {'type': 'string'},
             'expanded': {'type': 'boolean'},
-            'fieldName': {'type': 'string', 'minLength': 1}
+            'fieldName': {'type': 'string', 'minLength': 1},
+            'computedColumn': {'type': 'string'}
           },
           'required': ['fieldName', 'cardSize', 'expanded']
         }
@@ -254,7 +255,8 @@
             'cardType': {'type': 'string'},
             'expanded': {'type': 'boolean'},
             'fieldName': {'type': 'string', 'minLength': 1},
-            'cardOptions': {'type': 'object'}
+            'cardOptions': {'type': 'object'},
+            'computedColumn': {'type': 'string'}
           },
           'required': ['fieldName', 'cardSize', 'expanded']
         }

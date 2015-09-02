@@ -4,7 +4,7 @@
     <button
       class="visualization-type icon-line-chart"
       ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'timeline' }"
-      ng-click="setCardType('timeline')"
+      ng-click="setCardType('timeline', $event)"
       data-visualization-name="timelineChart"></button>
     <span>{{'common.cards.timelineChart' | I18n}}</span>
   </li>
@@ -12,7 +12,7 @@
     <button
     class="visualization-type icon-search"
     ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'search' }"
-    ng-click="setCardType('search')"
+    ng-click="setCardType('search', $event)"
     data-visualization-name="searchCard"></button>
     <span>{{'common.cards.searchCard' | I18n}}</span>
   </li>
@@ -20,15 +20,15 @@
     <button
       class="visualization-type icon-map"
       ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'feature' }"
-      ng-click="setCardType('feature')"
+      ng-click="setCardType('feature', $event)"
       data-visualization-name="featureMap"></button>
     <span>{{'common.cards.featureMap' | I18n}}</span>
   </li>
   <li ng-show="availableCardTypes.indexOf('column') > -1">
     <button
       class="visualization-type icon-bar-chart"
-      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'column', warn: showCardinalityWarning }"
-      ng-click="setCardType('column')"
+      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'column' }"
+      ng-click="setCardType('column', $event)"
       data-visualization-name="columnChart">
         <span class="icon-warning" ng-show="showCardinalityWarning"></span>
     </button>
@@ -37,8 +37,8 @@
   <li ng-show="availableCardTypes.indexOf('histogram') > -1">
     <button
       class="visualization-type icon-distribution"
-      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'histogram', warn: showHistogramColumnChartWarning }"
-      ng-click="setCardType('histogram')"
+      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'histogram', }"
+      ng-click="setCardType('histogram', $event)"
       data-visualization-name="distributionChart">
         <span class="icon-warning" ng-show="showHistogramColumnChartWarning"></span>
     </button>
@@ -47,9 +47,24 @@
   <li ng-show="availableCardTypes.indexOf('choropleth') > -1">
     <button
       class="visualization-type icon-region"
-      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'choropleth' }"
-      ng-click="setCardType('choropleth')"
-      data-visualization-name="choropleth"></button>
+      ng-class="{ selected: cardModel.getCurrentValue('cardType') === 'choropleth', disabled: showChoroplethWarning }"
+      ng-click="setCardType('choropleth', $event)"
+      data-visualization-name="choropleth">
+        <span class="icon-warning" ng-show="showChoroplethWarning"></span>
+    </button>
     <span>{{'common.cards.choropleth' | I18n}}</span>
   </li>
+
 </ul>
+
+<div class="curated-region-selector" ng-show="showCuratedRegionSelector">
+  <span>{{'common.by' | I18n}}</span>
+  <soc-select ng-model="selectedCuratedRegion">
+    <soc-option
+      value="{{curatedRegion.view.id}}"
+      ng-repeat="curatedRegion in curatedRegions"
+      ng-selected="curatedRegion.view.id === selectedCuratedRegion">
+        {{curatedRegion.name}}
+    </soc-option>
+  </soc-select>
+</div>

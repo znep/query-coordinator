@@ -10,22 +10,28 @@
       return scope.
         $observe('page').observeOnLatest('dataset.columns').
         map(function(columns) {
-          // Filter out system columns.
-          return _.pairs(columns).
-            map(function(columnPair) {
-              return {
-                fieldName: columnPair[0],
-                columnInfo: columnPair[1]
-              };
-            }).
-            filter(function(columnPair) {
 
-              // We need to ignore 'system' columns, whose fieldNames begin with ':', but
-              // retain 'computed' columns, whose fieldNames begin (somewhat inconveniently)
-              // with ':@'.
-              return _.isNull(columnPair.fieldName.substring(0, 2).match(/\:[\_A-Za-z0-9]/)) &&
-                columnPair.columnInfo.physicalDatatype !== '*';
-            });
+          // Create helper functions that identify columns that should be hidden from the dropdown.
+          var isTableColumn = _.flow(_.property('physicalDatatype'), _.partial(_.isEqual, '*'));
+          var isSystemColumn = _.property('isSystemColumn');
+          var isComputedColumn = _.flow(_.property('computationStrategy'), _.isDefined);
+
+          // Combine them into a function that returns true if a column should be hidden from the dropdown.
+          function shouldHideColumnFromDropdown(column) {
+            return isTableColumn(column) || isSystemColumn(column) || isComputedColumn(column);
+          }
+
+          // Given an array of ['fieldName', {columnObject}] pairs, turn it into an array of
+          // {fieldName: 'fieldName', columnObject: {columnObject}} objects.
+          var assignKeysToColumnPairs = _.partial(_.zipObject, ['fieldName', 'columnInfo']);
+
+          // Filter out unwanted columns, then transform them into an array of objects, each with a
+          // fieldName key and a columnInfo key.
+          return _.chain(columns).
+            omit(shouldHideColumnFromDropdown).
+            pairs().
+            map(assignKeysToColumnPairs).
+            value();
         }).
         map(function(columns) {
           return _.sortBy(columns, 'columnInfo.position');

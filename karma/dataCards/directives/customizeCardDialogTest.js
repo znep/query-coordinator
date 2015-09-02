@@ -61,6 +61,7 @@ describe('Customize card dialog', function() {
     $httpBackend.whenGET(/\/resource\/mash-apes.geojson.*/).respond([]);
     $httpBackend.whenGET(/\/resource\/mash-apes.geojson.*/).respond([]);
     $httpBackend.whenGET(/\/metadata\/v1\/dataset\/mash-apes.json.*/).respond([]);
+    $httpBackend.whenGET(/\/api\/curated_regions*/).respond([]);
 
     testHelpers.mockDirective(_$provide, 'suggestionToolPanel');
   }));
@@ -94,7 +95,8 @@ describe('Customize card dialog', function() {
       fred: 'location',
       physicalDatatype: 'point',
       availableCardTypes: ['feature'],
-      defaultCardType: 'feature'
+      defaultCardType: 'feature',
+      computedColumn: 'choropleth'
     },
     many_kinds: {
       name: 'A column suffering an identity crisis.',
@@ -153,13 +155,12 @@ describe('Customize card dialog', function() {
   function createDialog(options) {
     options = options || {};
 
-
-
     var card = options.card || {
       fieldName: 'choropleth',
       cardSize: 2,
       cardType: 'choropleth',
-      expanded: false
+      expanded: false,
+      computedColumn: 'choropleth'
     };
 
     var cards = options.cards || [];
@@ -313,7 +314,7 @@ describe('Customize card dialog', function() {
       var iconBarChart = dialog.element.find('.icon-bar-chart');
 
       expect(visualizationOptions.isolateScope().showCardinalityWarning).to.be.true;
-      expect(iconBarChart.hasClass('warn')).to.be.true;
+      expect(iconBarChart.find('.icon-warning')).to.not.have.css('display', 'none');
     });
 
     it('should not show a warning for a histogram with no filter when bucket type is changed', function() {

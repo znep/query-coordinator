@@ -1,0 +1,14 @@
+<%
+# {
+#  type: "socrata.visualization.columnChart",
+#  value: {
+#    dataSource: {
+#      type: "soql",
+#      domain: "dataspace.demo.socrata.com",
+#      uid: "r6t9-rak2",
+#      baseQuery: "SELECT `category` AS {0}, COUNT(*) AS {1} GROUP BY `category` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200"
+#    }
+#  }
+# }
+%>
+<div data-component-data="<%= component.to_json %>" ></div>

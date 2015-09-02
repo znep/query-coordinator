@@ -12,3 +12,18 @@
 //
 
 //= require jquery2
+//= require lodash
+//= require d3/d3
+//= require socrata-utils/socrata.utils
+//= require editor/storytellerUtils
+//= require editor/StringExtensions.js
+//= require editor/Constants
+//= require editor/init
+//= require socrata-visualizations/socrata.visualizations.DataProvider
+//= require socrata-visualizations/socrata.visualizations.SoqlDataProvider
+//= require socrata-visualizations/socrata.visualizations.Visualization
+//= require socrata-visualizations/socrata.visualizations.ColumnChart
+//= require editor/renderers/FlyoutRenderer.js
+//= require editor/components/SocrataVisualizationColumnChart.js
+//= require editor/block-component-renderers/componentSocrataVisualizationColumnChart.js
+//= require_tree ./view

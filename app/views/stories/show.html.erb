@@ -1,3 +1,37 @@
-<% @story.blocks.each do |block| -%>
-  <%= render_block(block) %>
-<% end -%>
+<div class="user-story">
+  <% @story.blocks.each do |block| -%>
+    <% layout_columns = block.layout.split('-') %>
+
+    <div class="block">
+      <% block.components.each_with_index do |component, index| %>
+        <div class="component-container <%= "col#{layout_columns[index]}" %>">
+          <div class="component <%= type_to_class_name_for_component_type(component['type']) %>">
+
+            <%=
+              case component['type']
+                when 'html'
+                  render(
+                    partial: 'stories/block-components/componentHtml',
+                    locals: { component: component }
+                  )
+                when 'youtube.video'
+                  render(
+                    partial: 'stories/block-components/componentYoutubeVideo',
+                    locals: { component: component }
+                  )
+                when 'socrata.visualization.columnChart'
+                  render(
+                    partial: 'stories/block-components/componentSocrataVisualizationColumnChart',
+                    locals: { component: component }
+                  )
+              end
+            %>
+
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+  <% end -%>
+
+</div>

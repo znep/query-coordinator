@@ -34,5 +34,8 @@ module Storyteller
     # Nginx routes urls with /stories from the Open Data platform to this app,
     # so respond to /stories as the root url.
     config.relative_url_root = '/stories'
+
+    # We're using the delayed_job_active_record gem to work the job queue
+    config.active_job.queue_adapter = :delayed_job
   end
 end

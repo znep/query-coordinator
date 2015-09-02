@@ -59,6 +59,11 @@
           _updateVisualizationConfiguration(payload);
           break;
 
+        case Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD:
+          _currentSelectorState = action;
+          _chooseImageUpload;
+          break;
+
         case Constants.ASSET_SELECTOR_CLOSE:
           _closeDialog();
           break;
@@ -130,6 +135,11 @@
     }
 
     function _chooseVisualization() {
+
+      self._emitChange();
+    }
+
+    function _chooseImageUpload() {
 
       self._emitChange();
     }

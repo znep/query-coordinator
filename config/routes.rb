@@ -7,10 +7,16 @@ Rails.application.routes.draw do
     get ':uid/create' => 'stories#new'
     post ':uid/create' => 'stories#create'
     get '(:vanity_text)/:uid/edit' => 'stories#edit'
-
-    post ':uid/drafts' => 'drafts#create', defaults: { format: 'json' }
   end
 
+  namespace :api do
+    namespace :v1, defaults: { format: 'json' } do
+      resources :documents, only: [:create]
+      resources :uploads, only: [:create]
+
+      post 'stories/:uid/drafts' => 'drafts#create'
+    end
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

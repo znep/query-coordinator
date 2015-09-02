@@ -48,7 +48,21 @@ your local storyteller instance with blah.dev, vertex.dev, etc.
 
 ## Run Server
 
-`bin/start`
+To run the rails server:
+```
+bin/start
+```
+
+We also have a delayed job queue for processing uploaded files. Everything but uploading files
+will work without this. The jobs can be processed manually with a rake task:
+```
+bin/rake jobs:work
+```
+
+Alternatively, you can run both processes in the same terminal window with foreman.Â
+```
+bundle exec forman start
+```
 
 ## How to run the test suite
 

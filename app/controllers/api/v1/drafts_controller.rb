@@ -1,4 +1,4 @@
-class DraftsController < ApplicationController
+class Api::V1::DraftsController < ApplicationController
 
   def create
     digest = request.env['HTTP_IF_MATCH']

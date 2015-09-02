@@ -38,9 +38,19 @@ export IMAGE_URL=${REGISTRY}/internal/${JOB_NAME}:${TAG}
 docker tag ${JOB_NAME}:${TAG} ${IMAGE_URL}
 docker push ${IMAGE_URL}
 
+# We deploy one docker container for the web server and one for the worker so
+# we create two properties files
+
 rm -f marathon.properties
 touch marathon.properties
 echo "DOCKER_IMAGE=${IMAGE_URL}" >> marathon.properties
 echo "SERVICE=${JOB_NAME}" >> marathon.properties
+echo "DOCKER_JOB=${JOB_NAME}" >> marathon.properties
+echo "ENVIRONMENT=${ENVIRONMENT}" >> marathon.properties
+
+rm -f worker-marathon.properties
+touch worker-marathon.properties
+echo "DOCKER_IMAGE=${IMAGE_URL}" >> marathon.properties
+echo "SERVICE=storyteller-worker" >> marathon.properties
 echo "DOCKER_JOB=${JOB_NAME}" >> marathon.properties
 echo "ENVIRONMENT=${ENVIRONMENT}" >> marathon.properties

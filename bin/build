@@ -50,7 +50,7 @@ echo "ENVIRONMENT=${ENVIRONMENT}" >> marathon.properties
 
 rm -f worker-marathon.properties
 touch worker-marathon.properties
-echo "DOCKER_IMAGE=${IMAGE_URL}" >> marathon.properties
-echo "SERVICE=storyteller-worker" >> marathon.properties
-echo "DOCKER_JOB=${JOB_NAME}" >> marathon.properties
-echo "ENVIRONMENT=${ENVIRONMENT}" >> marathon.properties
+echo "DOCKER_IMAGE=${IMAGE_URL}" >> worker-marathon.properties
+echo "SERVICE=storyteller-worker" >> worker-marathon.properties
+echo "DOCKER_JOB=${JOB_NAME}" >> worker-marathon.properties
+echo "ENVIRONMENT=${ENVIRONMENT}" >> worker-marathon.properties

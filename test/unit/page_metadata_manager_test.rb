@@ -223,9 +223,9 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     end
   end
 
-  def test_update_v2_page_metadata_success
+  def test_update_metadb_page_metadata_success
     NewViewManager.any_instance.stubs(
-      fetch: v2_page_metadata
+      fetch: metadb_page_metadata
     )
     core_stub = mock
     core_stub.expects(:update_request).with do |url, payload|
@@ -351,7 +351,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def test_delete_does_not_impact_phidippides_when_metadata_backed_by_metadb
     NewViewManager.any_instance.stubs(
-      fetch: v2_page_metadata
+      fetch: metadb_page_metadata
     )
     SodaFountain.any_instance.expects(:delete_rollup_table).with do |args|
       assert_equal({dataset_id: 'thw2-8btq', identifier: 'mjcb-9cxc'}, args)
@@ -712,8 +712,8 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     v1_page_metadata_as_v0
   end
 
-  def v2_page_metadata
-    JSON.parse(File.read("#{Rails.root}/test/fixtures/v2-page-metadata-metadb.json")).with_indifferent_access
+  def metadb_page_metadata
+    JSON.parse(File.read("#{Rails.root}/test/fixtures/metadb-page-metadata.json")).with_indifferent_access
   end
 
   def v0_dataset_metadata

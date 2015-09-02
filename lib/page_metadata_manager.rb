@@ -192,8 +192,11 @@ class PageMetadataManager
       end
       begin
         phidippides_response = phidippides.delete_page_metadata(id, options)
-      rescue Phidippides::ConnectionError
-        return { body: { body: 'Phidippides connection error' }, status: '500' }
+      rescue Phidippides::ConnectionError => error
+        report_error('Phidippides connection error on delete', error)
+        return { body: {
+          body: "Phidippides connection error on delete (#{error.error_code}): #{error.error_message}"
+        }, status: '500' }
       end
       if phidippides_response.fetch(:status) !~ /^2[0-9][0-9]$/
         report_error("Error deleting page #{id} in phidippides: #{phidippides_response.inspect}")

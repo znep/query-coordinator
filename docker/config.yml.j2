@@ -56,11 +56,6 @@ default: &default
   odysseus_app_name: {{ ODYSSEUS_APP_NAME }}
   cetera_host: {{ CETERA_HOST }}
 
-  {% if ACTIVEMQ_HOSTS is defined -%}
-  activemq_hosts: {{ ACTIVEMQ_HOSTS }}
-  {% else %}
-  activemq_hosts: stomp://localhost:61613
-  {%- endif %}
 
   {% if INTERCESSIO_SERVER is defined -%}
   intercessio_uri: http://{{ INTERCESSIO_SERVER }}:1313

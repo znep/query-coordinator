@@ -35,7 +35,6 @@
 
 default: &default
   coreservice_uri: http://localhost:8080
-  activemq_hosts: stomp://localhost:61613
   zk_hosts: 'localhost:2181'
   rpx_signin_url: https://socrata-test.rpxnow.com/openid/v2/signin
   rpx_facebook_url: https://socrata-test.rpxnow.com/facebook/start
@@ -92,7 +91,6 @@ staging:
 # www.socrata.com
 production:
   coreservice_uri: http://lb-vip.sea1.socrata.com:8081
-  activemq_hosts: stomp://activemq01.sea1.socrata.com:61613,stomp://activemq02.sea1.socrata.com:61613
   rpx_signin_url: https://socrata.rpxnow.com/openid/v2/signin
   rpx_facebook_url: https://socrata.rpxnow.com/facebook/start
   rpx_windowslive_url: https://socrata.rpxnow.com/liveid/start

@@ -8,7 +8,6 @@ Required ENV vars:
 
 Optional ENV vars:
 
-- `ACTIVEMQ_HOSTS`
 - `AUTH0_URI` and `AUTH0_CLIENT_ID` and `AUTH0_CLIENT_SECRET` and `AUTH0_JWT`
 - `INTERCESSIO_SERVER`
 - `METRICS_DIR`
@@ -19,7 +18,7 @@ Optional ENV vars:
 - `TILESERVER_HOSTS` - A comma-separated list of public tileserver API hosts
 
 _Note: An IP can be provided with `EXTERNAL_IP` that will be used for the `ZOOKEEPER_HOSTS`,
-`CORESERVICE_URI`, and `ACTIVEMQ_HOSTS`_
+`CORESERVICE_URI`
 
 ## Build locally
 ```

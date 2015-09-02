@@ -6,6 +6,10 @@ The command to run the server is:
 
     bundle exec unicorn_rails -c config/unicorn.rb
 
+## Dependencies
+
+Dependencies are stored in artifactoryonline.com.  A shared username and password can be found in LastPass under the user "Socrata-frontend."  Instructions on how to use these credentials can be found in the "Getting Artifacts" section of the [Artifactory Ops Doc](https://drive.google.com/a/socrata.com/folderview?ddrp=1&id=0B8bqh9w-C6AnNDJiNjYwMzgtZjJjNS00NWY0LTllNGEtNDdlNTdkNjhkZGY3#)
+
 ## Tests
 
 tl;dr: Run the Setup steps below, then

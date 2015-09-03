@@ -237,7 +237,7 @@
       // and then overriding it in the stylesheet.
       $(document.body).
         css('opacity', 0).
-        addClass('typeset');
+        addClass('typeset squire-formatted');
 
       var styleEl = document.createElement('link');
       styleEl.setAttribute('rel', 'stylesheet');

@@ -97,7 +97,7 @@ $th-headings: (
   }
 
   // Set the primary type face and vertical rhythm
-  p, & > div, ul, ol, blockquote, figcaption {
+  p, &.squire-formatted > div, ul, ol, blockquote, figcaption {
     font-size: $std-type-size;
     line-height: $std-line-height;
     margin-bottom: $ms-ratio-1 + em;
@@ -176,7 +176,7 @@ $th-headings: (
   & > h3:first-child,
   & > h4:first-child,
   & > p,
-  & > div,
+  &.squire-formatted > div,
   & > ul,
   & > ol,
   & > blockquote,
@@ -208,7 +208,7 @@ $th-headings: (
   }
 
   p,
-  & > div,
+  &.squire-formatted > div,
   ul,
   ol, blockquote, figcaption {
     font-size: $lg-type-size;
@@ -232,15 +232,15 @@ $th-headings: (
   & > h3:first-child,
   & > h4:first-child,
   & > p,
-  & > div,
+  &.squire-formatted > div,
   & > ul,
   & > ol,
   & > blockquote,
   & > hr,
   li + ul,
   h1 + p, h2 + p, h3 + p, h4 + p, img,
-  // also add space above a component.media placeholder as if it were an image because it will be and/or it should layout similarly.
-  .component.media {
+  // also add space above a component-media placeholder as if it were an image because it will be and/or it should layout similarly.
+  .component-media {
     margin-top: 1.5rem;
   }
 
@@ -260,7 +260,7 @@ $th-headings: (
   }
 
 
-  p, & > div, ul, ol, blockquote, figcaption {
+  p, &.squire-formatted > div, ul, ol, blockquote, figcaption {
       font-size: $lg-type-size;;
       line-height: $lg-line-height;
       margin-bottom: $ms-ratio-2 + em;
@@ -288,8 +288,8 @@ $th-headings: (
   & > hr,
   li + ul,
   h1 + p, h2 + p, h3 + p, h4 + p, img,
-  // also add space above a component.media placeholder as if it were an image because it will be and/or it should layout similarly.
-  .component.media {
+  // also add space above a component-media placeholder as if it were an image because it will be and/or it should layout similarly.
+  .component-media {
     margin-top: 2rem;
   }
 
@@ -297,7 +297,7 @@ $th-headings: (
 
 // Non-typeset styles
 
-.component.media {
+.component-media {
   margin-top: 1rem;
 
   .medium & {

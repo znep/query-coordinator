@@ -72,6 +72,41 @@ RSpec.describe StoriesHelper, type: :helper do
       expect(helper).to receive(:type_to_class_name_for_component_type).with('youtube.video')
       helper.component_classes('youtube.video')
     end
+
+    it 'adds `typeset` to any block' do
+      # This controls whether our typography styles apply
+      # right now they should apply to all blocks
+      expect(
+          component_classes('anyComponentTypeForNow')
+        ).to match(/typeset /)
+    end
+
+    it 'adds `component-media` to media blocks only' do
+      media_component_types = [
+        'youtube.video',
+        'socrata.visualizations.columnChart',
+        'socrata.visualizations.anyChartType', # should match anything with 'visualizations'
+        'image'
+      ]
+      non_media_component_types = [
+        'html',
+        'horizontalRule',
+        'spacer'
+      ]
+
+      media_component_types.each do |component_type|
+        expect(
+          component_classes(component_type)
+        ).to match(/component-media/)
+      end
+
+      non_media_component_types.each do |component_type|
+        expect(
+          component_classes(component_type)
+        ).not_to match(/component-media/)
+      end
+    end
+
   end
 
 end

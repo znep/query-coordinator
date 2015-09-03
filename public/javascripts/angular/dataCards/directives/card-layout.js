@@ -952,7 +952,7 @@
         // Flyouts
         var cardControlSelectors = [
           '.card-control:not(.debug-flyout)',
-          '.card-control:not(.debug_flyout) span'
+          '.card-control:not(.debug-flyout) span'
         ];
 
         FlyoutService.register({

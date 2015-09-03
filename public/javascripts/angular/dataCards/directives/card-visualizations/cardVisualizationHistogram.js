@@ -40,7 +40,7 @@
         return {
           headers: result.headers,
           data: result.data,
-          bucketType: columnDataSummary.bucketType
+          columnDataSummary: columnDataSummary
         };
       });
     }
@@ -192,34 +192,30 @@
           ).switchLatest();
 
           return Rx.Observable.combineLatest(
-            columnDataSummary$,
             unfilteredData$,
             filteredData$,
-            function(columnDataSummary, unfiltered, filtered) {
+            function(unfiltered, filtered) {
 
-              var bucketingOptions = _.pick(columnDataSummary, 'bucketType', 'bucketSize');
+              var bucketingOptions =
+                  _.pick(unfiltered.columnDataSummary, 'bucketType', 'bucketSize');
 
-              var unfilteredBucketed =
+              var unfilteredData =
                   HistogramService.bucketData(unfiltered.data, bucketingOptions);
-              var filteredBucketed =
+              var filteredData =
                   HistogramService.bucketData(filtered.data, bucketingOptions);
 
               $scope.$emit('response_headers:unfiltered', unfiltered.headers);
-
               $scope.$emit('response_headers:filtered', filtered.headers);
 
               $scope.histogramRenderError = false;
 
-              if (!_.isArray(unfilteredBucketed) || !_.isArray(filteredBucketed)) {
+              if (!_.isArray(unfilteredData) || !_.isArray(filteredData)) {
                 throw new Error('badData');
               }
 
-              if (_.isEmpty(unfilteredBucketed)) {
+              if (_.isEmpty(unfilteredData)) {
                 throw new Error('noData');
               }
-
-              var unfilteredData = unfilteredBucketed;
-              var filteredData = filteredBucketed;
 
               // While the filtered data doesn't have the same number of buckets as the unfiltered,
               // we need to create the missing buckets and give them values of zero.

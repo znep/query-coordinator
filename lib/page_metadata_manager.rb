@@ -1,5 +1,4 @@
-# Wrapper around the phidippides service, for functions related to page
-# metadata. Also handles managing rollup tables in soda fountain.
+# Wrapper around page metadata - metadata stored in both Phidippides and Metadb.
 class PageMetadataManager
 
   include CommonMetadataMethods
@@ -115,7 +114,7 @@ class PageMetadataManager
 
     page_metadata['cards'] << table_card unless has_table_card
 
-    result = update_page_metadata(page_metadata, options)
+    result = update_phidippides_page_metadata(page_metadata, options)
 
     if result[:status] == '200'
       request_soda_fountain_secondary_index(page_metadata['datasetId'], options)
@@ -124,19 +123,30 @@ class PageMetadataManager
     result
   end
 
-  # Updates an existing page.
-  # Note that phidippides will simply overwrite the existing value with the
+  # Updates an existing page - if the page is using metadb for its metadata, update metadb.
+  # Else update the Phiddy metadata.
+  # Note that the update will simply overwrite the existing value with the
   # given value, so any missing keys will become missing in the datastore.
   def update(page_metadata, options = {})
-    raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id') unless page_metadata.key?('datasetId')
-    raise Phidippides::NoPageIdException.new('cannot create page with no page id') unless page_metadata.key?('pageId')
+    raise Phidippides::NoDatasetIdException.new('cannot create page with no dataset id') unless page_metadata['datasetId'].present?
+    raise Phidippides::NoPageIdException.new('cannot create page with no page id') unless page_metadata['pageId'].present?
 
     initialize_metadata_key_names
 
+    begin
+      metadb_metadata = new_view_manager.fetch(page_metadata['pageId'])
+    rescue
+      metadb_metadata = nil
+    end
+
     new_view_manager.update(page_metadata['pageId'], page_metadata['name'], page_metadata['description'])
 
-    # TODO: verify that phidippides does auth checks for this
-    update_page_metadata(page_metadata, options)
+    if is_backed_by_metadb?(metadb_metadata)
+      update_metadb_page_metadata(page_metadata, metadb_metadata)
+    else
+      # TODO: verify that phidippides does auth checks for this
+      update_phidippides_page_metadata(page_metadata, options)
+    end
   end
 
   def delete(id, options = {})
@@ -156,32 +166,55 @@ class PageMetadataManager
       }, status: '500' }
     end
 
-    # Delete the actual page
-    # Need to get the page_metadata in order to get the dataset_id
-    page_metadata = phidippides.fetch_page_metadata(id, options)
-    if page_metadata[:status] !~ /^2[0-9][0-9]$/
-      return { body: { body: 'Not found' }, status: '404' }
-    end
     begin
-      phidippides_response = phidippides.delete_page_metadata(id, options)
-    rescue Phidippides::ConnectionError
-      return { body: { body: 'Phidippides connection error' }, status: '500' }
+      metadb_metadata = new_view_manager.fetch(id)
+    rescue
+      metadb_metadata = nil
     end
-    if phidippides_response.fetch(:status) !~ /^2[0-9][0-9]$/
-      report_error("Error deleting page #{id} in phidippides: #{phidippides_response.inspect}")
-      return phidippides_response
+
+    # Check if metadata is stored in metadb or phiddy. If phiddy, we need to actually delete
+    # the phidippides metadata.
+    # In either case, we need to pluck the dataset id so that we can remove the rollup tables
+    # from soda fountain.
+    if is_backed_by_metadb?(metadb_metadata)
+      dataset_id = metadb_metadata['displayFormat']['data_lens_page_metadata']['datasetId']
+      # Don't delete metadb-backed metadata from metadb. Since the entry in the lenses table
+      # is already marked as soft-deleted (deleted_at), we can ignore the metadb entry rather
+      # than deleting it.
+      response = { body: '', status: '200' }
+    else
+      # Delete the actual page
+      # Need to get the page_metadata in order to get the dataset_id
+      page_metadata = phidippides.fetch_page_metadata(id, options)
+      dataset_id = page_metadata.fetch(:body, {}).fetch(:datasetId)
+      if page_metadata[:status] !~ /^2[0-9][0-9]$/
+        return { body: { body: 'Not found' }, status: '404' }
+      end
+      begin
+        phidippides_response = phidippides.delete_page_metadata(id, options)
+      rescue Phidippides::ConnectionError => error
+        report_error('Phidippides connection error on delete', error)
+        return { body: {
+          body: "Phidippides connection error on delete (#{error.error_code}): #{error.error_message}"
+        }, status: '500' }
+      end
+      if phidippides_response.fetch(:status) !~ /^2[0-9][0-9]$/
+        report_error("Error deleting page #{id} in phidippides: #{phidippides_response.inspect}")
+        return phidippides_response
+      end
+      response = phidippides_response
     end
 
     # Delete any rollups created for the page
     response = soda_fountain.delete_rollup_table(
-      dataset_id: page_metadata.fetch(:body, {}).fetch(:datasetId),
+      dataset_id: dataset_id,
       identifier: id
     )
     if response.fetch(:status) !~ /^2[0-9][0-9]$/
       report_error("Error deleting rollup table for page #{id}: #{response.inspect}")
     end
 
-    phidippides_response
+    response
   end
 
   private
@@ -214,9 +247,32 @@ class PageMetadataManager
     @logical_datatype_name = 'fred'
   end
 
-  # Creates or updates a page. This takes care of updating phidippides, as well
+  # Creates or updates a metadb backed page.
+  # NOTE - currently this is "last write wins", meaning that if multiple users are editing the
+  # metadata at the same time, the last one to save will obliterate any changes other users
+  # may have made. This should be fixed with versioning within the metadata.
+  def update_metadb_page_metadata(page_metadata, metadb_metadata)
+    url = "/views/#{CGI::escape(metadb_metadata['id'])}.json"
+    payload = {
+      :displayFormat => {
+        :data_lens_page_metadata => page_metadata
+      }
+    }
+
+    # We have to fake the status code 200 because the consumer of page_metadata_manager expects
+    # a response with a body and a status (because we previously forwarded the status code from
+    # Phidippides).
+    # Since we didn't raise an exception by this point, we can assume a status of 200.
+    {
+      :body => CoreServer::Base.connection.update_request(url, JSON.dump(payload)),
+      :status => 200
+    }
+
+  end
+
+  # Creates or updates a Phidippides backed page. This takes care of updating phidippides, as well
   # as rollup tables in soda fountain and the core datalens link.
-  def update_page_metadata(page_metadata, options = {})
+  def update_phidippides_page_metadata(page_metadata, options = {})
     unless page_metadata['pageId'].present?
       raise Phidippides::NoPageIdException.new('page id must be provisioned first.')
     end

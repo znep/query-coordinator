@@ -427,7 +427,7 @@
         new root.CustomEvent(
           'SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE',
           {
-            detail:payload,
+            detail: payload,
             bubbles: true
           }
         )

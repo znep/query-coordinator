@@ -320,7 +320,8 @@
 
       var inspectorDataQueryConfig;
 
-      if (_flyoutData.count <= FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY) {
+      if (_flyoutData.count > 0 &&
+        _flyoutData.count <= FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY) {
 
         inspectorDataQueryConfig = {
           latLng: event.latlng,

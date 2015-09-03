@@ -121,7 +121,10 @@ $sticky-border-height: 10px
     .name,
     .value
       display: inline-block
-      word-break: break-all
+      // Only break word if it is too long
+      // to fit on one entire line.
+      // Otherwise do not break lines in the middle
+      // of words.
       word-wrap: break-word
 
     .name

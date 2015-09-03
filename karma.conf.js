@@ -39,9 +39,9 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'socrata.visualizations*.js': ['coverage']
+      'socrata.visualizations*.js': ['coverage'],
+      '*.scss': ['scss']
     },
-
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
@@ -61,6 +61,15 @@ module.exports = function(config) {
           file: 'coverage.xml' // To match simplecov
         }
       ]
+    },
+
+    scssPreprocessor: {
+      options: {
+        sourceMap: true,
+        includePaths: [
+          '.'
+        ]
+      }
     },
 
     // web server port

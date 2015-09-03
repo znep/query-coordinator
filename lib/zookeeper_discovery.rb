@@ -51,7 +51,7 @@ class ZookeeperDiscovery
 
   def self.connect
     ZK.install_fork_hook
-    ZK::Client.new(APP_CONFIG['zk_hosts'])
+    ZK::Client.new(APP_CONFIG.zk_hosts)
   end
 
 end

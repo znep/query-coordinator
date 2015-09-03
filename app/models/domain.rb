@@ -51,25 +51,17 @@ class Domain < Model
   end
 
   def port
-    port = 80
     if self.httpsEnforced
-      if Rails.env.development?
-        port = APP_CONFIG['ssl_port']
-      else
-        port = 443
-      end
+      port = Rails.env.development? ? APP_CONFIG.ssl_port : 443
     else
-      if Rails.env.development?
-        port = APP_CONFIG['http_port']
-      end
+      port = Rails.env.development? ? APP_CONFIG.http_port : 80
     end
 
     if (port == 80 || port == 443)
-      url_port = ""
+      ''
     else
-      url_port = ":#{port}"
+      ":#{port}"
     end
-    url_port
   end
 
   def configurations(type)

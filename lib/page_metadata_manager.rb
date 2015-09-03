@@ -37,7 +37,7 @@ class PageMetadataManager
   end
 
   def request_soda_fountain_secondary_index(dataset_id, options = {})
-    secondary_group_identifier = APP_CONFIG['secondary_group_identifier']
+    secondary_group_identifier = APP_CONFIG.secondary_group_identifier
     unless secondary_group_identifier.blank?
       soda_fountain_secondary = SodaFountain.new(path: '/dataset-copy')
       options = options.merge(

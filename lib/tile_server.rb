@@ -81,8 +81,8 @@ class TileServer < SocrataHttp
 
   def connection_details
     {
-      port: ENV['TILESERVER_PORT'] || APP_CONFIG['tileserver_port'],
-      address: ENV['TILESERVER_HOSTNAME'] || APP_CONFIG['tileserver_hostname']
+      port: ENV['TILESERVER_PORT'] || APP_CONFIG.tileserver_port,
+      address: ENV['TILESERVER_HOSTNAME'] || APP_CONFIG.tileserver_hostname
     }.with_indifferent_access
   end
 

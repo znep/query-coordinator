@@ -3,7 +3,7 @@ require 'forwardable'
 require 'cgi'
 
 module Cetera
-  @@cetera_host = APP_CONFIG['cetera_host']
+  @@cetera_host = APP_CONFIG.cetera_host
   @@version = 'v1'
   @@api_path = "catalog/#{@@version}"
 

@@ -594,7 +594,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_no_dataset_copy_when_feature_flag_not_set
-    APP_CONFIG['secondary_group_identifier'] = false
+    APP_CONFIG.secondary_group_identifier = false
 
     manager.stubs(
       fetch_min_max_in_column: { min: 0, max: 0 }
@@ -612,7 +612,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   end
 
   def test_no_dataset_copy_when_feature_flag_is_blank
-    APP_CONFIG['secondary_group_identifier'] = ''
+    APP_CONFIG.secondary_group_identifier = ''
 
     manager.stubs(
       fetch_min_max_in_column: { min: 0, max: 0 }
@@ -632,7 +632,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
   private
 
   def stub_dataset_copy_request(dataset_id)
-    secondary_group_identifier = APP_CONFIG['secondary_group_identifier'] || 'spandex'
+    secondary_group_identifier = APP_CONFIG.secondary_group_identifier || 'spandex'
     dataset_copy_uri = "http://localhost:6010/dataset-copy/_#{dataset_id}/#{secondary_group_identifier}"
     stub_request(:post, dataset_copy_uri).
       with(

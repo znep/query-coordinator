@@ -271,7 +271,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'render google analytics JS using the app config token if feature flag is set to true' do
-      APP_CONFIG['opendata_ga_tracking_code'] = 'UA-9046230'
+      APP_CONFIG.opendata_ga_tracking_code = 'UA-9046230'
       FeatureFlags.stubs(
         :derive => {
           :enable_opendata_ga_tracking => true
@@ -282,7 +282,7 @@ class AngularControllerTest < ActionController::TestCase
     end
 
     should 'render google analytics JS using the app config token if feature flag is an empty string' do
-      APP_CONFIG['opendata_ga_tracking_code'] = 'UA-9046230'
+      APP_CONFIG.opendata_ga_tracking_code = 'UA-9046230'
       FeatureFlags.stubs(
         :derive => {
           :enable_opendata_ga_tracking => ''

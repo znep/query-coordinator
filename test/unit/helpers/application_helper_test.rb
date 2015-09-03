@@ -21,11 +21,11 @@ class ApplicationHelperTest < ActionView::TestCase
 
   def test_get_ga_tracking_code
     FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: true })
-    APP_CONFIG['opendata_ga_tracking_code'] = 'UA-9999999'
+    APP_CONFIG.opendata_ga_tracking_code = 'UA-9999999'
     assert(application_helper.get_ga_tracking_code =~ /UA-9999999/)
 
     FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: '' })
-    APP_CONFIG['opendata_ga_tracking_code'] = 'UA-9999999'
+    APP_CONFIG.opendata_ga_tracking_code = 'UA-9999999'
     assert(application_helper.get_ga_tracking_code =~ /UA-9999999/)
 
     FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: 'UA-123456' })
@@ -37,11 +37,11 @@ class ApplicationHelperTest < ActionView::TestCase
 
   def test_render_ga_tracking
     FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: true })
-    APP_CONFIG['opendata_ga_tracking_code'] = 'UA-9999999'
+    APP_CONFIG.opendata_ga_tracking_code = 'UA-9999999'
     assert(application_helper.render_ga_tracking =~ /_gaSocrata\('create', 'UA-9999999', 'auto', 'socrata'\);/)
 
     FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: '' })
-    APP_CONFIG['opendata_ga_tracking_code'] = 'UA-9999999'
+    APP_CONFIG.opendata_ga_tracking_code = 'UA-9999999'
     assert(application_helper.render_ga_tracking =~ /_gaSocrata\('create', 'UA-9999999', 'auto', 'socrata'\);/)
 
     FeatureFlags.stubs(:derive => { enable_opendata_ga_tracking: 'UA-123456' })

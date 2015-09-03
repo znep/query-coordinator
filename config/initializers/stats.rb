@@ -34,8 +34,8 @@ def send_event_to_statsd(name, payload)
   Frontend.statsd.__send__ action.to_s, "#{name}.#{measurement}", (value || 1).round
 end
 
-if APP_CONFIG['statsd_enabled']
-  Frontend.statsd = Statsd.new(APP_CONFIG['statsd_server'])
+if APP_CONFIG.statsd_enabled
+  Frontend.statsd = Statsd.new(APP_CONFIG.statsd_server)
   # You probably only want to turn this on for debugging,
   # as it logs a line for _every_ freaking metric it records
   #

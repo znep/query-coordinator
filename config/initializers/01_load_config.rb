@@ -1,13 +1,12 @@
 # Values in this config will only be picked up on deploy.
 APP_CONFIG = begin
   conf = YAML.load_file("#{Rails.root}/config/config.yml") || {}
-  conf[Rails.env]
+  AppConfig.new(conf[Rails.env])
 end
 
-CORESERVICE_URI = URI.parse(APP_CONFIG['coreservice_uri'])
-ODYSSEUS_URI = URI.parse(APP_CONFIG['odysseus_uri'] || "http://localhost:4747")
-
-INTERCESSIO_URI = URI.parse(APP_CONFIG['intercessio_uri'] || "http://localhost:1313" )
+CORESERVICE_URI = URI.parse(APP_CONFIG.coreservice_uri)
+ODYSSEUS_URI = URI.parse(APP_CONFIG.odysseus_uri || "http://localhost:4747")
+INTERCESSIO_URI = URI.parse(APP_CONFIG.intercessio_uri || "http://localhost:1313" )
 
 revision_file = File.join(Rails.root, "REVISION")
 
@@ -38,8 +37,8 @@ end
 
 STYLE_PACKAGES = YAML.load_file("#{Rails.root}/config/style_packages.yml") || {}
 
-AUTH0_URI = ENV['AUTH0_URI'] || APP_CONFIG['auth0_uri']
-AUTH0_ID = ENV['AUTH0_ID'] || APP_CONFIG['auth0_id']
-AUTH0_SECRET = ENV['AUTH0_SECRET'] || APP_CONFIG['auth0_secret']
-AUTH0_JWT = ENV['AUTH0_JWT'] || APP_CONFIG['auth0_jwt']
+AUTH0_URI = ENV['AUTH0_URI'] || APP_CONFIG.auth0_uri
+AUTH0_ID = ENV['AUTH0_ID'] || APP_CONFIG.auth0_id
+AUTH0_SECRET = ENV['AUTH0_SECRET'] || APP_CONFIG.auth0_secret
+AUTH0_JWT = ENV['AUTH0_JWT'] || APP_CONFIG.auth0_jwt
 AUTH0_CONFIGURED = AUTH0_URI.present? && AUTH0_ID.present? && AUTH0_SECRET.present? && AUTH0_JWT.present?

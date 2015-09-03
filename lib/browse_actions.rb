@@ -14,7 +14,7 @@ protected
   # In order to use Cetera search: the cetera_search_enabled feature flag must be true,
   # the user must be anonymous, and the admin parameter cannot be true
   def using_cetera?(user_params)
-    cetera_search_enabled? && User.current_user.nil? && !user_params[:admin] && APP_CONFIG['cetera_host'].present?
+    cetera_search_enabled? && User.current_user.nil? && !user_params[:admin] && APP_CONFIG.cetera_host.present?
   end
 
   def view_types_facet(user_params = {})

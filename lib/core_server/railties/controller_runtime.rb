@@ -45,8 +45,8 @@ module CoreServer
     private
 
       def too_many_core_server_requests(requests)
-        APP_CONFIG['max_core_server_requests'].present? &&
-          (requests > APP_CONFIG['max_core_server_requests'])
+        APP_CONFIG.max_core_server_requests.present? &&
+          (requests > APP_CONFIG.max_core_server_requests)
       end
 
       module ClassMethods

@@ -234,7 +234,7 @@ module Canvas2
       req = Net::HTTP::Get.new(uri.request_uri)
 
       req['X-Socrata-Host'] = req['Host'] = CurrentDomain.cname
-      req['X-Socrata-App'] = APP_CONFIG['odysseus_app_name'] unless APP_CONFIG['odysseus_app_name'].blank?
+      req['X-Socrata-App'] = APP_CONFIG.odysseus_app_name unless APP_CONFIG.odysseus_app_name.blank?
       req['X-Socrata-Locale'] = @@env[:current_locale].to_s
       req['X-Socrata-Default-Locale'] = CurrentDomain.default_locale
       req['Cookie'] = Canvas2::Util.request.headers['Cookie'] if !is_anon

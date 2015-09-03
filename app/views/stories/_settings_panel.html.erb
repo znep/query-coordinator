@@ -37,7 +37,7 @@
             <h3><%= I18n.t('settings_panel.publishing.visibility.private') %></h3>
           </div>
           <div>
-            <button class="btn accent-btn"><%= I18n.t('settings_panel.publishing.visibility.make_story_public') %></button>
+            <button class="btn accent-btn"><span><%= I18n.t('settings_panel.publishing.visibility.make_story_public') %></span></button>
           </div>
         </div>
         <hr>
@@ -47,10 +47,11 @@
             <h3><%= I18n.t('settings_panel.publishing.status.draft') %></h3>
           </div>
           <div>
-            <button class="btn accent-btn" disabled><%= I18n.t('settings_panel.publishing.status.update_public_version') %></button>
+            <button class="btn accent-btn" disabled><span><%= I18n.t('settings_panel.publishing.status.update_public_version') %></span></button>
           </div>
         </div>
         <p class="settings-panel-story-publishing-help-text"><%= I18n.t('settings_panel.publishing.can_be_shared_publically') %></p>
+        <div class="settings-panel-story-publishing-error hidden"><%= I18n.t('settings_panel.publishing.error') %></div>
       </div>
     </section>
 

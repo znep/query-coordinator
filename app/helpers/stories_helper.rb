@@ -4,7 +4,8 @@ module StoriesHelper
     @story.as_json.merge(
       {
         :title => core_attributes['name'] || '',
-        :description => core_attributes['description'] || ''
+        :description => core_attributes['description'] || '',
+        :permissions => determine_permissions_from_core_attributes
       }
     ).to_json
   end
@@ -70,6 +71,16 @@ module StoriesHelper
 
 
   private
+
+  def determine_permissions_from_core_attributes
+    grants = core_attributes['grants']
+
+    {
+      :isPublic => grants.nil? ? false : grants.any? do |grant|
+        grant['flags'].include?('public')
+      end
+    }
+  end
 
   def core_attributes
     CoreServer::get_view(@story.uid, CoreServer::headers_from_request(request)) || {}

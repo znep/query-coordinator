@@ -16,6 +16,8 @@
     var _stories = {};
     var _blocks = {};
 
+    var _storySetPermissionsError;
+
     this.register(function(payload) {
 
       var action = payload.action;
@@ -36,6 +38,10 @@
 
         case Constants.STORY_SET_DESCRIPTION:
           _setStoryDescription(payload);
+          break;
+
+        case Constants.STORY_SET_PERMISSIONS:
+          _setStoryPermissions(payload);
           break;
 
         case Constants.STORY_OVERWRITE_STATE:
@@ -107,11 +113,18 @@
     };
 
     this.getStoryDigest = function(storyUid) {
-
       var story = _getStory(storyUid);
 
       return story.digest;
     };
+
+    this.getStoryPermissions = function(storyUid) {
+
+      var story = _getStory(storyUid);
+
+      return story.permissions;
+    }
+
 
     this.getStoryBlockIds = function(storyUid) {
 
@@ -241,6 +254,22 @@
       var storyUid = payload.storyUid;
 
       _getStory(storyUid).description = payload.description;
+
+      self._emitChange();
+    }
+
+    function _setStoryPermissions(payload) {
+      utils.assertHasProperty(payload, 'storyUid');
+      utils.assertIsOneOfTypes(payload.storyUid, 'string');
+      utils.assertIsOneOfTypes(payload, 'object');
+      utils.assertHasProperty(payload, 'isPublic');
+      utils.assertIsOneOfTypes(payload.isPublic, 'boolean');
+
+      var storyUid = payload.storyUid;
+
+      _getStory(storyUid).permissions = {
+        isPublic: payload.isPublic
+      };
 
       self._emitChange();
     }
@@ -434,7 +463,8 @@
         description: storyData.description,
         theme: storyData.theme,
         blockIds: blockIds,
-        digest: storyData.digest
+        digest: storyData.digest,
+        permissions: storyData.permissions
       };
 
       self._emitChange();

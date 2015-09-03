@@ -43,6 +43,8 @@
     var metadataStateAtPanelOpenTime = null;
     var saveWasInProgress = false;
 
+    var storyPermissionsRenderer = new storyteller.StoryPermissionsRenderer();
+
     storyteller.coreSavingStore.addChangeListener(function() {
       var saveInProgress = storyteller.coreSavingStore.isSaveInProgress();
       var lastSaveError = storyteller.coreSavingStore.lastRequestSaveErrorForStory(

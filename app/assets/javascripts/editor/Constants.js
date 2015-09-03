@@ -24,6 +24,9 @@ var Constants = {
   // {string} message
   STORY_SAVE_FAILED: 'STORY_SAVE_FAILED',
 
+  // {boolean} isPublic
+  STORY_SET_PERMISSIONS: 'STORY_SET_PERMISSIONS',
+
   // {object} data: Story data object.
   STORY_OVERWRITE_STATE: 'STORY_OVERWRITE_STATE',
 

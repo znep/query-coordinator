@@ -342,7 +342,7 @@ body.state-view-cards
 
       .card-group-customize-hint
         position: absolute
-        width: 152px
+        width: 156px
         height: 80px
         padding-top: 8px
         padding-left: 12px
@@ -371,11 +371,16 @@ body.state-view-cards
 
           .card-group-customize-hint-card
             height: 25px
-            margin-right: 4px
-            border-radius: 3px
+            display: inline-block
+            position: relative
 
-            &:last-child
-              margin-right: 0
+            .card-group-customize-hint-card-inner
+              border-radius: 3px
+              position: absolute
+              left: 0
+              right: 4px
+              top: 0
+              bottom: 0
 
       .card-group-drop-placeholder
         position: absolute

@@ -150,7 +150,7 @@
 
     function handleRowInspectorShow(event) {
 
-      var payload = event.originalEvent.detail.data;
+      var payload = event.originalEvent.detail;
 
       // Show the row inspector
       if (payload !== null) {
@@ -172,8 +172,8 @@
       if (payload !== null) {
 
         console.log(
-          'Updating Row Inspector with data: {0}.'.format(
-            JSON.stringify(payload.data)
+          'Updating Row Inspector with payload: {0}.'.format(
+            JSON.stringify(payload)
           )
         );
       }

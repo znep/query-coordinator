@@ -178,7 +178,7 @@
 
     function handleRowInspectorQuery(event) {
 
-      var payload = event.originalEvent.detail.data;
+      var payload = event.originalEvent.detail;
 
       var query = '$offset=0&$limit={0}&$order=distance_in_meters({1}, "POINT({2} {3})"){4}'.
         format(
@@ -427,9 +427,7 @@
         new root.CustomEvent(
           'SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE',
           {
-            detail: {
-              data: payload
-            },
+            detail:payload,
             bubbles: true
           }
         )

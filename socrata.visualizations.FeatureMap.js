@@ -320,7 +320,8 @@
 
       var inspectorDataQueryConfig;
 
-      if (_flyoutData.count <= FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY) {
+      if (_flyoutData.count > 0 &&
+        _flyoutData.count <= FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY) {
 
         inspectorDataQueryConfig = {
           latLng: event.latlng,
@@ -402,18 +403,14 @@
       // Emit one event to cause the row inspector to be rendered.
       self.emitEvent(
         'SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW',
-        {
-          data: payload
-        }
+        payload
       );
 
       // Emit a second event to initiate a query for the row
       // data which we intend to inspect.
       self.emitEvent(
         'SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY',
-        {
-          data: inspectorDataQueryConfig
-        }
+        inspectorDataQueryConfig
       );
     }
 

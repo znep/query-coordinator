@@ -16,6 +16,13 @@
       });
     });
 
+    function triggerCustomEvent(eventName, detail) {
+      $dom.trigger(
+        eventName,
+        detail
+      );
+    }
+
     before(function(done) {
       $.get('/base/socrata.visualizations.rowInspector.html').
         then(function(htmlString) {
@@ -79,7 +86,7 @@
         };
 
         beforeEach(function(done) {
-          $dom.trigger('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', showEventPayload);
+          triggerCustomEvent('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', showEventPayload);
           _.defer(done);
         });
 
@@ -100,7 +107,7 @@
 
         describe('When given SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDE', function() {
           beforeEach(function() {
-            $dom.trigger('SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDE');
+            triggerCustomEvent('SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDE');
           });
 
           it('should hide', function() {
@@ -118,7 +125,7 @@
           function verifyThrowsWithInvalidPayload(payload) {
             it('should throw', function() {
               assert.throws(function() {
-                $dom.trigger('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', payload);
+                triggerCustomEvent('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', payload);
               });
             });
           }
@@ -131,7 +138,7 @@
 
           describe('that is valid', function() {
             beforeEach(function(done) {
-              $dom.trigger('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', validUpdatePayload);
+              triggerCustomEvent('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', validUpdatePayload);
               _.defer(done);
             });
 
@@ -242,7 +249,7 @@
           };
 
           currentData = data;
-          $dom.trigger('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', payload);
+          triggerCustomEvent('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', payload);
           _.defer(done);
         });
       }
@@ -336,7 +343,7 @@
         };
 
         beforeEach(function(done) {
-          $dom.trigger('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', showEventPayload);
+          triggerCustomEvent('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', showEventPayload);
           _.defer(done);
         });
       }
@@ -422,7 +429,7 @@
       };
 
       beforeEach(function(done) {
-        $dom.trigger('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', errorPayload);
+        triggerCustomEvent('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', errorPayload);
         _.defer(done);
       });
 

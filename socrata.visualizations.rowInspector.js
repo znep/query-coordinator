@@ -84,13 +84,26 @@
     var $document = $(root.document);
     var $body = $(root.document.body);
 
-    $body.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', function(event, payload) {
+    $body.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', function(event, jQueryPayload) {
+      // These events are CustomEvents. jQuery < 3.0 does not understand that
+      // event.detail should be passed as an argument to the handler.
+      var payload = jQueryPayload || _.get(event, 'originalEvent.detail');
+
       // Defer, otherwise the click that triggered this event will immediately close the flannel.
       _.defer(_show);
       _setState(payload);
     });
 
-    $body.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', function(event, payload) {
+    $body.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', function(event, jQueryPayload) {
+      // These events are CustomEvents. jQuery < 3.0 does not understand that
+      // event.detail should be passed as an argument to the handler.
+      var payload = jQueryPayload || _.get(event, 'originalEvent.detail');
+
+      if (_.isUndefined(payload.position)) {
+        // Reuse position from SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW if not specified.
+        payload.position = _state.position;
+      }
+
       _setState(payload);
     });
 

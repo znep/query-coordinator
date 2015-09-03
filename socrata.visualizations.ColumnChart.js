@@ -57,7 +57,7 @@
     var FILTERED_INDEX = config.columns.filteredValue;
     var SELECTED_INDEX = config.columns.selected;
 
-    _renderTemplate(this.element, this.getAxisLabels());
+    _renderTemplate(this.element);
 
     _attachEvents(this.element);
 
@@ -118,74 +118,16 @@
         }
       ).append(chartScroll);
 
-      var topAxisLabel = $(
-        '<div>',
-        {
-          'class': 'top-axis-label'
-        }
-      );
-
-      var rightAxisLabel = $(
-        '<div>',
-        {
-          'class': 'right-axis-label'
-        }
-      );
-
-      var bottomAxisLabel = $(
-        '<div>',
-        {
-          'class': 'bottom-axis-label'
-        }
-      );
-
-      var leftAxisLabel = $(
-        '<div>',
-        {
-          'class': 'left-axis-label'
-        }
-      );
-
       var chartContainer = $(
         '<div>',
         {
           'class': 'column-chart-container'
         }
-      ).append([
-        chartElement,
-        topAxisLabel,
-        rightAxisLabel,
-        bottomAxisLabel,
-        leftAxisLabel
-      ]);
+      ).append(
+        chartElement
+      );
 
-      if (axisLabels.top) {
-
-        chartContainer.addClass('top-axis-label');
-        topAxisLabel.
-          text(axisLabels.top);
-      }
-
-      if (axisLabels.right) {
-
-        chartContainer.addClass('right-axis-label');
-        rightAxisLabel.
-          text(axisLabels.right);
-      }
-
-      if (axisLabels.bottom) {
-
-        chartContainer.addClass('bottom-axis-label');
-        bottomAxisLabel.
-          text(axisLabels.bottom);
-      }
-
-      if (axisLabels.left) {
-
-        chartContainer.addClass('left-axis-label');
-        leftAxisLabel.
-          text(axisLabels.left);
-      }
+      self.renderAxisLabels(chartContainer);
 
       // Cache element selections
       _chartContainer = chartContainer;
@@ -194,11 +136,6 @@
       _chartScroll = chartScroll;
       _chartLabels = chartLabels;
       _truncationMarker = truncationMarker;
-
-      _chartTopAxisLabel = topAxisLabel;
-      _chartRightAxisLabel = rightAxisLabel;
-      _chartBottomAxisLabel = bottomAxisLabel;
-      _chartLeftAxisLabel = leftAxisLabel;
 
       element.append(chartContainer);
     }

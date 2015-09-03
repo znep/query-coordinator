@@ -43,3 +43,20 @@ en:
     description_label: 'Description'
     save_button_label: 'Save'
     generic_save_failure_message: 'Oh no! There was a problem saving. Please try again.'
+    publishing:
+      title: 'Publishing'
+      visibility:
+        title: 'Visibility'
+        private: 'Private'
+        public: 'Public'
+        make_story_public: 'Make Story Public'
+        make_story_private: 'Make Story Private'
+      status:
+        title: 'Status'
+        published: 'Published'
+        draft: 'Draft'
+        update_public_version: 'Update Public Version'
+      can_be_shared_publically: 'Stories can be shared publically. Once they are public, you can continue to make changes to your story and those changes are only visible to you until you update the public version. This way, you can decide when to share your changes with the world.'
+      has_been_published: 'This story has been published.'
+      published_and_updated: 'This story is public and updated.'
+      previously_published: 'There is a previously published version of this story. Updating will make your changes visible to everyone.'

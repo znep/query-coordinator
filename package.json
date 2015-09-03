@@ -6,7 +6,8 @@
   },
   "scripts": {
     "lint": "eslint",
-    "test": "karma start karma.conf.js --singleRun true"
+    "test": "karma start karma.conf.js --singleRun true",
+    "demo-css": "node-sass --output-style expanded socrata.visualizations.rowInspector.scss examples/socrata.visualizations.rowInspector.demoOnly.css"
   },
   "homepage": "https://github.com/socrata/frontend-visualizations",
   "devDependencies": {
@@ -17,8 +18,10 @@
     "karma-coverage": "^0.3.1",
     "karma-mocha": "^0.1.10",
     "karma-phantomjs-launcher": "^0.2.0",
+    "karma-scss-preprocessor": "^1.0.0",
     "karma-sinon": "^1.0.4",
     "mocha": "^2.2.5",
+    "node-sass": "^3.3.2",
     "phantomjs": "^1.9.17",
     "sinon": "^1.15.3"
   },

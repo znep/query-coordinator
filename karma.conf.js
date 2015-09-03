@@ -26,6 +26,7 @@ module.exports = function(config) {
       'socrata.visualizations.ColumnChart.js',
       'socrata.visualizations.rowInspector.js',
       'socrata.visualizations.rowInspector.html',
+      'socrata.visualizations.rowInspector.scss',
       'socrata.visualizations.columnChart.css',
       'karma/**/*spec.js'
     ],

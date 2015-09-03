@@ -23,6 +23,7 @@
           $('body').append($dom);
           $rowInspector = $dom.find('#socrata-row-inspector');
           $toolPanel = $rowInspector.find('.tool-panel');
+          window.socrata.visualizations.rowInspector.setup();
           done();
         });
     });
@@ -247,8 +248,8 @@
       }
 
       function verifyStickyBorderBottomPosition(isPaged) {
-        it('should hide the stick border on the bottom', function() {
-          var expectedBottom = isPaged ? $rowInspector.find('.paging-panel').height() : 0;
+        it('should hide the sticky border on the bottom', function() {
+          var expectedBottom = isPaged ? $rowInspector.find('.paging-panel').outerHeight() : 0;
           assert.include($rowInspector.find('.sticky-border.bottom').attr('style'), 'bottom: {0}px'.format(expectedBottom));
         });
       }
@@ -324,7 +325,7 @@
 
     describe('positioning', function() {
       var $hint;
-      beforeEach(function() {
+      before(function() {
         $hint = $rowInspector.find('.tool-panel-hint');
       });
 
@@ -340,13 +341,17 @@
         });
       }
 
+      function distanceFromRightEdge() {
+        // Look at tool-panel-main, as the root of the rowInspector does not actually have dimensions.
+        var contentPosition = $toolPanel.find('.tool-panel-main')[0].getBoundingClientRect();
+        var windowWidth = $(document.body).width();
+        return windowWidth - contentPosition.right;
+      }
+
       describe('when shown at the right edge of the screen', function() {
         showAtXPosition($(window).width());
         it('should stick to the right side of the screen', function() {
-          // ROW_INSPECTOR_WIDTH + ROW_INSPECTOR_PADDING_COMPENSATION + ROW_INSPECTOR_WINDOW_PADDING
-          var expectedRight = 350 + 3 + 22;
-
-          assert.include($toolPanel.attr('style'), 'right: {0}px'.format(expectedRight));
+          assert.isAbove(distanceFromRightEdge(), 0);
         });
 
         it('should display the hint at the extreme right of the rowInspector', function() {
@@ -359,18 +364,15 @@
       });
 
       describe('when shown 50px from the right edge of the screen', function() {
-        showAtXPosition($(window).width() - 50);
+        var xPositionShownAt = $(window).width() - 50;
+        showAtXPosition(xPositionShownAt);
         it('should stick to the right side of the screen', function() {
-          // ROW_INSPECTOR_WIDTH + ROW_INSPECTOR_PADDING_COMPENSATION + ROW_INSPECTOR_WINDOW_PADDING
-          var expectedRight = 350 + 3 + 22;
-
-          assert.include($toolPanel.attr('style'), 'right: {0}px'.format(expectedRight));
+          assert.isAbove(distanceFromRightEdge(), 0);
         });
 
         it('should display the hint at the mouse X position', function() {
-          var expectedRight = $(window).width() - (($(window).width() - 50) + 22)
-
-          assert.include($hint.attr('style'), 'right: {0}px'.format(expectedRight));
+          var distance = Math.abs(xPositionShownAt - $hint[0].getBoundingClientRect().right);
+          assert.isBelow(distance, $hint.width());
         });
 
         it('should display a southeast hint', function() {
@@ -379,19 +381,15 @@
       });
 
       describe('when shown 275px from the right edge of the screen', function() {
-        showAtXPosition($(window).width() - 275);
+        var xPositionShownAt = $(window).width() - 275;
+        showAtXPosition(xPositionShownAt);
         it('should stick to the right side of the screen', function() {
-          // ROW_INSPECTOR_WIDTH + ROW_INSPECTOR_PADDING_COMPENSATION + ROW_INSPECTOR_WINDOW_PADDING
-          var expectedRight = 350 + 3 + 22;
-
-          assert.include($toolPanel.attr('style'), 'right: {0}px'.format(expectedRight));
+          assert.isAbove(distanceFromRightEdge(), 0);
         });
 
         it('should display the hint at the mouse X position', function() {
-          var ROW_INSPECTOR_HINT_WIDTH = 10;
-          var expectedRight = $(window).width() - (($(window).width() - 275) + 22) - ROW_INSPECTOR_HINT_WIDTH;
-
-          assert.include($hint.attr('style'), 'right: {0}px'.format(expectedRight));
+          var distance= Math.abs(xPositionShownAt - $hint[0].getBoundingClientRect().left);
+          assert.isBelow(distance, $hint.width());
         });
 
         it('should display a southwest hint', function() {
@@ -406,10 +404,8 @@
         });
 
         it('should display the hint at the extreme left of the rowInspector', function() {
-          // We can't load scss in these tests.
-          // Without a style attr attached, the hint will
-          // show up at the left by default.
-          assert.equal($hint.attr('style'), '');
+          // The tip is somewhat oddly shaped, which confuses getBoundingClientRect sometimes.
+          assert.isBelow($hint[0].getBoundingClientRect().left, 2);
         });
 
         it('should display a southwest hint', function() {
@@ -418,7 +414,7 @@
       });
     });
 
-    describe('When given SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', function() {
+    describe('When given SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW with the error field set', function() {
       var errorPayload = {
         position: { pageX: 10, pageY: 200 },
         error: true,

@@ -47,7 +47,7 @@
                 <%= browse_facet_option(facet_option, facet[:param], opts, facet[:use_icon]) %>
               <%- end -%>
             </ul>
-            <%- if !facet[:extra_options].blank? -%>
+            <%- unless facet[:extra_options].blank? -%>
               <%- if facet[:tag_cloud].present? -%>
                 <%- content_for :modals do -%>
                   <%= modal :id => "browseDialog_#{facet[:param]}", :class => 'browseOptionsDialog' do %>
@@ -99,7 +99,7 @@
         <%- end -%>
       </div>
     <%- end -%>
-    <%- if (!opts[:embedded_browse_iframe_hack]) -%>
+    <%- unless opts[:embedded_browse_iframe_hack] -%>
 
         <%- if ((CurrentDomain.user_can?(current_user, :create_datasets) ||
                 CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
@@ -159,7 +159,7 @@
 
     <%- show_catalog_sort_dropdown = opts[:show_catalog_sort_dropdown] -%>
     <div class="browseList <%= show_catalog_sort_dropdown ? 'hasSort' : '' %>">
-      <%- if !opts[:browse_in_container] -%>
+      <%- unless opts[:browse_in_container] -%>
         <div class="titleContainer">
           <h2 title="<%= opts[:title] %>"><%= opts[:title] %>
             <%- unless opts[:hide_catalog_rss] -%>
@@ -218,7 +218,7 @@
         <%- if opts[:view_request_timed_out] -%>
           <div class="noResults">
             <span class="message"><%= opts[:timeout_text] %></span>
-            <%- if (!opts[:embedded_browse_iframe_hack]) -%>
+            <%- unless opts[:embedded_browse_iframe_hack] -%>
 
               <%- if ((CurrentDomain.user_can?(current_user, :create_datasets) ||
                       CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
@@ -266,7 +266,7 @@
         <%- elsif opts[:view_count] == 0 -%>
           <div class="noResults">
             <span class="message"><%= opts[:no_results_text] %></span>
-            <%- if (!opts[:embedded_browse_iframe_hack]) -%>
+            <%- unless opts[:embedded_browse_iframe_hack] -%>
 
               <%- if ((CurrentDomain.user_can?(current_user, :create_datasets) ||
                       CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
@@ -342,7 +342,7 @@
                 <col class="rss" />
               <%- end -%>
             </colgroup>
-            <%- if !opts[:disable][:table_header] -%>
+            <%- unless opts[:disable][:table_header] -%>
             <thead>
               <tr>
                 <%- if opts[:grid_items][:index] -%>

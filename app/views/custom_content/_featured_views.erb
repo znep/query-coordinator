@@ -18,7 +18,7 @@
 
         <a href="<%= featured_view.href %>"
           class="viewTitle"><%= featured_view.title.gsub("\u00a0", ' ') %></a>
-        <p class="viewDescription"><%= raw(auto_link(h(featured_view.description), :html => { :rel => 'nofollow external' })) %></p>
+        <p class="viewDescription"><%= raw(auto_link(h(raw(featured_view.description)), :all, {'rel' => 'nofollow external' })) %></p>
       </div>
     </li>
   <%- end -%>

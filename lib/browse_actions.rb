@@ -368,10 +368,22 @@ protected
     browse_options[:grid_items] ||=
       case browse_options[:view_type]
       when 'rich'
-        { largeImage: true, richSection: true, popularity: true, type: true, rss: true }
+        {
+          largeImage: true,
+          richSection: true,
+          popularity: true,
+          type: true,
+          rss: true
+        }
       else
-        { index: true, domainIcon: browse_options[:use_federations], nameDesc: true,
-          datasetActions: browse_options[:dataset_actions], popularity: true, type: true }
+        {
+          index: true,
+          domainIcon: browse_options[:use_federations],
+          nameDesc: true,
+          datasetActions: browse_options[:dataset_actions],
+          popularity: true,
+          type: true
+        }
       end
 
     # In Cetera search, hide the RSS feed links as well as the popularity count

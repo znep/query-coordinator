@@ -1,4 +1,4 @@
-describe.only('A Timeline Chart Card Visualization', function() {
+describe('A Timeline Chart Card Visualization', function() {
   'use strict';
 
   var testHelpers;

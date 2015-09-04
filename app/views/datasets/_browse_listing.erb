@@ -1,0 +1,51 @@
+<div class="browse-list-item" data-viewId="<%= v.id %>" itemscope="itemscope" itemtype="http://schema.org/Dataset">
+  <!-- Settings dropdown menu-->
+  <div class="settings menu"></div>
+  <!-- Dataset information-->
+  <div class="media-item">
+    <div class="media-element">
+      <div
+        data-display-type="<%= v.display.type %>"
+        class="dataset-icon"
+        title="<%= v.display.name.capitalize %>">
+      </div>
+      <button
+        class="settings-icon <%= v.id %>"
+        title="Settings"
+      >
+      </button>
+    </div>
+
+    <div class="media-label">
+      <div class="browse-listing-titleinfo">
+        <span class="hide" itemprop="name"><%= v.name %></span>
+        <a class="browse-listing-name" href="<%= view_url(v) %>" itemprop="url"><%= v.name %></a>
+
+        <%- if v.category.present? -%>
+          <span class="browse-listing-category" itemprop="keywords"><%= v.category_display %></span>
+        <%- end -%>
+      </div>
+
+      <div class="browse-listing-description">
+        <%= view_format_description_text(v.description) %>
+        <div class="browse-listing-description-controls hidden">
+          <button data-expand-action="more">&hellip; Read more</button>
+          <button data-expand-action="less">Show less</button>
+        </div>
+      </div>
+
+
+      <div class="browse-listing-metadata">
+        <span class="browse-listing-viewcount">
+          <%= pluralize(number_with_delimiter(v.viewCount), t('core.analytics.visit'), t('core.analytics.visits')) %>
+        </span>
+        <span class="browse-listing-tags">
+          <%- if v.tags.present? -%>
+            <%= join_and_truncate_array(v.tags) %>
+          <%- end -%>
+        </span>
+      </div>
+
+    </div>
+  </div>
+</div>

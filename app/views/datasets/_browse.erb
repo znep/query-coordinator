@@ -6,7 +6,7 @@
 <%- show_time_period = cur_sort.nil? ? false : cur_sort[:is_time_period] -%>
 <%- in_search = opts[:user_params][:q] && opts[:row_count] -%>
 
-<div class="browseSection <%= opts[:facets].length < 1 ? 'noFacets' : '' %>
+<div data-view-type="<%= opts[:view_type] %>" class="browseSection <%= opts[:facets].length < 1 ? 'noFacets' : '' %>
   <%= opts[:custom_class] || '' %>
   <%= opts[:browse_in_container] ? 'inContainer' : '' %> <%= opts[:disable][:sort] ? 'noSort' : '' %>">
   <%- if opts[:facets].length > 0 -%>
@@ -172,7 +172,7 @@
       <%- end -%>
 
       <div class="topControls">
-        <%- if !opts[:hide_view_types] -%>
+        <%- unless opts[:view_type] == 'listing' || opts[:hide_view_types] -%>
           <ul class="viewTypeOptions pillButtons">
             <li><a href="<%= opts[:base_url] + '?' + opts[:user_params].merge(
                             {:view_type => 'table', :page => opts[:page]}).to_param %>"
@@ -311,7 +311,13 @@
               <a class="button suggestLink" href="<%= nominate_index_path %>"><%= t('controls.browse.actions.suggest_dataset_short') %></a>
             <%- end -%>
           </div>
-        <%- else -%>
+        <%- elsif opts[:view_type] == 'listing' %>
+          <%- opts[:view_results].each_with_index do |v, _| -%>
+              <%= render :partial => 'datasets/browse_listing',
+                :locals => { :opts => opts, :v => v, :in_search => in_search, :rel_type => view_rel_type(v, CurrentDomain, opts) } %>
+          <%- end -%>
+
+      <%- else -%>
           <table class="gridList<%= ' hasFederations' if opts[:use_federations] %>">
             <colgroup>
               <%- if opts[:grid_items][:index] -%>

@@ -1,8 +1,35 @@
 $browse_background_color: #ffffff
 $new_view_icon_color: #80acca
 
+@import "./media-object"
+@import url(https://fonts.googleapis.com/css?family=Open+Sans)
+
 .browseSection
+
   padding: #{$chrome_margin_inner} 0
+
+  .dataset-icon
+    margin-bottom: 5px
+
+  .media-item
+    .settings-icon
+      opacity: 0
+      position: relative
+      border: 0
+      padding: 0
+      cursor: pointer
+      transition: opacity .25s ease-in-out
+      -moz-transition: opacity .25s ease-in-out
+      -webkit-transition: opacity .25s ease-in-out
+    &:hover
+      .settings-icon
+        opacity: 1
+  .settings.menu
+    display: block
+    position: relative
+    top: 19px
+    left: 10px
+
   .action_browse_show &
     padding-top: 0
 
@@ -633,6 +660,189 @@ $new_view_icon_color: #80acca
 
   &.noFacets .browseList
     margin-left: 0
+
+  // Fall 2015 catalog visual style update
+  &[data-view-type="listing"]
+    font-family: 'Open Sans', sans-serif
+
+    div.menu .menuDropdown ul.menuColumns li.menuColumn ul.menuEntries li.menuEntry a
+      padding-left: 0.8em
+
+    .sortOptions .sortType
+      width: 13em
+
+    .uniform.selector
+      @include border-radius(0.2em)
+      background: #eee none
+
+      > .container > div
+        background-image: none
+        &::before
+          @include icon-font
+          color: #666
+          content: "\e60e"
+          line-height: inherit
+          position: absolute
+          right: 1em
+
+    .results
+      margin-top: 5em
+      overflow: visible
+
+    .dataset-icon
+      margin-top: 2px
+
+    .browse-list-item
+      margin-bottom: 2em
+
+    .browse-listing-name
+      font-size: 1.6em
+      font-weight: bold
+      margin-right: 0.25em
+
+    .browse-listing-tags
+      color: #666
+      font-size: 1em
+
+    .browse-listing-titleinfo
+      margin-bottom: 0.5em
+
+    .browse-listing-category
+      @include border-radius(0.2em)
+      background-color: #eee
+      color: #444
+      font-size: 1em
+      padding: 0 0.2em
+
+    .browse-listing-description
+      @include prefixer(transition, max-height 0.5s ease)
+      max-height: calc(1.4em * 6)
+      overflow: hidden
+      position: relative
+
+      &.is-expanded
+        max-height: 1000px
+        padding-bottom: 1.2em
+
+        [data-expand-action="more"]
+          display: none
+
+        [data-expand-action="less"]
+          display: inherit
+
+      &:not(.is-expanded)
+        [data-expand-action="more"]
+          display: inherit
+
+        [data-expand-action="less"]
+          display: none
+
+      p
+        font-size: 1.2em
+        line-height: 1.2em
+
+    .browse-listing-description-controls
+      &.hidden
+        display: none
+
+      button
+        border: 0
+        background-color: #fff
+        bottom: 0
+        cursor: pointer
+        padding: 0
+        position: absolute
+        right: 0
+
+    .browse-listing-metadata
+      line-height: 1.5em
+
+    .browse-listing-viewcount
+      color: #999
+      font-size: 1em
+      margin-right: 1em
+
+    .searchSection
+      border: 0
+      color: #999
+      padding:
+        left: 3.5em
+        right: 1.5em
+
+      .icon
+        @include prefixer(transform, scale(-1, 1))
+        left: 1.5em
+        text-indent: 0
+        background: none
+
+        &::before
+          @include icon-font
+          color: #666
+          content: "\e609"
+          font-size: 1.6em
+          line-height: 1.2em
+
+      .searchBox
+        color: #999
+        font-family: inherit
+        font-size: 1.6em
+        line-height: 1.6em
+        padding: 0 0.3em
+
+
+    &.inContainer
+
+      .browseList .topControls .sortOptions .sortType
+        width: 13em
+
+      .searchSection
+        padding:
+          left: 2em
+
+        .icon
+          left: 0
+
+    &:not(.inContainer)
+
+      .browseFacets, .browseList
+        @include border-radius(0.2em)
+        @include prefixer(box-shadow, 0 0 0 4px rgba(0, 0, 0, 0.0255))
+        border: 1px solid #e4e4e4
+
+      .browseFacets
+        padding:
+          left: 0
+          right: 0
+        width: 21em
+
+      .facetSection
+        padding:
+          left: 1.5em
+          right: 1.5em
+
+      .facetSection
+        border-color: #e4e4e4
+
+        .title
+          color: #333
+          font-size: 1.3em
+          font-weight: bold
+          letter-spacing: -0.02em
+          padding-bottom: 0.5em
+
+        li
+          padding: 0.45em 0
+
+          a
+            font-size: 1.2em
+            letter-spacing: -0.02em
+
+      .titleContainer > h2
+        font-size: 1.8em
+        padding-left: 0.3em
+
+      .browseList .topControls
+        right: 1.8em
 
 // modals
 .browseOptionsDialog

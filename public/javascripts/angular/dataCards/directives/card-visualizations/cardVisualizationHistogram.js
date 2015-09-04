@@ -204,8 +204,8 @@
               var filteredData =
                   HistogramService.bucketData(filtered.data, bucketingOptions);
 
-              $scope.$emit('response_headers:unfiltered', unfiltered.headers);
-              $scope.$emit('response_headers:filtered', filtered.headers);
+              $scope.$emit('unfiltered_query:complete', unfiltered.headers);
+              $scope.$emit('filtered_query:complete', filtered.headers);
 
               $scope.histogramRenderError = false;
 

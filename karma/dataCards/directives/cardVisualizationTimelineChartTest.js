@@ -1,4 +1,4 @@
-describe('A Timeline Chart Card Visualization', function() {
+describe.only('A Timeline Chart Card Visualization', function() {
   'use strict';
 
   var testHelpers;
@@ -53,11 +53,8 @@ describe('A Timeline Chart Card Visualization', function() {
         });
       },
       getTimelineData: function() {
-        return $q.when({
-          headers: function(headerName) {
-            return undefined;
-          },
-          data: [
+        return withHeaders({}, $q.when(
+          [
             {
               date: moment().subtract('years', 10)
             },
@@ -65,7 +62,7 @@ describe('A Timeline Chart Card Visualization', function() {
               date: moment()
             }
           ]
-        });
+        ));
       }
     };
     _$provide.value('CardDataService', mockCardDataService);

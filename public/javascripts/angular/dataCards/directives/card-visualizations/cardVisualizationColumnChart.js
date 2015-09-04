@@ -62,7 +62,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
               // Ok
               unfilteredData$.onNext(dataPromise);
               dataResponses$.onNext(1);
-              $scope.$emit('response_headers:unfiltered', result.headers);
+              $scope.$emit('unfiltered_query:complete', result.headers);
             },
             function() {
               // Error, do nothing
@@ -92,7 +92,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
               // Ok
               filteredData$.onNext(dataPromise);
               dataResponses$.onNext(1);
-              $scope.$emit('response_headers:filtered', result.headers);
+              $scope.$emit('filtered_query:complete', result.headers);
             },
             function() {
               // Error, do nothing

@@ -32,7 +32,7 @@
 
         $scope.$bindObservable('description', model$.observeOnLatest('column.description'));
 
-        function installDebugFlyout() {
+        function registerDebugFlyout() {
           // N.B.: Card models already have unique ids, but they can be shared across card directives.
           var uniqueId = _.uniqueId();
           element[0].dataset.card_directive_id = uniqueId;
@@ -52,11 +52,11 @@
             debugInfo.renderCompleteTime = event.timestamp;
           });
 
-          $scope.$on('response_headers:filtered', function(_, headers) {
+          $scope.$on('filtered_query:complete', function(_, headers) {
             debugInfo.filteredResponseHeaders = headers;
           });
 
-          $scope.$on('response_headers:unfiltered', function(_, headers) {
+          $scope.$on('unfiltered_query:complete', function(_, headers) {
             debugInfo.unfilteredResponseHeaders = headers;
           });
 
@@ -106,7 +106,7 @@
             }
           });
         }
-        installDebugFlyout();
+        registerDebugFlyout();
 
         var updateCardLayout = _.throttle(function(textHeight) {
           descriptionTruncatedContent.dotdotdot({

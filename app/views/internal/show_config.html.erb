@@ -19,6 +19,7 @@
         <a href="/internal/orgs/<%= @domain.organizationId
           %>/domains/<%= @domain.cname %>">
           <%= @domain.name %> (<%= @domain.cname %>)
+          (<%= 'not ' unless @config.default %>default for <%= @config.type %>)
       </a></h1>
 
       <a href="#export" class="exportLink">Export mode</a>

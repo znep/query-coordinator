@@ -69,12 +69,16 @@ Frontend::Application.routes do
       match '/orgs/:id', :action => 'show_org'
       match '/orgs/:id/domains', :action => 'create_domain', :via => :post
       match '/orgs/:org_id/domains/:id', :action => 'show_domain',
-        :constraints => {:id => /(\w|-|\.)+/}
+        :constraints => {:id => /(\w|-|\.)+/},
+        :as => 'show_domain'
       match '/orgs/:org_id/domains/:domain_id/site_config',
         :action => 'create_site_config', :constraints => {:domain_id => /(\w|-|\.)+/},
         :conditions => { :method => :post }
       match '/orgs/:org_id/domains/:domain_id/default_site_config',
         :action => 'set_default_site_config', :constraints => {:domain_id => /(\w|-|\.)+/},
+        :conditions => { :method => :post }
+      match '/orgs/:org_id/domains/:domain_id/delete_config/:id',
+        :action => 'delete_site_config', :constraints => {:domain_id => /(\w|-|\.)+/},
         :conditions => { :method => :post }
       match '/orgs/:org_id/domains/:domain_id/feature',
         :action => 'set_features', :constraints => {:domain_id => /(\w|-|\.)+/},
@@ -99,7 +103,8 @@ Frontend::Application.routes do
       post '/domains/:domain_id/set_feature_flags',
         :action => 'set_feature_flags', :constraints => {:domain_id => /(\w|-|\.)+/}
       match '/orgs/:org_id/domains/:domain_id/site_config/:id',
-        :action => 'show_config', :constraints => {:domain_id => /(\w|-|\.)+/}
+        :action => 'show_config', :constraints => {:domain_id => /(\w|-|\.)+/},
+        :as => :show_config
       post '/orgs/:org_id/domains/:domain_id/site_config/:id/property',
         :action => 'set_property', :constraints => {:domain_id => /(\w|-|\.)+/}
       match '/orgs/:org_id/domains/:domain_id/site_config/:config_id/edit_property',

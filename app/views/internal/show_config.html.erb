@@ -16,14 +16,22 @@
       <%- else -%>
       <%= render :partial => 'production_warning' %>
       <h1><%= @config.name %> for
-        <a href="/internal/orgs/<%= @domain.organizationId
-          %>/domains/<%= @domain.cname %>">
-          <%= @domain.name %> (<%= @domain.cname %>)
-          (<%= 'not ' unless @config.default %>default for <%= @config.type %>)
-      </a></h1>
+        <%= link_to "#{@domain.name} (#{@domain.cname})",
+                    show_domain_path(org_id: @domain.organizationId,
+                                     id: @domain.cname) %>
+        (<%= 'not ' unless @config.default %>default for <%= @config.type %>)
+      </h1>
 
       <a href="#export" class="exportLink">Export mode</a>
       <a href="#import" class="importLink">Import mode</a>
+
+      <%= form_tag "/internal/orgs/#{@domain.organizationId}/domains/#{@domain.cname}/default_site_config", :class => 'oneButtonForm' do %>
+        <input type="hidden" name="default-site-config" value="<%= @config.id %>" />
+        <input type="submit" value="Set this config as Default" />
+      <% end unless @config.default %>
+      <%= form_tag "/internal/orgs/#{@domain.organizationId}/domains/#{@domain.cname}/delete_config/#{@config.id}", :class => 'oneButtonForm deleteConfig' do %>
+        <input type="submit" value="Delete this Config" />
+      <% end unless editing_this_page_is_dangerous? %>
 
       <input type="text" class="importExportBox" />
       <a href="#doImport" class="doImportLink">Import this</a>
@@ -59,12 +67,14 @@
     <%- end -%>
 
     <%- if !@parent_config.nil? && !@parent_config.data['properties'].nil? -%>
-    <h2>Inherited Properties (from <a href="/internal/orgs/<%=
-        @parent_domain.organizationId %>/domains/<%= @parent_domain.cname
-        %>/site_config/<%= @parent_config.id %>"><%= @parent_config.name
-        %></a>):</h2>
+      <h2>Inherited Properties (from
+        <%= link_to @parent_config.name, show_config_path(org_id: @parent_domain.organizationId,
+                                                          domain_id: @parent_domain.cname,
+                                                          id: @parent_config.id) %>):</h2>
     <form class='wide inheritedProperties'>
-      <%- @parent_config.data['properties'].sort{ |a, b| a['name'] <=> b['name'] }.each do |prop| -%>
+      <%- @parent_config.data['properties'].
+        sort{ |a, b| a['name'] <=> b['name'] }.
+        each do |prop| -%>
       <%- next if cur_props[prop['name']] -%>
 
       <div class='line'>
@@ -94,6 +104,9 @@
   <script type="text/javascript">
     $(function()
     {
+      $('.deleteConfig').submit(function() {
+        return confirm('Are you sure you want to delete this config?');
+      });
       $('.exportLink').click(function(event)
       {
         event.preventDefault();

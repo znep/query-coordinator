@@ -11,7 +11,8 @@ var datasetsMetricName,
     pageViewsName,
     absoluteMetricRange,
     embedsName,
-    embedsTotal;
+    embedsTotal,
+    absoluteMetricTopRow;
 
 if(blist.feature_flags.dataset_count_v2){
   datasetsMetricName = 'datasets-published-v2';
@@ -46,6 +47,7 @@ if (blist.feature_flags.embetter_analytics_page) {
     absoluteMetricRange = true;
     embedsName = 'Embed Views';
     embedsTotal = false;
+    absoluteMetricTopRow = false;
 } else {
     pageViewsSummary = {
         plus: 'page-views',
@@ -72,6 +74,7 @@ if (blist.feature_flags.embetter_analytics_page) {
     absoluteMetricRange = false;
     embedsName = 'Embeds';
     embedsTotal = true;
+    absoluteMetricTopRow = true;
 }
 
 blist.metrics.sitewideShared = {
@@ -90,6 +93,28 @@ blist.metrics.sitewideShared = {
         }
     ],
     detailSections: _.filter([
+        {
+            id: 'summaryDatasets',    displayName: totalPrefix + 'Datasets' + addedSuffix,
+            summary: {
+                plus: datasetsMetricName,
+                range: absoluteMetricRange,
+                verbPhrase: 'datasets created',
+                verbPhraseSingular: 'dataset created',
+                deltaPhrase: 'datasets'
+            },
+            enabled: !absoluteMetricTopRow
+        },
+        {
+            id: 'summaryRows',        displayName: totalPrefix + 'Rows' + addedSuffix,
+            summary: {
+		plus: 'rows-created', 
+		minus: 'rows-deleted',
+                verbPhrase: 'rows created', 
+		verbPhraseSingular: 'row created',
+                deltaPhrase: 'rows'
+            },
+            enabled: !absoluteMetricTopRow
+        },
         {id: 'detailPublicGoals',      displayName: 'Public Goals',
             summary: {plus: ['govstat-goal-isPublic-true'],
                 verbPhrase: 'goals created', verbPhraseSingular: 'goal created'
@@ -154,7 +179,8 @@ blist.metrics.sitewideShared = {
                 verbPhrase: 'datasets created',
                 verbPhraseSingular: 'dataset created',
                 deltaPhrase: 'datasets'
-            }
+            },
+            enabled: absoluteMetricTopRow
         },
         {
             id: 'summaryRows',        displayName: totalPrefix + 'Rows' + addedSuffix,
@@ -164,7 +190,8 @@ blist.metrics.sitewideShared = {
                 verbPhrase: 'rows created', 
 		verbPhraseSingular: 'row created',
                 deltaPhrase: 'rows'
-            }
+            },
+            enabled: absoluteMetricTopRow
         },
         {
             id: 'summaryEmbeds',      displayName: embedsName,

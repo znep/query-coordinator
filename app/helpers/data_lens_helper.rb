@@ -94,6 +94,13 @@ module DataLensHelper
     include_javascripts_unminified("angular-app-#{angular_app}")
   end
 
+  def angular_templates
+    basedir = "#{Rails.root}/public"
+    Dir.glob("#{basedir}/angular_templates/**/*.html").map do |path|
+      { :id => path.gsub(basedir, ''), :template => File.read(path) }
+    end
+  end
+
   def render_airbrake_notifier
     return nil unless FeatureFlags.derive(nil, request)[:enable_airbrake_js]
 

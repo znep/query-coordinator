@@ -1,5 +1,5 @@
 <div class="user-story-container">
-  <div class="user-story large theme-classic">
+  <div class="user-story large theme-<%= @story.theme %>">
     <% @story.blocks.each do |block| -%>
       <% layout_columns = block.layout.split('-') %>
 
@@ -13,6 +13,7 @@
                     locals: { component: component } %>
 
             </div>
+
           </div>
         <% end %>
       </div>

@@ -59,7 +59,7 @@ var Constants = {
   STORY_SAVE_METADATA: 'STORY_SAVE_METADATA',
 
   // {string} storyUid
-  // {string} themeId
+  // {string} theme
   STORY_UPDATE_THEME: 'STORY_UPDATE_THEME',
 
   // {string} storyUid

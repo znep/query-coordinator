@@ -3,6 +3,7 @@ FactoryGirl.define do
   factory :published_story do
     uid 'test-test'
     block_ids []
+    theme 'serif'
     created_by 'test_user@socrata.com'
 
     factory :published_story_with_blocks do

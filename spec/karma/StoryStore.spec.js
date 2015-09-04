@@ -5,7 +5,7 @@ describe('StoryStore', function() {
   var story1Uid = 'stry-spc1';
   var story1Title = 'Story 1';
   var story1Description = 'Story 1 Description';
-  var story1ThemeId = 'testTheme';
+  var story1Theme = 'testTheme';
 
   var story2Uid = 'stry-spc2';
   var story2Title = 'Story 2';
@@ -42,7 +42,7 @@ describe('StoryStore', function() {
       uid: story1Uid,
       title: story1Title,
       description: story1Description,
-      themeId: story1ThemeId,
+      theme: story1Theme,
       blocks: [
         generateBlockData({
           id: block1Id,
@@ -283,23 +283,23 @@ describe('StoryStore', function() {
         });
       });
 
-      describe('.getStoryThemeId()', function() {
+      describe('.getStoryTheme()', function() {
         it('defaults to `classic` when not set', function() {
-          assert.equal(storyteller.storyStore.getStoryThemeId(story2Uid), 'classic');
+          assert.equal(storyteller.storyStore.getStoryTheme(story2Uid), 'classic');
         });
 
         it('returns the correct value when set on STORY_CREATE', function() {
-          assert.equal(storyteller.storyStore.getStoryThemeId(story1Uid), story1ThemeId);
+          assert.equal(storyteller.storyStore.getStoryTheme(story1Uid), story1Theme);
         });
 
         it('changes the value when `STORY_UPDATE_THEME` is fired', function() {
           dispatch({
             action: Constants.STORY_UPDATE_THEME,
             storyUid: story1Uid,
-            themeId: 'serif'
+            theme: 'serif'
           });
 
-          assert.equal(storyteller.storyStore.getStoryThemeId(story1Uid), 'serif');
+          assert.equal(storyteller.storyStore.getStoryTheme(story1Uid), 'serif');
         });
       });
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150828161432) do
+ActiveRecord::Schema.define(version: 20150904191402) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,6 +64,7 @@ ActiveRecord::Schema.define(version: 20150828161432) do
     t.datetime "updated_at"
     t.datetime "deleted_at"
     t.string   "digest"
+    t.string   "theme"
   end
 
   add_index "draft_stories", ["created_by"], name: "index_draft_stories_on_created_by", using: :btree
@@ -76,6 +77,7 @@ ActiveRecord::Schema.define(version: 20150828161432) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
+    t.string   "theme"
   end
 
   add_index "published_stories", ["created_by"], name: "index_published_stories_on_created_by", using: :btree

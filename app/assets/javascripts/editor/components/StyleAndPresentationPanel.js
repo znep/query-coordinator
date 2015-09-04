@@ -65,9 +65,9 @@
       }).
       on('mousewheel', '.scrollable', utils.preventScrolling).
       on('mousedown', '.theme', function(event) {
-        var themeId = event.currentTarget.getAttribute('data-theme-id');
+        var theme = event.currentTarget.getAttribute('data-theme-id');
 
-        if (themeId) {
+        if (theme) {
 
           styleAndPresentationPanel.find('.theme').removeClass('active');
           $(event.currentTarget).addClass('active');
@@ -75,7 +75,7 @@
           storyteller.dispatcher.dispatch({
             action: Constants.STORY_UPDATE_THEME,
             storyUid: storyteller.userStoryUid,
-            themeId: themeId
+            theme: theme
           });
         }
       });

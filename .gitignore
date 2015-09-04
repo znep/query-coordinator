@@ -14,3 +14,7 @@ marathon.properties
 
 # Ignore local database settings
 config/database.yml
+
+# IDE settings
+*.sublime-project
+*.sublime-workspace

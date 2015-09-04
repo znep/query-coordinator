@@ -281,10 +281,6 @@ describe('RichTextEditor', function() {
     });
 
     describe('applyThemeClass', function() {
-      it('has the theme-classic class initially', function() {
-        assert.isTrue($documentElement.hasClass('theme-classic'));
-      });
-
       it('adds a new theme class when called', function() {
         editor.applyThemeClass('sans');
         assert.isTrue($documentElement.hasClass('theme-sans'));

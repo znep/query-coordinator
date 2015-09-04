@@ -7,6 +7,11 @@ class DraftStory < ActiveRecord::Base
 
   before_create :set_digest
 
+  # TODO: make this inherit from shared class
+  def theme
+    self[:theme] || 'classic'
+  end
+
   private
 
   def set_digest

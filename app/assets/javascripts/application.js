@@ -26,4 +26,11 @@
 //= require editor/renderers/FlyoutRenderer.js
 //= require editor/components/SocrataVisualizationColumnChart.js
 //= require editor/block-component-renderers/componentSocrataVisualizationColumnChart.js
+
+// Store setup
+//= require editor/SimpleEventEmitter.js
+//= require editor/stores/Store.js
+//= require editor/stores/WindowSizeBreakpointStore.js
+
+// Finally, intialize
 //= require_tree ./view

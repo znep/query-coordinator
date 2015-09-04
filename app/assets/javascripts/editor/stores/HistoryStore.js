@@ -6,7 +6,14 @@
   var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
-  function HistoryStore() {
+  /**
+   * A store that maintains a story's edit history.
+   *
+   * @param {string} forStoryUid - The UID of the story to track.
+   */
+  function HistoryStore(forStoryUid) {
+
+    utils.assertIsOneOfTypes(forStoryUid, 'string');
 
     _.extend(this, new storyteller.Store());
 
@@ -32,12 +39,12 @@
 
     storyteller.storyStore.addChangeListener(function() {
 
-      if (storyteller.storyStore.storyExists(storyteller.userStoryUid)) {
+      if (storyteller.storyStore.storyExists(forStoryUid)) {
 
         var historyLength = _history.length;
         var newHistoryLength;
         var serializedStory = JSON.stringify(
-          storyteller.storyStore.serializeStory(storyteller.userStoryUid)
+          storyteller.storyStore.serializeStory(forStoryUid)
         );
 
         // This is the case when one or more undo operations have

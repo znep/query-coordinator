@@ -85,7 +85,7 @@ function applyStandardMocks() {
   storyteller.storyStore = new storyteller.StoryStore();
   storyteller.assetSelectorStore = new storyteller.AssetSelectorStore();
   storyteller.dragDropStore = new storyteller.DragDropStore();
-  storyteller.historyStore = new storyteller.HistoryStore();
+  storyteller.historyStore = new storyteller.HistoryStore(storyUid);
   storyteller.blockRemovalConfirmationStore = new storyteller.BlockRemovalConfirmationStore();
   storyteller.coreSavingStore = new storyteller.CoreSavingStore();
   storyteller.windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();

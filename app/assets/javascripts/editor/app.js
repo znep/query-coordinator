@@ -80,7 +80,7 @@ $(document).on('ready', function() {
   });
 
   storyteller.storyStore = new storyteller.StoryStore();
-  storyteller.historyStore = new storyteller.HistoryStore();
+  storyteller.historyStore = new storyteller.HistoryStore(storyteller.userStoryUid);
   storyteller.dragDropStore = new storyteller.DragDropStore();
   storyteller.assetSelectorStore = new storyteller.AssetSelectorStore();
   storyteller.blockRemovalConfirmationStore = new storyteller.BlockRemovalConfirmationStore();

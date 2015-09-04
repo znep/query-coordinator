@@ -39,12 +39,8 @@ describe('HistoryStore', function() {
   });
 
   beforeEach(function() {
-    storyteller.userStoryUid = validStoryUid;
+    storyteller.historyStore = new storyteller.HistoryStore(validStoryUid);
     dispatch({ action: Constants.STORY_CREATE, data: storyState1 });
-  });
-
-  afterEach(function() {
-    delete storyteller.userStoryUid;
   });
 
   function dispatch(action) {

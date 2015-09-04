@@ -190,7 +190,7 @@
           var shouldDelete = true;
 
           if (storyteller.blockRemovalConfirmationStore.needsConfirmation(blockId)) {
-            shouldDelete = confirm(I18n.t('editor.remove_block_confirmation')); //eslint-disable-line no-alert
+            shouldDelete = confirm(I18n.t('remove_block_confirmation')); //eslint-disable-line no-alert
           }
 
           if (shouldDelete) {
@@ -406,7 +406,7 @@
 
         if (blockCount === 0) {
           warningMessageElement.addClass('message-empty-story');
-          warningMessageElement.text(I18n.t('editor.empty_story_warning'));
+          warningMessageElement.text(I18n.t('empty_story_warning'));
         } else {
           warningMessageElement.removeClass('message-empty-story');
           warningMessageElement.text('');

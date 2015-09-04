@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'api v1 routing', type: :routing do
 
+  # POST /api/v1/stories/four-four/drafts
   describe 'drafts' do
     describe 'create endpoint' do
       it 'routes json requests to DraftsController' do
@@ -13,7 +14,7 @@ RSpec.describe 'api v1 routing', type: :routing do
         )
       end
 
-      it 'routes to DraftsController with json by default' do
+      it 'routes to draftscontroller with json by default' do
         expect(post: '/api/v1/stories/four-four/drafts').to route_to(
           controller: 'api/v1/drafts',
           action: 'create',
@@ -24,6 +25,28 @@ RSpec.describe 'api v1 routing', type: :routing do
     end
   end
 
+  # POST /api/v1/published-stories
+  describe 'published_stories' do
+    describe 'create endpoint' do
+      it 'routes json requests to published_stories_controller' do
+        expect(post: '/api/v1/published_stories', format: 'json').to route_to(
+          controller: 'api/v1/published_stories',
+          action: 'create',
+          format: 'json'
+        )
+      end
+
+      it 'routes to published_stories_controller with json by default' do
+        expect(post: '/api/v1/published_stories').to route_to(
+          controller: 'api/v1/published_stories',
+          action: 'create',
+          format: 'json'
+        )
+      end
+    end
+  end
+
+  # POST /api/v1/documents
   describe 'documents' do
     describe 'create endpoint' do
       it 'routes json requests to DocumentsController' do
@@ -64,6 +87,7 @@ RSpec.describe 'api v1 routing', type: :routing do
     end
   end
 
+  # POST /api/v1/uploads
   describe 'uploads' do
     describe 'create endpoint' do
       it 'routes json requests to UploadsController' do

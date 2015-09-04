@@ -65,41 +65,48 @@
       var url = '/views/{0}.json?{1}'.format(storyteller.userStoryUid, query);
       var headers = _coreRequestHeaders();
 
-      return new Promise(function(resolve, reject) {
+      if (setPublic) {
+        return socrata.utils.storytellerApiRequest('published_stories', 'put', {
+          uid: storyteller.userStoryUid,
+          digest: storyteller.storyteller
+        });
+      } else {
+        return new Promise(function(resolve, reject) {
 
-        var xhr = new XMLHttpRequest();
+          var xhr = new XMLHttpRequest();
 
-        function onFail() {
+          function onFail() {
 
-          return reject({
-            status: parseInt(xhr.status, 10),
-            message: xhr.statusText
-          });
-        }
-
-        xhr.onload = function() {
-
-          var status = parseInt(xhr.status, 10);
-
-          if (status === 200) {
-            return resolve({isPublic: setPublic});
+            return reject({
+              status: parseInt(xhr.status, 10),
+              message: xhr.statusText
+            });
           }
 
-          onFail();
-        };
+          xhr.onload = function() {
 
-        xhr.onabort = onFail;
-        xhr.onerror = onFail;
+            var status = parseInt(xhr.status, 10);
 
-        xhr.open('PUT', url, true);
+            if (status === 200) {
+              return resolve({isPublic: setPublic});
+            }
 
-        // Set user-defined headers.
-        _.each(headers, function(value, key) {
-          xhr.setRequestHeader(key, value);
+            onFail();
+          };
+
+          xhr.onabort = onFail;
+          xhr.onerror = onFail;
+
+          xhr.open('PUT', url, true);
+
+          // Set user-defined headers.
+          _.each(headers, function(value, key) {
+            xhr.setRequestHeader(key, value);
+          });
+
+          xhr.send();
         });
-
-        xhr.send();
-      });
+      }
     }
 
     function _coreRequestHeaders() {

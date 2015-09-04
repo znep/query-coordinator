@@ -7,6 +7,10 @@
   position: relative;
   z-index: $settings-panel-z-index;
 
+  button {
+    padding: 1rem;
+  }
+
   .settings-panel {
     position: fixed;
     width: $settings-panel-width;
@@ -73,10 +77,6 @@
       }
     }
 
-    .settings-save-btn {
-      width: 100%;
-    }
-
   }
 
   &.active .settings-panel {
@@ -102,6 +102,16 @@
   }
 }
 
+.settings-panel-errors {
+  border: solid 1px #F7A700;
+  background-color: #F7E7CC;
+  padding: .75rem;
+  font-size: 1.25rem;
+  color: #B37538;
+  font-weight: lighter;
+}
+
+.settings-panel-displaying,
 .settings-panel-publishing {
   margin-top: 2rem;
 
@@ -111,6 +121,9 @@
     color: $settings-panel-light-gray-color;
   }
 
+}
+
+.settings-panel-publishing {
   > div {
     padding-top: 1rem;
     padding-left: 1rem;
@@ -148,7 +161,6 @@
 
   button {
     width: 100%;
-    padding: 1rem;
   }
 }
 

@@ -7,51 +7,69 @@
       <span class="icon-cross2 close-panel-icon"></span>
     </button>
 
-    <section>
-      <h4 class="settings-main-title text-center"><%= I18n.t('settings_panel.panel_title') %></h4>
+    <header>
+      <h4 class="settings-main-title text-center"><%= I18n.t('editor.settings_panel.panel_title') %></h4>
+    </header>
+
+    <section class="settings-panel-errors">
+      <p class="settings-panel-error-message"><%= I18n.t('editor.settings_panel.errors.generic_error') %></p>
+    </section>
+
+    <section class="settings-panel-displaying">
       <hr>
+      <h2><%= I18n.t('editor.settings_panel.displaying_section.section_title') %></h2>
 
       <div class="scrollable">
         <form>
-          <label><%= I18n.t('settings_panel.title_label') %></label>
+          <label><%= I18n.t('editor.settings_panel.displaying_section.title_label') %></label>
           <input name="title" type="text" maxlength="254" />
-          <label><%= I18n.t('settings_panel.description_label') %></label>
+          <label><%= I18n.t('editor.settings_panel.displaying_section.description_label') %></label>
           <textarea></textarea>
         </form>
       </div>
 
       <div class="settings-save-failure-message">
-        <div><%= I18n.t('settings_panel.generic_save_failure_message') %></div>
+        <div><%= I18n.t('editor.settings_panel.errors.generic_save_failure_message') %></div>
         <div class="settings-save-failure-message-details"></div>
       </div>
-      <button class="settings-save-btn btn accent-btn"><span><%= I18n.t('settings_panel.save_button_label') %></span></button>
+      <button class="settings-save-btn btn accent-btn">
+        <span><%= I18n.t('editor.settings_panel.displaying_section.save_button_label') %></span>
+      </button>
     </section>
 
     <section class="settings-panel-publishing">
       <hr>
-      <h2><%= I18n.t('settings_panel.publishing.title') %></h2>
+      <h2><%= I18n.t('editor.settings_panel.publishing_section.section_title') %></h2>
       <div>
         <div class="settings-panel-story-visibility">
           <div>
-            <h2><%= I18n.t('settings_panel.publishing.visibility.title') %></h2>
-            <h3><%= I18n.t('settings_panel.publishing.visibility.private') %></h3>
+            <h2><%= I18n.t('editor.settings_panel.publishing_section.visibility.title') %></h2>
+            <h3><%= I18n.t('editor.settings_panel.publishing_section.visibility.private') %></h3>
           </div>
           <div>
-            <button class="btn accent-btn"><span><%= I18n.t('settings_panel.publishing.visibility.make_story_public') %></span></button>
+            <button class="btn accent-btn">
+              <span><%= I18n.t('editor.settings_panel.publishing_section.visibility.make_story_public') %></span>
+            </button>
           </div>
         </div>
         <hr>
         <div class="settings-panel-story-status hidden">
           <div>
-            <h2><%= I18n.t('settings_panel.publishing.status.title') %></h2>
-            <h3><%= I18n.t('settings_panel.publishing.status.draft') %></h3>
+            <h2><%= I18n.t('editor.settings_panel.publishing_section.status.title') %></h2>
+            <h3><%= I18n.t('editor.settings_panel.publishing_section.status.draft') %></h3>
           </div>
           <div>
-            <button class="btn accent-btn" disabled><span><%= I18n.t('settings_panel.publishing.status.update_public_version') %></span></button>
+            <button class="btn accent-btn" disabled>
+              <span><%= I18n.t('editor.settings_panel.publishing_section.status.update_public_version') %></span>
+            </button>
           </div>
         </div>
-        <p class="settings-panel-story-publishing-help-text"><%= I18n.t('settings_panel.publishing.can_be_shared_publically') %></p>
-        <div class="settings-panel-story-publishing-error hidden"><%= I18n.t('settings_panel.publishing.error') %></div>
+        <p class="settings-panel-story-publishing-help-text">
+          <%= I18n.t('editor.settings_panel.publishing_section.messages.can_be_shared_publically') %>
+        </p>
+        <div class="settings-panel-story-publishing-error hidden">
+          <p><%= I18n.t('editor.settings_panel.errors.generic_error') %></p>
+        </div>
       </div>
     </section>
 

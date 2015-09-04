@@ -148,6 +148,8 @@ var Constants = {
 
   SOCRATA_VISUALIZATION_DESTROY: 'SOCRATA_VISUALIZATION_DESTROY',
 
+  API_PREFIX_PATH: '/stories/api/v1/',
+
   // The `name` column of the `lenses` table is defined as:
   //
   //   name character varying(255)

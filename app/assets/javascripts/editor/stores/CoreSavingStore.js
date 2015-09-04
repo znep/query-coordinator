@@ -134,7 +134,7 @@
      */
     function _findMetadataError(metadata) {
       if (metadata.storyTitle.length >= Constants.CORE_VIEW_NAME_MAX_LENGTH) {
-        return I18n.t('editor.settings.errors.title_too_long');
+        return I18n.t('settings_panel.displaying_section.errors.title_too_long');
       } else {
         return null;
       }

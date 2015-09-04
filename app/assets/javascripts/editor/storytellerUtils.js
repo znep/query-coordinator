@@ -150,35 +150,27 @@
     },
 
     /**
-     * Asserts that an object is instanceof an instantiator.
+     * @function storytellerApiRequest
      *
-     * @param {object} instance - The instance to check.
-     * @param {function} instantiator - The instantiator to check against.
-     */
-    assertInstanceOf: function(instance, instantiator) {
-
-      socrata.utils.assertInstanceOfAny(instance, instantiator);
-    },
-
-    /**
-     * Asserts that an object is instanceof at least one of the provided instantiators.
+     * @param {String} path
+     * @param {String} requestType
+     * @param {Any} requestData
      *
-     * @param {object} instance - The instance to check.
-     * @param {...function} <arguments> - List of acceptable instantiators
+     * @return {Promise}
      */
-    assertInstanceOfAny: function(instance) {
-
-      var instantiators = _.rest(arguments);
-      var valid = _.any(instantiators, function(instantiator) {
-        return instance instanceof instantiator;
-      });
-
-      if (!valid) {
-        throw new Error(
-          'Value must be one of [{0}] (instance: {1}).'.
-            format(instantiators.join(', '), instance)
-        );
-      }
+    storytellerApiRequest: function(path, requestType, requestData) {
+      return Promise.resolve(
+        $.ajax({
+          url: Constants.API_PREFIX_PATH + path,
+          type: requestType,
+          dataType: 'json',
+          headers: {
+            'X-Socrata-Host': root.location.host,
+            'X-CSRF-Token': storyteller.csrfToken
+          },
+          data: requestData
+        })
+      )
     }
   };
 

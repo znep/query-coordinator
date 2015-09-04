@@ -7,8 +7,8 @@ class CoreServer
     view_request(uid: uid, verb: :get, headers: headers)
   end
 
-  def self.update_view(uid, headers, view_data)
-    view_request(uid: uid, verb: :put, headers: headers, data: view_data)
+  def self.update_view(uid, headers, view_data, query_params = nil)
+    view_request(uid: uid, verb: :put, headers: headers, data: view_data, query_params: query_params)
   end
 
   def self.current_user(headers)
@@ -91,6 +91,14 @@ class CoreServer
     ]
   end
 
+  def self.generate_query_params(params)
+    if params.is_a?(String)
+      params
+    elsif params.is_a?(Hash)
+      params.map { |key, value| "#{key}=#{value}"}.join('&')
+    end
+  end
+
   def self.view_request(options)
     raise ArgumentError("':uid' is required.") unless options.key?(:uid)
     raise ArgumentError("':verb' is required.") unless options.key?(:verb)
@@ -98,6 +106,9 @@ class CoreServer
 
     verb = options[:verb]
     path = "/views/#{options[:uid]}.json"
+
+    query_params = generate_query_params(options[:query_params])
+    path << "?#{query_params}" unless query_params.blank?
 
     core_server_request_options = {
       verb: verb,

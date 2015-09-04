@@ -1,6 +1,6 @@
 <script>
 window.I18n = (function () {
-  var translationHash = <%= current_js_translations.to_json.html_safe %>;
+  var translationHash = <%= current_editor_translations.to_json.html_safe %>;
 
   return {
     // Intakes translationKeys in the form of:        'a.b.c'

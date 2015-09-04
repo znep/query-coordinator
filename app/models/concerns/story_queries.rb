@@ -7,6 +7,10 @@ module StoryQueries
       self.where(uid: uid, deleted_at: nil).order(created_at: :desc).first
     end
 
+    def self.find_by_uid_and_digest(uid, digest)
+      self.where(uid: uid, digest: digest, deleted_at: nil).first
+    end
+
     # This method will eventually be useful for restoring drafts to previous
     # versions, but for the moment we don't necessarily need it.
     # Note that we have not figured out why passing a Ruby Time object as the

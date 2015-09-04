@@ -244,7 +244,7 @@ $(document).on('ready', function() {
 
   // Add Content Panel
   var addContentPanelElement = $('#add-content-panel');
-  addContentPanelElement.addContentPanel($('.menu button[data-panel-toggle="add-content-panel"]'));
+  addContentPanelElement.addContentPanel($('.menu [data-panel-toggle="add-content-panel"]'));
 
   // Style and Presentation Panel
   var styleAndPresentationPanelElement = $('#style-and-presentation-panel');

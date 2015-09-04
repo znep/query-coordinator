@@ -77,6 +77,9 @@
     };
 
     this.waitFor = function(ids) {
+      if (!Array.isArray(ids)) {
+        throw new Error('waitFor() expects an array of IDs');
+      }
 
       for (var i = 0; i < ids.length; i++) {
 

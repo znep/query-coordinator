@@ -13,6 +13,17 @@ var Constants = {
   // {string} title
   STORY_SET_TITLE: 'STORY_SET_TITLE',
 
+  // {string} storyUid
+  STORY_SAVE_STARTED: 'STORY_SAVE_STARTED',
+
+  // {string} storyUid
+  // {string} digest
+  STORY_SAVED: 'STORY_SAVED',
+
+  // {string} storyUid
+  // {string} message
+  STORY_SAVE_ERROR: 'STORY_SAVE_ERROR',
+
   // {object} data: Story data object.
   STORY_OVERWRITE_STATE: 'STORY_OVERWRITE_STATE',
 

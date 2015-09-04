@@ -81,13 +81,17 @@ body header {
     }
   }
 
-  .content-panel-btn {
+  .content-panel-btn, #story-save-btn {
     color: $header-color;
     background-color: transparent;
 
     &:hover, &.active {
       color: lighten($header-color, 10%);
       background-color: lighten($header-bg-color, 10%);
+    }
+
+    &:disabled {
+      color: darken($header-color, 40%);
     }
   }
 }

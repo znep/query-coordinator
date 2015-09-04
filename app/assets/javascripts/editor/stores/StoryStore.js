@@ -30,6 +30,10 @@
           _setStoryTitle(payload);
           break;
 
+        case Constants.STORY_SAVED:
+          _setStoryDigest(payload);
+          break;
+
         case Constants.STORY_SET_DESCRIPTION:
           _setStoryDescription(payload);
           break;
@@ -100,6 +104,13 @@
       var story = _getStory(storyUid);
 
       return story.theme || 'classic';
+    };
+
+    this.getStoryDigest = function(storyUid) {
+
+      var story = _getStory(storyUid);
+
+      return story.digest;
     };
 
     this.getStoryBlockIds = function(storyUid) {
@@ -202,6 +213,20 @@
       var storyUid = payload.storyUid;
 
       _getStory(storyUid).title = payload.title;
+
+      self._emitChange();
+    }
+
+    function _setStoryDigest(payload) {
+
+      utils.assertHasProperty(payload, 'storyUid');
+      utils.assertIsOneOfTypes(payload.storyUid, 'string');
+      utils.assertHasProperty(payload, 'digest');
+      utils.assertIsOneOfTypes(payload.digest, 'string');
+
+      var storyUid = payload.storyUid;
+
+      _getStory(storyUid).digest = payload.digest;
 
       self._emitChange();
     }
@@ -407,7 +432,8 @@
         title: storyData.title,
         description: storyData.description,
         theme: storyData.theme,
-        blockIds: blockIds
+        blockIds: blockIds,
+        digest: storyData.digest
       };
 
       self._emitChange();
@@ -580,12 +606,12 @@
     // The history state is set in HistoryStore, and a `.waitFor()` ensures
     // this will always run after the cursor is in the correct position.
     function _applyHistoryState() {
-
       storyteller.dispatcher.waitFor([ storyteller.historyStore.getDispatcherToken() ]);
 
       var serializedStory = storyteller.historyStore.getStateAtCursor();
 
       if (serializedStory) {
+
         _setStory(
           JSON.parse(serializedStory),
           true

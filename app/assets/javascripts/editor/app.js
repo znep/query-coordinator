@@ -87,6 +87,7 @@ $(document).on('ready', function() {
   storyteller.coreSavingStore = new storyteller.CoreSavingStore();
   storyteller.flyoutRenderer = new storyteller.FlyoutRenderer();
   storyteller.windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
+  storyteller.storySaveStatusStore = new storyteller.StorySaveStatusStore(storyteller.userStoryUid);
 
   var richTextEditorToolbar = new storyteller.RichTextEditorToolbar(
     $('#rich-text-editor-toolbar'),
@@ -261,6 +262,9 @@ $(document).on('ready', function() {
 
   // Story title
   $('.story-title').storyTitle(storyteller.userStoryUid);
+
+  // Save button
+  $('#story-save-btn').storySaveButton();
 
   // Modals
   $('.preview-btn').on('click', function() {

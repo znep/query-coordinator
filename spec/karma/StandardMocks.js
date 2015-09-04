@@ -28,6 +28,7 @@ function applyStandardMocks() {
     uid: storyUid,
     title: storyTitle,
     description: storyDescription,
+    digest: 'test-digest',
     blocks: [
       generateBlockData({
         id: assetSelectorBlockId,
@@ -83,6 +84,7 @@ function applyStandardMocks() {
   });
 
   storyteller.storyStore = new storyteller.StoryStore();
+  storyteller.storySaveStatusStore = new storyteller.StorySaveStatusStore(storyUid);
   storyteller.assetSelectorStore = new storyteller.AssetSelectorStore();
   storyteller.dragDropStore = new storyteller.DragDropStore();
   storyteller.historyStore = new storyteller.HistoryStore(storyUid);
@@ -97,6 +99,7 @@ function applyStandardMocks() {
 
     validStoryTitle: storyTitle,
     validStoryDescription: storyDescription,
+    validStoryDigest: storyData.digest,
     validBlockData1: storyData.blocks[0],
     validBlockData2: storyData.blocks[1],
 
@@ -128,6 +131,7 @@ function removeStandardMocks() {
 
   delete storyteller.dispatcher;
   delete storyteller.storyStore;
+  delete storyteller.storySaveStatusStore;
   delete storyteller.dragDropStore;
   delete storyteller.historyStore;
   delete storyteller.blockRemovalConfirmationStore;

@@ -149,7 +149,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     View.expects(:find).with(NBE_DATASET_ID).returns(mock_nbe_dataset)
     View.expects(:find).with(OBE_DATASET_ID).returns(mock_obe_dataset)
 
-    NewViewManager.any_instance.expects(:create).times(1).with do |_, _, category|
+    NewViewManager.any_instance.expects(:create).times(1).with do |_, category|
       assert_equal(OBE_CATEGORY_NAME, category)
     end.returns('fdsa-fdsa')
 
@@ -169,7 +169,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     View.expects(:find).with(NBE_DATASET_ID).returns(mock_nbe_dataset)
     View.expects(:find).with(OBE_DATASET_ID).raises(CoreServer::ResourceNotFound.new(nil))
 
-    NewViewManager.any_instance.expects(:create).times(1).with do |_, _, category|
+    NewViewManager.any_instance.expects(:create).times(1).with do |_, category|
       assert_equal(NBE_CATEGORY_NAME, category)
     end.returns('fdsa-fdsa')
 
@@ -185,9 +185,9 @@ class PageMetadataManagerTest < Test::Unit::TestCase
 
   def test_create_ignores_provided_pageId
     PageMetadataManager.any_instance.expects(:update_rollup_table).times(0)
-    NewViewManager.any_instance.expects(:create).times(1).with do |name, description|
-      assert_equal(v1_page_metadata['name'], name)
-      assert_equal(v1_page_metadata['description'], description)
+    NewViewManager.any_instance.expects(:create).times(1).with do |metadata|
+      assert_equal(v1_page_metadata['name'], metadata['name'])
+      assert_equal(v1_page_metadata['description'], metadata['description'])
     end.returns('data-lens')
     Phidippides.any_instance.stubs(
       fetch_page_metadata: { status: '200', body: v1_page_metadata_without_rollup_columns },

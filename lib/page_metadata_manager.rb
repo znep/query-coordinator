@@ -97,12 +97,13 @@ class PageMetadataManager
 
     initialize_metadata_key_names
 
-    # The core lens id for this page is the same one we use to refer to it in
-    # phidippides
+    v2_data_lens = FeatureFlags.derive(nil, defined?(request) ? request : nil)[:create_v2_data_lens]
+
+    # The core lens id for this page is the same one we use to refer to it in phidippides
     new_page_id = new_view_manager.create(
-      page_metadata['name'],
-      page_metadata['description'],
-      dataset_category(page_metadata['datasetId'])
+      page_metadata,
+      dataset_category(page_metadata['datasetId']),
+      v2_data_lens
     )
 
     page_metadata['pageId'] = new_page_id
@@ -114,7 +115,9 @@ class PageMetadataManager
 
     page_metadata['cards'] << table_card unless has_table_card
 
-    result = update_phidippides_page_metadata(page_metadata, options)
+    result = v2_data_lens ?
+      { :body => page_metadata, :status => 200 } :
+      update_phidippides_page_metadata(page_metadata, options)
 
     if result[:status] == '200'
       request_soda_fountain_secondary_index(page_metadata['datasetId'], options)
@@ -139,7 +142,10 @@ class PageMetadataManager
       metadb_metadata = nil
     end
 
-    new_view_manager.update(page_metadata['pageId'], page_metadata['name'], page_metadata['description'])
+    new_view_manager.update(page_metadata['pageId'], {
+      :name => page_metadata['name'],
+      :description => page_metadata['description']
+    })
 
     if is_backed_by_metadb?(metadb_metadata)
       update_metadb_page_metadata(page_metadata, metadb_metadata)

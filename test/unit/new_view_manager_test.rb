@@ -36,7 +36,7 @@ class NewViewManagerTest < Test::Unit::TestCase
     View.expects(:find).with('niew-veww').returns(expectant_stub)
     Rails.application.routes.url_helpers.stubs(opendata_cards_view_url: 'opendata_url')
 
-    result = new_view_manager.create('my title', 'my description')
+    result = new_view_manager.create({:name =>'my title', :description=>'my description'})
     assert_equal('niew-veww', result)
     assert(created)
   end
@@ -60,7 +60,7 @@ class NewViewManagerTest < Test::Unit::TestCase
     View.expects(:find).with('niew-veww').returns(expectant_stub)
     Rails.application.routes.url_helpers.stubs(opendata_cards_view_url: 'opendata_url')
 
-    result = new_view_manager.create('my title', 'my description', given_category)
+    result = new_view_manager.create({:name =>'my title', :description=>'my description'}, given_category)
     assert(created)
   end
 
@@ -81,7 +81,7 @@ class NewViewManagerTest < Test::Unit::TestCase
     View.expects(:find).with('niew-veww').returns(expectant_stub)
     Rails.application.routes.url_helpers.stubs(opendata_cards_view_url: 'opendata_url')
 
-    result = new_view_manager.create('my title', 'my description')
+    result = new_view_manager.create({:name =>'my title', :description=>'my description'})
     assert(created)
   end
 
@@ -94,7 +94,7 @@ class NewViewManagerTest < Test::Unit::TestCase
 
     View.expects(:find).raises(CoreServer::ResourceNotFound.new(nil))
     assert_nothing_raised do
-      new_view_manager.create('title', 'description')
+      new_view_manager.create({:name =>'my title', :description=>'my description'})
     end
   end
 
@@ -107,14 +107,14 @@ class NewViewManagerTest < Test::Unit::TestCase
 
     View.expects(:find).raises(CoreServer::Error)
     assert_nothing_raised do
-      new_view_manager.create('title', 'description')
+      new_view_manager.create({:name =>'my title', :description=>'my description'})
     end
   end
 
   def test_create_raises_when_view_not_created
     new_view_manager.stubs(:create_new_view => nil)
     assert_raises(NewViewManager::NewViewNotCreatedError) do
-      new_view_manager.create('title', 'description')
+      new_view_manager.create({:name =>'my title', :description=>'my description'})
     end
   end
 
@@ -130,7 +130,7 @@ class NewViewManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    new_view_manager.update('asdf-asdf', 'new name', 'new description')
+    new_view_manager.update('asdf-asdf', {:name => 'new name', :description => 'new description'})
   end
 
   def test_update_does_not_raise_when_reporting_core_errors
@@ -145,7 +145,7 @@ class NewViewManagerTest < Test::Unit::TestCase
     CoreServer::Base.stubs(connection: connection_stub)
 
     assert_nothing_raised do
-      new_view_manager.update('asdf-asdf', 'new name', 'new description')
+      new_view_manager.update('asdf-asdf', {:name => 'new name', :description => 'new description'})
     end
   end
 
@@ -161,7 +161,7 @@ class NewViewManagerTest < Test::Unit::TestCase
     CoreServer::Base.stubs(connection: connection_stub)
 
     assert_nothing_raised do
-      new_view_manager.update('asdf-asdf', 'new name', 'new description')
+      new_view_manager.update('asdf-asdf', {:name => 'new name', :description => 'new description'})
     end
   end
 

@@ -1,0 +1,12 @@
+@import 'lib/variables';
+
+.story-view {
+  .user-story-container {
+    font-size: 16px; //adjust back from 10px font-size, to match text iframes
+    padding-top: 0;
+
+    .user-story {
+      @include selectable(); /* remove unselectable from edit mode */
+    }
+  }
+}

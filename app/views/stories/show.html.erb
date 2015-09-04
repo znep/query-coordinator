@@ -1,21 +1,23 @@
-<div class="user-story">
-  <% @story.blocks.each do |block| -%>
-    <% layout_columns = block.layout.split('-') %>
+<div class="user-story-container">
+  <div class="user-story large theme-classic">
+    <% @story.blocks.each do |block| -%>
+      <% layout_columns = block.layout.split('-') %>
 
-    <div class="block">
-      <% block.components.each_with_index do |component, index| %>
-        <div class="<%= component_container_classes(layout_columns[index]) %>">
+      <div class="block">
+        <% block.components.each_with_index do |component, index| %>
+          <div class="<%= component_container_classes(layout_columns[index]) %>">
 
-          <div class="component <%= type_to_class_name_for_component_type(component['type']) %>">
+            <div class="<%= component_classes(component['type']) %>">
 
-            <%= render partial: component_partial_name(component['type']),
-                  locals: { component: component } %>
+              <%= render partial: component_partial_name(component['type']),
+                    locals: { component: component } %>
 
+            </div>
           </div>
-        </div>
-      <% end %>
-    </div>
+        <% end %>
+      </div>
 
-  <% end -%>
+    <% end -%>
 
+  </div>
 </div>

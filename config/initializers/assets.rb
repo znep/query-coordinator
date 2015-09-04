@@ -15,4 +15,5 @@ Rails.application.config.assets.paths << Rails.root.join('vendor', 'assets', 'co
 Rails.application.config.assets.precompile += %w( editor.js )
 Rails.application.config.assets.precompile += %w( AssetFinder.js )
 Rails.application.config.assets.precompile += %w( themes/themes.css )
+Rails.application.config.assets.precompile += %w( story-view.css )
 Rails.application.config.assets.precompile += %w( airbrake-js-client/dist/client.js )

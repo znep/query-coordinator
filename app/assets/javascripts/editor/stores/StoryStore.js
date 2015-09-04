@@ -569,13 +569,18 @@
     }
 
     function _serializeBlock(blockId) {
+      // NOTE! This _must not_ return any reference
+      // to internal data structures! Everything
+      // must be a fresh instance. Otherwise, the
+      // returned object is a backdoor allowing
+      // untracked state changes to this store's state.
 
       var block = _getBlock(blockId);
 
       return {
         id: block.id,
         layout: block.layout,
-        components: block.components
+        components: _.clone(block.components)
       };
     }
 
@@ -589,7 +594,7 @@
 
         serializedBlock = {
           layout: block.layout,
-          components: block.components
+          components: _.clone(block.components)
         };
 
       } else {

@@ -35,11 +35,11 @@ describe('componentHTML jQuery plugin', function() {
     var editorId;
     var initialValue = 'testing';
     var componentData = {type: 'html', value: initialValue};
-    var themeId = 'classic';
+    var theme = 'classic';
 
     beforeEach(function() {
       storyteller.RichTextEditorManagerMocker.reset();
-      $component = $component.componentHTML(componentData, themeId);
+      $component = $component.componentHTML(componentData, theme);
       editorId = $component.attr('data-editor-id');
     });
 
@@ -56,7 +56,7 @@ describe('componentHTML jQuery plugin', function() {
     });
 
     it('calls applyThemeClass during editor creation', function () {
-      sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.applyThemeClassSpy, themeId);
+      sinon.assert.calledWith(storyteller.RichTextEditorManagerMocker.applyThemeClassSpy, theme);
     });
 
     describe('that is then destroyed', function () {

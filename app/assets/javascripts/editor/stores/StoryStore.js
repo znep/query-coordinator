@@ -64,7 +64,7 @@
           break;
 
         case Constants.STORY_UPDATE_THEME:
-          _setStoryThemeId(payload);
+          _setStoryTheme(payload);
           break;
       }
     });
@@ -95,11 +95,11 @@
       return story.description;
     };
 
-    this.getStoryThemeId = function(storyUid) {
+    this.getStoryTheme = function(storyUid) {
 
       var story = _getStory(storyUid);
 
-      return story.themeId || 'classic';
+      return story.theme || 'classic';
     };
 
     this.getStoryBlockIds = function(storyUid) {
@@ -166,7 +166,7 @@
         uid: story.uid,
         title: story.title,
         description: story.description,
-        themeId: story.themeId,
+        theme: story.theme,
         blocks: story.blockIds.map(_serializeBlock)
       };
     };
@@ -179,7 +179,7 @@
         uid: story.uid,
         title: story.title,
         description: story.description,
-        themeId: story.themeId,
+        theme: story.theme,
         blocks: story.blockIds.map(_serializeBlockDiff)
       };
     };
@@ -220,15 +220,15 @@
       self._emitChange();
     }
 
-    function _setStoryThemeId(payload) {
+    function _setStoryTheme(payload) {
       utils.assertHasProperty(payload, 'storyUid');
       utils.assertIsOneOfTypes(payload.storyUid, 'string');
-      utils.assertHasProperty(payload, 'themeId');
-      utils.assertIsOneOfTypes(payload.themeId, 'string');
+      utils.assertHasProperty(payload, 'theme');
+      utils.assertIsOneOfTypes(payload.theme, 'string');
 
       var storyUid = payload.storyUid;
 
-      _getStory(storyUid).themeId = payload.themeId;
+      _getStory(storyUid).theme = payload.theme;
 
       self._emitChange();
     }
@@ -406,7 +406,7 @@
         uid: storyUid,
         title: storyData.title,
         description: storyData.description,
-        themeId: storyData.themeId,
+        theme: storyData.theme,
         blockIds: blockIds
       };
 

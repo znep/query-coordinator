@@ -7,7 +7,12 @@ class StoriesController < ApplicationController
   # rescue_from ActiveRecord::RecordNotFound, with: :tmp_render_404
 
   def show
-    @story = PublishedStory.find_by_uid(params[:uid])
+    if params['preview']
+      @story = DraftStory.find_by_uid(params[:uid])
+    else
+      @story = PublishedStory.find_by_uid(params[:uid])
+    end
+
     if @story
       respond_to do |format|
         format.html { render 'stories/show' }

@@ -12,7 +12,7 @@
     <div class="scrollable">
       <div class="theme-list">
         <% @theme_list.each do |theme| %>
-          <div class="theme" data-theme-id="<%= theme['id'] %>">
+          <div class="theme" data-theme="<%= theme['id'] %>">
             <h4 class="theme-title"><%= theme['title'] %></h4>
             <div class="theme-sample">
               <img src="<%= asset_path(theme['imagePreview']) %>" alt="<%= theme['description'] %>">

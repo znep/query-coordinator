@@ -1,5 +1,5 @@
 <header>
-  <button data-panel-toggle="settings-panel" class="icon-cog settings-panel-btn"></button>
+  <button data-panel-toggle="settings-panel" class="icon-stories-menu settings-panel-btn"></button>
   <a href="#" class="story-title" role="button" data-panel-toggle="settings-panel"></a>
   <div class="header-right">
     <ul class="menu">
@@ -10,7 +10,10 @@
         <button class="btn redo-btn" disabled="disabled">Redo</button>
       </li>
       <li>
-        <button class="btn content-panel-btn" data-panel-toggle="add-content-panel">+ Add Content</button>
+        <a class="btn preview-btn" role="button" href="/stories/s/<%= @story.uid %>?preview=1" target="_blank">Preview <span class="icon-preview"></span></a>
+      </li>
+      <li>
+        <button class="btn content-panel-btn" data-panel-toggle="add-content-panel"><span class="icon-plus3"></span> Add Content</button>
       </li>
       <li>
         <button class="btn content-panel-btn" data-panel-toggle="style-and-presentation-panel">Style &amp; Presentation</button>
@@ -39,6 +42,7 @@
 <div id="asset-selector-container" class="modal hidden"></div>
 
 <div id="block-ghost" class="block hidden"></div>
+
 
 <script>
   // Pass setup data from ruby to javascript

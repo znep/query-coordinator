@@ -129,7 +129,7 @@
     };
 
     // Add a `themeName` class to the html root of the iframe
-    this.applyThemeClass = function(themeId) {
+    this.applyThemeClass = function(theme) {
       var htmlElement = _editorElement[0].contentDocument.documentElement;
       var currentClasses = htmlElement.getAttribute('class');
 
@@ -141,7 +141,7 @@
           }
         );
 
-        newClassList.push('theme-{0}'.format(themeId));
+        newClassList.push('theme-{0}'.format(theme));
 
         htmlElement.setAttribute('class', newClassList.join(' '));
         _updateContentHeight();
@@ -228,11 +228,6 @@
      * wait until the iframe's internal document has actually loaded.
      */
     function _addThemeStyles(document) {
-      // Add top-level theme classes to html, to mirror high-level story classes
-      // in view mode
-      $(document).find('html').
-        addClass('theme-classic large'); //TODO: add actual size and theme class here
-
       // Prevent flash of unstyled text by setting opacity to zero
       // and then overriding it in the stylesheet.
       $(document.body).

@@ -183,7 +183,7 @@ $th-headings: (
   & > hr,
   li + ul,
   h1 + p, h2 + p, h3 + p, h4 + p, img {
-    margin-top: 1rem;
+    margin-top: 16px;
   }
 }
 
@@ -241,7 +241,7 @@ $th-headings: (
   h1 + p, h2 + p, h3 + p, h4 + p, img,
   // also add space above a component-media placeholder as if it were an image because it will be and/or it should layout similarly.
   .component-media {
-    margin-top: 1.5rem;
+    margin-top: 24px;
   }
 
 } // End Medium Size
@@ -290,24 +290,18 @@ $th-headings: (
   h1 + p, h2 + p, h3 + p, h4 + p, img,
   // also add space above a component-media placeholder as if it were an image because it will be and/or it should layout similarly.
   .component-media {
-    margin-top: 2rem;
+    margin-top: 32px;
   }
 
 } // End Large Size
 
-// Non-typeset styles
-
+// Media top margins also apply to non-typeset elements
 .component-media {
-  margin-top: 1rem;
-
-  .medium & {
-    margin-top: 1.5rem;
-  }
-
-  .large & {
-    margin-top: 2rem;
-  }
+  margin-top: 16px;
 }
-
-
-
+&.medium .component-media {
+  margin-top: 24px;
+}
+&.large .component-media {
+  margin-top: 32px;
+}

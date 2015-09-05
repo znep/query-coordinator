@@ -270,5 +270,16 @@ $(document).on('ready', function() {
   $('.preview-btn').on('click', function() {
 
   });
+
+  // Close confirmation
+  $(window).on('beforeunload', function(event) {
+    if (
+      !storyteller.storySaveStatusStore.isStorySaved() ||
+      storyteller.storySaveStatusStore.isSaveInProgress()
+    ) {
+      return false;
+    }
+
+  });
 });
 

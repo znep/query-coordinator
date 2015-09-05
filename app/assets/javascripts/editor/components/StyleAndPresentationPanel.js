@@ -65,7 +65,7 @@
       }).
       on('mousewheel', '.scrollable', utils.preventScrolling).
       on('mousedown', '.theme', function(event) {
-        var theme = event.currentTarget.getAttribute('data-theme-id');
+        var theme = event.currentTarget.getAttribute('data-theme');
 
         if (theme) {
 

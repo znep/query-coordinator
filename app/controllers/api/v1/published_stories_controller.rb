@@ -4,9 +4,9 @@ class Api::V1::PublishedStoriesController < ApplicationController
     published = story_publisher.publish
 
     if published
-      render json: story_publisher.story, status: 200
+      render json: story_publisher.story, status: :ok
     else
-      render json: { errors: story_publisher.errors.messages }, status: :unprocessable_entity
+      render json: { errors: story_publisher.errors.messages }, status: :internal_server_error
     end
   end
 

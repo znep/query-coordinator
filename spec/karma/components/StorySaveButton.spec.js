@@ -25,6 +25,7 @@ describe('storySaveButton jQuery plugin', function() {
 
       this.isStorySaved = function() { return _isSaved; };
       this.isStorySaveInProgress = function() { return _isSaveInProgress; };
+      this.isSaveImpossibleDueToConflict = _.constant(false); // TODO test.
     }
 
     mockStore = new MockStore();

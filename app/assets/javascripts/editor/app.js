@@ -272,12 +272,15 @@ $(document).on('ready', function() {
   });
 
   // Close confirmation
-  $(window).on('beforeunload', function(event) {
+  $(window).on('beforeunload', function() {
     if (
       !storyteller.storySaveStatusStore.isStorySaved() ||
       storyteller.storySaveStatusStore.isSaveInProgress()
     ) {
-      return false;
+      // If the save is impossible, don't bother confirming the close :(
+      if (!storyteller.storySaveStatusStore.isSaveImpossibleDueToConflict()) {
+        return false;
+      }
     }
 
   });

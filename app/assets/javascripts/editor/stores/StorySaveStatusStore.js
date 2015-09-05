@@ -17,6 +17,8 @@
 
     var _lastSavedSerializedStory = null;
     var _saveInProgress = false;
+    // If a conflict ever happens, disable save for the entire life of this page :(
+    var _poisonedWithSaveConflictForever = false;
 
     _.extend(this, new storyteller.Store());
 
@@ -41,6 +43,7 @@
 
         case Constants.STORY_SAVE_ERROR:
           _saveInProgress = false;
+          _poisonedWithSaveConflictForever = _poisonedWithSaveConflictForever || payload.conflict;
           self._emitChange();
         break;
 
@@ -68,6 +71,10 @@
 
     self.isStorySaveInProgress = function() {
       return _saveInProgress;
+    };
+
+    self.isSaveImpossibleDueToConflict = function() {
+      return _poisonedWithSaveConflictForever;
     };
   }
 

@@ -61,7 +61,8 @@
       storyteller.dispatcher.dispatch({
         action: Constants.STORY_SAVE_ERROR,
         storyUid: storyUid,
-        message: data
+        message: data,
+        conflict: data.status === 412
       });
     });
   }

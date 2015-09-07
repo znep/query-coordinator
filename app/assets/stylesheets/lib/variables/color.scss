@@ -3,12 +3,17 @@ $body-bg-color: #fff;
 
 // header
 $header-bg-color: #4a4747;
-$header-color: #fff;
+$header-text-color: #fff;
 $header-accent-color: #ddd;
-$header-story-title-color: #eee;
+$header-link-hover-color: #7ac3ff;
+$header-link-hover-bg-color: #3498Db;
 $header-box-shadow-color: rgba(0, 0, 0, 0.2);
+$header-story-title-color: #dbdbdb;
+$header-story-title-hover-color: #fff;
+$header-btn-disabled-color: #777;
 
 // Settings Panel
+$settings-panel-btn-color: #929292;
 $settings-panel-bg-color: #404040;
 $settings-panel-hr-color: #666;
 $settings-panel-close-font-color: #aaa;
@@ -37,8 +42,9 @@ $block-bg-color: #fafafa;
 $rich-text-editor-toolbar-inactive-color: rgb(215, 215, 215);
 $rich-text-editor-toolbar-inactive-bg-color: rgb(245, 245, 245);
 $rich-text-editor-toolbar-color: rgb(64, 64, 64);
-$rich-text-editor-toolbar-bg-color: rgb(225, 225, 225);
+$rich-text-editor-toolbar-bg-color: #EEEEEE;
 $rich-text-editor-toolbar-active-bg-color: rgb(190, 190, 190);
+$rich-text-editor-toolbar-border-color: rgba(73,73,73,0.20);
 
 // Embedded media
 $youtube-bg-color: #000;
@@ -62,9 +68,7 @@ $input-element-border-color: #ccc;
 
 // Buttons
 $btn-color: #666;
-$btn-bg-color: #ddd;
 $btn-hover-color: #444;
-$btn-hover-bg-color: #bbb;
 $btn-disabled-color: #ccc;
 $btn-disabled-bg-color: #eee;
 

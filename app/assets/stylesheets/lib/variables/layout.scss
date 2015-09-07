@@ -2,7 +2,6 @@
 $header-height: 6rem;
 $header-margin: 0.7rem;
 $header-title-height: 1.7em;
-$header-title-left-margin: 0.5em;
 $header-right-pane-padding: 1em;
 $header-box-shadow-size: 0.15rem;
 
@@ -75,7 +74,7 @@ $col8-block-edit-content-width-extra-large: ($main-content-width-extra-large - $
 $col12-block-edit-content-width-extra-large: $main-content-width-extra-large - $block-edit-controls-width - $block-edit-controls-padding;
 
 // Rich Text Editor toolbar
-$rich-text-editor-width: 52rem;
+$rich-text-editor-width: 53rem;
 $rich-text-editor-toolbar-left-offset-small: calc(((100vw - #{$main-content-width-small}) / 2) + #{$block-edit-controls-outer-width});
 $rich-text-editor-toolbar-left-offset-medium: calc(((100vw - #{$main-content-width-medium}) / 2) + #{$block-edit-controls-outer-width});
 $rich-text-editor-toolbar-left-offset-large: calc(((100vw - #{$main-content-width-large}) / 2) + #{$block-edit-controls-outer-width});

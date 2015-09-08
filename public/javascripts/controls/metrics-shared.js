@@ -304,7 +304,14 @@ metricsNS.summarySectionCallback = function($context, slice, section)
     };
     var $timeslice = $context.closest('#analyticsDataContainer').find('.currentTimeSlice');
     var percentCalculator = function(key, fraction) {
-        mappedData[key] = '{0}%'.format(Highcharts.numberFormat(Math.abs(fraction) * 100, 0));
+        // Note that Highcharts.numberFormat rounds, so only values in [1, 1.5)
+        // will be displayed as "1".
+        var percent = Math.abs(fraction) * 100;
+        if (percent > 0 && percent < 1) {
+            mappedData[key] = '< 1%';
+        } else {
+            mappedData[key] = '{0}%'.format(Highcharts.numberFormat(percent, 0));
+        }
 
         if (!_.isFinite(fraction)) {
             mappedData[key + 'Class'] = 'hidden';

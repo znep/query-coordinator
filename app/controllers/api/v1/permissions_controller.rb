@@ -5,8 +5,9 @@ class Api::V1::PermissionsController < ApplicationController
     permissions_response = nil
 
     begin
-      permissions_response = permissions.update_permissions(params[:isPublic])
-    rescue exception
+      request_payload = JSON.parse(request.body.read)
+      permissions_response = permissions.update_permissions(is_public: request_payload[:isPublic])
+    rescue => exception
       AirbrakeNotifier.report_error(exception, 'Permissions service object did not instantiate successfully.')
     end
 

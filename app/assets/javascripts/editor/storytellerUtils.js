@@ -167,34 +167,13 @@
           url: Constants.API_PREFIX_PATH + path,
           type: requestType,
           dataType: 'json',
-          headers: this.coreRequestHeaders(),
+          contentType: 'application/json',
+          headers: {
+            'X-CSRF-Token': storyteller.csrfToken
+          },
           data: requestData
         })
       );
-    },
-
-    /**
-     * @function coreRequestHeaders
-     * @desc Generate an object containing X-App-Token and X-CSRF-Token
-     * @return {Object} - an object with 'X-App-Token' and 'X-CSRF-Token'
-     */
-    coreRequestHeaders: function() {
-      var headers = {};
-
-      if (_.isEmpty(storyteller.config.coreServiceAppToken)) {
-        storyteller.notifyAirbrake({
-          error: {
-            message: '`storyteller.config.coreServiceAppToken` not configured.'
-          }
-        });
-      }
-
-      headers['X-App-Token'] = storyteller.config.coreServiceAppToken;
-      headers['X-CSRF-Token'] = decodeURIComponent(
-        utils.getCookie('socrata-csrf-token')
-      );
-
-      return headers;
     }
   };
 

@@ -5,27 +5,25 @@ class Permissions
 
     @clean_uid = nil
     @core_request_headers = nil
-    @view = nil
 
-    if view.present? && can_update_permissions(view, user)
+    if view.present? && can_update_permissions?(view, user)
       @clean_uid = uid
       @core_request_headers = core_request_headers
-      @view = view
     end
   end
 
-  def update_permissions(is_public)
+  def update_permissions(options)
     raise ArgumentError.new('Must initialize Permissions service object with valid uid.') unless @clean_uid.present?
     raise ArgumentError.new('Must initialize Permissions service object with valid core_request_headers.') unless @core_request_headers.present?
-    raise ArgumentError.new('Permissions service object failed to initialize view.') unless @view.present?
+    raise ArgumentError.new("'is_public' must be set as an option.") unless options.key?(:is_public)
 
     query_params = {
       accessType: 'WEBSITE',
       method: 'setPermission',
-      value: is_public ? 'public.read' : 'private'
+      value: options[:is_public] ? 'public.read' : 'private'
     }
 
-    CoreServer::update_view(@clean_uid, @core_request_headers, @view, query_params)
+    CoreServer::update_permissions(@clean_uid, @core_request_headers, query_params)
   end
 
   private

@@ -11,6 +11,6 @@ class PublishedStory < ActiveRecord::Base
   end
 
   def self.from_draft_story(draft_story)
-    self.new(draft_story.attributes)
+    self.new(draft_story.attributes.except('id'))
   end
 end

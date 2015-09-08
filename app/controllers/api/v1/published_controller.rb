@@ -8,13 +8,15 @@ class Api::V1::PublishedController < ApplicationController
     permissions_response = nil
 
     begin
-      permissions_response = permissions.update_permissions(params[:isPublic])
-    rescue exception
+      permissions_response = permissions.update_permissions(is_public: true)
+    rescue => exception
       AirbrakeNotifier.report_error(exception, 'Permissions service object did not instantiate successfully.')
     end
 
     if published && permissions_response.present?
-      render json: story_publisher.story, status: :ok
+      published_story = story_publisher.story.attributes.clone
+      published_story['isPublic'] = true
+      render json: published_story, status: :ok
     else
       if !published
         # TODO: Undo permissions, or retry publish

@@ -10,8 +10,10 @@
     var _$settingsPanelStoryStatus;
     var _$visibilityLabel;
     var _$visibilityButton;
+    var _$visibilityButtonText;
     var _$updatePublicLabel;
     var _$updatePublicButton;
+    var _$updatePublicText;
     var _$errorContainer;
 
     var _$settingsPanelPublishing = $('.settings-panel-publishing');
@@ -22,20 +24,24 @@
 
     _$visibilityLabel = _$settingsPanelPublishing.find('.settings-panel-story-visibility h3');
     _$visibilityButton = _$settingsPanelPublishing.find('.settings-panel-story-visibility button');
+    _$visibilityButtonText = _$visibilityButton.find('span');
 
     _$updatePublicLabel = _$settingsPanelPublishing.find('.settings-panel-story-status h3');
     _$updatePublicButton = _$settingsPanelPublishing.find('.settings-panel-story-status button');
+    _$updatePublicText = _$updatePublicButton.find('span');
 
-    _$errorContainer = _$settingsPanelPublishing.find('.settings-panel-story-publishing-error');
+    _$errorContainer = $('.settings-panel .settings-panel-errors');
 
     _attachEvents();
     _render();
 
     function _attachEvents() {
       storyteller.storyStore.addChangeListener(_render);
+      storyteller.storySaveStatusStore.addChangeListener(_render);
 
       _$visibilityButton.click(function() {
         var permissions = storyteller.storyStore.getStoryPermissions(storyteller.userStoryUid);
+        _$errorContainer.addClass('hidden');
 
         if (permissions.isPublic) {
           _manager.makePrivate(_renderError);
@@ -48,6 +54,8 @@
 
       _$updatePublicButton.click(function() {
         var permissions = storyteller.storyStore.getStoryPermissions(storyteller.userStoryUid);
+        _$errorContainer.addClass('hidden');
+
         if (permissions.isPublic) {
           _manager.makePublic(_renderError);
         } else {
@@ -58,8 +66,7 @@
       });
     }
 
-    function _renderError(message) {
-      console.error(message);
+    function _renderError() {
       _$errorContainer.removeClass('hidden');
       _$visibilityButton.removeClass('busy');
       _$updatePublicButton.removeClass('busy');
@@ -67,16 +74,21 @@
 
     function _render() {
       var permissions = storyteller.storyStore.getStoryPermissions(storyteller.userStoryUid);
+      var isStorySaved = storyteller.storySaveStatusStore.isStorySaved();
 
+      _$visibilityButton.prop('disabled', !isStorySaved);
+
+      debugger;
       // TODO: Add these to i18n;
       if (permissions.isPublic) {
         _$visibilityLabel.text('Public');
-        _$visibilityButton.text('Make Story Private');
+        _$visibilityButtonText.text('Make Story Private');
         _$updatePublicButton.prop('disabled', true);
         _$updatePublicLabel.text('Published');
       } else {
         _$visibilityLabel.text('Private');
-        _$visibilityButton.text('Make Story Public');
+        _$visibilityButtonText.text('Make Story Public');
+        _$updatePublicButton.prop('disabled', true);
       }
 
       _$settingsPanelStoryStatus.toggleClass('hidden', !permissions.isPublic);

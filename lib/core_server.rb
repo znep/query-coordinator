@@ -11,6 +11,10 @@ class CoreServer
     view_request(uid: uid, verb: :put, headers: headers, data: view_data, query_params: query_params)
   end
 
+  def self.update_permissions(uid, headers, query_params)
+    permissions_request(uid: uid, verb: :put, headers: headers, query_params: query_params)
+  end
+
   def self.current_user(headers)
     core_server_request_options = {
       verb: :get,
@@ -125,6 +129,26 @@ class CoreServer
     core_server_request_with_retries(core_server_request_options)
   end
 
+  def self.permissions_request(options)
+    raise ArgumentError("':uid' is required.") unless options.key?(:uid)
+    raise ArgumentError("':verb' is required.") unless options.key?(:verb)
+    raise ArgumentError("':headers' is required.") unless options.key?(:headers)
+    raise ArgumentError("':query_params' is required.") unless options.key?(:query_params)
+
+    verb = options[:verb]
+    path = "/views/#{options[:uid]}.json?#{generate_query_params(options[:query_params])}"
+
+    core_server_request_options = {
+      verb: verb,
+      path: path,
+      headers: options[:headers].merge(
+        'Content-type' => 'application/json'
+      )
+    }
+
+    core_server_permissions_request_with_retries(core_server_request_options)
+  end
+
   def self.core_server_request_with_retries(request_options)
     core_server_response = nil
     json_response = nil
@@ -151,6 +175,25 @@ class CoreServer
     end
 
     json_response
+  end
+
+  def self.core_server_permissions_request_with_retries(request_options)
+    core_server_response = nil
+
+    begin
+      with_retries(retry_options) do
+        core_server_response = core_server_http_request(request_options)
+      end
+
+      core_server_response.code.to_i == 200
+    rescue => error
+      error_message = "[#{request_options[:verb].upcase} #{request_options[:path]}"
+      error_message << " - HTTP #{status_code}" unless status_code.blank?
+      error_message << " - '#{response_body.inspect}'" unless response_body.blank?
+
+      AirbrakeNotifier.report_error(error, error_message)
+      false
+    end
   end
 
   def self.core_server_http_request(options)

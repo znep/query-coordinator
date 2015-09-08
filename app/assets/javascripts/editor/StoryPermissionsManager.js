@@ -50,11 +50,11 @@
     }
 
     function _handleRequestError(error, callback) {
-      utils.assertIsOneOfTypes(error, 'object');
-      utils.assertHasProperty(error, 'message');
-      utils.assertIsOneOfTypes(error.message, 'string');
+      console.error(error);
 
-      callback(error.message);
+      if (typeof callback === 'function') {
+        callback();
+      }
     }
 
     function _updatePermissions(setPublic) {
@@ -64,19 +64,19 @@
         return socrata.utils.storytellerApiRequest(
           'stories/{0}/published'.format(storyteller.userStoryUid),
           'POST',
-          {
-            digest: storyteller.storyStore.getDigest(
+          JSON.stringify({
+            digest: storyteller.storyStore.getStoryDigest(
               storyteller.userStoryUid
             )
-          }
+          })
         );
       } else {
         return socrata.utils.storytellerApiRequest(
           'stories/{0}/permissions'.format(storyteller.userStoryUid),
           'PUT',
-          {
+          JSON.stringify({
             isPublic: setPublic
-          }
+          })
         )
       }
     }

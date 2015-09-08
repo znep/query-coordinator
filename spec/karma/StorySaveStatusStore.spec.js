@@ -60,6 +60,17 @@ describe('StorySaveStatusStore', function() {
           assert.isTrue(store.isStorySaveInProgress());
         });
 
+        describe('and another save starts before the first completes', function() {
+          it('should throw', function() {
+            assert.throws(function() {
+              storyteller.dispatcher.dispatch({
+                action: Constants.STORY_SAVE_STARTED,
+                storyUid: standardMocks.validStoryUid
+              });
+            });
+          });
+        });
+
         describe('that completes', function() {
           beforeEach(function() {
             storyteller.dispatcher.dispatch({

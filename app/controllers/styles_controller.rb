@@ -28,7 +28,6 @@ class StylesController < ApplicationController
         with_development_cache(scss_stylesheet_filename) do
           stylesheet = File.read(scss_stylesheet_filename)
           includes = get_includes
-          puts(includes)
           Sass::Engine.new(includes + stylesheet,
                            :style => :nested,
                            :syntax => :scss,

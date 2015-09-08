@@ -18,26 +18,13 @@ class StylesController < ApplicationController
 
       scss_stylesheet_filename = File.join(style_path_parts + ["#{path}.scss"])
       css_stylesheet_filename = File.join(style_path_parts + ["#{path}.css"])
-      scss_erb_stylesheet_filename = File.join(style_path_parts + ["#{path}.scss.erb"])
 
-      # We have 3 cases:
+      # We have 2 cases:
       #  - The extension is .css. Return the css file.
       #  - The extension is .scss. Compile the scss template, cache its
       #    output and return it.
-      #  - The extension is .scss.erb. Compile erb to scss, compile scss to
-      #    css, return its output without caching.
 
-      if File.exist?(scss_erb_stylesheet_filename)
-        scss_template = ERB.new(File.read(scss_erb_stylesheet_filename)).result(binding)
-
-        includes = get_includes
-        stylesheet = Sass::Engine.new(includes + scss_template,
-                         :style => :nested,
-                         :syntax => :scss,
-                         :cache => false,
-                         :load_paths => ["#{Rails.root}/app/styles"]).render
-        render :text => stylesheet
-      elsif File.exist?(scss_stylesheet_filename)
+      if File.exist?(scss_stylesheet_filename)
         with_development_cache(scss_stylesheet_filename) do
           stylesheet = File.read(scss_stylesheet_filename)
           includes = get_includes

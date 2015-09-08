@@ -40,6 +40,14 @@
       utils.assertHasProperty(response, 'isPublic');
       utils.assertIsOneOfTypes(response.isPublic, 'boolean');
 
+      if (response.uid) {
+        storyteller.dispatcher.dispatch({
+          action: Constants.STORY_SET_PUBLISHED_STORY,
+          storyUid: storyteller.userStoryUid,
+          publishedStory: response
+        });
+      }
+
       var payload = {
         action: Constants.STORY_SET_PERMISSIONS,
         storyUid: storyteller.userStoryUid,

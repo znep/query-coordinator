@@ -42,6 +42,10 @@
           _setStoryPermissions(payload);
           break;
 
+        case Constants.STORY_SET_PUBLISHED_STORY:
+          _setStoryPublishedStory(payload);
+          break;
+
         case Constants.STORY_OVERWRITE_STATE:
           _setStory(payload.data, true);
           break;
@@ -117,12 +121,16 @@
     };
 
     this.getStoryPermissions = function(storyUid) {
-
       var story = _getStory(storyUid);
 
       return story.permissions;
-    }
+    };
 
+    this.getStoryPublishedStory = function(storyUid) {
+      var story  = _getStory(storyUid);
+
+      return story.publishedStory;
+    };
 
     this.getStoryBlockIds = function(storyUid) {
 
@@ -267,6 +275,18 @@
       _getStory(storyUid).permissions = {
         isPublic: payload.isPublic
       };
+
+      self._emitChange();
+    }
+
+    function _setStoryPublishedStory(payload) {
+      utils.assertIsOneOfTypes(payload, 'object');
+      utils.assertHasProperties(payload, 'storyUid', 'publishedStory');
+      utils.assertIsOneOfTypes(payload.storyUid, 'string');
+
+      var storyUid = payload.storyUid;
+
+      _getStory(storyUid).publishedStory = payload.publishedStory;
 
       self._emitChange();
     }

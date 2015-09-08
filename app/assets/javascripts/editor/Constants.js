@@ -27,6 +27,9 @@ var Constants = {
   // {boolean} isPublic
   STORY_SET_PERMISSIONS: 'STORY_SET_PERMISSIONS',
 
+  // {object} publishedStory
+  STORY_SET_PUBLISHED_STORY: 'STORY_SET_PUBLISHED_STORY',
+
   // {object} data: Story data object.
   STORY_OVERWRITE_STATE: 'STORY_OVERWRITE_STATE',
 

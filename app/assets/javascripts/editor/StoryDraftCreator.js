@@ -11,7 +11,7 @@
     utils.assert(storyteller.storyStore.storyExists(storyUid), 'Cannot save draft of non-existent story');
 
     var storyJson = JSON.stringify(
-        storyteller.storyStore.serializeStoryDiff(storyUid)
+      storyteller.storyStore.serializeStoryDiff(storyUid)
     );
 
     // important note here: we need to use the storyteller server's csrf token on the page

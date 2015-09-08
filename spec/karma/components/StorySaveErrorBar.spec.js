@@ -92,7 +92,7 @@ describe('storySaveErrorBar jQuery plugin', function() {
       });
 
       it('should place the correct text in the message', function() {
-        assert.equal($errorBar.find('span:not(.container)').text(), 'Translation for: editor.story_save_error_generic');
+        assert.equal($errorBar.find('.message').text(), 'Translation for: editor.story_save_error_generic');
       });
     });
 
@@ -122,7 +122,7 @@ describe('storySaveErrorBar jQuery plugin', function() {
       });
 
       it('should place the correct text in the message', function() {
-        assert.equal($errorBar.find('span:not(.container)').text(), 'Translation for: editor.story_save_error_conflict');
+        assert.equal($errorBar.find('.message').text(), 'Translation for: editor.story_save_error_conflict');
       });
     });
   });

@@ -40,7 +40,7 @@
           _saveInProgress = false;
           _lastSaveError = null;
           self._emitChange();
-          break;
+        break;
 
         case Constants.STORY_SAVE_ERROR:
           _saveInProgress = false;

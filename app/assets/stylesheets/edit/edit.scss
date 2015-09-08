@@ -116,7 +116,7 @@ body header {
     background: $story-save-error-bar-background;
     border: 1px solid $story-save-error-bar-border-color;
 
-    span {
+    .message {
       color: $story-save-error-bar-color;
       padding-left: 0.6rem;
     }

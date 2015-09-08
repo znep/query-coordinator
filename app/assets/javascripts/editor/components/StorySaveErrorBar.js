@@ -17,7 +17,7 @@
     utils.assert(storyteller.storySaveStatusStore, 'storySaveStatusStore must be instantiated');
 
     var $container = $('<span>', { 'class': 'container icon-warning' });
-    var $message = $('<span>');
+    var $message = $('<span>', { 'class': 'message' });
     var $tryAgainButton = $('<button>');
 
     $container.append($message);

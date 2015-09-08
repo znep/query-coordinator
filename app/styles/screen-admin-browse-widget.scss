@@ -1,0 +1,38 @@
+.sidebarOptionsContainer {
+  position: absolute;
+  right: 1em;
+  width: 50em;
+  .ie7 & {
+    width: 55em;
+  }
+}
+
+#gridSidebar {
+  .controlPane.embed {
+    .embedCodeWrapper {
+      margin: 0 1.2em 1em 0;
+      #_embed_code {
+        height: 8em;
+        font-size: 1em;
+        padding: 0.5em;
+        overflow: hidden;
+        width: 100%;
+      }
+    }
+    .sizeSection {
+      .line {
+        .errorMessage {
+          color: red;
+          display: none;
+          margin-left: 2em;
+          font-size: 1.1em;
+        }
+        &.error {
+          .errorMessage {
+            display: block;
+          }
+        }
+      }
+    }
+  }
+}

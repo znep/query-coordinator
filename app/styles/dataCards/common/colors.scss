@@ -1,0 +1,223 @@
+//TODO These are horribly unorganized... :(
+
+$blue-active-color: #67aecc;
+$grey-inactive-border-color: #e9e6e7;
+$grey-text-color: #676464;
+$grey-disabled-color: #aaa;
+$red-error-color: #e83e3e;
+$yellow-warning-color: #debb1e;
+
+// Buttons / Controls
+
+$btn-bg-color: #f0f5f7;
+$btn-border-color: #bad9e6;
+$btn-hover-bg-color: $blue-active-color;
+$btn-hover-border-color: $blue-active-color;
+$btn-hover-font-color: #ffffff;
+$btn-disabled-bg-color: #f9f7f8;
+$btn-disabled-border-color: $grey-inactive-border-color;
+$btn-disabled-font-color: #c6c1bf;
+$btn-touched-bg-color: $blue-active-color;
+$btn-touched-border-color: $blue-active-color;
+$btn-touched-font-color: #ffffff;
+$btn-error-bg-color: #cc6667;
+$btn-error-border-color: #cc6667;
+$btn-error-font-color: #ffffff;
+$btn-success-bg-color: #68cd70;
+$btn-success-border-color: #68cd70;
+$btn-success-font-color: #ffffff;
+$btn-working-bg-color: $blue-active-color;
+$btn-working-border-color: $blue-active-color;
+$btn-working-font-color: #ffffff;
+
+$dark-btn-bg-color: #3f4752;
+$dark-btn-border-color: $blue-active-color;
+$dark-btn-font-color: $blue-active-color;
+$dark-btn-hover-bg-color: $blue-active-color;
+$dark-btn-hover-border-color: $blue-active-color;
+$dark-btn-hover-font-color: #ffffff;
+$dark-btn-disabled-bg-color: #434d59;
+$dark-btn-disabled-border-color: #5f6a77;
+$dark-btn-disabled-font-color: #6d7681;
+$dark-btn-touched-bg-color: $blue-active-color;
+$dark-btn-touched-border-color: $blue-active-color;
+$dark-btn-touched-font-color: #ffffff;
+$dark-btn-working-bg-color: $blue-active-color;
+$dark-btn-working-border-color: $blue-active-color;
+$dark-btn-working-font-color: #ffffff;
+
+$green-btn-bg-color: rgb(87, 106, 74);
+$green-btn-border-color: rgb(135, 178, 101);
+$green-btn-font-color: rgb(255, 255, 255);
+$green-btn-hover-bg-color: rgb(135, 178, 101);
+$green-btn-hover-border-color: rgb(135, 178, 101);
+$green-btn-hover-font-color: rgb(255, 255, 255);
+$green-btn-disabled-bg-color: magenta;
+$green-btn-disabled-border-color: yellow;
+$green-btn-disabled-font-color: indigo;
+
+$dark-input-font-color: #fff;
+$dark-input-bg-color: #3f4752;
+$dark-input-border-color: $blue-active-color;
+
+$card-control-color: #888;
+
+// General page layout
+
+$panel-bg-color: #394047;
+$panel-border-color: #4f5f73;
+
+$white-font-color: #f0edee;
+$dark-grey-font-color: #646464;
+$lt-grey-font-color-alpha: 0.5;
+$lt-grey-font-color-rgba: rgba(0, 0, 0, $lt-grey-font-color-alpha);
+
+/* rgba version used for manipulating font color while card description is expanded */
+$lt-grey-font-color: #8F8F8F;
+$aqua-font-color: #68b0cc;
+$link-font-color: #68b0cc;
+$link-visited-font-color: #68b0cc;
+$active-filter-color: #888;
+$header-font-color: #68b0cc;
+$description-font-color: #666364;
+$expand-button-color: $lt-grey-font-color-rgba;
+$unfiltered-region-bg-color-1: #d6d4d5;
+$filtered-region-bg-color-1: #68b0cc;
+$filtered-region-bg-color-2: #debb1f;
+$filtered-region-bg-color-3: #de851f;
+$filtered-region-bg-color-4: #E0B700;
+$y-axis-color: #f0edee;
+
+// view-cards colors
+$view-cards-bg-color: #4d5969;
+$card-bg-color: #fff;
+$card-title-expanded-bg-color: #ddd;
+$card-example-text-color: #bbb;
+$card-dynamic-title-color: #bbb;
+
+$chart-tick-color: #BBB;
+$chart-y-origin-tick-color: #666;
+$chart-description-color: darken($chart-tick-color, 30);
+$unfiltered-bar-color: $unfiltered-region-bg-color-1;
+$unfiltered-hover-bar-bg-color: #BBBBBB;
+$unfiltered-value-color: #888;
+$neutral-bar-color: $blue-active-color;
+$filtered-bar-color: $filtered-region-bg-color-1;
+$selected-bar-color: $filtered-region-bg-color-2;
+$selected-bar-bg-color: rgba($filtered-region-bg-color-2, 0.2);
+$selected-bar-bg-hover-color: rgba($filtered-region-bg-color-2, 0.4);
+$hovered-bar-color: #00A9F0;
+$tooltip-border-color: #333;
+$tooltip-name-color: #333;
+$tooltip-value-color: #888;
+$tooltip-background-color: #F0F0F0;
+
+$dark-spinner-fill-color: #888;
+
+// API panel
+
+$api-panel-bg-color: #4d5968;
+$api-panel-border-color: #3f4752;
+$api-panel-white-font-color: #ffffff;
+$api-panel-black-font-color: #000000;
+$api-panel-url-textarea-bg-color: #ffffff;
+
+// Timeline chart
+
+$timeline-shaded-fill: rgba(104, 176, 204, 0.5);
+$timeline-shaded-stroke: #68b0cc;
+$timeline-context-fill: rgba(214, 212, 213, 0.5);
+$timeline-context-stroke: #d6d4d5;
+$timeline-selection-fill: rgb(222, 187, 31);
+$timeline-selection-stroke: rgb(150, 150, 5);
+$timeline-highlight-fill: rgba(255, 255, 255, 0.75);
+$timeline-highlight-stroke: transparent;
+
+$neutral-line-color: $neutral-bar-color;
+$neutral-line-color-hover: lighten($neutral-bar-color, 10%);
+$filtered-line-color: $filtered-bar-color;
+$filtered-line-color-hover: lighten($filtered-bar-color, 10%);
+$unfiltered-line-color: $unfiltered-bar-color;
+$unfiltered-line-color-hover: lighten($unfiltered-bar-color, 10%);
+$selected-line-color: $selected-bar-color;
+$selected-line-color-hover: lighten($selected-bar-color, 10%);
+$timeline-label-color: $chart-tick-color;
+$timeline-label-color-active: darken($chart-tick-color, 20%);
+
+// Table card
+
+$table-head-bg-color: $aqua-font-color;
+$table-head-color: $white-font-color;
+$table-row-odd-color: white;
+$table-row-even-color: #f0f5f8;
+$table-border-color: #f0eeef;
+$table-separator-color: $table-border-color;
+
+// Flyout
+
+$flyout-chart-background-color: #f1eeee;
+$flyout-chart-title-color: $grey-text-color;
+$flyout-chart-text-color: #8a8686;
+$flyout-chart-text-size: 14px;
+$flyout-chart-tip-size: 10px;
+$flyout-border: #ccc;
+
+$draghandle-border: #8a8686;
+$draghandle-line-color: $draghandle-border;
+$draghandle-fill: #c0bbbb;
+
+//Form
+$form-error-border-color: $red-error-color;
+$placeholder-text-color: rgba($lt-grey-font-color-rgba, 0.4);
+
+// Tool panel
+
+$tool-panel-bg-color: #4d5968;
+$tool-panel-border-color: #3f4752;
+$tool-panel-white-font-color: #ffffff;
+$tool-panel-black-font-color: #000000;
+$tool-panel-url-textarea-bg-color: #ffffff;
+
+$tool-panel-bg-color-light: #eee;
+$tool-panel-border-color-light: #d4d4d4;
+$tool-panel-text-color-light: #666;
+$tool-panel-selection-color-light: #67aecc;
+
+// Modal dialog
+
+$modal-dropdown-background-color: #ffffff;
+$modal-white-font-color: #ffffff;
+$modal-disabled-font-color: gray;
+$modal-dark-font-color: #000;
+$modal-overlay-color: #141415;
+
+// Feedback panel
+
+$feedback-panel-bg-color: #3f4752;
+$feedback-panel-border-color: #68b0cc;
+$feedback-panel-font-color: #f5f5f5;
+$feedback-panel-link-color: #ffffff;
+
+// Customize Bar
+$customize-bar-background-color: #fff;
+$customize-bar-opacity: 0.96;
+$customize-bar-border-color: #d7d4d4;
+$customize-bar-border-opacity: 0.8;
+
+$customize-bar-button-border-color: #5bb397;
+$customize-bar-button-background-color: #eaf4f1;
+$customize-bar-button-color: #4e9981;
+
+$customize-bar-customizing-background-color: #4e9981;
+$customize-bar-customizing-border-color: #4e9981;
+$customize-bar-customizing-border-opacity: 0.8;
+
+$customize-bar-customizing-button-background-color: #4c8d78;
+$customize-bar-customizing-button-color: #fff;
+
+$related-views-list-item-border-color: rgba(white, 0.3);
+$related-view-name-color: $link-font-color;
+
+// Lens Type
+$lens-type-bg-color: rgb(149, 149, 149);
+$lens-type-text-color: white;

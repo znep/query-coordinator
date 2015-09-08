@@ -1,0 +1,90 @@
+@import "dataCards/common/colors";
+@import "dataCards/common/layout";
+
+aggregation-chooser {
+  float: right;
+  margin-left: 1rem;
+  .aggregation-chooser-trigger {
+    cursor: pointer;
+    position: relative;
+    display: inline-block;
+    &.disabled {
+      cursor: default;
+    }
+    .information {
+      opacity: 0.6;
+    }
+    .tool-panel-cue {
+      display: inline-block;
+      margin-right: 3px;
+      padding: 1px 6px;
+      position: relative;
+      vertical-align: middle;
+      &::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 0;
+        top: 0;
+        right: 0;
+        border-style: solid;
+        border-width: 5px 5px 0 5px;
+      }
+    }
+  }
+  .tool-panel .tool-panel-main {
+    right: 15px;
+    margin-top: 14px;
+  }
+  .tool-panel-main {
+    line-height: 1rem;
+    padding-bottom: 10px;
+  }
+  .aggregation-functions, .aggregation-columns {
+    .aggregation-option:first-child {
+      height: 2rem;
+      margin-bottom: 1rem;
+    }
+  }
+  .aggregation-option {
+    outline: 0;
+    display: block;
+    cursor: pointer;
+    position: relative;
+    padding: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    &.disconnected {
+      margin-right: 1rem;
+    }
+    &.disabled {
+      cursor: default;
+    }
+    .label, .sublabel {
+      display: block;
+    }
+    .label {
+      font-weight: bold;
+      clear: both;
+    }
+    .sublabel {
+      font-size: smaller;
+    }
+  }
+}
+
+#uber-flyout.aggregation-chooser {
+  max-width: 500px;
+  padding-top: 0.5rem;
+  p {
+    margin: 0.5rem 0;
+  }
+  .content {
+    text-align: center;
+  }
+  .icon-warning {
+    color: $yellow-warning-color;
+    padding-right: 0.5rem;
+  }
+}

@@ -1,0 +1,115 @@
+#govstatHomeRoot {
+  .component-Share {
+    float: right;
+    z-index: 1;
+  }
+  .noResults {
+    font-size: 2em;
+    margin-top: 5em;
+    text-align: center;
+  }
+  //&.listLayout
+  // .categoryTitle h2
+  //   font-size: 2.5em
+  // .categoryItem
+  //   margin-bottom: 5em
+  //
+  // .goalList
+  //   width: 100%
+  //
+  // .goalItem
+  //   border-bottom: 3px solid #ffffff
+  //   color: #ffffff
+  //   padding: 1em
+  //   padding-left: 2em
+  //   position: relative
+  //   &:last-child
+  //     border-bottom: none
+  //
+  //   .goalProgress
+  //     display: none
+  //     font-size: 1em
+  //     height: 100%
+  //     left: 0
+  //     padding: 0
+  //     position: absolute
+  //     top: 0
+  //     width: 1em
+  //     .contentWrapper
+  //       height: 100%
+  //       width: 100%
+  //     .progress-good
+  //       background-color: #55ee55
+  //     .progress-progressing
+  //       background-color: #ee9955
+  //     .progress-bad
+  //       background-color: #ee3333
+  //
+  //   .goalTitle
+  //     font-size: 1.4em
+  //
+  //   .progressDetails
+  //     float: right
+  //     margin-top: 1em
+  //     .component-Text
+  //       display: inline-block
+  //       vertical-align: top
+  //     .barValue
+  //       background-color: #f1f1f1
+  //       color: #dddddd
+  //       display: inline-block
+  //       height: 1em
+  //       margin:
+  //         right: 2em
+  //         top: 0.2em
+  //       padding: 0.5em 1em
+  //       position: relative
+  //       text-transform: uppercase
+  //       width: 20em
+  //       .bar
+  //         height: 100%
+  //         position: absolute
+  //         right: 0
+  //         top: 0
+  //       &.progress-good .bar
+  //         background-color: #55ee55
+  //       &.progress-progressing .bar
+  //         background-color: #ee9955
+  //       &.progress-bad .bar
+  //         background-color: #ee3333
+  //     .textValue
+  //       font-size: 2.5em
+  //
+  //   .goalProgress, .goalTitle, .goalSubject
+  //     @include opacity(1)
+  //     @include transition(0.5s, opacity)
+  //   .goalDetails
+  //     position: static
+  //     a
+  //       background-color: rgba(51, 51, 51, 0.4)
+  //       bottom: 0
+  //       color: #ffffff
+  //       display: block
+  //       font-size: 1.5em
+  //       font-weight: bold
+  //       left: 0
+  //       @include opacity(0)
+  //       padding: 1.5em
+  //       position: absolute
+  //       right: 0
+  //       top: 0
+  //       @include transition(0.5s, opacity)
+  //       z-index: 1
+  //       .more
+  //         font-size: 0.6em
+  //         font-weight: normal
+  //         margin-top: 1em
+  //         text-transform: uppercase
+  //         .ss-icon
+  //           padding-left: 0.5em
+  //   &:hover
+  //     .goalProgress, .goalTitle, .goalSubject
+  //       @include opacity(0)
+  //     .goalDetails a
+  //       @include opacity(1)
+}

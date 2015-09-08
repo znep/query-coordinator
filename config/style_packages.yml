@@ -35,7 +35,7 @@ ie9:
 - dataCards/ie9
 
 includes:
-- sass-common
+- scss-common
 - icons
 base:
 - base

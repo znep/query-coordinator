@@ -1,0 +1,302 @@
+.modalContentBox.narrow {
+  max-width: 40em;
+}
+
+.modalContentBox {
+  .contentHeader {
+    .loginHeader, .signupHeader h1, .forgot-password-header {
+      border-bottom: solid 1px #cecece;
+      padding: 1em 0;
+      margin: 0;
+    }
+  }
+}
+
+.signupModal {
+  .loginHeader, .loginForm {
+    display: none;
+  }
+}
+
+.loginModal {
+  .signupHeader, .signupForm {
+    display: none;
+  }
+  .flash.notice {
+    margin-top: 0;
+  }
+}
+
+.loginModal, .signupModal, .forgot-password-modal {
+  border: solid 1px #cecece;
+  box-shadow: 0 0 0 4px rgba(#000, 0.08);
+}
+
+.contentHeader {
+  .explanation {
+    font-size: 1.2em;
+    padding: 0 2em;
+    p {
+      margin-top: 1em;
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+  }
+}
+
+.contentBoxInner {
+  font-size: 1.2em;
+  padding: 2em;
+  &.rpxReturnLogin {
+    padding-top: 0;
+  }
+  .column {
+    width: 29em;
+  }
+  .explanation {
+    margin-bottom: 1em;
+    font-size: 1.2em;
+  }
+  .submitLine {
+    padding-top: 1em;
+  }
+  .commonForm {
+    label {
+      font-size: 1em;
+    }
+  }
+  .line {
+    input[type='text'], input[type='password'], input[type='email'] {
+      width: 23.5em;
+    }
+    label {
+      width: 9em;
+      white-space: nowrap;
+      &.error {
+        width: auto;
+      }
+      .passwordHint {
+        @include sprite-menu-icons;
+        font-style: italic;
+        .icon {
+          display: inline-block;
+          position: relative;
+          top: 5px;
+        }
+      }
+    }
+  }
+  #forgotPasswordForm {
+    .line {
+      label {
+        width: 6em;
+      }
+    }
+  }
+  .loginSignupForm {
+    float: left;
+    #a0-lock {
+      .a0-panel {
+        -webkit-box-shadow: none;
+        box-shadow: none;
+      }
+    }
+    .loginTips {
+      margin-top: 0.5em;
+    }
+    .noAccountYet {
+      color: #666;
+      padding-left: 0.5em;
+    }
+    .signUpLink, .logInLink {
+      font-weight: bold;
+    }
+    .line {
+      margin-top: 1em;
+    }
+    .labelLine {
+      margin-bottom: 0.5em;
+    }
+    label.main {
+      font-weight: bold;
+    }
+    label.pushUp {
+      position: relative;
+      top: -0.3em;
+    }
+    .passwordLabel {
+      padding-right: 1em;
+    }
+    .passwordHint {
+      @include sprite-menu-icons;
+      font-style: italic;
+      .icon {
+        display: inline-block;
+        position: relative;
+        top: 5px;
+      }
+    }
+    .placeholder {
+      height: 10em;
+      .loading {
+        @include throbber-icon;
+        margin: 5em auto;
+      }
+    }
+    #recaptcha_widget_div, #captchaPlaceholder {
+      margin-top: 2em;
+    }
+    .loginSignupHint {
+      display: inline-block;
+      font-size: 1.1em;
+    }
+    .accountSignupHint {
+      padding-left: 0.5em;
+    }
+    label.error {
+      display: block;
+      margin-top: 0.2em;
+    }
+    div.uniform.checker {
+      margin-right: 0.5em;
+    }
+    .formActionButtons {
+      padding-top: 1em;
+    }
+    .signUpHint {
+      padding-top: 1.5em;
+    }
+    .authProvider .iconContainer {
+      margin-right: 0.5em;
+      padding-left: 0;
+    }
+    .forgotBox {
+      position: relative;
+      .forgotPassLink {
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+    }
+  }
+  .authProvider {
+    @include authentication-icons;
+    &.socrata {
+      > p {
+        margin-bottom: 1em;
+        background-image: url(/stylesheets/images/icons/menu_icons.png);
+        background-repeat: no-repeat;
+        background-position-y: -91px;
+        padding-left: 1.5em;
+      }
+      .login-back {
+        cursor: pointer;
+        &:visited {
+          color: #3b5998;
+        }
+      }
+    }
+    .iconContainer {
+      float: left;
+      padding: 0.7em;
+      margin-right: 1.5em;
+    }
+    .login-description-container {
+      text-align: left;
+      margin-bottom: 2em;
+    }
+    .login-description, .description {
+      line-height: 2.4em;
+    }
+    .description {
+      font-size: 1.4em;
+    }
+    .login-description {
+      font-size: 1.5em;
+      img {
+        vertical-align: middle;
+        height: 18px;
+      }
+    }
+  }
+  .rpxLoginPane {
+    float: right;
+    margin-top: 0.5em;
+    .thirdPartyLinks {
+      .button {
+        font-size: 1em;
+        font-weight: normal;
+        margin-top: 1em;
+        padding: 0;
+        width: 28em;
+        .iconContainer {
+          border-right: 1px solid $color_chrome_box_border;
+        }
+      }
+      .simpleLoginButton {
+        font-size: 1.4em;
+        font-weight: normal;
+        height: 2.4em;
+        padding-left: 3.2em;
+        text-align: left;
+        width: 20em;
+      }
+    }
+  }
+}
+
+.auth0login {
+  text-align: center;
+  margin-top: 0.5em;
+  p {
+    text-align: left;
+    padding: 0 0 1em 0.75em;
+  }
+  a {
+    font-size: 14px;
+  }
+  hr {
+    width: 25%;
+    margin-top: 18px;
+    border: none;
+    border-top: solid 1px #c0c0c0;
+  }
+  .button {
+    text-align: left;
+    position: relative;
+    margin-top: 10px;
+    font-weight: normal;
+    width: 95%;
+    box-sizing: border-box;
+    font-size: 1.35em;
+    padding: 0.8625em;
+    padding-left: 3.75em;
+  }
+  + .socrata {
+    display: none;
+  }
+  .iconContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    border-right: solid 1px #cecece;
+    padding: 0.5em;
+    img {
+      width: 25px;
+      height: 25px;
+    }
+  }
+  a:active img {
+    box-shadow: none;
+  }
+}
+
+.noLinearGradient .auth0login .button {
+  background-size: cover;
+}
+
+.a0-onestep {
+  margin: 0 auto;
+}

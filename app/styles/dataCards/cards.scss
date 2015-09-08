@@ -1,0 +1,445 @@
+@import "dataCards/common/colors";
+@import "dataCards/common/layout";
+@import "dataCards/action-button";
+@import "dataCards/aggregation-chooser";
+@import "dataCards/tool-panel";
+@import "dataCards/feature-map-flannel";
+@import "dataCards/inputs";
+@import "dataCards/spinner";
+@import "dataCards/customize-bar";
+@import "dataCards/related-views";
+@import "dataCards/histogram";
+
+$metadata-top-padding: 7px;
+$metadata-side-padding: 30px;
+$filter-height: 58px;
+
+// api panel sizes
+$api-panel-width: 512px;
+$api-panel-hint-width: 20px;
+
+/* MOBILE/RESPONSIVE DESIGN. SEE DESKTOP-SPECIFIC STYLES BELOW */
+body.state-view-cards {
+  *:focus {
+    outline-width: 2px;
+  }
+  .cards-metadata {
+    position: relative;
+    padding: $metadata-top-padding ($metadata-side-padding / 2);
+    border-bottom: 3px solid;
+    // Custom feature-flag related style hack.
+    &.page-header-enabled {
+      border-top: 3px solid;
+    }
+    .page-description {
+      margin-top: 1rem;
+      font-size: 1rem;
+      .show-more {
+        height: 1rem;
+        display: none;
+        padding-top: 1.5rem;
+        cursor: pointer;
+        .show-more-arrow {
+          margin-left: 5px;
+        }
+        &.clamped, &.less {
+          display: inline-block;
+        }
+      }
+    }
+    .padded-wrapper {
+      padding: $metadata-side-padding / 2;
+    }
+    .edit-page-name, .edit-page-description {
+      display: block;
+      position: relative;
+      color: inherit;
+      > .placeholder {
+        position: absolute;
+        z-index: 0;
+        top: 0;
+        left: 0;
+        color: inherit;
+        font-family: inherit;
+        &::before {
+          font-family: socrata-apps;
+          font-size: 0.55em;
+          line-height: 45px;
+          padding: 0 0.7em;
+        }
+        span {
+          display: none;
+          padding-left: 0.3em;
+          font: inherit;
+          font-style: italic;
+          font-size: 0.9em;
+        }
+      }
+      > textarea {
+        height: 1.2em;
+        padding-left: 1.3em;
+        margin-bottom: 0.3em;
+      }
+      > textarea, > rich-text-editor {
+        color: inherit;
+        font: inherit;
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        // Make sure this is above the placeholder
+        position: relative;
+        z-index: 1;
+        &:empty + .placeholder > span {
+          display: inline;
+        }
+        &:focus, &.focus {
+          outline: 0;
+          // Webkit doesn't give us box shadows unless we nuke its appearance
+          -webkit-appearance: none;
+          + .placeholder {
+            span {
+              display: none;
+            }
+          }
+        }
+      }
+      .icon-warning {
+        position: absolute;
+        top: 0;
+        left: 100%;
+        z-index: 1;
+        font-size: 0.7em;
+        margin-left: 0.5rem;
+        line-height: 1.5em;
+      }
+      [class^="icon-"], [class*=" icon-"] {
+        cursor: default;
+      }
+    }
+    header,
+    .edit-page-name {
+      font-size: 2rem;
+    }
+    .edit-page-description {
+      font-size: 1rem;
+    }
+    .activities {
+      position: relative;
+      $activities-divider-width: 36px;
+      text-align: right;
+      .metadata {
+        padding-bottom: 10px;
+        .manage-lens-link {
+          .icon-warning {
+            margin-left: 0.3rem;
+          }
+          a > small {
+            font-weight: normal;
+          }
+          .modal-dialog {
+            max-width: 45rem;
+          }
+        }
+      }
+      .metadatum-wrapper {
+        &:last-child {
+          .metadatum {
+            margin-bottom: 10px;
+          }
+        }
+        .metadatum {
+          padding: 10px 0 0 10px;
+          white-space: nowrap;
+          overflow: hidden;
+          width: 100%;
+          box-sizing: border-box;
+          display: block;
+          span {
+            &.label {
+              text-transform: uppercase;
+              padding-right: 0.3em;
+              vertical-align: top;
+            }
+            &.value, &.value a {
+              text-transform: capitalize;
+              font-weight: bold;
+            }
+            &.value.source-dataset-name a {
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              overflow: hidden;
+              display: inline-block;
+              max-width: 15rem;
+              &.content {
+                position: relative;
+                top: 3px;
+              }
+            }
+          }
+        }
+      }
+      .save-button {
+        position: relative;
+      }
+      .download-menu {
+        $border-width: 2px;
+        position: relative;
+        border-width: $border-width;
+        overflow: visible;
+        dropdown-menu {
+          z-index: 1003;
+          position: absolute;
+          top: 100%;
+          // Compensate for the border on the containing button
+          margin: 0 #{-$border-width};
+          background-color: inherit;
+          a {
+            white-space: nowrap;
+            color: inherit;
+            display: block;
+            line-height: 2rem;
+            text-align: left;
+            padding: $action-btn-padding-top $action-btn-padding-left;
+            &:hover {
+              background-color: $btn-bg-color;
+              color: $aqua-font-color;
+            }
+            &.download-menu-item-disabled, &.download-menu-item-disabled:hover {
+              cursor: default;
+              color: $lt-grey-font-color-rgba;
+              background-color: inherit;
+            }
+          }
+        }
+      }
+    }
+  }
+  .cards-content {
+    position: relative;
+    #quick-filter-bar-container {
+      position: relative;
+      .quick-filter-bar {
+        position: absolute;
+        width: 100%;
+        top: 0;
+        padding: 0;
+        box-sizing: border-box;
+        z-index: 1002;
+        @include prefixer(box-shadow, 0 0 8px rgba(0, 0, 0, 0.2));
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        &.stuck {
+          position: fixed;
+          top: 0;
+        }
+        .content {
+          padding: $metadata-side-padding / 2;
+          min-height: 2.75rem;
+          line-height: 2.75rem;
+          .clear-all-filters-button {
+            margin: 0;
+            .icon-close {
+              font-size: 0.5rem;
+              margin-left: 0.5rem;
+              vertical-align: middle;
+            }
+          }
+        }
+        .action-btn {
+          line-height: normal;
+        }
+        .filters {
+          display: inline;
+          margin-right: 1rem;
+          line-height: 2rem;
+        }
+        .filter {
+          // TODO: responsive design for filters when narrow
+          display: inline-block;
+          padding-right: 3px;
+          span {
+            opacity: 0.6;
+            &.light {
+              opacity: 1;
+            }
+          }
+        }
+        // buttons in the QFB are gonna look a little different from normal
+        .action-btn {
+          margin: (-0.5rem) 0;
+          border-width: 1px;
+        }
+      }
+    }
+    #card-container {
+      margin: 0 0 ($customize-bar-height + 10px);
+      position: relative;
+    }
+    .cards {
+      display: block;
+      padding: 0;
+      /* LAYOUT */
+      .card-spot {
+        position: absolute;
+        .overlay {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 0;
+          bottom: 0;
+          z-index: 1000;
+          &.card-chooser {
+            @include prefixer(transition, "background-color 0.1s");
+            .action-png-export {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              @include prefixer("transform", "translate(-50%, -50%)");
+              @include prefixer(box-shadow, 0 0.2rem 1.3rem -0.1rem rgba(0, 0, 0, 0.3));
+            }
+          }
+        }
+        .card-drag-overlay {
+          // IE9 ignores this overlay for JUST the column chart labels unless you give this
+          // a background color (transparent doesn't work).
+          background-color: rgba(0, 0, 0, 0);
+          cursor: move !important;
+          cursor: grab !important;
+          cursor: -webkit-grab !important;
+        }
+        card {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          &.dragged {
+            position: fixed;
+            z-index: 3000;
+            opacity: 0.85;
+            cursor: move !important;
+            cursor: grabbing !important;
+            cursor: -webkit-grabbing !important;
+            @include prefixer(transition, "width 0.55s, height 0.55s");
+            // Don't let our dimensions freak out when we're dragged
+            top: inherit;
+            left: inherit;
+            width: inherit;
+            height: inherit;
+          }
+        }
+      }
+      .card-group {
+        border-left-width: 4px;
+        border-left-style: solid;
+        border-radius: $rounded-corners-border-radius;
+        position: absolute;
+      }
+      .card-group-customize-hint {
+        position: absolute;
+        width: 156px;
+        height: 80px;
+        padding-top: 8px;
+        padding-left: 12px;
+        box-sizing: border-box;
+        .icon-help {
+          cursor: default;
+          border-radius: 50%;
+          border-width: 2px;
+          border-style: solid;
+          font-weight: bold;
+          font-size: 0.9em;
+          font-family: inherit;
+          width: 1em;
+          height: 1em;
+          display: inline-block;
+          text-align: center;
+        }
+        .card-group-customize-hint-text {
+          font-weight: 400;
+          line-height: 1.3rem;
+          padding-left: 2px;
+        }
+        .card-group-customize-hint-cards {
+          margin-top: 10px;
+          .card-group-customize-hint-card {
+            height: 25px;
+            display: inline-block;
+            position: relative;
+            .card-group-customize-hint-card-inner {
+              border-radius: 3px;
+              position: absolute;
+              left: 0;
+              right: 4px;
+              top: 0;
+              bottom: 0;
+            }
+          }
+        }
+      }
+      .card-group-drop-placeholder {
+        position: absolute;
+        display: none;
+        height: 128px;
+        font-size: 1em;
+        text-align: center;
+        border-radius: $rounded-corners-border-radius;
+        box-sizing: border-box;
+        color: #9ca2ad;
+        img.drag-card-icon {
+          padding-top: 4px;
+          vertical-align: middle;
+          opacity: 0.4;
+        }
+      }
+      .card-drop-placeholder {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        opacity: 0.5;
+        border-radius: $rounded-corners-border-radius;
+      }
+      .add-card-button {
+        position: absolute;
+        margin: 0;
+        line-height: normal;
+        .icon-add {
+          font-size: 0.9em;
+          font-weight: bold;
+          margin-right: 0.5em;
+          margin-left: -0.4em;
+        }
+      }
+    }
+  }
+}
+
+/* DESKTOP-SPECIFIC STYLES */
+
+@media screen {
+  @media (min-width: 768px) {
+    .cards-view {
+      .cards-metadata {
+        .metadatum-wrapper {
+          .span6:first-child {
+            .metadatum {
+              // left-hand activities on full-width
+              margin-right: 35px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.mobile-warning-buttons {
+  text-align: right;
+  clear: both;
+}
+
+[msd-elastic] {
+  resize: vertical;
+}

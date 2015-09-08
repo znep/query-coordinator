@@ -1,0 +1,134 @@
+html {
+  @include default-fonts;
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  vertical-align: baseline;
+  background: transparent;
+}
+
+body {
+  color: #333;
+  font-size: 62.5%;
+  line-height: 1;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+blockquote, q {
+  quotes: none;
+  &:before, &:after {
+    content: "";
+    content: none;
+  }
+}
+
+// remember to define focus styles!
+*:focus {
+  outline: 0;
+}
+
+/* remember to highlight inserts somehow! */
+ins {
+  text-decoration: none;
+}
+
+del {
+  text-decoration: line-through;
+}
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Now build up basic styles for elements */
+
+p {
+  font-size: 1.1em;
+  line-height: 1.1em;
+}
+
+/* Reset for ps in forms */
+form p {
+  font-size: 1em;
+  line-height: 1em;
+}
+
+h1 {
+  font-size: 2.4em;
+  line-height: 1.4em;
+  margin-bottom: 0.5em;
+}
+
+h2 {
+  font-size: 1.5em;
+  line-height: 1.5em;
+}
+
+h3 {
+  font-size: 1.4em;
+  line-height: 1.4em;
+}
+
+h4 {
+  font-size: 1.2em;
+  font-weight: normal;
+  line-height: 1.3em;
+}
+
+h5 {
+  display: inline;
+  font-size: 1.2em;
+  font-weight: normal;
+  line-height: 1.3em;
+}
+
+a {
+  text-decoration: none;
+  hover: {
+    text-decoration: underline;
+  };
+}
+
+textarea {
+  @include default-fonts;
+  height: 5em;
+}
+
+@font-face {
+  font-family: "SSStandard";
+  src: url("/webfonts/ss-standard.eot?1");
+  src: url("/webfonts/ss-standard.eot?1#iefix") format("embedded-opentype"), url("/webfonts/ss-standard.woff?1") format("woff"), url("/webfonts/ss-standard.ttf?1") format("truetype"), url("/webfonts/ss-standard.svg?1#SSStandard") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: "SSPika";
+  src: url("/webfonts/ss-pika.eot?1");
+  src: url("/webfonts/ss-pika.eot?1#iefix") format("embedded-opentype"), url("/webfonts/ss-pika.woff?1") format("woff"), url("/webfonts/ss-pika.ttf?1") format("truetype"), url("/webfonts/ss-pika.svg?1#SSPika") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+.ruler {
+  visibility: hidden;
+}

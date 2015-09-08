@@ -1,0 +1,110 @@
+.siteOuterWrapper {
+  min-width: 60em;
+}
+
+.nomDetailContainer {
+  background-color: #fff;
+  border: 1px solid $color_chrome_box_border;
+  margin: 0;
+  padding: 1.5em;
+  .editNomButton {
+    float: right;
+  }
+  .backButton {
+    @include sprite-menu-icons;
+    float: right;
+    .icon {
+      float: left;
+      padding-right: 0.5em;
+    }
+  }
+  .content {
+    h2 {
+      margin: {
+        top: 0.3em;
+        bottom: 0.5em;
+      };
+    }
+    h4 {
+      font-size: 1.4em;
+      font-weight: bold;
+    }
+    .nomActions {
+      font-size: 1.2em;
+      padding-bottom: 1em;
+      .ratingButtons {
+        position: relative;
+        top: 0.2em;
+        .rateLink {
+          display: inline-block;
+          margin-left: 0.2em;
+          .ie7 & {
+            display: inline;
+            zoom: 1;
+          }
+        }
+      }
+      .nomModerationContainer {
+        padding: 1em 0;
+      }
+    }
+    .submittedBy {
+      clear: right;
+      float: right;
+      margin-bottom: 1em;
+      padding: {
+        right: 1em;
+        top: 1em;
+      };
+      text-align: right;
+      width: 22em;
+      .submittedOn {
+        font-size: 1.2em;
+      }
+    }
+    .nomDescription {
+      margin-right: 25em;
+      .subPara {
+        font-size: 1.3em;
+        padding-bottom: 1em;
+      }
+    }
+    .nomAttachments {
+      .attachmentList {
+        list-style: disc inside;
+        a {
+          font-size: 1.2em;
+        }
+      }
+    }
+    .nomComments {
+      clear: both;
+      margin-top: 1em;
+      h4 {
+        float: left;
+      }
+      .feed {
+        #newCommentBody {
+          width: 40em;
+        }
+        .feedNewCommentButton {
+          margin-bottom: 0;
+        }
+        ul.feedList {
+          margin-top: 0;
+          > li {
+            padding: 1em 0;
+            &:first-child {
+              padding-top: 0;
+            }
+          }
+        }
+        .commentActions {
+          .rateUp, .rateDown {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}

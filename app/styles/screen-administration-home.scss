@@ -1,0 +1,313 @@
+// home admin page
+.contentBox {
+  .adminHeader {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+  .newButton {
+    @include sprite-menu-icons;
+    float: right;
+    .icon {
+      display: inline-block;
+      left: 0.1em;
+      margin-left: 0.3em;
+      position: relative;
+      top: 0.2em;
+      .ie7 & {
+        top: -0.1em;
+      }
+    }
+  }
+  h2 {
+    margin-bottom: 0.5em;
+    margin-top: 0.5em;
+  }
+  .newFeatureMessage {
+    color: #888;
+    display: none;
+    float: right;
+    font-size: 1.3em;
+    padding: 1em 0.6em 0;
+  }
+}
+
+.storiesList {
+  clear: right;
+  tbody {
+    tr {
+      .button {
+        opacity: 0.3;
+        @include transition-duration(0.2s);
+        @include transition-property(opacity);
+        padding: 0.5em 0.75em;
+      }
+      a.button {
+        padding: 0.65em 0.75em;
+      }
+      &:hover .button {
+        opacity: 1;
+      }
+      td {
+        vertical-align: top;
+      }
+      td.image .imagePreview {
+        height: 10em;
+        overflow: hidden;
+        width: 10em;
+        .imagePreviewWrapper {
+          margin: {
+            left: -150em;
+            top: -1em;
+          };
+          text-align: center;
+          width: 300em;
+          img {
+            height: 12em;
+          }
+        }
+      }
+      td.contents {
+        .storyTitle {
+          border-bottom: 1px solid #ddd;
+          font-size: 1.2em;
+          font-weight: bold;
+          margin: {
+            bottom: 0.4em;
+            top: 0.2em;
+          };
+          padding-bottom: 0.2em;
+        }
+        .storyBody {
+          text-align: justify;
+        }
+      }
+      td.date {
+        .cellDisplay {
+          position: relative;
+          top: 0.3em;
+        }
+        .cellInner {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+.featuresWorkspace {
+  @include workspace;
+  @include border-radius(0.2em);
+  clear: both;
+  margin-top: 1em;
+  min-height: 15em;
+  vertical-align: top;
+  .featureWrapper {
+    display: inline-block;
+    position: relative;
+    width: 25%;
+    .ie7 & {
+      float: left;
+    }
+    .featureSwapButton {
+      @include sprite-menu-icons;
+      background-color: #555;
+      @include border-radius(0.3em);
+      @include box-shadow(0, 0, 0.4em, rgba(0, 0, 0, 0.5), true);
+      display: block;
+      margin-top: -2em;
+      padding: 1.5em;
+      position: absolute;
+      @include transition-duration(0.5s);
+      @include transition-property("left, right");
+      top: 50%;
+      &:hover {
+        background-color: #999;
+      }
+      &.leftArrow {
+        left: 1em;
+        padding-left: 0.2em;
+      }
+      &.rightArrow {
+        right: 1em;
+        padding-right: 0.2em;
+      }
+    }
+    &:hover {
+      z-index: 2;
+      .featureSwapButton {
+        &.leftArrow {
+          left: -0.7em;
+        }
+        &.rightArrow {
+          right: -0.7em;
+        }
+      }
+    }
+    .featureBox {
+      background-color: #fff;
+      @include border-radius(0.2em);
+      @include box-shadow(0, 0, 1em, rgba(0, 0, 0, 0.4));
+      margin: 1em;
+      padding: 1em {
+        right: 2em;
+      };
+      position: relative;
+      z-index: 1;
+      .featureContentType {
+        display: none;
+      }
+      &.text .featureContentTextSection,
+      &.custom .featureContentCustomSection,
+      &.thumbnail .featureContentThumbnailSection {
+        display: block;
+      }
+      .featureRemoveButton {
+        @include sprite-menu-icons;
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+      &:hover .featureRemoveButton {
+        display: block;
+      }
+      .featureHeadline {
+        display: block;
+        font-family: Georgia;
+        font-size: 1.5em;
+        font-weight: bold;
+        width: 100%;
+      }
+      .featureContentSection {
+        border: 1px solid #ddd;
+        @include border-radius(0.2em);
+        @include box-shadow(0, 0, 2em, rgba(0, 0, 0, 0.05), true);
+        margin: 0.5em 0 {
+          right: -0.8em;
+        };
+        padding: 0.5em;
+      }
+      .line {
+        margin: 0.5em 0;
+      }
+      label {
+        font-size: 1.3em;
+      }
+      .featureContentCustomSection {
+        &.working {
+          .throbber {
+            display: block;
+            margin: 0.5em auto;
+          }
+        }
+        .throbber {
+          @include throbber-icon;
+          display: none;
+        }
+        .customImageContainer {
+          img {
+            max-width: 100%;
+          }
+        }
+        .customImageError {
+          display: none;
+        }
+      }
+      .featureContentThumbnailSection, .featureContentCustomSection {
+        text-align: center;
+      }
+      .featureContentTextSection {
+        margin-left: 2.5em;
+        padding-right: 1em;
+        .featureContentTextHeadline {
+          font-size: 1.5em;
+          font-weight: bold;
+          margin-bottom: 0.3em;
+          text-align: center;
+          width: 100%;
+        }
+        .featureContentTextSubtitle {
+          font-size: 1em;
+          padding: 0.3em;
+          text-align: center;
+          width: 100%;
+        }
+      }
+      .featureDescription {
+        font-size: 1.2em;
+        padding: 0.3em;
+        width: 100%;
+      }
+      .featureContentThumbnailSection {
+        img {
+          padding: 10px 0;
+        }
+        .thumbnailDisabledMessage {
+          font-size: 1.2em;
+          line-height: 1.3em;
+          padding: 10px 20px;
+        }
+      }
+    }
+  }
+}
+
+// edit story page
+.editStory {
+  .commonForm {
+    @include common-form(9em, 40em);
+    #story_headline {
+      font-size: 1.8em;
+      width: 26.5em;
+    }
+    textarea {
+      height: 6em;
+    }
+    .storyImagePreviewWrapper {
+      margin: {
+        left: 13.2em;
+        top: 1em;
+      };
+      p {
+        font-weight: bold;
+        margin-bottom: 0.2em;
+      }
+      .storyImagePreview {
+        overflow: hidden;
+        overflow-x: auto;
+        width: 100%;
+      }
+    }
+    .colorLine {
+      input {
+        width: 5em;
+      }
+    }
+    .colorLine, .linkLine {
+      p {
+        font-size: 1.2em;
+        padding: 0.4em;
+      }
+    }
+  }
+}
+
+#selectDataset {
+  margin-left: -41em;
+  width: 80em;
+  iframe {
+    border: none;
+    height: 55em;
+    width: 80em;
+  }
+}
+
+#setThumbnail {
+  margin-left: -53em;
+  width: 104em;
+  iframe {
+    border: none;
+    height: 55em;
+    width: 104em;
+  }
+}

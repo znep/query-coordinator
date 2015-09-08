@@ -1,0 +1,209 @@
+@import "dataCards/ellipsis";
+@import "dataCards/common/layout";
+@import "dataCards/common/colors";
+@import "dataCards/common/fonts";
+@import "dataCards/selection-label";
+@import "dataCards/clearable-input";
+@import "dataCards/animations";
+
+body {
+  margin: 0;
+  color: white;
+  font-family: "myriad-pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 200;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  &.prevent-user-select {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+  }
+}
+
+// Begin workaround for OSX + chrome + Magic Mouse hiding scrollbars by default.
+// Not only does this cause our scrollable content to be rather undiscoverable,
+// it messes with our jquery resize plugin.
+::-webkit-scrollbar {
+  width: 0.7rem;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-border-radius: 0.35rem;
+  border-radius: 0;
+  width: 0.35rem;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 0.35rem;
+  border-radius: 0.35rem;
+  width: 0.35rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+::-webkit-scrollbar-corner {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+a {
+  color: #696969;
+  text-decoration: none;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.transparent {
+  opacity: 0;
+}
+
+.hint {
+  color: #aaa;
+}
+
+.italicize {
+  font-style: italic;
+}
+
+.lowercase {
+  text-transform: lowercase;
+}
+
+// Vertical center the logo if it's shorter than 50px
+.page-header-logo {
+  padding: $header-logo-padding;
+  display: table-cell;
+  vertical-align: middle;
+  height: $header-logo-height;
+  img {
+    position: relative;
+    max-height: $header-logo-height;
+    border: none;
+  }
+}
+
+.page-header-links {
+  text-align: right;
+  line-height: 2 * $header-logo-padding-y + $header-logo-height;
+  padding-right: 1rem;
+}
+
+.page-header-link {
+  margin-left: 2rem;
+}
+
+// Why is this not in cards.sass?
+$quickFilterBarHeight: 40px;
+$cardBorder: 2px;
+$pageNameLineHeight: 1.5rem;
+$pageNameMaxLineCount: 2;
+
+.cards-view {
+  .pageName {
+    position: absolute;
+    top: 0;
+    @include multiline-with-ellipsis($pageNameMaxLineCount, $pageNameLineHeight, $view-cards-bg-color);
+  }
+  // The multiline-with-ellipsis mixin requires a fixed height on the content regardless
+  // of whether or not the content is wrapping. So, we take the ellipsified content out
+  // of layout and instead use this pageNameMeasuringStick to reserve the right amount
+  // of space.
+  .pageNameMeasuringStick {
+    visibility: hidden;
+    line-height: $pageNameLineHeight;
+    max-height: $pageNameLineHeight * $pageNameMaxLineCount;
+  }
+  .hideableMetadata {
+    margin: 15px;
+  }
+}
+
+#ruler {
+  position: absolute;
+  left: -10000px;
+  visibility: hidden;
+}
+
+#skip-links {
+  position: absolute;
+  left: 5px;
+  top: -495px;
+  a {
+    @include border-radius(0.2em);
+    outline: none;
+    font-size: 1rem;
+    padding: 0.6em;
+    position: absolute;
+    margin-top: 0.4em;
+    left: 0.4em;
+    width: 18em;
+    &:focus, &:active {
+      top: 500px;
+      z-index: 10000;
+    }
+  }
+}
+
+//
+// For modern browsers
+// 1. The space content is one way to avoid an Opera bug when the
+//    contenteditable attribute is included anywhere else in the document.
+//    Otherwise it causes space to appear at the top and bottom of elements
+//    that are clearfixed.
+// 2. The use of `table` rather than `block` is only necessary if using
+//    `:before` to contain the top-margins of child elements.
+//
+// Source: http://nicolasgallagher.com/micro-clearfix-hack/
+//
+.cf:before,
+.cf:after {
+  content: " ";
+  display: table;
+}
+
+.cf:after {
+  clear: both;
+}
+
+// For IE 6/7 only
+// Include this rule to trigger hasLayout and contain floats.
+.cf {
+  *zoom: 1;
+}
+
+// noscript - JavaScript disabled notifaction
+noscript {
+  .noscript-notification {
+    text-align: center;
+    h4, p {
+      color: black;
+      a {
+        color: $link-font-color;
+      }
+    }
+  }
+}
+
+// CORE-5209: Fixes the vertical scrollbar being un-draggable in
+// Safari because the browser dedicates room for scrollbars (through
+// overflow: auto).
+.resize-triggers > div {
+  overflow: hidden !important;
+}

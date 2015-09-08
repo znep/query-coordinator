@@ -1,0 +1,354 @@
+.logo {
+  text-align: center;
+}
+
+.morsel {
+  color: #333333;
+  font-size: 1.3em;
+  position: relative;
+  background: #F0F0F0;
+  width: 100%;
+  float: left;
+  li {
+    float: left;
+    padding: 0.3em;
+    padding-right: 1.5em;
+    background: url(/stylesheets/images/apifoundry/sep.png) no-repeat right center;
+    ul {
+      position: absolute;
+      float: left;
+      display: none;
+      width: 15em;
+      top: 1.5em;
+      background: #F0F0F0;
+      li {
+        float: left;
+        width: 100%;
+        background: none;
+      }
+    }
+  }
+}
+
+#navDiv {
+  margin-bottom: 2.5em;
+}
+
+#apiAdminBox {
+  font-size: 1.2em;
+}
+
+.adminContent {
+  margin: auto;
+  padding-bottom: 1.5em;
+  padding-top: 1.5em;
+  text-align: center;
+  #metrics {
+    text-align: left;
+  }
+  @include api-management-icons;
+  .apiicon {
+    border: 1px solid $color_chrome_box_border;
+    padding: 0.75em;
+    display: inline-block;
+    margin: 0.5em;
+  }
+}
+
+.error {
+  color: red;
+}
+
+#paneSpinner {
+  position: relative;
+  #paneSpinnerInside {
+    bottom: 0em;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+  }
+}
+
+.center {
+  text-align: center;
+}
+
+#permission {
+  .subtitleBlock {
+    display: none;
+  }
+  .controlPane {
+    min-height: 0em;
+  }
+}
+
+.contentBox .title, #transfer h2, #permission h2 {
+  color: #666;
+  font-size: 1.8em;
+  font-weight: normal;
+  margin-top: 0.5em;
+}
+
+.flowlist {
+  font-size: 1.3em;
+  text-align: center;
+  li {
+    display: inline-block;
+    list-style-type: none;
+    margin: 1em;
+  }
+}
+
+#adminList.flowlist li {
+  width: 18em;
+}
+
+#applications {
+  text-align: center;
+  .apiicon {
+    float: left;
+    display: block;
+  }
+}
+
+#tableWrapper {
+  display: inline-block;
+  font-size: 1.2em;
+  padding: 1em;
+}
+
+.desc {
+  color: grey;
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+.throttleTable {
+  .left {
+    padding-left: 0em;
+    text-align: left;
+  }
+  td {
+    padding: 1em;
+    vertical-align: middle;
+  }
+  th {
+    .bg {
+      background: #f0f0f0;
+      margin: 4px;
+      padding: 4px;
+    }
+  }
+  .tableTitle {
+    font-size: 1.6em;
+    width: 28em;
+  }
+}
+
+.limitEdit {
+  width: 5em;
+}
+
+#editAnonymous, #limitUpdate {
+  float: right;
+}
+
+.naming_edit_content {
+  width: 85em;
+}
+
+.apiFieldPane {
+  label {
+    display: inline-block;
+    margin-top: 0.5em;
+    vertical-align: top;
+    width: 8em;
+  }
+  label.error {
+    margin-left: 8.5em;
+    width: 26em;
+  }
+  input, select, textarea {
+    width: 27em;
+  }
+  .checkbox {
+    width: 3em;
+  }
+  .checkboxLabel {
+    width: 20em;
+  }
+  .formControl {
+    margin-bottom: 1.5em;
+    .additionalHelp {
+      color: gray;
+      font-style: italic;
+    }
+  }
+  .additionalHelp {
+    label {
+      color: grey;
+      font-style: italic;
+      margin-left: 8.5em;
+      margin-top: 0em;
+      text-align: left;
+      width: 30em;
+    }
+  }
+  #description {
+    width: 29em;
+  }
+}
+
+#namesOuter {
+  .managesection {
+    margin: 0em;
+  }
+}
+
+#names {
+  width: 85em;
+  text-align: left;
+  .managesection {
+    margin: 0em;
+  }
+  .flowlist {
+    li {
+      text-align: left;
+      display: block;
+    }
+  }
+}
+
+#transfer {
+  width: 40em;
+  .subtitleBlock {
+    .subtitle {
+      font-size: 1.2em;
+    }
+  }
+}
+
+.controlPane {
+  .subtitleBlock {
+    .subtitle {
+      font-size: 1.8em;
+    }
+  }
+}
+
+.managesection {
+  display: inline-block;
+  text-align: left;
+  vertical-align: top;
+}
+
+.paneContent {
+  padding-top: 2em;
+}
+
+.paneTitle {
+  padding-left: 0.75em;
+}
+
+.commonForm .formHeader {
+  padding-left: 0em;
+}
+
+.sharingForm, .togglePermissionsForm {
+  width: 28em;
+}
+
+.column {
+  float: right;
+  width: 42em;
+}
+
+.previewTitle {
+  color: grey;
+}
+
+.docPreview {
+  text-align: left;
+  p {
+    margin-bottom: 1em;
+  }
+}
+
+.docPreviewInside {
+  padding-left: 1em;
+}
+
+.docPreviewPage {
+  background-color: #F1F1F1;
+  background-image: url("/images/apifoundry/corner-flip.png");
+  background-position: right top;
+  background-repeat: no-repeat;
+  border: 1px solid $color_chrome_box_border;
+  @include box-shadow(3px, 3px, 4px, #cfcfcf);
+  margin-top: 0.5em;
+  padding: 1em;
+}
+
+.removeShareLink {
+  float: left;
+  padding-left: 0.5em;
+  @include sprite-repeater-icons;
+}
+
+.shareDatasetButton {
+  @include sprite-repeater-icons;
+  margin-bottom: 1em;
+  .icon {
+    float: left;
+    margin-right: 0.4em;
+  }
+}
+
+#uniform-type {
+  left: 14em;
+  top: -1em;
+}
+
+.profileImage {
+  background-image: url(/images/small-profile.png);
+  display: block;
+  float: left;
+  height: 24px;
+  margin: 0 0.5em;
+  position: relative;
+  top: -0.5em;
+  width: 24px;
+}
+
+.loadingShares {
+  font-size: 1.2em;
+  margin: 1em 0 1em 1em;
+}
+
+.loadingSharesIndicator {
+  @include throbber-icon;
+  float: left;
+  margin-right: 0.5em;
+}
+
+.noShares {
+  display: none;
+  font-size: 1.2em;
+  margin: 1em;
+}
+
+.shareNotifyArea {
+  display: none;
+  margin-top: 1em;
+  .shareNoticeSent {
+    display: none;
+    margin: 0 0 0 0.5em;
+    padding: 0.5em;
+  }
+}
+
+#tagline {
+  border-top: 1px solid $color_chrome_box_border;
+  padding-top: 1.5em;
+  text-align: center;
+}

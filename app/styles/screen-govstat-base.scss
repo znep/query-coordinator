@@ -1,0 +1,1000 @@
+// BASE STYLES
+@mixin header_color($page_name, $name, $color) {
+  .action_govstat_manage#{$page_name} {
+    #siteHeader {
+      .manageActions li.#{$name} {
+        background-color: #000;
+        border-color: $color;
+        a {
+          color: #fff;
+        }
+      }
+    }
+    .subnavigation {
+      border-color: $color;
+      .breadcrumb .main a {
+        color: $color;
+      }
+    }
+    .gridFlowLayout.nonDS .singleItem {
+      background-color: $color;
+    }
+  }
+  #siteHeader .manageActions li.#{$name}:hover {
+    background-color: #222;
+    border-color: $color;
+  }
+}
+
+@include header_color("", "home", $govstat_color_home);
+
+@include header_color("_data", "data", $govstat_color_data);
+
+@include header_color("_reports", "reports", $govstat_color_reports);
+
+@include header_color("_goals", "goals", $govstat_color_goals);
+
+@include header_color("_config", "config", $govstat_color_config);
+
+@mixin progress-colors($prop) {
+  &.progress-good {
+    #{$prop}: $govstat_color_good;
+  }
+  &.progress-progressing {
+    #{$prop}: $govstat_color_flat;
+  }
+  &.progress-bad {
+    #{$prop}: $govstat_color_poor;
+  }
+  &.progress-within_tolerance {
+    #{$prop}: $govstat_color_within_tolerance;
+  }
+  &.progress-none {
+    #{$prop}: $govstat_color_none;
+  }
+  &.progress-no_judgement {
+    #{$prop}: $govstat_color_none;
+  }
+  &.progress-needs_more_data {
+    #{$prop}: $govstat_color_needs_more_data;
+  }
+}
+
+body {
+  color: #333;
+  font-family: $govstat_font_family;
+}
+
+h1, h2, h3, h4 {
+  text-rendering: optimizeLegibility;
+}
+
+input.button, a.button, input.secondary-button, a.secondary-button {
+  background: $govstat_color_action;
+  border: none;
+  color: #ffffff;
+  font-family: $govstat_font_family;
+  font-weight: normal;
+  text-shadow: none;
+  @include transition(0.2s, background);
+  &:hover {
+    background: lighten($govstat_color_action, 6%);
+    &.disabled {
+      background: #fcfcfc;
+    }
+  }
+  &.default {
+    background: $govstat_color_home;
+    border-color: $govstat_color_action;
+  }
+  .noLinearGradient & {
+    background-image: none;
+  }
+}
+
+input.secondary-button, a.secondary-button {
+  color: #666;
+  background-color: #eee;
+  &:hover {
+    color: #fff;
+  }
+}
+
+a.expander {
+  border: none;
+  color: #999;
+  cursor: pointer;
+  display: block;
+  font-family: $govstat_font_family;
+  margin-top: 0.5em;
+  @include transition(0.2s, color);
+  .pulldownArrow {
+    @include rounded-ends;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    @include prefixer(box-shadow, 0 0 0.3em rgba(0, 0, 0, 0.08));
+    display: inline-block;
+    height: 1.3em;
+    line-height: 1.6;
+    margin-right: 0.6em;
+    position: relative;
+    @include transition(0.2s, border-color box-shadow);
+    width: 1.3em;
+    &:after {
+      bottom: 0;
+      content: "";
+      display: inline-block;
+      height: 100%;
+      left: 0;
+      margin: auto;
+      position: absolute;
+      right: 0;
+      top: 0.5em;
+      width: 100%;
+    }
+  }
+  span.text {
+    position: relative;
+    top: -0.25em;
+  }
+  &.down {
+    .pulldownArrow:after {
+      @include triangle(0.4em, #999, top);
+      @include transition(0.2s, border-top-color);
+    }
+    &:hover .pulldownArrow:after {
+      border-top-color: #666;
+    }
+  }
+  &.up {
+    .pulldownArrow:after {
+      @include triangle(0.4em, #999, bottom);
+      @include transition(0.2s, border-bottom-color);
+      top: -0.4em;
+    }
+    &:hover .pulldownArrow:after {
+      border-bottom-color: #666;
+    }
+  }
+  &:hover {
+    color: #444;
+    .pulldownArrow {
+      @include prefixer(box-shadow, 0 0 0.3em rgba(0, 0, 0, 0.3));
+    }
+  }
+}
+
+[class^="ss-"], [class*=" ss-"] {
+  &:not(:empty):before {
+    margin-right: 0.7em;
+    vertical-align: middle;
+  }
+}
+
+[class^="ss-"], [class*=" ss-"] {
+  &:not(:empty):after {
+    margin-left: 0.7em;
+    vertical-align: middle;
+  }
+}
+
+.button:before, .button:after {
+  display: inline-block;
+  margin-bottom: -0.2em;
+}
+
+.goalProgress {
+  .content-wrapper > div {
+    display: none;
+  }
+  .progress-good .good,
+  .progress-progressing .flat,
+  .progress-bad .poor,
+  .progress-none .none {
+    display: inline-block;
+  }
+}
+
+.gridFlowLayout {
+  .categoryItem {
+    margin-bottom: 1em;
+  }
+  .categoryTitle {
+    border-bottom: 1px solid #ccc;
+    font-size: 2em;
+    font-weight: normal;
+    margin-bottom: 1.2em;
+    h2 {
+      font-weight: normal;
+      padding: 0 {
+        bottom: 0.05em;
+      };
+    }
+  }
+  .singleItem {
+    height: 18.4em;
+    margin-bottom: 2em;
+    margin-right: 2em;
+    padding: 0.8em;
+    @include transition(0.7s, background-color);
+    &:hover {
+      .singleInner {
+        background-color: #ddd;
+        .fullIcon {
+          color: #888;
+        }
+      }
+    }
+    .singleInner {
+      background-color: #f8f8f8;
+      @include prefixer(border-radius, 0.2em);
+      @include prefixer(box-shadow, "0 0 5px rgba(0, 0, 0, 0.28), 0 0 51px #fff inset");
+      @include transition(0.2s, background-color);
+      height: 16.2em;
+      .title {
+        padding: 1.5em 1.5em 0;
+        height: 14.7em;
+        overflow: hidden;
+        h2 {
+          font-size: 2em;
+          font-weight: normal;
+          padding: 0;
+          @include white-space-pre-wrap;
+        }
+      }
+      .fullIcon {
+        color: #aaa;
+        display: block;
+        font-size: 7em;
+        line-height: 2.15em;
+        text-align: center;
+        @include transition(0.2s, color);
+      }
+      .goalSubject {
+        color: #555555;
+        font-style: italic;
+      }
+      .primaryAction {
+        bottom: 0;
+        left: 0;
+        padding: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 1;
+        a {
+          color: #000000;
+          display: block;
+          height: 15.3em;
+          .actionDetails {
+            bottom: -1.9em;
+            color: #fff;
+            position: absolute;
+            right: 0.25em;
+          }
+        }
+      }
+      .goalProgress, .secondaryAction {
+        bottom: -2em;
+        color: #fff;
+        left: 0.3em;
+        position: absolute;
+        .value {
+          color: #fff;
+          font-size: 1.5em;
+        }
+        > div > div:after {
+          margin-left: 0.7em;
+          position: relative;
+          top: 1px;
+        }
+      }
+      .secondaryAction {
+        bottom: 0.5em;
+        font-size: 1em;
+        left: 1em;
+        z-index: 2;
+        white-space: nowrap;
+        a {
+          margin: 0 0.1em;
+          padding: 0.4em 0.6em;
+          .left {
+            // IE8 thing
+            display: none;
+          }
+          span {
+            display: inline-block;
+            overflow: hidden;
+            @include transition(0.5s, width);
+            vertical-align: bottom;
+            width: 1em;
+          }
+          &:hover {
+            padding: 0.4em 0.8em;
+            span {
+              width: 5.7em;
+            }
+          }
+        }
+      }
+      .secondaryMetadata {
+        bottom: 0.5em;
+        color: #888888;
+        font-size: 1.4em;
+        left: 1em;
+        letter-spacing: -1px;
+        position: absolute;
+        right: 1em;
+        .mdLine {
+          @include clip-text;
+          display: block;
+          margin-top: 0.2em;
+        }
+      }
+      .secondaryAction ~ .secondaryMetadata {
+        bottom: 3em;
+      }
+      .tileIcon {
+        bottom: 0;
+        left: 0;
+        @include opacity(0.2);
+        position: absolute;
+        right: 0;
+        top: 3.5em;
+        div:before {
+          display: block;
+          font-size: 10em;
+          text-align: center;
+          vertical-align: middle;
+        }
+      }
+    }
+  }
+  .categoryItem div.singleItem.addNewItem {
+    background-color: $govstat_color_action;
+    border-color: $govstat_color_action;
+    .primaryAction .actionDetails {
+      display: block;
+      color: #ffffff;
+      font-size: 2em;
+      text-align: center;
+      &:before {
+        display: block;
+        font-size: 2.5em;
+        margin: {
+          bottom: 0.4em;
+          right: 0;
+          top: 1em;
+        };
+      }
+    }
+  }
+}
+
+.gridFlowLayoutNew {
+  .categoryItem {
+    margin-bottom: 1em;
+  }
+  .categoryTitleWrapper {
+    font-size: 1em;
+    margin: 0;
+    padding: 0;
+  }
+  .categoryTitle {
+    border-bottom: 1px solid #ccc;
+    font-size: 2em;
+    font-weight: normal;
+    margin-bottom: 1.2em;
+    h2 {
+      font-weight: normal;
+      padding: 0 {
+        bottom: 0.05em;
+      };
+    }
+    .addItem {
+      background-color: $govstat_color_action;
+      @include border-radius(0.2em);
+      color: #fff;
+      display: inline-block;
+      font-size: 0.44em;
+      line-height: 1.2em;
+      margin-left: 4em;
+      margin-top: 0.2em;
+      padding: 0.8em 1em 0.7em;
+      vertical-align: top;
+      &:before {
+        display: inline-block;
+        font-size: 1.4em;
+        @include prefixer(transform, translateY(1px));
+        @include transition(0.5s, transform);
+      }
+      &:hover {
+        background-color: darken($govstat_color_action, 10%);
+        &:before {
+          @include prefixer(transform, translateY(-3px));
+        }
+      }
+    }
+  }
+  .singleItemWrapper {
+    float: left;
+    font-size: 1em;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    overflow: hidden;
+    padding: 0;
+    > .component-Text {
+      font-size: 1em;
+    }
+  }
+  .goalList, .viewList {
+    overflow: hidden;
+  }
+  .singleItem {
+    position: relative;
+    &.addNewItem {
+      background-color: $govstat_color_action;
+      .singleInner {
+        background-color: $govstat_color_action;
+        color: #fff;
+        height: 19.8em;
+        text-align: center;
+        &:hover:before {
+          @include prefixer(transform, translateY(-6px));
+        }
+        &:before {
+          display: block;
+          font-size: 5em;
+          margin: 0;
+          padding-bottom: 0.2em;
+          padding-top: 1.2em;
+          @include prefixer(transform, translateY(0));
+          @include transition(0.5s, transform);
+        }
+        .addNewItemCaption {
+          font-size: 2em;
+          letter-spacing: -1px;
+        }
+      }
+    }
+    a {
+      display: block;
+      padding: 0.7em;
+      &:before {
+        background-color: #000;
+        content: " ";
+        display: block;
+        height: 100%;
+        left: 0;
+        @include opacity(0);
+        position: absolute;
+        top: 0;
+        @include transition(0.1s, opacity);
+        width: 100%;
+        z-index: 0;
+      }
+      &:hover:before {
+        @include opacity(0.3);
+      }
+    }
+    .singleInner {
+      background-color: #fff;
+      @include prefixer(border-radius, 0.18em);
+      height: 17em;
+      padding: 1em;
+      position: relative;
+      z-index: 1;
+      width: 17em;
+      .titleIcon {
+        float: left;
+        height: 20px;
+        margin: {
+          right: 0.2em;
+          top: 0.1em;
+        };
+        width: 20px;
+      }
+      .itemTitle {
+        color: #333;
+        font-size: 2.1em;
+        font-weight: normal;
+        letter-spacing: -1px;
+        line-height: 1.1em;
+        height: 2.2em;
+        overflow: hidden;
+      }
+    }
+    .singleCaption {
+      padding: 1em 0 0.4em;
+      position: relative;
+      z-index: 1;
+      .captionAction {
+        color: #fff;
+        float: left;
+        font-size: 1.3em;
+        margin: (-0.3em) 0.1em 0 0;
+        padding: 0.3em 0.4em;
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.3);
+          text-shadow: 0 0 0.2em rgba(255, 255, 255, 0.6);
+        }
+      }
+      .captionText {
+        color: #fff;
+        font-size: 1.4em;
+        margin-right: 1.7em;
+        text-align: right;
+      }
+      .captionIcon {
+        color: #fff;
+        font-size: 1.7em;
+        margin-top: -0.2em;
+        position: absolute;
+        right: 0.1em;
+        top: 50%;
+        &:before {
+          vertical-align: baseline;
+        }
+      }
+    }
+  }
+  .goalItem {
+    &.public-false, &.private {
+      a:before {
+        background-color: #bbb;
+        @include opacity(0.4);
+      }
+      a:hover:before {
+        background-color: #888;
+        @include opacity(0.7);
+      }
+      .privateFlag {
+        display: block;
+      }
+    }
+    .privateFlag {
+      color: #fff;
+      display: none;
+      float: left;
+      font-size: 1.1em;
+      padding-top: 0.2em;
+    }
+    .singleInner {
+      .goalValue {
+        @include progress-colors(color);
+        font-size: 5.5em;
+        letter-spacing: -3px;
+      }
+      .goalUnit {
+        display: none;
+      }
+      .goalValue.hasValue ~ .goalUnit {
+        display: block;
+      }
+      .goalUnit {
+        color: #888;
+        font-size: 1.6em;
+        height: 1em;
+        letter-spacing: -1px;
+        margin-top: -0.5em;
+      }
+      .goalIcon {
+        bottom: 0;
+        display: none;
+        left: 0.2em;
+        position: absolute;
+        &.hasIcon {
+          color: #dadada;
+          display: block;
+          font-size: 4em;
+          padding-top: 0.4em;
+          ~ .goalProgress {
+            left: 2.8em;
+            z-index: 2;
+          }
+        }
+      }
+      .loading .smallLoader {
+        margin-top: 3em;
+        @include opacity(0.6);
+      }
+      .goalProgress {
+        @include clearfix;
+        bottom: 1em;
+        left: 1em;
+        position: absolute;
+        width: 100%;
+        .progressIcon {
+          @include progress-colors(background-color);
+          @include rounded-ends;
+          color: #fff;
+          height: 1.6667em;
+          float: left;
+          font-size: 1.2em;
+          line-height: 1.5em;
+          text-indent: 0.3em;
+          width: 1.6667em;
+        }
+        .progressText {
+          @include progress-colors(color);
+          bottom: 0.3em;
+          font-size: 1.4em;
+          letter-spacing: -1px;
+          padding-left: 1.8em;
+          position: absolute;
+          text-transform: lowercase;
+          width: 8em;
+        }
+      }
+      .goalHealth {
+        bottom: 1em;
+        position: absolute;
+        right: 1em;
+        z-index: 3;
+        .ss-flag {
+          @include rounded-ends;
+          background-color: $govstat_color_poor;
+          color: #fff;
+          font-size: 1.5em;
+          height: 1.8em;
+          line-height: 1.6em;
+          text-align: center;
+          @include transition(0.2s, background-color);
+          width: 1.8em;
+        }
+        &:hover .ss-flag {
+          background-color: lighten($govstat_color_poor, 10%);
+        }
+      }
+    }
+    .goalEnded {
+      @include progress-colors(background-color);
+      background-color: #888;
+      bottom: 1.3em;
+      left: -3em;
+      padding: 1em;
+      position: absolute;
+      @include prefixer(transform, rotate(-15deg));
+      width: 23em;
+      z-index: 1;
+      .ie8 & {
+        bottom: 0;
+      }
+      div {
+        text-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+      }
+      .endedIcon {
+        @include rounded-ends;
+        border: 3px solid #fff;
+        @include prefixer(box-shadow, 0 0 2px rgba(0, 0, 0, 0.3));
+        color: #fff;
+        float: left;
+        font-size: 2em;
+        height: 1.2em;
+        margin-left: 1.9em;
+        margin-right: 0.3em;
+        padding: 0.1em;
+        text-align: center;
+        width: 1.2em;
+      }
+      .endedTitle {
+        color: #fff;
+        font-size: 1.8em;
+        font-weight: lighter;
+        letter-spacing: -1px;
+      }
+      .endedDate {
+        color: #fff;
+        font-size: 1.4em;
+        letter-spacing: -1px;
+        @include opacity(0.6);
+      }
+    }
+  }
+  .viewItem {
+    background-color: #bbb;
+    &.type-table {
+      background-color: $displaytype_table_color;
+    }
+    &.type-chart {
+      background-color: $displaytype_chart_color;
+    }
+    &.type-map {
+      background-color: $displaytype_map_color;
+    }
+    &.type-blob {
+      background-color: $displaytype_blob_color;
+    }
+    .itemTitle.viewName {
+      height: 6.6em;
+      margin-bottom: 0.3em;
+    }
+    .viewIcon {
+      color: #aaa;
+      float: left;
+      font-size: 2.2em;
+    }
+    .viewMeta {
+      color: #888;
+      font-size: 1.2em;
+      letter-spacing: -1px;
+      padding-left: 2.4em;
+      padding-top: 0.5em;
+    }
+  }
+  .component-Pager {
+    margin-top: 1em;
+    text-align: center;
+    .navigatePaging {
+      font-size: 1.2em;
+    }
+    .navigateLink {
+      font-size: 1.4em;
+      &.button {
+        padding: 0.3em 0.4em 0.1em;
+        .icon {
+          display: none;
+        }
+      }
+      &.button:before {
+        @include pika-icon;
+      }
+      &.firstLink:before {
+        content: "⏪";
+      }
+      &.prevLink:before {
+        content: "◃";
+      }
+      &.nextLink:before {
+        content: "▹";
+      }
+      &.lastLink:before {
+        content: "⏩";
+      }
+    }
+    .disabled {
+      display: none;
+    }
+  }
+}
+
+.listLayout {
+  .filterSection {
+    padding: 3em 0;
+    .component-Title {
+      float: left;
+      margin-right: 2em;
+      h2 {
+        font-size: 2.3em;
+        font-weight: normal;
+      }
+    }
+    .component-Pager {
+      .sidebarTabs {
+        li {
+          margin-bottom: 0.6em;
+          .childLink {
+            @include list-button;
+            &.active {
+              background: #222 none;
+              border-color: #222;
+              @include prefixer(box-shadow, none);
+              color: #fff;
+              text-shadow: none;
+            }
+          }
+        }
+      }
+    }
+  }
+  .itemList {
+    background-color: $list_border_color;
+    padding: {
+      left: 1em;
+      top: 1px;
+    };
+    .socrata-component {
+      min-height: 0;
+    }
+    .singleItem {
+      background-color: #fff;
+      border-left: 10px solid #777;
+      margin: {
+        bottom: 1px;
+        left: -1em;
+      };
+      padding: 1em 3.5em;
+      .itemTitle h2 {
+        font-size: 3em;
+        font-weight: normal;
+        line-height: 1em;
+        padding-bottom: 0.1em;
+      }
+      .itemSubtitle {
+        font-size: 1.1em;
+      }
+    }
+    &.goalList {
+      .singleItem {
+        @include progress-colors("border-color");
+        position: relative;
+        &.public-false {
+          .mainSection {
+            background-color: #eee;
+          }
+        }
+        .mainSection {
+          background-color: #fff;
+          cursor: pointer;
+          margin: (-1em) -3.5em -1em;
+          padding: 1em 3.5em 2.5em;
+          @include transition(0.1s, background-color);
+          &:hover {
+            background-color: #f3f3f3;
+          }
+          .goalValue {
+            @include progress-colors("color");
+            letter-spacing: -1px;
+            position: absolute;
+            right: 3.5em;
+            text-align: right;
+            top: 1.7em;
+            .component-Text {
+              padding: 0;
+            }
+            .value {
+              font-size: 3em;
+            }
+            .unit {
+              color: #666;
+              display: none;
+              font-size: 1.5em;
+            }
+            .hasValue ~ div .unit {
+              display: block;
+            }
+          }
+        }
+        .expandedSection {
+          background-color: #333;
+          border-top: 1px solid $list_border_color;
+          color: #fff;
+          display: none;
+          margin: 1em -3.5em -1em -4.5em;
+          padding: 3em 4em;
+          .close {
+            right: 0.3em;
+            position: absolute;
+            top: 0.3em;
+            a {
+              color: #fff;
+            }
+          }
+          .goalDetails {
+            border-right: 1px solid #666;
+            padding-right: 2em;
+          }
+          .goalDescription, .goalFallback {
+            display: none;
+          }
+          .goalVisualization.hide ~ .goalDescription {
+            display: block;
+          }
+          .goalVisualization.hide ~ .goalDescription.hide ~ .goalFallback {
+            display: block;
+          }
+          .goalVisualization {
+            .chartTitle {
+              h2 {
+                font-size: 2em;
+                font-weight: normal;
+              }
+            }
+            svg {
+              > rect {
+                fill: #333333;
+              }
+              .highcharts-grid path {
+                stroke: #666666;
+              }
+              .highcharts-axis text {
+                color: #ccc !important;
+                fill: #ccc !important;
+              }
+            }
+          }
+          .goalDescription {
+            p {
+              line-height: 1.3em;
+            }
+          }
+          .goalFallback {
+            min-height: 12em;
+            .content-wrapper {
+              color: #bbb;
+              font-size: 2em;
+              padding: 2em 0;
+              strong {
+                color: #fff;
+                font-weight: normal;
+              }
+            }
+          }
+          .goalLink {
+            padding: 0;
+            padding-top: 2em;
+            a {
+              @include list-button;
+              font-size: 1.25em;
+              margin-left: 0;
+              padding-bottom: 0.5em;
+              &:after {
+                position: relative;
+                top: 0.1em;
+              }
+            }
+          }
+          .metricContainer {
+            padding-left: 2em;
+            .metric {
+              padding: 3em 0;
+              position: relative;
+              text-align: right;
+              &.baselineValue {
+                border-bottom: 1px solid #666;
+              }
+              .metricType {
+                color: #bbb;
+                font-size: 1.2em;
+                position: absolute;
+              }
+              .metricValue {
+                font-size: 2.5em;
+              }
+              .metricUnit {
+                font-size: 1.4em;
+                font-weight: normal;
+              }
+              .metricTime {
+                color: #bbb;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.headerLine {
+  margin-bottom: 2em;
+  .backLink {
+    margin-left: 0;
+    span {
+      vertical-align: sub;
+    }
+  }
+}
+
+// Try to style just Text on Reports, not other spots on GovStat that use more
+// complex DataSlate configs
+.action_custom_content_page {
+  .component-Title h2 {
+    font-size: 2.2em;
+  }
+  .component-Text {
+    font-size: 1.5em;
+    line-height: 1.5em;
+  }
+  .component-FormattedText {
+    font-size: 1.5em;
+    line-height: 1.5em;
+  }
+  &.configuring .cfEditingWrapper {
+    .component-FormattedText, .component-Text {
+      .actionIcon {
+        font-size: 0.7333em;
+      }
+    }
+  }
+}

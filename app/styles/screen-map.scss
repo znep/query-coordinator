@@ -1,0 +1,474 @@
+.mapTypes {
+  position: absolute;
+  right: 1.5em;
+  top: 1.5em;
+  z-index: 1000;
+  a {
+    display: inline-block;
+    background-color: #ffffff;
+    border: 1px solid #333333;
+    padding: 0.5em;
+    cursor: pointer;
+  }
+  a.current {
+    font-weight: bold;
+    cursor: default;
+    color: black;
+  }
+}
+
+.mapLayers {
+  background-color: #ffffff;
+  border: 1px solid #333333;
+  padding: 0.5em;
+  position: absolute;
+  right: 1.5em;
+  top: 4em;
+  z-index: 1000;
+  a {
+    color: #333333;
+    display: inline-block;
+    font-size: 1.1em;
+    text-align: right;
+    width: 100%;
+    &.button {
+      width: auto;
+      @include sprite-repeater-icons;
+      .icon {
+        float: left;
+        margin-right: 0.4em;
+      }
+    }
+  }
+  .sliderControl {
+    display: inline-block;
+    margin-right: 0.7em;
+    vertical-align: bottom;
+    width: 8.6em;
+    margin-left: 4px;
+  }
+  .ui-slider-handle {
+    width: 1.2em;
+  }
+  .sliderInput {
+    background-color: transparent;
+    border: none;
+    @include box-shadow-none;
+    text-align: right;
+    width: 1.8em;
+    position: relative;
+    top: 3px;
+  }
+  .contentBlock {
+    width: 16.8em;
+    .prompt {
+      color: #ccc;
+    }
+    .layerOrder {
+      text-align: center;
+    }
+  }
+}
+
+.mapLayers li {
+  margin: 0.5em 0;
+  padding: 0.3em {
+    bottom: 8px;
+  };
+  min-width: 11.1em;
+  white-space: nowrap;
+  &:hover {
+    background-color: #ddeaf0;
+  }
+}
+
+.mapLayers ul.base li {
+  label {
+    font-size: 1.1em;
+    cursor: move;
+    white-space: normal;
+  }
+  &:hover {
+    cursor: move;
+  }
+}
+
+.mapOverview, .mapLayers {
+  > div {
+    margin: 0.5em 0;
+    padding: 0.3em;
+  }
+  div.uniform.selector {
+    width: 13em;
+    select {
+      width: 100%;
+    }
+  }
+}
+
+.layerLegend {
+  margin: 10px;
+  padding-bottom: 10px;
+  padding-right: 1.2em;
+  white-space: normal;
+  > div {
+    float: right;
+  }
+  .label {
+    float: left;
+  }
+  .color_swatch {
+    cursor: default;
+    height: 8px;
+  }
+}
+
+$swatch_size: 16px;
+$num_segments: 6;
+
+.mapLegend {
+  @include border-radius(0.1em);
+  background-color: #ffffff;
+  border: 1px solid #444444;
+  padding: {
+    top: 8px;
+    bottom: 8px;
+    left: 12px;
+    right: 12px;
+  };
+  position: absolute;
+  left: 3.7em;
+  bottom: 4em;
+  z-index: 1000;
+}
+
+.mapOverview {
+  @include border-radius(0.1em);
+  @include opacity(0.85);
+  background-color: #ffffff;
+  border: 1px solid #444444;
+  padding: {
+    top: 8px;
+    bottom: 8px;
+    left: 12px;
+    right: 12px;
+  };
+  position: absolute;
+  z-index: 1000;
+  overflow-y: auto;
+  overflow-x: hidden;
+  &.topRight {
+    right: 1.5em;
+    top: 4em;
+  }
+  &.bottomLeft {
+    left: 3.7em;
+    bottom: 4em;
+  }
+  .close_button {
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    top: 13px;
+    right: 20px;
+    cursor: pointer;
+  }
+  .minimized {
+    cursor: pointer;
+    span {
+      font-size: 0.8em;
+    }
+  }
+  .uniform.checker, .uniform.radio {
+    margin-right: 0.2em;
+    span {
+      margin-top: 3px;
+    }
+  }
+  label {
+    font-size: 1.3em;
+  }
+  li, h3.base {
+    margin-top: 9px;
+  }
+}
+
+.legendRow {
+  margin-top: 9px;
+  .mapOverview & {
+    margin-left: 2.1em;
+  }
+  .customEntries & {
+    margin-left: 1.8em;
+  }
+  &:first-child {
+    margin-top: 0;
+  }
+  .description {
+    white-space: nowrap;
+    line-height: $swatch_size;
+    margin-left: $swatch_size + 5;
+    font-size: 1.2em;
+  }
+  .color_swatch {
+    cursor: default;
+    &:last-child {
+      border-right: none;
+    }
+  }
+  .rangeValues {
+    width: ($swatch_size + 1) * $num_segments - 1;
+  }
+  &.icon .symbol {
+    float: left;
+    img {
+      max-width: $swatch_size;
+      max-height: $swatch_size;
+    }
+  }
+  &.colorRange .description {
+    margin-left: ($swatch_size + 1) * $num_segments + 5;
+  }
+}
+
+// For legacy during feature flag
+.mapLegend .color_swatch {
+  cursor: default;
+}
+
+$geolocator_margin_top: 6px;
+
+.geolocator_button {
+  width: 30px;
+  height: 30px;
+  margin-top: $geolocator_margin_top;
+  cursor: pointer;
+}
+
+.olMap .geolocator {
+  position: absolute;
+  top: $geolocator_margin_top;
+}
+
+.geolocator {
+  width: 265px;
+  padding: {
+    top: 12px;
+    left: 10px;
+    bottom: 7px;
+    right: 7px;
+  };
+  border: solid 1px #aaa;
+  @include border-radius(0.4em);
+  @include box-shadow(2px, 2px, 1px, rgba(0, 0, 0, 0.4));
+  background-color: white;
+  input {
+    float: left;
+  }
+  div.uniform.selector {
+    float: left;
+    width: 62px;
+    margin: {
+      top: -2px;
+      left: 4px;
+    };
+  }
+  a {
+    float: left;
+    display: inline-block;
+    cursor: pointer;
+    &.button {
+      text-align: center;
+      margin-top: 0;
+      padding: {
+        top: 3px;
+        bottom: 3px;
+      };
+    }
+    &.my_location {
+      height: 16px;
+      width: 16px;
+      margin-top: 3px;
+    }
+  }
+  div.error {
+    margin-top: 2px;
+    color: red;
+  }
+}
+
+.mapTitle {
+  font-size: 1.4em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+  margin-right: 15px;
+}
+
+.infowindow div .window .top .right .user {
+  .border {
+    border: none;
+  }
+  .layout {
+    margin-top: 10px;
+  }
+  .titlebar .hide_infowindow {
+    margin-top: 0;
+  }
+}
+
+.olMap .olPopup > div {
+  // content
+  .flyoutRenderer {
+    .richColumn .richLine {
+      border-bottom: none !important;
+      > div {
+        font-size: 1.7em;
+        margin-bottom: 0.5em;
+        padding-bottom: none;
+        .widgetWrapper & {
+          font-size: 1.2em;
+        }
+      }
+      > span {
+        font-size: 1.2em;
+        .widgetWrapper & {
+          font-size: 1em;
+        }
+      }
+      > span + div {
+        font-size: 1.2em;
+        margin-bottom: inherit;
+        .widgetWrapper & {
+          font-size: 1em;
+        }
+      }
+    }
+    a.viewRow {
+      margin-top: 1em;
+      text-indent: 23px;
+    }
+  }
+  a.external_link {
+    text-indent: 23px;
+  }
+}
+
+.olFramedCloudPopupContent {
+  .infoPaging {
+    text-align: center;
+    margin: {
+      // This makes the scrollbar go away in FF...
+      bottom: 0.2em;
+      top: 0.75em;
+    };
+    a {
+      font-size: 1.1em;
+      &.previous {
+        margin-right: 7em;
+      }
+      &.disabled {
+        color: #999999;
+        cursor: auto;
+      }
+    }
+  }
+  .layerPaging {
+    text-align: left;
+    margin: {
+      top: 0.75em;
+      bottom: 5px;
+    };
+    a {
+      font-size: 1.1em;
+      &.disabled {
+        color: #999999;
+        cursor: auto;
+      }
+    }
+  }
+}
+
+.firstChild {
+  .VE_Pushpin_Popup_Title {
+    font-size: 1.3em;
+  }
+  .VE_Pushpin_Popup_Body {
+    font-size: 1em;
+  }
+}
+
+.infowindow .window .top .right .user .titlebar .hide_infowindow {
+  height: 8px;
+  margin-top: 5px;
+  overflow: hidden;
+  position: absolute;
+  width: 12px;
+  .sprite {
+    margin-left: -752px;
+    margin-top: -900px;
+    cursor: pointer;
+    display: block;
+    &:hover {
+      margin-top: -908px;
+    }
+  }
+}
+
+.pageRenderType {
+  .mapLegend, .mapLayers, .mapOverview {
+    display: none;
+  }
+}
+
+.google_cluster_labels {
+  color: white;
+  background-color: transparent;
+  font-family: "Arial", sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  width: 40px;
+  white-space: nowrap;
+  &.small {
+    color: black;
+  }
+}
+
+.bing_cluster_labels {
+  color: black;
+  background-color: white;
+  font-family: "Lucida Grande", "Arial", sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  width: 40px;
+  border: solid 1px black;
+  position: absolute;
+  white-space: nowrap;
+}
+
+.infowindow, .mapInfoContainer, .olFramedCloudPopupContent {
+  .external_link {
+    display: block;
+    text-align: center;
+    margin: {
+      top: 5px;
+    };
+  }
+  .foreverNode {
+    width: 200px;
+    div {
+      border-bottom: 1px solid #666666;
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 0.75em;
+      padding-bottom: 0.2em;
+    }
+  }
+}
+
+@media print {
+  .mapLayers, .mapOverview, .olMapViewport .olControlNoSelect {
+    display: none;
+  }
+}

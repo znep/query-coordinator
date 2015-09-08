@@ -1,0 +1,158 @@
+// This aspect ratio *must* match the one used by the snapper service
+$thumbnail_preview_width: 790;
+$thumbnail_preview_height: 421;
+
+// And this should match SnapshotImage::THUMBNAIL_SIZE
+$cropped_width: 150;
+$cropped_height: 80;
+
+#datasetThumbnail {
+  position: relative;
+  h2 {
+    margin-top: 0;
+  }
+  .returnLink {
+    font-size: 1.2em;
+    font-weight: bold;
+    position: absolute;
+    right: 1em;
+    top: 1em;
+  }
+  .thumbnailEditContainer {
+    .refreshThumbnail {
+      margin-bottom: 1em;
+      .throbber {
+        @include throbber-icon;
+        display: none;
+      }
+      &.working {
+        .throbber {
+          display: inline-block;
+          position: relative;
+          top: 0.2em;
+        }
+      }
+    }
+    #fullThumbnail {
+      display: none;
+      width: 100%;
+      .thumbnailPresent {
+        @include transition-duration(0.5s);
+        @include transition-property(opacity);
+        clear: both;
+      }
+      &.noThumbnail {
+        .thumbnailPresent {
+          display: none;
+        }
+        .noThumbnail {
+          display: block;
+        }
+      }
+      .noThumbnail {
+        @include transition-duration(0.5s);
+        @include transition-property(opacity);
+        clear: both;
+        display: none;
+        .flash {
+          text-align: center;
+        }
+      }
+      float: left;
+      .fullThumbContainer {
+        position: relative;
+        height: #{$thumbnail_preview_height}px;
+        width: #{$thumbnail_preview_width}px;
+        @include image-area-select;
+        .image {
+          img {
+            height: #{$thumbnail_preview_height}px;
+            width: #{$thumbnail_preview_width}px;
+          }
+        }
+      }
+      .mainError {
+        display: none;
+        text-align: center;
+      }
+      &.snapError {
+        .mainError {
+          display: block;
+        }
+      }
+      &.unsaved {
+        #previewContainer #previewThumbnailWrapper {
+          background: #ffd;
+        }
+        .unsavedWarning {
+          display: block;
+          text-align: center;
+        }
+      }
+    }
+  }
+  #previewContainer {
+    float: right;
+    .unsavedWarning {
+      @include transition-duration(0.5s);
+      @include transition-property(opacity);
+      display: none;
+    }
+    #previewThumbnailWrapper {
+      @include transition-duration(2s);
+      @include transition-property(background-color);
+      border: 1px solid $color_chrome_box_border;
+      @include border-radius(0.2em);
+      position: relative;
+      width: #{$cropped_width + 20}px;
+      #previewThumbnail {
+        overflow: hidden;
+        height: #{$cropped_height}px;
+        margin: 10px;
+        width: #{$cropped_width}px;
+        > img {
+          height: #{$cropped_height}px;
+          width: #{$cropped_width}px;
+        }
+      }
+    }
+    .datasetDescription {
+      margin: 1em 0;
+      h4 {
+        font-weight: bold;
+        text-align: center;
+      }
+    }
+  }
+  .actionsForm {
+    float: right;
+    .saveStatus {
+      display: inline-block;
+      .ie7 & {
+        height: 1.8em;
+      }
+      margin-right: 0;
+      .saving {
+        @include throbber-icon;
+        float: left;
+        padding-right: 1em;
+        display: none;
+        position: relative;
+        top: 1em;
+      }
+      .saveMessage {
+        display: none;
+        position: relative;
+        text-align: center;
+        top: 0.7em;
+        .ie7 & {
+          top: -0.9em;
+        }
+        width: 15em;
+        &.error {
+          width: auto;
+        }
+      }
+    }
+  }
+}

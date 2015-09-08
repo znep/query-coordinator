@@ -1,0 +1,541 @@
+// Constants
+
+$box_gradient_alias_fix: "rx=1&ry=1&rw=1";
+
+$sidebar_default_tab_color_top: #989898;
+$sidebar_edit_tab_color_top: #e7b300;
+$sidebar_more_views_tab_color_top: #ba44b3;
+$sidebar_filter_tab_color_top: #0b5e9b;
+$sidebar_new_visualize_tab_color_top: #03723f;
+$sidebar_visualize_tab_color_top: #03723f;
+$sidebar_export_tab_color_top: #57b6dd;
+$sidebar_feed_tab_color_top: #ff7400;
+$sidebar_embed_tab_color_top: #e44044;
+$sidebar_about_tab_color_top: #a03341;
+$sidebar_manage_tab_color_top: #855318;
+
+$sidebar_metadata_tab_color_top: #999;
+$sidebar_appearance_tab_color_top: #1dad86;
+$sidebar_behavior_tab_color_top: #79ad1d;
+$sidebar_advanced_tab_color_top: #791dad;
+
+$sidebar_textbox_tab_color_top: #ecb113;
+$sidebar_pager_tab_color_top: #1283e3;
+$sidebar_other_tab_color_top: #df3b85;
+
+$sidebar_filters_tab_color_top: #0b5e9b;
+$sidebar_sort_tab_color_top: #791dad;
+
+$sidebar_designer_configuration_tab_color_tab: #0b5e9b;
+$sidebar_designer_components_tab_color_tab: #791dad;
+$designer_components_input_color: #03723f;
+$designer_components_actions_color: #e44044;
+$designer_components_data_color: #e7b300;
+$designer_components_content_color: #0b5e9b;
+
+$cell_feed_color: #df5400;
+
+$light_bg_color: #fafafa;
+
+$search_highlight_color: #ff7;
+
+$row_highlight_color: #ddeaf0;
+$row_zebra_color: #f6f6f6;
+
+$displaytype_table_color: #e76e34;
+$displaytype_chart_color: #fcba63;
+$displaytype_map_color: #009345;
+$displaytype_filter_color: #57b6dd;
+$displaytype_blob_color: #57bc7b;
+
+$federated_background_color: #f0f0f0;
+
+$new-ux-link-color: #ffffff;
+$new-ux-link-color-2: #dddddd;
+$new-ux-link-bg-color: #4b4748;
+$new-ux-link-button-color: #fafafa;
+
+// Compat functions
+
+@mixin border-radius($a, $b: true, $c: true, $d: true) {
+  // variables are strictly scoped in conditionals, so this can't be refactored out
+  @if $c == true and $d == true {
+    @if $b == true {
+      border-radius: $a;
+      -moz-border-radius: $a;
+      -webkit-border-radius: $a;
+    }
+    @else {
+      border-radius: $a $a $b $b;
+      -moz-border-radius: $a $a $b $b;
+      -webkit-border-radius: $a;
+      -webkit-border-top-right-radius: $a;
+      -webkit-border-bottom-right-radius: $b;
+      -webkit-border-bottom-left-radius: $b;
+    }
+  }
+  @else {
+    border-radius: $a $b $c $d;
+    -moz-border-radius: $a $b $c $d;
+    -webkit-border-radius: $a;
+    -webkit-border-top-right-radius: $b;
+    -webkit-border-bottom-right-radius: $c;
+    -webkit-border-bottom-left-radius: $d;
+  }
+}
+
+@mixin border-radius-corner($v, $h, $r) {
+  -moz-border-radius-#{$v}#{$h}: $r;
+  -webkit-border-#{$v}-#{$h}-radius: $r;
+}
+
+@mixin shadow($shadow) {
+  box-shadow: $shadow;
+  -moz-box-shadow: $shadow;
+  -webkit-box-shadow: $shadow;
+}
+
+@mixin box-shadow($x, $y, $r, $c, $inset: false) {
+  @if $inset == true {
+    box-shadow: inset $x $y $r $c;
+    -moz-box-shadow: inset $x $y $r $c;
+    -webkit-box-shadow: inset $x $y $r $c;
+  }
+  @else {
+    box-shadow: $x $y $r $c;
+    -moz-box-shadow: $x $y $r $c;
+    -webkit-box-shadow: $x $y $r $c;
+  }
+}
+
+@mixin box-shadow-none {
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+}
+
+@mixin transitions($spec...) {
+  transition: $spec;
+  -moz-transition: $spec;
+  -webkit-transition: $spec;
+  -o-transition: $spec;
+}
+
+@mixin transition($duration, $property) {
+  @include transition-duration($duration);
+  @include transition-property($property);
+}
+
+@mixin transition-duration($t) {
+  transition-duration: $t;
+  -moz-transition-duration: $t;
+  -webkit-transition-duration: $t;
+  -o-transition-duration: $t;
+}
+
+@mixin transition-property($p) {
+  transition-property: $p;
+  @if $p == box-shadow or $p == border-radius {
+    -moz-transition-property: -moz- + $p;
+    -webkit-transition-property: -webkit- + $p;
+    -o-transition-property: -o- + $p;
+  }
+  @else {
+    -moz-transition-property: $p;
+    -webkit-transition-property: $p;
+    -o-transition-property: $p;
+  }
+}
+
+@mixin vertical-gradient($s, $e: false) {
+  @if $e == false {
+    $e: adjust-color($s, $lightness: -10%);
+  }
+  background-color: $s;
+  background: -moz-linear-gradient(0 0 270deg, $s, $e);
+  background: -webkit-gradient(linear, left top, left bottom, from($s), to($e));
+  .noLinearGradient & {
+    background-image: none;
+  }
+}
+
+@mixin white-space-pre-wrap {
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  white-space: -o-pre-wrap;
+  word-wrap: break-word;
+}
+
+@mixin opacity($o) {
+  opacity: $o;
+  .ie7 & {
+    filter: alpha(opacity=#{$o * 100});
+  }
+  .ie8 & {
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$o * 100})";
+  }
+}
+
+// Convenience methods
+
+@mixin center($width, $height: $width) {
+  height: $height;
+  left: 50%;
+  margin-left: $width / 2 * -1;
+  margin-top: $height / 2 * -1;
+  position: absolute;
+  top: 50%;
+  width: $width;
+}
+
+// Common styles
+
+@mixin text-hiding {
+  background: {
+    color: transparent;
+    position: 0 0;
+    repeat: no-repeat;
+  };
+  display: block;
+  text-align: left;
+  text-indent: -9999px;
+}
+
+@mixin clip-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin default-fonts {
+  font-family: Arial, sans-serif;
+}
+
+@mixin rounded-ends {
+  @include border-radius(9999px);
+}
+
+@mixin underline-on-hover {
+  text-decoration: none;
+  &:hover, &:focus, &:active {
+    text-decoration: underline;
+  }
+}
+
+@mixin button {
+  @include gradient-buttons-active-background;
+  border: 1px solid $color_buttons_active_border;
+  @include border-radius(0.2em);
+  color: $color_buttons_active_text;
+  cursor: pointer;
+  font-size: 1em;
+  height: 14px;
+  line-height: 14px;
+  padding: 0.3em 0.7em;
+  &:hover {
+    @include box-shadow(0, 0, 0.3em, $color_buttons_active_shadow);
+  }
+  &.disabled {
+    @include gradient-buttons-disabled-background;
+    border: 1px solid $color_buttons_disabled_border;
+    color: $color_buttons_disabled_text;
+    cursor: default;
+    &:hover {
+      @include box-shadow-none;
+    }
+  }
+  .noLinearGradient & {
+    @include box-gradient-buttons-active-background(3, 21, $box_gradient_alias_fix);
+    &:hover {
+      border-color: $color_buttons_active_border - #222;
+    }
+  }
+  .noLinearGradient &.tall {
+    @include box-gradient-buttons-active-background(3, 46, $box_gradient_alias_fix);
+  }
+  &.active {
+    @include gradient-buttons-active-background_reverse;
+    border-color: $color_buttons_active_border - #444;
+    @include box-shadow(0, 0, 0.1em, $color_buttons_active_shadow);
+  }
+  &.default {
+    @include gradient-buttons-default-background;
+    border-color: $color_buttons_default_border;
+    color: $color_buttons_default_text;
+    text-shadow: none;
+    &.disabled {
+      @include gradient-buttons-default_disabled-background;
+      border: 1px solid $color_buttons_default_disabled_border;
+      color: $color_buttons_default_disabled_text;
+    }
+    .noLinearGradient & {
+      @include box-gradient-buttons-default-background(3, 21, $box_gradient_alias_fix);
+    }
+    .ie6 &, .ie7 &, .ie8 &, .ie9 & {
+      @include box-gradient-buttons-default-background(3, 31, $box_gradient_alias_fix);
+    }
+  }
+}
+
+// mix this into a commonForm to give it the appropriate width styling
+@mixin common-form($labelWidth, $controlWidth: true) {
+  label {
+    width: $labelWidth;
+  }
+  .additionalHelp {
+    margin-left: $labelWidth + 3.5em;
+  }
+  label.error, span.error {
+    margin-left: $labelWidth + 3em;
+  }
+  @if $controlWidth != true {
+    input[type=text], input[type=password], textarea, label.error {
+      width: $controlWidth;
+    }
+  }
+}
+
+@mixin disabled-overlay($messageTop: 0.75em, $zIndex: 80, $backgroundColor: #eee) {
+  position: relative;
+  .disabledOverlay {
+    background-color: $backgroundColor;
+    display: none;
+    height: 100%;
+    left: 0;
+    filter: alpha(opacity = 70);
+    opacity: 0.7;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: $zIndex;
+  }
+  .disabledMessage {
+    color: #333333;
+    display: none;
+    font-size: 1.2em;
+    font-weight: bold;
+    left: 5%;
+    position: absolute;
+    text-align: center;
+    top: $messageTop;
+    width: 90%;
+    z-index: $zIndex + 1;
+  }
+  &.disabled .disabledOverlay, &.disabled .disabledMessage {
+    display: block;
+  }
+}
+
+@mixin workspace {
+  background-color: #bbb;
+  @include box-shadow(0, 0, 5em, rgba(0, 0, 0, 0.3), true);
+}
+
+@mixin image-area-select {
+  .imgareaselect-border1 {
+    background: url(/stylesheets/images/jqueryui/imgareaselect/border-v.gif) repeat-y left top;
+  }
+  .imgareaselect-border2 {
+    background: url(/stylesheets/images/jqueryui/imgareaselect/border-h.gif) repeat-x left top;
+  }
+  .imgareaselect-border3 {
+    background: url(/stylesheets/images/jqueryui/imgareaselect/border-v.gif) repeat-y right top;
+  }
+  .imgareaselect-border4 {
+    background: url(/stylesheets/images/jqueryui/imgareaselect/border-h.gif) repeat-x left bottom;
+  }
+  .imgareaselect-border1, .imgareaselect-border2,
+  .imgareaselect-border3, .imgareaselect-border4 {
+    opacity: 0.5;
+    filter: alpha(opacity = 50);
+  }
+  .imgareaselect-handle {
+    background-color: #fff;
+    border: solid 1px #000;
+    opacity: 0.5;
+    filter: alpha(opacity = 50);
+  }
+  .imgareaselect-outer {
+    background-color: #000;
+    opacity: 0.5;
+    filter: alpha(opacity = 50);
+  }
+}
+
+@mixin ie7-inline-block {
+  .ie7 & {
+    display: inline;
+    zoom: 1;
+    // clearfix in IE7 still has a block element :after, so it continues to wrap
+    &:after {
+      display: inline;
+    }
+  }
+}
+
+@mixin no-pointer-events($pngurl: "/stylesheets/images/content/blank.png") {
+  pointer-events: none;
+  .ie7 &, .ie8 & {
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=#{$pngurl}, sizingMethod='scale');
+    background: none !important;
+  }
+}
+
+@mixin drag-handle {
+  background-image: url(/stylesheets/images/interface/drag_handle.png);
+  cursor: move;
+}
+
+@mixin required-star {
+  &:before {
+    content: "* ";
+    color: #C4282D;
+    font-size: 1.2em;
+  }
+}
+
+@mixin dl-section-content {
+  > dt {
+    color: $color_chrome_sidebar_text;
+    font-size: 1.1em;
+    font-weight: bold;
+    height: 2em;
+    margin-bottom: -4em;
+    overflow: hidden;
+    padding: 1em;
+    white-space: nowrap;
+    max-width: 40%;
+    &:first-child + dd {
+      border-top: none;
+    }
+  }
+  > dd {
+    border-top: 1px solid $color_chrome_box_border;
+    color: $color_chrome_sidebar_text;
+    font-size: 1.1em;
+    overflow: hidden;
+    padding: 1em {
+      left: 50%;
+    };
+    text-align: right;
+    .ie7 & {
+      // These would sit below dts in IE7, so you couldn't rate
+      position: relative;
+      z-index: 1;
+    }
+  }
+}
+
+@mixin contentBoxParent {
+  background-color: #fff;
+  border: 1px solid $color_chrome_box_border;
+  @include border-radius(0.2em);
+  margin: 0 {
+    bottom: $chrome_margin_inner;
+  };
+  padding: 1.5em;
+  &.fixedWidth {
+    max-width: 100em;
+    margin: 1em auto;
+  }
+  &.withLeftNavigation {
+    margin-left: #{17em + $chrome_margin_inner};
+  }
+  h1 {
+    font-size: 1.8em;
+  }
+  h2 {
+    color: #444;
+    font-size: 1.5em;
+    margin-top: 1em;
+  }
+  .jqmWindow {
+    display: none;
+    left: 50%;
+    min-height: 0;
+    position: fixed;
+    top: 0;
+  }
+}
+
+// NEW GENERATION OF BASIC TOOLS
+
+@mixin prefixer($key, $value) {
+  #{$key}: #{$value};
+  -webkit-#{$key}: #{$value};
+  -moz-#{$key}: #{$value};
+  -ms-#{$key}: #{$value};
+  -o-#{$key}: #{$value};
+}
+
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+@mixin triangle($size, $color, $side) {
+  border: $size solid transparent;
+  border-#{$side}-color: $color;
+  height: 0;
+  width: 0;
+}
+
+@mixin text-outline($color: #fff) {
+  text-shadow: 1px 0 0 $color, 0 1px 0 $color, -1px 0 0 $color, 0 -1px 0 $color, -1px -1px 0 $color, -1px 1px 0 $color, 1px -1px 0 $color, 1px 1px 0 $color;
+}
+
+// GovStat fonts
+$govstat_font_family: "myriad-pro", "PT Sans", sans-serif;
+
+// GovStat colors
+$govstat_color_action: #2f90dd;
+
+// Colors for different sections
+$govstat_color_home: #971ac0;
+$govstat_color_data: #2471ff;
+$govstat_color_reports: #35a000;
+$govstat_color_goals: #ec8b00;
+$govstat_color_config: #c73617;
+
+$govstat_color_good: #007613;
+$govstat_color_flat: #f8cd00;
+$govstat_color_poor: #d87419;
+$govstat_color_needs_more_data: #888;
+$govstat_color_within_tolerance: #ffba00;
+$govstat_color_none: #4473b4;
+
+$list_border_color: #d1d1d1;
+
+@mixin list-button {
+  background-color: #f2f2f2;
+  @include vertical-gradient(#fff, #f2f2f2);
+  border: 1px solid $list_border_color;
+  color: #222;
+  font-size: 1.4em;
+  font-weight: normal;
+  padding: 0.6em 0.9em 0.8em;
+  text-shadow: 0 1px 0 #fff;
+  &:hover {
+    @include box-shadow-none;
+  }
+}
+
+@mixin pika-icon {
+  font-family: "SSPika";
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: none;
+  text-rendering: optimizeLegibility;
+  white-space: nowrap;
+  -webkit-font-feature-settings: "liga";
+  -moz-font-feature-settings: "liga=1";
+  -moz-font-feature-settings: "liga";
+  -ms-font-feature-settings: "liga" 1;
+  -o-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+}

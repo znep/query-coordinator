@@ -1,0 +1,163 @@
+.aboutDataset {
+  .aboutHeader {
+    margin-bottom: 1em;
+    .aboutAuthorImageLink {
+      float: left;
+      margin-right: 1em;
+      .aboutAuthorImage {
+        height: 5em;
+        width: 5em;
+      }
+    }
+    .aboutAuthorName {
+      font-size: 1.2em;
+      font-weight: bold;
+      padding-top: 1em;
+    }
+    p {
+      font-size: 1.1em;
+    }
+  }
+  .unsavedView & .editMetadataButton {
+    display: none;
+  }
+  .customImageSection {
+    margin-top: 1em;
+    .datasetCustomImage {
+      margin: 0 auto;
+      display: block;
+      padding: 1em;
+    }
+  }
+  .formSection {
+    margin-top: 2em;
+    a.expander {
+      @include sprite-menu-icons;
+      .icon {
+        float: left;
+        margin-right: 0.5em;
+      }
+    }
+  }
+  .sectionContent {
+    @include dl-section-content;
+    padding: 0;
+    > p {
+      font-size: 1.2em;
+      line-height: 1.1em;
+      padding: 1em;
+    }
+    > dt.widenedItem {
+      text-align: center;
+      max-width: none !important;
+    }
+    > dd {
+      .wrap {
+        display: inline-block;
+      }
+      .hardWrap {
+        display: inline-block;
+        @include white-space-pre-wrap;
+      }
+      .starsControl {
+        float: right;
+        min-width: 127px;
+      }
+      &.actions {
+        overflow: visible;
+        padding-left: 6em;
+        .ie7 & {
+          z-index: 2;
+        }
+        form {
+          display: inline-block;
+          margin-right: 0.5em;
+          position: relative;
+          .ie7 & {
+            display: inline;
+          }
+          .reasonBox {
+            label {
+              padding-left: 0;
+              text-align: left;
+            }
+            input {
+              display: block;
+            }
+          }
+        }
+        .button {
+          @include approval-button-icons;
+          font-size: 1em;
+          font-weight: normal;
+          margin: 0;
+          padding: 0.4em 0.5em {
+            left: 2em;
+          };
+          .ie7 & {
+            padding: 0.2em 0.5em {
+              left: 1.25em;
+            };
+          }
+        }
+      }
+    }
+    > li {
+      border-top: 1px solid $color_chrome_box_border;
+      color: $color_chrome_sidebar_text;
+      font-size: 1.1em;
+      padding: 1em;
+      &:first-child {
+        border-top: none;
+      }
+    }
+  }
+  label {
+    display: block;
+    font-size: 1.1em;
+    font-weight: bold;
+    padding-bottom: 0.2em;
+  }
+  div.selector.uniform {
+    label.error {
+      font-size: 0.9em;
+      line-height: 1em;
+    }
+  }
+  .approvalHistory {
+    .stage {
+      font-weight: bold;
+      margin-bottom: 0.25em;
+    }
+    .user, .date {
+      margin-left: 1em;
+    }
+    .reason {
+      display: block;
+    }
+  }
+  .contactOwnerForm {
+    display: none;
+    margin: 0 0.5em 1em;
+    textarea, input {
+      display: block;
+      margin: 0.5em 0;
+      overflow: auto;
+      width: 95%;
+      .ie7 & {
+        width: 93%;
+      }
+      // Reset to defaults for this input
+      &#recaptcha_response_field {
+        overflow: visible;
+        display: inline-block;
+      }
+    }
+    #uniform-contactPurpose {
+      margin-bottom: 1em;
+    }
+    #contactSubject {
+      height: 3em;
+    }
+  }
+}

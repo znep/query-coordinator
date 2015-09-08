@@ -59,7 +59,6 @@
         var permissions = storyteller.storyStore.getStoryPermissions(storyteller.userStoryUid);
         _$errorContainer.addClass('hidden');
 
-        debugger;
         if (permissions.isPublic) {
           _manager.makePublic(_renderError);
         } else {

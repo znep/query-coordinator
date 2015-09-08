@@ -94,6 +94,17 @@ blist.metrics.sitewideShared = {
     ],
     detailSections: _.filter([
         {
+            id: 'detailLenses',
+            displayName: 'Data Lens Pages' + addedSuffix,
+            summary: {
+                plus: 'lense-new_view-published-v1',
+                verbPhrase: 'Data Lens pages created',
+                verbPhraseSingular: 'Data Lens page created',
+                deltaPhrase: 'Data Lens pages'
+            },
+            enabled: dataLensesEnabled
+        },
+        {
             id: 'summaryDatasets',    displayName: totalPrefix + 'Datasets' + addedSuffix,
             summary: {
                 plus: datasetsMetricName,
@@ -101,17 +112,6 @@ blist.metrics.sitewideShared = {
                 verbPhrase: 'datasets created',
                 verbPhraseSingular: 'dataset created',
                 deltaPhrase: 'datasets'
-            },
-            enabled: !absoluteMetricTopRow
-        },
-        {
-            id: 'summaryRows',        displayName: totalPrefix + 'Rows' + addedSuffix,
-            summary: {
-		plus: 'rows-created', 
-		minus: 'rows-deleted',
-                verbPhrase: 'rows created', 
-		verbPhraseSingular: 'row created',
-                deltaPhrase: 'rows'
             },
             enabled: !absoluteMetricTopRow
         },
@@ -140,12 +140,39 @@ blist.metrics.sitewideShared = {
             enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {id: 'detailCharts',    displayName: 'Charts' + addedSuffix,   summary: chartsSummary },
-        {id: 'detailLenses',    displayName: 'Data Lens Pages' + addedSuffix, summary: { plus: 'lense-new_view-published-v1', verbPhrase: 'Data Lens pages created', verbPhraseSingular: 'Data Lens page created', deltaPhrase: 'Data Lens pages' }, enabled: dataLensesEnabled },
-        {id: 'detailFilters',   displayName: 'Filters' + addedSuffix,  summary: { plus: ['filters-created'], minus: ['filters-deleted'], verbPhrase: 'filters created', verbPhraseSingular: 'filter created', deltaPhrase: 'filters' } },
+        {id: 'detailFilters',   displayName: 'Filters' + addedSuffix,  summary: { plus: ['filters-created'], minus: ['filters-deleted'], verbPhrase: 'filters created', verbPhraseSingular: 'filter created', deltaPhrase: 'filters' }, enabled: absoluteMetricTopRow },
         {id: 'detailMaps',      displayName: 'Maps' + addedSuffix,     summary: mapsSummary },
-        {id: 'detailSnapshots', displayName: 'Snapshots' + addedSuffix, summary: { plus: ['datasets-created-snapshot'], minus: ['datasets-deleted-snapshot'], verbPhrase: 'snapshots created', verbPhraseSingular: 'snapshot created', deltaPhrase: 'snapshots' } },
+        {id: 'detailFilters',   displayName: 'Filters' + addedSuffix,  summary: { plus: ['filters-created'], minus: ['filters-deleted'], verbPhrase: 'filters created', verbPhraseSingular: 'filter created', deltaPhrase: 'filters' }, enabled: !absoluteMetricTopRow },
+        {id: 'detailSnapshots', displayName: 'Snapshots' + addedSuffix, summary: { plus: ['datasets-created-snapshot'], minus: ['datasets-deleted-snapshot'], verbPhrase: 'snapshots created', verbPhraseSingular: 'snapshot created', deltaPhrase: 'snapshots' },
+            enabled: absoluteMetricTopRow
+        },
+        {id: 'detailHref',      displayName: 'External Datasets' + addedSuffix, summary: { plus: ['datasets-created-href'], minus: ['datasets-deleted-href'], verbPhrase: 'external datasets created', verbPhraseSingular: 'external dataset created', deltaPhrase: 'external datasets' }, enabled: !absoluteMetricTopRow },
         {id: 'detailBlobs',     displayName: 'Downloadable Files' + addedSuffix, summary: { plus: ['datasets-created-blobby'], minus: ['datasets-deleted-blobby'], verbPhrase: 'downloadable files created', verbPhraseSingular: 'downloadable file created', deltaPhrase: 'downloadable files' } },
-        {id: 'detailHref',      displayName: 'External Datasets' + addedSuffix, summary: { plus: ['datasets-created-href'], minus: ['datasets-deleted-href'], verbPhrase: 'external datasets created', verbPhraseSingular: 'external dataset created', deltaPhrase: 'external datasets' } }
+        {id: 'detailHref',      displayName: 'External Datasets' + addedSuffix, summary: { plus: ['datasets-created-href'], minus: ['datasets-deleted-href'], verbPhrase: 'external datasets created', verbPhraseSingular: 'external dataset created', deltaPhrase: 'external datasets' }, enabled: absoluteMetricTopRow },
+        {
+            id: 'summaryRows',
+            displayName: 'Rows Added',
+            summary: {
+                plus: 'rows-created',
+                minus: 'rows-deleted',
+                verbPhrase: 'rows created',
+                verbPhraseSingular: 'row created',
+                deltaPhrase: 'rows'
+            },
+            enabled: !absoluteMetricTopRow
+        },
+        {
+            id: 'detailSnapshots',
+            displayName: 'Snapshots Added',
+            summary: {
+                plus: ['datasets-created-snapshot'],
+                minus: ['datasets-deleted-snapshot'],
+                verbPhrase: 'snapshots created',
+                verbPhraseSingular: 'snapshot created',
+                deltaPhrase: 'snapshots'
+            },
+            enabled: !absoluteMetricTopRow
+        }
     ], function(section) { return section.enabled !== false; }),
     summarySections: _.filter([
         {

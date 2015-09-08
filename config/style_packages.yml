@@ -23,7 +23,6 @@ angular-app-dataCards:
 - dataCards/cards
 - dataCards/single-card-view
 - dataCards/visualization-add
-- dataCards/dataset-metadata
 - dataCards/card
 - dataCards/multiline-ellipsis
 - dataCards/modal-dialog

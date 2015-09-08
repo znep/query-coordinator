@@ -35,8 +35,8 @@ class NewViewManager
   # This will create a new view lens that points to a cards view url of the same
   # 4x4 as itself. Note that it will not create the requisite page_metadata for
   # that url to serve anything meaningful.
-  def create(page_metadata, category=nil, v2_data_lens=false)
-    # Create a new view pointing to nothing, since we don't have the 4x4 to point it to yet.
+  def create(page_metadata={}, category=nil, v2_data_lens=false)
+    page_metadata = ActiveSupport::HashWithIndifferentAccess.new(page_metadata)
     new_view = v2_data_lens ?
       create_v2_data_lens('', page_metadata, category) :
       create_new_view('', page_metadata, category)

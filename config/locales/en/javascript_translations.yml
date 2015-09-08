@@ -43,7 +43,6 @@ en:
         saving: 'Saving...'
         unsaved: 'Save'
         idle: 'Save'
-        conflict: 'Cannot save (conflict)'
 
     visualizations:
       no_value_placeholder: '(No value)'

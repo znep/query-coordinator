@@ -16,7 +16,7 @@
 
     utils.assert(storyteller.storySaveStatusStore, 'storySaveStatusStore must be instantiated');
 
-    var $container = $('<span>', { 'class': 'container' });
+    var $container = $('<span>', { 'class': 'container icon-warning' });
     var $message = $('<span>');
     var $tryAgainButton = $('<button>');
 
@@ -32,19 +32,18 @@
 
       $(document.body).toggleClass('story-save-error', hasError);
 
-      // Show or hide relevant bits.
-      $tryAgainButton.toggle(!isStorySaveInProgress && hasError && !error.conflict);
-      $this.toggle(hasError);
-
       if (hasError) {
+        $tryAgainButton.toggle(!isStorySaveInProgress && !error.conflict);
+
         text = I18n.t(error.conflict ?
           'editor.story_save_error_conflict' :
           'editor.story_save_error_generic'
         );
+        $message.text(text);
+        $tryAgainButton.text(I18n.t('editor.story_save_error_try_again'));
       }
 
-      $message.text(text);
-      $tryAgainButton.text(I18n.t('editor.story_save_error_try_again'));
+      $this.toggleClass('visible', hasError);
     }
 
     $tryAgainButton.on('click', function() {

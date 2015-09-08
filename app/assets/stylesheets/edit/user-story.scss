@@ -1,7 +1,7 @@
 @import 'lib/variables';
 
 body.story-save-error .user-story-container {
-  top: $story-save-error-bar-reserved-height
+  top: $story-save-error-bar-reserved-height;
 }
 
 .user-story-container {
@@ -11,6 +11,7 @@ body.story-save-error .user-story-container {
   padding-top: $header-height + $user-story-container-vertical-padding;
   z-index: $user-story-container-z-index;
   -webkit-font-smoothing: antialiased;
+  transition: top $transition-duration;
 
   .user-story {
     @include media-query-property(

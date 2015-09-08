@@ -20,6 +20,7 @@ body.story-save-error #rich-text-editor-toolbar {
   top: $rich-text-editor-toolbar-top-offset;
   background-color: $rich-text-editor-toolbar-bg-color;
   z-index: $rich-text-editor-toolbar-z-index;
+  transition: top $transition-duration;
 
   .rich-text-editor-toolbar-btn-group,
   .rich-text-editor-toolbar-select-group {

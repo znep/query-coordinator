@@ -46,10 +46,10 @@ describe('storySaveErrorBar jQuery plugin', function() {
       it('should be invisible', function() {
         mockStore.mockLastError(null);
         mockStore.mockIsSaveInProgress(true);
-        assert.equal($errorBar.css('display'), 'none');
+        assert.isFalse($errorBar.hasClass('visible'));
 
         mockStore.mockIsSaveInProgress(false);
-        assert.equal($errorBar.css('display'), 'none');
+        assert.isFalse($errorBar.hasClass('visible'));
       });
 
       it('should not place the story-save-error class on body', function() {
@@ -68,10 +68,10 @@ describe('storySaveErrorBar jQuery plugin', function() {
 
       it('bar should be visible', function() {
         mockStore.mockIsSaveInProgress(true);
-        assert.equal($errorBar.css('display'), 'block');
+        assert.isTrue($errorBar.hasClass('visible'));
 
         mockStore.mockIsSaveInProgress(false);
-        assert.equal($errorBar.css('display'), 'block');
+        assert.isTrue($errorBar.hasClass('visible'));
       });
 
       describe('try again button', function() {
@@ -107,10 +107,10 @@ describe('storySaveErrorBar jQuery plugin', function() {
 
       it('bar should be visible', function() {
         mockStore.mockIsSaveInProgress(true);
-        assert.equal($errorBar.css('display'), 'block');
+        assert.isTrue($errorBar.hasClass('visible'));
 
         mockStore.mockIsSaveInProgress(false);
-        assert.equal($errorBar.css('display'), 'block');
+        assert.isTrue($errorBar.hasClass('visible'));
       });
 
       it('try again button should be hidden', function() {

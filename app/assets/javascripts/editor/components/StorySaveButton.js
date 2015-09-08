@@ -38,8 +38,7 @@
       maybeGoToSave();
 
       if (isSaveImpossible) {
-        // TODO clarify AC
-        translationKey = 'editor.story_save_button.conflict';
+        translationKey = 'editor.story_save_button.idle';
       } else if (isStorySaveInProgress) {
         translationKey = 'editor.story_save_button.saving';
       } else if (isStorySaved) {

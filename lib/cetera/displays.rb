@@ -1,5 +1,5 @@
 # Display types that Cetera search returns.
-# Begginings of deprecation of /app/models/displays which rely on View class
+# Beginnings of deprecation of /app/models/displays which rely on View class
 
 # 9/26/2015 - Cetera currently only supports types `dataset` and `page`. We will need to add
 # new display types as they are supported by Cetera to enable them.

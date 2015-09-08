@@ -1,6 +1,8 @@
 $(function()
 {
     var $browse = $('.browseSection');
+    var isListingViewType = $browse.is('[data-view-type="listing"]');
+
     var $listingDescriptions = $('.browse-listing-description');
     function updateDescriptionControls() {
         $listingDescriptions.
@@ -322,28 +324,41 @@ $(function()
 
     // Sad hack: we don't have the stemmed version, so just highlight the words they typed.
     // Also remove special characters because they can break the regex.
-    var searchRegex = $.subKeyDefined(blist, 'browse.searchOptions.q') ?
-        new RegExp(blist.browse.searchOptions.q.trim().
-            replace(/[^\w\s]/gi, '').
-            replace(' ', '|'), 'gi') : '';
+    var searchRegex = '';
+
+    if ($.subKeyDefined(blist, 'browse.searchOptions.q')) {
+        searchRegex = new RegExp(blist.browse.searchOptions.q.trim().
+          replace(/[^\w\s]/gi, '').
+          replace(' ', '|'), 'gi');
+    }
 
     if (!$.isBlank(searchRegex))
     {
         // Assuming that dataset names do not have any html inside them.
         // Assuming that dataset descriptions only have A tags inside them.
         $("table tbody tr").find("a.name, span.name, div.description, span.category, span.tags").each(function() {
-            var $this = $(this),
-                a_links = $this.children().map(function()
-                    {
-                        var $child = $(this);
-                        $child.html($child.html()
-                            .replace(searchRegex, '<span class="highlight">$&</span>'));
-                        return $child[0].outerHTML;
-                    }),
+          var $this = $(this),
+            a_links = $this.children().map(function() {
+                var $child = $(this);
+                $child.html($child.html()
+                  .replace(searchRegex, '<span class="highlight">$&</span>'));
+                return $child[0].outerHTML;
+            }),
                 text_bits = _.map($this.html().split(/<a.*\/a>/), function(text)
                     { return text.replace(searchRegex, '<span class="highlight">$&</span>'); });
-            $this.html(_.flatten(_.zip(text_bits, a_links)).join(''));
-        });
+          $this.html(_.flatten(_.zip(text_bits, a_links)).join(''));
+          });
+
+        $('.browse-list-item').
+          find('[data-search="highlight"]').
+          find('*').addBack().
+          contents().filter(function() {
+              return this.nodeType === 3;
+          }).
+          each(function() {
+              var newContent = $(this).text().replace(searchRegex,'<span class="highlight">$&</span>');
+              $(this).replaceWith(newContent)
+          });
     }
 
     var replaceBrokenThumbnails = function() {
@@ -480,7 +495,7 @@ $(function()
     };
 
     // Need to load rows related to the search
-    if (!$.isBlank(blist.browse.rowCount))
+    if (!isListingViewType && !$.isBlank(blist.browse.rowCount))
     {
         var stopEllipsis = $('.rowSearchResults span')
                 .dancingEllipsis({ text: $.t('controls.browse.row_results.matching_rows') }),
@@ -604,7 +619,7 @@ $(function()
         window.parent.blist &&
         window.parent.blist.iframeHack)
     {
-        $('.browseSection').on('click', 'a[rel=external]', function(evt)
+        $browse.on('click', 'a[rel=external]', function(evt)
         {
             if (!window.parent.blist.iframeHack.isModified())
             {

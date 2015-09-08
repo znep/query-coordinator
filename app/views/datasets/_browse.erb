@@ -312,9 +312,17 @@
             <%- end -%>
           </div>
         <%- elsif opts[:view_type] == 'listing' %>
-          <%- opts[:view_results].each_with_index do |v, _| -%>
+          <%- opts[:view_results].each do |v| -%>
               <%= render :partial => 'datasets/browse_listing',
-                :locals => { :opts => opts, :v => v, :in_search => in_search, :rel_type => view_rel_type(v, CurrentDomain, opts) } %>
+                :locals => {
+                  :opts => opts,
+                  :v => v,
+                  :link => v.link.present? ? v.link : view_url(v),
+                  :display_title => v.display_title.present? ? v.display_title : v.display.name.capitalize,
+                  :in_search => in_search,
+                  :categories => v.categories.present? ? v.categories : [v.category_display].compact,
+                  :rel_type => view_rel_type(v, CurrentDomain, opts)
+                } %>
           <%- end -%>
 
       <%- else -%>

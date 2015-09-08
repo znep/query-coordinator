@@ -6,7 +6,7 @@
 <%- show_time_period = cur_sort.nil? ? false : cur_sort[:is_time_period] -%>
 <%- in_search = opts[:user_params][:q] && opts[:row_count] -%>
 
-<div class="browseSection <%= opts[:facets].length < 1 ? 'noFacets' : '' %>
+<div data-view-type="<%= opts[:view_type] %>" class="browseSection <%= opts[:facets].length < 1 ? 'noFacets' : '' %>
   <%= opts[:custom_class] || '' %>
   <%= opts[:browse_in_container] ? 'inContainer' : '' %> <%= opts[:disable][:sort] ? 'noSort' : '' %>">
   <%- if opts[:facets].length > 0 -%>
@@ -47,7 +47,7 @@
                 <%= browse_facet_option(facet_option, facet[:param], opts, facet[:use_icon]) %>
               <%- end -%>
             </ul>
-            <%- if !facet[:extra_options].blank? -%>
+            <%- unless facet[:extra_options].blank? -%>
               <%- if facet[:tag_cloud].present? -%>
                 <%- content_for :modals do -%>
                   <%= modal :id => "browseDialog_#{facet[:param]}", :class => 'browseOptionsDialog' do %>
@@ -99,7 +99,7 @@
         <%- end -%>
       </div>
     <%- end -%>
-    <%- if (!opts[:embedded_browse_iframe_hack]) -%>
+    <%- unless opts[:embedded_browse_iframe_hack] -%>
 
         <%- if ((CurrentDomain.user_can?(current_user, :create_datasets) ||
                 CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
@@ -159,7 +159,7 @@
 
     <%- show_catalog_sort_dropdown = opts[:show_catalog_sort_dropdown] -%>
     <div class="browseList <%= show_catalog_sort_dropdown ? 'hasSort' : '' %>">
-      <%- if !opts[:browse_in_container] -%>
+      <%- unless opts[:browse_in_container] -%>
         <div class="titleContainer">
           <h2 title="<%= opts[:title] %>"><%= opts[:title] %>
             <%- unless opts[:hide_catalog_rss] -%>
@@ -172,7 +172,7 @@
       <%- end -%>
 
       <div class="topControls">
-        <%- if !opts[:hide_view_types] -%>
+        <%- unless opts[:view_type] == 'listing' || opts[:hide_view_types] -%>
           <ul class="viewTypeOptions pillButtons">
             <li><a href="<%= opts[:base_url] + '?' + opts[:user_params].merge(
                             {:view_type => 'table', :page => opts[:page]}).to_param %>"
@@ -218,7 +218,7 @@
         <%- if opts[:view_request_timed_out] -%>
           <div class="noResults">
             <span class="message"><%= opts[:timeout_text] %></span>
-            <%- if (!opts[:embedded_browse_iframe_hack]) -%>
+            <%- unless opts[:embedded_browse_iframe_hack] -%>
 
               <%- if ((CurrentDomain.user_can?(current_user, :create_datasets) ||
                       CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
@@ -266,7 +266,7 @@
         <%- elsif opts[:view_count] == 0 -%>
           <div class="noResults">
             <span class="message"><%= opts[:no_results_text] %></span>
-            <%- if (!opts[:embedded_browse_iframe_hack]) -%>
+            <%- unless opts[:embedded_browse_iframe_hack] -%>
 
               <%- if ((CurrentDomain.user_can?(current_user, :create_datasets) ||
                       CurrentDomain.module_enabled?(:community_creation))) && !opts[:suppress_dataset_creation] -%>
@@ -311,7 +311,21 @@
               <a class="button suggestLink" href="<%= nominate_index_path %>"><%= t('controls.browse.actions.suggest_dataset_short') %></a>
             <%- end -%>
           </div>
-        <%- else -%>
+        <%- elsif opts[:view_type] == 'listing' %>
+          <%- opts[:view_results].each do |v| -%>
+              <%= render :partial => 'datasets/browse_listing',
+                :locals => {
+                  :opts => opts,
+                  :v => v,
+                  :link => v.link.present? ? v.link : view_url(v),
+                  :display_title => v.display_title.present? ? v.display_title : v.display.name.capitalize,
+                  :in_search => in_search,
+                  :categories => v.categories.present? ? v.categories : [v.category_display].compact,
+                  :rel_type => view_rel_type(v, CurrentDomain, opts)
+                } %>
+          <%- end -%>
+
+      <%- else -%>
           <table class="gridList<%= ' hasFederations' if opts[:use_federations] %>">
             <colgroup>
               <%- if opts[:grid_items][:index] -%>
@@ -342,7 +356,7 @@
                 <col class="rss" />
               <%- end -%>
             </colgroup>
-            <%- if !opts[:disable][:table_header] -%>
+            <%- unless opts[:disable][:table_header] -%>
             <thead>
               <tr>
                 <%- if opts[:grid_items][:index] -%>

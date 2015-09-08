@@ -14,6 +14,19 @@
   }
 }
 
+@mixin icon-font {
+  font-family: "socrata-apps";
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 // icons/button_icons.png
 @mixin sprite-button-icons($subselector: ".icon") {
   #{$subselector} {
@@ -242,8 +255,8 @@ $new-view-color: #80acca;
     background: none;
     text-indent: 0;
     &::before {
+      @include icon-font;
       content: "";
-      font-family: "socrata-apps";
       font-size: 13px;
       color: $new-view-color;
     }
@@ -253,6 +266,60 @@ $new-view-color: #80acca;
   }
   &.typeUnpublished #{$subselector} {
     background-position: 0 -611px;
+  }
+}
+
+.dataset-icon {
+  margin-bottom: 2px;
+  &[data-display-type] {
+    background: none;
+    text-indent: 0;
+    &::before {
+      @include icon-font;
+      font-size: 13px;
+    }
+  }
+  &[data-display-type="new_view"] {
+    &::before {
+      content: "";
+      color: $new-view-color;
+    }
+  }
+  &[data-display-type="calendar"] {
+    &::before {
+      content: "";
+      color: blue;
+    }
+  }
+  &[data-display-type="table"],
+  &[data-display-type="blist"] {
+    &::before {
+      content: "";
+      color: blue;
+    }
+  }
+  &[data-display-type="chart"] {
+    &::before {
+      content: "";
+      color: blue;
+    }
+  }
+  &[data-display-type="unpublished"] {
+    &::before {
+      content: "";
+      color: blue;
+    }
+  }
+}
+
+.settings-icon {
+  background: none;
+  text-indent: 0;
+  &::before {
+    @include icon-font;
+    font-size: 13px;
+    color: gray;
+    content: "";
   }
 }
 
@@ -1005,10 +1072,10 @@ $new-view-color: #80acca;
   &.geospatial #{$subselector} {
     background-position: 0 -460px;
   }
-  &.object #{$subselector} {
+  &.object #{$subselector} { // FIX ICON - borrow from location
     background-position: 0 -460px;
   }
-  &.list #{$subselector} {
+  &.list #{$subselector} { // FIX ICON - borrow from location
     background-position: 0 -460px;
   }
   &.money #{$subselector} {

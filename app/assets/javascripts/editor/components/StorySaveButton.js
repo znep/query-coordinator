@@ -1,5 +1,5 @@
 /*
- * A component that renders a story's save status.
+ * A button that allows the user to save a story. Displays progress.
  */
 (function($, root) {
 
@@ -55,7 +55,7 @@
       text = I18n.t(translationKey);
 
       $this.text(text);
-      $this.prop('disabled', isStorySaved || isSaveImpossible);
+      $this.prop('disabled', isStorySaveInProgress || isStorySaved || isSaveImpossible);
     }
 
     storyteller.storySaveStatusStore.addChangeListener(function() {

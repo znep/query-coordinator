@@ -104,7 +104,7 @@ describe('storySaveButton jQuery plugin', function() {
 
           mockStore.mockIsSaveInProgress(true);
           mockStore.mockIsSaved(false);
-          assert.isFalse($button.prop('disabled'));
+          assert.isTrue($button.prop('disabled'));
         });
       });
       it('should call StoryDraftCreator.saveDraft when clicked', function() {

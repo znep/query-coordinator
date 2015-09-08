@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Example Usage: socrata.visualizations.rowInspector.js</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF8">
+    <link rel="stylesheet" media="all" href="socrata.visualizations.rowInspector.demoOnly.css">
+    <style>
+    html, body {
+      box-sizing: border-box;
+      width: 100%;
+      height: 200%;
+      margin: 0;
+      font-size: 0.75em;
+    }
+
+    body {
+      border-right: solid 25px black;
+    }
+
+    body > div, label {
+      font-size: 2rem;
+    }
+
+    #click-me {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 25px;
+      font-size: 10em;
+      text-align: center;
+      background-color: rebeccapurple;
+      min-height: 250px;
+      color: white;
+    }
+    </style>
+  </head>
+  <body>
+    <div>IF THE TEMPLATE CHANGED, FOR ALL THAT IS RIGHT, PLEASE CHANGE THIS, TOO. I'M NOT KIDDING</div>
+    <div>ALSO, if the styles have changed, please run "npm run-script demo-css"</div>
+    <div>
+      <label for="row-count">Row Count</label>
+      <input type="number" min="1" step="1" id="row-count" placeholder="Row Count" value="9">
+    </div>
+    <div>
+      <input type="checkbox" id="error">
+      <label for="error">If checked, will cause an error state on click.</label>
+    </div>
+    <div id="click-me">CLICK ANYWHERE HERE!</div>
+    <div id="socrata-row-inspector">
+      <div class="tool-panel">
+        <div class="tool-panel-main">
+
+          <div class="icon-close"></div>
+          <div class="sticky-border"></div>
+          <div class="tool-panel-inner-container">
+            <!-- Successful query response -->
+            <div class="row-inspector-content">
+              <div class="row-data-item">
+                <span class="name"></span>
+                <span class="value"></span>
+              </div>
+            </div>
+            <!-- Loading spinner while query pending-->
+            <div class="pending-content"></div>
+            <!-- Error message if row query unsuccessful -->
+            <div class="error-content">
+              <div class="icon-warning"></div>
+              <div class="error-message"></div>
+            </div>
+          </div>
+          <div class="sticky-border bottom"></div>
+          <div class="paging-panel">
+            <button type="button" title="" class="l-to-r pagination-btn action-btn previous">
+              <span class="caret"></span>
+            </button>
+            <button type="button" title="" class="r-to-l pagination-btn action-btn next">
+              <span class="caret"></span>
+            </button>
+            <div class="paging-info">
+              <div class="message">
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+          </div>
+          <div class="tool-panel-hint"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <!-- lodash must be loaded before `socrata.utils.js` -->
+  <script type="text/javascript" src="../bower_components/lodash/lodash.js"></script>
+  <script type="text/javascript" src="../bower_components/socrata-utils/socrata.utils.js"></script>
+  <!-- jquery must be loaded before `socrata.visualizations.Visualization.js` -->
+  <script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
+  <script type="text/javascript" src="../socrata.visualizations.Visualization.js"></script>
+  <script type="text/javascript" src="../socrata.visualizations.rowInspector.js"></script>
+  <script type="text/javascript">
+    (function(root) {
+      var validData = function(rowCount) {
+        return _.map(_.range(1, parseInt(rowCount) + 1), function(rowIndex) {
+          return _.map(_.range(1, Math.random() * 25 + 1), function(columnIndex) {
+            return {
+              column: 'row {0} col {1}'.format(rowIndex, columnIndex),
+              value: _.uniqueId('row value ')
+            }
+          });
+        });
+      };
+
+      $(document).ready(function() {
+        root.socrata.visualizations.rowInspector.setup();
+
+        $('#click-me').click(function(event) {
+          if ($(event.target).closest('#socrata-row-inspector, #error').length) {
+            return;
+          }
+
+          $(document.body).trigger('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', {
+            position: {pageX: event.pageX, pageY: event.pageY},
+            error: $('#error:checked').length === 1,
+            message: 'There was an unexpected error.'
+          });
+
+          setTimeout(function() {
+            $(document.body).trigger('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', {
+              position: {pageX: event.pageX, pageY: event.pageY},
+              error: $('#error:checked').length === 1,
+              message: 'There was an unexpected error.',
+              data: validData($('#row-count').val())
+            });
+          }, 2000)
+        });
+      });
+    })(window);
+  </script>
+</html>

@@ -238,6 +238,12 @@ describe('socrata.visualizations.ColumnChart', function() {
 
   var columnChart;
 
+  afterEach(function() {
+    if ($('#chart').length) {
+      throw new Error('A test in this spec file did not clean up its column chart. This may cause downstream test failures.');
+    }
+  });
+
   describe('axis labels', function() {
 
     describe('with a top label', function() {

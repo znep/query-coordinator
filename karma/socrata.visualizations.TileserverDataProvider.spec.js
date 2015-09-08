@@ -132,6 +132,10 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
       );
     });
 
+    afterEach(function() {
+      server.restore();
+    });
+
     describe('when called with no arguments', function() {
 
       it('should return a function that gets a URL', function() {

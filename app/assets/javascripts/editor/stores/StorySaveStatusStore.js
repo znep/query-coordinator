@@ -52,7 +52,7 @@
         break;
 
         case Constants.STORY_SAVE_STARTED:
-          if(_saveInProgress) {
+          if (_saveInProgress) {
             throw new Error('Can only have one pending save at a time.');
           }
           _saveInProgress = true;

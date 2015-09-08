@@ -32,6 +32,12 @@
   <%# See also: app/views/angular/serve_app.html.erb %>
 
   <body ng-app="<%= angular_app %>">
+    <%- angular_templates.each do |obj| -%>
+      <script type="text/ng-template" id="<%= obj[:id] %>">
+<%== obj[:template] %>
+      </script>
+    <%- end %>
+
     <% if @migration_info %>
       <div id="skip-links">
         <%= link_to 'Go to an accessible version of this page', get_alt_dataset_link(@migration_info[:obeId]) %>

@@ -259,8 +259,8 @@ $(function()
     $browse.find('.settings-icon').each(function(index, settingsIcon) {
 
         // Find necessary component elements
-        var parentMediaItem = $(settingsIcon).parent().parent();
-        var $settingsMenu = parentMediaItem.parent().find('.settings.menu');
+        var parentMediaItem = $(settingsIcon).closest('.media-item');
+        var $settingsMenu = parentMediaItem.siblings('.settings.menu');
         var ds = getDS($(settingsIcon), 'listing');
         // TODO:
         //   - Handle permissions
@@ -272,9 +272,9 @@ $(function()
         var canDelete = ds.hasRight('delete_view') && !ds.isFederated();
 
         var deleteMenuItem = {
-          text: $.t('controls.browse.actions.delete.button'),
-          className: 'delete button',
-          href: '#Delete'
+            text: $.t('controls.browse.actions.delete.button'),
+            className: 'delete button',
+            href: '#Delete'
         };
 
         var canChangePermissions = (function(context) {
@@ -288,14 +288,14 @@ $(function()
                 }
             );
             return context.hasRight('update_view') &&
-              !context.isFederated()
-              && (!publicGrant || !publicGrant.inherited);
+                !context.isFederated()
+                && (!publicGrant || !publicGrant.inherited);
         })(ds);
 
         var permissionsMenuItem = {
-          text: $.t('controls.browse.actions.permissions.change_button.' + (ds.isPublic() ? 'public' : 'private') + '_html'),
-          className: 'permissions button',
-          href: '#Permissions'
+            text: $.t('controls.browse.actions.permissions.change_button.' + (ds.isPublic() ? 'public' : 'private') + '_html'),
+            className: 'permissions button',
+            href: '#Permissions'
         };
 
         var opts = {
@@ -328,8 +328,8 @@ $(function()
 
     if ($.subKeyDefined(blist, 'browse.searchOptions.q')) {
         searchRegex = new RegExp(blist.browse.searchOptions.q.trim().
-          replace(/[^\w\s]/gi, '').
-          replace(' ', '|'), 'gi');
+            replace(/[^\w\s]/gi, '').
+            replace(' ', '|'), 'gi');
     }
 
     if (!$.isBlank(searchRegex))
@@ -337,28 +337,28 @@ $(function()
         // Assuming that dataset names do not have any html inside them.
         // Assuming that dataset descriptions only have A tags inside them.
         $("table tbody tr").find("a.name, span.name, div.description, span.category, span.tags").each(function() {
-          var $this = $(this),
-            a_links = $this.children().map(function() {
-                var $child = $(this);
-                $child.html($child.html()
-                  .replace(searchRegex, '<span class="highlight">$&</span>'));
-                return $child[0].outerHTML;
-            }),
+            var $this = $(this),
+                a_links = $this.children().map(function() {
+                    var $child = $(this);
+                    $child.html($child.html()
+                        .replace(searchRegex, '<span class="highlight">$&</span>'));
+                    return $child[0].outerHTML;
+                }),
                 text_bits = _.map($this.html().split(/<a.*\/a>/), function(text)
                     { return text.replace(searchRegex, '<span class="highlight">$&</span>'); });
-          $this.html(_.flatten(_.zip(text_bits, a_links)).join(''));
-          });
+            $this.html(_.flatten(_.zip(text_bits, a_links)).join(''));
+        });
 
         $('.browse-list-item').
-          find('[data-search="highlight"]').
-          find('*').addBack().
-          contents().filter(function() {
-              return this.nodeType === 3;
-          }).
-          each(function() {
-              var newContent = $(this).text().replace(searchRegex,'<span class="highlight">$&</span>');
-              $(this).replaceWith(newContent)
-          });
+            find('[data-search="highlight"]').
+            find('*').addBack().
+            contents().filter(function() {
+                return this.nodeType === 3;
+            }).
+            each(function() {
+                var newContent = $(this).text().replace(searchRegex,'<span class="highlight">$&</span>');
+                $(this).replaceWith(newContent);
+            });
     }
 
     var replaceBrokenThumbnails = function() {

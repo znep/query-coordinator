@@ -14,6 +14,10 @@ describe BrowseHelper do
     it 'truncates and appends ellipses a string shorter than the requested length' do
       expect(helper.join_and_truncate_array(%w(antidisestablishmentism), 10)).to eql('antidisest...')
     end
+
+    it 'does not change a joined string exactly the length desired' do
+      expect(helper.join_and_truncate_array(%w(one two), 8)).to eql('one, two')
+    end
   end
 
   describe '#view_rel_type' do
@@ -61,14 +65,14 @@ describe BrowseHelper do
   end
 
   describe '#view_format_text' do
-    it 'formats the text preserving newlines' do
+    it 'formats the text converting newlines into html breaks' do
       description = %(my description \n http://google.com <b>bold!</b>)
       expect(helper.view_format_description_text(description)).to eql(%(<p>my description \n<br /> <a href="http://google.com" rel="nofollow external">http://google.com</a> <b>bold!</b></p>))
     end
 
-    it 'formats the description ignoring new lines' do
-      description = 'my description http://google.com <b>bold!</b>'
-      expect(helper.view_format_description_text(description, false)).to eql('my description <a href="http://google.com" rel="nofollow external">http://google.com</a> <b>bold!</b>')
+    it 'formats the description ignoring newline html formatting' do
+      description = %(my description http://google.com\n <b>bold!</b>)
+      expect(helper.view_format_description_text(description, false)).to eql(%(my description <a href="http://google.com" rel="nofollow external">http://google.com</a>\n <b>bold!</b>))
     end
   end
 

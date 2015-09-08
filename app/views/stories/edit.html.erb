@@ -1,6 +1,7 @@
 <header class="header-main">
   <button data-panel-toggle="settings-panel" class="icon-stories-menu settings-panel-btn"></button>
   <a href="#" class="story-title" role="button" data-panel-toggle="settings-panel"></a>
+  <div class="menu-divider"></div>
   <div class="header-right">
     <ul class="menu">
       <li>
@@ -13,6 +14,7 @@
           <span class="icon-redo"></span>
         </button>
       </li>
+      <li class="menu-divider"></li>
       <li>
         <a class="btn preview-btn" role="button" href="/stories/s/<%= @story.uid %>?preview=1" target="_blank">Preview <span class="icon-preview"></span></a>
       </li>
@@ -40,8 +42,6 @@
   <div id="story-insertion-hint" class="hidden"></div>
 
 </main>
-
-<button class="btn preview-btn">Preview</button>
 
 <div id="asset-selector-container" class="modal hidden"></div>
 

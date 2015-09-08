@@ -23,6 +23,27 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-presentation:before {
+  content: "\e95c";
+}
+.icon-pen6:before {
+  content: "\e927";
+}
+.icon-plus3:before {
+  content: "\ed5a";
+}
+.icon-checkmark3:before {
+  content: "\ed6e";
+}
+.icon-preview:before {
+  content: "\eec5";
+}
+.icon-move:before {
+  content: "\e601";
+}
+.icon-clear-formatting:before {
+  content: "\e600";
+}
 .icon-undo:before {
   content: "\eaa2";
 }
@@ -47,14 +68,8 @@
 .icon-plus2:before {
   content: "\ed58";
 }
-.icon-plus3:before {
-  content: "\ed5a";
-}
 .icon-cross2:before {
   content: "\ed6a";
-}
-.icon-stories-menu:before {
-    content: "\e603";
 }
 .icon-arrow-up2:before {
   content: "\edb5";
@@ -83,6 +98,9 @@
 .icon-paragraph-right3:before {
   content: "\eec0";
 }
-.icon-preview:before {
-  content: "\eec5";
+.icon-stories-menu:before {
+  content: "\e603";
+}
+.icon-stories-icon:before {
+  content: "\e602";
 }

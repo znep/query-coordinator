@@ -38,6 +38,10 @@ $theme-list-theme-active-border-color: #3498db;
 // Blocks
 $block-bg-color: #fafafa;
 
+// Block edit controls
+$block-edit-controls-bg-color: #23d6b0;
+$block-edit-controls-hover-color: #1CAB8D;
+
 // Rich text editor toolbar
 $rich-text-editor-toolbar-inactive-color: rgb(215, 215, 215);
 $rich-text-editor-toolbar-inactive-bg-color: rgb(245, 245, 245);
@@ -50,7 +54,7 @@ $rich-text-editor-toolbar-border-color: rgba(73,73,73,0.20);
 $youtube-bg-color: #000;
 
 // Edit user story
-$block-edit-hover-border-color: #ddd;
+$block-edit-hover-border-color: #c2c2c2;
 $story-insertion-hint-bg-color: #333;
 $empty-story-warning-font-color: rgb(153,153,153);
 

@@ -59,17 +59,15 @@ body .header-main {
     line-height: $header-height;
     font-size: 1.5em;
     font-weight: 100;
+  }
 
-    .menu a {
-      $button-border-width: 5px;
-      border: $button-border-width solid transparent;
-      border-radius: 3px;
-      &.active {
-        border: $button-border-width solid $header-text-color;
-        background: $header-text-color;
-        color: $header-bg-color;
-      }
-    }
+  .menu-divider {  // line divider
+    height: 3.2rem;
+    display: inline;
+    padding: 0;
+    margin: 0;
+    vertical-align: middle;
+    border-left: 1px solid #6B6B6B;
   }
 
   .story-title {
@@ -102,6 +100,10 @@ body .header-main {
     }
   }
 
+  .preview-btn span {
+    margin-left: 3px;
+  }
+
   .settings-panel-btn {
     display: block;
     float: left;
@@ -128,6 +130,8 @@ body .header-main {
   }
 
   .panel-btn {
+    padding: 0.8rem 1.5rem;
+
     &:hover,
     &:active,
     &:focus {

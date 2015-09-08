@@ -11,13 +11,7 @@
           <span class="value"><%= start_index + i %>.</span>
         </td>
       <%- end -%>
-
-      <%-
-        rel_type = v.federated? ?
-          (CurrentDomain.feature?(:federated_interstitial) ? 'externalDomain' : 'external') :
-          (opts[:rel_type] || '')
-      -%>
-
+      <%- rel_type = view_rel_type(v, CurrentDomain, opts) -%>
       <%- if opts[:grid_items][:nameDesc] -%>
         <td class="nameDesc">
           <div class="titleLine">
@@ -27,19 +21,8 @@
             <%- v.categories.each do |cat| -%>
               <span class="category infoItem"><%= cat %></span>
             <%- end -%>
-            <%- if !v.tags.nil? && v.tags.length > 0 -%>
-            <%- tag_limit = 50 -%>
-            <%- t = v.tags.join(', ') -%>
-            <%- if t.length > tag_limit
-                  i = t.rindex(',', tag_limit)
-                  if i.nil?
-                    t = v.tags[0].to_s.slice(0, tag_limit)
-                  else
-                    t = t.slice(0, i + 2)
-                  end
-                  t += '...'
-                end -%>
-            <span class="tags infoItem" itemprop="keywords"><%= t %></span>
+            <%- if v.tags.present? -%>
+              <span class="tags infoItem" itemprop="keywords"><%= join_and_truncate_array(v.tags) %></span>
             <%- end -%>
             <% if v.federated? %>
               <div class="federation-source infoItem">
@@ -50,7 +33,7 @@
           </div>
 
           <div class="expandBlock clearfix collapsed">
-            <div class="description"><%= sanitize raw(auto_link(h(raw(v.description)), :html => { :rel => 'nofollow external' })) %></div>
+            <div class="description"><%= view_format_description_text(v.description) %></div>
             <div class="rowSearchResults"><% if in_search %><span><%= t('controls.browse.row_results.matching_rows') %></span><% end %></div>
             <div class="extraInfo <%= opts[:use_federations] ? 'federated' : '' %>">
               <div class="infoContent"></div>
@@ -72,8 +55,7 @@
         <td class="richSection">
           <a itemprop="url" href="<%= v.link %>" class="nameLink" rel="<%= rel_type %>">
             <%- if opts[:use_federations] && v.federated? -%>
-              <img class="domainIcon" src="<%= v.domain_icon_href %>" alt="<%= v.federated? ?
-                t('controls.browse.listing.federation_source', :source => v.domainCName) : CurrentDomain.cname %>" />
+              <img class="domainIcon" src="<%= v.domain_icon_href %>" alt="<%= view_img_alt(v, CurrentDomain.cname) %>" />
             <%- end -%>
             <span itemprop="name" class="name"><%= v.name %></span>
           </a>
@@ -84,7 +66,7 @@
             </div>
           <% end %>
           <div class="expandBlock">
-            <div class="description collapsed"><%= sanitize raw(auto_link(h(raw(v.description)), :html => { :rel => 'nofollow external' })) %></div>
+            <div class="description collapsed"><%= view_format_description_text(v.description) %></div>
             <a class="expander" title="<%= t('controls.browse.actions.expand_section') %>" href="#Expand">
               <span class="icon"></span>
             </a>

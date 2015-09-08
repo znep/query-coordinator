@@ -9,6 +9,19 @@
   &.#{$className}.active #{$subselector}
     background-position: $left $top
 
+@mixin icon-font
+  font-family: 'socrata-apps'
+  speak: none
+  font-style: normal
+  font-weight: normal
+  font-variant: normal
+  text-transform: none
+  line-height: 1
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
+
 // icons/button_icons.png
 @mixin sprite-button-icons($subselector: '.icon')
   #{$subselector}
@@ -176,14 +189,56 @@ $new-view-color: #80acca
     background: none
     text-indent: 0
     &::before
+      @include icon-font
       content: "\e602"
-      font-family: 'socrata-apps'
       font-size: 13px
       color: $new-view-color
   &.error #{$subselector}
     background-position: 0 -598px
   &.typeUnpublished #{$subselector}
     background-position: 0 -611px
+
+
+.dataset-icon
+  margin-bottom: 2px
+  &[data-display-type]
+    background: none
+    text-indent: 0
+    &::before
+      @include icon-font
+      font-size: 13px
+
+  &[data-display-type="new_view"]
+    &::before
+      content: "\e602"
+      color: $new-view-color
+  &[data-display-type="calendar"]
+    &::before
+      content: "\e608"
+      color: blue
+  &[data-display-type="table"],
+  &[data-display-type="blist"]
+    &::before
+      content: "\e604"
+      color: blue
+  &[data-display-type="chart"]
+    &::before
+      content: "\e603"
+      color: blue
+  &[data-display-type="unpublished"]
+    &::before
+      content: "\e611"
+      color: blue
+
+.settings-icon
+  background: none
+  text-indent: 0
+  &::before
+    @include icon-font
+    font-size: 13px
+    color: gray
+    content: "\e60c"
+
 
 // icons/accordion_icons.png
 @mixin sprite-accordion-icons($subselector: '.icon')

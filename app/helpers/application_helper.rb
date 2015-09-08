@@ -1,6 +1,8 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
 
+  include BrowseHelper
+
 # RAILS OVERRIDE
   # if you provide a locale of nyan, we will nyan nyan nyan nyan nyan
   def translate(key, options = {})

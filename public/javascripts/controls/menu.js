@@ -3,7 +3,6 @@
     $.fn.menu = function(options)
     {
         var opts = $.extend({}, $.fn.menu.defaults, options);
-
         // Wrap in an extra array if necessary (one column)
         if (!_.isArray(opts.contents[0]))
         { opts.contents = [opts.contents]; }
@@ -33,14 +32,26 @@
                 }));
         });
 
-        var itemDirective = {  // inner array for rows
-            '.@class+': 'row.className',
-            'a .contents': 'row.text',
-            'a@href': 'row.href',
-            'a@rel': 'row.rel',
-            'a@title': 'row.title',
-            'a .subtext': 'row.subtext'
-        };
+        var isSettingsMenu = opts.menuButtonElement && opts.menuButtonElement.hasClass('settings-icon');
+
+        var itemDirective;
+
+        if (isSettingsMenu) {
+            itemDirective = {  // inner array for rows
+                '.@class+': 'row.className',
+                'a .contents': 'row.text',
+                'a@title': 'row.title'
+            };
+        } else {
+            itemDirective = {  // inner array for rows
+                '.@class+': 'row.className',
+                'a .contents': 'row.text',
+                'a@href': 'row.href',
+                'a@rel': 'row.rel',
+                'a@title': 'row.title',
+                'a .subtext': 'row.subtext'
+            };
+        }
 
         _.each(opts.additionalDataKeys, function(key)
         {
@@ -53,36 +64,68 @@
             { return $.htmlEscape(JSON.stringify(k.item[key])); };
         });
 
-        var renderDirective = {
-            '+a.menuButton': 'menuButtonContents',
-            'a.menuButton@title': 'menuButtonTitle',
-            'a.menuButton@class': 'menuButtonClass',
-            '.menuDropdown>ul>li': {
-                'column<-columns': { // outer array for columns
-                    'ul>li': {
-                        'row<-column': itemDirective
+        var renderDirective;
+        if (isSettingsMenu) {
+            renderDirective = {
+                '.menuDropdown>ul>li': {
+                    'column<-columns': { // outer array for columns
+                        'ul>li': {
+                            'row<-column': itemDirective
+                        }
                     }
                 }
-            }
-        };
+            };
+        } else {
+            renderDirective = {
+                '+a.menuButton': 'menuButtonContents',
+                'a.menuButton@title': 'menuButtonTitle',
+                'a.menuButton@class': 'menuButtonClass',
+                '.menuDropdown>ul>li': {
+                    'column<-columns': { // outer array for columns
+                        'ul>li': {
+                            'row<-column': itemDirective
+                        }
+                    }
+                }
+            };
+        }
 
         return this.each(function()
         {
             var $menuContainer = $(this);
-            $menuContainer
-                .empty()
-                .append(
-                    $.renderTemplate(
-                        'menu',
-                        { menuButtonClass: opts.menuButtonClass,
-                          menuButtonContents: opts.menuButtonContents,
-                          menuButtonTitle: opts.menuButtonTitle,
-                          columns: contents
-                        },
-                        renderDirective));
+            var $menuButton;
 
-            var $menuButton = $menuContainer.children('a');
+            if (isSettingsMenu) {
+                $menuContainer
+                    .empty()
+                    .append(
+                        $.renderTemplate(
+                            'settings.menu',
+                            { columns: contents },
+                            renderDirective));
+
+                $menuButton = opts.menuButtonElement;
+                $menuButton.attr('href', '#');
+            } else {
+                $menuContainer
+                    .empty()
+                    .append(
+                        $.renderTemplate(
+                            'menu',
+                            { menuButtonClass: opts.menuButtonClass,
+                              menuButtonContents: opts.menuButtonContents,
+                              menuButtonTitle: opts.menuButtonTitle,
+                              columns: contents
+                            },
+                            renderDirective));
+
+                $menuButton = $menuContainer.children('a');
+            }
+
             var $menuDropdown = $menuContainer.children('div');
+            if ($menuButton.hasClass('settings-icon')) {
+                $menuDropdown.addClass('settings');
+            }
 
             $menuButton.bind('click', function(event)
             {
@@ -191,10 +234,12 @@
             // clicked on link
             // Short-circuit test for event.target is document, since IE
             // throws errors when checking .has(document)
-            if (event.target == document ||
-                ($menuContainer.has(event.target).length === 0) ||
-                ($menuDropdown.find('a').has(event.target).length > 0) ||
-                $(event.target).is('.menuDropdown a'))
+            var clickedDocument = event.target == document;
+            var clickedOutsideMenu = event.target !== $menuButton[0] && $menuContainer.has(event.target).length === 0;
+            var clickedDropdownLink = $menuDropdown.find('a').has(event.target).length > 0;
+            var clickedDropdownOption = $(event.target).is('.menuDropdown a');
+
+            if (clickedDocument || clickedOutsideMenu || clickedDropdownLink || clickedDropdownOption)
             {
                 closeMenu(opts, $menuContainer, $menuButton, $menuDropdown);
             }
@@ -225,6 +270,7 @@
         menuButtonClass: 'menuButton',
         menuButtonContents: 'Menu',
         menuButtonTitle: 'Menu',
+        menuButtonElement: null,
         onOpen: function($menuContainer) {},
         onClose: function($menuContainer) {},
         parentContainer: null

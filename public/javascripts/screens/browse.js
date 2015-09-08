@@ -1,11 +1,41 @@
 $(function()
 {
     var $browse = $('.browseSection');
+    var isListingViewType = $browse.is('[data-view-type="listing"]');
+
+    var $listingDescriptions = $('.browse-listing-description');
+    function updateDescriptionControls() {
+        $listingDescriptions.
+          each(function() {
+              var $this = $(this);
+              $this.find('.browse-listing-description-controls').
+                toggleClass('hidden', parseFloat($this.css('max-height')) > $this.height());
+          });
+    }
+    updateDescriptionControls();
+
+    $listingDescriptions.
+        on('click', '[data-expand-action]', function(event) {
+            event.preventDefault();
+            $(event.delegateTarget).toggleClass('is-expanded');
+        });
+
+    $(window).on('resize', _.throttle(updateDescriptionControls, 100));
 
     // alias this method so external scripts can get at it
-    var getDS = blist.browse.getDS = function($item)
+    var getDS = blist.browse.getDS = function($item, browseType)
     {
-        var id = $item.closest('tr').attr('data-viewId');
+        var id;
+        switch (browseType) {
+            case 'listing':
+                id = $item.closest('.browse-list-item').attr('data-viewId');
+                break;
+            case 'table':
+            case 'rich':
+            default:
+                id = $item.closest('tr').attr('data-viewId');
+                break;
+        }
         if (!(blist.browse.datasets[id] instanceof Dataset))
         { blist.browse.datasets[id] = new Dataset(blist.browse.datasets[id]); }
         return blist.browse.datasets[id];
@@ -144,6 +174,7 @@ $(function()
 
         blist.datasetControls.hookUpShareMenu(ds, $content.find('.share.menu'),
                 {
+
                     menuButtonContents: $.tag([
                         {tagName: 'span', 'class': 'shareIcon'},
                         {tagName: 'span', 'class': 'shareText', contents: $.t('controls.browse.actions.share_button')}
@@ -189,6 +220,22 @@ $(function()
           .attr('rel', ds.isFederated() ? 'external' : '');
     };
 
+    function controlDeleteButton(e, ds) {
+        e.preventDefault();
+        if (confirm($.t('controls.browse.actions.delete.confirm', { dataset: ds.name })))
+        {
+            ds.remove(function() { $(e.target).closest('.browse-list-item').remove(); });
+        }
+    }
+
+    function controlPermissionsButton(e, ds) {
+        e.preventDefault();
+        var isPublic = ds.isPublic();
+        if (isPublic) { ds.makePrivate(); }
+        else { ds.makePublic(); }
+        e.target.textContent = $.t('controls.browse.actions.permissions.change_button.' + (!isPublic ? 'public' : 'private') + '_html');
+    }
+
     // Hook up expansion for list view
     $browse.find('table tbody tr').expander({
         animate: false,
@@ -208,12 +255,82 @@ $(function()
         expanderExpandedClass: 'expanded'
     });
 
+    // Hook up settings menu for listing view
+    $browse.find('.settings-icon').each(function(index, settingsIcon) {
+
+        // Find necessary component elements
+        var parentMediaItem = $(settingsIcon).closest('.media-item');
+        var $settingsMenu = parentMediaItem.siblings('.settings.menu');
+        var ds = getDS($(settingsIcon), 'listing');
+        // TODO:
+        //   - Handle permissions
+        //   - Add proper tool tips/titles
+        //   - Add styling
+        //   - refactor of controlPermissionsButton and controlDeleteButton and existing code
+        //   - Figure out how to access view type instead of hard coding it (line 245 above)
+
+        var canDelete = ds.hasRight('delete_view') && !ds.isFederated();
+
+        var deleteMenuItem = {
+            text: $.t('controls.browse.actions.delete.button'),
+            className: 'delete button',
+            href: '#Delete'
+        };
+
+        var canChangePermissions = (function(context) {
+            if (context.isNewView()) {
+                return false;
+            }
+            var publicGrant = _.detect(
+                context.grants || [],
+                function(grant) {
+                    return _.include(grant.flags || [], 'public');
+                }
+            );
+            return context.hasRight('update_view') &&
+                !context.isFederated()
+                && (!publicGrant || !publicGrant.inherited);
+        })(ds);
+
+        var permissionsMenuItem = {
+            text: $.t('controls.browse.actions.permissions.change_button.' + (ds.isPublic() ? 'public' : 'private') + '_html'),
+            className: 'permissions button',
+            href: '#Permissions'
+        };
+
+        var opts = {
+            menuButtonElement: $(settingsIcon),
+            contents: _.compact([
+                canChangePermissions ? permissionsMenuItem : null,
+                canDelete ? deleteMenuItem : null
+            ])
+        };
+
+        if (_.isEmpty(opts.contents)) {
+            $(settingsIcon).remove();
+        }
+        else {
+            $settingsMenu.menu(opts);
+        }
+
+        $settingsMenu.find('.permissions.button').click(function(e) {
+            controlPermissionsButton(e, ds);
+        });
+        $settingsMenu.find('.delete.button').click(function(e) {
+            controlDeleteButton(e, ds);
+        });
+    });
+
+
     // Sad hack: we don't have the stemmed version, so just highlight the words they typed.
     // Also remove special characters because they can break the regex.
-    var searchRegex = $.subKeyDefined(blist, 'browse.searchOptions.q') ?
-        new RegExp(blist.browse.searchOptions.q.trim().
+    var searchRegex = '';
+
+    if ($.subKeyDefined(blist, 'browse.searchOptions.q')) {
+        searchRegex = new RegExp(blist.browse.searchOptions.q.trim().
             replace(/[^\w\s]/gi, '').
-            replace(' ', '|'), 'gi') : '';
+            replace(' ', '|'), 'gi');
+    }
 
     if (!$.isBlank(searchRegex))
     {
@@ -221,17 +338,27 @@ $(function()
         // Assuming that dataset descriptions only have A tags inside them.
         $("table tbody tr").find("a.name, span.name, div.description, span.category, span.tags").each(function() {
             var $this = $(this),
-                a_links = $this.children().map(function()
-                    {
-                        var $child = $(this);
-                        $child.html($child.html()
-                            .replace(searchRegex, '<span class="highlight">$&</span>'));
-                        return $child[0].outerHTML;
-                    }),
+                a_links = $this.children().map(function() {
+                    var $child = $(this);
+                    $child.html($child.html()
+                        .replace(searchRegex, '<span class="highlight">$&</span>'));
+                    return $child[0].outerHTML;
+                }),
                 text_bits = _.map($this.html().split(/<a.*\/a>/), function(text)
                     { return text.replace(searchRegex, '<span class="highlight">$&</span>'); });
             $this.html(_.flatten(_.zip(text_bits, a_links)).join(''));
         });
+
+        $('.browse-list-item').
+            find('[data-search="highlight"]').
+            find('*').addBack().
+            contents().filter(function() {
+                return this.nodeType === 3;
+            }).
+            each(function() {
+                var newContent = $(this).text().replace(searchRegex,'<span class="highlight">$&</span>');
+                $(this).replaceWith(newContent);
+            });
     }
 
     var replaceBrokenThumbnails = function() {
@@ -355,20 +482,20 @@ $(function()
                 });
 
                 $scrollTarget = $this.filter(':eq(' + index + ')');
-                scrollDelta = $scrollTarget.offset().top - scrollPos;
+                scrollDelta = _.get($scrollTarget.offset(), 'top', 0) - scrollPos;
             },
             restore: function()
             {
                 if (scrollTarget)
                 { $(document).scrollTop(Math.max($(scrollTarget).offset().top - scrollDelta, 0)); }
                 else if ($scrollTarget)
-                { $(document).scrollTop($scrollTarget.offset().top - scrollDelta); }
+                { $(document).scrollTop(_.get($scrollTarget.offset(), 'top', 0) - scrollDelta); }
             }
         };
     };
 
     // Need to load rows related to the search
-    if (!$.isBlank(blist.browse.rowCount))
+    if (!isListingViewType && !$.isBlank(blist.browse.rowCount))
     {
         var stopEllipsis = $('.rowSearchResults span')
                 .dancingEllipsis({ text: $.t('controls.browse.row_results.matching_rows') }),
@@ -492,7 +619,7 @@ $(function()
         window.parent.blist &&
         window.parent.blist.iframeHack)
     {
-        $('.browseSection').on('click', 'a[rel=external]', function(evt)
+        $browse.on('click', 'a[rel=external]', function(evt)
         {
             if (!window.parent.blist.iframeHack.isModified())
             {

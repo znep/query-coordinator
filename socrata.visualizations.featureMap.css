@@ -1,9 +1,127 @@
 .feature-map-container {
   width: 100%;
   height: 100%;
+  font-size: 14px;
 }
 
 .feature-map {
   width: 100%;
   height: 100%;
+}
+
+.feature-map-locate-user-btn {
+  position: absolute;
+  display: none;
+  width: 2.5em;
+  height: 2.5em;
+  bottom: 1em;
+  right: 1em;
+  background-color: #fff;
+  border-radius: 4px;
+  border: none;
+  outline: none;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+  cursor: pointer;
+}
+
+.feature-map-locate-user-btn:hover {
+  background-color: #f4f4f4;
+}
+
+.leaflet-container ~ .feature-map-locate-user-btn {
+  display: block;
+}
+
+.feature-map-locate-user-btn .feature-map-locate-user-icon,
+.feature-map-locate-user-btn .feature-map-locate-user-error-icon {
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+.feature-map-locate-user-btn[data-locate-user-status="ready"] .feature-map-locate-user-icon {
+  display: block;
+}
+
+.feature-map-locate-user-btn[data-locate-user-status="busy"] .feature-map-locate-user-busy-spinner {
+  display: block;
+}
+
+.feature-map-locate-user-btn[data-locate-user-status="error"] .feature-map-locate-user-error-icon {
+  display: block;
+}
+
+.leaflet-marker-icon {
+  outline: none;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.leaflet-marker-icon:hover {
+  opacity: 0.65;
+}
+
+.feature-map-user-current-position-icon {
+  width: 1em !important;
+  height: 1em !important;
+  background-color: orange;
+  border-radius: 1em;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0.5rem rgba(0,0,0,0.5)
+}
+
+/**
+ * Busy spinner
+ */
+
+@-webkit-keyframes socrata-visualizations-spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@-moz-keyframes socrata-visualizations-spin {
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+
+@keyframes socrata-visualizations-spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.feature-map-locate-user-btn .feature-map-locate-user-busy-spinner {
+  position: relative;
+  display: none;
+}
+
+.feature-map-locate-user-btn .feature-map-locate-user-busy-spinner::after {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  content: '';
+  width: 1em;
+  height: 1em;
+  margin-top: -0.65em;
+  margin-left: -0.65em;
+  border: 0.25em solid;
+  border-color: #fff;
+  border-right-color: #000;
+  border-radius: 60%;
+  display: inline-block;
+  -webkit-animation: socrata-visualizations-spin 0.9s linear infinite;
+  -moz-animation: socrata-visualizations-spin 0.9s linear infinite;
+  animation: socrata-visualizations-spin 0.9s linear infinite;
+}
+
+.feature-map-locate-user-btn:hover .feature-map-locate-user-busy-spinner::after {
+  border-color: #f4f4f4;
+  border-right-color: #000;
 }

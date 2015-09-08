@@ -4,6 +4,7 @@ class StoryPublisher
 
   def initialize(user, params)
     creating_user_id = (user || {})['id']
+
     if creating_user_id.blank?
       raise ArgumentError.new('User is not valid')
     end
@@ -20,26 +21,13 @@ class StoryPublisher
 
   # @return [Boolean] success
   def publish
-    saved = @story.save
-
-    if saved
-      query_params = {
-        accessType: 'WEBSITE',
-        method: 'setPermission',
-        value: 'public.read'
-      }
-
-      CoreServer::update_view(clean_uid, core_request_headers, view, query_params)
-    end
-
-    saved
-  end
-
-  def errors
-    if @story.invalid?
-      @story.errors.messages
-    else
-      # Core Error Stuffs
+    begin
+      @story.save
+    rescue => exception
+      # TODO: Figure out what exceptions will actually be raised.
+      @story.errors.add(:persistence_exception => exception)
+      AirbrakeNotifier.report_error(exception, @story.errors.messages)
+      false
     end
   end
 end

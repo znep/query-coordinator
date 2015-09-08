@@ -16,6 +16,8 @@ Rails.application.routes.draw do
       resources :published_stories, only: [:create]
 
       post 'stories/:uid/drafts' => 'drafts#create'
+      post 'stories/:uid/published' => 'published#create'
+      put 'stories/:uid/permissions' => 'permissions#update'
     end
   end
 

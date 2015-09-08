@@ -16,8 +16,6 @@
     var _stories = {};
     var _blocks = {};
 
-    var _storySetPermissionsError;
-
     this.register(function(payload) {
 
       var action = payload.action;
@@ -259,10 +257,9 @@
     }
 
     function _setStoryPermissions(payload) {
-      utils.assertHasProperty(payload, 'storyUid');
-      utils.assertIsOneOfTypes(payload.storyUid, 'string');
       utils.assertIsOneOfTypes(payload, 'object');
-      utils.assertHasProperty(payload, 'isPublic');
+      utils.assertHasProperties(payload, 'storyUid', 'isPublic');
+      utils.assertIsOneOfTypes(payload.storyUid, 'string');
       utils.assertIsOneOfTypes(payload.isPublic, 'boolean');
 
       var storyUid = payload.storyUid;

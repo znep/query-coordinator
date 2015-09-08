@@ -45,12 +45,24 @@
 
         _$visibilityButton.addClass('busy');
       });
+
+      _$updatePublicButton.click(function() {
+        var permissions = storyteller.storyStore.getStoryPermissions(storyteller.userStoryUid);
+        if (permissions.isPublic) {
+          _manager.makePublic(_renderError);
+        } else {
+          _renderError('Your story has not been published and cannot be updated.');
+        }
+
+        _$updatePublicButton.addClass('busy');
+      });
     }
 
     function _renderError(message) {
       console.error(message);
       _$errorContainer.removeClass('hidden');
       _$visibilityButton.removeClass('busy');
+      _$updatePublicButton.removeClass('busy');
     }
 
     function _render() {
@@ -64,12 +76,13 @@
         _$updatePublicLabel.text('Published');
       } else {
         _$visibilityLabel.text('Private');
-        _$visibilityButton.text('Make Story Public')
+        _$visibilityButton.text('Make Story Public');
       }
 
       _$settingsPanelStoryStatus.toggleClass('hidden', !permissions.isPublic);
       _$errorContainer.addClass('hidden');
       _$visibilityButton.removeClass('busy');
+      _$updatePublicButton.removeClass('busy');
     }
   }
 

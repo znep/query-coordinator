@@ -12,7 +12,7 @@
     /**
      * @function makePublic
      */
-    this.makePublic = function (errorCallback) {
+    this.makePublic = function(errorCallback) {
       _updatePermissions(true).
         then(
           _handleRequestSuccess,
@@ -25,7 +25,7 @@
     /**
      * @function makePrivate
      */
-    this.makePrivate = function (errorCallback) {
+    this.makePrivate = function(errorCallback) {
       _updatePermissions(false).
         then(
           _handleRequestSuccess,
@@ -60,70 +60,25 @@
     function _updatePermissions(setPublic) {
       utils.assertIsOneOfTypes(setPublic, 'boolean');
 
-      var value = setPublic ? 'public.read' : 'private';
-      var query = 'accessType=WEBSITE&method=setPermission&value=' + value;
-      var url = '/views/{0}.json?{1}'.format(storyteller.userStoryUid, query);
-      var headers = _coreRequestHeaders();
-
       if (setPublic) {
-        return socrata.utils.storytellerApiRequest('published_stories', 'put', {
-          uid: storyteller.userStoryUid,
-          digest: storyteller.storyteller
-        });
+        return socrata.utils.storytellerApiRequest(
+          'stories/{0}/published'.format(storyteller.userStoryUid),
+          'POST',
+          {
+            digest: storyteller.storyStore.getDigest(
+              storyteller.userStoryUid
+            )
+          }
+        );
       } else {
-        return new Promise(function(resolve, reject) {
-
-          var xhr = new XMLHttpRequest();
-
-          function onFail() {
-
-            return reject({
-              status: parseInt(xhr.status, 10),
-              message: xhr.statusText
-            });
+        return socrata.utils.storytellerApiRequest(
+          'stories/{0}/permissions'.format(storyteller.userStoryUid),
+          'PUT',
+          {
+            isPublic: setPublic
           }
-
-          xhr.onload = function() {
-
-            var status = parseInt(xhr.status, 10);
-
-            if (status === 200) {
-              return resolve({isPublic: setPublic});
-            }
-
-            onFail();
-          };
-
-          xhr.onabort = onFail;
-          xhr.onerror = onFail;
-
-          xhr.open('PUT', url, true);
-
-          // Set user-defined headers.
-          _.each(headers, function(value, key) {
-            xhr.setRequestHeader(key, value);
-          });
-
-          xhr.send();
-        });
+        )
       }
-    }
-
-    function _coreRequestHeaders() {
-      var headers = {};
-
-      if (_.isEmpty(storyteller.config.coreServiceAppToken)) {
-        storyteller.notifyAirbrake({
-          error: {
-            message: '`storyteller.config.coreServiceAppToken` not configured.'
-          }
-        });
-      }
-
-      headers['X-App-Token'] = storyteller.config.coreServiceAppToken;
-      headers['X-CSRF-Token'] = decodeURIComponent(utils.getCookie('socrata-csrf-token'));
-
-      return headers;
     }
   }
 

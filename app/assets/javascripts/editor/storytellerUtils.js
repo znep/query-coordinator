@@ -3,7 +3,8 @@
   'use strict';
 
   var socrata = root.socrata = root.socrata || {};
-  root.socrata.utils = root.socrata.utils || {};
+  var storyteller = socrata.storyteller;
+  var utils = socrata.utils = socrata.utils || {};
 
   var storytellerUtils = {
 
@@ -151,10 +152,12 @@
 
     /**
      * @function storytellerApiRequest
+     * @description
+     * Makes a call to the API_PREFIX for Storyteller, and returns a Promise.
      *
-     * @param {String} path
-     * @param {String} requestType
-     * @param {Any} requestData
+     * @param {String} path - a valid Storyteller API URI.
+     * @param {String} requestType - any HTTP verb.
+     * @param {Any} requestData - any JSON-formatted data.
      *
      * @return {Promise}
      */
@@ -164,15 +167,36 @@
           url: Constants.API_PREFIX_PATH + path,
           type: requestType,
           dataType: 'json',
-          headers: {
-            'X-Socrata-Host': root.location.host,
-            'X-CSRF-Token': storyteller.csrfToken
-          },
+          headers: this.coreRequestHeaders(),
           data: requestData
         })
-      )
+      );
+    },
+
+    /**
+     * @function coreRequestHeaders
+     * @desc Generate an object containing X-App-Token and X-CSRF-Token
+     * @return {Object} - an object with 'X-App-Token' and 'X-CSRF-Token'
+     */
+    coreRequestHeaders: function() {
+      var headers = {};
+
+      if (_.isEmpty(storyteller.config.coreServiceAppToken)) {
+        storyteller.notifyAirbrake({
+          error: {
+            message: '`storyteller.config.coreServiceAppToken` not configured.'
+          }
+        });
+      }
+
+      headers['X-App-Token'] = storyteller.config.coreServiceAppToken;
+      headers['X-CSRF-Token'] = decodeURIComponent(
+        utils.getCookie('socrata-csrf-token')
+      );
+
+      return headers;
     }
   };
 
-  _.merge(root.socrata.utils, storytellerUtils);
+  _.merge(utils, storytellerUtils);
 })(window);

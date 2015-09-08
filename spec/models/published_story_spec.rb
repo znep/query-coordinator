@@ -70,4 +70,10 @@ RSpec.describe PublishedStory, type: :model do
       expect(story_with_serif_theme.theme).to eq('serif')
     end
   end
+
+  describe '#from_draft_story' do
+    it 'returns an instance of PublishedStory with the assigned attributes' do
+      draft_story = FactoryGirl.build(:draft_story, created_by: nil)
+    end
+  end
 end

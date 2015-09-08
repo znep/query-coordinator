@@ -103,11 +103,11 @@
 }
 
 .settings-panel-errors {
-  border: solid 1px #F7A700;
-  background-color: #F7E7CC;
+  border: solid 1px $settings-panel-errors-border-color;
+  background-color: $settings-panel-errors-background-color;
   padding: .75rem;
   font-size: 1.25rem;
-  color: #B37538;
+  color: $settings-panel-errors-color;
   font-weight: lighter;
 }
 

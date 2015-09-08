@@ -78,7 +78,6 @@
 
       _$visibilityButton.prop('disabled', !isStorySaved);
 
-      debugger;
       // TODO: Add these to i18n;
       if (permissions.isPublic) {
         _$visibilityLabel.text('Public');

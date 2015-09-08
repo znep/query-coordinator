@@ -7,7 +7,7 @@ describe('HistogramChart', function() {
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
   beforeEach(module('dataCards.services'));
-  beforeEach(module('dataCards/histogram.sass'));
+  beforeEach(module('dataCards/histogram.scss'));
 
   beforeEach(inject(function($injector) {
     testHelpers = $injector.get('testHelpers');

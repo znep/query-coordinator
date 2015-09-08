@@ -110,9 +110,9 @@ describe('table directive', function() {
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
-  beforeEach(module('dataCards/card.sass'));
-  beforeEach(module('dataCards/cards.sass'));
-  beforeEach(module('dataCards/table.sass'));
+  beforeEach(module('dataCards/card.scss'));
+  beforeEach(module('dataCards/cards.scss'));
+  beforeEach(module('dataCards/table.scss'));
 
   beforeEach(module(testJson));
   beforeEach(module(testNullJson));

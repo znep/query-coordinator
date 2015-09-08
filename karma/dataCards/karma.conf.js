@@ -47,7 +47,7 @@ module.exports = function ( karma ) {
       'public/javascripts/angular/**/!(angular-leaflet-directives.js)': ['coverage'],
       '**/*.html': ['ng-html2js'],
       '**/*.json': ['ng-html2js'],
-      '**/*.sass': ['sass']
+      '**/*.scss': ['scss']
     },
 
     /**
@@ -131,8 +131,8 @@ module.exports = function ( karma ) {
       'app/styles/socrata.visualizations.columnChart.css',
 
       'public/angular_templates/**/*.html',
-      'app/styles/dataCards/*.sass',
-      'app/styles/dataCards/theme/default.sass',
+      'app/styles/dataCards/*.scss',
+      'app/styles/dataCards/theme/default.scss',
       { pattern: 'public/stylesheets/images/**/*.{jpg,png}', watched: false, included: false, served: true },
 
       /* TEST MOCKS */
@@ -209,7 +209,7 @@ module.exports = function ( karma ) {
       'karma-coverage',
       'karma-mocha-reporter',
       'karma-ng-html2js-preprocessor',
-      require('../karma-sass-preprocessor.js')
+      require('../karma-scss-preprocessor.js')
     ],
 
     logLevel:  'WARN',

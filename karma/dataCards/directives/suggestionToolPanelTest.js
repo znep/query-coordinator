@@ -24,8 +24,8 @@ describe('Suggestion Tool Panel', function() {
   beforeEach(module('dataCards.services'));
   beforeEach(module('dataCards.directives'));
 
-  beforeEach(module('dataCards/cards.sass'));
-  beforeEach(module('dataCards/search.sass'));
+  beforeEach(module('dataCards/cards.scss'));
+  beforeEach(module('dataCards/search.scss'));
 
   beforeEach(function() {
     timeoutScheduler = Rx.Scheduler.timeout;

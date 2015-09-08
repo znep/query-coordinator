@@ -7,29 +7,28 @@ var escapeContent = function(content) {
 
 var TEMPLATE = 'angular.module(\'%s\', []).run(function() {\n' +
       'var name = \'%s\';\n' +
-      'var style = $("style.sass#" + name);\n' +
+      'var style = $("style.scss#" + name);\n' +
       'if (style.length == 0) {\n' +
-        '$("head").append("<style id=\'" + name + "\' class=\'sass\'>" + \'%s\' + "</style>");\n' +
+        '$("head").append("<style id=\'" + name + "\' class=\'scss\'>" + \'%s\' + "</style>");\n' +
       '}\n' +
     '});';
 
-
-var createSassPreprocessor = function(logger, basePath) {
+var createScssPreprocessor = function(logger, basePath) {
   config = typeof config === 'object' ? config : {};
 
-  var log = logger.create('preprocessor.sass');
+  var log = logger.create('preprocessor.scss');
 
   return function(content, file, done) {
     log.debug('Processing "%s".', file.originalPath);
     var dir = file.originalPath.replace(/\/app\/styles.*/, '') + '/app/styles';
     var htmlPath = file.originalPath.replace(basePath + '/', '').replace('app/styles/', '');
-    var sassId = htmlPath.replace(/[/.]/g, '-');
+    var scssId = htmlPath.replace(/[/.]/g, '-');
 
-    var child = spawn("bundle", ["exec", "sass", "-C", "-I", dir]);
+    var child = spawn("bundle", ["exec", "sass", "--scss", "-C", "-I", dir]);
     child.stdin.setEncoding('utf8');
     child.stdout.setEncoding('utf8');
     child.stderr.setEncoding('utf8');
-    child.stdin.write('@import sass-common\n' + content);
+    child.stdin.write('@import "scss-common";\n' + content);
 
     var data = '';
     child.stdout.on('data', function(buff) {
@@ -40,15 +39,14 @@ var createSassPreprocessor = function(logger, basePath) {
     });
     child.on('close', function(code, signal) {
       log.debug('Finished "%s".', file.originalPath);
-      done(util.format(TEMPLATE, htmlPath, sassId, escapeContent(data)));
+      done(util.format(TEMPLATE, htmlPath, scssId, escapeContent(data)));
     });
     child.stdin.end();
   };
 };
 
-createSassPreprocessor.$inject = ['logger', 'config.basePath'];
-
+createScssPreprocessor.$inject = ['logger', 'config.basePath'];
 
 module.exports = {
-  'preprocessor:sass': ['factory', createSassPreprocessor]
+  'preprocessor:scss': ['factory', createScssPreprocessor]
 }

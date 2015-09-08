@@ -8,7 +8,7 @@ describe('<soc-select/>', function() {
     module('dataCards');
     module('dataCards.directives');
     module('/angular_templates/dataCards/socSelect.html');
-    module('dataCards/cards.sass');
+    module('dataCards/cards.scss');
 
     inject(function($injector) {
       testHelpers = $injector.get('testHelpers');

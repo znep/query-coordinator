@@ -20,7 +20,7 @@ describe('featureMap', function() {
 
   beforeEach(module('dataCards.directives'));
 
-  beforeEach(module('dataCards/feature-map.sass'));
+  beforeEach(module('dataCards/feature-map.scss'));
 
   beforeEach(module('/angular_templates/dataCards/featureMap.html'));
 

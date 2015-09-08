@@ -170,7 +170,7 @@ describe('A Choropleth Directive', function() {
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
-  beforeEach(module('dataCards/choropleth.sass'));
+  beforeEach(module('dataCards/choropleth.scss'));
   beforeEach(module(testJson));
 
   beforeEach(inject(function($injector) {

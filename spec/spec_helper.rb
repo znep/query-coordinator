@@ -223,3 +223,15 @@ class Capybara::Session
     evaluate_script "(function(){ #{javascript} })()"
   end
 end
+
+# Force the "are you sure you want to discard your unsaved changes"
+# modal to come up at a deterministic time. If we don't, the next test
+# to interact with the browser will fail (Selenium will complain of an
+# unhandled modal).
+def unload_page_and_dismiss_confirmation_dialog
+  visit '/version'
+  begin
+    page.driver.browser.switch_to.alert.accept
+  rescue Selenium::WebDriver::Error::NoAlertPresentError
+  end
+end

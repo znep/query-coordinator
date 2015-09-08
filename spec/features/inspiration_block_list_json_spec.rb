@@ -52,6 +52,8 @@ RSpec.describe 'inspiration block list json', type: :feature, js: true do
       });"
     )
     # No need for assertions, as any javascript errors will cause the test to fail
+
+    unload_page_and_dismiss_confirmation_dialog
   end
 
 end

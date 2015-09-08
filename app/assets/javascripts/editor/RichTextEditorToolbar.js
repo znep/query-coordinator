@@ -148,6 +148,10 @@
 
       var toolbarButtons = [];
 
+      toolbarButtons.push(
+        $( '<span>', { 'class': 'rich-text-editor-toolbar-divider' })
+      );
+
       for (var i = 0; i < group.length; i++) {
 
         var buttonClass = 'rich-text-editor-toolbar-btn ' +

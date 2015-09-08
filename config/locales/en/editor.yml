@@ -43,6 +43,8 @@ en:
           has_been_published: 'This story has been published.'
           published_and_updated: 'This story is public and updated.'
           previously_published: 'There is a previously published version of this story. Updating will make your changes visible to everyone.'
+        errors:
+          not_published_not_updated: 'Your story has not been published and cannot be updated.'
     asset_selector:
       choose_provider_heading: 'Select data or media provider'
       back_button_text: 'Back'

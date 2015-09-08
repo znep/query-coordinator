@@ -14,6 +14,7 @@
     var _$updatePublicLabel;
     var _$updatePublicButton;
     var _$updatePublicText;
+    var _$publishingHelpText;
     var _$errorContainer;
 
     var _$settingsPanelPublishing = $('.settings-panel-publishing');
@@ -29,6 +30,8 @@
     _$updatePublicLabel = _$settingsPanelPublishing.find('.settings-panel-story-status h3');
     _$updatePublicButton = _$settingsPanelPublishing.find('.settings-panel-story-status button');
     _$updatePublicText = _$updatePublicButton.find('span');
+
+    _$publishingHelpText = _$settingsPanelPublishing.find('.settings-panel-story-publishing-help-text');
 
     _$errorContainer = $('.settings-panel .settings-panel-errors');
 
@@ -59,7 +62,7 @@
         if (permissions.isPublic) {
           _manager.makePublic(_renderError);
         } else {
-          _renderError('Your story has not been published and cannot be updated.');
+          _renderError(I18n.t('settings_panel.publishing_section.errors.not_published_not_updated'));
         }
 
         _$updatePublicButton.addClass('busy');
@@ -78,16 +81,17 @@
 
       _$visibilityButton.prop('disabled', !isStorySaved);
 
-      // TODO: Add these to i18n;
       if (permissions.isPublic) {
-        _$visibilityLabel.text('Public');
-        _$visibilityButtonText.text('Make Story Private');
+        _$visibilityLabel.text(I18n.t('settings_panel.publishing_section.visibility.public'));
+        _$visibilityButtonText.text(I18n.t('settings_panel.publishing_section.visibility.make_story_private'));
         _$updatePublicButton.prop('disabled', true);
-        _$updatePublicLabel.text('Published');
+        _$updatePublicLabel.text(I18n.t('settings_panel.publishing_section.status.published'));
+        _$publishingHelpText.text(I18n.t('settings_panel.publishing_section.messages.has_been_published'));
       } else {
-        _$visibilityLabel.text('Private');
-        _$visibilityButtonText.text('Make Story Public');
+        _$visibilityLabel.text(I18n.t('settings_panel.publishing_section.visibility.private'));
+        _$visibilityButtonText.text(I18n.t('settings_panel.publishing_section.visibility.make_story_public'));
         _$updatePublicButton.prop('disabled', true);
+        _$publishingHelpText.text(I18n.t('settings_panel.publishing_section.messages.can_be_shared_publically'));
       }
 
       _$settingsPanelStoryStatus.toggleClass('hidden', !permissions.isPublic);

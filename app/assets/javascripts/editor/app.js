@@ -265,6 +265,7 @@ $(document).on('ready', function() {
 
   // Save button
   $('#story-save-btn').storySaveButton();
+  $('#story-save-error-bar').storySaveErrorBar();
 
   // Modals
   $('.preview-btn').on('click', function() {

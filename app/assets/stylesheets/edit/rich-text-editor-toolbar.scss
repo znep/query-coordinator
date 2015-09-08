@@ -1,5 +1,9 @@
 @import 'lib/variables';
 
+body.story-save-error #rich-text-editor-toolbar {
+  top: $story-save-error-bar-reserved-height + $rich-text-editor-toolbar-top-offset;
+}
+
 #rich-text-editor-toolbar {
   @include media-query-property(
     'left',

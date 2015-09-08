@@ -96,6 +96,30 @@ body header {
   }
 }
 
+#story-save-error-bar {
+  position: absolute;
+  top: 7rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: $story-save-error-z-index;
+
+  .container {
+    padding: 0.25rem 1rem;
+    color: $story-save-error-bar-color;
+    background: $story-save-error-bar-background;
+    border: 1px solid $story-save-error-bar-border-color;
+
+    button {
+      border: none;
+      outline: none;
+      color: $story-save-error-bar-color;
+      background-color: transparent;
+      text-decoration: underline;
+    }
+  }
+}
+
 #create-story-title-input {
   width: 100%;
   font-size: 2rem;

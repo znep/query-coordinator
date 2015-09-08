@@ -12,6 +12,9 @@ en:
       empty_story_warning: 'Oh, no! Your story is empty! To get started, drag a block to the canvas.'
       remove_block_confirmation: 'Are you sure you want to remove this block?'
       page_close_confirmation: 'You have unsaved changes to this story.'
+      story_save_error_try_again: 'Try again.'
+      story_save_error_generic: 'There was an error saving.'
+      story_save_error_conflict: 'There was a conflict saving. To continue, you need to reload the page.'
       components:
         asset_selector:
           insert_btn: 'Insert...'

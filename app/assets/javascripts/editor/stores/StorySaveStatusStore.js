@@ -19,6 +19,7 @@
     var _saveInProgress = false;
     // If a conflict ever happens, disable save for the entire life of this page :(
     var _poisonedWithSaveConflictForever = false;
+    var _lastSaveError = null;
 
     _.extend(this, new storyteller.Store());
 
@@ -37,12 +38,16 @@
           storyteller.dispatcher.waitFor([ storyteller.storyStore.getDispatcherToken() ]);
           _lastSavedSerializedStory = storyteller.storyStore.serializeStory(forStoryUid);
           _saveInProgress = false;
+          _lastSaveError = null;
           self._emitChange();
           break;
 
         case Constants.STORY_SAVE_ERROR:
           _saveInProgress = false;
           _poisonedWithSaveConflictForever = _poisonedWithSaveConflictForever || payload.conflict;
+          _lastSaveError = {
+            conflict: payload.conflict
+          };
           self._emitChange();
         break;
 
@@ -51,6 +56,7 @@
             throw new Error('Can only have one pending save at a time.');
           }
           _saveInProgress = true;
+          _lastSaveError = null;
           self._emitChange();
         break;
       }
@@ -77,6 +83,19 @@
 
     self.isSaveImpossibleDueToConflict = function() {
       return _poisonedWithSaveConflictForever;
+    };
+
+    /**
+     * Returns the last save error, if any. The error is cleared when
+     * a new save is started.
+     *
+     * @typedef {Object} SaveError
+     * @property {boolean} conflict - whether or not there was a save conflict.
+     *
+     * @return {SaveError | null}
+     */
+    self.lastSaveError = function() {
+      return _lastSaveError;
     };
   }
 

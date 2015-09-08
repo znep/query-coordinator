@@ -112,6 +112,7 @@ describe('storySaveButton jQuery plugin', function() {
         mockStore.mockIsSaved(false);
         $button.click();
         sinon.assert.calledWithExactly(stub, standardMocks.validStoryUid);
+        stub.restore();
       });
     });
   });

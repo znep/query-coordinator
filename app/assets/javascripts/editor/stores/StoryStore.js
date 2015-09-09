@@ -616,9 +616,13 @@
       var serializedStory = storyteller.historyStore.getStateAtCursor();
 
       if (serializedStory) {
+        var deserializedStory = JSON.parse(serializedStory);
+        // Make sure we keep the latest digest - if a user undoes past a save,
+        // saving a draft should continue to work.
+        deserializedStory.digest = self.getStoryDigest(deserializedStory.uid);
 
         _setStory(
-          JSON.parse(serializedStory),
+          deserializedStory,
           true
         );
       }

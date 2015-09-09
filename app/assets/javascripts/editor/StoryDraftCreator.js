@@ -27,6 +27,8 @@
       storyUid: storyUid
     });
 
+    utils.assert(storyDigest && storyDigest.length > 0, 'storyDigest is not present, cannot save.');
+
     return $.ajax({
       type: 'POST',
       url: '/stories/api/v1/stories/{0}/drafts'.format(storyUid),

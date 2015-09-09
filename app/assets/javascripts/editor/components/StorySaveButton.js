@@ -12,15 +12,15 @@
   $.fn.storySaveButton = function(options) {
     var $this = $(this);
     var _holdInSavedState = false; // We need to keep displaying 'Saved!' for a bit.
-    var maybeGoToSave;
+    var maybeHoldInSaveState;
 
     utils.assert(storyteller.storySaveStatusStore, 'storySaveStatusStore must be instantiated');
     utils.assertIsOneOfTypes(options, 'object', 'undefined');
 
-    options = _.merge({}, { savedMessageTimeout: 5000 }, options);
+    options = _.extend({}, { savedMessageTimeout: 5000 }, options);
 
     // Stay in _holdInSavedState until things settle down for 5 seconds.
-    maybeGoToSave = _.debounce(function() {
+    maybeHoldInSaveState = _.debounce(function() {
       if (_holdInSavedState) {
         _holdInSavedState = false;
         render();
@@ -33,9 +33,8 @@
       var isStorySaveInProgress = storyteller.storySaveStatusStore.isStorySaveInProgress();
       var isSaveImpossible = storyteller.storySaveStatusStore.isSaveImpossibleDueToConflict();
       var translationKey;
-      var text;
 
-      maybeGoToSave();
+      maybeHoldInSaveState();
 
       if (isSaveImpossible) {
         translationKey = 'editor.story_save_button.idle';
@@ -51,9 +50,7 @@
         translationKey = 'editor.story_save_button.unsaved';
       }
 
-      text = I18n.t(translationKey);
-
-      $this.text(text);
+      $this.text(I18n.t(translationKey));
       $this.prop('disabled', isStorySaveInProgress || isStorySaved || isSaveImpossible);
     }
 

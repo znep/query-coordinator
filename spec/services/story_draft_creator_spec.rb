@@ -26,7 +26,7 @@ RSpec.describe StoryDraftCreator do
 
   # individual blocks
   def valid_new_block
-    { id: 'temp1234', layout: '12', components: [ { type: 'text', value: 'Hello, world!'} ] }.freeze
+    { id: 'temp1234', layout: '12', components: [ { type: 'html', value: 'Hello, world!'} ] }.freeze
   end
 
   def valid_existing_block

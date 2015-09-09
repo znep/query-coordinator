@@ -7,7 +7,7 @@ module SampleBlocksHelper
         'layout': '12',
         'components': [
           {
-            'type' => 'text',
+            'type' => 'html',
             # interpolate string, but reserve double-quotes for html attributes
             'value' => %{<h1>#{I18n.t('sample_story.title')}<br></h1>}
           }

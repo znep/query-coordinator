@@ -30,6 +30,7 @@ $(document).on('ready', function() {
   };
 
   storyteller.assetFinder = new storyteller.AssetFinder();
+  storyteller.storyPermissionsManager = new storyteller.StoryPermissionsManager();
 
   var richTextFormats = [
     { id: 'heading1', tag: 'h1', name: 'Heading 1', dropdown: true },

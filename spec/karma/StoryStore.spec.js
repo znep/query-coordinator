@@ -19,7 +19,7 @@ describe('StoryStore', function() {
   var block1Layout = '6-6';
   var block1Components = [
     { type: 'image', value: 'fakeImageFile.png' },
-    { type: 'text', value: 'First Block' }
+    { type: 'html', value: 'First Block' }
   ];
   var block1Content = {
     'id': block1Id,
@@ -29,11 +29,11 @@ describe('StoryStore', function() {
 
   var block2Id = 'block2';
   var block2Layout = '12';
-  var block2Components = [ { type: 'text', value: 'Second Block' } ];
+  var block2Components = [ { type: 'html', value: 'Second Block' } ];
 
   var block3Id = 'block3';
   var block3Layout = '12';
-  var block3Components = [ { type: 'text', value: 'Third Block' } ];
+  var block3Components = [ { type: 'html', value: 'Third Block' } ];
   var storyteller = window.socrata.storyteller;
 
   function dispatch(action) {
@@ -770,7 +770,7 @@ describe('StoryStore', function() {
                 invalidBlockObject: {
                   layout: '12',
                   components: [
-                    { type: 'text', value: 'test' }
+                    { type: 'html', value: 'test' }
                   ]
                 }
               }
@@ -793,7 +793,7 @@ describe('StoryStore', function() {
                 invalidBlockObject: {
                   id: 'testBlockId',
                   components: [
-                    { type: 'text', value: 'test' }
+                    { type: 'html', value: 'test' }
                   ]
                 }
               }
@@ -1574,7 +1574,7 @@ describe('StoryStore', function() {
 
       beforeEach(function() {
         validComponentIndex = 1;
-        validComponentType = 'text';
+        validComponentType = 'html';
         validComponentValue = 'updated component text';
       });
 

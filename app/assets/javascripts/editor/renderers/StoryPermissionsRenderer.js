@@ -4,8 +4,6 @@
   var storyteller = root.socrata.storyteller;
   var utils = root.socrata.utils;
 
-  var _manager = new storyteller.StoryPermissionsManager();
-
   function StoryPermissionsRenderer() {
     var _$settingsPanelStoryStatus;
     var _$visibilityLabel;
@@ -13,14 +11,13 @@
     var _$visibilityButtonText;
     var _$updatePublicLabel;
     var _$updatePublicButton;
-    var _$updatePublicText;
     var _$publishingHelpText;
     var _$errorContainer;
 
     var _$settingsPanelPublishing = $('.settings-panel-publishing');
 
     utils.assert(storyteller.storySaveStatusStore, 'storySaveStatusStore must be instantiated');
-    utils.assert(_$settingsPanelPublishing.length === 1);
+    utils.assert(_$settingsPanelPublishing.length === 1, 'Cannot find a publishing section in settings panel.');
 
     _$settingsPanelStoryStatus = _$settingsPanelPublishing.find('.settings-panel-story-status');
 
@@ -30,7 +27,6 @@
 
     _$updatePublicLabel = _$settingsPanelPublishing.find('.settings-panel-story-status h3');
     _$updatePublicButton = _$settingsPanelPublishing.find('.settings-panel-story-status button');
-    _$updatePublicText = _$updatePublicButton.find('span');
 
     _$publishingHelpText = _$settingsPanelPublishing.find('.settings-panel-story-publishing-help-text');
 
@@ -45,27 +41,27 @@
 
       _$visibilityButton.click(function() {
         var permissions = storyteller.storyStore.getStoryPermissions(storyteller.userStoryUid);
-        _$errorContainer.addClass('hidden');
 
         if (permissions.isPublic) {
-          _manager.makePrivate(_renderError);
+          storyteller.storyPermissionsManager.makePrivate(_renderError);
         } else {
-          _manager.makePublic(_renderError);
+          storyteller.storyPermissionsManager.makePublic(_renderError);
         }
 
+        _$errorContainer.addClass('hidden');
         _$visibilityButton.addClass('busy');
       });
 
       _$updatePublicButton.click(function() {
         var permissions = storyteller.storyStore.getStoryPermissions(storyteller.userStoryUid);
-        _$errorContainer.addClass('hidden');
 
         if (permissions.isPublic) {
-          _manager.makePublic(_renderError);
+          storyteller.storyPermissionsManager.makePublic(_renderError);
         } else {
           _renderError(I18n.t('settings_panel.publishing_section.errors.not_published_not_updated'));
         }
 
+        _$errorContainer.addClass('hidden');
         _$updatePublicButton.addClass('busy');
       });
     }
@@ -77,7 +73,7 @@
       return publishedStory.digest !== digest;
     }
 
-    function _renderError() {
+    function _renderError(error) {
       _$errorContainer.removeClass('hidden');
       _$visibilityButton.removeClass('busy');
       _$updatePublicButton.removeClass('busy');

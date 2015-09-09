@@ -10,6 +10,10 @@ en:
   editor:
     empty_story_warning: 'Oh, no! Your story is empty! To get started, drag a block to the canvas.'
     remove_block_confirmation: 'Are you sure you want to remove this block?'
+    page_close_confirmation: 'You have unsaved changes to this story.'
+    story_save_error_try_again: 'Try again.'
+    story_save_error_generic: 'There was an error saving.'
+    story_save_error_conflict: 'There was a conflict saving. To continue, you need to reload the page.'
     components:
       asset_selector:
         insert_btn: 'Insert...'
@@ -60,6 +64,11 @@ en:
         button_text: 'Vizualization'
         choose_dataset_heading: 'Choose a dataset to visualize'
         configure_vizualization_heading: 'Choose data to visualize'
+    story_save_button:
+      saved: 'Saved!'
+      saving: 'Saving...'
+      unsaved: 'Save'
+      idle: 'Save'
   visualizations:
     no_value_placeholder: '(No value)'
     flyout:

@@ -37,17 +37,17 @@
       clearHoldInSaveStateAfterDebounce();
 
       if (isSaveImpossible) {
-        translationKey = 'editor.story_save_button.idle';
+        translationKey = 'story_save_button.idle';
       } else if (isStorySaveInProgress) {
-        translationKey = 'editor.story_save_button.saving';
+        translationKey = 'story_save_button.saving';
       } else if (isStorySaved) {
         if (holdInSavedState) {
-          translationKey = 'editor.story_save_button.saved';
+          translationKey = 'story_save_button.saved';
         } else {
-          translationKey = 'editor.story_save_button.idle';
+          translationKey = 'story_save_button.idle';
         }
       } else {
-        translationKey = 'editor.story_save_button.unsaved';
+        translationKey = 'story_save_button.unsaved';
       }
 
       $this.text(I18n.t(translationKey));

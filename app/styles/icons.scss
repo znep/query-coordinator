@@ -251,7 +251,8 @@ $new-view-color: #80acca;
   &.typeHref #{$subselector} {
     background-position: 0 -585px;
   }
-  &.typeNew_view #{$subselector} {
+  &.typeNew_view #{$subselector},
+  &.typeData_lens #{$subselector} {
     background: none;
     text-indent: 0;
     &::before {
@@ -279,7 +280,8 @@ $new-view-color: #80acca;
       font-size: 13px;
     }
   }
-  &[data-display-type="new_view"] {
+  &[data-display-type="new_view"],
+  &[data-display-type="data_lens"] {
     &::before {
       content: "";
       color: $new-view-color;
@@ -429,7 +431,8 @@ $new-view-color: #80acca;
   &.typeHref #{$subselector} {
     background-position: 0 -450px;
   }
-  &.typeNew_view #{$subselector} {
+  &.typeNew_view #{$subselector},
+  &.typeData_lens #{$subselector} {
     background: none;
     text-indent: 0;
     &::before {
@@ -510,7 +513,8 @@ $new-view-color: #80acca;
   &.typeHref #{$subselector} {
     background-position: 0 -750px;
   }
-  &.typeNew_view #{$subselector} {
+  &.typeNew_view #{$subselector},
+  &.typeData_lens #{$subselector} {
     background: none;
     text-indent: 0;
     &::before {

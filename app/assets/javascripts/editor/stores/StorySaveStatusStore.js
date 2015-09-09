@@ -40,16 +40,16 @@
           _saveInProgress = false;
           _lastSaveError = null;
           self._emitChange();
-        break;
+          break;
 
-        case Constants.STORY_SAVE_ERROR:
+        case Constants.STORY_SAVE_FAILED:
           _saveInProgress = false;
           _poisonedWithSaveConflictForever = _poisonedWithSaveConflictForever || payload.conflict;
           _lastSaveError = {
             conflict: payload.conflict
           };
           self._emitChange();
-        break;
+          break;
 
         case Constants.STORY_SAVE_STARTED:
           if (_saveInProgress) {
@@ -58,7 +58,7 @@
           _saveInProgress = true;
           _lastSaveError = null;
           self._emitChange();
-        break;
+          break;
       }
 
     });

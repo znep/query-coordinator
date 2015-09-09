@@ -92,7 +92,7 @@ describe('StorySaveStatusStore', function() {
         describe('that errors', function() {
           beforeEach(function() {
             storyteller.dispatcher.dispatch({
-              action: Constants.STORY_SAVE_ERROR,
+              action: Constants.STORY_SAVE_FAILED,
               storyUid: standardMocks.validStoryUid,
               message: 'foo'
             });

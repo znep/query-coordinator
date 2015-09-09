@@ -78,7 +78,7 @@ describe('StoryDraftCreator', function() {
 
       it('should dispatch STORY_SAVED with the new digest', function(done) {
         storyteller.dispatcher.register(function(payload) {
-          assert.notEqual(payload.action, Constants.STORY_SAVE_ERROR);
+          assert.notEqual(payload.action, Constants.STORY_SAVE_FAILED);
           if(payload.action === Constants.STORY_SAVED) {
             assert.equal(payload.storyUid, standardMocks.validStoryUid);
             assert.equal(payload.digest, newDigest);
@@ -112,10 +112,10 @@ describe('StoryDraftCreator', function() {
         });
       });
 
-      it('should dispatch STORY_SAVE_ERROR', function(done) {
+      it('should dispatch STORY_SAVE_FAILED', function(done) {
         storyteller.dispatcher.register(function(payload) {
           assert.notEqual(payload.action, Constants.STORY_SAVED);
-          if(payload.action === Constants.STORY_SAVE_ERROR) {
+          if(payload.action === Constants.STORY_SAVE_FAILED) {
             assert.equal(payload.storyUid, standardMocks.validStoryUid);
             done();
           }
@@ -145,10 +145,10 @@ describe('StoryDraftCreator', function() {
         });
       });
 
-      it('should dispatch STORY_SAVE_ERROR', function(done) {
+      it('should dispatch STORY_SAVE_FAILED', function(done) {
         storyteller.dispatcher.register(function(payload) {
           assert.notEqual(payload.action, Constants.STORY_SAVED);
-          if(payload.action === Constants.STORY_SAVE_ERROR) {
+          if(payload.action === Constants.STORY_SAVE_FAILED) {
             assert.equal(payload.storyUid, standardMocks.validStoryUid);
             done();
           }

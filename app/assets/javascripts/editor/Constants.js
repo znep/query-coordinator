@@ -22,7 +22,7 @@ var Constants = {
 
   // {string} storyUid
   // {string} message
-  STORY_SAVE_ERROR: 'STORY_SAVE_ERROR',
+  STORY_SAVE_FAILED: 'STORY_SAVE_FAILED',
 
   // {object} data: Story data object.
   STORY_OVERWRITE_STATE: 'STORY_OVERWRITE_STATE',

@@ -58,7 +58,7 @@
     }).
     fail(function(data) {
       storyteller.dispatcher.dispatch({
-        action: Constants.STORY_SAVE_ERROR,
+        action: Constants.STORY_SAVE_FAILED,
         storyUid: storyUid,
         message: data,
         // A 412 (Precondition Failed) means our If-Match check failed, indicating someone else already
@@ -73,7 +73,7 @@
   storyteller.StoryDraftCreator = {
     /**
      * Saves a new draft of a story.
-     * Emits STORY_SAVE_STARTED, STORY_SAVE_ERROR, and STORY_SAVED as steps are completed.
+     * Emits STORY_SAVE_STARTED, STORY_SAVE_FAILED, and STORY_SAVED as steps are completed.
      *
      * @param {string} storyUid - The UID of the story to save.
      * @return {Promise<string>} A promise for the new story draft's digest.

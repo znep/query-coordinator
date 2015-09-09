@@ -476,31 +476,31 @@
       ).append([
 
         $(
-          '<button>',
+          '<span>',
           {
-            'class': 'block-edit-controls-move-up-btn',
+            'class': 'block-edit-controls-move-up-btn btn icon-arrow-up2',
             'data-block-id': blockId,
             'data-block-move-action': Constants.STORY_MOVE_BLOCK_UP
           }
-        ).append('&#9650;'),
+        ),
 
         $(
-          '<button>',
+          '<span>',
           {
-            'class': 'block-edit-controls-move-down-btn',
+            'class': 'block-edit-controls-move-down-btn btn icon-arrow-down2',
             'data-block-id': blockId,
             'data-block-move-action': Constants.STORY_MOVE_BLOCK_DOWN
           }
-        ).append('&#9660;'),
+        ),
 
         $(
-          '<button>',
+          '<span>',
           {
-            'class': 'block-edit-controls-delete-btn',
+            'class': 'block-edit-controls-delete-btn btn icon-cross2',
             'data-block-id': blockId,
             'data-block-delete-action': Constants.STORY_DELETE_BLOCK
           }
-        ).append('&#9587;')
+        )
 
       ]);
     }

@@ -265,9 +265,5 @@ $(document).on('ready', function() {
   // Story title
   $('.story-title').storyTitle(storyteller.userStoryUid);
 
-  // Modals
-  $('.preview-btn').on('click', function() {
-
-  });
 });
 

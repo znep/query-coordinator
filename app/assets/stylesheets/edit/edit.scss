@@ -6,6 +6,15 @@ html {
   overflow-y: auto;
   min-width: 768px;
 }
+// 100    Extra Light or Ultra Light
+// 200    Light or Thin
+// 300    Book or Demi
+// 400    Normal or Regular
+// 500    Medium
+// 600    Semibold, Demibold
+// 700    Bold
+// 800    Black, Extra Bold or Heavy
+// 900    Extra Black, Fat, Poster or Ultra Black
 
 body {
   margin: 0;
@@ -13,7 +22,7 @@ body {
   background-color: $body-bg-color;
 }
 
-body header {
+body .header-main {
   @include unselectable();
   @include clearfix();
 
@@ -22,38 +31,91 @@ body header {
   height: $header-height;
   left: 0;
   top: 0;
-  color: $header-color;
+  font-size: 15px;
+  color: $header-text-color;
   background-color: $header-bg-color;
   box-shadow: 0 $header-box-shadow-size $header-box-shadow-size $header-box-shadow-color;
   box-sizing: content-box;
   z-index: $site-header-z-index;
+  min-width: 73rem; // current point where header would bump to line 2
+
+  &:after {
+    position: absolute;
+    top: $header-height;
+    left: 0px;
+    width: 100%;
+    height: 75px;
+    pointer-events: none;
+    // Gradient from white, start transitioning to transparent at 25%
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,rgba(255,255,255,1)), color-stop(25%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 2%,rgba(255,255,255,1) 25%,rgba(255,255,255,0) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(255,255,255,1) 2%,rgba(255,255,255,1) 25%,rgba(255,255,255,0) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(255,255,255,1) 2%,rgba(255,255,255,1) 25%,rgba(255,255,255,0) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 2%,rgba(255,255,255,1) 25%,rgba(255,255,255,0) 100%); /* W3C */
+  }
 
   .header-right {
     display: inline-block;
     float: right;
     line-height: $header-height;
-    font-size: 1.5em;
-    font-weight: lighter;
+    font-size: 1.5rem;
+    font-weight: 100;
+    padding-right: 1rem;
+  }
 
-    .menu a {
-      $button-border-width: 5px;
-      border: $button-border-width solid transparent;
-      border-radius: 3px;
-      &.active {
-        border: $button-border-width solid $header-color;
-        background: $header-color;
-        color: $header-bg-color;
-      }
-    }
+  .menu-divider {  // line divider
+    height: 3.2rem;
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    vertical-align: middle;
+    border-left: 1px solid #6B6B6B;
   }
 
   .story-title {
     display: inline-block;
-    margin-left: $header-title-left-margin;
+    margin: 0 1em;
     line-height: $header-height;
-    font-size: $header-title-height;
-    font-weight: bold;
+    font-weight: 600;
     color: $header-story-title-color;
+
+    &:hover,
+    &:active {
+      color: $header-story-title-hover-color;
+    }
+  }
+
+  // Buttons
+  .btn {
+    color: $header-text-color;
+    background-color: transparent;
+    font-weight: lighter;
+
+    &:hover,
+    &:active {
+      color: $header-link-hover-color;
+      background-color: transparent;
+    }
+
+    &:disabled {
+      color: $header-btn-disabled-color;
+    }
+  }
+
+  .undo-btn,
+  .redo-btn {
+    padding: 0 0.3rem;;
+    font-size: 1.9rem;
+    position: relative;
+    top: 3px;
+  }
+
+  .redo-btn {
+    margin-right: 1.2rem;
+  }
+
+  .preview-btn span {
+    margin-left: 3px;
   }
 
   .settings-panel-btn {
@@ -61,8 +123,8 @@ body header {
     float: left;
     width: $header-height;
     height: 100%;
-    color: $header-bg-color;
-    font-size: 38px;
+    color: $settings-panel-btn-color;
+    font-size: 3.5rem;
     line-height: $header-height;
     text-align: center;
     background-color: $header-accent-color;
@@ -81,16 +143,19 @@ body header {
     }
   }
 
-  .content-panel-btn {
-    color: $header-color;
-    background-color: transparent;
+  .panel-btn {
+    padding: 0.8rem 1.5rem;
 
-    &:hover, &.active {
-      color: lighten($header-color, 10%);
-      background-color: lighten($header-bg-color, 10%);
+    &.active {
+      color: $header-text-color;
+      background-color: $header-link-hover-bg-color;
+    }
+
+    span {
+      font-size: 1.1rem;
     }
   }
-}
+} //end .header-main
 
 #create-story-title-input {
   width: 100%;
@@ -107,8 +172,8 @@ body header {
 
 ul.menu {
   li, ul {
-    display: inline;
-    padding-right: 1em;
+    display: inline-block;
+    height: $header-height;
   }
 }
 

@@ -2,7 +2,6 @@
 $header-height: 6rem;
 $header-margin: 0.7rem;
 $header-title-height: 1.7em;
-$header-title-left-margin: 0.5em;
 $header-right-pane-padding: 1em;
 $header-box-shadow-size: 0.15rem;
 
@@ -42,50 +41,42 @@ $user-story-container-vertical-padding: 8rem;
 $stack-to-single-column-width: 50rem;
 
 // Block edit controls
-$block-edit-controls-width: 3rem;
-$block-edit-controls-padding: 1rem;
-$block-edit-controls-outer-width: $block-edit-controls-width + $block-edit-controls-padding;
+$block-edit-controls-width: 2.5rem;
+$block-edit-controls-height: 9.3rem;
 
 // Block component column widths (small)
-$col3-block-edit-content-width-small: ($main-content-width-small - $block-edit-controls-width - $block-edit-controls-padding) * (1/4);
-$col4-block-edit-content-width-small: ($main-content-width-small - $block-edit-controls-width - $block-edit-controls-padding) * (1/3);
-$col6-block-edit-content-width-small: ($main-content-width-small - $block-edit-controls-width - $block-edit-controls-padding) * (1/2);
-$col8-block-edit-content-width-small: ($main-content-width-small - $block-edit-controls-width - $block-edit-controls-padding) * (2/3);
-$col12-block-edit-content-width-small: $main-content-width-small - $block-edit-controls-width - $block-edit-controls-padding;
+$col3-block-edit-content-width-small: ($main-content-width-small - $block-edit-controls-width) * (1/4);
+$col4-block-edit-content-width-small: ($main-content-width-small - $block-edit-controls-width) * (1/3);
+$col6-block-edit-content-width-small: ($main-content-width-small - $block-edit-controls-width) * (1/2);
+$col8-block-edit-content-width-small: ($main-content-width-small - $block-edit-controls-width) * (2/3);
+$col12-block-edit-content-width-small: $main-content-width-small - $block-edit-controls-width;
 
 // Block component column widths (medium)
-$col3-block-edit-content-width-medium: ($main-content-width-medium - $block-edit-controls-width - $block-edit-controls-padding) * (1/4);
-$col4-block-edit-content-width-medium: ($main-content-width-medium - $block-edit-controls-width - $block-edit-controls-padding) * (1/3);
-$col6-block-edit-content-width-medium: ($main-content-width-medium - $block-edit-controls-width - $block-edit-controls-padding) * (1/2);
-$col8-block-edit-content-width-medium: ($main-content-width-medium - $block-edit-controls-width - $block-edit-controls-padding) * (2/3);
-$col12-block-edit-content-width-medium: $main-content-width-medium - $block-edit-controls-width - $block-edit-controls-padding;
+$col3-block-edit-content-width-medium: ($main-content-width-medium - $block-edit-controls-width) * (1/4);
+$col4-block-edit-content-width-medium: ($main-content-width-medium - $block-edit-controls-width) * (1/3);
+$col6-block-edit-content-width-medium: ($main-content-width-medium - $block-edit-controls-width) * (1/2);
+$col8-block-edit-content-width-medium: ($main-content-width-medium - $block-edit-controls-width) * (2/3);
+$col12-block-edit-content-width-medium: $main-content-width-medium - $block-edit-controls-width;
 
 // Block component column widths (large)
-$col3-block-edit-content-width-large: ($main-content-width-large - $block-edit-controls-width - $block-edit-controls-padding) * (1/4);
-$col4-block-edit-content-width-large: ($main-content-width-large - $block-edit-controls-width - $block-edit-controls-padding) * (1/3);
-$col6-block-edit-content-width-large: ($main-content-width-large - $block-edit-controls-width - $block-edit-controls-padding) * (1/2);
-$col8-block-edit-content-width-large: ($main-content-width-large - $block-edit-controls-width - $block-edit-controls-padding) * (2/3);
-$col12-block-edit-content-width-large: $main-content-width-large - $block-edit-controls-width - $block-edit-controls-padding;
+$col3-block-edit-content-width-large: ($main-content-width-large - $block-edit-controls-width) * (1/4);
+$col4-block-edit-content-width-large: ($main-content-width-large - $block-edit-controls-width) * (1/3);
+$col6-block-edit-content-width-large: ($main-content-width-large - $block-edit-controls-width) * (1/2);
+$col8-block-edit-content-width-large: ($main-content-width-large - $block-edit-controls-width) * (2/3);
+$col12-block-edit-content-width-large: $main-content-width-large - $block-edit-controls-width;
 
 // Block component column widths (extra-large)
-$col3-block-edit-content-width-extra-large: ($main-content-width-extra-large - $block-edit-controls-width - $block-edit-controls-padding) * (1/4);
-$col4-block-edit-content-width-extra-large: ($main-content-width-extra-large - $block-edit-controls-width - $block-edit-controls-padding) * (1/3);
-$col6-block-edit-content-width-extra-large: ($main-content-width-extra-large - $block-edit-controls-width - $block-edit-controls-padding) * (1/2);
-$col8-block-edit-content-width-extra-large: ($main-content-width-extra-large - $block-edit-controls-width - $block-edit-controls-padding) * (2/3);
-$col12-block-edit-content-width-extra-large: $main-content-width-extra-large - $block-edit-controls-width - $block-edit-controls-padding;
+$col3-block-edit-content-width-extra-large: ($main-content-width-extra-large - $block-edit-controls-width) * (1/4);
+$col4-block-edit-content-width-extra-large: ($main-content-width-extra-large - $block-edit-controls-width) * (1/3);
+$col6-block-edit-content-width-extra-large: ($main-content-width-extra-large - $block-edit-controls-width) * (1/2);
+$col8-block-edit-content-width-extra-large: ($main-content-width-extra-large - $block-edit-controls-width) * (2/3);
+$col12-block-edit-content-width-extra-large: $main-content-width-extra-large - $block-edit-controls-width;
 
 // Rich Text Editor toolbar
-$rich-text-editor-width: 52rem;
-$rich-text-editor-toolbar-left-offset-small: calc(((100vw - #{$main-content-width-small}) / 2) + #{$block-edit-controls-outer-width});
-$rich-text-editor-toolbar-left-offset-medium: calc(((100vw - #{$main-content-width-medium}) / 2) + #{$block-edit-controls-outer-width});
-$rich-text-editor-toolbar-left-offset-large: calc(((100vw - #{$main-content-width-large}) / 2) + #{$block-edit-controls-outer-width});
-$rich-text-editor-toolbar-left-offset-extra-large: calc(((100vw - #{$main-content-width-extra-large}) / 2) + #{$block-edit-controls-outer-width});
-$rich-text-editor-toolbar-top-offset: $header-height + 3rem;
-$rich-text-editor-toolbar-btn-group-margin-right: 1rem;
-$rich-text-editor-toolbar-btn-width: 3rem;
-$rich-text-editor-toolbar-btn-height: 3rem;
+$rich-text-editor-toolbar-top-offset: $header-height + 2rem;
+$rich-text-editor-toolbar-btn-width: 4rem;
+$rich-text-editor-toolbar-btn-height: 4.2rem;
 $rich-text-editor-toolbar-select-width: 16rem;
-$rich-text-editor-toolbar-select-padding-left: 0.5rem;
 
 // Modal windows
 $modal-padding: 2rem;
@@ -102,7 +93,7 @@ $preview-btn-right-margin: 3rem;
 $preview-btn-bottom-margin: 3rem;
 
 // Border radii
-$btn-border-radius: 0.2rem;
+$btn-border-radius: 1px;
 $modal-border-radius: 0.3rem;
 $input-element-border-radius: 0.3rem;
 

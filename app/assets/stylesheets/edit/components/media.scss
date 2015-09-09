@@ -5,8 +5,9 @@
   background-size: 25%;
   background-position: 50% 50%;
   background-repeat: no-repeat;
-  border: 1px dashed #666;
+  border: 1px solid transparent;
   box-sizing: border-box;
+  background-color: #f2f2f2;
 
   &:hover {
     background-color: #ddd;
@@ -29,6 +30,12 @@
     width: 100%;
     height: 100%;
     z-index: 1;
+  }
+}
+
+.component-image {
+  img {
+    width: 100%;
   }
 }
 

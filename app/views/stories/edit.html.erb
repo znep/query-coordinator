@@ -1,23 +1,29 @@
-<header>
+<header class="header-main">
   <button data-panel-toggle="settings-panel" class="icon-stories-menu settings-panel-btn"></button>
   <a href="#" class="story-title" role="button" data-panel-toggle="settings-panel"></a>
+  <div class="menu-divider"></div>
   <button id="story-save-btn" class="btn"></button>
   <div class="header-right">
     <ul class="menu">
       <li>
-        <button class="btn undo-btn" disabled="disabled">Undo</button>
+        <button class="btn undo-btn" disabled="disabled" title="undo">
+          <span class="icon-undo"></span>
+        </button>
       </li>
       <li>
-        <button class="btn redo-btn" disabled="disabled">Redo</button>
+        <button class="btn redo-btn" disabled="disabled" title="redo">
+          <span class="icon-redo"></span>
+        </button>
       </li>
+      <li class="menu-divider"></li>
       <li>
         <a class="btn preview-btn" role="button" href="/stories/s/<%= @story.uid %>?preview=1" target="_blank">Preview <span class="icon-preview"></span></a>
       </li>
       <li>
-        <button class="btn content-panel-btn" data-panel-toggle="add-content-panel"><span class="icon-plus3"></span> Add Content</button>
+        <button class="btn panel-btn content-panel-btn" data-panel-toggle="add-content-panel"><span class="icon-plus3"></span> Add Content</button>
       </li>
       <li>
-        <button class="btn content-panel-btn" data-panel-toggle="style-and-presentation-panel">Style &amp; Presentation</button>
+        <button class="btn panel-btn style-panel-btn" data-panel-toggle="style-and-presentation-panel">Style &amp; Presentation</button>
       </li>
   </div>
 </header>
@@ -27,8 +33,9 @@
 <%= render 'style_and_presentation_panel' %>
 
 <div id="story-save-error-bar"></div>
-
-<section id="rich-text-editor-toolbar"></section>
+<div id="rich-text-editor-toolbar-wrapper">
+  <section id="rich-text-editor-toolbar"></section>
+</div>
 
 <main class="user-story-container">
 
@@ -39,8 +46,6 @@
   <div id="story-insertion-hint" class="hidden"></div>
 
 </main>
-
-<button class="btn preview-btn">Preview</button>
 
 <div id="asset-selector-container" class="modal hidden"></div>
 

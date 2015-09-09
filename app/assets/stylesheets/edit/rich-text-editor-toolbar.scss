@@ -1,31 +1,37 @@
 @import 'lib/variables';
 
-body.story-save-error #rich-text-editor-toolbar {
+body.story-save-error #rich-text-editor-toolbar-wrapper {
   top: $story-save-error-bar-reserved-height + $rich-text-editor-toolbar-top-offset;
 }
 
+#rich-text-editor-toolbar-wrapper { // for positioning
+  position: fixed;
+  top: $rich-text-editor-toolbar-top-offset;
+  z-index: $rich-text-editor-toolbar-z-index;
+  width: 100%;
+  text-align: center; // centering the toolbar
+  transition: top $transition-duration;
+}
+
 #rich-text-editor-toolbar {
-  @include media-query-property(
-    'left',
-    $rich-text-editor-toolbar-left-offset-small,
-    $rich-text-editor-toolbar-left-offset-medium,
-    $rich-text-editor-toolbar-left-offset-large,
-    $rich-text-editor-toolbar-left-offset-extra-large
-  );
   @include unselectable();
   @include clearfix();
 
-  position: fixed;
-  width: $rich-text-editor-width;
-  top: $rich-text-editor-toolbar-top-offset;
+  display: inline-block;
   background-color: $rich-text-editor-toolbar-bg-color;
-  z-index: $rich-text-editor-toolbar-z-index;
-  transition: top $transition-duration;
+  border: 1px solid $rich-text-editor-toolbar-border-color;
+  box-shadow: 0px 0px 7px 2px rgba(51,51,51,0.22);
+  border-radius: 1px;
+  font-size: 1.5rem;
+  padding: 0 1rem;
 
   .rich-text-editor-toolbar-btn-group,
   .rich-text-editor-toolbar-select-group {
     float: left;
-    margin-right: $rich-text-editor-toolbar-btn-group-margin-right;
+
+    &:first-child .rich-text-editor-toolbar-divider { // hide divider in first button group
+      display: none;
+    }
   }
 
   &:last-child {
@@ -93,7 +99,7 @@ body.story-save-error #rich-text-editor-toolbar {
     display: block;
     height: $rich-text-editor-toolbar-btn-height;
     width: $rich-text-editor-toolbar-select-width;
-    border: 1px solid transparent;
+    border: none;
     box-sizing: border-box;
 
     .rich-text-editor-toolbar-select,
@@ -106,10 +112,11 @@ body.story-save-error #rich-text-editor-toolbar {
       left: 0;
       width: 16rem;
       height: $rich-text-editor-toolbar-btn-height;
-      padding: 0 0 0 $rich-text-editor-toolbar-select-padding-left;
-      font-size: $rich-text-editor-toolbar-btn-height / 2;
+      padding: 0 0 0 1.5rem;
+      font-size: 1.7rem;
+      line-height: $rich-text-editor-toolbar-btn-height;
       background-color: transparent;
-      border: 1px solid transparent;
+      border: none;
       outline: none;
       z-index: 2;
       -webkit-appearance: none;
@@ -126,11 +133,22 @@ body.story-save-error #rich-text-editor-toolbar {
       line-height: $rich-text-editor-toolbar-btn-height;
       z-index: 1;
       font-family: 'icomoon';
+      font-size: 1.2rem;
 
       &:before {
         content: '\edbd';
       }
     }
+  }
+
+  .rich-text-editor-toolbar-divider {
+    position: relative;
+    top: -2px;
+    height: 2.7rem;
+    display: inline-block;
+    vertical-align: middle;
+    border-left: 1px solid $rich-text-editor-toolbar-inactive-color;
+    margin: 0 0.8rem;
   }
 
   &.active {
@@ -141,8 +159,15 @@ body.story-save-error #rich-text-editor-toolbar {
       color: $rich-text-editor-toolbar-color;
       cursor: pointer;
     }
+    .rich-text-editor-toolbar-divider {
+      border-left: 1px solid #C2C2C2;
+    }
 
+    .rich-text-editor-toolbar-select-group,
     .rich-text-editor-toolbar-btn {
+      &:hover {
+        background-color: lighten($rich-text-editor-toolbar-active-bg-color, 12%);
+      }
 
       &.active {
         background-color: $rich-text-editor-toolbar-active-bg-color;

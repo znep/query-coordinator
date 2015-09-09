@@ -131,7 +131,7 @@
     // Add a `themeName` class to the html root of the iframe
     this.applyThemeClass = function(theme) {
       var htmlElement = _editorElement[0].contentDocument.documentElement;
-      var currentClasses = htmlElement.getAttribute('class');
+      var currentClasses = htmlElement ? htmlElement.getAttribute('class') : null;
 
       if (currentClasses) {
         var newClassList = _.reject(

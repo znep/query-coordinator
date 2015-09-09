@@ -74,7 +74,7 @@ module StoriesHelper
     grants = core_attributes['grants'] || []
 
     {
-      isPublic => grants.any? { |grant| grant['flags'].include?('public') }
+      isPublic: grants.any? { |grant| (grant['flags'] || []).include?('public') }
     }
   end
 

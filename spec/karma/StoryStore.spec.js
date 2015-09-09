@@ -81,7 +81,18 @@ describe('StoryStore', function() {
     });
 
     dispatch({ action: Constants.STORY_CREATE, data: sampleStory1Data });
+    dispatch({
+      action: Constants.STORY_SET_PUBLISHED_STORY,
+      publishedStory: sampleStory1Data.publishedStory,
+      storyUid: sampleStory1Data.uid
+    });
+
     dispatch({ action: Constants.STORY_CREATE, data: sampleStory2Data });
+    dispatch({
+      action: Constants.STORY_SET_PUBLISHED_STORY,
+      publishedStory: sampleStory2Data.publishedStory,
+      storyUid: sampleStory2Data.uid
+    });
   }
 
   beforeEach(function() {
@@ -422,8 +433,8 @@ describe('StoryStore', function() {
       describe('.getStoryPublishedStory()', function() {
 
         it('should return the correct value', function() {
-          assert.equal(storyteller.storyStore.getStoryPublishedStory(story1Uid), story1PublishedStory);
-          assert.equal(storyteller.storyStore.getStoryPublishedStory(story2Uid), story2PublishedStory);
+          assert.deepEqual(storyteller.storyStore.getStoryPublishedStory(story1Uid), story1PublishedStory);
+          assert.deepEqual(storyteller.storyStore.getStoryPublishedStory(story2Uid), story2PublishedStory);
         });
       });
 
@@ -1047,7 +1058,7 @@ describe('StoryStore', function() {
             isPublic: true
           });
 
-          assert.equal(storyteller.storyStore.getStoryDescription(story1Uid), true);
+          assert.deepEqual(storyteller.storyStore.getStoryPermissions(story1Uid), {isPublic: true});
         });
       });
     });
@@ -1094,17 +1105,17 @@ describe('StoryStore', function() {
         });
       });
 
-      describe('given a valid story uid and an isPublic property', function() {
+      describe('given a valid story uid and a publishedStory property', function() {
 
         it('should update the story', function() {
 
           dispatch({
             action: Constants.STORY_SET_PUBLISHED_STORY,
             storyUid: story1Uid,
-            publishedStory: {digest: 'digest-1'}
+            publishedStory: {digest: 'new-digest'}
           });
 
-          assert.deepEqual(storyteller.storyStore.getStoryDescription(story1Uid), {digest: 'digest-1'});
+          assert.deepEqual(storyteller.storyStore.getStoryPublishedStory(story1Uid), {digest: 'new-digest'});
         });
       });
     });

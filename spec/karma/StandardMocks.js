@@ -99,7 +99,6 @@ function applyStandardMocks() {
   storyteller.fileUploadStore = new storyteller.FileUploadStore();
 
   storyteller.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyData });
-  storyteller.dispatcher.dispatch({ action: Constants.STORY_SET_PUBLISHED_STORY, publishedStory: storyData.publishedStory, storyUid: storyUid });
 
   window.standardMocks = {
     remove: removeStandardMocks,

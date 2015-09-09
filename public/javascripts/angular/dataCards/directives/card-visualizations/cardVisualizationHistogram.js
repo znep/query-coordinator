@@ -11,8 +11,6 @@
      */
     function fetchHistogramData(fieldName, dataset, whereClauseFragment, aggregationData, columnDataSummary) {
       var dataPromise;
-      var bucketingOptions = _.pick(columnDataSummary, 'bucketType', 'bucketSize');
-      var bucketData = _.curry(HistogramService.bucketData)(_, bucketingOptions);
 
       // Fetch data differently depending on how it should be bucketed.
       if (columnDataSummary.bucketType === 'linear') {
@@ -23,7 +21,7 @@
           whereClauseFragment,
           aggregationData,
           _.pick(columnDataSummary, 'bucketSize')
-        ).then(bucketData);
+        );
 
       } else if (columnDataSummary.bucketType === 'logarithmic') {
 
@@ -32,16 +30,17 @@
           dataset.id,
           whereClauseFragment,
           aggregationData
-        ).then(bucketData);
+        );
 
       } else {
         $log.error('Invalid bucket type "{0}"'.format(columnDataSummary.bucketType));
       }
 
-      return Rx.Observable.fromPromise(dataPromise).map(function(data) {
+      return Rx.Observable.fromPromise(dataPromise).map(function(result) {
         return {
-          data: data,
-          bucketType: columnDataSummary.bucketType
+          headers: result.headers,
+          data: result.data,
+          columnDataSummary: columnDataSummary
         };
       });
     }
@@ -197,18 +196,26 @@
             filteredData$,
             function(unfiltered, filtered) {
 
+              var bucketingOptions =
+                  _.pick(unfiltered.columnDataSummary, 'bucketType', 'bucketSize');
+
+              var unfilteredData =
+                  HistogramService.bucketData(unfiltered.data, bucketingOptions);
+              var filteredData =
+                  HistogramService.bucketData(filtered.data, bucketingOptions);
+
+              $scope.$emit('unfiltered_query:complete', unfiltered.headers);
+              $scope.$emit('filtered_query:complete', filtered.headers);
+
               $scope.histogramRenderError = false;
 
-              if (!_.isArray(unfiltered.data) || !_.isArray(filtered.data)) {
+              if (!_.isArray(unfilteredData) || !_.isArray(filteredData)) {
                 throw new Error('badData');
               }
 
-              if (_.isEmpty(unfiltered.data)) {
+              if (_.isEmpty(unfilteredData)) {
                 throw new Error('noData');
               }
-
-              var unfilteredData = unfiltered.data;
-              var filteredData = filtered.data;
 
               // While the filtered data doesn't have the same number of buckets as the unfiltered,
               // we need to create the missing buckets and give them values of zero.
@@ -340,7 +347,7 @@
                   return {
                     name: parseFloat(bucket.name),
                     value: bucket.value
-                  }
+                  };
                 });
               });
             return Rx.Observable.fromPromise(cardDataPromise);

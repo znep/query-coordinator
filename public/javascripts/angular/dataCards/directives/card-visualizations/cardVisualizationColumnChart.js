@@ -58,10 +58,11 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
             { namePhysicalDatatype: columnData.physicalDatatype, nullLast: true }
           );
           dataPromise.then(
-            function() {
+            function(result) {
               // Ok
               unfilteredData$.onNext(dataPromise);
               dataResponses$.onNext(1);
+              $scope.$emit('unfiltered_query:complete', result.headers);
             },
             function() {
               // Error, do nothing
@@ -87,10 +88,11 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
             { namePhysicalDatatype: columnData.physicalDatatype, nullLast: true }
           );
           dataPromise.then(
-            function() {
+            function(result) {
               // Ok
               filteredData$.onNext(dataPromise);
               dataResponses$.onNext(1);
+              $scope.$emit('filtered_query:complete', result.headers);
             },
             function() {
               // Error, do nothing
@@ -101,8 +103,8 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
       $scope.$bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
 
       $scope.$bindObservable('chartData', Rx.Observable.combineLatest(
-          unfilteredData$.switchLatest(),
-          filteredData$.switchLatest(),
+          unfilteredData$.switchLatest().pluck('data'),
+          filteredData$.switchLatest().pluck('data'),
           model.observeOnLatest('activeFilters'),
           function(unfilteredData, filteredData, filters) {
 

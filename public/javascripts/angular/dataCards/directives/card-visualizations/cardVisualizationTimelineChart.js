@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function cardVisualizationTimelineChart(CardDataService, Filter, TimelineChartVisualizationHelpers, $log, DateHelpers, SoqlHelpers) {
+  function cardVisualizationTimelineChart(CardDataService, ServerConfig, Filter, TimelineChartVisualizationHelpers, $log, DateHelpers, SoqlHelpers) {
 
     return {
       restrict: 'E',
@@ -15,13 +15,10 @@
         var dataset$ = cardModel$.observeOnLatest('page.dataset').filter(_.isPresent);
         var baseSoqlFilter$ = cardModel$.observeOnLatest('page.baseSoqlFilter');
         var aggregation$ = cardModel$.observeOnLatest('page.aggregation');
-        var defaultDateTruncFunction$ = cardModel$.observeOnLatest('page.defaultDateTruncFunction');
         var dataRequests$ = new Rx.Subject();
         var dataResponses$ = new Rx.Subject();
         var unfilteredData$ = new Rx.Subject();
         var filteredData$ = new Rx.Subject();
-        var filteredSoqlRollupTablesUsed$ = new Rx.Subject();
-        var unfilteredSoqlRollupTablesUsed$ = new Rx.Subject();
         var whereClause$ = scope.$observe('whereClause');
 
         // Keep track of the number of requests that have been made and the number of
@@ -111,7 +108,7 @@
           );
         });
 
-        var datasetPrecision = Rx.Observable.combineLatest(
+        var datasetPrecision$ = Rx.Observable.combineLatest(
           cardModel$.pluck('fieldName'),
           dataset$,
           function(fieldName, dataset) {
@@ -154,20 +151,18 @@
         );
 
         // TODO we should look to see if we can remove this wrapper
-        var unfilteredData = Rx.Observable.subscribeLatest(
+        Rx.Observable.subscribeLatest(
           cardModel$.pluck('fieldName'),
           dataset$,
           baseSoqlFilter$,
-          datasetPrecision,
+          datasetPrecision$,
           aggregation$,
-          defaultDateTruncFunction$,
           function(
             fieldName,
             dataset,
             whereClauseFragment,
             datasetPrecision,
-            aggregationData,
-            defaultDateTruncFunction
+            aggregationData
           ) {
 
             if (_.isDefined(datasetPrecision)) {
@@ -190,13 +185,11 @@
               );
 
               dataPromise.then(
-                function() {
+                function(result) {
                   // Ok
                   unfilteredData$.onNext(dataPromise);
                   dataResponses$.onNext(1);
-                  unfilteredSoqlRollupTablesUsed$.onNext(
-                    soqlMetadata.dateTruncFunctionUsed === defaultDateTruncFunction
-                  );
+                  scope.$emit('unfiltered_query:complete', result.headers);
                 },
                 function() {
                   // Error, do nothing
@@ -206,22 +199,20 @@
           }
         );
 
-        var filteredData = Rx.Observable.subscribeLatest(
+        Rx.Observable.subscribeLatest(
           cardModel$.pluck('fieldName'),
           dataset$,
           whereClause$,
-          datasetPrecision,
+          datasetPrecision$,
           aggregation$,
           cardModel$,
-          defaultDateTruncFunction$,
           function(
             fieldName,
             dataset,
             whereClause,
             datasetPrecision,
             aggregationData,
-            cardModel,
-            defaultDateTruncFunction
+            cardModel
           ) {
 
             if (_.isDefined(datasetPrecision)) {
@@ -253,13 +244,11 @@
               );
 
               dataPromise.then(
-                function() {
+                function(result) {
                   // Ok
                   filteredData$.onNext(dataPromise);
                   dataResponses$.onNext(1);
-                  filteredSoqlRollupTablesUsed$.onNext(
-                    soqlMetadata.dateTruncFunctionUsed === defaultDateTruncFunction
-                  );
+                  scope.$emit('filtered_query:complete', result.headers);
                 },
                 function() {
                   // Error, do nothing
@@ -270,8 +259,8 @@
         );
 
         var chartData$ = Rx.Observable.combineLatest(
-          unfilteredData$.switchLatest(),
-          filteredData$.switchLatest(),
+          unfilteredData$.switchLatest().pluck('data'),
+          filteredData$.switchLatest().pluck('data'),
           function(unfilteredData, filteredData) {
             if (_.isEmpty(unfilteredData) || _.isEmpty(filteredData)) {
               return null;
@@ -290,7 +279,7 @@
         // * whether the timespan of the data is more than zero (buckets don't make
         //   sense when they're zero in duration).
         var cannotRenderTimelineChart = Rx.Observable.combineLatest(
-          datasetPrecision.map(_.isUndefined),
+          datasetPrecision$.map(_.isUndefined),
           chartData$.startWith(undefined),
           function(badDates, chartData) {
             var cannotRender = false;
@@ -311,12 +300,10 @@
 
         scope.$bindObservable('chartData', chartData$);
         scope.$bindObservable('expanded', cardModel$.observeOnLatest('expanded'));
-        scope.$bindObservable('precision', datasetPrecision);
+        scope.$bindObservable('precision', datasetPrecision$);
         scope.$bindObservable('activeFilters', cardModel$.observeOnLatest('activeFilters'));
         scope.$bindObservable('rowDisplayUnit', cardModel$.observeOnLatest('page.aggregation.unit'));
         scope.$bindObservable('cannotRenderTimelineChart', cannotRenderTimelineChart);
-        scope.$bindObservable('unfilteredSoqlRollupTablesUsed', unfilteredSoqlRollupTablesUsed$);
-        scope.$bindObservable('filteredSoqlRollupTablesUsed', filteredSoqlRollupTablesUsed$);
 
         // Handle filtering
         scope.$on('filter-timeline-chart',

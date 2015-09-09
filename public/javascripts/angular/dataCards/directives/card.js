@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function CardDirective(DownloadService, $timeout, I18n) {
+  function CardDirective(DownloadService, ServerConfig, FlyoutService, $timeout, I18n) {
 
     return {
       restrict: 'E',
@@ -20,6 +20,8 @@
         var descriptionTruncatedContent;
         var descriptionElementsWithMaxSize;
 
+        $scope.debugDataLens = ServerConfig.get('debugDataLens');
+
         $scope.descriptionCollapsed = true;
         $scope.$bindObservable('expanded', model$.observeOnLatest('expanded'));
 
@@ -29,6 +31,82 @@
         $scope.$bindObservable('showDescription', model$.observeOnLatest('showDescription'));
 
         $scope.$bindObservable('description', model$.observeOnLatest('column.description'));
+
+        function registerDebugFlyout() {
+          // N.B.: Card models already have unique ids, but they can be shared across card directives.
+          var uniqueId = _.uniqueId();
+          element[0].dataset.card_directive_id = uniqueId;
+
+          var debugInfo = {
+            unfilteredResponseHeaders: undefined,
+            filteredResponseHeaders: undefined,
+            renderStartTime: undefined,
+            renderCompleteTime: undefined
+          };
+
+          $scope.$on('render:start', function(_, event) {
+            debugInfo.renderStartTime = event.timestamp;
+          });
+
+          $scope.$on('render:complete', function(_, event) {
+            debugInfo.renderCompleteTime = event.timestamp;
+          });
+
+          $scope.$on('filtered_query:complete', function(_, headers) {
+            debugInfo.filteredResponseHeaders = headers;
+          });
+
+          $scope.$on('unfiltered_query:complete', function(_, headers) {
+            debugInfo.unfilteredResponseHeaders = headers;
+          });
+
+          var selector = 'card[data-card_directive_id="' + uniqueId + '"] * .icon-table';
+          FlyoutService.register({
+            selector: selector,
+            render: function() {
+              var title = [
+                  '<div class="flyout-title">Card Debug Info</div>'
+              ];
+
+              var renderTime = [
+                  '<div class="flyout-row">',
+                    '<span class="flyout-cell">Render time</span>',
+                    '<span class="flyout-cell">{0} ms</span>'.
+                        format(debugInfo.renderCompleteTime - debugInfo.renderStartTime),
+                  '</div>'
+              ];
+
+              var filteredUsedRollups;
+              if (_.isPresent(debugInfo.filteredResponseHeaders)) {
+                filteredUsedRollups = [
+                  '<div class="flyout-row">',
+                    '<span class="flyout-cell">Filtered query used rollups</span>',
+                    '<span class="flyout-cell">{0}</span>'.
+                        format(_.isPresent(debugInfo.filteredResponseHeaders['x-soda2-rollup'])),
+                  '</div>'
+                ];
+              } else {
+                filteredUsedRollups = [];
+              }
+
+              var unfilteredUsedRollups;
+              if (_.isPresent(debugInfo.unfilteredResponseHeaders)) {
+                unfilteredUsedRollups = [
+                  '<div class="flyout-row">',
+                    '<span class="flyout-cell">Unfiltered query used rollups</span>',
+                    '<span class="flyout-cell">{0}</span>'.
+                        format(_.isPresent(debugInfo.unfilteredResponseHeaders['x-soda2-rollup'])),
+                  '</div>'
+                ];
+              } else {
+                unfilteredUsedRollups = [];
+              }
+
+              return _.flatten([title, renderTime, filteredUsedRollups, unfilteredUsedRollups]).join('');
+            }
+          });
+        }
+        registerDebugFlyout();
 
         var updateCardLayout = _.throttle(function(textHeight) {
           descriptionTruncatedContent.dotdotdot({

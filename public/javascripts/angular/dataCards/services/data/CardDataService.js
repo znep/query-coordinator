@@ -108,13 +108,16 @@
         var config = httpConfig.call(this);
 
         return http.get(url.href, config).then(function(response) {
-          return _.map(response.data, function(item) {
-            var name = options.namePhysicalDatatype === 'number' ? parseFloat(item[nameAlias]) : item[nameAlias];
-            return {
-              name: name,
-              value: parseFloat(item[valueAlias])
-            };
-          });
+          return {
+            headers: response.headers(),
+            data: _.map(response.data, function(item) {
+              var name = options.namePhysicalDatatype === 'number' ? parseFloat(item[nameAlias]) : item[nameAlias];
+              return {
+                name: name,
+                value: parseFloat(item[valueAlias])
+              };
+            })
+          };
         });
       },
 
@@ -143,16 +146,18 @@
           queryTemplate.format(fieldName, whereClause, aggregationClause, magnitudeAlias, valueAlias)
         );
 
-        return http.get(url.href, config).
-          then(function(result) {
-            var data = result.data;
-            return _.map(data, function(item) {
+        return http.get(url.href, config).then(function(result) {
+          var data = result.data;
+          return {
+            headers: result.headers(),
+            data: _.map(data, function(item) {
               return {
                 magnitude: parseFloat(item[magnitudeAlias]),
                 value: parseFloat(item[valueAlias])
               };
-            });
-          });
+            })
+          };
+        });
       },
 
       // Group data from fieldName into buckets of size options.bucketSize
@@ -188,13 +193,15 @@
         var config = httpConfig.call(this);
 
         return http.get(url.href, config).then(function(response) {
-          var data = response.data;
-          return _.map(data, function(item) {
-            return {
-              magnitude: parseFloat(item[magnitudeAlias]),
-              value: parseFloat(item[valueAlias])
-            };
-          });
+          return {
+            headers: response.headers(),
+            data: _.map(response.data, function(item) {
+              return {
+                magnitude: parseFloat(item[magnitudeAlias]),
+                value: parseFloat(item[valueAlias])
+              };
+            })
+          };
         });
       },
 
@@ -342,12 +349,15 @@
 
           // The purpose of the below is to make sure every date interval
           // between the start and end dates is present.
-          return _.map(timeData, function(item, i) {
-            if (_.isUndefined(item)) {
-              item = { date: moment(timeStart, moment.ISO_8601).add(i, precision), value: null };
-            }
-            return item;
-          });
+          return {
+            headers: response.headers(),
+            data: _.map(timeData, function(item, i) {
+              if (_.isUndefined(item)) {
+                item = { date: moment(timeStart, moment.ISO_8601).add(i, precision), value: null };
+              }
+              return item;
+            })
+          };
         });
       },
 
@@ -569,19 +579,19 @@
                 extent.bottomRight
               );
 
-            var url = $.baseUrl('/resource/{0}.geojson'.format(shapeFileId));
-            url.searchParams.set('$select', '*');
-            url.searchParams.set('$where', 'intersects(the_geom,{0})'.format(multiPolygon));
-            url.searchParams.set('$limit', shapeFileRegionQueryLimit());
+            var geoJsonUrl = $.baseUrl('/resource/{0}.geojson'.format(shapeFileId));
+            geoJsonUrl.searchParams.set('$select', '*');
+            geoJsonUrl.searchParams.set('$where', 'intersects(the_geom,{0})'.format(multiPolygon));
+            geoJsonUrl.searchParams.set('$limit', shapeFileRegionQueryLimit());
 
-            var config = httpConfig.call(self, {
+            var geoJsonConfig = httpConfig.call(self, {
               headers: {
                 'Accept': 'application/vnd.geo+json'
               }
             });
-            return http.get(url.href, config).
-              then(function(response) {
-                return response.data;
+            return http.get(geoJsonUrl.href, geoJsonConfig).
+              then(function(geoJsonResponse) {
+                return geoJsonResponse.data;
               });
 
           } else if (response.status >= 400 && response.status < 500) {

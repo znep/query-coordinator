@@ -9,6 +9,7 @@ describe('card directive', function() {
   var Card;
   var Mockumentary;
   var $provide;
+  var ServerConfig;
 
   /**
    * Create Card model with options
@@ -121,13 +122,15 @@ describe('card directive', function() {
       'Model',
       'Card',
       'Mockumentary',
-      function(_$rootScope, _$templateCache, _testHelpers, _Model, _Card, _Mockumentary) {
+      'ServerConfig',
+      function(_$rootScope, _$templateCache, _testHelpers, _Model, _Card, _Mockumentary, _ServerConfig) {
 
         $rootScope = _$rootScope;
         testHelpers = _testHelpers;
         Model = _Model;
         Card = _Card;
         Mockumentary = _Mockumentary;
+        ServerConfig = _ServerConfig;
 
         // Override the templates of the other directives. We don't need to test them.
         _$templateCache.put('/angular_templates/dataCards/cardVisualizationColumnChart.html', '');
@@ -147,6 +150,39 @@ describe('card directive', function() {
 
   afterEach(function() {
     testHelpers.TestDom.clear();
+  });
+
+  describe('debug flyout', function() {
+    var el;
+    var cardModel;
+
+    it('should not be shown when debugDataLens feature flag is false', function() {
+      sinon.stub(ServerConfig, 'get').withArgs('debugDataLens').returns(false);
+      var directive = createDirective({
+        columns: {}
+      });
+
+      cardModel = directive.cardModel;
+      el = directive.element;
+      expect(el.find('.card-control.debug-flyout:visible')).to.have.length(0);
+
+
+      ServerConfig.get.restore();
+    });
+
+    it('should be shown when debugDataLens feature flag is true', function() {
+      sinon.stub(ServerConfig, 'get').withArgs('debugDataLens').returns(true);
+      var directive = createDirective({
+        columns: {}
+      });
+
+      cardModel = directive.cardModel;
+      el = directive.element;
+      expect(el.find('.card-control.debug-flyout:visible')).to.have.length(1);
+
+      ServerConfig.get.restore();
+    });
+
   });
 
   describe('expansion toggle', function() {

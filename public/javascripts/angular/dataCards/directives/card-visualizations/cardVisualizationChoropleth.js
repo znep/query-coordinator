@@ -214,10 +214,11 @@
               { limit: shapeFileRegionQueryLimit }
             );
             dataPromise.then(
-              function() {
+              function(result) {
                 // Ok
                 unfilteredData$.onNext(dataPromise);
                 dataResponses$.onNext(1);
+                scope.$emit('unfiltered_query:complete', result.headers);
               },
               function() {
                 // Still increment the counter to stop the spinner
@@ -241,10 +242,11 @@
               { limit: shapeFileRegionQueryLimit }
             );
             dataPromise.then(
-              function() {
+              function(result) {
                 // Ok
                 filteredData$.onNext(dataPromise);
                 dataResponses$.onNext(1);
+                scope.$emit('filtered_query:complete', result.headers);
               },
               function() {
                 // Still increment the counter to stop the spinner
@@ -273,8 +275,8 @@
           Rx.Observable.combineLatest(
             geometryLabel$.switchLatest(),
             geojsonRegions$.switchLatest(),
-            unfilteredData$.switchLatest(),
-            filteredData$.switchLatest(),
+            unfilteredData$.switchLatest().pluck('data'),
+            filteredData$.switchLatest().pluck('data'),
             model.observeOnLatest('activeFilters'),
             model.pluck('fieldName'),
             dataset.observeOnLatest('columns'),

@@ -34,6 +34,10 @@ dataset_count_v2:
 debug_assets:
   description: Switch over to using unpackaged Javascript files.
   defaultValue: false
+debug_data_lens:
+  description: expose useful debugging information (data source, etc) for data lens pages
+  defaultValue: false
+  category: data lens
 default_imports_to_nbe:
   description: When performing import operations, such as via the wizard or append/replace, the endpoint will be NBE by default rather than needing a migration. Set to `delta-importer` for using that instead.
   defaultValue: false

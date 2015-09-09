@@ -39,10 +39,10 @@ describe('DragDrop', function() {
   describe('constructor', function() {
     describe('given bad arguments', function() {
       it('should throw', function() {
-        assert.throws(function() { new DragDrop(); });
-        assert.throws(function() { new DragDrop([]); });
-        assert.throws(function() { new DragDrop(3, ghost); });
-        assert.throws(function() { new DragDrop(blocks, $('nothing')); });
+        assert.throws(function() { new storyteller.DragDrop(); });
+        assert.throws(function() { new storyteller.DragDrop([]); });
+        assert.throws(function() { new storyteller.DragDrop(3, ghost); });
+        assert.throws(function() { new storyteller.DragDrop(blocks, $('nothing')); });
       });
     });
   });

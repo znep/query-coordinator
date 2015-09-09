@@ -8,6 +8,8 @@ $(document).on('ready', function() {
    * Setup
    */
 
+  storyteller.csrfToken = $('meta[name="csrf-token"]').attr('content');
+
   var airbrakeOptions = {
     'projectKey': storyteller.config.getAirbrakeConfig('projectKey'),
     'projectId': storyteller.config.getAirbrakeConfig('projectId')
@@ -88,6 +90,7 @@ $(document).on('ready', function() {
   storyteller.flyoutRenderer = new storyteller.FlyoutRenderer();
   storyteller.windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
   storyteller.storySaveStatusStore = new storyteller.StorySaveStatusStore(storyteller.userStoryUid);
+  storyteller.fileUploadStore = new storyteller.FileUploadStore();
 
   var richTextEditorToolbar = new storyteller.RichTextEditorToolbar(
     $('#rich-text-editor-toolbar'),

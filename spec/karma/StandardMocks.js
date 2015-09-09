@@ -66,7 +66,12 @@ function applyStandardMocks() {
   window.socrata.storyteller.assetFinder = new storyteller.AssetFinder();
 
   window.socrata.storyteller.config = {
-    coreServiceAppToken: 'storyteller_app_token'
+    coreServiceAppToken: 'storyteller_app_token',
+    fileUploader: {
+      checkDocumentProcessedRetryInterval: 50,
+      checkDocumentProcessedMaxRetrySeconds: 1,
+      maxFileSizeBytes: 5 * 1024
+    }
   }
 
   window.socrata.storyteller.SquireMocker.mock();
@@ -91,6 +96,7 @@ function applyStandardMocks() {
   storyteller.blockRemovalConfirmationStore = new storyteller.BlockRemovalConfirmationStore();
   storyteller.coreSavingStore = new storyteller.CoreSavingStore();
   storyteller.windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
+  storyteller.fileUploadStore = new storyteller.FileUploadStore();
 
   storyteller.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyData });
 
@@ -137,6 +143,7 @@ function removeStandardMocks() {
   delete storyteller.blockRemovalConfirmationStore;
   delete storyteller.coreSavingStore;
   delete storyteller.assetSelectorStore;
+  delete storyteller.fileUploadStore;
   delete storyteller.I18n;
   delete storyteller.config;
   delete storyteller.standardMocks;

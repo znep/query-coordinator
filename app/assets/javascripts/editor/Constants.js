@@ -120,6 +120,15 @@ var Constants = {
   // No payload
   ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD: 'ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD',
 
+  // {number} percentLoaded
+  FILE_UPLOAD_PROGRESS: 'FILE_UPLOAD_PROGRESS',
+
+  // No payload
+  FILE_UPLOAD_DONE: 'FILE_UPLOAD_DONE',
+
+  // {object} error
+  FILE_UPLOAD_ERROR: 'FILE_UPLOAD_ERROR',
+
   // Configuration
   YOUTUBE_URL_PATTERNS: [
     /youtu\.be\/([^#\&\?]{11})/,  // youtu.be/<id>

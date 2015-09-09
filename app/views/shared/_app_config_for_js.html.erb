@@ -8,6 +8,11 @@ window.socrata.storyteller.config = (function () {
 
   return {
     coreServiceAppToken: '<%= Rails.application.config.core_service_app_token %>',
+    fileUploader: {
+      checkDocumentProcessedRetryInterval: 1000,
+      checkDocumentProcessedMaxRetrySeconds: 30,
+      maxFileSizeBytes: 5 * 1024 * 1024  // 5 MB
+    },
     environment: '<%= Rails.env %>',
     getAirbrakeConfig: function (key) {
       return airbrakeConfigHash[_.camelCase(key)];

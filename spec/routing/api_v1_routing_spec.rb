@@ -25,22 +25,47 @@ RSpec.describe 'api v1 routing', type: :routing do
     end
   end
 
-  # POST /api/v1/published-stories
-  describe 'published_stories' do
+  # POST /api/v1/stories/four-four/published
+  describe 'publishing' do
     describe 'create endpoint' do
-      it 'routes json requests to published_stories_controller' do
-        expect(post: '/api/v1/published_stories', format: 'json').to route_to(
-          controller: 'api/v1/published_stories',
+      it 'routes json requests to published_controller' do
+        expect(post: '/api/v1/stories/four-four/published', format: 'json').to route_to(
+          controller: 'api/v1/published',
           action: 'create',
-          format: 'json'
+          format: 'json',
+          uid: 'four-four'
         )
       end
 
-      it 'routes to published_stories_controller with json by default' do
-        expect(post: '/api/v1/published_stories').to route_to(
-          controller: 'api/v1/published_stories',
+      it 'routes to published_controller with json by default' do
+        expect(post: '/api/v1/stories/four-four/published').to route_to(
+          controller: 'api/v1/published',
           action: 'create',
-          format: 'json'
+          format: 'json',
+          uid: 'four-four'
+        )
+      end
+    end
+  end
+
+  # PUT /api/v1/stories/four-four/permissions
+  describe 'permissions' do
+    describe 'update endpoint' do
+      it 'routes json requests to permissions_controller' do
+        expect(put: '/api/v1/stories/four-four/permissions', format: 'json').to route_to(
+          controller: 'api/v1/permissions',
+          action: 'update',
+          format: 'json',
+          uid: 'four-four'
+        )
+      end
+
+      it 'routes to permissions_controller with json by default' do
+        expect(put: '/api/v1/stories/four-four/permissions').to route_to(
+          controller: 'api/v1/permissions',
+          action: 'update',
+          format: 'json',
+          uid: 'four-four'
         )
       end
     end

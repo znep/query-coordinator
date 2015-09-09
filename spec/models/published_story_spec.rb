@@ -8,27 +8,7 @@ RSpec.describe PublishedStory, type: :model do
   it_behaves_like 'has_story_queries'
   it_behaves_like 'has_story_as_json'
 
-  describe 'immutability' do
-
-    context 'when it has not been saved' do
-
-      let(:subject) { FactoryGirl.build(:published_story) }
-
-      it 'can be saved once' do
-        expect(subject.save).to eq(true)
-      end
-
-      it 'cannot be saved twice' do
-        expect(subject.save).to eq(true)
-        expect {
-          subject.save
-        }.to raise_error(ActiveRecord::ReadOnlyRecord)
-      end
-    end
-  end
-
   describe 'validations' do
-
     it 'has a valid factory' do
       valid_published_story = FactoryGirl.build(:published_story)
       expect(valid_published_story).to be_valid
@@ -72,8 +52,25 @@ RSpec.describe PublishedStory, type: :model do
   end
 
   describe '#from_draft_story' do
-    it 'returns an instance of PublishedStory with the assigned attributes' do
-      draft_story = FactoryGirl.build(:draft_story, created_by: nil)
+    let(:draft_story) { FactoryGirl.create(:draft_story) }
+    let(:result) { PublishedStory.from_draft_story(draft_story) }
+
+    it 'is a PublishedStory' do
+      expect(result).to be_a(PublishedStory)
+    end
+
+    it 'is not persisted' do
+      expect(result).to_not be_persisted
+    end
+
+    it 'does not get timestamps assigned' do
+      expect(result.created_at).to be_nil
+      expect(result.updated_at).to be_nil
+      expect(result.deleted_at).to be_nil
+    end
+
+    it 'does not get created_by assigned' do
+      expect(result.created_by).to be_nil
     end
   end
 end

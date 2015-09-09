@@ -1,5 +1,4 @@
 class PublishedStory < ActiveRecord::Base
-  include Immutable
   include StoryValidations
   include StoryQueries
   include BlockOperations
@@ -11,6 +10,9 @@ class PublishedStory < ActiveRecord::Base
   end
 
   def self.from_draft_story(draft_story)
-    self.new(draft_story.attributes.except('id'))
+    params = draft_story.attributes.except(
+      'id', 'created_at', 'updated_at', 'deleted_at', 'created_by'
+    )
+    self.new(params)
   end
 end

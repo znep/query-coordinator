@@ -1,4 +1,4 @@
-class Permissions
+class PermissionsUpdater
 
   def initialize(user, uid, core_request_headers)
     view = CoreServer::get_view(uid, core_request_headers)

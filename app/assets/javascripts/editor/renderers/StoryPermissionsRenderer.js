@@ -19,6 +19,7 @@
 
     var _$settingsPanelPublishing = $('.settings-panel-publishing');
 
+    utils.assert(storyteller.storySaveStatusStore, 'storySaveStatusStore must be instantiated');
     utils.assert(_$settingsPanelPublishing.length === 1);
 
     _$settingsPanelStoryStatus = _$settingsPanelPublishing.find('.settings-panel-story-status');

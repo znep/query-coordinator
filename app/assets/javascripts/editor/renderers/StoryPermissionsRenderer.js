@@ -86,7 +86,7 @@
 
       _$visibilityButton.prop('disabled', !isStorySaved);
 
-      if (permissions.isPublic) {
+      if (permissions && permissions.isPublic) {
         havePublishedAndDraftDiverged = _havePublishedAndDraftDiverged();
 
         _$visibilityLabel.text(I18n.t('settings_panel.publishing_section.visibility.public'));
@@ -109,7 +109,7 @@
         _$publishingHelpText.text(I18n.t('settings_panel.publishing_section.messages.can_be_shared_publically'));
       }
 
-      _$settingsPanelStoryStatus.toggleClass('hidden', !permissions.isPublic);
+      _$settingsPanelStoryStatus.toggleClass('hidden', !permissions || !permissions.isPublic);
       _$errorContainer.addClass('hidden');
       _$visibilityButton.removeClass('busy');
       _$updatePublicButton.removeClass('busy');

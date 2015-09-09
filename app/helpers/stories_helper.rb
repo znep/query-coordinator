@@ -56,7 +56,6 @@ module StoriesHelper
       classes << 'component-media'
     end
 
-
     classes.join(' ').html_safe
   end
 
@@ -68,7 +67,6 @@ module StoriesHelper
     # turn camelCase into underscores, then dashes
     'component-' + type.gsub(/\./, '-').underscore.dasherize
   end
-
 
   private
 

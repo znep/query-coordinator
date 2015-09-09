@@ -2,6 +2,65 @@ require 'rails_helper'
 
 RSpec.describe StoriesHelper, type: :helper do
 
+  describe '#user_story_json' do
+    let(:valid_story) { FactoryGirl.create(:draft_story) }
+    let(:mock_core_response) do
+      {
+        'title' => 'Title',
+        'description' => 'Description'
+      }
+    end
+    let(:mock_core_response_with_public_grant) do
+      {
+        'title' => 'Title',
+        'description' => 'Description',
+        'grants' => [{
+          'inherited' => false,
+          'type' => 'viewer',
+          'flags' => [ 'public' ]
+        }]
+      }
+    end
+
+    describe 'given a valid story' do
+
+      it 'adds title, description, and permissions properties' do
+        @story = valid_story
+
+        expect(CoreServer).to receive(:headers_from_request).at_least(:once)
+        expect(CoreServer).to receive(:get_view).at_least(:once).and_return(mock_core_response)
+
+        expect(user_story_json).to include('title')
+        expect(user_story_json).to include('description')
+        expect(user_story_json).to include('permissions')
+      end
+
+      describe 'that is private' do
+
+        it 'returns permissions with isPublic equal to false' do
+          @story = valid_story
+
+          expect(CoreServer).to receive(:headers_from_request).at_least(:once)
+          expect(CoreServer).to receive(:get_view).at_least(:once).and_return(mock_core_response)
+
+          expect(JSON.parse(user_story_json)['permissions']['isPublic']).to be(false)
+        end
+      end
+
+      describe 'that is public' do
+
+        it 'returns permissions with isPublic equal to true' do
+          @story = valid_story
+
+          expect(CoreServer).to receive(:headers_from_request).at_least(:once)
+          expect(CoreServer).to receive(:get_view).at_least(:once).and_return(mock_core_response_with_public_grant)
+
+          expect(JSON.parse(user_story_json)['permissions']['isPublic']).to be(true)
+        end
+      end
+    end
+  end
+
   describe '#component_partial_name' do
     it 'returns a mapping for valid component types' do
       valid_component_types = [

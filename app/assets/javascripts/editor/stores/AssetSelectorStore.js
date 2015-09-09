@@ -61,7 +61,22 @@
 
         case Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD:
           _currentSelectorState = action;
-          _chooseImageUpload;
+          _chooseImageUpload();
+          break;
+
+        case Constants.FILE_UPLOAD_PROGRESS:
+          _currentSelectorState = action;
+          _updateImageUploadProgress(payload);
+          break;
+
+        case Constants.FILE_UPLOAD_DONE:
+          _currentSelectorState = action;
+          _updateImagePreview(payload);
+          break;
+
+        case Constants.FILE_UPLOAD_ERROR:
+          _currentSelectorState = action;
+          _updateImageUploadError(payload);
           break;
 
         case Constants.ASSET_SELECTOR_CLOSE:
@@ -140,7 +155,7 @@
     }
 
     function _chooseImageUpload() {
-
+      _cancelFileUploads();
       self._emitChange();
     }
 
@@ -195,6 +210,42 @@
       }
     }
 
+    function _updateImageUploadProgress(payload) {
+      _currentComponentProperties = {
+        percentLoaded: payload.percentLoaded
+      };
+
+      self._emitChange();
+    }
+
+    function _updateImagePreview(payload) {
+      var imageUrl = payload.url;
+      var documentId = payload.documentId;
+
+      _currentComponentType = 'image';
+
+      _currentComponentProperties = {
+        documentId: documentId,
+        url: imageUrl
+      };
+
+      self._emitChange();
+    }
+
+    function _updateImageUploadError(payload) {
+      _currentComponentType = 'imageUploadError';
+
+      _currentComponentProperties = {
+        step: payload.error.step
+      };
+
+      if (!_.isUndefined(payload.error.reason)) {
+        _currentComponentProperties.reason = payload.error.reason;
+      }
+
+      self._emitChange();
+    }
+
     function _updateYoutubeUrl(payload) {
 
       var youtubeId = _extractIdFromYoutubeUrl(payload.url);
@@ -220,6 +271,8 @@
       _currentBlockId = null;
       _currentComponentIndex = null;
       _currentComponentProperties = _getDefaultComponentProperties();
+
+      _cancelFileUploads();
 
       self._emitChange();
     }
@@ -262,6 +315,13 @@
       }
 
       return youtubeId;
+    }
+
+    function _cancelFileUploads() {
+      if (storyteller.fileUploader && storyteller.fileUploader !== null) {
+        storyteller.fileUploader.destroy();
+        storyteller.fileUploader = null;
+      }
     }
   }
 

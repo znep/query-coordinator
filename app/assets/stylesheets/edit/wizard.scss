@@ -13,6 +13,37 @@
     font-size: 1.75em;
     font-weight: normal;
   }
+
+  .asset-selector-preview-image-container,
+  .asset-selector-image-upload-progress {
+    @include media-query-property(
+      'height',
+      $main-content-width-small / 3,
+      $main-content-width-medium / 3,
+      $main-content-width-large / 3,
+      $main-content-width-extra-large / 3
+    );
+
+    position: relative;
+
+    .asset-selector-uploading-message {
+      font-size: 1.6rem;
+      position: absolute;
+      text-align: center;
+      top: 33%;
+      width: 100%;
+    }
+
+    .asset-selector-cancel-upload,
+    .asset-selector-try-again {
+      display: block;
+      margin: 0 auto;
+      position: relative;
+      top: 66%;
+    }
+
+  }
+
   .asset-selector-preview-container {
     @include media-query-property(
       'height',

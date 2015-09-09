@@ -31,7 +31,7 @@
       "camelcase": 1,
       "consistent-return": 1,
       "dot-location": [1, "object"],
-      "dot-notation": [1, {"allowKeywords": false}],
+      "dot-notation": [1, {"allowKeywords": true}],
       "eol-last": 1,
       "indent": [1, 2],
       "new-cap": 1,

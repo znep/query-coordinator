@@ -3,10 +3,6 @@ describe('AssetSelectorStore', function() {
   'use strict';
   var storyteller = window.socrata.storyteller;
 
-  function dispatch(action) {
-    storyteller.dispatcher.dispatch(action);
-  }
-
   describe('asset selector data accessors', function() {
 
     describe('when in an uninitialized state', function() {
@@ -245,5 +241,147 @@ describe('AssetSelectorStore', function() {
       })
     });
 
+
+    describe('after a `FILE_UPLOAD_PROGRESS` action', function() {
+
+      beforeEach(function() {
+        storyteller.dispatcher.dispatch({
+          action: Constants.FILE_UPLOAD_PROGRESS,
+          percentLoaded: 0.245
+        });
+      });
+
+      describe('.getCurrentComponentValue()', function() {
+        it('returns object with percentLoaded', function() {
+          assert.deepEqual(
+            storyteller.assetSelectorStore.getCurrentComponentValue(),
+            { percentLoaded: 0.245 }
+          );
+        });
+      });
+    });
+
+    describe('after a `FILE_UPLOAD_DONE` action', function() {
+
+      var payloadUrl = 'https://validurl.com/image.png';
+      var payloadDocumentId = '12345';
+
+      beforeEach(function() {
+        storyteller.dispatcher.dispatch({
+          action: Constants.FILE_UPLOAD_DONE,
+          url: payloadUrl,
+          documentId: payloadDocumentId
+        });
+      });
+
+      describe('.getCurrentComponentType()', function() {
+        it('returns `image`', function() {
+          assert.equal(
+            storyteller.assetSelectorStore.getCurrentComponentType(),
+            'image'
+          );
+        });
+      });
+
+      describe('.getCurrentComponentValue()', function() {
+        it('returns payload with url and documentId', function() {
+          assert.deepEqual(
+            storyteller.assetSelectorStore.getCurrentComponentValue(),
+            { documentId: payloadDocumentId, url: payloadUrl }
+          );
+        });
+      });
+    });
+
+    describe('after a `FILE_UPLOAD_ERROR` action', function() {
+
+      describe('for file type validation error', function() {
+        beforeEach(function() {
+          storyteller.dispatcher.dispatch({
+            action: Constants.FILE_UPLOAD_ERROR,
+            error: {
+              step: 'validation_file_type'
+            }
+          });
+        });
+
+        describe('.getCurrentComponentType()', function() {
+          it('returns `imageUploadError`', function() {
+            assert.equal(
+              storyteller.assetSelectorStore.getCurrentComponentType(),
+              'imageUploadError'
+            );
+          });
+        });
+
+        describe('.getCurrentComponentValue()', function() {
+          it('returns `validation_file_type`', function() {
+            assert.deepEqual(
+              storyteller.assetSelectorStore.getCurrentComponentValue(),
+              { step: 'validation_file_type' }
+            );
+          });
+        });
+      });
+
+      describe('for file size validation error', function() {
+        beforeEach(function() {
+          storyteller.dispatcher.dispatch({
+            action: Constants.FILE_UPLOAD_ERROR,
+            error: {
+              step: 'validation_file_size'
+            }
+          });
+        });
+
+        describe('.getCurrentComponentType()', function() {
+          it('returns `imageUploadError`', function() {
+            assert.equal(
+              storyteller.assetSelectorStore.getCurrentComponentType(),
+              'imageUploadError'
+            );
+          });
+        });
+
+        describe('.getCurrentComponentValue()', function() {
+          it('returns `validation_file_size`', function() {
+            assert.deepEqual(
+              storyteller.assetSelectorStore.getCurrentComponentValue(),
+              { step: 'validation_file_size' }
+            );
+          });
+        });
+      });
+
+      describe('for other upload error with reason', function() {
+        beforeEach(function() {
+          storyteller.dispatcher.dispatch({
+            action: Constants.FILE_UPLOAD_ERROR,
+            error: {
+              step: 'get_upload_url',
+              reason: { status: 500, message: 'Internal Server Error' }
+            }
+          });
+        });
+
+        describe('.getCurrentComponentType()', function() {
+          it('returns `imageUploadError`', function() {
+            assert.equal(
+              storyteller.assetSelectorStore.getCurrentComponentType(),
+              'imageUploadError'
+            );
+          });
+        });
+
+        describe('.getCurrentComponentValue()', function() {
+          it('returns `get_upload_url`', function() {
+            assert.deepEqual(
+              storyteller.assetSelectorStore.getCurrentComponentValue(),
+              { step: 'get_upload_url', reason: { status: 500, message: 'Internal Server Error' } }
+            );
+          });
+        });
+      });
+    });
   });
 });

@@ -8,7 +8,7 @@ RSpec.describe Api::V1::DocumentsController, type: :controller do
     let(:direct_upload_url) { "https://#{Rails.application.secrets.aws['s3_bucket_name']}.s3.amazonaws.com/uploads/random/#{upload_file_name}" }
     let(:upload_content_type) { 'image/jpeg' }
     let(:upload_file_name) { 'thefilename.jpg' }
-    let(:upload_file_size) { 3884732 }
+    let(:upload_file_size) { '3884732' }
     let(:story_uid) { 'four-four' }
 
     let(:document) { FactoryGirl.create(:document, params[:document]) }
@@ -44,6 +44,11 @@ RSpec.describe Api::V1::DocumentsController, type: :controller do
     context 'when authenticated' do
       before do
         stub_valid_session
+      end
+
+      it 'initializes service object with params' do
+        expect(CreateDocument).to receive(:new).with(mock_valid_user, params[:document].stringify_keys)
+        post :create, params
       end
 
       it 'returns success' do
@@ -82,6 +87,38 @@ RSpec.describe Api::V1::DocumentsController, type: :controller do
           response_json = JSON.parse(response.body)
           expect(response_json['errors']).to_not be_empty
         end
+      end
+    end
+  end
+
+  describe '#show' do
+    let!(:document) { FactoryGirl.create(:document) }
+
+    context 'when not authenticated' do
+      before do
+        stub_invalid_session
+      end
+
+      it 'redirects' do
+        get :show, id: document
+        expect(response).to be_redirect
+      end
+    end
+
+    context 'when authenticated' do
+      before do
+        stub_valid_session
+      end
+
+      it 'is success' do
+        get :show, id: document
+        expect(response).to be_success
+      end
+
+      it 'renders document' do
+        get :show, id: document
+        json_response = JSON.parse(response.body)
+        expect(json_response['document']).to_not be_empty
       end
     end
   end

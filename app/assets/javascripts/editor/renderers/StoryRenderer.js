@@ -22,6 +22,8 @@
         return 'componentHorizontalRule';
       case 'assetSelector':
         return 'componentAssetSelector';
+      case 'image':
+        return 'componentImage';
       case 'youtube.video':
         return 'componentYoutubeVideo';
       case 'socrata.visualization.columnChart':

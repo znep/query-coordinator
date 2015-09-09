@@ -372,7 +372,7 @@ Frontend::Application.routes do
       end
     end
 
-    scope :protocol => "https", :port => APP_CONFIG['ssl_port'] || 443 do
+    scope :protocol => "https", :port => APP_CONFIG.ssl_port do
       match '/login.json', :to => 'user_sessions#create', :format => 'json', :as => 'login_json'
       match '/login', :to => 'user_sessions#new', :as => 'login'
       match '/login/extend', :to => 'user_sessions#extend', :as => 'login_extend'

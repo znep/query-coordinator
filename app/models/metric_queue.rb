@@ -49,7 +49,7 @@ private
   end
 
   def do_flush_requests(current_requests)
-    targetdir = APP_CONFIG['metrics_dir']
+    targetdir = APP_CONFIG.metrics_dir
     FileUtils.mkdir_p(targetdir)
     lockfilename = targetdir + "/ruby-metrics.lock"
     File.open(lockfilename, "wb") do |lockfile|
@@ -69,7 +69,7 @@ private
         end
       end
     end
-    if APP_CONFIG['statsd_enabled']
+    if APP_CONFIG.statsd_enabled
       current_requests.each do |request|
         next unless request[:name].end_with? "-time"
         Frontend.statsd.timing("browser.#{request[:name]}", request[:value])

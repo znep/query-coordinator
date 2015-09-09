@@ -47,13 +47,13 @@ class AngularHelperTest < ActionView::TestCase
   end
 
   def test_tileserver_hosts
-    APP_CONFIG['tileserver_hosts'] = nil
+    APP_CONFIG.tileserver_hosts = nil
     result = application_helper.tileserver_hosts
     assert(result == [], 'result for nil is not []')
-    APP_CONFIG['tileserver_hosts'] = ''
+    APP_CONFIG.tileserver_hosts = ''
     result = application_helper.tileserver_hosts
     assert(result == [], 'result for '' is not []')
-    APP_CONFIG['tileserver_hosts'] = 'tile1.example.com, tile2.example.com'
+    APP_CONFIG.tileserver_hosts = 'tile1.example.com, tile2.example.com'
     result = application_helper.tileserver_hosts
     assert(result == %w(tile1.example.com tile2.example.com), 'result is not correct list')
   end

@@ -45,15 +45,15 @@
 
   //Session cookies and all events saved
   <%- if CurrentDomain.feature?(:mixpanelTracking) -%>
-    mixpanel.init("<%= APP_CONFIG['mixpanel_token'] %>", {cookie_expiration: null});
+    mixpanel.init("<%= APP_CONFIG.mixpanel_token %>", {cookie_expiration: null});
 
   //Full tracking is cookies valid for a year and all events saved
   <%- elsif CurrentDomain.feature?(:fullMixpanelTracking) -%>
-    mixpanel.init("<%= APP_CONFIG['mixpanel_token'] %>");
+    mixpanel.init("<%= APP_CONFIG.mixpanel_token %>");
 
   //Default is no tracking, no cookies and no events saved
   <%- else -%>
-    mixpanel.init("<%= APP_CONFIG['mixpanel_token'] %>", {disable_cookie: true});
+    mixpanel.init("<%= APP_CONFIG.mixpanel_token %>", {disable_cookie: true});
 
     mixpanel.disable();
 

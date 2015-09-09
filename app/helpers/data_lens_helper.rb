@@ -28,8 +28,8 @@ module DataLensHelper
   end
 
   def tileserver_hosts
-    APP_CONFIG['tileserver_hosts'].present? ?
-      APP_CONFIG['tileserver_hosts'].split(',').map { |value| value.strip } :
+    APP_CONFIG.tileserver_hosts.present? ?
+      APP_CONFIG.tileserver_hosts.split(',').map { |value| value.strip } :
       []
   end
 

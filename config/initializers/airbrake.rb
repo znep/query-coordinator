@@ -1,7 +1,7 @@
 require 'core_server/errors'
 
 Airbrake.configure do |config|
-  config.api_key = ENV['AIRBRAKE_API_KEY'] || APP_CONFIG['airbrake_api_key']
+  config.api_key = ENV['AIRBRAKE_API_KEY'] || APP_CONFIG.airbrake_api_key
   config.environment_name = ENV['AIRBRAKE_ENVIRONMENT_NAME'] || Rails.env
 
   config.params_filters << "AWS_ACCESS_KEY_ID"

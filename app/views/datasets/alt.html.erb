@@ -33,7 +33,7 @@
 
   <ul id="datasetMenu">
     <%- if @view.can_print? -%>
-      <li><a href="/api/views/<%= @view.id %>/rows.pdf?app_token=<%= APP_CONFIG['app_token'] %>">Print</a></li>
+      <li><a href="/api/views/<%= @view.id %>/rows.pdf?app_token=<%= APP_CONFIG.app_token %>">Print</a></li>
     <%- end -%>
     <%- if @view.can_email? -%>
       <li><a href="<%= email_dataset_path(@view) %>">Email...</a></li>

@@ -69,8 +69,8 @@ class Polaroid < SocrataHttp
 
   def connection_details
     {
-      port: ENV['POLAROID_PORT'] || APP_CONFIG['polaroid_port'],
-      address: ENV['POLAROID_HOSTNAME'] || APP_CONFIG['polaroid_hostname']
+      port: ENV['POLAROID_PORT'] || APP_CONFIG.polaroid_port,
+      address: ENV['POLAROID_HOSTNAME'] || APP_CONFIG.polaroid_hostname
     }.with_indifferent_access
   end
 

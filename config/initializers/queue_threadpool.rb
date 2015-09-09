@@ -30,7 +30,7 @@ class QueueThreadPool
 
 private
   def self.thread_count
-    tc = APP_CONFIG['threadpool_count'].to_i
+    tc = APP_CONFIG.threadpool_count
     tc < 1 ? 3 : tc
   end
 end

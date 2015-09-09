@@ -51,7 +51,7 @@ class NewViewManager
     page_url = Rails.application.routes.url_helpers.opendata_cards_view_url(
       :id => new_page_id,
       :host => CurrentDomain.cname,
-      :port => APP_CONFIG['ssl_port'] || 443,
+      :port => APP_CONFIG.ssl_port,
       :protocol => 'https'
     )
 

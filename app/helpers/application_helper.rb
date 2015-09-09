@@ -413,7 +413,7 @@ module ApplicationHelper
 
   def link_to_rpx(name, return_url = rpx_return_login_url, html_options = {})
     options = {:class => 'rpxnow', :onclick => 'return false;'}.merge(html_options)
-    link_to name, "#{APP_CONFIG['rpx_signin_url']}?token_url=#{return_url}", options
+    link_to name, "#{APP_CONFIG.rpx_signin_url}?token_url=#{return_url}", options
   end
 
   def render_license
@@ -639,7 +639,7 @@ module ApplicationHelper
   # If it's set to a specific value, use that value. If it is false, return false.
   def get_ga_tracking_code
     code = FeatureFlags.derive(nil, request)[:enable_opendata_ga_tracking]
-    (code == true || code.to_s.empty?) ? APP_CONFIG['opendata_ga_tracking_code'] : code
+    (code == true || code.to_s.empty?) ? APP_CONFIG.opendata_ga_tracking_code : code
   end
 
   # Given that the Google Analytics feature flag is either set to true or an explicit value

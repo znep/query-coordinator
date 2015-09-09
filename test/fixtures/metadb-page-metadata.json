@@ -92,7 +92,7 @@
     },
     "availableDisplayTypes" : [ "data_lens" ],
     "accessPoints" : {
-      "new_view" : "https://local.dev:443/view/mjcb-9cxc"
+      "new_view" : "https://localhost:443/view/mjcb-9cxc"
     },
     "v1_data_lens_blist_id" : "137"
   },

@@ -35,10 +35,11 @@ class NewViewManager
   # This will create a new view lens that points to a cards view url of the same
   # 4x4 as itself. Note that it will not create the requisite page_metadata for
   # that url to serve anything meaningful.
-  def create(title, description, category=nil)
-    # Create a new view pointing to nothing, since we don't have the 4x4 to
-    # point it to yet.
-    new_view = create_new_view('', title, description, category)
+  def create(page_metadata={}, category=nil, v2_data_lens=false)
+    page_metadata = ActiveSupport::HashWithIndifferentAccess.new(page_metadata)
+    new_view = v2_data_lens ?
+      create_v2_data_lens_in_metadb(page_metadata, category) :
+      create_v1_data_lens_in_phidippides(page_metadata, category)
 
     unless new_view.try(:[], :id)
       raise NewViewNotCreatedError.new('Error while creating view in core')
@@ -90,12 +91,8 @@ class NewViewManager
     parse_core_response(response)
   end
 
-  def update(page_id, title, description)
+  def update(page_id, payload = {})
     url = "/views/#{CGI::escape(page_id)}.json"
-    payload = {
-      :name => title,
-      :description => description
-    }
 
     begin
       response = CoreServer::Base.connection.update_request(url, JSON.dump(payload))
@@ -114,13 +111,14 @@ class NewViewManager
 
   private
 
-  def create_new_view(page_url, title, description, category)
-    #NOTE: Category is not validated. If category is not present in the
-    #domain's defined categories, the category will be ignored by core.
+  # Creates metadata in MetaDB with page metadata, rather than in Phidippides.
+  def create_v2_data_lens_in_metadb(page_metadata, category)
+    # NOTE: Category is not validated. If category is not present in the
+    # domain's defined categories, the category will be ignored by core.
     url = '/views.json?accessType=WEBSITE'
     payload = {
-      :name => title,
-      :description => description,
+      :name => page_metadata[:name],
+      :description => page_metadata[:description],
       :metadata => {
         :renderTypeConfig => {
           :visible => {
@@ -128,7 +126,62 @@ class NewViewManager
           }
         },
         :accessPoints => {
-          :new_view => page_url
+          :new_view => ''
+        },
+        :availableDisplayTypes => ['data_lens'],
+        :jsonQuery => {}
+      },
+      :displayType => 'data_lens',
+      :displayFormat => {
+        :data_lens_page_metadata => {
+          :name => page_metadata[:name],
+          :description => page_metadata[:description],
+          :cards => page_metadata[:cards],
+          :pageId => '',
+          :datasetId => page_metadata[:datasetId],
+          :defaultDateTruncFunction => page_metadata[:defaultDateTruncFunction],
+          :version => 2
+        }
+      },
+      :query => {},
+      :category => category
+    }
+
+    begin
+      response = CoreServer::Base.connection.create_request(url, JSON.dump(payload))
+    rescue CoreServer::Error => error
+      report_error(
+        "Error creating data_lens for page: #{error}",
+        error,
+        :url => url,
+        :payload => payload,
+        :page_url => ''
+      )
+    end
+
+    payload_with_id = parse_core_response(response)
+    new_page_id = payload_with_id[:id]
+    payload_with_id[:displayFormat][:data_lens_page_metadata][:pageId] = new_page_id
+
+    update(new_page_id, payload_with_id)
+  end
+
+  # v1 data lens, where the page metadata will be stored in Phidippides
+  def create_v1_data_lens_in_phidippides(page_metadata, category)
+    # NOTE: Category is not validated. If category is not present in the
+    # domain's defined categories, the category will be ignored by core.
+    url = '/views.json?accessType=WEBSITE'
+    payload = {
+      :name => page_metadata[:name],
+      :description => page_metadata[:description],
+      :metadata => {
+        :renderTypeConfig => {
+          :visible => {
+            :href => true
+          }
+        },
+        :accessPoints => {
+          :new_view => ''
         },
         :availableDisplayTypes => ['new_view'],
         :jsonQuery => {}
@@ -147,9 +200,8 @@ class NewViewManager
         error,
         :url => url,
         :payload => payload,
-        :page_url => page_url
+        :page_url => ''
       )
-      return
     end
 
     parse_core_response(response)

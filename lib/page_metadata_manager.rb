@@ -97,12 +97,15 @@ class PageMetadataManager
 
     initialize_metadata_key_names
 
-    # The core lens id for this page is the same one we use to refer to it in
-    # phidippides
+    update_metadata_date_trunc(page_metadata, options)
+
+    v2_data_lens = FeatureFlags.derive(nil, defined?(request) ? request : nil)[:create_v2_data_lens]
+
+    # The core lens id for this page is the same one we use to refer to it in phidippides
     new_page_id = new_view_manager.create(
-      page_metadata['name'],
-      page_metadata['description'],
-      dataset_category(page_metadata['datasetId'])
+      page_metadata,
+      dataset_category(page_metadata['datasetId']),
+      v2_data_lens
     )
 
     page_metadata['pageId'] = new_page_id
@@ -114,9 +117,14 @@ class PageMetadataManager
 
     page_metadata['cards'] << table_card unless has_table_card
 
-    result = update_phidippides_page_metadata(page_metadata, options)
+    if v2_data_lens
+      update_metadata_rollup_table(page_metadata, options)
+      result = { :body => page_metadata, :status => 200 }
+    else
+      result = update_phidippides_page_metadata(page_metadata, options)
+    end
 
-    if result[:status] == '200'
+    if result[:status].to_s == '200'
       request_soda_fountain_secondary_index(page_metadata['datasetId'], options)
     end
 
@@ -139,7 +147,10 @@ class PageMetadataManager
       metadb_metadata = nil
     end
 
-    new_view_manager.update(page_metadata['pageId'], page_metadata['name'], page_metadata['description'])
+    new_view_manager.update(page_metadata['pageId'],
+      :name => page_metadata['name'],
+      :description => page_metadata['description']
+    )
 
     if is_backed_by_metadb?(metadb_metadata)
       update_metadb_page_metadata(page_metadata, metadb_metadata)
@@ -276,39 +287,12 @@ class PageMetadataManager
     unless page_metadata['pageId'].present?
       raise Phidippides::NoPageIdException.new('page id must be provisioned first.')
     end
-    page_id = page_metadata['pageId']
-    dataset_id = page_metadata.fetch('datasetId')
-    cards = page_metadata['cards']
-
-    dataset_metadata_result = dataset_metadata(dataset_id, options)
-    if dataset_metadata_result.fetch(:status) != '200'
-      raise Phidippides::NoDatasetMetadataException.new(
-        "could not fetch dataset metadata for id: #{dataset_id}"
-      )
-    end
-    columns = dataset_metadata_result.fetch(:body).fetch('columns')
-
-    update_date_trunc_function(page_metadata, columns, cards, options)
 
     # Since we provision the page id beforehand, a create is the same as an
     # update.
     result = phidippides.update_page_metadata(page_metadata, options)
 
-    if result.fetch(:status) == '200'
-      rollup_soql = build_rollup_soql(page_metadata, columns, cards, options)
-
-      # if we can roll up anything for this query, do so
-      if rollup_soql
-        args = {
-          dataset_id: dataset_id,
-          identifier: page_id,
-          page_id: page_id,
-          soql: rollup_soql
-        }
-        args.reverse_merge!(options)
-        update_rollup_table(args)
-      end
-    end
+    update_metadata_rollup_table(page_metadata, options)
 
     # Replace the page metadata in the result, since FlexPhidippides
     # actually will not return the metadata blob that we just posted
@@ -316,6 +300,35 @@ class PageMetadataManager
     result[:body] = page_metadata
 
     result
+  end
+
+  def update_metadata_date_trunc(page_metadata, options = {})
+    page_id = page_metadata['pageId']
+    dataset_id = page_metadata.fetch('datasetId')
+    cards = page_metadata['cards']
+    columns = fetch_dataset_columns(dataset_id, options)
+
+    update_date_trunc_function(page_metadata, columns, cards, options)
+  end
+
+  def update_metadata_rollup_table(page_metadata, options = {})
+    page_id = page_metadata['pageId']
+    dataset_id = page_metadata.fetch('datasetId')
+    cards = page_metadata['cards']
+    columns = fetch_dataset_columns(dataset_id, options)
+    rollup_soql = build_rollup_soql(page_metadata, columns, cards, options)
+
+    # if we can roll up anything for this query, do so
+    if rollup_soql
+      args = {
+        dataset_id: dataset_id,
+        identifier: page_id,
+        page_id: page_id,
+        soql: rollup_soql
+      }
+      args.reverse_merge!(options)
+      update_rollup_table(args)
+    end
   end
 
   def build_rollup_soql(page_metadata, columns, cards, options = {})
@@ -370,6 +383,18 @@ class PageMetadataManager
     )
     page_metadata['largestTimeSpanDays'] = largest_time_span_days
     page_metadata['defaultDateTruncFunction'] = date_trunc_function(largest_time_span_days)
+  end
+
+  # Phidippides call for the dataset metadata - needed to fetch columns for both
+  # metadb and phidippides backed page metadata.
+  def fetch_dataset_columns(dataset_id, options = {})
+    dataset_metadata_result = dataset_metadata(dataset_id, options)
+    if dataset_metadata_result.fetch(:status) != '200'
+      raise Phidippides::NoDatasetMetadataException.new(
+        "could not fetch dataset metadata for id: #{dataset_id}"
+      )
+    end
+    dataset_metadata_result.fetch(:body).fetch('columns')
   end
 
   def transformed_columns(columns)

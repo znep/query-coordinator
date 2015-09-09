@@ -36,7 +36,7 @@ class NewViewManagerTest < Test::Unit::TestCase
     View.expects(:find).with('niew-veww').returns(expectant_stub)
     Rails.application.routes.url_helpers.stubs(opendata_cards_view_url: 'opendata_url')
 
-    result = new_view_manager.create('my title', 'my description')
+    result = new_view_manager.create(:name =>'my title', :description=>'my description')
     assert_equal('niew-veww', result)
     assert(created)
   end
@@ -60,7 +60,7 @@ class NewViewManagerTest < Test::Unit::TestCase
     View.expects(:find).with('niew-veww').returns(expectant_stub)
     Rails.application.routes.url_helpers.stubs(opendata_cards_view_url: 'opendata_url')
 
-    result = new_view_manager.create('my title', 'my description', given_category)
+    result = new_view_manager.create({:name =>'my title', :description=>'my description'}, given_category)
     assert(created)
   end
 
@@ -81,41 +81,74 @@ class NewViewManagerTest < Test::Unit::TestCase
     View.expects(:find).with('niew-veww').returns(expectant_stub)
     Rails.application.routes.url_helpers.stubs(opendata_cards_view_url: 'opendata_url')
 
-    result = new_view_manager.create('my title', 'my description')
+    result = new_view_manager.create(:name =>'my title', :description=>'my description')
     assert(created)
   end
 
   def test_create_does_not_raise_on_resource_not_found
     new_view_manager.stubs(
-      :create_new_view => { :id => '1234-1234' },
+      :create_v1_data_lens_in_phidippides => { :id => '1234-1234' },
       :update_page_url => nil
     )
     Rails.application.routes.url_helpers.stubs(:opendata_cards_view_url => 'url')
 
     View.expects(:find).raises(CoreServer::ResourceNotFound.new(nil))
     assert_nothing_raised do
-      new_view_manager.create('title', 'description')
+      new_view_manager.create(:name =>'my title', :description=>'my description')
     end
   end
 
   def test_create_does_not_raise_on_core_error
     new_view_manager.stubs(
-      :create_new_view => { :id => '1234-1234' },
+      :create_v1_data_lens_in_phidippides => { :id => '1234-1234' },
       :update_page_url => nil
     )
     Rails.application.routes.url_helpers.stubs(:opendata_cards_view_url => 'url')
 
     View.expects(:find).raises(CoreServer::Error)
     assert_nothing_raised do
-      new_view_manager.create('title', 'description')
+      new_view_manager.create(:name =>'my title', :description=>'my description')
     end
   end
 
   def test_create_raises_when_view_not_created
-    new_view_manager.stubs(:create_new_view => nil)
+    new_view_manager.stubs(:create_v1_data_lens_in_phidippides => nil)
     assert_raises(NewViewManager::NewViewNotCreatedError) do
-      new_view_manager.create('title', 'description')
+      new_view_manager.create(:name =>'my title', :description=>'my description')
     end
+  end
+
+  def test_create_v2_data_lens
+    stub_feature_flags_with(:create_v2_data_lens, true)
+    response = File.read("#{Rails.root}/test/fixtures/metadb-page-metadata.json")
+    connection_stub = mock
+    created = false
+    connection_stub.expects(:create_request).times(1).with do |url, payload|
+      if url == '/views.json?accessType=WEBSITE'
+        created = true
+        payload = JSON.parse(payload).with_indifferent_access
+        assert_equal('my title', payload[:displayFormat][:data_lens_page_metadata][:name])
+        assert_equal('my description', payload[:displayFormat][:data_lens_page_metadata][:description])
+        # Assert that the pageId is blank at this point
+        assert_equal('', payload[:displayFormat][:data_lens_page_metadata][:pageId])
+        assert_equal('data_lens', payload[:displayType])
+      end
+    end.returns(response)
+
+    connection_stub.expects(:update_request).times(2).with do |url, payload|
+      assert_equal('/views/mjcb-9cxc.json', url)
+      payload = JSON.parse(payload).with_indifferent_access
+      assert_equal('https://localhost:443/view/mjcb-9cxc', payload[:metadata][:accessPoints][:new_view])
+    end.returns(response)
+
+    CoreServer::Base.stubs(connection: connection_stub)
+
+    expectant_stub = mock.tap { |stub| stub.expects(:publish) }
+    View.expects(:find).with('mjcb-9cxc').returns(expectant_stub)
+
+    result = new_view_manager.create({:name=>'my title', :description=>'my description'}, nil, true)
+    assert_equal('mjcb-9cxc', result)
+    assert(created)
   end
 
 
@@ -130,7 +163,7 @@ class NewViewManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    new_view_manager.update('asdf-asdf', 'new name', 'new description')
+    new_view_manager.update('asdf-asdf', {:name => 'new name', :description => 'new description'})
   end
 
   def test_update_does_not_raise_when_reporting_core_errors
@@ -145,7 +178,7 @@ class NewViewManagerTest < Test::Unit::TestCase
     CoreServer::Base.stubs(connection: connection_stub)
 
     assert_nothing_raised do
-      new_view_manager.update('asdf-asdf', 'new name', 'new description')
+      new_view_manager.update('asdf-asdf', {:name => 'new name', :description => 'new description'})
     end
   end
 
@@ -161,7 +194,7 @@ class NewViewManagerTest < Test::Unit::TestCase
     CoreServer::Base.stubs(connection: connection_stub)
 
     assert_nothing_raised do
-      new_view_manager.update('asdf-asdf', 'new name', 'new description')
+      new_view_manager.update('asdf-asdf', {:name => 'new name', :description => 'new description'})
     end
   end
 

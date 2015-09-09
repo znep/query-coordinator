@@ -3,7 +3,7 @@
   'use strict';
 
   var socrata = root.socrata = root.socrata || {};
-  var storyteller = socrata.storyteller;
+  var storyteller = socrata.storyteller = socrata.storyteller || {};
   var utils = socrata.utils = socrata.utils || {};
 
   var storytellerUtils = {

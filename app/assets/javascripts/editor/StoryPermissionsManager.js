@@ -13,7 +13,9 @@
      * @function makePublic
      */
     this.makePublic = function(errorCallback) {
-      _updatePermissions(true).
+      utils.assertIsOneOfTypes(errorCallback, 'undefined', 'function');
+
+      _setToPublic().
         then(
           _handleRequestSuccess,
           function(error) {
@@ -26,7 +28,9 @@
      * @function makePrivate
      */
     this.makePrivate = function(errorCallback) {
-      _updatePermissions(false).
+      utils.assertIsOneOfTypes(errorCallback, 'undefined', 'function');
+
+      _setToPrivate().
         then(
           _handleRequestSuccess,
           function(error) {
@@ -58,35 +62,37 @@
     }
 
     function _handleRequestError(error, callback) {
+      if (callback) {
+        utils.assert(_.isFunction(callback), 'callback must be a function');
+      }
+
       console.error(error);
 
-      if (typeof callback === 'function') {
+      if (callback) {
         callback();
       }
     }
 
-    function _updatePermissions(setPublic) {
-      utils.assertIsOneOfTypes(setPublic, 'boolean');
+    function _setToPublic() {
+      return socrata.utils.storytellerApiRequest(
+        'stories/{0}/published'.format(storyteller.userStoryUid),
+        'POST',
+        JSON.stringify({
+          digest: storyteller.storyStore.getStoryDigest(
+            storyteller.userStoryUid
+          )
+        })
+      );
+    }
 
-      if (setPublic) {
-        return socrata.utils.storytellerApiRequest(
-          'stories/{0}/published'.format(storyteller.userStoryUid),
-          'POST',
-          JSON.stringify({
-            digest: storyteller.storyStore.getStoryDigest(
-              storyteller.userStoryUid
-            )
-          })
-        );
-      } else {
-        return socrata.utils.storytellerApiRequest(
-          'stories/{0}/permissions'.format(storyteller.userStoryUid),
-          'PUT',
-          JSON.stringify({
-            isPublic: setPublic
-          })
-        )
-      }
+    function _setToPrivate() {
+      return socrata.utils.storytellerApiRequest(
+        'stories/{0}/permissions'.format(storyteller.userStoryUid),
+        'PUT',
+        JSON.stringify({
+          isPublic: false
+        })
+      )
     }
   }
 

@@ -33,6 +33,12 @@
   }
 }
 
+.component-image {
+  img {
+    width: 100%;
+  }
+}
+
 .col3 {
   .component-asset-selector, .component-youtube-video {
     $small-height: $col3-block-edit-content-width-small * (3/4);

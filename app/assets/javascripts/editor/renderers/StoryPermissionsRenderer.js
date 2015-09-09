@@ -91,7 +91,7 @@
 
         _$visibilityLabel.text(I18n.t('settings_panel.publishing_section.visibility.public'));
         _$visibilityButtonText.text(I18n.t('settings_panel.publishing_section.visibility.make_story_private'));
-        _$visibilityButton.removeClass('accent-btn').removeClass('accent-green-btn');
+        _$visibilityButton.removeClass('accent-green-btn').addClass('accent-gray-btn');
         _$updatePublicButton.prop('disabled', true);
         _$updatePublicLabel.text(I18n.t('settings_panel.publishing_section.status.published'));
         _$publishingHelpText.text(I18n.t('settings_panel.publishing_section.messages.has_been_published'));
@@ -104,7 +104,7 @@
       } else {
         _$visibilityLabel.text(I18n.t('settings_panel.publishing_section.visibility.private'));
         _$visibilityButtonText.text(I18n.t('settings_panel.publishing_section.visibility.make_story_public'));
-        _$visibilityButton.addClass('accent-btn').addClass('accent-green-btn');
+        _$visibilityButton.removeClass('accent-gray-btn').addClass('accent-green-btn');
         _$updatePublicButton.prop('disabled', true);
         _$publishingHelpText.text(I18n.t('settings_panel.publishing_section.messages.can_be_shared_publically'));
       }

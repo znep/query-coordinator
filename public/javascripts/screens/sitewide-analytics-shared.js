@@ -9,7 +9,9 @@ var datasetsMetricName,
     totalPrefix,
     addedSuffix,
     pageViewsName,
-    absoluteMetricRange;
+    absoluteMetricRange,
+    embedsName,
+    embedsTotal;
 
 if(blist.feature_flags.dataset_count_v2){
   datasetsMetricName = 'datasets-published-v2';
@@ -42,6 +44,8 @@ if (blist.feature_flags.embetter_analytics_page) {
     addedSuffix = ' Added';
     pageViewsName = 'Browser Page Views';
     absoluteMetricRange = true;
+    embedsName = 'Embed Views';
+    embedsTotal = false;
 } else {
     pageViewsSummary = {
         plus: 'page-views',
@@ -66,6 +70,8 @@ if (blist.feature_flags.embetter_analytics_page) {
     addedSuffix = '';
     pageViewsName = 'Page Views';
     absoluteMetricRange = false;
+    embedsName = 'Embeds';
+    embedsTotal = true;
 }
 
 blist.metrics.sitewideShared = {
@@ -161,12 +167,13 @@ blist.metrics.sitewideShared = {
             }
         },
         {
-            id: 'summaryEmbeds',      displayName: 'Embeds' + addedSuffix,
+            id: 'summaryEmbeds',      displayName: embedsName,
             summary: {
 		plus: 'embeds', 
 		verbPhrase: 'embeds',
                 verbPhraseSingular: 'embed',
-                deltaPhrase: 'embeds'
+                deltaPhrase: 'embeds',
+                total: embedsTotal
             }
         }
     ], function(section) { return section.enabled !== false; }),

@@ -42,8 +42,9 @@
       if (override) {
         str = override;
       } else {
-        var ignore = (skip.indexOf(str.toLowerCase()) > -1);
         str = str.trim();
+        var lastWord = _.last(str.split(' '));
+        var ignore = (skip.indexOf(lastWord.toLowerCase()) > -1);
         if (!ignore) {
           for (var x = 0; x < rules.length; x++) {
             if (str.match(rules[x][0])) {

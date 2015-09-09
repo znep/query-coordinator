@@ -1,18 +1,8 @@
 ;blist.namespace.fetch('blist.metrics');
 
 var datasetsMetricName,
-    pageViewsSummary,
-    mapsSummary,
-    chartsSummary,
-    dataLensesEnabled,
     datasetsListHeader,
-    totalPrefix,
-    addedSuffix,
-    pageViewsName,
-    absoluteMetricRange,
-    embedsName,
-    embedsTotal,
-    absoluteMetricTopRow;
+    pageViewsName;
 
 if(blist.feature_flags.dataset_count_v2){
   datasetsMetricName = 'datasets-published-v2';
@@ -20,61 +10,11 @@ if(blist.feature_flags.dataset_count_v2){
   datasetsMetricName = 'datasets';
 }
 if (blist.feature_flags.embetter_analytics_page) {
-    pageViewsSummary = {
-        plus: 'js-page-view',
-        total: false,
-        verbPhrase: 'pages viewed',
-        verbPhraseSingular: 'page viewed',
-        deltaPhrase: 'page views'
-    };
-    mapsSummary = {
-        plus: 'lense-map-published-v1',
-        verbPhrase: 'maps created',
-        verbPhraseSingular: 'map created',
-        deltaPhrase: 'maps'
-    };
-    chartsSummary = {
-        plus: 'lense-chart-published-v1',
-        verbPhrase: 'charts created',
-        verbPhraseSingular: 'chart created',
-        deltaPhrase: 'charts'
-    };
-    dataLensesEnabled = true;
     datasetsListHeader = 'Browser Page Views';
-    totalPrefix = '';
-    addedSuffix = ' Added';
     pageViewsName = 'Browser Page Views';
-    absoluteMetricRange = true;
-    embedsName = 'Embed Views';
-    embedsTotal = false;
-    absoluteMetricTopRow = false;
 } else {
-    pageViewsSummary = {
-        plus: 'page-views',
-        verbPhrase: 'pages viewed',
-        verbPhraseSingular: 'page viewed'
-    };
-    mapsSummary = {
-        plus: ['maps-created'],
-        minus: ['maps-deleted'],
-        verbPhrase: 'maps created',
-        verbPhraseSingular: 'map created',
-    };
-    chartsSummary = {
-        plus: ['charts-created'],
-        minus: ['charts-deleted'],
-        verbPhrase: 'charts created',
-        verbPhraseSingular: 'chart created',
-    };
-    dataLensesEnabled = false;
     datasetsListHeader = '';
-    totalPrefix = 'Total ';
-    addedSuffix = '';
     pageViewsName = 'Page Views';
-    absoluteMetricRange = false;
-    embedsName = 'Embeds';
-    embedsTotal = true;
-    absoluteMetricTopRow = true;
 }
 
 blist.metrics.sitewideShared = {
@@ -95,25 +35,26 @@ blist.metrics.sitewideShared = {
     detailSections: _.filter([
         {
             id: 'detailLenses',
-            displayName: 'Data Lens Pages' + addedSuffix,
+            displayName: 'Data Lens Pages Added',
             summary: {
                 plus: 'lense-new_view-published-v1',
                 verbPhrase: 'Data Lens pages created',
                 verbPhraseSingular: 'Data Lens page created',
                 deltaPhrase: 'Data Lens pages'
             },
-            enabled: dataLensesEnabled
+            enabled: blist.feature_flags.embetter_analytics_page || false
         },
         {
-            id: 'summaryDatasets',    displayName: totalPrefix + 'Datasets' + addedSuffix,
+            id: 'detailDatasets',
+            displayName: 'Datasets Added',
             summary: {
                 plus: datasetsMetricName,
-                range: absoluteMetricRange,
+                range: true,
                 verbPhrase: 'datasets created',
                 verbPhraseSingular: 'dataset created',
                 deltaPhrase: 'datasets'
             },
-            enabled: !absoluteMetricTopRow
+            enabled: blist.feature_flags.embetter_analytics_page || false
         },
         {id: 'detailPublicGoals',      displayName: 'Public Goals',
             summary: {plus: ['govstat-goal-isPublic-true'],
@@ -139,18 +80,134 @@ blist.metrics.sitewideShared = {
             },
             enabled: blist.configuration.govStatMetricsEnabled || false
         },
-        {id: 'detailCharts',    displayName: 'Charts' + addedSuffix,   summary: chartsSummary },
-        {id: 'detailFilters',   displayName: 'Filters' + addedSuffix,  summary: { plus: ['filters-created'], minus: ['filters-deleted'], verbPhrase: 'filters created', verbPhraseSingular: 'filter created', deltaPhrase: 'filters' }, enabled: absoluteMetricTopRow },
-        {id: 'detailMaps',      displayName: 'Maps' + addedSuffix,     summary: mapsSummary },
-        {id: 'detailFilters',   displayName: 'Filters' + addedSuffix,  summary: { plus: ['filters-created'], minus: ['filters-deleted'], verbPhrase: 'filters created', verbPhraseSingular: 'filter created', deltaPhrase: 'filters' }, enabled: !absoluteMetricTopRow },
-        {id: 'detailSnapshots', displayName: 'Snapshots' + addedSuffix, summary: { plus: ['datasets-created-snapshot'], minus: ['datasets-deleted-snapshot'], verbPhrase: 'snapshots created', verbPhraseSingular: 'snapshot created', deltaPhrase: 'snapshots' },
-            enabled: absoluteMetricTopRow
-        },
-        {id: 'detailHref',      displayName: 'External Datasets' + addedSuffix, summary: { plus: ['datasets-created-href'], minus: ['datasets-deleted-href'], verbPhrase: 'external datasets created', verbPhraseSingular: 'external dataset created', deltaPhrase: 'external datasets' }, enabled: !absoluteMetricTopRow },
-        {id: 'detailBlobs',     displayName: 'Downloadable Files' + addedSuffix, summary: { plus: ['datasets-created-blobby'], minus: ['datasets-deleted-blobby'], verbPhrase: 'downloadable files created', verbPhraseSingular: 'downloadable file created', deltaPhrase: 'downloadable files' } },
-        {id: 'detailHref',      displayName: 'External Datasets' + addedSuffix, summary: { plus: ['datasets-created-href'], minus: ['datasets-deleted-href'], verbPhrase: 'external datasets created', verbPhraseSingular: 'external dataset created', deltaPhrase: 'external datasets' }, enabled: absoluteMetricTopRow },
         {
-            id: 'summaryRows',
+            id: 'detailCharts',
+            displayName: 'Charts',
+            summary: {
+                plus: ['charts-created'],
+                minus: ['charts-deleted'],
+                verbPhrase: 'charts created',
+                verbPhraseSingular: 'chart created',
+            },
+            enabled: !blist.feature_flags.embetter_analytics_page
+        },
+        {
+            id: 'detailCharts',
+            displayName: 'Charts Added',
+            summary: {
+                plus: 'lense-chart-published-v1',
+                verbPhrase: 'charts created',
+                verbPhraseSingular: 'chart created',
+                deltaPhrase: 'charts'
+            },
+            enabled: blist.feature_flags.embetter_analytics_page || false
+        },
+        {
+            id: 'detailFilters',
+            displayName: 'Filters',
+            summary: {
+                plus: ['filters-created'],
+                minus: ['filters-deleted'],
+                verbPhrase: 'filters created',
+                verbPhraseSingular: 'filter created'
+            },
+            enabled: !blist.feature_flags.embetter_analytics_page
+        },
+        {
+            id: 'detailMaps',
+            displayName: 'Maps',
+            summary: {
+                plus: ['maps-created'],
+                minus: ['maps-deleted'],
+                verbPhrase: 'maps created',
+                verbPhraseSingular: 'map created',
+            },
+            enabled: !blist.feature_flags.embetter_analytics_page
+        },
+        {
+            id: 'detailMaps',
+            displayName: 'Maps Added',
+            summary: {
+                plus: 'lense-map-published-v1',
+                verbPhrase: 'maps created',
+                verbPhraseSingular: 'map created',
+                deltaPhrase: 'maps'
+            },
+            enabled: blist.feature_flags.embetter_analytics_page || false
+        },
+        {
+            id: 'detailFilters',
+            displayName: 'Filters Added',
+            summary: {
+                plus: ['filters-created'],
+                minus: ['filters-deleted'],
+                verbPhrase: 'filters created',
+                verbPhraseSingular: 'filter created',
+                deltaPhrase: 'filters'
+            },
+            enabled: blist.feature_flags.embetter_analytics_page || false
+        },
+        {
+            id: 'detailSnapshots',
+            displayName: 'Snapshots',
+            summary: {
+                plus: ['datasets-created-snapshot'],
+                minus: ['datasets-deleted-snapshot'],
+                verbPhrase: 'snapshots created',
+                verbPhraseSingular: 'snapshot created',
+            },
+            enabled: !blist.feature_flags.embetter_analytics_page
+        },
+        {
+            id: 'detailHref',
+            displayName: 'External Datasets Added',
+            summary: {
+                plus: ['datasets-created-href'],
+                minus: ['datasets-deleted-href'],
+                verbPhrase: 'external datasets created',
+                verbPhraseSingular: 'external dataset created',
+                deltaPhrase: 'external datasets'
+            },
+            enabled: blist.feature_flags.embetter_analytics_page || false
+        },
+        {
+            id: 'detailBlobs',
+            displayName: 'Downloadable Files',
+            summary: {
+                plus: ['datasets-created-blobby'],
+                minus: ['datasets-deleted-blobby'],
+                verbPhrase: 'downloadable files created',
+                verbPhraseSingular: 'downloadable file created',
+                deltaPhrase: 'downloadable files'
+            },
+            enabled: !blist.feature_flags.embetter_analytics_page
+        },
+        {
+            id: 'detailBlobs',
+            displayName: 'Downloadable Files Added',
+            summary: {
+                plus: ['datasets-created-blobby'],
+                minus: ['datasets-deleted-blobby'],
+                verbPhrase: 'downloadable files created',
+                verbPhraseSingular: 'downloadable file created',
+                deltaPhrase: 'downloadable files'
+            },
+            enabled: blist.feature_flags.embetter_analytics_page || false
+        },
+        {
+            id: 'detailHref',
+            displayName: 'External Datasets',
+            summary: {
+                plus: ['datasets-created-href'],
+                minus: ['datasets-deleted-href'],
+                verbPhrase: 'external datasets created',
+                verbPhraseSingular: 'external dataset created',
+                deltaPhrase: 'external datasets'
+            },
+            enabled: !blist.feature_flags.embetter_analytics_page
+        },
+        {
+            id: 'detailRows',
             displayName: 'Rows Added',
             summary: {
                 plus: 'rows-created',
@@ -159,7 +216,7 @@ blist.metrics.sitewideShared = {
                 verbPhraseSingular: 'row created',
                 deltaPhrase: 'rows'
             },
-            enabled: !absoluteMetricTopRow
+            enabled: blist.feature_flags.embetter_analytics_page || false
         },
         {
             id: 'detailSnapshots',
@@ -171,17 +228,34 @@ blist.metrics.sitewideShared = {
                 verbPhraseSingular: 'snapshot created',
                 deltaPhrase: 'snapshots'
             },
-            enabled: !absoluteMetricTopRow
+            enabled: blist.feature_flags.embetter_analytics_page || false
         }
     ], function(section) { return section.enabled !== false; }),
     summarySections: _.filter([
         {
             id: 'summaryVisits',
             displayName: pageViewsName,
-            summary: pageViewsSummary
+            summary: {
+                plus: 'js-page-view',
+                total: false,
+                verbPhrase: 'pages viewed',
+                verbPhraseSingular: 'page viewed',
+                deltaPhrase: 'page views'
+            },
+            enabled: blist.feature_flags.embetter_analytics_page || false
         },
         {
-            id: 'summaryDash',        displayName: totalPrefix + 'Dashboards',
+            id: 'summaryVisits',
+            displayName: pageViewsName,
+            summary: {
+                plus: 'page-views',
+                verbPhrase: 'pages viewed',
+                verbPhraseSingular: 'page viewed'
+            },
+            enabled: !blist.feature_flags.embetter_analytics_page
+        },
+        {
+            id: 'summaryDash',        displayName: 'Dashboards',
             summary: {
 		plus: 'govstat-total-dash',
                 verbPhrase: 'dashboards created', 
@@ -190,7 +264,7 @@ blist.metrics.sitewideShared = {
             enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {
-            id: 'summaryGoals',        displayName: totalPrefix + 'Goals',
+            id: 'summaryGoals',        displayName: 'Goals',
             summary: {
 		plus: 'govstat-total-goals',
                 verbPhrase: 'goals created', 
@@ -199,18 +273,20 @@ blist.metrics.sitewideShared = {
             enabled: blist.configuration.govStatMetricsEnabled || false
         },
         {
-            id: 'summaryDatasets',    displayName: totalPrefix + 'Datasets' + addedSuffix,
+            id: 'summaryDatasets',
+            displayName: 'Total Datasets',
             summary: {
                 plus: datasetsMetricName,
-                range: absoluteMetricRange,
+                range: false,
                 verbPhrase: 'datasets created',
                 verbPhraseSingular: 'dataset created',
                 deltaPhrase: 'datasets'
             },
-            enabled: absoluteMetricTopRow
+            enabled: !blist.feature_flags.embetter_analytics_page
         },
         {
-            id: 'summaryRows',        displayName: totalPrefix + 'Rows' + addedSuffix,
+            id: 'summaryRows',
+            displayName: 'Total Rows',
             summary: {
 		plus: 'rows-created', 
 		minus: 'rows-deleted',
@@ -218,17 +294,31 @@ blist.metrics.sitewideShared = {
 		verbPhraseSingular: 'row created',
                 deltaPhrase: 'rows'
             },
-            enabled: absoluteMetricTopRow
+            enabled: !blist.feature_flags.embetter_analytics_page
         },
         {
-            id: 'summaryEmbeds',      displayName: embedsName,
+            id: 'summaryEmbeds',
+            displayName: 'Embeds',
+            summary: {
+		plus: 'embeds',
+		verbPhrase: 'embeds',
+                verbPhraseSingular: 'embed',
+                deltaPhrase: 'embeds',
+                total: true
+            },
+            enabled: !blist.feature_flags.embetter_analytics_page
+        },
+        {
+            id: 'summaryEmbeds',
+            displayName: 'Embed Views',
             summary: {
 		plus: 'embeds', 
 		verbPhrase: 'embeds',
                 verbPhraseSingular: 'embed',
                 deltaPhrase: 'embeds',
-                total: embedsTotal
-            }
+                total: false
+            },
+            enabled: blist.feature_flags.embetter_analytics_page || false
         }
     ], function(section) { return section.enabled !== false; }),
     topListSections: [

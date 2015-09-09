@@ -14,11 +14,11 @@ RSpec.describe StoriesHelper, type: :helper do
       {
         'title' => 'Title',
         'description' => 'Description',
-        'grants' => [{
+        'grants' => [
           'inherited' => false,
           'type' => 'viewer',
           'flags' => [ 'public' ]
-        }]
+        ]
       }
     end
 

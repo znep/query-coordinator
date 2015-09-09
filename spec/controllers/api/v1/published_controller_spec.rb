@@ -57,10 +57,10 @@ RSpec.describe Api::V1::PublishedController, type: :controller do
           expect(response.status).to eq(200)
         end
 
-        it 'renders published story with :isPubic set to true' do
+        it 'renders published story with :isPublic set to true' do
           post :create, params
           json_response = JSON.parse(response.body)
-          expected_json = published_story.attributes.tap{|attrs| attrs['isPublic'] = true }
+          expected_json = published_story.attributes.tap{ |attrs| attrs['isPublic'] = true }
           expect(response.body).to eq(expected_json.to_json)
         end
       end

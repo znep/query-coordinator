@@ -1,4 +1,4 @@
-# This object takes parameters that identify a draft story and attemp to publish the story.
+# This object takes parameters that identify a draft story and attempt to publish the story.
 # Publishing the story creates a PublishedStory record in the database and calls the core
 # service to update the story permissions and set them to public.
 #
@@ -16,13 +16,9 @@ class StoryPublisher
     @story_uid = params[:uid]
 
     creating_user_id = (user || {})['id']
-    if creating_user_id.blank?
-      raise ArgumentError.new('User is not valid')
-    end
 
-    if core_request_headers.blank?
-      raise ArgumentError.new('Missing core request headers')
-    end
+    raise ArgumentError.new('User is not valid') unless creating_user_id.present?
+    raise ArgumentError.new('Missing core request headers') unless core_request_headers.present?
 
     @draft_story = DraftStory.find_by_uid_and_digest(@story_uid, params[:digest])
 

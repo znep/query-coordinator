@@ -71,12 +71,10 @@ module StoriesHelper
   private
 
   def determine_permissions_from_core_attributes
-    grants = core_attributes['grants']
+    grants = core_attributes['grants'] || []
 
     {
-      :isPublic => grants.nil? ? false : grants.any? do |grant|
-        grant['flags'].include?('public')
-      end
+      isPublic => grants.any? { |grant| grant['flags'].include?('public') }
     }
   end
 

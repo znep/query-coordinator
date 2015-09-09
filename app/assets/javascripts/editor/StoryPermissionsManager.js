@@ -5,7 +5,7 @@
   var utils = root.socrata.utils;
 
   /**
-   * @function StoryPermissionsManager
+   * @class StoryPermissionsManager
    */
   function StoryPermissionsManager() {
 

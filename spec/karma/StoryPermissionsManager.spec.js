@@ -17,6 +17,7 @@ describe('StoryPermissionsManager', function() {
   var storytellerApiRequestStub;
   var storytellerApiRequestPromiseResolve;
   var storytellerApiRequestPromiseReject;
+
   beforeEach(function() {
     var storytellerApiRequestPromise = new Promise(function(resolve, reject) {
       storytellerApiRequestPromiseResolve = resolve;
@@ -25,6 +26,7 @@ describe('StoryPermissionsManager', function() {
 
     storytellerApiRequestStub = sinon.stub(socrata.utils, 'storytellerApiRequest', _.constant(storytellerApiRequestPromise));
   });
+
   afterEach(function() {
     storytellerApiRequestStub.restore();
   });

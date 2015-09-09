@@ -25,36 +25,36 @@
   &.accent-btn {
     color: $accent-btn-color;
     background-color: $accent-btn-bg-color;
-  }
 
-  &.accent-btn:hover {
-    color: $accent-btn-hover-color;
-    background-color: $accent-btn-hover-bg-color;
-  }
+    &:hover {
+      color: $accent-btn-hover-color;
+      background-color: $accent-btn-hover-bg-color;
+    }
 
-  &.accent-btn:disabled {
-    color: $accent-btn-disabled-color;
-    background-color: $accent-btn-disabled-bg-color;
+    &:disabled {
+      color: $accent-btn-disabled-color;
+      background-color: $accent-btn-disabled-bg-color;
+    }
   }
 
   &.accent-gray-btn {
     color: $accent-gray-btn-color;
     background-color: $accent-gray-btn-bg-color;
-  }
 
-  &.accent-gray-btn:hover {
-    color: $accent-gray-btn-color;
-    background-color: $accent-gray-btn-hover-bg-color;
+    &:hover {
+      color: $accent-gray-btn-color;
+      background-color: $accent-gray-btn-hover-bg-color;
+    }
   }
 
   &.accent-green-btn {
     color: $accent-green-btn-color;
     background-color: $accent-green-btn-bg-color;
-  }
 
-  &.accent-green-btn:hover {
-    color: $accent-green-btn-color;
-    background-color: $accent-green-btn-hover-bg-color;
+    &:hover {
+      color: $accent-green-btn-color;
+      background-color: $accent-green-btn-hover-bg-color;
+    }
   }
 
   // To use this, you'll need to have a span

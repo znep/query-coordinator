@@ -99,7 +99,7 @@ class CoreServer
     if params.is_a?(String)
       params
     elsif params.is_a?(Hash)
-      params.map { |key, value| "#{key}=#{value}"}.join('&')
+      params.to_query
     end
   end
 
@@ -187,7 +187,7 @@ class CoreServer
 
       core_server_response.code.to_i == 200
     rescue => error
-      error_message = "[#{request_options[:verb].upcase} #{request_options[:path]}"
+      error_message = "[#{request_options[:verb].upcase}] #{request_options[:path]}"
       error_message << " - HTTP #{status_code}" unless status_code.blank?
       error_message << " - '#{response_body.inspect}'" unless response_body.blank?
 

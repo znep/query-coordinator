@@ -1,6 +1,7 @@
 class Api::V1::PermissionsController < ApplicationController
 
   def update
+    core_request_headers = CoreServer::headers_from_request(request)
     permissions = PermissionsUpdater.new(current_user, params[:uid], core_request_headers)
     permissions_response = nil
 
@@ -16,11 +17,5 @@ class Api::V1::PermissionsController < ApplicationController
       render json: {isPublic: params[:isPublic]}, status: :ok
     end
   end
-
-  private
-
-  def core_request_headers
-    CoreServer::headers_from_request(request)
-  end
-
 end
+

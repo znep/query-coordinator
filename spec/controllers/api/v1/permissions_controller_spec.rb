@@ -85,7 +85,7 @@ RSpec.describe Api::V1::PermissionsController, type: :controller do
           put :update, params
         end
 
-        it 'renders Internal Server Error' do
+        it 'receives an error' do
           put :update, params
           expect(response).to be_error
         end

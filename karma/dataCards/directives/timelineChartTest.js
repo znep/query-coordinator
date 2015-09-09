@@ -42,9 +42,9 @@ describe('timelineChart', function() {
 
   beforeEach(module('dataCards.directives'));
 
-  beforeEach(module('dataCards/timeline-chart.sass'));
-  beforeEach(module('dataCards/flyout.sass'));
-  beforeEach(module('dataCards/theme/default.sass'));
+  beforeEach(module('dataCards/timeline-chart.scss'));
+  beforeEach(module('dataCards/flyout.scss'));
+  beforeEach(module('dataCards/theme/default.scss'));
 
   beforeEach(module('/angular_templates/dataCards/timelineChart.html'));
 

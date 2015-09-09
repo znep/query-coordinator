@@ -23,7 +23,7 @@ describe('<clearable-input/>', function() {
 
   beforeEach(function() {
     module('/angular_templates/dataCards/clearableInput.html');
-    module('dataCards/clearable-input.sass');
+    module('dataCards/clearable-input.scss');
     module('dataCards.directives');
     module('dataCards');
     module('test');

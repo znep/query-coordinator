@@ -105,8 +105,8 @@ describe('card directive', function() {
 
   beforeEach(module('/angular_templates/dataCards/card.html'));
   beforeEach(module('/angular_templates/dataCards/spinner.html'));
-  beforeEach(module('dataCards/cards.sass'));
-  beforeEach(module('dataCards/card.sass'));
+  beforeEach(module('dataCards/cards.scss'));
+  beforeEach(module('dataCards/card.scss'));
   beforeEach(module('test'));
   beforeEach(module('dataCards'));
   beforeEach(module(['$provide', function(_$provide_) {

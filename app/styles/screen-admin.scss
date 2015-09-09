@@ -1,0 +1,123 @@
+.siteInnerWrapper {
+  max-width: 100%;
+}
+
+.adminNavBox {
+  .hideButtonBox {
+    display: none;
+    float: right;
+    .hideButton {
+      @include sprite-menu-icons;
+    }
+  }
+  .adminNav {
+    li {
+      @include admin-icons;
+    }
+  }
+  &.collapsed {
+    height: 1.3em;
+    padding: 0.5em;
+    width: 1.3em;
+    .adminNav {
+      display: none;
+    }
+  }
+}
+
+.contentBox {
+  .adminHeader {
+    border-bottom: 1px solid $color_chrome_box_border;
+    @include admin-header-icons;
+    padding: 1em 1em 0.5em 1em;
+    margin-bottom: 1em;
+    &.floating {
+      border-bottom: 0;
+      margin-bottom: 0;
+    }
+    .icon {
+      float: left;
+      margin-right: 1em;
+    }
+    h1 {
+      line-height: 32px;
+      &.floating {
+        float: left;
+      }
+    }
+  }
+  .gridList {
+    input.button {
+      .ie7 & {
+        padding: 0.5em;
+      }
+    }
+    form {
+      display: inline;
+    }
+  }
+}
+
+#adminContent {
+  a.button {
+    font-size: 1em;
+  }
+}
+
+.layoutConfig {
+  border-top: 1px solid $color_chrome_box_border;
+  margin: {
+    bottom: 1em;
+    top: 2em;
+  };
+  .commonForm {
+    margin-top: 1em;
+    .line {
+      position: relative;
+      .mainLabel {
+        font-size: 1.3em;
+        font-weight: bold;
+        left: 0;
+        position: absolute;
+        top: 0.2em;
+      }
+      .valueBox {
+        display: block;
+        float: none;
+        margin-left: 18em;
+        .radio.uniform {
+          .ie7 & {
+            display: inline;
+          }
+        }
+        label {
+          padding-left: 0;
+        }
+      }
+      .statusText {
+        display: none;
+        font: {
+          size: 1.1em;
+          weight: bold;
+        };
+        left: 27em;
+        position: absolute;
+        top: 0.2em;
+        &.saved {
+          color: #999999;
+        }
+        &.saving {
+          @include throbber-image;
+          background-position: right 1px;
+          padding-right: 24px;
+        }
+      }
+    }
+    input[type='submit'] {
+      margin: {
+        left: 16.7em;
+        top: 0.5em;
+      };
+    }
+  }
+}

@@ -17,8 +17,8 @@ describe('Flyout service', function() {
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.services'));
   beforeEach(module('test'));
-  beforeEach(module('dataCards/flyout.sass'));
-  beforeEach(module('dataCards/theme/default.sass'));
+  beforeEach(module('dataCards/flyout.scss'));
+  beforeEach(module('dataCards/theme/default.scss'));
 
   beforeEach(inject(function($injector) {
     FlyoutService = $injector.get('FlyoutService');

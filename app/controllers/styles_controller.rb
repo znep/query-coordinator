@@ -16,32 +16,21 @@ class StylesController < ApplicationController
 
       headers['Content-Type'] = 'text/css'
 
-      sass_stylesheet_filename = File.join(style_path_parts + ["#{path}.sass"])
+      scss_stylesheet_filename = File.join(style_path_parts + ["#{path}.scss"])
       css_stylesheet_filename = File.join(style_path_parts + ["#{path}.css"])
-      sass_erb_stylesheet_filename = File.join(style_path_parts + ["#{path}.sass.erb"])
 
-      # We have 3 cases:
+      # We have 2 cases:
       #  - The extension is .css. Return the css file.
-      #  - The extension is .sass. Compile the sass template, cache its
+      #  - The extension is .scss. Compile the scss template, cache its
       #    output and return it.
-      #  - The extension is .sass.erb. Compile erb to sass, compile sass to
-      #    css, return its output without caching.
 
-      if File.exist?(sass_erb_stylesheet_filename)
-        sass_template = ERB.new(File.read(sass_erb_stylesheet_filename)).result(binding)
-
-        includes = get_includes
-        stylesheet = Sass::Engine.new(includes + sass_template,
-                         :style => :nested,
-                         :cache => false,
-                         :load_paths => ["#{Rails.root}/app/styles"]).render
-        render :text => stylesheet
-      elsif File.exist?(sass_stylesheet_filename)
-        with_development_cache(sass_stylesheet_filename) do
-          stylesheet = File.read(sass_stylesheet_filename)
+      if File.exist?(scss_stylesheet_filename)
+        with_development_cache(scss_stylesheet_filename) do
+          stylesheet = File.read(scss_stylesheet_filename)
           includes = get_includes
           Sass::Engine.new(includes + stylesheet,
                            :style => :nested,
+                           :syntax => :scss,
                            :cache => false,
                            :load_paths => ["#{Rails.root}/app/styles"]).render
         end
@@ -73,12 +62,12 @@ class StylesController < ApplicationController
           Rails.cache.write(includes_cache_key, includes)
         end
 
-        sass_sheets = []
+        scss_sheets = []
         css_sheets = []
         STYLE_PACKAGES[params[:stylesheet]].each do |sheet|
-          fname = "#{Rails.root}/app/styles/#{sheet}.sass"
+          fname = "#{Rails.root}/app/styles/#{sheet}.scss"
           if File.exist?(fname)
-            sass_sheets.push(File.read(fname))
+            scss_sheets.push(File.read(fname))
           else
             fname = "#{Rails.root}/app/styles/#{sheet}.css"
             css_sheets.push(File.read(fname))
@@ -86,8 +75,9 @@ class StylesController < ApplicationController
         end
 
         rendered_styles = css_sheets.join("\n")
-        rendered_styles += Sass::Engine.new(includes + sass_sheets.join("\n"),
+        rendered_styles += Sass::Engine.new(includes + scss_sheets.join("\n"),
                                            :style => :compressed,
+                                           :syntax => :scss,
                                            :cache => false,
                                            :load_paths => ["#{Rails.root}/app/styles"]).render
         Rails.cache.write(cache_key, rendered_styles)
@@ -130,9 +120,10 @@ class StylesController < ApplicationController
       includes += get_includes_recurse(theme, @@widget_theme_parse)
 
       # render
-      sheet = File.read("#{Rails.root}/app/styles/widget.sass")
+      sheet = File.read("#{Rails.root}/app/styles/widget.scss")
       rendered_styles = Sass::Engine.new(includes + sheet,
                                          :style => :compressed,
+                                         :syntax => :scss,
                                          :cache => false,
                                          :load_paths => ["#{Rails.root}/app/styles"]).render
       Rails.cache.write(cache_key, rendered_styles)
@@ -158,7 +149,7 @@ class StylesController < ApplicationController
 
   def get_includes
     STYLE_PACKAGES['includes'].map do |incl|
-      "@import \"#{incl}.sass\"\n"
+      "@import \"#{incl}.scss\";\n"
     end.join + get_includes_recurse(CurrentDomain.theme, @@site_theme_parse)
   end
 
@@ -168,7 +159,7 @@ class StylesController < ApplicationController
       Dir.mkdir(tmpdir_path) unless Dir.exist? tmpdir_path
 
       includes_cache_key = STYLE_PACKAGES['includes'].map do |include|
-        File.new(File.join(Rails.root, 'app/styles', "#{include}.sass")).mtime.to_s
+        File.new(File.join(Rails.root, 'app/styles', "#{include}.scss")).mtime.to_s
       end.join
 
       cache_key = Digest::MD5.hexdigest(stylesheet_filename + includes_cache_key +
@@ -220,16 +211,17 @@ class StylesController < ApplicationController
       "#{normalize_color(stop['color'], false)}:#{stop['position']}" : normalize_color(stop['color'], false) }.join(',')
 
     # ie (based on raw string)
-    result += "@mixin box_gradient_#{name}($width, $height, $additional)\n"
+    result += "@mixin box_gradient_#{name}($width, $height, $additional) {\n"
     result += '  background-image: url(/ui/box.png?w=#{$width}&h=#{$height}&fc=' +
-                 gradient_string + '&#{$additional})' + "\n"
+                 gradient_string + '&#{$additional});' + "\n" +
+              "}\n"
 
     first_stop = stops.first
     last_stop = stops.last
     stops.delete(stops.first) if stops.first['position'].nil?
     stops.delete(stops.last) if stops.last['position'].nil?
 
-    result += "@mixin gradient_#{name}\n"
+    result += "@mixin gradient_#{name} {\n"
 
     first_color = normalize_color(first_stop['color'])
     last_color = normalize_color(last_stop['color'])
@@ -247,16 +239,17 @@ class StylesController < ApplicationController
 
       result += ", #{normalize_color(stop['color'])} #{prev_stop_position}%"
     end
-    result += ")\n"
+    result += ");\n"
 
     # webkit
     result += '  background: -webkit-gradient(linear, left top, left bottom,' +
               " from(#{first_color}), to(#{last_color})" +
               stops.map{ |stop| ", color-stop(#{stop['position']},#{normalize_color(stop['color'])})" }.join +
-              ")\n"
+              ");\n"
 
     # default background-color for fallback
-    result + "  background-color: #{first_color}\n"
+    result += "  background-color: #{first_color};\n"
+    result + "}\n"
   end
 
   def get_includes_recurse(hash, definition, path = '')
@@ -264,33 +257,33 @@ class StylesController < ApplicationController
     unless hash.nil?
       hash.each do |key, value|
         if definition[key.to_sym] == 'string'
-          result += "$#{path}#{key}: \"#{value}\"\n"
+          result += "$#{path}#{key}: \"#{value}\";\n"
         elsif definition[key.to_sym] == 'number'
-          result += "$#{path}#{key}: #{value}\n"
+          result += "$#{path}#{key}: #{value};\n"
         elsif definition[key.to_sym] == 'boolean'
-          result += "$#{path}#{key}: #{value.to_s}\n"
+          result += "$#{path}#{key}: #{value.to_s};\n"
         elsif definition[key.to_sym] == 'dimensions'
-          result += "$#{path}#{key}: #{value[:value]}#{value[:unit]}\n"
+          result += "$#{path}#{key}: #{value[:value]}#{value[:unit]};\n"
         elsif definition[key.to_sym] == 'image'
           if value[:type].to_s == 'static'
             href = "#{value[:href]}"
           elsif value[:type].to_s == 'hosted'
             href = "/assets/#{value[:href]}"
           end
-          result += "$#{path}#{key}: url(#{href})\n"
-          result += "$#{path}#{key}_width: #{value[:width]}px\n"
-          result += "$#{path}#{key}_height: #{value[:height]}px\n"
+          result += "$#{path}#{key}: url(#{href});\n"
+          result += "$#{path}#{key}_width: #{value[:width]}px;\n"
+          result += "$#{path}#{key}_height: #{value[:height]}px;\n"
         elsif definition[key.to_sym] == 'color'
           if value.is_a? String
             # flat color
             if value.match(/([0-9a-f]{3}){1,2}/i) && !value.start_with?('#')
               # hex color (prepend #)
-              result += "$color_#{path}#{key}: ##{value}\n"
+              result += "$color_#{path}#{key}: ##{value};\n"
             else
               # rgba color (pass through)
-              result += "$color_#{path}#{key}: #{value}\n"
+              result += "$color_#{path}#{key}: #{value};\n"
             end
-            result += "$#{path}#{key}: #{value}\n"
+            result += "$#{path}#{key}: #{value};\n"
           elsif value.is_a? Array
             # gradient
             next unless value.first.is_a? Hash # hack to accomodate current header color format

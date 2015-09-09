@@ -45,9 +45,9 @@ describe('API Explorer', function() {
     module('dataCards.models');
     module('dataCards');
     module('test');
-    module('dataCards/cards.sass');
-    module('dataCards/action-button.sass');
-    module('dataCards/flyout.sass');
+    module('dataCards/cards.scss');
+    module('dataCards/action-button.scss');
+    module('dataCards/flyout.scss');
 
     $('body').addClass('state-view-cards');
 

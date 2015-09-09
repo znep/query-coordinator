@@ -1,0 +1,179 @@
+.logo {
+  text-align: center;
+}
+
+.contentBox {
+  width: 85em;
+}
+
+#newApiForm {
+  font-size: 1.2em;
+}
+
+#aboveslide {
+  line-height: 1.5;
+  text-align: center;
+  position: relative;
+  #toptitle {}
+  #steps {}
+  #skip {}
+  #progressbar {
+    width: 20em;
+    height: 1.25em;
+    margin: 0.5em auto;
+  }
+  .wizardButtons {
+    position: absolute;
+    top: 1.25em;
+    right: 0em;
+    margin: 0em;
+    width: 100%;
+  }
+}
+
+.error {
+  color: red;
+}
+
+#paneSpinner {
+  position: relative;
+  #paneSpinnerInside {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    bottom: 0em;
+  }
+}
+
+#apiFoundryWizard {
+  clear: both;
+  padding-top: 1.5em;
+  padding-bottom: 1.5em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  border-top: 1px solid $color_chrome_box_border;
+  border-bottom: 1px solid $color_chrome_box_border;
+  a h2 {
+    color: darkblue;
+  }
+  .apiFieldPane {
+    label {
+      width: 8em;
+      display: inline-block;
+      margin-top: 0.5em;
+      vertical-align: top;
+    }
+    label.error {
+      margin-left: 8.5em;
+      width: 26em;
+    }
+    input, select, textarea {
+      width: 23em;
+    }
+    .checkbox {
+      width: 3em;
+    }
+    .checkboxLabel {
+      width: 20em;
+    }
+    .additionalHelp {
+      label {
+        width: 26em;
+        margin-left: 8.5em;
+        text-align: left;
+        margin-top: 0em;
+      }
+    }
+    .description {
+      width: 23em;
+    }
+  }
+  .wizpane {
+    display: none;
+    float: left;
+    p {
+      line-height: 1.3;
+    }
+    .center {
+      text-align: center;
+    }
+    .column {
+      width: 32em;
+      float: right;
+      left: 38em;
+    }
+    .paneFormControls {
+      .additionalHelp {
+        color: gray;
+        font-style: italic;
+      }
+      .controlDiv {
+        display: inline-block;
+        font-size: 1.3em;
+        margin: 1em;
+        text-align: left;
+        label {
+          font-size: 1.3em;
+        }
+      }
+      .nameInput {
+        width: 25em;
+      }
+      .locationInput {
+        width: 12em;
+      }
+      .validationError {
+        color: red;
+      }
+      #rowIdentifierColumnId {
+        width: 21em;
+      }
+      .rowIdentifierColumnId {
+        margin-top: -0.6em;
+      }
+      .apiDescription {
+        width: 30em;
+        height: 12em;
+      }
+    }
+    .formControl {
+      margin-top: 0.5em;
+      margin-bottom: 1.5em;
+    }
+    .tabs {
+      margin-top: 2em;
+    }
+    .helpfulText {
+      text-align: left;
+      p {
+        margin-bottom: 1em;
+      }
+    }
+    .previewTitle {
+      color: grey;
+    }
+    .docPreview {
+      text-align: left;
+      p {
+        margin-bottom: 1em;
+      }
+    }
+    .docPreviewInside {
+      padding-left: 1em;
+    }
+    .docPreviewPage {
+      margin-top: 0.5em;
+      padding: 1em;
+      border: 1px solid $color_chrome_box_border;
+      background-image: url("/images/apifoundry/corner-flip.png");
+      background-repeat: no-repeat;
+      background-position: right top;
+      background-color: #F1F1F1;
+      @include box-shadow(3px, 3px, 4px, #cfcfcf);
+    }
+  }
+}
+
+#tagline {
+  text-align: center;
+}

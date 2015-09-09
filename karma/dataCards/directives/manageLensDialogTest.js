@@ -10,7 +10,7 @@ describe('manage-lens dialog', function() {
   var clock;
 
   beforeEach(module('/angular_templates/dataCards/manageLensDialog.html'));
-  beforeEach(module('dataCards/cards.sass'));
+  beforeEach(module('dataCards/cards.scss'));
   beforeEach(module('dataCards'));
 
   beforeEach(module(function($provide) {

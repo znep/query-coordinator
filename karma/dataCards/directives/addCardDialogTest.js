@@ -131,7 +131,7 @@ describe('addCardDialog', function() {
   beforeEach(module('/angular_templates/dataCards/visualizationTypeSelector.html'));
   beforeEach(module('/angular_templates/dataCards/socSelect.html'));
   beforeEach(module('/angular_templates/dataCards/card.html'));
-  beforeEach(module('dataCards/cards.sass'));
+  beforeEach(module('dataCards/cards.scss'));
 
   beforeEach(
     inject([

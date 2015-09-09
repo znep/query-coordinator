@@ -1,0 +1,48 @@
+@import "dataCards/common/colors";
+@import "dataCards/common/mixins";
+
+related-views {
+  margin-top: 1rem;
+  width: 100%;
+  display: block;
+}
+
+.related-views {
+  .action-btn > .icon-chart {
+    margin-right: 5px;
+  }
+  .tool-panel-inner-container {
+    padding: 15px 0;
+  }
+}
+
+.related-views-list {
+  overflow-y: auto;
+  padding: 0;
+  > li {
+    list-style: none;
+  }
+}
+
+.related-views-list-item {
+  > a {
+    display: block;
+    padding: 10px 25px;
+  }
+}
+
+.related-view-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.related-view-name {
+  font-weight: bold;
+  margin: 0;
+}
+
+.related-views-list-heading {
+  margin: 0 15px 15px 25px;
+}

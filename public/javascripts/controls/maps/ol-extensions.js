@@ -405,7 +405,7 @@
 
             var padding = new OpenLayers.Size(-2, -2);
 
-            // Magic number is height as specified in openlayers.sass.
+            // Magic number is height as specified in openlayers.scss.
             this.small = $(this.map.div).height() < 277;
 
             // HACK HACK HACK HACK HCAK HCAK HCAKHCAKHC AKHACKHAC HKACK HACKH ACHKACHK

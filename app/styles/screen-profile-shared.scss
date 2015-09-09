@@ -1,0 +1,65 @@
+.appTokenDisplay, .editAppToken {
+  .noThumbnail {
+    line-height: 80px;
+    text-align: center;
+    img {
+      display: none;
+    }
+  }
+  &.edit {
+    .thumbnailArea {
+      height: 100px;
+    }
+    .thumbnail {
+      height: 100px;
+    }
+  }
+}
+
+.appTokenDisplay {
+  min-height: 80px;
+  .thumbnailArea {
+    float: left;
+    width: 80px;
+  }
+  .thumbnail {
+    height: 80px;
+    .noThumbnailText {
+      display: none;
+    }
+  }
+  .appTokenContent {
+    margin-left: 100px;
+    p {
+      padding: 0.5em 0;
+      .fieldName {
+        float: left;
+        font-weight: bold;
+        width: 9em;
+      }
+      .fieldValue {
+        display: inline-block;
+        @include ie7-inline-block;
+      }
+    }
+    .appTokenLine {
+      .appTokenTextContainer {
+        display: inline;
+        .appTokenText {
+          font-family: monospace;
+          font-size: 1.2em;
+        }
+      }
+    }
+  }
+}
+
+.backButton {
+  float: right;
+  margin: 0;
+  @include sprite-menu-icons;
+  .icon {
+    float: left;
+    padding-right: 0.5em;
+  }
+}

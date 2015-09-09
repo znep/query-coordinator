@@ -1,0 +1,1332 @@
+// util
+@mixin ie6-fix {
+  .ie6 & {
+    overflow: hidden;
+  }
+}
+
+@mixin icon-include-active($className, $subselector, $top, $left) {
+  &.#{$className} #{$subselector} {
+    background-position: 0 $top;
+  }
+  &.#{$className}.active #{$subselector} {
+    background-position: $left $top;
+  }
+}
+
+@mixin icon-font {
+  font-family: "socrata-apps";
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// icons/button_icons.png
+@mixin sprite-button-icons($subselector: ".icon") {
+  #{$subselector} {
+    @include text-hiding;
+    @include ie6-fix;
+    background-image: url(/stylesheets/images/icons/button_icons.png?1);
+    height: 10px;
+    width: 10px;
+  }
+  #{$subselector},
+  &.upArrow #{$subselector} {
+    background-position: 0 0;
+  }
+  &.go #{$subselector},
+  &.submit #{$subselector} {
+    background-position: 0 -10px;
+  }
+  &.accept #{$subselector} {
+    background-position: 0 -20px;
+  }
+  &.add #{$subselector} {
+    background-position: 0 -30px;
+  }
+  &.downArrow #{$subselector} {
+    background-position: 0 -40px;
+  }
+  &.close #{$subselector},
+  &.jqmClose #{$subselector},
+  &.cancel #{$subselector},
+  &.delete #{$subselector} {
+    background-position: 0 -50px;
+  }
+  &.downArrowDark #{$subselector} {
+    background-position: 0 -60px;
+  }
+  &.upArrowDark #{$subselector} {
+    background-position: 0 -70px;
+  }
+}
+
+// icons/menu_icons.png
+$new-view-color: #80acca;
+
+@mixin sprite-menu-icons($subselector: ".icon", $defaultDown: true) {
+  #{$subselector} {
+    @include text-hiding;
+    @include ie6-fix;
+    background-image: url(/stylesheets/images/icons/menu_icons.png?3);
+    height: 13px;
+    width: 13px;
+    .ie6 & {
+      background-image: url(/stylesheets/images/icons/menu_icons.gif?1);
+    }
+  }
+  @if $defaultDown == true {
+    #{$subselector} {
+      background-position: 0 0;
+    }
+  }
+  @else {
+    #{$subselector} {
+      background-position: 0 13px;
+    }
+  }
+  @if $subselector == "&" {
+    $subselector: "";
+  }
+  &.none #{$subselector} {
+    background-position: 0 13px;
+  }
+  &.downArrow #{$subselector},
+  &.downArrowNoHover #{$subselector},
+  &.headerSortUp #{$subselector} {
+    background-position: 0 0;
+  }
+  &.downArrow:hover #{$subselector},
+  &.downArrowHighlight #{$subselector},
+  &.collapsed #{$subselector} {
+    background-position: 0 -13px;
+  }
+  &.upArrow #{$subselector},
+  &.upArrowNoHover #{$subselector},
+  &.headerSortDown #{$subselector} {
+    background-position: 0 -26px;
+  }
+  &.upArrow:hover #{$subselector},
+  &.upArrowHighlight #{$subselector},
+  &.expanded #{$subselector} {
+    background-position: 0 -39px;
+  }
+  &.rightArrow #{$subselector},
+  &.next #{$subselector} {
+    background-position: 0 -52px;
+  }
+  &.rightArrow:hover #{$subselector},
+  &.rightArrowHighlight #{$subselector} {
+    background-position: 0 -65px;
+  }
+  &.leftArrow #{$subselector},
+  &.leftArrowNoHover #{$subselector},
+  &.previous #{$subselector} {
+    background-position: 0 -78px;
+  }
+  &.leftArrow:hover #{$subselector},
+  &.leftArrowHighlight #{$subselector} {
+    background-position: 0 -91px;
+  }
+  &.add #{$subselector} {
+    background-position: 0 -104px;
+  }
+  &.search #{$subselector} {
+    background-position: 0 -117px;
+  }
+  &.about #{$subselector} {
+    background-position: 0 -130px;
+  }
+  &.fullscreen #{$subselector} {
+    background-position: 0 -143px;
+  }
+  &.share #{$subselector} {
+    background-position: 0 -156px;
+  }
+  &.checked #{$subselector} {
+    background-position: 0 -169px;
+  }
+  &.iconView #{$subselector} {
+    background-position: 0 -182px;
+  }
+  &.listView #{$subselector} {
+    background-position: 0 -195px;
+  }
+  &.fatrowView #{$subselector} {
+    background-position: 0 -208px;
+  }
+  &.gridView #{$subselector} {
+    background-position: 0 -221px;
+  }
+  &.typeFilter #{$subselector} {
+    background-position: 0 -234px;
+  }
+  &.typeChart #{$subselector} {
+    background-position: 0 -247px;
+  }
+  &.typeMap #{$subselector} {
+    background-position: 0 -260px;
+  }
+  &.typeBlist #{$subselector} {
+    background-position: 0 -273px;
+  }
+  &.feed #{$subselector} {
+    background-position: 0 -286px;
+  }
+  &.typeApi #{$subselector},
+  &.embed #{$subselector} {
+    background-position: 0 -299px;
+  }
+  &.views #{$subselector} {
+    background-position: 0 -312px;
+  }
+  &.downloads #{$subselector} {
+    background-position: 0 -325px;
+  }
+  &.delicious #{$subselector} {
+    background-position: 0 -338px;
+  }
+  &.digg #{$subselector} {
+    background-position: 0 -351px;
+  }
+  &.facebook #{$subselector} {
+    background-position: 0 -364px;
+  }
+  &.twitter #{$subselector} {
+    background-position: 0 -377px;
+  }
+  &.email #{$subselector} {
+    background-position: 0 -390px;
+  }
+  &.rateUp #{$subselector} {
+    background-position: 0 -403px;
+  }
+  &.ratedUp #{$subselector} {
+    background-position: 0 -416px;
+  }
+  &.rateDown #{$subselector} {
+    background-position: 0 -429px;
+  }
+  &.ratedDown #{$subselector} {
+    background-position: 0 -442px;
+  }
+  &.typeForm #{$subselector} {
+    background-position: 0 -455px;
+  }
+  &.typeCalendar #{$subselector} {
+    background-position: 0 -468px;
+  }
+  &.typeBlob #{$subselector} {
+    background-position: 0 -481px;
+  }
+  &.typeGrouped #{$subselector} {
+    background-position: 0 -494px;
+  }
+  &.close #{$subselector},
+  &.remove #{$subselector} {
+    background-position: 0 -507px;
+  }
+  &.alert #{$subselector},
+  &.warning #{$subselector} {
+    background-position: 0 -520px;
+  }
+  &.subscribe #{$subselector} {
+    background-position: 0 -533px;
+  }
+  &.start #{$subselector} {
+    background-position: 0 -546px;
+  }
+  &.end #{$subselector} {
+    background-position: 0 -559px;
+  }
+  &.options #{$subselector} {
+    background-position: 0 -572px;
+  }
+  &.typeHref #{$subselector} {
+    background-position: 0 -585px;
+  }
+  &.typeNew_view #{$subselector} {
+    background: none;
+    text-indent: 0;
+    &::before {
+      @include icon-font;
+      content: "";
+      font-size: 13px;
+      color: $new-view-color;
+    }
+  }
+  &.error #{$subselector} {
+    background-position: 0 -598px;
+  }
+  &.typeUnpublished #{$subselector} {
+    background-position: 0 -611px;
+  }
+}
+
+.dataset-icon {
+  margin-bottom: 2px;
+  &[data-display-type] {
+    background: none;
+    text-indent: 0;
+    &::before {
+      @include icon-font;
+      font-size: 13px;
+    }
+  }
+  &[data-display-type="new_view"] {
+    &::before {
+      content: "";
+      color: $new-view-color;
+    }
+  }
+  &[data-display-type="calendar"] {
+    &::before {
+      content: "";
+      color: blue;
+    }
+  }
+  &[data-display-type="table"],
+  &[data-display-type="blist"] {
+    &::before {
+      content: "";
+      color: blue;
+    }
+  }
+  &[data-display-type="chart"] {
+    &::before {
+      content: "";
+      color: blue;
+    }
+  }
+  &[data-display-type="unpublished"] {
+    &::before {
+      content: "";
+      color: blue;
+    }
+  }
+}
+
+.settings-icon {
+  background: none;
+  text-indent: 0;
+  &::before {
+    @include icon-font;
+    font-size: 13px;
+    color: gray;
+    content: "";
+  }
+}
+
+// icons/accordion_icons.png
+@mixin sprite-accordion-icons($subselector: ".icon") {
+  #{$subselector} {
+    @include text-hiding;
+    background-image: url(/stylesheets/images/icons/accordion_icons.png?2);
+    height: 13px;
+    width: 13px;
+  }
+  &.expanded #{$subselector},
+  &.selected #{$subselector} {
+    background-position: 0 0;
+  }
+  #{$subselector},
+  &.collapsed #{$subselector} {
+    background-position: 0 -13px;
+  }
+  &.formSection #{$subselector} {
+    background-position: 0 -26px;
+  }
+  &.collapsed.formSection #{$subselector} {
+    background-position: 0 -39px;
+  }
+}
+
+// icons/type_icons_30.png
+@mixin sprite-type-icons-30($subselector: ".icon") {
+  #{$subselector},
+  .alertIcon {
+    @include text-hiding;
+    @include ie6-fix;
+    background-image: url(/stylesheets/images/icons/type_icons_30.png?1);
+    height: 30px;
+    width: 30px;
+  }
+  &.typeFilter #{$subselector} {
+    background-position: 0 0;
+  }
+  &.typeChart #{$subselector} {
+    background-position: 0 -30px;
+  }
+  &.typeMap #{$subselector} {
+    background-position: 0 -60px;
+  }
+  &.typeBlist #{$subselector} {
+    background-position: 0 -90px;
+  }
+  &.comments #{$subselector} {
+    background-position: 0 -120px;
+  }
+  &.typeApi #{$subselector},
+  &.embed #{$subselector} {
+    background-position: 0 -150px;
+  }
+  &.views #{$subselector} {
+    background-position: 0 -180px;
+  }
+  &.downloads #{$subselector} {
+    background-position: 0 -210px;
+  }
+  &.print #{$subselector} {
+    background-position: 0 -240px;
+  }
+  &.typeForm #{$subselector} {
+    background-position: 0 -270px;
+  }
+  &.typeCalendar #{$subselector} {
+    background-position: 0 -300px;
+  }
+  &.typeBlob #{$subselector} {
+    background-position: 0 -330px;
+  }
+  &.typeGrouped #{$subselector} {
+    background-position: 0 -360px;
+  }
+  &.api #{$subselector} {
+    background-position: 0 -390px;
+  }
+  &.alert #{$subselector},
+  .alertIcon {
+    background-position: 0 -420px;
+  }
+  &.typeHref #{$subselector} {
+    background-position: 0 -450px;
+  }
+  &.typeNew_view #{$subselector} {
+    background: none;
+    text-indent: 0;
+    &::before {
+      content: "";
+      font-family: "socrata-apps";
+      font-size: 30px;
+      color: $new-view-color;
+    }
+  }
+  &.typeUnpublished #{$subselector} {
+    background-position: 0 -480px;
+  }
+  &.typeSnapshotted #{$subselector} {
+    background-position: 0 -510px;
+  }
+  &.typeApi-predeploy #{$subselector} {
+    background-position: 0 -540px;
+  }
+}
+
+// icons/type_icons_50.png
+@mixin sprite-type-icons-50($subselector: ".icon") {
+  #{$subselector},
+  .alertIcon {
+    @include text-hiding;
+    @include ie6-fix;
+    background-image: url(/stylesheets/images/icons/type_icons_50.png);
+    height: 50px;
+    width: 50px;
+  }
+  &.typeFilter #{$subselector} {
+    background-position: 0 0;
+  }
+  &.typeChart #{$subselector} {
+    background-position: 0 -50px;
+  }
+  &.typeMap #{$subselector} {
+    background-position: 0 -100px;
+  }
+  &.typeBlist #{$subselector} {
+    background-position: 0 -150px;
+  }
+  &.comments #{$subselector} {
+    background-position: 0 -200px;
+  }
+  &.typeApi #{$subselector},
+  &.embed #{$subselector} {
+    background-position: 0 -250px;
+  }
+  &.views #{$subselector} {
+    background-position: 0 -300px;
+  }
+  &.downloads #{$subselector} {
+    background-position: 0 -350px;
+  }
+  &.print #{$subselector} {
+    background-position: 0 -400px;
+  }
+  &.typeForm #{$subselector} {
+    background-position: 0 -450px;
+  }
+  &.typeCalendar #{$subselector} {
+    background-position: 0 -500px;
+  }
+  &.typeBlob #{$subselector} {
+    background-position: 0 -550px;
+  }
+  &.typeGrouped #{$subselector} {
+    background-position: 0 -600px;
+  }
+  &.api #{$subselector} {
+    background-position: 0 -650px;
+  }
+  &.alert #{$subselector},
+  .alertIcon {
+    background-position: 0 -700px;
+  }
+  &.typeHref #{$subselector} {
+    background-position: 0 -750px;
+  }
+  &.typeNew_view #{$subselector} {
+    background: none;
+    text-indent: 0;
+    &::before {
+      content: "";
+      font-family: "socrata-apps";
+      font-size: 50px;
+      color: $new-view-color;
+    }
+  }
+  &.typeUnpublished #{$subselector} {
+    background-position: 0 -800px;
+  }
+  &.typeSnapshotted #{$subselector} {
+    background-position: 0 -850px;
+  }
+}
+
+// icons/feed_icons.png
+@mixin sprite-feed-icons($subselector: ".icon") {
+  #{$subselector} {
+    @include text-hiding;
+    @include ie6-fix;
+    background-image: url(/stylesheets/images/icons/feed_icons.png);
+    height: 13px;
+    width: 19px;
+  }
+  &.comment #{$subselector} {
+    background-position: 0 0;
+  }
+  &.view #{$subselector} {
+    background-position: 0 -13px;
+  }
+  &.embed #{$subselector} {
+    background-position: 0 -26px;
+  }
+  &.trackback #{$subselector} {
+    background-position: 0 -39px;
+  }
+}
+
+// icons/dataset_toolbar_icons.png
+@mixin dataset-toolbar-icon-base {
+  @include text-hiding;
+  @include ie6-fix;
+  background-image: url(/stylesheets/images/icons/dataset_toolbar_icons.png);
+  height: 13px;
+  width: 16px;
+}
+
+@mixin dataset-toolbar-icon-search {
+  @include dataset-toolbar-icon-base;
+}
+
+@mixin dataset-toolbar-icon-share {
+  @include dataset-toolbar-icon-base;
+  background-position: 0 -13px;
+}
+
+@mixin dataset-toolbar-icon-maximize {
+  @include dataset-toolbar-icon-base;
+  background-position: 0 -26px;
+}
+
+@mixin dataset-toolbar-icon-minimize {
+  @include dataset-toolbar-icon-base;
+  background-position: 0 -39px;
+}
+
+// icons/dataset_edit_icons.png
+@mixin dataset-edit-icons($subselector: ".icon") {
+  #{$subselector} {
+    @include text-hiding;
+    background-image: url(/stylesheets/images/icons/dataset_edit_icons.png);
+    height: 16px;
+    width: 16px;
+  }
+  &.undo #{$subselector} {
+    background-position: 0 0;
+  }
+  &.redo #{$subselector} {
+    background-position: 0 -16px;
+  }
+}
+
+// icons/repeater_icons.png
+@mixin sprite-repeater-icons($subselector: ".icon") {
+  #{$subselector} {
+    @include text-hiding;
+    @include ie6-fix;
+    background-image: url(/stylesheets/images/icons/repeater_icons.png);
+    height: 14px;
+    width: 14px;
+  }
+  &.remove #{$subselector} {
+    background-position: 0 0;
+  }
+  &.add #{$subselector} {
+    background-position: 0 -14px;
+  }
+}
+
+// icons/social_media_icons.png
+@mixin sprite-social-media-icons($subselector: ".icon") {
+  #{$subselector} {
+    @include text-hiding;
+    background-image: url(/stylesheets/images/icons/social_media_icons.png);
+    height: 16px;
+    width: 16px;
+  }
+  &.facebook #{$subselector} {
+    background-position: 0 0;
+    &:hover {
+      background-position: (-16px) 0;
+    }
+  }
+  &.twitter #{$subselector} {
+    background-position: 0 -16px;
+    &:hover {
+      background-position: (-16px) -16px;
+    }
+  }
+  &.email #{$subselector} {
+    background-position: 0 -32px;
+    &:hover {
+      background-position: (-16px) -32px;
+    }
+  }
+  &.subscribe #{$subselector} {
+    background-position: 0 -48px;
+    &:hover {
+      background-position: (-16px) -48px;
+    }
+  }
+}
+
+// icons/dataset_button_icons.png
+@mixin dataset-sidebar-icons($subselector: ".icon") {
+  #{$subselector}, .alertIcon {
+    @include text-hiding;
+    background-image: url(/stylesheets/images/icons/dataset_sidebar_icons.png);
+    height: 13px;
+    width: 15px;
+  }
+  &.filter #{$subselector} {
+    background-position: 0 0;
+  }
+  &.visualize #{$subselector} {
+    background-position: 0 -13px;
+  }
+  &.export #{$subselector} {
+    background-position: 0 -26px;
+  }
+  &.feed #{$subselector} {
+    background-position: 0 -39px;
+  }
+  &.embed #{$subselector} {
+    background-position: 0 -52px;
+  }
+  &.about #{$subselector},
+  &.metadata #{$subselector} {
+    background-position: 0 -65px;
+  }
+  &.edit #{$subselector},
+  &.appearance #{$subselector} {
+    background-position: 0 -78px;
+  }
+  &.moreViews #{$subselector} {
+    background-position: 0 -91px;
+  }
+  .alertIcon,
+  &.alert #{$subselector} {
+    background-position: 0 -104px;
+  }
+  &.advanced #{$subselector},
+  &.manage #{$subselector} {
+    background-position: 0 -117px;
+  }
+  &.pager #{$subselector},
+  &.behavior #{$subselector} {
+    background-position: 0 -130px;
+  }
+  &.other #{$subselector} {
+    background-position: 0 -143px;
+  }
+  &.textbox #{$subselector} {
+    background-position: 0 -156px;
+  }
+}
+
+// icons/renderType_toggle_icons.png
+@mixin renderType-toggle-icons($subselector: ".icon") {
+  #{$subselector} {
+    @include text-hiding;
+    background-image: url(/stylesheets/images/icons/renderType_toggle_icons.png?1);
+    height: 13px;
+    width: 13px;
+  }
+  @include icon-include-active(blist, $subselector, 0, -13px);
+  @include icon-include-active(filter, $subselector, 0, -13px);
+  @include icon-include-active(table, $subselector, 0, -13px);
+  @include icon-include-active(grouped, $subselector, 0, -13px);
+  @include icon-include-active(chart, $subselector, -13px, -13px);
+  @include icon-include-active(calendar, $subselector, -26px, -13px);
+  @include icon-include-active(map, $subselector, -39px, -13px);
+  @include icon-include-active(page, $subselector, -52px, -13px);
+  @include icon-include-active(fatrow, $subselector, -65px, -13px);
+  @include icon-include-active(list, $subselector, -78px, -13px);
+}
+
+// icons/approval_toggle_icons.png
+@mixin approval-toggle-icons($subselector: ".icon") {
+  #{$subselector} {
+    @include text-hiding;
+    background-image: url(/stylesheets/images/icons/approval_toggle_icons.png);
+    height: 13px;
+    width: 13px;
+  }
+  @include icon-include-active(dashboard, $subselector, 0, -13px);
+  @include icon-include-active(queue, $subselector, -13px, -13px);
+  @include icon-include-active(manage, $subselector, -26px, -13px);
+}
+
+// common/close.png
+@mixin close-button {
+  @include text-hiding;
+  @include ie6-fix;
+  background-image: url(/stylesheets/images/common/close.png);
+  height: 13px;
+  width: 13px;
+}
+
+// content/table/drilldown.png
+@mixin drilldown-icon {
+  @include text-hiding;
+  @include ie6-fix;
+  background-image: url(/stylesheets/images/content/table/drilldown.png);
+  height: 16px;
+  width: 24px;
+}
+
+// content/snuffleupasnake.gif
+@mixin throbber-icon {
+  @include text-hiding;
+  @include ie6-fix;
+  background-image: url(/stylesheets/images/content/snuffleupasnake.gif);
+  height: 16px;
+  width: 16px;
+}
+
+@mixin throbber-image {
+  background-image: url(/stylesheets/images/content/snuffleupasnake.gif);
+  background-repeat: no-repeat;
+}
+
+// Grid header icons
+@mixin grid-header-icons($subselector: ".icon", $includeHover: true) {
+  #{$subselector} {
+    @include text-hiding;
+    @include ie6-fix;
+    background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png?1);
+    height: 12px;
+    width: 12px;
+    .ie6 & {
+      background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.gif?1);
+    }
+  }
+  &.sortDesc #{$subselector} {
+    background-position: 0 0;
+  }
+  &.sortDescLight #{$subselector} {
+    background-position: 0 -12px;
+  }
+  &.sortAsc #{$subselector} {
+    background-position: 0 -24px;
+  }
+  &.sortAscLight #{$subselector} {
+    background-position: 0 -36px;
+  }
+  &.filter #{$subselector} {
+    background-position: 0 -50px;
+  }
+  @if $includeHover == true {
+    &.sortAsc:hover #{$subselector} {
+      background-position: 0 -12px;
+    }
+    &.sortDesc:hover #{$subselector} {
+      background-position: 0 -36px;
+    }
+  }
+}
+
+// Format icons
+@mixin format-icon($subselector: ".icon") {
+  #{$subselector} {
+    @include text-hiding;
+    background-image: url(/stylesheets/images/content/table_menu/rich_text_format_sprites.png);
+    height: 16px;
+    width: 16px;
+  }
+  &.bold #{$subselector} {
+    background-position: 4px -3px;
+  }
+  &.underline #{$subselector} {
+    background-position: 3px -22px;
+  }
+  &.italic #{$subselector} {
+    background-position: 4px -43px;
+  }
+  &.strike #{$subselector} {
+    background-position: 4px -62px;
+    width: 30px;
+  }
+  &.bulletedList #{$subselector} {
+    background-position: 2px -83px;
+  }
+  &.numberedList #{$subselector} {
+    background-position: 2px -103px;
+  }
+  &.color #{$subselector} {
+    background-position: 2px -123px;
+  }
+  &.alignLeft #{$subselector} {
+    background-position: 4px -143px;
+    width: 20px;
+  }
+  &.alignCenter #{$subselector} {
+    background-position: 4px -183px;
+    width: 20px;
+  }
+  &.alignRight #{$subselector} {
+    background-position: 4px -163px;
+    width: 20px;
+  }
+}
+
+// icons/admin_icons.png
+@mixin admin-icons($subselector: ".icon") {
+  #{$subselector} {
+    @include text-hiding;
+    @include ie6-fix;
+    background-image: url(/stylesheets/images/icons/admin_icons.png?1);
+    height: 13px;
+    width: 16px;
+  }
+  &.home #{$subselector} {
+    background-position: 0 0;
+  }
+  &.datasets #{$subselector} {
+    background-position: 0 -13px;
+  }
+  &.comments #{$subselector} {
+    background-position: 0 -26px;
+  }
+  &.analytics #{$subselector} {
+    background-position: 0 -39px;
+  }
+  &.appearance #{$subselector} {
+    background-position: 0 -52px;
+  }
+  &.users #{$subselector} {
+    background-position: 0 -65px;
+  }
+  &.billing #{$subselector} {
+    background-position: 0 -78px;
+  }
+  &.internal #{$subselector} {
+    background-position: 0 -91px;
+  }
+  &.federation #{$subselector} {
+    background-position: 0 -104px;
+  }
+  &.contentmgmt #{$subselector} {
+    background-position: 0 -117px;
+  }
+  &.homemgmt #{$subselector} {
+    background-position: 0 -130px;
+  }
+  &.metadata #{$subselector} {
+    background-position: 0 -143px;
+  }
+  &.datasets #{$subselector} {
+    background-position: 0 -156px;
+  }
+  &.viewmoderation #{$subselector} {
+    background-position: 0 -169px;
+  }
+  &.routingApproval #{$subselector} {
+    background-position: 0 -182px;
+  }
+}
+
+// icons/admin_header_icons.png
+@mixin admin-header-icons($subselector: ".icon") {
+  #{$subselector} {
+    @include text-hiding;
+    @include ie6-fix;
+    background-image: url(/stylesheets/images/icons/admin_header_icons.png?1);
+    height: 32px;
+    width: 38px;
+  }
+  &.analytics #{$subselector} {
+    background-position: 0 0;
+  }
+  &.users #{$subselector} {
+    background-position: 0 -32px;
+  }
+  &.comments #{$subselector} {
+    background-position: 0 -64px;
+  }
+  &.appearance #{$subselector} {
+    background-position: 0 -96px;
+  }
+  &.internal #{$subselector} {
+    background-position: 0 -128px;
+  }
+  &.federation #{$subselector} {
+    background-position: 0 -160px;
+  }
+  &.contentmgmt #{$subselector} {
+    background-position: 0 -192px;
+  }
+  &.homemgmt #{$subselector} {
+    background-position: 0 -224px;
+  }
+  &.metadata #{$subselector} {
+    background-position: 0 -256px;
+  }
+  &.datasets #{$subselector} {
+    background-position: 0 -288px;
+  }
+  &.viewmoderation #{$subselector} {
+    background-position: 0 -320px;
+  }
+  &.routingApproval #{$subselector} {
+    background-position: 0 -352px;
+  }
+}
+
+//API Management icons
+@mixin api-management-icons($subselector: ".apiicon") {
+  #{$subselector} {
+    @include text-hiding;
+    @include ie6-fix;
+    height: 50px;
+    width: 50px;
+    background-position: center;
+  }
+  & .ico-permissions-sharing#{$subselector} {
+    background-image: url(/stylesheets/images/apifoundry/ico-permissions-sharing.png);
+  }
+  & .ico-applications#{$subselector} {
+    background-image: url(/stylesheets/images/apifoundry/ico-applications.png);
+  }
+  & .ico-metrics#{$subselector} {
+    background-image: url(/stylesheets/images/apifoundry/ico-metrics.png);
+  }
+  & .ico-names-descriptions#{$subselector} {
+    background-image: url(/stylesheets/images/apifoundry/ico-names-descriptions.png);
+  }
+  & .ico-transfer-ownership#{$subselector} {
+    background-image: url(/stylesheets/images/apifoundry/ico-transfer-ownership.png);
+  }
+  & .ico-delete#{$subselector} {
+    background-image: url(/stylesheets/images/apifoundry/ico-delete.png);
+  }
+}
+
+// icons/new_dataset_icons.png
+@mixin new-dataset-icons($subselector: ".icon") {
+  #{$subselector} {
+    @include text-hiding;
+    background-image: url(/stylesheets/images/icons/new_dataset_icons.png?1);
+    height: 64px;
+    width: 64px;
+  }
+  &.create #{$subselector} {
+    background-position: 0 0;
+  }
+  &.upload #{$subselector} {
+    background-position: 0 -64px;
+  }
+  &.blobby #{$subselector} {
+    background-position: 0 -128px;
+  }
+  &.mapLayer #{$subselector} {
+    background-position: 0 -192px;
+  }
+  &.external #{$subselector} {
+    background-position: 0 -256px;
+  }
+  &.append #{$subselector} {
+    background-position: 0 -320px;
+  }
+  &.replace #{$subselector} {
+    background-position: 0 -384px;
+  }
+  &.shapefile #{$subselector} {
+    background-position: 0 -448px;
+  }
+  &.byCrossload #{$subselector} {
+    background-position: 0 -512px;
+  }
+  &.byUpload #{$subselector} {
+    background-position: 0 -576px;
+  }
+}
+
+// icons/error_icons.png
+@mixin error-icons($subselector: ".icon") {
+  #{$subselector} {
+    @include text-hiding;
+    background-image: url(/stylesheets/images/icons/error_icons.png);
+    height: 64px;
+    width: 54px;
+  }
+  &.notFound #{$subselector} {
+    background-position: 0 0;
+  }
+  &.internalError #{$subselector} {
+    background-position: 0 -64px;
+  }
+  &.unauthorized #{$subselector} {
+    background-position: 0 -128px;
+  }
+}
+
+// icons/analytic_icons.png
+@mixin analytic-icons($subselector: ".icon") {
+  #{$subselector} {
+    @include text-hiding;
+    @include ie6-fix;
+    background-image: url(/stylesheets/images/icons/analytic_icons.png?1);
+    height: 9px;
+    width: 9px;
+  }
+  &.plus #{$subselector} {
+    background-position: 0 0;
+  }
+  &.minus #{$subselector} {
+    background-position: 0 -9px;
+  }
+}
+
+// Datatype icons
+@mixin datatype-icons($subselector: ".icon") {
+  #{$subselector} {
+    @include text-hiding;
+    @include ie6-fix;
+    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png?1);
+    height: 20px;
+    width: 20px;
+  }
+  &.calendar_date #{$subselector},
+  &.date #{$subselector} {
+    background-position: 0 -340px;
+  }
+  &.checkbox #{$subselector} {
+    background-position: 0 -120px;
+  }
+  &.document #{$subselector},
+  &.document_obsolete #{$subselector} {
+    background-position: 0 -280px;
+  }
+  &.drop_down_list #{$subselector},
+  &.picklist #{$subselector} {
+    background-position: 0 -400px;
+  }
+  &.email #{$subselector} {
+    background-position: 0 -260px;
+  }
+  &.flag #{$subselector} {
+    background-position: 0 -380px;
+  }
+  &.html #{$subselector} {
+    background-position: 0 -60px;
+  }
+  &.location #{$subselector},
+  &.point #{$subselector} {
+    background-position: 0 -460px;
+  }
+  &.geospatial #{$subselector} {
+    background-position: 0 -460px;
+  }
+  &.object #{$subselector} { // FIX ICON - borrow from location
+    background-position: 0 -460px;
+  }
+  &.list #{$subselector} { // FIX ICON - borrow from location
+    background-position: 0 -460px;
+  }
+  &.money #{$subselector} {
+    background-position: 0 -40px;
+  }
+  &.nested_table #{$subselector} {
+    background-position: 1px -440px;
+  }
+  &.number #{$subselector} {
+    background-position: 0 -20px;
+  }
+  &.percent #{$subselector} {
+    background-position: 0 0;
+  }
+  &.phone #{$subselector} {
+    background-position: 0 -240px;
+  }
+  &.photo #{$subselector},
+  &.photo_obsolete #{$subselector} {
+    background-position: 0 -100px;
+  }
+  &.stars #{$subselector} {
+    background-position: 0 -140px;
+  }
+  &.text #{$subselector} {
+    background-position: 0 -80px;
+  }
+  &.url #{$subselector},
+  &.dataset_link #{$subselector} {
+    background-position: 0 -360px;
+  }
+}
+
+// Component type icons
+@mixin component-icons($subselector: ".icon", $namepart: "icon", $init_hidden: false) {
+  $icon_slot: 0;
+  @each $name in Header, Catalog, Comments, Title, Picture, Related, Text, FormattedText, ColumnChart, LineChart, Map, PieChart, Repeater, BubbleChart, Table, TimeLine, TreeMap, CreateChart, MapLayer, Download, Embed, HideShow, InlineFilter, PopupFilter, Print, RateVote, Visualization, Search, Share, SlideFilter, Container, VerticalContainer, GridContainer, Chart, FloatGridContainer, SimpleTable, Button, donut, bar, stackedbar, stackedcolumn, area, timeline, treemap, HorizontalContainer {
+    &.#{$namepart}-#{$name} #{$subselector} {
+      @include text-hiding;
+      @include ie6-fix;
+      background-image: url(/stylesheets/images/component/cf-icons.png?3);
+      background-repeat: no-repeat;
+      background-position: 0 (-44px * $icon_slot);
+      height: 48px;
+      width: 48px;
+      @if $init_hidden == true {
+        display: none;
+      }
+    }
+    $icon_slot: $icon_slot + 1;
+  }
+}
+
+// Visualization type icons (New visualize sidebar)
+@mixin viz-type-icons {
+  $icon_slot: 0;
+  @each $name in Header, Catalog, Comments, Title, Picture, Related, Text, FormattedText, column, line, Map, pie, Repeater, bubble, Table, TimeLine, TreeMap, CreateChart, MapLayer, Download, Embed, HideShow, InlineFilter, PopupFilter, Print, RateVote, Visualization, Search, Share, SlideFilter, Container, HorizontalContainer, GridContainer, Chart, FloatGridContainer, SimpleTable, Button, donut, bar, stackedbar, stackedcolumn, area, timeline, treemap {
+    .#{$name} > label {
+      @include ie6-fix;
+      background-image: url(/stylesheets/images/component/cf-icons.png?2);
+      background-repeat: no-repeat;
+      background-position: 0 (-44px * $icon_slot);
+      @include border-radius(0.4em);
+      overflow: visible;
+      height: 48px;
+      width: 48px;
+      span > span {
+        margin-left: -8px;
+        padding-top: 51px;
+        visibility: visible;
+        display: inline-block;
+        white-space: normal;
+        width: 64px;
+        line-height: 1em;
+      }
+    }
+    $icon_slot: $icon_slot + 1;
+  }
+}
+
+@mixin viz-type-icons-small {
+  $icon_slot: 0;
+  @each $name in Header, Catalog, Comments, Title, Picture, Related, Text, FormattedText, column, line, Map, pie, Repeater, bubble, Table, TimeLine, TreeMap, CreateChart, MapLayer, Download, Embed, HideShow, InlineFilter, PopupFilter, Print, RateVote, Visualization, Search, Share, SlideFilter, Container, HorizontalContainer, GridContainer, Chart, FloatGridContainer, SimpleTable, Button, donut, bar, stackedbar, stackedcolumn, area, timeline, treemap {
+    &.#{$name}-selected .currentSelection > .selectionIcon {
+      @include ie6-fix;
+      background-image: url(/stylesheets/images/component/cf-icons-small.png?2);
+      background-repeat: no-repeat;
+      background-position: 0 (-23px * $icon_slot);
+      height: 20px;
+      width: 20px;
+      margin-left: -4px;
+      margin-right: 8px;
+    }
+    $icon_slot: $icon_slot + 1;
+  }
+}
+
+// Login icons
+@mixin authentication-icons($subselector: ".icon") {
+  #{$subselector} {
+    @include text-hiding;
+    background-image: url(/stylesheets/images/icons/authentication_icons.png?1);
+    height: 25px;
+    width: 25px;
+  }
+  &.socrata #{$subselector} {
+    background-position: 0 0;
+  }
+  &.facebook #{$subselector} {
+    background-position: 0 -25px;
+  }
+  &.twitter #{$subselector} {
+    background-position: 0 -50px;
+  }
+  &.google #{$subselector} {
+    background-position: 0 -75px;
+  }
+  &.openid #{$subselector} {
+    background-position: 0 -100px;
+  }
+}
+
+//Data selection form icons
+@mixin data-selection-icons {
+  $icon_slot: 0;
+  @each $name in stackedbar, bar, area, line, column, stackedcolumn, donut, pie, bubble, treemap, timeline {
+    .#{$name}LabelSelection + .lineIcon {
+      background-image: url(/stylesheets/images/icons/data-selection-icons-transp.png?1);
+      background-position: 0 (-60px * $icon_slot);
+    }
+    .#{$name}ValueSelection + .lineIcon {
+      background-image: url(/stylesheets/images/icons/data-selection-icons-transp.png?1);
+      background-position: (-60px) (-60px * $icon_slot);
+    }
+    .#{$name}ValueSelection + .lineIcon.hover {
+      background-position: (-120px) (-60px * $icon_slot);
+    }
+    $icon_slot: $icon_slot + 1;
+  }
+}
+
+//Other chart configuration form icons
+@mixin chart-config-icons {
+  $icon_slot: 0;
+  @each $name in labelInBar, valueInBar, valueMarker, flyout, pointColor, pointSize, errorBar, minAngle {
+    .#{$name} + .lineIcon {
+      background-image: url(/stylesheets/images/icons/chart-config-icons-transp.png?1);
+      background-position: 0 (-60px * $icon_slot);
+    }
+    $icon_slot: $icon_slot + 1;
+  }
+}
+
+// Profile edit icons
+@mixin profile-icons($subselector: ".icon") {
+  #{$subselector} {
+    @include text-hiding;
+    background-image: url(/stylesheets/images/icons/profile_icons.png?1);
+    height: 13px;
+    width: 15px;
+  }
+  &.basicInfo #{$subselector} {
+    background-position: 0 0;
+  }
+  &.profileImage #{$subselector} {
+    background-position: 0 -13px;
+  }
+  &.community #{$subselector} {
+    background-position: 0 -26px;
+  }
+  &.accountSettings #{$subselector} {
+    background-position: 0 -39px;
+  }
+  &.appTokens #{$subselector} {
+    background-position: 0 -52px;
+  }
+}
+
+// Story pager icons
+@mixin story-pager-glyphs($subselector: ".icon", $disposition: "light") {
+  #{$subselector} {
+    @include text-hiding;
+    background-image: url(/stylesheets/images/interface/story_pager.png);
+    height: 7px;
+    width: 7px;
+  }
+  // default: $disposition is light
+  $yoffset: 0;
+  @if $disposition == "dark" {
+    $yoffset: -7px;
+  }
+  & #{$subselector} {
+    background-position: 0 $yoffset;
+  }
+  & #{$subselector}.selected {
+    background-position: (-7px) $yoffset;
+  }
+}
+
+// Approval button icons
+@mixin approval-button-icons {
+  background-image: url(/stylesheets/images/icons/approval_button_icons.png);
+  background-repeat: no-repeat;
+  &.approve {
+    background-position: 0 -1px;
+  }
+  &.reject {
+    background-position: 0 -25px;
+  }
+  &.resubmit {
+    background-position: 0 -50px;
+  }
+}
+
+// Medium warning icon
+@mixin warning-icon-medium($subselector: ".icon") {
+  #{$subselector} {
+    @include text-hiding;
+    background-image: url(/stylesheets/images/icons/warning_icon_medium.png);
+    background-repeat: no-repeat;
+    height: 16px;
+    width: 16px;
+  }
+}
+
+// Cell annotation icons (comments, notes)
+@mixin cell-annotation-icons($selected: false, $active: false) {
+  background-image: url(/stylesheets/images/icons/cell_annotation_icons.png);
+  background-repeat: no-repeat;
+  display: block;
+  height: 10px;
+  width: 10px;
+  @if $active == true {
+    &.comments {
+      background-position: 0 -40px;
+    }
+  }
+  @else if $selected == true {
+    &.comments {
+      background-position: 0 -10px;
+    }
+    &.notes {
+      background-position: 0 -30px;
+    }
+  }
+  @else {
+    &.comments {
+      background-position: 0 0;
+    }
+    &.notes {
+      background-position: 0 -20px;
+    }
+  }
+}

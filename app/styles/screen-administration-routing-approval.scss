@@ -1,0 +1,391 @@
+#routingApprovalContent {
+  .adminHeader {
+    position: relative;
+    #sectionOptions {
+      bottom: 1em;
+      position: absolute;
+      right: 10px;
+      a {
+        @include approval-toggle-icons;
+        font-size: 1.2em;
+        .icon {
+          margin-right: 0.5em;
+        }
+      }
+    }
+  }
+  .unconfiguredMessage {
+    margin: {
+      bottom: 3em;
+      top: 3em;
+    };
+    text-align: center;
+  }
+  .browseSection {
+    padding: 0;
+    .browseList {
+      border: none;
+      margin: 0;
+      padding: 0;
+      .titleContainer {
+        float: none;
+        form {
+          float: right;
+          .searchSection {
+            display: inline-block;
+            margin-right: 0.5em;
+            .ie7 & {
+              display: inline;
+              input {
+                width: auto;
+              }
+            }
+          }
+          .ie7 & select {
+            margin-bottom: 1em;
+          }
+        }
+      }
+      .pagination {
+        // For IE7
+        position: relative;
+      }
+      .results {
+        margin: 0 {
+          top: 1em;
+        };
+        overflow: visible;
+        .gridList {
+          tr.item.stuck {
+            background-color: #fffadb;
+            td {
+              background-color: #fffadb;
+            }
+            .nameDesc .name {
+              @include sprite-menu-icons;
+              .icon {
+                display: inline-block;
+                margin-right: 0.2em;
+                vertical-align: bottom;
+                .ie7 & {
+                  display: inline;
+                  text-indent: 0;
+                }
+              }
+            }
+          }
+          .index {
+            width: 1.6em;
+            .expander {
+              float: none;
+            }
+          }
+          .domainIcon {
+            width: 30px;
+            img {
+              height: 30px;
+              width: 30px;
+            }
+          }
+          .nameDesc {
+            padding-bottom: 0.5em;
+            .description {
+              height: 1.1em;
+            }
+            .extraInfo {
+              margin-left: -2.8em;
+              padding-right: 33.6em;
+              .infoContent {
+                margin-right: -33.6em;
+              }
+              .ie7 & {
+                padding-right: 35.6em;
+                .infoContent {
+                  margin-right: -35.6em;
+                }
+              }
+              &.federated {
+                margin-left: -5.9em;
+                padding-right: 36.7em;
+                .infoContent {
+                  margin-right: -36.7em;
+                }
+                .ie7 & {
+                  padding-right: 38.7em;
+                  .infoContent {
+                    margin-right: -38.7em;
+                  }
+                }
+              }
+              .line {
+                margin: 0.5em;
+              }
+              .title {
+                display: inline-block;
+                line-height: 1.2em;
+                .ie7 & {
+                  display: inline;
+                }
+                font-weight: bold;
+                vertical-align: top;
+                width: 12em;
+              }
+              .value {
+                display: inline-block;
+                .ie7 & {
+                  display: inline;
+                }
+              }
+              .leftColumn {
+                display: inline-block;
+                width: 66%;
+                .ie7 & {
+                  display: inline;
+                }
+              }
+              .rightColumn {
+                display: inline-block;
+                .ie7 & {
+                  display: inline;
+                }
+                .title {
+                  width: 14em;
+                }
+              }
+              .nextApprover ul {
+                display: inline-block;
+                .ie7 & {
+                  display: inline;
+                }
+                li {
+                  margin-bottom: 0.25em;
+                  .ie7 & {
+                    margin-left: -1.2em;
+                  }
+                }
+              }
+              .userLoad {
+                @include throbber-icon;
+                display: inline-block;
+              }
+            }
+          }
+          td.stage {
+            padding-top: 1.3em;
+            width: 12em;
+          }
+          .actions {
+            width: 14em;
+            .ie7 & {
+              width: 20em;
+            }
+            form {
+              display: inline-block;
+              position: relative;
+              .ie7 & {
+                display: inline;
+              }
+            }
+            .button {
+              @include approval-button-icons;
+              font-size: 1em;
+              font-weight: normal;
+              padding: 0.4em 0.5em {
+                left: 2em;
+              };
+              .ie7 & {
+                padding: 0.2em 0.5em {
+                  left: 1.25em;
+                };
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+#routingApprovalDashboard {
+  .banner {
+    background-color: #fffadb;
+    border: 1px solid #ecd971;
+    position: relative;
+    p {
+      color: #796706;
+      font-size: 1.4em;
+      margin: 0.5em 1em;
+      strong {
+        font-size: 1.5em;
+      }
+    }
+    .button {
+      float: right;
+    }
+  }
+  .report {
+    margin-top: 2em;
+    &.loading .content {
+      display: none;
+    }
+  }
+  .pipeline {
+    ul {
+      margin: 0.5em 0;
+      border-top: 1px solid $color_chrome_box_border;
+      li {
+        border-bottom: 1px solid $color_chrome_box_border;
+        .label {
+          border-right: 1px solid $color_chrome_box_border;
+          float: left;
+          padding: 0.75em;
+          span {
+            @include clip-text;
+            display: inline-block;
+            font-size: 1.2em;
+            text-align: right;
+            vertical-align: bottom;
+            width: 15em;
+          }
+        }
+        .barContainer {
+          margin-left: 19.6em;
+          padding: {
+            right: 6em;
+            top: 0.75em;
+          };
+          .bar {
+            background-color: #1a84d7;
+            display: inline-block;
+            height: 1em;
+          }
+        }
+        .count {
+          display: inline-block;
+          font-size: 1.2em;
+          font-weight: bold;
+          margin-right: -6em;
+          padding-left: 0.3em;
+        }
+        &.finalStage .label {
+          font-weight: bold;
+        }
+      }
+    }
+  }
+  .gridList {
+    border-bottom: 1px solid $color_table_header_inactive;
+    margin-top: 0.5em;
+    th {
+      font-weight: bold;
+    }
+    .count {
+      text-align: right;
+      width: 5em;
+    }
+    .average {
+      text-align: right;
+      width: 7em;
+    }
+    .unitCount {
+      text-align: right;
+      width: 6em;
+    }
+  }
+  .stuckReport {
+    .gridList {
+      .name {
+        @include warning-icon-medium;
+        .icon {
+          display: inline-block;
+          margin-right: 0.5em;
+          vertical-align: middle;
+          .ie7 & {
+            text-indent: 0;
+          }
+        }
+      }
+      .stage {
+        text-align: right;
+        width: 10em;
+        .icon {
+          margin-right: 0;
+        }
+      }
+      .inactive {
+        text-align: right;
+        width: 6em;
+      }
+    }
+    .moreStuck {
+      display: block;
+      font-size: 1.2em;
+      margin: 2em 0;
+      text-align: center;
+    }
+  }
+}
+
+#routingApprovalManagement {
+  .commonForm {
+    margin-top: 1em;
+    label {
+      margin-top: 0.2em;
+      vertical-align: top;
+    }
+    input.number {
+      text-align: right;
+      width: 2em;
+    }
+    h3 {
+      margin-top: 1em;
+    }
+    .line > * {
+      float: none;
+    }
+    .line .info {
+      display: block;
+      margin-left: 2em;
+    }
+    .stageList {
+      border-bottom: 1px solid $color_chrome_box_border;
+    }
+    .stageItem {
+      border-top: 1px solid $color_chrome_box_border;
+      padding: 0.5em;
+      margin-top: 0.5em;
+      position: relative;
+      > .remove {
+        @include sprite-repeater-icons;
+        left: 0.2em;
+        position: absolute;
+        top: 1.2em;
+      }
+      &.newStage, &.onlyStage {
+        > .remove {
+          display: none;
+        }
+      }
+      .line {
+        margin-left: 2em;
+      }
+      .userList {
+        margin-top: 0.3em;
+        .ie7 & {
+          display: inline;
+        }
+        .userLink {
+          font-size: 1.2em;
+        }
+        .remove {
+          @include sprite-menu-icons;
+          display: inline-block;
+          margin: {
+            bottom: -0.2em;
+            left: 0.25em;
+          };
+        }
+      }
+    }
+  }
+}

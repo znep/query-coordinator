@@ -1,0 +1,126 @@
+@import "dataCards/common/colors";
+
+soc-select {
+  display: inline-block;
+  position: relative;
+  select {
+    min-width: 10rem;
+    width: 100%;
+    height: 100%;
+    padding: 0.7rem 2.5rem 0.7rem 1rem;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    &::-ms-expand {
+      display: none;
+    }
+  }
+  .arrow-container {
+    position: absolute;
+    width: 2rem;
+    height: 100%;
+    top: 0;
+    right: 0;
+    // Set the background color; otherwise it won't mask the native arrow
+    background-color: inherit;
+    pointer-events: none;
+    .arrow {
+      position: absolute;
+      width: 0;
+      height: 0;
+      top: 50%;
+      left: 30%;
+      border-style: solid;
+      border-width: 5px 5px 0 5px;
+      pointer-events: none;
+    }
+  }
+}
+
+input.dark[type="url"] {
+  color: $dark-input-font-color;
+  background-color: $dark-input-bg-color;
+  border: 1px solid $dark-input-border-color;
+  outline-color: $dark-input-border-color;
+  opacity: 0.8;
+  box-sizing: border-box;
+  padding: 0.5rem 1rem;
+  &:hover {
+    opacity: 0.9;
+  }
+  &:focus {
+    opacity: 1;
+  }
+}
+
+rich-text-editor {
+  display: block;
+  $toolbar-height: 1.3rem;
+  .toolbar {
+    text-align: right;
+    min-height: $toolbar-height;
+    .rich-text-editor-button {
+      display: inline-block;
+      height: 1.3em;
+      font-size: 1.1;
+      line-height: 1.3em;
+      width: 1.5em;
+      text-align: center;
+      background-color: transparent;
+      font-family: "socrata-apps";
+      padding: 6px;
+    }
+    $toolbar-link-edit-tip-size: 14px;
+    .icon-link-edit {
+      padding: 0.5em 0.8em 0;
+      .icon-link-edit-hint {
+        position: absolute;
+        left: -1px;
+        top: -$toolbar-link-edit-tip-size;
+        width: 0;
+        height: 0;
+        border-right-width: $toolbar-link-edit-tip-size;
+        border-bottom-width: $toolbar-link-edit-tip-size;
+        border-style: solid;
+      }
+      p {
+        margin: 0 0 0.5em;
+        text-align: left;
+        width: 15em;
+      }
+      input {
+        width: 100%;
+        font-size: 0.7rem;
+        padding: 5px;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+      .icon-link-edit-buttons {
+        text-align: right;
+        margin: 0.5em 0;
+        button {
+          font-size: 0.7em;
+          padding: 6px 14px;
+          margin-top: 6px;
+          margin-bottom: 3px;
+        }
+      }
+    }
+  }
+  iframe {
+    padding: 1em;
+  }
+  .icon-link:before {
+    content: "";
+  }
+  .icon-italic:before {
+    content: "";
+  }
+  .icon-bold:before {
+    content: "";
+  }
+}

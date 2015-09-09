@@ -1,0 +1,413 @@
+// Shared analytics styles
+
+.legendContainer {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  @include border-radius(0.2em);
+  display: inline-block;
+  margin-right: 2em;
+  border: 1px solid #aaa;
+  .legendLine {
+    float: left;
+    display: inline-block;
+    word-wrap: break-word;
+    padding: 0.5em;
+    .legendIcon {
+      float: left;
+      height: 1.7em;
+      margin-right: 1em;
+      @include border-radius(0.2em);
+      width: 1.7em;
+    }
+    .legendLabel {
+      font-size: 1.3em;
+      line-height: 1.38em;
+    }
+  }
+}
+
+.tick {
+  height: 1px;
+  left: 0;
+  width: 100%;
+  position: absolute;
+  .tickLine {
+    background: #ccc;
+    bottom: 0;
+    @include opacity(0.7);
+    position: absolute;
+    height: 1px;
+    width: 100%;
+  }
+  &.origin .tickLine {
+    background-color: #000;
+    //border-top: 1px solid #ccc
+    //border-bottom: 1px solid #ccc
+    margin-top: -1px;
+  }
+  .tickLabel {
+    background-color: rgba(247, 247, 247, 0.7);
+    bottom: 1px;
+    font-size: 1.2em;
+    padding: 0 0.3em;
+    @include no-pointer-events("/stylesheets/images/content/70percentwhite.png");
+    position: absolute;
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.8);
+  }
+}
+
+.xLabel {
+  position: absolute;
+}
+
+#analyticsDataContainer {
+  .exportMetricsLink {
+    float: right;
+    font-size: 1.2em;
+    &.button {
+      padding-left: 2em;
+      padding-right: 2em;
+    }
+  }
+  #analyticsTimeControl {
+    float: left;
+    padding-left: 2em;
+    .currentTimeSlice {
+      width: 13em;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+  &.overviewMetrics {
+    .exportMetricsLink {
+      padding-top: 0.5em;
+    }
+    #analyticsTimeControl {
+      padding-top: 0.5em;
+    }
+  }
+  &.datasetMetrics h1, &.publicSiteMetrics h1 {
+    float: left;
+  }
+  &.embetterV1 {
+    #analyticsTimeControl {
+      position: relative;
+      .currentTimeSlice {
+        background: #5da5da;
+        color: #fff;
+        padding-left: 0.5em;
+        border-radius: 0.3em;
+        width: 22em;
+      }
+      &::after {
+        border-color: #fff transparent transparent transparent;
+        border-style: solid;
+        border-width: 5px 5px 0 5px;
+        content: "";
+        height: 0;
+        margin-top: -2px;
+        pointer-events: none;
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        width: 0;
+      }
+    }
+    .chartsDisplay {
+      margin: 1.5em 0.5em;
+    }
+    .summaryDisplay, .detailDisplay {
+      margin: 2em 0 1em;
+    }
+  }
+  .chartContainer {
+    > .selector.uniform {
+      float: right;
+      select {
+        width: 8em;
+      }
+    }
+    .chartMenuContainer {
+      margin-bottom: 1em;
+      &.sliceDepthMenuContainer {
+        float: right;
+      }
+      .chartMenuLabel, .uniform {
+        vertical-align: middle;
+        font-size: 1.5em;
+        font-weight: bold;
+      }
+      select {
+        width: 14em;
+      }
+    }
+    .flash {
+      width: 50%;
+    }
+  }
+  .chartArea {
+    clear: both;
+    height: 35em;
+    position: relative;
+    &.noDataAvailable {
+      height: 7em;
+    }
+  }
+  .chartMenu {
+    cursor: pointer;
+    a.menuButton {
+      @include button;
+      font-size: 1.4em;
+      font-weight: bold;
+      padding: 0.4em 0 0.6em 0.7em;
+      @include ie7-inline-block;
+      .icon {
+        float: left;
+        padding-left: 0.5em;
+        position: relative;
+        top: 0.2em;
+      }
+      .contents {
+        float: left;
+        margin: 0.1em 0;
+      }
+    }
+    .menuDropdown {
+      left: 0;
+      ul.menuColumns li.menuColumn ul.menuEntries li.menuEntry a {
+        padding: 0.3em 0.8em;
+      }
+    }
+  }
+  .topDisplay {
+    .leftColumn {
+      float: left;
+    }
+    .rightColumn {
+      float: right;
+    }
+    > div {
+      width: 49%;
+      .metricsTopContainer {
+        display: none;
+        min-height: 10em;
+        &:last-child {
+          min-height: 0;
+        }
+        &.noDataAvailable {
+          height: 8em;
+          .metricsList {
+            display: none;
+          }
+        }
+        .flash.message {
+          margin: 0;
+        }
+        .sectionTitle {
+          padding-bottom: 0.5em;
+        }
+        .gridList thead tr th {
+          background-color: #dedede;
+        }
+        .value {
+          text-align: right;
+        }
+        .item {
+          border-bottom: 1px solid #eee;
+          line-height: 1.2em;
+          padding: 0.4em 0.8em;
+          &:last-child {
+            border-bottom: 2px solid #eee;
+          }
+          .thumbnail {
+            display: none;
+          }
+          &.showThumbnail {
+            line-height: 2.2em;
+            .thumbnail {
+              display: inline;
+              float: left;
+              padding-right: 1em;
+            }
+          }
+          .value .primaryValue {
+            display: none;
+          }
+          .subLinksContainer, .subValuesContainer {
+            display: none;
+          }
+          .subLinksContainer {
+            max-width: 25em;
+            padding-left: 2em;
+            .subLinks {
+              @include clip-text;
+            }
+          }
+          .subItemBox {
+            padding-top: 0.3em;
+          }
+        }
+        .showMore {
+          display: none;
+          margin: 0.8em auto;
+          text-align: center;
+          a {
+            font-size: 1.2em;
+          }
+          .icon {
+            @include throbber-icon;
+            display: inline-block;
+            padding-left: 1em;
+            position: relative;
+            top: 0.3em;
+            visibility: hidden;
+            @include ie7-inline-block;
+          }
+        }
+        &.loadingMore .showMore .icon {
+          visibility: visible;
+        }
+        &.moreDataAvailable {
+          .showMore {
+            display: block;
+          }
+        }
+        &.expanding {
+          col.description {
+            width: 80%;
+          }
+        }
+      }
+    }
+  }
+  .summaryDisplay {
+    display: inline-block;
+  }
+  .summaryDisplay, .detailDisplay {
+    margin: 1em 0;
+    width: 100%;
+    @include ie7-inline-block;
+    .summaryContainer {
+      float: left;
+      display: none;
+      min-width: 25em;
+      .summaryInnerContent {
+        background-color: $light_bg_color;
+        @include border-radius(0.3em);
+        border: 1px solid #dedede;
+        margin: 0.5em;
+        padding: 1em;
+        position: relative;
+        .summaryTitle {
+          font-size: 1.2em;
+          padding-bottom: 0.5em;
+        }
+        // only applicable if blist.feature_flags.embetter_analytics_page is false:
+        .totalValue {
+          cursor: default;
+          font-size: 1.7em;
+          font-weight: bold;
+          line-height: 1.4em;
+        }
+        .deltaBox {
+          @include analytic-icons;
+          @include border-radius(0.4em);
+          color: #fff;
+          float: right;
+          height: 13px;
+          padding: 0.5em;
+          &.plus {
+            background-color: #05c25a;
+            border-color: #05c25a;
+          }
+          &.minus {
+            background-color: #b01e2d;
+            border-color: #b01e2d;
+          }
+          .icon {
+            float: left;
+            margin-top: 2px;
+          }
+          .deltaValue {
+            cursor: default;
+            font-size: 1.2em;
+            font-weight: bold;
+            line-height: 1.2em;
+            padding-left: 0.5em;
+          }
+        }
+        // only applicable if blist.feature_flags.embetter_analytics_page is not false:
+        .hidden {
+          display: none;
+        }
+        .totalWrapper {
+          font-size: 1.2em;
+          line-height: 1.4;
+        }
+        .deltaValue {
+          font-size: 2.2em;
+          line-height: 1.4;
+        }
+        .percentBox {
+          @include analytic-icons;
+          @include border-radius(0, 0.3em, 0, 0.3em);
+          color: #fff;
+          height: 13px;
+          padding: 0.5em;
+          position: absolute;
+          right: -1px;
+          top: -1px;
+          &.plus {
+            background-color: #19b947;
+            border-color: #19b947;
+          }
+          &.minus {
+            background-color: #fd682f;
+            border-color: #fd682f;
+          }
+          .icon {
+            float: left;
+            margin-top: 2px;
+          }
+          .percentValue {
+            cursor: default;
+            font-size: 1.2em;
+            font-weight: bold;
+            line-height: 1.2em;
+            padding-left: 0.5em;
+          }
+        }
+      }
+    }
+  }
+  .flash.message {
+    clear: both;
+    display: none;
+    margin: 1em auto;
+    text-align: center;
+  }
+  .noDataAvailable .noDataNotice {
+    display: block;
+  }
+  .metricsError {
+    &.chartsDisplay {
+      .flash.errorMessage {
+        clear: none;
+        margin: 2em;
+      }
+    }
+    .loadingSpinner, .chartContainer, &.topDisplay, &.summaryDisplay {
+      display: none;
+    }
+    .flash.errorMessage {
+      display: block;
+    }
+  }
+}
+
+#ui-datepicker-div {
+  display: none;
+}

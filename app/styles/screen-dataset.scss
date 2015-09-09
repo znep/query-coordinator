@@ -1,0 +1,711 @@
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.siteInnerWrapper {
+  max-width: 100%;
+  padding-bottom: 0;
+  .flash.notice, .flash.warning {
+    margin: 1em;
+  }
+}
+
+#datasetBar {
+  background-color: white;
+  border-top: 1px solid $color_chrome_box_border;
+  min-height: 5.7em;
+  position: relative;
+  .outOfDate {
+    font-style: italic;
+    color: #aaa;
+  }
+  // IE keeps z-indexes in separate position domains
+  .ie7 & {
+    z-index: 99;
+  }
+  &.isEditable, &.sidebar-left {
+    padding-bottom: 2.5em;
+  }
+  #infoBox {
+    margin-right: 63em;
+    min-height: 3em;
+    padding: 0.25em {
+      bottom: 0.4em;
+      left: 45px;
+    };
+    position: relative;
+    z-index: 1;
+    #datasetIcon {
+      @include sprite-type-icons-30;
+      left: 0.4em;
+      top: 0.4em;
+      position: absolute;
+      .alertIcon {
+        display: none;
+        position: absolute;
+        top: 0;
+      }
+    }
+    #datasetName, .unsavedLine, #description, .basedOnTemp, .basedOnParent, .unpublished, #publishedLink {
+      margin: 0 {
+        right: 0.5em;
+      };
+    }
+    .unpublished {
+      display: inline;
+      vertical-align: baseline;
+      white-space: nowrap;
+    }
+    .snapshotted {
+      display: inline;
+      vertical-align: baseline;
+    }
+    #datasetName, .unsavedLine h2 {
+      font-size: 1.6em;
+      font-weight: normal;
+      padding: 0;
+    }
+    #description {
+      margin-top: -0.2em;
+      position: relative;
+      div.descriptionContent {
+        color: #999999;
+        font-size: 1.1em;
+        line-height: 1.1em;
+        margin-right: 1.6em;
+        overflow: hidden;
+        text-align: justify;
+        &.collapsed {
+          height: 1.1em;
+        }
+      }
+      .descriptionExpander {
+        @include sprite-menu-icons;
+        position: absolute;
+        right: 0.3em;
+        top: -0.1em;
+        .ie7 & .icon {
+          font-size: 1000em;
+          overflow: hidden;
+          text-indent: 0;
+        }
+      }
+    }
+    a.toolbarButton {
+      @include button;
+      font-size: 1.2em;
+      margin-right: 0.5em;
+      white-space: nowrap;
+      &.publish {
+        line-height: 20px;
+      }
+    }
+    .unsavedLine {
+      display: none;
+      h2 {
+        display: inline;
+        margin-right: 1em;
+      }
+      .revertMessage {
+        color: #999999;
+        font-size: 1.1em;
+      }
+    }
+    .basedOnParent, .basedOnTemp {
+      color: #999999;
+      display: none;
+      font-size: 1.2em;
+      line-height: 1.1em;
+      margin-bottom: 0.2em;
+    }
+    .basedOnParent.hasParent {
+      display: block;
+    }
+    #publishedLink {
+      display: block;
+      font-size: 1.2em;
+      line-height: 1.1em;
+      margin: {
+        bottom: 0.2em;
+        top: 0.3em;
+      };
+    }
+  }
+  &.unsavedView {
+    background: white url(/stylesheets/images/interface/dataset_unsaved_fade.png) repeat-y;
+    #infoBox {
+      .unsavedLine, .basedOnTemp {
+        display: block;
+      }
+      #datasetIcon .alertIcon {
+        display: block;
+      }
+      #datasetName, .unpublished, .snapshotted, .publish, #description.collapsed, .basedOnParent, #publishedLink {
+        display: none;
+      }
+    }
+    &.dataset .save {
+      display: none;
+    }
+    &.dataset.minorChange .save {
+      display: inline;
+    }
+    &.dataset .unpublishedRevert {
+      display: inline;
+      margin: {
+        left: 1em;
+        top: 0.3em;
+      };
+      position: absolute;
+    }
+    &.dataset.minorChange .unpublishedRevert {
+      display: none;
+    }
+  }
+  #actionBox {
+    height: 100%;
+    // IE7 doesn't make this box tall enough initially
+    min-height: 5.7em;
+    position: absolute;
+    right: 0;
+    top: 0;
+    .ie7 & {
+      max-width: 75em;
+      z-index: 1;
+    }
+    #toolbarOptions {
+      float: right;
+      margin: 0.6em 1.9em 0.3em {
+        left: 0;
+      };
+      > li {
+        display: block;
+        float: left;
+        margin-right: 1em;
+        #searchForm {
+          background-color: white;
+          border: 1px solid $color_buttons_active_border;
+          @include border-radius(0.2em);
+          @include box-shadow(0, 0, 2px, rgba(0, 0, 0, 0.05));
+          display: inline-block;
+          padding: 0.4em 2em 0.3em 2.8em;
+          position: relative;
+          &:hover {
+            @include box-shadow(0, 0, 2px, rgba(0, 0, 0, 0.15));
+          }
+          .icon {
+            @include dataset-toolbar-icon-search;
+            left: 0.5em;
+            position: absolute;
+            top: 0.3em;
+          }
+          .searchField {
+            border: none;
+            display: block;
+            height: 13px;
+            padding: 0;
+            -webkit-appearance: none;
+            width: 13em;
+            &.prompt {
+              font-style: normal;
+            }
+          }
+          .clearSearch {
+            @include sprite-menu-icons;
+            display: none;
+            position: absolute;
+            right: 2em;
+            top: 0;
+          }
+        }
+        #renderTypeOptions {
+          li a {
+            @include renderType-toggle-icons;
+          }
+        }
+        #shareOptions {
+          padding-right: 0.5em;
+          padding-top: 0.3em;
+          .unsavedView & {
+            display: none;
+          }
+          .minorChange & {
+            display: block;
+          }
+          li {
+            display: inline-block;
+            margin-right: 0.5em;
+            &.subscribe {
+              margin-right: 1em;
+            }
+            .ie7 & {
+              display: block;
+              float: left;
+              margin-right: 0.9em;
+            }
+            a {
+              @include sprite-social-media-icons;
+            }
+          }
+        }
+      }
+    }
+  }
+  .sidebarOptionsContainer {
+    bottom: 0;
+    position: absolute;
+    right: 0;
+  }
+  #sidebarOptions, #moreActionBarButtons {
+    clear: right;
+    li a {
+      background-color: #989898;
+      &.edit {
+        background-color: $sidebar_edit_tab_color_top;
+      }
+      &.moreViews {
+        background-color: $sidebar_more_views_tab_color_top;
+      }
+      &.filter {
+        background-color: $sidebar_filter_tab_color_top;
+      }
+      &.visualize {
+        background-color: $sidebar_visualize_tab_color_top;
+      }
+      &.new_visualize {
+        background-color: $sidebar_new_visualize_tab_color_top;
+      }
+      &.export {
+        background-color: $sidebar_export_tab_color_top;
+      }
+      &.feed {
+        background-color: $sidebar_feed_tab_color_top;
+      }
+      &.embed {
+        background-color: $sidebar_embed_tab_color_top;
+      }
+      &.about {
+        background-color: $sidebar_about_tab_color_top;
+      }
+      &.manage {
+        background-color: $sidebar_manage_tab_color_top;
+      }
+      .alertIcon {
+        display: none;
+        position: absolute;
+        left: 8px;
+        top: 4px;
+      }
+    }
+  }
+  .fullscreenButton {
+    @include button;
+    padding: 0;
+    position: absolute;
+    right: 0.6em;
+    top: 0.6em;
+    z-index: 2;
+    &.maximize .icon {
+      @include dataset-toolbar-icon-maximize;
+    }
+    &.minimize .icon {
+      @include dataset-toolbar-icon-minimize;
+    }
+  }
+}
+
+#editBar {
+  display: none;
+  float: left;
+  margin-top: -0.5em;
+  padding: 0.25em;
+  .table-renderType & {
+    display: block;
+  }
+  #editOptions {
+    float: left;
+    li {
+      display: inline-block;
+      margin: 0 -0.1em;
+      .ie7 & {
+        display: inline;
+      }
+      .button {
+        @include dataset-edit-icons;
+        margin: 0.1em {
+          top: 0.2em;
+        };
+        padding: 0.1em;
+        &.disabled .icon {
+          opacity: 0.3;
+        }
+      }
+    }
+  }
+  #formatOptions {
+    float: left;
+    margin: {
+      bottom: -0.2em;
+      left: 0.5em;
+      top: 0;
+    };
+    &.disabled {
+      display: none;
+    }
+    .ie7 & {
+      > ul > li {
+        display: inline;
+      }
+    }
+    li {
+      display: inline-block;
+      margin: 0 -0.1em;
+      .ie7 & {
+        margin: {
+          left: 0.2em;
+          top: 0.1em;
+        };
+        vertical-align: top;
+      }
+      .button {
+        @include format-icon;
+        margin: 0.1em;
+        padding: 0.1em;
+        &.link {
+          height: 16px;
+          padding: 0.1em 0.2em;
+        }
+      }
+      select.fontFamily {
+        width: 8em;
+      }
+      select.fontSize {
+        width: 5em;
+      }
+      .uniform {
+        vertical-align: middle;
+      }
+      .menu {
+        vertical-align: middle;
+        .ie7 & {
+          z-index: 10;
+        }
+        &.align {
+          @include format-icon(".alignIcon");
+        }
+        &.color {
+          @include format-icon(".colorIcon");
+          .colorIcon {
+            border-bottom: 3px solid #000000;
+            height: 12px;
+            width: 13px;
+          }
+          .menuButton .icon {
+            margin-bottom: 2px;
+          }
+        }
+        .menuButton {
+          @include button;
+          margin-top: 0;
+          padding: 0.3em 0.2em;
+          .icon {
+            margin-bottom: 3px;
+          }
+          .alignIcon, .colorIcon, .icon {
+            display: inline-block;
+            .ie7 & {
+              display: block;
+              float: left;
+            }
+          }
+        }
+        .menuDropdown ul li ul.menuEntries {
+          min-width: 2em;
+          li {
+            @include format-icon;
+            a {
+              min-height: 16px;
+              padding-right: 0.5em;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+#actionBar {
+  bottom: 0;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  &.position-left {
+    #editBar {
+      bottom: 0;
+      position: absolute;
+      right: 0;
+    }
+    .sidebarOptionsContainer {
+      position: static;
+    }
+  }
+  #editBar {
+    position: relative;
+    z-index: 10;
+  }
+}
+
+.aboutLoad {
+  height: 100px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  width: 99999px;
+  img {
+    display: none;
+  }
+  dl, dt, dd, ul, li, p, div {
+    display: inline;
+    white-space: nowrap;
+  }
+  .starsControl {
+    background: none;
+    display: inline;
+  }
+  .aboutDataset {
+    display: block;
+    padding-top: 11em;
+  }
+}
+
+.outerContainer {
+  background-color: white;
+  border: 1px solid $color_chrome_box_border {
+    left: 0;
+    right: 0;
+  };
+  position: relative;
+  .innerContainer {
+    overflow: hidden;
+    position: relative;
+    .viewErrorContainer {
+      display: none;
+      text-align: center;
+      .invalidView & {
+        display: block;
+      }
+      .viewError {
+        font-size: 1.4em;
+        font-weight: bold;
+        padding: 3em 0 1em;
+      }
+      .invalidActions li {
+        display: inline-block;
+        .ie7 & {
+          display: inline;
+        }
+      }
+    }
+  }
+}
+
+.invalidView {
+  #toolbarOptions, #editBar {
+    display: none;
+  }
+}
+
+.editAlert, .unpublishedAlert {
+  p {
+    font-size: 1.2em;
+    line-height: 1.1em;
+  }
+  .doneCopyingMessage {
+    font-weight: bold;
+  }
+  .button.close {
+    margin: {
+      left: 5em;
+      top: 0.5em;
+    };
+  }
+}
+
+// Other modals
+
+.newTemplateForm .submitActions {
+  margin-top: 1em;
+  li {
+    float: left;
+    margin-left: 0.5em;
+  }
+}
+
+// working copy message
+.editPublishedMessage {
+  .throbber {
+    @include throbber-icon;
+  }
+}
+
+#selectDataset {
+  margin-left: -41em;
+  width: 80em;
+  top: 4em;
+  iframe {
+    border: none;
+    height: 55em;
+    width: 80em;
+  }
+}
+
+#moreActionBarButtons {
+  background: white;
+  position: absolute;
+  right: 0.3em;
+  z-index: 10;
+  padding: {
+    top: 0.4em;
+    left: 0.6em;
+  };
+  border: solid 1px #333;
+  border-top: none;
+  li {
+    float: none;
+    margin: {
+      left: 0;
+      bottom: 0.6em;
+    };
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+$new-ux-z-index: 101;
+
+.new-ux-link {
+  font-size: 1.5em;
+  position: fixed;
+  bottom: 0;
+  right: 1em;
+  background-color: $new-ux-link-bg-color;
+  color: white;
+  padding: 0.4em 0.7em;
+  white-space: nowrap;
+  z-index: $new-ux-z-index;
+  overflow: hidden;
+  // Because this element has an icon- class on it (for the icon), our actual text's font gets
+  // messed up. So, get the normal font.
+  font-family: inherit;
+  // Set this explicitly here, so it doesn't get overridden by fontawesome
+  &[class^="icon-"], &[class*=" icon-"], [class^="icon-"], [class*=" icon-"] {
+    &::before {
+      font-family: "socrata-apps";
+    }
+  }
+  &:before {
+    display: none;
+  }
+  > h3 {
+    font-size: 1.5em;
+    font-weight: normal;
+    text-align: center;
+    margin-bottom: 0.2em;
+    color: $new-ux-link-color;
+  }
+  > p {
+    font-size: 1em;
+    text-align: center;
+    margin-bottom: 0.2em;
+    color: $new-ux-link-color-2;
+  }
+  > img.new-ux-image {
+    height: 200px;
+    margin: 0 auto;
+  }
+  > a.explore-btn {
+    display: block;
+    width: 4em;
+    margin: 0 auto;
+    padding: 0.5em 1.4em;
+    background: $new-ux-link-button-color;
+    color: $new-ux-link-bg-color;
+    font-weight: bold;
+    font-size: 0.9em;
+    text-decoration: none;
+    @include border-radius(0.2em);
+    @include prefixer(transition, "all 0.2s ease-out");
+  }
+  .icon-close {
+    position: absolute;
+    right: 0.5em;
+    top: 0.2em;
+    font-size: 0.5em;
+    line-height: 2em;
+    padding: 0.2em;
+    font-weight: 100;
+    background-color: inherit;
+    cursor: pointer;
+    &:hover {
+      font-weight: 900;
+    }
+  }
+  .spinner {
+    @include prefixer(transition, "all 0.05s ease-out");
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -1.5em;
+    margin-left: -1.5em;
+    height: 3em;
+    @include prefixer(border-radius, 100px);
+    opacity: 0;
+    background-color: white;
+    z-index: $new-ux-z-index + 1;
+  }
+  &.collapsed {
+    h3, p, .new-ux-image, .explore-btn, .icon-close {
+      display: none;
+    }
+    &:before {
+      display: block;
+    }
+    &.icon-cards {
+      cursor: pointer;
+      opacity: 0.8;
+      @include transition-property(opacity);
+      @include transition-duration(0.25s);
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+  // The overlay for the link itself - this one dims the link
+  &::after {
+    content: "﻿";
+    opacity: 0;
+    position: absolute;
+    @include prefixer(transition, "opacity 0.05s ease-out");
+  }
+  // The overlay for the entire page underneath the link
+  + .overlay, &.loading::after {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(128, 128, 128, 0.4);
+    opacity: 0;
+    z-index: $new-ux-z-index - 1;
+    @include prefixer(transition, "all 0.05s ease-out");
+    text-align: center;
+  }
+  &.loading {
+    &::after {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.2);
+      opacity: 1;
+    }
+  }
+}

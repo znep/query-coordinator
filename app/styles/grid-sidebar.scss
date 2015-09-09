@@ -1,0 +1,269 @@
+@mixin header-color($c, $dark: false, $bold: false) {
+  @if $bold == true {
+    background-color: scale-color($c, $saturation: -40%);
+    border-color: scale-color($c, $saturation: -20%);
+    color: #ffffff;
+  }
+  @else if $dark == true {
+    background-color: scale-color($c, $saturation: +90%, $lightness: +90%);
+    border-color: scale-color($c, $saturation: +60%, $lightness: +70%);
+  }
+  @else {
+    background-color: scale-color($c, $lightness: +70%);
+    border-color: scale-color($c, $lightness: +20%);
+  }
+  &.selected {
+    background-color: $c;
+  }
+}
+
+@mixin sidebar-colors($c, $dark: false) {
+  .mainTitleBlock {
+    background-color: $c;
+  }
+  .headerLink {
+    @include header-color($c, $dark);
+  }
+}
+
+.hideValidation {
+  display: none !important;
+}
+
+#gridSidebar {
+  background-color: $color_chrome_sidebar_background;
+  border: 0 solid $color_chrome_box_border;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  width: 30em;
+  &.position-left {
+    border-right-width: 1px;
+  }
+  &.position-right {
+    border-left-width: 1px;
+  }
+  .close {
+    @include sprite-button-icons;
+    position: absolute;
+    right: 0.5em;
+    top: 0.7em;
+    z-index: 1;
+    .ie7 & .icon {
+      display: block;
+    }
+  }
+  .ui-resizable-w {
+    left: 0;
+    width: 4px;
+  }
+  .paneOverlay {
+    background-color: #cccccc;
+    height: 100%;
+    left: 0;
+    filter: alpha(opacity = 30);
+    opacity: 0.3;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 60;
+  }
+  .loadingSpinnerContainer {
+    top: 33%;
+  }
+  .outerPane {
+    // IE7 had a weird issue where the scrollbar from a hidden pane would still
+    // show up on top of a visible pane, thereby disallowing the user from
+    // scrolling the real pane.  Apparently position: relative fixes it
+    @include sidebar-colors($sidebar_default_tab_color_top);
+    .ie7 & {
+      position: relative;
+    }
+    .mainTitleBlock {
+      padding: 0.5em 1em;
+      .title {
+        color: #ffffff;
+        font-size: 1.3em;
+        text-transform: none;
+      }
+    }
+    .headerLink {
+      @include sprite-accordion-icons;
+      border: 1px solid {
+        left: 0;
+        right: 0;
+      };
+      color: #333333;
+      display: block;
+      font-size: 1.1em;
+      font-weight: bold;
+      margin-bottom: 0.25em;
+      padding: 0.5em 0.75em;
+      &.selected {
+        border: none;
+        color: #ffffff;
+        cursor: default;
+        margin-bottom: 0;
+      }
+      &.disabled {
+        color: #999999;
+        cursor: default;
+        .icon {
+          // IE7 hides the title if this is display: none
+          visibility: hidden;
+        }
+      }
+      .ie7 & {
+        position: relative;
+      }
+      .icon {
+        float: right;
+      }
+    }
+    &#gridSidebar_outer_edit {
+      @include sidebar-colors($sidebar_edit_tab_color_top);
+    }
+    &#gridSidebar_outer_moreViews {
+      @include sidebar-colors($sidebar_more_views_tab_color_top);
+    }
+    &#gridSidebar_outer_filter {
+      @include sidebar-colors($sidebar_filter_tab_color_top, true);
+    }
+    &#gridSidebar_outer_new_visualize {
+      @include sidebar-colors($sidebar_new_visualize_tab_color_top, true);
+    }
+    &#gridSidebar_outer_visualize {
+      @include sidebar-colors($sidebar_visualize_tab_color_top, true);
+    }
+    &#gridSidebar_outer_export {
+      @include sidebar-colors($sidebar_export_tab_color_top);
+    }
+    &#gridSidebar_outer_feed {
+      @include sidebar-colors($sidebar_feed_tab_color_top);
+    }
+    &#gridSidebar_outer_embed {
+      @include sidebar-colors($sidebar_embed_tab_color_top);
+    }
+    &#gridSidebar_outer_about {
+      @include sidebar-colors($sidebar_about_tab_color_top);
+    }
+    &#gridSidebar_outer_manage {
+      @include sidebar-colors($sidebar_manage_tab_color_top);
+    }
+    // publisher tabs
+    &#gridSidebar_outer_metadata {
+      @include sidebar-colors($sidebar_metadata_tab_color_top);
+    }
+    &#gridSidebar_outer_appearance {
+      @include sidebar-colors($sidebar_appearance_tab_color_top);
+    }
+    &#gridSidebar_outer_behavior {
+      @include sidebar-colors($sidebar_behavior_tab_color_top);
+    }
+    &#gridSidebar_outer_advanced {
+      @include sidebar-colors($sidebar_advanced_tab_color_top);
+    }
+    // story customizer tabs
+    &#gridSidebar_outer_textbox {
+      @include sidebar-colors($sidebar_textbox_tab_color_top);
+    }
+    &#gridSidebar_outer_pager {
+      @include sidebar-colors($sidebar_pager_tab_color_top);
+    }
+    &#gridSidebar_outer_other {
+      @include sidebar-colors($sidebar_other_tab_color_top);
+    }
+    // special sidebars
+    &#gridSidebar_outer_cellFeed {
+      @include sidebar-colors($cell_feed_color);
+    }
+    // Canvas Designer
+    &#gridSidebar_outer_components {
+      @include sidebar-colors($sidebar_designer_components_tab_color_tab);
+      .headerLink.componentPaletteInput {
+        @include header-color($designer_components_input_color, false, true);
+      }
+      .headerLink.componentPaletteActions {
+        @include header-color($designer_components_actions_color, false, true);
+      }
+      .headerLink.componentPaletteData {
+        @include header-color($designer_components_data_color, false, true);
+      }
+      .headerLink.componentPaletteContent {
+        @include header-color($designer_components_content_color, false, true);
+      }
+    }
+    &#gridSidebar_outer_configuration {
+      @include sidebar-colors($sidebar_designer_configuration_tab_color_tab);
+    }
+    .panes {
+      overflow-y: auto;
+      overflow-x: hidden;
+      position: relative;
+    }
+  }
+}
+
+// sidebar button styles
+#sidebarOptions, #moreActionBarButtons {
+  background-image: url(/stylesheets/images/interface/dataset_sidebar_fade.png);
+  background-image: -moz-linear-gradient(0 0 270deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.7)), -moz-linear-gradient(0 0 0deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+  background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0.7))), -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0)));
+  background-repeat: no-repeat;
+  float: right;
+  padding: 0.2em 0.6em 0.4em 10em;
+  li {
+    float: left;
+    margin-left: 0.6em;
+    position: relative;
+    a {
+      @include dataset-sidebar-icons;
+      @include border-radius(0.35em);
+      color: #fff;
+      display: block;
+      font-size: 0.9em;
+      height: 13px;
+      line-height: 13px;
+      padding: 0.4em 0.7em 0.5em;
+      .icon {
+        display: inline-block;
+        margin-right: 0.4em;
+        vertical-align: bottom;
+        @include ie7-inline-block;
+      }
+      .ie7 & .icon {
+        float: left;
+      }
+    }
+    &.active {
+      margin: -2px {
+        left: 0.4em;
+      };
+      a {
+        border: 2px solid #fff;
+        // Chrome can't handle the larger border
+        border-radius: 0.1em;
+      }
+    }
+  }
+}
+
+.position-left {
+  #sidebarOptions, #moreActionBarButtons {
+    background-image: url(/stylesheets/images/interface/dataset_sidebar_fade_left.png?1);
+    background-image: -moz-linear-gradient(0 0 270deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.7)), -moz-linear-gradient(right 0 180deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0.7))), -webkit-gradient(linear, right top, left top, from(rgba(255, 255, 255, 1)), to(rgba(255, 255, 255, 0)));
+    background-position: right top;
+    float: left;
+    padding: {
+      left: 0.6em;
+      right: 10em;
+    };
+    li {
+      margin: {
+        left: 0;
+        right: 0.6em;
+      };
+    }
+  }
+}

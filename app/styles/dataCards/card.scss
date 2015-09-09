@@ -1,0 +1,315 @@
+@import "dataCards/common/colors";
+@import "dataCards/common/fonts";
+@import "dataCards/common/layout";
+
+$card-title-padding: 5px;
+$card-title-margin-right: 35px;
+$card-description-line-height: 1.3em;
+$card-description-transition-duration: 0.5s;
+
+.card {
+  border-radius: $rounded-corners-border-radius;
+  padding: $card-padding;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  height: 100%;
+  // This appears to keep elements with the .wrap and
+  // .title-expanded classes in the right box context.
+  // Without this position: relative, the content will
+  // be relative to the card, not the card content.
+  .card-text {
+    position: relative;
+  }
+  .title-one-line {
+    max-width: 100%;
+    line-height: $card-title-line-height;
+    font-weight: normal;
+    display: block;
+    padding-bottom: 5px;
+    position: relative;
+    &.dynamic-title {
+      font-size: $small-font-size;
+      line-height: $small-font-size;
+      padding-bottom: 1px;
+    }
+    .subtitle {
+      font-weight: normal;
+    }
+    .wrap {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-right: $card-title-margin-right + $card-title-padding;
+    }
+    &:hover {
+      // This z-index must be higher than that of the description.
+      .title-expanded {
+        z-index: 1001;
+        .wrap {
+          opacity: 1;
+          overflow: visible;
+        }
+      }
+    }
+  }
+  .title-expanded {
+    @extend .title-one-line;
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: visible;
+    z-index: -1;
+    // This z-index must be higher than that of the description.
+    &:hover {
+      z-index: 1001;
+    }
+    .wrap {
+      max-width: 100%;
+      overflow: hidden;
+      display: inline-block;
+      opacity: 0;
+      font-size: inherit;
+      white-space: initial;
+      &:hover {
+        opacity: 1;
+        overflow: visible;
+      }
+    }
+  }
+  .description {
+    position: relative;
+    line-height: $card-description-line-height;
+    padding-right: 30px;
+    padding-bottom: 1rem;
+    .description-truncated-content {
+      position: relative;
+      z-index: 2;
+      visibility: hidden;
+    }
+    .description-expand-button {
+      display: none;
+      position: absolute;
+      visibility: collapse;
+      right: 0;
+      bottom: 0;
+      width: 15px;
+      height: 25px;
+      cursor: pointer;
+    }
+    .description-expanded-wrapper {
+      z-index: 1;
+      position: absolute;
+      overflow: hidden;
+      opacity: 0.9;
+      top: 0;
+      display: block;
+      padding-right: 20px;
+      .description-expanded-content {
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-bottom: 0;
+      }
+      .description-expand-button {
+        display: block;
+      }
+    }
+    &.clamped {
+      .description-expand-button {
+        visibility: visible;
+      }
+    }
+    &.collapsed {
+      max-height: $card-description-line-height * 2;
+      .description-expanded-wrapper {
+        background: transparent;
+        .description-expanded-content {
+          visibility: collapse;
+        }
+        /* N.B this !important is here so that animations work - the initial max-height
+         * is set via jQuery, but this max-height here must override it if we're collapsed. */
+        max-height: ($card-description-line-height * 2) !important;
+      }
+      .description-truncated-content {
+        visibility: visible;
+      }
+    }
+    &.with-animation {
+      .description-expanded-wrapper {
+        .description-expanded-content {
+          @include prefixer(transition-property, "visibility");
+          @include prefixer(transition-duration, "0s");
+          @include prefixer(transition-timing-function, "step-end");
+          @include prefixer(transition-delay, "0");
+        }
+        @include prefixer(transition-property, "max-height, z-index");
+        @include prefixer(transition-duration, "#{$card-description-transition-duration}, 0s");
+        @include prefixer(transition-timing-function, "ease, step-end");
+        @include prefixer(transition-delay, "0, 0");
+        z-index: 3;
+      }
+      .description-truncated-content {
+        @include prefixer(transition-property, "visibility");
+        @include prefixer(transition-duration, "0");
+        @include prefixer(transition-delay, "0");
+      }
+      &.collapsed {
+        .description-expanded-wrapper {
+          .description-expanded-content {
+            @include prefixer(transition-duration, "0");
+            @include prefixer(transition-delay, #{$card-description-transition-duration});
+          }
+          @include prefixer(transition-duration, "#{$card-description-transition-duration}, #{$card-description-transition-duration}");
+          @include prefixer(transition-delay, "0, #{$card-description-transition-duration}");
+        }
+        .description-truncated-content {
+          @include prefixer(transition-delay, #{$card-description-transition-duration});
+        }
+      }
+    }
+  }
+  .card-controls {
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+    z-index: 1001;
+    > .card-control {
+      width: $icon-size;
+      height: $icon-size;
+      line-height: $icon-size;
+      font-size: $icon-size;
+      position: relative;
+      text-align: center;
+      cursor: pointer;
+      display: inline-block;
+      span {
+        display: block;
+        position: relative;
+      }
+    }
+    > .icon-settings {
+      &.disabled {
+        opacity: 0.25;
+      }
+    }
+  }
+}
+
+card-visualization {
+  display: block;
+  height: 100%;
+  .chart-render-error {
+    opacity: 0.8;
+    text-align: center;
+    padding-top: 1em;
+  }
+  .card-visualization {
+    height: 100%;
+    .card-text {
+      .description {
+        padding-bottom: $card-description-padding-bottom;
+      }
+    }
+  }
+}
+
+.edit-mode .expand-button {
+  display: none;
+}
+
+.flypaper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  z-index: 99999;
+}
+
+.card.preview {
+  position: relative;
+  display: block;
+  height: 300px;
+  text-align: left;
+}
+
+// This fixes a problem where, among other things, the spinner on
+// choropleth cards is not vertically centered when it should be.
+div[ng-switch="cardType"] {
+  position: relative;
+}
+
+.card-form-group {
+  padding: 10px 0;
+  display: table;
+  width: 100%;
+  .input-group {
+    display: table;
+    width: 100%;
+    .form-control,
+    .input-group-addon {
+      vertical-align: top;
+    }
+    .input-group-addon {
+      display: table-cell;
+      width: 1%;
+      button {
+        .icon-search {
+          font-size: 1.2rem;
+          text-align: center;
+          width: 100%;
+          line-height: 2rem;
+        }
+      }
+    }
+  }
+  .form-control {
+    width: 100%;
+    box-sizing: border-box;
+    display: block;
+    padding: 0 2px;
+    font-size: 0.8rem;
+    line-height: 35px;
+  }
+}
+
+.card-example-text {
+  .one-line {
+    overflow: hidden;
+    height: 1rem;
+  }
+}
+
+.invalid-card-body {
+  height: 200px;
+  line-height: 200px;
+  text-align: center;
+  .invalid-card-heading {
+    @include prefixer(transform, rotate(-25deg));
+  }
+}
+
+card-visualization-invalid {
+  display: block;
+  height: 100%;
+  overflow: hidden;
+}
+
+.visualization-render-error {
+  display: block;
+  padding: 0.5rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: #fff;
+  @include border-radius($rounded-corners-border-radius);
+  @include prefixer("transform", "translate(-50%, -50%)");
+  .icon-warning {
+    display: block;
+    float: left;
+    padding: 0 1rem 0 0;
+    font-size: 1.5rem;
+    line-height: 2rem;
+    color: $yellow-warning-color;
+  }
+}

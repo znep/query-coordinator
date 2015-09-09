@@ -1,0 +1,302 @@
+// general styles
+
+// control defaults
+
+// layout widgets
+.tickerLayout {
+  position: relative;
+  .tickerLayoutPager {
+    background-color: #fff;
+    border-bottom: 1px solid $color_chrome_box_border;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+    .currentChildName {
+      float: left;
+      font-size: 1.3em;
+      font-weight: bold;
+      padding: 0.54em;
+    }
+    .incrementalPager {
+      float: right;
+      .pagerCounter {
+        float: right;
+        padding: 0.8em 1em;
+        span {
+          font-size: 1.2em;
+        }
+      }
+      .pagerControls {
+        float: right;
+        .pageButton {
+          @include sprite-menu-icons;
+          border-left: 1px solid $color_chrome_box_border;
+          float: left;
+          padding: 0.7em 0.9em;
+        }
+      }
+    }
+  }
+  .tickerLayoutChildren {
+    height: 30em;
+    overflow: hidden;
+    padding-top: 2em;
+    .tickerLayoutChild {
+      visibility: hidden;
+    }
+  }
+}
+
+.twoColumnLayout {
+  .leftColumn, .rightColumn {
+    float: left;
+    width: 50%;
+    .wrapper {
+      padding: 0.5em;
+    }
+  }
+}
+
+// content widgets
+
+.facetBreadcrumb {
+  background-color: #777;
+  li {
+    background: transparent url(/stylesheets/images/interface/breadcrumb_arrow.png) no-repeat left center;
+    color: #fff;
+    display: block;
+    float: left;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 0.7em 0.8em {
+      left: 1.8em;
+    };
+    &:first-child {
+      background: none;
+      padding-left: 1em;
+    }
+    a {
+      color: #fff;
+    }
+  }
+}
+
+.facetList {
+  .alphaIndex {
+    margin-bottom: 0.5em;
+    li {
+      border-left: 1px solid $color_chrome_box_border;
+      margin: 0;
+      padding: 0.3em 0.4em {
+        left: 0.6em;
+      };
+      text-transform: uppercase;
+      width: auto;
+      &:first-child {
+        border-left: none;
+      }
+    }
+  }
+  .alphaIndexAnchor {
+    clear: both;
+    color: #333;
+    font-size: 1.4em;
+    font-weight: bold;
+    margin-top: 0.5em;
+    padding-left: 0.3em;
+    text-transform: uppercase;
+  }
+  li {
+    display: inline-block;
+    font-size: 1.4em;
+    padding: 0.3em;
+    width: 10em;
+  }
+}
+
+.featuredViews {
+  margin: 0 {
+    bottom: $chrome_margin_inner;
+  };
+  .featuredViewContainer {
+    float: left;
+    &.last {
+      float: none;
+      overflow: hidden;
+      width: auto;
+    }
+    .featuredView {
+      background-color: #fff;
+      border: 1px solid $color_chrome_box_border;
+      @include border-radius(0.3em);
+      margin: 0 {
+        right: $chrome_margin_inner;
+      };
+      min-width: 15em;
+      padding: 1em;
+      img {
+        border: 1px solid #e9e9e9;
+        display: block;
+        height: 80px;
+        margin: 0 auto 0.5em;
+        width: 150px;
+      }
+      .statContainer {
+        height: 80px;
+        text-align: center;
+        .statTitle {
+          color: #000;
+          font-size: 2.2em;
+          font-weight: bold;
+          padding-top: 1em;
+          padding-bottom: 0.1em;
+        }
+        .statDescription {
+          color: #999;
+          font-size: 1.1em;
+        }
+      }
+      .viewTitle {
+        color: #000;
+        display: block;
+        font-family: Georgia, serif;
+        font-size: 1.5em;
+        font-weight: bold;
+        margin: 0.6em 0 0.4em;
+      }
+      .viewDescription {
+        color: #999;
+        font-size: 1.2em;
+      }
+    }
+    &.last {
+      .featuredView {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+.viewList {
+  ul {
+    padding: 0 0.4em;
+    li {
+      border-top: 1px solid $color_chrome_box_border;
+      font-size: 1.3em;
+      padding: 0.5em;
+      &:first-child {
+        border-top: none;
+      }
+      .viewType {
+        @include sprite-menu-icons;
+        float: right;
+      }
+    }
+  }
+  .pagination {
+    font-size: 1.2em;
+    text-align: center;
+    .pageLink {
+      margin: 0 0.25em;
+      &.active {
+        color: #999999;
+        cursor: auto;
+      }
+    }
+    .button {
+      @include sprite-menu-icons;
+      font-size: 1em;
+      padding: 0.3em;
+      .ie7 & {
+        position: relative;
+        top: 0.5em;
+      }
+    }
+    .prevLink {
+      margin-right: 1em;
+      .ie7 & {
+        margin-left: 0.5em;
+      }
+    }
+    .nextLink {
+      margin-left: 1em;
+      .ie7 & {
+        margin-right: 0.5em;
+      }
+    }
+  }
+  .resultCount {
+    color: #999;
+    font-size: 1.2em;
+    margin: 0.7em {
+      bottom: 0;
+    };
+    text-align: center;
+  }
+}
+
+// TODO: This is a rapid-hack to just hide everything irrelevant for a demo
+.viewFilter {
+  .initialFilterMode {
+    display: none;
+  }
+  .normalFilterMode {
+    .advanced, .advancedLine, .notAdvancedLine, .editModeAdvancedOnLine, .editModeAdvancedOffLine {
+      display: none;
+    }
+    .close, .removeFilterLine {
+      display: none;
+    }
+    .filterHeadline {
+      .columnName, .subcolumnName, .operator, .value {
+        color: #333;
+        font-size: 1.3em;
+      }
+    }
+    .filterValues {
+      display: inline-block;
+      .autogeneratedPropertiesOverlay, .autogeneratedProperties {
+        display: none;
+      }
+      .line {
+        display: inline-block;
+        padding-right: 1.5em;
+        &:last-child {
+          display: none;
+        }
+        .lineValue {
+          font-size: 1.3em;
+        }
+      }
+    }
+  }
+}
+
+.viewPreview {
+  h2 {
+    margin-top: 0;
+  }
+  .viewPreviewContainer {
+    position: relative;
+    overflow: hidden;
+  }
+  .fullHeight {
+    height: 100%;
+  }
+  .description {
+    overflow: hidden;
+    padding-bottom: 1.3em;
+    position: relative;
+    p {
+      max-height: 10em;
+      overflow: hidden;
+    }
+    .moreLink {
+      font-size: 1.3em;
+      position: absolute;
+      top: 10em;
+    }
+  }
+}

@@ -1,0 +1,135 @@
+@import "dataCards/common/layout";
+@import "dataCards/common/colors";
+
+.card {
+  position: relative;
+}
+
+.choropleth-container {
+  &.card-size-1 {
+    .choropleth-legend.continuous {
+      max-height: 9rem;
+    }
+  }
+  &.card-size-2 {
+    .choropleth-legend.continuous {
+      max-height: 6rem;
+    }
+  }
+  &.card-size-3 {
+    .choropleth-legend.continuous {
+      max-height: 4rem;
+    }
+  }
+}
+
+card.expanded .choropleth-container .choropleth-legend.continuous {
+  max-height: 15rem;
+}
+
+.state-view-card .choropleth-container .choropleth-legend.continuous {
+  max-height: 15rem;
+}
+
+.choropleth-container {
+  padding: 0;
+  height: 100%;
+  .choropleth-map-container {
+    height: 100%;
+    path {
+      cursor: pointer;
+    }
+  }
+  .choropleth-legend {
+    position: absolute;
+    padding: 15px;
+    bottom: 15px;
+    right: 15px;
+    cursor: default;
+    z-index: 100;
+    svg {
+      display: block;
+      overflow: initial;
+      rect.choropleth-legend-color {
+        stroke-width: 1px;
+      }
+    }
+    &.continuous {
+      $inset: 30px;
+      max-height: 15rem;
+      height: 100%;
+      right: $inset;
+      bottom: 0;
+      width: 1rem;
+      box-sizing: content-box;
+      padding: $inset 0;
+      position: absolute;
+      svg {
+        width: 100%;
+        max-height: inherit;
+        height: 100%;
+        box-sizing: inherit;
+        position: absolute;
+        top: $inset;
+        left: 0;
+        &.legend-ticks {
+          max-height: none;
+        }
+        rect {
+          width: 100%;
+        }
+        .tick {
+          $font-size: 0.8rem;
+          font-size: $font-size;
+          &.small {
+            font-size: 0.75 * $font-size;
+            opacity: 0.8;
+          }
+        }
+        path.domain {
+          display: none;
+        }
+      }
+    }
+  }
+  .choropleth-selection-box {
+    border-radius: $rounded-corners-border-radius;
+    bottom: 10px;
+    cursor: pointer;
+    display: none;
+    left: 10px;
+    opacity: 0.9;
+    padding: 10px;
+    position: absolute;
+    z-index: 100;
+    .icon-filter {
+      vertical-align: middle;
+    }
+    .choropleth-selection-value {
+      display: inline-block;
+      font-weight: bold;
+      margin: 0 10px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    .icon-close {
+      cursor: pointer;
+      font-size: 0.5rem;
+      padding: 5px;
+      vertical-align: middle;
+    }
+  }
+}
+
+.card.dragged {
+  .choropleth-container {
+    .choropleth-map-container {
+      path {
+        cursor: grabbing !important;
+        cursor: -webkit-grabbing !important;
+      }
+    }
+  }
+}

@@ -1,0 +1,211 @@
+.editProfileNav {
+  .navigationList {
+    li {
+      @include profile-icons;
+    }
+  }
+}
+
+.editProfile {
+  .editArea {
+    padding: 0.5em 1.5em 1.5em;
+    .editSection {
+      &.noBorder {
+        border: none;
+        margin-top: 0;
+        padding-top: 0;
+      }
+      border-top: 1px solid $color_chrome_box_border;
+      margin-top: 1em;
+      padding-top: 1em;
+      &:first-child {
+        border-top: none;
+        margin-top: 0;
+      }
+      .line {
+        clear: both;
+        &.fullLine {
+          clear: both;
+          width: 90%;
+        }
+        line-height: 2.4em;
+        padding: 0.5em 0 0.5em 3em;
+        textarea, input, .field {
+          min-width: 38em;
+        }
+        select {
+          width: 16em;
+        }
+        label {
+          font-weight: bold;
+          padding-right: 0.5em;
+          text-align: right;
+          width: 9em;
+          &.error {
+            color: red;
+            margin-left: 12em;
+            text-align: left;
+            width: auto;
+          }
+          &.description {
+            color: #000;
+            font-weight: normal;
+            padding-left: 0;
+            width: auto;
+          }
+        }
+        .fieldHint {
+          padding-left: 1em;
+        }
+        .fieldHint, label {
+          color: #666;
+        }
+        .field > input[type='checkbox'] {
+          min-width: 0;
+        }
+        .passwordHint {
+          @include sprite-menu-icons;
+          .icon {
+            display: inline-block;
+            position: relative;
+            top: 5px;
+          }
+        }
+        .uniform.checker {
+          position: relative;
+          top: 0.2em;
+          @include ie7-inline-block;
+        }
+        p {
+          clear: left;
+          font-size: 1.2em;
+          line-height: 1.3em;
+          margin: {
+            left: 11.6em;
+            top: 0.3em;
+          };
+          width: 40em;
+        }
+      }
+      h4 {
+        font-size: 1.2em;
+        margin: 0.5em 0;
+      }
+      .emptyItem {
+        color: #999999;
+        font-size: 1.2em;
+      }
+      .textItem {
+        font-size: 1.2em;
+      }
+    }
+  }
+  .submitLine {
+    clear: both;
+    margin-top: 1em;
+  }
+  .editForm {
+    display: none;
+  }
+  &.editBasicInfo .editForm.editBasicInfoForm,
+  &.editProfileImage .editForm.editProfileImageForm,
+  &.editAccountInfo .editForm.editAccountInfoForm,
+  &.editAppToken .editForm.editAppTokenForm,
+  &.editAppTokens .editForm.editAppTokensForm {
+    display: block;
+  }
+  .editProfileImageForm {
+    .imageErrorLine {
+      display: none;
+    }
+    .uploadIndicator {
+      @include throbber-icon;
+      display: none;
+      margin-top: 0.5em;
+    }
+    .uploadNewImage {
+      margin: 0 1em 0 0;
+    }
+  }
+  .editAccountForm {
+    .addOpenIdButton {
+      @include sprite-repeater-icons;
+      .icon {
+        float: left;
+        padding-right: 0.5em;
+      }
+      .ie7 & {
+        width: 19em;
+      }
+    }
+  }
+  .editAppTokenForm {
+    .line {
+      .uploadIndicator {
+        @include throbber-icon;
+        display: none;
+        margin-left: 1em;
+        position: relative;
+        top: 1em;
+      }
+      &.working .uploadIndicator {
+        display: inline-block;
+        @include ie7-inline-block;
+      }
+      .thumbnailError {
+        display: none;
+      }
+      .uploadAppTokenImage {
+        clear: left;
+        margin: {
+          left: 11.6em;
+        };
+      }
+    }
+  }
+  .editAppTokensForm, .editAppTokenForm {
+    .code {
+      background-color: #f7f7f7;
+      border: 1px solid #eee;
+      @include border-radius(0.3em);
+      color: #555;
+      font-family: monaco, "courier new", monospace;
+      text-shadow: 1px 1px 0 #fff;
+    }
+  }
+  .editAppTokensForm {
+    .appTokenDisplay {
+      .appTokenLine {
+        padding: 0.5em 0;
+      }
+    }
+    .createNewToken {
+      border-bottom: 1px solid $color_chrome_box_border;
+    }
+    .existingTokens {
+      padding-top: 1em;
+      .tokenFieldsDisplay {
+        border-top: 1px solid $color_chrome_box_border;
+        &:first-child {
+          border-top: 0;
+        }
+        padding-top: 1em;
+      }
+    }
+    .showCreateTokenButton {}
+    .createNewToken {
+      h2 {
+        margin-top: 0;
+      }
+    }
+    .line p {
+      clear: left;
+      font-size: 1.1em;
+      line-height: 1.3em;
+      margin: {
+        left: 13em;
+        top: 0.3em;
+      };
+    }
+  }
+}

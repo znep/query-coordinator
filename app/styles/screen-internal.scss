@@ -1,0 +1,156 @@
+.contentBox ul li a {
+  font-size: 1.3em;
+}
+
+h1.floating {
+  float: left;
+}
+
+.leftNavBox {
+  z-index: 51;
+}
+
+.internalMetrics {
+  #analyticsTimeControl {
+    padding: 0;
+  }
+  .plotMore {
+    float: right;
+    position: relative;
+    top: -0.5em;
+    label {
+      font-size: 1.4em;
+    }
+  }
+}
+
+form {
+  label {
+    display: inline-block;
+    font-size: 1.3em;
+    margin-top: 0.5em;
+    width: 9em;
+  }
+  input[type=text] {
+    @include box-shadow(0, 0, 0.3em, rgba(0, 0, 0, 0.1), true);
+    width: 30em;
+  }
+  input[type=submit], input[type=button] {
+    @include button;
+    font-size: 1.1em;
+    height: 2.5em;
+    margin-top: 1em;
+    padding-top: 0.1em;
+  }
+}
+
+.isDefault {
+  font-weight: bold;
+}
+
+.exportLink, .importLink {
+  bottom: 2.5em;
+  display: inline-block;
+  font-size: 1.2em;
+  float: right;
+  margin-left: 1em;
+  position: relative;
+}
+
+.importExportBox, .doImportLink {
+  display: none;
+}
+
+form.wide {
+  .line {
+    background-color: #fff;
+    padding: 0.3em;
+    &:hover {
+      background-color: #f7f7f7;
+      @include transition-duration(0.1s);
+      @include transition-property(background-color);
+      label {
+        color: #800;
+        text-shadow: 1px 1px 0 #fff;
+      }
+    }
+    > * {
+      vertical-align: top;
+    }
+    textarea {
+      width: 40em;
+      &[readonly=true] {
+        background-color: #eee;
+      }
+    }
+    .deleteLink {
+      display: inline-block;
+      font-size: 1.1em;
+      margin-right: 0.5em;
+      padding-top: 0.4em;
+    }
+    .editLink {
+      display: inline-block;
+      font-size: 1.1em;
+      padding-top: 0.4em;
+    }
+  }
+  label {
+    width: 15em;
+  }
+}
+
+#ace-editor {
+  height: 50em;
+  position: relative;
+}
+
+.domainCompletion {
+  font-size: 1em;
+  .domainAwesomeComplete {
+    margin-bottom: 8px;
+    width: 95%;
+  }
+}
+
+.featureFlags form {
+  > div {
+    border-bottom: solid 1px #444;
+    margin: 0;
+    padding: 1.75em 1.5em;
+    font-size: 1.3em;
+  }
+  &:nth-child(even) {
+    background-color: #F9F9F9;
+  }
+  div.flagBox {
+    float: left;
+    max-width: 50em;
+    div {
+      font-size: 1.1em;
+      color: #444444;
+      font-weight: bold;
+    }
+    p {
+      margin-top: 0.5em;
+    }
+  }
+  div.valueBox {
+    float: right;
+    text-align: left;
+    label {
+      margin-top: 0;
+      width: auto;
+      display: inline;
+      font-size: inherit;
+    }
+    input {
+      width: auto;
+    }
+    input[type=submit] {
+      float: right;
+      font-size: 1em;
+      cursor: pointer;
+    }
+  }
+}

@@ -1,0 +1,539 @@
+.controlPane {
+  @include disabled-overlay(8em);
+  min-height: 15em;
+  padding-top: 0.5em;
+  &.mapDataLayerCreate {
+    min-height: 5em;
+  }
+  &.initialLoad .formSection {
+    filter: alpha(opacity = 30);
+    opacity: 0.3;
+  }
+  .subtitleBlock, .readOnlyBlock {
+    padding: 1em;
+    .subtitle, .readOnlyMessage {
+      font-size: 1.3em;
+    }
+    .subtitle {
+      color: #666;
+    }
+    .readOnlyMessage {
+      font-weight: bold;
+    }
+  }
+  .paneContent {
+    padding: 0.75em;
+    position: relative;
+  }
+  .formSection {
+    margin-bottom: 1em;
+    padding: 0;
+    // Expand/collapse of sections would sometimes leave visual artifacts unless we add this
+    .ie7 & {
+      position: relative;
+    }
+    > .uniform.checker, .sectionSelect {
+      display: none;
+      margin-right: 0.4em;
+    }
+    .ie7 &.selectable .sectionSelect {
+      position: absolute;
+      + .formHeader {
+        left: 2.3em;
+        margin-left: 0;
+        position: relative;
+      }
+    }
+    &.selectable > .uniform.checker, &.selectable .sectionSelect {
+      display: inline-block;
+    }
+    .formHeader {
+      color: $color_chrome_sidebar_text;
+      display: inline-block;
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 0.3em;
+      margin-left: 0;
+      padding-left: 0;
+      &.hide {
+        display: none;
+      }
+    }
+    .ie7 &.selectable .formHeader {
+      margin: {
+        left: 1.2em;
+        top: 0.4em;
+      };
+    }
+    .sectionDisabledMessage, .sectionWarningMessage {
+      color: #333333;
+      display: none;
+      font-size: 1.3em;
+      font-style: italic;
+      font-weight: bold;
+      margin: 1em 0;
+      text-align: center;
+    }
+    &.warned {
+      .sectionWarningMessage {
+        display: block;
+      }
+    }
+    &.disabled {
+      .sectionDisabledMessage {
+        display: block;
+      }
+      .sectionContent {
+        display: none;
+      }
+      &.error .sectionDisabledMessage {
+        color: red;
+      }
+    }
+    .sectionContent {
+      background-color: #fff;
+      border: 1px solid $color_chrome_box_border;
+      @include border-radius(0.3em);
+      margin-top: 0.3em;
+      padding: 1px {
+        bottom: 0.3em;
+      };
+    }
+    dl.sectionContent {
+      @include dl-section-content;
+    }
+    // custom content is wrappen in a formSectionInner,
+    // but shouldn't be styled that way.
+    &.custom > .sectionContent {
+      background-color: transparent;
+      border: none;
+      margin: 0;
+      padding: 0;
+    }
+    .line {
+      margin: 0.5em 0;
+      position: relative;
+      label {
+        background-position: left 5px;
+        color: $color_chrome_sidebar_text;
+        font-size: 1.1em;
+        font-weight: bold;
+        left: 0.7em;
+        overflow: hidden;
+        position: absolute;
+        top: 0.5em;
+        width: 6.7em;
+        white-space: nowrap;
+        .ie7 & {
+          width: 7em;
+        }
+      }
+      .inputWrapper {
+        display: block;
+        float: none;
+        padding-left: 10.2em;
+        &.textWrapper {
+          padding-right: 1em;
+        }
+      }
+      textarea, input[type="text"] {
+        width: 100%;
+      }
+      .uniform.selector, select {
+        width: 100%;
+        select {
+          width: 100%;
+        }
+      }
+      input[type="radio"], .uniform.radio,
+      input[type="checkbox"], .uniform.checker {
+        margin-right: 0.5em;
+        .ie7 & {
+          display: inline;
+        }
+      }
+      .customWrapper:before {
+        content: " ";
+      }
+      &.custom input[type="text"] {
+        width: 95%;
+      }
+      .blist-combo {
+        margin: {
+          left: -2px;
+          top: -3px;
+        };
+        width: 100%;
+      }
+      .uploader {
+        width: auto;
+        .filename {
+          float: none;
+          margin-right: 5em;
+          width: auto;
+          input {
+            @include box-shadow-none;
+            background-color: transparent;
+            border: none;
+            color: inherit;
+            font-size: 1em;
+            width: 100%;
+          }
+        }
+        .action {
+          right: 0;
+          position: absolute;
+          top: 0;
+          width: 5em;
+        }
+      }
+      span.error {
+        color: #ff0000;
+        display: block;
+        line-height: 1.7em;
+        margin-left: 9.1em;
+        padding-left: 12px;
+      }
+      .columnSelector {
+        @include text-hiding;
+        background-image: url(/stylesheets/images/controls/column_select_sprite.png);
+        display: none;
+        height: 20px;
+        left: 10.1em;
+        position: absolute;
+        top: 0.5em;
+        width: 20px;
+        .table-renderType & {
+          display: block;
+        }
+        &.inProcess {
+          background-position: 0 -20px;
+          z-index: 70;
+        }
+      }
+      .table-renderType &.columnSelect .inputWrapper {
+        font-size: 1em;
+        padding-left: 12.2em;
+      }
+      &.color .colorControlLabel {
+        margin-left: 1em;
+      }
+      &.static > span {
+        font-size: 1.2em;
+        padding-top: 0.2em;
+      }
+      &.note > span {
+        font-size: 1.2em;
+        padding-top: 0.2em;
+        padding-left: 1.2em;
+      }
+      .ui-spinner {
+        .ui-button-text {
+          padding: 0.1em 0em 0.3em 0em;
+          line-height: 100%;
+          font-size: 1.2em;
+        }
+        .ui-spinner-input {
+          width: 70%;
+        }
+        &.ui-widget-content {
+          border: none;
+        }
+        .ui-spinner-down {
+          @include border-radius(0px, 4px, 4px, 0px);
+        }
+        .ui-spinner-up {
+          @include border-radius(0px);
+        }
+      }
+      .ui-slider {
+        display: block;
+        margin: {
+          left: 0.5em;
+          right: 3em;
+        };
+      }
+      input.sliderInput {
+        background-color: transparent;
+        border: none;
+        @include box-shadow-none;
+        float: right;
+        margin-top: -0.2em;
+        text-align: right;
+        width: 1.8em;
+      }
+      &.colorCollapse {
+        position: absolute;
+        right: 0.2em;
+        margin-top: 0;
+        label {
+          display: none;
+        }
+      }
+      &.colorCollapse + div.line {
+        margin-right: 24px;
+      }
+      &.radioSelect {
+        padding-left: 0;
+        .radioSelectBlock {
+          .radioLine {
+            position: relative;
+            label {
+              font-weight: normal;
+              margin-right: 0;
+              padding-left: 0;
+              position: static;
+              text-transform: capitalize;
+              vertical-align: bottom;
+              width: auto;
+            }
+          }
+        }
+      }
+      &.radioGroup, &.group {
+        padding-left: 0.65em;
+      }
+      &.group {
+        padding-top: 0;
+        .inputBlock {
+          display: block;
+          float: none;
+        }
+      }
+      .radioBlock {
+        display: block;
+        float: none;
+        padding-left: 10.2em;
+        .radioLine {
+          position: relative;
+          &.text > label {
+            overflow: visible;
+          }
+        }
+        input[type="radio"], .uniform.radio {
+          left: 0;
+          position: absolute;
+          top: 0;
+        }
+        label {
+          display: block;
+          font-size: 1.2em;
+          font-weight: normal;
+          margin: {
+            left: 2.2em;
+            right: 0;
+          };
+          padding-left: 0;
+          position: static;
+          vertical-align: bottom;
+          white-space: normal;
+          width: auto;
+          .inputWrapper {
+            padding-left: 0;
+          }
+          .uniform.selector {
+            font-size: 1em;
+          }
+          select, input {
+            font-size: 1em;
+          }
+          input.sliderInput {
+            width: 1.8em;
+          }
+        }
+        .columnSelect {
+          .table-renderType & .inputWrapper {
+            margin-left: 2em;
+          }
+          .columnSelector {
+            left: 2.2em;
+            top: 0;
+          }
+          input[type="radio"], .uniform.radio {
+            margin-bottom: 3px;
+          }
+        }
+        label span.error {
+          font-size: 0.8333em;
+          margin-left: 0;
+          padding-left: 0;
+        }
+      }
+      &.inputFirst {
+        margin: 0;
+        .inputWrapper {
+          float: left;
+          padding-left: 0;
+          .ie7 & {
+            display: inline;
+          }
+        }
+        label {
+          display: block;
+          float: none;
+          padding-left: 0;
+          position: static;
+          width: auto;
+        }
+      }
+      &.noLabel {
+        > label {
+          display: none;
+        }
+        .inputWrapper, .radioBlock {
+          padding-left: 0;
+        }
+      }
+      &.repeater {
+        .addValue {
+          @include sprite-repeater-icons;
+          max-width: 80%;
+          overflow: hidden;
+          margin-left: 1em;
+          &.hide {
+            display: none;
+          }
+          .icon {
+            float: left;
+            margin-right: 0.4em;
+          }
+        }
+        .line {
+          display: block;
+          float: none;
+          margin: 0;
+          position: relative;
+          &.colorCollapse {
+            position: absolute;
+          }
+          .removeLink {
+            @include sprite-repeater-icons;
+            left: 0.1em;
+            line-height: 1em;
+            padding: 0.3em;
+            position: absolute;
+            top: 0.1em;
+            z-index: 1;
+          }
+          &.group .removeLink {
+            left: 0.1em;
+            top: 0.5em;
+          }
+        }
+        > .line {
+          border: 1px dashed transparent;
+          padding: 0.1em 0 0.3em 0.3em;
+          &:hover {
+            border-color: $color_chrome_box_border;
+          }
+          &.color:hover {
+            border-color: transparent;
+          }
+        }
+      }
+      &.group .removeLink {
+        left: 0.75em;
+      }
+      &.colorArray {
+        padding-left: 20px;
+        .line.color {
+          clear: none;
+          float: left;
+          margin: 0 1px;
+          padding: 0;
+          position: static;
+          & + .line.color .inputWrapper {
+            padding-left: 0;
+          }
+          .removeLink {
+            bottom: 0.1em;
+            top: auto;
+          }
+          .inputWrapper {
+            padding-left: 8.2em;
+          }
+        }
+        .addValue {
+          @include text-hiding;
+          background: none;
+          border: none;
+          height: 14px;
+          margin: 0;
+          padding: 4px;
+          width: 14px;
+        }
+      }
+      &.dimensions {
+        padding-left: 0;
+        .inputBlock {
+          clear: none;
+          margin: 0;
+          label {
+            display: none;
+          }
+          .line {
+            clear: none;
+            margin: 0;
+            padding: 0 {
+              right: 0.3em;
+            };
+            &.text .inputWrapper {
+              margin-right: 7.3em;
+            }
+            &.select {
+              position: absolute;
+              right: 0;
+              top: 0;
+              .inputWrapper {
+                padding-left: 0;
+                .ie7 & .container {
+                  width: auto;
+                }
+              }
+              select {
+                width: 6.1em;
+              }
+            }
+            &.static {
+              font-size: 1.2em;
+              position: absolute;
+              right: 1.9em;
+              top: 1em;
+              .inputWrapper, .inputWrapper span {
+                margin: 0;
+                padding-left: 0;
+              }
+            }
+          }
+        }
+      }
+    }
+    &.collapsed {
+      .formHeader {
+        color: #999999;
+      }
+      .sectionContent {
+        display: none;
+      }
+      .sectionContent.show {
+        display: block;
+      }
+    }
+  }
+  .readOnly .formSection {
+    &.selectable > .uniform.checker {
+      display: none;
+    }
+    &.selectable.collapsed {
+      display: none;
+    }
+  }
+  .finishButtons {
+    margin-top: 0;
+  }
+  .minimal {
+    .subtitleBlock {
+      display: none;
+    }
+  }
+}

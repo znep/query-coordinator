@@ -1,0 +1,91 @@
+.contentBox h2 {
+  margin-top: 0;
+}
+
+.commentStatusContainer {
+  float: right;
+  margin-top: -4em;
+  label {
+    bottom: 0.5em;
+    font-size: 1.3em;
+    padding-right: 0.3em;
+    position: relative;
+    .ie7 & {
+      bottom: -0.5em;
+      float: left;
+    }
+  }
+  #commentStatusDropdown {
+    width: 9em;
+  }
+}
+
+.gridListWrapper {
+  margin-top: 1em;
+  .commentModerationList {
+    .dataset {
+      max-width: 25em;
+      @include clip-text;
+    }
+    .status {
+      min-width: 20em;
+    }
+    tbody {
+      tr {
+        .button {
+          opacity: 0.15;
+          @include transition-duration(0.5s);
+          @include transition-property(opacity);
+        }
+        &:hover .button {
+          opacity: 1;
+        }
+      }
+      td.author {
+        max-width: 6em;
+        .cellInner {
+          display: inline-block;
+          line-height: 24px;
+          padding-left: 0.7em;
+          vertical-align: bottom;
+        }
+      }
+      td.comment {
+        max-width: 20em;
+        .cellInner {
+          color: #666;
+          font-size: 0.8em;
+          font-weight: bold;
+          margin-bottom: 0.4em;
+        }
+      }
+      td.dataset {
+        max-width: 20em;
+      }
+      td.status {
+        .cellInner {
+          display: inline-block;
+          font-size: 1.4em;
+          font-weight: bold;
+          text-transform: capitalize;
+          margin-right: 0.5em;
+          width: 5em;
+          @include ie7-inline-block;
+          .ie7 & {
+            padding-bottom: 0.7em;
+          }
+          .loading {
+            @include throbber-icon;
+          }
+        }
+      }
+    }
+  }
+}
+
+.noResultsMessage {
+  display: none;
+  font-size: 1.4em;
+  margin: 5em 0;
+  text-align: center;
+}

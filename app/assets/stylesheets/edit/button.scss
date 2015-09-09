@@ -37,6 +37,16 @@
     background-color: $accent-btn-disabled-bg-color;
   }
 
+  &.accent-green-btn {
+    color: $accent-green-btn-color;
+    background-color: $accent-green-btn-bg-color;
+  }
+
+  &.accent-green-btn:hover {
+    color: $accent-green-btn-color;
+    background-color: $accent-green-btn-hover-bg-color;
+  }
+
   // To use this, you'll need to have a span
   // around the content in your button.
   &.busy {

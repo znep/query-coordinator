@@ -269,7 +269,7 @@ $new-view-color: #80acca;
   }
 }
 
-.dataset-icon {
+.asset-icon {
   margin-bottom: 2px;
   &[data-display-type] {
     background: none;
@@ -291,17 +291,39 @@ $new-view-color: #80acca;
       color: blue;
     }
   }
+  &[data-display-type="datasets"],
   &[data-display-type="table"],
   &[data-display-type="blist"] {
     &::before {
       content: "";
-      color: blue;
+      color: #cf7532;
     }
   }
+  &[data-display-type="charts"],
   &[data-display-type="chart"] {
     &::before {
       content: "";
-      color: blue;
+      color: #e6be65;
+    }
+  }
+  &[data-display-type="filters"],
+  &[data-display-type="filter"] {
+    &::before {
+      content: "";
+      color: #8db7df;
+    }
+  }
+  &[data-display-type="blob"] {
+    &::before {
+      content: "";
+      color: #88bb50;
+    }
+  }
+  &[data-display-type="maps"],
+  &[data-display-type="map"] {
+    &::before {
+      content: "";
+      color: #619858;
     }
   }
   &[data-display-type="unpublished"] {

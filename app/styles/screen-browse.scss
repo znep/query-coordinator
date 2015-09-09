@@ -7,7 +7,7 @@ $new_view_icon_color: #80acca;
 
 .browseSection {
   padding: #{$chrome_margin_inner} 0;
-  .dataset-icon {
+  .asset-icon {
     margin-bottom: 5px;
   }
   .media-item {
@@ -79,6 +79,9 @@ $new_view_icon_color: #80acca;
       bottom: 0;
     };
     width: 18em;
+    .asset-icon {
+      margin-right: 0.5em;
+    }
     .facetSection {
       border-top: 1px solid #cacaca;
       &:first-child {
@@ -191,7 +194,8 @@ $new_view_icon_color: #80acca;
       }
     }
   }
-  .icon-cards {
+  .typeNew_view .icon-cards,
+  .typeNewView .icon-cards {
     &::before {
       color: $new_view_icon_color;
     }
@@ -833,7 +837,7 @@ $new_view_icon_color: #80acca;
       margin-top: 5em;
       overflow: visible;
     }
-    .dataset-icon {
+    .asset-icon {
       margin-top: 2px;
     }
     .browse-list-item {

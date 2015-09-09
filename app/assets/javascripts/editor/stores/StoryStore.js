@@ -127,7 +127,7 @@
     };
 
     this.getStoryPublishedStory = function(storyUid) {
-      var story  = _getStory(storyUid);
+      var story = _getStory(storyUid);
 
       return story.publishedStory;
     };

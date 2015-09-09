@@ -92,7 +92,7 @@
         JSON.stringify({
           isPublic: false
         })
-      )
+      );
     }
   }
 

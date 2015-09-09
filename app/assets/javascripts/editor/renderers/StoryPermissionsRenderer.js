@@ -73,7 +73,7 @@
       return publishedStory.digest !== digest;
     }
 
-    function _renderError(error) {
+    function _renderError() {
       _$errorContainer.removeClass('hidden');
       _$visibilityButton.removeClass('busy');
       _$updatePublicButton.removeClass('busy');

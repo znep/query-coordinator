@@ -157,7 +157,6 @@ class NewViewManager
         :payload => payload,
         :page_url => ''
       )
-      return
     end
 
     payload_with_id = parse_core_response(response)
@@ -203,7 +202,6 @@ class NewViewManager
         :payload => payload,
         :page_url => ''
       )
-      return
     end
 
     parse_core_response(response)

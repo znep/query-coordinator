@@ -147,10 +147,10 @@ class PageMetadataManager
       metadb_metadata = nil
     end
 
-    new_view_manager.update(page_metadata['pageId'], {
+    new_view_manager.update(page_metadata['pageId'],
       :name => page_metadata['name'],
       :description => page_metadata['description']
-    })
+    )
 
     if is_backed_by_metadb?(metadb_metadata)
       update_metadb_page_metadata(page_metadata, metadb_metadata)

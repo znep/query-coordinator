@@ -31,8 +31,7 @@ class StoryDraftCreator
     end
 
     # This will raise an exception if :blocks is not present.
-    @json_blocks = attributes.fetch(:blocks)
-    @json_blocks = [] if @json_blocks.nil?
+    @json_blocks = attributes.fetch(:blocks) || []
     unless @json_blocks.is_a?(Array)
       raise ArgumentError.new('Blocks attribute is not an array')
     end

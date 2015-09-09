@@ -38,8 +38,8 @@ class NewViewManager
   def create(page_metadata={}, category=nil, v2_data_lens=false)
     page_metadata = ActiveSupport::HashWithIndifferentAccess.new(page_metadata)
     new_view = v2_data_lens ?
-      create_v2_data_lens('', page_metadata, category) :
-      create_new_view('', page_metadata, category)
+      create_v2_data_lens_in_metadb(page_metadata, category) :
+      create_v1_data_lens_in_phidippides(page_metadata, category)
 
     unless new_view.try(:[], :id)
       raise NewViewNotCreatedError.new('Error while creating view in core')
@@ -112,7 +112,7 @@ class NewViewManager
   private
 
   # Creates metadata in MetaDB with page metadata, rather than in Phidippides.
-  def create_v2_data_lens(page_url, page_metadata, category)
+  def create_v2_data_lens_in_metadb(page_metadata, category)
     # NOTE: Category is not validated. If category is not present in the
     # domain's defined categories, the category will be ignored by core.
     url = '/views.json?accessType=WEBSITE'
@@ -126,7 +126,7 @@ class NewViewManager
           }
         },
         :accessPoints => {
-          :new_view => page_url
+          :new_view => ''
         },
         :availableDisplayTypes => ['data_lens'],
         :jsonQuery => {}
@@ -154,7 +154,7 @@ class NewViewManager
         error,
         :url => url,
         :payload => payload,
-        :page_url => page_url
+        :page_url => ''
       )
       return
     end
@@ -167,7 +167,7 @@ class NewViewManager
   end
 
   # v1 data lens, where the page metadata will be stored in Phidippides
-  def create_new_view(page_url, page_metadata, category)
+  def create_v1_data_lens_in_phidippides(page_metadata, category)
     # NOTE: Category is not validated. If category is not present in the
     # domain's defined categories, the category will be ignored by core.
     url = '/views.json?accessType=WEBSITE'
@@ -181,7 +181,7 @@ class NewViewManager
           }
         },
         :accessPoints => {
-          :new_view => page_url
+          :new_view => ''
         },
         :availableDisplayTypes => ['new_view'],
         :jsonQuery => {}
@@ -200,7 +200,7 @@ class NewViewManager
         error,
         :url => url,
         :payload => payload,
-        :page_url => page_url
+        :page_url => ''
       )
       return
     end

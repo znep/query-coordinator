@@ -115,11 +115,11 @@ class PageMetadataManager
 
     page_metadata['cards'] << table_card unless has_table_card
 
-    result = v2_data_lens ?
-      { :body => page_metadata, :status => 200 } :
-      update_phidippides_page_metadata(page_metadata, options)
+    # Phidippides currently contains the defaultDateTruncFunction
+    # TODO - for v2 lenses move that into the metadb metadata
+    result = update_phidippides_page_metadata(page_metadata, options)
 
-    if result[:status] == '200'
+    if result[:status].to_s == '200'
       request_soda_fountain_secondary_index(page_metadata['datasetId'], options)
     end
 

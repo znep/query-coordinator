@@ -370,6 +370,7 @@
         };
 
         block.dirty = true;
+        block.id = _generateTemporaryId();
       }
 
       self._emitChange();
@@ -594,7 +595,8 @@
 
         serializedBlock = {
           layout: block.layout,
-          components: _.clone(block.components)
+          components: _.clone(block.components),
+          id: block.id
         };
 
       } else {

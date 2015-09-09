@@ -409,8 +409,9 @@ describe('StoryStore', function() {
           assert.property(serializedStory.blocks[1], 'id');
           assert.notProperty(serializedStory.blocks[1], 'layout');
           assert.notProperty(serializedStory.blocks[1], 'components');
-          assert.notProperty(serializedStory.blocks[2], 'id');
+          assert.property(serializedStory.blocks[2], 'id');
           assert.equal(serializedStory.blocks[2].layout, block1Layout);
+
           assert.deepEqual(serializedStory.blocks[2].components, block1Components);
         });
       });

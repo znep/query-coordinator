@@ -53,10 +53,6 @@ class StoryDraftCreator
   def create
     validate_digest_matches_against_last_draft
 
-    unless existing_block_ids_in_previous_story_version?
-      raise InvalidBlockIdsError.new('invalid block ids')
-    end
-
     unless all_new_blocks_valid?
       raise InvalidNewBlocksError.new('invalid new blocks')
     end
@@ -147,15 +143,6 @@ class StoryDraftCreator
     unless block_mapping.nil?
       block_mapping[:new_block] = new_block
     end
-  end
-
-  def existing_block_ids_in_previous_story_version?
-    # This asserts that each non-temp block id in block_ids_or_nils also exists in
-    # block_ids_from_previous_story_version. Since a block may have been
-    # deleted that previously existed, we only care about the existence of
-    # current block ids in the previous verison, not the reverse.
-    # (This operation is therefore not commutative!)
-    (block_ids_or_nils.compact - block_ids_from_previous_story_version).empty?
   end
 
   def merge_existing_and_new_block_ids

@@ -14,7 +14,7 @@ en:
       page_close_confirmation: 'You have unsaved changes to this story.'
       story_save_error_try_again: 'Try again.'
       story_save_error_generic: 'There was an error saving.'
-      story_save_error_conflict: 'There was a conflict saving. To continue, you need to reload the page.'
+      story_save_error_conflict: 'There was a conflict saving. To continue, please reload the page.'
       components:
         asset_selector:
           insert_btn: 'Insert...'

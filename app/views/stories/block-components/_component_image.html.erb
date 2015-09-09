@@ -1,0 +1,11 @@
+<%
+# Component format:
+# {
+#   type: "image",
+#   value: {
+#     documentId: "1234",
+#     url: "https://bucket-name.s3.amazonaws.com/uploads/random/image.jpg"
+#   }
+# }
+%>
+<img src="<%= component['value']['url'] %>" />

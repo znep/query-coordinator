@@ -17,7 +17,8 @@ module StoriesHelper
       'socrata.visualization.columnChart' => 'component_socrata_visualization_column_chart',
       'assetSelector' => 'component_asset_selector',
       'horizontalRule' => 'component_horizontal_rule',
-      'spacer' => 'component_spacer'
+      'spacer' => 'component_spacer',
+      'image' => 'component_image'
     }
 
     if component_type_mapping[component_type].nil?

@@ -9,6 +9,15 @@ RSpec.describe 'block edit controls', type: :feature, js: true do
     @blocks = page.all('.user-story .block-edit')
   end
 
+  after :each do
+    # Force the "are you sure you want to discard your unsaved changes"
+    # modal to come up at a deterministic time. We can't do it in `before`,
+    # as the modal comes up on page unload time. Thus any unrelated test that
+    # happens to run after the last test in this file will fail (Selenium will
+    # complain of an unhandled modal).
+    unload_page_and_dismiss_confirmation_dialog
+  end
+
   describe 'move' do
 
     before do

@@ -1,11 +1,16 @@
 @import 'lib/variables';
 
+body.story-save-error #rich-text-editor-toolbar-wrapper {
+  top: $story-save-error-bar-reserved-height + $rich-text-editor-toolbar-top-offset;
+}
+
 #rich-text-editor-toolbar-wrapper { // for positioning
   position: fixed;
   top: $rich-text-editor-toolbar-top-offset;
   z-index: $rich-text-editor-toolbar-z-index;
   width: 100%;
   text-align: center; // centering the toolbar
+  transition: top $transition-duration;
 }
 
 #rich-text-editor-toolbar {

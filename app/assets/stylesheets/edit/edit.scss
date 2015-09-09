@@ -143,7 +143,7 @@ body .header-main {
     }
   }
 
-  .panel-btn {
+  .panel-btn, #story-save-btn {
     padding: 0.8rem 1.5rem;
 
     &.active {
@@ -153,6 +153,47 @@ body .header-main {
 
     span {
       font-size: 1.1rem;
+    }
+
+    &:disabled {
+      color: darken($header-text-color, 40%);
+    }
+  }
+}
+
+#story-save-error-bar {
+  position: absolute;
+  top: 7.5rem;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 1.5rem;
+  z-index: $story-save-error-z-index;
+  transition: opacity $transition-duration;
+  opacity: 0;
+
+  &.visible {
+    opacity: 1;
+  }
+
+  .container {
+    padding: 0.4rem 1rem;
+    color: $story-save-error-bar-icon-color;
+    background: $story-save-error-bar-background;
+    border: 1px solid $story-save-error-bar-border-color;
+
+    .message {
+      color: $story-save-error-bar-color;
+      padding-left: 0.6rem;
+    }
+
+    button {
+      border: none;
+      outline: none;
+      color: $story-save-error-bar-color;
+      background-color: transparent;
+      text-decoration: underline;
+      font-weight: bold;
     }
   }
 } //end .header-main

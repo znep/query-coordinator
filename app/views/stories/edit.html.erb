@@ -2,6 +2,7 @@
   <button data-panel-toggle="settings-panel" class="icon-stories-menu settings-panel-btn"></button>
   <a href="#" class="story-title" role="button" data-panel-toggle="settings-panel"></a>
   <div class="menu-divider"></div>
+  <button id="story-save-btn" class="btn"></button>
   <div class="header-right">
     <ul class="menu">
       <li>
@@ -31,6 +32,7 @@
 <%= render 'add_content_panel' %>
 <%= render 'style_and_presentation_panel' %>
 
+<div id="story-save-error-bar"></div>
 <div id="rich-text-editor-toolbar-wrapper">
   <section id="rich-text-editor-toolbar"></section>
 </div>

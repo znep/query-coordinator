@@ -82,13 +82,14 @@ $(document).on('ready', function() {
   });
 
   storyteller.storyStore = new storyteller.StoryStore();
-  storyteller.historyStore = new storyteller.HistoryStore();
+  storyteller.historyStore = new storyteller.HistoryStore(storyteller.userStoryUid);
   storyteller.dragDropStore = new storyteller.DragDropStore();
   storyteller.assetSelectorStore = new storyteller.AssetSelectorStore();
   storyteller.blockRemovalConfirmationStore = new storyteller.BlockRemovalConfirmationStore();
   storyteller.coreSavingStore = new storyteller.CoreSavingStore();
   storyteller.flyoutRenderer = new storyteller.FlyoutRenderer();
   storyteller.windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
+  storyteller.storySaveStatusStore = new storyteller.StorySaveStatusStore(storyteller.userStoryUid);
   storyteller.fileUploadStore = new storyteller.FileUploadStore();
 
   var richTextEditorToolbar = new storyteller.RichTextEditorToolbar(
@@ -265,5 +266,22 @@ $(document).on('ready', function() {
   // Story title
   $('.story-title').storyTitle(storyteller.userStoryUid);
 
+  // Save button
+  $('#story-save-btn').storySaveButton();
+  $('#story-save-error-bar').storySaveErrorBar();
+
+  // Close confirmation
+  $(window).on('beforeunload', function() {
+    if (
+      !storyteller.storySaveStatusStore.isStorySaved() ||
+      storyteller.storySaveStatusStore.isStorySaveInProgress()
+    ) {
+      // If the save is impossible, don't bother confirming the close :(
+      if (!storyteller.storySaveStatusStore.isSaveImpossibleDueToConflict()) {
+        return I18n.t('editor.page_close_confirmation');
+      }
+    }
+
+  });
 });
 

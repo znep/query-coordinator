@@ -11,6 +11,10 @@ en:
     editor:
       empty_story_warning: 'Oh, no! Your story is empty! To get started, drag a block to the canvas.'
       remove_block_confirmation: 'Are you sure you want to remove this block?'
+      page_close_confirmation: 'You have unsaved changes to this story.'
+      story_save_error_try_again: 'Try again.'
+      story_save_error_generic: 'There was an error saving.'
+      story_save_error_conflict: 'There was a conflict saving. To continue, please reload the page.'
       components:
         asset_selector:
           insert_btn: 'Insert...'
@@ -43,6 +47,11 @@ en:
             validation_file_size: 'Whoa! That image was bit too big. Try resizing it or using a smaller one.'
             validation_file_type: 'Shoot! We don’t support that kind of file. Try using a .jpg, .gif, or a .png'
             exception: "We're really sorry! There was an unexpected problem with your upload.<br>Our engineers have been notified."
+      story_save_button:
+        saved: 'Saved!'
+        saving: 'Saving...'
+        unsaved: 'Save'
+        idle: 'Save'
     visualizations:
       no_value_placeholder: '(No value)'
       flyout:

@@ -6,10 +6,12 @@ describe('StoryStore', function() {
   var story1Title = 'Story 1';
   var story1Description = 'Story 1 Description';
   var story1Theme = 'testTheme';
+  var story1Digest = 'Story 1 digest';
 
   var story2Uid = 'stry-spc2';
   var story2Title = 'Story 2';
   var story2Description = 'Story 2 Description';
+  var story2Digest = 'Story 2 digest';
 
   var block1Id = 'block1';
   var block1Layout = '6-6';
@@ -43,6 +45,7 @@ describe('StoryStore', function() {
       title: story1Title,
       description: story1Description,
       theme: story1Theme,
+      digest: story1Digest,
       blocks: [
         generateBlockData({
           id: block1Id,
@@ -61,6 +64,7 @@ describe('StoryStore', function() {
       uid: story2Uid,
       title: story2Title,
       description: story2Description,
+      digest: story2Digest,
       blocks: [
         generateBlockData({
           id: block3Id,
@@ -283,6 +287,14 @@ describe('StoryStore', function() {
         });
       });
 
+      describe('.getStoryDigest()', function() {
+
+        it('should return the correct value', function() {
+          assert.equal(storyteller.storyStore.getStoryDigest(story1Uid), story1Digest);
+          assert.equal(storyteller.storyStore.getStoryDigest(story2Uid), story2Digest);
+        });
+      });
+
       describe('.getStoryTheme()', function() {
         it('defaults to `classic` when not set', function() {
           assert.equal(storyteller.storyStore.getStoryTheme(story2Uid), 'classic');
@@ -397,8 +409,9 @@ describe('StoryStore', function() {
           assert.property(serializedStory.blocks[1], 'id');
           assert.notProperty(serializedStory.blocks[1], 'layout');
           assert.notProperty(serializedStory.blocks[1], 'components');
-          assert.notProperty(serializedStory.blocks[2], 'id');
+          assert.property(serializedStory.blocks[2], 'id');
           assert.equal(serializedStory.blocks[2].layout, block1Layout);
+
           assert.deepEqual(serializedStory.blocks[2].components, block1Components);
         });
       });
@@ -798,6 +811,18 @@ describe('StoryStore', function() {
 
           assert.deepEqual(storyteller.storyStore.getStoryTitle(story1Uid), 'new title');
         });
+      });
+    });
+
+    describe('STORY_SAVED', function() {
+      it('should update the digest', function() {
+        dispatch({
+          action: Constants.STORY_SAVED,
+          storyUid: story1Uid,
+          digest: 'new digest'
+        });
+
+        assert.equal(storyteller.storyStore.getStoryDigest(story1Uid), 'new digest');
       });
     });
 

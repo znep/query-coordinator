@@ -177,8 +177,7 @@ describe('StoryPermissionsRenderer', function() {
 
             assert.equal($visibilityLabel.text(), I18n.t('settings_panel.publishing_section.visibility.private'));
             assert.equal($visibilityButtonText.text(), I18n.t('settings_panel.publishing_section.visibility.make_story_public'));
-            assert($visibilityButton.hasClass('accent-btn'))
-            assert($visibilityButton.hasClass('accent-green-btn'));
+            assert.isTrue($visibilityButton.hasClass('accent-green-btn'));
             assert.equal($updatePublicButton.prop('disabled'), true);
             assert.equal($publishingHelpText.text(), I18n.t('settings_panel.publishing_section.messages.can_be_shared_publically'));
           });

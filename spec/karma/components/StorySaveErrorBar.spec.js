@@ -75,11 +75,19 @@ describe('storySaveErrorBar jQuery plugin', function() {
       });
 
       describe('try again button', function() {
+        var saveDraftStub;
+
+        beforeEach(function() {
+          saveDraftStub = sinon.stub(storyteller.StoryDraftCreator, 'saveDraft', _.noop);
+        });
+
+        afterEach(function() {
+          saveDraftStub.restore();
+        });
+
         it('should call StoryDraftCreator.saveDraft when clicked', function() {
-          var stub = sinon.stub(storyteller.StoryDraftCreator, 'saveDraft', _.noop);
           $errorBar.find('button').click();
-          sinon.assert.calledWithExactly(stub, standardMocks.validStoryUid);
-          stub.restore();
+          sinon.assert.calledWithExactly(saveDraftStub, standardMocks.validStoryUid);
         });
 
         it('try again button should be visible only when save is not in progress', function() {
@@ -92,7 +100,7 @@ describe('storySaveErrorBar jQuery plugin', function() {
       });
 
       it('should place the correct text in the message', function() {
-        assert.equal($errorBar.find('.message').text(), 'Translation for: editor.story_save_error_generic');
+        assert.equal($errorBar.find('.message').text(), 'Translation for: story_save_error_generic');
       });
     });
 
@@ -122,7 +130,7 @@ describe('storySaveErrorBar jQuery plugin', function() {
       });
 
       it('should place the correct text in the message', function() {
-        assert.equal($errorBar.find('.message').text(), 'Translation for: editor.story_save_error_conflict');
+        assert.equal($errorBar.find('.message').text(), 'Translation for: story_save_error_conflict');
       });
     });
   });

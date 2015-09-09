@@ -92,7 +92,6 @@ describe('StoryPermissionsManager', function() {
               done();
             });
           });
-          
         });
 
         describe('that succeeds with a uid in the data', function() {
@@ -137,7 +136,6 @@ describe('StoryPermissionsManager', function() {
               done();
             });
           });
-          
         });
 
         describe('that fails', function() {

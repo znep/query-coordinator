@@ -88,6 +88,16 @@ describe('storySaveButton jQuery plugin', function() {
     });
 
     describe('button', function() {
+      var saveDraftStub;
+
+      beforeEach(function() {
+        saveDraftStub = sinon.stub(storyteller.StoryDraftCreator, 'saveDraft', _.noop);
+      });
+
+      afterEach(function() {
+        saveDraftStub.restore();
+      });
+
       describe('enabled state', function() {
         it('should mirror the story save state', function() {
           mockStore.mockIsSaveInProgress(false);
@@ -107,12 +117,11 @@ describe('storySaveButton jQuery plugin', function() {
           assert.isTrue($button.prop('disabled'));
         });
       });
+
       it('should call StoryDraftCreator.saveDraft when clicked', function() {
-        var stub = sinon.stub(storyteller.StoryDraftCreator, 'saveDraft', _.noop);
         mockStore.mockIsSaved(false);
         $button.click();
-        sinon.assert.calledWithExactly(stub, standardMocks.validStoryUid);
-        stub.restore();
+        sinon.assert.calledWithExactly(saveDraftStub, standardMocks.validStoryUid);
       });
     });
   });

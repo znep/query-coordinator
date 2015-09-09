@@ -1,4 +1,4 @@
-xdescribe('SettingsPanel jQuery plugin', function() {
+describe('SettingsPanel jQuery plugin', function() {
   var node;
   var handle;
   var storyteller = window.socrata.storyteller;

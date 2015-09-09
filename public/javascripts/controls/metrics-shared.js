@@ -313,7 +313,7 @@ metricsNS.summarySectionCallback = function($context, slice, section)
             mappedData[key] = '{0}%'.format(Highcharts.numberFormat(percent, 0));
         }
 
-        if (!_.isFinite(fraction)) {
+        if (fraction === 0 || !_.isFinite(fraction)) {
             mappedData[key + 'Class'] = 'hidden';
         } else if (fraction < 0) {
             mappedData[key + 'Class'] = 'minus';

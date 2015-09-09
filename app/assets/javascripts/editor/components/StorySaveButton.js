@@ -11,18 +11,18 @@
 
   $.fn.storySaveButton = function(options) {
     var $this = $(this);
-    var _holdInSavedState = false; // We need to keep displaying 'Saved!' for a bit.
-    var maybeHoldInSaveState;
+    var holdInSavedState = false; // We need to keep displaying 'Saved!' for a bit.
+    var clearHoldInSaveStateAfterDebounce;
 
     utils.assert(storyteller.storySaveStatusStore, 'storySaveStatusStore must be instantiated');
     utils.assertIsOneOfTypes(options, 'object', 'undefined');
 
     options = _.extend({}, { savedMessageTimeout: 5000 }, options);
 
-    // Stay in _holdInSavedState until things settle down for 5 seconds.
-    maybeHoldInSaveState = _.debounce(function() {
-      if (_holdInSavedState) {
-        _holdInSavedState = false;
+    // Stay in holdInSavedState until things settle down for the configured timeout.
+    clearHoldInSaveStateAfterDebounce = _.debounce(function() {
+      if (holdInSavedState) {
+        holdInSavedState = false;
         render();
       }
     }, options.savedMessageTimeout);
@@ -34,14 +34,14 @@
       var isSaveImpossible = storyteller.storySaveStatusStore.isSaveImpossibleDueToConflict();
       var translationKey;
 
-      maybeHoldInSaveState();
+      clearHoldInSaveStateAfterDebounce();
 
       if (isSaveImpossible) {
         translationKey = 'editor.story_save_button.idle';
       } else if (isStorySaveInProgress) {
         translationKey = 'editor.story_save_button.saving';
       } else if (isStorySaved) {
-        if (_holdInSavedState) {
+        if (holdInSavedState) {
           translationKey = 'editor.story_save_button.saved';
         } else {
           translationKey = 'editor.story_save_button.idle';
@@ -55,7 +55,7 @@
     }
 
     storyteller.storySaveStatusStore.addChangeListener(function() {
-      _holdInSavedState = storyteller.storySaveStatusStore.isStorySaved();
+      holdInSavedState = storyteller.storySaveStatusStore.isStorySaved();
       render();
     });
     render();

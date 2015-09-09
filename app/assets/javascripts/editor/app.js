@@ -270,11 +270,6 @@ $(document).on('ready', function() {
   $('#story-save-btn').storySaveButton();
   $('#story-save-error-bar').storySaveErrorBar();
 
-  // Modals
-  $('.preview-btn').on('click', function() {
-
-  });
-
   // Close confirmation
   $(window).on('beforeunload', function() {
     if (

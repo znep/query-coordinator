@@ -81,10 +81,7 @@
 
     function _render() {
       var havePublishedAndDraftDiverged;
-      var isStorySaved = storyteller.storySaveStatusStore.isStorySaved(storyteller.userStoryUid);
       var permissions = storyteller.storyStore.getStoryPermissions(storyteller.userStoryUid);
-
-      _$visibilityButton.prop('disabled', !isStorySaved);
 
       if (permissions && permissions.isPublic) {
         havePublishedAndDraftDiverged = _havePublishedAndDraftDiverged();

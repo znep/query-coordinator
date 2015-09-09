@@ -261,6 +261,8 @@ module DatasetsHelper
       # use legacy icon sprite, or new icon font (e.g. .icon-cards)
       if facet_option[:icon_font_class]
         ret << %Q(<span class="#{facet_option[:icon_font_class]}"></span>)
+      elsif options[:view_type] == 'listing'
+        ret << %Q(<span class="asset-icon" data-display-type="#{facet_option[:value]}"></span>)
       else
         ret << '<span class="icon"></span>'
       end

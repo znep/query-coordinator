@@ -1,12 +1,11 @@
 class Api::V1::PermissionsController < ApplicationController
 
   def update
-    permissions = Permissions.new(current_user, params[:uid], core_request_headers)
+    permissions = PermissionsUpdater.new(current_user, params[:uid], core_request_headers)
     permissions_response = nil
 
     begin
-      request_payload = JSON.parse(request.body.read)
-      permissions_response = permissions.update_permissions(is_public: request_payload[:isPublic])
+      permissions_response = permissions.update_permissions(is_public: params[:isPublic])
     rescue => exception
       AirbrakeNotifier.report_error(exception, 'Permissions service object did not instantiate successfully.')
     end
@@ -23,4 +22,5 @@ class Api::V1::PermissionsController < ApplicationController
   def core_request_headers
     CoreServer::headers_from_request(request)
   end
+
 end

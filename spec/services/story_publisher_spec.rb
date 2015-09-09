@@ -104,6 +104,25 @@ RSpec.describe StoryPublisher do
         expect(mock_permissions_updater).to receive(:update_permissions).with(is_public: true)
         subject.publish
       end
+
+      context 'when updating permissions raises' do
+        before do
+          allow(mock_permissions_updater).to receive(:update_permissions).and_raise
+        end
+
+        it 'notifies airbrake' do
+          expect(AirbrakeNotifier).to receive(:report_error)
+          subject.publish
+        end
+
+        it 'does not create published story' do
+          expect { subject.publish }.to_not change { PublishedStory.count }
+        end
+
+        it 'returns false' do
+          expect(subject.publish).to eq(false)
+        end
+      end
     end
 
     context 'when published story is invalid' do

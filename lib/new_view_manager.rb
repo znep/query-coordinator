@@ -139,6 +139,7 @@ class NewViewManager
           :cards => page_metadata[:cards],
           :pageId => '',
           :datasetId => page_metadata[:datasetId],
+          :defaultDateTruncFunction => page_metadata[:defaultDateTruncFunction],
           :version => 2
         }
       },

@@ -87,7 +87,7 @@ class NewViewManagerTest < Test::Unit::TestCase
 
   def test_create_does_not_raise_on_resource_not_found
     new_view_manager.stubs(
-      :create_new_view => { :id => '1234-1234' },
+      :create_v1_data_lens_in_phidippides => { :id => '1234-1234' },
       :update_page_url => nil
     )
     Rails.application.routes.url_helpers.stubs(:opendata_cards_view_url => 'url')
@@ -100,7 +100,7 @@ class NewViewManagerTest < Test::Unit::TestCase
 
   def test_create_does_not_raise_on_core_error
     new_view_manager.stubs(
-      :create_new_view => { :id => '1234-1234' },
+      :create_v1_data_lens_in_phidippides => { :id => '1234-1234' },
       :update_page_url => nil
     )
     Rails.application.routes.url_helpers.stubs(:opendata_cards_view_url => 'url')
@@ -112,7 +112,7 @@ class NewViewManagerTest < Test::Unit::TestCase
   end
 
   def test_create_raises_when_view_not_created
-    new_view_manager.stubs(:create_new_view => nil)
+    new_view_manager.stubs(:create_v1_data_lens_in_phidippides => nil)
     assert_raises(NewViewManager::NewViewNotCreatedError) do
       new_view_manager.create({:name =>'my title', :description=>'my description'})
     end

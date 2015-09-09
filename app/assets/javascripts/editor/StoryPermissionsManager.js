@@ -90,6 +90,5 @@
     }
   }
 
-  root.storyteller.StoryPermissionsManager = StoryPermissionsManager;
-
+  storyteller.StoryPermissionsManager = StoryPermissionsManager;
 })(window);

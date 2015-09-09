@@ -29,7 +29,7 @@ function generateStoryData(storyData) {
     blocks: [ generateBlockData() ]
   };
 
-  storyData = $.extend(defaults, storyData);
+  storyData = $.extend(true, defaults, storyData);
 
   return storyData;
 }

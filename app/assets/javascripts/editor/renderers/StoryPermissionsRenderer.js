@@ -119,5 +119,5 @@
     }
   }
 
-  root.storyteller.StoryPermissionsRenderer = StoryPermissionsRenderer;
+  storyteller.StoryPermissionsRenderer = StoryPermissionsRenderer;
 })(window);

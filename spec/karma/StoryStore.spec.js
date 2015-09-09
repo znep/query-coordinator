@@ -7,11 +7,13 @@ describe('StoryStore', function() {
   var story1Description = 'Story 1 Description';
   var story1Theme = 'testTheme';
   var story1Digest = 'Story 1 digest';
+  var story1PublishedStory = {digest: 'test-digest-1'};
 
   var story2Uid = 'stry-spc2';
   var story2Title = 'Story 2';
   var story2Description = 'Story 2 Description';
   var story2Digest = 'Story 2 digest';
+  var story2PublishedStory = {digest: 'test-digest-2'};
 
   var block1Id = 'block1';
   var block1Layout = '6-6';
@@ -46,6 +48,8 @@ describe('StoryStore', function() {
       description: story1Description,
       theme: story1Theme,
       digest: story1Digest,
+      permissions: {isPublic: false},
+      publishedStory: story1PublishedStory,
       blocks: [
         generateBlockData({
           id: block1Id,
@@ -65,6 +69,8 @@ describe('StoryStore', function() {
       title: story2Title,
       description: story2Description,
       digest: story2Digest,
+      permissions: {isPublic: true},
+      publishedStory: story2PublishedStory,
       blocks: [
         generateBlockData({
           id: block3Id,
@@ -119,6 +125,46 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             storyteller.storyStore.getStoryDescription(null);
+          });
+        });
+      });
+
+      describe('.getStoryTheme()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            storyteller.storyStore.getStoryTheme(null);
+          });
+        });
+      });
+
+      describe('.getStoryDigest()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            storyteller.storyStore.getStoryDigest(null);
+          });
+        });
+      });
+
+      describe('.getStoryPermissions()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            storyteller.storyStore.getStoryPermissions(null);
+          });
+        });
+      });
+
+      describe('.getStoryPublishedStory()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            storyteller.storyStore.getStoryPublishedStory(null);
           });
         });
       });
@@ -199,6 +245,56 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             storyteller.storyStore.getStoryTitle('notf-ound');
+          });
+        });
+      });
+
+      describe('.getStoryDescription()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            storyteller.storyStore.getStoryDescription('notf-ound');
+          });
+        });
+      });
+
+      describe('.getStoryTheme()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            storyteller.storyStore.getStoryTheme('notf-ound');
+          });
+        });
+      });
+
+      describe('.getStoryDigest()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            storyteller.storyStore.getStoryDigest('notf-ound');
+          });
+        });
+      });
+
+      describe('.getStoryPermissions()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            storyteller.storyStore.getStoryPermissions('notf-ound');
+          });
+        });
+      });
+
+      describe('.getStoryPublishedStory()', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            storyteller.storyStore.getStoryPublishedStory('notf-ound');
           });
         });
       });
@@ -287,14 +383,6 @@ describe('StoryStore', function() {
         });
       });
 
-      describe('.getStoryDigest()', function() {
-
-        it('should return the correct value', function() {
-          assert.equal(storyteller.storyStore.getStoryDigest(story1Uid), story1Digest);
-          assert.equal(storyteller.storyStore.getStoryDigest(story2Uid), story2Digest);
-        });
-      });
-
       describe('.getStoryTheme()', function() {
         it('defaults to `classic` when not set', function() {
           assert.equal(storyteller.storyStore.getStoryTheme(story2Uid), 'classic');
@@ -312,6 +400,30 @@ describe('StoryStore', function() {
           });
 
           assert.equal(storyteller.storyStore.getStoryTheme(story1Uid), 'serif');
+        });
+      });
+
+      describe('.getStoryDigest()', function() {
+
+        it('should return the correct value', function() {
+          assert.equal(storyteller.storyStore.getStoryDigest(story1Uid), story1Digest);
+          assert.equal(storyteller.storyStore.getStoryDigest(story2Uid), story2Digest);
+        });
+      });
+
+      describe('.getStoryPermissions()', function() {
+
+        it('should return the correct value', function() {
+          assert.deepEqual(storyteller.storyStore.getStoryPermissions(story1Uid), {isPublic: false});
+          assert.deepEqual(storyteller.storyStore.getStoryPermissions(story2Uid), {isPublic: true});
+        });
+      });
+
+      describe('.getStoryPublishedStory()', function() {
+
+        it('should return the correct value', function() {
+          assert.equal(storyteller.storyStore.getStoryPublishedStory(story1Uid), story1PublishedStory);
+          assert.equal(storyteller.storyStore.getStoryPublishedStory(story2Uid), story2PublishedStory);
         });
       });
 
@@ -868,7 +980,6 @@ describe('StoryStore', function() {
         });
       });
 
-
       describe('given a valid story uid and description', function() {
 
         it('should update the story', function() {
@@ -880,6 +991,120 @@ describe('StoryStore', function() {
           });
 
           assert.equal(storyteller.storyStore.getStoryDescription(story1Uid), 'new description');
+        });
+      });
+    });
+
+    describe('STORY_SET_PERMISSIONS', function() {
+
+      describe('not given a story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_SET_PERMISSIONS,
+              isPublic: true
+            });
+          });
+        });
+      });
+
+      describe('not given an isPublic property', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_SET_PERMISSIONS,
+              storyUid: 'badd-ddab'
+            });
+          });
+        });
+      });
+
+      describe('given a non-existent story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_SET_PERMISSIONS,
+              storyUid: 'badd-ddab',
+              isPublic: true
+            });
+          });
+        });
+      });
+
+      describe('given a valid story uid and an isPublic property', function() {
+
+        it('should update the story', function() {
+
+          dispatch({
+            action: Constants.STORY_SET_PERMISSIONS,
+            storyUid: story1Uid,
+            isPublic: true
+          });
+
+          assert.equal(storyteller.storyStore.getStoryDescription(story1Uid), true);
+        });
+      });
+    });
+
+    describe('STORY_SET_PUBLISHED_STORY', function() {
+
+      describe('not given a story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_SET_PUBLISHED_STORY,
+              publishedStory: {digest: 'digest-1'}
+            });
+          });
+        });
+      });
+
+      describe('not given a publishedStory property', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_SET_PUBLISHED_STORY,
+              storyUid: 'badd-ddab'
+            });
+          });
+        });
+      });
+
+      describe('given a non-existent story uid', function() {
+
+        it('should throw an error', function() {
+
+          assert.throw(function() {
+            dispatch({
+              action: Constants.STORY_SET_PUBLISHED_STORY,
+              storyUid: 'badd-ddab',
+              publishedStory: {digest: 'digest-1'}
+            });
+          });
+        });
+      });
+
+      describe('given a valid story uid and an isPublic property', function() {
+
+        it('should update the story', function() {
+
+          dispatch({
+            action: Constants.STORY_SET_PUBLISHED_STORY,
+            storyUid: story1Uid,
+            publishedStory: {digest: 'digest-1'}
+          });
+
+          assert.deepEqual(storyteller.storyStore.getStoryDescription(story1Uid), {digest: 'digest-1'});
         });
       });
     });

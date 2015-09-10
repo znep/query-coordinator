@@ -150,6 +150,9 @@ en:
           custom: Custom Map
           standard: Standard
           title: Map base layer
+        feature_map_flannel:
+          title: Flyout title
+          select_column: Select a column
         visualization_options:
           title: Card Type
       distribution_chart:

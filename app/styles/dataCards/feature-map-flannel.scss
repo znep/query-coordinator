@@ -115,14 +115,22 @@ $sticky-border-height: 10px;
     // Right padding needed for close icon, extra bottom padding
     // needed to avoid text cutoff.
     padding: 0.5rem 1.2rem 0.7rem 0.5rem;
+    .flannel-title,
     .name,
     .value {
-      display: inline-block;
       // Only break word if it is too long
       // to fit on one entire line.
       // Otherwise do not break lines in the middle
       // of words.
       word-wrap: break-word;
+    }
+    .name,
+    .value {
+      display: inline-block;
+    }
+    .flannel-title {
+      margin: 0px 0px 5px 0px;
+      font-size: 1.2rem;
     }
     .name {
       font-weight: bold;

@@ -25,8 +25,27 @@
 
         scope.$bindObservable('busy', busy$);
 
+        // Compile a formatted row title from the given title column or lack there of.
+        function compileRowTitle(titleColumn) {
+          if (_.isUndefined(titleColumn)) {
+            return;
+          } else if (scope.useDefaults) {
+            // defaults are lat/lng coordiantes from a location column, which we
+            // can count on being accessible in this way
+            var coordinates = formatCellContent(titleColumn.value[0], titleColumn, true);
+            return coordinates;
+          } else {
+            var title = scope.formatSubColumns(titleColumn.value, titleColumn, true);
+            return _.isString(title) ? title.toUpperCase() : title;
+          }
+        }
+
         // Format content based on data type
-        scope.formatCellContent = function(cellContent, column) {
+        function formatCellContent(cellContent, column, isTitle) {
+          var isTitle = isTitle || false;
+
+          var isLatLng = column.physicalDatatype === 'point' || column.physicalDatatype === 'geo_entity';
+
           var datatypeToFormat = {
             'boolean': DataTypeFormatService.renderBooleanCell(cellContent, column),
             'number': DataTypeFormatService.renderNumberCell(cellContent, column),
@@ -37,19 +56,26 @@
             'money': DataTypeFormatService.renderMoneyCell(cellContent, column)
           };
 
-          return _.get(datatypeToFormat, column.physicalDatatype, cellContent);
+          var formattedContent = _.get(datatypeToFormat, column.physicalDatatype, cellContent);
+          if (isTitle && isLatLng) {
+            formattedContent = formattedContent.replace(/[()]/g, '');
+          }
+          return formattedContent;
         };
 
         // Format an array of subcolumns under a given parent column
-        scope.formatSubColumns = function(subColumns, parentColumn) {
+        scope.formatSubColumns = function(subColumns, parentColumn, isTitle) {
+          var isTitle = isTitle || false;
           var formattedColumnData;
 
           if (!_.isArray(subColumns)) {
-            return scope.formatCellContent(subColumns, parentColumn);
+            return formatCellContent(subColumns, parentColumn);
           }
 
           if (subColumns.length === 1 && _.has(subColumns[0], 'coordinates')) {
-            formattedColumnData = scope.formatCellContent(subColumns[0], parentColumn);
+            // Take into account if the data represents the title, in which coordinates should not
+            // be represented with parentheses.
+            formattedColumnData = formatCellContent(subColumns[0], parentColumn, isTitle);
           } else {
             var addressColumns = _.map(['address', 'city', 'state', 'zip'], function(column) {
               var columnValue = _.result(_.find(subColumns, { 'columnName': column }), 'value');
@@ -84,7 +110,7 @@
                 map(function(subColumn) {
                   return '{0}: {1}'.format(
                     subColumn.columnName,
-                    scope.formatCellContent(subColumn.value, parentColumn)
+                    formatCellContent(subColumn.value, parentColumn)
                   );
                 }).
                 join(', ');
@@ -109,6 +135,7 @@
 
         // On every page change, update the flyout content and positioning.
         currentIndex$.subscribe(function(index) {
+          scope.selectedRowTitle = compileRowTitle(scope.titles[index]);
           scope.selectedRow = scope.rows[index];
           scope.showingMessage = I18n.t('featureMapFlannel.showing',
             scope.rowDisplayUnit, ++index, scope.rows.length);

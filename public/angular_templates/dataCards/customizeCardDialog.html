@@ -34,6 +34,20 @@
           ng-max-length="5165"/>
       </div>
     </div>
+    <div class="configure-flannel-title" ng-show="showFlannelTitleMenu">
+      <h3>{{'customizeCardDialog.featureMapFlannel.title' | I18n}}</h3>
+      <div class="dropdown-container">
+        <soc-select class="column-selector flannel-title-selector" ng-model="selectedFlannelTitleColumnName">
+          <soc-option
+            value="null"
+            ng-selected="selectedFlannelTitleColumnName === null">{{'addCardDialog.chooseColumn' | I18n}}</soc-option>
+          <soc-option
+            value="{{fieldName}}"
+            ng-selected="selectedFlannelTitleColumnName === fieldName"
+            ng-repeat="fieldName in titleColumnOptions">{{columnHumanNameFn(fieldName)}}</soc-option>
+        </soc-select>
+      </div>
+    </div>
     <div class="configure-histogram-bucket-type" ng-show="showHistogramBucketTypeDropdown">
       <h3>{{'customizeCardDialog.histogramBucketType.title' | I18n}}</h3>
       <div>

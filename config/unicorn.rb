@@ -13,7 +13,7 @@
 if ENV['RAILS_ENV'] == 'development'
   worker_processes 1
 else
-  worker_processes Integer(ENV['WEB_CONCURRENCY'] || 4)
+  worker_processes Integer(ENV['WORKER_PROCESSES'] || 4)
 end
 
 # Since Unicorn is never exposed to outside clients, it does not need to
@@ -26,10 +26,10 @@ end
 # listen on both a Unix domain socket and a TCP port,
 # we use a shorter backlog for quicker failover when busy
 # listen "/path/to/.unicorn.sock", :backlog => 64
-listen 3010# , :tcp_nopush => true
+listen Integer(ENV['PORT'] || 3010)# , :tcp_nopush => true
 
 # nuke workers after 15 seconds instead of 60 seconds (the default)
-timeout 15
+timeout Integer(ENV['WEB_REQUEST_TIMEOUT'] || 15)
 
 # feel free to point this anywhere accessible on the filesystem
 # pid "/path/to/app/shared/pids/unicorn.pid"
@@ -45,14 +45,6 @@ timeout 15
 preload_app true
 GC.respond_to?(:copy_on_write_friendly=) and
   GC.copy_on_write_friendly = true
-
-# Enable this flag to have unicorn test client connections by writing the
-# beginning of the HTTP headers before calling the application.  This
-# prevents calling the application for connections that have disconnected
-# while queued.  This is only guaranteed to detect clients on the same
-# host unicorn runs on, and unlikely to detect disconnects even on a
-# fast LAN.
-check_client_connection false
 
 before_fork do |server, worker|
   # the following is highly recomended for Rails + "preload_app true"

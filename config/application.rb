@@ -37,5 +37,9 @@ module Storyteller
 
     # We're using the delayed_job_active_record gem to work the job queue
     config.active_job.queue_adapter = :delayed_job
+
+    # We should be logging to stdout for mesos/sumo
+    # Unicorn also writes to STDERR
+    config.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
   end
 end

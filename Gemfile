@@ -46,7 +46,7 @@ gem 'delayed_job_active_record'
 gem 'daemons'
 
 # Use Unicorn as the app server
-# gem 'unicorn'
+gem 'unicorn'
 
 group :development, :test do
   # Testing framework
@@ -74,8 +74,6 @@ group :development, :test do
   gem 'simplecov-cobertura', require: false
   gem 'nyan-cat-formatter', require: false
   gem 'factory_girl_rails'
-
-  gem 'foreman'
 end
 
 group :test do

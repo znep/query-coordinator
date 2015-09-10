@@ -9,4 +9,4 @@ source /dev/shm/storyteller_secrets.sh
 unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
 
 cd $APP_DIR
-exec su socrata -c 'bin/rails server -p 3010 -b 0.0.0.0'
+exec su socrata -c 'bundle exec unicorn -c ./config/unicorn.rb'

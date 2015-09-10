@@ -28,30 +28,12 @@ class InternalController < ApplicationController
     @domain = Domain.find(params[:id])
     @modules = AccountModule.find().sort {|a,b| a.name <=> b.name}
     @configs = ::Configuration.find_by_type(nil, false, params[:id], false)
-    # Show the Feature Flag link on all pages even if it doesn't exist, because we
-    # lazily create it when you make a change anyways.
-    unless @configs.detect { |config| config.type == 'feature_flags' }
-      @configs << Struct.new(:type).new('feature_flags')
-    end
-    @configs.sort! do |a, b|
-      type_for_sort = lambda do |type|
-        case type
-        when 'site_theme';    '0'
-        when 'feature_flags'; '1'
-        else;                 type
-        end
-      end
-      sort_delta = type_for_sort.call(a.type) <=> type_for_sort.call(b.type)
-      sort_delta = a.default ? -1 : 1 if sort_delta.zero? && a.default != b.default
-      sort_delta = a.name.downcase <=> b.name.downcase if sort_delta.zero?
-      sort_delta
-    end
   end
 
   def show_config
     @domain = Domain.find(params[:domain_id])
     @config = ::Configuration.find_unmerged(params[:id])
-    if @config.parentId.present?
+    if !@config.parentId.nil?
       @parent_config = ::Configuration.find(@config.parentId.to_s)
       @parent_domain = Domain.find(@parent_config.domainCName)
     end
@@ -126,7 +108,7 @@ class InternalController < ApplicationController
       flash.now[:error] = e.error_message
       return (render 'shared/error', :status => :internal_server_error)
     end
-    redirect_to show_domain_path(org_id: params[:id], id: domain.cname)
+    redirect_to '/internal/orgs/' + params[:id] + '/domains/' + domain.cname
   end
 
   def create_site_config
@@ -140,7 +122,7 @@ class InternalController < ApplicationController
       parent_id = params[:config][:parentId]
       parent_id = nil if parent_id.blank?
       config = ::Configuration.create({'name' => conf_name,
-        'default' => true,
+        'default' => params[:config][:default].present?,
         'type' => params[:config][:type], 'parentId' => parent_id,
         'domainCName' => params[:domain_id]})
     rescue CoreServer::CoreServerError => e
@@ -148,9 +130,8 @@ class InternalController < ApplicationController
       return (render 'shared/error', :status => :internal_server_error)
     end
 
-    redirect_to show_config_path(org_id: params[:org_id],
-                                 domain_id: params[:domain_id],
-                                 id: config.id)
+    redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
+      params[:domain_id] + '/site_config/' + config.id.to_s
   end
 
   def set_default_site_config
@@ -159,15 +140,8 @@ class InternalController < ApplicationController
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 
-    redirect_to show_domain_path(org_id: params[:org_id], id: params[:domain_id])
-  end
-
-  def delete_site_config
-    ::Configuration.delete(params[:id])
-
-    CurrentDomain.flag_out_of_date!(params[:domain_id])
-
-    redirect_to show_domain_path(org_id: params[:org_id], id: params[:domain_id])
+    redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
+      params[:domain_id]
   end
 
   def set_features
@@ -186,7 +160,8 @@ class InternalController < ApplicationController
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 
-    redirect_to show_domain_path(org_id: params[:org_id], id: params[:domain_id])
+    redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
+      params[:domain_id]
   end
 
   def add_module_to_domain
@@ -194,7 +169,8 @@ class InternalController < ApplicationController
 
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 
-    redirect_to show_domain_path(org_id: params[:org_id], id: params[:domain_id])
+    redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
+      params[:domain_id]
   end
 
   def update_aliases
@@ -212,7 +188,7 @@ class InternalController < ApplicationController
       return render 'shared/error', :status => :internal_server_error
     end
     CurrentDomain.flag_out_of_date!(params[:domain_id])
-    redirect_to show_domain_path(org_id: params[:org_id], id: new_cname)
+    redirect_to "/internal/orgs/#{params[:org_id]}/domains/#{new_cname}"
   end
 
 
@@ -253,9 +229,8 @@ class InternalController < ApplicationController
     CurrentDomain.flag_out_of_date!(params[:domain_id])
 
     respond_to do |format|
-      format.html { redirect_to show_config_path(org_id: params[:org_id],
-                                                 domain_id: params[:domain_id],
-                                                 id: params[:id]) }
+      format.html { redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
+        params[:domain_id] + '/site_config/' + params[:id] }
       format.data { render :json => { :success => true } }
     end
   end
@@ -380,10 +355,5 @@ private
   def valid_cname?(candidate)
     (/^[a-zA-Z\d]+([a-zA-Z\d]+|\.(?!(\.|-|_))|-(?!(-|\.|_))|_(?!(_|\.|-)))*[a-zA-Z\d]+$/ =~ candidate) == 0
   end
-
-  def editing_this_page_is_dangerous?(domain = @domain)
-    Rails.env.end_with?('production') && [ 'default', 'socrata' ].include?(domain.shortName)
-  end
-  helper_method :editing_this_page_is_dangerous?
 
 end

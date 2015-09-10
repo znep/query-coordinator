@@ -63,7 +63,15 @@ class StoriesController < ApplicationController
         )
 
         if @story.persisted?
-          view['name'] = clean_title
+
+          # `sanitize_story_title` will return nil if it is passed an empty
+          # string (attempting to update a view with an empty name is a
+          # validation error). In this case, we fall back to whatever name
+          # the view previously had.
+          if clean_title.present?
+            view['name'] = clean_title
+          end
+
           view['metadata']['accessPoints'] ||= {}
           view['metadata']['accessPoints']['story'] = "https://#{request.host}/stories/s/#{clean_uid}"
           view['metadata']['initialized'] = true
@@ -71,11 +79,13 @@ class StoriesController < ApplicationController
           updated_view = CoreServer::update_view(clean_uid, core_request_headers, view)
 
           if updated_view.nil?
-            Rails.logger.error(
-              "Successfully bootstrapped story with uid '#{clean_uid}' " \
-              "but failed to update the 'initialized' flag in the view metadata."
+            error_message = "Successfully bootstrapped story with uid '#{clean_uid}' " \
+              "but failed to update the title or 'initialized' flag in the view metadata."
+
+            AirbrakeNotifier.report_error(
+              StandardError.new(error_message),
+              "stories_controller#create"
             )
-            # TODO: Notify Airbrake
           end
 
           redirect_to "/stories/s/#{clean_uid}/edit"
@@ -142,11 +152,15 @@ class StoriesController < ApplicationController
     #   name character varying(255)
     #
     # Here 255 is the maxiumum allowed length, not the maxiumum character
-    # count. Truncating a string in Ruby using the [0..n] syntax will result
-    # in a string of length n + 1, however, so we truncate the string to
-    # 254 characters below to ensure that the resulting string will never
-    # exceed the 255 character limit enforced by the database.
-    dirty_title[0...255]
+    # count. The [n...m] operation will truncate to that length, not to
+    # m characters ([n..m] will truncate to m characters).
+    sanitized_title = dirty_title[0...255]
+
+    if sanitized_title.empty?
+      sanitized_title = nil
+    end
+
+    sanitized_title
   end
 
   def core_request_headers

@@ -7,7 +7,7 @@
   "scripts": {
     "lint": "eslint",
     "test": "karma start karma.conf.js --singleRun true",
-    "demo-css": "node-sass --output-style expanded socrata.visualizations.rowInspector.scss examples/socrata.visualizations.rowInspector.demoOnly.css"
+    "compile-css": "node-sass --output-style expanded socrata.visualizations.rowInspector.scss socrata.visualizations.rowInspector.css"
   },
   "homepage": "https://github.com/socrata/frontend-visualizations",
   "devDependencies": {

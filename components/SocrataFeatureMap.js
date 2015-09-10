@@ -107,7 +107,8 @@
     var visualizationConfig = {
       localization: config.localization,
       hover: config.hover,
-      panAndZoom: config.panAndZoom
+      panAndZoom: config.panAndZoom,
+      locateUser: config.locateUser
     };
     var visualization = new window.socrata.visualizations.FeatureMap(
       $element,
@@ -120,7 +121,7 @@
       labelUnit: 'rows',
       baseLayer: {
         url: config.baseLayer,
-        opacity: 0.15
+        opacity: config.baseLayerOpacity
       }
     };
 

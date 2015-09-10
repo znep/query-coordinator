@@ -134,18 +134,26 @@
       datasetMetadata: false,
       // Behavior
       hover: true,
-      panAndZoom: false,
+      panAndZoom: true,
+      locateUser: true,
       // The localization values should be set by the application but are set to string literals
       // for the purposes of this example.
       localization: {
         'FLYOUT_FILTER_NOTICE': 'There are too many points at this location',
         'FLYOUT_FILTER_OR_ZOOM_NOTICE': 'Zoom in to see details',
-        'FLYOUT_DENSE_DATA_TITLE': 'Numerous',
+        'FLYOUT_DENSE_DATA_NOTICE': 'Numerous',
         'FLYOUT_CLICK_TO_INSPECT_NOTICE': 'Click to see details',
-        'ROW_INSPECTOR_ROW_DATA_QUERY_FAILED': 'Detailed information about these points cannot be loaded at this time.'
+        'FLYOUT_CLICK_TO_LOCATE_USER_TITLE': 'Click to show your position on the map',
+        'FLYOUT_CLICK_TO_LOCATE_USER_NOTICE': 'You may have to give your browser permission to share your current location',
+        'FLYOUT_LOCATING_USER_TITLE': 'Your position is being determined',
+        'FLYOUT_LOCATE_USER_ERROR_TITLE': 'There was an error determining your location',
+        'FLYOUT_LOCATE_USER_ERROR_NOTICE': 'Click to try again',
+        'ROW_INSPECTOR_ROW_DATA_QUERY_FAILED': 'Detailed information about these points cannot be loaded at this time',
+        'USER_CURRENT_POSITION': 'Your current location (estimated)'
       },
       // Base layer
       baseLayer: 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png',
+      baseLayerOpacity: 0.5,
       baseWhereClause: '',
       useOriginHost: false
     };

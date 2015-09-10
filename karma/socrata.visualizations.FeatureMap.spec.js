@@ -50,6 +50,8 @@ describe('socrata.visualizations.FeatureMap', function() {
   var VALID_DESERIALIZED_TILESERVER_RESPONSES = deserializeTileserverResponses(VALID_SERIALIZED_TILESERVER_RESPONSES);
   var MAP_WIDTH = 640;
   var MAP_HEIGHT = 480;
+  var USER_LAT = 41.87886;
+  var USER_LNG = -87.635837;
 
   function deserializeTileserverResponses(serializedTileserverResponses) {
 
@@ -77,18 +79,6 @@ describe('socrata.visualizations.FeatureMap', function() {
 
     return deserializedTileserverResponses;
   }
-
-
-
-
-
-
-
-
-
-  
-
-
 
   function mockVectorTileGetter(zoom, x, y) {
 
@@ -140,12 +130,18 @@ describe('socrata.visualizations.FeatureMap', function() {
       localization: {
         'FLYOUT_FILTER_NOTICE': 'There are too many points at this location',
         'FLYOUT_FILTER_OR_ZOOM_NOTICE': 'Zoom in to see details',
-        'FLYOUT_DENSE_DATA_TITLE': 'Numerous',
+        'FLYOUT_DENSE_DATA_NOTICE': 'Numerous',
         'FLYOUT_CLICK_TO_INSPECT_NOTICE': 'Click to see details',
-        'ROW_INSPECTOR_ROW_DATA_QUERY_FAILED': 'Detailed information about these points cannot be loaded at this time.'
+        'FLYOUT_CLICK_TO_LOCATE_USER_TITLE': 'Click to show your position on the map',
+        'FLYOUT_CLICK_TO_LOCATE_USER_NOTICE': 'You may have to give your browser permission to share your current location.',
+        'FLYOUT_LOCATING_USER_TITLE': 'Your position is being determined.',
+        'FLYOUT_LOCATE_USER_ERROR_TITLE': 'There was an error determining your position.',
+        'FLYOUT_LOCATE_USER_ERROR_NOTICE': 'You may not have given your browser permission to share your current location, or your browser may be unable to do so.',
+        'ROW_INSPECTOR_ROW_DATA_QUERY_FAILED': 'Detailed information about these points cannot be loaded at this time.',
+        'USER_CURRENT_POSITION': 'Your current location (estimated)'
       },
       hover: true,
-      disablePanAndZoom: false
+      panAndZoom: true
     };
 
     if (overrideConfig) {
@@ -277,83 +273,174 @@ describe('socrata.visualizations.FeatureMap', function() {
       });
     });
   });
+
+  describe('`panAndZoom`', function() {
+
+    describe('when disabled', function() {
+
+      var featureMap;
+
+      beforeEach(function() {
+        featureMap = createFeatureMap(MAP_WIDTH, MAP_HEIGHT, { panAndZoom: false });
+      });
+
+      afterEach(function() {
+        removeFeatureMap(featureMap);
+      });
+
+      it('should not display the zoom controls', function() {
+
+        assert.equal($('.leaflet-control-zoom').length, 0);
+      });
+    });
+
+    describe('when enabled', function() {
+
+      var featureMap;
+
+      beforeEach(function() {
+        featureMap = createFeatureMap();
+      });
+
+      afterEach(function() {
+        removeFeatureMap(featureMap);
+      });
+
+      it('should display the zoom controls', function() {
+
+        assert.equal($('.leaflet-control-zoom').length, 1);
+      });
+    });
+  });
+
+  describe('`locateUser`', function() {
+
+    var stubGeolocation = false;
+    var getCurrentPositionStub;
+
+    beforeEach(function() {
+
+      if (!('geolocation' in navigator)) {
+        stubGeolocation = true;
+        navigator.geolocation = {
+          getCurrentPosition: function() {}
+        };
+      }
+      getCurrentPositionStub = sinon.stub(navigator.geolocation, 'getCurrentPosition');
+    });
+
+    afterEach(function() {
+
+      navigator.geolocation.getCurrentPosition.restore();
+
+      if (stubGeolocation) {
+        delete navigator.geolocation;
+      }
+    });
+
+    describe('when disabled', function() {
+
+      var featureMap;
+
+      beforeEach(function() {
+        featureMap = createFeatureMap();
+      });
+
+      afterEach(function() {
+        removeFeatureMap(featureMap);
+      });
+
+      it('should not display a "locate me" button', function() {
+
+        assert.equal($('.feature-map-locate-user-btn').length, 0);
+      });
+    });
+
+    describe('when enabled', function() {
+
+      var featureMap;
+
+      beforeEach(function() {
+        featureMap = createFeatureMap(MAP_WIDTH, MAP_HEIGHT, { locateUser: true });
+      });
+
+      afterEach(function() {
+        removeFeatureMap(featureMap);
+      });
+
+      it('should display a "locate me" button', function() {
+
+        assert.equal($('.feature-map-locate-user-btn').length, 1);
+      });
+
+      describe('when geolocating', function() {
+
+        it('should show the button in the "busy" state', function() {
+
+          var $locateUserButton = $('.feature-map-locate-user-btn');
+
+          assert.equal($locateUserButton.attr('data-locate-user-status'), 'ready');
+
+          $locateUserButton.click();
+
+          assert.equal($locateUserButton.attr('data-locate-user-status'), 'busy');
+        });
+      });
+
+      describe('on geolocation error', function() {
+
+        it('should show the button in the "error" state', function() {
+
+          var $locateUserButton = $('.feature-map-locate-user-btn');
+
+          assert.equal($locateUserButton.attr('data-locate-user-status'), 'ready');
+
+          getCurrentPositionStub.onCall(0).callsArg(1);
+
+          $locateUserButton.click();
+
+          assert.equal($locateUserButton.attr('data-locate-user-status'), 'error');
+        });
+      });
+
+      describe('on geolocation success', function() {
+
+        it('should show the button in the "ready" state', function() {
+
+          var $locateUserButton = $('.feature-map-locate-user-btn');
+          var mockUserPosition = {
+            coords: {
+              latitude: USER_LAT,
+              longitude: USER_LNG
+            }
+          };
+
+          assert.equal($locateUserButton.attr('data-locate-user-status'), 'ready');
+
+          getCurrentPositionStub.onCall(0).callsArgWith(0, mockUserPosition);
+
+          $locateUserButton.click();
+
+          assert.equal($locateUserButton.attr('data-locate-user-status'), 'ready');
+        });
+
+        it("should render the user's position", function() {
+
+          var $locateUserButton = $('.feature-map-locate-user-btn');
+          var mockUserPosition = {
+            coords: {
+              latitude: USER_LAT,
+              longitude: USER_LNG
+            }
+          };
+
+          getCurrentPositionStub.onCall(0).callsArgWith(0, mockUserPosition);
+
+          $locateUserButton.click();
+
+          assert.equal($('.feature-map-user-current-position-icon').length, 1);
+        });
+      });
+    });
+  });
 });
-
-
-
-//   describe('at the default calculated zoom level', function() {
-
-//     xit('should render visible points at expected locations', function(done) {
-
-//       var expectedPointColor = 'rgba(48,134,171,1.0)';
-//       var point1Color;
-//       var point2Color;
-//       var point3Color;
-
-//       // Wait for rendering to complete before checking the content of the canvas tiles.
-//       scope.$on('render:complete', function() {
-
-//         var canvases = $('canvas');
-
-//         expect(canvases.length).to.be.above(0);
-
-//         var canvasWithPointsRendered = canvases[6];
-
-//         point1Color = getCanvasColorAt(canvasWithPointsRendered, { x: 47, y: 246 });
-//         point2Color = getCanvasColorAt(canvasWithPointsRendered, { x: 104, y: 250 });
-//         point3Color = getCanvasColorAt(canvasWithPointsRendered, { x: 151, y: 235 });
-
-//         expect(point1Color).to.equal(expectedPointColor);
-//         expect(point2Color).to.equal(expectedPointColor);
-//         expect(point3Color).to.equal(expectedPointColor);
-
-//         done();
-//       });
-
-//       // We use a $q-promise-based tile getter here instead of a jQuery one because
-//       // the side-effect of $q being tied to the digest cycle makes this test pass
-//       // TODO: figure out what timing issue is causing this behavior
-//       createFeatureMap({
-//         vectorTileGetter: qVectorTileGetter
-//       });
-//     });
-//   });
-
-//   describe('when zoomed in', function() {
-
-//     it('should fire a second "render:complete" event.', function(done) {
-//       var completeEvents = 0;
-//       var hasZoomed = false;
-
-//       // Wait for rendering to complete before checking the content of the canvas tiles.
-//       scope.$on('render:complete', function() {
-//         completeEvents++;
-
-//         if (!hasZoomed) {
-//           testHelpers.fireEvent($('.leaflet-control-zoom-in')[0], 'click');
-//           hasZoomed = true;
-//         } else {
-//           expect(completeEvents).to.equal(2);
-//           done();
-//         }
-//       });
-
-//       createFeatureMap();
-//     });
-//   });
-
-//   describe('disable pan and zoom feature flag', function() {
-//     beforeEach(function() {
-//       scope.disablePanAndZoom = true;
-//     });
-
-//     it('should not render zoomControl if feature_map_disable_pan_zoom is true', function(done) {
-//       scope.$on('render:complete', function() {
-//         expect($('.leaflet-control-zoom').length).to.equal(0);
-//         done();
-//       });
-
-//       createFeatureMap();
-//     });
-//   });
-// });

@@ -69,7 +69,7 @@ describe('StoryDraftCreator', function() {
             200,
             {
               'Content-Type': 'application/json',
-              'ETag': newDigest
+              'X-Story-Digest': newDigest
             },
             '{}'
           );
@@ -98,7 +98,7 @@ describe('StoryDraftCreator', function() {
       });
     });
 
-    describe('when given a response with no ETag', function() {
+    describe('when given a response with no X-Story-Digest', function() {
 
       beforeEach(function() {
         server.respondImmediately = true;

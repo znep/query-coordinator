@@ -20,7 +20,7 @@ class Api::V1::DraftsController < ApplicationController
       return render nothing: true, status: 412
     end
 
-    headers['ETag'] = @new_draft_story.digest
+    headers['X-Story-Digest'] = @new_draft_story.digest
 
     response_obj = {
       blockIdMappings: story_draft_creator.block_id_mappings,

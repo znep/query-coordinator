@@ -10,7 +10,7 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
   describe '#create' do
     let(:mock_story_draft_creator) { double('story_draft_creator') }
     let(:uid) { 'newd-raft' }
-    let(:etag) { 'someetag' }
+    let(:digest) { 'someedigest' }
     let(:blocks) { [{id: 1}, {id: 2}] }
 
     let(:params) do
@@ -23,7 +23,7 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
 
     let(:headers) do
       {
-        'HTTP_IF_MATCH' => etag
+        'HTTP_IF_MATCH' => digest
       }
     end
 
@@ -45,7 +45,7 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
       expect(StoryDraftCreator).to receive(:new).with(
         user: mock_valid_user,
         uid: uid,
-        digest: etag,
+        digest: digest,
         blocks: blocks
       ).and_return(mock_story_draft_creator)
 
@@ -53,9 +53,9 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
       post :create, params
     end
 
-    it 'sets Etag for new digest in response headers' do
+    it 'sets X-Story-Digest for new digest in response headers' do
       post :create, params
-      expect(response.headers['ETag']).to eq(new_story_digest)
+      expect(response.headers['X-Story-Digest']).to eq(new_story_digest)
     end
 
     it 'renders block json' do

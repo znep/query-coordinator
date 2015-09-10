@@ -17,7 +17,7 @@
     // important note here: we need to use the storyteller server's csrf token on the page
     var storytellerCsrfToken = $('meta[name="csrf-token"]').attr('content');
 
-    // Should be updated from the ETag header in the last save repsonse
+    // Should be updated from the X-Story-Digest header in the last save repsonse
     var storyDigest = storyteller.storyStore.getStoryDigest(storyUid);
 
     var appToken = storyteller.config.coreServiceAppToken;
@@ -43,12 +43,12 @@
       }
     }).
     then(function(data, status, response) {
-      // Get the new draft digest from the response ETag header.
-      var newDigest = response.getResponseHeader('ETag');
+      // Get the new draft digest from the response X-Story-Digest header.
+      var newDigest = response.getResponseHeader('X-Story-Digest');
       if (_.isString(newDigest) && newDigest.length > 0) {
         return newDigest;
       } else {
-        return new $.Deferred().reject('ETag was not provided in save draft response').promise();
+        return new $.Deferred().reject('X-Story-Digest was not provided in save draft response').promise();
       }
     }).
     done(function(newDigest) {

@@ -21,6 +21,10 @@ $xxlarge:   1600px;
 $ms-base: $base-type-size;
 $ms-ratio: $ms-ratio-1, $ms-ratio-2, $ms-ratio-3;
 
+$small-top-margin: 16px;
+$medium-top-margin: 24px;
+$large-top-margin: 32px;
+
 
 // Heading size map.
 // Configured as: font-size line-height (margin-top margin-bottom) breakpoint
@@ -183,7 +187,7 @@ $th-headings: (
   & > hr,
   li + ul,
   h1 + p, h2 + p, h3 + p, h4 + p, img {
-    margin-top: 16px;
+    margin-top: $small-top-margin;
   }
 }
 
@@ -241,7 +245,7 @@ $th-headings: (
   h1 + p, h2 + p, h3 + p, h4 + p, img,
   // also add space above a component-media placeholder as if it were an image because it will be and/or it should layout similarly.
   .component-media {
-    margin-top: 24px;
+    margin-top: $medium-top-margin;
   }
 
 } // End Medium Size
@@ -290,18 +294,18 @@ $th-headings: (
   h1 + p, h2 + p, h3 + p, h4 + p, img,
   // also add space above a component-media placeholder as if it were an image because it will be and/or it should layout similarly.
   .component-media {
-    margin-top: 32px;
+    margin-top: $large-top-margin;
   }
 
 } // End Large Size
 
 // Media top margins also apply to non-typeset elements
 .component-media {
-  margin-top: 16px;
+  margin-top: $small-top-margin;
 }
 &.medium .component-media {
-  margin-top: 24px;
+  margin-top: $medium-top-margin;
 }
 &.large .component-media {
-  margin-top: 32px;
+  margin-top: $large-top-margin;
 }

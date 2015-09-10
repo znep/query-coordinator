@@ -674,17 +674,44 @@ $(function()
                         return valid;
                     }
 
+                    function onPublishSuccess(data, textStatus, xhr) {
+
+                        if (data.hasOwnProperty('id') && validate4x4(data.id)) {
+
+                            // This is the second phase of the creation action,
+                            // and this endpoint is responsible for removing the
+                            // '"initialized": false' flag (or setting it to true)
+                            // when it succeeds at creating the new story objects
+                            // in Storyteller's datastore.
+                            //
+                            // This isn't perfect but it should (hopefully) be
+                            // reliable enough that users will not totally fail to
+                            // create stories when they intend to do so.
+                            window.location.href = '/stories/s/' + data.id + '/create';
+
+                        } else {
+                            onError();
+                        }
+                    }
+
                     if (data.hasOwnProperty('id') && validate4x4(data.id)) {
-                        // This is the second phase of the creation action,
-                        // and this endpoint is responsible for removing the
-                        // '"initialized": false' flag (or setting it to true)
-                        // when it succeeds at creating the new story objects
-                        // in Storyteller's datastore.
-                        //
-                        // This isn't perfect but it should (hopefully) be
-                        // reliable enough that users will not totally fail to
-                        // create stories when they intend to do so.
-                        window.location.href = '/stories/s/' + data.id + '/create';
+
+                        // Next we need to publish the newly-created catalog
+                        // asset, since the publish action provisions a new
+                        // 4x4.
+                        var publishUrl = '/api/views/' + data.id + '/publication.json?accessType=WEBSITE';
+                        var publishSettings = {
+                            contentType: false,
+                            error: onError,
+                            headers: {
+                                'X-App-Token': blist.configuration.appToken
+                            },
+                            type: 'POST',
+                            success: onPublishSuccess
+                        };
+
+                        $.ajax(publishUrl, publishSettings);
+
                     } else {
                         onError(xhr, 'Invalid storyUid', 'Invalid storyUid');
                     }

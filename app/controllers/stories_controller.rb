@@ -63,10 +63,9 @@ class StoriesController < ApplicationController
         )
 
         if @story.persisted?
-
           view['name'] = clean_title
           view['metadata']['accessPoints'] ||= {}
-          view['metadata']['accessPoints']['story'] = "https://#{request.host}/stories/s/#{clean_uid}/edit"
+          view['metadata']['accessPoints']['story'] = "https://#{request.host}/stories/s/#{clean_uid}"
           view['metadata']['initialized'] = true
 
           updated_view = CoreServer::update_view(clean_uid, core_request_headers, view)
@@ -147,7 +146,7 @@ class StoriesController < ApplicationController
     # in a string of length n + 1, however, so we truncate the string to
     # 254 characters below to ensure that the resulting string will never
     # exceed the 255 character limit enforced by the database.
-    dirty_title.gsub(/\s+/, ' ').gsub(/[^A-Za-z0-9\-\:\s]/, '')[0...255]
+    dirty_title[0...255]
   end
 
   def core_request_headers

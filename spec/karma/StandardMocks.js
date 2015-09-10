@@ -88,6 +88,7 @@ function applyStandardMocks() {
     assert.isString(payload.action, 'action payload had a non-string `action` property');
   });
 
+  storyteller.userStoryUid = storyUid;
   storyteller.storyStore = new storyteller.StoryStore();
   storyteller.storySaveStatusStore = new storyteller.StorySaveStatusStore(storyUid);
   storyteller.assetSelectorStore = new storyteller.AssetSelectorStore();

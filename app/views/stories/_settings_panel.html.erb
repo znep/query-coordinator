@@ -1,30 +1,75 @@
 <div id="settings-panel-container">
   <div class="settings-panel">
     <button class="close-side-panel-btn" data-panel-toggle="settings-panel">
-      <span class="close-panel-label" title="<%= I18n.t('common.close') %>">
-        <%= I18n.t('common.close') %>
+      <span class="close-panel-label" title="<%= t('common.close') %>">
+        <%= t('common.close') %>
       </span>
       <span class="icon-cross2 close-panel-icon"></span>
     </button>
 
-    <section>
-      <h4 class="settings-main-title text-center"><%= I18n.t('settings_panel.panel_title') %></h4>
+    <header>
+      <h4 class="settings-main-title text-center"><%= t('editor.settings_panel.panel_title') %></h4>
+    </header>
+
+    <section class="settings-panel-errors hidden">
+      <p class="settings-panel-error-message"><%= t('editor.settings_panel.errors.generic_error') %></p>
+    </section>
+
+    <section class="settings-panel-displaying">
       <hr>
+      <h2><%= t('editor.settings_panel.displaying_section.section_title') %></h2>
 
       <div class="scrollable">
         <form>
-          <label><%= I18n.t('settings_panel.title_label') %></label>
+          <label><%= t('editor.settings_panel.displaying_section.title_label') %></label>
           <input name="title" type="text" maxlength="254" />
-          <label><%= I18n.t('settings_panel.description_label') %></label>
+          <label><%= t('editor.settings_panel.displaying_section.description_label') %></label>
           <textarea></textarea>
         </form>
       </div>
+
+      <div class="settings-save-failure-message">
+        <div><%= t('editor.settings_panel.errors.generic_save_failure_message') %></div>
+        <div class="settings-save-failure-message-details"></div>
+      </div>
+      <button class="settings-save-btn btn accent-btn">
+        <span><%= t('editor.settings_panel.displaying_section.save_button_label') %></span>
+      </button>
     </section>
-    <div class="settings-save-failure-message">
-      <div><%= I18n.t('settings_panel.generic_save_failure_message') %></div>
-      <div class="settings-save-failure-message-details"></div>
-    </div>
-    <button class="settings-save-btn btn accent-btn"><span><%= I18n.t('settings_panel.save_button_label') %></span></button>
+
+    <section class="settings-panel-publishing">
+      <hr>
+      <h2><%= t('editor.settings_panel.publishing_section.section_title') %></h2>
+      <div>
+        <div class="settings-panel-story-visibility">
+          <div>
+            <h2><%= t('editor.settings_panel.publishing_section.visibility.title') %></h2>
+            <h3><%= t('editor.settings_panel.publishing_section.visibility.private') %></h3>
+          </div>
+          <div>
+            <button class="btn accent-btn accent-green-btn">
+              <span><%= t('editor.settings_panel.publishing_section.visibility.make_story_public') %></span>
+            </button>
+          </div>
+        </div>
+        <hr>
+        <div class="settings-panel-story-status hidden">
+          <div>
+            <h2><%= t('editor.settings_panel.publishing_section.status.title') %></h2>
+            <h3><%= t('editor.settings_panel.publishing_section.status.draft') %></h3>
+          </div>
+          <div>
+            <button class="btn accent-btn" disabled>
+              <span><%= t('editor.settings_panel.publishing_section.status.update_public_version') %></span>
+            </button>
+          </div>
+        </div>
+        <p class="settings-panel-story-publishing-help-text">
+          <%= t('editor.settings_panel.publishing_section.messages.can_be_shared_publically') %>
+        </p>
+      </div>
+    </section>
+
   </div>
   <div id="settings-panel-overlay" data-panel-toggle="settings-panel"></div>
 </div>

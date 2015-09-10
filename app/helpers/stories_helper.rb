@@ -4,7 +4,8 @@ module StoriesHelper
     @story.as_json.merge(
       {
         :title => core_attributes['name'] || '',
-        :description => core_attributes['description'] || ''
+        :description => core_attributes['description'] || '',
+        :permissions => determine_permissions_from_core_attributes
       }
     ).to_json
   end
@@ -55,7 +56,6 @@ module StoriesHelper
       classes << 'component-media'
     end
 
-
     classes.join(' ').html_safe
   end
 
@@ -68,8 +68,15 @@ module StoriesHelper
     'component-' + type.gsub(/\./, '-').underscore.dasherize
   end
 
-
   private
+
+  def determine_permissions_from_core_attributes
+    grants = core_attributes['grants'] || []
+
+    {
+      isPublic: grants.any? { |grant| (grant['flags'] || []).include?('public') }
+    }
+  end
 
   def core_attributes
     CoreServer::get_view(@story.uid, CoreServer::headers_from_request(request)) || {}

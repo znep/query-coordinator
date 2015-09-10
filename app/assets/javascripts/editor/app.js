@@ -30,6 +30,7 @@ $(document).on('ready', function() {
   };
 
   storyteller.assetFinder = new storyteller.AssetFinder();
+  storyteller.storyPermissionsManager = new storyteller.StoryPermissionsManager();
 
   var richTextFormats = [
     { id: 'heading1', tag: 'h1', name: 'Heading 1', dropdown: true },
@@ -278,7 +279,7 @@ $(document).on('ready', function() {
     ) {
       // If the save is impossible, don't bother confirming the close :(
       if (!storyteller.storySaveStatusStore.isSaveImpossibleDueToConflict()) {
-        return I18n.t('editor.page_close_confirmation');
+        return I18n.t('page_close_confirmation');
       }
     }
 

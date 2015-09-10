@@ -222,9 +222,9 @@ describe('StoryRenderer', function() {
         options.storyUid = 'empt-yyyy';
         storyteller.storyRenderer = new storyteller.StoryRenderer(options);
 
-        assert.equal($('.message-empty-story').length, 1);
+        assert.equal($('.message-warning.message-empty-story').length, 1);
         assert.isAbove($('.message-empty-story').text().length, 1);
-        assert.isTrue(I18n.t.calledWith('editor.empty_story_warning'));
+        assert.isTrue(I18n.t.calledWith('empty_story_warning'));
       });
     });
 

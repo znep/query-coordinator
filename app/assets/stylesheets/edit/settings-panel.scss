@@ -7,6 +7,10 @@
   position: relative;
   z-index: $settings-panel-z-index;
 
+  button {
+    padding: 1rem;
+  }
+
   .settings-panel {
     position: fixed;
     width: $settings-panel-width;
@@ -74,9 +78,8 @@
     }
 
     .settings-save-btn {
-      width: 100%;
+      width: 70%;
     }
-
   }
 
   &.active .settings-panel {
@@ -100,6 +103,75 @@
       opacity: 1;
     }
   }
+}
+
+.settings-panel-errors {
+  border: solid 1px $settings-panel-errors-border-color;
+  background-color: $settings-panel-errors-background-color;
+  padding: .75rem;
+  font-size: 1.25rem;
+  color: $settings-panel-errors-color;
+  font-weight: lighter;
+}
+
+.settings-panel-displaying,
+.settings-panel-publishing {
+  margin-top: 2rem;
+
+  > h2 {
+    font-weight: lighter;
+    text-transform: uppercase;
+    color: $settings-panel-light-gray-color;
+  }
+
+}
+
+.settings-panel-publishing {
+  > div {
+    padding-top: 1rem;
+    padding-left: 1rem;
+  }
+}
+
+.settings-panel-story-visibility,
+.settings-panel-story-status {
+  box-sizing: border-box;
+  padding: 1rem 0;
+
+  &::after {
+    content: '';
+    display: table;
+    clear: left;
+  }
+
+  > div {
+    float: left;
+    width: $settings-panel-publishing-label-width;
+
+    & + div {
+      width: 100% - $settings-panel-publishing-label-width;
+    }
+  }
+
+  h2, h3 {
+    font-weight: lighter;
+  }
+
+  h3 {
+    margin-top: 0.25rem;
+    color: $settings-panel-visibility-status-state-color;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+
+.settings-panel-story-publishing-help-text {
+  padding: 1rem 0;
+  font-size: 1.15rem;
+  color: $settings-panel-light-gray-color;
+  line-height: 1.5rem;
 }
 
 /**

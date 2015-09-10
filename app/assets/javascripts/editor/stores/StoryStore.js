@@ -38,6 +38,14 @@
           _setStoryDescription(payload);
           break;
 
+        case Constants.STORY_SET_PERMISSIONS:
+          _setStoryPermissions(payload);
+          break;
+
+        case Constants.STORY_SET_PUBLISHED_STORY:
+          _setStoryPublishedStory(payload);
+          break;
+
         case Constants.STORY_OVERWRITE_STATE:
           _setStory(payload.data, true);
           break;
@@ -107,10 +115,21 @@
     };
 
     this.getStoryDigest = function(storyUid) {
-
       var story = _getStory(storyUid);
 
       return story.digest;
+    };
+
+    this.getStoryPermissions = function(storyUid) {
+      var story = _getStory(storyUid);
+
+      return story.permissions;
+    };
+
+    this.getStoryPublishedStory = function(storyUid) {
+      var story = _getStory(storyUid);
+
+      return story.publishedStory;
     };
 
     this.getStoryBlockIds = function(storyUid) {
@@ -241,6 +260,33 @@
       var storyUid = payload.storyUid;
 
       _getStory(storyUid).description = payload.description;
+
+      self._emitChange();
+    }
+
+    function _setStoryPermissions(payload) {
+      utils.assertIsOneOfTypes(payload, 'object');
+      utils.assertHasProperties(payload, 'storyUid', 'isPublic');
+      utils.assertIsOneOfTypes(payload.storyUid, 'string');
+      utils.assertIsOneOfTypes(payload.isPublic, 'boolean');
+
+      var storyUid = payload.storyUid;
+
+      _getStory(storyUid).permissions = {
+        isPublic: payload.isPublic
+      };
+
+      self._emitChange();
+    }
+
+    function _setStoryPublishedStory(payload) {
+      utils.assertIsOneOfTypes(payload, 'object');
+      utils.assertHasProperties(payload, 'storyUid', 'publishedStory');
+      utils.assertIsOneOfTypes(payload.storyUid, 'string');
+
+      var storyUid = payload.storyUid;
+
+      _getStory(storyUid).publishedStory = payload.publishedStory;
 
       self._emitChange();
     }
@@ -434,7 +480,8 @@
         description: storyData.description,
         theme: storyData.theme,
         blockIds: blockIds,
-        digest: storyData.digest
+        digest: storyData.digest,
+        permissions: storyData.permissions
       };
 
       self._emitChange();

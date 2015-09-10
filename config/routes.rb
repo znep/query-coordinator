@@ -13,8 +13,11 @@ Rails.application.routes.draw do
     namespace :v1, defaults: { format: 'json' } do
       resources :documents, only: [:create, :show]
       resources :uploads, only: [:create]
+      resources :published_stories, only: [:create]
 
       post 'stories/:uid/drafts' => 'drafts#create'
+      post 'stories/:uid/published' => 'published#create'
+      put 'stories/:uid/permissions' => 'permissions#update'
     end
   end
 

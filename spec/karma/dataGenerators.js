@@ -5,7 +5,7 @@ function generateBlockData(options) {
     layout: '12',
     components: [
       {
-        type: 'text',
+        type: 'html',
         value: 'Hello, world!'
       }
     ]
@@ -26,10 +26,14 @@ function generateStoryData(storyData) {
     uid: 'test-test',
     title: 'Test Story',
     description: 'Test Story Description',
-    blocks: [ generateBlockData() ]
+    blocks: [ generateBlockData() ],
+    publishedStory: {},
+    digest: 'digest',
+    permissions: {isPublic: false},
+    theme: 'classic'
   };
 
-  storyData = $.extend(defaults, storyData);
+  storyData = _.extend({}, defaults, storyData);
 
   return storyData;
 }

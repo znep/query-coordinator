@@ -52,33 +52,33 @@ describe('storySaveButton jQuery plugin', function() {
       it('should mirror the story save state', function() {
         mockStore.mockIsSaveInProgress(false);
         mockStore.mockIsSaved(true);
-        assert.equal($button.text(), 'Translation for: editor.story_save_button.saved');
+        assert.equal($button.text(), 'Translation for: story_save_button.saved');
 
         mockStore.mockIsSaveInProgress(false);
         mockStore.mockIsSaved(false);
-        assert.equal($button.text(), 'Translation for: editor.story_save_button.unsaved');
+        assert.equal($button.text(), 'Translation for: story_save_button.unsaved');
 
         mockStore.mockIsSaveInProgress(true);
         mockStore.mockIsSaved(true);
-        assert.equal($button.text(), 'Translation for: editor.story_save_button.saving');
+        assert.equal($button.text(), 'Translation for: story_save_button.saving');
 
         mockStore.mockIsSaveInProgress(true);
         mockStore.mockIsSaved(false);
-        assert.equal($button.text(), 'Translation for: editor.story_save_button.saving');
+        assert.equal($button.text(), 'Translation for: story_save_button.saving');
       });
 
       describe('five seconds after story finishes saving', function() {
         it('should say "save" and stay disabled', function(done) {
           mockStore.mockIsSaveInProgress(true);
           mockStore.mockIsSaved(false);
-          assert.equal($button.text(), 'Translation for: editor.story_save_button.saving');
+          assert.equal($button.text(), 'Translation for: story_save_button.saving');
 
           mockStore.mockIsSaved(true);
           mockStore.mockIsSaveInProgress(false);
-          assert.equal($button.text(), 'Translation for: editor.story_save_button.saved');
+          assert.equal($button.text(), 'Translation for: story_save_button.saved');
 
           setTimeout(function() {
-            assert.equal($button.text(), 'Translation for: editor.story_save_button.idle');
+            assert.equal($button.text(), 'Translation for: story_save_button.idle');
             assert.isTrue($button.prop('disabled'));
             done();
           }, 20);
@@ -88,6 +88,16 @@ describe('storySaveButton jQuery plugin', function() {
     });
 
     describe('button', function() {
+      var saveDraftStub;
+
+      beforeEach(function() {
+        saveDraftStub = sinon.stub(storyteller.StoryDraftCreator, 'saveDraft', _.noop);
+      });
+
+      afterEach(function() {
+        saveDraftStub.restore();
+      });
+
       describe('enabled state', function() {
         it('should mirror the story save state', function() {
           mockStore.mockIsSaveInProgress(false);
@@ -107,12 +117,11 @@ describe('storySaveButton jQuery plugin', function() {
           assert.isTrue($button.prop('disabled'));
         });
       });
+
       it('should call StoryDraftCreator.saveDraft when clicked', function() {
-        var stub = sinon.stub(storyteller.StoryDraftCreator, 'saveDraft', _.noop);
         mockStore.mockIsSaved(false);
         $button.click();
-        sinon.assert.calledWithExactly(stub, standardMocks.validStoryUid);
-        stub.restore();
+        sinon.assert.calledWithExactly(saveDraftStub, standardMocks.validStoryUid);
       });
     });
   });

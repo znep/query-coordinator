@@ -101,6 +101,7 @@ class StoriesController < ApplicationController
     @inspiration_block_list = InspirationBlockList.new.blocks
     @theme_list = ThemeList.new.themes
     @story = DraftStory.find_by_uid(params[:uid])
+    @published_story = PublishedStory.find_by_uid(params[:uid])
 
     if @story
       respond_to do |format|

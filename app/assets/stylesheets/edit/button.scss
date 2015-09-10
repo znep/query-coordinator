@@ -25,16 +25,36 @@
   &.accent-btn {
     color: $accent-btn-color;
     background-color: $accent-btn-bg-color;
+
+    &:hover {
+      color: $accent-btn-hover-color;
+      background-color: $accent-btn-hover-bg-color;
+    }
+
+    &:disabled {
+      color: $accent-btn-disabled-color;
+      background-color: $accent-btn-disabled-bg-color;
+    }
   }
 
-  &.accent-btn:hover {
-    color: $accent-btn-hover-color;
-    background-color: $accent-btn-hover-bg-color;
+  &.accent-gray-btn {
+    color: $accent-gray-btn-color;
+    background-color: $accent-gray-btn-bg-color;
+
+    &:hover {
+      color: $accent-gray-btn-color;
+      background-color: $accent-gray-btn-hover-bg-color;
+    }
   }
 
-  &.accent-btn:disabled {
-    color: $accent-btn-disabled-color;
-    background-color: $accent-btn-disabled-bg-color;
+  &.accent-green-btn {
+    color: $accent-green-btn-color;
+    background-color: $accent-green-btn-bg-color;
+
+    &:hover {
+      color: $accent-green-btn-color;
+      background-color: $accent-green-btn-hover-bg-color;
+    }
   }
 
   // To use this, you'll need to have a span
@@ -48,8 +68,8 @@
       border-right-color: darken(#ddd, 15);
       border-radius: 60%;
       display: inline-block;
-      width: 1.1rem;
-      height: 1.1rem;
+      width: 1.75rem;
+      height: 1.75rem;
       -webkit-animation: spin 0.9s linear infinite;
       -moz-animation: spin 0.9s linear infinite;
       animation: spin 0.9s linear infinite;
@@ -59,6 +79,13 @@
       span {
         border-color: $accent-btn-color;
         border-right-color: lighten($accent-btn-bg-color, 15)
+      }
+    }
+
+    &.accent-gray-btn {
+      span {
+        border-color: $accent-gray-btn-color;
+        border-right-color: lighten($accent-gray-btn-bg-color, 15)
       }
     }
   }

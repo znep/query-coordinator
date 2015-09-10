@@ -15,6 +15,7 @@ describe('SettingsPanel jQuery plugin', function() {
             '<div class="settings-save-failure-message-details"></div>',
           '</div>',
           '<button class="settings-save-btn"></button>',
+          '<section class="settings-panel-publishing"></section>',
         '</div>',
       '</div>'
     ].join('');
@@ -33,10 +34,18 @@ describe('SettingsPanel jQuery plugin', function() {
 
     window.socrata.storyteller.dispatcher = new storyteller.Dispatcher();
 
+    storyteller.storySaveStatusStore = {
+      addChangeListener: _.noop,
+      isStorySaved: _.constant(true)
+    };
+
     storyteller.storyStore = {
       addChangeListener: _.noop,
       getStoryTitle: _.constant(standardMocks.validStoryTitle),
-      getStoryDescription: _.constant(standardMocks.validStoryDescription)
+      getStoryDescription: _.constant(standardMocks.validStoryDescription),
+      getStoryPermissions: _.constant({ isPublic: true }),
+      getStoryPublishedStory: _.constant({}),
+      getStoryDigest: _.constant('')
     };
 
     storyteller.coreSavingStore = {

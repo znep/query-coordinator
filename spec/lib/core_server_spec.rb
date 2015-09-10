@@ -37,6 +37,55 @@ describe CoreServer do
     end
   end
 
+  describe '#generate_query_params' do
+    it 'should return a string containing a URL-safe parameterized string when given a Hash' do
+      result = CoreServer.generate_query_params({param1: 'rawr', param2: 'something'})
+      expect(result).to eq('param1=rawr&param2=something')
+    end
+
+    it 'should return a string container a URL-safe parameterized string when given a string' do
+      result = CoreServer.generate_query_params('param1=rawr&param2=something')
+      expect(result).to eq('param1=rawr&param2=something')
+    end
+
+    it 'should return nil when given something that is not a string or Hash' do
+      result = CoreServer.generate_query_params([])
+      expect(result).to be_nil
+    end
+  end
+
+  describe '#view_request' do
+
+    before do
+      allow(CoreServer).to receive(:core_server_request_with_retries) { false }
+    end
+
+    it 'should make a request with GET query parameters' do
+      CoreServer.view_request({
+        uid: 'four-four',
+        verb: :get,
+        headers: {},
+        query_params: {hello: 'world'}
+      })
+
+      expect(CoreServer).to have_received(:core_server_request_with_retries).with(
+        hash_including(:path => '/views/four-four.json?hello=world')
+      )
+    end
+
+    it 'should make a request without query parameters' do
+      CoreServer.view_request({
+        uid: 'four-four',
+        verb: :put,
+        headers: {}
+      })
+
+      expect(CoreServer).to have_received(:core_server_request_with_retries).with(
+        hash_including(:path => '/views/four-four.json')
+      )
+    end
+  end
+
   describe '#current_user' do
 
     let(:app_token) { 'the_app_token' }

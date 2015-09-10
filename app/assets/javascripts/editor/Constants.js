@@ -24,6 +24,12 @@ var Constants = {
   // {string} message
   STORY_SAVE_FAILED: 'STORY_SAVE_FAILED',
 
+  // {boolean} isPublic
+  STORY_SET_PERMISSIONS: 'STORY_SET_PERMISSIONS',
+
+  // {object} publishedStory
+  STORY_SET_PUBLISHED_STORY: 'STORY_SET_PUBLISHED_STORY',
+
   // {object} data: Story data object.
   STORY_OVERWRITE_STATE: 'STORY_OVERWRITE_STATE',
 
@@ -144,6 +150,8 @@ var Constants = {
   SOQL_DATA_PROVIDER_VALUE_ALIAS: 'COLUMN_ALIAS_GUARD_VALUE',
 
   SOCRATA_VISUALIZATION_DESTROY: 'SOCRATA_VISUALIZATION_DESTROY',
+
+  API_PREFIX_PATH: '/stories/api/v1/',
 
   // The `name` column of the `lenses` table is defined as:
   //

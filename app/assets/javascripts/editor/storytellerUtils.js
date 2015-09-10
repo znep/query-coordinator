@@ -3,7 +3,8 @@
   'use strict';
 
   var socrata = root.socrata = root.socrata || {};
-  root.socrata.utils = root.socrata.utils || {};
+  var storyteller = socrata.storyteller = socrata.storyteller || {};
+  var utils = socrata.utils = socrata.utils || {};
 
   var storytellerUtils = {
 
@@ -150,37 +151,31 @@
     },
 
     /**
-     * Asserts that an object is instanceof an instantiator.
+     * @function storytellerApiRequest
+     * @description
+     * Makes a call to the API_PREFIX for Storyteller, and returns a Promise.
      *
-     * @param {object} instance - The instance to check.
-     * @param {function} instantiator - The instantiator to check against.
-     */
-    assertInstanceOf: function(instance, instantiator) {
-
-      socrata.utils.assertInstanceOfAny(instance, instantiator);
-    },
-
-    /**
-     * Asserts that an object is instanceof at least one of the provided instantiators.
+     * @param {String} path - a valid Storyteller API URI.
+     * @param {String} requestType - any HTTP verb.
+     * @param {Any} requestData - any JSON-formatted data.
      *
-     * @param {object} instance - The instance to check.
-     * @param {...function} <arguments> - List of acceptable instantiators
+     * @return {Promise}
      */
-    assertInstanceOfAny: function(instance) {
-
-      var instantiators = _.rest(arguments);
-      var valid = _.any(instantiators, function(instantiator) {
-        return instance instanceof instantiator;
-      });
-
-      if (!valid) {
-        throw new Error(
-          'Value must be one of [{0}] (instance: {1}).'.
-            format(instantiators.join(', '), instance)
-        );
-      }
+    storytellerApiRequest: function(path, requestType, requestData) {
+      return Promise.resolve(
+        $.ajax({
+          url: Constants.API_PREFIX_PATH + path,
+          type: requestType,
+          dataType: 'json',
+          contentType: 'application/json',
+          headers: {
+            'X-CSRF-Token': storyteller.csrfToken
+          },
+          data: requestData
+        })
+      );
     }
   };
 
-  _.merge(root.socrata.utils, storytellerUtils);
+  _.merge(utils, storytellerUtils);
 })(window);

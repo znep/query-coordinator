@@ -20,7 +20,6 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
   common:
     close: 'Close'
   sample_story:
@@ -37,9 +36,3 @@ en:
     title: 'Styled Themes'
     description: 'Themes to make your story look Grrrrrrreat!'
     render_error: 'There was an error'
-  settings_panel:
-    panel_title: 'Story Settings'
-    title_label: 'Title'
-    description_label: 'Description'
-    save_button_label: 'Save'
-    generic_save_failure_message: 'Oh no! There was a problem saving. Please try again.'

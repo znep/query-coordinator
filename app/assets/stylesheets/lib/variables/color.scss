@@ -23,6 +23,11 @@ $settings-panel-btn-color: #929292;
 $settings-panel-bg-color: #404040;
 $settings-panel-hr-color: #666;
 $settings-panel-close-font-color: #aaa;
+$settings-panel-light-gray-color: #ccc;
+$settings-panel-visibility-status-state-color: #93c4e8;
+$settings-panel-errors-border-color: #F7A700;
+$settings-panel-errors-background-color: #F7E7CC;
+$settings-panel-errors-color: #B37538;
 
 // Content panels
 $content-panel-bg-color: #eee;
@@ -84,6 +89,12 @@ $btn-disabled-bg-color: #eee;
 
 $accent-btn-color: #fff;
 $accent-btn-bg-color: #5ab6e7;
+$accent-gray-btn-color: #fff;
+$accent-gray-btn-bg-color: #9b9b9b;
+$accent-gray-btn-hover-bg-color: darken($accent-gray-btn-bg-color, 10%);
+$accent-green-btn-color: #fff;
+$accent-green-btn-bg-color: #00d7b0;
+$accent-green-btn-hover-bg-color: darken($accent-green-btn-bg-color, 10%);
 $accent-btn-hover-color: #fff;
 $accent-btn-hover-bg-color: #2da2e1;
 $accent-btn-disabled-color: #ddd;

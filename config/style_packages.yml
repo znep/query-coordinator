@@ -272,3 +272,9 @@ dataset-about-full:
 - screen-dataset
 - screen-blob
 - screen-dataset-about
+mobile:
+- mobile/base
+- mobile/layout
+- mobile/states
+- mobile/components/navbar
+- mobile/components/meta

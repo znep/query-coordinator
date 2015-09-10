@@ -63,6 +63,9 @@ disable_legacy_types:
 disable_obe_redirection:
   description: When clicking on an NBE dataset, you are no longer redirected to the OBE dataset.
   defaultValue: false
+disable_nbe_redirection_warning_message:
+  description: When clicking to an NBE dataset, you no longer see a "You would be redirected to" message.
+  defaultValue: false
 display_catalog_lens_delete_button:
   description: Whether to show the Delete button for data lenses, in the old UX.
   defaultValue: false

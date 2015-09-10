@@ -200,6 +200,41 @@ RSpec.describe StoryDraftCreator do
         )
       end
 
+      context 'with an empty block list' do
+        let(:blocks) { [] }
+
+        it 'returns a DraftStory object' do
+          expect(result).to be_a(DraftStory)
+        end
+
+        it 'creates no new blocks' do
+          expect(result.block_ids).to be_empty
+        end
+
+        it 'creates a new draft story' do
+          expect(DraftStory.find(result.id)).to be_a(DraftStory)
+        end
+      end
+
+      # This test and related product behavior exist because
+      # Rails will parse the JSON '{ "foo": [] }' to { "foo": nil }.
+      context 'with a nil block list' do
+        let(:blocks) { nil }
+
+        it 'returns a DraftStory object' do
+          expect(result).to be_a(DraftStory)
+        end
+
+        it 'creates no new blocks' do
+          expect(result.block_ids).to be_empty
+        end
+
+        it 'creates a new draft story' do
+          expect(DraftStory.find(result.id)).to be_a(DraftStory)
+        end
+      end
+
+
       context 'with no existing blocks' do
 
         let(:blocks) { valid_no_existing_blocks }

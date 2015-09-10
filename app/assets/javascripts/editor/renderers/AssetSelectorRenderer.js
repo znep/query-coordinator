@@ -308,7 +308,7 @@
       var imageUploadButton = $('<button>', {
         'class': 'btn accent-btn',
         'data-action': Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
-      }).text(I18n.t('editor.asset_selector.image_upload.button_text'));
+      }).text(I18n.t('asset_selector.image_upload.button_text'));
 
       var providers = $('<ul>', {'class': 'button-list'}).append([
         $('<li>').html(youtubeButton),
@@ -323,7 +323,7 @@
     function _renderChooseImageUploadTemplate() {
 
       var heading = _renderModalTitle(
-        I18n.t('editor.asset_selector.image_upload.heading')
+        I18n.t('asset_selector.image_upload.heading')
       );
 
       var closeButton = _renderModalCloseButton();
@@ -331,7 +331,7 @@
       var inputLabel = $(
         '<h2>',
         { 'class': 'asset-selector-input-label input-label' }
-      ).text(I18n.t('editor.asset_selector.image_upload.input_label'));
+      ).text(I18n.t('asset_selector.image_upload.input_label'));
 
       var inputControl = $(
         '<input>',
@@ -351,7 +351,7 @@
           'data-action': Constants.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(I18n.t('asset_selector.insert_button_text'));
 
       var content = $(
         '<div>',
@@ -374,7 +374,7 @@
 
     function _renderFileUploadProgressTemplate() {
       var heading = _renderModalTitle(
-        I18n.t('editor.asset_selector.image_upload.heading')
+        I18n.t('asset_selector.image_upload.heading')
       );
 
       var closeButton = _renderModalCloseButton();
@@ -387,7 +387,7 @@
       var uploadProgressMessage = $(
         '<div>',
         { 'class': 'asset-selector-uploading-message' }
-      ).text(I18n.t('editor.asset_selector.image_upload.uploading_message'));
+      ).text(I18n.t('asset_selector.image_upload.uploading_message'));
 
       var uploadCancelButton = $(
         '<button>',
@@ -395,7 +395,7 @@
           'class': 'btn asset-selector-cancel-upload',
           'data-action': Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
         }
-      ).text(I18n.t('editor.asset_selector.cancel_button_text'));
+      ).text(I18n.t('asset_selector.cancel_button_text'));
 
       var tryAgainButton = $(
         '<button>',
@@ -403,7 +403,7 @@
           'class': 'hidden btn asset-selector-try-again',
           'data-action': Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
         }
-      ).text(I18n.t('editor.asset_selector.try_again_button_text'));
+      ).text(I18n.t('asset_selector.try_again_button_text'));
 
       progress.append([
         uploadProgressMessage,
@@ -420,7 +420,7 @@
           'data-action': Constants.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(I18n.t('asset_selector.insert_button_text'));
 
       var content = $(
         '<div>',
@@ -455,9 +455,9 @@
         tryAgainButton.removeClass('hidden');
 
         if (/^validation.*/.test(errorStep)) {
-          messageTranslationKey = 'editor.asset_selector.image_upload.errors.{0}'.format(errorStep);
+          messageTranslationKey = 'asset_selector.image_upload.errors.{0}'.format(errorStep);
         } else {
-          messageTranslationKey = 'editor.asset_selector.image_upload.errors.exception';
+          messageTranslationKey = 'asset_selector.image_upload.errors.exception';
         }
 
         progressMessage.html(I18n.t(messageTranslationKey));
@@ -467,7 +467,7 @@
     function _renderImagePreviewTemplate() {
 
       var heading = _renderModalTitle(
-        I18n.t('editor.asset_selector.image_upload.heading')
+        I18n.t('asset_selector.image_upload.heading')
       );
 
       var closeButton = _renderModalCloseButton();
@@ -492,7 +492,7 @@
           'class': 'btn accent-btn',
           'data-action': Constants.ASSET_SELECTOR_APPLY
         }
-      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+      ).text(I18n.t('asset_selector.insert_button_text'));
 
       var buttonGroup = $(
         '<div>',

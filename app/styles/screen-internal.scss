@@ -48,6 +48,10 @@ form {
   font-weight: bold;
 }
 
+form.oneButtonForm {
+  display: inline-block
+}
+
 .exportLink, .importLink {
   bottom: 2.5em;
   display: inline-block;

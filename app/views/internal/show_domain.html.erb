@@ -39,56 +39,37 @@
         <input type='submit' value='Update' />
       <% end %>
 
-
-      <%- sorted_configs = @domain.configurations('site_theme').
-        sort {|a,b| a.default == b.default ?
-          a.name.downcase <=> b.name.downcase :
-          (a.default ? -1 : 1)} -%>
-      <h2>Theme Configurations:</h2>
-      <%= form_tag '/internal/orgs/' + @domain.organizationId.to_s +
-        '/domains/' + @domain.cname + '/default_site_config' do %>
+      <h2>Configurations</h2>
       <ul>
-        <%- sorted_configs.each do |conf| -%>
-        <li>
-        <%= radio_button_tag 'default-site-config', conf.id, conf.default %>
-        <a href='/internal/orgs/<%= @domain.organizationId
-          %>/domains/<%= @domain.cname %>/site_config/<%= conf.id %>'>
-          <%= conf.name %>
-        </a>
-        </li>
-        <%- end -%>
-      </ul>
-      <input type='submit' value='Set Default' />
-      <%- end -%>
-
-      <h2>Other Configurations</h2>
-      <ul>
+        <%- @configs.each do |conf|
+          case conf.type
+          when 'feature_flags'
+        -%>
         <li><a href="/internal/orgs/<%= @domain.organizationId %>/domains/<%= @domain.cname %>/feature_flags">Feature Flags</a></li>
-        <%- @configs.each do |conf| -%>
-        <%- next if conf.type == 'site_theme' || conf.type == 'feature_flags' -%>
-        <li<%== " class='isDefault'" if conf.default %>>
-        <a href='/internal/orgs/<%= @domain.organizationId
-          %>/domains/<%= @domain.cname %>/site_config/<%= conf.id %>'>
-          <%= conf.name %> (<%= conf.type %>)
+        <%-
+          else
+        -%>
+        <li<%== ' class="isDefault"' if conf.default %>>
+        <a href='<%= show_config_path(org_id: @domain.organizationId,
+                                      domain_id: @domain.cname,
+                                      id: conf.id) %>'>
+          (<%= conf.type %>) <%= conf.name %>
         </a>
         </li>
+          <%- end -%>
         <%- end -%>
       </ul>
 
-      <h2>Add Configurations:</h2>
+      <h2>Add Configuration:</h2>
       <%= form_tag '/internal/orgs/' + @domain.organizationId.to_s +
-        '/domains/' + @domain.cname + '/site_config' do %>
+        '/domains/' + @domain.cname + '/site_config', :class => 'addConfigForm' do %>
         <div class='line'>
           <label>Name</label>
           <input type='text' name='config[name]' />
         </div>
         <div class='line'>
           <label>Type</label>
-          <input type='text' name='config[type]' value='site_theme' />
-        </div>
-        <div class='line'>
-          <label>Default?</label>
-          <input type='checkbox' name='config[default]' checked='checked' />
+          <input type='text' name='config[type]' value='' />
         </div>
         <input type='submit' value='Create' />
       <% end %>
@@ -146,3 +127,20 @@
 
   </div>
 </div>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    $(function() {
+      var existingConfigTypes = <%== @configs.inject([]) { |memo, conf| memo << conf.type }.uniq.to_json %>;
+      var $form = $('.addConfigForm');
+      $form.submit(function() {
+        var configType = $form.find('input[name="config[type]"]').val();
+        if (_.include(existingConfigTypes, configType)) {
+          return confirm('Hey, a config with type "{0}" already exists. Are you sure you want to add another one?'.format(configType));
+        } else {
+          return true;
+        }
+      });
+    });
+  </script>
+<% end %>

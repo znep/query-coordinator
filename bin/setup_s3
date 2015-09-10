@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+require 'pathname'
+
+# This script will attempt to copy AWS credentials from a shared lastpass entry
+# to your .env file
+
+# path to your application root.
+APP_ROOT = Pathname.new File.expand_path('../../',  __FILE__)
+
+Dir.chdir APP_ROOT do
+
+  unless `which lpass` =~ /lpass$/
+    abort <<-eos
+ERROR: Missing dependency - lpass
+Please install lastpass-cli before continuing.
+
+On Mac OS X:
+  brew install lastpass-cli --with-pinentry --with-doc
+
+On Ubuntu:
+  sudo apt-get install openssl libcurl4-openssl-dev libxml2 libssl-dev libxml2-dev pinentry-curses xclip
+
+  Then follow building instructions in https://github.com/lastpass/lastpass-cli to get `lpass` command.
+    eos
+  end
+
+  puts '== Copying AWS credentials to .env'
+  system("lpass show --notes 5520851962 | cat >> .env")
+
+  puts "\n== Restarting application server =="
+  system "mkdir -p tmp"
+  system "touch tmp/restart.txt"
+
+end

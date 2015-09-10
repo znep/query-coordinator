@@ -40,6 +40,19 @@ Run `bin/setup` from within the storyteller root. This will install
 dependencies and create and install the database and migrations. It will also
 create a good starting `database.yml` for development and test.
 
+#### AWS setup for S3
+
+In order to be able to upload images in development mode, some AWS credentials need
+to be pulled from lastpass. The lastpass login is called "Storyteller Upload IAM"
+and lives in the "Shared-Socrata Engineering Common" folder. The values in this
+secure note should be added to `.env` in the rails root.
+
+There is a script to do this for you (requires the [lastpass-cli](https://github.com/LastPass/lastpass-cli) to be
+installed):
+```
+bin/setup_s3
+```
+
 #### Multisite Setup
 
 On your local development instance, you'll likely want to have a nice multi-site

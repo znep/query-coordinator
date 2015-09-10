@@ -255,7 +255,8 @@ blist.metrics.sitewideShared = {
       enabled: !blist.feature_flags.embetter_analytics_page
     },
     {
-      id: 'summaryDash',    displayName: 'Dashboards',
+      id: 'summaryDash',
+      displayName: 'Total Dashboards',
       summary: {
         plus: 'govstat-total-dash',
         verbPhrase: 'dashboards created',
@@ -264,7 +265,8 @@ blist.metrics.sitewideShared = {
       enabled: blist.configuration.govStatMetricsEnabled || false
     },
     {
-      id: 'summaryGoals',    displayName: 'Goals',
+      id: 'summaryGoals',
+      displayName: 'Total Goals',
       summary: {
         plus: 'govstat-total-goals',
         verbPhrase: 'goals created',

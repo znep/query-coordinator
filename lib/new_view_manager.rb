@@ -56,7 +56,8 @@ class NewViewManager
       :protocol => 'https'
     )
 
-    update_page_url(new_page_id, page_url)
+    # V2 data lens handles this separately inside its create method
+    update_page_url(new_page_id, page_url) unless v2_data_lens
 
     begin
       View.find(new_page_id).publish
@@ -120,14 +121,6 @@ class NewViewManager
       :name => page_metadata[:name],
       :description => page_metadata[:description],
       :metadata => {
-        :renderTypeConfig => {
-          :visible => {
-            :href => true
-          }
-        },
-        :accessPoints => {
-          :new_view => ''
-        },
         :availableDisplayTypes => ['data_lens'],
         :jsonQuery => {}
       },
@@ -159,6 +152,7 @@ class NewViewManager
       )
     end
 
+    # Update metadata with page id
     payload_with_id = parse_core_response(response)
     new_page_id = payload_with_id[:id]
     payload_with_id[:displayFormat][:data_lens_page_metadata][:pageId] = new_page_id

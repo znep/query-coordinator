@@ -57,7 +57,7 @@ $(document).on('ready', function() {
     event.target.setAttribute('disabled', 'disabled');
     document.querySelector('.linear-mode').removeAttribute('disabled');
 
-    blocks.forEach(function(block, index) {
+    blocks.forEach(function(block) {
       block.classList.toggle('hidden', block !== pageable[0]);
     });
 
@@ -70,7 +70,7 @@ $(document).on('ready', function() {
     event.target.setAttribute('disabled', 'disabled');
     document.querySelector('.presentation-mode').removeAttribute('disabled');
 
-    blocks.forEach(function(block, index) {
+    blocks.forEach(function(block) {
       block.classList.remove('hidden');
     });
 
@@ -104,7 +104,7 @@ $(document).on('ready', function() {
     var key = event.charCode || event.keyCode;
 
     if (presenting) {
-      switch(key) {
+      switch (key) {
         case 27:
           document.querySelector('.linear-mode').click();
           break;

@@ -74,15 +74,6 @@ module.exports = function(config) {
       ]
     },
 
-    // scssPreprocessor: {
-    //   options: {
-    //     sourceMap: true,
-    //     includePaths: [
-    //       '.'
-    //     ]
-    //   }
-    // },
-
     // web server port
     port: 9876,
 

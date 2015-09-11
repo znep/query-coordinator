@@ -93,10 +93,18 @@ $action-btn-disabled-font-color: #c6c1bf;
   }
 }
 
-#socrata-row-inspector {
+@mixin unselectable() {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 
+#socrata-row-inspector {
   display: none;
-  font-size: 1.25rem;
+  font-size: 14px;
 
   * {
     box-sizing: border-box;
@@ -244,10 +252,12 @@ $action-btn-disabled-font-color: #c6c1bf;
   }
 
   .icon-close {
+    @include unselectable();
+
     font-size: $icon-size;
     cursor: pointer;
     top: 5px;
-    right: 15px;
+    right: 20px;
     position: absolute;
     z-index: 3;
 
@@ -297,8 +307,10 @@ $action-btn-disabled-font-color: #c6c1bf;
     }
 
     .paging-info {
-       margin: auto;
-       width: $socrata-row-inspector-width - (2 * $pagination-btn-width) - (2 * $pagination-horizontal-padding);
+      @include unselectable();
+
+      margin: auto;
+      width: $socrata-row-inspector-width - (2 * $pagination-btn-width) - (2 * $pagination-horizontal-padding);
 
       .message {
         text-align: center;
@@ -317,12 +329,19 @@ $action-btn-disabled-font-color: #c6c1bf;
     }
 
     .pagination-btn {
+      @include unselectable();
+
       margin: 0;
       padding: 0;
       position: absolute;
       text-align: center;
       width: $pagination-btn-width;
       height: $pagination-height - (2 * $pagination-vertical-padding) - $pagination-top-border-width;
+      outline: none;
+
+      .caret {
+        @include unselectable();
+      }
 
       &.previous {
         left: $pagination-horizontal-padding;

@@ -34,7 +34,7 @@ module.exports = function(config) {
       'socrata.visualizations.ColumnChart.js',
       'socrata.visualizations.rowInspector.js',
       'socrata.visualizations.rowInspector.html',
-      'socrata.visualizations.rowInspector.scss',
+      'socrata.visualizations.rowInspector.css',
       'socrata.visualizations.FeatureMap.js',
       'socrata.visualizations.columnChart.css',
       'socrata.visualizations.featureMap.css',
@@ -51,8 +51,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'socrata.visualizations*.js': ['coverage'],
-      '*.scss': ['scss']
+      'socrata.visualizations*.js': ['coverage']
     },
 
     // test results reporter to use
@@ -73,15 +72,6 @@ module.exports = function(config) {
           file: 'coverage.xml' // To match simplecov
         }
       ]
-    },
-
-    scssPreprocessor: {
-      options: {
-        sourceMap: true,
-        includePaths: [
-          '.'
-        ]
-      }
     },
 
     // web server port

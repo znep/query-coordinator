@@ -23,7 +23,7 @@
 
 #socrata-row-inspector {
   display: none;
-  font-size: 1.25rem;
+  font-size: 14px;
 }
 
 #socrata-row-inspector * {
@@ -189,10 +189,16 @@
 }
 
 #socrata-row-inspector .icon-close {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   font-size: 1.3rem;
   cursor: pointer;
   top: 5px;
-  right: 15px;
+  right: 20px;
   position: absolute;
   z-index: 3;
 }
@@ -238,6 +244,12 @@
 }
 
 #socrata-row-inspector .paging-panel .paging-info {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   margin: auto;
   width: 130px;
 }
@@ -258,12 +270,28 @@
 }
 
 #socrata-row-inspector .paging-panel .pagination-btn {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   margin: 0;
   padding: 0;
   position: absolute;
   text-align: center;
   width: 100px;
   height: 35px;
+  outline: none;
+}
+
+#socrata-row-inspector .paging-panel .pagination-btn .caret {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 #socrata-row-inspector .paging-panel .pagination-btn.previous {

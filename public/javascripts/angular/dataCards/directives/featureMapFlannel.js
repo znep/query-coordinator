@@ -32,31 +32,32 @@
           } else if (scope.useDefaults) {
             // defaults are lat/lng coordiantes from a location column, which we
             // can count on being accessible in this way
-            var coordinates = formatCellContent(titleColumn.value[0], titleColumn, true);
+            var coordinates = formatContentByType(titleColumn.value[0], titleColumn, true);
             return coordinates;
           } else {
-            var title = scope.formatSubColumns(titleColumn.value, titleColumn, true);
+            var title = scope.formatCellValue(titleColumn, true);
             return _.isString(title) ? title.toUpperCase() : title;
           }
         }
 
         // Format content based on data type
-        function formatCellContent(cellContent, column, isTitle) {
+        function formatContentByType(content, column, isTitle) {
           var isTitle = isTitle || false;
 
           var isLatLng = column.physicalDatatype === 'point' || column.physicalDatatype === 'geo_entity';
 
           var datatypeToFormat = {
-            'boolean': DataTypeFormatService.renderBooleanCell(cellContent, column),
-            'number': DataTypeFormatService.renderNumberCell(cellContent, column),
-            'geo_entity': DataTypeFormatService.renderGeoCell(cellContent, column),
-            'point': DataTypeFormatService.renderGeoCell(cellContent, column),
-            'timestamp': DataTypeFormatService.renderTimestampCell(cellContent, column),
-            'floating_timestamp': DataTypeFormatService.renderTimestampCell(cellContent, column),
-            'money': DataTypeFormatService.renderMoneyCell(cellContent, column)
+            'boolean': DataTypeFormatService.renderBooleanCell(content, column),
+            'number': DataTypeFormatService.renderNumberCell(content, column),
+            'geo_entity': DataTypeFormatService.renderGeoCell(content, column),
+            'point': DataTypeFormatService.renderGeoCell(content, column),
+            'timestamp': DataTypeFormatService.renderTimestampCell(content, column),
+            'floating_timestamp': DataTypeFormatService.renderTimestampCell(content, column),
+            'money': DataTypeFormatService.renderMoneyCell(content, column),
+            'text': _.identity(content)
           };
 
-          var formattedContent = _.get(datatypeToFormat, column.physicalDatatype, cellContent);
+          var formattedContent = _.get(datatypeToFormat, column.physicalDatatype, content);
           if (isTitle && isLatLng) {
             formattedContent = formattedContent.replace(/[()]/g, '');
           }
@@ -64,59 +65,88 @@
         };
 
         // Format an array of subcolumns under a given parent column
-        scope.formatSubColumns = function(subColumns, parentColumn, isTitle) {
+        scope.formatCellValue = function(column, isTitle) {
           var isTitle = isTitle || false;
-          var formattedColumnData;
 
-          if (!_.isArray(subColumns)) {
-            return formatCellContent(subColumns, parentColumn);
+          // Format cell value if it is a single column without subcolumns
+          if (!column.isParentColumn) {
+            return formatContentByType(column.value[0], column);
           }
 
+          // Otherwise, the column is a parent column.
+          // Process its subcolumns, formatting and arranging each value acccordingly.
+          var subColumns = column.value;
+          var formattedColumnData;
+
+          // If it is a location column with only coordinates, format that directly.
           if (subColumns.length === 1 && _.has(subColumns[0], 'coordinates')) {
             // Take into account if the data represents the title, in which coordinates should not
             // be represented with parentheses.
-            formattedColumnData = formatCellContent(subColumns[0], parentColumn, isTitle);
-          } else {
-            var addressColumns = _.map(['address', 'city', 'state', 'zip'], function(column) {
-              var columnValue = _.result(_.find(subColumns, { 'columnName': column }), 'value');
-              return _.isDefined(columnValue) ? columnValue.trim() : columnValue;
-            });
-
-            // Format address following US postal format if any of its components are present
-            if (_.any(addressColumns, _.isPresent)) {
-              var address = addressColumns[0];
-              var city = addressColumns[1];
-              var state = addressColumns[2];
-              var zip = addressColumns[3];
-              var addressLines = [];
-
-              if (address) {
-                addressLines.push(address);
-              }
-
-              if (city && state && zip) {
-                addressLines.push('{0}, {1} {2}'.format(city, state, zip));
-              } else if (state && zip) {
-                addressLines.push('{0} {1}'.format(state, zip));
-              } else if (city && state) {
-                addressLines.push('{0}, {1}'.format(city, state));
-              }
-
-              formattedColumnData = addressLines.join('\n');
-            } else {
-
-              // If neither expected set of subcolumns exists, list 'name: value' for each subcolumn
-              formattedColumnData = subColumns.
-                map(function(subColumn) {
-                  return '{0}: {1}'.format(
-                    subColumn.columnName,
-                    formatCellContent(subColumn.value, parentColumn)
-                  );
-                }).
-                join(', ');
-            }
+            formattedColumnData = formatContentByType(subColumns[0], column, isTitle);
           }
 
+          // Otherwise process subcolumns based on the parent column's type.
+          switch(column.renderTypeName) {
+            case 'location':
+              var addressColumns = _.map(['address', 'city', 'state', 'zip'], function(column) {
+              var columnValue = _.result(_.find(subColumns, { 'columnName': column }), 'value');
+                return _.isDefined(columnValue) ? columnValue.trim() : columnValue;
+              });
+
+              // Format address following US postal format if any of its components are present
+              if (_.any(addressColumns, _.isPresent)) {
+                var address = addressColumns[0];
+                var city = addressColumns[1];
+                var state = addressColumns[2];
+                var zip = addressColumns[3];
+                var addressLines = [];
+
+                if (address) {
+                  addressLines.push(address);
+                }
+
+                if (city && state && zip) {
+                  addressLines.push('{0}, {1} {2}'.format(city, state, zip));
+                } else if (state && zip) {
+                  addressLines.push('{0} {1}'.format(state, zip));
+                } else if (city && state) {
+                  addressLines.push('{0}, {1}'.format(city, state));
+                }
+
+                formattedColumnData = addressLines.join('\n');
+              } else {
+                // As a back up, just display the coordinates
+                formattedColumnData = formatContentByType(subColumns[0], column, isTitle);
+              }
+              break;
+            case 'phone':
+              // Just return the phone number, not its type
+              // Given that this is stored with the parent column, it will be the
+              // first subcolumn stored
+            case 'url':
+              // Just return the url, not its description
+              // Given that this is stored with the parent column, it will be the
+              // first subcolumn stored.
+            default:
+              // If an unexpected subcolumn comes up, format and display
+              // the value of its parent column only, not its subcolumns.
+              formattedColumnData = formatContentByType(subColumns[0].value, subColumns[0], isTitle);
+              break;
+
+              // Other possible default behavior:
+
+              // If an unexpected column and subcolumns are encountered,
+              // list 'name: value' for each subcolumn
+              // formattedColumnData = subColumns.
+              //   map(function(subColumn) {
+              //     return '{0}: {1}'.format(
+              //       subColumn.columnName,
+              //       formatContentByType(subColumn.value, column)
+              //     );
+              //   }).
+              //   join(', ');
+              // break;
+          }
           return formattedColumnData;
         };
 

@@ -424,27 +424,36 @@
       var _renderTicks = function() {
 
         var numberOfTicks = 3;
-        var element = $('<div>', {
+
+        var tickMarks = _.uniq([0].concat(verticalScale.ticks(numberOfTicks))).map(function(tickValue) {
+
+          var tick = $('<div>', {
+            'class': tickValue === 0 ? 'tick origin' : 'tick',
+            text: socrata.utils.formatNumber(tickValue)
+          });
+
+          var tickTopOffset = chartHeight - verticalScale(tickValue);
+          // The `+ 2` term accounts for the border-width.
+          var tickHeight = parseInt(element.css('font-size'), 10) + 3;
+
+          if (tickTopOffset <= tickHeight) {
+            tick.addClass('below');
+            tickTopOffset += tickHeight;
+          }
+
+          tick.css('top', tickTopOffset);
+
+          return tick;
+        });
+
+        return $('<div>', {
           'class': 'ticks',
           css: {
             top: _chartScroll.position().top + topMargin,
             width: chartWidth,
             height: chartHeight + topMargin
           }
-        });
-        var tickMarks = _.map(_.uniq([0].concat(verticalScale.ticks(numberOfTicks))), function(tick) {
-          return $('<div>', {
-            'class': tick === 0 ? 'origin' : '',
-            css: {
-              top: chartHeight - verticalScale(tick)
-            },
-            text: socrata.utils.formatNumber(tick)
-          });
-        });
-
-        element.append(tickMarks);
-
-        return element;
+        }).append(tickMarks);
       };
 
       var updateLabels = function(labelSelection) {

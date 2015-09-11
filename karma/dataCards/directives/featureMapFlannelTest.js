@@ -27,7 +27,8 @@ describe('feature map flannel', function() {
       value: [{
         coordinates: [-89.115646, fakeLatitude],
         type: 'Point'
-      }]
+      }],
+      renderTypeName: 'location'
     };
   }
 
@@ -38,8 +39,10 @@ describe('feature map flannel', function() {
       format: {},
       isTitleColumn: true,
       isFeatureMapColumn: false,
+      isParentColumn: false,
+      value: [name],
       physicalDatatype: 'text',
-      value: name
+      renderTypeName: 'text'
     };
   }
 
@@ -50,25 +53,31 @@ describe('feature map flannel', function() {
         format: {},
         isTitleColumn: false,
         isFeatureMapColumn: false,
+        isParentColumn: false,
+        value: [rowNumber],
         physicalDataType: 'number',
-        value: rowNumber
+        renderTypeName: 'number'
       },
       { columnName: 'Training Center',
         format: {},
         isTitleColumn: false,
         isFeatureMapColumn: true,
-        physicalDatatype: 'point',
+        isParentColumn: false,
         value: [{
           coordinates: [-89.115646, 32.911919],
           type: 'Point'
-        }]
+        }],
+        physicalDatatype: 'point',
+        renderTypeName: 'location'
       },
       { columnName: 'Commanding Officer',
         format: {},
         isTitleColumn: false,
         isFeatureMapColumn: false,
+        isParentColumn: false,
+        value: ['Brad Hentley'],
         physicalDataType: 'text',
-        value: 'Brad Hentley'
+        renderTypeName: 'text'
       }
     ];
   }
@@ -241,6 +250,16 @@ describe('feature map flannel', function() {
 
     it('should include a title of coordinates without parentheses by default', function() {
       scope.titles = MOCK_QUERY_DEFAULT_TITLES;
+      scope.useDefaults = true;
+      scope.$digest();
+
+      var flannelTitle = element.find('.flannel-title').text();
+      expect(flannelTitle).to.match(/^-?\d+(?:\.\d+)?°,\s-?\d+(?:\.\d+)?°$/);
+    });
+
+    it('should format coordinate titles without parentheses when not default as well', function() {
+      scope.titles = MOCK_QUERY_DEFAULT_TITLES;
+      scope.useDefaults = false;
       scope.$digest();
 
       var flannelTitle = element.find('.flannel-title').text();

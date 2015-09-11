@@ -70,7 +70,7 @@
 
           // Format cell value if it is a single column without subcolumns
           if (!column.isParentColumn) {
-            return formatContentByType(column.value[0], column);
+            return formatContentByType(column.value[0], column, isTitle);
           }
 
           // Otherwise, the column is a parent column.

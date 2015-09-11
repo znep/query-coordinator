@@ -95,6 +95,16 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def is_admin?
+    !!current_user.try(:is_admin?)
+  end
+
+  def show_nbe_redirection_warning?
+    feature_flags = FeatureFlags.derive(@view, request)
+    (is_admin? || feature_flags.disable_obe_redirection) &&
+      !feature_flags.disable_nbe_redirection_warning_message
+  end
+
 protected
   # v4 chrome style error messages
   def render_forbidden(message = I18n.t('core.auth.need_permission'))

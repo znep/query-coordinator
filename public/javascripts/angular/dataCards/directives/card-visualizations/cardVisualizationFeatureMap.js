@@ -190,15 +190,36 @@
                     // 'crime_location'.
                     var parentColumnName = cellName.slice(0, cellName.lastIndexOf('_'));
                     var parentPosition = columns[parentColumnName].position;
+                    var parentColumn = formattedRowData[parentPosition];
+
+                    // If the parent column has not already been marked as one,
+                    // mark it, and format its existing value as a subcolumn,
+                    // migrating over its attributes
+                    if (!parentColumn.isParentColumn) {
+                      parentColumn.isParentColumn = true;
+                      var existingValue = parentColumn.value[0];
+                      parentColumn.value[0] = {
+                        columnName: parentColumn.name,
+                        value: existingValue,
+                        format: parentColumn.format,
+                        physicalDatatype: parentColumn.physicalDatatype,
+                        renderTypeName: parentColumn.renderTypeName
+                      };
+                    }
+
                     var subColumnName = constructSubColumnName(column.name, parentColumnName);
 
-                    // Add the subcolumn data.
-                    formattedRowData[parentPosition].value.push({
+                    // Add the subcolumn data to the parent column's value.
+                    parentColumn.value.push({
                       columnName: subColumnName,
                       value: cellValue,
                       format: column.format,
-                      physicalDatatype: column.physicalDatatype
+                      physicalDatatype: column.physicalDatatype,
+                      renderTypeName: column.renderTypeName
                     });
+
+                    // Overwrite saved parent column with updated parent column
+                    formattedRowData[parentPosition] = parentColumn;
                   } else {
                     // If the cellValue is an object (e.g. a coordinate point),
                     // we should format it slightly differently.
@@ -207,9 +228,11 @@
                       columnName: column.name,
                       isTitleColumn: (cellName === flannelTitleColumn),
                       isFeatureMapColumn: (cellName === fieldName),
-                      value: _.isObject(cellValue) ? [cellValue] : cellValue,
-                      format: _.isObject(cellValue) ? undefined : column.format,
-                      physicalDatatype: column.physicalDatatype
+                      isParentColumn: false,
+                      value: [cellValue],
+                      format: column.format,
+                      physicalDatatype: column.physicalDatatype,
+                      renderTypeName: column.renderTypeName
                     };
                   }
                 });

@@ -18,6 +18,47 @@ describe BrowseHelper do
     it 'does not change a joined string exactly the length desired' do
       expect(helper.join_and_truncate_array(%w(one two), 8)).to eql('one, two')
     end
+
+    it 'works with nil values' do
+      input = ['one', 'two', nil, 'three']
+      expect(helper.join_and_truncate_array(input, 8)).to eql('one, two, ...')
+    end
+
+    it 'works with a nil array' do
+      expect(helper.join_and_truncate_array(nil, 1)).to eql('')
+    end
+
+    it 'works with a nil in the first position' do
+      input = [nil, 'one', 'two', 'three']
+      expect(helper.join_and_truncate_array(input, 3)).to eql(', ...')
+    end
+
+    it 'works with a tag that starts with ","' do
+      input = [',what']
+      expect(helper.join_and_truncate_array(input, 3)).to eql(',w...')
+    end
+
+    it 'works with a tag that ends with ","' do
+      input = ['what,']
+      expect(helper.join_and_truncate_array(input, 3)).to eql('wha...')
+    end
+
+    it 'works with tags with "/"' do
+      input = ['this/that']
+      expect(helper.join_and_truncate_array(input, 3)).to eql('thi...')
+    end
+
+    it 'works with > 50 character tags' do
+      input = ['planning consolidated plan 2013 action plan housing and community development']
+      expect(helper.join_and_truncate_array(input)).to eql('planning consolidated plan 2013 action plan housin...')
+    end
+
+    it 'works with tag objects' do
+      tag = Tag.new
+      tag.data = 'a tag'
+      input = [tag]
+      expect(helper.join_and_truncate_array(input, 2)).to eql('a ...')
+    end
   end
 
   describe '#view_rel_type' do

@@ -42,15 +42,12 @@ class DatasetsController < ApplicationController
 
     if @view.new_backend?
       destination_url = view_redirection_url
-      is_admin = current_user.try(:is_admin?)
-      disable_obe_redirection = FeatureFlags.derive(@view, request).disable_obe_redirection
-      disable_nbe_redirection_warning_message = FeatureFlags.derive(@view, request).disable_nbe_redirection_warning_message
 
-      if (is_admin || disable_obe_redirection) && !disable_nbe_redirection_warning_message
+      if show_nbe_redirection_warning?
         flash[:notice] = I18n.t('screens.ds.new_ux_nbe_warning', url: "<a href=#{destination_url}>#{destination_url}</a>").html_safe
       end
 
-      if !is_admin && !disable_obe_redirection
+      if !is_admin? && !FeatureFlags.derive(@view, request).disable_obe_redirection
         if FeatureFlags.derive(@view, request).force_redirect_to_data_lens === true
           begin
             pages = fetch_pages_for_dataset(@view.id).fetch(:publisher, [])

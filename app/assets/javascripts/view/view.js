@@ -40,7 +40,7 @@ $(document).on('ready', function() {
     var blacklist = ['spacer', 'horizontal-rule'];
     var presenting = false;
     var presentationNavigation = document.querySelector('.presentation-navigation');
-    var blocks = Array.prototype.slice.call(document.querySelectorAll('.block'), 0);
+    var blocks = Array.prototype.slice.call(document.querySelectorAll('.block'));
     var index = 0;
 
     blocks.forEach(function(block) {
@@ -49,7 +49,7 @@ $(document).on('ready', function() {
       }
     });
 
-    pageable = Array.prototype.slice.call(document.querySelectorAll('.block[data-page-index]'), 0);
+    pageable = Array.prototype.slice.call(document.querySelectorAll('.block[data-page-index]'));
 
     document.documentElement.addEventListener('keyup', pageOrClose);
     document.querySelector('.btn-presentation-next').addEventListener('click', pageNext);
@@ -138,7 +138,7 @@ $(document).on('ready', function() {
 
     function notBlacklisted(element) {
       element = element.querySelector('.component-container > .component');
-      var classes = Array.prototype.slice.call(element.classList, 0);
+      var classes = Array.prototype.slice.call(element.classList);
       return classes.every(function(value) {
         return blacklist.indexOf(value.replace('component-', '')) === -1;
       });

@@ -1,13 +1,13 @@
 module BrowseHelper
 
   def join_and_truncate_array(arr, truncation_length = 50, join_character = ',')
-    return '' if arr.empty?
+    return '' unless arr.present?
 
     str = arr.join("#{join_character} ")
     if str.length > truncation_length
       last_join_index = str.rindex(join_character, truncation_length)
       if last_join_index.nil?
-        str = arr[0].slice(0, truncation_length)
+        str = arr[0].to_s.slice(0, truncation_length)
       else
         str = str.slice(0, last_join_index + 2)
       end

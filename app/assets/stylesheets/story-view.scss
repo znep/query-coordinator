@@ -74,7 +74,7 @@
     transition: background-color 0.2s;
 
     &:hover {
-      background-color: darken($view-mode-button-background-color, 10%);
+      background-color: $view-mode-button-navigation-hover-background-color;
     }
   }
 

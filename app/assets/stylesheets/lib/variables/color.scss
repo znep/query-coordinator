@@ -105,6 +105,7 @@ $view-mode-button-color: #ddd;
 $view-mode-button-background-color: #474747;
 $view-mode-button-disabled-color: #fff;
 $view-mode-button-disabled-background-color: #3398DC;
+$view-mode-button-navigation-hover-background-color: darken($view-mode-button-disabled-background-color, 10%);
 
 // Flyout
 $flyout-color: #8a8686;

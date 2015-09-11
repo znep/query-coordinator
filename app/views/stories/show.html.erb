@@ -1,33 +1,3 @@
-<style>
-  .block.hidden {
-    display: none;
-  }
-
-  .presentation-mode,
-  .linear-mode,
-  .presentation-navigation {
-    position: fixed;
-    right: 25px;
-    z-index: 10;
-  }
-
-  .linear-mode {
-    bottom: 65px;
-  }
-
-  .presentation-mode {
-    bottom: 45px;
-  }
-
-  .presentation-navigation.hidden {
-    display: none
-  }
-
-  .presentation-navigation {
-    bottom: 25px;
-  }
-</style>
-
 <div class="user-story-container">
   <div class="user-story large theme-<%= @story.theme %>">
     <% @story.blocks.each do |block| -%>
@@ -53,9 +23,4 @@
   </div>
 </div>
 
-<button class="linear-mode" disabled>Linear Mode</button>
-<button class="presentation-mode">Presentation Mode</button>
-<div class="presentation-navigation hidden">
-  <button class="presentation-previous">Previous</button>
-  <button class="presentation-next">Next</button>
-</div>
+<%= render partial: 'stories/partials/presentation_mode' %>

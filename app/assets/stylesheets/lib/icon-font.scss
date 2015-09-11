@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:asset-url('icomoon.eot?-wh4b1h');
-  src:asset-url('icomoon.eot?#iefix-wh4b1h') format('embedded-opentype'),
-    asset-url('icomoon.ttf?-wh4b1h') format('truetype'),
-    asset-url('icomoon.woff?-wh4b1h') format('woff'),
-    asset-url('icomoon.svg?-wh4b1h#icomoon') format('svg');
+  src:asset-url('icomoon.eot?zd96j7');
+  src:asset-url('icomoon.eot?#iefixzd96j7') format('embedded-opentype'),
+    asset-url('icomoon.ttf?zd96j7') format('truetype'),
+    asset-url('icomoon.woff?zd96j7') format('woff'),
+    asset-url('icomoon.svg?zd96j7#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -23,14 +23,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-warning:before {
-  content: "\e604";
+.icon-arrow-next:before {
+  content: "\eddb";
 }
-.icon-stories-menu:before {
-  content: "\e603";
-}
-.icon-stories-icon:before {
-  content: "\e602";
+.icon-arrow-prev:before {
+  content: "\eddf";
 }
 .icon-presentation:before {
   content: "\e95c";
@@ -106,4 +103,13 @@
 }
 .icon-paragraph-right3:before {
   content: "\eec0";
+}
+.icon-warning:before {
+  content: "\e604";
+}
+.icon-stories-menu:before {
+  content: "\e603";
+}
+.icon-stories-icon:before {
+  content: "\e602";
 }

@@ -9,4 +9,56 @@
       @include selectable(); /* remove unselectable from edit mode */
     }
   }
+
+  .block.hidden {
+    display: none;
+  }
+
+  .presentation-mode,
+  .linear-mode,
+  .presentation-navigation {
+    position: fixed;
+    right: 0;
+    z-index: 10;
+  }
+
+  .presentation-mode,
+  .linear-mode,
+  .presentation-next,
+  .presentation-previous {
+    background-color: $view-mode-button-background-color;
+    color: $view-mode-button-color;
+    border: none;
+    width: $view-mode-button-width;
+    height: $view-mode-button-width;
+    font-size: 2.2rem;
+    right: 0;
+    text-align: center;
+
+    &:disabled {
+      background-color: $view-mode-button-disabled-background-color;
+      color: $view-mode-button-disabled-color;
+    }
+  }
+
+  .linear-mode {
+    bottom: $view-mode-button-width * 2;
+  }
+
+  .presentation-mode {
+    bottom: $view-mode-button-width;
+  }
+
+  .presentation-previous {
+    float: left;
+  }
+
+  .presentation-navigation {
+    right: $view-mode-button-width;
+    bottom: $view-mode-button-width;
+
+    &.hidden {
+      display: none;
+    }
+  }
 }

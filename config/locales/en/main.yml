@@ -36,3 +36,10 @@ en:
     title: 'Styled Themes'
     description: 'Themes to make your story look Grrrrrrreat!'
     render_error: 'There was an error'
+  preview_mode:
+    presentation_mode:
+      title: "Presentation Mode"
+      previous: "Previous"
+      next: "Next"
+    linear_mode:
+      title: "Linear Mode"

@@ -199,7 +199,7 @@
                       parentColumn.isParentColumn = true;
                       var existingValue = parentColumn.value[0];
                       parentColumn.value[0] = {
-                        columnName: parentColumn.name,
+                        columnName: parentColumn.columnName,
                         value: existingValue,
                         format: parentColumn.format,
                         physicalDatatype: parentColumn.physicalDatatype,

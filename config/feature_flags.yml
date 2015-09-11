@@ -104,6 +104,10 @@ enable_stories:
 enable_xls_download_type:
   description: Control visibility of the "Export > Download dataset as XLS/XLSX" formats.  A reason for disabling these download types is to avoid customer confusion stemming from the fact that there is a hard limit on the number of cells that can be exported for XLS/XLSX downloads.  XLS and XLSX file exports are truncated at 250,000 cells to preserve performance.
   defaultValue: true
+eventing_metrics:
+  description: Use experimental event-based instead of key-value metrics. If 'both', emit both.
+  defaultValue: false
+  expectedValues: both
 feature_map_default_extent:
   description: "The site-wide default extent for feature/point maps. Should be a single-quoted JSON object. Ex: '{\"southwest\":[41.681944,-87.827778],\"northeast\":[42.081944,-87.427778]}'"
   defaultValue: ''

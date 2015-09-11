@@ -55,6 +55,9 @@ default: &default
   odysseus_app_name: {{ ODYSSEUS_APP_NAME }}
   cetera_host: {{ CETERA_HOST }}
 
+  {% if KAFKA_REST_URI is defined -%}
+  kafka_rest_uri: {{ KAFKA_REST_URI }}
+  {%- endif %}
 
   {% if INTERCESSIO_SERVER is defined -%}
   intercessio_uri: http://{{ INTERCESSIO_SERVER }}:1313

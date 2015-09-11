@@ -110,6 +110,8 @@ administration-index-screen:
 - screen-admin-index
 administration-analytics-screen:
 - screen-metrics
+administration-georegions:
+- screen-administration-georegions
 administration-metadata:
 - screen-administration-metadata
 administration-moderation:

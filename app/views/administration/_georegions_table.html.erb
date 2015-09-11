@@ -1,0 +1,51 @@
+<div class="gridListWrapper">
+  <table class="gridList georegions-table" cellspacing="0">
+    <colgroup>
+      <col class="name" />
+      <col class="toggle-enabled" />
+      <%- if allow_actions -%>
+      <col class="edit-action" />
+      <col class="remove-action" />
+      <%- end -%>
+    </colgroup>
+    <thead>
+    <tr>
+      <th class="name"><div><%= t("#{prefix}.region_name") %></div><span class="icon"></span></th>
+      <th class="toggle-enabled"><div><%= t("#{prefix}.enabled?") %></div><span class="icon"></span></th>
+      <%- if allow_actions -%>
+      <th class="edit-action"><div><%= t("#{prefix}.actions") %></div><span class="icon"></span></th>
+      <th class="remove-action"></th>
+      <%- end -%>
+    </tr>
+    </thead>
+    <tbody>
+    <%- georegions.each do |georegion| -%>
+      <tr class="item">
+        <td class="name"><%= georegion[:name] %></td>
+        <td class="toggle-enabled">
+          <span class="enabled-state <%= georegion[:enabled] ? 'is-enabled' : 'is-disabled'%>">
+            <%=  t(georegion[:enabled] ? "#{prefix}.enabled_yes" : "#{prefix}.enabled_no") %>
+          </span>
+          <%- if georegion[:enabled] -%>
+            <%= form_button({ :action => 'disable_georegion' }, t("#{prefix}.disable"),
+              {:method => :put}, {:class => 'button'}) %>
+          <%- else -%>
+            <%= form_button({ :action => 'enable_georegion' }, t("#{prefix}.enable"),
+              {:method => :put}, {:class => 'button'}) %>
+          <%- end -%>
+        </td>
+        <%- if allow_actions -%>
+        <td class="edit-action">
+          <%= form_button({ :action => 'edit_georegion' }, t("#{prefix}.edit"),
+            {:method => :put}, {:class => 'button'}) %>
+        </td>
+        <td class="remove-action">
+          <%= form_button({ :action => 'remove_georegion' }, t("#{prefix}.remove"),
+            {:method => :delete}, {:class => 'button'}) %>
+        </td>
+        <%- end -%>
+      </tr>
+    <%- end -%>
+    </tbody>
+  </table>
+</div>

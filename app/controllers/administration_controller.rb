@@ -127,6 +127,64 @@ class AdministrationController < ApplicationController
   end
 
   #
+  # Manage Georegions
+  #
+
+  before_filter :only => [
+      :georegions, :add_georegion, :enable_georegion, :disable_georegion, :edit_georegion, :remove_georegion
+    ] {|c| c.check_auth_levels_any(['edit_others_datasets', 'edit_site_theme']) }
+  def georegions
+
+    curated_regions = CuratedRegion.find.
+      map do |r|
+        {
+          :default => r.defaultFlag,
+          :enabled => r.enabledFlag,
+          :id => r.id,
+          :name => r.name
+        }
+      end.
+      partition { |r| r[:default] }
+
+    default_curated_regions = curated_regions[0]
+    custom_curated_regions = curated_regions[1]
+
+    all_regions = default_curated_regions + custom_curated_regions
+    available_count = all_regions.length
+    enabled_count = all_regions.select {|r| r[:enabled] }.length
+
+    @georegions = {
+      :counts => {
+        :available => available_count,
+        :enabled => enabled_count
+      },
+      :custom => custom_curated_regions,
+      :default => default_curated_regions
+    }
+  end
+
+  def add_georegion
+    handle_button_response(true, 'error', 'success', :georegions)
+  end
+
+  def enable_georegion
+    handle_button_response(true, 'error', 'success', :georegions)
+  end
+
+  def disable_georegion
+    handle_button_response(true, 'error', 'success', :georegions)
+  end
+
+  def edit_georegion
+    handle_button_response(true, 'error', 'success', :georegions)
+  end
+
+  def remove_georegion
+    handle_button_response(true, 'error', 'success', :georegions)
+  end
+
+
+  #
   # Manage Users and User Roles
   #
 

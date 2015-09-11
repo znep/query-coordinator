@@ -1,0 +1,54 @@
+$is-enabled-color: #5F865F;
+$is-disabled-color: #963D3D;
+
+.enabled-state {
+  display: inline-block;
+  width: 2em;
+  &.is-enabled {
+    color: $is-enabled-color;
+  }
+  &.is-disabled {
+    color: $is-disabled-color;
+  }
+}
+
+input.button {
+  font-size: 0.65rem;
+}
+
+.georegions-table {
+  .name {
+    width: 50%;
+  }
+  .toggle-enabled, .edit-action, .remove-action {
+    input.button {
+      font-size: 0.8em;
+      opacity: 0.3;
+      @include transition-duration(0.5s);
+      @include transition-property(opacity);
+    }
+    &:hover .button {
+      opacity: 1;
+    }
+  }
+  .edit-action {
+    width: 4.5em;
+  }
+  td.edit-action, th.edit-action {
+    padding-right: 0;
+  }
+  .remove-action {
+    width: 7em;
+  }
+  td.remove-action, th.remove-action {
+    padding-left: 0;
+  }
+}
+
+.georegions-title-custom {
+  float: left;
+}
+
+.georegions-controls-custom {
+  float: right;
+}

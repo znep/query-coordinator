@@ -52,16 +52,17 @@ $(document).on('ready', function() {
     pageable = Array.prototype.slice.call(document.querySelectorAll('.block[data-page-index]'), 0);
 
     document.documentElement.addEventListener('keyup', pageOrClose);
-    document.querySelector('.presentation-next').addEventListener('click', pageNext);
-    document.querySelector('.presentation-previous').addEventListener('click', pagePrevious);
-    document.querySelector('.presentation-mode').addEventListener('click', enablePresentationMode);
-    document.querySelector('.linear-mode').addEventListener('click', enableLinearMode);
+    document.querySelector('.btn-presentation-next').addEventListener('click', pageNext);
+    document.querySelector('.btn-presentation-previous').addEventListener('click', pagePrevious);
+    document.querySelector('.btn-presentation-mode').addEventListener('click', enablePresentationMode);
+    document.querySelector('.btn-linear-mode').addEventListener('click', enableLinearMode);
 
     function enablePresentationMode(event) {
       presenting = true;
 
+      document.querySelector('.user-story').classList.add('presentation-mode');
       event.target.setAttribute('disabled', 'disabled');
-      document.querySelector('.linear-mode').removeAttribute('disabled');
+      document.querySelector('.btn-linear-mode').removeAttribute('disabled');
 
       blocks.forEach(function(block) {
         block.classList.toggle('hidden', block !== pageable[0]);
@@ -73,8 +74,9 @@ $(document).on('ready', function() {
     function enableLinearMode(event) {
       presenting = false;
 
+      document.querySelector('.user-story').classList.remove('presentation-mode');
       event.target.setAttribute('disabled', 'disabled');
-      document.querySelector('.presentation-mode').removeAttribute('disabled');
+      document.querySelector('.btn-presentation-mode').removeAttribute('disabled');
 
       blocks.forEach(function(block) {
         block.classList.remove('hidden');
@@ -111,14 +113,24 @@ $(document).on('ready', function() {
 
       if (presenting) {
         switch (key) {
+          // ESC
           case 27:
-            document.querySelector('.linear-mode').click();
+            document.querySelector('.btn-linear-mode').click();
             break;
+          // <=
           case 37:
             pagePrevious();
             break;
+          // =>
           case 39:
             pageNext();
+            break;
+        }
+      } else {
+        switch (key) {
+          // p
+          case 80:
+            document.querySelector('.btn-presentation-mode').click();
             break;
         }
       }

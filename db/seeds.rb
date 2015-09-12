@@ -44,18 +44,34 @@ block_4 = Block.create(
   created_by: 'storyteller@socrata.com'
 )
 
+block_5 = Block.create(
+  layout: '12',
+  components: [
+    {type: 'horizontalRule'}
+  ],
+  created_by: 'storyteller@socrata.com'
+)
+
 published_story = PublishedStory.create(
   uid: 'test-test',
   block_ids: [block_1.id, block_2.id, block_3.id, block_4.id],
   created_by: 'storyteller@socrata.com'
 )
+
 draft_story = DraftStory.create(
   uid: 'test-test',
   block_ids: [],
   created_by: 'storyteller@socrata.com'
 )
+
 draft_story = DraftStory.create(
   uid: 'hasb-lock',
   block_ids: [block_1.id, block_2.id, block_3.id, block_4.id],
+  created_by: 'storyteller@socrata.com'
+)
+
+presentation_story = DraftStory.create(
+  uid: 'pres-ents',
+  block_ids: [block_1.id, block_2.id, block_3.id, block_5.id, block_4.id],
   created_by: 'storyteller@socrata.com'
 )

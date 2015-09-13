@@ -65,7 +65,6 @@ class PageMetadataManager
     rescue
       result = nil
     end
-
     if is_backed_by_metadb?(result)
       page_metadata = result[:displayFormat][:data_lens_page_metadata]
       page_metadata = ensure_page_metadata_properties(page_metadata)
@@ -147,6 +146,11 @@ class PageMetadataManager
       metadb_metadata = nil
     end
 
+    # Update the name and description of the lens in metadb. 
+    # For v1 data lenses, this is a lens with display_type of "new_view"
+    # For v2 data lenses, this is a lens with display_type of "data_lens"
+    # Note that this *only* affects the lenses name and description, *not* 
+    # the page_metadata in displayFormat. 
     new_view_manager.update(page_metadata['pageId'],
       :name => page_metadata['name'],
       :description => page_metadata['description']
@@ -177,6 +181,9 @@ class PageMetadataManager
       }, status: '500' }
     end
 
+    # Question for Dylan and Andrew: I don't know how this call to new_view_manager.fetch
+    # succeeds. The view was deleted by the View.delete(id) line 16 lines above this. 
+    # Seems like we would need to move this before that call. 
     begin
       metadb_metadata = new_view_manager.fetch(id)
     rescue
@@ -258,7 +265,7 @@ class PageMetadataManager
     @logical_datatype_name = 'fred'
   end
 
-  # Creates or updates a metadb backed page.
+  # Updates a metadb backed page.
   # NOTE - currently this is "last write wins", meaning that if multiple users are editing the
   # metadata at the same time, the last one to save will obliterate any changes other users
   # may have made. This should be fixed with versioning within the metadata.

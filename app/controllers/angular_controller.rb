@@ -76,7 +76,8 @@ class AngularController < ActionController::Base
     rescue UnauthorizedDatasetMetadataRequest
       return render_403
     rescue DatasetMetadataNotFound
-      return render_404
+#      return render_404 # To Do: CORE-6612: Adjust fetch_pages_for_dataset to work with V2 Data Lenses. 
+#      but for the moment, commenting out this render_404 allows V2 data lenses to render. 
     rescue UnknownRequestError => error
       error_class = 'PagesForDatasetRequestFailure'
       error_message = "Could not serve app: encountered unknown error " \

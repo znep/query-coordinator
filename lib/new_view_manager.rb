@@ -60,7 +60,7 @@ class NewViewManager
     update_page_url(new_page_id, page_url) unless v2_data_lens
 
     begin
-      View.find(new_page_id).publish
+      View.find(new_page_id).publish unless v2_data_lens
     rescue CoreServer::ResourceNotFound => error
       report_error(
         "Failed to mark bootstrapped page as published. Core responded with 404 for new_page_id: #{new_page_id}"
@@ -114,6 +114,10 @@ class NewViewManager
 
   # Creates metadata in MetaDB with page metadata, rather than in Phidippides.
   def create_v2_data_lens_in_metadb(page_metadata, category)
+
+    # We are creating a V2 data lens. Therefore its version should be 2. 
+    page_metadata['version'] = 2
+
     # NOTE: Category is not validated. If category is not present in the
     # domain's defined categories, the category will be ignored by core.
     url = '/views.json?accessType=WEBSITE'
@@ -126,17 +130,12 @@ class NewViewManager
       },
       :displayType => 'data_lens',
       :displayFormat => {
-        :data_lens_page_metadata => {
-          :name => page_metadata[:name],
-          :description => page_metadata[:description],
-          :cards => page_metadata[:cards],
-          :pageId => '',
-          :datasetId => page_metadata[:datasetId],
-          :defaultDateTruncFunction => page_metadata[:defaultDateTruncFunction],
-          :version => 2
-        }
+        :data_lens_page_metadata => page_metadata
       },
       :query => {},
+      :flags => ['default'],
+      :id => page_metadata['datasetId'],
+      :originalViewId => page_metadata['datasetId'],
       :category => category
     }
 

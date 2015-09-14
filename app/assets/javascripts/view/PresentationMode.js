@@ -16,7 +16,6 @@
   function PresentationMode() {
     var pageable;
     var blacklist = ['spacer', 'horizontal-rule'];
-    var presenting = false;
     var presentationNavigation = document.querySelector('.presentation-navigation');
     var blocks = Array.prototype.slice.call(document.querySelectorAll('.block'));
     var index = 0;
@@ -36,8 +35,6 @@
     document.querySelector('.btn-linear-mode').addEventListener('click', enableLinearMode);
 
     function enablePresentationMode(event) {
-      presenting = true;
-
       document.querySelector('.user-story').classList.add('presentation-mode');
       event.target.setAttribute('disabled', 'disabled');
       document.querySelector('.btn-linear-mode').removeAttribute('disabled');
@@ -50,8 +47,6 @@
     }
 
     function enableLinearMode(event) {
-      presenting = false;
-
       document.querySelector('.user-story').classList.remove('presentation-mode');
       event.target.setAttribute('disabled', 'disabled');
       document.querySelector('.btn-presentation-mode').removeAttribute('disabled');
@@ -61,6 +56,8 @@
       });
 
       presentationNavigation.classList.add('hidden');
+
+      document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
     }
 
@@ -88,8 +85,9 @@
 
     function pageOrClose(event) {
       var key = event.charCode || event.keyCode;
+      var isPresenting = document.querySelector('.presentation-mode').length === 1;
 
-      if (presenting) {
+      if (isPresenting) {
         switch (key) {
           // ESC
           case 27:

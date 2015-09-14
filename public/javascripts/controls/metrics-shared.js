@@ -307,13 +307,15 @@ metricsNS.summarySectionCallback = function($context, slice, section)
         // Note that Highcharts.numberFormat rounds, so only values in [1, 1.5)
         // will be displayed as "1".
         var percent = Math.abs(fraction) * 100;
-        if (percent > 0 && percent < 1) {
+        if (!_.isFinite(percent)) {
+            mappedData[key] = '100%';
+        } else if (percent > 0 && percent < 1) {
             mappedData[key] = '< 1%';
         } else {
             mappedData[key] = '{0}%'.format(Highcharts.numberFormat(percent, 0));
         }
 
-        if (fraction === 0 || !_.isFinite(fraction)) {
+        if (fraction === 0 || _.isNaN(fraction)) {
             mappedData[key + 'Class'] = 'hidden';
         } else if (fraction < 0) {
             mappedData[key + 'Class'] = 'minus';

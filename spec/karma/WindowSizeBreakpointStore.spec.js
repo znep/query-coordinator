@@ -44,7 +44,9 @@
 
     beforeEach(function() {
       sinon.stub($.fn, 'resize', function (windowResizeCallback) {
-        resizeCallback = windowResizeCallback;
+        if (typeof windowResizeCallback === 'function') {
+          resizeCallback = windowResizeCallback;
+        }
       });
     });
 

@@ -85,7 +85,7 @@
 
     function pageOrClose(event) {
       var key = event.charCode || event.keyCode;
-      var isPresenting = document.querySelector('.presentation-mode').length === 1;
+      var isPresenting = document.querySelector('.presentation-mode');
 
       if (isPresenting) {
         switch (key) {

@@ -250,6 +250,11 @@ class NewUxBootstrapController < ActionController::Base
 
     page_id = page_creation_response.try(:[], :body).try(:[], :pageId)
 
+    # For V2 Data Lenses, the pageId is returned with a string key rather than a symbol key.
+    unless page_id.present?
+      page_id = page_creation_response.try(:[], :body).try(:[], 'pageId')
+    end
+
     unless page_creation_response[:status] == '200' && page_id.present?
       # Somehow the page creation failed so we should notify Airbrake.
       Airbrake.notify(

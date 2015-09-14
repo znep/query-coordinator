@@ -65,6 +65,7 @@ class PageMetadataManager
     rescue
       result = nil
     end
+
     if is_backed_by_metadb?(result)
       page_metadata = result[:displayFormat][:data_lens_page_metadata]
       page_metadata = ensure_page_metadata_properties(page_metadata)
@@ -114,7 +115,7 @@ class PageMetadataManager
       v2_data_lens
     )
 
-    # For V2 Data Lenses, adding the pageId is handled at the tail end of 
+    # For V2 Data Lenses, adding the pageId is handled at the tail end of
     # new_view_manager.create_v2_data_lens_in_metadb
     page_metadata['pageId'] = new_page_id
 
@@ -148,11 +149,11 @@ class PageMetadataManager
       metadb_metadata = nil
     end
 
-    # Update the name and description of the lens in metadb. 
+    # Update the name and description of the lens in metadb.
     # For v1 data lenses, this is a lens with display_type of "new_view"
     # For v2 data lenses, this is a lens with display_type of "data_lens"
-    # Note that this *only* affects the lenses name and description, *not* 
-    # the page_metadata in displayFormat. 
+    # Note that this *only* affects the lenses name and description, *not*
+    # the page_metadata in displayFormat.
     new_view_manager.update(page_metadata['pageId'],
       :name => page_metadata['name'],
       :description => page_metadata['description']
@@ -184,8 +185,8 @@ class PageMetadataManager
     end
 
     # Question for Dylan and Andrew: I don't know how this call to new_view_manager.fetch
-    # succeeds. The view was deleted by the View.delete(id) line 16 lines above this. 
-    # Seems like we would need to move this before that call. 
+    # succeeds. The view was deleted by the View.delete(id) line 16 lines above this.
+    # Seems like we would need to move this before that call.
     begin
       metadb_metadata = new_view_manager.fetch(id)
     rescue

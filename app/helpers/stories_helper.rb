@@ -19,7 +19,8 @@ module StoriesHelper
       'assetSelector' => 'component_asset_selector',
       'horizontalRule' => 'component_horizontal_rule',
       'spacer' => 'component_spacer',
-      'image' => 'component_image'
+      'image' => 'component_image',
+      'embeddedHTML' => 'component_embedded_html'
     }
 
     if component_type_mapping[component_type].nil?

@@ -115,7 +115,7 @@ class NewViewManager
   # Creates metadata in MetaDB with page metadata, rather than in Phidippides.
   def create_v2_data_lens_in_metadb(page_metadata, category)
 
-    # We are creating a V2 data lens. Therefore its version should be 2. 
+    # We are creating a V2 data lens. Therefore its version should be 2.
     page_metadata['version'] = 2
 
     # NOTE: Category is not validated. If category is not present in the

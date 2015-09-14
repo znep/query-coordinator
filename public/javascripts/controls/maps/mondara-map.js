@@ -1,6 +1,61 @@
 (function($) {
   // Should inherit from tiledata.
 
+  var NBEFeatureGetter = OpenLayers.Class(OpenLayers.Control.GetFeature, {
+
+    initialize: function(options) {
+      this._layer = options.layer;
+      OpenLayers.Control.GetFeature.prototype.initialize.call(this, options);
+    },
+
+    selectClick: function(evt) {
+      var proj = 'EPSG:4326';
+      var toProjection = new OpenLayers.Projection(proj);
+      var esp9xxLonLat = this._layer._map.baseLayer.
+          getLonLatFromViewPortPx(this._layer._map.events.getMousePosition(evt));
+      var coord = esp9xxLonLat.transform(this._layer._map.getProjectionObject(), toProjection);
+      this.request(coord);
+    },
+
+    request: function(coord) {
+      var layerIds = this._layer._config.layers.split(',');
+      $.when.apply(this, layerIds.map(function(uid) {
+        var layerUrl = '/api/geospatial/' + uid;
+        return $.getJSON(layerUrl, {
+          lat: coord.lat,
+          lng: coord.lon,
+          zoom: this._layer._map.zoom
+        });
+      }.bind(this))).then(function() {
+        //$.when has a completely different callback signature when called with one argument
+        //vs > 1 argument. Which is super unpleasant...so we need to do this
+        //see https://api.jquery.com/jquery.when/ (or don't)
+        var resps;
+        if (layerIds.length === 1) {
+          resps = [arguments[0]];
+        } else {
+          resps = Array.prototype.slice.call(arguments).map(function(args) {
+            return args[0];
+          });
+        }
+
+        var features = resps.reduce(function(acc, featureArr) {
+          return acc.concat(featureArr);
+        }, []).map(function(feature) {
+          //wrap each one
+          return {attributes: feature};
+        });
+
+
+        features.length && this.events.triggerEvent('featuresselected', {
+          features: features
+        });
+      }.bind(this), function(err) {
+        //TODO: there are no mechanisms to handle errors apparently?
+      });
+    }
+  });
+
   var MapProvider = function() {};
 
   MapProvider.prototype = {
@@ -81,60 +136,7 @@
     }
   });
 
-  var NBEFeatureGetter = OpenLayers.Class(OpenLayers.Control.GetFeature, {
 
-    initialize: function(options) {
-      this._layer = options.layer;
-      OpenLayers.Control.GetFeature.prototype.initialize.call(this, options);
-    },
-
-    selectClick: function(evt) {
-      var proj = 'EPSG:4326';
-      var toProjection = new OpenLayers.Projection(proj);
-      var esp9xxLonLat = this._layer._map.baseLayer.
-          getLonLatFromViewPortPx(this._layer._map.events.getMousePosition(evt));
-      var coord = esp9xxLonLat.transform(this._layer._map.getProjectionObject(), toProjection);
-      this.request(coord, proj);
-    },
-
-    request: function(coord, proj) {
-      var layerIds = this._layer._config.layers.split(',');
-      $.when.apply(this, layerIds.map(function(uid) {
-        var layerUrl = this._layer._config.owsUrl.replace('${uid}', uid);
-        return $.getJSON(layerUrl, {
-          lat: coord.lat,
-          lng: coord.lon,
-          srs: proj
-        });
-      }.bind(this))).then(function() {
-        //$.when has a completely different callback signature when called with one argument
-        //vs > 1 argument. Which is super unpleasant...so we need to do this
-        //see https://api.jquery.com/jquery.when/ (or don't)
-        var resps;
-        if (layerIds.length === 1) {
-          resps = [arguments[0]];
-        } else {
-          resps = Array.prototype.slice.call(arguments).map(function(args) {
-            return args[0];
-          });
-        }
-
-        var features = resps.reduce(function(acc, featureArr) {
-          return acc.concat(featureArr);
-        }, []).map(function(feature) {
-          //wrap each one
-          return {attributes: feature};
-        });
-
-
-        this.events.triggerEvent('featuresselected', {
-          features: features
-        });
-      }.bind(this), function(err) {
-        //TODO: there are no mechanisms to handle errors apparently?
-      });
-    }
-  });
 
   // There's a concept called OverlayLayer in the old code, but I don't see any reason for it.
   $.Control.registerMixin('mondara', {

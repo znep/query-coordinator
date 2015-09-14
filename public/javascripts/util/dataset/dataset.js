@@ -238,7 +238,7 @@ var Dataset = ServerModel.extend({
     isExportable: function()
     {
         if (this.newBackend) {
-            return this.displayName === 'dataset' || this.displayName === 'working copy';
+            return this.displayName === 'dataset' || this.displayName === 'working copy' || this.viewType === 'geo';
         } else {
             return true;
         }

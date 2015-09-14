@@ -9,19 +9,19 @@
       @include selectable(); /* remove unselectable from edit mode */
 
       &.presentation-mode {
-        font-size: 1.75rem;
+        font-size: $presentation-mode-font-size;
 
         &.large {
-          max-width: 84%;
+          max-width: $presentation-mode-large-max-width;
         }
 
         &.medium {
-          max-width: 94%;
+          max-width: $presentation-mode-medium-max-width;
         }
 
         &.small {
-          max-width: 96%;
-          width: auto;
+          max-width: $presentation-mode-small-max-width;
+          width: $presentation-mode-small-width;
         }
       }
     }

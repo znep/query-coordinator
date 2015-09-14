@@ -108,8 +108,6 @@ $input-element-border-radius: 0.3rem;
 $transition-duration: 0.2s;
 $iframe-onload-transition-duration: 1.5s;
 
-// Forms
-
 // Flyout
 $flyout-max-width: 35rem;
 $flyout-vertical-padding: 0.5rem;
@@ -118,3 +116,10 @@ $flyout-horizontal-padding: 1rem;
 // that make that assumption, such as: `($flyout-hint-size + 1)`
 $flyout-hint-size: 10px;
 $flyout-last-cell-margin-left: 1.5rem;
+
+// Presentation Mode
+$presenation-mode-font-size: 1.75rem;
+$presentation-mode-large-max-width: 84%;
+$presentation-mode-medium-max-width: 94%;
+$presentation-mode-small-width: auto;
+$presentation-mode-small-max-width: 96%;

@@ -100,6 +100,13 @@ class PageMetadataManager
 
     v2_data_lens = FeatureFlags.derive(nil, defined?(request) ? request : nil)[:create_v2_data_lens]
 
+    # Make sure that there is a table card
+    has_table_card = page_metadata['cards'].any? do |card|
+      card['fieldName'] == '*' || card['cardType'] == 'table'
+    end
+
+    page_metadata['cards'] << table_card unless has_table_card
+
     # The core lens id for this page is the same one we use to refer to it in phidippides
     new_page_id = new_view_manager.create(
       page_metadata,
@@ -107,14 +114,9 @@ class PageMetadataManager
       v2_data_lens
     )
 
+    # For V2 Data Lenses, adding the pageId is handled at the tail end of 
+    # new_view_manager.create_v2_data_lens_in_metadb
     page_metadata['pageId'] = new_page_id
-
-    # Make sure that there is a table card
-    has_table_card = page_metadata['cards'].any? do |card|
-      card['fieldName'] == '*' || card['cardType'] == 'table'
-    end
-
-    page_metadata['cards'] << table_card unless has_table_card
 
     if v2_data_lens
       update_metadata_rollup_table(page_metadata, options)

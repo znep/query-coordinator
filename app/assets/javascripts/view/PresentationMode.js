@@ -14,48 +14,52 @@
    * - Resizing the content to fit appropriately into the screen size.
    */
   function PresentationMode() {
-    var pageable;
     var blacklist = ['spacer', 'horizontal-rule'];
-    var presentationNavigation = document.querySelector('.presentation-navigation');
     var blocks = Array.prototype.slice.call(document.querySelectorAll('.block'));
-    var index = 0;
 
-    blocks.forEach(function(block) {
-      if (notBlacklisted(block)) {
-        block.setAttribute('data-page-index', index++);
-      }
-    });
+    attachPageIndexes();
+    attachEvents();
 
-    pageable = Array.prototype.slice.call(document.querySelectorAll('.block[data-page-index]'));
+    function attachPageIndexes() {
+      var index = 0;
 
-    document.documentElement.addEventListener('keyup', pageOrClose);
-    document.querySelector('.btn-presentation-next').addEventListener('click', pageNext);
-    document.querySelector('.btn-presentation-previous').addEventListener('click', pagePrevious);
-    document.querySelector('.btn-presentation-mode').addEventListener('click', enablePresentationMode);
-    document.querySelector('.btn-linear-mode').addEventListener('click', enableLinearMode);
+      blocks.forEach(function(block) {
+        if (notBlacklisted(block)) {
+          block.setAttribute('data-page-index', index++);
+        }
+      });
+    }
+
+    function attachEvents() {
+      document.documentElement.addEventListener('keyup', pageOrClose);
+      document.querySelector('.btn-presentation-next').addEventListener('click', pageNext);
+      document.querySelector('.btn-presentation-previous').addEventListener('click', pagePrevious);
+      document.querySelector('.btn-presentation-mode').addEventListener('click', enablePresentationMode);
+      document.querySelector('.btn-linear-mode').addEventListener('click', enableLinearMode);
+    }
 
     function enablePresentationMode(event) {
       document.querySelector('.user-story').classList.add('presentation-mode');
-      event.target.setAttribute('disabled', 'disabled');
+      document.querySelector('.btn-presentation-mode').setAttribute('disabled', 'disabled');
       document.querySelector('.btn-linear-mode').removeAttribute('disabled');
 
-      blocks.forEach(function(block) {
-        block.classList.toggle('hidden', block !== pageable[0]);
+      blocks.forEach(function(block, index) {
+        block.classList.toggle('hidden', index !== 0);
       });
 
-      presentationNavigation.classList.remove('hidden');
+      document.querySelector('.presentation-navigation').classList.remove('hidden');
     }
 
     function enableLinearMode(event) {
       document.querySelector('.user-story').classList.remove('presentation-mode');
-      event.target.setAttribute('disabled', 'disabled');
+      document.querySelector('.btn-linear-mode').setAttribute('disabled', 'disabled');
       document.querySelector('.btn-presentation-mode').removeAttribute('disabled');
 
       blocks.forEach(function(block) {
         block.classList.remove('hidden');
       });
 
-      presentationNavigation.classList.add('hidden');
+      document.querySelector('.presentation-navigation').classList.add('hidden');
 
       document.documentElement.scrollTop = 0;
       document.body.scrollTop = 0;
@@ -66,7 +70,9 @@
       var nextIndex = parseInt(visible.getAttribute('data-page-index'), 10) + 1;
       var nextVisible = document.querySelector('.block[data-page-index="' + nextIndex + '"]');
 
-      nextVisible = nextVisible ? nextVisible : document.querySelector('.block[data-page-index="0"]');
+      nextVisible = nextVisible ?
+        nextVisible :
+        document.querySelector('.block[data-page-index="0"]');
 
       visible.classList.add('hidden');
       nextVisible.classList.remove('hidden');
@@ -76,8 +82,11 @@
       var visible = document.querySelector('.block:not(.hidden)');
       var previousIndex = parseInt(visible.getAttribute('data-page-index'), 10) - 1;
       var previousVisible = document.querySelector('.block[data-page-index="' + previousIndex + '"]');
+      var pageable = Array.prototype.slice.call(document.querySelectorAll('.block[data-page-index]'));
 
-      previousVisible = previousVisible ? previousVisible : document.querySelector('.block[data-page-index="' + (pageable.length - 1) + '"]');
+      previousVisible = previousVisible ?
+        previousVisible :
+        document.querySelector('.block[data-page-index="' + (pageable.length - 1) + '"]');
 
       visible.classList.add('hidden');
       previousVisible.classList.remove('hidden');
@@ -88,33 +97,26 @@
       var isPresenting = document.querySelector('.presentation-mode');
 
       if (isPresenting) {
-        switch (key) {
-          // ESC
-          case 27:
-            document.querySelector('.btn-linear-mode').click();
-            break;
-          // <=
-          case 37:
-            pagePrevious();
-            break;
-          // =>
-          case 39:
-            pageNext();
-            break;
+        // 27 == ESC, 37 == <-, 39 == ->
+        if (key === 27) {
+          document.querySelector('.btn-linear-mode').click();
+        } else if (key === 37) {
+          pagePrevious();
+        } else if (key === 39) {
+          pageNext();
         }
       } else {
-        switch (key) {
-          // p
-          case 80:
-            document.querySelector('.btn-presentation-mode').click();
-            break;
+        // 80 == p
+        if (key === 80) {
+          document.querySelector('.btn-presentation-mode').click();
         }
       }
     }
 
     function notBlacklisted(element) {
-      element = element.querySelector('.component-container > .component');
-      var classes = Array.prototype.slice.call(element.classList);
+      var component = element.querySelector('.component-container > .component');
+      var classes = Array.prototype.slice.call(component.classList);
+
       return classes.every(function(value) {
         return blacklist.indexOf(value.replace('component-', '')) === -1;
       });

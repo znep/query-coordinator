@@ -242,20 +242,17 @@ class NewUxBootstrapController < ActionController::Base
   def create_default_page(dataset_metadata)
     new_ux_page = generate_page_metadata(dataset_metadata)
 
-    page_creation_response = page_metadata_manager.create(
-      new_ux_page,
-      :request_id => request_id,
-      :cookies => forwardable_session_cookies
+    page_creation_response = HashWithIndifferentAccess.new(
+      page_metadata_manager.create(
+        new_ux_page,
+        :request_id => request_id,
+        :cookies => forwardable_session_cookies
+      )
     )
 
     page_id = page_creation_response.try(:[], :body).try(:[], :pageId)
 
-    # For V2 Data Lenses, the pageId is returned with a string key rather than a symbol key.
-    unless page_id.present?
-      page_id = page_creation_response.try(:[], :body).try(:[], 'pageId')
-    end
-
-    unless page_creation_response[:status] == '200' && page_id.present?
+    unless page_creation_response[:status].to_s == '200' && page_id.present?
       # Somehow the page creation failed so we should notify Airbrake.
       Airbrake.notify(
         :error_class => "BootstrapUXFailure",

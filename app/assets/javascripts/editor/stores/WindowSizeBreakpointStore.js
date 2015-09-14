@@ -85,7 +85,7 @@
       });
     }
 
-    $(root).resize(function(event) {
+    function _resize(event) {
       var width = event.target.innerWidth;
       var sizeClasses = _computeWindowSizeClasses(width);
 
@@ -93,7 +93,10 @@
         lastWindowSizeClasses = sizeClasses;
         self._emitChange();
       }
-    });
+    }
+
+    $(root).resize(_resize);
+    $(root).resize();
   }
 
   root.socrata.storyteller.WindowSizeBreakpointStore = WindowSizeBreakpointStore;

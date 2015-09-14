@@ -1,7 +1,8 @@
 (function(root) {
+  'use strict';
 
   var socrata = root.socrata;
-  var storyteller = root.socrata.storyteller;
+  var storyteller = socrata.storyteller;
 
   /**
    * @class PresentationMode
@@ -13,129 +14,112 @@
    * - Resizing the content to fit appropriately into the screen size.
    */
   function PresentationMode() {
-    document.documentElement.addEventListener('keyup', keybindings);
+    var pageable;
+    var blacklist = ['spacer', 'horizontal-rule'];
+    var presenting = false;
+    var presentationNavigation = document.querySelector('.presentation-navigation');
+    var blocks = Array.prototype.slice.call(document.querySelectorAll('.block'));
+    var index = 0;
+
+    blocks.forEach(function(block) {
+      if (notBlacklisted(block)) {
+        block.setAttribute('data-page-index', index++);
+      }
+    });
+
+    pageable = Array.prototype.slice.call(document.querySelectorAll('.block[data-page-index]'));
+
+    document.documentElement.addEventListener('keyup', pageOrClose);
     document.querySelector('.btn-presentation-next').addEventListener('click', pageNext);
     document.querySelector('.btn-presentation-previous').addEventListener('click', pagePrevious);
     document.querySelector('.btn-presentation-mode').addEventListener('click', enablePresentationMode);
     document.querySelector('.btn-linear-mode').addEventListener('click', enableLinearMode);
 
-    function render() {
-      if (storyteller.presentationModeStore.isEnabled()) {
-        renderPresentationMode();
-        renderPage();
-      } else {
-        renderLinearMode();
-      }
-    }
-
-    function renderPresentationMode() {
-      document.querySelector('.user-story').classList.add('presentation-mode');
-      document.querySelector('.btn-presentation-mode').setAttribute('disabled', 'disabled');
-      document.querySelector('.btn-linear-mode').removeAttribute('disabled');
-      document.querySelector('.presentation-navigation').classList.remove('hidden');
-    }
-
-    function renderPage() {
-      var visibleBlockId = storyteller.presentationModeStore.getVisibleBlockId();
-      var hiddenBlockIds = storyteller.presentationModeStore.getHiddenBlockIds();
-
-      hiddenBlockIds.forEach(function(blockId) {
-        document.
-          querySelector('.block[data-block-id="{0}"]'.format(blockId)).
-          classList.add('hidden');
-      });
-
-      document.
-        querySelector('.block[data-block-id="{0}"]'.format(visibleBlockId)).
-        classList.remove('hidden');
-    }
-
-    function renderLinearMode() {
-      var blockIds = storyteller.storyStore.getStoryBlockIds();
-
-      document.
-        querySelector('.user-story').
-        classList.remove('presentation-mode');
-
-      document.
-        querySelector('.btn-linear-mode').
-        setAttribute('disabled', 'disabled');
-
-      document.
-        querySelector('.btn-presentation-mode').
-        removeAttribute('disabled');
-
-      blockIds.forEach(function(blockId) {
-        document.
-          querySelector('.block[data-block-id="{0}"]'.format()).
-          classList.remove('hidden');
-      });
-
-      presentationNavigation.classList.add('hidden');
-
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    }
-
     function enablePresentationMode(event) {
-      storyteller.dispatcher.dispatch({
-        action: Constants.PRESENTATION_MODE_ENABLE
+      presenting = true;
+
+      document.querySelector('.user-story').classList.add('presentation-mode');
+      event.target.setAttribute('disabled', 'disabled');
+      document.querySelector('.btn-linear-mode').removeAttribute('disabled');
+
+      blocks.forEach(function(block) {
+        block.classList.toggle('hidden', block !== pageable[0]);
       });
+
+      presentationNavigation.classList.remove('hidden');
     }
 
     function enableLinearMode(event) {
-      storyteller.dispatcher.dispatch({
-        action: Constants.PRESENTATION_MODE_DISABLE
+      presenting = false;
+
+      document.querySelector('.user-story').classList.remove('presentation-mode');
+      event.target.setAttribute('disabled', 'disabled');
+      document.querySelector('.btn-presentation-mode').removeAttribute('disabled');
+
+      blocks.forEach(function(block) {
+        block.classList.remove('hidden');
       });
+
+      presentationNavigation.classList.add('hidden');
+      document.body.scrollTop = 0;
     }
 
     function pageNext() {
-      storyteller.dispatcher.dispatch({
-        action: Constants.PRESENTATION_MODE_PAGE_NEXT
-      });
+      var visible = document.querySelector('.block:not(.hidden)');
+      var nextIndex = parseInt(visible.getAttribute('data-page-index'), 10) + 1;
+      var nextVisible = document.querySelector('.block[data-page-index="' + nextIndex + '"]');
+
+      nextVisible = nextVisible ? nextVisible : document.querySelector('.block[data-page-index="0"]');
+
+      visible.classList.add('hidden');
+      nextVisible.classList.remove('hidden');
     }
 
     function pagePrevious() {
-      storyteller.dispatcher.dispatch({
-        action: Constants.PRESENTATION_MODE_PAGE_PREVIOUS
-      });
+      var visible = document.querySelector('.block:not(.hidden)');
+      var previousIndex = parseInt(visible.getAttribute('data-page-index'), 10) - 1;
+      var previousVisible = document.querySelector('.block[data-page-index="' + previousIndex + '"]');
+
+      previousVisible = previousVisible ? previousVisible : document.querySelector('.block[data-page-index="' + (pageable.length - 1) + '"]');
+
+      visible.classList.add('hidden');
+      previousVisible.classList.remove('hidden');
     }
 
-    function keybindings(event) {
+    function pageOrClose(event) {
       var key = event.charCode || event.keyCode;
-      var isPresenting = storyteller.presentationModeStore.isEnabled();
 
-      if (storyteller.presentationModeStore.isEnabled()) {
+      if (presenting) {
         switch (key) {
           // ESC
           case 27:
-            storyteller.dispatcher.dispatch({
-              action: Constants.PRESENTATION_MODE_DISABLE
-            });
+            document.querySelector('.btn-linear-mode').click();
             break;
           // <=
           case 37:
-            storyteller.dispatcher.dispatch({
-              action: Constants.PRESENTATION_MODE_PAGE_PREVIOUS
-            });
+            pagePrevious();
             break;
           // =>
           case 39:
-            storyteller.dispatcher.dispatch({
-              action: Constants.PRESENTATION_MODE_PAGE_NEXT
-            });
+            pageNext();
             break;
         }
       } else {
         switch (key) {
           // p
           case 80:
-            storyteller.dispatcher.dispatch({
-              action: Constants.PRESENTATION_MODE_ENABLE
-            });
+            document.querySelector('.btn-presentation-mode').click();
             break;
         }
       }
+    }
+
+    function notBlacklisted(element) {
+      element = element.querySelector('.component-container > .component');
+      var classes = Array.prototype.slice.call(element.classList);
+      return classes.every(function(value) {
+        return blacklist.indexOf(value.replace('component-', '')) === -1;
+      });
     }
   }
 

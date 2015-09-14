@@ -38,7 +38,7 @@
       document.querySelector('.btn-linear-mode').addEventListener('click', enableLinearMode);
     }
 
-    function enablePresentationMode(event) {
+    function enablePresentationMode() {
       document.querySelector('.user-story').classList.add('presentation-mode');
       document.querySelector('.btn-presentation-mode').setAttribute('disabled', 'disabled');
       document.querySelector('.btn-linear-mode').removeAttribute('disabled');
@@ -50,7 +50,7 @@
       document.querySelector('.presentation-navigation').classList.remove('hidden');
     }
 
-    function enableLinearMode(event) {
+    function enableLinearMode() {
       document.querySelector('.user-story').classList.remove('presentation-mode');
       document.querySelector('.btn-linear-mode').setAttribute('disabled', 'disabled');
       document.querySelector('.btn-presentation-mode').removeAttribute('disabled');

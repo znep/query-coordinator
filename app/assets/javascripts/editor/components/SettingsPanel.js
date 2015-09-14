@@ -206,7 +206,7 @@
           }
         }
       }).
-      on('mousewheel', '.scrollable', utils.preventScrolling).
+      on('mousewheel', utils.preventScrolling).
       on('submit', 'form', function() {
         try {
           saveMetadata();

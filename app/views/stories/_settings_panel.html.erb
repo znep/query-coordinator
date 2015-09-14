@@ -1,5 +1,5 @@
 <div id="settings-panel-container">
-  <div class="settings-panel">
+  <div class="settings-panel scrollable">
     <button class="close-side-panel-btn" data-panel-toggle="settings-panel">
       <span class="close-panel-label" title="<%= t('common.close') %>">
         <%= t('common.close') %>
@@ -19,7 +19,7 @@
       <hr>
       <h2><%= t('editor.settings_panel.displaying_section.section_title') %></h2>
 
-      <div class="scrollable">
+      <div>
         <form>
           <label><%= t('editor.settings_panel.displaying_section.title_label') %></label>
           <input name="title" type="text" maxlength="254" />

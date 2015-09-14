@@ -9,8 +9,6 @@ RSpec.describe 'presentation mode', type: :feature, js: true do
   let(:linear_mode_selector) { '.btn-linear-mode:not(:disabled)' }
   let(:linear_mode_selector_disabled) { '.btn-linear-mode:disabled' }
   let(:valid_showing_block_selector) { '.block[data-page-index]:not(.hidden)' }
-  let(:valid_hidden_block_selector) { '.block[data-page-index].hidden' }
-  let(:blacklisted_showing_block_selector) { '.block:not([data-page-index])' }
   let(:blacklisted_hidden_block_selector) { '.block:not([data-page-index]).hidden' }
 
   before do

@@ -135,10 +135,15 @@
       &.sliceDepthMenuContainer {
         float: right;
       }
+      &.chartSeriesMenuContainer {
+        .chartMenuLabel, .uniform {
+          font-size: 1.5em;
+          font-weight: bold;
+        }
+      }
       .chartMenuLabel, .uniform {
         vertical-align: middle;
-        font-size: 1.5em;
-        font-weight: bold;
+        font-size: 1.3em;
       }
       select {
         width: 14em;

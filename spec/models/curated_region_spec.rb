@@ -1,73 +1,101 @@
 require 'rails_helper'
 
 describe CuratedRegion, :type => :model do
+  let(:cname) { 'socrata.dev' }
+  before(:each) do
+    domain = YAML::load(File.open('test/fixtures/domain.yml'))
+    CurrentDomain.set_domain(domain)
+    allow(CurrentDomain).to receive(:cname).and_return(cname)
+  end
 
   it 'has a service name' do
     expect(CuratedRegion.service_name).to eql('curated_regions')
   end
 
   describe 'find' do
-    before(:example) do
-      @domain = YAML::load(File.open('test/fixtures/domain.yml'))
-      CurrentDomain.set_domain(@domain)
-      allow(CurrentDomain).to receive(:cname).and_return('socrata.dev')
-    end
-
     it 'finds all curated regions' do
-      stub = stub_request(:get, 'http://localhost:8080/curated_regions.json').
-        with(:headers => { 'Accept' => '*/*', 'User-Agent' => 'Ruby', 'X-Socrata-Host' => 'socrata.dev' }).
+      stubbed_request = stub_request(:get, 'http://localhost:8080/curated_regions.json').
+        with(:headers => { 'X-Socrata-Host' => cname }).
         to_return(:status => 200, :body => '', :headers => {})
 
       CuratedRegion.find
-      expect(stub).to have_been_made.once
+      expect(stubbed_request).to have_been_made.once
     end
 
     it 'finds enabled curated regions' do
-      stub = stub_request(:get, 'http://localhost:8080/curated_regions.json?enabledOnly=true').
-        with(:headers => { 'Accept' => '*/*', 'User-Agent' => 'Ruby', 'X-Socrata-Host' => 'socrata.dev' }).
+      stubbed_request = stub_request(:get, 'http://localhost:8080/curated_regions.json?enabledOnly=true').
+        with(:headers => { 'X-Socrata-Host' => cname }).
         to_return(:status => 200, :body => '', :headers => {})
 
       CuratedRegion.find_enabled
-      expect(stub).to have_been_made.once
+      expect(stubbed_request).to have_been_made.once
     end
 
     it 'finds default curated regions' do
-      stub = stub_request(:get, 'http://localhost:8080/curated_regions.json?defaultOnly=true').
-        with(:headers => { 'Accept' => '*/*', 'User-Agent' => 'Ruby', 'X-Socrata-Host' => 'socrata.dev' }).
+      stubbed_request = stub_request(:get, 'http://localhost:8080/curated_regions.json?defaultOnly=true').
+        with(:headers => { 'X-Socrata-Host' => cname }).
         to_return(:status => 200, :body => '', :headers => {})
 
       CuratedRegion.find_default
-      expect(stub).to have_been_made.once
+      expect(stubbed_request).to have_been_made.once
     end
 
   end
 
-  describe 'enable/disable' do
-    before(:example) do
-      @domain = YAML::load(File.open('test/fixtures/domain.yml'))
-      CurrentDomain.set_domain(@domain)
-      allow(CurrentDomain).to receive(:cname).and_return('socrata.dev')
+  describe 'get_all' do
+    it 'returns a hash of data' do
+      region_1 = build(:curated_region)
+      region_2 = build(:curated_region, :enabled)
+      region_3 = build(:curated_region, :default)
+      allow(CuratedRegion).to receive(:find).and_return([
+            region_1,
+            region_2,
+            region_3
+          ])
+      georegions = CuratedRegion.get_all
+      expect(georegions).to match({
+            :counts => { :available => 3, :enabled => 1 },
+            :custom => a_collection_containing_exactly(region_1, region_2),
+            :default => a_collection_containing_exactly(region_3)
+          })
     end
+  end
+
+  describe 'enable/disable' do
 
     it 'disables the curated region' do
-      stub = stub_request(:put, 'http://localhost:8080/curated_regions/1.json').
+      stubbed_request = stub_request(:put, 'http://localhost:8080/curated_regions/1.json').
         with(
           :body => {
             :enabledFlag => false
-          }.to_json.to_s,
+          },
           :headers => {
-            'Accept' => '*/*',
-            'User-Agent' => 'Ruby',
-            'X-Socrata-Host' => 'socrata.dev',
+            'Content-Type' => 'application/json',
+            'X-Socrata-Host' => cname,
           }).
         to_return(
-          :status => 200,
-          :headers => {})
+          :body => {
+            :id => 1,
+            :name => 'USA States',
+            :defaultFlag => false,
+            :enabledFlag => false
+          }.to_json.to_s,
+          :headers => {
+            'Content-Type' => 'application/json'
+          },
+          :status => 200
+        )
 
-      curated_region = CuratedRegion.new({ 'id' => 1 })
-      curated_region.disable
-      expect(stub).to have_been_made.once
+      curated_region = CuratedRegion.new(
+        'id' => 1,
+        'name' => 'USA States',
+        'defaultFlag' => false,
+        'enabledFlag' => true
+      )
+      curated_region.disable!
+      expect(stubbed_request).to have_been_made.once
       expect(curated_region.enabledFlag).to eql(false)
+      expect(curated_region.enabled?).to eql(false)
     end
 
   end

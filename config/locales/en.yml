@@ -1416,11 +1416,11 @@ en:
         enabled?: Enabled?
         enabled_no: "No"
         enabled_yes: "Yes"
-        page_title: Manage Georegions
+        page_title: Manage Spatial Lens
         page_subtitle: You have enabled %{enabled_count} of %{available_count} available regions
         region_name: Region Name
         remove: Remove
-        title: Georegions
+        title: Spatial Lens
       home:
         add_featured_dataset: Add a New Featured Dataset
         are_you_sure: Are you sure? This action cannot be undone.

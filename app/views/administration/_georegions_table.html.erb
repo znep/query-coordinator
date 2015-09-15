@@ -21,12 +21,12 @@
     <tbody>
     <%- georegions.each do |georegion| -%>
       <tr class="item">
-        <td class="name"><%= georegion[:name] %></td>
+        <td class="name"><%= georegion.name %></td>
         <td class="toggle-enabled">
-          <span class="enabled-state <%= georegion[:enabled] ? 'is-enabled' : 'is-disabled'%>">
-            <%=  t(georegion[:enabled] ? "#{prefix}.enabled_yes" : "#{prefix}.enabled_no") %>
+          <span class="enabled-state <%= georegion.enabled? ? 'is-enabled' : 'is-disabled'%>">
+            <%=  t(georegion.enabled? ? "#{prefix}.enabled_yes" : "#{prefix}.enabled_no") %>
           </span>
-          <%- if georegion[:enabled] -%>
+          <%- if georegion.enabled? -%>
             <%= form_button({ :action => 'disable_georegion' }, t("#{prefix}.disable"),
               {:method => :put}, {:class => 'button'}) %>
           <%- else -%>

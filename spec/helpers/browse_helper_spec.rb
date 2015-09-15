@@ -64,28 +64,28 @@ describe BrowseHelper do
   describe '#view_rel_type' do
     it 'handles federated with feature flag "federated_interstitial"' do
       view = instance_double('View', :federated? => true)
-      current_domain = instance_double('CurrentDomain', :feature? => true)
+      current_domain = class_double('CurrentDomain', :feature? => true)
       opts = { :rel_type => 'my rel type' }
       expect(view_rel_type(view, current_domain, opts)).to eql('externalDomain')
     end
 
     it 'handles federated without feature flag "federated_interstitial"' do
       view = instance_double('View', :federated? => true)
-      current_domain = instance_double('CurrentDomain', :feature? => false)
+      current_domain = class_double('CurrentDomain', :feature? => false)
       opts = { :rel_type => 'my rel type' }
       expect(view_rel_type(view, current_domain, opts)).to eql('external')
     end
 
     it 'handles non-federated with rel_type option' do
       view = instance_double('View', :federated? => false)
-      current_domain = instance_double('CurrentDomain')
+      current_domain = class_double('CurrentDomain')
       opts = { :rel_type => 'my rel type' }
       expect(view_rel_type(view, current_domain, opts)).to eql('my rel type')
     end
 
     it 'handles non-federated with no rel_type option' do
       view = instance_double('View', :federated? => false)
-      current_domain = instance_double('CurrentDomain')
+      current_domain = class_double('CurrentDomain')
       opts = { }
       expect(view_rel_type(view, current_domain, opts)).to eql('')
     end
@@ -94,7 +94,7 @@ describe BrowseHelper do
   describe '#view_img_alt' do
     it 'works with federated sites' do
       view = double('View', :federated? => true, :domainCName => 'federated.example.com')
-      current_domain_cname = instance_double('CurrentDomain', :cname => 'example.com')
+      current_domain_cname = class_double('CurrentDomain', :cname => 'example.com')
       expect(helper.view_img_alt(view, current_domain_cname)).to eql('Federated from federated.example.com')
     end
 

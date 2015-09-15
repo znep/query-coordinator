@@ -1,5 +1,26 @@
 class CuratedRegion < Model
 
+  def self.get_all
+    curated_regions = CuratedRegion.find.
+      partition { |r| r.default? }
+
+    default_curated_regions = curated_regions[0]
+    custom_curated_regions = curated_regions[1]
+
+    all_regions = default_curated_regions + custom_curated_regions
+    available_count = all_regions.length
+    enabled_count = all_regions.select {|r| r.enabled? }.length
+
+    {
+      :counts => {
+        :available => available_count,
+        :enabled => enabled_count
+      },
+      :custom => custom_curated_regions,
+      :default => default_curated_regions
+    }
+  end
+
   def self.find_enabled( options = nil, custom_headers = {}, batch = nil, is_anon = false )
     options ||= {}
     options[:enabledOnly] = true
@@ -12,13 +33,17 @@ class CuratedRegion < Model
     find(options, custom_headers, batch, is_anon)
   end
 
-  def disable
-    path = "/#{CuratedRegion.service_name}/#{id}.json"
-    attributes = {
-      :enabledFlag => false
-    }
-    response = CoreServer::Base.connection.update_request(path, attributes.fix_key_encoding.to_json)
-    self.class.parse(response)
+  def default?
+    defaultFlag
+  end
+
+  def enabled?
+    enabledFlag
+  end
+
+  def disable!
+    update_attributes(:enabledFlag => false)
+    save!
   end
 
 end

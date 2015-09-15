@@ -59,7 +59,7 @@ class UserSessionsControllerTest < ActionController::TestCase
 
   def test_login_on_govstat_site_with_user_role
     stub_module_enabled_on_current_domain(:govStat)
-    User.stubs(current_user: User.new(some_user).tap {|usr| usr.stubs(rights: [ 'someRight' ]) })
+    User.stubs(current_user: User.new(some_user).tap { |user| user.stubs(rights: [ 'someRight' ]) })
     post(:create)
     assert(@response.redirect_url.include?(govstat_root_path), 'should redirect to govstat root')
   end
@@ -106,7 +106,38 @@ class UserSessionsControllerTest < ActionController::TestCase
     end
   end
 
+
+  # Leaving CSRF token validation disabled for logins is not without significant risk. It could allow
+  # mallicious attackers to logout the current user, or login as a valid user of their choosing without
+  # the victim necessarily being aware that something unusual is taking place.
+  context 'without a valid request forgery token' do
+
+    should 'login with JSON and return a JSON result containing the user id' do
+      UserSession.controller = @controller
+      @controller.stubs(
+        :protect_against_forgery? => true,
+        :current_user => OpenStruct.new(:id => 1)
+      )
+      post(:create, :format => :json)
+      assert_equal('200', @response.code)
+      assert_equal({:user_id => 1}.to_json, @response.body, 'should include a mock user in the JSON response')
+    end
+
+    should 'login with DATA and return a JSON result containing the user id' do
+      UserSession.controller = @controller
+      @controller.stubs(
+        :protect_against_forgery? => true,
+        :current_user => OpenStruct.new(:id => 1)
+      )
+      post(:create, :format => :data)
+      assert_equal('200', @response.code)
+      assert_equal({:user_id => 1}.to_json, @response.body, 'should include a mock user in the JSON response')
+    end
+
+  end
+
   private
+
   def some_user
     { login: 'foo@bar.com',
       password: 'asdf'

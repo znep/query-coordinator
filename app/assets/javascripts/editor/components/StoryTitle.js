@@ -18,6 +18,7 @@
     function render() {
       titleNodes.each(function() {
         $(this).text(storyteller.storyStore.getStoryTitle(storyUid));
+        $(this).attr('title', storyteller.storyStore.getStoryTitle(storyUid));
       });
     }
 

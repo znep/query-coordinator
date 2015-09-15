@@ -35,8 +35,9 @@ describe('StoryTitle jQuery plugin', function() {
       assert.instanceOf(returnValue, $);
     });
 
-    it('should render the story title', function() {
+    it('should render the story title and attribute', function() {
       assert.equal(node.text(), standardMocks.validStoryTitle);
+      assert.equal(node.attr('title'), standardMocks.validStoryTitle);
     });
 
     describe('that changes', function() {
@@ -50,6 +51,7 @@ describe('StoryTitle jQuery plugin', function() {
         });
 
         assert.equal(node.text(), newTitle);
+        assert.equal(node.attr('title'), newTitle);
       });
     });
 

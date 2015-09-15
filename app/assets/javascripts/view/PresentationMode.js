@@ -70,9 +70,7 @@
       var nextIndex = parseInt(visible.getAttribute('data-page-index'), 10) + 1;
       var nextVisible = document.querySelector('.block[data-page-index="' + nextIndex + '"]');
 
-      nextVisible = nextVisible ?
-        nextVisible :
-        document.querySelector('.block[data-page-index="0"]');
+      nextVisible = nextVisible || document.querySelector('.block[data-page-index="0"]');
 
       visible.classList.add('hidden');
       nextVisible.classList.remove('hidden');
@@ -84,9 +82,8 @@
       var previousVisible = document.querySelector('.block[data-page-index="' + previousIndex + '"]');
       var pageable = Array.prototype.slice.call(document.querySelectorAll('.block[data-page-index]'));
 
-      previousVisible = previousVisible ?
-        previousVisible :
-        document.querySelector('.block[data-page-index="' + (pageable.length - 1) + '"]');
+      previousVisible = previousVisible ||
+        document.querySelector('.block[data-page-index="{0}"]'.format(pageable.length - 1));
 
       visible.classList.add('hidden');
       previousVisible.classList.remove('hidden');

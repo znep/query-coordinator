@@ -76,6 +76,13 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Our uploaded file storage config
+  s3_proxy_uri = if ENV['https_proxy']
+                   uri = URI.parse(ENV['https_proxy'])
+                   {
+                     host: uri.host,
+                     port: uri.port
+                   }
+                 end
   config.paperclip_defaults = {
     :storage => :s3,
     :s3_credentials => {
@@ -83,6 +90,7 @@ Rails.application.configure do
       :access_key_id =>     Rails.application.secrets.aws['access_key_id'],
       :secret_access_key => Rails.application.secrets.aws['secret_access_key']
     },
-    :s3_protocol => 'https'
+    :s3_protocol => 'https',
+    :http_proxy => s3_proxy_uri
   }
 end

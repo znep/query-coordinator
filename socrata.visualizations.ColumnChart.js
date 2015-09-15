@@ -433,7 +433,7 @@
           });
 
           var tickTopOffset = chartHeight - verticalScale(tickValue);
-          // The `+ 2` term accounts for the border-width.
+          // The `+ 3` term accounts for the border-width.
           var tickHeight = parseInt(element.css('font-size'), 10) + 3;
 
           if (tickTopOffset <= tickHeight) {

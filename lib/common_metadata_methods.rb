@@ -100,11 +100,45 @@ module CommonMetadataMethods
 
   def fetch_pages_for_dataset(dataset_id)
 
-    result = phidippides.fetch_pages_for_dataset(
+    # Fetch phiddy (v1) pages
+    phiddy_result = phidippides.fetch_pages_for_dataset(
       dataset_id,
       :request_id => request_id,
       :cookies => forwardable_session_cookies
     )
+
+    # Fetch metadb (v2) pages
+    table_id = View.find(dataset_id).tableId
+    metadb_pages_url = "/views.json?accessType=WEBSITE&method=getByTableId&tableId=#{table_id}"
+
+    begin
+      metadb_response = CoreServer::Base.connection.get_request(metadb_pages_url)
+      # TODO - how to combine the result statuses?
+    # rescue CoreServer::ResourceNotFound => error
+    #   raise ViewNotFound.new(error.to_s)
+    # rescue CoreServer::CoreServerError => error
+    #   if error.respond_to?(:error_code)
+    #     if error.error_code == 'authentication_required'
+    #       raise ViewAuthenticationRequired.new(error)
+    #     elsif error.error_code == 'permission_denied'
+    #       raise ViewAccessDenied.new(error)
+    #     end
+    #   end
+
+    #   raise error
+    end
+
+    metadb_result = JSON.parse(metadb_response).select { |page|
+      page['displayType'] == 'data_lens' && page['viewType'] == 'tabular'
+    }
+
+
+    #binding.pry  # TODO!!!! - look at phiddy_result and map the metadb_result to look like that, so you can merge them together
+
+    result = phiddy_result
+
+
+    # TODO - how to combine the result statuses?
 
     if result[:status] != '200'
       case result[:status]

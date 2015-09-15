@@ -357,6 +357,10 @@ class Phidippides < SocrataHttp
     raise ArgumentError.new('pageId is required') unless page_metadata.key?('pageId')
     raise ArgumentError.new('datasetId is required') unless page_metadata.key?('datasetId')
 
+    # Overwrite version to enforce that Phidippides backed pages are V1.
+    # This is necessary if saving v1 page from a page that is v2.
+    page_metadata['version'] = 1
+
     issue_request(
       :verb => :put,
       :path => "v1/id/#{page_metadata['datasetId']}/pages/#{page_metadata['pageId']}",

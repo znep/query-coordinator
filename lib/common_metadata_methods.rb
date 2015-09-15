@@ -108,18 +108,15 @@ module CommonMetadataMethods
     )
 
     # Fetch metadb (v2) pages
-    begin
+    metadb_status = begin
       metadb_response = Array(View.find(dataset_id).find_related(1))
-      metadb_status = '200'
-    rescue CoreServer::ResourceNotFound => error
-      metadb_status = '404'
+      '200'
+    rescue CoreServer::ResourceNotFound
+      '404'
     rescue CoreServer::CoreServerError => error
-      if error.respond_to?(:error_code)
-        if error.error_code == 'authentication_required'
-          metadb_status = '401'
-        elsif error.error_code == 'permission_denied'
-          metadb_status = '403'
-        end
+      case error.error_code
+      when 'authentication_required'; '401'
+      when 'permission_denied'; '403'
       end
     end
 
@@ -128,16 +125,9 @@ module CommonMetadataMethods
       view.data_lens? && view.is_published?
     }.to_s, :symbolize_names => true)
 
-    combined_body = {
-      :publisher => metadb_result.map { |page|
-          HashWithIndifferentAccess.new(page[:displayFormat][:data_lens_page_metadata])
-        }.concat(Array(phiddy_result[:body][:publisher])),
-      :user => phiddy_result[:body][:user]
-    }
-
     combined_statuses = [phiddy_result[:status], metadb_status]
 
-    if !combined_statuses.include? '200'
+    unless combined_statuses.include? '200'
       if combined_statuses.include? '401'
         raise AuthenticationRequired.new
       elsif combined_statuses.include? '403'
@@ -149,6 +139,13 @@ module CommonMetadataMethods
       end
     end
 
-    combined_body
+    # Return hash with publisher and user views.
+    # Combines metadb and phiddy results into publisher views.
+    {
+      :publisher => metadb_result.map { |page|
+          HashWithIndifferentAccess.new(page[:displayFormat][:data_lens_page_metadata])
+        }.concat(Array(phiddy_result[:body][:publisher])),
+      :user => phiddy_result[:body][:user]
+    }
   end
 end

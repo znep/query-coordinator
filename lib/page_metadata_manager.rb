@@ -184,9 +184,6 @@ class PageMetadataManager
       }, status: '500' }
     end
 
-    # Question for Dylan and Andrew: I don't know how this call to new_view_manager.fetch
-    # succeeds. The view was deleted by the View.delete(id) line 16 lines above this.
-    # Seems like we would need to move this before that call.
     begin
       metadb_metadata = new_view_manager.fetch(id)
     rescue

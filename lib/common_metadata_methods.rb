@@ -113,46 +113,47 @@ module CommonMetadataMethods
 
     begin
       metadb_response = CoreServer::Base.connection.get_request(metadb_pages_url)
-      # TODO - how to combine the result statuses?
-    # rescue CoreServer::ResourceNotFound => error
-    #   raise ViewNotFound.new(error.to_s)
-    # rescue CoreServer::CoreServerError => error
-    #   if error.respond_to?(:error_code)
-    #     if error.error_code == 'authentication_required'
-    #       raise ViewAuthenticationRequired.new(error)
-    #     elsif error.error_code == 'permission_denied'
-    #       raise ViewAccessDenied.new(error)
-    #     end
-    #   end
-
-    #   raise error
-    end
-
-    metadb_result = JSON.parse(metadb_response).select { |page|
-      page['displayType'] == 'data_lens' && page['viewType'] == 'tabular'
-    }
-
-
-    #binding.pry  # TODO!!!! - look at phiddy_result and map the metadb_result to look like that, so you can merge them together
-
-    result = phiddy_result
-
-
-    # TODO - how to combine the result statuses?
-
-    if result[:status] != '200'
-      case result[:status]
-        when '401'
-          raise AuthenticationRequired.new
-        when '403'
-          raise UnauthorizedDatasetMetadataRequest.new
-        when '404'
-          raise DatasetMetadataNotFound.new
-        else
-          raise UnknownRequestError.new result[:body].to_s
+      metadb_status = '200'
+    rescue CoreServer::ResourceNotFound => error
+      metadb_status = '404'
+    rescue CoreServer::CoreServerError => error
+      if error.respond_to?(:error_code)
+        if error.error_code == 'authentication_required'
+          metadb_status = '401'
+        elsif error.error_code == 'permission_denied'
+          metadb_status = '403'
+        end
       end
     end
 
-    result[:body]
+    # Filter metadb_response on only published v2 data lenses
+    metadb_result = JSON.parse(metadb_response, {:symbolize_names => true}).select { |page|
+      page[:displayType] == 'data_lens' &&
+      page[:viewType] == 'tabular' &&
+      page[:publicationStage] == 'published'
+    }
+
+    combined_body = {
+      :publisher => metadb_result.map { |page|
+          page[:displayFormat][:data_lens_page_metadata]
+        }.concat(phiddy_result[:body][:publisher]),
+      :user => phiddy_result[:body][:user]
+    }
+
+    combined_statuses = [phiddy_result[:status], metadb_status]
+
+    if !combined_statuses.include? '200'
+      if combined_statuses.include? '401'
+        raise AuthenticationRequired.new
+      elsif combined_statuses.include? '403'
+        raise UnauthorizedDatasetMetadataRequest.new
+      elsif combined_statuses.include? '404'
+        raise DatasetMetadataNotFound.new
+      else
+        raise UnknownRequestError.new combined_result[:body].to_s
+      end
+    end
+
+    combined_body
   end
 end

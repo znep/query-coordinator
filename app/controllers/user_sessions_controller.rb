@@ -1,10 +1,17 @@
 class UserSessionsController < ApplicationController
+
   include ActionView::Helpers::TranslationHelper
   include Auth0Helper
   include UserSessionsHelper
 
   skip_before_filter :require_user
   protect_from_forgery :except => [:rpx]
+
+  # NOTE: This skip_before_filter must come _after_ the protect_from_forgery call above
+  skip_before_filter :verify_authenticity_token,
+    :if => lambda { |controller|
+      controller.action_name == 'create' && (request.format.json? || request.format.data?)
+    }
 
   def index
     Airbrake.notify(

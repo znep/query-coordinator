@@ -13,7 +13,7 @@ describe CuratedRegion, :type => :model do
   end
 
   describe 'find' do
-    it 'finds all curated regions' do
+    it 'finds curated regions (enabledOnly=true by default)' do
       stubbed_request = stub_request(:get, 'http://localhost:8080/curated_regions.json').
         with(:headers => { 'X-Socrata-Host' => cname }).
         to_return(:status => 200, :body => '', :headers => {})
@@ -42,12 +42,22 @@ describe CuratedRegion, :type => :model do
 
   end
 
+  describe 'find_all' do
+    it 'finds all curated regions' do
+      stubbed_request = stub_request(:get, 'http://localhost:8080/curated_regions.json?defaultOnly=false&enabledOnly=false').
+        with(:headers => {'X-Socrata-Host'=>'socrata.dev'}).
+        to_return(:status => 200, :body => '', :headers => {})
+      CuratedRegion.find_all
+      expect(stubbed_request).to have_been_made.once
+    end
+  end
+
   describe 'get_all' do
     it 'returns a hash of data' do
       region_1 = build(:curated_region)
       region_2 = build(:curated_region, :enabled)
       region_3 = build(:curated_region, :default)
-      allow(CuratedRegion).to receive(:find).and_return([
+      expect(CuratedRegion).to receive(:find_all).and_return([
             region_1,
             region_2,
             region_3

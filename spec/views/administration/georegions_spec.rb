@@ -23,11 +23,11 @@ describe 'administration/georegions.html.erb' do
     end
 
     it 'renders' do
-      expect(rendered).to match /Manage Spatial Lens/
+      expect(rendered).to include('Manage Spatial Lens')
     end
 
     it 'renders the available and enabled counts' do
-      expect(rendered).to match /You have enabled 4 of 5 available regions/
+      expect(rendered).to include('You have enabled 4 of 5 available regions')
     end
 
     it 'renders the table partial twice' do
@@ -38,18 +38,24 @@ describe 'administration/georegions.html.erb' do
   describe 'rendering partial' do
 
     it 'renders the table partial with data' do
+      curated_region = CuratedRegion.new(
+        'id' => 1,
+        'name' => 'My Curated Region',
+        'enabledFlag' => true,
+        'defaultFlag' => false
+      )
       assign(:georegions, {
           :counts => {
             :available => 1,
             :enabled => 1
           },
-          :custom => [build(:curated_region, :enabled, :name => 'My Curated Region')],
+          :custom => [curated_region],
           :default => [],
           :translations => nil
         })
       render
-      expect(rendered).to match /My Curated Region/
-      expect(rendered).to match /Yes/
+      expect(rendered).to include('My Curated Region')
+      expect(rendered).to include('Yes')
     end
 
   end

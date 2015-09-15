@@ -126,11 +126,11 @@ Frontend::Application.routes do
       get 'data_slate/create', :as => 'canvas_create', :action => 'create_canvas_page'
       post 'data_slate/create', :as => 'canvas_create', :action => 'post_canvas_page'
       get :georegions
-      post :add_georegion
-      put :enable_georegion
-      put :disable_georegion
-      put :edit_georegion
-      delete :remove_georegion
+      post 'georegions', :action => :add_georegion
+      put 'georegions/:id/enable', :action => :enable_georegion
+      put 'georegions/:id/disable', :action => :disable_georegion
+      put 'georegions/:id', :action => :edit_georegion
+      delete 'georegions/:id', :action => :remove_georegion
       get :home, :as => 'home_administration'
       get :metadata, :as => 'metadata_administration'
       get :views

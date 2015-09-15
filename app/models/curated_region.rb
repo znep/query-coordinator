@@ -1,7 +1,7 @@
 class CuratedRegion < Model
 
   def self.get_all
-    curated_regions = CuratedRegion.find.
+    curated_regions = CuratedRegion.find_all.
       partition { |r| r.default? }
 
     default_curated_regions = curated_regions[0]
@@ -21,14 +21,18 @@ class CuratedRegion < Model
     }
   end
 
-  def self.find_enabled( options = nil, custom_headers = {}, batch = nil, is_anon = false )
-    options ||= {}
+  def self.find_all( options = {}, custom_headers = {}, batch = nil, is_anon = false )
+    options[:enabledOnly] = false
+    options[:defaultOnly] = false
+    find(options, custom_headers, batch, is_anon)
+  end
+
+  def self.find_enabled( options = {}, custom_headers = {}, batch = nil, is_anon = false )
     options[:enabledOnly] = true
     find(options, custom_headers, batch, is_anon)
   end
 
-  def self.find_default( options = nil, custom_headers = {}, batch = nil, is_anon = false )
-    options ||= {}
+  def self.find_default( options = {}, custom_headers = {}, batch = nil, is_anon = false )
     options[:defaultOnly] = true
     find(options, custom_headers, batch, is_anon)
   end

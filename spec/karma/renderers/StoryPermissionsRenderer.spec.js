@@ -139,13 +139,13 @@ describe('StoryPermissionsRenderer', function() {
           it('renders', function() {
             var instance = new StoryPermissionsRenderer();
 
-            assert.equal($visibilityLabel.text(), I18n.t('settings_panel.publishing_section.visibility.public'));
-            assert.equal($visibilityButtonText.text(), I18n.t('settings_panel.publishing_section.visibility.make_story_private'));
+            assert.equal($visibilityLabel.text(), I18n.t('editor.settings_panel.publishing_section.visibility.public'));
+            assert.equal($visibilityButtonText.text(), I18n.t('editor.settings_panel.publishing_section.visibility.make_story_private'));
             assert(!$visibilityButton.hasClass('accent-btn'));
             assert(!$visibilityButton.hasClass('accent-green-btn'));
             assert.equal($updatePublicButton.prop('disabled'), true);
-            assert.equal($updatePublicLabel.text(), I18n.t('settings_panel.publishing_section.status.published'));
-            assert.equal($publishingHelpText.text(), I18n.t('settings_panel.publishing_section.messages.has_been_published'));
+            assert.equal($updatePublicLabel.text(), I18n.t('editor.settings_panel.publishing_section.status.published'));
+            assert.equal($publishingHelpText.text(), I18n.t('editor.settings_panel.publishing_section.messages.has_been_published'));
           });
 
           describe('and has a difference in digest', function() {
@@ -161,8 +161,8 @@ describe('StoryPermissionsRenderer', function() {
               var instance = new StoryPermissionsRenderer();
 
               assert.equal($updatePublicButton.prop('disabled'), false);
-              assert.equal($publishingHelpText.text(), I18n.t('settings_panel.publishing_section.messages.previously_published'));
-              assert.equal($updatePublicLabel.text(), I18n.t('settings_panel.publishing_section.status.draft'));
+              assert.equal($publishingHelpText.text(), I18n.t('editor.settings_panel.publishing_section.messages.previously_published'));
+              assert.equal($updatePublicLabel.text(), I18n.t('editor.settings_panel.publishing_section.status.draft'));
             });
           });
         });
@@ -175,11 +175,11 @@ describe('StoryPermissionsRenderer', function() {
           it('renders', function() {
             var instance = new StoryPermissionsRenderer();
 
-            assert.equal($visibilityLabel.text(), I18n.t('settings_panel.publishing_section.visibility.private'));
-            assert.equal($visibilityButtonText.text(), I18n.t('settings_panel.publishing_section.visibility.make_story_public'));
+            assert.equal($visibilityLabel.text(), I18n.t('editor.settings_panel.publishing_section.visibility.private'));
+            assert.equal($visibilityButtonText.text(), I18n.t('editor.settings_panel.publishing_section.visibility.make_story_public'));
             assert.isTrue($visibilityButton.hasClass('accent-green-btn'));
             assert.equal($updatePublicButton.prop('disabled'), true);
-            assert.equal($publishingHelpText.text(), I18n.t('settings_panel.publishing_section.messages.can_be_shared_publically'));
+            assert.equal($publishingHelpText.text(), I18n.t('editor.settings_panel.publishing_section.messages.can_be_shared_publically'));
           });
         });
       })

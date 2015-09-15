@@ -58,7 +58,7 @@
         if (permissions.isPublic) {
           storyteller.storyPermissionsManager.makePublic(_renderError);
         } else {
-          _renderError(I18n.t('settings_panel.publishing_section.errors.not_published_not_updated'));
+          _renderError(I18n.t('editor.settings_panel.publishing_section.errors.not_published_not_updated'));
         }
 
         _$errorContainer.addClass('hidden');
@@ -86,24 +86,24 @@
       if (permissions && permissions.isPublic) {
         havePublishedAndDraftDiverged = _havePublishedAndDraftDiverged();
 
-        _$visibilityLabel.text(I18n.t('settings_panel.publishing_section.visibility.public'));
-        _$visibilityButtonText.text(I18n.t('settings_panel.publishing_section.visibility.make_story_private'));
+        _$visibilityLabel.text(I18n.t('editor.settings_panel.publishing_section.visibility.public'));
+        _$visibilityButtonText.text(I18n.t('editor.settings_panel.publishing_section.visibility.make_story_private'));
         _$visibilityButton.removeClass('accent-green-btn').addClass('accent-gray-btn');
         _$updatePublicButton.prop('disabled', true);
-        _$updatePublicLabel.text(I18n.t('settings_panel.publishing_section.status.published'));
-        _$publishingHelpText.text(I18n.t('settings_panel.publishing_section.messages.has_been_published'));
+        _$updatePublicLabel.text(I18n.t('editor.settings_panel.publishing_section.status.published'));
+        _$publishingHelpText.text(I18n.t('editor.settings_panel.publishing_section.messages.has_been_published'));
 
         if (havePublishedAndDraftDiverged) {
           _$updatePublicButton.prop('disabled', false);
-          _$publishingHelpText.text(I18n.t('settings_panel.publishing_section.messages.previously_published'));
-          _$updatePublicLabel.text(I18n.t('settings_panel.publishing_section.status.draft'));
+          _$publishingHelpText.text(I18n.t('editor.settings_panel.publishing_section.messages.previously_published'));
+          _$updatePublicLabel.text(I18n.t('editor.settings_panel.publishing_section.status.draft'));
         }
       } else {
-        _$visibilityLabel.text(I18n.t('settings_panel.publishing_section.visibility.private'));
-        _$visibilityButtonText.text(I18n.t('settings_panel.publishing_section.visibility.make_story_public'));
+        _$visibilityLabel.text(I18n.t('editor.settings_panel.publishing_section.visibility.private'));
+        _$visibilityButtonText.text(I18n.t('editor.settings_panel.publishing_section.visibility.make_story_public'));
         _$visibilityButton.removeClass('accent-gray-btn').addClass('accent-green-btn');
         _$updatePublicButton.prop('disabled', true);
-        _$publishingHelpText.text(I18n.t('settings_panel.publishing_section.messages.can_be_shared_publically'));
+        _$publishingHelpText.text(I18n.t('editor.settings_panel.publishing_section.messages.can_be_shared_publically'));
       }
 
       _$settingsPanelStoryStatus.toggleClass('hidden', !permissions || !permissions.isPublic);

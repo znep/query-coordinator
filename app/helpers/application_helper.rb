@@ -7,6 +7,9 @@ module ApplicationHelper
       I18n.backend.send(:init_translations)
       I18n.backend.send(:translations)
     end
-    @translations[I18n.locale][:editor].with_indifferent_access
+
+    {
+      editor: @translations[I18n.locale][:editor].with_indifferent_access
+    }.with_indifferent_access
   end
 end

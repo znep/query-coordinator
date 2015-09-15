@@ -37,11 +37,11 @@
         $tryAgainButton.toggle(!isStorySaveInProgress && !error.conflict);
 
         text = I18n.t(error.conflict ?
-          'story_save_error_conflict' :
-          'story_save_error_generic'
+          'editor.story_save_error_conflict' :
+          'editor.story_save_error_generic'
         );
         $message.text(text);
-        $tryAgainButton.text(I18n.t('story_save_error_try_again'));
+        $tryAgainButton.text(I18n.t('editor.story_save_error_try_again'));
       }
 
       $this.toggleClass('visible', hasError);

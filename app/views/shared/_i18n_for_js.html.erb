@@ -1,14 +1,13 @@
-<script>
-window.I18n = (function () {
+<script type="text/javascript">
+(function (root) {
   var translationHash = <%= current_editor_translations.to_json.html_safe %>;
 
-  return {
+  window.I18n = {
     // Intakes translationKeys in the form of:        'a.b.c'
     // Maps to the translationHash in the form of:    ['a']['b']['c']
     t: function t(translationKeys) {
       return _.get(translationHash, translationKeys);
     }
   }
-})();
-
+})(window);
 </script>

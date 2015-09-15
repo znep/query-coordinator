@@ -455,9 +455,9 @@
         tryAgainButton.removeClass('hidden');
 
         if (/^validation.*/.test(errorStep)) {
-          messageTranslationKey = 'asset_selector.image_upload.errors.{0}'.format(errorStep);
+          messageTranslationKey = 'editor.asset_selector.image_upload.errors.{0}'.format(errorStep);
         } else {
-          messageTranslationKey = 'asset_selector.image_upload.errors.exception';
+          messageTranslationKey = 'editor.asset_selector.image_upload.errors.exception';
         }
 
         progressMessage.html(I18n.t(messageTranslationKey));

@@ -169,4 +169,37 @@ class DatasetsControllerTest < ActionController::TestCase
 #    assert_response :success
 #  end
 
+  # Leaving CSRF token validation disabled for email is not without some risk. It could allow
+  # mallicious attackers to attempt to use the site as an email relay, among other things.
+  # However, the risk is somewhat mitgated by the fact that a captcha is included on the form.
+  context 'without a valid request forgery token' do
+
+    setup do
+      stub_request(:post, "http://localhost:8080/views/four-four.json?from_address=user@domain.com&id=1234-abcd&message=message%20body&method=flag&subject=A%20visitor%20has%20sent%20you%20a%20message%20about%20your%20'Test%20for%20Andrew'%20'Socrata'%20dataset&type=other").
+        with(:body => "{}", :headers => {'Accept'=>'*/*', 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby', 'X-Socrata-Host'=>'localhost'}).
+        to_return(:status => 200, :body => "", :headers => {})
+    end
+
+    should 'login and return a JSON success result' do
+      UserSession.controller = @controller
+      @controller.stubs(:protect_against_forgery? => true, :verify_recaptcha => true)
+      post(:validate_contact_owner, contact_form_data.merge(:id => '1234-abcd', :format => :data))
+      assert_equal('200', @response.code)
+      assert_equal({:success => true}.to_json, @response.body, 'should include a success JSON response')
+    end
+
+  end
+
+  private
+
+  def contact_form_data
+    {
+      :method => 'flag',
+      :type => 'other',
+      :subject => "A visitor has sent you a message about your 'Test for Andrew' 'Socrata' dataset",
+      :message => 'message body',
+      :from_address => 'user@domain.com'
+    }
+  end
+
 end

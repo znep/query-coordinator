@@ -6,6 +6,12 @@ class DatasetsController < ApplicationController
   prepend_before_filter :check_chrome, :only => [:show, :alt]
   skip_before_filter :require_user, :only => [:show, :blob, :alt, :widget_preview, :contact, :validate_contact_owner, :form_success, :form_error, :external, :external_download, :download, :about]
   skip_before_filter :disable_frame_embedding, :only => [:form_success, :form_error]
+  # When CSRF token validation is skipped for this method (see skip_before_filter above), the
+  # verify_recaptcha test in the 'create' method is our only protection against abuse.
+  skip_before_filter :verify_authenticity_token,
+    :if => lambda { |controller|
+      controller.action_name == 'validate_contact_owner' && request.format.data?
+    }
 
 # collection actions
   def new
@@ -394,12 +400,17 @@ class DatasetsController < ApplicationController
 
 # end alt actions
 
+  # This puzzlingly named method is the target for the route 'datasets/four-four/validate_contact_owner'
+  # which sends an email to the dataset owner from 'About This Dataset' panel.
+  # NOTE: Even though we're skipping the CSRF token verification, there is still the 'verify_captcha' test
+  # before the 'respond_to' block, but without the CSRF token, this is our only protection.
   def validate_contact_owner
-
     @view = get_view(params[:id])
     return (render :nothing => true) if @view.nil?
 
     success = false
+    # When CSRF token validation is skipped for this method (see skip_before_filter above), this
+    # verify_recaptcha test is our only protection against abuse.
     if verify_recaptcha
       flag_params = {}
       keys = [:id, :type, :subject, :message, :from_address]

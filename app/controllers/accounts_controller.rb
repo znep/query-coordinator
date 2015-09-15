@@ -1,9 +1,20 @@
 class AccountsController < ApplicationController
+
   include ActionView::Helpers::TranslationHelper
   include UserSessionsHelper
+
   skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password]
   skip_before_filter :adjust_format, :only => [:update]
+
   protect_from_forgery :except => [:add_rpx_token]
+
+  # NOTE: This skip_before_filter must come _after_ the protect_from_forgery call above
+  # When CSRF token validation is skipped for this method (see skip_before_filter above), the
+  # verify_recaptcha test in the 'create' method is our only protection against abuse.
+  skip_before_filter :verify_authenticity_token,
+    :if => lambda { |controller|
+      controller.action_name == 'create' && (request.format.json? || request.format.data?)
+    }
 
   def new
     @signup = SignupPresenter.new({}, params[:token], params[:auth_token])
@@ -13,6 +24,10 @@ class AccountsController < ApplicationController
     @user_session = UserSession.new unless params[:no_js].present?
   end
 
+  # This is the true target of the form when signing up for a new account not '/profile/account'
+  # as you might be led to believe by looking at the form action in the HTML. The route is '/signup.json'
+  # NOTE: Even though we're skipping the CSRF token verification, there is still the 'verify_captcha' test
+  # within the 'respond_to' block, but without the CSRF token, this is our only protection.
   def create
     @body_class = 'signup'
     @token = params[:inviteToken] || ""
@@ -25,6 +40,8 @@ class AccountsController < ApplicationController
     @signup = SignupPresenter.new(params[:signup])
     respond_to do |format|
       # need both .data and .json formats because firefox detects as .data and chrome detects as .json
+      # When CSRF token validation is skipped for this method (see skip_before_filter above), this
+      # verify_recaptcha test is our only protection against abuse.
       if !verify_recaptcha
         flash.now[:error] = t('recaptcha.errors.verification_failed')
         @user_session = UserSession.new

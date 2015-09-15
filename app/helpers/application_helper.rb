@@ -10,6 +10,6 @@ module ApplicationHelper
 
     {
       editor: @translations[I18n.locale][:editor].with_indifferent_access
-    }
+    }.with_indifferent_access
   end
 end

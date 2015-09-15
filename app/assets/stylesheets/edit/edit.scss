@@ -75,9 +75,14 @@ body .header-main {
   .story-title {
     display: inline-block;
     margin: 0 1em;
+    max-width: $header-title-max-width;
     line-height: $header-height;
     font-weight: 600;
     color: $header-story-title-color;
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
     &:hover,
     &:active {

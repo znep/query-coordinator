@@ -188,22 +188,25 @@
     }
 
     function _updateVisualizationConfiguration(payload) {
-      var cardData = payload.cardData;
+      var vif = payload.vif;
 
-      if (cardData) {
-        _currentComponentType = 'socrata.visualization.columnChart';
-        switch (cardData.cardType) {
+      if (vif) {
+        switch (vif.type) {
           case 'column':
             _currentComponentType = 'socrata.visualization.columnChart';
             // Final query must contain {0} and {1} for guard value replacing down the road, so for now leave
             // them and only replace column name.
             // TODO: Finalize a better way to store this query.
+            _currentComponentProperties = vif;
+
+            /*
             _currentComponentProperties.dataSource.baseQuery =
               'SELECT `{2}` AS {0}, COUNT(*) AS {1} GROUP BY `{2}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200'.format(
                 '{0}',
                 '{1}',
-                cardData.fieldName
+                vif.columnName
               );
+              */
         }
 
         self._emitChange();

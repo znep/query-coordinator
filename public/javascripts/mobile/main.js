@@ -5,18 +5,18 @@ $(function () {
   var $intro = $('.intro');
   var $all = $('.all');
   var description = $('.all').find('.desc').html();
-  var introText = description.substring(0,85);
+  var introText = description.substring(0, 85);
 
   $intro.find('.desc').html(introText);
   $intro.removeClass('hidden');
 
-  $intro.find('.text-link').on('click',function(){
+  $intro.find('.text-link').on('click', function() {
     // show all desc
     $intro.addClass('hidden');
     $all.removeClass('hidden');
   });
 
-  $all.find('.text-link').on('click',function(){
+  $all.find('.text-link').on('click', function() {
     // show intro desc
     $all.addClass('hidden');
     $intro.removeClass('hidden');
@@ -30,22 +30,22 @@ $(function () {
   $window.scroll(function() {
     var stp = $window.scrollTop();
 
-    if(stp > lastScrollTop){
-      if(!wasScrollingDown) {
-        $navbar
-          .removeClass('navbar-visible')
-          .addClass('navbar-hidden');
-        $('#navbar')
-          .removeClass('in')
-          .attr('aria-expanded','false');
+    if (stp > lastScrollTop) {
+      if (!wasScrollingDown) {
+        $navbar.
+          removeClass('navbar-visible').
+          addClass('navbar-hidden');
+        $('#navbar').
+          removeClass('in').
+          attr('aria-expanded','false');
 
         wasScrollingDown = true;
       }
-    }else{
-      if(wasScrollingDown) {
-        $navbar
-          .removeClass('navbar-hidden')
-          .addClass('navbar-visible');
+    } else {
+      if (wasScrollingDown) {
+        $navbar.
+          removeClass('navbar-hidden').
+          addClass('navbar-visible');
 
         wasScrollingDown = false;
       }

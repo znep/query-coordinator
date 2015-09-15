@@ -19,14 +19,12 @@
       <hr>
       <h2><%= t('editor.settings_panel.displaying_section.section_title') %></h2>
 
-      <div class="scrollable">
-        <form>
-          <label><%= t('editor.settings_panel.displaying_section.title_label') %></label>
-          <input name="title" type="text" maxlength="254" />
-          <label><%= t('editor.settings_panel.displaying_section.description_label') %></label>
-          <textarea></textarea>
-        </form>
-      </div>
+      <form>
+        <label><%= t('editor.settings_panel.displaying_section.title_label') %></label>
+        <input name="title" type="text" maxlength="254" />
+        <label><%= t('editor.settings_panel.displaying_section.description_label') %></label>
+        <textarea></textarea>
+      </form>
 
       <div class="settings-save-failure-message">
         <div><%= t('editor.settings_panel.errors.generic_save_failure_message') %></div>

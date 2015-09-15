@@ -21,6 +21,7 @@
     color: $header-text-color;
     background-color: $header-bg-color;
     z-index: 2;
+    overflow: auto;
 
     .close-side-panel-btn {
       position: absolute;
@@ -124,6 +125,12 @@
     color: $settings-panel-light-gray-color;
   }
 
+}
+
+.settings-panel-displaying {
+  textarea {
+    resize: vertical;
+  }
 }
 
 .settings-panel-publishing {

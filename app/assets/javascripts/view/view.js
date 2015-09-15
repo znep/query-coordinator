@@ -3,6 +3,7 @@ $(document).on('ready', function() {
 
   var $userStory = $('.user-story');
   var storyteller = window.socrata.storyteller;
+  storyteller.presentationMode = new storyteller.PresentationMode();
   storyteller.flyoutRenderer = new storyteller.FlyoutRenderer();
 
   // Init window size classes
@@ -25,4 +26,7 @@ $(document).on('ready', function() {
       JSON.parse($this.attr('data-component-data'))
     );
   });
+
+  // Init window size
+  _applyWindowSizeClass();
 });

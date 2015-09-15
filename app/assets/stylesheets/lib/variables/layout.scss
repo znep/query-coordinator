@@ -97,6 +97,9 @@ $btn-height: 2rem;
 $preview-btn-right-margin: 3rem;
 $preview-btn-bottom-margin: 3rem;
 
+// View Mode button
+$view-mode-button-width: 4.2rem;
+
 // Border radii
 $btn-border-radius: 1px;
 $modal-border-radius: 0.3rem;
@@ -106,8 +109,6 @@ $input-element-border-radius: 0.3rem;
 $transition-duration: 0.2s;
 $iframe-onload-transition-duration: 1.5s;
 
-// Forms
-
 // Flyout
 $flyout-max-width: 35rem;
 $flyout-vertical-padding: 0.5rem;
@@ -116,3 +117,11 @@ $flyout-horizontal-padding: 1rem;
 // that make that assumption, such as: `($flyout-hint-size + 1)`
 $flyout-hint-size: 10px;
 $flyout-last-cell-margin-left: 1.5rem;
+
+// Presentation Mode
+$presentation-mode-font-size: 1.75rem;
+$presentation-mode-button-font-size: 2.2rem;
+$presentation-mode-large-max-width: 84%;
+$presentation-mode-medium-max-width: 94%;
+$presentation-mode-small-width: auto;
+$presentation-mode-small-max-width: 96%;

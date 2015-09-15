@@ -12,7 +12,8 @@
             url = urlBase + '?start=' + startDate.getTime() +
                             '&end='   + endDate.getTime() +
                             (previousDate ? '&previous=' + previousDate.getTime() : '') +
-                            '&embetter=' + (blist.feature_flags.embetter_analytics_page || 0);
+                            // core requires an integer; treat "true" as 1
+                            '&embetter=' + (+blist.feature_flags.embetter_analytics_page);
 
         if (_.isFunction(section.loading))
         { section.loading($section); }

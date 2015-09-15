@@ -9,6 +9,8 @@ describe('VisualizationAddController', function() {
   var $controller;
   var controllerHarness;
   var $scope;
+  var validVIF;
+  var serializedDataset;
 
   beforeEach(module('dataCards'));
 
@@ -41,7 +43,27 @@ describe('VisualizationAddController', function() {
     if (datasetOverrides && datasetOverrides.id) {
       pageOverrides.datasetId = datasetOverrides.id;
     }
+
+    validVIF = {
+      aggregation: {
+        field: null,
+        'function': 'count'
+      },
+      columnName: 'foo',
+      datasetUid: 'asdf-fdsa',
+      description: 'yar',
+      type: 'columnChart'
+    };
+
+    serializedDataset = { columns: {} };
+    serializedDataset.columns[validVIF.columnName] = {
+      availableCardTypes: ['column'],
+      description: validVIF.description,
+      name: 'name'
+    };
+
     var dataset = Mockumentary.createDataset(datasetOverrides);
+    dataset.serialize = _.constant(serializedDataset);
 
     var $scope = $rootScope.$new();
 
@@ -143,15 +165,15 @@ describe('VisualizationAddController', function() {
           });
 
           describe('with a non-null payload', function() {
-            it('should call onVisualizationSelected with the results of serialize() on the payload', function() {
-              var expectedArgument = { foo: 'bar' };
+            it('should call onVisualizationSelected with the results of VIF synthesis in the payload', function() {
+              var cardSelected = {
+                fieldName: validVIF.columnName
+              };
 
-              emitCardModelSelected({
-                serialize: _.constant(expectedArgument)
-              });
+              emitCardModelSelected(cardSelected);
 
               sinon.assert.calledOnce(window.frameElement.onVisualizationSelected);
-              sinon.assert.calledWith(window.frameElement.onVisualizationSelected, expectedArgument);
+              sinon.assert.calledWithMatch(window.frameElement.onVisualizationSelected, validVIF);
             });
           });
         });

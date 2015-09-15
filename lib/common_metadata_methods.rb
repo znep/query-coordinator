@@ -108,11 +108,8 @@ module CommonMetadataMethods
     )
 
     # Fetch metadb (v2) pages
-    table_id = View.find(dataset_id).tableId
-    metadb_pages_url = "/views.json?accessType=WEBSITE&method=getByTableId&tableId=#{table_id}"
-
     begin
-      metadb_response = CoreServer::Base.connection.get_request(metadb_pages_url)
+      metadb_response = Array(View.find(dataset_id).find_related(1))
       metadb_status = '200'
     rescue CoreServer::ResourceNotFound => error
       metadb_status = '404'
@@ -127,16 +124,14 @@ module CommonMetadataMethods
     end
 
     # Filter metadb_response on only published v2 data lenses
-    metadb_result = JSON.parse(metadb_response, {:symbolize_names => true}).select { |page|
-      page[:displayType] == 'data_lens' &&
-      page[:viewType] == 'tabular' &&
-      page[:publicationStage] == 'published'
-    }
+    metadb_result = JSON.parse(metadb_response.select { |view|
+      view.data_lens? && view.is_published?
+    }.to_s, :symbolize_names => true)
 
     combined_body = {
       :publisher => metadb_result.map { |page|
-          page[:displayFormat][:data_lens_page_metadata]
-        }.concat(phiddy_result[:body][:publisher]),
+          HashWithIndifferentAccess.new(page[:displayFormat][:data_lens_page_metadata])
+        }.concat(Array(phiddy_result[:body][:publisher])),
       :user => phiddy_result[:body][:user]
     }
 

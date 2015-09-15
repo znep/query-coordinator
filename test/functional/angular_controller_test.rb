@@ -11,12 +11,18 @@ class AngularControllerTest < ActionController::TestCase
     @controller.stubs(:phidippides => @phidippides)
     @new_view_manager = NewViewManager.new
     @page_metadata_manager = PageMetadataManager.new
-    View.stubs(
-      :migrations => {
-        :nbeId => "1234-1234",
-        :obeId => "1234-1234"
-      }
-    )
+    load_sample_data('test/fixtures/sample-data.json')
+      test_view = View.find('test-data')
+      load_sample_data('test/fixtures/metadb_response_v2_data_lens.json')
+      test_related_views = View.find('7q9m-tf7f')
+      View.stubs(
+        :find => test_view,
+        :find_related => test_related_views,
+        :migrations => {
+          :nbeId => "1234-1234",
+          :obeId => "1234-1234"
+        }
+      )
   end
 
   test 'should successfully get serve_app' do
@@ -61,11 +67,17 @@ class AngularControllerTest < ActionController::TestCase
   context 'accessibility' do
     setup do
       NewViewManager.any_instance.stubs(:fetch).returns({})
+      load_sample_data('test/fixtures/sample-data.json')
+      test_view = View.find('test-data')
+      load_sample_data('test/fixtures/metadb_response_v2_data_lens.json')
+      test_related_views = View.find('7q9m-tf7f')
       View.stubs(
         :migrations => {
           :nbeId => "1234-1234",
           :obeId => "1234-1234"
-        }
+        },
+        :find => test_view,
+        :find_related => test_related_views
       )
       PageMetadataManager.any_instance.stubs(
         :show => v1_page_metadata
@@ -256,6 +268,14 @@ class AngularControllerTest < ActionController::TestCase
           :body => v1_pages_for_dataset
         },
         :set_default_and_available_card_types_to_columns! => {}
+      )
+      load_sample_data('test/fixtures/sample-data.json')
+      test_view = View.find('test-data')
+      load_sample_data('test/fixtures/metadb_response_v2_data_lens.json')
+      test_related_views = View.find('7q9m-tf7f')
+      View.stubs(
+        :find => test_view,
+        :find_related => test_related_views
       )
       NewViewManager.any_instance.stubs(:fetch).returns({})
     end

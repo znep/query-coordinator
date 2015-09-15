@@ -127,6 +127,12 @@
 
 }
 
+.settings-panel-displaying {
+  textarea {
+    resize: vertical;
+  }
+}
+
 .settings-panel-publishing {
   > div {
     padding-top: 1rem;

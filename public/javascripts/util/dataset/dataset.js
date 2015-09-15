@@ -229,6 +229,11 @@ var Dataset = ServerModel.extend({
         return (this.displayType === 'new_view');
     },
 
+    isDataLens: function()
+    {
+        return (this.displayType === 'data_lens');
+    },
+
     isTabular: function()
     {
         return (this.viewType == 'tabular');
@@ -1470,7 +1475,7 @@ var Dataset = ServerModel.extend({
             if (_.isFunction(successCallback)) { successCallback(); }
         };
 
-        if (ds.isNewView()) {
+        if (ds.isNewView() || ds.isDataLens()) {
             // Send a DELETE request to the NFE endpoint, which should propagate the delete to the
             // OBE representation.
             ds.makeRequestWithPromise({

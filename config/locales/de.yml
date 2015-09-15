@@ -123,6 +123,7 @@ de:
           permissions: Berechtigungen
           private: Privat
           public: "Öffentlich"
+        save: Speichern
       customize_bar:
         changes_warning: SIe haben diese Seite geändert.
         collapse_card: Um in den Personalisierungs-Modus zu kommen, klappen Sie bitte die große Card mit dem Pfeil in der oberen rechten Ecke auf

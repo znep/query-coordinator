@@ -276,8 +276,20 @@ body.state-view-cards {
       }
     }
     #card-container {
-      margin: 0 0 ($customize-bar-height + 10px);
       position: relative;
+
+      &.multiple-cards {
+        margin: 0 0 ($customize-bar-height + 10px);
+      }
+
+      &.single-card {
+        margin: 0;
+
+        .card {
+          padding-top: 30px;
+          border-radius: 0;
+        }
+      }
     }
     .cards {
       display: block;

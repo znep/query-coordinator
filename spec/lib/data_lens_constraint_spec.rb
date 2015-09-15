@@ -4,6 +4,8 @@ require_relative '../../lib/constraints/data_lens_constraint'
 
 describe Constraints::DataLensConstraint do
 
+  include TestHelperMethods
+
   describe '#matches?' do
 
     subject(:constraint) { described_class.new }
@@ -19,6 +21,8 @@ describe Constraints::DataLensConstraint do
       # behind the scenes as a singleton or something else that can't be dumped,
       # and Marshal#dump is called after a new result is provided on cache miss.
       allow(Marshal).to receive(:dump).and_return(marshalled_out)
+
+      init_current_domain
     end
 
     # the missing/invalid ID cases are covered by resource_constraint_spec.rb
@@ -27,13 +31,31 @@ describe Constraints::DataLensConstraint do
       it 'is accepted (data_lens version)' do
         allow(data_lens).to receive(:data_lens?).and_return(true)
         allow(data_lens).to receive(:new_view?).and_return(false)
+        allow(data_lens).to receive(:standalone_visualization?).and_return(false)
         expect(constraint.matches?(request_without_query)).to be_truthy
       end
 
       it 'is accepted (new_view version)' do
         allow(data_lens).to receive(:data_lens?).and_return(false)
         allow(data_lens).to receive(:new_view?).and_return(true)
+        allow(data_lens).to receive(:standalone_visualization?).and_return(false)
         expect(constraint.matches?(request_without_query)).to be_truthy
+      end
+
+      it 'is accepted (standalone_visualization version, with flag)' do
+        allow(FeatureFlags).to receive(:derive).and_return(standalone_lens_chart: true)
+        allow(data_lens).to receive(:data_lens?).and_return(false)
+        allow(data_lens).to receive(:new_view?).and_return(false)
+        allow(data_lens).to receive(:standalone_visualization?).and_return(true)
+        expect(constraint.matches?(request_without_query)).to be_truthy
+      end
+
+      it 'is not accepted (standalone_visualization version, without flag)' do
+        allow(FeatureFlags).to receive(:derive).and_return(standalone_lens_chart: false)
+        allow(data_lens).to receive(:data_lens?).and_return(false)
+        allow(data_lens).to receive(:new_view?).and_return(false)
+        allow(data_lens).to receive(:standalone_visualization?).and_return(true)
+        expect(constraint.matches?(request_without_query)).to be_falsy
       end
 
       it 'is not accepted if the janky admin UI is requested' do
@@ -47,6 +69,7 @@ describe Constraints::DataLensConstraint do
       it 'is not accepted' do
         allow(data_lens).to receive(:data_lens?).and_return(false)
         allow(data_lens).to receive(:new_view?).and_return(false)
+        allow(data_lens).to receive(:standalone_visualization?).and_return(false)
         expect(constraint.matches?(request_without_query)).to be_falsy
       end
 

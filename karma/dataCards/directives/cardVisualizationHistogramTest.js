@@ -279,7 +279,7 @@ describe('Histogram Visualization', function() {
   it('should render as a column chart if HistogramService tells it to', function() {
     var histogram;
 
-    sinon.stub(HistogramService, 'getVisualizationTypeForData', function() { return 'columnChart'; });
+    sinon.stub(HistogramService, 'getVisualizationTypeForData', function() { return 'column'; });
 
     histogram = createHistogram();
     expect(histogram.element.find('column-chart').length).to.equal(1);
@@ -297,7 +297,7 @@ describe('Histogram Visualization', function() {
   });
 
   it('interprets the data from CardDataService.getData correctly', function() {
-    sinon.stub(HistogramService, 'getVisualizationTypeForData', function() { return 'columnChart'; });
+    sinon.stub(HistogramService, 'getVisualizationTypeForData', function() { return 'column'; });
 
     var histogram = createHistogram();
     var columnChart = histogram.element.find('column-chart');

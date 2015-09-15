@@ -75,18 +75,15 @@
                 </modal-dialog>
               </div>
               <div class="metadatum-wrapper row">
-                <related-views
-                  page="page"
-                  dataset-pages="datasetPages"
-                  ng-show="showOtherViewsButton && currentUserHasSaveRight"
-                  ></related-views>
+                <related-views ng-show="showOtherViewsButton && currentUserHasSaveRight"></related-views>
               </div>
             </div>
+            <!-- I think this is the menu -->
             <div
               ng-click="onDownloadClick($event)"
               class="action-btn r-to-l download-menu"
               ng-class="{active: downloadOpened || chooserMode.show, disabled: editMode}"
-              ng-if="showDownloadButton"
+              ng-if="showDownloadButton && !standaloneLensChartEnabled"
               >{{ (chooserMode.show ? 'common.cancel' : 'common.download') | I18n }}
               <dropdown-menu ng-if="downloadOpened">
               <a href="{{datasetCSVDownloadURL}}">{{::'metadata.dataAsCsv' | I18n}}</a>
@@ -100,13 +97,11 @@
                 </a>
               </dropdown-menu>
             </div>
-            <a ng-if="!showDownloadButton"
+            <a ng-if="!showDownloadButton && !standaloneLensChartEnabled"
                class="action-btn r-to-l"
                href="{{datasetCSVDownloadURL}}">{{::'common.download' | I18n}}</a>
-            <api-explorer
-              dataset-observable="page.observe('dataset')"
-              edit-mode="editMode">
-            </api-explorer>
+            <export-menu ng-if="standaloneLensChartEnabled"></export-menu>
+            <api-explorer></api-explorer>
           </div>
         </div>
       </div>
@@ -185,10 +180,10 @@
             ng-click="onDownloadClick($event)"
             class="action-btn l-to-r download-menu"
             ng-class="{active: downloadOpened || chooserMode.show, disabled: editMode}"
-            ng-if="showDownloadButton"
+            ng-if="showDownloadButton && !standaloneLensChartEnabled"
             >{{ (chooserMode.show ? 'common.cancel' : 'common.download') | I18n }}
             <dropdown-menu ng-if="downloadOpened">
-            <a href="{{datasetCSVDownloadURL}}">{{::'metadata.dataAsCsv' | I18n}}</a>
+              <a href="{{datasetCSVDownloadURL}}">{{::'metadata.dataAsCsv' | I18n}}</a>
               <a href='#'
                  ng-class="{'download-menu-item-disabled': hasChanges}"
                  ng-click="chooserMode.show = !hasChanges"
@@ -199,13 +194,11 @@
               </a>
             </dropdown-menu>
           </div>
-          <a ng-if="!showDownloadButton"
+          <a ng-if="!showDownloadButton && !standaloneLensChartEnabled"
              class="action-btn l-to-r"
              href="{{datasetCSVDownloadURL}}">{{::'common.download' | I18n}}</a>
-          <api-explorer
-            dataset-observable="page.observe('dataset')"
-            edit-mode="editMode">
-          </api-explorer>
+          <export-menu ng-if="standaloneLensChartEnabled"></export-menu>
+          <api-explorer></api-explorer>
           <div class="manage-section">
             <div class="action-btn r-to-l manage-button" ng-if="shouldShowManageLens && pagePermissions && currentUserHasSaveRight" ng-click="manageLensState.show = true">
               {{::'manageLensDialog.title' | I18n}}
@@ -231,7 +224,7 @@
     save-page="savePage"
     save-page-as="savePageAs"
     save-status="saveStatus"
-    ng-show="currentUserHasSaveRight">
+    ng-show="currentUserHasSaveRight && (page.displayType == 'data_lens' || page.displayType == 'new_view')">
   </customize-bar>
   <div class="cards-content">
     <div id="quick-filter-bar-container">
@@ -254,7 +247,10 @@
               </span>
             </div>
           </div>
-          <button class="clear-all-filters-button action-btn dark" ng-if="appliedFiltersForDisplay.length > 0" ng-click="clearAllFilters()">
+          <button
+            class="clear-all-filters-button action-btn dark"
+            ng-if="appliedFiltersForDisplay.length > 0 && !page.isStandaloneVisualization"
+            ng-click="clearAllFilters()">
             {{::'quickFilterBar.clearAll' | I18n}}
             <span class="icon-close"></span>
           </button>
@@ -263,17 +259,25 @@
       </div>
     </div>
 
-    <card-layout
-      id="card-container"
-      class="cards"
-      ng-class="{'edit-mode': editMode}"
-      page="page"
-      edit-mode="editMode"
-      global-where-clause-fragment="globalWhereClauseFragment"
-      expanded-card="expandedCard"
-      allow-add-card="!allVisualizableColumnsVisualized"
-      chooser-mode="chooserMode">
-    </card-layout>
+    <div ng-if="!page.isStandaloneVisualization">
+      <multi-card-layout
+        id="card-container"
+        class="cards multiple-cards"
+        ng-class="{'edit-mode': editMode}"
+        page="page"
+        edit-mode="editMode"
+        global-where-clause-fragment="globalWhereClauseFragment"
+        expanded-card="expandedCard"
+        allow-add-card="!allVisualizableColumnsVisualized"
+        chooser-mode="chooserMode">
+      </multi-card-layout>
+    </div>
+    <div ng-if="page.isStandaloneVisualization">
+      <single-card-layout
+         id="card-container"
+         class="cards single-card">
+      </single-card-layout>
+    </div>
 
   </div>
 
@@ -306,6 +310,17 @@
 
     <mobile-warning-dialog dialog-state="mobileWarningState"></mobile-warning-dialog>
 
+  </modal-dialog>
+
+  <modal-dialog
+    ng-if="saveVisualizationAsState.show"
+    dialog-state="saveVisualizationAsState"
+    id="save-visualization-as-dialog">
+    <save-visualization-as-dialog
+      page="page"
+      domain="domain"
+      dialog-state="saveVisualizationAsState">
+    </save-visualization-as-dialog>
   </modal-dialog>
 
   <feedback-panel></feedback-panel>

@@ -87,6 +87,39 @@ class PhidippidesPagesController < ApplicationController
     end
   end
 
+  def create_standalone_visualization
+    begin
+      # we need to do this because rails converts [] to nil
+      # see http://stackoverflow.com/questions/14647731/rails-converts-empty-arrays-into-nils-in-params-of-the-request
+      params[:vif][:filters] ||= []
+      # TODO(pete) figure out how to use this as a module
+      result = StandaloneVisualizationManager.new.create(
+        params[:vif],
+        params[:category],
+        params[:datasetId],
+        params[:isOfficial],
+        :request_id => request_id,
+        :cookies => forwardable_session_cookies
+      )
+      render :json => result
+    rescue Phidippides::ConnectionError
+      render :json => { :body => 'Phidippides connection error' }, :status => '500'
+    rescue Phidippides::NoDatasetIdException => error
+      render :json => { :body => "Error: #{error}" }, :status => '400'
+    rescue Phidippides::NoCardsException => error
+      render :json => { :body => "Error: #{error}" }, :status => '400'
+    rescue NewViewManager::NewViewNotCreatedError => error
+      message = "Core error creating standalone viz request ID #{request_id}: #{error}"
+      Rails.logger.error(message)
+      Airbrake.notify(
+        error,
+        :error_class => 'StandaloneVizCreation',
+        :error_message => message
+      )
+      render :nothing => true, :status => '500'
+    end
+  end
+
   def update
     unless dataset(params[:id]).can_edit?
       return render :nothing => true, :status => '401'

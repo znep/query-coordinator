@@ -154,7 +154,7 @@ module.exports = function ( karma ) {
       { pattern: 'karma/dataCards/controllers/*.js', included: isTestGroupIncluded('controllers') },
       { pattern: 'karma/dataCards/directives/*[cC]horoplethTest.js', included: isTestGroupIncluded('directives-maps') },
       { pattern: 'karma/dataCards/directives/*[fF]eatureMapTest.js', included: isTestGroupIncluded('directives-maps') },
-      { pattern: 'karma/dataCards/directives/cardLayoutTest.js', included: isTestGroupIncluded('directives-card-layout') },
+      { pattern: 'karma/dataCards/directives/multiCardLayoutTest.js', included: isTestGroupIncluded('directives-card-layout') },
       { pattern: 'karma/dataCards/directives/*.js', included: isTestGroupIncluded('directives-other') },
       { pattern: 'karma/dataCards/filters/*.js', included: isTestGroupIncluded('filters') },
       // TODO: Re-add this if we write more integration tests.

@@ -144,6 +144,9 @@ $tool-panel-z-index: 1004;
   .tool-panel-input-group {
     padding: 10px 0;
   }
+  .tool-panel-input-group.alt-group-padding {
+    padding: 0 0 20px;
+  }
   .form-control {
     box-sizing: border-box;
     display: block;

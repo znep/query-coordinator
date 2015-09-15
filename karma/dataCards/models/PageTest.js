@@ -8,11 +8,17 @@ describe('Page model', function() {
   var Page;
   var Model;
   var ServerConfig;
+  var testHelpers;
+
+  var sampleVifJson = 'karma/dataCards/test-data/pageTest/sampleVif.json';
+  var sampleVif;
 
   beforeEach(module('dataCards'));
+  beforeEach(module('karma/dataCards/test-data/pageTest/sampleVif.json'));
 
   beforeEach(inject(function($injector) {
     injector = $injector;
+    testHelpers = $injector.get('testHelpers');
     Mockumentary = $injector.get('Mockumentary');
     Page = $injector.get('Page');
     Model = $injector.get('Model');
@@ -20,7 +26,10 @@ describe('Page model', function() {
 
     // Set the current page metadata verison to 1
     ServerConfig.override('currentPageMetadataVersion', CURRENT_PAGE_METADATA_VERSION);
+
+    sampleVif = testHelpers.getTestJson(sampleVifJson);
   }));
+
 
   it('should correctly deserialize serialized page metadata passed into the constructor.', function() {
     var pageOverrides = {pageId: 'test-page'};
@@ -144,45 +153,47 @@ describe('Page model', function() {
     });
   });
 
-  describe('aggregation ephemeral property', function() {
+  var existingColumn = {
+    name: 'title',
+    description: 'blank!',
+    physicalDatatype: 'number',
+    defaultCardType: 'column',
+    availableCardTypes: ['column', 'search']
+  };
 
-    var existingColumn = {
-      name: 'title',
-      description: 'blank!',
-      physicalDatatype: 'number',
-      defaultCardType: 'column',
-      availableCardTypes: ['column', 'search']
+  function makePage(primaryAggregation, primaryAmountField, cards, vif) {
+    var pageOverrides = {
+      pageId: 'test-page',
+      primaryAggregation: primaryAggregation,
+      primaryAmountField: primaryAmountField,
+      cards: cards,
+      sourceVif: vif
     };
+    var datasetOverrides = {
+      id: 'test-data',
+      columns: {
+        'existing_column': existingColumn
+      }
+    };
+    return Mockumentary.createPage(pageOverrides, datasetOverrides);
+  }
 
-    function makePage(primaryAggregation, primaryAmountField) {
-      var pageOverrides = {
-        pageId: 'test-page',
-        primaryAggregation: primaryAggregation,
-        primaryAmountField: primaryAmountField
-      };
-      var datasetOverrides = {
-        id: 'test-data',
-        columns: {
-          'existing_column': existingColumn
-        }
-      };
-      return Mockumentary.createPage(pageOverrides, datasetOverrides);
-    }
+  function aggregationExpectation(
+    instance,
+    aggregationFunction,
+    aggregationColumnIsNull,
+    aggregationFieldName,
+    done
+  ) {
+    instance.observe('aggregation').subscribe(function(aggregation) {
+      expect(aggregation['function']).to.equal(aggregationFunction);
+      expect(aggregation.column === null).to.equal(aggregationColumnIsNull);
+      expect(aggregation.fieldName).to.equal(aggregationFieldName);
+      done();
+    });
+  }
 
-    function aggregationExpectation(
-      instance,
-      aggregationFunction,
-      aggregationColumnIsNull,
-      aggregationFieldName,
-      done
-    ) {
-      instance.observe('aggregation').subscribe(function(aggregation) {
-        expect(aggregation['function']).to.equal(aggregationFunction);
-        expect(aggregation.column === null).to.equal(aggregationColumnIsNull);
-        expect(aggregation.fieldName).to.equal(aggregationFieldName);
-        done();
-      });
-    }
+  describe('aggregation ephemeral property', function() {
 
     it('handles a count aggregation with no primaryAmountField', function(done) {
       var instance = makePage('count', null);
@@ -209,4 +220,64 @@ describe('Page model', function() {
       aggregationExpectation(instance, 'sum', false, 'existing_column', done);
     })
   });
+
+  describe('activeFilters ephemeral property', function() {
+
+    it('is computed from cards when there is no VIF', function(done) {
+      var instance = makePage('count', null, [Mockumentary.createCardMetadata()]);
+
+      instance.observe('activeFilters').subscribe(function(activeFilters) {
+        expect(activeFilters[0].filters[0].serialize()).to.eql({
+          function: 'BinaryOperator',
+          arguments: {
+            operator: '=',
+            operand: 0.12,
+            humanReadableOperand: undefined
+          }
+        });
+        done();
+      });
+
+    });
+
+    it('is computed from the VIF when there is one', function(done) {
+      var instance = makePage('count', null, [Mockumentary.createCardMetadata()], sampleVif);
+
+      instance.observe('activeFilters').subscribe(function(activeFilters) {
+        expect(activeFilters[0].filters[0].serialize()).to.eql({
+          function: 'BinaryOperator',
+          arguments: {
+            operator: '=',
+            operand: 0.23,
+            humanReadableOperand: undefined
+          }
+        });
+        done();
+      });
+    });
+
+  });
+
+  describe('computedWhereClauseFragment ephemeral property', function() {
+
+    it('is computed from cards when there is no VIF', function(done) {
+      var instance = makePage('count', null, [Mockumentary.createCardMetadata()]);
+
+      instance.observe('computedWhereClauseFragment').subscribe(function(computedWhereClauseFragment) {
+        expect(computedWhereClauseFragment).to.eql('`blood_alcohol_level`=0.12');
+        done();
+      });
+    });
+
+    it('is computed from the VIF when there is one', function(done) {
+      var instance = makePage('count', null, [Mockumentary.createCardMetadata()], sampleVif);
+
+      instance.observe('computedWhereClauseFragment').subscribe(function(computedWhereClauseFragment) {
+        expect(computedWhereClauseFragment).to.eql('`blood_alcohol_level`=0.23');
+        done();
+      });
+    });
+
+  });
+
 });

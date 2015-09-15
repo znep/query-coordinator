@@ -297,7 +297,7 @@ Frontend::Application.routes do
       match '/tiles/:page_id/:field_id/:zoom/:x_coord/:y_coord.pbf', :via => :get, :action => 'proxy_request'
     end
 
-    scope :controller => 'angular', :constraints => { :id => Frontend::UID_REGEXP, :field_id => Phidippides::COLUMN_ID_REGEX } do
+    scope :controller => 'angular', :constraints => Constraints::DataLensConstraint.new do
       # NOTE: The dataCards angular app is capable of rendering multiple views (Pages and Dataset Metadata, for instance).
       # As of 9/24/2014, the angular app itself figures out what particular view to render.
       # So if you change these routes, make sure public/javascripts/angular/dataCards/app.js is also updated to
@@ -452,6 +452,7 @@ Frontend::Application.routes do
     scope :controller => 'phidippides_pages' do
       match '/metadata/v1/page/:id', :to => 'phidippides_pages#show', :via => [:get], :constraints => { :id => Frontend::UID_REGEXP }
       match '/metadata/v1/page', :to => 'phidippides_pages#create', :via => [:post]
+      match '/metadata/v1/standalone_viz', :to => 'phidippides_pages#create_standalone_visualization', :via => [:post]
       match '/metadata/v1/page/:id', :to => 'phidippides_pages#update', :via => [:put], :constraints => { :id => Frontend::UID_REGEXP }
       match '/metadata/v1/page/:id', :to => 'phidippides_pages#destroy', :via => [:delete], :constraints => { :id => Frontend::UID_REGEXP }
     end

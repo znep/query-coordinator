@@ -123,6 +123,7 @@ zh:
           permissions: "许可"
           private: "隐私"
           public: "公开"
+        save: "保存"
       customize_bar:
         changes_warning: "你已更改此页面。"
         collapse_card: "进入自定义模式：使用其右上角的箭头关闭大卡"

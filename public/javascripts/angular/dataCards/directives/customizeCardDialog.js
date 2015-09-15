@@ -56,7 +56,7 @@
       baseLayerOption$.subscribe(function(value) {
         switch (value) {
           case 'standard':
-            cardModel.unset('baseLayerUrl');
+            cardModel.set('baseLayerUrl', null);
             break;
           case 'esri':
             cardModel.set('baseLayerUrl', Constants.ESRI_BASE_URL);

@@ -123,6 +123,7 @@ it:
           permissions: Permessi
           private: Privato
           public: Pubblico
+        save: Salva
       customize_bar:
         changes_warning: Hai effettuato dei cambiamenti in questa pagina.
         collapse_card: 'Per entrare nella modalità di personalizzazione: riduci la scheda grande utilizzando le frecce presenti all''angolo in alto a destra'

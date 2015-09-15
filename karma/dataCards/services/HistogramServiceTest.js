@@ -423,9 +423,9 @@ describe('HistogramService', function() {
       run(input, 'histogram');
     });
 
-    it('should return "columnChart" if the length is below a threshold and everything is an integer and the values span a range below a threshold', function() {
+    it('should return "column" if the length is below a threshold and everything is an integer and the values span a range below a threshold', function() {
       var input = generateInput([-4, -1, 0, 1.0, 7, 8, 9, 15]);
-      run(input, 'columnChart');
+      run(input, 'column');
     });
   });
 

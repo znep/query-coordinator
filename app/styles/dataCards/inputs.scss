@@ -54,6 +54,9 @@ input.dark[type="url"] {
   &:focus {
     opacity: 1;
   }
+  .invalid {
+    outline-color: $red-error-color;
+  }
 }
 
 rich-text-editor {

@@ -19,7 +19,8 @@ module Constraints
         view = Rails.cache.fetch("views/#{params[:id]}", expires_in: 15.minutes) do
           View.find(params[:id], 'Cookie' => request.cookies)
         end
-        view.data_lens? || view.new_view?
+        standalone_visualizations_enabled = FeatureFlags.derive(nil, request)[:standalone_lens_chart]
+        view.data_lens? || view.new_view? || (view.standalone_visualization? && standalone_visualizations_enabled)
       rescue
         false
       end

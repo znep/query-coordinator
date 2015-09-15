@@ -123,6 +123,7 @@ ro:
           permissions: Drepturi
           private: Privat
           public: Public
+        save: Salvare
       customize_bar:
         changes_warning: Ați efectuat schimbări la această pagină
         collapse_card: 'Pentru a intra în modul personalizare: Trageți în jos cardul mare, utilizând săgețile din colțul dreapta sus'

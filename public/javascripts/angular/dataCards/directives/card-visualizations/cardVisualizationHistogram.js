@@ -345,7 +345,7 @@
           switchLatest().
           shareReplay(1);
 
-        // Fires either 'columnChart' or 'histogram'.
+        // Fires either 'column' or 'histogram'.
         var visualizationType$ = groupBySample$.map(function(groupBySample) {
           return HistogramService.getVisualizationTypeForData(_.pluck(groupBySample, 'name'));
         }).share();
@@ -364,7 +364,7 @@
         visualizationType$.subscribe(function(visualizationType) {
           var conditionalStyles = {};
 
-          if (visualizationType === 'columnChart') {
+          if (visualizationType === 'column') {
             conditionalStyles.marginLeft = 0;
             conditionalStyles.marginRight = 0;
             ColumnChartService.registerColumnChartEvents($scope, element);

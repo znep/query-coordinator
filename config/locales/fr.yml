@@ -123,6 +123,7 @@ fr:
           permissions: Autorisation
           private: Privé
           public: Public
+        save: Enregistrer
       customize_bar:
         changes_warning: Vous avez apporté des modifications à cette page.
         collapse_card: 'Pour entre dans le mode personnalisation : faites dérouler la grande carte en utilisant les flèches dans le coin droit supérieur'

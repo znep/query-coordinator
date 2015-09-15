@@ -1,4 +1,4 @@
-describe('card-layout', function() {
+describe('multi-card-layout', function() {
   'use strict';
 
   var NUM_CARDS_IN_DEFAULT_LAYOUT = 6;
@@ -18,7 +18,7 @@ describe('card-layout', function() {
   var Constants;
   var I18n;
 
-  beforeEach(module('/angular_templates/dataCards/card-layout.html'));
+  beforeEach(module('/angular_templates/dataCards/multiCardLayout.html'));
   beforeEach(module('/angular_templates/dataCards/card.html'));
   beforeEach(module('/angular_templates/dataCards/cardVisualization.html'));
   beforeEach(module('dataCards/theme/default.scss'));
@@ -107,7 +107,7 @@ describe('card-layout', function() {
   });
 
   /**
-   * Generates and compiles the html with a card-layout directive.
+   * Generates and compiles the html with a multi-card-layout directive.
    *
    * @param {Object} options An object with any of the keys:
    *   cards: A function that takes the Page Model as an argument, and returns an array of
@@ -224,7 +224,7 @@ describe('card-layout', function() {
     outerScope.page = pageModel;
     outerScope.where = '';
     outerScope.editMode = false;
-    outerScope.chooserMode = {};
+    outerScope.chooserMode = { show: false, action: null };
 
     var html = [
       '<div class="customize-bar" style="height:{0}px"></div>',
@@ -233,7 +233,7 @@ describe('card-layout', function() {
         '<div id="quick-filter-bar-container" style="height:{1}px;display:block;">',
           '<div class="quick-filter-bar" style="height:{1}px;display:block;"></div>',
         '</div>',
-        '<card-layout id="card-container" ',
+        '<multi-card-layout id="card-container" ',
           'class="cards"',
           'ng-class="{\'edit-mode\': editMode}" ',
           'page="page"',
@@ -241,7 +241,7 @@ describe('card-layout', function() {
           'edit-mode="editMode"',
           'chooser-mode="chooserMode"',
           'allow-add-card="!allVisualizableColumnsVisualized"',
-          'expanded-card="expandedCard"></card-layout>',
+          'expanded-card="expandedCard"></multi-card-layout>',
       '</div>'
     ].join('').format(CUSTOMIZE_BAR_HEIGHT, QUICK_FILTER_BAR_HEIGHT);
     var element = testHelpers.TestDom.compileAndAppend(html, outerScope);
@@ -266,7 +266,7 @@ describe('card-layout', function() {
     Rx.Scheduler.timeout.advanceBy(Constants.LAYOUT_WINDOW_SIZE_DEBOUNCE);
 
     mockWindowStateService.scrollPosition$.onNext($(window).scrollTop());
-    var scope = element.find('card-layout').scope().$$childHead;
+    var scope = element.find('multi-card-layout').scope().$$childHead;
     scope.$digest();
 
     return {
@@ -319,18 +319,18 @@ describe('card-layout', function() {
 
   describe('DOM requirements', function() {
     it('should require a node anywhere in the dom with class cards-metadata', function() {
-      var html = '<card-layout id="card-container"></card-layout>';
+      var html = '<multi-card-layout id="card-container"></multi-card-layout>';
       expect(function() { testHelpers.TestDom.compileAndAppend(html, rootScope.$new())}).to.throw(/cards-metadata/);
 
-      html = '<div class="cards-metadata"></div><card-layout id="card-container"></card-layout>';
+      html = '<div class="cards-metadata"></div><multi-card-layout id="card-container"></multi-card-layout>';
       expect(function() { testHelpers.TestDom.compileAndAppend(html, rootScope.$new())}).to.not.throw(/cards-metadata/);
     });
 
     it('should require a node anywhere in the dom with class quick-filter-bar', function() {
-      var html = '<div class="cards-metadata"></div><card-layout id="card-container"></card-layout>';
+      var html = '<div class="cards-metadata"></div><multi-card-layout id="card-container"></multi-card-layout>';
       expect(function() { testHelpers.TestDom.compileAndAppend(html, rootScope.$new())}).to.throw(/quick-filter-bar/);
 
-      html = '<div class="quick-filter-bar"></div><div class="cards-metadata"></div><card-layout id="card-container"></card-layout>';
+      html = '<div class="quick-filter-bar"></div><div class="cards-metadata"></div><multi-card-layout id="card-container"></multi-card-layout>';
       expect(function() { testHelpers.TestDom.compileAndAppend(html, rootScope.$new())}).to.not.throw(/quick-filter-bar/);
     });
   });
@@ -785,7 +785,7 @@ describe('card-layout', function() {
         cl.pageModel.set('cards', cards);
         cl.outerScope.editMode = true;
         cl.outerScope.$apply();
-        cl.element.find('card-layout').css('display', 'block').width(900).height(300);
+        cl.element.find('multi-card-layout').css('display', 'block').width(900).height(300);
 
         mockWindowStateService.windowSize$.onNext({width: 1000, height: 1000});
         mockWindowStateService.scrollPosition$.onNext(0);
@@ -801,7 +801,7 @@ describe('card-layout', function() {
         expect(card3Dom.offset().top).to.be.above(card2Dom.offset().top);
 
         // Drag card 2.
-        var cardContainerOffset = cl.element.find('card-layout').offset().top;
+        var cardContainerOffset = cl.element.find('multi-card-layout').offset().top;
         card2Overlay.trigger(jQuery.Event( 'mousedown', {
           button: 0,
           clientX: card2Dom.parent().offset().left,
@@ -1430,10 +1430,13 @@ describe('card-layout', function() {
     });
 
     it('downloads the png url when clicking the download button and exits export mode', function() {
-      var eventSpy = sinon.spy();
-      cl.outerScope.$on('exit-export-card-visualization-mode', eventSpy);
+      var exitExportModeSpy = sinon.spy();
+      cl.outerScope.$on('exit-export-card-visualization-mode', exitExportModeSpy);
 
-      cl.scope.chooserMode.show = true;
+      cl.scope.chooserMode = {
+        show: true,
+        action: 'polaroid'
+      };
       cl.scope.$digest();
 
       var button = cl.element.find('.card-chooser .action-png-export:not(.disabled)').eq(1);
@@ -1442,7 +1445,29 @@ describe('card-layout', function() {
       $timeout.flush();
 
       expect(mockDownloadService.calledWith[0]).to.equal('./asdf-fdsa/choropleth_column.png');
-      expect(eventSpy.callCount).to.equal(1);
+      expect(exitExportModeSpy.callCount).to.equal(1);
+    });
+
+    it('shows a visualization-saving dialog when clicking the save button and exits export mode', function() {
+      var exitExportModeSpy = sinon.spy();
+      cl.outerScope.$on('exit-export-card-visualization-mode', exitExportModeSpy);
+
+      var triggerDialogSpy = sinon.spy();
+      cl.scope.$on('save-visualization-as', triggerDialogSpy);
+
+      cl.scope.chooserMode = {
+        show: true,
+        action: 'vif'
+      };
+      cl.scope.$digest();
+
+      var button = cl.element.find('.card-chooser .action-png-export:not(.disabled)').eq(1);
+      button.click();
+
+      $timeout.flush();
+
+      expect(triggerDialogSpy.callCount).to.equal(1);
+      expect(exitExportModeSpy.callCount).to.equal(1);
     });
   });
 

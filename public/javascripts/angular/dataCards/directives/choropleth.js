@@ -1276,7 +1276,7 @@
 
         var tileLayer = baseLayerUrl$.
           map(function(url) {
-            if (_.isUndefined(url)) {
+            if (_.isNull(url) || _.isUndefined(url)) {
               return {
                 url: Constants.DEFAULT_MAP_BASE_LAYER_URL,
                 opacity: Constants.DEFAULT_MAP_BASE_LAYER_OPACITY

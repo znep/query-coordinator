@@ -279,7 +279,7 @@ $(document).on('ready', function() {
     ) {
       // If the save is impossible, don't bother confirming the close :(
       if (!storyteller.storySaveStatusStore.isSaveImpossibleDueToConflict()) {
-        return I18n.t('editor.editor.page_close_confirmation');
+        return I18n.t('editor.page_close_confirmation');
       }
     }
 

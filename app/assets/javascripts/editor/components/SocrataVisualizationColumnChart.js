@@ -36,10 +36,10 @@
         selected: SELECTED_INDEX
       },
       localization: {
-        'NO_VALUE': I18n.t('visualizations.no_value_placeholder'),
-        'FLYOUT_UNFILTERED_AMOUNT_LABEL': I18n.t('visualizations.flyout.unfiltered_amount_label'),
-        'FLYOUT_FILTERED_AMOUNT_LABEL': I18n.t('visualizations.flyout.unfiltered_amount_label'),
-        'FLYOUT_SELECTED_NOTICE': I18n.t('visualizations.flyout.datum_selected_label')
+        'NO_VALUE': I18n.t('editor.visualizations.no_value_placeholder'),
+        'FLYOUT_UNFILTERED_AMOUNT_LABEL': I18n.t('editor.visualizations.flyout.unfiltered_amount_label'),
+        'FLYOUT_FILTERED_AMOUNT_LABEL': I18n.t('editor.visualizations.flyout.unfiltered_amount_label'),
+        'FLYOUT_SELECTED_NOTICE': I18n.t('editor.visualizations.flyout.datum_selected_label')
       }
     };
     var _unfilteredConfig = {

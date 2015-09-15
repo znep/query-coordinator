@@ -290,7 +290,7 @@
     function _renderChooseProvider() {
 
       var heading = _renderModalTitle(
-        I18n.t('asset_selector.choose_provider_heading')
+        I18n.t('editor.asset_selector.choose_provider_heading')
       );
 
       var closeButton = _renderModalCloseButton();
@@ -298,17 +298,17 @@
       var youtubeButton = $('<button>', {
         'class': 'btn accent-btn',
         'data-action': Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE
-      }).text(I18n.t('asset_selector.youtube.button_text'));
+      }).text(I18n.t('editor.asset_selector.youtube.button_text'));
 
       var visualizationButton = $('<button>', {
         'class': 'btn accent-btn',
         'data-action': Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION
-      }).text(I18n.t('asset_selector.visualization.button_text'));
+      }).text(I18n.t('editor.asset_selector.visualization.button_text'));
 
       var imageUploadButton = $('<button>', {
         'class': 'btn accent-btn',
         'data-action': Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
-      }).text(I18n.t('asset_selector.image_upload.button_text'));
+      }).text(I18n.t('editor.asset_selector.image_upload.button_text'));
 
       var providers = $('<ul>', {'class': 'button-list'}).append([
         $('<li>').html(youtubeButton),
@@ -323,7 +323,7 @@
     function _renderChooseImageUploadTemplate() {
 
       var heading = _renderModalTitle(
-        I18n.t('asset_selector.image_upload.heading')
+        I18n.t('editor.asset_selector.image_upload.heading')
       );
 
       var closeButton = _renderModalCloseButton();
@@ -331,7 +331,7 @@
       var inputLabel = $(
         '<h2>',
         { 'class': 'asset-selector-input-label input-label' }
-      ).text(I18n.t('asset_selector.image_upload.input_label'));
+      ).text(I18n.t('editor.asset_selector.image_upload.input_label'));
 
       var inputControl = $(
         '<input>',
@@ -351,7 +351,7 @@
           'data-action': Constants.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
-      ).text(I18n.t('asset_selector.insert_button_text'));
+      ).text(I18n.t('editor.asset_selector.insert_button_text'));
 
       var content = $(
         '<div>',
@@ -374,7 +374,7 @@
 
     function _renderFileUploadProgressTemplate() {
       var heading = _renderModalTitle(
-        I18n.t('asset_selector.image_upload.heading')
+        I18n.t('editor.asset_selector.image_upload.heading')
       );
 
       var closeButton = _renderModalCloseButton();
@@ -387,7 +387,7 @@
       var uploadProgressMessage = $(
         '<div>',
         { 'class': 'asset-selector-uploading-message' }
-      ).text(I18n.t('asset_selector.image_upload.uploading_message'));
+      ).text(I18n.t('editor.asset_selector.image_upload.uploading_message'));
 
       var uploadCancelButton = $(
         '<button>',
@@ -395,7 +395,7 @@
           'class': 'btn asset-selector-cancel-upload',
           'data-action': Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
         }
-      ).text(I18n.t('asset_selector.cancel_button_text'));
+      ).text(I18n.t('editor.asset_selector.cancel_button_text'));
 
       var tryAgainButton = $(
         '<button>',
@@ -403,7 +403,7 @@
           'class': 'hidden btn asset-selector-try-again',
           'data-action': Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
         }
-      ).text(I18n.t('asset_selector.try_again_button_text'));
+      ).text(I18n.t('editor.asset_selector.try_again_button_text'));
 
       progress.append([
         uploadProgressMessage,
@@ -420,7 +420,7 @@
           'data-action': Constants.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
-      ).text(I18n.t('asset_selector.insert_button_text'));
+      ).text(I18n.t('editor.asset_selector.insert_button_text'));
 
       var content = $(
         '<div>',
@@ -467,7 +467,7 @@
     function _renderImagePreviewTemplate() {
 
       var heading = _renderModalTitle(
-        I18n.t('asset_selector.image_upload.heading')
+        I18n.t('editor.asset_selector.image_upload.heading')
       );
 
       var closeButton = _renderModalCloseButton();
@@ -492,7 +492,7 @@
           'class': 'btn accent-btn',
           'data-action': Constants.ASSET_SELECTOR_APPLY
         }
-      ).text(I18n.t('asset_selector.insert_button_text'));
+      ).text(I18n.t('editor.asset_selector.insert_button_text'));
 
       var buttonGroup = $(
         '<div>',
@@ -547,13 +547,13 @@
     function _renderChooseYoutubeTemplate() {
 
       var heading = _renderModalTitle(
-        I18n.t('asset_selector.youtube.heading')
+        I18n.t('editor.asset_selector.youtube.heading')
       );
 
       var closeButton = _renderModalCloseButton();
 
       var inputLabel = $('<h2>', { 'class': 'asset-selector-input-label input-label' }).
-        text(I18n.t('asset_selector.youtube.input_label'));
+        text(I18n.t('editor.asset_selector.youtube.input_label'));
 
       var inputControl = $(
         '<input>',
@@ -570,9 +570,9 @@
         { 'class': 'asset-selector-invalid-title' }
       ).html(
         [
-          I18n.t('asset_selector.youtube.invalid_message_title_1'),
+          I18n.t('editor.asset_selector.youtube.invalid_message_title_1'),
           '<br />',
-          I18n.t('asset_selector.youtube.invalid_message_title_2')
+          I18n.t('editor.asset_selector.youtube.invalid_message_title_2')
         ].join('')
       );
 
@@ -580,7 +580,7 @@
         '<div>',
         { 'class': 'asset-selector-invalid-description' }
       ).text(
-        I18n.t('asset_selector.youtube.invalid_message_description')
+        I18n.t('editor.asset_selector.youtube.invalid_message_description')
       );
 
       var previewInvalidMessage = $(
@@ -618,7 +618,7 @@
           'class': 'btn accent-btn',
           'data-action': Constants.ASSET_SELECTOR_APPLY
         }
-      ).text(I18n.t('asset_selector.insert_button_text'));
+      ).text(I18n.t('editor.asset_selector.insert_button_text'));
 
       var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
         inputLabel,
@@ -708,7 +708,7 @@
       _addModalDialogClass('modal-dialog-wide');
 
       var heading = _renderModalTitle(
-        I18n.t('asset_selector.visualization.choose_dataset_heading')
+        I18n.t('editor.asset_selector.visualization.choose_dataset_heading')
       );
       var closeButton = _renderModalCloseButton();
       var backButton = _renderModalBackButton(Constants.ASSET_SELECTOR_CHOOSE_PROVIDER);
@@ -741,7 +741,7 @@
       );
 
       var heading = _renderModalTitle(
-        I18n.t('asset_selector.visualization.configure_vizualization_heading')
+        I18n.t('editor.asset_selector.visualization.configure_vizualization_heading')
       );
       var closeButton = _renderModalCloseButton();
       var backButton = _renderModalBackButton(Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION);
@@ -755,7 +755,7 @@
           'data-action': Constants.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
-      ).text(I18n.t('asset_selector.insert_button_text'));
+      ).text(I18n.t('editor.asset_selector.insert_button_text'));
 
       var buttonGroup = $(
         '<div>',
@@ -859,7 +859,7 @@
             'class': 'icon-arrow-left2'
           }
         ),
-        I18n.t('asset_selector.back_button_text')
+        I18n.t('editor.asset_selector.back_button_text')
       ]);
     }
 

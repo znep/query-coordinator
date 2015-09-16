@@ -4,16 +4,16 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
 
   var VALID_APP_TOKEN = 'validAppToken';
   var VALID_DOMAIN = 'example.com';
-  var VALID_FOUR_BY_FOUR = 'test-test';
-  var VALID_FIELD_NAME = 'point';
+  var VALID_DATASET_UID = 'test-test';
+  var VALID_COLUMN_NAME = 'point';
   var VALID_FEATURES_PER_TILE = 256 * 256;
   var VALID_TILESERVER_HOSTS = ['api1.example.com', 'api2.example.com'];
 
   var VALID_CONFIG = {
     appToken: VALID_APP_TOKEN,
     domain: VALID_DOMAIN,
-    fourByFour: VALID_FOUR_BY_FOUR,
-    fieldName: VALID_FIELD_NAME,
+    datasetUid: VALID_DATASET_UID,
+    columnName: VALID_COLUMN_NAME,
     featuresPerTile: VALID_FEATURES_PER_TILE,
     tileserverHosts: VALID_TILESERVER_HOSTS
   };
@@ -26,8 +26,8 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
   var TILESERVER_HOST_PATTERN = 'api[12]\\.example\\.com';
   var ORIGIN_HOST_PATTERN = window.location.host;
   var TILE_PATTERN = 'tiles\\/{0}\\/{1}\\/{2}\\/{3}\\/{4}\\.pbf'.format(
-    VALID_FOUR_BY_FOUR.split('-').join('\\-'),
-    VALID_FIELD_NAME,
+    VALID_DATASET_UID.split('-').join('\\-'),
+    VALID_COLUMN_NAME,
     VALID_ZOOM,
     VALID_X,
     VALID_Y
@@ -47,8 +47,8 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
           var tileserverDataProvider = new TileserverDataProvider({
             appToken: null,
             domain: VALID_DOMAIN,
-            fourByFour: VALID_FOUR_BY_FOUR,
-            fieldName: VALID_FIELD_NAME,
+            datasetUid: VALID_DATASET_UID,
+            columnName: VALID_COLUMN_NAME,
             featuresPerTile: VALID_FEATURES_PER_TILE,
             tileserverHosts: VALID_TILESERVER_HOSTS
           });
@@ -59,8 +59,8 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
           var tileserverDataProvider = new TileserverDataProvider({
             appToken: VALID_APP_TOKEN,
             domain: null,
-            fourByFour: VALID_FOUR_BY_FOUR,
-            fieldName: VALID_FIELD_NAME,
+            datasetUid: VALID_DATASET_UID,
+            columnName: VALID_COLUMN_NAME,
             featuresPerTile: VALID_FEATURES_PER_TILE,
             tileserverHosts: VALID_TILESERVER_HOSTS
           });
@@ -71,8 +71,8 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
           var tileserverDataProvider = new TileserverDataProvider({
             appToken: VALID_APP_TOKEN,
             domain: VALID_DOMAIN,
-            fourByFour: null,
-            fieldName: VALID_FIELD_NAME,
+            datasetUid: null,
+            columnName: VALID_COLUMN_NAME,
             featuresPerTile: VALID_FEATURES_PER_TILE,
             tileserverHosts: VALID_TILESERVER_HOSTS
           });
@@ -83,8 +83,8 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
           var tileserverDataProvider = new TileserverDataProvider({
             appToken: VALID_APP_TOKEN,
             domain: VALID_DOMAIN,
-            fourByFour: VALID_FOUR_BY_FOUR,
-            fieldName: null,
+            datasetUid: VALID_DATASET_UID,
+            columnName: null,
             featuresPerTile: VALID_FEATURES_PER_TILE,
             tileserverHosts: VALID_TILESERVER_HOSTS
           });
@@ -95,8 +95,8 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
           var tileserverDataProvider = new TileserverDataProvider({
             appToken: VALID_APP_TOKEN,
             domain: VALID_DOMAIN,
-            fourByFour: VALID_FOUR_BY_FOUR,
-            fieldName: VALID_FIELD_NAME,
+            datasetUid: VALID_DATASET_UID,
+            columnName: VALID_COLUMN_NAME,
             featuresPerTile: null,
             tileserverHosts: VALID_TILESERVER_HOSTS
           });
@@ -107,8 +107,8 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
           var tileserverDataProvider = new TileserverDataProvider({
             appToken: VALID_APP_TOKEN,
             domain: VALID_DOMAIN,
-            fourByFour: VALID_FOUR_BY_FOUR,
-            fieldName: VALID_FIELD_NAME,
+            datasetUid: VALID_DATASET_UID,
+            columnName: VALID_COLUMN_NAME,
             featuresPerTile: VALID_FEATURES_PER_TILE,
             tileserverHosts: null
           });

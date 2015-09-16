@@ -3,12 +3,12 @@ describe('socrata.visualizations.GeospaceDataProvider', function() {
   'use strict';
 
   var VALID_DOMAIN = 'localhost:9443';
-  var VALID_FOUR_BY_FOUR = 'test-test';
-  var VALID_FIELD_NAME = 'point';
+  var VALID_DATASET_UID = 'test-test';
+  var VALID_COLUMN_NAME = 'point';
 
   var INVALID_DOMAIN = null;
-  var INVALID_FOUR_BY_FOUR = null;
-  var INVALID_FIELD_NAME = 'npoint';
+  var INVALID_DATASET_UID = null;
+  var INVALID_COLUMN_NAME = 'npoint';
 
   var ERROR_STATUS = 400;
   var ERROR_MESSAGE = 'Bad request';
@@ -68,7 +68,7 @@ describe('socrata.visualizations.GeospaceDataProvider', function() {
 
           var geospaceDataProvider = new GeospaceDataProvider({
             domain: INVALID_DOMAIN,
-            fourByFour: VALID_FOUR_BY_FOUR
+            datasetUid: VALID_DATASET_UID
           });
         });
 
@@ -76,7 +76,7 @@ describe('socrata.visualizations.GeospaceDataProvider', function() {
 
           var geospaceDataProvider = new GeospaceDataProvider({
             domain: VALID_DOMAIN,
-            fourByFour: INVALID_FOUR_BY_FOUR
+            datasetUid: INVALID_DATASET_UID
           });
         });
       });
@@ -90,7 +90,7 @@ describe('socrata.visualizations.GeospaceDataProvider', function() {
       var server;
       var geospaceDataProviderOptions = {
         domain: VALID_DOMAIN,
-        fourByFour: VALID_FOUR_BY_FOUR
+        datasetUid: VALID_DATASET_UID
       };
       var geospaceDataProvider;
 
@@ -108,7 +108,7 @@ describe('socrata.visualizations.GeospaceDataProvider', function() {
       it('should return an object containing "status", "message" and "soqlError" properties', function(done) {
 
         geospaceDataProvider.
-          getFeatureExtent(VALID_FIELD_NAME).
+          getFeatureExtent(VALID_COLUMN_NAME).
           then(
             function(data) {
 
@@ -140,7 +140,7 @@ describe('socrata.visualizations.GeospaceDataProvider', function() {
       it('should include the correct request error status', function(done) {
 
         geospaceDataProvider.
-          getFeatureExtent(VALID_FIELD_NAME).
+          getFeatureExtent(VALID_COLUMN_NAME).
           then(
             function(data) {
 
@@ -170,7 +170,7 @@ describe('socrata.visualizations.GeospaceDataProvider', function() {
       it('should include the correct request error message', function(done) {
 
         geospaceDataProvider.
-          getFeatureExtent(VALID_FIELD_NAME).
+          getFeatureExtent(VALID_COLUMN_NAME).
           then(
             function(data) {
 
@@ -200,7 +200,7 @@ describe('socrata.visualizations.GeospaceDataProvider', function() {
       it('should include the correct soqlError object', function(done) {
 
         geospaceDataProvider.
-          getFeatureExtent(VALID_FIELD_NAME).
+          getFeatureExtent(VALID_COLUMN_NAME).
           then(
             function(data) {
 
@@ -233,7 +233,7 @@ describe('socrata.visualizations.GeospaceDataProvider', function() {
       var server;
       var geospaceDataProviderOptions = {
         domain: VALID_DOMAIN,
-        fourByFour: VALID_FOUR_BY_FOUR
+        datasetUid: VALID_DATASET_UID
       };
       var geospaceDataProvider;
 
@@ -251,7 +251,7 @@ describe('socrata.visualizations.GeospaceDataProvider', function() {
       it('should return an object containing southwest and northeast properties', function(done) {
 
         geospaceDataProvider.
-          getFeatureExtent(VALID_FIELD_NAME).
+          getFeatureExtent(VALID_COLUMN_NAME).
           then(
             function(data) {
 
@@ -282,7 +282,7 @@ describe('socrata.visualizations.GeospaceDataProvider', function() {
       it('should return the expected southwest extent', function(done) {
 
         geospaceDataProvider.
-          getFeatureExtent(VALID_FIELD_NAME).
+          getFeatureExtent(VALID_COLUMN_NAME).
           then(
             function(data) {
 
@@ -313,7 +313,7 @@ describe('socrata.visualizations.GeospaceDataProvider', function() {
       it('should return the expected northeast extent', function(done) {
 
         geospaceDataProvider.
-          getFeatureExtent(VALID_FIELD_NAME).
+          getFeatureExtent(VALID_COLUMN_NAME).
           then(
             function(data) {
 

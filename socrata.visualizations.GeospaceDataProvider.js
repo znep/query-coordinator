@@ -19,10 +19,10 @@
     _.extend(this, new root.socrata.visualizations.DataProvider(config));
 
     utils.assertHasProperty(config, 'domain');
-    utils.assertHasProperty(config, 'fourByFour');
+    utils.assertHasProperty(config, 'datasetUid');
 
     utils.assertIsOneOfTypes(config.domain, 'string');
-    utils.assertIsOneOfTypes(config.fourByFour, 'string');
+    utils.assertIsOneOfTypes(config.datasetUid, 'string');
 
     var _self = this;
 
@@ -30,12 +30,12 @@
      * Public methods
      */
 
-    this.getFeatureExtent = function(fieldName) {
+    this.getFeatureExtent = function(columnName) {
 
       var url= 'https://{0}/resource/{1}.json?$select=extent({2})'.format(
         this.getConfigurationProperty('domain'),
-        this.getConfigurationProperty('fourByFour'),
-        fieldName
+        this.getConfigurationProperty('datasetUid'),
+        columnName
       );
       var headers = {
         'Accept': 'application/json'
@@ -78,7 +78,7 @@
 
                 var coordinates = _.get(
                   JSON.parse(responseTextWithoutNewlines),
-                  '[0].extent_{0}.coordinates[0][0]'.format(fieldName)
+                  '[0].extent_{0}.coordinates[0][0]'.format(columnName)
                 );
 
                 if (!_.isUndefined(coordinates)) {

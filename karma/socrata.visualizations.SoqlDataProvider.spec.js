@@ -3,10 +3,10 @@ describe('socrata.visualizations.SoqlDataProvider', function() {
   'use strict';
 
   var VALID_DOMAIN = 'localhost:9443';
-  var VALID_FOUR_BY_FOUR = 'test-test';
+  var VALID_DATASET_UID = 'test-test';
 
   var INVALID_DOMAIN = null;
-  var INVALID_FOUR_BY_FOUR = null;
+  var INVALID_DATASET_UID = null;
 
   var QUERY_STRING = 'SELECT testName AS NAME_ALIAS, testValue AS VALUE_ALIAS WHERE testValue > 0 LIMIT 200';
 
@@ -128,7 +128,7 @@ describe('socrata.visualizations.SoqlDataProvider', function() {
 
           var soqlDataProvider = new SoqlDataProvider({
             domain: INVALID_DOMAIN,
-            fourByFour: VALID_FOUR_BY_FOUR
+            datasetUid: VALID_DATASET_UID
           });
         });
 
@@ -136,7 +136,7 @@ describe('socrata.visualizations.SoqlDataProvider', function() {
 
           var soqlDataProvider = new SoqlDataProvider({
             domain: VALID_DOMAIN,
-            fourByFour: INVALID_FOUR_BY_FOUR
+            datasetUid: INVALID_DATASET_UID
           });
         });
       });
@@ -150,7 +150,7 @@ describe('socrata.visualizations.SoqlDataProvider', function() {
       var server;
       var soqlDataProviderOptions = {
         domain: VALID_DOMAIN,
-        fourByFour: VALID_FOUR_BY_FOUR
+        datasetUid: VALID_DATASET_UID
       };
       var soqlDataProvider;
 
@@ -293,7 +293,7 @@ describe('socrata.visualizations.SoqlDataProvider', function() {
       var server;
       var soqlDataProviderOptions = {
         domain: VALID_DOMAIN,
-        fourByFour: VALID_FOUR_BY_FOUR
+        datasetUid: VALID_DATASET_UID
       };
       var soqlDataProvider;
 
@@ -408,7 +408,7 @@ describe('socrata.visualizations.SoqlDataProvider', function() {
       var server;
       var soqlDataProviderOptions = {
         domain: VALID_DOMAIN,
-        fourByFour: VALID_FOUR_BY_FOUR
+        datasetUid: VALID_DATASET_UID
       };
       var soqlDataProvider;
 
@@ -551,7 +551,7 @@ describe('socrata.visualizations.SoqlDataProvider', function() {
       var server;
       var soqlDataProviderOptions = {
         domain: VALID_DOMAIN,
-        fourByFour: VALID_FOUR_BY_FOUR
+        datasetUid: VALID_DATASET_UID
       };
       var soqlDataProvider;
 

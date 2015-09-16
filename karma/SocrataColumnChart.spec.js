@@ -20,8 +20,8 @@ describe('SocrataColumnChart component', function() {
   var $container;
   var columnChartConfig = {
     domain: 'dataspace.demo.socrata.com',
-    fourByFour: 'r6t9-rak2',
-    fieldName: 'category',
+    datasetUid: 'r6t9-rak2',
+    columnName: 'category',
     filters: [],
     localization: {
       'NO_VALUE': 'No value',
@@ -68,7 +68,7 @@ describe('SocrataColumnChart component', function() {
         assert.throws(function() {
           var config = _.cloneDeep(columnChartConfig);
 
-          delete config.fourByFour;
+          delete config.datasetUid;
 
           $container.socrataColumnChart(config);
         });
@@ -76,7 +76,7 @@ describe('SocrataColumnChart component', function() {
         assert.throws(function() {
           var config = _.cloneDeep(columnChartConfig);
 
-          delete config.fieldName;
+          delete config.columnName;
 
           $container.socrataColumnChart(config);
         });

@@ -19,10 +19,10 @@
     _.extend(this, new root.socrata.visualizations.DataProvider(config));
 
     utils.assertHasProperty(config, 'domain');
-    utils.assertHasProperty(config, 'fourByFour');
+    utils.assertHasProperty(config, 'datasetUid');
 
     utils.assertIsOneOfTypes(config.domain, 'string');
-    utils.assertIsOneOfTypes(config.fourByFour, 'string');
+    utils.assertIsOneOfTypes(config.datasetUid, 'string');
 
     var _self = this;
 
@@ -34,7 +34,7 @@
 
       var url= 'https://{0}/metadata/v1/dataset/{1}.json'.format(
         this.getConfigurationProperty('domain'),
-        this.getConfigurationProperty('fourByFour')
+        this.getConfigurationProperty('datasetUid')
       );
       var headers = {
         'Accept': 'application/json'

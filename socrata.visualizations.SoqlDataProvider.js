@@ -22,7 +22,7 @@
    *
    * @param {Object} config
    *  @property {String} domain - The domain against which to make the query.
-   *  @property {String} fourByFour - The uid of the dataset against which
+   *  @property {String} datasetUid - The uid of the dataset against which
    *    the user intends to query.
    *  @property {Function} success - The function to be called with successful
    *    query results.
@@ -37,10 +37,10 @@
     _.extend(this, new root.socrata.visualizations.DataProvider(config));
 
     utils.assertHasProperty(config, 'domain');
-    utils.assertHasProperty(config, 'fourByFour');
+    utils.assertHasProperty(config, 'datasetUid');
 
     utils.assertIsOneOfTypes(config.domain, 'string');
-    utils.assertIsOneOfTypes(config.fourByFour, 'string');
+    utils.assertIsOneOfTypes(config.datasetUid, 'string');
 
     var _self = this;
 
@@ -74,7 +74,7 @@
 
       var url = 'https://{0}/api/id/{1}.json?$query={2}'.format(
         _self.getConfigurationProperty('domain'),
-        _self.getConfigurationProperty('fourByFour'),
+        _self.getConfigurationProperty('datasetUid'),
         queryString
       );
       var headers = {
@@ -159,7 +159,7 @@
 
       var url = 'https://{0}/api/id/{1}.json?{2}'.format(
         _self.getConfigurationProperty('domain'),
-        _self.getConfigurationProperty('fourByFour'),
+        _self.getConfigurationProperty('datasetUid'),
         queryString
       );
       var headers = {

@@ -3,10 +3,10 @@ describe('socrata.visualizations.MetadataProvider', function() {
   'use strict';
 
   var VALID_DOMAIN = 'localhost:9443';
-  var VALID_FOUR_BY_FOUR = 'test-test';
+  var VALID_DATASET_UID = 'test-test';
 
   var INVALID_DOMAIN = null;
-  var INVALID_FOUR_BY_FOUR = null;
+  var INVALID_DATASET_UID = null;
 
   var ERROR_STATUS = 400;
   var ERROR_MESSAGE = 'Bad request';
@@ -67,7 +67,7 @@ describe('socrata.visualizations.MetadataProvider', function() {
 
         var metadataProvider = new MetadataProvider({
           domain: INVALID_DOMAIN,
-          fourByFour: VALID_FOUR_BY_FOUR
+          datasetUid: VALID_DATASET_UID
         });
       });
 
@@ -75,7 +75,7 @@ describe('socrata.visualizations.MetadataProvider', function() {
 
         var metadataProvider = new MetadataProvider({
           domain: VALID_DOMAIN,
-          fourByFour: INVALID_FOUR_BY_FOUR
+          datasetUid: INVALID_DATASET_UID
         });
       });
     });
@@ -88,7 +88,7 @@ describe('socrata.visualizations.MetadataProvider', function() {
       var server;
       var metadataProviderOptions = {
         domain: VALID_DOMAIN,
-        fourByFour: VALID_FOUR_BY_FOUR
+        datasetUid: VALID_DATASET_UID
       };
       var metadataProvider;
 
@@ -199,7 +199,7 @@ describe('socrata.visualizations.MetadataProvider', function() {
       var server;
       var metadataProviderOptions = {
         domain: VALID_DOMAIN,
-        fourByFour: VALID_FOUR_BY_FOUR
+        datasetUid: VALID_DATASET_UID
       };
       var metadataProvider;
 

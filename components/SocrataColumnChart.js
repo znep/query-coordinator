@@ -58,8 +58,8 @@
     };
 
     utils.assertHasProperty(config, 'domain');
-    utils.assertHasProperty(config, 'fourByFour');
-    utils.assertHasProperty(config, 'fieldName');
+    utils.assertHasProperty(config, 'datasetUid');
+    utils.assertHasProperty(config, 'columnName');
     utils.assertHasProperty(config, 'unit');
 
     var $element = $(this);
@@ -69,7 +69,7 @@
     // and 'filtered' requests, which are merged below.
     var unfilteredSoqlDataProviderConfig = {
       domain: config.domain,
-      fourByFour: config.fourByFour
+      datasetUid: config.datasetUid
     };
     var unfilteredSoqlDataProvider = new socrata.visualizations.SoqlDataProvider(
       unfilteredSoqlDataProviderConfig
@@ -77,7 +77,7 @@
 
     var filteredSoqlDataProviderConfig = {
       domain: config.domain,
-      fourByFour: config.fourByFour
+      datasetUid: config.datasetUid
     };
     var filteredSoqlDataProvider = new socrata.visualizations.SoqlDataProvider(
       filteredSoqlDataProviderConfig
@@ -358,7 +358,7 @@
     function _updateData() {
 
       var queryString = BASE_QUERY.format(
-        config.fieldName,
+        config.columnName,
         SOQL_DATA_PROVIDER_NAME_ALIAS,
         SOQL_DATA_PROVIDER_VALUE_ALIAS
       );

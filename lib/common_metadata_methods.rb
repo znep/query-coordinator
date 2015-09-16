@@ -139,13 +139,29 @@ module CommonMetadataMethods
       end
     end
 
+    metadb_pages = []
+    if metadb_result.present?
+      metadb_pages = metadb_result.map { |page|
+        if page[:displayFormat].present? && page[:displayFormat][:data_lens_page_metadata].present?
+          HashWithIndifferentAccess.new(page[:displayFormat][:data_lens_page_metadata])
+        else
+          {}
+        end
+      }
+    end
+
+    phiddy_pages = []
+    phiddy_user_pages = []
+    if phiddy_result[:body].present?
+      phiddy_pages = Array(phiddy_result[:body][:publisher])
+      phiddy_user_pages = Array(phiddy_result[:body][:user])
+    end
+
     # Return hash with publisher and user views.
     # Combines metadb and phiddy results into publisher views.
     {
-      :publisher => metadb_result.map { |page|
-          HashWithIndifferentAccess.new(page[:displayFormat][:data_lens_page_metadata])
-        }.concat(Array(phiddy_result[:body][:publisher])),
-      :user => phiddy_result[:body][:user]
+      :publisher => metadb_pages.concat(phiddy_pages),
+      :user => phiddy_user_pages
     }
   end
 end

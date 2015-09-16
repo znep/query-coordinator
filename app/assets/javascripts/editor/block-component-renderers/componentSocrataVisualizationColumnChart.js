@@ -16,7 +16,7 @@
       on('destroy', function() {
         $element.destroySocrataColumnChart();
       }).
-      on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', function (event) {
+      on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', function(event) {
         var payload = event.originalEvent.detail;
 
         if (payload !== null) {

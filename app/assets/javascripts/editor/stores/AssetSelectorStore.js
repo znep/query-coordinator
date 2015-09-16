@@ -160,8 +160,6 @@
     }
 
     function _chooseVisualizationDataset(payload) {
-      var datasetUid = null;
-
       if (payload.isNewBackend) {
         _setVisualizationDatasetUid(payload.datasetUid);
       } else {

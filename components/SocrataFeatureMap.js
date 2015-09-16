@@ -17,11 +17,6 @@
   /**
    * Instantiates a Socrata FeatureMap Visualization from the
    * `socrata-visualizations` package.
-   *
-   * @param {String} domain - The domain against which to make the query.
-   * @param {String} fourByFour - The uid of the dataset backing this
-   *   visualization. The referenced dataset must be of the 'NBE' type.
-   * @param {String} baseQuery - A valid SoQL query string.
    */
 
   $.fn.socrataFeatureMap = function(config) {

@@ -70,6 +70,10 @@
       _renderData(_chartElement, data, options);
     };
 
+    this.renderError = function() {
+      // TODO: Some helpful error message.
+    };
+
     this.destroy = function() {
       _unattachEvents(this.element);
     };
@@ -280,7 +284,7 @@
         title: _labelValueOrPlaceholder(datum[NAME_INDEX]),
         unfilteredValueLabel: self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL'),
         unfilteredValue: datum[UNFILTERED_INDEX],
-        labelUnit: _lastRenderOptions.labelUnit,
+        labelUnit: (datum[UNFILTERED_INDEX] === 1) ? _lastRenderOptions.labelUnit.one : _lastRenderOptions.labelUnit.other,
         selectedNotice: self.getLocalization('FLYOUT_SELECTED_NOTICE'),
         selected: datum[SELECTED_INDEX]
       };
@@ -339,6 +343,9 @@
       var showFiltered = options.showFiltered;
 
       if (chartWidth <= 0 || chartHeight <= 0) {
+        if (window.console && window.console.warn) {
+          console.warn('Aborted rendering column chart: chart width or height is zero.');
+        }
         return;
       }
 

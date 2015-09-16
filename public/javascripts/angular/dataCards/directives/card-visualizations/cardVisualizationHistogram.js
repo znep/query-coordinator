@@ -83,7 +83,6 @@
         var activeFiltersExcludingOwn$ = cardModel$.observeOnLatest('page.activeFilters').
           withLatestFrom(
             cardId$,
-            activeFilters$,
             function(activeFilters, cardId) {
               var cardFilterIndex = _.findIndex(activeFilters, function(cardFilterInfo) {
                 return cardFilterInfo.uniqueId === cardId;
@@ -185,7 +184,8 @@
           var filteredData$ = Rx.Observable.combineLatest(
             fieldName$,
             dataset$,
-            whereClauseExcludingOwn$,
+            // TODO - investigate HistogramService.bucketData returning different values when run multiple times
+            whereClauseExcludingOwn$.distinctUntilChanged(),
             aggregation$,
             columnDataSummary$,
             fetchHistogramData

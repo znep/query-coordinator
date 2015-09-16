@@ -185,7 +185,7 @@ describe('AssetSelectorStore', function() {
         });
 
         assert.equal(
-          storyteller.assetSelectorStore.getCurrentComponentValue().dataSource.uid,
+          storyteller.assetSelectorStore.getCurrentComponentValue().vif.datasetUid,
           standardMocks.validStoryUid
         );
       });
@@ -203,12 +203,12 @@ describe('AssetSelectorStore', function() {
         });
       });
 
-      it('does not change baseQuery if payload has no cardData', function() {
+      it('does not change baseQuery if payload has no vif', function() {
         var startingComponentValue = _.cloneDeep(storyteller.assetSelectorStore.getCurrentComponentValue());
 
         storyteller.dispatcher.dispatch({
           action: Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
-          cardData: null
+          vif: null
         });
 
         assert.deepEqual(
@@ -217,27 +217,20 @@ describe('AssetSelectorStore', function() {
         )
       });
 
-      it('adds visualization configuration to componentValue when there is cardData', function() {
-        var fakeCardData = {
-          'cardType': 'column',
-          'fieldName': 'test_field'
+      it('adds visualization configuration to componentValue when there is vif', function() {
+        var fakeVIFData = {
+          'type': 'columnChart'
         };
 
         storyteller.dispatcher.dispatch({
           action: Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
-          cardData: fakeCardData
+          vif: fakeVIFData
         });
 
         assert.equal(
           storyteller.assetSelectorStore.getCurrentComponentType(),
           'socrata.visualization.columnChart'
         );
-
-        assert.include(
-          storyteller.assetSelectorStore.getCurrentComponentValue().dataSource.baseQuery,
-          fakeCardData.fieldName
-        );
-
       })
     });
 

@@ -8,12 +8,10 @@ describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
   var validComponentData = {
     type: 'socrata.visualization.columnChart',
     value: {
-      dataSource: {
-        baseQuery: 'the base query',
-        domain: 'example.com',
-        uid: 'four-four',
-        type: 'soql'
-      }
+      layout: {
+        height: 300
+      },
+      vif: {}
     }
   };
 
@@ -42,43 +40,29 @@ describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
   });
 
   describe('given a valid component type and value', function() {
-    var socrataVisualizationColumnChartStub = sinon.stub($.fn, 'socrataVisualizationColumnChart');
+    var socrataColumnChartStub = sinon.stub($.fn, 'socrataColumnChart');
 
     beforeEach(function() {
       $component = $component.componentSocrataVisualizationColumnChart(validComponentData);
     });
 
     afterEach(function() {
-      socrataVisualizationColumnChartStub.reset();
+      socrataColumnChartStub.reset();
     });
 
     after(function() {
-      socrataVisualizationColumnChartStub.restore();
+      socrataColumnChartStub.restore();
     });
 
     it('should return a jQuery object for chaining', function() {
       assert.instanceOf($component, $);
     });
 
-    it('should call into socrataVisualizationColumnChart with the correct arguments', function() {
+    it('should call into socrataColumnChart with the correct arguments', function() {
       sinon.assert.calledWithExactly(
-        socrataVisualizationColumnChartStub,
-        'example.com',
-        'four-four',
-        'the base query'
+        socrataColumnChartStub,
+        validComponentData.value.vif
       );
-    });
-
-    describe('that then changes base query', function() {
-      it('should emit the destroy event on the old visualization', function(done) {
-        $component.on(Constants.SOCRATA_VISUALIZATION_DESTROY, function() {
-          done();
-        });
-
-        var newData = _.cloneDeep(validComponentData);
-        newData.value.dataSource.baseQuery = 'a new base query';
-        $component.componentSocrataVisualizationColumnChart(newData);
-      });
     });
   });
 });

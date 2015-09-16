@@ -230,6 +230,29 @@ describe('Histogram Visualization', function() {
     expect(bucketDataSpy.calledWithMatch(testData, {bucketType: 'linear'})).to.equal(true);
   });
 
+  it('calls HistogramService.bucketData an appropriate number of times', function() {
+    var threshold = Constants.HISTOGRAM_LOGARITHMIC_BUCKETING_THRESHOLD;
+    mockCardDataService.getColumnDomain = function() {
+      return $q.when({min: -threshold + 1, max: threshold - 1});
+    };
+
+    var testData = [{magnitude: 1, value: 113}];
+    mockCardDataService.getBucketedData = function() {
+      return withHeaders({}, $q.when(testData));
+    };
+
+    var bucketDataSpy = sinon.spy(HistogramService, 'bucketData');
+
+    var testValues = createHistogram();
+
+    // Simulate a change in filters that does not impact the filters on the histogram
+    testValues.scope.$apply(function() {
+      testValues.model.page.set('activeFilters', [{}]);
+    });
+
+    expect(bucketDataSpy).to.have.been.calledTwice;
+  });
+
   it('should use the logarithmic bucketing method if the absolute value of the min or max is above a threshold', function() {
     var threshold = Constants.HISTOGRAM_LOGARITHMIC_BUCKETING_THRESHOLD;
     mockCardDataService.getColumnDomain = function() {

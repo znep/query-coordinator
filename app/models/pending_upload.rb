@@ -17,8 +17,7 @@ class PendingUpload
 
   def url
     @url ||= begin
-      s3_config = ENV['https_proxy'] ? { proxy_uri: ENV['https_proxy'] } : {}
-      s3_obj = AWS::S3.new(s3_config).
+      s3_obj = AWS::S3.new.
         buckets[Rails.application.secrets.aws['s3_bucket_name']].
         objects["uploads/#{SecureRandom.uuid}/#{filename}"]
 

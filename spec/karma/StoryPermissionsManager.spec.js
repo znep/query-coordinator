@@ -142,12 +142,24 @@ describe('StoryPermissionsManager', function() {
 
         describe('that fails', function() {
           beforeEach(function() {
+            sinon.stub(window.console, 'error');
             storytellerApiRequestPromiseReject('expected');
+          });
+
+          afterEach(function() {
+            window.console.error.restore();
           });
 
           it('should call the error callback', function(done) {
             _.defer(function() {
               sinon.assert.calledOnce(errorSpy);
+              done();
+            });
+          });
+
+          it('should log an error to the console', function(done) {
+            _.defer(function() {
+              sinon.assert.called(console.error);
               done();
             });
           });

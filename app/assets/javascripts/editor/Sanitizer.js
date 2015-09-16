@@ -11,6 +11,7 @@
     'a': ['href']
   };
 
+  var Sanitizer = {};
 
   /**
    * Makes an element and all child nodes conform to our set of supported
@@ -63,7 +64,7 @@
       }
     }
 
-    var nodeName = el.nodeName.toLowerCase();
+    var nodeName = _.isString(el.nodeName) ? el.nodeName.toLowerCase() : null;
     var cleanEl = null;
     var childNodes;
     var childEl;
@@ -118,8 +119,6 @@
     return cleanEl;
   }
 
-  storyteller.Sanitizer = {};
-
   /**
    * This function recursively descends the given element and performs
    * a whitelisting filter operation on the element's child nodes.
@@ -137,7 +136,7 @@
    * @param {DOMNode} element
    * @return {DOMNode}
    */
-  storyteller.Sanitizer.sanitizeElement = function(element) {
+  Sanitizer.sanitizeElement = function(element) {
     var sanitizedElement;
     try {
       sanitizedElement = _sanitizeElement(element, _ATTRIBUTE_WHITELIST);
@@ -151,5 +150,7 @@
       return sanitizedElement;
     }
   };
+
+  storyteller.Sanitizer = Sanitizer;
 
 })(window);

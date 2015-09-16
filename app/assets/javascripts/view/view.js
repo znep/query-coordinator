@@ -4,7 +4,7 @@ $(document).on('ready', function() {
   var $userStory = $('.user-story');
   var storyteller = window.socrata.storyteller;
   storyteller.presentationMode = new storyteller.PresentationMode();
-  storyteller.flyoutRenderer = new storyteller.FlyoutRenderer();
+  storyteller.flyoutRenderer = new socrata.visualizations.FlyoutRenderer();
 
   // Init window size classes
   storyteller.windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();

@@ -22,6 +22,8 @@
 //= require socrata-visualizations/socrata.visualizations.SoqlDataProvider
 //= require socrata-visualizations/socrata.visualizations.Visualization
 //= require socrata-visualizations/socrata.visualizations.ColumnChart
+//= require socrata-visualizations/components/SocrataColumnChart
+//= require socrata-visualizations/socrata.visualizations.FlyoutRenderer
 //= require editor/init
 //= require editor/storytellerUtils
 //= require editor/SimpleEventEmitter

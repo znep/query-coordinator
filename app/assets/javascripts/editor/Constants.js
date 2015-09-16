@@ -165,14 +165,8 @@ var Constants = {
 
   // Breakpoints for Window Width
   WINDOW_SIZE_BREAK_LARGE: 1200,
-  WINDOW_SIZE_BREAK_MEDIUM: 768
-};
+  WINDOW_SIZE_BREAK_MEDIUM: 768,
 
-(function() {
-  'use strict';
-  var values = _.values(Constants);
-  if (values.length !== _.uniq(values).length) {
-    throw new Error('Constants contains non-unique values');
-  }
-})();
+  DEFAULT_VISUALIZATION_HEIGHT: 300
+};
 

@@ -88,10 +88,10 @@ $(document).on('ready', function() {
   storyteller.assetSelectorStore = new storyteller.AssetSelectorStore();
   storyteller.blockRemovalConfirmationStore = new storyteller.BlockRemovalConfirmationStore();
   storyteller.coreSavingStore = new storyteller.CoreSavingStore();
-  storyteller.flyoutRenderer = new storyteller.FlyoutRenderer();
   storyteller.windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
   storyteller.storySaveStatusStore = new storyteller.StorySaveStatusStore(storyteller.userStoryUid);
   storyteller.fileUploadStore = new storyteller.FileUploadStore();
+  storyteller.flyoutRenderer = new socrata.visualizations.FlyoutRenderer();
 
   var richTextEditorToolbar = new storyteller.RichTextEditorToolbar(
     $('#rich-text-editor-toolbar'),

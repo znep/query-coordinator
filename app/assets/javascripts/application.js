@@ -23,8 +23,8 @@
 //= require socrata-visualizations/socrata.visualizations.SoqlDataProvider
 //= require socrata-visualizations/socrata.visualizations.Visualization
 //= require socrata-visualizations/socrata.visualizations.ColumnChart
-//= require editor/renderers/FlyoutRenderer.js
-//= require editor/components/SocrataVisualizationColumnChart.js
+//= require socrata-visualizations/components/SocrataColumnChart
+//= require socrata-visualizations/socrata.visualizations.FlyoutRenderer
 //= require editor/block-component-renderers/componentSocrataVisualizationColumnChart.js
 
 // Store setup

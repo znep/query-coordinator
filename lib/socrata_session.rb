@@ -54,8 +54,10 @@ class SocrataSession
     request = Rack::Request.new(env)
 
     if has_session_cookie?(request)
+      Rails.logger.debug "we haz a session cookie #{request.inspect}"
       current_user(request)
     else
+      Rails.logger.debug "no haz cookiz!!! #{request.inspect}"
       nil
     end
   end

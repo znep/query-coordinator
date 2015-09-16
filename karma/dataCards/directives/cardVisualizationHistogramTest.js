@@ -19,8 +19,8 @@ describe('Histogram Visualization', function() {
   }));
 
   /**
-   * @param {Object} HTTP headers (e.g. put 'X-SODA2-Rollup': <4x4>)
-   * @param {Promise} to be returned as the `data` key
+   * @param headers {Object} HTTP headers (e.g. put 'X-SODA2-Rollup': <4x4>)
+   * @param dataPromise {Promise} to be returned as the `data` key
    * @return {Promise} with keys data and headers
    */
   function withHeaders(headers, dataPromise) {
@@ -42,7 +42,7 @@ describe('Histogram Visualization', function() {
 
     mockCardDataService = {
       getData: function() {
-        var response = _.range(0, Constants.HISTOGRAM_CARDINALITY_THRESHOLD + 5).map(function(x) {
+        var response = _.range(0, Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD + 5).map(function(x) {
           return { name: x, value: 1 };
         });
 
@@ -143,7 +143,7 @@ describe('Histogram Visualization', function() {
   });
 
   it('should display an error if bucketing the data fails', function() {
-    var stub = sinon.stub(HistogramService, 'bucketData').throws();
+    sinon.stub(HistogramService, 'bucketData').throws();
 
     var histogram = createHistogram();
     expect(histogram.scope.histogramRenderError).to.exist;
@@ -254,9 +254,11 @@ describe('Histogram Visualization', function() {
   });
 
   it('should render as a column chart if HistogramService tells it to', function() {
+    var histogram;
+
     sinon.stub(HistogramService, 'getVisualizationTypeForData', function() { return 'columnChart'; });
 
-    var histogram = createHistogram();
+    histogram = createHistogram();
     expect(histogram.element.find('column-chart').length).to.equal(1);
     expect(histogram.element.find('histogram').length).to.equal(0);
 
@@ -264,10 +266,20 @@ describe('Histogram Visualization', function() {
 
     sinon.stub(HistogramService, 'getVisualizationTypeForData', function() { return 'histogram'; });
 
-    var histogram = createHistogram();
+    histogram = createHistogram();
     expect(histogram.element.find('column-chart').length).to.equal(0);
     expect(histogram.element.find('histogram').length).to.equal(1);
 
     HistogramService.getVisualizationTypeForData.restore();
   });
+
+  it('interprets the data from CardDataService.getData correctly', function() {
+    sinon.stub(HistogramService, 'getVisualizationTypeForData', function() { return 'columnChart'; });
+
+    var histogram = createHistogram();
+    var columnChart = histogram.element.find('column-chart');
+    expect(columnChart.isolateScope().chartData[0][0]).to.not.eql(NaN);
+    HistogramService.getVisualizationTypeForData.restore();
+  });
+
 });

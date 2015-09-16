@@ -3,6 +3,7 @@
   'use strict';
 
   var socrata = root.socrata;
+  var storyteller = socrata.storyteller;
   var utils = socrata.utils;
 
   function _renderTemplate($element, componentData) {
@@ -13,64 +14,45 @@
     $element.
       addClass(utils.typeToClassNameForComponentType(componentData.type)).
       on('destroy', function() {
-        var destroyVisualizationEvent = new window.CustomEvent(
-          Constants.SOCRATA_VISUALIZATION_DESTROY,
-          {
-            detail: {},
-            bubbles: false
-          }
-        );
+        $element.destroySocrataColumnChart();
+      }).
+      on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', function (event) {
+        var payload = event.originalEvent.detail;
 
-        $element[0].dispatchEvent(destroyVisualizationEvent);
+        if (payload !== null) {
+          storyteller.flyoutRenderer.render(payload);
+        } else {
+          storyteller.flyoutRenderer.clear();
+        }
       });
 
     $element.append($componentContent);
   }
 
   function _updateVisualization($element, componentData) {
-
-    var domain;
-    var uid;
-    var baseQuery;
-    var dataSource;
-    var renderedUid = $element.attr('data-rendered-visualization-uid');
-    var renderedBaseQuery = $element.attr('data-rendered-visualization-base-query');
+    var renderedHeight = parseInt($element.attr('data-rendered-visualization-height'), 10);
+    var renderedVif = $element.attr('data-rendered-vif');
 
     utils.assertHasProperty(componentData, 'value');
-    utils.assertHasProperty(componentData.value, 'dataSource');
+    utils.assertHasProperties(componentData.value, 'layout', 'vif');
+    utils.assertHasProperty(componentData.value.layout, 'height');
 
-    dataSource = componentData.value.dataSource;
+    if (renderedVif !== JSON.stringify(componentData.value.vif) ||
+      renderedHeight !== componentData.value.layout.height) {
 
-    utils.assertHasProperty(dataSource, 'type');
-    utils.assertHasProperty(dataSource, 'domain');
-    utils.assertHasProperty(dataSource, 'uid');
-    utils.assertHasProperty(dataSource, 'baseQuery');
-    utils.assertEqual(dataSource.type, 'soql');
+      $element.height(componentData.value.layout.height);
 
-    domain = dataSource.domain;
-    // Respect uid or uid for backwards compatability.
-    uid = dataSource.uid;
-    utils.assert(uid.length, 'Dataset uid is required to render a visualization');
+      componentData.value.vif.localization = {
+        'NO_VALUE': I18n.t('editor.visualizations.no_value_placeholder'),
+        'FLYOUT_UNFILTERED_AMOUNT_LABEL': I18n.t('editor.visualizations.flyout.unfiltered_amount_label'),
+        'FLYOUT_FILTERED_AMOUNT_LABEL': I18n.t('editor.visualizations.flyout.filtered_amount_label'),
+        'FLYOUT_SELECTED_NOTICE': I18n.t('editor.visualizations.flyout.datum_selected_label')
+      };
 
-    baseQuery = dataSource.
-      baseQuery.
-      format(
-        Constants.SOQL_DATA_PROVIDER_NAME_ALIAS,
-        Constants.SOQL_DATA_PROVIDER_VALUE_ALIAS
-      );
+      $element.socrataColumnChart(componentData.value.vif);
 
-    if ((uid !== renderedUid) || (baseQuery !== renderedBaseQuery)) {
-
-      if (renderedUid !== undefined) {
-
-        // Destroy existing visualization.
-        $element.trigger('destroy');
-      }
-
-      $element.attr('data-rendered-visualization-uid', uid);
-      $element.attr('data-rendered-visualization-base-query', baseQuery);
-
-      $element.socrataVisualizationColumnChart(domain, uid, baseQuery);
+      $element.attr('data-rendered-vif', JSON.stringify(componentData.value.vif));
+      $element.attr('data-rendered-visualization-height', componentData.value.layout.height);
     }
   }
 

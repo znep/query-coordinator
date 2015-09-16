@@ -80,9 +80,9 @@ en:
       saving: 'Saving...'
       unsaved: 'Save'
       idle: 'Save'
-  visualizations:
-    no_value_placeholder: '(No value)'
-    flyout:
-      unfiltered_amount_label: 'Total: '
-      filtered_amount_label: 'Filtered: '
-      datum_selected_label: 'This column is currently selected.'
+    visualizations:
+      no_value_placeholder: '(No value)'
+      flyout:
+        unfiltered_amount_label: 'Total: '
+        filtered_amount_label: 'Filtered: '
+        datum_selected_label: 'This column is currently selected.'

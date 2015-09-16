@@ -135,10 +135,10 @@
 
       _dialog.on(
         'visualizationSelected',
-        function(event, selectedCard) {
+        function(event, selectedVisualization) {
           storyteller.dispatcher.dispatch({
-            action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
-            cardData: selectedCard
+            action: Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
+            vif: selectedVisualization
           });
         }
       );
@@ -769,7 +769,7 @@
         //   - The user makes or clears a selection (argument is either null or a visualization).
         //   - The page finishes loading (argument is null).
         // In either case, we should consider the iframe loaded.
-        $(this).
+        configureVisualizationIframe.
           removeClass('bg-loading-spinner').
           trigger('visualizationSelected', datasetObj);
       };
@@ -780,7 +780,7 @@
     function _renderConfigureVisualizationData(componentProperties) {
       var iframeElement = _dialog.find('.asset-selector-configure-visualization-iframe');
       var currentIframeSrc = iframeElement.attr('src');
-      var newIframeSrc = _visualizationChooserUrl(componentProperties.dataSource.uid);
+      var newIframeSrc = _visualizationChooserUrl(componentProperties.vif.datasetUid);
       var insertButton = _dialog.find(
         '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
       );
@@ -794,18 +794,15 @@
       } else {
         insertButton.prop('disabled', true);
       }
-
     }
-
 
     /**
      * Small helper functions
      */
 
     function _isVisualizationValid(componentProperties) {
-      // For now, if we have a baseQuery we have a valid configuration
-      // TODO: better check here
-      return !_.isEmpty(componentProperties.dataSource.baseQuery);
+      // columnName will only be added once a valid column is selected.
+      return componentProperties.hasOwnProperty('vif') && componentProperties.vif.hasOwnProperty('columnName');
     }
 
     function _datasetChooserUrl() {

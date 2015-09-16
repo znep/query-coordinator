@@ -11,6 +11,7 @@
  * file per style scope.
  *
  *= require socrata-visualizations/socrata.visualizations.columnChart
+ *= require socrata-visualizations/socrata.visualizations.flyoutRenderer
  *= require lib/reset
  *= require_tree ./lib
  *= require_tree ./edit

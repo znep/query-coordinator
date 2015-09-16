@@ -90,13 +90,13 @@ describe('FlyoutRenderer', function() {
         top: 300
       });
 
-      var $targetElementBoundingClientRect = $targetElement[0].getBoundingClientRect();
-      var $targetElementMidPoint = $targetElementBoundingClientRect.left + ($targetElementBoundingClientRect.width / 2);
+      var targetElementBoundingClientRect = $targetElement[0].getBoundingClientRect();
+      var targetElementMidPoint = targetElementBoundingClientRect.left + (targetElementBoundingClientRect.width / 2);
 
       flyoutRenderer.render(flyoutData);
 
       assert.isBelow(parseInt(flyoutElement.css('left'), 10), $(window).width());
-      assert.isBelow(parseInt(flyoutElement.css('left'), 10), $targetElementMidPoint);
+      assert.isBelow(parseInt(flyoutElement.css('left'), 10), targetElementMidPoint);
       assert.isBelow(parseInt(flyoutElement.css('top'), 10), parseInt($targetElement.css('top'), 10));
     });
   });

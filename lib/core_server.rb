@@ -40,7 +40,7 @@ class CoreServer
     headers['Cookie'] = authentication_cookie
     headers['X-Socrata-Host'] = request.host
     headers['X-CSRF-Token'] = csrf_token unless csrf_token.blank?
-    Rails.logger.debug("headers from request #{headers.inspect}")
+    Rails.logger.debug "headers from request #{headers.inspect}"
 
     headers
   end
@@ -59,7 +59,7 @@ class CoreServer
 
   def self.retry_handler
     Proc.new do |exception, attempt_number, total_delay|
-      if attempt_number == 3
+      if attempt_number === 3
         AirbrakeNotifier.report_error(
           exception,
           "CoreServer::core_server_request() failed with 3 retries after #{total_delay.to_s} seconds."
@@ -162,9 +162,6 @@ class CoreServer
 
       status_code = core_server_response.code.to_i
       response_body = core_server_response.body
-
-      Rails.logger.debug("`core_server_request_with_retries` code: `#{core_server_response.code.to_i}`")
-      Rails.logger.debug("`core_server_request_with_retries` body: `#{response_body.inspect}`")
 
       if status_code == 200
         json_response = JSON.parse(response_body)

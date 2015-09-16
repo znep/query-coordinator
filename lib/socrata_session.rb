@@ -76,12 +76,6 @@ class SocrataSession
     socrata_session_cookie =
       "_core_session_id=#{request.cookies['_core_session_id']}"
 
-    Rails.logger.debug("--------")
-    Rails.logger.debug("Attempting to get current user.")
-    Rails.logger.debug("`socrata_session_cookie`: `#{socrata_session_cookie}`")
-    Rails.logger.debug("`X-Socrata-Host`: `#{request.host}`")
-    Rails.logger.debug("--------")
-
     CoreServer.current_user(
       'Cookie' => socrata_session_cookie,
       'X-Socrata-Host' => request.host

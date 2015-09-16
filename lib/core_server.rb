@@ -40,6 +40,7 @@ class CoreServer
     headers['Cookie'] = authentication_cookie
     headers['X-Socrata-Host'] = request.host
     headers['X-CSRF-Token'] = csrf_token unless csrf_token.blank?
+    Rails.logger.debug "headers from request #{headers.inspect}"
 
     headers
   end

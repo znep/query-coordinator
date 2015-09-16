@@ -1404,6 +1404,23 @@ en:
         target_domain: Target Domain
         terminate: Terminate
         title: Open Data Federation
+      georegions:
+        actions: Actions
+        add_new: Add new
+        custom_georegions: Custom Georegions
+        default_georegions: Socrata Default Georegions
+        delete: Delete
+        disable: Disable
+        edit: Edit
+        enable: Enable
+        enabled?: Enabled?
+        enabled_no: "No"
+        enabled_yes: "Yes"
+        page_title: Manage Spatial Lens
+        page_subtitle: You have enabled %{enabled_count} of %{available_count} available regions
+        region_name: Region Name
+        remove: Remove
+        title: Spatial Lens
       home:
         add_featured_dataset: Add a New Featured Dataset
         are_you_sure: Are you sure? This action cannot be undone.

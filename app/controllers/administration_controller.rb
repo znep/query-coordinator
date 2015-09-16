@@ -127,6 +127,39 @@ class AdministrationController < ApplicationController
   end
 
   #
+  # Manage Georegions
+  #
+
+  before_filter :only => [
+      :georegions, :add_georegion, :enable_georegion, :disable_georegion, :edit_georegion, :remove_georegion
+    ] {|c| c.check_feature_flag(:enable_georegions_admin) }
+  def georegions
+    @georegions = CuratedRegion.get_all
+    @georegions[:translations] = LocalePart.screens.admin.georegions
+  end
+
+  def add_georegion
+    handle_button_response(true, 'error', 'success', :georegions)
+  end
+
+  def enable_georegion
+    handle_button_response(true, 'error', 'success', :georegions)
+  end
+
+  def disable_georegion
+    handle_button_response(true, 'error', 'success', :georegions)
+  end
+
+  def edit_georegion
+    handle_button_response(true, 'error', 'success', :georegions)
+  end
+
+  def remove_georegion
+    handle_button_response(true, 'error', 'success', :georegions)
+  end
+
+
+  #
   # Manage Users and User Roles
   #
 
@@ -1104,6 +1137,9 @@ public
   end
   def check_approval_rights
     return run_access_check{current_user.can_approve?}
+  end
+  def check_feature_flag(feature_flag)
+    run_access_check { feature_flag?(feature_flag, request) }
   end
 
 private

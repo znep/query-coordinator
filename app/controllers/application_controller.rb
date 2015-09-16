@@ -5,6 +5,10 @@ class ApplicationController < ActionController::Base
   include ActionControllerExtensions
   include UserAuthMethods
 
+  def current_domain
+    CurrentDomain
+  end
+
   before_filter :hook_auth_controller, :create_core_server_connection,
     :disable_frame_embedding, :adjust_format, :patch_microsoft_office,
     :sync_logged_in_cookie, :require_user, :set_user, :set_meta,

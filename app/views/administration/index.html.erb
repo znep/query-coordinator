@@ -80,6 +80,14 @@
         </span>
       </li>
     <%- end -%>
+    <%- if can_view_georegions_admin?(current_user) -%>
+      <li class="georegions">
+        <%= admin_nav_link_to t('screens.admin.georegions.title'), 'georegions' %>
+        <span class="description">
+          TBD
+        </span>
+      </li>
+    <%- end -%>
     <%- if CurrentDomain.user_can?(current_user, :manage_stories) ||
             CurrentDomain.user_can?(current_user, :feature_items) ||
             CurrentDomain.user_can?(current_user, :edit_site_theme) -%>

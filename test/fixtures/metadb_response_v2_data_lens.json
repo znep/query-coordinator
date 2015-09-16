@@ -1,0 +1,1109 @@
+{
+    "get_request": [
+        {
+            "id": "7q9m-tf7f",
+            "name": "47-3",
+            "averageRating": 0,
+            "createdAt": 1442264454,
+            "description": "",
+            "displayType": "data_lens",
+            "downloadCount": 0,
+            "newBackend": true,
+            "numberOfComments": 0,
+            "oid": 440,
+            "publicationAppendEnabled": false,
+            "publicationDate": 1442251593,
+            "publicationGroup": 426,
+            "publicationStage": "published",
+            "rowsUpdatedAt": 1442251593,
+            "rowsUpdatedBy": "tugg-ikce",
+            "tableId": 426,
+            "totalTimesRated": 0,
+            "viewCount": 0,
+            "viewLastModified": 1442264455,
+            "viewType": "tabular",
+            "columns": [],
+            "displayFormat": {
+                "data_lens_page_metadata": {
+                    "defaultDateTruncFunction": "date_trunc_ymd",
+                    "description": "",
+                    "pageId": "7q9m-tf7f",
+                    "datasetId": "uvc2-evmj",
+                    "name": "47-3",
+                    "largestTimeSpanDays": 364,
+                    "cards": [
+                        {
+                            "cardSize": 1,
+                            "expanded": false,
+                            "fieldName": "witness_gibberish",
+                            "cardType": "search"
+                        },
+                        {
+                            "cardSize": 1,
+                            "expanded": false,
+                            "fieldName": "incident_occurrence",
+                            "cardType": "timeline",
+                            "activeFilters": [
+                                {
+                                    "arguments": {
+                                        "start": "2001-08-20T00:00:00",
+                                        "end": "2001-11-16T00:00:00"
+                                    },
+                                    "function": "TimeRange"
+                                }
+                            ]
+                        },
+                        {
+                            "cardSize": 1,
+                            "cardOptions": {
+                                "bucketSize": 0.02
+                            },
+                            "expanded": false,
+                            "fieldName": "blood_alcohol_level",
+                            "cardType": "histogram"
+                        },
+                        {
+                            "cardSize": 1,
+                            "expanded": false,
+                            "fieldName": "incident_location",
+                            "cardType": "feature"
+                        },
+                        {
+                            "cardSize": 1,
+                            "cardOptions": {
+                                "bucketSize": "logarithmic"
+                            },
+                            "expanded": false,
+                            "fieldName": "id",
+                            "cardType": "histogram"
+                        },
+                        {
+                            "cardSize": 1,
+                            "cardOptions": {
+                                "bucketSize": 0.5
+                            },
+                            "expanded": false,
+                            "fieldName": "plausibility",
+                            "cardType": "histogram"
+                        },
+                        {
+                            "cardSize": 2,
+                            "expanded": false,
+                            "fieldName": "*",
+                            "cardType": "table"
+                        }
+                    ],
+                    "version": 2
+                }
+            },
+            "grants": [
+                {
+                    "inherited": true,
+                    "type": "viewer",
+                    "flags": [
+                        "public"
+                    ]
+                }
+            ],
+            "metadata": {
+                "availableDisplayTypes": [
+                    "data_lens"
+                ]
+            },
+            "owner": {
+                "id": "tugg-ikce",
+                "displayName": "themachines",
+                "emailUnsubscribed": false,
+                "profileLastModified": 1432081759,
+                "roleName": "administrator",
+                "screenName": "themachines",
+                "rights": [
+                    "create_datasets",
+                    "edit_others_datasets",
+                    "edit_sdp",
+                    "edit_site_theme",
+                    "moderate_comments",
+                    "manage_users",
+                    "chown_datasets",
+                    "edit_nominations",
+                    "approve_nominations",
+                    "feature_items",
+                    "federations",
+                    "manage_stories",
+                    "manage_approval",
+                    "change_configurations",
+                    "view_domain",
+                    "view_others_datasets",
+                    "edit_pages",
+                    "create_pages",
+                    "view_goals",
+                    "view_dashboards",
+                    "edit_goals",
+                    "edit_dashboards",
+                    "create_dashboards"
+                ],
+                "flags": [
+                    "admin"
+                ]
+            },
+            "query": {},
+            "rights": [
+                "read",
+                "write",
+                "add",
+                "delete",
+                "grant",
+                "add_column",
+                "remove_column",
+                "update_column",
+                "update_view",
+                "delete_view"
+            ],
+            "tableAuthor": {
+                "id": "tugg-ikce",
+                "displayName": "themachines",
+                "emailUnsubscribed": false,
+                "profileLastModified": 1432081759,
+                "roleName": "administrator",
+                "screenName": "themachines",
+                "rights": [
+                    "create_datasets",
+                    "edit_others_datasets",
+                    "edit_sdp",
+                    "edit_site_theme",
+                    "moderate_comments",
+                    "manage_users",
+                    "chown_datasets",
+                    "edit_nominations",
+                    "approve_nominations",
+                    "feature_items",
+                    "federations",
+                    "manage_stories",
+                    "manage_approval",
+                    "change_configurations",
+                    "view_domain",
+                    "view_others_datasets",
+                    "edit_pages",
+                    "create_pages",
+                    "view_goals",
+                    "view_dashboards",
+                    "edit_goals",
+                    "edit_dashboards",
+                    "create_dashboards"
+                ],
+                "flags": [
+                    "admin"
+                ]
+            }
+        },
+        {
+            "id": "uvc2-evmj",
+            "name": "UFO Sightings-47",
+            "averageRating": 0,
+            "createdAt": 1442251580,
+            "description": "Crazy things are sometimes seen at night in Mississippi...",
+            "downloadCount": 0,
+            "newBackend": true,
+            "numberOfComments": 0,
+            "oid": 434,
+            "publicationAppendEnabled": false,
+            "publicationDate": 1442251593,
+            "publicationGroup": 426,
+            "publicationStage": "published",
+            "rowsUpdatedAt": 1442251593,
+            "rowsUpdatedBy": "tugg-ikce",
+            "tableId": 426,
+            "totalTimesRated": 0,
+            "viewCount": 0,
+            "viewLastModified": 1442251593,
+            "viewType": "tabular",
+            "columns": [],
+            "grants": [
+                {
+                    "inherited": true,
+                    "type": "viewer",
+                    "flags": [
+                        "public"
+                    ]
+                }
+            ],
+            "owner": {
+                "id": "tugg-ikce",
+                "displayName": "themachines",
+                "emailUnsubscribed": false,
+                "profileLastModified": 1432081759,
+                "roleName": "administrator",
+                "screenName": "themachines",
+                "rights": [
+                    "create_datasets",
+                    "edit_others_datasets",
+                    "edit_sdp",
+                    "edit_site_theme",
+                    "moderate_comments",
+                    "manage_users",
+                    "chown_datasets",
+                    "edit_nominations",
+                    "approve_nominations",
+                    "feature_items",
+                    "federations",
+                    "manage_stories",
+                    "manage_approval",
+                    "change_configurations",
+                    "view_domain",
+                    "view_others_datasets",
+                    "edit_pages",
+                    "create_pages",
+                    "view_goals",
+                    "view_dashboards",
+                    "edit_goals",
+                    "edit_dashboards",
+                    "create_dashboards"
+                ],
+                "flags": [
+                    "admin"
+                ]
+            },
+            "query": {},
+            "rights": [
+                "read",
+                "write",
+                "add",
+                "delete",
+                "grant",
+                "add_column",
+                "remove_column",
+                "update_column",
+                "update_view",
+                "delete_view"
+            ],
+            "tableAuthor": {
+                "id": "tugg-ikce",
+                "displayName": "themachines",
+                "emailUnsubscribed": false,
+                "profileLastModified": 1432081759,
+                "roleName": "administrator",
+                "screenName": "themachines",
+                "rights": [
+                    "create_datasets",
+                    "edit_others_datasets",
+                    "edit_sdp",
+                    "edit_site_theme",
+                    "moderate_comments",
+                    "manage_users",
+                    "chown_datasets",
+                    "edit_nominations",
+                    "approve_nominations",
+                    "feature_items",
+                    "federations",
+                    "manage_stories",
+                    "manage_approval",
+                    "change_configurations",
+                    "view_domain",
+                    "view_others_datasets",
+                    "edit_pages",
+                    "create_pages",
+                    "view_goals",
+                    "view_dashboards",
+                    "edit_goals",
+                    "edit_dashboards",
+                    "create_dashboards"
+                ],
+                "flags": [
+                    "admin"
+                ]
+            },
+            "flags": [
+                "default"
+            ]
+        },
+        {
+            "id": "jdjq-2st9",
+            "name": "UFO Sightings-47",
+            "averageRating": 0,
+            "createdAt": 1442251601,
+            "description": "Crazy things are sometimes seen at night in Mississippi...",
+            "displayType": "data_lens",
+            "downloadCount": 0,
+            "newBackend": true,
+            "numberOfComments": 0,
+            "oid": 435,
+            "publicationAppendEnabled": false,
+            "publicationDate": 1442251593,
+            "publicationGroup": 426,
+            "publicationStage": "published",
+            "rowsUpdatedAt": 1442251593,
+            "rowsUpdatedBy": "tugg-ikce",
+            "tableId": 426,
+            "totalTimesRated": 0,
+            "viewCount": 0,
+            "viewLastModified": 1442251602,
+            "viewType": "tabular",
+            "columns": [],
+            "displayFormat": {
+                "data_lens_page_metadata": {
+                    "defaultDateTruncFunction": "date_trunc_ymd",
+                    "description": "Crazy things are sometimes seen at night in Mississippi...",
+                    "pageId": "jdjq-2st9",
+                    "datasetId": "uvc2-evmj",
+                    "name": "UFO Sightings-47",
+                    "largestTimeSpanDays": 364,
+                    "cards": [
+                        {
+                            "description": "",
+                            "name": "",
+                            "cardSize": 1,
+                            "expanded": false,
+                            "fieldName": "witness_gibberish",
+                            "cardType": "search"
+                        },
+                        {
+                            "description": "",
+                            "name": "",
+                            "cardSize": 1,
+                            "expanded": false,
+                            "fieldName": "incident_occurrence",
+                            "cardType": "timeline"
+                        },
+                        {
+                            "description": "",
+                            "name": "",
+                            "cardSize": 1,
+                            "expanded": false,
+                            "fieldName": "blood_alcohol_level",
+                            "cardType": "histogram"
+                        },
+                        {
+                            "description": "",
+                            "name": "",
+                            "cardSize": 1,
+                            "expanded": false,
+                            "fieldName": "incident_location",
+                            "cardType": "feature"
+                        },
+                        {
+                            "description": "",
+                            "name": "",
+                            "cardSize": 1,
+                            "expanded": false,
+                            "fieldName": "id",
+                            "cardType": "histogram"
+                        },
+                        {
+                            "description": "",
+                            "name": "",
+                            "cardSize": 1,
+                            "expanded": false,
+                            "fieldName": "plausibility",
+                            "cardType": "histogram"
+                        },
+                        {
+                            "description": "",
+                            "name": "",
+                            "cardSize": 2,
+                            "expanded": false,
+                            "fieldName": "*",
+                            "cardType": "table"
+                        }
+                    ],
+                    "version": 2
+                }
+            },
+            "grants": [
+                {
+                    "inherited": true,
+                    "type": "viewer",
+                    "flags": [
+                        "public"
+                    ]
+                }
+            ],
+            "metadata": {
+                "availableDisplayTypes": [
+                    "data_lens"
+                ]
+            },
+            "owner": {
+                "id": "tugg-ikce",
+                "displayName": "themachines",
+                "emailUnsubscribed": false,
+                "profileLastModified": 1432081759,
+                "roleName": "administrator",
+                "screenName": "themachines",
+                "rights": [
+                    "create_datasets",
+                    "edit_others_datasets",
+                    "edit_sdp",
+                    "edit_site_theme",
+                    "moderate_comments",
+                    "manage_users",
+                    "chown_datasets",
+                    "edit_nominations",
+                    "approve_nominations",
+                    "feature_items",
+                    "federations",
+                    "manage_stories",
+                    "manage_approval",
+                    "change_configurations",
+                    "view_domain",
+                    "view_others_datasets",
+                    "edit_pages",
+                    "create_pages",
+                    "view_goals",
+                    "view_dashboards",
+                    "edit_goals",
+                    "edit_dashboards",
+                    "create_dashboards"
+                ],
+                "flags": [
+                    "admin"
+                ]
+            },
+            "query": {},
+            "rights": [
+                "read",
+                "write",
+                "add",
+                "delete",
+                "grant",
+                "add_column",
+                "remove_column",
+                "update_column",
+                "update_view",
+                "delete_view"
+            ],
+            "tableAuthor": {
+                "id": "tugg-ikce",
+                "displayName": "themachines",
+                "emailUnsubscribed": false,
+                "profileLastModified": 1432081759,
+                "roleName": "administrator",
+                "screenName": "themachines",
+                "rights": [
+                    "create_datasets",
+                    "edit_others_datasets",
+                    "edit_sdp",
+                    "edit_site_theme",
+                    "moderate_comments",
+                    "manage_users",
+                    "chown_datasets",
+                    "edit_nominations",
+                    "approve_nominations",
+                    "feature_items",
+                    "federations",
+                    "manage_stories",
+                    "manage_approval",
+                    "change_configurations",
+                    "view_domain",
+                    "view_others_datasets",
+                    "edit_pages",
+                    "create_pages",
+                    "view_goals",
+                    "view_dashboards",
+                    "edit_goals",
+                    "edit_dashboards",
+                    "create_dashboards"
+                ],
+                "flags": [
+                    "admin"
+                ]
+            }
+        },
+        {
+            "id": "5q92-26hh",
+            "name": "47-2",
+            "averageRating": 0,
+            "createdAt": 1442252604,
+            "description": "",
+            "displayType": "data_lens",
+            "downloadCount": 0,
+            "newBackend": true,
+            "numberOfComments": 0,
+            "oid": 436,
+            "publicationAppendEnabled": false,
+            "publicationDate": 1442251593,
+            "publicationGroup": 426,
+            "publicationStage": "published",
+            "rowsUpdatedAt": 1442251593,
+            "rowsUpdatedBy": "tugg-ikce",
+            "tableId": 426,
+            "totalTimesRated": 0,
+            "viewCount": 0,
+            "viewLastModified": 1442252605,
+            "viewType": "tabular",
+            "columns": [],
+            "displayFormat": {
+                "data_lens_page_metadata": {
+                    "defaultDateTruncFunction": "date_trunc_ymd",
+                    "description": "",
+                    "pageId": "5q92-26hh",
+                    "datasetId": "uvc2-evmj",
+                    "name": "47-2",
+                    "largestTimeSpanDays": 364,
+                    "cards": [
+                        {
+                            "cardSize": 1,
+                            "expanded": false,
+                            "fieldName": "witness_gibberish",
+                            "cardType": "search"
+                        },
+                        {
+                            "cardSize": 1,
+                            "expanded": false,
+                            "fieldName": "incident_occurrence",
+                            "cardType": "timeline",
+                            "activeFilters": [
+                                {
+                                    "arguments": {
+                                        "start": "2001-03-25T00:00:00",
+                                        "end": "2001-07-16T00:00:00"
+                                    },
+                                    "function": "TimeRange"
+                                }
+                            ]
+                        },
+                        {
+                            "cardSize": 1,
+                            "cardOptions": {
+                                "bucketSize": 0.02
+                            },
+                            "expanded": false,
+                            "fieldName": "blood_alcohol_level",
+                            "cardType": "histogram"
+                        },
+                        {
+                            "cardSize": 1,
+                            "expanded": false,
+                            "fieldName": "incident_location",
+                            "cardType": "feature"
+                        },
+                        {
+                            "cardSize": 1,
+                            "cardOptions": {
+                                "bucketSize": "logarithmic"
+                            },
+                            "expanded": false,
+                            "fieldName": "id",
+                            "cardType": "histogram"
+                        },
+                        {
+                            "cardSize": 1,
+                            "cardOptions": {
+                                "bucketSize": 0.5
+                            },
+                            "expanded": false,
+                            "fieldName": "plausibility",
+                            "cardType": "histogram"
+                        },
+                        {
+                            "cardSize": 2,
+                            "expanded": false,
+                            "fieldName": "*",
+                            "cardType": "table"
+                        }
+                    ],
+                    "version": 2
+                }
+            },
+            "grants": [
+                {
+                    "inherited": true,
+                    "type": "viewer",
+                    "flags": [
+                        "public"
+                    ]
+                }
+            ],
+            "metadata": {
+                "availableDisplayTypes": [
+                    "data_lens"
+                ]
+            },
+            "owner": {
+                "id": "tugg-ikce",
+                "displayName": "themachines",
+                "emailUnsubscribed": false,
+                "profileLastModified": 1432081759,
+                "roleName": "administrator",
+                "screenName": "themachines",
+                "rights": [
+                    "create_datasets",
+                    "edit_others_datasets",
+                    "edit_sdp",
+                    "edit_site_theme",
+                    "moderate_comments",
+                    "manage_users",
+                    "chown_datasets",
+                    "edit_nominations",
+                    "approve_nominations",
+                    "feature_items",
+                    "federations",
+                    "manage_stories",
+                    "manage_approval",
+                    "change_configurations",
+                    "view_domain",
+                    "view_others_datasets",
+                    "edit_pages",
+                    "create_pages",
+                    "view_goals",
+                    "view_dashboards",
+                    "edit_goals",
+                    "edit_dashboards",
+                    "create_dashboards"
+                ],
+                "flags": [
+                    "admin"
+                ]
+            },
+            "query": {},
+            "rights": [
+                "read",
+                "write",
+                "add",
+                "delete",
+                "grant",
+                "add_column",
+                "remove_column",
+                "update_column",
+                "update_view",
+                "delete_view"
+            ],
+            "tableAuthor": {
+                "id": "tugg-ikce",
+                "displayName": "themachines",
+                "emailUnsubscribed": false,
+                "profileLastModified": 1432081759,
+                "roleName": "administrator",
+                "screenName": "themachines",
+                "rights": [
+                    "create_datasets",
+                    "edit_others_datasets",
+                    "edit_sdp",
+                    "edit_site_theme",
+                    "moderate_comments",
+                    "manage_users",
+                    "chown_datasets",
+                    "edit_nominations",
+                    "approve_nominations",
+                    "feature_items",
+                    "federations",
+                    "manage_stories",
+                    "manage_approval",
+                    "change_configurations",
+                    "view_domain",
+                    "view_others_datasets",
+                    "edit_pages",
+                    "create_pages",
+                    "view_goals",
+                    "view_dashboards",
+                    "edit_goals",
+                    "edit_dashboards",
+                    "create_dashboards"
+                ],
+                "flags": [
+                    "admin"
+                ]
+            }
+        },
+        {
+            "id": "kn63-ntgg",
+            "name": "shizzam!",
+            "averageRating": 0,
+            "createdAt": 1442340601,
+            "description": "",
+            "displayType": "data_lens",
+            "downloadCount": 0,
+            "newBackend": true,
+            "numberOfComments": 0,
+            "oid": 451,
+            "publicationAppendEnabled": false,
+            "publicationDate": 1442251593,
+            "publicationGroup": 426,
+            "publicationStage": "published",
+            "rowsUpdatedAt": 1442251593,
+            "rowsUpdatedBy": "tugg-ikce",
+            "tableId": 426,
+            "totalTimesRated": 0,
+            "viewCount": 0,
+            "viewLastModified": 1442340603,
+            "viewType": "tabular",
+            "columns": [],
+            "displayFormat": {
+                "data_lens_page_metadata": {
+                    "defaultDateTruncFunction": "date_trunc_ymd",
+                    "description": "",
+                    "pageId": "kn63-ntgg",
+                    "datasetId": "uvc2-evmj",
+                    "name": "shizzam!",
+                    "largestTimeSpanDays": 364,
+                    "cards": [
+                        {
+                            "cardSize": 1,
+                            "expanded": false,
+                            "fieldName": "witness_gibberish",
+                            "cardType": "search"
+                        },
+                        {
+                            "cardSize": 1,
+                            "expanded": false,
+                            "fieldName": "incident_occurrence",
+                            "cardType": "timeline",
+                            "activeFilters": [
+                                {
+                                    "arguments": {
+                                        "start": "2001-03-22T00:00:00",
+                                        "end": "2001-07-30T00:00:00"
+                                    },
+                                    "function": "TimeRange"
+                                }
+                            ]
+                        },
+                        {
+                            "cardSize": 1,
+                            "cardOptions": {
+                                "bucketSize": 0.02
+                            },
+                            "expanded": false,
+                            "fieldName": "blood_alcohol_level",
+                            "cardType": "histogram",
+                            "activeFilters": [
+                                {
+                                    "arguments": {
+                                        "start": 0.26,
+                                        "end": 0.4
+                                    },
+                                    "function": "ValueRange"
+                                }
+                            ]
+                        },
+                        {
+                            "cardSize": 1,
+                            "expanded": false,
+                            "fieldName": "incident_location",
+                            "cardType": "feature"
+                        },
+                        {
+                            "cardSize": 1,
+                            "cardOptions": {
+                                "bucketSize": "logarithmic"
+                            },
+                            "expanded": false,
+                            "fieldName": "id",
+                            "cardType": "histogram"
+                        },
+                        {
+                            "cardSize": 1,
+                            "cardOptions": {
+                                "bucketSize": 0.5
+                            },
+                            "expanded": false,
+                            "fieldName": "plausibility",
+                            "cardType": "histogram"
+                        },
+                        {
+                            "cardSize": 2,
+                            "expanded": false,
+                            "fieldName": "*",
+                            "cardType": "table"
+                        }
+                    ],
+                    "version": 2
+                }
+            },
+            "grants": [
+                {
+                    "inherited": true,
+                    "type": "viewer",
+                    "flags": [
+                        "public"
+                    ]
+                }
+            ],
+            "metadata": {
+                "availableDisplayTypes": [
+                    "data_lens"
+                ]
+            },
+            "owner": {
+                "id": "tugg-ikce",
+                "displayName": "themachines",
+                "emailUnsubscribed": false,
+                "profileLastModified": 1432081759,
+                "roleName": "administrator",
+                "screenName": "themachines",
+                "rights": [
+                    "create_datasets",
+                    "edit_others_datasets",
+                    "edit_sdp",
+                    "edit_site_theme",
+                    "moderate_comments",
+                    "manage_users",
+                    "chown_datasets",
+                    "edit_nominations",
+                    "approve_nominations",
+                    "feature_items",
+                    "federations",
+                    "manage_stories",
+                    "manage_approval",
+                    "change_configurations",
+                    "view_domain",
+                    "view_others_datasets",
+                    "edit_pages",
+                    "create_pages",
+                    "view_goals",
+                    "view_dashboards",
+                    "edit_goals",
+                    "edit_dashboards",
+                    "create_dashboards"
+                ],
+                "flags": [
+                    "admin"
+                ]
+            },
+            "query": {},
+            "rights": [
+                "read",
+                "write",
+                "add",
+                "delete",
+                "grant",
+                "add_column",
+                "remove_column",
+                "update_column",
+                "update_view",
+                "delete_view"
+            ],
+            "tableAuthor": {
+                "id": "tugg-ikce",
+                "displayName": "themachines",
+                "emailUnsubscribed": false,
+                "profileLastModified": 1432081759,
+                "roleName": "administrator",
+                "screenName": "themachines",
+                "rights": [
+                    "create_datasets",
+                    "edit_others_datasets",
+                    "edit_sdp",
+                    "edit_site_theme",
+                    "moderate_comments",
+                    "manage_users",
+                    "chown_datasets",
+                    "edit_nominations",
+                    "approve_nominations",
+                    "feature_items",
+                    "federations",
+                    "manage_stories",
+                    "manage_approval",
+                    "change_configurations",
+                    "view_domain",
+                    "view_others_datasets",
+                    "edit_pages",
+                    "create_pages",
+                    "view_goals",
+                    "view_dashboards",
+                    "edit_goals",
+                    "edit_dashboards",
+                    "create_dashboards"
+                ],
+                "flags": [
+                    "admin"
+                ]
+            }
+        },
+        {
+            "id": "bhva-bneu",
+            "name": "v2 testeroo!",
+            "averageRating": 0,
+            "createdAt": 1442275413,
+            "description": "",
+            "displayType": "data_lens",
+            "downloadCount": 0,
+            "newBackend": true,
+            "numberOfComments": 0,
+            "oid": 450,
+            "publicationAppendEnabled": false,
+            "publicationDate": 1442251593,
+            "publicationGroup": 426,
+            "publicationStage": "published",
+            "rowsUpdatedAt": 1442251593,
+            "rowsUpdatedBy": "tugg-ikce",
+            "tableId": 426,
+            "totalTimesRated": 0,
+            "viewCount": 0,
+            "viewLastModified": 1442275414,
+            "viewType": "tabular",
+            "columns": [],
+            "displayFormat": {
+                "data_lens_page_metadata": {
+                    "defaultDateTruncFunction": "date_trunc_ymd",
+                    "description": "",
+                    "pageId": "bhva-bneu",
+                    "datasetId": "uvc2-evmj",
+                    "name": "v2 testeroo!",
+                    "largestTimeSpanDays": 364,
+                    "cards": [
+                        {
+                            "cardSize": 1,
+                            "expanded": false,
+                            "fieldName": "witness_gibberish",
+                            "cardType": "search"
+                        },
+                        {
+                            "cardSize": 1,
+                            "expanded": false,
+                            "fieldName": "incident_occurrence",
+                            "cardType": "timeline",
+                            "activeFilters": [
+                                {
+                                    "arguments": {
+                                        "start": "2001-03-22T00:00:00",
+                                        "end": "2001-07-30T00:00:00"
+                                    },
+                                    "function": "TimeRange"
+                                }
+                            ]
+                        },
+                        {
+                            "cardSize": 1,
+                            "cardOptions": {
+                                "bucketSize": 0.02
+                            },
+                            "expanded": false,
+                            "fieldName": "blood_alcohol_level",
+                            "cardType": "histogram"
+                        },
+                        {
+                            "cardSize": 1,
+                            "expanded": false,
+                            "fieldName": "incident_location",
+                            "cardType": "feature"
+                        },
+                        {
+                            "cardSize": 1,
+                            "cardOptions": {
+                                "bucketSize": "logarithmic"
+                            },
+                            "expanded": false,
+                            "fieldName": "id",
+                            "cardType": "histogram"
+                        },
+                        {
+                            "cardSize": 1,
+                            "cardOptions": {
+                                "bucketSize": 0.5
+                            },
+                            "expanded": false,
+                            "fieldName": "plausibility",
+                            "cardType": "histogram"
+                        },
+                        {
+                            "cardSize": 2,
+                            "expanded": false,
+                            "fieldName": "*",
+                            "cardType": "table"
+                        }
+                    ],
+                    "version": 2
+                }
+            },
+            "grants": [
+                {
+                    "inherited": true,
+                    "type": "viewer",
+                    "flags": [
+                        "public"
+                    ]
+                }
+            ],
+            "metadata": {
+                "availableDisplayTypes": [
+                    "data_lens"
+                ]
+            },
+            "owner": {
+                "id": "tugg-ikce",
+                "displayName": "themachines",
+                "emailUnsubscribed": false,
+                "profileLastModified": 1432081759,
+                "roleName": "administrator",
+                "screenName": "themachines",
+                "rights": [
+                    "create_datasets",
+                    "edit_others_datasets",
+                    "edit_sdp",
+                    "edit_site_theme",
+                    "moderate_comments",
+                    "manage_users",
+                    "chown_datasets",
+                    "edit_nominations",
+                    "approve_nominations",
+                    "feature_items",
+                    "federations",
+                    "manage_stories",
+                    "manage_approval",
+                    "change_configurations",
+                    "view_domain",
+                    "view_others_datasets",
+                    "edit_pages",
+                    "create_pages",
+                    "view_goals",
+                    "view_dashboards",
+                    "edit_goals",
+                    "edit_dashboards",
+                    "create_dashboards"
+                ],
+                "flags": [
+                    "admin"
+                ]
+            },
+            "query": {},
+            "rights": [
+                "read",
+                "write",
+                "add",
+                "delete",
+                "grant",
+                "add_column",
+                "remove_column",
+                "update_column",
+                "update_view",
+                "delete_view"
+            ],
+            "tableAuthor": {
+                "id": "tugg-ikce",
+                "displayName": "themachines",
+                "emailUnsubscribed": false,
+                "profileLastModified": 1432081759,
+                "roleName": "administrator",
+                "screenName": "themachines",
+                "rights": [
+                    "create_datasets",
+                    "edit_others_datasets",
+                    "edit_sdp",
+                    "edit_site_theme",
+                    "moderate_comments",
+                    "manage_users",
+                    "chown_datasets",
+                    "edit_nominations",
+                    "approve_nominations",
+                    "feature_items",
+                    "federations",
+                    "manage_stories",
+                    "manage_approval",
+                    "change_configurations",
+                    "view_domain",
+                    "view_others_datasets",
+                    "edit_pages",
+                    "create_pages",
+                    "view_goals",
+                    "view_dashboards",
+                    "edit_goals",
+                    "edit_dashboards",
+                    "create_dashboards"
+                ],
+                "flags": [
+                    "admin"
+                ]
+            }
+        }
+    ]
+}

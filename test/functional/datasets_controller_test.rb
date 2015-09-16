@@ -13,7 +13,15 @@ class DatasetsControllerTest < ActionController::TestCase
         'profile_name' => 'name'
       }
     )
-    @view.stubs(user_granted?: false)
+    load_sample_data('test/fixtures/sample-data.json')
+    test_view = @view.find('test-data')
+    load_sample_data('test/fixtures/metadb_response_v2_data_lens.json')
+    test_related_views = @view.find('7q9m-tf7f')
+    @view.stubs(
+      :find => test_view,
+      :find_related => test_related_views,
+      :user_granted? => false
+    )
     @controller.stubs(:get_view => @view)
     @phidippides = Phidippides.new('localhost', 2401)
     @params = { :foo => 'foo', :bar => 'bar' }

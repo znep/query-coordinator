@@ -100,25 +100,52 @@ module CommonMetadataMethods
 
   def fetch_pages_for_dataset(dataset_id)
 
-    result = phidippides.fetch_pages_for_dataset(
+    # Fetch phiddy (v1) pages
+    phiddy_result = phidippides.fetch_pages_for_dataset(
       dataset_id,
       :request_id => request_id,
       :cookies => forwardable_session_cookies
     )
 
-    if result[:status] != '200'
-      case result[:status]
-        when '401'
-          raise AuthenticationRequired.new
-        when '403'
-          raise UnauthorizedDatasetMetadataRequest.new
-        when '404'
-          raise DatasetMetadataNotFound.new
-        else
-          raise UnknownRequestError.new result[:body].to_s
+    # Fetch metadb (v2) pages
+    metadb_status = begin
+      metadb_response = Array(View.find(dataset_id).find_related(1))
+      '200'
+    rescue CoreServer::ResourceNotFound
+      '404'
+    rescue CoreServer::CoreServerError => error
+      case error.error_code
+      when 'authentication_required'; '401'
+      when 'permission_denied'; '403'
       end
     end
 
-    result[:body]
+    # Filter metadb_response on only published v2 data lenses
+    metadb_result = JSON.parse(metadb_response.select { |view|
+      view.data_lens? && view.is_published?
+    }.to_s, :symbolize_names => true)
+
+    combined_statuses = [phiddy_result[:status], metadb_status]
+
+    unless combined_statuses.include? '200'
+      if combined_statuses.include? '401'
+        raise AuthenticationRequired.new
+      elsif combined_statuses.include? '403'
+        raise UnauthorizedDatasetMetadataRequest.new
+      elsif combined_statuses.include? '404'
+        raise DatasetMetadataNotFound.new
+      else
+        raise UnknownRequestError.new combined_result[:body].to_s
+      end
+    end
+
+    # Return hash with publisher and user views.
+    # Combines metadb and phiddy results into publisher views.
+    {
+      :publisher => metadb_result.map { |page|
+          HashWithIndifferentAccess.new(page[:displayFormat][:data_lens_page_metadata])
+        }.concat(Array(phiddy_result[:body][:publisher])),
+      :user => phiddy_result[:body][:user]
+    }
   end
 end

@@ -129,22 +129,21 @@ class NewViewManagerTest < Test::Unit::TestCase
         payload = JSON.parse(payload).with_indifferent_access
         assert_equal('my title', payload[:displayFormat][:data_lens_page_metadata][:name])
         assert_equal('my description', payload[:displayFormat][:data_lens_page_metadata][:description])
-        # Assert that the pageId is blank at this point
-        assert_equal('', payload[:displayFormat][:data_lens_page_metadata][:pageId])
+        # Assert that the pageId is nil at this point
+        assert_equal(nil, payload[:displayFormat][:data_lens_page_metadata][:pageId])
         assert_equal('data_lens', payload[:displayType])
       end
     end.returns(response)
 
-    connection_stub.expects(:update_request).times(2).with do |url, payload|
+    connection_stub.expects(:update_request).times(1).with do |url, payload|
       assert_equal('/views/mjcb-9cxc.json', url)
       payload = JSON.parse(payload).with_indifferent_access
       assert_equal('https://localhost:443/view/mjcb-9cxc', payload[:metadata][:accessPoints][:new_view])
     end.returns(response)
 
-    CoreServer::Base.stubs(connection: connection_stub)
+    connection_stub.expects(:publish).times(0)
 
-    expectant_stub = mock.tap { |stub| stub.expects(:publish) }
-    View.expects(:find).with('mjcb-9cxc').returns(expectant_stub)
+    CoreServer::Base.stubs(connection: connection_stub)
 
     result = new_view_manager.create({:name=>'my title', :description=>'my description'}, nil, true)
     assert_equal('mjcb-9cxc', result)

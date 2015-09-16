@@ -101,6 +101,13 @@ class PageMetadataManager
 
     v2_data_lens = FeatureFlags.derive(nil, defined?(request) ? request : nil)[:create_v2_data_lens]
 
+    # Make sure that there is a table card
+    has_table_card = page_metadata['cards'].any? do |card|
+      card['fieldName'] == '*' || card['cardType'] == 'table'
+    end
+
+    page_metadata['cards'] << table_card unless has_table_card
+
     # The core lens id for this page is the same one we use to refer to it in phidippides
     new_page_id = new_view_manager.create(
       page_metadata,
@@ -108,14 +115,9 @@ class PageMetadataManager
       v2_data_lens
     )
 
+    # For V2 Data Lenses, adding the pageId is handled at the tail end of
+    # new_view_manager.create_v2_data_lens_in_metadb
     page_metadata['pageId'] = new_page_id
-
-    # Make sure that there is a table card
-    has_table_card = page_metadata['cards'].any? do |card|
-      card['fieldName'] == '*' || card['cardType'] == 'table'
-    end
-
-    page_metadata['cards'] << table_card unless has_table_card
 
     if v2_data_lens
       update_metadata_rollup_table(page_metadata, options)
@@ -147,6 +149,11 @@ class PageMetadataManager
       metadb_metadata = nil
     end
 
+    # Update the name and description of the lens in metadb.
+    # For v1 data lenses, this is a lens with display_type of "new_view"
+    # For v2 data lenses, this is a lens with display_type of "data_lens"
+    # Note that this *only* affects the lenses name and description, *not*
+    # the page_metadata in displayFormat.
     new_view_manager.update(page_metadata['pageId'],
       :name => page_metadata['name'],
       :description => page_metadata['description']
@@ -258,7 +265,7 @@ class PageMetadataManager
     @logical_datatype_name = 'fred'
   end
 
-  # Creates or updates a metadb backed page.
+  # Updates a metadb backed page.
   # NOTE - currently this is "last write wins", meaning that if multiple users are editing the
   # metadata at the same time, the last one to save will obliterate any changes other users
   # may have made. This should be fixed with versioning within the metadata.

@@ -25,6 +25,8 @@ Frontend::Application.configure do
   config.action_controller.allow_forgery_protection    = false
 
   # Use the in-memory cache for tests.
+  # NOTE 2015-09-18: A small handful of tests are dependent on this cache, so
+  # we can't set this to :null_store.
   config.cache_store = :memory_store
 
   # Tell Action Mailer not to deliver emails to the real world.

@@ -21,6 +21,27 @@ class AngularController < ActionController::Base
   def serve_app
     raise 'The "app" parameter is required.' unless request[:app]
 
+    # If we're reaching the data lens page via an SEO-friendly URL,
+    # ensure that we end up on the canonical (SEO-friendly) URL.
+    # Uses the same basic technique as DatasetsController#show.
+    unless request.path =~ %r'/view/\w{4}-\w{4}$'
+      begin
+        view = View.find(params[:id])
+        href = Proc.new { |params| view_path(view.route_params.merge(params || {})) }
+        unless request.path == href.call(locale: nil)
+          locale = CurrentDomain.default_locale == I18n.locale.to_s ? nil : I18n.locale
+          canonical_path = href.call(locale: locale)
+          canonical_path += "?#{request.query_string}" unless request.query_string.empty?
+          return redirect_to canonical_path
+        end
+      rescue
+        # pass — if we weren't able to find the view, let the existing workflow
+        # handle the error propagation correctly. We shouldn't ever hit an error
+        # because the SEO-friendly URLs are gated by a constraint that verifies
+        # the existence of an appropriate view; this is an abundance of caution.
+      end
+    end
+
     # First fetch the current user's profile.
     @current_user = current_user
 

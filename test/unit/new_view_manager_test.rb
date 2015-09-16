@@ -7,6 +7,7 @@ class NewViewManagerTest < Test::Unit::TestCase
   end
 
   def setup
+    init_current_domain
     CurrentDomain.stubs(domain: stub(cname: 'localhost'))
   end
 
@@ -137,13 +138,13 @@ class NewViewManagerTest < Test::Unit::TestCase
 
     connection_stub.expects(:update_request).times(1).with do |url, payload|
       assert_equal('/views/mjcb-9cxc.json', url)
-      payload = JSON.parse(payload).with_indifferent_access
-      assert_equal('https://localhost:443/view/mjcb-9cxc', payload[:metadata][:accessPoints][:new_view])
     end.returns(response)
 
     connection_stub.expects(:publish).times(0)
 
     CoreServer::Base.stubs(connection: connection_stub)
+
+    Rails.application.routes.url_helpers.stubs(opendata_cards_view_url: 'opendata_url')
 
     result = new_view_manager.create({:name=>'my title', :description=>'my description'}, nil, true)
     assert_equal('mjcb-9cxc', result)

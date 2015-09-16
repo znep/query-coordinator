@@ -109,7 +109,7 @@ module CommonMetadataMethods
 
     # Fetch metadb (v2) pages
     metadb_status = begin
-      metadb_response = Array(View.find(dataset_id).find_related(1))
+      metadb_response = View.find(dataset_id).find_related(1)
       '200'
     rescue CoreServer::ResourceNotFound
       '404'
@@ -139,13 +139,27 @@ module CommonMetadataMethods
       end
     end
 
+    metadb_pages = []
+    if metadb_result.present?
+      metadb_pages = metadb_result.select { |page|
+        page[:displayFormat].present? && page[:displayFormat][:data_lens_page_metadata].present?
+      }.map { |page|
+        HashWithIndifferentAccess.new(page[:displayFormat][:data_lens_page_metadata])
+      }
+    end
+
+    phiddy_pages = []
+    phiddy_user_pages = []
+    if phiddy_result[:body].present?
+      phiddy_pages = phiddy_result[:body][:publisher] if phiddy_result[:body][:publisher].present?
+      phiddy_user_pages = phiddy_result[:body][:user] if phiddy_result[:body][:user].present?
+    end
+
     # Return hash with publisher and user views.
     # Combines metadb and phiddy results into publisher views.
     {
-      :publisher => metadb_result.map { |page|
-          HashWithIndifferentAccess.new(page[:displayFormat][:data_lens_page_metadata])
-        }.concat(Array(phiddy_result[:body][:publisher])),
-      :user => phiddy_result[:body][:user]
+      :publisher => metadb_pages.concat(phiddy_pages),
+      :user => phiddy_user_pages
     }
   end
 end

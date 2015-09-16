@@ -1,5 +1,5 @@
 $browse_background_color: #ffffff;
-$new_view_icon_color: #80acca;
+$data_lens_icon_color: #80acca;
 
 @import "./media-object";
 
@@ -195,9 +195,11 @@ $new_view_icon_color: #80acca;
     }
   }
   .typeNew_view .icon-cards,
-  .typeNewView .icon-cards {
+  .typeNewView .icon-cards,
+  .typeData_lens .icon-cards,
+  .typeDataLens .icon-cards {
     &::before {
-      color: $new_view_icon_color;
+      color: $data_lens_icon_color;
     }
   }
   .browseList {

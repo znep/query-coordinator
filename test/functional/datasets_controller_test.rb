@@ -5,6 +5,13 @@ class DatasetsControllerTest < ActionController::TestCase
   def setup
     init_core_session
     init_current_domain
+    load_sample_data('test/fixtures/sample-data.json')
+    test_view = View.find('test-data')
+    View.any_instance.stubs(
+      :find => test_view,
+      :find_related => [test_view],
+      :user_granted? => false
+    )
     @view = View.new(
       'resourceName' => 'resource-name',
       'id' => 'four-four',
@@ -12,15 +19,6 @@ class DatasetsControllerTest < ActionController::TestCase
         'id' => 'four-five',
         'profile_name' => 'name'
       }
-    )
-    load_sample_data('test/fixtures/sample-data.json')
-    test_view = @view.find('test-data')
-    load_sample_data('test/fixtures/metadb_response_v2_data_lens.json')
-    test_related_views = @view.find('7q9m-tf7f')
-    @view.stubs(
-      :find => test_view,
-      :find_related => test_related_views,
-      :user_granted? => false
     )
     @controller.stubs(:get_view => @view)
     @phidippides = Phidippides.new('localhost', 2401)

@@ -21,7 +21,6 @@ class ApplicationController < ActionController::Base
 
   def require_logged_in_user
     # If no current_user, send to main login page
-    Rails.logger.debug "i am a current user: #{current_user.inspect}"
     redirect_to "/login?return_to=#{request.path}" unless current_user.present?
   end
 end

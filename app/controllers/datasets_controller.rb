@@ -160,6 +160,10 @@ class DatasetsController < ApplicationController
     end
   end
 
+  def show_mobile
+    render 'mobile/datasets/show', :layout => 'layouts/mobile'
+  end
+
   def blob
     @view = get_view(params[:id])
     respond_to do |format|

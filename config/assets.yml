@@ -732,6 +732,9 @@ javascripts:
     - public/javascripts/util/jquery-extensions.js
     - public/javascripts/util/lodash-mixins.js
 
+  mobile:
+    - public/javascripts/mobile/main.js
+
 dump:
   javascripts:
     - shared-calendar

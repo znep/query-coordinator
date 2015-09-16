@@ -132,7 +132,7 @@ class AdministrationController < ApplicationController
 
   before_filter :only => [
       :georegions, :add_georegion, :enable_georegion, :disable_georegion, :edit_georegion, :remove_georegion
-    ] {|c| c.check_auth_levels_any(['edit_others_datasets', 'edit_site_theme']) }
+    ] {|c| c.check_feature_flag(:enable_georegions_admin) }
   def georegions
     @georegions = CuratedRegion.get_all
     @georegions[:translations] = LocalePart.screens.admin.georegions
@@ -1137,6 +1137,9 @@ public
   end
   def check_approval_rights
     return run_access_check{current_user.can_approve?}
+  end
+  def check_feature_flag(feature_flag)
+    run_access_check { feature_flag?(feature_flag, request) }
   end
 
 private

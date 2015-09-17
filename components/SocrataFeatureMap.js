@@ -6,22 +6,29 @@
   var utils = socrata.utils;
   var visualizations = socrata.visualizations;
 
-  var TILESERVER_HOSTS = [
+  var DEFAULT_TILESERVER_HOSTS = [
     'https://tileserver1.api.us.socrata.com',
     'https://tileserver2.api.us.socrata.com',
     'https://tileserver3.api.us.socrata.com',
     'https://tileserver4.api.us.socrata.com'
   ];
-  var FEATURES_PER_TILE = 256 * 256;
+  var DEFAULT_FEATURES_PER_TILE = 256 * 256;
+  var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png';
+  var DEFAULT_BASE_LAYER_OPACITY = 0.5;
+  var DEFAULT_HOVER = true;
+  var DEFAULT_PAN_AND_ZOOM = true;
+  var DEFAULT_LOCATE_USER = true;
 
   /**
    * Instantiates a Socrata FeatureMap Visualization from the
    * `socrata-visualizations` package.
    */
 
-  $.fn.socrataFeatureMap = function(config) {
+  $.fn.socrataFeatureMap = function(vif) {
 
     this.destroySocrataFeatureMap = function() {
+
+      detachEvents();
       visualization.destroy();
     }
 
@@ -31,8 +38,8 @@
     // Geospace has knowledge of the extents of a column, which
     // we use to modify point data queries with a WITHIN_BOX clause.
     var geospaceDataProviderConfig = {
-      domain: config.domain,
-      datasetUid: config.datasetUid
+      domain: vif.domain,
+      datasetUid: vif.datasetUid
     };
     var geospaceDataProvider = new socrata.visualizations.GeospaceDataProvider(
       geospaceDataProviderConfig
@@ -42,12 +49,11 @@
     // format. It returns protocol buffers containing point offsets from
     // the tile origin (top left).
     var tileserverDataProviderConfig = {
-      appToken: config.appToken,
-      domain: config.domain,
-      datasetUid: config.datasetUid,
-      columnName: config.columnName,
-      featuresPerTile: FEATURES_PER_TILE,
-      tileserverHosts: TILESERVER_HOSTS,
+      domain: vif.domain,
+      datasetUid: vif.datasetUid,
+      columnName: vif.columnName,
+      featuresPerTile: DEFAULT_FEATURES_PER_TILE,
+      tileserverHosts: vif.configuration.tileserverHosts || DEFAULT_TILESERVER_HOSTS,
     };
     var tileserverDataProvider = new socrata.visualizations.TileserverDataProvider(
       tileserverDataProviderConfig
@@ -55,18 +61,18 @@
 
     // SoQL returns row results for display in the row inspector
     var soqlDataProviderConfig = {
-      domain: config.domain,
-      datasetUid: config.datasetUid
+      domain: vif.domain,
+      datasetUid: vif.datasetUid
     };
     var soqlDataProvider = new socrata.visualizations.SoqlDataProvider(
       soqlDataProviderConfig
     );
 
-    if (config.datasetMetadata) {
+    if (vif.configuration.datasetMetadata) {
 
       // If the caller already has datasetMetadata, it can be passed through as
       // a configuration property.
-      datasetMetadata = config.datasetMetadata;
+      datasetMetadata = vif.configuration.datasetMetadata;
 
     } else {
 
@@ -74,8 +80,8 @@
       // specified dataset so that we can use its column definitions when
       // formatting data for the row inspector.
       var metadataProviderConfig = {
-        domain: config.domain,
-        datasetUid: config.datasetUid
+        domain: vif.domain,
+        datasetUid: vif.datasetUid
       }
       var metadataProvider = new socrata.visualizations.MetadataProvider(
         metadataProviderConfig
@@ -100,10 +106,10 @@
 
     // The visualization itself handles rendering and interaction events.
     var visualizationConfig = {
-      localization: config.localization,
-      hover: config.hover,
-      panAndZoom: config.panAndZoom,
-      locateUser: config.locateUser
+      localization: vif.localization,
+      hover: (!_.isUndefined(vif.configuration.hover)) ? vif.configuration.hover : DEFAULT_HOVER,
+      panAndZoom: (!_.isUndefined(vif.configuration.panAndZoom)) ? vif.configuration.panAndZoom : DEFAULT_PAN_AND_ZOOM,
+      locateUser: (!_.isUndefined(vif.configuration.locateUser)) ? vif.configuration.locateUser : DEFAULT_LOCATE_USER
     };
     var visualization = new window.socrata.visualizations.FeatureMap(
       $element,
@@ -113,10 +119,10 @@
     // The visualizationRenderOptions may change in response to user actions
     // and are passed as an argument to every render call.
     var visualizationRenderOptions = {
-      labelUnit: 'rows',
+      unit: vif.unit,
       baseLayer: {
-        url: config.baseLayer,
-        opacity: config.baseLayerOpacity
+        url: vif.configuration.baseLayerUrl || DEFAULT_BASE_LAYER_URL,
+        opacity: vif.configuration.baseLayerOpacity || DEFAULT_BASE_LAYER_OPACITY
       }
     };
 
@@ -128,7 +134,7 @@
     // individual tile requests more performant (through the use of a
     // WITHIN_BOX query clause).
     geospaceDataProvider.
-      getFeatureExtent(config.columnName).
+      getFeatureExtent(vif.columnName).
       then(
         handleFeatureExtentQuerySuccess,
         handleFeatureExtentQueryError
@@ -142,7 +148,19 @@
      * Events
      */
 
-    $element.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
+    function attachEvents() {
+
+      $element.on('SOCRATA_VISUALIZATION_FLYOUT_SHOW', handleVisualizationFlyoutShow);
+      $element.on('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
+      $element.on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
+    }
+
+    function detachEvents() {
+
+      $element.off('SOCRATA_VISUALIZATION_FLYOUT_SHOW', handleVisualizationFlyoutShow);
+      $element.off('SOCRATA_VISUALIZATION_FLYOUT_HIDE', handleVisualizationFlyoutHide);
+      $element.off('SOCRATA_VISUALIZATION_ROW_INSPECTOR_QUERY', handleRowInspectorQuery);
+    }
 
     /**
      * Event handlers
@@ -168,8 +186,86 @@
     }
 
     function handleFeatureExtentQueryError() {
-
       renderError();
+    }
+
+    function handleVisualizationFlyoutShow(event) {
+      var payload = event.originalEvent.detail;
+      var $flyoutContent = null;
+      var $flyoutTitle;
+      var $flyoutNotice;
+      var flyoutPayload;
+
+      event.stopPropagation();
+
+      if (payload !== null) {
+
+        $flyoutContent = $(document.createDocumentFragment());
+
+        // 'Datum Title'
+        $flyoutTitle = $(
+          '<div>',
+          {
+            'class': 'socrata-flyout-title'
+          }
+        ).text(payload.title);
+
+        $flyoutContent.append($flyoutTitle);
+
+        if (payload.notice) {
+
+          $flyoutNotice = $(
+            '<div>',
+            {
+              'class': 'socrata-flyout-notice'
+            }
+          ).text(payload.notice);
+
+          $flyoutContent.append($flyoutNotice);
+        }
+
+        if (payload.hasOwnProperty('flyoutOffset')) {
+
+          flyoutPayload = {
+            flyoutOffset: payload.flyoutOffset,
+            content: $flyoutContent,
+            rightSideHint: false,
+            belowTarget: false
+          };
+
+        } else {
+
+          flyoutPayload = {
+            element: payload.element,
+            content: $flyoutContent,
+            rightSideHint: false,
+            belowTarget: false
+          }
+
+        }
+
+        $element[0].dispatchEvent(
+          new root.CustomEvent(
+            'SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT',
+            {
+              detail: flyoutPayload,
+              bubbles: true
+            }
+          )
+        );
+      }
+    }
+
+    function handleVisualizationFlyoutHide() {
+      $element[0].dispatchEvent(
+        new root.CustomEvent(
+          'SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT',
+          {
+            detail: null,
+            bubbles: true
+          }
+        )
+      );
     }
 
     function handleRowInspectorQuery(event) {
@@ -179,10 +275,10 @@
       var query = '$offset=0&$limit={0}&$order=distance_in_meters({1}, "POINT({2} {3})"){4}'.
         format(
           payload.rowCount,
-          config.columnName,
+          vif.columnName,
           payload.latLng.lng,
           payload.latLng.lat,
-          generateWithinBoxClause(config.columnName, payload.queryBounds)
+          generateWithinBoxClause(vif.columnName, payload.queryBounds)
         );
 
       function generateWithinBoxClause(columnName, bounds) {
@@ -222,7 +318,7 @@
       var rowInspectorPayload = {
         data: null,        
         error: true,
-        message: config.localization.ROW_INSPECTOR_ROW_DATA_QUERY_FAILED
+        message: vif.localization.ROW_INSPECTOR_ROW_DATA_QUERY_FAILED
       }
 
       emitRowInspectorUpdateEvent(rowInspectorPayload);
@@ -234,10 +330,12 @@
 
     function initializeVisualization() {
 
+      attachEvents();
+
       // For now, we don't need to use any where clause but the default
       // one, so we just inline the call to
       // updateRenderOptionsVectorTileGetter.
-      updateRenderOptionsVectorTileGetter(config.baseWhereClause, config.useOriginHost);
+      updateRenderOptionsVectorTileGetter(soqlDataProvider.buildBaseQuery(vif.filters), vif.useOriginHost);
       renderIfReady();
     }
 

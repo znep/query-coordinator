@@ -306,7 +306,8 @@
                 var requestOptions = { orderBy: SoqlHelpers.formatFieldName(values.fieldName) };
                 var requestArguments = _.at(values, 'fieldName', 'dataset', 'whereClause', 'aggregation').concat(requestOptions);
                 var filteredDataPromise = CardDataService.getData.apply(CardDataService, requestArguments).
-                  then(function(filteredData) {
+                  then(function(response) {
+                    var filteredData = response.data;
                     var selectedValue = _.get(values.activeFilter, 'operand');
                     return HistogramService.transformDataForColumnChart(unfilteredData, filteredData, selectedValue);
                   });
@@ -342,8 +343,8 @@
             var whereClause = '`{0}` IS NOT NULL'.format(fieldName);
             var options = { limit: Constants.HISTOGRAM_COLUMN_CHART_CARDINALITY_THRESHOLD + 1, orderBy: fieldName};
             var cardDataPromise = CardDataService.getData(fieldName, dataset.id, whereClause, aggregation, options).
-              then(function(data) {
-                return _.map(data, function(bucket) {
+              then(function(response) {
+                return _.map(response.data, function(bucket) {
                   return {
                     name: parseFloat(bucket.name),
                     value: bucket.value

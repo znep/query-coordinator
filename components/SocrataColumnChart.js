@@ -48,7 +48,7 @@
    * `socrata-visualizations` package.
    */
 
-  $.fn.socrataColumnChart = function(config) {
+  $.fn.socrataColumnChart = function(vif) {
 
     this.destroySocrataColumnChart = function() {
 
@@ -57,10 +57,10 @@
       _detachEvents();
     };
 
-    utils.assertHasProperty(config, 'domain');
-    utils.assertHasProperty(config, 'datasetUid');
-    utils.assertHasProperty(config, 'columnName');
-    utils.assertHasProperty(config, 'unit');
+    utils.assertHasProperty(vif, 'domain');
+    utils.assertHasProperty(vif, 'datasetUid');
+    utils.assertHasProperty(vif, 'columnName');
+    utils.assertHasProperty(vif, 'unit');
 
     var $element = $(this);
 
@@ -68,16 +68,16 @@
     // We need separate data providers for 'unfiltered'
     // and 'filtered' requests, which are merged below.
     var unfilteredSoqlDataProviderConfig = {
-      domain: config.domain,
-      datasetUid: config.datasetUid
+      domain: vif.domain,
+      datasetUid: vif.datasetUid
     };
     var unfilteredSoqlDataProvider = new socrata.visualizations.SoqlDataProvider(
       unfilteredSoqlDataProviderConfig
     );
 
     var filteredSoqlDataProviderConfig = {
-      domain: config.domain,
-      datasetUid: config.datasetUid
+      domain: vif.domain,
+      datasetUid: vif.datasetUid
     };
     var filteredSoqlDataProvider = new socrata.visualizations.SoqlDataProvider(
       filteredSoqlDataProviderConfig
@@ -90,7 +90,7 @@
         filteredValue: FILTERED_INDEX,
         selected: SELECTED_INDEX
       },
-      localization: config.localization
+      localization: vif.localization
     };
 
     var visualization = new visualizations.ColumnChart($element, visualizationConfig);
@@ -107,18 +107,18 @@
     function _getRenderOptions() {
       return {
         showAllLabels: true,
-        labelUnit: _getLabelUnit(config),
+        labelUnit: _getLabelUnit(vif),
         showFiltered: false
       };
     }
 
-    function _getLabelUnit(config) {
-      utils.assertHasProperty(config, 'unit');
-      utils.assertHasProperty(config.unit, 'en');
-      utils.assertHasProperty(config.unit.en, 'one');
-      utils.assertHasProperty(config.unit.en, 'other');
+    function _getLabelUnit(vif) {
+      utils.assertHasProperty(vif, 'unit');
+      utils.assertHasProperty(vif.unit, 'en');
+      utils.assertHasProperty(vif.unit.en, 'one');
+      utils.assertHasProperty(vif.unit.en, 'other');
 
-      return config.unit.en;
+      return vif.unit.en;
     }
 
     /**
@@ -358,7 +358,7 @@
     function _updateData() {
 
       var queryString = BASE_QUERY.format(
-        config.columnName,
+        vif.columnName,
         SOQL_DATA_PROVIDER_NAME_ALIAS,
         SOQL_DATA_PROVIDER_VALUE_ALIAS
       );

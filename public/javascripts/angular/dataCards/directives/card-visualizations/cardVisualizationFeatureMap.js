@@ -197,26 +197,30 @@
                     // migrating over its attributes
                     if (!parentColumn.isParentColumn) {
                       parentColumn.isParentColumn = true;
-                      var existingValue = parentColumn.value[0];
-                      parentColumn.value[0] = {
-                        columnName: parentColumn.columnName,
-                        value: existingValue,
-                        format: parentColumn.format,
-                        physicalDatatype: parentColumn.physicalDatatype,
-                        renderTypeName: parentColumn.renderTypeName
-                      };
+                      if (_.isArray(parentColumn.value)) {
+                        var existingValue = parentColumn.value[0];
+                        parentColumn.value[0] = {
+                          columnName: parentColumn.columnName,
+                          value: existingValue,
+                          format: parentColumn.format,
+                          physicalDatatype: parentColumn.physicalDatatype,
+                          renderTypeName: parentColumn.renderTypeName
+                        };
+                      }
                     }
 
                     var subColumnName = constructSubColumnName(column.name, parentColumnName);
 
-                    // Add the subcolumn data to the parent column's value.
-                    parentColumn.value.push({
-                      columnName: subColumnName,
-                      value: cellValue,
-                      format: column.format,
-                      physicalDatatype: column.physicalDatatype,
-                      renderTypeName: column.renderTypeName
-                    });
+                    if (_.isArray(parentColumn.value)) {
+                      // Add the subcolumn data to the parent column's value.
+                      parentColumn.value.push({
+                        columnName: subColumnName,
+                        value: cellValue,
+                        format: column.format,
+                        physicalDatatype: column.physicalDatatype,
+                        renderTypeName: column.renderTypeName
+                      });
+                    }
 
                     // Overwrite saved parent column with updated parent column
                     formattedRowData[parentPosition] = parentColumn;

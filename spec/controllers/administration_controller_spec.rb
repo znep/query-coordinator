@@ -1,5 +1,5 @@
 require 'rails_helper'
-require 'test_helper'
+require_relative '../../test/test_helper'
 
 describe AdministrationController do
   include TestHelperMethods
@@ -11,9 +11,10 @@ describe AdministrationController do
       allow_any_instance_of(ApplicationController).to receive(:sync_logged_in_cookie)
       allow_any_instance_of(ApplicationController).to receive(:set_user)
       allow_any_instance_of(ApplicationController).to receive(:set_meta)
+      allow_any_instance_of(ApplicationHelper).to receive(:feature_flag?).and_return(true)
     end
 
-    describe 'GET /admin/georegions' do
+    describe 'GET /admin/geo' do
 
       describe 'not logged in' do
         before(:each) do
@@ -76,46 +77,46 @@ describe AdministrationController do
 
     end
 
-    describe 'POST /admin/georegions' do
+    describe 'POST /admin/geo' do
       before(:each) do
         user_double = double(User)
         allow(user_double).to receive(:has_right?).and_return(true)
         allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
       end
 
-      it 'redirects to /admin/georegions' do
+      it 'redirects to /admin/geo' do
         post :add_georegion
-        expect(response).to redirect_to(:georegions)
+        expect(response).to redirect_to('/admin/geo')
       end
     end
 
-    describe 'PUT /admin/georegions/:id' do
+    describe 'PUT /admin/geo/:id' do
       before(:each) do
         user_double = double(User)
         allow(user_double).to receive(:has_right?).and_return(true)
         allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
       end
 
-      it 'redirects to /admin/georegions' do
+      it 'redirects to /admin/geo' do
         put :edit_georegion, :id => 1
-        expect(response).to redirect_to(:georegions)
+        expect(response).to redirect_to('/admin/geo')
       end
     end
 
-    describe 'DELETE /admin/georegions/:id' do
+    describe 'DELETE /admin/geo/:id' do
       before(:each) do
         user_double = double(User)
         allow(user_double).to receive(:has_right?).and_return(true)
         allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
       end
 
-      it 'redirects to /admin/georegions' do
+      it 'redirects to /admin/geo' do
         delete :remove_georegion, :id => 1
-        expect(response).to redirect_to(:georegions)
+        expect(response).to redirect_to('/admin/geo')
       end
     end
 
-    describe 'PUT /admin/georegions/:id/enable' do
+    describe 'PUT /admin/geo/:id/enable' do
       before(:each) do
         user_double = double(User)
         allow(user_double).to receive(:has_right?).and_return(true)
@@ -124,20 +125,20 @@ describe AdministrationController do
 
       it 'redirects to /admin/georegions' do
         put :enable_georegion, :id => 1
-        expect(response).to redirect_to(:georegions)
+        expect(response).to redirect_to('/admin/geo')
       end
     end
 
-    describe 'PUT /admin/georegions/:id/disable' do
+    describe 'PUT /admin/geo/:id/disable' do
       before(:each) do
         user_double = double(User)
         allow(user_double).to receive(:has_right?).and_return(true)
         allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
       end
 
-      it 'redirects to /admin/georegions' do
+      it 'redirects to /admin/geo' do
         put :disable_georegion, :id => 1
-        expect(response).to redirect_to(:georegions)
+        expect(response).to redirect_to('/admin/geo')
       end
     end
   end

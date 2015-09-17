@@ -387,10 +387,10 @@
 
       // Test position (City Lights bookstore in San Francisco):
       //
-      var userLatLng = new L.LatLng(
-        37.79771,
-        -122.40647
-      );
+      // var userLatLng = new L.LatLng(
+      //   37.79771,
+      //   -122.40647
+      // );
       var userLatLng = new L.LatLng(
         position.coords.latitude,
         position.coords.longitude
@@ -398,10 +398,7 @@
       var featureBounds = _lastRenderOptions.bounds;
       var distanceFromBoundsSouthWest;
       var distanceFromBoundsNorthEast;
-      // var userLatLng = new L.LatLng(
-      //   37.79771,
-      //   -122.40647
-      // );
+
       function latLngIsInsideBounds(latLng, bounds) {
 
         return (

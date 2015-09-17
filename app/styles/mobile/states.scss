@@ -1,0 +1,16 @@
+.is-editable:hover {
+  cursor: pointer;
+}
+
+.is-editable .btn-edit {
+  display: none;
+}
+
+.is-editable:hover span.btn-edit {
+  display: inline-block;
+}
+
+.text-link {
+  margin-left: 10px;
+  color: #3b73af;
+}

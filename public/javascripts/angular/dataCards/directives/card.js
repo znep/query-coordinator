@@ -35,7 +35,7 @@
         function registerDebugFlyout() {
           // N.B.: Card models already have unique ids, but they can be shared across card directives.
           var uniqueId = _.uniqueId();
-          element[0].dataset.card_directive_id = uniqueId;
+          element[0].setAttribute('data-card_directive_id', uniqueId);
 
           var debugInfo = {
             unfilteredResponseHeaders: undefined,

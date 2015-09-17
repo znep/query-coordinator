@@ -75,8 +75,8 @@
 
     function runTestCasesAndAssertTranslations(i18nStrings) {
       it('should apply the correct translations to the html', function() {
-        assert.equal($dom.find('.pagination-btn.previous').text().trim(), i18nStrings.previous);
-        assert.equal($dom.find('.pagination-btn.next').text().trim(), i18nStrings.next);
+        assert.equal($dom.find('.paging-btn.previous').text().trim(), i18nStrings.previous);
+        assert.equal($dom.find('.paging-btn.next').text().trim(), i18nStrings.next);
       });
 
       describe('When given SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', function() {

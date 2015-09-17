@@ -64,8 +64,8 @@
     _$pendingContent = _$rowInspectorContainer.find('.pending-content');
     _$errorContent = _$rowInspectorContainer.find('.error-content');
     _$rowInspectorToolPanelHint = _$rowInspectorContainer.find('.tool-panel-hint');
-    _$paginationButtonPrevious = _$rowInspectorContainer.find('.pagination-btn.previous');
-    _$paginationButtonNext = _$rowInspectorContainer.find('.pagination-btn.next');
+    _$paginationButtonPrevious = _$rowInspectorContainer.find('.paging-btn.previous');
+    _$paginationButtonNext = _$rowInspectorContainer.find('.paging-btn.next');
     _$pagingPanel = _$rowInspectorContainer.find('.paging-panel');
     _$paginationMessage = _$rowInspectorContainer.find('.paging-info .message div:first-child');
     _$paginationPosition = _$rowInspectorContainer.find('.paging-info .message div + div');

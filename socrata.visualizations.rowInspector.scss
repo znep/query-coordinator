@@ -12,7 +12,7 @@ $socrata-row-inspector-hint-tip-size: 10px;
 
 $pagination-vertical-padding: 7px;
 $pagination-horizontal-padding: 10px;
-$pagination-btn-width: 100px;
+$paging-btn-width: 100px;
 $pagination-top-border-width: 1px;
 $sticky-border-height: 10px;
 
@@ -310,7 +310,8 @@ $action-btn-disabled-font-color: #c6c1bf;
       @include unselectable();
 
       margin: auto;
-      width: $socrata-row-inspector-width - (2 * $pagination-btn-width) - (2 * $pagination-horizontal-padding);
+      width: $socrata-row-inspector-width - (2 * $paging-btn-width) - (2 * $pagination-horizontal-padding);
+      cursor: default;
 
       .message {
         text-align: center;
@@ -328,16 +329,21 @@ $action-btn-disabled-font-color: #c6c1bf;
       }
     }
 
-    .pagination-btn {
+    .paging-btn {
       @include unselectable();
 
       margin: 0;
       padding: 0;
       position: absolute;
       text-align: center;
-      width: $pagination-btn-width;
+      width: $paging-btn-width;
       height: $pagination-height - (2 * $pagination-vertical-padding) - $pagination-top-border-width;
       outline: none;
+      cursor: pointer;
+
+      &:disabled {
+        cursor: default;
+      }
 
       .caret {
         @include unselectable();

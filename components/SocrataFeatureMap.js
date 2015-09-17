@@ -32,7 +32,7 @@
     // we use to modify point data queries with a WITHIN_BOX clause.
     var geospaceDataProviderConfig = {
       domain: config.domain,
-      fourByFour: config.fourByFour
+      datasetUid: config.datasetUid
     };
     var geospaceDataProvider = new socrata.visualizations.GeospaceDataProvider(
       geospaceDataProviderConfig
@@ -44,8 +44,8 @@
     var tileserverDataProviderConfig = {
       appToken: config.appToken,
       domain: config.domain,
-      fourByFour: config.fourByFour,
-      fieldName: config.fieldName,
+      datasetUid: config.datasetUid,
+      columnName: config.columnName,
       featuresPerTile: FEATURES_PER_TILE,
       tileserverHosts: TILESERVER_HOSTS,
     };
@@ -56,7 +56,7 @@
     // SoQL returns row results for display in the row inspector
     var soqlDataProviderConfig = {
       domain: config.domain,
-      fourByFour: config.fourByFour
+      datasetUid: config.datasetUid
     };
     var soqlDataProvider = new socrata.visualizations.SoqlDataProvider(
       soqlDataProviderConfig
@@ -75,7 +75,7 @@
       // formatting data for the row inspector.
       var metadataProviderConfig = {
         domain: config.domain,
-        fourByFour: config.fourByFour
+        datasetUid: config.datasetUid
       }
       var metadataProvider = new socrata.visualizations.MetadataProvider(
         metadataProviderConfig
@@ -128,7 +128,7 @@
     // individual tile requests more performant (through the use of a
     // WITHIN_BOX query clause).
     geospaceDataProvider.
-      getFeatureExtent(config.fieldName).
+      getFeatureExtent(config.columnName).
       then(
         handleFeatureExtentQuerySuccess,
         handleFeatureExtentQueryError
@@ -179,16 +179,16 @@
       var query = '$offset=0&$limit={0}&$order=distance_in_meters({1}, "POINT({2} {3})"){4}'.
         format(
           payload.rowCount,
-          config.fieldName,
+          config.columnName,
           payload.latLng.lng,
           payload.latLng.lat,
-          generateWithinBoxClause(config.fieldName, payload.queryBounds)
+          generateWithinBoxClause(config.columnName, payload.queryBounds)
         );
 
-      function generateWithinBoxClause(fieldName, bounds) {
+      function generateWithinBoxClause(columnName, bounds) {
 
         return '&$where=within_box({0}, {1}, {2})'.format(
-          fieldName,
+          columnName,
           '{0}, {1}'.format(bounds.northeast.lat, bounds.northeast.lng),
           '{0}, {1}'.format(bounds.southwest.lat, bounds.southwest.lng)
         );

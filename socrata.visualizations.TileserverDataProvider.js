@@ -35,15 +35,15 @@
 
     utils.assertHasProperty(config, 'appToken');
     utils.assertHasProperty(config, 'domain');
-    utils.assertHasProperty(config, 'fourByFour');
-    utils.assertHasProperty(config, 'fieldName');
+    utils.assertHasProperty(config, 'datasetUid');
+    utils.assertHasProperty(config, 'columnName');
     utils.assertHasProperty(config, 'featuresPerTile');
     utils.assertHasProperty(config, 'tileserverHosts');
 
     utils.assertIsOneOfTypes(config.appToken, 'string');
     utils.assertIsOneOfTypes(config.domain, 'string');
-    utils.assertIsOneOfTypes(config.fourByFour, 'string');
-    utils.assertIsOneOfTypes(config.fieldName, 'string');
+    utils.assertIsOneOfTypes(config.datasetUid, 'string');
+    utils.assertIsOneOfTypes(config.columnName, 'string');
     utils.assertIsOneOfTypes(config.featuresPerTile, 'number');
     utils.assertIsOneOfTypes(config.tileserverHosts, 'object');
 
@@ -57,11 +57,11 @@
      */
 
     /**
-     * Curries fourByFour, columnName and whereClause into a function that can
+     * Curries datasetUid, columnName and whereClause into a function that can
      * be called to perform an ajax call for a vector tile
      *
      * @param {String} columnName
-     * @param {String} fourByFour
+     * @param {String} datasetUid
      * @param {String} [whereClause]
      * @param {Boolean} [useOriginHost] - Whether or not all tiles should be
      *   requested from the origin host (as opposed to selecting one of the
@@ -73,8 +73,8 @@
 
       var appToken = this.getConfigurationProperty('appToken');
       var domain = this.getConfigurationProperty('domain');
-      var fourByFour = this.getConfigurationProperty('fourByFour');
-      var fieldName = this.getConfigurationProperty('fieldName');
+      var datasetUid = this.getConfigurationProperty('datasetUid');
+      var columnName = this.getConfigurationProperty('columnName');
       var featuresPerTile = parseInt(this.getConfigurationProperty('featuresPerTile'), 10);
 
       utils.assertIsOneOfTypes(whereClause, 'string', 'undefined');
@@ -107,8 +107,8 @@
 
         var url = '{0}/tiles/{1}/{2}/{3}/{4}/{5}.pbf?'.format(
           _getHost(x, y, useOriginHost),
-          fourByFour,
-          fieldName,
+          datasetUid,
+          columnName,
           zoom,
           x,
           y

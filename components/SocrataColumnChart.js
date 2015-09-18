@@ -46,8 +46,9 @@
   /**
    * Instantiates a Socrata ColumnChart Visualization from the
    * `socrata-visualizations` package.
+   *
+   * @param vif - https://docs.google.com/document/d/15oKmDfv39HrhgCJRTKtYadG8ZQvFUeyfx4kR_NZkBgc
    */
-
   $.fn.socrataColumnChart = function(vif) {
 
     utils.assertHasProperty(vif, 'domain');

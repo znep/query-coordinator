@@ -109,7 +109,6 @@
     // The visualizationRenderOptions may change in response to user actions
     // and are passed as an argument to every render call.
     var visualizationRenderOptions = {
-      unit: vif.unit,
       baseLayer: {
         url: vif.configuration.baseLayerUrl || DEFAULT_BASE_LAYER_URL,
         opacity: vif.configuration.baseLayerOpacity || DEFAULT_BASE_LAYER_OPACITY

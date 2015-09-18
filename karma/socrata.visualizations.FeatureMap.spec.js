@@ -139,15 +139,16 @@ describe('socrata.visualizations.FeatureMap', function() {
           'FLYOUT_LOCATE_USER_ERROR_TITLE': 'There was an error determining your position.',
           'FLYOUT_LOCATE_USER_ERROR_NOTICE': 'You may not have given your browser permission to share your current location, or your browser may be unable to do so.',
           'ROW_INSPECTOR_ROW_DATA_QUERY_FAILED': 'Detailed information about these points cannot be loaded at this time.',
-          'USER_CURRENT_POSITION': 'Your current location (estimated)',
-          'UNIT_ONE': 'record',
-          'UNIT_OTHER': 'records'
+          'USER_CURRENT_POSITION': 'Your current location (estimated)'
         },
         hover: true,
         panAndZoom: true,
         locateUser: false
+      },
+      unit: {
+        one: 'record',
+        other: 'records'
       }
-
     };
 
     if (overrideConfig) {
@@ -164,7 +165,6 @@ describe('socrata.visualizations.FeatureMap', function() {
         opacity: 0.15
       },
       bounds: getBounds(VALID_EXTENT),
-      labelUnit: 'rows',
       vectorTileGetter: mockVectorTileGetter
     };
 

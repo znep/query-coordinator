@@ -579,22 +579,20 @@
     }
 
     function _showFeatureFlyout(event) {
-      var rowCountPlusUnit = '{0} {1}';
+      var rowCountUnit;
+      var payload;
 
       if (_flyoutData.count === 1) {
-        rowCountPlusUnit = rowCountPlusUnit.format(
-          _flyoutData.count,
-          self.getLocalization('UNIT_ONE')
-        );
+        rowCountUnit = (_.has(_lastRenderOptions, 'unit.one')) ? _lastRenderOptions.unit.one : vif.unit.one;
       } else {
-        rowCountPlusUnit = rowCountPlusUnit.format(
-          _flyoutData.count,
-          self.getLocalization('UNIT_OTHER')
-        );
+        rowCountUnit = (_.has(_lastRenderOptions, 'unit.other')) ? _lastRenderOptions.unit.other : vif.unit.other;
       }
 
-      var payload = {
-        title: rowCountPlusUnit,
+      payload = {
+        title: '{0} {1}'.format(
+          _flyoutData.count,
+          rowCountUnit
+        ),
         notice: self.getLocalization('FLYOUT_CLICK_TO_INSPECT_NOTICE'),
         flyoutOffset: {
           left: event.originalEvent.clientX,
@@ -617,7 +615,7 @@
         if (_flyoutData.totalPoints >= FEATURE_MAP_MAX_TILE_DENSITY) {
           payload.title = '{0} {1}'.format(
             self.getLocalization('FLYOUT_DENSE_DATA_NOTICE'),
-            self.getLocalization('UNIT_OTHER')
+            (_.has(_lastRenderOptions, 'unit.other')) ? _lastRenderOptions.unit.other : vif.unit.other
           );
         }
       }

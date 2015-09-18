@@ -28,11 +28,13 @@ describe('SocrataColumnChart component', function() {
         'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
         'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
         'FLYOUT_SELECTED_NOTICE': 'This column is selected',
-        'UNIT_ONE': 'record',
-        'UNIT_OTHER': 'records'
       }
     },
     filters: [],
+    unit: {
+      one: 'case',
+      other: 'cases'
+    }
   };
 
   function destroyVisualization($container) {

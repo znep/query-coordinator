@@ -270,16 +270,43 @@
     }
 
     function showFlyout(event) {
-
       var datum = d3.select(event.currentTarget).datum();
-
       var barGroupName = _escapeQuotesAndBackslashes(datum[NAME_INDEX]);
-
       var barGroupElement = _chartWrapper.
         find('.bar-group').
         filter(function(index, element) { return element.getAttribute('data-bar-name') === barGroupName; }).
         find('.unfiltered').
         get(0);
+      var unfilteredValueUnit;
+      var filteredValueUnit;
+
+      if (datum[UNFILTERED_INDEX] ===1) {
+
+        unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
+          _lastRenderOptions.unit.one :
+          vif.unit.one;
+
+      } else {
+
+        unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
+          _lastRenderOptions.unit.other :
+          vif.unit.other;
+
+      }
+
+      if (datum[FILTERED_INDEX] ===1) {
+
+        filteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
+          _lastRenderOptions.unit.one :
+          vif.unit.one;
+
+      } else {
+
+        filteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
+          _lastRenderOptions.unit.other :
+          vif.unit.other;
+
+      }
 
       var payload = {
         element: barGroupElement,
@@ -287,7 +314,7 @@
         unfilteredValueLabel: self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL'),
         unfilteredValue: '{0} {1}'.format(
           utils.formatNumber(datum[UNFILTERED_INDEX]),
-          (datum[UNFILTERED_INDEX] === 1) ? self.getLocalization('UNIT_ONE') : self.getLocalization('UNIT_OTHER')
+          unfilteredValueUnit
         ),
         selectedNotice: self.getLocalization('FLYOUT_SELECTED_NOTICE'),
         selected: datum[SELECTED_INDEX]
@@ -298,7 +325,7 @@
         payload.filteredValueLabel = self.getLocalization('FLYOUT_FILTERED_AMOUNT_LABEL');
         payload.filteredValue = '{0} {1}'.format(
           utils.formatNumber(datum[FILTERED_INDEX]),
-          (datum[FILTERED_INDEX] === 1) ? self.getLocalization('UNIT_ONE') : self.getLocalization('UNIT_OTHER')
+          filteredValueUnit
         )
       }
 

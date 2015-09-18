@@ -93,6 +93,8 @@ $(document).on('ready', function() {
   storyteller.fileUploadStore = new storyteller.FileUploadStore();
   storyteller.flyoutRenderer = new socrata.visualizations.FlyoutRenderer();
 
+  socrata.visualizations.rowInspector.setup();
+
   var richTextEditorToolbar = new storyteller.RichTextEditorToolbar(
     $('#rich-text-editor-toolbar'),
     richTextFormats

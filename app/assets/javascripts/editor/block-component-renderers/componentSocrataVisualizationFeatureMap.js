@@ -22,15 +22,6 @@
         } else {
           storyteller.flyoutRenderer.clear();
         }
-      }).
-      on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', function(event) {
-
-      }).
-      on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', function(event) {
-
-      }).
-      on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDE', function(event) {
-
       });
   }
 

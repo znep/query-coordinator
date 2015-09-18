@@ -132,7 +132,7 @@ class AdministrationController < ApplicationController
 
   before_filter :only => [
       :georegions, :add_georegion, :enable_georegion, :disable_georegion, :edit_georegion, :remove_georegion
-    ] {|c| c.check_feature_flag(:enable_georegions_admin) }
+    ] {|c| c.check_feature_flag(:enable_spatial_lens_admin) }
   before_filter :only => [
       :georegions, :add_georegion, :enable_georegion, :disable_georegion, :edit_georegion, :remove_georegion
     ] {|c| c.check_auth_levels_any(['edit_others_datasets', 'edit_site_theme']) }

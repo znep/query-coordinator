@@ -50,16 +50,19 @@
 
   $.fn.socrataColumnChart = function(vif) {
 
+    utils.assertHasProperty(vif, 'domain');
+    utils.assertHasProperty(vif, 'datasetUid');
+    utils.assertHasProperty(vif, 'columnName');
+    utils.assertHasProperty(vif, 'unit');
+    utils.assertHasProperty(vif.unit, 'one');
+    utils.assertHasProperty(vif.unit, 'other');
+
     this.destroySocrataColumnChart = function() {
 
       clearTimeout(rerenderOnResizeTimeout);
       visualization.destroy();
       _detachEvents();
     };
-
-    utils.assertHasProperty(vif, 'domain');
-    utils.assertHasProperty(vif, 'datasetUid');
-    utils.assertHasProperty(vif, 'columnName');
 
     var $element = $(this);
 

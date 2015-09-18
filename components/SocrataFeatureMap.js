@@ -23,6 +23,13 @@
 
   $.fn.socrataFeatureMap = function(vif) {
 
+    utils.assertHasProperty(vif, 'domain');
+    utils.assertHasProperty(vif, 'datasetUid');
+    utils.assertHasProperty(vif, 'columnName');
+    utils.assertHasProperty(vif, 'unit');
+    utils.assertHasProperty(vif.unit, 'one');
+    utils.assertHasProperty(vif.unit, 'other');
+
     this.destroySocrataFeatureMap = function() {
 
       detachEvents();

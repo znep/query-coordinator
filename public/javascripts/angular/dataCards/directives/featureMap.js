@@ -155,6 +155,7 @@
             persistOnMousedown: true
           });
         });
+
         map.on('mouseout', function() {
           FlyoutService.deregister('canvas', renderHoverFlyout);
         });
@@ -443,6 +444,9 @@
                           var flannelScrollingElement = flannel.find('.tool-panel-inner-container');
                           window.socrata.utils.isolateScrolling(flannelScrollingElement, isScrollable);
                         });
+                      flannelScope.$on('$destroy', function() {
+                        isolateScrollSubscriber.dispose();
+                      });
                     }
                   });
                 });
@@ -529,10 +533,11 @@
 
             // Clean up after ourselves, and trigger clearing of clicked points under closing flannel
             function handleDestroyFlannel() {
+              // isolateScrollSubscriber is disposed via a $destroy event handler,
+              // as it can potentially be undefined
               queryHandler.dispose();
               closeSubscriber.dispose();
               scrollSubscriber.dispose();
-              isolateScrollSubscriber.dispose();
               map.off('resize', adjustPosition);
               flannel.remove();
               flannelScope.$destroy();

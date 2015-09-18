@@ -161,7 +161,8 @@
 
     function _handleVisualizationFlyout(event) {
 
-      var payload = event.originalEvent.detail.data;
+      var payload = event.originalEvent.detail;
+      var flyoutPayload = null;
       var flyoutContent = null;
       var flyoutTable = null;
       var flyoutElements = null;
@@ -177,19 +178,7 @@
       var flyoutSelectedNoticeLabel;
       var flyoutSelectedNoticeRow;
 
-      if (payload === null) {
-
-        $element[0].dispatchEvent(
-          new root.CustomEvent(
-            'SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT',
-            {
-              detail: null,
-              bubbles: true
-            }
-          )
-        );
-
-      } else {
+      if (payload !== null) {
 
         flyoutContent = $(document.createDocumentFragment());
         flyoutTable = $('<table>', { 'class': 'socrata-flyout-table' });
@@ -216,12 +205,7 @@
           {
             'class': 'socrata-flyout-cell'
           }
-        ).text(
-          '{0} {1}'.format(
-            utils.formatNumber(payload.unfilteredValue),
-            payload.labelUnit
-          )
-        );
+        ).text(payload.unfilteredValue);
 
         flyoutUnfilteredValueRow = $(
           '<tr>',
@@ -256,12 +240,7 @@
             {
               'class': filteredRowClass
             }
-          ).text(
-            '{0} {1}'.format(
-              utils.formatNumber(payload.filteredValue),
-              payload.labelUnit
-            )
-          );
+          ).text(payload.filteredValue);
 
           flyoutFilteredValueRow = $(
             '<tr>',
@@ -320,21 +299,23 @@
           flyoutTable
         ]);
 
-        $element[0].dispatchEvent(
-          new root.CustomEvent(
-            'SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT',
-            {
-              detail: {
-                element: payload.element,
-                content: flyoutContent,
-                rightSideHint: false,
-                belowTarget: false
-              },
-              bubbles: true
-            }
-          )
-        );
+        flyoutPayload = {
+          element: payload.element,
+          content: flyoutContent,
+          rightSideHint: false,
+          belowTarget: false
+        };
       }
+
+      $element[0].dispatchEvent(
+        new root.CustomEvent(
+          'SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT',
+          {
+            detail: flyoutPayload,
+            bubbles: true
+          }
+        )
+      );
     }
 
     function _handleDatumSelect() {// event) { ---> Linting sucks

@@ -2,6 +2,8 @@
 
   'use strict';
 
+  var utils = root.socrata.utils;
+
   if (!_.has(root, 'socrata.visualizations.Visualization')) {
     throw new Error(
       '`{0}` must be loaded before `{1}`'.
@@ -283,8 +285,10 @@
         element: barGroupElement,
         title: _labelValueOrPlaceholder(datum[NAME_INDEX]),
         unfilteredValueLabel: self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL'),
-        unfilteredValue: datum[UNFILTERED_INDEX],
-        labelUnit: (datum[UNFILTERED_INDEX] === 1) ? _lastRenderOptions.labelUnit.one : _lastRenderOptions.labelUnit.other,
+        unfilteredValue: '{0} {1}'.format(
+          utils.formatNumber(datum[UNFILTERED_INDEX]),
+          (datum[UNFILTERED_INDEX] === 1) ? self.getLocalization('UNIT_ONE') : self.getLocalization('UNIT_OTHER')
+        ),
         selectedNotice: self.getLocalization('FLYOUT_SELECTED_NOTICE'),
         selected: datum[SELECTED_INDEX]
       };
@@ -292,15 +296,15 @@
       if (_lastRenderOptions.showFiltered) {
 
         payload.filteredValueLabel = self.getLocalization('FLYOUT_FILTERED_AMOUNT_LABEL');
-        payload.filteredValue = datum[FILTERED_INDEX];
-
+        payload.filteredValue = '{0} {1}'.format(
+          utils.formatNumber(datum[FILTERED_INDEX]),
+          (datum[FILTERED_INDEX] === 1) ? self.getLocalization('UNIT_ONE') : self.getLocalization('UNIT_OTHER')
+        )
       }
 
       self.emitEvent(
         'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
-        {
-          data: payload
-        }
+        payload
       );
     }
 
@@ -308,9 +312,7 @@
 
       self.emitEvent(
         'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
-        {
-          data: null
-        }
+        null
       );
     }
 
@@ -339,7 +341,6 @@
       var chartWidth = element.width();
       var chartHeight = element.height();
       var showAllLabels = options.showAllLabels;
-      var labelUnit = options.labelUnit;
       var showFiltered = options.showFiltered;
 
       if (chartWidth <= 0 || chartHeight <= 0) {

@@ -117,14 +117,18 @@ class DatasetsController < ApplicationController
       href = Proc.new { |params| view_row_path(@view.route_params.merge(row_id: @row['sid']).merge(params || {})) }
     end
 
-    # See if it matches the authoritative URL; if not, redirect
+    # See if it matches the canonical URL; if not, redirect
     unless request.path == href.call( locale: nil )
-      # Log redirects in development
+      # Log redirects in production
       if Rails.env.production? && request.path =~ /^\/dataset\/\w{4}-\w{4}/
         logger.info("Doing a dataset redirect from #{request.referrer}")
       end
       flash.keep
-      return redirect_to "#{href.call}?#{request.query_string}"
+
+      locale = CurrentDomain.default_locale == I18n.locale.to_s ? nil : I18n.locale
+      canonical_path = href.call(locale: locale)
+      canonical_path += "?#{request.query_string}" unless request.query_string.empty?
+      return redirect_to canonical_path
     end
 
     # If we're displaying a single dataset, set the meta tags as appropriate.

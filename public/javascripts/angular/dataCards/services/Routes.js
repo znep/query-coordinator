@@ -9,11 +9,15 @@
       var regexPieces = {
         locale: '(?:/[a-z]{2})?', // Ex. 'en' or 'de'. Note: 'locale' is optional.
         withBootstrap: '(?:/bootstrap)?', // for ephemeral views only
+        category: '[\\w-]+',
+        viewName: '[\\w-]+',
         fourByFour: '(\\w{4}-\\w{4})',
         fieldName: '([\\w-_:@]+)'
       };
       var cardsViewUrlMatch = urlPathname.match(
         new RegExp('^{locale}/view{withBootstrap}/{fourByFour}$'.format(regexPieces)));
+      var cardsViewSeoUrlMatch = urlPathname.match(
+        new RegExp('^{locale}/{category}/{viewName}/{fourByFour}$'.format(regexPieces)));
       var bootstrapUrlMatch = urlPathname.match(
         new RegExp('^{locale}/dataset/{fourByFour}/lens/new$'.format(regexPieces)));
       var singleCardViewUrlMatch = urlPathname.match(
@@ -24,6 +28,9 @@
       if (cardsViewUrlMatch) {
         stateName = 'view.cards';
         params.id = cardsViewUrlMatch[1];
+      } else if (cardsViewSeoUrlMatch) {
+        stateName = 'view.cards'
+        params.id = cardsViewSeoUrlMatch[1];
       } else if (bootstrapUrlMatch) {
         stateName = 'view.cards';
         params.id = bootstrapUrlMatch[1];

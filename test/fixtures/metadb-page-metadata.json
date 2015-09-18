@@ -19,7 +19,7 @@
   "totalTimesRated" : 0,
   "viewCount" : 0,
   "viewLastModified" : 1441147079,
-  "viewType" : "href",
+  "viewType" : "tabular",
   "columns" : [ ],
   "displayFormat" : {
     "data_lens_page_metadata" : {
@@ -76,7 +76,7 @@
         "fieldName" : "longitude",
         "cardType" : "search"
       } ],
-      "version" : 1
+      "version" : 2
     }
   },
   "grants" : [ {
@@ -85,16 +85,7 @@
     "flags" : [ "public" ]
   } ],
   "metadata" : {
-    "renderTypeConfig" : {
-      "visible" : {
-        "href" : true
-      }
-    },
-    "availableDisplayTypes" : [ "data_lens" ],
-    "accessPoints" : {
-      "new_view" : "https://localhost:443/view/mjcb-9cxc"
-    },
-    "v1_data_lens_blist_id" : "137"
+    "availableDisplayTypes" : [ "data_lens" ]
   },
   "owner" : {
     "id" : "tugg-ikce",

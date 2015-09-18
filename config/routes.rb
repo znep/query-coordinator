@@ -314,7 +314,6 @@ Frontend::Application.routes do
     scope :controller => 'datasets', :constraints => {:id => Frontend::UID_REGEXP,
           :view_name => /(\w|-)+/, :category => /(\w|-)+/} do
 
-      get ':category/:view_name/:id', :action => 'show', :as => :view
       get ':category/:view_name/:id/:row_id', :action => 'show',
         :constraints => {:id => Frontend::UID_REGEXP, :view_name => /(\w|-)+/,
           :category => /(\w|-)+/, :row_id => /\d+/}, :as => :view_row
@@ -333,6 +332,14 @@ Frontend::Application.routes do
       match ':category/:view_name/:id/edit_metadata', :action => 'edit_metadata',
         :via => [:get, :post], :as => :edit_view_metadata
     end
+
+    # Overloaded route matcher for SEO purposes.
+    # The route structure is identical in each case; the handler for the route
+    # is determined by the constraint that is satisfied.
+    get ':category/:view_name/:id', :to => 'angular#serve_app', :app => 'dataCards', :as => :opendata_cards_view, :constraints => Constraints::DataLensConstraint.new
+    # Fallback: let DatasetsController#show handle it, since it was the original
+    # catch-all for SEO-friendly routes (including charts, calendars, etc.).
+    get ':category/:view_name/:id', :to => 'datasets#show', :as => :view, :constraints => Constraints::ResourceConstraint.new
 
     get 'proxy/verify_layer_url' => 'datasets#verify_layer_url'
     get 'proxy/wkt_to_wkid' => 'datasets#wkt_to_wkid'

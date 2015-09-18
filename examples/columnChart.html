@@ -55,33 +55,50 @@
 
     var flyoutRenderer = new window.socrata.visualizations.FlyoutRenderer();
 
-    var columnChart1Config = {
-      domain: 'dataspace.demo.socrata.com',
-      datasetUid: 'r6t9-rak2',
-      columnName: 'category',
-      filters: [],
-      localization: {
-        'NO_VALUE': 'No value',
-        'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
-        'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
-        'FLYOUT_SELECTED_NOTICE': 'This column is selected'
+    var COLUMN_NAME = 'category';
+    var DATASET_UID = 'r6t9-rak2';
+    var DOMAIN = 'dataspace.demo.socrata.com';
+
+    var columnChart1VIF = {
+      'aggregation': {
+        'columnName': null,
+        'function': 'count'
       },
-      unit: {
-        en: {
-          one: 'case',
-          other: 'cases'
+      'columnName': COLUMN_NAME,
+      'configuration': {
+        // The localization values should be set by the application but are set to string literals
+        // for the purposes of this example.
+        'localization': {
+          'NO_VALUE': 'No value',
+          'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
+          'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
+          'FLYOUT_SELECTED_NOTICE': 'This column is selected',
+          'UNIT_ONE': 'case',
+          'UNIT_OTHER': 'cases'
         }
+      },
+      'createdAt': '2014-01-01T00:00:00',
+      'datasetUid': DATASET_UID,
+      'domain': DOMAIN,
+      'filters': [],
+      'format': {
+        'type': 'visualization_interchange_format',
+        'version': 1
+      },
+      'origin': {
+        'type': 'test_data',
+        'url': 'localhost'
       }
     };
 
-    var columnChart2Config = _.cloneDeep(columnChart1Config);
-    columnChart2Config.columnName = 'source';
+    var columnChart2VIF = _.cloneDeep(columnChart1VIF);
+    columnChart2VIF.columnName = 'source';
 
     var $columnChart1Element = $('#column-chart-1');
-    $columnChart1Element.socrataColumnChart(columnChart1Config);
+    $columnChart1Element.socrataColumnChart(columnChart1VIF);
 
     var $columnChart2Element = $('#column-chart-2');
-    $columnChart2Element.socrataColumnChart(columnChart2Config);
+    $columnChart2Element.socrataColumnChart(columnChart2VIF);
 
     /**
      * Handle flyout events.
@@ -89,7 +106,6 @@
 
     $columnChart1Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
     $columnChart2Element.on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', handleFlyout);
-
 
     function handleFlyout(event) {
 

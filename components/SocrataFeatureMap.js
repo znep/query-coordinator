@@ -294,24 +294,36 @@
 
     function handleRowInspectorQuerySuccess(data) {
 
-      var rowInspectorPayload = {
-        data: formatRowInspectorData(datasetMetadata, data),
-        error: false,
-        message: null
-      }
-
-      emitRowInspectorUpdateEvent(rowInspectorPayload);
+      $element[0].dispatchEvent(
+        new root.CustomEvent(
+          'SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE',
+          {
+            detail: {
+              data: formatRowInspectorData(datasetMetadata, data),
+              error: false,
+              message: null
+            },
+            bubbles: true
+          }
+        )
+      );
     }
 
     function handleRowInspectorQueryError() {
 
-      var rowInspectorPayload = {
-        data: null,        
-        error: true,
-        message: vif.localization.ROW_INSPECTOR_ROW_DATA_QUERY_FAILED
-      }
-
-      emitRowInspectorUpdateEvent(rowInspectorPayload);
+      $element[0].dispatchEvent(
+        new root.CustomEvent(
+          'SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE',
+          {
+            detail: {
+              data: null,
+              error: true,
+              message: vif.configuration.localization.ROW_INSPECTOR_ROW_DATA_QUERY_FAILED
+            },
+            bubbles: true
+          }
+        )
+      );
     }
 
     /**
@@ -503,19 +515,6 @@
       );
 
       return formattedRowData;
-    }
-
-    function emitRowInspectorUpdateEvent(payload) {
-
-      $element[0].dispatchEvent(
-        new root.CustomEvent(
-          'SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE',
-          {
-            detail: payload,
-            bubbles: true
-          }
-        )
-      );
     }
 
     function logError(e) {

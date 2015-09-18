@@ -295,6 +295,7 @@
         _map.on('resize', _handleMapResize);
         _map.on('resize zoomend dragend', _handleExtentChange);
         _map.on('dragstart zoomstart', _handlePanAndZoom);
+        _map.on('mouseout', _hideFlyout);
 
         if (_hover) {
           _map.on('mousemove', _handleMousemove);
@@ -311,6 +312,8 @@
           _mapLocateUserButton.on('mousemove', _handleLocateUserButtonMousemove);
         }
       }
+
+      $(window).on('resize', _hideRowInspector);
     }
 
     function _detachEvents(element) {
@@ -321,6 +324,7 @@
         _map.off('resize', _handleMapResize);
         _map.off('resize dragend zoomend', _handleExtentChange);
         _map.off('dragstart zoomstart', _handlePanAndZoom);
+        _map.off('mouseout', _hideFlyout);
 
         if (_hover) {
           _map.off('mousemove', _handleMousemove);
@@ -337,6 +341,8 @@
           _mapLocateUserButton.off('mousemove', _handleLocateUserButtonMousemove);
         }
       }
+
+      $(window).off('resize', _hideRowInspector)
     }
 
     function _handleMapResize() {
@@ -591,8 +597,8 @@
         title: rowCountPlusUnit,
         notice: self.getLocalization('FLYOUT_CLICK_TO_INSPECT_NOTICE'),
         flyoutOffset: {
-          left: event.originalEvent.pageX,
-          top: event.originalEvent.pageY
+          left: event.originalEvent.clientX,
+          top: event.originalEvent.clientY
         }
       };
 

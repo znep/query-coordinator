@@ -315,7 +315,7 @@
      *
      *     { error: false,
      *       message: null,
-     *       position: {pageX: 0, pageY: 0}, // Must be numbers
+     *       position: {clientX: 0, clientY: 0}, // Must be numbers
      *       labelUnit: null, // or a string literal
      *       data: [ // This attribute is optional, a spinner will be shown if missing/null.
      *         [ // Represents a row
@@ -330,7 +330,7 @@
      *
      *     { error: true,
      *       message: 'There was an error',
-     *       position: {pageX: 0, pageY: 0} // Must be numbers
+     *       position: {clientX: 0, clientY: 0} // Must be numbers
      *     }
      *
      *   Event Names:

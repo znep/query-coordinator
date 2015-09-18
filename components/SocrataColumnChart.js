@@ -60,7 +60,6 @@
     utils.assertHasProperty(vif, 'domain');
     utils.assertHasProperty(vif, 'datasetUid');
     utils.assertHasProperty(vif, 'columnName');
-    utils.assertHasProperty(vif, 'unit');
 
     var $element = $(this);
 
@@ -83,17 +82,14 @@
       filteredSoqlDataProviderConfig
     );
 
-    var visualizationConfig = {
-      columns: {
-        name: NAME_INDEX,
-        unfilteredValue: UNFILTERED_INDEX,
-        filteredValue: FILTERED_INDEX,
-        selected: SELECTED_INDEX
-      },
-      localization: vif.localization
+    vif.configuration.columns = {
+      name: NAME_INDEX,
+      unfilteredValue: UNFILTERED_INDEX,
+      filteredValue: FILTERED_INDEX,
+      selected: SELECTED_INDEX
     };
 
-    var visualization = new visualizations.ColumnChart($element, visualizationConfig);
+    var visualization = new visualizations.ColumnChart($element, vif);
     var visualizationData = [];
     var rerenderOnResizeTimeout;
 
@@ -107,18 +103,8 @@
     function _getRenderOptions() {
       return {
         showAllLabels: true,
-        labelUnit: _getLabelUnit(vif),
         showFiltered: false
       };
-    }
-
-    function _getLabelUnit(vif) {
-      utils.assertHasProperty(vif, 'unit');
-      utils.assertHasProperty(vif.unit, 'en');
-      utils.assertHasProperty(vif.unit.en, 'one');
-      utils.assertHasProperty(vif.unit.en, 'other');
-
-      return vif.unit.en;
     }
 
     /**

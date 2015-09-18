@@ -32,10 +32,13 @@
   var FEATURE_MAP_FLYOUT_Y_OFFSET = 1.25;
   var FEATURE_MAP_ROW_INSPECTOR_QUERY_BOX_PADDING = 1;
   var FEATURE_MAP_ROW_INSPECTOR_MAX_ROW_DENSITY = 100;
+  var FEATURE_MAP_DEFAULT_HOVER = true;
+  var FEATURE_MAP_DEFAULT_PAN_AND_ZOOM = true;
+  var FEATURE_MAP_DEFAULT_LOCATE_USER = false;
 
-  function FeatureMap(element, config) {
+  function FeatureMap(element, vif) {
 
-    _.extend(this, new root.socrata.visualizations.Visualization(element, config));
+    _.extend(this, new root.socrata.visualizations.Visualization(element, vif));
 
     var self = this;
 
@@ -74,11 +77,11 @@
     var _lastPoints = null;
     var _currentLayerId;
 
-    _hover = config.hover || false;
-    _panAndZoom = config.panAndZoom || false;
-    _locateUser = (config.locateUser && ('geolocation' in navigator)) || false;
+    _hover = (!_.isUndefined(vif.configuration.hover)) ? vif.configuration.hover : FEATURE_MAP_DEFAULT_HOVER;
+    _panAndZoom = (!_.isUndefined(vif.configuration.panAndZoom)) ? vif.configuration.panAndZoom : FEATURE_MAP_DEFAULT_PAN_AND_ZOOM;
+    _locateUser = (vif.configuration.locateUser && ('geolocation' in navigator)) ? vif.configuration.locateUser : FEATURE_MAP_DEFAULT_LOCATE_USER;
 
-    _mapOptions = _.merge(_defaultMapOptions, config.mapOptions);
+    _mapOptions = _.merge(_defaultMapOptions, vif.configuration.mapOptions);
 
     // Render template here so that we can modify the map container's styles
     // below.
@@ -570,20 +573,17 @@
     }
 
     function _showFeatureFlyout(event) {
-
       var rowCountPlusUnit = '{0} {1}';
-      var unitSingular = _lastRenderOptions.unit.en.one;
-      var unitPlural = _lastRenderOptions.unit.en.other;
 
       if (_flyoutData.count === 1) {
         rowCountPlusUnit = rowCountPlusUnit.format(
           _flyoutData.count,
-          unitSingular
+          self.getLocalization('UNIT_ONE')
         );
       } else {
         rowCountPlusUnit = rowCountPlusUnit.format(
           _flyoutData.count,
-          unitPlural
+          self.getLocalization('UNIT_OTHER')
         );
       }
 
@@ -611,7 +611,7 @@
         if (_flyoutData.totalPoints >= FEATURE_MAP_MAX_TILE_DENSITY) {
           payload.title = '{0} {1}'.format(
             self.getLocalization('FLYOUT_DENSE_DATA_NOTICE'),
-            unitPlural
+            self.getLocalization('UNIT_OTHER')
           );
         }
       }

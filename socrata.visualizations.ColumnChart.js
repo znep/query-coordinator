@@ -28,9 +28,9 @@
     return width;
   };
 
-  function ColumnChart(element, config) {
+  function ColumnChart(element, vif) {
 
-    _.extend(this, new root.socrata.visualizations.Visualization(element, config));
+    _.extend(this, new root.socrata.visualizations.Visualization(element, vif));
 
     var self = this;
 
@@ -54,10 +54,10 @@
     var _nonDefaultSelectedLabelSelector = '.labels .label.selected.non-default';
 
     // TODO: Validate columns
-    var NAME_INDEX = config.columns.name;
-    var UNFILTERED_INDEX = config.columns.unfilteredValue;
-    var FILTERED_INDEX = config.columns.filteredValue;
-    var SELECTED_INDEX = config.columns.selected;
+    var NAME_INDEX = vif.configuration.columns.name;
+    var UNFILTERED_INDEX = vif.configuration.columns.unfilteredValue;
+    var FILTERED_INDEX = vif.configuration.columns.filteredValue;
+    var SELECTED_INDEX = vif.configuration.columns.selected;
 
     _renderTemplate(this.element);
 

@@ -15,9 +15,6 @@
   var DEFAULT_FEATURES_PER_TILE = 256 * 256;
   var DEFAULT_BASE_LAYER_URL = 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png';
   var DEFAULT_BASE_LAYER_OPACITY = 0.5;
-  var DEFAULT_HOVER = true;
-  var DEFAULT_PAN_AND_ZOOM = true;
-  var DEFAULT_LOCATE_USER = true;
 
   /**
    * Instantiates a Socrata FeatureMap Visualization from the
@@ -104,16 +101,9 @@
         });
     }
 
-    // The visualization itself handles rendering and interaction events.
-    var visualizationConfig = {
-      localization: vif.localization,
-      hover: (!_.isUndefined(vif.configuration.hover)) ? vif.configuration.hover : DEFAULT_HOVER,
-      panAndZoom: (!_.isUndefined(vif.configuration.panAndZoom)) ? vif.configuration.panAndZoom : DEFAULT_PAN_AND_ZOOM,
-      locateUser: (!_.isUndefined(vif.configuration.locateUser)) ? vif.configuration.locateUser : DEFAULT_LOCATE_USER
-    };
     var visualization = new window.socrata.visualizations.FeatureMap(
       $element,
-      visualizationConfig
+      vif
     );
 
     // The visualizationRenderOptions may change in response to user actions

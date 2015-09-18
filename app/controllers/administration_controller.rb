@@ -137,8 +137,7 @@ class AdministrationController < ApplicationController
       :georegions, :add_georegion, :enable_georegion, :disable_georegion, :edit_georegion, :remove_georegion
     ] {|c| c.check_auth_levels_any(['edit_others_datasets', 'edit_site_theme']) }
   def georegions
-    @georegions = CuratedRegion.get_all
-    @georegions[:translations] = LocalePart.screens.admin.georegions
+    @view_model = ::ViewModels::Administration::Georegions.new(CuratedRegion.all)
   end
 
   def add_georegion

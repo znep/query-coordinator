@@ -18,6 +18,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user
   helper_method :current_user_session
+  helper_method :current_domain
 
   layout 'main'
 

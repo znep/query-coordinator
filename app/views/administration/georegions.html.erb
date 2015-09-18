@@ -4,7 +4,7 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-georegions' %>
-  <title><%= t("#{prefix}.title") %> | <%= controller.current_domain.strings.site_title %></title>
+  <title><%= t("#{prefix}.title") %> | <%= current_domain.strings.site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -17,7 +17,7 @@
   <div class="adminHeader floating georegions">
     <span class="icon"></span>
     <h1><%= t("#{prefix}.page_title") %></h1>
-    <h4><%= t("#{prefix}.page_subtitle", :enabled_count => @georegions[:counts][:enabled], :available_count => @georegions[:counts][:available]) %></h4>
+    <h4><%= t("#{prefix}.page_subtitle", :enabled_count => @view_model.enabled_count, :available_count => @view_model.available_count) %></h4>
   </div>
 </div>
 
@@ -35,7 +35,7 @@
       </div>
     </div>
 
-    <%= render :partial => 'georegions_table', :locals => { :prefix => prefix, :georegions => @georegions[:custom], :allow_actions => true } %>
+    <%= render :partial => 'georegions_table', :locals => { :prefix => prefix, :georegions => @view_model.custom_regions, :allow_actions => true } %>
   </div>
 </div>
 
@@ -45,7 +45,7 @@
       <h1><%= t("#{prefix}.default_georegions") %></h1>
     </div>
 
-    <%= render :partial => 'georegions_table', :locals => { :prefix => prefix, :georegions => @georegions[:default], :allow_actions => false } %>
+    <%= render :partial => 'georegions_table', :locals => { :prefix => prefix, :georegions => @view_model.default_regions, :allow_actions => false } %>
   </div>
 </div>
 
@@ -54,4 +54,4 @@
     <%= include_javascripts 'admin-georegions' %>
   <%- end -%>
 <% end %>
-<%= render_translations @georegions[:translations] %>
+<%= render_translations @view_model.translations %>

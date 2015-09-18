@@ -65,12 +65,12 @@ describe AdministrationController do
               ])
 
           get :georegions
-          expect(assigns(:georegions)).to include(
-              :counts => { :available => 3, :enabled => 1 },
-              :custom => a_collection_containing_exactly(an_instance_of(CuratedRegion), an_instance_of(CuratedRegion)),
-              :default => a_collection_containing_exactly(an_instance_of(CuratedRegion)),
-              :translations => an_instance_of(LocalePart)
-            )
+          view_model = assigns(:view_model)
+          expect(view_model.available_count).to eq(3)
+          expect(view_model.enabled_count).to eq(1)
+          expect(view_model.custom_regions).to contain_exactly(an_instance_of(CuratedRegion), an_instance_of(CuratedRegion))
+          expect(view_model.default_regions).to contain_exactly(an_instance_of(CuratedRegion))
+          expect(view_model.translations).to be_an_instance_of(LocalePart)
         end
 
       end

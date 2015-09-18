@@ -18,23 +18,21 @@ describe('SocrataColumnChart component', function() {
   };
 
   var $container;
-  var columnChartConfig = {
+  var columnChartVIF = {
     domain: 'dataspace.demo.socrata.com',
     datasetUid: 'r6t9-rak2',
     columnName: 'category',
-    filters: [],
-    localization: {
-      'NO_VALUE': 'No value',
-      'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
-      'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
-      'FLYOUT_SELECTED_NOTICE': 'This column is selected'
-    },
-    unit: {
-      en: {
-        one: 'case',
-        other: 'cases'
+    configuration: {
+      localization: {
+        'NO_VALUE': 'No value',
+        'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'Total',
+        'FLYOUT_FILTERED_AMOUNT_LABEL': 'Filtered',
+        'FLYOUT_SELECTED_NOTICE': 'This column is selected',
+        'UNIT_ONE': 'record',
+        'UNIT_OTHER': 'records'
       }
-    }
+    },
+    filters: [],
   };
 
   function destroyVisualization($container) {
@@ -58,35 +56,27 @@ describe('SocrataColumnChart component', function() {
         assert.throws(function() { $container.socrataColumnChart(); });
 
         assert.throws(function() {
-          var config = _.cloneDeep(columnChartConfig);
+          var vif = _.cloneDeep(columnChartVIF);
 
-          delete config.domain;
+          delete vif.domain;
 
-          $container.socrataColumnChart(config);
+          $container.socrataColumnChart(vif);
         });
 
         assert.throws(function() {
-          var config = _.cloneDeep(columnChartConfig);
+          var vif = _.cloneDeep(columnChartVIF);
 
-          delete config.datasetUid;
+          delete vif.datasetUid;
 
-          $container.socrataColumnChart(config);
+          $container.socrataColumnChart(vif);
         });
 
         assert.throws(function() {
-          var config = _.cloneDeep(columnChartConfig);
+          var vif = _.cloneDeep(columnChartVIF);
 
-          delete config.columnName;
+          delete vif.columnName;
 
-          $container.socrataColumnChart(config);
-        });
-
-        assert.throws(function() {
-          var config = _.cloneDeep(columnChartConfig);
-
-          delete config.unit;
-
-          $container.socrataColumnChart(config);
+          $container.socrataColumnChart(vif);
         });
       });
     });
@@ -112,7 +102,7 @@ describe('SocrataColumnChart component', function() {
 
       it('should render a column visualization.', function(done) {
 
-        $container.socrataColumnChart(columnChartConfig);
+        $container.socrataColumnChart(columnChartVIF);
 
         setTimeout(
           function() {

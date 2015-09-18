@@ -1,0 +1,60 @@
+h1.padding {
+  margin-top: 50px;
+  font-size: 2rem;
+  padding-bottom: 0;
+  margin-bottom: 0; }
+
+.intro .desc::after {
+  content: "..."; }
+
+.source-pill {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background-color: #288CCF;
+  color: white;
+  font-size: 12px;
+  margin-left: 10px; }
+
+.meta-container {
+  width: 100%;
+  background-color: #727272;
+  font-family: "Open Sans", sans-serif;
+  color: white; }
+  .meta-container p {
+    color: white; }
+
+.meta-title {
+  font-size: 12px;
+  font-weight: 600;
+  font-family: "Open Sans", sans-serif;
+  margin-top: 0; }
+  .meta-title.alpha {
+    text-transform: uppercase;
+    float: left; }
+  .meta-title.beta {
+    text-decoration: underline;
+    float: right; }
+
+.title-section {
+  height: 35px;
+  border-bottom: 1px solid #8C8C8C; }
+
+.meta-go-link {
+  text-decoration: underline; }
+
+.meta-desc {
+  padding-left: 30px; }
+
+.meta-desc::before {
+  position: absolute;
+  left: 10px;
+  content: "i";
+  background-color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 20px;
+  color: #727272; }

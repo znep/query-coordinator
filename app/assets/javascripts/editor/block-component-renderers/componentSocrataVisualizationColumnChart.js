@@ -42,12 +42,16 @@
 
       $element.height(componentData.value.layout.height);
 
-      componentData.value.vif.localization = {
+      componentData.value.vif.configuration.localization = {
         'NO_VALUE': I18n.t('editor.visualizations.no_value_placeholder'),
         'FLYOUT_UNFILTERED_AMOUNT_LABEL': I18n.t('editor.visualizations.flyout.unfiltered_amount_label'),
         'FLYOUT_FILTERED_AMOUNT_LABEL': I18n.t('editor.visualizations.flyout.filtered_amount_label'),
-        'FLYOUT_SELECTED_NOTICE': I18n.t('editor.visualizations.flyout.datum_selected_label')
+        'FLYOUT_SELECTED_NOTICE': I18n.t('editor.visualizations.flyout.datum_selected_label'),
+        'UNIT_ONE': 'record',
+        'UNIT_OTHER': 'records'
       };
+
+      componentData.value.vif.domain = 'cml.local';
 
       $element.socrataColumnChart(componentData.value.vif);
 

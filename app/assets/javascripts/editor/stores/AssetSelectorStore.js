@@ -195,9 +195,15 @@
         switch (vif.type) {
           case 'columnChart':
             _currentComponentType = 'socrata.visualization.columnChart';
-            // Final query must contain {0} and {1} for guard value replacing down the road, so for now leave
-            // them and only replace column name.
-            // TODO: Finalize a better way to store this query.
+            _currentComponentProperties = {
+              layout: {
+                height: Constants.DEFAULT_VISUALIZATION_HEIGHT
+              },
+              vif: vif
+            };
+            break;
+          case 'featureMap':
+            _currentComponentType = 'socrata.visualization.featureMap';
             _currentComponentProperties = {
               layout: {
                 height: Constants.DEFAULT_VISUALIZATION_HEIGHT

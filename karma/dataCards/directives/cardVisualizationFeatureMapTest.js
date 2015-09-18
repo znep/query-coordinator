@@ -34,6 +34,7 @@ describe('A FeatureMap Card Visualization', function() {
       'name': 'location title',
       'fred': 'point',
       'physicalDatatype': 'point',
+      'renderTypeName': 'location',
       'defaultCardType': 'feature',
       'availableCardTypes': ['feature'],
       'position': 3
@@ -74,6 +75,7 @@ describe('A FeatureMap Card Visualization', function() {
       'name': 'mail address',
       'fred': 'point',
       'physicalDatatype': 'point',
+      'renderTypeName': 'location',
       'defaultCardType': 'feature',
       'availableCardTypes': ['feature'],
       'position': 6
@@ -340,49 +342,65 @@ describe('A FeatureMap Card Visualization', function() {
           var sixthRow = formattedRows[0][5];
 
           expect(firstRow.columnName).to.equal('number title');
-          expect(firstRow.value).to.equal(10);
+          expect(firstRow.value).to.deep.equal([10]);
           expect(secondRow.columnName).to.equal('timestamp title');
-          expect(secondRow.value).to.equal('1957-06-30T15:16:00.000');
+          expect(secondRow.value).to.deep.equal(['1957-06-30T15:16:00.000']);
           expect(thirdRow.columnName).to.equal('location title');
           expect(thirdRow.value).to.deep.equal([
             {
-              coordinates: [42, -87],
-              type: 'Point'
+              columnName: 'location title',
+              value: {
+                coordinates: [42, -87],
+                type: 'Point'
+              },
+              format: undefined,
+              physicalDatatype: 'point',
+              renderTypeName: 'location'
             },
             {
               columnName: 'address',
+              value: '9 PALMER ST',
               format: undefined,
               physicalDatatype: 'text',
-              value: '9 PALMER ST'
+              renderTypeName: undefined
             },
             {
               columnName: 'city',
+              value: 'ASHAWAY',
               format: undefined,
               physicalDatatype: 'text',
-              value: 'ASHAWAY'
+              renderTypeName: undefined
             }
           ]);
           expect(fourthRow.columnName).to.equal('mail state');
-          expect(fourthRow.value).to.equal('RI');
+          expect(fourthRow.value).to.deep.equal(['RI']);
           expect(fifthRow.columnName).to.equal('mail zip');
-          expect(fifthRow.value).to.equal('19104');
+          expect(fifthRow.value).to.deep.equal(['19104']);
           expect(sixthRow.columnName).to.equal('mail address');
           expect(sixthRow.value).to.deep.equal([
             {
-              coordinates: [40, -85],
-              type: 'Point'
+              columnName: 'mail address',
+              value: {
+                coordinates: [40, -85],
+                type: 'Point'
+              },
+              format: undefined,
+              physicalDatatype: 'point',
+              renderTypeName: 'location'
             },
             {
               columnName: 'address',
+              value: '3810 HARRISON',
               format: undefined,
               physicalDatatype: 'text',
-              value: '3810 HARRISON'
+              renderTypeName: undefined
             },
             {
               columnName: 'city',
+              value: 'PHILADELPHIA',
               format: undefined,
               physicalDatatype: 'text',
-              value: 'PHILADELPHIA'
+              renderTypeName: undefined
             }
           ]);
           done();
@@ -454,6 +472,39 @@ describe('A FeatureMap Card Visualization', function() {
           expect(fourthRow.isFeatureMapColumn).to.be.false;
           expect(fifthRow.isFeatureMapColumn).to.be.false;
           expect(sixthRow.isFeatureMapColumn).to.be.false;
+          done();
+        });
+
+        elementScope.$safeApply(function() {
+          deferred.resolve();
+        });
+      });
+
+      it('should properly mark isParentColumn as true when cooresponding subcolumns are present', function(done) {
+        var elementInfo = buildElement({ 'dataset': dataset });
+        var elementScope = elementInfo.scope;
+        var element = elementInfo.element;
+
+        // Get reference to getClickedRows function
+        var getClickedRows = $(element).find('card-visualization-feature-map').
+          isolateScope().getClickedRows;
+
+        var queryResponse$ = getClickedRows({}, [], fakeWithinBoxBounds);
+
+        queryResponse$.subscribe(function(formattedRows) {
+          var firstRow = formattedRows[0][0];
+          var secondRow = formattedRows[0][1];
+          var thirdRow = formattedRows[0][2];
+          var fourthRow = formattedRows[0][3];
+          var fifthRow = formattedRows[0][4];
+          var sixthRow = formattedRows[0][5];
+
+          expect(firstRow.isParentColumn).to.be.false;
+          expect(secondRow.isParentColumn).to.be.false;
+          expect(thirdRow.isParentColumn).to.be.true;
+          expect(fourthRow.isParentColumn).to.be.false;
+          expect(fifthRow.isParentColumn).to.be.false;
+          expect(sixthRow.isParentColumn).to.be.true;
           done();
         });
 

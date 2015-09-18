@@ -10,7 +10,7 @@
           <h3 class="flannel-title" ng-if="selectedRowTitle">{{selectedRowTitle}}</h3>
           <div ng-repeat="cell in selectedRow" class="row-data-item">
             <span class="name">{{cell.columnName}}</span>
-            <span class="value">{{formatSubColumns(cell.value, cell)}}</span>
+            <span class="value">{{formatCellValue(cell)}}</span>
           </div>
         </div>
         <!-- Loading spinner while query pending-->

@@ -102,103 +102,96 @@
         $('#siteHeader').addClass('loggedIn').find('.siteUserNav').addClass('loggedInNav');
     }
 
-    function oldBrowser()
-    {
-        return $.browser.msie && $.browser.majorVersion < 9 ||
-            $.browser.safari && $.browser.majorVersion < 6 ||
-            // Chrome & Firefox update regularly, so this is not technically current - 1
-            $.browser.chrome && $.browser.majorVersion < 28 ||
-            $.browser.mozilla && $.browser.majorVersion < 24;
-    };
-
-    if (window == window.top && !$.cookies.get('browser_ack') && oldBrowser())
-    {
-        $('#noticeContainer').append($.tag2({ _: 'div', id: 'browserSupportMessage',
-            className: 'flash error', contents: [
-                { _: 'a', href: '#', className: 'close', contents:
-                    { _: 'span', className: 'icon', contents: 'close' } },
-                { _: 'div', contents: $.t('core.browser_support.message_html',
-                    { link_text: $.tag2({ _: 'a', target: '_blank',
-                        href: 'http://support.socrata.com/entries/23245818-Socrata-Browser-Support',
-                        contents: $.t('core.browser_support.link_text') }, false)
-                    }) }
-            ] }));
-        $('#browserSupportMessage a.close').click(function(event)
-        {
-            event.preventDefault();
-            $('#browserSupportMessage').fadeOut();
-            $.cookies.set('browser_ack', true);
-        });
-    }
+    /* User Flashes
+     *
+     * Types:
+     * - Old Browser Warning
+     * - Maintenance Message
+     * - Custom Informational Message
+     *
+     * Structure:
+     * - Condition
+     * - Acknowledgement (?)
+     * - Message
+     * - Classes
+     */
 
     blist.namespace.fetch('blist.configuration');
-    if (window == window.top &&
-        ($.isPresent(blist.configuration.maintenance_message) ||
-         blist.feature_flags.domain_decommissioning))
-    {
-        var dismissMaintenance = function(target)
-        {
-            $(target).closest('.maintenanceNotice').fadeOut();
-            updateMaintenanceAckList(target);
-        };
+    if (window === window.top) {
+      // Construct User Flashes
 
-        var updateMaintenanceAckList = function(target) {
-          var ack_list = getMaintenanceAckList();
-          ack_list.push($(target).closest('.maintenanceNotice').data('hash'));
-          ack_list = _.compact(_.uniq(ack_list));
-          $.cookies.set('maintenance_ack', JSON.stringify(ack_list));
-        };
-
-        var checkMaintenanceAckList = function(hash) {
-          var ack_list = getMaintenanceAckList();
-          if (!$.isPresent(ack_list)) {
-            return false;
-          }
-          return _.detect(ack_list, function(item) { return item === hash; });
-        };
-
-        var getMaintenanceAckList = function() {
-          var cookie = $.cookies.get('maintenance_ack');
-          var ack_list = [];
-          if ($.isPresent(cookie)) {
-            ack_list = JSON.parse(cookie);
-          }
-          if (!_.isArray(ack_list)) {
-            ack_list = [];
-          }
-          return ack_list;
-        };
-
-        _.each(blist.configuration.maintenance_message, function(message) {
-            var $message = $(message);
-            var hash = $message.data('hash');
-            var active = JSON.parse($message.data('active'));
-            if (active && !checkMaintenanceAckList(hash)) {
-                $('#noticeContainer').append(message);
-            }
-        });
-
-        if (blist.configuration.show_domain_decommissioning_message &&
-            !checkMaintenanceAckList('decommissioning'))
-        {
-            $('#noticeContainer').append(
-                $.tag2({ _: 'div', className: 'flash notice maintenanceNotice decommissionMessage', contents: [
-                    { _: 'a', href: '#', className: 'close', contents: [
-                        { _: 'span', className: 'icon', contents: 'close' }]
-                    },
-                    { _: 'p', contents: [ 'Effective February 1, 2015 this Socrata demonstration site (', { _: 'a', href: 'https://opendata.socrata.com', contents: 'https://opendata.socrata.com' }, ') will no longer be available. We encourage all users to immediately remove all data prior to the February 1, 2015 site shut down.'] },
-                    { _: 'p', contents: ['Additional questions please contact', { _: 'a', href: 'mailto:support@socrata.com', contents: 'support@socrata.com' }]}
-                ] }).data('hash', 'decommissioning')
-            );
+      var browserIsOld = function(cookie) {
+        if (cookie) {
+          return false;
         }
 
-        setTimeout(dismissMaintenance, 15000);
+        return $.browser.msie && $.browser.majorVersion < 9 ||
+          $.browser.safari && $.browser.majorVersion < 6 ||
+          // Chrome & Firefox update regularly, so this is not technically current - 1
+          $.browser.chrome && $.browser.majorVersion < 28 ||
+          $.browser.mozilla && $.browser.majorVersion < 24;
+      };
+      var oldBrowserMessage = [{
+        _: 'div',
+        contents: $.t('core.browser_support.message_html', {
+          link_text: $.tag2({
+                       _: 'a',
+                       target: '_blank',
+                       href: 'http://support.socrata.com/entries/23245818-Socrata-Browser-Support',
+                       contents: $.t('core.browser_support.link_text')
+                     }, false)
+        })
+      }];
+      var oldBrowserUserFlash = {
+        shouldDisplay: browserIsOld,
+        acknowledgementCookie: 'browser_ack',
+        message: oldBrowserMessage,
+        htmlClasses: [ 'error' ]
+      };
 
-        $('.maintenanceNotice a.close').click(function(event)
-        {
-            event.preventDefault();
-            dismissMaintenance(event.target);
+      var userFlashes = [oldBrowserUserFlash];
+
+      if (blist.configuration.maintenance_messages) {
+        userFlashes = userFlashes.concat(blist.configuration.maintenance_messages);
+      }
+
+      var $noticeContainer = $('#noticeContainer');
+      var closeIcon = {
+        _: 'a',
+        href: '#',
+        className: 'close',
+        contents: {
+          _: 'span',
+          className: 'icon',
+          contents: 'close'
+        }
+      };
+
+      _.each(userFlashes, function(flash) {
+        var cookie = $.cookies.get(flash.acknowledgementCookie);
+        if (!!flash.shouldDisplay(cookie) === false) {
+          return;
+        }
+
+        // Construct the flash.
+        // Please make sure to define htmlClasses as an array and not as a string.
+        var $flash = $.tag2({
+          _: 'div',
+          className: flash.htmlClasses.concat('flash').join(' '),
+          contents: [ closeIcon ].concat(flash.message)
         });
+
+        $noticeContainer.append($flash);
+        $flash.find('a.close').click(function(event) {
+          event.preventDefault();
+          $flash.fadeOut();
+          if (flash.acknowlegementCookie) {
+            $.cookies.set(flash.acknowledgementCookie, true);
+          } else if (_.isFunction(flash.acknowledge)) {
+            flash.acknowledge();
+          }
+        });
+      });
     }
 
     var csrfToken = $('meta[name="csrf-token"]').attr('content');

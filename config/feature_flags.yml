@@ -69,9 +69,6 @@ disable_nbe_redirection_warning_message:
 display_catalog_lens_delete_button:
   description: Whether to show the Delete button for data lenses, in the old UX.
   defaultValue: false
-domain_decommissioning:
-  description: Enable a banner indicating that the domain is being decommissionsed.
-  defaultValue: false
 embetter_analytics_page:
   description: Incremental improvements to site analytics page
   defaultValue: false

@@ -71,7 +71,7 @@
 
         if (blockContent) {
           storyteller.dispatcher.dispatch({
-            action: Constants.STORY_INSERT_BLOCK,
+            action: Actions.STORY_INSERT_BLOCK,
             storyUid: storyteller.userStoryUid,
             blockContent: blockContent,
             insertAt: storyteller.storyStore.getStoryBlockIds(storyteller.userStoryUid).length

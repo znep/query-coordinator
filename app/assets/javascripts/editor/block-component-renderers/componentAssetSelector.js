@@ -15,7 +15,7 @@
       '<button>',
       {
         'class': 'btn accent-btn asset-selector-insert-btn',
-        'data-action': Constants.ASSET_SELECTOR_CHOOSE_PROVIDER
+        'data-action': Actions.ASSET_SELECTOR_CHOOSE_PROVIDER
       }
     ).text(I18n.t('editor.components.asset_selector.insert_btn'));
 

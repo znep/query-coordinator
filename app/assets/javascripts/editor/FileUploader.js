@@ -131,7 +131,7 @@
         _uploadedPercent = progressBytes / _file.size;
 
         storyteller.dispatcher.dispatch({
-          action: Constants.FILE_UPLOAD_PROGRESS,
+          action: Actions.FILE_UPLOAD_PROGRESS,
           percentLoaded: _uploadedPercent
         });
       }
@@ -139,7 +139,7 @@
 
     function _emitError(errorStep, reason) {
       storyteller.dispatcher.dispatch({
-        action: Constants.FILE_UPLOAD_ERROR,
+        action: Actions.FILE_UPLOAD_ERROR,
         error: {
           step: errorStep,
           reason: reason
@@ -262,7 +262,7 @@
     function _dispatchFileDone(resource) {
       if (!_destroyed) {
         storyteller.dispatcher.dispatch({
-          action: Constants.FILE_UPLOAD_DONE,
+          action: Actions.FILE_UPLOAD_DONE,
           documentId: resource.id,
           url: resource.url
         });

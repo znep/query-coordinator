@@ -15,7 +15,7 @@ describe('FileUploadStore', function() {
     describe('after a `FILE_UPLOAD_PROGRESS` action', function() {
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.FILE_UPLOAD_PROGRESS,
+          action: Actions.FILE_UPLOAD_PROGRESS,
           percentLoaded: 0.5
         });
       });
@@ -30,11 +30,11 @@ describe('FileUploadStore', function() {
     describe('after a `FILE_UPLOAD_DONE` action', function() {
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.FILE_UPLOAD_PROGRESS,
+          action: Actions.FILE_UPLOAD_PROGRESS,
           percentLoaded: 0.5
         });
         storyteller.dispatcher.dispatch({
-          action: Constants.FILE_UPLOAD_DONE
+          action: Actions.FILE_UPLOAD_DONE
         });
       });
 

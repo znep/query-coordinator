@@ -69,14 +69,14 @@ describe('AssetSelectorRenderer', function() {
     it('dispatches an `ASSET_SELECTOR_CLOSE` action when the escape key is pressed', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_CHOOSE_PROVIDER,
+        action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
       storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
-        assert.equal(action, Constants.ASSET_SELECTOR_CLOSE);
+        assert.equal(action, Actions.ASSET_SELECTOR_CLOSE);
         done();
       });
 
@@ -89,14 +89,14 @@ describe('AssetSelectorRenderer', function() {
     it('dispatches an `ASSET_SELECTOR_CLOSE` action when the overlay is clicked', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_CHOOSE_PROVIDER,
+        action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
       storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
-        assert.equal(action, Constants.ASSET_SELECTOR_CLOSE);
+        assert.equal(action, Actions.ASSET_SELECTOR_CLOSE);
         done();
       });
 
@@ -106,14 +106,14 @@ describe('AssetSelectorRenderer', function() {
     it('dispatches an `ASSET_SELECTOR_CLOSE` action when the modal dialog close button is clicked', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_CHOOSE_PROVIDER,
+        action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
 
       storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
-        assert.equal(action, Constants.ASSET_SELECTOR_CLOSE);
+        assert.equal(action, Actions.ASSET_SELECTOR_CLOSE);
         done();
       });
 
@@ -123,12 +123,12 @@ describe('AssetSelectorRenderer', function() {
     it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a url character', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE
+        action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE
       });
 
       storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
-        assert.equal(action, Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
+        assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
         assert.equal(payload.url, '');
         done();
       });
@@ -142,12 +142,12 @@ describe('AssetSelectorRenderer', function() {
     it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a keyup event from the youtube url input control where `.keyCode` is a delete key', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE
+        action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE
       });
 
       storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
-        assert.equal(action, Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
+        assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
         assert.equal(payload.url, '');
         done();
       });
@@ -161,12 +161,12 @@ describe('AssetSelectorRenderer', function() {
     it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a cut event from the youtube url input control', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE
+        action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE
       });
 
       storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
-        assert.equal(action, Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
+        assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
         assert.equal(payload.url, '');
         done();
       });
@@ -177,12 +177,12 @@ describe('AssetSelectorRenderer', function() {
     it('dispatches an `ASSET_SELECTOR_UPDATE_YOUTUBE_URL` action on a paste event from the youtube url input control', function(done) {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE
+        action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE
       });
 
       storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
-        assert.equal(action, Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
+        assert.equal(action, Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL);
         assert.equal(payload.url, '');
         done();
       });
@@ -194,7 +194,7 @@ describe('AssetSelectorRenderer', function() {
 
       storyteller.dispatcher.register(function(payload) {
         var action = payload.action;
-        assert.equal(action, Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET);
+        assert.equal(action, Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET);
         // the values will be empty, but assert that the event adds the keys
         assert.property(payload, 'datasetUid');
         assert.property(payload, 'isNewBackend');
@@ -207,13 +207,13 @@ describe('AssetSelectorRenderer', function() {
     it('dispatches `ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION` on a visualizationSelected event', function(done) {
       // add dataset so the proper component values are there for updating
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+        action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
         datasetUid: standardMocks.validStoryUid,
         isNewBackend: true
       });
 
       storyteller.dispatcher.register(function(payload) {
-        assert.equal(payload.action, Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION);
+        assert.equal(payload.action, Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION);
         // the values will be empty, but assert that the event adds the correct keys
         assert.property(payload, 'cardData');
         done();
@@ -231,7 +231,7 @@ describe('AssetSelectorRenderer', function() {
 
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
+          action: Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
         });
       });
 
@@ -277,7 +277,7 @@ describe('AssetSelectorRenderer', function() {
     it('renders the "choose provider" content on an `ASSET_SELECTOR_CHOOSE_PROVIDER` event', function() {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_CHOOSE_PROVIDER,
+        action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
@@ -292,7 +292,7 @@ describe('AssetSelectorRenderer', function() {
     it('renders the "choose YouTube" content on an `ASSET_SELECTOR_CHOOSE_YOUTUBE` event', function() {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE,
+        action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
@@ -305,7 +305,7 @@ describe('AssetSelectorRenderer', function() {
     it('renders the YouTube preview in the default state when no url has been supplied', function() {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE,
+        action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
@@ -317,7 +317,7 @@ describe('AssetSelectorRenderer', function() {
     it('renders the YouTube preview in the invalid state when an invalid YouTube url has been supplied', function() {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE,
+        action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
@@ -325,7 +325,7 @@ describe('AssetSelectorRenderer', function() {
       container.find('[data-asset-selector-validate-field="youtubeId"]').val('invalid');
 
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
+        action: Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
         url: 'invalid'
       });
 
@@ -339,7 +339,7 @@ describe('AssetSelectorRenderer', function() {
       var rickRoll = 'https://youtu.be/dQw4w9WgXcQ';
 
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE,
+        action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
@@ -347,7 +347,7 @@ describe('AssetSelectorRenderer', function() {
       container.find('[data-asset-selector-validate-field="youtubeId"]').val(rickRoll);
 
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
+        action: Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
         url: rickRoll
       });
 
@@ -360,7 +360,7 @@ describe('AssetSelectorRenderer', function() {
       var rickRoll = '<iframe width="420" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>';
 
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE,
+        action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
@@ -368,7 +368,7 @@ describe('AssetSelectorRenderer', function() {
       container.find('[data-asset-selector-validate-field="youtubeId"]').val(rickRoll);
 
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
+        action: Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
         url: rickRoll
       });
 
@@ -379,7 +379,7 @@ describe('AssetSelectorRenderer', function() {
     it('closes the modal on an `ASSET_SELECTOR_CLOSE` event', function() {
 
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_CHOOSE_PROVIDER,
+        action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
         blockId: testBlockId,
         componentIndex: testComponentIndex
       });
@@ -387,7 +387,7 @@ describe('AssetSelectorRenderer', function() {
       assert.isFalse(container.hasClass('hidden'));
 
       storyteller.dispatcher.dispatch({
-        action: Constants.ASSET_SELECTOR_CLOSE
+        action: Actions.ASSET_SELECTOR_CLOSE
       });
 
       assert.isTrue(container.hasClass('hidden'));
@@ -397,7 +397,7 @@ describe('AssetSelectorRenderer', function() {
 
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION
+          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION
         });
       });
 
@@ -429,7 +429,7 @@ describe('AssetSelectorRenderer', function() {
 
         it('has a button that goes back to the provider list', function() {
           assert.equal(
-            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_CHOOSE_PROVIDER)
+            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_CHOOSE_PROVIDER)
           ).length, 1);
         });
 
@@ -439,7 +439,7 @@ describe('AssetSelectorRenderer', function() {
     describe('when a `ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET` action is fired', function() {
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
           datasetUid: standardMocks.validStoryUid,
           isNewBackend: true
         });
@@ -478,7 +478,7 @@ describe('AssetSelectorRenderer', function() {
 
         it('has a button that goes back to the choose dataset list', function() {
           assert.equal(
-            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION)
+            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION)
           ).length, 1);
         });
 
@@ -488,7 +488,7 @@ describe('AssetSelectorRenderer', function() {
     describe('when a `ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD` action is fired', function() {
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
+          action: Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
         });
       });
 
@@ -506,13 +506,13 @@ describe('AssetSelectorRenderer', function() {
 
         it('has a button that goes back to the provider list', function() {
           assert.equal(
-            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_CHOOSE_PROVIDER)
+            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_CHOOSE_PROVIDER)
           ).length, 1);
         });
 
         it('has a disabled insert button', function() {
           assert.isTrue(
-            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_APPLY)).prop('disabled')
+            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_APPLY)).prop('disabled')
           );
         });
       });
@@ -521,7 +521,7 @@ describe('AssetSelectorRenderer', function() {
     describe('when a `FILE_UPLOAD_PROGRESS` action is fired', function() {
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.FILE_UPLOAD_PROGRESS,
+          action: Actions.FILE_UPLOAD_PROGRESS,
           percentLoaded: 0
         });
       });
@@ -532,7 +532,7 @@ describe('AssetSelectorRenderer', function() {
 
       it('has a cancel button in the progress pane', function() {
         assert.equal(
-          container.find('.asset-selector-cancel-upload[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD)).length,
+          container.find('.asset-selector-cancel-upload[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD)).length,
           1
         );
       });
@@ -544,13 +544,13 @@ describe('AssetSelectorRenderer', function() {
 
         it('has a button that goes back to the choose image upload step', function() {
           assert.isAbove(
-            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD)
+            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD)
           ).length, 0);
         });
 
         it('has a disabled insert button', function() {
           assert.isTrue(
-            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_APPLY)).prop('disabled')
+            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_APPLY)).prop('disabled')
           );
         });
       });
@@ -559,7 +559,7 @@ describe('AssetSelectorRenderer', function() {
     describe('when a `FILE_UPLOAD_ERROR` action is fired', function() {
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.FILE_UPLOAD_ERROR,
+          action: Actions.FILE_UPLOAD_ERROR,
           error: {
             step: 'get_resource',
             reason: { status: 400, message: 'Bad Request' }
@@ -572,7 +572,7 @@ describe('AssetSelectorRenderer', function() {
       });
 
       it('removes cancel button, replaces with try again', function() {
-        var buttonSelector = container.find('.asset-selector-image-upload-progress [data-action="{0}"]'.format(Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD));
+        var buttonSelector = container.find('.asset-selector-image-upload-progress [data-action="{0}"]'.format(Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD));
         assert.equal(buttonSelector.length, 1);
         assert.include(buttonSelector.attr('class'), 'asset-selector-try-again');
         assert.equal(container.find('.asset-selector-cancel-upload').length, 0);
@@ -585,13 +585,13 @@ describe('AssetSelectorRenderer', function() {
 
         it('has a button that goes back to the choose image upload step', function() {
           assert.isAbove(
-            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD)
+            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD)
           ).length, 0);
         });
 
         it('has a disabled insert button', function() {
           assert.isTrue(
-            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_APPLY)).prop('disabled')
+            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_APPLY)).prop('disabled')
           );
         });
       });
@@ -604,7 +604,7 @@ describe('AssetSelectorRenderer', function() {
 
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.FILE_UPLOAD_DONE,
+          action: Actions.FILE_UPLOAD_DONE,
           url: imageUrl,
           documentId: documentId
         });
@@ -626,13 +626,13 @@ describe('AssetSelectorRenderer', function() {
 
         it('has a button that goes back to the choose image upload step', function() {
           assert.equal(
-            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD)
+            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD)
           ).length, 1);
         });
 
         it('has an enabled insert button', function() {
           assert.isFalse(
-            container.find('[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_APPLY)).prop('disabled')
+            container.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_APPLY)).prop('disabled')
           );
         });
       });
@@ -651,7 +651,7 @@ describe('AssetSelectorRenderer', function() {
       it('should not have any classes starting with `modal-dialog-`', function() {
         // trigger any action
         storyteller.dispatcher.dispatch({
-          action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION
+          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION
         });
 
         // mess with classes
@@ -660,7 +660,7 @@ describe('AssetSelectorRenderer', function() {
 
         // trigger any other action
         storyteller.dispatcher.dispatch({
-          action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE
+          action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE
         });
 
         // ensure state-specific classes are removed

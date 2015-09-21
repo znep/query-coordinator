@@ -19,7 +19,7 @@ describe('BlockRemovalConfirmationStore', function() {
         var blockContent = standardMocks.validBlockData1;
 
         window.socrata.storyteller.dispatcher.dispatch({
-          action: Constants.STORY_INSERT_BLOCK,
+          action: Actions.STORY_INSERT_BLOCK,
           blockContent: blockContent,
           insertAt: validInsertionIndex,
           storyUid: standardMocks.validStoryUid
@@ -40,7 +40,7 @@ describe('BlockRemovalConfirmationStore', function() {
 
         it('should ask for confirmation to delete', function() {
           window.socrata.storyteller.dispatcher.dispatch({
-            action: Constants.BLOCK_UPDATE_COMPONENT,
+            action: Actions.BLOCK_UPDATE_COMPONENT,
             blockId: newlyAddedBlockId,
             componentIndex: 0,
             type: '',

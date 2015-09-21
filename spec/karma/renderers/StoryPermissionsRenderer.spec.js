@@ -43,12 +43,12 @@ describe('StoryPermissionsRenderer', function() {
     window.publishedStory = {digest: 'digest'};
     storyteller.userStoryUid = uid;
     storyteller.dispatcher.dispatch({
-      action: Constants.STORY_CREATE,
+      action: Actions.STORY_CREATE,
       data: sampleStoryData
     });
 
     storyteller.dispatcher.dispatch({
-      action: Constants.STORY_SET_PUBLISHED_STORY,
+      action: Actions.STORY_SET_PUBLISHED_STORY,
       publishedStory: {digest: 'digest'},
       storyUid: uid
     });
@@ -151,7 +151,7 @@ describe('StoryPermissionsRenderer', function() {
           describe('and has a difference in digest', function() {
             beforeEach(function() {
               storyteller.dispatcher.dispatch({
-                action: Constants.STORY_SET_PUBLISHED_STORY,
+                action: Actions.STORY_SET_PUBLISHED_STORY,
                 publishedStory: {digest: 'new-digest'},
                 storyUid: storyteller.userStoryUid
               });
@@ -232,7 +232,7 @@ describe('StoryPermissionsRenderer', function() {
         newStory(true);
 
         storyteller.dispatcher.dispatch({
-          action: Constants.STORY_SET_PUBLISHED_STORY,
+          action: Actions.STORY_SET_PUBLISHED_STORY,
           publishedStory: {digest: 'new-digest'},
           storyUid: storyteller.userStoryUid
         });

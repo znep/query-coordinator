@@ -31,55 +31,55 @@
       // response to actions that are actually relevant.
       switch (action) {
 
-        case Constants.ASSET_SELECTOR_CHOOSE_PROVIDER:
+        case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
           _currentSelectorState = action;
           _chooseProvider(payload);
           break;
 
-        case Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE:
+        case Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE:
           _currentSelectorState = action;
           _chooseYoutube();
           break;
 
-        case Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL:
+        case Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL:
           _updateYoutubeUrl(payload);
           break;
 
-        case Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION:
+        case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION:
           _currentSelectorState = action;
           _chooseVisualization();
           break;
 
-        case Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
+        case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
           _currentSelectorState = action;
           _chooseVisualizationDataset(payload);
           break;
 
-        case Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION:
+        case Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION:
           _updateVisualizationConfiguration(payload);
           break;
 
-        case Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD:
+        case Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD:
           _currentSelectorState = action;
           _chooseImageUpload();
           break;
 
-        case Constants.FILE_UPLOAD_PROGRESS:
+        case Actions.FILE_UPLOAD_PROGRESS:
           _currentSelectorState = action;
           _updateImageUploadProgress(payload);
           break;
 
-        case Constants.FILE_UPLOAD_DONE:
+        case Actions.FILE_UPLOAD_DONE:
           _currentSelectorState = action;
           _updateImagePreview(payload);
           break;
 
-        case Constants.FILE_UPLOAD_ERROR:
+        case Actions.FILE_UPLOAD_ERROR:
           _currentSelectorState = action;
           _updateImageUploadError(payload);
           break;
 
-        case Constants.ASSET_SELECTOR_CLOSE:
+        case Actions.ASSET_SELECTOR_CLOSE:
           _closeDialog();
           break;
       }

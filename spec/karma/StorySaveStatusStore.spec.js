@@ -30,7 +30,7 @@ describe('StorySaveStatusStore', function() {
     describe('after a story is modified', function() {
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.STORY_DELETE_BLOCK,
+          action: Actions.STORY_DELETE_BLOCK,
           storyUid: standardMocks.validStoryUid,
           blockId: standardMocks.validBlockId
         });
@@ -47,7 +47,7 @@ describe('StorySaveStatusStore', function() {
       describe('after a save starts', function() {
         beforeEach(function() {
           storyteller.dispatcher.dispatch({
-            action: Constants.STORY_SAVE_STARTED,
+            action: Actions.STORY_SAVE_STARTED,
             storyUid: standardMocks.validStoryUid
           });
         });
@@ -64,7 +64,7 @@ describe('StorySaveStatusStore', function() {
           it('should throw', function() {
             assert.throws(function() {
               storyteller.dispatcher.dispatch({
-                action: Constants.STORY_SAVE_STARTED,
+                action: Actions.STORY_SAVE_STARTED,
                 storyUid: standardMocks.validStoryUid
               });
             });
@@ -74,7 +74,7 @@ describe('StorySaveStatusStore', function() {
         describe('that completes', function() {
           beforeEach(function() {
             storyteller.dispatcher.dispatch({
-              action: Constants.STORY_SAVED,
+              action: Actions.STORY_SAVED,
               storyUid: standardMocks.validStoryUid,
               digest: 'foo'
             });
@@ -92,7 +92,7 @@ describe('StorySaveStatusStore', function() {
         describe('that errors', function() {
           beforeEach(function() {
             storyteller.dispatcher.dispatch({
-              action: Constants.STORY_SAVE_FAILED,
+              action: Actions.STORY_SAVE_FAILED,
               storyUid: standardMocks.validStoryUid,
               message: 'foo'
             });
@@ -111,7 +111,7 @@ describe('StorySaveStatusStore', function() {
       describe('but the edit is undone', function() {
         beforeEach(function() {
           storyteller.dispatcher.dispatch({
-            action: Constants.HISTORY_UNDO,
+            action: Actions.HISTORY_UNDO,
             storyUid: standardMocks.validStoryUid
           });
         });

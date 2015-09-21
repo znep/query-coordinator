@@ -73,7 +73,7 @@
           $(event.currentTarget).addClass('active');
 
           storyteller.dispatcher.dispatch({
-            action: Constants.STORY_UPDATE_THEME,
+            action: Actions.STORY_UPDATE_THEME,
             storyUid: storyteller.userStoryUid,
             theme: theme
           });

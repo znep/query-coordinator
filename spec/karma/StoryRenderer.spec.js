@@ -61,7 +61,7 @@ describe('StoryRenderer', function() {
 
   function forceRender() {
     storyteller.dispatcher.dispatch({
-      action: Constants.STORY_OVERWRITE_STATE,
+      action: Actions.STORY_OVERWRITE_STATE,
       data: storyteller.storyStore.serializeStory(storyUid)
     });
   }
@@ -215,7 +215,7 @@ describe('StoryRenderer', function() {
         });
 
         storyteller.dispatcher.dispatch({
-          action: Constants.STORY_CREATE,
+          action: Actions.STORY_CREATE,
           data: storyWithoutBlocks
         });
 
@@ -244,7 +244,7 @@ describe('StoryRenderer', function() {
         var numberOfBlocks = storyteller.storyStore.getStoryBlockIds(storyUid).length;
 
         storyteller.dispatcher.dispatch({
-          action: Constants.STORY_DELETE_BLOCK,
+          action: Actions.STORY_DELETE_BLOCK,
           storyUid: storyUid,
           blockId: assetSelectorBlockId
         });
@@ -277,7 +277,7 @@ describe('StoryRenderer', function() {
         });
 
         storyteller.dispatcher.dispatch({
-          action: Constants.STORY_CREATE,
+          action: Actions.STORY_CREATE,
           data: storyWithMedia
         });
 
@@ -352,7 +352,7 @@ describe('StoryRenderer', function() {
       // Cause DragDropStore to indicate we're dragging over
       // the given story and block.
       storyteller.dispatcher.dispatch({
-        action: Constants.STORY_DRAG_OVER,
+        action: Actions.STORY_DRAG_OVER,
         storyUid: storyUid,
         blockId: blockId,
         pointer: {},
@@ -365,7 +365,7 @@ describe('StoryRenderer', function() {
       // Cause DragDropStore to indicate we're dragging over
       // nothing at all.
       storyteller.dispatcher.dispatch({
-        action: Constants.STORY_DRAG_LEAVE,
+        action: Actions.STORY_DRAG_LEAVE,
         storyUid: storyUid
       });
     };

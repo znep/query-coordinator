@@ -362,7 +362,7 @@
           var scrollTop = scrollingElement.scrollTop();
 
           // IE/Chrome/Safari use 'wheelDelta', Firefox uses 'detail'
-          var scrollingUp = e.originalEvent.wheelDeltaY > 0 || e.originalEvent.detail < 0;
+          var scrollingUp = e.originalEvent.wheelDelta > 0 || e.originalEvent.detail < 0;
 
           if (scrollingUp) {
 

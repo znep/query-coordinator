@@ -1,4 +1,4 @@
-describe.only('componentSocrataVisualizationFeatureMap jQuery plugin', function() {
+describe('componentSocrataVisualizationFeatureMap jQuery plugin', function() {
 
   'use strict';
 

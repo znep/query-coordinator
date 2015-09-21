@@ -11,7 +11,9 @@ describe('componentSocrataVisualizationColumnChart jQuery plugin', function() {
       layout: {
         height: 300
       },
-      vif: {}
+      vif: {
+        configuration: {}
+      }
     }
   };
 

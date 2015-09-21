@@ -39,7 +39,8 @@ RSpec.describe 'undo/redo', type: :feature, js: true do
     end
 
     def expect_button_enabled(button)
-      expect(button[:disabled]).to be_nil #yeah, nil :/
+      # Nil because the attr is unset by the JS (vs. being set to 'false').
+      expect(button[:disabled]).to be_nil
     end
 
     # Get number of blocks in the current story

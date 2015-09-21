@@ -57,9 +57,7 @@
       'FLYOUT_LOCATE_USER_ERROR_NOTICE',
       'FLYOUT_PAN_ZOOM_DISABLED_WARNING_TITLE',
       'ROW_INSPECTOR_ROW_DATA_QUERY_FAILED',
-      'USER_CURRENT_POSITION',
-      'UNIT_ONE',
-      'UNIT_OTHER'
+      'USER_CURRENT_POSITION'
     );
 
     this.destroySocrataFeatureMap = function() {
@@ -208,7 +206,6 @@
     }
 
     function handleFeatureExtentQuerySuccess(response) {
-
       updateRenderOptionsBounds(response);
       renderIfReady();
     }

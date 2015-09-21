@@ -2,6 +2,7 @@ describe('SocrataFeatureMap component', function() {
 
   'use strict';
 
+  var isNotPhantom = !(/PhantomJS\/([0-9.]+)/.exec(navigator.userAgent));
   var NAME_ALIAS = '__NAME_ALIAS__';
   var VALUE_ALIAS = '__VALUE_ALIAS__';
 
@@ -120,12 +121,8 @@ describe('SocrataFeatureMap component', function() {
           this.getFeatureExtent = function(columnName) {
             return new Promise(function(resolve, reject) {
               return resolve({
-                southwest: {
-                  latlng: [-90, -180]
-                },
-                northeast: {
-                  latlng: [90, 180]
-                }
+                southwest: [-90, -180],
+                northeast: [90, 180]
               });
             });
           };
@@ -152,18 +149,6 @@ describe('SocrataFeatureMap component', function() {
             });
           };;
         }
-
-        // Mock socrata.visualizations.FeatureMap
-        actualSocrataVisualizationsFeatureMap = window.socrata.visualizations.FeatureMap;
-
-        var stubSocrataVisualizationsFeatureMapMethods = sinon.stub({
-          render: function() {},
-          renderError: function() {},
-          destroy: function() {}
-        });
-        var stubSocrataVisualizationsFeatureMapConstructor = sinon.stub().returns(stubSocrataVisualizationsFeatureMapMethods);
-
-        window.socrata.visualizations.FeatureMap = stubSocrataVisualizationsFeatureMapConstructor;
       });
 
       afterEach(function() {
@@ -174,13 +159,74 @@ describe('SocrataFeatureMap component', function() {
         window.socrata.visualizations.MetadataProvider = actualMetadataProvider;
 
         destroyVisualization($container);
-
-        window.socrata.visualizations.FeatureMap = actualSocrataVisualizationsFeatureMap;
       });
 
-      it('invokes socrata.visualization.featureMap on initialization', function() {
-        $container.socrataFeatureMap(featureMapVIF);
-        assert.isTrue(window.socrata.visualizations.FeatureMap.called);
+      describe('on initialization', function() {
+        var actualSocrataVisualizationsFeatureMap;
+
+        beforeEach(function () {
+          // Mock socrata.visualizations.FeatureMap
+          actualSocrataVisualizationsFeatureMap = window.socrata.visualizations.FeatureMap;
+
+          var stubSocrataVisualizationsFeatureMapMethods = sinon.stub({
+            render: function() {},
+            renderError: function() {},
+            destroy: function() {}
+          });
+          var stubSocrataVisualizationsFeatureMapConstructor = sinon.stub().returns(stubSocrataVisualizationsFeatureMapMethods);
+
+          window.socrata.visualizations.FeatureMap = stubSocrataVisualizationsFeatureMapConstructor;
+        });
+
+        afterEach(function() {
+          window.socrata.visualizations.FeatureMap = actualSocrataVisualizationsFeatureMap;
+        });
+
+        it('invokes socrata.visualization.featureMap', function() {
+          $container.socrataFeatureMap(featureMapVIF);
+          assert.isTrue(window.socrata.visualizations.FeatureMap.called);
+        });
+      });
+
+      // Phantomjs does not support geolocation, so this button will not be rendered.
+      // If you are running karma with a browser that supports it, this button should be rendered.
+      if (isNotPhantom) {
+
+        it('emits a flyout render event when the mouse is moved over the locate user button', function(done) {
+          var vif = _.cloneDeep(featureMapVIF);
+          vif.configuration.locateUser = true;
+
+          $container.socrataFeatureMap(vif);
+
+          $container.on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', function(event) {
+            if (event.originalEvent.detail !== null) {
+              assert.isTrue(true, 'Flyout was rendered.');
+              done();
+            }
+          });
+
+          setTimeout(function() {
+            $container.find('.feature-map-locate-user-btn').trigger('mousemove');
+          }, 0);
+        });
+      }
+
+      it('emits a flyout render event when the mouse is moved over the pan and zoom disabled warning', function() {
+          var vif = _.cloneDeep(featureMapVIF);
+          vif.configuration.panAndZoom = true;
+
+          $container.socrataFeatureMap(vif);
+
+          $container.on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', function(event) {
+            if (event.originalEvent.detail !== null) {
+              assert.isTrue(true, 'Flyout was rendered.');
+              done();
+            }
+          });
+
+          setTimeout(function() {
+            $container.find('.feature-map-pan-zoom-disabled-warning').trigger('mousemove');
+          }, 0);
       });
     });
   });

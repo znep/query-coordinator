@@ -22,15 +22,6 @@
         } else {
           storyteller.flyoutRenderer.clear();
         }
-      }).
-      on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', function(event) {
-
-      }).
-      on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_UPDATE', function(event) {
-
-      }).
-      on('SOCRATA_VISUALIZATION_ROW_INSPECTOR_HIDE', function(event) {
-
       });
   }
 
@@ -44,38 +35,40 @@
 
     if (renderedVif !== JSON.stringify(componentData.value.vif) ||
       renderedHeight !== componentData.value.layout.height) {
+      var vif = componentData.value.vif;
 
       $element.height(componentData.value.layout.height);
 
-      componentData.value.vif.configuration.localization = {
-        'FLYOUT_FILTER_NOTICE': 'There are too many points at this location',
-        'FLYOUT_FILTER_OR_ZOOM_NOTICE': 'Zoom in to see details',
-        'FLYOUT_DENSE_DATA_NOTICE': 'Numerous',
-        'FLYOUT_CLICK_TO_INSPECT_NOTICE': 'Click to see details',
-        'FLYOUT_CLICK_TO_LOCATE_USER_TITLE': 'Click to show your position on the map',
-        'FLYOUT_CLICK_TO_LOCATE_USER_NOTICE': 'You may have to give your browser permission to share your current location',
-        'FLYOUT_LOCATING_USER_TITLE': 'Your position is being determined',
-        'FLYOUT_LOCATE_USER_ERROR_TITLE': 'There was an error determining your location',
-        'FLYOUT_LOCATE_USER_ERROR_NOTICE': 'Click to try again',
-        'FLYOUT_PAN_ZOOM_DISABLED_WARNING_TITLE': 'Panning and zooming has been disabled',
-        'ROW_INSPECTOR_ROW_DATA_QUERY_FAILED': 'Detailed information about these points cannot be loaded at this time',
-        'USER_CURRENT_POSITION': 'Your current location (estimated)',
-        'UNIT_ONE': 'record',
-        'UNIT_OTHER': 'records'
+      vif.configuration.localization = {
+        'FLYOUT_FILTER_NOTICE': I18n.t('editor.visualizations.feature_map.flyout_filter_notice'),
+        'FLYOUT_FILTER_OR_ZOOM_NOTICE': I18n.t('editor.visualizations.feature_map.flyout_filter_or_zoom_notice'),
+        'FLYOUT_DENSE_DATA_NOTICE': I18n.t('editor.visualizations.feature_map.flyout_dense_data_notice'),
+        'FLYOUT_CLICK_TO_INSPECT_NOTICE': I18n.t('editor.visualizations.feature_map.flyout_click_to_inspect_notice'),
+        'FLYOUT_CLICK_TO_LOCATE_USER_TITLE': I18n.t('editor.visualizations.feature_map.flyout_click_to_locate_user_title'),
+        'FLYOUT_CLICK_TO_LOCATE_USER_NOTICE': I18n.t('editor.visualizations.feature_map.flyout_click_to_locate_user_notice'),
+        'FLYOUT_LOCATING_USER_TITLE': I18n.t('editor.visualizations.feature_map.flyout_locating_user_title'),
+        'FLYOUT_LOCATE_USER_ERROR_TITLE': I18n.t('editor.visualizations.feature_map.flyout_locate_user_error_title'),
+        'FLYOUT_LOCATE_USER_ERROR_NOTICE': I18n.t('editor.visualizations.feature_map.flyout_locate_user_error_notice'),
+        'FLYOUT_PAN_ZOOM_DISABLED_WARNING_TITLE': I18n.t('editor.visualizations.feature_map.flyout_pan_zoom_disabled_warning_title'),
+        'ROW_INSPECTOR_ROW_DATA_QUERY_FAILED': I18n.t('editor.visualizations.feature_map.row_inspector_row_data_query_failed'),
+        'USER_CURRENT_POSITION': I18n.t('editor.visualizations.feature_map.user_current_position')
       };
 
-      componentData.value.vif.domain = 'cml.local';
+      vif.unit = {
+        one: 'record',
+        other: 'records'
+      };
 
-      componentData.value.vif.configuration.tileserverHosts = ['https://cml.local'];
-      componentData.value.vif.configuration.baseLayerUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png';
-      componentData.value.vif.configuration.baseLayerOpacity = 0.25;
-      componentData.value.vif.configuration.hover = true;
-      componentData.value.vif.configuration.locateUser = true;
-      componentData.value.vif.configuration.panAndZoom = true;
+      vif.configuration.tileserverHosts = ['https://cml.local'];
+      vif.configuration.baseLayerUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png';
+      vif.configuration.baseLayerOpacity = 0.25;
+      vif.configuration.hover = true;
+      vif.configuration.locateUser = true;
+      vif.configuration.panAndZoom = true;
 
-      $element.socrataFeatureMap(componentData.value.vif);
+      $element.socrataFeatureMap(vif);
 
-      $element.attr('data-rendered-vif', JSON.stringify(componentData.value.vif));
+      $element.attr('data-rendered-vif', JSON.stringify(vif));
       $element.attr('data-rendered-visualization-height', componentData.value.layout.height);
     }
   }

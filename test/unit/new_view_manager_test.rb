@@ -144,8 +144,6 @@ class NewViewManagerTest < Test::Unit::TestCase
 
     CoreServer::Base.stubs(connection: connection_stub)
 
-    Rails.application.routes.url_helpers.stubs(opendata_cards_view_url: 'opendata_url')
-
     result = new_view_manager.create({:name=>'my title', :description=>'my description'}, nil, true)
     assert_equal('mjcb-9cxc', result)
     assert(created)

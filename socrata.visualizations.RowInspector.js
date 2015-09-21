@@ -6,7 +6,7 @@
       '`{0}` must be loaded before `{1}`'.
         format(
           'socrata.visualizations.Visualization.js',
-          'socrata.visualizations.rowInspector.js'
+          'socrata.visualizations.RowInspector.js'
         )
     );
   }
@@ -50,13 +50,60 @@
     _config.localization = _config.localization || {};
     _config.localization = _.merge({}, ROW_INSPECTOR_DEFAULT_TRANSLATIONS, _config.localization);
 
-    _$rowInspectorContainer = $('#socrata-row-inspector');
+    if ($('#socrata-row-inspector').length === 0) {
 
-    utils.assert(
-      _$rowInspectorContainer.length === 1,
-      'Could not find #socrata-row-inspector element, ' +
-        'please ensure socrata.visualizations.rowInspector.html is included into the page.'
-    );
+      _$rowInspectorContainer = $(
+        [
+          '<div id="socrata-row-inspector">',
+            '<div class="tool-panel">',
+              '<div class="tool-panel-main">',
+                '<div class="icon-close"></div>',
+                '<div class="sticky-border"></div>',
+                '<div class="tool-panel-inner-container">',
+                  '<!-- Successful query response -->',
+                  '<div class="row-inspector-content">',
+                    '<div class="row-data-item">',
+                      '<span class="name"></span>',
+                      '<span class="value"></span>',
+                    '</div>',
+                  '</div>',
+                  '<!-- Loading spinner while query pending-->',
+                  '<div class="pending-content"></div>',
+                  '<!-- Error message if row query unsuccessful -->',
+                  '<div class="error-content">',
+                    '<div class="icon-warning"></div>',
+                    '<div class="error-message"></div>',
+                  '</div>',
+                '</div>',
+                '<div class="sticky-border bottom"></div>',
+                '<div class="paging-panel">',
+                  '<button type="button" class="l-to-r paging-btn action-btn previous">',
+                    '<span class="caret"></span>',
+                  '</button>',
+                  '<button type="button" class="r-to-l paging-btn action-btn next">',
+                    '<span class="caret"></span>',
+                  '</button>',
+                  '<div class="paging-info">',
+                    '<div class="message">',
+                      '<div></div>',
+                      '<div></div>',
+                    '</div>',
+                  '</div>',
+                '</div>',
+                '<div class="tool-panel-hint"></div>',
+              '</div>',
+            '</div>',
+          '</div>'
+        ].join('')
+      );
+
+      $('body').append(_$rowInspectorContainer);
+
+    } else {
+
+      _$rowInspectorContainer = $('#socrata-row-inspector');
+
+    }
 
     // Grab all children that we run operations on.
     _$rowInspectorToolPanel= _$rowInspectorContainer.find('.tool-panel');
@@ -297,7 +344,7 @@
     _render();
   }
 
-  root.socrata.visualizations.rowInspector = {
+  root.socrata.visualizations.RowInspector = {
     /**
      * @function setup
      * @description
@@ -315,7 +362,7 @@
      *
      *     { error: false,
      *       message: null,
-     *       position: {clientX: 0, clientY: 0}, // Must be numbers
+     *       position: {pageX: 0, pageY: 0}, // Must be numbers
      *       labelUnit: null, // or a string literal
      *       data: [ // This attribute is optional, a spinner will be shown if missing/null.
      *         [ // Represents a row
@@ -330,7 +377,7 @@
      *
      *     { error: true,
      *       message: 'There was an error',
-     *       position: {clientX: 0, clientY: 0} // Must be numbers
+     *       position: {pageX: 0, pageY: 0} // Must be numbers
      *     }
      *
      *   Event Names:

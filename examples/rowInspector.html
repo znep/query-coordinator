@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Example Usage: socrata.visualizations.rowInspector.js</title>
+    <title>Example Usage: socrata.visualizations.RowInspector.js</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <link rel="stylesheet" media="all" href="../socrata.visualizations.rowInspector.css">
     <style>
@@ -35,8 +35,6 @@
     </style>
   </head>
   <body>
-    <div>IF THE TEMPLATE CHANGED, FOR ALL THAT IS RIGHT, PLEASE CHANGE THIS, TOO. I'M NOT KIDDING</div>
-    <div>ALSO, if the styles have changed, please run "npm run-script demo-css"</div>
     <div>
       <label for="row-count">Row Count</label>
       <input type="number" min="1" step="1" id="row-count" placeholder="Row Count" value="9">
@@ -46,47 +44,6 @@
       <label for="error">If checked, will cause an error state on click.</label>
     </div>
     <div id="click-me">CLICK ANYWHERE HERE!</div>
-    <div id="socrata-row-inspector">
-      <div class="tool-panel">
-        <div class="tool-panel-main">
-
-          <div class="icon-close"></div>
-          <div class="sticky-border"></div>
-          <div class="tool-panel-inner-container">
-            <!-- Successful query response -->
-            <div class="row-inspector-content">
-              <div class="row-data-item">
-                <span class="name"></span>
-                <span class="value"></span>
-              </div>
-            </div>
-            <!-- Loading spinner while query pending-->
-            <div class="pending-content"></div>
-            <!-- Error message if row query unsuccessful -->
-            <div class="error-content">
-              <div class="icon-warning"></div>
-              <div class="error-message"></div>
-            </div>
-          </div>
-          <div class="sticky-border bottom"></div>
-          <div class="paging-panel">
-            <button type="button" title="" class="l-to-r paging-btn action-btn previous">
-              <span class="caret"></span>
-            </button>
-            <button type="button" title="" class="r-to-l paging-btn action-btn next">
-              <span class="caret"></span>
-            </button>
-            <div class="paging-info">
-              <div class="message">
-                <div></div>
-                <div></div>
-              </div>
-            </div>
-          </div>
-          <div class="tool-panel-hint"></div>
-        </div>
-      </div>
-    </div>
   </body>
   <!-- lodash must be loaded before `socrata.utils.js` -->
   <script type="text/javascript" src="../bower_components/lodash/lodash.js"></script>
@@ -94,7 +51,7 @@
   <!-- jquery must be loaded before `socrata.visualizations.Visualization.js` -->
   <script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
   <script type="text/javascript" src="../socrata.visualizations.Visualization.js"></script>
-  <script type="text/javascript" src="../socrata.visualizations.rowInspector.js"></script>
+  <script type="text/javascript" src="../socrata.visualizations.RowInspector.js"></script>
   <script type="text/javascript">
     (function(root) {
       var validData = function(rowCount) {
@@ -109,7 +66,7 @@
       };
 
       $(document).ready(function() {
-        root.socrata.visualizations.rowInspector.setup();
+        root.socrata.visualizations.RowInspector.setup();
 
         $('#click-me').click(function(event) {
           if ($(event.target).closest('#socrata-row-inspector, #error').length) {

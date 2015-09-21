@@ -310,6 +310,7 @@
         if (_locateUser) {
           _mapLocateUserButton.on('click', _handleLocateUserButtonClick);
           _mapLocateUserButton.on('mousemove', _handleLocateUserButtonMousemove);
+          _mapLocateUserButton.on('mouseout', _hideFlyout);
         }
       }
 
@@ -337,8 +338,9 @@
         // have any purpose if the map does not exist so we include it in
         // the check for map existence anyway.
         if (_locateUser) {
-          _mapLocateUserButton.on('click', _handleLocateUserButtonClick);
+          _mapLocateUserButton.off('click', _handleLocateUserButtonClick);
           _mapLocateUserButton.off('mousemove', _handleLocateUserButtonMousemove);
+          _mapLocateUserButton.off('mouseout', _hideFlyout);
         }
       }
 

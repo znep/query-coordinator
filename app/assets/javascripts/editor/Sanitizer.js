@@ -2,9 +2,7 @@
 
   'use strict';
 
-  var Constants = root.Constants;
   var socrata = root.socrata;
-  var utils = socrata.utils;
   var storyteller = socrata.storyteller;
 
   var _ATTRIBUTE_WHITELIST = {

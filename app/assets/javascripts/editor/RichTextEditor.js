@@ -67,7 +67,6 @@
       );
     }
 
-    var self = this;
     var _containerElement = element;
     var _assetFinder = assetFinder;
     var _formats = formats;
@@ -190,8 +189,8 @@
         _editor.addEventListener('blur', _broadcastBlur);
         _editor.addEventListener('select', _broadcastFormatChange);
         _editor.addEventListener('pathChange', _broadcastFormatChange);
-        _editor.addEventListener('willPaste', function(e) {
-          _sanitizeClipboardInput(e);
+        _editor.addEventListener('willPaste', function(pasteEvent) {
+          _sanitizeClipboardInput(pasteEvent);
           _handleContentChangeByUser();
         });
         _editor.addEventListener('drop', function() {

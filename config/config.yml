@@ -99,5 +99,3 @@ production:
   rpx_googleplus_url: https://socrata.rpxnow.com/googleplus/start
   <<: *default
   mixpanel_token: 1d804068e1d3694468823f3c7f74567d
-
-

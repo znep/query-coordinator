@@ -12,6 +12,11 @@ Frontend::Application.configure do
   config.consider_all_requests_local = false
   config.action_controller.perform_caching = true
 
+  # Ordinarily this should be turned off in staging, rc, and production environments
+  # However, in AWS this must be set to true until we figure out the routing story for
+  # static assets and docker containers.
+  config.serve_static_assets = true
+
   # Use a different cache store in production
   config.cache_store = :mem_cache_store, ENV['MEMCACHED_HOST'] || 'memcache', { :namespace => 'webapp', :value_max_bytes => 2000000 }
 

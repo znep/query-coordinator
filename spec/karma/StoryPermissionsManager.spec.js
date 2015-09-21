@@ -85,7 +85,7 @@ describe('StoryPermissionsManager', function() {
                 actions,
                 [
                   {
-                    action: Constants.STORY_SET_PERMISSIONS,
+                    action: Actions.STORY_SET_PERMISSIONS,
                     storyUid: storyteller.userStoryUid,
                     isPublic: false
                   }
@@ -124,12 +124,12 @@ describe('StoryPermissionsManager', function() {
                 actions,
                 [
                   {
-                    action: Constants.STORY_SET_PUBLISHED_STORY,
+                    action: Actions.STORY_SET_PUBLISHED_STORY,
                     storyUid: storyteller.userStoryUid,
                     publishedStory: data
                   },
                   {
-                    action: Constants.STORY_SET_PERMISSIONS,
+                    action: Actions.STORY_SET_PERMISSIONS,
                     storyUid: storyteller.userStoryUid,
                     isPublic: false
                   }

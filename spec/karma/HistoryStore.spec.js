@@ -40,7 +40,7 @@ describe('HistoryStore', function() {
 
   beforeEach(function() {
     storyteller.historyStore = new storyteller.HistoryStore(validStoryUid);
-    dispatch({ action: Constants.STORY_CREATE, data: storyState1 });
+    dispatch({ action: Actions.STORY_CREATE, data: storyState1 });
   });
 
   function dispatch(action) {
@@ -70,7 +70,7 @@ describe('HistoryStore', function() {
 
       beforeEach(function() {
         dispatch({
-          action: Constants.STORY_OVERWRITE_STATE,
+          action: Actions.STORY_OVERWRITE_STATE,
           data: storyState2
         });
       });
@@ -94,14 +94,14 @@ describe('HistoryStore', function() {
 
       beforeEach(function() {
         dispatch({
-          action: Constants.STORY_OVERWRITE_STATE,
+          action: Actions.STORY_OVERWRITE_STATE,
           data: storyState2
         });
         dispatch({
-          action: Constants.STORY_OVERWRITE_STATE,
+          action: Actions.STORY_OVERWRITE_STATE,
           data: storyState3
         });
-        dispatch({ action: Constants.HISTORY_UNDO });
+        dispatch({ action: Actions.HISTORY_UNDO });
       });
 
       describe('.canUndo()', function() {
@@ -123,15 +123,15 @@ describe('HistoryStore', function() {
 
       beforeEach(function() {
         dispatch({
-          action: Constants.STORY_OVERWRITE_STATE,
+          action: Actions.STORY_OVERWRITE_STATE,
           data: storyState2
         });
         dispatch({
-          action: Constants.STORY_OVERWRITE_STATE,
+          action: Actions.STORY_OVERWRITE_STATE,
           data: storyState3
         });
-        dispatch({ action: Constants.HISTORY_UNDO });
-        dispatch({ action: Constants.HISTORY_UNDO });
+        dispatch({ action: Actions.HISTORY_UNDO });
+        dispatch({ action: Actions.HISTORY_UNDO });
       });
 
       describe('.canUndo()', function() {
@@ -162,7 +162,7 @@ describe('HistoryStore', function() {
 
           assert.equal(storyBeforeUndo.blocks.length, storyState1.blocks.length);
 
-          dispatch({ action: Constants.HISTORY_UNDO });
+          dispatch({ action: Actions.HISTORY_UNDO });
 
           var storyAfterUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
@@ -174,7 +174,7 @@ describe('HistoryStore', function() {
 
         beforeEach(function() {
           dispatch({
-            action: Constants.STORY_OVERWRITE_STATE,
+            action: Actions.STORY_OVERWRITE_STATE,
             data: storyState2
           });
         });
@@ -185,7 +185,7 @@ describe('HistoryStore', function() {
 
           assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
 
-          dispatch({ action: Constants.HISTORY_UNDO });
+          dispatch({ action: Actions.HISTORY_UNDO });
 
           var storyAfterUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
@@ -197,7 +197,7 @@ describe('HistoryStore', function() {
 
         beforeEach(function() {
           dispatch({
-            action: Constants.STORY_OVERWRITE_STATE,
+            action: Actions.STORY_OVERWRITE_STATE,
             data: storyState2
           });
         });
@@ -208,7 +208,7 @@ describe('HistoryStore', function() {
 
           assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
 
-          dispatch({ action: Constants.HISTORY_UNDO });
+          dispatch({ action: Actions.HISTORY_UNDO });
 
           var storyAfterUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
@@ -217,7 +217,7 @@ describe('HistoryStore', function() {
           assert.isTrue(window.socrata.storyteller.historyStore.canRedo());
 
           dispatch({
-            action: Constants.STORY_OVERWRITE_STATE,
+            action: Actions.STORY_OVERWRITE_STATE,
             data: storyState3
           });
 
@@ -237,17 +237,17 @@ describe('HistoryStore', function() {
 
             if (mod === 0) {
               dispatch({
-                action: Constants.STORY_OVERWRITE_STATE,
+                action: Actions.STORY_OVERWRITE_STATE,
                 data: storyState3
               });
             } else if (mod === 1) {
               dispatch({
-                action: Constants.STORY_OVERWRITE_STATE,
+                action: Actions.STORY_OVERWRITE_STATE,
                 data: storyState2
               });
             } else {
               dispatch({
-                action: Constants.STORY_OVERWRITE_STATE,
+                action: Actions.STORY_OVERWRITE_STATE,
                 data: storyState1
               });
             }
@@ -257,11 +257,11 @@ describe('HistoryStore', function() {
         it('should allow 99 redo actions (but a switch case 1)', function() {
 
           for (var i = 0; i < 98; i++) {
-            dispatch({ action: Constants.HISTORY_UNDO });
+            dispatch({ action: Actions.HISTORY_UNDO });
             assert.isTrue(window.socrata.storyteller.historyStore.canUndo());
           }
 
-          dispatch({ action: Constants.HISTORY_UNDO });
+          dispatch({ action: Actions.HISTORY_UNDO });
           assert.isFalse(window.socrata.storyteller.historyStore.canUndo());
         });
       });
@@ -277,7 +277,7 @@ describe('HistoryStore', function() {
 
           assert.equal(storyBeforeUndo.blocks.length, storyState1.blocks.length);
 
-          dispatch({ action: Constants.HISTORY_REDO });
+          dispatch({ action: Actions.HISTORY_REDO });
 
           var storyAfterRedo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
@@ -289,7 +289,7 @@ describe('HistoryStore', function() {
 
         beforeEach(function() {
           dispatch({
-            action: Constants.STORY_OVERWRITE_STATE,
+            action: Actions.STORY_OVERWRITE_STATE,
             data: storyState2
           });
         });
@@ -300,7 +300,7 @@ describe('HistoryStore', function() {
 
           assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
 
-          dispatch({ action: Constants.HISTORY_REDO });
+          dispatch({ action: Actions.HISTORY_REDO });
 
           var storyAfterRedo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
@@ -312,7 +312,7 @@ describe('HistoryStore', function() {
 
         beforeEach(function() {
           dispatch({
-            action: Constants.STORY_OVERWRITE_STATE,
+            action: Actions.STORY_OVERWRITE_STATE,
             data: storyState2
           });
         });
@@ -323,13 +323,13 @@ describe('HistoryStore', function() {
 
           assert.equal(storyBeforeUndo.blocks.length, storyState2.blocks.length);
 
-          dispatch({ action: Constants.HISTORY_UNDO });
+          dispatch({ action: Actions.HISTORY_UNDO });
 
           var storyAfterUndo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 
           assert.equal(storyAfterUndo.blocks.length, storyState1.blocks.length);
 
-          dispatch({ action: Constants.HISTORY_REDO });
+          dispatch({ action: Actions.HISTORY_REDO });
 
           var storyAfterRedo = JSON.parse(window.socrata.storyteller.historyStore.getStateAtCursor());
 

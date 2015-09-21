@@ -50,7 +50,7 @@ describe('componentAssetSelector jQuery plugin', function() {
     it('should render a button with the correct data-action attribute', function() {
       assert.lengthOf(
         $component.find(
-          '[data-action="{0}"]'.format(Constants.ASSET_SELECTOR_CHOOSE_PROVIDER)
+          '[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_CHOOSE_PROVIDER)
         ),
         1
       );

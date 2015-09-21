@@ -60,7 +60,7 @@ describe('AssetSelectorStore', function() {
 
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.ASSET_SELECTOR_CHOOSE_PROVIDER,
+          action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
           blockId: testBlockId,
           componentIndex: testComponentIndex
         });
@@ -69,7 +69,7 @@ describe('AssetSelectorStore', function() {
       describe('.getCurrentSelectorState()', function() {
 
         it('should return the action specified in the action payload', function() {
-          assert.equal(storyteller.assetSelectorStore.getCurrentSelectorState(), Constants.ASSET_SELECTOR_CHOOSE_PROVIDER);
+          assert.equal(storyteller.assetSelectorStore.getCurrentSelectorState(), Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
         });
       });
 
@@ -102,13 +102,13 @@ describe('AssetSelectorStore', function() {
 
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.ASSET_SELECTOR_CHOOSE_PROVIDER,
+          action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
           blockId: testBlockId,
           componentIndex: testComponentIndex
         });
 
         storyteller.dispatcher.dispatch({
-          action: Constants.ASSET_SELECTOR_CLOSE
+          action: Actions.ASSET_SELECTOR_CLOSE
         });
       });
 
@@ -156,7 +156,7 @@ describe('AssetSelectorStore', function() {
 
       it('should attempt to fetch the NBE datasetUid if dataset is OBE', function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
           datasetUid: standardMocks.validStoryUid,
           isNewBackend: false
         });
@@ -168,7 +168,7 @@ describe('AssetSelectorStore', function() {
 
       it('should not request API migrations if dataset is already NBE', function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
           datasetUid: standardMocks.validStoryUid,
           isNewBackend: true
         });
@@ -179,7 +179,7 @@ describe('AssetSelectorStore', function() {
 
       it('should add datasetUid to _currentComponentProperities', function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
           datasetUid: standardMocks.validStoryUid,
           isNewBackend: true
         });
@@ -197,7 +197,7 @@ describe('AssetSelectorStore', function() {
       beforeEach(function() {
         // Send in dataset uid so ComponentValues.value.settings exists
         storyteller.dispatcher.dispatch({
-          action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+          action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
           datasetUid: standardMocks.validStoryUid,
           isNewBackend: true
         });
@@ -207,7 +207,7 @@ describe('AssetSelectorStore', function() {
         var startingComponentValue = _.cloneDeep(storyteller.assetSelectorStore.getCurrentComponentValue());
 
         storyteller.dispatcher.dispatch({
-          action: Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
+          action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
           cardData: null
         });
 
@@ -224,7 +224,7 @@ describe('AssetSelectorStore', function() {
         };
 
         storyteller.dispatcher.dispatch({
-          action: Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
+          action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
           cardData: fakeCardData
         });
 
@@ -246,7 +246,7 @@ describe('AssetSelectorStore', function() {
 
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.FILE_UPLOAD_PROGRESS,
+          action: Actions.FILE_UPLOAD_PROGRESS,
           percentLoaded: 0.245
         });
       });
@@ -268,7 +268,7 @@ describe('AssetSelectorStore', function() {
 
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.FILE_UPLOAD_DONE,
+          action: Actions.FILE_UPLOAD_DONE,
           url: payloadUrl,
           documentId: payloadDocumentId
         });
@@ -298,7 +298,7 @@ describe('AssetSelectorStore', function() {
       describe('for file type validation error', function() {
         beforeEach(function() {
           storyteller.dispatcher.dispatch({
-            action: Constants.FILE_UPLOAD_ERROR,
+            action: Actions.FILE_UPLOAD_ERROR,
             error: {
               step: 'validation_file_type'
             }
@@ -327,7 +327,7 @@ describe('AssetSelectorStore', function() {
       describe('for file size validation error', function() {
         beforeEach(function() {
           storyteller.dispatcher.dispatch({
-            action: Constants.FILE_UPLOAD_ERROR,
+            action: Actions.FILE_UPLOAD_ERROR,
             error: {
               step: 'validation_file_size'
             }
@@ -356,7 +356,7 @@ describe('AssetSelectorStore', function() {
       describe('for other upload error with reason', function() {
         beforeEach(function() {
           storyteller.dispatcher.dispatch({
-            action: Constants.FILE_UPLOAD_ERROR,
+            action: Actions.FILE_UPLOAD_ERROR,
             error: {
               step: 'get_upload_url',
               reason: { status: 500, message: 'Internal Server Error' }

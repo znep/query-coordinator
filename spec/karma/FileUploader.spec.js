@@ -74,7 +74,7 @@ describe('FileUploader', function() {
 
         assert.equal(dispatchedEvents.length, 1);
         var dispatchedEvent = dispatchedEvents[0];
-        assert.equal(dispatchedEvent.action, Constants.FILE_UPLOAD_ERROR);
+        assert.equal(dispatchedEvent.action, Actions.FILE_UPLOAD_ERROR);
         assert.equal(dispatchedEvent.error.step, 'validation_file_type');
       });
 
@@ -84,7 +84,7 @@ describe('FileUploader', function() {
 
         assert.equal(dispatchedEvents.length, 1);
         var dispatchedEvent = dispatchedEvents[0];
-        assert.equal(dispatchedEvent.action, Constants.FILE_UPLOAD_ERROR);
+        assert.equal(dispatchedEvent.action, Actions.FILE_UPLOAD_ERROR);
         assert.equal(dispatchedEvent.error.step, 'validation_file_size');
       });
     });
@@ -140,17 +140,17 @@ describe('FileUploader', function() {
           assert.equal(dispatchedEvents.length, 3);
 
           assert.deepEqual(_.findWhere(dispatchedEvents, { 'action': 'FILE_UPLOAD_PROGRESS', percentLoaded: 0 }), {
-            action: Constants.FILE_UPLOAD_PROGRESS,
+            action: Actions.FILE_UPLOAD_PROGRESS,
             percentLoaded: 0
           });
 
           assert.deepEqual(_.findWhere(dispatchedEvents, { 'action': 'FILE_UPLOAD_PROGRESS', percentLoaded: 1 }), {
-            action: Constants.FILE_UPLOAD_PROGRESS,
+            action: Actions.FILE_UPLOAD_PROGRESS,
             percentLoaded: 1
           });
 
           assert.deepEqual(_.findWhere(dispatchedEvents, { 'action': 'FILE_UPLOAD_DONE' }), {
-            action: Constants.FILE_UPLOAD_DONE,
+            action: Actions.FILE_UPLOAD_DONE,
             documentId: documentId,
             url: documentUrl
           });
@@ -183,12 +183,12 @@ describe('FileUploader', function() {
         setTimeout(function() {
 
           assert.deepEqual(_.findWhere(dispatchedEvents, { 'action': 'FILE_UPLOAD_PROGRESS', percentLoaded: 0 }), {
-            action: Constants.FILE_UPLOAD_PROGRESS,
+            action: Actions.FILE_UPLOAD_PROGRESS,
             percentLoaded: 0
           });
 
           assert.deepEqual(_.findWhere(dispatchedEvents, { 'action': 'FILE_UPLOAD_ERROR' }), {
-            action: Constants.FILE_UPLOAD_ERROR,
+            action: Actions.FILE_UPLOAD_ERROR,
             error: { step: 'get_upload_url', reason: {status: 422, message: 'Unprocessable Entity'} }
           });
 
@@ -231,7 +231,7 @@ describe('FileUploader', function() {
         setTimeout(function() {
 
           assert.deepEqual(_.findWhere(dispatchedEvents, { 'action': 'FILE_UPLOAD_ERROR' }), {
-            action: Constants.FILE_UPLOAD_ERROR,
+            action: Actions.FILE_UPLOAD_ERROR,
             error: {
               step: 'upload_file',
               reason: { status: 403, message: 'Forbidden' }
@@ -286,7 +286,7 @@ describe('FileUploader', function() {
         setTimeout(function() {
 
           assert.deepEqual(_.findWhere(dispatchedEvents, { 'action': 'FILE_UPLOAD_ERROR' }), {
-            action: Constants.FILE_UPLOAD_ERROR,
+            action: Actions.FILE_UPLOAD_ERROR,
             error: {
               step: 'save_resource',
               reason: { status: 500, message: 'Internal Server Error' }
@@ -350,7 +350,7 @@ describe('FileUploader', function() {
         setTimeout(function() {
 
           assert.deepEqual(_.findWhere(dispatchedEvents, { 'action': 'FILE_UPLOAD_ERROR' }), {
-            action: Constants.FILE_UPLOAD_ERROR,
+            action: Actions.FILE_UPLOAD_ERROR,
             error: {
               step: 'get_resource',
               reason: { status: 400, message: 'Bad Request' }

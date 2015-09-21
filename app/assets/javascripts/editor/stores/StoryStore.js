@@ -22,60 +22,60 @@
 
       switch (action) {
 
-        case Constants.STORY_CREATE:
+        case Actions.STORY_CREATE:
           _setStory(payload.data);
           break;
 
-        case Constants.STORY_SET_TITLE:
+        case Actions.STORY_SET_TITLE:
           _setStoryTitle(payload);
           break;
 
-        case Constants.STORY_SAVED:
+        case Actions.STORY_SAVED:
           _setStoryDigest(payload);
           break;
 
-        case Constants.STORY_SET_DESCRIPTION:
+        case Actions.STORY_SET_DESCRIPTION:
           _setStoryDescription(payload);
           break;
 
-        case Constants.STORY_SET_PERMISSIONS:
+        case Actions.STORY_SET_PERMISSIONS:
           _setStoryPermissions(payload);
           break;
 
-        case Constants.STORY_SET_PUBLISHED_STORY:
+        case Actions.STORY_SET_PUBLISHED_STORY:
           _setStoryPublishedStory(payload);
           break;
 
-        case Constants.STORY_OVERWRITE_STATE:
+        case Actions.STORY_OVERWRITE_STATE:
           _setStory(payload.data, true);
           break;
 
-        case Constants.STORY_MOVE_BLOCK_UP:
+        case Actions.STORY_MOVE_BLOCK_UP:
           _moveBlockUp(payload);
           break;
 
-        case Constants.STORY_MOVE_BLOCK_DOWN:
+        case Actions.STORY_MOVE_BLOCK_DOWN:
           _moveBlockDown(payload);
           break;
 
-        case Constants.STORY_DELETE_BLOCK:
+        case Actions.STORY_DELETE_BLOCK:
           _deleteBlock(payload);
           break;
 
-        case Constants.STORY_INSERT_BLOCK:
+        case Actions.STORY_INSERT_BLOCK:
           _insertBlockIntoStory(payload);
           break;
 
-        case Constants.BLOCK_UPDATE_COMPONENT:
+        case Actions.BLOCK_UPDATE_COMPONENT:
           _updateBlockComponentAtIndex(payload);
           break;
 
-        case Constants.HISTORY_UNDO:
-        case Constants.HISTORY_REDO:
+        case Actions.HISTORY_UNDO:
+        case Actions.HISTORY_REDO:
           _applyHistoryState();
           break;
 
-        case Constants.STORY_UPDATE_THEME:
+        case Actions.STORY_UPDATE_THEME:
           _setStoryTheme(payload);
           break;
       }

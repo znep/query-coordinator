@@ -59,6 +59,7 @@
       "_socrataVisualizationComponentDataRenderers": true,
       "airbrakeJs": true,
       "Constants": true,
+      "Actions": true,
       "jQuery": true,
       "I18n": true,
       "sampleBlocks": true,

@@ -56,13 +56,13 @@ describe('CoreSavingStore', function() {
 
       beforeEach(function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.STORY_SET_TITLE,
+          action: Actions.STORY_SET_TITLE,
           storyUid: standardMocks.validStoryUid,
           title: _.range(0,1000).join()
         });
 
         storyteller.dispatcher.dispatch({
-          action: Constants.STORY_SAVE_METADATA,
+          action: Actions.STORY_SAVE_METADATA,
           storyUid: standardMocks.validStoryUid
         });
 
@@ -82,7 +82,7 @@ describe('CoreSavingStore', function() {
       it('immediately reports an error', function() {
         assert.throw(function() {
           storyteller.dispatcher.dispatch({
-            action: Constants.STORY_SAVE_METADATA,
+            action: Actions.STORY_SAVE_METADATA,
             storyUid: standardMocks.validStoryUid
           });
         });
@@ -98,7 +98,7 @@ describe('CoreSavingStore', function() {
         document.cookie = cookie;
 
         storyteller.dispatcher.dispatch({
-          action: Constants.STORY_SAVE_METADATA,
+          action: Actions.STORY_SAVE_METADATA,
           storyUid: standardMocks.validStoryUid
         });
         viewUrl = '/api/views/{0}.json'.format(standardMocks.validStoryUid);

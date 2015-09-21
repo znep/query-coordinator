@@ -71,7 +71,7 @@
       if (storyUidOver !== _storyUidDraggedOver) {
         if (_storyUidDraggedOver) {
           dispatcher.dispatch({
-            action: Constants.STORY_DRAG_LEAVE,
+            action: Actions.STORY_DRAG_LEAVE,
             storyUid: _storyUidDraggedOver
           });
           _storyUidDraggedOver = undefined;
@@ -79,7 +79,7 @@
 
         if (storyUidOver) {
           dispatcher.dispatch({
-            action: Constants.STORY_DRAG_ENTER,
+            action: Actions.STORY_DRAG_ENTER,
             storyUid: storyUidOver
           });
           _storyUidDraggedOver = storyUidOver;
@@ -88,7 +88,7 @@
 
       if (_storyUidDraggedOver) {
         dispatcher.dispatch({
-          action: Constants.STORY_DRAG_OVER,
+          action: Actions.STORY_DRAG_OVER,
           storyUid: _storyUidDraggedOver,
           blockContent: _blockContent,
           pointer: pointer,
@@ -115,7 +115,7 @@
 
       if (storyUidOver) {
         dispatcher.dispatch({
-          action: Constants.STORY_DROP,
+          action: Actions.STORY_DROP,
           blockContent: blockContent,
           storyUid: storyUidOver
         });

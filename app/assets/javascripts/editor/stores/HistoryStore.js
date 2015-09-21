@@ -27,11 +27,11 @@
 
       switch (action) {
 
-        case Constants.HISTORY_UNDO:
+        case Actions.HISTORY_UNDO:
           _undo();
           break;
 
-        case Constants.HISTORY_REDO:
+        case Actions.HISTORY_REDO:
           _redo();
           break;
       }

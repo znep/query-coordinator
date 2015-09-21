@@ -43,6 +43,10 @@ describe('SocrataFeatureMap component', function() {
       }
     },
     filters: [],
+    unit: {
+      one: 'record',
+      other: 'records'
+    }
   };
 
   function destroyVisualization($container) {

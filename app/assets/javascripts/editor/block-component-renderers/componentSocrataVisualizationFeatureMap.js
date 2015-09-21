@@ -59,7 +59,14 @@
         other: 'records'
       };
 
-      vif.configuration.tileserverHosts = ['https://cml.local'];
+      // At some point in the future we may want to do a check to see if the
+      // datasetUid is available on `tileserver[1..n].api.us.socrata.com` before
+      // falling back to the dataset's host domain.
+      //
+      // For now, this should be sufficient.
+      vif.configuration.tileserverHosts = [
+        'https://{0}'.format(vif.domain)
+      ];
       vif.configuration.baseLayerUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png';
       vif.configuration.baseLayerOpacity = 0.25;
       vif.configuration.hover = true;

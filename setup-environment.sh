@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 cp tools/hooks/pre-push .git/hooks/pre-push
 
@@ -24,15 +24,19 @@ else
 fi
 
 # 2. Ruby
+gem source -a https://${ARTIFACTORY_ONLINE_USER}:${ARTIFACTORY_ONLINE_PASSWORD}@socrata.artifactoryonline.com/socrata/api/gems/rubygems-remote/
 gem install bundler
 bundle config socrata.artifactoryonline.com "${ARTIFACTORY_ONLINE_USER}":"${ARTIFACTORY_ONLINE_PASSWORD}"
 echo "" > "${HOME}/.gemrc"
 
 # 3. NPM
+sudo chown -R $(whoami) ~/.npm
+sudo chown -R $(whoami) /usr/local/lib/node_modules
+
 npm config set registry https://socrata.artifactoryonline.com/socrata/api/npm/npm-remote
 curl -u"${ARTIFACTORY_ONLINE_USER}":"${ARTIFACTORY_ONLINE_PASSWORD}" "https://socrata.artifactoryonline.com/socrata/api/npm/auth" >> ~/.npmrc
 
 # 4. Bower
 echo "{\"registry\": \"https://${ARTIFACTORY_ONLINE_USER}:${ARTIFACTORY_ONLINE_PASSWORD}@socrata.artifactoryonline.com/socrata/api/bower/bower-remote-github\" }" > "${HOME}/.bowerrc"
-npm install -g karma-cli phantomjs karma-phantomjs-launcher bower-art bower-art-resolver
+npm install -g karma-cli phantomjs karma-phantomjs-launcher bower-art-resolver
 npm install

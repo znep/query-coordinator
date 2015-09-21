@@ -6,7 +6,7 @@
       '`{0}` must be loaded before `{1}`'.
         format(
           'socrata.visualizations.Visualization.js',
-          'socrata.visualizations.rowInspector.js'
+          'socrata.visualizations.RowInspector.js'
         )
     );
   }
@@ -77,10 +77,10 @@
                 '</div>',
                 '<div class="sticky-border bottom"></div>',
                 '<div class="paging-panel">',
-                  '<button type="button" class="l-to-r pagination-btn action-btn previous">',
+                  '<button type="button" class="l-to-r paging-btn action-btn previous">',
                     '<span class="caret"></span>',
                   '</button>',
-                  '<button type="button" class="r-to-l pagination-btn action-btn next">',
+                  '<button type="button" class="r-to-l paging-btn action-btn next">',
                     '<span class="caret"></span>',
                   '</button>',
                   '<div class="paging-info">',
@@ -344,7 +344,7 @@
     _render();
   }
 
-  root.socrata.visualizations.rowInspector = {
+  root.socrata.visualizations.RowInspector = {
     /**
      * @function setup
      * @description

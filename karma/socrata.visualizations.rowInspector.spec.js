@@ -1,4 +1,4 @@
-describe('socrata.visualizations.rowInspector', function() {
+describe('socrata.visualizations.RowInspector', function() {
   'use strict';
 
   var $rowInspector;
@@ -21,7 +21,7 @@ describe('socrata.visualizations.rowInspector', function() {
   }
 
   before(function() {
-    window.socrata.visualizations.rowInspector.setup();
+    window.socrata.visualizations.RowInspector.setup();
     $rowInspector = $('#socrata-row-inspector');
     $toolPanel = $rowInspector.find('.tool-panel');
   });
@@ -66,8 +66,8 @@ describe('socrata.visualizations.rowInspector', function() {
 
   function runTestCasesAndAssertTranslations(i18nStrings) {
     it('should apply the correct translations to the html', function() {
-      assert.equal($rowInspector.find('.pagination-btn.previous').text().trim(), i18nStrings.previous);
-      assert.equal($rowInspector.find('.pagination-btn.next').text().trim(), i18nStrings.next);
+      assert.equal($rowInspector.find('.paging-btn.previous').text().trim(), i18nStrings.previous);
+      assert.equal($rowInspector.find('.paging-btn.next').text().trim(), i18nStrings.next);
     });
 
     describe('When given SOCRATA_VISUALIZATION_ROW_INSPECTOR_SHOW', function() {
@@ -159,14 +159,16 @@ describe('socrata.visualizations.rowInspector', function() {
   }
 
   describe('setup', function() {
+
     describe('given no params', function() {
+
       var i18nStrings = {
         previous: 'Previous',
         next: 'Next'
       };
 
       beforeEach(function() {
-        window.socrata.visualizations.rowInspector.setup();
+        window.socrata.visualizations.RowInspector.setup();
       });
 
       runTestCasesAndAssertTranslations(i18nStrings);
@@ -180,7 +182,7 @@ describe('socrata.visualizations.rowInspector', function() {
         };
 
         beforeEach(function() {
-          window.socrata.visualizations.rowInspector.setup({
+          window.socrata.visualizations.RowInspector.setup({
             localization: i18nStrings
           });
         });

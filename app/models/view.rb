@@ -795,6 +795,12 @@ class View < Model
     download_url('rss')
   end
 
+  def show_rss?
+    is_tabular? &&
+    !is_form? &&
+    !data_lens?
+  end
+
   def download_url(ext = 'json')
      "#{root_url(host: self.domainCName || CurrentDomain.cname)}api/views/#{self.id}/rows.#{ext}"
   end

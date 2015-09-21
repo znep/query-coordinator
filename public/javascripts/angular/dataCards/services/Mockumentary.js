@@ -16,7 +16,7 @@
         },
         primaryAmountField: null,
         primaryAggregation: null,
-        version: 2
+        version: 1
       };
 
       return $.extend(true, minimalPageMetadata, pageOptions);
@@ -49,7 +49,7 @@
               pageId: 'page-page',
               primaryAmountField: null,
               primaryAggregation: null,
-              version: 2
+              version: 1
             },
             {
               cards: [],
@@ -59,7 +59,7 @@
               pageId: 'aaaa-aaaa',
               primaryAmountField: null,
               primaryAggregation: null,
-              version: 2
+              version: 1
             }
           ],
           user: []

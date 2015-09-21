@@ -1,12 +1,28 @@
 .feature-map-container {
+  position: relative;
   width: 100%;
   height: 100%;
   font-size: 14px;
+  background-color: #ccc;
 }
 
 .feature-map {
   width: 100%;
   height: 100%;
+}
+
+.feature-map-pan-zoom-disabled-warning {
+  position: absolute;
+  display: none;
+  left: 1em;
+  top: 1em;
+  cursor: default;
+}
+
+.feature-map-pan-zoom-disabled-warning .feature-map-pan-zoom-disabled-warning-icon {
+  font-size: 1.3em;
+  padding: 0.2em;
+  color: #666;
 }
 
 .feature-map-locate-user-btn {
@@ -37,6 +53,12 @@
   display: none;
   width: 100%;
   height: 100%;
+}
+
+.feature-map-locate-user-btn .feature-map-locate-user-busy-spinner {
+  position: relative;
+  left: 0.2em;
+  top: 0.25em;
 }
 
 .feature-map-locate-user-btn[data-locate-user-status="ready"] .feature-map-locate-user-icon {

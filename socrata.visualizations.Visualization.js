@@ -16,23 +16,25 @@
 
   root.socrata.visualizations = root.socrata.visualizations || {};
 
-  function Visualization(element, config) {
+  function Visualization(element, vif) {
 
-    var _defaultConfig = {
-      localization: {},
-      axisLabels: {
-        top: false,
-        right: false,
-        bottom: false,
-        left: false
+    var _defaultVIF = {
+      configuration: {
+        axisLabels: {
+          top: false,
+          right: false,
+          bottom: false,
+          left: false
+        },
+        localization: {}
       }
     }
-    var _config =_.merge(_defaultConfig, config);
+    var _vif =_.merge(_defaultVIF, vif);
 
-    utils.assertIsOneOfTypes(_config.axisLabels.top, 'boolean', 'string');
-    utils.assertIsOneOfTypes(_config.axisLabels.right, 'boolean', 'string');
-    utils.assertIsOneOfTypes(_config.axisLabels.bottom, 'boolean', 'string');
-    utils.assertIsOneOfTypes(_config.axisLabels.left, 'boolean', 'string');
+    utils.assertIsOneOfTypes(_vif.configuration.axisLabels.top, 'boolean', 'string');
+    utils.assertIsOneOfTypes(_vif.configuration.axisLabels.right, 'boolean', 'string');
+    utils.assertIsOneOfTypes(_vif.configuration.axisLabels.bottom, 'boolean', 'string');
+    utils.assertIsOneOfTypes(_vif.configuration.axisLabels.left, 'boolean', 'string');
 
     this.element = element;
 
@@ -42,7 +44,7 @@
 
     this.renderAxisLabels = function(container) {
 
-      var axisLabels = _config.axisLabels;
+      var axisLabels = _vif.configuration.axisLabels;
 
       var topAxisLabel = $(
         '<div>',
@@ -118,8 +120,8 @@
 
       var localizedString = '';
 
-      if (_.has(_config.localization, key)) {
-        localizedString = _config.localization[key];
+      if (_.has(_vif.configuration.localization, key)) {
+        localizedString = _vif.configuration.localization[key];
       } else {
         _logWarning('No localized string found for key `{0}`.'.format(key));
       }

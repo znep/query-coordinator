@@ -27,20 +27,17 @@
    *     provided as the `LIMIT` parameter in the query string.
    *   @property {String} cname - The CNAME of the current domain. This value
    *     will be provided as the 'X-Socrata-Host' header in tile data requests.
-   *   @property {appToken} - The app token to provide in tile data requests.
    */
   function TileserverDataProvider(config) {
 
     _.extend(this, new root.socrata.visualizations.DataProvider(config));
 
-    utils.assertHasProperty(config, 'appToken');
     utils.assertHasProperty(config, 'domain');
     utils.assertHasProperty(config, 'datasetUid');
     utils.assertHasProperty(config, 'columnName');
     utils.assertHasProperty(config, 'featuresPerTile');
     utils.assertHasProperty(config, 'tileserverHosts');
 
-    utils.assertIsOneOfTypes(config.appToken, 'string');
     utils.assertIsOneOfTypes(config.domain, 'string');
     utils.assertIsOneOfTypes(config.datasetUid, 'string');
     utils.assertIsOneOfTypes(config.columnName, 'string');
@@ -71,7 +68,6 @@
      */
     this.buildTileGetter = function(whereClause, useOriginHost) {
 
-      var appToken = this.getConfigurationProperty('appToken');
       var domain = this.getConfigurationProperty('domain');
       var datasetUid = this.getConfigurationProperty('datasetUid');
       var columnName = this.getConfigurationProperty('columnName');
@@ -125,8 +121,7 @@
           {
             headers: {
               'X-Socrata-Host': domain,
-              'X-Socrata-RequestId': _instanceRequestIdComponent + _randomNChars(16),
-              'X-App-Token': appToken
+              'X-Socrata-RequestId': _instanceRequestIdComponent + _randomNChars(16)
             }
           }
         );

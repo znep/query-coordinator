@@ -46,9 +46,38 @@
   /**
    * Instantiates a Socrata ColumnChart Visualization from the
    * `socrata-visualizations` package.
+   *
+   * @param vif - https://docs.google.com/document/d/15oKmDfv39HrhgCJRTKtYadG8ZQvFUeyfx4kR_NZkBgc
    */
+  $.fn.socrataColumnChart = function(vif) {
 
-  $.fn.socrataColumnChart = function(config) {
+    utils.assertHasProperties(
+      vif,
+      'columnName',
+      'configuration',
+      'datasetUid',
+      'domain',
+      'unit'
+    );
+
+    utils.assertHasProperties(
+      vif.unit,
+      'one',
+      'other'
+    );
+
+    utils.assertHasProperties(
+      vif.configuration,
+      'localization'
+    );
+
+    utils.assertHasProperties(
+      vif.configuration.localization,
+      'NO_VALUE',
+      'FLYOUT_UNFILTERED_AMOUNT_LABEL',
+      'FLYOUT_FILTERED_AMOUNT_LABEL',
+      'FLYOUT_SELECTED_NOTICE'
+    );
 
     this.destroySocrataColumnChart = function() {
 
@@ -57,43 +86,35 @@
       _detachEvents();
     };
 
-    utils.assertHasProperty(config, 'domain');
-    utils.assertHasProperty(config, 'datasetUid');
-    utils.assertHasProperty(config, 'columnName');
-    utils.assertHasProperty(config, 'unit');
-
     var $element = $(this);
 
     // SoQL returns row results for display as columns.
     // We need separate data providers for 'unfiltered'
     // and 'filtered' requests, which are merged below.
     var unfilteredSoqlDataProviderConfig = {
-      domain: config.domain,
-      datasetUid: config.datasetUid
+      domain: vif.domain,
+      datasetUid: vif.datasetUid
     };
     var unfilteredSoqlDataProvider = new socrata.visualizations.SoqlDataProvider(
       unfilteredSoqlDataProviderConfig
     );
 
     var filteredSoqlDataProviderConfig = {
-      domain: config.domain,
-      datasetUid: config.datasetUid
+      domain: vif.domain,
+      datasetUid: vif.datasetUid
     };
     var filteredSoqlDataProvider = new socrata.visualizations.SoqlDataProvider(
       filteredSoqlDataProviderConfig
     );
 
-    var visualizationConfig = {
-      columns: {
-        name: NAME_INDEX,
-        unfilteredValue: UNFILTERED_INDEX,
-        filteredValue: FILTERED_INDEX,
-        selected: SELECTED_INDEX
-      },
-      localization: config.localization
+    vif.configuration.columns = {
+      name: NAME_INDEX,
+      unfilteredValue: UNFILTERED_INDEX,
+      filteredValue: FILTERED_INDEX,
+      selected: SELECTED_INDEX
     };
 
-    var visualization = new visualizations.ColumnChart($element, visualizationConfig);
+    var visualization = new visualizations.ColumnChart($element, vif);
     var visualizationData = [];
     var rerenderOnResizeTimeout;
 
@@ -107,18 +128,8 @@
     function _getRenderOptions() {
       return {
         showAllLabels: true,
-        labelUnit: _getLabelUnit(config),
         showFiltered: false
       };
-    }
-
-    function _getLabelUnit(config) {
-      utils.assertHasProperty(config, 'unit');
-      utils.assertHasProperty(config.unit, 'en');
-      utils.assertHasProperty(config.unit.en, 'one');
-      utils.assertHasProperty(config.unit.en, 'other');
-
-      return config.unit.en;
     }
 
     /**
@@ -161,7 +172,8 @@
 
     function _handleVisualizationFlyout(event) {
 
-      var payload = event.originalEvent.detail.data;
+      var payload = event.originalEvent.detail;
+      var flyoutPayload = null;
       var flyoutContent = null;
       var flyoutTable = null;
       var flyoutElements = null;
@@ -177,19 +189,7 @@
       var flyoutSelectedNoticeLabel;
       var flyoutSelectedNoticeRow;
 
-      if (payload === null) {
-
-        $element[0].dispatchEvent(
-          new root.CustomEvent(
-            'SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT',
-            {
-              detail: null,
-              bubbles: true
-            }
-          )
-        );
-
-      } else {
+      if (payload !== null) {
 
         flyoutContent = $(document.createDocumentFragment());
         flyoutTable = $('<table>', { 'class': 'socrata-flyout-table' });
@@ -216,12 +216,7 @@
           {
             'class': 'socrata-flyout-cell'
           }
-        ).text(
-          '{0} {1}'.format(
-            utils.formatNumber(payload.unfilteredValue),
-            payload.labelUnit
-          )
-        );
+        ).text(payload.unfilteredValue);
 
         flyoutUnfilteredValueRow = $(
           '<tr>',
@@ -256,12 +251,7 @@
             {
               'class': filteredRowClass
             }
-          ).text(
-            '{0} {1}'.format(
-              utils.formatNumber(payload.filteredValue),
-              payload.labelUnit
-            )
-          );
+          ).text(payload.filteredValue);
 
           flyoutFilteredValueRow = $(
             '<tr>',
@@ -320,21 +310,23 @@
           flyoutTable
         ]);
 
-        $element[0].dispatchEvent(
-          new root.CustomEvent(
-            'SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT',
-            {
-              detail: {
-                element: payload.element,
-                content: flyoutContent,
-                rightSideHint: false,
-                belowTarget: false
-              },
-              bubbles: true
-            }
-          )
-        );
+        flyoutPayload = {
+          element: payload.element,
+          content: flyoutContent,
+          rightSideHint: false,
+          belowTarget: false
+        };
       }
+
+      $element[0].dispatchEvent(
+        new root.CustomEvent(
+          'SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT',
+          {
+            detail: flyoutPayload,
+            bubbles: true
+          }
+        )
+      );
     }
 
     function _handleDatumSelect() {// event) { ---> Linting sucks
@@ -358,7 +350,7 @@
     function _updateData() {
 
       var queryString = BASE_QUERY.format(
-        config.columnName,
+        vif.columnName,
         SOQL_DATA_PROVIDER_NAME_ALIAS,
         SOQL_DATA_PROVIDER_VALUE_ALIAS
       );

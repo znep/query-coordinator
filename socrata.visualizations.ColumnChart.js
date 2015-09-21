@@ -2,6 +2,8 @@
 
   'use strict';
 
+  var utils = root.socrata.utils;
+
   if (!_.has(root, 'socrata.visualizations.Visualization')) {
     throw new Error(
       '`{0}` must be loaded before `{1}`'.
@@ -26,9 +28,9 @@
     return width;
   };
 
-  function ColumnChart(element, config) {
+  function ColumnChart(element, vif) {
 
-    _.extend(this, new root.socrata.visualizations.Visualization(element, config));
+    _.extend(this, new root.socrata.visualizations.Visualization(element, vif));
 
     var self = this;
 
@@ -52,10 +54,10 @@
     var _nonDefaultSelectedLabelSelector = '.labels .label.selected.non-default';
 
     // TODO: Validate columns
-    var NAME_INDEX = config.columns.name;
-    var UNFILTERED_INDEX = config.columns.unfilteredValue;
-    var FILTERED_INDEX = config.columns.filteredValue;
-    var SELECTED_INDEX = config.columns.selected;
+    var NAME_INDEX = vif.configuration.columns.name;
+    var UNFILTERED_INDEX = vif.configuration.columns.unfilteredValue;
+    var FILTERED_INDEX = vif.configuration.columns.filteredValue;
+    var SELECTED_INDEX = vif.configuration.columns.selected;
 
     _renderTemplate(this.element);
 
@@ -268,23 +270,52 @@
     }
 
     function showFlyout(event) {
-
       var datum = d3.select(event.currentTarget).datum();
-
       var barGroupName = _escapeQuotesAndBackslashes(datum[NAME_INDEX]);
-
       var barGroupElement = _chartWrapper.
         find('.bar-group').
         filter(function(index, element) { return element.getAttribute('data-bar-name') === barGroupName; }).
         find('.unfiltered').
         get(0);
+      var unfilteredValueUnit;
+      var filteredValueUnit;
+
+      if (datum[UNFILTERED_INDEX] ===1) {
+
+        unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
+          _lastRenderOptions.unit.one :
+          vif.unit.one;
+
+      } else {
+
+        unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
+          _lastRenderOptions.unit.other :
+          vif.unit.other;
+
+      }
+
+      if (datum[FILTERED_INDEX] ===1) {
+
+        filteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
+          _lastRenderOptions.unit.one :
+          vif.unit.one;
+
+      } else {
+
+        filteredValueUnit = (_.has(_lastRenderOptions, 'unit.other')) ?
+          _lastRenderOptions.unit.other :
+          vif.unit.other;
+
+      }
 
       var payload = {
         element: barGroupElement,
         title: _labelValueOrPlaceholder(datum[NAME_INDEX]),
         unfilteredValueLabel: self.getLocalization('FLYOUT_UNFILTERED_AMOUNT_LABEL'),
-        unfilteredValue: datum[UNFILTERED_INDEX],
-        labelUnit: (datum[UNFILTERED_INDEX] === 1) ? _lastRenderOptions.labelUnit.one : _lastRenderOptions.labelUnit.other,
+        unfilteredValue: '{0} {1}'.format(
+          utils.formatNumber(datum[UNFILTERED_INDEX]),
+          unfilteredValueUnit
+        ),
         selectedNotice: self.getLocalization('FLYOUT_SELECTED_NOTICE'),
         selected: datum[SELECTED_INDEX]
       };
@@ -292,15 +323,15 @@
       if (_lastRenderOptions.showFiltered) {
 
         payload.filteredValueLabel = self.getLocalization('FLYOUT_FILTERED_AMOUNT_LABEL');
-        payload.filteredValue = datum[FILTERED_INDEX];
-
+        payload.filteredValue = '{0} {1}'.format(
+          utils.formatNumber(datum[FILTERED_INDEX]),
+          filteredValueUnit
+        )
       }
 
       self.emitEvent(
         'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
-        {
-          data: payload
-        }
+        payload
       );
     }
 
@@ -308,9 +339,7 @@
 
       self.emitEvent(
         'SOCRATA_VISUALIZATION_COLUMN_FLYOUT',
-        {
-          data: null
-        }
+        null
       );
     }
 
@@ -339,7 +368,6 @@
       var chartWidth = element.width();
       var chartHeight = element.height();
       var showAllLabels = options.showAllLabels;
-      var labelUnit = options.labelUnit;
       var showFiltered = options.showFiltered;
 
       if (chartWidth <= 0 || chartHeight <= 0) {

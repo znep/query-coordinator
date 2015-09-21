@@ -48,6 +48,11 @@
      * Public methods
      */
 
+    this.buildBaseQuery = function(filters) {
+      // TODO: Implement mapping of filters array into a query string
+      return '';
+    };
+
     /**
      * `.query()` executes a SoQL query against the current domain that returns
      * key => value pairs. The query string is passed in by the caller, meaning
@@ -164,7 +169,7 @@
       );
       var headers = {
         'Accept': 'application/json',
-        'Content-type': 'application/json',
+        'Content-type': 'application/json'
       };
 
       return (

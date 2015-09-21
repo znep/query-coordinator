@@ -2,7 +2,6 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
 
   'use strict';
 
-  var VALID_APP_TOKEN = 'validAppToken';
   var VALID_DOMAIN = 'example.com';
   var VALID_DATASET_UID = 'test-test';
   var VALID_COLUMN_NAME = 'point';
@@ -10,7 +9,6 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
   var VALID_TILESERVER_HOSTS = ['api1.example.com', 'api2.example.com'];
 
   var VALID_CONFIG = {
-    appToken: VALID_APP_TOKEN,
     domain: VALID_DOMAIN,
     datasetUid: VALID_DATASET_UID,
     columnName: VALID_COLUMN_NAME,
@@ -45,7 +43,6 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
         assert.throw(function() {
 
           var tileserverDataProvider = new TileserverDataProvider({
-            appToken: null,
             domain: VALID_DOMAIN,
             datasetUid: VALID_DATASET_UID,
             columnName: VALID_COLUMN_NAME,
@@ -57,7 +54,6 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
         assert.throw(function() {
 
           var tileserverDataProvider = new TileserverDataProvider({
-            appToken: VALID_APP_TOKEN,
             domain: null,
             datasetUid: VALID_DATASET_UID,
             columnName: VALID_COLUMN_NAME,
@@ -69,7 +65,6 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
         assert.throw(function() {
 
           var tileserverDataProvider = new TileserverDataProvider({
-            appToken: VALID_APP_TOKEN,
             domain: VALID_DOMAIN,
             datasetUid: null,
             columnName: VALID_COLUMN_NAME,
@@ -81,7 +76,6 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
         assert.throw(function() {
 
           var tileserverDataProvider = new TileserverDataProvider({
-            appToken: VALID_APP_TOKEN,
             domain: VALID_DOMAIN,
             datasetUid: VALID_DATASET_UID,
             columnName: null,
@@ -93,7 +87,6 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
         assert.throw(function() {
 
           var tileserverDataProvider = new TileserverDataProvider({
-            appToken: VALID_APP_TOKEN,
             domain: VALID_DOMAIN,
             datasetUid: VALID_DATASET_UID,
             columnName: VALID_COLUMN_NAME,
@@ -105,7 +98,6 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
         assert.throw(function() {
 
           var tileserverDataProvider = new TileserverDataProvider({
-            appToken: VALID_APP_TOKEN,
             domain: VALID_DOMAIN,
             datasetUid: VALID_DATASET_UID,
             columnName: VALID_COLUMN_NAME,
@@ -149,7 +141,6 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
         request = server.requests[0];
 
         assert.equal(request.method, 'GET');
-        assert.propertyVal(request.requestHeaders, 'X-App-Token', VALID_APP_TOKEN);
 
         assert.match(request.url, new RegExp(TILESERVER_HOST_PATTERN));
         assert.notMatch(request.url, new RegExp(ORIGIN_HOST_PATTERN));
@@ -172,7 +163,6 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
         request = server.requests[0];
 
         assert.equal(request.method, 'GET');
-        assert.propertyVal(request.requestHeaders, 'X-App-Token', VALID_APP_TOKEN);
 
         assert.match(request.url, new RegExp(TILESERVER_HOST_PATTERN));
         assert.notMatch(request.url, new RegExp(ORIGIN_HOST_PATTERN));
@@ -195,7 +185,6 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
         request = server.requests[0];
 
         assert.equal(request.method, 'GET');
-        assert.propertyVal(request.requestHeaders, 'X-App-Token', VALID_APP_TOKEN);
 
         assert.match(request.url, new RegExp(TILESERVER_HOST_PATTERN));
         assert.notMatch(request.url, new RegExp(ORIGIN_HOST_PATTERN));
@@ -218,7 +207,6 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
         request = server.requests[0];
 
         assert.equal(request.method, 'GET');
-        assert.propertyVal(request.requestHeaders, 'X-App-Token', VALID_APP_TOKEN);
 
         assert.match(request.url, new RegExp(TILESERVER_HOST_PATTERN));
         assert.notMatch(request.url, new RegExp(ORIGIN_HOST_PATTERN));
@@ -241,7 +229,6 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
         request = server.requests[0];
 
         assert.equal(request.method, 'GET');
-        assert.propertyVal(request.requestHeaders, 'X-App-Token', VALID_APP_TOKEN);
 
         assert.match(request.url, new RegExp(TILESERVER_HOST_PATTERN));
         assert.notMatch(request.url, new RegExp(ORIGIN_HOST_PATTERN));
@@ -264,7 +251,6 @@ describe('socrata.visualizations.TileserverDataProvider', function() {
         request = server.requests[0];
 
         assert.equal(request.method, 'GET');
-        assert.propertyVal(request.requestHeaders, 'X-App-Token', VALID_APP_TOKEN);
 
         assert.notMatch(request.url, new RegExp(TILESERVER_HOST_PATTERN));
         assert.match(request.url, new RegExp(ORIGIN_HOST_PATTERN));

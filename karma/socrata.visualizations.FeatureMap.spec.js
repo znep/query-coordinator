@@ -126,29 +126,36 @@ describe('socrata.visualizations.FeatureMap', function() {
 
 
     // The visualization itself handles rendering and interaction events.
-    var config = {
-      localization: {
-        'FLYOUT_FILTER_NOTICE': 'There are too many points at this location',
-        'FLYOUT_FILTER_OR_ZOOM_NOTICE': 'Zoom in to see details',
-        'FLYOUT_DENSE_DATA_NOTICE': 'Numerous',
-        'FLYOUT_CLICK_TO_INSPECT_NOTICE': 'Click to see details',
-        'FLYOUT_CLICK_TO_LOCATE_USER_TITLE': 'Click to show your position on the map',
-        'FLYOUT_CLICK_TO_LOCATE_USER_NOTICE': 'You may have to give your browser permission to share your current location.',
-        'FLYOUT_LOCATING_USER_TITLE': 'Your position is being determined.',
-        'FLYOUT_LOCATE_USER_ERROR_TITLE': 'There was an error determining your position.',
-        'FLYOUT_LOCATE_USER_ERROR_NOTICE': 'You may not have given your browser permission to share your current location, or your browser may be unable to do so.',
-        'ROW_INSPECTOR_ROW_DATA_QUERY_FAILED': 'Detailed information about these points cannot be loaded at this time.',
-        'USER_CURRENT_POSITION': 'Your current location (estimated)'
+    var featureMapVIF = {
+      configuration: {
+        localization: {
+          'FLYOUT_FILTER_NOTICE': 'There are too many points at this location',
+          'FLYOUT_FILTER_OR_ZOOM_NOTICE': 'Zoom in to see details',
+          'FLYOUT_DENSE_DATA_NOTICE': 'Numerous',
+          'FLYOUT_CLICK_TO_INSPECT_NOTICE': 'Click to see details',
+          'FLYOUT_CLICK_TO_LOCATE_USER_TITLE': 'Click to show your position on the map',
+          'FLYOUT_CLICK_TO_LOCATE_USER_NOTICE': 'You may have to give your browser permission to share your current location.',
+          'FLYOUT_LOCATING_USER_TITLE': 'Your position is being determined.',
+          'FLYOUT_LOCATE_USER_ERROR_TITLE': 'There was an error determining your position.',
+          'FLYOUT_LOCATE_USER_ERROR_NOTICE': 'You may not have given your browser permission to share your current location, or your browser may be unable to do so.',
+          'ROW_INSPECTOR_ROW_DATA_QUERY_FAILED': 'Detailed information about these points cannot be loaded at this time.',
+          'USER_CURRENT_POSITION': 'Your current location (estimated)'
+        },
+        hover: true,
+        panAndZoom: true,
+        locateUser: false
       },
-      hover: true,
-      panAndZoom: true
+      unit: {
+        one: 'record',
+        other: 'records'
+      }
     };
 
     if (overrideConfig) {
-      _.merge(config, overrideConfig);
+      _.merge(featureMapVIF, overrideConfig);
     }
 
-    var map = new window.socrata.visualizations.FeatureMap(element, config);
+    var map = new window.socrata.visualizations.FeatureMap(element, featureMapVIF);
 
     // The visualizationRenderOptions may change in response to user actions
     // and are passed as an argument to every render call.
@@ -158,7 +165,6 @@ describe('socrata.visualizations.FeatureMap', function() {
         opacity: 0.15
       },
       bounds: getBounds(VALID_EXTENT),
-      labelUnit: 'rows',
       vectorTileGetter: mockVectorTileGetter
     };
 
@@ -281,7 +287,7 @@ describe('socrata.visualizations.FeatureMap', function() {
       var featureMap;
 
       beforeEach(function() {
-        featureMap = createFeatureMap(MAP_WIDTH, MAP_HEIGHT, { panAndZoom: false });
+        featureMap = createFeatureMap(MAP_WIDTH, MAP_HEIGHT, { configuration: { panAndZoom: false } });
       });
 
       afterEach(function() {
@@ -361,7 +367,7 @@ describe('socrata.visualizations.FeatureMap', function() {
       var featureMap;
 
       beforeEach(function() {
-        featureMap = createFeatureMap(MAP_WIDTH, MAP_HEIGHT, { locateUser: true });
+        featureMap = createFeatureMap(MAP_WIDTH, MAP_HEIGHT, { configuration: { locateUser: true } });
       });
 
       afterEach(function() {

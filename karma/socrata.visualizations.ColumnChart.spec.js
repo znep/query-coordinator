@@ -146,7 +146,7 @@ describe('socrata.visualizations.ColumnChart', function() {
     });
   }
 
-  function createColumnChart(width, overrideConfig) {
+  function createColumnChart(width, overrideVIF) {
 
     if (!width) {
       width = CHART_WIDTH;
@@ -162,30 +162,35 @@ describe('socrata.visualizations.ColumnChart', function() {
 
     $('body').append(element);
 
-    var config = {
-      columns: {
-        name: NAME_INDEX,
-        unfilteredValue: UNFILTERED_INDEX,
-        filteredValue: FILTERED_INDEX,
-        selected: SELECTED_INDEX
+    var columnChartVIF = {
+      configuration: {
+        columns: {
+          name: NAME_INDEX,
+          unfilteredValue: UNFILTERED_INDEX,
+          filteredValue: FILTERED_INDEX,
+          selected: SELECTED_INDEX
+        },
+        localization: {
+          'NO_VALUE': '(No value)',
+          'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'UNFILTERED VALUE',
+          'FLYOUT_FILTERED_AMOUNT_LABEL': 'FILTERED VALUE',
+          'FLYOUT_SELECTED_NOTICE': 'THIS COLUMN IS CURRENTLY SELECTED'
+        }
       },
-      localization: {
-        'NO_VALUE': '(No value)',
-        'FLYOUT_UNFILTERED_AMOUNT_LABEL': 'UNFILTERED VALUE',
-        'FLYOUT_FILTERED_AMOUNT_LABEL': 'FILTERED VALUE',
-        'FLYOUT_SELECTED_NOTICE': 'THIS COLUMN IS CURRENTLY SELECTED'
+      unit: {
+        one: 'case',
+        other: 'cases'
       }
     };
 
-    if (overrideConfig) {
-      _.merge(config, overrideConfig);
+    if (overrideVIF) {
+      _.merge(columnChartVIF, overrideVIF);
     }
 
-    var chart = new window.socrata.visualizations.ColumnChart(element, config);
+    var chart = new window.socrata.visualizations.ColumnChart(element, columnChartVIF);
 
     var renderOptions = {
       showAllLabels: false,
-      labelUnit: ROW_DISPLAY_UNIT,
       showFiltered: false
     };
 
@@ -250,12 +255,14 @@ describe('socrata.visualizations.ColumnChart', function() {
 
       beforeEach(function() {
 
-        var overrideConfig = {
-          axisLabels: {
-            top: TOP_AXIS_LABEL
+        var overrideVIF = {
+          configuration: {
+            axisLabels: {
+              top: TOP_AXIS_LABEL
+            }
           }
         };
-        columnChart = createColumnChart(640, overrideConfig);
+        columnChart = createColumnChart(640, overrideVIF);
       });
 
       afterEach(function() {
@@ -282,12 +289,14 @@ describe('socrata.visualizations.ColumnChart', function() {
 
       beforeEach(function() {
 
-        var overrideConfig = {
-          axisLabels: {
-            right: RIGHT_AXIS_LABEL
+        var overrideVIF = {
+          configuration: {
+            axisLabels: {
+              right: RIGHT_AXIS_LABEL
+            }
           }
         };
-        columnChart = createColumnChart(640, overrideConfig);
+        columnChart = createColumnChart(640, overrideVIF);
       });
 
       afterEach(function() {
@@ -314,12 +323,14 @@ describe('socrata.visualizations.ColumnChart', function() {
 
       beforeEach(function() {
 
-        var overrideConfig = {
-          axisLabels: {
-            bottom: BOTTOM_AXIS_LABEL
+        var overrideVIF = {
+          configuration: {
+            axisLabels: {
+              bottom: BOTTOM_AXIS_LABEL
+            }
           }
         };
-        columnChart = createColumnChart(640, overrideConfig);
+        columnChart = createColumnChart(640, overrideVIF);
       });
 
       afterEach(function() {
@@ -346,12 +357,14 @@ describe('socrata.visualizations.ColumnChart', function() {
 
       beforeEach(function() {
 
-        var overrideConfig = {
-          axisLabels: {
-            left: LEFT_AXIS_LABEL
+        var overrideVIF = {
+          configuration: {
+            axisLabels: {
+              left: LEFT_AXIS_LABEL
+            }
           }
         };
-        columnChart = createColumnChart(640, overrideConfig);
+        columnChart = createColumnChart(640, overrideVIF);
       });
 
       afterEach(function() {
@@ -557,15 +570,17 @@ describe('socrata.visualizations.ColumnChart', function() {
 
     beforeEach(function() {
 
-      var overrideConfig = {
-        columns: {
-          name: 2,
-          selected: 1,
-          unfilteredValue: 3,
-          filteredValue: 0
+      var overrideVIF = {
+        configuration: {
+          columns: {
+            name: 2,
+            selected: 1,
+            unfilteredValue: 3,
+            filteredValue: 0
+          }
         }
       };
-      columnChart = createColumnChart(640, overrideConfig);
+      columnChart = createColumnChart(640, overrideVIF);
 
       testDataWithNonDefaultColumnIndices = testData.map(function(datum) {
 
@@ -1132,7 +1147,7 @@ describe('socrata.visualizations.ColumnChart', function() {
 
         columnChart.element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', function(event) {
 
-          var payload = event.originalEvent.detail.data;
+          var payload = event.originalEvent.detail;
 
           expect(_.has(payload, 'filteredValueLabel')).to.equal(true);
           expect(_.has(payload, 'filteredValue')).to.equal(true);
@@ -1167,7 +1182,7 @@ describe('socrata.visualizations.ColumnChart', function() {
 
         columnChart.element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', function(event) {
 
-          var payload = event.originalEvent.detail.data;
+          var payload = event.originalEvent.detail;
 
           expect(_.has(payload, 'filteredValueLabel')).to.equal(false);
           expect(_.has(payload, 'filteredValue')).to.equal(false);
@@ -1659,7 +1674,7 @@ describe('socrata.visualizations.ColumnChart', function() {
 
         columnChart.element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', function(event) {
 
-          var payload = event.originalEvent.detail.data;
+          var payload = event.originalEvent.detail;
 
           expect(payload.element).to.equal(unfilteredBarGroupBar);
           done();
@@ -1685,7 +1700,7 @@ describe('socrata.visualizations.ColumnChart', function() {
 
         columnChart.element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', function(event) {
 
-          var payload = event.originalEvent.detail.data;
+          var payload = event.originalEvent.detail;
 
           expect(payload.element).to.equal(unfilteredBarGroupBar);
           done();
@@ -1710,7 +1725,7 @@ describe('socrata.visualizations.ColumnChart', function() {
 
         columnChart.element.on('SOCRATA_VISUALIZATION_COLUMN_FLYOUT', function(event) {
 
-          var payload = event.originalEvent.detail.data;
+          var payload = event.originalEvent.detail;
 
           expect(payload.element).to.equal(unfilteredBarGroupBar);
           done();

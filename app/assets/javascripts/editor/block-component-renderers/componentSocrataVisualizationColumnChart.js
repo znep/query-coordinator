@@ -40,22 +40,25 @@
     if (renderedVif !== JSON.stringify(componentData.value.vif) ||
       renderedHeight !== componentData.value.layout.height) {
 
+      var vif = componentData.value.vif;
+
       $element.height(componentData.value.layout.height);
 
-      componentData.value.vif.configuration.localization = {
+      vif.configuration.localization = {
         'NO_VALUE': I18n.t('editor.visualizations.no_value_placeholder'),
         'FLYOUT_UNFILTERED_AMOUNT_LABEL': I18n.t('editor.visualizations.flyout.unfiltered_amount_label'),
         'FLYOUT_FILTERED_AMOUNT_LABEL': I18n.t('editor.visualizations.flyout.filtered_amount_label'),
-        'FLYOUT_SELECTED_NOTICE': I18n.t('editor.visualizations.flyout.datum_selected_label'),
-        'UNIT_ONE': 'record',
-        'UNIT_OTHER': 'records'
+        'FLYOUT_SELECTED_NOTICE': I18n.t('editor.visualizations.flyout.datum_selected_label')
       };
 
-      componentData.value.vif.domain = 'cml.local';
+      vif.unit = {
+        one: 'record',
+        other: 'records'
+      };
 
-      $element.socrataColumnChart(componentData.value.vif);
+      $element.socrataColumnChart(vif);
 
-      $element.attr('data-rendered-vif', JSON.stringify(componentData.value.vif));
+      $element.attr('data-rendered-vif', JSON.stringify(vif));
       $element.attr('data-rendered-visualization-height', componentData.value.layout.height);
     }
   }

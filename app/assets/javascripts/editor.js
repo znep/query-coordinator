@@ -34,7 +34,7 @@
 //= require socrata-visualizations/socrata.visualizations.FeatureMap
 
 //= require socrata-visualizations/socrata.visualizations.FlyoutRenderer
-//= require socrata-visualizations/socrata.visualizations.rowInspector
+//= require socrata-visualizations/socrata.visualizations.RowInspector
 
 //= require socrata-visualizations/components/SocrataColumnChart
 //= require socrata-visualizations/components/SocrataFeatureMap

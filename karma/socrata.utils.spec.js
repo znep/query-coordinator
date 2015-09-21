@@ -522,7 +522,7 @@ describe('socrata-utils.js', function() {
           throw new Error('Unexpected eventName passed to buildTestEvent: {0}'.format(eventName));
       }
 
-      var propertyName = (eventName === 'mousewheel') ? 'wheelDeltaY' : 'detail';
+      var propertyName = (eventName === 'mousewheel') ? 'wheelDelta' : 'detail';
 
       var originalEventData = {};
       originalEventData[propertyName] = testDeltaY;

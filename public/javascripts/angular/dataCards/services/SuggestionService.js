@@ -14,11 +14,12 @@
         window.socrata.utils.assert(query, 'Must provide a non-empty search query value');
 
         var url = $.baseUrl(
-          '/views/{0}/columns/{1}/suggest/{2}'.format(
+          '/views/{0}/columns/{1}/suggest'.format(
             datasetId,
-            fieldName,
-            query)
+            fieldName)
         );
+
+        url.searchParams.set('text', query);
 
         if (_.isFinite(limit)) {
           url.searchParams.set('size', limit + 1);

@@ -51,12 +51,33 @@
    */
   $.fn.socrataColumnChart = function(vif) {
 
-    utils.assertHasProperty(vif, 'domain');
-    utils.assertHasProperty(vif, 'datasetUid');
-    utils.assertHasProperty(vif, 'columnName');
-    utils.assertHasProperty(vif, 'unit');
-    utils.assertHasProperty(vif.unit, 'one');
-    utils.assertHasProperty(vif.unit, 'other');
+    utils.assertHasProperties(
+      vif,
+      'columnName',
+      'configuration',
+      'datasetUid',
+      'domain',
+      'unit'
+    );
+
+    utils.assertHasProperties(
+      vif.unit,
+      'one',
+      'other'
+    );
+
+    utils.assertHasProperties(
+      vif.configuration,
+      'localization'
+    );
+
+    utils.assertHasProperties(
+      vif.configuration.localization,
+      'NO_VALUE',
+      'FLYOUT_UNFILTERED_AMOUNT_LABEL',
+      'FLYOUT_FILTERED_AMOUNT_LABEL',
+      'FLYOUT_SELECTED_NOTICE'
+    );
 
     this.destroySocrataColumnChart = function() {
 

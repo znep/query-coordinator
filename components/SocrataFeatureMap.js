@@ -24,12 +24,43 @@
    */
   $.fn.socrataFeatureMap = function(vif) {
 
-    utils.assertHasProperty(vif, 'domain');
-    utils.assertHasProperty(vif, 'datasetUid');
-    utils.assertHasProperty(vif, 'columnName');
-    utils.assertHasProperty(vif, 'unit');
-    utils.assertHasProperty(vif.unit, 'one');
-    utils.assertHasProperty(vif.unit, 'other');
+    utils.assertHasProperties(
+      vif,
+      'columnName',
+      'configuration',
+      'datasetUid',
+      'domain',
+      'unit'
+    );
+
+    utils.assertHasProperties(
+      vif.unit,
+      'one',
+      'other'
+    );
+
+    utils.assertHasProperties(
+      vif.configuration,
+      'localization'
+    );
+
+    utils.assertHasProperties(
+      vif.configuration.localization,
+      'FLYOUT_FILTER_NOTICE',
+      'FLYOUT_FILTER_OR_ZOOM_NOTICE',
+      'FLYOUT_DENSE_DATA_NOTICE',
+      'FLYOUT_CLICK_TO_INSPECT_NOTICE',
+      'FLYOUT_CLICK_TO_LOCATE_USER_TITLE',
+      'FLYOUT_CLICK_TO_LOCATE_USER_NOTICE',
+      'FLYOUT_LOCATING_USER_TITLE',
+      'FLYOUT_LOCATE_USER_ERROR_TITLE',
+      'FLYOUT_LOCATE_USER_ERROR_NOTICE',
+      'FLYOUT_PAN_ZOOM_DISABLED_WARNING_TITLE',
+      'ROW_INSPECTOR_ROW_DATA_QUERY_FAILED',
+      'USER_CURRENT_POSITION',
+      'UNIT_ONE',
+      'UNIT_OTHER'
+    );
 
     this.destroySocrataFeatureMap = function() {
 
@@ -187,6 +218,7 @@
     }
 
     function handleVisualizationFlyoutShow(event) {
+      console.log(arguments);
       var payload = event.originalEvent.detail;
       var $flyoutContent = null;
       var $flyoutTitle;
@@ -237,12 +269,12 @@
             content: $flyoutContent,
             rightSideHint: false,
             belowTarget: false
-          }
+          };
 
         }
 
         $element[0].dispatchEvent(
-          new root.CustomEvent(
+          new CustomEvent(
             'SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT',
             {
               detail: flyoutPayload,
@@ -344,7 +376,7 @@
       // For now, we don't need to use any where clause but the default
       // one, so we just inline the call to
       // updateRenderOptionsVectorTileGetter.
-      updateRenderOptionsVectorTileGetter(soqlDataProvider.buildBaseQuery(vif.filters), vif.useOriginHost);
+      updateRenderOptionsVectorTileGetter(soqlDataProvider.buildBaseQuery(vif.filters), vif.configuration.useOriginHost);
       renderIfReady();
     }
 

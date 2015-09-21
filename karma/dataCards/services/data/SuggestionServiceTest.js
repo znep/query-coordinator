@@ -8,7 +8,7 @@ describe('SuggestionService', function() {
   var fake4x4 = 'fake-data';
   var fakeFieldName = 'fieldName';
   var fakeQuery = 'NAR';
-  var suggestUrl = '/views/{0}/columns/{1}/suggest/{2}'.format(fake4x4, fakeFieldName, fakeQuery);
+  var suggestUrl = '/views/{0}/columns/{1}/suggest\\?text={2}'.format(fake4x4, fakeFieldName, fakeQuery);
   var testJsonPath = 'karma/dataCards/test-data/suggestionServiceTest/suggestions.json';
   var TEST_RESPONSE;
 

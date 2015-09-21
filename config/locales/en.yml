@@ -1407,6 +1407,7 @@ en:
       georegions:
         actions: Actions
         add_new: Add new
+        choose_a_dataset: Choose a new geospatial Dataset
         custom_georegions: Custom Georegions
         default_georegions: Socrata Default Georegions
         delete: Delete
@@ -1416,6 +1417,8 @@ en:
         enabled?: Enabled?
         enabled_no: "No"
         enabled_yes: "Yes"
+        flashes:
+          add_georegion_error: <div>%{error_message}</div><div>Link to <a target="_blank" href="https://www.xkcd.com/627/">support KB article</a></div>
         page_title: Manage Spatial Lens
         page_subtitle: You have enabled %{enabled_count} of %{available_count} available regions
         region_name: Region Name

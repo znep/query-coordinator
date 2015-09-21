@@ -266,6 +266,8 @@ javascripts:
     - public/javascripts/controls/blob-dataset.js
   browse-select-dataset:
     - public/javascripts/screens/browse-select-dataset.js
+  browse-select-georegion:
+    - public/javascripts/screens/browse-select-georegion.js
   admin-canvas-pages:
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/controls/combination-list.js

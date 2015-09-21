@@ -1,0 +1,16 @@
+<%= render_browse(@processed_browse) %>
+
+<div class="select-georegion-spinner" id="paneSpinner" style="display: none">
+  <div id="paneSpinnerInside">
+    <img src="/stylesheets/images/common/BrandedSpinner.gif" />
+  </div>
+</div>
+
+<%- content_for :head do -%>
+  <%= rendered_stylesheet_tag 'strip-chrome' %>
+  <%= rendered_stylesheet_tag 'browse-select-dataset' %>
+<%- end -%>
+
+<%- content_for :js_footer do -%>
+  <%= include_javascripts 'browse-select-georegion' %>
+<%- end -%>

@@ -273,6 +273,11 @@ protected
       end
     end
 
+    if browse_options[:curated_region_candidates]
+      search_options[:options] = search_options[:option] || []
+      search_options[:options] += ['curated_region_candidates']
+    end
+
     if browse_options[:limitTo].present?
       case browse_options[:limitTo]
       when 'unpublished'
@@ -578,7 +583,7 @@ private
   @@cutoff_store = {}
 
   @@numeric_options = [ :limit, :page ]
-  @@boolean_options = [ :nofederate ]
+  @@boolean_options = [ :nofederate, :curated_region_candidates ]
 
   @@moderatable_types = [ 'filters', 'charts', 'maps', 'calendars', 'forms' ]
 

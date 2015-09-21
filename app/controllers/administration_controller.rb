@@ -141,7 +141,24 @@ class AdministrationController < ApplicationController
   end
 
   def add_georegion
-    handle_button_response(true, 'error', 'success', :georegions)
+    georegion_adder = ::Services::Administration::GeoregionAdder.new
+    is_success = false
+    error_message = t('error.error_500.were_sorry')
+    success_message = nil
+    begin
+      success_message = georegion_adder.add(params[:id], params[:key], params[:label], params[:name], {:enabledFlag => false})
+      is_success = success_message.present?
+    rescue CoreServer::CoreServerError => ex
+      error_message = t('screens.admin.georegions.flashes.add_georegion_error', :error_message => ex.error_message)
+    rescue StandardError => ex
+      Rails.logger.error(error_message = "Error while adding georegion to domain: #{ex.to_s}")
+    end
+    handle_button_response(
+      is_success,
+      error_message,
+      success_message,
+      :georegions
+    )
   end
 
   def enable_georegion

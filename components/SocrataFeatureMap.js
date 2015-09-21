@@ -218,7 +218,6 @@
     }
 
     function handleVisualizationFlyoutShow(event) {
-      console.log(arguments);
       var payload = event.originalEvent.detail;
       var $flyoutContent = null;
       var $flyoutTitle;

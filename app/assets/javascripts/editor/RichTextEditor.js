@@ -5,10 +5,6 @@
   var socrata = root.socrata;
   var storyteller = socrata.storyteller;
 
-  var _ATTRIBUTE_WHITELIST = {
-    'a': ['href']
-  };
-
   /**
    * @constructor
    * @param {jQuery} element
@@ -103,6 +99,16 @@
       }
     };
 
+    /**
+     * Sets the content of the editor.
+     * Does not treat the new content as a user-initiated
+     * action. If this is not your intention, use a StoryStore action
+     * to set the content instead.
+     *
+     * The practical implication of this not being treated as a
+     * user-initiated action is that any sanitization will not be
+     * re-broadcast as a content change (so it doesn't end up in undo-redo).
+     */
     this.setContent = function(content) {
 
       if (_editor === null) {
@@ -120,7 +126,7 @@
 
       if (_editor && contentIsDifferent) {
         _editor.setHTML(content);
-        _handleInput();
+        _handleContentChange();
       }
     };
 
@@ -177,13 +183,21 @@
           _formats
         );
 
-        _editor.addEventListener('input', _handleInput);
+        _editor.addEventListener('input', _handleContentChangeByUser);
         _editor.addEventListener('focus', _broadcastFocus);
         _editor.addEventListener('focus', _broadcastFormatChange);
         _editor.addEventListener('blur', _broadcastBlur);
         _editor.addEventListener('select', _broadcastFormatChange);
         _editor.addEventListener('pathChange', _broadcastFormatChange);
-        _editor.addEventListener('willPaste', _sanitizeClipboardInput);
+        _editor.addEventListener('willPaste', function(pasteEvent) {
+          _sanitizeClipboardInput(pasteEvent);
+          _handleContentChangeByUser();
+        });
+        _editor.addEventListener('drop', function() {
+          // We get no opportunity to edit the dropped content, so sanitize everything.
+          _sanitizeCurrentContent();
+          _handleContentChangeByUser();
+        });
 
         // Pre-load existing content (e.g. if we are editing an
         // existing resource).
@@ -265,9 +279,19 @@
       document.head.appendChild(styleEl);
     }
 
-    function _handleInput() {
+    /**
+     * Handles changes to content, whether or not they're initiated by the user.
+     */
+    function _handleContentChange() {
       _updateContentHeight();
-      _broadcastContentChange();
+    }
+
+    /**
+     * Handles changes to content that have been explicitly initiated by the user.
+     */
+    function _handleContentChangeByUser() {
+      _handleContentChange();
+      _broadcastContentChangeWhenSettled();
     }
 
     /**
@@ -342,7 +366,19 @@
       );
     }
 
-    function _broadcastContentChange() {
+    /**
+     * Broadcast rich-text-editor::content-change when this function stops being called for a while.
+     * Ideally we'd know exactly when it's safe to broadcast this event, but unfortunately different
+     * input scenarios (typing, pasting, dragging, browser-level undo-redo) have completely different
+     * ordering/presence of squire events (input, willPaste, drop, etc). This wouldn't be a problem, but
+     * we can't leak intermediate unsanitized content (otherwise it would show up in undo/redo buffers).
+     * Instead of maintaining a huge brittle state machine, we bite the async bullet and broadcast
+     * the event when things settle down for a frame. This guaranees that all pasting, dropping,
+     * typing, and (critically) sanitization have run.
+     */
+    var _broadcastContentChangeWhenSettled = _.debounce(_broadcastContentChangeNow, 1);
+
+    function _broadcastContentChangeNow() {
       _emitEvent(
         'rich-text-editor::content-change',
         { content: _editor.getHTML() }
@@ -365,146 +401,36 @@
     }
 
     /**
-     * Makes an element and all child nodes conform to our set of supported
-     * element types.
-     *
-     * @param {DOMNode} el
-     * @param {object} attributeWhitelist
-     */
-    function _sanitizeElement(el, attributeWhitelist) {
-
-      function _isNodeTypeSafeToUse(tagName) {
-        return [
-          'h1', 'h2', 'h3', 'h4', 'h5', 'h6', // Headers
-          'b', 'i', 'em', 'a',                // Inline
-          'div', 'ul', 'ol', 'li'             // Block
-        ].indexOf(tagName) > -1;
-      }
-
-      function _copyWhitelistedAttributes(dirtyElement, cleanElement) {
-
-        // This function checks the attribute whitelist on a tag-by-tag
-        // basis to determine whether or not the specified element
-        // attribute should be copied from the 'dirty' element received
-        // from the clipboard into the 'clean' element that will be
-        // inserted into the editor iframe's internal document.
-        function _attributeIsAllowed(tagName, attrName, whitelist) {
-          return (
-            whitelist.hasOwnProperty(tagName) &&
-            whitelist[nodeName].indexOf(attrName) > -1
-          );
-        }
-        var attributes = dirtyElement.attributes;
-        var attributeCount = attributes.length;
-
-        for (var index = 0; index < attributeCount; index++) {
-
-          var attribute = attributes[index];
-
-          var attributeIsAllowed = _attributeIsAllowed(
-            dirtyElement.nodeName.toLowerCase(),
-            attribute.name.toLowerCase(),
-            _ATTRIBUTE_WHITELIST
-          );
-
-          if (attributeIsAllowed) {
-            cleanElement.setAttribute(attribute.name, attribute.value);
-          }
-        }
-      }
-      var nodeName = el.nodeName.toLowerCase();
-      var cleanEl = null;
-      var childNodes;
-      var childEl;
-
-      // Node Types
-      //
-      // var Node = {
-      //   ELEMENT_NODE                :  1,
-      //   ATTRIBUTE_NODE              :  2,
-      //   TEXT_NODE                   :  3,
-      //   CDATA_SECTION_NODE          :  4,
-      //   ENTITY_REFERENCE_NODE       :  5,
-      //   ENTITY_NODE                 :  6,
-      //   PROCESSING_INSTRUCTION_NODE :  7,
-      //   COMMENT_NODE                :  8,
-      //   DOCUMENT_NODE               :  9,
-      //   DOCUMENT_TYPE_NODE          : 10,
-      //   DOCUMENT_FRAGMENT_NODE      : 11,
-      //   NOTATION_NODE               : 12
-      // };
-      if (el.nodeType === 1) {
-
-        if (_isNodeTypeSafeToUse(nodeName)) {
-          cleanEl = document.createElement(nodeName);
-        } else {
-          // DocumentFragments are ignored by squire.
-          // We use them here to maintain the DOM structure.
-          cleanEl = document.createDocumentFragment();
-        }
-
-        _copyWhitelistedAttributes(el, cleanEl, attributeWhitelist);
-      } else if (el.nodeType === 3) {
-        cleanEl = document.createTextNode(el.textContent);
-      } else if (el.nodeType === 11) {
-        cleanEl = document.createDocumentFragment();
-      }
-
-      if (cleanEl !== null) {
-
-        childNodes = el.childNodes;
-
-        for (var i = 0; i < childNodes.length; i++) {
-
-          childEl = _sanitizeElement(childNodes[i]);
-
-          if (childEl !== null) {
-            cleanEl.appendChild(childEl);
-          }
-        }
-      }
-
-      return cleanEl;
-    }
-
-    /**
      * Handles the 'willPaste' event emitted by Squire.
      *
      * The event object will include a `fragment` property which is a
      * document-fragment.
      *
-     * This function recursively descends the document-fragment and performs
-     * a whitelisting filter operation on the fragment's child nodes.
-     * This filter operation will replace non-header block elements with divs
-     * and collapse nested container elements into single divs. This is often
-     * necessary because the whitelist strips most element attributes and the
-     * semantic value of multiple nested divs with different classes, for
-     * example, is lost in the process.
-     *
-     * Note that we mutate the value of e.fragment, which is inserted
-     * by Squire into the text editor document at the cursror location
-     * after this function returns.
+     * e.fragment represents the content that was pasted. By mutating it,
+     * we can control what gets inserted into the DOM. We take this opportunity
+     * to sanitize the content.
      *
      * @param {Event} e
      *   @prop {DocumentFragment} fragment
      */
     function _sanitizeClipboardInput(e) {
-      // See function documentation above for:
-      //
-      // 1. Why this value is reassigned here
-      // 2. Why there is no return value
-      var sanitizedFragment;
-      try {
-        sanitizedFragment = _sanitizeElement(e.fragment, _ATTRIBUTE_WHITELIST);
-      } catch (error) {
-        sanitizedFragment = document.createDocumentFragment();
+      e.fragment = storyteller.Sanitizer.sanitizeElement(e.fragment);
+    }
 
-        if (window.console) {
-          console.warn('Error sanitizing clipboard input: ', error);
-        }
-      } finally {
-        e.fragment = sanitizedFragment;
-      }
+    /**
+     * Passes the content currently in the edfitor through Sanitizer.
+     */
+    function _sanitizeCurrentContent() {
+      // Get the content and sanitize it.
+      var iframe = _editorElement[0];
+      var sanitized = storyteller.Sanitizer.sanitizeElement(iframe.contentWindow.document.body);
+
+      // Insert the sanitized content into a div so we can get the HTML.
+      var div = document.createElement('div');
+      div.appendChild(sanitized.cloneNode(true));
+
+      // Set the new content.
+      _editor.setHTML(div.innerHTML);
     }
 
     // See: http://stackoverflow.com/a/15318321

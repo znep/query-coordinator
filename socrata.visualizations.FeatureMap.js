@@ -77,9 +77,9 @@
     var _lastPoints = null;
     var _currentLayerId;
 
-    _hover = (!_.isUndefined(vif.configuration.hover)) ? vif.configuration.hover : FEATURE_MAP_DEFAULT_HOVER;
-    _panAndZoom = (!_.isUndefined(vif.configuration.panAndZoom)) ? vif.configuration.panAndZoom : FEATURE_MAP_DEFAULT_PAN_AND_ZOOM;
-    _locateUser = (vif.configuration.locateUser && ('geolocation' in navigator)) ? vif.configuration.locateUser : FEATURE_MAP_DEFAULT_LOCATE_USER;
+    _hover = (_.isUndefined(vif.configuration.hover)) ? FEATURE_MAP_DEFAULT_HOVER : vif.configuration.hover;
+    _panAndZoom = (_.isUndefined(vif.configuration.panAndZoom)) ? FEATURE_MAP_DEFAULT_PAN_AND_ZOOM : vif.configuration.panAndZoom;
+    _locateUser = !(vif.configuration.locateUser && ('geolocation' in navigator)) ? FEATURE_MAP_DEFAULT_LOCATE_USER : vif.configuration.locateUser;
 
     _mapOptions = _.merge(_defaultMapOptions, vif.configuration.mapOptions);
 

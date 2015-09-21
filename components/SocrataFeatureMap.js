@@ -237,7 +237,7 @@
 
         $flyoutContent.append($flyoutTitle);
 
-        if (payload.notice) {
+        if (payload.hasOwnProperty('notice') && payload.notice) {
 
           $flyoutNotice = $(
             '<div>',
@@ -249,7 +249,7 @@
           $flyoutContent.append($flyoutNotice);
         }
 
-        if (payload.hasOwnProperty('flyoutOffset')) {
+        if (payload.hasOwnProperty('flyoutOffset') && payload.flyoutOffset) {
 
           flyoutPayload = {
             flyoutOffset: payload.flyoutOffset,

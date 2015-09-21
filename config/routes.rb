@@ -336,7 +336,7 @@ Frontend::Application.routes do
     # Overloaded route matcher for SEO purposes.
     # The route structure is identical in each case; the handler for the route
     # is determined by the constraint that is satisfied.
-    get ':category/:view_name/:id', :to => 'angular#serve_app', :app => 'dataCards', :as => :opendata_cards_view, :constraints => Constraints::DataLensConstraint.new
+    get ':category/:view_name/:id', :to => 'angular#serve_app', :app => 'dataCards', :constraints => Constraints::DataLensConstraint.new
     # Fallback: let DatasetsController#show handle it, since it was the original
     # catch-all for SEO-friendly routes (including charts, calendars, etc.).
     get ':category/:view_name/:id', :to => 'datasets#show', :as => :view, :constraints => Constraints::ResourceConstraint.new

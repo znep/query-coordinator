@@ -15,7 +15,7 @@ class StoriesController < ApplicationController
 
     if @story
       respond_to do |format|
-        format.html { render 'stories/show', layout: 'show'}
+        format.html { render 'stories/show'}
         format.json { render json: @story }
       end
     else
@@ -30,7 +30,7 @@ class StoriesController < ApplicationController
       @story_title = view['name']
 
       if story_is_uninitialized?(view['metadata']) && @story_title.present?
-        render 'stories/new'
+        render 'stories/new', layout: 'new'
       elsif !@story_title.nil?
         redirect_to "/stories/s/#{params[:uid]}/edit"
       else
@@ -120,6 +120,12 @@ class StoriesController < ApplicationController
       tmp_render_404
     end
   end
+
+  def needs_view_assets?
+    action_name == 'show'
+  end
+
+  helper_method :needs_view_assets?
 
   private
 

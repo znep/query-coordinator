@@ -5,10 +5,14 @@
   <%= stylesheet_link_tag    'application', media: 'all' %>
   <%= javascript_include_tag 'airbrake-js-client/dist/client' %>
   <%= javascript_include_tag 'application' %>
+  <% if needs_view_assets? %>
+    <%= stylesheet_link_tag    'story-view', media: 'all' %>
+    <%= javascript_include_tag 'view' %>
+  <% end %>
   <%= csrf_meta_tags %>
   <link rel="shortcut icon" href="/favicon.ico">
 </head>
-<body>
+<body class="story-view">
 
 <%= yield %>
 

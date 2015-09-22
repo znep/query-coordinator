@@ -131,45 +131,43 @@ describe('A Choropleth Card Visualization', function() {
 
     var id = options.id || 'choropleth-1';
     var whereClause = options.whereClause || '';
-    var testUndefinedColumns = options.testUndefined || false;
     var datasetModel = options.datasetModel || false;
     var version = options.version || '1';
     var model = new Model();
 
-    model.fieldName = 'ward';
+    model.fieldName = 'points';
     model.defineObservableProperty('cardOptions', {mapExtent: options.mapExtent || {}});
     model.defineObservableProperty('cardSize', 1);
     model.defineObservableProperty('activeFilters', []);
     model.defineObservableProperty('baseLayerUrl', 'https://a.tiles.mapbox.com/v3/socrata-apps.ibp0l899/{z}/{x}/{y}.png');
+    model.defineObservableProperty('computedColumn', 'ward');
+    model.defineObservableProperty('cardType', 'choropleth');
+    model.defineObservableProperty('customTitle', 'Cool Title');
     model.setOption = _.noop;
 
     if (!datasetModel) {
-      var columnsData;
-
-      if (!testUndefinedColumns) {
-        columnsData = {
-          "points": {
-            "name": "source column.",
-            "description": "required",
-            "fred": "location",
-            "physicalDatatype": "point"
-          },
-          "ward": {
-            "name": "Ward where crime was committed.",
-            "description": "Batman has bigger fish to fry sometimes, you know.",
-            "fred": "location",
-            "physicalDatatype": "number",
-            "computationStrategy": {
-              "parameters": {
-                "region": "_snuk-a5kv",
-                "geometryLabel": "ward"
-              },
-              "source_columns": ['computed_column_source_column'],
-              "strategy_type": "georegion_match_on_point"
-            }
+      var columnsData = {
+        "points": {
+          "name": "source column.",
+          "description": "required",
+          "fred": "location",
+          "physicalDatatype": "point"
+        },
+        "ward": {
+          "name": "Ward where crime was committed.",
+          "description": "Batman has bigger fish to fry sometimes, you know.",
+          "fred": "location",
+          "physicalDatatype": "number",
+          "computationStrategy": {
+            "parameters": {
+              "region": "_snuk-a5kv",
+              "geometryLabel": "ward"
+            },
+            "source_columns": ['computed_column_source_column'],
+            "strategy_type": "georegion_match_on_point"
           }
-        };
-      }
+        }
+      };
 
       datasetModel = createDatasetModelWithColumns(columnsData, version);
 
@@ -380,22 +378,14 @@ describe('A Choropleth Card Visualization', function() {
 
     });
 
-    it('should should not terminate with a TypeError if columns is undefined', function(){
-
-      var testUndefinedColumns = true;
-
-      expect(function() {
-        createChoropleth({
-          id: 'choropleth-1',
-          whereClause: '',
-          testUndefined: testUndefinedColumns
-        })
-      }).to.not.throw();
-
-    });
-
     it("should not fail to extract the shapeFile from the column's 'computationStrategy' object", function() {
       var columns = {
+        "points": {
+          "name": "source column.",
+          "description": "required",
+          "fred": "location",
+          "physicalDatatype": "point"
+        },
         "ward": {
           "name": "Ward where crime was committed.",
           "description": "Batman has bigger fish to fry sometimes, you know.",
@@ -425,6 +415,12 @@ describe('A Choropleth Card Visualization', function() {
 
     it("should fail to extract the shapeFile if the shapeFile property does not exist in the column's 'computationStrategy' object", function() {
       var columns = {
+        "points": {
+          "name": "source column.",
+          "description": "required",
+          "fred": "location",
+          "physicalDatatype": "point"
+        },
         "ward": {
           "name": "Ward where crime was committed.",
           "description": "Batman has bigger fish to fry sometimes, you know.",
@@ -450,45 +446,6 @@ describe('A Choropleth Card Visualization', function() {
       expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(true);
     });
 
-    it("should not use the source column to get the choropleth regions if the source_columns property does not exist in the column's 'computationStrategy' object", function() {
-      var columns = {
-        "ward": {
-          "name": "Ward where crime was committed.",
-          "description": "Batman has bigger fish to fry sometimes, you know.",
-          "fred": "location",
-          "physicalDatatype": "text",
-          "computationStrategy": {
-            "parameters": {
-              "region": "_snuk-a5kv",
-              "geometryLabel": "geoid10"
-            },
-            "strategy_type": "georegion_match_on_point"
-          }
-        }
-      };
-
-      sinon.spy(CardVisualizationChoroplethHelpers, 'extractSourceColumnFromColumn');
-      sinon.spy(CardDataService, 'getChoroplethRegions');
-      sinon.spy(CardDataService, 'getChoroplethRegionsUsingSourceColumn');
-
-      createChoropleth({
-        id: 'choropleth-1',
-        whereClause: '',
-        testUndefined: false,
-        datasetModel: createDatasetModelWithColumns(columns, '1'),
-        version: '1'
-      });
-
-      expect(CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledOnce).to.equal(true);
-      expect(CardDataService.getChoroplethRegions.calledOnce).to.equal(true);
-      expect(CardDataService.getChoroplethRegionsUsingSourceColumn.called).to.equal(false);
-
-      CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.restore();
-      CardDataService.getChoroplethRegions.restore();
-      CardDataService.getChoroplethRegionsUsingSourceColumn.restore();
-
-    });
-
     describe('if the extent query used to get the choropleth regions fails', function() {
 
       beforeEach(function() {
@@ -505,6 +462,12 @@ describe('A Choropleth Card Visualization', function() {
 
       it("should display an error message", function() {
         var columns = {
+          "points": {
+            "name": "source column.",
+            "description": "required",
+            "fred": "location",
+            "physicalDatatype": "point"
+          },
           "ward": {
             "name": "Ward where crime was committed.",
             "description": "Batman has bigger fish to fry sometimes, you know.",
@@ -548,6 +511,12 @@ describe('A Choropleth Card Visualization', function() {
 
       it('should display an error message', function() {
         var columns = {
+          "points": {
+            "name": "source column.",
+            "description": "required",
+            "fred": "location",
+            "physicalDatatype": "point"
+          },
           "ward": {
             "name": "Ward where crime was committed.",
             "description": "Batman has bigger fish to fry sometimes, you know.",
@@ -576,50 +545,15 @@ describe('A Choropleth Card Visualization', function() {
 
     });
 
-    it("should use the source column to get the choropleth regions if the source_columns property exists in the column's 'computationStrategy' object", function() {
-      var columns = {
-        "ward": {
-          "name": "Ward where crime was committed.",
-          "description": "Batman has bigger fish to fry sometimes, you know.",
-          "fred": "location",
-          "physicalDatatype": "text",
-          "computationStrategy": {
-            "parameters": {
-              "region": "_snuk-a5kv",
-              "geometryLabel": "geoid10"
-            },
-            "source_columns": ['computed_column_source_column'],
-            "strategy_type": "georegion_match_on_point"
-          }
-        }
-      };
-
-      sinon.spy(CardVisualizationChoroplethHelpers, 'extractSourceColumnFromColumn');
-      sinon.spy(CardDataService, 'getChoroplethRegions');
-      sinon.spy(CardDataService, 'getChoroplethRegionsUsingSourceColumn');
-
-      var testSubject = createChoropleth({
-        id: 'choropleth-1',
-        whereClause: '',
-        testUndefined: false,
-        datasetModel: createDatasetModelWithColumns(columns, '1'),
-        version: '1'
-      });
-
-      expect(CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.calledOnce).to.equal(true);
-      expect(CardDataService.getChoroplethRegions.called).to.equal(false);
-      expect(CardDataService.getChoroplethRegionsUsingSourceColumn.calledOnce).to.equal(true);
-      expect(testSubject.scope.$$childHead.choroplethRenderError).to.equal(false);
-
-      CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn.restore();
-      CardDataService.getChoroplethRegions.restore();
-      CardDataService.getChoroplethRegionsUsingSourceColumn.restore();
-
-    });
-
     it("should not use the source column to get the choropleth regions if the computation strategy is 'georegion_match_on_string'", function() {
 
       var columns = {
+        "points": {
+          "name": "source column.",
+          "description": "required",
+          "fred": "location",
+          "physicalDatatype": "point"
+        },
         "ward": {
           "name": "Some area where the crime was committed that can be described by a string",
           "description": "Batman has bigger fish to fry sometimes, you know.",

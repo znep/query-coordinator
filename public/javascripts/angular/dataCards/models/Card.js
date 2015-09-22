@@ -134,6 +134,15 @@
           var cardOptions = this.getCurrentValue('cardOptions');
           cardOptions.set(key, value);
           return value;
+        },
+
+        getFilteredColumn: function() {
+          var cardType = this.getCurrentValue('cardType');
+          if (cardType === 'choropleth') {
+            return this.getCurrentValue('computedColumn');
+          } else {
+            return this.fieldName;
+          }
         }
       });
 

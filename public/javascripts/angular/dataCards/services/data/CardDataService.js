@@ -653,8 +653,15 @@
           var data = response.data;
           return _.isEmpty(data) ? data : _.mapValues(data[0], parseFloat);
         });
-      }
+      },
 
+      getCuratedRegions: function() {
+        var url = $.baseUrl('/api/curated_regions');
+        var config = httpConfig.call(this);
+        return http.get(url.href).then(function(response) {
+          return response.data;
+        });
+      }
     };
 
     return serviceDefinition;

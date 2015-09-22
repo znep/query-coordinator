@@ -347,7 +347,7 @@
     }
 
     function _updateEmbedCodeProgress(payload) {
-      _currentComponentType = 'embeddedHTML';
+      _currentComponentType = 'embeddedHtml';
 
       _currentComponentProperties = {
         percentLoaded: payload.percentLoaded
@@ -372,10 +372,13 @@
     function _updateEmbedCodePreview(payload) {
       var htmlFragmentUrl = payload.url;
 
-      _currentComponentType = 'embeddedHTML';
+      _currentComponentType = 'embeddedHtml';
 
       _currentComponentProperties = {
-        url: htmlFragmentUrl
+        url: htmlFragmentUrl,
+        layout: {
+          height: Constants.DEFAULT_VISUALIZATION_HEIGHT
+        }
       };
 
       self._emitChange();

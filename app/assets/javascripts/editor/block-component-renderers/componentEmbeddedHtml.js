@@ -5,7 +5,7 @@
   var socrata = root.socrata;
   var utils = socrata.utils;
 
-  function _renderEmbeddedHTML($element, componentData) {
+  function _renderEmbeddedHtml($element, componentData) {
 
     utils.assertHasProperty(componentData, 'type');
 
@@ -37,27 +37,42 @@
     }
   }
 
-  function componentEmbeddedHTML(componentData) {
+  function _updateIframeHeight($element, componentData) {
+
+    var $iframeElement = $element.find('iframe');
+    var renderedHeight = parseInt($iframeElement.attr('height'), 10);
+
+    utils.assertHasProperty(componentData, 'value');
+    utils.assertHasProperty(componentData.value, 'layout');
+    utils.assertHasProperty(componentData.value.layout, 'height');
+
+    if (renderedHeight !== componentData.value.layout.height) {
+      $iframeElement.attr('height', componentData.value.layout.height);
+    }
+  }
+
+  function componentEmbeddedHtml(componentData) {
 
     var $this = $(this);
 
     utils.assertHasProperties(componentData, 'type');
     utils.assert(
-      componentData.type === 'embeddedHTML',
-      'componentEmbeddedHTML: Unsupported component type {0}'.format(
+      componentData.type === 'embeddedHtml',
+      'componentEmbeddedHtml: Unsupported component type {0}'.format(
         componentData.type
       )
     );
 
     if ($this.children().length === 0) {
-      _renderEmbeddedHTML($this, componentData);
+      _renderEmbeddedHtml($this, componentData);
     }
 
     _updateSrc($this, componentData);
+    _updateIframeHeight($this, componentData);
 
     return $this;
   }
 
-  $.fn.componentEmbeddedHTML = componentEmbeddedHTML;
+  $.fn.componentEmbeddedHtml = componentEmbeddedHtml;
 })(window, jQuery);
 

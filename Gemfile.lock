@@ -174,8 +174,6 @@ GEM
       binding_of_caller (>= 0.7)
       pry (>= 0.9.11)
     rack (1.6.4)
-    rack-mini-profiler (0.9.3)
-      rack (>= 1.1.3)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.4)
@@ -317,7 +315,6 @@ DEPENDENCIES
   pry-rails
   pry-remote
   pry-stack_explorer
-  rack-mini-profiler
   rails (= 4.2.4)
   retries
   rspec-rails (~> 3.2)

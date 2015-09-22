@@ -16,6 +16,7 @@ module StoriesHelper
       'html' => 'component_html',
       'youtube.video' => 'component_youtube_video',
       'socrata.visualization.columnChart' => 'component_socrata_visualization_column_chart',
+      'socrata.visualization.featureMap' => 'component_socrata_visualization_feature_map',
       'assetSelector' => 'component_asset_selector',
       'horizontalRule' => 'component_horizontal_rule',
       'spacer' => 'component_spacer',

@@ -15,18 +15,33 @@
 //= require lodash
 //= require d3/d3
 //= require socrata-utils/socrata.utils
+//= require vector-tile/dist/vectortile
+//= require leaflet/dist/leaflet
 //= require editor/storytellerUtils
-//= require editor/StringExtensions.js
 //= require editor/Constants
 //= require editor/Actions
 //= require editor/init
+
 //= require socrata-visualizations/socrata.visualizations.DataProvider
 //= require socrata-visualizations/socrata.visualizations.SoqlDataProvider
+//= require socrata-visualizations/socrata.visualizations.GeospaceDataProvider
+//= require socrata-visualizations/socrata.visualizations.MetadataProvider
+//= require socrata-visualizations/socrata.visualizations.TileserverDataProvider
+
 //= require socrata-visualizations/socrata.visualizations.Visualization
+//= require socrata-visualizations/socrata.visualizations.pbf
+//= require socrata-visualizations/socrata.visualizations.VectorTileManager
 //= require socrata-visualizations/socrata.visualizations.ColumnChart
-//= require socrata-visualizations/components/SocrataColumnChart
+//= require socrata-visualizations/socrata.visualizations.FeatureMap
+
 //= require socrata-visualizations/socrata.visualizations.FlyoutRenderer
-//= require editor/block-component-renderers/componentSocrataVisualizationColumnChart.js
+//= require socrata-visualizations/socrata.visualizations.RowInspector
+
+//= require socrata-visualizations/components/SocrataColumnChart
+//= require socrata-visualizations/components/SocrataFeatureMap
+
+//= require editor/block-component-renderers/componentSocrataVisualizationColumnChart
+//= require editor/block-component-renderers/componentSocrataVisualizationFeatureMap
 
 // Store setup
 //= require editor/SimpleEventEmitter.js

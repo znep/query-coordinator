@@ -5,6 +5,7 @@ $(document).on('ready', function() {
   var storyteller = window.socrata.storyteller;
   storyteller.presentationMode = new storyteller.PresentationMode();
   storyteller.flyoutRenderer = new socrata.visualizations.FlyoutRenderer();
+  socrata.visualizations.RowInspector.setup();
 
   // Init window size classes
   storyteller.windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
@@ -19,12 +20,31 @@ $(document).on('ready', function() {
   }
 
   // Init visualizations
-  $('[data-component-data]').each(function() {
-    var $this = $(this);
+  $('[data-component-data]').each(function(index, element) {
+    var $element = $(element);
+    var serializedComponentData = element.getAttribute('data-component-data');
+    var componentData;
 
-    $this.componentSocrataVisualizationColumnChart(
-      JSON.parse($this.attr('data-component-data'))
-    );
+    if (componentData !== null) {
+
+      componentData = JSON.parse(serializedComponentData);
+
+      switch (componentData.type) {
+
+        case 'socrata.visualization.columnChart':
+          $element.
+            componentSocrataVisualizationColumnChart(componentData);
+          break;
+
+        case 'socrata.visualization.featureMap':
+          $element.
+            componentSocrataVisualizationFeatureMap(componentData);
+          break;
+
+        default:
+          break;
+      }
+    }
   });
 
   // Init window size

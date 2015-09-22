@@ -23,6 +23,20 @@
   }
 }
 
+.component-youtube-video,
+.component-image,
+.component-socrata-visualization-column-chart,
+.component-socrata-visualization-feature-map,
+.component-embedded-html {
+  @include media-query-property(
+    'margin-top',
+    $media-component-small-margin-top,
+    $media-component-medium-margin-top,
+    $media-component-large-margin-top,
+    $media-component-extra-large-margin-top
+  );
+}
+
 .component-youtube-video {
   background-color: $youtube-bg-color;
 

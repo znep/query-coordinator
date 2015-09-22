@@ -5,7 +5,7 @@
 
       <div class="suggestions-status">
         <div ng-show="suggestionsLoading">
-          <div class="loading-message">{{'searchCard.loading' | I18n}}</div>
+          <div class="loading-message">{{::'searchCard.loading' | I18n}}</div>
           <spinner class="spinner"></spinner>
         </div>
 
@@ -13,7 +13,7 @@
 
         <div class="suggestions-error" ng-hide="suggestionsLoading || !error">
           <span class="icon-warning"></span>
-          <div ng-bind-html="'searchCard.errorExplanation' | I18n"></div>
+          <div ng-bind-html="::'searchCard.errorExplanation' | I18n"></div>
         </div>
       </div>
 

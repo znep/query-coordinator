@@ -2,7 +2,7 @@
   <span
     class="aggregation-chooser-static-label"
     ng-hide="hasAggregableColumns">
-    <span ng-bind-html="'aggregationChooser.byTheNumberOf' | I18n"></span>
+    <span ng-bind-html="::'aggregationChooser.byTheNumberOf' | I18n"></span>
     {{aggregationUnit.pluralize()}}
   </span>
   <a
@@ -17,8 +17,8 @@
   <div ng-class="{ active: panelActive }" class="tool-panel-main">
     <div class="tool-panel-inner-container">
       <div class="tool-panel-hint"></div>
-      <h3>{{'aggregationChooser.title' | I18n}}</h3>
-      <p>{{'aggregationChooser.description' | I18n}}</p>
+      <h3>{{::'aggregationChooser.title' | I18n}}</h3>
+      <p>{{::'aggregationChooser.description' | I18n}}</p>
 
       <div class="row">
         <div class="span6 aggregation-functions" ng-class="{ active: aggregationFunction.type == 'count' }">
@@ -28,7 +28,7 @@
             data-aggregation-type="count"
             ng-class="{ active: (aggregationFunction.type == 'count') || countFunctionHover }"
             ng-click="setAggregationFunction($event, 'count')">
-              <span class="label">{{'aggregationChooser.theNumberOf' | I18n}}</span>
+              <span class="label">{{::'aggregationChooser.theNumberOf' | I18n}}</span>
               <span class="sublabel">{{'aggregationChooser.countLabel' | I18n:rowDisplayUnit.pluralize()}}</span>
           </a>
           <a
@@ -37,7 +37,7 @@
             data-aggregation-type="sum"
             ng-class="{ active: aggregationFunction.type == 'sum' || aggregateFunctionHover }"
             ng-click="setAggregationFunction($event, 'sum', aggregationFunction.type, aggregationColumns[0].id)">
-              <span class="label">{{'aggregationChooser.theSumOf' | I18n}}</span>
+              <span class="label">{{::'aggregationChooser.theSumOf' | I18n}}</span>
               <span class="sublabel">{{'aggregationChooser.sumLabel' | I18n:aggregationUnit}}</span>
           </a>
         </div>

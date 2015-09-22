@@ -1,25 +1,25 @@
 <div class="tool-panel up-left">
 
-  <button type="button" ng-class="{touched: panelActive, disabled: !enabled}" class="remove-all-cards-button tool-panel-toggle-btn action-btn customize-bar-action-btn r-to-l" ng-click="conditionallyShowPanel()">{{'removeAllCards.button' | I18n}}</button>
+  <button type="button" ng-class="{touched: panelActive, disabled: !enabled}" class="remove-all-cards-button tool-panel-toggle-btn action-btn customize-bar-action-btn r-to-l" ng-click="conditionallyShowPanel()">{{::'removeAllCards.button' | I18n}}</button>
   <div ng-class="{active: panelActive}" class="tool-panel-main">
     <div class="tool-panel-inner-container">
       <div class="tool-panel-hint"></div>
-      <span>{{'removeAllCards.prompt' | I18n}}</span>
+      <span>{{::'removeAllCards.prompt' | I18n}}</span>
 
       <div class="tool-panel-input-group">
         <button
-          title="{{'removeAllCards.promptConfirm' | I18n}}"
+          title="{{::'removeAllCards.promptConfirm' | I18n}}"
           data-action="removeAll"
           class="tool-panel-btn action-btn customize-bar-action-btn l-to-r"
           ng-click="removeAll()">
-          {{'removeAllCards.promptConfirm' | I18n}}
+          {{::'removeAllCards.promptConfirm' | I18n}}
         </button>
         <button
-          title="{{'common.cancel' | I18n}}"
+          title="{{::'common.cancel' | I18n}}"
           data-action="cancel"
           class="tool-panel-btn action-btn customize-bar-action-btn l-to-r"
           ng-click="cancel()">
-          {{'common.cancel' | I18n}}
+          {{::'common.cancel' | I18n}}
         </button>
       </div>
     </div>

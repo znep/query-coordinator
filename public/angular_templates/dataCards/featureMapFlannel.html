@@ -22,20 +22,20 @@
           <div class="row">
             <div class="span2"><span class="icon-warning"></span></div>
             <div class="span10">
-              <div class="error-message">{{'featureMapFlannel.errorMessage' | I18n}}</div>
+              <div class="error-message">{{::'featureMapFlannel.errorMessage' | I18n}}</div>
             </div>
           </div>
         </div>
       </div>
       <div class="sticky-border bottom" ng-show="queryStatus === 'success'"></div>
       <div class="paging-panel" ng-show="queryStatus === 'success' && rows.length > 1">
-        <button type="button" title="{{'featureMapFlannel.previous' | I18n}}" class="l-to-r pagination-btn action-btn previous"
+        <button type="button" title="{{::'featureMapFlannel.previous' | I18n}}" class="l-to-r pagination-btn action-btn previous"
           ng-click="goToPreviousRow()" ng-disabled="currentIndex === 0">
-          <span class="caret">{{'featureMapFlannel.previous' | I18n}}</span>
+          <span class="caret">{{::'featureMapFlannel.previous' | I18n}}</span>
         </button>
-        <button type="button" title="{{'featureMapFlannel.next' | I18n}}" class="r-to-l pagination-btn action-btn next"
+        <button type="button" title="{{::'featureMapFlannel.next' | I18n}}" class="r-to-l pagination-btn action-btn next"
           ng-click="goToNextRow()" ng-disabled="currentIndex === rows.length - 1">
-          <span class="caret">{{'featureMapFlannel.next' | I18n}}</span>
+          <span class="caret">{{::'featureMapFlannel.next' | I18n}}</span>
         </button>
         <div class="paging-info">
           <div class="message" ng-bind-html="showingMessage"></div>

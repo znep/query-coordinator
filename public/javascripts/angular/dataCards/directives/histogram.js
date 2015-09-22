@@ -4,13 +4,12 @@
   function extentComparer(originalValue, newValue) {
     if (_.isArray(originalValue) && _.isArray(newValue)) {
       return (originalValue[0] === newValue[0]) && (originalValue[1] === newValue[1]);
-    }
-    else {
+    } else {
       return originalValue === newValue;
     }
   }
 
-  function histogramDirective(FlyoutService, HistogramVisualizationService, WindowState) {
+  function histogramDirective(FlyoutService, HistogramVisualizationService) {
     return {
       restrict: 'E',
       scope: {
@@ -81,7 +80,7 @@
           startWith(false);
 
         // Listen for brush clears emitted from the chart
-        var brushClearIndices$ = Rx.Observable.fromEventPattern(function(handler) {
+        Rx.Observable.fromEventPattern(function(handler) {
             brush.brushDispatcher.on('clear', handler);
           }).
           subscribe(function() {
@@ -168,7 +167,7 @@
           function(cardData, dimensions, currentRangeFilterValues) {
 
             var indices = null;
-            var selectionPixels = [0, 0];
+
             // Add a selected path/area to our data that duplicates the filtered version
             var cardDataWithSelection = _.extend({
               selected: _.slice(cardData.filtered)
@@ -285,7 +284,7 @@
         $scope.$bindObservable('hasSelection', hasSelection$);
 
       }
-    }
+    };
   }
 
   angular.

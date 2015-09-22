@@ -114,7 +114,7 @@
       }
     }
 
-    return function getStringsForErrors(JJVErrors, errorStrings) {
+    return function(JJVErrors, errorStrings) {
       var filteredErrorStrings = {};
       setErrorStrings(JJVErrors, errorStrings, filteredErrorStrings);
       return flattenLeaves(filteredErrorStrings);

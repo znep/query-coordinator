@@ -32,24 +32,24 @@
               commentBoxPlaceholder: 'Please add comments here',
               customfields: [
                 {
-                  name: "type",
-                  type: "select",
-                  placeholder: "Feedback Type",
+                  name: 'type',
+                  type: 'select',
+                  placeholder: 'Feedback Type',
                   options: [
                     {
-                      key: "I like this",
+                      key: 'I like this',
                       value: I18n.feedbackPanel.like
                     },
                     {
-                      key: "I\'m missing a feature",
+                      key: 'I\'m missing a feature',
                       value: I18n.feedbackPanel.missing
                     },
                     {
-                      key: "Something seems broken",
+                      key: 'Something seems broken',
                       value: I18n.feedbackPanel.broken
                     },
                     {
-                      key: "Other",
+                      key: 'Other',
                       value: I18n.feedbackPanel.otherOption
                     }
                   ],

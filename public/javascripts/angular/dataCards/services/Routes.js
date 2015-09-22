@@ -29,7 +29,7 @@
         stateName = 'view.cards';
         params.id = cardsViewUrlMatch[1];
       } else if (cardsViewSeoUrlMatch) {
-        stateName = 'view.cards'
+        stateName = 'view.cards';
         params.id = cardsViewSeoUrlMatch[1];
       } else if (bootstrapUrlMatch) {
         stateName = 'view.cards';

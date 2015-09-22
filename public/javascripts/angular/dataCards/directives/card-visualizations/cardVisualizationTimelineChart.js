@@ -10,7 +10,7 @@
         'whereClause': '='
       },
       templateUrl: '/angular_templates/dataCards/cardVisualizationTimelineChart.html',
-      link: function(scope, element) {
+      link: function(scope) {
         var cardModel$ = scope.$observe('model');
         var dataset$ = cardModel$.observeOnLatest('page.dataset').filter(_.isPresent);
         var baseSoqlFilter$ = cardModel$.observeOnLatest('page.baseSoqlFilter');

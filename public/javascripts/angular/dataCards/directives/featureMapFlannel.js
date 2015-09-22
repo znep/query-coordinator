@@ -62,7 +62,7 @@
             formattedContent = formattedContent.replace(/[()]/g, '');
           }
           return formattedContent;
-        };
+        }
 
         // Format an array of subcolumns under a given parent column
         scope.formatCellValue = function(column, isTitle) {

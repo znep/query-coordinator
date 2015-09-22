@@ -8,13 +8,6 @@ class ApplicationController < ActionController::Base
 
   prepend_before_filter :require_logged_in_user
 
-  # All requests must use SSL, otherwise core's CSRF check
-  # will fail (its CSRF cookies are HTTPS-only).
-  #
-  # However, since SSL isn't actually controlled by this app (it's done at the
-  # global Socrata router), SSL won't work in local test mode.
-  force_ssl unless Rails.env.test?
-
   # Returns the current user, or nil
   #
   # ==== Examples

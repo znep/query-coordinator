@@ -15,7 +15,7 @@ class StoriesController < ApplicationController
 
     if @story
       respond_to do |format|
-        format.html { render 'stories/show'}
+        format.html { render 'stories/show' }
         format.json { render json: @story }
       end
     else

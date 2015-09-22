@@ -1,5 +1,5 @@
 namespace :assets do
-  desc "Build unminified source packages (i.e. angular apps)"
+  desc 'Build unminified source packages (i.e. angular apps)'
   task :unminified do
     require 'tempfile'
 
@@ -21,6 +21,16 @@ namespace :assets do
 
     config_without_compression.unlink
   end
+
+  desc 'Transpile javascript with babel'
+  task :babel do
+    cmd = './node_modules/.bin/babel public/javascripts/src -d public/javascripts/dist'
+    puts cmd
+    fail($?.exitstatus) unless system(cmd)
+  end
 end
 
-Rake::Task[:default].enhance { Rake::Task["assets:unminified"].invoke }
+Rake::Task[:default].enhance do
+  Rake::Task['assets:babel'].invoke
+  Rake::Task['assets:unminified'].invoke
+end

@@ -125,8 +125,25 @@
 
   NBEMapProvider.prototype = _.extend({}, MapProvider.prototype, {
     getLayer: function(layerName, layerOpts) {
-      var style = encodeURIComponent('#main {polygon-fill: #dadbae; polygon-opacity: 0.60; line-width: 0.5; line-color: #000;}');
-      return new OpenLayers.Layer.XYZ(layerName, '/tiles/' + layerName + '/the_geom/${z}/${x}/${y}.png?$style=' + style, layerOpts);
+      var style = encodeURIComponent(
+        '#main {'+
+          'line-width: 0.5;' +
+          'line-color: #000;' +
+          'marker-width: 6;' +
+          'marker-fill: #f45;' +
+          'line-width:1;' +
+          'line-opacity:0.85' +
+        '}' +
+        '#multipolygon {' +
+          'polygon-fill:#a9a9a9;' +
+          'polygon-opacity:0.5;' +
+          'line-color:#333;' +
+          'line-width:1;' +
+          'line-opacity:0.85' +
+        '}'
+      );
+      var tileUrl = '/tiles/' + layerName + '/the_geom/${z}/${x}/${y}.png?$style=' + style
+      return new OpenLayers.Layer.XYZ(layerName, tileUrl, layerOpts);
     },
 
     featureGetter: function() {

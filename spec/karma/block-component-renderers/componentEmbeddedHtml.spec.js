@@ -1,13 +1,16 @@
-describe('componentEmbeddedHTML jQuery plugin', function() {
+describe('componentEmbeddedHtml jQuery plugin', function() {
   'use strict';
 
   var $component;
   var storyteller = window.socrata.storyteller;
 
   var validComponentData = {
-    type: 'embeddedHTML',
+    type: 'embeddedHtml',
     value: {
-      url: 'https://imageuploads.com/embedded_fragment.html'
+      url: 'https://imageuploads.com/embedded_fragment.html',
+      layout: {
+        height: 300
+      }
     }
   };
 
@@ -17,12 +20,12 @@ describe('componentEmbeddedHTML jQuery plugin', function() {
   });
 
   it('should throw when passed invalid arguments', function() {
-    assert.throws(function() { $component.componentEmbeddedHTML(); });
-    assert.throws(function() { $component.componentEmbeddedHTML(1); });
-    assert.throws(function() { $component.componentEmbeddedHTML(null); });
-    assert.throws(function() { $component.componentEmbeddedHTML(undefined); });
-    assert.throws(function() { $component.componentEmbeddedHTML({}); });
-    assert.throws(function() { $component.componentEmbeddedHTML([]); });
+    assert.throws(function() { $component.componentEmbeddedHtml(); });
+    assert.throws(function() { $component.componentEmbeddedHtml(1); });
+    assert.throws(function() { $component.componentEmbeddedHtml(null); });
+    assert.throws(function() { $component.componentEmbeddedHtml(undefined); });
+    assert.throws(function() { $component.componentEmbeddedHtml({}); });
+    assert.throws(function() { $component.componentEmbeddedHtml([]); });
   });
 
   describe('given a value that does not contain a url', function () {
@@ -31,7 +34,7 @@ describe('componentEmbeddedHTML jQuery plugin', function() {
       delete badData.value.url;
 
       assert.throws(function() {
-        $component.componentEmbeddedHTML(badData);
+        $component.componentEmbeddedHtml(badData);
       });
     });
   });
@@ -39,7 +42,7 @@ describe('componentEmbeddedHTML jQuery plugin', function() {
   describe('given a valid component type and value', function() {
 
     beforeEach(function() {
-      $component = $component.componentEmbeddedHTML(validComponentData);
+      $component = $component.componentEmbeddedHtml(validComponentData);
     });
 
     it('should return a jQuery object for chaining', function() {
@@ -58,7 +61,7 @@ describe('componentEmbeddedHTML jQuery plugin', function() {
         var updatedData = _.cloneDeep(validComponentData);
         updatedData.value.url = 'https://updated.imageuploads.com/embedded_fragment.html';
 
-        $component.componentEmbeddedHTML(updatedData);
+        $component.componentEmbeddedHtml(updatedData);
 
         assert.equal(
           $component.find('iframe').attr('src'),

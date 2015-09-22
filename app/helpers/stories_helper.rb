@@ -20,7 +20,7 @@ module StoriesHelper
       'horizontalRule' => 'component_horizontal_rule',
       'spacer' => 'component_spacer',
       'image' => 'component_image',
-      'embeddedHTML' => 'component_embedded_html'
+      'embeddedHtml' => 'component_embedded_html'
     }
 
     if component_type_mapping[component_type].nil?

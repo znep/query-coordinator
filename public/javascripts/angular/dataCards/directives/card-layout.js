@@ -499,15 +499,7 @@
           return card.model.fieldName === '*';
         }
 
-        var cardsBySize$ = Rx.Observable.combineLatest(
-          zipLatestArray(scope.page.observe('cards'), 'cardSize'),
-          scope.page.observe('dataset.rowCount').filter(_.isNumber),
-          function(cards, rowCount) {
-            if (rowCount <= 1) {
-              return _.filter(cards, isTableCard);
-            }
-            return cards;
-          }).
+        var cardsBySize$ = zipLatestArray(scope.page.observe('cards'), 'cardSize').
           map(function(cards) {
             var groupedCards = _.groupBy(cards, function(card) {
               return isTableCard(card) ? 'dataCard' : 'normal';

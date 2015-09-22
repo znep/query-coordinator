@@ -215,7 +215,7 @@ describe('AssetSelectorRenderer', function() {
       storyteller.dispatcher.register(function(payload) {
         assert.equal(payload.action, Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION);
         // the values will be empty, but assert that the event adds the correct keys
-        assert.property(payload, 'cardData');
+        assert.property(payload, 'vif');
         done();
       });
 

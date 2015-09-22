@@ -90,9 +90,22 @@ en:
       saving: 'Saving...'
       unsaved: 'Save'
       idle: 'Save'
-  visualizations:
-    no_value_placeholder: '(No value)'
-    flyout:
-      unfiltered_amount_label: 'Total: '
-      filtered_amount_label: 'Filtered: '
-      datum_selected_label: 'This column is currently selected.'
+    visualizations:
+      no_value_placeholder: '(No value)'
+      flyout:
+        unfiltered_amount_label: 'Total: '
+        filtered_amount_label: 'Filtered: '
+        datum_selected_label: 'This column is currently selected.'
+      feature_map:
+        flyout_filter_notice: 'There are too many points at this location'
+        flyout_filter_or_zoom_notice: 'Zoom in to see details'
+        flyout_dense_data_notice: 'Numerous'
+        flyout_click_to_inspect_notice: 'Click to see details'
+        flyout_click_to_locate_user_title: 'Click to show your position on the map'
+        flyout_click_to_locate_user_notice: 'You may have to give your browser permission to share your current location'
+        flyout_locating_user_title: 'Your position is being determined'
+        flyout_locate_user_error_title: 'There was an error determining your location'
+        flyout_locate_user_error_notice: 'Click to try again'
+        flyout_pan_zoom_disabled_warning_title: 'Panning and zooming has been disabled'
+        row_inspector_row_data_query_failed: 'Detailed information about these points cannot be loaded at this time'
+        user_current_position: 'Your current location (estimated)'

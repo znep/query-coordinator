@@ -28,6 +28,8 @@
         return 'componentYoutubeVideo';
       case 'socrata.visualization.columnChart':
         return 'componentSocrataVisualizationColumnChart';
+      case 'socrata.visualization.featureMap':
+        return 'componentSocrataVisualizationFeatureMap';
       case 'embeddedHTML':
         return 'componentEmbeddedHTML';
       default:

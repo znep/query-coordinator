@@ -183,49 +183,56 @@
 
     function _chooseVisualizationDataset(payload) {
       if (payload.isNewBackend) {
-        setUid(payload.datasetUid);
+        _setVisualizationDatasetUid(payload.datasetUid);
       } else {
         // We have an OBE datasetId, go fetch the NBE datasetId
         $.get('/api/migrations/{0}.json'.format(payload.datasetUid)).
           done(function(data) {
-            setUid(data.nbeId);
+            _setVisualizationDatasetUid(data.nbeId);
           }).
           fail(function() {
             alert('This dataset cannot be chosen at this time.'); //eslint-disable-line no-alert
           });
       }
+    }
 
-      function setUid(uid) {
-        _currentComponentProperties = {
-          dataSource: {
-            type: 'soql',
-            domain: window.location.host,
-            uid: uid,
-            baseQuery: ''
-          }
-        };
-        self._emitChange();
-      }
+    function _setVisualizationDatasetUid(uid) {
+      _currentComponentProperties = {
+        layout: {
+          height: Constants.DEFAULT_VISUALIZATION_HEIGHT
+        },
+        vif: {
+          domain: window.location.host,
+          datasetUid: uid
+        }
+      };
 
+      self._emitChange();
     }
 
     function _updateVisualizationConfiguration(payload) {
-      var cardData = payload.cardData;
+      var vif = payload.vif;
 
-      if (cardData) {
-        _currentComponentType = 'socrata.visualization.columnChart';
-        switch (cardData.cardType) {
-          case 'column':
+      if (vif) {
+        switch (vif.type) {
+          case 'columnChart':
             _currentComponentType = 'socrata.visualization.columnChart';
-            // Final query must contain {0} and {1} for guard value replacing down the road, so for now leave
-            // them and only replace column name.
-            // TODO: Finalize a better way to store this query.
-            _currentComponentProperties.dataSource.baseQuery =
-              'SELECT `{2}` AS {0}, COUNT(*) AS {1} GROUP BY `{2}` ORDER BY COUNT(*) DESC NULL LAST LIMIT 200'.format(
-                '{0}',
-                '{1}',
-                cardData.fieldName
-              );
+            _currentComponentProperties = {
+              layout: {
+                height: Constants.DEFAULT_VISUALIZATION_HEIGHT
+              },
+              vif: vif
+            };
+            break;
+          case 'featureMap':
+            _currentComponentType = 'socrata.visualization.featureMap';
+            _currentComponentProperties = {
+              layout: {
+                height: Constants.DEFAULT_VISUALIZATION_HEIGHT
+              },
+              vif: vif
+            };
+            break;
         }
 
         self._emitChange();

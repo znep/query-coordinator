@@ -21,11 +21,11 @@
      * Public methods
      */
 
-    this.renderFlyout = function(options) {
+    this.render = function(options) {
       _renderFlyoutData(options);
     };
 
-    this.clearFlyout = function() {
+    this.clear = function() {
       _hideFlyout();
     };
 
@@ -191,5 +191,5 @@
     }
   }
 
-  root.socrata.storyteller.FlyoutRenderer = FlyoutRenderer;
+  root.socrata.visualizations.FlyoutRenderer = FlyoutRenderer;
 })(window);

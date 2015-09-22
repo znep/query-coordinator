@@ -67,7 +67,7 @@
       vif.configuration.tileserverHosts = [
         'https://{0}'.format(vif.domain)
       ];
-      vif.configuration.baseLayerUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png';
+      vif.configuration.baseLayerUrl = Constants.SOCRATA_VISUALIZATION_FEATURE_MAP_DEFAULT_BASE_LAYER;
       vif.configuration.baseLayerOpacity = 0.25;
       vif.configuration.hover = true;
       vif.configuration.locateUser = true;

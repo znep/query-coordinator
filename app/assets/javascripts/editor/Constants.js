@@ -39,7 +39,9 @@
     // (in milliseconds)
     EMBED_CODE_DEBOUNCE_DELAY: 1000,
 
-    DEFAULT_VISUALIZATION_HEIGHT: 300
+    DEFAULT_VISUALIZATION_HEIGHT: 300,
+
+    SOCRATA_VISUALIZATION_FEATURE_MAP_DEFAULT_BASE_LAYER: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}.png'
   };
 
   root.Constants = Constants;

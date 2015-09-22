@@ -5,6 +5,7 @@ RSpec.describe StoryDraftCreator do
   let(:user) { mock_valid_user }
   let(:uid) { 'test-data' }
   let(:digest) { 'digest-for-draft' }
+  let(:theme) { 'serif' }
 
   let(:blocks) { [ valid_new_block.dup ] }
 
@@ -13,6 +14,7 @@ RSpec.describe StoryDraftCreator do
       user: user,
       uid: uid,
       digest: digest,
+      theme: theme,
       blocks: blocks
     )
   }
@@ -83,6 +85,7 @@ RSpec.describe StoryDraftCreator do
           user: user,
           uid: uid,
           digest: digest,
+          theme: theme,
           blocks: blocks
         )
       }.to raise_error(ArgumentError)
@@ -98,6 +101,7 @@ RSpec.describe StoryDraftCreator do
           user: user,
           uid: uid,
           digest: digest,
+          theme: theme,
           blocks: blocks
         )
       }.to raise_error(ArgumentError)
@@ -111,6 +115,7 @@ RSpec.describe StoryDraftCreator do
           user: mock_valid_user.tap{|user| user['id'] = 'not' },
           uid: uid,
           digest: digest,
+          theme: theme,
           blocks: blocks
         )
       }.to raise_error(ArgumentError)
@@ -126,6 +131,7 @@ RSpec.describe StoryDraftCreator do
           user: user,
           uid: uid,
           digest: digest,
+          theme: theme,
           blocks: blocks
         )
       }.to raise_error(ArgumentError)
@@ -141,6 +147,7 @@ RSpec.describe StoryDraftCreator do
           user: user,
           uid: uid,
           digest: digest,
+          theme: theme,
           blocks: blocks
         )
       }.to raise_error(ArgumentError)
@@ -156,6 +163,23 @@ RSpec.describe StoryDraftCreator do
           user: user,
           uid: uid,
           digest: digest,
+          theme: theme,
+          blocks: blocks
+        )
+      }.to raise_error(ArgumentError)
+    end
+  end
+
+  context 'when initialized with no theme' do
+    let (:theme) { nil }
+
+    it 'raises an exception' do
+      expect {
+        StoryDraftCreator.new(
+          user: user,
+          uid: uid,
+          digest: digest,
+          theme: theme,
           blocks: blocks
         )
       }.to raise_error(ArgumentError)
@@ -172,6 +196,7 @@ RSpec.describe StoryDraftCreator do
           user: user,
           uid: uid,
           digest: previous_digest + 'NOPE',
+          theme: theme,
           blocks: blocks
         )
       end
@@ -196,6 +221,7 @@ RSpec.describe StoryDraftCreator do
           user: user,
           uid: uid,
           digest: digest,
+          theme: theme,
           blocks: blocks
         )
       end
@@ -311,6 +337,7 @@ RSpec.describe StoryDraftCreator do
               user: user,
               uid: uid,
               digest: digest,
+              theme: theme,
               blocks: blocks
             )
           }.to raise_error(ArgumentError)
@@ -323,6 +350,7 @@ RSpec.describe StoryDraftCreator do
                 user: user,
                 uid: uid,
                 digest: digest,
+                theme: theme,
                 blocks: blocks
               )
             rescue => error
@@ -341,6 +369,7 @@ RSpec.describe StoryDraftCreator do
               user: user,
               uid: uid,
               digest: digest,
+              theme: theme,
               blocks: blocks
             )
           }.to raise_error(ArgumentError)
@@ -353,6 +382,7 @@ RSpec.describe StoryDraftCreator do
                 user: user,
                 uid: uid,
                 digest: digest,
+                theme: theme,
                 blocks: blocks
               )
             rescue => error
@@ -394,6 +424,7 @@ RSpec.describe StoryDraftCreator do
               user: user,
               uid: uid,
               digest: digest,
+              theme: theme,
               blocks: blocks
             )
           }.to raise_error(ArgumentError)
@@ -406,6 +437,7 @@ RSpec.describe StoryDraftCreator do
                 user: user,
                 uid: uid,
                 digest: digest,
+                theme: theme,
                 blocks: blocks
               )
             rescue => error

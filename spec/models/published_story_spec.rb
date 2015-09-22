@@ -39,18 +39,6 @@ RSpec.describe PublishedStory, type: :model do
     end
   end
 
-  describe 'default attributes' do
-    it 'returns a default theme when theme is not set' do
-      story_with_no_theme = FactoryGirl.build(:published_story, theme: nil)
-      expect(story_with_no_theme.theme).to eq('classic')
-    end
-
-    it 'returns a theme when the theme is set' do
-      story_with_serif_theme = FactoryGirl.build(:published_story, theme: 'serif')
-      expect(story_with_serif_theme.theme).to eq('serif')
-    end
-  end
-
   describe '#from_draft_story' do
     let(:draft_story) { FactoryGirl.create(:draft_story) }
     let(:result) { PublishedStory.from_draft_story(draft_story) }

@@ -59,7 +59,8 @@ class StoriesController < ApplicationController
         @story = DraftStory.create(
           :uid => clean_uid,
           :block_ids => [],
-          :created_by => current_user['id']
+          :created_by => current_user['id'],
+          :theme => 'classic' #TODO: make this default configurable by domain
         )
 
         if @story.persisted?

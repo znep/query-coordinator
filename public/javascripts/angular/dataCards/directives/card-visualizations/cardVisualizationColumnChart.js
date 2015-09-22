@@ -102,7 +102,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
 
       $scope.$bindObservable('rowDisplayUnit', model.observeOnLatest('page.aggregation.unit'));
 
-      $scope.$bindObservable('chartData', Rx.Observable.combineLatest(
+      $scope.$bindObservable('cardData', Rx.Observable.combineLatest(
           unfilteredData$.switchLatest().pluck('data'),
           filteredData$.switchLatest().pluck('data'),
           model.observeOnLatest('activeFilters'),
@@ -156,7 +156,7 @@ angular.module('dataCards.directives').directive('cardVisualizationColumnChart',
           }
         ));
 
-      $scope.$bindObservable('filterApplied', whereClause$.
+      $scope.$bindObservable('isFiltered', whereClause$.
         map(function(whereClause) {
           return _.isPresent(whereClause);
         })

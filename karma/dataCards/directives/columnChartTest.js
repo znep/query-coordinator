@@ -106,8 +106,7 @@ describe('columnChart', function() {
     var html =
       '<div class="card-visualization" style="width: ' +
         width + 'px; height: ' + CHART_HEIGHT + 'px;">' +
-        '<column-chart class="column-chart"' +
-          ' chart-data="testData" show-filtered="showFiltered" expanded="expanded">' +
+        '<column-chart class="column-chart">' +
         '</column-chart>' +
       '</div>';
 
@@ -119,7 +118,7 @@ describe('columnChart', function() {
     var compiledElem = compile(elem)(scope);
 
     scope.expanded = expanded;
-    scope.testData = data;
+    scope.cardData = data;
     scope.showFiltered = false;
     scope.$digest();
 
@@ -150,7 +149,7 @@ describe('columnChart', function() {
           expect(events[0].additionalArguments[0].timestamp).to.satisfy(_.isFinite);
           expect(events[1].additionalArguments[0].timestamp).to.satisfy(_.isFinite);
 
-          expect(events[0].additionalArguments[0].timestamp).to.be.below(events[1].additionalArguments[0].timestamp);
+          expect(events[0].additionalArguments[0].timestamp).to.be.lte(events[1].additionalArguments[0].timestamp);
           done();
         }
       );

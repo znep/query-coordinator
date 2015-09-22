@@ -758,14 +758,7 @@
     return {
       restrict: 'E',
       replace: true,
-      scope: {
-        'baseLayerUrl': '=',
-        'geojsonAggregateData': '=',
-        'savedExtent': '=',
-        'defaultExtent': '=',
-        'rowDisplayUnit': '=?',
-        'isFiltered': '='
-      },
+      scope: true,
       template: ['<div class="choropleth-container">',
                     '<div class="choropleth-map-container"></div>',
                     '<div class="choropleth-legend">',

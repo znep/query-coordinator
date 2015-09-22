@@ -15,16 +15,7 @@
   ) {
     return {
       restrict: 'E',
-      scope: {
-        'getClickedRows': '=',
-        'baseLayerUrl': '=',
-        'featureExtent': '=',
-        'zoomDebounceMilliseconds': '=',
-        'vectorTileGetter': '=',
-        'rowDisplayUnit': '=?',
-        'disablePanAndZoom': '=',
-        'busy': '='
-      },
+      scope: true,
       templateUrl: '/angular_templates/dataCards/featureMap.html',
       link: function(scope, element) {
         var baseLayerUrl$ = scope.$observe('baseLayerUrl');

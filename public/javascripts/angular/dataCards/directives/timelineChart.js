@@ -26,16 +26,8 @@
 
     return {
       templateUrl: '/angular_templates/dataCards/timelineChart.html',
-      restrict: 'A',
-      scope: {
-        chartData: '=',
-        expanded: '=',
-        precision: '=',
-        rowDisplayUnit: '=',
-        activeFilters: '=',
-        unfilteredSoqlRollupTablesUsed: '=',
-        filteredSoqlRollupTablesUsed: '='
-      },
+      restrict: 'E',
+      scope: true,
       link: function(scope, element, attrs) {
         var chartData$ = scope.$observe('chartData');
         var precision$ = scope.$observe('precision');

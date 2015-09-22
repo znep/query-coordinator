@@ -301,7 +301,7 @@ describe('Histogram Visualization', function() {
 
     var histogram = createHistogram();
     var columnChart = histogram.element.find('column-chart');
-    expect(columnChart.isolateScope().chartData[0][0]).to.not.eql(NaN);
+    expect(columnChart.scope().cardData[0][0]).to.not.eql(NaN);
     HistogramService.getVisualizationTypeForData.restore();
   });
 

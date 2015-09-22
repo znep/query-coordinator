@@ -1091,25 +1091,28 @@ var RowSet = ServerModel.extend({
                 { rs._totalCount = rowCount; }
 
                 var fields = JSON.parse(xhr.getResponseHeader('X-SODA2-Fields'));
-                //var types = xhr.getResponseHeader('X-SODA2-Types');
-                var newCols = _.map(fields, function(f)
+                var types = JSON.parse(xhr.getResponseHeader('X-SODA2-Types') || '[]') || [];
+                var newCols = _.map(fields, function(field, index)
                 {
-                    var c = rs._dataset.findColumnForServerName(f);
-                    if ($.isBlank(c))
+                    var col = rs._dataset.findColumnForServerName(field);
+                    if ($.isBlank(col))
                     {
-                        if (f.startsWith(':'))
+                        if (field.startsWith(':'))
                         {
                             // metadata column, add it
-                            c = { id: -1, name: f.slice(1), fieldName: f,
-                                dataTypeName: 'meta_data', renderTypeName: 'meta_data' };
+                            col = { id: -1, name: field.slice(1), fieldName: field,
+                                    dataTypeName: 'meta_data', renderTypeName: 'meta_data' };
                         }
                         else
                         {
                             // uh-oh, a column we don't know about
-                            $.debug('!!!!!!!!!!!! Unknown column: ' + f);
+                            $.debug('!!!!!!!!!!!! Unknown column: ' + field);
                         }
+                    } else if (blist.datatypes[types[index]]) {
+                      col.dataTypeName = types[index];
+                      col.renderTypeName = types[index];
                     }
-                    return c;
+                    return col;
                 });
 
                 var hasSystemIDColumn = _.any(newCols, function(c) {

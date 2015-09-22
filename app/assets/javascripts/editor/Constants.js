@@ -35,7 +35,7 @@ var Constants = {
   // How long to wait after user input has stopped before uploading the
   // embed code fragment to the backend for storage and subsequent preview
   // (in milliseconds)
-  EMBED_CODE_DEBOUNCE_DELAY: 1000,
+  EMBED_CODE_DEBOUNCE_DELAY: 1000
 };
 
 (function() {

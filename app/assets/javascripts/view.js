@@ -8,8 +8,4 @@
 // about supported directives.
 //
 
-//= require editor/SimpleEventEmitter.js
-//= require editor/stores/Store.js
-//= require editor/stores/WindowSizeBreakpointStore.js
-
 //= require_tree ./view

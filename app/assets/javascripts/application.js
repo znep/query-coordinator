@@ -14,10 +14,13 @@
 //= require jquery2
 //= require lodash
 //= require d3/d3
+//= require socrata-utils/socrata.utils
 //= require vector-tile/dist/vectortile
 //= require leaflet/dist/leaflet
-
-//= require socrata-utils/socrata.utils
+//= require editor/storytellerUtils
+//= require editor/Constants
+//= require editor/Actions
+//= require editor/init
 
 //= require socrata-visualizations/socrata.visualizations.DataProvider
 //= require socrata-visualizations/socrata.visualizations.SoqlDataProvider
@@ -37,7 +40,7 @@
 //= require socrata-visualizations/components/SocrataColumnChart
 //= require socrata-visualizations/components/SocrataFeatureMap
 
-//= require editor/storytellerUtils
-//= require editor/Constants
-//= require editor/Actions
-//= require editor/init
+// Store setup
+//= require editor/SimpleEventEmitter.js
+//= require editor/stores/Store.js
+//= require editor/stores/WindowSizeBreakpointStore.js

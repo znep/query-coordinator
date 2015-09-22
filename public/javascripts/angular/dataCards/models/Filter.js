@@ -12,7 +12,7 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
   }
 
   BinaryOperatorFilter.prototype.generateSoqlWhereFragment = function(field) {
-    return SoqlHelpers.formatFieldName(field) + this.operator + SoqlHelpers.encodePrimitive(this.operand)
+    return SoqlHelpers.formatFieldName(field) + this.operator + SoqlHelpers.encodePrimitive(this.operand);
   };
 
   BinaryOperatorFilter.prototype.serialize = function() {
@@ -27,7 +27,7 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
   };
 
   BinaryOperatorFilter.deserialize = function(blob) {
-    var args = blob['arguments'];
+    var args = blob.arguments;
     return new BinaryOperatorFilter(args.operator, args.operand, args.humanReadableOperand);
   };
 
@@ -59,7 +59,7 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
   };
 
   IsNullFilter.deserialize = function(blob) {
-    return new IsNullFilter(blob['arguments'].isNull);
+    return new IsNullFilter(blob.arguments.isNull);
   };
 
   TimeRangeFilter.prototype.generateSoqlWhereFragment = function(field) {
@@ -80,12 +80,12 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
   };
 
   TimeRangeFilter.deserialize = function(blob) {
-    var args = blob['arguments'];
+    var args = blob.arguments;
     if (!args.hasOwnProperty('start')) {
-      throw new Error("Could not deserialize TimeRangeFilter: no 'start' property.");
+      throw new Error('Could not deserialize TimeRangeFilter: no "start" property.');
     }
     if (!args.hasOwnProperty('end')) {
-      throw new Error("Could not deserialize TimeRangeFilter: no 'end' property.");
+      throw new Error('Could not deserialize TimeRangeFilter: no "end" property.');
     }
     var startDate = args.start;
     var endDate = args.end;
@@ -116,19 +116,19 @@ angular.module('dataCards.models').factory('Filter', function(SoqlHelpers, DateH
   };
 
   ValueRangeFilter.deserialize = function(blob) {
-    var args = blob['arguments'];
+    var args = blob.arguments;
     if (!_(args).has('start')) {
-      throw new Error("Could not deserialize ValueRangeFilter: no 'start' property.");
+      throw new Error('Could not deserialize ValueRangeFilter: no "start" property.');
     }
     if (!_(args).has('end')) {
-      throw new Error("Could not deserialize ValueRangeFilter: no 'end' property.");
+      throw new Error('Could not deserialize ValueRangeFilter: no "end" property.');
     }
     return new ValueRangeFilter(args.start, args.end);
   };
 
   function deserialize(blob) {
-    if (!_.isObject(blob['arguments'])) {
-      throw new Error('No arguments provided in serialized filter')
+    if (!_.isObject(blob.arguments)) {
+      throw new Error('No arguments provided in serialized filter');
     }
 
     var filterClass;

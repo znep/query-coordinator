@@ -159,11 +159,11 @@
           }
         );
 
-        return {
-          crs: geojsonRegions.crs,
-          features: newFeatures,
-          type: geojsonRegions.type
-        };
+      return {
+        crs: geojsonRegions.crs,
+        features: newFeatures,
+        type: geojsonRegions.type
+      };
     }
 
 

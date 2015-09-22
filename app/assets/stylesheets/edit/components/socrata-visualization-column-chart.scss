@@ -1,0 +1,22 @@
+@import 'lib/variables';
+
+.component-socrata-visualization-column-chart {
+  /**
+   * Temporarily override hover styles in order to not imply interactivity.
+   */
+
+  .bar-group {
+    cursor: default !important;
+
+    &:hover {
+      .bar.unfiltered,
+      .bar.filtered {
+        cursor: default !important;
+      }
+    }
+  }
+
+  .labels .label .contents {
+    cursor: default !important;
+  }
+}

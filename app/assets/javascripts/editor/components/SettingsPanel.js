@@ -115,7 +115,7 @@
     function saveMetadata() {
       if (isTitleChanged()) {
         storyteller.dispatcher.dispatch({
-          action: Constants.STORY_SET_TITLE,
+          action: Actions.STORY_SET_TITLE,
           storyUid: storyteller.userStoryUid,
           title: storyTitleInputBox.val()
         });
@@ -123,14 +123,14 @@
 
       if (isDescriptionChanged()) {
         storyteller.dispatcher.dispatch({
-          action: Constants.STORY_SET_DESCRIPTION,
+          action: Actions.STORY_SET_DESCRIPTION,
           storyUid: storyteller.userStoryUid,
           description: storyDescriptionTextarea.val()
         });
       }
 
       storyteller.dispatcher.dispatch({
-        action: Constants.STORY_SAVE_METADATA,
+        action: Actions.STORY_SAVE_METADATA,
         storyUid: storyteller.userStoryUid
       });
     }
@@ -192,7 +192,7 @@
         if (hasError) {
           if (isTitleChanged()) {
             storyteller.dispatcher.dispatch({
-              action: Constants.STORY_SET_TITLE,
+              action: Actions.STORY_SET_TITLE,
               storyUid: storyteller.userStoryUid,
               title: metadataStateAtPanelOpenTime.title
             });
@@ -200,7 +200,7 @@
 
           if (isDescriptionChanged()) {
             storyteller.dispatcher.dispatch({
-              action: Constants.STORY_SET_DESCRIPTION,
+              action: Actions.STORY_SET_DESCRIPTION,
               storyUid: storyteller.userStoryUid,
               description: metadataStateAtPanelOpenTime.description
             });

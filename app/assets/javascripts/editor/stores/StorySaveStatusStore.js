@@ -32,8 +32,8 @@
 
       switch (action) {
 
-        case Constants.STORY_CREATE:
-        case Constants.STORY_SAVED:
+        case Actions.STORY_CREATE:
+        case Actions.STORY_SAVED:
           // Let StoryStore deal with this action, then remember the initial or updated story state.
           storyteller.dispatcher.waitFor([ storyteller.storyStore.getDispatcherToken() ]);
           _lastSavedSerializedStory = storyteller.storyStore.serializeStory(forStoryUid);
@@ -42,7 +42,7 @@
           self._emitChange();
           break;
 
-        case Constants.STORY_SAVE_FAILED:
+        case Actions.STORY_SAVE_FAILED:
           _saveInProgress = false;
           _poisonedWithSaveConflictForever = _poisonedWithSaveConflictForever || payload.conflict;
           _lastSaveError = {
@@ -51,7 +51,7 @@
           self._emitChange();
           break;
 
-        case Constants.STORY_SAVE_STARTED:
+        case Actions.STORY_SAVE_STARTED:
           if (_saveInProgress) {
             throw new Error('Can only have one pending save at a time.');
           }

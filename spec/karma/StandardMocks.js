@@ -84,7 +84,7 @@ function applyStandardMocks() {
     assert.isObject(payload);
     assert.property(payload, 'action', 'action payload had no `action` property');
     assert.isDefined(payload.action, 'action property of payload must be defined,' +
-      ' check your Constants and/or dispatch call. Payload keys: ' + Object.keys(payload));
+      ' check your Actions and/or dispatch call. Payload keys: ' + Object.keys(payload));
     assert.isString(payload.action, 'action payload had a non-string `action` property');
   });
 
@@ -99,7 +99,7 @@ function applyStandardMocks() {
   storyteller.windowSizeBreakpointStore = new storyteller.WindowSizeBreakpointStore();
   storyteller.fileUploadStore = new storyteller.FileUploadStore();
 
-  storyteller.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: storyData });
+  storyteller.dispatcher.dispatch({ action: Actions.STORY_CREATE, data: storyData });
 
   window.standardMocks = {
     remove: removeStandardMocks,

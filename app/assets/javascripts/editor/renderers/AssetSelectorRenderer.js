@@ -52,7 +52,7 @@
           // `ESC`
           case 27:
             storyteller.dispatcher.dispatch({
-              action: Constants.ASSET_SELECTOR_CLOSE
+              action: Actions.ASSET_SELECTOR_CLOSE
             });
             break;
 
@@ -66,7 +66,7 @@
 
       _overlay.on('click', function() {
         storyteller.dispatcher.dispatch({
-          action: Constants.ASSET_SELECTOR_CLOSE
+          action: Actions.ASSET_SELECTOR_CLOSE
         });
       });
 
@@ -92,7 +92,7 @@
         function(event) {
 
           storyteller.dispatcher.dispatch({
-            action: Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
+            action: Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
             url: $(event.target).val()
           });
         }
@@ -114,7 +114,7 @@
           if (!event.keyCode) {
             setTimeout(function() {
               storyteller.dispatcher.dispatch({
-                action: Constants.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
+                action: Actions.ASSET_SELECTOR_UPDATE_YOUTUBE_URL,
                 url: $(event.target).val()
               });
             }, 0);
@@ -126,7 +126,7 @@
         'datasetSelected',
         function(event, datasetObj) {
           storyteller.dispatcher.dispatch({
-            action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
+            action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET,
             datasetUid: datasetObj.id,
             isNewBackend: datasetObj.newBackend
           });
@@ -137,7 +137,7 @@
         'visualizationSelected',
         function(event, selectedVisualization) {
           storyteller.dispatcher.dispatch({
-            action: Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
+            action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
             vif: selectedVisualization
           });
         }
@@ -149,48 +149,48 @@
 
         switch (action) {
 
-          case Constants.ASSET_SELECTOR_CHOOSE_PROVIDER:
+          case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
             storyteller.dispatcher.dispatch({
-              action: Constants.ASSET_SELECTOR_CHOOSE_PROVIDER,
+              action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
               blockId: storyteller.assetSelectorStore.getCurrentBlockId(),
               componentIndex: storyteller.assetSelectorStore.getCurrentComponentIndex()
             });
             break;
 
-          case Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE:
+          case Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE:
             storyteller.dispatcher.dispatch({
-              action: Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE
+              action: Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE
             });
             break;
 
-          case Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION:
+          case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION:
             storyteller.dispatcher.dispatch({
-              action: Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION
+              action: Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION
             });
             break;
 
-          case Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD:
+          case Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD:
             storyteller.dispatcher.dispatch({
-              action: Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
+              action: Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
             });
             break;
 
-          case Constants.ASSET_SELECTOR_APPLY:
+          case Actions.ASSET_SELECTOR_APPLY:
             storyteller.dispatcher.dispatch({
-              action: Constants.BLOCK_UPDATE_COMPONENT,
+              action: Actions.BLOCK_UPDATE_COMPONENT,
               blockId: storyteller.assetSelectorStore.getCurrentBlockId(),
               componentIndex: storyteller.assetSelectorStore.getCurrentComponentIndex(),
               type: storyteller.assetSelectorStore.getCurrentComponentType(),
               value: storyteller.assetSelectorStore.getCurrentComponentValue()
             });
             storyteller.dispatcher.dispatch({
-              action: Constants.ASSET_SELECTOR_CLOSE
+              action: Actions.ASSET_SELECTOR_CLOSE
             });
             break;
 
-          case Constants.ASSET_SELECTOR_CLOSE:
+          case Actions.ASSET_SELECTOR_CLOSE:
             storyteller.dispatcher.dispatch({
-              action: Constants.ASSET_SELECTOR_CLOSE
+              action: Actions.ASSET_SELECTOR_CLOSE
             });
             break;
 
@@ -215,32 +215,32 @@
 
         switch (state) {
 
-          case Constants.ASSET_SELECTOR_CHOOSE_PROVIDER:
+          case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
             selectorContent = _renderChooseProvider();
             break;
 
-          case Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE:
+          case Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE:
             selectorContent = _renderChooseYoutubeTemplate(componentValue);
             break;
 
-          case Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION:
+          case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION:
             selectorContent = _renderChooseDatasetTemplate();
             break;
 
-          case Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
+          case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
             selectorContent = _renderConfigureVisualizationTemplate();
             break;
 
-          case Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD:
+          case Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD:
             selectorContent = _renderChooseImageUploadTemplate();
             break;
 
-          case Constants.FILE_UPLOAD_PROGRESS:
-          case Constants.FILE_UPLOAD_ERROR:
+          case Actions.FILE_UPLOAD_PROGRESS:
+          case Actions.FILE_UPLOAD_ERROR:
             selectorContent = _renderFileUploadProgressTemplate();
             break;
 
-          case Constants.FILE_UPLOAD_DONE:
+          case Actions.FILE_UPLOAD_DONE:
             selectorContent = _renderImagePreviewTemplate();
             break;
 
@@ -264,19 +264,19 @@
       // not update dynamically
       switch (state) {
 
-        case Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE:
+        case Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE:
           _renderChooseYoutubeData(componentValue);
           break;
 
-        case Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
+        case Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET:
           _renderConfigureVisualizationData(componentValue);
           break;
 
-        case Constants.FILE_UPLOAD_DONE:
+        case Actions.FILE_UPLOAD_DONE:
           _renderImagePreviewData(componentValue);
           break;
 
-        case Constants.FILE_UPLOAD_ERROR:
+        case Actions.FILE_UPLOAD_ERROR:
           _renderImageUploadErrorData(componentValue);
           break;
 
@@ -297,17 +297,17 @@
 
       var youtubeButton = $('<button>', {
         'class': 'btn accent-btn',
-        'data-action': Constants.ASSET_SELECTOR_CHOOSE_YOUTUBE
+        'data-action': Actions.ASSET_SELECTOR_CHOOSE_YOUTUBE
       }).text(I18n.t('editor.asset_selector.youtube.button_text'));
 
       var visualizationButton = $('<button>', {
         'class': 'btn accent-btn',
-        'data-action': Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION
+        'data-action': Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION
       }).text(I18n.t('editor.asset_selector.visualization.button_text'));
 
       var imageUploadButton = $('<button>', {
         'class': 'btn accent-btn',
-        'data-action': Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
+        'data-action': Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
       }).text(I18n.t('editor.asset_selector.image_upload.button_text'));
 
       var providers = $('<ul>', {'class': 'button-list'}).append([
@@ -342,13 +342,13 @@
         }
       );
 
-      var backButton = _renderModalBackButton(Constants.ASSET_SELECTOR_CHOOSE_PROVIDER);
+      var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
 
       var insertButton = $(
         '<button>',
         {
           'class': 'btn accent-btn',
-          'data-action': Constants.ASSET_SELECTOR_APPLY,
+          'data-action': Actions.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
       ).text(I18n.t('editor.asset_selector.insert_button_text'));
@@ -393,7 +393,7 @@
         '<button>',
         {
           'class': 'btn asset-selector-cancel-upload',
-          'data-action': Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
+          'data-action': Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
         }
       ).text(I18n.t('editor.asset_selector.cancel_button_text'));
 
@@ -401,7 +401,7 @@
         '<button>',
         {
           'class': 'hidden btn asset-selector-try-again',
-          'data-action': Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
+          'data-action': Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
         }
       ).text(I18n.t('editor.asset_selector.try_again_button_text'));
 
@@ -411,13 +411,13 @@
         tryAgainButton
       ]);
 
-      var backButton = _renderModalBackButton(Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD);
+      var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD);
 
       var insertButton = $(
         '<button>',
         {
           'class': 'btn accent-btn',
-          'data-action': Constants.ASSET_SELECTOR_APPLY,
+          'data-action': Actions.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
       ).text(I18n.t('editor.asset_selector.insert_button_text'));
@@ -484,13 +484,13 @@
         previewImage
       ]);
 
-      var backButton = _renderModalBackButton(Constants.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD);
+      var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD);
 
       var insertButton = $(
         '<button>',
         {
           'class': 'btn accent-btn',
-          'data-action': Constants.ASSET_SELECTOR_APPLY
+          'data-action': Actions.ASSET_SELECTOR_APPLY
         }
       ).text(I18n.t('editor.asset_selector.insert_button_text'));
 
@@ -520,7 +520,7 @@
       var imageElement = imageContainer.find('.asset-selector-preview-image');
       var imageSrc = imageElement.attr('src');
       var insertButton = _dialog.find(
-        '[data-action="' + Constants.ASSET_SELECTOR_APPLY + '"]'
+        '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
       );
 
       if (componentProperties !== null &&
@@ -610,13 +610,13 @@
         previewIframe
       ]);
 
-      var backButton = _renderModalBackButton(Constants.ASSET_SELECTOR_CHOOSE_PROVIDER);
+      var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
 
       var insertButton = $(
         '<button>',
         {
           'class': 'btn accent-btn',
-          'data-action': Constants.ASSET_SELECTOR_APPLY
+          'data-action': Actions.ASSET_SELECTOR_APPLY
         }
       ).text(I18n.t('editor.asset_selector.insert_button_text'));
 
@@ -657,7 +657,7 @@
       var inputControl = _dialog.find('[data-asset-selector-validate-field="youtubeId"]');
       var iframeContainer;
       var insertButton = _dialog.find(
-        '[data-action="' + Constants.ASSET_SELECTOR_APPLY + '"]'
+        '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
       );
 
       if (componentProperties !== null &&
@@ -711,7 +711,7 @@
         I18n.t('editor.asset_selector.visualization.choose_dataset_heading')
       );
       var closeButton = _renderModalCloseButton();
-      var backButton = _renderModalBackButton(Constants.ASSET_SELECTOR_CHOOSE_PROVIDER);
+      var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
 
       var datasetChooserIframe = $(
         '<iframe>',
@@ -744,7 +744,7 @@
         I18n.t('editor.asset_selector.visualization.configure_vizualization_heading')
       );
       var closeButton = _renderModalCloseButton();
-      var backButton = _renderModalBackButton(Constants.ASSET_SELECTOR_CHOOSE_VISUALIZATION);
+      var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_VISUALIZATION);
 
       // TODO: Map insert button to APPLY instead of CLOSE, and share insert button
       // into shared function
@@ -752,7 +752,7 @@
         '<button>',
         {
           'class': 'btn accent-btn',
-          'data-action': Constants.ASSET_SELECTOR_APPLY,
+          'data-action': Actions.ASSET_SELECTOR_APPLY,
           'disabled': 'disabled'
         }
       ).text(I18n.t('editor.asset_selector.insert_button_text'));
@@ -782,7 +782,7 @@
       var currentIframeSrc = iframeElement.attr('src');
       var newIframeSrc = _visualizationChooserUrl(componentProperties.vif.datasetUid);
       var insertButton = _dialog.find(
-        '[data-action="' + Constants.ASSET_SELECTOR_APPLY + '"]'
+        '[data-action="' + Actions.ASSET_SELECTOR_APPLY + '"]'
       );
 
       if (currentIframeSrc !== newIframeSrc) {
@@ -829,14 +829,14 @@
         '<button>',
         {
           'class': 'modal-close-btn',
-          'data-action': Constants.ASSET_SELECTOR_CLOSE
+          'data-action': Actions.ASSET_SELECTOR_CLOSE
         }
       ).append(
         $(
           '<span>',
           {
             'class': 'icon-cross2',
-            'data-action': Constants.ASSET_SELECTOR_CLOSE
+            'data-action': Actions.ASSET_SELECTOR_CLOSE
           }
         )
       );

@@ -25,14 +25,14 @@
       var action = payload.action;
 
       switch (action) {
-        case Constants.STORY_CREATE:
+        case Actions.STORY_CREATE:
           payload.data.blocks.forEach(function(block) {
             _blockNeedsConfirmation[block.id] = true;
           });
           self._emitChange();
           break;
 
-        case Constants.BLOCK_UPDATE_COMPONENT:
+        case Actions.BLOCK_UPDATE_COMPONENT:
           _blockNeedsConfirmation[payload.blockId] = true;
           self._emitChange();
           break;

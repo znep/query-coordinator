@@ -15,13 +15,13 @@
     this.register(function(payload) {
 
       switch (payload.action) {
-        case Constants.STORY_DRAG_OVER:
+        case Actions.STORY_DRAG_OVER:
           _storyDragOver(payload);
           break;
-        case Constants.STORY_DRAG_LEAVE:
+        case Actions.STORY_DRAG_LEAVE:
           _storyDragLeave(payload);
           break;
-        case Constants.STORY_DROP:
+        case Actions.STORY_DROP:
           _storyDrop(payload);
           break;
       }
@@ -119,7 +119,7 @@
         _setReorderHintPosition(null);
 
         storyteller.dispatcher.dispatch({
-          action: Constants.STORY_INSERT_BLOCK,
+          action: Actions.STORY_INSERT_BLOCK,
           blockContent: payload.blockContent,
           storyUid: payload.storyUid,
           insertAt: hintPosition.dropIndex

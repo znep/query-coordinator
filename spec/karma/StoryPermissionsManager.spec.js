@@ -85,7 +85,7 @@ describe('StoryPermissionsManager', function() {
                 actions,
                 [
                   {
-                    action: Constants.STORY_SET_PERMISSIONS,
+                    action: Actions.STORY_SET_PERMISSIONS,
                     storyUid: storyteller.userStoryUid,
                     isPublic: false
                   }
@@ -124,12 +124,12 @@ describe('StoryPermissionsManager', function() {
                 actions,
                 [
                   {
-                    action: Constants.STORY_SET_PUBLISHED_STORY,
+                    action: Actions.STORY_SET_PUBLISHED_STORY,
                     storyUid: storyteller.userStoryUid,
                     publishedStory: data
                   },
                   {
-                    action: Constants.STORY_SET_PERMISSIONS,
+                    action: Actions.STORY_SET_PERMISSIONS,
                     storyUid: storyteller.userStoryUid,
                     isPublic: false
                   }
@@ -142,12 +142,24 @@ describe('StoryPermissionsManager', function() {
 
         describe('that fails', function() {
           beforeEach(function() {
+            sinon.stub(window.console, 'error');
             storytellerApiRequestPromiseReject('expected');
+          });
+
+          afterEach(function() {
+            window.console.error.restore();
           });
 
           it('should call the error callback', function(done) {
             _.defer(function() {
               sinon.assert.calledOnce(errorSpy);
+              done();
+            });
+          });
+
+          it('should log an error to the console', function(done) {
+            _.defer(function() {
+              sinon.assert.called(console.error);
               done();
             });
           });

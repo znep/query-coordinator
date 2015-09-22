@@ -147,7 +147,7 @@ describe('SettingsPanel jQuery plugin', function() {
 
                 assert.deepEqual(
                   _.pluck(actions, 'action'),
-                  [ Constants.STORY_SET_TITLE, Constants.STORY_SAVE_METADATA ]
+                  [ Actions.STORY_SET_TITLE, Actions.STORY_SAVE_METADATA ]
                 );
 
                 assert.equal(actions[0].storyUid, standardMocks.validStoryUid);
@@ -174,7 +174,7 @@ describe('SettingsPanel jQuery plugin', function() {
 
                 assert.deepEqual(
                   _.pluck(actions, 'action'),
-                  [ Constants.STORY_SET_TITLE, Constants.STORY_SAVE_METADATA ]
+                  [ Actions.STORY_SET_TITLE, Actions.STORY_SAVE_METADATA ]
                 );
 
                 assert.equal(actions[0].storyUid, standardMocks.validStoryUid);
@@ -233,7 +233,7 @@ describe('SettingsPanel jQuery plugin', function() {
 
               assert.deepEqual(
                 _.pluck(actions, 'action'),
-                [ Constants.STORY_SET_DESCRIPTION, Constants.STORY_SAVE_METADATA ]
+                [ Actions.STORY_SET_DESCRIPTION, Actions.STORY_SAVE_METADATA ]
               );
 
               assert.equal(actions[0].storyUid, standardMocks.validStoryUid);
@@ -331,7 +331,7 @@ describe('SettingsPanel jQuery plugin', function() {
 
                 assert.deepEqual(
                   _.pluck(actions, 'action'),
-                  [ Constants.STORY_SET_TITLE, Constants.STORY_SET_DESCRIPTION ]
+                  [ Actions.STORY_SET_TITLE, Actions.STORY_SET_DESCRIPTION ]
                 );
 
                 assert.equal(actions[0].storyUid, standardMocks.validStoryUid);

@@ -107,7 +107,7 @@ $(document).on('ready', function() {
   );
   storyteller.richTextEditorManager = richTextEditorManager;
 
-  storyteller.dispatcher.dispatch({ action: Constants.STORY_CREATE, data: userStoryData });
+  storyteller.dispatcher.dispatch({ action: Actions.STORY_CREATE, data: userStoryData });
 
   var assetSelectorOptions = {
     assetSelectorContainerElement: $('#asset-selector-container')
@@ -151,7 +151,7 @@ $(document).on('ready', function() {
       richTextEditorManager.unlinkToolbar();
 
       storyteller.dispatcher.dispatch({
-        action: Constants.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
+        action: Actions.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
         activeFormats: []
       });
     }
@@ -164,7 +164,7 @@ $(document).on('ready', function() {
   $('.undo-btn').on('click', function() {
 
     storyteller.dispatcher.dispatch({
-      action: Constants.HISTORY_UNDO,
+      action: Actions.HISTORY_UNDO,
       storyUid: storyteller.userStoryUid
     });
   });
@@ -172,7 +172,7 @@ $(document).on('ready', function() {
   $('.redo-btn').on('click', function() {
 
     storyteller.dispatcher.dispatch({
-      action: Constants.HISTORY_REDO,
+      action: Actions.HISTORY_REDO,
       storyUid: storyteller.userStoryUid
     });
   });
@@ -212,8 +212,8 @@ $(document).on('ready', function() {
 
       switch (payload.action) {
 
-        case Constants.STORY_MOVE_BLOCK_UP:
-        case Constants.STORY_MOVE_BLOCK_DOWN:
+        case Actions.STORY_MOVE_BLOCK_UP:
+        case Actions.STORY_MOVE_BLOCK_DOWN:
 
           // Ensure that the layout is performed before we try to read
           // back the y translate value. Since the renderer is synchronous

@@ -18,6 +18,7 @@
 //= require editor/storytellerUtils
 //= require editor/StringExtensions.js
 //= require editor/Constants
+//= require editor/Actions
 //= require editor/init
 //= require socrata-visualizations/socrata.visualizations.DataProvider
 //= require socrata-visualizations/socrata.visualizations.SoqlDataProvider

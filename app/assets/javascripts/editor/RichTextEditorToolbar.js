@@ -71,7 +71,7 @@
 
       switch (action) {
 
-        case Constants.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS:
+        case Actions.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS:
           _updateActiveFormats(payload);
           break;
       }

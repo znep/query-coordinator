@@ -138,12 +138,12 @@ describe('DragDrop', function() {
           assert.equal(dispatchedEvents.length, 2);
 
           assert.deepEqual(_.findWhere(dispatchedEvents, {'action': 'STORY_DRAG_ENTER'}), {
-            action: Constants.STORY_DRAG_ENTER,
+            action: Actions.STORY_DRAG_ENTER,
             storyUid: standardMocks.validStoryUid
           });
 
           assert.deepEqual(_.findWhere(dispatchedEvents, {'action': 'STORY_DRAG_OVER'}), {
-            action: Constants.STORY_DRAG_OVER,
+            action: Actions.STORY_DRAG_OVER,
             storyUid: standardMocks.validStoryUid,
             blockContent: standardMocks.validBlockData1,
             pointer: fakeDragMovePointer,
@@ -182,7 +182,7 @@ describe('DragDrop', function() {
 
           it('should invoke STORY_DROP', function() {
             assert.deepEqual(_.findWhere(dispatchedEvents, {'action': 'STORY_DROP'}), {
-              action: Constants.STORY_DROP,
+              action: Actions.STORY_DROP,
               storyUid: standardMocks.validStoryUid,
               blockContent: standardMocks.validBlockData1
             });

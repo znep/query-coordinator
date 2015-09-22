@@ -212,7 +212,7 @@
 
         if (blockId) {
           storyteller.dispatcher.dispatch({
-            action: Constants.BLOCK_DOUBLE_CLICK,
+            action: Actions.BLOCK_DOUBLE_CLICK,
             storyUid: storyUid,
             blockId: blockId
           });
@@ -222,7 +222,7 @@
       $container.on('rich-text-editor::format-change', function(event) {
 
         dispatcher.dispatch({
-          action: Constants.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
+          action: Actions.RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS,
           activeFormats: event.originalEvent.detail.content
         });
       });
@@ -252,7 +252,7 @@
         if (contentIsDifferent) {
 
           dispatcher.dispatch({
-            action: Constants.BLOCK_UPDATE_COMPONENT,
+            action: Actions.BLOCK_UPDATE_COMPONENT,
             blockId: blockId,
             componentIndex: componentIndex,
             type: 'html',
@@ -270,9 +270,9 @@
 
         switch (action) {
 
-          case Constants.ASSET_SELECTOR_CHOOSE_PROVIDER:
+          case Actions.ASSET_SELECTOR_CHOOSE_PROVIDER:
             dispatcher.dispatch({
-              action: Constants.ASSET_SELECTOR_CHOOSE_PROVIDER,
+              action: Actions.ASSET_SELECTOR_CHOOSE_PROVIDER,
               blockId: utils.findClosestAttribute(event.target, 'data-block-id'),
               componentIndex: utils.findClosestAttribute(event.target, 'data-component-index')
             });
@@ -482,7 +482,7 @@
           {
             'class': 'block-edit-controls-move-up-btn btn icon-arrow-up2',
             'data-block-id': blockId,
-            'data-block-move-action': Constants.STORY_MOVE_BLOCK_UP
+            'data-block-move-action': Actions.STORY_MOVE_BLOCK_UP
           }
         ),
 
@@ -491,7 +491,7 @@
           {
             'class': 'block-edit-controls-move-down-btn btn icon-arrow-down2',
             'data-block-id': blockId,
-            'data-block-move-action': Constants.STORY_MOVE_BLOCK_DOWN
+            'data-block-move-action': Actions.STORY_MOVE_BLOCK_DOWN
           }
         ),
 
@@ -500,7 +500,7 @@
           {
             'class': 'block-edit-controls-delete-btn btn icon-cross2',
             'data-block-id': blockId,
-            'data-block-delete-action': Constants.STORY_DELETE_BLOCK
+            'data-block-delete-action': Actions.STORY_DELETE_BLOCK
           }
         )
 

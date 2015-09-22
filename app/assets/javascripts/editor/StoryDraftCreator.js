@@ -23,7 +23,7 @@
     var appToken = storyteller.config.coreServiceAppToken;
 
     storyteller.dispatcher.dispatch({
-      action: Constants.STORY_SAVE_STARTED,
+      action: Actions.STORY_SAVE_STARTED,
       storyUid: storyUid
     });
 
@@ -53,14 +53,14 @@
     }).
     done(function(newDigest) {
       storyteller.dispatcher.dispatch({
-        action: Constants.STORY_SAVED,
+        action: Actions.STORY_SAVED,
         storyUid: storyUid,
         digest: newDigest
       });
     }).
     fail(function(data) {
       storyteller.dispatcher.dispatch({
-        action: Constants.STORY_SAVE_FAILED,
+        action: Actions.STORY_SAVE_FAILED,
         storyUid: storyUid,
         message: data,
         // A 412 (Precondition Failed) means our If-Match check failed, indicating someone else already

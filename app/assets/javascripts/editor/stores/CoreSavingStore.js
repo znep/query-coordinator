@@ -52,7 +52,7 @@
 
       switch (action) {
 
-        case Constants.STORY_SAVE_METADATA:
+        case Actions.STORY_SAVE_METADATA:
           utils.assertHasProperty(payload, 'storyUid');
           _saveStoryMetadata(payload.storyUid);
           break;

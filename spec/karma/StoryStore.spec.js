@@ -80,16 +80,16 @@ describe('StoryStore', function() {
       ]
     });
 
-    dispatch({ action: Constants.STORY_CREATE, data: sampleStory1Data });
+    dispatch({ action: Actions.STORY_CREATE, data: sampleStory1Data });
     dispatch({
-      action: Constants.STORY_SET_PUBLISHED_STORY,
+      action: Actions.STORY_SET_PUBLISHED_STORY,
       publishedStory: sampleStory1Data.publishedStory,
       storyUid: sampleStory1Data.uid
     });
 
-    dispatch({ action: Constants.STORY_CREATE, data: sampleStory2Data });
+    dispatch({ action: Actions.STORY_CREATE, data: sampleStory2Data });
     dispatch({
-      action: Constants.STORY_SET_PUBLISHED_STORY,
+      action: Actions.STORY_SET_PUBLISHED_STORY,
       publishedStory: sampleStory2Data.publishedStory,
       storyUid: sampleStory2Data.uid
     });
@@ -405,7 +405,7 @@ describe('StoryStore', function() {
 
         it('changes the value when `STORY_UPDATE_THEME` is fired', function() {
           dispatch({
-            action: Constants.STORY_UPDATE_THEME,
+            action: Actions.STORY_UPDATE_THEME,
             storyUid: story1Uid,
             theme: 'serif'
           });
@@ -520,7 +520,7 @@ describe('StoryStore', function() {
 
         it('should return an object matching the properties of the story except for unchanged blocks', function() {
 
-          dispatch({ action: Constants.STORY_INSERT_BLOCK, storyUid: story1Uid, blockContent: block1Content, insertAt: 2 });
+          dispatch({ action: Actions.STORY_INSERT_BLOCK, storyUid: story1Uid, blockContent: block1Content, insertAt: 2 });
 
           var serializedStory = storyteller.storyStore.serializeStoryDiff(story1Uid);
 
@@ -688,7 +688,7 @@ describe('StoryStore', function() {
             delete storyData['uid'];
 
             assert.throw(function() {
-              dispatch({ action: Constants.STORY_CREATE, data: storyData });
+              dispatch({ action: Actions.STORY_CREATE, data: storyData });
             });
           });
         });
@@ -700,7 +700,7 @@ describe('StoryStore', function() {
             storyData['uid'] = 'testtest';
 
             assert.throw(function() {
-              dispatch({ action: Constants.STORY_CREATE, data: storyData });
+              dispatch({ action: Actions.STORY_CREATE, data: storyData });
             });
           });
         });
@@ -712,7 +712,7 @@ describe('StoryStore', function() {
             delete storyData['title'];
 
             assert.throw(function() {
-              dispatch({ action: Constants.STORY_CREATE, data: storyData });
+              dispatch({ action: Actions.STORY_CREATE, data: storyData });
             });
           });
         });
@@ -724,7 +724,7 @@ describe('StoryStore', function() {
             delete storyData['blocks'];
 
             assert.throw(function() {
-              dispatch({ action: Constants.STORY_CREATE, data: storyData });
+              dispatch({ action: Actions.STORY_CREATE, data: storyData });
             });
           });
         });
@@ -738,7 +738,7 @@ describe('StoryStore', function() {
             });
 
             assert.throw(function() {
-              dispatch({ action: Constants.STORY_CREATE, data: invalidStoryData });
+              dispatch({ action: Actions.STORY_CREATE, data: invalidStoryData });
             });
           });
         });
@@ -755,7 +755,7 @@ describe('StoryStore', function() {
           });
 
           assert.throw(function() {
-            dispatch({ action: Constants.STORY_CREATE, data: invalidStoryData });
+            dispatch({ action: Actions.STORY_CREATE, data: invalidStoryData });
           });
         });
       });
@@ -778,7 +778,7 @@ describe('StoryStore', function() {
           });
 
           assert.throw(function() {
-            dispatch({ action: Constants.STORY_CREATE, data: invalidStoryData });
+            dispatch({ action: Actions.STORY_CREATE, data: invalidStoryData });
           });
         });
       });
@@ -801,7 +801,7 @@ describe('StoryStore', function() {
           });
 
           assert.throw(function() {
-            dispatch({ action: Constants.STORY_CREATE, data: invalidStoryData });
+            dispatch({ action: Actions.STORY_CREATE, data: invalidStoryData });
           });
         });
       });
@@ -822,7 +822,7 @@ describe('StoryStore', function() {
           });
 
           assert.throw(function() {
-            dispatch({ action: Constants.STORY_CREATE, data: invalidStoryData });
+            dispatch({ action: Actions.STORY_CREATE, data: invalidStoryData });
           });
         });
       });
@@ -836,7 +836,7 @@ describe('StoryStore', function() {
           });
 
           assert.throw(function() {
-            dispatch({ action: Constants.STORY_CREATE, data: invalidStoryData });
+            dispatch({ action: Actions.STORY_CREATE, data: invalidStoryData });
           });
         });
       });
@@ -855,7 +855,7 @@ describe('StoryStore', function() {
           });
 
           assert.throw(function() {
-            dispatch({ action: Constants.STORY_CREATE, data: invalidStoryData });
+            dispatch({ action: Actions.STORY_CREATE, data: invalidStoryData });
           });
         });
       });
@@ -872,7 +872,7 @@ describe('StoryStore', function() {
             title: validStoryTitle
           });
 
-          dispatch({ action: Constants.STORY_CREATE, data: validStoryData });
+          dispatch({ action: Actions.STORY_CREATE, data: validStoryData });
 
           assert.equal(storyteller.storyStore.getStoryTitle(validStoryUid), validStoryTitle);
         });
@@ -887,7 +887,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_SET_TITLE,
+              action: Actions.STORY_SET_TITLE,
               title: 'title'
             });
           });
@@ -900,7 +900,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_SET_TITLE,
+              action: Actions.STORY_SET_TITLE,
               storyUid: 'badd-ddab'
             });
           });
@@ -913,7 +913,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_SET_TITLE,
+              action: Actions.STORY_SET_TITLE,
               storyUid: 'badd-ddab',
               title: 'title'
             });
@@ -927,7 +927,7 @@ describe('StoryStore', function() {
         it('should update the story', function() {
 
           dispatch({
-            action: Constants.STORY_SET_TITLE,
+            action: Actions.STORY_SET_TITLE,
             storyUid: story1Uid,
             title: 'new title'
           });
@@ -940,7 +940,7 @@ describe('StoryStore', function() {
     describe('STORY_SAVED', function() {
       it('should update the digest', function() {
         dispatch({
-          action: Constants.STORY_SAVED,
+          action: Actions.STORY_SAVED,
           storyUid: story1Uid,
           digest: 'new digest'
         });
@@ -957,7 +957,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_SET_DESCRIPTION,
+              action: Actions.STORY_SET_DESCRIPTION,
               description: 'foobar'
             });
           });
@@ -970,7 +970,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_SET_DESCRIPTION,
+              action: Actions.STORY_SET_DESCRIPTION,
               storyUid: 'badd-ddab'
             });
           });
@@ -983,7 +983,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_SET_DESCRIPTION,
+              action: Actions.STORY_SET_DESCRIPTION,
               storyUid: 'badd-ddab',
               description: 'foobar'
             });
@@ -996,7 +996,7 @@ describe('StoryStore', function() {
         it('should update the story', function() {
 
           dispatch({
-            action: Constants.STORY_SET_DESCRIPTION,
+            action: Actions.STORY_SET_DESCRIPTION,
             storyUid: story1Uid,
             description: 'new description'
           });
@@ -1014,7 +1014,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_SET_PERMISSIONS,
+              action: Actions.STORY_SET_PERMISSIONS,
               isPublic: true
             });
           });
@@ -1027,7 +1027,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_SET_PERMISSIONS,
+              action: Actions.STORY_SET_PERMISSIONS,
               storyUid: 'badd-ddab'
             });
           });
@@ -1040,7 +1040,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_SET_PERMISSIONS,
+              action: Actions.STORY_SET_PERMISSIONS,
               storyUid: 'badd-ddab',
               isPublic: true
             });
@@ -1053,7 +1053,7 @@ describe('StoryStore', function() {
         it('should update the story', function() {
 
           dispatch({
-            action: Constants.STORY_SET_PERMISSIONS,
+            action: Actions.STORY_SET_PERMISSIONS,
             storyUid: story1Uid,
             isPublic: true
           });
@@ -1071,7 +1071,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_SET_PUBLISHED_STORY,
+              action: Actions.STORY_SET_PUBLISHED_STORY,
               publishedStory: {digest: 'digest-1'}
             });
           });
@@ -1084,7 +1084,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_SET_PUBLISHED_STORY,
+              action: Actions.STORY_SET_PUBLISHED_STORY,
               storyUid: 'badd-ddab'
             });
           });
@@ -1097,7 +1097,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_SET_PUBLISHED_STORY,
+              action: Actions.STORY_SET_PUBLISHED_STORY,
               storyUid: 'badd-ddab',
               publishedStory: {digest: 'digest-1'}
             });
@@ -1110,7 +1110,7 @@ describe('StoryStore', function() {
         it('should update the story', function() {
 
           dispatch({
-            action: Constants.STORY_SET_PUBLISHED_STORY,
+            action: Actions.STORY_SET_PUBLISHED_STORY,
             storyUid: story1Uid,
             publishedStory: {digest: 'new-digest'}
           });
@@ -1128,7 +1128,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_MOVE_BLOCK_UP,
+              action: Actions.STORY_MOVE_BLOCK_UP,
               blockId: block1Id
             });
           });
@@ -1141,7 +1141,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_MOVE_BLOCK_UP,
+              action: Actions.STORY_MOVE_BLOCK_UP,
               storyUid: 'badd-ddab'
             });
           });
@@ -1154,7 +1154,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_MOVE_BLOCK_UP,
+              action: Actions.STORY_MOVE_BLOCK_UP,
               storyUid: null,
               blockId: block1Id
             });
@@ -1169,7 +1169,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_MOVE_BLOCK_UP,
+              action: Actions.STORY_MOVE_BLOCK_UP,
               storyUid: story1Uid,
               blockId: null
             });
@@ -1183,7 +1183,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_MOVE_BLOCK_UP,
+              action: Actions.STORY_MOVE_BLOCK_UP,
               storyUid: 'badd-ddab',
               blockId: block1Id
             });
@@ -1198,7 +1198,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_MOVE_BLOCK_UP,
+              action: Actions.STORY_MOVE_BLOCK_UP,
               storyUid: story1Uid,
               blockId: 'not-found'
             });
@@ -1211,7 +1211,7 @@ describe('StoryStore', function() {
         it('should update the story', function() {
 
           dispatch({
-            action: Constants.STORY_MOVE_BLOCK_UP,
+            action: Actions.STORY_MOVE_BLOCK_UP,
             storyUid: story1Uid,
             blockId: block2Id
           });
@@ -1229,7 +1229,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_MOVE_BLOCK_DOWN,
+              action: Actions.STORY_MOVE_BLOCK_DOWN,
               blockId: block1Id
             });
           });
@@ -1242,7 +1242,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_MOVE_BLOCK_DOWN,
+              action: Actions.STORY_MOVE_BLOCK_DOWN,
               storyUid: 'badd-ddab'
             });
           });
@@ -1255,7 +1255,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_MOVE_BLOCK_DOWN,
+              action: Actions.STORY_MOVE_BLOCK_DOWN,
               storyUid: null,
               blockId: block1Id
             });
@@ -1270,7 +1270,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_MOVE_BLOCK_DOWN,
+              action: Actions.STORY_MOVE_BLOCK_DOWN,
               storyUid: story1Uid,
               blockId: null
             });
@@ -1284,7 +1284,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_MOVE_BLOCK_DOWN,
+              action: Actions.STORY_MOVE_BLOCK_DOWN,
               storyUid: 'badd-ddab',
               blockId: block1Id
             });
@@ -1299,7 +1299,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_MOVE_BLOCK_DOWN,
+              action: Actions.STORY_MOVE_BLOCK_DOWN,
               storyUid: story1Uid,
               blockId: 'not-found'
             });
@@ -1311,7 +1311,7 @@ describe('StoryStore', function() {
         it('should update the story', function() {
 
           dispatch({
-            action: Constants.STORY_MOVE_BLOCK_DOWN,
+            action: Actions.STORY_MOVE_BLOCK_DOWN,
             storyUid: story1Uid,
             blockId: block1Id
           });
@@ -1329,7 +1329,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_DELETE_BLOCK,
+              action: Actions.STORY_DELETE_BLOCK,
               blockId: block1Id
             });
           });
@@ -1342,7 +1342,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_DELETE_BLOCK,
+              action: Actions.STORY_DELETE_BLOCK,
               storyUid: 'badd-ddab'
             });
           });
@@ -1355,7 +1355,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_DELETE_BLOCK,
+              action: Actions.STORY_DELETE_BLOCK,
               storyUid: null,
               blockId: block1Id
             });
@@ -1370,7 +1370,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_DELETE_BLOCK,
+              action: Actions.STORY_DELETE_BLOCK,
               storyUid: story1Uid,
               blockId: null
             });
@@ -1384,7 +1384,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_DELETE_BLOCK,
+              action: Actions.STORY_DELETE_BLOCK,
               storyUid: 'badd-ddab',
               blockId: block1Id
             });
@@ -1399,7 +1399,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_DELETE_BLOCK,
+              action: Actions.STORY_DELETE_BLOCK,
               storyUid: story1Uid,
               blockId: 'not-found'
             });
@@ -1411,7 +1411,7 @@ describe('StoryStore', function() {
         it('should update the story', function() {
 
           dispatch({
-            action: Constants.STORY_DELETE_BLOCK,
+            action: Actions.STORY_DELETE_BLOCK,
             storyUid: story1Uid,
             blockId: block1Id
           });
@@ -1435,7 +1435,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_INSERT_BLOCK,
+              action: Actions.STORY_INSERT_BLOCK,
               storyUid: story1Uid,
               insertAt: validInsertionIndex
             });
@@ -1449,7 +1449,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_INSERT_BLOCK,
+              action: Actions.STORY_INSERT_BLOCK,
               blockContent: block1Content,
               insertAt: validInsertionIndex
             });
@@ -1463,7 +1463,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_INSERT_BLOCK,
+              action: Actions.STORY_INSERT_BLOCK,
               blockContent: block1Content,
               storyUid: story1Uid
             });
@@ -1477,7 +1477,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_INSERT_BLOCK,
+              action: Actions.STORY_INSERT_BLOCK,
               blockContent: null,
               storyUid: story1Uid,
               insertAt: validInsertionIndex
@@ -1492,7 +1492,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_INSERT_BLOCK,
+              action: Actions.STORY_INSERT_BLOCK,
               blockContent: block1Content,
               storyUid: null,
               insertAt: validInsertionIndex
@@ -1507,7 +1507,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_INSERT_BLOCK,
+              action: Actions.STORY_INSERT_BLOCK,
               blockContent: block1Content,
               storyUid: story1Uid,
               insertAt: null
@@ -1523,7 +1523,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_INSERT_BLOCK,
+              action: Actions.STORY_INSERT_BLOCK,
               blockContent: block1Content,
               storyUid: 'notf-ound',
               insertAt: validInsertionIndex
@@ -1538,7 +1538,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.STORY_INSERT_BLOCK,
+              action: Actions.STORY_INSERT_BLOCK,
               blockContent: block1Content,
               storyUid: story1Uid,
               insertAt: 99
@@ -1552,7 +1552,7 @@ describe('StoryStore', function() {
         it('should insert a block at the specified index', function() {
 
           dispatch({
-            action: Constants.STORY_INSERT_BLOCK,
+            action: Actions.STORY_INSERT_BLOCK,
             blockContent: block1Content,
             storyUid: story1Uid,
             insertAt: validInsertionIndex
@@ -1584,7 +1584,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.BLOCK_UPDATE_COMPONENT,
+              action: Actions.BLOCK_UPDATE_COMPONENT,
               blockId: null,
               componentIndex: validComponentIndex,
               type: validComponentType,
@@ -1600,7 +1600,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.BLOCK_UPDATE_COMPONENT,
+              action: Actions.BLOCK_UPDATE_COMPONENT,
               blockId: block1Id,
               componentIndex: null,
               type: validComponentType,
@@ -1616,7 +1616,7 @@ describe('StoryStore', function() {
 
           assert.throw(function() {
             dispatch({
-              action: Constants.BLOCK_UPDATE_COMPONENT,
+              action: Actions.BLOCK_UPDATE_COMPONENT,
               blockId: block1Id,
               componentIndex: 99,
               type: validComponentType,
@@ -1631,7 +1631,7 @@ describe('StoryStore', function() {
         it('should update the specified component', function() {
 
           dispatch({
-            action: Constants.BLOCK_UPDATE_COMPONENT,
+            action: Actions.BLOCK_UPDATE_COMPONENT,
             blockId: block1Id,
             componentIndex: validComponentIndex,
             type: validComponentType,

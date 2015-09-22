@@ -45,7 +45,7 @@ describe('StoryTitle jQuery plugin', function() {
         var newTitle = 'New Story Title';
 
         window.socrata.storyteller.dispatcher.dispatch({
-          action: Constants.STORY_SET_TITLE,
+          action: Actions.STORY_SET_TITLE,
           storyUid: standardMocks.validStoryUid,
           title: newTitle
         });

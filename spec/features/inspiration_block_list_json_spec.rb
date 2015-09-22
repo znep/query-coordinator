@@ -48,7 +48,7 @@ RSpec.describe 'inspiration block list json', type: :feature, js: true do
 
       // Trigger a re-render
       storyteller.dispatcher.dispatch({
-        action: Constants.STORY_OVERWRITE_STATE,
+        action: Actions.STORY_OVERWRITE_STATE,
         data: storyData
       });"
     )

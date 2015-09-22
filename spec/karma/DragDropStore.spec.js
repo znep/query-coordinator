@@ -6,7 +6,7 @@ describe('DragDropStore', function() {
 
   function dragOver(storyUid, blockContent) {
     storyteller.dispatcher.dispatch({
-      action: Constants.STORY_DRAG_OVER,
+      action: Actions.STORY_DRAG_OVER,
       storyUid: storyUid,
       pointer: {},
       storyElement: {},
@@ -16,14 +16,14 @@ describe('DragDropStore', function() {
 
   function dragLeave(storyUid) {
     storyteller.dispatcher.dispatch({
-      action: Constants.STORY_DRAG_LEAVE,
+      action: Actions.STORY_DRAG_LEAVE,
       storyUid: storyUid
     });
   }
 
   function dragDrop(storyUid, blockContent) {
     storyteller.dispatcher.dispatch({
-      action: Constants.STORY_DROP,
+      action: Actions.STORY_DROP,
       storyUid: storyUid,
       blockContent: blockContent
     });
@@ -100,7 +100,7 @@ describe('DragDropStore', function() {
         dragOver(standardMocks.validStoryUid, blockContent);
 
         storyteller.dispatcher.register(function(payload) {
-          if(payload.action === Constants.STORY_INSERT_BLOCK) {
+          if(payload.action === Actions.STORY_INSERT_BLOCK) {
             assert.propertyVal(payload, 'blockContent', standardMocks.validBlockData1);
             assert.propertyVal(payload, 'storyUid', standardMocks.validStoryUid);
             assert.propertyVal(payload, 'insertAt', 0);

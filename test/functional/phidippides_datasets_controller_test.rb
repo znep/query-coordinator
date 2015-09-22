@@ -76,8 +76,8 @@ class PhidippidesDatasetsControllerTest < ActionController::TestCase
 
     # It should flag subcolumns with no data
     columns = metadata[:columns]
-    assert(columns[:parent_column_child_no_data][:isSubcolumn])
-    assert(columns[:parent_column_child_has_data][:isSubcolumn])
+    assert(columns[:parent_column_child_type][:isSubcolumn])
+    assert(columns[:parent_column_child_description][:isSubcolumn])
     assert(!columns[:time_column_fine_granularity][:isSubcolumn])
     assert(!columns[:parent_column][:isSubcolumn])
     assert_equal(columns.count - 2, columns.count { |key, column| !column[:isSubcolumn] })

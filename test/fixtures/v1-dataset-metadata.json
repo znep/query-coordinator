@@ -42,16 +42,16 @@
       "name": "Parent",
       "physicalDatatype": "number"
     },
-    "parent_column_child_has_data": {
+    "parent_column_child_type": {
       "cardinality": 5,
-      "description": "A column that - in the OBE - was a child column, and had data.",
+      "description": "A column that - in the OBE - was a child column, and had data. Name must pass filter check in lib/common_metadata_methods#flag_subcolumns!",
       "fred": "text",
       "name": "Parent (child with data)",
       "physicalDatatype": "number"
     },
-    "parent_column_child_no_data": {
+    "parent_column_child_description": {
       "cardinality": 1,
-      "description": "A column that - in the OBE - was a child column, and had no data.",
+      "description": "A column that - in the OBE - was a child column, and had no data. Name must pass filter check in lib/common_metadata_methods#flag_subcolumns!",
       "fred": "text",
       "name": "Parent (child sans data)",
       "physicalDatatype": "number"

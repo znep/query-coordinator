@@ -1,5 +1,9 @@
 var Actions = {
 
+  /**
+   * Story state management
+   */
+
   // {object} data: Story data object.
   STORY_CREATE: 'STORY_CREATE',
 
@@ -12,18 +16,8 @@ var Actions = {
   STORY_SET_TITLE: 'STORY_SET_TITLE',
 
   // {string} storyUid
-  STORY_SAVE_STARTED: 'STORY_SAVE_STARTED',
-
-  // {string} storyUid
-  // {string} digest
-  STORY_SAVED: 'STORY_SAVED',
-
-  // {string} storyUid
-  // {string} message
-  STORY_SAVE_FAILED: 'STORY_SAVE_FAILED',
-
-  // {boolean} isPublic
-  STORY_SET_PERMISSIONS: 'STORY_SET_PERMISSIONS',
+  // {string} theme
+  STORY_UPDATE_THEME: 'STORY_UPDATE_THEME',
 
   // {object} publishedStory
   STORY_SET_PUBLISHED_STORY: 'STORY_SET_PUBLISHED_STORY',
@@ -54,6 +48,35 @@ var Actions = {
   // {any} value: New component value.
   BLOCK_UPDATE_COMPONENT: 'BLOCK_UPDATE_COMPONENT',
 
+  /**
+   * Story save
+   */
+
+  // {string} storyUid
+  STORY_SAVE_STARTED: 'STORY_SAVE_STARTED',
+
+  // {string} storyUid
+  // {string} digest
+  STORY_SAVED: 'STORY_SAVED',
+
+  // {string} storyUid
+  // {string} message
+  STORY_SAVE_FAILED: 'STORY_SAVE_FAILED',
+
+  /**
+   * Story metadata and permissions save
+   */
+
+  // {string} storyUid
+  STORY_SAVE_METADATA: 'STORY_SAVE_METADATA',
+
+  // {boolean} isPublic
+  STORY_SET_PERMISSIONS: 'STORY_SET_PERMISSIONS',
+
+  /**
+   * Drag drop and double-click-to-add-block actions
+   */
+
   // {string} storyUid
   STORY_DRAG_ENTER: 'STORY_DRAG_ENTER',
 
@@ -71,24 +94,29 @@ var Actions = {
   STORY_DROP: 'STORY_DROP',
 
   // {string} storyUid
-  STORY_SAVE_METADATA: 'STORY_SAVE_METADATA',
-
-  // {string} storyUid
-  // {string} theme
-  STORY_UPDATE_THEME: 'STORY_UPDATE_THEME',
-
-  // {string} storyUid
   // {string} blockId
   BLOCK_DOUBLE_CLICK: 'BLOCK_DOUBLE_CLICK',
 
+  /**
+   * Rich text editor -> rich text editor toolbar communication
+   */
+
   // {array[string]} activeFormats: Currently available formatters.
   RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS: 'RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS',
+
+  /**
+   * History management
+   */
 
   // {string} storyUid
   HISTORY_UNDO: 'HISTORY_UNDO',
 
   // {string} storyUid
   HISTORY_REDO: 'HISTORY_REDO',
+
+  /**
+   * Generic asset selector flow
+   */
 
   // Initial media selector setup
   // {string} blockId
@@ -101,7 +129,9 @@ var Actions = {
   // No payload
   ASSET_SELECTOR_CLOSE: 'ASSET_SELECTOR_CLOSE',
 
-  // YouTube embed flow
+  /**
+   * YouTube embed flow
+   */
 
   // No payload
   ASSET_SELECTOR_CHOOSE_YOUTUBE: 'ASSET_SELECTOR_CHOOSE_YOUTUBE',
@@ -109,7 +139,9 @@ var Actions = {
   // {string} url
   ASSET_SELECTOR_UPDATE_YOUTUBE_URL: 'ASSET_SELECTOR_UPDATE_YOUTUBE_URL',
 
-  // Socrata visualization flow
+  /**
+   * Socrata visualization flow
+   */
 
   // No payload
   ASSET_SELECTOR_CHOOSE_VISUALIZATION: 'ASSET_SELECTOR_CHOOSE_VISUALIZATION',
@@ -121,6 +153,10 @@ var Actions = {
   // {object} cardData
   ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION: 'ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION',
 
+  /**
+   * Image embed flow
+   */
+
   // No payload
   ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD: 'ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD',
 
@@ -131,5 +167,24 @@ var Actions = {
   FILE_UPLOAD_DONE: 'FILE_UPLOAD_DONE',
 
   // {object} error
-  FILE_UPLOAD_ERROR: 'FILE_UPLOAD_ERROR'
+  FILE_UPLOAD_ERROR: 'FILE_UPLOAD_ERROR',
+
+  /**
+   * Code embed flow
+   */
+
+  // No payload
+  ASSET_SELECTOR_CHOOSE_EMBED_CODE: 'ASSET_SELECTOR_CHOOSE_EMBED_CODE',
+
+  // {string} html
+  ASSET_SELECTOR_UPDATE_EMBED_CODE: 'ASSET_SELECTOR_UPDATE_EMBED_CODE',
+
+  // {number} percentLoaded
+  EMBED_CODE_UPLOAD_PROGRESS: 'EMBED_CODE_UPLOAD_PROGRESS',
+
+  // No payload
+  EMBED_CODE_UPLOAD_DONE: 'EMBED_CODE_UPLOAD_DONE',
+
+  // No payload
+  EMBED_CODE_UPLOAD_ERROR: 'EMBED_CODE_UPLOAD_ERROR'
 };

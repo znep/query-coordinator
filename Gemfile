@@ -51,6 +51,7 @@ group :test do
 end
 
 group :development, :test do
+  gem 'foreman'
   gem 'jazz_hands' unless ENV['RM_INFO']
   gem 'pry'
   gem 'pry-debugger'

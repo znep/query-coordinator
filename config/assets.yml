@@ -264,6 +264,10 @@ javascripts:
     - public/javascripts/controls/page-render-type.js
   shared-blob:
     - public/javascripts/controls/blob-dataset.js
+  react:
+    - public/javascripts/bower/react-with-addons.js
+  react-prod:
+    - public/javascripts/bower/react-with-addons.min.js
   browse-select-dataset:
     - public/javascripts/screens/browse-select-dataset.js
   browse-select-georegion:

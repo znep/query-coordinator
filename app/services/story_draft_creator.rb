@@ -14,6 +14,7 @@ class StoryDraftCreator
   # attributes[:uid] - UID of existing story draft
   # attributes[:digest] - previous draft digest to ensure safe saving
   # attributes[:blocks] - array of json blocks for new draft
+  # attributes[:theme] - display theme for this story draft
   def initialize(attributes)
     @user = attributes[:user] || {}
     unless @user['id'] =~ FOUR_BY_FOUR_PATTERN
@@ -37,6 +38,11 @@ class StoryDraftCreator
     end
     unless all_json_blocks_are_hashes?
       raise ArgumentError.new("Blocks contains non-hashes: '#{@json_blocks}'")
+    end
+
+    @theme = attributes[:theme]
+    if @theme.blank?
+      raise ArgumentError.new('Theme attribute is empty')
     end
 
     @story = nil
@@ -66,7 +72,8 @@ class StoryDraftCreator
       @story = DraftStory.new(
         uid: uid,
         block_ids: merge_existing_and_new_block_ids,
-        created_by: user['id']
+        created_by: user['id'],
+        theme: theme
       )
       @story.save!
     end
@@ -83,7 +90,7 @@ class StoryDraftCreator
   end
 
   private
-  attr_reader :user, :uid, :json_blocks, :digest
+  attr_reader :user, :uid, :json_blocks, :digest, :theme
 
   # Instance variable memoization
 

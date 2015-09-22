@@ -11,7 +11,8 @@ class Api::V1::DraftsController < ApplicationController
       user: current_user,
       uid: params[:uid],
       digest: digest,
-      blocks: params[:blocks]
+      blocks: params[:blocks],
+      theme: params[:theme]
     )
 
     begin

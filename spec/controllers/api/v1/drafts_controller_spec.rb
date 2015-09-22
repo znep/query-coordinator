@@ -12,11 +12,13 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
     let(:uid) { 'newd-raft' }
     let(:digest) { 'someedigest' }
     let(:blocks) { [{id: 1}, {id: 2}] }
+    let(:theme) { 'sans' }
 
     let(:params) do
       {
         uid: uid,
         blocks: blocks,
+        theme: theme,
         format: 'json'
       }
     end
@@ -46,6 +48,7 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
         user: mock_valid_user,
         uid: uid,
         digest: digest,
+        theme: theme,
         blocks: blocks
       ).and_return(mock_story_draft_creator)
 

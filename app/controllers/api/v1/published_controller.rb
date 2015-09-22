@@ -19,6 +19,6 @@ class Api::V1::PublishedController < ApplicationController
   private
 
   def story_params
-    params.permit(:uid, :digest)
+    params.permit(:uid, :digest, :theme)
   end
 end

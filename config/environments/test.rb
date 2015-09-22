@@ -20,6 +20,9 @@ Rails.application.configure do
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
 
+  # prod sets log_level to debug, but don't clutter up test results with all the sql
+  config.log_level = :error
+
   # Raise exceptions instead of rendering exception templates.
   config.action_dispatch.show_exceptions = false
 

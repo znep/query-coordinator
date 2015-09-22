@@ -68,7 +68,7 @@ disable_nbe_redirection_warning_message:
   defaultValue: false
 display_catalog_lens_delete_button:
   description: Whether to show the Delete button for data lenses, in the old UX.
-  defaultValue: false
+  defaultValue: true
 embetter_analytics_page:
   description: Incremental improvements to site analytics page
   defaultValue: false

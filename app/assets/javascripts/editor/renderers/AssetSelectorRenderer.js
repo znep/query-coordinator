@@ -137,7 +137,7 @@
         'visualizationSelected',
         function(event, selectedVisualization) {
           storyteller.dispatcher.dispatch({
-            action: Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
+            action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
             vif: selectedVisualization
           });
         }

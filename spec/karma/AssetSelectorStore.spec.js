@@ -207,7 +207,7 @@ describe('AssetSelectorStore', function() {
         var startingComponentValue = _.cloneDeep(storyteller.assetSelectorStore.getCurrentComponentValue());
 
         storyteller.dispatcher.dispatch({
-          action: Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
+          action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
           vif: null
         });
 
@@ -223,7 +223,7 @@ describe('AssetSelectorStore', function() {
         };
 
         storyteller.dispatcher.dispatch({
-          action: Constants.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
+          action: Actions.ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION,
           vif: fakeVIFData
         });
 

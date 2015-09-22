@@ -32,6 +32,3 @@
 //= require editor/SimpleEventEmitter.js
 //= require editor/stores/Store.js
 //= require editor/stores/WindowSizeBreakpointStore.js
-
-// Finally, intialize
-//= require_tree ./view

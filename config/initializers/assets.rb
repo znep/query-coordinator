@@ -13,6 +13,7 @@ Rails.application.config.assets.paths << Rails.root.join('vendor', 'assets', 'co
 # Rails.application.config.assets.precompile += %w( search.js )
 
 Rails.application.config.assets.precompile += %w( editor.js )
+Rails.application.config.assets.precompile += %w( view.js )
 Rails.application.config.assets.precompile += %w( AssetFinder.js )
 Rails.application.config.assets.precompile += %w( themes/themes.css )
 Rails.application.config.assets.precompile += %w( story-view.css )

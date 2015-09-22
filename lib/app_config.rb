@@ -6,7 +6,6 @@ class AppConfig < Hashie::Dash
   property :coreservice_uri
   property :odysseus_uri
   property :odysseus_app_name
-  property :intercessio_uri
   property :consul_host
   property :zk_hosts
 

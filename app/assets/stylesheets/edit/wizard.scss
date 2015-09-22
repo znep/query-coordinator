@@ -56,7 +56,9 @@
     position: relative;
     width: 100%;
     background-color: $asset-selector-preview-container-bg-color;
-    background-image: asset-url('video-preview-icon.png');
+    &.placeholder {
+      background-image: asset-url('embed-preview.png');
+    }
     background-size: 20%;
     background-position: 50% 50%;
     background-repeat: no-repeat;

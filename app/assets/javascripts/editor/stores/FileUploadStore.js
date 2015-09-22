@@ -19,11 +19,13 @@
       switch (action) {
 
         case Actions.FILE_UPLOAD_PROGRESS:
+        case Actions.EMBED_CODE_UPLOAD_PROGRESS:
           utils.assertHasProperty(payload, 'percentLoaded');
           _setFileUploadProgress(payload.percentLoaded);
           break;
 
         case Actions.FILE_UPLOAD_DONE:
+        case Actions.EMBED_CODE_UPLOAD_DONE:
           _setFileUploadProgress(null);
           break;
       }

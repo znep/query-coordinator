@@ -28,6 +28,8 @@
         return 'componentYoutubeVideo';
       case 'socrata.visualization.columnChart':
         return 'componentSocrataVisualizationColumnChart';
+      case 'embeddedHTML':
+        return 'componentEmbeddedHTML';
       default:
         throw new Error(
           'No component renderer found for component: {0}'.

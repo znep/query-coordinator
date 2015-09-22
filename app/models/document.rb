@@ -45,7 +45,7 @@ class Document < ActiveRecord::Base
   has_attached_file :upload
 
   validates :direct_upload_url, presence: true, format: { with: DIRECT_UPLOAD_URL_FORMAT }
-  validates_attachment_content_type :upload, content_type: /\Aimage/
+  validates_attachment_content_type :upload, content_type: /\A(image|text\/html)/
 
   def as_json(options=nil)
     {

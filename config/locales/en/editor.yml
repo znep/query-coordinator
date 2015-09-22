@@ -75,6 +75,16 @@ en:
           validation_file_size: 'Whoa! That image was bit too big. Try resizing it or using a smaller one.'
           validation_file_type: 'Shoot! We don’t support that kind of file. Try using a .jpg, .gif, or a .png'
           exception: "We're really sorry! There was an unexpected problem with your upload.<br>Our engineers have been notified."
+      embed_code:
+        button_text: 'Embed code'
+        heading: 'HTML Embed'
+        input_label: 'Paste or type HTML code'
+        preview_label: 'Preview'
+        invalid_message_title_1: 'Oh No!'
+        invalid_message_title_2: 'Something went wrong.'
+        errors:
+          validation_file_size: "Whoa! That's too much HTML. Try trimming the content down."
+          exception: "We're really sorry! There was an unexpected problem with your upload.<br>Our engineers have been notified."
     story_save_button:
       saved: 'Saved!'
       saving: 'Saving...'

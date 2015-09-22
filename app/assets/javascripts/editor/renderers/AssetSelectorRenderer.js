@@ -76,7 +76,7 @@
         function(event) {
           if (event.target.files && event.target.files.length > 0) {
 
-            if (storyteller.fileUploader && storyteller.fileUploader !== null) {
+            if (storyteller.fileUploader !== undefined && storyteller.fileUploader !== null) {
               storyteller.fileUploader.destroy();
             }
 
@@ -143,6 +143,40 @@
         }
       );
 
+      var currentHtmlFragment = '';
+      var debounceForOneSecondThenUploadHtmlFragment = _.debounce(function(event) {
+        if (storyteller.fileUploader !== undefined && storyteller.fileUploader !== null) {
+          storyteller.fileUploader.destroy();
+        }
+
+        var htmlFragment = $(event.target).val();
+        if (htmlFragment.length === 0 || htmlFragment === currentHtmlFragment) {
+          return;
+        }
+
+        var simulatedFileForUpload = {
+          name: 'embedded_fragment.html',
+          size: htmlFragment.length,
+          type: 'text/html',
+          body: htmlFragment
+        };
+
+        storyteller.fileUploader = new storyteller.FileUploader();
+        storyteller.fileUploader.upload(simulatedFileForUpload, {
+          progressAction: Actions.EMBED_CODE_UPLOAD_PROGRESS,
+          errorAction: Actions.EMBED_CODE_UPLOAD_ERROR,
+          doneAction: Actions.EMBED_CODE_UPLOAD_DONE
+        });
+
+        currentHtmlFragment = htmlFragment;
+      }, Constants.EMBED_CODE_DEBOUNCE_DELAY);
+
+      _dialog.on(
+        'keyup',
+        '[data-asset-selector-field="embedHtml"]',
+        debounceForOneSecondThenUploadHtmlFragment
+      );
+
       _dialog.on('click', '[data-action]', function() {
 
         var action = this.getAttribute('data-action');
@@ -172,6 +206,12 @@
           case Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD:
             storyteller.dispatcher.dispatch({
               action: Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
+            });
+            break;
+
+          case Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE:
+            storyteller.dispatcher.dispatch({
+              action: Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE
             });
             break;
 
@@ -244,6 +284,10 @@
             selectorContent = _renderImagePreviewTemplate();
             break;
 
+          case Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE:
+            selectorContent = _renderChooseEmbedCodeTemplate(componentValue);
+            break;
+
           default:
             selectorContent = null;
             break;
@@ -280,6 +324,10 @@
           _renderImageUploadErrorData(componentValue);
           break;
 
+        case Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE:
+          _renderPreviewEmbedCodeData(componentValue);
+          break;
+
         default:
           break;
       }
@@ -310,10 +358,16 @@
         'data-action': Actions.ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD
       }).text(I18n.t('editor.asset_selector.image_upload.button_text'));
 
+      var embedCodeButton = $('<button>', {
+        'class': 'btn accent-btn',
+        'data-action': Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE
+      }).text(I18n.t('editor.asset_selector.embed_code.button_text'));
+
       var providers = $('<ul>', {'class': 'button-list'}).append([
         $('<li>').html(youtubeButton),
         $('<li>').html(visualizationButton),
-        $('<li>').html(imageUploadButton)
+        $('<li>').html(imageUploadButton),
+        $('<li>').html(embedCodeButton)
       ]);
       var content = $('<div>', { 'class': 'modal-content' }).append(providers);
 
@@ -704,6 +758,76 @@
       }
     }
 
+    /**
+     * componentValue is of the following form:
+     *
+     * {
+     *   type: 'media',
+     *   subtype: 'embed_html',
+     *   value: {
+     *     documentId: '<html fragment>'
+     *   }
+     * }
+     */
+    function _renderPreviewEmbedCodeData(componentProperties) {
+
+      var htmlFragmentUrl = null;
+      var percentLoaded = null;
+      var errorStep = null;
+      var messageTranslationKey;
+      var iframeContainer = _dialog.find('.asset-selector-preview-container');
+      var iframeElement = _dialog.find('.asset-selector-preview-iframe');
+      var invalidMessageContainer = _dialog.find('.asset-selector-invalid-message');
+      var invalidMessageElement = _dialog.find('.asset-selector-invalid-description');
+      var iframeSrc = iframeElement.attr('src');
+      var insertButton = _dialog.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_APPLY));
+
+      if (_.has(componentProperties, 'url')) {
+        htmlFragmentUrl = componentProperties.url;
+      }
+
+      if (_.has(componentProperties, 'percentLoaded')) {
+        percentLoaded = componentProperties.percentLoaded;
+      }
+
+      if (_.has(componentProperties, 'step')) {
+        errorStep = componentProperties.step;
+      }
+
+      if (!_.isNull(htmlFragmentUrl)) {
+
+        if (iframeSrc !== htmlFragmentUrl) {
+          iframeElement.attr('src', htmlFragmentUrl);
+        }
+
+        iframeContainer.removeClass('placeholder');
+        invalidMessageContainer.hide();
+        insertButton.prop('disabled', false);
+      } else if (!_.isNull(errorStep)) {
+
+        if (/^validation.*/.test(errorStep)) {
+          messageTranslationKey = 'editor.asset_selector.embed_code.errors.{0}'.format(errorStep);
+        } else {
+          messageTranslationKey = 'editor.asset_selector.embed_code.errors.exception';
+        }
+
+        iframeElement.attr('src', '');
+        invalidMessageContainer.show();
+        invalidMessageElement.html(I18n.t(messageTranslationKey));
+
+        iframeContainer.removeClass('placeholder');
+        insertButton.prop('disabled', true);
+      } else if (!_.isNull(percentLoaded)) {
+
+        invalidMessageContainer.hide();
+        iframeContainer.removeClass('placeholder');
+        insertButton.prop('disabled', true);
+      } else {
+        invalidMessageContainer.hide();
+        insertButton.prop('disabled', true);
+      }
+    }
+
     function _renderChooseDatasetTemplate() {
       _addModalDialogClass('modal-dialog-wide');
 
@@ -820,6 +944,98 @@
         '{0}/component/visualization/add?datasetId={1}'.
           format(window.location.origin, datasetId)
       );
+    }
+
+    function _renderChooseEmbedCodeTemplate() {
+
+      var heading = _renderModalTitle(
+        I18n.t('editor.asset_selector.embed_code.heading')
+      );
+
+      var closeButton = _renderModalCloseButton();
+
+      var inputLabel = $('<h2>', { 'class': 'asset-selector-input-label input-label' }).
+        text(I18n.t('editor.asset_selector.embed_code.input_label'));
+
+      var inputControl = $(
+        '<textarea>',
+        {
+          'class': 'asset-selector-text-input',
+          'data-asset-selector-field': 'embedHtml',
+          'type': 'text'
+        }
+      );
+
+      var previewLabel = $('<h3>', { 'class': 'asset-selector-input-label input-label' }).
+        text(I18n.t('editor.asset_selector.embed_code.preview_label'));
+
+      var previewInvalidMessageTitle = $(
+        '<div>',
+        { 'class': 'asset-selector-invalid-title' }
+      ).html(
+        [
+          I18n.t('editor.asset_selector.embed_code.invalid_message_title_1'),
+          '<br />',
+          I18n.t('editor.asset_selector.embed_code.invalid_message_title_2')
+        ].join('')
+      );
+
+      var previewInvalidMessageDescription = $(
+        '<div>',
+        { 'class': 'asset-selector-invalid-description' }
+      );
+
+      var previewInvalidMessage = $(
+        '<div>',
+        {
+          'class': 'asset-selector-invalid-message'
+        }
+      ).append([
+        previewInvalidMessageTitle,
+        previewInvalidMessageDescription
+      ]);
+
+      var previewIframe = $(
+        '<iframe>',
+        {
+          'class': 'asset-selector-preview-iframe'
+        }
+      );
+
+      var previewContainer = $(
+        '<div>',
+        {
+          'class': 'asset-selector-preview-container placeholder'
+        }
+      ).append([
+        previewInvalidMessage,
+        previewIframe
+      ]);
+
+      var backButton = _renderModalBackButton(Actions.ASSET_SELECTOR_CHOOSE_PROVIDER);
+
+      var insertButton = $(
+        '<button>',
+        {
+          'class': 'btn accent-btn',
+          'data-action': Actions.ASSET_SELECTOR_APPLY
+        }
+      ).text(I18n.t('editor.asset_selector.insert_button_text'));
+
+      var content = $('<div>', { 'class': 'asset-selector-input-group' }).append([
+        inputLabel,
+        inputControl,
+        previewLabel,
+        previewContainer
+      ]);
+
+      var buttonGroup = $(
+        '<div>',
+        {
+          'class': 'asset-selector-button-group r-to-l'
+        }).append([ backButton, insertButton ]);
+
+      return [ heading, closeButton, content, buttonGroup ];
     }
 
     function _renderModalTitle(titleText) {

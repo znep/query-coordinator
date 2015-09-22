@@ -119,6 +119,7 @@ $th-headings: (
 
   // Left align lists
   ul, ol {
+    list-style-position: inside;
     padding-left: $list-padding-left;
   }
 

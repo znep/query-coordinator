@@ -33,32 +33,12 @@ $(document).on('ready', function() {
 
         case 'socrata.visualization.columnChart':
           $element.
-            height(componentData.value.layout.height).
-            on('SOCRATA_VISUALIZATION_COLUMN_CHART_FLYOUT', function(event) {
-              var payload = event.originalEvent.detail;
-
-              if (payload !== null) {
-                storyteller.flyoutRenderer.render(payload);
-              } else {
-                storyteller.flyoutRenderer.clear();
-              }
-            }).
-            socrataColumnChart(componentData.value.vif);
+            componentSocrataVisualizationColumnChart(componentData);
           break;
 
         case 'socrata.visualization.featureMap':
           $element.
-            height(componentData.value.layout.height).
-            on('SOCRATA_VISUALIZATION_FEATURE_MAP_FLYOUT', function(event) {
-              var payload = event.originalEvent.detail;
-
-              if (payload !== null) {
-                storyteller.flyoutRenderer.render(payload);
-              } else {
-                storyteller.flyoutRenderer.clear();
-              }
-            }).
-            socrataFeatureMap(componentData.value.vif);
+            componentSocrataVisualizationFeatureMap(componentData);
           break;
 
         default:

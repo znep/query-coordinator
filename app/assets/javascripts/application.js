@@ -40,6 +40,9 @@
 //= require socrata-visualizations/components/SocrataColumnChart
 //= require socrata-visualizations/components/SocrataFeatureMap
 
+//= require editor/block-component-renderers/componentSocrataVisualizationColumnChart
+//= require editor/block-component-renderers/componentSocrataVisualizationFeatureMap
+
 // Store setup
 //= require editor/SimpleEventEmitter.js
 //= require editor/stores/Store.js

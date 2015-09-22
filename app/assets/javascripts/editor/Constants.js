@@ -34,6 +34,11 @@
     WINDOW_SIZE_BREAK_LARGE: 1200,
     WINDOW_SIZE_BREAK_MEDIUM: 768,
 
+    // How long to wait after user input has stopped before uploading the
+    // embed code fragment to the backend for storage and subsequent preview
+    // (in milliseconds)
+    EMBED_CODE_DEBOUNCE_DELAY: 1000,
+
     DEFAULT_VISUALIZATION_HEIGHT: 300
   };
 

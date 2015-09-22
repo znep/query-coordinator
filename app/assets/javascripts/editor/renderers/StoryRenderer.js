@@ -30,6 +30,8 @@
         return 'componentSocrataVisualizationColumnChart';
       case 'socrata.visualization.featureMap':
         return 'componentSocrataVisualizationFeatureMap';
+      case 'embeddedHTML':
+        return 'componentEmbeddedHTML';
       default:
         throw new Error(
           'No component renderer found for component: {0}'.

@@ -1,0 +1,14 @@
+<%
+# Component format:
+# {
+#   type: "embeddedHTML",
+#   value: {
+#     url: "https://bucket-name.s3.amazonaws.com/uploads/random/embedded_fragment.html"
+#   }
+# }
+%>
+<iframe
+  src="<%= component['value']['url'] %>"
+  frameborder="0">
+</iframe>
+

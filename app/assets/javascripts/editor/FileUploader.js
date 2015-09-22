@@ -16,6 +16,9 @@
     var _xhr = null;
     var _destroyed = false;
 
+    var validFileTypes = [ /image\/.*/, /text\/html/ ];
+    var options = {};
+
     var self = this;
 
     /**
@@ -25,6 +28,10 @@
      *   FILE_UPLOAD_PROGRESS
      *   FILE_UPLOAD_ERROR
      *   FILE_UPLOAD_DONE
+     *
+     * These actions can be customized using options `progressAction`,
+     * `errorAction`, and `doneAction` * if you need to dispatch
+     * different actions instead.
      *
      * The workflow for uploading a file requires at least 4 web requests.
      *
@@ -66,8 +73,11 @@
      *      Retry until document.status === 'processed'
      *
      * @param {File} file - a reference to the file to upload
+     * @param {Object} opts - options for overriding actions
      */
-    this.upload = function(file) {
+    this.upload = function(file, opts) {
+      $.extend(options, opts || {});
+
       // Would love to be able to do `utils.assert(file instanceof File)`, but mocking File is hard.
       utils.assert(!_.isUndefined(file.name), 'File not valid: missing name.');
       utils.assert(!_.isUndefined(file.size), 'File not valid: missing size.');
@@ -82,7 +92,8 @@
         return;
       }
 
-      if (/image\/.*/.test(_file.type) !== true) {
+      var isValidFileType = _.any(_.invoke(validFileTypes, 'test', _file.type));
+      if (!isValidFileType) {
         _emitError('validation_file_type');
         return;
       }
@@ -131,7 +142,7 @@
         _uploadedPercent = progressBytes / _file.size;
 
         storyteller.dispatcher.dispatch({
-          action: Actions.FILE_UPLOAD_PROGRESS,
+          action: options.progressAction || Actions.FILE_UPLOAD_PROGRESS,
           percentLoaded: _uploadedPercent
         });
       }
@@ -139,7 +150,7 @@
 
     function _emitError(errorStep, reason) {
       storyteller.dispatcher.dispatch({
-        action: Actions.FILE_UPLOAD_ERROR,
+        action: options.errorAction || Actions.FILE_UPLOAD_ERROR,
         error: {
           step: errorStep,
           reason: reason
@@ -219,7 +230,7 @@
         _xhr.onabort = onFail;
         _xhr.onerror = onFail;
 
-        _xhr.send(_file);
+        _xhr.send(_file instanceof File ? _file : _file.body);
       });
     }
 
@@ -262,7 +273,7 @@
     function _dispatchFileDone(resource) {
       if (!_destroyed) {
         storyteller.dispatcher.dispatch({
-          action: Actions.FILE_UPLOAD_DONE,
+          action: options.doneAction || Actions.FILE_UPLOAD_DONE,
           documentId: resource.id,
           url: resource.url
         });
@@ -274,6 +285,7 @@
 
       if (resource.status === 'processed') {
         _dispatchFileDone(resource);
+        self.destroy();
       } else {
 
         var retryInterval = storyteller.config.fileUploader.checkDocumentProcessedRetryInterval || 1000;

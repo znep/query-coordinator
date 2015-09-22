@@ -79,6 +79,23 @@
           _updateImageUploadError(payload);
           break;
 
+        case Actions.ASSET_SELECTOR_CHOOSE_EMBED_CODE:
+          _currentSelectorState = action;
+          _chooseEmbedCode();
+          break;
+
+        case Actions.EMBED_CODE_UPLOAD_PROGRESS:
+          _updateEmbedCodeProgress(payload);
+          break;
+
+        case Actions.EMBED_CODE_UPLOAD_ERROR:
+          _updateEmbedCodeError(payload);
+          break;
+
+        case Actions.EMBED_CODE_UPLOAD_DONE:
+          _updateEmbedCodePreview(payload);
+          break;
+
         case Actions.ASSET_SELECTOR_CLOSE:
           _closeDialog();
           break;
@@ -155,6 +172,11 @@
     }
 
     function _chooseImageUpload() {
+      _cancelFileUploads();
+      self._emitChange();
+    }
+
+    function _chooseEmbedCode() {
       _cancelFileUploads();
       self._emitChange();
     }
@@ -322,6 +344,41 @@
       }
 
       return youtubeId;
+    }
+
+    function _updateEmbedCodeProgress(payload) {
+      _currentComponentType = 'embeddedHTML';
+
+      _currentComponentProperties = {
+        percentLoaded: payload.percentLoaded
+      };
+
+      self._emitChange();
+    }
+
+    function _updateEmbedCodeError(payload) {
+      _currentComponentProperties = {
+        error: true,
+        step: payload.error.step
+      };
+
+      if (!_.isUndefined(payload.error.reason)) {
+        _currentComponentProperties.reason = payload.error.reason;
+      }
+
+      self._emitChange();
+    }
+
+    function _updateEmbedCodePreview(payload) {
+      var htmlFragmentUrl = payload.url;
+
+      _currentComponentType = 'embeddedHTML';
+
+      _currentComponentProperties = {
+        url: htmlFragmentUrl
+      };
+
+      self._emitChange();
     }
 
     function _cancelFileUploads() {

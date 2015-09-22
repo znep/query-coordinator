@@ -55,6 +55,10 @@ RSpec.describe Document, type: :model do
     it 'validates upload_content_type is an image' do
       expect(FactoryGirl.build(:document, upload_content_type: 'image/png')).to be_valid
     end
+
+    it 'validates upload_content_type is an html document' do
+      expect(FactoryGirl.build(:document, upload_content_type: 'text/html')).to be_valid
+    end
   end
 
   describe '#as_json' do

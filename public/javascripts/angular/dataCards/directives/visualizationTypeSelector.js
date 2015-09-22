@@ -80,7 +80,7 @@
           selector: '.icon-bar-chart .icon-warning',
           render: _.constant(FLYOUT_TEMPLATE.format(I18n.addCardDialog.columnChartWarning)),
           positionOn: function(el) {
-            return $(el).closest('.visualization-type');
+            return $(el).closest('.visualization-type')[0];
           },
           destroySignal: scope.$destroyAsObservable(element)
         });
@@ -89,7 +89,7 @@
           selector: '.icon-distribution .icon-warning',
           render: _.constant(FLYOUT_TEMPLATE.format(I18n.addCardDialog.histogramColumnChartWarning)),
           positionOn: function(el) {
-            return $(el).closest('.visualization-type');
+            return $(el).closest('.visualization-type')[0];
           },
           persistOnMousedown: true,
           destroySignal: scope.$destroyAsObservable(element)
@@ -99,7 +99,7 @@
           selector: '.icon-region .icon-warning',
           render: _.constant(FLYOUT_TEMPLATE.format(I18n.addCardDialog.choroplethWarning)),
           positionOn: function(el) {
-            return $(el).closest('.visualization-type');
+            return $(el).closest('.visualization-type')[0];
           },
           persistOnMousedown: true,
           destroySignal: scope.$destroyAsObservable(element)

@@ -399,12 +399,19 @@
         // see which chart we decided to render as.
         visualizationType$.subscribe(_.bind($scope.model.set, $scope.model, 'visualizationType'));
 
+        var loading$ = Rx.Observable.merge(
+          baseSoqlFilter$.map(_.constant(true)),
+          whereClauseExcludingOwn$.distinctUntilChanged().map(_.constant(true)),
+          cardData$.map(_.constant(false))
+        ).startWith(true);
+
         $scope.$bindObservable('rowDisplayUnit', rowDisplayUnit$);
         $scope.$bindObservable('cardData', cardData$);
         $scope.$bindObservable('isFiltered', isFiltered$);
         $scope.$bindObservable('expanded', expanded$);
         $scope.$bindObservable('currentRangeFilterValues', currentRangeFilterValues$);
         $scope.$bindObservable('visualizationType', visualizationType$);
+        $scope.$bindObservable('loading', loading$);
       }
     };
   }

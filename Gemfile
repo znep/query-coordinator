@@ -90,7 +90,6 @@ group :development do
   # Run application with $RAILS_ROOT/Procfile
   gem 'foreman'
 
-  gem 'rack-mini-profiler', require: false
   gem 'stackprof', require: false
   gem 'flamegraph'
 

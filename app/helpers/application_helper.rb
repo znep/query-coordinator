@@ -43,7 +43,9 @@ module ApplicationHelper
       end
     elsif view.story?
       begin
-        # use the direct link stored in the metadata for 'story' display types
+        # Use the direct link stored in the metadata for 'story' display types.
+        # Don't autogenerate a link - storyteller supports vanity SEO-compatible
+        # URLs (though the UI for this feature isn't implemented yet).
         view.metadata.accessPoints['story']
       rescue NoMethodError => error
         error_message = "Failed to find access point 'story' for view with " \

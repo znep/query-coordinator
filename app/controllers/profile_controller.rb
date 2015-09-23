@@ -1,5 +1,11 @@
 class ProfileController < ApplicationController
   include BrowseActions
+
+  # To learn why we include ProfileHelper manually, see
+  # the comment at the top of ProfileHelper's implementation.
+  # tl;dr "helper :all" in ApplicationController.
+  include ProfileHelper
+
   skip_before_filter :require_user, :only => [:show_app_token]
 
   helper :user

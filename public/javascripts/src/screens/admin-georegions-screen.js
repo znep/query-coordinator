@@ -58,7 +58,7 @@ var t = function(str, props) {
 
       return (
         <div>
-          <span className={'enabled-state ' + enabledClassName}>{isEnabledLabel}</span>
+          <span className={'enabled-widget-label ' + enabledClassName}>{isEnabledLabel}</span>
           {actionButton}
         </div>
       );

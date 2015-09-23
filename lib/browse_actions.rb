@@ -274,8 +274,8 @@ protected
     end
 
     if browse_options[:curated_region_candidates]
-      search_options[:options] = search_options[:option] || []
-      search_options[:options] += ['curated_region_candidates']
+      search_options[:options] ||= []
+      search_options[:options] << 'curated_region_candidates'
     end
 
     if browse_options[:limitTo].present?

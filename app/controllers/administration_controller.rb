@@ -137,7 +137,7 @@ class AdministrationController < ApplicationController
       :georegions, :add_georegion, :enable_georegion, :disable_georegion, :edit_georegion, :remove_georegion
     ] {|c| c.check_auth_levels_any(['edit_others_datasets', 'edit_site_theme']) }
   def georegions
-    @view_model = ::ViewModels::Administration::Georegions.new(CuratedRegion.all)
+    @view_model = ::ViewModels::Administration::Georegions.new(CuratedRegion.all, CurrentDomain.strings.site_title)
   end
 
   def add_georegion

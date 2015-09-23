@@ -12,6 +12,9 @@ describe AdministrationController do
       allow_any_instance_of(ApplicationController).to receive(:set_user)
       allow_any_instance_of(ApplicationController).to receive(:set_meta)
       allow_any_instance_of(ApplicationHelper).to receive(:feature_flag?).and_return(true)
+      strings = Hashie::Mash.new
+      strings.site_title = 'My Site'
+      allow(CurrentDomain).to receive(:strings).and_return(strings)
     end
 
     describe 'GET /admin/geo' do

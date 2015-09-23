@@ -20,6 +20,7 @@ describe ::Services::Administration::GeoregionAdder do
 
   describe '#add' do
     before(:each) do
+      allow(CurrentDomain).to receive(:cname).and_return('localhost')
       stub_request(:get, 'http://localhost:8080/views/test-data.json').
         to_return(:status => 200, :body => fixture_data['get_request'].to_json, :headers => {'ContentType' => 'application/json'})
     end
@@ -53,6 +54,7 @@ describe ::Services::Administration::GeoregionAdder do
   describe '#validate_view' do
     it 'validates a view is present' do
       view_double = double(View)
+      expect(view_double).to receive(:columns).and_return(['fake'])
       expect(view_double).to receive(:present?).and_return(true)
       expect(subject.validate_view(view_double)).to eq(true)
     end

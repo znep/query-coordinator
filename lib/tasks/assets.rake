@@ -34,3 +34,6 @@ Rake::Task[:default].enhance do
   Rake::Task['assets:babel'].invoke
   Rake::Task['assets:unminified'].invoke
 end
+
+# compile assets before running tests
+task 'test:js:oldUx' => 'assets:babel'

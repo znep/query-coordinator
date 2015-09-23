@@ -1,7 +1,7 @@
 class CuratedRegion < Model
 
   def self.all
-    find({ :enabledOnly => false, :defaultOnly => false })
+    find(:enabledOnly => false, :defaultOnly => false)
   end
 
   def self.find_enabled( options = {}, custom_headers = {}, batch = nil, is_anon = false )

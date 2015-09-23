@@ -23,7 +23,7 @@
       <tr class="item">
         <td class="name"><%= georegion.name %></td>
         <td class="toggle-enabled">
-          <span class="enabled-state <%= georegion.enabled? ? 'is-enabled' : 'is-disabled'%>">
+          <span class="enabled-widget-label <%= georegion.enabled? ? 'is-enabled' : 'is-disabled'%>">
             <%=  t(georegion.enabled? ? "#{prefix}.enabled_yes" : "#{prefix}.enabled_no") %>
           </span>
           <%- if georegion.enabled? -%>

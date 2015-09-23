@@ -61,14 +61,14 @@ class BrowseController < ApplicationController
   end
 
   def select_georegion
-    @processed_browse = process_browse(request, {
-      browse_in_container: true,
-      curated_region_candidates: true,
-      rel_type: 'external',
-      view_type: 'table',
-      hide_view_types: true,
-      suppress_dataset_creation: true
-    })
+    @processed_browse = process_browse(request,
+      :browse_in_container=> true,
+      :curated_region_candidates=> true,
+      :rel_type=> 'external',
+      :view_type=> 'table',
+      :hide_view_types=> true,
+      :suppress_dataset_creation=> true
+    )
   end
 
   def domain_info

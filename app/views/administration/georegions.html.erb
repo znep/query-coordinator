@@ -4,8 +4,7 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-georegions' %>
-  <title><%= t("#{prefix}.title") %>
-    | <%= current_domain.strings.site_title %></title>
+  <title><%= t("#{prefix}.title") %> | <%= @view_model.site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -62,10 +61,10 @@
       blist.namespace.fetch('blist.georegions').georegions = <%== @view_model.curated_regions.to_json %>;
       blist.namespace.fetch('blist.georegions').maximumEnabledCount = <%== @view_model.maximum_enabled_count.to_json %>;
     </script>
-    <%- if Rails.env == 'production' -%>
+    <%- if Rails.env.production? -%>
       <%= include_javascripts 'react-prod' %>
     <%- else -%>
-      <%= include_javascripts 'react' %>
+      <%= include_javascripts 'react-dev' %>
     <%- end -%>
     <%= include_javascripts 'admin-georegions' %>
   <%- end -%>

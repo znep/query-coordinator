@@ -4,8 +4,8 @@ describe 'administration/georegions.html.erb' do
 
   let(:view_model) do
     double(::ViewModels::Administration::Georegions,
-      :available_count => 5,
       :enabled_count => 4,
+      :maximum_enabled_count => 5,
       :translations => nil,
       :custom_regions => [],
       :default_regions => []

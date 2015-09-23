@@ -13,6 +13,7 @@ module Services
       def add(view_id, feature_pk, geometry_label = nil, name = nil, options = nil)
         view = View.find(view_id)
         return unless validate_view(view)
+
         geometry_label_column = view.columns.detect { |column| column.name == 'name' }
         feature_pk_column = view.columns.detect { |column| column.name == '_feature_id' }
         attributes = {
@@ -37,7 +38,7 @@ module Services
       end
 
       def validate_view(view)
-        view.present?
+        view.present? && view.columns.present?
       end
     end
   end

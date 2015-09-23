@@ -12,6 +12,7 @@
     var _overlay = $('<div>', { 'class': 'modal-overlay' });
     var _dialog = $('<div>', { 'class': 'modal-dialog' });
     var _lastRenderedState = null;
+    var _warnAboutInsecureHTML = false;
 
     if (!(_container instanceof jQuery)) {
 
@@ -150,6 +151,7 @@
         }
 
         var htmlFragment = $(event.target).val();
+        _warnAboutInsecureHTML = /src=("|')http:\/\//.test(htmlFragment);
         if (htmlFragment.length === 0 || htmlFragment === currentHtmlFragment) {
           return;
         }
@@ -759,13 +761,15 @@
     }
 
     /**
-     * componentValue is of the following form:
+     * componentProperties is of the following form:
      *
      * {
-     *   type: 'media',
-     *   subtype: 'embed_html',
+     *   type: 'embeddedHtml',
      *   value: {
-     *     documentId: '<html fragment>'
+     *     url: '<html fragment url>'
+     *     layout: {
+     *       height: 300
+     *     }
      *   }
      * }
      */
@@ -781,6 +785,7 @@
       var invalidMessageElement = _dialog.find('.asset-selector-invalid-description');
       var iframeSrc = iframeElement.attr('src');
       var insertButton = _dialog.find('[data-action="{0}"]'.format(Actions.ASSET_SELECTOR_APPLY));
+      var insecureHtmlWarning = _dialog.find('.asset-selector-insecure-html-warning');
 
       if (_.has(componentProperties, 'url')) {
         htmlFragmentUrl = componentProperties.url;
@@ -794,6 +799,8 @@
         errorStep = componentProperties.step;
       }
 
+      insecureHtmlWarning.toggle(_warnAboutInsecureHTML);
+
       if (!_.isNull(htmlFragmentUrl)) {
 
         if (iframeSrc !== htmlFragmentUrl) {
@@ -801,6 +808,7 @@
         }
 
         iframeContainer.removeClass('placeholder');
+        iframeContainer.removeClass('bg-loading-spinner');
         invalidMessageContainer.hide();
         insertButton.prop('disabled', false);
       } else if (!_.isNull(errorStep)) {
@@ -816,14 +824,17 @@
         invalidMessageElement.html(I18n.t(messageTranslationKey));
 
         iframeContainer.removeClass('placeholder');
+        iframeContainer.removeClass('bg-loading-spinner');
         insertButton.prop('disabled', true);
       } else if (!_.isNull(percentLoaded)) {
 
         invalidMessageContainer.hide();
         iframeContainer.removeClass('placeholder');
+        iframeContainer.addClass('bg-loading-spinner');
         insertButton.prop('disabled', true);
       } else {
         invalidMessageContainer.hide();
+        iframeContainer.removeClass('bg-loading-spinner');
         insertButton.prop('disabled', true);
       }
     }
@@ -966,6 +977,13 @@
       var previewLabel = $('<h3>', { 'class': 'asset-selector-input-label input-label' }).
         text(I18n.t('editor.asset_selector.embed_code.preview_label'));
 
+      var previewInsecureMessage = $(
+        '<div>',
+        { 'class': 'asset-selector-insecure-html-warning' }
+      ).html(
+        I18n.t('editor.asset_selector.embed_code.insecure_html_warning')
+      );
+
       var previewInvalidMessageTitle = $(
         '<div>',
         { 'class': 'asset-selector-invalid-title' }
@@ -1005,6 +1023,7 @@
           'class': 'asset-selector-preview-container placeholder'
         }
       ).append([
+        previewInsecureMessage,
         previewInvalidMessage,
         previewIframe
       ]);

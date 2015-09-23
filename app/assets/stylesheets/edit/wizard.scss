@@ -73,6 +73,16 @@
       }
     }
 
+    .asset-selector-insecure-html-warning {
+      position: relative;
+      top: 0;
+      display: none;
+      background: yellow;
+      font-size: 1.6rem;
+      text-align: center;
+      padding: 0.5rem;
+    }
+
     .asset-selector-invalid-message {
       position: relative;
       display: none;

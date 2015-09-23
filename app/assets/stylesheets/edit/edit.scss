@@ -176,6 +176,7 @@ body .header-main {
   z-index: $story-save-error-z-index;
   transition: opacity $transition-duration;
   opacity: 0;
+  pointer-events: none;
 
   &.visible {
     opacity: 1;
@@ -186,6 +187,7 @@ body .header-main {
     color: $story-save-error-bar-icon-color;
     background: $story-save-error-bar-background;
     border: 1px solid $story-save-error-bar-border-color;
+    pointer-events: all;
 
     .message {
       color: $story-save-error-bar-color;

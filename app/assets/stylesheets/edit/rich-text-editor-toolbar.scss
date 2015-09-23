@@ -11,6 +11,7 @@ body.story-save-error #rich-text-editor-toolbar-wrapper {
   width: 100%;
   text-align: center; // centering the toolbar
   transition: top $transition-duration;
+  pointer-events: none;
 }
 
 #rich-text-editor-toolbar {
@@ -24,6 +25,7 @@ body.story-save-error #rich-text-editor-toolbar-wrapper {
   border-radius: 1px;
   font-size: 1.5rem;
   padding: 0 1rem;
+  pointer-events: all;
 
   .rich-text-editor-toolbar-btn-group,
   .rich-text-editor-toolbar-select-group {

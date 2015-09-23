@@ -31,7 +31,7 @@ module.exports = function ( karma ) {
     basePath: '../../',
 
      preprocessors: {
-      'public/javascripts/**/!(jquery-1.7.1.js)': ['coverage'],
+      'public/javascripts/**/!(jquery-1.7.1.js)': ['coverage']
     },
 
     /**
@@ -44,6 +44,7 @@ module.exports = function ( karma ) {
       'public/javascripts/jquery-1.7.1.js',
       'public/javascripts/plugins/lodash.js',
       'bower_components/sinon-browser-only/sinon.js',
+      'bower_components/react/react-with-addons.js',
 
       /* END OF EXTERNAL DEPENDENCIES
        * OUR CODE BELOW */
@@ -63,6 +64,7 @@ module.exports = function ( karma ) {
       // 'public/javascripts/controls/render-type-manager.js',
       // 'public/javascripts/controls/grid-sidebar.js',
       // 'public/javascripts/screens/dataset-show.js',
+      'public/javascripts/dist/**/*.js',
 
       // Utilities/Libraries
       'public/javascripts/plugins/html4-defs.js',

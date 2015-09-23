@@ -610,6 +610,20 @@ var Dataset = ServerModel.extend({
         else { success(); }
     },
 
+    makeCustomGeoregion: function(successCallback, errorCallback)
+    {
+        var ds = this;
+        ds.makeRequest({
+            url: '/admin/geo',
+            data: JSON.stringify({
+                id: ds.id
+            }),
+            type: 'POST',
+            success: successCallback,
+            error: errorCallback
+        });
+    },
+
     notifyUsers: function(successCallback, errorCallback)
     {
         this.makeRequest({url: '/api/views/' + this.id + '.json',

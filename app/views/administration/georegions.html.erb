@@ -4,7 +4,7 @@
 <% content_for :head do %>
   <%= rendered_stylesheet_tag 'administration-screen' %>
   <%= rendered_stylesheet_tag 'administration-georegions' %>
-  <title><%= t("#{prefix}.title") %> | <%= controller.current_domain.strings.site_title %></title>
+  <title><%= t("#{prefix}.title") %> | <%= @view_model.site_title %></title>
 <% end %>
 
 <% content_for :skip_links do %>
@@ -16,8 +16,9 @@
 <div class="contentBox withLeftNavigation georegionsScreen">
   <div class="adminHeader floating georegions">
     <span class="icon"></span>
+
     <h1><%= t("#{prefix}.page_title") %></h1>
-    <h4><%= t("#{prefix}.page_subtitle", :enabled_count => @georegions[:counts][:enabled], :available_count => @georegions[:counts][:available]) %></h4>
+    <h4 id="georegions-page-subtitle"><span><%= t("#{prefix}.page_subtitle", :enabled_count => @view_model.enabled_count, :available_count => @view_model.maximum_enabled_count) %></span></h4>
   </div>
 </div>
 
@@ -26,6 +27,7 @@
   <div class="georegions-custom">
     <div class="clearfix">
       <h1 class="georegions-title-custom"><%= t("#{prefix}.custom_georegions") %></h1>
+
       <div class="georegions-controls-custom">
         <%= form_button(
           { :action => 'add_georegion' },
@@ -35,7 +37,7 @@
       </div>
     </div>
 
-    <%= render :partial => 'georegions_table', :locals => { :prefix => prefix, :georegions => @georegions[:custom], :allow_actions => true } %>
+    <%= render :partial => 'georegions_table', :locals => { :prefix => prefix, :georegions => @view_model.custom_regions, :allow_actions => true } %>
   </div>
 </div>
 
@@ -45,13 +47,26 @@
       <h1><%= t("#{prefix}.default_georegions") %></h1>
     </div>
 
-    <%= render :partial => 'georegions_table', :locals => { :prefix => prefix, :georegions => @georegions[:default], :allow_actions => false } %>
+    <%= render :partial => 'georegions_table', :locals => { :prefix => prefix, :georegions => @view_model.default_regions, :allow_actions => false } %>
   </div>
 </div>
 
+<%- content_for :modals do -%>
+  <%= render :partial => 'modals/select_georegion', :locals => { :title => t("#{prefix}.choose_a_dataset") } %>
+<%- end -%>
+
 <% content_for :js_footer do %>
   <%- unless params[:no_js] == 'true' -%>
+    <script type="text/javascript" id="bar">
+      blist.namespace.fetch('blist.georegions').georegions = <%== @view_model.curated_regions.to_json %>;
+      blist.namespace.fetch('blist.georegions').maximumEnabledCount = <%== @view_model.maximum_enabled_count.to_json %>;
+    </script>
+    <%- if Rails.env.production? -%>
+      <%= include_javascripts 'react-prod' %>
+    <%- else -%>
+      <%= include_javascripts 'react-dev' %>
+    <%- end -%>
     <%= include_javascripts 'admin-georegions' %>
   <%- end -%>
 <% end %>
-<%= render_translations @georegions[:translations] %>
+<%= render_translations @view_model.translations %>

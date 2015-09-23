@@ -264,8 +264,14 @@ javascripts:
     - public/javascripts/controls/page-render-type.js
   shared-blob:
     - public/javascripts/controls/blob-dataset.js
+  react-dev:
+    - public/javascripts/bower/react-with-addons.js
+  react-prod:
+    - public/javascripts/bower/react-with-addons.min.js
   browse-select-dataset:
     - public/javascripts/screens/browse-select-dataset.js
+  browse-select-georegion:
+    - public/javascripts/screens/browse-select-georegion.js
   admin-canvas-pages:
     - public/javascripts/plugins/jquery.tablesorter.js
     - public/javascripts/controls/combination-list.js
@@ -288,7 +294,7 @@ javascripts:
     - public/javascripts/screens/admin-users-screen.js
   admin-georegions:
     - public/javascripts/controls/admin-buttons.js
-    - public/javascripts/screens/admin-georegions-screen.js
+    - public/javascripts/dist/screens/admin-georegions-screen.js
   admin-home:
     - public/javascripts/util/serialize.js
     - public/javascripts/controls/admin-buttons.js

@@ -17,6 +17,7 @@
   "author": "Socrata Engineering <engineering@socrata.com>",
   "license": "all rights reserved",
   "devDependencies": {
+    "babel": "^5.8.23",
     "chai": "~1.9.1",
     "chai-as-promised": "~4.1.1",
     "eslint": "^0.24.0",

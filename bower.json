@@ -27,6 +27,7 @@
     "lodash-compat": "3.7",
     "moment": "2.7.0",
     "pbf": "0.0.3",
+    "react": "0.13.3",
     "requestAnimationFrame-polyfill": "*",
     "rxjs": "2.5",
     "simple-statistics": "0.8.1",
@@ -58,6 +59,10 @@
       ],
       "lodash-compat": "bower_components/lodash-compat/lodash.js",
       "pbf": "bower_components/pbf/dist/pbf.min.js",
+      "react": [
+        "bower_components/react/react-with-addons.js",
+        "bower_components/react/react-with-addons.min.js"
+      ],
       "rxjs": [
         "bower_components/rxjs/dist/rx.js",
         "bower_components/rxjs/dist/rx.async.js",

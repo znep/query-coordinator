@@ -1,6 +1,17 @@
 require 'rails_helper'
 
 describe 'administration/georegions.html.erb' do
+
+  let(:view_model) do
+    double(::ViewModels::Administration::Georegions,
+      :enabled_count => 4,
+      :maximum_enabled_count => 5,
+      :translations => nil,
+      :custom_regions => [],
+      :default_regions => []
+    )
+  end
+
   before(:each) do
     allow_any_instance_of(ActionView::Helpers::CaptureHelper).to receive(:content_for)
     allow_any_instance_of(Jammit::Helper).to receive(:include_javascripts).and_return('')
@@ -10,15 +21,7 @@ describe 'administration/georegions.html.erb' do
 
   describe 'rendering' do
     before(:each) do
-      assign(:georegions, {
-          :counts => {
-            :available => 5,
-            :enabled => 4
-          },
-          :custom => [],
-          :default => [],
-          :translations => nil
-        })
+      assign(:view_model, view_model)
       render
     end
 
@@ -44,15 +47,10 @@ describe 'administration/georegions.html.erb' do
         'enabledFlag' => true,
         'defaultFlag' => false
       )
-      assign(:georegions, {
-          :counts => {
-            :available => 1,
-            :enabled => 1
-          },
-          :custom => [curated_region],
-          :default => [],
-          :translations => nil
-        })
+
+      allow(view_model).to receive(:custom_regions).and_return([curated_region])
+      assign(:view_model, view_model)
+
       render
       expect(rendered).to include('My Curated Region')
       expect(rendered).to include('Yes')

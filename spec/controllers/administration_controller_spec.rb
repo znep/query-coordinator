@@ -12,6 +12,9 @@ describe AdministrationController do
       allow_any_instance_of(ApplicationController).to receive(:set_user)
       allow_any_instance_of(ApplicationController).to receive(:set_meta)
       allow_any_instance_of(ApplicationHelper).to receive(:feature_flag?).and_return(true)
+      strings = Hashie::Mash.new
+      strings.site_title = 'My Site'
+      allow(CurrentDomain).to receive(:strings).and_return(strings)
     end
 
     describe 'GET /admin/geo' do
@@ -65,12 +68,12 @@ describe AdministrationController do
               ])
 
           get :georegions
-          expect(assigns(:georegions)).to include(
-              :counts => { :available => 3, :enabled => 1 },
-              :custom => a_collection_containing_exactly(an_instance_of(CuratedRegion), an_instance_of(CuratedRegion)),
-              :default => a_collection_containing_exactly(an_instance_of(CuratedRegion)),
-              :translations => an_instance_of(LocalePart)
-            )
+          view_model = assigns(:view_model)
+          expect(view_model.available_count).to eq(3)
+          expect(view_model.enabled_count).to eq(1)
+          expect(view_model.custom_regions).to contain_exactly(an_instance_of(CuratedRegion), an_instance_of(CuratedRegion))
+          expect(view_model.default_regions).to contain_exactly(an_instance_of(CuratedRegion))
+          expect(view_model.translations).to be_an_instance_of(LocalePart)
         end
 
       end
@@ -78,6 +81,8 @@ describe AdministrationController do
     end
 
     describe 'POST /admin/geo' do
+      let(:curated_region_double) { double(CuratedRegion, :id => 1) }
+
       before(:each) do
         user_double = double(User)
         allow(user_double).to receive(:has_right?).and_return(true)
@@ -85,8 +90,39 @@ describe AdministrationController do
       end
 
       it 'redirects to /admin/geo' do
+        allow_any_instance_of(::Services::Administration::GeoregionAdder).to receive(:add).and_return(nil)
         post :add_georegion
         expect(response).to redirect_to('/admin/geo')
+      end
+
+      it 'calls add on the georegion adder service' do
+        expect_any_instance_of(::Services::Administration::GeoregionAdder).to receive(:add).and_return(curated_region_double)
+        post :add_georegion, :format => :json
+      end
+
+      it 'returns an error response if GeoregionAdder.add returns nil' do
+        allow_any_instance_of(::Services::Administration::GeoregionAdder).to receive(:add).and_return(nil)
+        post :add_georegion, :format => :json
+        expect(JSON.parse(response.body)).to include('error' => true)
+      end
+
+      it 'returns a success response when successful' do
+        allow_any_instance_of(::Services::Administration::GeoregionAdder).to receive(:add).and_return(curated_region_double)
+        post :add_georegion, :format => :json
+        expect(JSON.parse(response.body)).to include('success' => true)
+      end
+
+      it 'returns the curated region info when successful' do
+        response_hash = {
+          'id' => 1,
+          'name' => 'Georegion Name',
+          'enabledFlag' => true
+        }
+        allow_any_instance_of(::Services::Administration::GeoregionAdder).to receive(:add).and_return(response_hash)
+        post :add_georegion, :format => :json
+        expect(JSON.parse(response.body)).to include(
+            'message' => response_hash
+          )
       end
     end
 

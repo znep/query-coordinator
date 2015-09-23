@@ -132,17 +132,33 @@ class AdministrationController < ApplicationController
 
   before_filter :only => [
       :georegions, :add_georegion, :enable_georegion, :disable_georegion, :edit_georegion, :remove_georegion
-    ] {|c| c.check_feature_flag(:enable_georegions_admin) }
+    ] {|c| c.check_feature_flag(:enable_spatial_lens_admin) }
   before_filter :only => [
       :georegions, :add_georegion, :enable_georegion, :disable_georegion, :edit_georegion, :remove_georegion
     ] {|c| c.check_auth_levels_any(['edit_others_datasets', 'edit_site_theme']) }
   def georegions
-    @georegions = CuratedRegion.get_all
-    @georegions[:translations] = LocalePart.screens.admin.georegions
+    @view_model = ::ViewModels::Administration::Georegions.new(CuratedRegion.all, CurrentDomain.strings.site_title)
   end
 
   def add_georegion
-    handle_button_response(true, 'error', 'success', :georegions)
+    georegion_adder = ::Services::Administration::GeoregionAdder.new
+    is_success = false
+    error_message = t('error.error_500.were_sorry')
+    success_message = nil
+    begin
+      success_message = georegion_adder.add(params[:id], params[:key], params[:label], params[:name], {:enabledFlag => false})
+      is_success = success_message.present?
+    rescue CoreServer::CoreServerError => ex
+      error_message = t('screens.admin.georegions.flashes.add_georegion_error', :error_message => ex.error_message)
+    rescue StandardError => ex
+      Rails.logger.error(error_message = "Error while adding georegion to domain: #{ex.to_s}")
+    end
+    handle_button_response(
+      is_success,
+      error_message,
+      success_message,
+      :georegions
+    )
   end
 
   def enable_georegion

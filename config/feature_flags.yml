@@ -85,8 +85,8 @@ enable_export_service:
   description: Use the new Export Service on this domain.
   defaultValue: false
   category: obe deprecation
-enable_georegions_admin:
-  description: Allow visibility of domain-specific georegions admin panel
+enable_spatial_lens_admin:
+  description: Allow visibility of spatial lens admin panel
   defaultValue: false
   category: spatial-lens
 enable_feedback:

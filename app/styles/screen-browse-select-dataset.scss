@@ -18,3 +18,18 @@ a.chooseDatasetButton {
   font-size: 0.8em;
   margin-right: 1em;
 }
+
+#paneSpinner {
+  background-color: rgba(255, 255, 255, 0.5);
+  height: 100%;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+#paneSpinnerInside {
+  bottom: 50%;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+}

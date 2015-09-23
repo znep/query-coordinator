@@ -117,18 +117,23 @@ RSpec.describe StoriesController, type: :controller do
 
       let!(:story_uid) { 'test-test' }
 
-      it 'creates a new draft story' do
+      it 'creates a new draft story with a single block' do
         post :create, uid: story_uid, title: mock_valid_lenses_view_title
 
-        expect(assigns(:story)).to be_a(DraftStory)
-        expect(assigns(:story).uid).to eq(story_uid)
+        story = assigns(:story)
+
+        expect(story).to be_a(DraftStory)
+        expect(story.block_ids.length).to be(1)
+        expect(story.uid).to eq(story_uid)
       end
 
       it 'ignores vanity_text' do
         post :create, uid: story_uid, vanity_text: 'haha', title: mock_valid_lenses_view_title
 
-        expect(assigns(:story)).to be_a(DraftStory)
-        expect(assigns(:story).uid).to eq(story_uid)
+        story = assigns(:story)
+
+        expect(story).to be_a(DraftStory)
+        expect(story.uid).to eq(story_uid)
       end
 
       it 'updates the lenses view metadata to set "initialized" equal to "true"' do

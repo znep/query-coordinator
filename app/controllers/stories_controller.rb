@@ -58,7 +58,7 @@ class StoriesController < ApplicationController
 
         @story = DraftStory.create(
           :uid => clean_uid,
-          :block_ids => [],
+          :block_ids => [generate_example_block.id],
           :created_by => current_user['id'],
           :theme => 'classic' #TODO: make this default configurable by domain
         )
@@ -168,6 +168,15 @@ class StoriesController < ApplicationController
     end
 
     sanitized_title
+  end
+
+  def generate_example_block
+    inspiration_block_list = InspirationBlockList.new.blocks
+
+    example_block = inspiration_block_list[0]['blockContent']
+    example_block['created_by'] = current_user['id']
+
+    Block.create(example_block.except('id'))
   end
 
   def core_request_headers

@@ -56,11 +56,9 @@ class StoriesController < ApplicationController
         clean_uid = params[:uid]
         clean_title = sanitize_story_title(dirty_title)
 
-        example_block = generate_example_block
-
         @story = DraftStory.create(
           :uid => clean_uid,
-          :block_ids => [example_block.id],
+          :block_ids => [generate_example_block.id],
           :created_by => current_user['id'],
           :theme => 'classic' #TODO: make this default configurable by domain
         )

@@ -80,7 +80,7 @@
   class="card-group-drop-placeholder"
   data-group-id="{{ dropTarget.cardSize}}">
     <img class="drag-card-icon" src="/images/dataCards/drag-card-icon.png">
-    {{'cardLayout.cardGroupPlaceholderText' | I18n}}
+    {{::'cardLayout.cardGroupPlaceholderText' | I18n}}
 
   <button
     ng-style="addCardButtons[$index].style"
@@ -88,6 +88,6 @@
     class="add-card-button action-btn dark r-to-l"
     ng-show="editMode"
     ng-click="addCardWithSize(addCardButtons[$index].cardSize)">
-      <span class="icon-add"></span> {{'cardLayout.addCardHere' | I18n}}
+      <span class="icon-add"></span> {{::'cardLayout.addCardHere' | I18n}}
   </button>
 </div>

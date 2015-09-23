@@ -25,7 +25,7 @@
             ng-trim="false">
             {{writablePage.name}}
           </textarea>
-          <div class="icon-edit placeholder"><span>({{'metadata.pageNamePlaceholder' | I18n}})</span></div>
+          <div class="icon-edit placeholder"><span>({{::'metadata.pageNamePlaceholder' | I18n}})</span></div>
         </label>
         <!-- description -->
         <div ng-hide="nonEphemeralEditMode"
@@ -41,7 +41,7 @@
           <rich-text-editor
             buttons="bold italic link"
             content="writablePage.description"
-            placeholder="{{'metadata.editDescriptionPrompt' | I18n}}">
+            placeholder="{{::'metadata.editDescriptionPrompt' | I18n}}">
           </rich-text-editor>
         </label>
       </div>
@@ -54,7 +54,7 @@
             </div>
             <div class="metadatum-wrapper row" ng-show="sourceDatasetURL">
               <div class="metadatum">
-                <span class="label">{{'metadata.sourceDataset' | I18n}}</span>
+                <span class="label">{{::'metadata.sourceDataset' | I18n}}</span>
                 <span class="value source-dataset-name">
                   <a href="{{sourceDatasetURL}}" title="{{sourceDatasetName}}" target="_parent">{{sourceDatasetName}}</a>
                 </span>
@@ -62,9 +62,9 @@
             </div>
             <div class="metadatum-wrapper row manage-lens-link" ng-if="shouldShowManageLens && pagePermissions && currentUserHasSaveRight">
               <div class="metadatum">
-                <span class="label">{{'common.permissions.permissions' | I18n}}</span>
+                <span class="label">{{::'common.permissions.permissions' | I18n}}</span>
                 <span class="value">
-                  <a href=# ng-click="manageLensState.show = true">{{('common.permissions.' + pagePermissions) | I18n}} <small>({{'common.change' | I18n}})</small><span class="icon-warning" ng-if="pageIsPublic && !datasetIsPublic"></span></a>
+                  <a href=# ng-click="manageLensState.show = true">{{('common.permissions.' + pagePermissions) | I18n}} <small>({{::'common.change' | I18n}})</small><span class="icon-warning" ng-if="pageIsPublic && !datasetIsPublic"></span></a>
                 </span>
               </div>
               <modal-dialog ng-if="manageLensState.show" dialog-state="manageLensState">
@@ -86,20 +86,20 @@
             ng-if="showDownloadButton"
             >{{ (chooserMode.show ? 'common.cancel' : 'common.download') | I18n }}
             <dropdown-menu ng-if="downloadOpened">
-            <a href="{{datasetCSVDownloadURL}}">{{'metadata.dataAsCsv' | I18n}}</a>
+            <a href="{{datasetCSVDownloadURL}}">{{::'metadata.dataAsCsv' | I18n}}</a>
               <a href='#'
                  ng-class="{'download-menu-item-disabled': hasChanges}"
                  ng-click="chooserMode.show = !hasChanges"
                  >
                 <span ng-class="{'download-menu-item-disabled-text': hasChanges}">
-                  {{'metadata.visualizationAsImage' | I18n}}
+                  {{::'metadata.visualizationAsImage' | I18n}}
                 </span>
               </a>
             </dropdown-menu>
           </div>
           <a ng-if="!showDownloadButton"
              class="action-btn r-to-l"
-             href="{{datasetCSVDownloadURL}}">{{'common.download' | I18n}}</a>
+             href="{{datasetCSVDownloadURL}}">{{::'common.download' | I18n}}</a>
           <api-explorer
             dataset-observable="page.observe('dataset')"
             edit-mode="editMode">
@@ -133,8 +133,8 @@
           </span>
           <div class="filters">
             <div class="filter" ng-repeat="filter in appliedFiltersForDisplay">
-              <span ng-if="$first">{{'filter.where' | I18n}}</span>
-              <span ng-if="!$first">{{'filter.and' | I18n}}</span>
+              <span ng-if="$first">{{::'filter.where' | I18n}}</span>
+              <span ng-if="!$first">{{::'filter.and' | I18n}}</span>
               <span class="light lowercase">{{filter.column.version === '0' ? filter.column.title : filter.column.name}}</span>
               <span>{{filter.operator}}</span>
               <span
@@ -145,7 +145,7 @@
             </div>
           </div>
           <button class="clear-all-filters-button action-btn dark" ng-if="appliedFiltersForDisplay.length > 0" ng-click="clearAllFilters()">
-            {{'quickFilterBar.clearAll' | I18n}}
+            {{::'quickFilterBar.clearAll' | I18n}}
             <span class="icon-close"></span>
           </button>
           <aggregation-chooser page="page"></aggregation-chooser>

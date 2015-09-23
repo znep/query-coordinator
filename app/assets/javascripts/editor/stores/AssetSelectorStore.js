@@ -177,6 +177,7 @@
     }
 
     function _chooseEmbedCode() {
+      _currentComponentProperties = {};
       _cancelFileUploads();
       self._emitChange();
     }

@@ -82,6 +82,7 @@ en:
         preview_label: 'Preview'
         invalid_message_title_1: 'Oh No!'
         invalid_message_title_2: 'Something went wrong.'
+        insecure_html_warning: 'This HTML includes some insecure content. Try replacing HTTP with HTTPS.'
         errors:
           validation_file_size: "Whoa! That's too much HTML. Try trimming the content down."
           exception: "We're really sorry! There was an unexpected problem with your upload.<br>Our engineers have been notified."

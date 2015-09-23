@@ -197,10 +197,6 @@ RSpec.describe StoriesController, type: :controller do
           expect(response.body).to match(/userStoryData = {/)
         end
 
-        it 'renders an array of json objects for sampleBlocks' do
-          get :edit, uid: draft_story.uid
-          expect(response.body).to match(/sampleBlocks = \[/)
-        end
       end
     end
 

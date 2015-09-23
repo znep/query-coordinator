@@ -295,23 +295,13 @@
       );
     }
 
-    function _clearFormat(selection) {
-
-      // As of 6/25/2015 the version of Squire provided by Bower does not yet
-      // include this method, but it is currently implemented in master:
-      //
-      // https://github.com/neilj/Squire
-      //
-      // Eventually we will be able to remove this check altogether and just
-      // call `_editor.removeAllFormatting(selection)` directly.
-      if (_editor.hasOwnProperty('removeAllFormatting')) {
-        _editor.removeAllFormatting(selection);
-      } else {
-        /*eslint-disable no-alert*/
-        alert('Support for the `removeAllFormatting()` method exists in Squire but not yet in the bower package that we are using.');
-        /*eslint-enable*/
-      }
-
+    function _clearFormat() {
+      // As of 9/23/2015 Squire's removeAllFormatting() only strips inline styles
+      // and block-level elements completely enclosed by the selection. When you
+      // have selected the text of a heading the closing tag is not included and
+      // so the heading is not removed.
+      // So call removeAllFormatting() AND update the block type.
+      editor.removeAllFormatting();
       _updateBlockType('div');
     }
 

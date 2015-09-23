@@ -14,10 +14,6 @@ $metadata-top-padding: 7px;
 $metadata-side-padding: 30px;
 $filter-height: 58px;
 
-// api panel sizes
-$api-panel-width: 512px;
-$api-panel-hint-width: 20px;
-
 /* MOBILE/RESPONSIVE DESIGN. SEE DESKTOP-SPECIFIC STYLES BELOW */
 body.state-view-cards {
   *:focus {
@@ -123,7 +119,7 @@ body.state-view-cards {
     .edit-page-description {
       font-size: 1rem;
     }
-    .activities {
+    .right-pane {
       position: relative;
       $activities-divider-width: 36px;
       text-align: right;
@@ -178,37 +174,45 @@ body.state-view-cards {
           }
         }
       }
-      .save-button {
-        position: relative;
+    }
+    .activities {
+      .modal-dialog {
+        max-width: 45rem;
       }
-      .download-menu {
-        $border-width: 2px;
-        position: relative;
-        border-width: $border-width;
-        overflow: visible;
-        dropdown-menu {
-          z-index: 1003;
-          position: absolute;
-          top: 100%;
-          // Compensate for the border on the containing button
-          margin: 0 #{-$border-width};
-          background-color: inherit;
-          a {
-            white-space: nowrap;
-            color: inherit;
-            display: block;
-            line-height: 2rem;
-            text-align: left;
-            padding: $action-btn-padding-top $action-btn-padding-left;
-            &:hover {
-              background-color: $btn-bg-color;
-              color: $aqua-font-color;
-            }
-            &.download-menu-item-disabled, &.download-menu-item-disabled:hover {
-              cursor: default;
-              color: $lt-grey-font-color-rgba;
-              background-color: inherit;
-            }
+      .manage-section {
+        float: right;
+      }
+    }
+    .save-button {
+      position: relative;
+    }
+    .download-menu {
+      $border-width: 2px;
+      position: relative;
+      border-width: $border-width;
+      overflow: visible;
+      dropdown-menu {
+        z-index: 1003;
+        position: absolute;
+        top: 100%;
+        // Compensate for the border on the containing button
+        margin: 0 #{-$border-width};
+        background-color: inherit;
+        a {
+          white-space: nowrap;
+          color: inherit;
+          display: block;
+          line-height: 2rem;
+          text-align: left;
+          padding: $action-btn-padding-top $action-btn-padding-left;
+          &:hover {
+            background-color: $btn-bg-color;
+            color: $aqua-font-color;
+          }
+          &.download-menu-item-disabled, &.download-menu-item-disabled:hover {
+            cursor: default;
+            color: $lt-grey-font-color-rgba;
+            background-color: inherit;
           }
         }
       }
@@ -425,7 +429,6 @@ body.state-view-cards {
         .metadatum-wrapper {
           .span6:first-child {
             .metadatum {
-              // left-hand activities on full-width
               margin-right: 35px;
             }
           }

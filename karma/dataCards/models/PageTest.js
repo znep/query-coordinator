@@ -70,7 +70,7 @@ describe('Page model', function() {
     var pageOverrides = {pageId: 'test-page'};
     var datasetOverrides = {id: 'test-data'};
     var instance = Mockumentary.createPage(pageOverrides, datasetOverrides);
-    var expectedFields = ['cards', 'datasetId', 'description', 'name', 'pageId', 'primaryAggregation', 'primaryAmountField', 'version'];
+    var expectedFields = ['cards', 'datasetId', 'description', 'name', 'pageId', 'primaryAggregation', 'primaryAmountField', 'version', 'moderationStatus'];
     var serialized = instance.serialize();
 
     expect(serialized).to.have.keys(expectedFields);

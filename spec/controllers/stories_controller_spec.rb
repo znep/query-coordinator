@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe StoriesController, type: :controller do
 
   before do
-    stub_valid_session
     stub_core_view('test-test')
   end
 
@@ -57,6 +56,10 @@ RSpec.describe StoriesController, type: :controller do
   describe '#preview' do
 
     context 'when authenticated' do
+      before do
+        stub_valid_session
+      end
+
       context 'when there is a story with the given four by four' do
 
         let!(:story_revision) { FactoryGirl.create(:draft_story) }
@@ -125,6 +128,10 @@ RSpec.describe StoriesController, type: :controller do
   describe '#new' do
 
     context 'when authenticated' do
+      before do
+        stub_valid_session
+      end
+
       context 'when there is an uninitialized lenses view with the given four by four' do
 
         before do
@@ -213,6 +220,10 @@ RSpec.describe StoriesController, type: :controller do
   describe '#create' do
 
     context 'when authenticated' do
+      before do
+        stub_valid_session
+      end
+
       context 'when there is an uninitialized lenses view with the given four by four' do
 
         before do
@@ -315,6 +326,10 @@ RSpec.describe StoriesController, type: :controller do
   describe '#edit' do
 
     context 'when authenticated' do
+      before do
+        stub_valid_session
+      end
+
       context 'when there is a matching story' do
 
         let!(:draft_story) { FactoryGirl.create(:draft_story) }

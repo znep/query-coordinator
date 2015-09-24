@@ -34,8 +34,6 @@
         var rowDisplayUnit$ = scope.$observe('rowDisplayUnit');
         var activeFilters$ = scope.$observe('activeFilters');
 
-        scope.debugDataLens = ServerConfig.get('debugDataLens');
-
         // The following cached jQuery/d3 selectors are used throughout the
         // directive.
         var jqueryBodyElement = $('body');

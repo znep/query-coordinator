@@ -199,9 +199,6 @@
 
     function _setVisualizationDatasetUid(uid) {
       _currentComponentProperties = {
-        layout: {
-          height: Constants.DEFAULT_VISUALIZATION_HEIGHT
-        },
         vif: {
           domain: window.location.host,
           datasetUid: uid
@@ -219,18 +216,12 @@
           case 'columnChart':
             _currentComponentType = 'socrata.visualization.columnChart';
             _currentComponentProperties = {
-              layout: {
-                height: Constants.DEFAULT_VISUALIZATION_HEIGHT
-              },
               vif: vif
             };
             break;
           case 'featureMap':
             _currentComponentType = 'socrata.visualization.featureMap';
             _currentComponentProperties = {
-              layout: {
-                height: Constants.DEFAULT_VISUALIZATION_HEIGHT
-              },
               vif: vif
             };
             break;

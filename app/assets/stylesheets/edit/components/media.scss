@@ -54,7 +54,10 @@
 }
 
 .col3 {
-  .component-asset-selector, .component-youtube-video {
+  .component-asset-selector,
+  .component-youtube-video,
+  .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-feature-map {
     $small-height: $col3-block-edit-content-width-small * (3/4);
     $medium-height: $col3-block-edit-content-width-medium * (3/4);
     $large-height: $col3-block-edit-content-width-large * (3/4);
@@ -81,7 +84,10 @@
 }
 
 .col4 {
-  .component-asset-selector, .component-youtube-video {
+  .component-asset-selector,
+  .component-youtube-video,
+  .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-feature-map {
     $small-height: $col4-block-edit-content-width-small * (3/4);
     $medium-height: $col4-block-edit-content-width-medium * (3/4);
     $large-height: $col4-block-edit-content-width-large * (3/4);
@@ -108,7 +114,10 @@
 }
 
 .col6 {
-  .component-asset-selector, .component-youtube-video {
+  .component-asset-selector,
+  .component-youtube-video,
+  .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-feature-map {
     $small-height: $col6-block-edit-content-width-small * (3/4);
     $medium-height: $col6-block-edit-content-width-medium * (3/4);
     $large-height: $col6-block-edit-content-width-large * (3/4);
@@ -135,7 +144,10 @@
 }
 
 .col8 {
-  .component-asset-selector, .component-youtube-video {
+  .component-asset-selector,
+  .component-youtube-video,
+  .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-feature-map {
     $small-height: $col8-block-edit-content-width-small * (3/4);
     $medium-height: $col8-block-edit-content-width-medium * (3/4);
     $large-height: $col8-block-edit-content-width-large * (3/4);
@@ -162,7 +174,10 @@
 }
 
 .col12 {
-  .component-asset-selector, .component-youtube-video {
+  .component-asset-selector,
+  .component-youtube-video,
+  .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-feature-map {
     $small-height: $col12-block-edit-content-width-small * (3/4);
     $medium-height: $col12-block-edit-content-width-medium * (3/4);
     $large-height: $col12-block-edit-content-width-large * (3/4);

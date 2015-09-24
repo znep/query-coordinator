@@ -5,22 +5,16 @@ require 'json'
 class StoriesController < ApplicationController
 
   # rescue_from ActiveRecord::RecordNotFound, with: :tmp_render_404
+  skip_before_filter :require_logged_in_user, only: [:show]
 
   def show
-    if params['preview']
-      @story = DraftStory.find_by_uid(params[:uid])
-    else
-      @story = PublishedStory.find_by_uid(params[:uid])
-    end
+    story = PublishedStory.find_by_uid(params[:uid])
+    respond_with_story(story)
+  end
 
-    if @story
-      respond_to do |format|
-        format.html { render 'stories/show' }
-        format.json { render json: @story }
-      end
-    else
-      tmp_render_404
-    end
+  def preview
+    story = DraftStory.find_by_uid(params[:uid])
+    respond_with_story(story)
   end
 
   def new
@@ -123,12 +117,24 @@ class StoriesController < ApplicationController
   end
 
   def needs_view_assets?
-    action_name == 'show'
+    action_name == 'show' || action_name == 'preview'
   end
 
   helper_method :needs_view_assets?
 
   private
+
+  def respond_with_story(story)
+    @story = story
+    if @story
+      respond_to do |format|
+        format.html { render 'stories/show' }
+        format.json { render json: @story }
+      end
+    else
+      tmp_render_404
+    end
+  end
 
   def should_create_draft_story?(view)
     story_belongs_to_current_user?(view) && story_is_uninitialized?(view['metadata'])

@@ -20,11 +20,8 @@ class ApplicationController < ActionController::Base
   end
 
   def require_logged_in_user
-    public_view = action_name == 'show' && params['preview'].nil?
     # If no current_user, send to main login page
-    if !public_view
-      redirect_to "/login?return_to=#{request.path}" unless current_user.present?
-    end
+    redirect_to "/login?return_to=#{request.path}" unless current_user.present?
   end
 end
 

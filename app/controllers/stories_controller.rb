@@ -8,13 +8,11 @@ class StoriesController < ApplicationController
   skip_before_filter :require_logged_in_user, only: [:show]
 
   def show
-    story = PublishedStory.find_by_uid(params[:uid])
-    respond_with_story(story)
+    respond_with_story(PublishedStory.find_by_uid(params[:uid]))
   end
 
   def preview
-    story = DraftStory.find_by_uid(params[:uid])
-    respond_with_story(story)
+    respond_with_story(DraftStory.find_by_uid(params[:uid]))
   end
 
   def new

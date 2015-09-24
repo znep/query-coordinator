@@ -101,7 +101,7 @@
               if (_.isEmpty(cardFilterInfo.filters)) {
                 return null;
               } else {
-                return _.invoke(cardFilterInfo.filters, 'generateSoqlWhereFragment', cardFilterInfo.filteredColumn).
+                return _.invoke(cardFilterInfo.filters, 'generateSoqlWhereFragment', cardFilterInfo.fieldName).
                   join(' AND ');
               }
             });

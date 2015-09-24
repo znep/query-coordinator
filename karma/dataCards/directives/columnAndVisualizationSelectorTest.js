@@ -9,18 +9,33 @@ describe('columnAndVisualizationSelectorTest', function() {
   var $rootScope;
   var $controller;
   var $provide;
-  var $httpBackend;
 
   function createDirective() {
 
     var columns = {
+      'spot': {
+        'name': 'Spot where cool froods hang out.',
+        'fieldName': 'spot',
+        'description': '???',
+        'fred': 'location',
+        'physicalDatatype': 'number',
+        'position': 0,
+        'computationStrategy': {
+          'parameters': {
+            'region': '_mash-apes'
+          }
+        },
+        'cardType': 'choropleth',
+        'defaultCardType': 'choropleth',
+        'availableCardTypes': ['choropleth']
+      },
       'bar': {
         'name': 'A bar where cool froods hang out.',
         'fieldName': 'bar',
         'description': '???',
         'fred': 'text',
         'physicalDatatype': 'text',
-        'position': 0,
+        'position': 1,
         'cardType': 'column',
         'defaultCardType': 'column',
         'availableCardTypes': ['column', 'search']
@@ -31,7 +46,7 @@ describe('columnAndVisualizationSelectorTest', function() {
         'description': '???',
         'fred': 'amount',
         'physicalDatatype': 'number',
-        'position': 1,
+        'position': 2,
         'cardinality': 20,
         'cardType': 'histogram',
         'defaultCardType': 'histogram',
@@ -43,11 +58,26 @@ describe('columnAndVisualizationSelectorTest', function() {
         'description': 'Points.',
         'fred': 'location',
         'physicalDatatype': 'point',
-        'position': 2,
+        'position': 3,
         'cardType': 'feature',
         'defaultCardType': 'feature',
-        'availableCardTypes': ['feature'],
-        'computedColumn': 'fakeComputedColumn'
+        'availableCardTypes': ['feature']
+      },
+      'ward': {
+        'name': 'Ward where crime was committed.',
+        'fieldName': 'ward',
+        'description': 'Batman has bigger fish to fry sometimes, you know.',
+        'fred': 'location',
+        'physicalDatatype': 'number',
+        'position': 4,
+        'computationStrategy': {
+          'parameters': {
+            'region': '_mash-apes'
+          }
+        },
+        'cardType': 'choropleth',
+        'defaultCardType': 'choropleth',
+        'availableCardTypes': ['choropleth']
       },
       'multipleVisualizations': {
         'name': 'A card for which multiple visualizations are possible.',
@@ -55,7 +85,7 @@ describe('columnAndVisualizationSelectorTest', function() {
         'description': '???',
         'fred': 'text',
         'physicalDatatype': 'text',
-        'position': 3,
+        'position': 5,
         'cardinality': 2000,
         'cardType': 'search',
         'defaultCardType': 'search',
@@ -122,7 +152,6 @@ describe('columnAndVisualizationSelectorTest', function() {
       'Model',
       '$rootScope',
       '$controller',
-      '$httpBackend',
       function(
         _I18n,
         _testHelpers,
@@ -130,8 +159,7 @@ describe('columnAndVisualizationSelectorTest', function() {
         _Mockumentary,
         _Model,
         _$rootScope,
-        _$controller,
-        _$httpBackend) {
+        _$controller) {
 
           I18n = _I18n;
           testHelpers = _testHelpers;
@@ -140,9 +168,6 @@ describe('columnAndVisualizationSelectorTest', function() {
           Model = _Model;
           $rootScope = _$rootScope;
           $controller = _$controller;
-          $httpBackend = _$httpBackend;
-
-          $httpBackend.whenGET(/\/api\/curated_regions.*/).respond([]);
 
           testHelpers.mockDirective($provide, 'card');
       }
@@ -153,14 +178,14 @@ describe('columnAndVisualizationSelectorTest', function() {
     testHelpers.TestDom.clear();
   });
 
-  xit('should show all valid columns as options in the "Choose a column..." select control', function() {
+  it('should show all columns as options in the "Choose a column..." select control', function() {
     var directive = createDirective();
     var selectableColumnOptions = directive.element.find('option:enabled');
 
-    expect(selectableColumnOptions.length).to.equal(4);
+    expect(selectableColumnOptions.length).to.equal(6);
   });
 
-  xit('should show columns currently represented as cards in the select control', function() {
+  it('should show columns currently represented as cards in the select control', function() {
     var directive = createDirective();
     var serializedCard = {
       fieldName: 'spot',
@@ -172,7 +197,7 @@ describe('columnAndVisualizationSelectorTest', function() {
 
     var selectableColumnOptions = directive.element.find('option:enabled');
 
-    expect(selectableColumnOptions.length).to.equal(4);
+    expect(selectableColumnOptions.length).to.equal(6);
   });
 
   it('should display a sample card visualization when an enabled column in the "Choose a column..." select control is selected', function() {
@@ -181,7 +206,7 @@ describe('columnAndVisualizationSelectorTest', function() {
     expect(directive.element.find('card').length).to.equal(0);
 
     directive.scope.cardSize = 2;
-    directive.element.find('option[value=point]').prop('selected', true).trigger('change');
+    directive.element.find('option[value=ward]').prop('selected', true).trigger('change');
 
     expect(directive.element.find('card').length).to.equal(1);
   });
@@ -210,13 +235,12 @@ describe('columnAndVisualizationSelectorTest', function() {
 
     // We show / hide the icon itself with CSS, which is not included in
     // this test file.  Thus, instead we test for the 'warn' class.
-
-    expect(directive.element.find('.icon-bar-chart').find('.icon-warning').css('display')).to.not.equal('none');
+    expect(directive.element.find('.icon-bar-chart').hasClass('warn')).to.be.true;
 
   });
 
   describe('when an enabled column is selected', function() {
-    var selectedColumnFieldName = 'point';
+    var selectedColumnFieldName = 'ward';
     var directive;
 
     function doSelectCard() {
@@ -288,7 +312,7 @@ describe('columnAndVisualizationSelectorTest', function() {
         expect(customizeButton).to.have.length(0);
 
         // With a customizable card selected, the button should show.
-        directive.element.find('select > option[value="point"]').prop('selected', true).trigger('change');
+        directive.element.find('select > option[value="ward"]').prop('selected', true).trigger('change');
 
         customizeButton = findButton();
         expect(customizeButton).to.have.length(1);
@@ -315,9 +339,9 @@ describe('columnAndVisualizationSelectorTest', function() {
         getCurrentValue('columns');
     });
 
-    it('should be sorted in order of the position keys of the scope variable', function() {
-      var expectedFieldNameOrder = _.pluck(_.sortBy(currentColumns, 'position'), 'fieldName');
-      expect(directive.scope.availableColumns).to.deep.equal(expectedFieldNameOrder);
+    it('should include non-subcolumns', function() {
+      expect(directive.scope.availableColumns.sort()).to.
+        deep.equal(_.keys(currentColumns).sort());
     });
 
     it('should not include subcolumns', function() {
@@ -334,9 +358,14 @@ describe('columnAndVisualizationSelectorTest', function() {
       expect(directive.scope.availableColumns).to.be.empty;
     });
 
+    it('should be sorted in order of the position keys of the scope variable', function() {
+      var expectedFieldNameOrder = _.pluck(_.sortBy(currentColumns, 'position'), 'fieldName');
+      expect(directive.scope.availableColumns).to.deep.equal(expectedFieldNameOrder);
+    });
+
     it('should not include system columns', function() {
       var newColumns = {
-        ':id': { isSystemColumn: true },
+        ':id': {},
         'normal_column': {}
       };
 
@@ -348,9 +377,9 @@ describe('columnAndVisualizationSelectorTest', function() {
       expect(directive.scope.availableColumns).to.include('normal_column');
     });
 
-    it('should not include computed columns', function() {
+    it('should include computed columns', function() {
       var newColumns = {
-        ':@computed_column': {computationStrategy: {}},
+        ':@computed_column': {},
         'normal_column': {}
       };
 
@@ -358,9 +387,9 @@ describe('columnAndVisualizationSelectorTest', function() {
         getCurrentValue('dataset').
         set('columns', newColumns);
 
-      expect(directive.scope.availableColumns).to.have.length(1);
+      expect(directive.scope.availableColumns).to.have.length(2);
       expect(directive.scope.availableColumns).to.include('normal_column');
-      expect(directive.scope.availableColumns).to.not.include(':@computed_column');
+      expect(directive.scope.availableColumns).to.include(':@computed_column');
     });
 
     describe('if supportedCardTypes is set', function() {
@@ -457,7 +486,7 @@ describe('columnAndVisualizationSelectorTest', function() {
 
     it('should not include system columns', function() {
       var newColumns = {
-        ':id': { isSystemColumn: true },
+        ':id': {},
         'normal_column': {}
       };
 
@@ -487,7 +516,9 @@ describe('columnAndVisualizationSelectorTest', function() {
         it('should include columns that cannot be visualized as column or timeline', function() {
           setSupportedCardTypes(['column', 'timeline']);
           var expectedUnsupported = [
-            'point'
+            'spot',
+            'point',
+            'ward'
           ];
 
           expect(directive.scope.unsupportedColumns.sort()).to.

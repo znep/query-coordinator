@@ -81,7 +81,35 @@ module CommonMetadataMethods
       # The naming convention is that child column names are the parent column name, followed by the
       # child column name in parentheses. Remove the parentheses to get the parent column's name.
       parent_column = column[:name].sub(/(\w) +\(.+\)$/, '\1')
-      if parent_column != column[:name]
+
+      # CORE-6925: Fairly brittle, but with no other clear option, it seems that
+      # we can and should only flag a column as a subcolumn if it follows the
+      # naming conventions associated with "exploding" location, URL, and phone
+      # number columns, which is an OBE-to-NBE occurrence. Robert Macomber has
+      # verified the closed set of suffixes in Slack PM:
+      #
+      #   _type for the type subcolumn on phones (the number has no suffix)
+      #   _description for the description subcolumn on urls (the url itself has no suffix)
+      #   _address, _city, _state, _zip for location columns (the point has no suffix)
+      #
+      # See also https://socrata.slack.com/archives/engineering/p1442959713000621
+      # for an unfortunately lengthy conversation on this topic.
+      #
+      # Complicating this matter... there is no strict guarantee that any suffix
+      # for collision prevention (e.g. `_1`) will belong to a user-given column
+      # or an exploded column consistently. It's possible that a user will have
+      # a column ending in a number. Given that we're already restricting the
+      # columns that we're willing to mark as subcolumns based on the closed set
+      # of (non-numeric) suffixes, and the low probability of this very specific
+      # type of column name similarity, we'll strip numeric parts off the end of
+      # the column name *before* checking the closed set. This leaves us with a
+      # very low (but non-zero) probability that a user-provided column will be
+      # marked as an exploded subcolumn.
+
+      field_name_without_collision_suffix = field_name.sub(/_\d+$/, '')
+      has_exploded_suffix = field_name_without_collision_suffix =~ /_(address|city|state|zip|type|description)$/
+
+      if parent_column != column[:name] && has_exploded_suffix
         # Look for the parent column
         parent_field_names = field_name_by_name[parent_column]
         is_subcolumn = (parent_field_names &&

@@ -11,12 +11,17 @@
   <% end %>
   <%= csrf_meta_tags %>
 
+  <!-- Twitter Sharing Metadata -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@govstories">
+  <% if @story.block_images.first.present? %>
+    <meta name="twitter:image" content="<%= @story.block_images.first %>">
+  <% end %>
+  <!-- Open Graph Sharing Metadata -->
   <meta property="og:title" content="<%= core_attributes['name'] %>">
   <meta property="og:description" content="<%= core_attributes['description'] %>">
   <% @story.block_images.each do |image| %>
-  <meta property="og:image" content="<%= image %>">
+    <meta property="og:image" content="<%= image %>">
   <% end %>
 
   <link rel="shortcut icon" href="/favicon.ico">

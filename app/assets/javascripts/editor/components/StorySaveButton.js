@@ -29,7 +29,7 @@
 
 
     function render() {
-      var isStorySaved = storyteller.storySaveStatusStore.isStorySaved();
+      var isStorySaved = !storyteller.storySaveStatusStore.isStoryDirty();
       var isStorySaveInProgress = storyteller.storySaveStatusStore.isStorySaveInProgress();
       var isSaveImpossible = storyteller.storySaveStatusStore.isSaveImpossibleDueToConflict();
       var translationKey;
@@ -55,7 +55,7 @@
     }
 
     storyteller.storySaveStatusStore.addChangeListener(function() {
-      holdInSavedState = storyteller.storySaveStatusStore.isStorySaved();
+      holdInSavedState = !storyteller.storySaveStatusStore.isStoryDirty();
       render();
     });
     render();

@@ -36,7 +36,7 @@ describe('SettingsPanel jQuery plugin', function() {
 
     storyteller.storySaveStatusStore = {
       addChangeListener: _.noop,
-      isStorySaved: _.constant(true)
+      isStoryDirty: _.constant(true)
     };
 
     storyteller.storyStore = {

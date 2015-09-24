@@ -1146,7 +1146,7 @@
         dom[value].filtered.style('visibility', hasSelection ? 'hidden' : null);
       });
 
-      dom.brush.selectAll('.histogram-brush-clear').style('visibility', hasSelection ? null : 'none');
+      dom.brush.selectAll('.histogram-brush-clear').style('visibility', hasSelection ? null : 'hidden');
 
       var selectionPixels;
       if (_.isPresent(selectionIndices)) {

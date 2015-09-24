@@ -1,6 +1,89 @@
 (function() {
   'use strict';
 
+  // Returns an object mapping magnitudes to buckets. Also merges the
+  // bucket with magnitude zero into the bucket with magnitude one.
+  function getDataByMagnitude(data) {
+    var dataByMagnitude = _.indexBy(_.cloneDeep(data), 'magnitude');
+
+    // Merge zero-bucket into one-bucket.
+    if (_.isPresent(dataByMagnitude[0])) {
+      if (_.isPresent(dataByMagnitude[1])) {
+        dataByMagnitude[1].value += dataByMagnitude[0].value;
+      } else {
+        dataByMagnitude[1] = {magnitude: 1, value: dataByMagnitude[0].value};
+      }
+    }
+
+    return dataByMagnitude;
+  }
+
+  // Returns a range of magnitudes to iterate over. The range must be
+  // continuous because of the use of an ordinal scale. The zero bucket
+  // must be eliminated due to the current way zero buckets are treated.
+  function getMagnitudeRange(dataByMagnitude) {
+    var extent = d3.extent(_.pluck(dataByMagnitude, 'magnitude'));
+    var min = extent[0];
+    var max = extent[1];
+
+    if (min > 0 && max > 0) {
+      min = 0;
+    } else if (min < 0 && max < 0) {
+      max = 0;
+    }
+
+    // +1 is there because _.range is a [min, max) range
+    return _.pull(_.range(min, max + 1), 0);
+  }
+
+  // Converts magnitude to start and end
+  function getLogarithmicBucket(magnitude, value) {
+    var start = 0;
+    var end = 0;
+
+    if (magnitude > 0) {
+      start = Math.pow(10, magnitude - 1);
+      end = Math.pow(10, magnitude);
+
+      if (start === 1) {
+        start = 0;
+      }
+    } else if (magnitude < 0) {
+      start = -Math.pow(10, Math.abs(magnitude));
+      end = -Math.pow(10, Math.abs(magnitude + 1));
+
+      if (end === -1) {
+        end = 0;
+      }
+    }
+
+    return {
+      start: start,
+      end: end,
+      value: value
+    };
+  }
+
+  // Converts magnitude to start and end
+  function getLinearBucket(magnitude, value, bucketSize) {
+    var start = 0;
+    var end = 0;
+
+    if (magnitude > 0) {
+      start = (magnitude - 1) * bucketSize;
+      end = magnitude * bucketSize;
+    } else if (magnitude < 0) {
+      start = magnitude * bucketSize;
+      end = (magnitude + 1) * bucketSize;
+    }
+
+    return {
+      start: start,
+      end: end,
+      value: value
+    };
+  }
+
   function HistogramService(Constants, $log) {
 
     /**
@@ -56,93 +139,10 @@
      *
      * returns [{start:, end:, value:}];
      */
-    function bucketData(data, options) {
-
-      // Returns an object mapping magnitudes to buckets. Also merges the
-      // bucket with magnitude zero into the bucket with magnitude one.
-      function getDataByMagnitude(data) {
-        var dataByMagnitude = _.indexBy(data, 'magnitude');
-
-        // Merge zero-bucket into one-bucket.
-        if (_.isPresent(dataByMagnitude[0])) {
-          if (_.isPresent(dataByMagnitude[1])) {
-            dataByMagnitude[1].value += dataByMagnitude[0].value;
-          } else {
-            dataByMagnitude[1] = {magnitude: 1, value: dataByMagnitude[0].value};
-          }
-        }
-
-        return dataByMagnitude;
-      }
-
-      // Returns a range of magnitudes to iterate over. The range must be
-      // continuous because of the use of an ordinal scale. The zero bucket
-      // must be eliminated due to the current way zero buckets are treated.
-      function getMagnitudeRange(dataByMagnitude) {
-        var extent = d3.extent(_.pluck(dataByMagnitude, 'magnitude'));
-        var min = extent[0];
-        var max = extent[1];
-
-        if (min > 0 && max > 0) {
-          min = 0;
-        } else if (min < 0 && max < 0) {
-          max = 0;
-        }
-
-        // +1 is there because _.range is a [min, max) range
-        return _.pull(_.range(min, max + 1), 0);
-      }
-
-      // Converts magnitude to start and end
-      function getLogarithmicBucket(magnitude, value) {
-        var start = 0;
-        var end = 0;
-
-        if (magnitude > 0) {
-          start = Math.pow(10, magnitude - 1);
-          end = Math.pow(10, magnitude);
-
-          if (start === 1) {
-            start = 0;
-          }
-        } else if (magnitude < 0) {
-          start = -Math.pow(10, Math.abs(magnitude));
-          end = -Math.pow(10, Math.abs(magnitude + 1));
-
-          if (end === -1) {
-            end = 0;
-          }
-        }
-
-        return {
-          start: start,
-          end: end,
-          value: value
-        };
-      }
-
-      // Converts magnitude to start and end
-      function getLinearBucket(magnitude, value) {
-        var start = 0;
-        var end = 0;
-
-        if (magnitude > 0) {
-          start = (magnitude - 1) * options.bucketSize;
-          end = magnitude * options.bucketSize;
-        } else if (magnitude < 0) {
-          start = magnitude * options.bucketSize;
-          end = (magnitude + 1) * options.bucketSize;
-        }
-
-        return {
-          start: start,
-          end: end,
-          value: value
-        };
-      }
+    function bucketData(input, options) {
 
       // Input validation
-      if (!_.isArray(data) || _.isEmpty(data)) {
+      if (!_.isArray(input) || _.isEmpty(input)) {
         return [];
       }
 
@@ -155,7 +155,7 @@
         return null;
       }
 
-      var dataByMagnitude = getDataByMagnitude(data);
+      var dataByMagnitude = getDataByMagnitude(input);
       var range = getMagnitudeRange(dataByMagnitude);
 
       // Map over the range, converting magnitudes into start and end keys.
@@ -181,7 +181,7 @@
               '"{0}", defaulting to linear'.format(options.bucketType));
           }
 
-          return getLinearBucket(magnitude, value);
+          return getLinearBucket(magnitude, value, options.bucketSize);
         }
       });
     }

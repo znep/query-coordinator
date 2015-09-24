@@ -30,19 +30,13 @@
   }
 
   function _updateVisualization($element, componentData) {
-    var renderedHeight = parseInt($element.attr('data-rendered-visualization-height'), 10);
     var renderedVif = $element.attr('data-rendered-vif');
 
     utils.assertHasProperty(componentData, 'value');
-    utils.assertHasProperties(componentData.value, 'layout', 'vif');
-    utils.assertHasProperty(componentData.value.layout, 'height');
 
-    if (renderedVif !== JSON.stringify(componentData.value.vif) ||
-      renderedHeight !== componentData.value.layout.height) {
+    if (renderedVif !== JSON.stringify(componentData.value.vif)) {
 
       var vif = componentData.value.vif;
-
-      $element.height(componentData.value.layout.height);
 
       vif.configuration.localization = {
         'NO_VALUE': I18n.t('editor.visualizations.no_value_placeholder'),
@@ -59,7 +53,6 @@
       $element.socrataColumnChart(vif);
 
       $element.attr('data-rendered-vif', JSON.stringify(vif));
-      $element.attr('data-rendered-visualization-height', componentData.value.layout.height);
     }
   }
 

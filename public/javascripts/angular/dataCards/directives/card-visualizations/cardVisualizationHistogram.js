@@ -69,8 +69,6 @@
           map(_.property('additionalArguments[0]'));
 
         var currentRangeFilterValues$ = activeFilters$.map(function(filters) {
-          if (!_.isPresent(filters)) { return null; }
-
           var valueRangeFilter = _.find(filters, function(filter) {
             return filter instanceof Filter.ValueRangeFilter;
           });
@@ -78,35 +76,27 @@
           if (_.isDefined(valueRangeFilter)) {
             return [valueRangeFilter.start, valueRangeFilter.end];
           }
+
+          return null;
         });
 
-        var activeFiltersExcludingOwn$ = cardModel$.observeOnLatest('page.activeFilters').
+        function convertFiltersToWhereClauseFragments(cardFilter) {
+          return _.invoke(cardFilter.filters, 'generateSoqlWhereFragment', cardFilter.fieldName);
+        }
+
+        var whereClauseExcludingOwn$ = cardModel$.observeOnLatest('page.activeFilters').
           withLatestFrom(
             cardId$,
             function(activeFilters, cardId) {
-              var cardFilterIndex = _.findIndex(activeFilters, function(cardFilterInfo) {
-                return cardFilterInfo.uniqueId === cardId;
-              });
-
-              if (_.isDefined(activeFilters[cardFilterIndex])) {
-                activeFilters[cardFilterIndex].filters = [];
-              }
-
-              return activeFilters;
-            });
-
-        var whereClauseExcludingOwn$ = activeFiltersExcludingOwn$.
-          map(function(pageFilters) {
-            var wheres = _.map(pageFilters, function(cardFilterInfo) {
-              if (_.isEmpty(cardFilterInfo.filters)) {
-                return null;
-              } else {
-                return _.invoke(cardFilterInfo.filters, 'generateSoqlWhereFragment', cardFilterInfo.fieldName).
-                  join(' AND ');
-              }
-            });
-            return _.compact(wheres).join(' AND ');
-          }).startWith('');
+              return _.chain(activeFilters).
+                reject(_.matchesProperty('uniqueId', cardId)).
+                omit(_.isEmpty).
+                map(convertFiltersToWhereClauseFragments).
+                flatten().
+                value().
+                join(' AND ');
+            }
+          ).distinctUntilChanged();
 
         filterSelected$.subscribe(function(filterValues) {
           if (_.isPresent(filterValues)) {
@@ -184,8 +174,7 @@
           var filteredData$ = Rx.Observable.combineLatest(
             fieldName$,
             dataset$,
-            // TODO - investigate HistogramService.bucketData returning different values when run multiple times
-            whereClauseExcludingOwn$.distinctUntilChanged(),
+            whereClauseExcludingOwn$,
             aggregation$,
             columnDataSummary$,
             fetchHistogramData
@@ -401,7 +390,7 @@
 
         var loading$ = Rx.Observable.merge(
           baseSoqlFilter$.map(_.constant(true)),
-          whereClauseExcludingOwn$.distinctUntilChanged().map(_.constant(true)),
+          whereClauseExcludingOwn$.map(_.constant(true)),
           cardData$.map(_.constant(false))
         ).startWith(true);
 

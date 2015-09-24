@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     get ':uid/create' => 'stories#new'
     post ':uid/create' => 'stories#create'
     get '(:vanity_text)/:uid/edit' => 'stories#edit'
+    get '(:vanity_text)/:uid/preview' => 'stories#preview'
   end
 
   namespace :api do

@@ -10,7 +10,7 @@ describe('DatasetColumnsService', function() {
   var DatasetColumnsService;
   var scope;
 
-  var SORTED_COLUMN_NAMES = ['map_of_the_world', 'awesome_bar_chart', 'map_of_atlantis'];
+  var SORTED_COLUMN_NAMES = ['map_of_the_world', ':@computed_column', 'awesome_bar_chart', 'map_of_atlantis'];
 
   var COLUMNS = {
     awesome_bar_chart: {
@@ -131,25 +131,26 @@ describe('DatasetColumnsService', function() {
       });
     });
 
-    it('should remove computed columns', function(done) {
+    it('should keep computed columns with field names beginning with ":@"', function(done) {
       sortedColumns$.subscribe(function(sortedColumns) {
         var sortedFieldNames = sortedColumns.map(function(column) {
           return column.fieldName;
         });
-        expect(sortedFieldNames).to.not.include(':@computed_column');
+        expect(sortedFieldNames).to.include(':@computed_column');
         done();
       });
     });
 
     it('should sort columns by position in table', function(done) {
       sortedColumns$.subscribe(function(sortedColumns) {
-        expect(sortedColumns).to.have.length(3);
+        expect(sortedColumns).to.have.length(4);
         var sortedFieldNames = sortedColumns.map(function(column) {
           return column.fieldName;
         });
         expect(sortedFieldNames[0]).to.equal(SORTED_COLUMN_NAMES[0]);
         expect(sortedFieldNames[1]).to.equal(SORTED_COLUMN_NAMES[1]);
         expect(sortedFieldNames[2]).to.equal(SORTED_COLUMN_NAMES[2]);
+        expect(sortedFieldNames[3]).to.equal(SORTED_COLUMN_NAMES[3]);
         done();
       });
     });

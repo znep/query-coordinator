@@ -3,7 +3,6 @@ describe('Customize card dialog', function() {
 
   beforeEach(module('dataCards'));
   beforeEach(module('dataCards.directives'));
-  beforeEach(module('dataCards.services'));
 
   beforeEach(module('/angular_templates/dataCards/card.html'));
   beforeEach(module('/angular_templates/dataCards/spinner.html'));
@@ -27,8 +26,6 @@ describe('Customize card dialog', function() {
   var testHelpers;
   var _$provide;
   var $timeout;
-  var CardDataService;
-  var $q;
 
   beforeEach(function() {
     module(function($provide) {
@@ -49,8 +46,6 @@ describe('Customize card dialog', function() {
     $templateCache = $injector.get('$templateCache');
     testHelpers = $injector.get('testHelpers');
     $timeout = $injector.get('$timeout');
-    CardDataService = $injector.get('CardDataService');
-    $q = $injector.get('$q');
 
     // We don't actually care about the contents of this
     $templateCache.put('/angular_templates/dataCards/cardVisualizationColumnChart.html', '');
@@ -125,19 +120,6 @@ describe('Customize card dialog', function() {
       availableCardTypes: ['column', 'search'],
       defaultCardType: 'column',
       cardinality: 1000
-    },
-    computedColumn: {
-      name: 'Computed Column',
-      fred: 'number',
-      physicalDatatype: 'number',
-      availableCardTypes: ['choropleth'],
-      defaultCardType: 'choropleth',
-      computationStrategy: {
-        parameters: {
-          region: '_rook-king',
-          geometryLabel: 'You can\'t label me',
-        }
-      }
     },
     ':system_column': {
       name: 'System Column to Exclude',
@@ -743,7 +725,7 @@ describe('Customize card dialog', function() {
         expect(flannelTitleConfigurationElement.length).to.equal(0);
       });
 
-      it('should display column options excluding subcolumns and system columns and computed columns, plus a null option', function() {
+      it('should display column options excluding subcolumns and system columns, plus a null option', function() {
         var dialog = createDialog({ card: featureMapCard });
         var scope = dialog.scope;
         var flannelTitleConfigurationElement = dialog.element.find('.configure-flannel-title:visible');
@@ -754,8 +736,8 @@ describe('Customize card dialog', function() {
         }, []);
 
         // We expect to have an option for each column unless it is a system column
-        // or subcolumn or computed column, plus one option for null.
-        var expectedLength = (_.keys(COLUMNS).length - 4) + 1;
+        // or subcolumn, plus one option for null.
+        var expectedLength = (_.keys(COLUMNS).length - 2) + 1;
 
         expect(options).to.have.length(expectedLength);
         expect(optionNames).to.not.include(':system_column');
@@ -858,79 +840,6 @@ describe('Customize card dialog', function() {
         expect(scope.selectedFlannelTitleColumnName).to.equal('null');
         expect(selectedOption.attr('value')).to.equal('null');
         expect(selectedOption.text()).to.equal(I18n.addCardDialog.chooseColumn);
-      });
-    });
-
-    describe('curated region selector', function() {
-      var featureMapCard = {
-        fieldName: 'feature',
-        cardSize: 2,
-        cardType: 'feature',
-        expanded: false
-      };
-
-      var choroplethCard = {
-        fieldName: 'feature',
-        cardSize: 2,
-        cardType: 'choropleth',
-        expanded: false
-      };
-
-      it('should appear when card is a choropleth', function() {
-        var dialog = createDialog({ card: choroplethCard });
-        var cardType = dialog.scope.customizedCard.getCurrentValue('cardType');
-        var curatedRegionSelectors = dialog.element.find('.curated-region-selector');
-
-        expect(cardType).to.equal('choropleth');
-        expect(curatedRegionSelectors.length).to.equal(1);
-        expect(curatedRegionSelectors).to.not.have.class('ng-hide');
-      });
-
-      it('should not appear when the card is not a choropleth', function() {
-        var dialog = createDialog({ card: featureMapCard });
-        var cardType = dialog.scope.customizedCard.getCurrentValue('cardType');
-        var curatedRegionSelectors = dialog.element.find('.curated-region-selector');
-
-        expect(cardType).to.equal('feature');
-        expect(curatedRegionSelectors.length).to.equal(1);
-        expect(curatedRegionSelectors).to.have.class('ng-hide');
-      });
-
-      it('should display the correct number of curated regions in the dropdown', function() {
-        var curatedRegions = [
-          { name: 'the most curated region ever', view: { id: 'rook-king' }},
-          { name: 'the 2nd most curated region ever', view: { id: 'king-pawn' }}
-        ];
-
-        sinon.stub(CardDataService, 'getCuratedRegions', function() {
-          return $q.when(curatedRegions);
-        });
-
-        var dialog = createDialog({ card: choroplethCard });
-        var options = dialog.element.find('.curated-region-selector option');
-
-        expect(options).to.have.length(curatedRegions.length);
-
-        CardDataService.getCuratedRegions.restore();
-      });
-
-      it('should set the computedColumn property on the card when an option is selected', function() {
-        var curatedRegions = [
-          { name: 'the most curated region ever', view: { id: 'mash-apes' }},
-          { name: 'the 2nd most curated region ever', view: { id: 'rook-king' }},
-        ];
-
-        sinon.stub(CardDataService, 'getCuratedRegions', function() {
-          return $q.when(curatedRegions);
-        });
-
-        var dialog = createDialog({ card: choroplethCard });
-
-        expect(dialog.scope.customizedCard.getCurrentValue('computedColumn')).to.equal('choropleth');
-        dialog.element.find('option[value="rook-king"]').prop('selected', true).change();
-        expect(dialog.scope.customizedCard.getCurrentValue('computedColumn')).to.equal('computedColumn');
-
-        CardDataService.getCuratedRegions.restore();
       });
     });
   });

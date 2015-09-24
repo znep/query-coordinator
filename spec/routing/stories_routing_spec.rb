@@ -8,8 +8,10 @@ RSpec.describe 'stories routing', type: :routing do
   # but RSpec routing tests seem to ignore relative_url_root.
   let(:stories_vanity_show_route_url) { "/s/#{vanity_text}/#{uid}" }
   let(:stories_vanity_edit_route_url) { "/s/#{vanity_text}/#{uid}/edit" }
+  let(:stories_preview_route_url) { "/s/#{uid}/preview" }
   let(:stories_show_route_url) { "/s/#{uid}" }
   let(:stories_edit_route_url) { "/s/#{uid}/edit" }
+  let(:stories_preview_route_url) { "/s/#{uid}/preview" }
 
   describe 'stories show and edit routes' do
 
@@ -28,6 +30,15 @@ RSpec.describe 'stories routing', type: :routing do
         expect(get: stories_vanity_edit_route_url).to route_to(
           controller: 'stories',
           action: 'edit',
+          uid: uid,
+          vanity_text: vanity_text
+        )
+      end
+
+      it 'routes to preview' do
+        expect(get: stories_vanity_preview_route_url).to route_to(
+          controller: 'stories',
+          action: 'preview',
           uid: uid,
           vanity_text: vanity_text
         )
@@ -54,6 +65,15 @@ RSpec.describe 'stories routing', type: :routing do
             vanity_text: vanity_text
           )
         end
+
+        it 'routes to preview' do
+          expect(get: stories_vanity_preview_route_url).to route_to(
+            controller: 'stories',
+            action: 'preview',
+            uid: uid,
+            vanity_text: vanity_text
+          )
+        end
       end
 
       context 'when the 4x4 is too long' do
@@ -66,6 +86,10 @@ RSpec.describe 'stories routing', type: :routing do
         it 'does not route to edit' do
           expect(get: stories_vanity_edit_route_url).to_not be_routable
         end
+
+        it 'does not route to preview' do
+          expect(get: stories_vanity_preview_route_url).to_not be_routable
+        end
       end
 
       context 'when the 4x4 has no dash' do
@@ -77,6 +101,10 @@ RSpec.describe 'stories routing', type: :routing do
 
         it 'does not route to edit' do
           expect(get: stories_vanity_edit_route_url).to_not be_routable
+        end
+
+        it 'does not route to preview' do
+          expect(get: stories_vanity_preview_route_url).to_not be_routable
         end
       end
     end # end with vanity text tests
@@ -100,6 +128,14 @@ RSpec.describe 'stories routing', type: :routing do
         )
       end
 
+      it 'routes to preview' do
+        expect(get: stories_preview_route_url).to route_to(
+          controller: 'stories',
+          action: 'preview',
+          uid: uid
+        )
+      end
+
       context 'with an invalid 4x4' do
         let(:uid) { 'really_im_not_a_fourbyfour' }
 
@@ -109,6 +145,10 @@ RSpec.describe 'stories routing', type: :routing do
 
         it 'does not route to edit' do
           expect(get: stories_edit_route_url).to_not be_routable
+        end
+
+        it 'does not route to preview' do
+          expect(get: stories_preview_route_url).to_not be_routable
         end
       end
 

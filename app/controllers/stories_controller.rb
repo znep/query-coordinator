@@ -115,7 +115,7 @@ class StoriesController < ApplicationController
   end
 
   def needs_view_assets?
-    action_name == 'show' || action_name == 'preview'
+    %w{ show preview }.include?(action_name)
   end
 
   helper_method :needs_view_assets?

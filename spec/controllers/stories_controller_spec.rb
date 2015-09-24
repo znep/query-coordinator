@@ -37,6 +37,12 @@ RSpec.describe StoriesController, type: :controller do
         get :show, uid: story_revision.uid, format: :json
         expect(response.body).to eq(story_revision.to_json)
       end
+
+      it 'renders when unauthenticated' do
+        stub_invalid_session
+        get :show, uid: story_revision.uid
+        expect(response).to render_template(:show)
+      end
     end
 
     context 'when there is no story with the given four by four' do

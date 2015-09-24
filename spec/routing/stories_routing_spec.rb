@@ -8,7 +8,7 @@ RSpec.describe 'stories routing', type: :routing do
   # but RSpec routing tests seem to ignore relative_url_root.
   let(:stories_vanity_show_route_url) { "/s/#{vanity_text}/#{uid}" }
   let(:stories_vanity_edit_route_url) { "/s/#{vanity_text}/#{uid}/edit" }
-  let(:stories_preview_route_url) { "/s/#{uid}/preview" }
+  let(:stories_vanity_preview_route_url) { "/s/#{vanity_text}/#{uid}/preview" }
   let(:stories_show_route_url) { "/s/#{uid}" }
   let(:stories_edit_route_url) { "/s/#{uid}/edit" }
   let(:stories_preview_route_url) { "/s/#{uid}/preview" }

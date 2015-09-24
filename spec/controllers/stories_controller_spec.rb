@@ -48,6 +48,47 @@ RSpec.describe StoriesController, type: :controller do
     end
   end
 
+  describe '#preview' do
+
+    context 'when there is a story with the given four by four' do
+
+      let!(:story_revision) { FactoryGirl.create(:draft_story) }
+
+      it 'renders show template' do
+        get :preview, uid: story_revision.uid
+        expect(response).to render_template(:show)
+      end
+
+      it 'ignores vanity_text' do
+        get :preview, uid: story_revision.uid, vanity_text: 'haha'
+        expect(assigns(:story)).to eq(story_revision)
+      end
+
+      it 'renders 404' do
+        get :preview, uid: 'notf-ound'
+        expect(response).to be_not_found
+      end
+
+      it 'assigns the :story' do
+        get :preview, uid: story_revision.uid
+        expect(assigns(:story)).to eq(story_revision)
+      end
+
+      it 'renders json when requested' do
+        get :preview, uid: story_revision.uid, format: :json
+        expect(response.body).to eq(story_revision.to_json)
+      end
+    end
+
+    context 'when there is no story with the given four by four' do
+
+      it 'renders 404' do
+        get :preview, uid: 'notf-ound'
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+
   describe '#new' do
 
     context 'when there is an uninitialized lenses view with the given four by four' do

@@ -852,7 +852,7 @@ class CardTypeMappingTest < Test::Unit::TestCase
       fake_column('point', nil, 2500),
       dataset_size
     )
-    assert_equal(['feature', 'choropleth'], available_card_types)
+    assert_equal(['feature'], available_card_types)
   end
 
   def test_card_type_mapping_returns_expected_available_card_types_for_text_column

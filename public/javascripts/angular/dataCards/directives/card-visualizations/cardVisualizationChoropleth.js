@@ -28,7 +28,6 @@
         var unfilteredData$ = new Rx.Subject();
         var filteredData$ = new Rx.Subject();
         var whereClause$ = scope.$observe('whereClause');
-        var computedColumn$ = model.observeOnLatest('computedColumn').filter(_.isPresent);
 
         // Keep track of the number of requests that have been made and the number of
         // responses that have come back.
@@ -38,7 +37,7 @@
         var dataRequestCount$ = dataRequests$.scan(0, function(acc) { return acc + 1; });
         var dataResponseCount$ = dataResponses$.scan(0, function(acc) { return acc + 1; });
 
-        var shapefile$;
+        var shapeFile$;
         var geometryLabel$;
         var geojsonRegions$;
 
@@ -69,52 +68,39 @@
         * THEN set up other observable sequences. *
         ******************************************/
 
-        // Set a custom card title corresponding to the computed column.
-        Rx.Observable.subscribeLatest(
-          model,
-          dataset.observeOnLatest('columns'),
-          computedColumn$,
-          function(currentModel, columns, computedColumn) {
-            var columnName = columns[currentModel.fieldName].name;
-            var regionName = columns[computedColumn].name;
-            var customTitle = '{0} &mdash; {1}'.format(columnName, regionName);
-            currentModel.set('customTitle', customTitle);
-          });
+        Rx.Observable.combineLatest(
+          whereClause$,
+          baseSoqlFilter,
+          function(whereClause, baseFilter) {
+            return !_.isEmpty(whereClause) && whereClause !== baseFilter;
+          }
+        );
 
-        // If the card type switches, clear the current title.
-        model.
-          filter(function(currentModel) {
-            return currentModel.getCurrentValue('cardType') !== 'choropleth';
-          }).
-          subscribe(function(currentModel) {
-            currentModel.set('customTitle', undefined);
-          });
-
-        shapefile$ = Rx.Observable.combineLatest(
+        shapeFile$ = Rx.Observable.combineLatest(
+          model.pluck('fieldName'),
           dataset.observeOnLatest('columns'),
-          computedColumn$,
-          function(columns, computedColumn) {
+          function(fieldName, columns) {
             if (_.isEmpty(columns)) {
-              return undefined;
+              return Rx.Observable.never();
             }
 
             // The shapeFile and the sourceColumn are both found in the
             // computationStrategy blob that is attached to computed columns.
-            var shapefile = CardVisualizationChoroplethHelpers.extractShapeFileFromColumn(
-              columns[computedColumn]
+            var shapeFile = CardVisualizationChoroplethHelpers.extractShapeFileFromColumn(
+              columns[fieldName]
             );
 
-            if (shapefile === null) {
+            if (shapeFile === null) {
               scope.$safeApply(function() {
                 scope.choroplethRenderError = true;
               });
             }
 
-            return shapefile;
+            return shapeFile;
           }
         );
 
-        geometryLabel$ = shapefile$.map(
+        geometryLabel$ = shapeFile$.map(
           function(shapeFile) {
             var dataPromise;
 
@@ -124,10 +110,10 @@
 
             dataPromise.then(
               function() {
+                // Ok
                 dataResponses$.onNext(1);
               },
               function() {
-
                 // Still increment the counter to stop the spinner
                 dataResponses$.onNext(1);
 
@@ -145,29 +131,53 @@
           dataset,
           dataset.observeOnLatest('columns'),
           model.pluck('fieldName'),
-          shapefile$,
-          computedColumn$,
-          function(currentDataset, columns, fieldName, shapefile, computedColumn) {
-            var sourceColumn = fieldName;
+          shapeFile$,
+          function(currentDataset, columns, fieldName, shapeFile) {
+            var sourceColumn = null;
             var dataPromise;
-            var computationStrategy = _.get(columns[computedColumn], 'computationStrategy.strategy_type');
+            var computationStrategy = _.get(columns[fieldName], 'computationStrategy.strategy_type');
 
             dataRequests$.onNext(1);
+
+            sourceColumn = CardVisualizationChoroplethHelpers.extractSourceColumnFromColumn(
+              columns[fieldName]
+            );
+
+            // If we were unable to extract the source column from the
+            // computationStrategy, attempt to find a location/point column
+            // that could potentially be the source column. This will not
+            // always be correct if there is more than one location/point
+            // column in the dataset.
+            if (sourceColumn === null) {
+              _.each(columns, function(column, currentFieldName) {
+                if (column.physicalDatatype === 'point' &&
+                  column.fred === 'location') {
+
+                  sourceColumn = currentFieldName;
+                }
+              });
+
+              // If we still could not determine the source column, issue a warning.
+              if (sourceColumn === null) {
+                $log.warn('Unable to get source column of computed ' +
+                  'column "{0}"'.format(fieldName));
+              }
+            }
 
             // If we have successfully found a source column and it uses the
             // georegion_match_on_point strategy, make the more specific bounding
             // box query utilizing the source column's extents.
-            if (computationStrategy === 'georegion_match_on_point') {
+            if (sourceColumn !== null && computationStrategy === 'georegion_match_on_point') {
 
               dataPromise = CardDataService.getChoroplethRegionsUsingSourceColumn(
                 currentDataset.id,
                 sourceColumn,
-                shapefile
+                shapeFile
               );
 
             // Otherwise, use the less efficient but more robust request.
             } else {
-              dataPromise = CardDataService.getChoroplethRegions(shapefile);
+              dataPromise = CardDataService.getChoroplethRegions(shapeFile);
             }
 
             dataPromise.then(
@@ -190,14 +200,14 @@
         );
 
         Rx.Observable.subscribeLatest(
-          computedColumn$,
+          model.pluck('fieldName'),
           dataset,
           baseSoqlFilter,
           aggregation$,
-          function(computedColumn, currentDataset, whereClauseFragment, aggregationData) {
+          function(fieldName, currentDataset, whereClauseFragment, aggregationData) {
             dataRequests$.onNext(1);
             var dataPromise = CardDataService.getData(
-              computedColumn,
+              fieldName,
               currentDataset.id,
               whereClauseFragment,
               aggregationData,
@@ -218,14 +228,14 @@
           });
 
         Rx.Observable.subscribeLatest(
-          computedColumn$,
+          model.pluck('fieldName'),
           dataset,
           whereClause$,
           aggregation$,
-          function(computedColumn, currentDataset, whereClauseFragment, aggregationData) {
+          function(fieldName, currentDataset, whereClauseFragment, aggregationData) {
             dataRequests$.onNext(1);
             var dataPromise = CardDataService.getData(
-              computedColumn,
+              fieldName,
               currentDataset.id,
               whereClauseFragment,
               aggregationData,

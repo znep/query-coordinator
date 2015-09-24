@@ -17,23 +17,23 @@
   ) {
 
     // Set up watchers for changing the base layer url.
-    function setupBaseLayerSelect(cardModel, $scope, element) {
+    function setupBaseLayerSelect(cardModel, scope, element) {
       var baseLayer$ = cardModel.observe('baseLayerUrl');
-      var customLayerUrl$ = $scope.$observe('customLayerUrl');
+      var customLayerUrl$ = scope.$observe('customLayerUrl');
       var baseLayerOption$;
 
       customLayerUrl$.subscribe(_.debounce(function(customLayerUrl) {
 
         // Only update it if it's valid, and the 'custom' option is chosen
-        if (customLayerUrl && $scope.baseLayerOption === 'custom') {
+        if (customLayerUrl && scope.baseLayerOption === 'custom') {
           cardModel.set('baseLayerUrl', decodeURI(customLayerUrl));
         }
       }, REFRESH_BASE_LAYER_DELAY, { leading: true, trailing: true }));
 
-      $scope.TILEURL_REGEX = Constants.TILEURL_REGEX;
+      scope.TILEURL_REGEX = Constants.TILEURL_REGEX;
 
       // Map the actual baseLayerUrl to the selected option
-      $scope.$bindObservable('baseLayerOption', baseLayer$.map(
+      scope.$bindObservable('baseLayerOption', baseLayer$.map(
         function(url) {
           switch (url) {
             case null:
@@ -47,12 +47,12 @@
         }));
 
       // Initialize the customLayerUrl if this choropleth has one
-      if ($scope.baseLayerOption === 'custom') {
-        $scope.customLayerUrl = cardModel.getCurrentValue('baseLayerUrl');
+      if (scope.baseLayerOption === 'custom') {
+        scope.customLayerUrl = cardModel.getCurrentValue('baseLayerUrl');
       }
 
       // Map the selected option to the actual baseLayerUrl
-      baseLayerOption$ = $scope.$observe('baseLayerOption');
+      baseLayerOption$ = scope.$observe('baseLayerOption');
       baseLayerOption$.subscribe(function(value) {
         switch (value) {
           case 'standard':
@@ -62,8 +62,8 @@
             cardModel.set('baseLayerUrl', Constants.ESRI_BASE_URL);
             break;
           case 'custom':
-            if ($scope.customLayerUrl) {
-              cardModel.set('baseLayerUrl', decodeURI($scope.customLayerUrl));
+            if (scope.customLayerUrl) {
+              cardModel.set('baseLayerUrl', decodeURI(scope.customLayerUrl));
             }
 
             // Focus the field on the next frame
@@ -117,7 +117,7 @@
     }
 
     // Set up watchers for changing the histogram bucketing type.
-    function setupHistogramBucketTypeSelect(cardModel, $scope) {
+    function setupHistogramBucketTypeSelect(cardModel, scope) {
       var currentBucketOption$;
 
       // Cache the filters and bucket type so that we can reapply them.
@@ -131,7 +131,7 @@
       };
 
       // Set the default value of the histogram bucket option.
-      $scope.$bindObservable('histogramBucketOption', bucketType$.
+      scope.$bindObservable('histogramBucketOption', bucketType$.
         map(function(bucketType) {
           return _.isDefined(bucketType) ? Rx.Observable.returnValue(bucketType) :
             determineBucketType(cardModel);
@@ -141,7 +141,7 @@
 
       // Subscribe to changes in the bucket option and set the card modal and
       // help text accordingly.
-      currentBucketOption$ = $scope.$observe('histogramBucketOption').filter(_.isDefined);
+      currentBucketOption$ = scope.$observe('histogramBucketOption').filter(_.isDefined);
       currentBucketOption$.subscribe(function(bucketType) {
 
         // Throw an error if invalid bucket type.
@@ -149,7 +149,7 @@
           throw new Error('Unknown bucket type: {0}'.format(bucketType));
         }
 
-        $scope.histogramBucketHelpText = helpTextByBucketType[bucketType];
+        scope.histogramBucketHelpText = helpTextByBucketType[bucketType];
         cardModel.set('bucketType', bucketType);
 
         // If the bucket type hasn't changed or it has never been defined,
@@ -157,7 +157,7 @@
         cardModel.set('activeFilters', (bucketType === cachedBucketType) ? cachedFilters : []);
 
         // Show the bucket type warning if we had filters and we've cleared them.
-        $scope.showBucketTypeWarning = (_.isPresent(cachedFilters) &&
+        scope.showBucketTypeWarning = (_.isPresent(cachedFilters) &&
           _.isEmpty(cardModel.getCurrentValue('activeFilters')));
       });
     }
@@ -169,21 +169,21 @@
         page: '='
       },
       templateUrl: '/angular_templates/dataCards/customizeCardDialog.html',
-      link: function($scope, element) {
+      link: function(scope, element) {
 
         // Clone the card, so we can cancel without having made any changes
-        $scope.customizedCard = $scope.dialogState.cardModel.clone();
-        $scope.showBucketTypeWarning = false;
+        scope.customizedCard = scope.dialogState.cardModel.clone();
+        scope.showBucketTypeWarning = false;
 
-        $scope.$bindObservable('availableCardTypes',
-          $scope.customizedCard.observe('column.availableCardTypes'));
+        scope.$bindObservable('availableCardTypes',
+          scope.customizedCard.observe('column.availableCardTypes'));
 
-        $scope.$bindObservable('showBaseMapLayerDropdown',
-          $scope.customizedCard.observe('isCustomizableMap'));
+        scope.$bindObservable('showBaseMapLayerDropdown',
+          scope.customizedCard.observe('isCustomizableMap'));
 
-        $scope.$bindObservable('showHistogramBucketTypeDropdown',
-          $scope.customizedCard.observe('cardType').combineLatest(
-            $scope.customizedCard.observe('visualizationType'),
+        scope.$bindObservable('showHistogramBucketTypeDropdown',
+          scope.customizedCard.observe('cardType').combineLatest(
+            scope.customizedCard.observe('visualizationType'),
             function(cardType, visualizationType) {
               return cardType === 'histogram' && visualizationType === 'histogram';
             }
@@ -191,33 +191,33 @@
         );
 
         // Set up map customization dropdowns.
-        setupBaseLayerSelect($scope.customizedCard, $scope, element);
+        setupBaseLayerSelect(scope.customizedCard, scope, element);
 
-        $scope.showFlannelTitleMenu = false;
+        scope.showFlannelTitleMenu = false;
         if (ServerConfig.get('oduxEnableFeatureMapHover')) {
-          $scope.showFlannelTitleMenu = $scope.customizedCard.getCurrentValue('cardType') === 'feature';
-          setupFlannelTitleSelect($scope.customizedCard, $scope);
+          scope.showFlannelTitleMenu = scope.customizedCard.getCurrentValue('cardType') === 'feature';
+          setupFlannelTitleSelect(scope.customizedCard, scope);
         }
 
         // Check to make sure we are customizing histogram before setting up
         // the bucket type option.
-        $scope.$observe('showHistogramBucketTypeDropdown').
+        scope.$observe('showHistogramBucketTypeDropdown').
           filter(_.identity).
           subscribe(function() {
-            setupHistogramBucketTypeSelect($scope.customizedCard, $scope);
+            setupHistogramBucketTypeSelect(scope.customizedCard, scope);
           });
 
          // Save the model by updating with our cloned copy.
-        $scope.updateCard = function() {
-          $scope.dialogState.cardModel.setFrom($scope.customizedCard);
-          $scope.dialogState.show = false;
+        scope.updateCard = function() {
+          scope.dialogState.cardModel.setFrom(scope.customizedCard);
+          scope.dialogState.show = false;
         };
 
         var FLYOUT_TEMPLATE = '<div class="flyout-title">{0}</div>';
         FlyoutService.register({
           selector: '.configure-histogram-bucket-type .warning-dropdown .warning-icon',
           render: _.constant(FLYOUT_TEMPLATE.format(I18n.customizeCardDialog.histogramBucketType.warning)),
-          destroySignal: $scope.$destroyAsObservable(element)
+          destroySignal: scope.$destroyAsObservable(element)
         });
       }
     };

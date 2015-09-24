@@ -10,6 +10,15 @@
     <%= javascript_include_tag 'view' %>
   <% end %>
   <%= csrf_meta_tags %>
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@govstories">
+  <meta name="og:title" content="<%= core_attributes['name'] %>">
+  <meta name="og:description" content="<%= core_attributes['description'] %>">
+  <% @story.block_images.each do |image| %>
+  <meta name="og:image" content="<%= image %>">
+  <% end %>
+
   <link rel="shortcut icon" href="/favicon.ico">
 </head>
 <body class="story-view">

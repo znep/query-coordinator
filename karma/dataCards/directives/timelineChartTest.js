@@ -137,15 +137,10 @@ describe('timelineChart', function() {
     var html = [
       '<div id="{0}">',
         '<div class="card-visualization" style="width: {1}px; height: 300px;">',
-          '<div timeline-chart ',
+          '<timeline-chart ',
             'style="display: block; width: {1}px; height: 300px;" ',
-            'class="timeline-chart"',
-            'chart-data="chartData" ',
-            'expanded="expanded" ',
-            'precision="precision" ',
-            'row-display-unit="rowDisplayUnit" ',
-            'active-filters="activeFilters">',
-          '</div>',
+            'class="timeline-chart">',
+          '</timeline-chart>',
         '</div>',
       '</div>'
     ].join('').format(chartId, width);

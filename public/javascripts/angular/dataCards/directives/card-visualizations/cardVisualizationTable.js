@@ -32,6 +32,7 @@
         });
 
         $scope.showCount = !$scope.isEmbedded;
+        $scope.infinite = false;
 
         $scope.model.set('showDescription', false);
 

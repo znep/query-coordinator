@@ -12,13 +12,7 @@
   function histogramDirective(FlyoutService, HistogramVisualizationService) {
     return {
       restrict: 'E',
-      scope: {
-        cardData: '=',
-        rowDisplayUnit: '=',
-        isFiltered: '=',
-        expanded: '=',
-        currentRangeFilterValues: '='
-      },
+      scope: true,
       template: '<div class="histogram" ng-class="{\'has-selection\': hasSelection}"></div>',
       link: function($scope, element) {
         var service = HistogramVisualizationService;

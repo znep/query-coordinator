@@ -4,16 +4,10 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
   return {
     restrict: 'E',
-    scope: {
-      chartData: '=',
-      showFiltered: '=',
-      expanded: '=',
-      showAllLabels: '=',
-      rowDisplayUnit: '='
-    },
+    scope: true,
     link: function(scope, element) {
-      var chartData$ = scope.$observe('chartData');
-      var showFiltered$ = scope.$observe('showFiltered');
+      var cardData$ = scope.$observe('cardData');
+      var isFiltered$ = scope.$observe('isFiltered');
       var expanded$ = scope.$observe('expanded');
       var showAllLabels$ = scope.$observe('showAllLabels');
       var rowDisplayUnit$ = scope.$observe('rowDisplayUnit');
@@ -237,18 +231,18 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
             height: Math.max(dimensions.height, 0)
           };
         }),
-        chartData$,
-        showFiltered$,
+        cardData$,
+        isFiltered$,
         expanded$,
         showAllLabels$,
         rowDisplayUnit$,
-        function(cardVisualizationDimensions, chartData, showFiltered, expanded, showAllLabels, rowDisplayUnit) {
+        function(cardVisualizationDimensions, cardData, isFiltered, expanded, showAllLabels, rowDisplayUnit) {
 
           if (!columnChart) {
             return undefined;
           }
 
-          if (!chartData) {
+          if (!cardData) {
             return undefined;
           }
 
@@ -257,10 +251,10 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
           var chartRenderOptions = {
             expanded: expanded,
             labelUnit: rowDisplayUnit,
-            showFiltered: showFiltered,
+            showFiltered: isFiltered,
             showAllLabels: expanded || showAllLabels
           };
-          columnChart.render(chartData, chartRenderOptions);
+          columnChart.render(cardData, chartRenderOptions);
 
           // Yield execution to the browser to render, then notify that render is complete
           $timeout(function() {

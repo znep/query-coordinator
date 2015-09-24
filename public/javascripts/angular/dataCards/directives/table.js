@@ -16,19 +16,7 @@
     return {
       templateUrl: '/angular_templates/dataCards/table.html',
       restrict: 'A',
-
-      scope: {
-        showCount: '=?',
-        rowCount: '=',
-        filteredRowCount: '=',
-        whereClause: '=',
-        getRows: '=',
-        infinite: '=',
-        columnDetails: '=',
-        rowDisplayUnit: '=',
-        defaultSortColumnName: '='    // When the table is first created, it will be sorted on this column.
-      },
-
+      scope: true,
       link: function(scope, element) {
         var columnDetails$ = scope.$observe('columnDetails');
         var whereClause$ = scope.$observe('whereClause');

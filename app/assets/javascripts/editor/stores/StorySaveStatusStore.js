@@ -72,9 +72,15 @@
      * Public methods
      */
 
-    self.isStorySaved = function() {
-      var newSerializedStory = storyteller.storyStore.serializeStory(forStoryUid);
-      return _.isEqual(newSerializedStory, _lastSavedSerializedStory);
+    self.isStoryDirty = function() {
+      // Metadata properties are saved through a different mechanism, so the save button
+      // should not light up for changes _only_ to the metadata.
+      var metadataProperties = [ 'title', 'description' ];
+      var currentSerializedStory = storyteller.storyStore.serializeStory(forStoryUid);
+      return !_.isEqual(
+        _.omit(currentSerializedStory, metadataProperties),
+        _.omit(_lastSavedSerializedStory, metadataProperties)
+      );
     };
 
     self.isStorySaveInProgress = function() {

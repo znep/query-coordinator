@@ -276,7 +276,7 @@ $(document).on('ready', function() {
   // Close confirmation
   $(window).on('beforeunload', function() {
     if (
-      !storyteller.storySaveStatusStore.isStorySaved() ||
+      storyteller.storySaveStatusStore.isStoryDirty() ||
       storyteller.storySaveStatusStore.isStorySaveInProgress()
     ) {
       // If the save is impossible, don't bother confirming the close :(

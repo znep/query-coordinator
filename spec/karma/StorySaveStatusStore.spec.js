@@ -19,11 +19,27 @@ describe('StorySaveStatusStore', function() {
     describe('on story loaded', function() {
       // StandardMocks will have loaded a story already.
       it('should indicate the story is fully saved', function() {
-        assert.isTrue(store.isStorySaved());
+        assert.isFalse(store.isStoryDirty());
       });
 
       it('should indicate no save in progress', function() {
         assert.isFalse(store.isStorySaveInProgress());
+      });
+    });
+
+    describe('when only metadata has been changed', function() {
+      it('should indicate that the story is saved', function() {
+        storyteller.dispatcher.dispatch({
+          action: Actions.STORY_SET_TITLE,
+          storyUid: standardMocks.validStoryUid,
+          title: 'i am a title'
+        });
+        storyteller.dispatcher.dispatch({
+          action: Actions.STORY_SET_DESCRIPTION,
+          storyUid: standardMocks.validStoryUid,
+          description: 'i am a description'
+        });
+        assert.isFalse(store.isStoryDirty());
       });
     });
 
@@ -37,7 +53,7 @@ describe('StorySaveStatusStore', function() {
       });
 
       it('should indicate the story is unsaved', function() {
-        assert.isFalse(store.isStorySaved());
+        assert.isTrue(store.isStoryDirty());
       });
 
       it('should indicate no save in progress', function() {
@@ -53,7 +69,7 @@ describe('StorySaveStatusStore', function() {
         });
 
         it('should indicate the story is unsaved', function() {
-          assert.isFalse(store.isStorySaved());
+          assert.isTrue(store.isStoryDirty());
         });
 
         it('should indicate save is in progress', function() {
@@ -81,7 +97,7 @@ describe('StorySaveStatusStore', function() {
           });
 
           it('should indicate the story is saved', function() {
-            assert.isTrue(store.isStorySaved());
+            assert.isFalse(store.isStoryDirty());
           });
 
           it('should indicate no save in progress', function() {
@@ -99,7 +115,7 @@ describe('StorySaveStatusStore', function() {
           });
 
           it('should indicate the story is unsaved', function() {
-            assert.isFalse(store.isStorySaved());
+            assert.isTrue(store.isStoryDirty());
           });
 
           it('should indicate no save in progress', function() {
@@ -117,7 +133,7 @@ describe('StorySaveStatusStore', function() {
         });
 
         it('should indicate the story is fully saved', function() {
-          assert.isTrue(store.isStorySaved());
+          assert.isFalse(store.isStoryDirty());
         });
 
         it('should indicate no save in progress', function() {

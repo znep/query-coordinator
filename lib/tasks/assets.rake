@@ -21,6 +21,9 @@ namespace :assets do
 
     config_without_compression.unlink
   end
+  desc 'No op'
+  task :babel do
+  end
 end
 
 Rake::Task[:default].enhance { Rake::Task["assets:unminified"].invoke }

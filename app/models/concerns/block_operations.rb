@@ -10,9 +10,7 @@ module BlockOperations
     def blocks_with_component_type(type)
       blocks = Block.for_story(self)
       blocks.select do |block|
-        block.components.any? do |component|
-          component['type'] == type
-        end
+        block.components.any? { |component| component['type'] == type }
       end
     end
 

@@ -174,7 +174,6 @@ describe('CardsViewController', function() {
         }
       };
     });
-    testHelpers.mockDirective(_$provide, 'lastUpdated');
     testHelpers.mockDirective(_$provide, 'multilineEllipsis');
     testHelpers.mockDirective(_$provide, 'notifyResize');
     testHelpers.mockDirective(_$provide, 'aggregationChooser');

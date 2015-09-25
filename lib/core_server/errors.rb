@@ -23,23 +23,6 @@ module CoreServer
     end
   end
 
-  # Helper class for development/test - we keep track of the total number of
-  # requests made to the core server in a give request/response cycle to the
-  # client. If we make too many requests, it's a sign that we're not designing
-  # our API correctly - so we throw an exception to make it blatantly obvious
-  # that you're doing something wrong.
-  class TooManyRequests < Error
-    def initialize(controller, action_name, requests)
-      @controller, = controller.class.name
-      @action_name = action_name
-      @requests = requests
-    end
-
-    def to_s
-      "Too many requests (#{@requests}) to the core server in a client request for #{@controller}::#{@action_name}"
-    end
-  end
-
   class ConnectionError < StandardError
     attr_reader :response
 

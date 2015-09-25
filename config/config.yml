@@ -62,7 +62,6 @@ default: &default
 development:
   ssl_port: 443
   http_port: 9292
-  max_core_server_requests: 150
   metrics_dir: tmp/metriclogs
   <<: *default
   mixpanel_token: 59b0b54697603105463834afdf20accf
@@ -85,19 +84,16 @@ test:
 
 # test-socrata.com
 staging:
-  max_core_server_requests: 15
   <<: *default
   mixpanel_token: ce548d5c95f7671fadd0174cc067dc69
 
 # rc-socrata.com
 rc:
-  max_core_server_requests: 15
   <<: *default
   mixpanel_token: ce548d5c95f7671fadd0174cc067dc69
 
 # fedramp-test.socrata.com
 fedramp-prod:
-  max_core_server_requests: 15
   <<: *default
   mixpanel_token: ce548d5c95f7671fadd0174cc067dc69
 

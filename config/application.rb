@@ -8,8 +8,6 @@ require 'active_support/core_ext/numeric/time'
 require 'semver'
 # require 'sprockets/railtie'
 
-require File.join(File.dirname(__FILE__), '..', 'lib/core_server/railtie')
-
 if defined?(Bundler)
   # If you precompile assets before deploying to production, use this line
   Bundler.require(*Rails.groups(:assets => %w(development test)))

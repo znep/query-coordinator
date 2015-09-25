@@ -22,7 +22,6 @@
         var whereClause$ = scope.$observe('whereClause');
         var rowCount$ = scope.$observe('rowCount');
         var filteredRowCount$ = scope.$observe('filteredRowCount');
-        var infinite$ = scope.$observe('infinite');
         var tableScroll$;
         var tableMouseScroll$;
         var tableMousemove$;
@@ -333,23 +332,19 @@
           });
 
           var updateExpanderHeight = function() {
-            if (scope.infinite) {
-              $expander.height(rowHeight * scope.filteredRowCount);
-            } else {
-              var lastLoadedBlock = _.max(element.find('.row-block'), function(block) {
-                return $(block).data().blockId;
-              });
-              var height = 0;
+            var lastLoadedBlock = _.max(element.find('.row-block'), function(block) {
+              return $(block).data().blockId;
+            });
+            var height = 0;
 
-              if (_.isElement(lastLoadedBlock)) {
-                var $lastLoadedBlock = $(lastLoadedBlock);
-                var lastHeight = $lastLoadedBlock.height() || 0;
+            if (_.isElement(lastLoadedBlock)) {
+              var $lastLoadedBlock = $(lastLoadedBlock);
+              var lastHeight = $lastLoadedBlock.height() || 0;
 
-                height = rowHeight * $lastLoadedBlock.data().blockId * rowsPerBlock + lastHeight;
-              }
-
-              $expander.height(height);
+              height = rowHeight * $lastLoadedBlock.data().blockId * rowsPerBlock + lastHeight;
             }
+
+            $expander.height(height);
           };
 
           var loadBlockOfRows = function(block) {
@@ -662,7 +657,6 @@
             rowCount$,
             filteredRowCount$,
             columnDetails$,
-            infinite$,
             function(cardDimensions, rowCount, filteredRowCount) {
 
               scope.$emit('render:start', {

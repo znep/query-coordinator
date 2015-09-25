@@ -5,24 +5,7 @@
     </button>
   </div>
   <section>
-    <h1 class="content-panel-title"><%= I18n.t('add_content_panel.title') %></h1>
-    <h2 class="content-panel-description"><%= I18n.t('add_content_panel.description') %></h2>
-    <hr></hr>
-    <div class="scrollable">
-      <div class="inspiration-block-list">
-        <% @inspiration_category_list.each do |index, category| %>
-          <div class="inspiration-block-category">
-            <h1><%= index %></h1>
-            <% category['blocks'].each do |block| %>
-              <div class="inspiration-block" data-block-id="<%= block['blockContent']['id'] %>" data-block-content="<%= block['blockContent'].to_json %>">
-                <img src="<%= asset_path(block['imagePreview']) %>">
-                <div class="drag-overlay"></div>
-              </div>
-            <% end %>
-          </div>
-        <% end %>
-      </div>
-    </div>
+    <%= render partial: 'stories/partials/inspiration_category_list' %>
   </section>
   <div class="inspiration-block-list-error hidden"><%= I18n.t('add_content_panel.render_error') %></div>
 </div>

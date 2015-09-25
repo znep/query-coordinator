@@ -1,29 +1,60 @@
 @import 'lib/variables';
 
+$add-content-panel-width: 38rem;
+$add-content-panel-top: 4rem;
+$inspiration-block-width: 44%;
+$inspiration-category-title-color: #474747;
+$inspiration-category-title-font-size: 1.5rem;
+$inspiration-category-subtitle-color: #999;
+$inspiration-category-subtitle-font-size: 1.3rem;
+$inspiration-block-hover-border-color: #4a90e2;
+
 /**
  * Add Content Panel
  */
 #add-content-panel {
   z-index: $add-content-panel-z-index;
-  width: 38rem;
+  width: $add-content-panel-width;
 
-  h1 {
-    text-align: center;
-  }
-
-  .inspiration-block-list-error {
-    position: absolute;
-    top: 0;
-    left: 0;
+  .scrollable {
+    top: $add-content-panel-top;
   }
 }
 
-.inspiration-block-category {
+.inspiration-block-list-error {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.inspiration-category {
   margin: 4rem 0;
 
   &:first-child {
     margin-top: 0;
   }
+}
+
+.inspiration-category-title,
+.inspiration-category-subtitle {
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.inspiration-category-title {
+  color: $inspiration-category-title-color;
+  font-size: $inspiration-category-title-font-size;
+}
+
+.inspiration-category-subtitle {
+  color: $inspiration-category-subtitle-color;
+  font-size: $inspiration-category-subtitle-font-size;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.inspiration-blocks {
+  margin: 2rem 0;
 
   &::after {
     content: "";
@@ -36,14 +67,27 @@
   @include unselectable();
 
   position: relative;
-  width: 46%;
+  width: $inspiration-block-width;
   float: left;
   min-height: 10px;
-  margin: $inspiration-block-list-block-margin;
+
+  margin-bottom: 4%;
+  margin-left: 4%;
+  margin-right: 2%;
+
   font-size: $inspiration-block-list-font-size;
   border: 1px solid $inspiration-block-border-color;
   cursor: -webkit-grab;
   cursor: grab;
+
+  &:nth-child(2n) {
+    margin-left: 2%;
+    margin-right: 4%;
+  }
+
+  &:hover {
+    border-color: $inspiration-block-hover-border-color;
+  }
 
   .grab-target {
     display: block;

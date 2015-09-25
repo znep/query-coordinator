@@ -126,20 +126,23 @@
   NBEMapProvider.prototype = _.extend({}, MapProvider.prototype, {
     getLayer: function(layerName, layerOpts) {
       var style = encodeURIComponent(
-        '#main {'+
+        '#main, #multipoint, #point {'+
           'line-width: 0.5;' +
           'line-color: #000;' +
-          'marker-width: 6;' +
+          'marker-width: 8;' +
           'marker-fill: #f45;' +
           'line-width:1;' +
-          'line-opacity:0.85' +
+          'line-opacity:0.85;' +
         '}' +
-        '#multipolygon {' +
+        '#multipolygon, #polygon {' +
           'polygon-fill:#a9a9a9;' +
           'polygon-opacity:0.5;' +
-          'line-color:#333;' +
-          'line-width:1;' +
-          'line-opacity:0.85' +
+          'line-width: 0.5;' +
+          'line-color: #000;' +
+        '}' +
+        '#multiline, #line {' +
+          'line-width: 0.5;' +
+          'line-color: #000;' +
         '}'
       );
       var tileUrl = '/tiles/' + layerName + '/the_geom/${z}/${x}/${y}.png?$style=' + style

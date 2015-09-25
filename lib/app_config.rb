@@ -66,7 +66,6 @@ class AppConfig < Hashie::Dash
   # Misc
   property :threadpool_count, default: 0, transform_with: as_int
   property :secondary_group_identifier
-  property :max_core_server_requests
 
   def method_missing(name)
     message = "Attempted to access invalid property '#{name}' in AppConfig!"

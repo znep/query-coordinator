@@ -1,7 +1,9 @@
 describe('admin-georegions-screen', function() {
   var target;
-  var components = blist.namespace.fetch('blist.georegions.components');
+  var components = blist.namespace.fetch('blist.components');
+  var georegionComponents = blist.namespace.fetch('blist.georegions.components');
   var TestUtils = React.addons.TestUtils;
+  var findByClass = TestUtils.findRenderedDOMComponentWithClass;
   var findByTag = TestUtils.findRenderedDOMComponentWithTag;
   var shallowRenderer;
   var node;
@@ -26,7 +28,6 @@ describe('admin-georegions-screen', function() {
     var FormButton = components.FormButton;
     var onSubmitStub;
     var props;
-
     beforeEach(function() {
       onSubmitStub = sinon.stub();
       props = {
@@ -36,7 +37,6 @@ describe('admin-georegions-screen', function() {
         onSubmit: onSubmitStub,
         value: 'Click'
       };
-      node = TestUtils.renderIntoDocument(React.createElement(FormButton, props));
     });
 
     it('exists', function() {
@@ -49,14 +49,25 @@ describe('admin-georegions-screen', function() {
       expect(result.type).to.eq('form');
     });
 
-    it('submits', function() {
-      TestUtils.Simulate.submit(findByTag(node, 'form'));
-      expect(onSubmitStub).to.have.been.calledOnce;
+    describe('rendered', function() {
+      beforeEach(function() {
+        this.node = TestUtils.renderIntoDocument(React.createElement(FormButton, props));
+      });
+
+      it('makes an ajax call on submit', function() {
+        sinon.stub($, 'ajax').yieldsTo('success', { success: true, message: 'message' });
+        TestUtils.Simulate.submit(findByTag(this.node, 'form'));
+        expect($.ajax).to.have.been.calledOnce;
+        expect(onSubmitStub).to.have.been.calledOnce;
+        $.ajax.restore();
+      });
+
     });
+
   });
 
   describe('EnabledWidget', function() {
-    var EnabledWidget = components.EnabledWidget;
+    var EnabledWidget = georegionComponents.EnabledWidget;
     var props;
 
     beforeEach(function() {
@@ -85,7 +96,7 @@ describe('admin-georegions-screen', function() {
 
       it('says "Yes" when enabled', function() {
         expect(translationStub).to.have.been.calledWith('enabled_yes');
-        expect(findByTag(node, 'span').getDOMNode().textContent).to.eq('Yes');
+        expect(findByClass(node, 'enabled-widget-label').getDOMNode().textContent).to.eq('Yes');
       });
 
     });
@@ -98,7 +109,7 @@ describe('admin-georegions-screen', function() {
 
       it('says "No" when disabled', function() {
         expect(translationStub).to.have.been.calledWith('enabled_no');
-        expect(findByTag(node, 'span').getDOMNode().textContent).to.eq('No');
+        expect(findByClass(node, 'enabled-widget-label').getDOMNode().textContent).to.eq('No');
       });
 
     });
@@ -106,7 +117,7 @@ describe('admin-georegions-screen', function() {
   });
 
   describe('GeoregionAdminTable', function() {
-    var GeoregionAdminTable = components.GeoregionAdminTable;
+    var GeoregionAdminTable = georegionComponents.GeoregionAdminTable;
     var props;
 
     beforeEach(function() {
@@ -142,7 +153,7 @@ describe('admin-georegions-screen', function() {
       });
 
       it('renders the rows', function() {
-        var rows = TestUtils.scryRenderedComponentsWithType(node, components.Row);
+        var rows = TestUtils.scryRenderedComponentsWithType(node, georegionComponents.GeoregionAdminRow);
         expect(rows).to.have.length(3);
         expect(rows[1]).to.have.deep.property('props.isEnabled', false);
         expect(rows[1]).to.have.deep.property('props.renderActions', true);

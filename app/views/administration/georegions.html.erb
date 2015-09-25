@@ -14,6 +14,7 @@
 <%= render :partial => 'left_nav' %>
 
 <div class="contentBox withLeftNavigation georegionsScreen">
+  <div id="flash-container"><%= display_standard_flashes %></div>
   <div class="adminHeader floating georegions">
     <span class="icon"></span>
 
@@ -37,7 +38,12 @@
       </div>
     </div>
 
-    <%= render :partial => 'georegions_table', :locals => { :prefix => prefix, :georegions => @view_model.custom_regions, :allow_actions => true } %>
+    <%= render :partial => 'georegions_table', :locals => {
+        :allow_actions => true,
+        :allow_enablement => @view_model.allow_enablement?,
+        :georegions => @view_model.custom_regions,
+        :prefix => prefix
+      } %>
   </div>
 </div>
 
@@ -47,7 +53,12 @@
       <h1><%= t("#{prefix}.default_georegions") %></h1>
     </div>
 
-    <%= render :partial => 'georegions_table', :locals => { :prefix => prefix, :georegions => @view_model.default_regions, :allow_actions => false } %>
+    <%= render :partial => 'georegions_table', :locals => {
+        :allow_actions => false,
+        :allow_enablement => @view_model.allow_enablement?,
+        :georegions => @view_model.default_regions,
+        :prefix => prefix,
+      } %>
   </div>
 </div>
 
@@ -60,6 +71,7 @@
     <script type="text/javascript" id="bar">
       blist.namespace.fetch('blist.georegions').georegions = <%== @view_model.curated_regions.to_json %>;
       blist.namespace.fetch('blist.georegions').maximumEnabledCount = <%== @view_model.maximum_enabled_count.to_json %>;
+      blist.namespace.fetch('blist.georegions').flash = <%== flash.map {|val| { :type => val[0], :message => val[1] } }.to_json %>;
     </script>
     <%- if Rails.env.production? -%>
       <%= include_javascripts 'react-prod' %>

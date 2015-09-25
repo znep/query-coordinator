@@ -12,7 +12,7 @@ $is-disabled-color: #999;
   }
 }
 
-input.button {
+input.button, button.button {
   font-size: 0.65rem;
 }
 
@@ -21,13 +21,13 @@ input.button {
     width: 50%;
   }
   .toggle-enabled, .edit-action, .remove-action {
-    input.button {
+    input.button, button.button {
       font-size: 0.8em;
       opacity: 0.3;
       @include transition-duration(0.5s);
       @include transition-property(opacity);
     }
-    &:hover .button {
+    &:hover .button:not(.disabled) {
       opacity: 1;
     }
   }

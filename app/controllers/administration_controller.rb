@@ -129,15 +129,22 @@ class AdministrationController < ApplicationController
   #
   # Manage Georegions
   #
+  def allow_georegions_access
+    run_access_check do
+      current_user.is_admin? &&
+        feature_flag?(:enable_spatial_lens_admin, request)
+    end
+  end
 
-  before_filter :only => [
-      :georegions, :add_georegion, :enable_georegion, :disable_georegion, :edit_georegion, :remove_georegion
-    ] {|c| c.check_feature_flag(:enable_spatial_lens_admin) }
-  before_filter :only => [
-      :georegions, :add_georegion, :enable_georegion, :disable_georegion, :edit_georegion, :remove_georegion
-    ] {|c| c.check_auth_levels_any(['edit_others_datasets', 'edit_site_theme']) }
+  before_filter :allow_georegions_access, :only => [
+      :georegions, :add_georegion, :enable_georegion, :disable_georegion,
+      :edit_georegion, :remove_georegion
+    ]
   def georegions
-    @view_model = ::ViewModels::Administration::Georegions.new(CuratedRegion.all, CurrentDomain.strings.site_title)
+    @view_model = ::ViewModels::Administration::Georegions.new(
+      CuratedRegion.all,
+      CurrentDomain.strings.site_title
+    )
   end
 
   def add_georegion
@@ -146,12 +153,18 @@ class AdministrationController < ApplicationController
     error_message = t('error.error_500.were_sorry')
     success_message = nil
     begin
-      success_message = georegion_adder.add(params[:id], params[:key], params[:label], params[:name], {:enabledFlag => false})
+      success_message = georegion_adder.add(
+        params[:id], params[:key], params[:label], params[:name],
+        { :enabledFlag => false }
+      )
       is_success = success_message.present?
     rescue CoreServer::CoreServerError => ex
-      error_message = t('screens.admin.georegions.flashes.add_georegion_error', :error_message => ex.error_message)
+      error_message = t(
+        'screens.admin.georegions.flashes.add_georegion_error',
+        :error_message => ex.error_message
+      )
     rescue StandardError => ex
-      Rails.logger.error(error_message = "Error while adding georegion to domain: #{ex.to_s}")
+      error_message = "Error while adding georegion to domain: #{ex.to_s}"
     end
     handle_button_response(
       is_success,
@@ -161,12 +174,46 @@ class AdministrationController < ApplicationController
     )
   end
 
+  def georegion_enabled_toggler
+    @georegion_enabled_toggler ||= ::Services::Administration::GeoregionEnabledToggler.new
+  end
+
   def enable_georegion
-    handle_button_response(true, 'error', 'success', :georegions)
+    curated_region = CuratedRegion.find(params[:id])
+    is_success = false
+    error_message = nil
+    success_message = nil
+    begin
+      georegion_enabled_toggler.enable(curated_region)
+      is_success = true
+      success_message = t(
+        'screens.admin.georegions.enable_success',
+        :name => curated_region.name
+      )
+    rescue CoreServer::CoreServerError => _
+      error_message = t('error.error_500.were_sorry')
+    rescue ::Services::Administration::EnabledGeoregionsLimitMet => _
+      error_message = t('screens.admin.georegions.enabled_georegions_limit')
+    end
+    handle_button_response(is_success, error_message, success_message, :georegions)
   end
 
   def disable_georegion
-    handle_button_response(true, 'error', 'success', :georegions)
+    curated_region = CuratedRegion.find(params[:id])
+    is_success = false
+    error_message = nil
+    success_message = nil
+    begin
+      georegion_enabled_toggler.disable(curated_region)
+      is_success = true
+      success_message = t(
+        'screens.admin.georegions.disable_success',
+        :name => curated_region.name
+      )
+    rescue CoreServer::CoreServerError => _
+      error_message = t('error.error_500.were_sorry')
+    end
+    handle_button_response(is_success, error_message, success_message, :georegions)
   end
 
   def edit_georegion

@@ -243,6 +243,7 @@ a {
 
 // New Modal Styles
 .socrataModal {
+  display: none; // visibility is toggled with JS, element should not be present when JS is disabled
   background-color: rgba(0, 0, 0, 0.6);
   height: 100%;
   left: 0;

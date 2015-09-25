@@ -30,8 +30,16 @@
             <%= form_button({ :action => :disable_georegion, :id => georegion.id }, t("#{prefix}.disable"),
               {:method => :put}, {:class => 'button', 'data-action' => 'disable' }) %>
           <%- else -%>
-            <%= form_button({ :action => :enable_georegion, :id => georegion.id }, t("#{prefix}.enable"),
-              {:method => :put}, {:class => 'button', 'data-action' => 'enable' }) %>
+            <%= form_button(
+                  { :action => :enable_georegion, :id => georegion.id },
+                  t("#{prefix}.enable"),
+                  {:method => :put},
+                  {
+                    :class => ['button', allow_enablement ? nil : 'disabled'].compact.join(' '),
+                    'data-action' => 'enable',
+                    :disabled => allow_enablement ? nil : 'disabled',
+                    :title => (allow_enablement ? nil : t("#{prefix}.enabled_georegions_limit"))
+                  }) %>
           <%- end -%>
         </td>
         <%- if allow_actions -%>

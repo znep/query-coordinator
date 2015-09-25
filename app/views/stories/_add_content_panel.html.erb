@@ -10,10 +10,15 @@
     <hr></hr>
     <div class="scrollable">
       <div class="inspiration-block-list">
-        <% @inspiration_block_list.each do |block| %>
-          <div class="inspiration-block" data-block-id="<%= block['blockContent']['id'] %>" data-block-content="<%= block['blockContent'].to_json %>">
-            <img src="<%= asset_path(block['imagePreview']) %>">
-            <div class="drag-overlay"></div>
+        <% @inspiration_category_list.each do |index, category| %>
+          <div class="inspiration-block-category">
+            <h1><%= index %></h1>
+            <% category['blocks'].each do |block| %>
+              <div class="inspiration-block" data-block-id="<%= block['blockContent']['id'] %>" data-block-content="<%= block['blockContent'].to_json %>">
+                <img src="<%= asset_path(block['imagePreview']) %>">
+                <div class="drag-overlay"></div>
+              </div>
+            <% end %>
           </div>
         <% end %>
       </div>

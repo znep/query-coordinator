@@ -5,6 +5,7 @@
  */
 #add-content-panel {
   z-index: $add-content-panel-z-index;
+  width: 38rem;
 
   h1 {
     text-align: center;
@@ -17,10 +18,26 @@
   }
 }
 
+.inspiration-block-category {
+  margin: 4rem 0;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  &::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
 .inspiration-block {
   @include unselectable();
 
   position: relative;
+  width: 46%;
+  float: left;
   min-height: 10px;
   margin: $inspiration-block-list-block-margin;
   font-size: $inspiration-block-list-font-size;

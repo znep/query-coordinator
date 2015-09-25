@@ -100,7 +100,7 @@ class StoriesController < ApplicationController
   end
 
   def edit
-    @inspiration_block_list = InspirationBlockList.new.blocks
+    @inspiration_category_list = InspirationBlockList.new.to_parsed_json
     @theme_list = ThemeList.new.themes
     @story = DraftStory.find_by_uid(params[:uid])
     @published_story = PublishedStory.find_by_uid(params[:uid])

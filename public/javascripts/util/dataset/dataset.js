@@ -1520,7 +1520,7 @@ var Dataset = ServerModel.extend({
 
     downloadUrl: function(type)
     {
-        if (this.isGeoDataset())
+        if (this.isGeoDataset() && !this.newBackend)
         {
             return this.metadata.geo.owsUrl + '?method=export&format=' + type;
         }

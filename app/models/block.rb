@@ -17,17 +17,24 @@ class Block < ActiveRecord::Base
   validates :components, presence: true
   validates :created_by, presence: true
 
-  scope :for_story, ->(story) {
+  scope :for_story, ->(story) do
+    where(id: story.block_ids)
+  end
+
+  # Searches the json blog for components with the specified type and only returns those blocks
+  scope :with_component_type, ->(component_type) do
+    json_query = %Q{ [{"type": "#{component_type}"}] }
+    where("components @> ?", json_query)
+  end
+
+  def self.for_story_in_order(story)
     # The order in which block rows are returned from the database is not
     # guaranteed to match the order in which the ids were supplied to the
     # select query, so we need to apply the story's ordering of the blocks
     # to the query result before returning it.
-    block_objects = where(id: story.block_ids)
-
-    story.block_ids.map do |block_id|
-      block_objects.detect { |block_object| block_object.id == block_id }
-    end
-  }
+    block_objects = Block.for_story(story)
+    self.in_story_order(block_objects, story)
+  end
 
   def as_json(options = nil)
     block_as_hash = self.attributes
@@ -41,5 +48,14 @@ class Block < ActiveRecord::Base
       components: json_block[:components],
       created_by: json_block[:created_by]
     )
+  end
+
+  # We pass in blocks here because we want to be able to sort a filtered list of blocks
+  # Chaining active record queries will not work here because of how we store the
+  # order of blocks within block_ids in the story model.
+  def self.in_story_order(blocks, story)
+    story.block_ids.map do |block_id|
+      blocks.detect { |block_object| block_object.id == block_id }
+    end
   end
 end

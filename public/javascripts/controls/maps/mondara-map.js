@@ -126,7 +126,7 @@
   NBEMapProvider.prototype = _.extend({}, MapProvider.prototype, {
     getLayer: function(layerName, layerOpts) {
       var style = encodeURIComponent(
-        '#main, #multipoint, #point {'+
+        '#main, #multipoint, #point {' +
           'line-width: 0.5;' +
           'line-color: #000;' +
           'marker-width: 8;' +
@@ -140,12 +140,12 @@
           'line-width: 0.5;' +
           'line-color: #000;' +
         '}' +
-        '#multiline, #line {' +
+        '#multilinestring, #linestring {' +
           'line-width: 0.5;' +
           'line-color: #000;' +
         '}'
       );
-      var tileUrl = '/tiles/' + layerName + '/the_geom/${z}/${x}/${y}.png?$style=' + style
+      var tileUrl = '/tiles/' + layerName + '/the_geom/${z}/${x}/${y}.png?$style=' + style;
       return new OpenLayers.Layer.XYZ(layerName, tileUrl, layerOpts);
     },
 

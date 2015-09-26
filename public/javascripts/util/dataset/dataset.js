@@ -1527,7 +1527,7 @@ var Dataset = ServerModel.extend({
         {
             var geoExportUrl = this.metadata.geo.owsUrl + '?method=export&format=' + type;
             if(this.newBackend) {
-                if(type === 'JSON' || type === 'CSV') {
+                if(ext === 'json' || ext === 'csv') {
                     return nbeExportUrl;
                 } else {
                     return geoExportUrl;

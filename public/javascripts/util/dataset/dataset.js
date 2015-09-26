@@ -1520,14 +1520,26 @@ var Dataset = ServerModel.extend({
 
     downloadUrl: function(type)
     {
-        if (this.isGeoDataset() && !this.newBackend)
-        {
-            return this.metadata.geo.owsUrl + '?method=export&format=' + type;
-        }
         var ext = type.toLowerCase().split(' ')[0];
+        var nbeExportUrl = '/api/export/v1/{0}.{1}'.format(this.id, ext);
+
+        if (this.isGeoDataset())
+        {
+            var geoExportUrl = this.metadata.geo.owsUrl + '?method=export&format=' + type;
+            if(this.newBackend) {
+                if(type === 'JSON' || type === 'CSV') {
+                    return nbeExportUrl;
+                } else {
+                    return geoExportUrl;
+                }
+            } else {
+                return geoExportUrl;
+            }
+        }
+
         var bom = (type == 'CSV for Excel') ? '&bom=true' : '';
         if (this.newBackend && blist.feature_flags.enable_export_service) {
-          return '/api/export/v1/{0}.{1}'.format(this.id, ext);
+          return nbeExportUrl
         } else {
           return '/api/views/' + this.id + '/rows.' + ext + '?accessType=DOWNLOAD' + bom;
         }

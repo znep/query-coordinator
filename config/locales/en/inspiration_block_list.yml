@@ -1,6 +1,15 @@
 en:
   inspiration_blocks:
     generic_intro_sentence: This is placeholder text. To get started, remove it and input your own information!
+    categories:
+      text:
+        name: Presentation Ideas
+        description: Variety and texture keep your readers interested!
+      media_and_text:
+        name: Rich Media and Text
+        description: Combinations that feature visualizations and media
+      dividers_and_spacers:
+        name: Dividers and Spacers
     title_block:
       heading: Your Great Story Title
     text_block:

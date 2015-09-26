@@ -11,8 +11,8 @@
 %>
 {
   "text": {
-    "name": "Presentation Ideas",
-    "description": "Variety and texture keep your readers interested",
+    "name": "<%= I18n.t('inspiration_blocks.categories.text.name') %>",
+    "description": "<%= I18n.t('inspiration_blocks.categories.text.description') %>",
     "blocks": [
       {
         "imagePreview": "<%= asset_path("editor/iconic-blocks/title-12.svg") %>",
@@ -187,8 +187,8 @@
   },
 
   "media_and_text": {
-    "name": "Rich Media and Text",
-    "description": "Combinations that feature visualizations and media",
+    "name": "<%= I18n.t('inspiration_blocks.categories.media_and_text.name') %>",
+    "description": "<%= I18n.t('inspiration_blocks.categories.media_and_text.description') %>",
     "blocks": [
       {
         "imagePreview": "<%= asset_path("editor/iconic-blocks/media-12.svg") %>",
@@ -210,6 +210,50 @@
           "components": [
             {
               "type": "assetSelector"
+            },
+            {
+              "type": "assetSelector"
+            }
+          ]
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/text-media-6-6.svg") %>",
+        "blockContent": {
+          "id": "text-media-6-6",
+          "layout": "6-6",
+          "components": [
+            {
+              "type": "html",
+              "value": "<%=
+              [
+                "<h3>#{I18n.t('inspiration_blocks.text_media_6_6.heading')}</h3>",
+                "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+                "#{I18n.t('inspiration_blocks.text_media_6_6.content')}",
+                "</div>"
+              ].join('').html_safe %>"
+            },
+            {
+              "type": "assetSelector"
+            }
+          ]
+        }
+      },
+      {
+        "imagePreview": "<%= asset_path("editor/iconic-blocks/text-media-4-8.svg") %>",
+        "blockContent": {
+          "id": "text-media-4-8",
+          "layout": "4-8",
+          "components": [
+            {
+              "type": "html",
+              "value": "<%=
+              [
+                "<h3>#{I18n.t('inspiration_blocks.text_media_4_8.heading')}</h3>",
+                "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
+                "#{I18n.t('inspiration_blocks.text_media_4_8.content')}",
+                "</div>"
+              ].join('').html_safe %>"
             },
             {
               "type": "assetSelector"
@@ -240,28 +284,6 @@
         }
       },
       {
-        "imagePreview": "<%= asset_path("editor/iconic-blocks/text-media-6-6.svg") %>",
-        "blockContent": {
-          "id": "text-media-6-6",
-          "layout": "6-6",
-          "components": [
-            {
-              "type": "html",
-              "value": "<%=
-              [
-                "<h3>#{I18n.t('inspiration_blocks.text_media_6_6.heading')}</h3>",
-                "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
-                "#{I18n.t('inspiration_blocks.text_media_6_6.content')}",
-                "</div>"
-              ].join('').html_safe %>"
-            },
-            {
-              "type": "assetSelector"
-            }
-          ]
-        }
-      },
-      {
         "imagePreview": "<%= asset_path("editor/iconic-blocks/media-text-8-4.svg") %>",
         "blockContent": {
           "id": "media-text-8-4",
@@ -282,34 +304,12 @@
             }
           ]
         }
-      },
-      {
-        "imagePreview": "<%= asset_path("editor/iconic-blocks/text-media-4-8.svg") %>",
-        "blockContent": {
-          "id": "text-media-4-8",
-          "layout": "4-8",
-          "components": [
-            {
-              "type": "html",
-              "value": "<%=
-              [
-                "<h3>#{I18n.t('inspiration_blocks.text_media_4_8.heading')}</h3>",
-                "<div><i>#{I18n.t('inspiration_blocks.generic_intro_sentence')}</i> ",
-                "#{I18n.t('inspiration_blocks.text_media_4_8.content')}",
-                "</div>"
-              ].join('').html_safe %>"
-            },
-            {
-              "type": "assetSelector"
-            }
-          ]
-        }
       }
     ]
   },
 
   "dividers_and_spacers": {
-    "name": "Dividers & Spacers",
+    "name": "<%= I18n.t('inspiration_blocks.categories.dividers_and_spacers.name') %>",
     "blocks": [
       {
         "imagePreview": "<%= asset_path("editor/iconic-blocks/element-rule.svg") %>",

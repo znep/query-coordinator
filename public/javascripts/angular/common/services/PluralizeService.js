@@ -54,6 +54,8 @@
   }
 
   function pluralize(str, count) {
+    window.socrata.utils.assertIsOneOfTypes(count, 'number', 'undefined');
+
     if (count === 1) {
       return str;
     }

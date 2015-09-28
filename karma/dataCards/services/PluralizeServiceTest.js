@@ -25,10 +25,12 @@ describe('pluralize', function() {
   });
 
   it('should not modify the string if the second parameter is 1', function() {
-    expect(PluralizeService.pluralize('cat', 1)).to.equal('cat');
+    expect(PluralizeService.pluralize('cat')).to.equal('cats');
     expect(PluralizeService.pluralize('cat', 0)).to.equal('cats');
-    expect(PluralizeService.pluralize('cat', '1')).to.equal('cats');
-    expect(PluralizeService.pluralize('cat', null)).to.equal('cats');
-    expect(PluralizeService.pluralize('cat', 'dog')).to.equal('cats');
+    expect(PluralizeService.pluralize('cat', 1)).to.equal('cat');
+    expect(PluralizeService.pluralize('cat', 2)).to.equal('cats');
+    expect(_.partial(PluralizeService.pluralize, 'cat', '1')).to.throw();
+    expect(_.partial(PluralizeService.pluralize, 'cat', null)).to.throw();
+    expect(_.partial(PluralizeService.pluralize, 'cat', 'dog')).to.throw();
   });
 });

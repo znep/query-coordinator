@@ -62,6 +62,9 @@ GEM
     bourbon (4.2.3)
       sass (~> 3.4)
       thor
+    breakpoint (2.5.0)
+      sass (~> 3.3)
+      sassy-maps (< 1.0.0)
     builder (3.2.2)
     byebug (2.7.0)
       columnize (~> 0.3)
@@ -236,6 +239,8 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (~> 1.1)
+    sassy-maps (0.4.0)
+      sass (~> 3.3)
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
@@ -293,6 +298,7 @@ DEPENDENCIES
   aws-sdk
   aws-sdk-v1
   bourbon
+  breakpoint
   byebug
   capybara
   daemons

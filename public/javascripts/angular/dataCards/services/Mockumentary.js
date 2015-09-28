@@ -11,6 +11,7 @@
         description: 'Description',
         name: 'Name',
         pageId: 'page-page',
+        moderationStatus: true,
         permissions: {
           isPublic: true
         },
@@ -47,6 +48,7 @@
               description: 'Description',
               name: 'Name',
               pageId: 'page-page',
+              moderationStatus: true,
               primaryAmountField: null,
               primaryAggregation: null,
               version: 2
@@ -57,6 +59,7 @@
               description: 'Description',
               name: 'Name',
               pageId: 'aaaa-aaaa',
+              moderationStatus: true,
               primaryAmountField: null,
               primaryAggregation: null,
               version: 2

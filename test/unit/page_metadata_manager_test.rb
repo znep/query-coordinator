@@ -49,7 +49,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     result = manager.show('four-four')
     assert_equal(%w(
       cards datasetId description name pageId primaryAggregation primaryAmountField
-      version largestTimeSpanDays defaultDateTruncFunction permissions
+      version largestTimeSpanDays defaultDateTruncFunction permissions moderationStatus
     ).sort, result.keys.sort)
     assert_equal({'isPublic' => true, 'rights' => []}.with_indifferent_access, result['permissions'])
   end
@@ -73,7 +73,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     result = manager.show('four-four')
     assert_equal(%w(
       cards datasetId description name pageId primaryAggregation primaryAmountField
-      version largestTimeSpanDays defaultDateTruncFunction permissions
+      version largestTimeSpanDays defaultDateTruncFunction permissions moderationStatus
     ).sort, result.keys.sort)
     assert_equal({'isPublic' => false, 'rights' => []}.with_indifferent_access, result['permissions'])
   end
@@ -90,7 +90,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     result = manager.show('four-four')
     assert_equal(%w(
       cards datasetId description name pageId primaryAggregation primaryAmountField
-      version largestTimeSpanDays defaultDateTruncFunction permissions
+      version largestTimeSpanDays defaultDateTruncFunction permissions moderationStatus
     ).sort, result.keys.sort)
     assert_equal({'isPublic' => true, 'rights' => []}.with_indifferent_access, result['permissions'])
   end
@@ -107,7 +107,7 @@ class PageMetadataManagerTest < Test::Unit::TestCase
     result = manager.show('four-four')
     assert_equal(%w(
       cards datasetId description name pageId primaryAggregation primaryAmountField
-      version largestTimeSpanDays defaultDateTruncFunction permissions
+      version largestTimeSpanDays defaultDateTruncFunction permissions moderationStatus
     ).sort, result.keys.sort)
     assert_equal({'isPublic' => false, 'rights' => []}.with_indifferent_access, result['permissions'])
   end

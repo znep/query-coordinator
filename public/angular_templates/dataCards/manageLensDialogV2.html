@@ -1,0 +1,29 @@
+<h2>{{::'manageLensDialog.title' | I18n}}</h2>
+<label>{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationTitle' : 'manageLensDialog.visibility.title') | I18n}}</label>
+<div class="right">
+  <soc-select ng-model="visibilityDropdownSelection" ng-disabled="visibilityDropdownDisabled">
+    <soc-option value="approved">{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationApproved' : 'manageLensDialog.visibility.shown') | I18n}}</soc-option>
+    <soc-option value="rejected">{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationRejected' : 'manageLensDialog.visibility.hidden') | I18n}}</soc-option>
+    <soc-option value="pending" ng-if="usingViewModeration && initialPageVisibility == 'pending'">{{::'manageLensDialog.visibility.viewModerationPending' | I18n}}</soc-option>
+  </soc-select>
+  <div class="flavor-text">
+    <div ng-show="datasetIsPrivate && userIsPrivileged"
+      ng-bind-html="'manageLensDialog.visibility.datasetIsPrivate' | I18n">
+    </div>
+    <div ng-show="!datasetIsPrivate && !userIsPrivileged"
+      ng-bind-html="'manageLensDialog.visibility.userIsUnprivileged' | I18n">
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <save-button
+    class="dark r-to-l manage-lens-dialog-save"
+    ng-click="dialogHasChanges && save()"
+    enabled="!dialogState.disableCloseDialog && dialogHasChanges"
+    save-status="saveStatus"></save-button>
+  <button
+    ng-disabled="dialogState.disableCloseDialog"
+    class="action-btn dark manage-lens-dialog-cancel"
+    ng-click="dialogState.show = false">{{::'common.cancel' | I18n}}</button>
+</div>

@@ -70,6 +70,7 @@ class PageMetadataManager
       page_metadata = result[:displayFormat][:data_lens_page_metadata]
       page_metadata = ensure_page_metadata_properties(page_metadata)
       page_metadata['permissions'] = permissions.stringify_keys!
+      page_metadata['moderationStatus'] = result[:moderationStatus]
       page_metadata
     else
       result = phidippides.fetch_page_metadata(id, options)
@@ -80,6 +81,7 @@ class PageMetadataManager
 
       page_metadata = result[:body]
       page_metadata['permissions'] = permissions.stringify_keys! if page_metadata
+      page_metadata['moderationStatus'] = result[:moderationStatus] if page_metadata
       page_metadata
     end
 

@@ -77,6 +77,9 @@
         }
       }
     };
+
+    $scope.dataLensVersion = $scope.page.version;
+    $scope.$bindObservable('moderationStatusIsPublic', $scope.page.observe('moderationStatus'));
   }
 
   function initManageLens($scope, page) {

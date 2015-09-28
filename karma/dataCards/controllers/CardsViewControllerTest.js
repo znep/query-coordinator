@@ -46,6 +46,7 @@ describe('CardsViewController', function() {
   beforeEach(module('/angular_templates/dataCards/addCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/columnAndVisualizationSelector.html'));
   beforeEach(module('/angular_templates/dataCards/manageLensDialog.html'));
+  beforeEach(module('/angular_templates/dataCards/manageLensDialogV2.html'));
   beforeEach(module('/angular_templates/dataCards/modalDialog.html'));
   beforeEach(module('/angular_templates/dataCards/customizeCardDialog.html'));
   beforeEach(module('/angular_templates/dataCards/mobileWarningDialog.html'));
@@ -154,6 +155,7 @@ describe('CardsViewController', function() {
     testHelpers.mockDirective(_$provide, 'modalDialog');
     testHelpers.mockDirective(_$provide, 'addCardDialog');
     testHelpers.mockDirective(_$provide, 'manageLensDialog');
+    testHelpers.mockDirective(_$provide, 'manageLensDialogV2');
     testHelpers.mockDirective(_$provide, 'mobileWarningDialog');
     context.$scope.$apply();
     expect(context.$scope.page).to.be.instanceof(Page);

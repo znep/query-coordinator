@@ -1,10 +1,10 @@
-<div class="tool-panel">
+<div class="tool-panel" ng-class="{'down-right': v2DataLens}">
 
   <button
     type="button"
     title="{{::'apiExplorer.apiButtonTitle' | I18n}}"
-    ng-class="{touched: panelActive, disabled: editMode}"
-    class="tool-panel-toggle-btn action-btn r-to-l"
+    ng-class="{touched: panelActive, disabled: editMode, 'l-to-r': v2DataLens}"
+    class="tool-panel-toggle-btn action-btn"
     ng-click="panelActive = editMode ? false : !panelActive">
     {{::'apiExplorer.apiButton' | I18n}}
   </button>

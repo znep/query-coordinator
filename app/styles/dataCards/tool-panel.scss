@@ -85,6 +85,24 @@ $tool-panel-z-index: 1004;
       border-width: 0 $tool-panel-hint-size $tool-panel-hint-size 0;
     }
   }
+  &.down-right { // downright ridiculous!
+    .tool-panel-main {
+      top: 43px;
+      left: 50%;
+    }
+    .tool-panel-hint {
+      bottom: inherit;
+      top: -$tool-panel-hint-size + 1;
+      left: -1px;
+      border-width: 0 ($tool-panel-hint-size + 1) ($tool-panel-hint-size + 1) 0;
+      &:before {
+        display: none;
+        // left: -($tool-panel-hint-size + 1);
+        // buttom: 1px;
+        // border-width: ($tool-panel-hint-size + 1) ($tool-panel-hint-size + 1) ($tool-panel-hint-size + 1) 0;
+      }
+    }
+  }
   &.light {
     .tool-panel-hint {
       border-width: 0 $tool-panel-hint-size $tool-panel-hint-size 0;

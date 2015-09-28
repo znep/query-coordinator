@@ -47,7 +47,8 @@
           'primaryAmountField',
           'primaryAggregation',
           'baseSoqlFilter',
-          'defaultDateTruncFunction'
+          'defaultDateTruncFunction',
+          'moderationStatus'
         ];
 
         var deserializedCards = _.map(pageMetadata.cards, function(serializedCard) {

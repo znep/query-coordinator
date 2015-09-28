@@ -489,7 +489,7 @@ module DatasetsHelper
     hash.manage!.sharing = view.is_snapshotted? || !view.has_rights?('grant')
     hash.manage!.permissions = view.is_snapshotted? || !view.has_rights?('update_view')
     hash.manage!.plagiarize = !CurrentDomain.user_can?(current_user, :chown_datasets)
-    hash.manage!.deleteDataset = !view.has_rights?('delete_view') || view.new_backend?
+    hash.manage!.deleteDataset = !view.has_rights?('delete_view')
     hash.manage!.api_foundry = hide_api_foundry?
 
     hash.columnProperties = view.non_tabular?

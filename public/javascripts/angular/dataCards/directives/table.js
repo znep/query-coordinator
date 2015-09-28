@@ -11,7 +11,8 @@
     $q,
     $timeout,
     DataTypeFormatService,
-    I18n
+    I18n,
+    PluralizeService
   ) {
     return {
       templateUrl: '/angular_templates/dataCards/table.html',
@@ -485,13 +486,14 @@
 
               if (scope.filteredRowCount <= 1) {
                 scope.tableLabel = I18n.t('table.nonRangeLabel',
-                  _.escape(scope.rowDisplayUnit.capitalize()),
+                  _.escape(_.capitalize(scope.rowDisplayUnit)),
                   window.socrata.utils.commaify(topRow),
                   window.socrata.utils.commaify(scope.filteredRowCount)
                 );
               } else {
+                var rowDisplayUnit = PluralizeService.pluralize(scope.rowDisplayUnit);
                 scope.tableLabel = I18n.t('table.rangeLabel',
-                  _.escape(scope.rowDisplayUnit.capitalize().pluralize()),
+                  _.escape(_.capitalize(rowDisplayUnit)),
                   window.socrata.utils.commaify(topRow),
                   window.socrata.utils.commaify(bottomRow),
                   window.socrata.utils.commaify(scope.filteredRowCount)

@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  function PageHelpersService(Page, I18n) {
+  function PageHelpersService(Page, I18n, PluralizeService) {
     return {
       dynamicAggregationTitle: function(pageModel) {
         window.socrata.utils.assert(pageModel instanceof Page, 'pageModel must be a Page model, durr');
@@ -20,14 +20,14 @@
         var countTitle$ = Rx.Observable.combineLatest(
           aggregation$.filter(function(value) { return value['function'] === 'count'; }),
           function(value) {
-            return I18n.t('cardTitles.numberOf', value.unit.pluralize());
+            return I18n.t('cardTitles.numberOf', PluralizeService.pluralize(value.unit));
           });
 
         var sumTitle$ = Rx.Observable.combineLatest(
           primaryAmountFieldName$.filter(_.isPresent),
           aggregation$.filter(function(value) { return value['function'] === 'sum'; }),
           function(primaryAmountField) {
-            return I18n.t('cardTitles.sumOf', primaryAmountField.pluralize());
+            return I18n.t('cardTitles.sumOf', PluralizeService.pluralize(primaryAmountField));
           });
 
         var meanTitle$ = Rx.Observable.combineLatest(

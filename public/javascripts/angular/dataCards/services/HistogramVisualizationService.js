@@ -1,10 +1,6 @@
 (function() {
   'use strict';
 
-  function pluralizeBasedOnValue(string, value) {
-    return (value === 1) ? string : string.pluralize();
-  }
-
   function renderHoverFlyoutTemplate(
     unfilteredBucket,
     filteredBucket,
@@ -54,7 +50,7 @@
     return lines.join('');
   }
 
-  function HistogramVisualizationService(Constants, FlyoutService, I18n) {
+  function HistogramVisualizationService(Constants, FlyoutService, I18n, PluralizeService) {
     function setupDOM(id, container) {
       var dom = {};
 
@@ -248,7 +244,7 @@
           window.socrata.utils.formatNumber(bucketOfInterest.end)
         );
 
-        var pluralizeRowDisplayUnit = _.partial(pluralizeBasedOnValue, hover.rowDisplayUnit, _);
+        var pluralizeRowDisplayUnit = _.partial(PluralizeService.pluralize, hover.rowDisplayUnit, _);
 
         return template.format({
           valueRange: valueRange,

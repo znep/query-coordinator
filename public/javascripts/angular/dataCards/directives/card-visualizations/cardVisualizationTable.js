@@ -2,7 +2,7 @@
 
   'use strict';
 
-  function cardVisualizationTableDirectiveFactory(Constants, CardDataService, SortedTileLayout, I18n) {
+  function cardVisualizationTableDirectiveFactory(Constants, CardDataService, PluralizeService, SortedTileLayout, I18n) {
 
     return {
       restrict: 'E',
@@ -206,9 +206,7 @@
           rowDisplayUnit$,
           function(filteredRowCount, rowCount, rowDisplayUnit) {
             var customTitle;
-            var pluralRowDisplayUnit = filteredRowCount === 1 ?
-              rowDisplayUnit :
-              rowDisplayUnit.pluralize();
+            var pluralRowDisplayUnit = PluralizeService.pluralize(rowDisplayUnit, filteredRowCount);
             var rowCountWithCommas = window.socrata.utils.commaify(rowCount);
             pluralRowDisplayUnit = _.escape(pluralRowDisplayUnit);
             if (rowCount === filteredRowCount) {

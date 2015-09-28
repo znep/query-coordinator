@@ -1,4 +1,4 @@
-angular.module('socrataCommon.directives').directive('columnChart', function($parse, $timeout, FlyoutService, I18n) {
+angular.module('socrataCommon.directives').directive('columnChart', function($parse, $timeout, FlyoutService, I18n, PluralizeService) {
 
   'use strict';
 
@@ -115,9 +115,7 @@ angular.module('socrataCommon.directives').directive('columnChart', function($pa
 
           if (_.isFinite(value)) {
             if (labelUnit) {
-              formattedValue = (value === 1) ?
-                labelUnit : labelUnit.pluralize();
-              formattedValue = ' ' + formattedValue;
+              formattedValue = ' ' + PluralizeService.pluralize(labelUnit, value);
             }
 
             formattedValue = window.socrata.utils.formatNumber(value) + formattedValue;

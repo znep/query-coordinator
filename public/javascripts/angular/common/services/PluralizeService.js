@@ -1,10 +1,10 @@
 (function() {
   'use strict';
-// Extracted from inflection-js (https://code.google.com/p/inflection-js/),
-// a port of the functionality from Ruby on Rails' Active Support Inflection classes into Javascript.
-// MIT Licensed
+  // Extracted from inflection-js (https://code.google.com/p/inflection-js/),
+  // a port of the functionality from Ruby on Rails' Active Support Inflection classes into Javascript.
+  // MIT Licensed
 
-  String.prototype.pluralRules = [
+  var pluralRules = [
     [new RegExp('(m)an$', 'gi'), '$1en'],
     [new RegExp('(pe)rson$', 'gi'), '$1ople'],
     [new RegExp('(child)$', 'gi'), '$1ren'],
@@ -27,7 +27,7 @@
     [new RegExp('$', 'gi'), 's']
   ];
 
-  String.prototype.uncountableWords = [
+  var uncountableWords = [
     'equipment', 'information', 'rice', 'money', 'species', 'series',
     'fish', 'sheep', 'moose', 'deer', 'news',
     'sugar', 'butter', 'water',
@@ -37,41 +37,39 @@
     'electricity', 'gas', 'power'
   ];
 
-  String.prototype.pluralize = function(plural) {
-    function applyRules(str, rules, skip, override) {
-      if (override) {
-        str = override;
-      } else {
-        str = str.trim();
-        var lastWord = _.last(str.split(' '));
-        var ignore = (skip.indexOf(lastWord.toLowerCase()) > -1);
-        if (!ignore) {
-          for (var x = 0; x < rules.length; x++) {
-            if (str.match(rules[x][0])) {
-              str = str.replace(rules[x][0], rules[x][1]);
-              break;
-            }
-          }
+  function applyRules(str, rules, skip) {
+    str = str.trim();
+    var lastWord = _.last(str.split(' '));
+    var ignore = (skip.indexOf(lastWord.toLowerCase()) > -1);
+    if (!ignore) {
+      for (var x = 0; x < rules.length; x++) {
+        if (str.match(rules[x][0])) {
+          str = str.replace(rules[x][0], rules[x][1]);
+          break;
         }
       }
+    }
+
+    return str;
+  }
+
+  function pluralize(str, count) {
+    window.socrata.utils.assertIsOneOfTypes(count, 'number', 'undefined');
+
+    if (count === 1) {
       return str;
     }
 
-    return applyRules(
-      this,
-      this.pluralRules,
-      this.uncountableWords,
-      plural
-    );
-  };
+    return applyRules(str, pluralRules, uncountableWords);
+  }
 
-  String.prototype.titleize = function() {
-    var str = this.toLowerCase();
-    return str.replace(/(?:^|\s|-)\S/g, function(c) { return c.toUpperCase(); });
-  };
+  function PluralizeService() {
+    return {
+      pluralize: pluralize
+    };
+  }
 
-  String.prototype.capitalize = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
-  };
-
+  angular.
+    module('socrataCommon.services').
+      factory('PluralizeService', PluralizeService);
 })();

@@ -21,14 +21,15 @@
     FlyoutService,
     Constants,
     ServerConfig,
-    I18n
+    I18n,
+    PluralizeService
   ) {
 
     return {
       templateUrl: '/angular_templates/dataCards/timelineChart.html',
       restrict: 'E',
       scope: true,
-      link: function(scope, element, attrs) {
+      link: function(scope, element) {
         var chartData$ = scope.$observe('chartData');
         var precision$ = scope.$observe('precision');
         var rowDisplayUnit$ = scope.$observe('rowDisplayUnit');
@@ -361,7 +362,7 @@
           var width = highlightData.width + (targetMargin * 2);
           var leftPos = highlightData.left - targetMargin;
           width = Math.min(width, cardWidth + gutter - leftPos);
-          leftPos = Math.max(leftPos , -gutter);
+          leftPos = Math.max(leftPos, -gutter);
 
           jqueryHighlightTargetElement.css({
             left: leftPos,
@@ -395,14 +396,14 @@
 
           // This function determines the vertical position of the flyout.
           // It always positions the flyout above all timeline paths.
-        function flyoutVerticalPosition() {
-          var hoveringWithinSelection =
-            currentDatum.date >= selectionStartDate && currentDatum.date <= selectionEndDate;
+          function flyoutVerticalPosition() {
+            var hoveringWithinSelection =
+              currentDatum.date >= selectionStartDate && currentDatum.date <= selectionEndDate;
 
-          return (selectionIsCurrentlyRendered && !hoveringWithinSelection) ?
-            d3YScale(_.max([currentDatum.unfiltered, 0])) :
-            d3YScale(_.max([currentDatum.unfiltered, currentDatum.filtered, 0]));
-        };
+            return (selectionIsCurrentlyRendered && !hoveringWithinSelection) ?
+              d3YScale(_.max([currentDatum.unfiltered, 0])) :
+              d3YScale(_.max([currentDatum.unfiltered, currentDatum.filtered, 0]));
+          }
 
           // Sets the x and y flyout position.
           flyoutPosition = d3.
@@ -593,113 +594,113 @@
 
         }
 
-        function renderChartSelection() {
+        /**
+         * This function will select the data points that fall between the
+         * selection start and end dates and then create synthetic points one
+         * half of a <datasetPrecision> unit before and after the selection.
+         * This is to support the behavior that the point representing the
+         * value of each interval is drawn in the center of the interval, not
+         * on its left edge.
+         *
+         * The half <datasetPrecision> unit synthetic points must
+         * furthermore have values that are interpolated between the first/
+         * last actual data points and the points just before or after them,
+         * so that the rendered selection mirrors the unfiltered data drawn
+         * behind it.
+         *
+         * In the case that the selection starts at the beginning of the
+         * overall data the first data point's value will be used instead.
+         *
+         * In the case that the selection ends at the end of the overall data
+         * the last data point's value will be used instead.
+         */
+        function deriveSelectionValues(chartData, minDate, maxDate) {
 
-          /**
-           * This function will select the data points that fall between the
-           * selection start and end dates and then create synthetic points one
-           * half of a <datasetPrecision> unit before and after the selection.
-           * This is to support the behavior that the point representing the
-           * value of each interval is drawn in the center of the interval, not
-           * on its left edge.
-           *
-           * The half <datasetPrecision> unit synthetic points must
-           * furthermore have values that are interpolated between the first/
-           * last actual data points and the points just before or after them,
-           * so that the rendered selection mirrors the unfiltered data drawn
-           * behind it.
-           *
-           * In the case that the selection starts at the beginning of the
-           * overall data the first data point's value will be used instead.
-           *
-           * In the case that the selection ends at the end of the overall data
-           * the last data point's value will be used instead.
-           */
-          function deriveSelectionValues(chartData, minDate, maxDate) {
+          var lastChartDatum = _.last(chartData.values);
+          var prevOutOfBoundsDatum = { filtered: null };
+          var nextOutOfBoundsDatum = { filtered: null };
+          var firstSelectionDatum = null;
+          var lastSelectionDatum = null;
+          var firstSelectionValueAmount = false;
+          var lastSelectionValueAmount = false;
+          var selectionValues = [];
 
-            var lastChartDatum = _.last(chartData.values);
-            var prevOutOfBoundsDatum = { filtered: null };
-            var nextOutOfBoundsDatum = { filtered: null };
-            var firstSelectionDatum = null;
-            var lastSelectionDatum = null;
-            var firstSelectionValueAmount = false;
-            var lastSelectionValueAmount = false;
-            var selectionValues = [];
+          _.each(chartData.values, function(datum) {
 
-            _.each(chartData.values, function(datum) {
-
-              if (datum.date >= minDate && datum.date <= maxDate) {
-                if (_.isNull(firstSelectionDatum)) {
-                  firstSelectionDatum = datum;
-                }
-                // Track the current datum as "beyond the end of the selection"
-                // instead of "last in selection" because we chop off the last
-                // value below!
-                nextOutOfBoundsDatum = datum;
-                selectionValues.push(datum);
-              } else if (datum.date < minDate) {
-                prevOutOfBoundsDatum = datum;
-              } else if (datum.date > maxDate) {
-                return false;
+            if (datum.date >= minDate && datum.date <= maxDate) {
+              if (_.isNull(firstSelectionDatum)) {
+                firstSelectionDatum = datum;
               }
-            });
-
-            // Drop the last selection value since they are all incremented
-            // by half of a dataset precision unit, and the last value to
-            // meet the date range criteria will actually be drawn outside
-            // the range indicated by the x-axis ticks.
-            // We could accomplish the same thing by looking ahead in the
-            // above for loop, but throwing away the last value seemed easier
-            // with regard to bounds checking and so forth.
-            selectionValues.length = selectionValues.length - 1;
-
-            // Because of the way the data is displayed, it is valid for a
-            // selection to begin on the last datum and end on the last datum
-            // + 1 <datasetPrecision> unit. Therefore we need to check to see
-            // our selection's end date is after the last date in the actual
-            // values and append a surrogate value to the filtered array with
-            // an appropriate date to show as the end of the x scale.
-            if (lastChartDatum.date < maxDate) {
-              selectionValues.push(lastChartDatum);
+              // Track the current datum as "beyond the end of the selection"
+              // instead of "last in selection" because we chop off the last
+              // value below!
+              nextOutOfBoundsDatum = datum;
+              selectionValues.push(datum);
+            } else if (datum.date < minDate) {
+              prevOutOfBoundsDatum = datum;
+            } else if (datum.date > maxDate) {
+              return false;
             }
+          });
 
-            // Only at this point can we define the true "last" datum.
-            lastSelectionDatum = _.last(selectionValues);
+          // Drop the last selection value since they are all incremented
+          // by half of a dataset precision unit, and the last value to
+          // meet the date range criteria will actually be drawn outside
+          // the range indicated by the x-axis ticks.
+          // We could accomplish the same thing by looking ahead in the
+          // above for loop, but throwing away the last value seemed easier
+          // with regard to bounds checking and so forth.
+          selectionValues.length = selectionValues.length - 1;
 
-            // If there is a non-null value immediately before the start of the
-            // selection, then force the first value to be halfway between the
-            // first selected datum and the preceding datum in order to keep the
-            // line consistent.
-            //
-            // Otherwise leave firstSelectionValueAmount false and let
-            // transformValuesForRendering choose how to extend the selection
-            // area (which it will do if firstSelectionValueAmount is falsey).
-            if (!_.isNull(prevOutOfBoundsDatum.filtered)) {
-              firstSelectionValueAmount = (
-                firstSelectionDatum.filtered + prevOutOfBoundsDatum.filtered
-              ) / 2;
-            }
-
-            // If there is a non-null value immediately after the end of the
-            // selection, then force the last value to be halfway between the
-            // last selected datum and the following datum in order to keep the
-            // line consistent.
-            //
-            // Otherwise leave lastSelectionValueAmount false and let
-            // transformValuesForRendering choose how to extend the selection
-            // area (which it will do if lastSelectionValueAmount is falsey).
-            if (!_.isNull(nextOutOfBoundsDatum.filtered)) {
-              lastSelectionValueAmount = (
-                lastSelectionDatum.filtered + nextOutOfBoundsDatum.filtered
-              ) / 2;
-            }
-
-            return transformValuesForRendering(
-              selectionValues,
-              firstSelectionValueAmount,
-              lastSelectionValueAmount
-            );
+          // Because of the way the data is displayed, it is valid for a
+          // selection to begin on the last datum and end on the last datum
+          // + 1 <datasetPrecision> unit. Therefore we need to check to see
+          // our selection's end date is after the last date in the actual
+          // values and append a surrogate value to the filtered array with
+          // an appropriate date to show as the end of the x scale.
+          if (lastChartDatum.date < maxDate) {
+            selectionValues.push(lastChartDatum);
           }
+
+          // Only at this point can we define the true "last" datum.
+          lastSelectionDatum = _.last(selectionValues);
+
+          // If there is a non-null value immediately before the start of the
+          // selection, then force the first value to be halfway between the
+          // first selected datum and the preceding datum in order to keep the
+          // line consistent.
+          //
+          // Otherwise leave firstSelectionValueAmount false and let
+          // transformValuesForRendering choose how to extend the selection
+          // area (which it will do if firstSelectionValueAmount is falsey).
+          if (!_.isNull(prevOutOfBoundsDatum.filtered)) {
+            firstSelectionValueAmount = (
+              firstSelectionDatum.filtered + prevOutOfBoundsDatum.filtered
+            ) / 2;
+          }
+
+          // If there is a non-null value immediately after the end of the
+          // selection, then force the last value to be halfway between the
+          // last selected datum and the following datum in order to keep the
+          // line consistent.
+          //
+          // Otherwise leave lastSelectionValueAmount false and let
+          // transformValuesForRendering choose how to extend the selection
+          // area (which it will do if lastSelectionValueAmount is falsey).
+          if (!_.isNull(nextOutOfBoundsDatum.filtered)) {
+            lastSelectionValueAmount = (
+              lastSelectionDatum.filtered + nextOutOfBoundsDatum.filtered
+            ) / 2;
+          }
+
+          return transformValuesForRendering(
+            selectionValues,
+            firstSelectionValueAmount,
+            lastSelectionValueAmount
+          );
+        }
+
+        function renderChartSelection() {
 
           var minDate;
           var maxDate;
@@ -717,8 +718,6 @@
           var labelLeftOffset;
           var labelRightPosition;
           var selectionDelta;
-          var chartWidth;
-          var chartHeight;
           var margin;
           var values;
           var transformedMinDate;
@@ -757,11 +756,6 @@
 
             margin = Constants.TIMELINE_CHART_MARGIN;
 
-            // chartWidth and chartHeight do not include margins so that
-            // we can use the margins to render axis ticks.
-            chartWidth = cachedChartDimensions.width - margin.LEFT - margin.RIGHT;
-            chartHeight = cachedChartDimensions.height - margin.TOP - margin.BOTTOM;
-
             values = [
               deriveSelectionValues(cachedChartData, minDate, maxDate)
             ];
@@ -783,7 +777,7 @@
               area().
               defined(line.defined()).
               x(line.x()).
-              y0(function(d) { return d3YScale(0); }).
+              y0(function() { return d3YScale(0); }).
               y1(line.y());
 
             svgChart = d3ChartElement.
@@ -886,18 +880,18 @@
             dataAggregate = cachedChartData.values.
               filter(function(datum) {
                 return datum.date.getTime() >= selectionStartDate.getTime() &&
-                       datum.date.getTime() < selectionEndDate.getTime();
-            });
+                  datum.date.getTime() < selectionEndDate.getTime();
+              });
 
             unfilteredAggregate = dataAggregate.
               reduce(function(acc, datum) {
                 return acc + datum.unfiltered;
-            }, 0);
+              }, 0);
 
             filteredAggregate = dataAggregate.
               reduce(function(acc, datum) {
                 return acc + datum.filtered;
-            }, 0);
+              }, 0);
 
             dateRangeFlyoutLabel = '{0} - {1}'.
               format(formatDateLabel(minDate, true), formatDateLabel(maxDate, true));
@@ -940,74 +934,75 @@
 
         }
 
+        function deriveXAxisLabelPrecision() {
+
+          var domain;
+          var xAxisLabelPrecision;
+
+          domain = _.map(d3XScale.domain(), function(date) {
+            return moment(date);
+          });
+
+          xAxisLabelPrecision = 'DECADE';
+
+          // ...then use the domain to derive a timeline granularity.
+          if (moment(domain[0]).add(2, 'months').isAfter(domain[1])) {
+            xAxisLabelPrecision = 'DAY';
+          } else if (moment(domain[0]).add(2, 'years').isAfter(domain[1])) {
+            xAxisLabelPrecision = 'MONTH';
+          } else if (moment(domain[0]).add(20, 'years').isAfter(domain[1])) {
+            xAxisLabelPrecision = 'YEAR';
+          }
+
+          return xAxisLabelPrecision;
+        }
+
+        function deriveXAxisLabelDatumStep(labels) {
+
+          var numberOfLabels = labels.length;
+
+          // TIMELINE_CHART_REQUIRED_LABEL_WIDTH is the min
+          // width required for labels with month ("Oct 15")
+          var labelsWeHaveRoomFor = Math.floor(cachedChartDimensions.width /
+            Constants.TIMELINE_CHART_REQUIRED_LABEL_WIDTH);
+          var labelEveryN;
+
+          // TODO - write integration tests for the number of labels shown at given screen widths
+          // and ensuring that they are interactive.
+
+          // Show every label, every other label, etc...
+          if (numberOfLabels <= labelsWeHaveRoomFor) {
+            labelEveryN = 1;
+          } else if (numberOfLabels / 2 <= labelsWeHaveRoomFor) {
+            labelEveryN = 2;
+          } else if (numberOfLabels / 3 <= labelsWeHaveRoomFor) {
+            labelEveryN = 3;
+          } else if (numberOfLabels / 5 <= labelsWeHaveRoomFor) {
+            labelEveryN = 5;
+          } else {
+            labelEveryN = 7;
+          }
+
+          return labelEveryN;
+        }
+
+        function recordLabel(labels, startDate, endDate, pixelsPerDay, shouldLabel) {
+          labels.push({
+            startDate: startDate,
+            endDate: endDate,
+            left: d3XScale(startDate) - halfVisualizedDatumWidth,
+            width: moment.duration(moment(endDate) - moment(startDate)).asDays() * pixelsPerDay,
+            shouldLabel: shouldLabel
+          });
+        }
+
+
         /**
          * Is probably the most complicated function in the directive
          * simply because of all the special casing that needs to happen for
          * sensible display of axis labels across multiple time intervals.
          */
         function renderChartXAxis() {
-
-          function deriveXAxisLabelPrecision() {
-
-            var domain;
-            var xAxisLabelPrecision;
-
-            domain = _.map(d3XScale.domain(), function(date) {
-              return moment(date);
-            });
-
-            xAxisLabelPrecision = 'DECADE';
-
-            // ...then use the domain to derive a timeline granularity.
-            if (moment(domain[0]).add(2, 'months').isAfter(domain[1])) {
-              xAxisLabelPrecision = 'DAY';
-            } else if (moment(domain[0]).add(2, 'years').isAfter(domain[1])) {
-              xAxisLabelPrecision = 'MONTH';
-            } else if (moment(domain[0]).add(20, 'years').isAfter(domain[1])) {
-              xAxisLabelPrecision = 'YEAR';
-            }
-
-            return xAxisLabelPrecision;
-          }
-
-          function deriveXAxisLabelDatumStep(labels) {
-
-            var numberOfLabels = labels.length;
-
-            // TIMELINE_CHART_REQUIRED_LABEL_WIDTH is the min
-            // width required for labels with month ("Oct 15")
-            var labelsWeHaveRoomFor = Math.floor(cachedChartDimensions.width /
-              Constants.TIMELINE_CHART_REQUIRED_LABEL_WIDTH);
-            var labelEveryN;
-
-            // TODO - write integration tests for the number of labels shown at given screen widths
-            // and ensuring that they are interactive.
-
-            // Show every label, every other label, etc...
-            if (numberOfLabels <= labelsWeHaveRoomFor) {
-              labelEveryN = 1;
-            } else if (numberOfLabels / 2 <= labelsWeHaveRoomFor) {
-              labelEveryN = 2;
-            } else if (numberOfLabels / 3 <= labelsWeHaveRoomFor) {
-              labelEveryN = 3;
-            } else if (numberOfLabels / 5 <= labelsWeHaveRoomFor) {
-              labelEveryN = 5;
-            } else {
-              labelEveryN = 7;
-            }
-
-            return labelEveryN;
-          }
-
-          function recordLabel(labels, startDate, endDate, pixelsPerDay, shouldLabel) {
-            labels.push({
-              startDate: startDate,
-              endDate: endDate,
-              left: d3XScale(startDate) - halfVisualizedDatumWidth,
-              width: moment.duration(moment(endDate) - moment(startDate)).asDays() * pixelsPerDay,
-              shouldLabel: shouldLabel
-            });
-          }
 
           var pixelsPerDay;
           var jqueryAxisContainer;
@@ -1276,8 +1271,6 @@
           return function() {
 
             var margin;
-            var chartWidth;
-            var chartHeight;
             var values;
             var line;
             var area;
@@ -1285,11 +1278,6 @@
             var selection;
 
             margin = Constants.TIMELINE_CHART_MARGIN;
-
-            // chartWidth and chartHeight do not include margins so that
-            // we can use the margins to render axis ticks.
-            chartWidth = cachedChartDimensions.width - margin.LEFT - margin.RIGHT;
-            chartHeight = cachedChartDimensions.height - margin.TOP - margin.BOTTOM;
 
             values = chartOpts.valueTransformer(cachedChartData.values);
 
@@ -1305,7 +1293,7 @@
               area().
               defined(line.defined()).
               x(line.x()).
-              y0(function(d) { return d3YScale(0); }).
+              y0(function() { return d3YScale(0); }).
               y1(line.y());
 
             svgChart = d3ChartElement.
@@ -1441,9 +1429,7 @@
           var formatFlyoutValue = function(unit, value) {
             var formattedValue;
 
-            unit = (value === 1) ?
-              cachedRowDisplayUnit :
-              cachedRowDisplayUnit.pluralize();
+            unit = PluralizeService.pluralize(cachedRowDisplayUnit, value);
 
             formattedValue = (_.isFinite(value)) ?
               '{0} {1}'.format(
@@ -1486,7 +1472,7 @@
               selectionIsCurrentlyRendered;
 
             withinSelection = isInterval ?
-              withinSelection && (date == selectionStartDate) :
+              withinSelection && (date === selectionStartDate) :
               withinSelection && (date >= selectionStartDate) && (date <= selectionEndDate);
 
             showBlueFiltered = !selectionIsCurrentlyRendered &&
@@ -1630,9 +1616,9 @@
           // Clear out unneeded precision from the date objects.
           // This intentionally falls through! Watch out!
           switch (datasetPrecision) {
-            case 'YEAR':
+            case 'YEAR': // eslint-disable-line no-fallthrough
               date.setMonth(0);
-            case 'MONTH':
+            case 'MONTH': // eslint-disable-line no-fallthrough
               date.setDate(1);
             default:
               date.setMilliseconds(0);

@@ -27,7 +27,7 @@
 
         var dynamicTitle$ = PageHelpersService.dynamicAggregationTitle(pageModel).
           map(function(title) {
-            return '{0} by'.format(title.capitalize());
+            return '{0} by'.format(_.capitalize(title));
           });
 
         var displayDynamicTitle$ = model$.

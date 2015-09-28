@@ -6,6 +6,7 @@ describe AirbrakeNotifier do
 
   before do
     error.set_backtrace(['one', 'two'])
+    allow(Rails.logger).to receive(:error)
   end
 
   describe '#report_error' do

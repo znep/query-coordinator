@@ -14,6 +14,10 @@ RSpec.describe Api::V1::PermissionsController, type: :controller do
       }
     end
 
+    before do
+      allow(AirbrakeNotifier).to receive(:report_error)
+    end
+
     context 'when not authenticated' do
       before do
         stub_invalid_session

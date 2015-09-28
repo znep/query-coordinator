@@ -174,8 +174,8 @@ class AdministrationController < ApplicationController
     )
   end
 
-  def georegion_enabled_toggler
-    @georegion_enabled_toggler ||= ::Services::Administration::GeoregionEnabledToggler.new
+  def georegion_enabler
+    @georegion_enabler ||= ::Services::Administration::GeoregionEnabler.new
   end
 
   def enable_georegion
@@ -184,7 +184,7 @@ class AdministrationController < ApplicationController
     error_message = nil
     success_message = nil
     begin
-      georegion_enabled_toggler.enable(curated_region)
+      georegion_enabler.enable(curated_region)
       is_success = true
       success_message = t(
         'screens.admin.georegions.enable_success',
@@ -192,7 +192,7 @@ class AdministrationController < ApplicationController
       )
     rescue CoreServer::CoreServerError => _
       error_message = t('error.error_500.were_sorry')
-    rescue ::Services::Administration::EnabledGeoregionsLimitMet => _
+    rescue ::Services::Administration::EnabledGeoregionsLimitMetError => _
       error_message = t('screens.admin.georegions.enabled_georegions_limit')
     end
     handle_button_response(is_success, error_message, success_message, :georegions)
@@ -204,7 +204,7 @@ class AdministrationController < ApplicationController
     error_message = nil
     success_message = nil
     begin
-      georegion_enabled_toggler.disable(curated_region)
+      georegion_enabler.disable(curated_region)
       is_success = true
       success_message = t(
         'screens.admin.georegions.disable_success',

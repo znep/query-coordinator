@@ -49,6 +49,8 @@ module.exports = function ( karma ) {
       /* END OF EXTERNAL DEPENDENCIES
        * OUR CODE BELOW */
 
+      'karma/helpers/chai-dom-assertions.js',
+
       /* Old UX */
       // Began implementing this for dataset-show-test, but its dependencies were breaking
       // many other tests, so leaving it out for now.

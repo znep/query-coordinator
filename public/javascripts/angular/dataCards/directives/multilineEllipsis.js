@@ -158,6 +158,7 @@
             // try to ellipsify during the animation. However, the UI should still act as if
             // an ellipsis has been added.
             var forceReportAsClamped = false;
+            var needsAnimation;
 
             maxLines = parseInt(maxLines);
             tolerance = parseInt(tolerance);
@@ -190,7 +191,7 @@
             // we need to start an animation to this UI state if we're currently
             // showing the old state.
             if (expanded) {
-              var needsAnimation = everRendered && content.triggerHandler('isTruncated');
+              needsAnimation = everRendered && content.triggerHandler('isTruncated');
               var currentUnexpandedHeight = content.height();
 
               content.dotdotdot({
@@ -209,7 +210,7 @@
               var targetCollapsedHeight = getLineHeight(element) * maxLines;
               var currentlyTruncated = content.triggerHandler('isTruncated');
               var wouldBeTruncated = targetCollapsedHeight < currentExpandedHeight - tolerance;
-              var needsAnimation = everRendered && !currentlyTruncated && wouldBeTruncated;
+              needsAnimation = everRendered && !currentlyTruncated && wouldBeTruncated;
 
               var applyEllipsis = function() {
                 content.dotdotdot({

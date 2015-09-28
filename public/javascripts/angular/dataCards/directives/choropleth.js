@@ -12,7 +12,8 @@
     LeafletHelpersService,
     LeafletVisualizationHelpersService,
     FlyoutService,
-    I18n
+    I18n,
+    PluralizeService
   ) {
 
     // The methods by which we determine choropleth styles are wrapped up in the
@@ -30,13 +31,13 @@
       // Initialize the flyout handler
       FlyoutService.register({
         selector: '.choropleth-legend-color',
-        render: function(element) {
-          if ($(element).parents('.card').hasClass('dragged')) {
+        render: function(flyoutElement) {
+          if ($(flyoutElement).parents('.card').hasClass('dragged')) {
             return undefined;
           }
 
           return '<div class="flyout-title">{0}</div>'.
-            format(element.getAttribute('data-flyout-text'));
+            format(flyoutElement.getAttribute('data-flyout-text'));
         },
         destroySignal: scope.$destroyAsObservable(),
         horizontal: true
@@ -813,11 +814,11 @@
          * Mutate Leaflet state *
          ***********************/
 
-        function setGeojsonData(data, options) {
+        function setGeojsonData(data, geojsonOptions) {
           if (!_.isNull(geojsonBaseLayer)) {
             map.removeLayer(geojsonBaseLayer);
           }
-          geojsonBaseLayer = L.geoJson(data, options);
+          geojsonBaseLayer = L.geoJson(data, geojsonOptions);
           geojsonBaseLayer.addTo(map);
         }
 
@@ -1080,14 +1081,11 @@
             return Constants.NULL_VALUE_LABEL;
           }
 
-          var rowDisplayUnit = value !== 1 ?
-            scope.rowDisplayUnit.pluralize() :
-            scope.rowDisplayUnit;
-
+          var rowDisplayUnit = PluralizeService.pluralize(scope.rowDisplayUnit, value);
           return '{0} {1}'.format(window.socrata.utils.formatNumber(value), rowDisplayUnit);
         }
 
-        function renderFlyout(ignored, element) {
+        function renderFlyout(ignored, flyoutElement) {
 
           var feature;
           var featureHumanReadableName;
@@ -1102,7 +1100,7 @@
 
           var flyoutContent;
           var flyoutSpanClass;
-          var dragging = $(element).parents('.card').hasClass('dragged');
+          var dragging = $(flyoutElement).parents('.card').hasClass('dragged');
 
           // To ensure that only one choropleth instance will ever draw
           // a flyout at a given point in time, we check to see if the

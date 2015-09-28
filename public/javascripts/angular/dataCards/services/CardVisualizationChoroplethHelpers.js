@@ -57,18 +57,18 @@
         reportMissingProperty('computationStrategy');
       } else if (!column.computationStrategy.hasOwnProperty('source_columns')) {
         reportMissingProperty('source_columns');
-      } else if (column.computationStrategy['source_columns'].length === 0) {
+      } else if (column.computationStrategy.source_columns.length === 0) {
         $log.warn(
           'Could not determine column sourceColumn: "source_columns" present but empty.'
         );
       } else {
-        if (column.computationStrategy['source_columns'].length > 1) {
+        if (column.computationStrategy.source_columns.length > 1) {
           $log.warn(
             'Could not determine column sourceColumn: "source_columns" ' +
             'contains multiple values but only the first is currently used.'
           );
         }
-        sourceColumn = column.computationStrategy['source_columns'][0];
+        sourceColumn = column.computationStrategy.source_columns[0];
       }
 
       return sourceColumn;
@@ -108,56 +108,57 @@
       geojsonRegions,
       unfilteredDataAsHash,
       filteredDataAsHash,
-      activeFilterNames) {
+      activeFilterNames
+    ) {
 
-        var newFeatures = geojsonRegions.features.filter(
-          function(geojsonFeature) {
+      var newFeatures = geojsonRegions.features.filter(
+        function(geojsonFeature) {
 
-            return (
-              geojsonFeature.properties.hasOwnProperty(
-                Constants.INTERNAL_DATASET_FEATURE_ID
-              ) &&
-              geojsonFeature.properties[Constants.INTERNAL_DATASET_FEATURE_ID]
-            );
+          return (
+            geojsonFeature.properties.hasOwnProperty(
+              Constants.INTERNAL_DATASET_FEATURE_ID
+            ) &&
+            geojsonFeature.properties[Constants.INTERNAL_DATASET_FEATURE_ID]
+          );
+        }
+      ).map(
+        function(geojsonFeature) {
+
+          var name = geojsonFeature.
+            properties[Constants.INTERNAL_DATASET_FEATURE_ID];
+          var humanReadableName = '';
+
+          if (_.isString(geometryLabel) &&
+            geojsonFeature.properties.hasOwnProperty(geometryLabel)) {
+
+            humanReadableName = geojsonFeature.properties[geometryLabel];
           }
-        ).map(
-          function(geojsonFeature) {
 
-            var name = geojsonFeature.
-              properties[Constants.INTERNAL_DATASET_FEATURE_ID];
-            var humanReadableName = '';
+          var properties = {};
+          properties[Constants.INTERNAL_DATASET_FEATURE_ID] =
+            geojsonFeature.properties[Constants.INTERNAL_DATASET_FEATURE_ID];
 
-            if (_.isString(geometryLabel) &&
-              geojsonFeature.properties.hasOwnProperty(geometryLabel)) {
+          properties[Constants.FILTERED_VALUE_PROPERTY_NAME] =
+            filteredDataAsHash[name];
 
-              humanReadableName = geojsonFeature.properties[geometryLabel];
-            }
+          properties[Constants.UNFILTERED_VALUE_PROPERTY_NAME] =
+            unfilteredDataAsHash[name];
 
-            var properties = {};
-            properties[Constants.INTERNAL_DATASET_FEATURE_ID] =
-              geojsonFeature.properties[Constants.INTERNAL_DATASET_FEATURE_ID];
+          properties[Constants.SELECTED_PROPERTY_NAME] =
+            _.contains(activeFilterNames, name);
 
-            properties[Constants.FILTERED_VALUE_PROPERTY_NAME] =
-              filteredDataAsHash[name];
+          properties[Constants.HUMAN_READABLE_PROPERTY_NAME] =
+            humanReadableName;
 
-            properties[Constants.UNFILTERED_VALUE_PROPERTY_NAME] =
-              unfilteredDataAsHash[name];
-
-            properties[Constants.SELECTED_PROPERTY_NAME] =
-              _.contains(activeFilterNames, name);
-
-            properties[Constants.HUMAN_READABLE_PROPERTY_NAME] =
-              humanReadableName;
-
-            // Create a new object to get rid of superfluous shapefile-specific
-            // fields coming out of the backend.
-            return {
-              geometry: geojsonFeature.geometry,
-              properties: properties,
-              type: geojsonFeature.type
-            };
-          }
-        );
+          // Create a new object to get rid of superfluous shapefile-specific
+          // fields coming out of the backend.
+          return {
+            geometry: geojsonFeature.geometry,
+            properties: properties,
+            type: geojsonFeature.type
+          };
+        }
+      );
 
       return {
         crs: geojsonRegions.crs,
@@ -207,14 +208,7 @@
 
       // Extract the active column from the columns array by matching against
       // the card's "fieldName".
-      var column = _.find(
-        columns,
-        function(column, candidateFieldName) {
-          return candidateFieldName === fieldName;
-        }
-      );
-
-      if (_.isEmpty(column)) {
+      if (!_.isPresent(columns[fieldName])) {
         throw new Error('Could not match fieldName to human-readable column name.');
       }
 

@@ -3,15 +3,15 @@
     class="aggregation-chooser-static-label"
     ng-hide="hasAggregableColumns">
     <span ng-bind-html="::'aggregationChooser.byTheNumberOf' | I18n"></span>
-    {{aggregationUnit.pluralize()}}
+    {{aggregationUnit | pluralize}}
   </span>
   <a
     class="aggregation-chooser-trigger"
     ng-show="hasAggregableColumns"
     ng-class="{ disabled: !canChooseAggregation }"
     ng-click="panelActive = canChooseAggregation && !panelActive">
-    <span ng-bind-html="('aggregationChooser.byThe' + aggregationFunction.label.capitalize() + 'Of') | I18n"></span>
-    {{activeAggregation.label.pluralize()}}
+    <span ng-bind-html="('aggregationChooser.byThe' + aggregationFunction.capitalized + 'Of') | I18n"></span>
+    {{activeAggregation.label | pluralize}}
     <span class="tool-panel-cue"></span>
   </a>
   <div ng-class="{ active: panelActive }" class="tool-panel-main">
@@ -29,7 +29,7 @@
             ng-class="{ active: (aggregationFunction.type == 'count') || countFunctionHover }"
             ng-click="setAggregationFunction($event, 'count')">
               <span class="label">{{::'aggregationChooser.theNumberOf' | I18n}}</span>
-              <span class="sublabel">{{'aggregationChooser.countLabel' | I18n:rowDisplayUnit.pluralize()}}</span>
+              <span class="sublabel">{{'aggregationChooser.countLabel' | I18n:pluralRowDisplayUnit}}</span>
           </a>
           <a
             tabindex="0"
@@ -47,14 +47,14 @@
             class="aggregation-option count"
             data-aggregation-type="count"
             ng-class="{ disabled: aggregationFunction.type != 'count', active: (activeAggregation.label == rowDisplayUnit) || countFunctionHover }"
-            ng-click="setAggregationFunction($event, 'count')">{{rowDisplayUnit.pluralize()}}</a>
+            ng-click="setAggregationFunction($event, 'count')">{{pluralRowDisplayUnit}}</a>
           <a
             tabindex="0"
             ng-repeat="column in aggregationColumns"
             data-column-id="{{column.id}}"
             class="aggregation-option no-count"
             ng-class="{ disabled: !column.enabled, active: (activeAggregation.id == column.id) || ($first && highlightFirstColumn) }"
-            ng-click="setAggregationColumn($event, column.id, column.enabled)" title="{{column.label.pluralize()}}">{{column.label.pluralize()}}</a>
+            ng-click="setAggregationColumn($event, column.id, column.enabled)" title="{{column.label | pluralize}}">{{column.label | pluralize}}</a>
         </div>
       </div>
 

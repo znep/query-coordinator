@@ -42,7 +42,7 @@
 
         // Format content based on data type
         function formatContentByType(content, column, isTitle) {
-          var isTitle = isTitle || false;
+          isTitle = isTitle || false;
 
           var isLatLng = column.physicalDatatype === 'point' || column.physicalDatatype === 'geo_entity';
 
@@ -66,7 +66,7 @@
 
         // Format an array of subcolumns under a given parent column
         scope.formatCellValue = function(column, isTitle) {
-          var isTitle = isTitle || false;
+          isTitle = isTitle || false;
 
           // Format cell value if it is a single column without subcolumns
           if (!column.isParentColumn) {
@@ -86,10 +86,10 @@
           }
 
           // Otherwise process subcolumns based on the parent column's type.
-          switch(column.renderTypeName) {
+          switch (column.renderTypeName) {
             case 'location':
-              var addressColumns = _.map(['address', 'city', 'state', 'zip'], function(column) {
-              var columnValue = _.result(_.find(subColumns, { 'columnName': column }), 'value');
+              var addressColumns = _.map(['address', 'city', 'state', 'zip'], function(addressColumn) {
+                var columnValue = _.result(_.find(subColumns, { 'columnName': addressColumn }), 'value');
                 return _.isDefined(columnValue) ? columnValue.trim() : columnValue;
               });
 

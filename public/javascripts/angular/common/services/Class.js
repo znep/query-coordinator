@@ -1,5 +1,5 @@
 (function() {
-  // 'use strict';
+  'use strict';
 
   // Yoinked from: http://ejohn.org/blog/simple-javascript-inheritance
   // Socrata wrapped it into a service.
@@ -14,13 +14,10 @@
     var fnTest = /return/.test(function() { return; }) ? /\b_super\b/ : /.*/;
 
     // The base Class implementation (does nothing)
-    // SOCRATA 9/23/2014: To conform to the angular service contract,
-    // we don't want to put Class on window. Instead, it's returned
-    // as the service itself.
     var Class = function() {};
 
     // Create a new Class that inherits from this class
-    Class.extend = function(prop) {
+    function extend(prop) {
       var _super = this.prototype;
 
       // Instantiate a base class (but only create the instance,
@@ -29,32 +26,32 @@
       var prototype = new this();
       initializing = false;
 
+      function makeMethod(currentName, fn) {
+        return function() {
+          var tmp = this._super;
+
+          // Add a new ._super() method that is the same method
+          // but on the super-class
+          this._super = _super[currentName];
+
+          // The method only need to be bound temporarily, so we
+          // remove it when we're done executing
+          var ret = fn.apply(this, arguments);
+          this._super = tmp;
+
+          return ret;
+        };
+      }
+
       // Copy the properties over onto the new prototype
       for (var name in prop) {
         // Check if we're overwriting an existing function
-        prototype[name] = typeof prop[name] === 'function' &&
-          typeof _super[name] === 'function' && fnTest.test(prop[name]) ?
-          (function(currentName, fn) {
-            return function() {
-              var tmp = this._super;
-
-              // Add a new ._super() method that is the same method
-              // but on the super-class
-              this._super = _super[currentName];
-
-              // The method only need to be bound temporarily, so we
-              // remove it when we're done executing
-              var ret = fn.apply(this, arguments);
-              this._super = tmp;
-
-              return ret;
-            };
-          })(name, prop[name]) :
-          prop[name];
+        var isFunction = typeof prop[name] === 'function' && typeof _super[name] === 'function' && fnTest.test(prop[name]);
+        prototype[name] = isFunction ? makeMethod(name, prop[name]) : prop[name];
       }
 
       // The dummy class constructor
-      function Class() {
+      function NewClass() {
         // All construction is actually done in the init method
         if (!initializing && this.init) {
           this.init.apply(this, arguments);
@@ -62,21 +59,19 @@
       }
 
       // Populate our constructed prototype object
-      Class.prototype = prototype;
+      NewClass.prototype = prototype;
 
       // Enforce the constructor to be what we expect
-      Class.prototype.constructor = Class;
+      NewClass.prototype.constructor = Class;
 
       // And make this class extendable
-      Class.extend = arguments.callee;
+      NewClass.extend = extend;
 
-      return Class;
-    };
+      return NewClass;
+    }
 
+    Class.extend = extend;
 
-    // SOCRATA 9/23/2014: To conform to the angular service contract,
-    // we don't want to put Class on window. Instead, it's returned
-    // as the service itself.
     return Class;
   };
 

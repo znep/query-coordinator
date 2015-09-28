@@ -22,6 +22,12 @@
     };
   }).
 
+  filter('pluralize', function(PluralizeService) {
+    return function() {
+      return PluralizeService.pluralize.apply(this, arguments);
+    };
+  }).
+
   filter('ellipsify', function() {
     return function(value, length) {
       if (_.isString(value) && _.isFinite(length) && length < value.length && length >= 0) {

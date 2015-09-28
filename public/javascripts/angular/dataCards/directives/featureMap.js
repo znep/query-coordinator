@@ -10,6 +10,7 @@
     LeafletVisualizationHelpersService,
     FlyoutService,
     I18n,
+    PluralizeService,
     ServerConfig,
     WindowState
   ) {
@@ -91,8 +92,9 @@
           // max number of rows to be displayed on a flannel,
           // prompt the user to filter and/or zoom in for accurate data.
           if (flyoutData.totalPoints >= Constants.FEATURE_MAP_MAX_TILE_DENSITY) {
+            var rowDisplayUnit = PluralizeService.pluralize(scope.rowDisplayUnit);
             return template.format(
-              I18n.t('flyout.denseData', scope.rowDisplayUnit.pluralize()),
+              I18n.t('flyout.denseData', rowDisplayUnit),
               chooseUserActionPrompt(zoom)
             );
 
@@ -113,10 +115,7 @@
         }
 
         function assembleFlyoutRowInfo() {
-          var unit = (flyoutData.count === 1) ?
-            scope.rowDisplayUnit :
-            scope.rowDisplayUnit.pluralize();
-
+          var unit = PluralizeService.pluralize(scope.rowDisplayUnit, flyoutData.count);
           return '{0} {1}'.format(flyoutData.count, _.escape(unit));
         }
 
@@ -416,9 +415,7 @@
                         // (those from the column used to produce the current feature map),
                         // and set flannel to use default titles.
                         rows.map(function(row) {
-                          var title = _.remove(row, function(row) {
-                            return row.isFeatureMapColumn;
-                          });
+                          var title = _.remove(row, _.property('isFeatureMapColumn'));
                           flannelScope.titles.push(title[0]);
                         });
                         flannelScope.useDefaults = true;

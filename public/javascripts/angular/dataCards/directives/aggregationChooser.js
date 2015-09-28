@@ -8,7 +8,7 @@
     { type: 'sum', name: 'sum' }
   ];
 
-  function AggregationChooser(Constants, Dataset, FlyoutService, WindowState, ServerConfig, I18n) {
+  function AggregationChooser(Constants, Dataset, FlyoutService, WindowState, ServerConfig, I18n, PluralizeService) {
 
     return {
       restrict: 'E',
@@ -164,13 +164,17 @@
           map(function(value) {
             var type = { type: value };
             var fn = _.find(availableAggregationFunctions, type);
-            return _.extend(type, { label: fn.name });
+            return _.extend(type, {
+              label: fn.name,
+              capitalized: _.capitalize(fn.name)
+            });
           });
 
         $scope.$bindObservable('highlightFirstColumn', highlightFirstColumn$);
         $scope.$bindObservable('hasAggregableColumns', hasAggregableColumns$);
         $scope.$bindObservable('canChooseAggregation', canChooseAggregation$);
         $scope.$bindObservable('rowDisplayUnit', rowDisplayUnit$);
+        $scope.$bindObservable('pluralRowDisplayUnit', rowDisplayUnit$.map(PluralizeService.pluralize));
         $scope.$bindObservable('aggregationUnit', aggregationUnit$);
         $scope.$bindObservable('aggregationFunction', labeledFunction$);
         $scope.$bindObservable('aggregationColumns', aggregationColumns$);

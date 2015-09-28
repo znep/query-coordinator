@@ -113,6 +113,28 @@
   font-size: 1.25rem;
   color: $settings-panel-errors-color;
   font-weight: lighter;
+
+  &::after {
+    content: '';
+    display: table;
+    clear: left;
+  }
+
+  p {
+    float: left;
+    box-sizing: border-box;
+
+    &:first-child {
+      width: $settings-panel-warning-width;
+      font-size: $settings-panel-warning-font-size;
+      color: $settings-panel-warning-color;
+    }
+
+    &:last-child {
+      width: $settings-panel-error-message-width;
+      padding-top: .25rem;
+    }
+  }
 }
 
 .settings-panel-displaying,
@@ -120,6 +142,7 @@
   margin-top: 2rem;
 
   > h2 {
+    font-size: 1.3rem;
     font-weight: lighter;
     text-transform: uppercase;
     color: $settings-panel-light-gray-color;
@@ -135,8 +158,7 @@
 
 .settings-panel-publishing {
   > div {
-    padding-top: 1rem;
-    padding-left: 1rem;
+    padding-top: 1.5rem;
   }
 }
 
@@ -172,6 +194,10 @@
   button {
     width: 100%;
   }
+}
+
+.settings-panel-story-visibility {
+  padding: 0 0 1rem 0;
 }
 
 .settings-panel-story-publishing-help-text {

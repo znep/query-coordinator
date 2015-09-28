@@ -12,8 +12,10 @@ RSpec.describe InspirationBlockList, type: :model do
       end.to_not raise_error
     end
 
-    it 'returns json containing the key "blocks"' do
-      expect(JSON.parse(to_json)).to have_key('blocks')
+    it 'returns json containing the categorized keys' do
+      expect(JSON.parse(to_json)).to have_key('text')
+      expect(JSON.parse(to_json)).to have_key('media_and_text')
+      expect(JSON.parse(to_json)).to have_key('dividers_and_spacers')
     end
 
   end

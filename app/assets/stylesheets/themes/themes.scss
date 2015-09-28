@@ -51,6 +51,7 @@ $link-hover: darken($link-color, 12%);
 // so this provides a nice fade-in
 body {
   transition: opacity $iframe-onload-transition-duration;
+  overflow: hidden;
 }
 
 

@@ -170,7 +170,6 @@
     });
 
     settingsPanel.
-      on('mousewheel', utils.preventScrolling).
       on('sidebar:open', function() {
         settingsPanel.find('button[data-panel-toggle="settings-panel"]').eq(0).focus();
         toggleButton.addClass('active');

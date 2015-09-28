@@ -6,10 +6,9 @@
   </div>
 
   <section>
-    <h1 class="content-panel-title"><%= I18n.t('style_and_presentation_panel.title') %></h1>
-    <h2 class="content-panel-description"><%= I18n.t('style_and_presentation_panel.description') %></h2>
-    <hr></hr>
     <div class="scrollable">
+      <h1 class="content-panel-title"><%= I18n.t('style_and_presentation_panel.title') %></h1>
+      <h2 class="content-panel-description"><%= I18n.t('style_and_presentation_panel.description') %></h2>
       <div class="theme-list">
         <% @theme_list.each do |theme| %>
           <div class="theme" data-theme="<%= theme['id'] %>">

@@ -32,6 +32,10 @@ $inspiration-block-hover-border-color: #4a90e2;
 
   &:first-child {
     margin-top: 0;
+
+    h1 {
+      margin-top: 0;
+    }
   }
 }
 
@@ -44,6 +48,7 @@ $inspiration-block-hover-border-color: #4a90e2;
 .inspiration-category-title {
   color: $inspiration-category-title-color;
   font-size: $inspiration-category-title-font-size;
+  font-weight: 600;
 }
 
 .inspiration-category-subtitle {

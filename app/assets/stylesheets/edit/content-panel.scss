@@ -34,6 +34,17 @@
       background-color: transparent;
       border: none;
       cursor: pointer;
+
+      color: $content-panel-close-button-color;
+      font-size: 1.4rem;
+
+      &:hover {
+        color: $content-panel-close-button-hover-color;
+      }
+
+      &:focus {
+        outline: none;
+      }
     }
   }
 
@@ -51,7 +62,7 @@
 
   .content-panel-description {
     margin-bottom: 2rem;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 200;
     font-style: oblique;
     color: $content-panel-description-color;
@@ -60,7 +71,7 @@
   .scrollable {
     position: absolute;
     left: 0;
-    top: 10rem;
+    top: 4rem;
     right: 0;
     bottom: 0;
     overflow-y: auto;

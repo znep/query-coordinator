@@ -46,6 +46,7 @@
 
       .close-panel-icon {
         float: right;
+        font-size: 1.4rem;
         line-height: $settings-panel-close-bar-height;
       }
     }
@@ -151,6 +152,12 @@
 }
 
 .settings-panel-displaying {
+  margin-bottom: 4rem;
+
+  form {
+    margin-top: 2rem;
+  }
+
   textarea {
     resize: vertical;
   }
@@ -158,7 +165,7 @@
 
 .settings-panel-publishing {
   > div {
-    padding-top: 1.5rem;
+    padding-top: 2rem;
   }
 }
 

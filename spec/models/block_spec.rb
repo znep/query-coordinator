@@ -90,28 +90,6 @@ RSpec.describe Block, type: :model do
     end
   end
 
-  describe '#for_story_in_order' do
-    let(:story) { FactoryGirl.create(:draft_story_with_blocks) }
-    let(:result) { Block.for_story_in_order(story) }
-
-    context 'when story has no blocks' do
-      let(:story) { FactoryGirl.create(:draft_story) }
-
-      it 'has returns 0 items' do
-        expect(result.size).to eq(0)
-      end
-    end
-
-    context 'when story has blocks' do
-      let(:story) { FactoryGirl.create(:draft_story_with_blocks) }
-
-      it 'returns blocks matching order or block_ids in story' do
-        block_ids = story.block_ids
-        expect(result.map(&:id)).to eq(block_ids)
-      end
-    end
-  end
-
   describe '#with_component_type' do
     let(:component_type) { 'blah' }
     let!(:block) { FactoryGirl.create(:block) }
@@ -136,26 +114,6 @@ RSpec.describe Block, type: :model do
       it 'returns blocks containing image' do
         expect(result.size).to eq(1)
         expect(result.first).to eq(block_with_image)
-      end
-    end
-  end
-
-  describe '#in_story_order' do
-    let(:story) { FactoryGirl.create(:draft_story_with_blocks) }
-    let(:blocks) { Block.for_story(story) }
-    let(:result) { Block.in_story_order(blocks, story) }
-
-    it 'returns blocks in order' do
-      expect(result.map(&:id)).to eq(story.block_ids)
-    end
-
-    context 'when block order is not necessarily the same' do
-      let(:reverse_story) { FactoryGirl.create(:draft_story, block_ids: story.block_ids.reverse) }
-      let(:blocks) { Block.for_story(reverse_story) }
-      let(:result) { Block.in_story_order(blocks, reverse_story) }
-
-      it 'returns blocks in order' do
-        expect(result.map(&:id)).to eq(reverse_story.block_ids)
       end
     end
   end

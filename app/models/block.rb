@@ -27,15 +27,6 @@ class Block < ActiveRecord::Base
     where("components @> ?", json_query)
   end
 
-  def self.for_story_in_order(story)
-    # The order in which block rows are returned from the database is not
-    # guaranteed to match the order in which the ids were supplied to the
-    # select query, so we need to apply the story's ordering of the blocks
-    # to the query result before returning it.
-    block_objects = Block.for_story(story)
-    self.in_story_order(block_objects, story)
-  end
-
   def as_json(options = nil)
     block_as_hash = self.attributes
     block_as_hash['id'] = block_as_hash['id'].to_s
@@ -50,12 +41,4 @@ class Block < ActiveRecord::Base
     )
   end
 
-  # We pass in blocks here because we want to be able to sort a filtered list of blocks
-  # Chaining active record queries will not work here because of how we store the
-  # order of blocks within block_ids in the story model.
-  def self.in_story_order(blocks, story)
-    story.block_ids.map do |block_id|
-      blocks.detect { |block_object| block_object.id == block_id }
-    end
-  end
 end

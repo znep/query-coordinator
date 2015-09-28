@@ -36,8 +36,26 @@ shared_examples 'has_block_operations' do
         @block = FactoryGirl.create(:block_with_image)
         subject.block_ids = [@block.id]
       end
+
       it 'returns all image URLs found in any block of a story' do
         expect(subject.block_images).to eq(['http://example.com/image.jpg'])
+      end
+    end
+
+    context 'when multiple blocks contain images' do
+      before do
+        @block = FactoryGirl.create(:block_with_image)
+        @block2 = FactoryGirl.create(
+          :block_with_image,
+          components: [ { type: 'image', value: { url: 'http://example.com/image2.jpg' } } ]
+        )
+        subject.block_ids = [@block2.id, @block.id]
+      end
+
+      it 'returns the first one in block order' do
+        expect(subject.block_images).to eq(
+          ['http://example.com/image2.jpg', 'http://example.com/image.jpg']
+        )
       end
     end
 

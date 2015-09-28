@@ -108,6 +108,7 @@ RSpec.describe StoryPublisher do
       context 'when updating permissions raises' do
         before do
           allow(mock_permissions_updater).to receive(:update_permissions).and_raise
+          allow(AirbrakeNotifier).to receive(:report_error)
         end
 
         it 'notifies airbrake' do

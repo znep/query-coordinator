@@ -5,7 +5,7 @@
     "url": "https://github.com/socrata/frontend-visualizations.git"
   },
   "scripts": {
-    "lint": "eslint",
+    "lint": "eslint -c package.json --ignore-path karma.conf.js *.js components/*.js",
     "test": "karma start karma.conf.js --singleRun true",
     "watch": "karma start karma.conf.js -v --singleRun false",
     "compile-css": "node-sass --output-style expanded socrata.visualizations.rowInspector.scss socrata.visualizations.rowInspector.css"

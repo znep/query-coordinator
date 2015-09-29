@@ -11,7 +11,6 @@
 
   var socrata = root.socrata;
   var storyteller = socrata.storyteller;
-  var utils = socrata.utils;
 
   /**
    * Instantiates an SettingsPanel control with the given

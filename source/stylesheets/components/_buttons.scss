@@ -58,7 +58,7 @@
 	display: block;
 }
 
-// Alternate Default
+// Alternate Default (Good for dark backgrounds)
 .btn-alternate {
 	border-color: $medium-gray;
 	background-color: #716D6D;
@@ -73,11 +73,13 @@
 	// This needs to be refactored to consider primary, default, etc.
 	&.disabled {
 		color: $light-gray;
+		border-color: shade($medium-gray, 10%);
 
 		&:hover {
 			background-color: #716D6D;
 			color: $light-gray;
 			cursor: not-allowed;
+
 		}
 	}
 }

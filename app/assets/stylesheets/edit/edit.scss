@@ -85,10 +85,16 @@ body .header-main {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    border: none;
+    background-color: transparent;
 
     &:hover,
     &:active {
       color: $header-story-title-hover-color;
+    }
+
+    &:focus {
+      outline: none;
     }
   }
 

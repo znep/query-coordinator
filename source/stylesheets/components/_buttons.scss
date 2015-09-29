@@ -22,12 +22,25 @@
 // Just a plain ol' button
 .btn-default {
 	border-color: $light-gray;
-	color: #929292;
+	color: $gray2;
 	background-color: $white;	
 	
 	&:hover {
 		background-color: $extra-light-gray;
 		color: #6e6e6e;
+	}
+
+	// This needs to be refactored to consider primary, default, etc.
+	&.disabled {
+		color: shade($gray2, 10%);
+		border-color: $medium-gray;
+		background-color: tint($light-gray, 20%);
+		
+		&:hover {	
+			color: shade($gray2, 10%);
+			cursor: not-allowed;
+
+		}
 	}
 }
 
@@ -71,7 +84,7 @@
 	}
 
 
-	// This needs to be refactored to consider primary, default, etc.
+	// This needs to be refactored to consider primary, secondary, etc.
 	&.disabled {
 		color: $light-gray;
 		border-color: shade($medium-gray, 10%);

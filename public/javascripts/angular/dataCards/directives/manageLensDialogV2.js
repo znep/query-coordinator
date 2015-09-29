@@ -2,8 +2,8 @@
 (The v1 only allowed modification of public / private.)
 This is the v2 manage lens dialog, which allows users to manage the
 - visibility (public vs private)
+- shared with users
 - owner (TODO)
-- shared with users (TODO)
 
 It is only enabled for v2 data lenses.
 
@@ -102,6 +102,37 @@ Your save function should return a promise.
           return http.post(url).then(function() {
             $scope.page.set('moderationStatus', $scope.visibilityDropdownSelection === 'approved');
           });
+        };
+
+        components.sharing = {};
+        components.sharing.init = function() {
+          function filterForInheritedShares(shares) {
+            return _.filter(shares, 'inherited');
+          }
+
+          function formatInheritedShare(share) {
+            var result = {
+              link: null,
+              name: _.trunc(share.member_name, 26),
+              type: I18n.t('manageLensDialog.sharing.{0}'.format(share.type.toLowerCase()))
+            };
+
+            if (share.member_id !== share.member_name) {
+              result.link = '/profile/{0}'.format(share.member_id);
+            }
+
+            return result;
+          }
+
+          var formatInheritedShares = _.partial(_.map, _, formatInheritedShare);
+
+          var inheritedShares$ = $scope.page.observe('shares').map(filterForInheritedShares);
+          $scope.$bindObservable('showSharingSection', inheritedShares$.map(_.negate(_.isEmpty)));
+          $scope.$bindObservable('inheritedShares', inheritedShares$.map(formatInheritedShares));
+        };
+
+        components.sharing.save = function() {
+          return $q.when(null);
         };
 
         // Initialize the components

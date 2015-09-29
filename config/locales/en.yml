@@ -209,6 +209,12 @@ en:
         dataset_public_page_private: This page is set to <b>Private</b>, so only those with privileged access will be able to see it. It will not appear in the public catalog.
         dataset_public_page_public: This page and its source dataset are both <b>Public</b>, so anyone will be able to see this page and it will appear in the public catalog.
         title: Manage
+        sharing:
+          title: Shared with
+          inherited_description: 'Inherited from the source dataset:'
+          contributor: Contributor
+          owner: Co-owner
+          viewer: Viewer
         visibility:
           title: Visibility
           shown: Shown in catalog

@@ -245,6 +245,9 @@
     .modal-close-button.disabled {
       color: $modal-dialog-disabled-close-button-color;
     }
+    a {
+      color: $modal-dialog-link-text-color;
+    }
   }
 }
 

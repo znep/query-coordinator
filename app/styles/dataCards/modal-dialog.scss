@@ -225,33 +225,54 @@ customize-card-dialog {
 // Manage lens dialog
 manage-lens-dialog,
 manage-lens-dialog-v2 {
-  label {
-    float: left;
-    soc-select {
-      visibility: hidden;
-      width: 0;
+  section {
+    margin-bottom: 2rem;
+
+    label {
+      float: left;
+      soc-select {
+        visibility: hidden;
+        width: 0;
+      }
+    }
+    .contents {
+      .flavor-text {
+        margin-top: 1rem;
+        line-height: 1.5em;
+        position: relative;
+        .icon-warning {
+          position: absolute;
+          right: 100%;
+          top: 0;
+          line-height: inherit;
+          margin-right: 1.5rem;
+        }
+      }
+    }
+    soc-select select {
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
     }
   }
-  .right {
-    margin-left: 9em;
-    .flavor-text {
-      margin-top: 1rem;
-      line-height: 1.5em;
-      position: relative;
-      .icon-warning {
-        position: absolute;
-        right: 100%;
-        top: 0;
-        line-height: inherit;
-        margin-right: 1.5rem;
+
+  section.visibility {
+    label {
+      line-height: 29px;
+    }
+  }
+  section.sharing {
+    .row.description {
+      margin-bottom: 1rem;
+    }
+    .inherited-share {
+      margin-bottom: .75rem;
+      &:last-child {
+        margin-bottom: 0;
       }
     }
   }
-  soc-select select {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-  }
-  label {
-    line-height: 29px;
+
+  a:hover {
+    text-decoration: underline;
   }
 }

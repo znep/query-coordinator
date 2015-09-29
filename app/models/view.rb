@@ -937,15 +937,15 @@ class View < Model
     end
     users = Hash.new
     if user_ids.any?
-        users_list = User.find 'ids' => user_ids.keys
-        users_list.each {|u| users[u.id] = u }
+      users_list = User.find 'ids' => user_ids.keys
+      users_list.each {|u| users[u.id] = u }
     end
     user_shares = Hash.new
     filtered_grants.each do |g|
       user_id = g.userId.nil? ? g.userEmail : g.userId
       s = Share.new((g.type || '').capitalize, user_id,
                     g.userId.nil? ? g.userEmail : users[g.userId].displayName, users[g.userId],
-                    !g.userId.nil?, false)
+                    !g.userId.nil?, false, g.inherited)
       user_shares[user_id] = s
     end
     user_shares.values

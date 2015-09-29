@@ -1,20 +1,43 @@
 <h2>{{::'manageLensDialog.title' | I18n}}</h2>
-<label>{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationTitle' : 'manageLensDialog.visibility.title') | I18n}}</label>
-<div class="right">
-  <soc-select ng-model="visibilityDropdownSelection" ng-disabled="visibilityDropdownDisabled">
-    <soc-option value="approved">{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationApproved' : 'manageLensDialog.visibility.shown') | I18n}}</soc-option>
-    <soc-option value="rejected">{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationRejected' : 'manageLensDialog.visibility.hidden') | I18n}}</soc-option>
-    <soc-option value="pending" ng-if="usingViewModeration && initialPageVisibility == 'pending'">{{::'manageLensDialog.visibility.viewModerationPending' | I18n}}</soc-option>
-  </soc-select>
-  <div class="flavor-text">
-    <div ng-show="datasetIsPrivate && userIsPrivileged"
-      ng-bind-html="'manageLensDialog.visibility.datasetIsPrivate' | I18n">
+<section class="row sharing" ng-if="showSharingSection">
+  <label class="span3">{{'manageLensDialog.sharing.title' | I18n}}</label>
+  <div class="contents span9">
+    <div class="row description">
+      {{'manageLensDialog.sharing.inheritedDescription' | I18n}}
     </div>
-    <div ng-show="!datasetIsPrivate && !userIsPrivileged"
-      ng-bind-html="'manageLensDialog.visibility.userIsUnprivileged' | I18n">
+    <div ng-repeat="share in inheritedShares" class="inherited-share">
+      <div ng-show="share.link" class="row">
+        <div class="span5">
+          <a href="{{share.link}}" target="_blank">{{share.name}}</a>
+        </div>
+        <div class="span7">{{share.type}}</div>
+      </div>
+      <div ng-hide="share.link" class="row">
+        <div class="span5">{{share.name}}</div>
+        <div class="span7">{{share.type}}</div>
+      </div>
     </div>
   </div>
-</div>
+</section>
+
+<section class="row visibility">
+  <label class="span3">{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationTitle' : 'manageLensDialog.visibility.title') | I18n}}</label>
+  <div class="contents span9">
+    <soc-select ng-model="visibilityDropdownSelection" ng-disabled="visibilityDropdownDisabled">
+      <soc-option value="approved">{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationApproved' : 'manageLensDialog.visibility.shown') | I18n}}</soc-option>
+      <soc-option value="rejected">{{(usingViewModeration ? 'manageLensDialog.visibility.viewModerationRejected' : 'manageLensDialog.visibility.hidden') | I18n}}</soc-option>
+      <soc-option value="pending" ng-if="usingViewModeration && initialPageVisibility == 'pending'">{{::'manageLensDialog.visibility.viewModerationPending' | I18n}}</soc-option>
+    </soc-select>
+    <div class="flavor-text">
+      <div ng-show="datasetIsPrivate && userIsPrivileged"
+        ng-bind-html="'manageLensDialog.visibility.datasetIsPrivate' | I18n">
+      </div>
+      <div ng-show="!datasetIsPrivate && !userIsPrivileged"
+        ng-bind-html="'manageLensDialog.visibility.userIsUnprivileged' | I18n">
+      </div>
+    </div>
+  </div>
+</section>
 
 <div class="controls">
   <save-button

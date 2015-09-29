@@ -19,3 +19,9 @@ gem 'neat'
 gem 'modular-scale'
 gem "breakpoint"
 gem 'type-heading', '~> 0.0.7'
+
+
+# Needed for Heroku
+gem 'puma',      '~> 2.7'
+gem 'rake',      '~> 10.1'
+gem 'rack-contrib'

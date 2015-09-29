@@ -71,6 +71,7 @@ class PageMetadataManager
       page_metadata = ensure_page_metadata_properties(page_metadata)
       page_metadata['permissions'] = permissions.stringify_keys!
       page_metadata['moderationStatus'] = result[:moderationStatus]
+      page_metadata['shares'] = View.new(result).shares
       page_metadata
     else
       result = phidippides.fetch_page_metadata(id, options)

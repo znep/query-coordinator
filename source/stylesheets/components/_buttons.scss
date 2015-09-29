@@ -60,12 +60,13 @@
 
 // Alternate Default (Good for dark backgrounds)
 .btn-alternate {
-	border-color: $medium-gray;
-	background-color: #716D6D;
-	color: $extra-light-gray;
+	border-color: $light-gray;
+	background-color: $medium-gray;
+	color: $white;
 
 	&:hover {
-		background-color: $medium-gray;
+		background-color: shade($medium-gray, 20%);
+		border-color: $medium-gray;
 		color: $white;
 	}
 
@@ -74,9 +75,9 @@
 	&.disabled {
 		color: $light-gray;
 		border-color: shade($medium-gray, 10%);
-
+		background-color: #716D6D;
 		&:hover {
-			background-color: #716D6D;
+			
 			color: $light-gray;
 			cursor: not-allowed;
 

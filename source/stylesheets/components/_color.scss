@@ -1,21 +1,30 @@
 //Colors
 $gray: #4A4A4A;
-$light-gray: #8C8C8C;
+$medium-gray: #929292;
+$light-gray: #b7b7b7; //Actually, light gray 3
+$extra-light-gray: #dbdbdb;
 $white: #fff;
+
 
 // Color Vars
 $default-text-color: $gray;
 $quiet-text-color: $light-gray;
 $light-text-color: $white;
 
+$primary-blue: #2C97DE;
+$secondary-green: #00BE9B;
+
+
+$success: #64CF6C;
+$error: #CE6565;
 
 //List of base colors
 //Probably want to turn these into variables..
 $colors: (
-	'blue': #2C97DE,
-	'grey': #797979,
+	'blue': $primary-blue,
+	'gray': #4a4a4a,
 	'yellow': #debb1e,
-	'green': #23D6B0
+	'green': $secondary-green
 
 );
 
@@ -39,7 +48,7 @@ $colors: (
 
 
 //Number of light and dark shades
-$range: 4;
+$range: 5;
 
 //Loop that generates classes for each base color
 //apply .[basecolor] and .[basecolor] .light(1-4) to change the color

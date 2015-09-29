@@ -1,0 +1,175 @@
+//Buttons
+
+.btn, .btn:active, .btn:focus {
+	padding: ms(-3) ms(0);
+	border-width: 1px;
+	border-style: solid;
+	border-color: transparent;
+	line-height: 1.6;
+	border-radius: 1px;
+	text-decoration: none;
+	display: inline-block;
+	margin-bottom: 0;
+	text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    touch-action: manipulation;
+    user-select: none;
+    cursor: pointer;
+}
+
+
+// Just a plain ol' button
+.btn-default {
+	border-color: $light-gray;
+	color: #929292;
+	background-color: $white;	
+	
+	&:hover {
+		background-color: $extra-light-gray;
+		color: #6e6e6e;
+	}
+}
+
+
+// Large Button
+.btn-lg {
+	font-size: ms(1);
+	padding: ms(-2) ms(1);	
+}
+
+
+// Small Button
+.btn-sm {
+	font-size: ms(-1);
+	padding: ms(-6) ms(-1);
+}
+
+
+// Extra Small Button
+.btn-xs {
+	font-size: ms(-2);
+	padding: ms(-8) ms(-2);	
+}
+
+
+// Display Button as a Full-Width Block
+.btn-block {
+	display: block;
+}
+
+// Alternate Default
+.btn-alternate {
+	border-color: $medium-gray;
+	background-color: #716D6D;
+	color: $extra-light-gray;
+
+	&:hover {
+		background-color: $medium-gray;
+		color: $white;
+	}
+
+
+	// This needs to be refactored to consider primary, default, etc.
+	&.disabled {
+		color: $light-gray;
+
+		&:hover {
+			background-color: #716D6D;
+			color: $light-gray;
+			cursor: not-allowed;
+		}
+	}
+}
+
+// Primary Button 
+.btn-primary {
+	border-color: $primary-blue;
+	background-color: $primary-blue;
+	color: $light-text-color;
+
+	&:hover {
+		background-color: shade($primary-blue, 20%);
+	}
+
+	// Flip the colors
+	&.btn-inverse {
+		border-color: $primary-blue;
+		background-color: $white;
+		color: $primary-blue;
+		&:hover {
+			background-color: $primary-blue;
+			color: $white;
+		}
+	}
+} //.btn-primary
+
+
+
+// Secondary Button
+.btn-secondary {
+	border-color: $secondary-green;
+	background-color: $secondary-green;
+	color: $light-text-color;
+
+	&:hover {
+		background-color: shade($secondary-green, 20%);
+	}
+
+	// Flip the colors
+	&.btn-inverse {
+		border-color: $secondary-green;
+		background-color: $white;
+		color: $secondary-green;
+		&:hover {
+			background-color: $secondary-green;
+			color: $white;
+		}
+	}
+} //.btn-secondary
+
+
+// Success Button
+.btn-success {
+	border-color: $success;
+	background-color: $success;
+	color: $light-text-color;
+
+	&:hover {
+		background-color: shade($success, 20%);
+	}
+
+	// Flip the colors
+	&.btn-inverse {
+		border-color: $success;
+		background-color: $white;
+		color: $success;
+		&:hover {
+			background-color: $success;
+			color: $white;
+		}
+	}
+} //.btn-success
+
+
+// Success Error
+.btn-error {
+	border-color: $error;
+	background-color: $error;
+	color: $light-text-color;
+
+	&:hover {
+		background-color: shade($error, 20%);
+	}
+
+	// Flip the colors
+	&.btn-inverse {
+		border-color: $error;
+		background-color: $white;
+		color: $error;
+		&:hover {
+			background-color: $error;
+			color: $white;
+		}
+	}
+} //.btn-success

@@ -2,6 +2,7 @@
 @import "components/grid";
 @import "components/typography";
 @import "components/color";
+@import "components/buttons";
 
 .container {
 	@include outer-container();
@@ -23,6 +24,11 @@ section {
 	@include shift(1);
 }
 
+
+.dark-context {
+	background-color: #4A4A4A;
+	padding: ms(-3);
+}
 
 .styleguide-title {
 	font-weight: 300;

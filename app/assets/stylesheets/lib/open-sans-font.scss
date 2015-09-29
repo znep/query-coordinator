@@ -3,7 +3,10 @@
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 300;
-  src: local('Open Sans Light'), local('OpenSans-Light'), asset-url('OpenSans-Light.ttf') format('truetype');
+  src: local('Open Sans Light'),
+       local('OpenSans-Light'),
+       asset-url('open-sans/OpenSans-Light.woff2') format('woff2'),
+       asset-url('open-sans/OpenSans-Light.woff') format('woff');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -12,7 +15,10 @@
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
-  src: local('Open Sans'), local('OpenSans'), asset-url('OpenSans-Regular.ttf') format('truetype');
+  src: local('Open Sans'),
+       local('OpenSans'),
+       asset-url('open-sans/OpenSans-Regular.woff2') format('woff2'),
+       asset-url('open-sans/OpenSans-Regular.woff') format('woff');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -21,7 +27,10 @@
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 600;
-  src: local('Open Sans Semibold'), local('OpenSans-Semibold'), asset-url('OpenSans-Semibold.ttf') format('truetype');
+  src: local('Open Sans Semibold'),
+       local('OpenSans-Semibold'),
+       asset-url('open-sans/OpenSans-Semibold.woff2') format('woff2'),
+       asset-url('open-sans/OpenSans-Semibold.woff') format('woff');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -30,7 +39,10 @@
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 700;
-  src: local('Open Sans Bold'), local('OpenSans-Bold'), asset-url('OpenSans-Bold.ttf') format('truetype');
+  src: local('Open Sans Bold'),
+       local('OpenSans-Bold'),
+       asset-url('open-sans/OpenSans-Bold.woff2') format('woff2'),
+       asset-url('open-sans/OpenSans-Bold.woff') format('woff');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -39,7 +51,10 @@
   font-family: 'Open Sans';
   font-style: italic;
   font-weight: 400;
-  src: local('Open Sans Italic'), local('OpenSans-Italic'), asset-url('OpenSans-Italic.ttf') format('truetype');
+  src: local('Open Sans Italic'),
+       local('OpenSans-Italic'),
+       asset-url('open-sans/OpenSans-Italic.woff2') format('woff2'),
+       asset-url('open-sans/OpenSans-Italic.woff') format('woff');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
@@ -48,6 +63,9 @@
   font-family: 'Open Sans';
   font-style: italic;
   font-weight: 600;
-  src: local('Open Sans Semibold Italic'), local('OpenSans-SemiboldItalic'), asset-url('OpenSans-SemiboldItalic.ttf') format('truetype');
+  src: local('Open Sans Semibold Italic'),
+       local('OpenSans-SemiboldItalic'),
+       asset-url('open-sans/OpenSans-SemiboldItalic.woff2') format('woff2'),
+       asset-url('open-sans/OpenSans-SemiboldItalic.woff') format('woff');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }

@@ -6,7 +6,8 @@
       restrict: 'E',
       scope: {
         enabled: '=',
-        saveStatus: '='
+        saveStatus: '=',
+        buttonClass: '@'
       },
       templateUrl: '/angular_templates/dataCards/saveButton.html',
       link: function($scope, element) {

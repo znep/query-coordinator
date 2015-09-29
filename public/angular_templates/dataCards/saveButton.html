@@ -1,7 +1,7 @@
 <button
   type="button"
   data-action="save"
-  class="save-button save-button-flyout-target action-btn customize-bar-action-btn {{ additionalClasses }}"
+  class="save-button save-button-flyout-target action-btn {{ buttonClass }} {{ additionalClasses }}"
   ng-class="{disabled: !enabled,
              working: saveStatus === 'saving',
              success: saveStatus === 'saved',
@@ -10,4 +10,3 @@
   {{saveStatus | saveStatusText}}
   <spinner class="save-button-flyout-target" ng-if="saveStatus === 'saving'"></spinner>
 </button>
-

@@ -48,14 +48,23 @@ $link-hover: darken($link-color, 12%);
 
 // END Theme Settings //
 
+html[class*="theme-"] {
+  // There is an extra amount of space that
+  // we have yet to account for in our JavaScript height
+  // calculations. In the meantime, overflow is going to be
+  // hidden.
+  overflow: hidden;
+}
+
 // Javascript sets body opacity to 0 while styles load, then removes that style,
 // so this provides a nice fade-in
 body {
   transition: opacity $iframe-onload-transition-duration;
+  margin: 0;
 }
 
 
-// Import each theme, scoped by a theme class, applied to the body via javascript //
+// Import each theme, scoped by a theme class, applied to the body via javascript
 .theme-classic {
   @import 'theme-classic';
 }

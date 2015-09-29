@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe InspirationBlockList, type: :model do
-  let(:inspiration_block_list) { InspirationBlockList.new() }
+RSpec.describe InspirationCategoryList, type: :model do
+  let(:inspiration_category_list) { InspirationCategoryList.new() }
 
   describe '#to_json' do
-    let(:to_json) { inspiration_block_list.to_json }
+    let(:to_json) { inspiration_category_list.to_json }
 
     it 'returns parsable json' do
       expect do
@@ -22,7 +22,7 @@ RSpec.describe InspirationBlockList, type: :model do
 
   describe '#blocks' do
     it 'returns an array with the "blockContent" key' do
-      expect(inspiration_block_list.blocks[0]).to have_key('blockContent')
+      expect(inspiration_category_list.blocks[0]).to have_key('blockContent')
     end
 
   end

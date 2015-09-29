@@ -141,8 +141,8 @@ describe('StoryPermissionsRenderer', function() {
 
             assert.equal($visibilityLabel.text(), I18n.t('editor.settings_panel.publishing_section.visibility.public'));
             assert.equal($visibilityButtonText.text(), I18n.t('editor.settings_panel.publishing_section.visibility.make_story_private'));
-            assert(!$visibilityButton.hasClass('accent-btn'));
-            assert(!$visibilityButton.hasClass('accent-green-btn'));
+            assert($visibilityButton.hasClass('btn-default'));
+            assert(!$visibilityButton.hasClass('btn-secondary'));
             assert.equal($updatePublicButton.prop('disabled'), true);
             assert.equal($updatePublicLabel.text(), I18n.t('editor.settings_panel.publishing_section.status.published'));
             assert.equal($publishingHelpText.text(), I18n.t('editor.settings_panel.publishing_section.messages.has_been_published'));
@@ -177,7 +177,7 @@ describe('StoryPermissionsRenderer', function() {
 
             assert.equal($visibilityLabel.text(), I18n.t('editor.settings_panel.publishing_section.visibility.private'));
             assert.equal($visibilityButtonText.text(), I18n.t('editor.settings_panel.publishing_section.visibility.make_story_public'));
-            assert.isTrue($visibilityButton.hasClass('accent-green-btn'));
+            assert.isTrue($visibilityButton.hasClass('btn-secondary'));
             assert.equal($updatePublicButton.prop('disabled'), true);
             assert.equal($publishingHelpText.text(), I18n.t('editor.settings_panel.publishing_section.messages.can_be_shared_publically'));
           });
@@ -200,7 +200,7 @@ describe('StoryPermissionsRenderer', function() {
         $visibilityButton.click();
 
         assert(storyteller.storyPermissionsManager.makePublic.called);
-        assert($visibilityButton.hasClass('busy'), 'Excepted the visibility button to have a class, .busy');
+        assert($visibilityButton.hasClass('btn-busy'), 'Excepted the visibility button to have a class, .busy');
         assert($errorContainer.hasClass('hidden'), 'Excepted the error container to have a class, .hidden');
       });
     });
@@ -215,7 +215,7 @@ describe('StoryPermissionsRenderer', function() {
         $visibilityButton.click();
 
         assert(storyteller.storyPermissionsManager.makePrivate.called);
-        assert($visibilityButton.hasClass('busy'), 'Excepted the visibility button to have a class, .busy');
+        assert($visibilityButton.hasClass('btn-busy'), 'Excepted the visibility button to have a class, .busy');
         assert($errorContainer.hasClass('hidden'), 'Excepted the error container to have a class, .hidden');
       });
     });
@@ -246,7 +246,7 @@ describe('StoryPermissionsRenderer', function() {
         $updatePublicButton.click();
 
         assert(storyteller.storyPermissionsManager.makePublic.called);
-        assert($updatePublicButton.hasClass('busy'), 'Excepted the update button to have a class, .busy');
+        assert($updatePublicButton.hasClass('btn-busy'), 'Excepted the update button to have a class, .busy');
         assert($errorContainer.hasClass('hidden'), 'Excepted the error container to have a class, .hidden');
       });
     });

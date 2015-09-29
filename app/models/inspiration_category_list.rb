@@ -1,7 +1,7 @@
-class InspirationBlockList
+class InspirationCategoryList
 
   def initialize
-    @json = ActionView::Base.new.render(file: "#{Rails.root}/app/views/stories/inspiration_block_list.json.erb")
+    @json = ActionView::Base.new.render(file: "#{Rails.root}/app/views/stories/inspiration_category_list.json.erb")
     @parsed_json = JSON.parse(@json)
   end
 

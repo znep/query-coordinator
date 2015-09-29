@@ -67,20 +67,16 @@
     .settings-save-failure-message {
       font-size: 1.5rem;
       padding-bottom: 0.8rem;
-      visibility: collapse;
+      display: none;
       text-align: center;
 
       &.active {
-        visibility: visible;
+        display: block;
       }
 
       .settings-save-failure-message-details {
         font-size: 1.5rem;
       }
-    }
-
-    .settings-save-btn {
-      width: 70%;
     }
   }
 

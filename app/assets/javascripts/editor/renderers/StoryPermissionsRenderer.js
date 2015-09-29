@@ -49,7 +49,7 @@
         }
 
         _$errorContainer.addClass('hidden');
-        _$visibilityButton.addClass('busy');
+        _$visibilityButton.addClass('btn-busy');
       });
 
       _$updatePublicButton.click(function() {
@@ -62,7 +62,7 @@
         }
 
         _$errorContainer.addClass('hidden');
-        _$updatePublicButton.addClass('busy');
+        _$updatePublicButton.addClass('btn-busy');
       });
     }
 
@@ -75,8 +75,8 @@
 
     function _renderError() {
       _$errorContainer.removeClass('hidden');
-      _$visibilityButton.removeClass('busy');
-      _$updatePublicButton.removeClass('busy');
+      _$visibilityButton.removeClass('btn-busy');
+      _$updatePublicButton.removeClass('btn-busy');
     }
 
     function _render() {
@@ -88,7 +88,7 @@
 
         _$visibilityLabel.text(I18n.t('editor.settings_panel.publishing_section.visibility.public'));
         _$visibilityButtonText.text(I18n.t('editor.settings_panel.publishing_section.visibility.make_story_private'));
-        _$visibilityButton.removeClass('accent-green-btn').addClass('accent-gray-btn');
+        _$visibilityButton.addClass('btn-default').removeClass('btn-secondary');
         _$updatePublicButton.prop('disabled', true);
         _$updatePublicLabel.text(I18n.t('editor.settings_panel.publishing_section.status.published'));
         _$publishingHelpText.text(I18n.t('editor.settings_panel.publishing_section.messages.has_been_published'));
@@ -101,15 +101,15 @@
       } else {
         _$visibilityLabel.text(I18n.t('editor.settings_panel.publishing_section.visibility.private'));
         _$visibilityButtonText.text(I18n.t('editor.settings_panel.publishing_section.visibility.make_story_public'));
-        _$visibilityButton.removeClass('accent-gray-btn').addClass('accent-green-btn');
+        _$visibilityButton.removeClass('btn-default').addClass('btn-secondary');
         _$updatePublicButton.prop('disabled', true);
         _$publishingHelpText.text(I18n.t('editor.settings_panel.publishing_section.messages.can_be_shared_publically'));
       }
 
       _$settingsPanelStoryStatus.toggleClass('hidden', !permissions || !permissions.isPublic);
       _$errorContainer.addClass('hidden');
-      _$visibilityButton.removeClass('busy');
-      _$updatePublicButton.removeClass('busy');
+      _$visibilityButton.removeClass('btn-busy');
+      _$updatePublicButton.removeClass('btn-busy');
     }
   }
 

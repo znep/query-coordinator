@@ -6,7 +6,7 @@ $header-bg-color: #4a4747;
 $header-text-color: #fff;
 $header-accent-color: #ddd;
 $header-link-hover-color: #7ac3ff;
-$header-link-hover-bg-color: #3498Db;
+$header-link-hover-bg-color: #2295e1;
 $header-box-shadow-color: rgba(0, 0, 0, 0.2);
 $header-story-title-color: #dbdbdb;
 $header-story-title-hover-color: #fff;
@@ -85,23 +85,32 @@ $asset-selector-invalid-message-color: #333;
 $input-element-border-color: #ccc;
 
 // Buttons
-$btn-color: #666;
+$btn-color: #dbdbdb;
 $btn-hover-color: #444;
 $btn-disabled-color: #ccc;
 $btn-disabled-bg-color: #eee;
 
-$accent-btn-color: #fff;
-$accent-btn-bg-color: #5ab6e7;
-$accent-gray-btn-color: #fff;
-$accent-gray-btn-bg-color: #9b9b9b;
-$accent-gray-btn-hover-bg-color: darken($accent-gray-btn-bg-color, 10%);
-$accent-green-btn-color: #fff;
-$accent-green-btn-bg-color: #00d7b0;
-$accent-green-btn-hover-bg-color: darken($accent-green-btn-bg-color, 10%);
-$accent-btn-hover-color: #fff;
-$accent-btn-hover-bg-color: #2da2e1;
-$accent-btn-disabled-color: #ddd;
-$accent-btn-disabled-bg-color: #ccc;
+$btn-default-color: #fff;
+$btn-default-bg-color: #929292;
+$btn-default-border-color: #b7b7b7;
+$btn-default-hover-color: #fff;
+$btn-default-hover-bg-color: #757575;
+$btn-default-hover-border-color: #929292;
+$btn-default-disabled-color: #b7b7b7;
+$btn-default-disabled-border-color: #838383;
+
+$btn-primary-color: #fff;
+$btn-primary-bg-color: #2295e1;
+$btn-primary-border-color: #2295e1;
+$btn-primary-hover-color: #fff;
+$btn-primary-hover-bg-color: #2379b2;
+$btn-primary-disabled-color: #ddd;
+$btn-primary-disabled-bg-color: #ccc;
+
+$btn-secondary-color: #fff;
+$btn-secondary-bg-color: #00be9b;
+$btn-secondary-border-color: #00be9b;
+$btn-secondary-hover-bg-color: #00987c;
 
 // View Mode buttons
 $view-mode-button-color: #ddd;

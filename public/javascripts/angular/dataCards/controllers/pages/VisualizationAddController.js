@@ -16,9 +16,9 @@
     $scope.page = new Page(pageBlob, dataset);
     $scope.dataset = dataset;
 
-    // Right now we only support embedding column charts and feature maps.
-    $scope.supportedCardTypes = ['column', 'feature'];
-    $scope.supportedVIFTypes = ['columnChart', 'featureMap'];
+    // Right now we only support embedding a subset of visualization types.
+    $scope.supportedCardTypes = ['column', 'feature', 'timeline'];
+    $scope.supportedVIFTypes = ['columnChart', 'featureMap', 'timelineChart'];
 
     var cardTypesToVIFTypes = {};
     $scope.supportedCardTypes.forEach(function(cardType, index) {

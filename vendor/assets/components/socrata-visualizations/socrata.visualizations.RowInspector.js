@@ -106,7 +106,7 @@
     }
 
     // Grab all children that we run operations on.
-    _$rowInspectorToolPanel= _$rowInspectorContainer.find('.tool-panel');
+    _$rowInspectorToolPanel = _$rowInspectorContainer.find('.tool-panel');
     _$rowInspectorContent = _$rowInspectorContainer.find('.row-inspector-content');
     _$pendingContent = _$rowInspectorContainer.find('.pending-content');
     _$errorContent = _$rowInspectorContainer.find('.error-content');
@@ -186,7 +186,7 @@
   }
 
   function _decrementPageByOne() {
-    _state.pageIndex = Math.max(0,  _state.pageIndex - 1);
+    _state.pageIndex = Math.max(0, _state.pageIndex - 1);
     _render();
   }
 

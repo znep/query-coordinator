@@ -11,6 +11,7 @@
  * file per style scope.
  *
  *= require socrata-visualizations/socrata.visualizations.columnChart
+ *= require socrata-visualizations/socrata.visualizations.timelineChart
  *= require socrata-visualizations/socrata.visualizations.featureMap
  *= require socrata-visualizations/socrata.visualizations.flyoutRenderer
  *= require socrata-visualizations/socrata.visualizations.rowInspector

@@ -383,7 +383,7 @@
           visualization.render(
             visualizationData,
             _getRenderOptions()
-          );          
+          );
         }).
         catch(function(error) {
           _logError(error);

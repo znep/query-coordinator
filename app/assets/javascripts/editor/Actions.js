@@ -1,190 +1,196 @@
-var Actions = {
+(function(root) {
+  'use strict';
 
-  /**
-   * Story state management
-   */
+  var Actions = {
 
-  // {object} data: Story data object.
-  STORY_CREATE: 'STORY_CREATE',
+    /**
+     * Story state management
+     */
 
-  // {string} storyUid
-  // {string} description
-  STORY_SET_DESCRIPTION: 'STORY_SET_DESCRIPTION',
+    // {object} data: Story data object.
+    STORY_CREATE: 'STORY_CREATE',
 
-  // {string} storyUid
-  // {string} title
-  STORY_SET_TITLE: 'STORY_SET_TITLE',
+    // {string} storyUid
+    // {string} description
+    STORY_SET_DESCRIPTION: 'STORY_SET_DESCRIPTION',
 
-  // {string} storyUid
-  // {string} theme
-  STORY_UPDATE_THEME: 'STORY_UPDATE_THEME',
+    // {string} storyUid
+    // {string} title
+    STORY_SET_TITLE: 'STORY_SET_TITLE',
 
-  // {object} publishedStory
-  STORY_SET_PUBLISHED_STORY: 'STORY_SET_PUBLISHED_STORY',
+    // {string} storyUid
+    // {string} theme
+    STORY_UPDATE_THEME: 'STORY_UPDATE_THEME',
 
-  // {object} data: Story data object.
-  STORY_OVERWRITE_STATE: 'STORY_OVERWRITE_STATE',
+    // {object} publishedStory
+    STORY_SET_PUBLISHED_STORY: 'STORY_SET_PUBLISHED_STORY',
 
-  // {string} storyUid
-  // {string} blockId
-  STORY_DELETE_BLOCK: 'STORY_DELETE_BLOCK',
+    // {object} data: Story data object.
+    STORY_OVERWRITE_STATE: 'STORY_OVERWRITE_STATE',
 
-  // {string} storyUid
-  // {string} blockId
-  STORY_MOVE_BLOCK_DOWN: 'STORY_MOVE_BLOCK_DOWN',
+    // {string} storyUid
+    // {string} blockId
+    STORY_DELETE_BLOCK: 'STORY_DELETE_BLOCK',
 
-  // {string} storyUid
-  // {string} blockId
-  STORY_MOVE_BLOCK_UP: 'STORY_MOVE_BLOCK_UP',
+    // {string} storyUid
+    // {string} blockId
+    STORY_MOVE_BLOCK_DOWN: 'STORY_MOVE_BLOCK_DOWN',
 
-  // {string} storyUid
-  // {number} insertAt: Index in block list to insert block.
-  // {object} blockContent: Object describing components in block.
-  STORY_INSERT_BLOCK: 'STORY_INSERT_BLOCK',
+    // {string} storyUid
+    // {string} blockId
+    STORY_MOVE_BLOCK_UP: 'STORY_MOVE_BLOCK_UP',
 
-  // {string} blockId
-  // {number|string} componentIndex
-  // {string} type: New component type.
-  // {any} value: New component value.
-  BLOCK_UPDATE_COMPONENT: 'BLOCK_UPDATE_COMPONENT',
+    // {string} storyUid
+    // {number} insertAt: Index in block list to insert block.
+    // {object} blockContent: Object describing components in block.
+    STORY_INSERT_BLOCK: 'STORY_INSERT_BLOCK',
 
-  /**
-   * Story save
-   */
+    // {string} blockId
+    // {number|string} componentIndex
+    // {string} type: New component type.
+    // {any} value: New component value.
+    BLOCK_UPDATE_COMPONENT: 'BLOCK_UPDATE_COMPONENT',
 
-  // {string} storyUid
-  STORY_SAVE_STARTED: 'STORY_SAVE_STARTED',
+    /**
+     * Story save
+     */
 
-  // {string} storyUid
-  // {string} digest
-  STORY_SAVED: 'STORY_SAVED',
+    // {string} storyUid
+    STORY_SAVE_STARTED: 'STORY_SAVE_STARTED',
 
-  // {string} storyUid
-  // {string} message
-  STORY_SAVE_FAILED: 'STORY_SAVE_FAILED',
+    // {string} storyUid
+    // {string} digest
+    STORY_SAVED: 'STORY_SAVED',
 
-  /**
-   * Story metadata and permissions save
-   */
+    // {string} storyUid
+    // {string} message
+    STORY_SAVE_FAILED: 'STORY_SAVE_FAILED',
 
-  // {string} storyUid
-  STORY_SAVE_METADATA: 'STORY_SAVE_METADATA',
+    /**
+     * Story metadata and permissions save
+     */
 
-  // {boolean} isPublic
-  STORY_SET_PERMISSIONS: 'STORY_SET_PERMISSIONS',
+    // {string} storyUid
+    STORY_SAVE_METADATA: 'STORY_SAVE_METADATA',
 
-  /**
-   * Drag drop and double-click-to-add-block actions
-   */
+    // {boolean} isPublic
+    STORY_SET_PERMISSIONS: 'STORY_SET_PERMISSIONS',
 
-  // {string} storyUid
-  STORY_DRAG_ENTER: 'STORY_DRAG_ENTER',
+    /**
+     * Drag drop and double-click-to-add-block actions
+     */
 
-  // {string} storyUid
-  STORY_DRAG_LEAVE: 'STORY_DRAG_LEAVE',
+    // {string} storyUid
+    STORY_DRAG_ENTER: 'STORY_DRAG_ENTER',
 
-  // {string} storyUid
-  // {object} blockContent: Data of block being dragged over story.
-  // {object} pointer: Pointer event that triggered this action.
-  // {HTMLElement} storyElement: Root of story DOM being dragged over.
-  STORY_DRAG_OVER: 'STORY_DRAG_OVER',
+    // {string} storyUid
+    STORY_DRAG_LEAVE: 'STORY_DRAG_LEAVE',
 
-  // {string} storyUid
-  // {object} blockContent: Data of block being dragged over story.
-  STORY_DROP: 'STORY_DROP',
+    // {string} storyUid
+    // {object} blockContent: Data of block being dragged over story.
+    // {object} pointer: Pointer event that triggered this action.
+    // {HTMLElement} storyElement: Root of story DOM being dragged over.
+    STORY_DRAG_OVER: 'STORY_DRAG_OVER',
 
-  // {string} storyUid
-  // {string} blockId
-  BLOCK_DOUBLE_CLICK: 'BLOCK_DOUBLE_CLICK',
+    // {string} storyUid
+    // {object} blockContent: Data of block being dragged over story.
+    STORY_DROP: 'STORY_DROP',
 
-  /**
-   * Rich text editor -> rich text editor toolbar communication
-   */
+    // {string} storyUid
+    // {string} blockId
+    BLOCK_DOUBLE_CLICK: 'BLOCK_DOUBLE_CLICK',
 
-  // {array[string]} activeFormats: Currently available formatters.
-  RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS: 'RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS',
+    /**
+     * Rich text editor -> rich text editor toolbar communication
+     */
 
-  /**
-   * History management
-   */
+    // {array[string]} activeFormats: Currently available formatters.
+    RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS: 'RTE_TOOLBAR_UPDATE_ACTIVE_FORMATS',
 
-  // {string} storyUid
-  HISTORY_UNDO: 'HISTORY_UNDO',
+    /**
+     * History management
+     */
 
-  // {string} storyUid
-  HISTORY_REDO: 'HISTORY_REDO',
+    // {string} storyUid
+    HISTORY_UNDO: 'HISTORY_UNDO',
 
-  /**
-   * Generic asset selector flow
-   */
+    // {string} storyUid
+    HISTORY_REDO: 'HISTORY_REDO',
 
-  // Initial media selector setup
-  // {string} blockId
-  // {number} componentIndex
-  ASSET_SELECTOR_CHOOSE_PROVIDER: 'ASSET_SELECTOR_CHOOSE_PROVIDER',
+    /**
+     * Generic asset selector flow
+     */
 
-  // No payload
-  ASSET_SELECTOR_APPLY: 'ASSET_SELECTOR_APPLY',
+    // Initial media selector setup
+    // {string} blockId
+    // {number} componentIndex
+    ASSET_SELECTOR_CHOOSE_PROVIDER: 'ASSET_SELECTOR_CHOOSE_PROVIDER',
 
-  // No payload
-  ASSET_SELECTOR_CLOSE: 'ASSET_SELECTOR_CLOSE',
+    // No payload
+    ASSET_SELECTOR_APPLY: 'ASSET_SELECTOR_APPLY',
 
-  /**
-   * YouTube embed flow
-   */
+    // No payload
+    ASSET_SELECTOR_CLOSE: 'ASSET_SELECTOR_CLOSE',
 
-  // No payload
-  ASSET_SELECTOR_CHOOSE_YOUTUBE: 'ASSET_SELECTOR_CHOOSE_YOUTUBE',
+    /**
+     * YouTube embed flow
+     */
 
-  // {string} url
-  ASSET_SELECTOR_UPDATE_YOUTUBE_URL: 'ASSET_SELECTOR_UPDATE_YOUTUBE_URL',
+    // No payload
+    ASSET_SELECTOR_CHOOSE_YOUTUBE: 'ASSET_SELECTOR_CHOOSE_YOUTUBE',
 
-  /**
-   * Socrata visualization flow
-   */
+    // {string} url
+    ASSET_SELECTOR_UPDATE_YOUTUBE_URL: 'ASSET_SELECTOR_UPDATE_YOUTUBE_URL',
 
-  // No payload
-  ASSET_SELECTOR_CHOOSE_VISUALIZATION: 'ASSET_SELECTOR_CHOOSE_VISUALIZATION',
+    /**
+     * Socrata visualization flow
+     */
 
-  // {string} datasetUid
-  // {boolean} isNewBackend
-  ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET: 'ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET',
+    // No payload
+    ASSET_SELECTOR_CHOOSE_VISUALIZATION: 'ASSET_SELECTOR_CHOOSE_VISUALIZATION',
 
-  // {object} cardData
-  ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION: 'ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION',
+    // {string} datasetUid
+    // {boolean} isNewBackend
+    ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET: 'ASSET_SELECTOR_CHOOSE_VISUALIZATION_DATASET',
 
-  /**
-   * Image embed flow
-   */
+    // {object} cardData
+    ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION: 'ASSET_SELECTOR_UPDATE_VISUALIZATION_CONFIGURATION',
 
-  // No payload
-  ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD: 'ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD',
+    /**
+     * Image embed flow
+     */
 
-  // {number} percentLoaded
-  FILE_UPLOAD_PROGRESS: 'FILE_UPLOAD_PROGRESS',
+    // No payload
+    ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD: 'ASSET_SELECTOR_CHOOSE_IMAGE_UPLOAD',
 
-  // No payload
-  FILE_UPLOAD_DONE: 'FILE_UPLOAD_DONE',
+    // {number} percentLoaded
+    FILE_UPLOAD_PROGRESS: 'FILE_UPLOAD_PROGRESS',
 
-  // {object} error
-  FILE_UPLOAD_ERROR: 'FILE_UPLOAD_ERROR',
+    // No payload
+    FILE_UPLOAD_DONE: 'FILE_UPLOAD_DONE',
 
-  /**
-   * Code embed flow
-   */
+    // {object} error
+    FILE_UPLOAD_ERROR: 'FILE_UPLOAD_ERROR',
 
-  // No payload
-  ASSET_SELECTOR_CHOOSE_EMBED_CODE: 'ASSET_SELECTOR_CHOOSE_EMBED_CODE',
+    /**
+     * Code embed flow
+     */
 
-  // {string} html
-  ASSET_SELECTOR_UPDATE_EMBED_CODE: 'ASSET_SELECTOR_UPDATE_EMBED_CODE',
+    // No payload
+    ASSET_SELECTOR_CHOOSE_EMBED_CODE: 'ASSET_SELECTOR_CHOOSE_EMBED_CODE',
 
-  // {number} percentLoaded
-  EMBED_CODE_UPLOAD_PROGRESS: 'EMBED_CODE_UPLOAD_PROGRESS',
+    // {string} html
+    ASSET_SELECTOR_UPDATE_EMBED_CODE: 'ASSET_SELECTOR_UPDATE_EMBED_CODE',
 
-  // No payload
-  EMBED_CODE_UPLOAD_DONE: 'EMBED_CODE_UPLOAD_DONE',
+    // {number} percentLoaded
+    EMBED_CODE_UPLOAD_PROGRESS: 'EMBED_CODE_UPLOAD_PROGRESS',
 
-  // No payload
-  EMBED_CODE_UPLOAD_ERROR: 'EMBED_CODE_UPLOAD_ERROR'
-};
+    // No payload
+    EMBED_CODE_UPLOAD_DONE: 'EMBED_CODE_UPLOAD_DONE',
+
+    // No payload
+    EMBED_CODE_UPLOAD_ERROR: 'EMBED_CODE_UPLOAD_ERROR'
+  };
+
+  root.Actions = Actions;
+})(window);

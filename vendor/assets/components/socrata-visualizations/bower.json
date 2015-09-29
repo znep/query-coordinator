@@ -34,6 +34,7 @@
     "leaflet": "0.7.3",
     "lodash": "~3.10.0",
     "jquery": "~2.1.1",
-    "vector-tile": "0.1.1"
+    "vector-tile": "0.1.1",
+    "moment": "~2.10.6"
   }
 }

@@ -718,7 +718,7 @@
       function injectTileInfo(e) {
 
         // TODO handle selecting layers and/or multiple layers better.
-        var layer = self.layers['main'];
+        var layer = self.layers.main;
 
         e.tile = VectorTileUtil.getTileInfoByPointAndZoomLevel(e.latlng, map.getZoom());
         e.tile.id = VectorTileUtil.getTileId(e.tile);
@@ -995,7 +995,7 @@
     },
 
     flushOutstandingQueue: function() {
-      
+
       var self = this;
 
       this.lastCommitedZoomLevel = this.lastSeenZoomLevel;

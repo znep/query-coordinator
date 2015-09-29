@@ -219,6 +219,12 @@
               vif: vif
             };
             break;
+          case 'timelineChart':
+            _currentComponentType = 'socrata.visualization.timelineChart';
+            _currentComponentProperties = {
+              vif: vif
+            };
+            break;
           case 'featureMap':
             _currentComponentType = 'socrata.visualization.featureMap';
             _currentComponentProperties = {

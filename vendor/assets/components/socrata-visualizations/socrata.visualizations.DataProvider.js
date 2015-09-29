@@ -80,23 +80,11 @@
       );
 
       return parsed;
-    }
+    };
 
     /**
      * Private methods
      */
-
-    function _logWarning(message) {
-      if (root.console && root.console.warn) {
-        root.console.warn(message);
-      }
-    }
-
-    function _logError(message) {
-      if (root.console && root.console.error) {
-        root.console.error(message);
-      }
-    }
   }
 
   root.socrata.visualizations.DataProvider = DataProvider;

@@ -23,7 +23,7 @@ class Block < ActiveRecord::Base
 
   # Searches the json blog for components with the specified type and only returns those blocks
   scope :with_component_type, ->(component_type) do
-    json_query = %Q{ [{"type": "#{component_type}"}] }
+    json_query = [{ type: component_type }].to_json
     where("components @> ?", json_query)
   end
 

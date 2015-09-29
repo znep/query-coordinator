@@ -3,7 +3,9 @@ require 'rails_helper'
 describe ::Services::Administration::GeoregionEnabler do
 
   subject { ::Services::Administration::GeoregionEnabler.new }
+
   let(:curated_region) { double(CuratedRegion, :id => 5) }
+
   before(:each) do
     allow(CurrentDomain).to receive(:cname).and_return('localhost')
   end

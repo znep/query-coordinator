@@ -13,15 +13,23 @@ var t = function(str, props) {
       action: PropTypes.string.isRequired,
       allowEnablement: PropTypes.bool,
       authenticityToken: PropTypes.string.isRequired,
-      isEnabled: PropTypes.bool.isRequired
+      isEnabled: PropTypes.bool.isRequired,
+      onSuccess: PropTypes.func
     },
     getDefaultProps: function() {
       return {
-        allowEnablement: true
+        allowEnablement: true,
+        onSuccess: _.noop
       };
     },
     render: function() {
-      const { action, allowEnablement, authenticityToken, isEnabled, onSubmit } = this.props;
+      const {
+        action,
+        allowEnablement,
+        authenticityToken,
+        isEnabled,
+        onSuccess
+      } = this.props;
       const isEnabledLabel = isEnabled ? t('enabled_yes') : t('enabled_no');
       const enabledClassName = isEnabled ? 'is-enabled' : 'is-disabled';
       const actionToPerform = isEnabled ? 'disable' : 'enable';
@@ -31,8 +39,8 @@ var t = function(str, props) {
         authenticityToken,
         disabled: isDisabled,
         method: 'put',
-        onSubmit,
-        title: isDisabled ? t('enabled_georegions_limit') : null,
+        onSuccess,
+        title: isDisabled ? t('enabled_georegions_limit', { limit: georegionsNS.maximumEnabledCount }) : null,
         value: t(actionToPerform)
       };
       const className = _.compact(['enabled-widget-label', enabledClassName]).join(' ');
@@ -62,24 +70,27 @@ var t = function(str, props) {
       };
     },
     renderEnabledWidget: function() {
-      const { action, authenticityToken, allowEnablement, id, isEnabled } = this.props;
-      const onSubmit = (response) => {
+      const {
+        isEnabled,
+        ...props
+      } = this.props;
+
+      const onSuccess = (response) => {
         if (response.success) {
-          setFlash(response.message, 'notice');
-          setGeoregionEnabled(id, !isEnabled);
+          setFlashMessage(response.message, 'notice');
+          updateGeoregion(props.id, { enabledFlag: !isEnabled });
         }
         else if (response.error) {
-          setFlash(response.message, 'error');
+          setFlashMessage(response.message, 'error');
         }
       };
 
       return (
         <EnabledWidget
-          action={action}
-          authenticityToken={authenticityToken}
-          allowEnablement={allowEnablement}
           isEnabled={isEnabled}
-          onSubmit={onSubmit} />
+          onSuccess={onSuccess}
+          {...props}
+          />
       );
     },
     render: function() {
@@ -127,20 +138,29 @@ var t = function(str, props) {
       };
     },
     renderRows: function(rows) {
-      const { allowEnablement, authenticityToken, baseUrlPath, renderActions } = this.props;
+      const {
+        allowEnablement,
+        authenticityToken,
+        baseUrlPath,
+        renderActions
+      } = this.props;
+
       const baseRowProps = {
         allowEnablement,
         authenticityToken,
         baseUrlPath,
         renderActions
       };
-      return rows.map(function({ enabledFlag, id, name }) {
+      return rows.map(function(row) {
+        const {
+          enabledFlag,
+          ...itemProps
+        } = row;
         const rowProps = {
-          action: `${baseUrlPath}${id}`,
-          id,
+          action: `${baseUrlPath}${itemProps.id}`,
           isEnabled: enabledFlag,
-          key: id,
-          name,
+          key: itemProps.id,
+          ...itemProps,
           ...baseRowProps
         };
         return (
@@ -176,15 +196,15 @@ var t = function(str, props) {
     }
   });
 
-  function setFlash(message, type) {
+  function setFlashMessage(message, type) {
     georegionsNS.flash = [{ message, type }];
     renderPage();
   }
 
-  function setGeoregionEnabled(id, enabledFlag) {
+  function updateGeoregion(id, newValue) {
     georegionsNS.georegions = _.map(georegionsNS.georegions, function(georegion) {
       if (georegion.id === id) {
-        return _.extend({}, georegion, { enabledFlag });
+        return _.extend({}, georegion, newValue);
       } else {
         return georegion;
       }
@@ -195,7 +215,7 @@ var t = function(str, props) {
   function renderTables(georegions, allowEnablement) {
     const authenticityToken = $('.georegions-controls-custom [name="authenticity_token"]').value();
     const baseUrlPath = '/admin/geo/';
-    const [defaultBoundaries, customBoundaries] = _.partition(georegions, _.property('defaultFlag'));
+    const [defaultBoundaries, customBoundaries] = _.partition(georegions, 'defaultFlag');
     const baseTableProps = {
       allowEnablement,
       authenticityToken,
@@ -239,7 +259,7 @@ var t = function(str, props) {
 
   function renderPage() {
     const georegions = georegionsNS.georegions;
-    const enabledBoundaries = _.filter(georegions, _.property('enabledFlag'));
+    const enabledBoundaries = _.filter(georegions, 'enabledFlag');
     const allowEnablement = enabledBoundaries.length < georegionsNS.maximumEnabledCount;
 
     renderTables(georegions, allowEnablement);

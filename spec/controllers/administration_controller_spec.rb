@@ -158,7 +158,7 @@ describe AdministrationController do
       end
 
       describe 'success' do
-        it 'redirects to /admin/georegions' do
+        it 'redirects to /admin/geo' do
           allow_any_instance_of(::Services::Administration::GeoregionEnabler).to receive(:enable)
           put :enable_georegion, :id => 1
           expect(response).to redirect_to('/admin/geo')
@@ -205,17 +205,16 @@ describe AdministrationController do
   end
 
   private
+
   def stub_admin_user
     user_double = double(User)
     allow(user_double).to receive(:is_admin?).and_return(true)
     allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
-    user_double
   end
 
   def stub_non_admin_user
     user_double = double(User)
     allow(user_double).to receive(:is_admin?).and_return(false)
     allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
-    user_double
   end
 end

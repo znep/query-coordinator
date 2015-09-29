@@ -23,7 +23,7 @@
         const className = _.compact(['flash', type]).join(' ');
         return (
           <div key={index} className={className}>{message}</div>
-        )
+        );
       });
       return (
         <div>{messages}</div>

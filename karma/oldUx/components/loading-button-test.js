@@ -9,7 +9,6 @@ describe('LoadingButton', function() {
   beforeEach(function() {
     this.target = $('<div/>').appendTo(document.body).get(0);
     this.shallowRenderer = TestUtils.createRenderer();
-    this.onSubmitStub = sinon.stub();
     this.props = {
     };
   });

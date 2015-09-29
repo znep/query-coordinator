@@ -8,12 +8,12 @@ describe('FormButton', function() {
   beforeEach(function() {
     this.target = $('<div/>').appendTo(document.body).get(0);
     this.shallowRenderer = TestUtils.createRenderer();
-    this.onSubmitStub = sinon.stub();
+    this.onSuccessStub = sinon.stub();
     this.props = {
       action: '/foo',
       authenticityToken: 'abcd',
       method: 'put',
-      onSubmit: this.onSubmitStub,
+      onSuccess: this.onSuccessStub,
       value: 'Click'
     };
   });
@@ -36,17 +36,20 @@ describe('FormButton', function() {
   describe('rendered', function() {
     beforeEach(function() {
       this.node = TestUtils.renderIntoDocument(React.createElement(FormButton, this.props));
-    });
-
-    it('makes an ajax call on submit', function() {
       sinon.stub($, 'ajax').yieldsTo('success', {
         success: true,
         message: 'message'
       });
+    });
+
+    afterEach(function() {
+      $.ajax.restore();
+    });
+
+    it('makes an ajax call on submit', function() {
       TestUtils.Simulate.submit(findByTag(this.node, 'form'));
       expect($.ajax).to.have.been.calledOnce;
-      expect(this.onSubmitStub).to.have.been.calledOnce;
-      $.ajax.restore();
+      expect(this.onSuccessStub).to.have.been.calledOnce;
     });
 
   });

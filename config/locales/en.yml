@@ -1412,14 +1412,14 @@ en:
         default_georegions: Socrata Default Georegions
         delete: Delete
         disable: Disable
-        disable_success: "%{name} has been disabled and will no longer be automatically computed for new datasets"
+        disable_success: "%{name} has been disabled and will no longer be automatically computed for new datasets."
         edit: Edit
         enable: Enable
         enabled?: Enabled?
         enabled_no: "No"
         enabled_yes: "Yes"
         enable_success: "%{name} has been enabled. Note that this will not retroactively enable the boundary for datasets created previously; the computation must be triggered for each extant dataset for which it should apply."
-        enabled_georegions_limit: You have reached the limit of five enabled boundaries for this site.
+        enabled_georegions_limit: You have reached the limit of %{limit} enabled boundaries for this site.
         flashes:
           add_georegion_error: <div>%{error_message}</div><div>Link to <a target="_blank" href="https://www.xkcd.com/627/">support KB article</a></div>
         page_title: Manage Spatial Lens

@@ -42,6 +42,7 @@
         :allow_actions => true,
         :allow_enablement => @view_model.allow_enablement?,
         :georegions => @view_model.custom_regions,
+        :limit => @view_model.maximum_enabled_count,
         :prefix => prefix
       } %>
   </div>
@@ -57,6 +58,7 @@
         :allow_actions => false,
         :allow_enablement => @view_model.allow_enablement?,
         :georegions => @view_model.default_regions,
+        :limit => @view_model.maximum_enabled_count,
         :prefix => prefix,
       } %>
   </div>
@@ -71,7 +73,7 @@
     <script type="text/javascript" id="bar">
       blist.namespace.fetch('blist.georegions').georegions = <%== @view_model.curated_regions.to_json %>;
       blist.namespace.fetch('blist.georegions').maximumEnabledCount = <%== @view_model.maximum_enabled_count.to_json %>;
-      blist.namespace.fetch('blist.georegions').flash = <%== flash.map {|val| { :type => val[0], :message => val[1] } }.to_json %>;
+      blist.namespace.fetch('blist.georegions').flash = <%== flash.map { |type, message| { :type => type, :message => message } }.to_json %>;
     </script>
     <%- if Rails.env.production? -%>
       <%= include_javascripts 'react-prod' %>

@@ -72,7 +72,7 @@ describe 'administration/georegions.html.erb' do
 
       render
       expect(rendered).to include('disabled="disabled"')
-      expect(rendered).to include('You have reached the limit of five enabled boundaries for this site')
+      expect(rendered).to include('You have reached the limit of 5 enabled boundaries for this site')
     end
 
   end

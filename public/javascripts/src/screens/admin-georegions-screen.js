@@ -3,198 +3,24 @@ var t = function(str, props) {
 };
 
 (function() {
-  var PropTypes = React.PropTypes;
-  const { FlashMessage, FormButton } = blist.namespace.fetch('blist.components');
-  var georegionsNS = blist.namespace.fetch('blist.georegions');
+  const PropTypes = React.PropTypes;
+  const {
+    FlashMessage
+  } = blist.namespace.fetch('blist.components');
+  let georegionsComponentsNS = blist.namespace.fetch('blist.georegions.components');
+  let georegionsNS = blist.namespace.fetch('blist.georegions');
+  const { GeoregionAdminTable } = georegionsComponentsNS;
   georegionsNS.flash = georegionsNS.flash || {};
-
-  var EnabledWidget = React.createClass({
-    propTypes: {
-      action: PropTypes.string.isRequired,
-      allowEnablement: PropTypes.bool,
-      authenticityToken: PropTypes.string.isRequired,
-      isEnabled: PropTypes.bool.isRequired,
-      onSuccess: PropTypes.func
-    },
-    getDefaultProps: function() {
-      return {
-        allowEnablement: true,
-        onSuccess: _.noop
-      };
-    },
-    render: function() {
-      const {
-        action,
-        allowEnablement,
-        authenticityToken,
-        isEnabled,
-        onSuccess
-      } = this.props;
-      const isEnabledLabel = isEnabled ? t('enabled_yes') : t('enabled_no');
-      const enabledClassName = isEnabled ? 'is-enabled' : 'is-disabled';
-      const actionToPerform = isEnabled ? 'disable' : 'enable';
-      const isDisabled = !isEnabled && !allowEnablement;
-      const formButtonProps = {
-        action: `${action}/${actionToPerform}`,
-        authenticityToken,
-        disabled: isDisabled,
-        method: 'put',
-        onSuccess,
-        title: isDisabled ? t('enabled_georegions_limit', { limit: georegionsNS.maximumEnabledCount }) : null,
-        value: t(actionToPerform)
-      };
-      const className = _.compact(['enabled-widget-label', enabledClassName]).join(' ');
-
-      return (
-        <div>
-          <span className={className}>{isEnabledLabel}</span>
-          {' '}
-          <FormButton {...formButtonProps} />
-        </div>
-      );
+  
+  function onEnableSuccess(id, newState, response) {
+    if (response.success) {
+      setFlashMessage(response.message, 'notice');
+      updateGeoregion(id, { enabledFlag: newState });
     }
-  });
-
-  var GeoregionAdminRow = React.createClass({
-    propTypes: {
-      action: PropTypes.string.isRequired,
-      allowEnablement: PropTypes.bool,
-      authenticityToken: PropTypes.string.isRequired,
-      isEnabled: PropTypes.bool.isRequired,
-      name: PropTypes.string.isRequired,
-      renderActions: PropTypes.bool.isRequired
-    },
-    getDefaultProps: function() {
-      return {
-        allowEnablement: true
-      };
-    },
-    renderEnabledWidget: function() {
-      const {
-        isEnabled,
-        ...props
-      } = this.props;
-
-      const onSuccess = (response) => {
-        if (response.success) {
-          setFlashMessage(response.message, 'notice');
-          updateGeoregion(props.id, { enabledFlag: !isEnabled });
-        }
-        else if (response.error) {
-          setFlashMessage(response.message, 'error');
-        }
-      };
-
-      return (
-        <EnabledWidget
-          isEnabled={isEnabled}
-          onSuccess={onSuccess}
-          {...props}
-          />
-      );
-    },
-    render: function() {
-      var props = this.props;
-      return (
-        <tr className="item">
-          <td className="name">{props.name}</td>
-          <td className="toggle-enabled">
-            {this.renderEnabledWidget()}
-          </td>
-          { props.renderActions ?
-            (<td className="edit-action">
-              <FormButton action={props.action} method="put" authenticityToken={props.authenticityToken} value="Edit" />
-            </td>)
-            : null }
-          { props.renderActions ?
-            (<td className="remove-action">
-              <FormButton action={props.action} method="delete" authenticityToken={props.authenticityToken} value="Remove" />
-            </td>)
-            : null }
-        </tr>
-      );
+    else if (response.error) {
+      setFlashMessage(response.message, 'error');
     }
-  });
-
-  var GeoregionPropType = PropTypes.shape({
-    enabledFlag: PropTypes.bool.isRequired,
-    id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired
-  });
-
-  var GeoregionAdminTable = React.createClass({
-    propTypes: {
-      allowEnablement: PropTypes.bool,
-      authenticityToken: PropTypes.string.isRequired,
-      baseUrlPath: PropTypes.string.isRequired,
-      renderActions: PropTypes.bool,
-      rows: PropTypes.arrayOf(GeoregionPropType).isRequired
-    },
-    getDefaultProps: function() {
-      return {
-        allowEnablement: true,
-        renderActions: true,
-        rows: []
-      };
-    },
-    renderRows: function(rows) {
-      const {
-        allowEnablement,
-        authenticityToken,
-        baseUrlPath,
-        renderActions
-      } = this.props;
-
-      const baseRowProps = {
-        allowEnablement,
-        authenticityToken,
-        baseUrlPath,
-        renderActions
-      };
-      return rows.map(function(row) {
-        const {
-          enabledFlag,
-          ...itemProps
-        } = row;
-        const rowProps = {
-          action: `${baseUrlPath}${itemProps.id}`,
-          isEnabled: enabledFlag,
-          key: itemProps.id,
-          ...itemProps,
-          ...baseRowProps
-        };
-        return (
-          <GeoregionAdminRow {...rowProps} />
-        );
-      });
-    },
-    render: function() {
-      var props = this.props;
-      return (
-        <table className="gridList georegions-table" cellSpacing="0">
-          <colgroup>
-            <col className="name" />
-            <col className="toggle-enabled" />
-            { props.renderActions ? (<col className="edit-action" />) : null }
-            { props.renderActions ? (<col className="remove-action" />) : null }
-            <col className="edit-action" />
-            <col className="remove-action" />
-          </colgroup>
-          <thead>
-          <tr>
-            <th className="name"><div>{ t('region_name') }</div><span className="icon"></span></th>
-            <th className="toggle-enabled"><div>{ t('enabled?') }</div><span className="icon"></span></th>
-            { props.renderActions ? (<th className="edit-action"><div>{ t('actions') }</div><span className="icon"></span></th>) : null }
-            { props.renderActions ? (<th className="remove-action"></th>) : null }
-          </tr>
-          </thead>
-          <tbody>
-          {this.renderRows(props.rows, props.authenticityToken)}
-          </tbody>
-        </table>
-      );
-    }
-  });
+  }
 
   function setFlashMessage(message, type) {
     georegionsNS.flash = [{ message, type }];
@@ -224,6 +50,7 @@ var t = function(str, props) {
 
     React.render(
       <GeoregionAdminTable
+        onEnableSuccess={onEnableSuccess}
         rows={customBoundaries}
         {...baseTableProps} />,
       $('.georegions-custom .gridListWrapper').get(0)
@@ -231,6 +58,7 @@ var t = function(str, props) {
 
     React.render(
       <GeoregionAdminTable
+        onEnableSuccess={onEnableSuccess}
         renderActions={false}
         rows={defaultBoundaries}
         {...baseTableProps} />,
@@ -268,13 +96,6 @@ var t = function(str, props) {
   }
 
   georegionsNS.renderPage = renderPage;
-
-  georegionsNS.components = {
-    GeoregionAdminTable,
-    GeoregionAdminRow,
-    FormButton,
-    EnabledWidget
-  };
 
   var commonNS = blist.namespace.fetch('blist.common');
 

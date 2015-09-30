@@ -297,6 +297,9 @@ javascripts:
     - public/javascripts/dist/components/socrata-title-tip-mixin.js
     - public/javascripts/dist/components/loading-button.js
     - public/javascripts/dist/components/form-button.js
+    - public/javascripts/dist/components/georegions/enabled-widget.js
+    - public/javascripts/dist/components/georegions/georegion-admin-row.js
+    - public/javascripts/dist/components/georegions/georegion-admin-table.js
     - public/javascripts/dist/screens/admin-georegions-screen.js
   admin-home:
     - public/javascripts/util/serialize.js

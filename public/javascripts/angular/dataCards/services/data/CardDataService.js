@@ -564,7 +564,7 @@
 
             try {
               var extent = validateExtentResponse(response);
-            } catch(e) {
+            } catch (e) {
               return $q.reject('Invalid extent response. {0}'.format(e.message));
             }
 

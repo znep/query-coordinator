@@ -65,15 +65,15 @@
             selector: selector,
             render: function() {
               var title = [
-                  '<div class="flyout-title">Card Debug Info</div>'
+                '<div class="flyout-title">Card Debug Info</div>'
               ];
 
               var renderTime = [
-                  '<div class="flyout-row">',
-                    '<span class="flyout-cell">Render time</span>',
-                    '<span class="flyout-cell">{0} ms</span>'.
-                        format(debugInfo.renderCompleteTime - debugInfo.renderStartTime),
-                  '</div>'
+                '<div class="flyout-row">',
+                  '<span class="flyout-cell">Render time</span>',
+                  '<span class="flyout-cell">{0} ms</span>'.
+                    format(debugInfo.renderCompleteTime - debugInfo.renderStartTime),
+                '</div>'
               ];
 
               var filteredUsedRollups;
@@ -82,7 +82,7 @@
                   '<div class="flyout-row">',
                     '<span class="flyout-cell">Filtered query used rollups</span>',
                     '<span class="flyout-cell">{0}</span>'.
-                        format(_.isPresent(debugInfo.filteredResponseHeaders['x-soda2-rollup'])),
+                      format(_.isPresent(debugInfo.filteredResponseHeaders['x-soda2-rollup'])),
                   '</div>'
                 ];
               } else {
@@ -95,7 +95,7 @@
                   '<div class="flyout-row">',
                     '<span class="flyout-cell">Unfiltered query used rollups</span>',
                     '<span class="flyout-cell">{0}</span>'.
-                        format(_.isPresent(debugInfo.unfilteredResponseHeaders['x-soda2-rollup'])),
+                      format(_.isPresent(debugInfo.unfilteredResponseHeaders['x-soda2-rollup'])),
                   '</div>'
                 ];
               } else {

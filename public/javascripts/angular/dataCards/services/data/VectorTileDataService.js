@@ -76,15 +76,15 @@
 
     VectorTileDataServiceDefinition.typedArrayFromArrayBufferResponse =
       function typedArrayFromArrayBufferResponse(xhr) {
-      if (xhrHasVBArray(xhr)) {
-        return new VBArray(xhr.responseBody).toArray();
-        // Default for well-behaved browsers.
-      } else if (xhr.response && xhr.response instanceof ArrayBuffer) {
-        return new Uint8Array(xhr.response);
-      }
+        if (xhrHasVBArray(xhr)) {
+          return new VBArray(xhr.responseBody).toArray();
+          // Default for well-behaved browsers.
+        } else if (xhr.response && xhr.response instanceof ArrayBuffer) {
+          return new Uint8Array(xhr.response);
+        }
 
-      return undefined;
-    };
+        return undefined;
+      };
 
     /**
      * Replicates the functionality of $http, but expects an array buffer as the

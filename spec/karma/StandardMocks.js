@@ -19,11 +19,14 @@ function applyStandardMocks() {
   var storyUid = 'test-test';
   var storyTitle = 'Standard Mock Story Title';
   var storyDescription = 'Standard Mock Story Description';
-  var assetSelectorBlockId = '1000';
-  var textBlockId = '1001';
-  var assetSelectorAndTextBlockId = '1002';
+  var blockIds;
+  var assetSelectorBlockId;
+  var textBlockId;
+  var assetSelectorAndTextBlockId;
   var storyteller = window.socrata.storyteller;
 
+  // If you mess with the blocks below, make sure to update
+  // the block ID code below.
   var storyData = generateStoryData({
     uid: storyUid,
     title: storyTitle,
@@ -31,21 +34,18 @@ function applyStandardMocks() {
     digest: 'test-digest',
     blocks: [
       generateBlockData({
-        id: assetSelectorBlockId,
         layout: '12',
         components: [
           { type: 'assetSelector' }
         ]
       }),
       generateBlockData({
-        id: textBlockId,
         layout: '12',
         components: [
           { type: 'html', value: 'some-text' }
         ]
       }),
       generateBlockData({
-        id: assetSelectorAndTextBlockId,
         layout: '6-6',
         components: [
           { type: 'assetSelector' },
@@ -54,6 +54,8 @@ function applyStandardMocks() {
       })
     ]
   });
+
+
 
   // Stub translations
   window.I18n = {
@@ -100,6 +102,12 @@ function applyStandardMocks() {
   storyteller.fileUploadStore = new storyteller.FileUploadStore();
 
   storyteller.dispatcher.dispatch({ action: Actions.STORY_CREATE, data: storyData });
+
+  // We don't know the client-side block IDs until the story is loaded.
+  blockIds = storyteller.storyStore.getStoryBlockIds(storyUid);
+  assetSelectorBlockId = blockIds[0];
+  textBlockId = blockIds[1];
+  assetSelectorAndTextBlockId = blockIds[2];
 
   window.standardMocks = {
     remove: removeStandardMocks,

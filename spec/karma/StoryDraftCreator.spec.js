@@ -49,7 +49,7 @@ describe('StoryDraftCreator', function() {
           // For instance, JSON.stringify({foo: undefined}) returns '{}'.
           // This is significant because sometimes 'themeId' is undefined.
           JSON.parse(JSON.stringify(
-            storyteller.storyStore.serializeStoryDiff(standardMocks.validStoryUid)
+            storyteller.storyStore.serializeStory(standardMocks.validStoryUid)
           ))
         );
         // Don't bother responding.

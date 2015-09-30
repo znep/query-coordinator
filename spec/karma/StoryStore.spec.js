@@ -40,6 +40,9 @@ describe('StoryStore', function() {
     storyteller.dispatcher.dispatch(action);
   }
 
+  // We don't rely on StandardMocks for the sample stories because
+  // we want this test to explicitly test StoryStore, not test it
+  // through some mocking layer.
   function createSampleStories() {
 
     var sampleStory1Data = generateStoryData({
@@ -52,12 +55,10 @@ describe('StoryStore', function() {
       publishedStory: story1PublishedStory,
       blocks: [
         generateBlockData({
-          id: block1Id,
           layout: block1Layout,
           components: block1Components
         }),
         generateBlockData({
-          id: block2Id,
           layout: block2Layout,
           components: block2Components
         })
@@ -73,7 +74,6 @@ describe('StoryStore', function() {
       publishedStory: story2PublishedStory,
       blocks: [
         generateBlockData({
-          id: block3Id,
           layout: block3Layout,
           components: block3Components
         })
@@ -93,6 +93,10 @@ describe('StoryStore', function() {
       publishedStory: sampleStory2Data.publishedStory,
       storyUid: sampleStory2Data.uid
     });
+
+    block1Id = storyteller.storyStore.getStoryBlockIds(story1Uid)[0];
+    block2Id = storyteller.storyStore.getStoryBlockIds(story1Uid)[1];
+    block3Id = storyteller.storyStore.getStoryBlockIds(story2Uid)[0];
   }
 
   beforeEach(function() {
@@ -219,16 +223,6 @@ describe('StoryStore', function() {
           });
         });
       });
-
-      describe('.serializeStoryDiff()', function() {
-
-        it('should throw an error', function() {
-
-          assert.throw(function() {
-            storyteller.storyStore.serializeStoryDiff(null);
-          });
-        });
-      });
     });
 
     describe('given a non-existent story uid', function() {
@@ -349,16 +343,6 @@ describe('StoryStore', function() {
           });
         });
       });
-
-      describe('.serializeStoryDiff()', function() {
-
-        it('should throw an error', function() {
-
-          assert.throw(function() {
-            storyteller.storyStore.serializeStoryDiff('notf-ound');
-          });
-        });
-      });
     });
 
     describe('given an existing story uid', function() {
@@ -464,14 +448,12 @@ describe('StoryStore', function() {
             var block1 = storyteller.storyStore.getStoryBlockAtIndex(story1Uid, 0);
             var block3 = storyteller.storyStore.getStoryBlockAtIndex(story2Uid, 0);
 
-            assert.propertyVal(block1, 'id', block1Id);
             assert.propertyVal(block1, 'layout', block1Layout);
             assert.equal(block1.components[0].type, block1Components[0].type);
             assert.equal(block1.components[0].value, block1Components[0].value);
             assert.equal(block1.components[1].type, block1Components[1].type);
             assert.equal(block1.components[1].value, block1Components[1].value);
 
-            assert.propertyVal(block3, 'id', block3Id);
             assert.propertyVal(block3, 'layout', block3Layout);
             assert.equal(block3.components[0].type, block3Components[0].type);
             assert.equal(block3.components[0].value, block3Components[0].value);
@@ -507,35 +489,10 @@ describe('StoryStore', function() {
 
           assert.equal(serializedStory.uid, story1Uid);
           assert.equal(serializedStory.title, story1Title);
-          assert.equal(serializedStory.blocks[0].id, block1Id);
           assert.equal(serializedStory.blocks[0].layout, block1Layout);
           assert.deepEqual(serializedStory.blocks[0].components, block1Components);
-          assert.equal(serializedStory.blocks[1].id, block2Id);
           assert.equal(serializedStory.blocks[1].layout, block2Layout);
           assert.deepEqual(serializedStory.blocks[1].components, block2Components);
-        });
-      });
-
-      describe('.serializeStoryDiff()', function() {
-
-        it('should return an object matching the properties of the story except for unchanged blocks', function() {
-
-          dispatch({ action: Actions.STORY_INSERT_BLOCK, storyUid: story1Uid, blockContent: block1Content, insertAt: 2 });
-
-          var serializedStory = storyteller.storyStore.serializeStoryDiff(story1Uid);
-
-          assert.equal(serializedStory.uid, story1Uid);
-          assert.equal(serializedStory.title, story1Title);
-          assert.property(serializedStory.blocks[0], 'id');
-          assert.notProperty(serializedStory.blocks[0], 'layout');
-          assert.notProperty(serializedStory.blocks[0], 'components');
-          assert.property(serializedStory.blocks[1], 'id');
-          assert.notProperty(serializedStory.blocks[1], 'layout');
-          assert.notProperty(serializedStory.blocks[1], 'components');
-          assert.property(serializedStory.blocks[2], 'id');
-          assert.equal(serializedStory.blocks[2].layout, block1Layout);
-
-          assert.deepEqual(serializedStory.blocks[2].components, block1Components);
         });
       });
     });
@@ -833,25 +790,6 @@ describe('StoryStore', function() {
 
           var invalidStoryData = generateStoryData({
             uid: story1Uid
-          });
-
-          assert.throw(function() {
-            dispatch({ action: Actions.STORY_CREATE, data: invalidStoryData });
-          });
-        });
-      });
-
-      describe('given `blocks` with a block id that already exists', function() {
-
-        it('should throw an error', function() {
-
-          var invalidStoryData = generateStoryData({
-            uid: 'notf-ound',
-            blocks: [
-              generateBlockData({
-                id: block1Id
-              })
-            ]
           });
 
           assert.throw(function() {

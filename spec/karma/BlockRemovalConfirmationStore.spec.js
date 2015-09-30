@@ -2,11 +2,13 @@ describe('BlockRemovalConfirmationStore', function() {
 
   'use strict';
 
+  var storyteller = window.socrata.storyteller;
+
   describe('needsConfirmation', function() {
 
     describe('for a newly loaded story', function() {
       it('needs confirmation to remove any block', function() {
-        assert.isTrue(window.socrata.storyteller.blockRemovalConfirmationStore.needsConfirmation(standardMocks.firstBlockId));
+        assert.isTrue(storyteller.blockRemovalConfirmationStore.needsConfirmation(standardMocks.firstBlockId));
       });
     });
 
@@ -18,28 +20,27 @@ describe('BlockRemovalConfirmationStore', function() {
         var validInsertionIndex = 0;
         var blockContent = standardMocks.validBlockData1;
 
-        window.socrata.storyteller.dispatcher.dispatch({
+        storyteller.dispatcher.dispatch({
           action: Actions.STORY_INSERT_BLOCK,
           blockContent: blockContent,
           insertAt: validInsertionIndex,
           storyUid: standardMocks.validStoryUid
         });
 
-        // temp id has been generated during the copy, fetch for asking about the block
-        newlyAddedBlockId = window.socrata.storyteller.storyStore.getStoryBlockAtIndex(
-            standardMocks.validStoryUid,
-            validInsertionIndex
-          ).id;
+        // id has been generated during the copy, fetch it.
+        newlyAddedBlockId = storyteller.storyStore.getStoryBlockIds(
+          standardMocks.validStoryUid
+        )[validInsertionIndex];
       });
 
       it('should not ask for confirmation to delete', function() {
-        assert.isFalse(window.socrata.storyteller.blockRemovalConfirmationStore.needsConfirmation(newlyAddedBlockId));
+        assert.isFalse(storyteller.blockRemovalConfirmationStore.needsConfirmation(newlyAddedBlockId));
       });
 
       describe('and then it is edited', function() {
 
         it('should ask for confirmation to delete', function() {
-          window.socrata.storyteller.dispatcher.dispatch({
+          storyteller.dispatcher.dispatch({
             action: Actions.BLOCK_UPDATE_COMPONENT,
             blockId: newlyAddedBlockId,
             componentIndex: 0,
@@ -47,7 +48,7 @@ describe('BlockRemovalConfirmationStore', function() {
             value: ''
           });
 
-          assert.isTrue(window.socrata.storyteller.blockRemovalConfirmationStore.needsConfirmation(newlyAddedBlockId));
+          assert.isTrue(storyteller.blockRemovalConfirmationStore.needsConfirmation(newlyAddedBlockId));
         });
       });
 

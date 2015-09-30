@@ -26,9 +26,15 @@
 
       switch (action) {
         case Actions.STORY_CREATE:
-          payload.data.blocks.forEach(function(block) {
-            _blockNeedsConfirmation[block.id] = true;
-          });
+          storyteller.dispatcher.waitFor([ storyteller.storyStore.getDispatcherToken() ]);
+
+          _.each(
+            storyteller.storyStore.getStoryBlockIds(payload.data.uid),
+            function(blockId) {
+              _blockNeedsConfirmation[blockId] = true;
+            }
+          );
+
           self._emitChange();
           break;
 

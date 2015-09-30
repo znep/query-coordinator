@@ -8,12 +8,25 @@
 
   var FOUR_BY_FOUR_PATTERN = /^\w{4}-\w{4}$/;
 
+  // A store for story data.
+  // Each story is comprised of blocks, which in turn
+  // are comprised of one or more component.
+  //
+  // For the purposes of the store API, blocks are represented by client-side IDs that
+  // remain constant until page reload. These IDs are not to be confused with the IDs
+  // in the database, which are not exposed via any API. Those server-side IDs change
+  // every time the story is saved, and no effort is expended attempting to sync client
+  // and server block IDs.
   function StoryStore() {
 
     _.extend(this, new storyteller.Store());
 
     var self = this;
     var _stories = {};
+
+    // Mapping of constant client-side ID
+    // to block JSON. Client-side IDs
+    // only change when the page reloads.
     var _blocks = {};
 
     this.register(function(payload) {
@@ -23,7 +36,7 @@
       switch (action) {
 
         case Actions.STORY_CREATE:
-          _setStory(payload.data);
+          _setStory(payload.data, false);
           break;
 
         case Actions.STORY_SET_TITLE:
@@ -201,19 +214,6 @@
       };
     };
 
-    this.serializeStoryDiff = function(storyUid) {
-
-      var story = _getStory(storyUid);
-
-      return {
-        uid: story.uid,
-        title: story.title,
-        description: story.description,
-        theme: story.theme,
-        blocks: story.blockIds.map(_serializeBlockDiff)
-      };
-    };
-
     /**
      * Private methods
      */
@@ -374,9 +374,8 @@
 
       var storyUid = payload.storyUid;
       var clonedBlock = _cloneBlock(payload.blockContent);
-      var blockId = clonedBlock.id;
+      var blockId = _importBlockAndGenerateClientSideId(clonedBlock);
 
-      _blocks[blockId] = clonedBlock;
       _insertStoryBlockAtIndex(storyUid, blockId, payload.insertAt);
 
       self._emitChange();
@@ -384,11 +383,10 @@
 
     function _updateBlockComponentAtIndex(payload) {
 
-      utils.assertHasProperty(payload, 'componentIndex');
+      utils.assertHasProperties(payload, 'componentIndex', 'type', 'value', 'blockId');
       utils.assertIsOneOfTypes(payload.componentIndex, 'number', 'string');
-      utils.assertHasProperty(payload, 'type');
       utils.assertIsOneOfTypes(payload.type, 'string');
-      utils.assertHasProperty(payload, 'value');
+      utils.assertIsOneOfTypes(payload.blockId, 'string');
 
       var block = _getBlock(payload.blockId);
       var index = parseInt(payload.componentIndex, 10);
@@ -414,9 +412,6 @@
           type: payload.type,
           value: payload.value
         };
-
-        block.dirty = true;
-        block.id = _generateTemporaryId();
       }
 
       self._emitChange();
@@ -426,8 +421,8 @@
      * Helper methods
      */
 
-    function _generateTemporaryId() {
-      return 'temp_' + String(Date.now());
+    function _generateClientSideId() {
+      return _.uniqueId('clientSideId_');
     }
 
     function _getStory(storyUid) {
@@ -454,10 +449,16 @@
       return _blocks[blockId];
     }
 
+    function _importBlockAndGenerateClientSideId(blockData) {
+      var clientSideBlockId = _generateClientSideId();
+      _setBlock(clientSideBlockId, blockData, false); // Never overwrite an existing block, the ID is new.
+      return clientSideBlockId;
+    }
+
     function _setStory(storyData, overwrite) {
 
       var storyUid;
-      var blockIds = [];
+      var blockIds;
 
       _validateStoryData(storyData);
 
@@ -469,10 +470,7 @@
         );
       }
 
-      storyData.blocks.forEach(function(blockData) {
-        _setBlock(blockData, overwrite);
-        blockIds.push(blockData.id);
-      });
+      blockIds = _.map(storyData.blocks, _importBlockAndGenerateClientSideId);
 
       _stories[storyUid] = {
         uid: storyUid,
@@ -487,22 +485,17 @@
       self._emitChange();
     }
 
-    function _setBlock(blockData, overwrite) {
-
-      var blockId;
+    function _setBlock(clientSideBlockId, blockData, overwrite) {
 
       _validateBlockData(blockData);
 
-      blockId = blockData.id;
-
-      if (!overwrite && _blocks.hasOwnProperty(blockId)) {
+      if (!overwrite && _blocks.hasOwnProperty(clientSideBlockId)) {
         throw new Error(
-          'Block with id "' + blockId + '" already exists.'
+          'Block with id "' + clientSideBlockId + '" already exists.'
         );
       }
 
-      _blocks[blockId] = {
-        id: blockId,
+      _blocks[clientSideBlockId] = {
         layout: blockData.layout,
         components: _cloneBlockComponents(blockData.components)
       };
@@ -513,10 +506,8 @@
       var block = blockContent;
 
       return {
-        id: _generateTemporaryId(),
         layout: block.layout,
-        components: _cloneBlockComponents(block.components),
-        dirty: true
+        components: _cloneBlockComponents(block.components)
       };
     }
 
@@ -547,21 +538,16 @@
     function _validateBlockData(blockData) {
 
       utils.assertIsOneOfTypes(blockData, 'object');
-      utils.assertHasProperty(blockData, 'id');
       utils.assertHasProperty(blockData, 'layout');
       utils.assertHasProperty(blockData, 'components');
+
+      if (blockData.id) {
+        throw new Error('Unexpected block ID in block JSON');
+      }
 
       blockData.components.forEach(function(component) {
         utils.assertHasProperty(component, 'type');
       });
-
-      if (typeof blockData.id !== 'string') {
-        throw new Error(
-          '`blockData` argument `id` property must be a string (is of type ' +
-          (typeof blockData.id) +
-          ').'
-        );
-      }
     }
 
     function _getStoryBlockIndexWithId(storyUid, blockId) {
@@ -626,35 +612,9 @@
       var block = _getBlock(blockId);
 
       return {
-        id: block.id,
         layout: block.layout,
         components: _.clone(block.components)
       };
-    }
-
-    // TODO: Verify that this works as intended.
-    function _serializeBlockDiff(blockId) {
-
-      var block = _getBlock(blockId);
-      var serializedBlock;
-
-      if (block.hasOwnProperty('dirty') && block.dirty) {
-
-        serializedBlock = {
-          layout: block.layout,
-          components: _.clone(block.components),
-          id: block.id
-        };
-
-      } else {
-
-        serializedBlock = {
-          id: block.id
-        };
-
-      }
-
-      return serializedBlock;
     }
 
     // The history state is set in HistoryStore, and a `.waitFor()` ensures

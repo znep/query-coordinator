@@ -64,7 +64,7 @@
 
       detachEvents();
       visualization.destroy();
-    }
+    };
 
     var $element = $(this);
     var datasetMetadata;
@@ -87,7 +87,7 @@
       datasetUid: vif.datasetUid,
       columnName: vif.columnName,
       featuresPerTile: DEFAULT_FEATURES_PER_TILE,
-      tileserverHosts: vif.configuration.tileserverHosts || DEFAULT_TILESERVER_HOSTS,
+      tileserverHosts: vif.configuration.tileserverHosts || DEFAULT_TILESERVER_HOSTS
     };
     var tileserverDataProvider = new socrata.visualizations.TileserverDataProvider(
       tileserverDataProviderConfig
@@ -116,7 +116,7 @@
       var metadataProviderConfig = {
         domain: vif.domain,
         datasetUid: vif.datasetUid
-      }
+      };
       var metadataProvider = new socrata.visualizations.MetadataProvider(
         metadataProviderConfig
       );
@@ -138,7 +138,7 @@
         });
     }
 
-    var visualization = new window.socrata.visualizations.FeatureMap(
+    var visualization = new visualizations.FeatureMap(
       $element,
       vif
     );
@@ -325,7 +325,7 @@
         });
 
       event.stopPropagation();
-    };
+    }
 
     function handleRowInspectorQuerySuccess(data) {
 
@@ -520,8 +520,8 @@
       // filter will collapse the array down to only defined values.
       return formattedRowData.
         filter(
-          function (datum) {
-            return !_.isUndefined(datum)
+          function(datum) {
+            return !_.isUndefined(datum);
           }
         );
     }
@@ -533,7 +533,7 @@
 
       sortedColumnNames.
         forEach(
-        function(columnName, index) {
+        function(columnName) {
 
           var originalColumnIndex = columnNames.indexOf(columnName);
           var columnValue = row[originalColumnIndex];

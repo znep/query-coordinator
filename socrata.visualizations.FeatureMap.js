@@ -344,7 +344,7 @@
         }
       }
 
-      $(window).off('resize', _hideRowInspector)
+      $(window).off('resize', _hideRowInspector);
     }
 
     function _handleMapResize() {
@@ -693,7 +693,7 @@
         position: inspectorDataQueryConfig.position,
         error: false,
         message: null
-      }
+      };
 
       // Emit one event to cause the row inspector to be rendered.
       self.emitEvent(

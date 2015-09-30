@@ -4,6 +4,7 @@
   function cardVisualizationFeatureMap(
     $q,
     $log,
+    I18n,
     Constants,
     WindowState,
     ServerConfig,
@@ -32,6 +33,8 @@
         var dataFieldName$ = model.observeOnLatest('fieldName');
         var id$ = dataset$.observeOnLatest('id').filter(_.isPresent);
         var flannelTitleColumn$ = model.observeOnLatest('cardOptions.mapFlannelTitleColumn');
+
+        scope.featureMapEnabled = ServerConfig.get('oduxEnableFeatureMap');
 
         /**
          * Handle queries for the row data for points clicked on current feature map.
@@ -296,10 +299,20 @@
             renderTimeout$.map(_.constant(true)),
             directiveTimeout$.map(_.constant(true)),
             renderError$.map(_.constant(true)),
-            renderComplete$.map(_.constant(false))
+            renderComplete$.map(_.constant(false)),
+            Rx.Observable.returnValue(!scope.featureMapEnabled)
           ).
           startWith(false).
-          distinctUntilChanged();
+          distinctUntilChanged().
+          map(function(displayRenderError) {
+            if (displayRenderError) {
+              if (scope.featureMapEnabled) {
+                return I18n.t('common.errors.mapRenderError');
+              } else {
+                return I18n.t('featureMap.featureMapDisabled');
+              }
+            }
+          });
 
         scope.$bindObservable('displayRenderError', displayRenderError$);
 
@@ -410,7 +423,9 @@
           useOriginHost$,
           VectorTileDataService.buildTileGetter);
 
-        scope.$bindObservable('vectorTileGetter', vectorTileGetter$);
+        if (scope.featureMapEnabled) {
+          scope.$bindObservable('vectorTileGetter', vectorTileGetter$);
+        }
 
         scope.$bindObservable(
           'rowDisplayUnit',

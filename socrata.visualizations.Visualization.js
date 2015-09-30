@@ -28,8 +28,8 @@
         },
         localization: {}
       }
-    }
-    var _vif =_.merge(_defaultVIF, vif);
+    };
+    var _vif = _.merge(_defaultVIF, vif);
 
     utils.assertIsOneOfTypes(_vif.configuration.axisLabels.top, 'boolean', 'string');
     utils.assertIsOneOfTypes(_vif.configuration.axisLabels.right, 'boolean', 'string');
@@ -145,12 +145,6 @@
     function _logWarning(message) {
       if (root.console && root.console.warn) {
         root.console.warn(message);
-      }
-    }
-
-    function _logError(message) {
-      if (root.console && root.console.error) {
-        root.console.error(message);
       }
     }
   }

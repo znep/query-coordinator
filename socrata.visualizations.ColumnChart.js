@@ -280,7 +280,7 @@
       var unfilteredValueUnit;
       var filteredValueUnit;
 
-      if (datum[UNFILTERED_INDEX] ===1) {
+      if (datum[UNFILTERED_INDEX] === 1) {
 
         unfilteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
           _lastRenderOptions.unit.one :
@@ -294,7 +294,7 @@
 
       }
 
-      if (datum[FILTERED_INDEX] ===1) {
+      if (datum[FILTERED_INDEX] === 1) {
 
         filteredValueUnit = (_.has(_lastRenderOptions, 'unit.one')) ?
           _lastRenderOptions.unit.one :
@@ -326,7 +326,7 @@
         payload.filteredValue = '{0} {1}'.format(
           utils.formatNumber(datum[FILTERED_INDEX]),
           filteredValueUnit
-        )
+        );
       }
 
       self.emitEvent(
@@ -803,7 +803,7 @@
         // Update the position of the individual bars.
         bars.
           style('width', rangeBand + 'px').
-          style('height', function (d) {
+          style('height', function(d) {
 
             if (_.isNaN(d.value)) {
               return 0;

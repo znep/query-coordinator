@@ -24,15 +24,13 @@
     utils.assertIsOneOfTypes(config.domain, 'string');
     utils.assertIsOneOfTypes(config.datasetUid, 'string');
 
-    var _self = this;
-
     /**
      * Public methods
      */
 
     this.getFeatureExtent = function(columnName) {
 
-      var url= 'https://{0}/resource/{1}.json?$select=extent({2})'.format(
+      var url = 'https://{0}/resource/{1}.json?$select=extent({2})'.format(
         this.getConfigurationProperty('domain'),
         this.getConfigurationProperty('datasetUid'),
         columnName
@@ -109,7 +107,7 @@
           xhr.send();
         })
       );
-    }
+    };
   }
 
   root.socrata.visualizations.GeospaceDataProvider = GeospaceDataProvider;

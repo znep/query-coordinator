@@ -163,6 +163,7 @@ en:
           no_data: There is no data to display.
       feature_map:
         zoom_disabled: Zoom is temporarily unavailable. Please try again later.
+        feature_map_disabled: Feature maps are unavailable.
       feature_map_flannel:
         previous: Previous
         next: Next

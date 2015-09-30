@@ -22,6 +22,9 @@ feature-map {
       color: $yellow-warning-color;
     }
   }
+  .display-render-warning {
+    padding-top: 0.5rem;
+  }
 }
 
 .card.dragged {

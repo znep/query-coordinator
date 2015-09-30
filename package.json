@@ -13,7 +13,7 @@
   "homepage": "https://github.com/socrata/frontend-visualizations",
   "devDependencies": {
     "chai": "^3.0.0",
-    "eslint": "^0.24.0",
+    "eslint": "^1.5.1",
     "karma": "^0.12.36",
     "karma-chai": "^0.1.0",
     "karma-coverage": "^0.3.1",
@@ -30,6 +30,7 @@
     "env": {
       "browser": true
     },
+    "extends": "eslint:recommended",
     "rules": {
       "brace-style": [
         2,
@@ -51,10 +52,7 @@
         }
       ],
       "eol-last": 1,
-      "indent": [
-        1,
-        2
-      ],
+      "indent": 0,
       "new-cap": [
         1,
         {
@@ -64,6 +62,7 @@
         }
       ],
       "no-console": 0,
+      "no-extend-native": 2,
       "no-extra-semi": 1,
       "no-shadow": [
         2,

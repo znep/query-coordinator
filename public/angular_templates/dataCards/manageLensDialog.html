@@ -1,25 +1,27 @@
 <h2>{{::'manageLensDialog.title' | I18n}}</h2>
-<label>{{::'common.permissions.permissions' | I18n}}</label>
-<div class="right">
-  <soc-select ng-model="pageVisibility" ng-disabled="selectDisabled">
-    <soc-option value="public">{{::'common.permissions.public' | I18n}}</soc-option>
-    <soc-option value="private">{{::'common.permissions.private' | I18n}}</soc-option>
-  </soc-select>
-  <div class="flavor-text">
-    <div ng-if="datasetIsPublic && pageVisibility === 'public'"
-      ng-bind-html="::'manageLensDialog.datasetPublicPagePublic' | I18n">
-    </div>
-    <div ng-if="datasetIsPublic && pageVisibility === 'private'"
-      ng-bind-html="::'manageLensDialog.datasetPublicPagePrivate' | I18n">
-    </div>
-    <div ng-if="!datasetIsPublic && pageVisibility === 'private'"
-      ng-bind-html="::'manageLensDialog.datasetPrivatePagePrivate' | I18n">
-    </div>
-    <div ng-if="!datasetIsPublic && pageVisibility === 'public'"
-      ng-bind-html="::'manageLensDialog.datasetPrivatePagePublic' | I18n">
+<section class="row">
+  <label class="span2">{{::'common.permissions.permissions' | I18n}}</label>
+  <div class="contents span10">
+    <soc-select ng-model="pageVisibility" ng-disabled="selectDisabled">
+      <soc-option value="public">{{::'common.permissions.public' | I18n}}</soc-option>
+      <soc-option value="private">{{::'common.permissions.private' | I18n}}</soc-option>
+    </soc-select>
+    <div class="flavor-text">
+      <div ng-if="datasetIsPublic && pageVisibility === 'public'"
+        ng-bind-html="::'manageLensDialog.datasetPublicPagePublic' | I18n">
+      </div>
+      <div ng-if="datasetIsPublic && pageVisibility === 'private'"
+        ng-bind-html="::'manageLensDialog.datasetPublicPagePrivate' | I18n">
+      </div>
+      <div ng-if="!datasetIsPublic && pageVisibility === 'private'"
+        ng-bind-html="::'manageLensDialog.datasetPrivatePagePrivate' | I18n">
+      </div>
+      <div ng-if="!datasetIsPublic && pageVisibility === 'public'"
+        ng-bind-html="::'manageLensDialog.datasetPrivatePagePublic' | I18n">
+      </div>
     </div>
   </div>
-</div>
+</section>
 
 <div class="controls">
   <save-button
@@ -29,6 +31,6 @@
     save-status="saveStatus"></save-button>
   <button
     ng-disabled="dialogState.disableCloseDialog"
-    class="action-btn dark"
+    class="action-btn dark r-to-l"
     ng-click="dialogState.show = false">{{::'common.cancel' | I18n}}</button>
 </div>

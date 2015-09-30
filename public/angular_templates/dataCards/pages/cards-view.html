@@ -203,7 +203,7 @@
               {{::'manageLensDialog.title' | I18n}}
             </div>
             <modal-dialog ng-if="manageLensState.show" dialog-state="manageLensState">
-              <manage-lens-dialog-v2 dialog-state="manageLensState" page="page"></manage-lens-dialog-v2>
+              <manage-lens-dialog-v2 ng-controller="ManageLensDialogV2Controller"></manage-lens-dialog-v2>
             </modal-dialog>
           </div>
         </div>

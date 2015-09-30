@@ -1,4 +1,3 @@
-@import "dataCards/common/colors";
 @import "dataCards/common/layout";
 
 $modal-padding: 2rem;
@@ -42,9 +41,6 @@ $modal-z-start: 9999;
         .icon-settings {
           font-size: 1rem;
         }
-      }
-      input.invalid {
-        border-color: $red-error-color;
       }
     }
     .modal-close-button {
@@ -230,14 +226,8 @@ customize-card-dialog {
 manage-lens-dialog,
 manage-lens-dialog-v2 {
   section {
-    margin-bottom: 2rem;
-
     label {
-      float: left;
-      soc-select {
-        visibility: hidden;
-        width: 0;
-      }
+      line-height: 29px;
     }
     .contents {
       .flavor-text {
@@ -259,12 +249,43 @@ manage-lens-dialog-v2 {
     }
   }
 
-  section.visibility {
-    label {
-      line-height: 29px;
-    }
-  }
   section.sharing {
+    margin-bottom: 2rem;
+    .shares {
+      .share {
+        margin-bottom: .75rem;
+        .share-user {
+          display: block;
+          line-height: 29px;
+          padding-right: .5rem;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          &.pending-removal {
+            text-decoration: line-through;
+          }
+        }
+        .share-remove-button {
+          font-size: .75rem;
+          margin-left: 1rem;
+        }
+      }
+      .add-new-shares-prompt {
+        position: relative;
+        margin-bottom: 1rem;
+        .icon-info {
+          position: absolute;
+          top: -1px;
+          font-size: 1.2rem;
+        }
+        .message {
+          padding-left: 1.5rem;
+        }
+      }
+      .manage-lens-dialog-add-shares {
+        margin-bottom: 1.5rem;
+      }
+    }
     .row.description {
       margin-bottom: 1rem;
     }
@@ -278,6 +299,62 @@ manage-lens-dialog-v2 {
 
   a:hover {
     text-decoration: underline;
+  }
+
+  .controls {
+    margin-top: 0;
+  }
+
+  new-share-dialog {
+    section {
+      margin-bottom: 1rem;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      .new-share {
+        margin-bottom: .75rem;
+        &:last-child {
+          margin-bottom: 0;
+        }
+        >div {
+          margin-right: 0.5rem;
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+        input.email {
+          box-sizing: border-box;
+          display: inline-block;
+          position: relative;
+          margin-top: 1px;
+          padding: 0.5rem 0.6rem;
+          width: 12rem;
+          outline: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+        }
+      }
+      textarea.optional-message {
+        height: 5rem;
+        padding: 0.5rem;
+        box-sizing: border-box;
+        resize: none;
+        outline: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+      }
+      .done-button, .remove-button {
+        float: right;
+      }
+      .done-button {
+        font-size: 1rem;
+      }
+      .add-more-button, .remove-button {
+        font-size: .75rem;
+      }
+    }
   }
 }
 
@@ -326,11 +403,6 @@ manage-lens-dialog-v2 {
   .form-control {
     width: 95%;
     display: inline;
-  }
-
-  .icon-warning {
-    color: $red-error-color;
-    padding-left: 4px;
   }
 
 }

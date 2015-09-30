@@ -6,10 +6,6 @@ This is the v2 manage lens dialog, which allows users to manage the
 - owner (TODO)
 
 It is only enabled for v2 data lenses.
-
-To add a new set of functionality, please follow the visibility example.
-Create an object on components with "init" and "save" functions.
-Your save function should return a promise.
 */
 
 (function() {
@@ -25,135 +21,28 @@ Your save function should return a promise.
   ) {
     return {
       restrict: 'E',
-      scope: {
-        dialogState: '=',
-        page: '='
-      },
+      scope: true,
       templateUrl: '/angular_templates/dataCards/manageLensDialogV2.html',
       link: function($scope) {
-
-        var components = {};
-
-        components.visibility = {};
-
-        components.visibility.init = function() {
-          var datasetIsPrivate$ = $scope.page.observe('dataset.permissions').
-              filter(_.isObject).
-              map(_.negate(_.property('isPublic')));
-
-          var userIsPrivileged$ = Rx.Observable.returnValue(
-            typeof currentUser !== 'undefined' &&
-              typeof currentUser.rights !== 'undefined' &&
-              currentUser.rights.indexOf('approve_nominations') >= 0
-          );
-
-          $scope.$bindObservable('datasetIsPrivate', datasetIsPrivate$);
-          $scope.$bindObservable('userIsPrivileged', userIsPrivileged$);
-
-          // Disable visibility dropdown if dataset is private or user does not have
-          // 'approve_nominations' privileges
-          $scope.$bindObservable('visibilityDropdownDisabled',
-            Rx.Observable.combineLatest(
-              datasetIsPrivate$,
-              userIsPrivileged$,
-              function(datasetIsPrivate, userIsPrivileged) {
-                return datasetIsPrivate || !userIsPrivileged;
-              }
-            )
-          );
-
-          var viewModerationEnabled = ServerConfig.getFeatureSet().view_moderation;
-          $scope.usingViewModeration = viewModerationEnabled;
-
-          var moderationStatus$ = $scope.page.observe('moderationStatus');
-
-          var pageVisibility$ = moderationStatus$.map(function(moderationStatus) {
-            if ($scope.usingViewModeration && !_.isPresent(moderationStatus)) {
-              return 'pending';
-            }
-
-            return moderationStatus ? 'approved' : 'rejected';
-          });
-
-          var initialPageVisibility$ = pageVisibility$.take(1);
-
-          // Set initial value of visibility dropdown selection
-          $scope.$bindObservable('initialPageVisibility', initialPageVisibility$);
-          $scope.$bindObservable('visibilityDropdownSelection', initialPageVisibility$);
-
-          var visibilityDropdownSelection$ = $scope.$observe('visibilityDropdownSelection');
-
-          // Observe changes to dropdown and compare with initial value
-          Rx.Observable.subscribeLatest(visibilityDropdownSelection$, initialPageVisibility$,
-            function(currentVisibility, initialVisibility) {
-              $scope.dialogHasChanges = (currentVisibility !== initialVisibility);
-            }
-          );
-        };
-
-        components.visibility.save = function() {
-          var visibility = $scope.visibilityDropdownSelection === 'approved' ? 'yes' : 'no';
-
-          var url = '/admin/views/{0}/set/{1}.json'.format(
-            $scope.page.id,
-            visibility
-          );
-
-          return http.post(url).then(function() {
-            $scope.page.set('moderationStatus', $scope.visibilityDropdownSelection === 'approved');
-          });
-        };
-
-        components.sharing = {};
-        components.sharing.init = function() {
-          function filterForInheritedShares(shares) {
-            return _.filter(shares, 'inherited');
-          }
-
-          function formatInheritedShare(share) {
-            var result = {
-              link: null,
-              name: _.trunc(share.member_name, 26),
-              type: I18n.t('manageLensDialog.sharing.{0}'.format(share.type.toLowerCase()))
-            };
-
-            if (share.member_id !== share.member_name) {
-              result.link = '/profile/{0}'.format(share.member_id);
-            }
-
-            return result;
-          }
-
-          var formatInheritedShares = _.partial(_.map, _, formatInheritedShare);
-
-          var inheritedShares$ = $scope.page.observe('shares').map(filterForInheritedShares);
-          $scope.$bindObservable('showSharingSection', inheritedShares$.map(_.negate(_.isEmpty)));
-          $scope.$bindObservable('inheritedShares', inheritedShares$.map(formatInheritedShares));
-        };
-
-        components.sharing.save = function() {
-          return $q.when(null);
-        };
-
-        // Initialize the components
-        _.invoke(components, 'init');
 
         /**
          * Calls `save` on all components and waits for all promises to resolve before showing
          * the "saved" success message in the button.
          */
         $scope.save = function() {
-          var promises = _.invoke(components, 'save');
+          var promises = _.invoke($scope.components, 'save');
 
           $scope.saveStatus = 'saving';
-          $scope.dialogState.disableCloseDialog = true;
+          $scope.manageLensState.disableCloseDialog = true;
 
           $q.all(promises).then(function() {
             $scope.saveStatus = 'saved';
 
+            _.invoke($scope.components, 'postSave');
+
             // Now close the dialog after 1.5 seconds
             $timeout(function() {
-              $scope.dialogState.show = false;
+              $scope.manageLensState.show = false;
             }, 1500);
           })['catch'](function() {
             $scope.saveStatus = 'failed';
@@ -161,7 +50,7 @@ Your save function should return a promise.
               $scope.saveStatus = null;
             }, 8000);
           })['finally'](function() {
-            $scope.dialogState.disableCloseDialog = false;
+            $scope.manageLensState.disableCloseDialog = false;
           });
         };
 
@@ -179,4 +68,3 @@ Your save function should return a promise.
     directive('manageLensDialogV2', manageLensDialogV2);
 
 })();
-

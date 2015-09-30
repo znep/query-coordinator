@@ -31,12 +31,10 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
 
     let(:new_draft_story) { double('new_draft_story').as_null_object }
     let(:new_story_digest) { 'new_digest' }
-    let(:block_id_mappings) { [{:oldId => 1, :newId => 5678}, {:oldId => 2, :newId => 9876}] }
 
     before do
       allow(StoryDraftCreator).to receive(:new).and_return(mock_story_draft_creator)
       allow(mock_story_draft_creator).to receive(:create).and_return(new_draft_story)
-      allow(mock_story_draft_creator).to receive(:block_id_mappings).and_return(block_id_mappings)
       allow(new_draft_story).to receive(:digest).and_return(new_story_digest)
       allow(new_draft_story).to receive(:blocks).and_return(blocks)
 
@@ -61,14 +59,10 @@ RSpec.describe Api::V1::DraftsController, type: :controller do
       expect(response.headers['X-Story-Digest']).to eq(new_story_digest)
     end
 
-    it 'renders block json' do
+    it 'returns json' do
       post :create, params
       expect(response.content_type).to eq('application/json')
-      response_json = {
-        blockIdMappings: block_id_mappings,
-        blocks: blocks
-      }.to_json
-      expect(response.body).to eq(response_json)
+      # Nothing interesting in the body today.
     end
 
     it 'responds with 200 status' do

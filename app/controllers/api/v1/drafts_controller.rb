@@ -23,10 +23,7 @@ class Api::V1::DraftsController < ApplicationController
 
     headers['X-Story-Digest'] = @new_draft_story.digest
 
-    response_obj = {
-      blockIdMappings: story_draft_creator.block_id_mappings,
-      blocks: @new_draft_story.blocks
-    }
+    response_obj = {}
 
     render json: response_obj
   end

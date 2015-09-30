@@ -29,6 +29,10 @@ $(document).on('ready', function() {
     }
   };
 
+  $(window).error(function(event) {
+    storyteller.notifyAirbrake(event.originalEvent.error);
+  });
+
   storyteller.assetFinder = new storyteller.AssetFinder();
   storyteller.storyPermissionsManager = new storyteller.StoryPermissionsManager();
 

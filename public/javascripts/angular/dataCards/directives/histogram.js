@@ -75,12 +75,11 @@
 
         // Listen for brush clears emitted from the chart
         Rx.Observable.fromEventPattern(function(handler) {
-            brush.brushDispatcher.on('clear', handler);
-          }).
-          subscribe(function() {
-            brush.updateExtent([0, 0]);
-            brush.brushDispatcher.end(null);
-          });
+          brush.brushDispatcher.on('clear', handler);
+        }).subscribe(function() {
+          brush.updateExtent([0, 0]);
+          brush.brushDispatcher.end(null);
+        });
 
         // Combine the brush indices with data to get indices and values
         var brushIndicesAndValues$ = brushEndIndices$.

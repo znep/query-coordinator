@@ -1482,11 +1482,11 @@
             filteredValue = formatFlyoutValue(filteredUnit, filteredValue);
 
             flyoutContent = [
-               '<div class="flyout-title">{0}</div>',
-               '<div class="flyout-row">',
-                 '<span class="flyout-cell">{1}</span>',
-                 '<span class="flyout-cell">{2}</span>',
-               '</div>'
+              '<div class="flyout-title">{0}</div>',
+              '<div class="flyout-row">',
+                '<span class="flyout-cell">{1}</span>',
+                '<span class="flyout-cell">{2}</span>',
+              '</div>'
             ];
 
             if (withinSelection || showBlueFiltered) {

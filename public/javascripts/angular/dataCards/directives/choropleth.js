@@ -494,22 +494,22 @@
           append('rect');
 
         rectangles.attr({
-            x: 0,
-            y: function(value) {
+          x: 0,
+          y: function(value) {
 
-              // Since y is actually 'top', and we want the lowest value at the bottom, subtract
-              // from 100
-              return '{0}%'.format(100 - positionScale(value));
-            },
-            width: '100%',
-            height: function(value, i) {
-              if (i === 0) {
-                return 0;
-              }
-              return '{0}%'.format(Math.abs(positionScale(value) - positionScale(tickStops[i - 1])));
-            },
-            fill: 'url(#{0})'.format(this.gradientId)
-          });
+            // Since y is actually 'top', and we want the lowest value at the bottom, subtract
+            // from 100
+            return '{0}%'.format(100 - positionScale(value));
+          },
+          width: '100%',
+          height: function(value, i) {
+            if (i === 0) {
+              return 0;
+            }
+            return '{0}%'.format(Math.abs(positionScale(value) - positionScale(tickStops[i - 1])));
+          },
+          fill: 'url(#{0})'.format(this.gradientId)
+        });
 
         rectangles.exit().remove();
       },
@@ -1133,11 +1133,11 @@
           filteredValue = formatValue(filteredValue);
 
           flyoutContent = [
-             '<div class="flyout-title">{0}</div>',
-             '<div class="flyout-row">',
-               '<span class="flyout-cell">{1}</span>',
-               '<span class="flyout-cell">{2}</span>',
-             '</div>'
+            '<div class="flyout-title">{0}</div>',
+            '<div class="flyout-row">',
+              '<span class="flyout-cell">{1}</span>',
+              '<span class="flyout-cell">{2}</span>',
+            '</div>'
           ];
 
           if (isFiltered || isSelected) {

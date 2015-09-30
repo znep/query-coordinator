@@ -20,7 +20,7 @@
     "babel": "^5.8.23",
     "chai": "~1.9.1",
     "chai-as-promised": "~4.1.1",
-    "eslint": "^0.24.0",
+    "eslint": "^1.5.1",
     "grunt": "^0.4.5",
     "http-proxy": "^1.1.6",
     "karma": "~0.12.16",
@@ -44,6 +44,7 @@
     "env": {
       "browser": true
     },
+    "extends": "eslint:recommended",
     "rules": {
       "brace-style": [
         2,
@@ -65,10 +66,7 @@
         }
       ],
       "eol-last": 1,
-      "indent": [
-        1,
-        2
-      ],
+      "indent": 0,
       "new-cap": [
         1,
         {
@@ -78,6 +76,7 @@
         }
       ],
       "no-console": 0,
+      "no-extend-native": 2,
       "no-extra-semi": 1,
       "no-shadow": [
         2,

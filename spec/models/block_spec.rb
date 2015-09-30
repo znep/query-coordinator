@@ -59,4 +59,64 @@ RSpec.describe Block, type: :model do
       expect(invalid_block.errors[:created_by].length).to eq(1)
     end
   end
+
+  describe '#for_story' do
+    let(:story) { FactoryGirl.create(:draft_story) }
+    let(:result) { Block.for_story(story) }
+
+    it 'returns ActiveRecord::Relation' do
+      expect(result).to be_a(ActiveRecord::Relation)
+    end
+
+    context 'when story has no blocks' do
+      let(:story) { FactoryGirl.create(:draft_story) }
+
+      it 'has returns 0 items' do
+        expect(result.size).to eq(0)
+      end
+    end
+
+    context 'when story has blocks' do
+      let(:story) { FactoryGirl.create(:draft_story_with_blocks) }
+
+      it 'has returns number of blocks in story' do
+        expect(result.size).to eq(story.block_ids.size)
+      end
+
+      it 'returns blocks for the block_ids in the story' do
+        block_ids = story.block_ids.sort
+        expect(result.map(&:id).sort).to eq(block_ids)
+      end
+    end
+  end
+
+  describe '#with_component_type' do
+    let(:component_type) { 'blah' }
+    let!(:block) { FactoryGirl.create(:block) }
+    let!(:block_with_image) { FactoryGirl.create(:block_with_image) }
+    let(:result) { Block.with_component_type(component_type) }
+
+    it 'returns ActiveRecord::Relation' do
+      expect(result).to be_a(ActiveRecord::Relation)
+    end
+
+    context 'for component_type not in any block' do
+      let(:component_type) { 'thisisafunkycomponenttype' }
+
+      it 'returns empty results' do
+        expect(result.size).to eq(0)
+      end
+    end
+
+    context 'for component_type in blocks' do
+      let(:component_type) { 'image' }
+
+      it 'returns blocks containing image' do
+        expect(result.size).to eq(1)
+        expect(result.first).to eq(block_with_image)
+      end
+    end
+  end
+
+  # TODO tests for as_json and from_json
 end

@@ -17,17 +17,15 @@ class Block < ActiveRecord::Base
   validates :components, presence: true
   validates :created_by, presence: true
 
-  scope :for_story, ->(story) {
-    # The order in which block rows are returned from the database is not
-    # guaranteed to match the order in which the ids were supplied to the
-    # select query, so we need to apply the story's ordering of the blocks
-    # to the query result before returning it.
-    block_objects = where(id: story.block_ids)
+  scope :for_story, ->(story) do
+    where(id: story.block_ids)
+  end
 
-    story.block_ids.map do |block_id|
-      block_objects.detect { |block_object| block_object.id == block_id }
-    end
-  }
+  # Searches the json blog for components with the specified type and only returns those blocks
+  scope :with_component_type, ->(component_type) do
+    json_query = [{ type: component_type }].to_json
+    where("components @> ?", json_query)
+  end
 
   def as_json(options = nil)
     block_as_hash = self.attributes
@@ -42,4 +40,5 @@ class Block < ActiveRecord::Base
       created_by: json_block[:created_by]
     )
   end
+
 end

@@ -11,19 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150910224547) do
+ActiveRecord::Schema.define(version: 20150930160915) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "blocks", force: :cascade do |t|
     t.string   "layout",     null: false
-    t.json     "components", null: false
+    t.jsonb    "components", null: false
     t.string   "created_by", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "deleted_at"
   end
+
+  add_index "blocks", ["components"], name: "index_blocks_on_components", using: :gin
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",   default: 0, null: false

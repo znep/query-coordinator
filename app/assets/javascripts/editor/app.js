@@ -27,6 +27,7 @@ $(document).on('ready', function() {
     if (!_.isUndefined(storyteller.airbrake)) {
       storyteller.airbrake.notify(arguments);
     }
+    console.error(arguments);
   };
 
   storyteller.assetFinder = new storyteller.AssetFinder();

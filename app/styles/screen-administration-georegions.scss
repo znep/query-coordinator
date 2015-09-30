@@ -12,8 +12,20 @@ $is-disabled-color: #999;
   }
 }
 
-input.button {
+.button {
   font-size: 0.65rem;
+  position: relative;
+
+  .loading {
+    display: block;
+    text-align: left;
+    background: transparent url('/stylesheets/images/content/snuffleupasnake.gif') no-repeat 0 0;
+    height: 16px;
+    width: 16px;
+    position: absolute;
+    top: calc(50% - 8px);
+    left: calc(50% - 8px);
+  }
 }
 
 .georegions-table {
@@ -21,13 +33,13 @@ input.button {
     width: 50%;
   }
   .toggle-enabled, .edit-action, .remove-action {
-    input.button {
+    input.button, button.button {
       font-size: 0.8em;
       opacity: 0.3;
       @include transition-duration(0.5s);
       @include transition-property(opacity);
     }
-    &:hover .button {
+    &:hover .button:not(.disabled) {
       opacity: 1;
     }
   }

@@ -1,66 +1,31 @@
 describe('admin-georegions-screen', function() {
-  var target;
-  var components = blist.namespace.fetch('blist.georegions.components');
+  var components = blist.namespace.fetch('blist.components');
+  var georegionComponents = blist.namespace.fetch('blist.georegions.components');
   var TestUtils = React.addons.TestUtils;
-  var findByTag = TestUtils.findRenderedDOMComponentWithTag;
-  var shallowRenderer;
+  var findByClass = TestUtils.findRenderedDOMComponentWithClass;
   var node;
-  var translationStub;
 
   beforeEach(function() {
-    target = $('<div/>').appendTo(document.body).get(0);
-    shallowRenderer = TestUtils.createRenderer();
-    translationStub = sinon.stub(window, 't');
+    this.target = $('<div/>').appendTo(document.body).get(0);
+    this.shallowRenderer = TestUtils.createRenderer();
+    var translationStub = sinon.stub(window, 't');
     translationStub.withArgs('enabled_yes').returns('Yes');
     translationStub.withArgs('enabled_no').returns('No');
     translationStub.withArgs('disable').returns('Disable');
     translationStub.withArgs('enable').returns('Enable');
+    this.translationStub = translationStub;
   });
 
   afterEach(function() {
-    $(target).remove();
-    translationStub.restore();
-  });
-
-  describe('FormButton', function() {
-    var FormButton = components.FormButton;
-    var onSubmitStub;
-    var props;
-
-    beforeEach(function() {
-      onSubmitStub = sinon.stub();
-      props = {
-        action: '/foo',
-        authenticityToken: 'abcd',
-        method: 'put',
-        onSubmit: onSubmitStub,
-        value: 'Click'
-      };
-      node = TestUtils.renderIntoDocument(React.createElement(FormButton, props));
-    });
-
-    it('exists', function() {
-      expect(FormButton).to.exist;
-    });
-
-    it('renders', function() {
-      shallowRenderer.render(React.createElement(FormButton, props));
-      var result = shallowRenderer.getRenderOutput();
-      expect(result.type).to.eq('form');
-    });
-
-    it('submits', function() {
-      TestUtils.Simulate.submit(findByTag(node, 'form'));
-      expect(onSubmitStub).to.have.been.calledOnce;
-    });
+    $(this.target).remove();
+    this.translationStub.restore();
   });
 
   describe('EnabledWidget', function() {
-    var EnabledWidget = components.EnabledWidget;
-    var props;
+    var EnabledWidget = georegionComponents.EnabledWidget;
 
     beforeEach(function() {
-      props = {
+      this.props = {
         action: '/foo',
         authenticityToken: 'abcd'
       };
@@ -71,34 +36,34 @@ describe('admin-georegions-screen', function() {
     });
 
     it('renders', function() {
-      props['isEnabled'] = true;
-      shallowRenderer.render(React.createElement(EnabledWidget, props));
-      var result = shallowRenderer.getRenderOutput();
+      this.props['isEnabled'] = true;
+      this.shallowRenderer.render(React.createElement(EnabledWidget, this.props));
+      var result = this.shallowRenderer.getRenderOutput();
       expect(result.type).to.eq('div');
     });
 
     describe('when enabled', function() {
       beforeEach(function() {
-        props['isEnabled'] = true;
-        node = TestUtils.renderIntoDocument(React.createElement(EnabledWidget, props));
+        this.props['isEnabled'] = true;
+        this.node = TestUtils.renderIntoDocument(React.createElement(EnabledWidget, this.props));
       });
 
       it('says "Yes" when enabled', function() {
-        expect(translationStub).to.have.been.calledWith('enabled_yes');
-        expect(findByTag(node, 'span').getDOMNode().textContent).to.eq('Yes');
+        expect(this.translationStub).to.have.been.calledWith('enabled_yes');
+        expect(findByClass(this.node, 'enabled-widget-label').getDOMNode().textContent).to.eq('Yes');
       });
 
     });
 
     describe('when disabled', function() {
       beforeEach(function() {
-        props['isEnabled'] = false;
-        node = TestUtils.renderIntoDocument(React.createElement(EnabledWidget, props));
+        this.props['isEnabled'] = false;
+        this.node = TestUtils.renderIntoDocument(React.createElement(EnabledWidget, this.props));
       });
 
       it('says "No" when disabled', function() {
-        expect(translationStub).to.have.been.calledWith('enabled_no');
-        expect(findByTag(node, 'span').getDOMNode().textContent).to.eq('No');
+        expect(this.translationStub).to.have.been.calledWith('enabled_no');
+        expect(findByClass(this.node, 'enabled-widget-label').getDOMNode().textContent).to.eq('No');
       });
 
     });
@@ -106,15 +71,14 @@ describe('admin-georegions-screen', function() {
   });
 
   describe('GeoregionAdminTable', function() {
-    var GeoregionAdminTable = components.GeoregionAdminTable;
-    var props;
+    var GeoregionAdminTable = georegionComponents.GeoregionAdminTable;
 
     beforeEach(function() {
-      props = {
+      this.props = {
         authenticityToken: 'token',
         baseUrlPath: '/admin/geo/'
       };
-      node = TestUtils.renderIntoDocument(React.createElement(GeoregionAdminTable, props));
+      node = TestUtils.renderIntoDocument(React.createElement(GeoregionAdminTable, this.props));
     });
 
     it('exists', function() {
@@ -126,23 +90,23 @@ describe('admin-georegions-screen', function() {
     });
 
     it('renders', function() {
-      shallowRenderer.render(React.createElement(GeoregionAdminTable, props));
-      var result = shallowRenderer.getRenderOutput();
+      this.shallowRenderer.render(React.createElement(GeoregionAdminTable, this.props));
+      var result = this.shallowRenderer.getRenderOutput();
       expect(result.type).to.eq('table');
     });
 
     describe('with row data', function() {
       beforeEach(function() {
-        props['rows'] = [
+        this.props['rows'] = [
           { enabledFlag: true, id: 1, name: 'Item 1' },
           { enabledFlag: false, id: 2, name: 'Item 2' },
           { enabledFlag: true, id: 3, name: 'Item 3' }
         ];
-        node = TestUtils.renderIntoDocument(React.createElement(GeoregionAdminTable, props));
+        node = TestUtils.renderIntoDocument(React.createElement(GeoregionAdminTable, this.props));
       });
 
       it('renders the rows', function() {
-        var rows = TestUtils.scryRenderedComponentsWithType(node, components.Row);
+        var rows = TestUtils.scryRenderedComponentsWithType(node, georegionComponents.GeoregionAdminRow);
         expect(rows).to.have.length(3);
         expect(rows[1]).to.have.deep.property('props.isEnabled', false);
         expect(rows[1]).to.have.deep.property('props.renderActions', true);

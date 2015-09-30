@@ -32,6 +32,10 @@ describe AdministrationController do
       end
 
       describe 'not admin user' do
+        before(:each) do
+          stub_non_admin_user
+        end
+
         it 'should be forbidden' do
           get :georegions
           expect(response).to have_http_status(:forbidden)
@@ -40,9 +44,7 @@ describe AdministrationController do
 
       describe 'logged in' do
         before(:each) do
-          user_double = double(User)
-          allow(user_double).to receive(:has_right?).and_return(true)
-          allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
+          stub_admin_user
         end
 
         it 'responds successfully with a 200 HTTP status code' do
@@ -84,9 +86,7 @@ describe AdministrationController do
       let(:curated_region_double) { double(CuratedRegion, :id => 1) }
 
       before(:each) do
-        user_double = double(User)
-        allow(user_double).to receive(:has_right?).and_return(true)
-        allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
+        stub_admin_user
       end
 
       it 'redirects to /admin/geo' do
@@ -128,9 +128,7 @@ describe AdministrationController do
 
     describe 'PUT /admin/geo/:id' do
       before(:each) do
-        user_double = double(User)
-        allow(user_double).to receive(:has_right?).and_return(true)
-        allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
+        stub_admin_user
       end
 
       it 'redirects to /admin/geo' do
@@ -141,9 +139,7 @@ describe AdministrationController do
 
     describe 'DELETE /admin/geo/:id' do
       before(:each) do
-        user_double = double(User)
-        allow(user_double).to receive(:has_right?).and_return(true)
-        allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
+        stub_admin_user
       end
 
       it 'redirects to /admin/geo' do
@@ -153,29 +149,72 @@ describe AdministrationController do
     end
 
     describe 'PUT /admin/geo/:id/enable' do
+      let(:curated_region_double) { double(CuratedRegion, :id => 1, :name => 'My Region') }
+
       before(:each) do
-        user_double = double(User)
-        allow(user_double).to receive(:has_right?).and_return(true)
-        allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
+        stub_admin_user
+        allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
+        allow(CuratedRegion).to receive(:find_enabled).and_return([])
       end
 
-      it 'redirects to /admin/georegions' do
-        put :enable_georegion, :id => 1
-        expect(response).to redirect_to('/admin/geo')
+      describe 'success' do
+        it 'redirects to /admin/geo' do
+          allow_any_instance_of(::Services::Administration::GeoregionEnabler).to receive(:enable)
+          put :enable_georegion, :id => 1
+          expect(response).to redirect_to('/admin/geo')
+        end
+
+        it 'enables via the enabler' do
+          expect_any_instance_of(::Services::Administration::GeoregionEnabler).to receive(:enable)
+          put :enable_georegion, :id => 1
+        end
+
       end
+
+      describe 'failure' do
+        it 'errors when the limit is met' do
+          allow_any_instance_of(::Services::Administration::GeoregionEnabler).
+            to receive(:enable).
+            and_raise(::Services::Administration::EnabledGeoregionsLimitMetError)
+          put :enable_georegion, :id => 1
+          expect(flash[:error]).to_not be_nil
+        end
+      end
+
     end
 
     describe 'PUT /admin/geo/:id/disable' do
+      let(:curated_region_double) { double(CuratedRegion, :id => 1, :name => 'My Region') }
+
       before(:each) do
-        user_double = double(User)
-        allow(user_double).to receive(:has_right?).and_return(true)
-        allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
+        stub_admin_user
+        allow(CuratedRegion).to receive(:find).and_return(curated_region_double)
       end
 
       it 'redirects to /admin/geo' do
+        allow_any_instance_of(::Services::Administration::GeoregionEnabler).to receive(:disable)
         put :disable_georegion, :id => 1
         expect(response).to redirect_to('/admin/geo')
       end
+
+      it 'disables via the enabler' do
+        expect_any_instance_of(::Services::Administration::GeoregionEnabler).to receive(:disable)
+        put :disable_georegion, :id => 1
+      end
     end
+  end
+
+  private
+
+  def stub_admin_user
+    user_double = double(User)
+    allow(user_double).to receive(:is_admin?).and_return(true)
+    allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
+  end
+
+  def stub_non_admin_user
+    user_double = double(User)
+    allow(user_double).to receive(:is_admin?).and_return(false)
+    allow_any_instance_of(UserAuthMethods).to receive(:current_user).and_return(user_double)
   end
 end

@@ -127,8 +127,8 @@ Frontend::Application.routes do
       post 'data_slate/create', :as => 'canvas_create', :action => 'post_canvas_page'
       get 'geo', :action => :georegions
       post 'geo', :action => :add_georegion
-      put 'geo/:id/enable', :action => :enable_georegion
-      put 'geo/:id/disable', :action => :disable_georegion
+      match 'geo/:id/enable', :action => :enable_georegion, :via => [:put, :post]
+      match 'geo/:id/disable', :action => :disable_georegion, :via => [:put, :post]
       put 'geo/:id', :action => :edit_georegion
       delete 'geo/:id', :action => :remove_georegion
       get :home, :as => 'home_administration'

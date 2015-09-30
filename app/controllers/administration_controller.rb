@@ -129,15 +129,22 @@ class AdministrationController < ApplicationController
   #
   # Manage Georegions
   #
+  def allow_georegions_access?
+    run_access_check do
+      current_user.is_admin? &&
+        feature_flag?(:enable_spatial_lens_admin, request)
+    end
+  end
 
-  before_filter :only => [
-      :georegions, :add_georegion, :enable_georegion, :disable_georegion, :edit_georegion, :remove_georegion
-    ] {|c| c.check_feature_flag(:enable_spatial_lens_admin) }
-  before_filter :only => [
-      :georegions, :add_georegion, :enable_georegion, :disable_georegion, :edit_georegion, :remove_georegion
-    ] {|c| c.check_auth_levels_any(['edit_others_datasets', 'edit_site_theme']) }
+  before_filter :allow_georegions_access?, :only => [
+      :georegions, :add_georegion, :enable_georegion, :disable_georegion,
+      :edit_georegion, :remove_georegion
+    ]
   def georegions
-    @view_model = ::ViewModels::Administration::Georegions.new(CuratedRegion.all, CurrentDomain.strings.site_title)
+    @view_model = ::ViewModels::Administration::Georegions.new(
+      CuratedRegion.all,
+      CurrentDomain.strings.site_title
+    )
   end
 
   def add_georegion
@@ -146,12 +153,18 @@ class AdministrationController < ApplicationController
     error_message = t('error.error_500.were_sorry')
     success_message = nil
     begin
-      success_message = georegion_adder.add(params[:id], params[:key], params[:label], params[:name], {:enabledFlag => false})
+      success_message = georegion_adder.add(
+        params[:id], params[:key], params[:label], params[:name],
+        { :enabledFlag => false }
+      )
       is_success = success_message.present?
     rescue CoreServer::CoreServerError => ex
-      error_message = t('screens.admin.georegions.flashes.add_georegion_error', :error_message => ex.error_message)
+      error_message = t(
+        'screens.admin.georegions.flashes.add_georegion_error',
+        :error_message => ex.error_message
+      )
     rescue StandardError => ex
-      Rails.logger.error(error_message = "Error while adding georegion to domain: #{ex.to_s}")
+      error_message = "Error while adding georegion to domain: #{ex}"
     end
     handle_button_response(
       is_success,
@@ -161,12 +174,46 @@ class AdministrationController < ApplicationController
     )
   end
 
+  def georegion_enabler
+    @georegion_enabler ||= ::Services::Administration::GeoregionEnabler.new
+  end
+
   def enable_georegion
-    handle_button_response(true, 'error', 'success', :georegions)
+    curated_region = CuratedRegion.find(params[:id])
+    is_success = false
+    error_message = nil
+    success_message = nil
+    begin
+      georegion_enabler.enable(curated_region)
+      is_success = true
+      success_message = t(
+        'screens.admin.georegions.enable_success',
+        :name => curated_region.name
+      )
+    rescue CoreServer::CoreServerError
+      error_message = t('error.error_500.were_sorry')
+    rescue ::Services::Administration::EnabledGeoregionsLimitMetError
+      error_message = t('screens.admin.georegions.enabled_georegions_limit', :limit => georegion_enabler.maximum_enabled_count)
+    end
+    handle_button_response(is_success, error_message, success_message, :georegions)
   end
 
   def disable_georegion
-    handle_button_response(true, 'error', 'success', :georegions)
+    curated_region = CuratedRegion.find(params[:id])
+    is_success = false
+    error_message = nil
+    success_message = nil
+    begin
+      georegion_enabler.disable(curated_region)
+      is_success = true
+      success_message = t(
+        'screens.admin.georegions.disable_success',
+        :name => curated_region.name
+      )
+    rescue CoreServer::CoreServerError
+      error_message = t('error.error_500.were_sorry')
+    end
+    handle_button_response(is_success, error_message, success_message, :georegions)
   end
 
   def edit_georegion
@@ -1133,6 +1180,7 @@ class AdministrationController < ApplicationController
   # checks are easier to define as class methods and can remain private.
   #
 public
+
   def check_auth_level(level)
     return run_access_check{CurrentDomain.user_can?(current_user, level)}
   end
@@ -1162,6 +1210,7 @@ public
   end
 
 private
+
   def run_access_check(&block)
     if yield
       return true
@@ -1251,7 +1300,7 @@ private
         else
           flash[:notice] = success_message
         end
-        redirect_to :action => redirect_action
+        redirect_to({ :action => redirect_action }.merge(request.query_parameters))
       end
       format.any(:js, :json, :data) do
         if success

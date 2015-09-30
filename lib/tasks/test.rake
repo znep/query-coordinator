@@ -1,5 +1,5 @@
 namespace :test do
   Rake::Task[:test].enhance do
-    system('rspec')
+    fail($?.exitstatus) unless system('rspec')
   end
 end

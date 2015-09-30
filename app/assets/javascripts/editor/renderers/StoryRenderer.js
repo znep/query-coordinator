@@ -632,11 +632,14 @@
       var theme = storyteller.storyStore.getStoryTheme(storyUid);
 
       components.forEach(function(componentData, componentIndex) {
+        try {
+          var componentRenderer = _findAppropriateComponentRenderer(componentData);
+          var $componentContainer = _getComponentContainer(blockId, componentIndex);
 
-        var componentRenderer = _findAppropriateComponentRenderer(componentData);
-        var $componentContainer = _getComponentContainer(blockId, componentIndex);
-
-        _runComponentRenderer(componentRenderer, $componentContainer, componentData, theme);
+          _runComponentRenderer(componentRenderer, $componentContainer, componentData, theme);
+        } catch (e) {
+          storyteller.notifyAirbrake(e);
+        }
       });
     }
 

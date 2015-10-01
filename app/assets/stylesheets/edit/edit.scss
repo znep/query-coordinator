@@ -1,3 +1,4 @@
+@import 'lib/open-sans-font';
 @import 'lib/variables';
 
 html {
@@ -6,6 +7,7 @@ html {
   overflow-y: auto;
   min-width: 768px;
 }
+
 // 100    Extra Light or Ultra Light
 // 200    Light or Thin
 // 300    Book or Demi
@@ -18,7 +20,7 @@ html {
 
 body {
   margin: 0;
-  min-height: calc(100vh - (#{$header-height} + (#{$user-story-container-vertical-padding} * 2)));
+  min-height: 100vh;
   background-color: $body-bg-color;
 }
 
@@ -76,17 +78,23 @@ body .header-main {
     display: inline-block;
     margin: 0 1em;
     max-width: $header-title-max-width;
-    line-height: $header-height;
+    line-height: 5.5rem;
     font-weight: 600;
     color: $header-story-title-color;
     vertical-align: middle;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    border: none;
+    background-color: transparent;
 
     &:hover,
     &:active {
       color: $header-story-title-hover-color;
+    }
+
+    &:focus {
+      outline: none;
     }
   }
 

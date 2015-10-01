@@ -46,6 +46,7 @@
 
       .close-panel-icon {
         float: right;
+        font-size: 1.4rem;
         line-height: $settings-panel-close-bar-height;
       }
     }
@@ -66,20 +67,16 @@
     .settings-save-failure-message {
       font-size: 1.5rem;
       padding-bottom: 0.8rem;
-      visibility: collapse;
+      display: none;
       text-align: center;
 
       &.active {
-        visibility: visible;
+        display: block;
       }
 
       .settings-save-failure-message-details {
         font-size: 1.5rem;
       }
-    }
-
-    .settings-save-btn {
-      width: 70%;
     }
   }
 
@@ -113,6 +110,28 @@
   font-size: 1.25rem;
   color: $settings-panel-errors-color;
   font-weight: lighter;
+
+  &::after {
+    content: '';
+    display: table;
+    clear: left;
+  }
+
+  p {
+    float: left;
+    box-sizing: border-box;
+
+    &:first-child {
+      width: $settings-panel-warning-width;
+      font-size: $settings-panel-warning-font-size;
+      color: $settings-panel-warning-color;
+    }
+
+    &:last-child {
+      width: $settings-panel-error-message-width;
+      padding-top: .25rem;
+    }
+  }
 }
 
 .settings-panel-displaying,
@@ -120,6 +139,7 @@
   margin-top: 2rem;
 
   > h2 {
+    font-size: 1.3rem;
     font-weight: lighter;
     text-transform: uppercase;
     color: $settings-panel-light-gray-color;
@@ -128,6 +148,12 @@
 }
 
 .settings-panel-displaying {
+  margin-bottom: 4rem;
+
+  form {
+    margin-top: 2rem;
+  }
+
   textarea {
     resize: vertical;
   }
@@ -135,8 +161,7 @@
 
 .settings-panel-publishing {
   > div {
-    padding-top: 1rem;
-    padding-left: 1rem;
+    padding-top: 2rem;
   }
 }
 
@@ -174,11 +199,16 @@
   }
 }
 
+.settings-panel-story-visibility {
+  padding: 0 0 1rem 0;
+}
+
 .settings-panel-story-publishing-help-text {
   padding: 1rem 0;
   font-size: 1.15rem;
   color: $settings-panel-light-gray-color;
   line-height: 1.5rem;
+  text-align: center;
 }
 
 /**

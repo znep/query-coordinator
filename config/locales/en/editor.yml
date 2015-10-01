@@ -18,7 +18,7 @@ en:
       asset_selector:
         insert_btn: 'Insert...'
     settings_panel:
-      panel_title: 'Story Settings'
+      panel_title: 'Menu'
       errors:
         generic_error: 'There was an unexpected error.'
         generic_save_failure_message: 'Oh no! There was a problem saving. Please try again.'

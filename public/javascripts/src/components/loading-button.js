@@ -2,6 +2,7 @@
 
   const PropTypes = React.PropTypes;
   let componentsNS = blist.namespace.fetch('blist.components');
+  const { classNames } = blist.namespace.fetch('blist.components.utils');
 
   componentsNS.LoadingButton = React.createClass({
     displayName: 'LoadingButton',
@@ -21,10 +22,10 @@
     },
     render: function() {
       const { isLoading, children, disabled, ...props } = this.props;
-      let className = _.compact([
+      let className = classNames(
         'button',
-        disabled ? 'disabled' : null
-      ]).join(' ');
+        { disabled }
+      );
       let spinnerStyle = { display: 'none' };
       let labelStyle = {};
       if (isLoading) {

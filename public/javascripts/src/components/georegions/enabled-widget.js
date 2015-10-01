@@ -2,6 +2,7 @@
 
   const PropTypes = React.PropTypes;
   let componentsNS = blist.namespace.fetch('blist.components');
+  const { classNames } = blist.namespace.fetch('blist.components.utils');
   let georegionsNS = blist.namespace.fetch('blist.georegions');
   let georegionsComponentsNS = blist.namespace.fetch('blist.georegions.components');
   const { FormButton } = componentsNS;
@@ -33,7 +34,6 @@
         onSuccess
       } = this.props;
       const isEnabledLabel = isEnabled ? t('enabled_yes') : t('enabled_no');
-      const enabledClassName = isEnabled ? 'is-enabled' : 'is-disabled';
       const actionToPerform = isEnabled ? 'disable' : 'enable';
       const isDisabled = !isEnabled && !allowEnablement;
       const formButtonProps = {
@@ -45,7 +45,10 @@
         title: isDisabled ? t('enabled_georegions_limit', { limit: georegionsNS.maximumEnabledCount }) : null,
         value: t(actionToPerform)
       };
-      const className = _.compact(['enabled-widget-label', enabledClassName]).join(' ');
+      const className = classNames(
+        'enabled-widget-label',
+        isEnabled ? 'is-enabled' : 'is-disabled'
+      );
 
       return (
         <div>

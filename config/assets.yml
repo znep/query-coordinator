@@ -293,6 +293,7 @@ javascripts:
     - public/javascripts/controls/combination-list.js
     - public/javascripts/screens/admin-users-screen.js
   admin-georegions:
+    - public/javascripts/dist/components/utils.js
     - public/javascripts/dist/components/flash-message.js
     - public/javascripts/dist/components/socrata-title-tip-mixin.js
     - public/javascripts/dist/components/loading-button.js

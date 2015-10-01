@@ -21,6 +21,7 @@ module.exports = function(config) {
       'bower_components/leaflet/dist/leaflet.js',
       'bower_components/leaflet/dist/leaflet.css',
       'bower_components/lodash/lodash.js',
+      'bower_components/moment/moment.js',
       'bower_components/socrata-utils/socrata.utils.js',
       'bower_components/vector-tile/dist/vectortile.js',
       'socrata.visualizations.DataProvider.js',
@@ -37,11 +38,15 @@ module.exports = function(config) {
       'socrata.visualizations.RowInspector.js',
       'socrata.visualizations.rowInspector.css',
       'socrata.visualizations.columnChart.css',
+      'socrata.visualizations.timelineChart.css',
       'socrata.visualizations.featureMap.css',
       'socrata.visualizations.flyoutRenderer.css',
+      'socrata.visualizations.TimelineChart.js',
       'components/SocrataColumnChart.js',
       'components/SocrataFeatureMap.js',
-      'karma/**/*spec.js'
+      'components/SocrataTimelineChart.js',
+      'karma/**/*spec.js',
+      'karma/timelineTestData/*.js'
     ],
 
 

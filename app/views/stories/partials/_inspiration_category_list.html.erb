@@ -9,7 +9,6 @@
       <% category['blocks'].each do |block| -%>
         <div
           class="inspiration-block"
-          data-block-id="<%= block['blockContent']['id'] %>"
           data-block-content="<%= block['blockContent'].to_json %>">
             <img src="<%= asset_url(block['imagePreview']) %>">
             <div class="drag-overlay"></div>

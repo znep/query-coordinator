@@ -70,7 +70,7 @@ RSpec.describe 'undo/redo', type: :feature, js: true do
     # Add a block.
     # Capybara complains that it can't scroll the sample block into screen.
     # Sigh. Do it with JS.
-    page.evaluate_script('$("[data-block-id=sample2]").dblclick()');
+    page.evaluate_script('$(".inspiration-block").eq(0).dblclick()');
     expect(block_count).to eq(initial_block_count + 1)
 
     # Grab some details from the block.
@@ -82,7 +82,7 @@ RSpec.describe 'undo/redo', type: :feature, js: true do
     expect_button_disabled(@redo_btn)
 
     # Add another block.
-    page.evaluate_script('$("[data-block-id=sample3]").dblclick()');
+    page.evaluate_script('$(".inspiration-block").eq(1).dblclick()');
     expect(block_count).to eq(initial_block_count + 2)
 
     # Grab block details.

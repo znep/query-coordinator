@@ -21,6 +21,38 @@ RSpec.describe Block, type: :model do
     end
   end
 
+  describe '.serializable_attributes' do
+    it 'returns correct attributes' do
+      valid_block = FactoryGirl.build(:block)
+      expect(valid_block.serializable_attributes).to eq(
+        'layout' => '12',
+        'created_at' => nil,
+        'created_by' => 'test_user@socrata.com',
+        'deleted_at' => nil,
+        'updated_at' => nil,
+        'components' => [
+          { 'type' => 'html', 'value' => 'Hello, world!' }
+        ]
+      )
+    end
+  end
+
+  describe '.as_json' do
+    it 'returns a correct object' do
+      valid_block = FactoryGirl.build(:block)
+      expect(valid_block.serializable_attributes).to eq(
+        'layout' => '12',
+        'created_at' => nil,
+        'created_by' => 'test_user@socrata.com',
+        'deleted_at' => nil,
+        'updated_at' => nil,
+        'components' => [
+          { 'type' => 'html', 'value' => 'Hello, world!' }
+        ]
+      )
+    end
+  end
+
   describe 'validations' do
 
     it 'has a valid factory' do

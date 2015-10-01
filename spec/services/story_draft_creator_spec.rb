@@ -7,7 +7,7 @@ RSpec.describe StoryDraftCreator do
   let(:digest) { 'digest-for-draft' }
   let(:theme) { 'serif' }
 
-  let(:blocks) { [ valid_new_block.dup ] }
+  let(:blocks) { [ valid_new_block_1.dup ] }
 
   let(:story_creator) {
     StoryDraftCreator.new(
@@ -21,59 +21,26 @@ RSpec.describe StoryDraftCreator do
 
   let(:result) { story_creator.create }
 
-  # block id
-  def existing_block_id
-    @existing_block_id ||= FactoryGirl.create(:block).id.to_s
-  end
-
   # individual blocks
-  def valid_new_block
-    { id: 'temp1234', layout: '12', components: [ { type: 'html', value: 'Hello, world!'} ] }.freeze
+  def valid_new_block_1
+    { layout: '12', components: [ { type: 'html', value: 'Hello, world!'} ] }.freeze
   end
 
-  def valid_existing_block
-    { id: existing_block_id.to_s }.freeze
+  def valid_new_block_2
+    { layout: '12', components: [ { type: 'html', value: 'Hello again, world!'} ] }.freeze
   end
 
   def invalid_new_block
     { invalid: true }
   end
 
-  def invalid_existing_block_1
-    { id: 0 }.freeze
-  end
-
-  def invalid_existing_block_2
-    { id: -1 }.freeze
-  end
-
-  def invalid_existing_block_3
-    { id: 'what' }.freeze
-  end
-
   # block arrays
-  def valid_no_existing_blocks
-    [ valid_new_block.dup ]
-  end
-
-  def valid_some_existing_blocks
-    [ valid_new_block.dup, valid_existing_block.dup ]
+  def valid_new_blocks
+    [ valid_new_block_1, valid_new_block_2 ]
   end
 
   def invalid_new_blocks
-    [ invalid_new_block.dup ]
-  end
-
-  def invalid_existing_blocks_1
-    [ valid_new_block.dup, invalid_existing_block_1.dup ]
-  end
-
-  def invalid_existing_blocks_2
-    [ valid_new_block.dup, invalid_existing_block_2.dup ]
-  end
-
-  def invalid_existing_blocks_3
-    [ valid_new_block.dup, invalid_existing_block_3.dup ]
+    [ invalid_new_block ]
   end
 
   context 'when instantiated with a non-array value for attributes[:blocks]' do
@@ -261,43 +228,9 @@ RSpec.describe StoryDraftCreator do
       end
 
 
-      context 'with no existing blocks' do
+      context 'with a non-empty blocks list' do
 
-        let(:blocks) { valid_no_existing_blocks }
-
-        it 'returns a DraftStory object' do
-          expect(result).to be_a(DraftStory)
-        end
-
-        it 'creates new blocks' do
-          expect(Block.find(result.block_ids.first)).to be_a(Block)
-        end
-
-        it 'creates a new draft story' do
-          expect(DraftStory.find(result.id)).to be_a(DraftStory)
-        end
-
-        it 'updates block_id_mappings' do
-          new_story = story_creator.create
-          expect(story_creator.block_id_mappings).to eq(
-            [{:oldId => "temp1234", :newId => Block.find(story_creator.story.block_ids.first).id}]
-          )
-        end
-      end
-
-      context 'with existing blocks' do
-        let(:blocks) { valid_some_existing_blocks }
-
-        let(:previous_draft) do
-          FactoryGirl.create(
-            :draft_story,
-            uid: uid,
-            block_ids: [ existing_block_id ],
-            created_by: user['id']
-          )
-        end
-
-        let(:digest) { previous_draft.digest }
+        let(:blocks) { valid_new_blocks }
 
         it 'returns a DraftStory object' do
           expect(result).to be_a(DraftStory)
@@ -305,20 +238,11 @@ RSpec.describe StoryDraftCreator do
 
         it 'creates new blocks' do
           expect(Block.find(result.block_ids.first)).to be_a(Block)
+          expect(Block.find(result.block_ids.second)).to be_a(Block)
         end
 
         it 'creates a new draft story' do
           expect(DraftStory.find(result.id)).to be_a(DraftStory)
-        end
-
-        it 'updates block_id_mappings' do
-          new_story = story_creator.create
-          expect(story_creator.block_id_mappings).to eq(
-            [
-              {:oldId => "temp1234", :newId => Block.find(story_creator.story.block_ids.first).id},
-              {:oldId => existing_block_id, :newId => existing_block_id}
-            ]
-          )
         end
       end
     end
@@ -327,7 +251,7 @@ RSpec.describe StoryDraftCreator do
 
       let(:uid) { 'invalid' }
 
-      context 'with no existing blocks' do
+      context 'with no blocks' do
 
         let(:blocks) { [] }
 
@@ -359,9 +283,9 @@ RSpec.describe StoryDraftCreator do
         end
       end
 
-      context 'with existing blocks' do
+      context 'with blocks' do
 
-        let(:blocks) { valid_some_existing_blocks }
+        let(:blocks) { valid_new_blocks }
 
         it 'raises an exception' do
           expect {
@@ -394,7 +318,7 @@ RSpec.describe StoryDraftCreator do
 
     context 'when called on an instance created with invalid blocks' do
 
-      context 'with no existing blocks' do
+      context 'with no blocks' do
 
         let(:blocks) { invalid_new_blocks }
 
@@ -414,7 +338,7 @@ RSpec.describe StoryDraftCreator do
         end
       end
 
-      context 'with an existing block that is not a hash' do
+      context 'with a block that is not a hash' do
 
         let(:blocks) { [1] }
 

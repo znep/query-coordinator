@@ -27,10 +27,12 @@ class Block < ActiveRecord::Base
     where("components @> ?", json_query)
   end
 
+  def serializable_attributes
+    attributes.except('id')
+  end
+
   def as_json(options = nil)
-    block_as_hash = self.attributes
-    block_as_hash['id'] = block_as_hash['id'].to_s
-    block_as_hash
+    self.serializable_attributes
   end
 
   def self.from_json(json_block)

@@ -36,11 +36,11 @@ RSpec.describe StoryDraftCreator do
 
   # block arrays
   def valid_new_blocks
-    [ valid_new_block_1.dup, valid_new_block_2.dup ]
+    [ valid_new_block_1, valid_new_block_2 ]
   end
 
   def invalid_new_blocks
-    [ invalid_new_block.dup ]
+    [ invalid_new_block ]
   end
 
   context 'when instantiated with a non-array value for attributes[:blocks]' do

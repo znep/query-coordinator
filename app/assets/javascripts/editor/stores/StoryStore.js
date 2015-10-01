@@ -36,7 +36,7 @@
       switch (action) {
 
         case Actions.STORY_CREATE:
-          _setStory(payload.data, false);
+          _importStory(payload.data);
           break;
 
         case Actions.STORY_SET_TITLE:
@@ -60,7 +60,7 @@
           break;
 
         case Actions.STORY_OVERWRITE_STATE:
-          _setStory(payload.data, true);
+          _overwriteStory(payload.data);
           break;
 
         case Actions.STORY_MOVE_BLOCK_UP:
@@ -451,11 +451,46 @@
 
     function _importBlockAndGenerateClientSideId(blockData) {
       var clientSideBlockId = _generateClientSideId();
-      _setBlock(clientSideBlockId, blockData, false); // Never overwrite an existing block, the ID is new.
+      _setBlock(clientSideBlockId, blockData);
       return clientSideBlockId;
     }
 
-    function _setStory(storyData, overwrite) {
+    /**
+     * Deserializes a story represented as a JSON blob into this store.
+     * Will not overwrite an existing story.
+     * If the argument's uid property corresponds to a story already in
+     * this store, an error is thrown.
+     */
+    function _importStory(storyData) {
+      utils.assert(
+        !_stories.hasOwnProperty(storyData.uid),
+        'Cannot import story: story with uid {0} already exists.'.format(storyData.uid)
+      );
+
+      _setStory(storyData);
+    }
+
+    /**
+     * Updates a story in this store according to the provided story JSON.
+     * If the argument's uid property does not correspond to a story already
+     * in this store, an error is thrown.
+     */
+    function _overwriteStory(storyData) {
+      utils.assert(
+        _stories.hasOwnProperty(storyData.uid),
+        'Cannot overwrite story: story with uid {0} does not exist.'.format(storyData.uid)
+      );
+
+      _setStory(storyData);
+    }
+
+    /**
+     * Deserializes a story represented as a JSON blob into this store.
+     * Consider using _importStory or _overwriteStory, as they verify
+     * the presence/absence of the story in the store (this function
+     * overwrites/creates blindly).
+     */
+    function _setStory(storyData) {
 
       var storyUid;
       var blockIds;
@@ -463,12 +498,6 @@
       _validateStoryData(storyData);
 
       storyUid = storyData.uid;
-
-      if (!overwrite && _stories.hasOwnProperty(storyUid)) {
-        throw new Error(
-          'Story with uid "' + storyUid + '" already exists.'
-        );
-      }
 
       blockIds = _.map(storyData.blocks, _importBlockAndGenerateClientSideId);
 
@@ -485,13 +514,13 @@
       self._emitChange();
     }
 
-    function _setBlock(clientSideBlockId, blockData, overwrite) {
+    function _setBlock(clientSideBlockId, blockData) {
 
       _validateBlockData(blockData);
 
-      if (!overwrite && _blocks.hasOwnProperty(clientSideBlockId)) {
+      if (_blocks.hasOwnProperty(clientSideBlockId)) {
         throw new Error(
-          'Block with id "' + clientSideBlockId + '" already exists.'
+          'Block with id {0} already exists.'.format(clientSideBlockId)
         );
       }
 
@@ -630,10 +659,7 @@
         // saving a draft should continue to work.
         deserializedStory.digest = self.getStoryDigest(deserializedStory.uid);
 
-        _setStory(
-          deserializedStory,
-          true
-        );
+        _overwriteStory(deserializedStory);
       }
     }
   }

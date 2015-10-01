@@ -15,7 +15,7 @@ module StoryAsJson
       attributes.
         except('id', 'block_ids', 'deleted_at').
         merge(:blocks => blocks.map do |block|
-          block.attributes.except('id')
+          block.serializable_attributes
         end)
     end
   end

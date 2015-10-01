@@ -86,7 +86,11 @@ class StoryDraftCreator
 
   def deserialize_json_blocks
     json_blocks.map do |json_block|
-      Block.from_json(json_block.merge(created_by: user).except(:id))
+      Block.from_json(
+        json_block.
+          merge(created_by: user).
+          except(:id)
+      )
     end
   end
 

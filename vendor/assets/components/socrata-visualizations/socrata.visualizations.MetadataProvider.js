@@ -24,15 +24,13 @@
     utils.assertIsOneOfTypes(config.domain, 'string');
     utils.assertIsOneOfTypes(config.datasetUid, 'string');
 
-    var _self = this;
-
     /**
      * Public methods
      */
 
     this.getDatasetMetadata = function() {
 
-      var url= 'https://{0}/metadata/v1/dataset/{1}.json'.format(
+      var url = 'https://{0}/metadata/v1/dataset/{1}.json'.format(
         this.getConfigurationProperty('domain'),
         this.getConfigurationProperty('datasetUid')
       );
@@ -83,7 +81,7 @@
 
         xhr.send();
       });
-    }
+    };
   }
 
   root.socrata.visualizations.MetadataProvider = MetadataProvider;

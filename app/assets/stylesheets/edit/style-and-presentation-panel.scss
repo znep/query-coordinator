@@ -8,11 +8,14 @@
 
   .theme-list {
 
+    margin: 0 4%;
+    margin-bottom: 4%;
+
     .theme {
       @include unselectable();
 
       position: relative;
-      margin: $theme-list-theme-margin;
+      margin: $theme-list-theme-margin 0;
       margin-bottom: $theme-list-theme-interior-margin-bottom;
       padding: $theme-list-theme-padding;
       background-color: $theme-list-theme-bg-color;
@@ -20,7 +23,7 @@
       cursor: pointer;
 
       &:last-child {
-        margin-bottom: $theme-list-theme-margin;
+        margin-bottom: 0;
       }
 
       &:hover {

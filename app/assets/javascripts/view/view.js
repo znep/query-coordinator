@@ -36,6 +36,11 @@ $(document).on('ready', function() {
             componentSocrataVisualizationColumnChart(componentData);
           break;
 
+        case 'socrata.visualization.timelineChart':
+          $element.
+            componentSocrataVisualizationTimelineChart(componentData);
+          break;
+
         case 'socrata.visualization.featureMap':
           $element.
             componentSocrataVisualizationFeatureMap(componentData);

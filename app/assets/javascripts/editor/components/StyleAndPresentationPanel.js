@@ -56,12 +56,14 @@
     styleAndPresentationPanel.
       on('sidebar:open', function() {
         toggleButton.addClass('active');
+        styleAndPresentationPanel.addClass('active');
         styleAndPresentationPanel.find('button[data-panel-toggle="style-and-presentation-panel"]').eq(0).focus();
       }).
       on('sidebar:close', function() {
         toggleButton.
           removeClass('active').
           blur();
+        styleAndPresentationPanel.removeClass('active');
       }).
       on('mousewheel', '.scrollable', utils.preventScrolling).
       on('mousedown', '.theme', function(event) {

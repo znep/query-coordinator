@@ -10,6 +10,7 @@
 
 //= require jquery2
 //= require lodash
+//= require moment/moment
 //= require d3/d3
 //= require squire-rte/build/squire
 //= require eventEmitter/EventEmitter
@@ -31,12 +32,14 @@
 //= require socrata-visualizations/socrata.visualizations.pbf
 //= require socrata-visualizations/socrata.visualizations.VectorTileManager
 //= require socrata-visualizations/socrata.visualizations.ColumnChart
+//= require socrata-visualizations/socrata.visualizations.TimelineChart
 //= require socrata-visualizations/socrata.visualizations.FeatureMap
 
 //= require socrata-visualizations/socrata.visualizations.FlyoutRenderer
 //= require socrata-visualizations/socrata.visualizations.RowInspector
 
 //= require socrata-visualizations/components/SocrataColumnChart
+//= require socrata-visualizations/components/SocrataTimelineChart
 //= require socrata-visualizations/components/SocrataFeatureMap
 
 //= require editor/init

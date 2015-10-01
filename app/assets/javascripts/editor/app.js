@@ -30,6 +30,10 @@ $(document).on('ready', function() {
     console.error(arguments);
   };
 
+  $(window).error(function(event) {
+    storyteller.notifyAirbrake(event.originalEvent.error);
+  });
+
   storyteller.assetFinder = new storyteller.AssetFinder();
   storyteller.storyPermissionsManager = new storyteller.StoryPermissionsManager();
 

@@ -13,6 +13,7 @@
 
 //= require jquery2
 //= require lodash
+//= require moment/moment
 //= require d3/d3
 //= require socrata-utils/socrata.utils
 //= require vector-tile/dist/vectortile
@@ -32,15 +33,18 @@
 //= require socrata-visualizations/socrata.visualizations.pbf
 //= require socrata-visualizations/socrata.visualizations.VectorTileManager
 //= require socrata-visualizations/socrata.visualizations.ColumnChart
+//= require socrata-visualizations/socrata.visualizations.TimelineChart
 //= require socrata-visualizations/socrata.visualizations.FeatureMap
 
 //= require socrata-visualizations/socrata.visualizations.FlyoutRenderer
 //= require socrata-visualizations/socrata.visualizations.RowInspector
 
 //= require socrata-visualizations/components/SocrataColumnChart
+//= require socrata-visualizations/components/SocrataTimelineChart
 //= require socrata-visualizations/components/SocrataFeatureMap
 
 //= require editor/block-component-renderers/componentSocrataVisualizationColumnChart
+//= require editor/block-component-renderers/componentSocrataVisualizationTimelineChart
 //= require editor/block-component-renderers/componentSocrataVisualizationFeatureMap
 
 // Store setup

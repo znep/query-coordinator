@@ -26,6 +26,7 @@
 .component-youtube-video,
 .component-image,
 .component-socrata-visualization-column-chart,
+.component-socrata-visualization-timeline-chart,
 .component-socrata-visualization-feature-map,
 .component-embedded-html {
   @include media-query-property(
@@ -57,6 +58,7 @@
   .component-asset-selector,
   .component-youtube-video,
   .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-timeline-chart,
   .component-socrata-visualization-feature-map {
     $small-height: $col3-block-edit-content-width-small * (3/4);
     $medium-height: $col3-block-edit-content-width-medium * (3/4);
@@ -87,6 +89,7 @@
   .component-asset-selector,
   .component-youtube-video,
   .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-timeline-chart,
   .component-socrata-visualization-feature-map {
     $small-height: $col4-block-edit-content-width-small * (3/4);
     $medium-height: $col4-block-edit-content-width-medium * (3/4);
@@ -117,6 +120,7 @@
   .component-asset-selector,
   .component-youtube-video,
   .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-timeline-chart,
   .component-socrata-visualization-feature-map {
     $small-height: $col6-block-edit-content-width-small * (3/4);
     $medium-height: $col6-block-edit-content-width-medium * (3/4);
@@ -147,6 +151,7 @@
   .component-asset-selector,
   .component-youtube-video,
   .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-timeline-chart,
   .component-socrata-visualization-feature-map {
     $small-height: $col8-block-edit-content-width-small * (3/4);
     $medium-height: $col8-block-edit-content-width-medium * (3/4);
@@ -177,6 +182,7 @@
   .component-asset-selector,
   .component-youtube-video,
   .component-socrata-visualization-column-chart,
+  .component-socrata-visualization-timeline-chart,
   .component-socrata-visualization-feature-map {
     $small-height: $col12-block-edit-content-width-small * (3/4);
     $medium-height: $col12-block-edit-content-width-medium * (3/4);

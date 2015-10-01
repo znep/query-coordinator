@@ -33,14 +33,15 @@
     "leaflet": "0.7.3",
     "lodash": "~3.10.0",
     "jquery": "~2.1.1",
-    "vector-tile": "0.1.1"
+    "vector-tile": "0.1.1",
+    "moment": "~2.10.6"
   },
   "homepage": "https://github.com/socrata/frontend-visualizations",
-  "_release": "29e688f8f2",
+  "_release": "d980175e45",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "29e688f8f27888df333cf0ab6ff42166a44c7c36"
+    "commit": "d980175e45d1ea0e49895fa22701adf383619c1c"
   },
   "_source": "git@github.com:socrata/frontend-visualizations.git",
   "_target": "master",

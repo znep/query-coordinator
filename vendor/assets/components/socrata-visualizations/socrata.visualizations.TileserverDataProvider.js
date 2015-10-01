@@ -173,7 +173,7 @@
       }
 
       return host;
-    };
+    }
 
     /**
      * IE9 doesn't support binary data in xhr.response, so we have to

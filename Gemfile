@@ -93,6 +93,7 @@ group :development do
 
   gem 'stackprof', require: false
   gem 'flamegraph'
+  gem 'rack-mini-profiler'
 
   # We use aws-sdk v2 for RDS database migrations
   gem 'aws-sdk'

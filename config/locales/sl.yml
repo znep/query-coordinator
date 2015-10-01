@@ -124,6 +124,7 @@ sl:
           permissions: Dovoljenja
           private: Zasebno
           public: Javno
+        save: Shrani
       customize_bar:
         changes_warning: Na tej strani ste uveljavili spremembe.
         collapse_card: 'Za vstop v način prilagajanja zaprite veliko kartico s pomočjo puščic v desnem zgornjem kotu '

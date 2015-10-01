@@ -123,6 +123,7 @@ ca:
           permissions: Permisos
           private: Privat
           public: Privat
+        save: Guardar
       customize_bar:
         changes_warning: Heu fet canvis a la pàgina
         collapse_card: 'Per entrar el mode de personalització: plegeu la targeta gran fent servir les fletxes a dalt de tot a la dreta'

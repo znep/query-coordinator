@@ -3,33 +3,26 @@ describe('API Explorer', function() {
 
   var FAKE4x4 = 'fake-data';
   var TEST_DOMAIN = 'config.ru';
-  var DOCUMENTATION_URL = 'http://dev.socrata.com/foundry/#/{0}/{1}'.format(
-    TEST_DOMAIN, FAKE4x4);
+  var DOCUMENTATION_URL = 'http://dev.socrata.com/foundry/#/{0}/{1}'.format(TEST_DOMAIN, FAKE4x4);
   var JSON_URL = 'https://{0}/resource/{1}.json'.format(TEST_DOMAIN, FAKE4x4);
   var GEOJSON_URL = 'https://{0}/resource/{1}.geojson'.format(TEST_DOMAIN, FAKE4x4);
 
+  var $httpBackend;
+  var $rootScope;
   var $window;
   var testHelpers;
-  var $rootScope;
-  var $httpBackend;
-  var Model;
+  var Mockumentary;
 
   /**
    * Create the <api-explorer> element with the proper wiring and add it to the dom.
    */
   function addValidElement() {
-    var model = new Model();
-    model.id = FAKE4x4;
-    model.defineObservableProperty('domain', TEST_DOMAIN);
     var scope = $rootScope.$new();
-    scope.myTest$ = Rx.Observable.returnValue(model);
-    var apiExplorerHtml = [
-      '<api-explorer',
-        'class="cards-metadata"',
-        'dataset-observable="myTest$"',
-        'edit-mode="editMode">',
-      '</api-explorer>'
-    ].join(' ');
+
+    var page = Mockumentary.createPage({datasetId: FAKE4x4}, {id: FAKE4x4, domain: TEST_DOMAIN});
+    scope.page = page;
+
+    var apiExplorerHtml = '<api-explorer></api-explorer>';
     var element = testHelpers.TestDom.compileAndAppend(apiExplorerHtml, scope);
     $httpBackend.flush();
     $rootScope.$digest();
@@ -51,28 +44,29 @@ describe('API Explorer', function() {
 
     $('body').addClass('state-view-cards');
 
-    inject(['$httpBackend', '$rootScope', '$window', 'testHelpers', 'Model', function(_$httpBackend, _$rootScope, _$window, _testHelpers, _Model) {
+    inject([
+      '$httpBackend',
+      '$rootScope',
+      '$window',
+      'testHelpers',
+      'Mockumentary',
+      function(
+        _$httpBackend,
+        _$rootScope,
+        _$window,
+        _testHelpers,
+        _Mockumentary) {
+
+      $httpBackend = _$httpBackend;
       $rootScope = _$rootScope;
       $window = _$window;
       testHelpers = _testHelpers;
-      Model = _Model;
-      $httpBackend = _$httpBackend;
+      Mockumentary = _Mockumentary;
     }]);
   });
 
   afterEach(function() {
     testHelpers.TestDom.clear();
-  });
-
-  describe('the tag itself', function() {
-    it('accepts a dataset-observable attribute', function() {
-      var scope = $rootScope.$new();
-      var TEST_OBSERVABLE = new Rx.Subject();
-      scope.myTest$ = TEST_OBSERVABLE;
-      var element = testHelpers.TestDom.compileAndAppend(
-        '<api-explorer class="cards-metadata" dataset-observable="myTest$"></api-explorer>', scope);
-      expect(element.isolateScope().datasetObservable).to.equal(TEST_OBSERVABLE);
-    });
   });
 
   describe('when more than one dataset format is available', function() {
@@ -157,13 +151,12 @@ describe('API Explorer', function() {
         $httpBackend.whenGET(new RegExp(
           '/resource/[^.]*\\.geojson\\?\\$limit=1')).respond({geojson: true});
 
-        var model = new Model();
-        model.id = '';
-        model.defineObservableProperty('domain', null);
         var scope = $rootScope.$new();
-        scope.myTest$ = Rx.Observable.returnValue(model);
-        element = testHelpers.TestDom.compileAndAppend(
-          '<api-explorer class="cards-metadata" dataset-observable="myTest$"></api-explorer>', scope);
+
+        var page = Mockumentary.createPage({datasetId: ''}, {id: '', domain: null});
+        scope.page = page;
+
+        element = testHelpers.TestDom.compileAndAppend('<api-explorer></api-explorer>', scope);
       });
 
       it('should populate the documentation URL link', function() {

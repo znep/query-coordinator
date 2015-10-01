@@ -123,6 +123,7 @@ pt:
           permissions: Autorizações
           private: Privado
           public: Público
+        save: Guardar
       customize_bar:
         changes_warning: Procedeu a alterações nesta página.
         collapse_card: 'Para entrar no modo de personalização: Colapse o cartão grande utilizando as setas existentes no seu canto superior direito'

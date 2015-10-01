@@ -456,6 +456,8 @@ class NewUxBootstrapController < ActionController::Base
       @migration_info = {}
     end
 
+    @domain_metadata = domain_metadata
+
     request[:app] = 'dataCards'
   end
 

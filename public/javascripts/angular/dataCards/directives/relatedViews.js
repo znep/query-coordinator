@@ -4,10 +4,7 @@
   function relatedViews(WindowState, Constants, ServerConfig) {
     return {
       restrict: 'E',
-      scope: {
-        page: '=',
-        datasetPages: '='
-      },
+      scope: true,
       templateUrl: '/angular_templates/dataCards/relatedViews.html',
       link: function($scope, element) {
         var destroy$ = $scope.$destroyAsObservable(element);
@@ -75,11 +72,6 @@
         // Bind locale part so that localized data lenses don't link to non-localized counterparts
         var localeInfo = ServerConfig.get('locales');
         $scope.localePart = localeInfo.currentLocale === localeInfo.defaultLocale ? '' : '/' + localeInfo.currentLocale;
-
-        // Temporary for v2 migration
-        // We need to check if we're on a v2 or v1 data lens page to know which
-        // button styling and tooltip panel classes to apply
-        $scope.v2DataLens = element.closest('div.activities').length > 0;
       }
     };
   }

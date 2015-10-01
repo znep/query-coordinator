@@ -121,6 +121,7 @@
       "currentUser": true,
       "d3": true,
       "datasetMetadata": true,
+      "domainMetadata": true,
       "jQuery": true,
       "L": true,
       "Modernizr": true,

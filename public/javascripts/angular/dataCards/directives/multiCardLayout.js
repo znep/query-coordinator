@@ -33,7 +33,7 @@
     });
   }
 
-  function cardLayout(
+  function multiCardLayout(
     Constants,
     WindowState,
     SortedTileLayout,
@@ -47,6 +47,7 @@
     sortedTileLayout = new SortedTileLayout();
     return {
       restrict: 'E',
+      // it seems we can't use a child scope here becase `expandedCard` changes need to be propagated up to parent scope
       scope: {
         page: '=',
         expandedCard: '=',
@@ -54,7 +55,7 @@
         chooserMode: '=',
         globalWhereClauseFragment: '='
       },
-      templateUrl: '/angular_templates/dataCards/card-layout.html',
+      templateUrl: '/angular_templates/dataCards/multiCardLayout.html',
       link: function(scope, cardContainer) {
         scope.grabbedCard = null;
 
@@ -79,12 +80,12 @@
         // verify our requirements are met.
         if (_.isEmpty(cardsMetadata)) {
           throw new Error(
-            'The cardLayout directive must be in the DOM with a node with class "cards-metadata".'
+            'The multiCardLayout directive must be in the DOM with a node with class "cards-metadata".'
           );
         }
         if (_.isEmpty(quickFilterBar)) {
           throw new Error(
-            'The cardLayout directive must be in the DOM with a node with class "quick-filter-bar".'
+            'The multiCardLayout directive must be in the DOM with a node with class "quick-filter-bar".'
           );
         }
 
@@ -961,7 +962,7 @@
         FlyoutService.register({
           selector: '.card-group-customize-hint-text .icon-help',
           render: function() {
-            return I18n.t('cardLayout.cardGroupCustomizeHintFlyoutText');
+            return I18n.t('multiCardLayout.cardGroupCustomizeHintFlyoutText');
           },
           destroySignal: scope.$destroyAsObservable(cardContainer)
         });
@@ -976,6 +977,6 @@
 
   angular.
     module('dataCards.directives').
-    directive('cardLayout', cardLayout);
+    directive('multiCardLayout', multiCardLayout);
 
 })();

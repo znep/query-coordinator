@@ -123,6 +123,7 @@ nl:
           permissions: Permissies
           private: Privé
           public: Publiek
+        save: Bewaren
       customize_bar:
         changes_warning: U heeft aanpassingen gemaakt aan deze pagina.
         collapse_card: 'Om naar aanpassingsmodus te gaan: Vouw de grote kaart in met behulp van de pijlen in de rechterbovenhoek'

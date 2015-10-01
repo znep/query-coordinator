@@ -158,6 +158,10 @@ stamen:
   defaultValue: false
   expectedValues: watercolor toner terrain
   category: easter egg
+standalone_lens_chart:
+  description: When enabled, allows individual visualizations from a data lens page to be saved as standalone catalog entries.
+  defaultValue: false
+  category: data lens
 swap_in_nbe_view:
   description: Utility flag to make frontend views use their NBE counterparts.
   defaultValue: false

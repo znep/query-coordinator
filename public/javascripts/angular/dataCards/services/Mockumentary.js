@@ -3,6 +3,26 @@
 
   function Mockumentary(Page, Dataset) {
 
+    function createCardMetadata(cardOptions) {
+      var minimalInitialValues = {
+        fieldName: 'blood_alcohol_level',
+        cardSize: 2,
+        cardType: 'column',
+        expanded: false,
+        activeFilters: [
+          {
+            function: 'BinaryOperator',
+            arguments: {
+              operand: 0.12,
+              operator: '='
+            }
+          }
+        ]
+      };
+
+      return $.extend(true, minimalInitialValues, cardOptions);
+    }
+
     function createPageMetadata(pageOptions) {
 
       var minimalPageMetadata = {
@@ -85,6 +105,7 @@
 
     return {
       createPageMetadata: createPageMetadata,
+      createCardMetadata: createCardMetadata,
       createPage: createPage,
       createDatasetMetadata: createDatasetMetadata,
       createDataset: createDataset

@@ -3,7 +3,6 @@
 class Displays::DataLens < Displays::Base
 
   def type
-    # TODO: verify
     'data_lens'
   end
 
@@ -21,12 +20,10 @@ class Displays::DataLens < Displays::Base
   end
 
   def render_partial
-    # TODO: verify
     'displays/blob'
   end
 
   def display_type
-    # TODO: verify
     'data_lens'
   end
 

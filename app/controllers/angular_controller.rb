@@ -114,6 +114,8 @@ class AngularController < ActionController::Base
       @migration_info = {}
     end
 
+    @domain_metadata = domain_metadata
+
   end
 
   def visualization_add

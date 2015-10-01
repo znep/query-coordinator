@@ -1056,7 +1056,7 @@ body.state-view-cards {
 }
 
 // customize-bar
-.customize-bar-action-btn {
+button.customize-bar-action-btn {
   @include action-button($customize-bar-button-color, $customize-bar-button-background-color, $customize-bar-button-border-color);
   &:hover, &.active, &.touched {
     @include action-button($customize-bar-customizing-button-color, $customize-bar-customizing-button-background-color, $customize-bar-customizing-button-color);

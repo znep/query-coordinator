@@ -21,11 +21,10 @@
       ].join(''),
 
       link: function($scope) {
-        var model$ = $scope.$observe('model');
-        var pageModel = $scope.model.page;
+        var model$ = $scope.$observe('model').filter(_.isPresent);
         var customTitle$ = model$.observeOnLatest('customTitle').filter(_.isPresent);
 
-        var dynamicTitle$ = PageHelpersService.dynamicAggregationTitle(pageModel).
+        var dynamicTitle$ = PageHelpersService.dynamicAggregationTitle(model$.pluck('page')).
           map(function(title) {
             return '{0} by'.format(_.capitalize(title));
           });

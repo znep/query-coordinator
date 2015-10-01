@@ -2,7 +2,7 @@
   'use strict';
   var DEFAULT_ROW_DISPLAY_UNIT = 'row';
 
-  function PageModelFactory(ServerConfig, Card, Dataset, Model, $log) {
+  function PageModelFactory(ServerConfig, Card, Dataset, Model, Filter, $log) {
 
     return Model.extend({
       // Builds a page model from either the page ID (given as a string),
@@ -51,6 +51,9 @@
           'moderationStatus',
           'shares'
         ];
+
+        this.displayType = pageMetadata.displayType;
+        this.isStandaloneVisualization = this.displayType === 'data_lens_chart' || this.displayType === 'data_lens_map';
 
         var deserializedCards = _.map(pageMetadata.cards, function(serializedCard) {
           return Card.deserialize(self, serializedCard);
@@ -141,22 +144,37 @@
         self.defineEphemeralObservablePropertyFromSequence('rowDisplayUnit',
           rowDisplayUnit$.filter(_.isDefined).startWith(DEFAULT_ROW_DISPLAY_UNIT));
 
-        var allCardsFilters = self.observe('cards').flatMap(function(cards) {
-          if (!cards) {
-            return Rx.Observable.never();
-          }
-          return Rx.Observable.combineLatest(_.map(cards, function(d) {
-            return d.observe('activeFilters');
-          }), function() {
-            return _.map(cards, function(card) {
-              return {
-                filters: card.getCurrentValue('activeFilters'),
-                fieldName: card.fieldName,
-                uniqueId: card.uniqueId
-              };
+        var allCardsFilters;
+
+        if (pageMetadata.sourceVif) {
+          allCardsFilters = Rx.Observable.returnValue(_.map(pageMetadata.sourceVif.filters, function(filter) {
+            return {
+              filters: [
+                Filter.deserialize(filter)
+              ],
+              fieldName: filter.columnName,
+              filteredColumn: filter.columnName,
+              uniqueId: _.uniqueId()
+            };
+          }));
+        } else {
+          allCardsFilters = self.observe('cards').flatMap(function(cards) {
+            if (!cards) {
+              return Rx.Observable.never();
+            }
+            return Rx.Observable.combineLatest(_.map(cards, function(d) {
+              return d.observe('activeFilters');
+            }), function() {
+              return _.map(cards, function(card) {
+                return {
+                  filters: card.getCurrentValue('activeFilters'),
+                  fieldName: card.fieldName,
+                  uniqueId: card.uniqueId
+                };
+              });
             });
           });
-        });
+        }
 
         self.defineEphemeralObservablePropertyFromSequence('activeFilters',
           allCardsFilters);
@@ -202,7 +220,7 @@
         // Enforce that here.
 
         // Since swapping the expanded card is not an atomic operation, observers listening
-        // to the expanded state (eg card-layout.js) will trigger multiple times for the
+        // to the expanded state (eg multiCardLayout.js) will trigger multiple times for the
         // same operation. Ideally it'd be an atomic operation, but since it isn't, let's
         // at least let the subscribers know by preferring to set more cards to expanded.
         // (ie since having 0 expanded cards is a valid state, but having 2 expanded cards

@@ -99,6 +99,9 @@
         resolve: {
           page: function(Page, Dataset) {
             return new Page(pageMetadata, new Dataset(datasetMetadata));
+          },
+          domain: function(Domain) {
+            return new Domain(domainMetadata);
           }
         },
         views: {

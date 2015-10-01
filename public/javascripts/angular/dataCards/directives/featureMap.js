@@ -709,15 +709,15 @@
         // Keep the baseTileLayer in sync with the baseLayerUrl observable.
         baseTileLayer$ = baseLayerUrl$.
           map(function(url) {
-            if (!_.isDefined(url)) {
+            if (_.isNull(url) || _.isUndefined(url)) {
               return {
                 url: Constants.DEFAULT_MAP_BASE_LAYER_URL,
-                opacity: 0.15
+                opacity: Constants.DEFAULT_MAP_BASE_LAYER_OPACITY
               };
             } else {
               return {
                 url: url,
-                opacity: 0.35
+                opacity: Constants.DEFINED_MAP_BASE_LAYER_OPACITY
               };
             }
           }).
